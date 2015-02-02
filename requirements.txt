@@ -1,0 +1,11 @@
+Flask==0.10.1
+Flask-SocketIO==0.4.1
+Jinja2==2.7.3
+MarkupSafe==0.23
+Werkzeug==0.9.6
+gevent==1.0.1
+gevent-socketio==0.3.6
+gevent-websocket==0.9.3
+gitdb==0.6.0
+greenlet==0.4.5
+itsdangerous==0.24

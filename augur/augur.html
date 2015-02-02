@@ -1,0 +1,429 @@
+<!doctype html>
+<!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->
+<html lang="en" data-useragent="Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)">
+
+<head>
+
+<title>Augur</title>
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+<link rel="stylesheet" href="/static/google-fonts.css">
+<link rel="stylesheet" href="/static/bootstrap.css">
+<link rel="stylesheet" href="/static/font-awesome.min.css" />
+<link rel="stylesheet" href="/static/augur.css" />
+
+<script src="/static/jquery.min.js"></script>
+<script src="/static/bootstrap.min.js"></script>
+<script src="/static/lodash.js"></script>
+<script src="/static/socket.io.min.js"></script>
+
+<script src="/static/bignumber.js"></script>
+<script src="/static/ethereum.min.js"></script>
+
+<body class="stopped">
+
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <h1 class="navbar-brand"><span>ḁugur</span></h1>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <button class="btn btn-sm miner-control" style="display: none;">
+                        <span class="status"></span>
+                        <i class="glyphicon glyphicon-off"></i>
+                    </button>
+                </li>
+                <li>
+                    <button class="btn btn-sm node-settings" style="display: none;" data-toggle="modal" data-target="#node-settings-modal">
+                        <span class="status"></span>
+                        <i class="glyphicon glyphicon-cog"></i>
+                    </button>
+                </li>
+            </ul>
+        </div>
+        <script type="text/template" id="parsing-template">
+            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="<%= percent %>" aria-valuemin="0" aria-valuemax="100" style="width: <%= percent %>%;">
+            </div>
+        </script>
+        <div class="parsing progress"></div>
+    </nav>
+
+    <section id="logo" class="container">ḁ</section>
+    <section id="main" class="container">
+
+        <div class="dash page row">
+
+            <div class="col-sm-3 sidebar">
+                <div class="panel panel-success account">
+                    <div class="panel-heading clearfix">Account</div>
+                    <div class="panel-body">
+                        <p class="address"></p>
+                        <p class="cash"></p>       
+                    </div>
+                </div>
+
+                <div class="panel panel-info">
+                    <div class="panel-heading clearfix"><span class="pull-left">Branches</span><a class="pull-right" href="#create-branch-modal" data-toggle="modal">create</a></div>
+                    <div class="panel-body branches">
+                    </div>
+                </div>
+
+                <div class="panel panel-default network">
+                    <div class="panel-heading clearfix"><span class="pull-left">Network</span></div>
+                    <div class="panel-body">
+                        <p class="blocks clearfix"></p>
+                        <p class="peers clearfix"></p>
+                    </div>
+                </div>
+
+            </div>
+          
+            <div class="col-sm-9">
+                <div class="cycle">
+                    <h3 class="clearfix"></h3>
+                    <script type="text/template" id="progress-template">
+                        <div class="progress-bar <%= type %>" role="progressbar" aria-valuenow="<%= percent %>" aria-valuemin="0" aria-valuemax="100" style="width: <%= percent %>%;">
+                        </div>
+                    </script>
+                    <div class="progress"></div>
+                    <div id="report" style="display: none;">
+                        <ul class="list-group" id="report-decisions"></ul>
+                        <script type="text/template" id="report-template">
+                            <li class="list-group-item clearfix<% if (d.state) { %> reported<% }; %>" id="<%= d.decision_id %>">
+                                <p><%= d.txt %></p>
+                                <label class="radio-inline">
+                                    <input type="radio" name="<%= d.decision_id %>" value="1" <% if (d.state == '1') { %>checked<% }; %>> True
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="<%= d.decision_id %>" value="0" <% if (d.state == '0') { %>checked<% }; %>> False
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="<%= d.decision_id %>" value="0.5" <% if (d.state == '0.5') { %>checked<% }; %>> Ambiguous or Indeterminent
+                                </label>
+                                <p class="my-choice"><%= d.state_desc %></p>
+                                <span class="pull-right" style="margin-left: 6px;"><%= d.reported %> report</span>
+                                <span class="pull-right glyphicon glyphicon-ok"></span>
+                            </li>
+                        </script>
+                        <p id="error" class="hidden pull-right"></p>
+                    </div>
+                </div>
+
+                <h4 class="clearfix">Decisions <a href="#add-decision-modal" data-toggle="modal" class="pull-right">Add decision</a>
+                </h4>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Description</th><th>Branch</th><th>Matures</th><th style="text-align: right;">Status</th>
+                        <tr>
+                    </thead>
+                    <tbody class="decisions"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </section>
+
+    <footer>
+
+        <div class="row container clearfix">
+
+        </div>
+
+    </footer>
+
+    <div id="alert" class="alert alert-dismissible" role="alert">
+        <button type="button" class="close" onclick="$('#alert').hide()"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <div></div>
+    </div>
+
+    <!-- modals dialogs -->
+
+    <div id="password-modal" class="modal fade">
+        <div class="modal-dialog model-sm">
+            <div class="modal-content">
+                <div class="modal-body clearfix">
+                    <form method="POST">
+                        <div class="col-lg-12">
+                            <div class="input-group">
+                                <input type="password" name="password" class="form-control" placeholder="Enter your password or public key" autofocus>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-success" type="submit">Start</button>
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="confirm-modal" class="modal fade">
+        <div class="modal-dialog model-sm">
+            <div class="modal-content">
+                <div class="modal-body clearfix">
+                    <p class="message"><p>
+                </div>
+                <div class="modal-footer clearfix">
+                    <button class="btn btn-success confirm pull-right" data-dismiss="modal">Okay</button>
+                    <button class="btn btn-default cancel pull-right" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="downloading-modal" class="modal fade">
+        <div class="modal-dialog model-sm">
+            <div class="modal-content">
+                <div class="modal-body clearfix">
+                    <h4>Downloading blockchain from peers</h4>
+                    <script type="text/template" id="downloading-template">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="<%= percent %>" aria-valuemin="0" aria-valuemax="100" style="width: <%= percent %>%;"><%= text %>
+                        </div>
+                    </script>
+                    <div class="progress"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="parsing-modal" class="modal fade">
+        <div class="modal-dialog model-sm">
+            <div class="modal-content">
+                <div class="modal-body clearfix">
+                    <h4>Parsing blockchain</h4>
+                    <script type="text/template" id="parsing-template">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="<%= percent %>" aria-valuemin="0" aria-valuemax="100" style="width: <%= percent %>%;"><%= text %>
+                        </div>
+                    </script>
+                    <div class="progress"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="create-branch-modal" class="modal fade">
+        <div class="modal-dialog model-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p>Create a new branch by entering a unique ID.  You will automatically be added to this branch and awarded all reputation to start.</p>
+                </div>
+                <div class="modal-body clearfix">
+                    <form>
+                        <div class="col-lg-12">
+                            <div class="input-group">
+                                <input type="text" name="branch-id" id="branch-id" class="form-control" placeholder="Enter a branch ID">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary" type="submit">Create branch</button>
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="send-cash-modal" class="modal fade">
+        <div class="modal-dialog model-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Send cash</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-inline" role="form">
+                        <div class="form-group">
+                            <label class="sr-only" for="dest-address">Destination address</label>
+                            <input type="text" class="form-control" name="cash-dest-address" id="cash-dest-address" placeholder="Enter destination address">
+                        </div>
+                        <div class="form-group">
+                            <label class="sr-only" for="amount">Amount</label>
+                            <input type="text" name="cash-amount" id="cash-amount" class="form-control" placeholder="Amount">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="send-rep-modal" class="modal fade">
+        <div class="modal-dialog model-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Send <span class="branch"></span> reputation</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-inline" role="form">
+                        <div class="form-group">
+                            <label class="sr-only" for="dest-address">Destination address</label>
+                            <input type="text" class="form-control" name="rep-dest-address" id="rep-dest-address" placeholder="Enter destination address">
+                        </div>
+                        <div class="form-group">
+                            <label class="sr-only" for="amount">Amount</label>
+                            <input type="text" name="rep-amount" id="rep-amount" class="form-control" placeholder="Amount">
+                        </div>
+                        <input type="hidden" name="rep-branch" id="rep-branch">
+                        <button type="submit" class="btn btn-primary">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="trade-modal" class="modal fade">
+        <div class="modal-dialog model-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="btn-group btn-group-justified" data-toggle="buttons">
+                        <label class="btn btn-primary">
+                            <input type="radio" name="trade-type" value="buy" autocomplete="off"> Buy
+                        </label>
+                        <label class="btn btn-primary">
+                            <input type="radio" name="trade-type" value="sell" autocomplete="off"> Sell
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <p class="decision-text"></p>
+                    <div class="balances"></div>
+                </div>
+                <div class="modal-footer">
+                    <form class="form-inline" role="form">
+                        <div class="form-group">
+                            <label for="market-state">State</label>
+                        </div>
+                        <div class="form-group">
+                            <label class="sr-only" for="market-state">State</label>
+                            <div id="market-state"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="sr-only" for="amount">Amount</label>
+                            <input type="text" name="trade-amount" id="trade-amount" class="form-control" placeholder="Amount">
+                        </div>
+                        <input type="hidden" name="trade-market" id="trade-market">
+                        <button type="submit" class="trade btn btn-primary" disabled><span class="trade-type">-</span></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="add-decision-modal" class="modal fade">
+        <div class="modal-dialog model-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Add decision</h4>
+                </div>
+                <div class="modal-body clearfix">
+                    <form role="form">
+                        <div class="form-group">
+                            <label for="decision-branch">Branch</label>
+                            <select class="form-control branches" id="decision-branch" name="decision-branch"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="decision-text">Decision text</label>
+                            <input type="text" class="form-control" id="decision-text" placeholder="Enter a true or false question">
+                        </div>
+                        <div class="form-group">
+                            <label for="decision-date">Maturation block</label>
+                            <input type="text" class="form-control" id="decision-time" placeholder="Enter block number that decision matures">
+                        </div>
+                        <div class="form-group">
+                            <label for="market-investment">Initial investment</label>
+                            <input type="text" class="form-control" id="market-investment" placeholder="Your initial investment (in cash)">
+                        </div>
+                        <button type="submit" class="btn btn-primary pull-right">Submit Decision</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="node-settings-modal" class="modal fade">
+        <div class="modal-dialog model-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button id="stop-node" class="btn btn-danger btn-block" data-loading-text="Stopping..." style="display: none;">Stop node</button>
+                    <button id="start-node" class="btn btn-success btn-block" data-loading-text="Starting...">Start node</button>
+                    <form id="password-form" style="display: none;">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="password" placeholder="Enter password or address">
+                            <span class="input-group-btn">
+                                <button class="btn btn-success" type="sumbit">Start</button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-body clearfix">
+                    <form class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <label for="node-host" class="col-sm-4 control-label">Host</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-sm" id="node-host" placeholder="Host">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="node-port" class="col-sm-4 control-label">Port</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-sm" id="node-port" placeholder="Port">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="core-path" class="col-sm-4 control-label">Augur path</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-sm" id="core-path" placeholder="Path to Augur core">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary pull-right btn-sm">SAVE SETTINGS</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="explore-modal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header clearfix">
+                    <form class="row">
+                        <div class="col-lg-6">
+                            <div class="input-group input-group-sm">
+                                <input type="text" name="block-number" class="form-control" placeholder="Enter block number">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-info" type="submit">View</button>
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <pre class="block-view"></pre>
+            </div>
+        </div>
+    </div>  
+</body>
+
+<script type="text/serpent" id="mul2-se">
+def double(x):
+     return(x * 2)
+</script>
+
+<script type="text/javascript">
+
+    var mul2 = "def double(x):\n   return(x * 2)\n"
+
+    var web3 = require('web3');
+
+    web3.setProvider(new web3.providers.HttpSyncProvider());
+
+    // test websocket connection
+    //console.log(web3.sha3(web3.fromAscii("hello world")));
+
+</script>
+
+</html>

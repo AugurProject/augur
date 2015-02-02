@@ -1,0 +1,10 @@
+*.pyc
+*.pyo
+*.db
+.DS_Store
+config_local.py
+.idea/
+/venv/
+core
+*#
+*~

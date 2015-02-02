@@ -1,0 +1,17 @@
+#!/bin/bash
+
+case "$1" in
+    start)
+        echo -n "Starting Augur..."
+        cd augur; ./augur.py 
+        echo "OK"
+        ;;
+    stop)
+        echo -n "Stopping Augur "
+        echo "OK"
+        ;;
+    *)
+        echo "Usage: $0 start|stop"
+        exit 1
+esac
+exit 0
