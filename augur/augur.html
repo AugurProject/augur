@@ -11,18 +11,15 @@
 
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
-<link rel="stylesheet" href="/static/google-fonts.css">
-<link rel="stylesheet" href="/static/bootstrap.css">
-<link rel="stylesheet" href="/static/font-awesome.min.css" />
-<link rel="stylesheet" href="/static/augur.css" />
+<link rel="stylesheet" href="static/google-fonts.css">
+<link rel="stylesheet" href="static/bootstrap.css">
+<link rel="stylesheet" href="static/font-awesome.min.css" />
+<link rel="stylesheet" href="static/augur.css" />
 
-<script src="/static/jquery.min.js"></script>
-<script src="/static/bootstrap.min.js"></script>
-<script src="/static/lodash.js"></script>
-<script src="/static/socket.io.min.js"></script>
-
-<script src="/static/bignumber.js"></script>
-<script src="/static/ethereum.min.js"></script>
+<script src="static/jquery.min.js"></script>
+<script src="static/bootstrap.min.js"></script>
+<script src="static/lodash.js"></script>
+<script src="static/socket.io.min.js"></script>
 
 <body class="stopped">
 
@@ -417,9 +414,9 @@ def double(x):
 
     var mul2 = "def double(x):\n   return(x * 2)\n"
 
-    var web3 = require('web3');
+    //var web3 = require('web3');
 
-    web3.setProvider(new web3.providers.HttpSyncProvider());
+    //web3.setProvider(new web3.providers.HttpSyncProvider());
 
     // test websocket connection
     //console.log(web3.sha3(web3.fromAscii("hello world")));
