@@ -31,96 +31,115 @@
 <script type="text/serpent" id="augur-desc">
 [{
     name: 'api',
+    type: 'function',
     inputs: [{ name: 'dataStructure', type: 'uint256' }, { name: 'itemNumber', type: 'uint256' }, { name: 'arrayIndex', type: 'uint256' }, { name: 'ID', type: 'uint256' }],
     outputs: [{ name: 'out', type: 'string' }]
 },
 {
     name: 'buy_shares',
+    type: 'function',
     inputs: [{ name: 'branch', type: 'uint256' }, { name: 'market', type: 'uint256' }, { name: 'outcome', type: 'uint256' }, { name: 'amount', type: 'uint256' }],
     outputs: [{ name: 'out', type: 'string' }]
 },
 {
     name: 'check_quorum',
+    type: 'function',
     inputs: [{ name: 'branch', type: 'uint256' }],
     outputs: [{ name: 'out', type: 'string' }]
 },
 {
     name: 'closeBet',
+    type: 'function',
     inputs: [{ name: 'betID', type: 'uint256' }],
     outputs: [{ name: 'out', type: 'string' }]
 },
 {
     name: 'create_event',
+    type: 'function',
     inputs: [{ name: 'branch', type: 'uint256' }, { name: 'description', type: 'string' }, { name: 'expDate', type: 'uint256' }, { name: 'minValue', type: 'uint256' }, { name: 'maxValue', type: 'uint256' }, { name: 'numOutcomes', type: 'uint256' }],
     outputs: [{ name: 'out', type: 'string' }]
 },
 {
     name: 'create_market',
+    type: 'function',
     inputs: [{ name: 'branch', type: 'uint256' }, { name: 'description', type: 'string' }, { name: 'alpha', type: 'uint256' }, { name: 'initialLiquidity', type: 'uint256' }, { name: 'events', type: 'uint256[]' }],
     outputs: [{ name: 'out', type: 'string' }]
 },
 {
     name: 'eventsExpApi',
+    type: 'function',
     inputs: [{ name: 'expDateIndex', type: 'uint256' }, { name: 'itemNumber', type: 'uint256' }, { name: 'arrayIndexOne', type: 'uint256' }, { name: 'arrayIndexTwo', type: 'uint256' }, { name: 'ID', type: 'uint256' }],
     outputs: [{ name: 'out', type: 'string' }]
 },
 {
     name: 'get_cash_balance',
+    type: 'function',
     inputs: [{ name: 'address', type: 'uint256' }],
     outputs: [{ name: 'out', type: 'string' }]
 },
 {
     name: 'get_rep_balance',
+    type: 'function',
     inputs: [{ name: 'branch', type: 'uint256' }, { name: 'address', type: 'uint256' }],
     outputs: [{ name: 'out', type: 'string' }]
 },
 {
     name: 'makeBallot',
+    type: 'function',
     inputs: [{ name: 'branch', type: 'uint256' }],
     outputs: [{ name: 'out', type: 'string' }]
 },
 {
     name: 'makeBet',
+    type: 'function',
     inputs: [{ name: 'eventID', type: 'uint256' }, { name: 'amtToBet', type: 'uint256' }],
     outputs: [{ name: 'out', type: 'string' }]
 },
 {
     name: 'make_subbranch',
+    type: 'function',
     inputs: [{ name: 'description', type: 'string' }, { name: 'periodLength', type: 'uint256' }, { name: 'parent', type: 'uint256' }, { name: 'repRequired', type: 'uint256' }],
     outputs: [{ name: 'out', type: 'string' }]
 },
 {
     name: 'marketParticipantsApi',
+    type: 'function',
     inputs: [{ name: 'participantIndex', type: 'uint256' }, { name: 'itemNumber', type: 'uint256' }, { name: 'eventID', type: 'uint256' }, { name: 'outcomeNumber', type: 'uint256' }, { name: 'marketID', type: 'uint256' }],
     outputs: [{ name: 'out', type: 'string' }]
 },
 {
     name: 'reputationApi',
+    type: 'function',
     inputs: [{ name: 'reputationIndex', type: 'uint256' }, { name: 'itemNumber', type: 'uint256' }, { name: 'branchID', type: 'uint256' }],
     outputs: [{ name: 'out', type: 'string' }]
 },
 {
     name: 'sell_shares',
+    type: 'function',
     inputs: [{ name: 'branch', type: 'uint256' }, { name: 'market', type: 'uint256' }, { name: 'outcome', type: 'uint256' }, { name: 'amount', type: 'uint256' }, { name: 'participantNumber', type: 'uint256' }],
     outputs: [{ name: 'out', type: 'string' }]
 },
 {
     name: 'sendMoneytoBet',
+    type: 'function',
     inputs: [{ name: 'betID', type: 'uint256' }, { name: 'outcome', type: 'uint256' }],
     outputs: [{ name: 'out', type: 'string' }]
 },
 {
     name: 'send_cashcoin',
+    type: 'function',
     inputs: [{ name: 'recver', type: 'uint256' }, { name: 'value', type: 'uint256' }],
     outputs: [{ name: 'out', type: 'string' }]
 },
 {
     name: 'send_reputation',
+    type: 'function',
     inputs: [{ name: 'branch', type: 'uint256' }, { name: 'recver', type: 'uint256' }, { name: 'value', type: 'uint256' }],
     outputs: [{ name: 'out', type: 'string' }]
 },
 {
     name: 'vote',
+    type: 'function',
     inputs: [{ name: 'branch', type: 'uint256' }, { name: 'report', type: 'uint256' }],
     outputs: [{ name: 'out', type: 'string' }]
 }]
