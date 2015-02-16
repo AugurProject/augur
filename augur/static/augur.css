@@ -1,11 +1,12 @@
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Source Sans Pro', sans-serif;
     font-weight: 200;
 }
 body.stopped #main {
     display: none;
 }
 body.stopped #logo {
+    font-family: 'Core Mellow 65 Bold';
     display: block;
 }
 body.running #main {
@@ -15,7 +16,7 @@ body.running #logo {
     display: none;
 }
 h1, h2, h3, h4, h5 {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Core Mellow 45 Regular';
     font-weight: 200;
 }
 h4 a,
@@ -27,8 +28,8 @@ table {
     font-size: 12px;
 }
 
-
 h1.navbar-brand {
+    font-family: 'Core Mellow 45 Regular';
     font-size: 26px;
     font-weight: 200;
     margin: 0px 0px 0px 0px;
