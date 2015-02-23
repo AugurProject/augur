@@ -1,6 +1,8 @@
 (function () {
 
-    var socket = io.connect(location.origin + '/socket.io/');
+    // node monitoring webworker thread
+    var nodeMonitorBlob = new Blob([$('#nodeMonitor').text()]);
+    var nodeMonitor = new Worker(window.URL.createObjectURL(nodeMonitorBlob));
 
     function formatDate(d) {
 
@@ -28,10 +30,9 @@
         $('#confirm-modal').modal('show');
     }
 
+    
     // get settings
-    socket.emit('settings', null);
-
-    var nodeMonitor = new Worker('/static/node-monitor.js');
+    //socket.emit('settings', null);
 
     // worker error handling
     nodeMonitor.addEventListener('error', function(e) {
@@ -259,11 +260,8 @@
 
         } else if (m['parsing']) {
 
-            // if (m['parsing'].done) {
-
             $('button.miner-control').show();
 
-            // } else {
             if (!m['parsing'].done) {
 
                 var text = m['parsing']['current'] + '/' + m['parsing']['total'];
@@ -343,25 +341,28 @@
 
     }, false);
 
+    // start node monitor web worker
+    nodeMonitor.postMessage();
+
     ////
     // sockets
 
-    socket.on('add-decision', function (data) {
-        nodeMonitor.postMessage({'add-decision': data});
-    });
+    //socket.on('add-decision', function (data) {
+    //    nodeMonitor.postMessage({'add-decision': data});
+    //});
 
-    socket.on('show-block', function (data) {
-        $('#explore-modal pre').text(data);
-    });
+    //socket.on('show-block', function (data) {
+    //    $('#explore-modal pre').text(data);
+    //});
 
-    socket.on('settings', function (settings) {
-        settings.port = parseInt(settings.port);
-        $('#node-host').val(settings.host);
-        $('#node-port').val(settings.port);
-        $('#core-path').val(settings.core_path);
-        $('#node-settings-modal form button[type=submit]').text('Saved')
-                                                          .attr('disabled', true);   
-    });
+    //socket.on('settings', function (settings) {
+    //    settings.port = parseInt(settings.port);
+    //    $('#node-host').val(settings.host);
+    //    $('#node-port').val(settings.port);
+    //    $('#core-path').val(settings.core_path);
+    //    $('#node-settings-modal form button[type=submit]').text('Saved')
+    //                                                      .attr('disabled', true);   
+    //});
 
     ////
     // actions
@@ -381,7 +382,7 @@
     $('#password-form').on('submit', function(event) {
 
         event.preventDefault();
-        socket.emit('start', $('#password').val());
+        //socket.emit('start', $('#password').val());
         $(this).hide();
         $('#start-node').button('loading');
         $('#start-node').show();
@@ -397,7 +398,7 @@
         }
         $('#node-settings-modal form button[type=submit]').text('Saving...')
                                                           .attr('disabled', true);
-        socket.emit('settings', settings);
+        //socket.emit('settings', settings);
     });
 
     $('#node-settings-modal form').on('change', function (event) {
@@ -415,13 +416,13 @@
             results[i]['branch'] = _decision[r.name].vote_id;
         });
 
-        socket.emit('report', results);
+        //socket.emit('report', results);
     }); 
 
     $('#create-branch-modal form').on('submit', function(event) {
 
         event.preventDefault();
-        socket.emit('create-branch', $('#branch-id').val());
+        //socket.emit('create-branch', $('#branch-id').val());
         $('#create-branch-modal').modal('hide');
     });
 
@@ -436,7 +437,7 @@
             'marketInv': $('#market-investment').val()
         }
 
-        socket.emit('add-decision', args);
+        //socket.emit('add-decision', args);
         $('#add-decision-modal').modal('hide');
     });
 
@@ -445,7 +446,7 @@
         event.preventDefault();
         var address = $('#cash-dest-address').val();
         var amount = $('#cash-amount').val();
-        socket.emit('send-cash', address, amount);
+        //socket.emit('send-cash', address, amount);
         $('#send-cash-modal').modal('hide');
     });
 
@@ -458,7 +459,7 @@
             'tradeAmount': $('#trade-amount').val(),
             'tradeType': $('#trade-modal input[name=trade-type]').val()
         }
-        socket.emit('trade', args);
+        //socket.emit('trade', args);
         $('#trade-modal').modal('hide');
     });
     $('#trade-modal input[name=trade-type]').on('change', function(event) {
@@ -472,19 +473,19 @@
         var amount = $('#rep-amount').val();
         var branch = $('#rep-branch').val();
         
-        socket.emit('send-reps', address, amount, branch);
+        //socket.emit('send-reps', address, amount, branch);
         $('#send-rep-modal').modal('hide');
     });
 
     $('#explore-modal form').on('submit', function(event) {
 
         event.preventDefault();
-        socket.emit('explore-block', $('#explore-modal input[name=block-number]').val());
+        //socket.emit('explore-block', $('#explore-modal input[name=block-number]').val());
     });
 
     $('#stop-node').on('click', function() {
         $(this).button('loading');
-        socket.emit('stop');
+        //socket.emit('stop');
     });
 
     $('#start-node').on('click', function() {

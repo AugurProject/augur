@@ -1,9 +1,223 @@
 console.log('[nodeMonitor] starting');
 
-importScripts("http://localhost:9000/static/lodash.js");
-importScripts("http://localhost:9000/static/socket.io.min.js");
+importScripts("https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.3.0/lodash.min.js");
+importScripts("https://cdnjs.cloudflare.com/ajax/libs/bignumber.js/2.0.3/bignumber.min.js");
+importScripts("https://raw.githubusercontent.com/ethereum/ethereum.js/master/dist/ethereum.min.js");
 
-var socket = io.connect('http://localhost:9000' + '/socket.io/')
+var abi = [
+    {
+        "name": "api(int256,int256,int256,int256)",
+        "type": "function",
+        "inputs": [{ "name": "dataStructure", "type": "int256" }, { "name": "itemNumber", "type": "int256" }, { "name": "arrayIndex", "type": "int256" }, { "name": "ID", "type": "int256" }],
+        "outputs": [{ "name": "unknown_out", "type": "int256[]" }]
+    },
+    {
+        "name": "balance(int256)",
+        "type": "function",
+        "inputs": [{ "name": "address", "type": "int256" }],
+        "outputs": [{ "name": "out", "type": "int256" }]
+    },
+    {
+        "name": "buyShares(int256,int256,int256,int256)",
+        "type": "function",
+        "inputs": [{ "name": "branch", "type": "int256" }, { "name": "market", "type": "int256" }, { "name": "outcome", "type": "int256" }, { "name": "amount", "type": "int256" }],
+        "outputs": [{ "name": "out", "type": "int256" }]
+    },
+    {
+        "name": "calibrate_sets(int256[],int256,int256)",
+        "type": "function",
+        "inputs": [{ "name": "scores", "type": "int256[]" }, { "name": "num_players", "type": "int256" }, { "name": "num_events", "type": "int256" }],
+        "outputs": [{ "name": "out", "type": "int256[]" }]
+    },
+    {
+        "name": "calibrate_wsets(int256[],int256[],int256[],int256[],int256,int256)",
+        "type": "function",
+        "inputs": [{ "name": "set1", "type": "int256[]" }, { "name": "set2", "type": "int256[]" }, { "name": "reputation", "type": "int256[]" }, { "name": "reports", "type": "int256[]" }, { "name": "num_players", "type": "int256" }, { "name": "num_events", "type": "int256" }],
+        "outputs": [{ "name": "out", "type": "int256[]" }]
+    },
+    {
+        "name": "center(int256[],int256[],int256[],int256[],int256[],int256)",
+        "type": "function",
+        "inputs": [{ "name": "reports_filled", "type": "int256[]" }, { "name": "reputation", "type": "int256[]" }, { "name": "scaled", "type": "int256[]" }, { "name": "scaled_max", "type": "int256[]" }, { "name": "scaled_min", "type": "int256[]" }, { "name": "max_iterations", "type": "int256" }],
+        "outputs": [{ "name": "out", "type": "int256[]" }]
+    },
+    {
+        "name": "checkQuorum(int256)",
+        "type": "function",
+        "inputs": [{ "name": "branch", "type": "int256" }],
+        "outputs": [{ "name": "out", "type": "int256" }]
+    },
+    {
+        "name": "closeBet(int256)",
+        "type": "function",
+        "inputs": [{ "name": "betID", "type": "int256" }],
+        "outputs": [{ "name": "out", "type": "int256" }]
+    },
+    {
+        "name": "closeMarket(int256,int256)",
+        "type": "function",
+        "inputs": [{ "name": "branch", "type": "int256" }, { "name": "market", "type": "int256" }],
+        "outputs": [{ "name": "unknown_out", "type": "int256[]" }]
+    },
+    {
+        "name": "consensus(int256[],int256[],int256[],int256[],int256[],int256,int256)",
+        "type": "function",
+        "inputs": [{ "name": "smooth_rep", "type": "int256[]" }, { "name": "reports", "type": "int256[]" }, { "name": "scaled", "type": "int256[]" }, { "name": "scaled_max", "type": "int256[]" }, { "name": "scaled_min", "type": "int256[]" }, { "name": "num_players", "type": "int256" }, { "name": "num_events", "type": "int256" }],
+        "outputs": [{ "name": "out", "type": "int256[]" }]
+    },
+    {
+        "name": "createEvent(int256,string,int256,int256,int256,int256)",
+        "type": "function",
+        "inputs": [{ "name": "branch", "type": "int256" }, { "name": "description", "type": "string" }, { "name": "expDate", "type": "int256" }, { "name": "minValue", "type": "int256" }, { "name": "maxValue", "type": "int256" }, { "name": "numOutcomes", "type": "int256" }],
+        "outputs": [{ "name": "out", "type": "int256" }]
+    },
+    {
+        "name": "createMarket(int256,string,int256,int256,int256,int256[])",
+        "type": "function",
+        "inputs": [{ "name": "branch", "type": "int256" }, { "name": "description", "type": "string" }, { "name": "alpha", "type": "int256" }, { "name": "initialLiquidity", "type": "int256" }, { "name": "tradingFee", "type": "int256" }, { "name": "events", "type": "int256[]" }],
+        "outputs": [{ "name": "out", "type": "int256" }]
+    },
+    {
+        "name": "eventsExpApi(int256,int256,int256,int256,int256)",
+        "type": "function",
+        "inputs": [{ "name": "expDateIndex", "type": "int256" }, { "name": "itemNumber", "type": "int256" }, { "name": "arrayIndexOne", "type": "int256" }, { "name": "arrayIndexTwo", "type": "int256" }, { "name": "ID", "type": "int256" }],
+        "outputs": [{ "name": "out", "type": "int256" }]
+    },
+    {
+        "name": "faucet()",
+        "type": "function",
+        "inputs": [],
+        "outputs": [{ "name": "out", "type": "int256" }]
+    },
+    {
+        "name": "getRepBalance(int256,int256)",
+        "type": "function",
+        "inputs": [{ "name": "branch", "type": "int256" }, { "name": "address", "type": "int256" }],
+        "outputs": [{ "name": "out", "type": "int256" }]
+    },
+    {
+        "name": "interpolate(int256[],int256[],int256[],int256[],int256[])",
+        "type": "function",
+        "inputs": [{ "name": "reports", "type": "int256[]" }, { "name": "reputation", "type": "int256[]" }, { "name": "scaled", "type": "int256[]" }, { "name": "scaled_max", "type": "int256[]" }, { "name": "scaled_min", "type": "int256[]" }],
+        "outputs": [{ "name": "out", "type": "int256[]" }]
+    },
+    {
+        "name": "makeBallot(int256)",
+        "type": "function",
+        "inputs": [{ "name": "branch", "type": "int256" }],
+        "outputs": [{ "name": "out", "type": "int256[]" }]
+    },
+    {
+        "name": "makeBet(int256,int256)",
+        "type": "function",
+        "inputs": [{ "name": "eventID", "type": "int256" }, { "name": "amtToBet", "type": "int256" }],
+        "outputs": []
+    },
+    {
+        "name": "makeSubBranch(string,int256,int256,int256)",
+        "type": "function",
+        "inputs": [{ "name": "description", "type": "string" }, { "name": "periodLength", "type": "int256" }, { "name": "parent", "type": "int256" }, { "name": "repRequired", "type": "int256" }],
+        "outputs": [{ "name": "out", "type": "int256" }]
+    },
+    {
+        "name": "marketParticipantsApi(int256,int256,int256,int256,int256)",
+        "type": "function",
+        "inputs": [{ "name": "participantIndex", "type": "int256" }, { "name": "itemNumber", "type": "int256" }, { "name": "eventID", "type": "int256" }, { "name": "outcomeNumber", "type": "int256" }, { "name": "marketID", "type": "int256" }],
+        "outputs": [{ "name": "out", "type": "int256" }]
+    },
+    {
+        "name": "participation(int256[],int256[],int256[],int256[],int256,int256)",
+        "type": "function",
+        "inputs": [{ "name": "outcomes_final", "type": "int256[]" }, { "name": "consensus_reward", "type": "int256[]" }, { "name": "smooth_rep", "type": "int256[]" }, { "name": "reports_mask", "type": "int256[]" }, { "name": "num_players", "type": "int256" }, { "name": "num_events", "type": "int256" }],
+        "outputs": [{ "name": "out", "type": "int256[]" }]
+    },
+    {
+        "name": "pca_adjust(int256[],int256[],int256[],int256[],int256[],int256[],int256,int256)",
+        "type": "function",
+        "inputs": [{ "name": "old", "type": "int256[]" }, { "name": "new1", "type": "int256[]" }, { "name": "new2", "type": "int256[]" }, { "name": "set1", "type": "int256[]" }, { "name": "set2", "type": "int256[]" }, { "name": "scores", "type": "int256[]" }, { "name": "num_players", "type": "int256" }, { "name": "num_events", "type": "int256" }],
+        "outputs": [{ "name": "out", "type": "int256[]" }]
+    },
+    {
+        "name": "pca_loadings(int256[],int256[],int256[],int256,int256)",
+        "type": "function",
+        "inputs": [{ "name": "loading_vector", "type": "int256[]" }, { "name": "weighted_centered_data", "type": "int256[]" }, { "name": "reputation", "type": "int256[]" }, { "name": "num_players", "type": "int256" }, { "name": "num_events", "type": "int256" }],
+        "outputs": [{ "name": "out", "type": "int256[]" }]
+    },
+    {
+        "name": "pca_scores(int256[],int256[],int256,int256)",
+        "type": "function",
+        "inputs": [{ "name": "loading_vector", "type": "int256[]" }, { "name": "weighted_centered_data", "type": "int256[]" }, { "name": "num_players", "type": "int256" }, { "name": "num_events", "type": "int256" }],
+        "outputs": [{ "name": "out", "type": "int256[]" }]
+    },
+    {
+        "name": "redeem(int256,int256)",
+        "type": "function",
+        "inputs": [{ "name": "branch", "type": "int256" }, { "name": "step", "type": "int256" }],
+        "outputs": [{ "name": "unknown_out", "type": "int256[]" }]
+    },
+    {
+        "name": "reputationApi(int256,int256,int256)",
+        "type": "function",
+        "inputs": [{ "name": "reputationIndex", "type": "int256" }, { "name": "itemNumber", "type": "int256" }, { "name": "branchID", "type": "int256" }],
+        "outputs": [{ "name": "out", "type": "int256" }]
+    },
+    {
+        "name": "sellShares(int256,int256,int256,int256,int256)",
+        "type": "function",
+        "inputs": [{ "name": "branch", "type": "int256" }, { "name": "market", "type": "int256" }, { "name": "outcome", "type": "int256" }, { "name": "amount", "type": "int256" }, { "name": "participantNumber", "type": "int256" }],
+        "outputs": [{ "name": "out", "type": "int256" }]
+    },
+    {
+        "name": "send(int256,int256)",
+        "type": "function",
+        "inputs": [{ "name": "recver", "type": "int256" }, { "name": "value", "type": "int256" }],
+        "outputs": [{ "name": "out", "type": "int256" }]
+    },
+    {
+        "name": "sendFrom(int256,int256,int256)",
+        "type": "function",
+        "inputs": [{ "name": "recver", "type": "int256" }, { "name": "value", "type": "int256" }, { "name": "from", "type": "int256" }],
+        "outputs": [{ "name": "out", "type": "int256" }]
+    },
+    {
+        "name": "sendMoneytoBet(int256,int256)",
+        "type": "function",
+        "inputs": [{ "name": "betID", "type": "int256" }, { "name": "outcome", "type": "int256" }],
+        "outputs": [{ "name": "out", "type": "int256" }]
+    },
+    {
+        "name": "sendReputation(int256,int256,int256)",
+        "type": "function",
+        "inputs": [{ "name": "branch", "type": "int256" }, { "name": "recver", "type": "int256" }, { "name": "value", "type": "int256" }],
+        "outputs": [{ "name": "unknown_out", "type": "int256[]" }]
+    },
+    {
+        "name": "smooth(int256[],int256[],int256,int256)",
+        "type": "function",
+        "inputs": [{ "name": "adjusted_scores", "type": "int256[]" }, { "name": "reputation", "type": "int256[]" }, { "name": "num_players", "type": "int256" }, { "name": "num_events", "type": "int256" }],
+        "outputs": [{ "name": "out", "type": "int256[]" }]
+    },
+    {
+        "name": "vote(int256,int256[])",
+        "type": "function",
+        "inputs": [{ "name": "branch", "type": "int256" }, { "name": "report", "type": "int256[]" }],
+        "outputs": [{ "name": "out", "type": "int256" }]
+    }
+];
+
+// get the web3 object
+if (typeof web3 === 'undefined') {
+
+    var web3 = require('web3');
+
+    // set providor
+    web3.setProvider(new web3.providers.HttpSyncProvider("http://localhost:8080"))
+}
+
+var address = '0x1b0d9c2449fb543016d2827e7342ec44a8dd7f09';   // this is the address returned from the loader
+var contract = web3.eth.contract(address, abi);
+
+console.log(contract);
 
 var SECONDS_PER_BLOCK = 60;
 var REPORT_CYCLE = 40;

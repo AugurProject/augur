@@ -1,12 +1,33 @@
+@font-face {
+    font-family: 'Core Mellow';
+    font-weight: 300;
+    src: url("fonts/S-Core - CoreMellow35Light.otf") format("opentype");
+}
+@font-face {
+    font-family: 'Core Mellow';
+    font-weight: 400;
+    src: url("fonts/S-Core - CoreMellow45Regular.otf") format("opentype");
+}
+@font-face {
+    font-family: 'Core Mellow';
+    font-weight: 700;
+    src: url("fonts/S-Core - CoreMellow55Medium.otf") format("opentype");
+}
+@font-face {
+    font-family: 'Core Mellow';
+    font-weight: 800;
+    src: url("fonts/S-Core - CoreMellow65Bold.otf") format("opentype");
+}
 body {
     font-family: 'Source Sans Pro', sans-serif;
-    font-weight: 200;
+    font-weight: 400;
 }
 body.stopped #main {
     display: none;
 }
 body.stopped #logo {
-    font-family: 'Core Mellow 65 Bold';
+    font-family: 'Core Mellow';
+    font-weight: 700;
     display: block;
 }
 body.running #main {
@@ -16,8 +37,8 @@ body.running #logo {
     display: none;
 }
 h1, h2, h3, h4, h5 {
-    font-family: 'Core Mellow 45 Regular';
-    font-weight: 200;
+    font-family: 'Core Mellow';
+    font-weight: 400;
 }
 h4 a,
 h4 span {
@@ -29,22 +50,22 @@ table {
 }
 
 h1.navbar-brand {
-    font-family: 'Core Mellow 45 Regular';
     font-size: 26px;
-    font-weight: 200;
     margin: 0px 0px 0px 0px;
     position: relative;
     top: -3px;
 }
-nav {
+nav.navbar {
     border-radius: 0px;
+    border: none;
 }
 nav h1 span {
-    font-weight: 400;
+    color: #8E8E8E;
+    font-weight: 300;
 }
 nav .cash {
     margin-left: 20px;
-    font-weight: bold;
+    font-weight: 400;
 }
 .nav li {
     margin-left: 10px;
@@ -76,7 +97,9 @@ nav .parsing.progress {
 .sidebar .panel {
     font-size: 12px;
 }
-
+.panel-heading {
+    padding: 5px 10px;
+}
 .branches .branches-toggle:before {
     content: 'show all';
 }
@@ -260,11 +283,13 @@ nav .parsing.progress {
     margin-bottom: 5px;
 }
 #logo {
+    display: none;
+    font-family: 'Core Mellow';
     font-size: 363px;
     width: 300px;
     margin: 0% auto 0px auto;
     text-align: center;
-    font-weight: 400;
+    font-weight: 700;
     line-height: 1em;
     color: rgb(209, 231, 231);
     position: relative;

@@ -11,32 +11,19 @@
 
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
-<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="static/bootstrap.css">
 <link rel="stylesheet" href="static/font-awesome.min.css" />
 <link rel="stylesheet" href="static/augur.css" />
 
-<script type="text/javascript">
-    (function() {
-        var path = '//easy.myfonts.net/v2/js?sid=249808(font-family=Core+Mellow+25+ExtraLight)&sid=249815(font-family=Core+Mellow+45+Regular)&sid=249818(font-family=Core+Mellow+55+Medium)&sid=249823(font-family=Core+Mellow+65+Bold)&key=X3bbFd7cxL',
-            protocol = ('https:' == document.location.protocol ? 'https:' : 'http:'),
-            trial = document.createElement('script');
-        trial.type = 'text/javascript';
-        trial.async = true;
-        trial.src = protocol + path;
-        var head = document.getElementsByTagName("head")[0];
-        head.appendChild(trial);
-    })();
-</script>
-
 <script src="static/jquery.min.js"></script>
 <script src="static/bootstrap.min.js"></script>
-<script src="static/lodash.js"></script>
 
+<script src="static/lodash.js"></script>
 <script src="static/bignumber.js"></script>
 <script src="static/ethereum.js"></script>
 
-<body class="stopped">
+<body>
 
     <nav class="navbar navbar-default" role="navigation">
         <div class="container">
@@ -62,7 +49,6 @@
             <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="<%= percent %>" aria-valuemin="0" aria-valuemax="100" style="width: <%= percent %>%;">
             </div>
         </script>
-        <div class="parsing progress"></div>
     </nav>
 
     <section id="logo" class="container">a</section>
@@ -420,8 +406,14 @@
     </div>  
 </body>
 
-<script type="text/javascript">
- 
+<script type="text/webworker" id="nodeMonitor">
+
+    console.log('[nodeMonitor] starting');
+
+    importScripts("https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.3.0/lodash.min.js");
+    importScripts("https://cdnjs.cloudflare.com/ajax/libs/bignumber.js/2.0.3/bignumber.min.js");
+    importScripts("https://raw.githubusercontent.com/ethereum/ethereum.js/master/dist/ethereum.min.js");
+
     var abi = [
         {
             "name": "api(int256,int256,int256,int256)",
@@ -622,7 +614,7 @@
             "outputs": [{ "name": "out", "type": "int256" }]
         }
     ];
-   
+
     // get the web3 object
     if (typeof web3 === 'undefined') {
 
@@ -634,7 +626,93 @@
 
     var address = '0x1b0d9c2449fb543016d2827e7342ec44a8dd7f09';   // this is the address returned from the loader
     var contract = web3.eth.contract(address, abi);
-        
+
+    console.log(contract);
+
+
+    var SECONDS_PER_BLOCK = 60;
+    var REPORT_CYCLE = 40;
+
+    var augur = {
+        decisions: {},
+        branches: {},
+        markets: {},
+        blockcount: 0,
+        network_blockcount: 0,
+        starting: false,
+        current: false,
+        market_queue: {},
+        force: false,
+        blocks_loaded: 0
+    }
+
+    var cycle = {
+        count: 0,
+        decisions: {}
+    };
+
+    var account = {};
+
+
+    // message listeners from DOM script
+    self.addEventListener('message', function(message) {
+
+        var m = message.data;
+
+        // adding a pending decision to list until the blockchain confirms it
+        if (m && m['add-decision']) {
+
+            var tx = {
+                'txt': m['add-decision']['decisionText'],
+                'decision_id': m['add-decision']['decisionId'],
+                'vote_id': m['add-decision']['branchId'],
+                'maturation': m['add-decision']['decisionMaturation'],
+                'status': 'pending'
+            }
+
+            augur.decisions[tx.decision_id] = tx;
+
+            var tx = {
+                'B': parseInt(m['add-decision']['marketInv']),
+                'PM_id': m['add-decision']['decisionId'] + '.market',
+                'decisions': [m['add-decision']['decisionId']],
+                'decision_id': m['add-decision']['decisionId'],
+                'fees': 0,
+                'owner': account.address,
+                'states': ['no', 'yes'],
+                'type': 'prediction_market',
+                'txt': m['add-decision']['decisionText'],
+                'vote_id': m['add-decision']['branchId'],
+                'maturation': m['add-decision']['decisionMaturation'],
+                'maturation_date': blockTime(m['add-decision']['decisionMaturation']),
+                'status': 'pending'
+            }
+
+            augur.markets[tx.decision_id] = tx;
+            self.postMessage({'markets': augur.markets});
+
+            augur.market_queue[m['add-decision'].decisionId] = m['add-decision'];
+
+        } else if (m && m['report-decision']) {
+
+            augur.decisions[m['report-decision']['decision_id']]['state'] = m['report-decision']['stage'];
+
+            var data = _.extend(augur.decisions[m['report-decision']['decision_id']], m['report-decision']);
+            socket.emit('report', data);
+
+        } else if (m && m['trade']) {
+
+            var id = m['trade'];
+
+            self.postMessage({'trade': augur.markets[id]});
+        }
+    });
+
+    // start pinging node for updates
+    setInterval(function() { console.log('ping') }, 2500);
+
 </script>
+
+<script type="text/javascript" src="static/augur.js"></script>
 
 </html>
