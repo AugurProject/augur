@@ -4,109 +4,66 @@
     var nodeMonitorBlob = new Blob([$('#nodeMonitor').text()]);
     var nodeMonitor = new Worker(window.URL.createObjectURL(nodeMonitorBlob));
 
-    function formatDate(d) {
-
-        if (!d) return '-';
-
-        months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Oct','Sep','Nov','Dec'];
-
-        var hour = d.getHours() > 11  ? d.getHours() - 12 : d.getHours();
-        hour = hour == 0 ? 12 : hour;
-        var apm = d.getHours() > 10 || d.getHours() == 23 && d.getHours() != 0 ? 'pm' : 'am';
-        var minutes = d.getMinutes() < 10 ? '0'+ d.getMinutes() : d.getMinutes();
-  
-        return months[d.getMonth()]+' '+d.getDate()+', '+hour+':'+minutes+' '+apm;
-    }
-
-    function confirm(args) {
-
-        $('#confirm-modal .message').html(args.message);
-        if (args.cancelText) $('#confirm-modal button.cancel').text(args.cancelText);
-        if (args.confirmText) $('#confirm-modal button.confirm').text(args.confirmText);
-
-        $('#confirm-modal button.confirm').on('click', args.confirmCallback);
-        $('#confirm-modal button.cancel').on('click', args.cancelCallback);
-
-        $('#confirm-modal').modal('show');
-    }
-
     // worker error handling
     nodeMonitor.addEventListener('error', function(e) {
-        console.log('[nodeMonitor] error on '+ e.lineno,': ' +e.message);
+        console.log('[augur] line '+ e.lineno,': ' +e.message);
     }, false);
 
-    // main worker postMessage listener
-    nodeMonitor.addEventListener('message', function(e) {
+    // nodeMonitor message listener
+    nodeMonitor.addEventListener('message', function(m) {
     
-        var m = e.data;
+        _.each(m.data, function (data, prop) {
 
-        if (m['alert']) {
+            if (prop in update) {
+
+                update[prop](data);
+
+            } else if (prop === 'test') {
+
+                console.log('testing: ' + value);
+            }
+        });
+
+    }, false);
+
+    // start node monitor web worker
+    nodeMonitor.postMessage();
+
+
+    // DOM manipulation (TODO: move to React or Mercury)
+    var update = {
+
+        alert: function(data) {
 
             $('#alert').show();
 
             $('#alert').removeClass('alert-info').removeClass('alert-success').removeClass('alert-warning').removeClass('alert-danger');
-            $('#alert').addClass('alert-'+m.alert['type']);
+            $('#alert').addClass('alert-'+data.type);
 
             items = [];
-            _.each(m.alert['messages'], function(message) {
+            _.each(data.messages, function(message) {
                 items.push($('<p>').html(message));
             });
             $('#alert div').append(items);
             $('#alert').show();
             $('#alert div').scrollTop($('#alert div')[0].scrollHeight);
+        },
 
-        } else if (m['node-up']) {
+        cycle: function(data) {
 
-            $('body').removeClass('stopped').addClass('running');
-            $('#node-settings-modal').modal('hide');
-            $('button.node-settings').addClass('btn-success');
-            $('button.node-settings').removeClass('btn-warning');
-            $('button.node-settings').removeClass('btn-danger');
-            $('button.node-settings').show();
-            $('#node-settings-modal .btn-success').hide();
-            $('#node-settings-modal .btn-danger').show();
-            $('#start-node').button('reset');
-
-        } else if (m['node-starting']) {
-
-            $('button.node-settings').removeClass('btn-success');
-            $('button.node-settings').addClass('btn-warning');
-            $('button.node-settings').removeClass('stopped');
-            $('button.node-settings').show();
-
-        } else if (m['node-down']) {
-
-            $('body').removeClass('running').addClass('stopped');
-            $('#node-settings-modal').modal('hide');
-            $('button.node-settings').removeClass('btn-success');
-            $('button.node-settings').removeClass('btn-warning');
-            $('button.node-settings').addClass('btn-danger');
-            $('button.node-settings').show();
-            $('#node-settings-modal .btn-success').show();
-            $('#node-settings-modal .btn-danger').hide();
-            $('#stop-node').button('reset');
-
-        } else if (m['peers']) {
-
-            $('.peers').empty();
-            var total_peers = Object.keys(m['peers']).length;
-            $('.peers').html('<span class="pull-left"><b>'+total_peers+'</b> PEERS</span><a class="pull-right"></a>');
-
-        } else if (m['cycle']) {
-
-            if (m['cycle'].phase == 'catching up') {
-                var phase = $('<i>').text(m['cycle'].phase);
+            if (data.phase == 'catching up') {
+                var phase = $('<i>').text(data.phase);
             } else {
-                var phase = $('<span>').text(m['cycle'].phase);
+                var phase = $('<span>').text(data.phase);
             }
-            $('.cycle h3').html('Cycle ending ' + formatDate(m['cycle'].end_date)).append(phase);
+            $('.cycle h3').html('Cycle ending ' + formatDate(data.end_date)).append(phase);
 
-            if (m['cycle']['percent'] > 97.5) {
-                var phases = [{name: 'reporting', percent: 87.5}, {name: 'reveal', percent: 10}, {name: 'svd', percent: m['cycle']['percent'] - 97.5}];
+            if (data.percent > 97.5) {
+                var phases = [{name: 'reporting', percent: 87.5}, {name: 'reveal', percent: 10}, {name: 'svd', percent: data.percent - 97.5}];
             } else if (m['cycle']['percent'] > 87.5) {
-                var phases = [{name: 'reporting', percent: 87.5}, {name: 'reveal', percent: m['cycle']['percent'] - 87.5}];
+                var phases = [{name: 'reporting', percent: 87.5}, {name: 'reveal', percent: data.percent - 87.5}];
             } else {
-                var phases = [{name: 'reporting', percent: m['cycle']['percent']}];
+                var phases = [{name: 'reporting', percent: data.percent}];
             }
 
             var template = _.template($("#progress-template").html());
@@ -116,21 +73,22 @@
             });
 
             $('.cycle').show();
+        },
 
-        } else if (m['report']) {
+        report: function(data) {
 
-            $('.cycle').removeClass('reporting').removeClass('reveal').removeClass('svd').addClass(m['report']['phase']);
+            $('.cycle').removeClass('reporting').removeClass('reveal').removeClass('svd').addClass(data.phase);
 
-            if (!$.isEmptyObject(m['report']['decisions'])) {
+            if (!$.isEmptyObject(data.decisions)) {
 
                 $('#report-decisions').empty();
 
                 var h = $('<h4>').html('Report');
-                var s = $('<span>').html('Ends at ' + formatDate(m['report'].reveal_date));
+                var s = $('<span>').html('Ends at ' + formatDate(data.reveal_date));
                 var report_header = $('<li>').addClass('list-group-item').append([h, s]);
                 $('#report-decisions').append(report_header);
                 var template = _.template($("#report-template").html());
-                _.each(m['report']['decisions'], function(d, id) {
+                _.each(data.decisions, function(d, id) {
 
                     if (d['state'] == '0') { d['state_desc'] = 'False' }
                     else if (d['state'] == '1') { d['state_desc'] = 'True' }
@@ -155,7 +113,7 @@
                             message: 'Changing this decision will incur and additional fee.  Are you sure you wish to change it?',
                             confirmText: 'Change',
                             confirmCallback: function() {
-                                nodeMonitor.postMessage({'report-decision': report});
+                                nodeMonitor.postMessage({'reportDecision': report});
                                 $('#report input[name='+report.decision_id+']').attr('data-state', report.state);
                             },
                             cancelCallback: function() {
@@ -167,22 +125,22 @@
 
                     } else {
 
-                        nodeMonitor.postMessage({'report-decision': report});
+                        nodeMonitor.postMessage({'reportDecision': report});
                         $('#report input[name='+report.decision_id+']').attr('data-state', report.state);
                         $('#'+report.decision_id).addClass('reported');
 
                     }
                 });
 
-
             } else {
 
                 $('#report').hide();
             }
- 
-        } else if (m['branches']) {
+        },
 
-             if (!$.isEmptyObject(m['branches'])) {
+        branches: function(data) {
+
+            if (!$.isEmptyObject(data.branches)) {
 
                 $('.branches').empty()
 
@@ -190,9 +148,9 @@
                 //m['branches'] = m['branches'].sort(function(a,b) {return (a.my_rep > b.my_rep) ? -1 : ((b.my_rep > a.my_rep) ? 1 : 0);} );
                 var has_branches = false;
 
-                _.each(m['branches'], function(branch) {
+                _.each(mdata.branches, function(branch) {
 
-                    m['branches'][branch['vote_id']] = branch;   // update local branches
+                    data.branches[branch['vote_id']] = branch;   // update local branches
 
                     // update add decision modal
                     $('#decision-branch').append($('<option>').val(branch.vote_id).text(branch.vote_id));
@@ -224,55 +182,24 @@
                 var p = $('<p>').html('<span class="pull-left">There are no branches</span>');
                 $('.branches').empty().append(p);
             }
+        },
 
-        } else if (m['address']) {
+        address: function(data) {
 
-            $('.address').html(m['address']);
+            $('.address').html(data);
+        },
 
-        } else if (m['blockcount']) {
+        blockcount: function(data) {
 
-            $('.blocks').html('<span class="pull-left"><b>'+m['blockcount']+'</b> BLOCKS</span><a class="pull-right" href="#explore-modal" data-toggle="modal">explore</a>');
+            $('.blocks').html('<span class="pull-left"><b>'+data+'</b> BLOCKS</span><a class="pull-right" href="#explore-modal" data-toggle="modal">explore</a>');
+        },
 
-        } else if (m['view-block']) {
+        markets: function(data) {
 
-            $('.block-view').text(m['view-block']);
-
-        } else if (m['downloading']) {
-
-            if (m['downloading'].done) {
-
-                $('#downloading-modal').modal('hide');
-
-            } else {
-
-                var text = m['downloading']['current'] + '/' + m['downloading']['total'];
-                var p = m['downloading']['current'] / m['downloading']['total'] * 100
-                var template = _.template($("#downloading-template").html());
-
-                $('#downloading-modal .progress').empty().append(template({'text': text, 'percent': p}));
-                $('#downloading-modal').modal({'keyboard': false, 'backdrop': 'static'});
-                $('#downloading-modal').modal('show');
-            }
-
-        } else if (m['parsing']) {
-
-            $('button.miner-control').show();
-
-            if (!m['parsing'].done) {
-
-                var text = m['parsing']['current'] + '/' + m['parsing']['total'];
-                var p = m['parsing']['current'] / m['parsing']['total'] * 100
-                var template = _.template($("#parsing-template").html());
-
-                $('.parsing.progress').empty().append(template({'text': text, 'percent': p}));
-            }
-
-        } else if (m['markets']) {
-
-            if (!$.isEmptyObject(m['markets'])) {
+            if (!$.isEmptyObject(data)) {
 
                 $('.decisions').empty();
-                _.each(m['markets'], function(m) {
+                _.each(data, function(m) {
 
                     if (m) {
                         var row = $('<tr>').html('<td class="text">'+m.txt+'</td><td>'+m.vote_id+'</td><td>'+formatDate(m.maturation_date)+'</td>');
@@ -291,18 +218,18 @@
                     }
                 });
             }
+        },
 
-        } else if (m['trade']) {
+        trade: function(data) {
 
-            var m = m['trade'];
-            m['my_shares'] = m.my_shares ? m.my_shares : [0,0];
+            data.my_shares = data.my_shares ? data.my_shares : [0,0];
             var states = $('<select>').addClass('states, form-control').attr('name', 'market-state');
             var balances = $('<table>').addClass('table');
             balances.append($('<tr>').html('<th>State</th><th>Owned</th><th>Total</th>'));
             states.append($('<option>').text('Select'));
-            _.each(m['states'], function(state, i) {
+            _.each(data.states, function(state, i) {
                 var s = state == '1' || String(state).toLowerCase() == 'yes' ? 'True' : 'False';
-                balances.append($('<tr>').html('<td>'+s+'</td><td>'+m['my_shares'][i]+'</td><td>'+m['shares_purchased'][i]+'</td>'));
+                balances.append($('<tr>').html('<td>'+s+'</td><td>'+data.my_shares[i]+'</td><td>'+data.shares_purchased[i]+'</td>'));
                 states.append($('<option>').val(state).text(s));
             });
 
@@ -313,74 +240,45 @@
 
             $('#trade-modal .decision-text').text(m.txt);
             $('#trade-modal .balances').empty().append(balances);
-            $('#trade-market').val(m.PM_id);
+            $('#trade-market').val(data.PM_id);
             $('#trade-modal').modal('show');
             $('#market-state').empty().append(states);
+        },
 
-        } else if (m['miner']) {
+        balance: function(data) {
 
-            if (m['miner'] == 'on') {
-
-                $('button.miner-control .status').text('Miner On');
-                $('button.miner-control').removeClass('btn-danger').addClass('btn-success');
-
-            } else {
-
-                $('button.miner-control .status').text('Miner Off');
-                $('button.miner-control').removeClass('btn-success').addClass('btn-danger');
-            }
-
-        } else if (m['balance']) {
-
-            $('.balance').text(m['balance']);
-        
-        } else if (m['debug']) {
-
-            web3 = m['debug'][0];
-            contract = m['debug'][1];
-            augur = m['debug'][2];
+            $('.balance').text(data);
         }
+    }
 
-    }, false);
+    // utility functions
+    function formatDate(d) {
 
-    // start node monitor web worker
-    nodeMonitor.postMessage();
+        if (!d) return '-';
 
-    ////
-    // sockets
+        months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Oct','Sep','Nov','Dec'];
 
-    //socket.on('add-decision', function (data) {
-    //    nodeMonitor.postMessage({'add-decision': data});
-    //});
+        var hour = d.getHours() > 11  ? d.getHours() - 12 : d.getHours();
+        hour = hour == 0 ? 12 : hour;
+        var apm = d.getHours() > 10 || d.getHours() == 23 && d.getHours() != 0 ? 'pm' : 'am';
+        var minutes = d.getMinutes() < 10 ? '0'+ d.getMinutes() : d.getMinutes();
+  
+        return months[d.getMonth()]+' '+d.getDate()+', '+hour+':'+minutes+' '+apm;
+    }
 
-    //socket.on('show-block', function (data) {
-    //    $('#explore-modal pre').text(data);
-    //});
+    function confirm(args) {
 
-    //socket.on('settings', function (settings) {
-    //    settings.port = parseInt(settings.port);
-    //    $('#node-host').val(settings.host);
-    //    $('#node-port').val(settings.port);
-    //    $('#core-path').val(settings.core_path);
-    //    $('#node-settings-modal form button[type=submit]').text('Saved')
-    //                                                      .attr('disabled', true);   
-    //});
+        $('#confirm-modal .message').html(args.message);
+        if (args.cancelText) $('#confirm-modal button.cancel').text(args.cancelText);
+        if (args.confirmText) $('#confirm-modal button.confirm').text(args.confirmText);
 
-    ////
-    // actions
+        $('#confirm-modal button.confirm').on('click', args.confirmCallback);
+        $('#confirm-modal button.cancel').on('click', args.cancelCallback);
 
-    $('button.miner-control').on('click', function() {
+        $('#confirm-modal').modal('show');
+    }
 
-        if ($(this).hasClass('btn-success')) {
-
-            socket.emit('miner', 'stop');
-            
-        } else {
-
-            socket.emit('miner', 'start');
-        }
-    });
-
+    // user events
     $('#password-form').on('submit', function(event) {
 
         event.preventDefault();
@@ -389,23 +287,6 @@
         $('#start-node').button('loading');
         $('#start-node').show();
         $('#password-modal').modal('hide');
-    });
-
-    $('#node-settings-modal form').on('submit', function (event) {
-        event.preventDefault();
-        var settings = {
-            'host': $('#node-host').val(),
-            'port': $('#node-port').val(),
-            'core_path': $('#core-path').val()
-        }
-        $('#node-settings-modal form button[type=submit]').text('Saving...')
-                                                          .attr('disabled', true);
-        //socket.emit('settings', settings);
-    });
-
-    $('#node-settings-modal form').on('change', function (event) {
-        $('#node-settings-modal form button[type=submit]').text('SAVE SETTINGS')
-                                                          .removeAttr('disabled');
     });
 
     $('.reporting form').on('submit', function(event) {
@@ -448,7 +329,7 @@
         event.preventDefault();
         var address = $('#cash-dest-address').val();
         var amount = $('#cash-amount').val();
-        nodeMonitor.postMessage({'send-cash': {'address': address, 'amount': amount}});
+        nodeMonitor.postMessage({'sendCash': {'address': address, 'amount': amount}});
         $('#send-cash-modal').modal('hide');
     });
 
@@ -479,26 +360,11 @@
         $('#send-rep-modal').modal('hide');
     });
 
-    $('#explore-modal form').on('submit', function(event) {
-
-        event.preventDefault();
-        //socket.emit('explore-block', $('#explore-modal input[name=block-number]').val());
-    });
-
-    $('#stop-node').on('click', function() {
-        $(this).button('loading');
-        //socket.emit('stop');
-    });
-
-    $('#start-node').on('click', function() {
-        $(this).hide();
-        $('#password-form').show();
-        $('#password').focus();
-    });
-
     $('#alert').on('closed.bs.alert', function() {
         $('#alert div').empty();
     });
+
+
 
 })();
 
@@ -507,7 +373,7 @@
 // global these objects for console debuging
 if (typeof web3 === 'undefined') {
     var web3 = require('web3');
-    web3.setProvider(new web3.providers.HttpSyncProvider("http://localhost:8080"))
+    web3.setProvider(new web3.providers.HttpSyncProvider())
 }
 var abi = [
     {

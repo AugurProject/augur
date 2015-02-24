@@ -21,7 +21,7 @@
 
 <script src="static/lodash.js"></script>
 <script src="static/bignumber.js"></script>
-<script src="https://raw.githubusercontent.com/ethereum/ethereum.js/develop/dist/ethereum.min.js"></script>
+<script src="static/ethereum.min.js"></script>
 
 <body>
 
@@ -341,68 +341,6 @@
             </div>
         </div>
     </div>
-
-    <div id="node-settings-modal" class="modal fade">
-        <div class="modal-dialog model-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button id="stop-node" class="btn btn-danger btn-block" data-loading-text="Stopping..." style="display: none;">Stop node</button>
-                    <button id="start-node" class="btn btn-success btn-block" data-loading-text="Starting...">Start node</button>
-                    <form id="password-form" style="display: none;">
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="password" placeholder="Enter password or address">
-                            <span class="input-group-btn">
-                                <button class="btn btn-success" type="sumbit">Start</button>
-                            </span>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-body clearfix">
-                    <form class="form-horizontal" role="form">
-                        <div class="form-group">
-                            <label for="node-host" class="col-sm-4 control-label">Host</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-sm" id="node-host" placeholder="Host">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="node-port" class="col-sm-4 control-label">Port</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-sm" id="node-port" placeholder="Port">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="core-path" class="col-sm-4 control-label">Augur path</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-sm" id="core-path" placeholder="Path to Augur core">
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary pull-right btn-sm">SAVE SETTINGS</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="explore-modal" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header clearfix">
-                    <form class="row">
-                        <div class="col-lg-6">
-                            <div class="input-group input-group-sm">
-                                <input type="text" name="block-number" class="form-control" placeholder="Enter block number">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-info" type="submit">View</button>
-                                </span>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <pre class="block-view"></pre>
-            </div>
-        </div>
-    </div>  
 </body>
 
 <script type="text/webworker" id="nodeMonitor">
@@ -411,7 +349,7 @@
 
     importScripts("https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.3.0/lodash.min.js");
     importScripts("https://cdnjs.cloudflare.com/ajax/libs/bignumber.js/2.0.3/bignumber.min.js");
-    importScripts("https://raw.githubusercontent.com/ethereum/ethereum.js/develop/dist/ethereum.min.js");
+    importScripts("https://raw.githubusercontent.com/ethereum/ethereum.js/master/dist/ethereum.js");
 
     var abi = [
         {
@@ -618,9 +556,7 @@
     if (typeof web3 === 'undefined') {
 
         var web3 = require('web3');
-
-        // set providor
-        web3.setProvider(new web3.providers.HttpSyncProvider("http://localhost:8080"))
+        web3.setProvider(new web3.providers.HttpSyncProvider('http://localhost:8080'))
     }
 
 
@@ -641,11 +577,16 @@
 
         starting: false,
         current: false,
-        market_queue: {},
-        force: false,
-        blockcount: 0,
-        network_blockcount: 0,
-        blocks_loaded: 0
+        marketQueue: {},
+    }
+
+    var network = {
+        host: 'localhost:8080',
+        peerCount: web3.eth.peerCount,
+        blockNumber: web3.eth.blockNumber,
+        mining: web3.eth.mining,
+        ether: 0,  //web3.toDecimal(web3.eth.getBalance(web3.eth.coinbase)),
+        gasPrice: web3.eth.gasPrice.toString(10)
     }
 
     var contract = web3.eth.contract(augur.address, abi);
@@ -661,65 +602,78 @@
     self.postMessage({'balance': augur.balance});
 
     // message listeners from DOM script
-    self.addEventListener('message', function(message) {
+    self.addEventListener('message', function(m) {
 
-        var m = message.data;
+        _.each(m.data, function (data, prop) {
 
-        // adding a pending decision to list until the blockchain confirms it
-        if (m && m['add-decision']) {
+            if (prop in update) {
+
+                update[prop](data);
+
+            } else if (prop === 'test') {
+
+                console.log('testing: ' + value);
+            }
+        });
+    });
+
+    var update = {
+
+        addDecision: function(data) {
 
             var tx = {
-                'txt': m['add-decision']['decisionText'],
-                'decision_id': m['add-decision']['decisionId'],
-                'vote_id': m['add-decision']['branchId'],
-                'maturation': m['add-decision']['decisionMaturation'],
+                'txt': data.decisionText,
+                'decision_id': data.decisionId,
+                'vote_id': data.branchId,
+                'maturation': data.decisionMaturation,
                 'status': 'pending'
             }
 
             augur.decisions[tx.decision_id] = tx;
 
             var tx = {
-                'B': parseInt(m['add-decision']['marketInv']),
-                'PM_id': m['add-decision']['decisionId'] + '.market',
-                'decisions': [m['add-decision']['decisionId']],
-                'decision_id': m['add-decision']['decisionId'],
+                'B': parseInt(data.marketInv),
+                'PM_id': data.decisionId + '.market',
+                'decisions': [data.decisionId],
+                'decision_id': data.decisionId,
                 'fees': 0,
                 'owner': account.address,
                 'states': ['no', 'yes'],
                 'type': 'prediction_market',
-                'txt': m['add-decision']['decisionText'],
-                'vote_id': m['add-decision']['branchId'],
-                'maturation': m['add-decision']['decisionMaturation'],
-                'maturation_date': blockTime(m['add-decision']['decisionMaturation']),
+                'txt': data.decisionText,
+                'vote_id': data.branchId,
+                'maturation': data.decisionMaturation,
+                'maturation_date': blockTime(data.decisionMaturation),
                 'status': 'pending'
             }
 
             augur.markets[tx.decision_id] = tx;
             self.postMessage({'markets': augur.markets});
 
-            augur.market_queue[m['add-decision'].decisionId] = m['add-decision'];
+            augur.market_queue[data.decisionId] = data;
 
-        } else if (m && m['report-decision']) {
+        },
 
-            augur.decisions[m['report-decision']['decision_id']]['state'] = m['report-decision']['stage'];
+        reportDecision: function(data) {
 
-            var data = _.extend(augur.decisions[m['report-decision']['decision_id']], m['report-decision']);
-            socket.emit('report', data);
+            augur.decisions[data.decision_id]['state'] = data.stage;
 
-        } else if (m && m['trade']) {
+            var d = _.extend(augur.decisions[data.decision_id], data);
+            socket.emit('report', d);
 
-            var id = m['trade'];
+        },
 
-            self.postMessage({'trade': augur.markets[id]});
+        trade: function(data) {
+
+            self.postMessage({'trade': augur.markets[data]});
         
-        } else if (m && m['send-cash']) {
+        },
 
-            var address = m['send-cash']['address'];
-            var amount = m['send-cash']['amount'];
+        sendCash: function(data) {
 
-            contract.call().send(address, amount);
+            contract.call().send(data.address, data.amount);
         }
-    });
+    }
 
     // start pinging node for updates
     setInterval(function() { console.log('ping') }, 2500);
