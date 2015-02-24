@@ -171,15 +171,33 @@ nav .parsing.progress {
     width: 250px;
 }
 
-#send-cash-modal #dest-address {
+#send-cash-modal .modal-dialog {
+    width: 555px;
+}
+#send-cash-modal h4 {
+    margin-top: 0px;
+}
+#send-cash-modal #cash-dest-address {
     width: 290px;
 }
-
-.address {
+#send-cash-modal form {
+    padding-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+}
+#send-cash-modal p {
+    color: #555;
+    margin: 15px 0px 0px 0px;
+    float: left;
+    font-size: 12px;
+} 
+.account .balance {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
+.account .address {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 .network .miner-off span {
     color: red;
 }

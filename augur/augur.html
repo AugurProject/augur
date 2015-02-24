@@ -21,7 +21,7 @@
 
 <script src="static/lodash.js"></script>
 <script src="static/bignumber.js"></script>
-<script src="static/ethereum.js"></script>
+<script src="https://raw.githubusercontent.com/ethereum/ethereum.js/develop/dist/ethereum.min.js"></script>
 
 <body>
 
@@ -61,7 +61,7 @@
                     <div class="panel-heading clearfix">Account</div>
                     <div class="panel-body">
                         <p class="address"></p>
-                        <p class="cash"></p>       
+                        <p><span class="pull-left"><b class="balance">0</b> CASH</span><a class="pull-right" href="#send-cash-modal" data-toggle="modal">send</a></p>       
                     </div>
                 </div>
 
@@ -230,21 +230,20 @@
     <div id="send-cash-modal" class="modal fade">
         <div class="modal-dialog model-sm">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-body clearfix">
                     <h4>Send cash</h4>
-                </div>
-                <div class="modal-body">
-                    <form class="form-inline" role="form">
+                    <form class="form-inline pull-right" role="form">
                         <div class="form-group">
                             <label class="sr-only" for="dest-address">Destination address</label>
-                            <input type="text" class="form-control" name="cash-dest-address" id="cash-dest-address" placeholder="Enter destination address">
+                            <input type="text" class="form-control" name="cash-dest-address" id="cash-dest-address" placeholder="destination address">
                         </div>
                         <div class="form-group">
                             <label class="sr-only" for="amount">Amount</label>
-                            <input type="text" name="cash-amount" id="cash-amount" class="form-control" placeholder="Amount">
+                            <input type="text" name="cash-amount" id="cash-amount" class="form-control" placeholder="amount">
                         </div>
                         <button type="submit" class="btn btn-primary">Send</button>
                     </form>
+                    <p>BALANCE: <b class="balance"></b> CASH</p>
                 </div>
             </div>
         </div>
@@ -408,11 +407,11 @@
 
 <script type="text/webworker" id="nodeMonitor">
 
-    console.log('[nodeMonitor] starting');
+    console.log('[augur] starting node monitor');
 
     importScripts("https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.3.0/lodash.min.js");
     importScripts("https://cdnjs.cloudflare.com/ajax/libs/bignumber.js/2.0.3/bignumber.min.js");
-    importScripts("https://raw.githubusercontent.com/ethereum/ethereum.js/master/dist/ethereum.min.js");
+    importScripts("https://raw.githubusercontent.com/ethereum/ethereum.js/develop/dist/ethereum.min.js");
 
     var abi = [
         {
@@ -624,35 +623,42 @@
         web3.setProvider(new web3.providers.HttpSyncProvider("http://localhost:8080"))
     }
 
-    var address = '0x1b0d9c2449fb543016d2827e7342ec44a8dd7f09';   // this is the address returned from the loader
-    var contract = web3.eth.contract(address, abi);
-
-    console.log(contract);
-
 
     var SECONDS_PER_BLOCK = 60;
     var REPORT_CYCLE = 40;
 
     var augur = {
+        address: '0x1b0d9c2449fb543016d2827e7342ec44a8dd7f09',  // this is the address returned from the loader
+        account: web3.eth.accounts[0],
+        balance: 0,
         decisions: {},
         branches: {},
         markets: {},
-        blockcount: 0,
-        network_blockcount: 0,
+        cycle: {
+            count: 0,
+            decisions: {}
+        },
+
         starting: false,
         current: false,
         market_queue: {},
         force: false,
+        blockcount: 0,
+        network_blockcount: 0,
         blocks_loaded: 0
     }
 
-    var cycle = {
-        count: 0,
-        decisions: {}
-    };
+    var contract = web3.eth.contract(augur.address, abi);
+    console.log('[augur] contract loaded from ' + augur.address);
 
-    var account = {};
+    // init data
+    augur.balance = contract.call().balance(augur.account).toString(10);
 
+    console.log(augur);
+
+    // init page
+    self.postMessage({'address': augur.account});
+    self.postMessage({'balance': augur.balance});
 
     // message listeners from DOM script
     self.addEventListener('message', function(message) {
@@ -705,6 +711,13 @@
             var id = m['trade'];
 
             self.postMessage({'trade': augur.markets[id]});
+        
+        } else if (m && m['send-cash']) {
+
+            var address = m['send-cash']['address'];
+            var amount = m['send-cash']['amount'];
+
+            contract.call().send(address, amount);
         }
     });
 
