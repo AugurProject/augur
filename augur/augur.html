@@ -573,12 +573,31 @@
 
     var network = {
         host: 'localhost:8080',
-        peerCount: web3.eth.peerCount,
-        blockNumber: web3.eth.blockNumber,
+        peerCount: '-',
+        blockNumber: '-',
         miner: web3.eth.mining,
-        ether: 0,
+        ether: '-',
         gasPrice: web3.toDecimal(web3.eth.gasPrice)
     }
+
+    // eth listeners
+    web3.eth.watch('chain').changed(function() {
+
+        network.peerCount = web3.eth.peerCount;
+        network.blockNumber = web3.eth.blockNumber;
+        network.ether = web3.toDecimal(web3.eth.balanceAt(web3.eth.coinbase));
+
+        console.log(network);
+        self.postMessage(network);
+    });
+
+    web3.eth.watch(contract).changed(function(r) {
+
+        console.log('contract change');
+        console.log(r);
+    });
+
+
 
     // init data
     augur.balance = contract.call().balance(augur.account).toString(10);
