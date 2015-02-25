@@ -49,16 +49,20 @@ h4 span {
 table {
     font-size: 12px;
 }
-
-nav h1 span {
-    color: #8E8E8E;
-    font-weight: 300;
-}
 nav h1.navbar-brand {
+    background-image: url('images/augur_logo.png');
+    background-repeat: no-repeat;
+    background-size: 27px 32px;
+    background-position: 0px 13px;
     font-size: 26px;
     margin: 0px 0px 0px 0px;
     position: relative;
     top: -3px;
+}
+nav h1 span {
+    color: #8E8E8E;
+    font-weight: 300;
+    margin-left: 20px;
 }
 nav h2 {
     color: #777;
