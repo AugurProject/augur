@@ -36,6 +36,7 @@ body.running #main {
 body.running #logo {
     display: none;
 }
+
 h1, h2, h3, h4, h5 {
     font-family: 'Core Mellow';
     font-weight: 400;
@@ -49,6 +50,10 @@ table {
     font-size: 12px;
 }
 
+nav h1 span {
+    color: #8E8E8E;
+    font-weight: 300;
+}
 nav h1.navbar-brand {
     font-size: 26px;
     margin: 0px 0px 0px 0px;
@@ -66,41 +71,13 @@ nav.navbar {
     border-radius: 0px;
     border: none;
 }
-nav h1 span {
-    color: #8E8E8E;
-    font-weight: 300;
-}
-nav .cash {
-    margin-left: 20px;
-    font-weight: 400;
-}
-.nav li {
-    margin-left: 10px;
-}
-.nav button {
-    margin-top: 9px;
-}
-.nav button i {
-    font-size: 14px;
-    margin-left: 8px;
-    position: relative;
-    top: 3px;
-}
-.nav button.node-settings.btn-danger .status:before {
-    content: 'Node stopped';
-}
-.nav button.node-settings.btn-warning .status:before {
-    content: 'Node starting';
-}
-.nav button.node-settings.btn-success .status:before {
-    content: 'Node running';
-}
 nav .parsing.progress {
     margin: 0px 0px 0px 0px;
     height: 2px;
     border-radius: 0px;
     border: 0px;
 }
+
 .sidebar .panel {
     font-size: 12px;
 }
@@ -118,26 +95,6 @@ nav .parsing.progress {
 }
 .branches.all .other {
     display: block;
-}
-
-#start-node,
-#stop-node {
-    margin-top: 0px;
-}
-
-#node-settings-modal .modal-dialog {
-    font-size: 14px;
-    width: 350px;
-}
-#node-settings-modal legend {
-    font-size: 14px;
-}
-#node-settings-modal label {
-    font-weight: 200;
-    font-size: 12px;
-    position: relative;
-    top: 0px;
-    right: -16px;
 }
 
 #create-branch-modal .modal-dialog {
@@ -165,18 +122,6 @@ nav .parsing.progress {
 #trade-modal .balances {
     margin-top: 18px;
 }
-#explore-modal .modal-dialog {
-    width: 90%;
-}
-#explore-modal pre {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    font-size: 12px;
-    margin: 0px;
-}
-#explore-modal .input-group {
-    width: 250px;
-}
 
 #send-cash-modal .modal-dialog {
     width: 555px;
@@ -201,15 +146,19 @@ nav .parsing.progress {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.network p {
+    display: none;
+    margin-bottom: 8px;
+}
+.network p:last-child {
+    margin-bottom: 0px;
+}
 .network .miner-off span {
     color: red;
 }
 .network .miner-on span {
     color: green;
     font-weight: bold;
-}
-.network .blocks {
-    margin-bottom: 15px;
 }
 .network fieldset {
     margin-top: 15px;
@@ -218,8 +167,6 @@ nav .parsing.progress {
     font-size: 12px;
     margin-bottom: 10px;
 }
-
-.report-decisions
 
 .cycle {
     margin-bottom: 30px;

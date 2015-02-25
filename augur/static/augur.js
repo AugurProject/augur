@@ -191,7 +191,38 @@
 
         blockNumber: function(data) {
 
-            $('.blocks').html('<span class="pull-left"><b>'+data+'</b> BLOCKS</span>');
+            $('.blocks span').text(data);
+            $('.blocks').show();
+        },
+
+        ether: function(data) {
+
+            $('.ether span').text(data);
+            $('.ether').show();
+        },
+
+        gasPrice: function(data) {
+
+            $('.gas-price span').text(data);
+            $('.gas-price').show();
+        },
+
+        host: function(data) {
+
+            $('.host span').text(data);
+            $('.host').show();
+        },
+
+        peerCount: function(data) {
+
+            $('.peers span').text(data);
+            $('.peers').show();
+        },
+
+        miner: function(data) {
+
+            $('.miner span').text(data ? 'on' : 'off');
+            $('.miner').show();
         },
 
         markets: function(data) {
