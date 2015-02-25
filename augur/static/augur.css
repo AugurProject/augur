@@ -19,6 +19,7 @@
     src: url("fonts/S-Core - CoreMellow65Bold.otf") format("opentype");
 }
 body {
+    background-color: #f9f6ea;
     font-family: 'Source Sans Pro', sans-serif;
     font-weight: 400;
 }
@@ -49,8 +50,13 @@ h4 span {
 table {
     font-size: 12px;
 }
+nav.navbar {
+    background-color: #602A52;
+    border-radius: 0px;
+    border: none;
+}
 nav h1.navbar-brand {
-    background-image: url('images/augur_logo.png');
+    background-image: url('images/augur_logo_small_white.png');
     background-repeat: no-repeat;
     background-size: 27px 32px;
     background-position: 0px 13px;
@@ -59,27 +65,43 @@ nav h1.navbar-brand {
     position: relative;
     top: -3px;
 }
-nav h1 span {
-    color: #8E8E8E;
+nav h1.navbar-brand span {
+    color: #fff;
     font-weight: 300;
     margin-left: 20px;
 }
 nav h2 {
-    color: #777;
+    color: #ECECEC;
     font-size: 16px;
 }
 nav h2 span {
     font-weight: 300;
 } 
-nav.navbar {
-    border-radius: 0px;
-    border: none;
-}
 nav .parsing.progress {
     margin: 0px 0px 0px 0px;
     height: 2px;
     border-radius: 0px;
     border: 0px;
+}
+
+.modal-content {
+    background-color: #f9f6ea;
+}
+.panel.panel-success .panel-heading {
+    background-color: #a15684;
+    color: #000;
+}
+.panel.panel-info .panel-heading {
+    background-color: #b1ddf1;
+    color: #080077;
+}
+.panel.panel-default .panel-heading {
+    background-color: #a2a7a5;
+    color: #000;
+}
+.progress {
+    background-color: #D6D8C6;
+    
 }
 
 .sidebar .panel {
