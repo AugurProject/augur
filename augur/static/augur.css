@@ -49,12 +49,19 @@ table {
     font-size: 12px;
 }
 
-h1.navbar-brand {
+nav h1.navbar-brand {
     font-size: 26px;
     margin: 0px 0px 0px 0px;
     position: relative;
     top: -3px;
 }
+nav h2 {
+    color: #777;
+    font-size: 16px;
+}
+nav h2 span {
+    font-weight: 300;
+} 
 nav.navbar {
     border-radius: 0px;
     border: none;
@@ -190,10 +197,6 @@ nav .parsing.progress {
     float: left;
     font-size: 12px;
 } 
-.account .balance {
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
 .account .address {
     overflow: hidden;
     text-overflow: ellipsis;

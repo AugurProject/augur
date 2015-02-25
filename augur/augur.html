@@ -32,16 +32,7 @@
             </div>
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <button class="btn btn-sm miner-control" style="display: none;">
-                        <span class="status"></span>
-                        <i class="glyphicon glyphicon-off"></i>
-                    </button>
-                </li>
-                <li>
-                    <button class="btn btn-sm node-settings" style="display: none;" data-toggle="modal" data-target="#node-settings-modal">
-                        <span class="status"></span>
-                        <i class="glyphicon glyphicon-cog"></i>
-                    </button>
+                    <h2><span>BALANCE: </span><b class="balance"></b></h2>
                 </li>
             </ul>
         </div>
@@ -61,7 +52,7 @@
                     <div class="panel-heading clearfix">Account</div>
                     <div class="panel-body">
                         <p class="address"></p>
-                        <p><span class="pull-left"><b class="balance">0</b> CASH</span><a class="pull-right" href="#send-cash-modal" data-toggle="modal">send</a></p>       
+                        <p><a href="#send-cash-modal" data-toggle="modal">send cash</a></p>       
                     </div>
                 </div>
 
@@ -348,7 +339,7 @@
     console.log('[augur] starting node monitor');
 
     importScripts("https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.3.0/lodash.min.js");
-    importScripts("https://cdnjs.cloudflare.com/ajax/libs/bignumber.js/2.0.3/bignumber.min.js");
+    importScripts("https://cdn.jsdelivr.net/bignumber.js/1.3.0/bignumber.min.js");
     importScripts("https://raw.githubusercontent.com/ethereum/ethereum.js/master/dist/ethereum.js");
 
     var abi = [
@@ -559,10 +550,6 @@
         web3.setProvider(new web3.providers.HttpSyncProvider('http://localhost:8080'))
     }
 
-
-    var SECONDS_PER_BLOCK = 60;
-    var REPORT_CYCLE = 40;
-
     var augur = {
         address: '0x1b0d9c2449fb543016d2827e7342ec44a8dd7f09',  // this is the address returned from the loader
         account: web3.eth.accounts[0],
@@ -573,33 +560,28 @@
         cycle: {
             count: 0,
             decisions: {}
-        },
-
-        starting: false,
-        current: false,
-        marketQueue: {},
+        }
     }
+
+    var contract = web3.eth.contract(augur.address, abi);
+    console.log('[augur] contract loaded from ' + augur.address);
 
     var network = {
         host: 'localhost:8080',
         peerCount: web3.eth.peerCount,
         blockNumber: web3.eth.blockNumber,
         mining: web3.eth.mining,
-        ether: 0,  //web3.toDecimal(web3.eth.getBalance(web3.eth.coinbase)),
+        ether: 0,
         gasPrice: web3.eth.gasPrice.toString(10)
     }
 
-    var contract = web3.eth.contract(augur.address, abi);
-    console.log('[augur] contract loaded from ' + augur.address);
-
     // init data
     augur.balance = contract.call().balance(augur.account).toString(10);
-
-    console.log(augur);
+    //network.ether = web3.toDecimal(web3.eth.getBalance(web3.eth.coinbase));
 
     // init page
-    self.postMessage({'address': augur.account});
-    self.postMessage({'balance': augur.balance});
+    self.postMessage(augur);
+    self.postMessage(network);
 
     // message listeners from DOM script
     self.addEventListener('message', function(m) {
@@ -610,9 +592,9 @@
 
                 update[prop](data);
 
-            } else if (prop === 'test') {
+            } else {
 
-                console.log('testing: ' + value);
+                console.log('[augur] unknown message type: '+prop);
             }
         });
     });
@@ -621,36 +603,6 @@
 
         addDecision: function(data) {
 
-            var tx = {
-                'txt': data.decisionText,
-                'decision_id': data.decisionId,
-                'vote_id': data.branchId,
-                'maturation': data.decisionMaturation,
-                'status': 'pending'
-            }
-
-            augur.decisions[tx.decision_id] = tx;
-
-            var tx = {
-                'B': parseInt(data.marketInv),
-                'PM_id': data.decisionId + '.market',
-                'decisions': [data.decisionId],
-                'decision_id': data.decisionId,
-                'fees': 0,
-                'owner': account.address,
-                'states': ['no', 'yes'],
-                'type': 'prediction_market',
-                'txt': data.decisionText,
-                'vote_id': data.branchId,
-                'maturation': data.decisionMaturation,
-                'maturation_date': blockTime(data.decisionMaturation),
-                'status': 'pending'
-            }
-
-            augur.markets[tx.decision_id] = tx;
-            self.postMessage({'markets': augur.markets});
-
-            augur.market_queue[data.decisionId] = data;
 
         },
 
@@ -676,7 +628,7 @@
     }
 
     // start pinging node for updates
-    setInterval(function() { console.log('ping') }, 2500);
+    //setInterval(function() { console.log('ping') }, 2500);
 
 </script>
 

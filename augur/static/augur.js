@@ -18,9 +18,9 @@
 
                 update[prop](data);
 
-            } else if (prop === 'test') {
+            } else {
 
-                console.log('testing: ' + value);
+                console.log('[augur] unknown message type: '+prop);
             }
         });
 
@@ -60,7 +60,7 @@
 
             if (data.percent > 97.5) {
                 var phases = [{name: 'reporting', percent: 87.5}, {name: 'reveal', percent: 10}, {name: 'svd', percent: data.percent - 97.5}];
-            } else if (m['cycle']['percent'] > 87.5) {
+            } else if (data.percent > 87.5) {
                 var phases = [{name: 'reporting', percent: 87.5}, {name: 'reveal', percent: data.percent - 87.5}];
             } else {
                 var phases = [{name: 'reporting', percent: data.percent}];
@@ -184,14 +184,14 @@
             }
         },
 
-        address: function(data) {
+        account: function(data) {
 
-            $('.address').html(data);
+            $('.account .address').html(data);
         },
 
-        blockcount: function(data) {
+        blockNumber: function(data) {
 
-            $('.blocks').html('<span class="pull-left"><b>'+data+'</b> BLOCKS</span><a class="pull-right" href="#explore-modal" data-toggle="modal">explore</a>');
+            $('.blocks').html('<span class="pull-left"><b>'+data+'</b> BLOCKS</span>');
         },
 
         markets: function(data) {
