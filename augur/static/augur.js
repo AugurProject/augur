@@ -2,7 +2,18 @@ var web3;
 var augur = {
 
     evmAddress: '0x0c7babff648901c3ead233dce403a8b4a7e83854',   // this is the address returned from the loader
-    data: {},
+
+    data: {
+        account: '-',
+        balance: '-',
+        decisions: {},
+        branches: {},
+        markets: {},
+        cycle: {
+            count: 0,
+            decisions: {}
+        }
+    },
 
     init: function() {
 
@@ -171,7 +182,7 @@ var augur = {
             } else {
                 var phase = $('<span>').text(data.phase);
             }
-            $('.cycle h3').html('Cycle ending ' + formatDate(data.end_date)).append(phase);
+            $('.cycle h3').html('Cycle ending ' + augur.formatDate(data.end_date)).append(phase);
 
             if (data.percent > 97.5) {
                 var phases = [{name: 'reporting', percent: 87.5}, {name: 'reveal', percent: 10}, {name: 'svd', percent: data.percent - 97.5}];
@@ -199,7 +210,7 @@ var augur = {
                 $('#report-decisions').empty();
 
                 var h = $('<h4>').html('Report');
-                var s = $('<span>').html('Ends at ' + formatDate(data.reveal_date));
+                var s = $('<span>').html('Ends at ' + augur.formatDate(data.reveal_date));
                 var report_header = $('<li>').addClass('list-group-item').append([h, s]);
                 $('#report-decisions').append(report_header);
                 var template = _.template($("#report-template").html());
@@ -236,7 +247,7 @@ var augur = {
                             }
                         }
                         
-                        confirm(dialog);
+                        augur.confirm(dialog);
 
                     } else {
 
@@ -348,7 +359,7 @@ var augur = {
                 _.each(data, function(m) {
 
                     if (m) {
-                        var row = $('<tr>').html('<td class="text">'+m.txt+'</td><td>'+m.vote_id+'</td><td>'+formatDate(m.maturation_date)+'</td>');
+                        var row = $('<tr>').html('<td class="text">'+m.txt+'</td><td>'+m.vote_id+'</td><td>'+augur.formatDate(m.maturation_date)+'</td>');
                         var trade = $('<a>').attr('href', '#').text('trade').on('click', function() {
                             nodeMonitor.postMessage({'trade': m.decision_id});
                         });
