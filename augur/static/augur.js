@@ -1,7 +1,7 @@
 var web3;
 var augur = {
 
-    evmAddress: '0x0c7babff648901c3ead233dce403a8b4a7e83854',   // this is the address returned from the loader
+    evmAddress: '0xed9274d7b4c8cbf728e25bf067a4e58426da3b29',   // this is the address returned from the loader
 
     data: {
         account: '-',
@@ -435,79 +435,62 @@ var augur = {
         $('#confirm-modal').modal('show');
     },
 
-    abi: [
-        {
-            "name": "balance(int256)",
-            "type": "function",
-            "inputs": [{ "name": "address", "type": "int256" }],
-            "outputs": [{ "name": "out", "type": "int256" }]
-        },
-        {
-            "name": "buyShares(int256,int256,int256,int256)",
-            "type": "function",
-            "inputs": [{ "name": "branch", "type": "int256" }, { "name": "market", "type": "int256" }, { "name": "outcome", "type": "int256" }, { "name": "amount", "type": "int256" }],
-            "outputs": [{ "name": "out", "type": "int256" }]
-        },
-        {
-            "name": "createEvent(int256,string,int256,int256,int256,int256)",
-            "type": "function",
-            "inputs": [{ "name": "branch", "type": "int256" }, { "name": "description", "type": "string" }, { "name": "expDate", "type": "int256" }, { "name": "minValue", "type": "int256" }, { "name": "maxValue", "type": "int256" }, { "name": "numOutcomes", "type": "int256" }],
-            "outputs": [{ "name": "out", "type": "int256" }]
-        },
-        {
-            "name": "createMarket(int256,string,int256,int256,int256,int256[])",
-            "type": "function",
-            "inputs": [{ "name": "branch", "type": "int256" }, { "name": "description", "type": "string" }, { "name": "alpha", "type": "int256" }, { "name": "initialLiquidity", "type": "int256" }, { "name": "tradingFee", "type": "int256" }, { "name": "events", "type": "int256[]" }],
-            "outputs": [{ "name": "out", "type": "int256" }]
-        },
-        {
-            "name": "faucet()",
-            "type": "function",
-            "inputs": [],
-            "outputs": [{ "name": "out", "type": "int256" }]
-        },
-        {
-            "name": "getRepBalance(int256,int256)",
-            "type": "function",
-            "inputs": [{ "name": "branch", "type": "int256" }, { "name": "address", "type": "int256" }],
-            "outputs": [{ "name": "out", "type": "int256" }]
-        },
-        {
-            "name": "makeSubBranch(string,int256,int256)",
-            "type": "function",
-            "inputs": [{ "name": "description", "type": "string" }, { "name": "periodLength", "type": "int256" }, { "name": "parent", "type": "int256" }],
-            "outputs": [{ "name": "out", "type": "int256" }]
-        },
-        {
-            "name": "reputation(int256)",
-            "type": "function",
-            "inputs": [{ "name": "address", "type": "int256" }],
-            "outputs": [{ "name": "out", "type": "int256[]" }]
-        },
-        {
-            "name": "sellShares(int256,int256,int256,int256,int256)",
-            "type": "function",
-            "inputs": [{ "name": "branch", "type": "int256" }, { "name": "market", "type": "int256" }, { "name": "outcome", "type": "int256" }, { "name": "amount", "type": "int256" }, { "name": "participantNumber", "type": "int256" }],
-            "outputs": [{ "name": "out", "type": "int256" }]
-        },
-        {
-            "name": "send(int256,int256)",
-            "type": "function",
-            "inputs": [{ "name": "recver", "type": "int256" }, { "name": "value", "type": "int256" }],
-            "outputs": [{ "name": "out", "type": "int256" }]
-        },
-        {
-            "name": "sendFrom(int256,int256,int256)",
-            "type": "function",
-            "inputs": [{ "name": "recver", "type": "int256" }, { "name": "value", "type": "int256" }, { "name": "from", "type": "int256" }],
-            "outputs": [{ "name": "out", "type": "int256" }]
-        },
-        {
-            "name": "sendReputation(int256,int256,int256)",
-            "type": "function",
-            "inputs": [{ "name": "branch", "type": "int256" }, { "name": "recver", "type": "int256" }, { "name": "value", "type": "int256" }],
-            "outputs": [{ "name": "unknown_out", "type": "int256[]" }]
-        }]
+    abi:
+[{
+    "name": "balance(int256)",
+    "type": "function",
+    "inputs": [{ "name": "address", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
+},
+{
+    "name": "createEvent(int256,string,int256,int256,int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "description", "type": "string" }, { "name": "expDate", "type": "int256" }, { "name": "minValue", "type": "int256" }, { "name": "maxValue", "type": "int256" }, { "name": "numOutcomes", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
+},
+{
+    "name": "faucet()",
+    "type": "function",
+    "inputs": [],
+    "outputs": [{ "name": "out", "type": "int256" }]
+},
+{
+    "name": "getRepBalance(int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "address", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
+},
+{
+    "name": "makeSubBranch(string,int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "description", "type": "string" }, { "name": "periodLength", "type": "int256" }, { "name": "parent", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
+},
+{
+    "name": "reputation(int256)",
+    "type": "function",
+    "inputs": [{ "name": "address", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256[]" }]
+},
+{
+    "name": "send(int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "recver", "type": "int256" }, { "name": "value", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
+},
+{
+    "name": "sendFrom(int256,int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "recver", "type": "int256" }, { "name": "value", "type": "int256" }, { "name": "from", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
+},
+{
+    "name": "sendReputation(int256,int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "recver", "type": "int256" }, { "name": "value", "type": "int256" }],
+    "outputs": [{ "name": "unknown_out", "type": "int256[]" }]
+}]
+
 }
 
 // start
