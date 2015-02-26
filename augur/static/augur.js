@@ -1,37 +1,152 @@
-(function () {
+var web3;
+var augur = {
 
-    // node monitoring webworker thread
-    var nodeMonitorBlob = new Blob([$('#nodeMonitor').text()]);
-    var nodeMonitor = new Worker(window.URL.createObjectURL(nodeMonitorBlob));
+    evmAddress: '0x0c7babff648901c3ead233dce403a8b4a7e83854',   // this is the address returned from the loader
+    data: {},
 
-    // worker error handling
-    nodeMonitor.addEventListener('error', function(e) {
-        console.log('[augur] line '+ e.lineno,': ' +e.message);
-    }, false);
+    init: function() {
 
-    // nodeMonitor message listener
-    nodeMonitor.addEventListener('message', function(m) {
-    
-        _.each(m.data, function (data, prop) {
+        // get the web3 object
+        if (typeof web3 === 'undefined') {
 
-            if (prop in update) {
+            web3 = require('web3');
+            web3.setProvider(new web3.providers.HttpSyncProvider())
+        }
 
-                update[prop](data);
+        augur.contract = web3.eth.contract(augur.evmAddress, augur.abi);
+        console.log('[augur] evm contract loaded from ' + augur.evmAddress);
 
-            } else {
+        augur.data.account = web3.eth.accounts[0];
+        augur.data.balance = augur.contract.call().balance(augur.data.account).toString(10);
 
-                console.log('[augur] unknown message type: '+prop);
-            }
+        // render initial data
+        augur.update(augur.data);
+
+        augur.network = {
+            host: 'localhost:8080',
+            peerCount: '-',
+            blockNumber: '-',
+            miner: web3.eth.mining,
+            ether: '-',
+            gasPrice: web3.toDecimal(web3.eth.gasPrice)
+        }
+
+        // watch ethereum chain for changes and update network data
+        web3.eth.watch('chain').changed(function() {
+
+            augur.network.peerCount = web3.eth.peerCount;
+            augur.network.blockNumber = web3.eth.blockNumber;
+            augur.network.ether = web3.toDecimal(web3.eth.balanceAt(web3.eth.coinbase));
+
+            augur.update(augur.network);
         });
 
-    }, false);
+        // watch for augur contract changes
+        web3.eth.watch(augur.contract).changed(function(r) {
 
-    // start node monitor web worker
-    nodeMonitor.postMessage();
+            console.log('contract change');
+            console.log(r);
+        });
 
+        // user events
+        $('#password-form').on('submit', function(event) {
 
-    // DOM manipulation (TODO: move to React or Mercury)
-    var update = {
+            event.preventDefault();
+            //socket.emit('start', $('#password').val());
+            $(this).hide();
+            $('#start-node').button('loading');
+            $('#start-node').show();
+            $('#password-modal').modal('hide');
+        });
+
+        $('.reporting form').on('submit', function(event) {
+
+            event.preventDefault();
+
+            var results = $(this).serializeArray();
+
+            _.each(results, function(r, i) {
+                results[i]['branch'] = _decision[r.name].vote_id;
+            });
+
+            //socket.emit('report', results);
+        }); 
+
+        $('#create-branch-modal form').on('submit', function(event) {
+
+            event.preventDefault();
+            //socket.emit('create-branch', $('#branch-id').val());
+            $('#create-branch-modal').modal('hide');
+        });
+
+        $('#add-decision-modal form').on('submit', function(event) {
+
+            event.preventDefault();
+
+            var args = {
+                'branchId': $('#decision-branch').val(),
+                'decisionText': $('#decision-text').val(),
+                'decisionMaturation': $('#decision-time').val(),
+                'marketInv': $('#market-investment').val()
+            }
+
+            //socket.emit('add-decision', args);
+            $('#add-decision-modal').modal('hide');
+        });
+
+        $('#send-cash-modal form').on('submit', function(event) {
+
+            event.preventDefault();
+            var address = $('#cash-dest-address').val();
+            var amount = $('#cash-amount').val();
+            nodeMonitor.postMessage({'sendCash': {'address': address, 'amount': amount}});
+            $('#send-cash-modal').modal('hide');
+        });
+
+        $('#trade-modal form').on('submit', function(event) {
+
+            event.preventDefault();
+            var args = {
+                'marketId': $('#trade-market').val(),
+                'marketState': $('#market-state select').val(),
+                'tradeAmount': $('#trade-amount').val(),
+                'tradeType': $('#trade-modal input[name=trade-type]').val()
+            }
+            //socket.emit('trade', args);
+            $('#trade-modal').modal('hide');
+        });
+        $('#trade-modal input[name=trade-type]').on('change', function(event) {
+           $('#trade-modal button.trade').text($(this).val()).removeAttr('disabled');
+        });
+
+        $('#send-rep-modal form').on('submit', function(event) {
+
+            event.preventDefault();
+            var address = $('#rep-dest-address').val();
+            var amount = $('#rep-amount').val();
+            var branch = $('#rep-branch').val();
+            
+            //socket.emit('send-reps', address, amount, branch);
+            $('#send-rep-modal').modal('hide');
+        });
+
+        $('#alert').on('closed.bs.alert', function() {
+            $('#alert div').empty();
+        });
+    },
+
+    // helper for rendering several components 
+    update: function(data) {
+
+        _.each(data, function (value, prop) {
+
+            if (prop in augur.render) augur.render[prop](value);
+            console.log(prop + ': ' + value);
+        });
+    },
+
+    // DOM manipulation (React or Mercury?)
+    render: {
 
         alert: function(data) {
 
@@ -280,10 +395,10 @@
 
             $('.balance').text(data);
         }
-    }
+    },
 
     // utility functions
-    function formatDate(d) {
+    formatDate: function(d) {
 
         if (!d) return '-';
 
@@ -295,9 +410,9 @@
         var minutes = d.getMinutes() < 10 ? '0'+ d.getMinutes() : d.getMinutes();
   
         return months[d.getMonth()]+' '+d.getDate()+', '+hour+':'+minutes+' '+apm;
-    }
+    },
 
-    function confirm(args) {
+    confirm: function(args) {
 
         $('#confirm-modal .message').html(args.message);
         if (args.cancelText) $('#confirm-modal button.cancel').text(args.cancelText);
@@ -307,171 +422,82 @@
         $('#confirm-modal button.cancel').on('click', args.cancelCallback);
 
         $('#confirm-modal').modal('show');
-    }
+    },
 
-    // user events
-    $('#password-form').on('submit', function(event) {
-
-        event.preventDefault();
-        //socket.emit('start', $('#password').val());
-        $(this).hide();
-        $('#start-node').button('loading');
-        $('#start-node').show();
-        $('#password-modal').modal('hide');
-    });
-
-    $('.reporting form').on('submit', function(event) {
-
-        event.preventDefault();
-
-        var results = $(this).serializeArray();
-
-        _.each(results, function(r, i) {
-            results[i]['branch'] = _decision[r.name].vote_id;
-        });
-
-        //socket.emit('report', results);
-    }); 
-
-    $('#create-branch-modal form').on('submit', function(event) {
-
-        event.preventDefault();
-        //socket.emit('create-branch', $('#branch-id').val());
-        $('#create-branch-modal').modal('hide');
-    });
-
-    $('#add-decision-modal form').on('submit', function(event) {
-
-        event.preventDefault();
-
-        var args = {
-            'branchId': $('#decision-branch').val(),
-            'decisionText': $('#decision-text').val(),
-            'decisionMaturation': $('#decision-time').val(),
-            'marketInv': $('#market-investment').val()
-        }
-
-        //socket.emit('add-decision', args);
-        $('#add-decision-modal').modal('hide');
-    });
-
-    $('#send-cash-modal form').on('submit', function(event) {
-
-        event.preventDefault();
-        var address = $('#cash-dest-address').val();
-        var amount = $('#cash-amount').val();
-        nodeMonitor.postMessage({'sendCash': {'address': address, 'amount': amount}});
-        $('#send-cash-modal').modal('hide');
-    });
-
-    $('#trade-modal form').on('submit', function(event) {
-
-        event.preventDefault();
-        var args = {
-            'marketId': $('#trade-market').val(),
-            'marketState': $('#market-state select').val(),
-            'tradeAmount': $('#trade-amount').val(),
-            'tradeType': $('#trade-modal input[name=trade-type]').val()
-        }
-        //socket.emit('trade', args);
-        $('#trade-modal').modal('hide');
-    });
-    $('#trade-modal input[name=trade-type]').on('change', function(event) {
-       $('#trade-modal button.trade').text($(this).val()).removeAttr('disabled');
-    });
-
-    $('#send-rep-modal form').on('submit', function(event) {
-
-        event.preventDefault();
-        var address = $('#rep-dest-address').val();
-        var amount = $('#rep-amount').val();
-        var branch = $('#rep-branch').val();
-        
-        //socket.emit('send-reps', address, amount, branch);
-        $('#send-rep-modal').modal('hide');
-    });
-
-    $('#alert').on('closed.bs.alert', function() {
-        $('#alert div').empty();
-    });
-
-
-
-})();
-
-
-// global objects for console debugging
-// global these objects for console debuging
-if (typeof web3 === 'undefined') {
-    var web3 = require('web3');
-    web3.setProvider(new web3.providers.HttpSyncProvider())
+    abi: [
+        {
+            "name": "balance(int256)",
+            "type": "function",
+            "inputs": [{ "name": "address", "type": "int256" }],
+            "outputs": [{ "name": "out", "type": "int256" }]
+        },
+        {
+            "name": "buyShares(int256,int256,int256,int256)",
+            "type": "function",
+            "inputs": [{ "name": "branch", "type": "int256" }, { "name": "market", "type": "int256" }, { "name": "outcome", "type": "int256" }, { "name": "amount", "type": "int256" }],
+            "outputs": [{ "name": "out", "type": "int256" }]
+        },
+        {
+            "name": "createEvent(int256,string,int256,int256,int256,int256)",
+            "type": "function",
+            "inputs": [{ "name": "branch", "type": "int256" }, { "name": "description", "type": "string" }, { "name": "expDate", "type": "int256" }, { "name": "minValue", "type": "int256" }, { "name": "maxValue", "type": "int256" }, { "name": "numOutcomes", "type": "int256" }],
+            "outputs": [{ "name": "out", "type": "int256" }]
+        },
+        {
+            "name": "createMarket(int256,string,int256,int256,int256,int256[])",
+            "type": "function",
+            "inputs": [{ "name": "branch", "type": "int256" }, { "name": "description", "type": "string" }, { "name": "alpha", "type": "int256" }, { "name": "initialLiquidity", "type": "int256" }, { "name": "tradingFee", "type": "int256" }, { "name": "events", "type": "int256[]" }],
+            "outputs": [{ "name": "out", "type": "int256" }]
+        },
+        {
+            "name": "faucet()",
+            "type": "function",
+            "inputs": [],
+            "outputs": [{ "name": "out", "type": "int256" }]
+        },
+        {
+            "name": "getRepBalance(int256,int256)",
+            "type": "function",
+            "inputs": [{ "name": "branch", "type": "int256" }, { "name": "address", "type": "int256" }],
+            "outputs": [{ "name": "out", "type": "int256" }]
+        },
+        {
+            "name": "makeSubBranch(string,int256,int256)",
+            "type": "function",
+            "inputs": [{ "name": "description", "type": "string" }, { "name": "periodLength", "type": "int256" }, { "name": "parent", "type": "int256" }],
+            "outputs": [{ "name": "out", "type": "int256" }]
+        },
+        {
+            "name": "reputation(int256)",
+            "type": "function",
+            "inputs": [{ "name": "address", "type": "int256" }],
+            "outputs": [{ "name": "out", "type": "int256[]" }]
+        },
+        {
+            "name": "sellShares(int256,int256,int256,int256,int256)",
+            "type": "function",
+            "inputs": [{ "name": "branch", "type": "int256" }, { "name": "market", "type": "int256" }, { "name": "outcome", "type": "int256" }, { "name": "amount", "type": "int256" }, { "name": "participantNumber", "type": "int256" }],
+            "outputs": [{ "name": "out", "type": "int256" }]
+        },
+        {
+            "name": "send(int256,int256)",
+            "type": "function",
+            "inputs": [{ "name": "recver", "type": "int256" }, { "name": "value", "type": "int256" }],
+            "outputs": [{ "name": "out", "type": "int256" }]
+        },
+        {
+            "name": "sendFrom(int256,int256,int256)",
+            "type": "function",
+            "inputs": [{ "name": "recver", "type": "int256" }, { "name": "value", "type": "int256" }, { "name": "from", "type": "int256" }],
+            "outputs": [{ "name": "out", "type": "int256" }]
+        },
+        {
+            "name": "sendReputation(int256,int256,int256)",
+            "type": "function",
+            "inputs": [{ "name": "branch", "type": "int256" }, { "name": "recver", "type": "int256" }, { "name": "value", "type": "int256" }],
+            "outputs": [{ "name": "unknown_out", "type": "int256[]" }]
+        }]
 }
-var abi = [
-{
-    "name": "balance(int256)",
-    "type": "function",
-    "inputs": [{ "name": "address", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "buyShares(int256,int256,int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "market", "type": "int256" }, { "name": "outcome", "type": "int256" }, { "name": "amount", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "createEvent(int256,string,int256,int256,int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "description", "type": "string" }, { "name": "expDate", "type": "int256" }, { "name": "minValue", "type": "int256" }, { "name": "maxValue", "type": "int256" }, { "name": "numOutcomes", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "createMarket(int256,string,int256,int256,int256,int256[])",
-    "type": "function",
-    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "description", "type": "string" }, { "name": "alpha", "type": "int256" }, { "name": "initialLiquidity", "type": "int256" }, { "name": "tradingFee", "type": "int256" }, { "name": "events", "type": "int256[]" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "faucet()",
-    "type": "function",
-    "inputs": [],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "getRepBalance(int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "address", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "makeSubBranch(string,int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "description", "type": "string" }, { "name": "periodLength", "type": "int256" }, { "name": "parent", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "sellShares(int256,int256,int256,int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "market", "type": "int256" }, { "name": "outcome", "type": "int256" }, { "name": "amount", "type": "int256" }, { "name": "participantNumber", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "send(int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "recver", "type": "int256" }, { "name": "value", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "sendFrom(int256,int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "recver", "type": "int256" }, { "name": "value", "type": "int256" }, { "name": "from", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "sendReputation(int256,int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "recver", "type": "int256" }, { "name": "value", "type": "int256" }],
-    "outputs": [{ "name": "unknown_out", "type": "int256[]" }]
-}];
-var address = '0x24dd2b80f42ec451cbaae0a9aff95aa432ef25dd';
-var contract = web3.eth.contract(address, abi);
+
+// start
+$(document).ready(augur.init);
