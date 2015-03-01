@@ -87,6 +87,21 @@ nav .parsing.progress {
 .modal-content {
     background-color: #f9f6ea;
 }
+.progress {
+    background-color: #D6D8C6;
+
+}
+
+.sidebar .panel {
+    font-size: 11px;
+}
+.sidebar .panel .panel-body {
+    padding: 10px;
+}
+
+.sidebar .panel-heading {
+    padding: 5px 10px;
+}
 .panel.panel-success .panel-heading {
     background-color: #a15684;
     color: #000;
@@ -99,17 +114,8 @@ nav .parsing.progress {
     background-color: #a2a7a5;
     color: #000;
 }
-.progress {
-    background-color: #D6D8C6;
 
-}
 
-.sidebar .panel {
-    font-size: 12px;
-}
-.panel-heading {
-    padding: 5px 10px;
-}
 .branches .branches-toggle:before {
     content: 'show all';
 }

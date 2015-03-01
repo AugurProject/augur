@@ -1,7 +1,8 @@
 var web3;
 var augur = {
 
-    evmAddress: '0xed9274d7b4c8cbf728e25bf067a4e58426da3b29',   // this is the address returned from the loader
+    evmAddress: '0x031ed8fa6e0050709c5f5a4cdb326c85920f995f',   // this is the address returned from the loader
+    evmAddress: '0x36f92f49d6d9c0ded1c397e343e8a3974625e876',
 
     data: {
         account: '-',
@@ -24,7 +25,8 @@ var augur = {
             web3.setProvider(new web3.providers.HttpSyncProvider())
         }
 
-        augur.contract = web3.eth.contract(augur.evmAddress, augur.abi);
+        var Contract = web3.eth.contract(augur.abi);
+        augur.contract = new Contract(augur.evmAddress);
         console.log('[augur] evm contract loaded from ' + augur.evmAddress);
 
         augur.data.account = web3.eth.accounts[0];
@@ -43,17 +45,17 @@ var augur = {
         }
 
         // watch ethereum chain for changes and update network data
-        web3.eth.watch('chain').changed(function() {
+        web3.eth.filter('chain').watch(function() {
 
             augur.network.peerCount = web3.eth.peerCount;
             augur.network.blockNumber = web3.eth.blockNumber;
-            augur.network.ether = web3.toDecimal(web3.eth.balanceAt(web3.eth.coinbase));
+            augur.network.ether = web3.toDecimal(web3.eth.getBalance(web3.eth.coinbase));
 
             augur.update(augur.network);
         });
 
         // watch for augur contract changes
-        web3.eth.watch(augur.contract).changed(function(r) {
+        web3.eth.filter(augur.contract).watch(function(r) {
 
             console.log('contract change');
             console.log(r);
@@ -446,6 +448,12 @@ var augur = {
     "name": "createEvent(int256,string,int256,int256,int256,int256)",
     "type": "function",
     "inputs": [{ "name": "branch", "type": "int256" }, { "name": "description", "type": "string" }, { "name": "expDate", "type": "int256" }, { "name": "minValue", "type": "int256" }, { "name": "maxValue", "type": "int256" }, { "name": "numOutcomes", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
+},
+{
+    "name": "createMarket(int256,string,int256,int256,int256,int256[])",
+    "type": "function",
+    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "description", "type": "string" }, { "name": "alpha", "type": "int256" }, { "name": "initialLiquidity", "type": "int256" }, { "name": "tradingFee", "type": "int256" }, { "name": "events", "type": "int256[]" }],
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {

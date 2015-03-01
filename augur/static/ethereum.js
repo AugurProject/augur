@@ -53,7 +53,6 @@ var inputTypes = types.inputTypes();
 /// @returns bytes representation of input params
 var formatInput = function (inputs, params) {
     var bytes = "";
-    var padding = c.ETH_PADDING * 2;
 
     /// first we iterate in search for dynamic 
     inputs.forEach(function (input, index) {
@@ -110,6 +109,7 @@ var formatOutput = function (outs, output) {
     output = output.slice(dynamicPartLength);
 
     outs.forEach(function (out, i) {
+        /*jshint maxcomplexity:6 */
         var typeMatch = false;
         for (var j = 0; j < outputTypes.length && !typeMatch; j++) {
             typeMatch = outputTypes[j].type(outs[i].type);
@@ -210,7 +210,7 @@ module.exports = {
 };
 
 
-},{"./const":2,"./formatters":6,"./types":11,"./utils":12,"./web3":13}],2:[function(require,module,exports){
+},{"./const":2,"./formatters":8,"./types":14,"./utils":15,"./web3":17}],2:[function(require,module,exports){
 /*
     This file is part of ethereum.js.
 
@@ -264,7 +264,8 @@ module.exports = {
     ETH_PADDING: 32,
     ETH_SIGNATURE_LENGTH: 4,
     ETH_UNITS: ETH_UNITS,
-    ETH_BIGNUMBER_ROUNDING_MODE: { ROUNDING_MODE: BigNumber.ROUND_DOWN }
+    ETH_BIGNUMBER_ROUNDING_MODE: { ROUNDING_MODE: BigNumber.ROUND_DOWN },
+    ETH_POLLING_TIMEOUT: 1000
 };
 
 
@@ -308,15 +309,23 @@ var exportNatspecGlobals = function (vars) {
 var addFunctionRelatedPropertiesToContract = function (contract) {
     
     contract.call = function (options) {
-        contract._isTransact = false;
+        contract._isTransaction = false;
         contract._options = options;
         return contract;
     };
 
-    contract.transact = function (options) {
-        contract._isTransact = true;
+
+    contract.sendTransaction = function (options) {
+        contract._isTransaction = true;
         contract._options = options;
         return contract;
+    };
+    // DEPRECATED
+    contract.transact = function (options) {
+
+        console.warn('myContract.transact() is deprecated please use myContract.sendTransaction() instead.');
+
+        return contract.sendTransaction(options);
     };
 
     contract._options = {};
@@ -340,6 +349,7 @@ var addFunctionsToContract = function (contract, desc, address) {
         var typeName = utils.extractTypeName(method.name);
 
         var impl = function () {
+            /*jshint maxcomplexity:7 */
             var params = Array.prototype.slice.call(arguments);
             var signature = abi.signatureFromAscii(method.name);
             var parsed = inputParser[displayName][typeName].apply(null, params);
@@ -348,14 +358,14 @@ var addFunctionsToContract = function (contract, desc, address) {
             options.to = address;
             options.data = signature + parsed;
             
-            var isTransact = contract._isTransact === true || (contract._isTransact !== false && !method.constant);
+            var isTransaction = contract._isTransaction === true || (contract._isTransaction !== false && !method.constant);
             var collapse = options.collapse !== false;
             
             // reset
             contract._options = {};
-            contract._isTransact = null;
+            contract._isTransaction = null;
 
-            if (isTransact) {
+            if (isTransaction) {
                 
                 exportNatspecGlobals({
                     abi: desc,
@@ -365,7 +375,7 @@ var addFunctionsToContract = function (contract, desc, address) {
                 });
 
                 // transactions do not have any output, cause we do not know, when they will be processed
-                web3.eth.transact(options);
+                web3.eth.sendTransaction(options);
                 return;
             }
             
@@ -416,11 +426,11 @@ var addEventsToContract = function (contract, desc, address) {
             var signature = abi.eventSignatureFromAscii(e.name);
             var event = eventImpl.inputParser(address, signature, e);
             var o = event.apply(null, params);
-            o._onWatchEventResult = function (data) {
+            var outputFormatter = function (data) {
                 var parser = eventImpl.outputParser(e);
                 return parser(data);
             };
-            return web3.eth.watch(o);  
+            return web3.eth.filter(o, undefined, undefined, outputFormatter);
         };
         
         // this property should be used by eth.filter to check if object is an event
@@ -450,25 +460,40 @@ var addEventsToContract = function (contract, desc, address) {
  *      outputs: [{name: 'd', type: 'string' }]
  * }];  // contract abi
  *
- * var myContract = web3.eth.contract('0x0123123121', abi); // creation of contract object
+ * var MyContract = web3.eth.contract(abi); // creation of contract prototype
  *
- * myContract.myMethod('this is test string param for call'); // myMethod call (implicit, default)
- * myContract.call().myMethod('this is test string param for call'); // myMethod call (explicit)
- * myContract.transact().myMethod('this is test string param for transact'); // myMethod transact
+ * var contractInstance = new MyContract('0x0123123121');
  *
- * @param address - address of the contract, which should be called
- * @param desc - abi json description of the contract, which is being created
+ * contractInstance.myMethod('this is test string param for call'); // myMethod call (implicit, default)
+ * contractInstance.call().myMethod('this is test string param for call'); // myMethod call (explicit)
+ * contractInstance.sendTransaction().myMethod('this is test string param for transact'); // myMethod sendTransaction
+ *
+ * @param abi - abi json description of the contract, which is being created
  * @returns contract object
  */
+var contract = function (abi) {
 
-var contract = function (address, desc) {
+    // return prototype
+    if(abi instanceof Array && arguments.length === 1) {
+        return Contract.bind(null, abi);
+
+    // deprecated: auto initiate contract
+    } else {
+
+        console.warn('Initiating a contract like this is deprecated please use var MyContract = eth.contract(abi); new MyContract(address); instead.');
+
+        return new Contract(arguments[1], arguments[0]);
+    }
+
+};
+
+function Contract(abi, address) {
 
     // workaround for invalid assumption that method.name is the full anonymous prototype of the method.
     // it's not. it's just the name. the rest of the code assumes it's actually the anonymous
     // prototype, so we make it so as a workaround.
     // TODO: we may not want to modify input params, maybe use copy instead?
-
-    desc.forEach(function (method) {
+    abi.forEach(function (method) {
         if (method.name.indexOf('(') === -1) {
             var displayName = method.name;
             var typeName = method.inputs.map(function(i){return i.type; }).join();
@@ -478,17 +503,161 @@ var contract = function (address, desc) {
 
     var result = {};
     addFunctionRelatedPropertiesToContract(result);
-    addFunctionsToContract(result, desc, address);
-    addEventRelatedPropertiesToContract(result, desc, address);
-    addEventsToContract(result, desc, address);
+    addFunctionsToContract(result, abi, address);
+    addEventRelatedPropertiesToContract(result, abi, address);
+    addEventsToContract(result, abi, address);
 
     return result;
-};
+}
 
 module.exports = contract;
 
 
-},{"./abi":1,"./event":4,"./utils":12,"./web3":13}],4:[function(require,module,exports){
+},{"./abi":1,"./event":6,"./utils":15,"./web3":17}],4:[function(require,module,exports){
+/*
+    This file is part of ethereum.js.
+
+    ethereum.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    ethereum.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with ethereum.js.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/** @file db.js
+ * @authors:
+ *   Marek Kotewicz <marek@ethdev.com>
+ * @date 2015
+ */
+
+/// @returns an array of objects describing web3.db api methods
+var methods = function () {
+    return [
+    { name: 'put', call: 'db_put' },
+    { name: 'get', call: 'db_get' },
+    { name: 'putString', call: 'db_putString' },
+    { name: 'getString', call: 'db_getString' }
+    ];
+};
+
+module.exports = {
+    methods: methods
+};
+
+},{}],5:[function(require,module,exports){
+/*
+    This file is part of ethereum.js.
+
+    ethereum.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    ethereum.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with ethereum.js.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/** @file eth.js
+ * @authors:
+ *   Marek Kotewicz <marek@ethdev.com>
+ * @date 2015
+ */
+
+var formatters = require('./formatters');
+
+
+var blockCall = function (args) {
+    return typeof args[0] === "string" ? "eth_blockByHash" : "eth_blockByNumber";
+};
+
+var transactionCall = function (args) {
+    return typeof args[0] === "string" ? 'eth_transactionByHash' : 'eth_transactionByNumber';
+};
+
+var uncleCall = function (args) {
+    return typeof args[0] === "string" ? 'eth_uncleByHash' : 'eth_uncleByNumber';
+};
+
+var transactionCountCall = function (args) {
+    return typeof args[0] === "string" ? 'eth_transactionCountByHash' : 'eth_transactionCountByNumber';
+};
+
+var uncleCountCall = function (args) {
+    return typeof args[0] === "string" ? 'eth_uncleCountByHash' : 'eth_uncleCountByNumber';
+};
+
+/// @returns an array of objects describing web3.eth api methods
+var methods = [
+    { name: 'getBalance', call: 'eth_balanceAt', outputFormatter: formatters.convertToBigNumber},
+    { name: 'getState', call: 'eth_stateAt' },
+    { name: 'getStorage', call: 'eth_storageAt' },
+    { name: 'getData', call: 'eth_codeAt' },
+    { name: 'getBlock', call: blockCall, outputFormatter: formatters.outputBlockFormatter},
+    { name: 'getUncle', call: uncleCall, outputFormatter: formatters.outputBlockFormatter},
+    { name: 'getCompilers', call: 'eth_compilers' },
+    { name: 'getBlockTransactionCount', call: transactionCountCall },
+    { name: 'getBlockUncleCount', call: uncleCountCall },
+    { name: 'getTransaction', call: transactionCall, outputFormatter: formatters.outputTransactionFormatter },
+    { name: 'getTransactionCount', call: 'eth_countAt'},
+    { name: 'sendTransaction', call: 'eth_transact', inputFormatter: formatters.inputTransactionFormatter },
+    { name: 'call', call: 'eth_call' },
+    { name: 'compile.solidity', call: 'eth_solidity' },
+    { name: 'compile.lll', call: 'eth_lll' },
+    { name: 'compile.serpent', call: 'eth_serpent' },
+    { name: 'flush', call: 'eth_flush' },
+
+    // deprecated methods
+    { name: 'balanceAt', call: 'eth_balanceAt', newMethod: 'getBalance' },
+    { name: 'stateAt', call: 'eth_stateAt', newMethod: 'getState' },
+    { name: 'storageAt', call: 'eth_storageAt', newMethod: 'getStorage' },
+    { name: 'countAt', call: 'eth_countAt', newMethod: 'getTransactionCount' },
+    { name: 'codeAt', call: 'eth_codeAt', newMethod: 'getData' },
+    { name: 'transact', call: 'eth_transact', newMethod: 'sendTransaction' },
+    { name: 'block', call: blockCall, newMethod: 'getBlock' },
+    { name: 'transaction', call: transactionCall, newMethod: 'getTransaction' },
+    { name: 'uncle', call: uncleCall, newMethod: 'getUncle' },
+    { name: 'compilers', call: 'eth_compilers', newMethod: 'getCompilers' },
+    { name: 'solidity', call: 'eth_solidity', newMethod: 'compile.solidity' },
+    { name: 'lll', call: 'eth_lll', newMethod: 'compile.lll' },
+    { name: 'serpent', call: 'eth_serpent', newMethod: 'compile.serpent' },
+    { name: 'transactionCount', call: transactionCountCall, newMethod: 'getBlockTransactionCount' },
+    { name: 'uncleCount', call: uncleCountCall, newMethod: 'getBlockUncleCount' },
+    { name: 'logs', call: 'eth_logs' }
+];
+
+/// @returns an array of objects describing web3.eth api properties
+var properties = [
+    { name: 'coinbase', getter: 'eth_coinbase', setter: 'eth_setCoinbase' },
+    { name: 'listening', getter: 'eth_listening', setter: 'eth_setListening' },
+    { name: 'mining', getter: 'eth_mining', setter: 'eth_setMining' },
+    { name: 'gasPrice', getter: 'eth_gasPrice', outputFormatter: formatters.convertToBigNumber},
+    { name: 'accounts', getter: 'eth_accounts' },
+    { name: 'peerCount', getter: 'eth_peerCount' },
+    { name: 'defaultBlock', getter: 'eth_defaultBlock', setter: 'eth_setDefaultBlock' },
+    { name: 'blockNumber', getter: 'eth_number'},
+
+    // deprecated properties
+    { name: 'number', getter: 'eth_number', newProperty: 'blockNumber'}
+];
+
+
+module.exports = {
+    methods: methods,
+    properties: properties
+};
+
+
+},{"./formatters":8}],6:[function(require,module,exports){
 /*
     This file is part of ethereum.js.
 
@@ -553,7 +722,7 @@ var indexedParamsToTopics = function (event, indexed) {
 
 var inputParser = function (address, signature, event) {
     
-    // valid options are 'earliest', 'latest', 'offset' and 'max', as defined for 'eth.watch'
+    // valid options are 'earliest', 'latest', 'offset' and 'max', as defined for 'eth.filter'
     return function (indexed, options) {
         var o = options || {};
         o.address = address;
@@ -572,9 +741,9 @@ var getArgumentsObject = function (inputs, indexed, notIndexed) {
     return inputs.reduce(function (acc, current) {
         var value;
         if (current.indexed)
-            value = indexed.splice(0, 1)[0];
+            value = indexedCopy.splice(0, 1)[0];
         else
-            value = notIndexed.splice(0, 1)[0];
+            value = notIndexedCopy.splice(0, 1)[0];
 
         acc[current.name] = value;
         return acc;
@@ -590,6 +759,7 @@ var outputParser = function (event) {
             args: {}
         };
 
+        output.topics = output.topic; // fallback for go-ethereum
         if (!output.topic) {
             return result;
         }
@@ -625,7 +795,7 @@ module.exports = {
 };
 
 
-},{"./abi":1,"./utils":12}],5:[function(require,module,exports){
+},{"./abi":1,"./utils":15}],7:[function(require,module,exports){
 /*
     This file is part of ethereum.js.
 
@@ -651,84 +821,119 @@ module.exports = {
  * @date 2014
  */
 
-var web3 = require('./web3'); // jshint ignore:line
+/// Should be called to check if filter implementation is valid
+/// @returns true if it is, otherwise false
+var implementationIsValid = function (i) {
+    return !!i && 
+        typeof i.newFilter === 'function' && 
+        typeof i.getLogs === 'function' && 
+        typeof i.uninstallFilter === 'function' &&
+        typeof i.startPolling === 'function' &&
+        typeof i.stopPolling === 'function';
+};
 
-/// should be used when we want to watch something
+/// This method should be called on options object, to verify deprecated properties && lazy load dynamic ones
+/// @param should be string or object
+/// @returns options string or object
+var getOptions = function (options) {
+    if (typeof options === 'string') {
+        return options;
+    } 
+
+    options = options || {};
+
+    if (options.topics) {
+        console.warn('"topics" is deprecated, is "topic" instead');
+    }
+
+    // evaluate lazy properties
+    return {
+        to: options.to,
+        topic: options.topic,
+        earliest: options.earliest,
+        latest: options.latest,
+        max: options.max,
+        skip: options.skip,
+        address: options.address
+    };
+};
+
+/// Should be used when we want to watch something
 /// it's using inner polling mechanism and is notified about changes
-/// TODO: change 'options' name cause it may be not the best matching one, since we have events
-var Filter = function(options, impl) {
-
-    if (typeof options !== "string") {
-
-        // topics property is deprecated, warn about it!
-        if (options.topics) {
-            console.warn('"topics" is deprecated, use "topic" instead');
-        }
-        
-        this._onWatchResult = options._onWatchEventResult;
-
-        // evaluate lazy properties
-        options = {
-            to: options.to,
-            topic: options.topic,
-            earliest: options.earliest,
-            latest: options.latest,
-            max: options.max,
-            skip: options.skip,
-            address: options.address
-        };
-
+/// @param options are filter options
+/// @param implementation, an abstract polling implementation
+/// @param formatter (optional), callback function which formats output before 'real' callback 
+var filter = function(options, implementation, formatter) {
+    if (!implementationIsValid(implementation)) {
+        console.error('filter implemenation is invalid');
+        return;
     }
+
+    options = getOptions(options);
+    var callbacks = [];
+    var filterId = implementation.newFilter(options);
+    var onMessages = function (messages) {
+        messages.forEach(function (message) {
+            message = formatter ? formatter(message) : message;
+            callbacks.forEach(function (callback) {
+                callback(message);
+            });
+        });
+    };
+
+    implementation.startPolling(filterId, onMessages, implementation.uninstallFilter);
+
+    var watch = function(callback) {
+        callbacks.push(callback);
+    };
+
+    var stopWatching = function() {
+        implementation.stopPolling(filterId);
+        implementation.uninstallFilter(filterId);
+        callbacks = [];
+    };
+
+    var get = function () {
+        return implementation.getLogs(filterId);
+    };
     
-    this.impl = impl;
-    this.callbacks = [];
+    return {
+        watch: watch,
+        stopWatching: stopWatching,
+        get: get,
 
-    this.id = impl.newFilter(options);
-    web3.provider.startPolling({method: impl.changed, params: [this.id]}, this.id, this.trigger.bind(this));
-};
-
-/// alias for changed*
-Filter.prototype.arrived = function(callback) {
-    this.changed(callback);
-};
-Filter.prototype.happened = function(callback) {
-    this.changed(callback);
-};
-
-/// gets called when there is new eth/shh message
-Filter.prototype.changed = function(callback) {
-    this.callbacks.push(callback);
-};
-
-/// trigger calling new message from people
-Filter.prototype.trigger = function(messages) {
-    for (var i = 0; i < this.callbacks.length; i++) {
-        for (var j = 0; j < messages.length; j++) {
-            var message = this._onWatchResult ? this._onWatchResult(messages[j]) : messages[j];
-            this.callbacks[i].call(this, message);
+        // DEPRECATED methods
+        changed:  function(){
+            console.warn('watch().changed() is deprecated please use filter().watch() instead.');
+            return watch.apply(this, arguments);
+        },
+        arrived:  function(){
+            console.warn('watch().arrived() is deprecated please use filter().watch() instead.');
+            return watch.apply(this, arguments);
+        },
+        happened:  function(){
+            console.warn('watch().happened() is deprecated please use filter().watch() instead.');
+            return watch.apply(this, arguments);
+        },
+        uninstall: function(){
+            console.warn('watch().uninstall() is deprecated please use filter().stopWatching() instead.');
+            return stopWatching.apply(this, arguments);
+        },
+        messages: function(){
+            console.warn('watch().messages() is deprecated please use filter().get() instead.');
+            return get.apply(this, arguments);
+        },
+        logs: function(){
+            console.warn('watch().logs() is deprecated please use filter().get() instead.');
+            return get.apply(this, arguments);
         }
-    }
+    };
 };
 
-/// should be called to uninstall current filter
-Filter.prototype.uninstall = function() {
-    this.impl.uninstallFilter(this.id);
-    web3.provider.stopPolling(this.id);
-};
+module.exports = filter;
 
-/// should be called to manually trigger getting latest messages from the client
-Filter.prototype.messages = function() {
-    return this.impl.getMessages(this.id);
-};
 
-/// alias for messages
-Filter.prototype.logs = function () {
-    return this.messages();
-};
-
-module.exports = Filter;
-
-},{"./web3":13}],6:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 /*
     This file is part of ethereum.js.
 
@@ -771,6 +976,7 @@ var padLeft = function (string, chars, sign) {
 /// If the value is floating point, round it down
 /// @returns right-aligned byte representation of int
 var formatInputInt = function (value) {
+    /*jshint maxcomplexity:7 */
     var padding = c.ETH_PADDING * 2;
     if (value instanceof BigNumber || typeof value === 'number') {
         if (typeof value === 'number')
@@ -821,7 +1027,9 @@ var signedIsNegative = function (value) {
 /// Formats input right-aligned input bytes to int
 /// @returns right-aligned input bytes formatted to int
 var formatOutputInt = function (value) {
+
     value = value || "0";
+
     // check if it's negative number
     // it it is, return two's complement
     if (signedIsNegative(value)) {
@@ -829,6 +1037,7 @@ var formatOutputInt = function (value) {
     }
     return new BigNumber(value, 16);
 };
+
 
 /// Formats big right-aligned input bytes to uint
 /// @returns right-aligned input bytes formatted to uint
@@ -868,6 +1077,138 @@ var formatOutputAddress = function (value) {
 };
 
 
+/// Formats the input to a big number
+/// @returns a BigNumber object
+var convertToBigNumber = function (value) {
+
+    // remove the leading 0x
+    if(typeof value === 'string')
+        value = value.replace('0x', '');
+
+    value = value || "0";
+
+    return new BigNumber(value, 16);
+};
+
+
+/**
+Formats the input of a transaction and converts all values to HEX
+
+@returns object
+*/
+var inputTransactionFormatter = function(options){
+
+    // make code -> data
+    if(options.code) {
+        options.data = options.code;
+        delete options.code;
+    }
+
+    // make endowment -> value
+    if(options.endowment) {
+        options.value = options.endowment;
+        delete options.endowment;
+    }
+
+
+    // format the following options
+    /*jshint maxcomplexity:5 */
+    ['gasPrice', 'value'].forEach(function(key){
+
+        // if hex or string integer
+        if(typeof options[key] === 'string') {
+
+            // if not hex assume its a number string
+            if(options[key].indexOf('0x') === -1)
+                options[key] = utils.fromDecimal(options[key]);
+
+        // if number
+        } else if(typeof options[key] === 'number') {
+            options[key] = utils.fromDecimal(options[key]);
+
+        // if bignumber
+        } else if(options[key] instanceof BigNumber) {
+            options[key] = '0x'+ options[key].toString(16);
+        }
+    });
+
+    // format gas to number
+    options.gas = Number(options.gas);
+
+
+    return options;
+};
+
+/**
+Formats the output of a transaction to its proper values
+
+@returns object
+*/
+var outputTransactionFormatter = function(tx){
+    // transform to number
+    tx.gas = Number(tx.gas);
+
+    // gasPrice to bignumber
+    if(typeof tx.gasPrice === 'string' && tx.gasPrice.indexOf('0x') === 0)
+        tx.gasPrice = new BigNumber(tx.gasPrice, 16);
+    else
+        tx.gasPrice = new BigNumber(tx.gasPrice.toString(10), 10);
+
+    // value to bignumber
+    if(typeof tx.value === 'string' && tx.value.indexOf('0x') === 0)
+        tx.value = new BigNumber(tx.value, 16);
+    else
+        tx.value = new BigNumber(tx.value.toString(10), 10);
+
+    return tx;
+};
+
+
+/**
+Formats the output of a block to its proper values
+
+@returns object
+*/
+var outputBlockFormatter = function(block){
+    /*jshint maxcomplexity:7 */
+
+    // transform to number
+    block.gasLimit = Number(block.gasLimit);
+    block.gasUsed = Number(block.gasUsed);
+    block.size = Number(block.size);
+    block.timestamp = Number(block.timestamp);
+    block.number = Number(block.number);
+
+    // minGasPrice to bignumber
+    if(block.minGasPrice) {
+        if(typeof block.minGasPrice === 'string' && block.minGasPrice.indexOf('0x') === 0)
+            block.minGasPrice = new BigNumber(block.minGasPrice, 16);
+        else
+            block.minGasPrice = new BigNumber(block.minGasPrice.toString(10), 10);
+    }
+
+
+    // difficulty to bignumber
+    if(block.difficulty) {
+        if(typeof block.difficulty === 'string' && block.difficulty.indexOf('0x') === 0)
+            block.difficulty = new BigNumber(block.difficulty, 16);
+        else
+            block.difficulty = new BigNumber(block.difficulty.toString(10), 10);
+    }
+
+
+    // difficulty to bignumber
+    if(block.totalDifficulty) {
+        if(typeof block.totalDifficulty === 'string' && block.totalDifficulty.indexOf('0x') === 0)
+            block.totalDifficulty = new BigNumber(block.totalDifficulty, 16);
+        else
+            block.totalDifficulty = new BigNumber(block.totalDifficulty.toString(10), 10);
+    }
+
+    return block;
+};
+
+
 module.exports = {
     formatInputInt: formatInputInt,
     formatInputString: formatInputString,
@@ -880,11 +1221,15 @@ module.exports = {
     formatOutputHash: formatOutputHash,
     formatOutputBool: formatOutputBool,
     formatOutputString: formatOutputString,
-    formatOutputAddress: formatOutputAddress
+    formatOutputAddress: formatOutputAddress,
+    convertToBigNumber: convertToBigNumber,
+    inputTransactionFormatter: inputTransactionFormatter,
+    outputTransactionFormatter: outputTransactionFormatter,
+    outputBlockFormatter: outputBlockFormatter
 };
 
 
-},{"./const":2,"./utils":12}],7:[function(require,module,exports){
+},{"./const":2,"./utils":15}],9:[function(require,module,exports){
 /*
     This file is part of ethereum.js.
 
@@ -919,20 +1264,22 @@ var HttpSyncProvider = function (host) {
 
 HttpSyncProvider.prototype.send = function (payload) {
     //var data = formatJsonRpcObject(payload);
-    
+
     var request = new XMLHttpRequest();
     request.open('POST', this.host, false);
     request.send(JSON.stringify(payload));
-    
-    // check request.status
+
     var result = request.responseText;
+    // check request.status
+    if(request.status !== 200)
+        return;
     return JSON.parse(result);
 };
 
 module.exports = HttpSyncProvider;
 
 
-},{}],8:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 /*
     This file is part of ethereum.js.
 
@@ -999,128 +1346,7 @@ module.exports = {
 
 
 
-},{}],9:[function(require,module,exports){
-/*
-    This file is part of ethereum.js.
-
-    ethereum.js is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    ethereum.js is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with ethereum.js.  If not, see <http://www.gnu.org/licenses/>.
-*/
-/** @file providermanager.js
- * @authors:
- *   Jeffrey Wilcke <jeff@ethdev.com>
- *   Marek Kotewicz <marek@ethdev.com>
- *   Marian Oancea <marian@ethdev.com>
- *   Gav Wood <g@ethdev.com>
- * @date 2014
- */
-
-var web3 = require('./web3'); 
-var jsonrpc = require('./jsonrpc');
-
-
-/**
- * Provider manager object prototype
- * It's responsible for passing messages to providers
- * If no provider is set it's responsible for queuing requests
- * It's also responsible for polling the ethereum node for incoming messages
- * Default poll timeout is 12 seconds
- * If we are running ethereum.js inside ethereum browser, there are backend based tools responsible for polling,
- * and provider manager polling mechanism is not used
- */
-var ProviderManager = function() {
-    this.polls = [];
-    this.provider = undefined;
-
-    var self = this;
-    var poll = function () {
-        if (self.provider) {
-            var pollsBatch = self.polls.map(function (data) {
-                return data.data;
-            });
-
-            var payload = jsonrpc.toBatchPayload(pollsBatch);
-            var results = self.provider.send(payload);
-
-            self.polls.forEach(function (data, index) {
-                var result = results[index];
-                
-                if (!jsonrpc.isValidResponse(result)) {
-                    console.log(result);
-                    return;
-                }
-
-                result = result.result;
-                // dont call the callback if result is not an array, or empty one
-                if (!(result instanceof Array) || result.length === 0) {
-                    return;
-                }
-
-                data.callback(result);
-
-            });
-
-        }
-        setTimeout(poll, 1000);
-    };
-    poll();
-};
-
-/// sends outgoing requests
-/// @params data - an object with at least 'method' property
-ProviderManager.prototype.send = function(data) {
-    var payload = jsonrpc.toPayload(data.method, data.params);
-
-    if (this.provider === undefined) {
-        console.error('provider is not set');
-        return null; 
-    }
-
-    var result = this.provider.send(payload);
-
-    if (!jsonrpc.isValidResponse(result)) {
-        console.log(result);
-        return null;
-    }
-
-    return result.result;
-};
-
-/// setups provider, which will be used for sending messages
-ProviderManager.prototype.set = function(provider) {
-    this.provider = provider;
-};
-
-/// this method is only used, when we do not have native qt bindings and have to do polling on our own
-/// should be callled, on start watching for eth/shh changes
-ProviderManager.prototype.startPolling = function (data, pollId, callback) {
-    this.polls.push({data: data, id: pollId, callback: callback});
-};
-
-/// should be called to stop polling for certain watch changes
-ProviderManager.prototype.stopPolling = function (pollId) {
-    for (var i = this.polls.length; i--;) {
-        var poll = this.polls[i];
-        if (poll.id === pollId) {
-            this.polls.splice(i, 1);
-        }
-    }
-};
-
-module.exports = ProviderManager;
-
-
-},{"./jsonrpc":8,"./web3":13}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 /*
     This file is part of ethereum.js.
 
@@ -1155,7 +1381,168 @@ QtSyncProvider.prototype.send = function (payload) {
 module.exports = QtSyncProvider;
 
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
+/*
+    This file is part of ethereum.js.
+
+    ethereum.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    ethereum.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with ethereum.js.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/** @file requestmanager.js
+ * @authors:
+ *   Jeffrey Wilcke <jeff@ethdev.com>
+ *   Marek Kotewicz <marek@ethdev.com>
+ *   Marian Oancea <marian@ethdev.com>
+ *   Gav Wood <g@ethdev.com>
+ * @date 2014
+ */
+
+var jsonrpc = require('./jsonrpc');
+var c = require('./const');
+
+/**
+ * It's responsible for passing messages to providers
+ * It's also responsible for polling the ethereum node for incoming messages
+ * Default poll timeout is 1 second
+ */
+var requestManager = function() {
+    var polls = [];
+    var provider;
+
+    var send = function (data) {
+        /*jshint maxcomplexity: 6 */
+
+        // format the input before sending
+        if(typeof data.inputFormatter === 'function') {
+            data.params = Array.prototype.map.call(data.params, function(item){
+                return data.inputFormatter(item);
+            });
+        }
+
+        var payload = jsonrpc.toPayload(data.method, data.params);
+        
+        if (!provider) {
+            console.error('provider is not set');
+            return null;
+        }
+
+        var result = provider.send(payload);
+
+        if (!jsonrpc.isValidResponse(result)) {
+            console.log(result);
+            if(typeof result === 'object' && result.error && result.error.message)
+                console.error(result.error.message);
+            return null;
+        }
+        
+        // format the output
+        return (typeof data.outputFormatter === 'function') ? data.outputFormatter(result.result) : result.result;
+    };
+
+    var setProvider = function (p) {
+        provider = p;
+    };
+
+    /*jshint maxparams:4 */
+    var startPolling = function (data, pollId, callback, uninstall) {
+        polls.push({data: data, id: pollId, callback: callback, uninstall: uninstall});
+    };
+    /*jshint maxparams:3 */
+
+    var stopPolling = function (pollId) {
+        for (var i = polls.length; i--;) {
+            var poll = polls[i];
+            if (poll.id === pollId) {
+                polls.splice(i, 1);
+            }
+        }
+    };
+
+    var reset = function () {
+        polls.forEach(function (poll) {
+            poll.uninstall(poll.id); 
+        });
+        polls = [];
+    };
+
+    var poll = function () {
+        polls.forEach(function (data) {
+            var result = send(data.data);
+            if (!(result instanceof Array) || result.length === 0) {
+                return;
+            }
+            data.callback(result);
+        });
+        setTimeout(poll, c.ETH_POLLING_TIMEOUT);
+    };
+    
+    poll();
+
+    return {
+        send: send,
+        setProvider: setProvider,
+        startPolling: startPolling,
+        stopPolling: stopPolling,
+        reset: reset
+    };
+};
+
+module.exports = requestManager;
+
+
+},{"./const":2,"./jsonrpc":10}],13:[function(require,module,exports){
+/*
+    This file is part of ethereum.js.
+
+    ethereum.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    ethereum.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with ethereum.js.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/** @file shh.js
+ * @authors:
+ *   Marek Kotewicz <marek@ethdev.com>
+ * @date 2015
+ */
+
+/// @returns an array of objects describing web3.shh api methods
+var methods = function () {
+    return [
+    { name: 'post', call: 'shh_post' },
+    { name: 'newIdentity', call: 'shh_newIdentity' },
+    { name: 'hasIdentity', call: 'shh_haveIdentity' },
+    { name: 'newGroup', call: 'shh_newGroup' },
+    { name: 'addToGroup', call: 'shh_addToGroup' },
+
+    // deprecated
+    { name: 'haveIdentity', call: 'shh_haveIdentity', newMethod: 'hasIdentity' },
+    ];
+};
+
+module.exports = {
+    methods: methods
+};
+
+
+},{}],14:[function(require,module,exports){
 /*
     This file is part of ethereum.js.
 
@@ -1236,7 +1623,7 @@ module.exports = {
 };
 
 
-},{"./formatters":6}],12:[function(require,module,exports){
+},{"./formatters":8}],15:[function(require,module,exports){
 /*
     This file is part of ethereum.js.
 
@@ -1260,6 +1647,30 @@ module.exports = {
  */
 
 var c = require('./const');
+
+if ("build" !== 'build') {/*
+    var BigNumber = require('bignumber.js'); // jshint ignore:line
+*/}
+
+var unitMap = {
+    'wei':      '1',
+    'kwei':     '1000',
+    'ada':      '1000',
+    'mwei':     '1000000',
+    'babbage':  '1000000',
+    'gwei':     '1000000000',
+    'shannon':  '1000000000',
+    'szabo':    '1000000000000',
+    'finney':   '1000000000000000',
+    'ether':    '1000000000000000000',
+    'kether':   '1000000000000000000000',
+    'grand':    '1000000000000000000000',
+    'einstein': '1000000000000000000000',
+    'mether':   '1000000000000000000000000',
+    'gether':   '1000000000000000000000000000',
+    'tether':   '1000000000000000000000000000000'
+};
+
 
 /// Finds first index of array element matching pattern
 /// @param array
@@ -1346,6 +1757,10 @@ var filterEvents = function (json) {
 /// TODO: use BigNumber.js to parse int
 /// TODO: add tests for it!
 var toEth = function (str) {
+
+    console.warn('This method is deprecated please use eth.fromWei(BigNumberOrNumber, unit) instead.');
+
+     /*jshint maxcomplexity:7 */
     var val = typeof str === "string" ? str.indexOf('0x') === 0 ? parseInt(str.substr(2), 16) : parseInt(str) : str;
     var unit = 0;
     var units = c.ETH_UNITS;
@@ -1368,19 +1783,206 @@ var toEth = function (str) {
     return s + ' ' + units[unit];
 };
 
+
+var toDecimal = function (val) {
+    // remove 0x and place 0, if it's required
+    val = val.length > 2 ? val.substring(2) : "0";
+    return (new BigNumber(val, 16).toString(10));
+};
+
+var fromDecimal = function (val) {
+    return "0x" + (new BigNumber(val).toString(16));
+};
+
+
+/**
+Takes a number of wei and converts it to any other ether unit.
+
+Possible units are:
+
+    - kwei/ada
+    - mwei/babbage
+    - gwei/shannon
+    - szabo
+    - finney
+    - ether
+    - kether/grand/einstein
+    - mether
+    - gether
+    - tether
+
+@method fromWei
+@param {Number|String} number can be a number, number string or a HEX of a decimal
+@param {String} unit the unit to convert to
+@return {String|Object} When given a BigNumber object it returns one as well, otherwise a number
+*/
+var fromWei = function(number, unit) {
+    /*jshint maxcomplexity: 6 */
+    unit = unit.toLowerCase();
+
+    var isBigNumber = true;
+
+    if(!unitMap[unit]) {
+        console.warn('This unit doesn\'t exists, please use the one of the following units' , unitMap);
+        return number;
+    }
+
+    if(!number)
+        return number;
+
+    if(typeof number === 'string' && number.indexOf('0x') === 0) {
+        isBigNumber = false;
+        number = new BigNumber(number, 16);
+    }
+    
+    if(!(number instanceof BigNumber)) {
+        isBigNumber = false;
+        number = new BigNumber(number.toString(10), 10); // toString to prevent errors, the user have to handle giving correct bignums themselves
+    }
+
+    number = number.dividedBy(new BigNumber(unitMap[unit], 10));
+
+    return (isBigNumber) ? number : number.toString(10);
+};
+
+/**
+Takes a number of a unit and converts it to wei.
+
+Possible units are:
+
+    - kwei/ada
+    - mwei/babbage
+    - gwei/shannon
+    - szabo
+    - finney
+    - ether
+    - kether/grand/einstein
+    - mether
+    - gether
+    - tether
+
+@method toWei
+@param {Number|String|BigNumber} number can be a number, number string or a HEX of a decimal
+@param {String} unit the unit to convert to
+@return {String|Object} When given a BigNumber object it returns one as well, otherwise a number
+*/
+var toWei = function(number, unit) {
+    /*jshint maxcomplexity: 6 */
+    unit = unit.toLowerCase();
+
+    var isBigNumber = true;
+
+    if(!unitMap[unit]) {
+        console.warn('This unit doesn\'t exists, please use the one of the following units' , unitMap);
+        return number;
+    }
+
+    if(!number)
+        return number;
+
+    if(typeof number === 'string' && number.indexOf('0x') === 0) {
+        isBigNumber = false;
+        number = new BigNumber(number, 16);
+    }
+
+    if(!(number instanceof BigNumber)) {
+        isBigNumber = false;
+        number = new BigNumber(number.toString(10), 10);// toString to prevent errors, the user have to handle giving correct bignums themselves
+    }
+
+
+    number = number.times(new BigNumber(unitMap[unit], 10));
+
+    return (isBigNumber) ? number : number.toString(10);
+};
+
+
+/**
+Checks if the given string is a valid ethereum HEX address.
+
+@method isAddress
+@param {String} address the given HEX adress
+@return {Boolean}
+*/
+var isAddress = function(address) {
+    if(address.indexOf('0x') === 0 && address.length !== 42)
+        return false;
+    if(address.indexOf('0x') === -1 && address.length !== 40)
+        return false;
+
+    return /^\w+$/.test(address);
+};
+
+
 module.exports = {
     findIndex: findIndex,
+    toDecimal: toDecimal,
+    fromDecimal: fromDecimal,
     toAscii: toAscii,
     fromAscii: fromAscii,
     extractDisplayName: extractDisplayName,
     extractTypeName: extractTypeName,
     filterFunctions: filterFunctions,
     filterEvents: filterEvents,
-    toEth: toEth
+    toEth: toEth,
+    toWei: toWei,
+    fromWei: fromWei,
+    isAddress: isAddress
 };
 
 
-},{"./const":2}],13:[function(require,module,exports){
+},{"./const":2}],16:[function(require,module,exports){
+/*
+    This file is part of ethereum.js.
+
+    ethereum.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    ethereum.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with ethereum.js.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/** @file watches.js
+ * @authors:
+ *   Marek Kotewicz <marek@ethdev.com>
+ * @date 2015
+ */
+
+/// @returns an array of objects describing web3.eth.filter api methods
+var eth = function () {
+    var newFilter = function (args) {
+        return typeof args[0] === 'string' ? 'eth_newFilterString' : 'eth_newFilter';
+    };
+
+    return [
+    { name: 'newFilter', call: newFilter },
+    { name: 'uninstallFilter', call: 'eth_uninstallFilter' },
+    { name: 'getLogs', call: 'eth_filterLogs' }
+    ];
+};
+
+/// @returns an array of objects describing web3.shh.watch api methods
+var shh = function () {
+    return [
+    { name: 'newFilter', call: 'shh_newFilter' },
+    { name: 'uninstallFilter', call: 'shh_uninstallFilter' },
+    { name: 'getLogs', call: 'shh_getMessages' }
+    ];
+};
+
+module.exports = {
+    eth: eth,
+    shh: shh
+};
+
+
+},{}],17:[function(require,module,exports){
 /*
     This file is part of ethereum.js.
 
@@ -1406,11 +2008,17 @@ module.exports = {
  * @date 2014
  */
 
-if ("build" !== 'build') {/*
-    var BigNumber = require('bignumber.js');
-*/}
+// if (process.env.NODE_ENV !== 'build') {
+//     var BigNumber = require('bignumber.js');
+// }
 
+var eth = require('./eth');
+var db = require('./db');
+var shh = require('./shh');
+var watches = require('./watches');
+var filter = require('./filter');
 var utils = require('./utils');
+var requestManager = require('./requestmanager');
 
 /// @returns an array of objects describing web3 api methods
 var web3Methods = function () {
@@ -1419,110 +2027,39 @@ var web3Methods = function () {
     ];
 };
 
-/// @returns an array of objects describing web3.eth api methods
-var ethMethods = function () {
-    var blockCall = function (args) {
-        return typeof args[0] === "string" ? "eth_blockByHash" : "eth_blockByNumber";
-    };
-
-    var transactionCall = function (args) {
-        return typeof args[0] === "string" ? 'eth_transactionByHash' : 'eth_transactionByNumber';
-    };
-
-    var uncleCall = function (args) {
-        return typeof args[0] === "string" ? 'eth_uncleByHash' : 'eth_uncleByNumber';
-    };
-
-    var methods = [
-    { name: 'balanceAt', call: 'eth_balanceAt' },
-    { name: 'stateAt', call: 'eth_stateAt' },
-    { name: 'storageAt', call: 'eth_storageAt' },
-    { name: 'countAt', call: 'eth_countAt'},
-    { name: 'codeAt', call: 'eth_codeAt' },
-    { name: 'transact', call: 'eth_transact' },
-    { name: 'call', call: 'eth_call' },
-    { name: 'block', call: blockCall },
-    { name: 'transaction', call: transactionCall },
-    { name: 'uncle', call: uncleCall },
-    { name: 'compilers', call: 'eth_compilers' },
-    { name: 'flush', call: 'eth_flush' },
-    { name: 'lll', call: 'eth_lll' },
-    { name: 'solidity', call: 'eth_solidity' },
-    { name: 'serpent', call: 'eth_serpent' },
-    { name: 'logs', call: 'eth_logs' }
-    ];
-    return methods;
-};
-
-/// @returns an array of objects describing web3.eth api properties
-var ethProperties = function () {
-    return [
-    { name: 'coinbase', getter: 'eth_coinbase', setter: 'eth_setCoinbase' },
-    { name: 'listening', getter: 'eth_listening', setter: 'eth_setListening' },
-    { name: 'mining', getter: 'eth_mining', setter: 'eth_setMining' },
-    { name: 'gasPrice', getter: 'eth_gasPrice' },
-    { name: 'accounts', getter: 'eth_accounts' },
-    { name: 'peerCount', getter: 'eth_peerCount' },
-    { name: 'defaultBlock', getter: 'eth_defaultBlock', setter: 'eth_setDefaultBlock' },
-    { name: 'number', getter: 'eth_number'}
-    ];
-};
-
-/// @returns an array of objects describing web3.db api methods
-var dbMethods = function () {
-    return [
-    { name: 'put', call: 'db_put' },
-    { name: 'get', call: 'db_get' },
-    { name: 'putString', call: 'db_putString' },
-    { name: 'getString', call: 'db_getString' }
-    ];
-};
-
-/// @returns an array of objects describing web3.shh api methods
-var shhMethods = function () {
-    return [
-    { name: 'post', call: 'shh_post' },
-    { name: 'newIdentity', call: 'shh_newIdentity' },
-    { name: 'haveIdentity', call: 'shh_haveIdentity' },
-    { name: 'newGroup', call: 'shh_newGroup' },
-    { name: 'addToGroup', call: 'shh_addToGroup' }
-    ];
-};
-
-/// @returns an array of objects describing web3.eth.watch api methods
-var ethWatchMethods = function () {
-    var newFilter = function (args) {
-        return typeof args[0] === 'string' ? 'eth_newFilterString' : 'eth_newFilter';
-    };
-
-    return [
-    { name: 'newFilter', call: newFilter },
-    { name: 'uninstallFilter', call: 'eth_uninstallFilter' },
-    { name: 'getMessages', call: 'eth_filterLogs' }
-    ];
-};
-
-/// @returns an array of objects describing web3.shh.watch api methods
-var shhWatchMethods = function () {
-    return [
-    { name: 'newFilter', call: 'shh_newFilter' },
-    { name: 'uninstallFilter', call: 'shh_uninstallFilter' },
-    { name: 'getMessages', call: 'shh_getMessages' }
-    ];
-};
-
 /// creates methods in a given object based on method description on input
 /// setups api calls for these methods
 var setupMethods = function (obj, methods) {
     methods.forEach(function (method) {
-        obj[method.name] = function () {
-            var args = Array.prototype.slice.call(arguments);
-            var call = typeof method.call === 'function' ? method.call(args) : method.call;
-            return web3.provider.send({
-                method: call,
-                params: args
-            });
-        };
+        // allow for object methods 'myObject.method'
+        var objectMethods = method.name.split('.'),
+            callFunction = function () {
+                var args = Array.prototype.slice.call(arguments);
+                var call = typeof method.call === 'function' ? method.call(args) : method.call;
+
+                // show deprecated warning
+                if(method.newMethod)
+                    console.warn('This method is deprecated please use eth.'+ method.newMethod +'() instead.');
+
+                return web3.manager.send({
+                    method: call,
+                    params: args,
+                    outputFormatter: method.outputFormatter,
+                    inputFormatter: method.inputFormatter
+                });
+            };
+
+        if(objectMethods.length > 1) {
+            if(!obj[objectMethods[0]])
+                obj[objectMethods[0]] = {};
+
+            obj[objectMethods[0]][objectMethods[1]] = callFunction;
+        
+        } else {
+
+            obj[objectMethods[0]] = callFunction;
+        }
+
     });
 };
 
@@ -1532,28 +2069,76 @@ var setupProperties = function (obj, properties) {
     properties.forEach(function (property) {
         var proto = {};
         proto.get = function () {
-            return web3.provider.send({
-                method: property.getter
+
+            // show deprecated warning
+            if(property.newProperty)
+                console.warn('This property is deprecated please use eth.'+ property.newProperty +' instead.');
+
+
+            return web3.manager.send({
+                method: property.getter,
+                outputFormatter: property.outputFormatter
             });
         };
 
         if (property.setter) {
             proto.set = function (val) {
-                return web3.provider.send({
+
+                // show deprecated warning
+                if(property.newProperty)
+                    console.warn('This property is deprecated please use eth.'+ property.newProperty +' instead.');
+
+                return web3.manager.send({
                     method: property.setter,
-                    params: [val]
+                    params: [val],
+                    inputFormatter: property.inputFormatter
                 });
             };
         }
+
+        proto.enumerable = !property.newProperty;
         Object.defineProperty(obj, property.name, proto);
+
     });
+};
+
+/*jshint maxparams:4 */
+var startPolling = function (method, id, callback, uninstall) {
+    web3.manager.startPolling({
+        method: method, 
+        params: [id]
+    }, id,  callback, uninstall); 
+};
+/*jshint maxparams:3 */
+
+var stopPolling = function (id) {
+    web3.manager.stopPolling(id);
+};
+
+var ethWatch = {
+    startPolling: startPolling.bind(null, 'eth_changed'), 
+    stopPolling: stopPolling
+};
+
+var shhWatch = {
+    startPolling: startPolling.bind(null, 'shh_changed'), 
+    stopPolling: stopPolling
 };
 
 /// setups web3 object, and it's in-browser executed methods
 var web3 = {
-    _callbacks: {},
-    _events: {},
+    manager: requestManager(),
     providers: {},
+
+    setProvider: function (provider) {
+        web3.manager.setProvider(provider);
+    },
+    
+    /// Should be called to reset state of web3 object
+    /// Resets everything except manager
+    reset: function () {
+        web3.manager.reset(); 
+    },
 
     /// @returns ascii string representation of hex value prefixed with 0x
     toAscii: utils.toAscii,
@@ -1562,23 +2147,25 @@ var web3 = {
     fromAscii: utils.fromAscii,
 
     /// @returns decimal representaton of hex value prefixed by 0x
-    toDecimal: function (val) {
-        // remove 0x and place 0, if it's required
-        val = val.length > 2 ? val.substring(2) : "0";
-        return (new BigNumber(val, 16).toString(10));
-    },
+    toDecimal: utils.toDecimal,
 
     /// @returns hex representation (prefixed by 0x) of decimal value
-    fromDecimal: function (val) {
-        return "0x" + (new BigNumber(val).toString(16));
-    },
+    fromDecimal: utils.fromDecimal,
 
     /// used to transform value/string to eth string
     toEth: utils.toEth,
 
+    toWei: utils.toWei,
+    fromWei: utils.fromWei,
+    isAddress: utils.isAddress,
+
+
     /// eth object prototype
     eth: {
+        // DEPRECATED
         contractFromAbi: function (abi) {
+            console.warn('Initiating a contract like this is deprecated please use var MyContract = eth.contract(abi); new MyContract(address); instead.');
+
             return function(addr) {
                 // Default to address of Config. TODO: rremove prior to genesis.
                 addr = addr || '0xc6d9d2cd449a754c494264e1809c50e34d64562b';
@@ -1589,14 +2176,24 @@ var web3 = {
         },
 
         /// @param filter may be a string, object or event
-        /// @param indexed is optional, this is an object with optional event indexed params
+        /// @param eventParams is optional, this is an object with optional event eventParams params
         /// @param options is optional, this is an object with optional event options ('max'...)
-        watch: function (filter, indexed, options) {
-            if (filter._isEvent) {
-                return filter(indexed, options);
-            }
-            return new web3.filter(filter, ethWatch);
+        /// TODO: fix it, 4 params? no way
+        /*jshint maxparams:4 */
+        filter: function (fil, eventParams, options, formatter) {
+
+            // if its event, treat it differently
+            if (fil._isEvent)
+                return fil(eventParams, options);
+
+            return filter(fil, ethWatch, formatter);
+        },
+        // DEPRECATED
+        watch: function (fil, eventParams, options, formatter) {
+            console.warn('eth.watch() is deprecated please use eth.filter() instead.');
+            return this.filter(fil, eventParams, options, formatter);
         }
+        /*jshint maxparams:3 */
     },
 
     /// db object prototype
@@ -1604,54 +2201,40 @@ var web3 = {
 
     /// shh object prototype
     shh: {
-        
         /// @param filter may be a string, object or event
-        watch: function (filter, indexed) {
-            return new web3.filter(filter, shhWatch);
+        filter: function (fil) {
+            return filter(fil, shhWatch);
+        },
+        // DEPRECATED
+        watch: function (fil) {
+            console.warn('shh.watch() is deprecated please use shh.filter() instead.');
+            return this.filter(fil);
         }
-    },
+    }
 };
 
 /// setups all api methods
 setupMethods(web3, web3Methods());
-setupMethods(web3.eth, ethMethods());
-setupProperties(web3.eth, ethProperties());
-setupMethods(web3.db, dbMethods());
-setupMethods(web3.shh, shhMethods());
-
-var ethWatch = {
-    changed: 'eth_changed'
-};
-
-setupMethods(ethWatch, ethWatchMethods());
-
-var shhWatch = {
-    changed: 'shh_changed'
-};
-
-setupMethods(shhWatch, shhWatchMethods());
-
-web3.setProvider = function(provider) {
-    web3.provider.set(provider);
-};
+setupMethods(web3.eth, eth.methods);
+setupProperties(web3.eth, eth.properties);
+setupMethods(web3.db, db.methods());
+setupMethods(web3.shh, shh.methods());
+setupMethods(ethWatch, watches.eth());
+setupMethods(shhWatch, watches.shh());
 
 module.exports = web3;
 
 
-},{"./utils":12}],"web3":[function(require,module,exports){
+},{"./db":4,"./eth":5,"./filter":7,"./requestmanager":12,"./shh":13,"./utils":15,"./watches":16}],"web3":[function(require,module,exports){
 var web3 = require('./lib/web3');
-var ProviderManager = require('./lib/providermanager');
-web3.provider = new ProviderManager();
-web3.filter = require('./lib/filter');
 web3.providers.HttpSyncProvider = require('./lib/httpsync');
 web3.providers.QtSyncProvider = require('./lib/qtsync');
 web3.eth.contract = require('./lib/contract');
 web3.abi = require('./lib/abi');
 
-
 module.exports = web3;
 
-},{"./lib/abi":1,"./lib/contract":3,"./lib/filter":5,"./lib/httpsync":7,"./lib/providermanager":9,"./lib/qtsync":10,"./lib/web3":13}]},{},["web3"])
+},{"./lib/abi":1,"./lib/contract":3,"./lib/httpsync":9,"./lib/qtsync":11,"./lib/web3":17}]},{},["web3"])
 
 
 //# sourceMappingURL=ethereum.js.map
