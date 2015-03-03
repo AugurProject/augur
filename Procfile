@@ -1,1 +1,1 @@
-web: gunicorn augur:app --log-file - 
+web: gunicorn augur.augur:app --log-file - 
