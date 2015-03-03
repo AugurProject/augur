@@ -25,7 +25,7 @@
 
 <script src="static/augur.js"></script>
 
-<body>
+<body class="stopped">
 
     <nav class="navbar" role="navigation">
         <div class="container">
@@ -40,11 +40,11 @@
         </div>
     </nav>
 
-    <section id="logo" class="container"></section>
-    <script type="text/template" id="parsing-template">
-    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="<%= percent %>" aria-valuemin="0" aria-valuemax="100" style="width: <%= percent %>%;">
-    </div>
-    </script>
+    <section id="logo" class="container">
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
+        </div>
+    </section>
 
     <section id="main" class="container">
 
@@ -140,6 +140,18 @@
     </div>
 
     <!-- modals dialogs -->
+
+    <div id="no-eth-modal" class="modal fade">
+        <div class="modal-dialog model-sm">
+            <div class="modal-content">
+                <div class="modal-body clearfix">
+                    <h4>Ethereum not found</h4>
+                    <p>Augur requires a local node of the Ethereum client running<p>
+                    <p>Visit <a href="https://github.com/ethereum/cpp-ethereum/wiki">the ethereum github wiki</a> for help installing the lastest client</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div id="password-modal" class="modal fade">
         <div class="modal-dialog model-sm">

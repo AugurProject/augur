@@ -1,8 +1,7 @@
 var web3;
 var augur = {
 
-    evmAddress: '0x031ed8fa6e0050709c5f5a4cdb326c85920f995f',   // this is the address returned from the loader
-    evmAddress: '0x36f92f49d6d9c0ded1c397e343e8a3974625e876',
+    evmAddress: '0x36f92f49d6d9c0ded1c397e343e8a3974625e876',   // this is the address returned from the loader
 
     data: {
         account: '-',
@@ -16,24 +15,40 @@ var augur = {
         }
     },
 
-    init: function() {
+    start: function() {
 
         // get the web3 object
-        if (typeof web3 === 'undefined') {
+        if (typeof web3 === 'undefined') web3 = require('web3');
 
-            web3 = require('web3');
-            web3.setProvider(new web3.providers.HttpSyncProvider())
+        web3.setProvider(new web3.providers.HttpSyncProvider());
+
+        try {
+
+            web3.eth.accounts;
+            augur.init();
+
+        } catch(err) {
+
+            console.log('[augur] no ethereum client found');
+            $('#no-eth-modal').modal('show');            
         }
+
+    },
+
+    init: function() {
 
         var Contract = web3.eth.contract(augur.abi);
         augur.contract = new Contract(augur.evmAddress);
         console.log('[augur] evm contract loaded from ' + augur.evmAddress);
+        $('#logo .progress-bar').css('width', '25%');
 
         augur.data.account = web3.eth.accounts[0];
         augur.data.balance = augur.contract.call().balance(augur.data.account).toString(10);
 
         // render initial data
         augur.update(augur.data);
+        $('#logo .progress-bar').css('width', '100%');
+        $('body').removeClass('stopped').addClass('running');
 
         augur.network = {
             host: 'localhost:8080',
@@ -502,4 +517,4 @@ var augur = {
 }
 
 // start
-$(document).ready(augur.init);
+$(document).ready(augur.start);

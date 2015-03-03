@@ -26,9 +26,10 @@ body {
 body.stopped #main {
     display: none;
 }
+body.stopped nav h2 {
+    display: none;
+}
 body.stopped #logo {
-    font-family: 'Core Mellow';
-    font-weight: 700;
     display: block;
 }
 body.running #main {
@@ -49,6 +50,29 @@ h4 span {
 }
 table {
     font-size: 12px;
+}
+
+#logo {
+    display: none;
+    background-image: url('images/augur_logo_bg.png');
+    background-repeat: no-repeat;
+    width: 171px;
+    height: 202px;
+    margin: 0px auto 0px auto;
+    position: relative;
+    top: 50%;
+    transform: translateY(50%);
+    font-family: 'Core Mellow';
+    color: rgb(209, 231, 231);
+    text-align: center;
+    opacity: 0.5;
+}
+#logo .progress {
+    height: 5px;
+    margin: 213px -15px 0px -15px;
+}
+#logo .progress-bar {
+    background-color: #737373;
 }
 nav.navbar {
     background-color: #602A52;
@@ -282,20 +306,7 @@ nav .parsing.progress {
     font-size: 13px;
     margin-bottom: 5px;
 }
-#logo {
-    display: none;
-    font-family: 'Core Mellow';
-    font-size: 363px;
-    width: 300px;
-    margin: 0% auto 0px auto;
-    text-align: center;
-    font-weight: 700;
-    line-height: 1em;
-    color: rgb(209, 231, 231);
-    position: relative;
-    top: 50%;
-    transform: translateY(0%);
-}
+#no-eth-modal .modal-dialog
 #confirm-modal .modal-dialog {
     width: 400px;
 }
