@@ -117,13 +117,14 @@ nav .parsing.progress {
 }
 
 .sidebar .panel {
-    font-size: 11px;
+    font-size: 12px;
 }
 .sidebar .panel .panel-body {
     padding: 10px;
 }
 
 .sidebar .panel-heading {
+    font-size: 14px;
     padding: 5px 10px;
 }
 .panel.panel-success .panel-heading {
@@ -306,7 +307,7 @@ nav .parsing.progress {
     font-size: 13px;
     margin-bottom: 5px;
 }
-#no-eth-modal .modal-dialog
+#no-eth-modal .modal-dialog,
 #confirm-modal .modal-dialog {
     width: 400px;
 }
