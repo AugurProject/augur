@@ -33,6 +33,7 @@
 <link rel="stylesheet" href="static/augur.css" />
 
 <script src="static/jquery.min.js"></script>
+<script src="static/jquery.cookie.js"></script>
 <script src="static/bootstrap.min.js"></script>
 
 <script src="static/lodash.js"></script>
@@ -91,7 +92,7 @@
                         <p class="peers">PEERS<span class="pull-right">-</span></p>
                         <p class="blocks">BLOCKS<span class="pull-right">-</span></p>
                         <p class="miner">MINER<span class="pull-right">-</span></p>
-                        <p class="ether">ETHER<span class="pull-right">-</span></p>
+                        <p class="gas">GAS<span class="pull-right">-</span></p>
                         <p class="gas-price">GAS PRICE<span class="pull-right">-</span></p>
                     </div>
                 </div>
@@ -169,18 +170,18 @@
         </div>
     </div>
 
-    <div id="password-modal" class="modal fade">
+    <div id="evm-address-modal" class="modal fade">
         <div class="modal-dialog model-sm">
             <div class="modal-content">
                 <div class="modal-body clearfix">
-                    <form method="POST">
-                        <div class="col-lg-12">
-                            <div class="input-group">
-                                <input type="password" name="password" class="form-control" placeholder="Enter your password or public key" autofocus>
-                                <span class="input-group-btn">
-                                    <button class="btn btn-success" type="submit">Start</button>
-                                </span>
-                            </div>
+                    <h4>No EVM address set</h4>
+                    <p>The EVM address for augur hasn't be set.  Please enter the EVM address where Augur is loaded.</p>
+                    <form method="POST" id="evm-address-form">
+                        <div class="input-group">
+                            <input name="evm-address" id="evm-address" class="form-control" placeholder="Enter the EVM address" autofocus>
+                            <span class="input-group-btn">
+                                <button class="btn btn-success" type="submit">Load</button>
+                            </span>
                         </div>
                     </form>
                 </div>
@@ -235,18 +236,14 @@
     <div id="create-branch-modal" class="modal fade">
         <div class="modal-dialog model-sm">
             <div class="modal-content">
-                <div class="modal-header">
-                    <p>Create a new branch by entering a unique ID.  You will automatically be added to this branch and awarded all reputation to start.</p>
-                </div>
                 <div class="modal-body clearfix">
+                    <p>Create a new branch under <b>root</b> by entering a new branch ID.  All reputation from the parent branch will be transfered into this new branch.</p>
                     <form>
-                        <div class="col-lg-12">
-                            <div class="input-group">
-                                <input type="text" name="branch-id" id="branch-id" class="form-control" placeholder="Enter a branch ID">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-primary" type="submit">Create branch</button>
-                                </span>
-                            </div>
+                        <div class="input-group">
+                            <input type="text" name="branch-id" id="branch-id" class="form-control" placeholder="Enter a new branch ID">
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary" type="submit">Create branch</button>
+                            </span>
                         </div>
                     </form>
                 </div>
@@ -279,22 +276,20 @@
     <div id="send-rep-modal" class="modal fade">
         <div class="modal-dialog model-sm">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h4>Send <span class="branch"></span> reputation</h4>
-                </div>
-                <div class="modal-body">
-                    <form class="form-inline" role="form">
+                <div class="modal-body clearfix">
+                    <h4>Send reputation</h4>
+                    <form class="form-inline pull-right" role="form">
                         <div class="form-group">
-                            <label class="sr-only" for="dest-address">Destination address</label>
-                            <input type="text" class="form-control" name="rep-dest-address" id="rep-dest-address" placeholder="Enter destination address">
+                            <label class="sr-only" for="rep-dest-address">Destination address</label>
+                            <input type="text" class="form-control" name="rep-dest-address" id="rep-dest-address" placeholder="destination address">
                         </div>
                         <div class="form-group">
-                            <label class="sr-only" for="amount">Amount</label>
-                            <input type="text" name="rep-amount" id="rep-amount" class="form-control" placeholder="Amount">
+                            <label class="sr-only" for="rep-amount">Amount</label>
+                            <input type="text" name="rep-amount" id="rep-amount" class="form-control" placeholder="amount">
                         </div>
-                        <input type="hidden" name="rep-branch" id="rep-branch">
                         <button type="submit" class="btn btn-primary">Send</button>
                     </form>
+                    <p>REPUTATION: <b class="rep-balance"></b></p>
                 </div>
             </div>
         </div>
@@ -341,10 +336,8 @@
     <div id="add-decision-modal" class="modal fade">
         <div class="modal-dialog model-sm">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h4>Add decision</h4>
-                </div>
                 <div class="modal-body clearfix">
+                    <h4>Add decision</h4>
                     <form role="form">
                         <div class="form-group">
                             <label for="decision-branch">Branch</label>

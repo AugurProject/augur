@@ -1,7 +1,8 @@
 var web3;
 var augur = {
 
-    evmAddress: '0x36f92f49d6d9c0ded1c397e343e8a3974625e876',   // this is the address returned from the loader
+    evmAddress: '0xc09ceb49fa837ef0a2a7a0c8e2572d25aa7291d4',   // POC8 private
+    evmAddress: '0x4a583abcf1a603e8b546768d3f80dc55d3f13be7',   // POC8 testnet
 
     data: {
         account: '-',
@@ -37,6 +38,25 @@ var augur = {
 
     init: function() {
 
+        $('#evm-address-form').on('submit', function(event) {
+            event.preventDefault();
+            augur.evmAddress = $('#evm-address').val();
+            console.log(augur.evmAddress);
+            $.cookie('evmAddress', augur.evmAddress);
+            $('#evm-address-modal').modal('hide');
+            augur.init();
+        });
+
+        // get EVM address
+        if (!augur.evmAddress) {
+            if ($.cookie('evmAddress')) {
+                augur.evmAddress = v
+            } else {
+                $('#evm-address-modal').modal('show');
+                return;
+            }
+        }
+
         var Contract = web3.eth.contract(augur.abi);
         augur.contract = new Contract(augur.evmAddress);
         console.log('[augur] evm contract loaded from ' + augur.evmAddress);
@@ -64,8 +84,9 @@ var augur = {
 
             augur.network.peerCount = web3.eth.peerCount;
             augur.network.blockNumber = web3.eth.blockNumber;
-            augur.network.ether = web3.toDecimal(web3.eth.getBalance(web3.eth.coinbase));
-
+            var wei = web3.eth.getBalance(augur.data.account);
+            var finney = web3.fromWei(wei, 'finney');
+            augur.network.gas = finney + ' finney';
             augur.update(augur.network);
         });
 
@@ -77,16 +98,6 @@ var augur = {
         });
 
         // user events
-        $('#password-form').on('submit', function(event) {
-
-            event.preventDefault();
-            //socket.emit('start', $('#password').val());
-            $(this).hide();
-            $('#start-node').button('loading');
-            $('#start-node').show();
-            $('#password-modal').modal('hide');
-        });
-
         $('.reporting form').on('submit', function(event) {
 
             event.preventDefault();
@@ -338,10 +349,10 @@ var augur = {
             $('.blocks').show();
         },
 
-        ether: function(data) {
+        gas: function(data) {
 
-            $('.ether span').text(data);
-            $('.ether').show();
+            $('.gas span').text(data);
+            $('.gas').show();
         },
 
         gasPrice: function(data) {
@@ -454,10 +465,64 @@ var augur = {
 
     abi:
 [{
+    "name": "api(int256,int256,int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "dataStructure", "type": "int256" }, { "name": "itemNumber", "type": "int256" }, { "name": "arrayIndex", "type": "int256" }, { "name": "ID", "type": "int256" }],
+    "outputs": [{ "name": "unknown_out", "type": "int256[]" }]
+},
+{
     "name": "balance(int256)",
     "type": "function",
     "inputs": [{ "name": "address", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256" }]
+},
+{
+    "name": "buyShares(int256,int256,int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "market", "type": "int256" }, { "name": "outcome", "type": "int256" }, { "name": "amount", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
+},
+{
+    "name": "calibrate_sets(int256[],int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "scores", "type": "int256[]" }, { "name": "num_players", "type": "int256" }, { "name": "num_events", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256[]" }]
+},
+{
+    "name": "calibrate_wsets(int256[],int256[],int256[],int256[],int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "set1", "type": "int256[]" }, { "name": "set2", "type": "int256[]" }, { "name": "reputation", "type": "int256[]" }, { "name": "reports", "type": "int256[]" }, { "name": "num_players", "type": "int256" }, { "name": "num_events", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256[]" }]
+},
+{
+    "name": "center(int256[],int256[],int256[],int256[],int256[],int256)",
+    "type": "function",
+    "inputs": [{ "name": "reports_filled", "type": "int256[]" }, { "name": "reputation", "type": "int256[]" }, { "name": "scaled", "type": "int256[]" }, { "name": "scaled_max", "type": "int256[]" }, { "name": "scaled_min", "type": "int256[]" }, { "name": "max_iterations", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256[]" }]
+},
+{
+    "name": "checkQuorum(int256)",
+    "type": "function",
+    "inputs": [{ "name": "branch", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
+},
+{
+    "name": "closeBet(int256)",
+    "type": "function",
+    "inputs": [{ "name": "betID", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
+},
+{
+    "name": "closeMarket(int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "market", "type": "int256" }],
+    "outputs": [{ "name": "unknown_out", "type": "int256[]" }]
+},
+{
+    "name": "consensus(int256[],int256[],int256[],int256[],int256[],int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "smooth_rep", "type": "int256[]" }, { "name": "reports", "type": "int256[]" }, { "name": "scaled", "type": "int256[]" }, { "name": "scaled_max", "type": "int256[]" }, { "name": "scaled_min", "type": "int256[]" }, { "name": "num_players", "type": "int256" }, { "name": "num_events", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256[]" }]
 },
 {
     "name": "createEvent(int256,string,int256,int256,int256,int256)",
@@ -472,15 +537,51 @@ var augur = {
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
+    "name": "eventsExpApi(int256,int256,int256,int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "expDateIndex", "type": "int256" }, { "name": "itemNumber", "type": "int256" }, { "name": "arrayIndexOne", "type": "int256" }, { "name": "arrayIndexTwo", "type": "int256" }, { "name": "ID", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
+},
+{
     "name": "faucet()",
     "type": "function",
     "inputs": [],
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
+    "name": "getAllEvents(int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "expPeriod", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256[]" }]
+},
+{
+    "name": "getAllMarkets(int256)",
+    "type": "function",
+    "inputs": [{ "name": "branch", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256[]" }]
+},
+{
     "name": "getRepBalance(int256,int256)",
     "type": "function",
     "inputs": [{ "name": "branch", "type": "int256" }, { "name": "address", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
+},
+{
+    "name": "interpolate(int256[],int256[],int256[],int256[],int256[])",
+    "type": "function",
+    "inputs": [{ "name": "reports", "type": "int256[]" }, { "name": "reputation", "type": "int256[]" }, { "name": "scaled", "type": "int256[]" }, { "name": "scaled_max", "type": "int256[]" }, { "name": "scaled_min", "type": "int256[]" }],
+    "outputs": [{ "name": "out", "type": "int256[]" }]
+},
+{
+    "name": "makeBallot(int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "votePeriod", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256[]" }]
+},
+{
+    "name": "makeBet(int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "eventID", "type": "int256" }, { "name": "amtToBet", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
@@ -490,10 +591,58 @@ var augur = {
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
-    "name": "reputation(int256)",
+    "name": "marketParticipantsApi(int256,int256,int256,int256,int256)",
     "type": "function",
-    "inputs": [{ "name": "address", "type": "int256" }],
+    "inputs": [{ "name": "participantIndex", "type": "int256" }, { "name": "itemNumber", "type": "int256" }, { "name": "eventID", "type": "int256" }, { "name": "outcomeNumber", "type": "int256" }, { "name": "marketID", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
+},
+{
+    "name": "participation(int256[],int256[],int256[],int256[],int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "outcomes_final", "type": "int256[]" }, { "name": "consensus_reward", "type": "int256[]" }, { "name": "smooth_rep", "type": "int256[]" }, { "name": "reports_mask", "type": "int256[]" }, { "name": "num_players", "type": "int256" }, { "name": "num_events", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256[]" }]
+},
+{
+    "name": "pca_adjust(int256[],int256[],int256[],int256[],int256[],int256[],int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "old", "type": "int256[]" }, { "name": "new1", "type": "int256[]" }, { "name": "new2", "type": "int256[]" }, { "name": "set1", "type": "int256[]" }, { "name": "set2", "type": "int256[]" }, { "name": "scores", "type": "int256[]" }, { "name": "num_players", "type": "int256" }, { "name": "num_events", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256[]" }]
+},
+{
+    "name": "pca_loadings(int256[],int256[],int256[],int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "loading_vector", "type": "int256[]" }, { "name": "weighted_centered_data", "type": "int256[]" }, { "name": "reputation", "type": "int256[]" }, { "name": "num_players", "type": "int256" }, { "name": "num_events", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256[]" }]
+},
+{
+    "name": "pca_scores(int256[],int256[],int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "loading_vector", "type": "int256[]" }, { "name": "weighted_centered_data", "type": "int256[]" }, { "name": "num_players", "type": "int256" }, { "name": "num_events", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256[]" }]
+},
+{
+    "name": "redeem(int256)",
+    "type": "function",
+    "inputs": [{ "name": "branch", "type": "int256" }],
+    "outputs": [{ "name": "unknown_out", "type": "int256[]" }]
+},
+{
+    "name": "reputation(int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "address", "type": "int256" }, { "name": "branch", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256[]" }]
+},
+{
+    "name": "reputationApi(int256,int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "reputationIndex", "type": "int256" }, { "name": "itemNumber", "type": "int256" }, { "name": "branchID", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
+},
+{
+    "name": "sellShares(int256,int256,int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "market", "type": "int256" }, { "name": "outcome", "type": "int256" }, { "name": "amount", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
     "name": "send(int256,int256)",
@@ -508,12 +657,35 @@ var augur = {
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
+    "name": "sendMoneytoBet(int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "betID", "type": "int256" }, { "name": "outcome", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
+},
+{
     "name": "sendReputation(int256,int256,int256)",
     "type": "function",
     "inputs": [{ "name": "branch", "type": "int256" }, { "name": "recver", "type": "int256" }, { "name": "value", "type": "int256" }],
     "outputs": [{ "name": "unknown_out", "type": "int256[]" }]
+},
+{
+    "name": "smooth(int256[],int256[],int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "adjusted_scores", "type": "int256[]" }, { "name": "reputation", "type": "int256[]" }, { "name": "num_players", "type": "int256" }, { "name": "num_events", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256[]" }]
+},
+{
+    "name": "transferShares(int256,int256,int256,int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "market", "type": "int256" }, { "name": "outcome", "type": "int256" }, { "name": "amount", "type": "int256" }, { "name": "to", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
+},
+{
+    "name": "vote(int256,int256[],int256)",
+    "type": "function",
+    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "report", "type": "int256[]" }, { "name": "votePeriod", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
 }]
-
 }
 
 // start
