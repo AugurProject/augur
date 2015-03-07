@@ -41,8 +41,8 @@ var augur = {
         $('#evm-address-form').on('submit', function(event) {
             event.preventDefault();
             augur.evmAddress = $('#evm-address').val();
-            console.log(augur.evmAddress);
             $.cookie('evmAddress', augur.evmAddress);
+            web3.db.set('augur', 'evmAddress', augur.evmAddress);
             $('#evm-address-modal').modal('hide');
             augur.init();
         });
@@ -50,7 +50,9 @@ var augur = {
         // get EVM address
         if (!augur.evmAddress) {
             if ($.cookie('evmAddress')) {
-                augur.evmAddress = v
+                augur.evmAddress = $.cookie('evmAddress');
+            } else if (web3.db.get('augur', 'evmAddress')) {
+                augur.evmAddress = web3.db.get('augur', 'evmAddress');
             } else {
                 $('#evm-address-modal').modal('show');
                 return;
@@ -75,8 +77,8 @@ var augur = {
             peerCount: '-',
             blockNumber: '-',
             miner: web3.eth.mining,
-            ether: '-',
-            gasPrice: web3.toDecimal(web3.eth.gasPrice)
+            gas: '-',
+            gasPrice: '-'
         }
 
         // watch ethereum chain for changes and update network data
@@ -87,6 +89,9 @@ var augur = {
             var wei = web3.eth.getBalance(augur.data.account);
             var finney = web3.fromWei(wei, 'finney');
             augur.network.gas = finney + ' finney';
+            var wei = web3.eth.gasPrice;
+            var finney = web3.fromWei(wei, 'finney');
+            augur.network.gasPrice = finney + ' finney';
             augur.update(augur.network);
         });
 
