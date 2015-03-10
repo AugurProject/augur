@@ -121,8 +121,14 @@ var augur = {
         $('#create-branch-modal form').on('submit', function(event) {
 
             event.preventDefault();
-            //socket.emit('create-branch', $('#branch-id').val());
-            $('#create-branch-modal').modal('hide');
+            var parent = parseInt($('#create-branch-modal .branch-parent').val());
+            var branchName = $('#create-branch-modal .branch-name').val();
+
+            if (augur.contract.call().makeSubBranch(branchName, 1, parent)) {
+                $('#create-branch-modal').modal('hide');
+            } else {
+                console.log("[augur] failed to create sub-branch");
+            }
         });
 
         $('#add-decision-modal form').on('submit', function(event) {
@@ -169,8 +175,8 @@ var augur = {
 
             event.preventDefault();
             var address = $('#rep-dest-address').val();
-            var amount = $('#rep-amount').val();
-            var branch = $('#branch-id').val();
+            var amount = $('#send-rep-modal .rep-amount').val();
+            var branch = $('#send-rep-modal .branch-id').val();
             
             if (augur.contract.call().sendReputation(branch, address, amount)) {
                 $('#send-rep-modal').modal('hide');

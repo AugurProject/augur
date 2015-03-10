@@ -237,10 +237,11 @@
         <div class="modal-dialog model-sm">
             <div class="modal-content">
                 <div class="modal-body clearfix">
-                    <p>Create a new branch under <b>root</b> by entering a new branch ID.  All reputation from the parent branch will be transfered into this new branch.</p>
+                    <p>Create a new branch under <b>Global</b> by entering a new branch name.  All reputation from the parent branch will be transfered into this new branch.</p>
                     <form>
+                        <input type="hidden" class="branch-parent" name="branch-parent" value="1010101">
                         <div class="input-group">
-                            <input type="text" name="branch-id" id="branch-id" class="form-control" placeholder="Enter a new branch ID">
+                            <input type="text" name="branch-name" class="branch-name form-control" placeholder="Enter a new branch name">
                             <span class="input-group-btn">
                                 <button class="btn btn-primary" type="submit">Create branch</button>
                             </span>
@@ -285,9 +286,9 @@
                         </div>
                         <div class="form-group">
                             <label class="sr-only" for="rep-amount">Amount</label>
-                            <input type="text" name="rep-amount" id="rep-amount" class="form-control" placeholder="amount">
+                            <input type="text" name="rep-amount" class="rep-amount form-control" placeholder="amount">
                         </div>
-                        <input type="hidden" id="branch-id" name="branch-id"></input>
+                        <input type="hidden" class="branch-id" name="branch-id"></input>
                         <button type="submit" class="btn btn-primary">Send</button>
                     </form>
                     <p>REPUTATION: <b class="rep-balance"></b></p>
