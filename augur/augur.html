@@ -277,7 +277,7 @@
         <div class="modal-dialog model-sm">
             <div class="modal-content">
                 <div class="modal-body clearfix">
-                    <h4>Send reputation</h4>
+                    <h4>Send <b class="branch"></b> reputation</h4>
                     <form class="form-inline pull-right" role="form">
                         <div class="form-group">
                             <label class="sr-only" for="rep-dest-address">Destination address</label>
@@ -287,6 +287,7 @@
                             <label class="sr-only" for="rep-amount">Amount</label>
                             <input type="text" name="rep-amount" id="rep-amount" class="form-control" placeholder="amount">
                         </div>
+                        <input type="hidden" id="branch-id" name="branch-id"></input>
                         <button type="submit" class="btn btn-primary">Send</button>
                     </form>
                     <p>REPUTATION: <b class="rep-balance"></b></p>

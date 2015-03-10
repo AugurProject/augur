@@ -2,13 +2,15 @@ var web3;
 var augur = {
 
     evmAddress: '0xc09ceb49fa837ef0a2a7a0c8e2572d25aa7291d4',   // POC8 private
-    evmAddress: '0x4a583abcf1a603e8b546768d3f80dc55d3f13be7',   // POC8 testnet
+    evmAddress: '0xc09ceb49fa837ef0a2a7a0c8e2572d25aa7291d4',   // POC8 testnet
 
     data: {
         account: '-',
         balance: '-',
         decisions: {},
-        branches: {},
+        branches: [
+            {name: 'Global', id: 1010101, rep: 1}
+        ],
         markets: {},
         cycle: {
             count: 0,
@@ -168,10 +170,13 @@ var augur = {
             event.preventDefault();
             var address = $('#rep-dest-address').val();
             var amount = $('#rep-amount').val();
-            var branch = $('#rep-branch').val();
+            var branch = $('#branch-id').val();
             
-            //socket.emit('send-reps', address, amount, branch);
-            $('#send-rep-modal').modal('hide');
+            if (augur.contract.call().sendReputation(branch, address, amount)) {
+                $('#send-rep-modal').modal('hide');
+            } else {
+                console.log('[augur] failed to send reputation');
+            }
         });
 
         $('#alert').on('closed.bs.alert', function() {
@@ -238,7 +243,7 @@ var augur = {
 
             $('.cycle').removeClass('reporting').removeClass('reveal').removeClass('svd').addClass(data.phase);
 
-            if (!$.isEmptyObject(data.decisions)) {
+            if (!$.isEmptyObject(data)) {
 
                 $('#report-decisions').empty();
 
@@ -247,7 +252,7 @@ var augur = {
                 var report_header = $('<li>').addClass('list-group-item').append([h, s]);
                 $('#report-decisions').append(report_header);
                 var template = _.template($("#report-template").html());
-                _.each(data.decisions, function(d, id) {
+                _.each(data, function(d, id) {
 
                     if (d['state'] == '0') { d['state_desc'] = 'False' }
                     else if (d['state'] == '1') { d['state_desc'] = 'True' }
@@ -299,42 +304,46 @@ var augur = {
 
         branches: function(data) {
 
-            if (!$.isEmptyObject(data.branches)) {
+            if (!$.isEmptyObject(data)) {
 
                 $('.branches').empty()
 
                 // sort on reputation
-                //m['branches'] = m['branches'].sort(function(a,b) {return (a.my_rep > b.my_rep) ? -1 : ((b.my_rep > a.my_rep) ? 1 : 0);} );
+                //data = data.sort(function(a,b) {return (a.rep > b.rep) ? -1 : ((b.rep > a.rep) ? 1 : 0);} );
                 var has_branches = false;
+                var has_others = false;
 
-                _.each(mdata.branches, function(branch) {
-
-                    data.branches[branch['vote_id']] = branch;   // update local branches
+                _.each(data, function(branch) {
 
                     // update add decision modal
-                    $('#decision-branch').append($('<option>').val(branch.vote_id).text(branch.vote_id));
+                    $('#decision-branch').append($('<option>').val(branch.id).text(branch.name));
 
-                    if (branch.my_rep) {
+                    if (branch.rep) {
 
                         has_branches = true;
-                        var p = $('<p>').html('<span class="pull-left"><b>'+branch.vote_id+'</b> ('+branch.my_rep+')</span>').addClass('clearfix');
+                        var p = $('<p>').html('<span class="pull-left"><b>'+branch.name+'</b> ('+branch.rep+')</span>').addClass('clearfix');
                         var send = $('<a>').attr('href','#').addClass('pull-right').text('send').on('click', function() {
-                            $('#rep-branch').val(branch.vote_id);
-                            $('#send-rep-modal .branch').text(branch.vote_id);
+                            $('#branch-id').val(branch.id);
+                            $('#send-rep-modal .rep-balance').text(branch.rep);
+                            $('#send-rep-modal .branch').text(branch.name);
                             $('#send-rep-modal').modal('show');
                         })
                         p.append(send);
 
                     } else {
-                        var p = $('<p class="other">').html('<span>'+branch.vote_id+'</span>');
+
+                        has_others = true;
+                        var p = $('<p class="other">').html('<span>'+branch.name+'</span>');
                     }
                     $('.branches').append(p);
                 });
 
-                var bt = $('<a>').addClass('pull-right branches-toggle').on('click', function(event) {
-                    $('.branches').toggleClass('all');
-                });
-                $('.branches').append(bt);
+                if (has_others) {
+                    var bt = $('<a>').addClass('pull-right branches-toggle').on('click', function(event) {
+                        $('.branches').toggleClass('all');
+                    });
+                    $('.branches').append(bt);
+                }
 
             } else {
 

@@ -180,19 +180,24 @@ nav .parsing.progress {
     margin-top: 18px;
 }
 
+#send-rep-modal .modal-dialog,
 #send-cash-modal .modal-dialog {
-    width: 555px;
+    width: 550px;
 }
+#send-rep-modal h4,
 #send-cash-modal h4 {
     margin-top: 0px;
 }
+#send-rep-modal #rep-dest-address,
 #send-cash-modal #cash-dest-address {
     width: 290px;
 }
+#send-rep-modal form,
 #send-cash-modal form {
     padding-bottom: 15px;
     border-bottom: 1px solid #ddd;
 }
+#send-rep-modal p,
 #send-cash-modal p {
     color: #555;
     margin: 15px 0px 0px 0px;
