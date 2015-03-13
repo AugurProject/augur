@@ -1,21 +1,15 @@
 var web3;
 var augur = {
 
-    evmAddress: '0xc09ceb49fa837ef0a2a7a0c8e2572d25aa7291d4',   // POC8 private
-    evmAddress: '0xc09ceb49fa837ef0a2a7a0c8e2572d25aa7291d4',   // POC8 testnet
+    evmAddress: '0xf78c52e8101f89a8cb1a008553519eab1de85ef8',
 
     data: {
         account: '-',
         balance: '-',
-        decisions: {},
-        branches: [
-            {name: 'Global', id: 1010101, rep: 1}
-        ],
+        branches: {},
+        rep: {},
         markets: {},
-        cycle: {
-            count: 0,
-            decisions: {}
-        }
+        decisions: {}
     },
 
     start: function() {
@@ -23,19 +17,19 @@ var augur = {
         // get the web3 object
         if (typeof web3 === 'undefined') web3 = require('web3');
 
-        web3.setProvider(new web3.providers.HttpSyncProvider());
+        web3.setProvider(new web3.providers.HttpProvider());
+
+        var client = true;
 
         try {
-
             web3.eth.accounts;
-            augur.init();
-
         } catch(err) {
-
             console.log('[augur] no ethereum client found');
-            $('#no-eth-modal').modal('show');            
+            $('#no-eth-modal').modal('show');
+            client = false;            
         }
 
+        if (client) augur.init();
     },
 
     init: function() {
@@ -64,13 +58,6 @@ var augur = {
         var Contract = web3.eth.contract(augur.abi);
         augur.contract = new Contract(augur.evmAddress);
         console.log('[augur] evm contract loaded from ' + augur.evmAddress);
-        $('#logo .progress-bar').css('width', '25%');
-
-        augur.data.account = web3.eth.accounts[0];
-        augur.data.balance = augur.contract.call().balance(augur.data.account).toString(10);
-
-        // render initial data
-        augur.update(augur.data);
         $('#logo .progress-bar').css('width', '100%');
         $('body').removeClass('stopped').addClass('running');
 
@@ -94,6 +81,7 @@ var augur = {
             var wei = web3.eth.gasPrice;
             var finney = web3.fromWei(wei, 'finney');
             augur.network.gasPrice = finney + ' finney';
+
             augur.update(augur.network);
         });
 
@@ -102,6 +90,25 @@ var augur = {
 
             console.log('contract change');
             console.log(r);
+
+            augur.data.account = web3.eth.accounts[0];
+            augur.data.balance = augur.formatBalance(augur.contract.call().balance(augur.data.account));
+
+            // get branches
+            _.each(augur.contract.call().getBranches(), function(branchId) {
+
+                var branchInfo = augur.contract.call().getBranchInfo(branchId);
+                var branchName = augur.contract.call().getBranchDesc(branchId);
+                if (branchId.toNumber() == 1010101) branchName = 'General';   // HACK
+
+                augur.data.branches[branchId.toNumber()] = {
+                    name: branchName,
+                    currentPeriod: branchInfo[2].toNumber(),
+                    periodLength: branchInfo[3].toNumber()
+                }
+            });
+            
+            augur.update(augur.data)
         });
 
         // user events
@@ -124,7 +131,7 @@ var augur = {
             var parent = parseInt($('#create-branch-modal .branch-parent').val());
             var branchName = $('#create-branch-modal .branch-name').val();
 
-            if (augur.contract.call().makeSubBranch(branchName, 1, parent)) {
+            if (augur.contract.call().makeSubBranch(branchName, 5*60, parent)) {
                 $('#create-branch-modal').modal('hide');
             } else {
                 console.log("[augur] failed to create sub-branch");
@@ -135,14 +142,14 @@ var augur = {
 
             event.preventDefault();
 
-            var args = {
-                'branchId': $('#decision-branch').val(),
-                'decisionText': $('#decision-text').val(),
-                'decisionMaturation': $('#decision-time').val(),
-                'marketInv': $('#market-investment').val()
-            }
+            var branchId = $('#decision-branch').val();
+            var decisionText = $('#decision-text').val();
+            var decisionMaturation = $('#decision-time').val();
+            var marketInv = $('#market-investment').val();
 
-            //socket.emit('add-decision', args);
+            var newEvent = augur.contract.call().createEvent(branchId, decisionText, decisionMaturation, 0, 1, 2);
+            console.log(newEvent.toString(10));
+
             $('#add-decision-modal').modal('hide');
         });
 
@@ -319,17 +326,17 @@ var augur = {
                 var has_branches = false;
                 var has_others = false;
 
-                _.each(data, function(branch) {
+                _.each(data, function(branch, id) {
 
                     // update add decision modal
-                    $('#decision-branch').append($('<option>').val(branch.id).text(branch.name));
+                    $('#decision-branch').append($('<option>').val(id).text(branch.name));
 
                     if (branch.rep) {
 
                         has_branches = true;
                         var p = $('<p>').html('<span class="pull-left"><b>'+branch.name+'</b> ('+branch.rep+')</span>').addClass('clearfix');
                         var send = $('<a>').attr('href','#').addClass('pull-right').text('send').on('click', function() {
-                            $('#branch-id').val(branch.id);
+                            $('#branch-id').val(id);
                             $('#send-rep-modal .rep-balance').text(branch.rep);
                             $('#send-rep-modal .branch').text(branch.name);
                             $('#send-rep-modal').modal('show');
@@ -457,6 +464,14 @@ var augur = {
     },
 
     // utility functions
+    formatBalance: function(value) {  // value must be a big number
+
+        var x = new BigNumber(2);
+        var y = x.toPower(64);
+
+        return value.dividedBy(y).toString('10');
+    },
+
     formatDate: function(d) {
 
         if (!d) return '-';
@@ -488,7 +503,7 @@ var augur = {
     "name": "api(int256,int256,int256,int256)",
     "type": "function",
     "inputs": [{ "name": "dataStructure", "type": "int256" }, { "name": "itemNumber", "type": "int256" }, { "name": "arrayIndex", "type": "int256" }, { "name": "ID", "type": "int256" }],
-    "outputs": [{ "name": "unknown_out", "type": "int256[]" }]
+    "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
     "name": "balance(int256)",
@@ -536,7 +551,7 @@ var augur = {
     "name": "closeMarket(int256,int256)",
     "type": "function",
     "inputs": [{ "name": "branch", "type": "int256" }, { "name": "market", "type": "int256" }],
-    "outputs": [{ "name": "unknown_out", "type": "int256[]" }]
+    "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
     "name": "consensus(int256[],int256[],int256[],int256[],int256[],int256,int256)",
@@ -557,6 +572,12 @@ var augur = {
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
+    "name": "createSubbranch(string,int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "description", "type": "string" }, { "name": "periodLength", "type": "int256" }, { "name": "parent", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
+},
+{
     "name": "eventsExpApi(int256,int256,int256,int256,int256)",
     "type": "function",
     "inputs": [{ "name": "expDateIndex", "type": "int256" }, { "name": "itemNumber", "type": "int256" }, { "name": "arrayIndexOne", "type": "int256" }, { "name": "arrayIndexTwo", "type": "int256" }, { "name": "ID", "type": "int256" }],
@@ -569,13 +590,61 @@ var augur = {
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
-    "name": "getAllEvents(int256,int256)",
+    "name": "getBranchDesc(int256)",
+    "type": "function",
+    "inputs": [{ "name": "branch", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "string" }]
+},
+{
+    "name": "getBranchInfo(int256)",
+    "type": "function",
+    "inputs": [{ "name": "branch", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256[]" }]
+},
+{
+    "name": "getBranches()",
+    "type": "function",
+    "inputs": [],
+    "outputs": [{ "name": "out", "type": "int256[]" }]
+},
+{
+    "name": "getEventDesc(int256)",
+    "type": "function",
+    "inputs": [{ "name": "event", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "string" }]
+},
+{
+    "name": "getEventInfo(int256)",
+    "type": "function",
+    "inputs": [{ "name": "event", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256[]" }]
+},
+{
+    "name": "getEvents(int256,int256)",
     "type": "function",
     "inputs": [{ "name": "branch", "type": "int256" }, { "name": "expPeriod", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256[]" }]
 },
 {
-    "name": "getAllMarkets(int256)",
+    "name": "getMarketDesc(int256)",
+    "type": "function",
+    "inputs": [{ "name": "market", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "string" }]
+},
+{
+    "name": "getMarketEvents(int256)",
+    "type": "function",
+    "inputs": [{ "name": "market", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256[]" }]
+},
+{
+    "name": "getMarketInfo(int256)",
+    "type": "function",
+    "inputs": [{ "name": "market", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256[]" }]
+},
+{
+    "name": "getMarkets(int256)",
     "type": "function",
     "inputs": [{ "name": "branch", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256[]" }]
@@ -602,12 +671,6 @@ var augur = {
     "name": "makeBet(int256,int256)",
     "type": "function",
     "inputs": [{ "name": "eventID", "type": "int256" }, { "name": "amtToBet", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "makeSubBranch(string,int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "description", "type": "string" }, { "name": "periodLength", "type": "int256" }, { "name": "parent", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
@@ -644,12 +707,12 @@ var augur = {
     "name": "redeem(int256)",
     "type": "function",
     "inputs": [{ "name": "branch", "type": "int256" }],
-    "outputs": [{ "name": "unknown_out", "type": "int256[]" }]
+    "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
-    "name": "reputation(int256,int256)",
+    "name": "reputation(int256)",
     "type": "function",
-    "inputs": [{ "name": "address", "type": "int256" }, { "name": "branch", "type": "int256" }],
+    "inputs": [{ "name": "address", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256[]" }]
 },
 {
@@ -686,7 +749,7 @@ var augur = {
     "name": "sendReputation(int256,int256,int256)",
     "type": "function",
     "inputs": [{ "name": "branch", "type": "int256" }, { "name": "recver", "type": "int256" }, { "name": "value", "type": "int256" }],
-    "outputs": [{ "name": "unknown_out", "type": "int256[]" }]
+    "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
     "name": "smooth(int256[],int256[],int256,int256)",
@@ -706,6 +769,7 @@ var augur = {
     "inputs": [{ "name": "branch", "type": "int256" }, { "name": "report", "type": "int256[]" }, { "name": "votePeriod", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256" }]
 }]
+
 }
 
 // start
