@@ -1,7 +1,7 @@
 var web3;
 var augur = {
 
-    evmAddress: '0xf78c52e8101f89a8cb1a008553519eab1de85ef8',
+    evmAddress: '0x64e8bc674f54d2357372e894e78924d8ff6ac70c',
 
     data: {
         account: '-',
@@ -17,7 +17,7 @@ var augur = {
         // get the web3 object
         if (typeof web3 === 'undefined') web3 = require('web3');
 
-        web3.setProvider(new web3.providers.HttpProvider());
+        web3.setProvider(new web3.providers.HttpSyncProvider());
 
         var client = true;
 
