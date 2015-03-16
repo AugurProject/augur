@@ -7,7 +7,6 @@ var augur = {
         account: '-',
         balance: '-',
         branches: {},
-        rep: {},
         markets: {},
         decisions: {}
     },
@@ -70,7 +69,7 @@ var augur = {
             gasPrice: '-'
         }
 
-        // watch ethereum chain for changes and update network data
+        // watch ethereum for changes and update network data
         web3.eth.filter('chain').watch(function() {
 
             augur.network.peerCount = web3.eth.peerCount;
@@ -84,8 +83,7 @@ var augur = {
         // watch for augur contract changes
         web3.eth.filter(augur.contract).watch(function(r) {
 
-            console.log('contract change');
-            console.log(r);
+            console.log('> contract change');
 
             augur.data.account = web3.eth.accounts[0];
             augur.data.balance = augur.formatBalance(augur.contract.call().balance(augur.data.account));
@@ -95,12 +93,14 @@ var augur = {
 
                 var branchInfo = augur.contract.call().getBranchInfo(branchId);
                 var branchName = augur.contract.call().getBranchDesc(branchId);
+                var rep = augur.contract.call().getRepBalance(branchId, augur.data.account);
                 if (branchId.toNumber() == 1010101) branchName = 'General';   // HACK
 
                 augur.data.branches[branchId.toNumber()] = {
                     name: branchName,
                     currentPeriod: branchInfo[2].toNumber(),
-                    periodLength: branchInfo[3].toNumber()
+                    periodLength: branchInfo[3].toNumber(),
+                    rep: augur.formatBalance(rep)
                 }
             });
             
@@ -144,7 +144,6 @@ var augur = {
             var marketInv = $('#market-investment').val();
 
             var newEvent = augur.contract.call().createEvent(branchId, decisionText, decisionMaturation, 0, 1, 2);
-            console.log(newEvent.toString(10));
 
             $('#add-decision-modal').modal('hide');
         });
@@ -222,21 +221,32 @@ var augur = {
             $('#alert div').scrollTop($('#alert div')[0].scrollHeight);
         },
 
-        cycle: function(data) {
+        period: function(data) {
 
-            if (data.phase == 'catching up') {
-                var phase = $('<i>').text(data.phase);
-            } else {
-                var phase = $('<span>').text(data.phase);
-            }
-            $('.cycle h3').html('Cycle ending ' + augur.formatDate(data.end_date)).append(phase);
+            // clean up current cycle
+            data.currentPeriod = data.currentPeriod == -1 ? 0 : data.currentPeriod;
 
-            if (data.percent > 97.5) {
-                var phases = [{name: 'reporting', percent: 87.5}, {name: 'reveal', percent: 10}, {name: 'svd', percent: data.percent - 97.5}];
-            } else if (data.percent > 87.5) {
-                var phases = [{name: 'reporting', percent: 87.5}, {name: 'reveal', percent: data.percent - 87.5}];
+            console.log(data);
+
+            var periodStart = data.periodLength * data.currentPeriod;
+            var periodEnd = periodStart + data.periodLength;
+            var periodAt = augur.network.blockNumber - periodStart;
+            var periodPercent = (periodAt/ data.periodLength) * 100;
+
+            // calculate end date
+            var blocksLeft = periodEnd - augur.network.blockNumber;
+            var secondsLeft = blocksLeft * 12;
+            var periodEndDate = new Date();
+            periodEndDate.setSeconds(periodEndDate.getSeconds() + secondsLeft);
+
+            $('.cycle h3').html('Period ending ' + augur.formatDate(periodEndDate));
+
+            if (periodPercent > 97.5) {
+                var phases = [{name: 'reporting', percent: 87.5}, {name: 'reveal', percent: 10}, {name: 'svd', percent: periodPercent - 97.5}];
+            } else if (periodPercent > 87.5) {
+                var phases = [{name: 'reporting', percent: 87.5}, {name: 'reveal', percent: periodPercent - 87.5}];
             } else {
-                var phases = [{name: 'reporting', percent: data.percent}];
+                var phases = [{name: 'reporting', percent: periodPercent}];
             }
 
             var template = _.template($("#progress-template").html());
@@ -321,6 +331,9 @@ var augur = {
                 //data = data.sort(function(a,b) {return (a.rep > b.rep) ? -1 : ((b.rep > a.rep) ? 1 : 0);} );
                 var has_branches = false;
                 var has_others = false;
+
+                // update cycle from General (root) branch
+                augur.render.period(data[1010101]);
 
                 _.each(data, function(branch, id) {
 
