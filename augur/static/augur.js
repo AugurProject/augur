@@ -1,7 +1,7 @@
 var web3;
 var augur = {
 
-    evmAddress: '0x64e8bc674f54d2357372e894e78924d8ff6ac70c',
+    evmAddress: '0xb62914c5cd6163206896e27beab6cad051c59083',
 
     data: {
         account: '-',
@@ -75,12 +75,8 @@ var augur = {
 
             augur.network.peerCount = web3.eth.peerCount;
             augur.network.blockNumber = web3.eth.blockNumber;
-            var wei = web3.eth.getBalance(augur.data.account);
-            var finney = web3.fromWei(wei, 'finney');
-            augur.network.gas = finney + ' finney';
-            var wei = web3.eth.gasPrice;
-            var finney = web3.fromWei(wei, 'finney');
-            augur.network.gasPrice = finney + ' finney';
+            augur.network.gas = augur.formatGas(web3.eth.getBalance(augur.data.account));
+            augur.network.gasPrice = augur.formatGas(web3.eth.gasPrice);
 
             augur.update(augur.network);
         });
@@ -486,6 +482,19 @@ var augur = {
         return months[d.getMonth()]+' '+d.getDate()+', '+hour+':'+minutes+' '+apm;
     },
 
+    formatGas: function(wei) {
+
+        if (wei >= 1000000000000 && wei < 1000000000000000) {
+            return wei / 1000000000000 + ' szabo';
+        } else if (wei >= 1000000000000000 && wei < 1000000000000000000) {
+            return wei / 1000000000000000 + ' finney';
+        } else if (wei >= 1000000000000000000 && wei < 1000000000000000000000) {
+            return wei / 1000000000000000000 + ' ether';
+        } else {
+            return wei + ' wei';
+        }
+    },
+
     confirm: function(args) {
 
         $('#confirm-modal .message').html(args.message);
@@ -516,48 +525,6 @@ var augur = {
     "type": "function",
     "inputs": [{ "name": "branch", "type": "int256" }, { "name": "market", "type": "int256" }, { "name": "outcome", "type": "int256" }, { "name": "amount", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "calibrate_sets(int256[],int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "scores", "type": "int256[]" }, { "name": "num_players", "type": "int256" }, { "name": "num_events", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256[]" }]
-},
-{
-    "name": "calibrate_wsets(int256[],int256[],int256[],int256[],int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "set1", "type": "int256[]" }, { "name": "set2", "type": "int256[]" }, { "name": "reputation", "type": "int256[]" }, { "name": "reports", "type": "int256[]" }, { "name": "num_players", "type": "int256" }, { "name": "num_events", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256[]" }]
-},
-{
-    "name": "center(int256[],int256[],int256[],int256[],int256[],int256)",
-    "type": "function",
-    "inputs": [{ "name": "reports_filled", "type": "int256[]" }, { "name": "reputation", "type": "int256[]" }, { "name": "scaled", "type": "int256[]" }, { "name": "scaled_max", "type": "int256[]" }, { "name": "scaled_min", "type": "int256[]" }, { "name": "max_iterations", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256[]" }]
-},
-{
-    "name": "checkQuorum(int256)",
-    "type": "function",
-    "inputs": [{ "name": "branch", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "closeBet(int256)",
-    "type": "function",
-    "inputs": [{ "name": "betID", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "closeMarket(int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "market", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "consensus(int256[],int256[],int256[],int256[],int256[],int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "smooth_rep", "type": "int256[]" }, { "name": "reports", "type": "int256[]" }, { "name": "scaled", "type": "int256[]" }, { "name": "scaled_max", "type": "int256[]" }, { "name": "scaled_min", "type": "int256[]" }, { "name": "num_players", "type": "int256" }, { "name": "num_events", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256[]" }]
 },
 {
     "name": "createEvent(int256,string,int256,int256,int256,int256)",
@@ -656,12 +623,6 @@ var augur = {
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
-    "name": "interpolate(int256[],int256[],int256[],int256[],int256[])",
-    "type": "function",
-    "inputs": [{ "name": "reports", "type": "int256[]" }, { "name": "reputation", "type": "int256[]" }, { "name": "scaled", "type": "int256[]" }, { "name": "scaled_max", "type": "int256[]" }, { "name": "scaled_min", "type": "int256[]" }],
-    "outputs": [{ "name": "out", "type": "int256[]" }]
-},
-{
     "name": "makeBallot(int256,int256)",
     "type": "function",
     "inputs": [{ "name": "branch", "type": "int256" }, { "name": "votePeriod", "type": "int256" }],
@@ -684,30 +645,6 @@ var augur = {
     "type": "function",
     "inputs": [{ "name": "outcomes_final", "type": "int256[]" }, { "name": "consensus_reward", "type": "int256[]" }, { "name": "smooth_rep", "type": "int256[]" }, { "name": "reports_mask", "type": "int256[]" }, { "name": "num_players", "type": "int256" }, { "name": "num_events", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256[]" }]
-},
-{
-    "name": "pca_adjust(int256[],int256[],int256[],int256[],int256[],int256[],int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "old", "type": "int256[]" }, { "name": "new1", "type": "int256[]" }, { "name": "new2", "type": "int256[]" }, { "name": "set1", "type": "int256[]" }, { "name": "set2", "type": "int256[]" }, { "name": "scores", "type": "int256[]" }, { "name": "num_players", "type": "int256" }, { "name": "num_events", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256[]" }]
-},
-{
-    "name": "pca_loadings(int256[],int256[],int256[],int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "loading_vector", "type": "int256[]" }, { "name": "weighted_centered_data", "type": "int256[]" }, { "name": "reputation", "type": "int256[]" }, { "name": "num_players", "type": "int256" }, { "name": "num_events", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256[]" }]
-},
-{
-    "name": "pca_scores(int256[],int256[],int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "loading_vector", "type": "int256[]" }, { "name": "weighted_centered_data", "type": "int256[]" }, { "name": "num_players", "type": "int256" }, { "name": "num_events", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256[]" }]
-},
-{
-    "name": "redeem(int256)",
-    "type": "function",
-    "inputs": [{ "name": "branch", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
     "name": "reputation(int256)",
@@ -752,12 +689,6 @@ var augur = {
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
-    "name": "smooth(int256[],int256[],int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "adjusted_scores", "type": "int256[]" }, { "name": "reputation", "type": "int256[]" }, { "name": "num_players", "type": "int256" }, { "name": "num_events", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256[]" }]
-},
-{
     "name": "transferShares(int256,int256,int256,int256,int256)",
     "type": "function",
     "inputs": [{ "name": "branch", "type": "int256" }, { "name": "market", "type": "int256" }, { "name": "outcome", "type": "int256" }, { "name": "amount", "type": "int256" }, { "name": "to", "type": "int256" }],
@@ -769,7 +700,6 @@ var augur = {
     "inputs": [{ "name": "branch", "type": "int256" }, { "name": "report", "type": "int256[]" }, { "name": "votePeriod", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256" }]
 }]
-
 }
 
 // start
