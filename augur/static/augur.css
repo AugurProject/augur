@@ -275,12 +275,12 @@ nav .parsing.progress {
     margin: 5px 0px 10px 0px;
     font-size: 22px;
 }
-.cycle h3 span,
-.cycle h3 i {
-    font-size: 14px;
-    margin-top: 10px;
-    margin-left: 10px;
+.cycle h3 .period {
+    float: right;
+    font-size: 16px;
+    margin-top: 6px;
 }
+
 .decisions .text {
     width: 63%;
 }

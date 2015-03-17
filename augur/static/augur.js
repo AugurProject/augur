@@ -7,8 +7,10 @@ var augur = {
         account: '-',
         balance: '-',
         branches: {},
-        markets: {},
-        decisions: {}
+        decisions: {},
+        currentBranch: 1010101,
+        pendingBranches: [],
+        pendingDecisions: []
     },
 
     start: function() {
@@ -127,7 +129,7 @@ var augur = {
             var parent = parseInt($('#create-branch-modal .branch-parent').val());
             var branchName = $('#create-branch-modal .branch-name').val();
 
-            if (augur.contract.call().makeSubBranch(branchName, 5*60, parent)) {
+            if (augur.contract.call().createSubbranch(branchName, 5*60, parent)) {
                 $('#create-branch-modal').modal('hide');
             } else {
                 console.log("[augur] failed to create sub-branch");
@@ -142,8 +144,23 @@ var augur = {
             var decisionText = $('#decision-text').val();
             var decisionMaturation = $('#decision-time').val();
             var marketInv = $('#market-investment').val();
+            var alpha = 1;
+            var fee = 10;
 
             var newEvent = augur.contract.call().createEvent(branchId, decisionText, decisionMaturation, 0, 1, 2);
+            //var newMarket = augur.contract.call().createMarket(branchId, decisionText, alpha, marketInv, fee, [newEvent]);
+
+            if (newEvent.toNumber() == 0) {
+                var data = {
+                    type: 'danger',
+                    messages: ['Oops! Failed to add a new decision.']
+                }
+                augur.render.alert(data);
+
+            } else {
+
+                console.log(newEvent.toNumber());
+            }
 
             $('#add-decision-modal').modal('hide');
         });
@@ -202,7 +219,7 @@ var augur = {
         });
     },
 
-    // DOM manipulation (React or Mercury?)
+    // DOM manipulation (convert to React or Mercury?)
     render: {
 
         alert: function(data) {
@@ -239,7 +256,9 @@ var augur = {
             var periodEndDate = new Date();
             periodEndDate.setSeconds(periodEndDate.getSeconds() + secondsLeft);
 
-            $('.cycle h3').html('Period ending ' + augur.formatDate(periodEndDate));
+            $('.cycle h3 .branch-name').html(data.name);
+            $('.cycle h3 .period').html('Period ending ' + augur.formatDate(periodEndDate));
+            $('.period-end-block').text(periodEnd);
 
             if (periodPercent > 97.5) {
                 var phases = [{name: 'reporting', percent: 87.5}, {name: 'reveal', percent: 10}, {name: 'svd', percent: periodPercent - 97.5}];
@@ -332,13 +351,10 @@ var augur = {
                 var has_branches = false;
                 var has_others = false;
 
-                // update cycle from General (root) branch
-                augur.render.period(data[1010101]);
-
                 _.each(data, function(branch, id) {
 
-                    // update add decision modal
-                    $('#decision-branch').append($('<option>').val(id).text(branch.name));
+                    // update period for current branch
+                    if (id == augur.data.currentBranch) augur.render.period(branch);
 
                     if (branch.rep) {
 
@@ -372,6 +388,12 @@ var augur = {
                 var p = $('<p>').html('<span class="pull-left">There are no branches</span>');
                 $('.branches').empty().append(p);
             }
+        },
+
+        currentBranch: function(id) {
+
+            $('#add-decision-modal .branch-name').text(augur.data.branches[id].name)
+            $('#add-decision-modal input.branch-id').val(id)
         },
 
         account: function(data) {

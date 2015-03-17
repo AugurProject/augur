@@ -101,7 +101,7 @@
           
             <div class="col-sm-9">
                 <div class="cycle">
-                    <h3 class="clearfix"></h3>
+                    <h3 class="clearfix"><span class="branch-name"></span><span class="period"></span></h3>
                     <script type="text/template" id="progress-template">
                         <div class="progress-bar <%= type %>" role="progressbar" aria-valuenow="<%= percent %>" aria-valuemin="0" aria-valuemax="100" style="width: <%= percent %>%;">
                         </div>
@@ -237,11 +237,11 @@
         <div class="modal-dialog model-sm">
             <div class="modal-content">
                 <div class="modal-body clearfix">
-                    <p>Create a new branch under <b>General</b> by entering a new branch name.  All reputation from the parent branch will be transfered into this new branch.</p>
+                    <p>Create a new branch under <b class="branch-name">General</b> by entering a new branch name.  All reputation from the parent branch will be transfered into this new branch.</p>
                     <form>
-                        <input type="hidden" class="branch-parent" name="branch-parent" value="1010101">
+                        <input type="hidden" class="branch-id" name="branch-id" value="1010101">
                         <div class="input-group">
-                            <input type="text" name="branch-name" class="branch-name form-control" placeholder="Enter a new branch name">
+                            <input type="text" name="new-branch-name" class="new-branch-name form-control" placeholder="Enter a new branch name">
                             <span class="input-group-btn">
                                 <button class="btn btn-primary" type="submit">Create branch</button>
                             </span>
@@ -339,18 +339,16 @@
         <div class="modal-dialog model-sm">
             <div class="modal-content">
                 <div class="modal-body clearfix">
-                    <h4>Add decision</h4>
+                    <h4>Add decision in <b class="branch-name"></b></h4>
                     <form role="form">
-                        <div class="form-group">
-                            <label for="decision-branch">Branch</label>
-                            <select class="form-control branches" id="decision-branch" name="decision-branch"></select>
-                        </div>
+                        <input type="hidden" class="branch-id" id="decision-branch" name="branch-id" />
                         <div class="form-group">
                             <label for="decision-text">Decision text</label>
                             <input type="text" class="form-control" id="decision-text" placeholder="Enter a true or false question">
                         </div>
                         <div class="form-group">
                             <label for="decision-date">Maturation block</label>
+                            <span class="help-text pull-right">must be greater than current period ending at <b class="period-end-block">-</b></span>
                             <input type="text" class="form-control" id="decision-time" placeholder="Enter block number that decision matures">
                         </div>
                         <div class="form-group">
