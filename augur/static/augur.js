@@ -15,12 +15,15 @@ var augur = {
         pendingEvents: []
     },
 
+    // augur whisper id for market/event comments
+    shhId: '0x99cb90f6e0dec117428baedf72d716d0ae677ed69740eb1de5b5a508d0adb7936f2d6590f5a831c369299948a9cf87a68ec2620e7cbba7f57fd91e21087d346f',
+
     checkClient: function() {
 
         // get the web3 object
-        web3 = require('web3');
+        if (typeof(web3) === 'undefined') web3 = require('web3');
 
-        web3.setProvider(new web3.providers.HttpSyncProvider());
+        web3.setProvider(new web3.providers.HttpProvider());
 
         var client = true;
 
@@ -31,6 +34,8 @@ var augur = {
             $('#no-eth-modal').modal('show');
             client = false;            
         }
+
+        $('#logo .progress-bar').css('width', '25%');
 
         augur.network = {
             host: 'localhost:8080',
@@ -43,9 +48,6 @@ var augur = {
 
         augur.data.account = web3.eth.accounts[0];
 
-        $('#logo .progress-bar').css('width', '25%');
-        $('body').removeClass('stopped').addClass('running');
-
         // watch ethereum for changes and update network data
         web3.eth.filter('chain').watch(function() {
 
@@ -56,6 +58,9 @@ var augur = {
 
             augur.update(augur.network);
         });
+
+        $('#logo .progress-bar').css('width', '50%');
+        $('.network').show();
 
         if (client) augur.load();
     },
@@ -83,6 +88,8 @@ var augur = {
             }
         }
 
+        $('#logo .progress-bar').css('width', '75%');
+
         var Contract = web3.eth.contract(augur.abi);
         augur.contract = new Contract(augur.evmAddress);
 
@@ -90,6 +97,7 @@ var augur = {
         if (augur.contract.call().faucet().toNumber()) {
 
             console.log('[augur] evm contract loaded from ' + augur.evmAddress);
+            $('#logo .progress-bar').css('width', '100%');
             augur.init();
 
         } else {
@@ -104,6 +112,8 @@ var augur = {
     },
 
     init: function() {
+
+        $('body').removeClass('stopped').addClass('running');
 
         // watch for augur contract changes
         web3.eth.filter(augur.contract).watch(function(r) {
@@ -128,6 +138,14 @@ var augur = {
             });
             
             augur.update(augur.data)
+        });
+
+        // watch for whisper based comments
+        web3.shh.filter({
+            topics: ['eventComment', 'marketComment'],
+            to: augur.shhId
+        }).watch(function(data) {
+            console.log(data);
         });
 
         // user events
@@ -236,10 +254,8 @@ var augur = {
     // helper for rendering several components 
     update: function(data) {
 
-        _.each(data, function (value, prop) {
-
+        _.each(data, function (value, prop) { 
             if (prop in augur.render) augur.render[prop](value);
-            console.log(prop + ': ' + value);
         });
     },
 
@@ -571,6 +587,8 @@ var augur = {
     },
 
     formatGas: function(wei) {
+
+        wei = wei.toNumber();
 
         if (wei >= 1000000000000 && wei < 1000000000000000) {
             return wei / 1000000000000 + ' szabo';

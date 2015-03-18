@@ -208,6 +208,26 @@ nav .parsing.progress {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.network {
+    display: none;
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    opacity: 0.75;
+    width: 200px;
+    font-size: 12px;
+    margin-bottom: 0px;
+    border-radius: 0px;
+}
+.network .panel-heading {
+    padding: 5px 8px;
+    border-radius: 0px;
+}
+.network .panel-body {
+    padding: 10px;
+    font-size: 11px;
+}
 .network p {
     display: none;
     margin-bottom: 8px;
