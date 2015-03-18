@@ -230,59 +230,62 @@ nav .parsing.progress {
     margin-bottom: 10px;
 }
 
-.cycle {
+.period {
     margin-bottom: 30px;
 }
-.cycle .progress {
+.period .progress {
     height: 6px;
 }
-.cycle .progress-bar.reveal {
+.period .progress-bar.reveal {
     background-color: rgb(239, 147, 5);
 }
-.cycle .progress-bar.svd {
+.period .progress-bar.svd {
     background-color: #000;
 }
-.cycle #report {
+.period #report {
     display: none;
 }
-.cycle #report-decisions {
+.period #report-decisions {
     margin-bottom: 0px;
 }
-.cycle #report-decisions li {
+.period #report-decisions li {
     background-color: rgb(255, 255, 228);
 }
-.cycle #report-decisions li:last-child {
+.period #report-decisions li:last-child {
     border-bottom-right-radius: 0; 
 }
-.cycle p,
-.cycle label {
+.period p,
+.period label {
     font-size: 14px;
 }
-.cycle .my-choice {
+.period .my-choice {
     display: none;
     font-weight: bold;
     margin-bottom: 0px;
 }
-.cycle.reveal .my-choice,
-.cycle.svd .my-choice {
+.period.reveal .my-choice,
+.period.svd .my-choice {
     display: inline-block;
 }
-.cycle.reveal label,
-.cycle.svd label {
+.period.reveal label,
+.period.svd label {
     display: none;
 }
-.cycle h3 {
+.period h3 {
     margin: 5px 0px 10px 0px;
     font-size: 22px;
 }
-.cycle h3 .period {
+.period h3 .period-ending {
     float: right;
     font-size: 16px;
     margin-top: 6px;
 }
 
-.decisions .text {
-    width: 63%;
+.markets,
+.no-markets,
+.events,
+.no-events {
+    display: none;
 }
 .spin {
     display: inline-block;
@@ -322,6 +325,7 @@ nav .parsing.progress {
 #confirm-modal .modal-body p {
     font-size: 16px;
     margin: 0px;
+    margin-bottom: 20px;
 }
 #report li span.glyphicon {
     display: none;

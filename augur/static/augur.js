@@ -1,22 +1,24 @@
 var web3;
 var augur = {
 
-    evmAddress: '0xb62914c5cd6163206896e27beab6cad051c59083',
+    evmAddress: '0xc09ceb49fa837ef0a2a7a0c8e2572d25aa7291d4',
 
     data: {
         account: '-',
         balance: '-',
         branches: {},
-        decisions: {},
+        markets: {},
+        events: {},
         currentBranch: 1010101,
         pendingBranches: [],
-        pendingDecisions: []
+        pendingMarkets: [],
+        pendingEvents: []
     },
 
-    start: function() {
+    checkClient: function() {
 
         // get the web3 object
-        if (typeof web3 === 'undefined') web3 = require('web3');
+        web3 = require('web3');
 
         web3.setProvider(new web3.providers.HttpSyncProvider());
 
@@ -30,10 +32,35 @@ var augur = {
             client = false;            
         }
 
-        if (client) augur.init();
+        augur.network = {
+            host: 'localhost:8080',
+            peerCount: '-',
+            blockNumber: '-',
+            miner: web3.eth.mining,
+            gas: '-',
+            gasPrice: '-'
+        }
+
+        augur.data.account = web3.eth.accounts[0];
+
+        $('#logo .progress-bar').css('width', '25%');
+        $('body').removeClass('stopped').addClass('running');
+
+        // watch ethereum for changes and update network data
+        web3.eth.filter('chain').watch(function() {
+
+            augur.network.peerCount = web3.eth.peerCount;
+            augur.network.blockNumber = web3.eth.blockNumber;
+            augur.network.gas = augur.formatGas(web3.eth.getBalance(augur.data.account));
+            augur.network.gasPrice = augur.formatGas(web3.eth.gasPrice);
+
+            augur.update(augur.network);
+        });
+
+        if (client) augur.load();
     },
 
-    init: function() {
+    load: function() {
 
         $('#evm-address-form').on('submit', function(event) {
             event.preventDefault();
@@ -41,7 +68,7 @@ var augur = {
             $.cookie('evmAddress', augur.evmAddress);
             web3.db.set('augur', 'evmAddress', augur.evmAddress);
             $('#evm-address-modal').modal('hide');
-            augur.init();
+            augur.load();
         });
 
         // get EVM address
@@ -58,34 +85,28 @@ var augur = {
 
         var Contract = web3.eth.contract(augur.abi);
         augur.contract = new Contract(augur.evmAddress);
-        console.log('[augur] evm contract loaded from ' + augur.evmAddress);
-        $('#logo .progress-bar').css('width', '100%');
-        $('body').removeClass('stopped').addClass('running');
 
-        augur.network = {
-            host: 'localhost:8080',
-            peerCount: '-',
-            blockNumber: '-',
-            miner: web3.eth.mining,
-            gas: '-',
-            gasPrice: '-'
+        // check to see if contract was successfully loaded
+        if (augur.contract.call().faucet().toNumber()) {
+
+            console.log('[augur] evm contract loaded from ' + augur.evmAddress);
+            augur.init();
+
+        } else {
+
+            augur.confirm({
+                message: '<h4>Augur could not be found.</h4><p>Load a different address?</p>',
+                confirmText: 'Yes',
+                cancelText: 'No',
+                confirmCallback: function() { $('#evm-address-modal').modal('show'); }
+            });
         }
+    },
 
-        // watch ethereum for changes and update network data
-        web3.eth.filter('chain').watch(function() {
-
-            augur.network.peerCount = web3.eth.peerCount;
-            augur.network.blockNumber = web3.eth.blockNumber;
-            augur.network.gas = augur.formatGas(web3.eth.getBalance(augur.data.account));
-            augur.network.gasPrice = augur.formatGas(web3.eth.gasPrice);
-
-            augur.update(augur.network);
-        });
+    init: function() {
 
         // watch for augur contract changes
         web3.eth.filter(augur.contract).watch(function(r) {
-
-            console.log('> contract change');
 
             augur.data.account = web3.eth.accounts[0];
             augur.data.balance = augur.formatBalance(augur.contract.call().balance(augur.data.account));
@@ -129,10 +150,13 @@ var augur = {
             var parent = parseInt($('#create-branch-modal .branch-parent').val());
             var branchName = $('#create-branch-modal .branch-name').val();
 
-            if (augur.contract.call().createSubbranch(branchName, 5*60, parent)) {
+            var newBranch = augur.contract.call().createSubbranch(branchName, 5*60, parent);
+            if (newBranch.toNumber()) {
+                console.log("[augur] new subbranch " + newBranch.toNumber() + " created");
                 $('#create-branch-modal').modal('hide');
             } else {
-                console.log("[augur] failed to create sub-branch");
+                augur.render.alert({type: 'danger', messages:['Oops! Failed to create subbranch.']});
+                console.log("[augur] failed to create subbranch");
             }
         });
 
@@ -240,7 +264,7 @@ var augur = {
 
         period: function(data) {
 
-            // clean up current cycle
+            // clean up current period
             data.currentPeriod = data.currentPeriod == -1 ? 0 : data.currentPeriod;
 
             console.log(data);
@@ -256,8 +280,8 @@ var augur = {
             var periodEndDate = new Date();
             periodEndDate.setSeconds(periodEndDate.getSeconds() + secondsLeft);
 
-            $('.cycle h3 .branch-name').html(data.name);
-            $('.cycle h3 .period').html('Period ending ' + augur.formatDate(periodEndDate));
+            $('.period h3 .branch-name').html(data.name);
+            $('.period h3 .period-ending').html('Period ending ' + augur.formatDate(periodEndDate));
             $('.period-end-block').text(periodEnd);
 
             if (periodPercent > 97.5) {
@@ -269,17 +293,17 @@ var augur = {
             }
 
             var template = _.template($("#progress-template").html());
-            $('.cycle .progress').empty();
+            $('.period .progress').empty();
             _.each(phases, function(p) {
-                $('.cycle .progress').append(template({'type': p.name, 'percent': p.percent}))
+                $('.period .progress').append(template({'type': p.name, 'percent': p.percent}))
             });
 
-            $('.cycle').show();
+            $('.period').show();
         },
 
         report: function(data) {
 
-            $('.cycle').removeClass('reporting').removeClass('reveal').removeClass('svd').addClass(data.phase);
+            $('.preiod').removeClass('reporting').removeClass('reveal').removeClass('svd').addClass(data.phase);
 
             if (!$.isEmptyObject(data)) {
 
@@ -392,8 +416,8 @@ var augur = {
 
         currentBranch: function(id) {
 
-            $('#add-decision-modal .branch-name').text(augur.data.branches[id].name)
-            $('#add-decision-modal input.branch-id').val(id)
+            $('.branch-name').text(augur.data.branches[id].name)
+            $('input.branch-id').val(id)
         },
 
         account: function(data) {
@@ -441,25 +465,54 @@ var augur = {
 
             if (!$.isEmptyObject(data)) {
 
-                $('.decisions').empty();
-                _.each(data, function(m) {
+                $('.no-markets').hide();
+                $('.markets').empty().show();
 
-                    if (m) {
-                        var row = $('<tr>').html('<td class="text">'+m.txt+'</td><td>'+m.vote_id+'</td><td>'+augur.formatDate(m.maturation_date)+'</td>');
+                _.each(data, function(market, id) {
+
+                    if (market) {
+                        var row = $('<tr>').html('<td class="text">'+market.desc+'</td>');
                         var trade = $('<a>').attr('href', '#').text('trade').on('click', function() {
-                            nodeMonitor.postMessage({'trade': m.decision_id});
+                            console.log('trade');
                         });
-                        if (m.status == 'open') {
+                        if (market.status == 'open') {
                             var trade = $('<td>').append(trade).css('text-align', 'right');
-                        } else if (m.status == 'pending') {
+                        } else if (market.status == 'pending') {
                             var trade = $('<td>').text('pending').css('text-align', 'right');
                         } else {
                             var trade = $('<td>').text('closed').css('text-align', 'right');
                         }
                         $(row).append(trade);
-                        $('.decisions').append(row);
+                        $('.markets tbody').append(row);
                     }
                 });
+
+            } else {
+
+                $('.markets').hide();
+                $('.no-markets').show();
+            }
+        },
+
+        events: function(data) {
+
+            if (!$.isEmptyObject(data)) {
+
+                $('.no-events').hide();
+                $('.events').empty().show();
+
+                _.each(data, function(event, id) {
+
+                    if (event) {
+                        var row = $('<tr>').html('<td class="text">'+event.text+'</td><td>'+augur.formatDate(event.endDate)+'</td><td>'+event.status+'</td>');
+                        $('.events tbody').append(row);
+                    }
+                });
+
+            } else {
+
+                $('.events').hide();
+                $('.no-events').show();
             }
         },
 
@@ -580,12 +633,6 @@ var augur = {
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
-    "name": "eventsExpApi(int256,int256,int256,int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "expDateIndex", "type": "int256" }, { "name": "itemNumber", "type": "int256" }, { "name": "arrayIndexOne", "type": "int256" }, { "name": "arrayIndexTwo", "type": "int256" }, { "name": "ID", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
     "name": "faucet()",
     "type": "function",
     "inputs": [],
@@ -658,16 +705,10 @@ var augur = {
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
-    "name": "makeBallot(int256,int256)",
+    "name": "getReputation(int256)",
     "type": "function",
-    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "votePeriod", "type": "int256" }],
+    "inputs": [{ "name": "address", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256[]" }]
-},
-{
-    "name": "makeBet(int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "eventID", "type": "int256" }, { "name": "amtToBet", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
     "name": "marketParticipantsApi(int256,int256,int256,int256,int256)",
@@ -676,21 +717,9 @@ var augur = {
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
-    "name": "participation(int256[],int256[],int256[],int256[],int256,int256)",
+    "name": "price(int256,int256)",
     "type": "function",
-    "inputs": [{ "name": "outcomes_final", "type": "int256[]" }, { "name": "consensus_reward", "type": "int256[]" }, { "name": "smooth_rep", "type": "int256[]" }, { "name": "reports_mask", "type": "int256[]" }, { "name": "num_players", "type": "int256" }, { "name": "num_events", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256[]" }]
-},
-{
-    "name": "reputation(int256)",
-    "type": "function",
-    "inputs": [{ "name": "address", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256[]" }]
-},
-{
-    "name": "reputationApi(int256,int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "reputationIndex", "type": "int256" }, { "name": "itemNumber", "type": "int256" }, { "name": "branchID", "type": "int256" }],
+    "inputs": [{ "name": "market", "type": "int256" }, { "name": "outcome", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
@@ -712,21 +741,9 @@ var augur = {
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
-    "name": "sendMoneytoBet(int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "betID", "type": "int256" }, { "name": "outcome", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
     "name": "sendReputation(int256,int256,int256)",
     "type": "function",
     "inputs": [{ "name": "branch", "type": "int256" }, { "name": "recver", "type": "int256" }, { "name": "value", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "transferShares(int256,int256,int256,int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "market", "type": "int256" }, { "name": "outcome", "type": "int256" }, { "name": "amount", "type": "int256" }, { "name": "to", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
@@ -738,4 +755,4 @@ var augur = {
 }
 
 // start
-$(document).ready(augur.start);
+$(document).ready(augur.checkClient);
