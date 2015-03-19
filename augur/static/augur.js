@@ -1,7 +1,7 @@
 var web3;
 var augur = {
 
-    evmAddress: '0xc7d99ba8cad1281cd4cb44c85dca7d413cfd9de6',
+    evmAddress: 'stub',
 
     data: {
         account: '-',
@@ -71,7 +71,6 @@ var augur = {
         // watch ethereum for changes and update network data
         web3.eth.filter('latest').watch(function(data) {
 
-
             augur.network.peerCount = web3.net.peerCount;
             augur.network.blockNumber = web3.eth.blockNumber;
             augur.network.gas = augur.formatGas(web3.eth.getBalance(augur.data.account));
@@ -111,9 +110,12 @@ var augur = {
 
         $('#logo .progress-bar').css('width', '75%');
 
-        //var Contract = web3.eth.contract(augur.abi);
-        //augur.contract = new Contract(augur.evmAddress);
-        augur.contract = stubContract;
+        if (augur.evmAddress == 'stub') {
+            augur.contract = stubContract;
+        } else {
+            var Contract = web3.eth.contract(augur.abi);
+            augur.contract = new Contract(augur.evmAddress);
+        }        
 
         // check to see if contract was successfully loaded
         if (augur.contract.call().faucet().toNumber()) {
