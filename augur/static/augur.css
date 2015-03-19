@@ -94,19 +94,24 @@ nav h1.navbar-brand span {
     font-weight: 300;
     margin-left: 20px;
 }
-nav h2 {
+nav .navbar-right li {
+    font-family: 'Core Mellow';
+    font-weight: 300;
     color: #ECECEC;
     font-size: 15px;
 }
-nav h2 span {
-    font-weight: 300;
-} 
-nav .parsing.progress {
-    margin: 0px 0px 0px 0px;
-    height: 2px;
-    border-radius: 0px;
-    border: 0px;
+nav .navbar-right li a {
+    color: #ECECEC;
 }
+nav .navbar-right li a:hover,
+nav .navbar-right li.open a,
+nav .navbar-right li.open a:hover {
+    color: #000;
+}
+nav .navbar-right li div {
+    padding: 15px;
+} 
+
 
 .modal-content {
     background-color: #f9f6ea;
@@ -209,7 +214,7 @@ nav .parsing.progress {
     text-overflow: ellipsis;
 }
 
-.network {
+.network_old {
     display: none;
     position: absolute;
     bottom: 0px;
@@ -220,14 +225,7 @@ nav .parsing.progress {
     margin-bottom: 0px;
     border-radius: 0px;
 }
-.network .panel-heading {
-    padding: 5px 8px;
-    border-radius: 0px;
-}
-.network .panel-body {
-    padding: 10px;
-    font-size: 11px;
-}
+
 .network p {
     display: none;
     margin-bottom: 8px;

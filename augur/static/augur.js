@@ -307,8 +307,6 @@ var augur = {
             // clean up current period
             data.currentPeriod = data.currentPeriod == -1 ? 0 : data.currentPeriod;
 
-            console.log(data);
-
             var periodStart = data.periodLength * data.currentPeriod;
             var periodEnd = periodStart + data.periodLength;
             var periodAt = augur.network.blockNumber - periodStart;
@@ -511,7 +509,7 @@ var augur = {
                 _.each(data, function(market, id) {
 
                     if (market) {
-                        var row = $('<tr>').html('<td class="text">'+market.desc+'</td>');
+                        var row = $('<tr>').html('<td class="text">'+market.desc+'</td><td>-</td><td>-</td>');
                         var trade = $('<a>').attr('href', '#').text('trade').on('click', function() {
                             console.log('trade');
                         });
@@ -527,10 +525,14 @@ var augur = {
                     }
                 });
 
-            } else {
+            } else if ($('.events').is(":visible")) {
 
                 $('.markets').hide();
                 $('.no-markets').show();
+
+            } else {
+
+                $('.markets').hide();
             }
         },
 
