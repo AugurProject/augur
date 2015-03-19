@@ -1,7 +1,7 @@
 var web3;
 var augur = {
 
-    evmAddress: '0xc09ceb49fa837ef0a2a7a0c8e2572d25aa7291d4',
+    evmAddress: '0xc7d99ba8cad1281cd4cb44c85dca7d413cfd9de6',
 
     data: {
         account: '-',
@@ -18,10 +18,30 @@ var augur = {
     // augur whisper id for market/event comments
     shhId: '0x99cb90f6e0dec117428baedf72d716d0ae677ed69740eb1de5b5a508d0adb7936f2d6590f5a831c369299948a9cf87a68ec2620e7cbba7f57fd91e21087d346f',
 
+    testClient: function() {
+
+        var testEVM = '0x604380600b600039604e567c010000000000000000000000000000000000000000000000000000000060003504636ffa1caa81141560415760043560405260405160020260605260206060f35b505b6000f3';
+        var testABI = [{
+            "name": "double(int256)",
+            "type": "function",
+            "inputs": [{ "name": "x", "type": "int256" }],
+            "outputs": [{ "name": "out", "type": "int256" }]
+        }];
+
+        var address = web3.eth.sendTransaction({
+            data: testEVM,
+            from: web3.eth.accounts[0]}
+            ), Contract = web3.eth.contract(testABI);
+
+        var testContract = new Contract(address);
+
+        return testContract;
+    },
+
     checkClient: function() {
 
         // get the web3 object
-        if (typeof(web3) === 'undefined') web3 = require('web3');
+        if (typeof(web3) === 'undefined') web3 = require('ethereum.js');
 
         web3.setProvider(new web3.providers.HttpProvider());
 
@@ -49,9 +69,10 @@ var augur = {
         augur.data.account = web3.eth.accounts[0];
 
         // watch ethereum for changes and update network data
-        web3.eth.filter('chain').watch(function() {
+        web3.eth.filter('latest').watch(function(data) {
 
-            augur.network.peerCount = web3.eth.peerCount;
+
+            augur.network.peerCount = web3.net.peerCount;
             augur.network.blockNumber = web3.eth.blockNumber;
             augur.network.gas = augur.formatGas(web3.eth.getBalance(augur.data.account));
             augur.network.gasPrice = augur.formatGas(web3.eth.gasPrice);
@@ -90,8 +111,9 @@ var augur = {
 
         $('#logo .progress-bar').css('width', '75%');
 
-        var Contract = web3.eth.contract(augur.abi);
-        augur.contract = new Contract(augur.evmAddress);
+        //var Contract = web3.eth.contract(augur.abi);
+        //augur.contract = new Contract(augur.evmAddress);
+        augur.contract = stubContract;
 
         // check to see if contract was successfully loaded
         if (augur.contract.call().faucet().toNumber()) {
