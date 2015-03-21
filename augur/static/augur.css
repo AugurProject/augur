@@ -83,7 +83,7 @@ nav h1.navbar-brand {
     background-image: url('images/augur_logo_small_white.png');
     background-repeat: no-repeat;
     background-size: 27px 32px;
-    background-position: 0px 13px;
+    background-position: 15px 13px;
     font-size: 26px;
     margin: 0px 0px 0px 0px;
     position: relative;
@@ -92,7 +92,7 @@ nav h1.navbar-brand {
 nav h1.navbar-brand span {
     color: #fff;
     font-weight: 300;
-    margin-left: 20px;
+    margin-left: 35px;
 }
 nav .navbar-right li {
     font-family: 'Core Mellow';
@@ -304,6 +304,11 @@ nav .navbar-right li div {
 .events,
 .no-events {
     display: none;
+}
+
+.events td:last-child,
+.events th:last-child {
+    text-align: right;
 }
 .spin {
     display: inline-block;

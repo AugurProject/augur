@@ -111,7 +111,7 @@ var augur = {
         $('#logo .progress-bar').css('width', '75%');
 
         if (augur.evmAddress == 'stub') {
-            augur.contract = stubContract;
+            augur.contract = stub.contract;
         } else {
             var Contract = web3.eth.contract(augur.abi);
             augur.contract = new Contract(augur.evmAddress);
@@ -144,23 +144,11 @@ var augur = {
 
             augur.data.account = web3.eth.accounts[0];
             augur.data.balance = augur.formatBalance(augur.contract.call().balance(augur.data.account));
-
-            // get branches
-            _.each(augur.contract.call().getBranches(), function(branchId) {
-
-                var branchInfo = augur.contract.call().getBranchInfo(branchId);
-                var branchName = augur.contract.call().getBranchDesc(branchId);
-                var rep = augur.contract.call().getRepBalance(branchId, augur.data.account);
-                if (branchId.toNumber() == 1010101) branchName = 'General';   // HACK
-
-                augur.data.branches[branchId.toNumber()] = {
-                    name: branchName,
-                    currentPeriod: branchInfo[2].toNumber(),
-                    periodLength: branchInfo[3].toNumber(),
-                    rep: augur.formatBalance(rep)
-                }
-            });
             
+            augur.getBranches();
+            augur.getEvents(augur.data.currentBranch);
+            augur.getMarkets();
+
             augur.update(augur.data)
         });
 
@@ -275,6 +263,44 @@ var augur = {
         });
     },
 
+    getBranches: function() {
+
+        _.each(augur.contract.call().getBranches(), function(branchId) {
+
+            var branchInfo = augur.contract.call().getBranchInfo(branchId);
+            var branchName = augur.contract.call().getBranchDesc(branchId);
+            var rep = augur.contract.call().getRepBalance(branchId, augur.data.account);
+            if (branchId.toNumber() == 1010101) branchName = 'General';   // HACK
+
+            augur.data.branches[branchId.toNumber()] = {
+                name: branchName,
+                currentPeriod: branchInfo[2].toNumber(),
+                periodLength: branchInfo[3].toNumber(),
+                rep: augur.formatBalance(rep)
+            }
+        });
+    },
+
+    getEvents: function(branchId) {
+
+        _.each(augur.contract.call().getEvents(branchId), function(eventId) {
+
+            var eventInfo = augur.contract.call().getEventInfo(eventId);
+            var eventText = augur.contract.call().getEventDesc(eventId);
+
+            augur.data.events[eventId.toNumber()] = {
+                text: eventText,
+                matureBlock: eventInfo[3].toNumber(),
+                matureDate: augur.blockToDate(eventInfo[3].toNumber()),
+                status: 'open'
+            }
+        });
+    },
+
+    getMarkets: function() {
+
+    },
+
     // helper for rendering several components 
     update: function(data) {
 
@@ -311,12 +337,7 @@ var augur = {
             var periodEnd = periodStart + data.periodLength;
             var periodAt = augur.network.blockNumber - periodStart;
             var periodPercent = (periodAt/ data.periodLength) * 100;
-
-            // calculate end date
-            var blocksLeft = periodEnd - augur.network.blockNumber;
-            var secondsLeft = blocksLeft * 12;
-            var periodEndDate = new Date();
-            periodEndDate.setSeconds(periodEndDate.getSeconds() + secondsLeft);
+            var periodEndDate = augur.blockToDate(periodEnd);
 
             $('.period h3 .branch-name').html(data.name);
             $('.period h3 .period-ending').html('Period ending ' + augur.formatDate(periodEndDate));
@@ -540,16 +561,20 @@ var augur = {
 
             if (!$.isEmptyObject(data)) {
 
-                $('.no-events').hide();
-                $('.events').empty().show();
-
+                $('.events tbody').empty();
+                
                 _.each(data, function(event, id) {
 
+                    console.log(event.text);
+
                     if (event) {
-                        var row = $('<tr>').html('<td class="text">'+event.text+'</td><td>'+augur.formatDate(event.endDate)+'</td><td>'+event.status+'</td>');
+                        var row = $('<tr>').html('<td class="text">'+event.text+'</td><td>'+augur.formatDate(event.matureDate)+'</td><td>'+event.status+'</td>');
                         $('.events tbody').append(row);
                     }
                 });
+
+                $('.no-events').hide();
+                $('.events').show();
 
             } else {
 
@@ -590,6 +615,16 @@ var augur = {
     },
 
     // utility functions
+    blockToDate: function(block) {
+
+        // calculate date from block number
+        var seconds = (block - augur.network.blockNumber) * 12;
+        var date = new Date();
+        date.setSeconds(date.getSeconds() + seconds);
+
+        return date;
+    },
+
     formatBalance: function(value) {  // value must be a big number
 
         var x = new BigNumber(2);
