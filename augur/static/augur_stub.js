@@ -65,6 +65,11 @@ var stub = {
 			return stub.events[id]['desc'];
 		},
 
+		createEvent: function(branchId, text, block, min, max, num) {
+
+			return new BigNumber(Object.keys(augur.data.events).length + 1);
+		},
+
 		call: function() { return stub.contract }
 	},
 

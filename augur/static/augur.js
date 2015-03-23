@@ -192,33 +192,35 @@ var augur = {
             }
         });
 
-        $('#add-decision-modal form').on('submit', function(event) {
+        $('#add-event-modal form').on('submit', function(event) {
 
             event.preventDefault();
 
-            var branchId = $('#decision-branch').val();
-            var decisionText = $('#decision-text').val();
-            var decisionMaturation = $('#decision-time').val();
-            var marketInv = $('#market-investment').val();
-            var alpha = 1;
-            var fee = 10;
+            var newEvent = {
+                branch: augur.data.currentBranch,
+                text: $('#event-text').val(),
+                matureBlock: $('#event-end-block').val(),
+                matureDate: augur.blockToDate($('#event-end-block').val()),
+                status: 'pending'
+            }
 
-            var newEvent = augur.contract.call().createEvent(branchId, decisionText, decisionMaturation, 0, 1, 2);
-            //var newMarket = augur.contract.call().createMarket(branchId, decisionText, alpha, marketInv, fee, [newEvent]);
+            var id = augur.contract.call().createEvent(newEvent.branch, newEvent.text, newEvent.matureBlock, 0, 1, 2);
 
-            if (newEvent.toNumber() == 0) {
+            if (id.toNumber() == 0) {
                 var data = {
                     type: 'danger',
-                    messages: ['Oops! Failed to add a new decision.']
+                    messages: ['Oops! Failed to add a new event.']
                 }
                 augur.render.alert(data);
 
             } else {
 
-                console.log(newEvent.toNumber());
+                console.log(id.toNumber());
+                augur.data.events[id.toNumber()] = newEvent;
+                augur.render.events(augur.data.events);
             }
 
-            $('#add-decision-modal').modal('hide');
+            $('#add-event-modal').modal('hide');
         });
 
         $('#send-cash-modal form').on('submit', function(event) {
@@ -556,6 +558,7 @@ var augur = {
 
             var events = false;
             $('.events tbody').empty();
+            $('#market-events').empty();
 
             _.each(data, function(event, id) {
 
