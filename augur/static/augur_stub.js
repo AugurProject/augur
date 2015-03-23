@@ -1,13 +1,37 @@
 var stub = {
 
 	web3: {
+
+		setProvider: function() {},
+		providers: { HttpProvider: function() {} },
 		eth: {
-
+			blockNumber: 1254,
+			mining: 'on',
+			accounts: [
+				'0xDEM0'
+			],
+			filter: function(type) {
+				return {
+					watch: function(runMe) {
+						runMe();
+					}
+				}
+			},
+			getBalance: function(account) {
+				return new BigNumber(3123440000000000);
+			},
+			gasPrice: new BigNumber(10000000000000),
 		},
-
 		net: {
-
+			peerCount: 24
 		},
+		shh: {
+			filter: function() {
+				return {
+					watch: function() {}
+				}
+			}
+		}
 	},
 
 	contract: {

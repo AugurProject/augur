@@ -35,6 +35,15 @@ var augur = {
         return testContract;
     },
 
+    demo: function() {
+
+        $('#no-eth-modal').modal('hide');
+        augur.demoMode = true;
+        web3 = stub.web3;
+
+        augur.checkClient();
+    },
+
     checkClient: function() {
 
         // get the web3 object
@@ -215,7 +224,6 @@ var augur = {
 
             } else {
 
-                console.log(id.toNumber());
                 augur.data.events[id.toNumber()] = newEvent;
                 augur.render.events(augur.data.events);
             }
@@ -252,7 +260,6 @@ var augur = {
 
             } else {
 
-                console.log(id.toNumber());
                 augur.data.markets[id.toNumber()] = newMarket;
                 augur.render.markets(augur.data.markets);
             }
