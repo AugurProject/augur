@@ -305,7 +305,12 @@ nav .navbar-right li div {
 .no-events {
     display: none;
 }
-
+.no-markets.has-events {
+    display: block;
+}
+.events {
+    margin-top: 20px;
+}
 .events td:last-child,
 .events th:last-child {
     text-align: right;

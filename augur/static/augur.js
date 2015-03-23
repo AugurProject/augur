@@ -546,11 +546,6 @@ var augur = {
                 $('.no-markets').hide();
                 $('.markets').show();
 
-            } else if ($('.events').is(":visible")) {
-
-                $('.markets').hide();
-                $('.no-markets').show();
-
             } else {
 
                 $('.markets').hide();
@@ -568,6 +563,9 @@ var augur = {
                     events = true;
                     var row = $('<tr>').html('<td class="text">'+event.text+'</td><td>'+augur.formatDate(event.matureDate)+'</td><td>'+event.status+'</td>');
                     $('.events tbody').append(row);
+                    // populate add market modal form
+                    var option = $('<option>').attr('value', id).text(event.text);
+                    $('#market-events').append(option);
                 }
             });
 
@@ -575,11 +573,13 @@ var augur = {
 
                 $('.no-events').hide();
                 $('.events').show();
-
+                $('.no-markets').addClass('has-events');
+                
             } else {
 
                 $('.events').hide();
                 $('.no-events').show();
+                $('.no-markets').removeClass('has-events');
             }
         },
 

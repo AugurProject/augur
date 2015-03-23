@@ -124,6 +124,10 @@ var stub = {
 		}
 	},
 
+	markets: {
+
+	},
+
 	branches: {
 
 		1010101: {
