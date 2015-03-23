@@ -131,7 +131,7 @@ var stub = {
 			info: [
 				new BigNumber(1),
 				new BigNumber(100),
-				new BigNumber(2),
+				new BigNumber(0),
 				new BigNumber(2000),
 				new BigNumber(1),
 				new BigNumber(0)
@@ -144,7 +144,7 @@ var stub = {
 			info: [
 				new BigNumber(1),
 				new BigNumber(100),
-				new BigNumber(2),
+				new BigNumber(0),
 				new BigNumber(8000),
 				new BigNumber(1),
 				new BigNumber(0)
@@ -157,7 +157,7 @@ var stub = {
 			info: [
 				new BigNumber(1),
 				new BigNumber(100),
-				new BigNumber(2),
+				new BigNumber(0),
 				new BigNumber(6000),
 				new BigNumber(1),
 				new BigNumber(0)
@@ -170,7 +170,7 @@ var stub = {
 			info: [
 				new BigNumber(1),
 				new BigNumber(100),
-				new BigNumber(2),
+				new BigNumber(0),
 				new BigNumber(1000),
 				new BigNumber(1),
 				new BigNumber(0)

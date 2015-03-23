@@ -9,10 +9,7 @@ var augur = {
         branches: {},
         markets: {},
         events: {},
-        currentBranch: 1010101,
-        pendingBranches: [],
-        pendingMarkets: [],
-        pendingEvents: []
+        currentBranch: 1010101
     },
 
     // augur whisper id for market/event comments
@@ -77,6 +74,11 @@ var augur = {
             augur.network.gasPrice = augur.formatGas(web3.eth.gasPrice);
 
             augur.update(augur.network);
+
+            // update period progress
+            if (augur.data.branches[augur.data.currentBranch]) {
+                augur.render.period(augur.data.branches[augur.data.currentBranch])
+            }
         });
 
         $('#logo .progress-bar').css('width', '50%');
@@ -343,13 +345,7 @@ var augur = {
             $('.period h3 .period-ending').html('Period ending ' + augur.formatDate(periodEndDate));
             $('.period-end-block').text(periodEnd);
 
-            if (periodPercent > 97.5) {
-                var phases = [{name: 'reporting', percent: 87.5}, {name: 'reveal', percent: 10}, {name: 'svd', percent: periodPercent - 97.5}];
-            } else if (periodPercent > 87.5) {
-                var phases = [{name: 'reporting', percent: 87.5}, {name: 'reveal', percent: periodPercent - 87.5}];
-            } else {
-                var phases = [{name: 'reporting', percent: periodPercent}];
-            }
+            var phases = [{name: 'reporting', percent: periodPercent}];
 
             var template = _.template($("#progress-template").html());
             $('.period .progress').empty();
@@ -522,29 +518,33 @@ var augur = {
 
         markets: function(data) {
 
-            if (!$.isEmptyObject(data)) {
+            var markets = false;
+            $('.markets tbody').empty();
+
+            _.each(data, function(market, id) {
+
+                if (market.branchId == augur.currentBranch) {
+                    markets = true;
+                    var row = $('<tr>').html('<td class="text">'+market.desc+'</td><td>-</td><td>-</td>');
+                    var trade = $('<a>').attr('href', '#').text('trade').on('click', function() {
+                        console.log('trade');
+                    });
+                    if (market.status == 'open') {
+                        var trade = $('<td>').append(trade).css('text-align', 'right');
+                    } else if (market.status == 'pending') {
+                        var trade = $('<td>').text('pending').css('text-align', 'right');
+                    } else {
+                        var trade = $('<td>').text('closed').css('text-align', 'right');
+                    }
+                    $(row).append(trade);
+                    $('.markets tbody').append(row);
+                }
+            });
+
+            if (markets) {
 
                 $('.no-markets').hide();
-                $('.markets').empty().show();
-
-                _.each(data, function(market, id) {
-
-                    if (market) {
-                        var row = $('<tr>').html('<td class="text">'+market.desc+'</td><td>-</td><td>-</td>');
-                        var trade = $('<a>').attr('href', '#').text('trade').on('click', function() {
-                            console.log('trade');
-                        });
-                        if (market.status == 'open') {
-                            var trade = $('<td>').append(trade).css('text-align', 'right');
-                        } else if (market.status == 'pending') {
-                            var trade = $('<td>').text('pending').css('text-align', 'right');
-                        } else {
-                            var trade = $('<td>').text('closed').css('text-align', 'right');
-                        }
-                        $(row).append(trade);
-                        $('.markets tbody').append(row);
-                    }
-                });
+                $('.markets').show();
 
             } else if ($('.events').is(":visible")) {
 
@@ -559,19 +559,19 @@ var augur = {
 
         events: function(data) {
 
-            if (!$.isEmptyObject(data)) {
+            var events = false;
+            $('.events tbody').empty();
 
-                $('.events tbody').empty();
-                
-                _.each(data, function(event, id) {
+            _.each(data, function(event, id) {
 
-                    console.log(event.text);
+                if (event.branchId == augur.currentBranch) {
+                    events = true;
+                    var row = $('<tr>').html('<td class="text">'+event.text+'</td><td>'+augur.formatDate(event.matureDate)+'</td><td>'+event.status+'</td>');
+                    $('.events tbody').append(row);
+                }
+            });
 
-                    if (event) {
-                        var row = $('<tr>').html('<td class="text">'+event.text+'</td><td>'+augur.formatDate(event.matureDate)+'</td><td>'+event.status+'</td>');
-                        $('.events tbody').append(row);
-                    }
-                });
+            if (events) {
 
                 $('.no-events').hide();
                 $('.events').show();
