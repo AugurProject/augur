@@ -65,6 +65,11 @@ var stub = {
 			return stub.events[id]['desc'];
 		},
 
+		createMarket: function(branchId, text, alpha, initialLiquidity, tradingFee, events) {
+
+			return new BigNumber(Object.keys(augur.data.markets).length + 1);
+		},
+
 		createEvent: function(branchId, text, block, min, max, num) {
 
 			return new BigNumber(Object.keys(augur.data.events).length + 1);

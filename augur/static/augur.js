@@ -223,6 +223,43 @@ var augur = {
             $('#add-event-modal').modal('hide');
         });
 
+        $('#add-market-modal form').on('submit', function(event) {
+
+            event.preventDefault();
+
+            var newMarket = {
+                branch: augur.data.currentBranch,
+                text: $('#market-text').val(),
+                alpha: $('#market-alpha').val(),
+                investment: $('#market-investment').val(),
+                creator: augur.data.account,
+                cumulativeScale: null,
+                numOutcomes: null,
+                tradingPeriod: null,
+                fee: 10,
+                events: [],
+                status: 'pending'
+            }
+
+            var id = augur.contract.call().createMarket(newMarket.branch, newMarket.text, newMarket.alpha, newMarket.initial, newMarket.fee, newMarket.events);
+
+            if (id.toNumber() == 0) {
+                var data = {
+                    type: 'danger',
+                    messages: ['Oops! Failed to add a new event.']
+                }
+                augur.render.alert(data);
+
+            } else {
+
+                console.log(id.toNumber());
+                augur.data.markets[id.toNumber()] = newMarket;
+                augur.render.markets(augur.data.markets);
+            }
+
+            $('#add-market-modal').modal('hide');
+        });
+
         $('#send-cash-modal form').on('submit', function(event) {
 
             event.preventDefault();
@@ -527,7 +564,7 @@ var augur = {
 
                 if (market.branchId == augur.currentBranch) {
                     markets = true;
-                    var row = $('<tr>').html('<td class="text">'+market.desc+'</td><td>-</td><td>-</td>');
+                    var row = $('<tr>').html('<td class="text">'+market.text+'</td><td>-</td><td>-</td>');
                     var trade = $('<a>').attr('href', '#').text('trade').on('click', function() {
                         console.log('trade');
                     });
