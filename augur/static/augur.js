@@ -1,7 +1,7 @@
 var web3;
 var augur = {
 
-    evmAddress: 'stub',
+    evmAddress: 'demo',
 
     data: {
         account: '-',
@@ -102,7 +102,7 @@ var augur = {
             event.preventDefault();
             augur.evmAddress = $('#evm-address').val();
             $.cookie('evmAddress', augur.evmAddress);
-            web3.db.set('augur', 'evmAddress', augur.evmAddress);
+            //web3.db.set('augur', 'evmAddress', augur.evmAddress);
             $('#evm-address-modal').modal('hide');
             augur.load();
         });
@@ -121,7 +121,7 @@ var augur = {
 
         $('#logo .progress-bar').css('width', '75%');
 
-        if (augur.evmAddress == 'stub') {
+        if (augur.evmAddress == 'demo') {
             augur.contract = stub.contract;
         } else {
             var Contract = web3.eth.contract(augur.abi);

@@ -123,13 +123,15 @@ nav .navbar-right li div {
 
 .sidebar .panel {
     font-size: 12px;
+    border-radius: 0px;
+    border: none;
 }
 .sidebar .panel .panel-body {
     padding: 10px;
 }
-
 .sidebar .panel-heading {
     font-size: 14px;
+    border-radius: 0px;
     padding: 5px 10px;
 }
 .panel.panel-success .panel-heading {
@@ -140,9 +142,11 @@ nav .navbar-right li div {
     background-color: #b1ddf1;
     color: #080077;
 }
-.panel.panel-default .panel-heading {
-    background-color: #a2a7a5;
-    color: #000;
+.panel.panel-default,
+.panel.panel-default .panel-heading,
+.panel.panel-default .panel-body {
+    background-color: transparent;
+    color: #333;
 }
 
 
