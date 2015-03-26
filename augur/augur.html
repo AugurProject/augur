@@ -28,9 +28,11 @@
 <meta name="theme-color" content="#ffffff">
 
 <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700' rel='stylesheet' type='text/css'>
+
 <link rel="stylesheet" href="static/bootstrap.css">
-<link rel="stylesheet" href="static/font-awesome.min.css" />
 <link rel="stylesheet" href="static/augur.css" />
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
 <script src="static/jquery.min.js"></script>
 <script src="static/jquery.cookie.js"></script>
@@ -42,6 +44,14 @@
 
 <script src="static/augur.js"></script>
 <script src="static/augur_stub.js"></script>
+
+<script type="text/javascript" src="https://www.google.com/jsapi?autoload={
+    'modules':[{
+        'name':'visualization',
+        'version':'1',
+        'packages':['corechart']
+    }]
+}"></script>
 
 <body class="stopped">
 
@@ -132,12 +142,38 @@
 
                     <h4></h4>
 
-                    <div class="trade">
-                        <p>Last price: <span class="price"></span><span class="delta"></span></p>
-                        <button>Buy at <i class="buy-price"></i></button>
-                        <button>Sell at <i class="sell-price"></i></button>
+                    <div class="row">
+                        <div class="col-md-4 trade">
+                            <h5>Last price: <span class="price">133.2</span><span class="delta"><i class="fa fa-chevron-up"></i> 2.3</span></h5>
+                            <button class="btn btn-success btn-lg">Buy at <i class="buy-price">134.4</i></button><br>
+                            <button class="btn btn-danger btn-lg">Sell at <i class="sell-price">133.2</i></button>
+                        </div>
+                        <div class="col-md-8 chart" id="market-chart">
+                        </div>
                     </div>
-                    <div class="chart">
+
+                    <div class="comments">
+                        <h5>Comments</h4>
+                        <div class="comment clearfix">
+                            <div class="avatar"></div>
+                            <p>RON PAUL 2012!!!!</p>
+                            <div class="date">8/16/2015</div>
+                        </div>
+                        <div class="comment clearfix">
+                            <div class="avatar"></div>
+                            <p>RON PAUL 2012!!!!</p>
+                            <div class="date">8/11/2015</div>
+                        </div>
+                        <div class="comment clearfix">
+                            <div class="avatar"></div>
+                            <p>RON PAUL 2012!!!!</p>
+                            <div class="date">7/12/2015</div>
+                        </div>
+                        <div class="comment clearfix">
+                            <div class="avatar"></div>
+                            <p>RON PAUL 2012!!!!</p>
+                            <div class="date">6/1/2015</div>
+                        </div>
                     </div>
                 </div>
 

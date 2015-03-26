@@ -9,7 +9,7 @@ var augur = {
         branches: {},
         markets: {},
         events: {},
-        currentBranch: 1010101
+        currentBranch: 1010102
     },
 
     // augur whisper id for market/event comments
@@ -181,8 +181,6 @@ var augur = {
             _.each(results, function(r, i) {
                 results[i]['branch'] = _decision[r.name].vote_id;
             });
-
-            //socket.emit('report', results);
         }); 
 
         $('#create-branch-modal form').on('submit', function(event) {
@@ -356,6 +354,9 @@ var augur = {
                 text: marketText,
                 volume: 12543,
                 fee: marketInfo[7].toNumber(),
+                buyPrice: 134.4,
+                sellPrice: 133.2,
+                delta: 1.3,
                 status: 'open'
             }
         });
@@ -365,9 +366,46 @@ var augur = {
 
         $('#market h4').text(augur.data.markets[id].text);
 
+        var data = google.visualization.arrayToDataTable([
+            ['Date', 'Price'],
+            ['7/20',  90.1],
+            ['7/21',  90.3],
+            ['7/22',  93.0],
+            ['7/23',  92.1],
+            ['7/24',  91.3],
+            ['7/25',  87.1],
+            ['7/26',  91.1],
+            ['7/27',  91.8],
+            ['7/28',  91.1],
+            ['7/29',  92.3],
+            ['7/30',  89.1],
+            ['8/1',  90.3],
+            ['8/2',  92.0],
+            ['8/3',  95.1],
+            ['8/4',  91.3],
+            ['8/5',  94.1],
+            ['8/6',  96.3],
+            ['8/7',  97.9],
+            ['8/8',  99.1],
+            ['8/9',  101.3],
+            ['8/10',  108.0],
+            ['8/11',  120.1],
+            ['8/12',  134.3]
+        ]);
+
+        var options = {
+          title: 'Price',
+          legend: { position: 'none' },
+          backgroundColor: '#f9f6ea'
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('market-chart'));
+
         $('#market').show();
         $('.markets').hide();
         $('.events').hide();
+
+        chart.draw(data, options);
 
     },
 

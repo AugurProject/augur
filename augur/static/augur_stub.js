@@ -128,7 +128,7 @@ var stub = {
 			info: [
 				new BigNumber(1),
 				new BigNumber(100),
-				new BigNumber(1010101), 
+				new BigNumber(1010102), 
 				new BigNumber(2030),
 				null,
 				new BigNumber(0), 
@@ -181,7 +181,7 @@ var stub = {
 
 		1: {
 			desc: 'Hillary Clinton will win the electorial vote in the 2016 presidential election.',
-			branch: 1010101,
+			branch: 1010102,
 			info: [
 				new BigNumber(1),		// creator
 				new BigNumber(100),		// creator fee
@@ -211,7 +211,7 @@ var stub = {
 		},
 
 		1010102: {
-			desc: 'Politics',
+			desc: 'U.S. Politics',
 			info: [
 				new BigNumber(1),
 				new BigNumber(100),
