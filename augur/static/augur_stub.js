@@ -105,7 +105,7 @@ var stub = {
 	events: {
 
 		1: {
-			desc: 'ISIL is a CIA funded, puppet terroist organization',
+			desc: 'ISIL is a CIA funded, puppet terrorist organization',
 			info: [
 				new BigNumber(1),
 				new BigNumber(100),

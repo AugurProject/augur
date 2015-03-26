@@ -127,7 +127,20 @@ nav .navbar-right li div {
     border: none;
 }
 .sidebar .panel .panel-body {
-    padding: 10px;
+    padding: 5px;
+}
+.sidebar .panel .panel-body p {
+    margin: 0px;
+    padding: 6px 6px;
+}
+.sidebar .panel .panel-body p a {
+    display: none;
+}
+.sidebar .panel .panel-body p:hover {
+    background-color: #f9f6ea;
+}
+.sidebar .panel .panel-body p:hover a {
+    display: inline;
 }
 .sidebar .panel-heading {
     font-size: 14px;
