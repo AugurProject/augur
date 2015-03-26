@@ -158,7 +158,7 @@ var augur = {
             
             augur.getBranches();
             augur.getEvents(augur.data.currentBranch);
-            augur.getMarkets();
+            augur.getMarkets(augur.data.currentBranch);
 
             augur.update(augur.data)
         });
@@ -345,7 +345,29 @@ var augur = {
         });
     },
 
-    getMarkets: function() {
+    getMarkets: function(branchId) {
+
+        _.each(augur.contract.call().getMarkets(branchId), function(id) {
+
+            var marketInfo = augur.contract.call().getMarketInfo(id);
+            var marketText = augur.contract.call().getMarketDesc(id);
+
+            augur.data.markets[id.toNumber()] = {
+                text: marketText,
+                volume: 12543,
+                fee: marketInfo[7].toNumber(),
+                status: 'open'
+            }
+        });
+    },
+
+    viewMarket: function(id) {
+
+        $('#market h4').text(augur.data.markets[id].text);
+
+        $('#market').show();
+        $('.markets').hide();
+        $('.events').hide();
 
     },
 
@@ -571,7 +593,7 @@ var augur = {
 
                 if (market.branchId == augur.currentBranch) {
                     markets = true;
-                    var row = $('<tr>').html('<td class="text">'+market.text+'</td><td>-</td><td>-</td>');
+                    var row = $('<tr>').html('<td class="text">'+market.text+'</td><td>'+market.volume+'</td><td>'+market.fee+'</td>');
                     var trade = $('<a>').attr('href', '#').text('trade').on('click', function() {
                         console.log('trade');
                     });
@@ -582,6 +604,7 @@ var augur = {
                     } else {
                         var trade = $('<td>').text('closed').css('text-align', 'right');
                     }
+                    row.on('click', function() { augur.viewMarket(id) });
                     $(row).append(trade);
                     $('.markets tbody').append(row);
                 }

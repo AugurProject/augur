@@ -89,6 +89,25 @@ var stub = {
 			return stub.events[id]['desc'];
 		},
 
+		getMarkets: function(branchId) {
+
+			var m = [];
+			_.each(Object.keys(stub.markets), function(id) {
+				if (stub.markets[id]['branch'] == branchId) m.push(new BigNumber(id));
+			});
+			return m;
+		},
+
+		getMarketInfo: function(id) {
+
+			return stub.markets[id]['info'];
+		},
+
+		getMarketDesc: function(id) {
+
+			return stub.markets[id]['desc'];
+		},
+
 		createMarket: function(branchId, text, alpha, initialLiquidity, tradingFee, events) {
 
 			return new BigNumber(Object.keys(augur.data.markets).length + 1);
@@ -160,6 +179,20 @@ var stub = {
 
 	markets: {
 
+		1: {
+			desc: 'Hillary Clinton will win the electorial vote in the 2016 presidential election.',
+			branch: 1010101,
+			info: [
+				new BigNumber(1),		// creator
+				new BigNumber(100),		// creator fee
+			    new BigNumber(1),  		// currentParticipant
+			    new BigNumber(1),  		// alpha
+			    new BigNumber(1),  		// cumulativeScale
+			    new BigNumber(2),  		// numOutcomes
+			    new BigNumber(20000) ,  // tradingPeriod
+			    new BigNumber(10)     	// tradingFee
+			]
+		}
 	},
 
 	branches: {

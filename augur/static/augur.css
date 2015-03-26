@@ -137,7 +137,7 @@ nav .navbar-right li div {
     display: none;
 }
 .sidebar .panel .panel-body p:hover {
-    background-color: #f9f6ea;
+    background-color: #fdfdfd;
 }
 .sidebar .panel .panel-body p:hover a {
     display: inline;
@@ -246,6 +246,9 @@ nav .navbar-right li div {
 .network p {
     display: none;
     margin-bottom: 8px;
+}
+.network .panel-body p:hover {
+    background-color: transparent;
 }
 .network p:last-child {
     margin-bottom: 0px;
