@@ -180,7 +180,7 @@ var stub = {
 	markets: {
 
 		1: {
-			desc: 'Hillary Clinton will win the electorial vote in the 2016 presidential election.',
+			desc: 'Hillary Clinton will win the electoral vote in the 2016 presidential election.',
 			branch: 1010102,
 			info: [
 				new BigNumber(1),		// creator
