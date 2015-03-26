@@ -377,6 +377,7 @@ nav .navbar-right li div {
     border-radius: 50%;
     float: left;
     background-color: #602A52;
+    margin: 4px 0px 0px 4px;
 }
 #market .comment p {
     margin-left: 70px;
