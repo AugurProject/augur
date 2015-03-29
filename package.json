@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "Web client for Augur, a prediction markets platform",
   "main": "augur/static/main.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/AugurProject/augur-client.git"
@@ -21,5 +18,10 @@
     "jquery.cookie": "~1.4.1",
     "lodash": "~3.6.0",
     "bootstrap": "~3.3.4"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-browserify": "^3.6.0",
+    "grunt-contrib-jshint": "^0.11.1"
   }
 }

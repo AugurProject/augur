@@ -18,7 +18,7 @@ var demo = {
 					watch: function(runMe) {
 						runMe();
 					}
-				}
+				};
 			},
 			getBalance: function(account) {
 				return new BigNumber(3123440000000000);
@@ -32,7 +32,7 @@ var demo = {
 			filter: function() {
 				return {
 					watch: function() {}
-				}
+				};
 			}
 		}
 	},
@@ -46,7 +46,7 @@ var demo = {
 
 		balance: function(foo) {
 
-			return new BigNumber(10000).times(new BigNumber(2).toPower(64))
+			return new BigNumber(10000).times(new BigNumber(2).toPower(64));
 		},
 
 		getBranches: function() {
@@ -131,11 +131,11 @@ var demo = {
 			info: [
 				new BigNumber(1),
 				new BigNumber(100),
-				new BigNumber(1010102), 
+				new BigNumber(1010102),
 				new BigNumber(2030),
 				null,
-				new BigNumber(0), 
-				new BigNumber(1), 
+				new BigNumber(0),
+				new BigNumber(1),
 				new BigNumber(2)
 			]
 		},
@@ -144,11 +144,11 @@ var demo = {
 			info: [
 				new BigNumber(1),
 				new BigNumber(100),
-				new BigNumber(1010101), 
+				new BigNumber(1010101),
 				new BigNumber(2030),
 				null,
-				new BigNumber(0), 
-				new BigNumber(1), 
+				new BigNumber(0),
+				new BigNumber(1),
 				new BigNumber(2)
 			]
 		},
@@ -157,11 +157,11 @@ var demo = {
 			info: [
 				new BigNumber(1),
 				new BigNumber(100),
-				new BigNumber(1010101), 
+				new BigNumber(1010101),
 				new BigNumber(2030),
 				null,
-				new BigNumber(0), 
-				new BigNumber(1), 
+				new BigNumber(0),
+				new BigNumber(1),
 				new BigNumber(2)
 			]
 		},
@@ -170,11 +170,11 @@ var demo = {
 			info: [
 				new BigNumber(1),
 				new BigNumber(100),
-				new BigNumber(1010101), 
+				new BigNumber(1010101),
 				new BigNumber(2030),
 				null,
-				new BigNumber(0), 
-				new BigNumber(1), 
+				new BigNumber(0),
+				new BigNumber(1),
 				new BigNumber(2)
 			]
 		}
@@ -274,6 +274,6 @@ var demo = {
 			rep: new BigNumber(35).times(new BigNumber(2).toPower(64))
 		}
 	}
-}
+};
 
 module.exports = demo;

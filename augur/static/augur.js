@@ -1,7 +1,12 @@
+var web3 = require('ethereum.js');
 var BigNumber = require('bignumber.js');
 var $ = require('jquery');
 var _ = require('lodash');
+
+// Add jQuery to Browserify's global object so plugins attach correctly.
+global.jQuery = $;
 require('jquery.cookie');
+require('bootstrap');
 
 var augur = {
 
@@ -51,9 +56,6 @@ var augur = {
 
     checkClient: function() {
 
-        // get the web3 object
-        if (typeof(web3) === 'undefined') web3 = require('ethereum.js');
-
         web3.setProvider(new web3.providers.HttpProvider());
 
         var client = true;
@@ -75,7 +77,7 @@ var augur = {
             miner: web3.eth.mining,
             gas: '-',
             gasPrice: '-'
-        }
+        };
 
         augur.data.account = web3.eth.accounts[0];
         augur.syncNetwork();
@@ -171,7 +173,7 @@ var augur = {
             var results = $(this).serializeArray();
 
             _.each(results, function(r, i) {
-                results[i]['branch'] = _decision[r.name].vote_id;
+                results[i].branch = _decision[r.name].vote_id;
             });
         });
 
@@ -201,15 +203,15 @@ var augur = {
                 matureBlock: $('#event-end-block').val(),
                 matureDate: augur.blockToDate($('#event-end-block').val()),
                 status: 'pending'
-            }
+            };
 
             var id = augur.contract.call().createEvent(newEvent.branch, newEvent.text, newEvent.matureBlock, 0, 1, 2);
 
-            if (id.toNumber() == 0) {
+            if (id.toNumber() === 0) {
                 var data = {
                     type: 'danger',
                     messages: ['Oops! Failed to add a new event.']
-                }
+                };
                 augur.render.alert(data);
 
             } else {
@@ -237,15 +239,15 @@ var augur = {
                 fee: 10,
                 events: [],
                 status: 'pending'
-            }
+            };
 
             var id = augur.contract.call().createMarket(newMarket.branch, newMarket.text, newMarket.alpha, newMarket.initial, newMarket.fee, newMarket.events);
 
-            if (id.toNumber() == 0) {
+            if (id.toNumber() === 0) {
                 var data = {
                     type: 'danger',
                     messages: ['Oops! Failed to add a new event.']
-                }
+                };
                 augur.render.alert(data);
 
             } else {
@@ -274,7 +276,7 @@ var augur = {
                 'marketState': $('#market-state select').val(),
                 'tradeAmount': $('#trade-amount').val(),
                 'tradeType': $('#trade-modal input[name=trade-type]').val()
-            }
+            };
             //socket.emit('trade', args);
             $('#trade-modal').modal('hide');
         });
@@ -310,7 +312,7 @@ var augur = {
 
         // update period progress
         if (augur.data.branches[augur.data.currentBranch]) {
-            augur.render.period(augur.data.branches[augur.data.currentBranch])
+            augur.render.period(augur.data.branches[augur.data.currentBranch]);
         }
 
         augur.update(augur.network);
@@ -320,7 +322,7 @@ var augur = {
 
         augur.data.account = web3.eth.accounts[0];
         augur.data.balance = augur.formatBalance(augur.contract.call().balance(augur.data.account));
-        
+
         augur.getBranches();
         augur.getEvents(augur.data.currentBranch);
         augur.getMarkets(augur.data.currentBranch);
@@ -342,7 +344,7 @@ var augur = {
                 currentPeriod: branchInfo[2].toNumber(),
                 periodLength: branchInfo[3].toNumber(),
                 rep: augur.formatBalance(rep)
-            }
+            };
         });
     },
 
@@ -358,7 +360,7 @@ var augur = {
                 matureBlock: eventInfo[3].toNumber(),
                 matureDate: augur.blockToDate(eventInfo[3].toNumber()),
                 status: 'open'
-            }
+            };
         });
     },
 
@@ -377,7 +379,7 @@ var augur = {
                 sellPrice: 133.2,
                 delta: 1.3,
                 status: 'open'
-            }
+            };
         });
     },
 
@@ -387,29 +389,29 @@ var augur = {
 
         var data = google.visualization.arrayToDataTable([
             ['Date', 'Price'],
-            ['7/20',  .400],
-            ['7/21',  .412],
-            ['7/22',  .403],
-            ['7/23',  .378],
-            ['7/24',  .412],
-            ['7/25',  .478],
-            ['7/26',  .488],
-            ['7/27',  .475],
-            ['7/28',  .413],
-            ['7/29',  .400],
-            ['7/30',  .321],
-            ['8/1',  .389],
-            ['8/2',  .409],
-            ['8/3',  .413],
-            ['8/4',  .429],
-            ['8/5',  .444],
-            ['8/6',  .412],
-            ['8/7',  .429],
-            ['8/8',  .433],
-            ['8/9',  .500],
-            ['8/10',  .541],
-            ['8/11',  .622],
-            ['8/12',  .679]
+            ['7/20',  0.400],
+            ['7/21',  0.412],
+            ['7/22',  0.403],
+            ['7/23',  0.378],
+            ['7/24',  0.412],
+            ['7/25',  0.478],
+            ['7/26',  0.488],
+            ['7/27',  0.475],
+            ['7/28',  0.413],
+            ['7/29',  0.400],
+            ['7/30',  0.321],
+            ['8/1',  0.389],
+            ['8/2',  0.409],
+            ['8/3',  0.413],
+            ['8/4',  0.429],
+            ['8/5',  0.444],
+            ['8/6',  0.412],
+            ['8/7',  0.429],
+            ['8/8',  0.433],
+            ['8/9',  0.500],
+            ['8/10',  0.541],
+            ['8/11',  0.622],
+            ['8/12',  0.679]
         ]);
 
         var options = {
@@ -475,7 +477,7 @@ var augur = {
             var template = _.template($("#progress-template").html());
             $('.period .progress').empty();
             _.each(phases, function(p) {
-                $('.period .progress').append(template({'type': p.name, 'percent': p.percent}))
+                $('.period .progress').append(template({'type': p.name, 'percent': p.percent}));
             });
 
             $('.period').show();
@@ -525,7 +527,7 @@ var augur = {
                             cancelCallback: function() {
                                 $('#report input[name='+report.decision_id+'][value="'+state+'"]').attr('checked', true);
                             }
-                        }
+                        };
 
                         augur.confirm(dialog);
 
@@ -548,7 +550,7 @@ var augur = {
 
             if (!$.isEmptyObject(data)) {
 
-                $('.branches').empty()
+                $('.branches').empty();
 
                 // sort on reputation
                 //data = data.sort(function(a,b) {return (a.rep > b.rep) ? -1 : ((b.rep > a.rep) ? 1 : 0);} );
@@ -569,7 +571,7 @@ var augur = {
                             $('#send-rep-modal .rep-balance').text(branch.rep);
                             $('#send-rep-modal .branch').text(branch.name);
                             $('#send-rep-modal').modal('show');
-                        })
+                        });
                         p.append(send);
 
                     } else {
@@ -596,8 +598,8 @@ var augur = {
 
         currentBranch: function(id) {
 
-            $('.branch-name').text(augur.data.branches[id].name)
-            $('input.branch-id').val(id)
+            $('.branch-name').text(augur.data.branches[id].name);
+            $('input.branch-id').val(id);
         },
 
         account: function(data) {
@@ -767,8 +769,8 @@ var augur = {
         months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Oct','Sep','Nov','Dec'];
 
         var hour = d.getHours() > 11  ? d.getHours() - 12 : d.getHours();
-        hour = hour == 0 ? 12 : hour;
-        var apm = d.getHours() > 10 || d.getHours() == 23 && d.getHours() != 0 ? 'pm' : 'am';
+        hour = hour === 0 ? 12 : hour;
+        var apm = d.getHours() > 10 || d.getHours() == 23 && d.getHours() !== 0 ? 'pm' : 'am';
         var minutes = d.getMinutes() < 10 ? '0'+ d.getMinutes() : d.getMinutes();
 
         return months[d.getMonth()]+' '+d.getDate()+', '+hour+':'+minutes+' '+apm;
@@ -963,6 +965,6 @@ var augur = {
     "inputs": [{ "name": "branch", "type": "int256" }, { "name": "report", "type": "int256[]" }, { "name": "votePeriod", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256" }]
 }]
-}
+};
 
 module.exports = augur;
