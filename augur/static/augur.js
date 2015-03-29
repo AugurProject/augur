@@ -1,7 +1,8 @@
-var web3 = require('ethereum.js');
-var BigNumber = require('bignumber.js');
-var $ = require('jquery');
-var _ = require('lodash');
+// setting these to the window object for debugging and console access
+window.web3 = require('ethereum.js');
+window.BigNumber = require('bignumber.js');
+window.$ = require('jquery');
+window._ = require('lodash');
 
 // Add jQuery to Browserify's global object so plugins attach correctly.
 global.jQuery = $;
@@ -370,6 +371,8 @@ var augur = {
 
             var marketInfo = augur.contract.call().getMarketInfo(id);
             var marketText = augur.contract.call().getMarketDesc(id);
+            var marketComments = augur.contract.call().getMarketComments(id);
+            var marketHistory = augur.contract.call().getMarketHistory(id);
 
             augur.data.markets[id.toNumber()] = {
                 text: marketText,
@@ -378,7 +381,9 @@ var augur = {
                 buyPrice: 134.4,
                 sellPrice: 133.2,
                 delta: 1.3,
-                status: 'open'
+                status: 'open',
+                priceHistory: marketHistory,
+                comments: marketComments
             };
         });
     },
@@ -387,37 +392,13 @@ var augur = {
 
         $('#market h4').text(augur.data.markets[id].text);
 
-        var data = google.visualization.arrayToDataTable([
-            ['Date', 'Price'],
-            ['7/20',  0.400],
-            ['7/21',  0.412],
-            ['7/22',  0.403],
-            ['7/23',  0.378],
-            ['7/24',  0.412],
-            ['7/25',  0.478],
-            ['7/26',  0.488],
-            ['7/27',  0.475],
-            ['7/28',  0.413],
-            ['7/29',  0.400],
-            ['7/30',  0.321],
-            ['8/1',  0.389],
-            ['8/2',  0.409],
-            ['8/3',  0.413],
-            ['8/4',  0.429],
-            ['8/5',  0.444],
-            ['8/6',  0.412],
-            ['8/7',  0.429],
-            ['8/8',  0.433],
-            ['8/9',  0.500],
-            ['8/10',  0.541],
-            ['8/11',  0.622],
-            ['8/12',  0.679]
-        ]);
+        var priceHistory = [['Date', 'Price']].concat(augur.data.markets[id].priceHistory);
+        var data = google.visualization.arrayToDataTable(priceHistory);
 
         var options = {
-          title: 'Price',
-          legend: { position: 'none' },
-          backgroundColor: '#f9f6ea'
+            title: 'Price',
+            legend: { position: 'none' },
+            backgroundColor: '#f9f6ea'
         };
 
         var chart = new google.visualization.LineChart(document.getElementById('market-chart'));
@@ -427,7 +408,6 @@ var augur = {
         $('.events').hide();
 
         chart.draw(data, options);
-
     },
 
     // helper for rendering several components
@@ -666,6 +646,14 @@ var augur = {
                     row.on('click', function() { augur.viewMarket(id) });
                     $(row).append(trade);
                     $('.markets tbody').append(row);
+
+                     $('#market .comment').empty();
+                    var template = _.template($("#comment-template").html());
+                    _.each(market.comments, function(c, id) {
+
+                        var html = template({avatar: null, comment: c.comment, date: augur.formatDate(c.date)});
+                        $('#market .comments').append(html);
+                    });
                 }
             });
 

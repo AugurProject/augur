@@ -101,6 +101,16 @@ var demo = {
 			return m;
 		},
 
+		// placing here for for demo purposes
+		getMarketComments: function(id) {
+			return demo.markets[id]['comments'];
+		},
+
+		// placing here for for demo puporses
+		getMarketHistory: function(id) {
+			return demo.markets[id]['priceHistory'];
+		},
+
 		getMarketInfo: function(id) {
 
 			return demo.markets[id]['info'];
@@ -216,6 +226,31 @@ var demo = {
 					'author': "0x642524ac872fe819",
 					'comment': "So she's leading in a primary where nobody is running, not even her?"
 				}
+			],
+			priceHistory: [
+	            ['7/20',  0.400],
+	            ['7/21',  0.412],
+	            ['7/22',  0.403],
+	            ['7/23',  0.378],
+	            ['7/24',  0.412],
+	            ['7/25',  0.478],
+	            ['7/26',  0.488],
+	            ['7/27',  0.475],
+	            ['7/28',  0.413],
+	            ['7/29',  0.400],
+	            ['7/30',  0.321],
+	            ['8/1',  0.389],
+	            ['8/2',  0.409],
+	            ['8/3',  0.413],
+	            ['8/4',  0.429],
+	            ['8/5',  0.444],
+	            ['8/6',  0.412],
+	            ['8/7',  0.429],
+	            ['8/8',  0.433],
+	            ['8/9',  0.500],
+	            ['8/10',  0.541],
+	            ['8/11',  0.622],
+	            ['8/12',  0.679]
 			]
 		}
 	},
