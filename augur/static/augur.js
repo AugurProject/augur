@@ -58,7 +58,7 @@ var augur = {
         } catch(err) {
             console.log('[augur] no ethereum client found');
             $('#no-eth-modal').modal('show');
-            client = false;            
+            client = false;
         }
 
         $('#logo .progress-bar').css('width', '25%');
@@ -126,7 +126,7 @@ var augur = {
         } else {
             var Contract = web3.eth.contract(augur.abi);
             augur.contract = new Contract(augur.evmAddress);
-        }        
+        }
 
         // check to see if contract was successfully loaded
         if (augur.contract.call().faucet().toNumber()) {
@@ -155,7 +155,7 @@ var augur = {
 
             augur.data.account = web3.eth.accounts[0];
             augur.data.balance = augur.formatBalance(augur.contract.call().balance(augur.data.account));
-            
+
             augur.getBranches();
             augur.getEvents(augur.data.currentBranch);
             augur.getMarkets(augur.data.currentBranch);
@@ -181,7 +181,7 @@ var augur = {
             _.each(results, function(r, i) {
                 results[i]['branch'] = _decision[r.name].vote_id;
             });
-        }); 
+        });
 
         $('#create-branch-modal form').on('submit', function(event) {
 
@@ -296,7 +296,7 @@ var augur = {
             var address = $('#rep-dest-address').val();
             var amount = $('#send-rep-modal .rep-amount').val();
             var branch = $('#send-rep-modal .branch-id').val();
-            
+
             if (augur.contract.call().sendReputation(branch, address, amount)) {
                 $('#send-rep-modal').modal('hide');
             } else {
@@ -409,10 +409,10 @@ var augur = {
 
     },
 
-    // helper for rendering several components 
+    // helper for rendering several components
     update: function(data) {
 
-        _.each(data, function (value, prop) { 
+        _.each(data, function (value, prop) {
             if (prop in augur.render) augur.render[prop](value);
         });
     },
@@ -507,7 +507,7 @@ var augur = {
                                 $('#report input[name='+report.decision_id+'][value="'+state+'"]').attr('checked', true);
                             }
                         }
-                        
+
                         augur.confirm(dialog);
 
                     } else {
@@ -682,7 +682,7 @@ var augur = {
                 $('.no-events').hide();
                 $('.events').show();
                 $('.no-markets').addClass('has-events');
-                
+
             } else {
 
                 $('.events').hide();
@@ -751,7 +751,7 @@ var augur = {
         hour = hour == 0 ? 12 : hour;
         var apm = d.getHours() > 10 || d.getHours() == 23 && d.getHours() != 0 ? 'pm' : 'am';
         var minutes = d.getMinutes() < 10 ? '0'+ d.getMinutes() : d.getMinutes();
-  
+
         return months[d.getMonth()]+' '+d.getDate()+', '+hour+':'+minutes+' '+apm;
     },
 
@@ -941,5 +941,4 @@ var augur = {
 }]
 }
 
-// start
-$(document).ready(augur.checkClient);
+module.exports = augur;
