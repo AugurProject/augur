@@ -17,7 +17,7 @@ var stub = {
 					watch: function(runMe) {
 						runMe();
 					}
-				}
+				};
 			},
 			getBalance: function(account) {
 				return new BigNumber(3123440000000000);
@@ -31,7 +31,7 @@ var stub = {
 			filter: function() {
 				return {
 					watch: function() {}
-				}
+				};
 			}
 		}
 	},
@@ -45,7 +45,7 @@ var stub = {
 
 		balance: function(foo) {
 
-			return new BigNumber(10000).times(new BigNumber(2).toPower(64))
+			return new BigNumber(10000).times(new BigNumber(2).toPower(64));
 		},
 
 		getBranches: function() {
@@ -251,6 +251,6 @@ var stub = {
 			rep: new BigNumber(35).times(new BigNumber(2).toPower(64))
 		}
 	}
-}
+};
 
 module.exports = stub;
