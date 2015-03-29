@@ -1,6 +1,7 @@
 var _ = require('lodash');
+var web3 = require('ethereum.js');
 var stub = require('./augur_stub');
-var web3;
+
 var augur = {
 
     evmAddress: 'demo',
@@ -47,9 +48,6 @@ var augur = {
     },
 
     checkClient: function() {
-
-        // get the web3 object
-        if (typeof(web3) === 'undefined') web3 = require('ethereum.js');
 
         web3.setProvider(new web3.providers.HttpProvider());
 
