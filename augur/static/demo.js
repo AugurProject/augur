@@ -1,5 +1,7 @@
 var BigNumber = require('bignumber.js');
-var stub = {
+var _ = require('lodash');
+
+var demo = {
 
 	web3: {
 
@@ -50,7 +52,7 @@ var stub = {
 		getBranches: function() {
 
 			var b = [];
-			_.each(Object.keys(stub.branches), function(id) {
+			_.each(Object.keys(demo.branches), function(id) {
 				b.push(new BigNumber(id));
 			});
 			return b;
@@ -58,55 +60,55 @@ var stub = {
 
 		getBranchInfo: function(id) {
 
-			return stub.branches[id]['info'];
+			return demo.branches[id]['info'];
 		},
 
 		getBranchDesc: function(id) {
 
-			return stub.branches[id]['desc'];
+			return demo.branches[id]['desc'];
 		},
 
 		getRepBalance: function(id) {
 
-			return stub.branches[id]['rep'];
+			return demo.branches[id]['rep'];
 		},
 
 		getEvents: function(branchId) {
 
 			var e = [];
-			_.each(Object.keys(stub.events), function(id) {
-				if (stub.events[id]['info'][2].toNumber() == branchId) e.push(new BigNumber(id));
+			_.each(Object.keys(demo.events), function(id) {
+				if (demo.events[id]['info'][2].toNumber() == branchId) e.push(new BigNumber(id));
 			});
 			return e;
 		},
 
 		getEventInfo: function(id) {
 
-			return stub.events[id]['info'];
+			return demo.events[id]['info'];
 		},
 
 		getEventDesc: function(id) {
 
-			return stub.events[id]['desc'];
+			return demo.events[id]['desc'];
 		},
 
 		getMarkets: function(branchId) {
 
 			var m = [];
-			_.each(Object.keys(stub.markets), function(id) {
-				if (stub.markets[id]['branch'] == branchId) m.push(new BigNumber(id));
+			_.each(Object.keys(demo.markets), function(id) {
+				if (demo.markets[id]['branch'] == branchId) m.push(new BigNumber(id));
 			});
 			return m;
 		},
 
 		getMarketInfo: function(id) {
 
-			return stub.markets[id]['info'];
+			return demo.markets[id]['info'];
 		},
 
 		getMarketDesc: function(id) {
 
-			return stub.markets[id]['desc'];
+			return demo.markets[id]['desc'];
 		},
 
 		createMarket: function(branchId, text, alpha, initialLiquidity, tradingFee, events) {
@@ -119,7 +121,7 @@ var stub = {
 			return new BigNumber(Object.keys(augur.data.events).length + 1);
 		},
 
-		call: function() { return stub.contract }
+		call: function() { return demo.contract }
 	},
 
 	events: {
@@ -274,4 +276,4 @@ var stub = {
 	}
 }
 
-module.exports = stub;
+module.exports = demo;

@@ -1,5 +1,8 @@
-var web3;
 var BigNumber = require('bignumber.js');
+var $ = require('jquery');
+var _ = require('lodash');
+require('jquery.cookie');
+
 var augur = {
 
     evmAddress: 'demo',
