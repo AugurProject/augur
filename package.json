@@ -2,7 +2,7 @@
   "name": "augur-client",
   "version": "1.0.0",
   "description": "Web client for Augur, a prediction markets platform",
-  "main": "augur/static/main.js",
+  "main": "app/static/main.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/AugurProject/augur-client.git"
