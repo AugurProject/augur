@@ -20,10 +20,12 @@ Ethereum Dapps store their data on the Ethereum blockchain, and their frontends 
 Install [Node.js](https://nodejs.org/), then:
 
 ```
-npm install -g browserify
+npm install -g grunt-cli
 npm install
-browserify augur/static/main.js -o augur/static/app.js
+grunt browserify:build
 ```
+
+To incrementally build on every save while you're developing, run `grunt watchify`.
 
 ### Running Ethereum
 
