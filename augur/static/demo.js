@@ -1,3 +1,4 @@
+var BigNumber = require('bignumber.js');
 var stub = {
 
 	web3: {
@@ -272,3 +273,5 @@ var stub = {
 		}
 	}
 }
+
+module.exports = stub;

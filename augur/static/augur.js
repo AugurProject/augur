@@ -1,4 +1,5 @@
 var web3;
+var BigNumber = require('bignumber.js');
 var augur = {
 
     evmAddress: 'demo',
@@ -39,7 +40,8 @@ var augur = {
 
         $('#no-eth-modal').modal('hide');
         augur.demoMode = true;
-        web3 = stub.web3;
+        var demo = require('./demo.js');
+        web3 = demo.web3;
 
         augur.checkClient();
     },
@@ -113,7 +115,8 @@ var augur = {
         $('#logo .progress-bar').css('width', '75%');
 
         if (augur.evmAddress == 'demo') {
-            augur.contract = stub.contract;
+            var demo = require('./demo.js');
+            augur.contract = demo.contract;
         } else {
             var Contract = web3.eth.contract(augur.abi);
             augur.contract = new Contract(augur.evmAddress);
@@ -143,21 +146,10 @@ var augur = {
 
         augur.syncContract();
 
-<<<<<<< HEAD
         // watch for augur contract changes
         web3.eth.filter(augur.contract).watch(function(log) {
             console.log('[augur] contract changed');
             augur.syncContract();
-=======
-            augur.data.account = web3.eth.accounts[0];
-            augur.data.balance = augur.formatBalance(augur.contract.call().balance(augur.data.account));
-
-            augur.getBranches();
-            augur.getEvents(augur.data.currentBranch);
-            augur.getMarkets(augur.data.currentBranch);
-
-            augur.update(augur.data)
->>>>>>> 07228afcc736c281bfbc9731036759247f30a31f
         });
 
         // watch for whisper based comments
