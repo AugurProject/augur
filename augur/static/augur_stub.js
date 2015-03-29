@@ -191,6 +191,28 @@ var stub = {
 			    new BigNumber(2),  		// numOutcomes
 			    new BigNumber(20000) ,  // tradingPeriod
 			    new BigNumber(10)     	// tradingFee
+			],
+			comments: [
+				{
+					'date': new Date('08/16/2015'),
+					'author': "0x37e540ac73bb3813",
+					'comment': "Her poll numbers haven't budged because 90% of voters have already made up their minds about her. We've all watched her trials and tribulations for decades. You either trust her or you don't. You either think the dozens of \"scandals\" she's had to deal with have been politically motivated or you believe them all to be true even if the accusations were proven false after lengthy investigations. People are not going to change their opinions because of this latest scandal or any scandal in the future. The only 2016 swing voters who don't already have strong opinions about Clinton are currently 16 years old and not following the email non-story."
+				},
+				{
+					'date': new Date('07/12/2015'),
+					'author': "0x37f540dc730b1113",
+					'comment': "We don't trust her, but some will vote for her in a mindless allegiance to partisanship."
+				},
+				{
+					'date': new Date('07/01/2015'),
+					'author': "0x34e524ac73ccc81b",
+					'comment': "RON PAUL 2012!!!!"
+				},
+				{
+					'date': new Date('06/01/2015'),
+					'author': "0x642524ac872fe819",
+					'comment': "So she's leading in a primary where nobody is running, not even her?"
+				}
 			]
 		}
 	},
