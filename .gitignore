@@ -8,3 +8,5 @@ config_local.py
 core
 *#
 *~
+node_modules/
+augur/static/app.js

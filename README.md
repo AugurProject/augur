@@ -15,6 +15,18 @@ Ethereum Dapps store their data on the Ethereum blockchain, and their frontends 
 
 ## Getting Started
 
+### Building augur-client
+
+Install [Node.js](https://nodejs.org/), then:
+
+```
+npm install -g browserify
+npm install
+browserify augur/static/main.js -o augur/static/app.js
+```
+
+### Running Ethereum
+
 Install cpp-ethereum ([installation instructions](https://github.com/ethereum/cpp-ethereum/wiki)). Start the Ethereum daemon with `eth -j`, which will enable the JSON-RPC interface on port 8080.
 
 You should now be able to load `augur/augur.html` in Chrome or Firefox.
