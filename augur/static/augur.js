@@ -1,6 +1,12 @@
-var _ = require('lodash');
 var web3 = require('ethereum.js');
-var stub = require('./augur_stub');
+var BigNumber = require('bignumber.js');
+var $ = require('jquery');
+var _ = require('lodash');
+
+// Add jQuery to Browserify's global object so plugins attach correctly.
+global.jQuery = $;
+require('jquery.cookie');
+require('bootstrap');
 
 var augur = {
 
@@ -42,7 +48,8 @@ var augur = {
 
         $('#no-eth-modal').modal('hide');
         augur.demoMode = true;
-        web3 = stub.web3;
+        var demo = require('./demo.js');
+        web3 = demo.web3;
 
         augur.checkClient();
     },
@@ -73,21 +80,12 @@ var augur = {
         };
 
         augur.data.account = web3.eth.accounts[0];
+        augur.syncNetwork();
 
         // watch ethereum for changes and update network data
-        web3.eth.filter('latest').watch(function(data) {
-
-            augur.network.peerCount = web3.net.peerCount;
-            augur.network.blockNumber = web3.eth.blockNumber;
-            augur.network.gas = augur.formatGas(web3.eth.getBalance(augur.data.account));
-            augur.network.gasPrice = augur.formatGas(web3.eth.gasPrice);
-
-            augur.update(augur.network);
-
-            // update period progress
-            if (augur.data.branches[augur.data.currentBranch]) {
-                augur.render.period(augur.data.branches[augur.data.currentBranch]);
-            }
+        web3.eth.filter('latest').watch(function(log) {
+            console.log('[augur] network changed');
+            augur.syncNetwork();
         });
 
         $('#logo .progress-bar').css('width', '50%');
@@ -122,7 +120,8 @@ var augur = {
         $('#logo .progress-bar').css('width', '75%');
 
         if (augur.evmAddress == 'demo') {
-            augur.contract = stub.contract;
+            var demo = require('./demo.js');
+            augur.contract = demo.contract;
         } else {
             var Contract = web3.eth.contract(augur.abi);
             augur.contract = new Contract(augur.evmAddress);
@@ -150,17 +149,12 @@ var augur = {
 
         $('body').removeClass('stopped').addClass('running');
 
+        augur.syncContract();
+
         // watch for augur contract changes
-        web3.eth.filter(augur.contract).watch(function(r) {
-
-            augur.data.account = web3.eth.accounts[0];
-            augur.data.balance = augur.formatBalance(augur.contract.call().balance(augur.data.account));
-
-            augur.getBranches();
-            augur.getEvents(augur.data.currentBranch);
-            augur.getMarkets(augur.data.currentBranch);
-
-            augur.update(augur.data);
+        web3.eth.filter(augur.contract).watch(function(log) {
+            console.log('[augur] contract changed');
+            augur.syncContract();
         });
 
         // watch for whisper based comments
@@ -307,6 +301,33 @@ var augur = {
         $('#alert').on('closed.bs.alert', function() {
             $('#alert div').empty();
         });
+    },
+
+    syncNetwork: function() {
+
+        augur.network.peerCount = web3.net.peerCount;
+        augur.network.blockNumber = web3.eth.blockNumber;
+        augur.network.gas = augur.formatGas(web3.eth.getBalance(augur.data.account));
+        augur.network.gasPrice = augur.formatGas(web3.eth.gasPrice);
+
+        // update period progress
+        if (augur.data.branches[augur.data.currentBranch]) {
+            augur.render.period(augur.data.branches[augur.data.currentBranch]);
+        }
+
+        augur.update(augur.network);
+    },
+
+    syncContract: function() {
+
+        augur.data.account = web3.eth.accounts[0];
+        augur.data.balance = augur.formatBalance(augur.contract.call().balance(augur.data.account));
+
+        augur.getBranches();
+        augur.getEvents(augur.data.currentBranch);
+        augur.getMarkets(augur.data.currentBranch);
+
+        augur.update(augur.data);
     },
 
     getBranches: function() {
@@ -757,7 +778,12 @@ var augur = {
 
     formatGas: function(wei) {
 
-        wei = wei.toNumber();
+        // detect format and convert
+        if (typeof(wei) === 'string' && wei.match(/^0x\w+/)) {
+            wei = web3.toWei(wei, 'wei');
+        } else {
+            wei = wei.toNumber();
+        }
 
         if (wei >= 1000000000000 && wei < 1000000000000000) {
             return wei / 1000000000000 + ' szabo';
