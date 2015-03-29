@@ -1,3 +1,5 @@
+var _ = require('lodash');
+
 var stub = {
 
 	web3: {
@@ -128,11 +130,11 @@ var stub = {
 			info: [
 				new BigNumber(1),
 				new BigNumber(100),
-				new BigNumber(1010102), 
+				new BigNumber(1010102),
 				new BigNumber(2030),
 				null,
-				new BigNumber(0), 
-				new BigNumber(1), 
+				new BigNumber(0),
+				new BigNumber(1),
 				new BigNumber(2)
 			]
 		},
@@ -141,11 +143,11 @@ var stub = {
 			info: [
 				new BigNumber(1),
 				new BigNumber(100),
-				new BigNumber(1010101), 
+				new BigNumber(1010101),
 				new BigNumber(2030),
 				null,
-				new BigNumber(0), 
-				new BigNumber(1), 
+				new BigNumber(0),
+				new BigNumber(1),
 				new BigNumber(2)
 			]
 		},
@@ -154,11 +156,11 @@ var stub = {
 			info: [
 				new BigNumber(1),
 				new BigNumber(100),
-				new BigNumber(1010101), 
+				new BigNumber(1010101),
 				new BigNumber(2030),
 				null,
-				new BigNumber(0), 
-				new BigNumber(1), 
+				new BigNumber(0),
+				new BigNumber(1),
 				new BigNumber(2)
 			]
 		},
@@ -167,11 +169,11 @@ var stub = {
 			info: [
 				new BigNumber(1),
 				new BigNumber(100),
-				new BigNumber(1010101), 
+				new BigNumber(1010101),
 				new BigNumber(2030),
 				null,
-				new BigNumber(0), 
-				new BigNumber(1), 
+				new BigNumber(0),
+				new BigNumber(1),
 				new BigNumber(2)
 			]
 		}
@@ -250,3 +252,5 @@ var stub = {
 		}
 	}
 }
+
+module.exports = stub;

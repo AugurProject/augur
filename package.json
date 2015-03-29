@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "Web client for Augur, a prediction markets platform",
   "main": "augur/static/main.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/AugurProject/augur-client.git"
@@ -15,6 +12,7 @@
   },
   "homepage": "https://github.com/AugurProject/augur-client",
   "dependencies": {
-    "ethereum.js": "^0.2.1"
+    "ethereum.js": "^0.2.1",
+    "lodash": "^3.6.0"
   }
 }

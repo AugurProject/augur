@@ -1,3 +1,5 @@
+var _ = require('lodash');
+var stub = require('./augur_stub');
 var web3;
 var augur = {
 
