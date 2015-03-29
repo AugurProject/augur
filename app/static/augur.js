@@ -167,6 +167,11 @@ var augur = {
         });
 
         // user events
+        $('.branch-name').on('click', function(event) { 
+            var id = $(this).attr('data-id');
+            augur.viewBranch(parseInt(id));
+        });
+
         $('.reporting form').on('submit', function(event) {
 
             event.preventDefault();
@@ -360,7 +365,8 @@ var augur = {
                 text: eventText,
                 matureBlock: eventInfo[3].toNumber(),
                 matureDate: augur.blockToDate(eventInfo[3].toNumber()),
-                status: 'open'
+                status: 'open',
+                branchId: branchId
             };
         });
     },
@@ -383,9 +389,21 @@ var augur = {
                 delta: 1.3,
                 status: 'open',
                 priceHistory: marketHistory,
-                comments: marketComments
+                comments: marketComments,
+                branchId: branchId
             };
         });
+    },
+
+    viewBranch: function(id) {
+
+        augur.data.currentBranch = id;
+        augur.update(augur.data);
+
+        $('.branch-name').removeClass('selected');
+        $('.branch-name[data-id='+id+']').addClass('selected');
+
+        $('#market, #event').hide();
     },
 
     viewMarket: function(id) {
@@ -545,7 +563,7 @@ var augur = {
                     if (branch.rep) {
 
                         has_branches = true;
-                        var p = $('<p>').html('<span class="pull-left"><b>'+branch.name+'</b> ('+branch.rep+')</span>').addClass('clearfix');
+                        var p = $('<p>').html('<span class="pull-left"><b class="branch-name" data-id='+id+'>'+branch.name+'</b> ('+branch.rep+')</span>').addClass('clearfix');
                         var send = $('<a>').attr('href','#').addClass('pull-right').text('send').on('click', function() {
                             $('#branch-id').val(id);
                             $('#send-rep-modal .rep-balance').text(branch.rep);
@@ -578,7 +596,7 @@ var augur = {
 
         currentBranch: function(id) {
 
-            $('.branch-name').text(augur.data.branches[id].name);
+            $('.period .branch-name').attr('data-id', id).text(augur.data.branches[id].name);
             $('input.branch-id').val(id);
         },
 
@@ -630,7 +648,7 @@ var augur = {
 
             _.each(data, function(market, id) {
 
-                if (market.branchId == augur.currentBranch) {
+                if (market.branchId === augur.data.currentBranch) {
                     markets = true;
                     var row = $('<tr>').html('<td class="text">'+market.text+'</td><td>'+market.volume+'</td><td>'+market.fee+'</td>');
                     var trade = $('<a>').attr('href', '#').text('trade').on('click', function() {
@@ -676,7 +694,7 @@ var augur = {
 
             _.each(data, function(event, id) {
 
-                if (event.branchId == augur.currentBranch) {
+                if (event.branchId === augur.data.currentBranch) {
                     events = true;
                     var row = $('<tr>').html('<td class="text">'+event.text+'</td><td>'+augur.formatDate(event.matureDate)+'</td><td>'+event.status+'</td>');
                     $('.events tbody').append(row);

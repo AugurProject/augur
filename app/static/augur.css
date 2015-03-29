@@ -162,7 +162,10 @@ nav .navbar-right li div {
     color: #333;
 }
 
-
+.branch-name:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
 .branches .branches-toggle:before {
     content: 'show all';
 }
@@ -335,10 +338,19 @@ nav .navbar-right li div {
 .events th:last-child {
     text-align: right;
 }
-
-.markets tr:hover {
+.markets tr:hover td,
+.events tr:hover td {
     cursor: pointer;
 }
+.markets tr:hover td:first-child,
+.events tr:hover td:first-child {
+    text-decoration: underline;
+}
+
+#event {
+    display: none;
+}
+
 #market {
     display: none;
 }
