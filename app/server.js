@@ -5,7 +5,7 @@ var static = require('node-static'),
     util = require('util');
 
 var webroot = './app',
- 	port = 5000;
+ 	port = process.env.PORT || 5000
 
 var file = new(static.Server)(webroot, { cache: 600 });
 
