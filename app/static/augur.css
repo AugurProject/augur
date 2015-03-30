@@ -365,6 +365,9 @@ nav .navbar-right li div {
     margin-left: 10px;
     color: green;
 }
+#market h4 {
+    font-size: 22px;
+}
 #market h5 {
     font-size: 17px;
 }
