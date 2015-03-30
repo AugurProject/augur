@@ -173,18 +173,7 @@ var augur = {
         $('.branch-name').on('click', function(event) { 
             var id = $(this).attr('data-id');
             augur.viewBranch(parseInt(id));
-        });
-
-        $('.reporting form').on('submit', function(event) {
-
-            event.preventDefault();
-
-            var results = $(this).serializeArray();
-
-            _.each(results, function(r, i) {
-                results[i].branch = _decision[r.name].vote_id;
-            });
-        });
+        }); 
 
         $('#create-branch-modal form').on('submit', function(event) {
 

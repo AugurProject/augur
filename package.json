@@ -3,6 +3,12 @@
   "version": "1.0.0",
   "description": "Web client for Augur, a prediction markets platform",
   "main": "app/static/main.js",
+  "scripts": {
+    "start": "node app/server.js"
+  },
+  "engines": {
+    "node": "0.12.x"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/AugurProject/augur-client.git"
