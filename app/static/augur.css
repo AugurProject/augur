@@ -166,7 +166,6 @@ nav .navbar-right li div {
     display: none;
 }
 .branches.panel-body p:hover {
-    border-left: 2px solid #555;
 }
 .branches.panel-body p:hover a {
     display: inline;

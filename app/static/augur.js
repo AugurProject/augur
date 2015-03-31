@@ -4,6 +4,9 @@ window.BigNumber = require('bignumber.js');
 window.$ = require('jquery');
 window._ = require('lodash');
 
+window.Identicon = require('./identicon.js');
+
+
 // add jQuery to Browserify's global object so plugins attach correctly.
 global.jQuery = $;
 require('jquery.cookie');
@@ -11,7 +14,7 @@ require('bootstrap');
 
 var augur = {
 
-    evmAddress: '0x01202a04dc223ae5f87b473ef11c2ec372e4b0be',
+    evmAddress: 'demo',
 
     abi: require('./abi.js'),
 
@@ -170,6 +173,7 @@ var augur = {
         });
 
         // user events
+
         $('#create-branch-modal form').on('submit', function(event) {
 
             event.preventDefault();
@@ -413,7 +417,8 @@ var augur = {
         $('#market .comments').empty();
         var template = _.template($("#comment-template").html());
         _.each(market.comments, function(c) {
-            var html = template({avatar: null, comment: c.comment, date: augur.formatDate(c.date)});
+            var identicon = 'data:image/png;base64,' + new Identicon(c.author, 50).toString();
+            var html = template({avatar: identicon, comment: c.comment, date: augur.formatDate(c.date)});
             $('#market .comments').append(html);
         });
 
