@@ -1,8 +1,8 @@
 var _ = require('lodash');
 
 var browserifyConfig = {
-  src: ['augur/static/main.js'],
-  dest: 'augur/static/app.js'
+  src: ['app/static/main.js'],
+  dest: 'app/static/app.js'
 }
 
 module.exports = function(grunt) {
