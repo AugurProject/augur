@@ -94,19 +94,21 @@ nav h1.navbar-brand span {
     font-weight: 300;
     margin-left: 35px;
 }
-nav .navbar-right li {
+nav .navbar-right > li {
     font-family: 'Core Mellow';
     font-weight: 300;
     color: #ECECEC;
     font-size: 15px;
 }
-nav .navbar-right li a {
+nav .dropdown > a {
     color: #ECECEC;
 }
-nav .navbar-right li a:hover,
-nav .navbar-right li.open a,
-nav .navbar-right li.open a:hover {
-    color: #000;
+.nav .open > a, 
+.nav .open > a:hover, 
+.nav .open > a:focus,
+.nav > li > a:hover, 
+.nav > li > a:focus {
+    background-color: #380B3F;
 }
 nav .navbar-right li div {
     padding: 15px;
@@ -133,15 +135,6 @@ nav .navbar-right li div {
     margin: 0px;
     padding: 6px 6px;
 }
-.sidebar .panel .panel-body p a {
-    display: none;
-}
-.sidebar .panel .panel-body p:hover {
-    background-color: #fdfdfd;
-}
-.sidebar .panel .panel-body p:hover a {
-    display: inline;
-}
 .sidebar .panel-heading {
     font-size: 14px;
     border-radius: 0px;
@@ -165,6 +158,18 @@ nav .navbar-right li div {
 .branch-name:hover {
     cursor: pointer;
     text-decoration: underline;
+}
+.branches.panel-body p {
+    font-size: 13px;
+}
+.branches.panel-body p a {
+    display: none;
+}
+.branches.panel-body p:hover {
+    border-left: 2px solid #555;
+}
+.branches.panel-body p:hover a {
+    display: inline;
 }
 .branches .branches-toggle:before {
     content: 'show all';
@@ -246,12 +251,15 @@ nav .navbar-right li div {
     border-radius: 0px;
 }
 
-.network p {
-    display: none;
-    margin-bottom: 8px;
+.sidebar .network .panel-body p {
+    padding: 2px 6px;
 }
 .network .panel-body p:hover {
     background-color: transparent;
+}
+.network {
+    box-shadow: none;
+    -webkit-box-shadow: none;
 }
 .network p:last-child {
     margin-bottom: 0px;
@@ -355,7 +363,7 @@ nav .navbar-right li div {
     display: none;
 }
 #market .chart {
-    height: 300px;
+    height: 240px;
 }
 #market .trade {
     padding-top: 20px;
@@ -365,6 +373,9 @@ nav .navbar-right li div {
     margin-left: 10px;
     color: green;
 }
+#market h4 {
+    font-size: 22px;
+}
 #market h5 {
     font-size: 17px;
 }
@@ -373,14 +384,12 @@ nav .navbar-right li div {
     width: 180px;
 }
 #market .comments {
-    max-width: 600px;
+
 }
 #market .comment {
-    border: 1px solid #e9e9e9;
     margin: 10px 0px 10px 10px;
     padding: 10px;
     position: relative;
-    background-color: #fff;
 }
 #market .comment .avatar {
     height: 50px;
@@ -394,7 +403,8 @@ nav .navbar-right li div {
 #market .comment p {
     margin-left: 70px;
     margin-top: 20px;
-    margin-right: 15px;
+    background-color: #fff;
+    padding: 15px;
 }
 #market .comment .date {
     font-size: 12px;
@@ -442,10 +452,4 @@ nav .navbar-right li div {
     font-size: 16px;
     margin: 0px;
     margin-bottom: 20px;
-}
-#report li span.glyphicon {
-    display: none;
-}
-#report li.reported span.glyphicon {
-    display: inline;
 }

@@ -4,14 +4,16 @@ window.BigNumber = require('bignumber.js');
 window.$ = require('jquery');
 window._ = require('lodash');
 
-// Add jQuery to Browserify's global object so plugins attach correctly.
+// add jQuery to Browserify's global object so plugins attach correctly.
 global.jQuery = $;
 require('jquery.cookie');
 require('bootstrap');
 
 var augur = {
 
-    evmAddress: 'demo',
+    evmAddress: '0x01202a04dc223ae5f87b473ef11c2ec372e4b0be',
+
+    abi: require('./abi.js'),
 
     data: {
         account: '-',
@@ -49,6 +51,7 @@ var augur = {
 
         $('#no-eth-modal').modal('hide');
         augur.demoMode = true;
+        augur.evmAddress = 'demo';
         var demo = require('./demo.js');
         web3 = demo.web3;
 
@@ -167,22 +170,6 @@ var augur = {
         });
 
         // user events
-        $('.branch-name').on('click', function(event) { 
-            var id = $(this).attr('data-id');
-            augur.viewBranch(parseInt(id));
-        });
-
-        $('.reporting form').on('submit', function(event) {
-
-            event.preventDefault();
-
-            var results = $(this).serializeArray();
-
-            _.each(results, function(r, i) {
-                results[i].branch = _decision[r.name].vote_id;
-            });
-        });
-
         $('#create-branch-modal form').on('submit', function(event) {
 
             event.preventDefault();
@@ -408,9 +395,11 @@ var augur = {
 
     viewMarket: function(id) {
 
-        $('#market h4').text(augur.data.markets[id].text);
+        var market = augur.data.markets[id];
 
-        var priceHistory = [['Date', 'Price']].concat(augur.data.markets[id].priceHistory);
+        $('#market h4').text(market.text);
+
+        var priceHistory = [['Date', 'Price']].concat(market.priceHistory);
         var data = google.visualization.arrayToDataTable(priceHistory);
 
         var options = {
@@ -420,6 +409,13 @@ var augur = {
         };
 
         var chart = new google.visualization.LineChart(document.getElementById('market-chart'));
+
+        $('#market .comments').empty();
+        var template = _.template($("#comment-template").html());
+        _.each(market.comments, function(c) {
+            var html = template({avatar: null, comment: c.comment, date: augur.formatDate(c.date)});
+            $('#market .comments').append(html);
+        });
 
         $('#market').show();
         $('.markets').hide();
@@ -481,69 +477,6 @@ var augur = {
             $('.period').show();
         },
 
-        report: function(data) {
-
-            $('.preiod').removeClass('reporting').removeClass('reveal').removeClass('svd').addClass(data.phase);
-
-            if (!$.isEmptyObject(data)) {
-
-                $('#report-decisions').empty();
-
-                var h = $('<h4>').html('Report');
-                var s = $('<span>').html('Ends at ' + augur.formatDate(data.reveal_date));
-                var report_header = $('<li>').addClass('list-group-item').append([h, s]);
-                $('#report-decisions').append(report_header);
-                var template = _.template($("#report-template").html());
-                _.each(data, function(d, id) {
-
-                    if (d['state'] == '0') { d['state_desc'] = 'False' }
-                    else if (d['state'] == '1') { d['state_desc'] = 'True' }
-                    else if (d['state'] == '0.5') { d['state_desc'] = 'Ambiguous or Indeterminent' }
-                    else { d['state_desc'] = 'Absent' }
-
-                    $('#report-decisions').append(template({'d': d}));
-                    $('#report input[name='+d.decision_id+']').attr('data-state', d.state);
-                });
-
-                $('#report').show();
-
-                $('#report input[name]').on('change', function(e) {
-
-                    var report = {'decision_id': $(this).attr('name'), 'state': $(this).val()};
-                    var state = $('#report input[name='+$(this).attr('name')+']').attr('data-state');
-                    var self = this;
-
-                    if (state) {
-
-                        var dialog = {
-                            message: 'Changing this decision will incur and additional fee.  Are you sure you wish to change it?',
-                            confirmText: 'Change',
-                            confirmCallback: function() {
-                                nodeMonitor.postMessage({'reportDecision': report});
-                                $('#report input[name='+report.decision_id+']').attr('data-state', report.state);
-                            },
-                            cancelCallback: function() {
-                                $('#report input[name='+report.decision_id+'][value="'+state+'"]').attr('checked', true);
-                            }
-                        };
-
-                        augur.confirm(dialog);
-
-                    } else {
-
-                        nodeMonitor.postMessage({'reportDecision': report});
-                        $('#report input[name='+report.decision_id+']').attr('data-state', report.state);
-                        $('#'+report.decision_id).addClass('reported');
-
-                    }
-                });
-
-            } else {
-
-                $('#report').hide();
-            }
-        },
-
         branches: function(data) {
 
             if (!$.isEmptyObject(data)) {
@@ -592,6 +525,11 @@ var augur = {
                 var p = $('<p>').html('<span class="pull-left">There are no branches</span>');
                 $('.branches').empty().append(p);
             }
+
+            $('.branch-name').on('click', function(event) { 
+                var id = $(this).attr('data-id');
+                augur.viewBranch(parseInt(id));
+            });
         },
 
         currentBranch: function(id) {
@@ -651,11 +589,9 @@ var augur = {
                 if (market.branchId === augur.data.currentBranch) {
                     markets = true;
                     var row = $('<tr>').html('<td class="text">'+market.text+'</td><td>'+market.volume+'</td><td>'+market.fee+'</td>');
-                    var trade = $('<a>').attr('href', '#').text('trade').on('click', function() {
-                        console.log('trade');
-                    });
+
                     if (market.status == 'open') {
-                        var trade = $('<td>').append(trade).css('text-align', 'right');
+                        var trade = $('<td>').text('trading').css('text-align', 'right');
                     } else if (market.status == 'pending') {
                         var trade = $('<td>').text('pending').css('text-align', 'right');
                     } else {
@@ -664,14 +600,6 @@ var augur = {
                     row.on('click', function() { augur.viewMarket(id) });
                     $(row).append(trade);
                     $('.markets tbody').append(row);
-
-                     $('#market .comment').empty();
-                    var template = _.template($("#comment-template").html());
-                    _.each(market.comments, function(c, id) {
-
-                        var html = template({avatar: null, comment: c.comment, date: augur.formatDate(c.date)});
-                        $('#market .comments').append(html);
-                    });
                 }
             });
 
@@ -812,165 +740,7 @@ var augur = {
         $('#confirm-modal button.cancel').on('click', args.cancelCallback);
 
         $('#confirm-modal').modal('show');
-    },
-
-    abi:
-[{
-    "name": "api(int256,int256,int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "dataStructure", "type": "int256" }, { "name": "itemNumber", "type": "int256" }, { "name": "arrayIndex", "type": "int256" }, { "name": "ID", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "balance(int256)",
-    "type": "function",
-    "inputs": [{ "name": "address", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "buyShares(int256,int256,int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "market", "type": "int256" }, { "name": "outcome", "type": "int256" }, { "name": "amount", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "createEvent(int256,string,int256,int256,int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "description", "type": "string" }, { "name": "expDate", "type": "int256" }, { "name": "minValue", "type": "int256" }, { "name": "maxValue", "type": "int256" }, { "name": "numOutcomes", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "createMarket(int256,string,int256,int256,int256,int256[])",
-    "type": "function",
-    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "description", "type": "string" }, { "name": "alpha", "type": "int256" }, { "name": "initialLiquidity", "type": "int256" }, { "name": "tradingFee", "type": "int256" }, { "name": "events", "type": "int256[]" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "createSubbranch(string,int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "description", "type": "string" }, { "name": "periodLength", "type": "int256" }, { "name": "parent", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "faucet()",
-    "type": "function",
-    "inputs": [],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "getBranchDesc(int256)",
-    "type": "function",
-    "inputs": [{ "name": "branch", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "string" }]
-},
-{
-    "name": "getBranchInfo(int256)",
-    "type": "function",
-    "inputs": [{ "name": "branch", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256[]" }]
-},
-{
-    "name": "getBranches()",
-    "type": "function",
-    "inputs": [],
-    "outputs": [{ "name": "out", "type": "int256[]" }]
-},
-{
-    "name": "getEventDesc(int256)",
-    "type": "function",
-    "inputs": [{ "name": "event", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "string" }]
-},
-{
-    "name": "getEventInfo(int256)",
-    "type": "function",
-    "inputs": [{ "name": "event", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256[]" }]
-},
-{
-    "name": "getEvents(int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "expPeriod", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256[]" }]
-},
-{
-    "name": "getMarketDesc(int256)",
-    "type": "function",
-    "inputs": [{ "name": "market", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "string" }]
-},
-{
-    "name": "getMarketEvents(int256)",
-    "type": "function",
-    "inputs": [{ "name": "market", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256[]" }]
-},
-{
-    "name": "getMarketInfo(int256)",
-    "type": "function",
-    "inputs": [{ "name": "market", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256[]" }]
-},
-{
-    "name": "getMarkets(int256)",
-    "type": "function",
-    "inputs": [{ "name": "branch", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256[]" }]
-},
-{
-    "name": "getRepBalance(int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "address", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "getReputation(int256)",
-    "type": "function",
-    "inputs": [{ "name": "address", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256[]" }]
-},
-{
-    "name": "marketParticipantsApi(int256,int256,int256,int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "participantIndex", "type": "int256" }, { "name": "itemNumber", "type": "int256" }, { "name": "eventID", "type": "int256" }, { "name": "outcomeNumber", "type": "int256" }, { "name": "marketID", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "price(int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "market", "type": "int256" }, { "name": "outcome", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "sellShares(int256,int256,int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "market", "type": "int256" }, { "name": "outcome", "type": "int256" }, { "name": "amount", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "send(int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "recver", "type": "int256" }, { "name": "value", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "sendFrom(int256,int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "recver", "type": "int256" }, { "name": "value", "type": "int256" }, { "name": "from", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "sendReputation(int256,int256,int256)",
-    "type": "function",
-    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "recver", "type": "int256" }, { "name": "value", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
-    "name": "vote(int256,int256[],int256)",
-    "type": "function",
-    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "report", "type": "int256[]" }, { "name": "votePeriod", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-}]
+    }
 };
 
 module.exports = augur;
