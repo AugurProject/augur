@@ -11,7 +11,7 @@ require('bootstrap');
 
 var augur = {
 
-    evmAddress: '0x192711ac30e593ed43c071b0c332bebd56e923b8',
+    evmAddress: '0x01202a04dc223ae5f87b473ef11c2ec372e4b0be',
 
     abi: require('./abi.js'),
 

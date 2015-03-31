@@ -135,15 +135,6 @@ nav .navbar-right li div {
     margin: 0px;
     padding: 6px 6px;
 }
-.sidebar .panel .panel-body p a {
-    display: none;
-}
-.sidebar .panel .panel-body p:hover {
-    background-color: #fdfdfd;
-}
-.sidebar .panel .panel-body p:hover a {
-    display: inline;
-}
 .sidebar .panel-heading {
     font-size: 14px;
     border-radius: 0px;
@@ -168,8 +159,17 @@ nav .navbar-right li div {
     cursor: pointer;
     text-decoration: underline;
 }
-.branches p {
+.branches.panel-body p {
     font-size: 13px;
+}
+.branches.panel-body p a {
+    display: none;
+}
+.branches.panel-body p:hover {
+    border-left: 2px solid #555;
+}
+.branches.panel-body p:hover a {
+    display: inline;
 }
 .branches .branches-toggle:before {
     content: 'show all';
