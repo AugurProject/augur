@@ -4,7 +4,7 @@ window.BigNumber = require('bignumber.js');
 window.$ = require('jquery');
 window._ = require('lodash');
 
-// Add jQuery to Browserify's global object so plugins attach correctly.
+// add jQuery to Browserify's global object so plugins attach correctly.
 global.jQuery = $;
 require('jquery.cookie');
 require('bootstrap');
@@ -170,11 +170,6 @@ var augur = {
         });
 
         // user events
-        $('.branch-name').on('click', function(event) { 
-            var id = $(this).attr('data-id');
-            augur.viewBranch(parseInt(id));
-        }); 
-
         $('#create-branch-modal form').on('submit', function(event) {
 
             event.preventDefault();
@@ -400,9 +395,11 @@ var augur = {
 
     viewMarket: function(id) {
 
-        $('#market h4').text(augur.data.markets[id].text);
+        var market = augur.data.markets[id];
 
-        var priceHistory = [['Date', 'Price']].concat(augur.data.markets[id].priceHistory);
+        $('#market h4').text(market.text);
+
+        var priceHistory = [['Date', 'Price']].concat(market.priceHistory);
         var data = google.visualization.arrayToDataTable(priceHistory);
 
         var options = {
@@ -412,6 +409,13 @@ var augur = {
         };
 
         var chart = new google.visualization.LineChart(document.getElementById('market-chart'));
+
+        $('#market .comments').empty();
+        var template = _.template($("#comment-template").html());
+        _.each(market.comments, function(c) {
+            var html = template({avatar: null, comment: c.comment, date: augur.formatDate(c.date)});
+            $('#market .comments').append(html);
+        });
 
         $('#market').show();
         $('.markets').hide();
@@ -473,69 +477,6 @@ var augur = {
             $('.period').show();
         },
 
-        report: function(data) {
-
-            $('.preiod').removeClass('reporting').removeClass('reveal').removeClass('svd').addClass(data.phase);
-
-            if (!$.isEmptyObject(data)) {
-
-                $('#report-decisions').empty();
-
-                var h = $('<h4>').html('Report');
-                var s = $('<span>').html('Ends at ' + augur.formatDate(data.reveal_date));
-                var report_header = $('<li>').addClass('list-group-item').append([h, s]);
-                $('#report-decisions').append(report_header);
-                var template = _.template($("#report-template").html());
-                _.each(data, function(d, id) {
-
-                    if (d['state'] == '0') { d['state_desc'] = 'False' }
-                    else if (d['state'] == '1') { d['state_desc'] = 'True' }
-                    else if (d['state'] == '0.5') { d['state_desc'] = 'Ambiguous or Indeterminent' }
-                    else { d['state_desc'] = 'Absent' }
-
-                    $('#report-decisions').append(template({'d': d}));
-                    $('#report input[name='+d.decision_id+']').attr('data-state', d.state);
-                });
-
-                $('#report').show();
-
-                $('#report input[name]').on('change', function(e) {
-
-                    var report = {'decision_id': $(this).attr('name'), 'state': $(this).val()};
-                    var state = $('#report input[name='+$(this).attr('name')+']').attr('data-state');
-                    var self = this;
-
-                    if (state) {
-
-                        var dialog = {
-                            message: 'Changing this decision will incur and additional fee.  Are you sure you wish to change it?',
-                            confirmText: 'Change',
-                            confirmCallback: function() {
-                                nodeMonitor.postMessage({'reportDecision': report});
-                                $('#report input[name='+report.decision_id+']').attr('data-state', report.state);
-                            },
-                            cancelCallback: function() {
-                                $('#report input[name='+report.decision_id+'][value="'+state+'"]').attr('checked', true);
-                            }
-                        };
-
-                        augur.confirm(dialog);
-
-                    } else {
-
-                        nodeMonitor.postMessage({'reportDecision': report});
-                        $('#report input[name='+report.decision_id+']').attr('data-state', report.state);
-                        $('#'+report.decision_id).addClass('reported');
-
-                    }
-                });
-
-            } else {
-
-                $('#report').hide();
-            }
-        },
-
         branches: function(data) {
 
             if (!$.isEmptyObject(data)) {
@@ -584,6 +525,11 @@ var augur = {
                 var p = $('<p>').html('<span class="pull-left">There are no branches</span>');
                 $('.branches').empty().append(p);
             }
+
+            $('.branch-name').on('click', function(event) { 
+                var id = $(this).attr('data-id');
+                augur.viewBranch(parseInt(id));
+            });
         },
 
         currentBranch: function(id) {
@@ -643,11 +589,9 @@ var augur = {
                 if (market.branchId === augur.data.currentBranch) {
                     markets = true;
                     var row = $('<tr>').html('<td class="text">'+market.text+'</td><td>'+market.volume+'</td><td>'+market.fee+'</td>');
-                    var trade = $('<a>').attr('href', '#').text('trade').on('click', function() {
-                        console.log('trade');
-                    });
+
                     if (market.status == 'open') {
-                        var trade = $('<td>').append(trade).css('text-align', 'right');
+                        var trade = $('<td>').text('trading').css('text-align', 'right');
                     } else if (market.status == 'pending') {
                         var trade = $('<td>').text('pending').css('text-align', 'right');
                     } else {
@@ -656,14 +600,6 @@ var augur = {
                     row.on('click', function() { augur.viewMarket(id) });
                     $(row).append(trade);
                     $('.markets tbody').append(row);
-
-                     $('#market .comment').empty();
-                    var template = _.template($("#comment-template").html());
-                    _.each(market.comments, function(c, id) {
-
-                        var html = template({avatar: null, comment: c.comment, date: augur.formatDate(c.date)});
-                        $('#market .comments').append(html);
-                    });
                 }
             });
 
