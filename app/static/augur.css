@@ -391,11 +391,11 @@ nav .navbar-right li div {
     margin: 0px 0px 0px 0px;
     width: 100px;
     font-size: 16px;
+    margin-right: 10px;
 }
 #market .buy span {
     font-size: 15px;
     display: inline-block;
-    margin-left: 10px;
     position: relative;
     top: 3px;
 }
