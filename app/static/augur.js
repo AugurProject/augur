@@ -295,6 +295,17 @@ var augur = {
             }
         });
 
+        $('#market .buy input').on('focus', function(event) {
+
+            $('#market .chart').hide();
+            $('#market .details').show();
+        });
+        $('#market .buy input').on('blur', function(event) {
+
+            $('#market .details').hide();
+            $('#market .chart').show();
+        });
+
         $('#alert').on('closed.bs.alert', function() {
             $('#alert div').empty();
         });
@@ -400,25 +411,27 @@ var augur = {
     viewMarket: function(id) {
 
         var market = augur.data.markets[id];
+        var currentPrice = market.priceHistory[market.priceHistory.length-1][1]; 
 
-        $('#market h3').text(market.text);
+        $('#market h3 .text').text(market.text);
+        $('#market h3 .current').text(parseInt(currentPrice * 100).toString() + '%');
 
-        var priceHistory = [['Date', 'Price']].concat(market.priceHistory);
-        var data = google.visualization.arrayToDataTable(priceHistory);
-
+        // build chart
+        var data = google.visualization.arrayToDataTable([['Date', 'Price']].concat(market.priceHistory));
         var options = {
             title: 'Price',
             legend: { position: 'none' },
             backgroundColor: '#f9f6ea',
-            chartArea: {top: 20, width: "85%", height: "80%"}
+            chartArea: {top: 10, width: "85%", height: "80%"}
         };
-
         var chart = new google.visualization.LineChart(document.getElementById('market-chart'));
+        $( window ).resize(function() { chart.draw(data, options); });
 
         var userIdenticon = 'data:image/png;base64,' + new Identicon(augur.data.account, 50).toString();
         $('.user.avatar').css('background-image', 'url('+userIdenticon+')');
 
         $('#market .comments').empty();
+        $('#market .comment-count').text(market.comments.length.toString());
         var template = _.template($("#comment-template").html());
         _.each(market.comments, function(c) {
             var identicon = 'data:image/png;base64,' + new Identicon(c.author, 50).toString();
@@ -682,7 +695,7 @@ var augur = {
 
         balance: function(data) {
 
-            $('.balance').text(data);
+            $('.cash-balance').text(data);
         }
     },
 

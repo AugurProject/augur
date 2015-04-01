@@ -43,8 +43,7 @@ h1, h2, h3, h4, h5 {
     font-family: 'Core Mellow';
     font-weight: 400;
 }
-h4 a,
-h4 span {
+h4 a {
     font-size: 14px;
     margin-top: 3px;
 }
@@ -140,14 +139,6 @@ nav .navbar-right li div {
     border-radius: 0px;
     padding: 5px 10px;
 }
-.panel.panel-success .panel-heading {
-    background-color: #a15684;
-    color: #000;
-}
-.panel.panel-info .panel-heading {
-    background-color: #b1ddf1;
-    color: #080077;
-}
 .panel.panel-default,
 .panel.panel-default .panel-heading,
 .panel.panel-default .panel-body {
@@ -160,7 +151,7 @@ nav .navbar-right li div {
     text-decoration: underline;
 }
 .branches.panel-body p {
-    font-size: 13px;
+    font-size: 14px;
 }
 .branches.panel-body p a {
     display: none;
@@ -361,11 +352,22 @@ nav .navbar-right li div {
 #market {
     display: none;
 }
-#market .chart {
-    height: 240px;
+#market p {
+    margin: 0px 0px 5px 0px;
+    font-size: 15px;
 }
-#market .trade {
-
+#market .chart {
+    height: 200px;
+}
+#market .details {
+    display: none;
+    margin: 0px 120px 0px 15px;
+}
+#market p {
+    clear: right;
+}
+#market p > b {
+    float: right;
 }
 #market .trade .delta {
     margin-left: 10px;
@@ -375,6 +377,23 @@ nav .navbar-right li div {
     color: #602A52;
     font-size: 25px;
     margin-bottom: 20px;
+    clear: left;
+}
+#market h3 .text {
+    margin-left: 85px;
+}
+#market h3 .current {
+    width: 68px;
+    height: 68px;
+    font-size: 23px;
+    color: #000;
+    background-color: #b1ddf1;
+    text-align: center;
+    padding: 6px;
+    border-radius: 50%;
+    float: left;
+    padding-top: 23px;
+    margin-top: -5px;
 }
 #market h4 {
     margin: 0px 0px 15px 0px;
@@ -388,25 +407,13 @@ nav .navbar-right li div {
     margin-top: 20px;
 }
 #market .buy button {
-    margin: 0px 0px 0px 0px;
     width: 100px;
-    font-size: 16px;
-    margin-right: 10px;
-}
-#market .buy span {
-    font-size: 15px;
-    display: inline-block;
-    position: relative;
-    top: 3px;
 }
 #market .summary {
     margin-bottom: 30px;
 }
-#market .tab-pane {
+#market #comments {
     background-color: #fff;
-}
-#market .comments {
-
 }
 #market .comment {
     padding: 10px;
