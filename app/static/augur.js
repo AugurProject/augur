@@ -401,7 +401,7 @@ var augur = {
 
         var market = augur.data.markets[id];
 
-        $('#market h4').text(market.text);
+        $('#market h3').text(market.text);
 
         var priceHistory = [['Date', 'Price']].concat(market.priceHistory);
         var data = google.visualization.arrayToDataTable(priceHistory);
@@ -409,7 +409,8 @@ var augur = {
         var options = {
             title: 'Price',
             legend: { position: 'none' },
-            backgroundColor: '#f9f6ea'
+            backgroundColor: '#f9f6ea',
+            chartArea: {top: 20, width: "85%", height: "80%"}
         };
 
         var chart = new google.visualization.LineChart(document.getElementById('market-chart'));

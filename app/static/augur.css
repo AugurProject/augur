@@ -103,11 +103,11 @@ nav .navbar-right > li {
 nav .dropdown > a {
     color: #ECECEC;
 }
-.nav .open > a, 
-.nav .open > a:hover, 
-.nav .open > a:focus,
-.nav > li > a:hover, 
-.nav > li > a:focus {
+nav .nav .open > a, 
+nav .nav .open > a:hover, 
+nav .nav .open > a:focus,
+nav .nav > li > a:hover, 
+nav .nav > li > a:focus {
     background-color: #380B3F;
 }
 nav .navbar-right li div {
@@ -365,41 +365,61 @@ nav .navbar-right li div {
     height: 240px;
 }
 #market .trade {
-    padding-top: 20px;
-    text-align: right;
+
 }
 #market .trade .delta {
     margin-left: 10px;
     color: green;
 }
+#market h3 {
+    color: #602A52;
+    font-size: 25px;
+    margin-bottom: 20px;
+}
 #market h4 {
-    font-size: 22px;
+    margin: 0px 0px 15px 0px;
 }
 #market h5 {
     font-size: 17px;
+    margin-bottom: 30px;
 }
-#market button {
-    margin: 20px 0px 0px 0px;
-    width: 180px;
+#market .buy {
+    text-align: left;
+    margin-top: 20px;
+}
+#market .buy button {
+    margin: 0px 0px 0px 0px;
+    width: 100px;
+    font-size: 16px;
+}
+#market .buy span {
+    font-size: 15px;
+    display: inline-block;
+    margin-left: 10px;
+    position: relative;
+    top: 3px;
+}
+#market .summary {
+    margin-bottom: 30px;
+}
+#market .tab-pane {
+    background-color: #fff;
 }
 #market .comments {
 
 }
 #market .comment {
-    margin: 10px 0px 10px 10px;
     padding: 10px;
 }
 #market .comment .avatar {
     height: 57px;
     width: 57px;
-    border: 1px solid #e1e1e1;
-    border-radius: 50%;
     float: left;
     background-color: #fff;
     background-repeat: no-repeat;
     background-position: 10px 9px;
-    background-size: 37px 37px;
-    margin: 4px 0px 0px 4px;
+    background-size: 50px 50px;
+    margin: 0px 0px 0px 4px;
 }
 
 #market .comment .box {

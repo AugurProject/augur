@@ -152,25 +152,46 @@
 
                 <div id="market">
 
-                    <h4></h4>
+                    <h3></h3>
 
-                    <div class="row">
+                    <div class="row summary">
                         <div class="col-xs-5 col-sm-4 trade">
-                            <h5>Last price: <span class="price">0.653</span><span class="delta"><i class="fa fa-chevron-up"></i>0.036</span></h5>
-                            <button class="btn btn-success btn-lg">Buy at <b class="buy-price">0.679</b></button><br>
-                            <button class="btn btn-danger btn-lg">Sell at <b class="sell-price">0.653</b></button>
+                            <h4>Current market: <b class="current-market">76%</b></h4>
+                            <h5>Last price: <span class="price">76¢</span><span class="delta"><i class="fa fa-arrow-up"></i> 0.12¢</span></h5>
+
+                            <div class="buy yes">
+                                <button class="btn btn-success">Buy <b>Yes</b></button>
+                                <span>Offers starting at <b>64¢</b></span>
+                            </div>
+                            <div class="buy no">
+                                <button class="btn btn-danger">Buy <b>No</b></button>
+                                <span>Offers starting at <b>32¢</b></span>
+                            </div>
                         </div>
                         <div class="col-xs-7 col-sm-8 chart" id="market-chart">
                         </div>
                     </div>
 
-                    <h5>Comments</h4>
-                    <form class="comment">
-                        <div class="user avatar"></div>
-                        <div class="box"><input type="textarea" class="form-control" placeholder="Share your thoughts on this market"><div class="user address"></div></div>
-                    </form>
-                    <div class="comments">
+                    <div role="tabpanel">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#offers" aria-controls="offers" role="tab" data-toggle="tab">Offers</a></li>
+                            <li role="presentation"><a href="#comments" aria-controls="comments" role="tab" data-toggle="tab"><span class="comment-count"></span> Comments</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="offers">
+                                <table style="height: 300px"></table>
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="comments">
+                                <form class="comment">
+                                    <div class="user avatar"></div>
+                                    <div class="box"><input type="textarea" class="form-control" placeholder="Join the discussion..."><div class="user address"></div></div>
+                                </form>
+                                <div class="comments">
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
                 </div>
 
                 <div class="markets">
