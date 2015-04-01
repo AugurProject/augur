@@ -130,8 +130,7 @@
                 <script type="text/template" id="comment-template">
                     <div class="comment">
                         <div class="avatar" style="background-image: url(<%= avatar %>)"></div>
-                        <p><%= comment %></p>
-                        <div class="date"><%= date %></div>
+                        <div class="box"><p><%= comment %></p><div class="date"><%= date %></div><div class="address"><%= author %></div></div>
                     </div>
                 </script>
 
@@ -143,6 +142,10 @@
                     </div>
 
                     <h5>Comments</h4>
+                    <form class="comment">
+                        <div class="user avatar"></div>
+                        <div class="box"><p><input type="textarea" class="form-control" placeholder="Share your thoughts on this market"></p><div class="user address"></div></div>
+                    </form>
                     <div class="comments">
                     </div>
                 </div>
@@ -162,6 +165,10 @@
                     </div>
 
                     <h5>Comments</h4>
+                    <form class="comment">
+                        <div class="user avatar"></div>
+                        <div class="box"><input type="textarea" class="form-control" placeholder="Share your thoughts on this market"><div class="user address"></div></div>
+                    </form>
                     <div class="comments">
                     </div>
                 </div>
@@ -265,7 +272,7 @@
             <div class="modal-content">
                 <div class="modal-body clearfix">
                     <h4>Account addresses</h4>
-                    <p class="address"><p>
+                    <p class="user address"><p>
                 </div>
             </div>
         </div>

@@ -414,11 +414,14 @@ var augur = {
 
         var chart = new google.visualization.LineChart(document.getElementById('market-chart'));
 
+        var userIdenticon = 'data:image/png;base64,' + new Identicon(augur.data.account, 50).toString();
+        $('.user.avatar').css('background-image', 'url('+userIdenticon+')');
+
         $('#market .comments').empty();
         var template = _.template($("#comment-template").html());
         _.each(market.comments, function(c) {
             var identicon = 'data:image/png;base64,' + new Identicon(c.author, 50).toString();
-            var html = template({avatar: identicon, comment: c.comment, date: augur.formatDate(c.date)});
+            var html = template({author: c.author, avatar: identicon, comment: c.comment, date: augur.formatDate(c.date)});
             $('#market .comments').append(html);
         });
 
@@ -545,7 +548,7 @@ var augur = {
 
         account: function(data) {
 
-            $('.account .address').html(data);
+            $('.user.address').html(data);
         },
 
         blockNumber: function(data) {

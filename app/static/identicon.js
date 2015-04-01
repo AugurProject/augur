@@ -33,8 +33,8 @@ Identicon.prototype = {
             cell    = Math.floor((size - (margin * 2)) / 5),
             image   = new PNGlib(size, size, 256);
 
-        // light-grey background
-        var bg      = image.color(240, 240, 240);
+        // white background
+        var bg      = image.color(255, 255, 255);
 
         // foreground is last 7 chars as hue at 50% saturation, 70% brightness
         var rgb     = this.hsl2rgb(parseInt(hash.substr(-7), 16) / 0xfffffff, .5, .7),
