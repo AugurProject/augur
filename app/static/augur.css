@@ -122,23 +122,6 @@ nav .navbar-right li div {
 
 }
 
-.sidebar .panel {
-    font-size: 12px;
-    border-radius: 0px;
-    border: none;
-}
-.sidebar .panel .panel-body {
-    padding: 5px;
-}
-.sidebar .panel .panel-body p {
-    margin: 0px;
-    padding: 6px 6px;
-}
-.sidebar .panel-heading {
-    font-size: 14px;
-    border-radius: 0px;
-    padding: 5px 10px;
-}
 .panel.panel-default,
 .panel.panel-default .panel-heading,
 .panel.panel-default .panel-body {
@@ -146,20 +129,32 @@ nav .navbar-right li div {
     color: #333;
 }
 
-.branch-name:hover {
+.branches-nav {
+    background-color: #602A52;
+    margin-top: -20px;
+    padding: 15px 0px 5px 0px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+.branches-nav p {
+    font-family: 'Core Mellow';
+    font-weight: 300;
+    padding: 0px 12px;
+    font-size: 14px;
+    color: #fff;
+}
+.branches-nav p a {
+    display: none;
+    color: #eee;
+}
+.branches-nav p:hover {
+}
+.branches-nav p:hover a {
+    display: inline;
+}
+.branches-nav .branch-name:hover {
     cursor: pointer;
     text-decoration: underline;
-}
-.branches.panel-body p {
-    font-size: 14px;
-}
-.branches.panel-body p a {
-    display: none;
-}
-.branches.panel-body p:hover {
-}
-.branches.panel-body p:hover a {
-    display: inline;
 }
 .branches .branches-toggle:before {
     content: 'show all';
@@ -229,29 +224,25 @@ nav .navbar-right li div {
     text-overflow: ellipsis;
 }
 
-.network_old {
-    display: none;
-    position: absolute;
-    bottom: 0px;
-    right: 0px;
-    opacity: 0.75;
-    width: 200px;
-    font-size: 12px;
-    margin-bottom: 0px;
-    border-radius: 0px;
+.network {
+    box-shadow: none;
+    border: none;
+    -webkit-box-shadow: none;
+    margin-top: 15px;
 }
-
-.sidebar .network .panel-body p {
-    padding: 2px 6px;
+.network .panel-body,
+.network .panel-heading {
+    padding: 5px;
+}
+.network .panel-body p {
+    padding: 0px 2px;
+    margin-bottom: 4px;
+    font-size: 12px;
 }
 .network .panel-body p:hover {
     background-color: transparent;
 }
-.network {
-    box-shadow: none;
-    -webkit-box-shadow: none;
-}
-.network p:last-child {
+.network .panel-body p:last-child {
     margin-bottom: 0px;
 }
 .network .miner-off span {
