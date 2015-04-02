@@ -4,7 +4,7 @@ var constants = require('../constants');
 var utilities = require('../utilities');
 
 var NetworkActions = {
-  updateNetwork: function (network) {
+  updateNetwork: function () {
     var accountState = this.flux.stores('account').getState();
 
     this.dispatch(constants.network.UPDATE_NETWORK, {

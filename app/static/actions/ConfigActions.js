@@ -1,3 +1,4 @@
+var abi = require('../abi.js');
 var constants = require('../constants');
 
 var ConfigActions = {
@@ -7,8 +8,8 @@ var ConfigActions = {
     if (isDemo) {
       contract = require('../demo').contract;
     } else {
-      // TODO: Load contract using evmAddress.
-      var contract = null;
+      var Contract = web3.eth.contract(abi);
+      contract = new Contract(augur.evmAddress);
     }
 
     this.dispatch(constants.config.UPDATE_CONTRACT, {
