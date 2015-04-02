@@ -4,6 +4,9 @@ window.BigNumber = require('bignumber.js');
 window.$ = require('jquery');
 window._ = require('lodash');
 
+window.Identicon = require('./identicon.js');
+
+
 // add jQuery to Browserify's global object so plugins attach correctly.
 global.jQuery = $;
 require('jquery.cookie');
@@ -11,7 +14,7 @@ require('bootstrap');
 
 var augur = {
 
-    evmAddress: '0x01202a04dc223ae5f87b473ef11c2ec372e4b0be',
+    evmAddress: 'demo',
 
     abi: require('./abi.js'),
 
@@ -170,6 +173,7 @@ var augur = {
         });
 
         // user events
+
         $('#create-branch-modal form').on('submit', function(event) {
 
             event.preventDefault();
@@ -291,6 +295,17 @@ var augur = {
             }
         });
 
+        $('#market .buy input').on('focus', function(event) {
+
+            $('#market .chart').hide();
+            $('#market .details').show();
+        });
+        $('#market .buy input').on('blur', function(event) {
+
+            $('#market .details').hide();
+            $('#market .chart').show();
+        });
+
         $('#alert').on('closed.bs.alert', function() {
             $('#alert div').empty();
         });
@@ -366,6 +381,7 @@ var augur = {
             var marketText = augur.contract.call().getMarketDesc(id);
             var marketComments = augur.contract.call().getMarketComments(id);
             var marketHistory = augur.contract.call().getMarketHistory(id);
+            var marketShares = augur.contract.call().getMarketShares(id, augur.data.account);
 
             augur.data.markets[id.toNumber()] = {
                 text: marketText,
@@ -377,7 +393,8 @@ var augur = {
                 status: 'open',
                 priceHistory: marketHistory,
                 comments: marketComments,
-                branchId: branchId
+                branchId: branchId,
+                sharesHeld: marketShares
             };
         });
     },
@@ -396,24 +413,33 @@ var augur = {
     viewMarket: function(id) {
 
         var market = augur.data.markets[id];
+        var currentPrice = market.priceHistory[market.priceHistory.length-1][1]; 
 
-        $('#market h4').text(market.text);
+        $('#market h3 .text').text(market.text);
+        $('#market h3 .current').text(parseInt(currentPrice * 100).toString() + '%');
+        $('#market .current-price b').html((currentPrice * 100).toString() + '&cent;');
+        $('#market .shares-held b').text(market.sharesHeld[0]);
 
-        var priceHistory = [['Date', 'Price']].concat(market.priceHistory);
-        var data = google.visualization.arrayToDataTable(priceHistory);
-
+        // build chart
+        var data = google.visualization.arrayToDataTable([['Date', 'Price']].concat(market.priceHistory));
         var options = {
             title: 'Price',
             legend: { position: 'none' },
-            backgroundColor: '#f9f6ea'
+            backgroundColor: '#f9f6ea',
+            chartArea: {top: 10, width: "85%", height: "80%"}
         };
-
         var chart = new google.visualization.LineChart(document.getElementById('market-chart'));
+        $( window ).resize(function() { chart.draw(data, options); });
+
+        var userIdenticon = 'data:image/png;base64,' + new Identicon(augur.data.account, 50).toString();
+        $('.user.avatar').css('background-image', 'url('+userIdenticon+')');
 
         $('#market .comments').empty();
+        $('#market .comment-count').text(market.comments.length.toString());
         var template = _.template($("#comment-template").html());
         _.each(market.comments, function(c) {
-            var html = template({avatar: null, comment: c.comment, date: augur.formatDate(c.date)});
+            var identicon = 'data:image/png;base64,' + new Identicon(c.author, 50).toString();
+            var html = template({author: c.author, avatar: identicon, comment: c.comment, date: augur.formatDate(c.date)});
             $('#market .comments').append(html);
         });
 
@@ -496,8 +522,8 @@ var augur = {
                     if (branch.rep) {
 
                         has_branches = true;
-                        var p = $('<p>').html('<span class="pull-left"><b class="branch-name" data-id='+id+'>'+branch.name+'</b> ('+branch.rep+')</span>').addClass('clearfix');
-                        var send = $('<a>').attr('href','#').addClass('pull-right').text('send').on('click', function() {
+                        var p = $('<p>').html('<span class="pull-left"><b class="branch-name" data-id='+id+'>'+branch.name+'</b><i>'+branch.rep+'</i></span>').addClass('clearfix');
+                        var send = $('<a>').attr('href','#').addClass('pull-right').html('<span class="fa fa-share-square-o"></span>').on('click', function() {
                             $('#branch-id').val(id);
                             $('#send-rep-modal .rep-balance').text(branch.rep);
                             $('#send-rep-modal .branch').text(branch.name);
@@ -540,7 +566,7 @@ var augur = {
 
         account: function(data) {
 
-            $('.account .address').html(data);
+            $('.user.address').html(data);
         },
 
         blockNumber: function(data) {
@@ -673,7 +699,7 @@ var augur = {
 
         balance: function(data) {
 
-            $('.balance').text(data);
+            $('.cash-balance').text(data);
         }
     },
 

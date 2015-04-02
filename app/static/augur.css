@@ -1,21 +1,36 @@
 @font-face {
     font-family: 'Core Mellow';
+    font-weight: 100;
+    src: url("fonts/S-Core - CoreMellow19CpThin.otf") format("opentype");
+}
+@font-face {
+    font-family: 'Core Mellow';
+    font-weight: 200;
+    src: url("fonts/S-Core - CoreMellow25ExtraLight.otf") format("opentype");
+}
+@font-face {
+    font-family: 'Core Mellow';
     font-weight: 300;
-    src: url("fonts/S-Core - CoreMellow35Light.otf") format("opentype");
+    src: url("fonts/S-Core - CoreMellow29CpExtraLight.otf") format("opentype");
 }
 @font-face {
     font-family: 'Core Mellow';
     font-weight: 400;
+    src: url("fonts/S-Core - CoreMellow35Light.otf") format("opentype");
+}
+@font-face {
+    font-family: 'Core Mellow';
+    font-weight: 500;
     src: url("fonts/S-Core - CoreMellow45Regular.otf") format("opentype");
 }
 @font-face {
     font-family: 'Core Mellow';
-    font-weight: 700;
+    font-weight: 600;
     src: url("fonts/S-Core - CoreMellow55Medium.otf") format("opentype");
 }
 @font-face {
     font-family: 'Core Mellow';
-    font-weight: 800;
+    font-weight: 700;
     src: url("fonts/S-Core - CoreMellow65Bold.otf") format("opentype");
 }
 body {
@@ -41,15 +56,14 @@ body.running #logo {
 
 h1, h2, h3, h4, h5 {
     font-family: 'Core Mellow';
-    font-weight: 400;
+    font-weight: 500;
 }
-h4 a,
-h4 span {
+h4 a {
     font-size: 14px;
     margin-top: 3px;
 }
 table {
-    font-size: 13px;
+    font-size: 16px;
 }
 
 #logo {
@@ -91,23 +105,23 @@ nav h1.navbar-brand {
 }
 nav h1.navbar-brand span {
     color: #fff;
-    font-weight: 300;
+    font-weight: 400;
     margin-left: 35px;
 }
 nav .navbar-right > li {
     font-family: 'Core Mellow';
-    font-weight: 300;
+    font-weight: 400;
     color: #ECECEC;
     font-size: 15px;
 }
 nav .dropdown > a {
     color: #ECECEC;
 }
-.nav .open > a, 
-.nav .open > a:hover, 
-.nav .open > a:focus,
-.nav > li > a:hover, 
-.nav > li > a:focus {
+nav .nav .open > a, 
+nav .nav .open > a:hover, 
+nav .nav .open > a:focus,
+nav .nav > li > a:hover, 
+nav .nav > li > a:focus {
     background-color: #380B3F;
 }
 nav .navbar-right li div {
@@ -123,31 +137,6 @@ nav .navbar-right li div {
 
 }
 
-.sidebar .panel {
-    font-size: 12px;
-    border-radius: 0px;
-    border: none;
-}
-.sidebar .panel .panel-body {
-    padding: 5px;
-}
-.sidebar .panel .panel-body p {
-    margin: 0px;
-    padding: 6px 6px;
-}
-.sidebar .panel-heading {
-    font-size: 14px;
-    border-radius: 0px;
-    padding: 5px 10px;
-}
-.panel.panel-success .panel-heading {
-    background-color: #a15684;
-    color: #000;
-}
-.panel.panel-info .panel-heading {
-    background-color: #b1ddf1;
-    color: #080077;
-}
 .panel.panel-default,
 .panel.panel-default .panel-heading,
 .panel.panel-default .panel-body {
@@ -155,21 +144,63 @@ nav .navbar-right li div {
     color: #333;
 }
 
-.branch-name:hover {
+.branches-nav {
+    background-color: #602A52;
+    margin-top: -20px;
+    padding: 20px 0px 5px 0px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+.branches-nav p {
+    font-family: 'Core Mellow';
+    font-weight: 300;
+    padding: 0px 12px;
+    font-size: 16px;
+    color: #fff;
+}
+.branches-nav div.divider {
+    margin: 10px 10px;
+    height: 1px;
+    border-bottom: 1px solid #eee;
+}
+.branches-nav p a {
+    display: none;
+    color: #eee;
+}
+.branches-nav p:hover {
+}
+.branches-nav p:hover a {
+    display: inline;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+}
+.branches-nav .branch-name {
+    font-weight: 400;
+}
+.branches-nav p i {
+    font-style: normal;
+    display: inline-block;
+    background-color: #fff;
+    color: #602A52;
+    padding: 1px 6px;
+    border-radius: 8px;
+    margin: 0px 0px 0px 10px;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    opacity: 0.6;
+    position: relative;
+    top: -1px;
+}
+.branches-nav p .fa-share-square-o {
+    font-size: 15px;
+    position: relative;
+    top: 2px;
+}
+.branches-nav .branch-name:hover {
     cursor: pointer;
     text-decoration: underline;
-}
-.branches.panel-body p {
-    font-size: 13px;
-}
-.branches.panel-body p a {
-    display: none;
-}
-.branches.panel-body p:hover {
-    border-left: 2px solid #555;
-}
-.branches.panel-body p:hover a {
-    display: inline;
 }
 .branches .branches-toggle:before {
     content: 'show all';
@@ -239,29 +270,25 @@ nav .navbar-right li div {
     text-overflow: ellipsis;
 }
 
-.network_old {
-    display: none;
-    position: absolute;
-    bottom: 0px;
-    right: 0px;
-    opacity: 0.75;
-    width: 200px;
-    font-size: 12px;
-    margin-bottom: 0px;
-    border-radius: 0px;
+.network {
+    box-shadow: none;
+    border: none;
+    -webkit-box-shadow: none;
+    margin-top: 15px;
 }
-
-.sidebar .network .panel-body p {
-    padding: 2px 6px;
+.network .panel-body,
+.network .panel-heading {
+    padding: 5px;
+}
+.network .panel-body p {
+    padding: 0px 2px;
+    margin-bottom: 4px;
+    font-size: 12px;
 }
 .network .panel-body p:hover {
     background-color: transparent;
 }
-.network {
-    box-shadow: none;
-    -webkit-box-shadow: none;
-}
-.network p:last-child {
+.network .panel-body p:last-child {
     margin-bottom: 0px;
 }
 .network .miner-off span {
@@ -362,51 +389,101 @@ nav .navbar-right li div {
 #market {
     display: none;
 }
-#market .chart {
-    height: 240px;
+#market p {
+    margin: 0px 0px 5px 0px;
+    font-size: 15px;
 }
-#market .trade {
-    padding-top: 20px;
-    text-align: right;
+#market .chart {
+    height: 200px;
+}
+#market .details {
+    display: none;
+    margin: 0px 120px 0px 15px;
+}
+#market p {
+    clear: right;
+}
+#market p > b {
+    float: right;
 }
 #market .trade .delta {
     margin-left: 10px;
     color: green;
 }
+#market h3 {
+    color: #602A52;
+    font-size: 25px;
+    margin-bottom: 35px;
+    clear: left;
+}
+#market h3 .text {
+    margin-left: 85px;
+}
+#market h3 .current {
+    width: 68px;
+    height: 68px;
+    font-size: 23px;
+    color: #000;
+    background-color: #b1ddf1;
+    text-align: center;
+    padding: 6px;
+    border-radius: 50%;
+    float: left;
+    padding-top: 23px;
+    margin-top: -5px;
+}
 #market h4 {
-    font-size: 22px;
+    margin: 0px 0px 15px 0px;
 }
 #market h5 {
     font-size: 17px;
+    margin-bottom: 30px;
 }
-#market button {
-    margin: 20px 0px 0px 0px;
-    width: 180px;
+#market .buy {
+    text-align: left;
+    margin-top: 20px;
 }
-#market .comments {
-
+#market .buy button {
+    width: 100px;
+}
+#market .summary {
+    margin-bottom: 30px;
+}
+#market #comments {
+    background-color: #fff;
 }
 #market .comment {
-    margin: 10px 0px 10px 10px;
     padding: 10px;
-    position: relative;
 }
 #market .comment .avatar {
-    height: 50px;
-    width: 50px;
-    border: 1px solid #e1e1e1;
-    border-radius: 50%;
+    height: 57px;
+    width: 57px;
     float: left;
-    background-color: #602A52;
-    margin: 4px 0px 0px 4px;
+    background-color: #fff;
+    background-repeat: no-repeat;
+    background-position: 10px 9px;
+    background-size: 50px 50px;
+    margin: 0px 0px 0px 4px;
+}
+
+#market .comment .box {
+    margin-left: 70px;
+    margin-top: 0px;
+    background-color: #fff;
+    padding: 30px 15px 15px 15px;
+    position: relative;
 }
 #market .comment p {
-    margin-left: 70px;
-    margin-top: 20px;
-    background-color: #fff;
-    padding: 15px;
-}
+    margin: 0px;
+} 
 #market .comment .date {
+    font-size: 12px;
+    color: #999;
+    position: absolute;
+    top: 5px;
+    left: 8px;
+}
+#market .comment .address {
     font-size: 12px;
     color: #999;
     position: absolute;

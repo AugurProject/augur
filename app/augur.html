@@ -51,12 +51,15 @@
             </div>
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <div>BALANCE: <b class="balance">-</b></div>
+                    <div>BALANCE: <b class="cash-balance">-</b></div>
                 </li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Account <span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">       
+                        <i class="fa fa-navicon"></i>
+                        <span class="caret"></span>
+                    </a>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="#account-modal" data-toggle="modal">Details</li>
+                        <li><a href="#account-modal" data-toggle="modal">Account Details</li>
                         <li><a href="#send-cash-modal" data-toggle="modal">Send Cash</a></li>
                     </ul>
                 </li>
@@ -75,12 +78,10 @@
         <div class="dash page row">
 
             <div class="col-md-3 hidden-sm hidden-xs sidebar">
-                <div class="panel panel-info">
-                    <div class="panel-heading clearfix">
-                        <span class="pull-left">Branches</span>
-                        <a class="pull-right" href="#create-branch-modal" data-toggle="modal">create</a>
-                    </div>
-                    <div class="panel-body branches"></div>
+                <div class="branches-nav">
+                    <p><b class="branch-name">Featured</b></p>
+                    <div class="divider"></div>
+                    <div class="branches"></div>
                 </div>
 
                 <div class="panel panel-default network">
@@ -130,8 +131,7 @@
                 <script type="text/template" id="comment-template">
                     <div class="comment">
                         <div class="avatar" style="background-image: url(<%= avatar %>)"></div>
-                        <p><%= comment %></p>
-                        <div class="date"><%= date %></div>
+                        <div class="box"><p><%= comment %></p><div class="date"><%= date %></div><div class="address"><%= author %></div></div>
                     </div>
                 </script>
 
@@ -143,27 +143,60 @@
                     </div>
 
                     <h5>Comments</h4>
+                    <form class="comment">
+                        <div class="user avatar"></div>
+                        <div class="box"><p><input type="textarea" class="form-control" placeholder="Share your thoughts on this market"></p><div class="user address"></div></div>
+                    </form>
                     <div class="comments">
                     </div>
                 </div>
 
                 <div id="market">
 
-                    <h4></h4>
+                    <h3><div class="current"></div><div class="text"></div></h3>
 
-                    <div class="row">
-                        <div class="col-xs-5 col-sm-4 trade">
-                            <h5>Last price: <span class="price">0.653</span><span class="delta"><i class="fa fa-chevron-up"></i>0.036</span></h5>
-                            <button class="btn btn-success btn-lg">Buy at <b class="buy-price">0.679</b></button><br>
-                            <button class="btn btn-danger btn-lg">Sell at <b class="sell-price">0.653</b></button>
+                    <div class="row summary">
+                        <div class="col-xs-4 trade">
+                            <p class="delta">-<p>
+                            <p class="shares-held">Shares held: <b>-</b><p>
+                            <p class="end-date">End date: <b>-</b><p>
+
+                            <div class="input-group buy yes">
+                                <input type="text" class="form-control" placeholder="Shares">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-success" type="button">Buy <b></b></button>
+                                </span>
+                            </div>
+                            <div class="input-group buy no">
+                                <input type="text" class="form-control" placeholder="Shares">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-danger" type="button">Sell <b></b></button>
+                                </span>
+                            </div>
                         </div>
-                        <div class="col-xs-7 col-sm-8 chart" id="market-chart">
+                        <div class="col-xs-8">
+                            <div id="market-chart" class="chart"></div>
+                            <div class="details">
+                                <p class="current-price">Current price:<b></b></p>
+                                <p class="cash">Cash available:<b class="cash-balance">-</b></p>
+                                <p class="cost">Cost of trade:<b>-</b></p>
+                                <p class="new-cash">New cash available:<b>-</b></p>
+                                <p class="new-price">New price:<b>-</b></p>
+                                <p class="author">-</p>
+                            </div>
                         </div>
                     </div>
 
-                    <h5>Comments</h4>
-                    <div class="comments">
+                    <h4><span class="comment-count"></span> Comments</h4>
+                    <div id="comments">
+                        <form class="comment">
+                            <div class="user avatar"></div>
+                            <div class="box"><input type="textarea" class="form-control" placeholder="Join the discussion..."><div class="user address"></div></div>
+                        </form>
+                        <div class="comments">
+                        </div>
                     </div>
+
                 </div>
 
                 <div class="markets">
@@ -265,7 +298,7 @@
             <div class="modal-content">
                 <div class="modal-body clearfix">
                     <h4>Account addresses</h4>
-                    <p class="address"><p>
+                    <p class="user address"><p>
                 </div>
             </div>
         </div>
@@ -336,7 +369,7 @@
                         </div>
                         <button type="submit" class="btn btn-primary">Send</button>
                     </form>
-                    <p>BALANCE: <b class="balance"></b></p>
+                    <p>BALANCE: <b class="cash-balance"></b></p>
                 </div>
             </div>
         </div>
