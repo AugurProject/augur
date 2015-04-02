@@ -3,9 +3,12 @@ var constants = require('../constants');
 
 var BranchActions = {
   loadBranches: function () {
-    var configState = this.flux.stores('config').getState();
     var accountState = this.flux.stores('account').getState();
+    var branchState = this.flux.stores('branch').getState();
+    var configState = this.flux.stores('config').getState();
+
     var contract = configState.contract;
+    var currentBranch = branchState.currentBranch;
 
     var branches = _.map(contract.call().getBranches(), function(branchId) {
       var branchInfo = contract.call().getBranchInfo(branchId);
@@ -23,6 +26,15 @@ var BranchActions = {
     });
 
     this.dispatch(constants.branch.LOAD_BRANCHES_SUCCESS, {branches: branches});
+
+    // If the current branch is no longer in the set of branches, update the
+    // current branch to one that exists.
+    var currentBranchExists = _.some(branches, function (branch) {
+      branch === currentBranch;
+    });
+    if (!currentBranchExists && branches.length) {
+      this.flux.actions.branch.updateCurrentBranch(branches[0]);
+    }
   },
 
   updateCurrentBranch: function (id) {
