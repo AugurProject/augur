@@ -6,6 +6,9 @@ module.exports = {
     UPDATE_CONTRACT: null,
     UPDATE_IS_DEMO: null
   }),
+  network: keyMirror({
+    UPDATE_NETWORK: null
+  }),
   account: keyMirror({
     UPDATE_ACCOUNT: null
   }),

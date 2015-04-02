@@ -2,7 +2,7 @@ var constants = require('../constants');
 
 var AccountActions = {
   updateAccount: function (account) {
-    this.dispatch(constants.accounts.UPDATE_ACCOUNT, {account: account});
+    this.dispatch(constants.account.UPDATE_ACCOUNT, {account: account});
   }
 };
 
