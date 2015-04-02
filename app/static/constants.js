@@ -13,7 +13,8 @@ module.exports = {
     UPDATE_ACCOUNT: null
   }),
   branch: keyMirror({
-    LOAD_BRANCHES_SUCCESS: null
+    LOAD_BRANCHES_SUCCESS: null,
+    UPDATE_CURRENT_BRANCH: null
   }),
   market: keyMirror({
     LOAD_MARKETS_SUCCESS: null

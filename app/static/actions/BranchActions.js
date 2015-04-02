@@ -22,7 +22,11 @@ var BranchActions = {
       };
     });
 
-    this.dispatch(constants.accounts.LOAD_BRANCHES_SUCCESS, {branches: branches});
+    this.dispatch(constants.branch.LOAD_BRANCHES_SUCCESS, {branches: branches});
+  },
+
+  updateCurrentBranch: function (id) {
+    this.dispatch(constants.branch.UPDATE_CURRENT_BRANCH, {currentBranch: id})
   }
 };
 

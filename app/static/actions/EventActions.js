@@ -5,9 +5,12 @@ var utilities = require('../utilities');
 
 var EventActions = {
   loadEvents: function () {
-    var configState = this.flux.stores('config').getState();
     var accountState = this.flux.stores('account').getState();
+    var branchState = this.flux.stores('branch').getState();
+    var configState = this.flux.stores('config').getState();
     var networkState = this.flux.stores('network').getState();
+
+    var branchId = branchState.currentBranch;
     var contract = configState.contract;
 
     var events = _.map(contract.call().getEvents(branchId), function(eventId) {
