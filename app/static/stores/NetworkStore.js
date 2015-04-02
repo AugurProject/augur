@@ -9,9 +9,9 @@ var state = {
 };
 
 var NetworkStore = Fluxxor.createStore({
-  initialize: {
+  initialize: function () {
     this.bindActions(
-      constants.network.UPDATE_NETWORK, this.handleNetwork
+      constants.network.UPDATE_NETWORK, this.handleUpdateNetwork
     );
   },
 

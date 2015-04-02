@@ -7,7 +7,7 @@ var state = {
 };
 
 var BranchStore = Fluxxor.createStore({
-  initialize: {
+  initialize: function () {
     this.bindActions(
       constants.branch.LOAD_BRANCHES_SUCCESS, this.handleLoadBranchesSuccess,
       constants.branch.UPDATE_CURRENT_BRANCH, this.handleUpdateCurrentBranch
@@ -27,6 +27,6 @@ var BranchStore = Fluxxor.createStore({
     state.currentBranch = payload.currentBranch;
     this.emit(constants.CHANGE_EVENT);
   }
-};
+});
 
 module.exports = BranchStore;

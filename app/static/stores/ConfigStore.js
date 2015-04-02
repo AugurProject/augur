@@ -11,7 +11,7 @@ var state = {
 }
 
 var ConfigStore = Fluxxor.createStore({
-  initialize: {
+  initialize: function () {
     // TODO: Re-implement loading the evmAddress from a cookie or web3.db.
     this.bindActions(
       constants.config.UPDATE_CONTRACT_SUCCESS, this.handleUpdateContractSuccess,
@@ -37,7 +37,7 @@ var ConfigStore = Fluxxor.createStore({
     state.contractFailed = true;
     state.evmAddress = payload.evmAddress;
     this.emit(constants.CHANGE_EVENT);
-  }
+  },
 
   handleUpdateIsDemo: function (payload) {
     state.isDemo = payload.isDemo;

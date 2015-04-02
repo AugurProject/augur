@@ -4,10 +4,10 @@ var constants = require('../constants');
 
 var MarketActions = {
   loadMarkets: function () {
-    var accountState = this.flux.stores('account').getState();
-    var branchState = this.flux.stores('branch').getState();
-    var configState = this.flux.stores('config').getState();
-    var networkState = this.flux.stores('network').getState();
+    var accountState = this.flux.store('account').getState();
+    var branchState = this.flux.store('branch').getState();
+    var configState = this.flux.store('config').getState();
+    var networkState = this.flux.store('network').getState();
 
     var branchId = branchState.currentBranch;
     var contract = configState.contract;

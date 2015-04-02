@@ -3,10 +3,11 @@ window.web3 = require('ethereum.js');
 window.BigNumber = require('bignumber.js');
 window.$ = require('jquery');
 window._ = require('lodash');
+var Fluxxor = require('fluxxor');
 
 window.Identicon = require('./identicon.js');
-var Fluxxor = require('fluxxor');
-var utilities = require('utilities');
+var constants = require('./constants');
+var utilities = require('./utilities');
 
 
 // add jQuery to Browserify's global object so plugins attach correctly.
@@ -14,19 +15,19 @@ global.jQuery = $;
 require('jquery.cookie');
 require('bootstrap');
 
-var AccountActions = require('actions/AccountActions');
-var BranchActions = require('actions/BranchActions');
-var ConfigActions = require('actions/ConfigActions');
-var EventActions = require('actions/EventActions');
-var MarketActions = require('actions/MarketActions');
-var NetworkActions = require('actions/NetworkActions');
+var AccountActions = require('./actions/AccountActions');
+var BranchActions = require('./actions/BranchActions');
+var ConfigActions = require('./actions/ConfigActions');
+var EventActions = require('./actions/EventActions');
+var MarketActions = require('./actions/MarketActions');
+var NetworkActions = require('./actions/NetworkActions');
 
-var AccountStore = require('stores/AccountStore');
-var BranchStore = require('stores/BranchStore');
-var ConfigStore = require('stores/ConfigStore');
-var EventStore = require('stores/EventStore');
-var MarketStore = require('stores/MarketStore');
-var NetworkStore = require('stores/NetworkStore');
+var AccountStore = require('./stores/AccountStore');
+var BranchStore = require('./stores/BranchStore');
+var ConfigStore = require('./stores/ConfigStore');
+var EventStore = require('./stores/EventStore');
+var MarketStore = require('./stores/MarketStore');
+var NetworkStore = require('./stores/NetworkStore');
 
 var actions = {
   account: AccountActions,
@@ -38,12 +39,12 @@ var actions = {
 }
 
 var stores = {
-  account: AccountStore,
-  branch: BranchStore,
-  config: ConfigStore,
-  event: EventStore,
-  market: MarketStore,
-  network: NetworkStore
+  account: new AccountStore(),
+  branch: new BranchStore(),
+  config: new ConfigStore(),
+  event: new EventStore(),
+  market: new MarketStore(),
+  network: new NetworkStore()
 }
 
 var flux = new Fluxxor.Flux(stores, actions);
@@ -108,8 +109,8 @@ var augur = {
     },
 
     viewMarket: function(id) {
-        var account = flux.stores('account').getState().account;
-        var markets = flux.stores('market').getState().markets;
+        var account = flux.store('account').getState().account;
+        var markets = flux.store('market').getState().markets;
         var market = markets[id];
         var currentPrice = market.priceHistory[market.priceHistory.length-1][1];
 
@@ -168,19 +169,27 @@ var augur = {
             $('#alert div').scrollTop($('#alert div')[0].scrollHeight);
         },
 
-        period: function(data) {
+        period: function() {
 
-            var currentBlock = flux.stores('network').getState().blockNumber;
+            var branchState = flux.store('branch').getState();
+            var currentBranchData = branchState.branches[branchState.currentBranch];
+            var currentBlock = flux.store('network').getState().blockNumber;
+
             // clean up current period
-            data.currentPeriod = data.currentPeriod == -1 ? 0 : data.currentPeriod;
+            var currentPeriod;
+            if (currentBranchData.currentPeriod == -1) {
+              currentPeriod = 0;
+            } else {
+              currentPeriod = currentBranchData.currentPeriod;
+            }
 
-            var periodStart = data.periodLength * data.currentPeriod;
-            var periodEnd = periodStart + data.periodLength;
+            var periodStart = currentBranchData.periodLength * currentPeriod;
+            var periodEnd = periodStart + currentBranchData.periodLength;
             var periodAt = currentBlock - periodStart;
-            var periodPercent = (periodAt/ data.periodLength) * 100;
+            var periodPercent = (periodAt/ currentBranchData.periodLength) * 100;
             var periodEndDate = utilities.blockToDate(periodEnd, currentBlock);
 
-            $('.period h3 .branch-name').html(data.name);
+            $('.period h3 .branch-name').html(currentBranchData.name);
             $('.period h3 .period-ending').html('Period ending ' + utilities.formatDate(periodEndDate));
             $('.period-end-block').text(periodEnd);
 
@@ -196,14 +205,14 @@ var augur = {
         },
 
         branches: function() {
-            var account = flux.stores('account').getState().account;
-            var contract = flux.stores('config').getState().contract;
-            var branchState = flux.stores('branch').getState();
+            var account = flux.store('account').getState().account;
+            var contract = flux.store('config').getState().contract;
+            var branchState = flux.store('branch').getState();
             var branches = branchState.branches;
             var currentBranch = branchState.currentBranch;
 
             // Update the display for the current branch.
-            $('.period .branch-name').attr('data-id', id).text(branches[currentBranch].name);
+            $('.period .branch-name').attr('data-id', currentBranch).text(branches[currentBranch].name);
             $('input.branch-id').val(currentBranch);
 
             if (_.keys(branches).length) {
@@ -259,28 +268,28 @@ var augur = {
         },
 
         account: function() {
-            var accountState = flux.stores('account').getState()
+            var accountState = flux.store('account').getState()
 
             $('.user.address').html(accountState.account);
             $('.cash-balance').text(accountState.balance);
         },
 
         network: function() {
-            var networkState = flux.stores('network').getState()
+            var networkState = flux.store('network').getState()
 
-            $('.blocks span').text(network.currentBlock);
+            $('.blocks span').text(networkState.currentBlock);
             $('.blocks').show();
 
-            $('.gas span').text(network.gas);
+            $('.gas span').text(networkState.gas);
             $('.gas').show();
 
-            $('.gas-price span').text(network.gasPrice);
+            $('.gas-price span').text(networkState.gasPrice);
             $('.gas-price').show();
 
-            $('.host span').text(network.host);
+            $('.host span').text(networkState.host);
             $('.host').show();
 
-            $('.peers span').text(network.peerCount);
+            $('.peers span').text(networkState.peerCount);
             $('.peers').show();
 
             // TODO: Store and display miner status.
@@ -292,8 +301,8 @@ var augur = {
         markets: function() {
 
             var branchHasMarkets = false;
-            var markets = flux.stores('market').getState().markets;
-            var currentBranch = flux.stores('branch').getState().currentBranch;
+            var markets = flux.store('market').getState().markets;
+            var currentBranch = flux.store('branch').getState().currentBranch;
             $('.markets tbody').empty();
 
             _.each(markets, function(market, id) {
@@ -329,14 +338,14 @@ var augur = {
         events: function(data) {
 
             var branchHasEvents = false;
-            var events = flux.stores('event').getState().events;
-            var currentBranch = flux.stores('branch').getState().currentBranch;
+            var events = flux.store('event').getState().events;
+            var currentBranch = flux.store('branch').getState().currentBranch;
             $('.events tbody').empty();
             $('#market-events').empty();
 
             _.each(events, function(event, id) {
 
-                if (event.branchId === augur.data.currentBranch) {
+                if (event.branchId === currentBranch) {
                     branchHasEvents = true;
                     var row = $('<tr>').html('<td class="text">'+event.text+'</td><td>'+utilities.formatDate(event.matureDate)+'</td><td>'+event.status+'</td>');
                     $('.events tbody').append(row);
@@ -402,7 +411,7 @@ var augur = {
 
 $('#evm-address-form').on('submit', function(event) {
   event.preventDefault();
-  var evmAddress = $('#evm-address').val());
+  var evmAddress = $('#evm-address').val();
   flux.actions.config.updateContract(evmAddress);
   $.cookie('evmAddress', evmAddress);
   //web3.db.set('augur', 'evmAddress', augur.evmAddress);
@@ -413,7 +422,7 @@ $('#create-branch-modal form').on('submit', function(event) {
 
     event.preventDefault();
     // TODO: Replace this with a createBranch action.
-    var contract = flux.stores('config').getState().contract;
+    var contract = flux.store('config').getState().contract;
     var parent = parseInt($('#create-branch-modal .branch-parent').val());
     var branchName = $('#create-branch-modal .branch-name').val();
 
@@ -431,10 +440,10 @@ $('#add-event-modal form').on('submit', function(event) {
 
     event.preventDefault();
     // TODO: Replace this with a call to a new createEvent action.
-    var account = flux.stores('account').getState().account;
-    var contract = flux.stores('config').getState().contract;
-    var currentBranch = flux.stores('branch').getState().currentBranch;
-    var currentBlock = flux.stores('network').getState().blockNumber;
+    var account = flux.store('account').getState().account;
+    var contract = flux.store('config').getState().contract;
+    var currentBranch = flux.store('branch').getState().currentBranch;
+    var currentBlock = flux.store('network').getState().blockNumber;
 
     var newEvent = {
         branch: currentBranch,
@@ -466,9 +475,9 @@ $('#add-market-modal form').on('submit', function(event) {
 
     event.preventDefault();
     // TODO: Replace this with a call to a new createMarket action.
-    var account = flux.stores('account').getState().account;
-    var contract = flux.stores('config').getState().contract;
-    var currentBranch = flux.stores('branch').getState().currentBranch;
+    var account = flux.store('account').getState().account;
+    var contract = flux.store('config').getState().contract;
+    var currentBranch = flux.store('branch').getState().currentBranch;
 
     var newMarket = {
         branch: currentBranch,
@@ -530,7 +539,7 @@ $('#send-rep-modal form').on('submit', function(event) {
 
     event.preventDefault();
     // TODO: Replace this with a sendReputation action.
-    var contract = flux.stores('config').getState().contract;
+    var contract = flux.store('config').getState().contract;
     var address = $('#rep-dest-address').val();
     var amount = $('#send-rep-modal .rep-amount').val();
     var branch = $('#send-rep-modal .branch-id').val();
@@ -557,7 +566,7 @@ $('#alert').on('closed.bs.alert', function() {
     $('#alert div').empty();
 });
 
-flux.stores('config').on('change', function () {
+flux.store('config').on('change', function () {
   var configState = this.getState();
   if (configState.ethereumStatus === constants.config.ETHEREUM_STATUS_FAILED) {
     // The Ethereum daemon couldn't be reached. Offer to display demo data.
@@ -582,23 +591,37 @@ flux.stores('config').on('change', function () {
   }
 });
 
-flux.stores('network').on('change', function () {
+flux.store('network').on('change', function () {
   $('.network').show();
 });
 
-flux.stores('branch').on('change', function () {
-  var currentBranch = this.getState().currentBranch;
-  $('.branch-name').removeClass('selected');
-  $('.branch-name[data-id='+currentBranch+']').addClass('selected');
-
-  // Since all the data gets loaded at the same time, kick off rerendering
-  // the elements when branches are loaded. The React components will
-  // render themselves in response to their own data changing.
+function renderAll() {
   augur.render.account();
   augur.render.network();
   augur.render.branches();
   augur.render.markets();
   augur.render.events();
+  augur.render.period();
+}
+
+flux.store('branch').on('change', function () {
+  var currentBranch = this.getState().currentBranch;
+  $('.branch-name').removeClass('selected');
+  $('.branch-name[data-id='+currentBranch+']').addClass('selected');
+
+  renderAll();
+});
+
+flux.store('market').on('change', function () {
+  renderAll();
+});
+
+flux.store('event').on('change', function () {
+  renderAll();
+});
+
+flux.on("dispatch", function(type, payload) {
+  console.log("Dispatched", type, payload);
 });
 
 // TODO: Listen for each new block once we're connected to the Ethereum

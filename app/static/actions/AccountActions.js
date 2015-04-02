@@ -8,8 +8,8 @@ var AccountActions = {
   },
 
   loadBalance: function () {
-    var accountState = this.flux.stores('account').getState();
-    var configState = this.flux.stores('config').getState();
+    var accountState = this.flux.store('account').getState();
+    var configState = this.flux.store('config').getState();
     var contract = configState.contract;
 
     var balance = contract.call().balance(accountState.account);

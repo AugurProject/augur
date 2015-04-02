@@ -6,7 +6,7 @@ var state = {
 };
 
 var EventStore = Fluxxor.createStore({
-  initialize: {
+  initialize: function () {
     this.bindActions(
       constants.event.LOAD_EVENTS_SUCCESS, this.handleLoadEventsSuccess
     );
@@ -20,6 +20,6 @@ var EventStore = Fluxxor.createStore({
     state.events = payload.events;
     this.emit(constants.CHANGE_EVENT);
   }
-};
+});
 
 module.exports = EventStore;

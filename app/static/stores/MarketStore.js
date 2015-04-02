@@ -6,7 +6,7 @@ var state = {
 };
 
 var MarketStore = Fluxxor.createStore({
-  initialize: {
+  initialize: function () {
     this.bindActions(
       constants.market.LOAD_MARKETS_SUCCESS, this.handleLoadMarketsSuccess
     );
@@ -20,6 +20,6 @@ var MarketStore = Fluxxor.createStore({
     state.markets = payload.markets;
     this.emit(constants.CHANGE_EVENT);
   }
-};
+});
 
 module.exports = MarketStore;

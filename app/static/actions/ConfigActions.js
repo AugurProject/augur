@@ -21,10 +21,10 @@ var ConfigActions = {
       constants.config.UPDATE_ETHEREUM_STATUS,
       {ethereumStatus: constants.config.ETHEREUM_STATUS_CONNECTED});
     this.flux.actions.config.loadContract();
-  }
+  },
 
   updateContract: function (evmAddress) {
-    var isDemo = this.flux.stores('config').getState().isDemo;
+    var isDemo = this.flux.store('config').getState().isDemo;
     var contract;
     if (isDemo) {
       contract = require('../demo').contract;
@@ -55,13 +55,13 @@ var ConfigActions = {
   },
 
   loadContract: function () {
-    var evmAddress = this.flux.stores('config').getState().evmAddress;
+    var evmAddress = this.flux.store('config').getState().evmAddress;
     this.flux.actions.config.updateContract(evmAddress);
   },
 
   updateIsDemo: function (isDemo) {
     this.dispatch(constants.config.UPDATE_IS_DEMO, {isDemo: isDemo});
-    this.flux.actions.loadContract();
+    this.flux.actions.config.loadContract();
   }
 };
 

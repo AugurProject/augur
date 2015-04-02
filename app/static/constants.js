@@ -14,7 +14,8 @@ module.exports = {
     UPDATE_NETWORK: null
   }),
   account: keyMirror({
-    UPDATE_ACCOUNT: null
+    UPDATE_ACCOUNT: null,
+    LOAD_BALANCE_SUCCESS: null
   }),
   branch: keyMirror({
     LOAD_BRANCHES_SUCCESS: null,

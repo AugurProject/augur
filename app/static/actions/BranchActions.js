@@ -1,11 +1,12 @@
 var _ = require('lodash');
 var constants = require('../constants');
+var utilities = require('../utilities');
 
 var BranchActions = {
   loadBranches: function () {
-    var accountState = this.flux.stores('account').getState();
-    var branchState = this.flux.stores('branch').getState();
-    var configState = this.flux.stores('config').getState();
+    var accountState = this.flux.store('account').getState();
+    var branchState = this.flux.store('branch').getState();
+    var configState = this.flux.store('config').getState();
 
     var contract = configState.contract;
     var currentBranch = branchState.currentBranch;
@@ -25,7 +26,7 @@ var BranchActions = {
         name: branchName,
         currentPeriod: branchInfo[2].toNumber(),
         periodLength: branchInfo[3].toNumber(),
-        rep: augur.formatBalance(rep)
+        rep: utilities.formatBalance(rep)
       };
     });
 
