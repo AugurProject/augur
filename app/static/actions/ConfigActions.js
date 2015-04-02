@@ -30,6 +30,9 @@ var ConfigActions = {
     if (isDemo) {
 
       contract = require('../demo').contract;
+      this.dispatch(constants.account.UPDATE_ACCOUNT, {
+          account: '0xDEM0'
+      });
       console.log('[augur] running in demo mode');
 
     } else {
