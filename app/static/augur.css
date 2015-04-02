@@ -105,12 +105,12 @@ nav h1.navbar-brand {
 }
 nav h1.navbar-brand span {
     color: #fff;
-    font-weight: 300;
+    font-weight: 400;
     margin-left: 35px;
 }
 nav .navbar-right > li {
     font-family: 'Core Mellow';
-    font-weight: 300;
+    font-weight: 400;
     color: #ECECEC;
     font-size: 15px;
 }
@@ -147,7 +147,7 @@ nav .navbar-right li div {
 .branches-nav {
     background-color: #602A52;
     margin-top: -20px;
-    padding: 15px 0px 5px 0px;
+    padding: 20px 0px 5px 0px;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
 }
@@ -155,8 +155,13 @@ nav .navbar-right li div {
     font-family: 'Core Mellow';
     font-weight: 300;
     padding: 0px 12px;
-    font-size: 14px;
+    font-size: 16px;
     color: #fff;
+}
+.branches-nav div.divider {
+    margin: 10px 10px;
+    height: 1px;
+    border-bottom: 1px solid #eee;
 }
 .branches-nav p a {
     display: none;
@@ -166,6 +171,32 @@ nav .navbar-right li div {
 }
 .branches-nav p:hover a {
     display: inline;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+}
+.branches-nav .branch-name {
+    font-weight: 400;
+}
+.branches-nav p i {
+    font-style: normal;
+    display: inline-block;
+    background-color: #fff;
+    color: #602A52;
+    padding: 1px 6px;
+    border-radius: 8px;
+    margin: 0px 0px 0px 10px;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    opacity: 0.6;
+    position: relative;
+    top: -1px;
+}
+.branches-nav p .fa-share-square-o {
+    font-size: 15px;
+    position: relative;
+    top: 2px;
 }
 .branches-nav .branch-name:hover {
     cursor: pointer;

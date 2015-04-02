@@ -518,8 +518,8 @@ var augur = {
                     if (branch.rep) {
 
                         has_branches = true;
-                        var p = $('<p>').html('<span class="pull-left"><b class="branch-name" data-id='+id+'>'+branch.name+'</b> ('+branch.rep+')</span>').addClass('clearfix');
-                        var send = $('<a>').attr('href','#').addClass('pull-right').text('send').on('click', function() {
+                        var p = $('<p>').html('<span class="pull-left"><b class="branch-name" data-id='+id+'>'+branch.name+'</b><i>'+branch.rep+'</i></span>').addClass('clearfix');
+                        var send = $('<a>').attr('href','#').addClass('pull-right').html('<span class="fa fa-share-square-o"></span>').on('click', function() {
                             $('#branch-id').val(id);
                             $('#send-rep-modal .rep-balance').text(branch.rep);
                             $('#send-rep-modal .branch').text(branch.name);
