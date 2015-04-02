@@ -3,8 +3,12 @@ var keyMirror = require('react/lib/keyMirror');
 module.exports = {
   CHANGE_EVENT: 'change',
   config: keyMirror({
-    UPDATE_CONTRACT: null,
-    UPDATE_IS_DEMO: null
+    UPDATE_CONTRACT_SUCCESS: null,
+    UPDATE_CONTRACT_FAILED: null,
+    UPDATE_IS_DEMO: null,
+    UPDATE_ETHEREUM_STATUS: null,
+    ETHEREUM_STATUS_CONNECTED: null,
+    ETHEREUM_STATUS_FAILED: null
   }),
   network: keyMirror({
     UPDATE_NETWORK: null

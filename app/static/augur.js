@@ -5,12 +5,47 @@ window.$ = require('jquery');
 window._ = require('lodash');
 
 window.Identicon = require('./identicon.js');
+var Fluxxor = require('fluxxor');
 
 
 // add jQuery to Browserify's global object so plugins attach correctly.
 global.jQuery = $;
 require('jquery.cookie');
 require('bootstrap');
+
+var AccountActions = require('actions/AccountActions');
+var BranchActions = require('actions/BranchActions');
+var ConfigActions = require('actions/ConfigActions');
+var EventActions = require('actions/EventActions');
+var MarketActions = require('actions/MarketActions');
+var NetworkActions = require('actions/NetworkActions');
+
+var AccountStore = require('stores/AccountStore');
+var BranchStore = require('stores/BranchStore');
+var ConfigStore = require('stores/ConfigStore');
+var EventStore = require('stores/EventStore');
+var MarketStore = require('stores/MarketStore');
+var NetworkStore = require('stores/NetworkStore');
+
+var actions = {
+  account: AccountActions,
+  branch: BranchActions,
+  config: ConfigActions,
+  event: EventActions,
+  market: MarketActions,
+  network: NetworkActions
+}
+
+var stores = {
+  account: AccountStore,
+  branch: BranchStore,
+  config: ConfigStore,
+  event: EventStore,
+  market: MarketStore,
+  network: NetworkStore
+}
+
+var flux = new Fluxxor.Flux(stores, actions);
 
 var augur = {
 
@@ -50,114 +85,19 @@ var augur = {
         return testContract;
     },
 
+    /**
+     * The callback for the modal to enable demo mode.
+     */
     demo: function() {
-
-        $('#no-eth-modal').modal('hide');
-        augur.demoMode = true;
-        augur.evmAddress = 'demo';
-        var demo = require('./demo.js');
-        web3 = demo.web3;
-
-        augur.checkClient();
+      $('#no-eth-modal').modal('hide');
+      flux.actions.config.updateIsDemo(true);
     },
 
     checkClient: function() {
-
-        web3.setProvider(new web3.providers.HttpProvider());
-
-        var client = true;
-
-        try {
-            web3.eth.accounts;
-        } catch(err) {
-            console.log('[augur] no ethereum client found');
-            $('#no-eth-modal').modal('show');
-            client = false;
-        }
-
-        $('#logo .progress-bar').css('width', '25%');
-
-        augur.network = {
-            host: 'localhost:8080',
-            peerCount: '-',
-            blockNumber: '-',
-            miner: web3.eth.mining,
-            gas: '-',
-            gasPrice: '-'
-        };
-
-        augur.data.account = web3.eth.accounts[0];
-        augur.syncNetwork();
-
-        // watch ethereum for changes and update network data
-        web3.eth.filter('latest').watch(function(log) {
-            console.log('[augur] network changed');
-            augur.syncNetwork();
-        });
-
-        $('#logo .progress-bar').css('width', '50%');
-        $('.network').show();
-
-        if (client) augur.load();
-    },
-
-    load: function() {
-
-        $('#evm-address-form').on('submit', function(event) {
-            event.preventDefault();
-            augur.evmAddress = $('#evm-address').val();
-            $.cookie('evmAddress', augur.evmAddress);
-            //web3.db.set('augur', 'evmAddress', augur.evmAddress);
-            $('#evm-address-modal').modal('hide');
-            augur.load();
-        });
-
-        // get EVM address
-        if (!augur.evmAddress) {
-            if ($.cookie('evmAddress')) {
-                augur.evmAddress = $.cookie('evmAddress');
-            } else if (web3.db.get('augur', 'evmAddress')) {
-                augur.evmAddress = web3.db.get('augur', 'evmAddress');
-            } else {
-                $('#evm-address-modal').modal('show');
-                return;
-            }
-        }
-
-        $('#logo .progress-bar').css('width', '75%');
-
-        if (augur.evmAddress == 'demo') {
-            var demo = require('./demo.js');
-            augur.contract = demo.contract;
-        } else {
-            var Contract = web3.eth.contract(augur.abi);
-            augur.contract = new Contract(augur.evmAddress);
-        }
-
-        // check to see if contract was successfully loaded
-        if (augur.contract.call().faucet().toNumber()) {
-
-            console.log('[augur] evm contract loaded from ' + augur.evmAddress);
-            $('#logo .progress-bar').css('width', '100%');
-            augur.init();
-
-        } else {
-
-            augur.confirm({
-                message: '<h4>Augur could not be found.</h4><p>Load a different address?</p>',
-                confirmText: 'Yes',
-                cancelText: 'No',
-                confirmCallback: function() { $('#evm-address-modal').modal('show'); }
-            });
-        }
+      flux.actions.config.checkEthereumClient();
     },
 
     init: function() {
-
-        $('body').removeClass('stopped').addClass('running');
-
-        augur.syncContract();
-
         // watch for augur contract changes
         web3.eth.filter(augur.contract).watch(function(log) {
             console.log('[augur] contract changed');
@@ -223,6 +163,8 @@ var augur = {
         $('#add-market-modal form').on('submit', function(event) {
 
             event.preventDefault();
+            var contract = flux.stores('config').getState().contract;
+            var currentBranch = flux.stores('branch').getState().currentBranch;
 
             var newMarket = {
                 branch: augur.data.currentBranch,
@@ -238,7 +180,7 @@ var augur = {
                 status: 'pending'
             };
 
-            var id = augur.contract.call().createMarket(newMarket.branch, newMarket.text, newMarket.alpha, newMarket.initial, newMarket.fee, newMarket.events);
+            var id = contract.call().createMarket(newMarket.branch, newMarket.text, newMarket.alpha, newMarket.initial, newMarket.fee, newMarket.events);
 
             if (id.toNumber() === 0) {
                 var data = {
@@ -326,79 +268,6 @@ var augur = {
         augur.update(augur.network);
     },
 
-    syncContract: function() {
-
-        augur.data.account = web3.eth.accounts[0];
-        augur.data.balance = augur.formatBalance(augur.contract.call().balance(augur.data.account));
-
-        augur.getBranches();
-        augur.getEvents(augur.data.currentBranch);
-        augur.getMarkets(augur.data.currentBranch);
-
-        augur.update(augur.data);
-    },
-
-    getBranches: function() {
-
-        _.each(augur.contract.call().getBranches(), function(branchId) {
-
-            var branchInfo = augur.contract.call().getBranchInfo(branchId);
-            var branchName = augur.contract.call().getBranchDesc(branchId);
-            var rep = augur.contract.call().getRepBalance(branchId, augur.data.account);
-            if (branchId.toNumber() == 1010101) branchName = 'General';   // HACK
-
-            augur.data.branches[branchId.toNumber()] = {
-                name: branchName,
-                currentPeriod: branchInfo[2].toNumber(),
-                periodLength: branchInfo[3].toNumber(),
-                rep: augur.formatBalance(rep)
-            };
-        });
-    },
-
-    getEvents: function(branchId) {
-
-        _.each(augur.contract.call().getEvents(branchId), function(eventId) {
-
-            var eventInfo = augur.contract.call().getEventInfo(eventId);
-            var eventText = augur.contract.call().getEventDesc(eventId);
-
-            augur.data.events[eventId.toNumber()] = {
-                text: eventText,
-                matureBlock: eventInfo[3].toNumber(),
-                matureDate: augur.blockToDate(eventInfo[3].toNumber()),
-                status: 'open',
-                branchId: branchId
-            };
-        });
-    },
-
-    getMarkets: function(branchId) {
-
-        _.each(augur.contract.call().getMarkets(branchId), function(id) {
-
-            var marketInfo = augur.contract.call().getMarketInfo(id);
-            var marketText = augur.contract.call().getMarketDesc(id);
-            var marketComments = augur.contract.call().getMarketComments(id);
-            var marketHistory = augur.contract.call().getMarketHistory(id);
-            var marketShares = augur.contract.call().getMarketShares(id, augur.data.account);
-
-            augur.data.markets[id.toNumber()] = {
-                text: marketText,
-                volume: 12543,
-                fee: marketInfo[7].toNumber(),
-                buyPrice: 134.4,
-                sellPrice: 133.2,
-                delta: 1.3,
-                status: 'open',
-                priceHistory: marketHistory,
-                comments: marketComments,
-                branchId: branchId,
-                sharesHeld: marketShares
-            };
-        });
-    },
-
     viewBranch: function(id) {
 
         augur.data.currentBranch = id;
@@ -413,7 +282,7 @@ var augur = {
     viewMarket: function(id) {
 
         var market = augur.data.markets[id];
-        var currentPrice = market.priceHistory[market.priceHistory.length-1][1]; 
+        var currentPrice = market.priceHistory[market.priceHistory.length-1][1];
 
         $('#market h3 .text').text(market.text);
         $('#market h3 .current').text(parseInt(currentPrice * 100).toString() + '%');
@@ -552,7 +421,7 @@ var augur = {
                 $('.branches').empty().append(p);
             }
 
-            $('.branch-name').on('click', function(event) { 
+            $('.branch-name').on('click', function(event) {
                 var id = $(this).attr('data-id');
                 augur.viewBranch(parseInt(id));
             });
@@ -768,5 +637,52 @@ var augur = {
         $('#confirm-modal').modal('show');
     }
 };
+
+$('#evm-address-form').on('submit', function(event) {
+  event.preventDefault();
+  val evmAddress = $('#evm-address').val());
+  flux.actions.config.updateContract(evmAddress);
+  $.cookie('evmAddress', evmAddress);
+  //web3.db.set('augur', 'evmAddress', augur.evmAddress);
+  $('#evm-address-modal').modal('hide');
+});
+
+flux.stores('config').on('change', function () {
+  var configState = this.getState();
+  if (configState.ethereumStatus === constants.config.ETHEREUM_STATUS_FAILED) {
+    // The Ethereum daemon couldn't be reached. Offer to display demo data.
+    $('#no-eth-modal').modal('show');
+  } else if (!configState.contract) {
+    // The Ethereum daemon is available, but we haven't loaded data yet.
+    $('#logo .progress-bar').css('width', '50%');
+  }
+
+  if (configState.contractFailed) {
+    augur.confirm({
+      message: '<h4>Augur could not be found.</h4><p>Load a different address?</p>',
+      confirmText: 'Yes',
+      cancelText: 'No',
+      confirmCallback: function() { $('#evm-address-modal').modal('show'); }
+    });
+  }
+
+  if (configState.contract) {
+    $('#logo .progress-bar').css('width', '100%');
+    $('body').removeClass('stopped').addClass('running');
+  }
+});
+
+flux.stores('network').on('change', function () {
+  $('.network').show();
+});
+
+// TODO: Listen for each new block once we're connected to the Ethereum
+// daemon with web3.eth.filter.
+// We can always update the network on each block.
+// this.flux.actions.network.updateNetwork();
+// If we have a contract, we can update the rest of our data.
+// this.flux.actions.branch.loadBranches();
+// this.flux.actions.event.loadEvents();
+// this.flux.actions.market.loadMarkets();
 
 module.exports = augur;

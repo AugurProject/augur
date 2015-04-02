@@ -5,14 +5,19 @@ var state = {
   host: 'localhost:8080',
   evmAddress: '0x01202a04dc223ae5f87b473ef11c2ec372e4b0be',
   isDemo: false,
-  contract: null
+  contract: null,
+  contractFailed: false,
+  ethereumStatus: null
 }
 
 var ConfigStore = Fluxxor.createStore({
   initialize: {
+    // TODO: Re-implement loading the evmAddress from a cookie or web3.db.
     this.bindActions(
-      constants.config.UPDATE_CONTRACT, this.handleUpdateContract,
-      constants.config.UPDATE_IS_DEMO, this.handleUpdateIsDemo
+      constants.config.UPDATE_CONTRACT_SUCCESS, this.handleUpdateContractSuccess,
+      constants.config.UPDATE_CONTRACT_FAILED, this.handleUpdateContractFailed,
+      constants.config.UPDATE_IS_DEMO, this.handleUpdateIsDemo,
+      constants.config.UPDATE_ETHEREUM_STATUS, this.handleUpdateEthereumStatus
     );
   },
 
@@ -20,14 +25,32 @@ var ConfigStore = Fluxxor.createStore({
     return state;
   },
 
-  handleUpdateContract: function (payload) {
+  handleUpdateContractSuccess: function (payload) {
     state.contract = payload.contract;
+    state.contractFailed = false;
     state.evmAddress = payload.evmAddress;
     this.emit(constants.CHANGE_EVENT);
   },
 
+  handleUpdateContractFailed: function (payload) {
+    state.contract = null;
+    state.contractFailed = true;
+    state.evmAddress = payload.evmAddress;
+    this.emit(constants.CHANGE_EVENT);
+  }
+
   handleUpdateIsDemo: function (payload) {
     state.isDemo = payload.isDemo;
+    if (state.isDemo) {
+      // In the demo state, we pretend the Ethereum daemon is reachable.
+      state.ethereumStatus = constants.config.ETHEREUM_STATUS_CONNECTED;
+    }
+    state.contractFailed = false;
+    this.emit(constants.CHANGE_EVENT);
+  },
+
+  handleUpdateEthereumStatus: function (payload) {
+    state.ethereumStatus = payload.ethereumStatus;
     this.emit(constants.CHANGE_EVENT);
   }
 });
