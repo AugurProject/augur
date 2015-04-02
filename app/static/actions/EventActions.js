@@ -12,7 +12,7 @@ var EventActions = {
     var branchId = branchState.currentBranch;
     var contract = configState.contract;
 
-    var events = _.map(contract.call().getEvents(branchId), function(eventId) {
+    var eventList = _.map(contract.call().getEvents(branchId), function(eventId) {
       var eventInfo = contract.call().getEventInfo(eventId);
       var eventText = contract.call().getEventDesc(eventId);
 
@@ -26,6 +26,7 @@ var EventActions = {
       };
     });
 
+    var events = _.indexBy(eventList, 'id');
     this.dispatch(constants.event.LOAD_EVENTS_SUCCESS, {events: events});
   }
 };

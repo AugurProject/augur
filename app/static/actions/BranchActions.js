@@ -10,7 +10,7 @@ var BranchActions = {
     var contract = configState.contract;
     var currentBranch = branchState.currentBranch;
 
-    var branches = _.map(contract.call().getBranches(), function(branchId) {
+    var branchList = _.map(contract.call().getBranches(), function(branchId) {
       var branchInfo = contract.call().getBranchInfo(branchId);
       var branchName = contract.call().getBranchDesc(branchId);
       var rep = contract.call().getRepBalance(branchId, accountState.account);
@@ -29,6 +29,7 @@ var BranchActions = {
       };
     });
 
+    var branches = _.indexBy(branchList, 'id');
     this.dispatch(constants.branch.LOAD_BRANCHES_SUCCESS, {branches: branches});
 
     // If the current branch is no longer in the set of branches, update the

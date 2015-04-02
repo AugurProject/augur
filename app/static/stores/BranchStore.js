@@ -2,7 +2,7 @@ var Fluxxor = require('fluxxor');
 var constants = require('../constants');
 
 var state = {
-  branches: [],
+  branches: {},
   currentBranch: 1010102
 };
 

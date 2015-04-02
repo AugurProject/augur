@@ -12,7 +12,7 @@ var MarketActions = {
     var branchId = branchState.currentBranch;
     var contract = configState.contract;
 
-    var markets = _.map(contract.call().getMarkets(branchId), function (id) {
+    var marketList = _.map(contract.call().getMarkets(branchId), function (id) {
       var marketInfo = contract.call().getMarketInfo(id);
       var marketText = contract.call().getMarketDesc(id);
       var marketComments = contract.call().getMarketComments(id);
@@ -35,6 +35,7 @@ var MarketActions = {
       };
     });
 
+    var markets = _.indexBy(marketList, 'id');
     this.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {markets: markets});
   }
 };

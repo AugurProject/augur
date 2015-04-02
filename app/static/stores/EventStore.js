@@ -2,7 +2,7 @@ var Fluxxor = require('fluxxor');
 var constants = require('../constants');
 
 var state = {
-  events: []
+  events: {}
 };
 
 var EventStore = Fluxxor.createStore({
