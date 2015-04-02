@@ -5,7 +5,6 @@ var utilities = require('../utilities');
 
 var EventActions = {
   loadEvents: function () {
-    var accountState = this.flux.stores('account').getState();
     var branchState = this.flux.stores('branch').getState();
     var configState = this.flux.stores('config').getState();
     var networkState = this.flux.stores('network').getState();
@@ -27,7 +26,7 @@ var EventActions = {
       };
     });
 
-    this.dispatch(constants.accounts.LOAD_EVENTS_SUCCESS, {events: events});
+    this.dispatch(constants.event.LOAD_EVENTS_SUCCESS, {events: events});
   }
 };
 

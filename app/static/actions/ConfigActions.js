@@ -9,13 +9,17 @@ var ConfigActions = {
       contract = require('../demo').contract;
     } else {
       var Contract = web3.eth.contract(abi);
-      contract = new Contract(augur.evmAddress);
+      contract = new Contract(evmAddress);
     }
 
     this.dispatch(constants.config.UPDATE_CONTRACT, {
       evmAddress: evmAddress,
       contract: contract
     });
+
+    this.flux.actions.network.updateNetwork();
+    this.flux.actions.branch.loadBranches();
+    this.flux.actions.event.loadEvents();
   },
 
   updateIsDemo: function (isDemo) {

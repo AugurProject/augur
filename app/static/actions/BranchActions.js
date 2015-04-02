@@ -14,7 +14,11 @@ var BranchActions = {
       var branchInfo = contract.call().getBranchInfo(branchId);
       var branchName = contract.call().getBranchDesc(branchId);
       var rep = contract.call().getRepBalance(branchId, accountState.account);
-      if (branchId.toNumber() == 1010101) branchName = 'General';   // HACK
+      if (branchId.toNumber() == 1010101) {
+        // FIXME: Explain this override in a comment or remove it if it isn't
+        // necessary.
+        branchName = 'General';
+      }
 
       return {
         id: branchId,
@@ -39,6 +43,7 @@ var BranchActions = {
 
   updateCurrentBranch: function (id) {
     this.dispatch(constants.branch.UPDATE_CURRENT_BRANCH, {currentBranch: id})
+    this.flux.actions.event.loadEvents();
   }
 };
 
