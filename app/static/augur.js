@@ -381,6 +381,7 @@ var augur = {
             var marketText = augur.contract.call().getMarketDesc(id);
             var marketComments = augur.contract.call().getMarketComments(id);
             var marketHistory = augur.contract.call().getMarketHistory(id);
+            var marketShares = augur.contract.call().getMarketShares(id, augur.data.account);
 
             augur.data.markets[id.toNumber()] = {
                 text: marketText,
@@ -392,7 +393,8 @@ var augur = {
                 status: 'open',
                 priceHistory: marketHistory,
                 comments: marketComments,
-                branchId: branchId
+                branchId: branchId,
+                sharesHeld: marketShares
             };
         });
     },
@@ -415,6 +417,8 @@ var augur = {
 
         $('#market h3 .text').text(market.text);
         $('#market h3 .current').text(parseInt(currentPrice * 100).toString() + '%');
+        $('#market .current-price b').html((currentPrice * 100).toString() + '&cent;');
+        $('#market .shares-held b').text(market.sharesHeld[0]);
 
         // build chart
         var data = google.visualization.arrayToDataTable([['Date', 'Price']].concat(market.priceHistory));

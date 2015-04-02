@@ -56,14 +56,14 @@ body.running #logo {
 
 h1, h2, h3, h4, h5 {
     font-family: 'Core Mellow';
-    font-weight: 400;
+    font-weight: 500;
 }
 h4 a {
     font-size: 14px;
     margin-top: 3px;
 }
 table {
-    font-size: 13px;
+    font-size: 16px;
 }
 
 #logo {
@@ -413,7 +413,7 @@ nav .navbar-right li div {
 #market h3 {
     color: #602A52;
     font-size: 25px;
-    margin-bottom: 20px;
+    margin-bottom: 35px;
     clear: left;
 }
 #market h3 .text {
