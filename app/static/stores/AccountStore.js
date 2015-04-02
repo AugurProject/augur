@@ -9,7 +9,7 @@ var state = {
 var AccountStore = Fluxxor.createStore({
   initialize: {
     this.bindActions(
-      constants.account.UPDATE_ACCOUNT, this.handleUpdateAccount,
+      constants.account.UPDATE_ACCOUNT, this.handleUpdateAccount
     );
   },
 

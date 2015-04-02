@@ -1,4 +1,6 @@
-var abi = require('../abi.js');
+var web3 = require('ethereum.js');
+
+var abi = require('../abi');
 var constants = require('../constants');
 
 var ConfigActions = {
@@ -20,6 +22,7 @@ var ConfigActions = {
     this.flux.actions.network.updateNetwork();
     this.flux.actions.branch.loadBranches();
     this.flux.actions.event.loadEvents();
+    this.flux.actions.market.loadMarkets();
   },
 
   updateIsDemo: function (isDemo) {
