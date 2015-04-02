@@ -88,14 +88,6 @@ var augur = {
     },
 
     /**
-     * The callback for the modal to enable demo mode.
-     */
-    demo: function() {
-      $('#no-eth-modal').modal('hide');
-      flux.actions.config.updateIsDemo(true);
-    },
-
-    /**
      * The entrypoint of the application. Checks for a running Ethereum
      * daemon, and if it doesn't find one, offers to show demo data.
      */
@@ -566,7 +558,12 @@ $('#alert').on('closed.bs.alert', function() {
     $('#alert div').empty();
 });
 
+$('.start-demo-mode').on('click', function(event) {
+    flux.actions.config.updateIsDemo(true);
+}),
+
 flux.store('config').on('change', function () {
+
   var configState = this.getState();
   if (configState.ethereumStatus === constants.config.ETHEREUM_STATUS_FAILED) {
     // The Ethereum daemon couldn't be reached. Offer to display demo data.
@@ -580,8 +577,9 @@ flux.store('config').on('change', function () {
     augur.confirm({
       message: '<h4>Augur could not be found.</h4><p>Load a different address?</p>',
       confirmText: 'Yes',
-      cancelText: 'No',
-      confirmCallback: function() { $('#evm-address-modal').modal('show'); }
+      cancelText: 'No, proceed in demo mode',
+      confirmCallback: function() { $('#evm-address-modal').modal('show'); },
+      cancelCallback: function() { flux.actions.config.updateIsDemo(true); }
     });
   }
 

@@ -4,6 +4,7 @@ var abi = require('../abi');
 var constants = require('../constants');
 
 var ConfigActions = {
+
   checkEthereumClient: function () {
     web3.setProvider(new web3.providers.HttpProvider());
 
@@ -27,13 +28,18 @@ var ConfigActions = {
     var isDemo = this.flux.store('config').getState().isDemo;
     var contract;
     if (isDemo) {
+
       contract = require('../demo').contract;
+      console.log('[augur] running in demo mode');
+
     } else {
+
       var Contract = web3.eth.contract(abi);
       contract = new Contract(evmAddress);
 
       // Attempt a contract call to see if we're good to go.
-      if (!augur.contract.call().faucet().toNumber()) {
+      if (!contract.call().faucet().toNumber()) {
+
         this.dispatch(constants.config.UPDATE_CONTRACT_FAILED, {
           evmAddress: evmAddress
         })
