@@ -6,7 +6,10 @@ var AccountActions = {
     this.flux.actions.account.loadBalance();
     this.flux.actions.network.updateNetwork();
   },
-
+  loadAccount: function () {
+    var accounts = this.flux.store('network').getState().accounts;
+    this.flux.actions.account.updateAccount(accounts[0]);  // just setting to first account for now
+  },
   loadBalance: function () {
     var accountState = this.flux.store('account').getState();
     var configState = this.flux.store('config').getState();

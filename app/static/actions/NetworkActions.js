@@ -15,6 +15,7 @@ var NetworkActions = {
     }
 
     this.dispatch(constants.network.UPDATE_NETWORK, {
+      accounts: web3.eth.accounts,
       peerCount: web3.net.peerCount,
       blockNumber: web3.eth.blockNumber,
       gas: utilities.formatGas(web3.eth.getBalance(accountState.account)),

@@ -2,6 +2,7 @@ var Fluxxor = require('fluxxor');
 var constants = require('../constants');
 
 var state = {
+  accounts: null,
   peerCount: null,
   blockNumber: null,
   gas: null,
@@ -9,6 +10,7 @@ var state = {
 };
 
 var NetworkStore = Fluxxor.createStore({
+  
   initialize: function () {
     this.bindActions(
       constants.network.UPDATE_NETWORK, this.handleUpdateNetwork

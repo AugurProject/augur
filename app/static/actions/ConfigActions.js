@@ -30,9 +30,6 @@ var ConfigActions = {
     if (isDemo) {
 
       contract = require('../demo').contract;
-      this.dispatch(constants.account.UPDATE_ACCOUNT, {
-          account: '0xDEM0'
-      });
       console.log('[augur] running in demo mode');
 
     } else {
@@ -58,6 +55,7 @@ var ConfigActions = {
     });
 
     this.flux.actions.network.updateNetwork();
+    this.flux.actions.account.loadAccount();
     this.flux.actions.branch.loadBranches();
     this.flux.actions.event.loadEvents();
     this.flux.actions.market.loadMarkets();
