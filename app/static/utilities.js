@@ -2,6 +2,7 @@ var BigNumber = require('bignumber.js');
 var web3 = require('ethereum.js');
 
 module.exports = {
+
   blockToDate: function(block, currentBlock) {
 
     // calculate date from block number
@@ -10,14 +11,6 @@ module.exports = {
     date.setSeconds(date.getSeconds() + seconds);
 
     return date;
-  },
-
-  formatBalance: function(value) {  // value must be a big number
-
-    var x = new BigNumber(2);
-    var y = x.toPower(64);
-
-    return value.dividedBy(y).toString('10');
   },
 
   formatDate: function(d) {

@@ -15,7 +15,7 @@ var AccountActions = {
     var configState = this.flux.store('config').getState();
     var contract = configState.contract;
 
-    var balance = contract.call().balance(accountState.account);
+    var balance = contract.call().balance(accountState.account).dividedBy( new BigNumber(2).toPower(64) );
     this.dispatch(constants.account.LOAD_BALANCE_SUCCESS, {balance: balance});
   }
 };
