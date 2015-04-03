@@ -1,6 +1,5 @@
 var _ = require('lodash');
 var constants = require('../constants');
-var utilities = require('../utilities');
 
 var BranchActions = {
   loadBranches: function () {
@@ -14,7 +13,7 @@ var BranchActions = {
     var branchList = _.map(contract.call().getBranches(), function(branchId) {
       var branchInfo = contract.call().getBranchInfo(branchId);
       var branchName = contract.call().getBranchDesc(branchId);
-      var rep = contract.call().getRepBalance(branchId, accountState.account);
+      var rep = contract.call().getRepBalance(branchId, accountState.account).dividedBy(new BigNumber(2).toPower(64));
       if (branchId.toNumber() == 1010101) {
         // FIXME: Explain this override in a comment or remove it if it isn't
         // necessary.
@@ -26,7 +25,7 @@ var BranchActions = {
         name: branchName,
         currentPeriod: branchInfo[2].toNumber(),
         periodLength: branchInfo[3].toNumber(),
-        rep: utilities.formatBalance(rep)
+        rep: rep
       };
     });
 
