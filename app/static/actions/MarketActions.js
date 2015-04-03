@@ -13,6 +13,7 @@ var MarketActions = {
     var contract = configState.contract;
 
     var marketList = _.map(contract.call().getMarkets(branchId), function (id) {
+      
       var marketInfo = contract.call().getMarketInfo(id);
       var marketText = contract.call().getMarketDesc(id);
       var marketComments = contract.call().getMarketComments(id);
@@ -22,11 +23,8 @@ var MarketActions = {
       return {
         id: id.toNumber(),
         text: marketText,
-        volume: 12543,
+        volume: 0,
         fee: marketInfo[7].toNumber(),
-        buyPrice: 134.4,
-        sellPrice: 133.2,
-        delta: 1.3,
         status: 'open',
         priceHistory: marketHistory,
         comments: marketComments,

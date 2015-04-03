@@ -14,18 +14,15 @@ var BranchActions = {
       var branchInfo = contract.call().getBranchInfo(branchId);
       var branchName = contract.call().getBranchDesc(branchId);
       var rep = contract.call().getRepBalance(branchId, accountState.account).dividedBy(new BigNumber(2).toPower(64));
-      if (branchId.toNumber() == 1010101) {
-        // FIXME: Explain this override in a comment or remove it if it isn't
-        // necessary.
-        branchName = 'General';
-      }
+      var marketCount = contract.call().getMarkets(branchId).length;
 
       return {
         id: branchId,
         name: branchName,
         currentPeriod: branchInfo[2].toNumber(),
         periodLength: branchInfo[3].toNumber(),
-        rep: rep
+        rep: rep,
+        marketCount: marketCount
       };
     });
 

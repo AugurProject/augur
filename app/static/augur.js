@@ -210,42 +210,17 @@ var augur = {
             if (_.keys(branches).length) {
                 $('.branches').empty();
 
-                // sort on reputation
-                //data = data.sort(function(a,b) {return (a.rep > b.rep) ? -1 : ((b.rep > a.rep) ? 1 : 0);} );
-                var has_branches = false;
-                var has_others = false;
-
                 _.each(branches, function(branch, id) {
 
                     // update period for current branch
                     if (id == currentBranch) augur.render.period(branch);
 
-                    if (branch.rep) {
+                    has_branches = true;
+                    var p = $('<p>').html('<b class="branch-name" data-id='+id+'>'+branch.name+'</b>');
+                    if (branch.marketCount) p.append($('<i>').text(branch.marketCount));
 
-                        has_branches = true;
-                        var p = $('<p>').html('<span class="pull-left"><b class="branch-name" data-id='+id+'>'+branch.name+'</b><i>'+branch.rep+'</i></span>').addClass('clearfix');
-                        var send = $('<a>').attr('href','#').addClass('pull-right').html('<span class="fa fa-share-square-o"></span>').on('click', function() {
-                            $('#branch-id').val(id);
-                            $('#send-rep-modal .rep-balance').text(branch.rep);
-                            $('#send-rep-modal .branch').text(branch.name);
-                            $('#send-rep-modal').modal('show');
-                        });
-                        p.append(send);
-
-                    } else {
-
-                        has_others = true;
-                        var p = $('<p class="other">').html('<span>'+branch.name+'</span>');
-                    }
                     $('.branches').append(p);
                 });
-
-                if (has_others) {
-                    var bt = $('<a>').addClass('pull-right branches-toggle').on('click', function(event) {
-                        $('.branches').toggleClass('all');
-                    });
-                    $('.branches').append(bt);
-                }
 
             } else {
 
