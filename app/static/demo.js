@@ -290,32 +290,6 @@ var demo = {
 				new BigNumber(0)
 			],
 			rep: new BigNumber(20).times(new BigNumber(2).toPower(64))
-		},
-
-		1010103: {
-			desc: 'Commodities',
-			info: [
-				new BigNumber(1),
-				new BigNumber(100),
-				new BigNumber(0),
-				new BigNumber(6000),
-				new BigNumber(1),
-				new BigNumber(0)
-			],
-			rep: new BigNumber(105).times(new BigNumber(2).toPower(64))
-		},
-
-		1010104: {
-			desc: 'Sports',
-			info: [
-				new BigNumber(1),
-				new BigNumber(100),
-				new BigNumber(0),
-				new BigNumber(1000),
-				new BigNumber(1),
-				new BigNumber(0)
-			],
-			rep: new BigNumber(35).times(new BigNumber(2).toPower(64))
 		}
 	}
 };
