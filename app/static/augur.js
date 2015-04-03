@@ -51,8 +51,6 @@ var flux = new Fluxxor.Flux(stores, actions);
 
 var augur = {
 
-    evmAddress: 'demo',
-
     abi: require('./abi.js'),
 
     data: {
@@ -430,9 +428,7 @@ $('#add-event-modal form').on('submit', function(event) {
         augur.render.alert(data);
 
     } else {
-        // FIXME: This won't work, but the createEvent action will handle this properly.
-        augur.data.events[id.toNumber()] = newEvent;
-        augur.render.events(augur.data.events);
+        // update event store
     }
 
     $('#add-event-modal').modal('hide');
@@ -465,13 +461,12 @@ $('#add-market-modal form').on('submit', function(event) {
     if (id.toNumber() === 0) {
         var data = {
             type: 'danger',
-            messages: ['Oops! Failed to add a new event.']
+            messages: ['Oops! Failed to add a new market.']
         };
         augur.render.alert(data);
 
     } else {
-        augur.data.markets[id.toNumber()] = newMarket;
-        augur.render.markets(augur.data.markets);
+        // update market store
     }
 
     $('#add-market-modal').modal('hide');
