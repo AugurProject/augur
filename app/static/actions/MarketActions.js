@@ -13,7 +13,7 @@ var MarketActions = {
     var contract = configState.contract;
 
     var marketList = _.map(contract.call().getMarkets(branchId), function (id) {
-      
+
       var marketInfo = contract.call().getMarketInfo(id);
       var marketText = contract.call().getMarketDesc(id);
       var marketComments = contract.call().getMarketComments(id);

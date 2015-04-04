@@ -51,20 +51,6 @@ var flux = new Fluxxor.Flux(stores, actions);
 
 var augur = {
 
-    abi: require('./abi.js'),
-
-    data: {
-        account: '-',
-        balance: '-',
-        branches: {},
-        markets: {},
-        events: {},
-        currentBranch: 1010102
-    },
-
-    // augur whisper id for market/event comments
-    shhId: '0x99cb90f6e0dec117428baedf72d716d0ae677ed69740eb1de5b5a508d0adb7936f2d6590f5a831c369299948a9cf87a68ec2620e7cbba7f57fd91e21087d346f',
-
     testClient: function() {
 
         var testEVM = '0x604380600b600039604e567c010000000000000000000000000000000000000000000000000000000060003504636ffa1caa81141560415760043560405260405160020260605260206060f35b505b6000f3';
@@ -139,8 +125,6 @@ var augur = {
         chart.draw(data, options);
     },
 
-    // DOM manipulation
-    // TODO: Convert to React.
     render: {
 
         alert: function(data) {
@@ -371,166 +355,157 @@ var augur = {
         $('#confirm-modal button.cancel').on('click', args.cancelCallback);
 
         $('#confirm-modal').modal('show');
+    },
+
+    init: function() {
+
+        $('#evm-address-form').on('submit', function(event) {
+          event.preventDefault();
+          var evmAddress = $('#evm-address').val();
+          flux.actions.config.updateContract(evmAddress);
+          $('#evm-address-modal').modal('hide');
+        });
+
+        $('#create-branch-modal form').on('submit', function(event) {
+
+            event.preventDefault();
+            // TODO: Replace this with a createBranch action.
+            var contract = flux.store('config').getState().contract;
+            var parent = parseInt($('#create-branch-modal .branch-parent').val());
+            var branchName = $('#create-branch-modal .branch-name').val();
+
+            var newBranch = contract.call().createSubbranch(branchName, 5*60, parent);
+            if (newBranch.toNumber()) {
+                console.log("[augur] new subbranch " + newBranch.toNumber() + " created");
+                $('#create-branch-modal').modal('hide');
+            } else {
+                augur.render.alert({type: 'danger', messages:['Oops! Failed to create subbranch.']});
+                console.log("[augur] failed to create subbranch");
+            }
+        });
+
+        $('#add-event-modal form').on('submit', function(event) {
+
+            event.preventDefault();
+            // TODO: Replace this with a call to a new createEvent action.
+            var account = flux.store('account').getState().account;
+            var contract = flux.store('config').getState().contract;
+            var currentBranch = flux.store('branch').getState().currentBranch;
+            var currentBlock = flux.store('network').getState().blockNumber;
+
+            var newEvent = {
+                branch: currentBranch,
+                text: $('#event-text').val(),
+                matureBlock: $('#event-end-block').val(),
+                matureDate: utilities.blockToDate($('#event-end-block').val(), currentBlock),
+                status: 'pending'
+            };
+
+            var id = contract.call().createEvent(newEvent.branch, newEvent.text, newEvent.matureBlock, 0, 1, 2);
+
+            if (id.toNumber() === 0) {
+                var data = {
+                    type: 'danger',
+                    messages: ['Oops! Failed to add a new event.']
+                };
+                augur.render.alert(data);
+
+            } else {
+                // update event store
+            }
+
+            $('#add-event-modal').modal('hide');
+        });
+
+        $('#add-market-modal form').on('submit', function(event) {
+
+            event.preventDefault();
+            // TODO: Replace this with a call to a new createMarket action.
+            var account = flux.store('account').getState().account;
+            var contract = flux.store('config').getState().contract;
+            var currentBranch = flux.store('branch').getState().currentBranch;
+
+            var newMarket = {
+                branch: currentBranch,
+                text: $('#market-text').val(),
+                alpha: $('#market-alpha').val(),
+                investment: $('#market-investment').val(),
+                creator: account,
+                cumulativeScale: null,
+                numOutcomes: null,
+                tradingPeriod: null,
+                fee: 10,
+                events: [],
+                status: 'pending'
+            };
+
+            var id = contract.call().createMarket(newMarket.branch, newMarket.text, newMarket.alpha, newMarket.initial, newMarket.fee, newMarket.events);
+
+            if (id.toNumber() === 0) {
+                var data = {
+                    type: 'danger',
+                    messages: ['Oops! Failed to add a new market.']
+                };
+                augur.render.alert(data);
+
+            } else {
+                // update market store
+            }
+
+            $('#add-market-modal').modal('hide');
+        });
+
+        $('#send-cash-modal form').on('submit', function(event) {
+
+            event.preventDefault();
+            var address = $('#cash-dest-address').val();
+            var amount = $('#cash-amount').val();
+
+            // send cash action
+
+            $('#send-cash-modal').modal('hide');
+        });
+
+
+        $('#send-rep-modal form').on('submit', function(event) {
+
+            event.preventDefault();
+            // TODO: Replace this with a sendReputation action.
+            var contract = flux.store('config').getState().contract;
+            var address = $('#rep-dest-address').val();
+            var amount = $('#send-rep-modal .rep-amount').val();
+            var branch = $('#send-rep-modal .branch-id').val();
+
+            if (contract.call().sendReputation(branch, address, amount)) {
+                $('#send-rep-modal').modal('hide');
+            } else {
+                console.log('[augur] failed to send reputation');
+            }
+        });
+
+        $('#market .buy input').on('focus', function(event) {
+
+            $('#market .chart').hide();
+            $('#market .details').show();
+        });
+        $('#market .buy input').on('blur', function(event) {
+
+            $('#market .details').hide();
+            $('#market .chart').show();
+        });
+
+        $('#alert').on('closed.bs.alert', function() {
+            $('#alert div').empty();
+        });
+
+        $('.start-demo-mode').on('click', function(event) {
+            event.preventDefault();
+            flux.actions.config.updateIsDemo(true);
+        });
+
+        augur.checkClient();
     }
-};
-
-$('#evm-address-form').on('submit', function(event) {
-  event.preventDefault();
-  var evmAddress = $('#evm-address').val();
-  flux.actions.config.updateContract(evmAddress);
-  $.cookie('evmAddress', evmAddress);
-  //web3.db.set('augur', 'evmAddress', augur.evmAddress);
-  $('#evm-address-modal').modal('hide');
-});
-
-$('#create-branch-modal form').on('submit', function(event) {
-
-    event.preventDefault();
-    // TODO: Replace this with a createBranch action.
-    var contract = flux.store('config').getState().contract;
-    var parent = parseInt($('#create-branch-modal .branch-parent').val());
-    var branchName = $('#create-branch-modal .branch-name').val();
-
-    var newBranch = contract.call().createSubbranch(branchName, 5*60, parent);
-    if (newBranch.toNumber()) {
-        console.log("[augur] new subbranch " + newBranch.toNumber() + " created");
-        $('#create-branch-modal').modal('hide');
-    } else {
-        augur.render.alert({type: 'danger', messages:['Oops! Failed to create subbranch.']});
-        console.log("[augur] failed to create subbranch");
-    }
-});
-
-$('#add-event-modal form').on('submit', function(event) {
-
-    event.preventDefault();
-    // TODO: Replace this with a call to a new createEvent action.
-    var account = flux.store('account').getState().account;
-    var contract = flux.store('config').getState().contract;
-    var currentBranch = flux.store('branch').getState().currentBranch;
-    var currentBlock = flux.store('network').getState().blockNumber;
-
-    var newEvent = {
-        branch: currentBranch,
-        text: $('#event-text').val(),
-        matureBlock: $('#event-end-block').val(),
-        matureDate: utilities.blockToDate($('#event-end-block').val(), currentBlock),
-        status: 'pending'
-    };
-
-    var id = contract.call().createEvent(newEvent.branch, newEvent.text, newEvent.matureBlock, 0, 1, 2);
-
-    if (id.toNumber() === 0) {
-        var data = {
-            type: 'danger',
-            messages: ['Oops! Failed to add a new event.']
-        };
-        augur.render.alert(data);
-
-    } else {
-        // update event store
-    }
-
-    $('#add-event-modal').modal('hide');
-});
-
-$('#add-market-modal form').on('submit', function(event) {
-
-    event.preventDefault();
-    // TODO: Replace this with a call to a new createMarket action.
-    var account = flux.store('account').getState().account;
-    var contract = flux.store('config').getState().contract;
-    var currentBranch = flux.store('branch').getState().currentBranch;
-
-    var newMarket = {
-        branch: currentBranch,
-        text: $('#market-text').val(),
-        alpha: $('#market-alpha').val(),
-        investment: $('#market-investment').val(),
-        creator: account,
-        cumulativeScale: null,
-        numOutcomes: null,
-        tradingPeriod: null,
-        fee: 10,
-        events: [],
-        status: 'pending'
-    };
-
-    var id = contract.call().createMarket(newMarket.branch, newMarket.text, newMarket.alpha, newMarket.initial, newMarket.fee, newMarket.events);
-
-    if (id.toNumber() === 0) {
-        var data = {
-            type: 'danger',
-            messages: ['Oops! Failed to add a new market.']
-        };
-        augur.render.alert(data);
-
-    } else {
-        // update market store
-    }
-
-    $('#add-market-modal').modal('hide');
-});
-
-$('#send-cash-modal form').on('submit', function(event) {
-
-    event.preventDefault();
-    var address = $('#cash-dest-address').val();
-    var amount = $('#cash-amount').val();
-    nodeMonitor.postMessage({'sendCash': {'address': address, 'amount': amount}});
-    $('#send-cash-modal').modal('hide');
-});
-
-$('#trade-modal form').on('submit', function(event) {
-
-    event.preventDefault();
-    var args = {
-        'marketId': $('#trade-market').val(),
-        'marketState': $('#market-state select').val(),
-        'tradeAmount': $('#trade-amount').val(),
-        'tradeType': $('#trade-modal input[name=trade-type]').val()
-    };
-    //socket.emit('trade', args);
-    $('#trade-modal').modal('hide');
-});
-$('#trade-modal input[name=trade-type]').on('change', function(event) {
-   $('#trade-modal button.trade').text($(this).val()).removeAttr('disabled');
-});
-
-$('#send-rep-modal form').on('submit', function(event) {
-
-    event.preventDefault();
-    // TODO: Replace this with a sendReputation action.
-    var contract = flux.store('config').getState().contract;
-    var address = $('#rep-dest-address').val();
-    var amount = $('#send-rep-modal .rep-amount').val();
-    var branch = $('#send-rep-modal .branch-id').val();
-
-    if (contract.call().sendReputation(branch, address, amount)) {
-        $('#send-rep-modal').modal('hide');
-    } else {
-        console.log('[augur] failed to send reputation');
-    }
-});
-
-$('#market .buy input').on('focus', function(event) {
-
-    $('#market .chart').hide();
-    $('#market .details').show();
-});
-$('#market .buy input').on('blur', function(event) {
-
-    $('#market .details').hide();
-    $('#market .chart').show();
-});
-
-$('#alert').on('closed.bs.alert', function() {
-    $('#alert div').empty();
-});
-
-$('.start-demo-mode').on('click', function(event) {
-    flux.actions.config.updateIsDemo(true);
-}),
+}; 
 
 flux.store('config').on('change', function () {
 
