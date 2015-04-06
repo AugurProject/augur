@@ -21,7 +21,7 @@
     "bignumber.js": "~2.0.5",
     "bootstrap": "~3.3.4",
     "browserify": "^9.0.3",
-    "ethereum.js": "^0.2.1",
+    "ethereum.js": "^0.2.4",
     "fluxxor": "^1.5.2",
     "jquery": "~2.1.3",
     "jquery.cookie": "~1.4.1",

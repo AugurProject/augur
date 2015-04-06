@@ -1,5 +1,4 @@
-var web3 = require('ethereum.js');
-
+window.web3 = require('ethereum.js');
 var abi = require('../abi');
 var constants = require('../constants');
 
@@ -37,8 +36,11 @@ var ConfigActions = {
       var Contract = web3.eth.contract(abi);
       contract = new Contract(evmAddress);
 
+      // add contract to global 'augur' object for debugging
+      augur.contract = contract;
+
       // Attempt a contract call to see if we're good to go.
-      if (!contract.call().faucet().toNumber()) {
+      if (!contract.call({from: web3.eth.accounts[0]}).faucet().toNumber()) {
 
         this.dispatch(constants.config.UPDATE_CONTRACT_FAILED, {
           evmAddress: evmAddress

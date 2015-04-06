@@ -1,4 +1,3 @@
-
 var constants = require('../constants');
 var utilities = require('../utilities');
 

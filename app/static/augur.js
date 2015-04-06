@@ -1,11 +1,10 @@
 // setting these to the window object for debugging and console access
-window.web3 = require('ethereum.js');
 window.BigNumber = require('bignumber.js');
 window.$ = require('jquery');
 window._ = require('lodash');
 var Fluxxor = require('fluxxor');
 
-window.Identicon = require('./identicon.js');
+var Identicon = require('./identicon.js');
 var constants = require('./constants');
 var utilities = require('./utilities');
 

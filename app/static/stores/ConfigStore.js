@@ -3,7 +3,7 @@ var constants = require('../constants');
 
 var state = {
   host: 'localhost:8080',
-  evmAddress: null,
+  evmAddress: '0x3a52e22178b3ecc3bc7f9918fd81973d33c8d10e',
   isDemo: false,
   contract: null,
   contractFailed: false,

@@ -10,11 +10,13 @@ var BranchActions = {
     var contract = configState.contract;
     var currentBranch = branchState.currentBranch;
 
-    var branchList = _.map(contract.call().getBranches(), function(branchId) {
-      var branchInfo = contract.call().getBranchInfo(branchId);
-      var branchName = contract.call().getBranchDesc(branchId);
-      var rep = contract.call().getRepBalance(branchId, accountState.account).dividedBy(new BigNumber(2).toPower(64));
-      var marketCount = contract.call().getMarkets(branchId).length;
+    var callParams = {from: accountState.account}
+    
+    var branchList = _.map(contract.call(callParams).getBranches(), function(branchId) {
+      var branchInfo = contract.call(callParams).getBranchInfo(branchId);
+      var branchName = contract.call(callParams).getBranchDesc(branchId);
+      var rep = contract.call(callParams).getRepBalance(branchId, accountState.account).dividedBy(new BigNumber(2).toPower(64));
+      var marketCount = contract.call(callParams).getMarkets(branchId).length;
 
       return {
         id: branchId,
