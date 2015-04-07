@@ -113,6 +113,11 @@ var demo = {
 		},
 
 		// placing here for for demo puporses
+		getMarketVolume: function(id) {
+			return demo.markets[id]['volume'];
+		},
+
+		// placing here for for demo puporses
 		getMarketShares: function(id, account) {
 			return demo.markets[id]['sharesHeld'][account];
 		},
@@ -143,11 +148,11 @@ var demo = {
 	events: {
 
 		1: {
-			desc: 'ISIL is a CIA funded, puppet terrorist organization',
+			desc: 'True',
 			info: [
 				new BigNumber(1),
 				new BigNumber(100),
-				new BigNumber(1010102),
+				new BigNumber(1010101),
 				new BigNumber(2030),
 				null,
 				new BigNumber(0),
@@ -156,33 +161,7 @@ var demo = {
 			]
 		},
 		2: {
-			desc:  'The Easter Bunny is a carnivore',
-			info: [
-				new BigNumber(1),
-				new BigNumber(100),
-				new BigNumber(1010101),
-				new BigNumber(2030),
-				null,
-				new BigNumber(0),
-				new BigNumber(1),
-				new BigNumber(2)
-			]
-		},
-		3: {
-			desc:  'Unicorns are real',
-			info: [
-				new BigNumber(1),
-				new BigNumber(100),
-				new BigNumber(1010101),
-				new BigNumber(2030),
-				null,
-				new BigNumber(0),
-				new BigNumber(1),
-				new BigNumber(2)
-			]
-		},
-		4: {
-			desc:  'The moon is made of pure, russian caviar',
+			desc:  'False',
 			info: [
 				new BigNumber(1),
 				new BigNumber(100),
@@ -200,7 +179,7 @@ var demo = {
 
 		1: {
 			desc: 'Hillary Clinton will win the electoral vote in the 2016 presidential election.',
-			branch: 1010102,
+			branch: 1010101,
 			info: [
 				new BigNumber(1),		// creator
 				new BigNumber(100),		// creator fee
@@ -211,6 +190,7 @@ var demo = {
 			    new BigNumber(20000) ,  // tradingPeriod
 			    new BigNumber(10)     	// tradingFee
 			],
+			volume: 2303,
 			comments: [
 				{
 					'date': new Date('08/16/2015'),
@@ -277,19 +257,6 @@ var demo = {
 				new BigNumber(0)
 			],
 			rep: new BigNumber(200).times(new BigNumber(2).toPower(64))
-		},
-
-		1010102: {
-			desc: 'U.S. Politics',
-			info: [
-				new BigNumber(1),
-				new BigNumber(100),
-				new BigNumber(0),
-				new BigNumber(8000),
-				new BigNumber(1),
-				new BigNumber(0)
-			],
-			rep: new BigNumber(20).times(new BigNumber(2).toPower(64))
 		}
 	}
 };

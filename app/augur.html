@@ -53,15 +53,16 @@
                 <li>
                     <div>BALANCE: <b class="cash-balance">-</b></div>
                 </li>
-                <li class="dropdown">
+                <li class="dropdown visible-xs visible-sm hidden-md">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                         <i class="fa fa-navicon"></i>
                         <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="#account-modal" data-toggle="modal">Account Details</li>
-                        <li><a href="#foo">Reputation</a></li>
-                        <li><a href="#bar">Reporting</a></li>
+                        <li><a href="#">Markets</li>
+                        <li><a href="#">Reputation</a></li>
+                        <li><a href="#">Ballots</a></li>
+                        <li><a href="#account-modal" data-toggle="modal">Account</li>
                         <li><a href="#send-cash-modal" data-toggle="modal">Send Cash</a></li>
                     </ul>
                 </li>
@@ -79,11 +80,13 @@
 
         <div class="dash page row">
 
-            <div class="col-md-3 hidden-sm hidden-xs sidebar">
-                <div class="branches-nav">
-                    <p><b class="branch-name">Featured</b></p>
-                    <div class="divider"></div>
-                    <div class="branches"></div>
+            <div class="col-md-3 hidden-xs hidden-sm sidebar">
+                <div class="side-nav">
+                    <p><a href="#">Markets</p>
+                    <p><a href="#">Reputation</a></p>
+                    <p><a href="#">Ballots</a></p>
+                    <p><a href="#account-modal" data-toggle="modal">Account</p>
+                    <p><a href="#send-cash-modal" data-toggle="modal">Send Cash</a></p>
                 </div>
 
                 <div id="network"></div>
@@ -91,7 +94,7 @@
 
             <div class="col-sm-12 col-md-9">
                 <div class="period">
-                    <h3 class="clearfix"><span class="branch-name"></span><span class="period-ending"></span></h3>
+                    <h3 class="clearfix"><span class="section-title"></span><span class="period-ending"></span></h3>
                     <script type="text/template" id="progress-template">
                         <div class="progress-bar <%= type %>" role="progressbar" aria-valuenow="<%= percent %>" aria-valuemin="0" aria-valuemax="100" style="width: <%= percent %>%;">
                         </div>
@@ -175,21 +178,7 @@
 
                 </div>
 
-                <div class="markets">
-                    <h4 class="clearfix">Markets <a href="#add-market-modal" data-toggle="modal" class="pull-right">Add market</a>
-                    </h4>
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Description</th><th>Volume</th><th>Fee</th><th style="text-align: right;">Status</th>
-                            <tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-                <div class="no-markets">
-                    <h4>No markets exist in this branch.  <a href="#add-market-modal" data-toggle="modal" class="pull-right">Add market</a></h4>
-                </div>
+                <div id="markets"></div>
 
             </div>
         </div>
@@ -279,21 +268,6 @@
         </div>
     </div>
 
-    <div id="parsing-modal" class="modal fade">
-        <div class="modal-dialog model-sm">
-            <div class="modal-content">
-                <div class="modal-body clearfix">
-                    <h4>Parsing blockchain</h4>
-                    <script type="text/template" id="parsing-template">
-                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="<%= percent %>" aria-valuemin="0" aria-valuemax="100" style="width: <%= percent %>%;"><%= text %>
-                        </div>
-                    </script>
-                    <div class="progress"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div id="create-branch-modal" class="modal fade">
         <div class="modal-dialog model-sm">
             <div class="modal-content">
@@ -358,49 +332,11 @@
         </div>
     </div>
 
-    <div id="trade-modal" class="modal fade">
-        <div class="modal-dialog model-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="btn-group btn-group-justified" data-toggle="buttons">
-                        <label class="btn btn-primary">
-                            <input type="radio" name="trade-type" value="buy" autocomplete="off"> Buy
-                        </label>
-                        <label class="btn btn-primary">
-                            <input type="radio" name="trade-type" value="sell" autocomplete="off"> Sell
-                        </label>
-                    </div>
-                </div>
-                <div class="modal-body">
-                    <p class="decision-text"></p>
-                    <div class="balances"></div>
-                </div>
-                <div class="modal-footer">
-                    <form class="form-inline" role="form">
-                        <div class="form-group">
-                            <label for="market-state">State</label>
-                        </div>
-                        <div class="form-group">
-                            <label class="sr-only" for="market-state">State</label>
-                            <div id="market-state"></div>
-                        </div>
-                        <div class="form-group">
-                            <label class="sr-only" for="amount">Amount</label>
-                            <input type="text" name="trade-amount" id="trade-amount" class="form-control" placeholder="Amount">
-                        </div>
-                        <input type="hidden" name="trade-market" id="trade-market">
-                        <button type="submit" class="trade btn btn-primary" disabled><span class="trade-type">-</span></button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div id="add-market-modal" class="modal fade">
         <div class="modal-dialog model-sm">
             <div class="modal-content">
                 <div class="modal-body clearfix">
-                    <h4>Add market in <b class="branch-name"></b></h4>
+                    <h4>Add market</h4>
                     <form role="form">
                         <input type="hidden" class="branch-id" id="market-branch-id" name="market-branch-id" />
                         <div class="form-group">
@@ -420,32 +356,6 @@
                             <select class="form-control" id="market-events" multiple></select>
                         </div>
                         <button type="submit" class="btn btn-primary pull-right">Submit Market</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="add-event-modal" class="modal fade">
-        <div class="modal-dialog model-sm">
-            <div class="modal-content">
-                <div class="modal-body clearfix">
-                    <h4>Add event in <b class="branch-name"></b></h4>
-                    <form role="form">
-                        <input type="hidden" class="branch-id" id="event-branch-id" name="event-branch-id" />
-                        <div class="form-group">
-                            <label for="event-text">Event text</label>
-                            <input type="text" class="form-control" id="event-text" placeholder="Enter a true or false question for this event">
-                        </div>
-                        <div class="form-group">
-                            <label for="event-end-block">Maturation block</label>
-                            <span class="help-text pull-right">must be greater than current period ending at <b class="period-end-block">-</b></span>
-                            <input type="text" class="form-control" id="event-end-block" placeholder="Enter block number that event matures">
-                        </div>
-                        <input type="hidden" id="event-min-value" name="event-min-value" />
-                        <input type="hidden" id="event-max-value" name="event-max-value" />
-                        <input type="hidden" id="event-num-outcomes" name="event-num-outcomes" />
-                        <button type="submit" class="btn btn-primary pull-right">Submit Event</button>
                     </form>
                 </div>
             </div>

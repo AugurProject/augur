@@ -18,15 +18,20 @@ var MarketActions = {
       var marketText = contract.call().getMarketDesc(id);
       var marketComments = contract.call().getMarketComments(id);
       var marketHistory = contract.call().getMarketHistory(id);
+      var marketVolume = contract.call().getMarketVolume(id);
       var marketShares = contract.call().getMarketShares(id, accountState.account);
+
+      var lastPrice = marketHistory[marketHistory.length-1][1];
 
       return {
         id: id.toNumber(),
         text: marketText,
-        volume: 0,
+        volume: marketVolume,
         fee: marketInfo[7].toNumber(),
+        author: marketInfo[0].toNumber(),
         status: 'open',
         priceHistory: marketHistory,
+        lastPrice: lastPrice,
         comments: marketComments,
         branchId: branchId,
         sharesHeld: marketShares

@@ -3,7 +3,7 @@ var constants = require('../constants');
 
 var state = {
   branches: {},
-  currentBranch: 1010102
+  currentBranch: 1010101
 };
 
 var BranchStore = Fluxxor.createStore({

@@ -1,17 +1,13 @@
 @font-face {
     font-family: 'Core Mellow';
-    font-weight: 100;
-    src: url("fonts/S-Core - CoreMellow19CpThin.otf") format("opentype");
-}
-@font-face {
-    font-family: 'Core Mellow';
     font-weight: 200;
-    src: url("fonts/S-Core - CoreMellow25ExtraLight.otf") format("opentype");
+    src: url("fonts/S-Core - CoreMellow15Thin.otf") format("opentype");
 }
 @font-face {
     font-family: 'Core Mellow';
     font-weight: 300;
-    src: url("fonts/S-Core - CoreMellow29CpExtraLight.otf") format("opentype");
+    src: url("fonts/S-Core - CoreMellow25ExtraLight.otf") format("opentype");
+}
 }
 @font-face {
     font-family: 'Core Mellow';
@@ -88,6 +84,17 @@ table {
 #logo .progress-bar {
     background-color: #737373;
 }
+
+.spin {
+    display: inline-block;
+    -webkit-transform-origin: 47% 50%;
+    transform-origin: 47% 50%;
+    -webkit-animation: spin 1s infinite linear;
+    -moz-animation: spin 1s infinite linear;
+    -o-animation: spin 1s infinite linear;
+    animation: spin 1s infinite linear;
+}
+
 nav.navbar {
     background-color: #602A52;
     border-radius: 0px;
@@ -144,41 +151,35 @@ nav .navbar-right li div {
     color: #333;
 }
 
-.branches-nav {
+.side-nav {
     background-color: #602A52;
     margin-top: -20px;
     padding: 20px 0px 5px 0px;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
 }
-.branches-nav p {
+.side-nav p {
     font-family: 'Core Mellow';
     font-weight: 300;
+    letter-spacing: 0.08em;
     padding: 0px 12px;
     font-size: 16px;
-    color: #fff;
 }
-.branches-nav div.divider {
+.side-nav p:hover {
+}
+.side-nav p a {
+    color: #fff;
+    text-decoration: none;
+}
+.side-nav p a:hover {
+    text-decoration: underline;
+}
+.side-nav div.divider {
     margin: 10px 10px;
     height: 1px;
     border-bottom: 1px solid #eee;
 }
-.branches-nav p a {
-    display: none;
-    color: #eee;
-}
-.branches-nav p:hover {
-}
-.branches-nav p:hover a {
-    display: inline;
-    font-family: 'Source Sans Pro', sans-serif;
-    font-weight: 400;
-    font-size: 12px;
-}
-.branches-nav .branch-name {
-    font-weight: 400;
-}
-.branches-nav p i {
+.side-nav p i {
     font-style: normal;
     display: inline-block;
     background-color: #fff;
@@ -192,27 +193,6 @@ nav .navbar-right li div {
     opacity: 0.6;
     position: relative;
     top: -1px;
-}
-.branches-nav p .fa-share-square-o {
-    font-size: 15px;
-    position: relative;
-    top: 2px;
-}
-.branches-nav .branch-name:hover {
-    cursor: pointer;
-    text-decoration: underline;
-}
-.branches .branches-toggle:before {
-    content: 'show all';
-}
-.branches.all .branches-toggle:before {
-    content: 'less';
-}
-.branches .other {
-    display: none;
-}
-.branches.all .other {
-    display: block;
 }
 
 #create-branch-modal .modal-dialog {
@@ -348,38 +328,47 @@ nav .navbar-right li div {
     display: none;
 }
 .period h3 {
-    margin: 5px 0px 10px 0px;
+    margin: 5px 0px 5px 0px;
     font-size: 22px;
 }
 .period h3 .period-ending {
-    float: right;
     font-size: 16px;
     margin-top: 6px;
 }
 
-.markets,
-.no-markets,
-.events,
-.no-events {
-    display: none;
+.market-pane {
+    width: 220px;
+    height: 220px;
+    background-color: #fff;
+    border: 1px solid #d8d8d8;
+    border-radius: 3px;
 }
-.no-markets.has-events {
-    display: block;
+.market-pane h4 {
+    margin: 0px;
+    padding: 12px;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.3em;
+    text-align: justify;
+    text-justify: inter-word;
+    height: 84px;
 }
-.events {
-    margin-top: 20px;
+.market-pane .summary {
+    padding: 3px 12px;
+    background-color: #a3b9e2;
+    font-size: 20px;
 }
-.events td:last-child,
-.events th:last-child {
-    text-align: right;
+.market-pane .details {
+    padding: 6px 12px;
+    font-size: 12px;
 }
-.markets tr:hover td,
-.events tr:hover td {
-    cursor: pointer;
+.market-pane .details p {
+    margin: 0px;
+    clear: right;
 }
-.markets tr:hover td:first-child,
-.events tr:hover td:first-child {
-    text-decoration: underline;
+.market-pane .details b {
+    float: right;
 }
 
 #event {
@@ -490,15 +479,7 @@ nav .navbar-right li div {
     top: 5px;
     right: 8px;
 }
-.spin {
-    display: inline-block;
-    -webkit-transform-origin: 47% 50%;
-    transform-origin: 47% 50%;
-    -webkit-animation: spin 1s infinite linear;
-    -moz-animation: spin 1s infinite linear;
-    -o-animation: spin 1s infinite linear;
-    animation: spin 1s infinite linear;
-}
+
 #alert {
     padding: 10px;
     position: fixed;

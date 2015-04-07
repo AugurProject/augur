@@ -30,6 +30,7 @@ var MarketStore = require('./stores/MarketStore');
 var NetworkStore = require('./stores/NetworkStore');
 
 var Network = require('./components/Network');
+var Markets = require('./components/Markets');
 
 var actions = {
   account: AccountActions,
@@ -180,147 +181,12 @@ var augur = {
             $('.period').show();
         },
 
-        branches: function() {
-            var account = flux.store('account').getState().account;
-            var contract = flux.store('config').getState().contract;
-            var branchState = flux.store('branch').getState();
-            var branches = branchState.branches;
-            var currentBranch = branchState.currentBranch;
-
-            // Update the display for the current branch.
-            $('.period .branch-name').attr('data-id', currentBranch).text(branches[currentBranch].name);
-            $('input.branch-id').val(currentBranch);
-
-            if (_.keys(branches).length) {
-                $('.branches').empty();
-
-                _.each(branches, function(branch, id) {
-
-                    // update period for current branch
-                    if (id == currentBranch) augur.render.period(branch);
-
-                    has_branches = true;
-                    var p = $('<p>').html('<b class="branch-name" data-id='+id+'>'+branch.name+'</b>');
-                    if (branch.marketCount) p.append($('<i>').text(branch.marketCount));
-
-                    $('.branches').append(p);
-                });
-
-            } else {
-
-                var p = $('<p>').html('<span class="pull-left">There are no branches</span>');
-                $('.branches').empty().append(p);
-            }
-
-            $('.branch-name').on('click', function(event) {
-                var id = $(this).attr('data-id');
-                augur.viewBranch(parseInt(id));
-            });
-        },
-
         account: function() {
             var accountState = flux.store('account').getState()
 
             $('.user.address').html(accountState.account);
             $('.cash-balance').text(accountState.balance);
-        },
-
-        markets: function() {
-
-            var branchHasMarkets = false;
-            var markets = flux.store('market').getState().markets;
-            var currentBranch = flux.store('branch').getState().currentBranch;
-            $('.markets tbody').empty();
-
-            _.each(markets, function(market, id) {
-
-                if (market.branchId === currentBranch) {
-                    branchHasMarkets = true;
-                    var row = $('<tr>').html('<td class="text">'+market.text+'</td><td>'+market.volume+'</td><td>'+market.fee+'</td>');
-
-                    if (market.status == 'open') {
-                        var trade = $('<td>').text('trading').css('text-align', 'right');
-                    } else if (market.status == 'pending') {
-                        var trade = $('<td>').text('pending').css('text-align', 'right');
-                    } else {
-                        var trade = $('<td>').text('closed').css('text-align', 'right');
-                    }
-                    row.on('click', function() { augur.viewMarket(id) });
-                    $(row).append(trade);
-                    $('.markets tbody').append(row);
-                }
-            });
-
-            if (branchHasMarkets) {
-
-                $('.no-markets').hide();
-                $('.markets').show();
-
-            } else {
-
-                $('.markets').hide();
-            }
-        },
-
-        events: function(data) {
-
-            var branchHasEvents = false;
-            var events = flux.store('event').getState().events;
-            var currentBranch = flux.store('branch').getState().currentBranch;
-            $('.events tbody').empty();
-            $('#market-events').empty();
-
-            _.each(events, function(event, id) {
-
-                if (event.branchId === currentBranch) {
-                    branchHasEvents = true;
-                    var row = $('<tr>').html('<td class="text">'+event.text+'</td><td>'+utilities.formatDate(event.matureDate)+'</td><td>'+event.status+'</td>');
-                    $('.events tbody').append(row);
-                    // populate add market modal form
-                    var option = $('<option>').attr('value', id).text(event.text);
-                    $('#market-events').append(option);
-                }
-            });
-
-            if (branchHasEvents) {
-
-                $('.no-events').hide();
-                $('.events').show();
-                $('.no-markets').addClass('has-events');
-
-            } else {
-
-                $('.events').hide();
-                $('.no-events').show();
-                $('.no-markets').removeClass('has-events');
-            }
-        },
-
-        trade: function(data) {
-
-            data.my_shares = data.my_shares ? data.my_shares : [0,0];
-            var states = $('<select>').addClass('states, form-control').attr('name', 'market-state');
-            var balances = $('<table>').addClass('table');
-            balances.append($('<tr>').html('<th>State</th><th>Owned</th><th>Total</th>'));
-            states.append($('<option>').text('Select'));
-            _.each(data.states, function(state, i) {
-                var s = state == '1' || String(state).toLowerCase() == 'yes' ? 'True' : 'False';
-                balances.append($('<tr>').html('<td>'+s+'</td><td>'+data.my_shares[i]+'</td><td>'+data.shares_purchased[i]+'</td>'));
-                states.append($('<option>').val(state).text(s));
-            });
-
-            // reset trade modal state
-            $('#trade-modal input[name=trade-type]').removeAttr('checked');
-            $('#trade-modal label.btn').removeClass('active');
-            $('#trade-modal button.trade').text('-').attr('disabled', true);
-
-            $('#trade-modal .decision-text').text(m.txt);
-            $('#trade-modal .balances').empty().append(balances);
-            $('#trade-market').val(data.PM_id);
-            $('#trade-modal').modal('show');
-            $('#market-state').empty().append(states);
-        },
-
+        }
     },
 
     confirm: function(args) {
@@ -482,7 +348,10 @@ var augur = {
         });
 
         var network = React.createElement(Network, {flux: flux});
+        var markets = React.createElement(Markets, {flux: flux});
+
         React.render(network, document.getElementById('network'));
+        React.render(markets, document.getElementById('markets'));
 
         augur.checkClient();
     }
@@ -521,9 +390,6 @@ flux.store('network').on('change', function () {
 
 function renderAll() {
   augur.render.account();
-  augur.render.branches();
-  augur.render.markets();
-  augur.render.events();
   augur.render.period();
 }
 
