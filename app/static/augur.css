@@ -342,6 +342,11 @@ nav .navbar-right li div {
     background-color: #fff;
     border: 1px solid #d8d8d8;
     border-radius: 3px;
+    opacity: 0.9;
+}
+.market-pane:hover {
+    cursor: pointer;
+    opacity: 1;
 }
 .market-pane h4 {
     margin: 0px;
@@ -353,6 +358,10 @@ nav .navbar-right li div {
     text-align: justify;
     text-justify: inter-word;
     height: 84px;
+    background-color: #18376f;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    color: #fff;
 }
 .market-pane .summary {
     padding: 3px 12px;
@@ -360,12 +369,16 @@ nav .navbar-right li div {
     font-size: 20px;
 }
 .market-pane .details {
-    padding: 6px 12px;
+    padding: 6px 6px;
     font-size: 12px;
 }
 .market-pane .details p {
     margin: 0px;
     clear: right;
+    padding: 0px 6px;
+}
+.market-pane .details p.alt {
+    background-color: rgb(230, 244, 230);
 }
 .market-pane .details b {
     float: right;

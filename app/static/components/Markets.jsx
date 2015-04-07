@@ -17,9 +17,9 @@ var MarketList = React.createClass({
           </div>
           <div className='details'>
             <p>Last price: <b>{ market.lastPrice }</b></p>
-            <p>Volume: <b>{ market.volume }</b></p>
+            <p className='alt'>Volume: <b>{ market.volume }</b></p>
             <p>Fee: <b>{ market.fee }</b></p>
-            <p>Author: <b>{ market.author }</b></p>
+            <p className='alt'>Author: <b>{ market.author }</b></p>
             <p>End date: <b>{ market.endDate || '-' }</b></p>
           </div>
         </div>
