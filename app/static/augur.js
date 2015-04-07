@@ -2,6 +2,7 @@
 window.BigNumber = require('bignumber.js');
 window.$ = require('jquery');
 window._ = require('lodash');
+var React = require('react');
 var Fluxxor = require('fluxxor');
 
 var Identicon = require('./identicon.js');
@@ -27,6 +28,8 @@ var ConfigStore = require('./stores/ConfigStore');
 var EventStore = require('./stores/EventStore');
 var MarketStore = require('./stores/MarketStore');
 var NetworkStore = require('./stores/NetworkStore');
+
+var Network = require('./components/Network');
 
 var actions = {
   account: AccountActions,
@@ -220,30 +223,6 @@ var augur = {
 
             $('.user.address').html(accountState.account);
             $('.cash-balance').text(accountState.balance);
-        },
-
-        network: function() {
-            var networkState = flux.store('network').getState()
-
-            $('.blocks span').text(networkState.currentBlock);
-            $('.blocks').show();
-
-            $('.gas span').text(networkState.gas);
-            $('.gas').show();
-
-            $('.gas-price span').text(networkState.gasPrice);
-            $('.gas-price').show();
-
-            $('.host span').text(networkState.host);
-            $('.host').show();
-
-            $('.peers span').text(networkState.peerCount);
-            $('.peers').show();
-
-            // TODO: Store and display miner status.
-            var miner = false;
-            $('.miner span').text(false ? 'on' : 'off');
-            $('.miner').show();
         },
 
         markets: function() {
@@ -502,9 +481,12 @@ var augur = {
             flux.actions.config.updateIsDemo(true);
         });
 
+        var network = React.createElement(Network, {flux: flux});
+        React.render(network, document.getElementById('network'));
+
         augur.checkClient();
     }
-}; 
+};
 
 flux.store('config').on('change', function () {
 
@@ -539,7 +521,6 @@ flux.store('network').on('change', function () {
 
 function renderAll() {
   augur.render.account();
-  augur.render.network();
   augur.render.branches();
   augur.render.markets();
   augur.render.events();

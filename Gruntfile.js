@@ -27,7 +27,11 @@ module.exports = function(grunt) {
           watch: true,
           keepAlive: true,
           browserifyOptions: {
-            debug: true
+            debug: true,
+            extensions: ['.jsx'],
+            transform: [
+              [ 'reactify', {'es6': true} ]
+            ]
           }
         }
       }, browserifyConfig)
