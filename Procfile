@@ -1,1 +1,1 @@
-web: ./node_modules/grunt-cli/bin/grunt browserify:build; node app/server.js
+web: browserify -t reactify ./app/static/main.js -o ./app/static/app.js; node app/server.js
