@@ -29,13 +29,13 @@ To incrementally build on every save while you're developing, run `grunt watchif
 
 ### Running Ethereum
 
-Install go-ethereum ([installation instructions](https://github.com/ethereum/go-ethereum/wiki)). Add a new account with `geth account new` and then start the client with `geth --rpc --rpcport 8080 --unlock primary`.
+Install go-ethereum ([installation instructions](https://github.com/ethereum/go-ethereum/wiki)). Add a new account with `geth account new` and then start the client with `geth --rpc --rpcport 8080 --rpccorsdomain null --unlock primary`.
 
 *or*
 
 Install cpp-ethereum ([installation instructions](https://github.com/ethereum/cpp-ethereum/wiki)). Start the client with `eth -j`, which will enable the JSON-RPC interface on port 8080.
 
-With either client running, you should now be able to load `augur/augur.html` in Chrome or Firefox.
+With either client running, you should now be able to load `app/augur.html` in Chrome or Firefox.
 
 
 ## Features
