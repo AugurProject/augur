@@ -2,7 +2,15 @@ var _ = require('lodash');
 
 var browserifyConfig = {
   src: ['app/static/main.js'],
-  dest: 'app/static/app.js'
+  dest: 'app/static/app.js',
+  options: {
+    browserifyOptions: {
+      extensions: ['.jsx'],
+      transform: [
+        [ 'reactify', {'es6': true} ]
+      ]
+    }
+  }
 }
 
 module.exports = function(grunt) {
@@ -24,15 +32,9 @@ module.exports = function(grunt) {
       build: browserifyConfig,
       watch: _.merge({
         options: {
+          debug: true,
           watch: true,
           keepAlive: true,
-          browserifyOptions: {
-            debug: true,
-            extensions: ['.jsx'],
-            transform: [
-              [ 'reactify', {'es6': true} ]
-            ]
-          }
         }
       }, browserifyConfig)
     }
