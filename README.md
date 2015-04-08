@@ -29,16 +29,20 @@ To incrementally build on every save while you're developing, run `grunt watchif
 
 ### Running Ethereum
 
-Install cpp-ethereum ([installation instructions](https://github.com/ethereum/cpp-ethereum/wiki)). Start the Ethereum daemon with `eth -j`, which will enable the JSON-RPC interface on port 8080.
+Install go-ethereum ([installation instructions](https://github.com/ethereum/go-ethereum/wiki)). Add a new account with `geth account new` and then start the client with `geth --rpc --rpcport 8080 --unlock primary`.
 
-You should now be able to load `augur/augur.html` in Chrome or Firefox.
+*or*
+
+Install cpp-ethereum ([installation instructions](https://github.com/ethereum/cpp-ethereum/wiki)). Start the client with `eth -j`, which will enable the JSON-RPC interface on port 8080.
+
+With either client running, you should now be able to load `augur/augur.html` in Chrome or Firefox.
 
 
 ## Features
 
+- [ ] market commenting
 - [ ] featured markets
 - [ ] filters to organize markets by volume, category, number of traders, trading fee, initial liquidity
 - [ ] api voting
 - [ ] search engine for contract data / markets
-- [ ] chat in UI
 - [ ] social media integrations
