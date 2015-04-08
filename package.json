@@ -28,9 +28,7 @@
     "lodash": "~3.6.0",
     "node-static": "~0.7.6",
     "pnglib": "0.0.1",
-    "react": "^0.13.1"
-  },
-  "devDependencies": {
+    "react": "^0.13.1",
     "grunt": "^0.4.5",
     "grunt-browserify": "^3.6.0",
     "grunt-contrib-jshint": "^0.11.1",
