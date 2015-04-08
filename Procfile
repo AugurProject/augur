@@ -1,1 +1,1 @@
-web: grunt browserify; node app/server.js
+web: grunt watchify; node app/server.js
