@@ -22,7 +22,6 @@ module.exports = function(grunt) {
         '!**/*.min.js',
         '!node_modules/**/*',
         '!augur/static/app.js',
-        '!augur/static/ethereum.poc8.js'
       ],
       options: {
         jshintrc: '.jshintrc'
