@@ -1,1 +1,1 @@
-web: grunt watchify; node app/server.js
+web: ./node_modules/grunt-cli/bin/grunt browserify:build; node app/server.js
