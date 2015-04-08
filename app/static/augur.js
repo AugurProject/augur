@@ -30,7 +30,8 @@ var MarketStore = require('./stores/MarketStore');
 var NetworkStore = require('./stores/NetworkStore');
 
 var Network = require('./components/Network');
-var Markets = require('./components/Markets');
+var Branch = require('./components/Branch');
+var Market = require('./components/Market');
 
 var actions = {
   account: AccountActions,
@@ -85,47 +86,6 @@ var augur = {
     viewBranch: function(id) {
       $('#market, #event').hide();
       flux.actions.branch.updateCurrentBranch(id);
-    },
-
-    viewMarket: function(id) {
-        var account = flux.store('account').getState().account;
-        var markets = flux.store('market').getState().markets;
-        var market = markets[id];
-        var currentPrice = market.priceHistory[market.priceHistory.length-1][1];
-
-        $('#market h3 .text').text(market.text);
-        $('#market h3 .current').text(parseInt(currentPrice * 100).toString() + '%');
-        $('#market .current-price b').html((currentPrice * 100).toString() + '&cent;');
-        $('#market .shares-held b').text(market.sharesHeld[0]);
-
-        // build chart
-        var data = google.visualization.arrayToDataTable([['Date', 'Price']].concat(market.priceHistory));
-        var options = {
-            title: 'Price',
-            legend: { position: 'none' },
-            backgroundColor: '#f9f6ea',
-            chartArea: {top: 10, width: "85%", height: "80%"}
-        };
-        var chart = new google.visualization.LineChart(document.getElementById('market-chart'));
-        $( window ).resize(function() { chart.draw(data, options); });
-
-        var userIdenticon = 'data:image/png;base64,' + new Identicon(account, 50).toString();
-        $('.user.avatar').css('background-image', 'url('+userIdenticon+')');
-
-        $('#market .comments').empty();
-        $('#market .comment-count').text(market.comments.length.toString());
-        var template = _.template($("#comment-template").html());
-        _.each(market.comments, function(c) {
-            var identicon = 'data:image/png;base64,' + new Identicon(c.author, 50).toString();
-            var html = template({author: c.author, avatar: identicon, comment: c.comment, date: utilities.formatDate(c.date)});
-            $('#market .comments').append(html);
-        });
-
-        $('#market').show();
-        $('.markets').hide();
-        $('.events').hide();
-
-        chart.draw(data, options);
     },
 
     render: {
@@ -348,10 +308,10 @@ var augur = {
         });
 
         var network = React.createElement(Network, {flux: flux});
-        var markets = React.createElement(Markets, {flux: flux});
+        var branch = React.createElement(Branch, {flux: flux});
 
         React.render(network, document.getElementById('network'));
-        React.render(markets, document.getElementById('markets'));
+        React.render(branch, document.getElementById('markets'));
 
         augur.checkClient();
     }

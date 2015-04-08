@@ -59,10 +59,10 @@
                         <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="#">Markets</li>
+                        <li><a href="#">Markets<a/></li>
                         <li><a href="#">Reputation</a></li>
                         <li><a href="#">Ballots</a></li>
-                        <li><a href="#account-modal" data-toggle="modal">Account</li>
+                        <li><a href="#account-modal" data-toggle="modal">Account<a/></li>
                         <li><a href="#send-cash-modal" data-toggle="modal">Send Cash</a></li>
                     </ul>
                 </li>
@@ -82,10 +82,10 @@
 
             <div class="col-md-3 hidden-xs hidden-sm sidebar">
                 <div class="side-nav">
-                    <p><a href="#">Markets</p>
-                    <p><a href="#">Reputation</a></p>
+                    <p><a href="#">Markets</a><i>1</i></p>
+                    <p><a href="#">Reputation</a><i>240</i></p>
                     <p><a href="#">Ballots</a></p>
-                    <p><a href="#account-modal" data-toggle="modal">Account</p>
+                    <p><a href="#account-modal" data-toggle="modal">Account</a></p>
                     <p><a href="#send-cash-modal" data-toggle="modal">Send Cash</a></p>
                 </div>
 
@@ -123,60 +123,7 @@
                     </div>
                 </div>
 
-                <script type="text/template" id="comment-template">
-                    <div class="comment">
-                        <div class="avatar" style="background-image: url(<%= avatar %>)"></div>
-                        <div class="box"><p><%= comment %></p><div class="date"><%= date %></div><div class="address"><%= author %></div></div>
-                    </div>
-                </script>
-
-                <div id="market">
-
-                    <h3><div class="current"></div><div class="text"></div></h3>
-
-                    <div class="row summary">
-                        <div class="col-xs-4 trade">
-                            <p class="delta">-<p>
-                            <p class="shares-held">Shares held: <b>-</b><p>
-                            <p class="end-date">End date: <b>-</b><p>
-
-                            <div class="input-group buy yes">
-                                <input type="text" class="form-control" placeholder="Shares">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-success" type="button">Buy <b></b></button>
-                                </span>
-                            </div>
-                            <div class="input-group buy no">
-                                <input type="text" class="form-control" placeholder="Shares">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-danger" type="button">Sell <b></b></button>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="col-xs-8">
-                            <div id="market-chart" class="chart"></div>
-                            <div class="details">
-                                <p class="current-price">Current price:<b></b></p>
-                                <p class="cash">Cash available:<b class="cash-balance">-</b></p>
-                                <p class="cost">Cost of trade:<b>-</b></p>
-                                <p class="new-cash">New cash available:<b>-</b></p>
-                                <p class="new-price">New price:<b>-</b></p>
-                                <p class="author">-</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <h4><span class="comment-count"></span> Comments</h4>
-                    <div id="comments">
-                        <form class="comment">
-                            <div class="user avatar"></div>
-                            <div class="box"><input type="textarea" class="form-control" placeholder="Join the discussion..."><div class="user address"></div></div>
-                        </form>
-                        <div class="comments">
-                        </div>
-                    </div>
-
-                </div>
+                <div id="market"></div>
 
                 <div id="markets"></div>
 

@@ -161,7 +161,7 @@ nav .navbar-right li div {
 .side-nav p {
     font-family: 'Core Mellow';
     font-weight: 300;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.05em;
     padding: 0px 12px;
     font-size: 16px;
 }
@@ -180,6 +180,7 @@ nav .navbar-right li div {
     border-bottom: 1px solid #eee;
 }
 .side-nav p i {
+    letter-spacing: 0.02em;
     font-style: normal;
     display: inline-block;
     background-color: #fff;
@@ -343,6 +344,7 @@ nav .navbar-right li div {
     border: 1px solid #d8d8d8;
     border-radius: 3px;
     opacity: 0.9;
+    display: block;
 }
 .market-pane:hover {
     cursor: pointer;
