@@ -6,7 +6,7 @@ var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
 
 var Network = React.createClass({
-  mixins: [FluxMixin, StoreWatchMixin('account', 'config', 'network')],
+  mixins: [FluxMixin, StoreWatchMixin('config', 'holding', 'network')],
 
   getStateFromFlux: function () {
     var flux = this.getFlux();
@@ -17,7 +17,7 @@ var Network = React.createClass({
     })
 
     return {
-      balance: flux.store('account').getState().balance,
+      balance: flux.store('holding').getState().balance,
       network: networkState,
       host: flux.store('config').getState().host
     }

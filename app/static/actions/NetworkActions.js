@@ -22,7 +22,7 @@ var NetworkActions = {
     });
 
     // The account may have changed. Load holdings.
-    this.flux.actions.account.loadBalance();
+    this.flux.actions.holding.loadBalance();
   }
 };
 

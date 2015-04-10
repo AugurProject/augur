@@ -15,17 +15,17 @@ global.jQuery = $;
 require('jquery.cookie');
 require('bootstrap');
 
-var AccountActions = require('./actions/AccountActions');
 var BranchActions = require('./actions/BranchActions');
 var ConfigActions = require('./actions/ConfigActions');
 var EventActions = require('./actions/EventActions');
+var HoldingActions = require('./actions/HoldingActions');
 var MarketActions = require('./actions/MarketActions');
 var NetworkActions = require('./actions/NetworkActions');
 
-var AccountStore = require('./stores/AccountStore');
 var BranchStore = require('./stores/BranchStore');
 var ConfigStore = require('./stores/ConfigStore');
 var EventStore = require('./stores/EventStore');
+var HoldingStore = require('./stores/HoldingStore');
 var MarketStore = require('./stores/MarketStore');
 var NetworkStore = require('./stores/NetworkStore');
 
@@ -34,19 +34,19 @@ var Branch = require('./components/Branch');
 var Market = require('./components/Market');
 
 var actions = {
-  account: AccountActions,
   branch: BranchActions,
   config: ConfigActions,
   event: EventActions,
+  holding: HoldingActions,
   market: MarketActions,
   network: NetworkActions
 }
 
 var stores = {
-  account: new AccountStore(),
   branch: new BranchStore(),
   config: new ConfigStore(),
   event: new EventStore(),
+  holding: new HoldingStore(),
   market: new MarketStore(),
   network: new NetworkStore()
 }
@@ -142,11 +142,11 @@ var augur = {
         },
 
         account: function() {
-            var accountState = flux.store('account').getState()
+            var balance = flux.store('holding').getState().balance;
             var account = flux.store('network').getAccount();
 
             $('.user.address').html(account);
-            $('.cash-balance').text(accountState.balance);
+            $('.cash-balance').text(balance);
         }
     },
 
@@ -193,7 +193,7 @@ var augur = {
 
             event.preventDefault();
             // TODO: Replace this with a call to a new createEvent action.
-            var account = flux.store('account').getState().account;
+            var account = flux.store('network').getAccount();
             var contract = flux.store('config').getState().contract;
             var currentBranch = flux.store('branch').getState().currentBranch;
             var currentBlock = flux.store('network').getState().blockNumber;
@@ -226,7 +226,7 @@ var augur = {
 
             event.preventDefault();
             // TODO: Replace this with a call to a new createMarket action.
-            var account = flux.store('account').getState().account;
+            var account = flux.store('network').getAccount();
             var contract = flux.store('config').getState().contract;
             var currentBranch = flux.store('branch').getState().currentBranch;
 
