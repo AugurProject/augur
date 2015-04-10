@@ -3,11 +3,10 @@ var constants = require('../constants');
 
 var state = {
   host: 'localhost:8080',
-  evmAddress: '0x3a52e22178b3ecc3bc7f9918fd81973d33c8d10e',
+  evmAddress: null,
   isDemo: false,
   contract: null,
-  contractFailed: false,
-  ethereumStatus: null
+  contractFailed: false
 }
 
 var ConfigStore = Fluxxor.createStore({
@@ -16,8 +15,7 @@ var ConfigStore = Fluxxor.createStore({
     this.bindActions(
       constants.config.UPDATE_CONTRACT_SUCCESS, this.handleUpdateContractSuccess,
       constants.config.UPDATE_CONTRACT_FAILED, this.handleUpdateContractFailed,
-      constants.config.UPDATE_IS_DEMO, this.handleUpdateIsDemo,
-      constants.config.UPDATE_ETHEREUM_STATUS, this.handleUpdateEthereumStatus
+      constants.config.UPDATE_IS_DEMO, this.handleUpdateIsDemo
     );
   },
 
@@ -46,11 +44,6 @@ var ConfigStore = Fluxxor.createStore({
       state.ethereumStatus = constants.config.ETHEREUM_STATUS_CONNECTED;
     }
     state.contractFailed = false;
-    this.emit(constants.CHANGE_EVENT);
-  },
-
-  handleUpdateEthereumStatus: function (payload) {
-    state.ethereumStatus = payload.ethereumStatus;
     this.emit(constants.CHANGE_EVENT);
   }
 });

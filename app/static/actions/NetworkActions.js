@@ -1,17 +1,33 @@
+window.web3 = require('web3');
 var constants = require('../constants');
 var utilities = require('../utilities');
 
 var NetworkActions = {
-  updateNetwork: function () {
-    var accountState = this.flux.store('account').getState();
-    var isDemo = this.flux.store('config').getState().isDemo;
 
-    var web3;
-    if (isDemo) {
-      web3 = require('../demo').web3;
-    } else {
-      web3 = require('ethereum.js');
+  checkEthereumClient: function() {
+
+    // place this in network init
+    web3.setProvider(new web3.providers.HttpProvider());
+
+    try {
+      web3.eth.accounts;
+    } catch(err) {
+      console.log('[augur] no ethereum client found');
+      this.dispatch(
+        constants.network.UPDATE_ETHEREUM_STATUS,
+        {ethereumStatus: constants.network.ETHEREUM_STATUS_FAILED});
+      return;
     }
+
+    this.dispatch(
+      constants.network.UPDATE_ETHEREUM_STATUS,
+      {ethereumStatus: constants.network.ETHEREUM_STATUS_CONNECTED});
+
+  },
+
+  updateNetwork: function () {
+
+    var accountState = this.flux.store('account').getState();
 
     this.dispatch(constants.network.UPDATE_NETWORK, {
       accounts: web3.eth.accounts,

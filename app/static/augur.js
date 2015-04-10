@@ -9,7 +9,6 @@ var Identicon = require('./identicon.js');
 var constants = require('./constants');
 var utilities = require('./utilities');
 
-
 // add jQuery to Browserify's global object so plugins attach correctly.
 global.jQuery = $;
 require('jquery.cookie');
@@ -73,19 +72,6 @@ var augur = {
         var testContract = new Contract(address);
 
         return testContract;
-    },
-
-    /**
-     * The entrypoint of the application. Checks for a running Ethereum
-     * daemon, and if it doesn't find one, offers to show demo data.
-     */
-    checkClient: function() {
-      flux.actions.config.checkEthereumClient();
-    },
-
-    viewBranch: function(id) {
-      $('#market, #event').hide();
-      flux.actions.branch.updateCurrentBranch(id);
     },
 
     render: {
@@ -313,20 +299,30 @@ var augur = {
         React.render(network, document.getElementById('network'));
         React.render(branch, document.getElementById('markets'));
 
-        augur.checkClient();
+        flux.actions.network.checkEthereumClient();
     }
 };
+
+
+function renderAll() {
+  augur.render.account();
+  augur.render.period();
+}
+
+
+flux.store('network').on('change', function () {
+
+  var networkState = this.getState();
+
+  if (networkState.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED) {
+    // The Ethereum daemon couldn't be reached. Offer to display demo data.
+    $('#no-eth-modal').modal('show');
+  }
+});
 
 flux.store('config').on('change', function () {
 
   var configState = this.getState();
-  if (configState.ethereumStatus === constants.config.ETHEREUM_STATUS_FAILED) {
-    // The Ethereum daemon couldn't be reached. Offer to display demo data.
-    $('#no-eth-modal').modal('show');
-  } else if (!configState.contract) {
-    // The Ethereum daemon is available, but we haven't loaded data yet.
-    $('#logo .progress-bar').css('width', '50%');
-  }
 
   if (configState.contractFailed) {
     augur.confirm({
@@ -347,11 +343,6 @@ flux.store('config').on('change', function () {
 flux.store('network').on('change', function () {
   $('.network').show();
 });
-
-function renderAll() {
-  augur.render.account();
-  augur.render.period();
-}
 
 flux.store('branch').on('change', function () {
   var currentBranch = this.getState().currentBranch;

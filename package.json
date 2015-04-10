@@ -17,6 +17,10 @@
     "url": "https://github.com/AugurProject/augur-client/issues"
   },
   "homepage": "https://github.com/AugurProject/augur-client",
+  "browserify": {
+    "extensions": [".jsx"],
+    "transform":[ ["reactify", {"es6":true} ]]
+  },
   "dependencies": {
     "bignumber.js": "~2.0.5",
     "bootstrap": "~3.3.4",
@@ -29,7 +33,8 @@
     "node-static": "~0.7.6",
     "pnglib": "0.0.1",
     "react": "^0.13.1",
-    "reactify": "^1.1.0"
+    "reactify": "^1.1.0",
+    "web3": "^0.2.6"
   },
   "devDependencies": {
     "grunt": "^0.4.5",

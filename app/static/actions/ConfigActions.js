@@ -1,27 +1,8 @@
-window.web3 = require('ethereum.js');
+var web3 = require('web3');
 var abi = require('../abi');
 var constants = require('../constants');
 
 var ConfigActions = {
-
-  checkEthereumClient: function () {
-    web3.setProvider(new web3.providers.HttpProvider());
-
-    try {
-      web3.eth.accounts;
-    } catch(err) {
-      console.log('[augur] no ethereum client found');
-      this.dispatch(
-        constants.config.UPDATE_ETHEREUM_STATUS,
-        {ethereumStatus: constants.config.ETHEREUM_STATUS_FAILED});
-      return;
-    }
-
-    this.dispatch(
-      constants.config.UPDATE_ETHEREUM_STATUS,
-      {ethereumStatus: constants.config.ETHEREUM_STATUS_CONNECTED});
-    this.flux.actions.config.loadContract();
-  },
 
   updateContract: function (evmAddress) {
     var isDemo = this.flux.store('config').getState().isDemo;

@@ -31,9 +31,11 @@ module.exports = function(grunt) {
       build: browserifyConfig,
       watch: _.merge({
         options: {
-          debug: true,
           watch: true,
           keepAlive: true,
+          browserifyOptions: {
+            debug: true
+          }
         }
       }, browserifyConfig)
     }

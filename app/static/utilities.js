@@ -1,5 +1,5 @@
 var BigNumber = require('bignumber.js');
-//var web3 = require('ethereum.js');
+var web3 = require('web3');
 
 module.exports = {
 
