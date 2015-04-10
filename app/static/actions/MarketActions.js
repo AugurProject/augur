@@ -4,10 +4,9 @@ var constants = require('../constants');
 
 var MarketActions = {
   loadMarkets: function () {
-    var accountState = this.flux.store('account').getState();
     var branchState = this.flux.store('branch').getState();
     var configState = this.flux.store('config').getState();
-    var networkState = this.flux.store('network').getState();
+    var account = this.flux.store('network').getAccount();
 
     var branchId = branchState.currentBranch;
     var contract = configState.contract;
@@ -19,7 +18,7 @@ var MarketActions = {
       var marketComments = contract.call().getMarketComments(id);
       var marketHistory = contract.call().getMarketHistory(id);
       var marketVolume = contract.call().getMarketVolume(id);
-      var marketShares = contract.call().getMarketShares(id, accountState.account);
+      var marketShares = contract.call().getMarketShares(id, account);
 
       var lastPrice = marketHistory[marketHistory.length-1][1];
 

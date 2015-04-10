@@ -143,8 +143,9 @@ var augur = {
 
         account: function() {
             var accountState = flux.store('account').getState()
+            var account = flux.store('network').getAccount();
 
-            $('.user.address').html(accountState.account);
+            $('.user.address').html(account);
             $('.cash-balance').text(accountState.balance);
         }
     },

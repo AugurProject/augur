@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var React = require('react');
-var Fluxxor = require("fluxxor");
+var Fluxxor = require('fluxxor');
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
@@ -15,11 +15,11 @@ var Market = React.createClass({
 
     var flux = this.getFlux();
     var marketState = flux.store('market').getState();
-    var accountState = flux.store('account').getState();
+    var account = flux.store('network').getAccount();
 
     return {
       market: marketState.markets[1],
-      account: accountState.account
+      account: account
     }
   },
 

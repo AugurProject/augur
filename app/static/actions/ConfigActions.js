@@ -57,7 +57,6 @@ var ConfigActions = {
     });
 
     this.flux.actions.network.updateNetwork();
-    this.flux.actions.account.loadAccount();
     this.flux.actions.branch.loadBranches();
     this.flux.actions.event.loadEvents();
     this.flux.actions.market.loadMarkets();

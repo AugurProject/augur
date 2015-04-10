@@ -3,7 +3,6 @@ var utilities = require('../utilities');
 
 var NetworkActions = {
   updateNetwork: function () {
-    var accountState = this.flux.store('account').getState();
     var isDemo = this.flux.store('config').getState().isDemo;
 
     var web3;
@@ -17,9 +16,13 @@ var NetworkActions = {
       accounts: web3.eth.accounts,
       peerCount: web3.net.peerCount,
       blockNumber: web3.eth.blockNumber,
-      gas: utilities.formatGas(web3.eth.getBalance(accountState.account)),
+      // TODO: Move gas to HoldingStore.
+      gas: utilities.formatGas(web3.eth.getBalance(web3.eth.accounts[0])),
       gasPrice: utilities.formatGas(web3.eth.gasPrice)
     });
+
+    // The account may have changed. Load holdings.
+    this.flux.actions.account.loadBalance();
   }
 };
 
