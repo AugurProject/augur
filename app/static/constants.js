@@ -14,7 +14,7 @@ module.exports = {
     UPDATE_NETWORK: null
   }),
   holding: keyMirror({
-    LOAD_BALANCE_SUCCESS: null
+    LOAD_HOLDINGS_SUCCESS: null
   }),
   branch: keyMirror({
     LOAD_BRANCHES_SUCCESS: null,

@@ -6,7 +6,6 @@ var state = {
   accounts: null,
   peerCount: null,
   blockNumber: null,
-  gas: null,
   gasPrice: null
 };
 

@@ -2,13 +2,14 @@ var Fluxxor = require('fluxxor');
 var constants = require('../constants');
 
 var state = {
-  balance: null
+  balance: null,
+  gas: null
 }
 
 var HoldingStore = Fluxxor.createStore({
   initialize: function () {
     this.bindActions(
-      constants.holding.LOAD_BALANCE_SUCCESS, this.handleLoadBalanceSuccess
+      constants.holding.LOAD_HOLDINGS_SUCCESS, this.handleLoadHoldingsSuccess
     );
   },
 
@@ -16,8 +17,9 @@ var HoldingStore = Fluxxor.createStore({
     return state;
   },
 
-  handleLoadBalanceSuccess: function (payload) {
+  handleLoadHoldingsSuccess: function (payload) {
     state.balance = payload.balance;
+    state.gas = payload.gas;
     this.emit(constants.CHANGE_EVENT);
   }
 });

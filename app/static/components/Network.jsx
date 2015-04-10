@@ -17,7 +17,7 @@ var Network = React.createClass({
     })
 
     return {
-      balance: flux.store('holding').getState().balance,
+      holding: flux.store('holding').getState(),
       network: networkState,
       host: flux.store('config').getState().host
     }
@@ -43,7 +43,7 @@ var Network = React.createClass({
             MINER<span className="pull-right">{this.state.network.miner ? 'on' : 'off'}</span>
           </p>
           <p className="gas">
-            GAS<span className="pull-right">{this.state.network.gas || '-'}</span>
+            GAS<span className="pull-right">{this.state.holding.gas || '-'}</span>
           </p>
           <p className="gas-price">
             GAS PRICE<span className="pull-right">{this.state.network.gasPrice || '-'}</span>
