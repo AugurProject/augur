@@ -6,7 +6,7 @@ var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
 
 var Network = React.createClass({
-  mixins: [FluxMixin, StoreWatchMixin('config', 'network')],
+  mixins: [FluxMixin, StoreWatchMixin('asset', 'config', 'network')],
 
   getStateFromFlux: function () {
     var flux = this.getFlux();
@@ -17,8 +17,9 @@ var Network = React.createClass({
     })
 
     return {
+      assets: flux.store('asset').getState(),
       network: networkState,
-      config: flux.store('config').getState()
+      host: flux.store('config').getState().host
     }
   },
 
@@ -30,7 +31,7 @@ var Network = React.createClass({
         </div>
         <div className="panel-body">
           <p className="host">
-            HOST<span className="pull-right">{this.state.config.host}</span>
+            HOST<span className="pull-right">{this.state.host}</span>
           </p>
           <p className="peers">
             PEERS<span className="pull-right">{this.state.network.peerCount || '-'}</span>
@@ -42,7 +43,7 @@ var Network = React.createClass({
             MINER<span className="pull-right">{this.state.network.miner ? 'on' : 'off'}</span>
           </p>
           <p className="gas">
-            GAS<span className="pull-right">{this.state.network.gas || '-'}</span>
+            GAS<span className="pull-right">{this.state.assets.gas || '-'}</span>
           </p>
           <p className="gas-price">
             GAS PRICE<span className="pull-right">{this.state.network.gasPrice || '-'}</span>

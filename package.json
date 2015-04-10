@@ -33,8 +33,12 @@
     "node-static": "~0.7.6",
     "pnglib": "0.0.1",
     "react": "^0.13.1",
+<<<<<<< HEAD
     "reactify": "^1.1.0",
     "web3": "^0.2.6"
+=======
+    "react-bootstrap": "^0.20.2"
+>>>>>>> f6ba757dc93d2310875959e960363828ee41ed8a
   },
   "devDependencies": {
     "grunt": "^0.4.5",

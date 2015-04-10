@@ -14,14 +14,14 @@ global.jQuery = $;
 require('jquery.cookie');
 require('bootstrap');
 
-var AccountActions = require('./actions/AccountActions');
+var AssetActions = require('./actions/AssetActions');
 var BranchActions = require('./actions/BranchActions');
 var ConfigActions = require('./actions/ConfigActions');
 var EventActions = require('./actions/EventActions');
 var MarketActions = require('./actions/MarketActions');
 var NetworkActions = require('./actions/NetworkActions');
 
-var AccountStore = require('./stores/AccountStore');
+var AssetStore = require('./stores/AssetStore');
 var BranchStore = require('./stores/BranchStore');
 var ConfigStore = require('./stores/ConfigStore');
 var EventStore = require('./stores/EventStore');
@@ -31,9 +31,10 @@ var NetworkStore = require('./stores/NetworkStore');
 var Network = require('./components/Network');
 var Branch = require('./components/Branch');
 var Market = require('./components/Market');
+var SendCashNavTrigger = require('./components/SendCash').SendCashNavTrigger;
 
 var actions = {
-  account: AccountActions,
+  asset: AssetActions,
   branch: BranchActions,
   config: ConfigActions,
   event: EventActions,
@@ -42,7 +43,7 @@ var actions = {
 }
 
 var stores = {
-  account: new AccountStore(),
+  asset: new AssetStore(),
   branch: new BranchStore(),
   config: new ConfigStore(),
   event: new EventStore(),
@@ -128,10 +129,11 @@ var augur = {
         },
 
         account: function() {
-            var accountState = flux.store('account').getState()
+            var balance = flux.store('asset').getState().balance;
+            var account = flux.store('network').getAccount();
 
-            $('.user.address').html(accountState.account);
-            $('.cash-balance').text(accountState.balance);
+            $('.user.address').html(account);
+            $('.cash-balance').text(balance);
         }
     },
 
@@ -178,7 +180,7 @@ var augur = {
 
             event.preventDefault();
             // TODO: Replace this with a call to a new createEvent action.
-            var account = flux.store('account').getState().account;
+            var account = flux.store('network').getAccount();
             var contract = flux.store('config').getState().contract;
             var currentBranch = flux.store('branch').getState().currentBranch;
             var currentBlock = flux.store('network').getState().blockNumber;
@@ -211,7 +213,7 @@ var augur = {
 
             event.preventDefault();
             // TODO: Replace this with a call to a new createMarket action.
-            var account = flux.store('account').getState().account;
+            var account = flux.store('network').getAccount();
             var contract = flux.store('config').getState().contract;
             var currentBranch = flux.store('branch').getState().currentBranch;
 
@@ -244,18 +246,6 @@ var augur = {
 
             $('#add-market-modal').modal('hide');
         });
-
-        $('#send-cash-modal form').on('submit', function(event) {
-
-            event.preventDefault();
-            var address = $('#cash-dest-address').val();
-            var amount = $('#cash-amount').val();
-
-            // send cash action
-
-            $('#send-cash-modal').modal('hide');
-        });
-
 
         $('#send-rep-modal form').on('submit', function(event) {
 
@@ -295,9 +285,11 @@ var augur = {
 
         var network = React.createElement(Network, {flux: flux});
         var branch = React.createElement(Branch, {flux: flux});
+        var sendCashTrigger = React.createElement(SendCashNavTrigger, {flux: flux});
 
         React.render(network, document.getElementById('network'));
         React.render(branch, document.getElementById('markets'));
+        React.render(sendCashTrigger, document.getElementById('send-cash-trigger'));
 
         flux.actions.network.checkEthereumClient();
     }

@@ -23,6 +23,14 @@ var ConfigStore = Fluxxor.createStore({
     return state;
   },
 
+  getWeb3: function () {
+    if (state.isDemo) {
+      return require('../demo').web3;
+    } else {
+      return require('ethereum.js');
+    }
+  },
+
   handleUpdateContractSuccess: function (payload) {
     state.contract = payload.contract;
     state.contractFailed = false;

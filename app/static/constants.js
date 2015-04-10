@@ -13,9 +13,8 @@ module.exports = {
     ETHEREUM_STATUS_CONNECTED: null,
     ETHEREUM_STATUS_FAILED: null
   }),
-  account: keyMirror({
-    UPDATE_ACCOUNT: null,
-    LOAD_BALANCE_SUCCESS: null
+  asset: keyMirror({
+    LOAD_ASSETS_SUCCESS: null
   }),
   branch: keyMirror({
     LOAD_BRANCHES_SUCCESS: null,

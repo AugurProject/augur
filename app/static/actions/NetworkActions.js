@@ -3,6 +3,7 @@ var constants = require('../constants');
 var utilities = require('../utilities');
 
 var NetworkActions = {
+<<<<<<< HEAD
 
   checkEthereumClient: function() {
 
@@ -17,6 +18,10 @@ var NetworkActions = {
         {ethereumStatus: constants.network.ETHEREUM_STATUS_FAILED});
       return;
     }
+=======
+  updateNetwork: function () {
+    var web3 = this.flux.store('config').getWeb3();
+>>>>>>> f6ba757dc93d2310875959e960363828ee41ed8a
 
     this.dispatch(
       constants.network.UPDATE_ETHEREUM_STATUS,
@@ -32,9 +37,11 @@ var NetworkActions = {
       accounts: web3.eth.accounts,
       peerCount: web3.net.peerCount,
       blockNumber: web3.eth.blockNumber,
-      gas: utilities.formatGas(web3.eth.getBalance(accountState.account)),
       gasPrice: utilities.formatGas(web3.eth.gasPrice)
     });
+
+    // The account may have changed. Load assets.
+    this.flux.actions.asset.loadAssets();
   }
 };
 

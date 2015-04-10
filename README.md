@@ -1,6 +1,8 @@
 Augur Client
 ------------
 
+[![Join the chat at https://gitter.im/AugurProject/augur-client](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/AugurProject/augur-client?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 This is the frontend for [Augur](http://augur.net), a decentralized prediction market platform that runs on Ethereum.
 
 

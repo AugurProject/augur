@@ -3,19 +3,19 @@ var constants = require('../constants');
 
 var BranchActions = {
   loadBranches: function () {
-    var accountState = this.flux.store('account').getState();
     var branchState = this.flux.store('branch').getState();
     var configState = this.flux.store('config').getState();
+    var account = this.flux.store('network').getAccount();
 
     var contract = configState.contract;
     var currentBranch = branchState.currentBranch;
 
-    var callParams = {from: accountState.account}
-    
+    var callParams = {from: account}
+
     var branchList = _.map(contract.call(callParams).getBranches(), function(branchId) {
       var branchInfo = contract.call(callParams).getBranchInfo(branchId);
       var branchName = contract.call(callParams).getBranchDesc(branchId);
-      var rep = contract.call(callParams).getRepBalance(branchId, accountState.account).dividedBy(new BigNumber(2).toPower(64));
+      var rep = contract.call(callParams).getRepBalance(branchId, account).dividedBy(new BigNumber(2).toPower(64));
       var marketCount = contract.call(callParams).getMarkets(branchId).length;
 
       return {

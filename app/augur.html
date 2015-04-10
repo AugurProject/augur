@@ -86,7 +86,7 @@
                     <p><a href="#">Reputation</a><i>240</i></p>
                     <p><a href="#">Ballots</a></p>
                     <p><a href="#account-modal" data-toggle="modal">Account</a></p>
-                    <p><a href="#send-cash-modal" data-toggle="modal">Send Cash</a></p>
+                    <div id="send-cash-trigger"></div>
                 </div>
 
                 <div id="network"></div>
@@ -229,28 +229,6 @@
                             </span>
                         </div>
                     </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="send-cash-modal" class="modal fade">
-        <div class="modal-dialog model-sm">
-            <div class="modal-content">
-                <div class="modal-body clearfix">
-                    <h4>Send cash</h4>
-                    <form class="form-inline pull-right" role="form">
-                        <div class="form-group">
-                            <label class="sr-only" for="dest-address">Destination address</label>
-                            <input type="text" class="form-control" name="cash-dest-address" id="cash-dest-address" placeholder="destination address">
-                        </div>
-                        <div class="form-group">
-                            <label class="sr-only" for="amount">Amount</label>
-                            <input type="text" name="cash-amount" id="cash-amount" class="form-control" placeholder="amount">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Send</button>
-                    </form>
-                    <p>BALANCE: <b class="cash-balance"></b></p>
                 </div>
             </div>
         </div>
