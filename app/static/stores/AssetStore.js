@@ -6,10 +6,10 @@ var state = {
   gas: null
 }
 
-var HoldingStore = Fluxxor.createStore({
+var AssetStore = Fluxxor.createStore({
   initialize: function () {
     this.bindActions(
-      constants.holding.LOAD_HOLDINGS_SUCCESS, this.handleLoadHoldingsSuccess
+      constants.asset.LOAD_ASSETS_SUCCESS, this.handleLoadAssetsSuccess
     );
   },
 
@@ -17,11 +17,11 @@ var HoldingStore = Fluxxor.createStore({
     return state;
   },
 
-  handleLoadHoldingsSuccess: function (payload) {
+  handleLoadAssetsSuccess: function (payload) {
     state.balance = payload.balance;
     state.gas = payload.gas;
     this.emit(constants.CHANGE_EVENT);
   }
 });
 
-module.exports = HoldingStore;
+module.exports = AssetStore;

@@ -15,17 +15,17 @@ global.jQuery = $;
 require('jquery.cookie');
 require('bootstrap');
 
+var AssetActions = require('./actions/AssetActions');
 var BranchActions = require('./actions/BranchActions');
 var ConfigActions = require('./actions/ConfigActions');
 var EventActions = require('./actions/EventActions');
-var HoldingActions = require('./actions/HoldingActions');
 var MarketActions = require('./actions/MarketActions');
 var NetworkActions = require('./actions/NetworkActions');
 
+var AssetStore = require('./stores/AssetStore');
 var BranchStore = require('./stores/BranchStore');
 var ConfigStore = require('./stores/ConfigStore');
 var EventStore = require('./stores/EventStore');
-var HoldingStore = require('./stores/HoldingStore');
 var MarketStore = require('./stores/MarketStore');
 var NetworkStore = require('./stores/NetworkStore');
 
@@ -34,19 +34,19 @@ var Branch = require('./components/Branch');
 var Market = require('./components/Market');
 
 var actions = {
+  asset: AssetActions,
   branch: BranchActions,
   config: ConfigActions,
   event: EventActions,
-  holding: HoldingActions,
   market: MarketActions,
   network: NetworkActions
 }
 
 var stores = {
+  asset: new AssetStore(),
   branch: new BranchStore(),
   config: new ConfigStore(),
   event: new EventStore(),
-  holding: new HoldingStore(),
   market: new MarketStore(),
   network: new NetworkStore()
 }
@@ -142,7 +142,7 @@ var augur = {
         },
 
         account: function() {
-            var balance = flux.store('holding').getState().balance;
+            var balance = flux.store('asset').getState().balance;
             var account = flux.store('network').getAccount();
 
             $('.user.address').html(account);

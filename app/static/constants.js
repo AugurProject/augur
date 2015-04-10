@@ -13,8 +13,8 @@ module.exports = {
   network: keyMirror({
     UPDATE_NETWORK: null
   }),
-  holding: keyMirror({
-    LOAD_HOLDINGS_SUCCESS: null
+  asset: keyMirror({
+    LOAD_ASSETS_SUCCESS: null
   }),
   branch: keyMirror({
     LOAD_BRANCHES_SUCCESS: null,

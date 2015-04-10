@@ -6,7 +6,7 @@ var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
 
 var Network = React.createClass({
-  mixins: [FluxMixin, StoreWatchMixin('config', 'holding', 'network')],
+  mixins: [FluxMixin, StoreWatchMixin('asset', 'config', 'network')],
 
   getStateFromFlux: function () {
     var flux = this.getFlux();
@@ -17,7 +17,7 @@ var Network = React.createClass({
     })
 
     return {
-      holding: flux.store('holding').getState(),
+      assets: flux.store('asset').getState(),
       network: networkState,
       host: flux.store('config').getState().host
     }
@@ -43,7 +43,7 @@ var Network = React.createClass({
             MINER<span className="pull-right">{this.state.network.miner ? 'on' : 'off'}</span>
           </p>
           <p className="gas">
-            GAS<span className="pull-right">{this.state.holding.gas || '-'}</span>
+            GAS<span className="pull-right">{this.state.assets.gas || '-'}</span>
           </p>
           <p className="gas-price">
             GAS PRICE<span className="pull-right">{this.state.network.gasPrice || '-'}</span>

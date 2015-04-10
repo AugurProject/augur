@@ -12,8 +12,8 @@ var NetworkActions = {
       gasPrice: utilities.formatGas(web3.eth.gasPrice)
     });
 
-    // The account may have changed. Load holdings.
-    this.flux.actions.holding.loadHoldings();
+    // The account may have changed. Load assets.
+    this.flux.actions.asset.loadAssets();
   }
 };
 
