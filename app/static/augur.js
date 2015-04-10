@@ -317,7 +317,12 @@ flux.store('network').on('change', function () {
   if (networkState.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED) {
     // The Ethereum daemon couldn't be reached. Offer to display demo data.
     $('#no-eth-modal').modal('show');
+  } else if (networkState.ethereumStatus === constants.network.ETHEREUM_STATUS_CONNECTED) {
+    // load contract id we haven't already
+    var contract = flux.store('config').getState().contract;
+    if (!contract) flux.actions.config.loadContract();
   }
+
 });
 
 flux.store('config').on('change', function () {

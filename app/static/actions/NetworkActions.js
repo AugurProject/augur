@@ -6,7 +6,6 @@ var NetworkActions = {
 
   checkEthereumClient: function() {
 
-    // place this in network init
     web3.setProvider(new web3.providers.HttpProvider());
 
     try {

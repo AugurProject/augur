@@ -39,10 +39,7 @@ var ConfigStore = Fluxxor.createStore({
 
   handleUpdateIsDemo: function (payload) {
     state.isDemo = payload.isDemo;
-    if (state.isDemo) {
-      // In the demo state, we pretend the Ethereum daemon is reachable.
-      state.ethereumStatus = constants.config.ETHEREUM_STATUS_CONNECTED;
-    }
+    state.contract = payload.contract;
     state.contractFailed = false;
     this.emit(constants.CHANGE_EVENT);
   }

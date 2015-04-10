@@ -1,4 +1,3 @@
-var web3 = require('web3');
 var abi = require('../abi');
 var constants = require('../constants');
 
@@ -11,6 +10,13 @@ var ConfigActions = {
 
       contract = require('../demo').contract;
       console.log('[augur] running in demo mode');
+
+    } else if (!evmAddress) {
+
+      console.log('[augur] invalid evm address');
+      this.dispatch(constants.config.UPDATE_CONTRACT_FAILED, {
+        evmAddress: evmAddress
+      });
 
     } else {
 
