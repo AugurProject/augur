@@ -32,6 +32,7 @@ var NetworkStore = require('./stores/NetworkStore');
 var Network = require('./components/Network');
 var Branch = require('./components/Branch');
 var Market = require('./components/Market');
+var SendCashNavTrigger = require('./components/SendCash').SendCashNavTrigger;
 
 var actions = {
   asset: AssetActions,
@@ -260,18 +261,6 @@ var augur = {
             $('#add-market-modal').modal('hide');
         });
 
-        $('#send-cash-modal form').on('submit', function(event) {
-
-            event.preventDefault();
-            var address = $('#cash-dest-address').val();
-            var amount = $('#cash-amount').val();
-
-            // send cash action
-
-            $('#send-cash-modal').modal('hide');
-        });
-
-
         $('#send-rep-modal form').on('submit', function(event) {
 
             event.preventDefault();
@@ -310,9 +299,11 @@ var augur = {
 
         var network = React.createElement(Network, {flux: flux});
         var branch = React.createElement(Branch, {flux: flux});
+        var sendCashTrigger = React.createElement(SendCashNavTrigger, {flux: flux});
 
         React.render(network, document.getElementById('network'));
         React.render(branch, document.getElementById('markets'));
+        React.render(sendCashTrigger, document.getElementById('send-cash-trigger'));
 
         augur.checkClient();
     }

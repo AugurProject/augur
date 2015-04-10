@@ -28,7 +28,8 @@
     "lodash": "~3.6.0",
     "node-static": "~0.7.6",
     "pnglib": "0.0.1",
-    "react": "^0.13.1"
+    "react": "^0.13.1",
+    "react-bootstrap": "^0.20.2"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
