@@ -3,7 +3,6 @@ var constants = require('../constants');
 var utilities = require('../utilities');
 
 var NetworkActions = {
-<<<<<<< HEAD
 
   checkEthereumClient: function() {
 
@@ -18,20 +17,15 @@ var NetworkActions = {
         {ethereumStatus: constants.network.ETHEREUM_STATUS_FAILED});
       return;
     }
-=======
-  updateNetwork: function () {
-    var web3 = this.flux.store('config').getWeb3();
->>>>>>> f6ba757dc93d2310875959e960363828ee41ed8a
 
     this.dispatch(
       constants.network.UPDATE_ETHEREUM_STATUS,
       {ethereumStatus: constants.network.ETHEREUM_STATUS_CONNECTED});
-
   },
 
   updateNetwork: function () {
 
-    var accountState = this.flux.store('account').getState();
+    var web3 = this.flux.store('config').getWeb3();
 
     this.dispatch(constants.network.UPDATE_NETWORK, {
       accounts: web3.eth.accounts,

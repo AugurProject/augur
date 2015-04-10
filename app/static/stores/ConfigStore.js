@@ -27,7 +27,7 @@ var ConfigStore = Fluxxor.createStore({
     if (state.isDemo) {
       return require('../demo').web3;
     } else {
-      return require('ethereum.js');
+      return require('web3');
     }
   },
 
