@@ -21,6 +21,8 @@ var NetworkActions = {
     this.dispatch(
       constants.network.UPDATE_ETHEREUM_STATUS,
       {ethereumStatus: constants.network.ETHEREUM_STATUS_CONNECTED});
+
+    this.flux.actions.config.loadContract();
   },
 
   updateNetwork: function () {
