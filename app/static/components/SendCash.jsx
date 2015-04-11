@@ -43,8 +43,7 @@ var SendCashModal = React.createClass({
 
   render: function () {
     return (
-      // TODO: Consider moving away from an id so this can be reusable.
-      <Modal {...this.props} id='send-cash-modal' title='Send Cash'>
+      <Modal {...this.props} className='send-cash-modal' title='Send Cash'>
         <div className='modal-body clearfix'>
           <form className='form-inline pull-right' role='form'>
             <div className='form-group'>

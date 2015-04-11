@@ -6,8 +6,7 @@ var state = {
   evmAddress: null,
   isDemo: false,
   contract: null,
-  contractFailed: false,
-  contractLoaded: false
+  contractFailed: false
 }
 
 var ConfigStore = Fluxxor.createStore({

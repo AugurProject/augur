@@ -32,6 +32,7 @@ var Network = require('./components/Network');
 var Branch = require('./components/Branch');
 var Market = require('./components/Market');
 var SendCashNavTrigger = require('./components/SendCash').SendCashNavTrigger;
+var AccountDetailsNavTrigger = require('./components/AccountDetails').AccountDetailsNavTrigger;
 
 var actions = {
   asset: AssetActions,
@@ -286,10 +287,12 @@ var augur = {
         var network = React.createElement(Network, {flux: flux});
         var branch = React.createElement(Branch, {flux: flux});
         var sendCashTrigger = React.createElement(SendCashNavTrigger, {flux: flux});
+        var accountDetailsTrigger = React.createElement(AccountDetailsNavTrigger, {flux: flux});
 
         React.render(network, document.getElementById('network'));
         React.render(branch, document.getElementById('markets'));
         React.render(sendCashTrigger, document.getElementById('send-cash-trigger'));
+        React.render(accountDetailsTrigger, document.getElementById('account-details-trigger'));
 
         flux.actions.network.checkEthereumClient();
     }
