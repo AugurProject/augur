@@ -31,6 +31,7 @@ var NetworkStore = require('./stores/NetworkStore');
 var Network = require('./components/Network');
 var Branch = require('./components/Branch');
 var Market = require('./components/Market');
+
 var SendCashNavTrigger = require('./components/SendCash').SendCashNavTrigger;
 var AccountDetailsNavTrigger = require('./components/AccountDetails').AccountDetailsNavTrigger;
 
@@ -310,7 +311,7 @@ flux.store('network').on('change', function () {
 
   if (networkState.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED) {
 
-    // The Ethereum daemon couldn't be reached. Offer to display demo data.
+    // The Ethereum client couldn't be reached. Offer to display demo data.
     $('#no-eth-modal').modal('show');
   }
 
@@ -334,10 +335,6 @@ flux.store('config').on('change', function () {
     $('#logo .progress-bar').css('width', '100%');
     $('body').removeClass('stopped').addClass('running');
   }
-});
-
-flux.store('network').on('change', function () {
-  $('.network').show();
 });
 
 flux.store('branch').on('change', function () {

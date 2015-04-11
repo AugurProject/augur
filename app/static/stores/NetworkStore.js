@@ -24,6 +24,16 @@ var NetworkStore = Fluxxor.createStore({
     return state;
   },
 
+  getWeb3: function () {
+
+    console.log(state);
+    if (state.ethereumStatus === constants.network.ETHEREUM_STATUS_CONNECTED) {
+      return require('web3');
+    } else {
+      return require('../demo').web3;
+    }
+  },
+
   /**
    * Get the currently selected account.
    *
@@ -45,7 +55,7 @@ var NetworkStore = Fluxxor.createStore({
   },
 
   handleUpdateNetwork: function (payload) {
-    state = payload;
+    _.merge(state, payload);
     this.emit(constants.CHANGE_EVENT);
   },
 

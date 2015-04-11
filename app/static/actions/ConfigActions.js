@@ -23,9 +23,6 @@ var ConfigActions = {
       var Contract = web3.eth.contract(abi);
       contract = new Contract(evmAddress);
 
-      // add contract to global 'augur' object for debugging
-      augur.contract = contract;
-
       // Attempt a contract call to see if we're good to go.
       if (!contract.call({from: web3.eth.accounts[0]}).faucet().toNumber()) {
 

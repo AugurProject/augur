@@ -34,7 +34,7 @@ var AccountDetailsModal = React.createClass({
       <Modal {...this.props} className='account-modal' title='Account Details'>
         <div className="modal-body clearfix">
             <h4>Account addresses</h4>
-            <p className="user address">{ this.state.primaryAccount }<p>
+            <p className="user address">{ this.state.primaryAccount }</p>
         </div>
       </Modal>
     );

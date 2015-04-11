@@ -27,7 +27,7 @@ var NetworkActions = {
 
   updateNetwork: function () {
 
-    var web3 = this.flux.store('config').getWeb3();
+    var web3 = this.flux.store('network').getWeb3();
 
     this.dispatch(constants.network.UPDATE_NETWORK, {
       accounts: web3.eth.accounts,
