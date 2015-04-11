@@ -43,26 +43,31 @@ var SendCashModal = React.createClass({
 
   render: function () {
     return (
-      <Modal {...this.props} className='send-cash-modal' title='Send Cash'>
+      <Modal {...this.props} id='send-cash-modal'>
         <div className='modal-body clearfix'>
-          <form className='form-inline pull-right' role='form'>
+          <h4>Send cash</h4>
+          <form className='form-horizontal' role='form'>
             <div className='form-group'>
-              <label className='sr-only' htmlFor='dest-address'>Destination address</label>
-              <input
-                type='text'
-                className='form-control'
-                placeholder='destination address'
-                onChange={this.onChangeDestination} />
+              <div className="col-sm-7">
+                <input
+                  type='text'
+                  className='form-control dest-address'
+                  placeholder='destination address'
+                  onChange={this.onChangeDestination} />
+              </div>
+              <div className="col-sm-5">
+                <div className='input-group'>
+                  <input
+                    type='text'
+                    className='form-control'
+                    placeholder='amount'
+                    onChange={this.onChangeAmount} />
+                  <span className="input-group-btn">
+                    <Button bsStyle='primary' onClick={this.onSend}>Send</Button>
+                  </span>
+                </div>
+              </div>
             </div>
-            <div className='form-group'>
-              <label className='sr-only' htmlFor='amount'>Amount</label>
-              <input
-                type='text'
-                className='form-control'
-                placeholder='amount'
-                onChange={this.onChangeAmount} />
-            </div>
-            <Button bsStyle='primary' onClick={this.onSend}>Send</Button>
           </form>
           <p>BALANCE: <b className='cash-balance'>{this.state.balance}</b></p>
         </div>

@@ -26,7 +26,6 @@ var NetworkStore = Fluxxor.createStore({
 
   getWeb3: function () {
 
-    console.log(state);
     if (state.ethereumStatus === constants.network.ETHEREUM_STATUS_CONNECTED) {
       return require('web3');
     } else {

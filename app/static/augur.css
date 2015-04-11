@@ -180,7 +180,7 @@ nav .navbar-right li div {
     border-bottom: 1px solid #eee;
 }
 .side-nav p i {
-    letter-spacing: 0.02em;
+    letter-spacing: 0.02em;x
     font-style: normal;
     display: inline-block;
     background-color: #fff;
@@ -196,56 +196,6 @@ nav .navbar-right li div {
     top: -1px;
 }
 
-#create-branch-modal .modal-dialog {
-    width: 400px;
-}
-
-#trade-modal .modal-dialog {
-    width: 450px;
-}
-#trade-modal .btn-group {
-    width: 100%;
-}
-#trade-modal p {
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 0px;
-}
-#trade-modal #trade-amount {
-    width: 115px;
-}
-#trade-modal button {
-    width: 100px;
-    text-transform: capitalize;
-}
-#trade-modal .balances {
-    margin-top: 18px;
-}
-
-#send-rep-modal .modal-dialog,
-#send-cash-modal .modal-dialog {
-    width: 550px;
-}
-#send-rep-modal h4,
-#send-cash-modal h4 {
-    margin-top: 0px;
-}
-#send-rep-modal #rep-dest-address,
-#send-cash-modal #cash-dest-address {
-    width: 290px;
-}
-#send-rep-modal form,
-#send-cash-modal form {
-    padding-bottom: 15px;
-    border-bottom: 1px solid #ddd;
-}
-#send-rep-modal p,
-#send-cash-modal p {
-    color: #555;
-    margin: 15px 0px 0px 0px;
-    float: left;
-    font-size: 12px;
-} 
 .account .address {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -341,10 +291,12 @@ nav .navbar-right li div {
     width: 220px;
     height: 220px;
     background-color: #fff;
-    border: 1px solid #d8d8d8;
     border-radius: 3px;
     opacity: 0.9;
     display: block;
+    box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.75);
+    -webkit-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.75);
 }
 .market-pane:hover {
     cursor: pointer;
@@ -514,6 +466,60 @@ nav .navbar-right li div {
     font-size: 13px;
     margin-bottom: 5px;
 }
+
+#create-branch-modal .modal-dialog {
+    width: 400px;
+}
+
+#trade-modal .modal-dialog {
+    width: 450px;
+}
+#trade-modal .btn-group {
+    width: 100%;
+}
+#trade-modal p {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 0px;
+}
+#trade-modal #trade-amount {
+    width: 115px;
+}
+#trade-modal button {
+    width: 100px;
+    text-transform: capitalize;
+}
+#trade-modal .balances {
+    margin-top: 18px;
+}
+
+/* modals */
+
+#send-rep-modal .modal-dialog,
+#send-cash-modal .modal-dialog {
+    max-width: 520px;
+}
+#send-rep-modal h4,
+#send-cash-modal h4 {
+    margin-top: 0px;
+}
+#send-rep-modal .dest-address,
+#send-cash-modal .dest-address {
+
+}
+#send-rep-modal form,
+#send-cash-modal form {
+    padding-top: 15px;
+    border-bottom: 1px solid #ddd;
+}
+#send-rep-modal p,
+#send-cash-modal p {
+    color: #555;
+    margin: 15px 0px 0px 0px;
+    float: left;
+    font-size: 12px;
+} 
+
 #no-eth-modal .modal-dialog,
 #confirm-modal .modal-dialog {
     width: 400px;
