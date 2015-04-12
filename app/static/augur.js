@@ -32,6 +32,8 @@ var Network = require('./components/Network');
 var Branch = require('./components/Branch');
 var Market = require('./components/Market');
 
+var NoEthereum = require('./components/NoEthereum');
+
 var SendCashNavTrigger = require('./components/SendCash').SendCashNavTrigger;
 var AccountDetailsNavTrigger = require('./components/AccountDetails').AccountDetailsNavTrigger;
 
@@ -153,118 +155,6 @@ var augur = {
 
     init: function() {
 
-        $('#evm-address-form').on('submit', function(event) {
-          event.preventDefault();
-          var evmAddress = $('#evm-address').val();
-          flux.actions.config.updateContract(evmAddress);
-          $('#evm-address-modal').modal('hide');
-        });
-
-        $('#create-branch-modal form').on('submit', function(event) {
-
-            event.preventDefault();
-            // TODO: Replace this with a createBranch action.
-            var contract = flux.store('config').getState().contract;
-            var parent = parseInt($('#create-branch-modal .branch-parent').val());
-            var branchName = $('#create-branch-modal .branch-name').val();
-
-            var newBranch = contract.call().createSubbranch(branchName, 5*60, parent);
-            if (newBranch.toNumber()) {
-                console.log("[augur] new subbranch " + newBranch.toNumber() + " created");
-                $('#create-branch-modal').modal('hide');
-            } else {
-                augur.render.alert({type: 'danger', messages:['Oops! Failed to create subbranch.']});
-                console.log("[augur] failed to create subbranch");
-            }
-        });
-
-        $('#add-event-modal form').on('submit', function(event) {
-
-            event.preventDefault();
-            // TODO: Replace this with a call to a new createEvent action.
-            var account = flux.store('network').getAccount();
-            var contract = flux.store('config').getState().contract;
-            var currentBranch = flux.store('branch').getState().currentBranch;
-            var currentBlock = flux.store('network').getState().blockNumber;
-
-            var newEvent = {
-                branch: currentBranch,
-                text: $('#event-text').val(),
-                matureBlock: $('#event-end-block').val(),
-                matureDate: utilities.blockToDate($('#event-end-block').val(), currentBlock),
-                status: 'pending'
-            };
-
-            var id = contract.call().createEvent(newEvent.branch, newEvent.text, newEvent.matureBlock, 0, 1, 2);
-
-            if (id.toNumber() === 0) {
-                var data = {
-                    type: 'danger',
-                    messages: ['Oops! Failed to add a new event.']
-                };
-                augur.render.alert(data);
-
-            } else {
-                // update event store
-            }
-
-            $('#add-event-modal').modal('hide');
-        });
-
-        $('#add-market-modal form').on('submit', function(event) {
-
-            event.preventDefault();
-            // TODO: Replace this with a call to a new createMarket action.
-            var account = flux.store('network').getAccount();
-            var contract = flux.store('config').getState().contract;
-            var currentBranch = flux.store('branch').getState().currentBranch;
-
-            var newMarket = {
-                branch: currentBranch,
-                text: $('#market-text').val(),
-                alpha: $('#market-alpha').val(),
-                investment: $('#market-investment').val(),
-                creator: account,
-                cumulativeScale: null,
-                numOutcomes: null,
-                tradingPeriod: null,
-                fee: 10,
-                events: [],
-                status: 'pending'
-            };
-
-            var id = contract.call().createMarket(newMarket.branch, newMarket.text, newMarket.alpha, newMarket.initial, newMarket.fee, newMarket.events);
-
-            if (id.toNumber() === 0) {
-                var data = {
-                    type: 'danger',
-                    messages: ['Oops! Failed to add a new market.']
-                };
-                augur.render.alert(data);
-
-            } else {
-                // update market store
-            }
-
-            $('#add-market-modal').modal('hide');
-        });
-
-        $('#send-rep-modal form').on('submit', function(event) {
-
-            event.preventDefault();
-            // TODO: Replace this with a sendReputation action.
-            var contract = flux.store('config').getState().contract;
-            var address = $('#rep-dest-address').val();
-            var amount = $('#send-rep-modal .rep-amount').val();
-            var branch = $('#send-rep-modal .branch-id').val();
-
-            if (contract.call().sendReputation(branch, address, amount)) {
-                $('#send-rep-modal').modal('hide');
-            } else {
-                console.log('[augur] failed to send reputation');
-            }
-        });
-
         $('#market .buy input').on('focus', function(event) {
 
             $('#market .chart').hide();
@@ -285,6 +175,7 @@ var augur = {
             flux.actions.config.updateIsDemo(true);
         });
 
+        // render base react components to document 
         var network = React.createElement(Network, {flux: flux});
         var branch = React.createElement(Branch, {flux: flux});
         var sendCashTrigger = React.createElement(SendCashNavTrigger, {flux: flux});
@@ -295,6 +186,7 @@ var augur = {
         React.render(sendCashTrigger, document.getElementById('send-cash-trigger'));
         React.render(accountDetailsTrigger, document.getElementById('account-details-trigger'));
 
+        // get things rolling
         flux.actions.network.checkEthereumClient();
     }
 };

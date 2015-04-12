@@ -158,25 +158,6 @@
         </div>
     </div>
 
-    <div id="evm-address-modal" class="modal fade">
-        <div class="modal-dialog model-sm">
-            <div class="modal-content">
-                <div class="modal-body clearfix">
-                    <h4>No EVM address set</h4>
-                    <p>The EVM address for Augur hasn't be set.  Please enter an address where Augur can be found.</p>
-                    <form method="POST" id="evm-address-form">
-                        <div class="input-group">
-                            <input name="evm-address" id="evm-address" class="form-control" placeholder="Enter the EVM address" autofocus>
-                            <span class="input-group-btn">
-                                <button class="btn btn-success" type="submit">Load</button>
-                            </span>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div id="confirm-modal" class="modal fade">
         <div class="modal-dialog model-sm">
             <div class="modal-content">
@@ -184,21 +165,6 @@
                     <div class="message"></div>
                     <button class="btn btn-success confirm pull-right" data-dismiss="modal">Okay</button>
                     <button class="btn btn-default cancel pull-right" data-dismiss="modal">Cancel</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="downloading-modal" class="modal fade">
-        <div class="modal-dialog model-sm">
-            <div class="modal-content">
-                <div class="modal-body clearfix">
-                    <h4>Downloading blockchain from peers</h4>
-                    <script type="text/template" id="downloading-template">
-                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="<%= percent %>" aria-valuemin="0" aria-valuemax="100" style="width: <%= percent %>%;"><%= text %>
-                        </div>
-                    </script>
-                    <div class="progress"></div>
                 </div>
             </div>
         </div>
@@ -241,36 +207,6 @@
                         <button type="submit" class="btn btn-primary">Send</button>
                     </form>
                     <p>REPUTATION: <b class="rep-balance"></b></p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="add-market-modal" class="modal fade">
-        <div class="modal-dialog model-sm">
-            <div class="modal-content">
-                <div class="modal-body clearfix">
-                    <h4>Add market</h4>
-                    <form role="form">
-                        <input type="hidden" class="branch-id" id="market-branch-id" name="market-branch-id" />
-                        <div class="form-group">
-                            <label for="market-text">Market description</label>
-                            <input type="text" class="form-control" id="market-text" placeholder="Enter a a description for this market">
-                        </div>
-                        <div class="form-group">
-                            <label for="market-alpha">Alpha</label>
-                            <input type="text" class="form-control" id="market-alpha" placeholder="Enter the market alpha">
-                        </div>
-                        <div class="form-group">
-                            <label for="market-investment">Initial liquidity</label>
-                            <input type="text" class="form-control" id="market-investment" placeholder="Your initial liquidity">
-                        </div>
-                        <div class="form-group">
-                            <label for="market-events">Events</label>
-                            <select class="form-control" id="market-events" multiple></select>
-                        </div>
-                        <button type="submit" class="btn btn-primary pull-right">Submit Market</button>
-                    </form>
                 </div>
             </div>
         </div>

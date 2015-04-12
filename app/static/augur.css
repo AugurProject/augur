@@ -180,7 +180,7 @@ nav .navbar-right li div {
     border-bottom: 1px solid #eee;
 }
 .side-nav p i {
-    letter-spacing: 0.02em;x
+    letter-spacing: 0.02em;
     font-style: normal;
     display: inline-block;
     background-color: #fff;
@@ -467,32 +467,6 @@ nav .navbar-right li div {
     margin-bottom: 5px;
 }
 
-#create-branch-modal .modal-dialog {
-    width: 400px;
-}
-
-#trade-modal .modal-dialog {
-    width: 450px;
-}
-#trade-modal .btn-group {
-    width: 100%;
-}
-#trade-modal p {
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 0px;
-}
-#trade-modal #trade-amount {
-    width: 115px;
-}
-#trade-modal button {
-    width: 100px;
-    text-transform: capitalize;
-}
-#trade-modal .balances {
-    margin-top: 18px;
-}
-
 /* modals */
 
 #send-rep-modal .modal-dialog,
@@ -503,13 +477,9 @@ nav .navbar-right li div {
 #send-cash-modal h4 {
     margin-top: 0px;
 }
-#send-rep-modal .dest-address,
-#send-cash-modal .dest-address {
-
-}
 #send-rep-modal form,
 #send-cash-modal form {
-    padding-top: 15px;
+    padding-top: 10px;
     border-bottom: 1px solid #ddd;
 }
 #send-rep-modal p,

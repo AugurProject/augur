@@ -4,6 +4,8 @@ var Fluxxor = require("fluxxor");
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
+var AddMarketTrigger =  require('./AddMarket').AddMarketTrigger;
+
 var Branch = React.createClass({
 
   // assuming only one branch and all markets in store are of that branch
@@ -23,7 +25,7 @@ var Branch = React.createClass({
   render: function () {
     return (
       <div>
-        <h4 className="clearfix">Markets <a href="#add-market-modal" data-toggle="modal" className="pull-right">Submit a market</a></h4>
+        <h4 className="clearfix">Markets <span className="pull-right"><AddMarketTrigger /></span></h4>
         <MarketList data={ this.state.markets } />
       </div>
     );

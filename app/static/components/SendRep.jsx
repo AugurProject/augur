@@ -7,8 +7,7 @@ var Button = ReactBootstrap.Button;
 var Modal = ReactBootstrap.Modal;
 var ModalTrigger = ReactBootstrap.ModalTrigger;
 
-
-var SendCashModal = React.createClass({
+var SendRepModal = React.createClass({
   mixins: [FluxMixin, StoreWatchMixin('asset')],
 
   getInitialState: function () {
@@ -22,7 +21,7 @@ var SendCashModal = React.createClass({
     var flux = this.getFlux();
 
     return {
-      balance: flux.store('asset').getState().balance
+      reputation: flux.store('asset').getState().reputation
     }
   },
 
@@ -37,21 +36,21 @@ var SendCashModal = React.createClass({
   onSend: function (event) {
     // TODO: Validate the state, then call a contract to send the
     // transaction requested in the state.
-    console.log('Would have sent ' + this.state.amount + ' cash to ' + this.state.destination);
+    console.log('Would have sent ' + this.state.amount + ' reputation to ' + this.state.destination);
     this.props.onRequestHide();
   },
 
   render: function () {
     return (
-      <Modal {...this.props} id='send-cash-modal'>
+      <Modal {...this.props} id='send-rep-modal'>
         <div className='modal-body clearfix'>
-          <h4>Send cash</h4>
+          <h4>Send reputation</h4>
           <form className='form-horizontal' role='form'>
             <div className='form-group'>
               <div className="col-sm-7">
                 <input
                   type='text'
-                  className='form-control'
+                  className='form-control dest-address'
                   placeholder='destination address'
                   onChange={this.onChangeDestination} />
               </div>
@@ -69,26 +68,26 @@ var SendCashModal = React.createClass({
               </div>
             </div>
           </form>
-          <p>BALANCE: <b className='cash-balance'>{this.state.balance}</b></p>
+          <p>REPUTATION: <b className='rep-balance'>{this.state.reputation}</b></p>
         </div>
       </Modal>
     );
   }
 });
 
-var SendCashNavTrigger = React.createClass({
+var SendRepTrigger = React.createClass({
   mixins: [FluxMixin],
 
   render: function () {
     return (
-      <ModalTrigger modal={<SendCashModal {...this.props} />}>
-        <p><a href='#'>Send Cash</a></p>
+      <ModalTrigger modal={<SendRepModal {...this.props} />}>
+        <a href='#'>Send Reputation</a>
       </ModalTrigger>
     );
   }
 });
 
 module.exports = {
-  SendCashModal: SendCashModal,
-  SendCashNavTrigger: SendCashNavTrigger
+  SendRepModal: SendRepModal,
+  SendRepTrigger: SendRepTrigger
 };

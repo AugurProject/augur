@@ -13,9 +13,6 @@ var AccountDetailsModal = React.createClass({
 
   getInitialState: function () {
     return {
-      primaryAccount: '',
-      allAccounts: [],
-      cashBalance: ''
     };
   },
 
@@ -33,8 +30,8 @@ var AccountDetailsModal = React.createClass({
     return (
       <Modal {...this.props} id='account-modal'>
         <div className="modal-body clearfix">
-            <h4>Account addresses</h4>
-            <p className="user address">{ this.state.primaryAccount }</p>
+            <h4>Accounts</h4>
+            <p className="user address primary">{ this.state.primaryAccount }</p>
         </div>
       </Modal>
     );
