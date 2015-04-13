@@ -43,19 +43,19 @@ var SendCashModal = React.createClass({
 
   render: function () {
     return (
-      <Modal {...this.props} id='send-cash-modal'>
+      <Modal {...this.props} id='send-cash-modal' bsSize='small'>
         <div className='modal-body clearfix'>
           <h4>Send cash</h4>
           <form className='form-horizontal' role='form'>
             <div className='form-group'>
-              <div className="col-sm-7">
+              <div className="col-sm-12">
                 <input
                   type='text'
-                  className='form-control'
+                  className='form-control dest-address'
                   placeholder='destination address'
                   onChange={this.onChangeDestination} />
               </div>
-              <div className="col-sm-5">
+              <div className="col-sm-12">
                 <div className='input-group'>
                   <input
                     type='text'
@@ -82,7 +82,7 @@ var SendCashNavTrigger = React.createClass({
   render: function () {
     return (
       <ModalTrigger modal={<SendCashModal {...this.props} />}>
-        <p><a href='#'>Send Cash</a></p>
+        <a href='#'>Send Cash</a>
       </ModalTrigger>
     );
   }

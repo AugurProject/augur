@@ -42,19 +42,19 @@ var SendRepModal = React.createClass({
 
   render: function () {
     return (
-      <Modal {...this.props} id='send-rep-modal'>
+      <Modal {...this.props} id='send-rep-modal' bsSize='small'>
         <div className='modal-body clearfix'>
           <h4>Send reputation</h4>
           <form className='form-horizontal' role='form'>
             <div className='form-group'>
-              <div className="col-sm-7">
+              <div className="col-sm-12">
                 <input
                   type='text'
                   className='form-control dest-address'
                   placeholder='destination address'
                   onChange={this.onChangeDestination} />
               </div>
-              <div className="col-sm-5">
+              <div className="col-sm-12">
                 <div className='input-group'>
                   <input
                     type='text'

@@ -37,5 +37,5 @@ module.exports = {
     'info': '0x84ad0e89dbbbdfb18a59954addf10ad501525a01',
     'sendReputation': '0x9ba9fd49e9398bb756e5bcc4d7daec5efcca42c8',
     'expiringEvents': '0xb7b617b776e66cbae79606d2b6221501ad110090'
-  },
+  }
 };

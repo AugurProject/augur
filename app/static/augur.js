@@ -59,26 +59,6 @@ var flux = new Fluxxor.Flux(stores, actions);
 
 var augur = {
 
-    testClient: function() {
-
-        var testEVM = '0x604380600b600039604e567c010000000000000000000000000000000000000000000000000000000060003504636ffa1caa81141560415760043560405260405160020260605260206060f35b505b6000f3';
-        var testABI = [{
-            "name": "double(int256)",
-            "type": "function",
-            "inputs": [{ "name": "x", "type": "int256" }],
-            "outputs": [{ "name": "out", "type": "int256" }]
-        }];
-
-        var address = web3.eth.sendTransaction({
-            data: testEVM,
-            from: web3.eth.accounts[0]}
-            ), Contract = web3.eth.contract(testABI);
-
-        var testContract = new Contract(address);
-
-        return testContract;
-    },
-
     render: {
 
         alert: function(data) {
@@ -184,7 +164,9 @@ var augur = {
         React.render(network, document.getElementById('network'));
         React.render(branch, document.getElementById('markets'));
         React.render(sendCashTrigger, document.getElementById('send-cash-trigger'));
+        React.render(sendCashTrigger, document.getElementById('send-cash-menu-trigger'));
         React.render(accountDetailsTrigger, document.getElementById('account-details-trigger'));
+        React.render(accountDetailsTrigger, document.getElementById('account-details-menu-trigger'));
 
         // get things rolling
         flux.actions.network.checkEthereumClient();

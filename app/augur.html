@@ -62,8 +62,8 @@
                         <li><a href="#">Markets<a/></li>
                         <li><a href="#">Reputation</a></li>
                         <li><a href="#">Ballots</a></li>
-                        <li><a href="#account-modal" data-toggle="modal">Account<a/></li>
-                        <li><a href="#send-cash-modal" data-toggle="modal">Send Cash</a></li>
+                        <li id="account-details-menu-trigger"></li>
+                        <li id="send-cash-menu-trigger"></li>
                     </ul>
                 </li>
             </ul>
@@ -85,8 +85,8 @@
                     <p><a href="#">Markets</a><i>1</i></p>
                     <p><a href="#">Reputation</a><i>240</i></p>
                     <p><a href="#">Ballots</a></p>
-                    <div id="account-details-trigger"></div>
-                    <div id="send-cash-trigger"></div>
+                    <p id="account-details-trigger"></p>
+                    <p id="send-cash-trigger"></p>
                 </div>
 
                 <div id="network"></div>
@@ -146,7 +146,7 @@
     <!-- modals dialogs -->
 
     <div id="no-eth-modal" class="modal fade">
-        <div class="modal-dialog model-sm">
+        <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-body clearfix">
                     <h4>Ethereum not found</h4>
@@ -159,7 +159,7 @@
     </div>
 
     <div id="confirm-modal" class="modal fade">
-        <div class="modal-dialog model-sm">
+        <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-body clearfix">
                     <div class="message"></div>
@@ -171,7 +171,7 @@
     </div>
 
     <div id="create-branch-modal" class="modal fade">
-        <div class="modal-dialog model-sm">
+        <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-body clearfix">
                     <p>Create a new branch under <b class="branch-name">General</b> by entering a new branch name.  All reputation from the parent branch will be transfered into this new subbranch.</p>
@@ -190,7 +190,7 @@
     </div>
 
     <div id="send-rep-modal" class="modal fade">
-        <div class="modal-dialog model-sm">
+        <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-body clearfix">
                     <h4>Send <b class="branch"></b> reputation</h4>

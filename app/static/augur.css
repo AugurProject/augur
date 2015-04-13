@@ -469,10 +469,6 @@ nav .navbar-right li div {
 
 /* modals */
 
-#send-rep-modal .modal-dialog,
-#send-cash-modal .modal-dialog {
-    max-width: 520px;
-}
 #send-rep-modal h4,
 #send-cash-modal h4 {
     margin-top: 0px;
@@ -482,6 +478,10 @@ nav .navbar-right li div {
     padding-top: 10px;
     border-bottom: 1px solid #ddd;
 }
+#send-rep-modal input.dest-address,
+#send-cash-modal input.dest-address {
+    margin-bottom: 10px;
+}
 #send-rep-modal p,
 #send-cash-modal p {
     color: #555;
@@ -490,10 +490,6 @@ nav .navbar-right li div {
     font-size: 12px;
 } 
 
-#no-eth-modal .modal-dialog,
-#confirm-modal .modal-dialog {
-    width: 400px;
-}
 #confirm-modal button.confirm {
     margin-left: 10px;
 }

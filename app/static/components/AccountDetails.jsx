@@ -44,7 +44,7 @@ var AccountDetailsNavTrigger = React.createClass({
   render: function () {
     return (
       <ModalTrigger modal={<AccountDetailsModal {...this.props} />}>
-        <p><a href='#'>Account</a></p>
+        <a href='#'>Account</a>
       </ModalTrigger>
     );
   }
