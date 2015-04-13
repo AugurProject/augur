@@ -20,6 +20,7 @@ var ConfigActions = require('./actions/ConfigActions');
 var EventActions = require('./actions/EventActions');
 var MarketActions = require('./actions/MarketActions');
 var NetworkActions = require('./actions/NetworkActions');
+var LogActions = require('./actions/LogActions');
 
 var AssetStore = require('./stores/AssetStore');
 var BranchStore = require('./stores/BranchStore');
@@ -27,12 +28,14 @@ var ConfigStore = require('./stores/ConfigStore');
 var EventStore = require('./stores/EventStore');
 var MarketStore = require('./stores/MarketStore');
 var NetworkStore = require('./stores/NetworkStore');
+var LogStore = require('./stores/LogStore');
 
 var Network = require('./components/Network');
 var Branch = require('./components/Branch');
 var Market = require('./components/Market');
 
 var NoEthereum = require('./components/NoEthereum');
+var Alert = require('./components/Alert');
 
 var SendCashNavTrigger = require('./components/SendCash').SendCashNavTrigger;
 var AccountDetailsNavTrigger = require('./components/AccountDetails').AccountDetailsNavTrigger;
@@ -60,22 +63,6 @@ var flux = new Fluxxor.Flux(stores, actions);
 var augur = {
 
     render: {
-
-        alert: function(data) {
-
-            $('#alert').show();
-
-            $('#alert').removeClass('alert-info').removeClass('alert-success').removeClass('alert-warning').removeClass('alert-danger');
-            $('#alert').addClass('alert-'+data.type);
-
-            items = [];
-            _.each(data.messages, function(message) {
-                items.push($('<p>').html(message));
-            });
-            $('#alert div').append(items);
-            $('#alert').show();
-            $('#alert div').scrollTop($('#alert div')[0].scrollHeight);
-        },
 
         period: function() {
 

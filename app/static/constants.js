@@ -16,6 +16,9 @@ module.exports = {
   asset: keyMirror({
     LOAD_ASSETS_SUCCESS: null
   }),
+  log: keyMirror({
+    UPDATE_LOG: null
+  }),
   branch: keyMirror({
     LOAD_BRANCHES_SUCCESS: null,
     UPDATE_CURRENT_BRANCH: null
