@@ -4,7 +4,7 @@ var Fluxxor = require('fluxxor');
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
-var utilities = require('../utilities');
+var utilities = require('../libs/utilities');
 
 var Period = React.createClass({
 

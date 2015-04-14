@@ -1,6 +1,6 @@
 var _ = require('lodash');
 
-var constants = require('../constants');
+var constants = require('../libs/constants');
 
 var MarketActions = {
   loadMarkets: function () {

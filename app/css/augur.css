@@ -64,7 +64,7 @@ table {
 
 #logo {
     display: none;
-    background-image: url('images/augur_logo_bg.png');
+    background-image: url('../images/augur_logo_bg.png');
     background-repeat: no-repeat;
     width: 171px;
     height: 202px;
@@ -101,7 +101,7 @@ nav.navbar {
     border: none;
 }
 nav h1.navbar-brand {
-    background-image: url('images/augur_logo_small_white.png');
+    background-image: url('../images/augur_logo_small_white.png');
     background-repeat: no-repeat;
     background-size: 27px 32px;
     background-position: 15px 13px;

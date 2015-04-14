@@ -1,5 +1,5 @@
-var abi = require('../abi');
-var constants = require('../constants');
+var abi = require('../libs/abi');
+var constants = require('../libs/constants');
 
 var ConfigActions = {
 
@@ -8,7 +8,7 @@ var ConfigActions = {
     var contract;
     if (isDemo) {
 
-      contract = require('../demo').contract;
+      contract = require('../libs/demo').contract;
       console.log('[augur] running in demo mode');
 
     } else if (!evmAddress) {

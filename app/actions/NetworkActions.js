@@ -1,6 +1,6 @@
 window.web3 = require('web3');
-var constants = require('../constants');
-var utilities = require('../utilities');
+var constants = require('../libs/constants');
+var utilities = require('../libs/utilities');
 
 var NetworkActions = {
 

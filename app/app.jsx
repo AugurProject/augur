@@ -5,8 +5,8 @@ window._ = require('lodash');
 var React = require('react');
 var Fluxxor = require('fluxxor');
 
-var constants = require('./constants');
-var utilities = require('./utilities');
+var constants = require('./libs/constants');
+var utilities = require('./libs/utilities');
 
 // add jQuery to Browserify's global object so plugins attach correctly.
 global.jQuery = $;
@@ -136,4 +136,4 @@ flux.on("dispatch", function(type, payload) {
 
 // TODO: Render the period display every time the NetworkStore changes.
 
-module.exports = augur;
+$(document).ready(augur.init);

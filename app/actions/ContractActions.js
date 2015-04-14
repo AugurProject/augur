@@ -1,5 +1,5 @@
-var abi = require('../abi');
-var constants = require('../constants');
+var abi = require('../libs/abi');
+var constants = require('../libs/constants');
 
 var ContractActions = {
 

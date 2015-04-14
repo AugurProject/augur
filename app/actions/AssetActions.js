@@ -1,5 +1,5 @@
-var constants = require('../constants');
-var utilities = require('../utilities');
+var constants = require('../libs/constants');
+var utilities = require('../libs/utilities');
 
 var AssetActions = {
 

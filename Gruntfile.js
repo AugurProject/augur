@@ -1,8 +1,8 @@
 var _ = require('lodash');
 
 var browserifyConfig = {
-  src: ['app/static/main.js'],
-  dest: 'app/static/app.js',
+  src: ['app/app.jsx'],
+  dest: 'app/augur.js',
   options: {
     browserifyOptions: {
       extensions: ['.jsx'],
@@ -21,7 +21,7 @@ module.exports = function(grunt) {
         '**/*.js',
         '!**/*.min.js',
         '!node_modules/**/*',
-        '!augur/static/app.js',
+        '!app/augur.js',
       ],
       options: {
         jshintrc: '.jshintrc'

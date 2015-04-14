@@ -1,5 +1,5 @@
 var Fluxxor = require('fluxxor');
-var constants = require('../constants');
+var constants = require('../libs/constants');
 
 var state = {
   balance: null,

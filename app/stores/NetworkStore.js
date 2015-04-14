@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var Fluxxor = require('fluxxor');
-var constants = require('../constants');
+var constants = require('../libs/constants');
 
 var state = {
   accounts: null,
@@ -30,7 +30,7 @@ var NetworkStore = Fluxxor.createStore({
     if (state.ethereumStatus === constants.network.ETHEREUM_STATUS_CONNECTED) {
       return require('web3');
     } else {
-      return require('../demo').web3;
+      return require('../libs/demo').web3;
     }
   },
 

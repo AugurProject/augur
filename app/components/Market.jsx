@@ -4,8 +4,8 @@ var Fluxxor = require('fluxxor');
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
-var Identicon = require('../identicon.js');
-var utilities = require('../utilities');
+var Identicon = require('../libs/identicon.js');
+var utilities = require('../libs/utilities');
 
 var Market = React.createClass({
 
