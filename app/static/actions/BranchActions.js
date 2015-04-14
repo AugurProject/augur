@@ -2,6 +2,7 @@ var _ = require('lodash');
 var constants = require('../constants');
 
 var BranchActions = {
+
   loadBranches: function () {
     var branchState = this.flux.store('branch').getState();
     var configState = this.flux.store('config').getState();
@@ -12,7 +13,10 @@ var BranchActions = {
 
     var callParams = {from: account}
 
+    console.log(contract);
+    
     var branchList = _.map(contract.call(callParams).getBranches(), function(branchId) {
+
       var branchInfo = contract.call(callParams).getBranchInfo(branchId);
       var branchName = contract.call(callParams).getBranchDesc(branchId);
       var rep = contract.call(callParams).getRepBalance(branchId, account).dividedBy(new BigNumber(2).toPower(64));

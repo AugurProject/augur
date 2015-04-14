@@ -5,7 +5,6 @@ window._ = require('lodash');
 var React = require('react');
 var Fluxxor = require('fluxxor');
 
-var Identicon = require('./identicon.js');
 var constants = require('./constants');
 var utilities = require('./utilities');
 
@@ -14,6 +13,7 @@ global.jQuery = $;
 require('jquery.cookie');
 require('bootstrap');
 
+// flux actions
 var AssetActions = require('./actions/AssetActions');
 var BranchActions = require('./actions/BranchActions');
 var ConfigActions = require('./actions/ConfigActions');
@@ -21,24 +21,6 @@ var EventActions = require('./actions/EventActions');
 var MarketActions = require('./actions/MarketActions');
 var NetworkActions = require('./actions/NetworkActions');
 var LogActions = require('./actions/LogActions');
-
-var AssetStore = require('./stores/AssetStore');
-var BranchStore = require('./stores/BranchStore');
-var ConfigStore = require('./stores/ConfigStore');
-var EventStore = require('./stores/EventStore');
-var MarketStore = require('./stores/MarketStore');
-var NetworkStore = require('./stores/NetworkStore');
-var LogStore = require('./stores/LogStore');
-
-var Network = require('./components/Network');
-var Branch = require('./components/Branch');
-var Market = require('./components/Market');
-
-var NoEthereum = require('./components/NoEthereum');
-var Alert = require('./components/Alert');
-
-var SendCashNavTrigger = require('./components/SendCash').SendCashNavTrigger;
-var AccountDetailsNavTrigger = require('./components/AccountDetails').AccountDetailsNavTrigger;
 
 var actions = {
   asset: AssetActions,
@@ -49,6 +31,15 @@ var actions = {
   network: NetworkActions
 }
 
+// flux stores
+var AssetStore = require('./stores/AssetStore');
+var BranchStore = require('./stores/BranchStore');
+var ConfigStore = require('./stores/ConfigStore');
+var EventStore = require('./stores/EventStore');
+var MarketStore = require('./stores/MarketStore');
+var NetworkStore = require('./stores/NetworkStore');
+var LogStore = require('./stores/LogStore');
+
 var stores = {
   asset: new AssetStore(),
   branch: new BranchStore(),
@@ -58,93 +49,28 @@ var stores = {
   network: new NetworkStore()
 }
 
+// base components
+var Network = require('./components/Network');
+var Period = require('./components/Period');
+var Branch = require('./components/Branch');
+var Market = require('./components/Market');
+
+// modals
+var NoEthereum = require('./components/NoEthereum');
+var Alert = require('./components/Alert');
+var SendCashNavTrigger = require('./components/SendCash').SendCashNavTrigger;
+var AccountDetailsNavTrigger = require('./components/AccountDetails').AccountDetailsNavTrigger;
+
 var flux = new Fluxxor.Flux(stores, actions);
 
 var augur = {
 
-    render: {
-
-        period: function() {
-
-            var branchState = flux.store('branch').getState();
-            var currentBranchData = branchState.branches[branchState.currentBranch];
-            var currentBlock = flux.store('network').getState().blockNumber;
-
-            // clean up current period
-            var currentPeriod;
-            if (currentBranchData.currentPeriod == -1) {
-              currentPeriod = 0;
-            } else {
-              currentPeriod = currentBranchData.currentPeriod;
-            }
-
-            var periodStart = currentBranchData.periodLength * currentPeriod;
-            var periodEnd = periodStart + currentBranchData.periodLength;
-            var periodAt = currentBlock - periodStart;
-            var periodPercent = (periodAt/ currentBranchData.periodLength) * 100;
-            var periodEndDate = utilities.blockToDate(periodEnd, currentBlock);
-
-            $('.period h3 .branch-name').html(currentBranchData.name);
-            $('.period h3 .period-ending').html('Period ending ' + utilities.formatDate(periodEndDate));
-            $('.period-end-block').text(periodEnd);
-
-            var phases = [{name: 'reporting', percent: periodPercent}];
-
-            var template = _.template($("#progress-template").html());
-            $('.period .progress').empty();
-            _.each(phases, function(p) {
-                $('.period .progress').append(template({'type': p.name, 'percent': p.percent}));
-            });
-
-            $('.period').show();
-        },
-
-        account: function() {
-            var balance = flux.store('asset').getState().balance;
-            var account = flux.store('network').getAccount();
-
-            $('.user.address').html(account);
-            $('.cash-balance').text(balance);
-        }
-    },
-
-    confirm: function(args) {
-
-        $('#confirm-modal .message').html(args.message);
-        if (args.cancelText) $('#confirm-modal button.cancel').text(args.cancelText);
-        if (args.confirmText) $('#confirm-modal button.confirm').text(args.confirmText);
-
-        $('#confirm-modal button.confirm').on('click', args.confirmCallback);
-        $('#confirm-modal button.cancel').on('click', args.cancelCallback);
-
-        $('#confirm-modal').modal('show');
-    },
-
     init: function() {
-
-        $('#market .buy input').on('focus', function(event) {
-
-            $('#market .chart').hide();
-            $('#market .details').show();
-        });
-        $('#market .buy input').on('blur', function(event) {
-
-            $('#market .details').hide();
-            $('#market .chart').show();
-        });
-
-        $('#alert').on('closed.bs.alert', function() {
-            $('#alert div').empty();
-        });
-
-        $('.start-demo-mode').on('click', function(event) {
-            event.preventDefault();
-            flux.actions.config.updateIsDemo(true);
-        });
 
         // render base react components to document 
         var network = React.createElement(Network, {flux: flux});
         var branch = React.createElement(Branch, {flux: flux});
+        var period = React.createElement(Period, {flux: flux});
         var sendCashTrigger = React.createElement(SendCashNavTrigger, {flux: flux});
         var accountDetailsTrigger = React.createElement(AccountDetailsNavTrigger, {flux: flux});
 
@@ -157,14 +83,10 @@ var augur = {
 
         // get things rolling
         flux.actions.network.checkEthereumClient();
+
+        React.render(period, document.getElementById('period'));
     }
 };
-
-
-function renderAll() {
-  augur.render.account();
-  augur.render.period();
-}
 
 flux.store('network').on('change', function () {
 
@@ -183,6 +105,7 @@ flux.store('config').on('change', function () {
   var configState = this.getState();
 
   if (configState.contractFailed) {
+
     augur.confirm({
       message: '<h4>Augur could not be found.</h4><p>Load a different address?</p>',
       confirmText: 'Yes',
@@ -196,22 +119,6 @@ flux.store('config').on('change', function () {
     $('#logo .progress-bar').css('width', '100%');
     $('body').removeClass('stopped').addClass('running');
   }
-});
-
-flux.store('branch').on('change', function () {
-  var currentBranch = this.getState().currentBranch;
-  $('.branch-name').removeClass('selected');
-  $('.branch-name[data-id='+currentBranch+']').addClass('selected');
-
-  renderAll();
-});
-
-flux.store('market').on('change', function () {
-  renderAll();
-});
-
-flux.store('event').on('change', function () {
-  renderAll();
 });
 
 flux.on("dispatch", function(type, payload) {

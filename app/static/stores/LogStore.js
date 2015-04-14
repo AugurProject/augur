@@ -27,4 +27,4 @@ var LogStore = Fluxxor.createStore({
   }
 });
 
-module.exports = AssetStore;
+module.exports = LogStore;

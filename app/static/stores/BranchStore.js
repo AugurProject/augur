@@ -7,6 +7,7 @@ var state = {
 };
 
 var BranchStore = Fluxxor.createStore({
+  
   initialize: function () {
     this.bindActions(
       constants.branch.LOAD_BRANCHES_SUCCESS, this.handleLoadBranchesSuccess,

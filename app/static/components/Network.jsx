@@ -11,10 +11,6 @@ var Network = React.createClass({
   getStateFromFlux: function () {
     var flux = this.getFlux();
     var networkState = flux.store('network').getState();
-    // Add in the miner variable, which will eventually go in the NetworkStore.
-    networkState = _.extend(networkState, {
-      miner: false
-    })
 
     return {
       assets: flux.store('asset').getState(),

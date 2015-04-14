@@ -93,13 +93,15 @@
             </div>
 
             <div class="col-sm-12 col-md-9">
-                <div class="period">
-                    <h3 class="clearfix"><span class="section-title"></span><span class="period-ending"></span></h3>
-                    <script type="text/template" id="progress-template">
-                        <div class="progress-bar <%= type %>" role="progressbar" aria-valuenow="<%= percent %>" aria-valuemin="0" aria-valuemax="100" style="width: <%= percent %>%;">
-                        </div>
-                    </script>
-                    <div class="progress"></div>
+
+                <div id="period"></div>
+
+                <div id="market"></div>
+
+                <div id="markets"></div>
+
+                <div id="reporting">
+
                     <div id="report" style="display: none;">
                         <ul class="list-group" id="report-decisions"></ul>
                         <script type="text/template" id="report-template">
@@ -121,11 +123,8 @@
                         </script>
                         <p id="error" class="hidden pull-right"></p>
                     </div>
+
                 </div>
-
-                <div id="market"></div>
-
-                <div id="markets"></div>
 
             </div>
         </div>
@@ -137,75 +136,6 @@
         <div class="row container clearfix"></div>
 
     </footer>
-
-    <!-- modals dialogs -->
-
-    <div id="no-eth-modal" class="modal fade">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-body clearfix">
-                    <h4>Ethereum not found</h4>
-                    <p>Augur requires a local node of the Ethereum client running<p>
-                    <p>Visit <a href="https://github.com/ethereum/cpp-ethereum/wiki">the ethereum github wiki</a> for help installing the lastest client</p>
-                    <p><a class="pull-right start-demo-mode" href="javascript:void(0)" data-dismiss="modal">Proceed in demo mode</a></p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="confirm-modal" class="modal fade">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-body clearfix">
-                    <div class="message"></div>
-                    <button class="btn btn-success confirm pull-right" data-dismiss="modal">Okay</button>
-                    <button class="btn btn-default cancel pull-right" data-dismiss="modal">Cancel</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="create-branch-modal" class="modal fade">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-body clearfix">
-                    <p>Create a new branch under <b class="branch-name">General</b> by entering a new branch name.  All reputation from the parent branch will be transfered into this new subbranch.</p>
-                    <form>
-                        <input type="hidden" class="branch-id" name="branch-id" value="1010101">
-                        <div class="input-group">
-                            <input type="text" name="new-branch-name" class="new-branch-name form-control" placeholder="Enter a new branch name">
-                            <span class="input-group-btn">
-                                <button class="btn btn-primary" type="submit">Create branch</button>
-                            </span>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="send-rep-modal" class="modal fade">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-body clearfix">
-                    <h4>Send <b class="branch"></b> reputation</h4>
-                    <form class="form-inline pull-right" role="form">
-                        <div class="form-group">
-                            <label class="sr-only" for="rep-dest-address">Destination address</label>
-                            <input type="text" class="form-control" name="rep-dest-address" id="rep-dest-address" placeholder="destination address">
-                        </div>
-                        <div class="form-group">
-                            <label class="sr-only" for="rep-amount">Amount</label>
-                            <input type="text" name="rep-amount" class="rep-amount form-control" placeholder="amount">
-                        </div>
-                        <input type="hidden" class="branch-id" name="branch-id"></input>
-                        <button type="submit" class="btn btn-primary">Send</button>
-                    </form>
-                    <p>REPUTATION: <b class="rep-balance"></b></p>
-                </div>
-            </div>
-        </div>
-    </div>
 
 </body>
 
