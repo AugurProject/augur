@@ -9,4 +9,4 @@ core
 *#
 *~
 node_modules/
-app/static/app.js
+app/augur.js
