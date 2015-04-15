@@ -34,10 +34,13 @@ body {
     font-family: 'Source Sans Pro', sans-serif;
     font-weight: 400;
 }
+body.stopped {
+    background-color: #602A52;
+}
 body.stopped #main {
     display: none;
 }
-body.stopped nav h2 {
+body.stopped nav {
     display: none;
 }
 body.stopped #logo {
@@ -64,25 +67,29 @@ table {
 
 #logo {
     display: none;
-    background-image: url('../images/augur_logo_bg.png');
+    position:absolute;
+    left:50%;
+    top:50%;
+    background-image: url('../images/augur_logo_200_white.png');
     background-repeat: no-repeat;
-    width: 171px;
-    height: 202px;
-    margin: 0px auto 0px auto;
-    position: relative;
-    top: 50%;
-    transform: translateY(50%);
+    background-position-x: 5px; 
+    width: 180px;
+    height: 200px;
+    margin: -100px 0px 0px -90px;
     font-family: 'Core Mellow';
     color: rgb(209, 231, 231);
     text-align: center;
-    opacity: 0.5;
+    opacity: 0.7;
 }
 #logo .progress {
+    display: none;
     height: 5px;
-    margin: 213px -15px 0px -15px;
+    margin: 220px -15px 0px -15px;
+    opacity: 0.5;
+    background-color: #000;
 }
 #logo .progress-bar {
-    background-color: #737373;
+    background-color: #fff;
 }
 
 .spin {

@@ -5,6 +5,7 @@ var state = {
   host: 'localhost:8080',
   evmAddress: null,
   isDemo: false,
+  loadingPercent: null,
   contract: null,
   contractFailed: false
 }

@@ -35,7 +35,7 @@ var ConfirmModal = React.createClass({
     this.state.cancelCallback();
   },
 
-  render: function () {
+  renderOverlay: function () {
     return (
       <Modal {...this.props} id='confirm-modal' bsSize='small' onRequestHide={ this.handleToggle }>
         <div className="modal-body clearfix">
