@@ -14,7 +14,7 @@ var BranchActions = {
     var callParams = {from: account}
 
     console.log(contract);
-    
+
     var branchList = _.map(contract.call(callParams).getBranches(), function(branchId) {
 
       var branchInfo = contract.call(callParams).getBranchInfo(branchId);
@@ -38,7 +38,7 @@ var BranchActions = {
     // If the current branch is no longer in the set of branches, update the
     // current branch to one that exists.
     var currentBranchExists = _.some(branches, function (branch) {
-      branch === currentBranch;
+      return branch === currentBranch;
     });
     if (!currentBranchExists && branches.length) {
       this.flux.actions.branch.updateCurrentBranch(branches[0]);
