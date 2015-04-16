@@ -60,11 +60,11 @@ var addr = {
         mul2: "0xe9d61cfdc67115372a78578b3d1082e8911419d9",
         info: "0x84ad0e89dbbbdfb18a59954addf10ad501525a01",
         cash: "0x559b098076d35ddc7f5057bf28eb20d9cf183a99",
-        interpolate: "0x13aad6f5573db896e589d2fdef22da8c5033141d",
-        center: "0x63faff743ab0398524c08a435f94ceb91352ba58",
+        interpolate: "0x63faff743ab0398524c08a435f94ceb91352ba58",
+        center: "0x3e79ddefd9406c913a74373eb65df6c0eaea98c1",
         score: "0x13aad6f5573db896e589d2fdef22da8c5033141d",
-        adjust: "0x3e79ddefd9406c913a74373eb65df6c0eaea98c1",
-        resolve: "0xd7a973f0f38a065a3c5a3e3d3f02ac80685f08a0",
+        adjust: "0xd7a973f0f38a065a3c5a3e3d3f02ac80685f08a0",
+        resolve: "0x3e79ddefd9406c913a74373eb65df6c0eaea98c1",
         payout: "0x7313f08f324b1b2ce54413a20677b3a43a27522f"
     }
 };

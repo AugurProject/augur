@@ -7,9 +7,10 @@
  * @license MIT
  */
 
-var rpc = { host: "127.0.0.1", port: 8545 };
+var primary_account = "0x63524e3fe4791aefce1e932bbfb3fdf375bfad89";
+var rpc = { protocol: "http", host: "127.0.0.1", port: 8545 };
 
-var EthRPC = (function (rpc_url) {
+var EthRPC = (function (rpc_url, primary) {
 
     var pdata, id = 1;
 
@@ -117,11 +118,6 @@ var EthRPC = (function (rpc_url) {
                 }
             });
         },
-        code: function (address, block, f) {
-            if (address) {
-                return json_rpc(postdata("getCode", [address, block || "latest"]), f);
-            }
-        },
         balance: function (address, block, f) {
             return json_rpc(postdata("getBalance", [address, block || "latest"]), f || function (data) {
                 return parseInt(data.result, 16) / 1e16;
@@ -146,14 +142,29 @@ var EthRPC = (function (rpc_url) {
         peerCount: function (f) {
             return json_rpc(postdata("peerCount", [], "net_"), f);
         },
+        // publish a new contract to the blockchain (from the primary account)
+        publish: function (compiled, f) {
+            return this.sendTx({ from: primary, data: compiled }, f);
+        },
+        // invoke a function from a contract on the blockchain
+        // invoke: function (address, funcname, f) {
+        //     var data = funcname;
+        //     return this.call({ from: primary, to: address, data: data }, f);
+        // },
+        // read the code in a contract on the blockchain
+        read: function (address, block, f) {
+            if (address) {
+                return json_rpc(postdata("getCode", [address, block || "latest"]), f);
+            }
+        },
         id: function () { return id; },
         data: function () { return pdata; },
         // aliases
         sha3: function (data, f) { return this.hash(data, f); },
-        getCode: function (address, block, f) { return this.code(address, block, f); },
         getBalance: function (address, block, f) { return this.balance(address, block, f); },
         getTransactionCount: function (address, f) { return this.txCount(address, f); },
         sendTransaction: function (tx, f) { return this.sendTx(tx, f); },
-        getTransactionByHash: function (hash, f) { return this.getTx(hash, f); }
+        getTransactionByHash: function (hash, f) { return this.getTx(hash, f); },
+        getCode: function (address, block, f) { return this.read(address, block, f); }
     };
-})("http://" + rpc.host.toString() + ":" + rpc.port.toString());
+})(rpc.protocol + "://" + rpc.host + ":" + rpc.port.toString(), primary_account);
