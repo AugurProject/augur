@@ -25,7 +25,7 @@ var Branch = React.createClass({
   render: function () {
     return (
       <div>
-        <h4 className="clearfix">Markets <span className="pull-right"><AddMarketTrigger /></span></h4>
+        <h3 className="clearfix">Markets <span className="pull-right"><AddMarketTrigger /></span></h3>
         <MarketList data={ this.state.markets } />
       </div>
     );

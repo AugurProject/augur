@@ -14,13 +14,16 @@ var NetworkActions = {
       console.log('[augur] no ethereum client found');
       this.dispatch(
         constants.network.UPDATE_ETHEREUM_STATUS,
-        {ethereumStatus: constants.network.ETHEREUM_STATUS_FAILED});
+        {ethereumStatus: constants.network.ETHEREUM_STATUS_FAILED}
+      );
+      
       return;
     }
 
     this.dispatch(
       constants.network.UPDATE_ETHEREUM_STATUS,
-      {ethereumStatus: constants.network.ETHEREUM_STATUS_CONNECTED});
+      {ethereumStatus: constants.network.ETHEREUM_STATUS_CONNECTED}
+    );
 
     this.flux.actions.config.loadContract();
   },

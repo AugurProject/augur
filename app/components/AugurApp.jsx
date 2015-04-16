@@ -35,7 +35,8 @@ var AugurApp = React.createClass({
 
     var flux = this.getFlux();
 
-    console.log(flux.store('config').getState().percentLoaded);
+    console.log(flux.store('config').getState().contractFailed);
+
     if (flux.store('config').getState().percentLoaded) {
       this.setState({status: flux.store('config').getState().percentLoaded === 100 ? 'running' : 'loading'});
     }
@@ -166,7 +167,7 @@ var ErrorModal = React.createClass({
 
     if (nextProps.config.isDemo === false) {
       if (nextProps.network.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED ||
-      nextProps.config.contractFailed === false) {
+      nextProps.config.contractFailed === true) {
         this.setState({ isModalOpen: true });
       }
     }
@@ -195,27 +196,29 @@ var ErrorModal = React.createClass({
 
     if (!this.state.isModalOpen) return <span />;
 
-    if (this.props.network.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED) {
+    if (this.props.config.contractFailed) {
 
+      // augur contracts failed to load
+      return (
+        <Modal {...this.props} bsSize='small' onRequestHide={ this.handleToggle }>
+          <div className="modal-body clearfix">
+              <h4>Augur failed to load</h4>
+              <p>There was a problem loading Augur</p>
+              <p>Visit our help page for assitance contact us directly</p>
+              <p><a className="pull-right start-demo-mode" onClick={ this.startDemoMode } href="javascript:void(0)">Proceed in demo mode</a></p>
+          </div>
+        </Modal>
+      );
+
+    } else if (this.props.network.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED) {
+
+      // no ethereum client detected
       return (
         <Modal {...this.props} bsSize='small' onRequestHide={ this.handleToggle }>
           <div className="modal-body clearfix">
               <h4>Ethereum not found</h4>
               <p>Augur requires a local node of the Ethereum client running</p>
               <p>Visit <a href="https://github.com/ethereum/cpp-ethereum/wiki">the ethereum github wiki</a> for help installing the lastest client</p>
-              <p><a className="pull-right start-demo-mode" onClick={ this.startDemoMode } href="javascript:void(0)">Proceed in demo mode</a></p>
-          </div>
-        </Modal>
-      );
-
-    } else if (this.props.config.contractFailed) {
-
-      return (
-        <Modal {...this.props} bsSize='small' onRequestHide={ this.handleToggle }>
-          <div className="modal-body clearfix">
-              <h4>Augur failed to load</h4>
-              <p>There was a problem loading Augur off Ethereum</p>
-              <p>Visit our help page for assitance in resolving the issue or contact us</p>
               <p><a className="pull-right start-demo-mode" onClick={ this.startDemoMode } href="javascript:void(0)">Proceed in demo mode</a></p>
           </div>
         </Modal>

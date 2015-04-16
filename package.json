@@ -45,7 +45,7 @@
     "react-bootstrap": "^0.20.2",
     "react-router": "^0.13.2",
     "reactify": "^1.1.0",
-    "web3": "^0.2.6"
+    "web3": "^0.2.8"
   },
   "devDependencies": {
     "grunt": "^0.4.5",

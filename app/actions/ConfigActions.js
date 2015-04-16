@@ -4,8 +4,10 @@ var constants = require('../libs/constants');
 var ConfigActions = {
 
   updateContract: function (evmAddress) {
+
     var isDemo = this.flux.store('config').getState().isDemo;
     var contract;
+
     if (isDemo) {
 
       contract = require('../libs/demo').contract;
@@ -18,6 +20,8 @@ var ConfigActions = {
         evmAddress: evmAddress
       });
 
+      return;
+
     } else {
 
       var Contract = web3.eth.contract(abi);
@@ -29,6 +33,7 @@ var ConfigActions = {
         this.dispatch(constants.config.UPDATE_CONTRACT_FAILED, {
           evmAddress: evmAddress
         })
+        
         return;
       }
 
