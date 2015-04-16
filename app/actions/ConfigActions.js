@@ -40,6 +40,11 @@ var ConfigActions = {
       contract: contract
     });
 
+    // just setting this to 100 for now
+    this.dispatch(constants.config.UPDATE_PERCENT_LOADED, {
+      percentLoaded: 100
+    });
+
     this.flux.actions.network.updateNetwork();
     this.flux.actions.branch.loadBranches();
     this.flux.actions.event.loadEvents();

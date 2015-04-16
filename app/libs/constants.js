@@ -5,7 +5,8 @@ module.exports = {
   config: keyMirror({
     UPDATE_CONTRACT_SUCCESS: null,
     UPDATE_CONTRACT_FAILED: null,
-    UPDATE_IS_DEMO: null
+    UPDATE_IS_DEMO: null,
+    UPDATE_PERCENT_LOADED: null
   }),
   network: keyMirror({
     UPDATE_NETWORK: null,

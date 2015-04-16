@@ -30,26 +30,26 @@
     src: url("fonts/S-Core - CoreMellow65Bold.otf") format("opentype");
 }
 body {
-    background-color: #f9f6ea;
     font-family: 'Source Sans Pro', sans-serif;
     font-weight: 400;
 }
-body.stopped {
-    background-color: #602A52;
+#app.stopped {
+    height: 100%;
+    width: 100%;
 }
-body.stopped #main {
+#app.stopped #main {
     display: none;
 }
-body.stopped nav {
+#app.stopped nav {
     display: none;
 }
-body.stopped #logo {
+#app.stopped #logo {
     display: block;
 }
-body.running #main {
+#app.running #main {
     display: block;
 }
-body.running #logo {
+#app.running #logo {
     display: none;
 }
 
@@ -65,8 +65,14 @@ table {
     font-size: 16px;
 }
 
-#logo {
-    display: none;
+#loading {
+    background-color: #602A52;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+#loading .logo {
     position:absolute;
     left:50%;
     top:50%;
@@ -81,14 +87,13 @@ table {
     text-align: center;
     opacity: 0.7;
 }
-#logo .progress {
-    display: none;
+#loading .progress {
     height: 5px;
     margin: 220px -15px 0px -15px;
     opacity: 0.5;
     background-color: #000;
 }
-#logo .progress-bar {
+#loading .progress-bar {
     background-color: #fff;
 }
 

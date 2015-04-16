@@ -2,15 +2,23 @@
 window.BigNumber = require('bignumber.js');
 window.$ = require('jquery');
 window._ = require('lodash');
-var React = require('react');
-var Fluxxor = require('fluxxor');
-
-var constants = require('./libs/constants');
 
 // add jQuery to Browserify's global object so plugins attach correctly.
 global.jQuery = $;
 require('jquery.cookie');
 require('bootstrap');
+
+var React = require('react');
+var Fluxxor = require('fluxxor');
+
+var Router = require("react-router");
+var Route = Router.Route;
+var NotFoundRoute = Router.NotFoundRoute;
+var DefaultRoute = Router.DefaultRoute;
+var RouteHandler = Router.RouteHandler;
+var Redirect = Router.Redirect;
+
+var constants = require('./libs/constants');
 
 var AssetActions = require('./actions/AssetActions');
 var BranchActions = require('./actions/BranchActions');
@@ -46,62 +54,11 @@ var stores = {
   network: new NetworkStore()
 }
 
-var Network = require('./components/Network');
-var Period = require('./components/Period');
+var AugurApp = require("./components/AugurApp");
 var Branch = require('./components/Branch');
 var Market = require('./components/Market');
 
-var Alert = require('./components/Alert');
-var SendCashNavTrigger = require('./components/SendCash').SendCashNavTrigger;
-var AccountDetailsNavTrigger = require('./components/AccountDetails').AccountDetailsNavTrigger;
-var NoEthereum = require('./components/NoEthereum');
-
 var flux = new Fluxxor.Flux(stores, actions);
-
-// base react components
-var network = React.createElement(Network, {flux: flux});
-var branch = React.createElement(Branch, {flux: flux});
-var period = React.createElement(Period, {flux: flux});
-var sendCashTrigger = React.createElement(SendCashNavTrigger, {flux: flux});
-var accountDetailsTrigger = React.createElement(AccountDetailsNavTrigger, {flux: flux});
-
-flux.store('network').on('change', function () {
-
-  var networkState = this.getState();
-
-  if (networkState.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED) {
-
-    // The Ethereum client couldn't be reached. Offer to display demo data.
-    var noEthereum = React.createElement(NoEthereum, {flux: flux});
-    React.render(noEthereum, $('#no-eth-modal').get(0));
-  }
-
-  React.render(period, document.getElementById('period'));
-
-});
-
-flux.store('config').on('change', function () {
-
-  var configState = this.getState();
-
-  if (configState.contractFailed) {
-
-    // TODO: trigger the react modal
-    //augur.confirm({
-    //  message: '<h4>Augur could not be found.</h4><p>Load a different address?</p>',
-    //  confirmText: 'Yes',
-    //  cancelText: 'No, proceed in demo mode',
-    //  confirmCallback: function() { $('#evm-address-modal').modal('show'); },
-    //  cancelCallback: function() { flux.actions.config.updateIsDemo(true); }
-    //});
-
-  }
-
-  if (configState.contract) {
-    $('#logo .progress-bar').css('width', '100%');
-    $('body').removeClass('stopped').addClass('running');
-  }
-});
 
 flux.on("dispatch", function(type, payload) {
   console.log("Dispatched", type, payload);
@@ -118,17 +75,15 @@ flux.on("dispatch", function(type, payload) {
 
 // TODO: Render the period display every time the NetworkStore changes.
 
-$(document).ready(function() {
+var routes = (
+  <Route name="app" handler={ AugurApp } flux={ flux }>
+    <DefaultRoute handler={ Branch } flux={ flux } title="Branch" />
+    <Route name="home" path="/" handler={ Branch } flux={ flux } title="Branch" />
+    <Route name="branch" path="/branch/:branchId" handler={ Branch} flux={ flux } title="Branch" />
+    <Route name="market" path="/market/:marketId" handler={ Market } flux={ flux } title="Market" />
+  </Route>
+);
 
-  React.render(network, document.getElementById('network'));
-  React.render(branch, document.getElementById('markets'));
-  React.render(sendCashTrigger, document.getElementById('send-cash-trigger'));
-  React.render(sendCashTrigger, document.getElementById('send-cash-menu-trigger'));
-  React.render(accountDetailsTrigger, document.getElementById('account-details-trigger'));
-  React.render(accountDetailsTrigger, document.getElementById('account-details-menu-trigger'));
-
-  flux.actions.network.checkEthereumClient();
-
+Router.run(routes, function (Handler) {
+  React.render(<Handler flux={ flux } />, document.body);
 });
-
-

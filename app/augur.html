@@ -32,8 +32,6 @@
 <link rel="stylesheet" href="css/bootstrap.css">
 <link rel="stylesheet" href="css/augur.css" />
 
-<script src="augur.js"></script>
-
 <script type="text/javascript" src="https://www.google.com/jsapi?autoload={
     'modules':[{
         'name':'visualization',
@@ -42,103 +40,8 @@
     }]
 }"></script>
 
-<body class="stopped">
+<body></body>
 
-    <nav class="navbar" role="navigation">
-        <div class="container">
-            <div class="navbar-header">
-                <h1 class="navbar-brand"><span>augur</span></h1>
-            </div>
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <div>BALANCE: <b class="cash-balance">-</b></div>
-                </li>
-                <li class="dropdown visible-xs visible-sm hidden-md">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                        <i class="fa fa-navicon"></i>
-                        <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="#">Markets<a/></li>
-                        <li><a href="#">Reputation</a></li>
-                        <li><a href="#">Ballots</a></li>
-                        <li id="account-details-menu-trigger"></li>
-                        <li id="send-cash-menu-trigger"></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-    <section id="logo" class="container">
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
-        </div>
-    </section>
-
-    <section id="main" class="container">
-
-        <div class="dash page row">
-
-            <div class="col-md-3 hidden-xs hidden-sm sidebar">
-                <div class="side-nav">
-                    <p><a href="#">Markets</a><i>1</i></p>
-                    <p><a href="#">Reputation</a><i>240</i></p>
-                    <p><a href="#">Ballots</a></p>
-                    <p id="account-details-trigger"></p>
-                    <p id="send-cash-trigger"></p>
-                </div>
-
-                <div id="network"></div>
-            </div>
-
-            <div class="col-sm-12 col-md-9">
-
-                <div id="period"></div>
-
-                <div id="market"></div>
-
-                <div id="markets"></div>
-
-                <div id="reporting">
-
-                    <div id="report" style="display: none;">
-                        <ul class="list-group" id="report-decisions"></ul>
-                        <script type="text/template" id="report-template">
-                            <li class="list-group-item clearfix<% if (d.state) { %> reported<% }; %>" id="<%= d.decision_id %>">
-                                <p><%= d.txt %></p>
-                                <label class="radio-inline">
-                                    <input type="radio" name="<%= d.decision_id %>" value="1" <% if (d.state == '1') { %>checked<% }; %>> True
-                                </label>
-                                <label class="radio-inline">
-                                    <input type="radio" name="<%= d.decision_id %>" value="0" <% if (d.state == '0') { %>checked<% }; %>> False
-                                </label>
-                                <label class="radio-inline">
-                                    <input type="radio" name="<%= d.decision_id %>" value="0.5" <% if (d.state == '0.5') { %>checked<% }; %>> Ambiguous or Indeterminent
-                                </label>
-                                <p class="my-choice"><%= d.state_desc %></p>
-                                <span class="pull-right" style="margin-left: 6px;"><%= d.reported %> report</span>
-                                <span class="pull-right glyphicon glyphicon-ok"></span>
-                            </li>
-                        </script>
-                        <p id="error" class="hidden pull-right"></p>
-                    </div>
-
-                </div>
-
-            </div>
-        </div>
-
-    </section>
-
-    <footer>
-
-        <div class="row container clearfix"></div>
-
-    </footer>
-    
-    <div id="no-eth-modal"></div>
-    
-</body>
+<script src="augur.js"></script>
 
 </html>

@@ -5,7 +5,7 @@ var state = {
   host: 'localhost:8080',
   evmAddress: null,
   isDemo: false,
-  loadingPercent: null,
+  percentLoaded: null,
   contract: null,
   contractFailed: false
 }
@@ -16,12 +16,17 @@ var ConfigStore = Fluxxor.createStore({
     this.bindActions(
       constants.config.UPDATE_CONTRACT_SUCCESS, this.handleUpdateContractSuccess,
       constants.config.UPDATE_CONTRACT_FAILED, this.handleUpdateContractFailed,
-      constants.config.UPDATE_IS_DEMO, this.handleUpdateIsDemo
+      constants.config.UPDATE_IS_DEMO, this.handleUpdateIsDemo,
+      constants.config.UPDATE_PERCENT_LOADED, this.handleUpdatePercentLoaded
     );
   },
 
   getState: function () {
     return state;
+  },
+
+  handleUpdatePercentLoaded: function (payload) {
+    state.percentLoaded = payload.percentLoaded
   },
 
   handleUpdateContractSuccess: function (payload) {
