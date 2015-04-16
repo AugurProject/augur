@@ -13,8 +13,6 @@ var BranchActions = {
 
     var callParams = {from: account}
 
-    console.log(contract);
-
     var branchList = _.map(contract.call(callParams).getBranches(), function(branchId) {
 
       var branchInfo = contract.call(callParams).getBranchInfo(branchId);

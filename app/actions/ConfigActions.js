@@ -64,7 +64,12 @@ var ConfigActions = {
   updateIsDemo: function (isDemo) {
     this.dispatch(constants.config.UPDATE_IS_DEMO, {isDemo: isDemo});
     this.flux.actions.config.loadContract();
+  },
+
+  updateDebug: function (debug) {
+    this.dispatch(constants.config.UPDATE_DEBUG, {debug: debug});
   }
+
 };
 
 module.exports = ConfigActions;

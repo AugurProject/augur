@@ -2,9 +2,10 @@ var Fluxxor = require('fluxxor');
 var constants = require('../libs/constants');
 
 var state = {
-  host: 'localhost:8080',
+  host: 'localhost:8545',
   evmAddress: null,
   isDemo: false,
+  debug: true,
   percentLoaded: null,
   contract: null,
   contractFailed: false
@@ -17,6 +18,7 @@ var ConfigStore = Fluxxor.createStore({
       constants.config.UPDATE_CONTRACT_SUCCESS, this.handleUpdateContractSuccess,
       constants.config.UPDATE_CONTRACT_FAILED, this.handleUpdateContractFailed,
       constants.config.UPDATE_IS_DEMO, this.handleUpdateIsDemo,
+      constants.config.UPDATE_DEBUG, this.handleUpdateDebug,
       constants.config.UPDATE_PERCENT_LOADED, this.handleUpdatePercentLoaded
     );
   },
@@ -48,6 +50,11 @@ var ConfigStore = Fluxxor.createStore({
     state.isDemo = payload.isDemo;
     state.contract = payload.contract;
     state.contractFailed = false;
+    this.emit(constants.CHANGE_EVENT);
+  },
+
+  handleUpdateDebug: function (payload) {
+    state.debug = payload.debug;
     this.emit(constants.CHANGE_EVENT);
   }
 });

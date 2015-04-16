@@ -6,7 +6,8 @@ var NetworkActions = {
 
   checkEthereumClient: function() {
 
-    web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
+    var host = this.flux.store('config').getState().host;
+    web3.setProvider(new web3.providers.HttpProvider('http://'+host));
 
     try {
       web3.eth.accounts;
@@ -15,8 +16,7 @@ var NetworkActions = {
       this.dispatch(
         constants.network.UPDATE_ETHEREUM_STATUS,
         {ethereumStatus: constants.network.ETHEREUM_STATUS_FAILED}
-      );
-      
+      ); 
       return;
     }
 
@@ -24,6 +24,13 @@ var NetworkActions = {
       constants.network.UPDATE_ETHEREUM_STATUS,
       {ethereumStatus: constants.network.ETHEREUM_STATUS_CONNECTED}
     );
+
+    // start network watching
+    var self = this;
+    web3.eth.filter('latest').watch(function (log) {
+      self.flux.actions.network.updateNetwork();
+    });
+
 
     this.flux.actions.config.loadContract();
   },

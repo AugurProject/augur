@@ -15,6 +15,7 @@ var state = {
 var NetworkStore = Fluxxor.createStore({
 
   initialize: function () {
+
     this.bindActions(
       constants.network.UPDATE_NETWORK, this.handleUpdateNetwork,
       constants.network.UPDATE_ETHEREUM_STATUS, this.handleUpdateEthereumStatus
