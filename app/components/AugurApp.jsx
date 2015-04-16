@@ -25,9 +25,20 @@ var AugurApp = React.createClass({
 
   mixins: [FluxMixin, StoreWatchMixin('branch', 'asset', 'network', 'config')],
 
+  getInitialState: function () {
+    return {
+      status: 'stopped'
+    };
+  },
+
   getStateFromFlux: function () {
 
     var flux = this.getFlux();
+
+    console.log(flux.store('config').getState().percentLoaded);
+    if (flux.store('config').getState().percentLoaded) {
+      this.setState({status: flux.store('config').getState().percentLoaded === 100 ? 'running' : 'loading'});
+    }
 
     return {
       network: flux.store('network').getState(),
@@ -40,17 +51,6 @@ var AugurApp = React.createClass({
   componentDidMount: function() {
 
     this.getFlux().actions.network.checkEthereumClient();
-  },
-
-  getStatus: function() {
-
-    var status = 'stopped';
-
-    if (this.state.config.loadingPercent) {
-      status = this.config.state.percentLoaded === 100 ? 'running' : 'loading';
-    }
-
-    return status;
   },
 
   getLoadingProgress: function() {
@@ -79,7 +79,7 @@ var AugurApp = React.createClass({
   render: function() {
 
     return (
-      <div id="app" className={ this.getStatus() }>
+      <div id="app" className={ this.state.status }>
         <nav className="navbar" role="navigation">
           <div className="container">
               <div className="navbar-header">

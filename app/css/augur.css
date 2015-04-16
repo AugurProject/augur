@@ -43,13 +43,13 @@ body {
 #app.stopped nav {
     display: none;
 }
-#app.stopped #logo {
+#app.stopped #loading {
     display: block;
 }
 #app.running #main {
     display: block;
 }
-#app.running #logo {
+#app.running #loading {
     display: none;
 }
 
