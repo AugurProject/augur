@@ -61,8 +61,9 @@ var Market = require('./components/Market');
 var flux = new Fluxxor.Flux(stores, actions);
 
 // console object for testing/debuging
+var ethereumClient = require('./clients/EthereumClient');
 window.augur = {
-  evm: require('./clients/EthereumClient'),
+  evm: new ethereumClient( flux.store('network').getAccount() ),
   debug: function(state) {
     if (typeof(state === 'boolean')) {
       flux.actions.config.updateDebug(state);

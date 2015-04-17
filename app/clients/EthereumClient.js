@@ -18,10 +18,13 @@ function MissingContractError(contractName) {
  * @param {object} [addresses] - The address for each contract, keyed as defined in abi.js.
  * @param {object} [web3] - The web3 object to use to access Ethereum data.
  */
-function EthereumClient(addresses, web3) {
-  this.contracts = {};
+function EthereumClient(account, addresses, web3) {
+
+  this.account = account;
+  this.addresses = addresses || {};
   this.web3 = web3 || require('web3');
-  this.addresses = addresses;
+
+  this.contracts = {};
   _.defaults(this.addresses, constants.addresses);
 }
 
@@ -42,7 +45,7 @@ EthereumClient.prototype.getContract = function (name) {
     }
 
     var Contract = web3.eth.contract(contractAbi);
-    contract = new Contract(evmAddress);
+    contract = new Contract(address);
     this.contracts[name] = contract;
   }
 
@@ -55,24 +58,22 @@ EthereumClient.prototype.getContract = function (name) {
  * @returns {object} Branch information keyed by branch ID.
  */
 EthereumClient.prototype.getBranches = function () {
-  var branchContract = this.getContract('branch');
+  var branchContract = this.getContract('branches');
   var reportingContract = this.getContract('reporting');
+  var account = this.account;
 
   var branchList = _.map(branchContract.call().getBranches(), function(branchId) {
-    var storedRep = reportingContract.call().getRepBalance(branchId, account);
-    // TODO: Explain why storedRep is manipulated like this.
-    var rep = storedRep.dividedBy(new BigNumber(2).toPower(64));
-    var marketCount = branchContract.call().getMarkets(branchId).length;
 
-    // TODO: Get name, currentPeriod and periodLength, which used to come from
-    // getBranchDesc and getBranchInfo, neither of which appear in the current
-    // ABI.
+    var storedRep = reportingContract.call().getRepBalance(branchId, account);
+    var rep = storedRep.dividedBy(new BigNumber(2).toPower(64)).toNumber();
+    var marketCount = branchContract.call().getNumMarkets(branchId).toNumber();
+    var periodLength = branchContract.call().getPeriodLength(branchId).toNumber();
+    var branchName = branchId == 1010101 ? 'General' : 'Unknown';  // HACK: until we're actually using multi-branch
 
     return {
-      id: branchId,
-      name: 'TODO Branch Name',
-      currentPeriod: 0, // branchInfo[2].toNumber()
-      periodLength: 100, // branchInfo[3].toNumber()
+      id: branchId.toNumber(),
+      name: branchName,
+      periodLength: periodLength,
       rep: rep,
       marketCount: marketCount
     };
