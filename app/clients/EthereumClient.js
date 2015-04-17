@@ -87,34 +87,37 @@ EthereumClient.prototype.getBranches = function () {
 EthereumClient.prototype.getMarkets = function (branchId) {
 
   var branchContract = this.getContract('branches');
-  var marketContract = this.getContract('market');
+  var marketContract = this.getContract('markets');
+  var infoContract = this.getContract('info');
   var account = this.account;
 
   var marketList = _.map(branchContract.call().getMarkets(branchId), function(marketId) {
 
-    var desc = 'Placeholder';   // NEED
+    var desc = infoContract.call().getDescription(marketId);
     var events = marketContract.call().getMarketEvents(marketId);
     var alpha = marketContract.call().getAlpha(marketId).toNumber();
-    var author = 'Placeholder';   // NEED
-    var endDate = new Date();   // NEED or calc from events
+    var author = infoContract.call().getCreator(marketId);
+    var creationFee = infoContract.call().getCreationFee(marketId);
+    var endDate = new Date();   // calc from events
     var traderCount = marketContract.call().getCurrentParticipantNumber(marketId).toNumber();
     var tradingPeriod = marketContract.call().getTradingPeriod(marketId).toNumber();
     var tradingFee = marketContract.call().getTradingFee(marketId).toNumber();
     var traderId =  marketContract.call().getParticipantNumber(marketId, account);
+    var totalVolume = 0;
 
-    var outcomeCount = marketContract.call().getMarketNumOutcomes(marketId);
-    var outcomes = _.map( _.range(outcomeCount), function (outcomeId) {
+    var outcomeCount = marketContract.call().getMarketNumOutcomes(marketId);    var outcomes = _.map( _.range(outcomeCount), function (outcomeId) {
 
       var id = BigNumber(outcomeId);
+      var volume = marketContract.call().getSharesPurchased(marketId, id);
+      totalVolume += volume;
 
       return {
         price: marketContract.call().price(marketId, id),
         sellPrice: marketContract.call().getSimulatedSell(marketId, id),
         buyPrice: marketContract.call().getSimulatedBuy(marketId, id),
-        volume: 0,   // NEED
         priceHistory: [],  // NEED
         sharesPurchased: marketContract.call().getParticipantSharesPurchased(marketId, traderId, id),
-        totalSharePurchased: marketContract.call().getSharesPurchased(marketId, id)
+        volume: volume
       }
     });
 
@@ -130,6 +133,7 @@ EthereumClient.prototype.getMarkets = function (branchId) {
       tradingPeriod: tradingPeriod,
       tradingFee: tradingFee,
       traderId: traderId,
+      totalVolume: totalVolume,
       events: events,
       outcomes: outcomes
     };
