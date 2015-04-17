@@ -3,6 +3,7 @@ var Promise = require('es6-promise').Promise;
 
 var abi = require('../libs/abi');
 var constants = require('../libs/constants');
+var utlities = require('../libs/utilities');
 
 
 function MissingContractError(contractName) {

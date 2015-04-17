@@ -45,5 +45,11 @@ module.exports = {
     } else {
       return wei + ' wei';
     }
+  },
+
+  log: function(message) {
+
+    var css = 'background-color: #602A52; color: #fff; padding: 2px 6px;';
+    console.log('%caugur', css, message);
   }
 };

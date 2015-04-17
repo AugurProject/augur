@@ -1,6 +1,7 @@
 var _ = require('lodash');
 var Fluxxor = require('fluxxor');
 var constants = require('../libs/constants');
+var utilities = require('../libs/utilities');
 
 var state = {
   accounts: null,

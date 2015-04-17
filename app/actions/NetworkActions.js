@@ -12,7 +12,7 @@ var NetworkActions = {
     try {
       web3.eth.accounts;
     } catch(err) {
-      console.log('[augur] no ethereum client found');
+      utilities.log('no ethereum client found');
       this.dispatch(
         constants.network.UPDATE_ETHEREUM_STATUS,
         {ethereumStatus: constants.network.ETHEREUM_STATUS_FAILED}

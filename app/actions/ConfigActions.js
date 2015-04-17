@@ -1,5 +1,6 @@
 var abi = require('../libs/abi');
 var constants = require('../libs/constants');
+var utilities = require('../libs/utilities');
 
 var ConfigActions = {
 
@@ -11,11 +12,11 @@ var ConfigActions = {
     if (isDemo) {
 
       contract = require('../libs/demo').contract;
-      console.log('[augur] running in demo mode');
+      utilities.log('running in demo mode');
 
     } else if (!evmAddress) {
 
-      console.log('[augur] invalid evm address');
+      utilities.log('invalid evm address');
       this.dispatch(constants.config.UPDATE_CONTRACT_FAILED, {
         evmAddress: evmAddress
       });
@@ -37,7 +38,7 @@ var ConfigActions = {
         return;
       }
 
-      console.log('[augur] evm contract loaded from ' + evmAddress);
+      utlities.log('evm contract loaded from ' + evmAddress);
     }
 
     this.dispatch(constants.config.UPDATE_CONTRACT_SUCCESS, {
