@@ -17,6 +17,10 @@ Ethereum Dapps store their data on the Ethereum blockchain, and their frontends 
 
 ## Getting Started
 
+### Running Ethereum
+
+Install go-ethereum ([installation instructions](https://github.com/ethereum/go-ethereum/wiki)). Add a new account with `geth account new` and then start the client with `geth --rpc --rpccorsdomain 'http://localhost:8080' --unlock primary`.
+
 ### Building augur-client
 
 Install [Node.js](https://nodejs.org/), then:
@@ -29,11 +33,11 @@ grunt browserify:build
 
 To incrementally build on every save while you're developing, run `grunt watchify`.
 
-### Running Ethereum
+### Running augur-client
 
-Install go-ethereum ([installation instructions](https://github.com/ethereum/go-ethereum/wiki)). Add a new account with `geth account new` and then start the client with `geth --rpc --rpccorsdomain null --unlock primary`.
+`node server.js`
 
-You should now be able to load `app/augur.html` in Chrome or Firefox.
+http://localhost:8080
 
 
 ## Features

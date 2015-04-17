@@ -3,6 +3,8 @@ var Fluxxor = require("fluxxor");
 
 var Router = require("react-router");
 var RouteHandler = Router.RouteHandler;
+var Link = Router.Link;
+var Route = Router.Route;
 
 var FluxMixin = Fluxxor.FluxMixin(React),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
@@ -95,7 +97,7 @@ var AugurApp = React.createClass({
                           <span className="caret"></span>
                       </a>
                       <ul className="dropdown-menu" role="menu">
-                          <li><a href="#">Markets</a></li>
+                          <li><Link to="home">Markets</Link></li>
                           <li><a href="#">Reputation</a></li>
                           <li><a href="#">Ballots</a></li>
                           <li><AccountDetailsNavTrigger /></li>
@@ -110,7 +112,7 @@ var AugurApp = React.createClass({
           <div className="dash page row">
             <div className="col-md-3 hidden-xs hidden-sm sidebar">
               <div className="side-nav">
-                  <p><a href="#">Markets</a><i>1</i></p>
+                  <p><Link to="home">Markets</Link><i>1</i></p>
                   <p><a href="#">Reputation</a><i>240</i></p>
                   <p><a href="#">Ballots</a></p>
                   <p><AccountDetailsNavTrigger /></p>
@@ -124,10 +126,7 @@ var AugurApp = React.createClass({
 
               <div id="period"></div>
 
-              <RouteHandler
-                branch={ this.state.branch }
-                market={ this.state.market }
-              />
+              <RouteHandler {...this.props} branch={ this.state.branch } market={ this.state.market } />
 
             </div>
           </div>

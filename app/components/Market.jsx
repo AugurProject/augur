@@ -17,8 +17,10 @@ var Market = React.createClass({
     var marketState = flux.store('market').getState();
     var account = flux.store('network').getAccount();
 
+    var marketId = this.props.params.marketId;
+
     return {
-      market: marketState.markets[1],
+      market: marketState.markets[marketId],
       account: account
     }
   },
@@ -26,7 +28,7 @@ var Market = React.createClass({
   componentDidMount: function() {
 
     // build chart
-    var data = google.visualization.arrayToDataTable([['Date', 'Price']].concat(market.priceHistory));
+    var data = google.visualization.arrayToDataTable([['Date', 'Price']].concat(this.state.market.priceHistory));
     var options = {
         title: 'Price',
         legend: { position: 'none' },
@@ -46,7 +48,7 @@ var Market = React.createClass({
     var lastPrice = this.state.market.priceHistory[this.state.market.priceHistory.length-1][1];
 
     return (
-      <div>
+      <div id='market'>
         <h3>
           <div className="current">{ parseInt(lastPrice * 100).toString() + '%' }</div>
           <div className="text">{ this.state.market.text }</div>
@@ -54,7 +56,7 @@ var Market = React.createClass({
         <div className="row summary">
           <div className="col-xs-4 trade">
             <p className="delta">-</p>
-            <p className="shares-held">Shares held: <b>{ this.state.market.sharesHeld[0] || '-' }</b></p>
+            <p className="shares-held">Shares held: <b>-</b></p>
             <p className="end-date">End date: <b>-</b></p>
             <div className="input-group buy yes">
               <input type="text" className="form-control" placeholder="Shares" />
@@ -121,6 +123,12 @@ var CommentList = React.createClass({
         </div>
       );
     });
+
+    return (
+      <div>
+        { commentList }
+      </div>
+    );
   }
 });
 

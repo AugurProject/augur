@@ -16,7 +16,7 @@ var ConfigActions = {
 
     } else if (!evmAddress) {
 
-      utilities.log('invalid evm address');
+      utilities.warn('invalid evm address');
       this.dispatch(constants.config.UPDATE_CONTRACT_FAILED, {
         evmAddress: evmAddress
       });

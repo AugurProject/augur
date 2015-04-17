@@ -4,6 +4,10 @@ var Fluxxor = require("fluxxor");
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
+var Router = require("react-router");
+var RouteHandler = Router.RouteHandler;
+var Link = Router.Link;
+
 var AddMarketTrigger =  require('./AddMarket').AddMarketTrigger;
 
 var Branch = React.createClass({
@@ -56,20 +60,12 @@ var MarketList = React.createClass({
 // bundling this list class here for now until needed for reuse
 var MarketPane = React.createClass({
 
-  handleViewMarket: function(event) {
-
-    // unclear the how to render the market view from here
-    // perhaps it's time to install react router
-    console.log(event);
-
-  },
-
   render: function() {
 
     var market = this.props.market;
 
     return (
-      <div className='market-pane' onClick={ this.handleViewMarket } id={ 'market-' + market.id }>
+      <Link to='market' params={ {marketId: market.id} } className='market-pane'>
         <h4>{ market.text }</h4>
         <div className='summary'>
           <span>{ market.lastPrice * 100 }%</span>
@@ -81,7 +77,7 @@ var MarketPane = React.createClass({
           <p className='alt'>Author: <b>{ market.author }</b></p>
           <p>End date: <b>{ market.endDate || '-' }</b></p>
         </div>
-      </div>
+      </Link>
     );
   }
 });

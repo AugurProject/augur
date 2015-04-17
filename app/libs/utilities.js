@@ -47,9 +47,18 @@ module.exports = {
     }
   },
 
-  log: function(message) {
+  consoleStyle: 'background-color: #602A52; color: #fff; padding: 2px 6px;',
 
-    var css = 'background-color: #602A52; color: #fff; padding: 2px 6px;';
-    console.log('%caugur', css, message);
+  log: function(message) { 
+    console.log('%caugur', this.consoleStyle, message); 
+  },
+
+  warn: function(message) { 
+    console.warn('%caugur', this.consoleStyle, message); 
+  },
+
+  error: function(message) {  
+    console.error('%caugur', this.consoleStyle, message);
   }
+
 };
