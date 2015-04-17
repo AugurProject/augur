@@ -83,4 +83,59 @@ EthereumClient.prototype.getBranches = function () {
   return branches;
 };
 
+EthereumClient.prototype.getMarkets = function (branchId) {
+
+  var branchContract = this.getContract('branches');
+  var marketContract = this.getContract('market');
+  var account = this.account;
+
+  var marketList = _.map(branchContract.call().getMarkets(branchId), function(marketId) {
+
+    var desc = 'Placeholder';   // NEED
+    var events = marketContract.call().getMarketEvents(marketId);
+    var alpha = marketContract.call().getAlpha(marketId).toNumber();
+    var author = 'Placeholder';   // NEED
+    var endDate = new Date();   // NEED or calc from events
+    var traderCount = marketContract.call().getCurrentParticipantNumber(marketId).toNumber();
+    var tradingPeriod = marketContract.call().getTradingPeriod(marketId).toNumber();
+    var tradingFee = marketContract.call().getTradingFee(marketId).toNumber();
+    var traderId =  marketContract.call().getParticipantNumber(marketId, account);
+
+    var outcomeCount = marketContract.call().getMarketNumOutcomes(marketId);
+    var outcomes = _.map( _.range(outcomeCount), function (outcomeId) {
+
+      var id = BigNumber(outcomeId);
+
+      return {
+        price: marketContract.call().price(marketId, id),
+        sellPrice: marketContract.call().getSimulatedSell(marketId, id),
+        buyPrice: marketContract.call().getSimulatedBuy(marketId, id),
+        volume: 0,   // NEED
+        priceHistory: [],  // NEED
+        sharesPurchased: marketContract.call().getParticipantSharesPurchased(marketId, traderId, id),
+        totalSharePurchased: marketContract.call().getSharesPurchased(marketId, id)
+      }
+    });
+
+    var winningOutcomes = marketContract.call().getWinningOutcomes(marketId);
+
+    return {
+      id: marketId.toNumber(),
+      desc: desc,
+      alpha: alpha,
+      author: author,
+      endDate: endDate,
+      traderCount: traderCount,
+      tradingPeriod: tradingPeriod,
+      tradingFee: tradingFee,
+      traderId: traderId,
+      events: events,
+      outcomes: outcomes
+    };
+  });
+
+  var markets = _.indexBy(marketList, 'id');
+  return markets;
+};
+
 module.exports = EthereumClient;
