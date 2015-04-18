@@ -46,6 +46,7 @@ var AugurApp = React.createClass({
       network: flux.store('network').getState(),
       branch: flux.store('branch').getState(),
       asset: flux.store('asset').getState(),
+      market: flux.store('market').getState(),
       config: flux.store('config').getState()
     }
   },
@@ -89,7 +90,7 @@ var AugurApp = React.createClass({
               </div>
               <ul className="nav navbar-nav navbar-right">
                   <li>
-                      <div>BALANCE: <b className="cash-balance">-</b></div>
+                      <div>BALANCE: <b className="cash-balance">{ this.state.asset.balance || '-'}</b></div>
                   </li>
                   <li className="dropdown visible-xs visible-sm hidden-md">
                       <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -112,8 +113,8 @@ var AugurApp = React.createClass({
           <div className="dash page row">
             <div className="col-md-3 hidden-xs hidden-sm sidebar">
               <div className="side-nav">
-                  <p><Link to="home">Markets</Link><i>1</i></p>
-                  <p><a href="#">Reputation</a><i>240</i></p>
+                  <p><Link to="home">Markets</Link><i>{ _.keys(this.state.market.markets).length }</i></p>
+                  <p><a href="#">Reputation</a><i>{ this.state.asset.rep || 0}</i></p>
                   <p><a href="#">Ballots</a></p>
                   <p><AccountDetailsNavTrigger /></p>
                   <p><SendCashNavTrigger /></p>

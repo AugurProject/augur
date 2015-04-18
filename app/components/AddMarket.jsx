@@ -16,7 +16,7 @@ var AddMarketModal = React.createClass({
     return {
       marketText: '',
       marketInvestment: '',
-      events: []
+      tradingFee: ''
     };
   },
 
@@ -28,15 +28,15 @@ var AddMarketModal = React.createClass({
   },
 
   onChangeMarketText: function (event) {
-    this.setState({destination: event.target.value});
+    this.setState({marketText: event.target.value});
+  },
+
+  onChangeTradingFee: function (event) {
+    this.setState({tradingFee: event.target.value});
   },
 
   onChangeMarketInvestment: function (event) {
-    this.setState({amount: event.target.value});
-  },
-
-  onAddEvent: function (event) {
-
+    this.setState({marketInvestment: event.target.value});
   },
 
   onSubmit: function (event) {
@@ -62,7 +62,17 @@ var AddMarketModal = React.createClass({
                   />
               </div>
               <div className="form-group">
-                  <label for="market-investment">Initial liquidity</label>
+                  <label for="trading-fee">Trading fee</label>
+                  <input 
+                    type="text" 
+                    className="form-control" 
+                    name="trading-fee" 
+                    placeholder="Fee charged for each trade"
+                    onChange={ this.onChangeTradingFee } 
+                  />
+              </div>
+              <div className="form-group">
+                  <label for="market-investment">Market Investment</label>
                   <input 
                     type="text" 
                     className="form-control" 
@@ -70,10 +80,6 @@ var AddMarketModal = React.createClass({
                     placeholder="The markets initial liquidity"
                     onChange={ this.onChangeMarketInvestment } 
                   />
-              </div>
-              <div className="form-group clearfix">
-                  <label for="market-events">No Events</label>
-                  <a href="#" onClick={ this.onAddEvent } className='pull-right'>Add Event</a>
               </div>
               <Button bsStyle='primary' onClick={ this.onSubmit } className='pull-right'>Submit Market</Button>
           </form>

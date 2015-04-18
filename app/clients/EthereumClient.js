@@ -53,6 +53,47 @@ EthereumClient.prototype.getContract = function (name) {
   return contract;
 };
 
+EthereumClient.prototype.cashFaucet = function() {
+
+  var cashContract = this.getContract('cash');
+  var self = this;
+
+  cashContract.sendTransaction({from: this.account}, function(result) {
+    console.log(result);
+    var balance = cashContract.call().balance(self.account);
+    console.log('new cash balance: ' + balance.toNumber());
+  }).faucet();
+};
+
+EthereumClient.prototype.getCashBalance = function() {
+
+  var cashContract = this.getContract('cash');
+
+  var balance = cashContract.call().balance(this.account);
+  return balance.toString();
+};
+
+EthereumClient.prototype.repFaucet = function() {
+
+  var reportingContract = this.getContract('reporting');
+  var self = this;
+
+  reportingContract.sendTransaction({from: self.account}, function(result) {
+    console.log(result);
+    var rep = reportingContract.call().getRepBalance(1010101, self.account);
+    console.log('new rep balance: ' + rep.toNumber());
+  }).faucet();  
+};
+
+EthereumClient.prototype.getRepBalance = function(branchId) {
+
+  var id = branchId || 1010101;
+
+  var reportingContract = this.getContract('reporting');
+  var rep = reportingContract.call().getRepBalance(id, this.account);
+  return rep.toNumber();
+};
+
 /**
  * Get information about all available branches.
  *
@@ -98,7 +139,7 @@ EthereumClient.prototype.getMarkets = function (branchId) {
     var alpha = marketContract.call().getAlpha(marketId).toNumber();
     var author = infoContract.call().getCreator(marketId);
     var creationFee = infoContract.call().getCreationFee(marketId);
-    var endDate = new Date();   // calc from events
+    var endDate = new Date();   // calc from last event expiration
     var traderCount = marketContract.call().getCurrentParticipantNumber(marketId).toNumber();
     var tradingPeriod = marketContract.call().getTradingPeriod(marketId).toNumber();
     var tradingFee = marketContract.call().getTradingFee(marketId).toNumber();
@@ -141,6 +182,38 @@ EthereumClient.prototype.getMarkets = function (branchId) {
 
   var markets = _.indexBy(marketList, 'id');
   return markets;
+};
+
+EthereumClient.prototype.addEvent = function(params) {
+
+    var contract = this.getContract('createEvent');
+
+    var branchId = params.branchId || 1010101;
+    var desc = params.desc;
+    var expirationBlock = params.expirationBlock;
+    var minValue = params.minValue || 0;
+    var maxValue = params.maxValue || 1;
+    var numOutcomes = params.numOutcomes || 2;
+
+    var newEventId = contract.sendTransaction({from: this.account}).createEvent(
+      branchId, desc, expirationBlock, minValue, maxValue, numOutcomes
+    );
+};
+
+EthereumClient.prototype.addMarket = function(params) {
+
+    var contract = this.getContract('createMarket');
+
+    var branchId = 1010101;
+    var desc = params.desc;
+    var alpha = new BigNumber('0.07').multiplyBy(new BigNumber(2).toPower(64));
+    var initialLiquidity = new BigNumber(params.initialLiquidity).multiplyBy(new BigNumber(2).toPower(64));
+    var tradingFee = new BigNumber(params.tradingFee).multiplyBy(new BigNumber(2).toPower(64));   // percent trading fee
+    var events = params.events;  // a list of event ids
+
+    var newMarketId = contract.sendTransaction({from: this.account}).createMarket(
+      branchId, desc, alpha, initialLiquidity, tradingFee, events
+    );
 };
 
 module.exports = EthereumClient;

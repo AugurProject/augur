@@ -196,7 +196,7 @@ nav .navbar-right li div {
     display: inline-block;
     background-color: #fff;
     color: #602A52;
-    padding: 1px 6px;
+    padding: 1px 6px 2px 6px;
     border-radius: 8px;
     margin: 0px 0px 0px 10px;
     font-family: 'Source Sans Pro', sans-serif;
@@ -204,7 +204,7 @@ nav .navbar-right li div {
     font-size: 12px;
     opacity: 0.6;
     position: relative;
-    top: -1px;
+    top: -2px;
 }
 
 .account .address {
