@@ -120,7 +120,7 @@ var EthRPC = (function (rpc_url, primary) {
         },
         balance: function (address, block, f) {
             return json_rpc(postdata("getBalance", [address, block || "latest"]), f || function (data) {
-                return parseInt(data.result, 16) / 1e16;
+                return parseInt(data.result, 16) / 1e18;
             });
         },
         txCount: function (address, f) {
