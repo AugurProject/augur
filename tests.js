@@ -55,6 +55,8 @@ var addr = {
     loopy: "0x00e3f8de3ed9d428dc235ce0c25bc1136073be8b",
     jack: "0x63524e3fe4791aefce1e932bbfb3fdf375bfad89",
     toast: "0xb76a02724d44c89c20e41882f729a092f14d3eaf",
+    joey: "0x1c11aa45c792e202e9ffdc2f12f99d0d209bef70",
+    heavy: "0x816e547d69e20e918340e7ff766c9ea841fe577a",
     contracts: {
         ten: "0x3caf506cf3d5bb16ba2c8f89a6591c5160d69cf3",
         mul2: "0xe9d61cfdc67115372a78578b3d1082e8911419d9",
