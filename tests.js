@@ -12,7 +12,7 @@ function ping(addr) {
     var contract_code;
     for (a in addr) {
         if (!addr.hasOwnProperty(a)) continue;
-        contract_code = EthRPC.code(addr[a]);
+        contract_code = EthRPC.read(addr[a]);
         if (contract_code !== "0x") {
             console.log(a + ":", contract_code);
         }
@@ -50,13 +50,27 @@ function test_ethrpc(addr, contracts, gas) {
 // lots of gas
 var gas = 100000000;
 
+// n = new BigNumber('498000000000000000000')
+n = new BigNumber('100000000000000000000')
+// eth.sendTransaction({from: addr.jack, to: addr.joey, value: n.toString()})
+
+n = new BigNumber('100000000000000000000')
+eth.sendTransaction({from: "0x00e3f8de3ed9d428dc235ce0c25bc1136073be8b", to: "0x1c11aa45c792e202e9ffdc2f12f99d0d209bef70", value: n.toString()});
+
+eth.sendTransaction({
+    from: "0x63524e3fe4791aefce1e932bbfb3fdf375bfad89",
+    to: "0x1c11aa45c792e202e9ffdc2f12f99d0d209bef70",
+    value: "100000000000000000000"}
+);
+
 // frontier testnet addresses
 var addr = {
     loopy: "0x00e3f8de3ed9d428dc235ce0c25bc1136073be8b",
     jack: "0x63524e3fe4791aefce1e932bbfb3fdf375bfad89",
+    heavy: "0x816e547d69e20e918340e7ff766c9ea841fe577a",
+    simulator2: "0x78829d3d1fd441aee8eff7a1263c11ed2f3adba7",
     toast: "0xb76a02724d44c89c20e41882f729a092f14d3eaf",
     joey: "0x1c11aa45c792e202e9ffdc2f12f99d0d209bef70",
-    heavy: "0x816e547d69e20e918340e7ff766c9ea841fe577a",
     contracts: {
         ten: "0x3caf506cf3d5bb16ba2c8f89a6591c5160d69cf3",
         mul2: "0xe9d61cfdc67115372a78578b3d1082e8911419d9",
@@ -64,12 +78,24 @@ var addr = {
         cash: "0x559b098076d35ddc7f5057bf28eb20d9cf183a99",
         interpolate: "0x63faff743ab0398524c08a435f94ceb91352ba58",
         center: "0x3e79ddefd9406c913a74373eb65df6c0eaea98c1",
-        score: "0x13aad6f5573db896e589d2fdef22da8c5033141d",
-        adjust: "0xd7a973f0f38a065a3c5a3e3d3f02ac80685f08a0",
-        resolve: "0x3e79ddefd9406c913a74373eb65df6c0eaea98c1",
+        score: "0x24c47de8ce8f9bca800c3b428a499fb5b0bcaa09",
+        adjust: "0xfe8505191bc811cf0967b809efc501ae0fc113a1",
+        resolve: "0x75fea285fe10873a82bfcd9c3ce7d1efc48f2f89",
         payout: "0x7313f08f324b1b2ce54413a20677b3a43a27522f"
     }
 };
+
+function chkbal(addr) {
+    var bal = {
+        loopy: eth.getBalance(addr.loopy) / 1e18,
+        jack: eth.getBalance(addr.jack) / 1e18,
+        heavy: eth.getBalance(addr.heavy) / 1e18,
+        simulator2: eth.getBalance(addr.simulator2) / 1e18,
+        joey: eth.getBalance(addr.joey) / 1e18
+    };
+    bal.total = bal.loopy + bal.jack + bal.heavy + bal.simulator2;
+    return bal;
+}
 
 var contracts = {
     compiled: {
