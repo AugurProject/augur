@@ -2,6 +2,7 @@ var _ = require('lodash');
 var constants = require('../libs/constants');
 
 var MarketActions = {
+
   loadMarkets: function () {
     var branchState = this.flux.store('branch').getState();
     var configState = this.flux.store('config').getState();

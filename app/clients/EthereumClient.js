@@ -139,7 +139,7 @@ EthereumClient.prototype.getMarkets = function (branchId) {
     var alpha = marketContract.call().getAlpha(marketId).toNumber();
     var author = infoContract.call().getCreator(marketId);
     var creationFee = infoContract.call().getCreationFee(marketId);
-    var endDate = new Date();   // calc from last event expiration
+    var endDate = new Date();   // TODO: calc from last event expiration
     var traderCount = marketContract.call().getCurrentParticipantNumber(marketId).toNumber();
     var tradingPeriod = marketContract.call().getTradingPeriod(marketId).toNumber();
     var tradingFee = marketContract.call().getTradingFee(marketId).toNumber();
@@ -189,6 +189,14 @@ EthereumClient.prototype.getEvents = function(branchId) {
   return {};
 };
 
+EthereumClient.prototype.getEvent = function(eventId) {
+
+  var contract = this.getContract('events');
+  var r = contract.call({gas: 1000000}).getEventInfo(eventId);
+
+  console.log(r);
+};
+
 EthereumClient.prototype.addEvent = function(params) {
 
     var contract = this.getContract('createEvent');
@@ -209,13 +217,12 @@ EthereumClient.prototype.addEvent = function(params) {
         branchId, desc, expirationBlock, minValue, maxValue, numOutcomes
       );
     } catch(err) {
+
       utilities.error(err);
-      return;
+      return false;;
     }
 
-    utilities.log('adding new event '+ newEventId.toNumber());
-
-    // add event to store as pending
+    return newEventId;
 };
 
 EthereumClient.prototype.addMarket = function(params) {
@@ -240,13 +247,12 @@ EthereumClient.prototype.addMarket = function(params) {
       );
 
     } catch(err) {
+
       utilities.error(err);
-      return;
+      return false;
     }
 
-    utilities.log('adding new market '+ EventId.toNumber());
-
-    // add market to store as 'pending'
+    return newMarketId;
 };
 
 module.exports = EthereumClient;
