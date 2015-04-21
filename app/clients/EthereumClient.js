@@ -200,9 +200,15 @@ EthereumClient.prototype.addEvent = function(params) {
     var maxValue = params.maxValue || 1;
     var numOutcomes = params.numOutcomes || 2;
 
-    var newEventId = contract.sendTransaction({from: this.account}).createEvent(
+    contract.sendTransaction({from: this.account}).createEvent(
       branchId, desc, expirationBlock, minValue, maxValue, numOutcomes
     );
+
+    var newEventId = contract.call().createEvent(
+      branchId, desc, expirationBlock, minValue, maxValue, numOutcomes
+    );
+
+    utilities.log('adding new event '+ EventId.toNumber());
 
     // add event to store as pending
 };
@@ -212,15 +218,21 @@ EthereumClient.prototype.addMarket = function(params) {
     var contract = this.getContract('createMarket');
 
     var branchId = 1010101;
-    var desc = params.desc;
+    var desc = params.des;
     var alpha = new BigNumber('0.07').multiplyBy(new BigNumber(2).toPower(64));
     var initialLiquidity = new BigNumber(params.initialLiquidity).multiplyBy(new BigNumber(2).toPower(64));
     var tradingFee = new BigNumber(params.tradingFee).multiplyBy(new BigNumber(2).toPower(64));   // percent trading fee
     var events = params.events;  // a list of event ids
 
-    var newMarketId = contract.sendTransaction({from: this.account}).createMarket(
+    contract.sendTransaction({from: this.account}).createMarket(
       branchId, desc, alpha, initialLiquidity, tradingFee, events
     );
+
+    var newMarketId = contract.call().createMarket(
+      branchId, desc, alpha, initialLiquidity, tradingFee, events
+    );
+
+    utilities.log('adding new market '+ EventId.toNumber());
 
     // add market to store as 'pending'
 };
