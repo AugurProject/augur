@@ -31,21 +31,15 @@ module.exports = {
     LOAD_EVENTS_SUCCESS: null
   }),
   addresses: {
-    branches: '0x2440e4769deb9fd3fd528884b95dc76e4e3482cf',
-    buyAndSellShares: '0xd89134277d395df906b06c2a7677fd97106bac6d',
-    cash: '0x559b098076d35ddc7f5057bf28eb20d9cf183a99',
-    checkQuorum: '0xdb609952cc948372d85081665d176d2c506c3591',
-    createBranch: '0xb01164d8174e6ce6ea5589824dca4e0acb92d26d',
-    createEvent: '0x134ae8c13f9955c205da87ea49c4d21612ff5c14',
-    createMarket: '0x31298c07334febd45584d24797ced02bc54777ca',
-    events: '0xe34fd8a3840cba70fdd73a01c75302de959aa5a9',
-    expiringEvents: '0xb7b617b776e66cbae79606d2b6221501ad110090',
-    info: '0x84ad0e89dbbbdfb18a59954addf10ad501525a01',
+    branches: '0x13dc5836cd5638d0b81a1ba8377a7852d41b5bbe',
+    cash: '0xf1d413688a330839177173ce98c86529d0da6e5c',
+    createEvent: '0x4bef64bebfe3acb7c1f6a67c1abd17aad77a103f',
+    createMarket: '0x9105c2b43b31cd0883e6b2cfb21b551ac72bddfe',
+    events: '0xb71464588fc19165cbdd1e6e8150c40df544467b',
+    expiringEvents: '0xd85f31c7688577f21af4dd278a1c0ce31174b0ef',
+    info: '0x910b359bb5b2c2857c1d3b7f207a08f3f25c4a8b',
     makeReports: '0xa66d31612c2e716ab9633a8ba886686b3777d99a',
-    markets: '0x9d8b4e6da4e917e7b951f372e66b1012b203e30e',
-    p2pWagers: '0x8b504a36f5dcd5debab695bd9474d47693195141',
-    reporting: '0x175d90d83deec9e5b75cef6b0659958fe2fd24b1',
-    sendReputation: '0x9ba9fd49e9398bb756e5bcc4d7daec5efcca42c8',
-    transferShares: '0xda588186e874e3d39b3884367342e98d3df0dfc1'
+    markets: '0x65100915863c7c8d83cc3298d0b15880a01b1eda',
+    reporting: '0xd1f7f020f24abca582366ec80ce2fef6c3c22233',
   }
 };

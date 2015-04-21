@@ -7,8 +7,9 @@ var ConfigActions = {
 
   updateEthereumClient: function () {
 
-    var account = this.flux.store('config').getState().account;
-    var ethereumClient = new EthereumClient(account);
+    //var account = this.flux.store('network').getAccount();
+    var web3 = require('web3');
+    var ethereumClient = new EthereumClient(web3.eth.coinbase);
 
     if (!ethereumClient) {
 
@@ -19,7 +20,7 @@ var ConfigActions = {
     // console object for testing/debuging
     var self = this;
     window.augur = {
-      evm: ethereumClient,
+      client: ethereumClient,
       debug: function(state) {
         if (typeof(state === 'boolean')) {
           self.flux.actions.config.updateDebug(state);

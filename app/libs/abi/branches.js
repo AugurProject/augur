@@ -57,6 +57,12 @@ module.exports = [{
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
+    "name": "getSubstep(int256)",
+    "type": "function",
+    "inputs": [{ "name": "branch", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
+},
+{
     "name": "getVotePeriod(int256)",
     "type": "function",
     "inputs": [{ "name": "branch", "type": "int256" }],
@@ -75,6 +81,12 @@ module.exports = [{
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
+    "name": "incrementSubstep(int256)",
+    "type": "function",
+    "inputs": [{ "name": "branch", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
+},
+{
     "name": "initializeBranch(int256,int256,int256,int256)",
     "type": "function",
     "inputs": [{ "name": "ID", "type": "int256" }, { "name": "currentVotePeriod", "type": "int256" }, { "name": "periodLength", "type": "int256" }, { "name": "minTradingFee", "type": "int256" }],
@@ -84,5 +96,11 @@ module.exports = [{
     "name": "setStep(int256,int256)",
     "type": "function",
     "inputs": [{ "name": "branch", "type": "int256" }, { "name": "step", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
+},
+{
+    "name": "setSubstep(int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "substep", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256" }]
 }];

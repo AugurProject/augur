@@ -4,7 +4,7 @@ var utilities = require('../libs/utilities');
 
 var NetworkActions = {
 
-  checkEthereumClient: function() {
+  checkNetwork: function() {
 
     var host = this.flux.store('config').getState().host;
     web3.setProvider(new web3.providers.HttpProvider('http://'+host));
@@ -40,6 +40,7 @@ var NetworkActions = {
 
     this.dispatch(constants.network.UPDATE_NETWORK, {
       accounts: web3.eth.accounts,
+      primaryAccount: web3.eth.coinbase,
       peerCount: web3.net.peerCount,
       blockNumber: web3.eth.blockNumber,
       gasPrice: utilities.formatGas(web3.eth.gasPrice),

@@ -54,7 +54,7 @@ var AugurApp = React.createClass({
 
   componentDidMount: function() {
 
-    this.getFlux().actions.network.checkEthereumClient();
+    this.getFlux().actions.network.checkNetwork();
   },
 
   getLoadingProgress: function() {

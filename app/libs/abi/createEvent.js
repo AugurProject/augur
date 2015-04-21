@@ -3,8 +3,8 @@
  * serpent mk_full_signature createEvent.se
  */
 module.exports = [{
-    "name": "createEvent(int256,string,int256,int256,int256,int256)",
+    "name": "createEvent(int256,bytes,int256,int256,int256,int256)",
     "type": "function",
-    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "description", "type": "bytes" }, { "name": "expDate", "type": "int256" }, { "name": "minValue", "type": "int256" }, { "name": "maxValue", "type": "int256" }, { "name": "numOutcomes", "type": "int256" }],
+    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "description", "type": "btyes" }, { "name": "expDate", "type": "int256" }, { "name": "minValue", "type": "int256" }, { "name": "maxValue", "type": "int256" }, { "name": "numOutcomes", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256" }]
 }];

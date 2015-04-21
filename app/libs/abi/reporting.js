@@ -18,7 +18,7 @@ module.exports = [{
     "name": "faucet()",
     "type": "function",
     "inputs": [],
-    "outputs": []
+    "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
     "name": "getNumberReporters(int256)",
@@ -30,6 +30,12 @@ module.exports = [{
     "name": "getRepBalance(int256,int256)",
     "type": "function",
     "inputs": [{ "name": "branch", "type": "int256" }, { "name": "address", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
+},
+{
+    "name": "getRepByIndex(int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "repIndex", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
@@ -63,8 +69,15 @@ module.exports = [{
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
+    "name": "setRep(int256,int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "index", "type": "int256" }, { "name": "value", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
+},
+{
     "name": "subtractRep(int256,int256,int256)",
     "type": "function",
     "inputs": [{ "name": "branch", "type": "int256" }, { "name": "index", "type": "int256" }, { "name": "value", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256" }]
-}];
+}]
+;
