@@ -76,7 +76,7 @@ var SendCashModal = React.createClass({
   }
 });
 
-var SendCashNavTrigger = React.createClass({
+var SendCashTrigger = React.createClass({
   mixins: [FluxMixin],
 
   render: function () {
@@ -90,5 +90,5 @@ var SendCashNavTrigger = React.createClass({
 
 module.exports = {
   SendCashModal: SendCashModal,
-  SendCashNavTrigger: SendCashNavTrigger
+  SendCashTrigger: SendCashTrigger
 };

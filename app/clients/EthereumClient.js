@@ -184,6 +184,11 @@ EthereumClient.prototype.getMarkets = function (branchId) {
   return markets;
 };
 
+EthereumClient.prototype.getEvents = function(branchId) {
+
+  return {};
+};
+
 EthereumClient.prototype.addEvent = function(params) {
 
     var contract = this.getContract('createEvent');
@@ -198,6 +203,8 @@ EthereumClient.prototype.addEvent = function(params) {
     var newEventId = contract.sendTransaction({from: this.account}).createEvent(
       branchId, desc, expirationBlock, minValue, maxValue, numOutcomes
     );
+
+    // add event to store as pending
 };
 
 EthereumClient.prototype.addMarket = function(params) {
@@ -214,6 +221,8 @@ EthereumClient.prototype.addMarket = function(params) {
     var newMarketId = contract.sendTransaction({from: this.account}).createMarket(
       branchId, desc, alpha, initialLiquidity, tradingFee, events
     );
+
+    // add market to store as 'pending'
 };
 
 module.exports = EthereumClient;

@@ -1,7 +1,6 @@
 window.web3 = require('web3');
 var constants = require('../libs/constants');
 var utilities = require('../libs/utilities');
-var ethereumClient = require('../clients/EthereumClient');
 
 var NetworkActions = {
 
@@ -32,19 +31,7 @@ var NetworkActions = {
       self.flux.actions.network.updateNetwork();
     });
 
-    // console object for testing/debuging
-    window.augur = {
-      evm: new ethereumClient( web3.eth.accounts[0] ),
-      account: web3.eth.accounts[0],
-      debug: function(state) {
-        if (typeof(state === 'boolean')) {
-          flux.actions.config.updateDebug(state);
-        }
-        return flux.store('config').getState().debug;
-      }
-    }
-
-    this.flux.actions.config.loadContract();
+    this.flux.actions.config.loadEthereumClient();
   },
 
   updateNetwork: function () {

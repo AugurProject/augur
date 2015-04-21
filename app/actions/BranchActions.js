@@ -8,29 +8,11 @@ var BranchActions = {
     var configState = this.flux.store('config').getState();
     var account = this.flux.store('network').getAccount();
 
-    var contract = configState.contract;
+    var ethereumClient = configState.ethereumClient;
     var currentBranch = branchState.currentBranch;
 
-    var callParams = {from: account}
+    var branches = ethereumClient.getBranches();
 
-    var branchList = _.map(contract.call(callParams).getBranches(), function(branchId) {
-
-      var branchInfo = contract.call(callParams).getBranchInfo(branchId);
-      var branchName = contract.call(callParams).getBranchDesc(branchId);
-      var rep = contract.call(callParams).getRepBalance(branchId, account).dividedBy(new BigNumber(2).toPower(64));
-      var marketCount = contract.call(callParams).getMarkets(branchId).length;
-
-      return {
-        id: branchId,
-        name: branchName,
-        currentPeriod: branchInfo[2].toNumber(),
-        periodLength: branchInfo[3].toNumber(),
-        rep: rep,
-        marketCount: marketCount
-      };
-    });
-
-    var branches = _.indexBy(branchList, 'id');
     this.dispatch(constants.branch.LOAD_BRANCHES_SUCCESS, {branches: branches});
 
     // If the current branch is no longer in the set of branches, update the
@@ -45,7 +27,6 @@ var BranchActions = {
 
   updateCurrentBranch: function (id) {
     this.dispatch(constants.branch.UPDATE_CURRENT_BRANCH, {currentBranch: id})
-    this.flux.actions.event.loadEvents();
   }
 };
 

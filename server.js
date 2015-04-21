@@ -24,7 +24,7 @@ http.createServer(function(req, res) {
 
   		} else {
 
-    		console.log('%s - %s', req.url, res.message); 
+    		console.log('%s', req.url); 
   		}
 	});
 

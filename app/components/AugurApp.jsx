@@ -20,8 +20,9 @@ var Network = require('./Network');
 var Alert = require('./Alert');
 var Confirm = require('./Confirm');
 
-var SendCashNavTrigger = require('./SendCash').SendCashNavTrigger;
-var AccountDetailsNavTrigger = require('./AccountDetails').AccountDetailsNavTrigger;
+var SendCashTrigger = require('./SendCash').SendCashTrigger;
+var SendRepTrigger = require('./SendRep').SendRepTrigger;
+var AccountDetailsTrigger = require('./AccountDetails').AccountDetailsTrigger;
 
 var AugurApp = React.createClass({
 
@@ -79,6 +80,13 @@ var AugurApp = React.createClass({
     return loadingProgress
   },
 
+  render2: function() { 
+    return (
+      <div>
+      </div>
+    )
+  },
+
   render: function() {
 
     return (
@@ -90,7 +98,7 @@ var AugurApp = React.createClass({
               </div>
               <ul className="nav navbar-nav navbar-right">
                   <li>
-                      <div>BALANCE: <b className="cash-balance">{ this.state.asset.balance || '-'}</b></div>
+                      <div>CASH: <b className="cash-balance">{ this.state.asset.balance || '-'}</b></div>
                   </li>
                   <li className="dropdown visible-xs visible-sm hidden-md">
                       <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -99,10 +107,10 @@ var AugurApp = React.createClass({
                       </a>
                       <ul className="dropdown-menu" role="menu">
                           <li><Link to="home">Markets</Link></li>
-                          <li><a href="#">Reputation</a></li>
+                          <li><SendRepTrigger /></li>
                           <li><a href="#">Ballots</a></li>
-                          <li><AccountDetailsNavTrigger /></li>
-                          <li><SendCashNavTrigger /></li>
+                          <li><AccountDetailsTrigger /></li>
+                          <li><SendCashTrigger /></li>
                       </ul>
                   </li>
               </ul>
@@ -114,10 +122,10 @@ var AugurApp = React.createClass({
             <div className="col-md-3 hidden-xs hidden-sm sidebar">
               <div className="side-nav">
                   <p><Link to="home">Markets</Link><i>{ _.keys(this.state.market.markets).length }</i></p>
-                  <p><a href="#">Reputation</a><i>{ this.state.asset.rep || 0}</i></p>
+                  <p><SendRepTrigger /><i>{ this.state.asset.rep || 0}</i></p>
                   <p><a href="#">Ballots</a></p>
-                  <p><AccountDetailsNavTrigger /></p>
-                  <p><SendCashNavTrigger /></p>
+                  <p><AccountDetailsTrigger /></p>
+                  <p><SendCashTrigger /></p>
               </div>
 
               <Network />
@@ -164,11 +172,9 @@ var ErrorModal = React.createClass({
 
   componentWillReceiveProps: function(nextProps) {
 
-    if (nextProps.config.isDemo === false) {
-      if (nextProps.network.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED ||
-      nextProps.config.contractFailed === true) {
-        this.setState({ isModalOpen: true });
-      }
+    if (nextProps.network.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED ||
+    nextProps.config.ethereumClientFailed === true) {
+      this.setState({ isModalOpen: true });
     }
   },
 
@@ -182,9 +188,7 @@ var ErrorModal = React.createClass({
   startDemoMode: function (event) {
 
     this.handleToggle();
-
-    var flux = this.getFlux();
-    flux.actions.config.updateIsDemo(true);
+    // start ethereum client demo mode
   },
 
   render: function() {
@@ -195,16 +199,16 @@ var ErrorModal = React.createClass({
 
     if (!this.state.isModalOpen) return <span />;
 
-    if (this.props.config.contractFailed) {
+    if (this.props.config.ethereumClientFailed) {
 
-      // augur contracts failed to load
+      // augur client failed to load
       return (
         <Modal {...this.props} bsSize='small' onRequestHide={ this.handleToggle }>
           <div className="modal-body clearfix">
               <h4>Augur failed to load</h4>
               <p>There was a problem loading Augur</p>
               <p>Visit our help page for assitance contact us directly</p>
-              <p><a className="pull-right start-demo-mode" onClick={ this.startDemoMode } href="javascript:void(0)">Proceed in demo mode</a></p>
+              <p style={{display: 'none'}}><a className="pull-right start-demo-mode" onClick={ this.startDemoMode } href="javascript:void(0)">Proceed in demo mode</a></p>
           </div>
         </Modal>
       );
@@ -218,7 +222,7 @@ var ErrorModal = React.createClass({
               <h4>Ethereum not found</h4>
               <p>Augur requires a local node of the Ethereum client running</p>
               <p>Visit <a href="https://github.com/ethereum/cpp-ethereum/wiki">the ethereum github wiki</a> for help installing the lastest client</p>
-              <p><a className="pull-right start-demo-mode" onClick={ this.startDemoMode } href="javascript:void(0)">Proceed in demo mode</a></p>
+              <p style={{display: 'none'}}><a className="pull-right start-demo-mode" onClick={ this.startDemoMode } href="javascript:void(0)">Proceed in demo mode</a></p>
           </div>
         </Modal>
       );

@@ -1,49 +1,35 @@
 var abi = require('../libs/abi');
 var constants = require('../libs/constants');
 var utilities = require('../libs/utilities');
+var EthereumClient = require('../clients/EthereumClient');
 
 var ConfigActions = {
 
-  updateContract: function (evmAddress) {
+  updateEthereumClient: function () {
 
-    var isDemo = this.flux.store('config').getState().isDemo;
-    var contract;
+    var account = this.flux.store('config').getState().account;
+    var ethereumClient = new EthereumClient(account);
 
-    if (isDemo) {
+    if (!ethereumClient) {
 
-      contract = require('../libs/demo').contract;
-      utilities.log('running in demo mode');
-
-    } else if (!evmAddress) {
-
-      utilities.warn('invalid evm address');
-      this.dispatch(constants.config.UPDATE_CONTRACT_FAILED, {
-        evmAddress: evmAddress
-      });
-
+      this.dispatch(constants.config.UPDATE_ETHEREUM_CLIENT_FAILED);
       return;
-
-    } else {
-
-      var Contract = web3.eth.contract(abi);
-      contract = new Contract(evmAddress);
-
-      // Attempt a contract call to see if we're good to go.
-      if (!contract.call({from: web3.eth.accounts[0]}).faucet().toNumber()) {
-
-        this.dispatch(constants.config.UPDATE_CONTRACT_FAILED, {
-          evmAddress: evmAddress
-        })
-        
-        return;
-      }
-
-      utlities.log('evm contract loaded from ' + evmAddress);
     }
 
-    this.dispatch(constants.config.UPDATE_CONTRACT_SUCCESS, {
-      evmAddress: evmAddress,
-      contract: contract
+    // console object for testing/debuging
+    var self = this;
+    window.augur = {
+      evm: ethereumClient,
+      debug: function(state) {
+        if (typeof(state === 'boolean')) {
+          self.flux.actions.config.updateDebug(state);
+        }
+        return self.flux.store('config').getState().debug;
+      }
+    }
+
+    this.dispatch(constants.config.UPDATE_ETHEREUM_CLIENT_SUCCESS, {
+      ethereumClient: ethereumClient
     });
 
     // just setting this to 100 for now
@@ -57,14 +43,9 @@ var ConfigActions = {
     this.flux.actions.market.loadMarkets();
   },
 
-  loadContract: function () {
-    var evmAddress = this.flux.store('config').getState().evmAddress;
-    this.flux.actions.config.updateContract(evmAddress);
-  },
+  loadEthereumClient: function () {
 
-  updateIsDemo: function (isDemo) {
-    this.dispatch(constants.config.UPDATE_IS_DEMO, {isDemo: isDemo});
-    this.flux.actions.config.loadContract();
+    this.flux.actions.config.updateEthereumClient();
   },
 
   updateDebug: function (debug) {

@@ -38,7 +38,7 @@ var AccountDetailsModal = React.createClass({
   }
 });
 
-var AccountDetailsNavTrigger = React.createClass({
+var AccountDetailsTrigger = React.createClass({
   mixins: [FluxMixin],
 
   render: function () {
@@ -52,5 +52,5 @@ var AccountDetailsNavTrigger = React.createClass({
 
 module.exports = {
   AccountDetailsModal: AccountDetailsModal,
-  AccountDetailsNavTrigger: AccountDetailsNavTrigger
+  AccountDetailsTrigger: AccountDetailsTrigger
 };
