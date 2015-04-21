@@ -18,7 +18,7 @@ module.exports = [{
     "name": "getDescription(int256)",
     "type": "function",
     "inputs": [{ "name": "ID", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "string" }]
+    "outputs": [{ "name": "out", "type": "bytes" }]
 },
 {
     "name": "getDescriptionLength(int256)",
@@ -29,6 +29,6 @@ module.exports = [{
 {
     "name": "setInfo(int256,string,int256,int256)",
     "type": "function",
-    "inputs": [{ "name": "ID", "type": "int256" }, { "name": "description", "type": "string" }, { "name": "creator", "type": "int256" }, { "name": "fee", "type": "int256" }],
+    "inputs": [{ "name": "ID", "type": "int256" }, { "name": "description", "type": "bytes" }, { "name": "creator", "type": "int256" }, { "name": "fee", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256" }]
 }];

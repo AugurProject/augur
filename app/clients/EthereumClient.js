@@ -200,13 +200,18 @@ EthereumClient.prototype.addEvent = function(params) {
     var maxValue = params.maxValue || 1;
     var numOutcomes = params.numOutcomes || 2;
 
-    contract.sendTransaction({from: this.account}).createEvent(
-      branchId, desc, expirationBlock, minValue, maxValue, numOutcomes
-    );
+    try {
+      var newEventId = contract.call({gas: 1000000}).createEvent(
+        branchId, desc, expirationBlock, minValue, maxValue, numOutcomes
+      );
 
-    var newEventId = contract.call().createEvent(
-      branchId, desc, expirationBlock, minValue, maxValue, numOutcomes
-    );
+      contract.sendTransaction({from: this.account, gas: 1000000}).createEvent(
+        branchId, desc, expirationBlock, minValue, maxValue, numOutcomes
+      );
+    } catch(err) {
+      utilities.error(err);
+      return;
+    }
 
     utilities.log('adding new event '+ newEventId.toNumber());
 
@@ -224,13 +229,20 @@ EthereumClient.prototype.addMarket = function(params) {
     var tradingFee = new BigNumber(params.tradingFee).multiplyBy(new BigNumber(2).toPower(64));   // percent trading fee
     var events = params.events;  // a list of event ids
 
-    contract.sendTransaction({from: this.account}).createMarket(
-      branchId, desc, alpha, initialLiquidity, tradingFee, events
-    );
+    try {
 
-    var newMarketId = contract.call().createMarket(
-      branchId, desc, alpha, initialLiquidity, tradingFee, events
-    );
+      var newMarketId = contract.call({gas: 30000}).createMarket(
+        branchId, desc, alpha, initialLiquidity, tradingFee, events
+      );
+
+      contract.sendTransaction({from: this.account, gas: 30000}).createMarket(
+        branchId, desc, alpha, initialLiquidity, tradingFee, events
+      );
+
+    } catch(err) {
+      utilities.error(err);
+      return;
+    }
 
     utilities.log('adding new market '+ EventId.toNumber());
 
