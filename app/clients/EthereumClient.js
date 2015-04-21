@@ -3,7 +3,7 @@ var Promise = require('es6-promise').Promise;
 
 var abi = require('../libs/abi');
 var constants = require('../libs/constants');
-var utlities = require('../libs/utilities');
+var utilities = require('../libs/utilities');
 
 
 function MissingContractError(contractName) {
@@ -208,7 +208,7 @@ EthereumClient.prototype.addEvent = function(params) {
       branchId, desc, expirationBlock, minValue, maxValue, numOutcomes
     );
 
-    utilities.log('adding new event '+ EventId.toNumber());
+    utilities.log('adding new event '+ newEventId.toNumber());
 
     // add event to store as pending
 };
