@@ -21,7 +21,8 @@ var SendRepModal = React.createClass({
     var flux = this.getFlux();
 
     return {
-      reputation: flux.store('asset').getState().reputation
+      reputation: flux.store('asset').getState().reputation,
+      ethereumClient: flux.store('config').getEthereumClient()
     }
   },
 
@@ -34,9 +35,10 @@ var SendRepModal = React.createClass({
   },
 
   onSend: function (event) {
-    // TODO: Validate the state, then call a contract to send the
-    // transaction requested in the state.
-    console.log('Would have sent ' + this.state.amount + ' reputation to ' + this.state.destination);
+
+    // TODO: validation and error handling
+    var status = this.state.ethereumClient.sendRep(this.state.destination, this.state.amount);
+
     this.props.onRequestHide();
   },
 

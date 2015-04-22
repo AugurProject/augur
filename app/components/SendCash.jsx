@@ -22,7 +22,8 @@ var SendCashModal = React.createClass({
     var flux = this.getFlux();
 
     return {
-      balance: flux.store('asset').getState().balance
+      balance: flux.store('asset').getState().balance,
+      ethereumClient: flux.store('config').getEthereumClient()
     }
   },
 
@@ -35,9 +36,10 @@ var SendCashModal = React.createClass({
   },
 
   onSend: function (event) {
-    // TODO: Validate the state, then call a contract to send the
-    // transaction requested in the state.
-    console.log('Would have sent ' + this.state.amount + ' cash to ' + this.state.destination);
+
+    // TODO: validation and error handling
+    var status = this.state.ethereumClient.sendCash(this.state.destination, this.state.amount);
+
     this.props.onRequestHide();
   },
 

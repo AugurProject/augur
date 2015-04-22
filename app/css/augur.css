@@ -506,6 +506,9 @@ nav .navbar-right li div {
 
 /* modals */
 
+.modal-body h4 {
+    margin-top: 0px;
+}
 #no-eth-modal .modal-dialog {
     max-width: 450px;
 }
@@ -536,6 +539,13 @@ nav .navbar-right li div {
     color: #FFF;
     border-radius: 3px;
     font-weight: 400;
+    position: relative;
+    top: -2px;
+    opacity: 0.7;
+}
+#account-modal .modal-body p .detail a:hover {
+    opacity: 1;
+    text-decoration: none;
 }
 #account-modal .modal-body p b {
     
@@ -546,10 +556,6 @@ nav .navbar-right li div {
 }
 #account-modal .modal-footer i {
     margin-left: 8px;
-}
-#send-rep-modal h4,
-#send-cash-modal h4 {
-    margin-top: 0px;
 }
 #send-rep-modal form,
 #send-cash-modal form {

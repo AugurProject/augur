@@ -5,7 +5,6 @@ var abi = require('../libs/abi');
 var constants = require('../libs/constants');
 var utilities = require('../libs/utilities');
 
-
 function MissingContractError(contractName) {
   this.name = 'MissingContractError';
   this.message = contractName;
@@ -56,32 +55,25 @@ EthereumClient.prototype.getContract = function (name) {
 EthereumClient.prototype.cashFaucet = function() {
 
   var cashContract = this.getContract('cash');
-  var self = this;
+  var status = cashContract.sendTransaction({from: this.account, gas: 1000000}).faucet();
 
-  cashContract.sendTransaction({from: this.account}, function(result) {
-    console.log(result);
-    var balance = cashContract.call().balance(self.account);
-    console.log('new cash balance: ' + balance.toNumber());
-  }).faucet();
+  return status;
 };
-
 
 EthereumClient.prototype.getCashBalance = function() {
 
   var cashContract = this.getContract('cash');
-
   var balance = cashContract.call().balance(this.account);
+
   return balance.dividedBy(new BigNumber(2).toPower(64)).toNumber();
 };
 
 EthereumClient.prototype.sendCash = function(destination, amount) {
 
   var cashContract = this.getContract('cash');
-  var self = this;
+  var fixedAmount = new BigNumber(amount).times(new BigNumber(2).toPower(64));
 
-  var status = cashContract.sendTransaction({from: this.account}, function(result) {
-    console.log('callback result: '+result);
-  }).send(destination, amount);
+  var status = cashContract.sendTransaction({from: this.account, gas: 1000000}).send(destination, fixedAmount);
 
   return status;
 };
@@ -89,13 +81,9 @@ EthereumClient.prototype.sendCash = function(destination, amount) {
 EthereumClient.prototype.repFaucet = function() {
 
   var reportingContract = this.getContract('reporting');
-  var self = this;
+  var status = reportingContract.sendTransaction({from: this.account, gas: 1000000}).faucet();  
 
-  reportingContract.sendTransaction({from: self.account}, function(result) {
-    console.log(result);
-    var rep = reportingContract.call().getRepBalance(1010101, self.account);
-    console.log('new rep balance: ' + rep.toNumber());
-  }).faucet();  
+  return status;
 };
 
 EthereumClient.prototype.getRepBalance = function(branchId) {
@@ -104,7 +92,20 @@ EthereumClient.prototype.getRepBalance = function(branchId) {
 
   var reportingContract = this.getContract('reporting');
   var rep = reportingContract.call().getRepBalance(id, this.account);
+
   return rep.dividedBy(new BigNumber(2).toPower(64)).toNumber();
+};
+
+EthereumClient.prototype.sendRep = function(destination, amount, brachId) {
+
+  var id = branchId || 1010101;
+  var sendRepContract = this.getContract('sendReputation');
+  var fixedAmount = new BigNumber(amount).times(new BigNumber(2).toPower(64));
+
+  var self = this;
+  var status = sendRepContract.sendTransaction({from: this.account, gas: 1000000}).sendReputation(destination, fixedAmount);
+
+  return status;
 };
 
 /**

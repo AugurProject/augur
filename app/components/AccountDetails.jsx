@@ -51,8 +51,8 @@ var AccountDetailsModal = React.createClass({
             <p><b>Gas</b><span className='detail'>{ this.state.gasBalance }<SendGasTrigger text='send' /></span></p>
         </div>
         <div className="modal-footer clearfix">
-          <Button bsStyle='default' onClick={ this.onCashFaucet }>Cash Faucet<i className='fa fa-tint'></i></Button>
-          <Button bsStyle='default' onClick={ this.onRepFaucet }>Rep Faucet<i className='fa fa-tint'></i></Button>
+          <Button bsSize='x-small' bsStyle='default' onClick={ this.onCashFaucet }>Cash Faucet<i className='fa fa-tint'></i></Button>
+          <Button bsSize='x-small' bsStyle='default' onClick={ this.onRepFaucet }>Rep Faucet<i className='fa fa-tint'></i></Button>
         </div>
       </Modal>
     );

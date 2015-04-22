@@ -7,31 +7,66 @@ var NetworkActions = {
   checkNetwork: function() {
 
     var host = this.flux.store('config').getState().host;
-    web3.setProvider(new web3.providers.HttpProvider('http://'+host));
+    var networkState = this.flux.store('network').getState()
+    var netUp;
 
     try {
+      web3.setProvider(new web3.providers.HttpProvider('http://'+host));
       web3.eth.accounts;
+      netUp = true;
     } catch(err) {
-      utilities.warn('no ethereum client found');
+      utilities.warn('failed to connect to ethereum');
+      netUp = false;
+    }
+
+    if ((!networkState.ethereumStatus || networkState.ethereumStatus === constants.network.ETHEREUM_STATUS_CONNECTED) && !netUp) {
+ 
+      // we lost our connection
+
+      // shutdown all network filters
+      _.each(networkState.filters, function(filter) {
+        filter.stopWatching()
+      });
+
       this.dispatch(
         constants.network.UPDATE_ETHEREUM_STATUS,
         {ethereumStatus: constants.network.ETHEREUM_STATUS_FAILED}
-      ); 
-      return;
+      );
+
+    } else if ((!networkState.ethereumStatus || networkState.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED) && netUp) {
+
+      // connection has been established
+
+      var filters = {
+        latest: web3.eth.filter('latest'),
+        pending: web3.eth.filter('pending')
+      };
+
+      this.dispatch(
+        constants.network.UPDATE_ETHEREUM_STATUS,
+        {
+          ethereumStatus: constants.network.ETHEREUM_STATUS_CONNECTED,
+          filters: filters
+        }
+      );
+
+      // start network monitoring
+      var self = this;
+
+      filters.latest.watch(function (err, log) {
+        utilities.log(log);
+        self.flux.actions.network.updateNetwork();
+      });
+
+      filters.pending.watch(function (err, log) {
+        utilities.log(log);
+      });
+
+      this.flux.actions.config.loadEthereumClient();
     }
 
-    this.dispatch(
-      constants.network.UPDATE_ETHEREUM_STATUS,
-      {ethereumStatus: constants.network.ETHEREUM_STATUS_CONNECTED}
-    );
-
-    // start network watching
-    var self = this;
-    web3.eth.filter('latest').watch(function (log) {
-      self.flux.actions.network.updateNetwork();
-    });
-
-    this.flux.actions.config.loadEthereumClient();
+    // start monitoring the client
+    setTimeout(this.flux.actions.network.checkNetwork, 3000);
   },
 
   updateNetwork: function () {
