@@ -194,7 +194,8 @@ EthereumClient.prototype.getMarkets = function (branchId) {
       traderId: traderId,
       totalVolume: totalVolume,
       events: events,
-      outcomes: outcomes
+      outcomes: outcomes,
+      comments: []
     };
   });
 

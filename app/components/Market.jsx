@@ -27,8 +27,10 @@ var Market = React.createClass({
 
   componentDidMount: function() {
 
+    var priceHistory = [];
+    
     // build chart
-    var data = google.visualization.arrayToDataTable([['Date', 'Price']].concat(this.state.market.priceHistory));
+    var data = google.visualization.arrayToDataTable([['Date', 'Price']].concat(priceHistory));
     var options = {
         title: 'Price',
         legend: { position: 'none' },
@@ -48,7 +50,7 @@ var Market = React.createClass({
     return (
       <div id='market'>
         <h3>
-          <div className="current">{ parseInt(this.market.price * 100).toString() + '%' }</div>
+          <div className="current">{ parseInt(this.state.market.price * 100).toString() + '%' }</div>
           <div className="text">{ this.state.market.text }</div>
         </h3>
         <div className="row summary">
