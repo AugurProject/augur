@@ -68,12 +68,12 @@ var MarketPane = React.createClass({
       <Link to='market' params={ {marketId: market.id} } className='market-pane'>
         <h4>{ market.text }</h4>
         <div className='summary'>
-          <span>{ market.lastPrice * 100 }%</span>
+          <span>{ market.price * 100 }%</span>
         </div>
         <div className='details'>
-          <p>Last price: <b>{ market.lastPrice }</b></p>
-          <p className='alt'>Volume: <b>{ market.volume }</b></p>
-          <p>Fee: <b>{ market.fee }</b></p>
+          <p>Price: <b>{ market.price }</b></p>
+          <p className='alt'>Volume: <b>{ market.totalVolume }</b></p>
+          <p>Fee: <b>{ market.tradingFee }</b></p>
           <p className='alt'>Author: <b>{ market.author }</b></p>
           <p>End date: <b>{ market.endDate || '-' }</b></p>
         </div>
