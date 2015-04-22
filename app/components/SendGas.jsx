@@ -7,7 +7,7 @@ var Button = ReactBootstrap.Button;
 var Modal = ReactBootstrap.Modal;
 var ModalTrigger = ReactBootstrap.ModalTrigger;
 
-var SendRepModal = React.createClass({
+var SendGasModal = React.createClass({
   mixins: [FluxMixin, StoreWatchMixin('asset')],
 
   getInitialState: function () {
@@ -21,7 +21,7 @@ var SendRepModal = React.createClass({
     var flux = this.getFlux();
 
     return {
-      reputation: flux.store('asset').getState().reputation
+      gas: flux.store('asset').getState().gas
     }
   },
 
@@ -36,7 +36,7 @@ var SendRepModal = React.createClass({
   onSend: function (event) {
     // TODO: Validate the state, then call a contract to send the
     // transaction requested in the state.
-    console.log('Would have sent ' + this.state.amount + ' reputation to ' + this.state.destination);
+    console.log('Would have sent ' + this.state.amount + ' gas to ' + this.state.destination);
     this.props.onRequestHide();
   },
 
@@ -44,7 +44,7 @@ var SendRepModal = React.createClass({
     return (
       <Modal {...this.props} id='send-rep-modal' bsSize='small'>
         <div className='modal-body clearfix'>
-          <h4>Send reputation</h4>
+          <h4>Send gas</h4>
           <form className='form-horizontal' role='form'>
             <div className='form-group'>
               <div className="col-sm-12">
@@ -68,19 +68,19 @@ var SendRepModal = React.createClass({
               </div>
             </div>
           </form>
-          <p>REPUTATION: <b className='rep-balance'>{this.state.reputation}</b></p>
+          <p>GAS: <b className='gas-balance'>{this.state.gas}</b></p>
         </div>
       </Modal>
     );
   }
 });
 
-var SendRepTrigger = React.createClass({
+var SendGasTrigger = React.createClass({
   mixins: [FluxMixin],
 
   render: function () {
     return (
-      <ModalTrigger modal={<SendRepModal {...this.props} />}>
+      <ModalTrigger modal={<SendGasModal {...this.props} />}>
         <a href='#'>{ this.props.text }</a>
       </ModalTrigger>
     );
@@ -88,6 +88,6 @@ var SendRepTrigger = React.createClass({
 });
 
 module.exports = {
-  SendRepModal: SendRepModal,
-  SendRepTrigger: SendRepTrigger
+  SendGasModal: SendGasModal,
+  SendGasTrigger: SendGasTrigger
 };

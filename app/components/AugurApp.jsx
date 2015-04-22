@@ -20,8 +20,6 @@ var Network = require('./Network');
 var Alert = require('./Alert');
 var Confirm = require('./Confirm');
 
-var SendCashTrigger = require('./SendCash').SendCashTrigger;
-var SendRepTrigger = require('./SendRep').SendRepTrigger;
 var AccountDetailsTrigger = require('./AccountDetails').AccountDetailsTrigger;
 
 var AugurApp = React.createClass({
@@ -107,10 +105,8 @@ var AugurApp = React.createClass({
                       </a>
                       <ul className="dropdown-menu" role="menu">
                           <li><Link to="home">Markets</Link></li>
-                          <li><SendRepTrigger /></li>
-                          <li><a href="#">Ballots</a></li>
+                          <li><a className="disabled">Ballots</a></li>
                           <li><AccountDetailsTrigger /></li>
-                          <li><SendCashTrigger /></li>
                       </ul>
                   </li>
               </ul>
@@ -122,10 +118,8 @@ var AugurApp = React.createClass({
             <div className="col-md-3 hidden-xs hidden-sm sidebar">
               <div className="side-nav">
                   <p><Link to="home">Markets</Link><i>{ _.keys(this.state.market.markets).length }</i></p>
-                  <p><SendRepTrigger /><i>{ this.state.asset.rep || 0}</i></p>
-                  <p><a href="#">Ballots</a></p>
+                  <p><a className="disabled">Ballots</a></p>
                   <p><AccountDetailsTrigger /></p>
-                  <p><SendCashTrigger /></p>
               </div>
 
               <Network />

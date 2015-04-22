@@ -82,7 +82,7 @@ var SendCashTrigger = React.createClass({
   render: function () {
     return (
       <ModalTrigger modal={<SendCashModal {...this.props} />}>
-        <a href='#'>Send Cash</a>
+        <a href='#'>{ this.props.text }</a>
       </ModalTrigger>
     );
   }

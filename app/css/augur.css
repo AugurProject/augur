@@ -182,8 +182,18 @@ nav .navbar-right li div {
     color: #fff;
     text-decoration: none;
 }
+.side-nav p a {
+    color: #fff;
+    text-decoration: none;
+}
 .side-nav p a:hover {
     text-decoration: underline;
+}
+.side-nav p a.disabled:hover {
+    text-decoration: none;
+}
+.side-nav p a.disabled {
+    opacity: 0.5;
 }
 .side-nav div.divider {
     margin: 10px 10px;
@@ -497,6 +507,31 @@ nav .navbar-right li div {
 
 /* modals */
 
+#account-modal .modal-dialog {
+    max-width: 415px;
+}
+#account-modal .modal-body p {
+    font-size: 14px;
+    width: 100%;
+    padding-right: 0px;
+    clear: right;   
+}
+#account-modal .modal-body p .detail {
+    float: right;
+}
+#account-modal .modal-body p .detail a {
+    margin-left: 12px;
+}
+#account-modal .modal-body p b {
+    
+}
+#account-modal .modal-footer {
+    margin-top: 0px;
+    background-color: #eee;
+}
+#account-modal .modal-footer i {
+    margin-left: 8px;
+}
 #send-rep-modal h4,
 #send-cash-modal h4 {
     margin-top: 0px;
