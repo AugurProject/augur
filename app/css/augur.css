@@ -528,6 +528,14 @@ nav .navbar-right li div {
 }
 #account-modal .modal-body p .detail a {
     margin-left: 12px;
+    display: inline-block;
+    font-size: 10px;
+    text-transform: uppercase;
+    background-color: #295ED2;
+    padding: 2px 6px;
+    color: #FFF;
+    border-radius: 3px;
+    font-weight: 400;
 }
 #account-modal .modal-body p b {
     

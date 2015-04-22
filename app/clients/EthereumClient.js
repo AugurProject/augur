@@ -71,7 +71,7 @@ EthereumClient.prototype.getCashBalance = function() {
   var cashContract = this.getContract('cash');
 
   var balance = cashContract.call().balance(this.account);
-  return balance.toString();
+  return balance.dividedBy(new BigNumber(2).toPower(64)).toNumber();
 };
 
 EthereumClient.prototype.sendCash = function(destination, amount) {
@@ -104,7 +104,7 @@ EthereumClient.prototype.getRepBalance = function(branchId) {
 
   var reportingContract = this.getContract('reporting');
   var rep = reportingContract.call().getRepBalance(id, this.account);
-  return rep.toNumber();
+  return rep.dividedBy(new BigNumber(2).toPower(64)).toNumber();
 };
 
 /**
