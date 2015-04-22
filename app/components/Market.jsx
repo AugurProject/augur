@@ -45,12 +45,10 @@ var Market = React.createClass({
 
   render: function() {
 
-    var lastPrice = this.state.market.priceHistory[this.state.market.priceHistory.length-1][1];
-
     return (
       <div id='market'>
         <h3>
-          <div className="current">{ parseInt(lastPrice * 100).toString() + '%' }</div>
+          <div className="current">{ parseInt(this.market.price * 100).toString() + '%' }</div>
           <div className="text">{ this.state.market.text }</div>
         </h3>
         <div className="row summary">
