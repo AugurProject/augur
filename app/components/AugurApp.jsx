@@ -209,13 +209,16 @@ var ErrorModal = React.createClass({
 
     } else if (this.props.network.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED) {
 
+      var host = window.location.origin;
+
       // no ethereum client detected
       return (
-        <Modal {...this.props} bsSize='small' onRequestHide={ this.handleToggle }>
+        <Modal {...this.props} id="no-eth-modal" onRequestHide={ this.handleToggle }>
           <div className="modal-body clearfix">
               <h4>Ethereum not found</h4>
               <p>Augur requires a local node of the Ethereum client running</p>
-              <p>Visit <a href="https://github.com/ethereum/cpp-ethereum/wiki">the ethereum github wiki</a> for help installing the lastest client</p>
+              <p>Visit <a href="https://github.com/ethereum/go-ethereum/wiki">the ethereum github wiki</a> for help installing the lastest client</p>
+              <p>If geth is installed:<br /><span className='cmd'>geth --rpc --rpccorsdomain { host } --unlock primary</span></p>
               <p style={{display: 'none'}}><a className="pull-right start-demo-mode" onClick={ this.startDemoMode } href="javascript:void(0)">Proceed in demo mode</a></p>
           </div>
         </Modal>

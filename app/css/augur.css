@@ -40,7 +40,6 @@ h1, h2, h3, h4, h5 {
     font-weight: 500;
 }
 
-
 #app.stopped {
     height: 100%;
     width: 100%;
@@ -507,6 +506,14 @@ nav .navbar-right li div {
 
 /* modals */
 
+#no-eth-modal .modal-dialog {
+    max-width: 450px;
+}
+#no-eth-modal span.cmd {
+    font-family: "Lucida Console", Monaco, monospace;
+    font-size: 10px;
+    margin-left: 8px;
+}
 #account-modal .modal-dialog {
     max-width: 415px;
 }
