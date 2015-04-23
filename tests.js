@@ -73,6 +73,7 @@ var addr = {
     simulator2: "0x78829d3d1fd441aee8eff7a1263c11ed2f3adba7",
     toast: "0xb76a02724d44c89c20e41882f729a092f14d3eaf",
     joey: "0x1c11aa45c792e202e9ffdc2f12f99d0d209bef70",
+    chris: "0x9b7e6cd69f45d93336606b0f70dac77b5b6e9fb0",
     examples: {
         ten: "0x3caf506cf3d5bb16ba2c8f89a6591c5160d69cf3",
         // mul2: "0xe9d61cfdc67115372a78578b3d1082e8911419d9"
@@ -123,11 +124,15 @@ function chkbal(addr) {
         heavy: eth.getBalance(addr.heavy) / 1e18,
         lifespan: eth.getBalance(addr.lifespan) / 1e18,
         simulator2: eth.getBalance(addr.simulator2) / 1e18,
-        joey: eth.getBalance(addr.joey) / 1e18
+        joey: eth.getBalance(addr.joey) / 1e18,
+        chris: eth.getBalance(addr.chris) / 1e18
     };
     bal.total = bal.loopy + bal.jack + bal.heavy + bal.simulator2 + bal.lifespan;
     return bal;
 }
+
+// admin.unlock(eth.coinbase, undefined, 60*60*24*7)
+// admin.startRPC("127.0.0.1", 8545)
 
 var contracts = {
     compiled: {
