@@ -73,7 +73,7 @@ var AddMarketModal = React.createClass({
                     type="text" 
                     className="form-control" 
                     name="market-text" 
-                    placeholder="Enter a a description for this market"  
+                    placeholder="Enter a description for this market"  
                     onChange={ this.onChangeMarketText } 
                   />
               </div>
@@ -93,11 +93,11 @@ var AddMarketModal = React.createClass({
                     type="text" 
                     className="form-control" 
                     name="market-investment" 
-                    placeholder="The markets initial liquidity"
+                    placeholder="The market's initial liquidity"
                     onChange={ this.onChangeMarketInvestment } 
                   />
               </div>
-              <p>BALANCE: <b className='cash-balance'>{this.state.balance}</b></p>
+              <p>CASH: <b className='cash-balance'>{this.state.balance}</b></p>
               <Button bsStyle='primary' onClick={ this.onSubmit } className='pull-right'>Submit Market</Button>
           </form>
         </div>

@@ -40,7 +40,7 @@ module.exports = {
       return wei / 1000000000000 + ' szabo';
     } else if (wei >= 1000000000000000 && wei < 1000000000000000000) {
       return wei / 1000000000000000 + ' finney';
-    } else if (wei >= 1000000000000000000 && wei < 1000000000000000000000) {
+    } else if (wei >= 1000000000000000000) {
       return wei / 1000000000000000000 + ' ether';
     } else {
       return wei + ' wei';

@@ -39,7 +39,7 @@ var Network = React.createClass({
             MINER<span className="pull-right">{this.state.network.miner ? 'on' : 'off'}</span>
           </p>
           <p className="gas">
-            GAS<span className="pull-right">{this.state.assets.gas || '-'}</span>
+            BALANCE<span className="pull-right">{this.state.assets.gas || '-'}</span>
           </p>
           <p className="gas-price">
             GAS PRICE<span className="pull-right">{this.state.network.gasPrice || '-'}</span>
