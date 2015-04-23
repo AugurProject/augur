@@ -28,16 +28,19 @@ var AccountDetailsModal = React.createClass({
       allAccounts:flux.store('network').getState().accounts,
       cashBalance: assetState.balance,
       repBalance: assetState.reputation,
-      gasBalance: assetState.gas
+      gasBalance: assetState.gas,
+      ethereumClient: flux.store('config').getEthereumClient()
     }
   },
 
   onCashFaucet: function(event) {
 
+    this.state.ethereumClient.cashFaucet();
   },
 
   onRepFaucet: function(event) {
 
+    this.state.ethereumClient.repFaucet();
   },
 
   render: function () {
@@ -51,8 +54,8 @@ var AccountDetailsModal = React.createClass({
             <p><b>Gas</b><span className='detail'>{ this.state.gasBalance }<SendGasTrigger text='send' /></span></p>
         </div>
         <div className="modal-footer clearfix">
-          <Button bsSize='x-small' bsStyle='default' onClick={ this.onCashFaucet }>Cash Faucet<i className='fa fa-tint'></i></Button>
-          <Button bsSize='x-small' bsStyle='default' onClick={ this.onRepFaucet }>Rep Faucet<i className='fa fa-tint'></i></Button>
+          <Button bsSize='small' bsStyle='default' onClick={ this.onCashFaucet }>Cash Faucet<i className='fa fa-tint'></i></Button>
+          <Button bsSize='small' bsStyle='default' onClick={ this.onRepFaucet }>Rep Faucet<i className='fa fa-tint'></i></Button>
         </div>
       </Modal>
     );

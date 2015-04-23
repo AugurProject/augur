@@ -39,7 +39,7 @@ var NetworkActions = {
 
       var filters = {
         latest: web3.eth.filter('latest'),
-        pending: web3.eth.filter('pending')
+        account: web3.eth.filter({address: web3.eth.coinbase})
       };
 
       this.dispatch(
@@ -54,11 +54,13 @@ var NetworkActions = {
       var self = this;
 
       filters.latest.watch(function (err, log) {
+        if (err) utilities.error(err);
         utilities.log(log);
         self.flux.actions.network.updateNetwork();
       });
 
-      filters.pending.watch(function (err, log) {
+      filters.account.watch(function (err, log) {
+        if (err) utilities.error(err);
         utilities.log(log);
       });
 

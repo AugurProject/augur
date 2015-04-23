@@ -96,7 +96,7 @@ EthereumClient.prototype.getRepBalance = function(branchId) {
   return rep.dividedBy(new BigNumber(2).toPower(64)).toNumber();
 };
 
-EthereumClient.prototype.sendRep = function(destination, amount, brachId) {
+EthereumClient.prototype.sendRep = function(destination, amount, branchId) {
 
   var id = branchId || 1010101;
   var sendRepContract = this.getContract('sendReputation');
