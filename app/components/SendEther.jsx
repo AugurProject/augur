@@ -44,7 +44,7 @@ var SendEtherModal = React.createClass({
     return (
       <Modal {...this.props} id='send-rep-modal' bsSize='small'>
         <div className='modal-body clearfix'>
-          <h4>Send gas</h4>
+          <h4>Send ether</h4>
           <form className='form-horizontal' role='form'>
             <div className='form-group'>
               <div className="col-sm-12">

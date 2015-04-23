@@ -80,7 +80,7 @@ var NetworkActions = {
       primaryAccount: web3.eth.coinbase,
       peerCount: web3.net.peerCount,
       blockNumber: web3.eth.blockNumber,
-      gasPrice: utilities.formatGas(web3.eth.gasPrice),
+      gasPrice: utilities.formatEther(web3.eth.gasPrice),
       miner: true
     });
 

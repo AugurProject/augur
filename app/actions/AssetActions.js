@@ -12,7 +12,7 @@ var AssetActions = {
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var cash = ethereumClient.getCashBalance();
     var reputation = ethereumClient.getRepBalance();
-    var ether = utilities.formatGas(web3.eth.getBalance(account));
+    var ether = utilities.formatEther(web3.eth.getBalance(account));
     
     this.dispatch(constants.asset.LOAD_ASSETS_SUCCESS, {
       cash: cash,

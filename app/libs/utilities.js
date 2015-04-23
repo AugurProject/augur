@@ -27,7 +27,7 @@ module.exports = {
     return months[d.getMonth()]+' '+d.getDate()+', '+hour+':'+minutes+' '+apm;
   },
 
-  formatGas: function(wei) {
+  formatEther: function(wei) {
 
     // detect format and convert
     if (typeof(wei) === 'string' && wei.match(/^0x\w+/)) {
@@ -40,7 +40,7 @@ module.exports = {
       return wei / 1000000000000 + ' szabo';
     } else if (wei >= 1000000000000000 && wei < 1000000000000000000) {
       return wei / 1000000000000000 + ' finney';
-    } else if (wei >= 1000000000000000000 && wei < 1000000000000000000000) {
+    } else if (wei >= 1000000000000000000) {
       return wei / 1000000000000000000 + ' ether';
     } else {
       return wei + ' wei';
