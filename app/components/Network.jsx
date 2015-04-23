@@ -38,8 +38,8 @@ var Network = React.createClass({
           <p className="miner">
             MINER<span className="pull-right">{this.state.network.miner ? 'on' : 'off'}</span>
           </p>
-          <p className="gas">
-            GAS<span className="pull-right">{this.state.assets.gas || '-'}</span>
+          <p className="balance">
+            ETHER<span className="pull-right">{this.state.assets.ether || '-'}</span>
           </p>
           <p className="gas-price">
             GAS PRICE<span className="pull-right">{this.state.network.gasPrice || '-'}</span>

@@ -97,7 +97,7 @@ var AugurApp = React.createClass({
               </div>
               <ul className="nav navbar-nav navbar-right">
                   <li>
-                      <div>CASH: <b className="cash-balance">{ this.state.asset.balance || '-'}</b></div>
+                      <div>CASH: <b className="cash-balance">{ this.state.asset.cash || '-'}</b></div>
                   </li>
                   <li className="dropdown visible-xs visible-sm hidden-md">
                       <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -216,7 +216,7 @@ var ErrorModal = React.createClass({
       return (
         <Modal {...this.props} id="no-eth-modal" onRequestHide={ this.handleToggle }>
           <div className="modal-body clearfix">
-              <h4>Ethereum not found</h4>
+              <h4>Failed to connect to Ethereum</h4>
               <p>Augur requires a local node of the Ethereum client running</p>
               <p>Visit <a href="https://github.com/ethereum/go-ethereum/wiki">the ethereum github wiki</a> for help installing the lastest client</p>
               <p>If geth is installed:<br /><span className='cmd'>geth --rpc --rpccorsdomain { host } --unlock primary</span></p>

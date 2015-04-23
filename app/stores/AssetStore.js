@@ -2,9 +2,9 @@ var Fluxxor = require('fluxxor');
 var constants = require('../libs/constants');
 
 var state = {
-  balance: null,
+  cash: null,
   reputation: null,
-  gas: null
+  ether: null
 }
 
 var AssetStore = Fluxxor.createStore({
@@ -20,8 +20,8 @@ var AssetStore = Fluxxor.createStore({
   },
 
   handleLoadAssetsSuccess: function (payload) {
-    state.balance = payload.balance;
-    state.gas = payload.gas;
+    state.cash = payload.cash;
+    state.ether = payload.ether;
     state.reputation = payload.reputation;
     this.emit(constants.CHANGE_EVENT);
   }

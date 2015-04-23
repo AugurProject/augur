@@ -10,14 +10,14 @@ var AssetActions = {
     var account = networkStore.getAccount();
     
     var ethereumClient = this.flux.store('config').getEthereumClient();
-    var balance = ethereumClient.getCashBalance();
+    var cash = ethereumClient.getCashBalance();
     var reputation = ethereumClient.getRepBalance();
-    var gas = utilities.formatGas(web3.eth.getBalance(account));
+    var ether = utilities.formatGas(web3.eth.getBalance(account));
     
     this.dispatch(constants.asset.LOAD_ASSETS_SUCCESS, {
-      balance: balance,
+      cash: cash,
       reputation: reputation,
-      gas: gas
+      ether: ether
     });
   }
 };

@@ -7,7 +7,7 @@ var Button = ReactBootstrap.Button;
 var Modal = ReactBootstrap.Modal;
 var ModalTrigger = ReactBootstrap.ModalTrigger;
 
-var SendGasModal = React.createClass({
+var SendEtherModal = React.createClass({
   mixins: [FluxMixin, StoreWatchMixin('asset')],
 
   getInitialState: function () {
@@ -21,7 +21,7 @@ var SendGasModal = React.createClass({
     var flux = this.getFlux();
 
     return {
-      gas: flux.store('asset').getState().gas
+      ether: flux.store('asset').getState().ether
     }
   },
 
@@ -36,7 +36,7 @@ var SendGasModal = React.createClass({
   onSend: function (event) {
     // TODO: Validate the state, then call a contract to send the
     // transaction requested in the state.
-    console.log('Would have sent ' + this.state.amount + ' gas to ' + this.state.destination);
+    console.log('Would have sent ' + this.state.amount + ' ether to ' + this.state.destination);
     this.props.onRequestHide();
   },
 
@@ -68,19 +68,19 @@ var SendGasModal = React.createClass({
               </div>
             </div>
           </form>
-          <p>GAS: <b className='gas-balance'>{this.state.gas}</b></p>
+          <p>ETHER: <b className='ether-balance'>{this.state.ether}</b></p>
         </div>
       </Modal>
     );
   }
 });
 
-var SendGasTrigger = React.createClass({
+var SendEtherTrigger = React.createClass({
   mixins: [FluxMixin],
 
   render: function () {
     return (
-      <ModalTrigger modal={<SendGasModal {...this.props} />}>
+      <ModalTrigger modal={<SendEtherModal {...this.props} />}>
         <a href='#'>{ this.props.text }</a>
       </ModalTrigger>
     );
@@ -88,6 +88,6 @@ var SendGasTrigger = React.createClass({
 });
 
 module.exports = {
-  SendGasModal: SendGasModal,
-  SendGasTrigger: SendGasTrigger
+  SendEtherModal: SendEtherModal,
+  SendEtherTrigger: SendEtherTrigger
 };
