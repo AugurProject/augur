@@ -55,7 +55,7 @@ n = new BigNumber('100000000000000000000')
 // eth.sendTransaction({from: addr.jack, to: addr.joey, value: n.toString()})
 
 n = new BigNumber('100000000000000000000')
-eth.sendTransaction({from: "0x00e3f8de3ed9d428dc235ce0c25bc1136073be8b", to: "0x1c11aa45c792e202e9ffdc2f12f99d0d209bef70", value: n.toString()});
+eth.sendTransaction({from: addr.jack, to: addr.joey, value: "500000000000000000000"});
 
 eth.sendTransaction({
     from: addr.jack,
@@ -91,14 +91,14 @@ var addr = {
         checkQuorum: "0xa0f9b118329cf0c6d300140f51195961e5c30044",
         createBranch: "0x4ff62a9697c0935409220aec6e59ee07c46e0145",
         buyAndSellShares: "0x04f063bfbd102f58b514d1cbd2843882e210ba83",
-        createEvent: "0x4bef64bebfe3acb7c1f6a67c1abd17aad77a103f",
+        createEvent: "0x11247c02b10f3eba1fc0a23a932d0697730d3441",
         p2pwagers: "0x45077327d89f04c8b892ae0872e5c31fc0447288",
         sendReputation: "0xdd51f21a5abdd335aa629406aab7a6d54082a36f",
         transferShares: "0x062e87b42cce6c3ba6eefeeded1ca3d1e2e756c7",
         makeReports: "0x793d12aa685fd66775b9542af7111f0a57bbb7c0",
         createMarket: "0x062e87b42cce6c3ba6eefeeded1ca3d1e2e756c7",
         closeMarket: "0xf365b989d905a63157af2885c3d5bf03d68be3cb",
-        dispatch: "",
+        dispatch: "0x9bb646e3137f1d43e4a31bf8a6377c299f26727d",
         // consensus
         statistics: "0x0cb1277671d162b2f5c81e9435744f63768398d0",
         interpolate: "0xeb51564b43068745ae80136fcefe3ca532617a87",
@@ -107,13 +107,12 @@ var addr = {
         adjust: "0xfd268b3d161e0af75e487950d44e23c91229eb7f",
         resolve: "0x82a0ce86301c4f1832f78a324c20dd981e21d57b",
         payout: "0x0a4184e2bc58669fb78a9bcee0cc1ab0da9d3ce3",
-        redeem_interpolate: "",
-        redeem_center: "",
-        redeem_score: "0x5cd1751149bd82374510f179a2b3fdd08a03d705",
-        redeem_adjust: "",
-        redeem_resolve: "",
-        // redeem_payout: "0x7d8c622e89087c700a37ba9f84dba7ca73ee64e4"
-        redeem_payout: "0x574392a2cfc70c8998c228150938cee99b42beb4"
+        redeem_interpolate: "0x6e87d29e2b80d1cfeff57f782dcb57cd2cc15d2d",
+        redeem_center: "0x1f0571210c03efb7a616ed8a29d408a81cefe846",
+        redeem_score: "0xcd2f28fe067ea3cdc3b55f1a1e62cb347118b04c",
+        redeem_adjust: "0x562cc65e8d901f03bbeb6d83011bbd48ad1d377e",
+        redeem_resolve: "0xa9b43b17ed17106f075960f9b9af38c330df9471",
+        redeem_payout: "0xe995724195e58489f75c2e12247ce28bf50a5245"
     }
 };
 
@@ -122,10 +121,11 @@ function chkbal(addr) {
         loopy: eth.getBalance(addr.loopy) / 1e18,
         jack: eth.getBalance(addr.jack) / 1e18,
         heavy: eth.getBalance(addr.heavy) / 1e18,
+        lifespan: eth.getBalance(addr.lifespan) / 1e18,
         simulator2: eth.getBalance(addr.simulator2) / 1e18,
         joey: eth.getBalance(addr.joey) / 1e18
     };
-    bal.total = bal.loopy + bal.jack + bal.heavy + bal.simulator2;
+    bal.total = bal.loopy + bal.jack + bal.heavy + bal.simulator2 + bal.lifespan;
     return bal;
 }
 
