@@ -239,10 +239,6 @@ var EthRPC = (function (rpc_url, primary) {
         },
         // invoke a function from a contract on the blockchain
         invoke: function (address, funcname, sig, data, f) {
-            address = "0x0cb1277671d162b2f5c81e9435744f63768398d0"; // mul2
-            funcname = "double";
-            sig = "i";
-            data = "[3]";
             child_process.exec("serpent get_prefix " + funcname + " '" + sig + "'", function (err, prefix) {
                 if (err) return console.error(err);
                 var data_abi = parseInt(prefix.slice(0,-1)).toString(16);
