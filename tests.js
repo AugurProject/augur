@@ -50,18 +50,18 @@ function test_ethrpc(addr, contracts, gas) {
 // lots of gas
 var gas = 100000000;
 
-// n = new BigNumber('498000000000000000000')
-n = new BigNumber('100000000000000000000')
-// eth.sendTransaction({from: addr.jack, to: addr.joey, value: n.toString()})
+// // n = new BigNumber('498000000000000000000')
+// n = new BigNumber('100000000000000000000')
+// // eth.sendTransaction({from: addr.jack, to: addr.joey, value: n.toString()})
 
-n = new BigNumber('100000000000000000000')
-eth.sendTransaction({from: addr.jack, to: addr.joey, value: "500000000000000000000"});
+// n = new BigNumber('100000000000000000000')
+// eth.sendTransaction({from: addr.jack, to: addr.joey, value: "500000000000000000000"});
 
-eth.sendTransaction({
-    from: addr.jack,
-    to: addr.heavy,
-    value: "100000000000000000000"}
-);
+// eth.sendTransaction({
+//     from: addr.jack,
+//     to: addr.heavy,
+//     value: "100000000000000000000"}
+// );
 
 // frontier testnet addresses
 var addr = {
@@ -183,17 +183,17 @@ var contracts = {
     }
 };
 
-var evm = contracts.compiled.redeem_payout;
-var gas = 90000000;
-var address = eth.sendTransaction({from: addr.jack, gas: gas, code: evm});
+// var evm = contracts.compiled.redeem_payout;
+// var gas = 90000000;
+// var address = eth.sendTransaction({from: addr.jack, gas: gas, code: evm});
 
-var Contract = web3.eth.contract(contracts.full_signature.statistics);
-var contract = new Contract(addr.augur.statistics);
-var ONE = Math.pow(2,64);
-var input_data = [ONE, ONE, ONE];
-var input_weights = [ONE, ONE, ONE];
-contract.call({"from": addr.jack}).weighted_median(input_data, input_weights).toNumber();
-eth.getCode(addr.augur.statistics);
+// var Contract = web3.eth.contract(contracts.full_signature.statistics);
+// var contract = new Contract(addr.augur.statistics);
+// var ONE = Math.pow(2,64);
+// var input_data = [ONE, ONE, ONE];
+// var input_weights = [ONE, ONE, ONE];
+// contract.call({"from": addr.jack}).weighted_median(input_data, input_weights).toNumber();
+// eth.getCode(addr.augur.statistics);
 
 // test drive!
 // test_ethrpc(addr, contracts, gas);
@@ -202,4 +202,24 @@ eth.getCode(addr.augur.statistics);
 // broadcast(addr.jack, contracts.compiled, gas);
 
 // are contracts loaded yet?
-ping(addr.contracts)
+// ping(addr.contracts)
+
+// serpent get_prefix weighted_median '[{"name": "weighted_median(int256[],int256[])","type": "function","inputs": [{ "name": "data", "type": "int256[]" }, { "name": "weights", "type": "int256[]" }],"outputs": [{ "name": "out", "type": "int256" }]}]'
+// 2910811973
+
+// contract Foo {
+//   function bar(real[2] xy) {}
+//   function baz(uint32 x, bool y) returns (bool r) { r = x > 32 || y; }
+//   function sam(bytes name, uint[] data) {}
+// }
+// baz(uint32,bool)
+// baz_full_sig = [{"name": "baz(uint32,bool)","type": "function","inputs": [{ "name": "x", "type": "uint32" }, { "name": "y", "type": "bool" }],"outputs": [{ "name": "r", "type": "bool" }]}];
+
+// serpent get_prefix baz '[{"name": "baz(uint32,bool)","type": "function","inputs": [{ "name": "x", "type": "uint32" }, { "name": "y", "type": "bool" }],"outputs": [{ "name": "r", "type": "bool" }]'
+
+// from pyepm.api import abi_data
+// abi_data("double", "i", [42])
+// abi_data("ten", "", [])
+
+// 2005764065
+// expected: 0xf7183750

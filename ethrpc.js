@@ -10,6 +10,97 @@
 var primary_account = "0x63524e3fe4791aefce1e932bbfb3fdf375bfad89";
 var rpc = { protocol: "http", host: "127.0.0.1", port: 8545 };
 
+function encode_int(value) {
+    var cs = [];
+    while (value > 0) {
+        cs.push(String.fromCharCode(value % 256));
+        value = Math.floor(value / 256);
+    }
+    return (cs.reverse()).join('');
+}
+
+function zeropad(r) {
+    var nzeros = Math.max(0, 32 - r.length);
+    var padding = [];
+    while (nzeros--) {
+        padding[nzeros] = "\x00";
+    }
+    return encode_utf8(padding.join('') + r);
+}
+
+function encode_single(arg, base, sub) {
+    var normal_args, len_args, var_args;
+    normal_args = '';
+    len_args = '';
+    var_args = '';
+    if (base === "int") {
+        normal_args = zeropad(encode_int(arg % Math.pow(2, sub)));
+    } else if (base === "string") {
+        len_args = zeropad(encode_int(arg.length));
+        var_args = arg;
+    }
+    return {
+        len_args: len_args,
+        normal_args: normal_args,
+        var_args: var_args
+    }
+}
+
+function encode_any(arg, base, sub, arrlist) {
+    if (arrlist) {
+        var res;
+        var o = '';
+        for (var j = 0, l = arg.length; j < l; ++j) {
+            res = encode_any(arg[j], base, sub, arrlist.slice(0,-1));
+            o += res.normal_args;
+        }
+        return {
+            len_args: zeropad(encode_int(arg.length)),
+            normal_args: '',
+            var_args: o
+        }
+    } else {
+        var len_args = '';
+        var normal_args = '';
+        var var_args = '';
+        if (base === "string") {
+            len_args = zeropad(encode_int(arg.length));
+            var_args = arg;
+        }
+        if (base === "int") {
+            normal_args = zeropad(encode_int(arg % Math.pow(2, 256)));
+        }
+        return {
+            len_args: len_args,
+            normal_args: normal_args,
+            var_args: var_args
+        }
+    }
+}
+
+function encode_utf8(str) {
+    var length, char;
+    var bytes = [];
+    var offset = 0;
+
+    str = encodeURI(str);
+    length = str.length;
+
+    while (offset < length) {
+        char = str[offset];
+        offset += 1;
+
+        if ('%' !== char) {
+            bytes.push(char.charCodeAt(0));
+        } else {
+            char = str[offset] + str[offset + 1];
+            bytes.push(parseInt(char, 16));
+            offset += 2;
+        }
+    }
+    return bytes.join('');
+}
+
 var EthRPC = (function (rpc_url, primary) {
 
     var pdata, id = 1;
@@ -147,10 +238,57 @@ var EthRPC = (function (rpc_url, primary) {
             return this.sendTx({ from: primary, data: compiled }, f);
         },
         // invoke a function from a contract on the blockchain
-        // invoke: function (address, funcname, f) {
-        //     var data = funcname;
-        //     return this.call({ from: primary, to: address, data: data }, f);
-        // },
+        invoke: function (address, funcname, sig, data, f) {
+            address = "0x0cb1277671d162b2f5c81e9435744f63768398d0"; // mul2
+            funcname = "double";
+            sig = "i";
+            data = "[3]";
+            child_process.exec("serpent get_prefix " + funcname + " '" + sig + "'", function (err, prefix) {
+                if (err) return console.error(err);
+                var data_abi = parseInt(prefix.slice(0,-1)).toString(16);
+                var types = [];
+                for (var i = 0, len = sig.length; i < len; ++i) {
+                    if (sig[i] == 's') {
+                        types.push("string");
+                    } else if (sig[i] == 'a') {
+                        types.push("int256[]");
+                    } else {
+                        types.push("int256");
+                    }
+                }
+                var len_args = '';
+                var normal_args = '';
+                var var_args = '';
+                var base, sub, arrlist;
+                data = JSON.parse(data);
+                console.log("types: ", types);
+                console.log("data: ", data);
+                if (types.length == data.length) {
+                    for (i = 0, len = types.length; i < len; ++i) {
+                        if (types[i] === "string") {
+                            base = "string";
+                            sub = '';
+                        } else if (types[i] === "int256[]") {
+                            base = "int";
+                            sub = 256;
+                            arrlist = "[]";
+                        } else {
+                            base = "int";
+                            sub = 256;
+                        }
+                        res = encode_any(data[i], base, sub, arrlist);
+                        len_args += res.len_args;
+                        normal_args += res.normal_args;
+                        var_args += res.var_args;
+                    }
+                    data_abi += len_args + normal_args + var_args;
+                    console.log("ABI data: ", data_abi);
+                    return this.call({ from: primary, to: address, data: data_abi }, f);
+                } else {
+                    return console.error("Wrong number of arguments");
+                }
+            });
+        },
         // read the code in a contract on the blockchain
         read: function (address, block, f) {
             if (address) {
