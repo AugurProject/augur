@@ -45,12 +45,14 @@ var MarketList = React.createClass({
 
     var marketList = _.map(this.props.data, function (market) {
       return (
-        <MarketPane market={ market } />
+        <div className='col-md-4'>
+          <MarketPane market={ market } />
+        </div>
       );
     });
 
     return (
-      <div className='markets'> 
+      <div className='markets row'> 
         { marketList } 
       </div>
     );

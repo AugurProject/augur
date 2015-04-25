@@ -374,6 +374,9 @@ nav .navbar-right li div {
 .market-pane .details b {
     float: right;
 }
+.markets .market-pane {
+    margin-bottom: 20px;
+}
 
 #event {
     display: none;

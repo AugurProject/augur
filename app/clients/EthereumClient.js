@@ -52,6 +52,14 @@ EthereumClient.prototype.getContract = function (name) {
   return contract;
 };
 
+EthereumClient.prototype.getAddress = function (name) {
+
+  var address = this.addresses[name];
+  if (_.isUndefined(address)) return false;
+
+  return address;
+};
+
 EthereumClient.prototype.cashFaucet = function() {
 
   var cashContract = this.getContract('cash');
@@ -68,14 +76,18 @@ EthereumClient.prototype.getCashBalance = function() {
   return balance.dividedBy(new BigNumber(2).toPower(64)).toNumber();
 };
 
-EthereumClient.prototype.sendCash = function(destination, amount) {
+EthereumClient.prototype.sendCash = function(destination, amount, onSuccess) {
 
   var cashContract = this.getContract('cash');
   var fixedAmount = new BigNumber(amount).times(new BigNumber(2).toPower(64));
 
-  var status = cashContract.sendTransaction({from: this.account, gas: 1000000}).send(destination, fixedAmount);
+  var contractAddress = this.getAddress('cash');
+  var filter = this.web3.eth.filter({address: contractAddress});
+  filter.watch(function(err, result) {
+    console.log(result);
+  });
 
-  return status;
+  cashContract.sendTransaction({from: this.account, gas: 1000000}).send(destination, fixedAmount);
 };
 
 EthereumClient.prototype.repFaucet = function() {
@@ -180,11 +192,12 @@ EthereumClient.prototype.getMarkets = function (branchId) {
       };
     });
 
+    var price = outcomes.length ? outcomes[0].price : '-';
     var winningOutcomes = marketContract.call().getWinningOutcomes(marketId);
 
     return {
       id: marketId,
-      price: outcomes[0].price,  // HACK
+      price: price,  // HACK
       desc: desc,
       alpha: alpha,
       author: author,
