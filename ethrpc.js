@@ -8,7 +8,21 @@
  */
 
 var primary_account = "0x63524e3fe4791aefce1e932bbfb3fdf375bfad89";
-var rpc = { protocol: "http", host: "127.0.0.1", port: 8545 };
+var rpc = {
+    protocol: "http",
+    host: "127.0.0.1",
+    port: 8545
+};
+
+var NODE_JS = typeof(module) != 'undefined';
+if (NODE_JS) {
+    root = global;
+    var http = require('http');
+    var httpsync = require('http-sync');
+    var sha3 = require('js-sha3').keccak_256;
+} else {
+    root = window;
+}
 
 function encode_int(value) {
     var cs = [];
@@ -101,11 +115,36 @@ function encode_utf8(str) {
     return bytes.join('');
 }
 
-var EthRPC = (function (rpc_url, primary) {
+function get_prefix(funcname, signature) {
+    signature = signature || "";
+    var summary = funcname + "(";
+    for (var i = 0, len = signature.length; i < len; ++i) {
+        switch (signature[i]) {
+            case 's':
+                summary += "string";
+                break;
+            case 'i':
+                summary += "int256";
+                break;
+            case 'a':
+                summary += "int256[]";
+                break;
+            default:
+                summary += "weird";
+        }
+        if (i != len - 1) summary += ",";
+    }
+    summary += ")";
+    return "0x" + sha3(summary).slice(0, 8);
+}
+
+var EthRPC = (function (rpc, primary) {
 
     var pdata, id = 1;
+    var rpc_url = rpc.protocol + "://" + rpc.host + ":" + rpc.port.toString()
 
     function parse(response, callback) {
+        response = JSON.parse(response);
         if (response.error) {
             console.error(
                 "[" + response.error.code + "]",
@@ -124,26 +163,58 @@ var EthRPC = (function (rpc_url, primary) {
 
     // post json-rpc command to ethereum client
     function json_rpc(command, callback, async) {
-        var xhr = null;
-        if (window.XMLHttpRequest) {
-            xhr = new XMLHttpRequest();
+        var req, xhr = null;
+        if (NODE_JS) {
+            if (async) {
+                req = http.request({
+                    protocol: rpc.protocol,
+                    host: rpc.host,
+                    path: '/',
+                    port: rpc.port,
+                    method: 'POST'
+                }, function (response) {
+                    var body = '';
+                    response.on('data', function (d) {
+                        body += d;
+                    });
+                    response.on('end', function () {
+                        parse(body, callback);
+                    });
+                });
+                req.write(command);
+                req.end();
+            } else {
+                req = httpsync.request({
+                    protocol: rpc.protocol,
+                    host: rpc.host,
+                    path: '/',
+                    port: rpc.port,
+                    method: 'POST'
+                });
+                req.write(command);
+                return parse((req.end()).body.toString(), callback);
+            }
         } else {
-            xhr = new ActiveXObject("Microsoft.XMLHTTP");
-        }
-        if (async) {
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4) {
-                    parse(JSON.parse(xhr.responseText), callback);
-                }
-            };
-            xhr.open("POST", rpc_url, true);
-            xhr.setRequestHeader("Content-type", "application/json");
-            xhr.send(JSON.stringify(command));
-        } else {            
-            xhr.open("POST", rpc_url, false);
-            xhr.setRequestHeader("Content-type", "application/json");
-            xhr.send(JSON.stringify(command));
-            return parse(JSON.parse(xhr.responseText), callback);
+            if (window.XMLHttpRequest) {
+                xhr = new XMLHttpRequest();
+            } else {
+                xhr = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            if (async) {
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4) {
+                        parse(xhr.responseText, callback);
+                    }
+                };
+                xhr.open("POST", rpc_url, true);
+                xhr.setRequestHeader("Content-type", "application/json");
+                xhr.send(JSON.stringify(command));
+            } else {            
+                xhr.open("POST", rpc_url, false);
+                xhr.setRequestHeader("Content-type", "application/json");
+                xhr.send(JSON.stringify(command));
+                return parse(xhr.responseText, callback);
+            }
         }
     }
 
@@ -239,51 +310,47 @@ var EthRPC = (function (rpc_url, primary) {
         },
         // invoke a function from a contract on the blockchain
         invoke: function (address, funcname, sig, data, f) {
-            child_process.exec("serpent get_prefix " + funcname + " '" + sig + "'", function (err, prefix) {
-                if (err) return console.error(err);
-                var data_abi = parseInt(prefix.slice(0,-1)).toString(16);
-                var types = [];
-                for (var i = 0, len = sig.length; i < len; ++i) {
-                    if (sig[i] == 's') {
-                        types.push("string");
-                    } else if (sig[i] == 'a') {
-                        types.push("int256[]");
-                    } else {
-                        types.push("int256");
-                    }
-                }
-                var len_args = '';
-                var normal_args = '';
-                var var_args = '';
-                var base, sub, arrlist;
-                data = JSON.parse(data);
-                console.log("types: ", types);
-                console.log("data: ", data);
-                if (types.length == data.length) {
-                    for (i = 0, len = types.length; i < len; ++i) {
-                        if (types[i] === "string") {
-                            base = "string";
-                            sub = '';
-                        } else if (types[i] === "int256[]") {
-                            base = "int";
-                            sub = 256;
-                            arrlist = "[]";
-                        } else {
-                            base = "int";
-                            sub = 256;
-                        }
-                        res = encode_any(data[i], base, sub, arrlist);
-                        len_args += res.len_args;
-                        normal_args += res.normal_args;
-                        var_args += res.var_args;
-                    }
-                    data_abi += len_args + normal_args + var_args;
-                    console.log("ABI data: ", data_abi);
-                    return this.call({ from: primary, to: address, data: data_abi }, f);
+            var prefix = get_prefix(funcname, sig);
+            var data_abi = parseInt(prefix.slice(0,-1)).toString(16);
+            var types = [];
+            for (var i = 0, len = sig.length; i < len; ++i) {
+                if (sig[i] == 's') {
+                    types.push("string");
+                } else if (sig[i] == 'a') {
+                    types.push("int256[]");
                 } else {
-                    return console.error("Wrong number of arguments");
+                    types.push("int256");
                 }
-            });
+            }
+            var len_args = '';
+            var normal_args = '';
+            var var_args = '';
+            var base, sub, arrlist;
+            data = JSON.parse(data);
+            if (types.length == data.length) {
+                for (i = 0, len = types.length; i < len; ++i) {
+                    if (types[i] === "string") {
+                        base = "string";
+                        sub = '';
+                    } else if (types[i] === "int256[]") {
+                        base = "int";
+                        sub = 256;
+                        arrlist = "[]";
+                    } else {
+                        base = "int";
+                        sub = 256;
+                    }
+                    res = encode_any(data[i], base, sub, arrlist);
+                    len_args += res.len_args;
+                    normal_args += res.normal_args;
+                    var_args += res.var_args;
+                }
+                data_abi += len_args + normal_args + var_args;
+                console.log("ABI data: ", data_abi);
+                return this.call({ from: primary, to: address, data: data_abi }, f);
+            } else {
+                return console.error("Wrong number of arguments");
+            }
         },
         // read the code in a contract on the blockchain
         read: function (address, block, f) {
@@ -301,4 +368,4 @@ var EthRPC = (function (rpc_url, primary) {
         getTransactionByHash: function (hash, f) { return this.getTx(hash, f); },
         getCode: function (address, block, f) { return this.read(address, block, f); }
     };
-})(rpc.protocol + "://" + rpc.host + ":" + rpc.port.toString(), primary_account);
+})(rpc, primary_account);

@@ -63,6 +63,13 @@ var gas = 100000000;
 //     value: "100000000000000000000"}
 // );
 
+address = "0x0cb1277671d162b2f5c81e9435744f63768398d0"; // mul2
+funcname = "double";
+sig = "i";
+data = "[3]";
+
+EthRPC.invoke(address, funcname, sig, data);
+
 // frontier testnet addresses
 var addr = {
     loopy: "0x00e3f8de3ed9d428dc235ce0c25bc1136073be8b",
