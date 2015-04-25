@@ -6,7 +6,7 @@ module.exports = [{
     "name": "addAddress(int256,int256)",
     "type": "function",
     "inputs": [{ "name": "address1", "type": "int256" }, { "name": "address2", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "string" }]
+    "outputs": [{ "name": "out", "type": "bytes" }]
 },
 {
     "name": "check(int256)",
@@ -24,5 +24,5 @@ module.exports = [{
     "name": "replaceAddress(int256,int256,int256)",
     "type": "function",
     "inputs": [{ "name": "address1", "type": "int256" }, { "name": "address2", "type": "int256" }, { "name": "address3", "type": "int256" }],
-    "outputs": [{ "name": "out", "type": "string" }]
+    "outputs": [{ "name": "out", "type": "bytes" }]
 }];

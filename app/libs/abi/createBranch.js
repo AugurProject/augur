@@ -5,6 +5,6 @@
 module.exports = [{
     "name": "createSubbranch(string,int256,int256,int256)",
     "type": "function",
-    "inputs": [{ "name": "description", "type": "string" }, { "name": "periodLength", "type": "int256" }, { "name": "parent", "type": "int256" }, { "name": "tradingFee", "type": "int256" }],
+    "inputs": [{ "name": "description", "type": "bytes" }, { "name": "periodLength", "type": "int256" }, { "name": "parent", "type": "int256" }, { "name": "tradingFee", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256" }]
 }];

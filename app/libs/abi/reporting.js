@@ -79,5 +79,4 @@ module.exports = [{
     "type": "function",
     "inputs": [{ "name": "branch", "type": "int256" }, { "name": "index", "type": "int256" }, { "name": "value", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256" }]
-}]
-;
+}];

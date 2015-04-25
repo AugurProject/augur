@@ -15,9 +15,21 @@ module.exports = [{
     "outputs": [{ "name": "out", "type": "int256[]" }]
 },
 {
+    "name": "getCovarianceMatrixRow(int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "expDateIndex", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256[]" }]
+},
+{
+    "name": "getDeflated(int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "expDateIndex", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256[]" }]
+},
+{
     "name": "getEvent(int256,int256,int256)",
     "type": "function",
-    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "expDateIndex", "type": "int256" }, { "name": "expDateIndex", "type": "int256" }],
+    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "expDateIndex", "type": "int256" }, { "name": "eventIndex", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
@@ -25,6 +37,12 @@ module.exports = [{
     "type": "function",
     "inputs": [{ "name": "branch", "type": "int256" }, { "name": "expDateIndex", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256[]" }]
+},
+{
+    "name": "getLatent(int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "expDateIndex", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
     "name": "getLoadingVector(int256,int256)",
@@ -150,6 +168,24 @@ module.exports = [{
     "name": "setAdjPrinComp(int256,int256,int256[])",
     "type": "function",
     "inputs": [{ "name": "branch", "type": "int256" }, { "name": "expDateIndex", "type": "int256" }, { "name": "adjPrinComp", "type": "int256[]" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
+},
+{
+    "name": "setCovarianceMatrixRow(int256,int256,int256[])",
+    "type": "function",
+    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "expDateIndex", "type": "int256" }, { "name": "covarianceMatrixRow", "type": "int256[]" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
+},
+{
+    "name": "setDeflated(int256,int256,int256[])",
+    "type": "function",
+    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "expDateIndex", "type": "int256" }, { "name": "deflated", "type": "int256[]" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
+},
+{
+    "name": "setLatent(int256,int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "branch", "type": "int256" }, { "name": "expDateIndex", "type": "int256" }, { "name": "latent", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
