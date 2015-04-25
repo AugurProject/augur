@@ -63,28 +63,21 @@ var gas = 100000000;
 //     value: "100000000000000000000"}
 // );
 
-address = "0x0cb1277671d162b2f5c81e9435744f63768398d0"; // mul2
-funcname = "double";
-sig = "i";
-data = "[3]";
-
-EthRPC.invoke(address, funcname, sig, data);
-
 // frontier testnet addresses
 var addr = {
     loopy: "0x00e3f8de3ed9d428dc235ce0c25bc1136073be8b",
     jack: "0x63524e3fe4791aefce1e932bbfb3fdf375bfad89",
+    jack_eth: "0x32a34974787b46a62dbecc491c8a030185eaeb9d",
     heavy: "0x816e547d69e20e918340e7ff766c9ea841fe577a",
-    // lifespan: "0x74dcba4a17d257486785f1811604c8fba5373eb4",
-    lifespan: "0x8c9c88015d33c5b40d26ba87f1425dcc6cc98ff2",
+    lifespan: "0x74dcba4a17d257486785f1811604c8fba5373eb4",
+    lifespan_eth: "0x8c9c88015d33c5b40d26ba87f1425dcc6cc98ff2",
     simulator2: "0x78829d3d1fd441aee8eff7a1263c11ed2f3adba7",
     toast: "0xb76a02724d44c89c20e41882f729a092f14d3eaf",
     joey: "0x1c11aa45c792e202e9ffdc2f12f99d0d209bef70",
     chris: "0x9b7e6cd69f45d93336606b0f70dac77b5b6e9fb0",
     examples: {
         ten: "0x3caf506cf3d5bb16ba2c8f89a6591c5160d69cf3",
-        // mul2: "0xe9d61cfdc67115372a78578b3d1082e8911419d9"
-        mul2: "0x0cb1277671d162b2f5c81e9435744f63768398d0"
+        mul2: "0x5204f18c652d1c31c6a5968cb65e011915285a50"
     },
     augur: {
         // data & api files
@@ -138,9 +131,6 @@ function chkbal(addr) {
     return bal;
 }
 
-// admin.unlock(eth.coinbase, undefined, 60*60*24*7)
-// admin.startRPC("127.0.0.1", 8545)
-
 var contracts = {
     compiled: {
         ten: "0x603980600b6000396044567c01000000000000000000000000000000000000000000000000000000006000350463643ceff9811415603757600a60405260206040f35b505b6000f3",
@@ -190,43 +180,13 @@ var contracts = {
     }
 };
 
-// var evm = contracts.compiled.redeem_payout;
-// var gas = 90000000;
-// var address = eth.sendTransaction({from: addr.jack, gas: gas, code: evm});
+// no parameters
+// curl --data '{"jsonrpc":"2.0","method":"eth_call","params":[{"from":"0x63524e3fe4791aefce1e932bbfb3fdf375bfad89","to":"0x3caf506cf3d5bb16ba2c8f89a6591c5160d69cf3","data":"0x643ceff9"}],"id":1}' http://127.0.0.1:8545
+parseInt(EthRPC.invoke(addr.examples.ten, "ten", "", []));
+EthRPC.invoke(addr.augur.cash, "faucet", "", []);
 
-// var Contract = web3.eth.contract(contracts.full_signature.statistics);
-// var contract = new Contract(addr.augur.statistics);
-// var ONE = Math.pow(2,64);
-// var input_data = [ONE, ONE, ONE];
-// var input_weights = [ONE, ONE, ONE];
-// contract.call({"from": addr.jack}).weighted_median(input_data, input_weights).toNumber();
-// eth.getCode(addr.augur.statistics);
+// integer parameter
+// curl --data '{"jsonrpc":"2.0","method":"eth_call","params":[{"from":"0x63524e3fe4791aefce1e932bbfb3fdf375bfad89","to":"0x5204f18c652d1c31c6a5968cb65e011915285a50","data":"0x6ffa1caa0000000000000000000000000000000000000000000000000000000000000003","gas":"0x2dc6c0"}],"id":1}' http://127.0.0.1:8545
+parseInt(EthRPC.invoke("0x5204f18c652d1c31c6a5968cb65e011915285a50", "double", "i", [21]));
 
-// test drive!
-// test_ethrpc(addr, contracts, gas);
-
-// load consensus on chain
-// broadcast(addr.jack, contracts.compiled, gas);
-
-// are contracts loaded yet?
-// ping(addr.contracts)
-
-// serpent get_prefix weighted_median '[{"name": "weighted_median(int256[],int256[])","type": "function","inputs": [{ "name": "data", "type": "int256[]" }, { "name": "weights", "type": "int256[]" }],"outputs": [{ "name": "out", "type": "int256" }]}]'
-// 2910811973
-
-// contract Foo {
-//   function bar(real[2] xy) {}
-//   function baz(uint32 x, bool y) returns (bool r) { r = x > 32 || y; }
-//   function sam(bytes name, uint[] data) {}
-// }
-// baz(uint32,bool)
-// baz_full_sig = [{"name": "baz(uint32,bool)","type": "function","inputs": [{ "name": "x", "type": "uint32" }, { "name": "y", "type": "bool" }],"outputs": [{ "name": "r", "type": "bool" }]}];
-
-// serpent get_prefix baz '[{"name": "baz(uint32,bool)","type": "function","inputs": [{ "name": "x", "type": "uint32" }, { "name": "y", "type": "bool" }],"outputs": [{ "name": "r", "type": "bool" }]'
-
-// from pyepm.api import abi_data
-// abi_data("double", "i", [42])
-// abi_data("ten", "", [])
-
-// 2005764065
-// expected: 0xf7183750
+EthRPC.invoke("0x13dc5836cd5638d0b81a1ba8377a7852d41b5bbe", "getMarkets", "i", [1010101]);
