@@ -4,7 +4,7 @@
   "description": "EthRPC - Browser-compatible Ethereum JSON-RPC",
   "main": "ethrpc.js",
   "scripts": {
-    "test": "node runtests.js"
+    "test": "node test/runtests.js"
   },
   "dependencies": {
     "bignumber.js": "^2.0.7",
@@ -19,5 +19,11 @@
     "url": "https://github.com/tinybike/ethrpc.js.git"
   },
   "keywords": [],
-  "license": "MIT"
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tinybike/ethrpc.js/issues"
+  },
+  "homepage": "https://github.com/tinybike/ethrpc.js",
+  "devDependencies": {},
+  "author": "Jack Peterson <jack@tinybike.net>"
 }

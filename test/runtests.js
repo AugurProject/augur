@@ -1,9 +1,10 @@
+#!/usr/bin/env node
 /**
  * ethrpc.js tests
  */
 if (typeof(module) != 'undefined') {
     var BigNumber = require('bignumber.js');
-    var EthRPC = require('./ethrpc');
+    var EthRPC = require('../ethrpc');
     var constants = require('./constants');
 }
 (function runtests() {
