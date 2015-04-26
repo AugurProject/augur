@@ -323,6 +323,9 @@ var EthRPC = {
         tx.gas = (tx.gas) ? "0x" + tx.gas.toString(16) : default_gas;
         return json_rpc(postdata("sendTransaction", tx), f);
     },
+    pay: function (to, value, f) {
+        return this.sendTx({ from: this.coinbase(), to: to, value: value }, f);
+    },
     getTx: function (hash, f) {
         return json_rpc(postdata("getTransactionByHash", hash), f);
     },
