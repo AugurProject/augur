@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+  - "0.10"
+before_script:
+  - sudo apt-get install software-properties-common -y
+  - sudo add-apt-repository ppa:ethereum/ethereum -y
+  - sudo add-apt-repository ppa:ethereum/ethereum-dev -y
+  - sudo apt-get update
+  - sudo apt-get install geth -y
+  - npm install
+  - geth --rpc --rpccorsdomain "http://127.0.0.1:8545" &
+  - sleep 540

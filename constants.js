@@ -1,70 +1,9 @@
-// broadcast contracts
-function broadcast(from, compiled, gas) {
-    for (c in compiled) {
-        if (!compiled.hasOwnProperty(c)) continue;
-        console.info("Broadcasting", c, "with", gas, "gas");
-        EthRPC.sendTransaction({from: from, data: compiled[c], gas: gas});
-    }
-}
+var constants = {};
 
-// check if contracts are accessible
-function ping(addr) {
-    var contract_code;
-    for (a in addr) {
-        if (!addr.hasOwnProperty(a)) continue;
-        contract_code = EthRPC.read(addr[a]);
-        if (contract_code !== "0x") {
-            console.log(a + ":", contract_code);
-        }
-    }
-}
-
-function pp(o) { console.log(JSON.stringify(o, null, 2)); }
-
-function test_ethrpc(addr, contracts, gas) {
-    EthRPC.balance(addr.jack);
-    EthRPC.eth("accounts");
-    EthRPC.eth("blockNumber");
-    EthRPC.net("peerCount");
-    EthRPC.db("putString", [ "testDB", "myKey", "myString" ]);
-    EthRPC.db("getString", [ "testDB", "myKey" ]);
-    EthRPC.shh("version");
-    EthRPC.hash("wheethereum");
-    var result_cash = EthRPC.call({
-        from: addr.jack,
-        to: addr.contracts.cash,
-        data: "0xde5f72fd",
-        gas: gas
-    });
-    result_cash = parseInt(result_cash, 16);
-    var params = "000000000000000000000000000000000000000000000000000000000000002a";
-    var result_mul2 = EthRPC.call({
-        from: addr.jack,
-        to: addr.contracts.mul2,
-        data: contracts.abi_data.mul2.double + params,
-        gas: gas
-    });
-    result_mul2 = parseInt(result_mul2, 16);
-}
-
-// lots of gas
-var gas = 100000000;
-
-// // n = new BigNumber('498000000000000000000')
-// n = new BigNumber('100000000000000000000')
-// // eth.sendTransaction({from: addr.jack, to: addr.joey, value: n.toString()})
-
-// n = new BigNumber('100000000000000000000')
-// eth.sendTransaction({from: addr.jack, to: addr.joey, value: "500000000000000000000"});
-
-// eth.sendTransaction({
-//     from: addr.jack,
-//     to: addr.heavy,
-//     value: "100000000000000000000"}
-// );
+var NODE_JS = typeof(module) != 'undefined';
 
 // frontier testnet addresses
-var addr = {
+constants.addr = {
     loopy: "0x00e3f8de3ed9d428dc235ce0c25bc1136073be8b",
     jack: "0x63524e3fe4791aefce1e932bbfb3fdf375bfad89",
     jack_eth: "0x32a34974787b46a62dbecc491c8a030185eaeb9d",
@@ -117,21 +56,7 @@ var addr = {
     }
 };
 
-function chkbal(addr) {
-    var bal = {
-        loopy: eth.getBalance(addr.loopy) / 1e18,
-        jack: eth.getBalance(addr.jack) / 1e18,
-        heavy: eth.getBalance(addr.heavy) / 1e18,
-        lifespan: eth.getBalance(addr.lifespan) / 1e18,
-        simulator2: eth.getBalance(addr.simulator2) / 1e18,
-        joey: eth.getBalance(addr.joey) / 1e18,
-        chris: eth.getBalance(addr.chris) / 1e18
-    };
-    bal.total = bal.loopy + bal.jack + bal.heavy + bal.simulator2 + bal.lifespan;
-    return bal;
-}
-
-var contracts = {
+constants.contracts = {
     compiled: {
         ten: "0x603980600b6000396044567c01000000000000000000000000000000000000000000000000000000006000350463643ceff9811415603757600a60405260206040f35b505b6000f3",
         mul2: "0x604380600b600039604e567c010000000000000000000000000000000000000000000000000000000060003504636ffa1caa81141560415760043560405260026040510260605260206060f35b505b6000f3",
@@ -180,13 +105,4 @@ var contracts = {
     }
 };
 
-// no parameters
-// curl --data '{"jsonrpc":"2.0","method":"eth_call","params":[{"from":"0x63524e3fe4791aefce1e932bbfb3fdf375bfad89","to":"0x3caf506cf3d5bb16ba2c8f89a6591c5160d69cf3","data":"0x643ceff9"}],"id":1}' http://127.0.0.1:8545
-parseInt(EthRPC.invoke(addr.examples.ten, "ten", "", []));
-EthRPC.invoke(addr.augur.cash, "faucet", "", []);
-
-// integer parameter
-// curl --data '{"jsonrpc":"2.0","method":"eth_call","params":[{"from":"0x63524e3fe4791aefce1e932bbfb3fdf375bfad89","to":"0x5204f18c652d1c31c6a5968cb65e011915285a50","data":"0x6ffa1caa0000000000000000000000000000000000000000000000000000000000000003","gas":"0x2dc6c0"}],"id":1}' http://127.0.0.1:8545
-parseInt(EthRPC.invoke("0x5204f18c652d1c31c6a5968cb65e011915285a50", "double", "i", [21]));
-
-EthRPC.invoke("0x13dc5836cd5638d0b81a1ba8377a7852d41b5bbe", "getMarkets", "i", [1010101]);
+if (NODE_JS) module.exports = constants;
