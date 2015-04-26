@@ -58,7 +58,7 @@ Many of the commonly used functions have named wrappers.  For example, `coinbase
 > EthRPC.invoke(tx)
 44242
 ```
-The function called here `double(22121)` simply doubles its input argument, so the result is as expected.  The transaction fields are as follows:
+(For people with no fire in their souls, `execute` and `run` are both aliases for `invoke`.) The function called here `double(22121)` simply doubles its input argument, so the result is as expected.  The transaction fields are as follows:
 ```
 Required:
     - to: <contract address> (hexstring)
@@ -71,6 +71,8 @@ Optional:
     - returns: <"array", "int", "BigNumber", or "string" (default)>
 ```
 The `params` and `signature` fields are required if your function accepts parameters; otherwise, these fields can be excluded.  The `returns` field is used only to format the output, and has no effect on the actual RPC command.
+
+Note that `invoke` is set up specifically for Serpent functions.  I haven't (yet) included all the different datatypes that Solidity supports in EthRPC's encoder -- everything's either a string, an int256, or an int256 array.  If you need a more flexible ABI encoder, check out [pyepm](https://github.com/etherex/pyepm), specifically the `pyepm.api.abi_data` method.
 
 EthRPC can be used from the browser (although the Ethereum client must be set to accept RPC calls from the browser's address).  To use EthRPC in the browser, just include `ethrpc.js`, as well as the [bignumber.js](https://github.com/MikeMcl/bignumber.js) and [js-sha3](https://github.com/emn178/js-sha3) libraries.
 

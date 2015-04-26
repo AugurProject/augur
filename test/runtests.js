@@ -130,4 +130,17 @@ if (typeof(module) != 'undefined') {
             return s.slice(0,193);
         }
     );
+
+    tx = {
+        to: constants.addr.examples.multiplier,
+        function:"multiply",
+        signature: "ii",
+        params: [2, 3],
+        returns: "int"
+    };
+    test(tx, 6);
+
+    tx.params = [123, 321];
+    test(tx, 39483);
+
 })();

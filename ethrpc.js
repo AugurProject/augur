@@ -303,22 +303,8 @@ var EthRPC = {
     publish: function (compiled, f) {
         return this.sendTx({ from: this.coinbase(), data: compiled }, f);
     },
-    // 
-    /**
-     * Invoke a function from a contract on the blockchain.
-     *
-     * Input tx format:
-     * {
-     *    from: <sender's address> (hexstring; optional, coinbase default)
-     *    to: <contract address> (hexstring)
-     *    function: <function name> (string)
-     *    signature: <function signature, e.g. "iia"> (string)
-     *    params: <parameters passed to the function> (optional)
-     *    returns: <"array", "int", "BigNumber", or "string" (default)>
-     *    send: <true to sendTransaction, false to call (default)>
-     * }
-     */
-    invoke: function (tx, f) {
+    // hex-encode a function's ABI data and return it
+    encode_abi: function (tx, f) {
         tx.signature = tx.signature || "";
         var data_abi = get_prefix(tx.function, tx.signature);
         var types = [];
@@ -366,6 +352,27 @@ var EthRPC = {
                 var_args += res.var_args;
             }
             data_abi += len_args + normal_args + var_args;
+        }
+        return data_abi;
+    },
+    /**
+     * Invoke a function from a contract on the blockchain.
+     *
+     * Input tx format:
+     * {
+     *    from: <sender's address> (hexstring; optional, coinbase default)
+     *    to: <contract address> (hexstring)
+     *    function: <function name> (string)
+     *    signature: <function signature, e.g. "iia"> (string)
+     *    params: <parameters passed to the function> (optional)
+     *    returns: <"array", "int", "BigNumber", or "string" (default)>
+     *    send: <true to sendTransaction, false to call (default)>
+     * }
+     */
+    invoke: function (tx, f) {
+        tx.signature = tx.signature || "";
+        data_abi = this.encode_abi(tx);
+        if (tx && data_abi) {
             var packaged = {
                 from: tx.from || this.coinbase(),
                 to: tx.to,
@@ -387,8 +394,6 @@ var EthRPC = {
                 }
             }
             return result;
-        } else {
-            return console.error("wrong number of arguments");
         }
     },
     // read the code in a contract on the blockchain
@@ -405,7 +410,9 @@ var EthRPC = {
     getTransactionCount: function (address, f) { return this.txCount(address, f); },
     sendTransaction: function (tx, f) { return this.sendTx(tx, f); },
     getTransactionByHash: function (hash, f) { return this.getTx(hash, f); },
-    getCode: function (address, block, f) { return this.read(address, block, f); }
+    getCode: function (address, block, f) { return this.read(address, block, f); },
+    run: function (tx, f) { this.invoke(tx, f); },
+    execute: function (tx, f) { this.invoke(tx, f); }
 };
 
 if (NODE_JS) module.exports = EthRPC;
