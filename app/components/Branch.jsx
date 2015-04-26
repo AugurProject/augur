@@ -74,7 +74,7 @@ var MarketPane = React.createClass({
     var market = this.props.market;
 
     return (
-      <Link to='market' params={ {marketId: market.id} } className='market-pane'>
+      <Link to='market' params={ {marketId: market.id.toString(64)} } className='market-pane'>
         <h4>{ market.description }</h4>
         <div className='summary'>
           <span>{ market.price * 100 }%</span>

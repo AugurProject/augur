@@ -173,14 +173,14 @@ EthereumClient.prototype.getMarkets = function (branchId) {
     var description = infoContract.call().getDescription(marketId);
     var events = marketContract.call().getMarketEvents(marketId);
     var alpha = marketContract.call().getAlpha(marketId).toNumber();
-    var author = infoContract.call().getCreator(marketId).toString(16);
+    var author = infoContract.call().getCreator(marketId);
     var creationFee = infoContract.call().getCreationFee(marketId).toNumber;
 
     var endDate = new Date();   // TODO: calc from last event expiration
     var traderCount = marketContract.call().getCurrentParticipantNumber(marketId).toNumber();
     var tradingPeriod = marketContract.call().getTradingPeriod(marketId).toNumber();
     var tradingFee = marketContract.call().getTradingFee(marketId).toNumber();
-    var traderId =  marketContract.call().getParticipantNumber(marketId, account).toString(16);
+    var traderId =  marketContract.call().getParticipantNumber(marketId, account);
     var totalVolume = 0;
 
     var outcomeCount = marketContract.call().getMarketNumOutcomes(marketId).toNumber(); 
@@ -206,7 +206,7 @@ EthereumClient.prototype.getMarkets = function (branchId) {
     var winningOutcomes = marketContract.call().getWinningOutcomes(marketId);
 
     return {
-      id: marketId.toString(64),
+      id: marketId,
       price: price,  // HACK
       description: description,
       alpha: alpha,
