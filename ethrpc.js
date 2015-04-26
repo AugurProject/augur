@@ -285,9 +285,19 @@ var EthRPC = {
             });
         }
     },
+    gasPrice: function (f) {
+        return json_rpc(postdata("gasPrice"), function (data) {
+            var gasPrice = parseInt(data.result);
+            if (f) {
+                return f(gasPrice);
+            } else {
+                return gasPrice;
+            }
+        });
+    },
     blockNumber: function (f) {
         return json_rpc(postdata("blockNumber"), function (data) {
-            var blocknum = parseInt(data.result, 16);
+            var blocknum = parseInt(data.result);
             if (f) {
                 return f(blocknum);
             } else {
@@ -317,7 +327,7 @@ var EthRPC = {
         return json_rpc(postdata("getTransactionByHash", hash), f);
     },
     peerCount: function (f) {
-        return json_rpc(postdata("peerCount", [], "net_"), f);
+        return parseInt(json_rpc(postdata("peerCount", [], "net_"), f));
     },
     coinbase: function (f) {
         return json_rpc(postdata("coinbase"), f);
