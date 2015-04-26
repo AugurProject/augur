@@ -46,7 +46,7 @@ var MarketList = React.createClass({
 
     var marketList = _.map(this.props.data, function (market) {
       return (
-        <div className='col-sm-4'>
+        <div key={ market.id } className='col-sm-4'>
           <MarketPane market={ market } />
         </div>
       );

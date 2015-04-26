@@ -225,8 +225,6 @@ EthereumClient.prototype.getMarkets = function (branchId) {
 
   var markets = _.indexBy(marketList, 'id');
 
-  console.log(markets);
-
   return markets;
 };
 
