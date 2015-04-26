@@ -81,8 +81,8 @@ EthereumClient.prototype.sendCash = function(destination, amount, onSuccess) {
   var cashContract = this.getContract('cash');
   var fixedAmount = new BigNumber(amount).times(new BigNumber(2).toPower(64));
 
-  cashContract.sendTransaction({from: this.account, gas: 1000000}, function(result) {
-    console.log(result);
+  cashContract.sendTransaction({from: this.account, gas: 1000000}, function(err, log) {
+    console.log(log);
   }).send(destination, fixedAmount);
 };
 
@@ -111,9 +111,10 @@ EthereumClient.prototype.sendRep = function(destination, amount, branchId) {
   var fixedAmount = new BigNumber(amount).times(new BigNumber(2).toPower(64));
 
   var self = this;
-  var status = sendRepContract.sendTransaction({from: this.account, gas: 1000000}).sendReputation(destination, fixedAmount);
+  sendRepContract.sendTransaction({from: this.account, gas: 1000000}, function(err, log) {
+    console.log(log);
+  }).sendReputation(branchId, destination, fixedAmount);
 
-  return status;
 };
 
 /**
@@ -166,8 +167,8 @@ EthereumClient.prototype.getMarkets = function (branchId) {
 
   var marketList = _.map(branchContract.call().getMarkets(branchId), function(marketId) {
 
-    var description = infoContract.call().getDescription(marketId);
     var events = marketContract.call().getMarketEvents(marketId);
+    var description = infoContract.call().getDescription(marketId);
     var alpha = marketContract.call().getAlpha(marketId).toNumber();
     var author = infoContract.call().getCreator(marketId);
     var creationFee = infoContract.call().getCreationFee(marketId).toNumber;
