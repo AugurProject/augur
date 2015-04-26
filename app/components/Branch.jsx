@@ -45,7 +45,7 @@ var MarketList = React.createClass({
 
     var marketList = _.map(this.props.data, function (market) {
       return (
-        <div className='col-md-4'>
+        <div className='col-sm-4'>
           <MarketPane market={ market } />
         </div>
       );
@@ -76,8 +76,7 @@ var MarketPane = React.createClass({
           <p>Price: <b>{ market.price }</b></p>
           <p className='alt'>Volume: <b>{ market.totalVolume }</b></p>
           <p>Fee: <b>{ market.tradingFee }</b></p>
-          <p className='alt'>Author: <b>{ market.author }</b></p>
-          <p>End date: <b>{ market.endDate || '-' }</b></p>
+          <p className='alt'>End date: <b>{ market.endDate || '-' }</b></p>
         </div>
       </Link>
     );

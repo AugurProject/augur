@@ -1,16 +1,21 @@
 var BigNumber = require('bignumber.js');
 var web3 = require('web3');
+var constants = require('./constants.js')
 
 module.exports = {
 
   blockToDate: function(block, currentBlock) {
 
     // calculate date from block number
-    var seconds = (block - currentBlock) * 12;
+    var seconds = (block - currentBlock) * constants.SECONDS_PER_BLOCK;
     var date = new Date();
     date.setSeconds(date.getSeconds() + seconds);
 
     return date;
+  },
+
+  dateToBlock: function(date) {
+
   },
 
   formatDate: function(d) {

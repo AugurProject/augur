@@ -105,6 +105,13 @@ h1, h2, h3, h4, h5 {
     animation: spin 1s infinite linear;
 }
 
+.truncate {
+  width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 nav.navbar {
     background-color: #602A52;
     border-radius: 0px;
