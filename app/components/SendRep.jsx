@@ -83,7 +83,7 @@ var SendRepTrigger = React.createClass({
   render: function () {
     return (
       <ModalTrigger modal={<SendRepModal {...this.props} />}>
-        <a href='#'>{ this.props.text }</a>
+        <Button bsSize='xsmall' bsStyle='primary'>{ this.props.text }</Button>
       </ModalTrigger>
     );
   }

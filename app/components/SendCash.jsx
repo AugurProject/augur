@@ -84,7 +84,7 @@ var SendCashTrigger = React.createClass({
   render: function () {
     return (
       <ModalTrigger modal={<SendCashModal {...this.props} />}>
-        <a href='#'>{ this.props.text }</a>
+        <Button bsSize='xsmall' bsStyle='primary'>{ this.props.text }</Button>
       </ModalTrigger>
     );
   }

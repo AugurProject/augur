@@ -3,7 +3,7 @@ var React = require('react');
 var Fluxxor = require("fluxxor");
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
-
+var utilities = require('../libs/utilities');
 
 var Network = React.createClass({
   mixins: [FluxMixin, StoreWatchMixin('asset', 'config', 'network')],
@@ -39,10 +39,10 @@ var Network = React.createClass({
             MINER<span className="pull-right">{this.state.network.miner ? 'on' : 'off'}</span>
           </p>
           <p className="ether">
-            ETHER<span className="pull-right">{this.state.assets.ether || '-'}</span>
+            ETHER<span className="pull-right">{ utilities.formatEther(this.state.assets.ether) || '-'}</span>
           </p>
           <p className="gas-price">
-            GAS PRICE<span className="pull-right">{this.state.network.gasPrice || '-'}</span>
+            GAS PRICE<span className="pull-right">{ utilities.formatEther(this.state.network.gasPrice) || '-'}</span>
           </p>
         </div>
       </div>

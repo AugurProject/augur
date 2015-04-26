@@ -57,6 +57,7 @@ var stores = {
 var AugurApp = require("./components/AugurApp");
 var Branch = require('./components/Branch');
 var Market = require('./components/Market');
+var AccountDetails = require('./components/AccountDetails');
 
 var flux = new Fluxxor.Flux(stores, actions);
 
@@ -65,23 +66,13 @@ flux.on("dispatch", function(type, payload) {
   if (debug) console.log("Dispatched", type, payload);
 });
 
-// TODO: Listen for each new block once we're connected to the Ethereum
-// daemon with web3.eth.filter.
-// We can always update the network on each block.
-// this.flux.actions.network.updateNetwork();
-// If we have a contract, we can update the rest of our data.
-// this.flux.actions.branch.loadBranches();
-// this.flux.actions.event.loadEvents();
-// this.flux.actions.market.loadMarkets();
-
-// TODO: Render the period display every time the NetworkStore changes.
-
 var routes = (
   <Route name="app" handler={ AugurApp } flux={ flux }>
     <DefaultRoute handler={ Branch } flux={ flux } title="Branch" />
     <Route name="home" path="/" handler={ Branch } flux={ flux } title="Branch" />
     <Route name="branch" path="/branch/:branchId" handler={ Branch} flux={ flux } title="Branch" />
     <Route name="market" path="/market/:marketId" handler={ Market } flux={ flux } title="Market" />
+    <Route name="account" path="/account" handler={ AccountDetails } flux={ flux } title="Account Overview" />
   </Route>
 );
 

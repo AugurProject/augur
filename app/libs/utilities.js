@@ -14,8 +14,13 @@ module.exports = {
     return date;
   },
 
-  dateToBlock: function(date) {
+  dateToBlock: function(date, currentBlock) {
 
+    var now = new Date();
+    var secondsDelta = date.valueOf() - now.valueOf();
+    var blockDelta = parseInt(secondsDelta / constants.SECONDS_PER_BLOCK);
+
+    return currentBlock + blockDelta;
   },
 
   formatDate: function(d) {
@@ -37,19 +42,30 @@ module.exports = {
     // detect format and convert
     if (typeof(wei) === 'string' && wei.match(/^0x\w+/)) {
       wei = web3.toWei(wei, 'wei');
-    } else {
+    } else if (wei) {
       wei = wei.toNumber();
+    } else {
+      return '-';
     }
 
+    var value;
+    var unit;
+
     if (wei >= 1000000000000 && wei < 1000000000000000) {
-      return wei / 1000000000000 + ' szabo';
+      value = wei / 1000000000000;
+      unit = 'szabo';
     } else if (wei >= 1000000000000000 && wei < 1000000000000000000) {
-      return wei / 1000000000000000 + ' finney';
+      value = wei / 1000000000000000;
+      unit = 'finney';
     } else if (wei >= 1000000000000000000) {
-      return wei / 1000000000000000000 + ' ether';
+      value = wei / 1000000000000000000;
+      unit = 'ether';
     } else {
-      return wei + ' wei';
+      value = wei;
+      unit = 'wei';
     }
+
+    return +value.toFixed(5) + ' ' + unit;
   },
 
   consoleStyle: 'background-color: #602A52; color: #fff; padding: 2px 6px;',

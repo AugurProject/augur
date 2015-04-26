@@ -4,14 +4,14 @@ var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 var ReactBootstrap = require('react-bootstrap');
 var Button = ReactBootstrap.Button;
-var Modal = ReactBootstrap.Modal;
-var ModalTrigger = ReactBootstrap.ModalTrigger;
+var utilities = require('../libs/utilities');
 
 var SendCashTrigger = require('./SendCash').SendCashTrigger;
 var SendRepTrigger = require('./SendRep').SendRepTrigger;
 var SendEtherTrigger = require('./SendEther').SendEtherTrigger;
 
-var AccountDetailsModal = React.createClass({
+var AccountDetails = React.createClass({
+
   mixins: [FluxMixin, StoreWatchMixin('asset')],
 
   getInitialState: function () {
@@ -42,36 +42,45 @@ var AccountDetailsModal = React.createClass({
 
   render: function () {
     return (
-      <Modal {...this.props} id='account-modal'>
-        <div className="modal-body clearfix">
-            <h4>Account</h4>
-            <p><b>Address</b><span className='detail'>{ this.state.primaryAccount }</span></p>
-            <p><b>Cash</b><span className='detail'>{ this.state.assets.cash }<SendCashTrigger text='send' /></span></p>
-            <p><b>Reputation</b><span className='detail'>{ this.state.assets.reputation }<SendRepTrigger text='send' /></span></p>
-            <p><b>ETHER</b><span className='detail'>{ this.state.assets.ether }<SendEtherTrigger text='send' /></span></p>
+      <div id="account">
+        <h3>Account Overview<span className='subheading pull-right'>{ this.state.primaryAccount }</span></h3>
+        <div className='row'>
+          <div className="col-sm-6 col-lg-7">
+            <h4>Holdings</h4>
+          </div>
+          <div className="col-sm-6 col-lg-5">
+            <div className='balances'>
+              <h4>Balances</h4>
+              <p>
+                <b>Cash</b>
+                <span className='balance'>
+                  { this.state.assets.cash }
+                  <SendCashTrigger text='send' />
+                  <Button bsSize='xsmall' bsStyle='default' onClick={ this.onCashFaucet }>Faucet<i className='fa fa-tint'></i></Button>
+                </span>
+              </p>
+              <p>
+                <b>Reputation</b>
+                <span className='balance'>
+                  { this.state.assets.reputation }
+                  <SendRepTrigger text='send' />
+                  <Button bsSize='xsmall' bsStyle='default' onClick={ this.onRepFaucet }>Faucet<i className='fa fa-tint'></i></Button>
+                </span>
+              </p>
+              <p>
+                <b>Ether</b>
+                <span className='balance'>
+                  { utilities.formatEther(this.state.assets.ether) }
+                  <SendEtherTrigger text='send' />
+                  <Button bsSize='xsmall' bsStyle='default' style={{visibility: 'hidden'}}>Faucet<i className='fa fa-tint'></i></Button>
+                </span>
+              </p>
+            </div>
+          </div>
         </div>
-        <div className="modal-footer clearfix">
-          <Button bsSize='small' bsStyle='default' onClick={ this.onCashFaucet }>Cash Faucet<i className='fa fa-tint'></i></Button>
-          <Button bsSize='small' bsStyle='default' onClick={ this.onRepFaucet }>Rep Faucet<i className='fa fa-tint'></i></Button>
-        </div>
-      </Modal>
+      </div>
     );
   }
 });
 
-var AccountDetailsTrigger = React.createClass({
-  mixins: [FluxMixin],
-
-  render: function () {
-    return (
-      <ModalTrigger modal={<AccountDetailsModal {...this.props} />}>
-        <a href='#'>Account</a>
-      </ModalTrigger>
-    );
-  }
-});
-
-module.exports = {
-  AccountDetailsModal: AccountDetailsModal,
-  AccountDetailsTrigger: AccountDetailsTrigger
-};
+module.exports = AccountDetails;

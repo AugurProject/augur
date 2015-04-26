@@ -6,6 +6,7 @@ var ReactBootstrap = require('react-bootstrap');
 var Button = ReactBootstrap.Button;
 var Modal = ReactBootstrap.Modal;
 var ModalTrigger = ReactBootstrap.ModalTrigger;
+var utilities = require('../libs/utilities');
 
 var SendEtherModal = React.createClass({
   mixins: [FluxMixin, StoreWatchMixin('asset')],
@@ -21,7 +22,8 @@ var SendEtherModal = React.createClass({
     var flux = this.getFlux();
 
     return {
-      ether: flux.store('asset').getState().ether
+      ether: flux.store('asset').getState().ether,
+      account: flux.store('network').getAccount()
     }
   },
 
@@ -30,13 +32,31 @@ var SendEtherModal = React.createClass({
   },
 
   onChangeAmount: function (event) {
-    this.setState({amount: event.target.value});
+
+    // convert to wei
+    var amount = event.target.value * 1000000000000000000;
+    this.setState({amount: amount});
   },
 
   onSend: function (event) {
-    // TODO: Validate the state, then call a contract to send the
-    // transaction requested in the state.
-    console.log('Would have sent ' + this.state.amount + ' ether to ' + this.state.destination);
+
+    // TODO: validation
+    var transaction = {
+      from: this.state.account,
+      to: this.state.destination,
+      value: this.state.amount
+    };
+
+    var self = this;
+
+    web3.eth.sendTransaction(transaction, function(err, txhash) {
+      if (!err) {
+        utilities.log(self.state.account+' sent '+self.state.amount+' wei to '+ self.state.destination)
+      } else {
+        utilities.error(err);
+      }
+    });
+
     this.props.onRequestHide();
   },
 
@@ -59,7 +79,7 @@ var SendEtherModal = React.createClass({
                   <input
                     type='text'
                     className='form-control'
-                    placeholder='amount'
+                    placeholder='amount in ether'
                     onChange={this.onChangeAmount} />
                   <span className="input-group-btn">
                     <Button bsStyle='primary' onClick={this.onSend}>Send</Button>
@@ -68,7 +88,7 @@ var SendEtherModal = React.createClass({
               </div>
             </div>
           </form>
-          <p>ETHER: <b className='ether-balance'>{this.state.ether}</b></p>
+          <p>ETHER: <b className='ether-balance'>{ utilities.formatEther(this.state.ether) }</b></p>
         </div>
       </Modal>
     );
@@ -81,7 +101,7 @@ var SendEtherTrigger = React.createClass({
   render: function () {
     return (
       <ModalTrigger modal={<SendEtherModal {...this.props} />}>
-        <a href='#'>{ this.props.text }</a>
+        <Button bsSize='xsmall' bsStyle='primary'>{ this.props.text }</Button>
       </ModalTrigger>
     );
   }

@@ -7,7 +7,6 @@ var Button = ReactBootstrap.Button;
 var Modal = ReactBootstrap.Modal;
 var ModalTrigger = ReactBootstrap.ModalTrigger;
 
-
 var AddMarketModal = React.createClass({
 
   mixins: [FluxMixin, StoreWatchMixin('market')],
@@ -17,6 +16,7 @@ var AddMarketModal = React.createClass({
       marketText: '',
       marketTextHelper: '',
       marketInvestment: '',
+      maturationDate: '',
       tradingFee: '',
       valid: false
     };
@@ -27,7 +27,7 @@ var AddMarketModal = React.createClass({
 
     return {
       ethereumClient: flux.store('config').getEthereumClient(),
-      balance: flux.store('asset').getState().balance
+      cash: flux.store('asset').getState().cash
     }
   },
 
@@ -53,6 +53,10 @@ var AddMarketModal = React.createClass({
     this.setState({marketInvestment: event.target.value});
   },
 
+  onChangeMaturationDate: function (event) {
+    this.setState({maturationDate: event.target.value});
+  },
+
   onSubmit: function (event) {
 
     console.log(this.state);
@@ -67,7 +71,7 @@ var AddMarketModal = React.createClass({
           <h4>New Market</h4>
           <form role="form clearfix">
               <div className="form-group">
-                  <label for="market-text">Market description</label>
+                  <label>Market description</label>
                   <span className="helper pull-right">{ this.state.marketTextHelper }</span> 
                   <input 
                     type="text" 
@@ -78,7 +82,7 @@ var AddMarketModal = React.createClass({
                   />
               </div>
               <div className="form-group">
-                  <label for="trading-fee">Trading fee</label>
+                  <label>Trading fee</label>
                   <input 
                     type="text" 
                     className="form-control" 
@@ -88,7 +92,7 @@ var AddMarketModal = React.createClass({
                   />
               </div>
               <div className="form-group">
-                  <label for="market-investment">Market Investment</label>
+                  <label>Market Investment</label>
                   <input 
                     type="text" 
                     className="form-control" 
@@ -97,7 +101,17 @@ var AddMarketModal = React.createClass({
                     onChange={ this.onChangeMarketInvestment } 
                   />
               </div>
-              <p>CASH: <b className='cash-balance'>{this.state.balance}</b></p>
+              <div className="form-group">
+                  <label>Maturation Date</label>
+                  <input 
+                    type="text" 
+                    className="form-control" 
+                    name="maturation-date" 
+                    placeholder="MM/DD/YYYY"
+                    onChange={ this.onChangeMaturationDate } 
+                  />
+              </div>
+              <p>CASH: <b className='cash-balance'>{this.state.cash}</b></p>
               <Button bsStyle='primary' onClick={ this.onSubmit } className='pull-right'>Submit Market</Button>
           </form>
         </div>

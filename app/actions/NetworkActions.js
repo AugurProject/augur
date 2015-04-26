@@ -42,6 +42,14 @@ var NetworkActions = {
         pending: web3.eth.filter('pending')
       };
 
+      _.each(constants.addresses, function(address, contractName) {
+        filters[contractName] = web3.eth.filter({address: address});
+        filters[contractName].watch(function(err, log) {
+          utilities.log(contractName);
+          utilities.log(log);
+        });
+      })
+
       this.dispatch(
         constants.network.UPDATE_ETHEREUM_STATUS,
         {
@@ -60,6 +68,7 @@ var NetworkActions = {
 
       filters.pending.watch(function (err, log) {
         if (err) utilities.error(err);
+        utilities.log('pending');
       });
 
       this.flux.actions.config.loadEthereumClient();
@@ -78,7 +87,7 @@ var NetworkActions = {
       primaryAccount: web3.eth.coinbase,
       peerCount: web3.net.peerCount,
       blockNumber: web3.eth.blockNumber,
-      gasPrice: utilities.formatEther(web3.eth.gasPrice),
+      gasPrice: web3.eth.gasPrice,
       miner: true
     });
 

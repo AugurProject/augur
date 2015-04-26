@@ -81,13 +81,9 @@ EthereumClient.prototype.sendCash = function(destination, amount, onSuccess) {
   var cashContract = this.getContract('cash');
   var fixedAmount = new BigNumber(amount).times(new BigNumber(2).toPower(64));
 
-  var contractAddress = this.getAddress('cash');
-  var filter = this.web3.eth.filter({address: contractAddress});
-  filter.watch(function(err, result) {
+  cashContract.sendTransaction({from: this.account, gas: 1000000}, function(result) {
     console.log(result);
-  });
-
-  cashContract.sendTransaction({from: this.account, gas: 1000000}).send(destination, fixedAmount);
+  }).send(destination, fixedAmount);
 };
 
 EthereumClient.prototype.repFaucet = function() {

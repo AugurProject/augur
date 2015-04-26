@@ -20,8 +20,6 @@ var Network = require('./Network');
 var Alert = require('./Alert');
 var Confirm = require('./Confirm');
 
-var AccountDetailsTrigger = require('./AccountDetails').AccountDetailsTrigger;
-
 var AugurApp = React.createClass({
 
   mixins: [FluxMixin, StoreWatchMixin('branch', 'asset', 'network', 'config')],
@@ -79,13 +77,6 @@ var AugurApp = React.createClass({
     return loadingProgress
   },
 
-  render2: function() { 
-    return (
-      <div>
-      </div>
-    )
-  },
-
   render: function() {
 
     return (
@@ -107,7 +98,7 @@ var AugurApp = React.createClass({
                       <ul className="dropdown-menu" role="menu">
                           <li><Link to="home">Markets</Link></li>
                           <li><a className="disabled">Ballots</a></li>
-                          <li><AccountDetailsTrigger /></li>
+                          <li><Link to="account">Account</Link></li>
                       </ul>
                   </li>
               </ul>
@@ -120,7 +111,7 @@ var AugurApp = React.createClass({
               <div className="side-nav">
                   <p><Link to="home">Markets</Link><i>{ _.keys(this.state.market.markets).length }</i></p>
                   <p><a className="disabled">Ballots</a></p>
-                  <p><AccountDetailsTrigger /></p>
+                  <p><Link to="account">Account</Link></p>
               </div>
 
               <Network />

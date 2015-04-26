@@ -267,9 +267,10 @@ nav .navbar-right li div {
 
 #main h3 {
     margin-top: 0px;
+    margin-bottom: 20px;
     font-size: 22px;
 }
-#main h3 a {
+#main h3 .subheading {
     font-size: 16px;
     margin-top: 3px;
 }
@@ -494,6 +495,32 @@ nav .navbar-right li div {
     right: 8px;
 }
 
+#account h4 {
+    margin-bottom: 20px;
+}
+#account .balances {
+    margin-top: 15px;
+    padding: 0px 0px 15px 15px;
+    border-left: 1px solid #bbb;
+}
+#account .balances p {
+    font-size: 14px;
+    width: 100%;
+    padding-right: 0px;
+    clear: right;   
+}
+#account .balances p .balance {
+    float: right;
+}
+#account .balances p button {
+    margin-left: 12px;
+    font-size: 10px;
+    text-transform: uppercase;
+}
+#account .balances p button i {
+    margin-left: 8px;
+}
+
 #alert {
     padding: 10px;
     position: fixed;
@@ -525,46 +552,6 @@ nav .navbar-right li div {
 #no-eth-modal span.cmd {
     font-family: "Lucida Console", Monaco, monospace;
     font-size: 10px;
-    margin-left: 8px;
-}
-#account-modal .modal-dialog {
-    max-width: 415px;
-}
-#account-modal .modal-body p {
-    font-size: 14px;
-    width: 100%;
-    padding-right: 0px;
-    clear: right;   
-}
-#account-modal .modal-body p .detail {
-    float: right;
-}
-#account-modal .modal-body p .detail a {
-    margin-left: 12px;
-    display: inline-block;
-    font-size: 10px;
-    text-transform: uppercase;
-    background-color: #295ED2;
-    padding: 2px 6px;
-    color: #FFF;
-    border-radius: 3px;
-    font-weight: 400;
-    position: relative;
-    top: -2px;
-    opacity: 0.7;
-}
-#account-modal .modal-body p .detail a:hover {
-    opacity: 1;
-    text-decoration: none;
-}
-#account-modal .modal-body p b {
-    
-}
-#account-modal .modal-footer {
-    margin-top: 0px;
-    background-color: #eee;
-}
-#account-modal .modal-footer i {
     margin-left: 8px;
 }
 #send-rep-modal form,
