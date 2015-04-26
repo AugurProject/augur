@@ -165,7 +165,12 @@ EthereumClient.prototype.getMarkets = function (branchId) {
   var infoContract = this.getContract('info');
   var account = this.account;
 
-  var marketList = _.map(branchContract.call().getMarkets(branchId), function(marketId) {
+  var validMarkets = _.filter(branchContract.call().getMarkets(branchId), function(marketId) {
+    var events = marketContract.call().getMarketEvents(marketId);
+    return events.length ? true : false;
+  });
+
+  var marketList = _.map(validMarkets, function(marketId) {
 
     var events = marketContract.call().getMarketEvents(marketId);
     var description = infoContract.call().getDescription(marketId);
