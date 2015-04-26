@@ -43,5 +43,6 @@ module.exports = {
     makeReports: '0xa66d31612c2e716ab9633a8ba886686b3777d99a',
     markets: '0xaef3d1b4d10c31cf999b174dd3ce12421abb49e2',
     reporting: '0xd1f7f020f24abca582366ec80ce2fef6c3c22233',
+    sendReputation: '0x049487d32b727be98a4c8b58c4eab6521791f288'
   }
 };
