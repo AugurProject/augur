@@ -3,6 +3,7 @@ var React = require('react');
 var Fluxxor = require("fluxxor");
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
+var web3 = require('web3');
 
 var Router = require("react-router");
 var RouteHandler = Router.RouteHandler;
@@ -52,12 +53,18 @@ var MarketList = React.createClass({
     });
 
     return (
-      <div className='markets row'> 
-        { marketList } 
+      <div className='markets row'>
+        { marketList }
       </div>
     );
   }
 });
+
+var ellipsizeAddress = function (address, length) {
+  var hexAddress = web3.toHex(address);
+  var prefixLength = 2; // Ignore the '0x'.
+  return hexAddress.substr(0, length + prefixLength) + '...';
+};
 
 // bundling this list class here for now until needed for reuse
 var MarketPane = React.createClass({
@@ -68,7 +75,7 @@ var MarketPane = React.createClass({
 
     return (
       <Link to='market' params={ {marketId: market.id} } className='market-pane'>
-        <h4>{ market.text }</h4>
+        <h4>{ market.description }</h4>
         <div className='summary'>
           <span>{ market.price * 100 }%</span>
         </div>
@@ -76,7 +83,7 @@ var MarketPane = React.createClass({
           <p>Price: <b>{ market.price }</b></p>
           <p className='alt'>Volume: <b>{ market.totalVolume }</b></p>
           <p>Fee: <b>{ market.tradingFee }</b></p>
-          <p className='alt'>Author: <b>{ market.author }</b></p>
+          <p className='alt'>Author: <b>{ ellipsizeAddress(market.author, 6) }</b></p>
           <p>End date: <b>{ market.endDate || '-' }</b></p>
         </div>
       </Link>
