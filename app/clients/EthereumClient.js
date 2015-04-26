@@ -174,14 +174,14 @@ EthereumClient.prototype.getMarkets = function (branchId) {
 
     var events = marketContract.call().getMarketEvents(marketId);
     var description = infoContract.call().getDescription(marketId);
-    var alpha = marketContract.call().getAlpha(marketId).toNumber();
+    var alpha = marketContract.call().getAlpha(marketId).dividedBy(new BigNumber(2).toPower(64));
     var author = infoContract.call().getCreator(marketId);
-    var creationFee = infoContract.call().getCreationFee(marketId).toNumber;
+    var creationFee = infoContract.call().getCreationFee(marketId);
 
     var endDate = new Date();   // TODO: calc from last event expiration
-    var traderCount = marketContract.call().getCurrentParticipantNumber(marketId).toNumber();
-    var tradingPeriod = marketContract.call().getTradingPeriod(marketId).toNumber();
-    var tradingFee = marketContract.call().getTradingFee(marketId).toNumber();
+    var traderCount = marketContract.call().getCurrentParticipantNumber(marketId);
+    var tradingPeriod = marketContract.call().getTradingPeriod(marketId);
+    var tradingFee = marketContract.call().getTradingFee(marketId);
     var traderId =  marketContract.call().getParticipantNumber(marketId, account);
     var totalVolume = 0;
 
@@ -189,17 +189,18 @@ EthereumClient.prototype.getMarkets = function (branchId) {
     var outcomes = _.map( _.range(outcomeCount), function (outcomeId) {
 
       outcomeId += 1;   // 1-indexed 
-      var volume = marketContract.call().getSharesPurchased(marketId, outcomeId).toNumber();
+      var volume = marketContract.call().getSharesPurchased(marketId, outcomeId);
+      //console.log(volume.toNumber());
 
-      totalVolume += volume;
+      //totalVolume += volume;
 
       return {
         id: outcomeId,
-        price: marketContract.call().price(marketId, outcomeId).toNumber(),
+        price: marketContract.call().price(marketId, outcomeId).dividedBy(new BigNumber(2).toPower(64)),
         //sellPrice: marketContract.call().getSimulatedSell(marketId, id).toNumber(),
         //buyPrice: marketContract.call().getSimulatedBuy(marketId, id).toNumber(),
         priceHistory: [],  // NEED
-        sharesPurchased: marketContract.call().getParticipantSharesPurchased(marketId, traderId, outcomeId).toNumber(),
+        sharesPurchased: marketContract.call().getParticipantSharesPurchased(marketId, traderId, outcomeId).dividedBy(new BigNumber(2).toPower(64)),
         volume: volume
       };
     });
