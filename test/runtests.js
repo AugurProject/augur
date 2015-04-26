@@ -16,7 +16,12 @@ if (typeof(module) != 'undefined') {
         var params, output, send, returns;
         output = " - ";
         if (tx) {
-            params = (tx.params) ? tx.params.toString() : "";
+            if (tx.params && tx.params.constructor === Array) {
+                params = JSON.stringify(tx.params);
+            } else {
+                params = (tx.params) ? tx.params.toString() : "";
+            }
+            if (params.length > 25) params = params.slice(0,25) + "...";
             send = (tx.send) ? "sendTransaction" : "call";
             returns = (tx.returns) ? tx.returns : "string";
             output += send + " " + tx.to + ": " + tx.function + "(" + params + ") -> " + returns;
@@ -108,7 +113,6 @@ if (typeof(module) != 'undefined') {
 
     // Single integer parameter, array return value
     tx = {
-        from: constants.addr.jack,
         to: constants.addr.augur.branches,
         function: "getMarkets",
         signature: "i",
@@ -133,7 +137,7 @@ if (typeof(module) != 'undefined') {
 
     tx = {
         to: constants.addr.examples.multiplier,
-        function:"multiply",
+        function: "multiply",
         signature: "ii",
         params: [2, 3],
         returns: "int"
@@ -142,5 +146,13 @@ if (typeof(module) != 'undefined') {
 
     tx.params = [123, 321];
     test(tx, 39483);
+
+    tx = {
+        to: constants.addr.augur.cash,
+        function: "balance",
+        signature: "i",
+        params: constants.addr.jack
+    };
+    test(tx, "0x0000000000000000000000000000000000000000000027100000000000000000");
 
 })();

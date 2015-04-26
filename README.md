@@ -74,6 +74,31 @@ The `params` and `signature` fields are required if your function accepts parame
 
 Note that `invoke` is set up specifically for Serpent functions.  I haven't (yet) included all the different datatypes that Solidity supports in EthRPC's encoder -- everything's either a string, an int256, or an int256 array.  If you need a more flexible ABI encoder, check out [pyepm](https://github.com/etherex/pyepm), specifically the `pyepm.api.abi_data` method.
 
+All of EthRPC's functions have an optional callback as their last parameter.  This can be useful for chaining together RPC commands.  For example, here is a way to retrieve the return value from a function executed using sendTransaction (which normally returns only a transaction hash):
+```javascript
+EthRPC.invoke(tx, function (data) {
+    var txhash = data.result;
+    var pingTx = function () {
+        EthRPC.getTx(txhash, function (res) {
+            if (res && res.result && res.result.input) {
+                EthRPC.call({
+                    from: EthRPC.coinbase(),
+                    to: res.result.to,
+                    data: res.result.input
+                }, function (h) {
+                    if (h && h.result) {
+                        console.log("return value: ", h.result);
+                        clearInterval(timer);
+                    }
+                });
+            }
+        });
+    };
+    var timer = setInterval(pingTx, 12000);
+});
+```
+Once the transaction is detected on the chain, the input is re-used to obtain the function's return value.
+
 EthRPC can be used from the browser (although the Ethereum client must be set to accept RPC calls from the browser's address).  To use EthRPC in the browser, just include `ethrpc.js`, as well as the [bignumber.js](https://github.com/MikeMcl/bignumber.js) and [js-sha3](https://github.com/emn178/js-sha3) libraries.
 
 Tests

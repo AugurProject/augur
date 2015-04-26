@@ -1,6 +1,6 @@
 {
   "name": "ethrpc.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "EthRPC - Browser-compatible Ethereum JSON-RPC",
   "main": "ethrpc.js",
   "scripts": {
@@ -9,7 +9,8 @@
   "dependencies": {
     "bignumber.js": "^2.0.7",
     "http-sync": "^0.1.1",
-    "js-sha3": "^0.2.0"
+    "js-sha3": "^0.2.0",
+    "xhr2": "^0.1.2"
   },
   "engines": {
     "node": "0.10.x"

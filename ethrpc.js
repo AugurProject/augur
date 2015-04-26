@@ -20,6 +20,7 @@ if (NODE_JS) {
     var httpsync = require('http-sync');
     var keccak_256 = require('js-sha3').keccak_256;
     var BigNumber = require('bignumber.js');
+    var XMLHttpRequest = require('xhr2');
 }
 
 var pdata, id = 1;
@@ -70,33 +71,16 @@ function encode_hex(str) {
     return result;
 }
 
-function zeropad(r) {
-    var output = encode_hex(r);
+function zeropad(r, ishex) {
+    var output = r;
+    if (!ishex) output = encode_hex(output);
     while (output.length < 64) {
         output = '0' + output;
     }
     return output;
 }
 
-function encode_single(arg, base, sub) {
-    var normal_args, len_args, var_args;
-    normal_args = '';
-    len_args = '';
-    var_args = '';
-    if (base === "int") {
-        normal_args = zeropad(encode_int(arg % Math.pow(2, sub)));
-    } else if (base === "string") {
-        len_args = zeropad(encode_int(arg.length));
-        var_args = arg;
-    }
-    return {
-        len_args: len_args,
-        normal_args: normal_args,
-        var_args: var_args
-    }
-}
-
-function encode_any(arg, base, sub, arrlist) {
+function encode_abi(arg, base, sub, arrlist) {
     if (arrlist) {
         var res;
         var o = '';
@@ -118,7 +102,15 @@ function encode_any(arg, base, sub, arrlist) {
             var_args = arg;
         }
         if (base === "int") {
-            normal_args = zeropad(encode_int(arg % Math.pow(2, 256)));
+            if (arg.constructor === Number) {
+                normal_args = zeropad(encode_int(arg % Math.pow(2, sub)));
+            } else if (arg.constructor === String) {
+                if (arg.slice(0,2) === "0x") {
+                    normal_args = zeropad(arg.slice(2), true);
+                } else {
+                    normal_args = zeropad(encode_int(parseInt(arg) % Math.pow(2, sub)));
+                }
+            }
         }
         return {
             len_args: len_args,
@@ -151,6 +143,15 @@ function get_prefix(funcname, signature) {
     return "0x" + keccak_256(summary).slice(0, 8);
 }
 
+function clone(obj) {
+    if (null == obj || "object" != typeof obj) return obj;
+    var copy = obj.constructor();
+    for (var attr in obj) {
+        if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+    }
+    return copy;
+}
+
 function parse(response, callback) {
     response = JSON.parse(response);
     if (response.error) {
@@ -159,49 +160,22 @@ function parse(response, callback) {
             response.error.message
         );
     } else {
-        if (response.result && callback) {
-            return callback(response);
-        } else if (response.result) {
-            return response.result;
+        if (rpc.async) {
+            if (response.result && callback) {
+                callback(response);
+            } else if (response.result) {
+                log(response.result);
+            } else {
+                log(response);
+            }
         } else {
-            return response;
-        }
-    }
-}
-
-// post json-rpc command to ethereum client
-function json_rpc(command, callback, async) {
-    var req = null;
-    if (NODE_JS) {
-        req = httpsync.request({
-            protocol: rpc.protocol,
-            host: rpc.host,
-            path: '/',
-            port: rpc.port,
-            method: 'POST'
-        });
-        req.write(command);
-        return parse((req.end()).body.toString(), callback);
-    } else {
-        if (window.XMLHttpRequest) {
-            req = new XMLHttpRequest();
-        } else {
-            req = new ActiveXObject("Microsoft.XMLHTTP");
-        }
-        if (async || rpc.async) {
-            req.onreadystatechange = function () {
-                if (req.readyState == 4) {
-                    parse(req.responseText, callback);
-                }
-            };
-            req.open("POST", rpc_url, true);
-            req.setRequestHeader("Content-type", "application/json");
-            req.send(command);
-        } else {            
-            req.open("POST", rpc_url, false);
-            req.setRequestHeader("Content-type", "application/json");
-            req.send(command);
-            return parse(req.responseText, callback);
+            if (response.result && callback) {
+                return callback(response);
+            } else if (response.result) {
+                return response.result;
+            } else {
+                return response;
+            }
         }
     }
 }
@@ -226,6 +200,55 @@ function postdata(command, params, prefix) {
         pdata.params = [];
     }
     return JSON.stringify(pdata);
+}
+
+// post json-rpc command to ethereum client
+function json_rpc(command, callback) {
+    var req = null;
+    if (NODE_JS) {
+        if (rpc.async) {
+            req = new XMLHttpRequest();
+            req.onreadystatechange = function () {
+                if (req.readyState == 4) {
+                    parse(req.responseText, callback);
+                }
+            };
+            req.open("POST", rpc_url, true);
+            req.setRequestHeader("Content-type", "application/json");
+            req.send(command);
+        } else {
+            req = httpsync.request({
+                protocol: rpc.protocol,
+                host: rpc.host,
+                path: '/',
+                port: rpc.port,
+                method: 'POST'
+            });
+            req.write(command);
+            return parse((req.end()).body.toString(), callback);
+        }
+    } else {
+        if (window.XMLHttpRequest) {
+            req = new XMLHttpRequest();
+        } else {
+            req = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        if (rpc.async) {
+            req.onreadystatechange = function () {
+                if (req.readyState == 4) {
+                    parse(req.responseText, callback);
+                }
+            };
+            req.open("POST", rpc_url, true);
+            req.setRequestHeader("Content-type", "application/json");
+            req.send(command);
+        } else {            
+            req.open("POST", rpc_url, false);
+            req.setRequestHeader("Content-type", "application/json");
+            req.send(command);
+            return parse(req.responseText, callback);
+        }
+    }
 }
 
 var EthRPC = {
@@ -304,7 +327,7 @@ var EthRPC = {
         return this.sendTx({ from: this.coinbase(), data: compiled }, f);
     },
     // hex-encode a function's ABI data and return it
-    encode_abi: function (tx, f) {
+    abi_data: function (tx, f) {
         tx.signature = tx.signature || "";
         var data_abi = get_prefix(tx.function, tx.signature);
         var types = [];
@@ -319,7 +342,9 @@ var EthRPC = {
         }
         if (tx.params) {
             if (tx.params.constructor === String) {
-                tx.params = JSON.parse(tx.params);
+                if (tx.params.slice(0,1) === "[" && tx.params.slice(-1) === "]") {
+                    tx.params = JSON.parse(tx.params);
+                }
                 if (tx.params.constructor === String) {
                     tx.params = [tx.params];
                 }
@@ -346,12 +371,14 @@ var EthRPC = {
                     base = "int";
                     sub = 256;
                 }
-                res = encode_any(tx.params[i], base, sub, arrlist);
+                res = encode_abi(tx.params[i], base, sub, arrlist);
                 len_args += res.len_args;
                 normal_args += res.normal_args;
                 var_args += res.var_args;
             }
             data_abi += len_args + normal_args + var_args;
+        } else {
+            return console.error("wrong number of parameters");
         }
         return data_abi;
     },
@@ -370,8 +397,8 @@ var EthRPC = {
      * }
      */
     invoke: function (tx, f) {
-        tx.signature = tx.signature || "";
-        data_abi = this.encode_abi(tx);
+        var tx = clone(tx);
+        data_abi = this.abi_data(tx);
         if (tx && data_abi) {
             var packaged = {
                 from: tx.from || this.coinbase(),
