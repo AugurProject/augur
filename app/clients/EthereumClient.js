@@ -113,7 +113,7 @@ EthereumClient.prototype.sendRep = function(destination, amount, branchId) {
   var self = this;
   sendRepContract.sendTransaction({from: this.account, gas: 1000000}, function(err, log) {
     console.log(log);
-  }).sendReputation(branchId, destination, fixedAmount);
+  }).sendReputation(id, destination, fixedAmount);
 
 };
 
