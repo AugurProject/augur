@@ -1,6 +1,14 @@
 var keyMirror = require('react/lib/keyMirror');
+var BigNumber = require('bignumber.js');
+
+// Many Augur values are stored shifted 64 bits to use the lower bits
+// as fixed-point fractional values.
+var ONE_FXP = new BigNumber(2).toPower(64);
 
 module.exports = {
+  ONE_FXP: ONE_FXP,
+  NO: ONE_FXP,
+  YES: ONE_FXP.mul(2),
   SECONDS_PER_BLOCK: 12,
   CHANGE_EVENT: 'change',
   config: keyMirror({

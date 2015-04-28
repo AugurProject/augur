@@ -5,6 +5,9 @@ var abi = require('../libs/abi');
 var constants = require('../libs/constants');
 var utilities = require('../libs/utilities');
 
+var fromFixedPoint = utilities.fromFixedPoint;
+var toFixedPoint = utilities.toFixedPoint;
+
 function MissingContractError(contractName) {
   this.name = 'MissingContractError';
   this.message = contractName;
@@ -73,13 +76,13 @@ EthereumClient.prototype.getCashBalance = function() {
   var cashContract = this.getContract('cash');
   var balance = cashContract.call().balance(this.account);
 
-  return balance.dividedBy(new BigNumber(2).toPower(64)).toNumber();
+  return fromFixedPoint(balance).toNumber();
 };
 
 EthereumClient.prototype.sendCash = function(destination, amount, onSuccess) {
 
   var cashContract = this.getContract('cash');
-  var fixedAmount = new BigNumber(amount).times(new BigNumber(2).toPower(64));
+  var fixedAmount = toFixedPoint(amount);
 
   cashContract.sendTransaction({from: this.account, gas: 1000000}, function(err, log) {
     console.log(log);
@@ -101,14 +104,14 @@ EthereumClient.prototype.getRepBalance = function(branchId) {
   var reportingContract = this.getContract('reporting');
   var rep = reportingContract.call().getRepBalance(id, this.account);
 
-  return rep.dividedBy(new BigNumber(2).toPower(64)).toNumber();
+  return fromFixedPoint(rep).toNumber();
 };
 
 EthereumClient.prototype.sendRep = function(destination, amount, branchId) {
 
   var id = branchId || 1010101;
   var sendRepContract = this.getContract('sendReputation');
-  var fixedAmount = new BigNumber(amount).times(new BigNumber(2).toPower(64));
+  var fixedAmount = toFixedPoint(amount);
 
   var self = this;
   sendRepContract.sendTransaction({from: this.account, gas: 1000000}, function(err, log) {
@@ -130,7 +133,7 @@ EthereumClient.prototype.getBranches = function () {
   var branchList = _.map(branchContract.call().getBranches(), function(branchId) {
 
     var storedRep = reportingContract.call().getRepBalance(branchId, account);
-    var rep = storedRep.dividedBy(new BigNumber(2).toPower(64)).toNumber();
+    var rep = fromFixedPoint(storedRep).toNumber();
     var marketCount = branchContract.call().getNumMarkets(branchId).toNumber();
     var periodLength = branchContract.call().getPeriodLength(branchId).toNumber();
     var branchName = branchId == 1010101 ? 'General' : 'Unknown';  // HACK: until we're actually using multi-branch
@@ -174,7 +177,7 @@ EthereumClient.prototype.getMarkets = function (branchId) {
 
     var events = marketContract.call().getMarketEvents(marketId);
     var description = infoContract.call().getDescription(marketId);
-    var alpha = marketContract.call().getAlpha(marketId).dividedBy(new BigNumber(2).toPower(64));
+    var alpha = fromFixedPoint(marketContract.call().getAlpha(marketId));
     var author = infoContract.call().getCreator(marketId);
     var creationFee = infoContract.call().getCreationFee(marketId);
 
@@ -185,10 +188,9 @@ EthereumClient.prototype.getMarkets = function (branchId) {
     var traderId =  marketContract.call().getParticipantNumber(marketId, account);
     var totalVolume = 0;
 
-    var outcomeCount = marketContract.call().getMarketNumOutcomes(marketId).toNumber(); 
-    var outcomes = _.map( _.range(outcomeCount), function (outcomeId) {
+    var outcomeCount = marketContract.call().getMarketNumOutcomes(marketId).toNumber();
+    var outcomes = _.map( _.range(1, outcomeCount + 1), function (outcomeId) {
 
-      outcomeId += 1;   // 1-indexed 
       var volume = marketContract.call().getSharesPurchased(marketId, outcomeId);
       //console.log(volume.toNumber());
 
@@ -196,11 +198,11 @@ EthereumClient.prototype.getMarkets = function (branchId) {
 
       return {
         id: outcomeId,
-        price: marketContract.call().price(marketId, outcomeId).dividedBy(new BigNumber(2).toPower(64)),
+        price: fromFixedPoint(marketContract.call().price(marketId, outcomeId)),
         //sellPrice: marketContract.call().getSimulatedSell(marketId, id).toNumber(),
         //buyPrice: marketContract.call().getSimulatedBuy(marketId, id).toNumber(),
         priceHistory: [],  // NEED
-        sharesPurchased: marketContract.call().getParticipantSharesPurchased(marketId, traderId, outcomeId).dividedBy(new BigNumber(2).toPower(64)),
+        sharesPurchased: fromFixedPoint(marketContract.call().getParticipantSharesPurchased(marketId, traderId, outcomeId)),
         volume: volume
       };
     });
@@ -280,9 +282,10 @@ EthereumClient.prototype.addMarket = function(params) {
 
     var branchId = params.branchId || 1010101;
     var description = params.description;
-    var alpha = new BigNumber('0.07').times(new BigNumber(2).toPower(64));
-    var initialLiquidity = new BigNumber(params.initialLiquidity).times(new BigNumber(2).toPower(64));
-    var tradingFee = new BigNumber(params.tradingFee).times(new BigNumber(2).toPower(64));   // percent trading fee
+    var alpha = toFixedPoint(new BigNumber('0.07'));
+    var initialLiquidity = toFixedPoint(params.initialLiquidity);
+    var tradingFee = toFixedPoint(params.tradingFee);   // percent trading fee
+
     var events = params.events;  // a list of event ids
 
     try {
