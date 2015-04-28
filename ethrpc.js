@@ -83,14 +83,13 @@ function zeropad(r, ishex) {
 }
 
 function encode_abi(arg, base, sub, arrlist) {
-    var args;
     if (arrlist) {
         var res, o = '';
         for (var j = 0, l = arg.length; j < l; ++j) {
             res = encode_any(arg[j], base, sub, arrlist.slice(0,-1));
             o += res.normal_args;
         }
-        args = {
+        return {
             len_args: zeropad(encode_int(arg.length)),
             normal_args: '',
             var_args: o
@@ -112,13 +111,12 @@ function encode_abi(arg, base, sub, arrlist) {
                 }
             }
         }
-        args = {
+        return {
             len_args: len_args,
             normal_args: normal_args,
             var_args: var_args
         }
     }
-    return args;
 }
 
 function get_prefix(funcname, signature) {
