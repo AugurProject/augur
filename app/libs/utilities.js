@@ -68,17 +68,30 @@ module.exports = {
     return +value.toFixed(5) + ' ' + unit;
   },
 
+  /**
+   * Convert a number to a fixed-point BigNumber.
+   *
+   * Multiplies the value by 2^64, then floors it to get a round BigNumber.
+   */
+  toFixedPoint: function (value) {
+    return constants.ONE_FXP.times(value).floor();
+  },
+
+  fromFixedPoint: function (value) {
+    return value.dividedBy(constants.ONE_FXP);
+  },
+
   consoleStyle: 'background-color: #602A52; color: #fff; padding: 2px 6px;',
 
-  log: function(message) { 
-    console.log('%caugur', this.consoleStyle, message); 
+  log: function(message) {
+    console.log('%caugur', this.consoleStyle, message);
   },
 
-  warn: function(message) { 
-    console.warn('%caugur', this.consoleStyle, message); 
+  warn: function(message) {
+    console.warn('%caugur', this.consoleStyle, message);
   },
 
-  error: function(message) {  
+  error: function(message) {
     console.error('%caugur', this.consoleStyle, message);
   }
 
