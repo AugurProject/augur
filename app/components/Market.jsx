@@ -9,8 +9,7 @@ var RouteHandler = Router.RouteHandler;
 var Identicon = require('../libs/identicon.js');
 var utilities = require('../libs/utilities');
 
-var NO = 1;
-var YES = 2;
+var Outcomes = require('./Outcomes');
 
 var Router = React.createClass({
 
@@ -31,18 +30,6 @@ var Router = React.createClass({
   },
 
   render: function() {
-    var outcomes;
-    if (_.isUndefined(this.state.market)) {
-      outcomes = [];
-    } else {
-      var outcomeCount = this.state.market.outcomes.length;
-      var outcomes = _.map(this.state.market.outcomes, function (outcome) {
-        return (
-          <Outcome {...outcome} outcomeCount={outcomeCount}></Outcome>
-        );
-      });
-    }
-
     return (
       <div id='market'>
         <h3>{ this.state.market.description }</h3>
@@ -62,7 +49,7 @@ var Overview = React.createClass({
       var outcomeCount = this.props.market.outcomes.length;
       var outcomes = _.map(this.props.market.outcomes, function (outcome) {
         return (
-          <Outcome {...outcome} outcomeCount={outcomeCount}></Outcome>
+          <Outcomes.Overview {...outcome} outcomeCount={outcomeCount}></Outcomes.Overview>
         );
       });
     }
@@ -72,33 +59,6 @@ var Overview = React.createClass({
         { outcomes }
         <h4>{ this.props.market.comments.length } Comments</h4>
         <Comments comments={ this.props.market.comments } account={ this.props.account } />
-      </div>
-    );
-  }
-});
-
-var Outcome = React.createClass({
-
-  getOutcomeName: function () {
-    if (this.props.outcomeCount != 2) {
-      return this.props.id;
-    }
-
-    if (this.props.id === NO) {
-      return 'No';
-    } else {
-      return 'Yes';
-    }
-  },
-
-  render: function () {
-    return (
-      <div className="outcome outcome-{ this.props.id } col-md-6">
-        <h3>{ this.getOutcomeName() }</h3>
-        <div className="price">{ (Math.floor(this.props.price) * 100).toString() }%</div>
-        <p className="shares-held">Shares held: 0</p>
-        <button className="btn btn-success" type="button">Buy</button>
-        <button className="btn btn-warning" type="button">Sell</button>
       </div>
     );
   }
