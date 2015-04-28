@@ -58,6 +58,7 @@ var AugurApp = require("./components/AugurApp");
 var Branch = require('./components/Branch');
 var Market = require('./components/Market');
 var AccountDetails = require('./components/AccountDetails');
+var Outcomes = require('./components/Outcomes');
 
 var flux = new Fluxxor.Flux(stores, actions);
 
@@ -70,8 +71,12 @@ var routes = (
   <Route name="app" handler={ AugurApp } flux={ flux }>
     <DefaultRoute handler={ Branch } flux={ flux } title="Branch" />
     <Route name="home" path="/" handler={ Branch } flux={ flux } title="Branch" />
-    <Route name="branch" path="/branch/:branchId" handler={ Branch} flux={ flux } title="Branch" />
-    <Route name="market" path="/market/:marketId" handler={ Market } flux={ flux } title="Market" />
+    <Route name="branch" path="/branches/:branchId" handler={ Branch} flux={ flux } title="Branch" />
+    <Route name="market" path="/markets/:marketId" handler={ Market.Router } flux={ flux }>
+      <DefaultRoute handler={ Market.Overview } flux={ flux } title="Market" />
+      <Route name="buy-outcome" path="outcomes/:outcomeId/buy" handler={ Outcomes.Buy } flux={ flux } title="Buy Outcome" />
+      <Route name="sell-outcome" path="outcomes/:outcomeId/sell" handler={ Outcomes.Sell } flux={ flux } title="Sell Outcome" />
+    </Route>
     <Route name="account" path="/account" handler={ AccountDetails } flux={ flux } title="Account Overview" />
   </Route>
 );

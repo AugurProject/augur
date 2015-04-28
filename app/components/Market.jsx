@@ -3,6 +3,8 @@ var React = require('react');
 var Fluxxor = require('fluxxor');
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
+var Router = require("react-router");
+var RouteHandler = Router.RouteHandler;
 
 var Identicon = require('../libs/identicon.js');
 var utilities = require('../libs/utilities');
@@ -10,7 +12,7 @@ var utilities = require('../libs/utilities');
 var NO = 1;
 var YES = 2;
 
-var Market = React.createClass({
+var Router = React.createClass({
 
   mixins: [FluxMixin, StoreWatchMixin('market')],
 
@@ -45,10 +47,31 @@ var Market = React.createClass({
       <div id='market'>
         <h3>{ this.state.market.description }</h3>
         <p className="info">Augur reporters will resolve this question on January 1, 2016.</p>
-        { outcomes }
-        <h4>{ this.state.market.comments.length } Comments</h4>
-        <Comments comments={ this.state.market.comments } account={ this.state.account } />
+        <RouteHandler {...this.props} {...this.state} />
+      </div>
+    );
+  }
+});
 
+var Overview = React.createClass({
+  render: function() {
+    var outcomes;
+    if (_.isUndefined(this.props.market)) {
+      outcomes = [];
+    } else {
+      var outcomeCount = this.props.market.outcomes.length;
+      var outcomes = _.map(this.props.market.outcomes, function (outcome) {
+        return (
+          <Outcome {...outcome} outcomeCount={outcomeCount}></Outcome>
+        );
+      });
+    }
+
+    return (
+      <div>
+        { outcomes }
+        <h4>{ this.props.market.comments.length } Comments</h4>
+        <Comments comments={ this.props.market.comments } account={ this.props.account } />
       </div>
     );
   }
@@ -69,7 +92,6 @@ var Outcome = React.createClass({
   },
 
   render: function () {
-    console.log(this);
     return (
       <div className="outcome outcome-{ this.props.id } col-md-6">
         <h3>{ this.getOutcomeName() }</h3>
@@ -140,4 +162,7 @@ var CommentForm = React.createClass({
   }
 });
 
-module.exports = Market;
+module.exports = {
+  Overview: Overview,
+  Router: Router
+};
