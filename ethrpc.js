@@ -64,11 +64,13 @@ function encode_int(value) {
 }
 
 function encode_hex(str) {
-    var result = '';
+    var byte, hex = '';
     for (var i = 0, len = str.length; i < len; ++i) {
-        result += str.charCodeAt(i).toString(16);
+        byte = str.charCodeAt(i).toString(16);
+        if (byte.length === 1) byte = "0" + byte;
+        hex += byte;
     }
-    return result;
+    return hex;
 }
 
 function zeropad(r, ishex) {
@@ -81,25 +83,23 @@ function zeropad(r, ishex) {
 }
 
 function encode_abi(arg, base, sub, arrlist) {
+    var args;
     if (arrlist) {
-        var res;
-        var o = '';
+        var res, o = '';
         for (var j = 0, l = arg.length; j < l; ++j) {
             res = encode_any(arg[j], base, sub, arrlist.slice(0,-1));
             o += res.normal_args;
         }
-        return {
+        args = {
             len_args: zeropad(encode_int(arg.length)),
             normal_args: '',
             var_args: o
         }
     } else {
-        var len_args = '';
-        var normal_args = '';
-        var var_args = '';
+        var len_args = normal_args = var_args = '';
         if (base === "string") {
             len_args = zeropad(encode_int(arg.length));
-            var_args = arg;
+            var_args = encode_hex(arg);
         }
         if (base === "int") {
             if (arg.constructor === Number) {
@@ -112,12 +112,13 @@ function encode_abi(arg, base, sub, arrlist) {
                 }
             }
         }
-        return {
+        args = {
             len_args: len_args,
             normal_args: normal_args,
             var_args: var_args
         }
     }
+    return args;
 }
 
 function get_prefix(funcname, signature) {
@@ -139,8 +140,11 @@ function get_prefix(funcname, signature) {
         }
         if (i != len - 1) summary += ",";
     }
-    summary += ")";
-    return "0x" + keccak_256(summary).slice(0, 8);
+    var prefix = keccak_256(summary + ")").slice(0, 8);
+    while (prefix.slice(0, 1) === '0') {
+        prefix = prefix.slice(1);
+    }
+    return "0x" + prefix;
 }
 
 function clone(obj) {
