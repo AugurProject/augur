@@ -185,10 +185,9 @@ EthereumClient.prototype.getMarkets = function (branchId) {
     var traderId =  marketContract.call().getParticipantNumber(marketId, account);
     var totalVolume = 0;
 
-    var outcomeCount = marketContract.call().getMarketNumOutcomes(marketId).toNumber(); 
-    var outcomes = _.map( _.range(outcomeCount), function (outcomeId) {
+    var outcomeCount = marketContract.call().getMarketNumOutcomes(marketId).toNumber();
+    var outcomes = _.map( _.range(1, outcomeCount + 1), function (outcomeId) {
 
-      outcomeId += 1;   // 1-indexed 
       var volume = marketContract.call().getSharesPurchased(marketId, outcomeId);
       //console.log(volume.toNumber());
 
