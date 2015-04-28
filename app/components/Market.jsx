@@ -47,9 +47,10 @@ var Overview = React.createClass({
       outcomes = [];
     } else {
       var outcomeCount = this.props.market.outcomes.length;
+      var params = this.props.params;
       var outcomes = _.map(this.props.market.outcomes, function (outcome) {
         return (
-          <Outcomes.Overview {...outcome} outcomeCount={outcomeCount}></Outcomes.Overview>
+          <Outcomes.Overview {...outcome} outcomeCount={outcomeCount} params={params}></Outcomes.Overview>
         );
       });
     }

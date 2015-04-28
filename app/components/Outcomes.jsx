@@ -1,4 +1,6 @@
 var React = require('react');
+var Router = require('react-router');
+var Link = Router.Link;
 
 var NO = 1;
 var YES = 2;
@@ -26,8 +28,8 @@ var Overview = React.createClass({
         <h3>{ this.getOutcomeName() }</h3>
         <div className="price">{ priceToPercentage(this.props.price) }%</div>
         <p className="shares-held">Shares held: 0</p>
-        <button className="btn btn-success" type="button">Buy</button>
-        <button className="btn btn-warning" type="button">Sell</button>
+        <Link to="buy-outcome" className="btn btn-success" params={{marketId: this.props.params.marketId, outcomeId: this.props.id}}>Buy</Link>
+        <Link to="sell-outcome" className="btn btn-danger" params={{marketId: this.props.params.marketId, outcomeId: this.props.id}}>Sell</Link>
       </div>
     );
   }
@@ -45,7 +47,11 @@ var Buy = React.createClass({
 
 var Sell = React.createClass({
   render: function () {
-    return '';
+    return (
+      <div>
+        <h3>Sell Shares</h3>
+      </div>
+    );
   }
 });
 
