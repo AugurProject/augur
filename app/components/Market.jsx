@@ -7,6 +7,9 @@ var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 var Identicon = require('../libs/identicon.js');
 var utilities = require('../libs/utilities');
 
+var NO = 1;
+var YES = 2;
+
 var Market = React.createClass({
 
   mixins: [FluxMixin, StoreWatchMixin('market')],
@@ -25,68 +28,55 @@ var Market = React.createClass({
     }
   },
 
-  componentDidMount: function() {
-
-    var priceHistory = [];
-    
-    // build chart
-    var data = google.visualization.arrayToDataTable([['Date', 'Price']].concat(priceHistory));
-    var options = {
-        title: 'Price',
-        legend: { position: 'none' },
-        backgroundColor: '#f9f6ea',
-        chartArea: {top: 10, width: "85%", height: "80%"}
-    };
-
-    var chart = new google.visualization.LineChart(document.getElementById('market-chart'));
-    chart.draw(data, options);
-
-    // redraw on window resize
-    $( window ).resize(function() { this.chart.draw(data, options); });
-  },
-
   render: function() {
+    var outcomes;
+    if (_.isUndefined(this.state.market)) {
+      outcomes = [];
+    } else {
+      var outcomeCount = this.state.market.outcomes.length;
+      var outcomes = _.map(this.state.market.outcomes, function (outcome) {
+        return (
+          <Outcome {...outcome} outcomeCount={outcomeCount}></Outcome>
+        );
+      });
+    }
 
     return (
       <div id='market'>
-        <h3>
-          <div className="current">{ parseInt(this.state.market.price * 100).toString() + '%' }</div>
-          <div className="text">{ this.state.market.text }</div>
-        </h3>
-        <div className="row summary">
-          <div className="col-xs-4 trade">
-            <p className="delta">-</p>
-            <p className="shares-held">Shares held: <b>-</b></p>
-            <p className="end-date">End date: <b>-</b></p>
-            <div className="input-group buy yes">
-              <input type="text" className="form-control" placeholder="Shares" />
-              <span className="input-group-btn">
-                <button className="btn btn-success" type="button">Buy <b></b></button>
-              </span>
-            </div>
-            <div className="input-group buy no">
-              <input type="text" className="form-control" placeholder="Shares" />
-              <span className="input-group-btn">
-                <button className="btn btn-danger" type="button">Sell <b></b></button>
-              </span>
-            </div>
-          </div>
-          <div className="col-xs-8">
-            <div id="market-chart" className="chart"></div>
-            <div className="details">
-              <p className="current-price">Current price:<b></b></p>
-              <p className="cash">Cash available:<b className="cash-balance">-</b></p>
-              <p className="cost">Cost of trade:<b>-</b></p>
-              <p className="new-cash">New cash available:<b>-</b></p>
-              <p className="new-price">New price:<b>-</b></p>
-              <p className="author">-</p>
-            </div>
-          </div>
-        </div>
-
+        <h3>{ this.state.market.description }</h3>
+        <p className="info">Augur reporters will resolve this question on January 1, 2016.</p>
+        { outcomes }
         <h4>{ this.state.market.comments.length } Comments</h4>
         <Comments comments={ this.state.market.comments } account={ this.state.account } />
 
+      </div>
+    );
+  }
+});
+
+var Outcome = React.createClass({
+
+  getOutcomeName: function () {
+    if (this.props.outcomeCount != 2) {
+      return this.props.id;
+    }
+
+    if (this.props.id === NO) {
+      return 'No';
+    } else {
+      return 'Yes';
+    }
+  },
+
+  render: function () {
+    console.log(this);
+    return (
+      <div className="outcome outcome-{ this.props.id } col-md-6">
+        <h3>{ this.getOutcomeName() }</h3>
+        <div className="price">{ (Math.floor(this.props.price) * 100).toString() }%</div>
+        <p className="shares-held">Shares held: 0</p>
+        <button className="btn btn-success" type="button">Buy</button>
+        <button className="btn btn-warning" type="button">Sell</button>
       </div>
     );
   }
