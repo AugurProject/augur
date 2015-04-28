@@ -77,6 +77,9 @@ module.exports = {
     return constants.ONE_FXP.times(value).floor();
   },
 
+  /**
+   * Convert a fixed-point BigNumber to an unshifted BigNumber.
+   */
   fromFixedPoint: function (value) {
     return value.dividedBy(constants.ONE_FXP);
   },
