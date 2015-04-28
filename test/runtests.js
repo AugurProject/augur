@@ -111,30 +111,7 @@ if (typeof(module) != 'undefined') {
     tx.params = 22121;
     test(tx, 44242);
 
-    // Single integer parameter, array return value
-    tx = {
-        to: constants.addr.augur.branches,
-        function: "getMarkets",
-        signature: "i",
-        params: 1010101,
-        returns: "array"
-    };
-    test(tx, [
-        "0x0000000000000000000000000000000000000000000000000000000000000032",
-        "0x00000000000000000000000000000000000000000000000000000000000000e8",
-        "0x00000000000000000000000000000000000000000000000000000000000000e8"
-    ], function (a) {
-        return a.slice(0,3);
-    });
-
-    tx.returns = "string";
-    test(tx,
-        "0x000000000000000000000000000000000000000000000000000000000000003200000000000000000000000000000000000000000000000000000000000000e800000000000000000000000000000000000000000000000000000000000000e", 
-        function (s) {
-            return s.slice(0,193);
-        }
-    );
-
+    // multiple integer parameters
     tx = {
         to: constants.addr.examples.multiplier,
         function: "multiply",
@@ -154,5 +131,29 @@ if (typeof(module) != 'undefined') {
         params: constants.addr.jack
     };
     test(tx, "0x0000000000000000000000000000000000000000000027100000000000000000");
+
+
+    // Single integer parameter, array return value
+    tx = {
+        to: constants.addr.augur.branches,
+        function: "getMarkets",
+        signature: "i",
+        params: 1010101,
+        returns: "array"
+    };
+    test(tx, [
+        "0x00000000000000000000000000000000000000000000000000000000000000e8",
+        "0x00000000000000000000000000000000000000000000000000000000000000e8"
+    ], function (a) {
+        a.slice(1,2);
+    });
+
+    tx.returns = "string";
+    test(tx,
+        "0x000000000000000000000000000000000000000000000000000000000000003300000000000000000000000000000000000000000000000000000000000000e800000000000000000000000000000000000000000000000000000000000000e8",
+        function (s) {
+            return s.slice(66,194);
+        }
+    )
 
 })();
