@@ -249,20 +249,22 @@ EthereumClient.prototype.addEvent = function(params) {
     var contract = this.getContract('createEvent');
 
     var branchId = params.branchId || 1010101;
-    var desc = params.desc;
+    var description = params.description;
     var expirationBlock = params.expirationBlock;
     var minValue = params.minValue || 0;
     var maxValue = params.maxValue || 1;
     var numOutcomes = params.numOutcomes || 2;
 
     try {
+
       var newEventId = contract.call({gas: 1000000}).createEvent(
-        branchId, desc, expirationBlock, minValue, maxValue, numOutcomes
+        branchId, description, expirationBlock, minValue, maxValue, numOutcomes
       );
 
-      contract.sendTransaction({from: this.account, gas: 1000000}).createEvent(
-        branchId, desc, expirationBlock, minValue, maxValue, numOutcomes
+      contract.sendTransaction({from: this.account, gas: 1000000}, console.log).createEvent(
+        branchId, description, expirationBlock, minValue, maxValue, numOutcomes
       );
+
     } catch(err) {
 
       utilities.error(err);
@@ -276,22 +278,30 @@ EthereumClient.prototype.addMarket = function(params) {
 
     var contract = this.getContract('createMarket');
 
-    var branchId = 1010101;
-    var desc = params.des;
-    var alpha = new BigNumber('0.07').multiplyBy(new BigNumber(2).toPower(64));
-    var initialLiquidity = new BigNumber(params.initialLiquidity).multiplyBy(new BigNumber(2).toPower(64));
-    var tradingFee = new BigNumber(params.tradingFee).multiplyBy(new BigNumber(2).toPower(64));   // percent trading fee
+    var branchId = params.branchId || 1010101;
+    var description = params.description;
+    var alpha = new BigNumber('0.07').times(new BigNumber(2).toPower(64));
+    var initialLiquidity = new BigNumber(params.initialLiquidity).times(new BigNumber(2).toPower(64));
+    var tradingFee = new BigNumber(params.tradingFee).times(new BigNumber(2).toPower(64));   // percent trading fee
     var events = params.events;  // a list of event ids
 
     try {
 
-      var newMarketId = contract.call({gas: 30000}).createMarket(
-        branchId, desc, alpha, initialLiquidity, tradingFee, events
+      var newMarketId = contract.call({gas: 1000000}).createMarket(
+        branchId, description, alpha, initialLiquidity, tradingFee, events
       );
 
-      contract.sendTransaction({from: this.account, gas: 30000}).createMarket(
-        branchId, desc, alpha, initialLiquidity, tradingFee, events
-      );
+      if (newMarketId && [-1, -2, -3, -4].indexOf(newMarketId.toNumber())) {
+
+        contract.sendTransaction({from: this.account, gas: 1000000}).createMarket(
+          branchId, description, alpha, initialLiquidity, tradingFee, events
+        );
+
+      } else {
+
+        utilities.error('error adding market ('+newMarketId+')');
+        return false;
+      }
 
     } catch(err) {
 

@@ -161,6 +161,8 @@ var ErrorModal = React.createClass({
     if (nextProps.network.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED ||
     nextProps.config.ethereumClientFailed === true) {
       this.setState({ isModalOpen: true });
+    } else {
+      this.setState({ isModalOpen: false });
     }
   },
 

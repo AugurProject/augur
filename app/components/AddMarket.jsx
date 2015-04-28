@@ -6,6 +6,7 @@ var ReactBootstrap = require('react-bootstrap');
 var Button = ReactBootstrap.Button;
 var Modal = ReactBootstrap.Modal;
 var ModalTrigger = ReactBootstrap.ModalTrigger;
+var utilities = require('../libs/utilities');
 
 var AddMarketModal = React.createClass({
 
@@ -27,7 +28,8 @@ var AddMarketModal = React.createClass({
 
     return {
       ethereumClient: flux.store('config').getEthereumClient(),
-      cash: flux.store('asset').getState().cash
+      cash: flux.store('asset').getState().cash,
+      currentBlock: flux.store('network').getState().blockNumber
     }
   },
 
@@ -59,7 +61,36 @@ var AddMarketModal = React.createClass({
 
   onSubmit: function (event) {
 
-    console.log(this.state);
+    var newEventParams = {
+      description: this.state.marketText,
+      expirationBlock: utilities.dateToBlock(new Date(this.state.maturationDate), this.state.currentBlock)
+    }
+
+    var newEventId = this.state.ethereumClient.addEvent(newEventParams);
+    if (newEventId) {
+
+      var newMarketParams = {
+        description: this.state.marketText,
+        initialLiquidity: this.state.marketInvestment,
+        tradingFee: this.state.tradingFee,
+        events: [newEventId],
+      }  
+      var newMarketId = this.state.ethereumClient.addMarket(newMarketParams);
+
+      if (newMarketId) {
+
+        utilities.log('new market ' + newMarketId +' created');
+
+      } else {
+
+        utilities.error('failed to add market');
+      }
+
+    } else {
+
+      utilities.error('failed to add event');
+    }
+
     this.props.onRequestHide();
   },
 
