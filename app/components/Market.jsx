@@ -46,7 +46,7 @@ var Router = React.createClass({
     return (
       <div id='market'>
         <h3>{ this.state.market.description }</h3>
-        <p className="info">Augur reporters will resolve this question on January 1, 2016.</p>
+        <p className="info">Augur reporters will resolve this question after January 20, 2017.</p>
         <RouteHandler {...this.props} {...this.state} />
       </div>
     );
