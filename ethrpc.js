@@ -205,10 +205,10 @@ function postdata(command, params, prefix) {
 }
 
 // post json-rpc command to ethereum client
-function json_rpc(command, callback) {
+function json_rpc(command, async, callback) {
     var req = null;
     if (NODE_JS) {
-        if (rpc.async) {
+        if (async || rpc.async) {
             req = new XMLHttpRequest();
             req.onreadystatechange = function () {
                 if (req.readyState == 4) {
@@ -235,7 +235,7 @@ function json_rpc(command, callback) {
         } else {
             req = new ActiveXObject("Microsoft.XMLHTTP");
         }
-        if (rpc.async) {
+        if (async || rpc.async) {
             req.onreadystatechange = function () {
                 if (req.readyState == 4) {
                     parse(req.responseText, callback);
@@ -253,31 +253,33 @@ function json_rpc(command, callback) {
     }
 }
 
+var coinbase = json_rpc(postdata("coinbase"), false);
+
 var EthRPC = {
     rpc: function (command, params, f) {
-        return json_rpc(postdata(command, params, "null"), f);
+        return json_rpc(postdata(command, params, "null"), rpc.async, f);
     },
     eth: function (command, params, f) {
-        return json_rpc(postdata(command, params), f);
+        return json_rpc(postdata(command, params), rpc.async, f);
     },
     net: function (command, params, f) {
-        return json_rpc(postdata(command, params, "net_"), f);
+        return json_rpc(postdata(command, params, "net_"), rpc.async, f);
     },
     web3: function (command, params, f) {
-        return json_rpc(postdata(command, params, "web3_"), f);
+        return json_rpc(postdata(command, params, "web3_"), rpc.async, f);
     },
     db: function (command, params, f) {
-        return json_rpc(postdata(command, params, "db_"), f);
+        return json_rpc(postdata(command, params, "db_"), rpc.async, f);
     },
     shh: function (command, params, f) {
-        return json_rpc(postdata(command, params, "shh_"), f);
+        return json_rpc(postdata(command, params, "shh_"), rpc.async, f);
     },
     hash: function (data, small, f) {
         if (data) {
             if (data.constructor === Array || data.constructor === Object) {
                 data = JSON.stringify(data);
             }
-            return json_rpc(postdata("sha3", data.toString(), "web3_"), function (data) {
+            return json_rpc(postdata("sha3", data.toString(), "web3_"), rpc.async, function (data) {
                 var hash = (small) ? data.result.slice(0, 10) : data.result;
                 if (f) {
                     return f(hash);
@@ -288,7 +290,7 @@ var EthRPC = {
         }
     },
     gasPrice: function (f) {
-        return json_rpc(postdata("gasPrice"), function (data) {
+        return json_rpc(postdata("gasPrice"), rpc.async, function (data) {
             var gasPrice = parseInt(data.result);
             if (f) {
                 return f(gasPrice);
@@ -298,7 +300,7 @@ var EthRPC = {
         });
     },
     blockNumber: function (f) {
-        return json_rpc(postdata("blockNumber"), function (data) {
+        return json_rpc(postdata("blockNumber"), rpc.async, function (data) {
             var blocknum = parseInt(data.result);
             if (f) {
                 return f(blocknum);
@@ -308,38 +310,47 @@ var EthRPC = {
         });
     },
     balance: function (address, block, f) {
-        return json_rpc(postdata("getBalance", [address, block || "latest"]), f || function (data) {
-            return parseInt(data.result, 16) / 1e18;
+        return json_rpc(postdata("getBalance", [address, block || "latest"]), rpc.async, f || function (data) {
+            var ether = (new BigNumber(data.result)).dividedBy(new BigNumber(10).toPower(18));
+            if (rpc.async) {
+                log(ether);
+            } else {
+                return ether.toNumber();
+            }
         });
     },
     txCount: function (address, f) {
-        return json_rpc(postdata("getTransactionCount", address), f);
+        return json_rpc(postdata("getTransactionCount", address), rpc.async, f);
     },
     call: function (tx, f) {
         tx.to = tx.to || "";
         tx.gas = (tx.gas) ? "0x" + tx.gas.toString(16) : default_gas;
-        return json_rpc(postdata("call", tx), f);
+        return json_rpc(postdata("call", tx), rpc.async, f);
     },
     sendTx: function (tx, f) {
         tx.to = tx.to || "";
         tx.gas = (tx.gas) ? "0x" + tx.gas.toString(16) : default_gas;
-        return json_rpc(postdata("sendTransaction", tx), f);
+        return json_rpc(postdata("sendTransaction", tx), rpc.async, f);
     },
     pay: function (to, value, f) {
-        return this.sendTx({ from: this.coinbase(), to: to, value: value }, f);
+        return this.sendTx({ from: coinbase, to: to, value: value }, f);
     },
     getTx: function (hash, f) {
-        return json_rpc(postdata("getTransactionByHash", hash), f);
+        return json_rpc(postdata("getTransactionByHash", hash), rpc.async, f);
     },
     peerCount: function (f) {
-        return parseInt(json_rpc(postdata("peerCount", [], "net_"), f));
+        if (rpc.async) {
+            return json_rpc(postdata("peerCount", [], "net_"), rpc.async, f);
+        } else {
+            return parseInt(json_rpc(postdata("peerCount", [], "net_"), rpc.async, f));
+        }
     },
     coinbase: function (f) {
-        return json_rpc(postdata("coinbase"), f);
+        return json_rpc(postdata("coinbase"), rpc.async, f);
     },
     // publish a new contract to the blockchain (from the coinbase account)
     publish: function (compiled, f) {
-        return this.sendTx({ from: this.coinbase(), data: compiled }, f);
+        return this.sendTx({ from: coinbase, data: compiled }, f);
     },
     // hex-encode a function's ABI data and return it
     abi_data: function (tx, f) {
@@ -416,7 +427,7 @@ var EthRPC = {
         data_abi = this.abi_data(tx);
         if (tx && data_abi) {
             var packaged = {
-                from: tx.from || this.coinbase(),
+                from: tx.from || coinbase,
                 to: tx.to,
                 data: data_abi
             };
@@ -441,7 +452,7 @@ var EthRPC = {
     // read the code in a contract on the blockchain
     read: function (address, block, f) {
         if (address) {
-            return json_rpc(postdata("getCode", [address, block || "latest"]), f);
+            return json_rpc(postdata("getCode", [address, block || "latest"]), rpc.async, f);
         }
     },
     id: function () { return id; },

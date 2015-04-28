@@ -124,13 +124,13 @@ if (typeof(module) != 'undefined') {
     tx.params = [123, 321];
     test(tx, 39483);
 
-    tx = {
-        to: constants.addr.augur.cash,
-        function: "balance",
-        signature: "i",
-        params: constants.addr.jack
-    };
-    test(tx, "0x0000000000000000000000000000000000000000000027100000000000000000");
+    // tx = {
+    //     to: constants.addr.augur.cash,
+    //     function: "balance",
+    //     signature: "i",
+    //     params: constants.addr.jack
+    // };
+    // test(tx, "0x0000000000000000000000000000000000000000000027100000000000000000");
 
 
     // Single integer parameter, array return value
@@ -156,20 +156,20 @@ if (typeof(module) != 'undefined') {
         }
     )
 
-    tx = {
-        to: constants.addr.augur.createEvent,
-        function: "createEvent",
-        signature: "isiiii",
-        params: [
-            1010101,
-            "dance party",
-            200000,
-            1,
-            2,
-            2
-        ]
-    };
-    test(tx, "0x35b25195f9368104225e241c642dc51b2ffef4f6681a55f9a003b999ad45d746");
+    // tx = {
+    //     to: constants.addr.augur.createEvent,
+    //     function: "createEvent",
+    //     signature: "isiiii",
+    //     params: [
+    //         1010101,
+    //         "dance party",
+    //         200000,
+    //         1,
+    //         2,
+    //         2
+    //     ]
+    // };
+    // test(tx, "0x35b25195f9368104225e241c642dc51b2ffef4f6681a55f9a003b999ad45d746");
 
     // tx = {
     //     to: constants.addr.augur.createMarket,
