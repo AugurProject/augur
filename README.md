@@ -21,9 +21,9 @@ After installing, to use it with Node, just require it:
 ```javascript
 > var EthRPC = require('ethrpc.js');
 ```
-The basic `rpc` method allows you to send in raw commands (similar to sending in via cURL):
+The `raw` method allows you to send in raw commands (similar to sending in via cURL):
 ```
-> EthRPC.rpc("net_peerCount")
+> EthRPC.raw("net_peerCount")
 "0x10"
 
 > EthRPC.eth("gasPrice")

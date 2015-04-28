@@ -174,7 +174,16 @@ if (typeof(module) != 'undefined') {
     // tx = {
     //     to: constants.addr.augur.createMarket,
     //     function: "createMarket",
-    //     signature: "isiiia"
+    //     signature: "isiiia",
+    //     params: [
+    //         1010101,
+    //         "market for dance parties",
+    //         "0x1000000000000000",
+    //         "0x2800000000000000000",
+    //         "0x400000000000000",
+    //         ["0x",
+    //          "0x"]
+    //     ]
     // };
     // result = EthRPC.invoke(tx);
     // console.log("createMarket: ", result);

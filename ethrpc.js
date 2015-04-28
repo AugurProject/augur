@@ -86,7 +86,7 @@ function encode_abi(arg, base, sub, arrlist) {
     if (arrlist) {
         var res, o = '';
         for (var j = 0, l = arg.length; j < l; ++j) {
-            res = encode_any(arg[j], base, sub, arrlist.slice(0,-1));
+            res = encode_abi(arg[j], base, sub, arrlist.slice(0,-1));
             o += res.normal_args;
         }
         return {
@@ -253,7 +253,20 @@ function json_rpc(command, async, callback) {
     }
 }
 
-var coinbase = json_rpc(postdata("coinbase"), false);
+function format_result(returns, result) {
+    try {
+        if (returns === "array") {
+            result = parse_array(result);
+        } else if (returns === "int") {
+            result = parseInt(result);
+        } else if (returns === "bignumber") {
+            result = new BigNumber(result);
+        }
+    } catch (exc) {
+        log(exc);
+    }
+    return result;
+}
 
 var EthRPC = {
     rpc: function (command, params, f) {
@@ -333,7 +346,7 @@ var EthRPC = {
         return json_rpc(postdata("sendTransaction", tx), rpc.async, f);
     },
     pay: function (to, value, f) {
-        return this.sendTx({ from: coinbase, to: to, value: value }, f);
+        return this.sendTx({ from: this.coinbase(), to: to, value: value }, f);
     },
     getTx: function (hash, f) {
         return json_rpc(postdata("getTransactionByHash", hash), rpc.async, f);
@@ -350,7 +363,7 @@ var EthRPC = {
     },
     // publish a new contract to the blockchain (from the coinbase account)
     publish: function (compiled, f) {
-        return this.sendTx({ from: coinbase, data: compiled }, f);
+        return this.sendTx({ from: this.coinbase(), data: compiled }, f);
     },
     // hex-encode a function's ABI data and return it
     abi_data: function (tx, f) {
@@ -423,30 +436,27 @@ var EthRPC = {
      * }
      */
     invoke: function (tx, f) {
-        var tx = clone(tx);
-        data_abi = this.abi_data(tx);
-        if (tx && data_abi) {
-            var packaged = {
-                from: tx.from || coinbase,
-                to: tx.to,
-                data: data_abi
-            };
-            var invocation = (tx.send) ? this.sendTx : this.call;
-            var result = invocation(packaged, f);
-            if (tx.returns) {
-                try {
-                    if (tx.returns.toLowerCase() === "array") {
-                        result = parse_array(result);
-                    } else if (tx.returns.toLowerCase() === "int") {
-                        result = parseInt(result);
-                    } else if (tx.returns.toLowerCase() === "bignumber") {
-                        result = new BigNumber(result);
+        var packaged, invocation, result;
+        if (tx) {
+            var tx = clone(tx);
+            data_abi = this.abi_data(tx);
+            if (data_abi) {
+                packaged = {
+                    from: tx.from || this.coinbase(),
+                    to: tx.to,
+                    data: data_abi
+                };
+                invocation = (tx.send) ? this.sendTx : this.call;
+                if (rpc.async) {
+                    invocation(packaged, f);
+                } else {
+                    result = invocation(packaged, f);
+                    if (tx.returns) {
+                        result = format_result(tx.returns.toLowerCase(), result);
                     }
-                } catch (exc) {
-                    log(exc);
+                    return result;
                 }
             }
-            return result;
         }
     },
     // read the code in a contract on the blockchain
