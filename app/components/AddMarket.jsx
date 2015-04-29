@@ -59,7 +59,20 @@ var AddMarketModal = React.createClass({
     this.setState({maturationDate: event.target.value});
   },
 
-  onSubmit: function (event) {
+  // waits for record id ro return a valid creator then executes callback
+  waitForRecord: function(id, callback) {
+
+    var creatorId = this.state.ethereumClient.getCreator(id);
+    if (creatorId.toNumber() !== 0) {
+      callback();
+    } else {
+      var self = this;
+      utililies.log('waiting for record '+id.toString(16));
+      setTimeout(function() { self.waitForRecord(id, callback) }, 3000);
+    }
+  },
+
+  onSubmit: function(event) {
 
     var newEventParams = {
       description: this.state.marketText,
@@ -67,24 +80,30 @@ var AddMarketModal = React.createClass({
     }
 
     var newEventId = this.state.ethereumClient.addEvent(newEventParams);
+
     if (newEventId) {
 
-      var newMarketParams = {
-        description: this.state.marketText,
-        initialLiquidity: this.state.marketInvestment,
-        tradingFee: this.state.tradingFee,
-        events: [newEventId],
-      }  
-      var newMarketId = this.state.ethereumClient.addMarket(newMarketParams);
+      var self = this;
+      this.waitForRecord(newEventId, function() {
 
-      if (newMarketId) {
+        var newMarketParams = {
+          description: self.state.marketText,
+          initialLiquidity: self.state.marketInvestment,
+          tradingFee: self.state.tradingFee,
+          events: [newEventId],
+        }  
 
-        utilities.log('new market ' + newMarketId +' created');
+        var newMarketId = self.state.ethereumClient.addMarket(newMarketParams);
 
-      } else {
+        if (newMarketId) {
 
-        utilities.error('failed to add market');
-      }
+          utilities.log('new market ' + newMarketId +' created');
+
+        } else {
+          utilities.error('failed to add market');
+        }
+
+      });
 
     } else {
 

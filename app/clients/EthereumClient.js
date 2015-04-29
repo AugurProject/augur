@@ -6,7 +6,7 @@ var constants = require('../libs/constants');
 var utilities = require('../libs/utilities');
 
 var fromFixedPoint = utilities.fromFixedPoint;
-var toFixedPoint = utilities.toFixedPoint;
+window.toFixedPoint = utilities.toFixedPoint;
 
 function MissingContractError(contractName) {
   this.name = 'MissingContractError';
@@ -26,6 +26,7 @@ function EthereumClient(account, addresses, web3) {
   this.account = account;
   this.addresses = addresses || {};
   this.web3 = web3 || require('web3');
+  this.defaultGas = 500000;
 
   this.contracts = {};
   _.defaults(this.addresses, constants.addresses);
@@ -66,7 +67,7 @@ EthereumClient.prototype.getAddress = function (name) {
 EthereumClient.prototype.cashFaucet = function() {
 
   var cashContract = this.getContract('cash');
-  var status = cashContract.sendTransaction({from: this.account, gas: 1000000}).faucet();
+  var status = cashContract.sendTransaction({from: this.account, gas: this.defaultGas}).faucet();
 
   return status;
 };
@@ -84,7 +85,7 @@ EthereumClient.prototype.sendCash = function(destination, amount, onSuccess) {
   var cashContract = this.getContract('cash');
   var fixedAmount = toFixedPoint(amount);
 
-  cashContract.sendTransaction({from: this.account, gas: 1000000}, function(err, log) {
+  cashContract.sendTransaction({from: this.account, gas: this.defaultGas}, function(err, log) {
     console.log(log);
   }).send(destination, fixedAmount);
 };
@@ -92,7 +93,7 @@ EthereumClient.prototype.sendCash = function(destination, amount, onSuccess) {
 EthereumClient.prototype.repFaucet = function() {
 
   var reportingContract = this.getContract('reporting');
-  var status = reportingContract.sendTransaction({from: this.account, gas: 1000000}).faucet();
+  var status = reportingContract.sendTransaction({from: this.account, gas: this.defaultGas}).faucet();
 
   return status;
 };
@@ -114,10 +115,34 @@ EthereumClient.prototype.sendRep = function(destination, amount, branchId) {
   var fixedAmount = toFixedPoint(amount);
 
   var self = this;
-  sendRepContract.sendTransaction({from: this.account, gas: 1000000}, function(err, log) {
+  sendRepContract.sendTransaction({from: this.account, gas: this.defaultGas}, function(err, log) {
     console.log(log);
   }).sendReputation(id, destination, fixedAmount);
 
+};
+
+EthereumClient.prototype.getDescription = function(id) {
+
+  var contract = this.getContract('info');
+  var description = contract.call().getDescription(id);
+
+  return description;
+};
+
+EthereumClient.prototype.getCreator = function(id) {
+
+  var contract = this.getContract('info');
+  var creatorId = contract.call().getCreator(id);
+
+  return creatorId;
+};
+
+EthereumClient.prototype.getEventBranch = function(id) {
+
+  var contract = this.getContract('events');
+  var branchId = contract.call().getEventBranch(id);
+
+  return branchId;
 };
 
 /**
@@ -233,7 +258,7 @@ EthereumClient.prototype.getMarkets = function (branchId) {
   return markets;
 };
 
-EthereumClient.prototype.getEvents = function(branchId) {
+EthereumClient.prototype.getEvents = function(branchId, expirationPeriod) {
 
   return {};
 };
@@ -241,14 +266,15 @@ EthereumClient.prototype.getEvents = function(branchId) {
 EthereumClient.prototype.getEvent = function(eventId) {
 
   var contract = this.getContract('events');
-  var r = contract.call({gas: 1000000}).getEventInfo(eventId);
+  var info = contract.call().getEventInfo(eventId);
 
-  console.log(r);
+  return info;
 };
 
 EthereumClient.prototype.addEvent = function(params) {
 
     var contract = this.getContract('createEvent');
+    var infoContract = this.getContract('info');
 
     var branchId = params.branchId || 1010101;
     var description = params.description;
@@ -257,20 +283,20 @@ EthereumClient.prototype.addEvent = function(params) {
     var maxValue = params.maxValue || 1;
     var numOutcomes = params.numOutcomes || 2;
 
-    try {
+    var newEventId = contract.call({gas: 300000}).createEvent(
+      branchId, description, expirationBlock, minValue, maxValue, numOutcomes
+    );
 
-      var newEventId = contract.call({gas: 1000000}).createEvent(
-        branchId, description, expirationBlock, minValue, maxValue, numOutcomes
-      );
+    if (newEventId !== 0) {
 
       contract.sendTransaction({from: this.account, gas: 1000000}, console.log).createEvent(
         branchId, description, expirationBlock, minValue, maxValue, numOutcomes
       );
 
-    } catch(err) {
+    } else {
 
-      utilities.error(err);
-      return false;;
+      utilities.error('unknown error adding event');
+      return false;
     }
 
     return newEventId;
@@ -282,33 +308,33 @@ EthereumClient.prototype.addMarket = function(params) {
 
     var branchId = params.branchId || 1010101;
     var description = params.description;
-    var alpha = toFixedPoint(new BigNumber('0.07'));
+    var alpha = toFixedPoint(1);  // debugging, should be 0.07
     var initialLiquidity = toFixedPoint(params.initialLiquidity);
     var tradingFee = toFixedPoint(params.tradingFee);   // percent trading fee
-
     var events = params.events;  // a list of event ids
 
-    try {
+    // use call to get new market id or error return
+    var newMarketId = contract.call({gas: 300000}).createMarket(
+      branchId, description, alpha, initialLiquidity, tradingFee, events
+    );
 
-      var newMarketId = contract.call({gas: 1000000}).createMarket(
+    console.log(newMarketId.toString(16));
+    console.log(branchId, description, alpha.toString(16), initialLiquidity.toString(16), tradingFee.toString(16), events);
+
+    if ([-1, -2, -3, -4].indexOf(newMarketId.toNumber()) > -1) {
+
+      utilities.error('error adding market ('+newMarketId+')');
+      return false;
+
+    } else if (newMarketId) {
+
+      contract.sendTransaction({from: this.account, gas: 1000000}).createMarket(
         branchId, description, alpha, initialLiquidity, tradingFee, events
       );
 
-      if (newMarketId && [-1, -2, -3, -4].indexOf(newMarketId.toNumber())) {
+    } else {
 
-        contract.sendTransaction({from: this.account, gas: 1000000}).createMarket(
-          branchId, description, alpha, initialLiquidity, tradingFee, events
-        );
-
-      } else {
-
-        utilities.error('error adding market ('+newMarketId+')');
-        return false;
-      }
-
-    } catch(err) {
-
-      utilities.error(err);
+      utilities.error('unknown error adding market');
       return false;
     }
 

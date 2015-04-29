@@ -43,7 +43,7 @@ module.exports = {
     branches: '0x13dc5836cd5638d0b81a1ba8377a7852d41b5bbe',
     cash: '0xf1d413688a330839177173ce98c86529d0da6e5c',
     createEvent: '0xcae6d5912033d66650894e2ae8c2f7502eaba15c',
-    createMarket: '0x58c8a428c049974f18fa9e4fd97777227b4b7c29',
+    createMarket: '0x386acc6b970aea7c6f9b87e7622d2ae7c18d377a',
     dispatch: '0x9bb646e3137f1d43e4a31bf8a6377c299f26727d',
     events: '0xb71464588fc19165cbdd1e6e8150c40df544467b',
     expiringEvents: '0x61d90fd4c1c3502646153003ec4d5c177de0fb58',

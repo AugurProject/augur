@@ -39,16 +39,8 @@ var NetworkActions = {
 
       var filters = {
         latest: web3.eth.filter('latest'),
-        pending: web3.eth.filter('pending')
+        pending: web3.eth.filter({fromBlock:'pending', address: web3.eth.coinbase})
       };
-
-      _.each(constants.addresses, function(address, contractName) {
-        filters[contractName] = web3.eth.filter({address: address});
-        filters[contractName].watch(function(err, log) {
-          utilities.log(contractName);
-          utilities.log(log);
-        });
-      })
 
       this.dispatch(
         constants.network.UPDATE_ETHEREUM_STATUS,
@@ -61,15 +53,15 @@ var NetworkActions = {
       // start network monitoring
       var self = this;
 
-      filters.latest.watch(function (err, log) {
-        if (err) utilities.error(err);
-        self.flux.actions.network.updateNetwork();
-      });
+      //filters.latest.watch(function (err, log) {
+      //  if (err) utilities.error(err);
+      //  self.flux.actions.network.updateNetwork();
+      //});
 
-      filters.pending.watch(function (err, log) {
-        if (err) utilities.error(err);
-        utilities.log('pending');
-      });
+      //filters.pending.watch(function (err, log) {
+      //  if (err) utilities.error(err);
+      //  utilities.log(log);
+      //});
 
       this.flux.actions.config.loadEthereumClient();
     }
