@@ -1,9 +1,7 @@
 /**
- * Send JSON-RPC commands to Ethereum from the safety and convenience of
- * your browser!
+ * Asynchronous, browser-compatible JSON-RPC for Ethereum
  * 
- * @author Jack Peterson (jack@augur.net)
- * @date 4/12/2015
+ * @author Jack Peterson (jack@tinybike.net)
  * @license MIT
  */
 
@@ -83,7 +81,7 @@ function zeropad(r, ishex) {
 }
 
 function encode_abi(arg, base, sub, arrlist) {
-    if (arrlist) {
+    if (arrlist && arrlist.slice(-2) === "[]") {
         var res, o = '';
         for (var j = 0, l = arg.length; j < l; ++j) {
             res = encode_abi(arg[j], base, sub, arrlist.slice(0,-1));
@@ -93,7 +91,7 @@ function encode_abi(arg, base, sub, arrlist) {
             len_args: zeropad(encode_int(arg.length)),
             normal_args: '',
             var_args: o
-        }
+        };
     } else {
         var len_args = normal_args = var_args = '';
         if (base === "string") {
@@ -125,7 +123,7 @@ function get_prefix(funcname, signature) {
     for (var i = 0, len = signature.length; i < len; ++i) {
         switch (signature[i]) {
             case 's':
-                summary += "string";
+                summary += "string"; // change to bytes?
                 break;
             case 'i':
                 summary += "int256";
@@ -269,6 +267,7 @@ function format_result(returns, result) {
 }
 
 var EthRPC = {
+    async: rpc.async,
     rpc: function (command, params, f) {
         return json_rpc(postdata(command, params, "null"), rpc.async, f);
     },

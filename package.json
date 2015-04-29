@@ -1,7 +1,7 @@
 {
   "name": "ethrpc.js",
-  "version": "0.0.6",
-  "description": "EthRPC - Browser-compatible Ethereum JSON-RPC",
+  "version": "0.0.8",
+  "description": "EthRPC - Asynchronous, browser-compatible JSON-RPC for Ethereum",
   "main": "ethrpc.js",
   "scripts": {
     "test": "node test/runtests.js"
