@@ -26,7 +26,7 @@ function EthereumClient(account, addresses, web3) {
   this.account = account;
   this.addresses = addresses || {};
   this.web3 = web3 || require('web3');
-  this.defaultGas = 500000;
+  this.defaultGas = 1000000;
 
   this.contracts = {};
   _.defaults(this.addresses, constants.addresses);
@@ -75,7 +75,7 @@ EthereumClient.prototype.cashFaucet = function() {
 EthereumClient.prototype.getCashBalance = function() {
 
   var cashContract = this.getContract('cash');
-  var balance = cashContract.call().balance(this.account);
+  var balance = cashContract.balance.call(this.account);
 
   return fromFixedPoint(balance).toNumber();
 };
@@ -85,15 +85,13 @@ EthereumClient.prototype.sendCash = function(destination, amount, onSuccess) {
   var cashContract = this.getContract('cash');
   var fixedAmount = toFixedPoint(amount);
 
-  cashContract.sendTransaction({from: this.account, gas: this.defaultGas}, function(err, log) {
-    console.log(log);
-  }).send(destination, fixedAmount);
+  cashContract.send.sendTransaction( destination, fixedAmount, {from: this.account, gas: this.defaultGas} );
 };
 
 EthereumClient.prototype.repFaucet = function() {
 
   var reportingContract = this.getContract('reporting');
-  var status = reportingContract.sendTransaction({from: this.account, gas: this.defaultGas}).faucet();
+  var status = reportingContract.faucet.sendTransaction({from: this.account, gas: this.defaultGas});
 
   return status;
 };
@@ -103,7 +101,7 @@ EthereumClient.prototype.getRepBalance = function(branchId) {
   var id = branchId || 1010101;
 
   var reportingContract = this.getContract('reporting');
-  var rep = reportingContract.call().getRepBalance(id, this.account);
+  var rep = reportingContract.getRepBalance.call(id, this.account);
 
   return fromFixedPoint(rep).toNumber();
 };
@@ -115,16 +113,14 @@ EthereumClient.prototype.sendRep = function(destination, amount, branchId) {
   var fixedAmount = toFixedPoint(amount);
 
   var self = this;
-  sendRepContract.sendTransaction({from: this.account, gas: this.defaultGas}, function(err, log) {
-    console.log(log);
-  }).sendReputation(id, destination, fixedAmount);
+  sendRepContract.sendReputation.sendTransaction(id, destination, fixedAmount, {from: this.account, gas: this.defaultGas});
 
 };
 
 EthereumClient.prototype.getDescription = function(id) {
 
   var contract = this.getContract('info');
-  var description = contract.call().getDescription(id);
+  var description = contract.getDescription.call(id);
 
   return description;
 };
@@ -132,7 +128,7 @@ EthereumClient.prototype.getDescription = function(id) {
 EthereumClient.prototype.getCreator = function(id) {
 
   var contract = this.getContract('info');
-  var creatorId = contract.call().getCreator(id);
+  var creatorId = contract.getCreator.call(id);
 
   return creatorId;
 };
@@ -140,7 +136,7 @@ EthereumClient.prototype.getCreator = function(id) {
 EthereumClient.prototype.getEventBranch = function(id) {
 
   var contract = this.getContract('events');
-  var branchId = contract.call().getEventBranch(id);
+  var branchId = contract.getEventBranch.call(id);
 
   return branchId;
 };
@@ -155,12 +151,12 @@ EthereumClient.prototype.getBranches = function () {
   var reportingContract = this.getContract('reporting');
   var account = this.account;
 
-  var branchList = _.map(branchContract.call().getBranches(), function(branchId) {
+  var branchList = _.map(branchContract.getBranches.call(), function(branchId) {
 
-    var storedRep = reportingContract.call().getRepBalance(branchId, account);
+    var storedRep = reportingContract.getRepBalance.call(branchId, account);
     var rep = fromFixedPoint(storedRep).toNumber();
-    var marketCount = branchContract.call().getNumMarkets(branchId).toNumber();
-    var periodLength = branchContract.call().getPeriodLength(branchId).toNumber();
+    var marketCount = branchContract.getNumMarkets.call(branchId).toNumber();
+    var periodLength = branchContract.getPeriodLength.call(branchId).toNumber();
     var branchName = branchId == 1010101 ? 'General' : 'Unknown';  // HACK: until we're actually using multi-branch
 
     return {
@@ -193,47 +189,47 @@ EthereumClient.prototype.getMarkets = function (branchId) {
   var infoContract = this.getContract('info');
   var account = this.account;
 
-  var validMarkets = _.filter(branchContract.call().getMarkets(branchId), function(marketId) {
-    var events = marketContract.call().getMarketEvents(marketId);
+  var validMarkets = _.filter(branchContract.getMarkets.call(branchId), function(marketId) {
+    var events = marketContract.getMarketEvents.call(marketId);
     return events.length ? true : false;
   });
 
   var marketList = _.map(validMarkets, function(marketId) {
 
-    var events = marketContract.call().getMarketEvents(marketId);
-    var description = infoContract.call().getDescription(marketId);
-    var alpha = fromFixedPoint(marketContract.call().getAlpha(marketId));
-    var author = infoContract.call().getCreator(marketId);
-    var creationFee = infoContract.call().getCreationFee(marketId);
+    var events = marketContract.getMarketEvents.call(marketId);
+    var description = infoContract.getDescription.call(marketId);
+    var alpha = fromFixedPoint(marketContract.getAlpha.call(marketId));
+    var author = infoContract.getCreator.call(marketId);
+    var creationFee = infoContract.getCreationFee.call(marketId);
 
     var endDate = new Date();   // TODO: calc from last event expiration
-    var traderCount = marketContract.call().getCurrentParticipantNumber(marketId);
-    var tradingPeriod = marketContract.call().getTradingPeriod(marketId);
-    var tradingFee = marketContract.call().getTradingFee(marketId);
-    var traderId =  marketContract.call().getParticipantNumber(marketId, account);
+    var traderCount = marketContract.getCurrentParticipantNumber.call(marketId);
+    var tradingPeriod = marketContract.getTradingPeriod.call(marketId);
+    var tradingFee = marketContract.getTradingFee.call(marketId);
+    var traderId =  marketContract.getParticipantNumber.call(marketId, account);
     var totalVolume = 0;
 
-    var outcomeCount = marketContract.call().getMarketNumOutcomes(marketId).toNumber();
+    var outcomeCount = marketContract.getMarketNumOutcomes.call(marketId).toNumber();
     var outcomes = _.map( _.range(1, outcomeCount + 1), function (outcomeId) {
 
-      var volume = marketContract.call().getSharesPurchased(marketId, outcomeId);
+      var volume = marketContract.getSharesPurchased.call(marketId, outcomeId);
       //console.log(volume.toNumber());
 
       //totalVolume += volume;
 
       return {
         id: outcomeId,
-        price: fromFixedPoint(marketContract.call().price(marketId, outcomeId)),
-        //sellPrice: marketContract.call().getSimulatedSell(marketId, id).toNumber(),
-        //buyPrice: marketContract.call().getSimulatedBuy(marketId, id).toNumber(),
+        price: fromFixedPoint(marketContract.price.call(marketId, outcomeId)),
+        //sellPrice: marketContract.getSimulatedSell.call(marketId, id).toNumber(),
+        //buyPrice: marketContract.getSimulatedBuy.call(marketId, id).toNumber(),
         priceHistory: [],  // NEED
-        sharesPurchased: fromFixedPoint(marketContract.call().getParticipantSharesPurchased(marketId, traderId, outcomeId)),
+        sharesPurchased: fromFixedPoint(marketContract.getParticipantSharesPurchased.call(marketId, traderId, outcomeId)),
         volume: volume
       };
     });
 
     var price = outcomes.length ? outcomes[0].price : '-';
-    var winningOutcomes = marketContract.call().getWinningOutcomes(marketId);
+    var winningOutcomes = marketContract.getWinningOutcomes.call(marketId);
 
     return {
       id: marketId,
@@ -266,7 +262,7 @@ EthereumClient.prototype.getEvents = function(branchId, expirationPeriod) {
 EthereumClient.prototype.getEvent = function(eventId) {
 
   var contract = this.getContract('events');
-  var info = contract.call().getEventInfo(eventId);
+  var info = contract.getEventInfo.call(eventId);
 
   return info;
 };
@@ -283,14 +279,14 @@ EthereumClient.prototype.addEvent = function(params) {
     var maxValue = params.maxValue || 1;
     var numOutcomes = params.numOutcomes || 2;
 
-    var newEventId = contract.call({gas: 300000}).createEvent(
-      branchId, description, expirationBlock, minValue, maxValue, numOutcomes
+    var newEventId = contract.createEvent.call(
+      branchId, description, expirationBlock, minValue, maxValue, numOutcomes, {gas: 300000}
     );
 
     if (newEventId !== 0) {
 
-      contract.sendTransaction({from: this.account, gas: 1000000}, console.log).createEvent(
-        branchId, description, expirationBlock, minValue, maxValue, numOutcomes
+      contract.createEvent.sendTransaction(
+        branchId, description, expirationBlock, minValue, maxValue, numOutcomes, {from: this.account, gas: 1000000}
       );
 
     } else {
@@ -314,8 +310,8 @@ EthereumClient.prototype.addMarket = function(params) {
     var events = params.events;  // a list of event ids
 
     // use call to get new market id or error return
-    var newMarketId = contract.call({gas: 300000}).createMarket(
-      branchId, description, alpha, initialLiquidity, tradingFee, events
+    var newMarketId = contract.createMarket.call(
+      branchId, description, alpha, initialLiquidity, tradingFee, events, {gas: 300000}
     );
 
     console.log(newMarketId.toString(16));
@@ -328,8 +324,8 @@ EthereumClient.prototype.addMarket = function(params) {
 
     } else if (newMarketId) {
 
-      contract.sendTransaction({from: this.account, gas: 1000000}).createMarket(
-        branchId, description, alpha, initialLiquidity, tradingFee, events
+      contract.createMarket.sendTransaction(
+        branchId, description, alpha, initialLiquidity, tradingFee, events, {from: this.account, gas: 1000000}
       );
 
     } else {
@@ -343,7 +339,7 @@ EthereumClient.prototype.addMarket = function(params) {
 
 EthereumClient.prototype.getSimulatedBuy = function (marketId, outcomeId, numShares) {
   var marketContract = this.getContract('markets');
-  var result = marketContract.call().getSimulatedBuy(
+  var result = marketContract.getSimulatedBuy.call(
     marketId,
     outcomeId,
     toFixedPoint(numShares)

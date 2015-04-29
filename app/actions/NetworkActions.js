@@ -53,15 +53,15 @@ var NetworkActions = {
       // start network monitoring
       var self = this;
 
-      //filters.latest.watch(function (err, log) {
-      //  if (err) utilities.error(err);
-      //  self.flux.actions.network.updateNetwork();
-      //});
+      filters.latest.watch(function (err, log) {
+        if (err) utilities.error(err);
+        self.flux.actions.network.updateNetwork();
+      });
 
-      //filters.pending.watch(function (err, log) {
-      //  if (err) utilities.error(err);
-      //  utilities.log(log);
-      //});
+      filters.pending.watch(function (err, log) {
+        if (err) utilities.error(err);
+        utilities.log(log);
+      });
 
       this.flux.actions.config.loadEthereumClient();
     }
