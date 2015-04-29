@@ -14,12 +14,14 @@ var AddMarketModal = React.createClass({
 
   getInitialState: function () {
     return {
+      pageNumber: 1,
       marketText: '',
       marketTextHelper: '',
       marketInvestment: '',
       maturationDate: '',
       tradingFee: '',
-      valid: false
+      valid: false,
+      cashLeft: 0,
     };
   },
 
@@ -31,6 +33,12 @@ var AddMarketModal = React.createClass({
       cash: flux.store('asset').getState().cash,
       currentBlock: flux.store('network').getState().blockNumber
     }
+  },
+
+  componentDidMount: function(event) {
+
+    // not sure the proper place to put this
+    this.state.cashLeft = this.state.cash;
   },
 
   onChangeMarketText: function (event) {
@@ -52,7 +60,11 @@ var AddMarketModal = React.createClass({
   },
 
   onChangeMarketInvestment: function (event) {
-    this.setState({marketInvestment: event.target.value});
+
+    var marketInvestment = event.target.value;
+    this.state.cashLeft = this.state.cash - marketInvestment;
+
+    this.setState({marketInvestment: marketInvestment});
   },
 
   onChangeMaturationDate: function (event) {
@@ -67,12 +79,24 @@ var AddMarketModal = React.createClass({
       callback();
     } else {
       var self = this;
-      utililies.log('waiting for record '+id.toString(16));
+      utilities.log('waiting for record '+id.toString(16));
       setTimeout(function() { self.waitForRecord(id, callback) }, 3000);
     }
   },
 
+  onNext: function(event) {
+    var newPageNumber = this.state.pageNumber + 1;
+    this.setState({pageNumber: newPageNumber});
+  },
+
+  onBack: function(event) {
+    var newPageNumber = this.state.pageNumber - 1;
+    this.setState({pageNumber: newPageNumber});
+  },
+
   onSubmit: function(event) {
+
+    console.log(this.state.marketText);
 
     var newEventParams = {
       description: this.state.marketText,
@@ -115,55 +139,106 @@ var AddMarketModal = React.createClass({
 
   render: function () {
 
+    var page, subheading, footer;
+    if (this.state.pageNumber === 2) {
+      subheading = 'Fees';
+      page = (
+        <div className="form-horizontal fees">
+          <div className="form-group">
+            <label className="col-sm-3">Trading fee</label>
+            <div className="col-sm-2 input-group">
+              <input 
+                type="text" 
+                className="form-control" 
+                name="trading-fee" 
+                placeholder="2"
+                onChange={ this.onChangeTradingFee } 
+              />
+              <span className="input-group-addon">%</span>
+            </div>
+            <div className="col-xs-12">
+              <p className="desc">The trading fee is the percentage taken from each purchase or sale of an outcome.  These fees are split buy creator and all owners of winning outcomes</p>
+            </div> 
+          </div>
+          <div className="form-group">
+            <label className="col-sm-3">Initial Liquidity</label>
+            <div className="col-sm-2">
+              <input 
+                type="text" 
+                className="form-control" 
+                name="market-investment" 
+                placeholder="100"
+                onChange={ this.onChangeMarketInvestment } 
+              />
+            </div>
+            <div className="col-sm-4">
+              <span className="helper">CASH: { this.state.cashLeft }</span> 
+            </div>
+            <div className="col-xs-12">
+              <p className="desc">The initial market liquidity is the amount of cash you wish to put in the market upfront.</p>
+            </div> 
+          </div>
+        </div>
+      );
+      footer = (
+        <div className='pull-right'>
+          <Button bsStyle='default' onClick={ this.onBack }>Back</Button>
+          <Button bsStyle='primary' onClick={ this.onNext }>Next</Button>
+        </div>
+      );
+    } else if (this.state.pageNumber === 3) {
+      subheading = 'Maturation Date';
+      page = (
+        <div className="form-group date">
+          <p>Enter the date this event will mature, trading will end and the question decided.</p>
+          <input 
+            type="text"
+            bsSize="xlarge"
+            className="form-control" 
+            name="maturation-date" 
+            placeholder="MM/DD/YYYY"
+            onChange={ this.onChangeMaturationDate } 
+          />
+        </div>
+      );
+      footer = (
+        <div className='pull-right'>
+          <Button bsStyle='default' onClick={ this.onBack }>Back</Button>
+          <Button bsStyle='primary' onClick={ this.onSubmit }>Submit Market</Button>
+        </div>
+      );
+    } else {
+      subheading = 'Market Query';
+      page = (
+        <div>
+          <p>Enter a question for the market to trade on.  This question should have a yes or no answer, be easiely verifiable and have an expiring date in the future.</p>
+          <p>For example: "Will Hurrican Fatima remain a category four and make land-fall by August 8th, 2017"</p>
+          <textarea 
+            className="form-control" 
+            name="market-text" 
+            placeholder="What's your yes or no question?"  
+            onChange={ this.onChangeMarketText } 
+          />
+          <span className="helper pull-right">{ this.state.marketTextHelper }</span> 
+        </div>
+      );
+      footer = (
+        <div className='pull-right'>
+          <Button bsStyle='primary' onClick={ this.onNext }>Next</Button>
+        </div>
+      );
+    }
+
     return (
       <Modal {...this.props} id='add-market-modal'>
+        <div className="modal-header clearfix">
+          <h4>New Market<span className='subheading pull-right'>{ subheading }</span></h4>
+        </div>
         <div className="modal-body clearfix">
-          <h4>New Market</h4>
-          <form role="form clearfix">
-              <div className="form-group">
-                  <label>Market description</label>
-                  <span className="helper pull-right">{ this.state.marketTextHelper }</span> 
-                  <input 
-                    type="text" 
-                    className="form-control" 
-                    name="market-text" 
-                    placeholder="Enter a description for this market"  
-                    onChange={ this.onChangeMarketText } 
-                  />
-              </div>
-              <div className="form-group">
-                  <label>Trading fee</label>
-                  <input 
-                    type="text" 
-                    className="form-control" 
-                    name="trading-fee" 
-                    placeholder="Fee charged for each trade"
-                    onChange={ this.onChangeTradingFee } 
-                  />
-              </div>
-              <div className="form-group">
-                  <label>Market Investment</label>
-                  <input 
-                    type="text" 
-                    className="form-control" 
-                    name="market-investment" 
-                    placeholder="The market's initial liquidity"
-                    onChange={ this.onChangeMarketInvestment } 
-                  />
-              </div>
-              <div className="form-group">
-                  <label>Maturation Date</label>
-                  <input 
-                    type="text" 
-                    className="form-control" 
-                    name="maturation-date" 
-                    placeholder="MM/DD/YYYY"
-                    onChange={ this.onChangeMaturationDate } 
-                  />
-              </div>
-              <p>CASH: <b className='cash-balance'>{this.state.cash}</b></p>
-              <Button bsStyle='primary' onClick={ this.onSubmit } className='pull-right'>Submit Market</Button>
-          </form>
+          { page }
+        </div>
+        <div className="modal-footer clearfix">
+          { footer }
         </div>
       </Modal>
     );
