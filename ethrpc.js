@@ -11,7 +11,7 @@ var rpc = {
     protocol: "http",
     host: "127.0.0.1",
     port: 8545,
-    async: false
+    async: true
 };
 
 var NODE_JS = typeof(module) != 'undefined';
@@ -345,8 +345,8 @@ var EthRPC = {
         tx.gas = (tx.gas) ? "0x" + tx.gas.toString(16) : default_gas;
         return json_rpc(postdata("sendTransaction", tx), rpc.async, f);
     },
-    pay: function (to, value, f) {
-        return this.sendTx({ from: this.coinbase(), to: to, value: value }, f);
+    pay: function (from, to, value, f) {
+        return this.sendTx({ from: from || this.coinbase(), to: to, value: value }, f);
     },
     getTx: function (hash, f) {
         return json_rpc(postdata("getTransactionByHash", hash), rpc.async, f);
