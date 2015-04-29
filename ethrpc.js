@@ -160,14 +160,8 @@ function parse(response, callback) {
             response.error.message
         );
     } else {
-        if (rpc.async) {
-            if (response.result && callback) {
-                callback(response);
-            } else if (response.result) {
-                log(response.result);
-            } else {
-                log(response);
-            }
+        if (rpc.async && response.result && callback) {
+            callback(response);
         } else {
             if (response.result && callback) {
                 return callback(response);
@@ -447,7 +441,7 @@ var EthRPC = {
                 };
                 invocation = (tx.send) ? this.sendTx : this.call;
                 if (rpc.async) {
-                    invocation(packaged, f);
+                    result = invocation(packaged, f);
                 } else {
                     result = invocation(packaged, f);
                     if (tx.returns) {
