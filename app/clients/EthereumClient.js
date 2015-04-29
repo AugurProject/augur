@@ -341,4 +341,18 @@ EthereumClient.prototype.addMarket = function(params) {
     return newMarketId;
 };
 
+EthereumClient.prototype.getSimulatedBuy = function (marketId, outcomeId, numShares) {
+  var marketContract = this.getContract('markets');
+  var result = marketContract.call().getSimulatedBuy(
+    marketId,
+    outcomeId,
+    toFixedPoint(numShares)
+  );
+
+  return {
+    cost: fromFixedPoint(result[0]),
+    newPrice: fromFixedPoint(result[1])
+  };
+};
+
 module.exports = EthereumClient;
