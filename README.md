@@ -13,8 +13,7 @@ Ethereum Dapps store their data on the Ethereum blockchain, and their frontends 
 * [Ethereum Development Tutorial](https://github.com/ethereum/wiki/wiki/Ethereum-Development-Tutorial)
 * [Ethereum JavaScript API](https://github.com/ethereum/wiki/wiki/JavaScript-API)
 * [Dapps for Beginners](https://dappsforbeginners.wordpress.com/)
-
-
+ZZ
 ## Getting Started
 
 ### Running Ethereum
@@ -31,14 +30,15 @@ npm install
 grunt browserify:build
 ```
 
-To incrementally build on every save while you're developing, run `grunt watchify`.
-
 ### Running augur-client
 
 `node server.js`
 
-http://localhost:8080
+[http://localhost:8080](http://localhost:8080)
 
+### For development
+
+use `grunt watchify` to have grunt watch for changes as well as build in a debug mode
 
 ## Features
 

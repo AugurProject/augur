@@ -6,7 +6,7 @@ var constants = require('../libs/constants');
 var utilities = require('../libs/utilities');
 
 var fromFixedPoint = utilities.fromFixedPoint;
-window.toFixedPoint = utilities.toFixedPoint;
+var toFixedPoint = utilities.toFixedPoint;
 
 function MissingContractError(contractName) {
   this.name = 'MissingContractError';
