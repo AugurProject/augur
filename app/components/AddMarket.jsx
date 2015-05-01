@@ -6,6 +6,8 @@ var ReactBootstrap = require('react-bootstrap');
 var Button = ReactBootstrap.Button;
 var Modal = ReactBootstrap.Modal;
 var ModalTrigger = ReactBootstrap.ModalTrigger;
+var DatePicker = require('react-date-picker');
+var moment = require('moment');
 var utilities = require('../libs/utilities');
 
 var AddMarketModal = React.createClass({
@@ -21,7 +23,7 @@ var AddMarketModal = React.createClass({
       maturationDate: '',
       tradingFee: '',
       valid: false,
-      cashLeft: 0,
+      cashLeft: 0
     };
   },
 
@@ -137,10 +139,17 @@ var AddMarketModal = React.createClass({
     this.props.onRequestHide();
   },
 
-  render: function () {
+  handleDatePicked: function(dateText, moment, event) {
+
+    this.setState({maturationDate: dateText});
+  },
+
+  render: function() {
 
     var page, subheading, footer;
+
     if (this.state.pageNumber === 2) {
+
       subheading = 'Fees';
       page = (
         <div className="form-horizontal fees">
@@ -186,19 +195,29 @@ var AddMarketModal = React.createClass({
           <Button bsStyle='primary' onClick={ this.onNext }>Next</Button>
         </div>
       );
+
     } else if (this.state.pageNumber === 3) {
+
       subheading = 'Maturation Date';
       page = (
         <div className="form-group date">
-          <p>Enter the date this event will mature, trading will end and the question decided.</p>
-          <input 
-            type="text"
-            bsSize="xlarge"
-            className="form-control" 
-            name="maturation-date" 
-            placeholder="MM/DD/YYYY"
-            onChange={ this.onChangeMaturationDate } 
-          />
+          <div className='col-sm-6'>
+            <p>Enter the date this event will mature, trading will end and the question decided.</p>
+            <input
+              className='form-control'
+              bsSize='large'
+              type='text'
+              placeholder='YYYY-MM-DD'
+              value={ this.state.maturationDate }
+              onChange={ this.onChangeMaturationDate } 
+            />
+          </div>
+          <div className='col-sm-6'>
+            <DatePicker 
+              hideFooter={ true }
+              onChange={ this.handleDatePicked }
+            />
+          </div>
         </div>
       );
       footer = (
@@ -207,7 +226,9 @@ var AddMarketModal = React.createClass({
           <Button bsStyle='primary' onClick={ this.onSubmit }>Submit Market</Button>
         </div>
       );
+
     } else {
+
       subheading = 'Market Query';
       page = (
         <div>

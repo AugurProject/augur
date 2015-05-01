@@ -300,7 +300,7 @@ EthereumClient.prototype.addEvent = function(params) {
 
 EthereumClient.prototype.addMarketTest = function(params) {
 
-    var Augur = require('augur.js');
+    //var Augur = require('augur.js');
 
     var contract = this.getContract('createMarket');
 

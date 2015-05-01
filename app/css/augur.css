@@ -622,12 +622,11 @@ nav .navbar-right li div {
     color: #777;
 }
 #add-market-modal .date p {
-    margin: 10px 0px 30px 0px;
+    margin: 0px 0px 0px 0px;
 }
 #add-market-modal .date input {
-    width: 140px;
-    height: 45px;
+    width: 130px;
+    margin: 20px auto;
     display: block;
-    margin: 20px auto 10px auto;
-    font-size: 20px;
+    text-align: center;
 }
