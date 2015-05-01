@@ -18,7 +18,7 @@ npm install augur
 ```
 After installing, to use it with Node, just require it:
 ```javascript
-> var Augur = require('augur');
+> var Augur = require('augur.js');
 ```
 
 Usage
