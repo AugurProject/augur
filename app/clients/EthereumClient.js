@@ -323,7 +323,7 @@ EthereumClient.prototype.addMarket = function(params) {
     var description = params.description;
     var alpha = toFixedPoint(1);  // debugging, should be 0.07
     var initialLiquidity = toFixedPoint(params.initialLiquidity);
-    var tradingFee = toFixedPoint(params.tradingFee);   // percent trading fee
+    var tradingFee = toFixedPoint(parseInt(params.tradingFee)/100);   // percent trading fee
     var events = params.events;  // a list of event ids
 
     // use call to get new market id or error return

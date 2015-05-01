@@ -49,8 +49,9 @@ module.exports = {
     expiringEvents: '0x61d90fd4c1c3502646153003ec4d5c177de0fb58',
     info: '0x910b359bb5b2c2857c1d3b7f207a08f3f25c4a8b',
     makeReports: '0xa66d31612c2e716ab9633a8ba886686b3777d99a',
-    markets: '0xaef3d1b4d10c31cf999b174dd3ce12421abb49e2',
+    markets: '0x75ee234fe5ef1cd493c2af38a2ae7d0d0cba01f5',
     reporting: '0xd1f7f020f24abca582366ec80ce2fef6c3c22233',
-    sendReputation: '0x049487d32b727be98a4c8b58c4eab6521791f288'
+    sendReputation: '0x049487d32b727be98a4c8b58c4eab6521791f288',
+    buySellShares: '0xfde83609d8bd5e4bfd6479af2b1cb28c85f0bce7'
   }
 };
