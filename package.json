@@ -1,8 +1,8 @@
 {
-  "name": "ethrpc.js",
+  "name": "augur",
   "version": "0.0.9",
-  "description": "EthRPC - Asynchronous, browser-compatible JSON-RPC for Ethereum",
-  "main": "ethrpc.js",
+  "description": "Augur - Augur/Ethereum JSON-RPC",
+  "main": "augur.js",
   "scripts": {
     "test": "node test/runtests.js"
   },
@@ -17,14 +17,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/tinybike/ethrpc.js.git"
+    "url": "https://github.com/AugurProject/augur.js.git"
   },
   "keywords": [],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/tinybike/ethrpc.js/issues"
+    "url": "https://github.com/AugurProject/augur.js/issues"
   },
-  "homepage": "https://github.com/tinybike/ethrpc.js",
+  "homepage": "https://github.com/AugurProject/augur.js",
   "devDependencies": {},
   "author": "Jack Peterson <jack@tinybike.net>"
 }
