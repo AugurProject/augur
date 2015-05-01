@@ -67,7 +67,7 @@ EthereumClient.prototype.getAddress = function (name) {
 EthereumClient.prototype.cashFaucet = function() {
 
   var cashContract = this.getContract('cash');
-  var status = cashContract.sendTransaction({from: this.account, gas: this.defaultGas}).faucet();
+  var status = cashContract.faucet.sendTransaction({from: this.account, gas: this.defaultGas});
 
   return status;
 };
@@ -298,6 +298,23 @@ EthereumClient.prototype.addEvent = function(params) {
     return newEventId;
 };
 
+EthereumClient.prototype.addMarketTest = function(params) {
+
+    var Augur = require('augur.js');
+
+    var contract = this.getContract('createMarket');
+
+    var branchId = params.branchId || 1010101;
+    var description = params.description;
+    var alpha = 1;  // debugging, should be 0.07
+    var initialLiquidity = params.initialLiquidity;
+    var tradingFee = params.tradingFee;   // percent trading fee
+    var events = params.events;  // a list of event ids
+
+    Augur.createMarket(branchId, description, alpha, initialLiquidity, tradingFee, events);
+
+},
+
 EthereumClient.prototype.addMarket = function(params) {
 
     var contract = this.getContract('createMarket');
@@ -310,9 +327,9 @@ EthereumClient.prototype.addMarket = function(params) {
     var events = params.events;  // a list of event ids
 
     // use call to get new market id or error return
-    var newMarketId = contract.createMarket.call(
-      branchId, description, alpha, initialLiquidity, tradingFee, events, {gas: 300000}
-    );
+    //var newMarketId = contract.createMarket.call(
+    //  branchId, description, alpha, initialLiquidity, tradingFee, events, {gas: 300000}
+    //);
 
     console.log(newMarketId.toString(16));
     console.log(branchId, description, alpha.toString(16), initialLiquidity.toString(16), tradingFee.toString(16), events);
