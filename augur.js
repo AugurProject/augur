@@ -155,6 +155,20 @@ var Augur = (function (augur, async) {
         return hex;
     }
 
+    function decode_hex(hexx) {
+        var hex = hexx.toString();
+        var substr, str = '';
+        var foundNonzero = 0;
+        for (var i = 0; i < hex.length; i += 2) {
+            substr = hex.substr(i, 2);
+            if (foundNonzero > 1 || substr != '00') {
+                str += String.fromCharCode(parseInt(substr, 16));
+                foundNonzero++;
+            }
+        }
+        return str;
+    }
+
     function zeropad(r, ishex) {
         var output = r;
         if (!ishex) output = encode_hex(output);
@@ -354,20 +368,6 @@ var Augur = (function (augur, async) {
             augur.tx.params = [];
         }
         return augur.tx;
-    }
-
-    function decode_hex(hexx) {
-        var hex = hexx.toString();
-        var substr, str = '';
-        var foundNonzero = 0;
-        for (var i = 0; i < hex.length; i += 2) {
-            substr = hex.substr(i, 2);
-            if (foundNonzero > 1 || substr != '00') {
-                str += String.fromCharCode(parseInt(substr, 16));
-                foundNonzero++;
-            }
-        }
-        return str;
     }
 
     augur.clone = function (obj) {

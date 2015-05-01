@@ -20,6 +20,7 @@ After installing, to use it with Node, just require it:
 ```javascript
 > var Augur = require('augur.js');
 ```
+To use augur.js from the browser, include [augur.min.js](https://github.com/AugurProject/augur.js/blob/master/augur.min.js), as well as the [bignumber.js](https://github.com/MikeMcl/bignumber.js) and [js-sha3](https://github.com/emn178/js-sha3) libraries.
 
 Usage
 -----
@@ -52,18 +53,27 @@ All Augur functions have an optional callback (or callbacks; see below) as their
 - reputationFaucet([callback])
 - getDescription(id[, callback])
 - createEvent(branch, description, expDate, minValue, maxValue, numOutcomes[, sentCallback, verifiedCallback])
+    - `sentCallback` fires when the transaction is initially broadcast and you receive a txhash
+    - `verifiedCallback` fires when augur.js is able to see your transaction on the network using `eth_getTransactionByHash` (asynchronous check every 4 seconds until it succeeds)
 - createMarket(branch, description, alpha, liquidity, tradingFee, events[, sentCallback, verifiedCallback, failedCallback])
+    - `sentCallback` fires when the transaction is initially broadcast and you receive a txhash
+    - `verifiedCallback` fires when augur.js is able to see your transaction on the network using `eth_getTransactionByHash` (asynchronous check every 4 seconds until it succeeds)
+    - `failedCallback` fires if the initial `sendTransaction` fails
 - buyShares(branch, market, outcome, amount, nonce[, callback])
 - sellShares(branch, market, outcome, amount, nonce[, callback])
 - sendReputation(branch, receiver, value[, callback])
 
-(Examples and more API functions coming soon!)
+Examples and more API functions coming soon :)
 
 If you need more flexibility, please refer to the `invoke` function below, which allows you to build a transaction object manually, then broadcast it to the network with `sendTransaction` and/or capture its return value with `call`.
 
-### Ethereum JSON-RPC commands
+### Asynchronous RPC
 
-augur.js sends commands to Ethereum via [JSON-RPC](https://github.com/ethereum/wiki/wiki/JSON-RPC).  The lower-level RPCs are described here. 
+By default, augur.js is fully asynchronous, although by setting `Augur.async = false` it can be forced to make synchronous HTTP RPC requests.  This is generally not recommended, especially if augur.js is running in the browser, as synchronous RPC requests block the main JS thread (which essentially freezes the browser).  All of augur.js's methods that involve an RPC request take an optional callback function as their last parameter.
+
+### Ethereum JSON-RPC bindings
+
+augur.js sends [JSON-RPC](https://github.com/ethereum/wiki/wiki/JSON-RPC) commands to Ethereum.  Its lower-level RPC functions are described here. 
 
 #### Basic RPC commands
 
@@ -75,10 +85,10 @@ The `raw` method allows you to send in raw commands (similar to sending in via c
 > Augur.eth("gasPrice")
 "0x015f90"
 ```
-Many of the commonly used functions have named wrappers.  For example, `coinbase` fetches your coinbase account:
+Many of the commonly used functions have named wrappers.  For example, `blockNumber` fetches the current block number:
 ```javascript
-> Augur.coinbase()
-"0x63524e3fe4791aefce1e932bbfb3fdf375bfad89"
+> Augur.blockNumber()
+217153
 ```
 
 #### Uploading and downloading contracts
@@ -124,15 +134,7 @@ Optional:
 ```
 The `params` and `signature` fields are required if your function accepts parameters; otherwise, these fields can be excluded.  The `returns` field is used only to format the output, and has no effect on the actual RPC command.
 
-*`invoke` currently only works for Serpent contracts.*  I haven't (yet) included all the different datatypes that Solidity supports in augur.js's encoder -- all parameters are strings, int256, or int256 arrays.  If you need a more flexible ABI encoder, I recommend [pyepm](https://github.com/etherex/pyepm), specifically the `pyepm.api.abi_data` method.
-
-#### Asynchronous RPC and callbacks
-
-By default, augur.js is fully asynchronous, although by changing `rpc.async` to `true` it can be forced to make synchronous HTTP RPC requests.  This is generally not recommended, especially if augur.js is running in the browser, as synchronous RPC requests block the main JS thread (which essentially freezes the browser).  All of augur.js's methods that involve an HTTP RPC request take an optional callback function as their last parameter.
-
-#### From the browser
-
-augur.js can be used from the browser (although the Ethereum client must be set to accept RPC calls from the browser's address).  To use augur.js in the browser, just include `augur.min.js`, as well as the [bignumber.js](https://github.com/MikeMcl/bignumber.js) and [js-sha3](https://github.com/emn178/js-sha3) libraries.
+*`invoke` currently only works for Serpent contracts.*  I haven't (yet) included all the different datatypes that Solidity supports in augur.js's encoder -- all parameters are type string, int256, or int256[].  If you need a more flexible ABI encoder, I recommend [pyepm](https://github.com/etherex/pyepm), specifically the `pyepm.api.abi_data` method.
 
 Tests
 -----
