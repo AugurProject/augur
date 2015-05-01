@@ -127,6 +127,14 @@
             }
         }
         function gteq0(n) { return (parseFloat(n) >= 0); }
+        function print(s) { console.log(s); };
+        function ne0(n) {
+            return (parseInt(n) != 0);
+        }
+        function is_array(r) { console.assert(r.constructor === Array); }
+        function is_object(r) { console.assert(r.constructor === Object); }
+        function on_root_branch(r) { console.assert(parseInt(r.branch) === 1010101); };
+
 
         console.log("  ethereum json-rpc wrapper");
         console.log("   - coinbase");
@@ -287,7 +295,7 @@
         tx.params = [123, 321];
         test(tx, 39483);
 
-        console.log("  augur contract functions");
+        console.log("  augur contract functions (invoke)");
         tx = {
             to: Augur.contracts.cash,
             function: "faucet",
@@ -316,7 +324,44 @@
             function (s) {
                 return s.slice(66,194);
             }
-        )
+        );
+
+        console.log("  augur contract functions (API)");
+        console.log("   - cashFaucet")
+        Augur.tx.cashFaucet.send = false;
+        Augur.cashFaucet(function (r) { console.assert(parseInt(r) === 1) });
+        console.log("   - getBranches");    
+        Augur.getBranches(is_array);
+        console.log("   - getCashBalance");
+        Augur.getCashBalance(Augur.coinbase, gteq0);
+        console.log("   - getRepBalance");
+        Augur.getRepBalance(1010101, Augur.coinbase, gteq0);
+        console.log("   - getMarkets");
+        Augur.getMarkets(1010101, is_array);
+        console.log("   - getMarketInfo");
+        Augur.getMarketInfo("0x97d63d7567b1fc41c19296d959eba0e7df4900bf2d197c6b7b746d864fdde421", is_object);
+        console.log("   - getEventInfo");
+        Augur.getEventInfo("0xb2a6de45f349b5ac384b01a785e640f519f0a8597ab2031c964c7f572d96b13c", on_root_branch);
+        console.log("   - getDescription");
+        Augur.getDescription("0xb2a6de45f349b5ac384b01a785e640f519f0a8597ab2031c964c7f572d96b13c", function (r) { console.assert(r.slice(-9) === "ragefest!"); });
+        console.log("   - getVotePeriod");
+        Augur.getVotePeriod(1010101, gteq0);
+        console.log("   - createEvent");
+        function cb1(r) { gteq0(r); }
+        function cb2(r) { gteq0(r); }
+        function cb3(r) { gteq0(r); }
+        Augur.createEvent(1010101, Math.random().toString(36).substring(7), 300000, 1, 2, 2, cb1, cb2, print);
+        console.log("   - createMarket");
+        Augur.createMarket(
+            1010101,
+            Math.random().toString(36).substring(7),
+            "0x1000000000000000",
+            "0x2800000000000000000",
+            "0x400000000000000",
+            ["0xb2a6de45f349b5ac384b01a785e640f519f0a8597ab2031c964c7f572d96b13c",
+             "0x4f37814757b7d0e2dde46de18bb4bf4a85e6716a06849d5cfcebf8f1d7270b12",
+             "0x412b3c588f9be08d54e99bf5095ef910c5e84080f048e3af8a2718b7b693cb83"]
+        , cb1, cb2, cb3, print);
     };
     Tests(false);
     Tests(true);

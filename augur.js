@@ -49,7 +49,7 @@ var Augur = (function (augur, async) {
     var rpc_url = rpc.protocol + "://" + rpc.host + ":" + rpc.port.toString();
 
     augur.id = 1;
-    augur.tx = {};
+    augur.data = {};
     augur.async = (augur && augur.async) || async;
     augur.default_gas = "0x2dc6c0";
     augur.coinbase = json_rpc(postdata("coinbase"), false);
@@ -192,18 +192,20 @@ var Augur = (function (augur, async) {
             };
         } else {
             var len_args = normal_args = var_args = '';
-            if (base === "string") {
-                len_args = zeropad(encode_int(arg.length));
-                var_args = encode_hex(arg);
-            }
-            if (base === "int") {
-                if (arg.constructor === Number) {
-                    normal_args = zeropad(encode_int(arg % Math.pow(2, sub)));
-                } else if (arg.constructor === String) {
-                    if (arg.slice(0,2) === "0x") {
-                        normal_args = zeropad(arg.slice(2), true);
-                    } else {
-                        normal_args = zeropad(encode_int(parseInt(arg) % Math.pow(2, sub)));
+            if (arg) {
+                if (base === "string") {
+                    len_args = zeropad(encode_int(arg.length));
+                    var_args = encode_hex(arg);
+                }
+                if (base === "int") {
+                    if (arg.constructor === Number) {
+                        normal_args = zeropad(encode_int(arg % Math.pow(2, sub)));
+                    } else if (arg.constructor === String) {
+                        if (arg.slice(0,2) === "0x") {
+                            normal_args = zeropad(arg.slice(2), true);
+                        } else {
+                            normal_args = zeropad(encode_int(parseInt(arg) % Math.pow(2, sub)));
+                        }
                     }
                 }
             }
@@ -349,25 +351,25 @@ var Augur = (function (augur, async) {
     }
 
     function postdata(command, params, prefix) {
-        augur.tx = {
+        augur.data = {
             id: augur.id++,
             jsonrpc: "2.0"
         };
         if (prefix === "null") {
-            augur.tx.method = command.toString();
+            augur.data.method = command.toString();
         } else {
-            augur.tx.method = (prefix || "eth_") + command.toString();
+            augur.data.method = (prefix || "eth_") + command.toString();
         }
         if (params) {
             if (params.constructor === Array) {
-                augur.tx.params = params;
+                augur.data.params = params;
             } else {
-                augur.tx.params = [params];
+                augur.data.params = [params];
             }
         } else {
-            augur.tx.params = [];
+            augur.data.params = [];
         }
-        return augur.tx;
+        return augur.data;
     }
 
     augur.clone = function (obj) {
@@ -772,11 +774,11 @@ var Augur = (function (augur, async) {
     // Invoke Augur API functions (asynchronous only)
     augur.getCashBalance = function (account, f) {
         if (account) augur.tx.getCashBalance.params = account;
-        augur.invoke(augur.tx.getCashBalance);
+        augur.invoke(augur.tx.getCashBalance, f);
     };
-    augur.getRepBalance = function (account, f) {
-        if (account) augur.tx.getRepBalance.params = account;
-        augur.invoke(augur.tx.getRepBalance);
+    augur.getRepBalance = function (branch, account, f) {
+        augur.tx.getRepBalance.params = [branch, account];
+        augur.invoke(augur.tx.getRepBalance, f);
     };
     augur.getBranches = function (f) {
         augur.invoke(augur.tx.getBranches, f);
@@ -817,12 +819,12 @@ var Augur = (function (augur, async) {
         augur.invoke(augur.tx.getEventInfo, function (eventInfo) {
             if (eventInfo) {
                 var info = {
-                    branch: parseInt(eventInfo[1]),
-                    expirationDate: parseInt(eventInfo[2]),
-                    outcome: parseInt(eventInfo[3]),
-                    minValue: parseInt(eventInfo[4]),
-                    maxValue: parseInt(eventInfo[5]),
-                    numOutcomes: parseInt(eventInfo[6])
+                    branch: parseInt(eventInfo[0]),
+                    expirationDate: parseInt(eventInfo[1]),
+                    outcome: parseInt(eventInfo[2]),
+                    minValue: parseInt(eventInfo[3]),
+                    maxValue: parseInt(eventInfo[4]),
+                    numOutcomes: parseInt(eventInfo[5])
                 };
                 augur.getDescription(event, function (description) {
                     if (description) info.description = description;
@@ -830,16 +832,6 @@ var Augur = (function (augur, async) {
                 });
             }
         });
-    };
-    augur.sendCash = function (receiver, value, f) {
-        augur.tx.sendCash.params = [receiver, value];
-        augur.invoke(augur.tx.sendCash, f);
-    };
-    augur.cashFaucet = function (f) {
-        augur.invoke(augur.tx.cashFaucet, f);
-    };
-    augur.reputationFaucet = function (f) { // should this take a branch parameter?
-        augur.invoke(augur.tx.reputationFaucet, f);
     };
     augur.getDescription = function (item, f) {
         augur.tx.getDescription.params = item;
@@ -883,19 +875,19 @@ var Augur = (function (augur, async) {
     };
     augur.createEvent = function (branch, description, expDate, minValue, maxValue, numOutcomes, sentCallback, verifiedCallback) {
         augur.tx.createEvent.params = [branch, description, expDate, minValue, maxValue, numOutcomes];
-        augur.invoke(tx, function (eventID) {
+        augur.tx.createEvent.send = false;
+        augur.invoke(augur.tx.createEvent, function (eventID) {
             if (eventID) {
                 var event = { id: eventID };
                 if (sentCallback) sentCallback(event);
-                tx.send = true;
-                augur.invoke(tx, function (txhash) {
+                augur.tx.createEvent.send = true;
+                augur.invoke(augur.tx.createEvent, function (txhash) {
                     if (txhash) {
                         event.txhash = txhash;
                         var pingTx = function () {
                             augur.getTx(txhash, function (getTx) {
                                 if (getTx) {
                                     augur.getDescription(eventID, function (description) {
-                                        console.log("event: ", description);
                                         event.description = description;
                                         if (verifiedCallback) verifiedCallback(event);
                                     });
@@ -911,7 +903,8 @@ var Augur = (function (augur, async) {
     };
     augur.createMarket = function (branch, description, alpha, liquidity, tradingFee, events, sentCallback, verifiedCallback, failedCallback) {
         augur.tx.createMarket.params = [branch, description, alpha, liquidity, tradingFee, events];
-        augur.invoke(tx, function (marketID) {
+        augur.tx.createMarket.send = false;
+        augur.invoke(augur.tx.createMarket, function (marketID) {
             if (marketID) {
                 var market = { id: marketID };
                 if (augur.errors[marketID]) {
@@ -919,8 +912,8 @@ var Augur = (function (augur, async) {
                     if (failedCallback) failedCallback(market);
                 } else {
                     if (sentCallback) sentCallback(market);
-                    tx.send = true;
-                    augur.invoke(tx, function (txhash) {
+                    augur.tx.createMarket.send = true;
+                    augur.invoke(augur.tx.createMarket, function (txhash) {
                         if (txhash) {
                             market.txhash = txhash;
                             var pingTx = function () {
@@ -949,14 +942,14 @@ var Augur = (function (augur, async) {
         augur.tx.sellShares.params = [branch, market, outcome, amount, nonce];
         augur.invoke(augur.tx.sellShares, f);
     };
-    augur.sendCash = function (reciever, value, f) {
+    augur.sendCash = function (receiver, value, f) {
         augur.tx.sendCash.params = [receiver, value];
         augur.invoke(augur.tx.sendCash, f);
     };
     augur.cashFaucet = function (f) {
         augur.invoke(augur.tx.cashFaucet, f);
     };
-    augur.reputationFaucet = function (f) {
+    augur.reputationFaucet = function (f) { // should this take a branch parameter?
         augur.invoke(augur.tx.reputationFaucet, f);
     };
     augur.buyShares = function (branch, market, outcome, amount, nonce, f) {
