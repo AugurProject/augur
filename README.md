@@ -14,7 +14,7 @@ geth --rpc --rpccorsdomain "http://localhost:8545" --shh --unlock primary
 ```
 augur.js can be installed using npm:
 ```
-npm install augur
+npm install augur.js
 ```
 After installing, to use it with Node, just require it:
 ```javascript
