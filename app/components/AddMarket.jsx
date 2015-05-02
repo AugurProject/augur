@@ -97,7 +97,7 @@ var AddMarketModal = React.createClass({
       var newMarketParams = {
         description: self.state.marketText,
         initialLiquidity: self.state.marketInvestment,
-        tradingFee: self.state.tradingFee,
+        tradingFee: self.state.tradingFee/100,  // convert to decimal percentage
         events: [newEvent.id],
       }  
 
