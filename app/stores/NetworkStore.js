@@ -11,8 +11,7 @@ var state = {
   ether: null,
   gasPrice: null,
   ethereumStatus: null,
-  miner: false,
-  filters: {}
+  miner: false
 };
 
 var NetworkStore = Fluxxor.createStore({
@@ -27,15 +26,6 @@ var NetworkStore = Fluxxor.createStore({
 
   getState: function () {
     return state;
-  },
-
-  getWeb3: function () {
-
-    if (state.ethereumStatus === constants.network.ETHEREUM_STATUS_CONNECTED) {
-      return require('web3');
-    } else {
-      //return require('../libs/demo').web3;  // depricated until fixtures can be implemented
-    }
   },
 
   /**

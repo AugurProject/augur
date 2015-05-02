@@ -18,19 +18,65 @@ function MissingContractError(contractName) {
  * Augur is implemented as several Ethereum contracts, mainly due to size
  * limitations. EthereumClient wraps the calls to those contracts to abstract
  * the contract details from the rest of the codebase.
- *
- * @param {object} [addresses] - The address for each contract, keyed as defined in abi.js.
- * @param {object} [web3] - The web3 object to use to access Ethereum data.
  */
-function EthereumClient(account, addresses, web3) {
+function EthereumClient(host) {
 
-  this.account = account;
-  this.addresses = addresses || {};
-  this.web3 = web3 || require('web3');
+  this.web3 = window.web3 = require('web3');
+  this.addresses = {};
+  this.filters = {}
+
   this.defaultGas = 1000000;
 
   this.contracts = {};
   _.defaults(this.addresses, constants.addresses);
+
+  this.web3.setProvider(new web3.providers.HttpProvider('http://'+host));
+}
+
+EthereumClient.prototype.isAvailable = function() {
+
+    try {
+      this.account = this.getPrimaryAccount();
+    } catch(err) {
+      return false;
+    }
+
+    return true;
+};
+
+EthereumClient.prototype.startMonitoring = function(callback) {
+  this.filters.latest = web3.eth.filter('latest');
+  this.filters.latest.watch(function (err, log) {
+    if (err) utilities.error(err);
+    callback();
+  });
+}
+
+EthereumClient.prototype.stopMonitoring = function() {
+  _.each(this.filters, function(filter) {
+    filter.stopWatching()
+  });
+}
+
+EthereumClient.prototype.getEtherBalance = function() {
+  return this.web3.eth.getBalance(this.account);
+}
+
+EthereumClient.prototype.getAccounts = function() {
+  return this.web3.eth.accounts;
+}
+
+EthereumClient.prototype.getPrimaryAccount = function() {
+  return this.web3.eth.coinbase;
+}
+
+EthereumClient.prototype.getStats = function() {
+  return {
+    gasPrice: this.web3.eth.gasPrice,
+    blockNumber: this.web3.eth.blockNumber,
+    miner: this.web3.eth.miner,
+    peerCount: this.web3.net.peerCount
+  }
 }
 
 /**
