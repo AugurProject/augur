@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "0.1.5",
+  "version": "0.1.7",
   "description": "JavaScript bindings for the Augur API",
   "main": "augur.js",
   "scripts": {

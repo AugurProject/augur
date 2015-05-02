@@ -9,14 +9,15 @@ var rpc = {
     async: true
 };
 
-var NODE_JS = typeof(module) != 'undefined';
-if (NODE_JS) {
-    var httpsync = require('http-sync');
-    var XMLHttpRequest = require('xhr2');
+var MODULAR = (typeof(module) != 'undefined');
+var NODE_JS = MODULAR && process && !process.browser;
+if (MODULAR) {
+    if (NODE_JS) {
+        var httpsync = require('http-sync');
+        var XMLHttpRequest = require('xhr2');
+    }
     var keccak_256 = require('js-sha3').keccak_256;
     var BigNumber = require('bignumber.js');
-} else {
-    var httpsync = { request: function (o) {} };
 }
 
 Array.prototype.loop = function (iterator) {
@@ -50,10 +51,6 @@ var Augur = (function (augur, async) {
     BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
     var rpc_url = rpc.protocol + "://" + rpc.host + ":" + rpc.port.toString();
-    var MAXBITS = new BigNumber(2).toPower(256);
-
-    // maximum number of times to try and verify transactions
-    augur.pingmax = 12;
 
     // true for asynchronous (recommended), false for synchronous
     augur.async = (augur && augur.async) || async;
@@ -61,10 +58,24 @@ var Augur = (function (augur, async) {
     // default gas: 3M
     augur.default_gas = "0x2dc6c0";
 
+    // max number of tx verification attempts
+    augur.PINGMAX = 12;
+
+    // constants
+    augur.MAXBITS = new BigNumber(2).toPower(256);
+    augur.ONE = augur.NO = new BigNumber(2).toPower(64);
+    augur.TWO = augur.YES = new BigNumber(2).toPower(65);
+    augur.BAD = (new BigNumber(2).toPower(63)).mul(new BigNumber(3));
+    augur.ETHER = new BigNumber(10).toPower(18);
+    augur.AGAINST = 1; // against: "won't happen"
+    augur.ON = 2;      // on: "will happen"
+
     augur.coinbase = json_rpc(postdata("coinbase"), false);
     augur.id = 1;
     augur.data = {};
-    augur.errors = {
+    
+    // createMarket error codes
+    augur.ERRORS = {
         "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
             code: -1,
             message: "bad input or parent doesn't exist"
@@ -213,14 +224,14 @@ var Augur = (function (augur, async) {
                 }
                 if (base === "int") {
                     if (arg.constructor === Number) {
-                        normal_args = zeropad(encode_int((new BigNumber(arg)).mod(MAXBITS).toFixed()));
+                        normal_args = zeropad(encode_int((new BigNumber(arg)).mod(augur.MAXBITS).toFixed()));
                     } else if (arg.constructor === String) {
                         if (arg.slice(0,1) === '-') {
-                            normal_args = zeropad(encode_int((new BigNumber(arg)).mod(MAXBITS).toFixed()));
+                            normal_args = zeropad(encode_int((new BigNumber(arg)).mod(augur.MAXBITS).toFixed()));
                         } else if (arg.slice(0,2) === "0x") {
                             normal_args = zeropad(arg.slice(2), true);
                         } else {
-                            normal_args = zeropad(encode_int(new BigNumber(arg).mod(MAXBITS)));
+                            normal_args = zeropad(encode_int(new BigNumber(arg).mod(augur.MAXBITS)));
                         }
                     }
                 }
@@ -332,19 +343,21 @@ var Augur = (function (augur, async) {
                 req.setRequestHeader("Content-type", "application/json");
                 req.send(command);
             } else {
-                req = httpsync.request({
-                    protocol: rpc.protocol,
-                    host: rpc.host,
-                    path: '/',
-                    port: rpc.port,
-                    method: 'POST'
-                });
-                req.write(command);
-                return parse((req.end()).body.toString(), returns, async, callback);
+                if (httpsync && httpsync.request && httpsync.request.constructor === Function) {
+                    req = httpsync.request({
+                        protocol: rpc.protocol,
+                        host: rpc.host,
+                        path: '/',
+                        port: rpc.port,
+                        method: 'POST'
+                    });
+                    req.write(command);
+                    return parse((req.end()).body.toString(), returns, async, callback);
+                }
             }
         } else {
             if (window.XMLHttpRequest) {
-                req = new XMLHttpRequest();
+                req = new window.XMLHttpRequest();
             } else {
                 req = new ActiveXObject("Microsoft.XMLHTTP");
             }
@@ -615,6 +628,32 @@ var Augur = (function (augur, async) {
             params: augur.coinbase,
             returns: "BigNumber"
         },
+        getCreator: {
+            from: augur.coinbase,
+            to: augur.contracts.info,
+            function: "getCreator",
+            signature: "i"
+        },
+        getCreationFee: {
+            from: augur.coinbase,
+            to: augur.contracts.info,
+            function: "getCreationFee",
+            signature: "i"
+        },
+        getSimulatedBuy: {
+            from: augur.coinbase,
+            to: augur.contracts.markets,
+            function: "getSimulatedBuy",
+            signature: "iii",
+            returns: "array"
+        },
+        getSimulatedSell: {
+            from: augur.coinbase,
+            to: augur.contracts.markets,
+            function: "getSimulatedSell",
+            signature: "iii",
+            returns: "array"
+        },
         getRepBalance: {
             from: augur.coinbase,
             to: augur.contracts.reporting,
@@ -792,6 +831,22 @@ var Augur = (function (augur, async) {
         if (account) augur.tx.getCashBalance.params = account;
         augur.invoke(augur.tx.getCashBalance, f);
     };
+    augur.getCreator = function (id, f) {
+        augur.tx.getCreator.params = id;
+        augur.invoke(augur.tx.getCreator, f);
+    };
+    augur.getCreationFee = function (id, f) {
+        augur.tx.getCreationFee.params = id;
+        augur.invoke(augur.tx.getCreationFee, f);
+    };
+    augur.getSimulatedBuy = function (market, outcome, amount, f) {
+        augur.tx.getSimulatedBuy.params = [market, outcome, amount];
+        augur.invoke(augur.tx.getSimulatedBuy, f);
+    };
+    augur.getSimulatedSell = function (market, outcome, amount, f) {
+        augur.tx.getSimulatedSell.params = [market, outcome, amount];
+        augur.invoke(augur.tx.getSimulatedSell, f);
+    };
     augur.getRepBalance = function (branch, account, f) {
         augur.tx.getRepBalance.params = [branch, account];
         augur.invoke(augur.tx.getRepBalance, f);
@@ -911,7 +966,7 @@ var Augur = (function (augur, async) {
                                             verifiedCallback(event);
                                         });
                                     } else {
-                                        if (pings < augur.pingmax) setTimeout(pingTx, 12000);
+                                        if (pings < augur.PINGMAX) setTimeout(pingTx, 12000);
                                     }
                                 });
                             };
@@ -929,8 +984,8 @@ var Augur = (function (augur, async) {
         augur.invoke(augur.tx.createMarket, function (marketID) {
             if (marketID) {
                 var market = { id: marketID };
-                if (augur.errors[marketID]) {
-                    market.error = "error " + augur.errors[marketID].code.toString() + ": " + augur.errors[marketID].message;
+                if (augur.ERRORS[marketID]) {
+                    market.error = "error " + augur.ERRORS[marketID].code.toString() + ": " + augur.ERRORS[marketID].message;
                     if (failedCallback) failedCallback(market);
                 } else {
                     if (sentCallback) sentCallback(market);
@@ -949,7 +1004,7 @@ var Augur = (function (augur, async) {
                                                 verifiedCallback(market);
                                             });
                                         } else {
-                                            if (pings < augur.pingmax) setTimeout(pingTx, 12000);
+                                            if (pings < augur.PINGMAX) setTimeout(pingTx, 12000);
                                         }
                                     });
                                 };
@@ -998,4 +1053,4 @@ var Augur = (function (augur, async) {
 
 delete rpc;
 
-if (NODE_JS) module.exports = Augur;
+if (MODULAR) module.exports = Augur;
