@@ -123,25 +123,32 @@ var AddMarketModal = React.createClass({
       },
       // verifiedCallback
       function (event) {
-        console.log("verified event");
+        console.log("verified hash");
         console.log(" - txhash:", event.txhash);
+        Augur.getTx(event.txhash, function (r) { console.log(r); });
+        var alpha = 0.07;
+        var liquidity = self.state.marketInvestment || 100;
+        var tradingFee = self.state.tradingFee || 0.02;
+        alpha = (new BigNumber(alpha)).mul(Augur.ONE).toFixed();
+        liquidity = (new BigNumber(liquidity)).mul(Augur.ONE).toFixed();
+        tradingFee = (new BigNumber(tradingFee)).mul(Augur.ONE).toFixed();
         // var alpha = "0x" + (new BigNumber(0.07)).mul(Augur.ONE).toString(16);
         // var liquidity = "0x" + (new BigNumber(100)).mul(Augur.ONE).toString(16);
         // var tradingFee = "0x" + (new BigNumber(0.02)).mul(Augur.ONE).toString(16);
-        // console.log("alpha", alpha);
-        // console.log("liquidity", liquidity);
-        // console.log("tradingfee",tradingFee);
-        // console.log(event);
-        // console.log([event.id]);
+        console.log("alpha", alpha);
+        console.log("liquidity", liquidity);
+        console.log("tradingfee",tradingFee);
+        console.log("event", event);
+        console.log("event.id array", [event.id]);
         console.log("broadcasting market");
         Augur.createMarket(
           1010101,
-          "why are there so many files in this repository?!?",
-          Augur.ONE.toFixed(),
-          Augur.ONE.mul(10).toFixed(),
-          Augur.ONE.mul(10).toFixed(),
-          [ "-0x2ae31f0184fa3e11a1517a11e3fc6319cb7c310cee36b20f8e0263049b1f3a6f" ],
-          // [ event.id ],
+          description,
+          alpha,
+          liquidity,
+          tradingFee,
+          // [ "-0x2ae31f0184fa3e11a1517a11e3fc6319cb7c310cee36b20f8e0263049b1f3a6f" ],
+          [ event.id ],
           // sentCallback
           function (market) {
             console.log("sent market");
@@ -155,6 +162,7 @@ var AddMarketModal = React.createClass({
           // failedCallback
           function (market) {
             console.log("something went wrong :(\nno market for you");
+            console.log(market);
           }
         );
       }
