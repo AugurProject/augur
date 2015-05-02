@@ -12,7 +12,8 @@ constants.accounts = {
     simulator2: "0x78829d3d1fd441aee8eff7a1263c11ed2f3adba7",
     toast: "0xb76a02724d44c89c20e41882f729a092f14d3eaf",
     joey: "0x1c11aa45c792e202e9ffdc2f12f99d0d209bef70",
-    chris: "0x9b7e6cd69f45d93336606b0f70dac77b5b6e9fb0"
+    chris: "0x9b7e6cd69f45d93336606b0f70dac77b5b6e9fb0",
+    jay: "0x6a56cf7a57405800b18e3e0940628c190cfa73bc"
 };
 
 constants.contracts = {

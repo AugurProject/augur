@@ -62,6 +62,30 @@ All Augur functions have an optional callback (or callbacks; see below) as their
 - buyShares(branch, market, outcome, amount, nonce[, callback])
 - sellShares(branch, market, outcome, amount, nonce[, callback])
 - sendReputation(branch, receiver, value[, callback])
+- getSimulatedBuy(market, outcome, amount[, callback])
+    ```javascript
+    > function print(s) { console.log(s); }; // quality-of-life improvement :)
+    > Augur.getSimulatedBuy("0xb13d98f933cbd602a3d9d4626260077678ab210d1e63b3108b231c1758ff9971", 1, Augur.ONE.toString(16), print)
+    ["0x0000000000000000000000000000000000000000000000000013b073172aceb2",
+     "0x0000000000000000000000000000000000000000000000008de39f2500000000"]
+    ```
+- getSimulatedSell(market, outcome, amount[, callback])
+    ```javascript
+    > Augur.getSimulatedSell("0xb13d98f933cbd602a3d9d4626260077678ab210d1e63b3108b231c1758ff9971", 1, Augur.ONE.toString(16), print)
+    ["0x0000000000000000000000000000000000000000000000000013af84d04feba9",
+     "0x0000000000000000000000000000000000000000000000008dd635b900000000"]
+     ```
+- getCreator(id[, callback])
+    ```javascript
+    > var marketID = "0xb13d98f933cbd602a3d9d4626260077678ab210d1e63b3108b231c1758ff9971";
+    > Augur.getCreator(marketID, print);
+    "0x0000000000000000000000001c11aa45c792e202e9ffdc2f12f99d0d209bef70"
+    ```
+- getCreationFee(id[, callback])
+    ```javascript
+    > Augur.getCreationFee(marketID, print)
+    "0x00000000000000000000000000000000000000000000000a0000000000000000"
+    ```
 
 Examples and more API functions coming soon :)
 
