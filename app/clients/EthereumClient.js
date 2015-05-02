@@ -338,8 +338,8 @@ EthereumClient.prototype.addEvent = function(params, onSuccess) {
     var branchId = params.branchId || 1010101;
     var description = params.description;
     var expirationBlock = params.expirationBlock;
-    var minValue = params.minValue || 0;
-    var maxValue = params.maxValue || 1;
+    var minValue = params.minValue || 1;  // why arn't these 0 and 1?!  create market errors if they are not
+    var maxValue = params.maxValue || 2;
     var numOutcomes = params.numOutcomes || 2;
 
     //var contract = this.getContract('createEvent');
@@ -353,15 +353,15 @@ EthereumClient.prototype.addEvent = function(params, onSuccess) {
 
       // sent callback
       function (newEvent) {
-        utilities.debug("submitted event "+ newEvent.id);
+        utilities.debug("submitted new event "+ newEvent.id);
       },
 
       // success callback
       function (newEvent) {
 
         utilities.debug("tx: " + newEvent.txhash);
-        Augur.getTx(newEvent.txhash, console.log);
 
+        Augur.getTx(newEvent.txhash);
         if (onSuccess) onSuccess(newEvent);
       }
     );
@@ -381,8 +381,6 @@ EthereumClient.prototype.addMarket = function(params, onSuccess) {
     var tradingFee = (new BigNumber(params.tradingFee)).mul(Augur.ONE).toFixed();
     var events = params.events;  // a list of event ids
 
-    console.log(params.tradingFee);
-
     //var contract = this.getContract('createMarket');
 
     // use call to get new market id or error return
@@ -390,15 +388,13 @@ EthereumClient.prototype.addMarket = function(params, onSuccess) {
     //  branchId, description, alpha, initialLiquidity, tradingFee, events, {gas: 300000}
     //);
 
-    console.log(branchId, description, alpha, initialLiquidity, tradingFee, events);
-
     Augur.createMarket(
           
       branchId, description, alpha, initialLiquidity, tradingFee, events,
 
       // sent callback
       function (newMarket) {
-        utilities.debug("submitted market "+ newMarket.id);
+        utilities.debug("submitted new market "+ newMarket.id);
       },
 
       // success callback
@@ -410,8 +406,8 @@ EthereumClient.prototype.addMarket = function(params, onSuccess) {
 
       // failed callback
       function (newMarket) {
-        utilities.error("error adding market")
-        utiltites.error(newMarket);
+        utilities.error("error adding new market")
+        utilities.error(newMarket);
       }
     );
 

@@ -94,10 +94,11 @@ var AddMarketModal = React.createClass({
 
     this.state.ethereumClient.addEvent(newEventParams, function(newEvent) {
 
+      // create associated market on success of event
       var newMarketParams = {
         description: self.state.marketText,
         initialLiquidity: self.state.marketInvestment,
-        tradingFee: self.state.tradingFee,
+        tradingFee: self.state.tradingFee/100,
         events: [newEvent.id],
       }  
 
