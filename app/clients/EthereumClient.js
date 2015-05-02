@@ -376,13 +376,12 @@ EthereumClient.prototype.addMarket = function(params, onSuccess) {
     //var alpha = toFixedPoint(0.07);
     //var initialLiquidity = toFixedPoint(params.initialLiquidity);
     //var tradingFee = toFixedPoint(params.tradingFee);   // percent trading fee
-    var events = params.events;  // a list of event ids
-
-    // let's try to use BigNumber objects all throughout for those that need it
-    // and only convert right before an RPC or rendering.
     var alpha = (new BigNumber(0.07)).mul(Augur.ONE).toFixed();
     var initialLiquidity = (new BigNumber(params.initialLiquidity)).mul(Augur.ONE).toFixed();
     var tradingFee = (new BigNumber(params.tradingFee)).mul(Augur.ONE).toFixed();
+    var events = params.events;  // a list of event ids
+
+    console.log(params.tradingFee);
 
     //var contract = this.getContract('createMarket');
 
@@ -411,7 +410,8 @@ EthereumClient.prototype.addMarket = function(params, onSuccess) {
 
       // failed callback
       function (newMarket) {
-        utilities.error("error adding market " + newMarket.id);
+        utilities.error("error adding market")
+        utiltites.error(newMarket);
       }
     );
 
