@@ -471,6 +471,10 @@
                 print("   - price(" + market_id + ", " + Augur.AGAINST + ") -> " + r.dividedBy(Augur.ONE).toFixed());
                 gteq0(r);
             });
+            Augur.getWinningOutcomes(market_id, function (r) {
+                print("   - getWinningOutcomes(" + market_id + ")");
+                is_array(r);
+            });
         }
     };
     Tests(false);

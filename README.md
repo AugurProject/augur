@@ -97,6 +97,12 @@ All Augur functions have an optional callback (or callbacks; see below) as their
     > Augur.getMarketNumOutcomes(market, print)
     2
     ```
+- price(market, outcome[, callback]): Get the current (instantaneous) price of an outcome.
+    ```javascript
+    > Augur.price(market_id, 1, function (r) { print(r.dividedBy(Augur.ONE).toFixed()); })
+    0.55415210523642599583
+    ```
+- getWinningOutcomes(market[, callback])
 
 Examples and more API functions coming soon :)
 

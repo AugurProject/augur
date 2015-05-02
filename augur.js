@@ -783,6 +783,13 @@ var Augur = (function (augur, async) {
             function: "getBranch",
             signature: "i"
         },
+        getWinningOutcomes: {
+            from: augur.coinbase,
+            to: augur.contracts.markets,
+            function: "getWinningOutcomes",
+            signature: "i",
+            returns: "array"
+        },
         sendCash: {
             from: augur.coinbase,
             to: augur.contracts.cash,
@@ -977,6 +984,10 @@ var Augur = (function (augur, async) {
     augur.getBranch = function (branchNumber, f) {
         augur.tx.getBranch.params = branchNumber;
         augur.invoke(augur.tx.getBranch, f);
+    };
+    augur.getWinningOutcomes = function (market, f) {
+        augur.tx.getWinningOutcomes.params = market;
+        augur.invoke(augur.tx.getWinningOutcomes, f);
     };
     augur.createEvent = function (branch, description, expDate, minValue, maxValue, numOutcomes, sentCallback, verifiedCallback) {
         augur.tx.createEvent.params = [branch, description, expDate, minValue, maxValue, numOutcomes];
