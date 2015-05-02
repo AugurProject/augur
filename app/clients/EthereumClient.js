@@ -254,6 +254,8 @@ EthereumClient.prototype.getMarkets = function (branchId) {
 
   var validMarkets = branchContract.getMarkets.call(branchId);
 
+  return {};
+
   var marketList = _.map(validMarkets, function(marketId) {
 
     var events = marketContract.getMarketEvents.call(marketId);
@@ -371,10 +373,16 @@ EthereumClient.prototype.addMarket = function(params, onSuccess) {
 
     var branchId = params.branchId || 1010101;
     var description = params.description;
-    var alpha = toFixedPoint(0.07);
-    var initialLiquidity = toFixedPoint(params.initialLiquidity);
-    var tradingFee = toFixedPoint(parseInt(params.tradingFee)/100);   // percent trading fee
+    //var alpha = toFixedPoint(0.07);
+    //var initialLiquidity = toFixedPoint(params.initialLiquidity);
+    //var tradingFee = toFixedPoint(parseInt(params.tradingFee)/100);   // percent trading fee
     var events = params.events;  // a list of event ids
+
+    // let's try to use BigNumber objects all throughout for those that need it
+    // and only convert right before an RPC or rendering.
+    var alpha = (new BigNumber(0.07)).mul(Augur.ONE).toFixed();
+    var initialLiquidity = (new BigNumber(params.initialLiquidity)).mul(Augur.ONE).toFixed();
+    var tradingFee = (new BigNumber(params.tradingFee).mul(Augur.ONE).toFixed();
 
     //var contract = this.getContract('createMarket');
 
