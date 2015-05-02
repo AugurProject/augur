@@ -13,8 +13,8 @@
             var constants = require('./constants');
         }
 
-        function print(s) { console.log(s); };
-        function assert(c) { console.assert(c); };
+        var print = console.log;
+        var assert = console.assert;
     
         Augur.async = async;
 
@@ -137,7 +137,7 @@
             assert(r.constructor === Array);
         }
         function is_object(r) {
-            // print(r);
+            print(r);
             assert(r.constructor === Object);
         }
         function on_root_branch(r) {
@@ -404,7 +404,7 @@
                 2,
                 2, 
                 is_object,
-                null // is_object
+                is_object
             );
             var market_description = Math.random().toString(36).substring(7);
             print("   - createMarket: \"" + market_description + "\"");
@@ -418,7 +418,7 @@
                 "0xa0000000000000000",
                 ["-0x2ae31f0184fa3e11a1517a11e3fc6319cb7c310cee36b20f8e0263049b1f3a6f"],
                 is_object,
-                null, // is_object,
+                is_object,
                 null
             );
             var market_id = "0xb13d98f933cbd602a3d9d4626260077678ab210d1e63b3108b231c1758ff9971";
