@@ -959,7 +959,7 @@ var Augur = (function (augur, async) {
     };
     augur.getParticipantSharesPurchased = function (market, participationNumber, outcome, f) {
         augur.tx.getParticipantSharesPurchased.params = [market, participationNumber, outcome];
-        augur.invoke(augur.gtx.getParticipantSharesPurchased, f);
+        augur.invoke(augur.tx.getParticipantSharesPurchased, f);
     };
     augur.price = function (market, outcome, f) {
         augur.tx.price.params = [market, outcome];
