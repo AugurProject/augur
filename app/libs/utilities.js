@@ -25,20 +25,6 @@ module.exports = {
     return currentBlock + blockDelta;
   },
 
-  formatDate: function(d) {
-
-    if (!d) return '-';
-
-    months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Oct','Sep','Nov','Dec'];
-
-    var hour = d.getHours() > 11  ? d.getHours() - 12 : d.getHours();
-    hour = hour === 0 ? 12 : hour;
-    var apm = d.getHours() > 10 || d.getHours() == 23 && d.getHours() !== 0 ? 'pm' : 'am';
-    var minutes = d.getMinutes() < 10 ? '0'+ d.getMinutes() : d.getMinutes();
-
-    return months[d.getMonth()]+' '+d.getDate()+', '+hour+':'+minutes+' '+apm;
-  },
-
   formatEther: function(wei) {
 
     // detect format and convert

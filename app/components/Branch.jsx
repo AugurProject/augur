@@ -4,7 +4,7 @@ var Fluxxor = require("fluxxor");
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 var web3 = require('web3');
-var utilities = require('../libs/utilities')
+var moment = require('moment');
 
 var Router = require("react-router");
 var RouteHandler = Router.RouteHandler;
@@ -73,7 +73,7 @@ var MarketPane = React.createClass({
   render: function() {
 
     var market = this.props.market;
-    var formattedDate = market.endDate ? utilities.formatDate(market.endDate) : '-'
+    var formattedDate = market.endDate ? moment(market.endDate).format('MMM Do, YYYY') : '-'
 
     return (
       <Link to='market' params={ {marketId: market.id.toString(64)} } className='market-pane'>
