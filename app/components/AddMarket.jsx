@@ -6,9 +6,9 @@ var ReactBootstrap = require('react-bootstrap');
 var Button = ReactBootstrap.Button;
 var Modal = ReactBootstrap.Modal;
 var ModalTrigger = ReactBootstrap.ModalTrigger;
-var DatePicker = require('react-date-picker');
-var moment = require('moment');
+var Augur = require('augur.js');
 var utilities = require('../libs/utilities');
+var BigNumber = require('bignumber.js');
 
 var AddMarketModal = React.createClass({
 
@@ -23,7 +23,7 @@ var AddMarketModal = React.createClass({
       maturationDate: '',
       tradingFee: '',
       valid: false,
-      cashLeft: 0
+      cashLeft: 0,
     };
   },
 
@@ -96,7 +96,73 @@ var AddMarketModal = React.createClass({
     this.setState({pageNumber: newPageNumber});
   },
 
-  onSubmit: function(event) {
+  onSubmit: function (event) {
+    var self = this;
+    console.log("submitting new market:", this.state.marketText);
+    var branchId = 1010101;
+    var description = this.state.marketText;
+    var expirationBlock = utilities.dateToBlock(
+      new Date(this.state.maturationDate),
+      this.state.currentBlock
+    );
+    var minValue = 0;
+    var maxValue = 1;
+    var numOutcomes = 2;
+    console.log("broadcasting event:");
+    Augur.createEvent(
+      branchId,
+      description,
+      expirationBlock,
+      minValue,
+      maxValue,
+      numOutcomes,
+      // sentCallback
+      function (event) {
+        console.log("sent event");
+        console.log(" - eventID:", event.id);
+      },
+      // verifiedCallback
+      function (event) {
+        console.log("verified event");
+        console.log(" - txhash:", event.txhash);
+        // var alpha = "0x" + (new BigNumber(0.07)).mul(Augur.ONE).toString(16);
+        // var liquidity = "0x" + (new BigNumber(100)).mul(Augur.ONE).toString(16);
+        // var tradingFee = "0x" + (new BigNumber(0.02)).mul(Augur.ONE).toString(16);
+        // console.log("alpha", alpha);
+        // console.log("liquidity", liquidity);
+        // console.log("tradingfee",tradingFee);
+        // console.log(event);
+        // console.log([event.id]);
+        console.log("broadcasting market");
+        Augur.createMarket(
+          1010101,
+          "why are there so many files in this repository?!?",
+          Augur.ONE.toFixed(),
+          Augur.ONE.mul(10).toFixed(),
+          Augur.ONE.mul(10).toFixed(),
+          [ "-0x2ae31f0184fa3e11a1517a11e3fc6319cb7c310cee36b20f8e0263049b1f3a6f" ],
+          // [ event.id ],
+          // sentCallback
+          function (market) {
+            console.log("sent market");
+            console.log(" - marketID:", market.id);
+          },
+          // verifiedCallback
+          function (market) {
+            console.log("verified market!");
+            console.log(market);
+          },
+          // failedCallback
+          function (market) {
+            console.log("something went wrong :(\nno market for you");
+          }
+        );
+      }
+    );
+    this.props.onRequestHide();
+  },
+
+  onSubmitPunk: function(event) {
 
     console.log(this.state.marketText);
 
@@ -139,17 +205,10 @@ var AddMarketModal = React.createClass({
     this.props.onRequestHide();
   },
 
-  handleDatePicked: function(dateText, moment, event) {
-
-    this.setState({maturationDate: dateText});
-  },
-
-  render: function() {
+  render: function () {
 
     var page, subheading, footer;
-
     if (this.state.pageNumber === 2) {
-
       subheading = 'Fees';
       page = (
         <div className="form-horizontal fees">
@@ -195,29 +254,19 @@ var AddMarketModal = React.createClass({
           <Button bsStyle='primary' onClick={ this.onNext }>Next</Button>
         </div>
       );
-
     } else if (this.state.pageNumber === 3) {
-
       subheading = 'Maturation Date';
       page = (
         <div className="form-group date">
-          <div className='col-sm-6'>
-            <p>Enter the date this event will mature, trading will end and the question decided.</p>
-            <input
-              className='form-control'
-              bsSize='large'
-              type='text'
-              placeholder='YYYY-MM-DD'
-              value={ this.state.maturationDate }
-              onChange={ this.onChangeMaturationDate } 
-            />
-          </div>
-          <div className='col-sm-6'>
-            <DatePicker 
-              hideFooter={ true }
-              onChange={ this.handleDatePicked }
-            />
-          </div>
+          <p>Enter the date this event will mature, trading will end and the question decided.</p>
+          <input 
+            type="text"
+            bsSize="xlarge"
+            className="form-control" 
+            name="maturation-date" 
+            placeholder="MM/DD/YYYY"
+            onChange={ this.onChangeMaturationDate } 
+          />
         </div>
       );
       footer = (
@@ -226,9 +275,7 @@ var AddMarketModal = React.createClass({
           <Button bsStyle='primary' onClick={ this.onSubmit }>Submit Market</Button>
         </div>
       );
-
     } else {
-
       subheading = 'Market Query';
       page = (
         <div>

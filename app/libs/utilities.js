@@ -62,6 +62,9 @@ module.exports = {
    * Multiplies the value by 2^64, then floors it to get a round BigNumber.
    */
   toFixedPoint: function (value) {
+    return (new BigNumber(value)).mul(constants.ONE_FXP);
+  },
+  toFixedPointPunk: function (value) {
     return constants.ONE_FXP.times(value).floor();
   },
 

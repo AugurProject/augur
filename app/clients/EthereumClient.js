@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var Promise = require('es6-promise').Promise;
+var Augur = require('augur.js');
 
 var abi = require('../libs/abi');
 var constants = require('../libs/constants');
@@ -182,6 +183,66 @@ EthereumClient.prototype.getBranches = function () {
  * @returns {BigNumber} object.$id.author - The account hash of the market
  *   creator. Convert to hexadecimal for display purposes.
  */
+EthereumClient.prototype.getMarketsPunk = function (branchId, callback) {
+  // welcome to callback hell
+  var markets = {};
+  Augur.getMarkets(branchId, function (marketList) {
+    marketList.loop(function (market, nextMarket) {
+      markets[market] = { id: market, comments: [], endDate: null };
+      Augur.getMarketEvents(market, function (events) {
+        markets[market].events = events;
+        Augur.getMarketInfo(market, function (marketInfo) {
+          /**
+           * marketInfo: {
+           *    currentParticipant: BigNumber
+           *    alpha: BigNumber
+           *    cumulativeScale: BigNumber
+           *    description: string (ASCII)
+           *    numOutcomes: int
+           *    tradingFee: BigNumber
+           *    tradingPeriod: BigNumber
+           * }
+           */
+          markets[market].traderId = marketInfo.currentParticipant;
+          markets[market].alpha = marketInfo.alpha;
+          markets[market].description = marketInfo.description;
+          markets[market].numOutcomes = marketInfo.numOutcomes;
+          markets[market].tradingFee = marketInfo.tradingFee;
+          markets[market].tradingPeriod = marketInfo.tradingPeriod;
+          if (!markets[market].outcomes) {
+            markets[market].outcomes = Array(marketInfo.numOutcomes);
+          }
+          Augur.getCreator(market, function (author) {
+            markets[market].author = author;
+            markets[market].totalVolume = new BigNumber(0);
+            _.range(1, marketInfo.numOutcomes + 1).loop(function (outcome, nextOutcome) {
+              markets[market].outcomes[outcome] = { id: outcome };
+              Augur.getSharesPurchased(market, outcome, function (allShares) {
+                markets[market].volume = markets[market].outcomes[outcome].volume = fromFixedPoint(allShares);
+                markets[market].totalVolume = markets[market].totalVolume.plus(markets[market].volume);
+                Augur.price(market, outcome, function (price) {
+                  markets[market].price = fromFixedPoint(price);
+                  Augur.getParticipantSharesPurchased(market, marketInfo.currentParticipant, outcome, function (myShares) {
+                    markets[market].outcomes[outcome].sharesPurchased = fromFixedPoint(myShares);
+                    Augur.getExpiration(events[0], function (expiration) {
+                      if (events.length) {
+                        markets[market].endDate = utilities.blockToDate((new BigNumber(expiration)).toNumber());
+                        console.log(markets[market]);
+                      }
+                    });
+                  });
+                });
+              });
+              nextOutcome();
+            });
+          });
+        });
+      });
+      nextMarket();
+    });
+  });
+};
+
 EthereumClient.prototype.getMarkets = function (branchId) {
 
   var branchContract = this.getContract('branches');
@@ -315,7 +376,43 @@ EthereumClient.prototype.addMarketTest = function(params) {
 
     Augur.createMarket(branchId, description, alpha, initialLiquidity, tradingFee, events);
 
-},
+};
+
+EthereumClient.prototype.addEventPunk = function (params, callback) {
+    var branchId = params.branchId || 1010101;
+    var description = params.description;
+    var expirationBlock = params.expirationBlock;
+    var minValue = params.minValue || 0;
+    var maxValue = params.maxValue || 1;
+    var numOutcomes = params.numOutcomes || 2;
+
+};
+EthereumClient.prototype.addMarketPunk = function (params, callback) {
+    var branchId = params.branchId || 1010101;
+    var description = params.description;
+    var alpha = toFixedPoint("0.07").toString(16);
+    var initialLiquidity = toFixedPoint(params.initialLiquidity).toString(16);
+    var tradingFee = toFixedPoint(parseInt(params.tradingFee)/100);   // percent trading fee
+    var events = params.events;  // a list of event ids
+    console.log("ADD MARKET:");
+    console.log("  - branch:", branchId);
+    console.log("  - description:", description);
+    console.log("  - alpha:", alpha);
+    console.log("  - liquidity:", initialLiquidity);
+    console.log("  - tradingFee:", tradingFee);
+    console.log("  - events:", events);
+    function sent(market) {
+      console.log("SENT:", market);
+      callback(market.id);
+    }
+    // function verified(market) {
+    //   console.log("VERIFIED:", market);
+    // }
+    // function failed(market) {
+    //   console.log("FAILED:", market);
+    // }
+    Augur.createMarket(branchId, description, alpha, initialLiquidity, tradingFee, events, sent, null, null);
+};
 
 EthereumClient.prototype.addMarket = function(params) {
 
