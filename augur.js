@@ -1040,7 +1040,7 @@ var Augur = (function (augur, async) {
                                     augur.getMarketInfo(marketID, function (marketInfo) {
                                         pings++;
                                         if (marketInfo && marketInfo.numOutcomes && marketInfo.numOutcomes != 0 && marketInfo.numOutcomes != "0") {
-                                            verifiedCallback(event);
+                                            verifiedCallback(market);
                                         } else {
                                             if (pings < augur.PINGMAX) setTimeout(pingTx, 12000);
                                         }
