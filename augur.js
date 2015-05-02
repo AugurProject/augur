@@ -695,12 +695,26 @@ var Augur = (function (augur, async) {
             signature: "i",
             returns: "int"
         },
+        getExpiration: {
+            from: augur.coinbase,
+            to: augur.contracts.events,
+            function: "getExpiration",
+            signature: "i",
+            returns: "BigNumber"
+        },
         getEventInfo: {
             from: augur.coinbase,
             to: augur.contracts.events,
             function: "getEventInfo",
             signature: "i",
             returns: "array"
+        },
+        getMarketNumOutcomes: {
+            from: augur.coinbase,
+            to: augur.contracts.markets,
+            function: "getMarketNumOutcomes",
+            signature: "i",
+            returns: "int"
         },
         getBranchID: {
             from: augur.coinbase,
@@ -885,6 +899,10 @@ var Augur = (function (augur, async) {
         augur.tx.getNumEvents.params = market;
         augur.invoke(augur.tx.getNumEvents, f);
     };
+    augur.getExpiration = function (event, f) {
+        augur.tx.getExpiration.params = event;
+        augur.invoke(augur.tx.getExpiration, f);
+    };
     augur.getEventInfo = function (event, f) {
         augur.tx.getEventInfo.params = event;
         augur.invoke(augur.tx.getEventInfo, function (eventInfo) {
@@ -903,6 +921,10 @@ var Augur = (function (augur, async) {
                 });
             }
         });
+    };
+    augur.getMarketNumOutcomes = function (market, f) {
+        augur.tx.getMarketNumOutcomes.params = market;
+        augur.invoke(augur.tx.getMarketNumOutcomes, f);
     };
     augur.getDescription = function (item, f) {
         augur.tx.getDescription.params = item;

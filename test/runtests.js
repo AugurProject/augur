@@ -353,25 +353,45 @@
 
         if (Augur.async) {
             print("  augur contract functions (API)");
-            print("   - cashFaucet")
             Augur.tx.cashFaucet.send = false;
-            Augur.cashFaucet(function (r) { assert(parseInt(r) === 1) });
-            print("   - getBranches");    
-            Augur.getBranches(is_array);
-            print("   - getCashBalance");
-            Augur.getCashBalance(Augur.coinbase, gteq0);
-            print("   - getRepBalance");
-            Augur.getRepBalance(1010101, Augur.coinbase, gteq0);
-            print("   - getMarkets");
-            Augur.getMarkets(1010101, is_array);
-            print("   - getMarketInfo");
-            Augur.getMarketInfo("0x97d63d7567b1fc41c19296d959eba0e7df4900bf2d197c6b7b746d864fdde421", is_object);
-            Augur.getMarketInfo("0xb13d98f933cbd602a3d9d4626260077678ab210d1e63b3108b231c1758ff9971", is_object);
-            print("   - getEventInfo");
-            Augur.getEventInfo("0xb2a6de45f349b5ac384b01a785e640f519f0a8597ab2031c964c7f572d96b13c", on_root_branch);
+            Augur.cashFaucet(function (r) {
+                print("   - cashFaucet")
+                assert(parseInt(r) === 1)
+            });
+            Augur.getBranches(function (r) {
+                print("   - getBranches");
+                assert(r.length >= 3);
+                is_array(r);
+            });
+            Augur.getCashBalance(Augur.coinbase, function (r) {
+                print("   - getCashBalance -> " + (new BigNumber(r)).dividedBy(Augur.ONE).toFixed());
+                gteq0(r);
+            });
+            Augur.getRepBalance(1010101, Augur.coinbase, function (r) {
+                print("   - getRepBalance");
+                gteq0(r);
+            });
+            Augur.getMarkets(1010101, function (r) {
+                print("   - getMarkets");
+                is_array(r);
+            });
+            Augur.getMarketInfo("0x97d63d7567b1fc41c19296d959eba0e7df4900bf2d197c6b7b746d864fdde421", function (r) {
+                print("   - getMarketInfo");
+                is_object(r);
+            });
+            Augur.getMarketInfo("0xb13d98f933cbd602a3d9d4626260077678ab210d1e63b3108b231c1758ff9971", function (r) {
+                print("   - getMarketInfo");
+                is_object(r)
+            });
+            Augur.getEventInfo("0xb2a6de45f349b5ac384b01a785e640f519f0a8597ab2031c964c7f572d96b13c", function (r) {
+                print("   - getEventInfo");
+                on_root_branch(r);
+            });
             Augur.getEventInfo("0xb2a6de45f349b5ac384b01a785e640f519f0a8597ab2031c964c7f572d96b13c", is_object);
-            print("   - getDescription");
-            Augur.getDescription("0xb2a6de45f349b5ac384b01a785e640f519f0a8597ab2031c964c7f572d96b13c", function (r) { assert(r.slice(-9) === "ragefest!"); });
+            Augur.getDescription("0xb2a6de45f349b5ac384b01a785e640f519f0a8597ab2031c964c7f572d96b13c", function (r) {
+                print("   - getDescription");
+                assert(r.slice(-9) === "ragefest!");
+            });
             print("   - getVotePeriod");
             Augur.getVotePeriod(1010101, gteq0);
             var event_description = Math.random().toString(36).substring(7);
@@ -403,44 +423,49 @@
             );
             var market_id = "0xb13d98f933cbd602a3d9d4626260077678ab210d1e63b3108b231c1758ff9971";
             var event_id = "0xb2a6de45f349b5ac384b01a785e640f519f0a8597ab2031c964c7f572d96b13c";
-            print("   - getMarketEvents(" + market_id + ")");
             Augur.getMarketEvents(market_id, function (r) {
+                print("   - getMarketEvents(" + market_id + ")");
                 assert(r.constructor === Array);
                 assert(r.length === 1);
                 assert(array_equal(r, ['0xd51ce0fe7b05c1ee5eae85ee1c039ce63483cef311c94df071fd9cfb64e0c591']));
             });
             // python ./call_contract.py markets getSimulatedBuy 'market_id' 1 2**64`
             // `0x0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000a4369b3fb835e32a000000000000000000000000000000000000000000000000b876cf7b00000000`
-            print("   - getCreator(" + event_id + ") [event]");
             Augur.getCreator(event_id, function (r) {
-                // this many leading zeros correct?
+                print("   - getCreator(" + event_id + ") [event]");
                 assert(r === "0x00000000000000000000000063524e3fe4791aefce1e932bbfb3fdf375bfad89");
             });
-            print("   - getCreationFee(" + event_id + ") [event]");
             Augur.getCreationFee(event_id, function (r) {
-                // tiny, nonzero to prevent spam ala Ripple ~ 2 wei
                 // print("getCreationFee(m): " + (new BigNumber(r)).dividedBy(Augur.ONE).toString());
+                print("   - getCreationFee(" + event_id + ") [event]");
                 assert(r === "0x000000000000000000000000000000000000000000000000000000000000002d");
             });
-            print("   - getCreator(" + market_id + ") [market]");
             Augur.getCreator(market_id, function (r) {
+                print("   - getCreator(" + market_id + ") [market]");
                 assert(r === "0x0000000000000000000000001c11aa45c792e202e9ffdc2f12f99d0d209bef70");
             });
-            print("   - getCreationFee(" + market_id + ") [market]");
             Augur.getCreationFee(market_id, function (r) {
-                // ~ 10 ether
+                print("   - getCreationFee(" + market_id + ") [market]");
                 // print("getCreationFee(m): " + (new BigNumber(r)).dividedBy(Augur.ONE).toString());
                 assert(r === "0x00000000000000000000000000000000000000000000000a0000000000000000");
             });
-            print("   - getSimulatedBuy(" + market_id + ", " + Augur.AGAINST + ", " + Augur.ONE.toString(16) + ")");
             Augur.getSimulatedBuy(market_id, Augur.AGAINST, Augur.ONE.toString(16), function (r) {
-                print("getSimulatedBuy: " + r);
+                print("   - getSimulatedBuy(" + market_id + ", " + Augur.AGAINST + ", " + Augur.ONE.toString(16) + ")");
+                print(r);
                 is_array(r);
             });
-            print("   - getSimulatedSell(" + market_id + ", " + Augur.AGAINST + ", " + Augur.ONE.toString(16) + ")");
             Augur.getSimulatedSell(market_id, Augur.AGAINST, Augur.ONE.toString(16), function (r) {
-                print("simSell: " + r);
+                print("   - getSimulatedSell(" + market_id + ", " + Augur.AGAINST + ", " + Augur.ONE.toString(16) + ")");
+                print(r);
                 is_array(r);
+            });
+            Augur.getExpiration(event_id, function (r) {
+                print("   - getExpiration(" + event_id + ")");
+                assert(r === "0x000000000000000000000000000000000000000000000000000000000003d090");
+            });
+            Augur.getMarketNumOutcomes(market_id, function (r) {
+                print("   - getMarketNumOutcomes(" + market_id + ")");
+                assert(r === 2);
             });
         }
     };

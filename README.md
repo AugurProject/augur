@@ -77,14 +77,25 @@ All Augur functions have an optional callback (or callbacks; see below) as their
      ```
 - getCreator(id[, callback])
     ```javascript
-    > var marketID = "0xb13d98f933cbd602a3d9d4626260077678ab210d1e63b3108b231c1758ff9971";
-    > Augur.getCreator(marketID, print);
+    > var market = "0xb13d98f933cbd602a3d9d4626260077678ab210d1e63b3108b231c1758ff9971";
+    > Augur.getCreator(market, print);
     "0x0000000000000000000000001c11aa45c792e202e9ffdc2f12f99d0d209bef70"
     ```
 - getCreationFee(id[, callback])
     ```javascript
-    > Augur.getCreationFee(marketID, print)
+    > Augur.getCreationFee(market, print)
     "0x00000000000000000000000000000000000000000000000a0000000000000000"
+    ```
+- getExpiration(event[, callback]): Event expiration block.
+    ```javascript
+    > var event = "0xb2a6de45f349b5ac384b01a785e640f519f0a8597ab2031c964c7f572d96b13c";
+    > Augur.getExpiration(event, print)
+    "0x000000000000000000000000000000000000000000000000000000000003d090"
+    ```
+- getMarketNumOutcomes(market[, callback]): Number of outcomes in this market as an integer.
+    ```javascript
+    > Augur.getMarketNumOutcomes(market, print)
+    2
     ```
 
 Examples and more API functions coming soon :)
