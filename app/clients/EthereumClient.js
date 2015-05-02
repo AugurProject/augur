@@ -189,10 +189,7 @@ EthereumClient.prototype.getMarkets = function (branchId) {
   var infoContract = this.getContract('info');
   var account = this.account;
 
-  var validMarkets = _.filter(branchContract.getMarkets.call(branchId), function(marketId) {
-    var events = marketContract.getMarketEvents.call(marketId);
-    return events.length ? true : false;
-  });
+  var validMarkets = branchContract.getMarkets.call(branchId);
 
   var marketList = _.map(validMarkets, function(marketId) {
 
@@ -200,22 +197,20 @@ EthereumClient.prototype.getMarkets = function (branchId) {
     var description = infoContract.getDescription.call(marketId);
     var alpha = fromFixedPoint(marketContract.getAlpha.call(marketId));
     var author = infoContract.getCreator.call(marketId);
-    var creationFee = infoContract.getCreationFee.call(marketId);
+    var creationFee = fromFixedPoint(infoContract.getCreationFee.call(marketId));
 
     var endDate = new Date();   // TODO: calc from last event expiration
     var traderCount = marketContract.getCurrentParticipantNumber.call(marketId);
     var tradingPeriod = marketContract.getTradingPeriod.call(marketId);
-    var tradingFee = marketContract.getTradingFee.call(marketId);
+    var tradingFee = fromFixedPoint(marketContract.getTradingFee.call(marketId));
     var traderId =  marketContract.getParticipantNumber.call(marketId, account);
-    var totalVolume = 0;
+    var totalVolume = new BigNumber(0);
 
     var outcomeCount = marketContract.getMarketNumOutcomes.call(marketId).toNumber();
     var outcomes = _.map( _.range(1, outcomeCount + 1), function (outcomeId) {
 
-      var volume = marketContract.getSharesPurchased.call(marketId, outcomeId);
-      //console.log(volume.toNumber());
-
-      //totalVolume += volume;
+      var volume = fromFixedPoint(marketContract.getSharesPurchased.call(marketId, outcomeId));
+      totalVolume = totalVolume.plus(volume);
 
       return {
         id: outcomeId,
@@ -228,7 +223,7 @@ EthereumClient.prototype.getMarkets = function (branchId) {
       };
     });
 
-    var price = outcomes.length ? outcomes[0].price : '-';
+    var price = outcomes.length ? outcomes[0].price : new BigNumber(0);  
     var winningOutcomes = marketContract.getWinningOutcomes.call(marketId);
 
     return {
@@ -327,9 +322,9 @@ EthereumClient.prototype.addMarket = function(params) {
     var events = params.events;  // a list of event ids
 
     // use call to get new market id or error return
-    //var newMarketId = contract.createMarket.call(
-    //  branchId, description, alpha, initialLiquidity, tradingFee, events, {gas: 300000}
-    //);
+    var newMarketId = contract.createMarket.call(
+      branchId, description, alpha, initialLiquidity, tradingFee, events, {gas: 300000}
+    );
 
     console.log(newMarketId.toString(16));
     console.log(branchId, description, alpha.toString(16), initialLiquidity.toString(16), tradingFee.toString(16), events);
