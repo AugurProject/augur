@@ -4,9 +4,10 @@ var constants = require('./constants.js')
 
 module.exports = {
 
-  blockToDate: function(block, currentBlock) {
+  blockToDate: function(block) {
 
     // calculate date from block number
+    var currentBlock = web3.eth.blockNumber;
     var seconds = (block - currentBlock) * constants.SECONDS_PER_BLOCK;
     var date = new Date();
     date.setSeconds(date.getSeconds() + seconds);
@@ -14,8 +15,9 @@ module.exports = {
     return date;
   },
 
-  dateToBlock: function(date, currentBlock) {
+  dateToBlock: function(date) {
 
+    var currentBlock = web3.eth.blockNumber;
     var now = new Date();
     var secondsDelta = date.valueOf() - now.valueOf();
     var blockDelta = parseInt(secondsDelta / constants.SECONDS_PER_BLOCK);

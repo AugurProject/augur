@@ -186,6 +186,7 @@ EthereumClient.prototype.getMarkets = function (branchId) {
 
   var branchContract = this.getContract('branches');
   var marketContract = this.getContract('markets');
+  var eventContract = this.getContract('events');
   var infoContract = this.getContract('info');
   var account = this.account;
 
@@ -199,7 +200,13 @@ EthereumClient.prototype.getMarkets = function (branchId) {
     var author = infoContract.getCreator.call(marketId);
     var creationFee = fromFixedPoint(infoContract.getCreationFee.call(marketId));
 
-    var endDate = new Date();   // TODO: calc from last event expiration
+    // calc end date from first events expiration
+    var endDate;
+    if (events.length) {
+      var expirationBlock = eventContract.getExpiration.call(events[0]);
+      endDate = utilities.blockToDate(expirationBlock.toNumber());
+    }
+
     var traderCount = marketContract.getCurrentParticipantNumber.call(marketId);
     var tradingPeriod = marketContract.getTradingPeriod.call(marketId);
     var tradingFee = fromFixedPoint(marketContract.getTradingFee.call(marketId));

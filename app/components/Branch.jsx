@@ -4,6 +4,7 @@ var Fluxxor = require("fluxxor");
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 var web3 = require('web3');
+var utilities = require('../libs/utilities')
 
 var Router = require("react-router");
 var RouteHandler = Router.RouteHandler;
@@ -72,6 +73,7 @@ var MarketPane = React.createClass({
   render: function() {
 
     var market = this.props.market;
+    var formattedDate = market.endDate ? utilities.formatDate(market.endDate) : '-'
 
     return (
       <Link to='market' params={ {marketId: market.id.toString(64)} } className='market-pane'>
@@ -83,7 +85,7 @@ var MarketPane = React.createClass({
           <p>Price: <b>{ market.price.toPrecision(3) }</b></p>
           <p className='alt'>Volume: <b>{ market.totalVolume.toFixed(0) }</b></p>
           <p>Fee: <b>{ market.tradingFee.times(100).toPrecision(3) }%</b></p>
-          <p className='alt'>End date: <b>{ market.endDate || '-' }</b></p>
+          <p className='alt'>End date: <b>{ formattedDate }</b></p>
         </div>
       </Link>
     );
