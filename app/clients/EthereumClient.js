@@ -183,8 +183,7 @@ EthereumClient.prototype.getBranches = function () {
  * @returns {BigNumber} object.$id.author - The account hash of the market
  *   creator. Convert to hexadecimal for display purposes.
  */
-EthereumClient.prototype.getMarketsPunk = function (branchId, callback) {
-  // welcome to callback hell
+EthereumClient.prototype.getMarketsAsync = function (branchId) {
   var markets = {};
   Augur.getMarkets(branchId, function (marketList) {
     marketList.loop(function (market, nextMarket) {
@@ -227,6 +226,8 @@ EthereumClient.prototype.getMarketsPunk = function (branchId, callback) {
                     Augur.getExpiration(events[0], function (expiration) {
                       if (events.length) {
                         markets[market].endDate = utilities.blockToDate((new BigNumber(expiration)).toNumber());
+                        // markets[market] is ready to append to the DOM -- is there a way to do that
+                        // on-the-fly instead of doing it all-at-once thru the dispatcher?
                         console.log(markets[market]);
                       }
                     });
@@ -376,42 +377,6 @@ EthereumClient.prototype.addMarketTest = function(params) {
 
     Augur.createMarket(branchId, description, alpha, initialLiquidity, tradingFee, events);
 
-};
-
-EthereumClient.prototype.addEventPunk = function (params, callback) {
-    var branchId = params.branchId || 1010101;
-    var description = params.description;
-    var expirationBlock = params.expirationBlock;
-    var minValue = params.minValue || 0;
-    var maxValue = params.maxValue || 1;
-    var numOutcomes = params.numOutcomes || 2;
-
-};
-EthereumClient.prototype.addMarketPunk = function (params, callback) {
-    var branchId = params.branchId || 1010101;
-    var description = params.description;
-    var alpha = toFixedPoint("0.07").toString(16);
-    var initialLiquidity = toFixedPoint(params.initialLiquidity).toString(16);
-    var tradingFee = toFixedPoint(parseInt(params.tradingFee)/100);   // percent trading fee
-    var events = params.events;  // a list of event ids
-    console.log("ADD MARKET:");
-    console.log("  - branch:", branchId);
-    console.log("  - description:", description);
-    console.log("  - alpha:", alpha);
-    console.log("  - liquidity:", initialLiquidity);
-    console.log("  - tradingFee:", tradingFee);
-    console.log("  - events:", events);
-    function sent(market) {
-      console.log("SENT:", market);
-      callback(market.id);
-    }
-    // function verified(market) {
-    //   console.log("VERIFIED:", market);
-    // }
-    // function failed(market) {
-    //   console.log("FAILED:", market);
-    // }
-    Augur.createMarket(branchId, description, alpha, initialLiquidity, tradingFee, events, sent, null, null);
 };
 
 EthereumClient.prototype.addMarket = function(params) {

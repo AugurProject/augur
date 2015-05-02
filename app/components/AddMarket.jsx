@@ -105,8 +105,8 @@ var AddMarketModal = React.createClass({
       new Date(this.state.maturationDate),
       this.state.currentBlock
     );
-    var minValue = 0;
-    var maxValue = 1;
+    var minValue = 1;
+    var maxValue = 2;
     var numOutcomes = 2;
     console.log("broadcasting event:");
     Augur.createEvent(
@@ -125,21 +125,13 @@ var AddMarketModal = React.createClass({
       function (event) {
         console.log("verified hash");
         console.log(" - txhash:", event.txhash);
-        Augur.getTx(event.txhash, function (r) { console.log(r); });
+        Augur.getTx(event.txhash, console.log);
         var alpha = 0.07;
         var liquidity = self.state.marketInvestment || 100;
         var tradingFee = self.state.tradingFee || 0.02;
         alpha = (new BigNumber(alpha)).mul(Augur.ONE).toFixed();
         liquidity = (new BigNumber(liquidity)).mul(Augur.ONE).toFixed();
         tradingFee = (new BigNumber(tradingFee)).mul(Augur.ONE).toFixed();
-        // var alpha = "0x" + (new BigNumber(0.07)).mul(Augur.ONE).toString(16);
-        // var liquidity = "0x" + (new BigNumber(100)).mul(Augur.ONE).toString(16);
-        // var tradingFee = "0x" + (new BigNumber(0.02)).mul(Augur.ONE).toString(16);
-        console.log("alpha", alpha);
-        console.log("liquidity", liquidity);
-        console.log("tradingfee",tradingFee);
-        console.log("event", event);
-        console.log("event.id array", [event.id]);
         console.log("broadcasting market");
         Augur.createMarket(
           1010101,
@@ -147,7 +139,6 @@ var AddMarketModal = React.createClass({
           alpha,
           liquidity,
           tradingFee,
-          // [ "-0x2ae31f0184fa3e11a1517a11e3fc6319cb7c310cee36b20f8e0263049b1f3a6f" ],
           [ event.id ],
           // sentCallback
           function (market) {
