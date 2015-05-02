@@ -15,7 +15,8 @@ if (NODE_JS) {
     var XMLHttpRequest = require('xhr2');
     var keccak_256 = require('js-sha3').keccak_256;
     var BigNumber = require('bignumber.js');
-    BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
+} else {
+    var httpsync = { request: function (o) {} };
 }
 
 Array.prototype.loop = function (iterator) {
@@ -45,6 +46,8 @@ Array.prototype.loop = function (iterator) {
 };
 
 var Augur = (function (augur, async) {
+
+    BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
     var rpc_url = rpc.protocol + "://" + rpc.host + ":" + rpc.port.toString();
     var MAXBITS = new BigNumber(2).toPower(256);
