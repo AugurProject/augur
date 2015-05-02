@@ -8,6 +8,8 @@ var Modal = ReactBootstrap.Modal;
 var ModalTrigger = ReactBootstrap.ModalTrigger;
 var Augur = require('augur.js');
 var utilities = require('../libs/utilities');
+var DatePicker = require('react-date-picker');
+var moment = require('moment');
 var BigNumber = require('bignumber.js');
 
 var AddMarketModal = React.createClass({
@@ -123,7 +125,7 @@ var AddMarketModal = React.createClass({
       },
       // verifiedCallback
       function (event) {
-        console.log("verified hash");
+        console.log("verified event is on chain!");
         console.log(" - txhash:", event.txhash);
         Augur.getTx(event.txhash, console.log);
         var alpha = 0.07;
@@ -204,6 +206,11 @@ var AddMarketModal = React.createClass({
     this.props.onRequestHide();
   },
 
+  handleDatePicked: function(dateText, moment, event) {
+
+    this.setState({maturationDate: dateText});
+  },
+
   render: function () {
 
     var page, subheading, footer;
@@ -257,15 +264,23 @@ var AddMarketModal = React.createClass({
       subheading = 'Maturation Date';
       page = (
         <div className="form-group date">
-          <p>Enter the date this event will mature, trading will end and the question decided.</p>
-          <input 
-            type="text"
-            bsSize="xlarge"
-            className="form-control" 
-            name="maturation-date" 
-            placeholder="MM/DD/YYYY"
-            onChange={ this.onChangeMaturationDate } 
-          />
+          <div className='col-sm-6'>
+            <p>Enter the date this event will mature, trading will end and the question decided.</p>
+            <input
+              className='form-control'
+              bsSize='large'
+              type='text'
+              placeholder='YYYY-MM-DD'
+              value={ this.state.maturationDate }
+              onChange={ this.onChangeMaturationDate } 
+            />
+          </div>
+          <div className='col-sm-6'>
+            <DatePicker 
+              hideFooter={ true }
+              onChange={ this.handleDatePicked }
+            />
+          </div>
         </div>
       );
       footer = (
@@ -279,7 +294,7 @@ var AddMarketModal = React.createClass({
       page = (
         <div>
           <p>Enter a question for the market to trade on.  This question should have a yes or no answer, be easiely verifiable and have an expiring date in the future.</p>
-          <p>For example: "Will Hurrican Fatima remain a category four and make land-fall by August 8th, 2017"</p>
+          <p>For example: "Will Hurricane Fatima remain a category four and make land-fall by August 8th, 2017?"</p>
           <textarea 
             className="form-control" 
             name="market-text" 
