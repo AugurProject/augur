@@ -495,8 +495,8 @@ nav .navbar-right li div {
     right: 8px;
 }
 
-#account h3 .subheading a {
-    margin-left: 6px;
+#account h3 {
+    margin-bottom: 0px;
 }
 #account h4 {
     margin-bottom: 20px;

@@ -13,7 +13,7 @@ Ethereum Dapps store their data on the Ethereum blockchain, and their frontends 
 * [Ethereum Development Tutorial](https://github.com/ethereum/wiki/wiki/Ethereum-Development-Tutorial)
 * [Ethereum JavaScript API](https://github.com/ethereum/wiki/wiki/JavaScript-API)
 * [Dapps for Beginners](https://dappsforbeginners.wordpress.com/)
-ZZ
+
 ## Getting Started
 
 ### Running Ethereum

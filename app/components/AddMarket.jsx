@@ -19,9 +19,9 @@ var AddMarketModal = React.createClass({
       pageNumber: 1,
       marketText: '',
       marketTextHelper: '',
-      marketInvestment: '',
+      marketInvestment: '100',
       maturationDate: '',
-      tradingFee: '',
+      tradingFee: '2',
       valid: false,
       cashLeft: 0
     };
@@ -160,13 +160,13 @@ var AddMarketModal = React.createClass({
                 type="text" 
                 className="form-control" 
                 name="trading-fee" 
-                placeholder="2"
+                placeholder={ this.state.tradingFee }
                 onChange={ this.onChangeTradingFee } 
               />
               <span className="input-group-addon">%</span>
             </div>
             <div className="col-xs-12">
-              <p className="desc">The trading fee is the percentage taken from each purchase or sale of an outcome.  These fees are split buy creator and all owners of winning outcomes</p>
+              <p className="desc">The trading fee is the percentage taken from each purchase or sale of an outcome.  These fees are split by you and all owners of winning outcomes</p>
             </div> 
           </div>
           <div className="form-group">
@@ -176,7 +176,7 @@ var AddMarketModal = React.createClass({
                 type="text" 
                 className="form-control" 
                 name="market-investment" 
-                placeholder="100"
+                placeholder={ this.state.marketInvestment }
                 onChange={ this.onChangeMarketInvestment } 
               />
             </div>

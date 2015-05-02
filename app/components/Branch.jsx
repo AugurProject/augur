@@ -18,6 +18,13 @@ var Branch = React.createClass({
 
   mixins: [FluxMixin, StoreWatchMixin('market')],
 
+  getInitialState: function () {
+    return {
+      marketsPerPage: 12,
+      pageNum: 1
+    };
+  },
+
   getStateFromFlux: function () {
 
     var flux = this.getFlux();
@@ -32,7 +39,7 @@ var Branch = React.createClass({
     return (
       <div>
         <h3 className="clearfix">Markets <span className="subheading pull-right"><AddMarketTrigger /></span></h3>
-        <MarketList data={ this.state.markets } />
+        <MarketList markets={ this.state.markets } marketsPerPage={ this.state.marketsPerPage } pageNum={ this.state.pageNum } />
       </div>
     );
   }
@@ -45,7 +52,11 @@ var MarketList = React.createClass({
 
     var viewMarket = this.props.viewMarket;
 
-    var marketList = _.map(this.props.data, function (market) {
+    var start = 0 + (this.props.pageNum-1) * this.props.marketsPerPage;
+    var end = start + this.props.marketsPerPage;
+    var markets = _.sortBy(this.props.markets, 'volume').slice(start, end)
+
+    var marketList = _.map(markets, function (market) {
       return (
         <div key={ market.id } className='col-sm-4'>
           <MarketPane market={ market } />
