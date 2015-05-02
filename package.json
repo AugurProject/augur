@@ -1,10 +1,10 @@
 {
   "name": "augur-client",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Web client for Augur, a prediction markets platform",
   "main": "app/app.jsx",
   "scripts": {
-    "start": "node app/server.js"
+    "start": "node server.js"
   },
   "engines": {
     "node": "0.12.x"
@@ -31,7 +31,8 @@
     ]
   },
   "dependencies": {
-    "bignumber.js": "~2.0.5",
+    "augur.js": "^0.1.9",
+    "bignumber.js": "~2.0.7",
     "bootstrap": "~3.3.4",
     "browserify": "^9.0.3",
     "es6-promise": "^2.0.1",

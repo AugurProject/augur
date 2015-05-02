@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var Promise = require('es6-promise').Promise;
+var Augur = require('augur.js');
 
 var abi = require('../libs/abi');
 var constants = require('../libs/constants');
@@ -182,6 +183,67 @@ EthereumClient.prototype.getBranches = function () {
  * @returns {BigNumber} object.$id.author - The account hash of the market
  *   creator. Convert to hexadecimal for display purposes.
  */
+EthereumClient.prototype.getMarketsAsync = function (branchId) {
+  var markets = {};
+  Augur.getMarkets(branchId, function (marketList) {
+    marketList.loop(function (market, nextMarket) {
+      markets[market] = { id: market, comments: [], endDate: null };
+      Augur.getMarketEvents(market, function (events) {
+        markets[market].events = events;
+        Augur.getMarketInfo(market, function (marketInfo) {
+          /**
+           * marketInfo: {
+           *    currentParticipant: BigNumber
+           *    alpha: BigNumber
+           *    cumulativeScale: BigNumber
+           *    description: string (ASCII)
+           *    numOutcomes: int
+           *    tradingFee: BigNumber
+           *    tradingPeriod: BigNumber
+           * }
+           */
+          markets[market].traderId = marketInfo.currentParticipant;
+          markets[market].alpha = marketInfo.alpha;
+          markets[market].description = marketInfo.description;
+          markets[market].numOutcomes = marketInfo.numOutcomes;
+          markets[market].tradingFee = marketInfo.tradingFee;
+          markets[market].tradingPeriod = marketInfo.tradingPeriod;
+          if (!markets[market].outcomes) {
+            markets[market].outcomes = Array(marketInfo.numOutcomes);
+          }
+          Augur.getCreator(market, function (author) {
+            markets[market].author = author;
+            markets[market].totalVolume = new BigNumber(0);
+            _.range(1, marketInfo.numOutcomes + 1).loop(function (outcome, nextOutcome) {
+              markets[market].outcomes[outcome] = { id: outcome };
+              Augur.getSharesPurchased(market, outcome, function (allShares) {
+                markets[market].volume = markets[market].outcomes[outcome].volume = fromFixedPoint(allShares);
+                markets[market].totalVolume = markets[market].totalVolume.plus(markets[market].volume);
+                Augur.price(market, outcome, function (price) {
+                  markets[market].price = fromFixedPoint(price);
+                  Augur.getParticipantSharesPurchased(market, marketInfo.currentParticipant, outcome, function (myShares) {
+                    markets[market].outcomes[outcome].sharesPurchased = fromFixedPoint(myShares);
+                    Augur.getExpiration(events[0], function (expiration) {
+                      if (events.length) {
+                        markets[market].endDate = utilities.blockToDate((new BigNumber(expiration)).toNumber());
+                        // markets[market] is ready to append to the DOM -- is there a way to do that
+                        // on-the-fly instead of doing it all-at-once thru the dispatcher?
+                        console.log(markets[market]);
+                      }
+                    });
+                  });
+                });
+              });
+              nextOutcome();
+            });
+          });
+        });
+      });
+      nextMarket();
+    });
+  });
+};
+
 EthereumClient.prototype.getMarkets = function (branchId) {
 
   var branchContract = this.getContract('branches');
@@ -315,7 +377,7 @@ EthereumClient.prototype.addMarketTest = function(params) {
 
     Augur.createMarket(branchId, description, alpha, initialLiquidity, tradingFee, events);
 
-},
+};
 
 EthereumClient.prototype.addMarket = function(params) {
 

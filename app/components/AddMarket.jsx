@@ -6,9 +6,11 @@ var ReactBootstrap = require('react-bootstrap');
 var Button = ReactBootstrap.Button;
 var Modal = ReactBootstrap.Modal;
 var ModalTrigger = ReactBootstrap.ModalTrigger;
+var Augur = require('augur.js');
+var utilities = require('../libs/utilities');
 var DatePicker = require('react-date-picker');
 var moment = require('moment');
-var utilities = require('../libs/utilities');
+var BigNumber = require('bignumber.js');
 
 var AddMarketModal = React.createClass({
 
@@ -23,7 +25,7 @@ var AddMarketModal = React.createClass({
       maturationDate: '',
       tradingFee: '2',
       valid: false,
-      cashLeft: 0
+      cashLeft: 0,
     };
   },
 
@@ -96,7 +98,72 @@ var AddMarketModal = React.createClass({
     this.setState({pageNumber: newPageNumber});
   },
 
-  onSubmit: function(event) {
+  onSubmit: function (event) {
+    var self = this;
+    console.log("submitting new market:", this.state.marketText);
+    var branchId = 1010101;
+    var description = this.state.marketText;
+    var expirationBlock = utilities.dateToBlock(
+      new Date(this.state.maturationDate),
+      this.state.currentBlock
+    );
+    var minValue = 1;
+    var maxValue = 2;
+    var numOutcomes = 2;
+    console.log("broadcasting event:");
+    Augur.createEvent(
+      branchId,
+      description,
+      expirationBlock,
+      minValue,
+      maxValue,
+      numOutcomes,
+      // sentCallback
+      function (event) {
+        console.log("sent event");
+        console.log(" - eventID:", event.id);
+      },
+      // verifiedCallback
+      function (event) {
+        console.log("verified event is on chain!");
+        console.log(" - txhash:", event.txhash);
+        Augur.getTx(event.txhash, console.log);
+        var alpha = 0.07;
+        var liquidity = self.state.marketInvestment || 100;
+        var tradingFee = self.state.tradingFee || 0.02;
+        alpha = (new BigNumber(alpha)).mul(Augur.ONE).toFixed();
+        liquidity = (new BigNumber(liquidity)).mul(Augur.ONE).toFixed();
+        tradingFee = (new BigNumber(tradingFee)).mul(Augur.ONE).toFixed();
+        console.log("broadcasting market");
+        Augur.createMarket(
+          1010101,
+          description,
+          alpha,
+          liquidity,
+          tradingFee,
+          [ event.id ],
+          // sentCallback
+          function (market) {
+            console.log("sent market");
+            console.log(" - marketID:", market.id);
+          },
+          // verifiedCallback
+          function (market) {
+            console.log("verified market!");
+            console.log(market);
+          },
+          // failedCallback
+          function (market) {
+            console.log("something went wrong :(\nno market for you");
+            console.log(market);
+          }
+        );
+      }
+    );
+    this.props.onRequestHide();
+  },
+
+  onSubmitPunk: function(event) {
 
     console.log(this.state.marketText);
 
@@ -144,12 +211,10 @@ var AddMarketModal = React.createClass({
     this.setState({maturationDate: dateText});
   },
 
-  render: function() {
+  render: function () {
 
     var page, subheading, footer;
-
     if (this.state.pageNumber === 2) {
-
       subheading = 'Fees';
       page = (
         <div className="form-horizontal fees">
@@ -195,9 +260,7 @@ var AddMarketModal = React.createClass({
           <Button bsStyle='primary' onClick={ this.onNext }>Next</Button>
         </div>
       );
-
     } else if (this.state.pageNumber === 3) {
-
       subheading = 'Maturation Date';
       page = (
         <div className="form-group date">
@@ -226,14 +289,12 @@ var AddMarketModal = React.createClass({
           <Button bsStyle='primary' onClick={ this.onSubmit }>Submit Market</Button>
         </div>
       );
-
     } else {
-
       subheading = 'Market Query';
       page = (
         <div>
           <p>Enter a question for the market to trade on.  This question should have a yes or no answer, be easiely verifiable and have an expiring date in the future.</p>
-          <p>For example: "Will Hurrican Fatima remain a category four and make land-fall by August 8th, 2017"</p>
+          <p>For example: "Will Hurricane Fatima remain a category four and make land-fall by August 8th, 2017?"</p>
           <textarea 
             className="form-control" 
             name="market-text" 
