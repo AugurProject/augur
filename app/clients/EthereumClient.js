@@ -448,7 +448,7 @@ EthereumClient.prototype.addMarket = function(params, onSuccess) {
       // success callback
       function (newMarket) {
         utilities.debug("tx: " + newMarket.txhash);
-
+        utilities.log('new market successfully added');
         if (onSuccess) onSuccess();
       },
 
