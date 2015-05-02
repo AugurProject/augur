@@ -131,9 +131,16 @@
         function ne0(n) {
             return (parseInt(n) != 0);
         }
-        function is_array(r) { console.assert(r.constructor === Array); }
-        function is_object(r) { console.assert(r.constructor === Object); }
-        function on_root_branch(r) { console.assert(parseInt(r.branch) === 1010101); };
+        function is_array(r) {
+            console.assert(r.constructor === Array);
+        }
+        function is_object(r) {
+            console.log(r);
+            console.assert(r.constructor === Object);
+        }
+        function on_root_branch(r) {
+            console.assert(parseInt(r.branch) === 1010101);
+        };
 
 
         console.log("  ethereum json-rpc wrapper");
@@ -224,8 +231,24 @@
                  "0x412b3c588f9be08d54e99bf5095ef910c5e84080f048e3af8a2718b7b693cb83"]
             ],
             gas: 3000000
-        }
+        };
         abi_test(tx, "0x45d96cd70000000000000000000000000000000000000000000000000000000000000014000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000f69b50000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000280000000000000000000000000000000000000000000000000000000000000000004000000000000006d61726b657420666f7220726167656665737473b2a6de45f349b5ac384b01a785e640f519f0a8597ab2031c964c7f572d96b13c4f37814757b7d0e2dde46de18bb4bf4a85e6716a06849d5cfcebf8f1d7270b12412b3c588f9be08d54e99bf5095ef910c5e84080f048e3af8a2718b7b693cb83");
+        // negative hash
+        tx = {
+            from: Augur.coinbase,
+            to: Augur.contracts.createMarket,
+            function: "createMarket",
+            signature: "isiiia",
+            params: [
+                1010101,
+                "unicorns are real",
+                "0x10000000000000000",
+                "0xa0000000000000000",
+                "0xa0000000000000000",
+                ["-0x2ae31f0184fa3e11a1517a11e3fc6319cb7c310cee36b20f8e0263049b1f3a6f"]
+            ],
+        };
+        abi_test(tx, "0x45d96cd70000000000000000000000000000000000000000000000000000000000000011000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000f69b5000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000a0000000000000000756e69636f726e7320617265207265616cd51ce0fe7b05c1ee5eae85ee1c039ce63483cef311c94df071fd9cfb64e0c591");
         tx = {
             from: Augur.coinbase,
             to: Augur.contracts.branches,
@@ -342,26 +365,40 @@
         Augur.getMarketInfo("0x97d63d7567b1fc41c19296d959eba0e7df4900bf2d197c6b7b746d864fdde421", is_object);
         console.log("   - getEventInfo");
         Augur.getEventInfo("0xb2a6de45f349b5ac384b01a785e640f519f0a8597ab2031c964c7f572d96b13c", on_root_branch);
+        Augur.getEventInfo("0xb2a6de45f349b5ac384b01a785e640f519f0a8597ab2031c964c7f572d96b13c", is_object);
         console.log("   - getDescription");
         Augur.getDescription("0xb2a6de45f349b5ac384b01a785e640f519f0a8597ab2031c964c7f572d96b13c", function (r) { console.assert(r.slice(-9) === "ragefest!"); });
         console.log("   - getVotePeriod");
         Augur.getVotePeriod(1010101, gteq0);
-        console.log("   - createEvent");
-        function cb1(r) { gteq0(r); }
-        function cb2(r) { gteq0(r); }
-        function cb3(r) { gteq0(r); }
-        Augur.createEvent(1010101, Math.random().toString(36).substring(7), 300000, 1, 2, 2, cb1, cb2, print);
-        console.log("   - createMarket");
+        var event_description = Math.random().toString(36).substring(7);
+        console.log("   - createEvent: \"" + event_description + "\"");
+        Augur.createEvent(
+            1010101,
+            event_description,
+            300000,
+            1,
+            2,
+            2, 
+            is_object,
+            is_object
+        );
+        var market_description = Math.random().toString(36).substring(7);
+        console.log("   - createMarket: \"" + market_description + "\"");
+        // callback 1: market object { id: marketID }
+        // callback 2: verified market object { id: marketID, txhash: hash, description: "..." }
         Augur.createMarket(
             1010101,
-            Math.random().toString(36).substring(7),
-            "0x1000000000000000",
-            "0x2800000000000000000",
-            "0x400000000000000",
-            ["0xb2a6de45f349b5ac384b01a785e640f519f0a8597ab2031c964c7f572d96b13c",
-             "0x4f37814757b7d0e2dde46de18bb4bf4a85e6716a06849d5cfcebf8f1d7270b12",
-             "0x412b3c588f9be08d54e99bf5095ef910c5e84080f048e3af8a2718b7b693cb83"]
-        , cb1, cb2, cb3, print);
+            market_description,
+            "0x10000000000000000",
+            "0xa0000000000000000",
+            "0xa0000000000000000",
+            ["-0x2ae31f0184fa3e11a1517a11e3fc6319cb7c310cee36b20f8e0263049b1f3a6f"],
+            is_object,
+            is_object,
+            null
+        );
+        console.log("   - getMarketEvents");
+        Augur.getMarketEvents("0xb13d98f933cbd602a3d9d4626260077678ab210d1e63b3108b231c1758ff9971", is_array);
     };
     Tests(false);
     Tests(true);

@@ -11,11 +11,11 @@ var rpc = {
 
 var NODE_JS = typeof(module) != 'undefined';
 if (NODE_JS) {
-    var http = require('http');
     var httpsync = require('http-sync');
+    var XMLHttpRequest = require('xhr2');
     var keccak_256 = require('js-sha3').keccak_256;
     var BigNumber = require('bignumber.js');
-    var XMLHttpRequest = require('xhr2');
+    BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 }
 
 Array.prototype.loop = function (iterator) {
@@ -47,12 +47,20 @@ Array.prototype.loop = function (iterator) {
 var Augur = (function (augur, async) {
 
     var rpc_url = rpc.protocol + "://" + rpc.host + ":" + rpc.port.toString();
+    var MAXBITS = new BigNumber(2).toPower(256);
 
+    // maximum number of times to try and verify transactions
+    augur.pingmax = 12;
+
+    // true for asynchronous (recommended), false for synchronous
+    augur.async = (augur && augur.async) || async;
+    
+    // default gas: 3M
+    augur.default_gas = "0x2dc6c0";
+
+    augur.coinbase = json_rpc(postdata("coinbase"), false);
     augur.id = 1;
     augur.data = {};
-    augur.async = (augur && augur.async) || async;
-    augur.default_gas = "0x2dc6c0";
-    augur.coinbase = json_rpc(postdata("coinbase"), false);
     augur.errors = {
         "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
             code: -1,
@@ -71,29 +79,31 @@ var Augur = (function (augur, async) {
             message: "not enough money or market already exists"
         }
     };
+
     augur.contracts = {
-        // data & api files
-        whitelist: "0x21dbe4a05a9174e96e6c6bc1e05a7096338cb0d6",
+        // Data and API
+        cash: "0xf1d413688a330839177173ce98c86529d0da6e5c",
+        info: "0x910b359bb5b2c2857c1d3b7f207a08f3f25c4a8b",
+        branches: "0x13dc5836cd5638d0b81a1ba8377a7852d41b5bbe",
         events: "0xb71464588fc19165cbdd1e6e8150c40df544467b",
         expiringEvents: "0x61d90fd4c1c3502646153003ec4d5c177de0fb58",
-        reporting: "0xd1f7f020f24abca582366ec80ce2fef6c3c22233",
-        branches: "0x13dc5836cd5638d0b81a1ba8377a7852d41b5bbe",
-        info: "0x910b359bb5b2c2857c1d3b7f207a08f3f25c4a8b",
-        cash: "0xf1d413688a330839177173ce98c86529d0da6e5c",
+        fxpFunctions: "0xdaf26192091449d14c03026f79272e410fce0908",
         markets: "0x75ee234fe5ef1cd493c2af38a2ae7d0d0cba01f5",
-        // function files
+        reporting: "0xd1f7f020f24abca582366ec80ce2fef6c3c22233",
+        whitelist: "0x21dbe4a05a9174e96e6c6bc1e05a7096338cb0d6",
+        // Functions
         checkQuorum: "0x4eaa7a8b00107bbc11909e327e163b067fd3cfb9",
+        buyAndsellShares: "0xfde83609d8bd5e4bfd6479af2b1cb28c85f0bce7",
         createBranch: "0x5c955b31ac72c83ffd7562aed4e2100b2ba09a3b",
-        buyAndSellShares: "0xfde83609d8bd5e4bfd6479af2b1cb28c85f0bce7",
-        createEvent: "0xcae6d5912033d66650894e2ae8c2f7502eaba15c",
-        p2pwagers: "0x45077327d89f04c8b892ae0872e5c31fc0447288",
+        p2pWagers: "",
         sendReputation: "0x049487d32b727be98a4c8b58c4eab6521791f288",
         transferShares: "0x78da82256f5775df22eee51096d27666772b592d",
         makeReports: "0x72f249c06299308e5b7aaaa4d155ed61a1f66671",
+        createEvent: "0xcae6d5912033d66650894e2ae8c2f7502eaba15c",
         createMarket: "0x386acc6b970aea7c6f9b87e7622d2ae7c18d377a",
-        closeMarket: "0xf365b989d905a63157af2885c3d5bf03d68be3cb",
+        closeMarket: "",
         dispatch: "0x9bb646e3137f1d43e4a31bf8a6377c299f26727d",
-        // consensus
+        //Consensus
         statistics: "0x0cb1277671d162b2f5c81e9435744f63768398d0",
         interpolate: "0xeb51564b43068745ae80136fcefe3ca532617a87",
         center: "0xcff950797165df23550b6d79fa98e55d4c250fbe",
@@ -138,9 +148,10 @@ var Augur = (function (augur, async) {
 
     function encode_int(value) {
         var cs = [];
-        while (value > 0) {
-            cs.push(String.fromCharCode(value % 256));
-            value = Math.floor(value / 256);
+        var x = new BigNumber(value);
+        while (x.gt(new BigNumber(0))) {
+            cs.push(String.fromCharCode(x.mod(new BigNumber(256))));
+            x = x.dividedBy(new BigNumber(256)).floor();
         }
         return (cs.reverse()).join('');
     }
@@ -199,12 +210,14 @@ var Augur = (function (augur, async) {
                 }
                 if (base === "int") {
                     if (arg.constructor === Number) {
-                        normal_args = zeropad(encode_int(arg % Math.pow(2, sub)));
+                        normal_args = zeropad(encode_int((new BigNumber(arg)).mod(MAXBITS).toFixed()));
                     } else if (arg.constructor === String) {
-                        if (arg.slice(0,2) === "0x") {
+                        if (arg.slice(0,1) === '-') {
+                            normal_args = zeropad(encode_int((new BigNumber(arg)).mod(MAXBITS).toFixed()));
+                        } else if (arg.slice(0,2) === "0x") {
                             normal_args = zeropad(arg.slice(2), true);
                         } else {
-                            normal_args = zeropad(encode_int(parseInt(arg) % Math.pow(2, sub)));
+                            normal_args = zeropad(encode_int(new BigNumber(arg).mod(MAXBITS)));
                         }
                     }
                 }
@@ -881,29 +894,35 @@ var Augur = (function (augur, async) {
                 var event = { id: eventID };
                 if (sentCallback) sentCallback(event);
                 augur.tx.createEvent.send = true;
-                augur.invoke(augur.tx.createEvent, function (txhash) {
-                    if (txhash) {
-                        event.txhash = txhash;
-                        var pingTx = function () {
-                            augur.getTx(txhash, function (getTx) {
-                                if (getTx) {
-                                    augur.getDescription(eventID, function (description) {
-                                        event.description = description;
-                                        if (verifiedCallback) verifiedCallback(event);
-                                    });
-                                    clearInterval(timer);
-                                }
-                            });
-                        };
-                        var timer = setInterval(pingTx, 6000);
-                    }
-                });
+                if (verifiedCallback) {
+                    augur.invoke(augur.tx.createEvent, function (txhash) {
+                        if (txhash) {
+                            event.txhash = txhash;
+                            var pings = 0;
+                            var pingTx = function () {
+                                augur.getTx(txhash, function (tx) {
+                                    pings++;
+                                    if (tx && (tx.result !== null)) {
+                                        augur.getDescription(eventID, function (description) {
+                                            if (description) event.description = description;
+                                            verifiedCallback(event);
+                                        });
+                                    } else {
+                                        if (pings < augur.pingmax) setTimeout(pingTx, 12000);
+                                    }
+                                });
+                            };
+                            pingTx();
+                        }
+                    });
+                }
             }
         });
     };
     augur.createMarket = function (branch, description, alpha, liquidity, tradingFee, events, sentCallback, verifiedCallback, failedCallback) {
         augur.tx.createMarket.params = [branch, description, alpha, liquidity, tradingFee, events];
         augur.tx.createMarket.send = false;
+        augur.tx.createMarket.gas = 3000000;
         augur.invoke(augur.tx.createMarket, function (marketID) {
             if (marketID) {
                 var market = { id: marketID };
@@ -913,23 +932,28 @@ var Augur = (function (augur, async) {
                 } else {
                     if (sentCallback) sentCallback(market);
                     augur.tx.createMarket.send = true;
-                    augur.invoke(augur.tx.createMarket, function (txhash) {
-                        if (txhash) {
-                            market.txhash = txhash;
-                            var pingTx = function () {
-                                augur.getTx(txhash, function (getTx) {
-                                    if (getTx) {
-                                        augur.getDescription(marketID, function (description) {
-                                            market.description = description;
-                                            if (verifiedCallback) verifiedCallback(market);
-                                        });
-                                        clearInterval(timer);
-                                    }
-                                });
-                            };
-                            var timer = setInterval(pingTx, 6000);
-                        }
-                    });
+                    if (verifiedCallback) {
+                        augur.invoke(augur.tx.createMarket, function (txhash) {
+                            if (txhash) {
+                                market.txhash = txhash;
+                                var pings = 0;
+                                var pingTx = function () {
+                                    augur.getTx(txhash, function (tx) {
+                                        pings++;
+                                        if (tx && (tx.result !== null)) {
+                                            augur.getDescription(marketID, function (description) {
+                                                if (description) market.description = description;
+                                                verifiedCallback(market);
+                                            });
+                                        } else {
+                                            if (pings < augur.pingmax) setTimeout(pingTx, 12000);
+                                        }
+                                    });
+                                };
+                                pingTx();
+                            }
+                        });
+                    }
                 }
             }
         });

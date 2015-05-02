@@ -54,10 +54,10 @@ All Augur functions have an optional callback (or callbacks; see below) as their
 - getDescription(id[, callback])
 - createEvent(branch, description, expDate, minValue, maxValue, numOutcomes[, sentCallback, verifiedCallback])
     - `sentCallback` fires when the transaction is initially broadcast and you receive a txhash
-    - `verifiedCallback` fires when augur.js is able to see your transaction on the network using `eth_getTransactionByHash` (asynchronous check every 4 seconds until it succeeds)
+    - `verifiedCallback` fires when augur.js is able to see your transaction on the network using `eth_getTransactionByHash` (asynchronous check every 12 seconds)
 - createMarket(branch, description, alpha, liquidity, tradingFee, events[, sentCallback, verifiedCallback, failedCallback])
     - `sentCallback` fires when the transaction is initially broadcast and you receive a txhash
-    - `verifiedCallback` fires when augur.js is able to see your transaction on the network using `eth_getTransactionByHash` (asynchronous check every 4 seconds until it succeeds)
+    - `verifiedCallback` fires when augur.js is able to see your transaction on the network using `eth_getTransactionByHash` (asynchronous check every 12 seconds)
     - `failedCallback` fires if the initial `sendTransaction` fails
 - buyShares(branch, market, outcome, amount, nonce[, callback])
 - sellShares(branch, market, outcome, amount, nonce[, callback])
