@@ -5,6 +5,7 @@ var Augur = require('augur.js');
 var abi = require('../libs/abi');
 var constants = require('../libs/constants');
 var utilities = require('../libs/utilities');
+var blacklist = require('../libs/blacklist');
 
 var fromFixedPoint = utilities.fromFixedPoint;
 var toFixedPoint = utilities.toFixedPoint;
@@ -298,12 +299,13 @@ EthereumClient.prototype.getMarkets = function (branchId) {
   var infoContract = this.getContract('info');
   var account = this.account;
 
-  var validMarkets = branchContract.getMarkets.call(branchId);
-
-  return {};
+  var validMarkets = _.filter(branchContract.getMarkets.call(branchId), function(marketId) {
+    return !_.contains(blacklist.markets, marketId.toString(16));
+  });
 
   var marketList = _.map(validMarkets, function(marketId) {
 
+    console.log(marketId.toString(16));
     var events = marketContract.getMarketEvents.call(marketId);
     var description = infoContract.getDescription.call(marketId);
     var alpha = fromFixedPoint(marketContract.getAlpha.call(marketId));

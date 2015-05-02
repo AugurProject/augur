@@ -1,6 +1,7 @@
 var BigNumber = require('bignumber.js');
 var web3 = require('web3');
 var constants = require('./constants.js')
+var moment = window.moment = require('moment');
 
 module.exports = {
 
@@ -9,17 +10,17 @@ module.exports = {
     // calculate date from block number
     var currentBlock = web3.eth.blockNumber;
     var seconds = (block - currentBlock) * constants.SECONDS_PER_BLOCK;
-    var date = new Date();
-    date.setSeconds(date.getSeconds() + seconds);
+    var date = moment().add(seconds, 'seconds');
 
     return date;
   },
 
   dateToBlock: function(date) {
 
+    // assuming date is moment for now
     var currentBlock = web3.eth.blockNumber;
-    var now = new Date();
-    var secondsDelta = date.valueOf() - now.valueOf();
+    var now = moment();
+    var secondsDelta = date.diff(now, 'seconds');
     var blockDelta = parseInt(secondsDelta / constants.SECONDS_PER_BLOCK);
 
     return currentBlock + blockDelta;

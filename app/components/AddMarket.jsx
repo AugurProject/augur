@@ -89,7 +89,7 @@ var AddMarketModal = React.createClass({
 
     var newEventParams = {
       description: this.state.marketText,
-      expirationBlock: utilities.dateToBlock(new Date(this.state.maturationDate), this.state.currentBlock)
+      expirationBlock: utilities.dateToBlock(moment(this.state.maturationDate))
     }
 
     this.state.ethereumClient.addEvent(newEventParams, function(newEvent) {
