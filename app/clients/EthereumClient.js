@@ -342,12 +342,12 @@ EthereumClient.prototype.getMarkets = function (branchId) {
       };
     });
 
-    var price = outcomes.length ? outcomes[0].price : new BigNumber(0);  
+    var price = outcomes.length ? outcomes[1].price : new BigNumber(0);  // hardcoded to outcome 2 (yes) 
     var winningOutcomes = marketContract.getWinningOutcomes.call(marketId);
 
     return {
       id: marketId,
-      price: price,  // HACK
+      price: price,
       description: description,
       alpha: alpha,
       author: author,
