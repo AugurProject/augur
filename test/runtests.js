@@ -137,7 +137,7 @@
             assert(r.constructor === Array);
         }
         function is_object(r) {
-            print(r);
+            // print(r);
             assert(r.constructor === Object);
         }
         function on_root_branch(r) {
@@ -461,11 +461,15 @@
             });
             Augur.getExpiration(event_id, function (r) {
                 print("   - getExpiration(" + event_id + ")");
-                assert(r === "0x000000000000000000000000000000000000000000000000000000000003d090");
+                assert(r.toFixed() === "250000");
             });
             Augur.getMarketNumOutcomes(market_id, function (r) {
                 print("   - getMarketNumOutcomes(" + market_id + ")");
                 assert(r === 2);
+            });
+            Augur.price(market_id, Augur.AGAINST, function (r) {
+                print("   - price(" + market_id + ", " + Augur.AGAINST + ") -> " + r.dividedBy(Augur.ONE).toFixed());
+                gteq0(r);
             });
         }
     };

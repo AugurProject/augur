@@ -271,6 +271,7 @@ var Augur = (function (augur, async) {
     }
 
     function format_result(returns, result) {
+        var returns = returns.toLowerCase();
         try {
             if (returns === "array") {
                 result = parse_array(result);
@@ -741,6 +742,13 @@ var Augur = (function (augur, async) {
             signature: "iii",
             returns: "BigNumber"
         },
+        price: {
+            from: augur.coinbase,
+            to: augur.contracts.markets,
+            function: "price",
+            signature: "ii",
+            returns: "BigNumber"
+        },
         getSharesPurchased: {
             from: augur.coinbase,
             to: augur.contracts.markets,
@@ -877,12 +885,12 @@ var Augur = (function (augur, async) {
         augur.invoke(augur.tx.getMarketInfo, function (marketInfo) {
             if (marketInfo) {
                 var info = {
-                    currentParticipant: parseInt(marketInfo[1]),
-                    alpha: marketInfo[2],
-                    cumulativeScale: marketInfo[3],
-                    numOutcomes: parseInt(marketInfo[4]),
-                    tradingPeriod: parseInt(marketInfo[5]),
-                    tradingFee: marketInfo[6]
+                    currentParticipant: new BigNumber(marketInfo[0]),
+                    alpha: new BigNumber(marketInfo[1]),
+                    cumulativeScale: new BigNumber(marketInfo[2]),
+                    numOutcomes: parseInt(marketInfo[3]),
+                    tradingPeriod: new BigNumber(marketInfo[4]),
+                    tradingFee: marketInfo[5]
                 };
                 augur.getDescription(market, function (description) {
                     if (description) info.description = description;
@@ -945,6 +953,10 @@ var Augur = (function (augur, async) {
     augur.getParticipantSharesPurchased = function (market, participationNumber, outcome, f) {
         augur.tx.getParticipantSharesPurchased.params = [market, participationNumber, outcome];
         augur.invoke(augur.gtx.getParticipantSharesPurchased, f);
+    };
+    augur.price = function (market, outcome, f) {
+        augur.tx.price.params = [market, outcome];
+        augur.invoke(augur.tx.price, f);
     };
     augur.getSharesPurchased = function (market, outcome, f) {
         augur.tx.getSharesPurchased.params = [market, outcome];
