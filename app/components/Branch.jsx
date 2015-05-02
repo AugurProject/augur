@@ -54,7 +54,7 @@ var MarketList = React.createClass({
 
     var start = 0 + (this.props.pageNum-1) * this.props.marketsPerPage;
     var end = start + this.props.marketsPerPage;
-    var markets = _.sortBy(this.props.markets, 'volume').slice(start, end)
+    var markets = _.sortBy(this.props.markets, 'volume').reverse().slice(start, end)
 
     var marketList = _.map(markets, function (market) {
       return (

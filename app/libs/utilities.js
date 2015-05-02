@@ -84,6 +84,10 @@ module.exports = {
 
   error: function(message) {
     console.error('%caugur', this.consoleStyle, message);
+  },
+
+  debug: function(message) {
+    console.log('%caugur', this.consoleStyle, message);
   }
 
 };

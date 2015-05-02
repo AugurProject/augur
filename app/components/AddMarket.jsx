@@ -6,11 +6,9 @@ var ReactBootstrap = require('react-bootstrap');
 var Button = ReactBootstrap.Button;
 var Modal = ReactBootstrap.Modal;
 var ModalTrigger = ReactBootstrap.ModalTrigger;
-var Augur = require('augur.js');
 var utilities = require('../libs/utilities');
 var DatePicker = require('react-date-picker');
 var moment = require('moment');
-var BigNumber = require('bignumber.js');
 
 var AddMarketModal = React.createClass({
 
@@ -75,19 +73,6 @@ var AddMarketModal = React.createClass({
     this.setState({maturationDate: event.target.value});
   },
 
-  // waits for record id ro return a valid creator then executes callback
-  waitForRecord: function(id, callback) {
-
-    var creatorId = this.state.ethereumClient.getCreator(id);
-    if (creatorId.toNumber() !== 0) {
-      callback();
-    } else {
-      var self = this;
-      utilities.log('waiting for record '+id.toString(16));
-      setTimeout(function() { self.waitForRecord(id, callback) }, 3000);
-    }
-  },
-
   onNext: function(event) {
     var newPageNumber = this.state.pageNumber + 1;
     this.setState({pageNumber: newPageNumber});
@@ -98,110 +83,26 @@ var AddMarketModal = React.createClass({
     this.setState({pageNumber: newPageNumber});
   },
 
-  onSubmit: function (event) {
+  onSubmit: function(event) {
+
     var self = this;
-    console.log("submitting new market:", this.state.marketText);
-    var branchId = 1010101;
-    var description = this.state.marketText;
-    var expirationBlock = utilities.dateToBlock(
-      new Date(this.state.maturationDate),
-      this.state.currentBlock
-    );
-    var minValue = 1;
-    var maxValue = 2;
-    var numOutcomes = 2;
-    console.log("broadcasting event:");
-    Augur.createEvent(
-      branchId,
-      description,
-      expirationBlock,
-      minValue,
-      maxValue,
-      numOutcomes,
-      // sentCallback
-      function (event) {
-        console.log("sent event");
-        console.log(" - eventID:", event.id);
-      },
-      // verifiedCallback
-      function (event) {
-        console.log("verified event is on chain!");
-        console.log(" - txhash:", event.txhash);
-        Augur.getTx(event.txhash, console.log);
-        var alpha = 0.07;
-        var liquidity = self.state.marketInvestment || 100;
-        var tradingFee = self.state.tradingFee || 0.02;
-        alpha = (new BigNumber(alpha)).mul(Augur.ONE).toFixed();
-        liquidity = (new BigNumber(liquidity)).mul(Augur.ONE).toFixed();
-        tradingFee = (new BigNumber(tradingFee)).mul(Augur.ONE).toFixed();
-        console.log("broadcasting market");
-        Augur.createMarket(
-          1010101,
-          description,
-          alpha,
-          liquidity,
-          tradingFee,
-          [ event.id ],
-          // sentCallback
-          function (market) {
-            console.log("sent market");
-            console.log(" - marketID:", market.id);
-          },
-          // verifiedCallback
-          function (market) {
-            console.log("verified market!");
-            console.log(market);
-          },
-          // failedCallback
-          function (market) {
-            console.log("something went wrong :(\nno market for you");
-            console.log(market);
-          }
-        );
-      }
-    );
-    this.props.onRequestHide();
-  },
-
-  onSubmitPunk: function(event) {
-
-    console.log(this.state.marketText);
 
     var newEventParams = {
       description: this.state.marketText,
       expirationBlock: utilities.dateToBlock(new Date(this.state.maturationDate), this.state.currentBlock)
     }
 
-    var newEventId = this.state.ethereumClient.addEvent(newEventParams);
+    this.state.ethereumClient.addEvent(newEventParams, function(newEvent) {
 
-    if (newEventId) {
+      var newMarketParams = {
+        description: self.state.marketText,
+        initialLiquidity: self.state.marketInvestment,
+        tradingFee: self.state.tradingFee,
+        events: [newEvent.id],
+      }  
 
-      var self = this;
-      this.waitForRecord(newEventId, function() {
-
-        var newMarketParams = {
-          description: self.state.marketText,
-          initialLiquidity: self.state.marketInvestment,
-          tradingFee: self.state.tradingFee,
-          events: [newEventId],
-        }  
-
-        var newMarketId = self.state.ethereumClient.addMarket(newMarketParams);
-
-        if (newMarketId) {
-
-          utilities.log('new market ' + newMarketId +' created');
-
-        } else {
-          utilities.error('failed to add market');
-        }
-
-      });
-
-    } else {
-
-      utilities.error('failed to add event');
-    }
+      self.state.ethereumClient.addMarket(newMarketParams);
+    });
 
     this.props.onRequestHide();
   },
