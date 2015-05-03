@@ -399,7 +399,7 @@ EthereumClient.prototype.addEvent = function(params, onSuccess) {
     var branchId = params.branchId || 1010101;
     var description = params.description;
     var expirationBlock = params.expirationBlock;
-    var minValue = params.minValue || 1;  // why arn't these 0 and 1?!  create market errors if they are not
+    var minValue = params.minValue || 1;
     var maxValue = params.maxValue || 2;
     var numOutcomes = params.numOutcomes || 2;
 
@@ -408,24 +408,27 @@ EthereumClient.prototype.addEvent = function(params, onSuccess) {
     //  branchId, description, expirationBlock, minValue, maxValue, numOutcomes, {gas: 300000}
     //);
 
-    Augur.createEvent(
+    Augur.createEvent({
 
-      branchId, description, expirationBlock, minValue, maxValue, numOutcomes,
+      branchId: branchId,
+      description: description,
+      expDate: expirationBlock,
+      minValue: minValue,
+      maxValue: maxValue,
+      numOutcomes: numOutcomes,
 
-      // sent callback
-      function (newEvent) {
+      onSent: function (newEvent) {
         utilities.debug("submitted new event "+ newEvent.id);
       },
 
-      // success callback
-      function (newEvent) {
+      onSuccess: function (newEvent) {
 
         utilities.debug("tx: " + newEvent.txhash);
 
         Augur.getTx(newEvent.txhash);
         if (onSuccess) onSuccess(newEvent);
       }
-    );
+    });
 
     //return newEventId;
 };
@@ -434,45 +437,37 @@ EthereumClient.prototype.addMarket = function(params, onSuccess) {
 
     var branchId = params.branchId || 1010101;
     var description = params.description;
-    //var alpha = toFixedPoint(0.07);
-    //var initialLiquidity = toFixedPoint(params.initialLiquidity);
-    //var tradingFee = toFixedPoint(params.tradingFee);   // percent trading fee
-    var alpha = (new BigNumber(0.0079)).mul(Augur.ONE).toFixed();
-    var initialLiquidity = (new BigNumber(params.initialLiquidity)).mul(Augur.ONE).toFixed();
-    var tradingFee = (new BigNumber(params.tradingFee)).mul(Augur.ONE).toFixed();
+    var alpha = "0.0079";
+    var initialLiquidity = params.initialLiquidity.toString();
+    var tradingFee = params.tradingFee.toString();
     var events = params.events;  // a list of event ids
 
-    //var contract = this.getContract('createMarket');
-
-    // use call to get new market id or error return
-    //var newMarketId = contract.createMarket.call(
-    //  branchId, description, alpha, initialLiquidity, tradingFee, events, {gas: 300000}
-    //);
-
-    Augur.createMarket(
-
-      branchId, description, alpha, initialLiquidity, tradingFee, events,
+    Augur.createMarket({
+      branchId: branchId,
+      description: description,
+      alpha: alpha,
+      initialLiquidity: initialLiquidity,
+      tradingFee: tradingFee,
+      events: events,
 
       // sent callback
-      function (newMarket) {
+      onSent: function (newMarket) {
         utilities.debug("submitted new market "+ newMarket.id);
       },
 
       // success callback
-      function (newMarket) {
+      onSuccess: function (newMarket) {
         utilities.debug("tx: " + newMarket.txhash);
         utilities.log('new market successfully added');
         if (onSuccess) onSuccess();
       },
 
       // failed callback
-      function (newMarket) {
+      onFailed: function (newMarket) {
         utilities.error("error adding new market")
         utilities.error(newMarket);
       }
-    );
-
-    //return newMarketId;
+    });
 };
 
 var hexNumber = function (bignum) {
