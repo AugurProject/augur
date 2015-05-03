@@ -39,7 +39,7 @@ var Overview = React.createClass({
       <div className="outcome outcome-{ this.props.id } col-md-6">
         <h3>{ getOutcomeName(this.props.id, this.props.outcomeCount) }</h3>
         <div className="price">{ priceToPercentage(this.props.price) }%</div>
-        <p className="shares-held">Shares held: 0</p>
+        <p className="shares-held">Shares held: {this.props.sharesPurchased.toString()}</p>
         <Link to="buy-outcome" className="btn btn-success" params={{marketId: this.props.params.marketId, outcomeId: this.props.id}}>Buy</Link>
         <Link to="sell-outcome" className="btn btn-danger" params={{marketId: this.props.params.marketId, outcomeId: this.props.id}}>Sell</Link>
       </div>
@@ -61,7 +61,7 @@ var TradeBase = {
 
   getInitialState: function () {
     return {
-      ownedShares: 0,
+      ownedShares: this.getOwnedShares(),
       simulation: null,
       value: ''
     }
@@ -74,6 +74,12 @@ var TradeBase = {
   getPrice: function () {
     var outcome = getOutcome(this);
     return outcome.price;
+  },
+
+  getOwnedShares: function () {
+    var outcome = getOutcome(this);
+    console.log(outcome);
+    return outcome.sharesPurchased.toNumber();
   },
 
   handleChange: function () {
@@ -123,7 +129,7 @@ var TradeBase = {
     }).then((returnCode) => {
       console.log('Trade function returned ', returnCode);
       this.setState({
-        ownedShares: numShares,
+        ownedShares: this.getOwnedSharesAfterTrade(numShares),
         value: ''
       });
     });
@@ -176,6 +182,10 @@ var Buy = React.createClass(_.merge({
     var flux = this.getFlux();
     var client = flux.store('config').getEthereumClient();
     return client.buyShares;
+  },
+
+  getOwnedSharesAfterTrade: function (numShares) {
+    return this.state.ownedShares + numShares;
   }
 }, TradeBase));
 
@@ -203,6 +213,10 @@ var Sell = React.createClass(_.merge({
     var flux = this.getFlux();
     var client = flux.store('config').getEthereumClient();
     return client.sellShares;
+  },
+
+  getOwnedSharesAfterTrade: function (numShares) {
+    return this.state.ownedShares - numShares;
   }
 }, TradeBase));
 
