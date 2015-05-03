@@ -135,6 +135,7 @@
         }
         function is_array(r) {
             assert(r.constructor === Array);
+            assert(r.length > 0);
         }
         function is_object(r) {
             print(r);
@@ -153,11 +154,13 @@
         print("   - bignum");
         assert(Augur.bignum(ex_decimal).eq(Augur.bignum(ex_decimal_string)));
         print("   - fix");
-        assert(Augur.fix(ex_decimal).eq((new BigNumber(ex_decimal)).mul(Augur.ONE)));
+        assert(Augur.fix(ex_decimal, "BigNumber").eq((new BigNumber(ex_decimal)).mul(Augur.ONE).round()));
+        assert(Augur.fix(ex_decimal, "string") === "2277375790844960561");
+        assert(Augur.fix(ex_decimal_string, "hex") === "0x1f9add3739635f31");
         print("   - unfix");
-        assert(Augur.unfix(Augur.fix(ex_integer_hex), "hex") === ex_integer_hex);
-        assert(Augur.unfix(Augur.fix(ex_integer_string), "string") === ex_integer_string);
-        assert(Augur.unfix(Augur.fix(ex_integer_string), "number") === ex_integer);
+        assert(Augur.unfix(Augur.fix(ex_integer_hex, "BigNumber"), "hex") === ex_integer_hex);
+        assert(Augur.unfix(Augur.fix(ex_integer_string, "BigNumber"), "string") === ex_integer_string);
+        assert(Augur.unfix(Augur.fix(ex_integer_string, "BigNumber"), "number") === ex_integer);
 
         print("  ethereum json-rpc wrapper");
         print("   - coinbase");
@@ -189,7 +192,7 @@
             to: constants.contracts.examples.ten,
             function: "ten",
             send: false,
-            returns: "int"
+            returns: "number"
         };
         abi_test(tx, "0x643ceff9");
         tx = {
@@ -203,7 +206,7 @@
             function: "double",
             signature: "i",
             params: [3],
-            returns: "int"
+            returns: "number"
         };
         abi_test(tx, "0x6ffa1caa0000000000000000000000000000000000000000000000000000000000000003");
         tx = {
@@ -211,7 +214,7 @@
             function: "multiply",
             signature: "ii",
             params: [2, 3],
-            returns: "int"
+            returns: "number"
         };
         abi_test(tx, "0x3c4308a800000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003");
         tx = {
@@ -303,9 +306,9 @@
             to: constants.contracts.examples.ten,
             function: "ten",
             send: false,
-            returns: "int"
+            returns: "number"
         };
-        test(tx, 10);
+        test(tx, "10");
         tx.returns = "bignumber";
         test(tx, new BigNumber(10), String);
         // Single integer parameter
@@ -315,24 +318,24 @@
             function: "double",
             signature: "i",
             params: [3],
-            returns: "int"
+            returns: "number"
         };
-        test(tx, 6);
+        test(tx, "6");
         tx.params = 100;
-        test(tx, 200);
+        test(tx, "200");
         tx.params = 22121;
-        test(tx, 44242);
+        test(tx, "44242");
         // multiple integer parameters
         tx = {
             to: constants.contracts.examples.multiplier,
             function: "multiply",
             signature: "ii",
             params: [2, 3],
-            returns: "int"
+            returns: "number"
         };
-        test(tx, 6);
+        test(tx, "6");
         tx.params = [123, 321];
-        test(tx, 39483);
+        test(tx, "39483");
 
         print("  augur contract functions (invoke)");
         tx = {
@@ -341,8 +344,8 @@
             send: false
         };
         test(tx, "0x0000000000000000000000000000000000000000000000000000000000000001");
-        tx.returns = "int";
-        test(tx, 1);
+        tx.returns = "number";
+        test(tx, "1");
         // Single integer parameter, array return value
         tx = {
             to: Augur.contracts.branches,
@@ -455,7 +458,8 @@
             });
             Augur.getCreationFee(event_id, function (r) {
                 print("   - getCreationFee(" + event_id + ") [event]");
-                assert(r === "0x000000000000000000000000000000000000000000000000000000000000002d");
+                print(r);
+                assert(r === "0.00000000000000000244");
             });
             Augur.getCreator(market_id, function (r) {
                 print("   - getCreator(" + market_id + ") [market]");
@@ -463,28 +467,30 @@
             });
             Augur.getCreationFee(market_id, function (r) {
                 print("   - getCreationFee(" + market_id + ") [market]");
-                assert(r === "0x00000000000000000000000000000000000000000000000a0000000000000000");
+                assert(r === "10");
             });
-            Augur.getSimulatedBuy(market_id, Augur.AGAINST, Augur.ONE.toString(16), function (r) {
-                print("   - getSimulatedBuy(" + market_id + ", " + Augur.AGAINST + ", " + Augur.ONE.toString(16) + ")");
+            var amount = 1;
+            Augur.getSimulatedBuy(market_id, Augur.AGAINST, amount, function (r) {
+                print("   - getSimulatedBuy(" + market_id + ", " + Augur.AGAINST + ", " + amount + ")");
                 print(r);
                 is_array(r);
             });
-            Augur.getSimulatedSell(market_id, Augur.AGAINST, Augur.ONE.toString(16), function (r) {
-                print("   - getSimulatedSell(" + market_id + ", " + Augur.AGAINST + ", " + Augur.ONE.toString(16) + ")");
+            Augur.getSimulatedSell(market_id, Augur.AGAINST, amount, function (r) {
+                print("   - getSimulatedSell(" + market_id + ", " + Augur.AGAINST + ", " + amount + ")");
                 print(r);
                 is_array(r);
             });
             Augur.getExpiration(event_id, function (r) {
                 print("   - getExpiration(" + event_id + ")");
-                assert(r.toFixed() === "250000");
+                print(r);
+                assert(r === "250000");
             });
             Augur.getMarketNumOutcomes(market_id, function (r) {
                 print("   - getMarketNumOutcomes(" + market_id + ")");
-                assert(r === 2);
+                assert(r === "2");
             });
             Augur.price(market_id, Augur.AGAINST, function (r) {
-                print("   - price(" + market_id + ", " + Augur.AGAINST + ") -> " + r.dividedBy(Augur.ONE).toFixed());
+                print("   - price(" + market_id + ", " + Augur.AGAINST + ") -> " + r);
                 gteq0(r);
             });
             Augur.getWinningOutcomes(market_id, function (r) {
