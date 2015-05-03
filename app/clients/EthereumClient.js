@@ -277,12 +277,12 @@ EthereumClient.prototype.getMarketsAsync = function (branchId) {
             _.range(1, marketInfo.numOutcomes + 1).loop(function (outcome, nextOutcome) {
               markets[market].outcomes[outcome] = { id: outcome };
               Augur.getSharesPurchased(market, outcome, function (allShares) {
-                markets[market].volume = markets[market].outcomes[outcome].volume = fromFixedPoint(allShares);
+                markets[market].volume = markets[market].outcomes[outcome].volume = allShares;
                 markets[market].totalVolume = markets[market].totalVolume.plus(markets[market].volume);
                 Augur.price(market, outcome, function (price) {
-                  markets[market].price = fromFixedPoint(price);
+                  markets[market].price = price;
                   Augur.getParticipantSharesPurchased(market, marketInfo.currentParticipant, outcome, function (myShares) {
-                    markets[market].outcomes[outcome].sharesPurchased = fromFixedPoint(myShares);
+                    markets[market].outcomes[outcome].sharesPurchased = myShares;
                     Augur.getExpiration(events[0], function (expiration) {
                       if (events.length) {
                         markets[market].endDate = utilities.blockToDate((new BigNumber(expiration)).toNumber());
@@ -438,8 +438,8 @@ EthereumClient.prototype.addMarket = function(params, onSuccess) {
     var branchId = params.branchId || 1010101;
     var description = params.description;
     var alpha = "0.0079";
-    var initialLiquidity = params.initialLiquidity.toString();
-    var tradingFee = params.tradingFee.toString();
+    var initialLiquidity = params.initialLiquidity;
+    var tradingFee = params.tradingFee;
     var events = params.events;  // a list of event ids
 
     Augur.createMarket({
@@ -485,8 +485,8 @@ var getSimulationArgs = function (marketId, outcomeId, numShares, callback) {
     // and assigned to keys.
     console.log('Raw getSimulatedBuy result for ' + numShares + ' shares: ', result);
     callback({
-      cost: fromFixedPoint(new BigNumber(result[0])),
-      newPrice: fromFixedPoint(new BigNumber(result[1]))
+      cost: Augur.bignum(result[0]),
+      newPrice: Augur.bignum(result[1])
     });
   };
 
@@ -494,7 +494,7 @@ var getSimulationArgs = function (marketId, outcomeId, numShares, callback) {
   return [
     hexMarketId,
     outcomeId,
-    toFixedPoint(numShares).toFixed(), // augur.js accepts String, but not BigNumber.
+    numShares,
     wrappedCallback
   ];
 };
@@ -514,8 +514,8 @@ var getTradeArgs = function (branchId, marketId, outcomeId, numShares, callback)
     hexNumber(branchId),
     hexNumber(marketId),
     outcomeId,
-    toFixedPoint(numShares).toFixed(),
-    1, // TODO: Generate a nonce when front-running protection is enabled.
+    numShares,
+    null, // nonce is now calculated by augur.js!
     callback
   ];
 };
