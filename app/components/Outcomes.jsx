@@ -47,7 +47,16 @@ var Overview = React.createClass({
   }
 });
 
-var Buy = React.createClass({
+/**
+ * Common trading logic.
+ *
+ * Components that use this must implement:
+ * - actionLabel
+ * - getHelpText
+ * - getSimulationFunction
+ * - getTradeFunction
+ */
+var TradeBase = {
   mixins: [FluxMixin],
 
   getInitialState: function () {
@@ -67,23 +76,6 @@ var Buy = React.createClass({
     return outcome.price;
   },
 
-  getHelpText: function () {
-    if (!this.state.simulation) {
-      return 'Enter the number of shares to see the cost.';
-    }
-
-    return (
-      'Cost: ' + this.state.simulation.cost.toString() + ' cash. ' +
-      'New forecast: ' + priceToPercentage(this.state.simulation.newPrice) + '%'
-    );
-  },
-
-  getSimulatedBuy: function (numShares, callback) {
-    var flux = this.getFlux();
-    var client = flux.store('config').getEthereumClient();
-    client.getSimulatedBuy(this.props.market.id, this.getOutcomeId(), numShares, callback);
-  },
-
   handleChange: function () {
     var rawValue = this.refs.input.getValue()
     var numShares = parseInt(rawValue);
@@ -100,7 +92,12 @@ var Buy = React.createClass({
     } else {
       new Promise((resolve, reject) => {
         console.log('Getting simulation...');
-        this.getSimulatedBuy(numShares, resolve);
+        this.getSimulationFunction()(
+          this.props.market.id,
+          this.getOutcomeId(),
+          numShares,
+          resolve
+        );
       }).then((simulation) => {
         console.log('Setting simulation: ', simulation);
         this.setState({
@@ -113,12 +110,10 @@ var Buy = React.createClass({
   onSubmit: function (event) {
     event.preventDefault();
     var numShares = parseInt(this.state.value);
-    console.log('Buying ' + numShares + ' shares...');
+    console.log('Trading ' + numShares + ' shares...');
 
-    var flux = this.getFlux();
-    var client = flux.store('config').getEthereumClient();
-    new Promise((resolve, reject) => {
-      client.buyShares(
+    new Promise((resolve) => {
+      this.getTradeFunction()(
         this.props.market.branchId,
         this.props.market.id,
         this.getOutcomeId(),
@@ -126,7 +121,7 @@ var Buy = React.createClass({
         resolve
       );
     }).then((returnCode) => {
-      console.log('buyShares returned ', returnCode);
+      console.log('Trade function returned ', returnCode);
       this.setState({
         ownedShares: numShares,
         value: ''
@@ -139,7 +134,7 @@ var Buy = React.createClass({
 
     return (
       <div>
-        <h3>Purchase "{ getOutcomeName(this.getOutcomeId(), outcomeCount) }" Shares</h3>
+        <h3>{this.actionLabel} "{ getOutcomeName(this.getOutcomeId(), outcomeCount) }" Shares</h3>
         <div className="price">{ priceToPercentage(this.getPrice()) }%</div>
         <p className="shares-held">Shares held: {this.state.ownedShares}</p>
         <form onSubmit={this.onSubmit}>
@@ -155,17 +150,61 @@ var Buy = React.createClass({
       </div>
     );
   }
-});
+};
 
-var Sell = React.createClass({
-  render: function () {
+var Buy = React.createClass(_.merge({
+  actionLabel: 'Purchase',
+
+  getHelpText: function () {
+    if (!this.state.simulation) {
+      return 'Enter the number of shares to see the cost.';
+    }
+
     return (
-      <div>
-        <h3>Sell Shares</h3>
-      </div>
+      'Cost: ' + this.state.simulation.cost.toString() + ' cash. ' +
+      'New forecast: ' + priceToPercentage(this.state.simulation.newPrice) + '%'
     );
+  },
+
+  getSimulationFunction: function () {
+    var flux = this.getFlux();
+    var client = flux.store('config').getEthereumClient();
+    return client.getSimulatedBuy;
+  },
+
+  getTradeFunction: function () {
+    var flux = this.getFlux();
+    var client = flux.store('config').getEthereumClient();
+    return client.buyShares;
   }
-});
+}, TradeBase));
+
+var Sell = React.createClass(_.merge({
+  actionLabel: 'Sell',
+
+  getHelpText: function () {
+    if (!this.state.simulation) {
+      return 'Enter the number of shares to see their value.';
+    }
+
+    return (
+      'Value: ' + this.state.simulation.cost.toString() + ' cash. ' +
+      'New forecast: ' + priceToPercentage(this.state.simulation.newPrice) + '%'
+    );
+  },
+
+  getSimulationFunction: function () {
+    var flux = this.getFlux();
+    var client = flux.store('config').getEthereumClient();
+    return client.getSimulatedSell;
+  },
+
+  getTradeFunction: function (numShares, callback) {
+    var flux = this.getFlux();
+    var client = flux.store('config').getEthereumClient();
+    return client.sellShares;
+  }
+}, TradeBase));
 
 module.exports = {
   Buy: Buy,

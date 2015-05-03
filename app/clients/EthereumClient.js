@@ -487,7 +487,7 @@ var hexNumber = function (bignum) {
   }
 };
 
-EthereumClient.prototype.getSimulatedBuy = function (marketId, outcomeId, numShares, callback) {
+var getSimulationArgs = function (marketId, outcomeId, numShares, callback) {
   var wrappedCallback = function (result) {
     // Pass the callback the result with its values converted from fixed point
     // and assigned to keys.
@@ -499,28 +499,43 @@ EthereumClient.prototype.getSimulatedBuy = function (marketId, outcomeId, numSha
   };
 
   var hexMarketId = hexNumber(marketId);
-  console.log('getSimulatedBuy: ', '0x' + hexMarketId, outcomeId, numShares);
-
-  Augur.getSimulatedBuy(
+  return [
     hexMarketId,
     outcomeId,
-    toFixedPoint(numShares).toFixed(),
+    toFixedPoint(numShares).toFixed(), // augur.js accepts String, but not BigNumber.
     wrappedCallback
-  );
+  ];
 };
 
-EthereumClient.prototype.buyShares = function (branchId, marketId, outcomeId, numShares, callback) {
-  var hexBranchId = hexNumber(branchId);
-  var hexMarketId = hexNumber(marketId);
+EthereumClient.prototype.getSimulatedBuy = function (marketId, outcomeId, numShares, callback) {
+  var args = getSimulationArgs(marketId, outcomeId, numShares, callback);
+  Augur.getSimulatedBuy.apply(null, args);
+};
 
-  Augur.buyShares(
-    hexBranchId,
-    hexMarketId,
+EthereumClient.prototype.getSimulatedSell = function (marketId, outcomeId, numShares, callback) {
+  var args = getSimulationArgs(marketId, outcomeId, numShares, callback);
+  Augur.getSimulatedSell.apply(null, args);
+};
+
+var getTradeArgs = function (branchId, marketId, outcomeId, numShares, callback) {
+  return [
+    hexNumber(branchId),
+    hexNumber(marketId),
     outcomeId,
     toFixedPoint(numShares).toFixed(),
     1, // TODO: Generate a nonce when front-running protection is enabled.
     callback
-  );
+  ];
+};
+
+EthereumClient.prototype.buyShares = function (branchId, marketId, outcomeId, numShares, callback) {
+  var args = getTradeArgs(branchId, marketId, outcomeId, numShares, callback);
+  Augur.buyShares.apply(null, args);
+};
+
+EthereumClient.prototype.sellShares = function (branchId, marketId, outcomeId, numShares, callback) {
+  var args = getTradeArgs(branchId, marketId, outcomeId, numShares, callback);
+  Augur.sellShares.apply(null, args);
 };
 
 module.exports = EthereumClient;
