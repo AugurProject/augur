@@ -8,7 +8,7 @@ var ConfigActions = {
   updateEthereumClient: function () {
 
     var configState = this.flux.store('config').getState();
-    var ethereumClient = configState.ethereumClient || new EthereumClient(configState.host);
+    var ethereumClient = window.ethereumClient = configState.ethereumClient || new EthereumClient(configState.host);
 
     if (!ethereumClient) {
       this.dispatch(constants.config.UPDATE_ETHEREUM_CLIENT_FAILED);
@@ -31,8 +31,8 @@ var ConfigActions = {
     });
 
     this.flux.actions.network.updateNetwork();
-    this.flux.actions.branch.loadBranches();
-    this.flux.actions.event.loadEvents();
+    //this.flux.actions.branch.loadBranches();
+    //this.flux.actions.event.loadEvents();
     this.flux.actions.market.loadMarkets();
   }
 };
