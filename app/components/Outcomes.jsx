@@ -52,6 +52,7 @@ var Buy = React.createClass({
 
   getInitialState: function () {
     return {
+      ownedShares: 0,
       simulation: null,
       value: ''
     }
@@ -109,6 +110,30 @@ var Buy = React.createClass({
     }
   },
 
+  onSubmit: function (event) {
+    event.preventDefault();
+    var numShares = parseInt(this.state.value);
+    console.log('Buying ' + numShares + ' shares...');
+
+    var flux = this.getFlux();
+    var client = flux.store('config').getEthereumClient();
+    new Promise((resolve, reject) => {
+      client.buyShares(
+        this.props.market.branchId,
+        this.props.market.id,
+        this.getOutcomeId(),
+        numShares,
+        resolve
+      );
+    }).then((returnCode) => {
+      console.log('buyShares returned ', returnCode);
+      this.setState({
+        ownedShares: numShares,
+        value: ''
+      });
+    });
+  },
+
   render: function () {
     var outcomeCount = this.props.market.outcomes.length;
 
@@ -116,16 +141,16 @@ var Buy = React.createClass({
       <div>
         <h3>Purchase "{ getOutcomeName(this.getOutcomeId(), outcomeCount) }" Shares</h3>
         <div className="price">{ priceToPercentage(this.getPrice()) }%</div>
-        <p className="shares-held">Shares held: 0</p>
-        <form>
+        <p className="shares-held">Shares held: {this.state.ownedShares}</p>
+        <form onSubmit={this.onSubmit}>
           <Input
-            type='text'
+            type="text"
             value={this.state.value}
-            label='Shares'
+            label="Shares"
             help={this.getHelpText()}
-            ref='input'
+            ref="input"
             onChange={this.handleChange} />
-
+          <Input type="submit" />
         </form>
       </div>
     );

@@ -362,6 +362,7 @@ EthereumClient.prototype.getMarkets = function (branchId) {
 
     return {
       id: marketId,
+      branchId: branchId,
       price: price,
       description: description,
       alpha: alpha,
@@ -477,6 +478,15 @@ EthereumClient.prototype.addMarket = function(params, onSuccess) {
     //return newMarketId;
 };
 
+var hexNumber = function (bignum) {
+  var hex = bignum.toString(16);
+  if (hex[0] === '-') {
+    return '-0x' + hex.slice(1);
+  } else {
+    return '0x' + hex;
+  }
+};
+
 EthereumClient.prototype.getSimulatedBuy = function (marketId, outcomeId, numShares, callback) {
   var wrappedCallback = function (result) {
     // Pass the callback the result with its values converted from fixed point
@@ -488,13 +498,7 @@ EthereumClient.prototype.getSimulatedBuy = function (marketId, outcomeId, numSha
     });
   };
 
-  var hexMarketId = marketId.toString(16);
-  if (hexMarketId[0] === '-') {
-    hexMarketId = '-0x' + hexMarketId.slice(1);
-  } else {
-    hexMarketId = '0x' + hexMarketId;
-  }
-
+  var hexMarketId = hexNumber(marketId);
   console.log('getSimulatedBuy: ', '0x' + hexMarketId, outcomeId, numShares);
 
   Augur.getSimulatedBuy(
@@ -502,6 +506,20 @@ EthereumClient.prototype.getSimulatedBuy = function (marketId, outcomeId, numSha
     outcomeId,
     toFixedPoint(numShares).toFixed(),
     wrappedCallback
+  );
+};
+
+EthereumClient.prototype.buyShares = function (branchId, marketId, outcomeId, numShares, callback) {
+  var hexBranchId = hexNumber(branchId);
+  var hexMarketId = hexNumber(marketId);
+
+  Augur.buyShares(
+    hexBranchId,
+    hexMarketId,
+    outcomeId,
+    toFixedPoint(numShares).toFixed(),
+    1, // TODO: Generate a nonce when front-running protection is enabled.
+    callback
   );
 };
 
