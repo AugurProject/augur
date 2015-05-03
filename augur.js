@@ -54,7 +54,7 @@ var Augur = (function (augur, async) {
 
     // true for asynchronous (recommended), false for synchronous
     augur.async = (augur && augur.async) || async;
-    
+
     // default gas: 3M
     augur.default_gas = "0x2dc6c0";
 
@@ -73,7 +73,7 @@ var Augur = (function (augur, async) {
     augur.coinbase = json_rpc(postdata("coinbase"), false);
     augur.id = 1;
     augur.data = {};
-    
+
     // createMarket error codes
     augur.ERRORS = {
         "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
@@ -107,7 +107,7 @@ var Augur = (function (augur, async) {
         whitelist: "0x21dbe4a05a9174e96e6c6bc1e05a7096338cb0d6",
         // Functions
         checkQuorum: "0x4eaa7a8b00107bbc11909e327e163b067fd3cfb9",
-        buyAndsellShares: "0xfde83609d8bd5e4bfd6479af2b1cb28c85f0bce7",
+        buyAndSellShares: "0xfde83609d8bd5e4bfd6479af2b1cb28c85f0bce7",
         createBranch: "0x5c955b31ac72c83ffd7562aed4e2100b2ba09a3b",
         p2pWagers: "",
         sendReputation: "0x049487d32b727be98a4c8b58c4eab6521791f288",
@@ -371,7 +371,7 @@ var Augur = (function (augur, async) {
                 req.open("POST", rpc_url, true);
                 req.setRequestHeader("Content-type", "application/json");
                 req.send(command);
-            } else {            
+            } else {
                 req.open("POST", rpc_url, false);
                 req.setRequestHeader("Content-type", "application/json");
                 req.send(command);
