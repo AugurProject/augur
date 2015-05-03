@@ -458,7 +458,6 @@
             });
             Augur.getCreationFee(event_id, function (r) {
                 print("   - getCreationFee(" + event_id + ") [event]");
-                print(r);
                 assert(r === "0.00000000000000000244");
             });
             Augur.getCreator(market_id, function (r) {
@@ -472,17 +471,14 @@
             var amount = 1;
             Augur.getSimulatedBuy(market_id, Augur.AGAINST, amount, function (r) {
                 print("   - getSimulatedBuy(" + market_id + ", " + Augur.AGAINST + ", " + amount + ")");
-                print(r);
                 is_array(r);
             });
             Augur.getSimulatedSell(market_id, Augur.AGAINST, amount, function (r) {
                 print("   - getSimulatedSell(" + market_id + ", " + Augur.AGAINST + ", " + amount + ")");
-                print(r);
                 is_array(r);
             });
             Augur.getExpiration(event_id, function (r) {
                 print("   - getExpiration(" + event_id + ")");
-                print(r);
                 assert(r === "250000");
             });
             Augur.getMarketNumOutcomes(market_id, function (r) {

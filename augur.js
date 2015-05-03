@@ -1027,8 +1027,6 @@ var Augur = (function (augur, async) {
         // outcome: integer (1 or 2 for binary events)
         // amount: base 10 number -> base 2^64 number
         augur.tx.getSimulatedBuy.params = [market, outcome, augur.fix(amount)];
-        console.log("amount:", amount);
-        console.log("amount-fixed:", augur.fix(amount));
         augur.invoke(augur.tx.getSimulatedBuy, onSent);
     };
     augur.getSimulatedSell = function (market, outcome, amount, onSent) {
