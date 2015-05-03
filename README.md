@@ -63,44 +63,58 @@ All Augur functions have an optional callback (or callbacks; see below) as their
 - sellShares(branch, market, outcome, amount, nonce[, callback])
 - sendReputation(branch, receiver, value[, callback])
 - getSimulatedBuy(market, outcome, amount[, callback])
+
     ```javascript
     > Augur.getSimulatedBuy("0xb13d98f933cbd602a3d9d4626260077678ab210d1e63b3108b231c1758ff9971", 1, Augur.ONE.toString(16), console.log)
     ["0x0000000000000000000000000000000000000000000000000013b073172aceb2",
      "0x0000000000000000000000000000000000000000000000008de39f2500000000"]
     ```
+
 - getSimulatedSell(market, outcome, amount[, callback])
+
     ```javascript
     > Augur.getSimulatedSell("0xb13d98f933cbd602a3d9d4626260077678ab210d1e63b3108b231c1758ff9971", 1, Augur.ONE.toString(16), console.log)
     ["0x0000000000000000000000000000000000000000000000000013af84d04feba9",
      "0x0000000000000000000000000000000000000000000000008dd635b900000000"]
      ```
+
 - getCreator(id[, callback])
+
     ```javascript
     > var market = "0xb13d98f933cbd602a3d9d4626260077678ab210d1e63b3108b231c1758ff9971";
     > Augur.getCreator(market, console.log);
     "0x0000000000000000000000001c11aa45c792e202e9ffdc2f12f99d0d209bef70"
     ```
+
 - getCreationFee(id[, callback])
+
     ```javascript
     > Augur.getCreationFee(market, console.log)
     "0x00000000000000000000000000000000000000000000000a0000000000000000"
     ```
+
 - getExpiration(event[, callback]): Event expiration block.
+
     ```javascript
     > var event = "0xb2a6de45f349b5ac384b01a785e640f519f0a8597ab2031c964c7f572d96b13c";
     > Augur.getExpiration(event, console.log)
     "0x000000000000000000000000000000000000000000000000000000000003d090"
     ```
+
 - getMarketNumOutcomes(market[, callback]): Number of outcomes in this market as an integer.
+
     ```javascript
     > Augur.getMarketNumOutcomes(market, console.log)
     2
     ```
+
 - price(market, outcome[, callback]): Get the current (instantaneous) price of an outcome.
+
     ```javascript
     > Augur.price(market_id, 1, function (r) { console.log(r.dividedBy(Augur.ONE).toFixed()); })
     0.55415210523642599583
     ```
+
 - getWinningOutcomes(market[, callback])
 
 Examples and more API functions coming soon :)
