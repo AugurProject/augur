@@ -63,12 +63,12 @@ var Augur = (function (augur, async) {
 
     // constants
     augur.MAXBITS = new BigNumber(2).toPower(256);
-    augur.ONE = augur.NO = new BigNumber(2).toPower(64);
-    augur.TWO = augur.YES = new BigNumber(2).toPower(65);
+    augur.ONE = new BigNumber(2).toPower(64);
+    augur.TWO = new BigNumber(2).toPower(65);
     augur.BAD = (new BigNumber(2).toPower(63)).mul(new BigNumber(3));
     augur.ETHER = new BigNumber(10).toPower(18);
-    augur.AGAINST = 1; // against: "won't happen"
-    augur.ON = 2;      // on: "will happen"
+    augur.AGAINST = augur.NO = 1; // against: "won't happen"
+    augur.ON = augur.YES = 2;     // on: "will happen"
 
     augur.coinbase = json_rpc(postdata("coinbase"), false);
     augur.id = 1;
