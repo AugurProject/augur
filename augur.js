@@ -1054,14 +1054,14 @@ var Augur = (function (augur, async) {
         // market: sha256 hash id
         augur.tx.getMarketInfo.params = market;
         augur.invoke(augur.tx.getMarketInfo, function (marketInfo) {
-            if (marketInfo) {
+            if (marketInfo && marketInfo.length) {
                 var info = {
-                    currentParticipant: new BigNumber(marketInfo[0]),
-                    alpha: new BigNumber(marketInfo[1]),
-                    cumulativeScale: new BigNumber(marketInfo[2]),
-                    numOutcomes: parseInt(marketInfo[3]),
-                    tradingPeriod: new BigNumber(marketInfo[4]),
-                    tradingFee: marketInfo[5]
+                    currentParticipant: augur.bignum(marketInfo[0]).toFixed(),
+                    alpha: augur.bignum(marketInfo[1]).toFixed(),
+                    cumulativeScale: augur.bignum(marketInfo[2]).toFixed(),
+                    numOutcomes: augur.bignum(marketInfo[3]).toFixed(),
+                    tradingPeriod: augur.bignum(marketInfo[4]).toFixed(),
+                    tradingFee: augur.bignum(marketInfo[5]).toFixed()
                 };
                 augur.getDescription(market, function (description) {
                     if (description) info.description = description;
@@ -1089,14 +1089,14 @@ var Augur = (function (augur, async) {
         // event: sha256 hash id
         augur.tx.getEventInfo.params = event;
         augur.invoke(augur.tx.getEventInfo, function (eventInfo) {
-            if (eventInfo) {
+            if (eventInfo && eventInfo.length) {
                 var info = {
-                    branch: parseInt(eventInfo[0]),
-                    expirationDate: parseInt(eventInfo[1]),
-                    outcome: parseInt(eventInfo[2]),
-                    minValue: parseInt(eventInfo[3]),
-                    maxValue: parseInt(eventInfo[4]),
-                    numOutcomes: parseInt(eventInfo[5])
+                    branch: augur.bignum(eventInfo[0]).toFixed(),
+                    expirationDate: augur.bignum(eventInfo[1]).toFixed(),
+                    outcome: augur.bignum(eventInfo[2]).toFixed(),
+                    minValue: augur.bignum(eventInfo[3]).toFixed(),
+                    maxValue: augur.bignum(eventInfo[4]).toFixed(),
+                    numOutcomes: augur.bignum(eventInfo[5]).toFixed()
                 };
                 augur.getDescription(event, function (description) {
                     if (description) info.description = description;
@@ -1214,6 +1214,7 @@ var Augur = (function (augur, async) {
     augur.createMarket = function (branch, description, alpha, liquidity, tradingFee, events, onSent, onSuccess, onFailed) {
         // first parameter can optionally be a transaction object
         if (branch.constructor === Object && branch.branchId) {
+            var alpha = branch.alpha;                // number -> fixed-point
             var description = branch.description;    // string
             var liquidity = branch.initialLiquidity; // number -> fixed-point
             var tradingFee = branch.tradingFee;      // number -> fixed-point
@@ -1223,7 +1224,14 @@ var Augur = (function (augur, async) {
             var onFailed = branch.onFailed;          // function({id, txhash})
             var branch = branch.branchId;            // sha256 hash
         }
-        augur.tx.createMarket.params = [branch, description, alpha, liquidity, tradingFee, events];
+        augur.tx.createMarket.params = [
+            branch,
+            description,
+            augur.fix(alpha, "hex"),
+            augur.fix(liquidity, "hex"),
+            augur.fix(tradingFee, "hex"),
+            events
+        ];
         augur.tx.createMarket.send = false;
         augur.invoke(augur.tx.createMarket, function (marketID) {
             if (marketID) {

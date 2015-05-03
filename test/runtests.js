@@ -407,6 +407,8 @@
             Augur.getEventInfo(id, function (r) {
                 print("   - getEventInfo(" + id + ")");
                 on_root_branch(r);
+                assert(r.expirationDate === "250000");
+                assert(r.description === "\u0000\u001fthe augur semi-annual ragefest!");
             });
             id = "0xb2a6de45f349b5ac384b01a785e640f519f0a8597ab2031c964c7f572d96b13c";
             Augur.getEventInfo(id, is_object);
@@ -417,7 +419,7 @@
             });
             print("   - getVotePeriod(" + branchId + ")");
             Augur.getVotePeriod(branchId, gteq0);
-            var event_description = "event " + Math.random().toString(36).substring(7) + " [augur.js testing]";
+            var event_description = "[augur.js testing] " + Math.random().toString(36).substring(4);
             print("   - createEvent: \"" + event_description + "\"");
             Augur.createEvent({
                 branchId: branchId,
@@ -429,18 +431,18 @@
                 onSent: is_object,
                 onSuccess: is_object
             });
-            var market_description = "market " + Math.random().toString(36).substring(7) + " [augur.js testing]";
+            var market_description = "[augur.js testing] " + Math.random().toString(36).substring(4);
             print("   - createMarket: \"" + market_description + "\"");
             Augur.createMarket({
                 branchId: branchId,
                 description: market_description,
-                alpha: "0x10000000000000000",
-                initialLiquidity: "0xa0000000000000000",
-                tradingFee: "0xa0000000000000000",
+                alpha: "0.0079",
+                initialLiquidity: "100",
+                tradingFee: "0.01",
                 events: ["-0x2ae31f0184fa3e11a1517a11e3fc6319cb7c310cee36b20f8e0263049b1f3a6f"],
                 onSent: is_object,
                 onSuccess: is_object,
-                onFailed: null
+                onFailed: is_object
             });
             var market_id = "0xb13d98f933cbd602a3d9d4626260077678ab210d1e63b3108b231c1758ff9971";
             var event_id = "0xb2a6de45f349b5ac384b01a785e640f519f0a8597ab2031c964c7f572d96b13c";
