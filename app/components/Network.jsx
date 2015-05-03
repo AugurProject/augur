@@ -36,7 +36,7 @@ var Network = React.createClass({
             BLOCKS<span className="pull-right">{this.state.network.blockNumber || '-'}</span>
           </p>
           <p className="miner">
-            MINER<span className="pull-right">{this.state.network.miner ? this.state.network.hashrate : 'off'}</span>
+            MINER<span className="pull-right">{this.state.network.mining ? this.state.network.hashrate : 'off'}</span>
           </p>
           <p className="ether">
             ETHER<span className="pull-right">{ utilities.formatEther(this.state.assets.ether) || '-'}</span>
