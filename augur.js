@@ -1092,15 +1092,26 @@ var Augur = (function (augur, async) {
         augur.tx.getWinningOutcomes.params = market;
         augur.invoke(augur.tx.getWinningOutcomes, f);
     };
-    augur.createEvent = function (branch, description, expDate, minValue, maxValue, numOutcomes, sentCallback, verifiedCallback) {
+    augur.createEvent = function (branch, description, expDate, minValue, maxValue, numOutcomes, onSent, onSuccess) {
+        // first parameter can optionally be a transaction object
+        if (branch.constructor === Object && branch.branchId) {
+            var description = branch.description;
+            var minValue = branch.minValue;
+            var maxValue = branch.maxValue;
+            var numOutcomes = branch.numOutcomes;
+            var expDate = branch.expDate;
+            var onSent = branch.onSent;
+            var onSuccess = branch.onSuccess;
+            var branch = branch.branchId;
+        }
         augur.tx.createEvent.params = [branch, description, expDate, minValue, maxValue, numOutcomes];
         augur.tx.createEvent.send = false;
         augur.invoke(augur.tx.createEvent, function (eventID) {
             if (eventID) {
                 var event = { id: eventID };
-                if (sentCallback) sentCallback(event);
+                if (onSent) onSent(event);
                 augur.tx.createEvent.send = true;
-                if (verifiedCallback) {
+                if (onSuccess) {
                     augur.invoke(augur.tx.createEvent, function (txhash) {
                         if (txhash) {
                             event.txhash = txhash;
@@ -1109,7 +1120,7 @@ var Augur = (function (augur, async) {
                                 augur.getEventInfo(eventID, function (eventInfo) {
                                     pings++;
                                     if (eventInfo && eventInfo.branch && eventInfo.branch != 0 && eventInfo.branch != "0") {
-                                        verifiedCallback(event);
+                                        onSuccess(event);
                                     } else {
                                         if (pings < augur.PINGMAX) setTimeout(pingTx, 12000);
                                     }
@@ -1122,7 +1133,18 @@ var Augur = (function (augur, async) {
             }
         });
     };
-    augur.createMarket = function (branch, description, alpha, liquidity, tradingFee, events, sentCallback, verifiedCallback, failedCallback) {
+    augur.createMarket = function (branch, description, alpha, liquidity, tradingFee, events, onSent, onSuccess, onFailed) {
+        // first parameter can optionally be a transaction object
+        if (branch.constructor === Object && branch.branchId) {
+            var description = branch.description;
+            var liquidity = branch.initialLiquidity;
+            var tradingFee = branch.tradingFee;
+            var events = branch.events;
+            var onSent = branch.onSent;
+            var onSuccess = branch.onSuccess;
+            var onFailed = branch.onFailed;
+            var branch = branch.branchId;
+        }
         augur.tx.createMarket.params = [branch, description, alpha, liquidity, tradingFee, events];
         augur.tx.createMarket.send = false;
         augur.invoke(augur.tx.createMarket, function (marketID) {
@@ -1130,11 +1152,11 @@ var Augur = (function (augur, async) {
                 var market = { id: marketID };
                 if (augur.ERRORS[marketID]) {
                     market.error = "error " + augur.ERRORS[marketID].code.toString() + ": " + augur.ERRORS[marketID].message;
-                    if (failedCallback) failedCallback(market);
+                    if (onFailed) onFailed(market);
                 } else {
-                    if (sentCallback) sentCallback(market);
+                    if (onSent) onSent(market);
                     augur.tx.createMarket.send = true;
-                    if (verifiedCallback) {
+                    if (onSuccess) {
                         augur.invoke(augur.tx.createMarket, function (txhash) {
                             if (txhash) {
                                 market.txhash = txhash;
@@ -1143,7 +1165,7 @@ var Augur = (function (augur, async) {
                                     augur.getMarketInfo(marketID, function (marketInfo) {
                                         pings++;
                                         if (marketInfo && marketInfo.numOutcomes && marketInfo.numOutcomes != 0 && marketInfo.numOutcomes != "0") {
-                                            verifiedCallback(market);
+                                            onSuccess(market);
                                         } else {
                                             if (pings < augur.PINGMAX) setTimeout(pingTx, 12000);
                                         }

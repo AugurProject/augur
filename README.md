@@ -45,9 +45,7 @@ All Augur functions have an optional callback (or callbacks; see below) as their
 
 - getNumEvents(market[, callback])
 
-
 - getEventInfo(event[, callback])
-
 
 - getBranchID(branch[, callback])
 
@@ -59,13 +57,13 @@ All Augur functions have an optional callback (or callbacks; see below) as their
 
 - getSharesPurchased(market, outcome[, callback])
 
-- getEvents(branch, votePeriod[, callback])
+- getEvents(branchId, votePeriod[, callback])
 
-- getVotePeriod(branch[, callback])
+- getVotePeriod(branchId[, callback])
 
-- getPeriodLength(branch[, callback])
+- getPeriodLength(branchId[, callback])
 
-- getBranch(branchNumber[, callback])
+- getBranch(branchIdNumber[, callback])
 
 - sendCash(receiver, value[, callback])
 
@@ -75,20 +73,42 @@ All Augur functions have an optional callback (or callbacks; see below) as their
 
 - getDescription(id[, callback])
 
-- createEvent(branch, description, expDate, minValue, maxValue, numOutcomes[, sentCallback, verifiedCallback])
-    - `sentCallback` fires when the transaction is initially broadcast and you receive a txhash
-    - `verifiedCallback` fires when augur.js is able to see your transaction on the network using `eth_getTransactionByHash` (asynchronous check every 12 seconds)
+- createEvent(eventObject)
+    - eventObject has the following fields:
+        - branchId <integer>
+        - description <string>
+        - minValue <integer> (will be floating-point)
+        - maxValue <integer> (will be floating-point)
+        - numOutcomes <integer>
+        - expDate <integer> - block number when the event expires
+        - onSent <function> - callback that fires after the event is broadcast to the network
+        - onSuccess <function> - optional callback that fires when augur.js is able to see your event on the network (asynchronous check every 12 seconds)
 
-- createMarket(branch, description, alpha, liquidity, tradingFee, events[, sentCallback, verifiedCallback, failedCallback])
-    - `sentCallback` fires when the transaction is initially broadcast and you receive a txhash
-    - `verifiedCallback` fires when augur.js is able to see your transaction on the network using `eth_getTransactionByHash` (asynchronous check every 12 seconds)
-    - `failedCallback` fires if the initial `sendTransaction` fails
+    - All callbacks should accept a single parameter: an `event` object with `id` and `txhash` fields
+    
+    - Calling createEvent(branchId, description, expDate, minValue, maxValue, numOutcomes[, onSent, onSuccess]) with positional arguments also works
 
-- buyShares(branch, market, outcome, amount, nonce[, callback])
+- createMarket(marketObject)
+    - marketObject has the following fields:
+        - branchId <integer>
+        - description <string>
+        - minValue <integer> (will be floating-point)
+        - maxValue <integer> (will be floating-point)
+        - numOutcomes <integer>
+        - expDate <integer> - block number when the event expires
+        - onSent <function> - callback that fires after the event is broadcast to the network
+        - onSuccess <function> - optional callback that fires when augur.js is able to see your event on the network (asynchronous check every 12 seconds)
+        - onFailure <function> - optional callback that fires if you market creation errors
 
-- sellShares(branch, market, outcome, amount, nonce[, callback])
+    - All callbacks should accept a single parameter: a `market` object with `id` and `txhash` fields
+    
+    - Calling createMarket(branchId, description, alpha, liquidity, tradingFee, events[, onSent, onSuccess, onFailed]) with positional arguments also works
 
-- sendReputation(branch, receiver, value[, callback])
+- buyShares(branchId, market, outcome, amount, nonce[, callback])
+
+- sellShares(branchId, market, outcome, amount, nonce[, callback])
+
+- sendReputation(branchId, receiver, value[, callback])
 
 - getSimulatedBuy(market, outcome, amount[, callback])
 
@@ -145,9 +165,23 @@ All Augur functions have an optional callback (or callbacks; see below) as their
 
 - getWinningOutcomes(market[, callback])
 
-Examples and more API functions coming soon :)
-
 If you need more flexibility, please refer to the `invoke` function below, which allows you to build a transaction object manually, then broadcast it to the network with `sendTransaction` and/or capture its return value with `call`.
+
+### Numbers
+
+There are three acceptable ways to pass numerical inputs to the Augur API:
+
+- primitive JS numbers (e.g., `1010101`): ok for integers, but use strings for floating point numbers (see below)
+
+- stringified numbers (e.g., `"1010101"`)
+
+- hexadecimal strings (e.g., `"0xf69b5"`)
+
+Note that for primitive JS numbers, you will receive an error from the BigNumber library if your input contains more than 15 significant figures.
+
+Floating-point (decimal) values should be passed to augur.js as strings (e.g., instead of `0.07`, use `"0.07"`), for reasons described in [enormous detail](http://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html) elsewhere.
+
+*All numerical parameters passed to augur.js must be either base 10 (decimal) or base 16 (hexadecimal).* Do *not* use the base 2^64 representation that Augur uses internally for fixed-point numbers!  augur.js handles all fixed-point conversions for you.  Do *not* send the Loch Ness monster 3.50*2^64 CASH.  (Probably don't even give him 3.50, but that's a debate for another time.)
 
 ### Asynchronous RPC
 
