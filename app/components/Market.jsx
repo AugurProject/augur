@@ -29,11 +29,15 @@ var Router = React.createClass({
     }
   },
 
+  getFormattedEndDate: function () {
+    return this.state.market.endDate.format('MMMM D, YYYY');
+  },
+
   render: function() {
     return (
       <div id='market'>
         <h3>{ this.state.market.description }</h3>
-        <p className="info">Augur reporters will resolve this question after January 20, 2017.</p>
+        <p className="info">Augur reporters will resolve this question after {this.getFormattedEndDate()}.</p>
         <RouteHandler {...this.props} {...this.state} />
       </div>
     );
