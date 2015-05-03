@@ -1,6 +1,7 @@
 var _ = require('lodash');
 
-var browserifyConfig = {
+var browserify = {};
+browserify.build = {
   src: ['app/app.jsx'],
   dest: 'app/augur.js',
   options: {
@@ -11,9 +12,15 @@ var browserifyConfig = {
       ]
     }
   }
-}
+};
+browserify.watch = _.merge({
+  options: {
+    watch: true,
+    keepAlive: true
+  }
+}, browserify.build);
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     jshint: {
@@ -28,21 +35,19 @@ module.exports = function(grunt) {
       }
     },
     browserify: {
-      build: browserifyConfig,
-      watch: _.merge({
-        options: {
-          watch: true,
-          keepAlive: true,
-          browserifyOptions: {
-            debug: true
-          }
+      build: browserify.build,
+      watch: browserify.watch,
+      debug: _.merge({
+        browserifyOptions: {
+          debug: true
         }
-      }, browserifyConfig)
+      }, browserify.watch)
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-browserify');
 
+  grunt.registerTask('default', ['jshint', 'browserify:build']);
   grunt.registerTask('watchify', ['browserify:watch']);
 };
