@@ -6,6 +6,7 @@ var Router = require('react-router');
 var Link = Router.Link;
 var ReactBootstrap = require('react-bootstrap');
 var Input = ReactBootstrap.Input;
+var Promise = require('es6-promise').Promise;
 
 var NO = 1;
 var YES = 2;
@@ -51,7 +52,7 @@ var Buy = React.createClass({
 
   getInitialState: function () {
     return {
-      simulations: {},
+      simulation: null,
       value: ''
     }
   },
@@ -66,24 +67,46 @@ var Buy = React.createClass({
   },
 
   getHelpText: function () {
-    if (!this.state.value) {
+    if (!this.state.simulation) {
       return 'Enter the number of shares to see the cost.';
     }
 
-    var simulation = this.getSimulatedBuy(parseInt(this.state.value));
-    return 'Cost: ' + simulation.cost.toString() + ' cash. New forecast: ' + priceToPercentage(simulation.newPrice) + '%';
+    return (
+      'Cost: ' + this.state.simulation.cost.toString() + ' cash. ' +
+      'New forecast: ' + priceToPercentage(this.state.simulation.newPrice) + '%'
+    );
   },
 
-  getSimulatedBuy: function (numShares) {
+  getSimulatedBuy: function (numShares, callback) {
     var flux = this.getFlux();
     var client = flux.store('config').getEthereumClient();
-    return client.getSimulatedBuy(this.props.market.marketId, this.getOutcomeId(), numShares);
+    client.getSimulatedBuy(this.props.market.id, this.getOutcomeId(), numShares, callback);
   },
 
   handleChange: function () {
+    var rawValue = this.refs.input.getValue()
+    var numShares = parseInt(rawValue);
+
     this.setState({
-      value: this.refs.input.getValue()
+      value: rawValue
     });
+
+    if (!numShares) {
+      console.log('Clearing simulation.');
+      this.setState({
+        simulation: null
+      });
+    } else {
+      new Promise((resolve, reject) => {
+        console.log('Getting simulation...');
+        this.getSimulatedBuy(numShares, resolve);
+      }).then((simulation) => {
+        console.log('Setting simulation: ', simulation);
+        this.setState({
+          simulation: simulation
+        });
+      });
+    }
   },
 
   render: function () {

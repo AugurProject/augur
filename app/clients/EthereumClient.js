@@ -477,18 +477,32 @@ EthereumClient.prototype.addMarket = function(params, onSuccess) {
     //return newMarketId;
 };
 
-EthereumClient.prototype.getSimulatedBuy = function (marketId, outcomeId, numShares) {
-  var marketContract = this.getContract('markets');
-  var result = marketContract.getSimulatedBuy.call(
-    marketId,
-    outcomeId,
-    toFixedPoint(numShares)
-  );
-
-  return {
-    cost: fromFixedPoint(result[0]),
-    newPrice: fromFixedPoint(result[1])
+EthereumClient.prototype.getSimulatedBuy = function (marketId, outcomeId, numShares, callback) {
+  var wrappedCallback = function (result) {
+    // Pass the callback the result with its values converted from fixed point
+    // and assigned to keys.
+    console.log('Raw getSimulatedBuy result for ' + numShares + ' shares: ', result);
+    callback({
+      cost: fromFixedPoint(new BigNumber(result[0])),
+      newPrice: fromFixedPoint(new BigNumber(result[1]))
+    });
   };
+
+  var hexMarketId = marketId.toString(16);
+  if (hexMarketId[0] === '-') {
+    hexMarketId = '-0x' + hexMarketId.slice(1);
+  } else {
+    hexMarketId = '0x' + hexMarketId;
+  }
+
+  console.log('getSimulatedBuy: ', '0x' + hexMarketId, outcomeId, numShares);
+
+  Augur.getSimulatedBuy(
+    hexMarketId,
+    outcomeId,
+    toFixedPoint(numShares).toFixed(),
+    wrappedCallback
+  );
 };
 
 module.exports = EthereumClient;
