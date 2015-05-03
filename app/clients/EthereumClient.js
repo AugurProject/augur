@@ -123,6 +123,13 @@ EthereumClient.prototype.cashFaucet = function() {
 
 EthereumClient.prototype.getCashBalance = function() {
 
+  // Ensure that this.account is set and valid.
+  // FIXME: We should make sure this gets set during the initialization process.
+  console.log(this.account);
+  if (!this.isAvailable() || this.account === '0x') {
+    return 0;
+  }
+
   var cashContract = this.getContract('cash');
   var balance = cashContract.balance.call(this.account);
 
@@ -146,6 +153,13 @@ EthereumClient.prototype.repFaucet = function() {
 };
 
 EthereumClient.prototype.getRepBalance = function(branchId) {
+
+  // Ensure that this.account is set and valid.
+  // FIXME: We should make sure this gets set during the initialization process.
+  console.log(this.account);
+  if (!this.isAvailable() || this.account === '0x') {
+    return 0;
+  }
 
   var id = branchId || 1010101;
 
@@ -343,7 +357,7 @@ EthereumClient.prototype.getMarkets = function (branchId) {
       };
     });
 
-    var price = outcomes.length ? outcomes[1].price : new BigNumber(0);  // hardcoded to outcome 2 (yes) 
+    var price = outcomes.length ? outcomes[1].price : new BigNumber(0);  // hardcoded to outcome 2 (yes)
     var winningOutcomes = marketContract.getWinningOutcomes.call(marketId);
 
     return {
@@ -438,7 +452,7 @@ EthereumClient.prototype.addMarket = function(params, onSuccess) {
     //);
 
     Augur.createMarket(
-          
+
       branchId, description, alpha, initialLiquidity, tradingFee, events,
 
       // sent callback
