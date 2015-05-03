@@ -144,6 +144,20 @@
             assert(parseInt(r.branch) === 1010101);
         };
 
+        print("  utility functions");
+        var ex_integer = 12345678901;
+        var ex_decimal = 0.123456789;
+        var ex_integer_hex = "0x2dfdc1c35";
+        var ex_integer_string = "12345678901";
+        var ex_decimal_string = "0.123456789";
+        print("   - bignum");
+        assert(Augur.bignum(ex_decimal).eq(Augur.bignum(ex_decimal_string)));
+        print("   - fix");
+        assert(Augur.fix(ex_decimal).eq((new BigNumber(ex_decimal)).mul(Augur.ONE)));
+        print("   - unfix");
+        assert(Augur.unfix(Augur.fix(ex_integer_hex), "hex") === ex_integer_hex);
+        assert(Augur.unfix(Augur.fix(ex_integer_string), "string") === ex_integer_string);
+        assert(Augur.unfix(Augur.fix(ex_integer_string), "number") === ex_integer);
 
         print("  ethereum json-rpc wrapper");
         print("   - coinbase");
@@ -394,7 +408,7 @@
             });
             print("   - getVotePeriod");
             Augur.getVotePeriod(1010101, gteq0);
-            var event_description = Math.random().toString(36).substring(7);
+            var event_description = Math.random().toString(36).substring(7) + " [augur.js testing]";
             print("   - createEvent: \"" + event_description + "\"");
             Augur.createEvent(
                 1010101,
@@ -406,7 +420,7 @@
                 is_object,
                 is_object
             );
-            var market_description = Math.random().toString(36).substring(7);
+            var market_description = Math.random().toString(36).substring(7) + " [augur.js testing]";
             print("   - createMarket: \"" + market_description + "\"");
             // callback 1: market object { id: marketID }
             // callback 2: verified market object { id: marketID, txhash: hash, description: "..." }

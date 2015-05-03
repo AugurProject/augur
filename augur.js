@@ -145,6 +145,36 @@ var Augur = (function (augur, async) {
         }
     }
 
+    augur.bignum = function (n) {
+        var bn;
+        try {
+            if (n.constructor === Number) {
+                if (Math.floor(Math.log(n) / Math.log(10) + 1) <= 15) {
+                    bn = new BigNumber(n);
+                } else {
+                    n = n.toString();
+                    try {
+                        bn = new BigNumber(n);
+                    } catch (exc) {
+                        if (n.slice(0,1) === '-') {
+                            bn = new BigNumber("-0x" + n.slice(1));
+                        }
+                        bn = new BigNumber("0x" + n);
+                    }
+                }
+            } else if (n.constructor === String) {
+                try {
+                    bn = new BigNumber(n);
+                } catch (exc) {
+                    bn = new BigNumber("0x" + n);
+                }
+            }
+            return bn;
+        } catch (e) {
+            log("could not create BigNumber for " + n.toString());
+        }
+    }
+
     function parse_array(string, stride, init, bignum) {
         stride = stride || 64;
         var elements = (string.length - 2) / stride;
@@ -400,6 +430,79 @@ var Augur = (function (augur, async) {
             augur.data.params = [];
         }
         return augur.data;
+    }
+
+    augur.fix = function (n) {
+        var fixed;
+        try {
+            if (n.constructor === BigNumber) {
+                fixed = n.mul(augur.ONE);
+            } else if (n.constructor === Number || n.constructor === String) {
+                fixed = augur.bignum(n).mul(Augur.ONE);
+            } else if (n.constructor === Array) {
+                var len = n.length;
+                fixed = Array(len);
+                for (var i = 0; i < len; ++i) {
+                    fixed[i] = augur.fix(n[i]);
+                }
+            } else {
+                log("could not convert " + n.toString() + " to fixed-point");
+            }
+            return fixed;
+        } catch (e) {
+            log("could not convert " + n.toString() + " to fixed-point");
+        }
+    };
+
+    augur.unfix = function (n, encode) {
+        var unfixed;
+        try {
+            if (encode) encode = encode.toLowerCase();
+            if (n.constructor === BigNumber) {
+                unfixed = n.dividedBy(augur.ONE);
+                if (encode) {
+                    if (encode === "hex") {
+                        unfixed = unfixed.toString(16);
+                        if (unfixed.slice(0,1) === '-') {
+                            unfixed = "-0x" + unfixed.slice(1);
+                        } else {
+                            unfixed = "0x" + unfixed;
+                        }
+                    } else if (encode === "string") {
+                        unfixed = unfixed.toFixed();
+                    } else if (encode === "number") {
+                        unfixed = unfixed.toNumber();
+                    }
+                }
+            } else if (n.constructor === Number || n.constructor === String) {
+                unfixed = augur.bignum(n).dividedBy(augur.ONE);
+                if (encode) {
+                    if (encode === "hex") {
+                        unfixed = unfixed.toString(16);
+                        if (unfixed.slice(0,1) === '-') {
+                            unfixed = "-0x" + unfixed.slice(3);
+                        } else {
+                            unfixed = "0x" + unfixed.slice(2);
+                        }
+                    } else if (encode === "string") {
+                        unfixed = unfixed.toFixed();
+                    } else if (encode === "number") {
+                        unfixed = unfixed.toNumber();
+                    }
+                }
+            } else if (n.constructor === Array) {
+                var len = n.length;
+                unfixed = Array(len);
+                for (var i = 0; i < len; ++i) {
+                    unfixed[i] = augur.unfix(n[i]);
+                }
+            } else {
+                log("could not convert " + n.toString() + " from fixed-point");
+            }
+            return unfixed;
+        } catch (e) {
+            log("could not convert " + n.toString() + " from fixed-point");
+        }
     }
 
     augur.clone = function (obj) {

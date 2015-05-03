@@ -32,36 +32,64 @@ augur.js is a set of (hopefully convenient, easy-to-use) JavaScript bindings for
 All Augur functions have an optional callback (or callbacks; see below) as their final parameter.  augur.js currently implements the following Augur API functions:
 
 - getCashBalance(address[, callback])
+
 - getRepBalance(branch, address[, callback])
+
 - getBranches([callback])
+
 - getMarkets(branch[, callback])
+
 - getMarketInfo(market[, callback])
+
 - getMarketEvents(market[, callback])
+
 - getNumEvents(market[, callback])
+
+
 - getEventInfo(event[, callback])
+
+
 - getBranchID(branch[, callback])
+
 - getNonce(id[, callback])
+
 - getCurrentParticipantNumber(market[, callback])
+
 - getParticipantSharesPurchased(market, participantNumber, outcome[, callback])
+
 - getSharesPurchased(market, outcome[, callback])
+
 - getEvents(branch, votePeriod[, callback])
+
 - getVotePeriod(branch[, callback])
+
 - getPeriodLength(branch[, callback])
+
 - getBranch(branchNumber[, callback])
+
 - sendCash(receiver, value[, callback])
+
 - cashFaucet([callback])
+
 - reputationFaucet([callback])
+
 - getDescription(id[, callback])
+
 - createEvent(branch, description, expDate, minValue, maxValue, numOutcomes[, sentCallback, verifiedCallback])
     - `sentCallback` fires when the transaction is initially broadcast and you receive a txhash
     - `verifiedCallback` fires when augur.js is able to see your transaction on the network using `eth_getTransactionByHash` (asynchronous check every 12 seconds)
+
 - createMarket(branch, description, alpha, liquidity, tradingFee, events[, sentCallback, verifiedCallback, failedCallback])
     - `sentCallback` fires when the transaction is initially broadcast and you receive a txhash
     - `verifiedCallback` fires when augur.js is able to see your transaction on the network using `eth_getTransactionByHash` (asynchronous check every 12 seconds)
     - `failedCallback` fires if the initial `sendTransaction` fails
+
 - buyShares(branch, market, outcome, amount, nonce[, callback])
+
 - sellShares(branch, market, outcome, amount, nonce[, callback])
+
 - sendReputation(branch, receiver, value[, callback])
+
 - getSimulatedBuy(market, outcome, amount[, callback])
 
     ```javascript
