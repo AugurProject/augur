@@ -449,7 +449,6 @@
             Augur.getMarketEvents(market_id, function (r) {
                 print("   - getMarketEvents(" + market_id + ")");
                 assert(r.constructor === Array);
-                assert(r.length === 1);
                 assert(array_equal(r, ['0xd51ce0fe7b05c1ee5eae85ee1c039ce63483cef311c94df071fd9cfb64e0c591']));
             });
             // python ./call_contract.py markets getSimulatedBuy 'market_id' 1 2**64`

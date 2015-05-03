@@ -388,15 +388,20 @@ var Augur = (function (augur, async) {
      * Parse Ethereum response JSON *
      ********************************/
 
-    function parse_array(string, stride, init, bignum) {
+    function parse_array(string, returns, stride, init) {
         stride = stride || 64;
         var elements = (string.length - 2) / stride;
         var array = Array(elements);
         var position = init || 2;
         for (var i = 0; i < elements; ++i) {
-            array[i] = "0x" + string.slice(position, position + stride);
-            if (bignum) {
-                array[i] = new BigNumber(array[i]);
+            array[i] = string.slice(position, position + stride);
+            if (array[i].slice(0,1) === '-') {
+                array[i] = "-0x" + array[i].slice(1);
+            } else {
+                array[i] = "0x" + array[i];
+            }
+            if (returns === "number[]") {
+                array[i] = augur.unfix(array[i], "string");
             }
             position += stride;
         }
@@ -406,8 +411,8 @@ var Augur = (function (augur, async) {
     function format_result(returns, result) {
         var returns = returns.toLowerCase();
         try {
-            if (returns === "array") {
-                result = parse_array(result);
+            if (returns.slice(-2) === "[]") {
+                result = parse_array(result, returns);
             } else if (returns === "number") {
                 result = augur.bignum(result).toFixed();
             } else if (returns === "bignumber") {
@@ -716,7 +721,7 @@ var Augur = (function (augur, async) {
      *    function: <function name> (string)
      *    signature: <function signature, e.g. "iia"> (string)
      *    params: <parameters passed to the function> (optional)
-     *    returns: <"array", "int", "BigNumber", or "string" (default)>
+     *    returns: <"number[]", "int", "BigNumber", or "string" (default)>
      *    send: <true to sendTransaction, false to call (default)>
      * }
      */
@@ -745,7 +750,7 @@ var Augur = (function (augur, async) {
                     function: "<function name> (string)",
                     signature: '<function signature, e.g. "iia"> (string)',
                     params: "<parameters passed to the function> (optional)",
-                    returns: '<"array", "int", "BigNumber", or "string" (default)>',
+                    returns: '<"number[]", "int", "BigNumber", or "string" (default)>',
                     send: '<true to sendTransaction, false to call (default)>'
                 });
         }
@@ -770,7 +775,6 @@ var Augur = (function (augur, async) {
             function: "balance",
             signature: "i",
             params: augur.coinbase,
-            // returns: "BigNumber"
             returns: "unfix"
         },
         getCreator: {
@@ -791,49 +795,48 @@ var Augur = (function (augur, async) {
             to: augur.contracts.markets,
             function: "getSimulatedBuy",
             signature: "iii",
-            returns: "array"
+            returns: "number[]"
         },
         getSimulatedSell: {
             from: augur.coinbase,
             to: augur.contracts.markets,
             function: "getSimulatedSell",
             signature: "iii",
-            returns: "array"
+            returns: "number[]"
         },
         getRepBalance: {
             from: augur.coinbase,
             to: augur.contracts.reporting,
             function: "getRepBalance",
             signature: "ii",
-            // returns: "BigNumber"
             returns: "unfix"
         },
         getBranches: {
             from: augur.coinbase,
             to: augur.contracts.branches,
             function: "getBranches",
-            returns: "array"
+            returns: "hash[]"
         },
         getMarkets: {
             from: augur.coinbase,
             to: augur.contracts.branches,
             function: "getMarkets",
             signature: "i",
-            returns: "array"
+            returns: "hash[]"
         },
         getMarketInfo: {
             from: augur.coinbase,
             to: augur.contracts.markets,
             function: "getMarketInfo",
             signature: "i",
-            returns: "array"
+            returns: "mixed[]"
         },
         getMarketEvents: {
             from: augur.coinbase,
             to: augur.contracts.markets,
             function: "getMarketEvents",
             signature: "i",
-            returns: "array"
+            returns: "hash[]"
         },
         getNumEvents: {
             from: augur.coinbase,
@@ -847,7 +850,6 @@ var Augur = (function (augur, async) {
             to: augur.contracts.events,
             function: "getExpiration",
             signature: "i",
-            // returns: "BigNumber"
             returns: "number"
         },
         getEventInfo: {
@@ -855,7 +857,7 @@ var Augur = (function (augur, async) {
             to: augur.contracts.events,
             function: "getEventInfo",
             signature: "i",
-            returns: "array"
+            returns: "mixed[]"
         },
         getMarketNumOutcomes: {
             from: augur.coinbase,
@@ -888,7 +890,6 @@ var Augur = (function (augur, async) {
             to: augur.contracts.markets,
             function: "getParticipantSharesPurchased",
             signature: "iii",
-            // returns: "BigNumber"
             returns: "unfix"
         },
         price: {
@@ -896,7 +897,6 @@ var Augur = (function (augur, async) {
             to: augur.contracts.markets,
             function: "price",
             signature: "ii",
-            // returns: "BigNumber"
             returns: "unfix"
         },
         getSharesPurchased: {
@@ -904,7 +904,6 @@ var Augur = (function (augur, async) {
             to: augur.contracts.markets,
             function: "getSharesPurchased",
             signature: "ii",
-            // returns: "BigNumber"
             returns: "unfix"
         },
         getEvents: {
@@ -912,7 +911,7 @@ var Augur = (function (augur, async) {
             to: augur.contracts.expiringEvents,
             function: "getEvents",
             signature: "ii",
-            returns: "array"
+            returns: "hash[]"
         },
         getVotePeriod: {
             from: augur.coinbase,
@@ -939,7 +938,7 @@ var Augur = (function (augur, async) {
             to: augur.contracts.markets,
             function: "getWinningOutcomes",
             signature: "i",
-            returns: "array"
+            returns: "hash[]"
         },
         sendCash: {
             from: augur.coinbase,
