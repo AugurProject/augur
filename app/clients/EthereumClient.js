@@ -75,7 +75,8 @@ EthereumClient.prototype.getStats = function() {
   return {
     gasPrice: this.web3.eth.gasPrice,
     blockNumber: this.web3.eth.blockNumber,
-    miner: this.web3.eth.miner,
+    mining: this.web3.eth.mining,
+    hashrate: this.web3.eth.hashrate,
     peerCount: this.web3.net.peerCount
   }
 }

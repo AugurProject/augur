@@ -45,7 +45,8 @@ var NetworkActions = {
       peerCount: networkStats.peerCount,
       blockNumber: networkStats.blockNumber,
       gasPrice: networkStats.gasPrice,
-      miner: networkStats.miner
+      mining: networkStats.mining,
+      hashrate: networkStats.hashrate
     });
 
     // the account may have changed. load assets.

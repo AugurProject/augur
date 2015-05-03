@@ -11,7 +11,8 @@ var state = {
   ether: null,
   gasPrice: null,
   ethereumStatus: null,
-  miner: false
+  mining: null,
+  hashrate: null
 };
 
 var NetworkStore = Fluxxor.createStore({
