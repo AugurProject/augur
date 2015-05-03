@@ -125,7 +125,6 @@ EthereumClient.prototype.getCashBalance = function() {
 
   // Ensure that this.account is set and valid.
   // FIXME: We should make sure this gets set during the initialization process.
-  console.log(this.account);
   if (!this.isAvailable() || this.account === '0x') {
     return 0;
   }
@@ -156,7 +155,6 @@ EthereumClient.prototype.getRepBalance = function(branchId) {
 
   // Ensure that this.account is set and valid.
   // FIXME: We should make sure this gets set during the initialization process.
-  console.log(this.account);
   if (!this.isAvailable() || this.account === '0x') {
     return 0;
   }
@@ -320,7 +318,6 @@ EthereumClient.prototype.getMarkets = function (branchId) {
 
   var marketList = _.map(validMarkets, function(marketId) {
 
-    console.log(marketId.toString(16));
     var events = marketContract.getMarketEvents.call(marketId);
     var description = infoContract.getDescription.call(marketId);
     var alpha = fromFixedPoint(marketContract.getAlpha.call(marketId));

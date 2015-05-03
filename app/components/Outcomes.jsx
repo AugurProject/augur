@@ -78,7 +78,6 @@ var TradeBase = {
 
   getOwnedShares: function () {
     var outcome = getOutcome(this);
-    console.log(outcome);
     return outcome.sharesPurchased.toNumber();
   },
 
