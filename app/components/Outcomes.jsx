@@ -12,8 +12,7 @@ var NO = 1;
 var YES = 2;
 
 var priceToPercentage = function (price) {
-  // toFixed(6) = 6 decimal points
-  return Math.floor(parseFloat(price) * 100).toFixed(6);
+  return Math.floor(parseFloat(price) * 100).toString();
 };
 
 var getOutcomeName = function (id, count) {
