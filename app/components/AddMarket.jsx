@@ -195,7 +195,7 @@ var AddMarketModal = React.createClass({
       subheading = 'Market Query';
       page = (
         <div>
-          <p>Enter a question for the market to trade on.  This question should have a yes or no answer, be easiely verifiable and have an expiring date in the future.</p>
+          <p>Enter a question for the market to trade on.  This question should have a yes or no answer, be easily verifiable and have an expiring date in the future.</p>
           <p>For example: "Will Hurricane Fatima remain a category four and make land-fall by August 8th, 2017?"</p>
           <textarea 
             className="form-control" 
