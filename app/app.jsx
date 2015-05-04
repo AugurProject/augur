@@ -72,7 +72,7 @@ var routes = (
     <DefaultRoute handler={ Branch } flux={ flux } title="Branch" />
     <Route name="home" path="/" handler={ Branch } flux={ flux } title="Branch" />
     <Route name="branch" path="/branches/:branchId" handler={ Branch} flux={ flux } title="Branch" />
-    <Route name="market" path="/markets/:marketId" handler={ Market.Router } flux={ flux }>
+    <Route name="market" path="/market/:marketId" handler={ Market.Router } flux={ flux }>
       <DefaultRoute handler={ Market.Overview } flux={ flux } title="Market" />
       <Route name="buy-outcome" path="outcomes/:outcomeId/buy" handler={ Outcomes.Buy } flux={ flux } title="Buy Outcome" />
       <Route name="sell-outcome" path="outcomes/:outcomeId/sell" handler={ Outcomes.Sell } flux={ flux } title="Sell Outcome" />

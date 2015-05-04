@@ -404,66 +404,7 @@ nav .navbar-right li div {
 #market {
 
 }
-#market p {
-    margin: 0px 0px 5px 0px;
-    font-size: 15px;
-}
-#market .chart {
-    height: 200px;
-}
-#market .details {
-    display: none;
-    margin: 0px 120px 0px 15px;
-}
-#market p {
-    clear: right;
-}
-#market p > b {
-    float: right;
-}
-#market .trade .delta {
-    margin-left: 10px;
-    color: green;
-}
-#market h3 {
-    color: #602A52;
-    font-size: 25px;
-    margin-bottom: 35px;
-    clear: left;
-}
-#market h3 .text {
-    margin-left: 85px;
-}
-#market h3 .current {
-    width: 68px;
-    height: 68px;
-    font-size: 23px;
-    color: #000;
-    background-color: #b1ddf1;
-    text-align: center;
-    padding: 6px;
-    border-radius: 50%;
-    float: left;
-    padding-top: 23px;
-    margin-top: -5px;
-}
-#market h4 {
-    margin: 0px 0px 15px 0px;
-}
-#market h5 {
-    font-size: 17px;
-    margin-bottom: 30px;
-}
-#market .buy {
-    text-align: left;
-    margin-top: 20px;
-}
-#market .buy button {
-    width: 100px;
-}
-#market .summary {
-    margin-bottom: 30px;
-}
+
 #market #comments {
     background-color: #fff;
 }
