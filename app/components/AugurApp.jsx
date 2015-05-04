@@ -79,6 +79,8 @@ var AugurApp = React.createClass({
 
   render: function() {
 
+    var cashBalance = this.state.asset.cash ? +this.state.asset.cash.toFixed(2) : '-';
+
     return (
       <div id="app" className={ this.state.status }>
         <nav className="navbar" role="navigation">
@@ -88,7 +90,7 @@ var AugurApp = React.createClass({
               </div>
               <ul className="nav navbar-nav navbar-right">
                   <li>
-                      <div>CASH: <b className="cash-balance">{ this.state.asset.cash || '-'}</b></div>
+                      <div>CASH: <b className="cash-balance">{ cashBalance }</b></div>
                   </li>
                   <li className="dropdown visible-xs visible-sm hidden-md">
                       <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
