@@ -50,7 +50,7 @@ var Branch = React.createClass({
 
     return (
       <div id="branch">
-        <h3 className="clearfix">Markets <span className="subheading pull-right">Showing { start+1 } - { end+1 } of { total+1 }</span></h3>
+        <h3 className="clearfix">Markets <span className="subheading pull-right">Showing { start+1 } - { end } of { total }</span></h3>
         <h4 className="clearfix">
           <AddMarketTrigger />
           <Pager 
