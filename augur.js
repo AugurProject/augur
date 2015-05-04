@@ -354,14 +354,14 @@ var Augur = (function (augur, async) {
                 }
                 if (base === "int") {
                     if (arg.constructor === Number) {
-                        normal_args = zeropad(encode_int((new BigNumber(arg)).mod(augur.MAXBITS).toFixed()));
+                        normal_args = zeropad(encode_int(augur.bignum(arg).mod(augur.MAXBITS).toFixed()));
                     } else if (arg.constructor === String) {
                         if (arg.slice(0,1) === '-') {
-                            normal_args = zeropad(encode_int((new BigNumber(arg)).mod(augur.MAXBITS).toFixed()));
+                            normal_args = zeropad(encode_int(augur.bignum(arg).mod(augur.MAXBITS).toFixed()));
                         } else if (arg.slice(0,2) === "0x") {
                             normal_args = zeropad(arg.slice(2), true);
                         } else {
-                            normal_args = zeropad(encode_int(new BigNumber(arg).mod(augur.MAXBITS)));
+                            normal_args = zeropad(encode_int(augur.bignum(arg).mod(augur.MAXBITS)));
                         }
                     }
                 }
@@ -1325,13 +1325,41 @@ var Augur = (function (augur, async) {
         to: augur.contracts.reporting,
         function: "getRepBalance",
         signature: "ii",
-        returns: "number"
+        returns: "unfix"
     };
-    augur.tx.reputationFaucet = {
+    augur.tx.getRepByIndex = {
         from: augur.coinbase,
         to: augur.contracts.reporting,
-        function: "faucet",
-        send: true
+        function: "getRepByIndex",
+        signature: "ii",
+        returns: "unfix"
+    };
+    augur.tx.getReporterID = {
+        from: augur.coinbase,
+        to: augur.contracts.reporting,
+        function: "getReporterID",
+        signature: "ii"
+    };
+    augur.tx.getReputation = {
+        from: augur.coinbase,
+        to: augur.contracts.reporting,
+        function: "getReputation",
+        signature: "i",
+        returns: "number[]"
+    };
+    augur.tx.getNumberReporters = {
+        from: augur.coinbase,
+        to: augur.contracts.reporting,
+        function: "getNumberReporters",
+        signature: "i",
+        returns: "number"
+    };
+    augur.tx.repIDToIndex = {
+        from: augur.coinbase,
+        to: augur.contracts.reporting,
+        function: "repIDToIndex",
+        signature: "ii",
+        returns: "number"
     };
     augur.getRepBalance = function (branch, account, onSent) {
         // branch: sha256 hash id
@@ -1339,9 +1367,59 @@ var Augur = (function (augur, async) {
         augur.tx.getRepBalance.params = [branch, account];
         augur.invoke(augur.tx.getRepBalance, onSent);
     };
+    augur.getRepByIndex = function (branch, repIndex, onSent) {
+        // branch: sha256
+        // repIndex: integer
+        augur.tx.getRepByIndex.params = [branch, repIndex];
+        augur.invoke(augur.tx.getRepByIndex, onSent);
+    };
+    augur.getReporterID = function (branch, index, onSent) {
+        // branch: sha256
+        // index: integer
+        augur.tx.getReporterID.params = [branch, index];
+        augur.invoke(augur.tx.getReporterID, onSent);
+    };
+    // reputation of a single address over all branches
+    augur.getReputation = function (address, onSent) {
+        // address: ethereum account
+        augur.tx.getReputation.params = address;
+        augur.invoke(augur.tx.getReputation, onSent);
+    };
+    augur.getNumberReporters = function (branch, onSent) {
+        // branch: sha256
+        augur.tx.getNumberReporters.params = branch;
+        augur.invoke(augur.tx.getNumberReporters, onSent);
+    };
+    augur.repIDToIndex = function (branch, repID, onSent) {
+        // branch: sha256
+        // repID: ethereum account
+        augur.tx.repIDToIndex.params = [branch, repID];
+        augur.invoke(augur.tx.repIDToIndex, onSent);
+    };
+
+    augur.tx.hashReport = {
+        from: augur.coinbase,
+        to: augur.contracts.reporting,
+        function: "hashReport",
+        signature: "ai"
+    };
+    augur.tx.reputationFaucet = {
+        from: augur.coinbase,
+        to: augur.contracts.reporting,
+        function: "faucet",
+        send: true
+    };
+    augur.hashReport = function (ballot, salt, onSent) {
+        // ballot: number[]
+        // salt: integer
+        if (ballot.constructor === Array) {
+            augur.tx.hashReport.params = [ballot, salt];
+            augur.invoke(augur.tx.hashReport, onSent);
+        }
+    };
     augur.reputationFaucet = function (onSent) { // should this take a branch parameter?
         augur.invoke(augur.tx.reputationFaucet, onSent);
-    };
+    };    
 
     // buy&SellShares.se
     augur.tx.getNonce = {

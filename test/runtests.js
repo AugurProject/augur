@@ -380,6 +380,10 @@
             var market_id2 = "0x97d63d7567b1fc41c19296d959eba0e7df4900bf2d197c6b7b746d864fdde421";
             var event_description = "[augur.js] " + Math.random().toString(36).substring(4);
             var market_description = "[augur.js] " + Math.random().toString(36).substring(4);
+            var reporter_index = "0";
+            var reporter_address = constants.accounts.jack;
+            var ballot = [Augur.YES, Augur.YES, Augur.NO, Augur.YES];
+            var salt = "1337";
 
             // cash.se
             Augur.getCashBalance(Augur.coinbase, function (r) {
@@ -565,10 +569,44 @@
 
             // reporting.se
             Augur.getRepBalance(branch_id, Augur.coinbase, function (r) {
-                print("   - getRepBalance(" + branch_id.toString() + ") -> " + Augur.unfix(r));
+                print("   - getRepBalance(" + branch_id + ") -> " + r);
                 gteq0(r);
             });
-            // TODO reputationFaucet
+            Augur.getRepByIndex(branch_id, reporter_index, function (r) {
+                print("   - getRepByIndex(" + branch_id + ", " + reporter_index + ") -> " + r);
+                gteq0(r);
+            });
+            Augur.getReporterID(branch_id, reporter_index, function (r) {
+                print("   - getReporterID(" + branch_id + ", " + reporter_index + ") -> " + r);
+                assert(r === "0x0000000000000000000000001c11aa45c792e202e9ffdc2f12f99d0d209bef70");
+            });
+            Augur.getReputation(reporter_address, function (r) {
+                print("   - getReputation(" + reporter_address + ")");
+                is_array(r);
+                assert(r.length >= 3); // why equal to 5...?
+                for (var i = 0, len = r.length; i < len; ++i)
+                    gteq0(r[i]);
+            });
+            Augur.getNumberReporters(branch_id, function (r) {
+                print("   - getNumberReporters(" + branch_id + ") -> " + r);
+                gteq0(r);
+                assert(parseInt(r) >= 22);
+            });
+            Augur.repIDToIndex(branch_id, function (r) {
+                print("   - repIDToIndex(" + branch_id + ") -> " + r);
+                gteq0(r);
+            });
+            Augur.hashReport(ballot, salt, function (r) {
+                print("   - hashReport([ballot], " + salt + ") -> " + r);
+                // TODO double-check this
+                assert(r === "0xa5ea8e72fa70be0521a240201dedd1376599a9a935be4977d798522bcfbc29de");
+            });
+            Augur.tx.reputationFaucet.send = false;
+            Augur.tx.reputationFaucet.returns = "number";
+            Augur.reputationFaucet(function (r) {
+                print("   - reputationFaucet(" + branch_id.toString() + ") -> " + r);
+                assert(r === "1");
+            });
 
             // buy&SellShares.se
             // TODO getNonce
