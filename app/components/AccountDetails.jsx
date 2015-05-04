@@ -25,7 +25,7 @@ var AccountDetails = React.createClass({
     return {
       primaryAccount: flux.store('network').getAccount(),
       allAccounts:flux.store('network').getState().accounts,
-      assets: flux.store('asset').getState(),
+      asset: flux.store('asset').getState(),
       ethereumClient: flux.store('config').getEthereumClient()
     }
   },
@@ -41,6 +41,9 @@ var AccountDetails = React.createClass({
   },
 
   render: function () {
+
+    var cashBalance = this.state.asset.cash ? +this.state.asset.cash.toFixed(2) : '-';
+
     return (
       <div id="account">
         <h3>Account Overview</h3>
@@ -55,7 +58,7 @@ var AccountDetails = React.createClass({
               <p>
                 <b>Cash</b>
                 <span className='balance'>
-                  { this.state.assets.cash }
+                  { cashBalance }
                   <SendCashTrigger text='send' />
                   <Button bsSize='xsmall' bsStyle='default' onClick={ this.onCashFaucet }>Faucet<i className='fa fa-tint'></i></Button>
                 </span>
@@ -63,7 +66,7 @@ var AccountDetails = React.createClass({
               <p>
                 <b>Reputation</b>
                 <span className='balance'>
-                  { this.state.assets.reputation }
+                  { this.state.asset.reputation }
                   <SendRepTrigger text='send' />
                   <Button bsSize='xsmall' bsStyle='default' onClick={ this.onRepFaucet }>Faucet<i className='fa fa-tint'></i></Button>
                 </span>
@@ -71,7 +74,7 @@ var AccountDetails = React.createClass({
               <p>
                 <b>Ether</b>
                 <span className='balance'>
-                  { utilities.formatEther(this.state.assets.ether) }
+                  { utilities.formatEther(this.state.asset.ether) }
                   <SendEtherTrigger text='send' />
                   <Button bsSize='xsmall' bsStyle='default' style={{visibility: 'hidden'}}>Faucet<i className='fa fa-tint'></i></Button>
                 </span>
