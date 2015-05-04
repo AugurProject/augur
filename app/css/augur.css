@@ -347,7 +347,7 @@ nav .navbar-right li div {
     cursor: pointer;
     opacity: 1;
 }
-.market-pane h4 {
+.market-pane h5 {
     margin: 0px;
     padding: 12px;
     font-family: 'Source Sans Pro', sans-serif;
@@ -386,8 +386,7 @@ nav .navbar-right li div {
     margin-bottom: 20px;
 }
 #branch h4 {
-    margin-top: 10px;
-    margin-bottom: 20px;
+    margin: 10px 0px 20px 0px;
 }
 #branch nav {
     margin-top: 0px;
