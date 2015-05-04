@@ -874,17 +874,17 @@ var Augur = (function (augur, async) {
         signature: "i",
         returns: "hash[]"
     };
-    augur.tx.getVotePeriod = {
-        from: augur.coinbase,
-        to: augur.contracts.branches,
-        function: "getVotePeriod",
-        signature: "i",
-        returns: "number"
-    };
     augur.tx.getPeriodLength = {
         from: augur.coinbase,
         to: augur.contracts.branches,
         function: "getPeriodLength",
+        signature: "i",
+        returns: "number"
+    };
+    augur.tx.getVotePeriod = {
+        from: augur.coinbase,
+        to: augur.contracts.branches,
+        function: "getVotePeriod",
         signature: "i",
         returns: "number"
     };
@@ -896,15 +896,15 @@ var Augur = (function (augur, async) {
         augur.tx.getMarkets.params = branch;
         augur.invoke(augur.tx.getMarkets, onSent);
     };
-    augur.getVotePeriod = function (branch, onSent) {
-        // branch: sha256 hash id
-        augur.tx.getVotePeriod.params = branch;
-        augur.invoke(augur.tx.getVotePeriod, onSent);
-    };
     augur.getPeriodLength = function (branch, onSent) {
         // branch: sha256 hash id
         augur.tx.getPeriodLength.params = branch;
         augur.invoke(augur.tx.getPeriodLength, onSent);
+    };
+    augur.getVotePeriod = function (branch, onSent) {
+        // branch: sha256 hash id
+        augur.tx.getVotePeriod.params = branch;
+        augur.invoke(augur.tx.getVotePeriod, onSent);
     };
 
     // events.se
@@ -1094,13 +1094,17 @@ var Augur = (function (augur, async) {
         signature: "i",
         returns: "number"
     };
-    augur.tx.getMarketNumOutcomes = {
-        from: augur.coinbase,
-        to: augur.contracts.markets,
-        function: "getMarketNumOutcomes",
-        signature: "i",
-        returns: "number"
+    augur.getMarketEvents = function (market, onSent) {
+        // market: sha256 hash id
+        augur.tx.getMarketEvents.params = market;
+        augur.invoke(augur.tx.getMarketEvents, onSent);
     };
+    augur.getNumEvents = function (market, onSent) {
+        // market: sha256 hash id
+        augur.tx.getNumEvents.params = market;
+        augur.invoke(augur.tx.getNumEvents, onSent);
+    };
+
     augur.tx.getBranchID = {
         from: augur.coinbase,
         to: augur.contracts.markets,
@@ -1114,18 +1118,18 @@ var Augur = (function (augur, async) {
         signature: "i",
         returns: "unfix"
     };
+    augur.tx.getMarketNumOutcomes = {
+        from: augur.coinbase,
+        to: augur.contracts.markets,
+        function: "getMarketNumOutcomes",
+        signature: "i",
+        returns: "number"
+    };
     augur.tx.getParticipantSharesPurchased = {
         from: augur.coinbase,
         to: augur.contracts.markets,
         function: "getParticipantSharesPurchased",
         signature: "iii",
-        returns: "unfix"
-    };
-    augur.tx.price = {
-        from: augur.coinbase,
-        to: augur.contracts.markets,
-        function: "price",
-        signature: "ii",
         returns: "unfix"
     };
     augur.tx.getSharesPurchased = {
@@ -1142,20 +1146,12 @@ var Augur = (function (augur, async) {
         signature: "i",
         returns: "hash[]"
     };
-    augur.getMarketEvents = function (market, onSent) {
-        // market: sha256 hash id
-        augur.tx.getMarketEvents.params = market;
-        augur.invoke(augur.tx.getMarketEvents, onSent);
-    };
-    augur.getNumEvents = function (market, onSent) {
-        // market: sha256 hash id
-        augur.tx.getNumEvents.params = market;
-        augur.invoke(augur.tx.getNumEvents, onSent);
-    };
-    augur.getMarketNumOutcomes = function (market, onSent) {
-        // market: sha256 hash id
-        augur.tx.getMarketNumOutcomes.params = market;
-        augur.invoke(augur.tx.getMarketNumOutcomes, onSent);
+    augur.tx.price = {
+        from: augur.coinbase,
+        to: augur.contracts.markets,
+        function: "price",
+        signature: "ii",
+        returns: "unfix"
     };
     augur.getBranchID = function (branch, onSent) {
         // branch: sha256 hash id
@@ -1167,15 +1163,15 @@ var Augur = (function (augur, async) {
         augur.tx.getCurrentParticipantNumber.params = market;
         augur.invoke(augur.tx.getCurrentParticipantNumber, onSent);
     };
+    augur.getMarketNumOutcomes = function (market, onSent) {
+        // market: sha256 hash id
+        augur.tx.getMarketNumOutcomes.params = market;
+        augur.invoke(augur.tx.getMarketNumOutcomes, onSent);
+    };
     augur.getParticipantSharesPurchased = function (market, participationNumber, outcome, onSent) {
         // market: sha256 hash id
         augur.tx.getParticipantSharesPurchased.params = [market, participationNumber, outcome];
         augur.invoke(augur.tx.getParticipantSharesPurchased, onSent);
-    };
-    augur.price = function (market, outcome, onSent) {
-        // market: sha256 hash id
-        augur.tx.price.params = [market, outcome];
-        augur.invoke(augur.tx.price, onSent);
     };
     augur.getSharesPurchased = function (market, outcome, onSent) {
         // market: sha256 hash id
@@ -1186,6 +1182,11 @@ var Augur = (function (augur, async) {
         // market: sha256 hash id
         augur.tx.getWinningOutcomes.params = market;
         augur.invoke(augur.tx.getWinningOutcomes, onSent);
+    };
+    augur.price = function (market, outcome, onSent) {
+        // market: sha256 hash id
+        augur.tx.price.params = [market, outcome];
+        augur.invoke(augur.tx.price, onSent);
     };
 
     // reporting.se
