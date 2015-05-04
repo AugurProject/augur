@@ -57,10 +57,10 @@ var Branch = React.createClass({
             total={  total / this.state.marketsPerPage }
             current={ this.state.pageNum }
             titles={{
-              first:   'First',
-              prev:    '\u00AB',
-              next:    '\u00BB',
-              last:    'Last'
+              first:   '\u2758\u25c0',
+              prev:    '\u25c0',
+              next:    '\u25b6',
+              last:    '\u25b6\u2758'
             }}
             visiblePages={ this.state.visiblePages }
             onPageChanged={ this.handlePageChanged }
