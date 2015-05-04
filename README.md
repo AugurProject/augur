@@ -22,10 +22,7 @@ After installing, to use it with Node, just require it:
 ```
 To use augur.js from the browser, include [augur.min.js](https://github.com/AugurProject/augur.js/blob/master/augur.min.js), as well as the [bignumber.js](https://github.com/MikeMcl/bignumber.js) and [js-sha3](https://github.com/emn178/js-sha3) libraries.
 
-Usage
------
-
-### Augur API
+## Augur API
 
 augur.js is a set of (hopefully convenient, easy-to-use) JavaScript bindings for the Augur API.  The augur.js function name, as well as the order of parameters, are generally the same as those of the underlying [augur-core](https://github.com/AugurProject/augur-core) Serpent functions.  (A few function names have been changed to avoid ambiguity, e.g. `faucet`.)
 
@@ -167,7 +164,7 @@ All Augur functions have an optional callback (or callbacks; see below) as their
 
 If you need more flexibility, please refer to the `invoke` function below, which allows you to build a transaction object manually, then broadcast it to the network with `sendTransaction` and/or capture its return value with `call`.
 
-### Numbers
+## Numbers
 
 There are three acceptable ways to pass numerical inputs to the Augur API:
 
@@ -183,15 +180,15 @@ Floating-point (decimal) values should be passed to augur.js as strings (e.g., i
 
 *All numerical parameters passed to augur.js must be either base 10 (decimal) or base 16 (hexadecimal).* Do *not* use the base 2^64 representation that Augur uses internally for fixed-point numbers!  augur.js handles all fixed-point conversions for you.  Do *not* send the Loch Ness monster 3.50*2^64 CASH.  (Probably don't even give him 3.50, but that's a debate for another time.)
 
-### Asynchronous RPC
+## Asynchronous RPC
 
 By default, augur.js is fully asynchronous, although by setting `Augur.async = false` it can be forced to make synchronous HTTP RPC requests.  This is generally not recommended, especially if augur.js is running in the browser, as synchronous RPC requests block the main JS thread (which essentially freezes the browser).  All of augur.js's methods that involve an RPC request take an optional callback function as their last parameter.
 
-### Ethereum JSON-RPC bindings
+## Ethereum JSON-RPC bindings
 
 augur.js sends [JSON-RPC](https://github.com/ethereum/wiki/wiki/JSON-RPC) commands to Ethereum.  Its lower-level RPC functions are described here. 
 
-#### Basic RPC commands
+### Basic RPC commands
 
 The `raw` method allows you to send in raw commands (similar to sending in via cURL):
 ```
@@ -207,7 +204,7 @@ Many of the commonly used functions have named wrappers.  For example, `blockNum
 217153
 ```
 
-#### Uploading and downloading contracts
+### Uploading and downloading contracts
 
 `publish` broadcasts (uploads) a compiled contract to the network, and returns the contract's address:
 ```javascript
@@ -220,7 +217,7 @@ Many of the commonly used functions have named wrappers.  For example, `blockNum
 "0x7c010000000000000000000000000000000000000000000000000000000060003504636ffa1caa81141560415760043560405260026040510260605260206060f35b50"
 ```
 
-#### Running contract functions
+### Running contract functions
 
 `invoke` executes a function in a contract already on the network:
 ```javascript

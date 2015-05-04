@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * augur.js tests
+ * augur.js unit tests
  * @author Jack Peterson (jack@tinybike.net)
  */
 (function () {
@@ -103,8 +103,6 @@
             if (tx.send === undefined) {
                 tx.send = false;
                 runtest(tx, expected, apply);
-                // tx.send = true;
-                // runtest(tx, expected, apply);
             } else {
                 runtest(tx, expected, apply);
             }
@@ -189,7 +187,7 @@
 
         print("  contract abi data serialization") // no rpc => always synchronous
         tx = {
-            to: constants.contracts.examples.ten,
+            to: constants.examples.ten,
             function: "ten",
             send: false,
             returns: "number"
@@ -202,7 +200,7 @@
         };
         abi_test(tx, "0xde5f72fd");
         tx = {
-            to: constants.contracts.examples.mul2,
+            to: constants.examples.mul2,
             function: "double",
             signature: "i",
             params: [3],
@@ -210,7 +208,7 @@
         };
         abi_test(tx, "0x6ffa1caa0000000000000000000000000000000000000000000000000000000000000003");
         tx = {
-            to: constants.contracts.examples.multiplier,
+            to: constants.examples.multiplier,
             function: "multiply",
             signature: "ii",
             params: [2, 3],
@@ -303,7 +301,7 @@
         // No parameters
         // curl --data '{"jsonrpc":"2.0","method":"eth_call","params":[{"from":"0x63524e3fe4791aefce1e932bbfb3fdf375bfad89","to":"0x3caf506cf3d5bb16ba2c8f89a6591c5160d69cf3","data":"0x643ceff9"}],"id":1}' http://127.0.0.1:8545
         tx = {
-            to: constants.contracts.examples.ten,
+            to: constants.examples.ten,
             function: "ten",
             send: false,
             returns: "number"
@@ -314,7 +312,7 @@
         // Single integer parameter
         // curl --data '{"jsonrpc":"2.0","method":"eth_call","params":[{"from":"0x63524e3fe4791aefce1e932bbfb3fdf375bfad89","to":"0x5204f18c652d1c31c6a5968cb65e011915285a50","data":"0x6ffa1caa0000000000000000000000000000000000000000000000000000000000000003","gas":"0x2dc6c0"}],"id":1}' http://127.0.0.1:8545
         tx = {
-            to: constants.contracts.examples.mul2,
+            to: constants.examples.mul2,
             function: "double",
             signature: "i",
             params: [3],
@@ -327,7 +325,7 @@
         test(tx, "44242");
         // multiple integer parameters
         tx = {
-            to: constants.contracts.examples.multiplier,
+            to: constants.examples.multiplier,
             function: "multiply",
             signature: "ii",
             params: [2, 3],
@@ -419,7 +417,7 @@
             });
             print("   - getVotePeriod(" + branchId + ")");
             Augur.getVotePeriod(branchId, gteq0);
-            var event_description = "[augur.js testing] " + Math.random().toString(36).substring(4);
+            var event_description = "[augur.js] " + Math.random().toString(36).substring(4);
             print("   - createEvent: \"" + event_description + "\"");
             Augur.createEvent({
                 branchId: branchId,
@@ -431,19 +429,19 @@
                 onSent: is_object,
                 onSuccess: is_object
             });
-            var market_description = "[augur.js testing] " + Math.random().toString(36).substring(4);
-            print("   - createMarket: \"" + market_description + "\"");
-            Augur.createMarket({
-                branchId: branchId,
-                description: market_description,
-                alpha: "0.0079",
-                initialLiquidity: "100",
-                tradingFee: "0.01",
-                events: ["-0x2ae31f0184fa3e11a1517a11e3fc6319cb7c310cee36b20f8e0263049b1f3a6f"],
-                onSent: is_object,
-                onSuccess: is_object,
-                onFailed: is_object
-            });
+            var market_description = "[augur.js] " + Math.random().toString(36).substring(4);
+            // print("   - createMarket: \"" + market_description + "\"");
+            // Augur.createMarket({
+            //     branchId: branchId,
+            //     description: market_description,
+            //     alpha: "0.0079",
+            //     initialLiquidity: "100",
+            //     tradingFee: "0.01",
+            //     events: ["-0x2ae31f0184fa3e11a1517a11e3fc6319cb7c310cee36b20f8e0263049b1f3a6f"],
+            //     onSent: is_object,
+            //     onSuccess: is_object,
+            //     onFailed: is_object
+            // });
             var market_id = "0xb13d98f933cbd602a3d9d4626260077678ab210d1e63b3108b231c1758ff9971";
             var event_id = "0xb2a6de45f349b5ac384b01a785e640f519f0a8597ab2031c964c7f572d96b13c";
             Augur.getMarketEvents(market_id, function (r) {

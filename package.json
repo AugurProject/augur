@@ -17,7 +17,7 @@
     "xhr2": false
   },
   "engines": {
-    "node": "0.10.x"
+    "node": ">= 0.10.x"
   },
   "repository": {
     "type": "git",

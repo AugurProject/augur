@@ -112,19 +112,19 @@ var Augur = (function (augur, async) {
         whitelist: "0x21dbe4a05a9174e96e6c6bc1e05a7096338cb0d6",
 
         // Functions
-        checkQuorum: "0x4eaa7a8b00107bbc11909e327e163b067fd3cfb9",
-        buyAndSellShares: "0xfde83609d8bd5e4bfd6479af2b1cb28c85f0bce7",
+        checkQuorum: "0xe9aaab4aff0cf06e62d2442ae0f68660882e5a67",
+        buyAndsellShares: "0x9dff8b4278f05e37f00d7461b175e092ae611380",
         createBranch: "0x5c955b31ac72c83ffd7562aed4e2100b2ba09a3b",
-        p2pWagers: "",
+        p2pWagers: "0x7c2bbb3045fd8b39d28f4b4a5682dbec9a710771",
         sendReputation: "0x049487d32b727be98a4c8b58c4eab6521791f288",
         transferShares: "0x78da82256f5775df22eee51096d27666772b592d",
-        makeReports: "0x72f249c06299308e5b7aaaa4d155ed61a1f66671",
+        makeReports: "0x32bfb5724874b209193aa0fca45b1f337b27e9b5",
         createEvent: "0xcae6d5912033d66650894e2ae8c2f7502eaba15c",
         createMarket: "0x386acc6b970aea7c6f9b87e7622d2ae7c18d377a",
-        closeMarket: "",
+        closeMarket: "0xb0e93253a008ce80f4c26152da3869225c716ce3",
         dispatch: "0x9bb646e3137f1d43e4a31bf8a6377c299f26727d",
 
-        //Consensus
+        // Consensus
         statistics: "0x0cb1277671d162b2f5c81e9435744f63768398d0",
         interpolate: "0xeb51564b43068745ae80136fcefe3ca532617a87",
         center: "0xcff950797165df23550b6d79fa98e55d4c250fbe",
