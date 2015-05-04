@@ -436,6 +436,26 @@
                 print("   - getVotePeriod(" + branch_id + ") -> " + r);
                 assert(parseInt(r) >= 2);
             });
+            Augur.getStep(branch_id, function (r) {
+                print("   - getStep(" + branch_id + ") -> " + r);
+                assert(parseInt(r) >= 0 && parseInt(r) <= 9);
+            });
+            Augur.getNumMarkets(branch_id, function (r) {
+                print("   - getNumMarkets(" + branch_id + ") -> " + r);
+                assert(parseInt(r) >= 120);
+            });
+            Augur.getMinTradingFee(branch_id, function (r) {
+                print("   - getMinTradingFee(" + branch_id + ") -> " + r);
+                assert(parseFloat(r) >= 0.0 && parseFloat(r) <= 1.0);
+            });
+            Augur.getNumBranches(function (r) {
+                print("   - getNumBranches() -> " + r);
+                assert(parseInt(r) >= 3);
+            });
+            Augur.getBranch(branch_number, function (r) {
+                print("   - getBranch(" + branch_number + ") -> " + r);
+                assert(r === "0x7f5026f174d59f6f01ff3735773b5e3adef0b9c98f8a8e84e0000f034cfbf35a");
+            });
 
             // events.se
             Augur.getEventInfo(event_id, function (r) {

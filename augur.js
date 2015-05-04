@@ -888,6 +888,39 @@ var Augur = (function (augur, async) {
         signature: "i",
         returns: "number"
     };
+    augur.tx.getStep = {
+        from: augur.coinbase,
+        to: augur.contracts.branches,
+        function: "getStep",
+        signature: "i",
+        returns: "number"
+    };
+    augur.tx.getNumMarkets = {
+        from: augur.coinbase,
+        to: augur.contracts.branches,
+        function: "getNumMarkets",
+        signature: "i",
+        returns: "number"
+    };
+    augur.tx.getMinTradingFee = {
+        from: augur.coinbase,
+        to: augur.contracts.branches,
+        function: "getMinTradingFee",
+        signature: "i",
+        returns: "unfix"
+    };
+    augur.tx.getNumBranches = {
+        from: augur.coinbase,
+        to: augur.contracts.branches,
+        function: "getNumBranches",
+        returns: "number"
+    };
+    augur.tx.getBranch = {
+        from: augur.coinbase,
+        to: augur.contracts.branches,
+        function: "getBranch",
+        signature: "i"
+    };
     augur.getBranches = function (onSent) {
         augur.invoke(augur.tx.getBranches, onSent);
     };
@@ -905,6 +938,29 @@ var Augur = (function (augur, async) {
         // branch: sha256 hash id
         augur.tx.getVotePeriod.params = branch;
         augur.invoke(augur.tx.getVotePeriod, onSent);
+    };
+    augur.getStep = function (branch, onSent) {
+        // branch: sha256
+        augur.tx.getStep.params = branch;
+        augur.invoke(augur.tx.getStep, onSent);
+    };
+    augur.getNumMarkets = function (branch, onSent) {
+        // branch: sha256
+        augur.tx.getNumMarkets.params = branch;
+        augur.invoke(augur.tx.getNumMarkets, onSent);
+    };
+    augur.getMinTradingFee = function (branch, onSent) {
+        // branch: sha256
+        augur.tx.getMinTradingFee.params = branch;
+        augur.invoke(augur.tx.getMinTradingFee, onSent);
+    };
+    augur.getNumBranches = function (onSent) {
+        augur.invoke(augur.tx.getNumBranches, onSent);
+    };
+    augur.getBranch = function (branchNumber, onSent) {
+        // branchNumber: integer
+        augur.tx.getBranch.params = branchNumber;
+        augur.invoke(augur.tx.getBranch, onSent);
     };
 
     // events.se
