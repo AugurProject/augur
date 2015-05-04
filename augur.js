@@ -74,23 +74,39 @@ var Augur = (function (augur, async) {
     augur.id = 1;
     augur.data = {};
 
-    // createMarket error codes
+    // contract error codes
     augur.ERRORS = {
-        "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
-            code: -1,
-            message: "bad input or parent doesn't exist"
+        closeMarket: {
+            "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
+                code: -1,
+                message: "market has no cash anyway"
+            },
+            "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe": {
+                code: -2,
+                message: "0 outcome"
+            },
+            "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd": {
+                code: -3,
+                message: "outcome indeterminable"
+            }
         },
-        "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe": {
-            code: -2,
-            message: "too many events"
-        },
-        "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd": {
-            code: -3,
-            message: "too many outcomes"
-        },
-        "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc": {
-            code: -4,
-            message: "not enough money or market already exists"
+        createMarket: {
+            "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
+                code: -1,
+                message: "bad input or parent doesn't exist"
+            },
+            "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe": {
+                code: -2,
+                message: "too many events"
+            },
+            "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd": {
+                code: -3,
+                message: "too many outcomes"
+            },
+            "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc": {
+                code: -4,
+                message: "not enough money or market already exists"
+            }
         }
     };
 
@@ -122,7 +138,7 @@ var Augur = (function (augur, async) {
         createEvent: "0xcae6d5912033d66650894e2ae8c2f7502eaba15c",
         createMarket: "0x386acc6b970aea7c6f9b87e7622d2ae7c18d377a",
         closeMarket: "0xb0e93253a008ce80f4c26152da3869225c716ce3",
-        dispatch: "0x9bb646e3137f1d43e4a31bf8a6377c299f26727d",
+        dispatch: "0x6c2af20ef783f0f16bc0eb499462b888e57c9fbf",
 
         // Consensus
         statistics: "0x0cb1277671d162b2f5c81e9435744f63768398d0",
@@ -769,6 +785,8 @@ var Augur = (function (augur, async) {
 
     // Augur transaction objects
     augur.tx = {
+
+        // cash.se
         getCashBalance: {
             from: augur.coinbase,
             to: augur.contracts.cash,
@@ -777,6 +795,21 @@ var Augur = (function (augur, async) {
             params: augur.coinbase,
             returns: "unfix"
         },
+        sendCash: {
+            from: augur.coinbase,
+            to: augur.contracts.cash,
+            function: "send",
+            send: true,
+            signature: "ii"
+        },
+        cashFaucet: {
+            from: augur.coinbase,
+            to: augur.contracts.cash,
+            function: "faucet",
+            send: true
+        },
+
+        // info.se
         getCreator: {
             from: augur.coinbase,
             to: augur.contracts.info,
@@ -790,6 +823,75 @@ var Augur = (function (augur, async) {
             signature: "i",
             returns: "unfix"
         },
+        getDescription: {
+            from: augur.coinbase,
+            to: augur.contracts.info,
+            function: "getDescription",
+            signature: "i",
+            returns: "string"
+        },
+
+        // branches.se
+        getBranches: {
+            from: augur.coinbase,
+            to: augur.contracts.branches,
+            function: "getBranches",
+            returns: "hash[]"
+        },
+        getMarkets: {
+            from: augur.coinbase,
+            to: augur.contracts.branches,
+            function: "getMarkets",
+            signature: "i",
+            returns: "hash[]"
+        },
+        getVotePeriod: {
+            from: augur.coinbase,
+            to: augur.contracts.branches,
+            function: "getVotePeriod",
+            signature: "i",
+            returns: "number"
+        },
+        getPeriodLength: {
+            from: augur.coinbase,
+            to: augur.contracts.branches,
+            function: "getPeriodLength",
+            signature: "i",
+            returns: "number"
+        },
+
+        // events.se
+        getExpiration: {
+            from: augur.coinbase,
+            to: augur.contracts.events,
+            function: "getExpiration",
+            signature: "i",
+            returns: "number"
+        },
+        getEventInfo: {
+            from: augur.coinbase,
+            to: augur.contracts.events,
+            function: "getEventInfo",
+            signature: "i",
+            returns: "mixed[]"
+        },
+        getBranch: {
+            from: augur.coinbase,
+            to: augur.contracts.events,
+            function: "getBranch",
+            signature: "i"
+        },
+
+        // expiringEvents.se
+        getEvents: {
+            from: augur.coinbase,
+            to: augur.contracts.expiringEvents,
+            function: "getEvents",
+            signature: "ii",
+            returns: "hash[]"
+        },
+
+        // markets.se
         getSimulatedBuy: {
             from: augur.coinbase,
             to: augur.contracts.markets,
@@ -803,26 +905,6 @@ var Augur = (function (augur, async) {
             function: "getSimulatedSell",
             signature: "iii",
             returns: "number[]"
-        },
-        getRepBalance: {
-            from: augur.coinbase,
-            to: augur.contracts.reporting,
-            function: "getRepBalance",
-            signature: "ii",
-            returns: "unfix"
-        },
-        getBranches: {
-            from: augur.coinbase,
-            to: augur.contracts.branches,
-            function: "getBranches",
-            returns: "hash[]"
-        },
-        getMarkets: {
-            from: augur.coinbase,
-            to: augur.contracts.branches,
-            function: "getMarkets",
-            signature: "i",
-            returns: "hash[]"
         },
         getMarketInfo: {
             from: augur.coinbase,
@@ -845,20 +927,6 @@ var Augur = (function (augur, async) {
             signature: "i",
             returns: "number"
         },
-        getExpiration: {
-            from: augur.coinbase,
-            to: augur.contracts.events,
-            function: "getExpiration",
-            signature: "i",
-            returns: "number"
-        },
-        getEventInfo: {
-            from: augur.coinbase,
-            to: augur.contracts.events,
-            function: "getEventInfo",
-            signature: "i",
-            returns: "mixed[]"
-        },
         getMarketNumOutcomes: {
             from: augur.coinbase,
             to: augur.contracts.markets,
@@ -870,12 +938,6 @@ var Augur = (function (augur, async) {
             from: augur.coinbase,
             to: augur.contracts.markets,
             function: "getBranchID",
-            signature: "i"
-        },
-        getNonce: {
-            from: augur.coinbase,
-            to: augur.contracts.buyAndSellShares,
-            function: "getNonce",
             signature: "i"
         },
         getCurrentParticipantNumber: {
@@ -906,33 +968,6 @@ var Augur = (function (augur, async) {
             signature: "ii",
             returns: "unfix"
         },
-        getEvents: {
-            from: augur.coinbase,
-            to: augur.contracts.expiringEvents,
-            function: "getEvents",
-            signature: "ii",
-            returns: "hash[]"
-        },
-        getVotePeriod: {
-            from: augur.coinbase,
-            to: augur.contracts.branches,
-            function: "getVotePeriod",
-            signature: "i",
-            returns: "number"
-        },
-        getPeriodLength: {
-            from: augur.coinbase,
-            to: augur.contracts.branches,
-            function: "getPeriodLength",
-            signature: "i",
-            returns: "number"
-        },
-        getBranch: {
-            from: augur.coinbase,
-            to: augur.contracts.events,
-            function: "getBranch",
-            signature: "i"
-        },
         getWinningOutcomes: {
             from: augur.coinbase,
             to: augur.contracts.markets,
@@ -940,18 +975,14 @@ var Augur = (function (augur, async) {
             signature: "i",
             returns: "hash[]"
         },
-        sendCash: {
+
+        // reporting.se
+        getRepBalance: {
             from: augur.coinbase,
-            to: augur.contracts.cash,
-            function: "send",
-            send: true,
-            signature: "ii"
-        },
-        cashFaucet: {
-            from: augur.coinbase,
-            to: augur.contracts.cash,
-            function: "faucet",
-            send: true
+            to: augur.contracts.reporting,
+            function: "getRepBalance",
+            signature: "ii",
+            returns: "unfix"
         },
         reputationFaucet: {
             from: augur.coinbase,
@@ -959,26 +990,13 @@ var Augur = (function (augur, async) {
             function: "faucet",
             send: true
         },
-        getDescription: {
+
+        // buy&SellShares.se
+        getNonce: {
             from: augur.coinbase,
-            to: augur.contracts.info,
-            function: "getDescription",
-            signature: "i",
-            returns: "string"
-        },
-        createEvent: {
-            from: augur.coinbase,
-            to: augur.contracts.createEvent,
-            function: "createEvent",
-            signature: "isiiii",
-            send: true
-        },
-        createMarket: {
-            from: augur.coinbase,
-            to: augur.contracts.createMarket,
-            function: "createMarket",
-            signature: "isiiia",
-            send: true
+            to: augur.contracts.buyAndSellShares,
+            function: "getNonce",
+            signature: "i"
         },
         buyShares: {
             from: augur.coinbase,
@@ -996,11 +1014,59 @@ var Augur = (function (augur, async) {
             returns: "number",
             send: true
         },
+
+        // createBranch.se
+
+        // p2pWagers.se
+
+        // sendReputation.se
         sendReputation: {
             from: augur.coinbase,
             to: augur.contracts.sendReputation,
             function: "sendReputation",
             signature: "iii",
+            send: true
+        },
+
+        // transferShares.se
+
+        // makeReports.se
+
+        // createEvent.se
+        createEvent: {
+            from: augur.coinbase,
+            to: augur.contracts.createEvent,
+            function: "createEvent",
+            signature: "isiiii",
+            send: true
+        },
+
+        // createMarket.se
+        createMarket: {
+            from: augur.coinbase,
+            to: augur.contracts.createMarket,
+            function: "createMarket",
+            signature: "isiiia",
+            send: true
+        },
+
+        // closeMarket.se
+        closeMarket: {
+            from: augur.coinbase,
+            to: augur.contracts.closeMarket,
+            function: "closeMarket",
+            signature: "ii",
+            returns: "number",
+            send: true
+        },
+
+        // dispatch.se
+        dispatch: {
+            from: augur.coinbase,
+            to: augur.contracts.dispatch,
+            function: "dispatch",
+            signature: "i",
+            returns: "number",
             send: true
         }
     };
@@ -1324,6 +1390,17 @@ var Augur = (function (augur, async) {
         // value: number -> fixed-point
         augur.tx.sendReputation.params = [branch, receiver, augur.fix(value)];
         augur.invoke(augur.tx.sendReputation, onSent);
+    };
+    augur.closeMarket = function (branch, market, onSent) {
+        // branch: sha256
+        // market: sha256
+        augur.tx.closeMarket.params = [branch, market];
+        augur.invoke(augur.tx.closeMarket, onSent);
+    };
+    augur.dispatch = function (branchNumber, onSent) {
+        // branchNumber: integer
+        augur.tx.dispatch.params = branchNumber;
+        augur.invoke(augur.tx.dispatch, onSent);
     };
 
     return augur;
