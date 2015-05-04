@@ -30,9 +30,9 @@ npm install
 grunt browserify:build
 ```
 
-### Running augur-client
+### Running augur-clint
 
-`node server.js`
+`npm start`
 
 [http://localhost:8080](http://localhost:8080)
 
