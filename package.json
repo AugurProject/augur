@@ -46,6 +46,7 @@
     "react": "^0.13.1",
     "react-bootstrap": "^0.20.3",
     "react-date-picker": "^2.0.18",
+    "react-pager": "^1.1.1",
     "react-router": "^0.13.2",
     "reactify": "^1.1.0",
     "web3": "^0.3.4"

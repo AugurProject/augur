@@ -403,11 +403,6 @@ EthereumClient.prototype.addEvent = function(params, onSuccess) {
     var maxValue = params.maxValue || 2;
     var numOutcomes = params.numOutcomes || 2;
 
-    //var contract = this.getContract('createEvent');
-    //var newEventId = contract.createEvent.call(
-    //  branchId, description, expirationBlock, minValue, maxValue, numOutcomes, {gas: 300000}
-    //);
-
     Augur.createEvent({
 
       branchId: branchId,
@@ -429,8 +424,6 @@ EthereumClient.prototype.addEvent = function(params, onSuccess) {
         if (onSuccess) onSuccess(newEvent);
       }
     });
-
-    //return newEventId;
 };
 
 EthereumClient.prototype.addMarket = function(params, onSuccess) {
@@ -450,19 +443,16 @@ EthereumClient.prototype.addMarket = function(params, onSuccess) {
       tradingFee: tradingFee,
       events: events,
 
-      // sent callback
       onSent: function (newMarket) {
         utilities.debug("submitted new market "+ newMarket.id);
       },
 
-      // success callback
       onSuccess: function (newMarket) {
         utilities.debug("tx: " + newMarket.txhash);
         utilities.log('new market successfully added');
         if (onSuccess) onSuccess();
       },
-
-      // failed callback
+      
       onFailed: function (newMarket) {
         utilities.error("error adding new market")
         utilities.error(newMarket);

@@ -267,7 +267,7 @@ nav .navbar-right li div {
 
 #main h3 {
     margin-top: 0px;
-    margin-bottom: 20px;
+    margin-bottom: 0px;
     font-size: 22px;
 }
 #main h3 .subheading {
@@ -384,6 +384,19 @@ nav .navbar-right li div {
 }
 .markets .market-pane {
     margin-bottom: 20px;
+}
+#branch h4 {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+#branch nav {
+    margin-top: 0px;
+    float: right;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 12px;
+}
+#branch nav ul {
+    margin: 0;
 }
 
 #event {
