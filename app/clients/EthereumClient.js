@@ -324,6 +324,11 @@ EthereumClient.prototype.getMarkets = function (branchId) {
     var author = infoContract.getCreator.call(marketId);
     var creationFee = fromFixedPoint(infoContract.getCreationFee.call(marketId));
 
+    // add spammy test markets to blacklist
+    // if (description.indexOf("[augur.js]") > -1) {
+    //   console.log(marketId.toString(16));
+    // }
+
     // calc end date from first events expiration
     var endDate;
     if (events.length) {
