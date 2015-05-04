@@ -102,7 +102,7 @@ var MarketPane = React.createClass({
     var formattedDate = market.endDate ? moment(market.endDate).format('MMM Do, YYYY') : '-'
 
     return (
-      <Link to='market' params={ {marketId: market.id.toString(64)} } className='market-pane'>
+      <Link to='market' params={ {marketId: market.id.toString(16)} } className='market-pane'>
         <h5>{ market.description }</h5>
         <div className='summary'>
           <span>{ market.price.times(100).toPrecision(3) }%</span>

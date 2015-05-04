@@ -21,7 +21,7 @@ var Router = React.createClass({
     var marketState = flux.store('market').getState();
     var account = flux.store('network').getAccount();
 
-    var marketId = new BigNumber(this.props.params.marketId, 64);
+    var marketId = new BigNumber(this.props.params.marketId, 16);
 
     return {
       market: marketState.markets[marketId],
