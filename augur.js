@@ -1072,10 +1072,308 @@ var Augur = (function (augur, async) {
         signature: "ii",
         returns: "hash[]"
     };
+    augur.tx.getNumberEvents = {
+        from: augur.coinbase,
+        to: augur.contracts.expiringEvents,
+        function: "getNumberEvents",
+        signature: "ii",
+        returns: "number"
+    };
+    augur.tx.getEvent = {
+        from: augur.coinbase,
+        to: augur.contracts.expiringEvents,
+        function: "getEvent",
+        signature: "iii"
+    };
+    augur.tx.getTotalRepReported = {
+        from: augur.coinbase,
+        to: augur.contracts.expiringEvents,
+        function: "getTotalRepReported",
+        signature: "ii",
+        returns: "unfix"
+    };
+    augur.tx.getReporterBallot = {
+        from: augur.coinbase,
+        to: augur.contracts.expiringEvents,
+        function: "getReporterBallot",
+        signature: "iii",
+        returns: "number[]"
+    };
+    augur.tx.getReport = {
+        from: augur.coinbase,
+        to: augur.contracts.expiringEvents,
+        function: "getReport",
+        signature: "iiii",
+        returns: "unfix"
+    };
+    augur.tx.getReportHash = {
+        from: augur.coinbase,
+        to: augur.contracts.expiringEvents,
+        function: "getReportHash",
+        signature: "iii"
+    };
+    augur.tx.getVSize = {
+        from: augur.coinbase,
+        to: augur.contracts.expiringEvents,
+        function: "getVSize",
+        signature: "ii",
+        returns: "number"
+    };
+    augur.tx.getReportsFilled = {
+        from: augur.coinbase,
+        to: augur.contracts.expiringEvents,
+        function: "getReportsFilled",
+        signature: "ii",
+        returns: "number[]"
+    };
+    augur.tx.getReportsMask = {
+        from: augur.coinbase,
+        to: augur.contracts.expiringEvents,
+        function: "getReportsMask",
+        signature: "ii",
+        returns: "number[]"
+    };
+    augur.tx.getWeightedCenteredData = {
+        from: augur.coinbase,
+        to: augur.contracts.expiringEvents,
+        function: "getWeightedCenteredData",
+        signature: "ii",
+        returns: "number[]"
+    };
+    augur.tx.getCovarianceMatrixRow = {
+        from: augur.coinbase,
+        to: augur.contracts.expiringEvents,
+        function: "getCovarianceMatrixRow",
+        signature: "ii",
+        returns: "number[]"
+    };
+    augur.tx.getDeflated = {
+        from: augur.coinbase,
+        to: augur.contracts.expiringEvents,
+        function: "getDeflated",
+        signature: "ii",
+        returns: "number[]"
+    };
+    augur.tx.getLoadingVector = {
+        from: augur.coinbase,
+        to: augur.contracts.expiringEvents,
+        function: "getLoadingVector",
+        signature: "ii",
+        returns: "number[]"
+    };
+    augur.tx.getLatent = {
+        from: augur.coinbase,
+        to: augur.contracts.expiringEvents,
+        function: "getLatent",
+        signature: "ii",
+        returns: "unfix"
+    };
+    augur.tx.getScores = {
+        from: augur.coinbase,
+        to: augur.contracts.expiringEvents,
+        function: "getScores",
+        signature: "ii",
+        returns: "number[]"
+    };
+    augur.tx.getSetOne = {
+        from: augur.coinbase,
+        to: augur.contracts.expiringEvents,
+        function: "getSetOne",
+        signature: "ii",
+        returns: "number[]"
+    };
+    augur.tx.getSetTwo = {
+        from: augur.coinbase,
+        to: augur.contracts.expiringEvents,
+        function: "getSetTwo",
+        signature: "ii",
+        returns: "number[]"
+    };
+    augur.tx.returnOld = {
+        from: augur.coinbase,
+        to: augur.contracts.expiringEvents,
+        function: "returnOld",
+        signature: "ii",
+        returns: "number[]"
+    };
+    augur.tx.getNewOne = {
+        from: augur.coinbase,
+        to: augur.contracts.expiringEvents,
+        function: "getNewOne",
+        signature: "ii",
+        returns: "number[]"
+    };
+    augur.tx.getNewTwo = {
+        from: augur.coinbase,
+        to: augur.contracts.expiringEvents,
+        function: "getNewTwo",
+        signature: "ii",
+        returns: "number[]"
+    };
+    augur.tx.getAdjPrinComp = {
+        from: augur.coinbase,
+        to: augur.contracts.expiringEvents,
+        function: "getAdjPrinComp",
+        signature: "ii",
+        returns: "number[]"
+    };
+    augur.tx.getSmoothRep = {
+        from: augur.coinbase,
+        to: augur.contracts.expiringEvents,
+        function: "getSmoothRep",
+        signature: "ii",
+        returns: "number[]"
+    };
+    augur.tx.getOutcomesFinal = {
+        from: augur.coinbase,
+        to: augur.contracts.expiringEvents,
+        function: "getOutcomesFinal",
+        signature: "ii",
+        returns: "number[]"
+    };
     augur.getEvents = function (branch, votePeriod, onSent) {
         // branch: sha256 hash id
+        // votePeriod: integer
         augur.tx.getEvents.params = [branch, votePeriod];
         augur.invoke(augur.tx.getEvents, onSent);
+    };
+    augur.getNumberEvents = function (branch, votePeriod, onSent) {
+        // branch: sha256
+        // votePeriod: integer
+        augur.tx.getNumberEvents.params = [branch, votePeriod];
+        augur.invoke(augur.tx.getNumberEvents, onSent);
+    };
+    augur.getEvent = function (branch, votePeriod, eventIndex, onSent) {
+        // branch: sha256
+        // votePeriod: integer
+        augur.tx.getEvent.params = [branch, votePeriod, eventIndex];
+        augur.invoke(augur.tx.getEvent, onSent);
+    };
+    augur.getTotalRepReported = function (branch, votePeriod, onSent) {
+        // branch: sha256
+        // votePeriod: integer
+        augur.tx.getTotalRepReported.params = [branch, votePeriod];
+        augur.invoke(augur.tx.getTotalRepReported, onSent);
+    };
+    augur.getReporterBallot = function (branch, votePeriod, reporterID, onSent) {
+        // branch: sha256
+        // votePeriod: integer
+        augur.tx.getReporterBallot.params = [branch, votePeriod, reporterID];
+        augur.invoke(augur.tx.getReporterBallot, onSent);
+    };
+    augur.getReport = function (branch, votePeriod, reporter, onSent) {
+        // branch: sha256
+        // votePeriod: integer
+        augur.tx.getReport.params = [branch, votePeriod, reporter];
+        augur.invoke(augur.tx.getReport, onSent);
+    };
+    augur.getReportHash = function (branch, votePeriod, reporter, onSent) {
+        // branch: sha256
+        // votePeriod: integer
+        augur.tx.getReportHash.params = [branch, votePeriod, reporter];
+        augur.invoke(augur.tx.getReportHash, onSent);
+    };
+    augur.getVSize = function (branch, votePeriod, onSent) {
+        // branch: sha256
+        // votePeriod: integer
+        augur.tx.getVSize.params = [branch, votePeriod];
+        augur.invoke(augur.tx.getVSize, onSent);
+    };
+    augur.getReportsFilled = function (branch, votePeriod, onSent) {
+        // branch: sha256
+        // votePeriod: integer
+        augur.tx.getReportsFilled.params = [branch, votePeriod];
+        augur.invoke(augur.tx.getReportsFilled, onSent);
+    };
+    augur.getReportsMask = function (branch, votePeriod, onSent) {
+        // branch: sha256
+        // votePeriod: integer
+        augur.tx.getReportsMask.params = [branch, votePeriod];
+        augur.invoke(augur.tx.getReportsMask, onSent);
+    };
+    augur.getWeightedCenteredData = function (branch, votePeriod, onSent) {
+        // branch: sha256
+        // votePeriod: integer
+        augur.tx.getWeightedCenteredData.params = [branch, votePeriod];
+        augur.invoke(augur.tx.getWeightedCenteredData, onSent);
+    };
+    augur.getCovarianceMatrixRow = function (branch, votePeriod, onSent) {
+        // branch: sha256
+        // votePeriod: integer
+        augur.tx.getCovarianceMatrixRow.params = [branch, votePeriod];
+        augur.invoke(augur.tx.getCovarianceMatrixRow, onSent);
+    };
+    augur.getDeflated = function (branch, votePeriod, onSent) {
+        // branch: sha256
+        // votePeriod: integer
+        augur.tx.getDeflated.params = [branch, votePeriod];
+        augur.invoke(augur.tx.getDeflated, onSent);
+    };
+    augur.getLoadingVector = function (branch, votePeriod, onSent) {
+        // branch: sha256
+        // votePeriod: integer
+        augur.tx.getLoadingVector.params = [branch, votePeriod];
+        augur.invoke(augur.tx.getLoadingVector, onSent);
+    };
+    augur.getLatent = function (branch, votePeriod, onSent) {
+        // branch: sha256
+        // votePeriod: integer
+        augur.tx.getLatent.params = [branch, votePeriod];
+        augur.invoke(augur.tx.getLatent, onSent);
+    };
+    augur.getScores = function (branch, votePeriod, onSent) {
+        // branch: sha256
+        // votePeriod: integer
+        augur.tx.getScores.params = [branch, votePeriod];
+        augur.invoke(augur.tx.getScores, onSent);
+    };
+    augur.getSetOne = function (branch, votePeriod, onSent) {
+        // branch: sha256
+        // votePeriod: integer
+        augur.tx.getSetOne.params = [branch, votePeriod];
+        augur.invoke(augur.tx.getSetOne, onSent);
+    };
+    augur.getSetTwo = function (branch, votePeriod, onSent) {
+        // branch: sha256
+        // votePeriod: integer
+        augur.tx.getSetTwo.params = [branch, votePeriod];
+        augur.invoke(augur.tx.getSetTwo, onSent);
+    };
+    augur.returnOld = function (branch, votePeriod, onSent) {
+        // branch: sha256
+        // votePeriod: integer
+        augur.tx.returnOld.params = [branch, votePeriod];
+        augur.invoke(augur.tx.returnOld, onSent);
+    };
+    augur.getNewOne = function (branch, votePeriod, onSent) {
+        // branch: sha256
+        // votePeriod: integer
+        augur.tx.getNewOne.params = [branch, votePeriod];
+        augur.invoke(augur.tx.getNewOne, onSent);
+    };
+    augur.getNewTwo = function (branch, votePeriod, onSent) {
+        // branch: sha256
+        // votePeriod: integer
+        augur.tx.getNewTwo.params = [branch, votePeriod];
+        augur.invoke(augur.tx.getNewTwo, onSent);
+    };
+    augur.getAdjPrinComp = function (branch, votePeriod, onSent) {
+        // branch: sha256
+        // votePeriod: integer
+        augur.tx.getAdjPrinComp.params = [branch, votePeriod];
+        augur.invoke(augur.tx.getAdjPrinComp, onSent);
+    };
+    augur.getSmoothRep = function (branch, votePeriod, onSent) {
+        // branch: sha256
+        // votePeriod: integer
+        augur.tx.getSmoothRep.params = [branch, votePeriod];
+        augur.invoke(augur.tx.getSmoothRep, onSent);
+    };
+    augur.getOutcomesFinal = function (branch, votePeriod, onSent) {
+        // branch: sha256
+        // votePeriod: integer
+        augur.tx.getOutcomesFinal.params = [branch, votePeriod];
+        augur.invoke(augur.tx.getOutcomesFinal, onSent);
     };
 
     // markets.se
