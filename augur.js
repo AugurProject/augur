@@ -1121,7 +1121,7 @@ var Augur = (function (augur, async) {
         signature: "iii",
         returns: "unfix"
     };
-    augur.tx.price: {
+    augur.tx.price = {
         from: augur.coinbase,
         to: augur.contracts.markets,
         function: "price",
