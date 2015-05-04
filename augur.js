@@ -793,7 +793,7 @@ var Augur = (function (augur, async) {
         function: "balance",
         signature: "i",
         params: augur.coinbase,
-        returns: "unfix"
+        returns: "number"
     };
     augur.tx.sendCash = {
         from: augur.coinbase,
@@ -1189,13 +1189,87 @@ var Augur = (function (augur, async) {
         augur.invoke(augur.tx.price, onSent);
     };
 
+    augur.tx.getParticipantNumber = {
+        from: augur.coinbase,
+        to: augur.contracts.markets,
+        function: "getParticipantNumber",
+        signature: "ii",
+        returns: "number"
+    };
+    augur.tx.getParticipantID = {
+        from: augur.coinbase,
+        to: augur.contracts.markets,
+        function: "getParticipantID",
+        signature: "ii"
+    };
+    augur.getParticipantNumber = function (market, address, onSent) {
+        // market: sha256
+        // address: ethereum account
+        augur.tx.getParticipantNumber.params = [market, address];
+        augur.invoke(augur.tx.getParticipantNumber, onSent);
+    };
+    augur.getParticipantID = function (market, participantNumber, onSent) {
+        // market: sha256
+        augur.tx.getParticipantID.params = [market, participantNumber];
+        augur.invoke(augur.tx.getParticipantID, onSent);
+    };
+
+    augur.tx.getAlpha = {
+        from: augur.coinbase,
+        to: augur.contracts.markets,
+        function: "getAlpha",
+        signature: "i",
+        returns: "unfix"
+    };
+    augur.tx.getCumScale = {
+        from: augur.coinbase,
+        to: augur.contracts.markets,
+        function: "getCumScale",
+        signature: "i",
+        returns: "unfix"
+    };
+    augur.tx.getTradingPeriod = {
+        from: augur.coinbase,
+        to: augur.contracts.markets,
+        function: "getTradingPeriod",
+        signature: "i",
+        returns: "number"
+    };
+    augur.tx.getTradingFee = {
+        from: augur.coinbase,
+        to: augur.contracts.markets,
+        function: "getTradingFee",
+        signature: "i",
+        returns: "unfix"
+    };
+    augur.getAlpha = function (market, onSent) {
+        // market: sha256
+        augur.tx.getAlpha.params = market;
+        augur.invoke(augur.tx.getAlpha, onSent);
+    };
+    augur.getCumScale = function (market, onSent) {
+        // market: sha256
+        augur.tx.getCumScale.params = market;
+        augur.invoke(augur.tx.getCumScale, onSent);
+    };
+    augur.getTradingPeriod = function (market, onSent) {
+        // market: sha256
+        augur.tx.getTradingPeriod.params = market;
+        augur.invoke(augur.tx.getTradingPeriod, onSent);
+    };
+    augur.getTradingFee = function (market, onSent) {
+        // market: sha256
+        augur.tx.getTradingFee.params = market;
+        augur.invoke(augur.tx.getTradingFee, onSent);
+    };
+
     // reporting.se
     augur.tx.getRepBalance = {
         from: augur.coinbase,
         to: augur.contracts.reporting,
         function: "getRepBalance",
         signature: "ii",
-        returns: "unfix"
+        returns: "number"
     };
     augur.tx.reputationFaucet = {
         from: augur.coinbase,

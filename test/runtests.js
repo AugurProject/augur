@@ -474,7 +474,7 @@
             // TODO getCurrentParticipantNumber
             // TODO getNumEvents
             Augur.getMarketNumOutcomes(market_id, function (r) {
-                print("   - getMarketNumOutcomes(" + market_id + ")");
+                print("   - getMarketNumOutcomes(" + market_id + ") -> " + r);
                 assert(r === "2");
             });
             // TODO getParticipantSharesPurchased
@@ -485,7 +485,25 @@
             });
             Augur.price(market_id, Augur.AGAINST, function (r) {
                 print("   - price(" + market_id + ", " + Augur.AGAINST + ") -> " + r);
-                gteq0(r);
+                assert(parseFloat(r) >= 0.0 && parseFloat(r) <= 1.0);
+            });
+            // TODO getParticipantNumber
+            // TODO getParticipantID
+            Augur.getAlpha(market_id, function (r) {
+                print("   - getAlpha(" + market_id + ") -> " + r);
+                assert(parseFloat(r).toFixed(6) === "0.078125");
+            });
+            Augur.getCumScale(market_id, function (r) {
+                print("   - getCumScale(" + market_id + ") -> " + r);
+                assert(r === "0.00000000000000000005");
+            });
+            Augur.getTradingPeriod(market_id, function (r) {
+                print("   - getTradingPeriod(" + market_id + ") -> " + r);
+                assert(r === "70779157");
+            });
+            Augur.getTradingFee(market_id, function (r) {
+                print("   - getTradingFee(" + market_id + ") -> " + r);
+                assert(r === "10");
             });
 
             // reporting.se
