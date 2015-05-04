@@ -52,6 +52,6 @@ module.exports = {
     markets: '0x75ee234fe5ef1cd493c2af38a2ae7d0d0cba01f5',
     reporting: '0xd1f7f020f24abca582366ec80ce2fef6c3c22233',
     sendReputation: '0x049487d32b727be98a4c8b58c4eab6521791f288',
-    buySellShares: '0xfde83609d8bd5e4bfd6479af2b1cb28c85f0bce7'
+    buySellShares: '0x9dff8b4278f05e37f00d7461b175e092ae611380'
   }
 };
