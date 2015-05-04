@@ -14,8 +14,10 @@ var NetworkActions = {
  
       utilities.warn('failed to connect to ethereum');
 
-      // shutdown all network filters
-      ethereumClient.stopMonitoring();
+      this.dispatch(
+        constants.network.UPDATE_ETHEREUM_STATUS,
+        {ethereumStatus: constants.network.ETHEREUM_STATUS_FAILED}
+      );
 
     } else if ((!networkState.ethereumStatus || networkState.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED) && up) {
 
@@ -28,6 +30,10 @@ var NetworkActions = {
 
       // start basic latest block monitoring
       ethereumClient.startMonitoring(this.flux.actions.network.updateNetwork);
+
+      //this.flux.actions.branch.loadBranches();
+      //this.flux.actions.event.loadEvents();
+      this.flux.actions.market.loadMarkets();
     }
 
     // check yo self

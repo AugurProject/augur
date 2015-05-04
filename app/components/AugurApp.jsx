@@ -34,9 +34,11 @@ var AugurApp = React.createClass({
 
     var flux = this.getFlux();
 
-    // set app status (stopped, loading, running) from config state
-    if (flux.store('config').getState().percentLoaded) {
-      this.setState({status: flux.store('config').getState().percentLoaded === 100 ? 'running' : 'loading'});
+    // set app status (stopped, loading, running) from network & config state
+    if (flux.store('network').getState().ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED) {
+      this.setState({status: 'stopped'});
+    } else {
+      this.setState({status: 'running'});
     }
 
     return {

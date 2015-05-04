@@ -1,6 +1,5 @@
 var _ = require('lodash');
 var Promise = require('es6-promise').Promise;
-var Augur = require('augur.js');
 
 var abi = require('../libs/abi');
 var constants = require('../libs/constants');
@@ -9,6 +8,8 @@ var blacklist = require('../libs/blacklist');
 
 var fromFixedPoint = utilities.fromFixedPoint;
 var toFixedPoint = utilities.toFixedPoint;
+
+var Augur;
 
 function MissingContractError(contractName) {
   this.name = 'MissingContractError';
@@ -32,6 +33,13 @@ function EthereumClient(host) {
   _.defaults(this.addresses, constants.addresses);
 
   this.web3.setProvider(new web3.providers.HttpProvider('http://'+host));
+
+  // hacking around agressive Augur
+  try {
+    Augur = require('augur.js');
+  } catch (err) {
+    
+  }
 }
 
 EthereumClient.prototype.isAvailable = function() {

@@ -10,11 +10,9 @@ var ConfigActions = {
     var configState = this.flux.store('config').getState();
     var ethereumClient = window.ethereumClient = configState.ethereumClient || new EthereumClient(configState.host);
 
-    if (!ethereumClient) {
-      this.dispatch(constants.config.UPDATE_ETHEREUM_CLIENT_FAILED);
-      return;
-    }
-
+    // TODO: refactor this config state
+    // EthereumClient is now a class interface that does not fail.  
+    // network status serves this purpose
     this.dispatch(constants.config.UPDATE_ETHEREUM_CLIENT_SUCCESS, {
       ethereumClient: ethereumClient
     });
@@ -24,16 +22,6 @@ var ConfigActions = {
 
     this.flux.actions.config.updateEthereumClient();
     this.flux.actions.network.checkNetwork();
-
-    // just setting this to 100 for now
-    this.dispatch(constants.config.UPDATE_PERCENT_LOADED, {
-      percentLoaded: 100
-    });
-
-    this.flux.actions.network.updateNetwork();
-    //this.flux.actions.branch.loadBranches();
-    //this.flux.actions.event.loadEvents();
-    this.flux.actions.market.loadMarkets();
   }
 };
 
