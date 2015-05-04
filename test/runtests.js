@@ -369,8 +369,12 @@
 
         if (Augur.async) {
 
-            var amount = 1;
-            var branchId = 1010101;
+            var amount = "1";
+            var branch_id = "1010101";
+            var branch_number = "1";
+            var participant_id = constants.accounts.jack;
+            var participant_number = "1";
+            var outcome = Augur.NO.toString();
             var event_id = "0xb2a6de45f349b5ac384b01a785e640f519f0a8597ab2031c964c7f572d96b13c";
             var market_id = "0xb13d98f933cbd602a3d9d4626260077678ab210d1e63b3108b231c1758ff9971";
             var market_id2 = "0x97d63d7567b1fc41c19296d959eba0e7df4900bf2d197c6b7b746d864fdde421";
@@ -417,15 +421,20 @@
                 assert(r.length >= 3);
                 is_array(r);
             });
-            Augur.getMarkets(branchId, function (r) {
-                print("   - getMarkets(" + branchId.toString() + ")");
+            Augur.getMarkets(branch_id, function (r) {
+                print("   - getMarkets(" + branch_id.toString() + ")");
                 is_array(r);
+                assert(r.length > 1);
+                assert(r[0] === "0x00000000000000000000000000000000000000000000000000000000000000e8");
+                assert(r[1] === "0x00000000000000000000000000000000000000000000000000000000000000e8");
             });
-            // TODO getPeriodLength
-            
-            Augur.getVotePeriod(branchId, function (r) {
-                print("   - getVotePeriod(" + branchId + ")");
-                gteq0(r);
+            Augur.getPeriodLength(branch_id, function (r) {
+                print("   - getPeriodLength(" + branch_id + ") -> " + r);
+                assert(r === "20");
+            });
+            Augur.getVotePeriod(branch_id, function (r) {
+                print("   - getVotePeriod(" + branch_id + ") -> " + r);
+                assert(parseInt(r) >= 2);
             });
 
             // events.se
@@ -449,13 +458,19 @@
             // TODO getEvents
 
             // markets.se
-            Augur.getSimulatedBuy(market_id, Augur.AGAINST, amount, function (r) {
-                print("   - getSimulatedBuy(" + market_id + ", " + Augur.AGAINST + ", " + amount + ")");
+            Augur.getSimulatedBuy(market_id, outcome, amount, function (r) {
+                print("   - getSimulatedBuy(" + market_id + ", " + outcome + ", " + amount + ")");
                 is_array(r);
+                assert(r.length === 2);
+                gteq0(r[0]);
+                gteq0(r[1]);
             });
-            Augur.getSimulatedSell(market_id, Augur.AGAINST, amount, function (r) {
-                print("   - getSimulatedSell(" + market_id + ", " + Augur.AGAINST + ", " + amount + ")");
+            Augur.getSimulatedSell(market_id, outcome, amount, function (r) {
+                print("   - getSimulatedSell(" + market_id + ", " + outcome + ", " + amount + ")");
+                assert(r.length === 2);
                 is_array(r);
+                gteq0(r[0]);
+                gteq0(r[1]);
             });
             Augur.getMarketInfo(market_id, function (r) {
                 print("   - getMarketInfo(" + market_id + ")");
@@ -470,22 +485,44 @@
                 assert(r.constructor === Array);
                 assert(array_equal(r, ['0xd51ce0fe7b05c1ee5eae85ee1c039ce63483cef311c94df071fd9cfb64e0c591']));
             });
-            // TODO getBranchID
-            // TODO getCurrentParticipantNumber
-            // TODO getNumEvents
+            Augur.getNumEvents(market_id, function (r) {
+                print("   - getNumEvents(" + market_id + ") -> " + r);
+                assert(r === "1");
+            });
+            Augur.getBranchID(market_id, function (r) {
+                print("   - getBranchID(" + market_id + ") -> " + r);
+                assert(r === "0x00000000000000000000000000000000000000000000000000000000000f69b5");
+            });
+            Augur.getCurrentParticipantNumber(market_id, function (r) {
+                print("   - getCurrentParticipantNumber(" + market_id + ") -> " + r);
+                gteq0(r);
+            });
             Augur.getMarketNumOutcomes(market_id, function (r) {
                 print("   - getMarketNumOutcomes(" + market_id + ") -> " + r);
                 assert(r === "2");
             });
-            // TODO getParticipantSharesPurchased
-            // TODO getSharesPurchased
+            Augur.getParticipantSharesPurchased(market_id, participant_number, outcome, function (r) {
+                print("   - getParticipantSharesPurchased(" + market_id + ", " + participant_number + "," + outcome + ") -> " + r);
+                gteq0(r);
+            });
+            Augur.getSharesPurchased(market_id, outcome, function (r) {
+                print("   - getSharesPurchased(" + market_id + ", " + outcome + ") -> " + r);
+                gteq0(r);
+            });
             Augur.getWinningOutcomes(market_id, function (r) {
                 print("   - getWinningOutcomes(" + market_id + ")");
                 is_array(r);
             });
-            Augur.price(market_id, Augur.AGAINST, function (r) {
-                print("   - price(" + market_id + ", " + Augur.AGAINST + ") -> " + r);
+            Augur.price(market_id, outcome, function (r) {
+                print("   - price(" + market_id + ", " + outcome + ") -> " + r);
                 assert(parseFloat(r) >= 0.0 && parseFloat(r) <= 1.0);
+            });
+            Augur.getParticipantNumber(market_id, constants.accounts.jack, function (r) {
+                print("   - getParticipantNumber(" + market_id + ", " + constants.accounts.jack + ") -> " + r);
+                gteq0(r);
+            });
+            Augur.getParticipantID(market_id, participant_number, function (r) {
+                print("   - getParticipantID(" + market_id + ", " + participant_number + ") -> " + r);
             });
             // TODO getParticipantNumber
             // TODO getParticipantID
@@ -507,8 +544,8 @@
             });
 
             // reporting.se
-            Augur.getRepBalance(branchId, Augur.coinbase, function (r) {
-                print("   - getRepBalance(" + branchId.toString() + ") -> " + Augur.unfix(r));
+            Augur.getRepBalance(branch_id, Augur.coinbase, function (r) {
+                print("   - getRepBalance(" + branch_id.toString() + ") -> " + Augur.unfix(r));
                 gteq0(r);
             });
             // TODO reputationFaucet
@@ -532,7 +569,7 @@
             // createEvent.se
             print("   - createEvent: \"" + event_description + "\"");
             Augur.createEvent({
-                branchId: branchId,
+                branchId: branch_id,
                 description: event_description,
                 expDate: 300000,
                 minValue: 1,
@@ -545,7 +582,7 @@
             // createMarket.se
             // print("   - createMarket: \"" + market_description + "\"");
             // Augur.createMarket({
-            //     branchId: branchId,
+            //     branchId: branch_id,
             //     description: market_description,
             //     alpha: "0.0079",
             //     initialLiquidity: "100",
