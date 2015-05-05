@@ -5,7 +5,7 @@
  */
 (function () {
     var Tests = function (async) {
-        var tx;
+        var tx, print, assert, callback;
 
         if (typeof(module) != 'undefined') {
             var BigNumber = require('bignumber.js');
@@ -14,18 +14,22 @@
             var constants = require('./constants');
         }
 
-        var print = console.log;
-        var assert = console.assert;
+        print = console.log;
+        assert = console.assert;
     
         Augur.async = async;
         Augur.BigNumberOnly = false;
 
-        if (async) print("###############################\n"+
-                         "# asynchronous augur.js tests #\n"+
-                         "###############################");
-        else print("##############################\n"+
-                   "# synchronous augur.js tests #\n"+
-                   "##############################");
+        if (async) {
+            print("###############################\n"+
+                  "# asynchronous augur.js tests #\n"+
+                  "###############################");
+            callback = print;
+        } else {
+            print("##############################\n"+
+                  "# synchronous augur.js tests #\n"+
+                  "##############################");
+        }
 
         function report(tx, showsig) {
             var params, output, send, returns;
@@ -394,7 +398,7 @@
             var market_id2 = "0x97d63d7567b1fc41c19296d959eba0e7df4900bf2d197c6b7b746d864fdde421";
             var event_description = "[augur.js] " + Math.random().toString(36).substring(4);
             var market_description = "[augur.js] " + Math.random().toString(36).substring(4);
-            var market_description_long = "[augur.js] abcdefghijklmnopqrstuvwxyz0101001101010101010101010101010101010101010101010101";
+            var market_description_long = "[augur.js] abcdefghijklmnopqrstuvwxyzkaetlkfwagalkjgakhgealkgeajgealgqwMCQeaAjgeajleagjlagai3";
             var reporter_index = "0";
             var reporter_address = constants.accounts.jack;
             var ballot = [Augur.YES, Augur.YES, Augur.NO, Augur.YES];
@@ -786,41 +790,41 @@
             var initialLiquidity = "100";
             var tradingFee = "0.01";
             var events = ["-0x2ae31f0184fa3e11a1517a11e3fc6319cb7c310cee36b20f8e0263049b1f3a6f"];
-            // Augur.createMarket({
-            //     branchId: branch_id,
-            //     description: market_description,
-            //     alpha: alpha,
-            //     initialLiquidity: initialLiquidity,
-            //     tradingFee: tradingFee,
-            //     events: events,
-            //     onSent: function (r) {
-            //         print("   - createMarket: \"" + market_description + "\"");
-            //         print("     -> sent: " + JSON.stringify(r, null, 2));
-            //         is_object(r);
-            //         !is_empty(r);
-            //         is_not_zero(r.id);
-            //         is_not_zero(r.txhash);
-            //     },
-            //     onSuccess: function (r) {
-            //         print("   - createMarket: \"" + market_description + "\"");
-            //         print("     -> success: " + JSON.stringify(r, null, 2));
-            //         is_object(r);
-            //         !is_empty(r);
-            //         is_not_zero(r.id);
-            //         is_not_zero(r.txhash);
-            //         assert(r.numOutcomes === numOutcomes);
-            //         // assert(r.alpha === alpha); // rounding error WTF?
-            //         assert(r.numOutcomes === numOutcomes);
-            //         assert(r.tradingFee === tradingFee);
-            //         assert(r.description.slice(-5) === market_description.slice(-5));
-            //     },
-            //     onFailed: function (r) {
-            //         print("   - createMarket: \"" + market_description + "\"");
-            //         print("     -> failed: " + JSON.stringify(r, null, 2));
-            //         is_object(r);
-            //         !is_empty(r);
-            //     }
-            // });
+            Augur.createMarket({
+                branchId: branch_id,
+                description: market_description,
+                alpha: alpha,
+                initialLiquidity: initialLiquidity,
+                tradingFee: tradingFee,
+                events: events,
+                onSent: function (r) {
+                    print("   - createMarket: \"" + market_description + "\"");
+                    print("     -> sent: " + JSON.stringify(r, null, 2));
+                    is_object(r);
+                    !is_empty(r);
+                    is_not_zero(r.id);
+                    is_not_zero(r.txhash);
+                },
+                onSuccess: function (r) {
+                    print("   - createMarket: \"" + market_description + "\"");
+                    print("     -> success: " + JSON.stringify(r, null, 2));
+                    is_object(r);
+                    !is_empty(r);
+                    is_not_zero(r.id);
+                    is_not_zero(r.txhash);
+                    assert(r.numOutcomes === numOutcomes);
+                    // assert(r.alpha === alpha); // rounding error WTF?
+                    assert(r.numOutcomes === numOutcomes);
+                    assert(r.tradingFee === tradingFee);
+                    assert(r.description.slice(-5) === market_description.slice(-5));
+                },
+                onFailed: function (r) {
+                    print("   - createMarket: \"" + market_description + "\"");
+                    print("     -> failed: " + JSON.stringify(r, null, 2));
+                    is_object(r);
+                    !is_empty(r);
+                }
+            });
 
             // // closeMarket.se
             // Augur.tx.closeMarket.send = false;
@@ -841,6 +845,6 @@
             // Augur.tx.dispatch.returns = undefined;
         }
     };
-    Tests(false);
+    // Tests(false);
     Tests(true);
 })();

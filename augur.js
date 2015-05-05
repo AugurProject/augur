@@ -5,8 +5,7 @@
 var rpc = {
     protocol: "http",
     host: "localhost",
-    port: 8545,
-    async: true
+    port: 8545
 };
 
 var MODULAR = (typeof(module) != 'undefined');
@@ -46,14 +45,11 @@ Array.prototype.loop = function (iterator) {
     next();
 };
 
-var Augur = (function (augur, async) {
+var Augur = (function (augur) {
 
     BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
     var rpc_url = rpc.protocol + "://" + rpc.host + ":" + rpc.port.toString();
-
-    // true for asynchronous (recommended), false for synchronous
-    augur.async = (augur && augur.async) || async;
 
     // default gas: 3M
     augur.default_gas = "0x2dc6c0";
@@ -73,8 +69,7 @@ var Augur = (function (augur, async) {
     augur.ETHER = new BigNumber(10).toPower(18);
     augur.AGAINST = augur.NO = 1; // against: "won't happen"
     augur.ON = augur.YES = 2;     // on: "will happen"
-
-    augur.coinbase = json_rpc(postdata("coinbase"), false);
+    
     augur.id = 1;
     augur.data = {};
 
@@ -113,7 +108,7 @@ var Augur = (function (augur, async) {
             }
         },
         sendReputation: {
-            
+
         }
     };
 
@@ -406,6 +401,15 @@ var Augur = (function (augur, async) {
      * Parse Ethereum response JSON *
      ********************************/
 
+    function strip_returns(tx) {
+        var returns;
+        if (tx && tx.params && tx.params[0] && tx.params[0].returns) {
+            returns = tx.params[0].returns;
+            delete tx.params[0].returns;
+        }
+        return returns;
+    }
+
     function parse_array(string, returns, stride, init) {
         stride = stride || 64;
         var elements = (string.length - 2) / stride;
@@ -455,42 +459,27 @@ var Augur = (function (augur, async) {
         return result;
     }
 
-    function parse(response, returns, async, callback) {
+    function parse(response, returns, callback) {
         var response = JSON.parse(response);
-        if (response.error) {
-            console.error(
-                "[" + response.error.code + "]",
-                response.error.message
-            );
-        } else {
-            if (response.result) {
+        if (response) {
+            if (response.error) {
+                console.error(
+                    "[" + response.error.code + "]",
+                    response.error.message
+                );
+            } else if (response.result) {
                 if (returns) {
-                    response = format_result(returns, response.result);
-                } else {
-                    response = response.result;
+                    response.result = format_result(returns, response.result);
                 }
-            }
-            if (async && response && callback) {
-                callback(response);
-            } else {
-                if (response.result && callback) {
-                    return callback(response);
-                } else if (response.result) {
+                if (callback) {
+                    callback(response.result);
+                } else {
                     return response.result;
-                } else {
-                    return response;
                 }
+            } else { // no result or error field :(
+                return response;
             }
         }
-    }
-
-    function strip_returns(tx) {
-        var returns;
-        if (tx && tx.params && tx.params[0] && tx.params[0].returns) {
-            returns = tx.params[0].returns;
-            delete tx.params[0].returns;
-        }
-        return returns;
     }
 
     augur.clone = function (obj) {
@@ -513,34 +502,33 @@ var Augur = (function (augur, async) {
      * Post JSON-RPC command to Ethereum client *
      ********************************************/
 
-    function json_rpc(command, async, callback) {
+    function json_rpc(command, callback) {
         var returns, req = null;
         returns = strip_returns(command);
         var command = JSON.stringify(command);
-        async = (async !== undefined) ? async : augur.async;
         if (NODE_JS) {
-            if (async) {
+            // asynchronous if callback exists
+            if (callback && callback.constructor === Function) {
                 req = new XMLHttpRequest();
                 req.onreadystatechange = function () {
                     if (req.readyState == 4) {
-                        parse(req.responseText, returns, async, callback);
+                        parse(req.responseText, returns, callback);
                     }
                 };
                 req.open("POST", rpc_url, true);
                 req.setRequestHeader("Content-type", "application/json");
                 req.send(command);
             } else {
-                if (httpsync && httpsync.request && httpsync.request.constructor === Function) {
-                    req = httpsync.request({
-                        protocol: rpc.protocol,
-                        host: rpc.host,
-                        path: '/',
-                        port: rpc.port,
-                        method: 'POST'
-                    });
-                    req.write(command);
-                    return parse((req.end()).body.toString(), returns, async, callback);
-                }
+                // TODO replace httpsync (?)
+                req = httpsync.request({
+                    protocol: rpc.protocol,
+                    host: rpc.host,
+                    path: '/',
+                    port: rpc.port,
+                    method: 'POST'
+                });
+                req.write(command);
+                return parse((req.end()).body.toString(), returns);
             }
         } else {
             if (window.XMLHttpRequest) {
@@ -548,11 +536,10 @@ var Augur = (function (augur, async) {
             } else {
                 req = new ActiveXObject("Microsoft.XMLHTTP");
             }
-            if (async) {
+            if (callback && callback.constructor === Function) {
                 req.onreadystatechange = function () {
                     if (req.readyState == 4) {
-                        console.log(callback.toString());
-                        parse(req.responseText, returns, async, callback);
+                        parse(req.responseText, returns, callback);
                     }
                 };
                 req.open("POST", rpc_url, true);
@@ -562,7 +549,7 @@ var Augur = (function (augur, async) {
                 req.open("POST", rpc_url, false);
                 req.setRequestHeader("Content-type", "application/json");
                 req.send(command);
-                return parse(req.responseText, returns, async, callback);
+                return parse(req.responseText, returns);
             }
         }
     }
@@ -594,67 +581,63 @@ var Augur = (function (augur, async) {
      ******************************/
 
     augur.rpc = function (command, params, f) {
-        return json_rpc(postdata(command, params, "null"), augur.async, f);
+        return json_rpc(postdata(command, params, "null"), f);
     };
     augur.eth = function (command, params, f) {
-        return json_rpc(postdata(command, params), augur.async, f);
+        return json_rpc(postdata(command, params), f);
     };
     augur.net = function (command, params, f) {
-        return json_rpc(postdata(command, params, "net_"), augur.async, f);
+        return json_rpc(postdata(command, params, "net_"), f);
     };
     augur.web3 = function (command, params, f) {
-        return json_rpc(postdata(command, params, "web3_"), augur.async, f);
+        return json_rpc(postdata(command, params, "web3_"), f);
     };
     augur.db = function (command, params, f) {
-        return json_rpc(postdata(command, params, "db_"), augur.async, f);
+        return json_rpc(postdata(command, params, "db_"), f);
     };
     augur.shh = function (command, params, f) {
-        return json_rpc(postdata(command, params, "shh_"), augur.async, f);
+        return json_rpc(postdata(command, params, "shh_"), f);
     };
     augur.sha3 = augur.hash = function (data, f) {
         if (data) {
             if (data.constructor === Array || data.constructor === Object) {
                 data = JSON.stringify(data);
             }
-            return json_rpc(postdata("sha3", data.toString(), "web3_"), augur.async, f);
+            return json_rpc(postdata("sha3", data.toString(), "web3_"), f);
         }
     };
     augur.gasPrice = function (f) {
-        return json_rpc(postdata("gasPrice"), augur.async, f);
+        return json_rpc(postdata("gasPrice"), f);
     };
     augur.blockNumber = function (f) {
-        return json_rpc(postdata("blockNumber"), augur.async, f);
+        return json_rpc(postdata("blockNumber"), f);
     };
     augur.getBalance = augur.balance = function (address, block, f) {
-        return json_rpc(postdata("getBalance", [address || augur.coinbase, block || "latest"]), augur.async, f);
+        return json_rpc(postdata("getBalance", [address || augur.coinbase, block || "latest"]), f);
     };
     augur.getTransactionCount = augur.txCount = function (address, f) {
-        return json_rpc(postdata("getTransactionCount", address || augur.coinbase), augur.async, f);
+        return json_rpc(postdata("getTransactionCount", address || augur.coinbase), f);
     };
     augur.pay = function (from, to, value, f) {
         return this.sendTx({ from: from || augur.coinbase, to: to, value: value }, f);
     };
     augur.getTransactionByHash = augur.getTx = function (hash, f) {
-        return json_rpc(postdata("getTransactionByHash", hash), augur.async, f);
+        return json_rpc(postdata("getTransactionByHash", hash), f);
     };
     augur.peerCount = function (f) {
-        if (augur.async) {
-            return json_rpc(postdata("peerCount", [], "net_"), augur.async, f);
-        } else {
-            return parseInt(json_rpc(postdata("peerCount", [], "net_"), augur.async, f));
-        }
+        return json_rpc(postdata("peerCount", [], "net_"), f);
     };
 
     // execute functions on contracts on the blockchain
     augur.call = function (tx, f) {
         tx.to = tx.to || "";
         tx.gas = (tx.gas) ? "0x" + tx.gas.toString(16) : augur.default_gas;
-        return json_rpc(postdata("call", tx), augur.async, f);
+        return json_rpc(postdata("call", tx), f);
     };
     augur.sendTransaction = augur.sendTx = function (tx, f) {
         tx.to = tx.to || "";
         tx.gas = (tx.gas) ? "0x" + tx.gas.toString(16) : augur.default_gas;
-        return json_rpc(postdata("sendTransaction", tx), augur.async, f);
+        return json_rpc(postdata("sendTransaction", tx), f);
     };
 
     // publish a new contract to the blockchain (from the coinbase account)
@@ -779,7 +762,7 @@ var Augur = (function (augur, async) {
     // Read the code in a contract on the blockchain
     augur.getCode = augur.read = function (address, block, f) {
         if (address) {
-            return json_rpc(postdata("getCode", [address, block || "latest"]), augur.async, f);
+            return json_rpc(postdata("getCode", [address, block || "latest"]), f);
         }
     };
 
@@ -1978,9 +1961,22 @@ var Augur = (function (augur, async) {
         augur.invoke(augur.tx.dispatch, onSent);
     };
 
+    augur.getCoinbase = function (repeat) {
+        try {
+            augur.coinbase = json_rpc(postdata("coinbase"));
+        } catch (e) {
+            var delay = 5000 * repeat;
+            log("connection error, retrying in " + parseInt(delay / 1000).toString() + " seconds");
+            if (repeat) {
+                setTimeout(function () { augur.getCoinbase(repeat + 1); }, delay);
+            }
+        }
+    };
+    augur.getCoinbase(1);
+
     return augur;
 
-})(Augur || {}, rpc.async);
+})(Augur || {});
 
 delete rpc;
 

@@ -20,7 +20,7 @@ After installing, to use it with Node, just require it:
 ```javascript
 > var Augur = require('augur.js');
 ```
-To use augur.js from the browser, include [augur.min.js](https://github.com/AugurProject/augur.js/blob/master/augur.min.js), as well as the [bignumber.js](https://github.com/MikeMcl/bignumber.js) and [js-sha3](https://github.com/emn178/js-sha3) libraries.
+To use augur.js from the browser, just include [augur.min.js](https://github.com/AugurProject/augur.js/blob/master/augur.min.js).  (This minified file includes the [bignumber.js](https://github.com/MikeMcl/bignumber.js) and [js-sha3](https://github.com/emn178/js-sha3) libraries.)
 
 ## Augur API
 
@@ -173,6 +173,8 @@ There are three acceptable ways to pass numerical inputs to the Augur API:
 - stringified numbers (e.g., `"1010101"`)
 
 - hexadecimal strings (e.g., `"0xf69b5"`)
+
+- BigNumbers (e.g., new BigNumber("1010101"))
 
 Note that for primitive JS numbers, you will receive an error from the BigNumber library if your input contains more than 15 significant figures.
 
