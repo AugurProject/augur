@@ -186,6 +186,38 @@ var Augur = (function (augur) {
         }
         return fixed;
     }
+    augur.bignum = function (n) {
+        var bn;
+        try {
+            if (n.constructor === Number) {
+                if (Math.floor(Math.log(n) / Math.log(10) + 1) <= 15) {
+                    bn = new BigNumber(n);
+                } else {
+                    n = n.toString();
+                    try {
+                        bn = new BigNumber(n);
+                    } catch (exc) {
+                        if (n.slice(0,1) === '-') {
+                            bn = new BigNumber("-0x" + n.slice(1));
+                        }
+                        bn = new BigNumber("0x" + n);
+                    }
+                }
+            } else if (n.constructor === String) {
+                try {
+                    bn = new BigNumber(n);
+                } catch (exc) {
+                    if (n.slice(0,1) === '-') {
+                        bn = new BigNumber("-0x" + n.slice(1));
+                    }
+                    bn = new BigNumber("0x" + n);
+                }
+            }
+            return bn;
+        } catch (e) {
+            log("could not create BigNumber for " + n.toString());
+        }
+    }
     augur.fix = function (n, encode) {
         var fixed;
         try {
@@ -256,35 +288,6 @@ var Augur = (function (augur) {
             return unfixed;
         } catch (e) {
             log("could not convert " + n.toString() + " from fixed-point");
-        }
-    }
-    augur.bignum = function (n) {
-        var bn;
-        try {
-            if (n.constructor === Number) {
-                if (Math.floor(Math.log(n) / Math.log(10) + 1) <= 15) {
-                    bn = new BigNumber(n);
-                } else {
-                    n = n.toString();
-                    try {
-                        bn = new BigNumber(n);
-                    } catch (exc) {
-                        if (n.slice(0,1) === '-') {
-                            bn = new BigNumber("-0x" + n.slice(1));
-                        }
-                        bn = new BigNumber("0x" + n);
-                    }
-                }
-            } else if (n.constructor === String) {
-                try {
-                    bn = new BigNumber(n);
-                } catch (exc) {
-                    bn = new BigNumber("0x" + n);
-                }
-            }
-            return bn;
-        } catch (e) {
-            log("could not create BigNumber for " + n.toString());
         }
     }
 
