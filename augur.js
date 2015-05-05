@@ -4,7 +4,7 @@
  */
 var rpc = {
     protocol: "http",
-    host: "127.0.0.1",
+    host: "localhost",
     port: 8545,
     async: true
 };
@@ -111,6 +111,9 @@ var Augur = (function (augur, async) {
                 code: -4,
                 message: "not enough money or market already exists"
             }
+        },
+        sendReputation: {
+            
         }
     };
 
@@ -548,6 +551,7 @@ var Augur = (function (augur, async) {
             if (async) {
                 req.onreadystatechange = function () {
                     if (req.readyState == 4) {
+                        console.log(callback.toString());
                         parse(req.responseText, returns, async, callback);
                     }
                 };
@@ -616,34 +620,13 @@ var Augur = (function (augur, async) {
         }
     };
     augur.gasPrice = function (f) {
-        return json_rpc(postdata("gasPrice"), augur.async, function (data) {
-            var gasPrice = parseInt(data.result);
-            if (f) {
-                return f(gasPrice);
-            } else {
-                return gasPrice;
-            }
-        });
+        return json_rpc(postdata("gasPrice"), augur.async, f);
     };
     augur.blockNumber = function (f) {
-        return json_rpc(postdata("blockNumber"), augur.async, function (data) {
-            var blocknum = parseInt(data.result);
-            if (f) {
-                return f(blocknum);
-            } else {
-                return blocknum;
-            }
-        });
+        return json_rpc(postdata("blockNumber"), augur.async, f);
     };
     augur.getBalance = augur.balance = function (address, block, f) {
-        return json_rpc(postdata("getBalance", [address || augur.coinbase, block || "latest"]), augur.async, f || function (data) {
-            var ether = (new BigNumber(data.result)).dividedBy(new BigNumber(10).toPower(18));
-            if (augur.async) {
-                log(ether);
-            } else {
-                return ether.toNumber();
-            }
-        });
+        return json_rpc(postdata("getBalance", [address || augur.coinbase, block || "latest"]), augur.async, f);
     };
     augur.getTransactionCount = augur.txCount = function (address, f) {
         return json_rpc(postdata("getTransactionCount", address || augur.coinbase), augur.async, f);
