@@ -18,6 +18,7 @@
         var assert = console.assert;
     
         Augur.async = async;
+        Augur.BigNumberOnly = false;
 
         if (async) print("###############################\n"+
                          "# asynchronous augur.js tests #\n"+
@@ -392,7 +393,8 @@
             var market_id = "0xb13d98f933cbd602a3d9d4626260077678ab210d1e63b3108b231c1758ff9971";
             var market_id2 = "0x97d63d7567b1fc41c19296d959eba0e7df4900bf2d197c6b7b746d864fdde421";
             var event_description = "[augur.js] " + Math.random().toString(36).substring(4);
-            var market_description = "[augur.js] " + Math.random().toString(36).substring(4);
+            // var market_description = "[augur.js] " + Math.random().toString(36).substring(4);
+            var market_description = "[augur.js] abcdefghijklmnopqrstuvwxyz0101001101010101010101010101010101010101010101010101";
             var reporter_index = "0";
             var reporter_address = constants.accounts.jack;
             var ballot = [Augur.YES, Augur.YES, Augur.NO, Augur.YES];

@@ -58,6 +58,10 @@ var Augur = (function (augur, async) {
     // default gas: 3M
     augur.default_gas = "0x2dc6c0";
 
+    // if set to true, all numerical results (including hashes)
+    // are returned as BigNumber objects
+    augur.BigNumberOnly = true;
+
     // max number of tx verification attempts
     augur.PINGMAX = 12;
 
@@ -424,14 +428,23 @@ var Augur = (function (augur, async) {
         try {
             if (returns.slice(-2) === "[]") {
                 result = parse_array(result, returns);
-            } else if (returns === "number") {
-                result = augur.bignum(result).toFixed();
-            } else if (returns === "bignumber") {
-                result = augur.bignum(result);
             } else if (returns === "string") {
                 result = decode_hex(result);
-            } else if (returns === "unfix") {
-                result = augur.unfix(result, "string");
+            } else {
+                if (augur.BigNumberOnly) {
+                    if (returns === "number" || returns === "bignumber") {
+                        result = augur.bignum(result);
+                    } else if (returns === "unfix") {
+                        result = augur.unfix(result);
+                    }    
+                }
+                if (returns === "number") {
+                    result = augur.bignum(result).toFixed();
+                } else if (returns === "bignumber") {
+                    result = augur.bignum(result);
+                } else if (returns === "unfix") {
+                    result = augur.unfix(result, "string");
+                }
             }
         } catch (exc) {
             log(exc);
@@ -737,9 +750,22 @@ var Augur = (function (augur, async) {
      * }
      */
     augur.run = augur.execute = augur.invoke = function (tx, f) {
-        var packaged, invocation, result, invoked;
+        var data_abi, packaged, invocation, result, invoked;
         if (tx) {
             var tx = augur.clone(tx);
+            if (tx.params) {
+                if (tx.params.constructor === Array) {
+                    for (var i = 0, len = tx.params.length; i < len; ++i) {
+                        if (tx.params[i].constructor === BigNumber) {
+                            tx.params[i] = tx.params[i].toFixed();
+                        }
+                    }
+                } else {
+                    if (tx.params.constructor === BigNumber) {
+                        tx.params = tx.params.toFixed();
+                    }
+                }
+            }
             data_abi = this.abi_data(tx);
             if (data_abi) {
                 packaged = {
