@@ -39,13 +39,13 @@ var Overview = React.createClass({
       <div>
         <div className="outcome outcome-{ this.props.id }">
           <div className="row">
-            <div className="col-sm-6">
+            <div className="col-sm-7">
               <h3>
                 { getOutcomeName(this.props.id, this.props.outcomeCount) }
                 <span className="price pull-right">{ priceToPercentage(this.props.price) }% <b>({ this.props.sharesPurchased.toString() } shares)</b></span>
               </h3>
             </div>
-            <div className="col-sm-6">
+            <div className="col-sm-5">
               <Link to="buy-outcome" bsSize='large' className="btn btn-success pull-right" params={{marketId: this.props.params.marketId, outcomeId: this.props.id}}>Buy</Link>
             </div>
           </div>
