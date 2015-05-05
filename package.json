@@ -29,7 +29,9 @@
     "url": "https://github.com/AugurProject/augur.js/issues"
   },
   "homepage": "https://github.com/AugurProject/augur.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "crypto": "latest"
+  },
   "author": "Jack Peterson <jack@tinybike.net>",
   "directories": {
     "test": "test"

@@ -10,6 +10,7 @@
         if (typeof(module) != 'undefined') {
             var BigNumber = require('bignumber.js');
             var Augur = require('./../augur');
+            var crypto = require('crypto');
             var constants = require('./constants');
         }
 
@@ -41,7 +42,7 @@
                 }
                 if (params && params.length > 25) params = params.slice(0,25) + "...";
                 send = (tx.send) ? "sendTransaction" : "call";
-                output += send + " " + tx.to + ": " + tx.function + "(" + params + ")";
+                output += send + " " + tx.to + ": " + tx.method + "(" + params + ")";
                 if (!showsig || showsig !== "signature") {
                     output += " -> " + returns;
                 }
@@ -94,6 +95,7 @@
             if (tx && expected) {
                 report(tx, "signature");
                 var res = Augur.abi_data(tx);
+                print(res);
                 check_results(res, expected, apply);
             }
         }
@@ -127,21 +129,32 @@
                 }
             }
         }
-        function gteq0(n) { return (parseFloat(n) >= 0); }
-        function ne0(n) {
-            return (parseInt(n) != 0);
+        function sha512(s) {
+            return crypto.createHash('sha512').update(s).digest('hex');
         }
+        function sha256(s) {
+            return crypto.createHash('sha256').update(s).digest('hex');
+        }
+        function gteq0(n) { return (parseFloat(n) >= 0); }
         function is_array(r) {
             assert(r.constructor === Array);
             assert(r.length > 0);
         }
         function is_object(r) {
-            // print(r);
             assert(r.constructor === Object);
+        }
+        function is_empty(o) {
+            for (var i in o) {
+                if (o.hasOwnProperty(i)) return false;
+            }
+            return true;
         }
         function on_root_branch(r) {
             assert(parseInt(r.branch) === 1010101);
-        };
+        }
+        function is_not_zero(r) {
+            assert(r.id != "0" && r.id != "0x" && r.id != "0x0" && parseInt(r) != 0);
+        }
 
         print("  utility functions");
         var ex_integer = 12345678901;
@@ -188,20 +201,20 @@
         print("  contract abi data serialization") // no rpc => always synchronous
         tx = {
             to: constants.examples.ten,
-            function: "ten",
+            method: "ten",
             send: false,
             returns: "number"
         };
         abi_test(tx, "0x643ceff9");
         tx = {
             to: Augur.contracts.cash,
-            function: "faucet",
+            method: "faucet",
             send: false
         };
         abi_test(tx, "0xde5f72fd");
         tx = {
             to: constants.examples.mul2,
-            function: "double",
+            method: "double",
             signature: "i",
             params: [3],
             returns: "number"
@@ -209,7 +222,7 @@
         abi_test(tx, "0x6ffa1caa0000000000000000000000000000000000000000000000000000000000000003");
         tx = {
             to: constants.examples.multiplier,
-            function: "multiply",
+            method: "multiply",
             signature: "ii",
             params: [2, 3],
             returns: "number"
@@ -217,7 +230,7 @@
         abi_test(tx, "0x3c4308a800000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003");
         tx = {
             to: Augur.contracts.branches,
-            function: "getMarkets",
+            method: "getMarkets",
             signature: "i",
             params: 1010101,
             returns: "array"
@@ -226,7 +239,7 @@
         tx = {
             from: Augur.coinbase,
             to: Augur.contracts.createEvent,
-            function: "createEvent",
+            method: "createEvent",
             signature: "isiiii",
             params: [1010101, "augur ragefest 2015", 250000, 1, 2, 2],
             gas: 2500000
@@ -235,7 +248,7 @@
         tx = {
             from: Augur.coinbase,
             to: Augur.contracts.createMarket,
-            function: "createMarket",
+            method: "createMarket",
             signature: "isiiia",
             params: [
                 1010101,
@@ -254,7 +267,7 @@
         tx = {
             from: Augur.coinbase,
             to: Augur.contracts.createMarket,
-            function: "createMarket",
+            method: "createMarket",
             signature: "isiiia",
             params: [
                 1010101,
@@ -269,20 +282,20 @@
         tx = {
             from: Augur.coinbase,
             to: Augur.contracts.branches,
-            function: "getBranches"
+            method: "getBranches"
         };
         abi_test(tx, "0xc3387858");
         tx = {
             from: Augur.coinbase,
             to: Augur.contracts.branches,
-            function: "getVotePeriod",
+            method: "getVotePeriod",
             signature: "i",
             params: 1010101
         };
         abi_test(tx, "0x7a66d7ca00000000000000000000000000000000000000000000000000000000000f69b5");
         tx = {
             to: Augur.contracts.info,
-            function: "getDescription",
+            method: "getDescription",
             signature: "i",
             send: false,
             params: "0xb2a6de45f349b5ac384b01a785e640f519f0a8597ab2031c964c7f572d96b13c"
@@ -291,7 +304,7 @@
         tx = {
             from: Augur.coinbase,
             to: Augur.contracts.events,
-            function: "getEventInfo",
+            method: "getEventInfo",
             signature: "i",
             params: "0xb2a6de45f349b5ac384b01a785e640f519f0a8597ab2031c964c7f572d96b13c"
         };
@@ -303,7 +316,7 @@
         // curl --data '{"jsonrpc":"2.0","method":"eth_call","params":[{"from":"0x63524e3fe4791aefce1e932bbfb3fdf375bfad89","to":"0x3caf506cf3d5bb16ba2c8f89a6591c5160d69cf3","data":"0x643ceff9"}],"id":1}' http://127.0.0.1:8545
         tx = {
             to: constants.examples.ten,
-            function: "ten",
+            method: "ten",
             send: false,
             returns: "number"
         };
@@ -314,7 +327,7 @@
         // curl --data '{"jsonrpc":"2.0","method":"eth_call","params":[{"from":"0x63524e3fe4791aefce1e932bbfb3fdf375bfad89","to":"0x5204f18c652d1c31c6a5968cb65e011915285a50","data":"0x6ffa1caa0000000000000000000000000000000000000000000000000000000000000003","gas":"0x2dc6c0"}],"id":1}' http://127.0.0.1:8545
         tx = {
             to: constants.examples.mul2,
-            function: "double",
+            method: "double",
             signature: "i",
             params: [3],
             returns: "number"
@@ -327,7 +340,7 @@
         // multiple integer parameters
         tx = {
             to: constants.examples.multiplier,
-            function: "multiply",
+            method: "multiply",
             signature: "ii",
             params: [2, 3],
             returns: "number"
@@ -339,7 +352,7 @@
         if (!Augur.async) print("  augur contract functions (invoke)");
         tx = {
             to: Augur.contracts.cash,
-            function: "faucet",
+            method: "faucet",
             send: false
         };
         test(tx, "0x0000000000000000000000000000000000000000000000000000000000000001");
@@ -348,7 +361,7 @@
         // Single integer parameter, array return value
         tx = {
             to: Augur.contracts.branches,
-            function: "getMarkets",
+            method: "getMarkets",
             signature: "i",
             params: 1010101,
             returns: "array"
@@ -384,17 +397,42 @@
             var reporter_address = constants.accounts.jack;
             var ballot = [Augur.YES, Augur.YES, Augur.NO, Augur.YES];
             var salt = "1337";
+            var receiving_account = constants.accounts.loopy;
+            var vote_period = 1;
 
             // cash.se
-            Augur.getCashBalance(Augur.coinbase, function (r) {
-                print("   - getCashBalance -> " + Augur.unfix(r));
-                gteq0(r);
-            });
-            // TODO sendCash
+            // Augur.getCashBalance(Augur.coinbase, function (r) {
+            //     print("   - getCashBalance(" + Augur.coinbase + ") -> " + r);
+            //     is_not_zero(r);
+            //     Augur.getCashBalance(receiving_account, function (r) {
+            //         print("   - getCashBalance(" + receiving_account + ") -> " + r);
+            //         Augur.tx.sendCash.send = false;
+            //         Augur.tx.sendCash.returns = "number";
+            //         Augur.sendCash(receiving_account, amount, function (r) {
+            //             print("   - sendCash(" + receiving_account + ", " + amount + ") [call] -> " + r);
+            //             is_not_zero(r);
+            //             assert(r === amount);
+            //             Augur.tx.sendCash.send = true;
+            //             Augur.tx.sendCash.returns = undefined;
+            //             Augur.sendCash(receiving_account, amount, function (r) {
+            //                 print("   - sendCash(" + receiving_account + ", " + amount + ") [sendTx] -> " + r);
+            //                 is_not_zero(r);
+            //                 // TODO check that balances actually changed
+            //             });
+            //         });
+            //     });
+            // });
             Augur.tx.cashFaucet.send = false;
+            Augur.tx.cashFaucet.returns = "number";
             Augur.cashFaucet(function (r) {
-                print("   - cashFaucet")
-                assert(parseInt(r) === 1)
+                print("   - cashFaucet() [call]")
+                assert(r === "1")
+            });
+            Augur.tx.cashFaucet.send = true;
+            Augur.tx.cashFaucet.returns = undefined;
+            Augur.cashFaucet(function (r) {
+                print("   - cashFaucet() [sendTx]")
+                is_not_zero(r);
             });
 
             // info.se
@@ -426,7 +464,7 @@
                 is_array(r);
             });
             Augur.getMarkets(branch_id, function (r) {
-                print("   - getMarkets(" + branch_id.toString() + ")");
+                print("   - getMarkets(" + branch_id + ")");
                 is_array(r);
                 assert(r.length > 1);
                 assert(r[0] === "0x00000000000000000000000000000000000000000000000000000000000000e8");
@@ -466,20 +504,31 @@
                 print("   - getEventInfo(" + event_id + ")");
                 on_root_branch(r);
                 assert(r.expirationDate === "250000");
-                assert(r.description === "\u0000\u001fthe augur semi-annual ragefest!");
+                assert(r.description.slice(-9) === "ragefest!");
             });
             // TODO getEventBranch
             Augur.getExpiration(event_id, function (r) {
-                print("   - getExpiration(" + event_id + ")");
+                print("   - getExpiration(" + event_id + ") -> " + r);
                 assert(r === "250000");
             });
             // TODO getOutcome
-            // TODO getMinValue
-            // TODO getMaxValue
-            // TODO getNumOutcomes
+            Augur.getMinValue(event_id, function (r) {
+                print("   - getMinValue(" + event_id + ") -> " + r);
+                assert(r === "1");
+            });
+            Augur.getMaxValue(event_id, function (r) {
+                print("   - getMaxValue(" + event_id + ") -> " + r);
+                assert(r === "2");
+            });
+            Augur.getNumOutcomes(event_id, function (r) {
+                print("   - getNumOutcomes(" + event_id + ") -> " + r);
+                assert(r === "2");
+            });
 
             // expiringEvents.se
-            // TODO getEvents
+            Augur.getEvents(branch_id, vote_period, function (r) {
+                print("   - getEvents(" + branch_id + ", " + vote_period + ") -> " + r);
+            });
 
             // markets.se
             Augur.getSimulatedBuy(market_id, outcome, amount, function (r) {
@@ -498,11 +547,11 @@
             });
             Augur.getMarketInfo(market_id, function (r) {
                 print("   - getMarketInfo(" + market_id + ")");
-                assert(r.description === "\u0000\u0007unicorn");
+                assert(r.description.slice(-7) === "unicorn");
             });
             Augur.getMarketInfo(market_id2, function (r) {
                 print("   - getMarketInfo(" + market_id2 + ")");
-                assert(r.description === "\u0000\u0003lol");
+                assert(r.description.slice(-3) === "lol");
             });
             Augur.getMarketEvents(market_id, function (r) {
                 print("   - getMarketEvents(" + market_id + ")");
@@ -548,8 +597,6 @@
             Augur.getParticipantID(market_id, participant_number, function (r) {
                 print("   - getParticipantID(" + market_id + ", " + participant_number + ") -> " + r);
             });
-            // TODO getParticipantNumber
-            // TODO getParticipantID
             Augur.getAlpha(market_id, function (r) {
                 print("   - getAlpha(" + market_id + ") -> " + r);
                 assert(parseFloat(r).toFixed(6) === "0.078125");
@@ -604,58 +651,186 @@
             Augur.tx.reputationFaucet.send = false;
             Augur.tx.reputationFaucet.returns = "number";
             Augur.reputationFaucet(function (r) {
-                print("   - reputationFaucet(" + branch_id.toString() + ") -> " + r);
+                print("   - reputationFaucet(" + branch_id + ") -> " + r);
                 assert(r === "1");
             });
 
-            // buy&SellShares.se
-            // TODO getNonce
-            // TODO buyShares
-            // TODO sellShares
+            // buy&sellShares.se
+            Augur.getNonce(market_id, function (r) {
+                print("   - getNonce(" + market_id + ") -> " + r);
+                assert(r === "0");
+            });
+            Augur.tx.buyShares.send = false;
+            Augur.buyShares({
+                branchId: branch_id,
+                marketId: market_id,
+                outcome: outcome,
+                amount: amount,
+                nonce: null,
+                onSent: function (r) {
+                    print("   - buyShares(" + branch_id + ", " + market_id + ", " + outcome + ", " + amount + ", null) [call] -> " + r);
+                    is_not_zero(r);
+                }
+            });
+            Augur.tx.sellShares.send = false;
+            Augur.sellShares({
+                branchId: branch_id,
+                marketId: market_id,
+                outcome: outcome,
+                amount: amount,
+                nonce: null,
+                onSent: function (r) {
+                    print("   - sellShares(" + branch_id + ", " + market_id + ", " + outcome + ", " + amount + ", null) [call] -> " + r);
+                    is_not_zero(r);
+                }
+            });
+            Augur.tx.buyShares.send = true;
+            Augur.buyShares({
+                branchId: branch_id,
+                marketId: market_id,
+                outcome: outcome,
+                amount: amount,
+                nonce: null,
+                onSent: function (r) {
+                    print("   - buyShares(" + branch_id + ", " + market_id + ", " + outcome + ", " + amount + ", null) [sendTx] -> " + r);
+                    is_not_zero(r);
+                }
+            });
+            Augur.tx.sellShares.send = true;
+            Augur.sellShares({
+                branchId: branch_id,
+                marketId: market_id,
+                outcome: outcome,
+                amount: amount,
+                nonce: null,
+                onSent: function (r) {
+                    print("   - sellShares(" + branch_id + ", " + market_id + ", " + outcome + ", " + amount + ", null) [sendTx] -> " + r);
+                    is_not_zero(r);
+                }
+            });
 
             // createBranch.se
 
             // p2pWagers.se
 
             // sendReputation.se
-            // TODO sendReputation
+            // Augur.tx.sendReputation.send = false;
+            // Augur.tx.sendReputation.returns = "number";
+            // Augur.sendReputation(branch_id, receiving_account, amount, function (r) {
+            //     print("   - sendReputation(" + branch_id + ", " + receiving_account + ", " + amount + ") [call] -> " + r);
+            //     is_not_zero(r);
+            //     assert(r === amount);
+            // });
+            // var larger_amount = "9000"; // should fail
+            // Augur.sendReputation(branch_id, receiving_account, amount, function (r) {
+            //     print("   - sendReputation(" + branch_id + ", " + receiving_account + ", " + amount + ") [call] -> " + r);
+            //     assert(r === "0");
+            // });
+            // Augur.tx.sendReputation.send = true;
+            // Augur.tx.sendReputation.returns = undefined;
+            // Augur.sendReputation(branch_id, receiving_account, amount, function (r) {
+            //     print("   - sendReputation(" + branch_id + ", " + receiving_account + ", " + amount + ") [sendTx] -> " + r);
+            //     is_not_zero(r);
+            // });
 
             // transferShares.se
 
             // makeReports.se
 
             // createEvent.se
-            print("   - createEvent: \"" + event_description + "\"");
+            var expDate = "300000";
+            var minValue = "1";
+            var maxValue = "2";
+            var numOutcomes = "2";
             Augur.createEvent({
                 branchId: branch_id,
                 description: event_description,
-                expDate: 300000,
-                minValue: 1,
-                maxValue: 2,
-                numOutcomes: 2,
-                onSent: is_object,
-                onSuccess: is_object
+                expDate: expDate,
+                minValue: minValue,
+                maxValue: maxValue,
+                numOutcomes: numOutcomes,
+                onSent: function (r) {
+                    print("   - createEvent: \"" + event_description + "\"");
+                    print("     -> sent: " + JSON.stringify(r, null, 2));
+                    is_object(r);
+                    !is_empty(r);
+                    is_not_zero(r.id);
+                    is_not_zero(r.txhash);
+                },
+                onSuccess: function (r) {
+                    print("   - createEvent: \"" + event_description + "\"");
+                    print("     -> success: " + JSON.stringify(r, null, 2));
+                    is_object(r);
+                    !is_empty(r);
+                    is_not_zero(r.id);
+                    is_not_zero(r.txhash);
+                    assert(r.branch === branch_id);
+                    assert(r.expirationDate === expDate);
+                    assert(r.minValue === minValue);
+                    assert(r.maxValue === maxValue);
+                    assert(r.numOutcomes === numOutcomes);
+                    assert(r.description.slice(-5) === event_description.slice(-5));
+                }
             });
 
             // createMarket.se
-            // print("   - createMarket: \"" + market_description + "\"");
-            // Augur.createMarket({
-            //     branchId: branch_id,
-            //     description: market_description,
-            //     alpha: "0.0079",
-            //     initialLiquidity: "100",
-            //     tradingFee: "0.01",
-            //     events: ["-0x2ae31f0184fa3e11a1517a11e3fc6319cb7c310cee36b20f8e0263049b1f3a6f"],
-            //     onSent: is_object,
-            //     onSuccess: is_object,
-            //     onFailed: is_object
+            var alpha = "0.0079";
+            var initialLiquidity = "100";
+            var tradingFee = "0.01";
+            var events = ["-0x2ae31f0184fa3e11a1517a11e3fc6319cb7c310cee36b20f8e0263049b1f3a6f"];
+            Augur.createMarket({
+                branchId: branch_id,
+                description: market_description,
+                alpha: alpha,
+                initialLiquidity: initialLiquidity,
+                tradingFee: tradingFee,
+                events: events,
+                onSent: function (r) {
+                    print("   - createMarket: \"" + market_description + "\"");
+                    print("     -> sent: " + JSON.stringify(r, null, 2));
+                    is_object(r);
+                    !is_empty(r);
+                    is_not_zero(r.id);
+                    is_not_zero(r.txhash);
+                },
+                onSuccess: function (r) {
+                    print("   - createMarket: \"" + market_description + "\"");
+                    print("     -> success: " + JSON.stringify(r, null, 2));
+                    is_object(r);
+                    !is_empty(r);
+                    is_not_zero(r.id);
+                    is_not_zero(r.txhash);
+                    assert(r.numOutcomes === numOutcomes);
+                    // assert(r.alpha === alpha); // rounding error WTF?
+                    assert(r.numOutcomes === numOutcomes);
+                    assert(r.tradingFee === tradingFee);
+                    assert(r.description.slice(-5) === market_description.slice(-5));
+                },
+                onFailed: function (r) {
+                    print("   - createMarket: \"" + market_description + "\"");
+                    print("     -> failed: " + JSON.stringify(r, null, 2));
+                    is_object(r);
+                    !is_empty(r);
+                }
+            });
+
+            // // closeMarket.se
+            // Augur.tx.closeMarket.send = false;
+            // Augur.tx.closeMarket.returns = "number";
+            // Augur.closeMarket(branch_id, market_id, function (r) {
+            //     print("   - closeMarket(" + branch_id + ", " + market_id + ") [call] -> " + r);
             // });
+            // Augur.tx.closeMarket.send = true;
+            // Augur.tx.closeMarket.returns = undefined;
 
-            // closeMarket.se
-            // TODO closeMarket
-
-            // dispatch.se
-            // TODO dispatch
+            // // dispatch.se
+            // Augur.tx.dispatch.send = false;
+            // Augur.tx.dispatch.returns = "number";
+            // Augur.dispatch(branch_number, function (r) {
+            //     print("   - closeMarket(" + branch_id + ", " + market_id + ") [call] -> " + r);
+            // });
+            // Augur.tx.dispatch.send = true;
+            // Augur.tx.dispatch.returns = undefined;
         }
     };
     Tests(false);

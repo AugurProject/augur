@@ -223,7 +223,7 @@ Many of the commonly used functions have named wrappers.  For example, `blockNum
 ```javascript
 > tx = {
 ...   to: "0x5204f18c652d1c31c6a5968cb65e011915285a50",
-...   function: "double",
+...   method: "double",
 ...   signature: "i",
 ...   params: 22121,
 ...   send: false,
@@ -237,7 +237,7 @@ Many of the commonly used functions have named wrappers.  For example, `blockNum
 ```
 Required:
     - to: <contract address> (hexstring)
-    - function: <function name> (string)
+    - method: <function name> (string)
     - signature: <function signature, e.g. "iia"> (string)
     - params: <parameters passed to the function>
 Optional:
@@ -252,7 +252,8 @@ The `params` and `signature` fields are required if your function accepts parame
 Tests
 -----
 
-The tests included with augur.js are in `test/runtests.js`, and can be run using npm:
+Unit tests included with augur.js are in `test/runtests.js`, and can be run using npm:
 ```
 npm test
 ```
+Note that geth must be running for the tests to run properly.

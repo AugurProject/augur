@@ -129,7 +129,7 @@ var Augur = (function (augur, async) {
 
         // Functions
         checkQuorum: "0xe9aaab4aff0cf06e62d2442ae0f68660882e5a67",
-        buyAndsellShares: "0x9dff8b4278f05e37f00d7461b175e092ae611380",
+        buyAndSellShares: "0x9dff8b4278f05e37f00d7461b175e092ae611380",
         createBranch: "0x5c955b31ac72c83ffd7562aed4e2100b2ba09a3b",
         p2pWagers: "0x7c2bbb3045fd8b39d28f4b4a5682dbec9a710771",
         sendReputation: "0x049487d32b727be98a4c8b58c4eab6521791f288",
@@ -301,25 +301,20 @@ var Augur = (function (augur, async) {
     }
 
     function encode_hex(str) {
-        var byte, hex = '';
+        var hexbyte, hex = '';
         for (var i = 0, len = str.length; i < len; ++i) {
-            byte = str.charCodeAt(i).toString(16);
-            if (byte.length === 1) byte = "0" + byte;
-            hex += byte;
+            hexbyte = str.charCodeAt(i).toString(16);
+            if (hexbyte.length === 1) hexbyte = "0" + hexbyte;
+            hex += hexbyte;
         }
         return hex;
     }
 
-    function decode_hex(hexx) {
-        var hex = hexx.toString();
-        var substr, str = '';
-        var foundNonzero = 0;
-        for (var i = 0; i < hex.length; i += 2) {
-            substr = hex.substr(i, 2);
-            if (foundNonzero > 1 || substr != '00') {
-                str += String.fromCharCode(parseInt(substr, 16));
-                foundNonzero++;
-            }
+    function decode_hex(h) {
+        var hex = h.toString();
+        var str = '';
+        for (var i = 0, len = hex.length; i < len; i += 2) {
+            str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
         }
         return str;
     }
@@ -674,7 +669,7 @@ var Augur = (function (augur, async) {
     // hex-encode a function's ABI data and return it
     augur.abi_data = function (tx, f) {
         tx.signature = tx.signature || "";
-        var data_abi = get_prefix(tx.function, tx.signature);
+        var data_abi = get_prefix(tx.method, tx.signature);
         var types = [];
         for (var i = 0, len = tx.signature.length; i < len; ++i) {
             if (tx.signature[i] == 's') {
@@ -734,7 +729,7 @@ var Augur = (function (augur, async) {
      * {
      *    from: <sender's address> (hexstring; optional, coinbase default)
      *    to: <contract address> (hexstring)
-     *    function: <function name> (string)
+     *    method: <function name> (string)
      *    signature: <function signature, e.g. "iia"> (string)
      *    params: <parameters passed to the function> (optional)
      *    returns: <"number[]", "int", "BigNumber", or "string" (default)>
@@ -759,11 +754,11 @@ var Augur = (function (augur, async) {
             }
         }
         if (!invoked) {
-            return "Error invoking " + tx.function + "@" + tx.to + "\n"+
+            return "Error invoking " + tx.method + "@" + tx.to + "\n"+
                 "Expected transaction format:" + JSON.stringify({
                     from: "<sender's address> (hexstring; optional, coinbase default)",
                     to: "<contract address> (hexstring)",
-                    function: "<function name> (string)",
+                    method: "<function name> (string)",
                     signature: '<function signature, e.g. "iia"> (string)',
                     params: "<parameters passed to the function> (optional)",
                     returns: '<"number[]", "int", "BigNumber", or "string" (default)>',
@@ -790,7 +785,7 @@ var Augur = (function (augur, async) {
     augur.tx.getCashBalance = {
         from: augur.coinbase,
         to: augur.contracts.cash,
-        function: "balance",
+        method: "balance",
         signature: "i",
         params: augur.coinbase,
         returns: "number"
@@ -798,14 +793,14 @@ var Augur = (function (augur, async) {
     augur.tx.sendCash = {
         from: augur.coinbase,
         to: augur.contracts.cash,
-        function: "send",
+        method: "send",
         send: true,
         signature: "ii"
     };
     augur.tx.cashFaucet = {
         from: augur.coinbase,
         to: augur.contracts.cash,
-        function: "faucet",
+        method: "faucet",
         send: true
     };
     augur.getCashBalance = function (account, onSent) {
@@ -827,20 +822,20 @@ var Augur = (function (augur, async) {
     augur.tx.getCreator = {
         from: augur.coinbase,
         to: augur.contracts.info,
-        function: "getCreator",
+        method: "getCreator",
         signature: "i"
     };
     augur.tx.getCreationFee = {
         from: augur.coinbase,
         to: augur.contracts.info,
-        function: "getCreationFee",
+        method: "getCreationFee",
         signature: "i",
         returns: "unfix"
     };
     augur.tx.getDescription = {
         from: augur.coinbase,
         to: augur.contracts.info,
-        function: "getDescription",
+        method: "getDescription",
         signature: "i",
         returns: "string"
     };
@@ -864,61 +859,61 @@ var Augur = (function (augur, async) {
     augur.tx.getBranches = {
         from: augur.coinbase,
         to: augur.contracts.branches,
-        function: "getBranches",
+        method: "getBranches",
         returns: "hash[]"
     };
     augur.tx.getMarkets = {
         from: augur.coinbase,
         to: augur.contracts.branches,
-        function: "getMarkets",
+        method: "getMarkets",
         signature: "i",
         returns: "hash[]"
     };
     augur.tx.getPeriodLength = {
         from: augur.coinbase,
         to: augur.contracts.branches,
-        function: "getPeriodLength",
+        method: "getPeriodLength",
         signature: "i",
         returns: "number"
     };
     augur.tx.getVotePeriod = {
         from: augur.coinbase,
         to: augur.contracts.branches,
-        function: "getVotePeriod",
+        method: "getVotePeriod",
         signature: "i",
         returns: "number"
     };
     augur.tx.getStep = {
         from: augur.coinbase,
         to: augur.contracts.branches,
-        function: "getStep",
+        method: "getStep",
         signature: "i",
         returns: "number"
     };
     augur.tx.getNumMarkets = {
         from: augur.coinbase,
         to: augur.contracts.branches,
-        function: "getNumMarkets",
+        method: "getNumMarkets",
         signature: "i",
         returns: "number"
     };
     augur.tx.getMinTradingFee = {
         from: augur.coinbase,
         to: augur.contracts.branches,
-        function: "getMinTradingFee",
+        method: "getMinTradingFee",
         signature: "i",
         returns: "unfix"
     };
     augur.tx.getNumBranches = {
         from: augur.coinbase,
         to: augur.contracts.branches,
-        function: "getNumBranches",
+        method: "getNumBranches",
         returns: "number"
     };
     augur.tx.getBranch = {
         from: augur.coinbase,
         to: augur.contracts.branches,
-        function: "getBranch",
+        method: "getBranch",
         signature: "i"
     };
     augur.getBranches = function (onSent) {
@@ -967,7 +962,7 @@ var Augur = (function (augur, async) {
     augur.tx.getEventInfo = {
         from: augur.coinbase,
         to: augur.contracts.events,
-        function: "getEventInfo",
+        method: "getEventInfo",
         signature: "i",
         returns: "mixed[]"
     };
@@ -995,41 +990,41 @@ var Augur = (function (augur, async) {
     augur.tx.getEventBranch = {
         from: augur.coinbase,
         to: augur.contracts.events,
-        function: "getEventBranch",
+        method: "getEventBranch",
         signature: "i"
     };
     augur.tx.getExpiration = {
         from: augur.coinbase,
         to: augur.contracts.events,
-        function: "getExpiration",
+        method: "getExpiration",
         signature: "i",
         returns: "number"
     };
     augur.tx.getOutcome = {
         from: augur.coinbase,
         to: augur.contracts.events,
-        function: "getOutcome",
+        method: "getOutcome",
         signature: "i",
         returns: "number"
     };
     augur.tx.getMinValue = {
         from: augur.coinbase,
         to: augur.contracts.events,
-        function: "getMinValue",
+        method: "getMinValue",
         signature: "i",
         returns: "number"
     };
     augur.tx.getMaxValue = {
         from: augur.coinbase,
         to: augur.contracts.events,
-        function: "getMaxValue",
+        method: "getMaxValue",
         signature: "i",
         returns: "number"
     };
     augur.tx.getNumOutcomes = {
         from: augur.coinbase,
         to: augur.contracts.events,
-        function: "getNumOutcomes",
+        method: "getNumOutcomes",
         signature: "i",
         returns: "number"
     };
@@ -1068,166 +1063,166 @@ var Augur = (function (augur, async) {
     augur.tx.getEvents = {
         from: augur.coinbase,
         to: augur.contracts.expiringEvents,
-        function: "getEvents",
+        method: "getEvents",
         signature: "ii",
         returns: "hash[]"
     };
     augur.tx.getNumberEvents = {
         from: augur.coinbase,
         to: augur.contracts.expiringEvents,
-        function: "getNumberEvents",
+        method: "getNumberEvents",
         signature: "ii",
         returns: "number"
     };
     augur.tx.getEvent = {
         from: augur.coinbase,
         to: augur.contracts.expiringEvents,
-        function: "getEvent",
+        method: "getEvent",
         signature: "iii"
     };
     augur.tx.getTotalRepReported = {
         from: augur.coinbase,
         to: augur.contracts.expiringEvents,
-        function: "getTotalRepReported",
+        method: "getTotalRepReported",
         signature: "ii",
         returns: "unfix"
     };
     augur.tx.getReporterBallot = {
         from: augur.coinbase,
         to: augur.contracts.expiringEvents,
-        function: "getReporterBallot",
+        method: "getReporterBallot",
         signature: "iii",
         returns: "number[]"
     };
     augur.tx.getReport = {
         from: augur.coinbase,
         to: augur.contracts.expiringEvents,
-        function: "getReport",
+        method: "getReport",
         signature: "iiii",
         returns: "unfix"
     };
     augur.tx.getReportHash = {
         from: augur.coinbase,
         to: augur.contracts.expiringEvents,
-        function: "getReportHash",
+        method: "getReportHash",
         signature: "iii"
     };
     augur.tx.getVSize = {
         from: augur.coinbase,
         to: augur.contracts.expiringEvents,
-        function: "getVSize",
+        method: "getVSize",
         signature: "ii",
         returns: "number"
     };
     augur.tx.getReportsFilled = {
         from: augur.coinbase,
         to: augur.contracts.expiringEvents,
-        function: "getReportsFilled",
+        method: "getReportsFilled",
         signature: "ii",
         returns: "number[]"
     };
     augur.tx.getReportsMask = {
         from: augur.coinbase,
         to: augur.contracts.expiringEvents,
-        function: "getReportsMask",
+        method: "getReportsMask",
         signature: "ii",
         returns: "number[]"
     };
     augur.tx.getWeightedCenteredData = {
         from: augur.coinbase,
         to: augur.contracts.expiringEvents,
-        function: "getWeightedCenteredData",
+        method: "getWeightedCenteredData",
         signature: "ii",
         returns: "number[]"
     };
     augur.tx.getCovarianceMatrixRow = {
         from: augur.coinbase,
         to: augur.contracts.expiringEvents,
-        function: "getCovarianceMatrixRow",
+        method: "getCovarianceMatrixRow",
         signature: "ii",
         returns: "number[]"
     };
     augur.tx.getDeflated = {
         from: augur.coinbase,
         to: augur.contracts.expiringEvents,
-        function: "getDeflated",
+        method: "getDeflated",
         signature: "ii",
         returns: "number[]"
     };
     augur.tx.getLoadingVector = {
         from: augur.coinbase,
         to: augur.contracts.expiringEvents,
-        function: "getLoadingVector",
+        method: "getLoadingVector",
         signature: "ii",
         returns: "number[]"
     };
     augur.tx.getLatent = {
         from: augur.coinbase,
         to: augur.contracts.expiringEvents,
-        function: "getLatent",
+        method: "getLatent",
         signature: "ii",
         returns: "unfix"
     };
     augur.tx.getScores = {
         from: augur.coinbase,
         to: augur.contracts.expiringEvents,
-        function: "getScores",
+        method: "getScores",
         signature: "ii",
         returns: "number[]"
     };
     augur.tx.getSetOne = {
         from: augur.coinbase,
         to: augur.contracts.expiringEvents,
-        function: "getSetOne",
+        method: "getSetOne",
         signature: "ii",
         returns: "number[]"
     };
     augur.tx.getSetTwo = {
         from: augur.coinbase,
         to: augur.contracts.expiringEvents,
-        function: "getSetTwo",
+        method: "getSetTwo",
         signature: "ii",
         returns: "number[]"
     };
     augur.tx.returnOld = {
         from: augur.coinbase,
         to: augur.contracts.expiringEvents,
-        function: "returnOld",
+        method: "returnOld",
         signature: "ii",
         returns: "number[]"
     };
     augur.tx.getNewOne = {
         from: augur.coinbase,
         to: augur.contracts.expiringEvents,
-        function: "getNewOne",
+        method: "getNewOne",
         signature: "ii",
         returns: "number[]"
     };
     augur.tx.getNewTwo = {
         from: augur.coinbase,
         to: augur.contracts.expiringEvents,
-        function: "getNewTwo",
+        method: "getNewTwo",
         signature: "ii",
         returns: "number[]"
     };
     augur.tx.getAdjPrinComp = {
         from: augur.coinbase,
         to: augur.contracts.expiringEvents,
-        function: "getAdjPrinComp",
+        method: "getAdjPrinComp",
         signature: "ii",
         returns: "number[]"
     };
     augur.tx.getSmoothRep = {
         from: augur.coinbase,
         to: augur.contracts.expiringEvents,
-        function: "getSmoothRep",
+        method: "getSmoothRep",
         signature: "ii",
         returns: "number[]"
     };
     augur.tx.getOutcomesFinal = {
         from: augur.coinbase,
         to: augur.contracts.expiringEvents,
-        function: "getOutcomesFinal",
+        method: "getOutcomesFinal",
         signature: "ii",
         returns: "number[]"
     };
@@ -1380,14 +1375,14 @@ var Augur = (function (augur, async) {
     augur.tx.getSimulatedBuy = {
         from: augur.coinbase,
         to: augur.contracts.markets,
-        function: "getSimulatedBuy",
+        method: "getSimulatedBuy",
         signature: "iii",
         returns: "number[]"
     };
     augur.tx.getSimulatedSell = {
         from: augur.coinbase,
         to: augur.contracts.markets,
-        function: "getSimulatedSell",
+        method: "getSimulatedSell",
         signature: "iii",
         returns: "number[]"
     };
@@ -1409,7 +1404,7 @@ var Augur = (function (augur, async) {
     augur.tx.getMarketInfo = {
         from: augur.coinbase,
         to: augur.contracts.markets,
-        function: "getMarketInfo",
+        method: "getMarketInfo",
         signature: "i",
         returns: "mixed[]"
     };
@@ -1420,11 +1415,11 @@ var Augur = (function (augur, async) {
             if (marketInfo && marketInfo.length) {
                 var info = {
                     currentParticipant: augur.bignum(marketInfo[0]).toFixed(),
-                    alpha: augur.bignum(marketInfo[1]).toFixed(),
+                    alpha: augur.unfix(marketInfo[1], "string"),
                     cumulativeScale: augur.bignum(marketInfo[2]).toFixed(),
                     numOutcomes: augur.bignum(marketInfo[3]).toFixed(),
                     tradingPeriod: augur.bignum(marketInfo[4]).toFixed(),
-                    tradingFee: augur.bignum(marketInfo[5]).toFixed()
+                    tradingFee: augur.unfix(marketInfo[5], "string")
                 };
                 augur.getDescription(market, function (description) {
                     if (description) info.description = description;
@@ -1437,14 +1432,14 @@ var Augur = (function (augur, async) {
     augur.tx.getMarketEvents = {
         from: augur.coinbase,
         to: augur.contracts.markets,
-        function: "getMarketEvents",
+        method: "getMarketEvents",
         signature: "i",
         returns: "hash[]"
     };
     augur.tx.getNumEvents = {
         from: augur.coinbase,
         to: augur.contracts.markets,
-        function: "getNumEvents",
+        method: "getNumEvents",
         signature: "i",
         returns: "number"
     };
@@ -1462,48 +1457,48 @@ var Augur = (function (augur, async) {
     augur.tx.getBranchID = {
         from: augur.coinbase,
         to: augur.contracts.markets,
-        function: "getBranchID",
+        method: "getBranchID",
         signature: "i"
     };
     augur.tx.getCurrentParticipantNumber = {
         from: augur.coinbase,
         to: augur.contracts.markets,
-        function: "getCurrentParticipantNumber",
+        method: "getCurrentParticipantNumber",
         signature: "i",
         returns: "unfix"
     };
     augur.tx.getMarketNumOutcomes = {
         from: augur.coinbase,
         to: augur.contracts.markets,
-        function: "getMarketNumOutcomes",
+        method: "getMarketNumOutcomes",
         signature: "i",
         returns: "number"
     };
     augur.tx.getParticipantSharesPurchased = {
         from: augur.coinbase,
         to: augur.contracts.markets,
-        function: "getParticipantSharesPurchased",
+        method: "getParticipantSharesPurchased",
         signature: "iii",
         returns: "unfix"
     };
     augur.tx.getSharesPurchased = {
         from: augur.coinbase,
         to: augur.contracts.markets,
-        function: "getSharesPurchased",
+        method: "getSharesPurchased",
         signature: "ii",
         returns: "unfix"
     };
     augur.tx.getWinningOutcomes = {
         from: augur.coinbase,
         to: augur.contracts.markets,
-        function: "getWinningOutcomes",
+        method: "getWinningOutcomes",
         signature: "i",
         returns: "hash[]"
     };
     augur.tx.price = {
         from: augur.coinbase,
         to: augur.contracts.markets,
-        function: "price",
+        method: "price",
         signature: "ii",
         returns: "unfix"
     };
@@ -1546,14 +1541,14 @@ var Augur = (function (augur, async) {
     augur.tx.getParticipantNumber = {
         from: augur.coinbase,
         to: augur.contracts.markets,
-        function: "getParticipantNumber",
+        method: "getParticipantNumber",
         signature: "ii",
         returns: "number"
     };
     augur.tx.getParticipantID = {
         from: augur.coinbase,
         to: augur.contracts.markets,
-        function: "getParticipantID",
+        method: "getParticipantID",
         signature: "ii"
     };
     augur.getParticipantNumber = function (market, address, onSent) {
@@ -1571,28 +1566,28 @@ var Augur = (function (augur, async) {
     augur.tx.getAlpha = {
         from: augur.coinbase,
         to: augur.contracts.markets,
-        function: "getAlpha",
+        method: "getAlpha",
         signature: "i",
         returns: "unfix"
     };
     augur.tx.getCumScale = {
         from: augur.coinbase,
         to: augur.contracts.markets,
-        function: "getCumScale",
+        method: "getCumScale",
         signature: "i",
         returns: "unfix"
     };
     augur.tx.getTradingPeriod = {
         from: augur.coinbase,
         to: augur.contracts.markets,
-        function: "getTradingPeriod",
+        method: "getTradingPeriod",
         signature: "i",
         returns: "number"
     };
     augur.tx.getTradingFee = {
         from: augur.coinbase,
         to: augur.contracts.markets,
-        function: "getTradingFee",
+        method: "getTradingFee",
         signature: "i",
         returns: "unfix"
     };
@@ -1621,41 +1616,41 @@ var Augur = (function (augur, async) {
     augur.tx.getRepBalance = {
         from: augur.coinbase,
         to: augur.contracts.reporting,
-        function: "getRepBalance",
+        method: "getRepBalance",
         signature: "ii",
         returns: "unfix"
     };
     augur.tx.getRepByIndex = {
         from: augur.coinbase,
         to: augur.contracts.reporting,
-        function: "getRepByIndex",
+        method: "getRepByIndex",
         signature: "ii",
         returns: "unfix"
     };
     augur.tx.getReporterID = {
         from: augur.coinbase,
         to: augur.contracts.reporting,
-        function: "getReporterID",
+        method: "getReporterID",
         signature: "ii"
     };
     augur.tx.getReputation = {
         from: augur.coinbase,
         to: augur.contracts.reporting,
-        function: "getReputation",
+        method: "getReputation",
         signature: "i",
         returns: "number[]"
     };
     augur.tx.getNumberReporters = {
         from: augur.coinbase,
         to: augur.contracts.reporting,
-        function: "getNumberReporters",
+        method: "getNumberReporters",
         signature: "i",
         returns: "number"
     };
     augur.tx.repIDToIndex = {
         from: augur.coinbase,
         to: augur.contracts.reporting,
-        function: "repIDToIndex",
+        method: "repIDToIndex",
         signature: "ii",
         returns: "number"
     };
@@ -1698,13 +1693,13 @@ var Augur = (function (augur, async) {
     augur.tx.hashReport = {
         from: augur.coinbase,
         to: augur.contracts.reporting,
-        function: "hashReport",
+        method: "hashReport",
         signature: "ai"
     };
     augur.tx.reputationFaucet = {
         from: augur.coinbase,
         to: augur.contracts.reporting,
-        function: "faucet",
+        method: "faucet",
         send: true
     };
     augur.hashReport = function (ballot, salt, onSent) {
@@ -1719,17 +1714,18 @@ var Augur = (function (augur, async) {
         augur.invoke(augur.tx.reputationFaucet, onSent);
     };    
 
-    // buy&SellShares.se
+    // buy&sellShares.se
     augur.tx.getNonce = {
         from: augur.coinbase,
         to: augur.contracts.buyAndSellShares,
-        function: "getNonce",
-        signature: "i"
+        method: "getNonce",
+        signature: "i",
+        returns: "number"
     };
     augur.tx.buyShares = {
         from: augur.coinbase,
         to: augur.contracts.buyAndSellShares,
-        function: "buyShares",
+        method: "buyShares",
         signature: "iiiii",
         returns: "number",
         send: true
@@ -1737,7 +1733,7 @@ var Augur = (function (augur, async) {
     augur.tx.sellShares = {
         from: augur.coinbase,
         to: augur.contracts.buyAndSellShares,
-        function: "sellShares",
+        method: "sellShares",
         signature: "iiiii",
         returns: "number",
         send: true
@@ -1798,7 +1794,7 @@ var Augur = (function (augur, async) {
     augur.tx.sendReputation = {
         from: augur.coinbase,
         to: augur.contracts.sendReputation,
-        function: "sendReputation",
+        method: "sendReputation",
         signature: "iii",
         send: true
     };
@@ -1818,7 +1814,7 @@ var Augur = (function (augur, async) {
     augur.tx.createEvent = {
         from: augur.coinbase,
         to: augur.contracts.createEvent,
-        function: "createEvent",
+        method: "createEvent",
         signature: "isiiii",
         send: true
     };
@@ -1839,17 +1835,24 @@ var Augur = (function (augur, async) {
         augur.invoke(augur.tx.createEvent, function (eventID) {
             if (eventID) {
                 var event = { id: eventID };
-                if (onSent) onSent(event);
                 augur.tx.createEvent.send = true;
-                if (onSuccess) {
-                    augur.invoke(augur.tx.createEvent, function (txhash) {
-                        if (txhash) {
-                            event.txhash = txhash;
+                augur.invoke(augur.tx.createEvent, function (txhash) {
+                    if (txhash) {
+                        event.txhash = txhash;
+                        if (onSent) onSent(event);
+                        if (onSuccess) {
                             var pings = 0;
                             var pingTx = function () {
                                 augur.getEventInfo(eventID, function (eventInfo) {
                                     pings++;
                                     if (eventInfo && eventInfo.branch && eventInfo.branch != 0 && eventInfo.branch != "0") {
+                                        event.branch = eventInfo.branch;
+                                        event.expirationDate = eventInfo.expirationDate;
+                                        event.outcome = eventInfo.outcome;
+                                        event.minValue = eventInfo.minValue;
+                                        event.maxValue = eventInfo.maxValue;
+                                        event.numOutcomes = eventInfo.numOutcomes;
+                                        event.description = eventInfo.description;
                                         onSuccess(event);
                                     } else {
                                         if (pings < augur.PINGMAX) setTimeout(pingTx, 12000);
@@ -1858,8 +1861,8 @@ var Augur = (function (augur, async) {
                             };
                             pingTx();
                         }
-                    });
-                }
+                    }
+                });
             }
         });
     };
@@ -1868,7 +1871,7 @@ var Augur = (function (augur, async) {
     augur.tx.createMarket = {
         from: augur.coinbase,
         to: augur.contracts.createMarket,
-        function: "createMarket",
+        method: "createMarket",
         signature: "isiiia",
         send: true
     };
@@ -1901,17 +1904,25 @@ var Augur = (function (augur, async) {
                     market.error = "error " + augur.ERRORS[marketID].code.toString() + ": " + augur.ERRORS[marketID].message;
                     if (onFailed) onFailed(market);
                 } else {
-                    if (onSent) onSent(market);
                     augur.tx.createMarket.send = true;
-                    if (onSuccess) {
-                        augur.invoke(augur.tx.createMarket, function (txhash) {
-                            if (txhash) {
-                                market.txhash = txhash;
+                    augur.invoke(augur.tx.createMarket, function (txhash) {
+                        if (txhash) {
+                            market.txhash = txhash;
+                            if (onSent) onSent(market);
+                            if (onSuccess) {
                                 var pings = 0;
                                 var pingTx = function () {
                                     augur.getMarketInfo(marketID, function (marketInfo) {
                                         pings++;
                                         if (marketInfo && marketInfo.numOutcomes && marketInfo.numOutcomes != 0 && marketInfo.numOutcomes != "0") {
+                                            market.numOutcomes = marketInfo.numOutcomes;
+                                            market.currentParticipant = marketInfo.currentParticipant;
+                                            market.alpha = marketInfo.alpha;
+                                            market.cumulativeScale = marketInfo.cumulativeScale;
+                                            market.numOutcomes = marketInfo.numOutcomes;
+                                            market.tradingPeriod = marketInfo.tradingPeriod;
+                                            market.tradingFee = marketInfo.tradingFee;
+                                            market.description = marketInfo.description;
                                             onSuccess(market);
                                         } else {
                                             if (pings < augur.PINGMAX) setTimeout(pingTx, 12000);
@@ -1920,8 +1931,8 @@ var Augur = (function (augur, async) {
                                 };
                                 pingTx();
                             }
-                        });
-                    }
+                        }
+                    });
                 }
             }
         });
@@ -1931,7 +1942,7 @@ var Augur = (function (augur, async) {
     augur.tx.closeMarket = {
         from: augur.coinbase,
         to: augur.contracts.closeMarket,
-        function: "closeMarket",
+        method: "closeMarket",
         signature: "ii",
         returns: "number",
         send: true
@@ -1947,7 +1958,7 @@ var Augur = (function (augur, async) {
     augur.tx.dispatch = {
         from: augur.coinbase,
         to: augur.contracts.dispatch,
-        function: "dispatch",
+        method: "dispatch",
         signature: "i",
         returns: "number",
         send: true
