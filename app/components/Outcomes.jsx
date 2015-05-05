@@ -36,12 +36,27 @@ var getOutcome = function (outcomeComponent) {
 var Overview = React.createClass({
   render: function () {
     return (
-      <div className="outcome outcome-{ this.props.id } col-md-6">
-        <h3>{ getOutcomeName(this.props.id, this.props.outcomeCount) }</h3>
-        <div className="price">{ priceToPercentage(this.props.price) }%</div>
-        <p className="shares-held">Shares held: {this.props.sharesPurchased.toString()}</p>
-        <Link to="buy-outcome" className="btn btn-success" params={{marketId: this.props.params.marketId, outcomeId: this.props.id}}>Buy</Link>
-        <Link to="sell-outcome" className="btn btn-danger" params={{marketId: this.props.params.marketId, outcomeId: this.props.id}}>Sell</Link>
+      <div>
+        <div className="outcome outcome-{ this.props.id }">
+          <div className="row">
+            <div className="col-sm-6">
+              <h3>
+                { getOutcomeName(this.props.id, this.props.outcomeCount) }
+                <span className="price pull-right">{ priceToPercentage(this.props.price) }% <b>({ this.props.sharesPurchased.toString() } shares)</b></span>
+              </h3>
+            </div>
+            <div className="col-sm-6">
+              <Link to="buy-outcome" bsSize='large' className="btn btn-success pull-right" params={{marketId: this.props.params.marketId, outcomeId: this.props.id}}>Buy</Link>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-sm-6">
+            </div>
+            <div className="col-sm-6">
+              <Link to="sell-outcome" bsSize='large' className="btn btn-danger pull-right" params={{marketId: this.props.params.marketId, outcomeId: this.props.id}}>Sell</Link>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

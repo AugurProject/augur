@@ -274,10 +274,10 @@ nav .navbar-right li div {
     font-size: 16px;
     margin-top: 3px;
 }
-
-#main table {
-    font-size: 16px;
+#main h4 {
+    font-weight: 300;
 }
+
 
 .period {
     margin-bottom: 30px;
@@ -405,17 +405,39 @@ nav .navbar-right li div {
 
 }
 
-#market #comments {
-    background-color: #fff;
+#market .outcome {
+    border: 1px solid #DACEEA;
+    margin-top: 10px;
+    border-radius: 5px;
+    padding: 10px 10px 10px 10px;
+    background-color: #F2F2F2;
+}
+#market .outcome .row:first-child {
+    margin-bottom: 10px;
+}
+#market .outcome h3 {
+    padding: 5px 0px;
+}
+#market .outcome h3 .price {
+    font-weight: 200;
+}
+#market .outcome h3 .price b {
+    font-size: 18px;
+    font-family: 'Source Sans Pro';
+    font-weight: 400;
+    margin-left: 10px
+}
+#market .comments {
+    margin-top: 40px;
 }
 #market .comment {
     padding: 10px;
+    background-color: #fff;
 }
 #market .comment .avatar {
     height: 57px;
     width: 57px;
     float: left;
-    background-color: #fff;
     background-repeat: no-repeat;
     background-position: 10px 9px;
     background-size: 50px 50px;
@@ -425,7 +447,6 @@ nav .navbar-right li div {
 #market .comment .box {
     margin-left: 70px;
     margin-top: 0px;
-    background-color: #fff;
     padding: 30px 15px 15px 15px;
     position: relative;
 }

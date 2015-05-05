@@ -8,7 +8,7 @@ var RouteHandler = Router.RouteHandler;
 
 var Identicon = require('../libs/identicon.js');
 var utilities = require('../libs/utilities');
-
+var momemt = require('moment');
 var Outcomes = require('./Outcomes');
 
 var Router = React.createClass({
@@ -29,15 +29,11 @@ var Router = React.createClass({
     }
   },
 
-  getFormattedEndDate: function () {
-    return this.state.market.endDate.format('MMMM D, YYYY');
-  },
-
   render: function() {
     return (
       <div id='market'>
         <h3>{ this.state.market.description }</h3>
-        <p className="info">Augur reporters will resolve this question after {this.getFormattedEndDate()}.</p>
+        <h4 className="info">Resolves after { this.state.market.endDate.format("MMMM Do, YYYY") }</h4>
         <RouteHandler {...this.props} {...this.state} />
       </div>
     );
@@ -61,8 +57,13 @@ var Overview = React.createClass({
 
     return (
       <div>
-        { outcomes }
-        <h4>{ this.props.market.comments.length } Comments</h4>
+        <div className="row">
+          <div className='col-sm-6'>
+            { outcomes }
+          </div>
+          <div className='col-sm-6'>
+          </div>
+        </div>
         <Comments comments={ this.props.market.comments } account={ this.props.account } />
       </div>
     );
@@ -73,7 +74,8 @@ var Comments = React.createClass({
 
   render: function() {
     return (
-      <div id="comments">
+      <div className="comments">
+        <h4>{ this.props.comments.length } Comments</h4>
         <CommentForm account={ this.props.account }/>
         <CommentList comments={ this.props.comments } />
       </div>
