@@ -30,6 +30,10 @@ var Router = React.createClass({
   },
 
   render: function() {
+
+    // return nothing until we have an actual market loaded
+    if (_.isUndefined(this.state.market)) return (<div />);
+
     return (
       <div id='market'>
         <h3>{ this.state.market.description }</h3>
@@ -41,19 +45,19 @@ var Router = React.createClass({
 });
 
 var Overview = React.createClass({
+
   render: function() {
-    var outcomes;
-    if (_.isUndefined(this.props.market)) {
-      outcomes = [];
-    } else {
-      var outcomeCount = this.props.market.outcomes.length;
-      var params = this.props.params;
-      var outcomes = _.map(this.props.market.outcomes, function (outcome) {
-        return (
-          <Outcomes.Overview {...outcome} outcomeCount={outcomeCount} params={params}></Outcomes.Overview>
-        );
-      });
-    }
+
+    // return nothing until we have an actual market loaded
+    if (_.isUndefined(this.props.market)) return (<div />);
+
+    var outcomeCount = this.props.market.outcomes.length;
+    var params = this.props.params;
+    var outcomes = _.map(this.props.market.outcomes, function (outcome) {
+      return (
+        <Outcomes.Overview {...outcome} outcomeCount={outcomeCount} params={params}></Outcomes.Overview>
+      );
+    });
 
     return (
       <div>
@@ -73,6 +77,10 @@ var Overview = React.createClass({
 var Comments = React.createClass({
 
   render: function() {
+
+    // return nothing until we have an account
+    if (!this.props.account) return (<div />);
+
     return (
       <div className="comments">
         <h4>{ this.props.comments.length } Comments</h4>
