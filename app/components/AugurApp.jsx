@@ -215,7 +215,7 @@ var ErrorModal = React.createClass({
           <div className="modal-body clearfix">
               <h4>Failed to connect to Ethereum</h4>
               <p>Augur requires a local node of the Ethereum client running</p>
-              <p>Visit <a href="https://github.com/ethereum/go-ethereum/wiki">the ethereum github wiki</a> for help installing the lastest client</p>
+              <p>Visit <a href="https://github.com/ethereum/go-ethereum/wiki">the ethereum github wiki</a> for help installing the latest client</p>
               <p>If geth is installed:<br /><span className='cmd'>geth --rpc --rpccorsdomain { host } --unlock primary</span></p>
               <p style={{display: 'none'}}><a className="pull-right start-demo-mode" onClick={ this.startDemoMode } href="javascript:void(0)">Proceed in demo mode</a></p>
           </div>
