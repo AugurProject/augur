@@ -394,36 +394,36 @@
             var market_id2 = "0x97d63d7567b1fc41c19296d959eba0e7df4900bf2d197c6b7b746d864fdde421";
             var event_description = "[augur.js] " + Math.random().toString(36).substring(4);
             var market_description = "[augur.js] " + Math.random().toString(36).substring(4);
-            // var market_description = "[augur.js] abcdefghijklmnopqrstuvwxyz0101001101010101010101010101010101010101010101010101";
+            var market_description_long = "[augur.js] abcdefghijklmnopqrstuvwxyz0101001101010101010101010101010101010101010101010101";
             var reporter_index = "0";
             var reporter_address = constants.accounts.jack;
             var ballot = [Augur.YES, Augur.YES, Augur.NO, Augur.YES];
             var salt = "1337";
-            var receiving_account = constants.accounts.loopy;
+            var receiving_account = constants.accounts.joey;
             var vote_period = 1;
 
             // cash.se
-            // Augur.getCashBalance(Augur.coinbase, function (r) {
-            //     print("   - getCashBalance(" + Augur.coinbase + ") -> " + r);
-            //     is_not_zero(r);
-            //     Augur.getCashBalance(receiving_account, function (r) {
-            //         print("   - getCashBalance(" + receiving_account + ") -> " + r);
-            //         Augur.tx.sendCash.send = false;
-            //         Augur.tx.sendCash.returns = "number";
-            //         Augur.sendCash(receiving_account, amount, function (r) {
-            //             print("   - sendCash(" + receiving_account + ", " + amount + ") [call] -> " + r);
-            //             is_not_zero(r);
-            //             assert(r === amount);
-            //             Augur.tx.sendCash.send = true;
-            //             Augur.tx.sendCash.returns = undefined;
-            //             Augur.sendCash(receiving_account, amount, function (r) {
-            //                 print("   - sendCash(" + receiving_account + ", " + amount + ") [sendTx] -> " + r);
-            //                 is_not_zero(r);
-            //                 // TODO check that balances actually changed
-            //             });
-            //         });
-            //     });
-            // });
+            Augur.getCashBalance(Augur.coinbase, function (r) {
+                print("   - getCashBalance(" + Augur.coinbase + ") -> " + r);
+                is_not_zero(r);
+                Augur.getCashBalance(receiving_account, function (r) {
+                    print("   - getCashBalance(" + receiving_account + ") -> " + r);
+                    Augur.tx.sendCash.send = false;
+                    Augur.tx.sendCash.returns = "unfix";
+                    Augur.sendCash(receiving_account, amount, function (r) {
+                        print("   - sendCash(" + receiving_account + ", " + amount + ") [call] -> " + r);
+                        is_not_zero(r);
+                        assert(r === amount);
+                        Augur.tx.sendCash.send = true;
+                        Augur.tx.sendCash.returns = undefined;
+                        Augur.sendCash(receiving_account, amount, function (r) {
+                            print("   - sendCash(" + receiving_account + ", " + amount + ") [sendTx] -> " + r);
+                            is_not_zero(r);
+                            // TODO check that balances actually changed
+                        });
+                    });
+                });
+            });
             Augur.tx.cashFaucet.send = false;
             Augur.tx.cashFaucet.returns = "number";
             Augur.cashFaucet(function (r) {
@@ -716,23 +716,29 @@
             // p2pWagers.se
 
             // sendReputation.se
+            // call: returns rep amount sent
             Augur.tx.sendReputation.send = false;
-            Augur.tx.sendReputation.returns = undefined;
+            Augur.tx.sendReputation.returns = "unfix";
             Augur.sendReputation(branch_id, receiving_account, amount, function (r) {
                 print("   - sendReputation(" + branch_id + ", " + receiving_account + ", " + amount + ") [call] -> " + r);
                 is_not_zero(r);
                 assert(r === amount);
-            });
-            var larger_amount = "9000"; // should fail
-            Augur.sendReputation(branch_id, receiving_account, amount, function (r) {
-                print("   - sendReputation(" + branch_id + ", " + receiving_account + ", " + amount + ") [call] -> " + r);
-                assert(r === "0");
-            });
-            Augur.tx.sendReputation.send = true;
-            Augur.tx.sendReputation.returns = undefined;
-            Augur.sendReputation(branch_id, receiving_account, amount, function (r) {
-                print("   - sendReputation(" + branch_id + ", " + receiving_account + ", " + amount + ") [sendTx] -> " + r);
-                is_not_zero(r);
+                // sendTx: returns txhash
+                Augur.tx.sendReputation.send = true;
+                Augur.tx.sendReputation.returns = undefined;
+                Augur.sendReputation(branch_id, receiving_account, amount, function (r) {
+                    print("   - sendReputation(" + branch_id + ", " + receiving_account + ", " + amount + ") [sendTx] -> " + r);
+                    is_not_zero(r);
+                    var larger_amount = "9000"; // should fail
+                    Augur.tx.sendReputation.send = false;
+                    Augur.tx.sendReputation.returns = "number";
+                    Augur.sendReputation(branch_id, receiving_account, larger_amount, function (r) {
+                        print("   - sendReputation(" + branch_id + ", " + receiving_account + ", " + larger_amount + ") [call] -> " + r);
+                        assert(r === "0");
+                        Augur.tx.sendReputation.send = true;
+                        Augur.tx.sendReputation.returns = undefined;
+                    });
+                });
             });
 
             // transferShares.se
