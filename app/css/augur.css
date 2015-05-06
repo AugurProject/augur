@@ -152,7 +152,11 @@ nav .navbar-right li div {
     padding: 15px;
 } 
 
-
+.shadow {
+    box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.4);
+    -webkit-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.4);
+    -moz-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.4);
+}
 .modal-content {
     background-color: #f9f6ea;
 }
@@ -264,7 +268,6 @@ nav .navbar-right li div {
     margin-bottom: 10px;
 }
 
-
 #main h3 {
     margin-top: 0px;
     margin-bottom: 0px;
@@ -340,9 +343,6 @@ nav .navbar-right li div {
     border-radius: 3px;
     opacity: 0.9;
     display: block;
-    box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.75);
-    -webkit-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.75);
-    -moz-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.75);
 }
 .market-pane:hover {
     color: #000;
@@ -410,8 +410,7 @@ nav .navbar-right li div {
 }
 
 #market .outcome {
-    border: 1px solid #DACEEA;
-    margin-top: 10px;
+    margin: 10px 0px 25px 0px;
     border-radius: 5px;
     padding: 0px 0px 0px 0px;
     background-color: #F2F2F2;
@@ -485,7 +484,6 @@ nav .navbar-right li div {
     border-bottom-right-radius: 3px;
 }
 #market .execute-trade {
-    border: 1px solid #DAD6D6;
     background-color: #F2F2F2;
     border-radius: 5px;
     padding: 10px 20px;

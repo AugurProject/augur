@@ -52,7 +52,7 @@ var Overview = React.createClass({
     }
     return (
       <div>
-        <div className="outcome outcome-{ this.props.id }">
+        <div className="outcome outcome-{ this.props.id } shadow">
           <h3>
             <div className="name">{ getOutcomeName(this.props.id, this.props.outcomeCount) }</div>
             <div className="price">{ priceToPercentage(this.props.price) }%</div>
@@ -173,7 +173,7 @@ var TradeBase = {
     );
 
     return (
-      <div className='execute-trade'>
+      <div className='execute-trade shadow'>
           <h4>{ this.actionLabel } shares of <b>{ getOutcomeName(this.getOutcomeId(), outcomeCount) }</b></h4>
           <h3 className="price">{ priceToPercentage(this.getPrice()) }% { this.getPriceDelta() }</h3>
           <p className="shares-held">Shares held: { this.state.ownedShares }</p>
