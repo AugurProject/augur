@@ -186,6 +186,16 @@ var Augur = (function (augur) {
         }
         return fixed;
     }
+    augur.prefix_hex = function (hex) {
+        if (hex.slice(0,2) !== "0x" && hex.slice(0,3) !== "-0x") {
+            if (hex.slice(0,1) == '-') {
+                hex = "-0x" + hex.slice(1);
+            } else {
+                hex = "0x" + hex;
+            }
+        }
+        return hex;
+    };
     augur.bignum = function (n) {
         var bn;
         try {
@@ -305,7 +315,7 @@ var Augur = (function (augur) {
         return (cs.reverse()).join('');
     }
 
-    function encode_hex(str) {
+    augur.encode_hex = function (str) {
         var hexbyte, hex = '';
         for (var i = 0, len = str.length; i < len; ++i) {
             hexbyte = str.charCodeAt(i).toString(16);
@@ -313,20 +323,20 @@ var Augur = (function (augur) {
             hex += hexbyte;
         }
         return hex;
-    }
+    };
 
-    function decode_hex(h) {
+    augur.decode_hex = function (h) {
         var hex = h.toString();
         var str = '';
         for (var i = 0, len = hex.length; i < len; i += 2) {
             str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
         }
         return str;
-    }
+    };
 
     function zeropad(r, ishex) {
         var output = r;
-        if (!ishex) output = encode_hex(output);
+        if (!ishex) output = augur.encode_hex(output);
         while (output.length < 64) {
             output = '0' + output;
         }
@@ -350,7 +360,7 @@ var Augur = (function (augur) {
             if (arg) {
                 if (base === "string") {
                     len_args = zeropad(encode_int(arg.length));
-                    var_args = encode_hex(arg);
+                    var_args = augur.encode_hex(arg);
                 }
                 if (base === "int") {
                     if (arg.constructor === Number) {
@@ -435,11 +445,11 @@ var Augur = (function (augur) {
 
     function format_result(returns, result) {
         var returns = returns.toLowerCase();
-        try {
+        if (result && result !== "0x") {
             if (returns.slice(-2) === "[]") {
                 result = parse_array(result, returns);
             } else if (returns === "string") {
-                result = decode_hex(result);
+                result = augur.decode_hex(result);
             } else {
                 if (augur.BigNumberOnly) {
                     if (returns === "number" || returns === "bignumber") {
@@ -447,30 +457,29 @@ var Augur = (function (augur) {
                     } else if (returns === "unfix") {
                         result = augur.unfix(result);
                     }    
-                }
-                if (returns === "number") {
-                    result = augur.bignum(result).toFixed();
-                } else if (returns === "bignumber") {
-                    result = augur.bignum(result);
-                } else if (returns === "unfix") {
-                    result = augur.unfix(result, "string");
+                } else {
+                    if (returns === "number") {
+                        result = augur.bignum(result).toFixed();
+                    } else if (returns === "bignumber") {
+                        result = augur.bignum(result);
+                    } else if (returns === "unfix") {
+                        result = augur.unfix(result, "string");
+                    }
                 }
             }
-        } catch (exc) {
-            log(exc);
         }
         return result;
     }
 
     function parse(response, returns, callback) {
-        var response = JSON.parse(response);
-        if (response) {
+        if (response !== undefined) {
+            var response = JSON.parse(response);
             if (response.error) {
                 console.error(
                     "[" + response.error.code + "]",
                     response.error.message
                 );
-            } else if (response.result) {
+            } else if (response.result !== undefined) {
                 if (returns) {
                     response.result = format_result(returns, response.result);
                 }
@@ -600,6 +609,36 @@ var Augur = (function (augur) {
     };
     augur.shh = function (command, params, f) {
         return json_rpc(postdata(command, params, "shh_"), f);
+    };
+    augur.newIdentity = function (f) {
+        return json_rpc(postdata("newIdentity", null, "shh_"), f);
+    };
+    augur.post = function (params, f) {
+        return json_rpc(postdata("post", params, "shh_"), f);
+    };
+    augur.whisperFilter = function (params, f) {
+        return json_rpc(postdata("newFilter", params, "shh_"), f);
+    };
+    augur.commentFilter = function (market, f) {
+        return augur.whisperFilter({ topics: [ market ]}, f);
+    };
+    augur.uninstallFilter = function (filter, f) {
+        return json_rpc(postdata("uninstallFilter", filter, "shh_"), f);
+    };
+    augur.comment = function (payload, f) {
+
+    };
+    augur.getMessages = function (filter, f) {
+        return json_rpc(postdata("getMessages", filter, "shh_"), f);
+    };
+    augur.getFilterChanges = function (filter, f) {
+        return json_rpc(postdata("getFilterChanges", filter, "shh_"), f);
+    };
+    augur.putString = function (key, string, f) {
+        return json_rpc(postdata("putString", ["augur", key, string], "db_"), f);
+    };
+    augur.getString = function (key, f) {
+        return json_rpc(postdata("getString", ["augur", key], "db_"), f);
     };
     augur.sha3 = augur.hash = function (data, f) {
         if (data) {

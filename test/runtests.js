@@ -4,18 +4,71 @@
  * @author Jack Peterson (jack@tinybike.net)
  */
 (function () {
+    if (typeof(module) != 'undefined') {
+        var BigNumber = require('bignumber.js');
+        var Augur = require('./../augur');
+        var crypto = require('crypto');
+        var constants = require('./constants');
+    }
+
+    var print = console.log;
+    var assert = console.assert;
+
+    var WhisperTest = function () {
+        var comment_text = "testing";
+        var dbname = "augur";
+        var market_id = "0x00000003";
+        Augur.newIdentity(function (whisper_id) {
+            if (whisper_id) {
+                var post_params = {
+                    from: whisper_id,
+                    topics: [ market_id ],
+                    priority: '0x64',
+                    ttl: "0x50" // time-to-live (until expiration) in seconds
+                };
+                Augur.commentFilter(market_id, function (filter) {
+                    post_params.payload = Augur.prefix_hex(Augur.encode_hex(comment_text));
+                    Augur.post(post_params, function (post_ok) {
+                        if (post_ok) {
+                            Augur.getFilterChanges(filter, function (message) {
+                                if (message) {
+                                    var updated_comments = JSON.stringify([{
+                                        whisperId: message[0].from, // whisper ID
+                                        from: Augur.coinbase, // ethereum account
+                                        comment: Augur.decode_hex(message[0].payload),
+                                        time: message[0].sent
+                                    }]);
+                                    // get existing comment(s) stored locally
+                                    // (note: get/putString not implemented in eth)
+                                    Augur.getString(market_id, function (comments) {
+                                        if (comments) {
+                                            updated_comments = updated_comments.slice(0,-1) + "," + comments.slice(1);
+                                        }
+                                        Augur.putString(market_id, updated_comments, function (put_ok) {
+                                            if (put_ok) {
+                                                Augur.getString(market_id, function (s) {
+                                                    print(JSON.parse(s));
+                                                    assert(s === updated_comments);
+                                                });
+                                            }
+                                        });
+                                    });
+                                }
+                            });
+                        }
+                    });
+                });
+            }
+        });
+    };
+
+    // minimal example that crashes geth (?)
+    // var print = console.log;
+    // Augur.shh("newFilter", { topics: [ "0xb13d98f933cbd602a3d9d4626260077678ab210d1e63b3108b231c1758ff9971" ] }, print);
+    // Augur.shh("uninstallFilter", "0x0", print);
+
     var Tests = function (async) {
-        var tx, print, assert, callback;
-
-        if (typeof(module) != 'undefined') {
-            var BigNumber = require('bignumber.js');
-            var Augur = require('./../augur');
-            var crypto = require('crypto');
-            var constants = require('./constants');
-        }
-
-        print = console.log;
-        assert = console.assert;
+        var tx, callback;
     
         Augur.async = async;
         Augur.BigNumberOnly = false;
@@ -847,4 +900,5 @@
     };
     // Tests(false);
     Tests(true);
+    WhisperTest();
 })();
