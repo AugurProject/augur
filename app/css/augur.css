@@ -560,7 +560,7 @@ nav .navbar-right li div {
     border-left: 1px solid #bbb;
 }
 #account .balances p {
-    font-size: 14px;
+    font-size: 16px;
     width: 100%;
     padding-right: 0px;
     clear: right;   
@@ -570,8 +570,10 @@ nav .navbar-right li div {
 }
 #account .balances p button {
     margin-left: 12px;
-    font-size: 10px;
+    font-size: 12px;
     text-transform: uppercase;
+    position: relative;
+    top: -2px;
 }
 #account .balances p button i {
     margin-left: 8px;
