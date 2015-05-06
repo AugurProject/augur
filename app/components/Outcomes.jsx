@@ -237,12 +237,25 @@ var Sell = React.createClass(_.merge({
 
   getHelpText: function () {
     if (!this.state.simulation) {
-      return 'Enter the number of shares to see their value.';
+      return '';
+    }
+    return (
+      'Cost: ' + this.state.simulation.cost.toString()
+    );
+  },
+
+  getPriceDelta: function () {
+
+    if (!this.state.simulation) {
+      return '';
     }
 
+    var newPrice = priceToPercentage(this.state.simulation.newPrice);
     return (
-      'Value: ' + this.state.simulation.cost.toString() + ' cash. ' +
-      'New forecast: ' + priceToPercentage(this.state.simulation.newPrice) + '%'
+      <span>
+        <i className='fa fa-chevron-down' style={{color: 'red'}}></i>
+        <span className='new-price'>{ newPrice }%</span>
+      </span>
     );
   },
 
