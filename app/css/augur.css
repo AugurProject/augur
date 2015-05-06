@@ -477,8 +477,8 @@ nav .navbar-right li div {
     border-bottom-right-radius: 3px;
 }
 #market .execute-trade {
-    border: 1px solid #eee;
-    background-color: #DFDBE0;
+    border: 1px solid #DAD6D6;
+    background-color: #F2F2F2;
     border-radius: 5px;
     padding: 10px 20px;
 }

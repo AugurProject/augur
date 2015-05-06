@@ -41,10 +41,10 @@ var Router = React.createClass({
         <h3>{ this.state.market.description }</h3>
         <h4 className="info">Resolves after { this.state.market.endDate.format("MMMM Do, YYYY") }</h4>
         <div className="row">
-          <div className='col-sm-5'>
+          <div className='col-sm-6'>
             <RouteHandler {...this.props} {...this.state} />
           </div>
-          <div className='col-sm-7'>
+          <div className='col-sm-6'>
           </div>
         </div>
         <Comments comments={ this.props.market.comments } account={ this.props.account } />

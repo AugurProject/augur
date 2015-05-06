@@ -162,8 +162,9 @@ var TradeBase = {
 
     var outcomeCount = this.props.market.outcomes.length;
 
+    var style = this.actionLabel === 'Sell' ? 'danger' : 'success';
     var submit = (
-      <Button type="submit">{ this.actionLabel }</Button>
+      <Button bsStyle={ style } type="submit">{ this.actionLabel }</Button>
     );
 
     return (
