@@ -6,6 +6,7 @@ var Router = require('react-router');
 var Link = Router.Link;
 var ReactBootstrap = require('react-bootstrap');
 var Input = ReactBootstrap.Input;
+var Button = ReactBootstrap.Button;
 var Promise = require('es6-promise').Promise;
 
 var NO = 1;
@@ -35,26 +36,34 @@ var getOutcome = function (outcomeComponent) {
 
 var Overview = React.createClass({
   render: function () {
+
+    var holdings;
+    if (this.props.sharesPurchased) {
+      holdings = (
+        <div className='sell trade'>
+          <Link to="sell-outcome" className="btn btn-danger form-control" params={{marketId: this.props.params.marketId, outcomeId: this.props.id}}>Sell</Link>
+          <span className="shares-held btn">{ this.props.sharesPurchased } shares held</span> 
+        </div>);
+    } else {
+      holdings = (
+        <div className='sell trade'>
+          <span className="shares-held">no shares held</span> 
+        </div>);      
+    }
     return (
       <div>
-        <div className="outcome outcome-{ this.props.id }">
-          <div className="row">
-            <div className="col-sm-7">
-              <h3>
-                { getOutcomeName(this.props.id, this.props.outcomeCount) }
-                <span className="price pull-right">{ priceToPercentage(this.props.price) }% <b>({ this.props.sharesPurchased.toString() } shares)</b></span>
-              </h3>
+        <div className="outcome outcome{ this.props.id }">
+          <h3>
+            <div className="name">{ getOutcomeName(this.props.id, this.props.outcomeCount) }</div>
+            <div className="price">{ priceToPercentage(this.props.price) }%</div>
+          </h3>
+          <div className="summary">
+            <div className='buy trade'>
+              <Link to="buy-outcome" className="btn btn-success" params={{marketId: this.props.params.marketId, outcomeId: this.props.id}}>Buy</Link>
             </div>
-            <div className="col-sm-5">
-              <Link to="buy-outcome" bsSize='large' className="btn btn-success pull-right" params={{marketId: this.props.params.marketId, outcomeId: this.props.id}}>Buy</Link>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-sm-6">
-            </div>
-            <div className="col-sm-6">
-              <Link to="sell-outcome" bsSize='large' className="btn btn-danger pull-right" params={{marketId: this.props.params.marketId, outcomeId: this.props.id}}>Sell</Link>
-            </div>
+            { holdings }
+            <p>{ +this.props.volume.toFixed(2) } shares</p>
+            <p>${ +this.props.price.toFixed(2) }</p>
           </div>
         </div>
       </div>
@@ -150,39 +159,59 @@ var TradeBase = {
   },
 
   render: function () {
+
     var outcomeCount = this.props.market.outcomes.length;
 
+    var submit = (
+      <Button type="submit">{ this.actionLabel }</Button>
+    );
+
     return (
-      <div>
-        <h3>{this.actionLabel} "{ getOutcomeName(this.getOutcomeId(), outcomeCount) }" Shares</h3>
-        <div className="price">{ priceToPercentage(this.getPrice()) }%</div>
-        <p className="shares-held">Shares held: {this.state.ownedShares}</p>
-        <form onSubmit={this.onSubmit}>
-          <Input
-            type="text"
-            value={this.state.value}
-            label="Shares"
-            help={this.getHelpText()}
-            ref="input"
-            onChange={this.handleChange} />
-          <Input type="submit" />
-        </form>
+      <div className='execute-trade'>
+          <h4>{ this.actionLabel } shares of <b>{ getOutcomeName(this.getOutcomeId(), outcomeCount) }</b></h4>
+          <h3 className="price">{ priceToPercentage(this.getPrice()) }% { this.getPriceDelta() }</h3>
+          <p className="shares-held">Shares held: { this.state.ownedShares }</p>
+          <p className="shares-held">Cash balance: { this.state.cashBalance }</p>
+          <form onSubmit={ this.onSubmit }>
+            <Input
+              type="text"
+              value={ this.state.value }
+              help={ this.getHelpText() }
+              ref="input"
+              placeholder='Shares'
+              onChange={ this.handleChange } 
+              buttonAfter={ submit }
+            />
+          </form>
       </div>
     );
   }
 };
 
 var Buy = React.createClass(_.merge({
-  actionLabel: 'Purchase',
+  actionLabel: 'Buy',
 
   getHelpText: function () {
     if (!this.state.simulation) {
-      return 'Enter the number of shares to see the cost.';
+      return '';
+    }
+    return (
+      'Cost: ' + this.state.simulation.cost.toString()
+    );
+  },
+
+  getPriceDelta: function () {
+
+    if (!this.state.simulation) {
+      return '';
     }
 
+    var newPrice = priceToPercentage(this.state.simulation.newPrice);
     return (
-      'Cost: ' + this.state.simulation.cost.toString() + ' cash. ' +
-      'New forecast: ' + priceToPercentage(this.state.simulation.newPrice) + '%'
+      <span>
+        <i className='fa fa-chevron-up' style={{color: 'green'}}></i>
+        <span className='new-price'>{ newPrice }%</span>
+      </span>
     );
   },
 

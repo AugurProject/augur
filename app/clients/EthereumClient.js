@@ -9,7 +9,7 @@ var blacklist = require('../libs/blacklist');
 var fromFixedPoint = utilities.fromFixedPoint;
 var toFixedPoint = utilities.toFixedPoint;
 
-var Augur;
+var Augur = window.Augur = require('augur.js');
 
 function MissingContractError(contractName) {
   this.name = 'MissingContractError';
@@ -36,7 +36,7 @@ function EthereumClient(host) {
 
   // hacking around agressive Augur
   try {
-    Augur = require('augur.js');
+    //Augur = require('augur.js');
   } catch (err) {
     
   }
@@ -45,7 +45,7 @@ function EthereumClient(host) {
 EthereumClient.prototype.isAvailable = function() {
 
     try {
-      this.account = this.getPrimaryAccount();
+      this.account = this.web3.eth.coinbase;
     } catch(err) {
       return false;
     }

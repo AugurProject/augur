@@ -20,11 +20,13 @@ var Router = React.createClass({
     var flux = this.getFlux();
     var marketState = flux.store('market').getState();
     var account = flux.store('network').getAccount();
+    var assetState = flux.store('asset').getState();
 
     var marketId = new BigNumber(this.props.params.marketId, 16);
 
     return {
       market: marketState.markets[marketId],
+      cashBalance: assetState.cashBalance,
       account: account
     }
   },
@@ -38,7 +40,14 @@ var Router = React.createClass({
       <div id='market'>
         <h3>{ this.state.market.description }</h3>
         <h4 className="info">Resolves after { this.state.market.endDate.format("MMMM Do, YYYY") }</h4>
-        <RouteHandler {...this.props} {...this.state} />
+        <div className="row">
+          <div className='col-sm-5'>
+            <RouteHandler {...this.props} {...this.state} />
+          </div>
+          <div className='col-sm-7'>
+          </div>
+        </div>
+        <Comments comments={ this.props.market.comments } account={ this.props.account } />
       </div>
     );
   }
@@ -59,16 +68,9 @@ var Overview = React.createClass({
       );
     });
 
-    return (
+    return ( 
       <div>
-        <div className="row">
-          <div className='col-sm-6'>
-            { outcomes }
-          </div>
-          <div className='col-sm-6'>
-          </div>
-        </div>
-        <Comments comments={ this.props.market.comments } account={ this.props.account } />
+        { outcomes } 
       </div>
     );
   }

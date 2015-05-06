@@ -409,23 +409,96 @@ nav .navbar-right li div {
     border: 1px solid #DACEEA;
     margin-top: 10px;
     border-radius: 5px;
-    padding: 10px 10px 10px 10px;
+    padding: 0px 0px 0px 0px;
     background-color: #F2F2F2;
-}
-#market .outcome .row:first-child {
-    margin-bottom: 10px;
+    overflow: hidden;
+    clear: both;
+    position: relative;
+    height: 90px;
 }
 #market .outcome h3 {
-    padding: 5px 0px;
+    color: #fff;
+    background-color: #18376f;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    height: 100%;
+    float: left;
+    width: 75px;
+    position: relative;
+}
+#market .outcome h3 .name {
+    position: absolute;
+    top: 8px;
+    left: 8px;
 }
 #market .outcome h3 .price {
-    font-weight: 200;
-}
-#market .outcome h3 .price b {
-    font-size: 18px;
+    font-size: 20px;
     font-family: 'Source Sans Pro';
-    font-weight: 400;
-    margin-left: 10px
+    font-weight: 300;
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+}
+#market .outcome .summary {
+    float: left;
+    padding: 4px 8px;
+    color: #555;
+}
+#market .outcome .summary p {
+    margin: 0px;
+    font-size: 16px;
+}
+#market .outcome .trade {
+    position: absolute;
+    right: -1px;
+}
+#market .outcome .trade a.btn {
+    float: right;
+    width: 63px;
+}   
+#market .outcome .trade .shares-held.btn {
+    background-color: #FCFFFD;
+    float: right;
+    border-radius: 0px;
+    border-top-left-radius: 3px;
+}
+#market .outcome .buy {
+    top: -1px;
+}
+#market .outcome .buy .btn {
+    border-bottom-right-radius: 0px;
+    border-top-left-radius: 0px;
+}
+#market .outcome .sell {
+    bottom: -1px;
+}
+#market .outcome .sell .btn {
+    border-radius: 0px;
+    border-bottom-right-radius: 3px;
+}
+#market .execute-trade {
+    border: 1px solid #eee;
+    background-color: #DFDBE0;
+    border-radius: 5px;
+    padding: 10px 20px;
+}
+#market .execute-trade p {
+    margin: 0px;
+}
+#market .execute-trade .price {
+    margin-bottom: 10px;
+    margin-top: 15px;
+}
+#market .execute-trade .price i {
+    margin: 0px 3px 0px 8px;
+    position: relative;
+    top: -1px;
+}
+#market .execute-trade .price .new-price {
+    color: #777;
+}
+#market .execute-trade form {
+    margin-top: 20px;
 }
 #market .comments {
     margin-top: 40px;
