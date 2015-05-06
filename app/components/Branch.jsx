@@ -51,7 +51,7 @@ var Branch = React.createClass({
     return (
       <div id="branch">
         <h3 className="clearfix">Markets <span className="subheading pull-right">Showing { start+1 } - { end } of { total }</span></h3>
-        <h4 className="clearfix">
+        <div className="subheading clearfix">
           <AddMarketTrigger />
           <Pager 
             total={  total / this.state.marketsPerPage }
@@ -65,7 +65,7 @@ var Branch = React.createClass({
             visiblePages={ this.state.visiblePages }
             onPageChanged={ this.handlePageChanged }
           />
-        </h4>
+        </div>
         <MarketList markets={ marketPage } />
       </div>
     );

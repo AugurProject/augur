@@ -39,7 +39,7 @@ var Router = React.createClass({
     return (
       <div id='market'>
         <h3>{ this.state.market.description }</h3>
-        <h4 className="info">Resolves after { this.state.market.endDate.format("MMMM Do, YYYY") }</h4>
+        <div className="subheading">Resolves after { this.state.market.endDate.format("MMMM Do, YYYY") }</div>
         <div className="row">
           <div className='col-sm-6'>
             <RouteHandler {...this.props} {...this.state} />

@@ -274,8 +274,12 @@ nav .navbar-right li div {
     font-size: 16px;
     margin-top: 3px;
 }
+#main div.subheading {
+    font-size: 18px;
+    margin: 5px 0px 15px 0px;
+}
 #main h4 {
-    font-weight: 300;
+    font-weight: 400;
 }
 
 
@@ -481,6 +485,9 @@ nav .navbar-right li div {
     background-color: #F2F2F2;
     border-radius: 5px;
     padding: 10px 20px;
+}
+#market .execute-trade h4 {
+    font-size: 20px;
 }
 #market .execute-trade p {
     margin: 0px;

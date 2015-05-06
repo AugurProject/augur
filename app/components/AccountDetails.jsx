@@ -47,7 +47,7 @@ var AccountDetails = React.createClass({
     return (
       <div id="account">
         <h3>Account Overview</h3>
-        <h4>{ this.state.primaryAccount }</h4>
+        <div className='subheading'>{ this.state.primaryAccount }</div>
         <div className='row'>
           <div className="col-sm-6 col-lg-7">
             <h4>Holdings</h4>

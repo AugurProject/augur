@@ -197,7 +197,7 @@ var Buy = React.createClass(_.merge({
       return '';
     }
     return (
-      'Cost: ' + this.state.simulation.cost.toString()
+      'Cost: ' + this.state.simulation.cost.toFixed(3)
     );
   },
 
@@ -241,7 +241,7 @@ var Sell = React.createClass(_.merge({
       return '';
     }
     return (
-      'Cost: ' + this.state.simulation.cost.toString()
+      'Cost: ' + this.state.simulation.cost.toFixed(3)
     );
   },
 
