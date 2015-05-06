@@ -459,6 +459,10 @@ nav .navbar-right li div {
 #market .outcome .trade a.btn {
     float: right;
     width: 63px;
+}
+#market .outcome .trade .shares-held.none {
+    padding: 10px 10px;
+    display: inline-block;
 }   
 #market .outcome .trade .shares-held.btn {
     background-color: #FCFFFD;

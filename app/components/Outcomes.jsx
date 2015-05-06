@@ -38,16 +38,16 @@ var Overview = React.createClass({
   render: function () {
 
     var holdings;
-    if (this.props.sharesPurchased) {
+    if (this.props.sharesPurchased.toNumber()) {
       holdings = (
         <div className='sell trade'>
           <Link to="sell-outcome" className="btn btn-danger form-control" params={{marketId: this.props.params.marketId, outcomeId: this.props.id}}>Sell</Link>
-          <span className="shares-held btn">{ this.props.sharesPurchased } shares held</span> 
+          <span className="shares-held btn">{ this.props.sharesPurchased.toNumber() } shares held</span> 
         </div>);
     } else {
       holdings = (
         <div className='sell trade'>
-          <span className="shares-held">no shares held</span> 
+          <span className="shares-held none">no shares held</span> 
         </div>);      
     }
     return (

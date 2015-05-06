@@ -355,6 +355,9 @@ EthereumClient.prototype.getMarkets = function (branchId) {
 
       var volume = fromFixedPoint(marketContract.getSharesPurchased.call(marketId, outcomeId));
       totalVolume = totalVolume.plus(volume);
+      var sharesPurchased = fromFixedPoint(marketContract.getParticipantSharesPurchased.call(marketId, traderId, outcomeId));
+
+      //console.log (sharesPurchased.toNumber(), marketId.toString(16), traderId.toNumber(), outcomeId);
 
       return {
         id: outcomeId,
@@ -362,7 +365,7 @@ EthereumClient.prototype.getMarkets = function (branchId) {
         //sellPrice: marketContract.getSimulatedSell.call(marketId, id).toNumber(),
         //buyPrice: marketContract.getSimulatedBuy.call(marketId, id).toNumber(),
         priceHistory: [],  // NEED
-        sharesPurchased: fromFixedPoint(marketContract.getParticipantSharesPurchased.call(marketId, traderId, outcomeId)),
+        sharesPurchased: sharesPurchased,
         volume: volume
       };
     });
