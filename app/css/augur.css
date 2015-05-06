@@ -372,7 +372,8 @@ nav .navbar-right li div {
 }
 .market-pane .details {
     padding: 6px 6px;
-    font-size: 12px;
+    font-size: 14px;
+    color: #333;
 }
 .market-pane .details p {
     margin: 0px;
