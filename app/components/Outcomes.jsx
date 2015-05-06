@@ -13,7 +13,7 @@ var NO = 1;
 var YES = 2;
 
 var priceToPercentage = function (price) {
-  return Math.floor(parseFloat(price) * 100).toString();
+  return +price.times(100).toFixed(0);
 };
 
 var getOutcomeName = function (id, count) {
@@ -52,7 +52,7 @@ var Overview = React.createClass({
     }
     return (
       <div>
-        <div className="outcome outcome{ this.props.id }">
+        <div className="outcome outcome-{ this.props.id }">
           <h3>
             <div className="name">{ getOutcomeName(this.props.id, this.props.outcomeCount) }</div>
             <div className="price">{ priceToPercentage(this.props.price) }%</div>
@@ -62,8 +62,8 @@ var Overview = React.createClass({
               <Link to="buy-outcome" className="btn btn-success" params={{marketId: this.props.params.marketId, outcomeId: this.props.id}}>Buy</Link>
             </div>
             { holdings }
-            <p>{ +this.props.volume.toFixed(2) } shares</p>
-            <p>${ +this.props.price.toFixed(2) }</p>
+            <p>{ +this.props.volume.toFixed(2, 5) } shares</p>
+            <p>${ +this.props.price.toFixed(2, 5) }</p>
           </div>
         </div>
       </div>
@@ -129,6 +129,11 @@ var TradeBase = {
         );
       }).then((simulation) => {
         console.log('Setting simulation: ', simulation);
+
+        // HACK: sanitize return value to big number for demo
+        simulation = {cost: new BigNumber(simulation.cost), newPrice: new BigNumber(simulation.newPrice)};
+        ////
+
         this.setState({
           simulation: simulation
         });
@@ -250,7 +255,6 @@ var Sell = React.createClass(_.merge({
     if (!this.state.simulation) {
       return '';
     }
-
     var newPrice = priceToPercentage(this.state.simulation.newPrice);
     return (
       <span>

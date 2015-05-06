@@ -105,12 +105,12 @@ var MarketPane = React.createClass({
       <Link to='market' params={ {marketId: market.id.toString(16)} } className='market-pane'>
         <h5>{ market.description }</h5>
         <div className='summary'>
-          <span>{ market.price.times(100).toPrecision(3) }%</span>
+          <span>{ +market.price.times(100).toFixed(0) }%</span>
         </div>
         <div className='details'>
-          <p>Price: <b>{ market.price.toPrecision(3) }</b></p>
-          <p className='alt'>Volume: <b>{ market.totalVolume.toFixed(0) }</b></p>
-          <p>Fee: <b>{ market.tradingFee.times(100).toPrecision(3) }%</b></p>
+          <p>Price: <b>{ +market.price.toFixed(3) }</b></p>
+          <p className='alt'>Volume: <b>{ +market.totalVolume.toFixed(2) }</b></p>
+          <p>Fee: <b>{ +market.tradingFee.times(100).toFixed(3) }%</b></p>
           <p className='alt'>End date: <b>{ formattedDate }</b></p>
         </div>
       </Link>

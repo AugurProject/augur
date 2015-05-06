@@ -357,8 +357,6 @@ EthereumClient.prototype.getMarkets = function (branchId) {
       totalVolume = totalVolume.plus(volume);
       var sharesPurchased = fromFixedPoint(marketContract.getParticipantSharesPurchased.call(marketId, traderId, outcomeId));
 
-      //console.log (sharesPurchased.toNumber(), marketId.toString(16), traderId.toNumber(), outcomeId);
-
       return {
         id: outcomeId,
         price: fromFixedPoint(marketContract.price.call(marketId, outcomeId)),
@@ -528,11 +526,13 @@ var getTradeArgs = function (branchId, marketId, outcomeId, numShares, callback)
 
 EthereumClient.prototype.buyShares = function (branchId, marketId, outcomeId, numShares, callback) {
   var args = getTradeArgs(branchId, marketId, outcomeId, numShares, callback);
+  console.log(args);
   Augur.buyShares.apply(null, args);
 };
 
 EthereumClient.prototype.sellShares = function (branchId, marketId, outcomeId, numShares, callback) {
   var args = getTradeArgs(branchId, marketId, outcomeId, numShares, callback);
+  console.log(args);
   Augur.sellShares.apply(null, args);
 };
 
