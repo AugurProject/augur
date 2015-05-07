@@ -3,10 +3,12 @@ var React = require('react');
 var Fluxxor = require('fluxxor');
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
+var ReactBootstrap = require('react-bootstrap');
+var Modal = ReactBootstrap.Modal;
 var Router = require("react-router");
 var RouteHandler = Router.RouteHandler;
 
-var Identicon = require('../libs/identicon.js');
+var Identicon = require('../libs/identicon');
 var utilities = require('../libs/utilities');
 var momemt = require('moment');
 var Outcomes = require('./Outcomes');
@@ -106,7 +108,7 @@ var CommentList = React.createClass({
           <div className="user avatar" style={{ backgroundImage: 'url(' + identicon + ')' }}></div>
           <div className="box">
             <p>{ c.comment }</p>
-            <div className="date">{ utilities.formatDate(c.date) }</div>
+            <div className="date">{ c.date }</div>
             <div className="address">{ c.author }</div>
           </div>
         </div>
