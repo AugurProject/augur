@@ -64,7 +64,7 @@ var Overview = React.createClass({
             </div>
             { holdings }
             <p>{ +this.props.volume.toFixed(2) } shares</p>
-            <p>${ +this.props.price.toFixed(2) }</p>
+            <p>${ this.props.price.toFixed(2) }</p>
           </div>
         </div>
       </div>
