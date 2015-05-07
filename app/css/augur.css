@@ -409,7 +409,17 @@ nav .navbar-right li div {
 #market {
 
 }
-
+#market .price-history {
+    background-color: #eee;
+    border: 1px solid #dedede;
+    border-radius: 5px;
+    height: 225px;
+}
+#market .price-history h4 {
+    margin: 95px auto 0px auto;
+    width: 155px;
+    color: #999;
+}
 #market .outcome {
     margin: 10px 0px 25px 0px;
     border-radius: 5px;

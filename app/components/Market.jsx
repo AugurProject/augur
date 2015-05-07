@@ -47,6 +47,9 @@ var Router = React.createClass({
             <RouteHandler {...this.props} {...this.state} />
           </div>
           <div className='col-sm-6'>
+            <div className='price-history'>
+              <h4>Price history soon...</h4>
+            </div>
           </div>
         </div>
         <Comments comments={ this.props.market.comments } account={ this.props.account } />
