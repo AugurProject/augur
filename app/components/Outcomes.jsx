@@ -193,7 +193,7 @@ var TradeBase = {
         <form onSubmit={ this.onSubmit }>
           <Input
             type="text"
-            bsStyle= { inputStyle }
+            bsStyle={ inputStyle }
             value={ this.state.value }
             help={ this.getHelpText() }
             ref="input"

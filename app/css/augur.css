@@ -660,6 +660,9 @@ nav .navbar-right li div {
 #add-market-modal p {
     font-size: 16px;
 }
+#add-market-modal .help-block {
+    float: left;
+}
 #add-market-modal .modal-body {
     height: 215px;
 }
@@ -675,7 +678,7 @@ nav .navbar-right li div {
     font-size: 15px;
 }
 #add-market-modal .fees label, 
-#add-market-modal .fees .helper {
+#add-market-modal .fees .help {
     position: relative;
     top: 6px;
 }
@@ -686,7 +689,7 @@ nav .navbar-right li div {
     font-size: 16px;
     margin-top: 15px;
 }
-#add-market-modal .helper {
+#add-market-modal .text-count {
     color: #777;
 }
 #add-market-modal .date p {

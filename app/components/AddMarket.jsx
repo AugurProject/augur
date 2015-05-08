@@ -4,6 +4,7 @@ var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 var ReactBootstrap = require('react-bootstrap');
 var Button = ReactBootstrap.Button;
+var Input = ReactBootstrap.Input;
 var Modal = ReactBootstrap.Modal;
 var ModalTrigger = ReactBootstrap.ModalTrigger;
 var utilities = require('../libs/utilities');
@@ -18,7 +19,9 @@ var AddMarketModal = React.createClass({
     return {
       pageNumber: 1,
       marketText: '',
-      marketTextHelper: '',
+      marketTextMaxLength: 256,
+      marketTextCount: '',
+      marketTextError: null,
       marketInvestment: '100',
       maturationDate: '',
       tradingFee: '2',
@@ -46,14 +49,14 @@ var AddMarketModal = React.createClass({
   onChangeMarketText: function (event) {
 
     var marketText = event.target.value;
-    var maxLength = 256;
 
     if (marketText.length) {
-      this.state.marketTextHelper = marketText.length.toString()+'/'+maxLength.toString();
+      this.state.marketTextCount = marketText.length.toString()+'/'+this.state.marketTextMaxLength.toString();
     } else {
-      this.state.marketTextHelper = '';
+      this.state.marketTextCount = '';
     }
 
+    this.setState({marketTextError: null});
     this.setState({marketText: marketText});
   },
 
@@ -74,8 +77,30 @@ var AddMarketModal = React.createClass({
   },
 
   onNext: function(event) {
-    var newPageNumber = this.state.pageNumber + 1;
-    this.setState({pageNumber: newPageNumber});
+
+    if (this.validatePage(this.state.pageNumber)) {
+      var newPageNumber = this.state.pageNumber + 1;
+      this.setState({pageNumber: newPageNumber});
+    }
+  },
+
+  validatePage: function(pageNumber) {
+    console.log(pageNumber);
+    if (pageNumber === 1) {
+      if (this.state.marketText.length > this.state.marketTextMaxLength) {
+        this.setState({marketTextError: 'Text exceeds the maximum length of ' + this.state.marketTextMaxLength});
+        return false;
+      } else if (!this.state.marketText.length) {
+        console.log(this.state.marketText.length);
+         this.setState({marketTextError: 'Please enter your question'});
+        return false;       
+      }
+    } else if (pageNumber === 2) {
+
+    } else if (pageNumber === 3) {
+
+    }
+    return true;
   },
 
   onBack: function(event) {
@@ -123,7 +148,7 @@ var AddMarketModal = React.createClass({
           <div className="form-group">
             <label className="col-sm-3">Trading fee</label>
             <div className="col-sm-2 input-group">
-              <input 
+              <Input 
                 type="text" 
                 className="form-control" 
                 name="trading-fee" 
@@ -148,7 +173,7 @@ var AddMarketModal = React.createClass({
               />
             </div>
             <div className="col-sm-4">
-              <span className="helper">CASH: { this.state.cashLeft }</span> 
+              <span className="help">CASH: { this.state.cashLeft }</span> 
             </div>
             <div className="col-xs-12">
               <p className="desc">The initial market liquidity is the amount of cash you wish to put in the market upfront.</p>
@@ -193,17 +218,19 @@ var AddMarketModal = React.createClass({
       );
     } else {
       subheading = 'Market Query';
+      var inputStyle = this.state.marketTextError ? 'error' : 'default';
       page = (
         <div>
           <p>Enter a question for the market to trade on.  This question should have a yes or no answer, be easily verifiable and have an expiring date in the future.</p>
           <p>For example: "Will Hurricane Fatima remain a category four and make land-fall by August 8th, 2017?"</p>
-          <textarea 
-            className="form-control" 
-            name="market-text" 
+          <Input
+            type='textarea'
+            help={ this.state.marketTextError }
+            bsStyle={ inputStyle }
             placeholder="What's your yes or no question?"  
             onChange={ this.onChangeMarketText } 
           />
-          <span className="helper pull-right">{ this.state.marketTextHelper }</span> 
+          <span className="text-count pull-right">{ this.state.marketTextCount }</span> 
         </div>
       );
       footer = (
