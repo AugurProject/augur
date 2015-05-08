@@ -21,7 +21,8 @@ module.exports = {
     UPDATE_NETWORK: null,
     UPDATE_ETHEREUM_STATUS: null,
     ETHEREUM_STATUS_CONNECTED: null,
-    ETHEREUM_STATUS_FAILED: null
+    ETHEREUM_STATUS_FAILED: null,
+    ETHEREUM_STATUS_LOADING: null
   }),
   asset: keyMirror({
     LOAD_ASSETS_SUCCESS: null

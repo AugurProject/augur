@@ -109,7 +109,7 @@ var TradeBase = {
 
   handleChange: function () {
     var rawValue = this.refs.input.getValue()
-    var numShares = parseInt(rawValue);
+    var numShares = parseFloat(rawValue);
 
     this.setState({
       value: rawValue,
