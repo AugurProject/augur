@@ -227,7 +227,7 @@ var Augur = (function (augur) {
         } catch (e) {
             log("could not create BigNumber for " + n.toString());
         }
-    }
+    };
     augur.fix = function (n, encode) {
         var fixed;
         try {
@@ -235,7 +235,7 @@ var Augur = (function (augur) {
             if (n.constructor === BigNumber) {
                 fixed = fixed_string(n.mul(augur.ONE).round(), encode);
             } else if (n.constructor === Number || n.constructor === String) {
-                fixed = fixed_string(augur.bignum(n).mul(Augur.ONE).round(), encode);
+                fixed = fixed_string(augur.bignum(n).mul(augur.ONE).round(), encode);
             } else if (n.constructor === Array) {
                 var len = n.length;
                 fixed = Array(len);
@@ -252,7 +252,7 @@ var Augur = (function (augur) {
     };
     augur.unfix = function (n, encode) {
         var unfixed;
-        try {
+        if (n && n !== "0x") {
             if (encode) encode = encode.toLowerCase();
             if (n.constructor === BigNumber) {
                 unfixed = n.dividedBy(augur.ONE);
@@ -296,10 +296,8 @@ var Augur = (function (augur) {
                 log("could not convert " + n.toString() + " from fixed-point");
             }
             return unfixed;
-        } catch (e) {
-            log("could not convert " + n.toString() + " from fixed-point");
         }
-    }
+    };
 
     /***********************************
      * Contract ABI data serialization *
@@ -328,6 +326,9 @@ var Augur = (function (augur) {
     augur.decode_hex = function (h) {
         var hex = h.toString();
         var str = '';
+        if (hex.slice(0, 2) === "0x") {
+            hex = hex.slice(2);
+        }
         for (var i = 0, len = hex.length; i < len; i += 2) {
             str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
         }
@@ -436,7 +437,11 @@ var Augur = (function (augur) {
                 array[i] = "0x" + array[i];
             }
             if (returns === "number[]") {
-                array[i] = augur.unfix(array[i], "string");
+                if (augur.BigNumbersOnly) {
+                    array[i] = augur.unfix(array[i]);
+                } else {
+                    array[i] = augur.unfix(array[i], "string");
+                }
             }
             position += stride;
         }
@@ -501,14 +506,14 @@ var Augur = (function (augur) {
             if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
         }
         return copy;
-    }
+    };
     augur.range = function (start, end) {
         var foo = [];
         for (var i = start; i <= end; i++) {
             foo.push(i);
         }
         return foo;
-    }
+    };
 
     /********************************************
      * Post JSON-RPC command to Ethereum client *
@@ -610,36 +615,7 @@ var Augur = (function (augur) {
     augur.shh = function (command, params, f) {
         return json_rpc(postdata(command, params, "shh_"), f);
     };
-    augur.newIdentity = function (f) {
-        return json_rpc(postdata("newIdentity", null, "shh_"), f);
-    };
-    augur.post = function (params, f) {
-        return json_rpc(postdata("post", params, "shh_"), f);
-    };
-    augur.whisperFilter = function (params, f) {
-        return json_rpc(postdata("newFilter", params, "shh_"), f);
-    };
-    augur.commentFilter = function (market, f) {
-        return augur.whisperFilter({ topics: [ market ]}, f);
-    };
-    augur.uninstallFilter = function (filter, f) {
-        return json_rpc(postdata("uninstallFilter", filter, "shh_"), f);
-    };
-    augur.comment = function (payload, f) {
 
-    };
-    augur.getMessages = function (filter, f) {
-        return json_rpc(postdata("getMessages", filter, "shh_"), f);
-    };
-    augur.getFilterChanges = function (filter, f) {
-        return json_rpc(postdata("getFilterChanges", filter, "shh_"), f);
-    };
-    augur.putString = function (key, string, f) {
-        return json_rpc(postdata("putString", ["augur", key, string], "db_"), f);
-    };
-    augur.getString = function (key, f) {
-        return json_rpc(postdata("getString", ["augur", key], "db_"), f);
-    };
     augur.sha3 = augur.hash = function (data, f) {
         if (data) {
             if (data.constructor === Array || data.constructor === Object) {
@@ -1435,6 +1411,8 @@ var Augur = (function (augur) {
         augur.invoke(augur.tx.getSimulatedSell, onSent);
     };
 
+    augur.filters = {}; // key: marketId => {filterId: hexstring, polling: bool}
+
     augur.tx.getMarketInfo = {
         from: augur.coinbase,
         to: augur.contracts.markets,
@@ -1456,8 +1434,39 @@ var Augur = (function (augur) {
                     tradingFee: augur.unfix(marketInfo[5], "string")
                 };
                 augur.getDescription(market, function (description) {
-                    if (description) info.description = description;
-                    onSent(info);
+                    if (description) {
+                        info.description = description;
+                    }
+
+                    // make sure there's only one filter per market
+                    if (augur.filters[market] && augur.filters[market].filterId) {
+                        log("existing filter found");
+                        pollFilter(market, augur.filters[market].filterId);
+                    } else {
+                    
+                        // create filter for this market
+                        augur.commentFilter(market, function (filter) {
+                            if (filter && filter !== "0x") {
+                                log("creating new filter");
+                                augur.filters[market] = {
+                                    filterId: filter,
+                                    polling: false
+                                };
+                                augur.filters[market].polling = true;
+                    
+                                // get and send all comments in local leveldb
+                                augur.getString(market, function (comments) {
+                                    if (comments) {
+                                        info.comments = comments;
+                                        augur.comment(market, comments, function (ok) {
+                                            if (ok) onSent(info);
+                                        });
+                                    }
+                                });
+                                pollFilter(market, filter);
+                            }
+                        });
+                    }
                 });
             }
         });
@@ -2001,6 +2010,126 @@ var Augur = (function (augur) {
         // branchNumber: integer
         augur.tx.dispatch.params = branchNumber;
         augur.invoke(augur.tx.dispatch, onSent);
+    };
+
+    /***************************
+     * Whisper comments system *
+     ***************************/
+
+    augur.getMessages = function (filter, f) {
+        return json_rpc(postdata("getMessages", filter, "shh_"), f);
+    };
+    augur.getFilterChanges = function (filter, f) {
+        return json_rpc(postdata("getFilterChanges", filter, "shh_"), f);
+    };
+    augur.putString = function (key, string, f) {
+        return json_rpc(postdata("putString", ["augur", key, string], "db_"), f);
+    };
+    augur.getString = function (key, f) {
+        return json_rpc(postdata("getString", ["augur", key], "db_"), f);
+    };
+    augur.newIdentity = function (f) {
+        return json_rpc(postdata("newIdentity", null, "shh_"), f);
+    };
+    augur.post = function (params, f) {
+        return json_rpc(postdata("post", params, "shh_"), f);
+    };
+    augur.whisperFilter = function (params, f) {
+        return json_rpc(postdata("newFilter", params, "shh_"), f);
+    };
+    augur.commentFilter = function (market, f) {
+        return augur.whisperFilter({ topics: [ market ]}, f);
+    };
+    augur.uninstallFilter = function (filter, f) {
+        return json_rpc(postdata("uninstallFilter", filter, "shh_"), f);
+    };
+    /**
+     * Incoming comment filter:
+     *  - compare comment string length, write the longest to leveldb
+     *  - 10 second ethereum network polling interval
+     */
+    function pollFilter(market_id, filter_id) {
+        augur.getFilterChanges(filter_id, function (message) {
+            log(message);
+            if (message && message.length && message[0].payload) {
+                var incoming_comments = augur.decode_hex(message[0].payload);
+                if (incoming_comments) {
+                    var updated_comments = JSON.stringify([{
+                        whisperId: message[0].from, // whisper ID
+                        from: augur.coinbase, // ethereum account
+                        comment: incoming_comments,
+                        time: message[0].sent
+                    }]);
+                    incoming_comments = JSON.parse(incoming_comments);
+        
+                    // get existing comment(s) stored locally
+                    augur.getString(market_id, function (stored_comments) {
+
+                        // check if incoming comments length > stored
+                        if (stored_comments && stored_comments.length) {
+                            stored_comments = JSON.parse(stored_comments);
+                            if (incoming_comments.length > stored_comments.length ) {
+                                log("[" + filter_id + "] overwriting comments for market: " + market_id);
+                                augur.putString(market_id, incoming_comments, function (put_ok) {
+                                    if (put_ok) {
+                                        log("[" + filter_id + "] updated comments for market: " + market_id);
+                                    }
+                                });
+                                log(incoming_comments.length.toString() + " comments found");
+                                log(incoming_comments);
+                            } else {
+                                log(stored_comments.length.toString() + " comments found");
+                                log("[" + filter_id + "] retaining comments for market: " + market_id);
+                                log(stored_comments);
+                            }
+                        }
+
+                        augur.putString(market_id, updated_comments, function (put_ok) {
+                            if (put_ok) {
+                                log("[" + filter_id + "] updated comments for market: " + market_id);
+                            }
+                        });
+                    });
+                }
+            } else {
+                log("[" + filter_id + "] no new comments for market: " + market_id);
+            }
+            setTimeout(function () { pollFilter(market_id, filter_id); }, 1000);
+        });
+    }
+    augur.comment = function (market_id, comment_text, f) {
+
+        // get existing comment(s) stored locally
+        // (note: build with DFATDB=1 if DBUNDLE=minimal)
+        augur.newIdentity(function (whisper_id) {
+            if (whisper_id) {
+                var updated = JSON.stringify([{
+                    whisperId: whisper_id, // whisper ID
+                    from: augur.coinbase, // ethereum account
+                    comment: comment_text,
+                    time: Math.floor((new Date).getTime() / 1000)
+                }]);
+                augur.getString(market_id, function (comments) {
+                    if (comments) {
+                        updated = updated.slice(0,-1) + "," + comments.slice(1);
+                    }
+                    augur.putString(market_id, updated, function (put_ok) {
+                        if (put_ok) log("comment added to leveldb");
+                    });
+                    var transmission = {
+                        from: whisper_id,
+                        topics: [market_id],
+                        payload: augur.prefix_hex(augur.encode_hex(updated)),
+                        priority: "0x64",
+                        ttl: "0x500" // time-to-live (until expiration) in seconds
+                    };
+                    augur.post(transmission, function (post_ok) {
+                        if (post_ok) log("comment sent successfully");
+                    });
+                    if (f) f(JSON.parse(augur.decode_hex(transmission.payload)));
+                });
+            }
+        });
     };
 
     augur.getCoinbase = function (repeat) {
