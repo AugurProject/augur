@@ -69,7 +69,7 @@ var Augur = (function (augur) {
     augur.ETHER = new BigNumber(10).toPower(18);
     augur.AGAINST = augur.NO = 1; // against: "won't happen"
     augur.ON = augur.YES = 2;     // on: "will happen"
-    
+
     augur.id = 1;
     augur.data = {};
 
@@ -219,7 +219,7 @@ var Augur = (function (augur) {
         }
         return hex;
     };
-    augur.bignum = function (n) {
+    augur.bignum = function (n, compact) {
         var bn;
         if (n && n !== "0x") {
             if (n.constructor === Number) {
@@ -244,6 +244,12 @@ var Augur = (function (augur) {
                         bn = new BigNumber("-0x" + n.slice(1));
                     }
                     bn = new BigNumber("0x" + n);
+                }
+            }
+            if (compact) {
+                var cbn = bn.sub(augur.MAXBITS);
+                if (bn.toString(16).length > cbn.toString(16).length) {
+                    bn = cbn;
                 }
             }
             return bn;
@@ -351,7 +357,7 @@ var Augur = (function (augur) {
         for (var i = 0, len = hex.length; i < len; i += 2) {
             str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
         }
-        return str.replace(/[\u0000-\u0019]/g, '');
+        return str.replace(/[\u0000-\u0019]/g, '').slice(1);
     };
 
     function zeropad(r, ishex) {
@@ -455,11 +461,15 @@ var Augur = (function (augur) {
             } else {
                 array[i] = "0x" + array[i];
             }
-            if (returns === "number[]") {
-                if (augur.BigNumbersOnly) {
-                    array[i] = augur.unfix(array[i]);
-                } else {
-                    array[i] = augur.unfix(array[i], "string");
+            if (returns === "hash[]" && augur.BigNumberOnly) {
+                array[i] = augur.bignum(array[i]);
+            } else {
+                if (returns === "number[]") {
+                    if (augur.BigNumberOnly) {
+                        array[i] = augur.unfix(array[i]);
+                    } else {
+                        array[i] = augur.unfix(array[i], "string");
+                    }
                 }
             }
             position += stride;
@@ -771,10 +781,29 @@ var Augur = (function (augur) {
                             tx.params[i] = tx.params[i].toFixed();
                         }
                     }
-                } else {
-                    if (tx.params.constructor === BigNumber) {
-                        tx.params = tx.params.toFixed();
+                } else if (tx.params.constructor === Object) {
+                    for (p in tx.params) {
+                        if (!tx.params.hasOwnProperty(p)) continue;
+                        if (tx.params[p].constructor === BigNumber) {
+                            tx.params[p] = tx.params[p].toFixed();
+                        }
                     }
+                } else if (tx.params.constructor === BigNumber) {
+                    tx.params = tx.params.toFixed();
+                }
+            }
+            if (tx.to && tx.to.constructor === BigNumber) {
+                if (tx.to.s === -1) {
+                    tx.to = "-0x" + tx.to.toString(16).slice(1);
+                } else {
+                    tx.to = "0x" + tx.to.toString(16);
+                }
+            }
+            if (tx.from && tx.from.constructor === BigNumber) {
+                if (tx.from.s === -1) {
+                    tx.from = "-0x" + tx.from.toString(16).slice(1);
+                } else {
+                    tx.from = "0x" + tx.from.toString(16);
                 }
             }
             data_abi = this.abi_data(tx);
@@ -888,6 +917,8 @@ var Augur = (function (augur) {
     };
     augur.getDescription = function (item, onSent) {
         // item: sha256 hash id
+        // console.log(typeof item);
+        // console.log(item.constructor);
         augur.tx.getDescription.params = item;
         return augur.invoke(augur.tx.getDescription, onSent);
     };

@@ -17,7 +17,7 @@
     var TestComments = function () {
         var comment_text = Math.random().toString(36).substring(4);
         var dbname = "augur";
-        var market_id = "0x97d63d7567b1fc41c19296d959eba0e7df4900bf2d197c6b7b746d864fdde421";
+        var market_id = "-0x18b9aec6e8886ecec9ff0fd5c149800468edf8e9533efd32ab2efcc4a9388533";
         Augur.getMarketInfo(market_id, function (r) {
             print(r);
             print("commenting");
