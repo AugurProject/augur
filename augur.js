@@ -12,7 +12,12 @@ var MODULAR = (typeof(module) != 'undefined');
 var NODE_JS = MODULAR && process && !process.browser;
 if (MODULAR) {
     if (NODE_JS) {
-        var httpsync = require('http-sync');
+        var httpsync;
+        try {
+            httpsync = require('http-sync');
+        } catch (e) {
+            httpsync = require('http-sync-win');
+        }
         var XMLHttpRequest = require('xhr2');
     }
     var keccak_256 = require('js-sha3').keccak_256;
@@ -573,7 +578,6 @@ var Augur = (function (augur) {
                 req.setRequestHeader("Content-type", "application/json");
                 req.send(command);
             } else {
-                // TODO replace httpsync (?)
                 req = httpsync.request({
                     protocol: rpc.protocol,
                     host: rpc.host,
