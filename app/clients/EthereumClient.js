@@ -317,46 +317,41 @@ EthereumClient.prototype.getMarkets = function (branchId) {
   var infoContract = this.getContract('info');
   var account = this.account;
 
-  var validMarkets = _.filter(branchContract.getMarkets.call(branchId), function(marketId) {
+  var validMarkets = _.filter(Augur.getMarkets(branchId), function (marketId) {
     return !_.contains(blacklist.markets, marketId.toString(16));
   });
 
   var marketList = _.map(validMarkets, function(marketId) {
 
-    var events = marketContract.getMarketEvents.call(marketId);
-    var description = infoContract.getDescription.call(marketId);
-    var alpha = fromFixedPoint(marketContract.getAlpha.call(marketId));
-    var author = infoContract.getCreator.call(marketId);
-    var creationFee = fromFixedPoint(infoContract.getCreationFee.call(marketId));
-
-    // add spammy test markets to blacklist
-    // if (description.indexOf("[augur.js]") > -1) {
-    //   console.log(marketId.toString(16));
-    // }
+    var events = Augur.getMarketEvents(marketId);
+    var description = Augur.getDescription(marketId);
+    var alpha = Augur.getAlpha(marketId);
+    var author = Augur.getCreator(marketId);
+    var creationFee = Augur.getCreationFee(marketId);
 
     // calc end date from first events expiration
     var endDate;
     if (events.length) {
-      var expirationBlock = eventContract.getExpiration.call(events[0]);
+      var expirationBlock = Augur.getExpiration(events[0]);
       endDate = utilities.blockToDate(expirationBlock.toNumber());
     }
 
-    var traderCount = marketContract.getCurrentParticipantNumber.call(marketId);
-    var tradingPeriod = marketContract.getTradingPeriod.call(marketId);
-    var tradingFee = fromFixedPoint(marketContract.getTradingFee.call(marketId));
-    var traderId =  marketContract.getParticipantNumber.call(marketId, account);
+    var traderCount = Augur.getCurrentParticipantNumber(marketId);
+    var tradingPeriod = Augur.getTradingPeriod(marketId);
+    var tradingFee = Augur.getTradingFee(marketId);
+    var traderId = Augur.getParticipantNumber(marketId, account);
     var totalVolume = new BigNumber(0);
 
-    var outcomeCount = marketContract.getMarketNumOutcomes.call(marketId).toNumber();
+    var outcomeCount = Augur.getMarketNumOutcomes(marketId).toNumber();
     var outcomes = _.map( _.range(1, outcomeCount + 1), function (outcomeId) {
 
-      var volume = fromFixedPoint(marketContract.getSharesPurchased.call(marketId, outcomeId));
+      var volume = Augur.getSharesPurchased(marketId, outcomeId);
       totalVolume = totalVolume.plus(volume);
-      var sharesPurchased = fromFixedPoint(marketContract.getParticipantSharesPurchased.call(marketId, traderId, outcomeId));
+      var sharesPurchased = Augur.getParticipantSharesPurchased(marketId, traderId, outcomeId);
 
       return {
         id: outcomeId,
-        price: fromFixedPoint(marketContract.price.call(marketId, outcomeId)),
+        price: Augur.price(marketId, outcomeId),
         //sellPrice: marketContract.getSimulatedSell.call(marketId, id).toNumber(),
         //buyPrice: marketContract.getSimulatedBuy.call(marketId, id).toNumber(),
         priceHistory: [],  // NEED
@@ -366,7 +361,7 @@ EthereumClient.prototype.getMarkets = function (branchId) {
     });
 
     var price = outcomes.length ? outcomes[1].price : new BigNumber(0);  // hardcoded to outcome 2 (yes)
-    var winningOutcomes = marketContract.getWinningOutcomes.call(marketId);
+    var winningOutcomes = Augur.getWinningOutcomes(marketId);
 
     return {
       id: marketId,
@@ -484,10 +479,9 @@ var getSimulationArgs = function (marketId, outcomeId, numShares, callback) {
   var wrappedCallback = function (result) {
     // Pass the callback the result with its values converted from fixed point
     // and assigned to keys.
-    console.log('Raw getSimulatedBuy result for ' + numShares + ' shares: ', result);
     callback({
-      cost: Augur.bignum(result[0]),
-      newPrice: Augur.bignum(result[1])
+      cost: result[0],
+      newPrice: result[1]
     });
   };
 
