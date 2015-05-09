@@ -75,6 +75,10 @@ var Augur = (function (augur) {
 
     // contract error codes
     augur.ERRORS = {
+        "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": -1,
+        "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe": -2,
+        "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd": -3,
+        "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc": -4,
         closeMarket: {
             "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
                 code: -1,
@@ -217,7 +221,7 @@ var Augur = (function (augur) {
     };
     augur.bignum = function (n) {
         var bn;
-        if (n) {
+        if (n && n !== "0x") {
             if (n.constructor === Number) {
                 if (Math.floor(Math.log(n) / Math.log(10) + 1) <= 15) {
                     bn = new BigNumber(n);
@@ -247,7 +251,7 @@ var Augur = (function (augur) {
     };
     augur.fix = function (n, encode) {
         var fixed;
-        try {
+        if (n && n !== "0x") {
             encode = (encode) ? encode.toLowerCase() : "string";
             if (n.constructor === BigNumber) {
                 fixed = fixed_string(n.mul(augur.ONE).round(), encode);
@@ -263,8 +267,6 @@ var Augur = (function (augur) {
                 log("could not convert " + n.toString() + " to fixed-point");
             }
             return fixed;
-        } catch (e) {
-            log("could not convert " + n.toString() + " to fixed-point");
         }
     };
     augur.unfix = function (n, encode) {
@@ -293,9 +295,9 @@ var Augur = (function (augur) {
                     if (encode === "hex") {
                         unfixed = unfixed.toString(16);
                         if (unfixed.slice(0,1) === '-') {
-                            unfixed = "-0x" + unfixed.slice(3);
+                            unfixed = "-0x" + unfixed.slice(1);
                         } else {
-                            unfixed = "0x" + unfixed.slice(2);
+                            unfixed = "0x" + unfixed;
                         }
                     } else if (encode === "string") {
                         unfixed = unfixed.toFixed();
@@ -494,10 +496,17 @@ var Augur = (function (augur) {
     }
 
     function parse(response, returns, callback) {
-        log(response);
+        // log(response);
         if (response !== undefined) {
             var response = JSON.parse(response);
-            if (response.error) {
+            if (response.result && augur.ERRORS[response.result]) {
+                log("contract returned error code: " + augur.ERRORS[response.result]);
+                if (callback) {
+                    callback(augur.ERRORS[response.result]);
+                } else {
+                    return augur.ERRORS[response.result];
+                }
+            } else if (response.error) {
                 console.error(
                     "[" + response.error.code + "]",
                     response.error.message
