@@ -917,8 +917,6 @@ var Augur = (function (augur) {
     };
     augur.getDescription = function (item, onSent) {
         // item: sha256 hash id
-        // console.log(typeof item);
-        // console.log(item.constructor);
         augur.tx.getDescription.params = item;
         return augur.invoke(augur.tx.getDescription, onSent);
     };
@@ -1037,7 +1035,25 @@ var Augur = (function (augur) {
     augur.getEventInfo = function (event, onSent) {
         // event: sha256 hash id
         augur.tx.getEventInfo.params = event;
-        augur.invoke(augur.tx.getEventInfo, function (eventInfo) {
+        if (onSent) {
+            augur.invoke(augur.tx.getEventInfo, function (eventInfo) {
+                if (eventInfo && eventInfo.length) {
+                    var info = {
+                        branch: augur.bignum(eventInfo[0]).toFixed(),
+                        expirationDate: augur.bignum(eventInfo[1]).toFixed(),
+                        outcome: augur.bignum(eventInfo[2]).toFixed(),
+                        minValue: augur.bignum(eventInfo[3]).toFixed(),
+                        maxValue: augur.bignum(eventInfo[4]).toFixed(),
+                        numOutcomes: augur.bignum(eventInfo[5]).toFixed()
+                    };
+                    augur.getDescription(event, function (description) {
+                        if (description) info.description = description;
+                        if (onSent) onSent(info);
+                    });
+                }
+            });
+        } else {
+            var eventInfo = augur.invoke(augur.tx.getEventInfo);
             if (eventInfo && eventInfo.length) {
                 var info = {
                     branch: augur.bignum(eventInfo[0]).toFixed(),
@@ -1047,12 +1063,11 @@ var Augur = (function (augur) {
                     maxValue: augur.bignum(eventInfo[4]).toFixed(),
                     numOutcomes: augur.bignum(eventInfo[5]).toFixed()
                 };
-                augur.getDescription(event, function (description) {
-                    if (description) info.description = description;
-                    if (onSent) onSent(info);
-                });
+                var description = augur.getDescription(event);
+                if (description) info.description = description;
+                return info;
             }
-        });
+        }
     };
 
     augur.tx.getEventBranch = {
@@ -1481,7 +1496,57 @@ var Augur = (function (augur) {
     augur.getMarketInfo = function (market, onSent) {
         // market: sha256 hash id
         augur.tx.getMarketInfo.params = market;
-        augur.invoke(augur.tx.getMarketInfo, function (marketInfo) {
+        if (onSent) {
+            augur.invoke(augur.tx.getMarketInfo, function (marketInfo) {
+                if (marketInfo && marketInfo.length) {
+                    var info = {
+                        currentParticipant: augur.bignum(marketInfo[0]).toFixed(),
+                        alpha: augur.unfix(marketInfo[1], "string"),
+                        cumulativeScale: augur.bignum(marketInfo[2]).toFixed(),
+                        numOutcomes: augur.bignum(marketInfo[3]).toFixed(),
+                        tradingPeriod: augur.bignum(marketInfo[4]).toFixed(),
+                        tradingFee: augur.unfix(marketInfo[5], "string")
+                    };
+                    augur.getDescription(market, function (description) {
+                        if (description) {
+                            info.description = description;
+                        }
+                        onSent(info);
+
+                        // make sure there's only one filter per market
+                        // if (augur.filters[market] && augur.filters[market].filterId) {
+                        //     log("existing filter found");
+                        //     pollFilter(market, augur.filters[market].filterId);
+                        // } else {
+                        
+                        //     // create filter for this market
+                        //     augur.commentFilter(market, function (filter) {
+                        //         if (filter && filter !== "0x") {
+                        //             log("creating new filter");
+                        //             augur.filters[market] = {
+                        //                 filterId: filter,
+                        //                 polling: false
+                        //             };
+                        //             augur.filters[market].polling = true;
+                        
+                        //             // get and send all comments in local leveldb
+                        //             augur.getString(market, function (comments) {
+                        //                 if (comments) {
+                        //                     info.comments = comments;
+                        //                     augur.comment(market, comments, function (ok) {
+                        //                         if (ok) onSent(info);
+                        //                     });
+                        //                 }
+                        //             });
+                        //             pollFilter(market, filter);
+                        //         }
+                        //     });
+                        // }
+                    });
+                }
+            });
+        } else {
+            var marketInfo = augur.invoke(augur.tx.getMarketInfo);
             if (marketInfo && marketInfo.length) {
                 var info = {
                     currentParticipant: augur.bignum(marketInfo[0]).toFixed(),
@@ -1491,44 +1556,13 @@ var Augur = (function (augur) {
                     tradingPeriod: augur.bignum(marketInfo[4]).toFixed(),
                     tradingFee: augur.unfix(marketInfo[5], "string")
                 };
-                augur.getDescription(market, function (description) {
-                    if (description) {
-                        info.description = description;
-                    }
-                    onSent(info);
-
-                    // make sure there's only one filter per market
-                    // if (augur.filters[market] && augur.filters[market].filterId) {
-                    //     log("existing filter found");
-                    //     pollFilter(market, augur.filters[market].filterId);
-                    // } else {
-                    
-                    //     // create filter for this market
-                    //     augur.commentFilter(market, function (filter) {
-                    //         if (filter && filter !== "0x") {
-                    //             log("creating new filter");
-                    //             augur.filters[market] = {
-                    //                 filterId: filter,
-                    //                 polling: false
-                    //             };
-                    //             augur.filters[market].polling = true;
-                    
-                    //             // get and send all comments in local leveldb
-                    //             augur.getString(market, function (comments) {
-                    //                 if (comments) {
-                    //                     info.comments = comments;
-                    //                     augur.comment(market, comments, function (ok) {
-                    //                         if (ok) onSent(info);
-                    //                     });
-                    //                 }
-                    //             });
-                    //             pollFilter(market, filter);
-                    //         }
-                    //     });
-                    // }
-                });
+                var description = augur.getDescription(market);
+                if (description) {
+                    info.description = description;
+                }
+                return info;
             }
-        });
+        }
     };
 
     augur.tx.getMarketEvents = {
@@ -1857,10 +1891,16 @@ var Augur = (function (augur) {
             var branch = branch.branchId; // sha256
         }
         if (!nonce) {
-            augur.getNonce(market, function (nonce) {
+            if (onSent) {
+                augur.getNonce(market, function (nonce) {
+                    augur.tx.buyShares.params = [branch, market, outcome, augur.fix(amount), nonce];
+                    augur.invoke(augur.tx.buyShares, onSent);
+                });
+            } else {
+                var nonce = augur.getNonce(market);
                 augur.tx.buyShares.params = [branch, market, outcome, augur.fix(amount), nonce];
-                augur.invoke(augur.tx.buyShares, onSent);
-            });
+                return augur.invoke(augur.tx.buyShares);
+            }
         } else {
             augur.tx.buyShares.params = [branch, market, outcome, augur.fix(amount), nonce];
             return augur.invoke(augur.tx.buyShares, onSent);
@@ -1878,10 +1918,16 @@ var Augur = (function (augur) {
             var branch = branch.branchId; // sha256
         }
         if (!nonce) {
-            augur.getNonce(market, function (nonce) {
+            if (onSent) {
+                augur.getNonce(market, function (nonce) {
+                    augur.tx.sellShares.params = [branch, market, outcome, augur.fix(amount), nonce];
+                    augur.invoke(augur.tx.sellShares, onSent);
+                });
+            } else {
+                var nonce = augur.getNonce(market);
                 augur.tx.sellShares.params = [branch, market, outcome, augur.fix(amount), nonce];
-                augur.invoke(augur.tx.sellShares, onSent);
-            });
+                return augur.invoke(augur.tx.sellShares);
+            }
         } else {
             augur.tx.sellShares.params = [branch, market, outcome, augur.fix(amount), nonce];
             return augur.invoke(augur.tx.sellShares, onSent);
