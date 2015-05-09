@@ -33,7 +33,7 @@ function EthereumClient(params) {
   this.defaultBranchId = params.defaultBranchId || 1010101;
   this.defaultGas = params.defaultGas || 1000000;
   this.host = params.host || 'localhost:8454';
-  
+
   _.defaults(this.addresses, constants.addresses);
 
   this.web3.setProvider(new web3.providers.HttpProvider('http://'+this.host));
@@ -502,6 +502,7 @@ var getSimulationArgs = function (marketId, outcomeId, numShares, callback) {
 
 EthereumClient.prototype.getSimulatedBuy = function (marketId, outcomeId, numShares, callback) {
   var args = getSimulationArgs(marketId, outcomeId, numShares, callback);
+  console.log(args);
   Augur.getSimulatedBuy.apply(null, args);
 };
 

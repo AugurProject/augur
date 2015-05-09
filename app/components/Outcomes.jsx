@@ -182,7 +182,7 @@ var TradeBase = {
     var submit = (
       <Button bsStyle={ buttonStyle } type="submit">{ this.actionLabel }</Button>
     );
-    var inputStyle = this.state.inputError ? 'error' : 'default';
+    var inputStyle = this.state.inputError ? 'error' : '';
 
     return (
       <div className='execute-trade shadow'>

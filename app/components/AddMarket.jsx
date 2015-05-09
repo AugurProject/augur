@@ -218,7 +218,7 @@ var AddMarketModal = React.createClass({
       );
     } else {
       subheading = 'Market Query';
-      var inputStyle = this.state.marketTextError ? 'error' : 'default';
+      var inputStyle = this.state.marketTextError ? 'error' : null;
       page = (
         <div>
           <p>Enter a question for the market to trade on.  This question should have a yes or no answer, be easily verifiable and have an expiring date in the future.</p>
@@ -227,7 +227,7 @@ var AddMarketModal = React.createClass({
             type='textarea'
             help={ this.state.marketTextError }
             bsStyle={ inputStyle }
-            placeholder="What's your yes or no question?"  
+            placeholder="Ask your yes or no question"  
             onChange={ this.onChangeMarketText } 
           />
           <span className="text-count pull-right">{ this.state.marketTextCount }</span> 
