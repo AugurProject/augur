@@ -8,7 +8,11 @@ var ConfigActions = {
   updateEthereumClient: function () {
 
     var configState = this.flux.store('config').getState();
-    var ethereumClient = window.ethereumClient = configState.ethereumClient || new EthereumClient(configState.host);
+    var clientParams = {
+      host: configState.host,
+      defaultBranchId: 1010101
+    }
+    var ethereumClient = window.ethereumClient = configState.ethereumClient || new EthereumClient(clientParams);
 
     // TODO: refactor this config state
     // EthereumClient is now a class interface that does not fail.  
@@ -22,7 +26,6 @@ var ConfigActions = {
 
     this.flux.actions.config.updateEthereumClient();
     this.flux.actions.network.checkNetwork();
-    
     this.flux.actions.network.updateNetwork();
   }
 };

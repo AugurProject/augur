@@ -31,6 +31,8 @@ module.exports = {
     UPDATE_LOG: null
   }),
   branch: keyMirror({
+    ROOT_ID: 0,
+    ROOT_DEV_ID: 1010101,
     LOAD_BRANCHES_SUCCESS: null,
     UPDATE_CURRENT_BRANCH: null
   }),

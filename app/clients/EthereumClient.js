@@ -21,25 +21,22 @@ function MissingContractError(contractName) {
  * limitations. EthereumClient wraps the calls to those contracts to abstract
  * the contract details from the rest of the codebase.
  */
-function EthereumClient(host) {
+function EthereumClient(params) {
 
-  this.web3 = window.web3 = require('web3');
+  params = params || {};
   this.addresses = {};
   this.filters = {}
-
-  this.defaultGas = 1000000;
-
   this.contracts = {};
+
+  // defaults
+  this.web3 = window.web3 = params.web3 || require('web3');
+  this.defaultBranchId = params.defaultBranchId || 1010101;
+  this.defaultGas = params.defaultGas || 1000000;
+  this.host = params.host || 'localhost:8454';
+  
   _.defaults(this.addresses, constants.addresses);
 
-  this.web3.setProvider(new web3.providers.HttpProvider('http://'+host));
-
-  // hacking around agressive Augur
-  try {
-    //Augur = require('augur.js');
-  } catch (err) {
-    
-  }
+  this.web3.setProvider(new web3.providers.HttpProvider('http://'+this.host));
 }
 
 EthereumClient.prototype.isAvailable = function() {
@@ -167,7 +164,7 @@ EthereumClient.prototype.getRepBalance = function(branchId) {
     return 0;
   }
 
-  var id = branchId || 1010101;
+  var id = branchId || this.defaultBranchId;
 
   var reportingContract = this.getContract('reporting');
   var rep = reportingContract.getRepBalance.call(id, this.account);
@@ -177,7 +174,7 @@ EthereumClient.prototype.getRepBalance = function(branchId) {
 
 EthereumClient.prototype.sendRep = function(destination, amount, branchId) {
 
-  var id = branchId || 1010101;
+  var id = branchId || this.defaultBranchId;
   var sendRepContract = this.getContract('sendReputation');
   var fixedAmount = toFixedPoint(amount);
 
@@ -226,7 +223,7 @@ EthereumClient.prototype.getBranches = function () {
     var rep = fromFixedPoint(storedRep).toNumber();
     var marketCount = branchContract.getNumMarkets.call(branchId).toNumber();
     var periodLength = branchContract.getPeriodLength.call(branchId).toNumber();
-    var branchName = branchId == 1010101 ? 'General' : 'Unknown';  // HACK: until we're actually using multi-branch
+    var branchName = branchId == this.defaultBranchId ? 'General' : 'Unknown';  // HACK: until we're actually using multi-branch
 
     return {
       id: branchId.toNumber(),
@@ -410,7 +407,7 @@ EthereumClient.prototype.getEvent = function(eventId) {
 
 EthereumClient.prototype.addEvent = function(params, onSuccess) {
 
-    var branchId = params.branchId || 1010101;
+    var branchId = params.branchId || this.defaultBranchId;
     var description = params.description;
     var expirationBlock = params.expirationBlock;
     var minValue = params.minValue || 1;
@@ -442,7 +439,7 @@ EthereumClient.prototype.addEvent = function(params, onSuccess) {
 
 EthereumClient.prototype.addMarket = function(params, onSuccess) {
 
-    var branchId = params.branchId || 1010101;
+    var branchId = params.branchId || this.defaultBranchId;
     var description = params.description;
     var alpha = "0.0079";
     var initialLiquidity = params.initialLiquidity;
