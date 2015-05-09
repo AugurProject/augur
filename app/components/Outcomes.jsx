@@ -110,6 +110,7 @@ var TradeBase = {
   handleChange: function () {
     var rawValue = this.refs.input.getValue()
     var numShares = parseFloat(rawValue);
+    var self = this;
 
     this.setState({
       value: rawValue,
@@ -122,25 +123,17 @@ var TradeBase = {
         simulation: null
       });
     } else {
-      new Promise((resolve, reject) => {
-        console.log('Getting simulation...');
-        this.getSimulationFunction()(
-          this.props.market.id,
-          this.getOutcomeId(),
-          numShares,
-          resolve
-        );
-      }).then((simulation) => {
-        console.log('Setting simulation: ', simulation);
-
-        // HACK: sanitize return value to big number for demo
-        simulation = {cost: new BigNumber(simulation.cost), newPrice: new BigNumber(simulation.newPrice)};
-        ////
-
-        this.setState({
-          simulation: simulation
-        });
-      });
+      this.getSimulationFunction()(
+        self.props.market.id,
+        self.getOutcomeId(),
+        numShares,
+        function (simulation) {
+          console.log('Setting simulation: ', simulation);
+          self.setState({
+            simulation: simulation
+          });  
+        }
+      );
     }
   },
 
