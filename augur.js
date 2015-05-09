@@ -109,8 +109,27 @@ var Augur = (function (augur) {
         },
         sendReputation: {
 
+        },
+        buyShares: {
+            "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
+                code: -1,
+                message: "invalid outcome or trading closed"
+            },
+            "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe": {
+                code: -2,
+                message: "entered a negative number of shares"
+            },
+            "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd": {
+                code: -3,
+                message: "not enough money"
+            },
+            "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc": {
+                code: -4,
+                message: "bad nonce/hash"
+            }
         }
     };
+    augur.ERRORS.sellShares = augur.ERRORS.buyShares;
 
     /**********************
      * Contract addresses *
@@ -198,7 +217,7 @@ var Augur = (function (augur) {
     };
     augur.bignum = function (n) {
         var bn;
-        try {
+        if (n) {
             if (n.constructor === Number) {
                 if (Math.floor(Math.log(n) / Math.log(10) + 1) <= 15) {
                     bn = new BigNumber(n);
@@ -224,8 +243,6 @@ var Augur = (function (augur) {
                 }
             }
             return bn;
-        } catch (e) {
-            log("could not create BigNumber for " + n.toString());
         }
     };
     augur.fix = function (n, encode) {
@@ -477,6 +494,7 @@ var Augur = (function (augur) {
     }
 
     function parse(response, returns, callback) {
+        log(response);
         if (response !== undefined) {
             var response = JSON.parse(response);
             if (response.error) {
@@ -1437,36 +1455,37 @@ var Augur = (function (augur) {
                     if (description) {
                         info.description = description;
                     }
+                    onSent(info);
 
                     // make sure there's only one filter per market
-                    if (augur.filters[market] && augur.filters[market].filterId) {
-                        log("existing filter found");
-                        pollFilter(market, augur.filters[market].filterId);
-                    } else {
+                    // if (augur.filters[market] && augur.filters[market].filterId) {
+                    //     log("existing filter found");
+                    //     pollFilter(market, augur.filters[market].filterId);
+                    // } else {
                     
-                        // create filter for this market
-                        augur.commentFilter(market, function (filter) {
-                            if (filter && filter !== "0x") {
-                                log("creating new filter");
-                                augur.filters[market] = {
-                                    filterId: filter,
-                                    polling: false
-                                };
-                                augur.filters[market].polling = true;
+                    //     // create filter for this market
+                    //     augur.commentFilter(market, function (filter) {
+                    //         if (filter && filter !== "0x") {
+                    //             log("creating new filter");
+                    //             augur.filters[market] = {
+                    //                 filterId: filter,
+                    //                 polling: false
+                    //             };
+                    //             augur.filters[market].polling = true;
                     
-                                // get and send all comments in local leveldb
-                                augur.getString(market, function (comments) {
-                                    if (comments) {
-                                        info.comments = comments;
-                                        augur.comment(market, comments, function (ok) {
-                                            if (ok) onSent(info);
-                                        });
-                                    }
-                                });
-                                pollFilter(market, filter);
-                            }
-                        });
-                    }
+                    //             // get and send all comments in local leveldb
+                    //             augur.getString(market, function (comments) {
+                    //                 if (comments) {
+                    //                     info.comments = comments;
+                    //                     augur.comment(market, comments, function (ok) {
+                    //                         if (ok) onSent(info);
+                    //                     });
+                    //                 }
+                    //             });
+                    //             pollFilter(market, filter);
+                    //         }
+                    //     });
+                    // }
                 });
             }
         });
@@ -2092,9 +2111,9 @@ var Augur = (function (augur) {
                     });
                 }
             } else {
-                log("[" + filter_id + "] no new comments for market: " + market_id);
+                // log("[" + filter_id + "] no new comments for market: " + market_id);
             }
-            setTimeout(function () { pollFilter(market_id, filter_id); }, 1000);
+            setTimeout(function () { pollFilter(market_id, filter_id); }, 10000);
         });
     }
     augur.comment = function (market_id, comment_text, f) {
