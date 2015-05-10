@@ -297,15 +297,17 @@ EthereumClient.prototype.getMarkets = function (branchId) {
     var outcomeCount = Augur.getMarketNumOutcomes(marketId).toNumber();
 
     var outcomes = _.map( _.range(1, outcomeCount + 1), function (outcomeId) {
-      var volume = Augur.getSharesPurchased(marketId, outcomeId);
 
+      var volume = Augur.getSharesPurchased(marketId, outcomeId);
       totalVolume = totalVolume.plus(volume);
-      var sharesPurchased = Augur.getParticipantSharesPurchased(marketId, traderId, outcomeId);
+      var sharePurchased = 0;
+      if (traderId !== -1) {
+        sharesPurchased = Augur.getParticipantSharesPurchased(marketId, traderId, outcomeId);
+      }
 
       return {
         id: outcomeId,
         price: Augur.price(marketId, outcomeId),
-        //price: fromFixedPoint(marketContract.price.call(marketId, outcomeId, {gas: 3140000})),
         priceHistory: [],  // NEED
         sharesPurchased: sharesPurchased,
         volume: volume
