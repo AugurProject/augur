@@ -353,16 +353,30 @@ var Augur = (function (augur) {
         return hex;
     };
 
-    augur.decode_hex = function (h) {
+    augur.decode_hex = function (h, strip) {
         var hex = h.toString();
         var str = '';
-        while (hex.slice(0, 2) === "0x") {
+        // remove leading zeros
+        while (hex.slice(0, 2) === "0x" || hex.slice(0, 2) === "00") {
             hex = hex.slice(2);
+        }
+        // remove leading byte(s) = string length
+        if (strip) {
+            var len = hex.length;
+            if (len > 16777215) {     // leading 4 bytes if > 16777215
+                hex = hex.slice(8);
+            } else if (len > 65540) { // leading 3 bytes if > 65535
+                hex = hex.slice(6);
+            } else if (len > 259) {   // leading 2 bytes if > 255
+                hex = hex.slice(4);
+            } else {
+                hex = hex.slice(2);
+            }
         }
         for (var i = 0, len = hex.length; i < len; i += 2) {
             str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
         }
-        return str.replace(/[\u0000-\u0019]/g, '').slice(1);
+        return str;
     };
 
     function zeropad(r, ishex) {
@@ -488,7 +502,7 @@ var Augur = (function (augur) {
             if (returns.slice(-2) === "[]") {
                 result = parse_array(result, returns);
             } else if (returns === "string") {
-                result = augur.decode_hex(result);
+                result = augur.decode_hex(result, true);
             } else {
                 if (augur.BigNumberOnly) {
                     if (returns === "number" || returns === "bignumber") {
