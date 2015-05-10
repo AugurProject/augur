@@ -10,6 +10,7 @@ var fromFixedPoint = utilities.fromFixedPoint;
 var toFixedPoint = utilities.toFixedPoint;
 
 var Augur = window.Augur = require('augur.js');
+Augur.BigNumberOnly = true;
 
 function MissingContractError(contractName) {
   this.name = 'MissingContractError';
@@ -266,7 +267,7 @@ EthereumClient.prototype.getMarkets = function (branchId) {
     return !_.contains(blacklist.markets, marketId.toString(16));
   });
 
-  var marketList = _.map(validMarkets, function(marketId) {
+  var marketList = _.map(validMarkets, function (marketId) {
 
     var events = Augur.getMarketEvents(marketId);
     var description = Augur.getDescription(marketId);
