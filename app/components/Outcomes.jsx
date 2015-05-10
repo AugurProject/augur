@@ -116,11 +116,11 @@ var TradeBase = {
     });
 
     if (!numShares) {
-      console.log('Clearing simulation.');
       this.setState({
         simulation: null
       });
     } else {
+
       new Promise((resolve, reject) => {
         console.log('Getting simulation...');
         this.getSimulationFunction()(
@@ -144,7 +144,6 @@ var TradeBase = {
     event.preventDefault();
 
     var numShares = parseFloat(this.state.value);
-    console.log(typeof(numShares));
     if (typeof(numShares) !== 'number' || !numShares) {
       this.setState({inputError: 'Shares must be a numeric value'});
     } else if (this.state.simulation.cost > this.props.cashBalance) {

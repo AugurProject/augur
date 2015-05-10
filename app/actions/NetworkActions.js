@@ -31,7 +31,7 @@ var NetworkActions = {
       // start basic latest block monitoring
       ethereumClient.startMonitoring(this.flux.actions.network.updateNetwork);
 
-      //this.flux.actions.branch.loadBranches();
+      this.flux.actions.branch.loadBranches();
       //this.flux.actions.event.loadEvents();
       this.flux.actions.market.loadMarkets();
     }
