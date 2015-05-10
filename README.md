@@ -5,12 +5,7 @@ Augur JavaScript API
 [![npm version](https://badge.fury.io/js/augur.js.svg)](http://badge.fury.io/js/augur.js)
 [![Join the chat at https://gitter.im/AugurProject/augur.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/AugurProject/augur.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-JavaScript bindings for the Augur API.
-
-Installation
-------------
-
-augur.js requires you to be running a local Ethereum node.  By default, it expects your Ethereum client to be listening on port 8545.  Note that I've only tested with [geth](https://github.com/ethereum/go-ethereum) so far; use with [eth](https://github.com/ethereum/cpp-ethereum) or [pyethapp](https://github.com/ethereum/pyethapp) at your own risk.
+To use augur.js, you must be running a local Ethereum node.  By default, it expects your Ethereum client to be listening on port 8545.  Note that I've only tested with [geth](https://github.com/ethereum/go-ethereum) so far; use with [eth](https://github.com/ethereum/cpp-ethereum) or [pyethapp](https://github.com/ethereum/pyethapp) at your own risk.
 
 To use "send" RPC commands, you will need to unlock your client.  The easiest way to do this is to start geth with the `--unlock` option:
 ```
@@ -170,7 +165,7 @@ If you need more flexibility, please refer to the `invoke` function below, which
 
 ## Numbers
 
-There are three acceptable ways to pass numerical inputs to the Augur API:
+There are four acceptable ways to pass numerical inputs to the Augur API:
 
 - primitive JS numbers (e.g., `1010101`): ok for integers, but use strings for floating point numbers (see below)
 
@@ -178,7 +173,7 @@ There are three acceptable ways to pass numerical inputs to the Augur API:
 
 - hexadecimal strings (e.g., `"0xf69b5"`)
 
-- BigNumbers (e.g., new BigNumber("1010101"))
+- BigNumbers (e.g., `new BigNumber("1010101")`)
 
 Note that for primitive JS numbers, you will receive an error from the BigNumber library if your input contains more than 15 significant figures.
 
@@ -258,8 +253,9 @@ The `params` and `signature` fields are required if your function accepts parame
 Tests
 -----
 
-Unit tests included with augur.js are in `test/runtests.js`, and can be run using npm:
+Unit tests included with augur.js are in `test/runtests.js`, and can be run with [mocha](http://mochajs.org/):
 ```
+npm install mocha
 npm test
 ```
-Note that geth must be running for the tests to run properly.
+Note that your local Ethereum node must be running for the tests to run properly.
