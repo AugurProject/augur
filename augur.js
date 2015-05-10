@@ -711,8 +711,12 @@ var Augur = (function (augur) {
     augur.getTransactionCount = augur.txCount = function (address, f) {
         return json_rpc(postdata("getTransactionCount", address || augur.coinbase), f);
     };
-    augur.pay = function (from, to, value, f) {
-        return this.sendTx({ from: from || augur.coinbase, to: to, value: value }, f);
+    augur.pay = function (to, value, from, f) {
+        return this.sendTx({
+            from: from || augur.coinbase,
+            to: to,
+            value: augur.bignum(value).mul(augur.ETHER).toFixed()
+        }, f);
     };
     augur.getTransactionByHash = augur.getTx = function (hash, f) {
         return json_rpc(postdata("getTransactionByHash", hash), f);
@@ -1711,6 +1715,7 @@ var Augur = (function (augur) {
         augur.tx.getBranchID.params = branch;
         return augur.invoke(augur.tx.getBranchID, onSent);
     };
+    // Get the current number of participants in this market
     augur.getCurrentParticipantNumber = function (market, onSent) {
         // market: sha256 hash id
         augur.tx.getCurrentParticipantNumber.params = market;
@@ -1755,12 +1760,14 @@ var Augur = (function (augur) {
         method: "getParticipantID",
         signature: "ii"
     };
+    // Get the participant number (the array index) for specified address
     augur.getParticipantNumber = function (market, address, onSent) {
         // market: sha256
         // address: ethereum account
         augur.tx.getParticipantNumber.params = [market, address];
         return augur.invoke(augur.tx.getParticipantNumber, onSent);
     };
+    // Get the address for the specified participant number (array index) 
     augur.getParticipantID = function (market, participantNumber, onSent) {
         // market: sha256
         augur.tx.getParticipantID.params = [market, participantNumber];
@@ -1931,7 +1938,6 @@ var Augur = (function (augur) {
         to: augur.contracts.buyAndSellShares,
         method: "buyShares",
         signature: "iiiii",
-        returns: "number",
         send: true
     };
     augur.tx.sellShares = {
@@ -1939,7 +1945,6 @@ var Augur = (function (augur) {
         to: augur.contracts.buyAndSellShares,
         method: "sellShares",
         signature: "iiiii",
-        returns: "number",
         send: true
     };
     augur.getNonce = function (id, onSent) {
