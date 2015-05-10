@@ -6,3 +6,4 @@ lib
 .npmignore
 .travis.yml
 test
+env.js

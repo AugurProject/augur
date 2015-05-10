@@ -1669,7 +1669,7 @@ var Augur = (function (augur) {
         to: augur.contracts.markets,
         method: "getCurrentParticipantNumber",
         signature: "i",
-        returns: "unfix"
+        returns: "number"
     };
     augur.tx.getMarketNumOutcomes = {
         from: augur.coinbase,
