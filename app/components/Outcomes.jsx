@@ -52,20 +52,18 @@ var Overview = React.createClass({
         </div>);      
     }
     return (
-      <div>
-        <div className="outcome outcome-{ this.props.id } shadow">
-          <h3>
-            <div className="name">{ getOutcomeName(this.props.id, this.props.outcomeCount) }</div>
-            <div className="price">{ priceToPercentage(this.props.price) }%</div>
-          </h3>
-          <div className="summary">
-            <div className='buy trade'>
-              <Link to="buy-outcome" className="btn btn-success" params={{marketId: this.props.params.marketId, outcomeId: this.props.id}}>Buy</Link>
-            </div>
-            { holdings }
-            <p>{ +this.props.volume.toFixed(2) } shares</p>
-            <p>${ this.props.price.toFixed(2) }</p>
+      <div className="outcome outcome-{ this.props.id } shadow">
+        <h3>
+          <div className="name">{ getOutcomeName(this.props.id, this.props.outcomeCount) }</div>
+          <div className="price">{ priceToPercentage(this.props.price) }%</div>
+        </h3>
+        <div className="summary">
+          <div className='buy trade'>
+            <Link to="buy-outcome" className="btn btn-success" params={{marketId: this.props.params.marketId, outcomeId: this.props.id}}>Buy</Link>
           </div>
+          { holdings }
+          <p>{ +this.props.volume.toFixed(2) } shares</p>
+          <p>${ this.props.price.toFixed(2) }</p>
         </div>
       </div>
     );
@@ -123,17 +121,21 @@ var TradeBase = {
         simulation: null
       });
     } else {
-      this.getSimulationFunction()(
-        self.props.market.id,
-        self.getOutcomeId(),
-        numShares,
-        function (simulation) {
-          console.log('Setting simulation: ', simulation);
-          self.setState({
-            simulation: simulation
-          });  
-        }
-      );
+      new Promise((resolve, reject) => {
+        console.log('Getting simulation...');
+        this.getSimulationFunction()(
+          this.props.market.id,
+          this.getOutcomeId(),
+          numShares,
+          resolve
+        );
+      }).then((simulation) => {
+        console.log('Setting simulation: ', simulation);
+
+        this.setState({
+          simulation: simulation
+        });
+      });
     }
   },
 

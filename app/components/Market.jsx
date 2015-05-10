@@ -38,19 +38,18 @@ var Router = React.createClass({
     // return nothing until we have an actual market loaded
     if (_.isUndefined(this.state.market)) return (<div />);
 
+    var subheading = '';
+    if (this.state.market.endDate) {
+      subheading = 'Resolves after ' + this.state.market.endDate.format("MMMM Do, YYYY");
+    }
+
     return (
       <div id='market'>
         <h3>{ this.state.market.description }</h3>
-        <div className="subheading">Resolves after { this.state.market.endDate.format("MMMM Do, YYYY") }</div>
-        <div className="row">
-          <div className='col-sm-6'>
-            <RouteHandler {...this.props} {...this.state} />
-          </div>
-          <div className='col-sm-6'>
-            <div className='price-history'>
-              <h4>Price history soon...</h4>
-            </div>
-          </div>
+        <div className="subheading">{ subheading }</div>
+        <RouteHandler {...this.props} {...this.state} />
+        <div className='price-history'>
+          <h4>Price history soon...</h4>
         </div>
         <Comments comments={ this.props.market.comments } account={ this.props.account } />
       </div>
@@ -69,12 +68,14 @@ var Overview = React.createClass({
     var params = this.props.params;
     var outcomes = _.map(this.props.market.outcomes, function (outcome) {
       return (
-        <Outcomes.Overview {...outcome} outcomeCount={outcomeCount} params={params}></Outcomes.Overview>
+        <div className="col-sm-6">
+          <Outcomes.Overview key={ outcome.id } {...outcome} outcomeCount={outcomeCount} params={params}></Outcomes.Overview>
+        </div>
       );
     });
 
     return ( 
-      <div>
+      <div className='row'>
         { outcomes } 
       </div>
     );

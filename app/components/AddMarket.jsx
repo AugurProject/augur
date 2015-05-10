@@ -141,44 +141,41 @@ var AddMarketModal = React.createClass({
   render: function () {
 
     var page, subheading, footer;
+
     if (this.state.pageNumber === 2) {
+
+      var cashLeft = 'CASH: '+ this.state.cashLeft;
       subheading = 'Fees';
       page = (
-        <div className="form-horizontal fees">
-          <div className="form-group">
-            <label className="col-sm-3">Trading fee</label>
-            <div className="col-sm-2 input-group">
-              <Input 
-                type="text" 
-                className="form-control" 
-                name="trading-fee" 
-                placeholder={ this.state.tradingFee }
-                onChange={ this.onChangeTradingFee } 
-              />
-              <span className="input-group-addon">%</span>
-            </div>
-            <div className="col-xs-12">
-              <p className="desc">The trading fee is the percentage taken from each purchase or sale of an outcome.  These fees are split by you and all owners of winning outcomes</p>
-            </div> 
+        <div className="fees">
+
+          <div className="form-horizontal">
+            <Input 
+              type='text'
+              label='Trading fee'
+              labelClassName='col-xs-3'
+              wrapperClassName='col-xs-3'
+              addonAfter='%'
+              placeholder={ this.state.tradingFee }
+              onChange={ this.onChangeTradingFee }
+            />
           </div>
-          <div className="form-group">
-            <label className="col-sm-3">Initial Liquidity</label>
-            <div className="col-sm-2">
-              <input 
-                type="text" 
-                className="form-control" 
-                name="market-investment" 
-                placeholder={ this.state.marketInvestment }
-                onChange={ this.onChangeMarketInvestment } 
-              />
-            </div>
-            <div className="col-sm-4">
-              <span className="help">CASH: { this.state.cashLeft }</span> 
-            </div>
-            <div className="col-xs-12">
-              <p className="desc">The initial market liquidity is the amount of cash you wish to put in the market upfront.</p>
-            </div> 
+
+          <p className="desc">The trading fee is the percentage taken from each purchase or sale of an outcome.  These fees are split by you and all owners of winning outcomes</p>
+
+          <div className="form-horizontal">
+            <Input 
+              type="text"
+              label="Initial liquidity"
+              labelClassName='col-xs-3'
+              wrapperClassName='col-xs-3'
+              placeholder={ this.state.marketInvestment }
+              onChange={ this.onChangeMarketInvestment } />
+
           </div>
+
+          <p className="desc">The initial market liquidity is the amount of cash you wish to put in the market upfront.</p>
+
         </div>
       );
       footer = (
@@ -187,7 +184,9 @@ var AddMarketModal = React.createClass({
           <Button bsStyle='primary' onClick={ this.onNext }>Next</Button>
         </div>
       );
+
     } else if (this.state.pageNumber === 3) {
+
       subheading = 'Maturation Date';
       page = (
         <div className="form-group date">
