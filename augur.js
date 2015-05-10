@@ -2,13 +2,16 @@
  * JavaScript bindings for the Augur API
  * @author Jack Peterson (jack@tinybike.net)
  */
+
+"use strict";
+
 var rpc = {
     protocol: "http",
     host: "localhost",
     port: 8545
 };
 
-var MODULAR = (typeof(module) != 'undefined');
+var MODULAR = (typeof(module) !== 'undefined');
 var NODE_JS = MODULAR && process && !process.browser;
 if (MODULAR) {
     if (NODE_JS) {
@@ -18,7 +21,7 @@ if (MODULAR) {
         } catch (e) {
             httpsync = require('http-sync-win');
         }
-        var XMLHttpRequest = require('xhr2');
+        var XHR2 = require('xhr2');
     }
     var keccak_256 = require('js-sha3').keccak_256;
     var BigNumber = require('bignumber.js');
@@ -30,19 +33,19 @@ Array.prototype.loop = function (iterator) {
     var i = -1;
     var calls = 0;
     var looping = false;
-    var iterate = function() {
+    var iterate = function () {
         calls -= 1;
         i += 1;
         if (i === n) return;
         iterator(list[i], next);
     };
-    var loop = function() {
+    var loop = function () {
         if (looping) return;
         looping = true;
         while (calls > 0) iterate();
         looping = false;
     };
-    var next = function() {
+    var next = function () {
         calls += 1;
         if (typeof setTimeout === 'undefined') loop();
         else setTimeout(iterate, 1);
@@ -61,7 +64,7 @@ var Augur = (function (augur) {
 
     // if set to true, all numerical results (including hashes)
     // are returned as BigNumber objects
-    augur.BigNumberOnly = true;
+    augur.BigNumberOnly = false;
 
     // max number of tx verification attempts
     augur.PINGMAX = 12;
@@ -189,7 +192,7 @@ var Augur = (function (augur) {
     function log(msg) {
         var output = "[augur.js] ";
         if (msg) {
-            if (msg.constructor == Object || msg.constructor == Array) {
+            if (msg.constructor === Object || msg.constructor === Array) {
                 output += JSON.stringify(msg, null, 2);
             } else {
                 output += msg.toString();
@@ -216,7 +219,7 @@ var Augur = (function (augur) {
     }
     augur.prefix_hex = function (hex) {
         if (hex.slice(0,2) !== "0x" && hex.slice(0,3) !== "-0x") {
-            if (hex.slice(0,1) == '-') {
+            if (hex.slice(0,1) === '-') {
                 hex = "-0x" + hex.slice(1);
             } else {
                 hex = "0x" + hex;
@@ -272,7 +275,7 @@ var Augur = (function (augur) {
                 fixed = fixed_string(augur.bignum(n).mul(augur.ONE).round(), encode);
             } else if (n.constructor === Array) {
                 var len = n.length;
-                fixed = Array(len);
+                fixed = new Array(len);
                 for (var i = 0; i < len; ++i) {
                     fixed[i] = augur.fix(n[i], encode);
                 }
@@ -320,7 +323,7 @@ var Augur = (function (augur) {
                 }
             } else if (n.constructor === Array) {
                 var len = n.length;
-                unfixed = Array(len);
+                unfixed = new Array(len);
                 for (var i = 0; i < len; ++i) {
                     unfixed[i] = augur.unfix(n[i], encode);
                 }
@@ -375,7 +378,7 @@ var Augur = (function (augur) {
                 hex = hex.slice(2);
             }
         }
-        for (var i = 0, len = hex.length; i < len; i += 2) {
+        for (var i = 0, l = hex.length; i < l; i += 2) {
             str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
         }
         return str;
@@ -403,7 +406,9 @@ var Augur = (function (augur) {
                 var_args: o
             };
         } else {
-            var len_args = normal_args = var_args = '';
+            var len_args = '';
+            var normal_args = '';
+            var var_args = '';
             if (arg) {
                 if (base === "string") {
                     len_args = zeropad(encode_int(arg.length));
@@ -427,7 +432,7 @@ var Augur = (function (augur) {
                 len_args: len_args,
                 normal_args: normal_args,
                 var_args: var_args
-            }
+            };
         }
     }
 
@@ -448,7 +453,7 @@ var Augur = (function (augur) {
                 default:
                     summary += "weird";
             }
-            if (i != len - 1) summary += ",";
+            if (i !== len - 1) summary += ",";
         }
         var prefix = keccak_256(summary + ")").slice(0, 8);
         while (prefix.slice(0, 1) === '0') {
@@ -473,7 +478,7 @@ var Augur = (function (augur) {
     function parse_array(string, returns, stride, init) {
         stride = stride || 64;
         var elements = (string.length - 2) / stride;
-        var array = Array(elements);
+        var array = new Array(elements);
         var position = init || 2;
         for (var i = 0; i < elements; ++i) {
             array[i] = string.slice(position, position + stride);
@@ -499,7 +504,7 @@ var Augur = (function (augur) {
     }
 
     function format_result(returns, result) {
-        var returns = returns.toLowerCase();
+        returns = returns.toLowerCase();
         if (result && result !== "0x") {
             if (returns && returns.slice(-2) === "[]") {
                 result = parse_array(result, returns);
@@ -529,7 +534,7 @@ var Augur = (function (augur) {
 
     function parse(response, returns, callback) {
         if (response !== undefined) {
-            var response = JSON.parse(response);
+            response = JSON.parse(response);
             if (response.result && augur.ERRORS[response.result]) {
                 log("contract returned error code: " + augur.ERRORS[response.result]);
                 if (callback) {
@@ -561,19 +566,12 @@ var Augur = (function (augur) {
     }
 
     augur.clone = function (obj) {
-        if (null == obj || "object" != typeof obj) return obj;
+        if (null === obj || "object" !== typeof obj) return obj;
         var copy = obj.constructor();
         for (var attr in obj) {
             if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
         }
         return copy;
-    };
-    augur.range = function (start, end) {
-        var foo = [];
-        for (var i = start; i <= end; i++) {
-            foo.push(i);
-        }
-        return foo;
     };
 
     /********************************************
@@ -583,13 +581,13 @@ var Augur = (function (augur) {
     function json_rpc(command, callback) {
         var returns, req = null;
         returns = strip_returns(command);
-        var command = JSON.stringify(command);
+        command = JSON.stringify(command);
         if (NODE_JS) {
             // asynchronous if callback exists
             if (callback && callback.constructor === Function) {
-                req = new XMLHttpRequest();
+                req = new XHR2();
                 req.onreadystatechange = function () {
-                    if (req.readyState == 4) {
+                    if (req.readyState === 4) {
                         parse(req.responseText, returns, callback);
                     }
                 };
@@ -611,11 +609,11 @@ var Augur = (function (augur) {
             if (window.XMLHttpRequest) {
                 req = new window.XMLHttpRequest();
             } else {
-                req = new ActiveXObject("Microsoft.XMLHTTP");
+                req = new window.ActiveXObject("Microsoft.XMLHTTP");
             }
             if (callback && callback.constructor === Function) {
                 req.onreadystatechange = function () {
-                    if (req.readyState == 4) {
+                    if (req.readyState === 4) {
                         parse(req.responseText, returns, callback);
                     }
                 };
@@ -758,14 +756,14 @@ var Augur = (function (augur) {
     };
 
     // hex-encode a function's ABI data and return it
-    augur.abi_data = function (tx, f) {
+    augur.abi_data = function (tx) {
         tx.signature = tx.signature || "";
         var data_abi = get_prefix(tx.method, tx.signature);
         var types = [];
         for (var i = 0, len = tx.signature.length; i < len; ++i) {
-            if (tx.signature[i] == 's') {
+            if (tx.signature[i] === 's') {
                 types.push("string");
-            } else if (tx.signature[i] == 'a') {
+            } else if (tx.signature[i] === 'a') {
                 types.push("int256[]");
             } else {
                 types.push("int256");
@@ -788,8 +786,8 @@ var Augur = (function (augur) {
         var len_args = '';
         var normal_args = '';
         var var_args = '';
-        var base, sub, arrlist;
-        if (types.length == tx.params.length) {
+        var base, sub, arrlist, res;
+        if (types.length === tx.params.length) {
             for (i = 0, len = types.length; i < len; ++i) {
                 if (types[i] === "string") {
                     base = "string";
@@ -827,10 +825,10 @@ var Augur = (function (augur) {
      *    send: <true to sendTransaction, false to call (default)>
      * }
      */
-    augur.run = augur.execute = augur.invoke = function (tx, f) {
-        var data_abi, packaged, invocation, result, invoked;
-        if (tx) {
-            var tx = augur.clone(tx);
+    augur.run = augur.execute = augur.invoke = function (itx, f) {
+        var tx, data_abi, packaged, invocation, invoked;
+        if (itx) {
+            tx = augur.clone(itx);
             if (tx.params) {
                 if (tx.params.constructor === Array) {
                     for (var i = 0, len = tx.params.length; i < len; ++i) {
@@ -839,7 +837,7 @@ var Augur = (function (augur) {
                         }
                     }
                 } else if (tx.params.constructor === Object) {
-                    for (p in tx.params) {
+                    for (var p in tx.params) {
                         if (!tx.params.hasOwnProperty(p)) continue;
                         if (tx.params[p].constructor === BigNumber) {
                             tx.params[p] = tx.params[p].toFixed();
@@ -1541,6 +1539,19 @@ var Augur = (function (augur) {
         return augur.invoke(augur.tx.getSimulatedSell, onSent);
     };
 
+    augur.tx.lsLmsr = {
+        from: augur.coinbase,
+        to: augur.contracts.markets,
+        method: "lsLmsr",
+        signature: "i",
+        returns: "unfix"
+    };
+    augur.lsLmsr = function (market, onSent) {
+        // market: sha256
+        augur.tx.lsLmsr.params = market;
+        return augur.invoke(augur.tx.lsLmsr, onSent);
+    };
+
     augur.filters = {}; // key: marketId => {filterId: hexstring, polling: bool}
 
     augur.tx.getMarketInfo = {
@@ -1573,7 +1584,7 @@ var Augur = (function (augur) {
                         // make sure there's only one filter per market
                         // if (augur.filters[market] && augur.filters[market].filterId) {
                         //     log("existing filter found");
-                        //     pollFilter(market, augur.filters[market].filterId);
+                        //     augur.pollFilter(market, augur.filters[market].filterId);
                         // } else {
                         
                         //     // create filter for this market
@@ -1595,7 +1606,7 @@ var Augur = (function (augur) {
                         //                     });
                         //                 }
                         //             });
-                        //             pollFilter(market, filter);
+                        //             augur.pollFilter(market, filter);
                         //         }
                         //     });
                         // }
@@ -1938,14 +1949,13 @@ var Augur = (function (augur) {
     };
     augur.buyShares = function (branch, market, outcome, amount, nonce, onSent) {
         if (branch.constructor === Object && branch.branchId) {
-            var market = branch.marketId; // sha256
-            var outcome = branch.outcome; // integer (1 or 2 for binary)
-            var amount = branch.amount;   // number -> fixed-point
-            var nonce;                    // integer (optional)
+            market = branch.marketId; // sha256
+            outcome = branch.outcome; // integer (1 or 2 for binary)
+            amount = branch.amount;   // number -> fixed-point
             if (branch.nonce) {
-                nonce = branch.nonce;
+                nonce = branch.nonce; // integer (optional)
             }
-            var branch = branch.branchId; // sha256
+            branch = branch.branchId; // sha256
         }
         if (!nonce) {
             if (onSent) {
@@ -1954,7 +1964,7 @@ var Augur = (function (augur) {
                     augur.invoke(augur.tx.buyShares, onSent);
                 });
             } else {
-                var nonce = augur.getNonce(market);
+                nonce = augur.getNonce(market);
                 augur.tx.buyShares.params = [branch, market, outcome, augur.fix(amount), nonce];
                 return augur.invoke(augur.tx.buyShares);
             }
@@ -1965,14 +1975,13 @@ var Augur = (function (augur) {
     };
     augur.sellShares = function (branch, market, outcome, amount, nonce, onSent) {
         if (branch.constructor === Object && branch.branchId) {
-            var market = branch.marketId; // sha256
-            var outcome = branch.outcome; // integer (1 or 2 for binary)
-            var amount = branch.amount;   // number -> fixed-point
-            var nonce;                    // integer (optional)
+            market = branch.marketId; // sha256
+            outcome = branch.outcome; // integer (1 or 2 for binary)
+            amount = branch.amount;   // number -> fixed-point
             if (branch.nonce) {
-                nonce = branch.nonce;
+                nonce = branch.nonce; // integer (optional)
             }
-            var branch = branch.branchId; // sha256
+            branch = branch.branchId; // sha256
         }
         if (!nonce) {
             if (onSent) {
@@ -1981,7 +1990,7 @@ var Augur = (function (augur) {
                     augur.invoke(augur.tx.sellShares, onSent);
                 });
             } else {
-                var nonce = augur.getNonce(market);
+                nonce = augur.getNonce(market);
                 augur.tx.sellShares.params = [branch, market, outcome, augur.fix(amount), nonce];
                 return augur.invoke(augur.tx.sellShares);
             }
@@ -2026,14 +2035,14 @@ var Augur = (function (augur) {
     augur.createEvent = function (branch, description, expDate, minValue, maxValue, numOutcomes, onSent, onSuccess) {
         // first parameter can optionally be a transaction object
         if (branch.constructor === Object && branch.branchId) {
-            var description = branch.description; // string
-            var minValue = branch.minValue;       // integer (1 for binary)
-            var maxValue = branch.maxValue;       // integer (2 for binary)
-            var numOutcomes = branch.numOutcomes; // integer (2 for binary)
-            var expDate = branch.expDate;         // integer
-            var onSent = branch.onSent;           // function({id, txhash})
-            var onSuccess = branch.onSuccess;     // function({id, txhash})
-            var branch = branch.branchId;         // sha256 hash
+            description = branch.description; // string
+            minValue = branch.minValue;       // integer (1 for binary)
+            maxValue = branch.maxValue;       // integer (2 for binary)
+            numOutcomes = branch.numOutcomes; // integer (2 for binary)
+            expDate = branch.expDate;         // integer
+            onSent = branch.onSent;           // function({id, txhash})
+            onSuccess = branch.onSuccess;     // function({id, txhash})
+            branch = branch.branchId;         // sha256 hash
         }
         augur.tx.createEvent.params = [branch, description, expDate, minValue, maxValue, numOutcomes];
         augur.tx.createEvent.send = false;
@@ -2050,7 +2059,7 @@ var Augur = (function (augur) {
                             var pingTx = function () {
                                 augur.getEventInfo(eventID, function (eventInfo) {
                                     pings++;
-                                    if (eventInfo && eventInfo.branch && eventInfo.branch != 0 && eventInfo.branch != "0") {
+                                    if (eventInfo && eventInfo !== "0x" && eventInfo.branch && eventInfo.branch !== 0 && eventInfo.branch !== "0") {
                                         event.branch = eventInfo.branch;
                                         event.expirationDate = eventInfo.expirationDate;
                                         event.outcome = eventInfo.outcome;
@@ -2083,15 +2092,15 @@ var Augur = (function (augur) {
     augur.createMarket = function (branch, description, alpha, liquidity, tradingFee, events, onSent, onSuccess, onFailed) {
         // first parameter can optionally be a transaction object
         if (branch.constructor === Object && branch.branchId) {
-            var alpha = branch.alpha;                // number -> fixed-point
-            var description = branch.description;    // string
-            var liquidity = branch.initialLiquidity; // number -> fixed-point
-            var tradingFee = branch.tradingFee;      // number -> fixed-point
-            var events = branch.events;              // array [sha256, ...]
-            var onSent = branch.onSent;              // function({id, txhash})
-            var onSuccess = branch.onSuccess;        // function({id, txhash})
-            var onFailed = branch.onFailed;          // function({id, txhash})
-            var branch = branch.branchId;            // sha256 hash
+            alpha = branch.alpha;                // number -> fixed-point
+            description = branch.description;    // string
+            liquidity = branch.initialLiquidity; // number -> fixed-point
+            tradingFee = branch.tradingFee;      // number -> fixed-point
+            events = branch.events;              // array [sha256, ...]
+            onSent = branch.onSent;              // function({id, txhash})
+            onSuccess = branch.onSuccess;        // function({id, txhash})
+            onFailed = branch.onFailed;          // function({id, txhash})
+            branch = branch.branchId;            // sha256 hash
         }
         augur.tx.createMarket.params = [
             branch,
@@ -2119,7 +2128,7 @@ var Augur = (function (augur) {
                                 var pingTx = function () {
                                     augur.getMarketInfo(marketID, function (marketInfo) {
                                         pings++;
-                                        if (marketInfo && marketInfo.numOutcomes && marketInfo.numOutcomes != 0 && marketInfo.numOutcomes != "0") {
+                                        if (marketInfo && marketInfo !== "0x" && marketInfo.numOutcomes && marketInfo.numOutcomes !== 0 && marketInfo.numOutcomes !== "0") {
                                             market.numOutcomes = marketInfo.numOutcomes;
                                             market.currentParticipant = marketInfo.currentParticipant;
                                             market.alpha = marketInfo.alpha;
@@ -2210,7 +2219,7 @@ var Augur = (function (augur) {
      *  - compare comment string length, write the longest to leveldb
      *  - 10 second ethereum network polling interval
      */
-    function pollFilter(market_id, filter_id) {
+    augur.pollFilter = function (market_id, filter_id) {
         augur.getFilterChanges(filter_id, function (message) {
             log(message);
             if (message && message.length && message[0].payload) {
@@ -2253,12 +2262,10 @@ var Augur = (function (augur) {
                         });
                     });
                 }
-            } else {
-                // log("[" + filter_id + "] no new comments for market: " + market_id);
             }
-            setTimeout(function () { pollFilter(market_id, filter_id); }, 10000);
+            setTimeout(function () { augur.pollFilter(market_id, filter_id); }, 10000);
         });
-    }
+    };
     augur.comment = function (market_id, comment_text, f) {
 
         // get existing comment(s) stored locally
@@ -2269,7 +2276,7 @@ var Augur = (function (augur) {
                     whisperId: whisper_id, // whisper ID
                     from: augur.coinbase, // ethereum account
                     comment: comment_text,
-                    time: Math.floor((new Date).getTime() / 1000)
+                    time: Math.floor((new Date()).getTime() / 1000)
                 }]);
                 augur.getString(market_id, function (comments) {
                     if (comments) {
@@ -2297,7 +2304,5 @@ var Augur = (function (augur) {
     return augur;
 
 })(Augur || {});
-
-delete rpc;
 
 if (MODULAR) module.exports = Augur;

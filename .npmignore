@@ -2,3 +2,7 @@ node_modules
 minify.sh
 compiler.jar
 lib
+.gitignore
+.npmignore
+.travis.yml
+test

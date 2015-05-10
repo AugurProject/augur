@@ -1,6 +1,8 @@
-augur.js
-========
+Augur JavaScript API
+====================
 
+[![Build Status](https://travis-ci.org/AugurProject/augur.js.svg?branch=master)](https://travis-ci.org/AugurProject/augur.js)
+[![npm version](https://badge.fury.io/js/augur.js.svg)](http://badge.fury.io/js/augur.js)
 [![Join the chat at https://gitter.im/AugurProject/augur.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/AugurProject/augur.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 JavaScript bindings for the Augur API.
