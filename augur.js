@@ -250,6 +250,8 @@ var Augur = (function (augur) {
                     }
                     bn = new BigNumber("0x" + n);
                 }
+            } else if (n.constructor === BigNumber) {
+                bn = n;
             }
             if (compact) {
                 var cbn = bn.sub(augur.MAXBITS);
@@ -499,17 +501,18 @@ var Augur = (function (augur) {
     function format_result(returns, result) {
         var returns = returns.toLowerCase();
         if (result && result !== "0x") {
-            if (returns.slice(-2) === "[]") {
+            if (returns && returns.slice(-2) === "[]") {
                 result = parse_array(result, returns);
             } else if (returns === "string") {
                 result = augur.decode_hex(result, true);
             } else {
                 if (augur.BigNumberOnly) {
-                    if (returns === "number" || returns === "bignumber") {
-                        result = augur.bignum(result);
-                    } else if (returns === "unfix") {
+                    if (returns === "unfix") {
                         result = augur.unfix(result);
-                    }    
+                    }
+                    if (result.constructor !== BigNumber) {
+                        result = augur.bignum(result);
+                    }
                 } else {
                     if (returns === "number") {
                         result = augur.bignum(result).toFixed();
@@ -525,7 +528,6 @@ var Augur = (function (augur) {
     }
 
     function parse(response, returns, callback) {
-        // log(response);
         if (response !== undefined) {
             var response = JSON.parse(response);
             if (response.result && augur.ERRORS[response.result]) {
@@ -544,6 +546,9 @@ var Augur = (function (augur) {
                 if (returns) {
                     response.result = format_result(returns, response.result);
                 }
+                // if (augur.BigNumberOnly) {
+                //     response.result = augur.bignum(response.result);
+                // }
                 if (callback) {
                     callback(response.result);
                 } else {
@@ -652,6 +657,19 @@ var Augur = (function (augur) {
      * Ethereum JSON-RPC bindings *
      ******************************/
 
+    augur.getCoinbase = function (repeat) {
+        try {
+            augur.coinbase = json_rpc(postdata("coinbase"));
+        } catch (e) {
+            var delay = 5000 * repeat;
+            log("connection error, retrying in " + parseInt(delay / 1000).toString() + " seconds");
+            if (repeat) {
+                setTimeout(function () { augur.getCoinbase(repeat + 1); }, delay);
+            }
+        }
+    };
+    augur.getCoinbase(1);
+
     augur.rpc = function (command, params, f) {
         return json_rpc(postdata(command, params, "null"), f);
     };
@@ -683,7 +701,11 @@ var Augur = (function (augur) {
         return json_rpc(postdata("gasPrice"), f);
     };
     augur.blockNumber = function (f) {
-        return json_rpc(postdata("blockNumber"), f);
+        if (f) {
+            json_rpc(postdata("blockNumber"), f);
+        } else {
+            return parseInt(json_rpc(postdata("blockNumber")));
+        }
     };
     augur.getBalance = augur.balance = function (address, block, f) {
         return json_rpc(postdata("getBalance", [address || augur.coinbase, block || "latest"]), f);
@@ -698,7 +720,24 @@ var Augur = (function (augur) {
         return json_rpc(postdata("getTransactionByHash", hash), f);
     };
     augur.peerCount = function (f) {
-        return json_rpc(postdata("peerCount", [], "net_"), f);
+        if (f) {
+            json_rpc(postdata("peerCount", [], "net_"), f);
+        } else {
+            return parseInt(json_rpc(postdata("peerCount", [], "net_")));
+        }
+    };
+    augur.accounts = function (f) {
+        return json_rpc(postdata("accounts"), f);
+    };
+    augur.mining = function (f) {
+        return json_rpc(postdata("mining"), f);
+    };
+    augur.hashrate = function (f) {
+        if (f) {
+            json_rpc(postdata("hashrate"), f);
+        } else {
+            return parseInt(json_rpc(postdata("hashrate")));
+        }
     };
 
     // execute functions on contracts on the blockchain
@@ -872,7 +911,7 @@ var Augur = (function (augur) {
         method: "balance",
         signature: "i",
         params: augur.coinbase,
-        returns: "number"
+        returns: "unfix"
     };
     augur.tx.sendCash = {
         from: augur.coinbase,
@@ -2254,19 +2293,6 @@ var Augur = (function (augur) {
             }
         });
     };
-
-    augur.getCoinbase = function (repeat) {
-        try {
-            augur.coinbase = json_rpc(postdata("coinbase"));
-        } catch (e) {
-            var delay = 5000 * repeat;
-            log("connection error, retrying in " + parseInt(delay / 1000).toString() + " seconds");
-            if (repeat) {
-                setTimeout(function () { augur.getCoinbase(repeat + 1); }, delay);
-            }
-        }
-    };
-    augur.getCoinbase(1);
 
     return augur;
 

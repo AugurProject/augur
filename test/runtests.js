@@ -82,6 +82,7 @@
     
         Augur.async = async;
         Augur.BigNumberOnly = false;
+        Augur.getCoinbase(1);
 
         if (async) {
             print("###############################\n"+
