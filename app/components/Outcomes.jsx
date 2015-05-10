@@ -180,22 +180,30 @@ var TradeBase = {
 
     return (
       <div className='execute-trade shadow'>
-        <h4>{ this.actionLabel } shares of <b>{ getOutcomeName(this.getOutcomeId(), outcomeCount) }</b></h4>
-        <h3 className="price">{ priceToPercentage(this.getPrice()) }% { this.getPriceDelta() }</h3>
-        <p className="shares-held">Shares held: { this.state.ownedShares }</p>
-        <p className="shares-held">Cash balance: { this.props.cashBalance }</p>
-        <form onSubmit={ this.onSubmit }>
-          <Input
-            type="text"
-            bsStyle={ inputStyle }
-            value={ this.state.value }
-            help={ this.getHelpText() }
-            ref="input"
-            placeholder='Shares'
-            onChange={ this.handleChange } 
-            buttonAfter={ submit }
-          />
-        </form>
+        <div className='row'>
+          <div className='col-sm-4'>
+            <h4>{ this.actionLabel } shares of <b>{ getOutcomeName(this.getOutcomeId(), outcomeCount) }</b></h4>
+            <h3 className="price">{ priceToPercentage(this.getPrice()) }% { this.getPriceDelta() }</h3>
+          </div>
+          <div className='col-sm-4'>
+            <p className="shares-held">Shares held: { this.state.ownedShares }</p>
+            <p className="shares-held">Cash balance: { this.props.cashBalance }</p>
+          </div>
+          <div className='col-sm-4'>        
+            <form onSubmit={ this.onSubmit }>
+              <Input
+                type="text"
+                bsStyle={ inputStyle }
+                value={ this.state.value }
+                help={ this.getHelpText() }
+                ref="input"
+                placeholder='Shares'
+                onChange={ this.handleChange } 
+                buttonAfter={ submit }
+              />
+            </form>
+          </div>
+        </div>
       </div>
     );
   }

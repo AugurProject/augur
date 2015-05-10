@@ -279,7 +279,7 @@ nav .navbar-right li div {
 }
 #main div.subheading {
     font-size: 18px;
-    margin: 5px 0px 15px 0px;
+    margin: 5px 0px 25px 0px;
 }
 #main h4 {
     font-weight: 400;
@@ -414,6 +414,7 @@ nav .navbar-right li div {
     border: 1px solid #dedede;
     border-radius: 5px;
     height: 225px;
+    margin-top: 30px;
 }
 #market .price-history h4 {
     margin: 95px auto 0px auto;
@@ -421,7 +422,7 @@ nav .navbar-right li div {
     color: #999;
 }
 #market .outcome {
-    margin: 0px 0px 35px 0px;
+    margin: 0px 0px 0px 0px;
     border-radius: 5px;
     padding: 0px 0px 0px 0px;
     background-color: #F2F2F2;
@@ -498,12 +499,15 @@ nav .navbar-right li div {
     background-color: #F2F2F2;
     border-radius: 5px;
     padding: 10px 20px;
+    margin-bottom: 10px;
+    height: 90px;
 }
 #market .execute-trade h4 {
     font-size: 20px;
+    margin-top: 5px;
 }
 #market .execute-trade p {
-    margin: 0px;
+    margin: 5px 0px 0px 0px;
 }
 #market .execute-trade .price {
     margin-bottom: 10px;
@@ -518,7 +522,7 @@ nav .navbar-right li div {
     color: #777;
 }
 #market .execute-trade form {
-    margin-top: 20px;
+    margin-top: 10px;
 }
 #market .comments {
     margin-top: 40px;
