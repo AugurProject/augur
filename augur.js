@@ -70,11 +70,12 @@ var Augur = (function (augur) {
     augur.PINGMAX = 12;
 
     // constants
-    augur.MAXBITS = new BigNumber(2).toPower(256);
-    augur.ONE = new BigNumber(2).toPower(64);
-    augur.TWO = new BigNumber(2).toPower(65);
-    augur.BAD = (new BigNumber(2).toPower(63)).mul(new BigNumber(3));
-    augur.ETHER = new BigNumber(10).toPower(18);
+    augur.MAXBITS = (new BigNumber(2)).toPower(256);
+    augur.MAXNUM = (new BigNumber(2)).toPower(255);
+    augur.ONE = (new BigNumber(2)).toPower(64);
+    augur.TWO = (new BigNumber(2)).toPower(65);
+    augur.BAD = ((new BigNumber(2)).toPower(63)).mul(new BigNumber(3));
+    augur.ETHER = (new BigNumber(10)).toPower(18);
     augur.AGAINST = augur.NO = 1; // against: "won't happen"
     augur.ON = augur.YES = 2;     // on: "will happen"
 
@@ -156,20 +157,20 @@ var Augur = (function (augur) {
         events: "0xb71464588fc19165cbdd1e6e8150c40df544467b",
         expiringEvents: "0x61d90fd4c1c3502646153003ec4d5c177de0fb58",
         fxpFunctions: "0xdaf26192091449d14c03026f79272e410fce0908",
-        markets: "0x75ee234fe5ef1cd493c2af38a2ae7d0d0cba01f5",
+        markets: "0x2303f6b69e1d7662320819af027d88a9e350ebfb",
         reporting: "0xd1f7f020f24abca582366ec80ce2fef6c3c22233",
         whitelist: "0x21dbe4a05a9174e96e6c6bc1e05a7096338cb0d6",
 
         // Functions
         checkQuorum: "0xe9aaab4aff0cf06e62d2442ae0f68660882e5a67",
-        buyAndSellShares: "0x9dff8b4278f05e37f00d7461b175e092ae611380",
+        buyAndSellShares: "0xb8555091be5c8b8fc77449bb203717959079c29a",
         createBranch: "0x5c955b31ac72c83ffd7562aed4e2100b2ba09a3b",
         p2pWagers: "0x7c2bbb3045fd8b39d28f4b4a5682dbec9a710771",
         sendReputation: "0x049487d32b727be98a4c8b58c4eab6521791f288",
         transferShares: "0x78da82256f5775df22eee51096d27666772b592d",
         makeReports: "0x32bfb5724874b209193aa0fca45b1f337b27e9b5",
         createEvent: "0xcae6d5912033d66650894e2ae8c2f7502eaba15c",
-        createMarket: "0x386acc6b970aea7c6f9b87e7622d2ae7c18d377a",
+        createMarket: "0x0568c631465eca542affb4bd3c72d1d2ee222c06",
         closeMarket: "0xb0e93253a008ce80f4c26152da3869225c716ce3",
         dispatch: "0x6c2af20ef783f0f16bc0eb499462b888e57c9fbf",
 
@@ -205,27 +206,18 @@ var Augur = (function (augur) {
      * Fixed-point conversion routines *
      ***********************************/
 
-    function fixed_string(fixed, encode) {
-        if (encode === "string") {
-            fixed = fixed.toFixed();
-        } else if (encode === "hex") {
-            if (fixed.s === -1) {
-                fixed = "-0x" + fixed.toString(16).slice(1);
+    augur.prefix_hex = function (n) {
+        if (n.constructor === Number || n.constructor === BigNumber) {
+            n = n.toString(16);
+        }
+        if (n.slice(0,2) !== "0x" && n.slice(0,3) !== "-0x") {
+            if (n.slice(0,1) === '-') {
+                n = "-0x" + n.slice(1);
             } else {
-                fixed = "0x" + fixed.toString(16);
+                n = "0x" + n;
             }
         }
-        return fixed;
-    }
-    augur.prefix_hex = function (hex) {
-        if (hex.slice(0,2) !== "0x" && hex.slice(0,3) !== "-0x") {
-            if (hex.slice(0,1) === '-') {
-                hex = "-0x" + hex.slice(1);
-            } else {
-                hex = "0x" + hex;
-            }
-        }
-        return hex;
+        return n;
     };
     augur.bignum = function (n, compact) {
         var bn;
@@ -256,6 +248,9 @@ var Augur = (function (augur) {
             } else if (n.constructor === BigNumber) {
                 bn = n;
             }
+            if (bn.gt(augur.MAXNUM)) {
+                bn = bn.sub(augur.MAXBITS);
+            }
             if (compact) {
                 var cbn = bn.sub(augur.MAXBITS);
                 if (bn.toString(16).length > cbn.toString(16).length) {
@@ -263,74 +258,71 @@ var Augur = (function (augur) {
                 }
             }
             return bn;
+        } else {
+            return n;
         }
     };
     augur.fix = function (n, encode) {
         var fixed;
         if (n && n !== "0x") {
-            encode = (encode) ? encode.toLowerCase() : "string";
-            if (n.constructor === BigNumber) {
-                fixed = fixed_string(n.mul(augur.ONE).round(), encode);
-            } else if (n.constructor === Number || n.constructor === String) {
-                fixed = fixed_string(augur.bignum(n).mul(augur.ONE).round(), encode);
-            } else if (n.constructor === Array) {
+            if (encode) encode = encode.toLowerCase();
+            if (n.constructor === Array) {
                 var len = n.length;
                 fixed = new Array(len);
                 for (var i = 0; i < len; ++i) {
                     fixed[i] = augur.fix(n[i], encode);
                 }
             } else {
-                log("could not convert " + n.toString() + " to fixed-point");
+                if (n.constructor === BigNumber) {
+                    fixed = n.mul(augur.ONE).round();
+                } else {
+                    fixed = augur.bignum(n).mul(augur.ONE).round();
+                }
+                if (fixed.gt(augur.MAXNUM)) {
+                    fixed = fixed.sub(augur.MAXBITS);
+                }
+                if (encode) {
+                    if (encode === "string") {
+                        fixed = fixed.toFixed();
+                    } else if (encode === "hex") {
+                        fixed = augur.prefix_hex(fixed);
+                    }
+                }
             }
             return fixed;
+        } else {
+            return n;
         }
     };
     augur.unfix = function (n, encode) {
         var unfixed;
         if (n && n !== "0x") {
             if (encode) encode = encode.toLowerCase();
-            if (n.constructor === BigNumber) {
-                unfixed = n.dividedBy(augur.ONE);
-                if (encode) {
-                    if (encode === "hex") {
-                        unfixed = unfixed.toString(16);
-                        if (unfixed.slice(0,1) === '-') {
-                            unfixed = "-0x" + unfixed.slice(1);
-                        } else {
-                            unfixed = "0x" + unfixed;
-                        }
-                    } else if (encode === "string") {
-                        unfixed = unfixed.toFixed();
-                    } else if (encode === "number") {
-                        unfixed = unfixed.toNumber();
-                    }
-                }
-            } else if (n.constructor === Number || n.constructor === String) {
-                unfixed = augur.bignum(n).dividedBy(augur.ONE);
-                if (encode) {
-                    if (encode === "hex") {
-                        unfixed = unfixed.toString(16);
-                        if (unfixed.slice(0,1) === '-') {
-                            unfixed = "-0x" + unfixed.slice(1);
-                        } else {
-                            unfixed = "0x" + unfixed;
-                        }
-                    } else if (encode === "string") {
-                        unfixed = unfixed.toFixed();
-                    } else if (encode === "number") {
-                        unfixed = unfixed.toNumber();
-                    }
-                }
-            } else if (n.constructor === Array) {
+            if (n.constructor === Array) {
                 var len = n.length;
                 unfixed = new Array(len);
                 for (var i = 0; i < len; ++i) {
                     unfixed[i] = augur.unfix(n[i], encode);
                 }
             } else {
-                log("could not convert " + n.toString() + " from fixed-point");
+                if (n.constructor === BigNumber) {
+                    unfixed = n.dividedBy(augur.ONE);
+                } else {
+                    unfixed = augur.bignum(n).dividedBy(augur.ONE);
+                }
+                if (encode) {
+                    if (encode === "hex") {
+                        unfixed = augur.prefix_hex(unfixed);
+                    } else if (encode === "string") {
+                        unfixed = unfixed.toFixed();
+                    } else if (encode === "number") {
+                        unfixed = unfixed.toNumber();
+                    }
+                }
             }
             return unfixed;
+        } else {
+            return n;
         }
     };
 
@@ -347,7 +339,6 @@ var Augur = (function (augur) {
         }
         return (cs.reverse()).join('');
     }
-
     augur.encode_hex = function (str) {
         var hexbyte, hex = '';
         for (var i = 0, len = str.length; i < len; ++i) {
@@ -357,7 +348,6 @@ var Augur = (function (augur) {
         }
         return hex;
     };
-
     augur.decode_hex = function (h, strip) {
         var hex = h.toString();
         var str = '';
@@ -383,7 +373,6 @@ var Augur = (function (augur) {
         }
         return str;
     };
-
     function zeropad(r, ishex) {
         var output = r;
         if (!ishex) output = augur.encode_hex(output);
@@ -392,7 +381,6 @@ var Augur = (function (augur) {
         }
         return output;
     }
-
     function encode_abi(arg, base, sub, arrlist) {
         if (arrlist && arrlist.slice(-2) === "[]") {
             var res, o = '';
@@ -435,7 +423,6 @@ var Augur = (function (augur) {
             };
         }
     }
-
     function get_prefix(funcname, signature) {
         signature = signature || "";
         var summary = funcname + "(";
@@ -466,27 +453,13 @@ var Augur = (function (augur) {
      * Parse Ethereum response JSON *
      ********************************/
 
-    function strip_returns(tx) {
-        var returns;
-        if (tx && tx.params && tx.params[0] && tx.params[0].returns) {
-            returns = tx.params[0].returns;
-            delete tx.params[0].returns;
-        }
-        return returns;
-    }
-
     function parse_array(string, returns, stride, init) {
         stride = stride || 64;
         var elements = (string.length - 2) / stride;
         var array = new Array(elements);
         var position = init || 2;
         for (var i = 0; i < elements; ++i) {
-            array[i] = string.slice(position, position + stride);
-            if (array[i].slice(0,1) === '-') {
-                array[i] = "-0x" + array[i].slice(1);
-            } else {
-                array[i] = "0x" + array[i];
-            }
+            array[i] = augur.prefix_hex(string.slice(position, position + stride));
             if (returns === "hash[]" && augur.BigNumberOnly) {
                 array[i] = augur.bignum(array[i]);
             } else {
@@ -502,7 +475,6 @@ var Augur = (function (augur) {
         }
         return array.slice(1);
     }
-
     function format_result(returns, result) {
         returns = returns.toLowerCase();
         if (result && result !== "0x") {
@@ -580,7 +552,10 @@ var Augur = (function (augur) {
 
     function json_rpc(command, callback) {
         var returns, req = null;
-        returns = strip_returns(command);
+        if (command.params && command.params.length && command.params[0].returns) {
+            returns = command.params[0].returns;
+            delete command.params[0].returns;
+        }
         command = JSON.stringify(command);
         if (NODE_JS) {
             // asynchronous if callback exists
@@ -628,7 +603,6 @@ var Augur = (function (augur) {
             }
         }
     }
-
     function postdata(command, params, prefix) {
         augur.data = {
             id: augur.id++,
@@ -650,11 +624,6 @@ var Augur = (function (augur) {
         }
         return augur.data;
     }
-
-    /******************************
-     * Ethereum JSON-RPC bindings *
-     ******************************/
-
     augur.getCoinbase = function (repeat) {
         try {
             augur.coinbase = json_rpc(postdata("coinbase"));
@@ -667,6 +636,10 @@ var Augur = (function (augur) {
         }
     };
     augur.getCoinbase(1);
+
+    /******************************
+     * Ethereum JSON-RPC bindings *
+     ******************************/
 
     augur.rpc = function (command, params, f) {
         return json_rpc(postdata(command, params, "null"), f);
@@ -686,7 +659,6 @@ var Augur = (function (augur) {
     augur.shh = function (command, params, f) {
         return json_rpc(postdata(command, params, "shh_"), f);
     };
-
     augur.sha3 = augur.hash = function (data, f) {
         if (data) {
             if (data.constructor === Array || data.constructor === Object) {
