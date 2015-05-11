@@ -266,79 +266,78 @@ EthereumClient.prototype.getMarketsAsync = function (branchId) {
 
 EthereumClient.prototype.getMarkets = function (branchId) {
 
-  var account = this.account;
-
   var validMarkets = _.filter(Augur.getMarkets(branchId), function (marketId) {
     return !_.contains(blacklist.markets, marketId.toString(16));
   });
 
   var marketList = _.map(validMarkets, function (marketId) {
+    return this.getMarket(branchId, marketId);
+  }, this);
 
-    var events = Augur.getMarketEvents(marketId);
-    var description = Augur.getDescription(marketId);
-    var alpha = Augur.getAlpha(marketId);
-    var author = Augur.getCreator(marketId);
-    var creationFee = Augur.getCreationFee(marketId);
+  return _.indexBy(marketList, 'id');
+};
 
-    // calc end date from first events expiration
-    var endDate;
-    if (events.length) {
-      var expirationBlock = Augur.getExpiration(events[0]);
-      endDate = utilities.blockToDate(expirationBlock.toNumber());
+EthereumClient.prototype.getMarket = function (branchId, marketId) {
+
+  var events = Augur.getMarketEvents(marketId);
+  var description = Augur.getDescription(marketId);
+  var alpha = Augur.getAlpha(marketId);
+  var author = Augur.getCreator(marketId);
+  var creationFee = Augur.getCreationFee(marketId);
+
+  // calc end date from first events expiration
+  var endDate;
+  if (events.length) {
+    var expirationBlock = Augur.getExpiration(events[0]);
+    endDate = utilities.blockToDate(expirationBlock.toNumber());
+  }
+
+  var traderCount = Augur.getCurrentParticipantNumber(marketId);
+  var tradingPeriod = Augur.getTradingPeriod(marketId);
+  var tradingFee = Augur.getTradingFee(marketId);
+  var traderId = Augur.getParticipantNumber(marketId, this.account);
+
+  var totalVolume = new BigNumber(0);
+
+  var outcomeCount = Augur.getMarketNumOutcomes(marketId).toNumber();
+  var outcomes = _.map( _.range(1, outcomeCount + 1), function (outcomeId) {
+
+    var volume = Augur.getSharesPurchased(marketId, outcomeId);
+    totalVolume = totalVolume.plus(volume);
+    var sharePurchased = 0;
+    if (traderId !== -1) {
+      sharesPurchased = Augur.getParticipantSharesPurchased(marketId, traderId, outcomeId);
     }
 
-    var traderCount = Augur.getCurrentParticipantNumber(marketId);
-    var tradingPeriod = Augur.getTradingPeriod(marketId);
-    var tradingFee = Augur.getTradingFee(marketId);
-    var traderId = Augur.getParticipantNumber(marketId, account);
-
-    var totalVolume = new BigNumber(0);
-
-    var outcomeCount = Augur.getMarketNumOutcomes(marketId).toNumber();
-
-    var outcomes = _.map( _.range(1, outcomeCount + 1), function (outcomeId) {
-
-      var volume = Augur.getSharesPurchased(marketId, outcomeId);
-      totalVolume = totalVolume.plus(volume);
-      var sharePurchased = 0;
-      if (traderId !== -1) {
-        sharesPurchased = Augur.getParticipantSharesPurchased(marketId, traderId, outcomeId);
-      }
-
-      return {
-        id: outcomeId,
-        price: Augur.price(marketId, outcomeId),
-        priceHistory: [],  // NEED
-        sharesPurchased: sharesPurchased,
-        volume: volume
-      };
-    });
-
-    var price = outcomes.length ? outcomes[1].price : new BigNumber(0);  // hardcoded to outcome 2 (yes)
-    var winningOutcomes = Augur.getWinningOutcomes(marketId);
-
     return {
-      id: marketId,
-      branchId: branchId,
-      price: price,
-      description: description,
-      alpha: alpha,
-      author: author,
-      endDate: endDate,
-      traderCount: traderCount,
-      tradingPeriod: tradingPeriod,
-      tradingFee: tradingFee,
-      traderId: traderId,
-      totalVolume: totalVolume,
-      events: events,
-      outcomes: outcomes,
-      comments: []
+      id: outcomeId,
+      price: Augur.price(marketId, outcomeId),
+      priceHistory: [],  // NEED
+      sharesPurchased: sharesPurchased,
+      volume: volume
     };
   });
 
-  var markets = _.indexBy(marketList, 'id');
+  var price = outcomes.length ? outcomes[1].price : new BigNumber(0);  // hardcoded to outcome 2 (yes)
+  var winningOutcomes = Augur.getWinningOutcomes(marketId);
 
-  return markets;
+  return {
+    id: marketId,
+    branchId: branchId,
+    price: price,
+    description: description,
+    alpha: alpha,
+    author: author,
+    endDate: endDate,
+    traderCount: traderCount,
+    tradingPeriod: tradingPeriod,
+    tradingFee: tradingFee,
+    traderId: traderId,
+    totalVolume: totalVolume,
+    events: events,
+    outcomes: outcomes,
+    comments: []
+  };
 };
 
 EthereumClient.prototype.getEvents = function(branchId, expirationPeriod) {
@@ -405,7 +404,7 @@ EthereumClient.prototype.addMarket = function(params, onSuccess) {
       onSuccess: function (newMarket) {
         utilities.debug("tx: " + newMarket.txhash);
         utilities.log('new market successfully added');
-        if (onSuccess) onSuccess();
+        if (onSuccess) onSuccess(newMarket);
       },
       
       onFailed: function (newMarket) {

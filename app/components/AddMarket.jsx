@@ -85,13 +85,12 @@ var AddMarketModal = React.createClass({
   },
 
   validatePage: function(pageNumber) {
-    console.log(pageNumber);
+
     if (pageNumber === 1) {
       if (this.state.marketText.length > this.state.marketTextMaxLength) {
         this.setState({marketTextError: 'Text exceeds the maximum length of ' + this.state.marketTextMaxLength});
         return false;
       } else if (!this.state.marketText.length) {
-        console.log(this.state.marketText.length);
          this.setState({marketTextError: 'Please enter your question'});
         return false;       
       }
@@ -123,11 +122,19 @@ var AddMarketModal = React.createClass({
       tradingFee: self.state.tradingFee / 100
     };
 
+    var flux = this.getFlux();
+    var pendingId = flux.actions.market.addMarket(newMarketParams);
+    console.log(pendingId);
+
     this.state.ethereumClient.addEvent(newEventParams, function(newEvent) {
 
       // create associated market on success of event
       newMarketParams.events = [ newEvent.id ];
-      self.state.ethereumClient.addMarket(newMarketParams);
+      self.state.ethereumClient.addMarket(newMarketParams, function(newMarket) {
+
+        console.log(newMarket);
+        console.log(pendingId);
+      });
     });
 
     this.props.onRequestHide();

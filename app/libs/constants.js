@@ -37,7 +37,8 @@ module.exports = {
     UPDATE_CURRENT_BRANCH: null
   }),
   market: keyMirror({
-    LOAD_MARKETS_SUCCESS: null
+    LOAD_MARKETS_SUCCESS: null,
+    ADD_MARKET_SUCCESS: null,
   }),
   event: keyMirror({
     LOAD_EVENTS_SUCCESS: null
