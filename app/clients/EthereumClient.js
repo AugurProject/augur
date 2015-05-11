@@ -305,7 +305,7 @@ EthereumClient.prototype.getMarket = function (marketId, branchId) {
 
     var volume = Augur.getSharesPurchased(marketId, outcomeId);
     totalVolume = totalVolume.plus(volume);
-    var sharePurchased = 0;
+    var sharesPurchased = new BigNumber(0);
     if (traderId !== -1) {
       sharesPurchased = Augur.getParticipantSharesPurchased(marketId, traderId, outcomeId);
     }
