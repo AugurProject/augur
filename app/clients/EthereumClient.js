@@ -434,9 +434,8 @@ var getSimulationArgs = function (marketId, outcomeId, numShares, callback) {
     });
   };
 
-  var hexMarketId = hexNumber(marketId);
   return [
-    hexMarketId,
+    marketId,
     outcomeId,
     numShares,
     wrappedCallback
@@ -451,28 +450,19 @@ EthereumClient.prototype.getSimulatedBuy = function (marketId, outcomeId, numSha
 
 EthereumClient.prototype.getSimulatedSell = function (marketId, outcomeId, numShares, callback) {
   var args = getSimulationArgs(marketId, outcomeId, numShares, callback);
+  console.log(args);
   Augur.getSimulatedSell.apply(null, args);
 };
 
-var getTradeArgs = function (branchId, marketId, outcomeId, numShares, callback) {
-  return [
-    hexNumber(branchId),
-    hexNumber(marketId),
-    outcomeId,
-    numShares,
-    null, // nonce is now calculated by augur.js!
-    callback
-  ];
-};
 
 EthereumClient.prototype.buyShares = function (branchId, marketId, outcomeId, numShares, callback) {
-  var args = getTradeArgs(branchId, marketId, outcomeId, numShares, callback);
-  Augur.buyShares.apply(null, args);
+
+  Augur.buyShares(branchId, marketId, outcomeId, numShares, null, callback);
 };
 
 EthereumClient.prototype.sellShares = function (branchId, marketId, outcomeId, numShares, callback) {
-  var args = getTradeArgs(branchId, marketId, outcomeId, numShares, callback);
-  Augur.sellShares.apply(null, args);
+
+  Augur.sellShares(branchId, marketId, outcomeId, numShares, null, callback);
 };
 
 module.exports = EthereumClient;

@@ -18,6 +18,11 @@ var MarketStore = Fluxxor.createStore({
     return state;
   },
 
+  getMarketsByAuthor: function(author) {
+    var marketsByAuthor = _.filter(state.markets, {'author': author});
+    return _.indexBy(marketsByAuthor, 'id');
+  },
+
   handleLoadMarketsSuccess: function (payload) {
     state.markets = payload.markets;
     this.emit(constants.CHANGE_EVENT);

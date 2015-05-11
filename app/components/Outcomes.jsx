@@ -130,7 +130,7 @@ var TradeBase = {
           resolve
         );
       }).then((simulation) => {
-        console.log('Setting simulation: ', simulation);
+        console.log('Setting simulation: ', simulation.cost.toNumber(), simulation.newPrice.toNumber());
 
         this.setState({
           simulation: simulation
@@ -158,8 +158,8 @@ var TradeBase = {
           numShares,
           resolve
         );
-      }).then((returnCode) => {
-        utillities.debug('Trade returned ' +returnCode);
+      }).then((tx) => {
+        console.log('Trade returned ' +tx.toString(16));
         this.setState({
           ownedShares: this.getOwnedSharesAfterTrade(numShares),
           value: ''
