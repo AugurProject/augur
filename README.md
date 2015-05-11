@@ -17,9 +17,31 @@ npm install augur.js
 ```
 After installing, to use it with Node, just require it:
 ```javascript
-> var Augur = require('augur.js');
+var Augur = require('augur.js');
 ```
 To use augur.js from the browser, just include [augur.min.js](https://github.com/AugurProject/augur.js/blob/master/augur.min.js).  (This minified file includes the [bignumber.js](https://github.com/MikeMcl/bignumber.js) and [js-sha3](https://github.com/emn178/js-sha3) libraries.)
+
+## How to pass numbers to Augur
+
+There are four acceptable ways to pass numerical inputs to the Augur API:
+
+- primitive JS numbers (e.g., `1010101`): ok for integers, but use strings for floating point numbers (see below)
+
+- stringified numbers (e.g., `"1010101"`)
+
+- hexadecimal strings (e.g., `"0xf69b5"`)
+
+- BigNumbers (e.g., `new BigNumber("1010101")`)
+
+Note that for primitive JS numbers, you will receive an error from the BigNumber library if your input contains more than 15 significant figures.
+
+Floating-point (decimal) values should be passed to augur.js as strings (e.g., instead of `0.07`, use `"0.07"`), for reasons described in [enormous detail](http://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html) elsewhere.
+
+**All numerical parameters passed to augur.js must be either base 10 (decimal) or base 16 (hexadecimal).** Do **not** use the base 2^64 representation that Augur uses internally for fixed-point numbers!  augur.js handles all fixed-point conversions for you.  Do **not** send the Loch Ness monster 3.50*2^64 CASH.  (Probably don't even give him 3.50, but that's a debate for another time.)
+
+## Callbacks
+
+All of augur.js's methods that involve an RPC request take an optional callback function as their last parameter.  If a callback is supplied, the RPC request will be asynchronous; otherwise, it will be synchronous.  Synchronous HTTP RPC is generally not recommended, especially if augur.js is running in the browser, as synchronous RPC requests block the main JS thread (which essentially freezes the browser).
 
 ## Augur API
 
@@ -163,27 +185,28 @@ All Augur functions have an optional callback (or callbacks; see below) as their
 
 If you need more flexibility, please refer to the `invoke` function below, which allows you to build a transaction object manually, then broadcast it to the network with `sendTransaction` and/or capture its return value with `call`.
 
-## Numbers
+## Batched RPC commands
 
-There are four acceptable ways to pass numerical inputs to the Augur API:
-
-- primitive JS numbers (e.g., `1010101`): ok for integers, but use strings for floating point numbers (see below)
-
-- stringified numbers (e.g., `"1010101"`)
-
-- hexadecimal strings (e.g., `"0xf69b5"`)
-
-- BigNumbers (e.g., `new BigNumber("1010101")`)
-
-Note that for primitive JS numbers, you will receive an error from the BigNumber library if your input contains more than 15 significant figures.
-
-Floating-point (decimal) values should be passed to augur.js as strings (e.g., instead of `0.07`, use `"0.07"`), for reasons described in [enormous detail](http://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html) elsewhere.
-
-*All numerical parameters passed to augur.js must be either base 10 (decimal) or base 16 (hexadecimal).* Do *not* use the base 2^64 representation that Augur uses internally for fixed-point numbers!  augur.js handles all fixed-point conversions for you.  Do *not* send the Loch Ness monster 3.50*2^64 CASH.  (Probably don't even give him 3.50, but that's a debate for another time.)
-
-## Asynchronous RPC
-
-By default, augur.js is fully asynchronous, although by setting `Augur.async = false` it can be forced to make synchronous HTTP RPC requests.  This is generally not recommended, especially if augur.js is running in the browser, as synchronous RPC requests block the main JS thread (which essentially freezes the browser).  All of augur.js's methods that involve an RPC request take an optional callback function as their last parameter.
+You can send batched RPC commands using the `batch` method:
+```javascript
+> var txlist = [{
+...         to: "0x3caf506cf3d5bb16ba2c8f89a6591c5160d69cf3",
+...         method: "ten"
+...     }, {
+...         to: "0x5204f18c652d1c31c6a5968cb65e011915285a50",
+...         method: "double",
+...         signature: "i",
+...         params: 3
+...     }];
+> Augur.batch(txlist)
+[ { id: 2,
+    jsonrpc: '2.0',
+    result: '0x000000000000000000000000000000000000000000000000000000000000000a' },
+  { id: 3,
+    jsonrpc: '2.0',
+    result: '0x0000000000000000000000000000000000000000000000000000000000000006' } ]
+```
+I'm going to add more user-friendly wrappers soon, which will allow you to batch commands without setting up transaction objects yourself.
 
 ## Ethereum JSON-RPC bindings
 
