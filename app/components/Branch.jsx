@@ -67,7 +67,11 @@ var Branch = React.createClass({
             onPageChanged={ this.handlePageChanged }
           />
         </div>
-        <Markets markets={ marketPage } />
+        <div className='markets row'>
+          <Markets 
+            markets={ marketPage } 
+            classNameWrapper='col-sm-4' />
+        </div>
       </div>
     );
   }

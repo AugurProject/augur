@@ -10,6 +10,8 @@ var SendCashTrigger = require('./SendCash').SendCashTrigger;
 var SendRepTrigger = require('./SendRep').SendRepTrigger;
 var SendEtherTrigger = require('./SendEther').SendEtherTrigger;
 
+var Markets = require('./Markets');
+
 var AccountDetails = React.createClass({
 
   mixins: [FluxMixin, StoreWatchMixin('asset')],

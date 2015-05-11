@@ -13,14 +13,14 @@ var Markets = React.createClass({
 
     var marketList = _.map(_.sortBy(this.props.markets, 'pending'), function (market) {
       return (
-        <div key={ market.id } className='col-sm-4'>
+        <div key={ market.id } className={ this.props.classNameWrapper }>
           <MarketPane market={ market } />
         </div>
       );
-    });
+    }, this);
 
-    return (
-      <div className='markets row'>
+    return ( 
+      <div>
         { marketList }
       </div>
     );
