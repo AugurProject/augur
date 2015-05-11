@@ -51,6 +51,9 @@ var AccountDetails = React.createClass({
         <div className='row'>
           <div className="col-sm-6 col-lg-7">
             <h4>Holdings</h4>
+
+            <h4>Markets</h4>
+
           </div>
           <div className="col-sm-6 col-lg-5">
             <div className='balances'>
