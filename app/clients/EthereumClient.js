@@ -266,18 +266,19 @@ EthereumClient.prototype.getMarketsAsync = function (branchId) {
 
 EthereumClient.prototype.getMarkets = function (branchId) {
 
+  branchId = branchId 
   var validMarkets = _.filter(Augur.getMarkets(branchId), function (marketId) {
     return !_.contains(blacklist.markets, marketId.toString(16));
   });
 
   var marketList = _.map(validMarkets, function (marketId) {
-    return this.getMarket(branchId, marketId);
+    return this.getMarket(marketId, branchId);
   }, this);
 
   return _.indexBy(marketList, 'id');
 };
 
-EthereumClient.prototype.getMarket = function (branchId, marketId) {
+EthereumClient.prototype.getMarket = function (marketId, branchId) {
 
   var events = Augur.getMarketEvents(marketId);
   var description = Augur.getDescription(marketId);

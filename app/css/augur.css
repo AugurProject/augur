@@ -344,6 +344,9 @@ nav .navbar-right li div {
     opacity: 0.9;
     display: block;
 }
+.market-pane.pending {
+    opacity: 0.8;
+}
 .market-pane:hover {
     color: #000;
     text-decoration: none;
@@ -369,6 +372,10 @@ nav .navbar-right li div {
     padding: 3px 12px;
     background-color: #a3b9e2;
     font-size: 20px;
+}
+.market-pane.pending .summary {
+    background-color: #E28B17;
+    font-style: italic;
 }
 .market-pane .details {
     padding: 6px 6px;

@@ -38,6 +38,7 @@ module.exports = {
   }),
   market: keyMirror({
     LOAD_MARKETS_SUCCESS: null,
+    ADD_PENDING_MARKET_SUCCESS: null,
     ADD_MARKET_SUCCESS: null,
   }),
   event: keyMirror({
