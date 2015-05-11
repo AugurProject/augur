@@ -14,7 +14,7 @@ var NO = 1;
 var YES = 2;
 
 var priceToPercentage = function (price) {
-  return +price.times(100).toFixed(0);
+  return +price.times(100).toFixed(1);
 };
 
 var getOutcomeName = function (id, count) {
@@ -63,7 +63,7 @@ var Overview = React.createClass({
           </div>
           { holdings }
           <p>{ +this.props.volume.toFixed(2) } shares</p>
-          <p>${ this.props.price.toFixed(2) }</p>
+          <p>{ +this.props.price.toFixed(3) }</p>
         </div>
       </div>
     );

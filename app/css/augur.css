@@ -345,7 +345,7 @@ nav .navbar-right li div {
     display: block;
 }
 .market-pane.pending {
-    opacity: 0.8;
+    opacity: 0.6;
 }
 .market-pane:hover {
     color: #000;
