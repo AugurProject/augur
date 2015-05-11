@@ -537,24 +537,28 @@ var Augur = (function (augur) {
         }
     }
 
-    augur.clone = function (obj) {
-        if (null === obj || "object" !== typeof obj) return obj;
-        var copy = obj.constructor();
-        for (var attr in obj) {
-            if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
-        }
-        return copy;
-    };
-
     /********************************************
      * Post JSON-RPC command to Ethereum client *
      ********************************************/
 
+    function strip_returns(tx) {
+        var returns;
+        if (tx.params && tx.params.length && tx.params[0].returns) {
+            returns = tx.params[0].returns;
+            delete tx.params[0].returns;
+        }
+        return returns;
+    }
     function json_rpc(command, callback) {
-        var returns, req = null;
-        if (command.params && command.params.length && command.params[0].returns) {
-            returns = command.params[0].returns;
-            delete command.params[0].returns;
+        var num_commands, returns, req = null;
+        if (command.constructor === Array) {
+            num_commands = command.length;
+            returns = new Array(num_commands);
+            for (var i = 0; i < num_commands; ++i) {
+                returns[i] = strip_returns(command[i]);
+            }
+        } else {
+            returns = strip_returns(command);
         }
         command = JSON.stringify(command);
         if (NODE_JS) {
@@ -787,6 +791,14 @@ var Augur = (function (augur) {
         }
         return data_abi;
     };
+    augur.clone = function (obj) {
+        if (null === obj || "object" !== typeof obj) return obj;
+        var copy = obj.constructor();
+        for (var attr in obj) {
+            if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+        }
+        return copy;
+    };
     /**
      * Invoke a function from a contract on the blockchain.
      *
@@ -823,20 +835,22 @@ var Augur = (function (augur) {
                     tx.params = tx.params.toFixed();
                 }
             }
-            if (tx.to && tx.to.constructor === BigNumber) {
-                if (tx.to.s === -1) {
-                    tx.to = "-0x" + tx.to.toString(16).slice(1);
-                } else {
-                    tx.to = "0x" + tx.to.toString(16);
-                }
-            }
-            if (tx.from && tx.from.constructor === BigNumber) {
-                if (tx.from.s === -1) {
-                    tx.from = "-0x" + tx.from.toString(16).slice(1);
-                } else {
-                    tx.from = "0x" + tx.from.toString(16);
-                }
-            }
+            if (tx.to) tx.to = augur.prefix_hex(tx.to);
+            if (tx.from) tx.from = augur.prefix_hex(tx.from);
+            // if (tx.to && tx.to.constructor === BigNumber) {
+            //     if (tx.to.s === -1) {
+            //         tx.to = "-0x" + tx.to.toString(16).slice(1);
+            //     } else {
+            //         tx.to = "0x" + tx.to.toString(16);
+            //     }
+            // }
+            // if (tx.from && tx.from.constructor === BigNumber) {
+            //     if (tx.from.s === -1) {
+            //         tx.from = "-0x" + tx.from.toString(16).slice(1);
+            //     } else {
+            //         tx.from = "0x" + tx.from.toString(16);
+            //     }
+            // }
             data_abi = this.abi_data(tx);
             if (data_abi) {
                 packaged = {
@@ -868,6 +882,49 @@ var Augur = (function (augur) {
     augur.getCode = augur.read = function (address, block, f) {
         if (address) {
             return json_rpc(postdata("getCode", [address, block || "latest"]), f);
+        }
+    };
+
+    // Batched RPC commands
+    augur.batch = function (txlist, f) {
+        var num_commands, rpclist, tx, data_abi, packaged, invocation;
+        if (txlist.constructor === Array) {
+            num_commands = txlist.length;
+            rpclist = new Array(num_commands);
+            for (var i = 0; i < num_commands; ++i) {
+                tx = this.clone(txlist[i]);
+                if (tx.params) {
+                    if (tx.params.constructor === Array) {
+                        for (var j = 0, len = tx.params.length; j < len; ++j) {
+                            if (tx.params[j].constructor === BigNumber) {
+                                tx.params[j] = tx.params[j].toFixed();
+                            }
+                        }
+                    } else if (tx.params.constructor === BigNumber) {
+                        tx.params = tx.params.toFixed();
+                    }
+                }
+                if (tx.from) tx.from = this.prefix_hex(tx.from);
+                tx.to = this.prefix_hex(tx.to);
+                data_abi = this.abi_data(tx);
+                if (data_abi) {
+                    packaged = {
+                        from: tx.from || augur.coinbase,
+                        to: tx.to,
+                        data: data_abi,
+                        returns: tx.returns
+                    };
+                    invocation = (tx.send) ? "sendTransaction" : "call";
+                    rpclist[i] = postdata(invocation, packaged);
+                } else {
+                    log("unable to package commands for batch RPC");
+                    return rpclist;
+                }
+            }
+            return json_rpc(rpclist, f);
+        } else {
+            log("expected array for batch RPC, invoking instead");
+            return this.invoke(txlist, f);
         }
     };
 

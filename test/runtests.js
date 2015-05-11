@@ -585,11 +585,48 @@
             });
         });
     });
-    describe("Augur API", function () {
 
-        var tx;
-    
-        Augur.BigNumberOnly = false;
+    describe("Batch RPC", function () {
+        describe("batch(ten.ten, mul2.double(3))", function () {
+            var test = function (res) {
+                assert.equal(res.constructor, Array);
+                assert.equal(res.length, 2);
+                assert.equal(parseInt(res[0].result), 10);
+                assert.equal(parseInt(res[1].result), 6);
+            };
+            it("sync: match separate invocations", function () {
+                var txlist = [{
+                    to: constants.examples.ten,
+                    method: "ten",
+                    returns: "number"
+                }, {
+                    to: constants.examples.mul2,
+                    method: "double",
+                    signature: "i",
+                    returns: "number",
+                    params: 3
+                }];
+                test(Augur.batch(txlist));
+            });
+            it("async: match separate invocations", function () {
+                var txlist = [{
+                    to: constants.examples.ten,
+                    method: "ten",
+                    send: false,
+                    returns: "number"
+                }, {
+                    to: constants.examples.mul2,
+                    method: "double",
+                    signature: "i",
+                    returns: "number",
+                    params: 3
+                }];
+                Augur.batch(txlist, test);
+            });
+        });
+    });
+
+    describe("Augur API", function () {
 
         var ex_integer = 12345678901;
         var ex_decimal = 0.123456789;
@@ -784,18 +821,18 @@
                     Augur.getMarkets(branch_id, function (r) {
                         is_array(r);
                         assert(r.length > 1);
-                        assert(r[0] === "0x00000000000000000000000000000000000000000000000000000000000000e8");
-                        assert(r[1] === "0x00000000000000000000000000000000000000000000000000000000000000e8");
+                        assert.equal(r[0], "0x00000000000000000000000000000000000000000000000000000000000000e8");
+                        assert.equal(r[1], "0x00000000000000000000000000000000000000000000000000000000000000e8");
                     });
                 });
             });
             describe("getPeriodLength(" + branch_id + ") == '20'", function () {
                 it("sync", function () {
-                    assert(Augur.getPeriodLength(branch_id) === "20");
+                    assert.equal(Augur.getPeriodLength(branch_id), "20");
                 });
                 it("async", function () {
                     Augur.getPeriodLength(branch_id, function (r) {
-                        assert(r === "20");
+                        assert.equal(r, "20");
                     });
                 });
             });
@@ -830,18 +867,18 @@
                     });
                 });
             });
-            Augur.getMinTradingFee(branch_id, function (r) {
-                print("getMinTradingFee(" + branch_id + ") -> " + r);
-                assert(parseFloat(r) >= 0.0 && parseFloat(r) <= 1.0);
-            });
-            Augur.getNumBranches(function (r) {
-                print("getNumBranches() -> " + r);
-                assert(parseInt(r) >= 3);
-            });
-            Augur.getBranch(branch_number, function (r) {
-                print("getBranch(" + branch_number + ") -> " + r);
-                assert(r === "0x7f5026f174d59f6f01ff3735773b5e3adef0b9c98f8a8e84e0000f034cfbf35a");
-            });
+            // Augur.getMinTradingFee(branch_id, function (r) {
+            //     print("getMinTradingFee(" + branch_id + ") -> " + r);
+            //     assert(parseFloat(r) >= 0.0 && parseFloat(r) <= 1.0);
+            // });
+            // Augur.getNumBranches(function (r) {
+            //     print("getNumBranches() -> " + r);
+            //     assert(parseInt(r) >= 3);
+            // });
+            // Augur.getBranch(branch_number, function (r) {
+            //     print("getBranch(" + branch_number + ") -> " + r);
+            //     assert.equal(r, "0x7f5026f174d59f6f01ff3735773b5e3adef0b9c98f8a8e84e0000f034cfbf35a");
+            // });
         });
 
         // events.se
@@ -926,14 +963,14 @@
                 it("sync", function () {
                     var r = Augur.getSimulatedBuy(market_id, outcome, amount);
                     is_array(r);
-                    assert(r.length === 2);
+                    assert.equal(r.length, 2);
                     gteq0(r[0]);
                     gteq0(r[1]);
                 });
                 it("async", function () {
                     Augur.getSimulatedBuy(market_id, outcome, amount, function (r) {
                         is_array(r);
-                        assert(r.length === 2);
+                        assert.equal(r.length, 2);
                         gteq0(r[0]);
                         gteq0(r[1]);
                     });
@@ -942,14 +979,14 @@
             describe("getSimulatedSell(" + market_id + ", " + outcome + ", " + amount + ")", function () {
                 it("sync", function () {
                     var r = Augur.getSimulatedSell(market_id, outcome, amount);
-                    assert(r.length === 2);
+                    assert.equal(r.length, 2);
                     is_array(r);
                     gteq0(r[0]);
                     gteq0(r[1]);
                 });
                 it("async", function () {
                     Augur.getSimulatedSell(market_id, outcome, amount, function (r) {
-                        assert(r.length === 2);
+                        assert.equal(r.length, 2);
                         is_array(r);
                         gteq0(r[0]);
                         gteq0(r[1]);
@@ -972,22 +1009,22 @@
             describe("getMarketInfo(" + market_id + ")", function () {
                 it("sync", function () {
                     var r = Augur.getMarketInfo(market_id);
-                    assert(r.description === "Will the Augur software sale total be at least $1M?");
+                    assert.equal(r.description, "Will the Augur software sale total be at least $1M?");
                 });
                 it("async", function () {
                     Augur.getMarketInfo(market_id, function (r) {
-                        assert(r.description === "Will the Augur software sale total be at least $1M?");
+                        assert.equal(r.description, "Will the Augur software sale total be at least $1M?");
                     });
                 });
             });
             describe("getMarketInfo(" + market_id2 + ")", function () {
                 it("sync", function () {
                     var r = Augur.getMarketInfo(market_id2);
-                    assert(r.description === "Will the Augur alpha be out by Friday, May 15, 2015?");
+                    assert.equal(r.description, "Will the Augur alpha be out by Friday, May 15, 2015?");
                 });
                 it("async", function () {
                     Augur.getMarketInfo(market_id2, function (r) {
-                        assert(r.description === "Will the Augur alpha be out by Friday, May 15, 2015?");
+                        assert.equal(r.description, "Will the Augur alpha be out by Friday, May 15, 2015?");
                     });
                 });
             });
@@ -1005,14 +1042,14 @@
             });
             describe("getNumEvents(" + market_id + ") === '1'", function () {
                 var test = function (r) {
-                    assert(r === "1");
+                    assert.equal(r, "1");
                 };
                 it("sync", function () { test(Augur.getNumEvents(market_id)); });
                 it("async", function () { Augur.getNumEvents(market_id, test); });
             });
             describe("getBranchID(" + market_id + ")", function () {
                 var test = function (r) {
-                    assert(r === "0x00000000000000000000000000000000000000000000000000000000000f69b5");
+                    assert.equal(r, "0x00000000000000000000000000000000000000000000000000000000000f69b5");
                 };
                 it("sync", function () { test(Augur.getBranchID(market_id)); });
                 it("async", function () { Augur.getBranchID(market_id, test); });
@@ -1026,7 +1063,7 @@
             });
             describe("getMarketNumOutcomes(" + market_id + ") ", function () {
                 var test = function (r) {
-                    assert(r === "2");
+                    assert.equal(r, "2");
                 };
                 it("sync", function () { test(Augur.getMarketNumOutcomes(market_id)); });
                 it("async", function () { Augur.getMarketNumOutcomes(market_id, test); });
@@ -1121,7 +1158,7 @@
             });
             describe("getReporterID(" + branch_id + ", " + reporter_index + ") ", function () {
                 var test = function (r) {
-                    assert(r === "0x0000000000000000000000001c11aa45c792e202e9ffdc2f12f99d0d209bef70");
+                    assert.equal(r, "0x0000000000000000000000001c11aa45c792e202e9ffdc2f12f99d0d209bef70");
                 };
                 it("sync", function () { test(Augur.getReporterID(branch_id, reporter_index)); });
                 it("async", function () { Augur.getReporterID(branch_id, reporter_index, test); });
@@ -1154,7 +1191,7 @@
             describe("hashReport([ballot], " + salt + ") ", function () {
                 var test = function (r) {
                     // TODO double-check this
-                    assert(r === "0xa5ea8e72fa70be0521a240201dedd1376599a9a935be4977d798522bcfbc29de");
+                    assert.equal(r, "0xa5ea8e72fa70be0521a240201dedd1376599a9a935be4977d798522bcfbc29de");
                 };
                 it("sync", function () { test(Augur.hashReport(ballot, salt)); });
                 it("async", function () { Augur.hashReport(ballot, salt, test); });
@@ -1163,7 +1200,7 @@
             Augur.tx.reputationFaucet.returns = "number";
             describe("reputationFaucet(" + branch_id + ") ", function () {
                 var test = function (r) {
-                    assert(r === "1");
+                    assert.equal(r, "1");
                 };
                 it("sync", function () { test(Augur.reputationFaucet()); });
                 it("async", function () { Augur.reputationFaucet(test); });
@@ -1174,7 +1211,7 @@
         describe("buy&sellShares.se", function () {
             describe("getNonce(" + market_id + ") ", function () {
                 var test = function (r) {
-                    assert(r === "0");
+                    assert.equal(r, "0");
                 };
                 it("sync", function () { test(Augur.getNonce(market_id)); });
                 it("async", function () { Augur.getNonce(market_id, test); });
@@ -1233,9 +1270,9 @@
             });
             describe("buyShares(" + branch_id + ", " + market_id + ", " + outcome + ", " + amount + ", null) [sendTx] ", function () {
                 var test = function (txhash) {
-                    assert(txhash.constructor === String);
+                    assert.equal(txhash.constructor, String);
                     assert(txhash.length > 2);
-                    assert(txhash.length === 66);
+                    assert.equal(txhash.length, 66);
                     assert.ok(parseInt(txhash));
                     assert.ok(Augur.bignum(txhash));
                 };
@@ -1265,9 +1302,9 @@
             });
             describe("sellShares(" + branch_id + ", " + market_id + ", " + outcome + ", " + amount + ", null) [sendTx] ", function () {
                 var test = function (txhash) {
-                    assert(txhash.constructor === String);
+                    assert.equal(txhash.constructor, String);
                     assert(txhash.length > 2);
-                    assert(txhash.length === 66);
+                    assert.equal(txhash.length, 66);
                     assert.ok(parseInt(txhash));
                     assert.ok(Augur.bignum(txhash));
                 };
@@ -1310,7 +1347,7 @@
                     Augur.tx.sendReputation.returns = "unfix";
                     Augur.sendReputation(branch_id, receiving_account, amount, function (r) {
                         is_not_zero(r);
-                        assert(r === amount);
+                        assert.equal(r, amount);
                         // sendTx: returns txhash
                         Augur.tx.sendReputation.send = true;
                         Augur.tx.sendReputation.returns = undefined;
@@ -1322,7 +1359,7 @@
                             Augur.tx.sendReputation.returns = "number";
                             Augur.sendReputation(branch_id, receiving_account, larger_amount, function (r) {
                                 // print("sendReputation(" + branch_id + ", " + receiving_account + ", " + larger_amount + ") [call] -> " + r);
-                                assert(r === "0");
+                                assert.equal(r, "0");
                                 Augur.tx.sendReputation.send = true;
                                 Augur.tx.sendReputation.returns = undefined;
                             });
@@ -1364,12 +1401,12 @@
                             !is_empty(r);
                             is_not_zero(r.id);
                             is_not_zero(r.txhash);
-                            assert(r.branch === branch_id);
-                            assert(r.expirationDate === expDate);
-                            assert(r.minValue === minValue);
-                            assert(r.maxValue === maxValue);
-                            assert(r.numOutcomes === numOutcomes);
-                            assert(r.description.slice(-5) === event_description.slice(-5));
+                            assert.equal(r.branch, branch_id);
+                            assert.equal(r.expirationDate, expDate);
+                            assert.equal(r.minValue, minValue);
+                            assert.equal(r.maxValue, maxValue);
+                            assert.equal(r.numOutcomes, numOutcomes);
+                            assert.equal(r.description, event_description);
                         }
                     });
                 });
@@ -1405,11 +1442,11 @@
         //                     !is_empty(r);
         //                     is_not_zero(r.id);
         //                     is_not_zero(r.txhash);
-        //                     assert(r.numOutcomes === numOutcomes);
-        //                     // assert(r.alpha === alpha); // rounding error WTF?
-        //                     assert(r.numOutcomes === numOutcomes);
-        //                     assert(r.tradingFee === tradingFee);
-        //                     assert(r.description.slice(-5) === market_description.slice(-5));
+        //                     assert.equal(r.numOutcomes, numOutcomes);
+        //                     // assert.equal(r.alpha, alpha); // rounding error WTF?
+        //                     assert.equal(r.numOutcomes, numOutcomes);
+        //                     assert.equal(r.tradingFee, tradingFee);
+        //                     assert.equal(r.description, market_description);
         //                 },
         //                 onFailed: function (r) {
         //                     print("createMarket: \"" + market_description + "\"");
