@@ -3,7 +3,8 @@ var constants = require('../libs/constants');
 
 var state = {
   branches: {},
-  currentBranch: 1010101
+  currentBranch: 1010101,
+  currentVotePeriod: null
 };
 
 var BranchStore = Fluxxor.createStore({
@@ -26,6 +27,7 @@ var BranchStore = Fluxxor.createStore({
 
   handleUpdateCurrentBranch: function (payload) {
     state.currentBranch = payload.currentBranch;
+    state.currentVotePeriod = payload.currentVotePeriod;
     this.emit(constants.CHANGE_EVENT);
   }
 });

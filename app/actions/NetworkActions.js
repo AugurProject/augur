@@ -55,8 +55,11 @@ var NetworkActions = {
       hashrate: networkStats.hashrate
     });
 
-    // the account may have changed. load assets.
+    // the account assets may have changed. reload.
     this.flux.actions.asset.loadAssets();
+
+    // vote period may have changed
+    this.flux.actions.branch.updateCurrentBranch();
   }
 };
 

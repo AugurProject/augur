@@ -342,6 +342,7 @@ nav .navbar-right li div {
     border-radius: 3px;
     opacity: 0.9;
     display: block;
+    margin-bottom: 25px;
 }
 .market-pane.pending {
     opacity: 0.6;
@@ -372,9 +373,16 @@ nav .navbar-right li div {
     background-color: #a3b9e2;
     font-size: 20px;
 }
+.market-pane .summary i {
+    font-weight: 100;
+    font-style: normal;
+    font-size: 17px;
+}
 .market-pane.pending .summary {
     background-color: #E28B17;
-    font-style: italic;
+}
+.market-pane.matured .summary {
+    background-color: #C8C8C8;
 }
 .market-pane .details {
     padding: 6px 6px;
@@ -392,9 +400,7 @@ nav .navbar-right li div {
 .market-pane .details b {
     float: right;
 }
-.markets .market-pane {
-    margin-bottom: 20px;
-}
+
 #branch h4 {
     margin: 10px 0px 20px 0px;
 }

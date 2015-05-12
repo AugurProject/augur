@@ -26,7 +26,14 @@ var BranchActions = {
   },
 
   updateCurrentBranch: function (id) {
-    this.dispatch(constants.branch.UPDATE_CURRENT_BRANCH, {currentBranch: id})
+
+    // keep branch at current branch if none was passed
+    if (!id) id = this.flux.store('branch').getState().currentBranch;
+
+    var ethereumClient = this.flux.store('config').getEthereumClient();
+    var currentVotePeriod = ethereumClient.getCurrentVotePeriod(id);
+    
+    this.dispatch(constants.branch.UPDATE_CURRENT_BRANCH, {currentBranch: id, currentVotePeriod: currentVotePeriod});
   }
 };
 

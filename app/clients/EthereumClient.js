@@ -193,6 +193,15 @@ EthereumClient.prototype.getBranches = function () {
   return branches;
 };
 
+EthereumClient.prototype.getCurrentVotePeriod = function(branchId) {
+
+  var currentVotePeriod =  Augur.getVotePeriod(branchId);
+  //console.log(currentVotePeriod.toNumber());
+  //console.log(Augur.getPeriodLength(branchId).toNumber());
+
+  return currentVotePeriod;
+};
+
 /**
  * Get a list of all the market data for the given branch.
  *
@@ -284,6 +293,10 @@ EthereumClient.prototype.getMarket = function (marketId, branchId) {
   var description = Augur.getDescription(marketId);
   var alpha = Augur.getAlpha(marketId);
   var author = Augur.getCreator(marketId);
+  // HACK AROUND INVALID RETURN
+  author = author.replace(/0x000000000000000000000000/, '0x');
+  ////
+
   var creationFee = Augur.getCreationFee(marketId);
 
   // calc end date from first events expiration

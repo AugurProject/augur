@@ -10,13 +10,10 @@ var ConfigActions = {
     var configState = this.flux.store('config').getState();
     var clientParams = {
       host: configState.host,
-      defaultBranchId: 1010101
+      defaultBranchId: configState.rootBranchId
     }
     var ethereumClient = window.ethereumClient = configState.ethereumClient || new EthereumClient(clientParams);
 
-    // TODO: refactor this config state
-    // EthereumClient is now a class interface that does not fail.  
-    // network status serves this purpose
     this.dispatch(constants.config.UPDATE_ETHEREUM_CLIENT_SUCCESS, {
       ethereumClient: ethereumClient
     });
@@ -24,9 +21,13 @@ var ConfigActions = {
 
   loadEthereumClient: function () {
 
+    var configState = this.flux.store('config').getState();
+
     this.flux.actions.config.updateEthereumClient();
+
     this.flux.actions.network.checkNetwork();
     this.flux.actions.network.updateNetwork();
+    this.flux.actions.branch.updateCurrentBranch(configState.rootBranchId);
   }
 };
 

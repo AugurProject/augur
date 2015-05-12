@@ -15,8 +15,7 @@ var Markets = require('./Markets');
 var Branch = React.createClass({
 
   // assuming only one branch and all markets in store are of that branch
-
-  mixins: [FluxMixin, StoreWatchMixin('market')],
+  mixins: [FluxMixin, StoreWatchMixin('market', 'branch')],
 
   getInitialState: function () {
     return {
@@ -30,9 +29,11 @@ var Branch = React.createClass({
 
     var flux = this.getFlux();
     var marketState = flux.store('market').getState();
+    var votePeriod = flux.store('branch').getState().currentVotePeriod;
 
     return {
-      markets: marketState.markets
+      markets: marketState.markets,
+      votePeriod: votePeriod
     }
   },
 
@@ -69,7 +70,8 @@ var Branch = React.createClass({
         </div>
         <div className='markets row'>
           <Markets 
-            markets={ marketPage } 
+            markets={ marketPage }
+            votePeriod={ this.state.votePeriod }
             classNameWrapper='col-sm-4' />
         </div>
       </div>

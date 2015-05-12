@@ -23,12 +23,15 @@ var AccountDetails = React.createClass({
 
   getStateFromFlux: function () {
     var flux = this.getFlux();
+    var account = flux.store('network').getAccount();
 
     return {
-      primaryAccount: flux.store('network').getAccount(),
+      primaryAccount: account,
       allAccounts:flux.store('network').getState().accounts,
       asset: flux.store('asset').getState(),
-      ethereumClient: flux.store('config').getEthereumClient()
+      ethereumClient: flux.store('config').getEthereumClient(),
+      authoredMarkets: flux.store('market').getMarketsByAuthor(account),
+      votePeriod: flux.store('branch').getState().currentVotePeriod
     }
   },
 
@@ -54,8 +57,13 @@ var AccountDetails = React.createClass({
           <div className="col-sm-6 col-lg-7">
             <h4>Holdings</h4>
 
-            <h4>Markets</h4>
-
+            <h4>Authored Markets</h4>
+            <div className='authored-markets row'>
+              <Markets 
+                markets={ this.state.authoredMarkets }
+                votePeriod={ this.state.votePeriod }
+                classNameWrapper='col-sm-6' />
+            </div>
           </div>
           <div className="col-sm-6 col-lg-5">
             <div className='balances'>
