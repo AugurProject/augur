@@ -33,46 +33,55 @@ var MarketPane = React.createClass({
   render: function() {
 
     var market = this.props.market;
-    var formattedDate = market.endDate ? moment(market.endDate).format('MMM Do, YYYY') : '-'
+    var formattedDate = market.endDate ? moment(market.endDate).format('MMM Do, YYYY') : '-';
+    var price = market.price ? +market.price.toFixed(3) : '-';
+    var volume = market.totalVolume ? +market.totalVolume.toFixed(2) : '-';
+    var tradingFee = market.tradingFee ? market.tradingFee.times(100).toFixed(3)+'%' : '-';
 
-    if (market.pending) {
-      return (
-        <div className='market-pane pending shadow'>
-          <h5>{ market.description }</h5>
-          <div className='summary'>
-            <i className='pull-right'>Pending</i>
-          </div>
-          <div className='details'>
-            <p>Price: <b>-</b></p>
-            <p className='alt'>Volume: <b>-</b></p>
-            <p>Fee: <b>-</b></p>
-            <p className='alt'>End date: <b>-</b></p>
-          </div>
+    var status = '';
+    var linked = true;
+    var className = 'market-pane shadow'
+
+    if (market.invalid) {
+      status = 'Invalid'
+      className += ' invalid'; 
+      linked = false;   
+    } else if (this.props.votePeriod && this.props.votePeriod.toNumber() > market.tradingPeriod.toNumber()) {
+      status = 'Matured'
+      className += ' matured';
+    } else if (market.pending) {
+      status = 'Pending'
+      className += ' pending';
+      linked = false;    
+    }
+
+    var body = (
+      <div>
+        <h5>{ market.description }</h5>
+        <div className='summary clearfix'>
+          <span>{ +market.price.times(100).toFixed(1) }%</span>
+          <i className='pull-right'>{ status }</i>
         </div>
-      );
-    } else {
+        <div className='details'>
+          <p>Price: <b>{ price }</b></p>
+          <p className='alt'>Volume: <b>{ volume }</b></p>
+          <p>Fee: <b>{ tradingFee }</b></p>
+          <p className='alt'>End date: <b>{ formattedDate }</b></p>
+        </div>
+      </div>
+    );
 
-      var matured = '';
-      var className = 'market-pane shadow'
-      if (this.props.votePeriod && this.props.votePeriod.toNumber() > market.tradingPeriod.toNumber()) {
-        matured = 'Matured';
-        className += ' matured';
-      }
-
+    if (linked) {
       return (
         <Link to='market' params={ {marketId: market.id.toString(16)} } className={ className }>
-          <h5>{ market.description }</h5>
-          <div className='summary clearfix'>
-            <span>{ +market.price.times(100).toFixed(1) }%</span>
-            <i className='pull-right'>{ matured }</i>
-          </div>
-          <div className='details'>
-            <p>Price: <b>{ +market.price.toFixed(3) }</b></p>
-            <p className='alt'>Volume: <b>{ +market.totalVolume.toFixed(2) }</b></p>
-            <p>Fee: <b>{ +market.tradingFee.times(100).toFixed(3) }%</b></p>
-            <p className='alt'>End date: <b>{ formattedDate }</b></p>
-          </div>
+          { body }
         </Link>
+      );
+    } else {
+      return (
+        <div className={ className }>
+          { body }
+        </div>
       );
     }
   }

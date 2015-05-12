@@ -335,6 +335,9 @@ EthereumClient.prototype.getMarket = function (marketId, branchId) {
   var price = outcomes.length ? outcomes[1].price : new BigNumber(0);  // hardcoded to outcome 2 (yes)
   var winningOutcomes = Augur.getWinningOutcomes(marketId);
 
+  // check validity
+  var invalid = outcomes.length ? false : true
+
   return {
     id: marketId,
     branchId: branchId,
@@ -350,7 +353,8 @@ EthereumClient.prototype.getMarket = function (marketId, branchId) {
     totalVolume: totalVolume,
     events: events,
     outcomes: outcomes,
-    comments: []
+    comments: [],
+    invalid: invalid
   };
 };
 

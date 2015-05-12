@@ -344,10 +344,11 @@ nav .navbar-right li div {
     display: block;
     margin-bottom: 25px;
 }
-.market-pane.pending {
-    opacity: 0.6;
+.market-pane.pending,
+.market-pane.invalid {
+    opacity: 0.75;
 }
-.market-pane:hover {
+a.market-pane:hover {
     color: #000;
     text-decoration: none;
     cursor: pointer;
@@ -376,13 +377,18 @@ nav .navbar-right li div {
 .market-pane .summary i {
     font-weight: 100;
     font-style: normal;
-    font-size: 17px;
+    font-size: 16px;
 }
 .market-pane.pending .summary {
     background-color: #E28B17;
+    pointer-events: none;
+}
+.market-pane.invalid .summary {
+    background-color: #C8C8C8;
+    pointer-events: none;
 }
 .market-pane.matured .summary {
-    background-color: #C8C8C8;
+    background-color: #72D29B;
 }
 .market-pane .details {
     padding: 6px 6px;
