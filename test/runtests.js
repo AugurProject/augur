@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * augur.js unit tests
  * @author Jack Peterson (jack@tinybike.net)
@@ -142,134 +141,151 @@
 
     var print = console.log;
 
-    var TestWhisper = function () {
-        var comment_text = Math.random().toString(36).substring(4);
-        var dbname = "augur";
-        var market_id = "0x00000003";
-        Augur.newIdentity(function (whisper_id) {
-            if (whisper_id) {
-                var post_params = {
-                    from: whisper_id,
-                    topics: [ market_id ],
-                    priority: '0x64',
-                    ttl: "0x500" // time-to-live (until expiration) in seconds
-                };
-                Augur.commentFilter(market_id, function (filter) {
-                    post_params.payload = Augur.prefix_hex(Augur.encode_hex(comment_text));
-                    Augur.post(post_params, function (post_ok) {
-                        if (post_ok) {
-                            Augur.getFilterChanges(filter, function (message) {
-                                if (message) {
-                                    var updated_comments = JSON.stringify([{
-                                        whisperId: message[0].from, // whisper ID
-                                        from: Augur.coinbase, // ethereum account
-                                        comment: Augur.decode_hex(message[0].payload),
-                                        time: message[0].sent
-                                    }]);
-                                    // get existing comment(s) stored locally
-                                    Augur.getString(market_id, function (comments) {
-                                        if (comments) {
-                                            updated_comments = updated_comments.slice(0,-1) + "," + comments.slice(1);
-                                        }
-                                        Augur.putString(market_id, updated_comments, function (put_ok) {
-                                            if (put_ok && updated_comments) {
-                                                print(JSON.parse(updated_comments));
-                                            }
-                                        });
-                                    });
-                                }
-                            });
-                        }
-                    });
-                });
-            }
-        });
-    };
+    // var TestWhisper = function () {
+    //     var comment_text = Math.random().toString(36).substring(4);
+    //     var dbname = "augur";
+    //     var market_id = "0x00000003";
+    //     Augur.newIdentity(function (whisper_id) {
+    //         if (whisper_id) {
+    //             var post_params = {
+    //                 from: whisper_id,
+    //                 topics: [ market_id ],
+    //                 priority: '0x64',
+    //                 ttl: "0x500" // time-to-live (until expiration) in seconds
+    //             };
+    //             Augur.commentFilter(market_id, function (filter) {
+    //                 post_params.payload = Augur.prefix_hex(Augur.encode_hex(comment_text));
+    //                 Augur.post(post_params, function (post_ok) {
+    //                     if (post_ok) {
+    //                         Augur.getFilterChanges(filter, function (message) {
+    //                             if (message) {
+    //                                 var updated_comments = JSON.stringify([{
+    //                                     whisperId: message[0].from, // whisper ID
+    //                                     from: Augur.coinbase, // ethereum account
+    //                                     comment: Augur.decode_hex(message[0].payload),
+    //                                     time: message[0].sent
+    //                                 }]);
+    //                                 // get existing comment(s) stored locally
+    //                                 Augur.getString(market_id, function (comments) {
+    //                                     if (comments) {
+    //                                         updated_comments = updated_comments.slice(0,-1) + "," + comments.slice(1);
+    //                                     }
+    //                                     Augur.putString(market_id, updated_comments, function (put_ok) {
+    //                                         if (put_ok && updated_comments) {
+    //                                             print(JSON.parse(updated_comments));
+    //                                         }
+    //                                     });
+    //                                 });
+    //                             }
+    //                         });
+    //                     }
+    //                 });
+    //             });
+    //         }
+    //     });
+    // };
 
     // minimal example that crashes geth (?)
     // var print = console.log;
     // Augur.shh("newFilter", { topics: [ "0xb13d98f933cbd602a3d9d4626260077678ab210d1e63b3108b231c1758ff9971" ] }, print);
     // Augur.shh("uninstallFilter", "0x0", print);
 
-    describe("Comments", function () {
-        var comment_text = Math.random().toString(36).substring(4);
-        var market_id = "-0x18b9aec6e8886ecec9ff0fd5c149800468edf8e9533efd32ab2efcc4a9388533";    
-        Augur.comment(market_id, comment_text, function (comments) {
-            assert(comments);
-            // print(comments.length.toString() + " comments found");
-            // print(comments);
-        });
-    });
+    // describe("Comments", function () {
+    //     var comment_text = Math.random().toString(36).substring(4);
+    //     var market_id = "-0x18b9aec6e8886ecec9ff0fd5c149800468edf8e9533efd32ab2efcc4a9388533";    
+    //     Augur.comment(market_id, comment_text, function (comments) {
+    //         // assert(comments);
+    //         // print(comments.length.toString() + " comments found");
+    //         // print(comments);
+    //     });
+    // });
     describe("Ethereum JSON-RPC", function () {
         describe("coinbase", function () {
-            it("should be 42 characters long", function () {
+            it("should be 42 characters long", function (done) {
                 assert.equal(Augur.coinbase.length, 42);
+                done();
             });
         });
         describe("net_version", function () {
-            it("should be version 0", function () {
-                rpctest("rpc", "net_version", "0");
+            it("should be version 0", function (done) {
+                assert.equal(Augur.rpc("net_version"), "0");
+                done();
             });
         });
         describe("eth_protocolVersion", function () {
-            it("should be version 60", function () {
-                rpctest("eth", "protocolVersion", "60");
+            it("should be version 60", function (done) {
+                assert.equal(Augur.eth("protocolVersion"), "60");
+                done();
             });
         });
         describe("eth_coinbase", function () {
-            it("should match Augur.coinbase", function () {
-                rpctest("eth", "coinbase", Augur.coinbase);
+            it("should match Augur.coinbase", function (done) {
+                assert.equal(Augur.eth("coinbase"), Augur.coinbase);
+                done();
             });
         });
         describe("web3_sha3", function () {
             var input = "boom!";
             var digest = "0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470";
-            it("'" + input + "' should hash to '" + digest + "'", function () {
-                rpctest("web3", "sha3", digest, input);
-                rpctest("hash", input, digest);
-                rpctest("sha3", input, digest);
+            it("'" + input + "' should hash to '" + digest + "'", function (done) {
+                var input = "boom!";
+                var digest = "0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470";
+                assert.equal(Augur.web3("sha3", input), digest);
+                assert.equal(Augur.hash(input), digest);
+                assert.equal(Augur.sha3(input), digest);
+                done();
             });
         });
         describe("db_putString", function () {
-            it("should return true", function () {
-                rpctest("db", "putString", true, ["augur_test_DB", "boomkey", "boom!"]);
+            it("should return true", function (done) {
+                assert.equal(Augur.db("putString", ["augur_test_DB", "boomkey", "boom!"]), true);
+                done();
             });
         });
         describe("db_getString", function () {
-            it("should fetch 'boom!' using key 'boomkey'", function () {
-                rpctest("db", "getString", "boom!", ["augur_test_DB", "boomkey"]);
+            it("should fetch 'boom!' using key 'boomkey'", function (done) {
+                Augur.db("putString", ["augur_test_DB", "boomkey", "boom!"]);
+                assert.equal(Augur.db("getString", ["augur_test_DB", "boomkey"]), "boom!");
+                done();
             });
         });
         describe("shh_version", function () {
-            it("should be version 2", function () {
+            it("should be version 2", function (done) {
                 rpctest("shh", "version", "2");
+                assert.equal(Augur.shh("version"), "2");
+                done();
             });
         });
         describe("gasPrice", function () {
-            it("should be 10 szabo", function () {
-                rpctest("gasPrice", "", "0x9184e72a000");
+            it("should be 10 szabo", function (done) {
+                assert.equal(Augur.gasPrice(), "0x9184e72a000");
+                done();
             });
         });      
         describe("blockNumber", function () {
-            it("should be a number greater than or equal to 200,000", function () {
-                rpctest("blockNumber", "", function (n) { return parseFloat(n) >= 200000; });
+            it("should be a number greater than or equal to 200,000", function (done) {
+                assert(parseFloat(Augur.blockNumber()) >= 200000);
+                done();
             });
         });
         describe("balance", function () {
-            it("should be a number greater than or equal to 0", function () {
+            it("should be a number greater than or equal to 0", function (done) {
                 rpctest("balance", "", gteq0);
                 rpctest("getBalance", "", gteq0);
+                done();
             });
         });
         describe("txCount", function () {
-            it("should be a number greater than or equal to 0", function () {
+            it("should be a number greater than or equal to 0", function (done) {
                 rpctest("txCount", "", gteq0);
                 rpctest("getTransactionCount", "", gteq0);
+                done();
             });
         });
         describe("peerCount", function () {
-            it("should be a number greater than or equal to 0", function () {
+            it("should be a number greater than or equal to 0", function (done) {
                 rpctest("peerCount", "", gteq0);
+                done();
             });
         });
     });
@@ -484,7 +500,7 @@
             describe("cash.se: " + Augur.contracts.cash, function () {
                 var method = "faucet";
                 var params = "";
-                var expected = "0x0000000000000000000000000000000000000000000000000000000000000001";
+                var expected = "0x01";
                 it(method + "(" + params + ") -> " + expected, function () {
                     var tx = {
                         to: Augur.contracts.cash,
@@ -492,7 +508,7 @@
                         params: params,
                         send: false
                     };
-                    var expected = "0x0000000000000000000000000000000000000000000000000000000000000001";
+                    var expected = "0x01";
                     test(tx, expected);
                 });
                 var expected = "1";
@@ -562,25 +578,17 @@
                     params: 1010101
                 };
                 it("getMarkets(1010101) -> " + JSON.stringify([
-                        "0x00000000000000000000000000000000000000000000000000000000000000e8",
-                        "0x00000000000000000000000000000000000000000000000000000000000000e8", "..."
+                        "0xe8",
+                        "0xe8",
+                        "..."
                     ]), function () {
                     tx.returns = "hash[]";
                     test(tx, [
-                        "0x00000000000000000000000000000000000000000000000000000000000000e8",
-                        "0x00000000000000000000000000000000000000000000000000000000000000e8"
+                        "0xe8",
+                        "0xe8"
                     ], function (a) {
                         a.slice(1,2);
                     });
-                });
-                it("getMarkets(1010101) -> 0x000000000000000000000000000000000000000000000000000000000000003300000000000000000000000000000000000000000000000000000000000000e800000000000000000000000000000000000000000000000000000000000000e8", function () {
-                    tx.returns = null;
-                    test(tx,
-                        "0x000000000000000000000000000000000000000000000000000000000000003300000000000000000000000000000000000000000000000000000000000000e800000000000000000000000000000000000000000000000000000000000000e8",
-                        function (s) {
-                            return s.slice(66,194);
-                        }
-                    );
                 });
             });
         });
@@ -591,37 +599,31 @@
             var test = function (res) {
                 assert.equal(res.constructor, Array);
                 assert.equal(res.length, 2);
-                assert.equal(parseInt(res[0].result), 10);
-                assert.equal(parseInt(res[1].result), 6);
+                assert.equal(parseInt(res[0]), 10);
+                assert.equal(parseInt(res[1]), 6);
             };
+            var txlist = [{
+                to: constants.examples.ten,
+                method: "ten",
+                returns: "number"
+            }, {
+                to: constants.examples.mul2,
+                method: "double",
+                signature: "i",
+                returns: "number",
+                params: 3
+            }];
             it("sync: match separate invocations", function () {
-                var txlist = [{
-                    to: constants.examples.ten,
-                    method: "ten",
-                    returns: "number"
-                }, {
-                    to: constants.examples.mul2,
-                    method: "double",
-                    signature: "i",
-                    returns: "number",
-                    params: 3
-                }];
                 test(Augur.batch(txlist));
             });
-            it("async: match separate invocations", function () {
-                var txlist = [{
-                    to: constants.examples.ten,
-                    method: "ten",
-                    send: false,
-                    returns: "number"
-                }, {
-                    to: constants.examples.mul2,
-                    method: "double",
-                    signature: "i",
-                    returns: "number",
-                    params: 3
-                }];
-                Augur.batch(txlist, test);
+            it("async: match separate invocations", function (done) {
+                Augur.batch(txlist, function (res) {
+                    assert.equal(res.constructor, Array);
+                    assert.equal(res.length, 2);
+                    assert.equal(parseInt(res[0]), 10);
+                    assert.equal(parseInt(res[1]), 6);
+                    done();
+                });
             });
         });
     });
@@ -720,9 +722,10 @@
                 it("sync", function () {
                     assert.equal(res, "1");
                 });
-                it("async", function () {
+                it("async", function (done) {
                     Augur.cashFaucet(function (r) {
                         assert.equal(r, "1");
+                        done();
                     });
                 });
             });
@@ -733,7 +736,7 @@
                 //     var res = Augur.cashFaucet();
                 //     is_not_zero(res);
                 // });
-                it("async", function () {
+                it("async", function (done) {
                     Augur.tx.cashFaucet.send = true;
                     Augur.tx.cashFaucet.returns = undefined;
                     Augur.cashFaucet(function (txhash) {
@@ -743,31 +746,34 @@
                         assert.ok(parseInt(txhash));
                         assert.ok(Augur.bignum(txhash));
                     });
+                    done();
                 });
             });
         });
 
         // info.se
         describe("info.se", function () {
-            describe("getCreator(" + event_id + ") [event] -> 0x00000000000000000000000063524e3fe4791aefce1e932bbfb3fdf375bfad89", function () {
+            describe("getCreator(" + event_id + ") [event] -> 0x63524e3fe4791aefce1e932bbfb3fdf375bfad89", function () {
                 it("sync", function () {
                     var res = Augur.getCreator(event_id);
-                    assert.equal(res, "0x00000000000000000000000063524e3fe4791aefce1e932bbfb3fdf375bfad89")
+                    assert.equal(res, "0x63524e3fe4791aefce1e932bbfb3fdf375bfad89")
                 });
-                it("async", function () {
+                it("async", function (done) {
                     Augur.getCreator(event_id, function (r) {
-                        assert.equal(r, "0x00000000000000000000000063524e3fe4791aefce1e932bbfb3fdf375bfad89");
+                        assert.equal(r, "0x63524e3fe4791aefce1e932bbfb3fdf375bfad89");
+                        done();
                     });
                 });
             });
-            describe("getCreator(" + market_id + ") [market] -> 0x00000000000000000000000063524e3fe4791aefce1e932bbfb3fdf375bfad89", function () {
+            describe("getCreator(" + market_id + ") [market] -> 0x63524e3fe4791aefce1e932bbfb3fdf375bfad89", function () {
                 it("sync", function () {
                     var res = Augur.getCreator(market_id);
-                    assert.equal(res, "0x00000000000000000000000063524e3fe4791aefce1e932bbfb3fdf375bfad89")
+                    assert.equal(res, "0x63524e3fe4791aefce1e932bbfb3fdf375bfad89")
                 });
-                it("async", function () {
+                it("async", function (done) {
                     Augur.getCreator(market_id, function (r) {
-                        assert.equal(r, "0x00000000000000000000000063524e3fe4791aefce1e932bbfb3fdf375bfad89");
+                        assert.equal(r, "0x63524e3fe4791aefce1e932bbfb3fdf375bfad89");
+                        done();
                     });
                 });
             });
@@ -776,9 +782,10 @@
                     var res = Augur.getCreationFee(event_id);
                     assert.equal(res, "0.00000000000000000244");
                 });
-                it("async", function () {
+                it("async", function (done) {
                     Augur.getCreationFee(event_id, function (r) {
                         assert.equal(r, "0.00000000000000000244");
+                        done();
                     });
                 });
             });
@@ -787,9 +794,10 @@
                     var res = Augur.getCreationFee(market_id);
                     assert.equal(res, "7500");
                 });
-                it("async", function () {
+                it("async", function (done) {
                     Augur.getCreationFee(market_id, function (r) {
                         assert.equal(r, "7500");
+                        done();
                     });
                 });
             });
@@ -798,9 +806,10 @@
                     var res = Augur.getDescription(event_id);
                     assert.equal(res, "Will Hillary Rodham Clinton win the 2016 presidential race?");
                 });
-                it("async", function () {
+                it("async", function (done) {
                     Augur.getDescription(event_id, function (r) {
                         assert.equal(r, "Will Hillary Rodham Clinton win the 2016 presidential race?");
+                        done();
                     });
                 });
             });
@@ -808,136 +817,200 @@
 
         // branches.se
         describe("branches.se", function () {
-            describe("getBranches", function () {
-                it("should be an array with length >= 3", function () {
+            describe("getBranches: array length >= 3", function () {
+                var test = function (r) {
+                    is_array(r);
+                    assert(r.length >= 3);
+                };
+                it("sync", function () {
+                    test(Augur.getBranches());
+                });
+                it("async", function (done) {
                     Augur.getBranches(function (r) {
-                        assert(r.length >= 3);
-                        is_array(r);
+                        test(r); done();
                     });
                 });
             });
-            describe("getMarkets(" + branch_id + ")", function () {
-                it("should be an array with length > 1 and first two elements equal to 232", function () {
+            describe("getMarkets(" + branch_id + "): array length > 1, first two elements equal to 232", function () {
+                var test = function (r) {
+                    is_array(r);
+                    assert(r.length > 1);
+                    assert.equal(r[0], "0x00000000000000000000000000000000000000000000000000000000000000e8");
+                    assert.equal(r[1], "0x00000000000000000000000000000000000000000000000000000000000000e8");
+                };
+                it("sync", function () {
+                    test(Augur.getMarkets(branch_id));
+                });
+                it("async", function (done) {
                     Augur.getMarkets(branch_id, function (r) {
-                        is_array(r);
-                        assert(r.length > 1);
-                        assert.equal(r[0], "0x00000000000000000000000000000000000000000000000000000000000000e8");
-                        assert.equal(r[1], "0x00000000000000000000000000000000000000000000000000000000000000e8");
+                        test(r); done();
                     });
                 });
             });
             describe("getPeriodLength(" + branch_id + ") == '20'", function () {
+                var test = function (r) {
+                    assert.equal(r, "20");
+                };
                 it("sync", function () {
-                    assert.equal(Augur.getPeriodLength(branch_id), "20");
+                    test(Augur.getPeriodLength(branch_id));
                 });
-                it("async", function () {
+                it("async", function (done) {
                     Augur.getPeriodLength(branch_id, function (r) {
-                        assert.equal(r, "20");
+                        test(r); done();
                     });
                 });
             });
             describe("getVotePeriod(" + branch_id + ") >= 2", function () {
+                var test = function (r) {
+                    assert(parseInt(r) >= 2);
+                };
                 it("sync", function () {
-                    assert(parseInt(Augur.getVotePeriod(branch_id)) >= 2);
+                    test(Augur.getVotePeriod(branch_id));
                 });
-                it("async", function () {
+                it("async", function (done) {
                     Augur.getVotePeriod(branch_id, function (r) {
-                        assert(parseInt(r) >= 2);
+                        test(r); done();
                     });
                 });
             });
             describe("getStep(" + branch_id + ") <= 9", function () {
+                var test = function (r) {
+                    assert(parseInt(r) >= 0 && parseInt(r) <= 9);
+                };
                 it("sync", function () {
-                    var res = parseInt(Augur.getStep(branch_id));
-                    assert(res >= 0 && res <= 9);
+                    test(Augur.getStep(branch_id));
                 });
-                it("async", function () {
+                it("async", function (done) {
                     Augur.getStep(branch_id, function (r) {
-                        assert(parseInt(r) >= 0 && parseInt(r) <= 9);
+                        test(r); done();
                     });
                 });
             });
             describe("getNumMarkets(" + branch_id + ") >= 120", function () {
+                var test = function (r) {
+                    assert(parseInt(r) >= 120);
+                };
                 it("sync", function () {
-                    assert(parseInt(Augur.getNumMarkets(branch_id)) >= 120);
+                    test(Augur.getNumMarkets(branch_id));
                 });
-                it("async", function () {
+                it("async", function (done) {
                     Augur.getNumMarkets(branch_id, function (r) {
-                        assert(parseInt(r) >= 120);
+                        test(r); done();
                     });
                 });
             });
-            // Augur.getMinTradingFee(branch_id, function (r) {
-            //     print("getMinTradingFee(" + branch_id + ") -> " + r);
-            //     assert(parseFloat(r) >= 0.0 && parseFloat(r) <= 1.0);
-            // });
-            // Augur.getNumBranches(function (r) {
-            //     print("getNumBranches() -> " + r);
-            //     assert(parseInt(r) >= 3);
-            // });
-            // Augur.getBranch(branch_number, function (r) {
-            //     print("getBranch(" + branch_number + ") -> " + r);
-            //     assert.equal(r, "0x7f5026f174d59f6f01ff3735773b5e3adef0b9c98f8a8e84e0000f034cfbf35a");
-            // });
+            describe("getMinTradingFee(" + branch_id + ")", function () {
+                var test = function (r) {
+                    assert(parseFloat(r) >= 0.0);
+                    assert(parseFloat(r) <= 1.0);
+                };
+                it("sync", function () {
+                    test(Augur.getMinTradingFee(branch_id));
+                });
+                it("async", function (done) {
+                    Augur.getMinTradingFee(branch_id, function (r) {
+                        test(r); done();
+                    });
+                });
+            });
+            describe("getNumBranches()", function () {
+                var test = function (r) {
+                    assert(parseInt(r) >= 3);
+                };
+                it("sync", function () {
+                    test(Augur.getNumBranches());
+                });
+                it("async", function (done) {
+                    Augur.getNumBranches(function (r) {
+                        test(r); done();
+                    });
+                });
+            });
+            describe("getBranch(" + branch_number + ")", function () {
+                var test = function (r) {
+                    assert.equal(r, "0x7f5026f174d59f6f01ff3735773b5e3adef0b9c98f8a8e84e0000f034cfbf35a");
+                };
+                it("sync", function () {
+                    test(Augur.getBranch(branch_number));
+                });
+                it("async", function (done) {
+                    Augur.getBranch(branch_number, function (r) {
+                        test(r); done();
+                    });
+                });
+            });
         });
 
         // events.se
         describe("events.se", function () {
             describe("getEventInfo(" + event_id + ")", function () {
-                it("sync", function () {
-                    var res = Augur.getEventInfo(event_id);
+                var test = function (res) {
                     on_root_branch(res);
                     assert.equal(res.expirationDate, "4629146");
                     assert.equal(res.description, "Will Hillary Rodham Clinton win the 2016 presidential race?");
+                }
+                it("sync", function () {
+                    test(Augur.getEventInfo(event_id));
+                    
                 });
-                it("async", function () {
+                it("async", function (done) {
                     Augur.getEventInfo(event_id, function (r) {
-                        on_root_branch(r);
-                        assert.equal(r.expirationDate, "4629146");
-                        assert.equal(r.description, "Will Hillary Rodham Clinton win the 2016 presidential race?");
+                        test(r); done();
                     });
                 });
             });
 
             // TODO getEventBranch
             describe("getExpiration(" + event_id + ") == '4629146'", function () {
+                var test = function (r) {
+                    assert.equal(r, "4629146");
+                };
                 it("sync", function () {
-                    assert.equal(Augur.getExpiration(event_id), "4629146");
+                    test(Augur.getExpiration(event_id));
                 });
-                it("async", function () {
+                it("async", function (done) {
                     Augur.getExpiration(event_id, function (r) {
-                        assert.equal(r, "4629146");
+                        test(r); done();
                     });
                 });
             });
             // TODO getOutcome
             describe("getMinValue(" + event_id + ") == '1'", function () {
+                var test = function (r) {
+                    assert.equal(r, "1");
+                };
                 it("sync", function () {
-                    assert.equal(Augur.getMinValue(event_id), '1');
+                    test(Augur.getMinValue(event_id));
                 });
-                it("async", function () {
+                it("async", function (done) {
                     Augur.getMinValue(event_id, function (r) {
-                        assert.equal(r, "1");
+                        test(r); done();
                     });
                 });
             });
             describe("getMaxValue(" + event_id + ") == '2'", function () {
+                var test = function (r) {
+                    assert.equal(r, "2");
+                };
                 it("sync", function () {
-                    assert.equal(Augur.getMaxValue(event_id), "2");
+                    test(Augur.getMaxValue(event_id));
                 });
-                it("async", function () {
+                it("async", function (done) {
                     Augur.getMaxValue(event_id, function (r) {
-                        assert.equal(r, "2");
+                        test(r); done();
                     });
                 });
             });
             describe("getNumOutcomes(" + event_id + ") == '2'", function () {
+                var test = function (r) {
+                    assert.equal(r, "2");
+                };
                 it("sync", function () {
-                    assert.equal(Augur.getNumOutcomes(event_id), '2');
+                    test(Augur.getNumOutcomes(event_id));
                 });
-                it("async", function () {
+                it("async", function (done) {
                     Augur.getNumOutcomes(event_id, function (r) {
-                        assert.equal(r, "2");
+                        test(r); done();
                     });
                 });
             });
@@ -946,12 +1019,15 @@
         // expiringEvents.se
         describe("expiringEvents.se", function () {
             describe("getEvents(" + branch_id + ", " + vote_period + ")", function () {
+                var test = function (r) {
+                
+                };
                 it("sync", function () {
-                    var res = Augur.getEvents(branch_id, vote_period);
+                    test(Augur.getEvents(branch_id, vote_period));
                 });
-                it("async", function () {
+                it("async", function (done) {
                     Augur.getEvents(branch_id, vote_period, function (r) {
-                    
+                        test(r); done();
                     });
                 });
             });
@@ -960,36 +1036,34 @@
         // markets.se
         describe("markets.se", function () {
             describe("getSimulatedBuy(" + market_id + ", " + outcome + ", " + amount + ")", function () {
-                it("sync", function () {
-                    var r = Augur.getSimulatedBuy(market_id, outcome, amount);
+                var test = function (r) {
                     is_array(r);
                     assert.equal(r.length, 2);
                     gteq0(r[0]);
                     gteq0(r[1]);
+                };
+                it("sync", function () {
+                    test(Augur.getSimulatedBuy(market_id, outcome, amount));
                 });
-                it("async", function () {
+                it("async", function (done) {
                     Augur.getSimulatedBuy(market_id, outcome, amount, function (r) {
-                        is_array(r);
-                        assert.equal(r.length, 2);
-                        gteq0(r[0]);
-                        gteq0(r[1]);
+                        test(r); done();
                     });
                 });
             });
             describe("getSimulatedSell(" + market_id + ", " + outcome + ", " + amount + ")", function () {
-                it("sync", function () {
-                    var r = Augur.getSimulatedSell(market_id, outcome, amount);
+                var test = function (r) {
                     assert.equal(r.length, 2);
                     is_array(r);
                     gteq0(r[0]);
                     gteq0(r[1]);
+                };
+                it("sync", function () {
+                    test(Augur.getSimulatedSell(market_id, outcome, amount));
                 });
-                it("async", function () {
+                it("async", function (done) {
                     Augur.getSimulatedSell(market_id, outcome, amount, function (r) {
-                        assert.equal(r.length, 2);
-                        is_array(r);
-                        gteq0(r[0]);
-                        gteq0(r[1]);
+                        test(r); done();
                     });
                 });
             });
@@ -1007,24 +1081,28 @@
                 });
             });
             describe("getMarketInfo(" + market_id + ")", function () {
-                it("sync", function () {
-                    var r = Augur.getMarketInfo(market_id);
+                var test = function (r) {
                     assert.equal(r.description, "Will the Augur software sale total be at least $1M?");
+                }
+                it("sync", function () {
+                    test(Augur.getMarketInfo(market_id));
                 });
-                it("async", function () {
+                it("async", function (done) {
                     Augur.getMarketInfo(market_id, function (r) {
-                        assert.equal(r.description, "Will the Augur software sale total be at least $1M?");
+                        test(r); done();
                     });
                 });
             });
             describe("getMarketInfo(" + market_id2 + ")", function () {
-                it("sync", function () {
-                    var r = Augur.getMarketInfo(market_id2);
+                var test = function (r) {
                     assert.equal(r.description, "Will the Augur alpha be out by Friday, May 15, 2015?");
+                };
+                it("sync", function () {
+                    test(Augur.getMarketInfo(market_id2));
                 });
-                it("async", function () {
+                it("async", function (done) {
                     Augur.getMarketInfo(market_id2, function (r) {
-                        assert.equal(r.description, "Will the Augur alpha be out by Friday, May 15, 2015?");
+                        test(r); done();
                     });
                 });
             });
@@ -1036,107 +1114,194 @@
                 it("sync", function () {
                     test(Augur.getMarketEvents(market_id));
                 });
-                it("async", function () {
-                    Augur.getMarketEvents(market_id, test);
+                it("async", function (done) {
+                    Augur.getMarketEvents(market_id, function (r) {
+                        test(r); done();
+                    });
                 });
             });
             describe("getNumEvents(" + market_id + ") === '1'", function () {
                 var test = function (r) {
                     assert.equal(r, "1");
                 };
-                it("sync", function () { test(Augur.getNumEvents(market_id)); });
-                it("async", function () { Augur.getNumEvents(market_id, test); });
+                it("sync", function () {
+                    test(Augur.getNumEvents(market_id));
+                });
+                it("async", function (done) {
+                    Augur.getNumEvents(market_id, function (r) {
+                        test(r); done();
+                    });
+                });
             });
             describe("getBranchID(" + market_id + ")", function () {
                 var test = function (r) {
-                    assert.equal(r, "0x00000000000000000000000000000000000000000000000000000000000f69b5");
+                    assert.equal(r, "0x0f69b5");
                 };
-                it("sync", function () { test(Augur.getBranchID(market_id)); });
-                it("async", function () { Augur.getBranchID(market_id, test); });
+                it("sync", function () {
+                    test(Augur.getBranchID(market_id));
+                });
+                it("async", function (done) {
+                    Augur.getBranchID(market_id, function (r) {
+                        test(r); done();
+                    });
+                });
             });
             describe("getCurrentParticipantNumber(" + market_id + ") >= 0", function () {
                 var test = function (r) {
                     gteq0(r);
                 };
-                it("sync", function () { test(Augur.getCurrentParticipantNumber(market_id)); });
-                it("async", function () { Augur.getCurrentParticipantNumber(market_id, test); });
+                it("sync", function () {
+                    test(Augur.getCurrentParticipantNumber(market_id));
+                });
+                it("async", function (done) {
+                    Augur.getCurrentParticipantNumber(market_id, function (r) {
+                        test(r); done();
+                    });
+                });
             });
             describe("getMarketNumOutcomes(" + market_id + ") ", function () {
                 var test = function (r) {
                     assert.equal(r, "2");
                 };
-                it("sync", function () { test(Augur.getMarketNumOutcomes(market_id)); });
-                it("async", function () { Augur.getMarketNumOutcomes(market_id, test); });
+                it("sync", function () {
+                    test(Augur.getMarketNumOutcomes(market_id));
+                });
+                it("async", function (done) {
+                    Augur.getMarketNumOutcomes(market_id, function (r) {
+                        test(r); done();
+                    });
+                });
             });
             describe("getParticipantSharesPurchased(" + market_id + ", " + participant_number + "," + outcome + ") ", function () {
                 var test = function (r) {
                     gteq0(r);
                 };
-                it("sync", function () { test(Augur.getParticipantSharesPurchased(market_id, participant_number, outcome)); });
-                it("async", function () { Augur.getParticipantSharesPurchased(market_id, participant_number, outcome, test); });
+                it("sync", function () {
+                    test(Augur.getParticipantSharesPurchased(market_id, participant_number, outcome));
+                });
+                it("async", function (done) {
+                    Augur.getParticipantSharesPurchased(market_id, participant_number, outcome, function (r) {
+                        test(r); done();
+                    });
+                });
             });
             describe("getSharesPurchased(" + market_id + ", " + outcome + ") ", function () {
                 var test = function (r) {
                     gteq0(r);
                 };
-                it("sync", function () { test(Augur.getSharesPurchased(market_id, outcome)); });
-                it("async", function () { Augur.getSharesPurchased(market_id, outcome, test); });
+                it("sync", function () {
+                    test(Augur.getSharesPurchased(market_id, outcome));
+                });
+                it("async", function (done) {
+                    Augur.getSharesPurchased(market_id, outcome, function (r) {
+                        test(r); done();
+                    });
+                });
             });
             describe("getWinningOutcomes(" + market_id + ")", function () {
                 var test = function (r) {
                     is_array(r);
                 };
-                it("sync", function () { test(Augur.getWinningOutcomes(market_id)); });
-                it("async", function () { Augur.getWinningOutcomes(market_id, test); });
+                it("sync", function () {
+                    test(Augur.getWinningOutcomes(market_id));
+                });
+                it("async", function (done) {
+                    Augur.getWinningOutcomes(market_id, function (r) {
+                        test(r); done();
+                    });
+                });
             });
             describe("price(" + market_id + ", " + outcome + ") ", function () {
                 var test = function (r) {
-                    assert(parseFloat(r) >= 0.0 && parseFloat(r) <= 1.0);
+                    assert(parseFloat(r) >= 0.0);
+                    assert(parseFloat(r) <= 1.0);
                 };
-                it("sync", function () { test(Augur.price(market_id, outcome)); });
-                it("async", function () { Augur.price(market_id, outcome, test); });
+                it("sync", function () {
+                    test(Augur.price(market_id, outcome));
+                });
+                it("async", function (done) {
+                    Augur.price(market_id, outcome, function (r) {
+                        test(r); done();
+                    });
+                });
             });
             describe("getParticipantNumber(" + market_id + ", " + constants.accounts.jack + ") ", function () {
                 var test = function (r) {
                     gteq0(r);
                 };
-                it("sync", function () { test(Augur.getParticipantNumber(market_id, constants.accounts.jack)); });
-                it("async", function () { Augur.getParticipantNumber(market_id, constants.accounts.jack, test); });
+                it("sync", function () {
+                    test(Augur.getParticipantNumber(market_id, constants.accounts.jack));
+                });
+                it("async", function (done) {
+                    Augur.getParticipantNumber(market_id, constants.accounts.jack, function (r) {
+                        test(r); done();
+                    });
+                });
             });
             describe("getParticipantID(" + market_id + ", " + participant_number + ") ", function () {
                 var test = function (r) {
                     gteq0(r);
                 };
-                it("sync", function () { test(Augur.getParticipantID(market_id, participant_number)); });
-                it("async", function () { Augur.getParticipantID(market_id, participant_number, test); });
+                it("sync", function () {
+                    test(Augur.getParticipantID(market_id, participant_number));
+                });
+                it("async", function (done) {
+                    Augur.getParticipantID(market_id, participant_number, function (r) {
+                        test(r); done();
+                    });
+                });
             });
             describe("getAlpha(" + market_id + ") ", function () {
                 var test = function (r) {
                     assert.equal(parseFloat(r).toFixed(6), "0.007900");
                 };
-                it("sync", function () { test(Augur.getAlpha(market_id)); });
-                it("async", function () { Augur.getAlpha(market_id, test); });
+                it("sync", function () {
+                    test(Augur.getAlpha(market_id));
+                });
+                it("async", function (done) {
+                    Augur.getAlpha(market_id, function (r) {
+                        test(r); done();
+                    });
+                });
             });
             describe("getCumScale(" + market_id + ") ", function () {
                 var test = function (r) {
                     assert.equal(r, "0.00000000000000000005");
                 };
-                it("sync", function () { test(Augur.getCumScale(market_id)); });
-                it("async", function () { Augur.getCumScale(market_id, test); });
+                it("sync", function () {
+                    test(Augur.getCumScale(market_id));
+                });
+                it("async", function (done) {
+                    Augur.getCumScale(market_id, function (r) {
+                        test(r); done();
+                    });
+                });
             });
             describe("getTradingPeriod(" + market_id + ") ", function () {
                 var test = function (r) {
                     assert.equal(r, "66202");
                 };
-                it("sync", function () { test(Augur.getTradingPeriod(market_id)); });
-                it("async", function () { Augur.getTradingPeriod(market_id, test); });
+                it("sync", function () {
+                    test(Augur.getTradingPeriod(market_id));
+                });
+                it("async", function (done) {
+                    Augur.getTradingPeriod(market_id, function (r) {
+                        test(r); done();
+                    });
+                });
             });
             describe("getTradingFee(" + market_id + ") ", function () {
                 var test = function (r) {
                     assert.equal(r, "0.02999999999999999997");
                 };
-                it("sync", function () { test(Augur.getTradingFee(market_id)); });
-                it("async", function () { Augur.getTradingFee(market_id, test); });
+                it("sync", function () {
+                    test(Augur.getTradingFee(market_id));
+                });
+                it("async", function (done) {
+                    Augur.getTradingFee(market_id, function (r) {
+                        test(r); done();
+                    });
+                });
             });
         });
 
@@ -1146,55 +1311,98 @@
                 var test = function (r) {
                     gteq0(r);
                 };
-                it("sync", function () { test(Augur.getRepBalance(branch_id, Augur.coinbase)); });
-                it("async", function () { Augur.getRepBalance(branch_id, Augur.coinbase, test); });
+                it("sync", function () {
+                    test(Augur.getRepBalance(branch_id, Augur.coinbase));
+                });
+                it("async", function (done) {
+                    Augur.getRepBalance(branch_id, Augur.coinbase, function (r) {
+                        test(r); done();
+                    });
+                });
             });
             describe("getRepByIndex(" + branch_id + ", " + reporter_index + ") ", function () {
                 var test = function (r) {
                     gteq0(r);
                 };
-                it("sync", function () { test(Augur.getRepByIndex(branch_id, reporter_index)); });
-                it("async", function () { Augur.getRepByIndex(branch_id, reporter_index, test); });
+                it("sync", function () {
+                    test(Augur.getRepByIndex(branch_id, reporter_index));
+                });
+                it("async", function (done) {
+                    Augur.getRepByIndex(branch_id, reporter_index, function (r) {
+                        test(r); done();
+                    });
+                });
             });
             describe("getReporterID(" + branch_id + ", " + reporter_index + ") ", function () {
                 var test = function (r) {
-                    assert.equal(r, "0x0000000000000000000000001c11aa45c792e202e9ffdc2f12f99d0d209bef70");
+                    assert.equal(r, "0x1c11aa45c792e202e9ffdc2f12f99d0d209bef70");
                 };
-                it("sync", function () { test(Augur.getReporterID(branch_id, reporter_index)); });
-                it("async", function () { Augur.getReporterID(branch_id, reporter_index, test); });
+                it("sync", function () {
+                    test(Augur.getReporterID(branch_id, reporter_index));
+                });
+                it("async", function (done) {
+                    Augur.getReporterID(branch_id, reporter_index, function (r) {
+                        test(r); done();
+                    });
+                });
             });
             describe("getReputation(" + reporter_address + ")", function () {
                 var test = function (r) {
                     is_array(r);
                     assert(r.length >= 3); // why equal to 5...?
-                    for (var i = 0, len = r.length; i < len; ++i)
+                    for (var i = 0, len = r.length; i < len; ++i) {
                         gteq0(r[i]);
+                    }
                 };
-                it("sync", function () { test(Augur.getReputation(reporter_address)); });
-                it("async", function () { Augur.getReputation(reporter_address, test); });
+                it("sync", function () {
+                    test(Augur.getReputation(reporter_address));
+                });
+                it("async", function (done) {
+                    Augur.getReputation(reporter_address, function (r) {
+                        test(r); done();
+                    });
+                });
             });
             describe("getNumberReporters(" + branch_id + ") ", function () {
                 var test = function (r) {
                     gteq0(r);
                     assert(parseInt(r) >= 22);
                 };
-                it("sync", function () { test(Augur.getNumberReporters(branch_id)); });
-                it("async", function () { Augur.getNumberReporters(branch_id, test); });
+                it("sync", function () {
+                    test(Augur.getNumberReporters(branch_id));
+                });
+                it("async", function (done) {
+                    Augur.getNumberReporters(branch_id, function (r) {
+                        test(r); done();
+                    });
+                });
             });
             describe("repIDToIndex(" + branch_id + ") ", function () {
                 var test = function (r) {
                     
                 };
-                it("sync", function () { test(Augur.repIDToIndex(branch_id, "0")); });
-                it("async", function () { Augur.repIDToIndex(branch_id, "0", test); });
+                it("sync", function () {
+                    test(Augur.repIDToIndex(branch_id, "0"));
+                });
+                it("async", function (done) {
+                    Augur.repIDToIndex(branch_id, "0", function (r) {
+                        test(r); done();
+                    });
+                });
             });
             describe("hashReport([ballot], " + salt + ") ", function () {
                 var test = function (r) {
                     // TODO double-check this
                     assert.equal(r, "0xa5ea8e72fa70be0521a240201dedd1376599a9a935be4977d798522bcfbc29de");
                 };
-                it("sync", function () { test(Augur.hashReport(ballot, salt)); });
-                it("async", function () { Augur.hashReport(ballot, salt, test); });
+                it("sync", function () {
+                    test(Augur.hashReport(ballot, salt));
+                });
+                it("async", function (done) {
+                    Augur.hashReport(ballot, salt, function (r) {
+                        test(r); done();
+                    });
+                });
             });
             Augur.tx.reputationFaucet.send = false;
             Augur.tx.reputationFaucet.returns = "number";
@@ -1202,8 +1410,14 @@
                 var test = function (r) {
                     assert.equal(r, "1");
                 };
-                it("sync", function () { test(Augur.reputationFaucet()); });
-                it("async", function () { Augur.reputationFaucet(test); });
+                it("sync", function () {
+                    test(Augur.reputationFaucet());
+                });
+                it("async", function (done) {
+                    Augur.reputationFaucet(function (r) {
+                        test(r); done();
+                    });
+                });
             });
         });
 
@@ -1213,8 +1427,14 @@
                 var test = function (r) {
                     assert.equal(r, "0");
                 };
-                it("sync", function () { test(Augur.getNonce(market_id)); });
-                it("async", function () { Augur.getNonce(market_id, test); });
+                it("sync", function () {
+                    test(Augur.getNonce(market_id));
+                });
+                it("async", function (done) {
+                    Augur.getNonce(market_id, function (r) {
+                        test(r); done();
+                    });
+                });
             });
             describe("buyShares(" + branch_id + ", " + market_id + ", " + outcome + ", " + amount + ", null) [call] ", function () {
                 var test = function (r) {
@@ -1230,7 +1450,7 @@
                         nonce: null
                     }));
                 });
-                it("async", function () {
+                it("async", function (done) {
                     Augur.tx.buyShares.send = false;
                     Augur.buyShares({
                         branchId: branch_id,
@@ -1238,7 +1458,9 @@
                         outcome: outcome,
                         amount: amount,
                         nonce: null,
-                        onSent: test
+                        onSent: function (r) {
+                            test(r); done();
+                        }
                     });
                 });
             });
@@ -1256,7 +1478,7 @@
                         nonce: null
                     }));
                 });
-                it("async", function () {
+                it("async", function (done) {
                     Augur.tx.sellShares.send = false;
                     Augur.sellShares({
                         branchId: branch_id,
@@ -1264,7 +1486,9 @@
                         outcome: outcome,
                         amount: amount,
                         nonce: null,
-                        onSent: test
+                        onSent: function (r) {
+                            test(r); done();
+                        }
                     });
                 });
             });
@@ -1287,7 +1511,7 @@
                         nonce: null
                     }));
                 });
-                it("async", function () {
+                it("async", function (done) {
                     var amount = (Math.random() * 10).toString();
                     Augur.tx.buyShares.send = true;
                     Augur.buyShares({
@@ -1296,7 +1520,9 @@
                         outcome: outcome,
                         amount: amount,
                         nonce: null,
-                        onSent: test
+                        onSent: function (r) {
+                            test(r); done();
+                        }
                     });
                 });
             });
@@ -1319,7 +1545,7 @@
                         nonce: null
                     }));
                 });
-                it("async", function () {
+                it("async", function (done) {
                     var amount = (Math.random() * 10).toString();
                     Augur.tx.sellShares.send = true;
                     Augur.sellShares({
@@ -1328,7 +1554,9 @@
                         outcome: outcome,
                         amount: amount,
                         nonce: null,
-                        onSent: test
+                        onSent: function (r) {
+                            test(r); done();
+                        }
                     });
                 });
             });
@@ -1342,7 +1570,7 @@
         // call: returns rep amount sent
         describe("sendReputation.se", function () {
             describe("sendReputation(" + branch_id + ", " + receiving_account + ", " + amount + ") [call] ", function () {
-                it("async", function () {
+                it("async", function (done) {
                     Augur.tx.sendReputation.send = false;
                     Augur.tx.sendReputation.returns = "unfix";
                     Augur.sendReputation(branch_id, receiving_account, amount, function (r) {
@@ -1362,6 +1590,7 @@
                                 assert.equal(r, "0");
                                 Augur.tx.sendReputation.send = true;
                                 Augur.tx.sendReputation.returns = undefined;
+                                done();
                             });
                         });
                     });
@@ -1376,8 +1605,9 @@
         // createEvent.se
         describe("createEvent.se", function () {
             describe("createEvent: \"" + event_description + "\"", function () {
-                it("async", function () {
-                    var expDate = "300000";
+                it("async", function (done) {
+                    this.timeout(60000);
+                    var expDate = "3000000";
                     var minValue = "1";
                     var maxValue = "2";
                     var numOutcomes = "2";
@@ -1394,6 +1624,7 @@
                             !is_empty(r);
                             is_not_zero(r.id);
                             is_not_zero(r.txhash);
+                            done();
                         },
                         onSuccess: function (r) {
                             print("success: " + JSON.stringify(r, null, 2));
@@ -1407,16 +1638,24 @@
                             assert.equal(r.maxValue, maxValue);
                             assert.equal(r.numOutcomes, numOutcomes);
                             assert.equal(r.description, event_description);
+                            done();
+                        },
+                        onFailed: function (r) {
+                            print("failed: " + JSON.stringify(r, null, 2));
+                            is_object(r);
+                            !is_empty(r);
+                            done();
                         }
                     });
                 });
             });
         });
 
-        // // createMarket.se
+        // createMarket.se
         // describe("createMarket.se", function () {
         //     describe("createMarket: \"" + market_description + "\"", function () {
-        //         it("async", function () {
+        //         it("async", function (done) {
+        //             this.timeout(30000);
         //             var alpha = "0.0079";
         //             var initialLiquidity = "100";
         //             var tradingFee = "0.01";
@@ -1447,12 +1686,14 @@
         //                     assert.equal(r.numOutcomes, numOutcomes);
         //                     assert.equal(r.tradingFee, tradingFee);
         //                     assert.equal(r.description, market_description);
+        //                     done();
         //                 },
         //                 onFailed: function (r) {
         //                     print("createMarket: \"" + market_description + "\"");
         //                     print("failed: " + JSON.stringify(r, null, 2));
         //                     is_object(r);
         //                     !is_empty(r);
+        //                     done();
         //                 }
         //             });
         //         });
@@ -1462,11 +1703,12 @@
         // closeMarket.se
         describe("closeMarket.se", function () {
             describe("closeMarket(" + branch_id + ", " + market_id + ") [call] ", function () {
-                it("async", function () {
+                it("async", function (done) {
                     Augur.tx.closeMarket.send = false;
                     Augur.tx.closeMarket.returns = "number";
                     Augur.closeMarket(branch_id, market_id, function (r) {
                         print("closeMarket: " + r);
+                        done();
                     });
                     Augur.tx.closeMarket.send = true;
                     Augur.tx.closeMarket.returns = undefined;
@@ -1477,11 +1719,12 @@
         // dispatch.se
         describe("dispatch.se", function () {
             describe("dispatch(" + branch_number + ") [call] ", function () {
-                it("async", function () {
+                it("async", function (done) {
                     Augur.tx.dispatch.send = false;
                     Augur.tx.dispatch.returns = "number";
                     Augur.dispatch(branch_number, function (r) {
                         print("dispatch: " + r);
+                        done();
                     });
                     Augur.tx.dispatch.send = true;
                     Augur.tx.dispatch.returns = undefined;
