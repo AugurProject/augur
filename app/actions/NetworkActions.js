@@ -60,6 +60,7 @@ var NetworkActions = {
 
     // vote period may have changed
     this.flux.actions.branch.updateCurrentBranch();
+    this.flux.actions.branch.updateBallotEvents();
   }
 };
 

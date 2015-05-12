@@ -204,14 +204,17 @@ EthereumClient.prototype.getCurrentVotePeriod = function(branchId) {
 
 EthereumClient.prototype.getBallotEvents = function(votePeriod, branchId) {
 
+  if (!votePeriod) return;
+  
   // TODO: this should eventually return all events that need to be voted on by the user
   branchId = branchId || this.defaultBranchId;
-  
+
   var events = [];
   _.each(_.range(votePeriod), function(i) {   // getting all past period events as well for now
     events.concat(Augur.getEvents(branchId, i));
   });
 
+  console.log('ballot events', events);
   return events;
 };
 

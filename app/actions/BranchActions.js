@@ -34,12 +34,23 @@ var BranchActions = {
     var currentVotePeriod = ethereumClient.getCurrentVotePeriod(id);
     //var currentQuorum = ethereumClient.checkQuorum(id);
 
-    this.dispatch(constants.branch.UPDATE_CURRENT_BRANCH, {
+    this.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, {
       currentBranch: id, 
       currentVotePeriod: currentVotePeriod[0], 
       currentVotePeriodLength: currentVotePeriod[1]
     });
-  }
+  },
+
+  updateBallotEvents: function() {
+
+    var ethereumClient = this.flux.store('config').getEthereumClient();
+    var currentVotePeriod = this.flux.store('branch').getState().currentVotePeriod;
+    var ballotEvents = ethereumClient.getBallotEvents(currentVotePeriod);
+
+    this.dispatch(constants.branch.UPDATE_BALLOT_EVENTS_SUCCESS, {
+      ballotEvents: ballotEvents || {}
+    });
+  },
 };
 
 module.exports = BranchActions;
