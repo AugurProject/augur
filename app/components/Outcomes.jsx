@@ -38,6 +38,9 @@ var getOutcome = function (outcomeComponent) {
 var Overview = React.createClass({
   render: function () {
 
+    var className = 'outcome outcome-'+this.props.id+' shadow';
+    if (this.props.matured) className += ' matured';
+
     var holdings;
     if (this.props.sharesPurchased.toNumber()) {
       holdings = (
@@ -52,7 +55,7 @@ var Overview = React.createClass({
         </div>);      
     }
     return (
-      <div className="outcome outcome-{ this.props.id } shadow">
+      <div className={ className }>
         <h3>
           <div className="name">{ getOutcomeName(this.props.id, this.props.outcomeCount) }</div>
           <div className="price">{ priceToPercentage(this.props.price) }%</div>

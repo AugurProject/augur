@@ -23,11 +23,14 @@ var Router = React.createClass({
     var marketState = flux.store('market').getState();
     var account = flux.store('network').getAccount();
     var assetState = flux.store('asset').getState();
+    var votePeriod = flux.store('branch').getState().currentVotePeriod;
 
     var marketId = new BigNumber(this.props.params.marketId, 16);
+    var market = marketState.markets[marketId];
+    if (market) market.matured = votePeriod && votePeriod.toNumber() > market.tradingPeriod.toNumber() ? true : false;
 
     return {
-      market: marketState.markets[marketId],
+      market: market,
       cashBalance: assetState.cashBalance,
       account: account
     }
@@ -40,7 +43,11 @@ var Router = React.createClass({
 
     var subheading = '';
     if (this.state.market.endDate) {
-      subheading = 'Resolves after ' + this.state.market.endDate.format("MMMM Do, YYYY");
+      if (this.state.market.matured) {
+        subheading = 'Matured on ' + this.state.market.endDate.format("MMMM Do, YYYY");
+      } else {
+        subheading = 'Resolves after ' + this.state.market.endDate.format("MMMM Do, YYYY");
+      }
     }
 
     return (
@@ -48,7 +55,9 @@ var Router = React.createClass({
         <h3>{ this.state.market.description }</h3>
         <div className="subheading">{ subheading }</div>
         <RouteHandler {...this.props} {...this.state} />
-        <div className='price-history'>
+        <div className='market-details col-sm-4'>
+        </div>
+        <div className='price-history col-sm-8'>
           <h4>Price history soon...</h4>
         </div>
         <Comments comments={ this.props.market.comments } account={ this.props.account } />
@@ -65,11 +74,12 @@ var Overview = React.createClass({
     if (_.isUndefined(this.props.market)) return (<div />);
 
     var outcomeCount = this.props.market.outcomes.length;
+    var matured = this.props.market.matured;
     var params = this.props.params;
     var outcomes = _.map(this.props.market.outcomes, function (outcome) {
       return (
         <div className="col-sm-6">
-          <Outcomes.Overview key={ outcome.id } {...outcome} outcomeCount={outcomeCount} params={params}></Outcomes.Overview>
+          <Outcomes.Overview key={ outcome.id } {...outcome} matured={matured} outcomeCount={outcomeCount} params={params}></Outcomes.Overview>
         </div>
       );
     });

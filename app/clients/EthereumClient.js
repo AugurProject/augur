@@ -428,6 +428,14 @@ EthereumClient.prototype.addMarket = function(params, onSuccess) {
     });
 };
 
+EthereumClient.prototype.closeMarket = function(marketId, branchId) {
+
+  Augur.closeMarket(branchId, marketId, function(tx) {
+    utilities.log('tx: '+ tx);
+  });
+};
+
+
 var hexNumber = function (bignum) {
   var hex = bignum.toString(16);
   if (hex[0] === '-') {

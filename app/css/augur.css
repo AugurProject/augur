@@ -483,6 +483,9 @@ nav .navbar-right li div {
     float: right;
     width: 63px;
 }
+#market .outcome.matured .trade a.btn {
+    display: none;
+}
 #market .outcome .trade .shares-held.none {
     padding: 10px 10px;
     display: inline-block;
