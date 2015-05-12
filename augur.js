@@ -2036,7 +2036,7 @@ var Augur = (function (augur) {
         augur.tx.getNonce.params = id;
         return augur.invoke(augur.tx.getNonce, onSent);
     };
-    augur.buyShares = function (branch, market, outcome, amount, nonce, onSent) {
+    augur.buyShares = function (branch, market, outcome, amount, nonce, onSent, onSuccess, onFailed) {
         if (branch.constructor === Object && branch.branchId) {
             market = branch.marketId; // sha256
             outcome = branch.outcome; // integer (1 or 2 for binary)
@@ -2044,26 +2044,53 @@ var Augur = (function (augur) {
             if (branch.nonce) {
                 nonce = branch.nonce; // integer (optional)
             }
-            onSent = branch.onSent;
+            if (branch.onSent) onSent = branch.onSent;
+            if (branch.onSuccess) onSuccess = branch.onSuccess;
+            if (branch.onFailed) onFailed = branch.onFailed;
             branch = branch.branchId; // sha256
         }
-        if (!nonce) {
-            if (onSent) {
-                augur.getNonce(market, function (nonce) {
-                    augur.tx.buyShares.params = [branch, market, outcome, augur.fix(amount), nonce];
-                    augur.invoke(augur.tx.buyShares, onSent);
-                });
-            } else {
-                nonce = augur.getNonce(market);
+        if (onSent) {
+            augur.getNonce(market, function (nonce) {
                 augur.tx.buyShares.params = [branch, market, outcome, augur.fix(amount), nonce];
-                return augur.invoke(augur.tx.buyShares);
-            }
+                augur.tx.buyShares.send = false;
+                augur.invoke(augur.tx.buyShares, function (res) {
+                    if (augur.ERRORS.buyShares[res]) {
+                        var contract_error = "error " + augur.ERRORS.buyShares[res].code.toString() + ": " + augur.ERRORS.buyShares[res].message;
+                        if (onFailed) onFailed(contract_error);
+                    }
+                    if (res && parseInt(res) > 0) {
+                        augur.tx.buyShares.send = true;
+                        augur.invoke(augur.tx.buyShares, function (txhash) {
+                            if (txhash) {
+                                if (onSent) onSent({ txHash: txhash });
+                                if (onSuccess) {
+                                    var pings = 0;
+                                    var pingTx = function () {
+                                        augur.getTx(txhash, function (tx) {
+                                            pings++;
+                                            if (tx && tx.blockHash && parseInt(tx.blockHash !== 0)) {
+                                                tx.txHash = tx.hash;
+                                                delete tx.hash;
+                                                onSuccess(tx);
+                                            } else {
+                                                if (pings < augur.PINGMAX) setTimeout(pingTx, 12000);
+                                            }
+                                        });
+                                    };
+                                    pingTx();
+                                }
+                            }
+                        });
+                    }
+                });
+            });
         } else {
+            nonce = augur.getNonce(market);
             augur.tx.buyShares.params = [branch, market, outcome, augur.fix(amount), nonce];
-            return augur.invoke(augur.tx.buyShares, onSent);
+            return augur.invoke(augur.tx.buyShares);
         }
     };
-    augur.sellShares = function (branch, market, outcome, amount, nonce, onSent) {
+    augur.sellShares = function (branch, market, outcome, amount, nonce, onSent, onSuccess, onFailed) {
         if (branch.constructor === Object && branch.branchId) {
             market = branch.marketId; // sha256
             outcome = branch.outcome; // integer (1 or 2 for binary)
@@ -2071,23 +2098,50 @@ var Augur = (function (augur) {
             if (branch.nonce) {
                 nonce = branch.nonce; // integer (optional)
             }
-            onSent = branch.onSent;
+            if (branch.onSent) onSent = branch.onSent;
+            if (branch.onSuccess) onSuccess = branch.onSuccess;
+            if (branch.onFailed) onFailed = branch.onFailed;
             branch = branch.branchId; // sha256
         }
-        if (!nonce) {
-            if (onSent) {
-                augur.getNonce(market, function (nonce) {
-                    augur.tx.sellShares.params = [branch, market, outcome, augur.fix(amount), nonce];
-                    augur.invoke(augur.tx.sellShares, onSent);
-                });
-            } else {
-                nonce = augur.getNonce(market);
+        if (onSent) {
+            augur.getNonce(market, function (nonce) {
                 augur.tx.sellShares.params = [branch, market, outcome, augur.fix(amount), nonce];
-                return augur.invoke(augur.tx.sellShares);
-            }
+                augur.tx.sellShares.send = false;
+                augur.invoke(augur.tx.sellShares, function (res) {
+                    if (augur.ERRORS.sellShares[res]) {
+                        var contract_error = "error " + augur.ERRORS.sellShares[res].code.toString() + ": " + augur.ERRORS.sellShares[res].message;
+                        if (onFailed) onFailed(contract_error);
+                    }
+                    if (res && parseInt(res) > 0) {
+                        augur.tx.sellShares.send = true;
+                        augur.invoke(augur.tx.sellShares, function (txhash) {
+                            if (txhash) {
+                                if (onSent) onSent({ txHash: txhash });
+                                if (onSuccess) {
+                                    var pings = 0;
+                                    var pingTx = function () {
+                                        augur.getTx(txhash, function (tx) {
+                                            pings++;
+                                            if (tx && tx.blockHash && parseInt(tx.blockHash !== 0)) {
+                                                tx.txHash = tx.hash;
+                                                delete tx.hash;
+                                                onSuccess(tx);
+                                            } else {
+                                                if (pings < augur.PINGMAX) setTimeout(pingTx, 12000);
+                                            }
+                                        });
+                                    };
+                                    pingTx();
+                                }
+                            }
+                        });
+                    }
+                });
+            });
         } else {
+            nonce = augur.getNonce(market);
             augur.tx.sellShares.params = [branch, market, outcome, augur.fix(amount), nonce];
-            return augur.invoke(augur.tx.sellShares, onSent);
+            return augur.invoke(augur.tx.sellShares);
         }
     };
 
@@ -2148,14 +2202,13 @@ var Augur = (function (augur) {
                     augur.tx.createEvent.send = true;
                     augur.invoke(augur.tx.createEvent, function (txhash) {
                         if (txhash) {
-                            event.txhash = txhash;
+                            event.txHash = txhash;
                             if (onSent) onSent(event);
                             if (onSuccess) {
                                 var pings = 0;
                                 var pingTx = function () {
                                     augur.getEventInfo(eventID, function (eventInfo) {
                                         pings++;
-                                        log(pings);
                                         if (eventInfo && eventInfo !== "0x" && eventInfo.branch && eventInfo.branch !== 0 && eventInfo.branch !== "0") {
                                             event.branch = eventInfo.branch;
                                             event.expirationDate = eventInfo.expirationDate;
@@ -2219,7 +2272,7 @@ var Augur = (function (augur) {
                     augur.tx.createMarket.send = true;
                     augur.invoke(augur.tx.createMarket, function (txhash) {
                         if (txhash) {
-                            market.txhash = txhash;
+                            market.txHash = txhash;
                             if (onSent) onSent(market);
                             if (onSuccess) {
                                 var pings = 0;
