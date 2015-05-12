@@ -378,6 +378,7 @@ a.market-pane:hover {
     font-weight: 100;
     font-style: normal;
     font-size: 16px;
+    margin-top: 3px;
 }
 .market-pane.pending .summary {
     background-color: #E28B17;
@@ -410,13 +411,21 @@ a.market-pane:hover {
 #branch h4 {
     margin: 10px 0px 20px 0px;
 }
-#branch nav {
+#branch .markets-nav {
+    padding: 10px 0px 0px 0px;
+    margin: 10px 0px 10px 0px;
+    border-top: 1px solid #D2D2D2;
+}
+#branch .markets-nav .showing {
+    font-size: 16px;
+}
+#branch .markets-nav nav {
     margin-top: 0px;
     float: right;
     font-family: 'Source Sans Pro', sans-serif;
     font-size: 12px;
 }
-#branch nav ul {
+#branch .markets-nav nav ul {
     margin: 0;
 }
 
