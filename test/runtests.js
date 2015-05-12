@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * augur.js unit tests
  * @author Jack Peterson (jack@tinybike.net)
@@ -12,29 +13,6 @@
     var Augur = require("./../augur");
     var constants = require("./constants");
 
-    function report(tx, showsig) {
-        var params, output, send, returns;
-        output = "";
-        if (tx) {
-            returns = (tx.returns) ? tx.returns : "hex";
-            if (showsig && showsig === "signature") {
-                params = tx.signature || "";
-            } else {
-                if (tx.params && tx.params.constructor === Array) {
-                    params = JSON.stringify(tx.params);
-                } else {
-                    params = (tx.params) ? tx.params.toString() : "";
-                }
-            }
-            if (params && params.length > 25) params = params.slice(0,25) + "...";
-            send = (tx.send) ? "sendTransaction" : "call";
-            output += send + " " + tx.to + ": " + tx.method + "(" + params + ")";
-            if (!showsig || showsig !== "signature") {
-                output += " -> " + returns;
-            }
-            return output;
-        }
-    }
     function array_equal(a, b) {
         if (a === b) return true;
         if (a === null || b === null) return false;
@@ -65,22 +43,14 @@
     }
     function runtest(tx, expected, apply) {
         if (tx && expected) {
-            if (Augur.async) {
-                Augur.invoke(tx, function (res) {
-                    check_results(res, expected, apply);
-                });
-            } else {
-                var res = Augur.invoke(tx);
-                check_results(res, expected, apply);
-            }
-            return report(tx);
+            var res = Augur.invoke(tx);
+            check_results(res, expected, apply);
         }
     }
     function abi_test(tx, expected, apply) {
         if (tx && expected) {
             var res = Augur.abi_data(tx);
             check_results(res, expected, apply);
-            return report(tx, "signature");
         }
     }
     function test(itx, expected, apply) {
@@ -91,25 +61,6 @@
             runtest(tx, expected, apply);
         } else {
             runtest(tx, expected, apply);
-        }
-    }
-    function rpctest(method, command, expected, params) {
-        var res;
-        if (Augur.async) {
-            Augur[method](command, params, function (res) {
-                if (expected.constructor === Function) {
-                    assert(expected(res));
-                } else {
-                    assert.equal(expected, res);
-                }
-            });
-        } else {
-            res = Augur[method](command, params);
-            if (expected.constructor === Function) {
-                assert(expected(res));
-            } else {
-                assert.equal(expected, res);
-            }
         }
     }
     function sha512(s) {
@@ -141,64 +92,6 @@
 
     var print = console.log;
 
-    // var TestWhisper = function () {
-    //     var comment_text = Math.random().toString(36).substring(4);
-    //     var dbname = "augur";
-    //     var market_id = "0x00000003";
-    //     Augur.newIdentity(function (whisper_id) {
-    //         if (whisper_id) {
-    //             var post_params = {
-    //                 from: whisper_id,
-    //                 topics: [ market_id ],
-    //                 priority: '0x64',
-    //                 ttl: "0x500" // time-to-live (until expiration) in seconds
-    //             };
-    //             Augur.commentFilter(market_id, function (filter) {
-    //                 post_params.payload = Augur.prefix_hex(Augur.encode_hex(comment_text));
-    //                 Augur.post(post_params, function (post_ok) {
-    //                     if (post_ok) {
-    //                         Augur.getFilterChanges(filter, function (message) {
-    //                             if (message) {
-    //                                 var updated_comments = JSON.stringify([{
-    //                                     whisperId: message[0].from, // whisper ID
-    //                                     from: Augur.coinbase, // ethereum account
-    //                                     comment: Augur.decode_hex(message[0].payload),
-    //                                     time: message[0].sent
-    //                                 }]);
-    //                                 // get existing comment(s) stored locally
-    //                                 Augur.getString(market_id, function (comments) {
-    //                                     if (comments) {
-    //                                         updated_comments = updated_comments.slice(0,-1) + "," + comments.slice(1);
-    //                                     }
-    //                                     Augur.putString(market_id, updated_comments, function (put_ok) {
-    //                                         if (put_ok && updated_comments) {
-    //                                             print(JSON.parse(updated_comments));
-    //                                         }
-    //                                     });
-    //                                 });
-    //                             }
-    //                         });
-    //                     }
-    //                 });
-    //             });
-    //         }
-    //     });
-    // };
-
-    // minimal example that crashes geth (?)
-    // var print = console.log;
-    // Augur.shh("newFilter", { topics: [ "0xb13d98f933cbd602a3d9d4626260077678ab210d1e63b3108b231c1758ff9971" ] }, print);
-    // Augur.shh("uninstallFilter", "0x0", print);
-
-    // describe("Comments", function () {
-    //     var comment_text = Math.random().toString(36).substring(4);
-    //     var market_id = "-0x18b9aec6e8886ecec9ff0fd5c149800468edf8e9533efd32ab2efcc4a9388533";    
-    //     Augur.comment(market_id, comment_text, function (comments) {
-    //         // assert(comments);
-    //         // print(comments.length.toString() + " comments found");
-    //         // print(comments);
-    //     });
-    // });
     describe("Ethereum JSON-RPC", function () {
         describe("coinbase", function () {
             it("should be 42 characters long", function (done) {
@@ -251,7 +144,6 @@
         });
         describe("shh_version", function () {
             it("should be version 2", function (done) {
-                rpctest("shh", "version", "2");
                 assert.equal(Augur.shh("version"), "2");
                 done();
             });
@@ -270,21 +162,21 @@
         });
         describe("balance", function () {
             it("should be a number greater than or equal to 0", function (done) {
-                rpctest("balance", "", gteq0);
-                rpctest("getBalance", "", gteq0);
+                assert(parseInt(Augur.balance()) >= 0);
+                assert.equal(Augur.balance(), Augur.getBalance());
                 done();
             });
         });
         describe("txCount", function () {
             it("should be a number greater than or equal to 0", function (done) {
-                rpctest("txCount", "", gteq0);
-                rpctest("getTransactionCount", "", gteq0);
+                assert(parseInt(Augur.txCount()) >= 0);
+                assert.equal(Augur.txCount(), Augur.getTransactionCount());
                 done();
             });
         });
         describe("peerCount", function () {
             it("should be a number greater than or equal to 0", function (done) {
-                rpctest("peerCount", "", gteq0);
+                assert(parseInt(Augur.peerCount()) >= 0);
                 done();
             });
         });
@@ -1436,36 +1328,6 @@
                     });
                 });
             });
-            // describe("buyShares(" + branch_id + ", " + market_id + ", " + outcome + ", " + amount + ", null) [call] ", function () {
-            //     var test = function (r) {
-            //         assert(Augur.bignum(r).gt(0));
-            //     };
-            //     it("sync", function () {
-            //         Augur.tx.buyShares.send = false;
-            //         test(Augur.buyShares({
-            //             branchId: branch_id,
-            //             marketId: market_id,
-            //             outcome: outcome,
-            //             amount: amount,
-            //             nonce: null
-            //         }));
-            //     });
-            // });
-            // describe("sellShares(" + branch_id + ", " + market_id + ", " + outcome + ", " + amount + ", null) [call] ", function () {
-            //     var test = function (r) {
-            //         assert(Augur.bignum(r).gt(0));
-            //     };
-            //     it("sync", function () {
-            //         Augur.tx.sellShares.send = false;
-            //         test(Augur.sellShares({
-            //             branchId: branch_id,
-            //             marketId: market_id,
-            //             outcome: outcome,
-            //             amount: amount,
-            //             nonce: null
-            //         }));
-            //     });
-            // });
             describe("buyShares(" + branch_id + ", " + market_id + ", " + outcome + ", " + amount + ", null)", function () {
                 it("async", function (done) {
                     this.timeout(30000);
@@ -1480,6 +1342,7 @@
                         onSent: function (r) {
                             print("sent:");
                             print(r);
+                            done();
                         },
                         onSuccess: function (r) {
                             print("success:");
@@ -1508,6 +1371,7 @@
                         onSent: function (r) {
                             print("sent:");
                             print(r);
+                            done();
                         },
                         onSuccess: function (r) {
                             print("success:");

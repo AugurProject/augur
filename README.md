@@ -199,12 +199,7 @@ You can send batched RPC commands using the `batch` method:
 ...         params: 3
 ...     }];
 > Augur.batch(txlist)
-[ { id: 2,
-    jsonrpc: '2.0',
-    result: '0x000000000000000000000000000000000000000000000000000000000000000a' },
-  { id: 3,
-    jsonrpc: '2.0',
-    result: '0x0000000000000000000000000000000000000000000000000000000000000006' } ]
+['10', '6']
 ```
 I'm going to add more user-friendly wrappers soon, which will allow you to batch commands without setting up transaction objects yourself.
 

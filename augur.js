@@ -69,6 +69,9 @@ var Augur = (function (augur) {
     // max number of tx verification attempts
     augur.PINGMAX = 12;
 
+    // comment polling interval (in milliseconds)
+    augur.COMMENT_POLL_INTERVAL = 10000;
+
     // constants
     augur.MAXBITS = (new BigNumber(2)).toPower(256);
     augur.MAXNUM = (new BigNumber(2)).toPower(255);
@@ -1667,37 +1670,8 @@ var Augur = (function (augur) {
                         if (description) {
                             info.description = description;
                         }
+                        info.filter = augur.initComments(market);
                         onSent(info);
-
-                        // make sure there's only one filter per market
-                        // if (augur.filters[market] && augur.filters[market].filterId) {
-                        //     log("existing filter found");
-                        //     augur.pollFilter(market, augur.filters[market].filterId);
-                        // } else {
-                        
-                        //     // create filter for this market
-                        //     augur.commentFilter(market, function (filter) {
-                        //         if (filter && filter !== "0x") {
-                        //             log("creating new filter");
-                        //             augur.filters[market] = {
-                        //                 filterId: filter,
-                        //                 polling: false
-                        //             };
-                        //             augur.filters[market].polling = true;
-                        
-                        //             // get and send all comments in local leveldb
-                        //             augur.getString(market, function (comments) {
-                        //                 if (comments) {
-                        //                     info.comments = comments;
-                        //                     augur.comment(market, comments, function (ok) {
-                        //                         if (ok) onSent(info);
-                        //                     });
-                        //                 }
-                        //             });
-                        //             augur.pollFilter(market, filter);
-                        //         }
-                        //     });
-                        // }
                     });
                 }
             });
@@ -1716,6 +1690,7 @@ var Augur = (function (augur) {
                 if (description) {
                     info.description = description;
                 }
+                info.filter = augur.initComments(market);
                 return info;
             }
         }
@@ -2371,85 +2346,139 @@ var Augur = (function (augur) {
      *  - 10 second ethereum network polling interval
      */
     augur.pollFilter = function (market_id, filter_id) {
+        var incoming_comments, stored_comments, num_messages, incoming_parsed, stored_parsed;
         augur.getFilterChanges(filter_id, function (message) {
-            log(message);
-            if (message && message.length && message[0].payload) {
-                var incoming_comments = augur.decode_hex(message[0].payload);
-                if (incoming_comments) {
-                    var updated_comments = JSON.stringify([{
-                        whisperId: message[0].from, // whisper ID
-                        from: augur.coinbase, // ethereum account
-                        comment: incoming_comments,
-                        time: message[0].sent
-                    }]);
-                    incoming_comments = JSON.parse(incoming_comments);
-        
-                    // get existing comment(s) stored locally
-                    augur.getString(market_id, function (stored_comments) {
+            if (message) {
+                num_messages = message.length;
+                if (num_messages) {
+                    for (var i = 0; i < num_messages; ++i) {
+                        log("\n\nPOLLFILTER: reading incoming message " + i.toString());
+                        incoming_comments = augur.decode_hex(message[i].payload);
+                        if (incoming_comments) {
+                            incoming_parsed = JSON.parse(incoming_comments);
+                            log(incoming_parsed);
+                
+                            // get existing comment(s) stored locally
+                            stored_comments = augur.getString(market_id);
 
-                        // check if incoming comments length > stored
-                        if (stored_comments && stored_comments.length) {
-                            stored_comments = JSON.parse(stored_comments);
-                            if (incoming_comments.length > stored_comments.length ) {
-                                log("[" + filter_id + "] overwriting comments for market: " + market_id);
-                                augur.putString(market_id, incoming_comments, function (put_ok) {
-                                    if (put_ok) {
-                                        log("[" + filter_id + "] updated comments for market: " + market_id);
+                            // check if incoming comments length > stored
+                            if (stored_comments && stored_comments.length) {
+                                stored_parsed = JSON.parse(stored_comments);
+                                if (incoming_parsed.length > stored_parsed.length ) {
+                                    log(incoming_parsed.length.toString() + " incoming comments");
+                                    log("[" + filter_id + "] overwriting comments for market: " + market_id);
+                                    if (augur.putString(market_id, incoming_comments)) {
+                                        log("[" + filter_id + "] overwrote comments for market: " + market_id);
                                     }
-                                });
-                                log(incoming_comments.length.toString() + " comments found");
-                                log(incoming_comments);
+                                } else {
+                                    log(stored_parsed.length.toString() + " stored comments");
+                                    log("[" + filter_id + "] retaining comments for market: " + market_id);
+                                }
                             } else {
-                                log(stored_comments.length.toString() + " comments found");
-                                log("[" + filter_id + "] retaining comments for market: " + market_id);
-                                log(stored_comments);
+                                log(incoming_parsed.length.toString() + " incoming comments");
+                                log("[" + filter_id + "] inserting first comments for market: " + market_id);
+                                if (augur.putString(market_id, incoming_comments)) {
+                                    log("[" + filter_id + "] overwrote comments for market: " + market_id);
+                                }
                             }
                         }
-
-                        augur.putString(market_id, updated_comments, function (put_ok) {
-                            if (put_ok) {
-                                log("[" + filter_id + "] updated comments for market: " + market_id);
-                            }
-                        });
-                    });
+                    }
                 }
             }
-            setTimeout(function () { augur.pollFilter(market_id, filter_id); }, 10000);
+            // wait a few seconds, then poll the filter for new messages
+            setTimeout(function () {
+                augur.pollFilter(market_id, filter_id);
+            }, augur.COMMENT_POLL_INTERVAL);
         });
     };
-    augur.comment = function (market_id, comment_text, f) {
+    augur.initComments = function (market) {
+        var filter, comments, whisper_id;
 
-        // get existing comment(s) stored locally
-        // (note: build with DFATDB=1 if DBUNDLE=minimal)
-        augur.newIdentity(function (whisper_id) {
-            if (whisper_id) {
-                var updated = JSON.stringify([{
-                    whisperId: whisper_id, // whisper ID
-                    from: augur.coinbase, // ethereum account
-                    comment: comment_text,
-                    time: Math.floor((new Date()).getTime() / 1000)
-                }]);
-                augur.getString(market_id, function (comments) {
-                    if (comments) {
-                        updated = updated.slice(0,-1) + "," + comments.slice(1);
+        // make sure there's only one filter per market
+        if (augur.filters[market] && augur.filters[market].filterId) {
+            log("existing filter found");
+            augur.pollFilter(market, augur.filters[market].filterId);
+        } else {
+
+            // create filter for this market
+            filter = augur.commentFilter(market);
+            if (filter && filter !== "0x") {
+                log("creating new filter");
+                augur.filters[market] = {
+                    filterId: filter,
+                    polling: false
+                };
+                augur.filters[market].polling = true;
+    
+                // broadcast all comments in local leveldb
+                comments = augur.getString(market);
+                if (comments) {
+                    whisper_id = augur.newIdentity();
+                    if (whisper_id) {
+                        var transmission = {
+                            from: whisper_id,
+                            topics: [market],
+                            payload: augur.prefix_hex(augur.encode_hex(comments)),
+                            priority: "0x64",
+                            ttl: "0x500" // time-to-live (until expiration) in seconds
+                        };
+                        if (augur.post(transmission)) {
+                            log("comments sent successfully");
+                        }
                     }
-                    augur.putString(market_id, updated, function (put_ok) {
-                        if (put_ok) log("comment added to leveldb");
-                    });
-                    var transmission = {
-                        from: whisper_id,
-                        topics: [market_id],
-                        payload: augur.prefix_hex(augur.encode_hex(updated)),
-                        priority: "0x64",
-                        ttl: "0x500" // time-to-live (until expiration) in seconds
-                    };
-                    augur.post(transmission, function (post_ok) {
-                        if (post_ok) log("comment sent successfully");
-                    });
-                    if (f) f(JSON.parse(augur.decode_hex(transmission.payload)));
-                });
+                }
+                augur.pollFilter(market, filter);
+                return filter;
             }
-        });
+        }
+    };
+    augur.resetComments = function (market) {
+        return augur.putString(market, "");
+    };
+    augur.getMarketComments = function (market) {
+        var comments = augur.getString(market);
+        if (comments) {
+            return JSON.parse(comments);
+        } else {
+            log("no commments found");
+        }
+    };
+    augur.addMarketComment = function (pkg) {
+        var market, comment_text, author, updated, transmission, whisper_id, comments;
+        market = pkg.marketId;
+        comment_text = pkg.message;
+        author = pkg.author || augur.coinbase;
+
+        whisper_id = augur.newIdentity();
+        if (whisper_id) {
+            updated = JSON.stringify([{
+                whisperId: whisper_id,
+                from: author, // ethereum account
+                comment: comment_text,
+                time: Math.floor((new Date()).getTime() / 1000)
+            }]);
+
+            // get existing comment(s) stored locally
+            // (note: build with DFATDB=1 if DBUNDLE=minimal)
+            comments = augur.getString(market);
+            if (comments) {
+                updated = updated.slice(0,-1) + "," + comments.slice(1);
+            }
+            if (augur.putString(market, updated)) {
+                log("comment added to leveldb");
+            }
+            transmission = {
+                from: whisper_id,
+                topics: [market],
+                payload: augur.prefix_hex(augur.encode_hex(updated)),
+                priority: "0x64",
+                ttl: "0x600" // 10 minutes
+            };
+            if (augur.post(transmission)) {
+                log("comment sent successfully");
+            }
+            return JSON.parse(augur.decode_hex(transmission.payload));
+        }
     };
 
     return augur;
