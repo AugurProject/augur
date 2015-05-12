@@ -58,6 +58,7 @@ var AugurApp = require("./components/AugurApp");
 var Branch = require('./components/Branch');
 var Market = require('./components/Market');
 var AccountDetails = require('./components/AccountDetails');
+var Ballots = require('./components/Ballots');
 var Outcomes = require('./components/Outcomes');
 
 var flux = new Fluxxor.Flux(stores, actions);
@@ -78,6 +79,7 @@ var routes = (
       <Route name="sell-outcome" path="outcomes/:outcomeId/sell" handler={ Outcomes.Sell } flux={ flux } title="Sell Outcome" />
     </Route>
     <Route name="account" path="/account" handler={ AccountDetails } flux={ flux } title="Account Overview" />
+    <Route name="ballots" path="/ballots" handler={ Ballots } flux={ flux } title="Ballots" />
   </Route>
 );
 

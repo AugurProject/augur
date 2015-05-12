@@ -102,7 +102,7 @@ var AugurApp = React.createClass({
                       <ul className="dropdown-menu" role="menu">
                           <li><Link to="home">Markets</Link></li>
                           <li><Link to="account">Account</Link></li>
-                          <li><a className="disabled">Ballots</a></li>
+                          <li><Link to="ballots">Ballots</Link></li>
                           <li><a className="disabled">Contacts</a></li>
                       </ul>
                   </li>
@@ -116,7 +116,7 @@ var AugurApp = React.createClass({
               <div className="side-nav">
                   <p><Link to="home">Markets</Link><i>{ _.keys(this.state.market.markets).length }</i></p>
                   <p><Link to="account">Account</Link></p>
-                  <p><a className="disabled">Ballots</a></p>
+                  <p><Link to="ballots">Ballots</Link></p>
                   <p><a className="disabled">Contacts</a></p>
               </div>
 

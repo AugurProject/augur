@@ -11,7 +11,6 @@ var Markets = React.createClass({
 
   render: function() {
 
-    //console.log(this.props.votePeriod);
     var marketList = _.map(_.sortBy(this.props.markets, 'pending'), function (market) {
       return (
         <div key={ market.id } className={ this.props.classNameWrapper }>

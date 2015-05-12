@@ -195,11 +195,32 @@ EthereumClient.prototype.getBranches = function () {
 
 EthereumClient.prototype.getCurrentVotePeriod = function(branchId) {
 
+  // TODO: have augur.js batch these
   var currentVotePeriod =  Augur.getVotePeriod(branchId);
-  //console.log(currentVotePeriod.toNumber());
-  //console.log(Augur.getPeriodLength(branchId).toNumber());
+  var currentVotePeriodLength = Augur.getPeriodLength(branchId);
 
-  return currentVotePeriod;
+  return [currentVotePeriod, currentVotePeriodLength];
+};
+
+EthereumClient.prototype.getBallotEvents = function(votePeriod, branchId) {
+
+  // TODO: this should eventually return all events that need to be voted on by the user
+  branchId = branchId || this.defaultBranchId;
+  
+  var events = [];
+  _.each(_.range(votePeriod), function(i) {   // getting all past period events as well for now
+    events.concat(Augur.getEvents(branchId, i));
+  });
+
+  return events;
+};
+
+EthereumClient.prototype.checkQuorum = function(branchId) {
+
+  //var currentQuorum = Augur.checkQuorum(branchId);
+  //console.log(currentQuorum.toNumber());
+
+  //return currentQuorum;
 };
 
 /**
@@ -275,7 +296,7 @@ EthereumClient.prototype.getMarketsAsync = function (branchId) {
 
 EthereumClient.prototype.getMarkets = function (branchId) {
 
-  branchId = branchId 
+  branchId = branchId || this.defaultBranchId;
   var validMarkets = _.filter(Augur.getMarkets(branchId), function (marketId) {
     return !_.contains(blacklist.markets, marketId.toString(16));
   });
@@ -420,7 +441,7 @@ EthereumClient.prototype.addMarket = function(params, onSuccess) {
       },
 
       onSuccess: function (newMarket) {
-        utilities.debug("tx: " + newMarket.txhash);
+        utilities.debug("txHash: " + newMarket.txhash);
         utilities.log('new market successfully added');
         if (onSuccess) onSuccess(newMarket);
       },
@@ -434,8 +455,8 @@ EthereumClient.prototype.addMarket = function(params, onSuccess) {
 
 EthereumClient.prototype.closeMarket = function(marketId, branchId) {
 
-  Augur.closeMarket(branchId, marketId, function(tx) {
-    utilities.log('tx: '+ tx);
+  Augur.closeMarket(branchId, marketId, function(txHash) {
+    utilities.log('txHash: '+ txHash);
   });
 };
 

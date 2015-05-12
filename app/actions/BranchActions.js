@@ -32,8 +32,13 @@ var BranchActions = {
 
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var currentVotePeriod = ethereumClient.getCurrentVotePeriod(id);
-    
-    this.dispatch(constants.branch.UPDATE_CURRENT_BRANCH, {currentBranch: id, currentVotePeriod: currentVotePeriod});
+    //var currentQuorum = ethereumClient.checkQuorum(id);
+
+    this.dispatch(constants.branch.UPDATE_CURRENT_BRANCH, {
+      currentBranch: id, 
+      currentVotePeriod: currentVotePeriod[0], 
+      currentVotePeriodLength: currentVotePeriod[1]
+    });
   }
 };
 
