@@ -15,6 +15,11 @@ var MarketActions = {
     this.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {markets: markets});
   },
 
+  updateMarket: function(market) {
+
+    this.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
+  },
+
   addMarket: function(market, pendingId) {
 
   	// if no market id set, add as pending and return temp id

@@ -9,6 +9,7 @@ var MarketStore = Fluxxor.createStore({
   initialize: function () {
     this.bindActions(
       constants.market.LOAD_MARKETS_SUCCESS, this.handleLoadMarketsSuccess,
+      constants.market.UPDATE_MARKET_SUCCESS, this.handleUpdateMarketSuccess,
       constants.market.ADD_PENDING_MARKET_SUCCESS, this.handleAddPendingMarketSuccess,
       constants.market.ADD_MARKET_SUCCESS, this.handleAddMarketSuccess
     );
@@ -25,6 +26,11 @@ var MarketStore = Fluxxor.createStore({
 
   handleLoadMarketsSuccess: function (payload) {
     state.markets = payload.markets;
+    this.emit(constants.CHANGE_EVENT);
+  },
+
+  handleUpdateMarketSuccess: function (payload) {
+    state.market[payload.market.id] = payload.market;
     this.emit(constants.CHANGE_EVENT);
   },
 
