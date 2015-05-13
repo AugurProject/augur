@@ -1466,7 +1466,7 @@ var Augur = (function (augur) {
         // vpStart: integer
         // vpEnd: integer
         var vp_range, txlist;
-        augur.tx.getEvents.params[0] = branch;
+        augur.tx.getEvents.params = [branch, vpStart];
         vp_range = vpEnd - vpStart + 1; // inclusive range
         txlist = new Array(vp_range);
         for (var i = 0; i < vp_range; ++i) {
