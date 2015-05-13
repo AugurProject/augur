@@ -9,7 +9,7 @@ var EventActions = {
     var configState = this.flux.store('config').getState();
     var networkState = this.flux.store('network').getState();
 
-    var branchId = branchState.currentBranch;
+    var branchId = branchState.currentBranch.id;
     var events = configState.ethereumClient.getEvents(branchId);
 
     this.dispatch(constants.event.LOAD_EVENTS_SUCCESS, {events: events});

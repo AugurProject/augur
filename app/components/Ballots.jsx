@@ -23,17 +23,21 @@ var Ballots = React.createClass({
       account: account,
       asset: flux.store('asset').getState(),
       ethereumClient: flux.store('config').getEthereumClient(),
-      votePeriod: flux.store('branch').getState().currentVotePeriod,
-      votePeriodLength: flux.store('branch').getState().currentVotePeriodLength
+      branchState: flux.store('branch').getState()
     }
   },
 
   render: function () {
 
-    var periodEndDate = '-';
-    if (this.state.votePeriod) {
-      var periodEndMoment = utilities.blockToDate(this.state.votePeriod.times(this.state.votePeriodLength).toNumber());
-      periodEndDate = periodEndMoment.format('MMM Do, YYYY');
+    var currentBranch = this.state.branchState.currentBranch;
+
+    var periodDateRange = '';
+    if (currentBranch.currentPeriod) {
+      var endBlock = currentBranch.currentPeriod * currentBranch.periodLength;
+      var periodEndMoment = utilities.blockToDate(endBlock);
+      var startBlock = (currentBranch.currentPeriod - 1) * currentBranch.periodLength;
+      var periodStartMoment = utilities.blockToDate(startBlock);
+      periodDateRange = periodStartMoment.format('MMM Do, HH:MM') + ' - ' + periodEndMoment.format('MMM Do, HH:MM'); 
     }
 
     var ballotList = _.map(_.sortBy(this.props.events, 'expirationBlock'), function (event) {
@@ -48,8 +52,8 @@ var Ballots = React.createClass({
       <div id="ballots">
         <h3>Ballots</h3>
         <div className='subheading clearfix'>
-          Period { this.state.votePeriod }
-          <span className='pull-right'>Ending { periodEndDate }</span>
+          Period { currentBranch.currentPeriod } 
+          <span className='pull-right'>{ periodDateRange }</span>
         </div>
         <div className='row'>
           { ballotList }

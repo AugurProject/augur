@@ -8,7 +8,7 @@ var MarketActions = {
     var configState = this.flux.store('config').getState();
     var account = this.flux.store('network').getAccount();
 
-    var branchId = branchState.currentBranch;
+    var branchId = branchState.currentBranch.id;
     var ethereumClient = configState.ethereumClient;
     var markets = ethereumClient.getMarkets(branchId);
 

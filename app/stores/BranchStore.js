@@ -3,10 +3,7 @@ var constants = require('../libs/constants');
 
 var state = {
   branches: {},
-  currentBranch: 1010101,
-  currentVotePeriod: null,
-  currentVotePeriodLength: null,
-  currentQuorum: false,
+  currentBranch: { id:1010101 },
   ballotEvents: {}
 };
 

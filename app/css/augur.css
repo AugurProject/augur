@@ -738,3 +738,13 @@ a.market-pane:hover {
   font-size: 20px;
   padding: 20px 10px;
 }
+
+span.debug {
+    font-size: 12px;
+    display: inline-block;
+    padding: 2px 8px;
+    background-color: rgb(239, 239, 79);
+    border: 1px solid rgb(182, 182, 59);
+    color: #333;
+    margin: 0px 8px;
+}

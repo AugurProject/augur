@@ -193,25 +193,25 @@ EthereumClient.prototype.getBranches = function () {
   return branches;
 };
 
-EthereumClient.prototype.getCurrentVotePeriod = function(branchId) {
+EthereumClient.prototype.getVotePeriod = function(branchId) {
 
   // TODO: have augur.js batch these
-  var currentVotePeriod =  Augur.getVotePeriod(branchId);
-  var currentVotePeriodLength = Augur.getPeriodLength(branchId);
+  var votePeriod =  Augur.getVotePeriod(branchId).toNumber();
+  var periodLength = Augur.getPeriodLength(branchId).toNumber();
 
-  return [currentVotePeriod, currentVotePeriodLength];
+  return [votePeriod, periodLength];
 };
 
 EthereumClient.prototype.getBallotEvents = function(votePeriod, branchId) {
 
   if (!votePeriod) return;
-  
+
   // TODO: this should eventually return all events that need to be voted on by the user
   branchId = branchId || this.defaultBranchId;
 
   var events = [];
   _.each(_.range(votePeriod), function(i) {   // getting all past period events as well for now
-    events.concat(Augur.getEvents(branchId, i));
+    events.concat(Augur.getEvents(branchId, i+1));
   });
 
   console.log('ballot events', events);
@@ -382,12 +382,16 @@ EthereumClient.prototype.getMarket = function (marketId, branchId) {
   };
 };
 
-EthereumClient.prototype.getEvents = function(branchId, expirationPeriod) {
-  return {};
-};
-
 EthereumClient.prototype.getEvent = function(eventId) {
-  return Augur.getEventInfo(eventId);
+
+  var event = Augur.getEventInfo(eventId);
+
+  if (event.expirationDate) {
+    event.expirationBlock = event.expirationDate;
+    delete event['expirationDate']
+  }
+
+  return event;
 };
 
 EthereumClient.prototype.addEvent = function(params, onSuccess) {
@@ -414,9 +418,9 @@ EthereumClient.prototype.addEvent = function(params, onSuccess) {
 
       onSuccess: function (newEvent) {
 
-        utilities.debug("tx: " + newEvent.txhash);
+        utilities.debug("txHash: " + newEvent.txHash);
 
-        Augur.getTx(newEvent.txhash);
+        Augur.getTx(newEvent.txHash);
         if (onSuccess) onSuccess(newEvent);
       }
     });

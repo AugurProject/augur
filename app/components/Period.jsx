@@ -15,7 +15,7 @@ var Period = React.createClass({
     var flux = this.getFlux();
     var networkSate = flux.store('network').getState();
     var branchState = flux.store('branch').getState();
-    var currentBranchData = branchState.branches[branchState.currentBranch];
+    var currentBranchData = branchState.branches[branchState.currentBranch.id];
 
     console.log(branchState);
     // clean up current period

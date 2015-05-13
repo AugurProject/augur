@@ -28,24 +28,49 @@ var BranchActions = {
   updateCurrentBranch: function (id) {
 
     // keep branch at current branch if none was passed
-    if (!id) id = this.flux.store('branch').getState().currentBranch;
+    if (!id && this.flux.store('branch').getState().currentBranch) {
+      id = this.flux.store('branch').getState().currentBranch.id;
+    } else {
+      return;
+    }
 
     var ethereumClient = this.flux.store('config').getEthereumClient();
-    var currentVotePeriod = ethereumClient.getCurrentVotePeriod(id);
+    var currentBlock = this.flux.store('network').getState().blockNumber;
+    var votePeriod = ethereumClient.getVotePeriod(id);
     //var currentQuorum = ethereumClient.checkQuorum(id);
 
+    var currentBranch = {
+      id: id,
+      currentPeriod: currentBlock / votePeriod[1],
+      periodLength: votePeriod[1],
+      votePeriod: votePeriod[0]
+    }
+
     this.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, {
-      currentBranch: id, 
-      currentVotePeriod: currentVotePeriod[0], 
-      currentVotePeriodLength: currentVotePeriod[1]
+      currentBranch: currentBranch,
     });
   },
 
   updateBallotEvents: function() {
 
     var ethereumClient = this.flux.store('config').getEthereumClient();
-    var currentVotePeriod = this.flux.store('branch').getState().currentVotePeriod;
-    var ballotEvents = ethereumClient.getBallotEvents(currentVotePeriod);
+    //var currentVotePeriod = this.flux.store('branch').getState().currentVotePeriod;
+    //var ballotEvents = ethereumClient.getBallotEvents(currentVotePeriod);
+
+    // HACK: pulling events from markets
+    var events = [];
+    var markets = this.flux.store('market').getState().markets;
+    _.each(markets, function(market) {
+      _.each(market.events, function(eventId) {
+        var event = ethereumClient.getEvent(eventId);
+        event.id = eventId;
+        event.marketId = market.id;
+        events.push(event)
+      })
+    });
+    ////
+
+    var ballotEvents = _.indexBy(events, 'id');
 
     this.dispatch(constants.branch.UPDATE_BALLOT_EVENTS_SUCCESS, {
       ballotEvents: ballotEvents || {}
