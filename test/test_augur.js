@@ -1088,16 +1088,30 @@ describe("Augur API", function () {
 
     // dispatch.se
     describe("dispatch.se", function () {
-        describe("dispatch(" + branch_number + ") [call] ", function () {
+        describe("dispatch(" + branch_id + ")", function () {
+            var test = function (r) {
+                log(JSON.stringify(r));
+                assert(r.step);
+                assert(r.txHash);
+            };
             it("async", function (done) {
-                Augur.tx.dispatch.send = false;
-                Augur.tx.dispatch.returns = "number";
-                Augur.dispatch(branch_number, function (r) {
-                    log("dispatch: " + r);
-                    done();
-                });
-                Augur.tx.dispatch.send = true;
-                Augur.tx.dispatch.returns = undefined;
+                this.timeout(120000);
+                var dispatchObj = {
+                    branchId: branch_id,
+                    onSent: function (r) {
+                        log("dispatch sent:");
+                        test(r); done();
+                    },
+                    onSuccess: function (r) {
+                        log("dispatch success:");
+                        test(r); done();
+                    },
+                    onFailed: function (r) {
+                        log("dispatch failed:");
+                        test(r); done();
+                    }
+                };
+                Augur.dispatch(dispatchObj);
             });
         });
     });

@@ -133,6 +133,12 @@ var Augur = (function (augur) {
                 message: "not enough money or market already exists"
             }
         },
+        dispatch: {
+            "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
+                code: -1,
+                message: "quorum not met"
+            }
+        },
         sendReputation: {
             "0x0": {
                 code: 0,
@@ -2370,13 +2376,74 @@ var Augur = (function (augur) {
         to: augur.contracts.dispatch,
         method: "dispatch",
         signature: "i",
-        returns: "number",
         send: true
     };
-    augur.dispatch = function (branchNumber, onSent) {
-        // branchNumber: integer
-        augur.tx.dispatch.params = branchNumber;
-        return augur.invoke(augur.tx.dispatch, onSent);
+    augur.dispatch = function (branch, onSent, onSuccess, onFailed) {
+        // branch: sha256 or transaction object
+        var step, pings, txhash, pingTx;
+        if (branch.constructor === Object && branch.branchId) {
+            if (branch.onSent) onSent = branch.onSent;
+            if (branch.onSuccess) onSuccess = branch.onSuccess;
+            if (branch.onFailed) onFailed = branch.onFailed;
+            branch = branch.branchId;
+        }
+        augur.tx.dispatch.params = branch;
+        augur.tx.dispatch.send = false;
+        augur.tx.dispatch.returns = "number";
+        if (onSent) {
+            augur.invoke(augur.tx.dispatch, function (step) {
+                if (step) {
+                    if (augur.ERRORS.dispatch[step]) {
+                        if (onFailed) onFailed(step);
+                    } else {
+                        step = { step: step };
+                        augur.tx.dispatch.send = true;
+                        delete augur.tx.dispatch.returns;
+                        augur.invoke(augur.tx.dispatch, function (txhash) {
+                            if (txhash) {
+                                step.txHash = txhash;
+                                if (onSent) onSent(step);
+                                if (onSuccess) {
+                                    pings = 0;
+                                    pingTx = function () {
+                                        augur.getTx(txhash, function (tx) {
+                                            pings++;
+                                            if (tx && tx.blockHash && parseInt(tx.blockHash !== 0)) {
+                                                tx.step = step.step;
+                                                tx.txHash = tx.hash;
+                                                delete tx.hash;
+                                                onSuccess(tx);
+                                            } else {
+                                                if (pings < augur.PINGMAX) {
+                                                    setTimeout(pingTx, 12000);
+                                                }
+                                            }
+                                        });
+                                    };
+                                    pingTx();
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        } else {
+            step = augur.invoke(augur.tx.dispatch);
+            if (step) {
+                step = { step: step };
+                if (augur.ERRORS.dispatch[step]) {
+                    if (onFailed) onFailed(step);
+                } else {
+                    augur.tx.dispatch.send = true;
+                    delete augur.tx.dispatch.returns;
+                    txhash = augur.invoke(augur.tx.dispatch);
+                    if (txhash) {
+                        step.txHash = txhash;
+                        return step;
+                    }
+                }
+            }
+        }
     };
 
     /***************************
