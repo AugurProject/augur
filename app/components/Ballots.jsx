@@ -4,6 +4,7 @@ var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 var ReactBootstrap = require('react-bootstrap');
 var Button = ReactBootstrap.Button;
+var Input = ReactBootstrap.Input;
 var utilities = require('../libs/utilities');
 
 var Ballots = React.createClass({
@@ -72,8 +73,21 @@ var Ballot = React.createClass({
   render: function() {
 
     return (
-      <div className='ballot'>
-        <h4>{ this.props.event.description }</h4>
+      <div className='col-xs-12'>
+        <div className='ballot shadow'>
+          <div className='row'>
+            <div className='col-sm-8'>
+              <h4>{ this.props.event.description }</h4>
+            </div>
+            <div className='col-sm-4'>
+              <div className="outcomes">
+                <Input name={ this.props.event.id } type="radio" ref="No" value="0" label="No" />
+                <Input name={ this.props.event.id } type="radio" ref="Ambiguous / Indeterminate" value="0.5" label="Ambiguous / Indeterminate" />
+                <Input name={ this.props.event.id } type="radio" ref="Yes" value="1" label="Yes" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

@@ -626,6 +626,20 @@ a.market-pane:hover {
     margin-left: 8px;
 }
 
+#ballots .ballot {
+    border-radius: 5px;
+    background-color: rgb(253, 253, 186);
+    margin: 0px 0px 20px 0px;
+    padding: 15px 15px;
+}
+#ballots .ballot h4 {
+    margin-top: 3px;
+}
+#ballots .ballot .outcomes {
+    float: right;
+    padding: 0px 0px 0px 20px;
+    border-left: 1px solid rgb(217, 221, 154);
+}
 #alert {
     padding: 10px;
     position: fixed;
