@@ -7,8 +7,6 @@
 "use strict";
 
 var BigNumber = require("bignumber.js");
-var assert = require("assert");
-var crypto = require("crypto");
 var Augur = require("./../augur");
 var constants = require("./constants");
 

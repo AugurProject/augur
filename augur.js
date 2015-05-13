@@ -1461,6 +1461,20 @@ var Augur = (function (augur) {
         augur.tx.getEvents.params = [branch, votePeriod];
         return augur.invoke(augur.tx.getEvents, onSent);
     };
+    augur.getEventsRange = function (branch, vpStart, vpEnd, onSent) {
+        // branch: sha256
+        // vpStart: integer
+        // vpEnd: integer
+        var vp_range, txlist;
+        augur.tx.getEvents.params[0] = branch;
+        vp_range = vpEnd - vpStart + 1; // inclusive range
+        txlist = new Array(vp_range);
+        for (var i = 0; i < vp_range; ++i) {
+            augur.tx.getEvents.params[1] = i + vpStart;
+            txlist[i] = augur.tx.getEvents;
+        }
+        return augur.batch(txlist, onSent);
+    };
     augur.getNumberEvents = function (branch, votePeriod, onSent) {
         // branch: sha256
         // votePeriod: integer
