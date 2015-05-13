@@ -76,10 +76,10 @@ var Ballot = React.createClass({
       <div className='col-xs-12'>
         <div className='ballot shadow'>
           <div className='row'>
-            <div className='col-sm-8'>
+            <div className='col-md-8 col-sm-7'>
               <h4>{ this.props.event.description }</h4>
             </div>
-            <div className='col-sm-4'>
+            <div className='col-md-4 col-sm-5'>
               <div className="outcomes">
                 <Input name={ this.props.event.id } type="radio" ref="No" value="0" label="No" />
                 <Input name={ this.props.event.id } type="radio" ref="Ambiguous / Indeterminate" value="0.5" label="Ambiguous / Indeterminate" />

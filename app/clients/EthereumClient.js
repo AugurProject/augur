@@ -228,12 +228,19 @@ EthereumClient.prototype.getRangeEvents = function(period, periodsBack, branchId
   period = parseInt(period);
 
   var events = [];
+  var lastTotal = 0;
   _.each(_.range(period - periodsBack, period), function(i) {
     var e = _.map(Augur.getEvents(branchId, i), function(eventId) {
       return this.getEvent(eventId);
     }, this);
     events = events.concat(e);
-  }, this)
+    lastTotal = events.length;
+  }, this);
+
+  //var events = _.map(Augur.getEventsRange(branchId, period - periodsBack, period), function(eventId) {
+  //  console.log(eventId);
+  //  return this.getEvent(eventId);
+  //}, this);
 
   return events;
 };
