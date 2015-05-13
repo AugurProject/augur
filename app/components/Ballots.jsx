@@ -8,7 +8,7 @@ var utilities = require('../libs/utilities');
 
 var Ballots = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin('asset', 'branch', 'config')],
+  mixins: [FluxMixin, StoreWatchMixin('asset', 'branch', 'config', 'event')],
 
   getInitialState: function () {
     return {
@@ -23,11 +23,15 @@ var Ballots = React.createClass({
       account: account,
       asset: flux.store('asset').getState(),
       ethereumClient: flux.store('config').getEthereumClient(),
-      branchState: flux.store('branch').getState()
+      branchState: flux.store('branch').getState(),
+      events: flux.store('event').getState().events
     }
   },
 
   render: function () {
+
+    // return nothing until we have events
+    //if (!this.state.events) return (<div />);
 
     var currentBranch = this.state.branchState.currentBranch;
 
@@ -40,9 +44,9 @@ var Ballots = React.createClass({
       periodDateRange = periodStartMoment.format('MMM Do, HH:MM') + ' - ' + periodEndMoment.format('MMM Do, HH:MM'); 
     }
 
-    var ballotList = _.map(_.sortBy(this.props.events, 'expirationBlock'), function (event) {
+    var ballotList = _.map(this.state.events, function (event) {
       return (
-        <div key={ event.id } className={ this.props.classNameWrapper }>
+        <div key={ event.id }>
           <Ballot event={ event } {...this.props} />
         </div>
       );
@@ -67,6 +71,11 @@ var Ballot = React.createClass({
 
   render: function() {
 
+    return (
+      <div className='ballot'>
+        <h4>{ this.props.event.description }</h4>
+      </div>
+    );
   }
 
 });

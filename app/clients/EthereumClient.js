@@ -207,7 +207,9 @@ EthereumClient.prototype.getEvents = function(period, branchId) {
   if (!period) return;
   branchId = branchId || this.defaultBranchId;
 
-  var events = Augur.getEvents(branchId, period);
+  var events = _.map(Augur.getEvents(branchId, period), function(eventId) {
+    return this.getEvent(eventId);
+  }, this);
 
   return events;
 };
@@ -225,13 +227,14 @@ EthereumClient.prototype.getRangeEvents = function(period, periodsBack, branchId
 
   period = parseInt(period);
 
-  console.log(period - periodsBack, period);
-
   var events = [];
   _.each(_.range(period - periodsBack, period), function(i) {
-     events = events.concat(Augur.getEvents(branchId, i));
-  })
-  
+    var e = _.map(Augur.getEvents(branchId, i), function(eventId) {
+      return this.getEvent(eventId);
+    }, this);
+    events = events.concat(e);
+  }, this)
+
   return events;
 };
 
@@ -402,6 +405,7 @@ EthereumClient.prototype.getMarket = function (marketId, branchId) {
 EthereumClient.prototype.getEvent = function(eventId) {
 
   var event = Augur.getEventInfo(eventId);
+  event.id = eventId;
 
   if (event.expirationDate) {
     event.expirationBlock = event.expirationDate;
