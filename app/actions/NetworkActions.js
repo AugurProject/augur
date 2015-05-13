@@ -32,7 +32,7 @@ var NetworkActions = {
       ethereumClient.startMonitoring(this.flux.actions.network.updateNetwork);
 
       this.flux.actions.branch.loadBranches();
-      //this.flux.actions.event.loadEvents();
+      this.flux.actions.event.loadEvents();
       this.flux.actions.market.loadMarkets();
     }
 
@@ -60,7 +60,7 @@ var NetworkActions = {
 
     // vote period may have changed
     this.flux.actions.branch.updateCurrentBranch();
-    this.flux.actions.branch.updateBallotEvents();
+    this.flux.actions.event.updateEvents();
   }
 };
 

@@ -4,16 +4,29 @@ var constants = require('../libs/constants');
 var utilities = require('../libs/utilities');
 
 var EventActions = {
+
   loadEvents: function () {
-    var branchState = this.flux.store('branch').getState();
-    var configState = this.flux.store('config').getState();
-    var networkState = this.flux.store('network').getState();
 
-    var branchId = branchState.currentBranch.id;
-    var events = configState.ethereumClient.getEvents(branchId);
+    var ethereumClient = this.flux.store('config').getEthereumClient();
+    var currentPeriod = this.flux.store('branch').getState().currentBranch.currentPeriod;
+    var events = ethereumClient.getRangeEvents(currentPeriod, 300);
 
-    this.dispatch(constants.event.LOAD_EVENTS_SUCCESS, {events: events});
-  }
+    this.dispatch(constants.event.LOAD_EVENTS_SUCCESS, {
+      events: events || {}
+    }); 
+  },
+
+
+  updateEvents: function() {
+
+    var ethereumClient = this.flux.store('config').getEthereumClient();
+    var currentPeriod = this.flux.store('branch').getState().currentBranch.currentPeriod;
+    var events = ethereumClient.getEvents(currentPeriod);
+
+    this.dispatch(constants.event.UPDATE_EVENTS_SUCCESS, {
+      events: events || {}
+    });
+  },
 };
 
 module.exports = EventActions;

@@ -202,19 +202,36 @@ EthereumClient.prototype.getVotePeriod = function(branchId) {
   return [votePeriod, periodLength];
 };
 
-EthereumClient.prototype.getBallotEvents = function(votePeriod, branchId) {
+EthereumClient.prototype.getEvents = function(period, branchId) {
 
-  if (!votePeriod) return;
-
-  // TODO: this should eventually return all events that need to be voted on by the user
+  if (!period) return;
   branchId = branchId || this.defaultBranchId;
 
-  var events = [];
-  _.each(_.range(votePeriod), function(i) {   // getting all past period events as well for now
-    events.concat(Augur.getEvents(branchId, i+1));
-  });
+  var events = Augur.getEvents(branchId, period);
 
-  console.log('ballot events', events);
+  return events;
+};
+
+EthereumClient.prototype.getRangeEvents = function(period, periodsBack, branchId) {
+
+  branchId = branchId || this.defaultBranchId;
+
+  if (!period) {
+    // calc here cause of race condition, sigh
+    var periodLength = Augur.getPeriodLength(branchId).toNumber();
+    var currentBlock =  Augur.blockNumber();
+    period = currentBlock / periodLength;
+  }
+
+  period = parseInt(period);
+
+  console.log(period - periodsBack, period);
+
+  var events = [];
+  _.each(_.range(period - periodsBack, period), function(i) {
+     events = events.concat(Augur.getEvents(branchId, i));
+  })
+  
   return events;
 };
 

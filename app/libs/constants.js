@@ -34,8 +34,7 @@ module.exports = {
     ROOT_ID: 0,
     ROOT_DEV_ID: 1010101,
     LOAD_BRANCHES_SUCCESS: null,
-    UPDATE_CURRENT_BRANCH_SUCCESS: null,
-    UPDATE_BALLOT_EVENTS_SUCCESS: null
+    UPDATE_CURRENT_BRANCH_SUCCESS: null
   }),
   market: keyMirror({
     LOAD_MARKETS_SUCCESS: null,
@@ -44,7 +43,8 @@ module.exports = {
     ADD_MARKET_SUCCESS: null,
   }),
   event: keyMirror({
-    LOAD_EVENTS_SUCCESS: null
+    LOAD_EVENTS_SUCCESS: null,
+    UPDATE_EVENTS_SUCCESS: null
   })
   // addresses: {
   //   branches: '0x13dc5836cd5638d0b81a1ba8377a7852d41b5bbe',

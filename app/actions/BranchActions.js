@@ -49,33 +49,7 @@ var BranchActions = {
     this.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, {
       currentBranch: currentBranch,
     });
-  },
-
-  updateBallotEvents: function() {
-
-    var ethereumClient = this.flux.store('config').getEthereumClient();
-    //var currentVotePeriod = this.flux.store('branch').getState().currentVotePeriod;
-    //var ballotEvents = ethereumClient.getBallotEvents(currentVotePeriod);
-
-    // HACK: pulling events from markets
-    var events = [];
-    var markets = this.flux.store('market').getState().markets;
-    _.each(markets, function(market) {
-      _.each(market.events, function(eventId) {
-        var event = ethereumClient.getEvent(eventId);
-        event.id = eventId;
-        event.marketId = market.id;
-        events.push(event)
-      })
-    });
-    ////
-
-    var ballotEvents = _.indexBy(events, 'id');
-
-    this.dispatch(constants.branch.UPDATE_BALLOT_EVENTS_SUCCESS, {
-      ballotEvents: ballotEvents || {}
-    });
-  },
+  }
 };
 
 module.exports = BranchActions;
