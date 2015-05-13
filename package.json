@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Augur JavaScript API",
   "main": "augur.js",
   "scripts": {
@@ -29,7 +29,12 @@
     "url": "https://github.com/AugurProject/augur.js/issues"
   },
   "homepage": "https://github.com/AugurProject/augur.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "coveralls": "^2.11.2",
+    "lodash": "^3.8.0",
+    "mocha": "^2.2.4",
+    "mocha-lcov-reporter": "0.0.2"
+  },
   "optionalDependencies": {
     "http-sync": "^0.1.1",
     "http-sync-win": "^0.0.7"

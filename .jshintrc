@@ -3,7 +3,7 @@
     "bitwise": true,
     "funcscope": false,
     "freeze": false,
-    "maxerr": 100,
+    "maxerr": 1000,
     "unused": true,
     "undef": true,
     "debug": false,
@@ -33,5 +33,9 @@
     "newcap": true,
     "onevar": true,
     "asi": false,
-    "eqnull": false
+    "eqnull": false,
+    "predef": [
+        "describe",
+        "it"
+    ]
 }

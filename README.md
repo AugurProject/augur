@@ -3,7 +3,12 @@ Augur JavaScript API
 
 [![Build Status](https://travis-ci.org/AugurProject/augur.js.svg?branch=master)](https://travis-ci.org/AugurProject/augur.js)
 [![npm version](https://badge.fury.io/js/augur.js.svg)](http://badge.fury.io/js/augur.js)
-[![Join the chat at https://gitter.im/AugurProject/augur.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/AugurProject/augur.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Coverage Status](https://coveralls.io/repos/AugurProject/augur.js/badge.svg)](https://coveralls.io/r/AugurProject/augur.js)
+
+[![Bugs](https://badge.waffle.io/AugurProject/augur.js.svg?label=bugs&title=Bugs)](http://waffle.io/AugurProject/augur.js)
+[![Ready](https://badge.waffle.io/AugurProject/augur.js.svg?label=ready&title=Ready)](http://waffle.io/AugurProject/augur.js)
+[![In Progress](https://badge.waffle.io/AugurProject/augur.js.svg?label=in%20progress&title=In%20Progress)](http://waffle.io/AugurProject/augur.js)
+[![Gitter chat https://gitter.im/AugurProject/augur.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/AugurProject/augur.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 To use augur.js, you must be running a local Ethereum node.  By default, it expects your Ethereum client to be listening on port 8545.  Note that I've only tested with [geth](https://github.com/ethereum/go-ethereum) so far; use with [eth](https://github.com/ethereum/cpp-ethereum) or [pyethapp](https://github.com/ethereum/pyethapp) at your own risk.
 
@@ -271,9 +276,9 @@ The `params` and `signature` fields are required if your function accepts parame
 Tests
 -----
 
-Unit tests included with augur.js are in `test/runtests.js`, and can be run with [mocha](http://mochajs.org/):
+Unit tests included with augur.js are in the `test` directory, and can be run with [mocha](http://mochajs.org/):
 ```
 npm install mocha
-npm test
+mocha
 ```
 Note that your local Ethereum node must be running for the tests to run properly.

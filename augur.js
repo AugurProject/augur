@@ -2038,7 +2038,21 @@ var Augur = (function (augur) {
     };
     augur.reputationFaucet = function (onSent) { // should this take a branch parameter?
         return augur.invoke(augur.tx.reputationFaucet, onSent);
-    };    
+    };
+
+    // checkQuorum.se
+    augur.tx.checkQuorum = {
+        from: augur.coinbase,
+        to: augur.contracts.checkQuorum,
+        method: "checkQuorum",
+        signature: "i",
+        returns: "number"
+    };
+    augur.checkQuorum = function (branch, onSent) {
+        // branch: sha256
+        augur.tx.checkQuorum.params = branch;
+        return augur.invoke(augur.tx.checkQuorum, onSent);
+    };
 
     // buy&sellShares.se
     augur.tx.getNonce = {

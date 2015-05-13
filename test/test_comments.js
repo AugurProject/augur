@@ -6,85 +6,82 @@
 
 "use strict";
 
-var BigNumber = require("bignumber.js");
-var Augur = require("./../augur");
-var constants = require("./constants");
+var Augur = require("../augur");
+var log = console.log;
 
-var print = console.log;
-
-var TestComments = function () {
+function test_comments() {
     // var market = "-0x57a7e0a3b713b12662f7891c5a29cf55a6756b28ecb5b1c2dc7869fbdcaa594a";
     var market = "0x01";
 
-    print("\nReset comments");
-    print(Augur.resetComments(market));
+    log("\nReset comments");
+    log(Augur.resetComments(market));
     
-    print("\nAugur.getMarketComments:");
+    log("\nAugur.getMarketComments:");
     var comments = Augur.getMarketComments(market);
-    print(comments)
+    log(comments);
     
-    print("\nAugur.initComments:");
+    log("\nAugur.initComments:");
     var filter = Augur.initComments(market);
+    log(filter);
 
     var pkg = {
         marketId: market,
         message: Math.random().toString(36).substring(4),
         author: Augur.coinbase
     };
-    print("\nAugur.addMarketComment(" + JSON.stringify(pkg, null, 2) + "):");
+    log("\nAugur.addMarketComment(" + JSON.stringify(pkg, null, 2) + "):");
     var updated_comments = Augur.addMarketComment(pkg);
 
     pkg.message = Math.random().toString(36).substring(4);
-    print("\nAugur.addMarketComment(" + JSON.stringify(pkg, null, 2) + "):");
-    var updated_comments = Augur.addMarketComment(pkg);
-    print(updated_comments.length.toString() + " comments found");
-    print(updated_comments);
+    log("\nAugur.addMarketComment(" + JSON.stringify(pkg, null, 2) + "):");
+    updated_comments = Augur.addMarketComment(pkg);
+    log(updated_comments.length.toString() + " comments found");
+    log(updated_comments);
 
-    print("\nAugur.getMarketComments:");
-    var comments = Augur.getMarketComments(market);
-    print(comments)
+    log("\nAugur.getMarketComments:");
+    comments = Augur.getMarketComments(market);
+    log(comments);
 
     pkg.message = Math.random().toString(36).substring(4);
-    print("\nAugur.addMarketComment(" + JSON.stringify(pkg, null, 2) + "):");
-    var updated_comments = Augur.addMarketComment(pkg);
-    print(updated_comments.length.toString() + " comments found");
-    print(updated_comments);
+    log("\nAugur.addMarketComment(" + JSON.stringify(pkg, null, 2) + "):");
+    updated_comments = Augur.addMarketComment(pkg);
+    log(updated_comments.length.toString() + " comments found");
+    log(updated_comments);
 
-    print("\nReset comments");
-    print(Augur.resetComments(market));
+    log("\nReset comments");
+    log(Augur.resetComments(market));
 
     // crashes geth (!)
-    // print("\nUninstalling filter " + filter);
-    // print(Augur.uninstallFilter(filter));
-};
+    // log("\nUninstalling filter " + filter);
+    // log(Augur.uninstallFilter(filter));
+}
 
-var Interlocutor = function () {
+function interlocutor() {
     var market = "0x01";
 
-    print("\nAugur.getMarketComments:");
+    log("\nAugur.getMarketComments:");
     var comments = Augur.getMarketComments(market);
-    print(comments)
+    log(comments);
 
     var pkg = {
         marketId: market,
         message: Math.random().toString(36).substring(4),
         author: Augur.coinbase
     };
-    print("\nAugur.addMarketComment(" + JSON.stringify(pkg, null, 2) + "):");
+    log("\nAugur.addMarketComment(" + JSON.stringify(pkg, null, 2) + "):");
     var updated_comments = Augur.addMarketComment(pkg);
     pkg.message = Math.random().toString(36).substring(4);
-    print("\nAugur.addMarketComment(" + JSON.stringify(pkg, null, 2) + "):");
-    var updated_comments = Augur.addMarketComment(pkg);
+    log("\nAugur.addMarketComment(" + JSON.stringify(pkg, null, 2) + "):");
+    updated_comments = Augur.addMarketComment(pkg);
     pkg.message = Math.random().toString(36).substring(4);
-    print("\nAugur.addMarketComment(" + JSON.stringify(pkg, null, 2) + "):");
-    var updated_comments = Augur.addMarketComment(pkg);
-    print(updated_comments.length.toString() + " comments found");
-    print(updated_comments);
-};
+    log("\nAugur.addMarketComment(" + JSON.stringify(pkg, null, 2) + "):");
+    updated_comments = Augur.addMarketComment(pkg);
+    log(updated_comments.length.toString() + " comments found");
+    log(updated_comments);
+}
 
-var TestWhisper = function () {
+function test_whisper() {
     var comment_text = Math.random().toString(36).substring(4);
-    var dbname = "augur";
     var market_id = "0x00000003";
     Augur.newIdentity(function (whisper_id) {
         if (whisper_id) {
@@ -113,7 +110,7 @@ var TestWhisper = function () {
                                     }
                                     Augur.putString(market_id, updated_comments, function (put_ok) {
                                         if (put_ok && updated_comments) {
-                                            print(JSON.parse(updated_comments));
+                                            log(JSON.parse(updated_comments));
                                         }
                                     });
                                 });
@@ -124,7 +121,7 @@ var TestWhisper = function () {
             });
         }
     });
-};
+}
 
-TestComments();
-// TestWhisper();
+test_comments();
+// test_whisper();
