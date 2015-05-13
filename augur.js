@@ -1288,6 +1288,29 @@ var Augur = (function (augur) {
         return augur.invoke(augur.tx.getNumOutcomes, onSent);
     };
 
+    augur.getCurrentVotePeriod = function (branch, onSent) {
+        // branch: sha256
+        var periodLength, blockNum;
+        augur.tx.getPeriodLength.params = branch;
+        if (onSent) {
+            augur.invoke(augur.tx.getPeriodLength, function (periodLength) {
+                if (periodLength) {
+                    periodLength = augur.bignum(periodLength);
+                    augur.blockNumber(function (blockNum) {
+                        blockNum = augur.bignum(blockNum);
+                        onSent(blockNum.dividedBy(periodLength).sub(1));
+                    });
+                }
+            });
+        } else {
+            periodLength = augur.invoke(augur.tx.getPeriodLength);
+            if (periodLength) {
+                blockNum = augur.bignum(augur.blockNumber());
+                return blockNum.dividedBy(augur.bignum(periodLength)).sub(1);
+            }
+        }
+    };
+
     // expiringEvents.se
     augur.tx.getEvents = {
         from: augur.coinbase,
@@ -1466,12 +1489,17 @@ var Augur = (function (augur) {
         // vpStart: integer
         // vpEnd: integer
         var vp_range, txlist;
-        augur.tx.getEvents.params = [branch, vpStart];
-        vp_range = vpEnd - vpStart + 1; // inclusive range
+        vp_range = vpEnd - vpStart + 1; // inclusive
         txlist = new Array(vp_range);
         for (var i = 0; i < vp_range; ++i) {
-            augur.tx.getEvents.params[1] = i + vpStart;
-            txlist[i] = augur.tx.getEvents;
+            txlist[i] = {
+                from: augur.coinbase,
+                to: augur.contracts.expiringEvents,
+                method: "getEvents",
+                signature: "ii",
+                returns: "hash[]",
+                params: [branch, i + vpStart]
+            };
         }
         return augur.batch(txlist, onSent);
     };
@@ -1612,6 +1640,20 @@ var Augur = (function (augur) {
         // votePeriod: integer
         augur.tx.getOutcomesFinal.params = [branch, votePeriod];
         return augur.invoke(augur.tx.getOutcomesFinal, onSent);
+    };
+
+    augur.tx.makeBallot = {
+        from: augur.coinbase,
+        to: augur.contracts.expiringEvents,
+        method: "makeBallot",
+        signature: "ii",
+        returns: "hash[]"
+    };
+    augur.makeBallot = function (branch, votePeriod, onSent) {
+        // branch: sha256
+        // votePeriod: integer
+        augur.tx.makeBallot.params = [branch, votePeriod];
+        return augur.invoke(augur.tx.makeBallot, onSent);
     };
 
     // markets.se

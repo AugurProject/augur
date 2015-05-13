@@ -7,8 +7,8 @@ var constants = {};
 
 constants.accounts = {
     loopy: "0x00e3f8de3ed9d428dc235ce0c25bc1136073be8b",
-    jack: "0xa18e10a46a36d59cb2ef1fe8ec18a0a5c78a7fbf",
-    jack_old: "0x63524e3fe4791aefce1e932bbfb3fdf375bfad89",
+    jack_new: "0xa18e10a46a36d59cb2ef1fe8ec18a0a5c78a7fbf",
+    jack: "0x63524e3fe4791aefce1e932bbfb3fdf375bfad89",
     jack_eth: "0x32a34974787b46a62dbecc491c8a030185eaeb9d",
     heavy: "0x816e547d69e20e918340e7ff766c9ea841fe577a",
     lifespan: "0x74dcba4a17d257486785f1811604c8fba5373eb4",
