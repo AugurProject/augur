@@ -3,12 +3,12 @@ var constants = require('../libs/constants');
 
 var state = {
   branches: {},
-  currentBranch: { id: constants.DEV_BRANCH_ID },
+  currentBranch: { id: process.env.AUGUR_BRANCH_ID || constants.DEV_BRANCH_ID },
   ballot: []
 };
 
 var BranchStore = Fluxxor.createStore({
-  
+
   initialize: function () {
     this.bindActions(
       constants.branch.LOAD_BRANCHES_SUCCESS, this.handleLoadBranchesSuccess,

@@ -65,6 +65,8 @@ var Outcomes = require('./components/Outcomes');
 
 var flux = new Fluxxor.Flux(stores, actions);
 
+console.log('Using Augur Branch ID: ', flux.store('branch').getState().currentBranch.id);
+
 flux.on("dispatch", function(type, payload) {
   var debug = flux.store('config').getState().debug;
   if (debug) console.log("Dispatched", type, payload);
