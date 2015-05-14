@@ -34,6 +34,7 @@ var MarketPane = React.createClass({
     var market = this.props.market;
     var formattedDate = market.endDate ? moment(market.endDate).format('MMM Do, YYYY') : '-';
     var price = market.price ? +market.price.toFixed(3) : '-';
+    var percent = market.price ? +market.price.times(100).toFixed(1) + '%' : ''
     var volume = market.totalVolume ? +market.totalVolume.toFixed(2) : '-';
     var tradingFee = market.tradingFee ? +market.tradingFee.times(100).toFixed(2)+'%' : '-';
 
@@ -58,7 +59,7 @@ var MarketPane = React.createClass({
       <div>
         <h5>{ market.description }</h5>
         <div className='summary clearfix'>
-          <span>{ +market.price.times(100).toFixed(1) }%</span>
+          <span>{ percent }</span>
           <i className='pull-right'>{ status }</i>
         </div>
         <div className='details'>
