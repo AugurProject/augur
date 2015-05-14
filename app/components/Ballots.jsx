@@ -41,7 +41,11 @@ var Ballots = React.createClass({
       var periodEndMoment = utilities.blockToDate(endBlock);
       var startBlock = (currentBranch.currentPeriod - 1) * currentBranch.periodLength;
       var periodStartMoment = utilities.blockToDate(startBlock);
-      periodDateRange = periodStartMoment.format('MMM Do, HH:MM') + ' - ' + periodEndMoment.format('MMM Do, HH:MM'); 
+      if (periodStartMoment.format('MMM Do') === periodEndMoment.format('MMM Do')) {
+        periodDateRange = periodStartMoment.format('MMM Do, HH:MM') + ' - ' + periodEndMoment.format('HH:MM');
+      } else {
+        periodDateRange = periodStartMoment.format('MMM Do, HH:MM') + ' - ' + periodEndMoment.format('MMM Do, HH:MM');
+      }
     }
 
     var currentPeriod = currentBranch.currentPeriod ? +currentBranch.currentPeriod.toFixed(2) : '-';

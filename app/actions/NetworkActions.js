@@ -34,7 +34,7 @@ var NetworkActions = {
       this.flux.actions.asset.loadAssets();
       this.flux.actions.branch.loadBranches();
       this.flux.actions.market.loadMarkets();
-      //this.flux.actions.branch.loadBallot();
+      this.flux.actions.branch.loadBallots();
       //this.flux.actions.event.loadEvents(); 
     }
 
@@ -64,7 +64,7 @@ var NetworkActions = {
     this.flux.actions.branch.updateCurrentBranch();
     //this.flux.actions.event.updateEvents();
 
-    //this.flux.actions.branch.loadBallot();  // should only be called on period change
+    this.flux.actions.branch.loadBallots();  // should only be called on period change
 
     // check quorum
     var currentBranch = this.flux.store('branch').getState().currentBranch;

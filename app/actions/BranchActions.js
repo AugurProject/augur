@@ -24,15 +24,15 @@ var BranchActions = {
     }
   },
 
-  loadBallot: function() {
+  loadBallots: function() {
 
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var currentPeriod = this.flux.store('branch').getState().currentBranch.currentPeriod;
 
-    var ballotEvents = ethereumClient.getBallotEvents(currentPeriod);
+    var ballots = ethereumClient.getBallots(currentPeriod);
 
-    this.dispatch(constants.event.LOAD_BALLOT_SUCCESS, {
-      ballot: ballotEvents || []
+    this.dispatch(constants.branch.LOAD_BALLOTS_SUCCESS, {
+      ballots: ballots || []
     }); 
   },
 
