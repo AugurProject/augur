@@ -31,9 +31,6 @@ var Ballots = React.createClass({
 
   render: function () {
 
-    // return nothing until we have events
-    //if (!this.state.events) return (<div />);
-
     var currentBranch = this.state.branchState.currentBranch;
 
     var periodDateRange = '';
@@ -57,7 +54,7 @@ var Ballots = React.createClass({
       <div id="ballots">
         <h3>Ballots</h3>
         <div className='subheading clearfix'>
-          Period { currentBranch.currentPeriod } 
+          Period { currentBranch.currentPeriod } / { currentBranch.votePeriod }
           <span className='pull-right'>{ periodDateRange }</span>
         </div>
         <div className='row'>

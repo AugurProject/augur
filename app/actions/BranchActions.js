@@ -25,7 +25,19 @@ var BranchActions = {
     }
   },
 
-  updateCurrentBranch: function (id) {
+  loadBallot: function() {
+
+    var ethereumClient = this.flux.store('config').getEthereumClient();
+    var currentPeriod = this.flux.store('branch').getState().currentBranch.currentPeriod;
+
+    var ballotEvents = ethereumClient.getBallotEvents(currentPeriod);
+
+    this.dispatch(constants.event.LOAD_BALLOT_SUCCESS, {
+      ballot: ballotEvents || []
+    }); 
+  },
+
+  updateCurrentBranch: function(id) {
 
     // keep branch at current branch if none was passed
     if (!id && this.flux.store('branch').getState().currentBranch) {

@@ -245,10 +245,33 @@ EthereumClient.prototype.getRangeEvents = function(period, periodsBack, branchId
   return events;
 };
 
-EthereumClient.prototype.dispatch = function(branchId) {
+EthereumClient.prototype.getBallotEvents = function(currentPeriod) {
 
-  Augur.dispatch(branchId);
-  
+};
+
+EthereumClient.prototype.checkQuorum = function(branchId) {
+
+  if (!branchId) return;
+
+  var periodLength = Augur.getPeriodLength(branchId).toNumber();
+  var currentBlock =  Augur.blockNumber();
+  var currentPeriod = parseInt(currentBlock / periodLength);
+  var votePeriod =  Augur.getVotePeriod(branchId).toNumber();
+
+  if (votePeriod < currentPeriod) {
+
+    utilities.warn('branch '+branchId+' behind '+(currentPeriod-votePeriod)+' periods. calling dispatch.');
+
+    Augur.dispatch(branchId, function(result) {
+
+      //console.log('sent', result);
+
+    }, function(result) {
+
+      //console.log('success', result);
+
+    });
+  }
 };
 
 /**

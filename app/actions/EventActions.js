@@ -9,7 +9,8 @@ var EventActions = {
 
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var currentPeriod = this.flux.store('branch').getState().currentBranch.currentPeriod;
-    var events = ethereumClient.getRangeEvents(currentPeriod, 300);
+    //var events = ethereumClient.getRangeEvents(currentPeriod, 300);
+    var events = ethereumClient.getEvents(currentPeriod);
 
     this.dispatch(constants.event.LOAD_EVENTS_SUCCESS, {
       events: events || {}

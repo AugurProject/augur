@@ -31,9 +31,11 @@ var NetworkActions = {
       // start basic latest block monitoring
       ethereumClient.startMonitoring(this.flux.actions.network.updateNetwork);
 
+      this.flux.actions.asset.loadAssets();
+      //this.flux.actions.branch.loadBallot();
       this.flux.actions.branch.loadBranches();
-      this.flux.actions.event.loadEvents();
       this.flux.actions.market.loadMarkets();
+      //this.flux.actions.event.loadEvents(); 
     }
 
     // check yo self
@@ -60,7 +62,13 @@ var NetworkActions = {
 
     // vote period may have changed
     this.flux.actions.branch.updateCurrentBranch();
-    this.flux.actions.event.updateEvents();
+    //this.flux.actions.event.updateEvents();
+
+    //this.flux.actions.branch.loadBallot();  // should only be called on period change
+
+    // check quorum
+    var currentBranch = this.flux.store('branch').getState().currentBranch;
+    ethereumClient.checkQuorum(currentBranch.id);
   }
 };
 

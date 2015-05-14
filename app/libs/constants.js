@@ -34,7 +34,8 @@ module.exports = {
     ROOT_ID: 0,
     ROOT_DEV_ID: 1010101,
     LOAD_BRANCHES_SUCCESS: null,
-    UPDATE_CURRENT_BRANCH_SUCCESS: null
+    UPDATE_CURRENT_BRANCH_SUCCESS: null,
+    LOAD_BALLOT_SUCCESS: null
   }),
   market: keyMirror({
     LOAD_MARKETS_SUCCESS: null,
