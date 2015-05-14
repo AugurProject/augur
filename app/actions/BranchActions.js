@@ -10,10 +10,9 @@ var BranchActions = {
 
     var ethereumClient = configState.ethereumClient;
     var currentBranch = branchState.currentBranch;
-
     var branches = ethereumClient.getBranches();
 
-    this.dispatch(constants.branch.LOAD_BRANCHES_SUCCESS, {branches: branches});
+    this.dispatch(constants.branch.LOAD_BRANCHES_SUCCESS, {branches: branches, currentBranch: currentBranch});
 
     // If the current branch is no longer in the set of branches, update the
     // current branch to one that exists.

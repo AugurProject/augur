@@ -33,6 +33,8 @@ var Ballots = React.createClass({
 
     var currentBranch = this.state.branchState.currentBranch;
 
+    if (!currentBranch) return (<div />);
+    
     var periodDateRange = '';
     if (currentBranch.currentPeriod) {
       var endBlock = currentBranch.currentPeriod * currentBranch.periodLength;

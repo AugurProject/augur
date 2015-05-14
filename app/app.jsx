@@ -54,6 +54,8 @@ var stores = {
   network: new NetworkStore()
 }
 
+console.log(process.env);
+
 var AugurApp = require("./components/AugurApp");
 var Branch = require('./components/Branch');
 var Market = require('./components/Market');

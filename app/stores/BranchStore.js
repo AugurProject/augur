@@ -3,7 +3,9 @@ var constants = require('../libs/constants');
 
 var state = {
   branches: {},
-  currentBranch: { id:1010101 },
+  devBranchId: '0x9d20f57dbf317b6c93177d44d37f9cd21c47fcb811fcd2067c4aab1e4dcd3298',
+  demoBranchId: '0x5a4b7dd5f404ca02bf74fa56a28693802538e548f7dc23e4bff567e19d497e3b',
+  currentBranch: { id: '0x9d20f57dbf317b6c93177d44d37f9cd21c47fcb811fcd2067c4aab1e4dcd3298' },
   ballot: []
 };
 

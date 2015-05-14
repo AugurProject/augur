@@ -32,9 +32,9 @@ var NetworkActions = {
       ethereumClient.startMonitoring(this.flux.actions.network.updateNetwork);
 
       this.flux.actions.asset.loadAssets();
-      //this.flux.actions.branch.loadBallot();
       this.flux.actions.branch.loadBranches();
       this.flux.actions.market.loadMarkets();
+      //this.flux.actions.branch.loadBallot();
       //this.flux.actions.event.loadEvents(); 
     }
 
@@ -68,7 +68,7 @@ var NetworkActions = {
 
     // check quorum
     var currentBranch = this.flux.store('branch').getState().currentBranch;
-    ethereumClient.checkQuorum(currentBranch.id);
+    //ethereumClient.checkQuorum(currentBranch.id);
   }
 };
 
