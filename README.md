@@ -18,7 +18,7 @@ Ethereum Dapps store their data on the Ethereum blockchain, and their frontends 
 
 ### Running Ethereum
 
-Install go-ethereum ([installation instructions](https://github.com/ethereum/go-ethereum/wiki)). Add a new account with `geth account new` and then start the client with `geth --rpc --rpccorsdomain 'http://localhost:8080' --unlock primary`.
+Install go-ethereum ([installation instructions](https://github.com/ethereum/go-ethereum/wiki)). Add a new account with `geth account new` and then start the client with `geth --rpc --rpccorsdomain 'http://localhost:8080'  --shh --unlock primary`.
 
 ### Building augur-client
 
