@@ -19,6 +19,7 @@ var RouteHandler = Router.RouteHandler;
 var Redirect = Router.Redirect;
 
 var constants = require('./libs/constants');
+var utilities = require('./libs/utilities');
 
 var AssetActions = require('./actions/AssetActions');
 var BranchActions = require('./actions/BranchActions');
@@ -54,8 +55,6 @@ var stores = {
   network: new NetworkStore()
 }
 
-console.log(process.env);
-
 var AugurApp = require("./components/AugurApp");
 var Branch = require('./components/Branch');
 var Market = require('./components/Market');
@@ -65,7 +64,7 @@ var Outcomes = require('./components/Outcomes');
 
 var flux = new Fluxxor.Flux(stores, actions);
 
-console.log('Using Augur Branch ID: ', flux.store('branch').getState().currentBranch.id);
+utilities.log('using branch ' + flux.store('branch').getState().currentBranch.id);
 
 flux.on("dispatch", function(type, payload) {
   var debug = flux.store('config').getState().debug;

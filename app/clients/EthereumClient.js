@@ -352,8 +352,6 @@ EthereumClient.prototype.getMarkets = function (branchId) {
     return !_.contains(blacklist.markets, marketId.toString(16));
   });
 
-  console.log(validMarkets);
-  
   var marketList = _.map(validMarkets, function (marketId) {
     return this.getMarket(marketId, branchId);
   }, this);
@@ -363,7 +361,6 @@ EthereumClient.prototype.getMarkets = function (branchId) {
 
 EthereumClient.prototype.getMarket = function (marketId, branchId) {
 
-  console.log(marketId);
   var events = Augur.getMarketEvents(marketId);
   var description = Augur.getDescription(marketId);
   var alpha = Augur.getAlpha(marketId);

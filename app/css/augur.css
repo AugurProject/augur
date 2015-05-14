@@ -272,14 +272,16 @@ nav .navbar-right li div {
     margin-top: 0px;
     margin-bottom: 0px;
     font-size: 22px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #CDCAC5;
 }
 #main h3 .subheading {
     font-size: 16px;
     margin-top: 3px;
 }
 #main div.subheading {
-    font-size: 18px;
-    margin: 5px 0px 25px 0px;
+    font-size: 16px;
+    margin: 10px 0px 25px 0px;
 }
 #main h4 {
     font-weight: 400;
@@ -412,21 +414,13 @@ a.market-pane:hover {
 #branch h4 {
     margin: 10px 0px 20px 0px;
 }
-#branch .markets-nav {
-    padding: 10px 0px 0px 0px;
-    margin: 10px 0px 10px 0px;
-    border-top: 1px solid #D2D2D2;
-}
-#branch .markets-nav .showing {
-    font-size: 16px;
-}
-#branch .markets-nav nav {
+#branch nav {
     margin-top: 0px;
     float: right;
     font-family: 'Source Sans Pro', sans-serif;
     font-size: 12px;
 }
-#branch .markets-nav nav ul {
+#branch nav ul {
     margin: 0;
 }
 
@@ -633,8 +627,15 @@ a.market-pane:hover {
     margin: 0px 0px 20px 0px;
     padding: 15px 15px;
 }
+#ballots h3 {
+    border-bottom: none;
+}
 #ballots .ballot h4 {
     margin-top: 3px;
+}
+#ballots .period-progress {
+    height: 2px;
+    margin: 0px;
 }
 #ballots .ballot .outcomes {
     float: right;

@@ -5,6 +5,7 @@ var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 var ReactBootstrap = require('react-bootstrap');
 var Button = ReactBootstrap.Button;
 var Input = ReactBootstrap.Input;
+var ProgressBar = ReactBootstrap.ProgressBar;
 var utilities = require('../libs/utilities');
 
 var Ballots = React.createClass({
@@ -36,19 +37,32 @@ var Ballots = React.createClass({
     if (!currentBranch) return (<div />);
 
     var periodDateRange = '';
+    var currentPeriod = '-';
+    var percentComplete = 0;
+    var percentStyle = 'primary';
+
     if (currentBranch.currentPeriod) {
+
       var endBlock = currentBranch.currentPeriod * currentBranch.periodLength;
       var periodEndMoment = utilities.blockToDate(endBlock);
       var startBlock = (currentBranch.currentPeriod - 1) * currentBranch.periodLength;
       var periodStartMoment = utilities.blockToDate(startBlock);
+
       if (periodStartMoment.format('MMM Do') === periodEndMoment.format('MMM Do')) {
         periodDateRange = periodStartMoment.format('MMM Do, HH:MM') + ' - ' + periodEndMoment.format('HH:MM');
       } else {
         periodDateRange = periodStartMoment.format('MMM Do, HH:MM') + ' - ' + periodEndMoment.format('MMM Do, HH:MM');
       }
-    }
 
-    var currentPeriod = currentBranch.currentPeriod ? +currentBranch.currentPeriod.toFixed(2) : '-';
+      currentPeriod = parseInt(currentBranch.currentPeriod);
+
+      if (currentBranch.votePeriod === (currentPeriod - 1)) {
+        var percentComplete = ((currentBranch.currentPeriod - currentPeriod) * 100).toFixed(3);
+      } else {
+        var percentComplete = 100;
+        var percentStyle = 'warning';
+      }
+    }
 
     var ballotList = _.map(this.state.events, function (event) {
       return (
@@ -61,8 +75,9 @@ var Ballots = React.createClass({
     return (
       <div id="ballots">
         <h3>Ballots</h3>
+        <ProgressBar bsStyle={ percentStyle } now={ percentComplete } className='period-progress' />
         <div className='subheading clearfix'>
-          Period { currentPeriod } / { currentBranch.votePeriod }
+          Period { currentPeriod }
           <span className='pull-right'>{ periodDateRange }</span>
         </div>
         <div className='row'>
