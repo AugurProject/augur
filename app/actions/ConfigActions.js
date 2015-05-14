@@ -8,9 +8,11 @@ var ConfigActions = {
   updateEthereumClient: function () {
 
     var configState = this.flux.store('config').getState();
+    var branchState = this.flux.store('branch').getState();
+
     var clientParams = {
       host: configState.host,
-      defaultBranchId: configState.rootBranchId
+      defaultBranchId: constants.DEV_BRANCH_ID
     }
     var ethereumClient = window.ethereumClient = configState.ethereumClient || new EthereumClient(clientParams);
 

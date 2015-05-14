@@ -6,6 +6,8 @@ var BigNumber = require('bignumber.js');
 var ONE_FXP = new BigNumber(2).toPower(64);
 
 module.exports = {
+  DEMO_BRANCH_ID: '0x5a4b7dd5f404ca02bf74fa56a28693802538e548f7dc23e4bff567e19d497e3b',
+  DEV_BRANCH_ID: '0x9d20f57dbf317b6c93177d44d37f9cd21c47fcb811fcd2067c4aab1e4dcd3298',
   ONE_FXP: ONE_FXP,
   NO: ONE_FXP,
   YES: ONE_FXP.mul(2),
@@ -31,8 +33,6 @@ module.exports = {
     UPDATE_LOG: null
   }),
   branch: keyMirror({
-    ROOT_ID: 0,
-    ROOT_DEV_ID: 1010101,
     LOAD_BRANCHES_SUCCESS: null,
     UPDATE_CURRENT_BRANCH_SUCCESS: null,
     LOAD_BALLOT_SUCCESS: null

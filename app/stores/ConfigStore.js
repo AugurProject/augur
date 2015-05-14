@@ -5,8 +5,7 @@ var state = {
   host: 'localhost:8545',
   debug: false,
   percentLoaded: null,
-  ethereumClient: null,
-  rootBranchId: 1010101
+  ethereumClient: null
 }
 
 var ConfigStore = Fluxxor.createStore({

@@ -28,10 +28,10 @@ function EthereumClient(params) {
   this.addresses = {};
   this.filters = {}
   this.contracts = {};
+  this.defaultBranchId = params.defaultBranchId;
 
   // defaults
   this.web3 = window.web3 = params.web3 || require('web3');
-  this.defaultBranchId = params.defaultBranchId || 1010101;
   this.defaultGas = params.defaultGas || 1000000;
   this.host = params.host || 'localhost:8454';
 
@@ -149,7 +149,7 @@ EthereumClient.prototype.getRepBalance = function(branchId) {
   if (!this.isAvailable() || this.account === '0x') {
     return 0;
   }
-
+  
   return Augur.getRepBalance(branchId || this.defaultBranchId, this.account).toNumber();
 };
 
