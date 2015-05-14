@@ -7,3 +7,4 @@ lib
 .travis.yml
 test
 env.js
+coverage

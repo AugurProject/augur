@@ -2,7 +2,7 @@
     "browserify": true,
     "bitwise": true,
     "funcscope": false,
-    "freeze": false,
+    "freeze": true,
     "maxerr": 1000,
     "unused": true,
     "undef": true,

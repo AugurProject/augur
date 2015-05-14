@@ -2,3 +2,4 @@ node_modules
 compiler.jar
 lib
 npm-debug.log
+coverage

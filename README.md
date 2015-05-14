@@ -3,7 +3,7 @@ Augur JavaScript API
 
 [![Build Status](https://travis-ci.org/AugurProject/augur.js.svg?branch=master)](https://travis-ci.org/AugurProject/augur.js)
 [![npm version](https://badge.fury.io/js/augur.js.svg)](http://badge.fury.io/js/augur.js)
-[![Coverage Status](https://coveralls.io/repos/AugurProject/augur.js/badge.svg)](https://coveralls.io/r/AugurProject/augur.js)
+<!-- [![Coverage Status](https://coveralls.io/repos/AugurProject/augur.js/badge.svg)](https://coveralls.io/r/AugurProject/augur.js) -->
 
 [![Bugs](https://badge.waffle.io/AugurProject/augur.js.svg?label=bugs&title=Bugs)](http://waffle.io/AugurProject/augur.js)
 [![Ready](https://badge.waffle.io/AugurProject/augur.js.svg?label=ready&title=Ready)](http://waffle.io/AugurProject/augur.js)
@@ -14,15 +14,22 @@ To use augur.js, you must be running a local Ethereum node.  By default, it expe
 
 To use "send" RPC commands, you will need to unlock your client.  The easiest way to do this is to start geth with the `--unlock` option:
 ```
-geth --rpc --rpccorsdomain "http://localhost:8545" --shh --unlock primary
+$ geth --rpc --rpccorsdomain "http://localhost:8545" --shh --unlock primary
 ```
 augur.js can be installed using npm:
 ```
-npm install augur.js
+$ npm install augur.js
 ```
 After installing, to use it with Node, just require it:
 ```javascript
 var Augur = require('augur.js');
+Augur.connect();
+```
+By default, augur.js will look for a localhost Ethereum node listening on port 8545.  To change this, just call pass your RPC connection info (as an object or a URL string) to the `connect` method.  For example:
+```javascript
+Augur.connect({ protocol: "http", host: "localhost", port: 8545 });
+Augur.connect("http://poc9.com:8545");
+Augur.connect("127.0.0.1");
 ```
 To use augur.js from the browser, just include [augur.min.js](https://github.com/AugurProject/augur.js/blob/master/augur.min.js).  (This minified file includes the [bignumber.js](https://github.com/MikeMcl/bignumber.js) and [js-sha3](https://github.com/emn178/js-sha3) libraries.)
 
@@ -278,7 +285,7 @@ Tests
 
 Unit tests included with augur.js are in the `test` directory, and can be run with [mocha](http://mochajs.org/):
 ```
-npm install mocha
-mocha
+$ npm install mocha
+$ mocha
 ```
 Note that your local Ethereum node must be running for the tests to run properly.
