@@ -31,7 +31,7 @@
     ]
   },
   "dependencies": {
-    "augur.js": "^0.2.0",
+    "augur.js": "^0.2.6",
     "bignumber.js": "^2.0.7",
     "bootstrap": "^3.3.4",
     "browserify": "^9.0.8",
@@ -50,7 +50,7 @@
     "react-pager": "^1.1.1",
     "react-router": "^0.13.2",
     "reactify": "^1.1.0",
-    "web3": "^0.3.4"
+    "web3": "^0.4.1"
   },
   "devDependencies": {
     "grunt": "^0.4.5",

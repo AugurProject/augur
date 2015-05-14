@@ -245,12 +245,10 @@ EthereumClient.prototype.getRangeEvents = function(period, periodsBack, branchId
   return events;
 };
 
-EthereumClient.prototype.checkQuorum = function(branchId) {
+EthereumClient.prototype.dispatch = function(branchId) {
 
-  //var currentQuorum = Augur.checkQuorum(branchId);
-  //console.log(currentQuorum.toNumber());
-
-  //return currentQuorum;
+  Augur.dispatch(branchId);
+  
 };
 
 /**
@@ -344,9 +342,6 @@ EthereumClient.prototype.getMarket = function (marketId, branchId) {
   var description = Augur.getDescription(marketId);
   var alpha = Augur.getAlpha(marketId);
   var author = Augur.getCreator(marketId);
-  // HACK AROUND INVALID RETURN
-  author = author.replace(/0x000000000000000000000000/, '0x');
-  ////
 
   var creationFee = Augur.getCreationFee(marketId);
 
@@ -476,7 +471,7 @@ EthereumClient.prototype.addMarket = function(params, onSuccess) {
       },
 
       onSuccess: function (newMarket) {
-        utilities.debug("txHash: " + newMarket.txhash);
+        utilities.debug("txHash: " + newMarket.txHash);
         utilities.log('new market successfully added');
         if (onSuccess) onSuccess(newMarket);
       },
