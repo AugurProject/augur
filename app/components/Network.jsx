@@ -20,6 +20,11 @@ var Network = React.createClass({
   },
 
   render: function () {
+
+    var formattedEther = '-';
+    if (this.state.assets.ether) {
+      formattedEther = utilities.formatEther(this.state.assets.ether).value + ' ' +  utilities.formatEther(this.state.assets.ether).unit;
+    }
     return (
       <div className="panel panel-default network">
         <div className="panel-heading clearfix">
@@ -39,7 +44,7 @@ var Network = React.createClass({
             MINER<span className="pull-right">{this.state.network.mining ? this.state.network.hashrate : 'off'}</span>
           </p>
           <p className="ether">
-            ETHER<span className="pull-right">{ utilities.formatEther(this.state.assets.ether) || '-'}</span>
+            ETHER<span className="pull-right">{ formattedEther }</span>
           </p>
           <p className="gas-price">
             GAS PRICE<span className="pull-right">{ utilities.formatEther(this.state.network.gasPrice) || '-'}</span>

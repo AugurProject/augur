@@ -281,7 +281,7 @@ nav .navbar-right li div {
 }
 #main div.subheading {
     font-size: 16px;
-    margin: 10px 0px 25px 0px;
+    margin: 10px 0px 20px 0px;
 }
 #main h4 {
     font-weight: 400;
@@ -596,28 +596,30 @@ a.market-pane:hover {
 #account h4 {
     margin-bottom: 20px;
 }
-#account .balances {
-    margin-top: 15px;
-    padding: 0px 0px 15px 15px;
-    border-left: 1px solid #bbb;
+#account div.subheading {
+    margin-left: -15px;
+    margin-right: -15px;
 }
-#account .balances p {
-    font-size: 16px;
-    width: 100%;
-    padding-right: 0px;
-    clear: right;   
+#account div.subheading .unit {
+    font-weight: 200;
+    color: #696969;
+    text-transform: uppercase;
 }
-#account .balances p .balance {
-    float: right;
+#account div.subheading .rep-balance {
+    text-align: center;
 }
-#account .balances p button {
+#account div.subheading .ether-balance {
+    text-align: right;
+}
+#account div.subheading
+ button {
     margin-left: 12px;
     font-size: 12px;
     text-transform: uppercase;
     position: relative;
     top: -2px;
 }
-#account .balances p button i {
+#account div.subheading button i {
     margin-left: 8px;
 }
 

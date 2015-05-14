@@ -51,10 +51,25 @@ var AccountDetails = React.createClass({
 
     return (
       <div id="account">
-        <h3>Account Overview</h3>
-        <div className='subheading'>{ this.state.primaryAccount }</div>
+        <h3>Account<span className='subheading pull-right'>{ this.state.primaryAccount }</span></h3>
+        <div className='subheading row'>
+          <div className='col-sm-4 cash-balance'>
+            { cashBalance } <span className='unit'>cash</span>
+            <SendCashTrigger text='send' />
+            <Button bsSize='xsmall' bsStyle='default' onClick={ this.onCashFaucet }>Faucet<i className='fa fa-tint'></i></Button>
+          </div>
+          <div className='col-sm-4 rep-balance'>
+            { this.state.asset.reputation } <span className='unit'>reputation</span>
+            <SendRepTrigger text='send' />
+            <Button bsSize='xsmall' bsStyle='default' onClick={ this.onRepFaucet }>Faucet<i className='fa fa-tint'></i></Button>
+          </div>
+          <div className='col-sm-4 ether-balance'>
+            { utilities.formatEther(this.state.asset.ether).value } <span className='unit'>{ utilities.formatEther(this.state.asset.ether).unit }</span>
+            <SendEtherTrigger text='send' />
+          </div>
+        </div>
         <div className='row'>
-          <div className="col-sm-6 col-lg-7">
+          <div className="col-xs-12">
             <h4>Holdings</h4>
 
             <h4>Authored Markets</h4>
@@ -62,37 +77,9 @@ var AccountDetails = React.createClass({
               <Markets 
                 markets={ this.state.authoredMarkets }
                 votePeriod={ this.state.votePeriod }
-                classNameWrapper='col-sm-6' />
+                classNameWrapper='col-sm-4' />
             </div>
-          </div>
-          <div className="col-sm-6 col-lg-5">
-            <div className='balances'>
-              <h4>Balances</h4>
-              <p>
-                <b>Cash</b>
-                <span className='balance'>
-                  { cashBalance }
-                  <SendCashTrigger text='send' />
-                  <Button bsSize='xsmall' bsStyle='default' onClick={ this.onCashFaucet }>Faucet<i className='fa fa-tint'></i></Button>
-                </span>
-              </p>
-              <p>
-                <b>Reputation</b>
-                <span className='balance'>
-                  { this.state.asset.reputation }
-                  <SendRepTrigger text='send' />
-                  <Button bsSize='xsmall' bsStyle='default' onClick={ this.onRepFaucet }>Faucet<i className='fa fa-tint'></i></Button>
-                </span>
-              </p>
-              <p>
-                <b>Ether</b>
-                <span className='balance'>
-                  { utilities.formatEther(this.state.asset.ether) }
-                  <SendEtherTrigger text='send' />
-                  <Button bsSize='xsmall' bsStyle='default' style={{visibility: 'hidden'}}>Faucet<i className='fa fa-tint'></i></Button>
-                </span>
-              </p>
-            </div>
+        
           </div>
         </div>
       </div>
