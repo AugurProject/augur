@@ -453,7 +453,7 @@ a.market-pane:hover {
     position: relative;
     height: 90px;
 }
-#market .outcome h3 {
+#market .outcome h4 {
     color: #fff;
     background-color: #18376f;
     border-top-left-radius: 5px;
@@ -462,13 +462,14 @@ a.market-pane:hover {
     float: left;
     width: 75px;
     position: relative;
+    margin: 0px;
 }
-#market .outcome h3 .name {
+#market .outcome h4 .name {
     position: absolute;
     top: 8px;
     left: 8px;
 }
-#market .outcome h3 .price {
+#market .outcome h4 .price {
     font-size: 20px;
     font-family: 'Source Sans Pro';
     font-weight: 300;

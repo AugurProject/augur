@@ -56,10 +56,10 @@ var Overview = React.createClass({
     }
     return (
       <div className={ className }>
-        <h3>
+        <h4>
           <div className="name">{ getOutcomeName(this.props.id, this.props.outcomeCount) }</div>
           <div className="price">{ priceToPercentage(this.props.price) }%</div>
-        </h3>
+        </h4>
         <div className="summary">
           <div className='buy trade'>
             <Link to="buy-outcome" className="btn btn-success" params={{marketId: this.props.params.marketId, outcomeId: this.props.id}}>Buy</Link>
