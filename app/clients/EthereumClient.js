@@ -149,7 +149,7 @@ EthereumClient.prototype.getRepBalance = function(branchId) {
   if (!this.isAvailable() || this.account === '0x') {
     return 0;
   }
-  
+
   return Augur.getRepBalance(branchId || this.defaultBranchId, this.account).toNumber();
 };
 
@@ -181,7 +181,7 @@ EthereumClient.prototype.getBranches = function () {
   var branchList = _.map(Augur.getBranches(), function (branchId) {
 
     return {
-      id: (branchId.toNumber() === this.defaultBranchId) ? branchId.toNumber() : branchId.toFixed(),
+      id: '0x'+branchId.toString(16),
       name: Augur.getDescription(branchId),
       periodLength: Augur.getPeriodLength(branchId).toNumber(),
       rep: Augur.getRepBalance(branchId, account).toNumber(),

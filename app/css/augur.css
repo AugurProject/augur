@@ -379,6 +379,7 @@ a.market-pane:hover {
     font-style: normal;
     font-size: 16px;
     margin-top: 3px;
+    height: 25px;
 }
 .market-pane.pending .summary {
     background-color: #E28B17;
