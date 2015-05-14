@@ -34,7 +34,7 @@ var Ballots = React.createClass({
     var currentBranch = this.state.branchState.currentBranch;
 
     if (!currentBranch) return (<div />);
-    
+
     var periodDateRange = '';
     if (currentBranch.currentPeriod) {
       var endBlock = currentBranch.currentPeriod * currentBranch.periodLength;
@@ -43,6 +43,8 @@ var Ballots = React.createClass({
       var periodStartMoment = utilities.blockToDate(startBlock);
       periodDateRange = periodStartMoment.format('MMM Do, HH:MM') + ' - ' + periodEndMoment.format('MMM Do, HH:MM'); 
     }
+
+    var currentPeriod = currentBranch.currentPeriod ? +currentBranch.currentPeriod.toFixed(2) : '-';
 
     var ballotList = _.map(this.state.events, function (event) {
       return (
@@ -56,7 +58,7 @@ var Ballots = React.createClass({
       <div id="ballots">
         <h3>Ballots</h3>
         <div className='subheading clearfix'>
-          Period { currentBranch.currentPeriod } / { currentBranch.votePeriod }
+          Period { currentPeriod } / { currentBranch.votePeriod }
           <span className='pull-right'>{ periodDateRange }</span>
         </div>
         <div className='row'>

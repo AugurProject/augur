@@ -258,7 +258,7 @@ EthereumClient.prototype.checkQuorum = function(branchId) {
   var currentPeriod = parseInt(currentBlock / periodLength);
   var votePeriod =  Augur.getVotePeriod(branchId).toNumber();
 
-  if (votePeriod < currentPeriod) {
+  if (votePeriod < (currentPeriod - 1)) {
 
     utilities.warn('branch '+branchId+' behind '+(currentPeriod-votePeriod)+' periods. calling dispatch.');
 

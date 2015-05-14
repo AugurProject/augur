@@ -68,7 +68,7 @@ var NetworkActions = {
 
     // check quorum
     var currentBranch = this.flux.store('branch').getState().currentBranch;
-    //ethereumClient.checkQuorum(currentBranch.id);
+    ethereumClient.checkQuorum(currentBranch.id);
   }
 };
 
