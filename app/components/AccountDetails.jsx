@@ -18,6 +18,8 @@ var AccountDetails = React.createClass({
 
   getInitialState: function () {
     return {
+      repFaucetDisabled: false,
+      cashFaucetDisabled: false
     };
   },
 
@@ -37,11 +39,13 @@ var AccountDetails = React.createClass({
 
   onCashFaucet: function(event) {
 
+    this.setState({cashFaucetDisabled: true});
     this.state.ethereumClient.cashFaucet();
   },
 
   onRepFaucet: function(event) {
 
+    this.setState({repFaucetDisabled: true});
     this.state.ethereumClient.repFaucet();
   },
 

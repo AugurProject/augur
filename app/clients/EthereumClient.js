@@ -138,8 +138,10 @@ EthereumClient.prototype.sendCash = function(destination, amount, onSuccess) {
   return Augur.sendCash(destination, amount);
 };
 
-EthereumClient.prototype.repFaucet = function() {
-  return Augur.reputationFaucet();
+EthereumClient.prototype.repFaucet = function(branchId) {
+
+  branchId = branchId || this.defaultBranchId;
+  return Augur.reputationFaucet(branchId);
 };
 
 EthereumClient.prototype.getRepBalance = function(branchId) {

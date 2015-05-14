@@ -57,10 +57,10 @@ var Ballots = React.createClass({
       currentPeriod = parseInt(currentBranch.currentPeriod);
 
       if (currentBranch.votePeriod === (currentPeriod - 1)) {
-        var percentComplete = ((currentBranch.currentPeriod - currentPeriod) * 100).toFixed(3);
+        percentComplete = parseFloat( ((currentBranch.currentPeriod - currentPeriod) * 100).toFixed(3) );
       } else {
-        var percentComplete = 100;
-        var percentStyle = 'warning';
+        percentComplete = 100;
+        percentStyle = 'warning';
       }
     }
 
