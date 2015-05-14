@@ -33,7 +33,7 @@ function EthereumClient(params) {
   // defaults
   this.web3 = window.web3 = params.web3 || require('web3');
   this.defaultGas = params.defaultGas || 1000000;
-  this.host = params.host || 'localhost:8454';
+  this.host = params.host || 'localhost:8545';
 
   _.defaults(this.addresses, constants.addresses);
 
