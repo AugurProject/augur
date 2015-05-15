@@ -106,7 +106,6 @@ h1, h2, h3, h4, h5 {
 }
 
 .truncate {
-  width: 250px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -431,18 +430,6 @@ a.market-pane:hover {
 #market {
 
 }
-#market .price-history {
-    background-color: #eee;
-    border: 1px solid #dedede;
-    border-radius: 5px;
-    height: 225px;
-    margin-top: 30px;
-}
-#market .price-history h4 {
-    margin: 95px auto 0px auto;
-    width: 155px;
-    color: #999;
-}
 #market .outcome {
     margin: 0px 0px 0px 0px;
     border-radius: 5px;
@@ -549,6 +536,42 @@ a.market-pane:hover {
 }
 #market .execute-trade form {
     margin-top: 10px;
+}
+#market .price-history {
+    height: 225px;
+    margin-top: 30px;
+    background-color: #eee;
+}
+#market .price-history h4 {
+    margin: 95px auto 0px auto;
+    width: 155px;
+    color: #999;
+}
+#market .details {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-right: 2px solid #ddd;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px; 
+    margin-top: 30px;
+    padding: 6px 6px;
+    font-size: 14px;
+    color: #333;
+}
+#market .details p {
+    margin: 0px;
+    clear: right;
+    padding: 2px 6px;
+}
+#market .details p.alt {
+    background-color: rgb(230, 244, 230);
+}
+#market .details b {
+    float: right;
+}
+#market .details .author {
+    text-align: right;
+    width: 75%;
 }
 #market .comments {
     margin-top: 40px;

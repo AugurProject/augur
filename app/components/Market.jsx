@@ -15,7 +15,7 @@ var Outcomes = require('./Outcomes');
 
 var Router = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin('market')],
+  mixins: [FluxMixin, StoreWatchMixin('market', 'asset')],
 
   getStateFromFlux: function () {
 
@@ -41,26 +41,45 @@ var Router = React.createClass({
     // return nothing until we have an actual market loaded
     if (_.isUndefined(this.state.market)) return (<div />);
 
+    var market = this.state.market;
+
     var subheading = '';
-    if (this.state.market.endDate) {
-      if (this.state.market.matured) {
-        subheading = 'Matured on ' + this.state.market.endDate.format("MMMM Do, YYYY");
+    if (market.endDate) {
+      if (market.matured) {
+        subheading = 'Matured on ' + market.endDate.format("MMMM Do, YYYY");
       } else {
-        subheading = 'Resolves after ' + this.state.market.endDate.format("MMMM Do, YYYY");
+        subheading = 'Resolves after ' + market.endDate.format("MMMM Do, YYYY");
       }
     }
 
+    var formattedDate = market.endDate ? moment(market.endDate).format('MMM Do, YYYY') : '-';
+    var price = market.price ? +market.price.toFixed(3) : '-';
+    var percent = market.price ? +market.price.times(100).toFixed(1) + '%' : ''
+    var volume = market.totalVolume ? +market.totalVolume.toFixed(2) : '-';
+    var tradingFee = market.tradingFee ? +market.tradingFee.times(100).toFixed(2)+'%' : '-';
+    var traderCount = market.traderCount ? +market.traderCount.toNumber() : '-';
+
     return (
       <div id='market'>
-        <h3>{ this.state.market.description }</h3>
+        <h3>{ market.description }</h3>
         <div className="subheading">{ subheading }</div>
         <RouteHandler {...this.props} {...this.state} />
-        <div className='market-details col-sm-4'>
+        <div className='details col-sm-4'>
+          <p>Price: <b>{ price }</b></p>
+          <p className='alt'>Volume: <b>{ volume }</b></p>
+          <p>Fee: <b>{ tradingFee }</b></p>
+          <p className='alt'>Traders: <b>{ traderCount }</b></p>
+          <p>Author: <b className='truncate author'>{ market.author || '' }</b></p>
+          <p className='alt'>End date: <b>{ formattedDate }</b></p>
         </div>
         <div className='price-history col-sm-8'>
           <h4>Price history soon...</h4>
         </div>
-        <Comments comments={ this.props.market.comments } account={ this.props.account } />
+        <div className='row'>
+          <div className='col-xs-12'>
+            <Comments comments={ market.comments } account={ this.state.account } />
+          </div>
+        </div>
       </div>
     );
   }
@@ -147,7 +166,7 @@ var CommentForm = React.createClass({
       <form className="comment">
         <div className="user avatar" style={{ backgroundImage: 'url(' + userIdenticon + ')' }}></div>
         <div className="box">
-          <input type="textarea" className="form-control" placeholder="Join the discussion..." />
+          <input type="textarea" className="form-control" placeholder="Also coming soon..." />
           <div className="user address"></div>
         </div>
       </form>
