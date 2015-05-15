@@ -142,7 +142,7 @@ nav h1.navbar-brand i {
   font-size: 20px;
   font-style: normal;
   font-weight: 200;
-  left: 3px;
+  left: 4px;
   opacity: 0.75;
 }
 nav .navbar-right > li {
@@ -501,9 +501,11 @@ a.market-pane:hover {
     margin-top: 10px;
 }
 #market .price-history {
-    height: 225px;
-    margin-top: 30px;
-    background-color: #eee;
+  height: 225px;
+  margin-top: 30px;
+  background-color: #373232;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 #market .price-history h4 {
     margin: 95px auto 0px auto;
@@ -520,6 +522,7 @@ a.market-pane:hover {
     padding: 6px 6px;
     font-size: 14px;
     color: #333;
+    height: 225px;
 }
 #market .details p {
     margin: 0px;
