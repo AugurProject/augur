@@ -8,8 +8,7 @@ config.envify.debug = {
 };
 config.envify.build = {
   // Use the demo branch when building for deployment.
-  //AUGUR_BRANCH_ID: '0x3d595622e5444dd258670ab405b82a467117bd9377dc8fa8c4530528242fe0c5'
-  AUGUR_BRANCH_ID: '0x38a820692912b5f7a3bfefc2a1d4826e1da6beaed5fac6de3d22b18132133991'
+  AUGUR_BRANCH_ID: '0x3d595622e5444dd258670ab405b82a467117bd9377dc8fa8c4530528242fe0c5'
 };
 
 config.browserify = {};
@@ -29,14 +28,13 @@ config.browserify.build = {
 config.browserify.watch = _.merge({
   options: {
     watch: true,
-    keepAlive: true,
-    browserifyOptions: {
-      transform: [
-        ['envify', config.envify.debug]
-      ]
-    }
+    keepAlive: true
   }
 }, config.browserify.build);
+config.browserify.watch.options.browserifyOptions.transform = [
+  ['reactify', {'es6': true}],
+  ['envify', config.envify.debug]
+];
 
 module.exports = function (grunt) {
   grunt.initConfig({
