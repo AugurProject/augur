@@ -27,9 +27,11 @@ var BranchActions = {
   loadBallots: function() {
 
     var ethereumClient = this.flux.store('config').getEthereumClient();
-    var currentPeriod = this.flux.store('branch').getState().currentBranch.currentPeriod;
+    var currentBranch = this.flux.store('branch').getState().currentBranch;
 
-    var ballots = ethereumClient.getBallots(currentPeriod);
+    // only load ballots if branch vote period is current
+    var isCurrent = currentBranch.votePeriod === parseInt(currentBranch.currentPeriod) - 1 ? true : false;
+    var ballots = isCurrent ? ethereumClient.getEvents(parseInt(currentBranch.currentPeriod)) : [];
 
     this.dispatch(constants.branch.LOAD_BALLOTS_SUCCESS, {
       ballots: ballots || []

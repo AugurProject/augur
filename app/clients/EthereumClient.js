@@ -204,52 +204,32 @@ EthereumClient.prototype.getVotePeriod = function(branchId) {
   return [votePeriod, periodLength];
 };
 
+
 EthereumClient.prototype.getEvents = function(period, branchId) {
 
   if (!period) return;
   branchId = branchId || this.defaultBranchId;
 
-  var events = _.map(Augur.getEvents(branchId, period), function(eventId) {
+  var events = _.map(Augur.getEvents(branchId, period-1), function(eventId) {
     return this.getEvent(eventId);
   }, this);
 
   return events;
 };
 
-EthereumClient.prototype.getRangeEvents = function(period, periodsBack, branchId) {
+EthereumClient.prototype.getEvent = function(eventId) {
 
-  branchId = branchId || this.defaultBranchId;
+  var event = Augur.getEventInfo(eventId);
+  event.id = eventId;
 
-  if (!period) {
-    // calc here cause of race condition, sigh
-    var periodLength = Augur.getPeriodLength(branchId).toNumber();
-    var currentBlock =  Augur.blockNumber();
-    period = currentBlock / periodLength;
+  if (event.expirationDate) {
+    event.expirationBlock = event.expirationDate;
+    delete event['expirationDate']
   }
 
-  period = parseInt(period);
-
-  var events = [];
-  var lastTotal = 0;
-  _.each(_.range(period - periodsBack, period), function(i) {
-    var e = _.map(Augur.getEvents(branchId, i), function(eventId) {
-      return this.getEvent(eventId);
-    }, this);
-    events = events.concat(e);
-    lastTotal = events.length;
-  }, this);
-
-  //var events = _.map(Augur.getEventsRange(branchId, period - periodsBack, period), function(eventId) {
-  //  console.log(eventId);
-  //  return this.getEvent(eventId);
-  //}, this);
-
-  return events;
+  return event;
 };
 
-EthereumClient.prototype.getBallots = function(currentPeriod) {
-
-};
 
 EthereumClient.prototype.checkQuorum = function(branchId) {
 
@@ -262,7 +242,7 @@ EthereumClient.prototype.checkQuorum = function(branchId) {
 
   if (votePeriod < (currentPeriod - 1)) {
 
-    utilities.warn('branch '+branchId+' behind '+(currentPeriod-votePeriod)+' periods. calling dispatch.');
+    utilities.log('branch '+branchId+' behind '+(currentPeriod-votePeriod)+' periods. calling dispatch.');
 
     Augur.dispatch(branchId, function(result) {
 
@@ -427,19 +407,6 @@ EthereumClient.prototype.getMarket = function (marketId, branchId) {
     comments: [],
     invalid: invalid
   };
-};
-
-EthereumClient.prototype.getEvent = function(eventId) {
-
-  var event = Augur.getEventInfo(eventId);
-  event.id = eventId;
-
-  if (event.expirationDate) {
-    event.expirationBlock = event.expirationDate;
-    delete event['expirationDate']
-  }
-
-  return event;
 };
 
 EthereumClient.prototype.addEvent = function(params, onSuccess) {

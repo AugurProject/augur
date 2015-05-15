@@ -186,7 +186,7 @@ var TradeBase = {
         <div className='row'>
           <div className='col-sm-4'>
             <h4>{ this.actionLabel } shares of <b>{ getOutcomeName(this.getOutcomeId(), outcomeCount) }</b></h4>
-            <h3 className="price">{ priceToPercentage(this.getPrice()) }% { this.getPriceDelta() }</h3>
+            <h4 className="price">{ priceToPercentage(this.getPrice()) }% { this.getPriceDelta() }</h4>
           </div>
           <div className='col-sm-4'>
             <p className="shares-held">Shares held: { this.state.ownedShares }</p>

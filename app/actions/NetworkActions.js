@@ -60,13 +60,12 @@ var NetworkActions = {
     // the account assets may have changed. reload.
     this.flux.actions.asset.loadAssets();
 
-    // vote period may have changed
     this.flux.actions.branch.updateCurrentBranch();
     //this.flux.actions.event.updateEvents();
 
-    this.flux.actions.branch.loadBallots();  // should only be called on period change
+    // TODO: the following methods should only be called on period change to be nicer
+    this.flux.actions.branch.loadBallots();  
 
-    // check quorum
     var currentBranch = this.flux.store('branch').getState().currentBranch;
     ethereumClient.checkQuorum(currentBranch.id);
   }
