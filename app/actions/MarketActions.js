@@ -27,12 +27,12 @@ var MarketActions = {
 
 	  	// generate temp pending id
 	  	var s = JSON.stringify(market);
-		var hash = 0, i, chr, len;
-		for (i = 0, len = s.length; i < len; i++) {
-			chr = s.charCodeAt(i);
-			hash = ((hash << 5) - hash) + chr;
-			hash |= 0;   // convert to 32bit integer
-		}
+		  var hash = 0, i, chr, len;
+		  for (i = 0, len = s.length; i < len; i++) {
+			  chr = s.charCodeAt(i);
+			  hash = ((hash << 5) - hash) + chr;
+			  hash |= 0;   // convert to 32bit integer
+		  }
 	  	market.id = new BigNumber(hash);
 	  	market.pending = true;
 

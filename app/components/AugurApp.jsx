@@ -89,7 +89,7 @@ var AugurApp = React.createClass({
         <nav className="navbar" role="navigation">
           <div className="container">
               <div className="navbar-header">
-                  <h1 className="navbar-brand"><span>augur</span></h1>
+                  <h1 className="navbar-brand">augur<i>𝛂</i></h1>
               </div>
               <ul className="nav navbar-nav navbar-right">
                   <li>
