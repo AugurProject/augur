@@ -286,7 +286,7 @@ nav .navbar-right li div {
     margin-bottom: 0px;
     font-size: 22px;
     padding-bottom: 10px;
-    border-bottom: 2px solid #CDCAC5;
+    border-bottom: 1px solid #CDCAC5;
 }
 #main h3 .subheading {
     font-size: 16px;
@@ -616,8 +616,16 @@ a.market-pane:hover {
 #ballots h3 {
     border-bottom: none;
 }
+#ballots .now-ball {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: rgb(55, 117, 171);
+    margin-bottom: -3px;
+    position: relative;
+}
 #ballots .period-progress {
-    height: 2px;
+    height: 1px;
     margin: 0px;
 }
 #ballots .ballot {

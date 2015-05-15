@@ -41,7 +41,8 @@ var Ballots = React.createClass({
 
     if (!currentBranch) return (<div />);
 
-    var periodDateRange = '';
+    var periodStartDate = '';
+    var periodEndDate = '';
     var currentPeriod = '-';
     var percentComplete = 0;
     var percentStyle = 'primary';
@@ -54,9 +55,11 @@ var Ballots = React.createClass({
       var periodStartMoment = utilities.blockToDate(startBlock);
 
       if (periodStartMoment.format('MMM Do') === periodEndMoment.format('MMM Do')) {
-        periodDateRange = periodStartMoment.format('MMM Do, HH:MM') + ' - ' + periodEndMoment.format('HH:MM');
+        periodStartDate = periodStartMoment.format('MMM Do, HH:MM');
+        periodEndDate = periodEndMoment.format('HH:MM');
       } else {
-        periodDateRange = periodStartMoment.format('MMM Do, HH:MM') + ' - ' + periodEndMoment.format('MMM Do, HH:MM');
+        periodStartDate = periodStartMoment.format('MMM Do, HH:MM');
+        periodEndDate = periodEndMoment.format('MMM Do, HH:MM');
       }
 
       currentPeriod = parseInt(currentBranch.currentPeriod);
@@ -96,13 +99,15 @@ var Ballots = React.createClass({
       );
     }
 
+    var ballPosition = percentComplete+'%';
     return (
       <div id="ballots">
-        <h3>Ballot</h3>
+        <h3>Ballot<span className='subheading pull-right'>Period { currentPeriod }</span></h3>
+        <div className='now-ball' style={{marginLeft: ballPosition}}></div>
         <ProgressBar bsStyle={ percentStyle } now={ percentComplete } className='period-progress' />
         <div className='subheading clearfix'>
-          Period { currentPeriod }
-          <span className='pull-right'>{ periodDateRange }</span>
+          { periodStartDate }
+          <span className='pull-right'>{ periodEndDate }</span>
         </div>
         { ballot }
       </div>
