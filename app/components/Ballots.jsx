@@ -30,6 +30,11 @@ var Ballots = React.createClass({
     }
   },
 
+  handleSubmitBallot: function() {
+
+    // TODO
+  },
+
   render: function () {
 
     var currentBranch = this.state.branchState.currentBranch;
@@ -64,47 +69,66 @@ var Ballots = React.createClass({
       }
     }
 
-    var ballotList = _.map(this.state.events, function (event) {
-      return (
-        <div key={ event.id }>
-          <Ballot event={ event } {...this.props} />
+    if (!this.state.events.length) {
+
+      var ballot = (
+        <div className='no-decisions'>
+          <h4>No decisions require your attention</h4>
         </div>
       );
-    }, this);
+
+    } else {
+
+      // build ballot
+      var decisionList = _.map(this.state.events, function (event) {
+        return (
+          <div key={ event.id } className="decision">
+            <Decision event={ event } {...this.props} />
+          </div>
+        );
+      }, this);
+
+      var ballot = (
+        <div className='ballot shadow clearfix'>
+          { decisionList }
+          <Button className='pull-right submit-ballot' bsStyle='primary' disabled onClick={ this.handleSubmitBallot }>Submit Ballot</Button>
+        </div>
+      );
+    }
 
     return (
       <div id="ballots">
-        <h3>Ballots</h3>
+        <h3>Ballot</h3>
         <ProgressBar bsStyle={ percentStyle } now={ percentComplete } className='period-progress' />
         <div className='subheading clearfix'>
           Period { currentPeriod }
           <span className='pull-right'>{ periodDateRange }</span>
         </div>
-        <div className='row'>
-          { ballotList }
-        </div>
+        { ballot }
       </div>
     );
   }
 });
 
-var Ballot = React.createClass({
+var Decision = React.createClass({
 
   render: function() {
 
     return (
-      <div className='col-xs-12'>
-        <div className='ballot shadow'>
-          <div className='row'>
-            <div className='col-md-8 col-sm-7'>
-              <h4>{ this.props.event.description }</h4>
+      <div className='row'>
+        <div className='col-xs-12'>
+          <h4>{ this.props.event.description }</h4>
+        </div>
+        <div className='col-xs-12'>
+          <div className="outcomes row">
+            <div className='col-sm-3'>
+              <Input name={ this.props.event.id } type="radio" ref="No" value="0" label="No" />
             </div>
-            <div className='col-md-4 col-sm-5'>
-              <div className="outcomes">
-                <Input name={ this.props.event.id } type="radio" ref="No" value="0" label="No" />
-                <Input name={ this.props.event.id } type="radio" ref="Ambiguous / Indeterminate" value="0.5" label="Ambiguous / Indeterminate" />
-                <Input name={ this.props.event.id } type="radio" ref="Yes" value="1" label="Yes" />
-              </div>
+            <div className='col-sm-6'>
+              <Input name={ this.props.event.id } type="radio" ref="Ambiguous / Indeterminate" value="0.5" label="Ambiguous / Indeterminate" />
+            </div>
+            <div className='col-sm-3'>
+              <Input name={ this.props.event.id } type="radio" ref="Yes" value="1" label="Yes" />
             </div>
           </div>
         </div>

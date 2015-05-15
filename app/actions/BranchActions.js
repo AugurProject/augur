@@ -31,7 +31,7 @@ var BranchActions = {
 
     // only load ballots if branch vote period is current
     var isCurrent = currentBranch.votePeriod === parseInt(currentBranch.currentPeriod) - 1 ? true : false;
-    var ballots = isCurrent ? ethereumClient.getEvents(parseInt(currentBranch.currentPeriod)) : [];
+    var ballots = isCurrent ? ethereumClient.getEvents(currentBranch.currentPeriod.toFixed(3)) : [];
 
     this.dispatch(constants.branch.LOAD_BALLOTS_SUCCESS, {
       ballots: ballots || []

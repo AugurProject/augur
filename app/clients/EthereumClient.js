@@ -210,7 +210,7 @@ EthereumClient.prototype.getEvents = function(period, branchId) {
   if (!period) return;
   branchId = branchId || this.defaultBranchId;
 
-  var events = _.map(Augur.getEvents(branchId, period-1), function(eventId) {
+  var events = _.map(Augur.getEvents(branchId, period), function(eventId) {
     return this.getEvent(eventId);
   }, this);
 

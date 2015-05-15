@@ -624,26 +624,40 @@ a.market-pane:hover {
     margin-left: 8px;
 }
 
-#ballots .ballot {
-    border-radius: 5px;
-    background-color: rgb(253, 253, 186);
-    margin: 0px 0px 20px 0px;
-    padding: 15px 15px;
-}
+
 #ballots h3 {
     border-bottom: none;
-}
-#ballots .ballot h4 {
-    margin-top: 3px;
 }
 #ballots .period-progress {
     height: 2px;
     margin: 0px;
 }
-#ballots .ballot .outcomes {
-    float: right;
-    padding: 0px 0px 0px 20px;
-    border-left: 1px solid rgb(217, 221, 154);
+#ballots .ballot {
+    border-radius: 5px;
+    background-color: rgb(253, 253, 186);
+    margin: 0px 0px 20px 0px;
+    padding: 0px;
+}
+#ballots .ballot .decision {
+    padding: 10px 10px 0px 10px;
+    border-bottom: 1px dotted #D0C173;
+}
+#ballots .ballot .decision:last-child {
+}
+#ballots .ballot .decision h4 {
+    margin-top: 3px;
+}
+#ballots .ballot .decision .outcomes {
+
+}
+#ballots .ballot button.submit-ballot {
+    margin-top: 15px;
+    border-top-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+#ballots .no-decisions {
+    text-align: center;
+    margin-top: 50px;
 }
 
 #alert {
