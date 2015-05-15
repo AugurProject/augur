@@ -286,57 +286,6 @@ nav .navbar-right li div {
     font-weight: 400;
 }
 
-
-.period {
-    margin-bottom: 30px;
-}
-.period .progress {
-    height: 4px;
-}
-.period .progress-bar.reveal {
-    background-color: rgb(239, 147, 5);
-}
-.period .progress-bar.svd {
-    background-color: #000;
-}
-.period #report {
-    display: none;
-}
-.period #report-decisions {
-    margin-bottom: 0px;
-}
-.period #report-decisions li {
-    background-color: rgb(255, 255, 228);
-}
-.period #report-decisions li:last-child {
-    border-bottom-right-radius: 0; 
-}
-.period p,
-.period label {
-    font-size: 14px;
-}
-.period .my-choice {
-    display: none;
-    font-weight: bold;
-    margin-bottom: 0px;
-}
-.period.reveal .my-choice,
-.period.svd .my-choice {
-    display: inline-block;
-}
-.period.reveal label,
-.period.svd label {
-    display: none;
-}
-.period h3 {
-    margin: 5px 0px 5px 0px;
-    font-size: 22px;
-}
-.period h3 .period-ending {
-    font-size: 16px;
-    margin-top: 6px;
-}
-
 .market-pane {
     color: #000;
     background-color: #fff;
@@ -628,6 +577,7 @@ a.market-pane:hover {
     font-weight: 200;
     color: #696969;
     text-transform: uppercase;
+    margin-right: 10px;
 }
 #account div.subheading .rep-balance {
     text-align: center;
@@ -635,9 +585,7 @@ a.market-pane:hover {
 #account div.subheading .ether-balance {
     text-align: right;
 }
-#account div.subheading
- button {
-    margin-left: 12px;
+#account div.subheading button {
     font-size: 12px;
     text-transform: uppercase;
     position: relative;
