@@ -225,6 +225,7 @@ EthereumClient.prototype.getEvent = function(eventId) {
   var event = Augur.getEventInfo(eventId);
   event.id = eventId;
 
+  // FIXME: Make this go away.
   if (event.expirationDate) {
     event.expirationBlock = event.expirationDate;
     delete event['expirationDate']
@@ -480,7 +481,7 @@ EthereumClient.prototype.addMarket = function(params, onSuccess) {
         utilities.log('new market successfully added');
         if (onSuccess) onSuccess(newMarket);
       },
-      
+
       onFailed: function (newMarket) {
         utilities.error("error adding new market")
         utilities.error(newMarket);

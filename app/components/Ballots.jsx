@@ -14,6 +14,7 @@ var Ballots = React.createClass({
 
   getInitialState: function () {
     return {
+      decisions: {}
     };
   },
 
@@ -21,18 +22,30 @@ var Ballots = React.createClass({
     var flux = this.getFlux();
     var account = flux.store('network').getAccount();
 
-    return {
+    var state = {
       account: account,
       asset: flux.store('asset').getState(),
       ethereumClient: flux.store('config').getEthereumClient(),
       branchState: flux.store('branch').getState(),
       events: flux.store('branch').getState().ballots
-    }
+    };
+
+    return state;
   },
 
   handleSubmitBallot: function() {
 
     // TODO
+  },
+
+  handleChangeDecision: function (eventId, decision) {
+    this.setState(function (previousState, currentProps) {
+      var decisions = _.clone(previousState.decisions);
+      decisions[eventId] = decision;
+      return {
+        decisions: decisions
+      };
+    });
   },
 
   render: function () {
@@ -86,7 +99,11 @@ var Ballots = React.createClass({
       var decisionList = _.map(this.state.events, function (event) {
         return (
           <div key={ event.id } className="decision">
-            <Decision event={ event } {...this.props} />
+            <Decision
+              event={ event }
+              decision={ this.state.decisions[event.id] }
+              onChange={ this.handleChangeDecision }
+              {...this.props} />
           </div>
         );
       }, this);
@@ -116,6 +133,18 @@ var Ballots = React.createClass({
 });
 
 var Decision = React.createClass({
+  propTypes: {
+    event: React.PropTypes.object.isRequired,
+    decision: React.PropTypes.number,
+    // onChange takes an event ID and a decision value as a float.
+    onChange: React.PropTypes.func.isRequired
+  },
+
+  handleChange: function (event) {
+    // The change event on radio buttons is fired only on the element that
+    // becomes checked, which is what we want.
+    this.props.onChange(this.props.event.id, parseFloat(event.target.value));
+  },
 
   render: function() {
 
@@ -127,13 +156,31 @@ var Decision = React.createClass({
         <div className='col-xs-12'>
           <div className="outcomes row">
             <div className='col-sm-3'>
-              <Input name={ this.props.event.id } type="radio" ref="No" value="0" label="No" />
+              <Input
+                name={ this.props.event.id }
+                type="radio"
+                value="0"
+                label="No"
+                checked={this.props.decision === 0}
+                onChange={this.handleChange} />
             </div>
             <div className='col-sm-6'>
-              <Input name={ this.props.event.id } type="radio" ref="Ambiguous / Indeterminate" value="0.5" label="Ambiguous / Indeterminate" />
+              <Input
+                name={ this.props.event.id }
+                type="radio"
+                value="0.5"
+                label="Ambiguous / Indeterminate"
+                checked={this.props.decision === 0.5}
+                onChange={this.handleChange} />
             </div>
             <div className='col-sm-3'>
-              <Input name={ this.props.event.id } type="radio" ref="Yes" value="1" label="Yes" />
+              <Input
+                name={ this.props.event.id }
+                type="radio"
+                value="1"
+                label="Yes"
+                checked={this.props.decision === 1}
+                onChange={this.handleChange} />
             </div>
           </div>
         </div>

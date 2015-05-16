@@ -19,7 +19,7 @@ config.browserify.build = {
     browserifyOptions: {
       extensions: ['.jsx'],
       transform: [
-        ['reactify', {'es6': true}],
+        ['babelify', {}],
         ['envify', config.envify.build]
       ]
     }
@@ -32,7 +32,7 @@ config.browserify.watch = _.merge({
   }
 }, config.browserify.build);
 config.browserify.watch.options.browserifyOptions.transform = [
-  ['reactify', {'es6': true}],
+  ['babelify', {}],
   ['envify', config.envify.debug]
 ];
 
