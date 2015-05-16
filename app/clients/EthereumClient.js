@@ -37,8 +37,8 @@ function EthereumClient(params) {
 
   _.defaults(this.addresses, constants.addresses);
 
- // var isConnected = Augur.connect({host: this.host});
-//  if (!isConnected) return false;
+  var isConnected = Augur.connect({host: 'localhost', 'port': 8545});
+  if (!isConnected) return false;
   
   this.web3.setProvider(new web3.providers.HttpProvider('http://'+this.host));
 }
