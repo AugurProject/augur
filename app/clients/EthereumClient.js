@@ -39,7 +39,7 @@ function EthereumClient(params) {
 
   var isConnected = Augur.connect({host: 'localhost', 'port': 8545});
   if (!isConnected) return false;
-  
+
   this.web3.setProvider(new web3.providers.HttpProvider('http://'+this.host));
 }
 
@@ -543,6 +543,10 @@ EthereumClient.prototype.buyShares = function (branchId, marketId, outcomeId, nu
 EthereumClient.prototype.sellShares = function (branchId, marketId, outcomeId, numShares, callback) {
 
   Augur.sellShares(branchId, marketId, outcomeId, numShares, null, callback);
+};
+
+EthereumClient.prototype.hashReport = function (decisions, salt) {
+  Augur.hashReport(decisions, salt);
 };
 
 module.exports = EthereumClient;

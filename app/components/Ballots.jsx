@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var React = require('react');
 var Fluxxor = require("fluxxor");
 var FluxMixin = Fluxxor.FluxMixin(React);
@@ -34,8 +35,13 @@ var Ballots = React.createClass({
   },
 
   handleSubmitBallot: function() {
+    this.getFlux().actions.ballot.hashBallot(
+      this.state.branchState.currentBranch.id,
+      this.state.branchState.currentBranch.votePeriod,
+      this.state.decisions
+    );
 
-    // TODO
+    // TODO: Make the storing of the decisions make the ballot go away.
   },
 
   handleChangeDecision: function (eventId, decision) {
@@ -108,10 +114,16 @@ var Ballots = React.createClass({
         );
       }, this);
 
+      var allDecisions = _.map(this.state.events, (event) => {
+        return this.state.decisions[event.id];
+      });
+      var isSubmitDisabled = _.any(allDecisions, _.isUndefined);
+      var disabledProp = isSubmitDisabled ? {disabled: true} : {};
+
       var ballot = (
         <div className='ballot shadow clearfix'>
           { decisionList }
-          <Button className='pull-right submit-ballot' bsStyle='primary' disabled onClick={ this.handleSubmitBallot }>Submit Ballot</Button>
+          <Button className='pull-right submit-ballot' bsStyle='primary' {...disabledProp} onClick={ this.handleSubmitBallot }>Submit Ballot</Button>
         </div>
       );
     }

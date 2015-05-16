@@ -22,6 +22,7 @@ var constants = require('./libs/constants');
 var utilities = require('./libs/utilities');
 
 var AssetActions = require('./actions/AssetActions');
+var BallotActions = require('./actions/BallotActions');
 var BranchActions = require('./actions/BranchActions');
 var ConfigActions = require('./actions/ConfigActions');
 var EventActions = require('./actions/EventActions');
@@ -31,6 +32,7 @@ var LogActions = require('./actions/LogActions');
 
 var actions = {
   asset: AssetActions,
+  ballot: BallotActions,
   branch: BranchActions,
   config: ConfigActions,
   event: EventActions,
