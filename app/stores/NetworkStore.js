@@ -29,13 +29,6 @@ var NetworkStore = Fluxxor.createStore({
     return state;
   },
 
-  /**
-   * Get the currently selected account.
-   *
-   * TODO: This currently returns the first account in the list, but users
-   * will eventually be able to choose an account, which will be stored as
-   * currentAccount in this store.
-   */
   getAccount: function () {
     if (_.isNull(state.primaryAccount)) {
       return null;
