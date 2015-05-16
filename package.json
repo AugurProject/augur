@@ -23,10 +23,8 @@
     ],
     "transform": [
       [
-        "reactify",
-        {
-          "es6": true
-        }
+        "babelify",
+        {}
       ]
     ]
   },
