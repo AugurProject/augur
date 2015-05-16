@@ -37,6 +37,9 @@ function EthereumClient(params) {
 
   _.defaults(this.addresses, constants.addresses);
 
+ // var isConnected = Augur.connect({host: this.host});
+//  if (!isConnected) return false;
+  
   this.web3.setProvider(new web3.providers.HttpProvider('http://'+this.host));
 }
 
@@ -343,7 +346,7 @@ EthereumClient.prototype.getMarkets = function(branchId, onProgress) {
       progress.current += 1;
       onProgress(progress);
     }
-    
+
     return this.getMarket(marketId, branchId);
 
   }, this);
@@ -522,13 +525,11 @@ var getSimulationArgs = function (marketId, outcomeId, numShares, callback) {
 
 EthereumClient.prototype.getSimulatedBuy = function (marketId, outcomeId, numShares, callback) {
   var args = getSimulationArgs(marketId, outcomeId, numShares, callback);
-  console.log(args);
   Augur.getSimulatedBuy.apply(null, args);
 };
 
 EthereumClient.prototype.getSimulatedSell = function (marketId, outcomeId, numShares, callback) {
   var args = getSimulationArgs(marketId, outcomeId, numShares, callback);
-  console.log(args);
   Augur.getSimulatedSell.apply(null, args);
 };
 
