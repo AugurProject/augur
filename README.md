@@ -38,8 +38,7 @@ grunt browserify:build
 
 ### For development
 
-use `grunt watchify` to have grunt watch for changes as well as build in a debug mode
-do this if you're stuck on a nonloading screen
+use `grunt watchify` to have grunt watch for changes as well as build in a debug mode.  Do this if you're stuck on a nonloading screen
 
 ## Features
 
