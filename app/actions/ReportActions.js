@@ -13,12 +13,12 @@ var byteArrayToNumber = function (bytes) {
   });
 };
 
-var BallotActions = {
+var ReportActions = {
 
   /**
    * Broadcast the hash of the ballot and store the ballot and salt.
    */
-  hashBallot: function (branchId, votePeriod, decisions) {
+  hashReport: function (branchId, votePeriod, decisions) {
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var saltBytes = secureRandom(32);
     var saltNumber = byteArrayToNumber(saltBytes);
@@ -30,4 +30,4 @@ var BallotActions = {
   }
 };
 
-module.exports = BallotActions;
+module.exports = ReportActions;

@@ -34,8 +34,8 @@ var Ballots = React.createClass({
     return state;
   },
 
-  handleSubmitBallot: function() {
-    this.getFlux().actions.ballot.hashBallot(
+  handleSubmitReport: function() {
+    this.getFlux().actions.report.hashReport(
       this.state.branchState.currentBranch.id,
       this.state.branchState.currentBranch.votePeriod,
       this.state.decisions
@@ -123,7 +123,7 @@ var Ballots = React.createClass({
       var ballot = (
         <div className='ballot shadow clearfix'>
           { decisionList }
-          <Button className='pull-right submit-ballot' bsStyle='primary' {...disabledProp} onClick={ this.handleSubmitBallot }>Submit Ballot</Button>
+          <Button className='pull-right submit-ballot' bsStyle='primary' {...disabledProp} onClick={ this.handleSubmitReport }>Submit Ballot</Button>
         </div>
       );
     }
