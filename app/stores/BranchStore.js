@@ -3,7 +3,8 @@ var constants = require('../libs/constants');
 
 var state = {
   branches: {},
-  currentBranch: { id: process.env.AUGUR_BRANCH_ID || constants.DEV_BRANCH_ID },
+  // currentBranch: { id: process.env.AUGUR_BRANCH_ID || constants.DEV_BRANCH_ID },
+  currentBranch: { id: constants.DEV_BRANCH_ID },
   ballots: []
 };
 
