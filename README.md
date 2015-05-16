@@ -30,7 +30,7 @@ npm install
 grunt browserify:build
 ```
 
-### Running augur-clint
+### Running augur-client
 
 `npm start`
 
