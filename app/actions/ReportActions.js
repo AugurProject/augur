@@ -4,29 +4,33 @@ var secureRandom = require('secure-random');
 var constants = require('../libs/constants');
 
 
-var byteArrayToNumber = function (bytes) {
-  var exponents = _.range(bytes.length).map(i => i * 8);
-  var bytesWithExponents = _.zip(bytes, exponents);
-  return _.reduce(bytesWithExponents, function (sum, byteAndExponent) {
-    var [byte, exponent] = byteAndExponent;
-    return byte * Math.pow(2, exponent) + sum;
-  });
+var bytesToHex = function (bytes) {
+  return '0x' + _.reduce(bytes, function (hexString, byte) {
+    return hexString + byte.toString(16);
+  }, '');
 };
 
 var ReportActions = {
-
   /**
-   * Broadcast the hash of the ballot and store the ballot and salt.
+   * Broadcast the hash of the report and store the report and salt.
    */
   hashReport: function (branchId, votePeriod, decisions) {
-    var ethereumClient = this.flux.store('config').getEthereumClient();
     var saltBytes = secureRandom(32);
-    var saltNumber = byteArrayToNumber(saltBytes);
-    ethereumClient.hashReport(decisions, saltNumber);
+    var salt = bytesToHex(saltBytes);
 
-    // localStorage.write(branchId, votePeriod, decisions, saltNumber)
+    var reportsString = localStorage.getItem(constants.report.REPORTS_STORAGE);
+    var reports = reportsString ? JSON.parse(reportsString) : [];
+    reports.push({
+      branchId,
+      votePeriod,
+      decisions,
+      salt
+    });
+    localStorage.setItem(constants.report.REPORTS_STORAGE, JSON.stringify(reports));
 
-    // clear pending ballot
+    var ethereumClient = this.flux.store('config').getEthereumClient();
+    ethereumClient.hashReport(decisions, salt);
+    this.dispatch(constants.report.UPDATE_REPORTS, {reports});
   }
 };
 
