@@ -16,6 +16,8 @@ var BranchActions = {
 
     // If the current branch is no longer in the set of branches, update the
     // current branch to one that exists.
+    // FIXME: This was written when branches was an array of IDs, but it's
+    // now branch objects keyed by ID, so this isn't working.
     var currentBranchExists = _.some(branches, function (branch) {
       return branch === currentBranch;
     });
@@ -35,7 +37,7 @@ var BranchActions = {
 
     this.dispatch(constants.branch.LOAD_BALLOTS_SUCCESS, {
       ballots: ballots || []
-    }); 
+    });
   },
 
   updateCurrentBranch: function(id) {
@@ -52,6 +54,7 @@ var BranchActions = {
     var votePeriod = ethereumClient.getVotePeriod(id);
     //var currentQuorum = ethereumClient.checkQuorum(id);
 
+    // TODO: Reconcile this object with what EthereumClient.getBranches returns.
     var currentBranch = {
       id: id,
       currentPeriod: currentBlock / votePeriod[1],

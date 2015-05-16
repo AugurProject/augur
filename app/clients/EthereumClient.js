@@ -222,6 +222,7 @@ EthereumClient.prototype.getEvent = function(eventId) {
   var event = Augur.getEventInfo(eventId);
   event.id = eventId;
 
+  // FIXME: Make this go away.
   if (event.expirationDate) {
     event.expirationBlock = event.expirationDate;
     delete event['expirationDate']
@@ -343,7 +344,7 @@ EthereumClient.prototype.getMarkets = function(branchId, onProgress) {
       progress.current += 1;
       onProgress(progress);
     }
-    
+
     return this.getMarket(marketId, branchId);
 
   }, this);
@@ -477,7 +478,7 @@ EthereumClient.prototype.addMarket = function(params, onSuccess) {
         utilities.log('new market successfully added');
         if (onSuccess) onSuccess(newMarket);
       },
-      
+
       onFailed: function (newMarket) {
         utilities.error("error adding new market")
         utilities.error(newMarket);
