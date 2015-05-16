@@ -10,6 +10,7 @@ var FluxMixin = Fluxxor.FluxMixin(React),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
 var ReactBootstrap = require('react-bootstrap');
+var ProgressBar = ReactBootstrap.ProgressBar;
 var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
 var Modal = ReactBootstrap.Modal;
 
@@ -35,9 +36,7 @@ var AugurApp = React.createClass({
     var flux = this.getFlux();
 
     // set app status (stopped, loading, running) from network & config state
-    if (flux.store('network').getState().ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED) {
-      this.setState({status: 'stopped'});
-    } else {
+    if (parseInt(flux.store('config').getState().percentLoaded) === 100) {
       this.setState({status: 'running'});
     }
 
@@ -61,19 +60,10 @@ var AugurApp = React.createClass({
 
     var loadingProgress = <span />;
     
-    if (this.state.config.loadingPercent) {
+    if (this.state.config.percentLoaded) {
 
       loadingProgress = (
-        <div className="progress">
-            <div 
-              className="progress-bar progress-bar-striped active" 
-              role="progressbar" 
-              aria-valuenow="0" 
-              aria-valuemin="0" 
-              aria-valuemax="100" 
-              style={{'width': this.state.config.percentLoaded+'%'}}
-            ></div>
-        </div>
+        <ProgressBar now={ this.state.config.percentLoaded } className='loading-progress' />
       );
     } 
 

@@ -21,7 +21,14 @@ var ConfigActions = {
     });
   },
 
-  loadEthereumClient: function () {
+  updatePercentLoaded: function(percent) {
+
+    this.dispatch(constants.config.UPDATE_PERCENT_LOADED_SUCCESS, { 
+      percentLoaded: percent
+    });
+  },
+
+  loadEthereumClient: function() {
 
     var configState = this.flux.store('config').getState();
 

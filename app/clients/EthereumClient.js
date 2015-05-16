@@ -327,21 +327,31 @@ EthereumClient.prototype.getMarketsAsync = function (branchId) {
   });
 };
 
-EthereumClient.prototype.getMarkets = function (branchId) {
+EthereumClient.prototype.getMarkets = function(branchId, onProgress) {
 
   branchId = branchId || this.defaultBranchId;
   var validMarkets = _.filter(Augur.getMarkets(branchId), function (marketId) {
     return !_.contains(blacklist.markets, marketId.toString(16));
   });
 
+  var progress = {total: validMarkets.length, current: 0};
+
   var marketList = _.map(validMarkets, function (marketId) {
+
+    // update/call progress
+    if (onProgress) {
+      progress.current += 1;
+      onProgress(progress);
+    }
+    
     return this.getMarket(marketId, branchId);
+
   }, this);
 
   return _.indexBy(marketList, 'id');
 };
 
-EthereumClient.prototype.getMarket = function (marketId, branchId) {
+EthereumClient.prototype.getMarket = function(marketId, branchId) {
 
   var events = Augur.getMarketEvents(marketId);
   var description = Augur.getDescription(marketId);

@@ -10,7 +10,11 @@ var MarketActions = {
 
     var branchId = branchState.currentBranch.id;
     var ethereumClient = configState.ethereumClient;
-    var markets = ethereumClient.getMarkets(branchId);
+    var self = this;
+    var markets = ethereumClient.getMarkets(branchId, function(progress) {
+      var percent = ((progress.current/progress.total) * 100).toFixed(2);
+      self.flux.actions.config.updatePercentLoaded(percent);
+    });
 
     this.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {markets: markets});
   },

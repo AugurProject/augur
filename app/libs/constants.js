@@ -18,7 +18,7 @@ module.exports = {
     UPDATE_ETHEREUM_CLIENT_SUCCESS: null,
     UPDATE_ETHEREUM_CLIENT_FAILED: null,
     UPDATE_DEBUG: null,
-    UPDATE_PERCENT_LOADED: null
+    UPDATE_PERCENT_LOADED_SUCCESS: null
   }),
   network: keyMirror({
     UPDATE_NETWORK: null,

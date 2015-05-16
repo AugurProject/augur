@@ -14,7 +14,7 @@ var ConfigStore = Fluxxor.createStore({
       constants.config.UPDATE_ETHEREUM_CLIENT_SUCCESS, this.handleUpdateEthereumClientSuccess,
       constants.config.UPDATE_ETHEREUM_CLIENT_FAILED, this.handleUpdateEthereumClientFailed,
       constants.config.UPDATE_DEBUG, this.handleUpdateDebug,
-      constants.config.UPDATE_PERCENT_LOADED, this.handleUpdatePercentLoaded
+      constants.config.UPDATE_PERCENT_LOADED_SUCCESS, this.handleUpdatePercentLoadedSuccess
     );
   },
 
@@ -23,11 +23,10 @@ var ConfigStore = Fluxxor.createStore({
   },
 
   getEthereumClient: function () {
-
     return state.ethereumClient;
   },
 
-  handleUpdatePercentLoaded: function (payload) {
+  handleUpdatePercentLoadedSuccess: function (payload) {
     state.percentLoaded = payload.percentLoaded
     this.emit(constants.CHANGE_EVENT);
   },
