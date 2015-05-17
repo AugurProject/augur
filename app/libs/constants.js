@@ -53,5 +53,9 @@ module.exports = {
   }),
   report: keyMirror({
     REPORTS_STORAGE: null
+  }),
+  transaction: keyMirror({
+    ADD_TRANSACTION: null,
+    UPDATE_TRANSACTIONS: null
   })
 };
