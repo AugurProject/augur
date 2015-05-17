@@ -18,20 +18,25 @@ var ReportActions = {
     var saltBytes = secureRandom(32);
     var salt = bytesToHex(saltBytes);
 
-    var reportsString = localStorage.getItem(constants.report.REPORTS_STORAGE);
-    var reports = reportsString ? JSON.parse(reportsString) : [];
-    reports.push({
+    var pendingReports = this.flux.store('branch').getState().pendingReports;
+    pendingReports.push({
       branchId,
       votePeriod,
       decisions,
       salt
     });
-    localStorage.setItem(constants.report.REPORTS_STORAGE, JSON.stringify(reports));
+    localStorage.setItem(constants.report.REPORTS_STORAGE, JSON.stringify(pendingReports));
 
     var ethereumClient = this.flux.store('config').getEthereumClient();
     ethereumClient.hashReport(decisions, salt);
-    this.dispatch(constants.report.UPDATE_REPORTS, {reports});
-  }
+    this.dispatch(constants.branch.UPDATE_PENDING_REPORTS, {pendingReports});
+  },
+
+  loadPendingReports: function () {
+    var reportsString = localStorage.getItem(constants.report.REPORTS_STORAGE);
+    var pendingReports = reportsString ? JSON.parse(reportsString) : [];
+    this.dispatch(constants.branch.LOAD_PENDING_REPORTS_SUCCESS, {pendingReports});
+  },
 };
 
 module.exports = ReportActions;

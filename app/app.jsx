@@ -63,7 +63,7 @@ var AccountDetails = require('./components/AccountDetails');
 var Ballots = require('./components/Ballots');
 var Outcomes = require('./components/Outcomes');
 
-var flux = new Fluxxor.Flux(stores, actions);
+window.flux = new Fluxxor.Flux(stores, actions);
 
 utilities.log('using branch ' + flux.store('branch').getState().currentBranch.id);
 

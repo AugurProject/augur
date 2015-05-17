@@ -5,7 +5,8 @@ var state = {
   branches: {},
   // currentBranch: { id: process.env.AUGUR_BRANCH_ID || constants.DEV_BRANCH_ID },
   currentBranch: { id: constants.DEV_BRANCH_ID },
-  eventsToReport: []
+  eventsToReport: [],
+  pendingReports: []
 };
 
 var BranchStore = Fluxxor.createStore({
@@ -14,7 +15,9 @@ var BranchStore = Fluxxor.createStore({
     this.bindActions(
       constants.branch.LOAD_BRANCHES_SUCCESS, this.handleLoadBranchesSuccess,
       constants.branch.LOAD_EVENTS_TO_REPORT_SUCCESS, this.handleLoadEventsToReportSuccess,
-      constants.branch.LOAD_CURRENT_BRANCH_SUCCESS, this.handleUpdateCurrentBranchSuccess
+      constants.branch.LOAD_PENDING_REPORTS_SUCCESS, this.handleLoadPendingReportsSuccess,
+      constants.branch.LOAD_CURRENT_BRANCH_SUCCESS, this.handleUpdateCurrentBranchSuccess,
+      constants.branch.UPDATE_PENDING_REPORTS, this.handleLoadPendingReportsSuccess
     );
   },
 
@@ -29,6 +32,11 @@ var BranchStore = Fluxxor.createStore({
 
   handleLoadEventsToReportSuccess: function (payload) {
     state.eventsToReport = payload.eventsToReport;
+    this.emit(constants.CHANGE_EVENT);
+  },
+
+  handleLoadPendingReportsSuccess: function (payload) {
+    state.pendingReports = payload.pendingReports;
     this.emit(constants.CHANGE_EVENT);
   },
 
