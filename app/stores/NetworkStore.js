@@ -12,7 +12,8 @@ var state = {
   gasPrice: null,
   ethereumStatus: null,
   mining: null,
-  hashrate: null
+  hashrate: null,
+  isMonitoringBlocks: false
 };
 
 var NetworkStore = Fluxxor.createStore({
@@ -21,7 +22,8 @@ var NetworkStore = Fluxxor.createStore({
 
     this.bindActions(
       constants.network.UPDATE_NETWORK, this.handleUpdateNetwork,
-      constants.network.UPDATE_ETHEREUM_STATUS, this.handleUpdateEthereumStatus
+      constants.network.UPDATE_ETHEREUM_STATUS, this.handleUpdateEthereumStatus,
+      constants.network.UPDATE_IS_MONITORING_BLOCKS, this.handleUpdateIsMonitoringBlocks
     );
   },
 
@@ -49,6 +51,11 @@ var NetworkStore = Fluxxor.createStore({
 
   handleUpdateEthereumStatus: function (payload) {
     state.ethereumStatus = payload.ethereumStatus;
+    this.emit(constants.CHANGE_EVENT);
+  },
+
+  handleUpdateIsMonitoringBlocks: function (payload) {
+    state.isMonitoringBlocks = payload.isMonitoringBlocks;
     this.emit(constants.CHANGE_EVENT);
   }
 });

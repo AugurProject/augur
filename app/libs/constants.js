@@ -21,8 +21,9 @@ module.exports = {
     UPDATE_PERCENT_LOADED_SUCCESS: null
   }),
   network: keyMirror({
-    UPDATE_NETWORK: null,
     UPDATE_ETHEREUM_STATUS: null,
+    UPDATE_IS_MONITORING_BLOCKS: null,
+    UPDATE_NETWORK: null,
     ETHEREUM_STATUS_CONNECTED: null,
     ETHEREUM_STATUS_FAILED: null,
     ETHEREUM_STATUS_LOADING: null

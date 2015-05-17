@@ -37,16 +37,16 @@ function EthereumClient(params) {
 
   _.defaults(this.addresses, constants.addresses);
 
-  var isConnected = Augur.connect({host: 'localhost', 'port': 8545});
-  if (!isConnected) return false;
+  Augur.connect({host: 'localhost', 'port': 8545});
+  this.account = Augur.coinbase;
 
   this.web3.setProvider(new web3.providers.HttpProvider('http://'+this.host));
 }
 
 EthereumClient.prototype.isAvailable = function() {
-
     try {
-      this.account = Augur.coinbase;
+      // Attempt an RPC call that should fail if the daemon is unreachable.
+      Augur.blockNumber();
     } catch(err) {
       return false;
     }
