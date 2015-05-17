@@ -37,7 +37,7 @@ module.exports = {
   branch: keyMirror({
     LOAD_BRANCHES_SUCCESS: null,
     LOAD_CURRENT_BRANCH_SUCCESS: null,
-    LOAD_BALLOTS_SUCCESS: null
+    LOAD_EVENTS_TO_REPORT_SUCCESS: null
   }),
   market: keyMirror({
     LOAD_MARKETS_SUCCESS: null,

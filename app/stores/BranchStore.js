@@ -5,7 +5,7 @@ var state = {
   branches: {},
   // currentBranch: { id: process.env.AUGUR_BRANCH_ID || constants.DEV_BRANCH_ID },
   currentBranch: { id: constants.DEV_BRANCH_ID },
-  ballots: []
+  eventsToReport: []
 };
 
 var BranchStore = Fluxxor.createStore({
@@ -13,7 +13,7 @@ var BranchStore = Fluxxor.createStore({
   initialize: function () {
     this.bindActions(
       constants.branch.LOAD_BRANCHES_SUCCESS, this.handleLoadBranchesSuccess,
-      constants.branch.LOAD_BALLOTS_SUCCESS, this.handleLoadBallotsSuccess,
+      constants.branch.LOAD_EVENTS_TO_REPORT_SUCCESS, this.handleLoadEventsToReportSuccess,
       constants.branch.LOAD_CURRENT_BRANCH_SUCCESS, this.handleUpdateCurrentBranchSuccess
     );
   },
@@ -27,8 +27,8 @@ var BranchStore = Fluxxor.createStore({
     this.emit(constants.CHANGE_EVENT);
   },
 
-  handleLoadBallotsSuccess: function (payload) {
-    state.ballots = payload.ballots;
+  handleLoadEventsToReportSuccess: function (payload) {
+    state.eventsToReport = payload.eventsToReport;
     this.emit(constants.CHANGE_EVENT);
   },
 

@@ -19,18 +19,17 @@ var BranchActions = {
    *
    * TODO: Load events across all branched that need reports.
    */
-  loadBallots: function() {
+  loadEventsToReport: function() {
 
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var currentBranch = this.flux.store('branch').getState().currentBranch;
 
-    // only load ballots if branch vote period is current
-    console.log('currentPeriod: ', currentBranch.currentPeriod);
+    // only load events if branch vote period is current
     var isCurrent = currentBranch.votePeriod === parseInt(currentBranch.currentPeriod) - 1 ? true : false;
-    var ballots = isCurrent ? ethereumClient.getEvents(currentBranch.currentPeriod.toFixed(3)) : [];
+    var events = isCurrent ? ethereumClient.getEvents(currentBranch.currentPeriod.toFixed(3)) : [];
 
-    this.dispatch(constants.branch.LOAD_BALLOTS_SUCCESS, {
-      ballots: ballots || []
+    this.dispatch(constants.branch.LOAD_EVENTS_TO_REPORT_SUCCESS, {
+      eventsToReport: events || []
     });
   },
 

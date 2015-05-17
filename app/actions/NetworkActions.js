@@ -77,7 +77,7 @@ var NetworkActions = {
     this.flux.actions.branch.loadBranches();
     this.flux.actions.branch.loadCurrentBranch();
     this.flux.actions.market.loadMarkets();
-    this.flux.actions.branch.loadBallots();
+    this.flux.actions.branch.loadEventsToReport();
   },
 
   /**
@@ -89,8 +89,8 @@ var NetworkActions = {
     // We pull the branch's block-dependent period information from
     // contract calls that need to be called each block.
     this.flux.actions.branch.loadCurrentBranch();
-    // TODO: We can skip loading ballots if the voting period hasn't changed.
-    this.flux.actions.branch.loadBallots();
+    // TODO: We can skip loading events to report if the voting period hasn't changed.
+    this.flux.actions.branch.loadEventsToReport();
 
     var currentBranch = this.flux.store('branch').getState().currentBranch;
     ethereumClient.checkQuorum(currentBranch.id);
