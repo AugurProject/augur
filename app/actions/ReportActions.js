@@ -25,10 +25,15 @@ var ReportActions = {
       decisions,
       salt
     });
+    // TODO: Encrypt the reports so malware can't access them and steal
+    // reputation.
     localStorage.setItem(constants.report.REPORTS_STORAGE, JSON.stringify(pendingReports));
 
+    // Hash the report and submit it to the network.
     var ethereumClient = this.flux.store('config').getEthereumClient();
-    ethereumClient.hashReport(decisions, salt);
+    var hash = ethereumClient.hashReport(decisions, salt);
+    ethereumClient.submitReportHash(branchId, hash, votePeriod);
+
     this.dispatch(constants.branch.UPDATE_PENDING_REPORTS, {pendingReports});
   },
 

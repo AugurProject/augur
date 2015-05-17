@@ -551,5 +551,9 @@ EthereumClient.prototype.hashReport = function (decisions, salt) {
   Augur.hashReport(decisions, salt);
 };
 
+EthereumClient.prototype.submitReportHash = function (branchId, hash, votePeriod) {
+  Augur.submitReportHash(branchId, hash, votePeriod);
+}
+
 module.exports = EthereumClient;
 
