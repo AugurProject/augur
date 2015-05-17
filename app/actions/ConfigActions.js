@@ -23,20 +23,14 @@ var ConfigActions = {
 
   updatePercentLoaded: function(percent) {
 
-    this.dispatch(constants.config.UPDATE_PERCENT_LOADED_SUCCESS, { 
+    this.dispatch(constants.config.UPDATE_PERCENT_LOADED_SUCCESS, {
       percentLoaded: percent
     });
   },
 
-  loadEthereumClient: function() {
-
-    var configState = this.flux.store('config').getState();
-
+  initializeState: function() {
     this.flux.actions.config.updateEthereumClient();
-
     this.flux.actions.network.checkNetwork();
-    this.flux.actions.network.updateNetwork();
-    this.flux.actions.branch.updateCurrentBranch(configState.rootBranchId);
   }
 };
 

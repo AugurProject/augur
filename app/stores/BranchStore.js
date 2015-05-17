@@ -14,7 +14,7 @@ var BranchStore = Fluxxor.createStore({
     this.bindActions(
       constants.branch.LOAD_BRANCHES_SUCCESS, this.handleLoadBranchesSuccess,
       constants.branch.LOAD_BALLOTS_SUCCESS, this.handleLoadBallotsSuccess,
-      constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, this.handleUpdateCurrentBranchSuccess
+      constants.branch.LOAD_CURRENT_BRANCH_SUCCESS, this.handleUpdateCurrentBranchSuccess
     );
   },
 
@@ -34,8 +34,6 @@ var BranchStore = Fluxxor.createStore({
 
   handleUpdateCurrentBranchSuccess: function (payload) {
     state.currentBranch = payload.currentBranch;
-    state.currentVotePeriod = payload.currentVotePeriod;
-    state.currentVotePeriodLength = payload.currentVotePeriodLength;
     this.emit(constants.CHANGE_EVENT);
   }
 });

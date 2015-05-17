@@ -245,6 +245,8 @@ EthereumClient.prototype.checkQuorum = function(branchId) {
   var votePeriod =  Augur.getVotePeriod(branchId).toNumber();
 
   if (votePeriod < (currentPeriod - 1)) {
+    // TODO: Avoid sending duplicate transactions if we've sent a dispatch
+    // transaction that hasn't been included in a block yet.
 
     utilities.log('branch '+branchId+' behind '+(currentPeriod-votePeriod)+' periods. calling dispatch.');
 

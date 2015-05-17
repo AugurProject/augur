@@ -23,7 +23,7 @@ module.exports = {
   network: keyMirror({
     UPDATE_ETHEREUM_STATUS: null,
     UPDATE_IS_MONITORING_BLOCKS: null,
-    UPDATE_NETWORK: null,
+    LOAD_NETWORK: null,
     ETHEREUM_STATUS_CONNECTED: null,
     ETHEREUM_STATUS_FAILED: null,
     ETHEREUM_STATUS_LOADING: null
@@ -36,7 +36,7 @@ module.exports = {
   }),
   branch: keyMirror({
     LOAD_BRANCHES_SUCCESS: null,
-    UPDATE_CURRENT_BRANCH_SUCCESS: null,
+    LOAD_CURRENT_BRANCH_SUCCESS: null,
     LOAD_BALLOTS_SUCCESS: null
   }),
   market: keyMirror({

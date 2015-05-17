@@ -52,12 +52,12 @@ var NetworkActions = {
     setTimeout(this.flux.actions.network.checkNetwork, 3000);
   },
 
-  updateNetwork: function () {
+  loadNetwork: function () {
 
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var networkStats = ethereumClient.getStats();
 
-    this.dispatch(constants.network.UPDATE_NETWORK, {
+    this.dispatch(constants.network.LOAD_NETWORK, {
       accounts: ethereumClient.getAccounts(),
       primaryAccount: ethereumClient.getPrimaryAccount(),
       peerCount: networkStats.peerCount,
@@ -66,34 +66,41 @@ var NetworkActions = {
       mining: networkStats.mining,
       hashrate: networkStats.hashrate
     });
+  },
 
-    // the account assets may have changed. reload.
+  /**
+   * Load all of the application's data, particularly during initialization.
+   */
+  loadEverything: function () {
+    this.flux.actions.network.loadNetwork();
     this.flux.actions.asset.loadAssets();
+    this.flux.actions.branch.loadBranches();
+    this.flux.actions.branch.loadCurrentBranch();
+    this.flux.actions.market.loadMarkets();
+    this.flux.actions.branch.loadBallots();
+  },
 
-    this.flux.actions.branch.updateCurrentBranch();
-    //this.flux.actions.event.updateEvents();
-
-    // TODO: the following methods should only be called on period change to be nicer
+  /**
+   * Update data that should change over time in the UI.
+   */
+  onNewBlock: function () {
+    this.flux.actions.network.loadNetwork();
+    this.flux.actions.asset.loadAssets();
+    // We pull the branch's block-dependent period information from
+    // contract calls that need to be called each block.
+    this.flux.actions.branch.loadCurrentBranch();
+    // TODO: We can skip loading ballots if the voting period hasn't changed.
     this.flux.actions.branch.loadBallots();
 
     var currentBranch = this.flux.store('branch').getState().currentBranch;
     ethereumClient.checkQuorum(currentBranch.id);
   },
 
-  loadEverything: function () {
-    this.flux.actions.network.updateNetwork();
-    this.flux.actions.asset.loadAssets();
-    this.flux.actions.branch.loadBranches();
-    this.flux.actions.market.loadMarkets();
-    this.flux.actions.branch.loadBallots();
-  },
-
   startMonitoring: function () {
     var networkState = this.flux.store('network').getState()
     if (!networkState.isMonitoringBlocks) {
       var ethereumClient = this.flux.store('config').getEthereumClient();
-      ethereumClient.startMonitoring(this.flux.actions.network.updateNetwork);
-      // TODO: Update more than just the network data on each block.
+      ethereumClient.startMonitoring(this.flux.actions.network.onNewBlock);
     }
   }
 };

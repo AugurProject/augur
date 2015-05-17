@@ -52,20 +52,20 @@ var AugurApp = React.createClass({
 
   componentDidMount: function() {
 
-    // start the ethereum client
-    this.getFlux().actions.config.loadEthereumClient();
+    // Initialize the EthereumClient and load the current Augur data.
+    this.getFlux().actions.config.initializeState();
   },
 
   getLoadingProgress: function() {
 
     var loadingProgress = <span />;
-    
+
     if (this.state.config.percentLoaded) {
 
       loadingProgress = (
         <ProgressBar now={ this.state.config.percentLoaded } className='loading-progress' />
       );
-    } 
+    }
 
     return loadingProgress
   },
@@ -148,7 +148,7 @@ var ErrorModal = React.createClass({
 
   getInitialState: function () {
 
-    return { 
+    return {
       isModalOpen: false
     }
   },
