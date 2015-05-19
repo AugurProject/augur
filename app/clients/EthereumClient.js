@@ -231,12 +231,6 @@ EthereumClient.prototype.getEvent = function(eventId) {
   var event = Augur.getEventInfo(eventId);
   event.id = eventId;
 
-  // FIXME: Make this go away.
-  if (event.expirationDate) {
-    event.expirationBlock = event.expirationDate;
-    delete event['expirationDate']
-  }
-
   return event;
 };
 
