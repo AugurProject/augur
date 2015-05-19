@@ -11,6 +11,12 @@ var bytesToHex = function (bytes) {
 };
 
 var ReportActions = {
+  storeReports: function (reports) {
+    // TODO: Encrypt the reports so malware can't access them and steal
+    // reputation.
+    localStorage.setItem(constants.report.REPORTS_STORAGE, JSON.stringify(reports));
+  },
+
   /**
    * Broadcast the hash of the report and store the report and salt.
    */
@@ -23,18 +29,57 @@ var ReportActions = {
       branchId,
       votePeriod,
       decisions,
-      salt
+      salt,
+      reported: false
     });
-    // TODO: Encrypt the reports so malware can't access them and steal
-    // reputation.
-    localStorage.setItem(constants.report.REPORTS_STORAGE, JSON.stringify(pendingReports));
+    this.flux.actions.report.storeReports(pendingReports);
 
     // Hash the report and submit it to the network.
     var ethereumClient = this.flux.store('config').getEthereumClient();
-    var hash = ethereumClient.hashReport(decisions, salt);
-    ethereumClient.submitReportHash(branchId, hash, votePeriod);
+    var hash = Augur.hashReport(decisions, salt);
+    Augur.submitReportHash(branchId, hash, votePeriod);
 
     this.dispatch(constants.branch.UPDATE_PENDING_REPORTS, {pendingReports});
+  },
+
+  /**
+   * Submit the actual report data.
+   *
+   * @param report {Object} branchId, votePeriod, decisions and salt.
+   */
+  submitReport: function (report) {
+    return Augur.report(report.branchId, report.decisions, report.votePeriod, report.salt);
+  },
+
+  /**
+   * Submit any reports that haven't been submitted and are in the last half of
+   * their reporting period.
+   */
+  submitQualifiedReports: function () {
+    let currentBlock = this.flux.store('network').getState().blockNumber;
+    let ethereumClient = this.flux.store('config').getEthereumClient();
+    let reports = this.flux.store('branch').getState().pendingReports;
+    let unsentReports = _.filter(reports, r => !r.reported);
+    let didSendReports = false;
+
+    _.forEach(unsentReports, (report) => {
+      let [votePeriod, periodLength] = ethereumClient.getVotePeriod(report.branchId);
+      let votePeriodBlock = currentBlock - (votePeriod * periodLength);
+      let shouldSend = votePeriodBlock > (votePeriod / 2);
+
+      if (shouldSend) {
+        console.log('Sending report for period ', votePeriod);
+        this.flux.actions.submitReport(report);
+        report.reported = true;
+        didSendReports = true;
+      }
+    });
+
+    if (didSendReports) {
+      // Update localStorage and the stores with the mutated reports array.
+      this.flux.actions.report.storeReports(reports);
+      this.dispatch(constants.branch.LOAD_PENDING_REPORTS_SUCCESS, {pendingReports: reports});
+    }
   },
 
   loadPendingReports: function () {

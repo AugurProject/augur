@@ -93,6 +93,7 @@ var NetworkActions = {
     // TODO: We can skip loading events to report if the voting period hasn't changed.
     this.flux.actions.branch.loadEventsToReport();
 
+    this.flux.actions.report.submitQualifiedReports();
     var currentBranch = this.flux.store('branch').getState().currentBranch;
     ethereumClient.checkQuorum(currentBranch.id);
   },
