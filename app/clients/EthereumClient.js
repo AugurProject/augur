@@ -155,7 +155,13 @@ EthereumClient.prototype.getRepBalance = function(branchId) {
     return 0;
   }
 
-  return Augur.getRepBalance(branchId || this.defaultBranchId, this.account).toNumber();
+  var repBalance = Augur.getRepBalance(branchId || this.defaultBranchId, this.account);
+  
+  if (repBalance.error) {
+    utilities.error(repBalance.message);
+  } else {
+    return repBalance.toNumber();
+  }
 };
 
 EthereumClient.prototype.sendRep = function(destination, amount, branchId) {
