@@ -6,8 +6,7 @@ var ReactBootstrap = require('react-bootstrap');
 var Button = ReactBootstrap.Button;
 var Modal = ReactBootstrap.Modal;
 var ModalTrigger = ReactBootstrap.ModalTrigger;
-var utilities = require('../libs/utilities');
-var fromFixedPoint = utilities.fromFixedPoint;
+
 
 
 var SendCashModal = React.createClass({
@@ -73,7 +72,7 @@ var SendCashModal = React.createClass({
               </div>
             </div>
           </form>
-          <p>CASH: <b className='cash-balance'>{fromFixedPoint(this.state.cash)}</b></p>
+          <p>CASH: <b className='cash-balance'>{this.state.cash}</b></p>
         </div>
       </Modal>
     );
