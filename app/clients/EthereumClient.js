@@ -252,11 +252,11 @@ EthereumClient.prototype.checkQuorum = function(branchId) {
 
     Augur.dispatch(branchId, function(result) {
 
-      //console.log('sent', result);
+      console.log('dispatch sent', result);
 
     }, function(result) {
 
-      //console.log('success', result);
+      console.log('dispatch success', result);
 
     });
   }

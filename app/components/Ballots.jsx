@@ -131,7 +131,7 @@ var Ballots = React.createClass({
     var ballPosition = percentComplete+'%';
     return (
       <div id="ballots">
-        <h3>Ballot<span className='subheading pull-right'>Period { currentPeriod }</span></h3>
+        <h3>Ballot<span className='subheading pull-right'>Period { currentPeriod - 1}</span></h3>
         <div className='now-ball' style={{marginLeft: ballPosition}}></div>
         <ProgressBar bsStyle={ percentStyle } now={ percentComplete } className='period-progress' />
         <div className='subheading clearfix'>

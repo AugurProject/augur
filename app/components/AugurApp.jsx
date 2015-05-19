@@ -63,7 +63,7 @@ var AugurApp = React.createClass({
     if (this.state.config.percentLoaded) {
 
       loadingProgress = (
-        <ProgressBar now={ this.state.config.percentLoaded } className='loading-progress' />
+        <ProgressBar now={ parseFloat(this.state.config.percentLoaded) } className='loading-progress' />
       );
     }
 
