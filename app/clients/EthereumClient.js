@@ -134,7 +134,7 @@ EthereumClient.prototype.getCashBalance = function() {
     return 0;
   }
 
-  return fromFixedPoint(Augur.getCashBalance(this.account));
+  return Augur.getCashBalance(this.account);
 };
 
 EthereumClient.prototype.sendCash = function(destination, amount, onSuccess) {
