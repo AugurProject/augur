@@ -430,8 +430,8 @@ EthereumClient.prototype.addEvent = function(params, onSuccess) {
     var branchId = params.branchId || this.defaultBranchId;
     var description = params.description;
     var expirationBlock = params.expirationBlock;
-    var minValue = params.minValue || 1;
-    var maxValue = params.maxValue || 2;
+    var minValue = params.minValue || 0;
+    var maxValue = params.maxValue || 1;
     var numOutcomes = params.numOutcomes || 2;
 
     Augur.createEvent({
