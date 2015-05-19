@@ -436,8 +436,8 @@ EthereumClient.prototype.addEvent = function(params, onSuccess) {
     var branchId = params.branchId || this.defaultBranchId;
     var description = params.description;
     var expirationBlock = params.expirationBlock;
-    var minValue = params.minValue || 1;
-    var maxValue = params.maxValue || 2;
+    var minValue = params.minValue || 0;
+    var maxValue = params.maxValue || 1;
     var numOutcomes = params.numOutcomes || 2;
 
     Augur.createEvent({
@@ -552,14 +552,6 @@ EthereumClient.prototype.sellShares = function (branchId, marketId, outcomeId, n
 
   Augur.sellShares(branchId, marketId, outcomeId, numShares, null, callback);
 };
-
-EthereumClient.prototype.hashReport = function (decisions, salt) {
-  Augur.hashReport(decisions, salt);
-};
-
-EthereumClient.prototype.submitReportHash = function (branchId, hash, votePeriod) {
-  Augur.submitReportHash(branchId, hash, votePeriod);
-}
 
 module.exports = EthereumClient;
 

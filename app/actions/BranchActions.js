@@ -43,6 +43,10 @@ var BranchActions = {
     // TODO: Reconcile this object with what EthereumClient.getBranches returns.
     var currentBranch = {
       id: currentBranchId,
+      // FIXME: currentPeriod is a float that we truncate various places in
+      // the codebase. It should be the actual period number as an integer,
+      // and if we need to know the fraction of a period that has elapsed, we
+      // should include that as a separate value.
       currentPeriod: currentBlock / votePeriod[1],
       periodLength: votePeriod[1],
       votePeriod: votePeriod[0]

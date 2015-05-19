@@ -8,6 +8,7 @@ var Modal = ReactBootstrap.Modal;
 var ModalTrigger = ReactBootstrap.ModalTrigger;
 
 
+
 var SendCashModal = React.createClass({
   mixins: [FluxMixin, StoreWatchMixin('asset')],
 
