@@ -58,11 +58,9 @@ var BranchActions = {
     var currentBlock = this.flux.store('network').getState().blockNumber;
     var votePeriod = ethereumClient.getVotePeriod(currentBranch.id);
     var currentPeriod = parseInt(currentBlock / currentBranch.periodLength);
-    // HACK: for some reason there is a diff of 2 
+
     var percentComplete = (currentBlock / currentBranch.periodLength) - (votePeriod + 1);
     var isCurrent = votePeriod < (currentPeriod - 1) ? false : true;
-
-    console.log(votePeriod, currentPeriod, isCurrent);
 
     if (!isCurrent) {
       var periodsBehind = (currentPeriod - 1) - votePeriod;

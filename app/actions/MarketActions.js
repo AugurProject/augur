@@ -18,8 +18,6 @@ var MarketActions = {
     _.each(markets, function(market) {
       if (currentBranch.currentPeriod >= market.tradingPeriod) market.matured = true;
     }, this);
-  
-    console.log(markets);
 
     if (_.keys(markets).length === 0) self.flux.actions.config.updatePercentLoaded(100);  // sometimes there's no markets
 
