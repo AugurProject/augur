@@ -5,7 +5,7 @@ var state = {
   // rootBranchId: process.env.AUGUR_BRANCH_ID || constants.DEV_BRANCH_ID,
   rootBranchId: constants.DEV_BRANCH_ID,
   branches: {},
-  currentBranch: { id: constants.DEV_BRANCH_ID },
+  currentBranch: {},
   eventsToReport: [],
   pendingReports: []
 };
@@ -17,7 +17,8 @@ var BranchStore = Fluxxor.createStore({
       constants.branch.LOAD_BRANCHES_SUCCESS, this.handleLoadBranchesSuccess,
       constants.branch.LOAD_EVENTS_TO_REPORT_SUCCESS, this.handleLoadEventsToReportSuccess,
       constants.branch.LOAD_PENDING_REPORTS_SUCCESS, this.handleLoadPendingReportsSuccess,
-      constants.branch.LOAD_CURRENT_BRANCH_SUCCESS, this.handleUpdateCurrentBranchSuccess,
+      constants.branch.SET_CURRENT_BRANCH_SUCCESS, this.handleUpdateCurrentBranchSuccess,
+      constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, this.handleUpdateCurrentBranchSuccess,
       constants.branch.UPDATE_PENDING_REPORTS, this.handleLoadPendingReportsSuccess,
       constants.branch.CHECK_QUORUM_SENT, this.handleCheckQuorumSent,
       constants.branch.CHECK_QUORUM_SUCCESS, this.handleCheckQuorumSuccess
@@ -26,6 +27,10 @@ var BranchStore = Fluxxor.createStore({
 
   getState: function () {
     return state;
+  },
+
+  getCurrentBranch: function() {
+    return state.currentBranch;
   },
 
   handleLoadBranchesSuccess: function (payload) {
@@ -43,8 +48,13 @@ var BranchStore = Fluxxor.createStore({
     this.emit(constants.CHANGE_EVENT);
   },
 
-  handleUpdateCurrentBranchSuccess: function (payload) {
-    state.currentBranch = payload.currentBranch;
+  handleSetCurrentBranchSuccess: function (branch) {
+    state.currentBranch = branch;
+    this.emit(constants.CHANGE_EVENT);
+  },
+
+  handleUpdateCurrentBranchSuccess: function (branch) {
+    state.currentBranch = branch;
     this.emit(constants.CHANGE_EVENT);
   },
 

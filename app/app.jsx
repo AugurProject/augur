@@ -65,8 +65,6 @@ var Outcomes = require('./components/Outcomes');
 
 window.flux = new Fluxxor.Flux(stores, actions);
 
-utilities.log('using branch ' + flux.store('branch').getState().currentBranch.id);
-
 flux.on("dispatch", function(type, payload) {
   var debug = flux.store('config').getState().debug;
   if (debug) console.log("Dispatched", type, payload);

@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var constants = require('../libs/constants');
+var utilities = require('../libs/utilities');
 
 var BranchActions = {
 
@@ -33,28 +34,39 @@ var BranchActions = {
     });
   },
 
-  loadCurrentBranch: function() {
+  setCurrentBranch: function(branchId) {
 
-    var currentBranchId = this.flux.store('branch').getState().currentBranch.id;
+    branchId = branchId || this.flux.store('branch').getState().rootBranchId;
+    var periodLength = ethereumClient.getPeriodLength(branchId);
 
-    var ethereumClient = this.flux.store('config').getEthereumClient();
-    var currentBlock = this.flux.store('network').getState().blockNumber;
-    var votePeriod = ethereumClient.getVotePeriod(currentBranchId);
-    var currentPeriod = parseInt(currentBlock / votePeriod[1]);
-    var isCurrent = votePeriod[0] < (currentPeriod - 1) ? false : true;
+    utilities.log('using branch ' + branchId);
 
-    // TODO: Reconcile this object with what EthereumClient.getBranches returns.
     var currentBranch = {
-      id: currentBranchId,
-      currentPeriod: currentPeriod,
-      periodLength: votePeriod[1],
-      votePeriod: votePeriod[0],
-      isCurrent: isCurrent
+      id: branchId,
+      periodLength: periodLength
     };
 
-    this.dispatch(constants.branch.LOAD_CURRENT_BRANCH_SUCCESS, {
-      currentBranch: currentBranch,
+    this.dispatch(constants.branch.SET_CURRENT_BRANCH_SUCCESS, currentBranch);
+
+    this.flux.actions.branch.updateCurrentBranch();
+  },
+
+  updateCurrentBranch: function() {
+
+    var currentBranch = this.flux.store('branch').getCurrentBranch();
+    var ethereumClient = this.flux.store('config').getEthereumClient();
+    var currentBlock = this.flux.store('network').getState().blockNumber;
+    var votePeriod = ethereumClient.getVotePeriod(currentBranch.id);
+    var currentPeriod = parseInt(currentBlock / currentBranch.votePeriod);
+    var isCurrent = votePeriod < (currentPeriod - 1) ? false : true;
+
+    var updatedBranch = _.merge(currentBranch, {
+      currentPeriod: currentPeriod,
+      votePeriod: votePeriod,
+      isCurrent: isCurrent
     });
+
+    this.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, updatedBranch);
   },
 
   checkQuorum: function() {

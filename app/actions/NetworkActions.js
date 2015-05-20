@@ -72,10 +72,11 @@ var NetworkActions = {
    * Load all of the application's data, particularly during initialization.
    */
   loadEverything: function () {
+
     this.flux.actions.network.loadNetwork();
-    this.flux.actions.asset.loadAssets();
     this.flux.actions.branch.loadBranches();
-    this.flux.actions.branch.loadCurrentBranch();
+    this.flux.actions.branch.setCurrentBranch();
+    this.flux.actions.asset.loadAssets();
     this.flux.actions.market.loadMarkets();
     this.flux.actions.branch.loadEventsToReport();
     this.flux.actions.report.loadPendingReports();
@@ -87,19 +88,17 @@ var NetworkActions = {
   onNewBlock: function () {
     this.flux.actions.network.loadNetwork();
     this.flux.actions.asset.loadAssets();
-
     this.flux.actions.market.updateMarkets();
 
     // We pull the branch's block-dependent period information from
     // contract calls that need to be called each block.
-    this.flux.actions.branch.loadCurrentBranch();
-    
+    this.flux.actions.branch.updateCurrentBranch();
+
     // TODO: We can skip loading events to report if the voting period hasn't changed.
     this.flux.actions.branch.loadEventsToReport();
     this.flux.actions.branch.checkQuorum();
 
     this.flux.actions.report.submitQualifiedReports();
-
   },
 
   startMonitoring: function () {

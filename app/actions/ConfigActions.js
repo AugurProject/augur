@@ -12,7 +12,7 @@ var ConfigActions = {
 
     var clientParams = {
       host: configState.host,
-      defaultBranchId: branchState.currentBranch.id
+      defaultBranchId:  branchState.currentBranch.id || branchState.rootBranchId
     }
     var ethereumClient = window.ethereumClient = configState.ethereumClient || new EthereumClient(clientParams);
 
@@ -29,6 +29,7 @@ var ConfigActions = {
   },
 
   initializeState: function() {
+
     this.flux.actions.config.updateEthereumClient();
     this.flux.actions.network.checkNetwork();
   }

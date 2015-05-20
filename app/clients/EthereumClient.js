@@ -28,19 +28,21 @@ function EthereumClient(params) {
   this.addresses = {};
   this.filters = {}
   this.contracts = {};
-  this.defaultBranchId = params.defaultBranchId;
 
   // defaults
-  this.web3 = window.web3 = params.web3 || require('web3');
   this.defaultGas = params.defaultGas || 1000000;
+  this.defaultBranchId = params.defaultBranchId;
   this.host = params.host || 'localhost:8545';
 
   _.defaults(this.addresses, constants.addresses);
 
+  // web3 setup
+  this.web3 = window.web3 = params.web3 || require('web3');
+  this.web3.setProvider(new web3.providers.HttpProvider('http://'+this.host));
+
+  // augur.js setup
   Augur.connect({host: 'localhost', 'port': 8545});
   this.account = Augur.coinbase;
-
-  this.web3.setProvider(new web3.providers.HttpProvider('http://'+this.host));
 }
 
 EthereumClient.prototype.isAvailable = function() {
@@ -66,6 +68,10 @@ EthereumClient.prototype.stopMonitoring = function() {
   _.each(this.filters, function(filter) {
     filter.stopWatching()
   });
+}
+
+EthereumClient.prototype.setDefaultBranch = function(branchId) {
+  this.defaultBranchId = branchId;
 }
 
 EthereumClient.prototype.getEtherBalance = function() {
@@ -128,12 +134,6 @@ EthereumClient.prototype.cashFaucet = function() {
 
 EthereumClient.prototype.getCashBalance = function() {
 
-  // Ensure that this.account is set and valid.
-  // FIXME: We should make sure this gets set during the initialization process.
-  if (!this.isAvailable() || this.account === '0x') {
-    return 0;
-  }
-
   return Augur.getCashBalance(this.account);
 };
 
@@ -148,12 +148,6 @@ EthereumClient.prototype.repFaucet = function(branchId) {
 };
 
 EthereumClient.prototype.getRepBalance = function(branchId) {
-
-  // Ensure that this.account is set and valid.
-  // FIXME: We should make sure this gets set during the initialization process.
-  if (!this.isAvailable() || this.account === '0x') {
-    return 0;
-  }
 
   var repBalance = Augur.getRepBalance(branchId || this.defaultBranchId, this.account);
   
@@ -204,15 +198,19 @@ EthereumClient.prototype.getBranches = function () {
   return branches;
 };
 
-EthereumClient.prototype.getVotePeriod = function(branchId) {
+EthereumClient.prototype.getPeriodLength = function(branchId) {
 
-  // TODO: have augur.js batch these
-  var votePeriod =  Augur.getVotePeriod(branchId).toNumber();
   var periodLength = Augur.getPeriodLength(branchId).toNumber();
 
-  return [votePeriod, periodLength];
+  return periodLength;
 };
 
+EthereumClient.prototype.getVotePeriod = function(branchId) {
+
+  var votePeriod =  Augur.getVotePeriod(branchId).toNumber();
+
+  return votePeriod;
+};
 
 EthereumClient.prototype.getEvents = function(period, branchId) {
 

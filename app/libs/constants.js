@@ -36,7 +36,8 @@ module.exports = {
   }),
   branch: keyMirror({
     LOAD_BRANCHES_SUCCESS: null,
-    LOAD_CURRENT_BRANCH_SUCCESS: null,
+    SET_CURRENT_BRANCH_SUCCESS: null,
+    UPDATE_CURRENT_BRANCH_SUCCESS: null,
     LOAD_EVENTS_TO_REPORT_SUCCESS: null,
     LOAD_PENDING_REPORTS_SUCCESS: null,
     UPDATE_PENDING_REPORTS: null,
