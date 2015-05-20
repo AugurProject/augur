@@ -188,7 +188,7 @@ var ErrorModal = React.createClass({
 
       // augur client failed to load
       return (
-        <Modal {...this.props} bsSize='small' onRequestHide={ this.handleToggle }>
+        <Modal {...this.props} bsSize='small' onRequestHide={ this.handleToggle } backdrop='static'>
           <div className="modal-body clearfix">
               <h4>Augur failed to load</h4>
               <p>There was a problem loading Augur</p>
@@ -204,7 +204,7 @@ var ErrorModal = React.createClass({
 
       // no ethereum client detected
       return (
-        <Modal {...this.props} id="no-eth-modal" onRequestHide={ this.handleToggle }>
+        <Modal {...this.props} id="no-eth-modal" onRequestHide={ this.handleToggle } backdrop='static'>
           <div className="modal-body clearfix">
               <h4>Failed to connect to Ethereum</h4>
               <p>Augur requires a local node of the Ethereum client running</p>

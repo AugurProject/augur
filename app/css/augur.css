@@ -682,7 +682,7 @@ a.market-pane:hover {
     margin-top: 0px;
 }
 #no-eth-modal .modal-dialog {
-    max-width: 450px;
+    max-width: 500px;
 }
 #no-eth-modal span.cmd {
     font-family: "Lucida Console", Monaco, monospace;

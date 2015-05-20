@@ -14,7 +14,7 @@ var NO = 1;
 var YES = 2;
 
 var priceToPercentage = function (price) {
-  return +price.times(100).toFixed(1);
+  return +price.times(100).toFixed(2);
 };
 
 var getOutcomeName = function (id, count) {
@@ -125,7 +125,7 @@ var TradeBase = {
     } else {
 
       new Promise((resolve, reject) => {
-        console.log('Getting simulation...');
+        console.log('requesting simulation:', this.props.market.id, this.getOutcomeId(), numShares);
         this.getSimulationFunction()(
           this.props.market.id,
           this.getOutcomeId(),
@@ -133,7 +133,7 @@ var TradeBase = {
           resolve
         );
       }).then((simulation) => {
-        console.log('Setting simulation: ', simulation.cost.toNumber(), simulation.newPrice.toNumber());
+        console.log('setting simulation:', simulation.cost.toFixed(3), simulation.newPrice.toFixed(3));
 
         this.setState({
           simulation: simulation
