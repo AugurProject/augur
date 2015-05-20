@@ -29,7 +29,7 @@
     ]
   },
   "dependencies": {
-    "augur.js": "^0.3.2",
+    "augur.js": "^0.3.3",
     "bignumber.js": "^2.0.7",
     "bootstrap": "^3.3.4",
     "browserify": "^9.0.8",
