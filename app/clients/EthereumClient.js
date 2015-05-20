@@ -46,14 +46,13 @@ function EthereumClient(params) {
 }
 
 EthereumClient.prototype.isAvailable = function() {
+
+    // attempt an RPC call that should fail if the daemon is unreachable.
     try {
-      // Attempt an RPC call that should fail if the daemon is unreachable.
-      Augur.blockNumber();
+      return web3.net.listening
     } catch(err) {
       return false;
     }
-
-    return true;
 };
 
 EthereumClient.prototype.startMonitoring = function(callback) {
@@ -325,13 +324,15 @@ EthereumClient.prototype.getMarkets = function(branchId, currentMarkets, onProgr
 
   branchId = branchId || this.defaultBranchId;
   var validMarkets = _.filter(Augur.getMarkets(branchId), function (marketId) {
-    _.each(_.range(100000), function() {});
+    //_.each(_.range(100000), function() {});
     return !_.contains(blacklist.markets, marketId.toString(16));
   });
 
   var markets = validMarkets;
+
+  // only get new markets we don't already have
   if (currentMarkets) {
-    markets = _.without(markets, currentMarkets);
+    markets = _.difference(currentMarkets, markets);
   }
 
   var progress = {total: validMarkets.length, current: 0};
