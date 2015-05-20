@@ -201,14 +201,12 @@ EthereumClient.prototype.getBranches = function () {
 EthereumClient.prototype.getPeriodLength = function(branchId) {
 
   var periodLength = Augur.getPeriodLength(branchId).toNumber();
-
   return periodLength;
 };
 
 EthereumClient.prototype.getVotePeriod = function(branchId) {
 
   var votePeriod =  Augur.getVotePeriod(branchId).toNumber();
-
   return votePeriod;
 };
 

@@ -57,7 +57,7 @@ var BranchActions = {
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var currentBlock = this.flux.store('network').getState().blockNumber;
     var votePeriod = ethereumClient.getVotePeriod(currentBranch.id);
-    var currentPeriod = parseInt(currentBlock / currentBranch.votePeriod);
+    var currentPeriod = parseInt(currentBlock / currentBranch.periodLength);
     var isCurrent = votePeriod < (currentPeriod - 1) ? false : true;
 
     var updatedBranch = _.merge(currentBranch, {
