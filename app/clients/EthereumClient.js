@@ -234,7 +234,6 @@ EthereumClient.prototype.getEvent = function(eventId) {
   return event;
 };
 
-
 EthereumClient.prototype.checkQuorum = function(branchId) {
 
   if (!branchId) return;
@@ -244,22 +243,25 @@ EthereumClient.prototype.checkQuorum = function(branchId) {
   var currentPeriod = parseInt(currentBlock / periodLength);
   var votePeriod =  Augur.getVotePeriod(branchId).toNumber();
 
-  if (votePeriod < (currentPeriod - 1)) {
-    // TODO: Avoid sending duplicate transactions if we've sent a dispatch
-    // transaction that hasn't been included in a block yet.
+  return votePeriod < (currentPeriod - 1) ? false : true;
+}
 
-    utilities.log('branch '+branchId+' behind '+(currentPeriod-votePeriod)+' periods. calling dispatch.');
+EthereumClient.prototype.dispatch = function(branchId, onSent, onSuccess) {
 
-    Augur.dispatch(branchId, function(result) {
+  if (!branchId) return;
+  utilities.log('calling dispatch');
 
-      console.log('dispatch sent', result);
+  Augur.dispatch(branchId, function(result) {
 
-    }, function(result) {
+    utilities.log(result.message + ' ('+result.error.toNumber()+')');
+    if (onSent) onSent(result.txHash);
 
-      console.log('dispatch success', result);
+  }, function(result) {
 
-    });
-  }
+    console.log('dispatch success', result);
+    if (onSuccess) onSuccess();
+
+  });
 };
 
 /**

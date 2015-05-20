@@ -55,6 +55,30 @@ var BranchActions = {
     this.dispatch(constants.branch.LOAD_CURRENT_BRANCH_SUCCESS, {
       currentBranch: currentBranch,
     });
+  },
+
+  checkQuorum: function() {
+
+    var ethereumClient = this.flux.store('config').getEthereumClient();
+    var branchState = this.flux.store('branch').getState();
+    var currentBranch = branchState.currentBranch;
+    var hasCheckedQuorum = branchState.hasCheckedQuorum;
+
+    if (ethereumClient.checkQuorum) {
+
+      var self = this;
+      if (!hasCheckedQuorum) {
+        ethereumClient.dispatch(currentBranch.id, function(txHash) { 
+          self.dispatch(constants.branch.CHECK_QUORUM_SENT);
+        }, function() {
+          self.dispatch(constants.branch.CHECK_QUORUM_SUCCESS);
+        });
+      }
+
+    } else if (hasCheckedQuorum) {
+
+      this.dispatch(constants.branch.CHECK_QUORUM_SUCCESS);
+    }
   }
 };
 

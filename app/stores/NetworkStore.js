@@ -13,7 +13,8 @@ var state = {
   ethereumStatus: null,
   mining: null,
   hashrate: null,
-  isMonitoringBlocks: false
+  isMonitoringBlocks: false,
+  hasCheckedQuorum: false
 };
 
 var NetworkStore = Fluxxor.createStore({

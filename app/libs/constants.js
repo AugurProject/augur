@@ -39,7 +39,9 @@ module.exports = {
     LOAD_CURRENT_BRANCH_SUCCESS: null,
     LOAD_EVENTS_TO_REPORT_SUCCESS: null,
     LOAD_PENDING_REPORTS_SUCCESS: null,
-    UPDATE_PENDING_REPORTS: null
+    UPDATE_PENDING_REPORTS: null,
+    CHECK_QUORUM_SENT: null,
+    CHECK_QUORUM_SUCCESS: null
   }),
   market: keyMirror({
     LOAD_MARKETS_SUCCESS: null,

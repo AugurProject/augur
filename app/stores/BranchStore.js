@@ -17,7 +17,9 @@ var BranchStore = Fluxxor.createStore({
       constants.branch.LOAD_EVENTS_TO_REPORT_SUCCESS, this.handleLoadEventsToReportSuccess,
       constants.branch.LOAD_PENDING_REPORTS_SUCCESS, this.handleLoadPendingReportsSuccess,
       constants.branch.LOAD_CURRENT_BRANCH_SUCCESS, this.handleUpdateCurrentBranchSuccess,
-      constants.branch.UPDATE_PENDING_REPORTS, this.handleLoadPendingReportsSuccess
+      constants.branch.UPDATE_PENDING_REPORTS, this.handleLoadPendingReportsSuccess,
+      constants.branch.CHECK_QUORUM_SENT, this.handleCheckQuorumSent,
+      constants.branch.CHECK_QUORUM_SUCCESS, this.handleCheckQuorumSuccess
     );
   },
 
@@ -42,6 +44,16 @@ var BranchStore = Fluxxor.createStore({
 
   handleUpdateCurrentBranchSuccess: function (payload) {
     state.currentBranch = payload.currentBranch;
+    this.emit(constants.CHANGE_EVENT);
+  },
+
+  handleCheckQuorumSent: function (payload) {
+    state.hasCheckedQuorum = true;
+    this.emit(constants.CHANGE_EVENT);
+  },
+
+  handleCheckQuorumSuccess: function (payload) {
+    state.hasCheckedQuorum = false;
     this.emit(constants.CHANGE_EVENT);
   }
 });
