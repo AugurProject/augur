@@ -4,19 +4,33 @@ var constants = require('../libs/constants');
 var MarketActions = {
 
   loadMarkets: function () {
+
     var branchState = this.flux.store('branch').getState();
     var configState = this.flux.store('config').getState();
-    var account = this.flux.store('network').getAccount();
 
     var branchId = branchState.currentBranch.id;
     var ethereumClient = configState.ethereumClient;
     var self = this;
-    var markets = ethereumClient.getMarkets(branchId, function(progress) {
+    var markets = ethereumClient.getMarkets(branchId, null, function(progress) {
       var percent = ((progress.current/progress.total) * 100).toFixed(2);
       self.flux.actions.config.updatePercentLoaded(percent);
     });
 
     this.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {markets: markets});
+  },
+
+  updateMarkets: function() {
+
+    var branchState = this.flux.store('branch').getState();
+    var configState = this.flux.store('config').getState();
+
+    var branchId = branchState.currentBranch.id;
+    var currentMarketIds = _.keys(this.flux.store('config').getState().markets);
+    
+    var ethereumClient = configState.ethereumClient;
+    var markets = ethereumClient.getMarkets(branchId, currentMarketIds);
+
+    this.dispatch(constants.market.UPDATE_MARKETS_SUCCESS, {markets: markets});
   },
 
   updateMarket: function(market) {

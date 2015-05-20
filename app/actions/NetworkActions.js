@@ -87,10 +87,13 @@ var NetworkActions = {
   onNewBlock: function () {
     this.flux.actions.network.loadNetwork();
     this.flux.actions.asset.loadAssets();
-    //this.flux.actions.market.loadMarkets();
+
+    this.flux.actions.market.updateMarkets();
+
     // We pull the branch's block-dependent period information from
     // contract calls that need to be called each block.
     this.flux.actions.branch.loadCurrentBranch();
+    
     // TODO: We can skip loading events to report if the voting period hasn't changed.
     this.flux.actions.branch.loadEventsToReport();
     this.flux.actions.branch.checkQuorum();
