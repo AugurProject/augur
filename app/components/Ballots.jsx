@@ -62,7 +62,6 @@ var Ballots = React.createClass({
 
     var periodStartDate = '';
     var periodEndDate = '';
-    var currentPeriod = '-';
     var percentComplete = 0;
     var percentStyle = 'primary';
 
@@ -81,10 +80,8 @@ var Ballots = React.createClass({
         periodEndDate = periodEndMoment.format('MMM Do, HH:MM');
       }
 
-      currentPeriod = parseInt(currentBranch.currentPeriod);
-
-      if (currentBranch.votePeriod === (currentPeriod - 1)) {
-        percentComplete = parseFloat( ((currentBranch.currentPeriod - currentPeriod) * 100).toFixed(3) );
+      if (currentBranch.isCurrent) {
+        percentComplete = parseFloat( ((currentBranch.currentPeriod - currentBranch.currentPeriod) * 100).toFixed(3) );
       } else {
         percentComplete = 100;
         percentStyle = 'warning';
@@ -131,7 +128,7 @@ var Ballots = React.createClass({
     var ballPosition = percentComplete+'%';
     return (
       <div id="ballots">
-        <h3>Ballot<span className='subheading pull-right'>Period { currentPeriod - 1}</span></h3>
+        <h3>Ballot<span className='subheading pull-right'>Period { currentBranch.currentPeriod - 1}</span></h3>
         <div className='now-ball' style={{marginLeft: ballPosition}}></div>
         <ProgressBar bsStyle={ percentStyle } now={ percentComplete } className='period-progress' />
         <div className='subheading clearfix'>

@@ -2,8 +2,9 @@ var Fluxxor = require('fluxxor');
 var constants = require('../libs/constants');
 
 var state = {
+  // rootBranchId: process.env.AUGUR_BRANCH_ID || constants.DEV_BRANCH_ID,
+  rootBranchId: constants.DEV_BRANCH_ID,
   branches: {},
-  // currentBranch: { id: process.env.AUGUR_BRANCH_ID || constants.DEV_BRANCH_ID },
   currentBranch: { id: constants.DEV_BRANCH_ID },
   eventsToReport: [],
   pendingReports: []
