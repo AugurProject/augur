@@ -45,6 +45,9 @@ var SendCashModal = React.createClass({
   },
 
   render: function () {
+
+    var cashBalance = this.state.cash ? +this.state.cash.toFixed(2) : '-';
+
     return (
       <Modal {...this.props} id='send-cash-modal' bsSize='small'>
         <div className='modal-body clearfix'>
@@ -72,7 +75,7 @@ var SendCashModal = React.createClass({
               </div>
             </div>
           </form>
-          <p>CASH: <b className='cash-balance'>{this.state.cash}</b></p>
+          <p>CASH: <b className='cash-balance'>{ cashBalance }</b></p>
         </div>
       </Modal>
     );
