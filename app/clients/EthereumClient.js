@@ -234,19 +234,7 @@ EthereumClient.prototype.getEvent = function(eventId) {
   return event;
 };
 
-EthereumClient.prototype.checkQuorum = function(branchId) {
-
-  if (!branchId) return;
-
-  var periodLength = Augur.getPeriodLength(branchId).toNumber();
-  var currentBlock =  Augur.blockNumber();
-  var currentPeriod = parseInt(currentBlock / periodLength);
-  var votePeriod =  Augur.getVotePeriod(branchId).toNumber();
-
-  return votePeriod < (currentPeriod - 1) ? false : true;
-}
-
-EthereumClient.prototype.dispatch = function(branchId, onSent, onSuccess) {
+EthereumClient.prototype.checkQuorum = function(branchId, onSent, onSuccess) {
 
   if (!branchId) return;
   utilities.log('calling dispatch');

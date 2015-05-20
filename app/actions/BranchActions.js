@@ -34,22 +34,22 @@ var BranchActions = {
   },
 
   loadCurrentBranch: function() {
+
     var currentBranchId = this.flux.store('branch').getState().currentBranch.id;
 
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var currentBlock = this.flux.store('network').getState().blockNumber;
     var votePeriod = ethereumClient.getVotePeriod(currentBranchId);
+    var currentPeriod = parseInt(currentBlock / votePeriod[1]);
+    var isCurrent = votePeriod[0] < (currentPeriod - 1) ? false : true;
 
     // TODO: Reconcile this object with what EthereumClient.getBranches returns.
     var currentBranch = {
       id: currentBranchId,
-      // FIXME: currentPeriod is a float that we truncate various places in
-      // the codebase. It should be the actual period number as an integer,
-      // and if we need to know the fraction of a period that has elapsed, we
-      // should include that as a separate value.
-      currentPeriod: currentBlock / votePeriod[1],
+      currentPeriod: currentPeriod,
       periodLength: votePeriod[1],
-      votePeriod: votePeriod[0]
+      votePeriod: votePeriod[0],
+      isCurrent: isCurrent
     };
 
     this.dispatch(constants.branch.LOAD_CURRENT_BRANCH_SUCCESS, {
@@ -64,19 +64,15 @@ var BranchActions = {
     var currentBranch = branchState.currentBranch;
     var hasCheckedQuorum = branchState.hasCheckedQuorum;
 
-    if (ethereumClient.checkQuorum) {
-
+    // check quorum if branch isn't current and we havn't already
+    if (!currentBranch.isCurrent && !hasCheckedQuorum) {
       var self = this;
-      if (!hasCheckedQuorum) {
-        ethereumClient.dispatch(currentBranch.id, function(txHash) { 
-          self.dispatch(constants.branch.CHECK_QUORUM_SENT);
-        }, function() {
-          self.dispatch(constants.branch.CHECK_QUORUM_SUCCESS);
-        });
-      }
-
-    } else if (hasCheckedQuorum) {
-
+      ethereumClient.checkQuorum(currentBranch.id, function(txHash) { 
+        self.dispatch(constants.branch.CHECK_QUORUM_SENT);
+      }, function() {
+        self.dispatch(constants.branch.CHECK_QUORUM_SUCCESS);
+      });
+    } else if (hasCheckedQuorum && currentBranch.isCurrent) {
       this.dispatch(constants.branch.CHECK_QUORUM_SUCCESS);
     }
   }
