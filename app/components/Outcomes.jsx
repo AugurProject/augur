@@ -125,7 +125,7 @@ var TradeBase = {
     } else {
 
       new Promise((resolve, reject) => {
-        console.log('requesting simulation:', this.props.market.id, this.getOutcomeId(), numShares);
+        console.log('requesting simulation:', this.props.market.id.toString(16), this.getOutcomeId(), numShares);
         this.getSimulationFunction()(
           this.props.market.id,
           this.getOutcomeId(),

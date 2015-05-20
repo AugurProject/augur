@@ -235,6 +235,7 @@ EthereumClient.prototype.checkQuorum = function(branchId, onSent, onSuccess) {
   if (!branchId) return;
   utilities.log('calling dispatch');
 
+  return;
   Augur.dispatch(branchId, function(result) {
 
     utilities.log(result.message + ' ('+result.error.toNumber()+')');
@@ -323,6 +324,7 @@ EthereumClient.prototype.getMarkets = function(branchId, currentMarkets, onProgr
 
   branchId = branchId || this.defaultBranchId;
   var validMarkets = _.filter(Augur.getMarkets(branchId), function (marketId) {
+    _.each(_.range(100000), function() {});
     return !_.contains(blacklist.markets, marketId.toString(16));
   });
 

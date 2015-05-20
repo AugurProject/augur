@@ -16,6 +16,8 @@ var MarketActions = {
       self.flux.actions.config.updatePercentLoaded(percent);
     });
 
+    if (_.keys(markets).length === 0) self.flux.actions.config.updatePercentLoaded(100);  // sometimes there's no markets
+
     this.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {markets: markets});
   },
 
