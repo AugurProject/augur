@@ -46,7 +46,7 @@ var MarketPane = React.createClass({
       status = 'Invalid'
       className += ' invalid'; 
       linked = false;   
-    } else if (this.props.votePeriod && this.props.votePeriod > market.tradingPeriod) {
+    } else if (market.matured) {
       status = 'Matured'
       className += ' matured';
     } else if (market.pending) {

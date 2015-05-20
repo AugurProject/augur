@@ -243,9 +243,8 @@ EthereumClient.prototype.checkQuorum = function(branchId, onSent, onSuccess) {
 
   }, function(result) {
 
-    console.log('dispatch success', result);
+    utilities.log('dispatch succeeded');
     if (onSuccess) onSuccess();
-
   });
 };
 
@@ -398,7 +397,7 @@ EthereumClient.prototype.getMarket = function(marketId, branchId) {
   var winningOutcomes = Augur.getWinningOutcomes(marketId);
 
   // check validity
-  var invalid = outcomes.length ? false : true
+  var invalid = outcomes.length ? false : true;
 
   return {
     id: marketId,

@@ -15,7 +15,7 @@ var Outcomes = require('./Outcomes');
 
 var Router = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin('market', 'asset')],
+  mixins: [FluxMixin, StoreWatchMixin('market', 'asset', 'branch')],
 
   getStateFromFlux: function () {
 
@@ -23,11 +23,13 @@ var Router = React.createClass({
     var marketState = flux.store('market').getState();
     var account = flux.store('network').getAccount();
     var assetState = flux.store('asset').getState();
-    var votePeriod = flux.store('branch').getState().currentVotePeriod;
+    var currentBranch = flux.store('branch').getCurrentBranch();
 
     var marketId = new BigNumber(this.props.params.marketId, 16);
     var market = marketState.markets[marketId];
-    if (market) market.matured = votePeriod && votePeriod.toNumber() > market.tradingPeriod.toNumber() ? true : false;
+
+    // TODO: centralize this somewhere, also used for market panes in branch
+    if (market) market.matured = currentBranch.currentPeriod > market.tradingPeriod.toNumber() ? true : false;
 
     return {
       market: market,

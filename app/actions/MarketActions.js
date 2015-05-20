@@ -5,16 +5,21 @@ var MarketActions = {
 
   loadMarkets: function () {
 
-    var branchState = this.flux.store('branch').getState();
-    var configState = this.flux.store('config').getState();
+    var currentBranch = this.flux.store('branch').getCurrentBranch();
+    var ethereumClient = this.flux.store('config').getEthereumClient();
 
-    var branchId = branchState.currentBranch.id;
-    var ethereumClient = configState.ethereumClient;
     var self = this;
-    var markets = ethereumClient.getMarkets(branchId, null, function(progress) {
+    var markets = ethereumClient.getMarkets(currentBranch.id, null, function(progress) {
       var percent = ((progress.current/progress.total) * 100).toFixed(2);
       self.flux.actions.config.updatePercentLoaded(percent);
     });
+
+    // TODO: put this somewhere where markets can be checked on period change
+    _.each(markets, function(market) {
+      if (currentBranch.currentPeriod >= market.tradingPeriod) market.matured = true;
+    }, this);
+  
+    console.log(markets);
 
     if (_.keys(markets).length === 0) self.flux.actions.config.updatePercentLoaded(100);  // sometimes there's no markets
 

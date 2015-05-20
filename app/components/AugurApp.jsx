@@ -34,10 +34,13 @@ var AugurApp = React.createClass({
   getStateFromFlux: function () {
 
     var flux = this.getFlux();
+    var percentLoaded = flux.store('config').getState().percentLoaded;
 
     // set app status (stopped, loading, running) from network & config state
-    if (parseInt(flux.store('config').getState().percentLoaded) === 100) {
+    if (parseInt(percentLoaded) === 100) {
       this.setState({status: 'running'});
+    } else {
+      this.setState({status: 'stopped'});
     }
 
     return {

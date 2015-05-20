@@ -43,13 +43,14 @@ var Branch = React.createClass({
 
   render: function () {
 
+
     var start = 0 + (this.state.pageNum) * this.state.marketsPerPage;
     var total = _.size(this.state.markets);
     var end = start + this.state.marketsPerPage;
     end = end > total ? total : end;
     var marketPage = _.sortBy(this.state.markets, 'volume').reverse().slice(start, end);
 
-
+    
     return (
       <div id="branch">
         <h3 className="clearfix">Markets <span className="subheading pull-right"><AddMarketTrigger /></span></h3>
@@ -71,7 +72,6 @@ var Branch = React.createClass({
         <div className='markets row'>
           <Markets 
             markets={ marketPage }
-            votePeriod={ this.state.votePeriod }
             classNameWrapper='col-sm-4' />
         </div>
       </div>
