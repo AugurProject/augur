@@ -49,6 +49,9 @@ var Network = React.createClass({
           <p className="gas-price">
             GAS PRICE<span className="pull-right">{ utilities.formatEther(this.state.network.gasPrice) || '-'}</span>
           </p>
+          <p className="block-time">
+            BLOCK TIME<span className="pull-right">{ this.state.network.blocktime || '-'}</span>
+          </p>
         </div>
       </div>
     );

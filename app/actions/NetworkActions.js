@@ -56,6 +56,7 @@ var NetworkActions = {
 
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var networkStats = ethereumClient.getStats();
+    var blockMoment = utilities.blockToDate(networkStats.blockNumber);
 
     this.dispatch(constants.network.LOAD_NETWORK, {
       accounts: ethereumClient.getAccounts(),
@@ -64,7 +65,8 @@ var NetworkActions = {
       blockNumber: networkStats.blockNumber,
       gasPrice: networkStats.gasPrice,
       mining: networkStats.mining,
-      hashrate: networkStats.hashrate
+      hashrate: networkStats.hashrate,
+      blocktime: blockMoment.format('MMM Do, HH:MM')
     });
   },
 

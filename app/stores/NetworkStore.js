@@ -8,6 +8,7 @@ var state = {
   primaryAccount: null,
   peerCount: null,
   blockNumber: null,
+  blocktime: null,
   ether: null,
   gasPrice: null,
   ethereumStatus: null,
