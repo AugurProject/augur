@@ -2,8 +2,7 @@ var _ = require('lodash');
 var React = require('react');
 var Fluxxor = require('fluxxor');
 var FluxMixin = Fluxxor.FluxMixin(React);
-var Router = require('react-router');
-var Link = Router.Link;
+
 var ReactBootstrap = require('react-bootstrap');
 var utilities = require('../libs/utilities');
 var Input = ReactBootstrap.Input;
@@ -14,7 +13,7 @@ var NO = 1;
 var YES = 2;
 
 var priceToPercentage = function (price) {
-  return +price.times(100).toFixed(2);
+  return +price.times(100).toFixed(1);
 };
 
 var getOutcomeName = function (id, count) {
@@ -31,43 +30,88 @@ var getOutcomeName = function (id, count) {
 
 var getOutcome = function (outcomeComponent) {
   var outcomes = outcomeComponent.props.market.outcomes;
-  var outcomeId = parseInt(outcomeComponent.props.params.outcomeId);
+  var outcomeId = parseInt(outcomeComponent.props.outcome.id);
   return _.find(outcomes, {id: outcomeId});
 };
 
 var Overview = React.createClass({
+
+  getInitialState: function () {
+    return {
+      buyShares: false,
+      sellShares: false
+    }
+  },
+
+  handleSellClick: function() {
+    this.setState({sellShares: true});
+  },
+
+  handleBuyClick: function() {
+    this.setState({buyShares: true});
+  },
+
+  handleReturn: function() {
+    this.setState({
+      buyShares: false,
+      sellShares: false
+    });
+  },
+
   render: function () {
 
-    var className = 'outcome outcome-'+this.props.id+' shadow';
-    if (this.props.matured) className += ' matured';
+    var summary;
+    var outcome = this.props.outcome;
+    var className = 'outcome outcome-'+outcome.id+' shadow';
+    if (this.props.market.matured) className += ' matured';
 
-    var holdings;
-    if (this.props.sharesPurchased.toNumber()) {
-      holdings = (
-        <div className='sell trade'>
-          <Link to="sell-outcome" className="btn btn-danger form-control" params={{marketId: this.props.params.marketId, outcomeId: this.props.id}}>Sell</Link>
-          <span className="shares-held btn">{ this.props.sharesPurchased.toNumber() } shares held</span> 
-        </div>);
+    if (this.state.buyShares) {
+
+      summary =  (
+        <Buy {...this.props} handleReturn={ this.handleReturn } />
+      );
+
+    } else if (this.state.sellShares) {
+
+      summary = (
+        <Sell {...this.props} handleReturn={ this.handleReturn } />
+      );
+
     } else {
-      holdings = (
-        <div className='sell trade'>
-          <span className="shares-held none">no shares held</span> 
-        </div>);      
+
+      var holdings;
+      if (outcome.sharesPurchased.toNumber()) {
+        holdings = (
+          <div className='sell trade-button'>
+            <Button bsStyle='danger' onClick={ this.handleSellClick }>Sell</Button>
+            <span className="shares-held btn">{ outcome.sharesPurchased.toNumber() } { outcome.sharesPurchased.toNumber() === 1 ? 'share' : 'shares' } held</span> 
+          </div>);
+      } else {
+        holdings = (
+          <div className='sell trade-button'>
+            <span className="shares-held none">no shares held</span> 
+          </div>);      
+      }
+
+      summary = (
+        <div className="summary">
+          <div className='buy trade-button'>
+            <Button bsStyle='success' onClick={ this.handleBuyClick }>Buy</Button>
+          </div>
+          { holdings }
+          <p>{ +outcome.price.toFixed(2) }</p>
+          <p>{ +outcome.volume.toFixed(2) } shares</p>
+        </div>
+      )
     }
+
     return (
       <div className={ className }>
         <h4>
-          <div className="name">{ getOutcomeName(this.props.id, this.props.outcomeCount) }</div>
-          <div className="price">{ priceToPercentage(this.props.price) }%</div>
+          <div className="name">{ getOutcomeName(outcome.id, this.props.market.outcomes.length) }</div>
+          <div className="price">{ priceToPercentage(outcome.price) }%</div>
         </h4>
-        <div className="summary">
-          <div className='buy trade'>
-            <Link to="buy-outcome" className="btn btn-success" params={{marketId: this.props.params.marketId, outcomeId: this.props.id}}>Buy</Link>
-          </div>
-          { holdings }
-          <p>{ +this.props.volume.toFixed(2) } shares</p>
-          <p>{ +this.props.price.toFixed(3) }</p>
-        </div>
+        { summary }
       </div>
     );
   }
@@ -88,6 +132,7 @@ var TradeBase = {
   getInitialState: function () {
     return {
       ownedShares: this.getOwnedShares(),
+      tradeDisabled: false,
       simulation: null,
       inputError: null,
       value: ''
@@ -95,7 +140,7 @@ var TradeBase = {
   },
 
   getOutcomeId: function () {
-    return parseInt(this.props.params.outcomeId);
+    return parseInt(this.props.outcome.id);
   },
 
   getPrice: function () {
@@ -153,27 +198,43 @@ var TradeBase = {
       this.setState({inputError: 'Cost of shares exceeds funds'});
     } else {
 
-      new Promise((resolve) => {
-        this.getTradeFunction()(
-          this.props.market.branchId,
-          this.props.market.id,
-          this.getOutcomeId(),
-          numShares,
-          resolve
-        );
-      }).then((tx) => {
-        console.log('Trade returned ' +tx.toString(16));
-        this.setState({
-          ownedShares: this.getOwnedSharesAfterTrade(numShares),
-          value: ''
-        });
-      });
-    }
+      var self = this;
+      this.getTradeFunction()(
+        this.props.market.branchId,
+        this.props.market.id,
+        this.getOutcomeId(),
+        numShares,
+        // on sent
+        function(result) {
+          utilities.log('trade submitted: ' + result);
+          self.setState({
+            ownedShares: self.getOwnedSharesAfterTrade(numShares),
+            tradeDisabled: true
+          });
+          self.props.handleReturn();
+        },
+        // on success
+        function(result) {
+          console.log('trade completed');
+          self.setState({
+            tradeDisabled: false
+          });
+        },
+        // on failed
+        function(error) {
+          utilities.error('trade failed: ' + result);
+          self.setState({
+            tradeDisabled: false
+          });
+        }  
+      );
+    }   
   },
 
   render: function () {
 
     var outcomeCount = this.props.market.outcomes.length;
+    var outcome = this.props.outcome;
 
     var buttonStyle = this.actionLabel === 'Sell' ? 'danger' : 'success';
     var submit = (
@@ -182,31 +243,27 @@ var TradeBase = {
     var inputStyle = this.state.inputError ? 'error' : '';
 
     return (
-      <div className='execute-trade shadow'>
-        <div className='row'>
-          <div className='col-sm-4'>
-            <h4>{ this.actionLabel } shares of <b>{ getOutcomeName(this.getOutcomeId(), outcomeCount) }</b></h4>
-            <h4 className="price">{ priceToPercentage(this.getPrice()) }% { this.getPriceDelta() }</h4>
-          </div>
-          <div className='col-sm-4'>
-            <p className="shares-held">Shares held: { this.state.ownedShares }</p>
-            <p className="shares-held">Cash balance: { this.props.cashBalance }</p>
-          </div>
-          <div className='col-sm-4'>        
-            <form onSubmit={ this.onSubmit }>
-              <Input
-                type="text"
-                bsStyle={ inputStyle }
-                value={ this.state.value }
-                help={ this.getHelpText() }
-                ref="input"
-                placeholder='Shares'
-                onChange={ this.handleChange } 
-                buttonAfter={ submit }
-              />
-            </form>
-          </div>
+      <div className="summary trade">
+        <div className='buy trade-button'>
+          <form onSubmit={ this.onSubmit }>
+            <Input
+              type="text"
+              bsStyle={ inputStyle }
+              value={ this.state.value }
+              help={ this.getHelpText() }
+              ref="input"
+              placeholder='Shares'
+              onChange={ this.handleChange } 
+              buttonAfter={ submit }
+            />
+          </form>
         </div>
+        <div className='cancel trade-button'>
+          <Button bsStyle='default' onClick={ this.props.handleReturn } bsSize='small'>Cancel</Button>
+        </div>
+        <p>{ +outcome.price.toFixed(2) }</p>
+        <p>{ outcome.sharesPurchased.toNumber() } { outcome.sharesPurchased.toNumber() === 1 ? 'share' : 'shares' } held</p>
+        <p className='new-price'>{ this.getPriceDelta() }</p>
       </div>
     );
   }

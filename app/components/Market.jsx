@@ -13,7 +13,7 @@ var utilities = require('../libs/utilities');
 var momemt = require('moment');
 var Outcomes = require('./Outcomes');
 
-var Router = React.createClass({
+var Market = React.createClass({
 
   mixins: [FluxMixin, StoreWatchMixin('market', 'asset', 'branch')],
 
@@ -27,9 +27,6 @@ var Router = React.createClass({
 
     var marketId = new BigNumber(this.props.params.marketId, 16);
     var market = marketState.markets[marketId];
-
-    // TODO: centralize this somewhere, also used for market panes in branch
-    if (market) market.matured = currentBranch.currentPeriod > market.tradingPeriod.toNumber() ? true : false;
 
     return {
       market: market,
@@ -61,11 +58,21 @@ var Router = React.createClass({
     var tradingFee = market.tradingFee ? +market.tradingFee.times(100).toFixed(2)+'%' : '-';
     var traderCount = market.traderCount ? +market.traderCount.toNumber() : '-';
 
+    var outcomes = _.map(this.state.market.outcomes, function (outcome) {
+      return (
+        <div className="col-sm-6">
+          <Outcomes.Overview key={ outcome.id } market={ market } outcome={ outcome }></Outcomes.Overview>
+        </div>
+      );
+    });
+
     return (
       <div id='market'>
         <h3>{ market.description }</h3>
         <div className="subheading">{ subheading }</div>
-        <RouteHandler {...this.props} {...this.state} />
+        <div className='row'>
+          { outcomes } 
+        </div>
         <div className='details col-sm-4'>
           <p>Price: <b>{ price }</b></p>
           <p className='alt'>Volume: <b>{ volume }</b></p>
@@ -82,32 +89,6 @@ var Router = React.createClass({
             <Comments comments={ market.comments } account={ this.state.account } />
           </div>
         </div>
-      </div>
-    );
-  }
-});
-
-var Overview = React.createClass({
-
-  render: function() {
-
-    // return nothing until we have an actual market loaded
-    if (_.isUndefined(this.props.market)) return (<div />);
-
-    var outcomeCount = this.props.market.outcomes.length;
-    var matured = this.props.market.matured;
-    var params = this.props.params;
-    var outcomes = _.map(this.props.market.outcomes, function (outcome) {
-      return (
-        <div className="col-sm-6">
-          <Outcomes.Overview key={ outcome.id } {...outcome} matured={matured} outcomeCount={outcomeCount} params={params}></Outcomes.Overview>
-        </div>
-      );
-    });
-
-    return ( 
-      <div className='row'>
-        { outcomes } 
       </div>
     );
   }
@@ -176,7 +157,4 @@ var CommentForm = React.createClass({
   }
 });
 
-module.exports = {
-  Overview: Overview,
-  Router: Router
-};
+module.exports = Market;

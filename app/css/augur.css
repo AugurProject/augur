@@ -436,22 +436,24 @@ a.market-pane:hover {
     margin: 0px;
     font-size: 16px;
 }
-#market .outcome .trade {
+
+
+#market .outcome .trade-button {
     position: absolute;
     right: -1px;
 }
-#market .outcome .trade a.btn {
+#market .outcome .trade-button button {
     float: right;
     width: 63px;
 }
-#market .outcome.matured .trade a.btn {
+#market .outcome.matured .trade-button {
     display: none;
 }
-#market .outcome .trade .shares-held.none {
+#market .outcome .shares-held.none {
     padding: 10px 10px;
     display: inline-block;
 }   
-#market .outcome .trade .shares-held.btn {
+#market .outcome .shares-held.btn {
     background-color: #FCFFFD;
     float: right;
     border-radius: 0px;
@@ -464,41 +466,47 @@ a.market-pane:hover {
     border-bottom-right-radius: 0px;
     border-top-left-radius: 0px;
 }
-#market .outcome .sell {
+#market .outcome .sell,
+#market .outcome .cancel {
     bottom: -1px;
 }
-#market .outcome .sell .btn {
+#market .outcome .sell .btn,
+#market .outcome .cancel .btn {
     border-radius: 0px;
     border-bottom-right-radius: 3px;
 }
-#market .execute-trade {
+#market .outcome .cancel .btn {
+    border: none;
+}
+#market .outcome .trade {
     background-color: #F2F2F2;
-    border-radius: 5px;
-    padding: 10px 20px;
-    height: 90px;
 }
-#market .execute-trade h4 {
-    font-size: 20px;
-    margin-top: 5px;
-}
-#market .execute-trade p {
-    margin: 5px 0px 0px 0px;
-}
-#market .execute-trade .price {
+#market .outcome .trade .price {
     margin-bottom: 10px;
     margin-top: 15px;
 }
-#market .execute-trade .price i {
+#market .outcome .trade .price i {
     margin: 0px 3px 0px 8px;
     position: relative;
     top: -1px;
 }
-#market .execute-trade .price .new-price {
+#market .outcome .trade .new-price {
+    font-size: 20px;
+    font-family: 'Source Sans Pro';
+    font-weight: 300;
     color: #777;
+    margin-top: 9px;
 }
-#market .execute-trade form {
-    margin-top: 10px;
+#market .outcome .trade .new-price i {
+    margin-right: 2px;
 }
+#market .outcome .trade form {
+    width: 150px;
+}
+#market .outcome .trade form input {
+    border-radius: 0px;
+}
+
 #market .price-history {
   height: 225px;
   margin-top: 30px;

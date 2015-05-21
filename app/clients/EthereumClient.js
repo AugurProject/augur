@@ -229,7 +229,7 @@ EthereumClient.prototype.getEvent = function(eventId) {
   return event;
 };
 
-EthereumClient.prototype.checkQuorum = function(branchId, onSent, onSuccess) {
+EthereumClient.prototype.checkQuorum = function(branchId, onSent, onSuccess, onFailed) {
 
   if (!branchId) return;
   utilities.log('calling dispatch');
@@ -245,6 +245,11 @@ EthereumClient.prototype.checkQuorum = function(branchId, onSent, onSuccess) {
 
     utilities.log('dispatch succeeded');
     if (onSuccess) onSuccess();
+
+  }, function(error) {
+
+    //utilities.error(error);
+    if (onFailed) onFailed(error);
   });
 };
 
@@ -447,7 +452,11 @@ EthereumClient.prototype.addEvent = function(params, onSuccess) {
 
         Augur.getTx(newEvent.txHash);
         if (onSuccess) onSuccess(newEvent);
-      }
+      },
+
+      onFailed: function (error) {
+        utilities.error(error);
+      },
     });
 };
 
@@ -478,9 +487,9 @@ EthereumClient.prototype.addMarket = function(params, onSuccess) {
         if (onSuccess) onSuccess(newMarket);
       },
 
-      onFailed: function (newMarket) {
+      onFailed: function (error) {
         utilities.error("error adding new market")
-        utilities.error(newMarket);
+        utilities.error(error);
       }
     });
 };
@@ -531,14 +540,14 @@ EthereumClient.prototype.getSimulatedSell = function (marketId, outcomeId, numSh
 };
 
 
-EthereumClient.prototype.buyShares = function (branchId, marketId, outcomeId, numShares, callback) {
+EthereumClient.prototype.buyShares = function (branchId, marketId, outcomeId, numShares, onSent, onSuccess, onFailed) {
 
-  Augur.buyShares(branchId, marketId, outcomeId, numShares, null, callback);
+  Augur.buyShares(branchId, marketId, outcomeId, numShares, null, onSent, onSuccess, onFailed);
 };
 
-EthereumClient.prototype.sellShares = function (branchId, marketId, outcomeId, numShares, callback) {
+EthereumClient.prototype.sellShares = function (branchId, marketId, outcomeId, numShares, onSent, onSuccess, onFailed) {
 
-  Augur.sellShares(branchId, marketId, outcomeId, numShares, null, callback);
+  Augur.sellShares(branchId, marketId, outcomeId, numShares, null, onSent, onSuccess, onFailed);
 };
 
 module.exports = EthereumClient;
