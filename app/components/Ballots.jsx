@@ -35,10 +35,11 @@ var Ballots = React.createClass({
   },
 
   handleSubmitReport: function() {
+    var orderedDecisions = _.map(this.state.events, e => this.state.decisions[e.id]);
     this.getFlux().actions.report.hashReport(
       this.state.branchState.currentBranch.id,
       this.state.branchState.currentBranch.votePeriod,
-      this.state.decisions
+      orderedDecisions
     );
 
     // TODO: Make the storing of the decisions make the ballot go away.
