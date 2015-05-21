@@ -62,7 +62,7 @@ var BranchActions = {
     var votePeriod = ethereumClient.getVotePeriod(currentBranch.id);
     var currentPeriod = Math.floor(currentBlock / currentBranch.periodLength);
 
-    var percentComplete = (currentBlock / currentBranch.periodLength) - (votePeriod + 1);
+    var percentComplete = (currentBlock % currentBranch.periodLength) / currentBranch.periodLength * 100;
     var isCurrent = votePeriod < (currentPeriod - 1) ? false : true;
 
     if (!isCurrent) {
