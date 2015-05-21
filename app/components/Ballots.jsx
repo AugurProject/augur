@@ -68,9 +68,9 @@ var Ballots = React.createClass({
 
     if (currentBranch.currentPeriod) {
 
-      var endBlock = currentBranch.currentPeriod * currentBranch.periodLength;
+      var endBlock = (currentBranch.votePeriod + 1) * currentBranch.periodLength;
       var periodEndMoment = utilities.blockToDate(endBlock);
-      var startBlock = (currentBranch.currentPeriod - 1) * currentBranch.periodLength;
+      var startBlock = (currentBranch.votePeriod) * currentBranch.periodLength;
       var periodStartMoment = utilities.blockToDate(startBlock);
 
       if (periodStartMoment.format('MMM Do') === periodEndMoment.format('MMM Do')) {
@@ -129,7 +129,7 @@ var Ballots = React.createClass({
     var ballPosition = percentComplete+'%';
     return (
       <div id="ballots">
-        <h3>Ballot<span className='subheading pull-right'>Period { currentBranch.currentPeriod - 1}</span></h3>
+        <h3>Ballot<span className='subheading pull-right'>for voting period { currentBranch.votePeriod}</span></h3>
         <div className='now-ball' style={{marginLeft: ballPosition}}></div>
         <ProgressBar bsStyle={ percentStyle } now={ percentComplete } className='period-progress' />
         <div className='subheading clearfix'>
