@@ -22,7 +22,6 @@ var markets = [
 "-4868b705cfa92164920732f96c3dfc07fdb11204773f54355bbf9e7b4a24dbd",
 "-60581acb88fdcffec6b1065829a0a2d2002648368a184bfb68562a7d4d99a99c"
 ];
-markets = [];
 var events = [];
 
 module.exports = {
