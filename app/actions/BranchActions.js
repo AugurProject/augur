@@ -18,7 +18,7 @@ var BranchActions = {
   /**
    * Load the events in the current branch that need reports.
    *
-   * TODO: Load events across all branched that need reports.
+   * TODO: Load events across all branches that need reports.
    */
   loadEventsToReport: function() {
 

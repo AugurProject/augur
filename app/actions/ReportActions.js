@@ -37,7 +37,9 @@ var ReportActions = {
     // Hash the report and submit it to the network.
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var hash = Augur.hashReport(decisions, salt);
-    Augur.submitReportHash(branchId, hash, votePeriod);
+    console.log('Submitting hash for period', votePeriod, 'reports:', hash);
+    var log = x => console.log(x);
+    Augur.submitReportHash(branchId, hash, votePeriod, log, log, log);
 
     this.dispatch(constants.branch.UPDATE_PENDING_REPORTS, {pendingReports});
   },
