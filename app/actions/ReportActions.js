@@ -37,7 +37,9 @@ var ReportActions = {
     // Hash the report and submit it to the network.
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var hash = Augur.hashReport(decisions, salt);
-    Augur.submitReportHash(branchId, hash, votePeriod);
+    console.log('Submitting hash for period', votePeriod, 'reports:', hash);
+    var log = x => console.log(x);
+    Augur.submitReportHash(branchId, hash, votePeriod, log, log, log);
 
     this.dispatch(constants.branch.UPDATE_PENDING_REPORTS, {pendingReports});
   },
@@ -63,13 +65,13 @@ var ReportActions = {
     let didSendReports = false;
 
     _.forEach(unsentReports, (report) => {
-      let [votePeriod, periodLength] = ethereumClient.getVotePeriod(report.branchId);
-      let votePeriodBlock = currentBlock - (votePeriod * periodLength);
-      let shouldSend = votePeriodBlock > (votePeriod / 2);
+      let periodLength = ethereumClient.getPeriodLength(report.branchId);
+      let votePeriodBlock = currentBlock - (report.votePeriod * periodLength);
+      let shouldSend = votePeriodBlock > (periodLength / 2);
 
       if (shouldSend) {
-        console.log('Sending report for period ', votePeriod);
-        this.flux.actions.submitReport(report);
+        console.log('Sending report for period ', report.votePeriod);
+        this.flux.actions.report.submitReport(report);
         report.reported = true;
         didSendReports = true;
       }

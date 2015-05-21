@@ -18,16 +18,19 @@ var BranchActions = {
   /**
    * Load the events in the current branch that need reports.
    *
-   * TODO: Load events across all branched that need reports.
+   * TODO: Load events across all branches that need reports.
    */
   loadEventsToReport: function() {
 
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var currentBranch = this.flux.store('branch').getState().currentBranch;
 
-    // only load events if branch vote period is current
-    var isCurrent = currentBranch.votePeriod === parseInt(currentBranch.currentPeriod) - 1 ? true : false;
-    var events = isCurrent ? ethereumClient.getEvents(currentBranch.currentPeriod.toFixed(3)) : [];
+    // Only load events if the vote period indicated by the chain is the
+    // previous period. (Otherwise, dispatch needs to be run, which will
+    // move the events from their old periods to the current period. Those
+    // events will get voted on in the next period.)
+    var isCurrent = currentBranch.votePeriod === currentBranch.currentPeriod - 1 ? true : false;
+    var events = isCurrent ? ethereumClient.getEvents(currentBranch.currentPeriod.toFixed()) : [];
 
     this.dispatch(constants.branch.LOAD_EVENTS_TO_REPORT_SUCCESS, {
       eventsToReport: events || []
@@ -57,9 +60,9 @@ var BranchActions = {
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var currentBlock = this.flux.store('network').getState().blockNumber;
     var votePeriod = ethereumClient.getVotePeriod(currentBranch.id);
-    var currentPeriod = parseInt(currentBlock / currentBranch.periodLength);
+    var currentPeriod = Math.floor(currentBlock / currentBranch.periodLength);
 
-    var percentComplete = (currentBlock / currentBranch.periodLength) - (votePeriod + 1);
+    var percentComplete = (currentBlock % currentBranch.periodLength) / currentBranch.periodLength * 100;
     var isCurrent = votePeriod < (currentPeriod - 1) ? false : true;
 
     if (!isCurrent) {
@@ -87,7 +90,7 @@ var BranchActions = {
     // check quorum if branch isn't current and we havn't already
     if (!currentBranch.isCurrent && !hasCheckedQuorum) {
       var self = this;
-      ethereumClient.checkQuorum(currentBranch.id, function(txHash) { 
+      ethereumClient.checkQuorum(currentBranch.id, function(txHash) {
         self.dispatch(constants.branch.CHECK_QUORUM_SENT);
       }, function() {
         self.dispatch(constants.branch.CHECK_QUORUM_SUCCESS);

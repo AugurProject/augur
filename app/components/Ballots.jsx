@@ -35,10 +35,11 @@ var Ballots = React.createClass({
   },
 
   handleSubmitReport: function() {
+    var orderedDecisions = _.map(this.state.events, e => this.state.decisions[e.id]);
     this.getFlux().actions.report.hashReport(
       this.state.branchState.currentBranch.id,
       this.state.branchState.currentBranch.votePeriod,
-      this.state.decisions
+      orderedDecisions
     );
 
     // TODO: Make the storing of the decisions make the ballot go away.
@@ -144,15 +145,17 @@ var Ballots = React.createClass({
 var Decision = React.createClass({
   propTypes: {
     event: React.PropTypes.object.isRequired,
-    decision: React.PropTypes.number,
+    decision: React.PropTypes.string,
     // onChange takes an event ID and a decision value as a float.
     onChange: React.PropTypes.func.isRequired
   },
 
   handleChange: function (event) {
     // The change event on radio buttons is fired only on the element that
-    // becomes checked, which is what we want.
-    this.props.onChange(this.props.event.id, parseFloat(event.target.value));
+    // becomes checked, which is what we want. We use number strings to
+    // for the decision values to maintain precision. Augur.js converts them
+    // to fixed point numbers for us.
+    this.props.onChange(this.props.event.id, event.target.value);
   },
 
   render: function() {
@@ -170,7 +173,7 @@ var Decision = React.createClass({
                 type="radio"
                 value="0"
                 label="No"
-                checked={this.props.decision === 0}
+                checked={this.props.decision === "0"}
                 onChange={this.handleChange} />
             </div>
             <div className='col-sm-6'>
@@ -179,7 +182,7 @@ var Decision = React.createClass({
                 type="radio"
                 value="0.5"
                 label="Ambiguous / Indeterminate"
-                checked={this.props.decision === 0.5}
+                checked={this.props.decision === "0.5"}
                 onChange={this.handleChange} />
             </div>
             <div className='col-sm-3'>
@@ -188,7 +191,7 @@ var Decision = React.createClass({
                 type="radio"
                 value="1"
                 label="Yes"
-                checked={this.props.decision === 1}
+                checked={this.props.decision === "1"}
                 onChange={this.handleChange} />
             </div>
           </div>
