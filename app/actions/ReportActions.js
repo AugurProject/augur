@@ -63,7 +63,8 @@ var ReportActions = {
     let didSendReports = false;
 
     _.forEach(unsentReports, (report) => {
-      let [votePeriod, periodLength] = ethereumClient.getVotePeriod(report.branchId);
+      let votePeriod = ethereumClient.getVotePeriod(report.branchId);
+      let periodLength = ethereumClient.getPeriodLength(report.branchId);
       let votePeriodBlock = currentBlock - (votePeriod * periodLength);
       let shouldSend = votePeriodBlock > (votePeriod / 2);
 
