@@ -302,7 +302,7 @@ EthereumClient.prototype.getMarketsAsync = function (branchId) {
                 Augur.price(market, outcome, function (price) {
                   markets[market].price = price;
                   Augur.getParticipantSharesPurchased(market, marketInfo.currentParticipant, outcome, function (myShares) {
-                    markets[market].outcomes[outcome].sharesPurchased = myShares;
+                    markets[market].outcomes[outcome].sharesHeld = myShares;
                     Augur.getExpiration(events[0], function (expiration) {
                       if (events.length) {
                         markets[market].endDate = utilities.blockToDate((new BigNumber(expiration)).toNumber());
@@ -384,16 +384,16 @@ EthereumClient.prototype.getMarket = function(marketId, branchId) {
 
     var volume = Augur.getSharesPurchased(marketId, outcomeId);
     totalVolume = totalVolume.plus(volume);
-    var sharesPurchased = new BigNumber(0);
+    var sharesHeld = new BigNumber(0);
     if (traderId !== -1) {
-      sharesPurchased = Augur.getParticipantSharesPurchased(marketId, traderId, outcomeId);
+      sharesHeld = Augur.getParticipantSharesPurchased(marketId, traderId, outcomeId);
     }
 
     return {
       id: outcomeId,
       price: Augur.price(marketId, outcomeId),
       priceHistory: [],  // NEED
-      sharesPurchased: sharesPurchased,
+      sharesHeld: sharesHeld,
       volume: volume
     };
   });

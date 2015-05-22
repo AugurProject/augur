@@ -43,6 +43,11 @@ var MarketActions = {
     this.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
   },
 
+  updateSharesHeld: function(marketId, outcomeId, relativeShares) {
+
+    //console.log(marketId, outcomeId, relativeShares);
+  },
+
   addMarket: function(market, pendingId) {
 
   	// if no market id set, add as pending and return temp id

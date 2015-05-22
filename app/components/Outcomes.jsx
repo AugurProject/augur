@@ -2,6 +2,7 @@ var _ = require('lodash');
 var React = require('react');
 var Fluxxor = require('fluxxor');
 var FluxMixin = Fluxxor.FluxMixin(React);
+var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
 var ReactBootstrap = require('react-bootstrap');
 var utilities = require('../libs/utilities');
@@ -36,10 +37,13 @@ var getOutcome = function (outcomeComponent) {
 
 var Overview = React.createClass({
 
+  mixins: [FluxMixin],
+
   getInitialState: function () {
     return {
       buyShares: false,
-      sellShares: false
+      sellShares: false,
+      pendingShares: null
     }
   },
 
@@ -51,11 +55,73 @@ var Overview = React.createClass({
     this.setState({buyShares: true});
   },
 
-  handleReturn: function() {
+  handleCancel: function() {
     this.setState({
       buyShares: false,
       sellShares: false
     });
+  },
+
+  updateShareHelds: function () {
+
+      //var flux = this.getFlux();
+      //flux.actions.market.updateSharesHeld(this.props.market.id, this.props.outcome.id, pendingShares);
+  },
+
+  getTradeFunction: function (shares) {
+
+    var flux = this.getFlux();
+    var client = flux.store('config').getEthereumClient();
+
+    return (shares < 0) ? client.sellShares : client.buyShares;
+  },
+
+  handleTrade: function (relativeShares) {
+
+    event.preventDefault();
+
+    var self = this;
+    var absShares = Math.abs(relativeShares);
+
+    this.getTradeFunction(relativeShares)(
+
+      this.props.market.branchId,
+      this.props.market.id,
+      this.props.outcome.id,
+      absShares,
+
+      // on sent
+      function(result) {
+        utilities.debug('trade submitted: ' + result);
+        // TODO: check if component is mounted
+        self.setState({
+          pendingShares: relativeShares,
+          buyShares: false,
+          sellShares: false
+        });
+      },
+
+      // on success
+      function(result) {
+        utilities.debug('trade completed');
+
+        // TODO: check if component is mounted
+        self.setState({
+          pendingShares: null
+        });
+      },
+
+      // on failed
+      function(error) {
+        utilities.debug('trade failed: ' + result);
+        // TODO: check if component is mounted
+        self.setState({
+          pendingShares: null
+        });
+      }  
+    );
+
+
   },
 
   render: function () {
@@ -69,25 +135,40 @@ var Overview = React.createClass({
 
       className += ' buy';
       summary =  (
-        <Buy {...this.props} handleReturn={ this.handleReturn } />
+        <Buy {...this.props} handleTrade={ this.handleTrade } handleCancel={ this.handleCancel } />
       );
 
     } else if (this.state.sellShares) {
 
       className += ' sell';
       summary = (
-        <Sell {...this.props} handleReturn={ this.handleReturn } />
+        <Sell {...this.props} handleTrade={ this.handleTrade } handleCancel={ this.handleCancel } /> 
       );
 
     } else {
 
+      var pendingShares = ( <span /> )
+      if (this.state.pendingShares) {
+        var shares = this.state.pendingShares;
+        var sharesString = shares < 0 ? shares.toString() : '+'+shares;
+        var color = shares < 0 ? 'red' : 'green';
+        pendingShares = (
+          <b style={ {color: color} }>{ sharesString }</b>
+        )
+      }
+
       var holdings;
-      if (outcome.sharesPurchased.toNumber()) {
+      if (outcome.sharesHeld.toNumber()) {
         holdings = (
           <div className='sell trade-button'>
             <Button bsStyle='danger' onClick={ this.handleSellClick }>Sell</Button>
-            <span className="shares-held btn">{ outcome.sharesPurchased.toNumber() } { outcome.sharesPurchased.toNumber() === 1 ? 'share' : 'shares' } held</span> 
+            <span className="shares-held btn">{ outcome.sharesHeld.toNumber() }{ pendingShares } { outcome.sharesHeld.toNumber() === 1 ? 'share' : 'shares' } held</span> 
           </div>);
+      } else if (this.state.pendingShares) {
+        holdings = (
+          <div className='sell trade-button'>
+            <span className="shares-held none">{ this.state.pendingShares } shares pending</span> 
+          </div>);    
       } else {
         holdings = (
           <div className='sell trade-button'>
@@ -129,20 +210,16 @@ var Overview = React.createClass({
  * - getTradeFunction
  */
 var TradeBase = {
+
   mixins: [FluxMixin],
 
   getInitialState: function () {
     return {
-      ownedShares: this.getOwnedShares(),
-      tradeDisabled: false,
+      sharesHeld: this.getSharesHeld(),
       simulation: null,
       inputError: null,
       value: ''
     }
-  },
-
-  getOutcomeId: function () {
-    return parseInt(this.props.outcome.id);
   },
 
   getPrice: function () {
@@ -150,9 +227,9 @@ var TradeBase = {
     return outcome.price;
   },
 
-  getOwnedShares: function () {
+  getSharesHeld: function () {
     var outcome = getOutcome(this);
-    return outcome.sharesPurchased.toNumber();
+    return outcome.sharesHeld.toNumber();
   },
 
   handleChange: function () {
@@ -174,7 +251,7 @@ var TradeBase = {
       new Promise((resolve, reject) => {
         this.getSimulationFunction()(
           this.props.market.id,
-          this.getOutcomeId(),
+          this.props.outcome.id,
           numShares,
           resolve
         );
@@ -188,43 +265,17 @@ var TradeBase = {
 
   onSubmit: function (event) {
 
-    event.preventDefault();
-
     var numShares = parseFloat(this.state.value);
+
     if (typeof(numShares) !== 'number' || !numShares) {
       this.setState({inputError: 'Shares must be a numeric value'});
     } else if (this.state.simulation.cost > this.props.cashBalance) {
       this.setState({inputError: 'Cost of shares exceeds funds'});
     } else {
 
-      var self = this;
-      this.getTradeFunction()(
-        this.props.market.branchId,
-        this.props.market.id,
-        this.getOutcomeId(),
-        numShares,
-        // on sent
-        function(result) {
-          utilities.log('trade submitted: ' + result);
-          self.setState({
-            ownedShares: self.getOwnedSharesAfterTrade(numShares),
-            tradeDisabled: true
-          });
-          self.props.handleReturn();
-        },
-        // on success
-        function(result) {
-          utilities.log('trade completed');
-        },
-        // on failed
-        function(error) {
-          utilities.error('trade failed: ' + result);
-          self.setState({
-            tradeDisabled: false
-          });
-        }  
-      );
-    }   
+      var relativeShares = this.getRelativeShares();
+      this.props.handleTrade(relativeShares);
+    }
   },
 
   render: function () {
@@ -255,17 +306,19 @@ var TradeBase = {
           </form>
         </div>
         <div className='cancel trade-button'>
-          <Button bsStyle='default' onClick={ this.props.handleReturn } bsSize='small'>CANCEL</Button>
+          <Button bsStyle='default' onClick={ this.props.handleCancel } bsSize='small'>CANCEL</Button>
         </div>
         <p>{ +outcome.price.toFixed(2) }</p>
-        <p>{ outcome.sharesPurchased.toNumber() } { outcome.sharesPurchased.toNumber() === 1 ? 'share' : 'shares' } held</p>
+        <p>{ outcome.sharesHeld.toNumber() } { outcome.sharesHeld.toNumber() === 1 ? 'share' : 'shares' } held</p>
         <p className='new-price'>{ this.getPriceDelta() }</p>
       </div>
     );
   }
 };
 
+
 var Buy = React.createClass(_.merge({
+
   actionLabel: 'Buy',
 
   getHelpText: function () {
@@ -293,24 +346,21 @@ var Buy = React.createClass(_.merge({
     );
   },
 
+  getRelativeShares: function() {
+    return this.state.value;
+  },
+
   getSimulationFunction: function () {
     var flux = this.getFlux();
     var client = flux.store('config').getEthereumClient();
     return client.getSimulatedBuy;
-  },
-
-  getTradeFunction: function () {
-    var flux = this.getFlux();
-    var client = flux.store('config').getEthereumClient();
-    return client.buyShares;
-  },
-
-  getOwnedSharesAfterTrade: function (numShares) {
-    return this.state.ownedShares + numShares;
   }
+
 }, TradeBase));
 
+
 var Sell = React.createClass(_.merge({
+
   actionLabel: 'Sell',
 
   getHelpText: function () {
@@ -318,7 +368,7 @@ var Sell = React.createClass(_.merge({
       return '';
     }
     return (
-      'Cost: ' + this.state.simulation.cost.toFixed(3)
+      'Return: ' + this.state.simulation.cost.toFixed(3)
     );
   },
 
@@ -336,21 +386,16 @@ var Sell = React.createClass(_.merge({
     );
   },
 
+  getRelativeShares: function() {
+    return this.state.value * -1;
+  },
+
   getSimulationFunction: function () {
     var flux = this.getFlux();
     var client = flux.store('config').getEthereumClient();
     return client.getSimulatedSell;
-  },
-
-  getTradeFunction: function (numShares, callback) {
-    var flux = this.getFlux();
-    var client = flux.store('config').getEthereumClient();
-    return client.sellShares;
-  },
-
-  getOwnedSharesAfterTrade: function (numShares) {
-    return this.state.ownedShares - numShares;
   }
+
 }, TradeBase));
 
 module.exports = {

@@ -61,10 +61,10 @@ var Market = React.createClass({
     var outcomes = _.map(this.state.market.outcomes, function (outcome) {
       return (
         <div className="col-sm-6" key={ outcome.id }>
-          <Outcomes.Overview market={ market } outcome={ outcome }></Outcomes.Overview>
+          <Outcomes.Overview market={ this.state.market } outcome={ outcome }></Outcomes.Overview>
         </div>
       );
-    });
+    }, this);
 
     return (
       <div id='market'>
