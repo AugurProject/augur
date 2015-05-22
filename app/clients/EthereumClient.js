@@ -333,7 +333,6 @@ EthereumClient.prototype.getMarkets = function(branchId, currentMarkets, onProgr
   });
 
   var markets = validMarkets;
-
   // only get new markets we don't already have
   if (currentMarkets) {
     markets = _.difference(currentMarkets, markets);
