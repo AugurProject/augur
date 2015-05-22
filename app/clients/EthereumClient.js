@@ -469,6 +469,15 @@ EthereumClient.prototype.addMarket = function(params, onSuccess) {
     var tradingFee = params.tradingFee;
     var events = params.events;  // a list of event ids
 
+    utilities.log({
+      branchId: branchId,
+      description: description,
+      alpha: alpha,
+      initialLiquidity: initialLiquidity,
+      tradingFee: tradingFee,
+      events: events
+    });
+
     Augur.createMarket({
       branchId: branchId,
       description: description,
