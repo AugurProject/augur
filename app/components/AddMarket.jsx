@@ -13,7 +13,7 @@ var moment = require('moment');
 
 var AddMarketModal = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin('market')],
+  mixins: [FluxMixin, StoreWatchMixin('market', 'network', 'asset')],
 
   getInitialState: function () {
     return {
@@ -36,7 +36,8 @@ var AddMarketModal = React.createClass({
     return {
       ethereumClient: flux.store('config').getEthereumClient(),
       cash: flux.store('asset').getState().cash,
-      currentBlock: flux.store('network').getState().blockNumber
+      currentBlock: flux.store('network').getState().blockNumber,
+      currentBranch: flux.store('branch').getCurrentBranch()
     }
   },
 
@@ -134,7 +135,7 @@ var AddMarketModal = React.createClass({
 
         // get new market and add to store on success
         var marketId = new BigNumber(newMarket.id);  // convert hex string returned to Big Number :/
-        var market = ethereumClient.getMarket(marketId)
+        var market = ethereumClient.getMarket(marketId, self.state.currentBranch.id);
         flux.actions.market.addMarket(market, pendingId);
       });
     });

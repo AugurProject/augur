@@ -88,7 +88,7 @@ var SendEtherModal = React.createClass({
               </div>
             </div>
           </form>
-          <p>ETHER: <b className='ether-balance'>{ utilities.formatEther(this.state.ether) }</b></p>
+          <p>ETHER: <b className='ether-balance'>{ utilities.formatEther(this.state.ether).value }</b></p>
         </div>
       </Modal>
     );

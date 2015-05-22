@@ -541,12 +541,10 @@ EthereumClient.prototype.getSimulatedSell = function (marketId, outcomeId, numSh
 
 
 EthereumClient.prototype.buyShares = function (branchId, marketId, outcomeId, numShares, onSent, onSuccess, onFailed) {
-
   Augur.buyShares(branchId, marketId, outcomeId, numShares, null, onSent, onSuccess, onFailed);
 };
 
 EthereumClient.prototype.sellShares = function (branchId, marketId, outcomeId, numShares, onSent, onSuccess, onFailed) {
-
   Augur.sellShares(branchId, marketId, outcomeId, numShares, null, onSent, onSuccess, onFailed);
 };
 
