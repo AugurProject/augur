@@ -172,7 +172,6 @@ var TradeBase = {
     } else {
 
       new Promise((resolve, reject) => {
-        utilities.debug('requesting simulation:', this.props.market.id.toString(16), this.getOutcomeId(), numShares);
         this.getSimulationFunction()(
           this.props.market.id,
           this.getOutcomeId(),
@@ -180,8 +179,6 @@ var TradeBase = {
           resolve
         );
       }).then((simulation) => {
-        utilities.debug('setting simulation:', simulation.cost.toFixed(3), simulation.newPrice.toFixed(3));
-
         this.setState({
           simulation: simulation
         });

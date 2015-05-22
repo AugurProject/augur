@@ -629,14 +629,15 @@ a.market-pane:hover {
 #ballots h3 {
     border-bottom: none;
 }
-#ballots .now-ball {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background-color: rgb(55, 117, 171);
-    margin-bottom: -3px;
+#ballots .now-marker {
+    display: none;
+    height: 6px;
+    width: 10px;
+    color: rgb(55, 117, 171);
+    margin-bottom: -4px;
     position: relative;
-}
+    top: -11px;
+    }
 #ballots .period-progress {
     height: 1px;
     margin: 0px;

@@ -39,8 +39,6 @@ var AugurApp = React.createClass({
     // set app status (stopped, loading, running) from network & config state
     if (parseInt(percentLoaded) === 100) {
       this.setState({status: 'running'});
-    } else {
-      this.setState({status: 'stopped'});
     }
 
     return {
