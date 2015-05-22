@@ -65,14 +65,14 @@ var AccountDetails = React.createClass({
               <Button bsSize='xsmall' bsStyle='default' onClick={ this.onCashFaucet }>Faucet<i className='fa fa-tint'></i></Button>
             </ButtonGroup>
           </div>
-          <div className='col-sm-5 rep-balance'>
+          <div className='col-sm-4 rep-balance'>
             { this.state.asset.reputation } <span className='unit'>rep</span>
             <ButtonGroup>
               <SendRepTrigger text='send' />
               <Button bsSize='xsmall' bsStyle='default' onClick={ this.onRepFaucet }>Faucet<i className='fa fa-tint'></i></Button>
             </ButtonGroup>
           </div>
-          <div className='col-sm-3 ether-balance'>
+          <div className='col-sm-4 ether-balance'>
             { utilities.formatEther(this.state.asset.ether).value } <span className='unit'>{ utilities.formatEther(this.state.asset.ether).unit }</span>
             <SendEtherTrigger text='send' />
           </div>
