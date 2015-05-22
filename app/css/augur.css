@@ -403,6 +403,12 @@ a.market-pane:hover {
     position: relative;
     height: 90px;
 }
+#market .outcome.buy {
+
+}
+#market .outcome.sell {
+
+}
 #market .outcome h4 {
     color: #fff;
     background-color: #18376f;
@@ -434,7 +440,7 @@ a.market-pane:hover {
 }
 #market .outcome .summary p {
     margin: 0px;
-    font-size: 16px;
+    font-size: 15px;
 }
 
 
@@ -473,13 +479,12 @@ a.market-pane:hover {
 #market .outcome .sell .btn,
 #market .outcome .cancel .btn {
     border-radius: 0px;
-    border-bottom-right-radius: 3px;
+    border-bottom-right-radius: 4px;
 }
 #market .outcome .cancel .btn {
-    border: none;
-}
-#market .outcome .trade {
-    background-color: #F2F2F2;
+    border-top-left-radius: 4px;
+    color: #999;
+    border-color: #eee;
 }
 #market .outcome .trade .price {
     margin-bottom: 10px;
@@ -495,7 +500,7 @@ a.market-pane:hover {
     font-family: 'Source Sans Pro';
     font-weight: 300;
     color: #777;
-    margin-top: 9px;
+    margin-top: 11px;
 }
 #market .outcome .trade .new-price i {
     margin-right: 2px;
@@ -505,6 +510,7 @@ a.market-pane:hover {
 }
 #market .outcome .trade form input {
     border-radius: 0px;
+    border-bottom-left-radius: 4px;
 }
 
 #market .price-history {

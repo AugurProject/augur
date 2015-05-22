@@ -67,12 +67,14 @@ var Overview = React.createClass({
 
     if (this.state.buyShares) {
 
+      className += ' buy';
       summary =  (
         <Buy {...this.props} handleReturn={ this.handleReturn } />
       );
 
     } else if (this.state.sellShares) {
 
+      className += ' sell';
       summary = (
         <Sell {...this.props} handleReturn={ this.handleReturn } />
       );
@@ -170,7 +172,7 @@ var TradeBase = {
     } else {
 
       new Promise((resolve, reject) => {
-        console.log('requesting simulation:', this.props.market.id.toString(16), this.getOutcomeId(), numShares);
+        utilities.debug('requesting simulation:', this.props.market.id.toString(16), this.getOutcomeId(), numShares);
         this.getSimulationFunction()(
           this.props.market.id,
           this.getOutcomeId(),
@@ -178,7 +180,7 @@ var TradeBase = {
           resolve
         );
       }).then((simulation) => {
-        console.log('setting simulation:', simulation.cost.toFixed(3), simulation.newPrice.toFixed(3));
+        utilities.debug('setting simulation:', simulation.cost.toFixed(3), simulation.newPrice.toFixed(3));
 
         this.setState({
           simulation: simulation
@@ -215,10 +217,7 @@ var TradeBase = {
         },
         // on success
         function(result) {
-          console.log('trade completed');
-          self.setState({
-            tradeDisabled: false
-          });
+          utilities.log('trade completed');
         },
         // on failed
         function(error) {
@@ -240,7 +239,7 @@ var TradeBase = {
     var submit = (
       <Button bsStyle={ buttonStyle } type="submit">{ this.actionLabel }</Button>
     );
-    var inputStyle = this.state.inputError ? 'error' : '';
+    var inputStyle = this.state.inputError ? 'error' : null;
 
     return (
       <div className="summary trade">
@@ -259,7 +258,7 @@ var TradeBase = {
           </form>
         </div>
         <div className='cancel trade-button'>
-          <Button bsStyle='default' onClick={ this.props.handleReturn } bsSize='small'>Cancel</Button>
+          <Button bsStyle='default' onClick={ this.props.handleReturn } bsSize='small'>CANCEL</Button>
         </div>
         <p>{ +outcome.price.toFixed(2) }</p>
         <p>{ outcome.sharesPurchased.toNumber() } { outcome.sharesPurchased.toNumber() === 1 ? 'share' : 'shares' } held</p>

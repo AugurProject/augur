@@ -60,8 +60,8 @@ var Market = React.createClass({
 
     var outcomes = _.map(this.state.market.outcomes, function (outcome) {
       return (
-        <div className="col-sm-6">
-          <Outcomes.Overview key={ outcome.id } market={ market } outcome={ outcome }></Outcomes.Overview>
+        <div className="col-sm-6" key={ outcome.id }>
+          <Outcomes.Overview market={ market } outcome={ outcome }></Outcomes.Overview>
         </div>
       );
     });
@@ -120,7 +120,7 @@ var CommentList = React.createClass({
       var identicon = 'data:image/png;base64,' + new Identicon(c.author, 50).toString();
 
       return (
-        <div className="comment">
+        <div className="comment" key={ c.id }>
           <div className="user avatar" style={{ backgroundImage: 'url(' + identicon + ')' }}></div>
           <div className="box">
             <p>{ c.comment }</p>
