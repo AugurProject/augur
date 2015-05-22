@@ -29,12 +29,6 @@ var getOutcomeName = function (id, count) {
   }
 };
 
-var getOutcome = function (outcomeComponent) {
-  var outcomes = outcomeComponent.props.market.outcomes;
-  var outcomeId = parseInt(outcomeComponent.props.outcome.id);
-  return _.find(outcomes, {id: outcomeId});
-};
-
 var Overview = React.createClass({
 
   mixins: [FluxMixin],
@@ -43,6 +37,7 @@ var Overview = React.createClass({
     return {
       buyShares: false,
       sellShares: false,
+      sharesHeld: this.props.outcome.sharesHeld.toNumber(),
       pendingShares: null
     }
   },
@@ -62,10 +57,15 @@ var Overview = React.createClass({
     });
   },
 
-  updateShareHelds: function () {
+  updateShareHelds: function (relativeShares) {
 
-      //var flux = this.getFlux();
-      //flux.actions.market.updateSharesHeld(this.props.market.id, this.props.outcome.id, pendingShares);
+    var currentShares = this.props.outcome.sharesHeld;
+    console.log(currentShares);
+    this.props.outcome.sharesHeld = currentShares.plus(new BigNumber(relativeShares));
+    this.props.market.outcomes[outcomeId].sharesHeld = currentShares.plus(new BigNumber(relativeShares));
+
+    var flux = this.getFlux();
+    flux.actions.market.updateMarket(this.props.market);
   },
 
   getTradeFunction: function (shares) {
@@ -105,9 +105,14 @@ var Overview = React.createClass({
       function(result) {
         utilities.debug('trade completed');
 
+        //self.updateSharesHeld(relativeShares);
+
+        var newSharesHeld = parseFloat(self.state.sharesHeld) + parseFloat(relativeShares);
+
         // TODO: check if component is mounted
         self.setState({
-          pendingShares: null
+          pendingShares: null,
+          sharesHeld: newSharesHeld
         });
       },
 
@@ -120,8 +125,6 @@ var Overview = React.createClass({
         });
       }  
     );
-
-
   },
 
   render: function () {
@@ -158,11 +161,11 @@ var Overview = React.createClass({
       }
 
       var holdings;
-      if (outcome.sharesHeld.toNumber()) {
+      if (this.state.sharesHeld) {
         holdings = (
           <div className='sell trade-button'>
             <Button bsStyle='danger' onClick={ this.handleSellClick }>Sell</Button>
-            <span className="shares-held btn">{ outcome.sharesHeld.toNumber() }{ pendingShares } { outcome.sharesHeld.toNumber() === 1 ? 'share' : 'shares' } held</span> 
+            <span className="shares-held btn">{ this.state.sharesHeld }{ pendingShares } { this.state.sharesHeld === 1 ? 'share' : 'shares' } held</span> 
           </div>);
       } else if (this.state.pendingShares) {
         holdings = (
@@ -207,7 +210,6 @@ var Overview = React.createClass({
  * - actionLabel
  * - getHelpText
  * - getSimulationFunction
- * - getTradeFunction
  */
 var TradeBase = {
 
@@ -215,21 +217,10 @@ var TradeBase = {
 
   getInitialState: function () {
     return {
-      sharesHeld: this.getSharesHeld(),
       simulation: null,
       inputError: null,
       value: ''
     }
-  },
-
-  getPrice: function () {
-    var outcome = getOutcome(this);
-    return outcome.price;
-  },
-
-  getSharesHeld: function () {
-    var outcome = getOutcome(this);
-    return outcome.sharesHeld.toNumber();
   },
 
   handleChange: function () {

@@ -26,6 +26,10 @@ var MarketStore = Fluxxor.createStore({
     return _.indexBy(marketsByAuthor, 'id');
   },
 
+  getMarket: function(marketId) {
+    return state.markets[marketId];
+  },
+
   handleUpdateMarketsSuccess: function (payload) {
     state.markets = _.merge(state.markets, payload.markets);
     this.emit(constants.CHANGE_EVENT);
