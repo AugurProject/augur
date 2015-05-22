@@ -25,6 +25,10 @@ var Network = React.createClass({
     if (this.state.assets.ether) {
       formattedEther = utilities.formatEther(this.state.assets.ether).value + ' ' +  utilities.formatEther(this.state.assets.ether).unit;
     }
+    var formattedGasPrice = '-';
+    if (this.state.assets.ether) {
+      formattedGasPrice = utilities.formatEther(this.state.network.gasPrice).value + ' ' +  utilities.formatEther(this.state.network.gasPrice).unit;
+    }
     return (
       <div className="panel panel-default network">
         <div className="panel-heading clearfix">
@@ -47,10 +51,10 @@ var Network = React.createClass({
             ETHER<span className="pull-right">{ formattedEther }</span>
           </p>
           <p className="gas-price">
-            GAS PRICE<span className="pull-right">{ utilities.formatEther(this.state.network.gasPrice) || '-'}</span>
+            GAS PRICE<span className="pull-right">{ formattedGasPrice }</span>
           </p>
           <p className="block-time">
-            BLOCK TIME<span className="pull-right">{ this.state.network.blocktime || '-'}</span>
+            BLOCK TIME<span className="pull-right">{ this.state.network.blocktime || '-' }</span>
           </p>
         </div>
       </div>

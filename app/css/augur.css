@@ -484,7 +484,7 @@ a.market-pane:hover {
 #market .outcome .cancel .btn {
     border-top-left-radius: 4px;
     color: #999;
-    border-color: #eee;
+    border-color: #DADADA;
 }
 #market .outcome .trade .price {
     margin-bottom: 10px;
