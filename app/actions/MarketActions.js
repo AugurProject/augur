@@ -30,6 +30,7 @@ var MarketActions = {
     var configState = this.flux.store('config').getState();
 
     var branchId = branchState.currentBranch.id;
+
     var currentMarketIds = _.keys(this.flux.store('market').getState().markets);
     
     var ethereumClient = configState.ethereumClient;

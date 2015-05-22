@@ -332,6 +332,8 @@ EthereumClient.prototype.getMarkets = function(branchId, currentMarkets, onProgr
     return !_.contains(blacklist.markets, marketId.toString(16));
   });
 
+  currentMarkets = null;
+
   var markets = validMarkets;
   // only get new markets we don't already have
   if (currentMarkets) {
