@@ -73,7 +73,7 @@ var MarketPane = React.createClass({
 
     if (linked) {
       return (
-        <Link to='market' params={ {marketId: market.id.toString(16)} } className={ className }>
+        <Link to='market' params={ {marketId: market.id} } className={ className }>
           { body }
         </Link>
       );

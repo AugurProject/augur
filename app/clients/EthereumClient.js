@@ -324,25 +324,34 @@ EthereumClient.prototype.getMarketsAsync = function (branchId) {
   });
 };
 
-EthereumClient.prototype.getMarkets = function(branchId, currentMarkets, onProgress) {
+EthereumClient.prototype.getNewMarkets = function(branchId, currentMarkets) {
 
   branchId = branchId || this.defaultBranchId;
   var validMarkets = _.filter(Augur.getMarkets(branchId), function (marketId) {
-    //_.each(_.range(100000), function() {});
     return !_.contains(blacklist.markets, marketId.toString(16));
   });
 
-  currentMarkets = null;
+  // convert to hex string for comparison
+  validMarkets = _.map(validMarkets, function(marketId) { return marketId.toString(16) } );
+  var markets = _.difference(currentMarkets, validMarkets);  // new markets
 
-  var markets = validMarkets;
-  // only get new markets we don't already have
-  if (currentMarkets) {
-    markets = _.difference(currentMarkets, markets);
-  }
+  var marketList = _.map(markets, function (marketId) {
+    return this.getMarket(marketId, branchId);
+  }, this);
+
+  return _.indexBy(marketList, 'id');
+};
+
+EthereumClient.prototype.getMarkets = function(branchId, onProgress) {
+
+  branchId = branchId || this.defaultBranchId;
+  var validMarkets = _.filter(Augur.getMarkets(branchId), function (marketId) {
+    return !_.contains(blacklist.markets, marketId.toString(16));
+  });
 
   var progress = {total: validMarkets.length, current: 0};
 
-  var marketList = _.map(markets, function (marketId) {
+  var marketList = _.map(validMarkets, function (marketId) {
 
     // update/call progress
     if (onProgress) {
@@ -358,6 +367,9 @@ EthereumClient.prototype.getMarkets = function(branchId, currentMarkets, onProgr
 };
 
 EthereumClient.prototype.getMarket = function(marketId, branchId) {
+
+  // convert to BigNumber if needed
+  marketId = typeof(marketId) === 'string' ? new BigNumber(marketId) : marketId;
 
   var events = Augur.getMarketEvents(marketId);
   var description = Augur.getDescription(marketId);
@@ -406,7 +418,7 @@ EthereumClient.prototype.getMarket = function(marketId, branchId) {
   var invalid = outcomes.length ? false : true;
 
   return {
-    id: marketId,
+    id: marketId.toString(16),
     branchId: branchId,
     price: price,
     description: description,

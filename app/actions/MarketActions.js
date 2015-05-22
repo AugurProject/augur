@@ -9,7 +9,7 @@ var MarketActions = {
     var ethereumClient = this.flux.store('config').getEthereumClient();
 
     var self = this;
-    var markets = ethereumClient.getMarkets(currentBranch.id, null, function(progress) {
+    var markets = ethereumClient.getMarkets(currentBranch.id, function(progress) {
       var percent = ((progress.current/progress.total) * 100).toFixed(2);
       self.flux.actions.config.updatePercentLoaded(percent);
     });
@@ -34,7 +34,7 @@ var MarketActions = {
     var currentMarketIds = _.keys(this.flux.store('market').getState().markets);
     
     var ethereumClient = configState.ethereumClient;
-    var markets = ethereumClient.getMarkets(branchId, currentMarketIds);
+    var markets = ethereumClient.getNewMarkets(branchId, currentMarketIds);
 
     this.dispatch(constants.market.UPDATE_MARKETS_SUCCESS, {markets: markets});
   },
