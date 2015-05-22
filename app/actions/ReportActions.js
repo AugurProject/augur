@@ -38,7 +38,7 @@ var ReportActions = {
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var hash = Augur.hashReport(decisions, salt);
     console.log('Submitting hash for period', votePeriod, 'reports:', hash);
-    var log = x => console.log(x);
+    var log = x => console.log('Augur.submitReportHash callback:', x);
     Augur.submitReportHash(branchId, hash, votePeriod, log, log, log);
 
     this.dispatch(constants.branch.UPDATE_PENDING_REPORTS, {pendingReports});
@@ -50,7 +50,9 @@ var ReportActions = {
    * @param report {Object} branchId, votePeriod, decisions and salt.
    */
   submitReport: function (report) {
-    return Augur.report(report.branchId, report.decisions, report.votePeriod, report.salt);
+    var log = x => console.log('Augur.report callback:', x);
+    var returned = Augur.report(report.branchId, report.decisions, report.votePeriod, report.salt, log, log, log);
+    console.log('Augur.report returned:', returned);
   },
 
   /**
