@@ -70,7 +70,7 @@ var ReportActions = {
       let shouldSend = votePeriodBlock > (periodLength / 2);
 
       if (shouldSend) {
-        console.log('Sending report for period ', report.votePeriod);
+        console.log('Sending report for period', report.votePeriod);
         this.flux.actions.report.submitReport(report);
         report.reported = true;
         didSendReports = true;
