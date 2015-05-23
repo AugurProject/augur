@@ -7,7 +7,7 @@ RUN sudo ln /usr/bin/nodejs /usr/bin/node
 
 RUN sudo npm install -g grunt-cli
 
-RUN git clone https://github.com/augur/augur-client.git
+RUN git clone https://github.com/AugurProject/augur-client.git
 
 WORKDIR augur-client
 
