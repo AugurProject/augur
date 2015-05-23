@@ -22,7 +22,15 @@ Install go-ethereum ([installation instructions](https://github.com/ethereum/go-
 
 ### Local or Docker
 
-You can launch augur-client locally with the instructions that follow, or run it in docker with: `docker run -p 8080:8080 carver/augur-client`.  (To build it locally, run `docker build -t augur-client . && docker run -p 8080:8080 augur-client`)
+You can launch augur-client locally with the instructions in the following sections, or run it in [docker](https://docs.docker.com/) with one of:
+```
+# get a quick start with a pre-built image:
+docker run -p 8080:8080 carver/augur-client
+
+# or rebuild your own image with:
+docker build -t augur-client .
+docker run -p 8080:8080 augur-client
+```
 
 ### Building augur-client
 
