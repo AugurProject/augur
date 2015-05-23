@@ -20,6 +20,10 @@ Ethereum Dapps store their data on the Ethereum blockchain, and their frontends 
 
 Install go-ethereum ([installation instructions](https://github.com/ethereum/go-ethereum/wiki)). Add a new account with `geth account new` and then start the client with `geth --rpc --rpccorsdomain 'http://localhost:8080'  --shh --unlock primary`.
 
+### Local or Docker
+
+You can launch augur-client locally with the instructions that follow, or run it in docker with: `docker run -p 8080:8080 carver/augur-client`.  (To build it locally, run `docker build -t augur-client . && docker run -p 8080:8080 augur-client`)
+
 ### Building augur-client
 
 Install [Node.js](https://nodejs.org/), then:
