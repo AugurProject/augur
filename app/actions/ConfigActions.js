@@ -14,7 +14,7 @@ var ConfigActions = {
       host: configState.host,
       defaultBranchId:  branchState.currentBranch.id || branchState.rootBranchId
     }
-    var ethereumClient = window.ethereumClient = configState.ethereumClient || new EthereumClient(clientParams);
+    var ethereumClient = window.ethereumClient = new EthereumClient(clientParams);
 
     this.dispatch(constants.config.UPDATE_ETHEREUM_CLIENT_SUCCESS, {
       ethereumClient: ethereumClient

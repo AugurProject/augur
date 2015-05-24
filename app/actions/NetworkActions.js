@@ -25,7 +25,7 @@ var NetworkActions = {
       networkState.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED
     );
 
-    if (!nowUp) {  // ethereum client not found
+    if (!nowUp) { 
 
       utilities.warn('failed to connect to ethereum');
 
@@ -43,6 +43,7 @@ var NetworkActions = {
         }
       );
 
+      this.flux.actions.config.updateEthereumClient();
       this.flux.actions.branch.loadBranches();
       this.flux.actions.branch.setCurrentBranch();
       
@@ -87,6 +88,7 @@ var NetworkActions = {
    * Update data that should change over time in the UI.
    */
   onNewBlock: function () {
+
     this.flux.actions.network.loadNetwork();
     this.flux.actions.asset.loadAssets();
     this.flux.actions.market.updateMarkets();
