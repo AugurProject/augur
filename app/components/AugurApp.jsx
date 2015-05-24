@@ -73,7 +73,7 @@ var AugurApp = React.createClass({
 
   render: function() {
 
-    var cashBalance = this.state.asset.cash ? +this.state.asset.cash.toFixed(2) : '-';
+    var cashBalance = this.state.asset.cash && this.state.asset.cash.toFixed ? +this.state.asset.cash.toFixed(2) : '-';
 
     return (
       <div id="app" className={ this.state.status }>

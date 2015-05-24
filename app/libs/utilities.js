@@ -31,7 +31,7 @@ module.exports = {
     // detect format and convert
     if (typeof(wei) === 'string' && wei.match(/^0x\w+/)) {
       wei = web3.toWei(wei, 'wei');
-    } else if (wei) {
+    } else if (wei.toNumber) {
       wei = wei.toNumber();
     } else {
       return '-';

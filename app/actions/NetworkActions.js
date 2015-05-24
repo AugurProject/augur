@@ -18,7 +18,6 @@ var NetworkActions = {
 
     var nowUp = ethereumClient.isAvailable();
     var wasUp = (
-      !networkState.ethereumStatus ||
       networkState.ethereumStatus === constants.network.ETHEREUM_STATUS_CONNECTED
     );
     var wasDown = (
@@ -26,7 +25,7 @@ var NetworkActions = {
       networkState.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED
     );
 
-    if (wasUp && !nowUp) {
+    if (!nowUp) {  // ethereum client not found
 
       utilities.warn('failed to connect to ethereum');
 
@@ -35,7 +34,7 @@ var NetworkActions = {
         {ethereumStatus: constants.network.ETHEREUM_STATUS_FAILED}
       );
 
-    } else if (wasDown && nowUp) {
+    } else if (wasDown && nowUp) { 
 
       this.dispatch(
         constants.network.UPDATE_ETHEREUM_STATUS,
