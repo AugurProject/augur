@@ -51,6 +51,8 @@ var BranchActions = {
 
     this.dispatch(constants.branch.SET_CURRENT_BRANCH_SUCCESS, currentBranch);
 
+    this.flux.actions.network.loadEverything();
+
     this.flux.actions.branch.updateCurrentBranch();
   },
 
