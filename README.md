@@ -28,6 +28,8 @@ You can launch augur-client locally with the instructions in the following secti
 docker run -p 8080:8080 carver/augur-client
 
 # or rebuild your own image with:
+git clone https://github.com/AugurProject/augur-client.git
+cd augur-client
 docker build -t augur-client .
 docker run -p 8080:8080 augur-client
 ```
