@@ -53,6 +53,11 @@ h1, h2, h3, h4, h5 {
 #app.stopped #loading {
     display: block;
 }
+#app.running {
+    background-color: #f9f6ea;
+    height: 100%;
+    width: 100%;
+}
 #app.running #main {
     display: block;
 }

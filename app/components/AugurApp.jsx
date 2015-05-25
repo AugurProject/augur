@@ -36,8 +36,6 @@ var AugurApp = React.createClass({
     var flux = this.getFlux();
     var percentLoaded = flux.store('config').getState().percentLoaded;
 
-    //console.log(percentLoaded);
-
     // set app status (stopped, loading, running) from network & config state
     if (parseInt(percentLoaded) === 100) {
       this.setState({status: 'running'});
@@ -52,10 +50,15 @@ var AugurApp = React.createClass({
     }
   },
 
-  componentWillMount: function() {
+  componentDidMount: function() {
+
+    this.setState({status: 'stopped'});
+    //console.log('initializing');
 
     // Initialize the EthereumClient and load the current Augur data.
     this.getFlux().actions.config.initializeState();
+
+    //console.log('initialized');
   },
 
   getLoadingProgress: function() {
@@ -64,7 +67,6 @@ var AugurApp = React.createClass({
 
     if (this.state.config.percentLoaded) {
 
-      //console.log(parseFloat(this.state.config.percentLoaded) );
       loadingProgress = (
         <ProgressBar now={ parseFloat(this.state.config.percentLoaded) } className='loading-progress' />
       );
@@ -74,6 +76,8 @@ var AugurApp = React.createClass({
   },
 
   render: function() {
+
+    //console.log('rendering', this.state.status);
 
     var cashBalance = this.state.asset.cash ? +this.state.asset.cash.toFixed(2) : '-';
 
