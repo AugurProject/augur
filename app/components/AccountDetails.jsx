@@ -4,7 +4,11 @@ var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 var ReactBootstrap = require('react-bootstrap');
 var Button = ReactBootstrap.Button;
+var Table = ReactBootstrap.Table;
 var ButtonGroup = ReactBootstrap.ButtonGroup;
+var Router = require('react-router');
+var Link = Router.Link;
+
 var utilities = require('../libs/utilities');
 
 var SendCashTrigger = require('./SendCash').SendCashTrigger;
@@ -12,7 +16,6 @@ var SendRepTrigger = require('./SendRep').SendRepTrigger;
 var SendEtherTrigger = require('./SendEther').SendEtherTrigger;
 
 var Markets = require('./Markets');
-var Outcomes = require('./Outcomes');
 
 var AccountDetails = React.createClass({
 
@@ -60,10 +63,15 @@ var AccountDetails = React.createClass({
     _.each(this.state.holdings, function (market) {
       _.each(market.outcomes, function(outcome) {
         if (outcome.sharesHeld.toNumber()) {
+          var name = outcome.id == 1 ? 'No' : 'Yes';
           holdings.push(
-            <div className='col-xs-12 col-sm-6'>
-              <Outcomes.Overview market={ market } outcome={ outcome }></Outcomes.Overview>
-            </div>
+            <tr>
+              <td>
+                <Link to='market' params={ {marketId: market.id.toString(16) } }>{ market.description }</Link>
+              </td>
+              <td>{ outcome.sharesHeld.toNumber() } of { name }</td>
+              <td>{ +outcome.price.toFixed(2) }</td>
+            </tr>
           );
         }
       });
@@ -95,9 +103,18 @@ var AccountDetails = React.createClass({
         <div className='row'>
           <div className="col-xs-12">
             <h4>Holdings</h4>
-            <div className='holdings row'>
-              { holdings }
-            </div>
+            <Table responsive striped hover>
+              <thead>
+                <tr>
+                  <th>Description</th>
+                  <th>Shares Held</th>
+                  <th>Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                { holdings }
+              </tbody>
+            </Table>
             <h4>Authored Markets</h4>
             <div className='authored-markets row'>
               <Markets 
