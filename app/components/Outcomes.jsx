@@ -224,6 +224,7 @@ var TradeBase = {
   },
 
   handleChange: function () {
+
     var rawValue = this.refs.input.getValue()
     var numShares = parseFloat(rawValue);
     var self = this;

@@ -317,11 +317,13 @@ EthereumClient.prototype.getNewMarkets = function(branchId, currentMarkets) {
     return !_.contains(blacklist.markets, marketId.toString(16));
   });
 
-  // convert to hex string for comparison
-  validMarkets = _.map(validMarkets, function(marketId) { return marketId.toString(16) } );
+  // convert to string for comparision
+  validMarkets = _.map(validMarkets, function(marketId) { return marketId.toString() } );
+
   var markets = _.difference(currentMarkets, validMarkets);  // new markets
 
   var marketList = _.map(markets, function (marketId) {
+    utilities.debug('new market: '+marketId.toString(16));
     return this.getMarket(marketId, branchId);
   }, this);
 
@@ -341,6 +343,7 @@ EthereumClient.prototype.getMarkets = function(branchId, onProgress) {
 
     // update/call progress
     if (onProgress) {
+      console.log('loading', marketId.toString(16));
       progress.current += 1;
       onProgress(progress);
     }
@@ -353,9 +356,6 @@ EthereumClient.prototype.getMarkets = function(branchId, onProgress) {
 };
 
 EthereumClient.prototype.getMarket = function(marketId, branchId) {
-
-  // convert to BigNumber if needed
-  marketId = typeof(marketId) === 'string' ? new BigNumber(marketId) : marketId;
 
   var events = Augur.getMarketEvents(marketId);
   var description = Augur.getDescription(marketId);
@@ -404,7 +404,7 @@ EthereumClient.prototype.getMarket = function(marketId, branchId) {
   var invalid = outcomes.length ? false : true;
 
   return {
-    id: marketId.toString(16),
+    id: marketId,
     branchId: branchId,
     price: price,
     description: description,

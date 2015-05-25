@@ -24,8 +24,8 @@ var Market = React.createClass({
     var account = flux.store('network').getAccount();
     var assetState = flux.store('asset').getState();
     var currentBranch = flux.store('branch').getCurrentBranch();
-
-    var market = marketState.markets[this.props.params.marketId];
+    var marketId = new BigNumber(this.props.params.marketId, 16);
+    var market = marketState.markets[marketId];
 
     return {
       market: market,
