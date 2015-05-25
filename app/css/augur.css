@@ -398,8 +398,9 @@ a.market-pane:hover {
 #market {
 
 }
-#market .outcome {
-    margin: 0px 0px 0px 0px;
+
+.outcome {
+    margin: 0px 0px 20px 0px;
     border-radius: 5px;
     padding: 0px 0px 0px 0px;
     background-color: #F2F2F2;
@@ -408,13 +409,13 @@ a.market-pane:hover {
     position: relative;
     height: 90px;
 }
-#market .outcome.buy {
+.outcome.buy {
 
 }
-#market .outcome.sell {
+.outcome.sell {
 
 }
-#market .outcome h4 {
+.outcome h4 {
     color: #fff;
     background-color: #18376f;
     border-top-left-radius: 5px;
@@ -425,12 +426,12 @@ a.market-pane:hover {
     position: relative;
     margin: 0px;
 }
-#market .outcome h4 .name {
+.outcome h4 .name {
     position: absolute;
     top: 8px;
     left: 8px;
 }
-#market .outcome h4 .price {
+.outcome h4 .price {
     font-size: 20px;
     font-family: 'Source Sans Pro';
     font-weight: 300;
@@ -438,89 +439,87 @@ a.market-pane:hover {
     bottom: 8px;
     right: 8px;
 }
-#market .outcome .summary {
+.outcome .summary {
     float: left;
     padding: 4px 8px;
     color: #555;
 }
-#market .outcome .summary p {
+.outcome .summary p {
     margin: 0px;
     font-size: 15px;
 }
-
-
-#market .outcome .trade-button {
+.outcome .trade-button {
     position: absolute;
     right: -1px;
 }
-#market .outcome .trade-button button {
+.outcome .trade-button button {
     float: right;
     width: 63px;
 }
-#market .outcome.matured .trade-button {
+.outcome.matured .trade-button {
     display: none;
 }
-#market .outcome .shares-held.none {
+.outcome .shares-held.none {
     padding: 10px 10px;
     display: inline-block;
 }   
-#market .outcome .shares-held.btn {
+.outcome .shares-held.btn {
     background-color: #FCFFFD;
     float: right;
     border-radius: 0px;
     border-top-left-radius: 3px;
 }
-#market .outcome .buy {
+.outcome .buy {
     top: -1px;
 }
-#market .outcome .buy .btn {
+.outcome .buy .btn {
     border-bottom-right-radius: 0px;
     border-top-left-radius: 0px;
 }
-#market .outcome .sell,
-#market .outcome .cancel {
+.outcome .sell,
+.outcome .cancel {
     bottom: -1px;
 }
-#market .outcome .sell .btn,
-#market .outcome .cancel .btn {
+.outcome .sell .btn,
+.outcome .cancel .btn {
     border-radius: 0px;
     border-bottom-right-radius: 4px;
 }
-#market .outcome .cancel .btn {
+.outcome .cancel .btn {
     border-top-left-radius: 4px;
     color: #999;
     border-color: #DADADA;
 }
-#market .outcome .trade .price {
+.outcome .trade .price {
     margin-bottom: 10px;
     margin-top: 15px;
 }
-#market .outcome .trade .price i {
+.outcome .trade .price i {
     margin: 0px 3px 0px 8px;
     position: relative;
     top: -1px;
 }
-#market .outcome .trade .new-price {
+.outcome .trade .new-price {
     font-size: 20px;
     font-family: 'Source Sans Pro';
     font-weight: 300;
     color: #777;
     margin-top: 11px;
 }
-#market .outcome .trade .new-price i {
+.outcome .trade .new-price i {
     margin-right: 2px;
 }
-#market .outcome .trade form {
+.outcome .trade form {
     width: 150px;
 }
-#market .outcome .trade form input {
+.outcome .trade form input {
     border-radius: 0px;
     border-bottom-left-radius: 4px;
 }
 
 #market .price-history {
   height: 225px;
-  margin-top: 30px;
+  margin-top: 10px;
   background-color: #373232;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
@@ -536,7 +535,7 @@ a.market-pane:hover {
     border-right: 2px solid #ddd;
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px; 
-    margin-top: 30px;
+    margin-top: 10px;
     padding: 6px 6px;
     font-size: 14px;
     color: #333;

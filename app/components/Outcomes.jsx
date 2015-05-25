@@ -105,6 +105,7 @@ var Overview = React.createClass({
       function(result) {
         utilities.debug('trade completed');
 
+        // odd problem trying to update the market here
         //self.updateSharesHeld(relativeShares);
 
         var newSharesHeld = parseFloat(self.state.sharesHeld) + parseFloat(relativeShares);

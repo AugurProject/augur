@@ -11,7 +11,7 @@ var AssetActions = {
     var cash = ethereumClient.getCashBalance();
     var reputation = ethereumClient.getRepBalance();
     var ether = ethereumClient.getEtherBalance();
-    
+
     this.dispatch(constants.asset.LOAD_ASSETS_SUCCESS, {
       cash: cash,
       reputation: reputation,

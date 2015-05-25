@@ -12,6 +12,7 @@ var SendRepTrigger = require('./SendRep').SendRepTrigger;
 var SendEtherTrigger = require('./SendEther').SendEtherTrigger;
 
 var Markets = require('./Markets');
+var Outcomes = require('./Outcomes');
 
 var AccountDetails = React.createClass({
 
@@ -34,7 +35,8 @@ var AccountDetails = React.createClass({
       asset: flux.store('asset').getState(),
       ethereumClient: flux.store('config').getEthereumClient(),
       authoredMarkets: flux.store('market').getMarketsByAuthor(account),
-      votePeriod: flux.store('branch').getState().currentVotePeriod
+      votePeriod: flux.store('branch').getState().currentVotePeriod,
+      holdings: flux.store('market').getMarketsHeld()
     }
   },
 
@@ -53,6 +55,19 @@ var AccountDetails = React.createClass({
   render: function () {
 
     var cashBalance = this.state.asset.cash ? +this.state.asset.cash.toFixed(2) : '-';
+
+    var holdings = [];
+    _.each(this.state.holdings, function (market) {
+      _.each(market.outcomes, function(outcome) {
+        if (outcome.sharesHeld.toNumber()) {
+          holdings.push(
+            <div className='col-xs-12 col-sm-6'>
+              <Outcomes.Overview market={ market } outcome={ outcome }></Outcomes.Overview>
+            </div>
+          );
+        }
+      });
+    }, this);
 
     return (
       <div id="account">
@@ -80,7 +95,9 @@ var AccountDetails = React.createClass({
         <div className='row'>
           <div className="col-xs-12">
             <h4>Holdings</h4>
-
+            <div className='holdings row'>
+              { holdings }
+            </div>
             <h4>Authored Markets</h4>
             <div className='authored-markets row'>
               <Markets 

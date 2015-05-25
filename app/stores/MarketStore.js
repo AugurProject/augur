@@ -21,6 +21,14 @@ var MarketStore = Fluxxor.createStore({
     return state;
   },
 
+  getMarketsHeld: function() {
+
+    var marketsHeld = _.filter(state.markets, function(market) {
+      if ( _.filter(market.outcomes, function(outcome) {  return outcome.sharesHeld.toNumber != 0}) ) return true;
+    });
+    return _.indexBy(marketsHeld, 'id');
+  },
+
   getMarketsByAuthor: function(author) {
     var marketsByAuthor = _.filter(state.markets, {'author': author});
     return _.indexBy(marketsByAuthor, 'id');
