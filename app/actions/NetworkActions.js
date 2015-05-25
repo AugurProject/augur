@@ -77,7 +77,7 @@ var NetworkActions = {
     this.flux.actions.network.loadNetwork();
     this.flux.actions.branch.loadBranches();
     this.flux.actions.branch.setCurrentBranch();
-    
+
     this.flux.actions.asset.loadAssets();
     this.flux.actions.market.loadMarkets();
     this.flux.actions.branch.loadEventsToReport();

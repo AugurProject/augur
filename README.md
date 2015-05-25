@@ -30,12 +30,6 @@ npm install
 grunt browserify:build
 ```
 
-Use 
-```
-grunt watchify
-```
-to go on dev branch
-
 ### Running augur-client
 
 `npm start`
@@ -44,7 +38,9 @@ to go on dev branch
 
 ### For development
 
-use `grunt watchify` to have grunt watch for changes.  `grunt browserify:debug` for helpful (yet slow) module mappings in console.
+use `grunt watchify` to have grunt watch for changes.  `grunt browserify:debug` for helpful (yet slow) module mappings in console.  
+
+*NOTE:*  a seperate dev branch is used when building in this manner and data will be seperate from the default build above. 
 
 ## Features
 

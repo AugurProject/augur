@@ -118,8 +118,8 @@ var AddMarketModal = React.createClass({
     }
 
     var newMarketParams = {
-      description: self.state.marketText,
-      initialLiquidity: self.state.marketInvestment,
+      description: this.state.marketText,
+      initialLiquidity: this.state.marketInvestment,
       tradingFee: new BigNumber(self.state.tradingFee / 100)
     };
 

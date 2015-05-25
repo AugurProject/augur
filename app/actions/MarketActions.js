@@ -31,10 +31,12 @@ var MarketActions = {
 
     var branchId = branchState.currentBranch.id;
 
-    var currentMarketIds = _.keys(this.flux.store('market').getState().markets);
-    
+    var currentMarkets = _.filter(this.flux.store('market').getState().markets, function (market) {
+      return !market.pending;
+    });
+
     var ethereumClient = configState.ethereumClient;
-    var markets = ethereumClient.getNewMarkets(branchId, currentMarketIds);
+    var markets = ethereumClient.getNewMarkets(branchId, _.keys(_.indexBy(currentMarkets, 'id')));
 
     this.dispatch(constants.market.UPDATE_MARKETS_SUCCESS, {markets: markets});
   },
@@ -57,7 +59,7 @@ var MarketActions = {
 			  hash = ((hash << 5) - hash) + chr;
 			  hash |= 0;   // convert to 32bit integer
 		  }
-	  	market.id = new BigNumber(hash);
+	  	market.id = 'pending.'+new BigNumber(hash);
 	  	market.pending = true;
 
   		this.dispatch(constants.market.ADD_PENDING_MARKET_SUCCESS, {market: market});
