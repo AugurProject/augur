@@ -343,7 +343,6 @@ EthereumClient.prototype.getMarkets = function(branchId, onProgress) {
 
     // update/call progress
     if (onProgress) {
-      console.log('loading', marketId.toString(16));
       progress.current += 1;
       onProgress(progress);
     }

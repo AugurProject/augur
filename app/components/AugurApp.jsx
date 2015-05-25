@@ -23,7 +23,7 @@ var Confirm = require('./Confirm');
 
 var AugurApp = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin('branch', 'asset', 'network', 'config', 'event')],
+  mixins: [FluxMixin, StoreWatchMixin('branch', 'asset', 'network', 'config')],
 
   getInitialState: function () {
     return {
@@ -36,6 +36,8 @@ var AugurApp = React.createClass({
     var flux = this.getFlux();
     var percentLoaded = flux.store('config').getState().percentLoaded;
 
+    //console.log(percentLoaded);
+
     // set app status (stopped, loading, running) from network & config state
     if (parseInt(percentLoaded) === 100) {
       this.setState({status: 'running'});
@@ -46,12 +48,11 @@ var AugurApp = React.createClass({
       branch: flux.store('branch').getState(),
       asset: flux.store('asset').getState(),
       market: flux.store('market').getState(),
-      config: flux.store('config').getState(),
-      event: flux.store('event').getState()
+      config: flux.store('config').getState()
     }
   },
 
-  componentDidMount: function() {
+  componentWillMount: function() {
 
     // Initialize the EthereumClient and load the current Augur data.
     this.getFlux().actions.config.initializeState();
@@ -63,6 +64,7 @@ var AugurApp = React.createClass({
 
     if (this.state.config.percentLoaded) {
 
+      //console.log(parseFloat(this.state.config.percentLoaded) );
       loadingProgress = (
         <ProgressBar now={ parseFloat(this.state.config.percentLoaded) } className='loading-progress' />
       );
