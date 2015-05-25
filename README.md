@@ -30,6 +30,12 @@ npm install
 grunt browserify:build
 ```
 
+Use 
+```
+grunt watchify
+```
+to go on dev branch
+
 ### Running augur-client
 
 `npm start`
