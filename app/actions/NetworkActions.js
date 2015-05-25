@@ -43,11 +43,7 @@ var NetworkActions = {
         }
       );
 
-      this.flux.actions.config.updateEthereumClient();
-      this.flux.actions.branch.loadBranches();
-      this.flux.actions.branch.setCurrentBranch();
-      
-      this.flux.actions.network.startMonitoring();
+      this.flux.actions.network.loadEverything();
     }
 
     // check yo self
@@ -77,11 +73,18 @@ var NetworkActions = {
    */
   loadEverything: function () {
 
+    this.flux.actions.config.updateEthereumClient();
     this.flux.actions.network.loadNetwork();
+    this.flux.actions.branch.loadBranches();
+    this.flux.actions.branch.setCurrentBranch();
+    
     this.flux.actions.asset.loadAssets();
     this.flux.actions.market.loadMarkets();
     this.flux.actions.branch.loadEventsToReport();
     this.flux.actions.report.loadPendingReports();
+
+    // start monitoring for updates
+    this.flux.actions.network.startMonitoring();
   },
 
   /**

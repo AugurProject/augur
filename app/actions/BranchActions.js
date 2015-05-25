@@ -5,11 +5,8 @@ var utilities = require('../libs/utilities');
 var BranchActions = {
 
   loadBranches: function () {
-    var branchState = this.flux.store('branch').getState();
-    var configState = this.flux.store('config').getState();
-    var account = this.flux.store('network').getAccount();
 
-    var ethereumClient = configState.ethereumClient;
+    var ethereumClient = this.flux.store('config').getEthereumClient();
     var branches = ethereumClient.getBranches();
 
     this.dispatch(constants.branch.LOAD_BRANCHES_SUCCESS, {branches: branches});
@@ -40,6 +37,7 @@ var BranchActions = {
   setCurrentBranch: function(branchId) {
 
     branchId = branchId || this.flux.store('branch').getState().rootBranchId;
+    var ethereumClient = this.flux.store('config').getEthereumClient();
     var periodLength = ethereumClient.getPeriodLength(branchId);
 
     utilities.log('using branch ' + branchId);
@@ -50,8 +48,6 @@ var BranchActions = {
     };
 
     this.dispatch(constants.branch.SET_CURRENT_BRANCH_SUCCESS, currentBranch);
-
-    this.flux.actions.network.loadEverything();
 
     this.flux.actions.branch.updateCurrentBranch();
   },

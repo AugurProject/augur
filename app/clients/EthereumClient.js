@@ -180,21 +180,7 @@ EthereumClient.prototype.getEventBranch = function(id) {
  */
 EthereumClient.prototype.getBranches = function () {
 
-  var account = this.account;
-
-  var branchList = _.map(Augur.getBranches(), function (branchId) {
-
-    return {
-      id: '0x'+branchId.toString(16),
-      name: Augur.getDescription(branchId),
-      periodLength: Augur.getPeriodLength(branchId).toNumber(),
-      rep: Augur.getRepBalance(branchId, account).toNumber(),
-      marketCount: Augur.getNumMarkets(branchId).toNumber()
-    };
-  });
-
-  var branches = _.indexBy(branchList, 'id');
-  return branches;
+  return Augur.getBranches();
 };
 
 EthereumClient.prototype.getPeriodLength = function(branchId) {

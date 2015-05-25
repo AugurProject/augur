@@ -13,7 +13,7 @@ var MarketActions = {
       var percent = ((progress.current/progress.total) * 100).toFixed(2);
       self.flux.actions.config.updatePercentLoaded(percent);
     });
-
+    
     // TODO: put this somewhere where markets can be checked on period change
     _.each(markets, function(market) {
       if (currentBranch.currentPeriod >= market.tradingPeriod) market.matured = true;

@@ -3,7 +3,7 @@ var constants = require('../libs/constants');
 
 var state = {
   rootBranchId: process.env.AUGUR_BRANCH_ID || constants.DEV_BRANCH_ID,
-  branches: {},
+  branches: [],
   currentBranch: {},
   eventsToReport: [],
   pendingReports: []
