@@ -28,11 +28,12 @@ module.exports = {
 
   formatEther: function(wei) {
 
-
     // detect format and convert
     if (typeof(wei) === 'string' && wei.match(/^0x\w+/)) {
       wei = web3.toWei(wei, 'wei');
-    } else if (wei && wei.toNumber) {
+    } 
+
+    if (wei != null && wei != undefined && wei.toNumber) {
       wei = wei.toNumber();
     } else {
       return '-';
