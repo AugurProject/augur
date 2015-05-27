@@ -11,7 +11,7 @@ var utilities = require('../libs/utilities');
 
 var Ballots = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin('asset', 'branch', 'config', 'event', 'report')],
+  mixins: [FluxMixin, StoreWatchMixin('asset', 'branch', 'config', 'event', 'network', 'report')],
 
   getInitialState: function () {
     return {
@@ -21,12 +21,12 @@ var Ballots = React.createClass({
 
   getStateFromFlux: function () {
     var flux = this.getFlux();
-    var account = flux.store('network').getAccount();
     var reportState = flux.store('report').getState();
 
     var state = {
-      account: account,
+      account: flux.store('network').getAccount(),
       asset: flux.store('asset').getState(),
+      blockNumber: flux.store('network').getState().blockNumber,
       ethereumClient: flux.store('config').getEthereumClient(),
       branchState: flux.store('branch').getState(),
       events: reportState.eventsToReport,
@@ -99,14 +99,7 @@ var Ballots = React.createClass({
       }
     }
 
-    if (!this.state.events.length) {
-
-      var ballot = (
-        <div className='no-decisions'>
-          <h4>No decisions require your attention</h4>
-        </div>
-      );
-    } else if (this.state.report) {
+    if (this.state.report) {
       if (this.state.report.reported) {
         var ballot = (
           <div className='no-decisions'>
@@ -114,16 +107,25 @@ var Ballots = React.createClass({
           </div>
         );
       } else {
+        var [publishStart, publishEnd] = currentBranch.getReportPublishDates(this.state.blockNumber);
         var ballot = (
           <div className='no-decisions'>
             <h4>Your ballot hash has been submitted.</h4>
             <p>
-              You need to run Augur between X and Y so it can submit your full ballot
-              during the appropriate reporting phase.
+              You need to run Augur between
+              { publishStart.format('MMM Do at HH:MM') } and
+              { publishEnd.format('MMM Do at HH:MM') }
+              so it can submit your full ballot during the appropriate reporting phase.
             </p>
           </div>
         );
       }
+    } else if (!(this.state.events.length && percentComplete < 50)) {
+      var ballot = (
+        <div className='no-decisions'>
+          <h4>No decisions require your attention</h4>
+        </div>
+      );
     } else {
 
       // build ballot
