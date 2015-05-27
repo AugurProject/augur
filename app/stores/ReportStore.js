@@ -20,6 +20,10 @@ var ReportStore = Fluxxor.createStore({
     return state;
   },
 
+  getReport: function (branchId, votePeriod) {
+    return _.findWhere(this.getState().pendingReports, {branchId, votePeriod});
+  },
+
   handleLoadEventsToReportSuccess: function (payload) {
     state.eventsToReport = payload.eventsToReport;
     this.emit(constants.CHANGE_EVENT);

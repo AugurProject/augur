@@ -22,14 +22,20 @@ var Ballots = React.createClass({
   getStateFromFlux: function () {
     var flux = this.getFlux();
     var account = flux.store('network').getAccount();
+    var reportState = flux.store('report').getState();
 
     var state = {
       account: account,
       asset: flux.store('asset').getState(),
       ethereumClient: flux.store('config').getEthereumClient(),
       branchState: flux.store('branch').getState(),
-      events: flux.store('report').getState().eventsToReport
+      events: reportState.eventsToReport,
     };
+
+    state.report = reportState.getReport(
+      state.branchState.currentBranch.id,
+      state.branchState.currentBranch.votePeriod
+    );
 
     return state;
   },
@@ -100,7 +106,24 @@ var Ballots = React.createClass({
           <h4>No decisions require your attention</h4>
         </div>
       );
-
+    } else if (this.state.report) {
+      if (this.state.report.reported) {
+        var ballot = (
+          <div className='no-decisions'>
+            <h4>Your ballot has been submitted.</h4>
+          </div>
+        );
+      } else {
+        var ballot = (
+          <div className='no-decisions'>
+            <h4>Your ballot hash has been submitted.</h4>
+            <p>
+              You need to run Augur between X and Y so it can submit your full ballot
+              during the appropriate reporting phase.
+            </p>
+          </div>
+        );
+      }
     } else {
 
       // build ballot
