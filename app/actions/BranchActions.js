@@ -12,28 +12,6 @@ var BranchActions = {
     this.dispatch(constants.branch.LOAD_BRANCHES_SUCCESS, {branches: branches});
   },
 
-  /**
-   * Load the events in the current branch that need reports.
-   *
-   * TODO: Load events across all branches that need reports.
-   */
-  loadEventsToReport: function() {
-
-    var ethereumClient = this.flux.store('config').getEthereumClient();
-    var currentBranch = this.flux.store('branch').getState().currentBranch;
-
-    // Only load events if the vote period indicated by the chain is the
-    // previous period. (Otherwise, dispatch needs to be run, which will
-    // move the events from their old periods to the current period. Those
-    // events will get voted on in the next period.)
-    var isCurrent = currentBranch.votePeriod === currentBranch.currentPeriod - 1;
-    var events = isCurrent ? ethereumClient.getEvents(currentBranch.votePeriod) : [];
-
-    this.dispatch(constants.branch.LOAD_EVENTS_TO_REPORT_SUCCESS, {
-      eventsToReport: events || []
-    });
-  },
-
   setCurrentBranch: function(branchId) {
 
     branchId = branchId || this.flux.store('branch').getState().rootBranchId;

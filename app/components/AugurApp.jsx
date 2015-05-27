@@ -23,7 +23,7 @@ var Confirm = require('./Confirm');
 
 var AugurApp = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin('branch', 'asset', 'network', 'config')],
+  mixins: [FluxMixin, StoreWatchMixin('branch', 'asset', 'network', 'config', 'report')],
 
   getInitialState: function () {
     return {
@@ -46,7 +46,8 @@ var AugurApp = React.createClass({
       branch: flux.store('branch').getState(),
       asset: flux.store('asset').getState(),
       market: flux.store('market').getState(),
-      config: flux.store('config').getState()
+      config: flux.store('config').getState(),
+      report: flux.store('config').getState()
     }
   },
 
@@ -114,7 +115,7 @@ var AugurApp = React.createClass({
               <div className="side-nav">
                   <p><Link to="home">Markets</Link><i>{ _.keys(this.state.market.markets).length }</i></p>
                   <p><Link to="account">Account</Link></p>
-                  <p><Link to="ballots">Ballot</Link><i>{ this.state.branch.eventsToReport.length }</i></p>
+                  <p><Link to="ballots">Ballot</Link><i>{ this.state.report.eventsToReport.length }</i></p>
                   <p><a className="disabled">Contacts</a></p>
               </div>
 

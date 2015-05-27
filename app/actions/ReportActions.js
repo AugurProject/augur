@@ -11,6 +11,28 @@ var bytesToHex = function (bytes) {
 };
 
 var ReportActions = {
+  /**
+   * Load the events in the current branch that need reports.
+   *
+   * TODO: Load events across all branches that need reports.
+   */
+  loadEventsToReport: function() {
+
+    var ethereumClient = this.flux.store('config').getEthereumClient();
+    var currentBranch = this.flux.store('branch').getState().currentBranch;
+
+    // Only load events if the vote period indicated by the chain is the
+    // previous period. (Otherwise, dispatch needs to be run, which will
+    // move the events from their old periods to the current period. Those
+    // events will get voted on in the next period.)
+    var isCurrent = currentBranch.votePeriod === currentBranch.currentPeriod - 1;
+    var events = isCurrent ? ethereumClient.getEvents(currentBranch.votePeriod) : [];
+
+    this.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {
+      eventsToReport: events || []
+    });
+  },
+
   storeReports: function (reports) {
     // TODO: Encrypt the reports so malware can't access them and steal
     // reputation.
@@ -83,14 +105,14 @@ var ReportActions = {
     if (didSendReports) {
       // Update localStorage and the stores with the mutated reports array.
       this.flux.actions.report.storeReports(reports);
-      this.dispatch(constants.branch.LOAD_PENDING_REPORTS_SUCCESS, {pendingReports: reports});
+      this.dispatch(constants.report.LOAD_PENDING_REPORTS_SUCCESS, {pendingReports: reports});
     }
   },
 
   loadPendingReports: function () {
     var reportsString = localStorage.getItem(constants.report.REPORTS_STORAGE);
     var pendingReports = reportsString ? JSON.parse(reportsString) : [];
-    this.dispatch(constants.branch.LOAD_PENDING_REPORTS_SUCCESS, {pendingReports});
+    this.dispatch(constants.report.LOAD_PENDING_REPORTS_SUCCESS, {pendingReports});
   },
 };
 

@@ -43,9 +43,10 @@ var AssetStore = require('./stores/AssetStore');
 var BranchStore = require('./stores/BranchStore');
 var ConfigStore = require('./stores/ConfigStore');
 var EventStore = require('./stores/EventStore');
+var LogStore = require('./stores/LogStore');
 var MarketStore = require('./stores/MarketStore');
 var NetworkStore = require('./stores/NetworkStore');
-var LogStore = require('./stores/LogStore');
+var ReportStore = require('./stores/ReportStore');
 
 var stores = {
   asset: new AssetStore(),
@@ -53,7 +54,8 @@ var stores = {
   config: new ConfigStore(),
   event: new EventStore(),
   market: new MarketStore(),
-  network: new NetworkStore()
+  network: new NetworkStore(),
+  report: new ReportStore()
 }
 
 var AugurApp = require("./components/AugurApp");

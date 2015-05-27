@@ -11,7 +11,7 @@ var utilities = require('../libs/utilities');
 
 var Ballots = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin('asset', 'branch', 'config', 'event')],
+  mixins: [FluxMixin, StoreWatchMixin('asset', 'branch', 'config', 'event', 'report')],
 
   getInitialState: function () {
     return {
@@ -28,7 +28,7 @@ var Ballots = React.createClass({
       asset: flux.store('asset').getState(),
       ethereumClient: flux.store('config').getEthereumClient(),
       branchState: flux.store('branch').getState(),
-      events: flux.store('branch').getState().eventsToReport
+      events: flux.store('report').getState().eventsToReport
     };
 
     return state;
