@@ -1,9 +1,11 @@
-var _ = require('lodash');
-var constants = require('../libs/constants');
-var utilities = require('../libs/utilities');
+import _ from 'lodash'
 
-var BranchActions = {
+import { Branch } from '../stores/BranchStore'
+import constants from '../libs/constants'
+import utilites from '../libs/utilities'
 
+
+export default {
   loadBranches: function () {
 
     var ethereumClient = this.flux.store('config').getEthereumClient();
@@ -12,7 +14,7 @@ var BranchActions = {
     this.dispatch(constants.branch.LOAD_BRANCHES_SUCCESS, {branches: branches});
   },
 
-  setCurrentBranch: function(branchId) {
+  setCurrentBranch: function (branchId) {
 
     branchId = branchId || this.flux.store('branch').getState().rootBranchId;
     var ethereumClient = this.flux.store('config').getEthereumClient();
@@ -20,17 +22,12 @@ var BranchActions = {
 
     utilities.log('using branch ' + branchId);
 
-    var currentBranch = {
-      id: branchId,
-      periodLength: periodLength
-    };
-
+    var currentBranch = new Branch(branchId, periodLength);
     this.dispatch(constants.branch.SET_CURRENT_BRANCH_SUCCESS, currentBranch);
-
     this.flux.actions.branch.updateCurrentBranch();
   },
 
-  updateCurrentBranch: function() {
+  updateCurrentBranch: function () {
 
     var currentBranch = this.flux.store('branch').getCurrentBranch();
     var ethereumClient = this.flux.store('config').getEthereumClient();
@@ -56,7 +53,7 @@ var BranchActions = {
     this.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, updatedBranch);
   },
 
-  checkQuorum: function() {
+  checkQuorum: function () {
 
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var branchState = this.flux.store('branch').getState();
@@ -76,5 +73,3 @@ var BranchActions = {
     }
   }
 };
-
-module.exports = BranchActions;
