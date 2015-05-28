@@ -63,13 +63,14 @@ var AccountDetails = React.createClass({
     _.each(this.state.holdings, function (market) {
       _.each(market.outcomes, function(outcome) {
         if (outcome.sharesHeld.toNumber()) {
-          var name = outcome.id == 1 ? 'No' : 'Yes';
+          var name = outcome.id == 1 ? 'no' : 'yes';
+          var className = 'shares-held ' + name;
           holdings.push(
             <tr>
               <td>
                 <Link to='market' params={ {marketId: market.id.toString(16) } }>{ market.description }</Link>
               </td>
-              <td>{ outcome.sharesHeld.toNumber() } of { name }</td>
+              <td><span className={ className }>{ outcome.sharesHeld.toNumber() } { name }</span></td>
               <td>{ +outcome.price.toFixed(2) }</td>
             </tr>
           );

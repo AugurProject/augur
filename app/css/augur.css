@@ -628,8 +628,20 @@ a.market-pane:hover {
 #account div.subheading button i {
     margin-left: 8px;
 }
-
-
+#account .shares-held {
+    display: inline-block;
+    text-transform: uppercase;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: #fff;
+}
+#account .yes.shares-held {
+    background-color: green;
+}
+#account .no.shares-held {
+    background-color: rgb(194, 64, 64);
+}
 #ballots h3 {
     border-bottom: none;
 }
