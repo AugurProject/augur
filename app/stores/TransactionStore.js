@@ -1,5 +1,6 @@
 var Fluxxor = require('fluxxor');
 var constants = require('../libs/constants');
+var momemnt = require('moment');
 
 // Map transaction hashes to Transactions.
 var state = {}
@@ -7,6 +8,10 @@ var state = {}
 class Transaction {
   constructor (hash) {
     this.hash = hash;
+    this.from = null;
+    this.to = null;
+    this.timestamp = moment();
+    this.status = 'pending';
     this.isMined = false;
   }
 }

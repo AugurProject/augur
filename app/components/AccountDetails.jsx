@@ -11,9 +11,9 @@ var Link = Router.Link;
 
 var utilities = require('../libs/utilities');
 
-var SendCashTrigger = require('./SendCash').SendCashTrigger;
-var SendRepTrigger = require('./SendRep').SendRepTrigger;
-var SendEtherTrigger = require('./SendEther').SendEtherTrigger;
+var SendCashTrigger = require('./SendModal').SendCashTrigger;
+var SendRepTrigger = require('./SendModal').SendRepTrigger;
+var SendEtherTrigger = require('./SendModal').SendEtherTrigger;
 
 var Markets = require('./Markets');
 

@@ -31,12 +31,10 @@ module.exports = {
     // detect format and convert
     if (typeof(wei) === 'string' && wei.match(/^0x\w+/)) {
       wei = web3.toWei(wei, 'wei');
-    } 
-
-    if (wei != null && wei != undefined && wei.toNumber) {
+    } else if (wei != null && wei != undefined && wei.toNumber) {
       wei = wei.toNumber();
     } else {
-      return '-';
+      return {value: '?', unit: 'ether', withUnit: '-'};
     }
 
     var value;
@@ -56,7 +54,7 @@ module.exports = {
       unit = 'wei';
     }
 
-    return {value: +value.toFixed(3), unit: unit};
+    return {value: +value.toFixed(3), unit: unit, withUnit: value+' '+unit};
   },
 
   /**
@@ -66,6 +64,13 @@ module.exports = {
    */
   toFixedPoint: function (value) {
     return constants.ONE_FXP.times(value).floor();
+  },
+
+  // check if account address is correctly formatted
+  isValidAccount: function(address) {
+
+    address = address.replace(/^0x/, '');  // strip leading '0x' is it exists
+    return address.match(/^[0-9a-fA-F]{40}$/) ? true : false;
   },
 
   /**

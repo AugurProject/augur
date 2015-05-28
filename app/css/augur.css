@@ -707,22 +707,20 @@ a.market-pane:hover {
     font-size: 10px;
     margin-left: 8px;
 }
-#send-rep-modal form,
-#send-cash-modal form {
-    padding-top: 10px;
-    border-bottom: 1px solid #ddd;
-}
-#send-rep-modal input.dest-address,
-#send-cash-modal input.dest-address {
+
+.send-modal input.dest-address,
     margin-bottom: 10px;
 }
-#send-rep-modal p,
-#send-cash-modal p {
+.send-modal p {
     color: #555;
     margin: 15px 0px 0px 0px;
     float: left;
     font-size: 12px;
-} 
+}
+.send-modal .balance {
+    text-transform: uppercase;
+}
+
 
 #confirm-modal button.confirm {
     margin-left: 10px;

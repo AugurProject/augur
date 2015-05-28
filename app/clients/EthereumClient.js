@@ -161,6 +161,23 @@ EthereumClient.prototype.sendRep = function(destination, amount, branchId) {
   return Augur.sendReputation(branchId || this.defaultBranchId, destination, amount);
 };
 
+EthereumClient.prototype.sendEther = function(destination, amount) {
+
+  var transaction = {
+    from: this.account,
+    to: destination,
+    value: amount
+  };
+
+  this.web3.eth.sendTransaction(transaction, function(err, txhash) {
+    if (!err) {
+      utilities.log(transaction.account.account+' sent ' + amount + ' wei to '+ destination)
+    } else {
+      utilities.error(err);
+    }
+  });
+};
+
 EthereumClient.prototype.getDescription = function(id) {
   return Augur.getDescription(id);
 };
