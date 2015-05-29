@@ -64,7 +64,7 @@ var NetworkActions = {
       gasPrice: networkStats.gasPrice,
       mining: networkStats.mining,
       hashrate: networkStats.hashrate,
-      blocktime: blockMoment.format('MMM Do, HH:MM')
+      blocktime: blockMoment.format('MMM Do, HH:mm')
     });
   },
 
