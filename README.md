@@ -38,15 +38,14 @@ grunt browserify:build
 
 ### For development
 
-use `grunt watchify` to have grunt watch for changes.  `grunt browserify:debug` for helpful (yet slow) module mappings in console.  
+use `grunt watchify` to have grunt watch for changes.  `grunt browserify:debug` for helpful (yet slow) module mappings in console.
 
-*NOTE:*  a seperate dev branch is used when building in this manner and data will be seperate from the default build above. 
+*NOTE:*  a seperate dev branch is used when building in this manner and data will be seperate from the default build above.
 
-## Features
+## Contributing
 
-- [ ] market commenting
-- [ ] featured markets
-- [ ] filters to organize markets by volume, category, number of traders, trading fee, initial liquidity
-- [ ] api voting
-- [ ] search engine for contract data / markets
-- [ ] social media integrations
+We think Augur and Ethereum are pretty fascinating, and they're going to change the world. You should be a part of this.
+
+We use [ZenHub](https://zenhub.io) to organize our GitHub issues. Find an issue in the To Do column that looks good, comment on it to let us know you want to tackle it, and we'll help you get it done.
+
+Most discussions happen in our Slack, which has an IRC gateway in #augur on Freenode. You can ask for a Slack invite there, or stick with IRC if you prefer.
