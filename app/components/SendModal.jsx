@@ -88,14 +88,14 @@ var SendCashModal = React.createClass({
 
     if (!utilities.isValidAccount(this.state.destination)) {
       this.setState({destinationError: 'enter a valid destination address'});
-      return;
+      return false;
     } else if (this.state.amount === '') {
       this.setState({amountError: 'enter a valid amount'});
-      return;
+      return false;
     } else if (this.state.amountError || this.state.destinationError) {
-      return;
+      return false;
     }
-
+    return true;
   },
 
   render: function () {
@@ -216,14 +216,14 @@ var SendRepModal = React.createClass({
 
     if (!utilities.isValidAccount(this.state.destination)) {
       this.setState({destinationError: 'enter a valid destination address'});
-      return;
+      return false;
     } else if (this.state.amount === '') {
       this.setState({amountError: 'enter a valid amount'});
-      return;
+      return false;
     } else if (this.state.amountError || this.state.destinationError) {
-      return;
+      return false;
     }
-
+    return true;
   },
 
   render: function () {
@@ -344,14 +344,14 @@ var SendEtherModal = React.createClass({
 
     if (!utilities.isValidAccount(this.state.destination)) {
       this.setState({destinationError: 'enter a valid destination address'});
-      return;
+      return false;
     } else if (this.state.amount === '') {
       this.setState({amountError: 'enter a valid amount'});
-      return;
+      return false;
     } else if (this.state.amountError || this.state.destinationError) {
-      return;
+      return false;
     }
-
+    return true;
   },
 
   render: function () {

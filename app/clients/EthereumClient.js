@@ -137,7 +137,13 @@ EthereumClient.prototype.getCashBalance = function() {
 };
 
 EthereumClient.prototype.sendCash = function(destination, amount, onSuccess) {
-  return Augur.sendCash(destination, amount);
+  return Augur.sendCash(destination, amount, function(result) {
+    utilities.log('sending '+amount+' cash to '+ destination);
+  }, function(result) {
+    utilities.log('cash sent successfully');
+  }, function(error) {
+    utilities.error('failed to send cash: ' + error);
+  });
 };
 
 EthereumClient.prototype.repFaucet = function(branchId) {
@@ -158,7 +164,13 @@ EthereumClient.prototype.getRepBalance = function(branchId) {
 };
 
 EthereumClient.prototype.sendRep = function(destination, amount, branchId) {
-  return Augur.sendReputation(branchId || this.defaultBranchId, destination, amount);
+  return Augur.sendReputation(branchId || this.defaultBranchId, destination, amount, function(result) {
+    utilities.log('sending '+amount+' rep to '+ destination);
+  }, function(result) {
+    utilities.log('rep sent successfully');
+  }, function(error) {
+    utilities.error('failed to send rep: ' + error);
+  });
 };
 
 EthereumClient.prototype.sendEther = function(destination, amount) {
@@ -169,9 +181,10 @@ EthereumClient.prototype.sendEther = function(destination, amount) {
     value: amount
   };
 
+  var self = this;
   this.web3.eth.sendTransaction(transaction, function(err, txhash) {
     if (!err) {
-      utilities.log(transaction.account.account+' sent ' + amount + ' wei to '+ destination)
+      utilities.log(self.account+' sent ' + amount + ' wei to '+ destination)
     } else {
       utilities.error(err);
     }
