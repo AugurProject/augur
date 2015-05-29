@@ -68,11 +68,10 @@ var Ballots = React.createClass({
 
     if (!currentBranch) return (<div />);
 
-    var periodStartDate = '';
-    var periodEndDate = '';
     var percentComplete = 0;
     var votePercentComplete = 0;
     var revealPercentComplete = 0;
+    var votingDeadlineSpan = '';
 
     if (currentBranch.currentPeriod) {
       var [publishStart, publishEnd] = currentBranch.getReportPublishDates(this.state.blockNumber);
@@ -139,6 +138,9 @@ var Ballots = React.createClass({
           <Button className='pull-right submit-ballot' bsStyle='primary' {...disabledProp} onClick={ this.handleSubmitReport }>Save Ballot</Button>
         </div>
       );
+      votingDeadlineSpan = (
+        <span className='pull-right'>Voting deadline: { publishStart.format('MMM Do [at] HH:mm') }</span>
+      );
     }
 
     var markerPosition = percentComplete+'%';
@@ -151,8 +153,15 @@ var Ballots = React.createClass({
           <ProgressBar bsStyle='warning' now={ revealPercentComplete } key={2} />
         </ProgressBar>
         <div className='subheading clearfix'>
+          {/*
+             FIXME: moment's humanize has peculiar rounding behavior that
+             won't always work for us. Period lengths will round to the
+             largest unit, and the behavior above 25 days is definitely
+             wrong for us.
+             http://momentjs.com/docs/#/displaying/fromnow/
+           */}
           Check for a new ballot every { currentBranch.periodDuration.humanize().replace(/^an? /, '') }.
-          <span className='pull-right'>Voting deadline: { publishStart.format('MMM Do [at] HH:mm') }</span>
+          { votingDeadlineSpan }
         </div>
         { ballot }
       </div>
