@@ -7,9 +7,12 @@ This is the frontend for [Augur](http://augur.net), a decentralized prediction m
 
 Ethereum Dapps store their data on the Ethereum blockchain, and their frontends are web pages that use the JavaScript API to access blockchain data.
 
+* [Ethereum Frontier Guide](http://ethereum.gitbooks.io/frontier-guide/content/)
 * [Ethereum Development Tutorial](https://github.com/ethereum/wiki/wiki/Ethereum-Development-Tutorial)
 * [Ethereum JavaScript API](https://github.com/ethereum/wiki/wiki/JavaScript-API)
-* [Dapps for Beginners](https://dappsforbeginners.wordpress.com/)
+* [Ethereum Wiki](https://github.com/ethereum/wiki/wiki)
+* [Ethereum Builders](http://ethereum.builders/) ([YouTube Channel](https://www.youtube.com/channel/UCYlXQeVJ__t7T5kgHWhhiXQ))
+* [State of the Dapps](https://docs.google.com/spreadsheets/d/1VdRMFENPzjL2V-vZhcc_aa5-ysf243t5vXlxC2b054g/edit#gid=0), a spreadsheet of Dapps in development
 
 ## Getting Started
 
