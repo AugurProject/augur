@@ -4,7 +4,8 @@ var config = {};
 
 config.envify = {};
 config.envify.debug = {
-  AUGUR_BRANCH_ID: '0x38a820692912b5f7a3bfefc2a1d4826e1da6beaed5fac6de3d22b18132133991'
+  //AUGUR_BRANCH_ID: '0x38a820692912b5f7a3bfefc2a1d4826e1da6beaed5fac6de3d22b18132133991'
+  AUGUR_BRANCH_ID: 1010101
 };
 config.envify.build = {
   // alpha branch for testing
