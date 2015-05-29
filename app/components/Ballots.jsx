@@ -31,10 +31,12 @@ var Ballots = React.createClass({
       events: flux.store('report').getState().eventsToReport
     };
 
-    state.report = flux.store('report').getReport(
-      state.branchState.currentBranch.id,
-      state.branchState.currentBranch.votePeriod
-    );
+    if (state.branchState.currentBranch) {
+      state.report = flux.store('report').getReport(
+        state.branchState.currentBranch.id,
+        state.branchState.currentBranch.votePeriod
+      );
+    }
 
     return state;
   },
@@ -73,19 +75,7 @@ var Ballots = React.createClass({
     var revealPercentComplete = 0;
 
     if (currentBranch.currentPeriod) {
-
-      var endBlock = (currentBranch.votePeriod + 1) * currentBranch.periodLength;
-      var periodEndMoment = utilities.blockToDate(endBlock);
-      var startBlock = (currentBranch.votePeriod) * currentBranch.periodLength;
-      var periodStartMoment = utilities.blockToDate(startBlock);
-
-      if (periodStartMoment.format('MMM Do') === periodEndMoment.format('MMM Do')) {
-        periodStartDate = periodStartMoment.format('MMM Do, HH:MM');
-        periodEndDate = periodEndMoment.format('HH:MM');
-      } else {
-        periodStartDate = periodStartMoment.format('MMM Do, HH:MM');
-        periodEndDate = periodEndMoment.format('MMM Do, HH:MM');
-      }
+      var [publishStart, publishEnd] = currentBranch.getReportPublishDates(this.state.blockNumber);
 
       if (currentBranch.isCurrent) {
         percentComplete = currentBranch.percentComplete;
@@ -106,12 +96,12 @@ var Ballots = React.createClass({
           </div>
         );
       } else {
-        var [publishStart, publishEnd] = currentBranch.getReportPublishDates(this.state.blockNumber);
         var ballot = (
           <div className='no-decisions'>
-            <h4>Your ballot has been saved.</h4>
+            <h4>Your ballot for period { currentBranch.votePeriod } has been saved.</h4>
             <p>
-              You need to run Augur between { publishStart.format('MMM Do [at] HH:MM') } and { publishEnd.format('MMM Do [at] HH:MM') } so we can submit your full ballot during the appropriate reporting phase.
+              You need to run Augur to automatically submit your ballot during this period's submission phase:<br/>
+              <b>{ publishStart.format('MMM Do [at] HH:mm') } to { publishEnd.format('MMM Do [at] HH:mm') }</b>.
             </p>
           </div>
         );
@@ -161,8 +151,8 @@ var Ballots = React.createClass({
           <ProgressBar bsStyle='warning' now={ revealPercentComplete } key={2} />
         </ProgressBar>
         <div className='subheading clearfix'>
-          { periodStartDate }
-          <span className='pull-right'>{ periodEndDate }</span>
+          Check for a new ballot every { currentBranch.periodDuration.humanize().replace(/^an? /, '') }.
+          <span className='pull-right'>Voting deadline: { publishStart.format('MMM Do [at] HH:mm') }</span>
         </div>
         { ballot }
       </div>

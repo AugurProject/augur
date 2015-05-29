@@ -3,12 +3,6 @@ import moment from 'moment'
 
 import constants from '../libs/constants'
 
-var state = {
-  rootBranchId: process.env.AUGUR_BRANCH_ID || constants.DEV_BRANCH_ID,
-  branches: [],
-  currentBranch: {}
-};
-
 export class Branch {
   constructor(id, periodLength) {
     this.id = id;
@@ -27,18 +21,26 @@ export class Branch {
    * @return {Array[Moment]} A two-element array of Moments.
    */
   getReportPublishDates(currentBlock) {
-    let periodStartBlock = this.votePeriod * this.periodLength;
-    let periodEndBlock = periodStartBlock + this.periodLength;
-
+    let periodStartBlock = (this.votePeriod + 1) * this.periodLength;
     let publishStartBlock = periodStartBlock + (this.periodLength / 2);
+
     let publishStart = moment()
-      .add((currentBlock - publishStartBlock) * constants.SECONDS_PER_BLOCK, 'seconds');
+      .subtract((currentBlock - publishStartBlock) * constants.SECONDS_PER_BLOCK, 'seconds');
     let publishEnd = publishStart.clone()
       .add(this.periodLength / 2 * constants.SECONDS_PER_BLOCK, 'seconds');
 
     return [publishStart, publishEnd];
   }
+
+  get periodDuration() {
+    return moment.duration(this.periodLength * constants.SECONDS_PER_BLOCK, 'seconds');
+  }
 }
+
+var state = {
+  branches: [],
+  currentBranch: null
+};
 
 export default Fluxxor.createStore({
   initialize: function () {

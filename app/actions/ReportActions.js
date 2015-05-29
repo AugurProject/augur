@@ -46,7 +46,7 @@ var ReportActions = {
     var saltBytes = secureRandom(32);
     var salt = bytesToHex(saltBytes);
 
-    var pendingReports = this.flux.store('branch').getState().pendingReports;
+    var pendingReports = this.flux.store('report').getState().pendingReports;
     pendingReports.push({
       branchId,
       votePeriod,
@@ -63,7 +63,7 @@ var ReportActions = {
     var log = x => console.log('Augur.submitReportHash callback:', x);
     Augur.submitReportHash(branchId, hash, votePeriod, log, log, log);
 
-    this.dispatch(constants.branch.UPDATE_PENDING_REPORTS, {pendingReports});
+    this.dispatch(constants.report.UPDATE_PENDING_REPORTS, {pendingReports});
   },
 
   /**
@@ -84,7 +84,7 @@ var ReportActions = {
   submitQualifiedReports: function () {
     let currentBlock = this.flux.store('network').getState().blockNumber;
     let ethereumClient = this.flux.store('config').getEthereumClient();
-    let reports = this.flux.store('branch').getState().pendingReports;
+    let reports = this.flux.store('report').getState().pendingReports;
     let unsentReports = _.filter(reports, r => !r.reported);
     let didSendReports = false;
 

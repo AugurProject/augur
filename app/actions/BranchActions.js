@@ -16,7 +16,7 @@ export default {
 
   setCurrentBranch: function (branchId) {
 
-    branchId = branchId || this.flux.store('branch').getState().rootBranchId;
+    branchId = branchId || process.env.AUGUR_BRANCH_ID;
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var periodLength = ethereumClient.getPeriodLength(branchId);
 
