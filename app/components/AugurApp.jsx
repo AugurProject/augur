@@ -47,7 +47,7 @@ var AugurApp = React.createClass({
       asset: flux.store('asset').getState(),
       market: flux.store('market').getState(),
       config: flux.store('config').getState(),
-      report: flux.store('config').getState()
+      report: flux.store('report').getState()
     }
   },
 

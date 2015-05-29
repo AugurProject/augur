@@ -2,7 +2,7 @@ import _ from 'lodash'
 
 import { Branch } from '../stores/BranchStore'
 import constants from '../libs/constants'
-import utilites from '../libs/utilities'
+import utilities from '../libs/utilities'
 
 
 export default {

@@ -33,7 +33,8 @@ export class Branch {
     let publishStartBlock = periodStartBlock + (this.periodLength / 2);
     let publishStart = moment()
       .add((currentBlock - publishStartBlock) * constants.SECONDS_PER_BLOCK, 'seconds');
-    let publishEnd = publishStart.add(this.periodLength / 2 * constants.SECONDS_PER_BLOCK);
+    let publishEnd = publishStart.clone()
+      .add(this.periodLength / 2 * constants.SECONDS_PER_BLOCK, 'seconds');
 
     return [publishStart, publishEnd];
   }

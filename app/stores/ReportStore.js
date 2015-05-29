@@ -12,7 +12,7 @@ var ReportStore = Fluxxor.createStore({
     this.bindActions(
       constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, this.handleLoadEventsToReportSuccess,
       constants.report.LOAD_PENDING_REPORTS_SUCCESS, this.handleLoadPendingReportsSuccess,
-      constants.report.UPDATE_PENDING_REPORTS, this.handleLoadPendingReportsSuccess,
+      constants.report.UPDATE_PENDING_REPORTS, this.handleLoadPendingReportsSuccess
     );
   },
 

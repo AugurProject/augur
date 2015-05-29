@@ -80,7 +80,7 @@ var NetworkActions = {
 
     this.flux.actions.asset.loadAssets();
     this.flux.actions.market.loadMarkets();
-    this.flux.actions.branch.loadEventsToReport();
+    this.flux.actions.report.loadEventsToReport();
     this.flux.actions.report.loadPendingReports();
 
     // start monitoring for updates

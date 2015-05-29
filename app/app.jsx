@@ -40,7 +40,7 @@ var actions = {
 }
 
 var AssetStore = require('./stores/AssetStore');
-var BranchStore = require('./stores/BranchStore');
+var BranchStore = require('./stores/BranchStore').default;
 var ConfigStore = require('./stores/ConfigStore');
 var EventStore = require('./stores/EventStore');
 var LogStore = require('./stores/LogStore');

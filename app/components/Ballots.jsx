@@ -21,7 +21,6 @@ var Ballots = React.createClass({
 
   getStateFromFlux: function () {
     var flux = this.getFlux();
-    var reportState = flux.store('report').getState();
 
     var state = {
       account: flux.store('network').getAccount(),
@@ -29,10 +28,10 @@ var Ballots = React.createClass({
       blockNumber: flux.store('network').getState().blockNumber,
       ethereumClient: flux.store('config').getEthereumClient(),
       branchState: flux.store('branch').getState(),
-      events: reportState.eventsToReport,
+      events: flux.store('report').getState().eventsToReport
     };
 
-    state.report = reportState.getReport(
+    state.report = flux.store('report').getReport(
       state.branchState.currentBranch.id,
       state.branchState.currentBranch.votePeriod
     );
@@ -110,12 +109,9 @@ var Ballots = React.createClass({
         var [publishStart, publishEnd] = currentBranch.getReportPublishDates(this.state.blockNumber);
         var ballot = (
           <div className='no-decisions'>
-            <h4>Your ballot hash has been submitted.</h4>
+            <h4>Your ballot has been saved.</h4>
             <p>
-              You need to run Augur between
-              { publishStart.format('MMM Do at HH:MM') } and
-              { publishEnd.format('MMM Do at HH:MM') }
-              so it can submit your full ballot during the appropriate reporting phase.
+              You need to run Augur between { publishStart.format('MMM Do [at] HH:MM') } and { publishEnd.format('MMM Do [at] HH:MM') } so we can submit your full ballot during the appropriate reporting phase.
             </p>
           </div>
         );
@@ -150,7 +146,7 @@ var Ballots = React.createClass({
       var ballot = (
         <div className='ballot shadow clearfix'>
           { decisionList }
-          <Button className='pull-right submit-ballot' bsStyle='primary' {...disabledProp} onClick={ this.handleSubmitReport }>Submit Ballot</Button>
+          <Button className='pull-right submit-ballot' bsStyle='primary' {...disabledProp} onClick={ this.handleSubmitReport }>Save Ballot</Button>
         </div>
       );
     }
