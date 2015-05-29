@@ -12,7 +12,10 @@ var ConfigActions = {
 
     var clientParams = {
       host: configState.host,
-      defaultBranchId:  branchState.currentBranch.id || branchState.rootBranchId
+      // FIXME: If we can, we should make defaultBranchId unnecessary. We should
+      // always know which branch we're acting on in the client, and pass it to
+      // EthereumClient functions.
+      defaultBranchId: branchState.currentBranch ? branchState.currentBranch.id : process.env.AUGUR_BRANCH_ID
     }
     var ethereumClient = window.ethereumClient = new EthereumClient(clientParams);
 

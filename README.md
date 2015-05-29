@@ -1,18 +1,18 @@
 Augur Client
 ------------
 
-[![Join the chat at https://gitter.im/AugurProject/augur-client](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/AugurProject/augur-client?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 This is the frontend for [Augur](http://augur.net), a decentralized prediction market platform that runs on Ethereum.
-
 
 ## How Dapps Work
 
 Ethereum Dapps store their data on the Ethereum blockchain, and their frontends are web pages that use the JavaScript API to access blockchain data.
 
+* [Ethereum Frontier Guide](http://ethereum.gitbooks.io/frontier-guide/content/)
 * [Ethereum Development Tutorial](https://github.com/ethereum/wiki/wiki/Ethereum-Development-Tutorial)
 * [Ethereum JavaScript API](https://github.com/ethereum/wiki/wiki/JavaScript-API)
-* [Dapps for Beginners](https://dappsforbeginners.wordpress.com/)
+* [Ethereum Wiki](https://github.com/ethereum/wiki/wiki)
+* [Ethereum Builders](http://ethereum.builders/) ([YouTube Channel](https://www.youtube.com/channel/UCYlXQeVJ__t7T5kgHWhhiXQ))
+* [State of the Dapps](https://docs.google.com/spreadsheets/d/1VdRMFENPzjL2V-vZhcc_aa5-ysf243t5vXlxC2b054g/edit#gid=0), a spreadsheet of Dapps in development
 
 ## Getting Started
 
@@ -38,15 +38,14 @@ grunt browserify:build
 
 ### For development
 
-use `grunt watchify` to have grunt watch for changes.  `grunt browserify:debug` for helpful (yet slow) module mappings in console.  
+use `grunt watchify` to have grunt watch for changes.  `grunt browserify:debug` for helpful (yet slow) module mappings in console.
 
-*NOTE:*  a seperate dev branch is used when building in this manner and data will be seperate from the default build above. 
+*NOTE:*  a seperate dev branch is used when building in this manner and data will be seperate from the default build above.
 
-## Features
+## Contributing
 
-- [ ] market commenting
-- [ ] featured markets
-- [ ] filters to organize markets by volume, category, number of traders, trading fee, initial liquidity
-- [ ] api voting
-- [ ] search engine for contract data / markets
-- [ ] social media integrations
+We think Augur and Ethereum are pretty fascinating, and they're going to change the world. You should be a part of this.
+
+We use [ZenHub](https://zenhub.io) to organize our GitHub issues. Find an issue in the To Do column that looks good, comment on it to let us know you want to tackle it, and we'll help you get it done.
+
+Most discussions happen in our Slack, which has an IRC gateway in #augur on Freenode. You can ask for a Slack invite there, or stick with IRC if you prefer.

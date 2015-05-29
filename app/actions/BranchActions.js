@@ -1,9 +1,11 @@
-var _ = require('lodash');
-var constants = require('../libs/constants');
-var utilities = require('../libs/utilities');
+import _ from 'lodash'
 
-var BranchActions = {
+import { Branch } from '../stores/BranchStore'
+import constants from '../libs/constants'
+import utilities from '../libs/utilities'
 
+
+export default {
   loadBranches: function () {
 
     var ethereumClient = this.flux.store('config').getEthereumClient();
@@ -12,47 +14,20 @@ var BranchActions = {
     this.dispatch(constants.branch.LOAD_BRANCHES_SUCCESS, {branches: branches});
   },
 
-  /**
-   * Load the events in the current branch that need reports.
-   *
-   * TODO: Load events across all branches that need reports.
-   */
-  loadEventsToReport: function() {
+  setCurrentBranch: function (branchId) {
 
-    var ethereumClient = this.flux.store('config').getEthereumClient();
-    var currentBranch = this.flux.store('branch').getState().currentBranch;
-
-    // Only load events if the vote period indicated by the chain is the
-    // previous period. (Otherwise, dispatch needs to be run, which will
-    // move the events from their old periods to the current period. Those
-    // events will get voted on in the next period.)
-    var isCurrent = currentBranch.votePeriod === currentBranch.currentPeriod - 1;
-    var events = isCurrent ? ethereumClient.getEvents(currentBranch.votePeriod) : [];
-
-    this.dispatch(constants.branch.LOAD_EVENTS_TO_REPORT_SUCCESS, {
-      eventsToReport: events || []
-    });
-  },
-
-  setCurrentBranch: function(branchId) {
-
-    branchId = branchId || this.flux.store('branch').getState().rootBranchId;
+    branchId = branchId || process.env.AUGUR_BRANCH_ID;
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var periodLength = ethereumClient.getPeriodLength(branchId);
 
     utilities.log('using branch ' + branchId);
 
-    var currentBranch = {
-      id: branchId,
-      periodLength: periodLength
-    };
-
+    var currentBranch = new Branch(branchId, periodLength);
     this.dispatch(constants.branch.SET_CURRENT_BRANCH_SUCCESS, currentBranch);
-
     this.flux.actions.branch.updateCurrentBranch();
   },
 
-  updateCurrentBranch: function() {
+  updateCurrentBranch: function () {
 
     var currentBranch = this.flux.store('branch').getCurrentBranch();
     var ethereumClient = this.flux.store('config').getEthereumClient();
@@ -78,7 +53,7 @@ var BranchActions = {
     this.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, updatedBranch);
   },
 
-  checkQuorum: function() {
+  checkQuorum: function () {
 
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var branchState = this.flux.store('branch').getState();
@@ -98,5 +73,3 @@ var BranchActions = {
     }
   }
 };
-
-module.exports = BranchActions;

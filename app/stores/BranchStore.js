@@ -1,24 +1,53 @@
-var Fluxxor = require('fluxxor');
-var constants = require('../libs/constants');
+import Fluxxor from 'fluxxor'
+import moment from 'moment'
+
+import constants from '../libs/constants'
+
+export class Branch {
+  constructor(id, periodLength) {
+    this.id = id;
+    this.periodLength = periodLength;
+
+    this.currentPeriod = 0;
+    this.votePeriod = 0;
+    this.isCurrent = false;
+    this.percentComplete = 0;
+  }
+
+  /**
+   * Get the start and end of the report publication period, the second half of
+   * the reporting period.
+   * @param  {int} currentBlock - The current block number.
+   * @return {Array[Moment]} A two-element array of Moments.
+   */
+  getReportPublishDates(currentBlock) {
+    let periodStartBlock = (this.votePeriod + 1) * this.periodLength;
+    let publishStartBlock = periodStartBlock + (this.periodLength / 2);
+
+    let publishStart = moment()
+      .subtract((currentBlock - publishStartBlock) * constants.SECONDS_PER_BLOCK, 'seconds');
+    let publishEnd = publishStart.clone()
+      .add(this.periodLength / 2 * constants.SECONDS_PER_BLOCK, 'seconds');
+
+    return [publishStart, publishEnd];
+  }
+
+  get periodDuration() {
+    return moment.duration(this.periodLength * constants.SECONDS_PER_BLOCK, 'seconds');
+  }
+}
 
 var state = {
-  rootBranchId: process.env.AUGUR_BRANCH_ID || constants.DEV_BRANCH_ID,
   branches: [],
-  currentBranch: {},
-  eventsToReport: [],
-  pendingReports: []
+  currentBranch: null
 };
 
-var BranchStore = Fluxxor.createStore({
-
+export default Fluxxor.createStore({
   initialize: function () {
     this.bindActions(
       constants.branch.LOAD_BRANCHES_SUCCESS, this.handleLoadBranchesSuccess,
-      constants.branch.LOAD_EVENTS_TO_REPORT_SUCCESS, this.handleLoadEventsToReportSuccess,
-      constants.branch.LOAD_PENDING_REPORTS_SUCCESS, this.handleLoadPendingReportsSuccess,
       constants.branch.SET_CURRENT_BRANCH_SUCCESS, this.handleUpdateCurrentBranchSuccess,
       constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, this.handleUpdateCurrentBranchSuccess,
-      constants.branch.UPDATE_PENDING_REPORTS, this.handleLoadPendingReportsSuccess,
       constants.branch.CHECK_QUORUM_SENT, this.handleCheckQuorumSent,
       constants.branch.CHECK_QUORUM_SUCCESS, this.handleCheckQuorumSuccess
     );
@@ -34,16 +63,6 @@ var BranchStore = Fluxxor.createStore({
 
   handleLoadBranchesSuccess: function (payload) {
     state.branches = payload.branches;
-    this.emit(constants.CHANGE_EVENT);
-  },
-
-  handleLoadEventsToReportSuccess: function (payload) {
-    state.eventsToReport = payload.eventsToReport;
-    this.emit(constants.CHANGE_EVENT);
-  },
-
-  handleLoadPendingReportsSuccess: function (payload) {
-    state.pendingReports = payload.pendingReports;
     this.emit(constants.CHANGE_EVENT);
   },
 
@@ -67,5 +86,3 @@ var BranchStore = Fluxxor.createStore({
     this.emit(constants.CHANGE_EVENT);
   }
 });
-
-module.exports = BranchStore;

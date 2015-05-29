@@ -25,7 +25,7 @@ var NetworkActions = {
       networkState.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED
     );
 
-    if (!nowUp) { 
+    if (!nowUp) {
 
       utilities.warn('failed to connect to ethereum');
 
@@ -34,7 +34,7 @@ var NetworkActions = {
         {ethereumStatus: constants.network.ETHEREUM_STATUS_FAILED}
       );
 
-    } else if (wasDown && nowUp) { 
+    } else if (wasDown && nowUp) {
 
       this.dispatch(
         constants.network.UPDATE_ETHEREUM_STATUS,
@@ -64,7 +64,7 @@ var NetworkActions = {
       gasPrice: networkStats.gasPrice,
       mining: networkStats.mining,
       hashrate: networkStats.hashrate,
-      blocktime: blockMoment.format('MMM Do, HH:MM')
+      blocktime: blockMoment.format('MMM Do, HH:mm')
     });
   },
 
@@ -80,7 +80,7 @@ var NetworkActions = {
 
     this.flux.actions.asset.loadAssets();
     this.flux.actions.market.loadMarkets();
-    this.flux.actions.branch.loadEventsToReport();
+    this.flux.actions.report.loadEventsToReport();
     this.flux.actions.report.loadPendingReports();
 
     // start monitoring for updates
@@ -101,7 +101,7 @@ var NetworkActions = {
     this.flux.actions.branch.updateCurrentBranch();
 
     // TODO: We can skip loading events to report if the voting period hasn't changed.
-    this.flux.actions.branch.loadEventsToReport();
+    this.flux.actions.report.loadEventsToReport();
     this.flux.actions.branch.checkQuorum();
 
     this.flux.actions.report.submitQualifiedReports();

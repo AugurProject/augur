@@ -11,7 +11,7 @@ var utilities = require('../libs/utilities');
 
 var Ballots = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin('asset', 'branch', 'config', 'event')],
+  mixins: [FluxMixin, StoreWatchMixin('asset', 'branch', 'config', 'event', 'network', 'report')],
 
   getInitialState: function () {
     return {
@@ -21,15 +21,22 @@ var Ballots = React.createClass({
 
   getStateFromFlux: function () {
     var flux = this.getFlux();
-    var account = flux.store('network').getAccount();
 
     var state = {
-      account: account,
+      account: flux.store('network').getAccount(),
       asset: flux.store('asset').getState(),
+      blockNumber: flux.store('network').getState().blockNumber,
       ethereumClient: flux.store('config').getEthereumClient(),
       branchState: flux.store('branch').getState(),
-      events: flux.store('branch').getState().eventsToReport
+      events: flux.store('report').getState().eventsToReport
     };
+
+    if (state.branchState.currentBranch) {
+      state.report = flux.store('report').getReport(
+        state.branchState.currentBranch.id,
+        state.branchState.currentBranch.votePeriod
+      );
+    }
 
     return state;
   },
@@ -61,26 +68,13 @@ var Ballots = React.createClass({
 
     if (!currentBranch) return (<div />);
 
-    var periodStartDate = '';
-    var periodEndDate = '';
     var percentComplete = 0;
     var votePercentComplete = 0;
     var revealPercentComplete = 0;
+    var votingDeadlineSpan = '';
 
     if (currentBranch.currentPeriod) {
-
-      var endBlock = (currentBranch.votePeriod + 1) * currentBranch.periodLength;
-      var periodEndMoment = utilities.blockToDate(endBlock);
-      var startBlock = (currentBranch.votePeriod) * currentBranch.periodLength;
-      var periodStartMoment = utilities.blockToDate(startBlock);
-
-      if (periodStartMoment.format('MMM Do') === periodEndMoment.format('MMM Do')) {
-        periodStartDate = periodStartMoment.format('MMM Do, HH:MM');
-        periodEndDate = periodEndMoment.format('HH:MM');
-      } else {
-        periodStartDate = periodStartMoment.format('MMM Do, HH:MM');
-        periodEndDate = periodEndMoment.format('MMM Do, HH:MM');
-      }
+      var [publishStart, publishEnd] = currentBranch.getReportPublishDates(this.state.blockNumber);
 
       if (currentBranch.isCurrent) {
         percentComplete = currentBranch.percentComplete;
@@ -93,14 +87,30 @@ var Ballots = React.createClass({
       }
     }
 
-    if (!this.state.events.length) {
-
+    if (this.state.report) {
+      if (this.state.report.reported) {
+        var ballot = (
+          <div className='no-decisions'>
+            <h4>Your ballot has been submitted.</h4>
+          </div>
+        );
+      } else {
+        var ballot = (
+          <div className='no-decisions'>
+            <h4>Your ballot for period { currentBranch.votePeriod } has been saved.</h4>
+            <p>
+              You need to run Augur to automatically submit your ballot during this period's submission phase:<br/>
+              <b>{ publishStart.format('MMM Do [at] HH:mm') } to { publishEnd.format('MMM Do [at] HH:mm') }</b>.
+            </p>
+          </div>
+        );
+      }
+    } else if (!(this.state.events.length && percentComplete < 50)) {
       var ballot = (
         <div className='no-decisions'>
           <h4>No decisions require your attention</h4>
         </div>
       );
-
     } else {
 
       // build ballot
@@ -125,8 +135,11 @@ var Ballots = React.createClass({
       var ballot = (
         <div className='ballot shadow clearfix'>
           { decisionList }
-          <Button className='pull-right submit-ballot' bsStyle='primary' {...disabledProp} onClick={ this.handleSubmitReport }>Submit Ballot</Button>
+          <Button className='pull-right submit-ballot' bsStyle='primary' {...disabledProp} onClick={ this.handleSubmitReport }>Save Ballot</Button>
         </div>
+      );
+      votingDeadlineSpan = (
+        <span className='pull-right'>Voting deadline: { publishStart.format('MMM Do [at] HH:mm') }</span>
       );
     }
 
@@ -140,8 +153,15 @@ var Ballots = React.createClass({
           <ProgressBar bsStyle='warning' now={ revealPercentComplete } key={2} />
         </ProgressBar>
         <div className='subheading clearfix'>
-          { periodStartDate }
-          <span className='pull-right'>{ periodEndDate }</span>
+          {/*
+             FIXME: moment's humanize has peculiar rounding behavior that
+             won't always work for us. Period lengths will round to the
+             largest unit, and the behavior above 25 days is definitely
+             wrong for us.
+             http://momentjs.com/docs/#/displaying/fromnow/
+           */}
+          Check for a new ballot every { currentBranch.periodDuration.humanize().replace(/^an? /, '') }.
+          { votingDeadlineSpan }
         </div>
         { ballot }
       </div>

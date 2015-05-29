@@ -38,9 +38,6 @@ module.exports = {
     LOAD_BRANCHES_SUCCESS: null,
     SET_CURRENT_BRANCH_SUCCESS: null,
     UPDATE_CURRENT_BRANCH_SUCCESS: null,
-    LOAD_EVENTS_TO_REPORT_SUCCESS: null,
-    LOAD_PENDING_REPORTS_SUCCESS: null,
-    UPDATE_PENDING_REPORTS: null,
     CHECK_QUORUM_SENT: null,
     CHECK_QUORUM_SUCCESS: null
   }),
@@ -56,7 +53,10 @@ module.exports = {
     UPDATE_EVENTS_SUCCESS: null
   }),
   report: keyMirror({
-    REPORTS_STORAGE: null
+    REPORTS_STORAGE: null,
+    LOAD_EVENTS_TO_REPORT_SUCCESS: null,
+    LOAD_PENDING_REPORTS_SUCCESS: null,
+    UPDATE_PENDING_REPORTS: null
   }),
   transaction: keyMirror({
     ADD_TRANSACTION: null,
