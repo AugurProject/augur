@@ -25,6 +25,9 @@ Install go-ethereum ([installation instructions](https://github.com/ethereum/go-
 Install [Node.js](https://nodejs.org/), then:
 
 ```
+git clone https://github.com/AugurProject/augur-client.git
+cd augur-client
+git checkout develop
 npm install -g grunt-cli
 npm install
 grunt browserify:build
