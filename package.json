@@ -34,6 +34,7 @@
     "bootstrap": "^3.3.4",
     "browserify": "^9.0.8",
     "envify": "^3.4.0",
+    "babelify": "^6.1.1",
     "es6-promise": "^2.0.1",
     "fluxxor": "^1.5.4",
     "jquery": "^2.1.3",
@@ -51,7 +52,6 @@
     "web3": "^0.5.0"
   },
   "devDependencies": {
-    "babelify": "^6.1.1",
     "grunt": "^0.4.5",
     "grunt-browserify": "^3.6.0",
     "grunt-contrib-jshint": "^0.11.1"
