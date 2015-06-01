@@ -215,14 +215,26 @@ EthereumClient.prototype.getBranches = function () {
 
 EthereumClient.prototype.getPeriodLength = function(branchId) {
 
-  var periodLength = Augur.getPeriodLength(branchId).toNumber();
-  return periodLength;
+  var periodLength = Augur.getPeriodLength(branchId);
+  if (periodLength) {
+    if (!periodLength.error) {
+      return periodLength.toNumber();
+    } else {
+      utilities.error(periodLength);
+    }
+  }
 };
 
 EthereumClient.prototype.getVotePeriod = function(branchId) {
 
-  var votePeriod =  Augur.getVotePeriod(branchId).toNumber();
-  return votePeriod;
+  var votePeriod =  Augur.getVotePeriod(branchId);
+  if (votePeriod) {
+    if (!votePeriod.error) {
+      return votePeriod.toNumber();
+    } else {
+      utilities.error(votePeriod);
+    }
+  }
 };
 
 EthereumClient.prototype.getEvents = function(period, branchId) {
@@ -255,6 +267,7 @@ EthereumClient.prototype.checkQuorum = function(branchId, onSent, onSuccess, onF
     if (result && result.message && result.error) {
       utilities.log(result.message);
     }
+    // utilities.log(result);
     if (onSent) onSent(result.txHash);
 
   }, function(result) {
