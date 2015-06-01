@@ -200,7 +200,7 @@ var Decision = React.createClass({
                 type="radio"
                 value="1"
                 label="No"
-                checked={this.props.decision === "0"}
+                checked={this.props.decision === "1"}
                 onChange={this.handleChange} />
             </div>
             <div className='col-sm-6'>
@@ -209,7 +209,7 @@ var Decision = React.createClass({
                 type="radio"
                 value="1.5"
                 label="Ambiguous / Indeterminate"
-                checked={this.props.decision === "0.5"}
+                checked={this.props.decision === "1.5"}
                 onChange={this.handleChange} />
             </div>
             <div className='col-sm-3'>
@@ -218,7 +218,7 @@ var Decision = React.createClass({
                 type="radio"
                 value="2"
                 label="Yes"
-                checked={this.props.decision === "1"}
+                checked={this.props.decision === "2"}
                 onChange={this.handleChange} />
             </div>
           </div>
