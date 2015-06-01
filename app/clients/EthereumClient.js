@@ -377,6 +377,7 @@ EthereumClient.prototype.getMarkets = function(branchId, onProgress) {
 
   branchId = branchId || this.defaultBranchId;
   var validMarkets = _.filter(Augur.getMarkets(branchId), function (marketId) {
+    console.log('"'+marketId.toString(16)+'",');
     return !_.contains(blacklist.markets, marketId.toString(16));
   });
 
