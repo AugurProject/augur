@@ -198,7 +198,7 @@ var Decision = React.createClass({
               <Input
                 name={ this.props.event.id }
                 type="radio"
-                value="0"
+                value="1"
                 label="No"
                 checked={this.props.decision === "0"}
                 onChange={this.handleChange} />
@@ -207,7 +207,7 @@ var Decision = React.createClass({
               <Input
                 name={ this.props.event.id }
                 type="radio"
-                value="0.5"
+                value="1.5"
                 label="Ambiguous / Indeterminate"
                 checked={this.props.decision === "0.5"}
                 onChange={this.handleChange} />
@@ -216,7 +216,7 @@ var Decision = React.createClass({
               <Input
                 name={ this.props.event.id }
                 type="radio"
-                value="1"
+                value="2"
                 label="Yes"
                 checked={this.props.decision === "1"}
                 onChange={this.handleChange} />
