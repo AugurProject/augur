@@ -23,6 +23,7 @@ var AddMarketModal = React.createClass({
       marketTextCount: '',
       marketTextError: null,
       marketInvestment: '100',
+      marketInvestmentError: null,
       maturationDate: '',
       tradingFee: '2',
       valid: false,
@@ -70,6 +71,11 @@ var AddMarketModal = React.createClass({
     var marketInvestment = event.target.value;
     this.state.cashLeft = this.state.cash - marketInvestment;
 
+    if (this.state.cashLeft < 0) {
+      this.setState({marketInvestmentError: 'cost exceeds cash balance'});
+    } else {
+      this.setState({marketInvestmentError: null});
+    }
     this.setState({marketInvestment: marketInvestment});
   },
 
@@ -96,6 +102,8 @@ var AddMarketModal = React.createClass({
         return false;       
       }
     } else if (pageNumber === 2) {
+
+      if (this.state.marketInvestmentError) return false;
 
     } else if (pageNumber === 3) {
 
@@ -154,7 +162,9 @@ var AddMarketModal = React.createClass({
 
     if (this.state.pageNumber === 2) {
 
-      var cashLeft = 'CASH: '+ this.state.cashLeft;
+      var helpText = 'CASH: '+ this.state.cashLeft;
+      var inputStyle = this.state.marketInvestmentError ? 'error' : null;
+
       subheading = 'Fees';
       page = (
         <div className="fees">
@@ -166,7 +176,7 @@ var AddMarketModal = React.createClass({
               labelClassName='col-xs-3'
               wrapperClassName='col-xs-3'
               addonAfter='%'
-              placeholder={ this.state.tradingFee }
+              value={ this.state.tradingFee }
               onChange={ this.onChangeTradingFee }
             />
           </div>
@@ -177,11 +187,13 @@ var AddMarketModal = React.createClass({
             <Input 
               type="text"
               label="Initial liquidity"
+              help={ helpText }
+              bsStyle={ inputStyle }
               labelClassName='col-xs-3'
               wrapperClassName='col-xs-3'
-              placeholder={ this.state.marketInvestment }
-              onChange={ this.onChangeMarketInvestment } />
-
+              value={ this.state.marketInvestment }
+              onChange={ this.onChangeMarketInvestment }
+            />
           </div>
 
           <p className="desc">The initial market liquidity is the amount of cash you wish to put in the market upfront.</p>
@@ -225,7 +237,9 @@ var AddMarketModal = React.createClass({
           <Button bsStyle='primary' onClick={ this.onSubmit }>Submit Market</Button>
         </div>
       );
+
     } else {
+
       subheading = 'Market Query';
       var inputStyle = this.state.marketTextError ? 'error' : null;
       page = (
@@ -236,6 +250,7 @@ var AddMarketModal = React.createClass({
             type='textarea'
             help={ this.state.marketTextError }
             bsStyle={ inputStyle }
+            value={ this.state.marketText }
             placeholder="Ask your yes or no question"  
             onChange={ this.onChangeMarketText } 
           />

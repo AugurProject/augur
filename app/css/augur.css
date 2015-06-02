@@ -755,6 +755,11 @@ a.market-pane:hover {
 #add-market-modal .help-block {
     float: left;
 }
+#add-market-modal .fees .help-block {
+    position: absolute;
+    top: 2px;
+    right: -70px;
+}
 #add-market-modal .modal-body {
     height: 225px;
 }

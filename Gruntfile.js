@@ -4,13 +4,10 @@ var config = {};
 
 config.envify = {};
 config.envify.debug = {
-  AUGUR_BRANCH_ID: "0x00000000000000000000000000000000000000000000000000000000000f69b5",
-  RPC_HOST: 'localhost:8545'
+  AUGUR_BRANCH_ID: 1010101
 };
 config.envify.build = {
-  // alpha branch for testing
-  AUGUR_BRANCH_ID: '0x00000000000000000000000000000000000000000000000000000000000f69b5',
-  RPC_HOST: 'localhost:8545'
+  AUGUR_BRANCH_ID: 1010101
 };
 
 config.browserify = {};
