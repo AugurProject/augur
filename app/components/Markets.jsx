@@ -57,7 +57,7 @@ var MarketPane = React.createClass({
 
     var body = (
       <div>
-        <h5>{ market.description }</h5>
+        <h5>{ market.description }<div className='overlay' /></h5>
         <div className='summary clearfix'>
           <span>{ percent }</span>
           <i className='pull-right'>{ status }</i>
