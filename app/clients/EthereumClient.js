@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var Promise = require('es6-promise').Promise;
+var moment = require('moment');
 
 var abi = require('../libs/abi');
 var constants = require('../libs/constants');
@@ -49,12 +50,23 @@ function EthereumClient(params) {
 
 EthereumClient.prototype.isAvailable = function() {
 
-    // attempt an RPC call that should fail if the daemon is unreachable.
-    try {
-      return web3.net.listening
-    } catch(err) {
-      return false;
-    }
+  // attempt an RPC call that should fail if the daemon is unreachable.
+  try {
+    return web3.net.listening
+  } catch(err) {
+    return false;
+  }
+};
+
+EthereumClient.prototype.blockChainAge = function() {
+
+  if (web3.net.listening) {
+    var blockNumber = web3.eth.blockNumber;
+    var blockTimeStamp = web3.eth.getBlock(blockNumber).timestamp;
+    var currentTimeStamp = moment().unix();
+
+    return currentTimeStamp - blockTimeStamp;
+  }
 };
 
 EthereumClient.prototype.startMonitoring = function(callback) {

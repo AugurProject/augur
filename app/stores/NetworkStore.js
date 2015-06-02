@@ -14,6 +14,7 @@ var state = {
   ethereumStatus: null,
   mining: null,
   hashrate: null,
+  blockChainAge: null,
   isMonitoringBlocks: false,
   hasCheckedQuorum: false
 };
@@ -25,7 +26,8 @@ var NetworkStore = Fluxxor.createStore({
     this.bindActions(
       constants.network.LOAD_NETWORK, this.handleUpdateNetwork,
       constants.network.UPDATE_ETHEREUM_STATUS, this.handleUpdateEthereumStatus,
-      constants.network.UPDATE_IS_MONITORING_BLOCKS, this.handleUpdateIsMonitoringBlocks
+      constants.network.UPDATE_IS_MONITORING_BLOCKS, this.handleUpdateIsMonitoringBlocks,
+      constants.network.UPDATE_BLOCK_CHAIN_AGE, this.handleUpdateBlockChainAge
     );
   },
 
@@ -48,6 +50,11 @@ var NetworkStore = Fluxxor.createStore({
 
   handleUpdateNetwork: function (payload) {
     _.merge(state, payload);
+    this.emit(constants.CHANGE_EVENT);
+  },
+
+  handleUpdateBlockChainAge: function (payload) {
+    state.blockChainAge = payload.blockChainAge;
     this.emit(constants.CHANGE_EVENT);
   },
 

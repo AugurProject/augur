@@ -157,7 +157,8 @@ var ErrorModal = React.createClass({
   getInitialState: function () {
 
     return {
-      isModalOpen: false
+      isModalOpen: false,
+      isLoading: false
     }
   },
 
@@ -166,9 +167,12 @@ var ErrorModal = React.createClass({
     if (nextProps.network.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED ||
     nextProps.config.ethereumClientFailed === true) {
       this.setState({ isModalOpen: true });
+    } else if (nextProps.network.blockChainAge > 60) {
+      this.setState({ isModalOpen: true, isLoading: true });
     } else {
-      this.setState({ isModalOpen: false });
+      this.setState({ isModalOpen: false, isLoading: false });
     }
+
   },
 
   handleToggle: function() {
@@ -219,6 +223,18 @@ var ErrorModal = React.createClass({
               <p>Visit <a href="https://github.com/ethereum/go-ethereum/wiki">the ethereum github wiki</a> for help installing the latest client</p>
               <p>If geth is installed:<br /><span className='cmd'>geth --rpc --rpccorsdomain { host }  --shh --unlock primary</span></p>
               <p style={{display: 'none'}}><a className="pull-right start-demo-mode" onClick={ this.startDemoMode } href="javascript:void(0)">Proceed in demo mode</a></p>
+          </div>
+        </Modal>
+      );
+
+    } else if (this.state.isLoading) {
+
+      // augur client failed to load
+      return (
+        <Modal {...this.props} bsSize='small' onRequestHide={ this.handleToggle } backdrop='static'>
+          <div className="modal-body clearfix">
+              <h4>Ethereum loading</h4>
+              <p>The Ethereum block chain is not current and is fetching blocks from peers</p>
           </div>
         </Modal>
       );

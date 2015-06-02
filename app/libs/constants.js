@@ -23,6 +23,7 @@ module.exports = {
   network: keyMirror({
     UPDATE_ETHEREUM_STATUS: null,
     UPDATE_IS_MONITORING_BLOCKS: null,
+    UPDATE_BLOCK_CHAIN_AGE: null,
     LOAD_NETWORK: null,
     ETHEREUM_STATUS_CONNECTED: null,
     ETHEREUM_STATUS_FAILED: null,

@@ -16,7 +16,11 @@ var NetworkActions = {
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var networkState = this.flux.store('network').getState()
 
+    var blockChainAge = ethereumClient.blockChainAge();
+    this.dispatch(constants.network.UPDATE_BLOCK_CHAIN_AGE, { blockChainAge: blockChainAge });
+
     var nowUp = ethereumClient.isAvailable();
+
     var wasUp = (
       networkState.ethereumStatus === constants.network.ETHEREUM_STATUS_CONNECTED
     );
