@@ -38,10 +38,16 @@ function EthereumClient(params) {
 
   // web3 setup
   this.web3 = window.web3 = params.web3 || require('web3');
-  this.web3.setProvider(new web3.providers.HttpProvider('http://'+this.host));
+  this.web3.setProvider(new web3.providers.HttpProvider('//'+this.host));
 
   // augur.js setup
+<<<<<<< HEAD
   Augur.connect({host: 'home.scottleonard.org', 'port': 8545});
+=======
+  var domain, port;
+  [domain, port] = this.host.split(':');
+  Augur.connect({host: domain, 'port': port || '8545'});
+>>>>>>> develop
   this.account = Augur.coinbase;
 }
 
@@ -215,26 +221,14 @@ EthereumClient.prototype.getBranches = function () {
 
 EthereumClient.prototype.getPeriodLength = function(branchId) {
 
-  var periodLength = Augur.getPeriodLength(branchId);
-  if (periodLength) {
-    if (!periodLength.error) {
-      return periodLength.toNumber();
-    } else {
-      utilities.error(periodLength);
-    }
-  }
+  var periodLength = Augur.getPeriodLength(branchId).toNumber();
+  return periodLength;
 };
 
 EthereumClient.prototype.getVotePeriod = function(branchId) {
 
-  var votePeriod =  Augur.getVotePeriod(branchId);
-  if (votePeriod) {
-    if (!votePeriod.error) {
-      return votePeriod.toNumber();
-    } else {
-      utilities.error(votePeriod);
-    }
-  }
+  var votePeriod =  Augur.getVotePeriod(branchId).toNumber();
+  return votePeriod;
 };
 
 EthereumClient.prototype.getEvents = function(period, branchId) {
@@ -267,7 +261,6 @@ EthereumClient.prototype.checkQuorum = function(branchId, onSent, onSuccess, onF
     if (result && result.message && result.error) {
       utilities.log(result.message);
     }
-    // utilities.log(result);
     if (onSent) onSent(result.txHash);
 
   }, function(result) {
@@ -377,7 +370,11 @@ EthereumClient.prototype.getMarkets = function(branchId, onProgress) {
 
   branchId = branchId || this.defaultBranchId;
   var validMarkets = _.filter(Augur.getMarkets(branchId), function (marketId) {
+<<<<<<< HEAD
     //console.log('"'+marketId.toString(16)+'",');
+=======
+    //console.log('"'+marketId.toString(16)+'",');  
+>>>>>>> develop
     return !_.contains(blacklist.markets, marketId.toString(16));
   });
 

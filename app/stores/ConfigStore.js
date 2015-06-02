@@ -2,7 +2,11 @@ var Fluxxor = require('fluxxor');
 var constants = require('../libs/constants');
 
 var state = {
+<<<<<<< HEAD
   host: 'home.scottleonard.org:8545',
+=======
+  host: process.env.RPC_HOST || 'localhost:8545',
+>>>>>>> develop
   debug: false,
   percentLoaded: null,
   ethereumClient: null
