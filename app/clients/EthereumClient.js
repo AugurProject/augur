@@ -215,26 +215,14 @@ EthereumClient.prototype.getBranches = function () {
 
 EthereumClient.prototype.getPeriodLength = function(branchId) {
 
-  var periodLength = Augur.getPeriodLength(branchId);
-  if (periodLength) {
-    if (!periodLength.error) {
-      return periodLength.toNumber();
-    } else {
-      utilities.error(periodLength);
-    }
-  }
+  var periodLength = Augur.getPeriodLength(branchId).toNumber();
+  return periodLength;
 };
 
 EthereumClient.prototype.getVotePeriod = function(branchId) {
 
-  var votePeriod =  Augur.getVotePeriod(branchId);
-  if (votePeriod) {
-    if (!votePeriod.error) {
-      return votePeriod.toNumber();
-    } else {
-      utilities.error(votePeriod);
-    }
-  }
+  var votePeriod =  Augur.getVotePeriod(branchId).toNumber();
+  return votePeriod;
 };
 
 EthereumClient.prototype.getEvents = function(period, branchId) {
@@ -267,7 +255,6 @@ EthereumClient.prototype.checkQuorum = function(branchId, onSent, onSuccess, onF
     if (result && result.message && result.error) {
       utilities.log(result.message);
     }
-    // utilities.log(result);
     if (onSent) onSent(result.txHash);
 
   }, function(result) {
@@ -377,6 +364,7 @@ EthereumClient.prototype.getMarkets = function(branchId, onProgress) {
 
   branchId = branchId || this.defaultBranchId;
   var validMarkets = _.filter(Augur.getMarkets(branchId), function (marketId) {
+    console.log('"'+marketId.toString(16)+'",');  
     return !_.contains(blacklist.markets, marketId.toString(16));
   });
 
