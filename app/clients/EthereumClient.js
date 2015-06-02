@@ -38,10 +38,12 @@ function EthereumClient(params) {
 
   // web3 setup
   this.web3 = window.web3 = params.web3 || require('web3');
-  this.web3.setProvider(new web3.providers.HttpProvider('http://'+this.host));
+  this.web3.setProvider(new web3.providers.HttpProvider('//'+this.host));
 
   // augur.js setup
-  Augur.connect({host: 'localhost', 'port': 8545});
+  var domain, port;
+  [domain, port] = this.host.split(':');
+  Augur.connect({host: domain, 'port': port || '8545'});
   this.account = Augur.coinbase;
 }
 
@@ -364,7 +366,7 @@ EthereumClient.prototype.getMarkets = function(branchId, onProgress) {
 
   branchId = branchId || this.defaultBranchId;
   var validMarkets = _.filter(Augur.getMarkets(branchId), function (marketId) {
-    console.log('"'+marketId.toString(16)+'",');  
+    //console.log('"'+marketId.toString(16)+'",');  
     return !_.contains(blacklist.markets, marketId.toString(16));
   });
 
