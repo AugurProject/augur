@@ -29,12 +29,12 @@
     ]
   },
   "dependencies": {
-    "augur.js": "AugurProject/augur.js#develop",
+    "augur.js": "^0.4.1",
+    "babelify": "^6.1.1",
     "bignumber.js": "^2.0.7",
     "bootstrap": "^3.3.4",
     "browserify": "^9.0.8",
     "envify": "^3.4.0",
-    "babelify": "^6.1.1",
     "es6-promise": "^2.0.1",
     "fluxxor": "^1.5.4",
     "jquery": "^2.1.3",

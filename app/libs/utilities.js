@@ -54,7 +54,7 @@ module.exports = {
       unit = 'wei';
     }
 
-    return {value: +value.toFixed(3), unit: unit, withUnit: value+' '+unit};
+    return {value: +value, unit: unit, withUnit: value+' '+unit};
   },
 
   /**

@@ -90,18 +90,15 @@ var Ballots = React.createClass({
     if (this.state.report) {
       if (this.state.report.reported) {
         var ballot = (
-          <div className='no-decisions'>
-            <h4>Your ballot has been submitted.</h4>
+          <div className='ballot shadow clearfix'>
+            <h4>Ballot { currentBranch.votePeriod }<span className="pull-right">submitted</span></h4>
           </div>
         );
       } else {
         var ballot = (
-          <div className='no-decisions'>
-            <h4>Your ballot for period { currentBranch.votePeriod } has been saved.</h4>
-            <p>
-              You need to run Augur to automatically submit your ballot during this period's submission phase:<br/>
-              <b>{ publishStart.format('MMM Do [at] HH:mm') } to { publishEnd.format('MMM Do [at] HH:mm') }</b>.
-            </p>
+          <div className='ballot shadow clearfix'>
+            <h4>Ballot { currentBranch.votePeriod }<span className="pull-right">saved</span></h4>
+            <p>This ballot has been saved and will be submitted <b>{ publishStart.format('MMM Do HH:mm') } - { publishEnd.format('MMM Do HH:mm') }</b></p>
           </div>
         );
       }
