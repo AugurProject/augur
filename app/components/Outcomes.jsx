@@ -16,7 +16,7 @@ var YES = 2;
 var priceToPercentage = function (price) {
   // HACK: bignumify
   price = utilities.bigNumify(price);
-  return +price.times(100).toFixed(1);
+  return +price.toFixed(1);
 };
 
 var getOutcomeName = function (id, count) {
