@@ -26,6 +26,18 @@ module.exports = {
     return currentBlock + blockDelta;
   },
 
+  bigNumify: function(num) {
+
+    //console.log(typeof(num));
+    //console.log(num);
+    if (typeof(num) === 'string') {
+      return new BigNumber(num);
+    } else {
+      return num;
+    }
+
+  },
+
   formatEther: function(wei) {
 
     // detect format and convert

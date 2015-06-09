@@ -168,7 +168,7 @@ var ErrorModal = React.createClass({
     if (nextProps.network.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED ||
     nextProps.config.ethereumClientFailed === true) {
       this.setState({ isModalOpen: true });
-    } else if (nextProps.network.blockChainAge > 80) {
+    } else if (nextProps.network.blockChainAge > 300) {
       utilities.warn('last block was '+ nextProps.network.blockChainAge + ' seconds old');
       this.setState({ isModalOpen: true, isLoading: true });
     } else {
