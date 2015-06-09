@@ -44,7 +44,7 @@ function EthereumClient(params) {
   // augur.js setup
   var domain, port;
   [domain, port] = this.host.split(':');
-  Augur.connect({host: domain, 'port': port || '8545'});
+  Augur.connect({ host: domain, port: port || '8545' });
   this.account = Augur.coinbase;
 }
 
