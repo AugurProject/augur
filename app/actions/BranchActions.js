@@ -61,7 +61,8 @@ export default {
     var hasCheckedQuorum = branchState.hasCheckedQuorum;
 
     // check quorum if branch isn't current and we havn't already
-    if (!currentBranch.isCurrent && !hasCheckedQuorum) {
+    //if (!currentBranch.isCurrent && !hasCheckedQuorum) {
+    if (!currentBranch.isCurrent) {
       var self = this;
       ethereumClient.checkQuorum(currentBranch.id, function(txHash) {
         self.dispatch(constants.branch.CHECK_QUORUM_SENT);

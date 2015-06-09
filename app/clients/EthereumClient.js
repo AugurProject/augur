@@ -271,7 +271,7 @@ EthereumClient.prototype.checkQuorum = function(branchId, onSent, onSuccess, onF
   Augur.dispatch(branchId, function(result) {
 
     if (result && result.message && result.error) {
-      utilities.log(result.message);
+      utilities.error(result.message);
     }
     if (onSent) onSent(result.txHash);
 
@@ -282,7 +282,7 @@ EthereumClient.prototype.checkQuorum = function(branchId, onSent, onSuccess, onF
 
   }, function(error) {
 
-    //utilities.error(error);
+    utilities.error(error);
     if (onFailed) onFailed(error);
   });
 };
