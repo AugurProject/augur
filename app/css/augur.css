@@ -773,7 +773,8 @@ background: linear-gradient(to bottom, rgba(24,55,111,0) 0%,rgba(24,55,111,0.7) 
 #add-market-modal .fees .help-block {
     position: absolute;
     top: 2px;
-    right: -70px;
+    left: 150px;
+    width: 300px;
 }
 #add-market-modal .modal-body {
     height: 225px;

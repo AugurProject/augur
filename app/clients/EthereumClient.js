@@ -282,7 +282,7 @@ EthereumClient.prototype.checkQuorum = function(branchId, onSent, onSuccess, onF
 
   }, function(error) {
 
-    utilities.error(error);
+    //utilities.error(error);
     if (onFailed) onFailed(error);
   });
 };
@@ -515,6 +515,8 @@ EthereumClient.prototype.addMarket = function(params, onSuccess) {
     var initialLiquidity = params.initialLiquidity;
     var tradingFee = params.tradingFee;
     var events = params.events;  // a list of event ids
+
+    //console.log(branchId, description, alpha, initialLiquidity, tradingFee, events);
 
     Augur.createMarket({
       branchId: branchId,
