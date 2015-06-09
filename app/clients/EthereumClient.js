@@ -272,6 +272,9 @@ EthereumClient.prototype.checkQuorum = function(branchId, onSent, onSuccess, onF
 
     if (result && result.message && result.error) {
       utilities.error(result.message);
+      if (typeof(result.txHash == 'Object')) {
+        console.error(result.txHash.message);
+      }
     }
     if (onSent) onSent(result.txHash);
 
@@ -282,7 +285,7 @@ EthereumClient.prototype.checkQuorum = function(branchId, onSent, onSuccess, onF
 
   }, function(error) {
 
-    //utilities.error(error);
+    utilities.error(error);
     if (onFailed) onFailed(error);
   });
 };
@@ -479,6 +482,8 @@ EthereumClient.prototype.addEvent = function(params, onSuccess) {
     var minValue = params.minValue || 0;
     var maxValue = params.maxValue || 1;
     var numOutcomes = params.numOutcomes || 2;
+
+    console.log(branchId, description, expirationBlock, minValue, maxValue, numOutcomes);
 
     Augur.createEvent({
 

@@ -70,14 +70,17 @@ var AddMarketModal = React.createClass({
   onChangeMarketInvestment: function (event) {
 
     var marketInvestment = event.target.value;
-    this.state.cashLeft = this.state.cash - marketInvestment;
+    var cashLeft = this.state.cash - marketInvestment;
 
-    if (this.state.cashLeft < 0) {
+    if (cashLeft < 0) {
       this.setState({marketInvestmentError: 'cost exceeds cash balance'});
     } else {
       this.setState({marketInvestmentError: null});
     }
-    this.setState({marketInvestment: marketInvestment});
+    this.setState({
+      marketInvestment: marketInvestment,
+      casheLeft: cashLeft
+    });
   },
 
   onChangeMaturationDate: function (event) {
@@ -163,7 +166,7 @@ var AddMarketModal = React.createClass({
 
     if (this.state.pageNumber === 2) {
 
-      var helpText = 'CASH: '+ this.state.cashLeft;
+      var helpText = 'CASH: '+ this.state.cashLeft.toFixed(5);
       var inputStyle = this.state.marketInvestmentError ? 'error' : null;
 
       subheading = 'Fees';
