@@ -28,6 +28,7 @@ var AddMarketModal = React.createClass({
       tradingFee: '2',
       valid: false,
       cashLeft: 0,
+      minDate: moment().format('YYYY-MM-DD')
     };
   },
 
@@ -210,11 +211,12 @@ var AddMarketModal = React.createClass({
     } else if (this.state.pageNumber === 3) {
 
       subheading = 'Maturation Date';
+
       page = (
         <div className="form-group date">
           <div className='col-sm-6'>
             <p>Enter the date this event will mature, trading will end and the question decided.</p>
-            <input
+            <Input
               className='form-control'
               bsSize='large'
               type='text'
@@ -224,7 +226,8 @@ var AddMarketModal = React.createClass({
             />
           </div>
           <div className='col-sm-6'>
-            <DatePicker 
+            <DatePicker
+              minDate={ this.state.minDate }
               hideFooter={ true }
               onChange={ this.handleDatePicked }
             />
