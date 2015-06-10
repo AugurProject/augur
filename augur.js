@@ -174,44 +174,44 @@ var Augur = (function (augur) {
 
     /* Augur private chain (networkid 1010101) addresses */
     augur.privatechain_contracts = {
-        "checkQuorum": "0x77d4957e16fb19a384974431ac561d77f3f21281",
-        "buyAndSellShares": "0xdf05b0b4b3b6b5b9e4fb9ecc054f2fc193fe5e1c",
-        "createBranch": "0x775eb0d6902fd49ec5209e9dea42a5e17c37de33",
-        "p2pWagers": "0x7848abe5708f19e0f8d506a467b3447925f06bca",
-        "sendReputation": "0x2deb3869396cd7c66c7c224de9f0b6c7087546b2",
-        "transferShares": "0x92dae2ca6b7fa42e2f1ad9480b13e82431824b43",
-        "makeReports": "0x273df8e7b5f265fe7c9c043a015a52de37e61009",
-        "createEvent": "0xa216dcd1291ad9572513b66008a1c714fe5d18fd",
-        "createMarket": "0x0220396c49832e900c346ead972bf0eaa4f2b54c",
-        "closeMarket": "0xcedb06d8a931056c71e34843a3e75c1d77569120",
-        "closeMarketOne": "0xf0e2ebb512392c4ee2a95b0cf565c5e28f0837e4",
-        "closeMarketTwo": "0x23b6b51f4cfd942be3b3693287420270762cb10b",
-        "closeMarketFour": "0x45673337b7327e2c02fd7b664492993c76013c70",
-        "closeMarketEight": "0x03cea6c2ea2adf640b1e992c68538ce1a947df08",
-        "dispatch": "0x99f1741a38bf607d434cdefa4aaf63434a19592b",
+        "checkQuorum": "0x7fb1264cc59f29c70f8e3d20d6e7bc85a3c40a23",
+        "buyAndSellShares": "0x1669026e27e6cfea78b0535e7646534c03a475c2",
+        "createBranch": "0xe574cdd84d23fce8f2f784401719d4a187176ff0",
+        "p2pWagers": "0x02f4a44188d5de59aa8f5392549d9d6242c4d9d0",
+        "sendReputation": "0x55da61f99238af4e92c6c51d9cb7855287987754",
+        "transferShares": "0xea00745c65a5fc0dd01caa83ffe3d912252dc874",
+        "makeReports": "0x0411bff27ba2662a86f0b036f93cef5688be30f5",
+        "createEvent": "0x7f35ce7fd8b69f93e9f7760a36f21f8d8f61fdf4",
+        "createMarket": "0x397c3bd79be18aada6af1b7d40a0ba2a994b1f25",
+        "closeMarket": "0xa9f802c825d6cafd36153593a7e218061f9dc6bc",
+        "closeMarketOne": "0xe7d7c459a7da0ab5f1e3e3661099598a6fe5c9b8",
+        "closeMarketTwo": "0xb438e147d75744b35840e26c407448cc1bcd85d5",
+        "closeMarketFour": "0x537882720f8e206d20f47136086f480b141b9ccf",
+        "closeMarketEight": "0x9ce021bf76a7a831384fe83a7d6b295059b77fe3",
+        "dispatch": "0x577e5c462239e1cd811b064fbc8539e9e0ea624f",
 
-        "cash": "0xf9f5ac7e138162f36cfda03978faeba7fa6a70da",
-        "info": "0xaa050d7d9d57d22483f0548fe1cd70508c543712",
-        "branches": "0x06c2a32c3264f4468e94ce9b8ae47f2967503da1",
-        "events": "0xf67964aa0a6f6c1bf4a9c60d8327dac1cff553b4",
-        "expiringEvents": "0x1d43aecb796026e4909556e056be947ae8cdb78f",
-        "fxpFunctions": "0x16f8fe6f12a4e52bcef2b68c06a2f628deafa45d",
-        "markets": "0xda4a7a474f27c522c840fd1ab6eecada39fe487d",
-        "reporting": "0x2174f1841648f6824503f00fe4c9a4fb2060f40d",
+        "cash": "0xfbbc3c6adfb5f365c569437ff9accfda98072ce3",
+        "info": "0xfc682123eb42994ffbef948853265413b3afb49f",
+        "branches": "0x3ff4617f1ec29f2208274ea9158df772d5f6dc09",
+        "events": "0xb11444802847abe44e62ef36c0c4c99b631459fe",
+        "expiringEvents": "0x59628e9a0b948df0f902d2e56f596cc80aad1e2f",
+        "fxpFunctions": "0x77b2b3d110f046d2fbf03902ec087451de792b46",
+        "markets": "0xbf6cfa3a53b82ba9b167dedd924079333a377f96",
+        "reporting": "0xdae2eb9198fb38d7a5f264f74c6c9e70ac88b18b",
 
-        "statistics": "0x6494d29620ec3d3b7af031e6adc328945c48214e",
-        "interpolate": "0x6fd9a15d2d7c751ce7360f4e511b7832f7c05c60",
-        "center": "0x87697d8e32db4d23786841d1ba953824d6dae3c9",
-        "score": "0x76e772977db1e48ee13abe8517fc144e76ac9870",
-        "adjust": "0xe586d1bb8e02c919a9026bbcf8939f884615bb8c",
-        "resolve": "0xc58c986f9b41af787ccb1b3199861523dd293f84",
-        "payout": "0xb3f7c4e0ac3130e424799760ecfff425fc6104dd",
-        "redeem_interpolate": "0x1ca2b2aa07933d091c6b4794e94146f341b67f14",
-        "redeem_center": "0x288466370bca91a607e90bf8d8cf8729ba937f21",
-        "redeem_score": "0x9985b931bf2939e5c35019dbae0b5b2e0184e292",
-        "redeem_adjust": "0x126cd13169fc9b2f9d8812019270bdd02e31e598",
-        "redeem_resolve": "0x02931d9f64064c1ab502220d137dd2794a6de6fc",
-        "redeem_payout": "0x87f3e2af436398f006011096ce32ee8f6e193d9c"
+        "statistics": "0xdd4353b797df3fd7bfb10aac332f961f84bb6ac0",
+        "interpolate": "0xc99e10b9593a17d3a56f82f7964f6716783843e9",
+        "center": "0x0f5cbe7ef76caa477d1212436cece601574e3184",
+        "score": "0xa9356378c72439548fe14b5ecccb6ba77094eb37",
+        "adjust": "0x0514b2b07b448a48c0f02380135e6961e33cf1c8",
+        "resolve": "0x9a9036ad4c736889134f61361b6cc2e6ef6fba7f",
+        "payout": "0xeebcf5a154394e5673e60ac6c26c10399814f9a9",
+        "redeem_interpolate": "0xe098bde7bd726714ce73e03428e238aeba20c159",
+        "redeem_center": "0x98c1ec6fa883a80b09a945480502d7f3e473462a",
+        "redeem_score": "0xa287639d193da519631ba7be1521d3fd504dbb27",
+        "redeem_adjust": "0xd20362f3e9e640f062dff0e7809e7f61dc3cccbd",
+        "redeem_resolve": "0xcbaa4c7b84bab6898630dbbf3538ba59468c801f",
+        "redeem_payout": "0x54f2de2716f3676cb127feac1e65951cb14387d9"
     };
 
     /* Testing private chain (networkid 10101) addresses */
@@ -1115,18 +1115,20 @@ var Augur = (function (augur) {
                     var arraylen = tx.params[i].length;
                     dynamics += pad_left(encode_int(arraylen));
                     for (var j = 0; j < arraylen; ++j) {
-                        if (tx.params[i][j].constructor === Number) {
-                            dynamic = augur.bignum(tx.params[i][j]).mod(augur.MAXBITS).toFixed();
-                            dynamics += pad_left(encode_int(dynamic));
-                        } else if (tx.params[i][j].constructor === String) {
-                            if (tx.params[i][j].slice(0,1) === '-') {
+                        if (tx.params[i][j]) {
+                            if (tx.params[i][j].constructor === Number) {
                                 dynamic = augur.bignum(tx.params[i][j]).mod(augur.MAXBITS).toFixed();
                                 dynamics += pad_left(encode_int(dynamic));
-                            } else if (tx.params[i][j].slice(0,2) === "0x") {
-                                dynamics += pad_left(tx.params[i][j].slice(2), true);
-                            } else {
-                                dynamic = augur.bignum(tx.params[i][j]).mod(augur.MAXBITS);
-                                dynamics += pad_left(encode_int(dynamic));
+                            } else if (tx.params[i][j].constructor === String) {
+                                if (tx.params[i][j].slice(0,1) === '-') {
+                                    dynamic = augur.bignum(tx.params[i][j]).mod(augur.MAXBITS).toFixed();
+                                    dynamics += pad_left(encode_int(dynamic));
+                                } else if (tx.params[i][j].slice(0,2) === "0x") {
+                                    dynamics += pad_left(tx.params[i][j].slice(2), true);
+                                } else {
+                                    dynamic = augur.bignum(tx.params[i][j]).mod(augur.MAXBITS);
+                                    dynamics += pad_left(encode_int(dynamic));
+                                }
                             }
                         }
                     }
@@ -1377,6 +1379,7 @@ var Augur = (function (augur) {
                     message: augur.ERRORS[txhash]
                 });
             } else {
+                // log(txhash);
                 augur.getTx(txhash, function (sent) {
                     augur.call({
                         from: sent.from || augur.coinbase,
@@ -1385,7 +1388,9 @@ var Augur = (function (augur) {
                         returns: returns
                     }, function (callreturn) {
                         if (callreturn) {
-                            if (augur.ERRORS[callreturn]) {
+                            if (callreturn.constructor === Object && callreturn.error) {
+                                if (onFailed) onFailed(callreturn);
+                            } else if (augur.ERRORS[callreturn]) {
                                 if (onFailed) onFailed({
                                     error: callreturn,
                                     message: augur.ERRORS[callreturn]
@@ -1401,8 +1406,6 @@ var Augur = (function (augur) {
                                             error: numeric,
                                             message: augur.ERRORS[tx.method][numeric]
                                         });
-                                    } else if (callreturn.constructor === Object && callreturn.error) {
-                                        if (onFailed) onFailed(callreturn);
                                     } else {
                                         onSent({
                                             txHash: txhash,

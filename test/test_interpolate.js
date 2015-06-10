@@ -13,7 +13,7 @@ require('it-each')({ testPerIteration: true });
 Augur.connect();
 
 var log = console.log;
-var TIMEOUT = 120000;
+var TIMEOUT = 240000;
 
 var branch = Augur.branches.dev;
 var period = Augur.getVotePeriod(branch);
@@ -34,6 +34,7 @@ for (var i = 0; i < num_reports; ++i) {
         }
     }
 }
+log(reports);
 var scaled = [];
 var scaled_min = [];
 var scaled_max = [];

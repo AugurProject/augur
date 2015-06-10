@@ -52,10 +52,10 @@ describe("functions/createMarket", function () {
             maxValue: maxValue,
             numOutcomes: numOutcomes,
             onSent: function (r) {
-                // log("createEvent sent: " + JSON.stringify(r, null, 2));
+                log("createEvent sent: " + JSON.stringify(r, null, 2));
             },
             onSuccess: function (r) {
-                // log("createEvent success: " + JSON.stringify(r, null, 2));
+                log("createEvent success: " + JSON.stringify(r, null, 2));
                 // assert.equal(r.branch, Augur.branches.dev);
                 // assert.equal(r.expirationDate, expDate);
                 // assert.equal(r.minValue, minValue);
@@ -76,10 +76,10 @@ describe("functions/createMarket", function () {
                     tradingFee: tradingFee,
                     events: events,
                     onSent: function (res) {
-                        // log("createMarket sent: " + JSON.stringify(res, null, 2));
+                        log("createMarket sent: " + JSON.stringify(res, null, 2));
                     },
                     onSuccess: function (res) {
-                        // log("createMarket success: " + JSON.stringify(res, null, 2));
+                        log("createMarket success: " + JSON.stringify(res, null, 2));
                         // assert.equal(res.numOutcomes, numOutcomes);
                         // assert.equal(parseFloat(res.alpha).toFixed(5), parseFloat(alpha).toFixed(5));
                         // assert.equal(res.numOutcomes, numOutcomes);
@@ -89,14 +89,14 @@ describe("functions/createMarket", function () {
                         next();
                     },
                     onFailed: function (res) {
-                        // log("createMarket failed: " + JSON.stringify(res, null, 2));
+                        log("createMarket failed: " + JSON.stringify(res, null, 2));
                         next();
                     }
                 };
                 Augur.createMarket(marketObj);
             },
             onFailed: function (r) {
-                // log("createEvent failed: " + JSON.stringify(r, null, 2));
+                log("createEvent failed: " + JSON.stringify(r, null, 2));
                 next();
             }
         };

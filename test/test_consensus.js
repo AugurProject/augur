@@ -15,7 +15,7 @@ Augur.connect();
 
 var log = console.log;
 var TIMEOUT = 120000;
-var num_components = 1;
+var num_components = 2;
 var num_iterations = 5;
 var dispatches = 9 + num_components*(4 + num_iterations);
 
@@ -24,7 +24,7 @@ var period = Augur.getVotePeriod(branch);
 var num_events = Augur.getNumberEvents(branch, period);
 
 describe("Consensus", function () {
-    describe("call dispatch " + dispatches + " times", function () {
+    describe("calling dispatch " + dispatches + " times", function () {
         it.each(_.range(0, dispatches), "dispatch %s", ['element'], function (element, next) {
             this.timeout(TIMEOUT);
             Augur.dispatch({
@@ -39,7 +39,7 @@ describe("Consensus", function () {
                     next();
                 },
                 onFailed: function (r) {
-                    throw("dispatch failed: " + r);
+                    throw("dispatch failed: " + JSON.stringify(r, null, 2));
                     next();
                 }
             });
