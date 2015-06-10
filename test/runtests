@@ -12,6 +12,7 @@ mocha test_reporting.js
 # mocha test_expiring.js
 # mocha test_augur.js
 mocha test_createEvent.js
+mocha test_ballot.js
 mocha test_interpolate.js
 mocha test_consensus.js
 mocha test_score.js

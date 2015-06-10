@@ -21,7 +21,7 @@ var numOutcomes = 2;
 var num_events = 10;
 
 var branch = Augur.branches.dev;
-var vote_period = Augur.getVotePeriod(branch);
+var period = Augur.getVotePeriod(branch);
 
 describe("functions/createEvent", function () {
     var events = [];

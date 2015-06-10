@@ -188,7 +188,7 @@ var Augur = (function (augur) {
         "closeMarketTwo": "0x23b6b51f4cfd942be3b3693287420270762cb10b",
         "closeMarketFour": "0x45673337b7327e2c02fd7b664492993c76013c70",
         "closeMarketEight": "0x03cea6c2ea2adf640b1e992c68538ce1a947df08",
-        "dispatch": "0x58f4671066855a29a0ebe9101bba59deae85e5a8",
+        "dispatch": "0xf5e2f4120edf42e5d01276eada26c6d710c1c70e",
 
         "cash": "0xf9f5ac7e138162f36cfda03978faeba7fa6a70da",
         "info": "0xaa050d7d9d57d22483f0548fe1cd70508c543712",
@@ -1385,38 +1385,41 @@ var Augur = (function (augur) {
                         returns: returns
                     }, function (callreturn) {
                         if (callreturn) {
-                            var numeric = augur.bignum(callreturn);
-                            if (numeric && numeric.constructor === BigNumber) {
-                                numeric = numeric.toFixed();
-                            }
-                            if (numeric && augur.ERRORS[tx.method] && augur.ERRORS[tx.method][numeric]) {
+                            if (augur.ERRORS[callreturn]) {
                                 if (onFailed) onFailed({
-                                    error: numeric,
-                                    message: augur.ERRORS[tx.method][numeric]
+                                    error: callreturn,
+                                    message: augur.ERRORS[callreturn]
                                 });
-                            } else if (augur.ERRORS[numeric]) {
-                                if (onFailed) onFailed({
-                                    error: numeric,
-                                    message: augur.ERRORS[numeric]
-                                });
-                            } else if (callreturn.constructor === Object && callreturn.error) {
-                                if (onFailed) onFailed(callreturn);
                             } else {
-                                onSent({
-                                    txHash: txhash,
-                                    callReturn: callreturn
-                                });
-                                if (onSuccess) {
-                                    tx_notify(
-                                        0,
-                                        callreturn,
-                                        tx,
-                                        txhash,
-                                        returns,
-                                        onSent,
-                                        onSuccess,
-                                        onFailed
-                                    );
+                                // log(callreturn);
+                                var numeric = augur.bignum(callreturn);
+                                if (numeric && numeric.constructor === BigNumber) {
+                                    numeric = numeric.toFixed();
+                                }
+                                if (numeric && augur.ERRORS[tx.method] && augur.ERRORS[tx.method][numeric]) {
+                                    if (onFailed) onFailed({
+                                        error: numeric,
+                                        message: augur.ERRORS[tx.method][numeric]
+                                    });
+                                } else if (callreturn.constructor === Object && callreturn.error) {
+                                    if (onFailed) onFailed(callreturn);
+                                } else {
+                                    onSent({
+                                        txHash: txhash,
+                                        callReturn: callreturn
+                                    });
+                                    if (onSuccess) {
+                                        tx_notify(
+                                            0,
+                                            callreturn,
+                                            tx,
+                                            txhash,
+                                            returns,
+                                            onSent,
+                                            onSuccess,
+                                            onFailed
+                                        );
+                                    }
                                 }
                             }
                         }        
