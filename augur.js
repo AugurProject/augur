@@ -188,7 +188,7 @@ var Augur = (function (augur) {
         "closeMarketTwo": "0x23b6b51f4cfd942be3b3693287420270762cb10b",
         "closeMarketFour": "0x45673337b7327e2c02fd7b664492993c76013c70",
         "closeMarketEight": "0x03cea6c2ea2adf640b1e992c68538ce1a947df08",
-        "dispatch": "0xf5e2f4120edf42e5d01276eada26c6d710c1c70e",
+        "dispatch": "0x99f1741a38bf607d434cdefa4aaf63434a19592b",
 
         "cash": "0xf9f5ac7e138162f36cfda03978faeba7fa6a70da",
         "info": "0xaa050d7d9d57d22483f0548fe1cd70508c543712",
@@ -200,13 +200,13 @@ var Augur = (function (augur) {
         "reporting": "0x2174f1841648f6824503f00fe4c9a4fb2060f40d",
 
         "statistics": "0x6494d29620ec3d3b7af031e6adc328945c48214e",
-        "interpolate": "0xe962cb8bef25e2191d6489a4a7bca7e79b5039d2",
+        "interpolate": "0x6fd9a15d2d7c751ce7360f4e511b7832f7c05c60",
         "center": "0x87697d8e32db4d23786841d1ba953824d6dae3c9",
         "score": "0x76e772977db1e48ee13abe8517fc144e76ac9870",
         "adjust": "0xe586d1bb8e02c919a9026bbcf8939f884615bb8c",
         "resolve": "0xc58c986f9b41af787ccb1b3199861523dd293f84",
         "payout": "0xb3f7c4e0ac3130e424799760ecfff425fc6104dd",
-        "redeem_interpolate": "0x4bc195ee63efce25d855f224a883495805ee1f74",
+        "redeem_interpolate": "0x1ca2b2aa07933d091c6b4794e94146f341b67f14",
         "redeem_center": "0x288466370bca91a607e90bf8d8cf8729ba937f21",
         "redeem_score": "0x9985b931bf2939e5c35019dbae0b5b2e0184e292",
         "redeem_adjust": "0x126cd13169fc9b2f9d8812019270bdd02e31e598",
@@ -1391,38 +1391,41 @@ var Augur = (function (augur) {
                                     message: augur.ERRORS[callreturn]
                                 });
                             } else {
-                                // log(callreturn);
-                                var numeric = augur.bignum(callreturn);
-                                if (numeric && numeric.constructor === BigNumber) {
-                                    numeric = numeric.toFixed();
-                                }
-                                if (numeric && augur.ERRORS[tx.method] && augur.ERRORS[tx.method][numeric]) {
-                                    if (onFailed) onFailed({
-                                        error: numeric,
-                                        message: augur.ERRORS[tx.method][numeric]
-                                    });
-                                } else if (callreturn.constructor === Object && callreturn.error) {
-                                    if (onFailed) onFailed(callreturn);
-                                } else {
-                                    onSent({
-                                        txHash: txhash,
-                                        callReturn: callreturn
-                                    });
-                                    if (onSuccess) {
-                                        tx_notify(
-                                            0,
-                                            callreturn,
-                                            tx,
-                                            txhash,
-                                            returns,
-                                            onSent,
-                                            onSuccess,
-                                            onFailed
-                                        );
+                                try {
+                                    var numeric = augur.bignum(callreturn);
+                                    if (numeric && numeric.constructor === BigNumber) {
+                                        numeric = numeric.toFixed();
                                     }
+                                    if (numeric && augur.ERRORS[tx.method] && augur.ERRORS[tx.method][numeric]) {
+                                        if (onFailed) onFailed({
+                                            error: numeric,
+                                            message: augur.ERRORS[tx.method][numeric]
+                                        });
+                                    } else if (callreturn.constructor === Object && callreturn.error) {
+                                        if (onFailed) onFailed(callreturn);
+                                    } else {
+                                        onSent({
+                                            txHash: txhash,
+                                            callReturn: callreturn
+                                        });
+                                        if (onSuccess) {
+                                            tx_notify(
+                                                0,
+                                                callreturn,
+                                                tx,
+                                                txhash,
+                                                returns,
+                                                onSent,
+                                                onSuccess,
+                                                onFailed
+                                            );
+                                        }
+                                    }
+                                } catch (e) {
+                                    if (onFailed) onFailed(e);
                                 }
                             }
-                        }        
+                        }
                     });
                 });
             }
