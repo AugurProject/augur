@@ -68,27 +68,6 @@ describe("Invoke contract functions", function () {
     // No parameters
     // curl --data '{"jsonrpc":"2.0","method":"eth_call","params":[{"from":"0x63524e3fe4791aefce1e932bbfb3fdf375bfad89","to":"0x3caf506cf3d5bb16ba2c8f89a6591c5160d69cf3","data":"0x643ceff9"}],"id":1}' http://127.0.0.1:8545
     describe("No parameters", function () {
-        // describe("ten.se: " + constants.examples.ten, function () {
-        //     var method = "ten";
-        //     var params = "";
-        //     var expected = "10";
-        //     var tx = {
-        //         to: constants.examples.ten,
-        //         from: Augur.coinbase,
-        //         method: method,
-        //         send: false,
-        //         params: params,
-        //         returns: "number"
-        //     };
-        //     it(method + "(" + params + ") -> " + expected, function () {
-        //         assert.equal(Augur.invoke(tx), expected);
-        //     });
-        //     expected = new BigNumber(10);
-        //     it(method + "(" + params + ") -> " + expected, function () {
-        //         tx.returns = "bignumber";
-        //         test(tx, expected, String);
-        //     });
-        // });
         describe("cash.se: " + Augur.contracts.cash, function () {
             var method = "faucet";
             var params = "";
@@ -119,51 +98,6 @@ describe("Invoke contract functions", function () {
             });
         });
     });
-    // Single integer parameter
-    // curl --data '{"jsonrpc":"2.0","method":"eth_call","params":[{"from":"0x63524e3fe4791aefce1e932bbfb3fdf375bfad89","to":"0x5204f18c652d1c31c6a5968cb65e011915285a50","data":"0x6ffa1caa0000000000000000000000000000000000000000000000000000000000000003","gas":"0x2dc6c0"}],"id":1}' http://127.0.0.1:8545
-    // describe("Single integer parameter", function () {
-    //     describe("mul2.se: " + constants.examples.mul2, function () {
-    //         var tx = {
-    //             to: constants.examples.mul2,
-    //             from: Augur.coinbase,
-    //             method: "double",
-    //             signature: "i",
-    //             returns: "number"
-    //         };
-    //         it("double(3) -> 6", function () {
-    //             tx.params = [3];
-    //             test(tx, "6");
-    //         });
-    //         it("double(100) -> 200", function () {
-    //             tx.params = 100;
-    //             test(tx, "200");
-    //         });
-    //         it("double(22121) -> 44242", function () {
-    //             tx.params = 22121;
-    //             test(tx, "44242");
-    //         });
-    //     });
-    // });
-    // multiple integer parameters
-    // describe("Multiple integer parameters", function () {
-    //     describe("multiplier.se: " + constants.examples.multiplier, function () {
-    //         var tx = {
-    //             to: constants.examples.multiplier,
-    //             from: Augur.coinbase,
-    //             method: "multiply",
-    //             signature: "ii",
-    //             returns: "number"
-    //         };
-    //         it("multiply(2,3) -> 6", function () {
-    //             tx.params = [2, 3];
-    //             test(tx, "6");
-    //         });
-    //         it("multiply(123,321) -> 39483", function () {
-    //             tx.params = [123, 321];
-    //             test(tx, "39483");
-    //         });
-    //     });
-    // });
     // Single integer parameter, array return value
     describe("Single integer parameter, array return value", function () {
         describe("branches.se: " + Augur.contracts.branches, function () {

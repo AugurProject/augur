@@ -37,10 +37,10 @@ describe("functions/createEvent", function () {
             maxValue: maxValue,
             numOutcomes: numOutcomes,
             onSent: function (r) {
-                log(r);
+                // log(r);
             },
             onSuccess: function (r) {
-                log(r);
+                // log(r);
                 if (element < num_events - 1) {
                     fs.appendFile("events.dat", r.callReturn + "\n");
                 } else {

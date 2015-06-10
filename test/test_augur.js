@@ -498,48 +498,6 @@ describe("Augur API", function () {
 
     // transferShares.se
 
-    // createEvent.se
-    describe("createEvent.se", function () {
-        describe("createEvent: \"" + event_description + "\"", function () {
-            it("complete call-send-confirm callback sequence", function (done) {
-                this.timeout(120000);
-                var branch_id = "0x00000000000000000000000000000000000000000000000000000000000f69b5";
-                var event_description = "Will Jack win the June 2015 Augur Breakdancing Competition?";
-                var expDate = 500080 + Math.round(Math.random() * 1000);
-                var minValue = 0;
-                var maxValue = 1;
-                var numOutcomes = 2;
-                var eventObj = {
-                    branchId: branch_id,
-                    description: event_description,
-                    expDate: expDate,
-                    minValue: minValue,
-                    maxValue: maxValue,
-                    numOutcomes: numOutcomes,
-                    onSent: function (r) {
-                        log("sent: " + JSON.stringify(r, null, 2));
-                    },
-                    onSuccess: function (r) {
-                        log("success: " + JSON.stringify(r, null, 2));
-                        assert.equal(r.branch, branch_id);
-                        assert.equal(r.expirationDate, expDate);
-                        assert.equal(r.minValue, minValue);
-                        assert.equal(r.maxValue, maxValue);
-                        assert.equal(r.numOutcomes, numOutcomes);
-                        assert.equal(r.description, event_description);
-                        done();
-                    },
-                    onFailed: function (r) {
-                        log("failed: " + JSON.stringify(r, null, 2));
-                        done();
-                    }
-                };
-                Augur.createEvent(eventObj);
-                // done();
-            });
-        });
-    });
-
     // closeMarket.se
     describe("closeMarket.se", function () {
         describe("closeMarket(" + branch_id + ", " + market_id + ") [call] ", function () {
@@ -552,33 +510,6 @@ describe("Augur API", function () {
                 });
                 Augur.tx.closeMarket.send = true;
                 Augur.tx.closeMarket.returns = undefined;
-            });
-        });
-    });
-
-    // dispatch.se
-    describe("dispatch.se", function () {
-        describe("dispatch(" + branch_id + ")", function () {
-            var test = function (r) {
-                assert(r.error);
-                assert(r.message);
-                assert.equal(r.error, "-1");
-            };
-            it("complete call-send-confirm callback sequence", function (done) {
-                this.timeout(120000);
-                var dispatchObj = {
-                    branchId: branch_id,
-                    onSent: function (r) {
-                        test(r);
-                    },
-                    onSuccess: function (r) {
-                        test(r); done();
-                    },
-                    onFailed: function (r) {
-                        test(r); done();
-                    }
-                };
-                Augur.dispatch(dispatchObj);
             });
         });
     });
