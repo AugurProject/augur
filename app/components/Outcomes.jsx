@@ -14,9 +14,7 @@ var NO = 1;
 var YES = 2;
 
 var priceToPercentage = function (price) {
-  // HACK: bignumify
-  price = utilities.bigNumify(price);
-  return +price.toFixed(1);
+  return +price.times(100).toFixed(1);
 };
 
 var getOutcomeName = function (id, count) {
@@ -251,6 +249,7 @@ var TradeBase = {
           resolve
         );
       }).then((simulation) => {
+        utilities.debug('simulation returned: '+simulation);
         this.setState({
           simulation: simulation
         });
@@ -321,10 +320,7 @@ var Buy = React.createClass(_.merge({
     if (this.state.inputError) {
       return ( this.state.inputError );
     } else if (this.state.simulation) {
-      
-      // HACK: bignumify
-      var cost = utilities.bigNumify(this.state.simulation.cost);
-      return ( 'Cost: ' + cost.toFixed(3) );
+      return ( 'Cost: ' + this.state.simulation.cost.toFixed(3) );
     } else {
       return '';
     }
