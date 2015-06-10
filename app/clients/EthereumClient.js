@@ -269,17 +269,25 @@ EthereumClient.prototype.checkQuorum = function(branchId, onSent, onSuccess, onF
   utilities.log('calling dispatch');
 
   Augur.dispatch(branchId, function(result) {
-
-    if (result && result.message && result.error) {
-      utilities.error(result.message);
-      if (typeof(result.txHash == 'Object')) {
-        console.error(result.txHash.message);
+    if (result) {
+      if (result.callReturn) {
+        result.step = result.callReturn;
+        delete result.callReturn;
+      }
+      if (result && result.message && result.error) {
+        utilities.error(result.message);
+        if (typeof(result.txHash == 'Object')) {
+          console.error(result.txHash.message);
+        }
       }
     }
     if (onSent) onSent(result.txHash);
 
   }, function(result) {
-
+    if (result && result.callReturn) {
+      result.step = result.callReturn;
+      delete result.callReturn;
+    }
     utilities.log('dispatch succeeded');
     if (onSuccess) onSuccess();
 
@@ -495,15 +503,25 @@ EthereumClient.prototype.addEvent = function(params, onSuccess) {
       numOutcomes: numOutcomes,
 
       onSent: function (newEvent) {
-        utilities.debug("submitted new event "+ newEvent.id);
+        if (newEvent && newEvent.callReturn) {
+          newEvent.id = newEvent.callReturn;
+          delete newEvent.callReturn;
+          utilities.debug("submitted new event "+ newEvent.id);
+        }
       },
 
       onSuccess: function (newEvent) {
-
-        utilities.debug("txHash: " + newEvent.txHash);
-
-        Augur.getTx(newEvent.txHash);
-        if (onSuccess) onSuccess(newEvent);
+        if (newEvent) {
+          if (newEvent.callReturn) {
+            newEvent.id = newEvent.callReturn;
+            delete newEvent.callReturn;
+          }
+          if (newEvent.txHash) {
+            utilities.debug("txHash: " + newEvent.txHash);
+            Augur.getTx(newEvent.txHash);
+          }
+          if (onSuccess) onSuccess(newEvent);
+        }
       },
 
       onFailed: function (error) {
@@ -532,13 +550,25 @@ EthereumClient.prototype.addMarket = function(params, onSuccess) {
       events: events,
 
       onSent: function (newMarket) {
-        utilities.debug("submitted new market "+ newMarket.id);
+        if (newMarket && newMarket.callReturn) {
+          newMarket.id = newMarket.callReturn;
+          delete newMarket.callReturn;
+          utilities.debug("submitted new market "+ newMarket.id);
+        }
       },
 
       onSuccess: function (newMarket) {
-        utilities.debug("txHash: " + newMarket.txHash);
-        utilities.log('new market successfully added');
-        if (onSuccess) onSuccess(newMarket);
+        if (newMarket) {
+          if (newMarket.callReturn) {
+            newMarket.id = newMarket.callReturn;
+            delete newMarket.callReturn;
+          }
+          if (newMarket.txHash) {
+            utilities.debug("txHash: " + newMarket.txHash);
+          }
+          utilities.log('new market successfully added');
+          if (onSuccess) onSuccess(newMarket);
+        }
       },
 
       onFailed: function (error) {
@@ -603,4 +633,3 @@ EthereumClient.prototype.sellShares = function (branchId, marketId, outcomeId, n
 };
 
 module.exports = EthereumClient;
-
