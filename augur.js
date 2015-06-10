@@ -174,44 +174,44 @@ var Augur = (function (augur) {
 
     /* Augur private chain (networkid 1010101) addresses */
     augur.privatechain_contracts = {
-        "checkQuorum": "0x19f9b15e5e77dcd432e8ed82474edef8e6310725",
-        "buyAndSellShares": "0x2e3d21752a22f7b17fb8c5752ddb5065f6cab4c8",
-        "createBranch": "0x215a79d1d376a239929670cc2b8d5de0964f244d",
-        "p2pWagers": "0x4f98615810d1c9ff52a629d907305319fbae32b8",
-        "sendReputation": "0xbfe4ac9aa4a3e62c7d964b1fb5495eb8eda680ed",
-        "transferShares": "0x6d2f0ed874f1a14e16566c2eb1e287e2bbd97471",
-        "makeReports": "0xb4a6fb965643aa06c8ce17c30d076b6f9cbcb6c3",
-        "createEvent": "0x8c2dbc2783298ad64099b01cf6beaa6181daf9da",
-        "createMarket": "0x8b1870753124d56c3e51a2ec478ed1bfce305ae5",
-        "closeMarket": "0x1572054f9a52e9ddeedaed8113bc73dcd4c030a2",
-        "closeMarketOne": "0x70c8464269c9605b037d2cd53e4867438cfa6547",
-        "closeMarketTwo": "0x70ee205cf2795b57afdafb665f4014665026ddd8",
-        "closeMarketFour": "0x5ae5307dd2f0afd388c26d98581acc7ed11fa3cb",
-        "closeMarketEight": "0x7fca639094431055d62e5fb130ba2c354db770af",
-        "dispatch": "0x636afdc740a70eb5cac82b959e9cd4fa95e55a75",
+        "checkQuorum": "0xed6213d5d9b1859f92440f7e4d43b61a9f77d210",
+        "buyAndSellShares": "0x5a6e7f6203fc0ea51b5878ee082d26293646f5b7",
+        "createBranch": "0x6efc702fc3393eabe505f0666a884c2139bda6e3",
+        "p2pWagers": "0x4132424e34e2d3a49d194fe0381fa7ce17c19e23",
+        "sendReputation": "0xcc82a93b5d69fec0fe2c7b38007f5144f9c836b1",
+        "transferShares": "0xcbcbb116d60fbccf30ad48192f9025bab4b0f721",
+        "makeReports": "0xb8ffb2e922ef10b43a0b1e4fe1e7762e78d3cd17",
+        "createEvent": "0x6ea5c1e8e7941f715658c61fbf2f427c4d08f097",
+        "createMarket": "0xb23f15281550dd655fc9b712fe1dfecabfdcff67",
+        "closeMarket": "0xa907b9542a859875d5c9dd7d0709895dbfaa15fe",
+        "closeMarketOne": "0x0df463164cb8fae03ff2b22a0974513c3769fa6d",
+        "closeMarketTwo": "0x09997155f309662a510a896affbc2e437fbbec10",
+        "closeMarketFour": "0xeddaf9bc9b2dffbfcb256f02413cbd108585d008",
+        "closeMarketEight": "0x082f8228b11dde30d3c49efd2e4d832eb613e2c1",
+        "dispatch": "0x7e7f148832e635b18257986fb2910a31bc4181fc",
 
-        "cash": "0x696e1e8fd7e86ccc1f88b1a274434c4307a7faba",
-        "info": "0x3217ba01f9a3f31d0cbeb8e4d59621cf56976c4a",
-        "branches": "0xe6778bfbe77093d9bfb6806740aca438b5bb7eb0",
-        "events": "0xc6ca532ef72db0627a4e6ebed818678c2d981f7f",
-        "expiringEvents": "0x780c2221fcdbf5b942722cb9cd95b49de7f1e9e8",
-        "fxpFunctions": "0x8a2f224e6b0ee6f28c43b61c6a55a521f2708c74",
-        "markets": "0x6ee7d2d762542ffee7fae110b418a4ba11a19a88",
-        "reporting": "0x2f1dc43641deccaaa1f727abed2891c26444f96b",
+        "cash": "0x9c26c31b01c1f1f4655b3da6d5f9c7f2b9e973b5",
+        "info": "0xcd32fb978ada02f664714b4735165ab72e26a016",
+        "branches": "0xbfaceed300c544af334af012afd82e01f0a426b5",
+        "events": "0x7bd1bad43e056e76788c782cb56e61c2d983f0d0",
+        "expiringEvents": "0xa3632e2270a8c0d5be104eebeac7aac9781ef836",
+        "fxpFunctions": "0x7d25f2ded9076d468f6cc7e84d1e9a01f587a96a",
+        "markets": "0xead2da8fa2af61115a496a94309ef1ae72112149",
+        "reporting": "0x003d0ccd33461fdb61c4c2ab944756f80875ea7d",
 
-        "statistics": "0xecf5c2ffd68baccd6103afccba8cc3c04d8d2c9e",
-        "interpolate": "0x1d48feb18b3cade641176e1562d2c8e061e49aa0",
-        "center": "0x4f01cafaf939219361d5928a7957f1c080732d89",
-        "score": "0xcc0069c4c211ff940b083659ac71ef03d3557b2f",
-        "adjust": "0x4f5d554b695ec602802690f832cd66ff727eb55d",
-        "resolve": "0x9cc99ef1ae608aa2b140c40d83ccdc281a6a036c",
-        "payout": "0x3ebc9dc81eba9812316b3cefc037f10231784a3c",
-        "redeem_interpolate": "0xbdbf11a75b5354fc1cd766054281e1888491c390",
-        "redeem_center": "0x2ddfb8de3dbfa3958e872932c3fea16f48eaeec0",
-        "redeem_score": "0x09173a1b30858313d8f483250060c2dd86d24862",
-        "redeem_adjust": "0xec2c4c65ade322f7c595562372336415c889330a",
-        "redeem_resolve": "0x189ddfc69ee814915818d710d9c2de34e9970ca6",
-        "redeem_payout": "0x86b821162d0cfcfb4abe5e4cd7ce11b6551d903e"
+        "statistics": "0x74908136b62e28dd0f18e8a4bea1a0cbfd2946fb",
+        "interpolate": "0x84cbcc851058b82db2402ed5183c1b704e4d2640",
+        "center": "0x7ababbb997cfd2ca749f4a819c39a7686d0129ec",
+        "score": "0x1659240ed188069f66ffbe7f0a801f26bbe41191",
+        "adjust": "0xe690b9507dd9277194ee211eef7cccf6d77bc82b",
+        "resolve": "0xca7df70f683c5d9a1f6667157ccac5ddf27023b0",
+        "payout": "0x287c661b62f634433ae278123ef954ff9fa2ab80",
+        "redeem_interpolate": "0x6b59a0be9699428c4b5643ccce91d8c21da3c05c",
+        "redeem_center": "0xb7f32ad688f7a46261d1812272cde5ad862f2f53",
+        "redeem_score": "0x0296def27bb07ebd63766e855966dd515a4afde4",
+        "redeem_adjust": "0xa7ed4596dcaa6c71773d0fff88697b98f7858435",
+        "redeem_resolve": "0xcc68ef8a0e1afb601b6df6f0c9e36df05fe1bca4",
+        "redeem_payout": "0x16990e5010d23e7af95779c8dc91332fb1c3e666"
     };
 
     /* Testing private chain (networkid 10101) addresses */
@@ -3248,64 +3248,13 @@ var Augur = (function (augur) {
             numOutcomes = branch.numOutcomes; // integer (2 for binary)
             expDate = branch.expDate;         // integer
             if (branch.onSent) onSent = branch.onSent;           // function({id, txhash})
-            if (branch.onSuccess) onSuccess = branch.onSuccess;     // function({id, txhash})
-            if (branch.onFailed) onFailed = branch.onFailed;       // function({id, txhash})
+            if (branch.onSuccess) onSuccess = branch.onSuccess;  // function({id, txhash})
+            if (branch.onFailed) onFailed = branch.onFailed;     // function({id, txhash})
             branch = branch.branchId;         // sha256 hash
         }
         var tx = augur.tx.createEvent;
         tx.params = [branch, description, expDate, minValue, maxValue, numOutcomes];
         return send_call_confirm(tx, onSent, onSuccess, onFailed);
-        // augur.invoke(tx, function (eventID) {
-        //     var eventID_number, event;
-        //     if (eventID && eventID !== "0x") {
-        //         if (eventID.error) {
-        //             if (onFailed) onFailed(eventID);
-        //         } else {
-        //             eventID_number = augur.bignum(eventID).toFixed();
-        //             if (augur.ERRORS.createEvent[eventID_number]) {
-        //                 if (onFailed) onFailed({
-        //                     error: eventID_number,
-        //                     message: augur.ERRORS.createEvent[eventID_number]
-        //                 });
-        //             } else {
-        //                 event = { id: eventID };
-        //                 tx.send = true;
-        //                 augur.invoke(tx, function (txhash) {
-        //                     var pings, pingTx;
-        //                     if (txhash) {
-        //                         if (txhash.constructor === Object && txhash.error) {
-        //                             if (onFailed) onFailed(txhash);
-        //                         } else {
-        //                             event.txHash = txhash;
-        //                             if (onSent) onSent(event);
-        //                             if (onSuccess) {
-        //                                 pings = 0;
-        //                                 pingTx = function () {
-        //                                     augur.getEventInfo(eventID, function (eventInfo) {
-        //                                         pings++;
-        //                                         if (eventInfo && eventInfo !== "0x" && eventInfo.expirationDate && eventInfo.expirationDate !== 0 && eventInfo.expirationDate !== "0") {
-        //                                             event.branch = eventInfo.branch;
-        //                                             event.expirationDate = eventInfo.expirationDate;
-        //                                             event.outcome = eventInfo.outcome;
-        //                                             event.minValue = eventInfo.minValue;
-        //                                             event.maxValue = eventInfo.maxValue;
-        //                                             event.numOutcomes = eventInfo.numOutcomes;
-        //                                             event.description = eventInfo.description;
-        //                                             onSuccess(event);
-        //                                         } else {
-        //                                             if (pings < augur.TX_POLL_MAX) setTimeout(pingTx, augur.TX_POLL_INTERVAL);
-        //                                         }
-        //                                     });
-        //                                 };
-        //                                 pingTx();
-        //                             }
-        //                         }
-        //                     }
-        //                 });
-        //             }
-        //         }
-        //     }
-        // });
     };
 
     // createMarket.se
@@ -3338,62 +3287,6 @@ var Augur = (function (augur) {
             events
         ];
         return send_call_confirm(tx, onSent, onSuccess, onFailed);
-        // augur.tx.createMarket.send = false;
-        // augur.invoke(augur.tx.createMarket, function (marketID) {
-        //     var marketID_number, market;
-        //     if (marketID && marketID !== "0x") {
-        //         if (marketID.error) {
-        //             if (onFailed) onFailed(marketID);
-        //         } else {
-        //             marketID_number = augur.bignum(marketID);
-        //             if (marketID_number) {
-        //                 marketID_number = marketID_number.toFixed();
-        //             }
-        //             if (marketID_number && augur.ERRORS.createMarket[marketID_number]) {
-        //                 if (onFailed) onFailed({
-        //                     error: marketID_number,
-        //                     message: augur.ERRORS.createMarket[marketID_number]
-        //                 });
-        //             } else {
-        //                 market = { id: marketID };
-        //                 augur.tx.createMarket.send = true;
-        //                 augur.invoke(augur.tx.createMarket, function (txhash) {
-        //                     var pings, pingTx;
-        //                     if (txhash) {
-        //                         if (txhash.constructor === Object && txhash.error) {
-        //                             if (onFailed) onFailed(txhash);
-        //                         } else {
-        //                             market.txHash = txhash;
-        //                             if (onSent) onSent(market);
-        //                             if (onSuccess) {
-        //                                 pings = 0;
-        //                                 pingTx = function () {
-        //                                     augur.getMarketInfo(marketID, function (marketInfo) {
-        //                                         pings++;
-        //                                         if (marketInfo && marketInfo !== "0x" && marketInfo.numOutcomes && marketInfo.numOutcomes !== 0 && marketInfo.numOutcomes !== "0") {
-        //                                             market.numOutcomes = marketInfo.numOutcomes;
-        //                                             market.currentParticipant = marketInfo.currentParticipant;
-        //                                             market.alpha = marketInfo.alpha;
-        //                                             market.cumulativeScale = marketInfo.cumulativeScale;
-        //                                             market.numOutcomes = marketInfo.numOutcomes;
-        //                                             market.tradingPeriod = marketInfo.tradingPeriod;
-        //                                             market.tradingFee = marketInfo.tradingFee;
-        //                                             market.description = marketInfo.description;
-        //                                             onSuccess(market);
-        //                                         } else {
-        //                                             if (pings < augur.TX_POLL_MAX) setTimeout(pingTx, augur.TX_POLL_INTERVAL);
-        //                                         }
-        //                                     });
-        //                                 };
-        //                                 pingTx();
-        //                             }
-        //                         }
-        //                     }
-        //                 });
-        //             }
-        //         }
-        //     }
-        // });
     };
 
     // closeMarket.se

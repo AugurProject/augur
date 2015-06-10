@@ -11,7 +11,6 @@ mocha test_invoke.js
 mocha test_reporting.js
 # mocha test_expiring.js
 # mocha test_augur.js
-# mocha faucets.js
 mocha test_createEvent.js
 mocha test_interpolate.js
 mocha test_consensus.js
