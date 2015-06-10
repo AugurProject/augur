@@ -7,10 +7,8 @@
 
 var fs = require("fs");
 var assert = require("assert");
-var BigNumber = require("bignumber.js");
 var _ = require("lodash");
 var Augur = require("../augur");
-var constants = require("./constants");
 require('it-each')({ testPerIteration: true });
 
 Augur.connect();
@@ -25,7 +23,7 @@ var num_events = 10;
 var branch = Augur.branches.dev;
 var vote_period = Augur.getVotePeriod(branch);
 
-describe("creating events for consensus", function () {
+describe("functions/createEvent", function () {
     var events = [];
     fs.writeFileSync("events.dat", "");
     it.each(_.range(0, num_events), "creating event %s", ['element'], function (element, next) {
@@ -42,7 +40,11 @@ describe("creating events for consensus", function () {
 
             },
             onSuccess: function (r) {
-                fs.appendFile("events.dat", r.id + "\n");
+                if (element < num_events - 1) {
+                    fs.appendFile("events.dat", r.callReturn + "\n");
+                } else {
+                    fs.appendFile("events.dat", r.callReturn);
+                }
                 next();
             },
             onFailed: function (r) {
@@ -50,27 +52,5 @@ describe("creating events for consensus", function () {
                 next();
             }
         });
-    });
-});
-
-describe("populating vote period and +50", function () {
-    var events = fs.readFileSync('events.dat').toString().split("\n");
-    it.each(events, "addEvent: %s", ['element'], function (element, next) {
-        if (element !== "" && element !== "\n") {
-            Augur.tx.addEvent.send = false;
-            assert.equal(Augur.addEvent(branch, parseInt(vote_period), element), "0x01");
-            Augur.tx.addEvent.send = true;
-            Augur.addEvent(branch, parseInt(vote_period), element);
-        }
-        next();
-    });
-    it.each(events, "addEvent (future): %s", ['element'], function (element, next) {
-        if (element !== "" && element !== "\n") {
-            Augur.tx.addEvent.send = false;
-            assert.equal(Augur.addEvent(branch, parseInt(vote_period) + 50, element), "0x01");
-            Augur.tx.addEvent.send = true;
-            Augur.addEvent(branch, parseInt(vote_period) + 50, element);
-        }
-        next();
     });
 });

@@ -3,24 +3,23 @@ Augur JavaScript API
 
 [![Build Status](https://travis-ci.org/AugurProject/augur.js.svg?branch=master)](https://travis-ci.org/AugurProject/augur.js)
 [![npm version](https://badge.fury.io/js/augur.js.svg)](http://badge.fury.io/js/augur.js)
-<!-- [![Coverage Status](https://coveralls.io/repos/AugurProject/augur.js/badge.svg)](https://coveralls.io/r/AugurProject/augur.js) -->
 
 [![Bugs](https://badge.waffle.io/AugurProject/augur.js.svg?label=bugs&title=Bugs)](http://waffle.io/AugurProject/augur.js)
 [![Ready](https://badge.waffle.io/AugurProject/augur.js.svg?label=ready&title=Ready)](http://waffle.io/AugurProject/augur.js)
 [![In Progress](https://badge.waffle.io/AugurProject/augur.js.svg?label=in%20progress&title=In%20Progress)](http://waffle.io/AugurProject/augur.js)
 [![Gitter chat https://gitter.im/AugurProject/augur.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/AugurProject/augur.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-To use augur.js, you must be running a local Ethereum node.  By default, it expects your Ethereum client to be listening on port 8545.  Note that I've only tested with [geth](https://github.com/ethereum/go-ethereum) so far; use with [eth](https://github.com/ethereum/cpp-ethereum) or [pyethapp](https://github.com/ethereum/pyethapp) at your own risk.
+To use augur.js, you must be running a local Ethereum node.  By default, it expects your Ethereum client to be listening on port 8545.  Note that we've only tested with [geth](https://github.com/ethereum/go-ethereum) so far; use with [eth](https://github.com/ethereum/cpp-ethereum) or [pyethapp](https://github.com/ethereum/pyethapp) at your own risk.
 
 To use "send" RPC commands, you will need to unlock your client.  The easiest way to do this is to start geth with the `--unlock` option:
 ```
-$ geth --rpc --rpccorsdomain "http://localhost:8545" --shh --unlock primary
+$ geth --rpc --rpccorsdomain "http://localhost:8545" --shh --networkid "1010101" --protocolversion "71" --unlock primary
 ```
 augur.js can be installed using npm:
 ```
 $ npm install augur.js
 ```
-After installing, to use it with Node, just require it:
+After installing, just require augur.js to use it:
 ```javascript
 var Augur = require('augur.js');
 Augur.connect();
@@ -31,7 +30,6 @@ Augur.connect({ protocol: "http", host: "localhost", port: 8545 });
 Augur.connect("http://poc9.com:8545");
 Augur.connect("127.0.0.1");
 ```
-To use augur.js from the browser, just include [augur.min.js](https://github.com/AugurProject/augur.js/blob/master/augur.min.js).  (This minified file includes the [bignumber.js](https://github.com/MikeMcl/bignumber.js) and [js-sha3](https://github.com/emn178/js-sha3) libraries.)
 
 ## How to pass numbers to Augur
 
@@ -57,7 +55,7 @@ All of augur.js's methods that involve an RPC request take an optional callback 
 
 ## Augur API
 
-augur.js is a set of (hopefully convenient, easy-to-use) JavaScript bindings for the Augur API.  The augur.js function name, as well as the order of parameters, are generally the same as those of the underlying [augur-core](https://github.com/AugurProject/augur-core) Serpent functions.  (A few function names have been changed to avoid ambiguity, e.g. `faucet`.)
+augur.js is primarily a set of JavaScript bindings for the Augur API.  The augur.js function name, as well as the function's parameters, are generally the same as those of the underlying [augur-core](https://github.com/AugurProject/augur-core) functions.
 
 All Augur functions have an optional callback (or callbacks; see below) as their final parameter.  augur.js currently implements the following Augur API functions:
 
@@ -285,7 +283,7 @@ Tests
 
 Unit tests included with augur.js are in the `test` directory, and can be run with [mocha](http://mochajs.org/):
 ```
-$ npm install mocha
-$ mocha
+$ npm install mocha it-each
+$ test/runtests
 ```
 Note that your local Ethereum node must be running for the tests to run properly.

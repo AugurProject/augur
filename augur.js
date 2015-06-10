@@ -41,7 +41,7 @@ var Augur = (function (augur) {
     augur.BigNumberOnly = false;
 
     // max number of tx verification attempts
-    augur.TX_POLL_MAX = 12;
+    augur.TX_POLL_MAX = 24;
 
     // comment polling interval (in milliseconds)
     augur.COMMENT_POLL_INTERVAL = 10000;
@@ -174,86 +174,86 @@ var Augur = (function (augur) {
 
     /* Augur private chain (networkid 1010101) addresses */
     augur.privatechain_contracts = {
-        "checkQuorum": "0xf7d4a258ce717f0558f69e53d53f84550d3d47c4",
-        "buyAndSellShares": "0x690383890e3762d93fa8de2886d233a784033a0b",
-        "createBranch": "0xd0e7baf1751265a55390abb9fed011b23fa1ca80",
-        "p2pWagers": "0xc9bac4ad7434df57a8025e12093c2cb5cdbf3c3e",
-        "sendReputation": "0x4dca336f24fe61a9fa0333cbf934ae9d1aff624e",
-        "transferShares": "0x1b4612a3b8e6578b33e60cd7319deeb0839882f3",
-        "makeReports": "0x1f21b226722fc99731b71b6babb9ce7097273556",
-        "createEvent": "0x5fd2d5813ef1cc1e2a6eba88d6fad16144e91539",
-        "createMarket": "0x77f0d26045bf32f9670af09646c32a4574236fea",
-        "closeMarket": "0x6b08881ccbb5a44f6c8cc23264da5155a06b2104",
-        "closeMarketOne": "0x959293f7110446763359c946d553393833293df3",
-        "closeMarketTwo": "0x9e408407742ba9a4cef2543912eeb33609b57a45",
-        "closeMarketFour": "0xd3a19989e363ae8ebd9723453462811adddf4417",
-        "closeMarketEight": "0x7bf80bf5b3be2db32db28f56365206a3a9c986d1",
-        "dispatch": "0x352170389642f363b25db49bf70074c0bb0062e2",
+        "checkQuorum": "0x19f9b15e5e77dcd432e8ed82474edef8e6310725",
+        "buyAndSellShares": "0x2e3d21752a22f7b17fb8c5752ddb5065f6cab4c8",
+        "createBranch": "0x215a79d1d376a239929670cc2b8d5de0964f244d",
+        "p2pWagers": "0x4f98615810d1c9ff52a629d907305319fbae32b8",
+        "sendReputation": "0xbfe4ac9aa4a3e62c7d964b1fb5495eb8eda680ed",
+        "transferShares": "0x6d2f0ed874f1a14e16566c2eb1e287e2bbd97471",
+        "makeReports": "0xb4a6fb965643aa06c8ce17c30d076b6f9cbcb6c3",
+        "createEvent": "0x8c2dbc2783298ad64099b01cf6beaa6181daf9da",
+        "createMarket": "0x8b1870753124d56c3e51a2ec478ed1bfce305ae5",
+        "closeMarket": "0x1572054f9a52e9ddeedaed8113bc73dcd4c030a2",
+        "closeMarketOne": "0x70c8464269c9605b037d2cd53e4867438cfa6547",
+        "closeMarketTwo": "0x70ee205cf2795b57afdafb665f4014665026ddd8",
+        "closeMarketFour": "0x5ae5307dd2f0afd388c26d98581acc7ed11fa3cb",
+        "closeMarketEight": "0x7fca639094431055d62e5fb130ba2c354db770af",
+        "dispatch": "0x636afdc740a70eb5cac82b959e9cd4fa95e55a75",
 
-        "cash": "0x15e0ae52c236ec99a819ab467c773c015cc06116",
-        "info": "0xc47f9fbdf5fbb0c5e30e1482c788aae6e304ccf8",
-        "branches": "0x9735d1e1d4e8295340fd4a48449fb7f0ddce3a0b",
-        "events": "0x0e0cbeb9322924789511ce7f372a203a1a553004",
-        "expiringEvents": "0x4402a8c5bab29e5365abbdea0b6c65313d2aa99a",
-        "fxpFunctions": "0x3a57ceaf84cac73e3a82887121b6206d4256f211",
-        "markets": "0x3fd6694eb1897182e6ac23edd65a39490772b52c",
-        "reporting": "0x2fbb0b744146a40916c4fc0f449ca9c75b371b99",
+        "cash": "0x696e1e8fd7e86ccc1f88b1a274434c4307a7faba",
+        "info": "0x3217ba01f9a3f31d0cbeb8e4d59621cf56976c4a",
+        "branches": "0xe6778bfbe77093d9bfb6806740aca438b5bb7eb0",
+        "events": "0xc6ca532ef72db0627a4e6ebed818678c2d981f7f",
+        "expiringEvents": "0x780c2221fcdbf5b942722cb9cd95b49de7f1e9e8",
+        "fxpFunctions": "0x8a2f224e6b0ee6f28c43b61c6a55a521f2708c74",
+        "markets": "0x6ee7d2d762542ffee7fae110b418a4ba11a19a88",
+        "reporting": "0x2f1dc43641deccaaa1f727abed2891c26444f96b",
 
-        "statistics": "0x47f1e0c95297002f32dec3aa10352fe8efbaf36e",
-        "interpolate": "0xc575f50573dafa226409f93cb417590ba6c530c0",
-        "center": "0x1b665d4550909e75158c083c31830ea71764d44f",
-        "score": "0xa680398458febde405c57267f63002572c1596e4",
-        "adjust": "0xb376a706e5011193266fcc1c6e58765f037ae5e7",
-        "resolve": "0x1878366391d504a3f456b8c59ae42654f6c3e3c6",
-        "payout": "0xc6793360653450a7a9df5c1d9a45cbfdc578dbce",
-        "redeem_interpolate": "0xdf3b176d5b326b861cf1f238069d4c88d2d8a6d0",
-        "redeem_center": "0x9a72a987d073ab6744a2968670a8beaaa5e18a23",
-        "redeem_score": "0x92544e5a2024eb855fcc794b2ea322e46c4b3288",
-        "redeem_adjust": "0x1fa8a28101640b1db75e4902219fee03cce0feb7",
-        "redeem_resolve": "0xd96aa31ee5714d41b3bab38f4ac912c7cca84318",
-        "redeem_payout": "0x29bbbc468420514315d7112cb0be17411d3bde7e"
+        "statistics": "0xecf5c2ffd68baccd6103afccba8cc3c04d8d2c9e",
+        "interpolate": "0x1d48feb18b3cade641176e1562d2c8e061e49aa0",
+        "center": "0x4f01cafaf939219361d5928a7957f1c080732d89",
+        "score": "0xcc0069c4c211ff940b083659ac71ef03d3557b2f",
+        "adjust": "0x4f5d554b695ec602802690f832cd66ff727eb55d",
+        "resolve": "0x9cc99ef1ae608aa2b140c40d83ccdc281a6a036c",
+        "payout": "0x3ebc9dc81eba9812316b3cefc037f10231784a3c",
+        "redeem_interpolate": "0xbdbf11a75b5354fc1cd766054281e1888491c390",
+        "redeem_center": "0x2ddfb8de3dbfa3958e872932c3fea16f48eaeec0",
+        "redeem_score": "0x09173a1b30858313d8f483250060c2dd86d24862",
+        "redeem_adjust": "0xec2c4c65ade322f7c595562372336415c889330a",
+        "redeem_resolve": "0x189ddfc69ee814915818d710d9c2de34e9970ca6",
+        "redeem_payout": "0x86b821162d0cfcfb4abe5e4cd7ce11b6551d903e"
     };
 
     /* Testing private chain (networkid 10101) addresses */
     augur.testchain_contracts = {
-        "checkQuorum": "0x67f0ea717bc1587353c1119abf856bc5f68b8b6c",
-        "buyAndSellShares": "0x795af763dd0c5627ce6ad590d8734bf4ce64a266",
-        "createBranch": "0x0de7904a19f3cd77d5a22d56fabf271daeb61cc4",
-        "p2pWagers": "0xe0e0706aa7fc7507009a75e24122b2c400f67d86",
-        "sendReputation": "0xb14010eb05acce2a0493479db9955cd8967500e6",
-        "transferShares": "0xcad657bf92bf221eaadb3f43247de9ce9d356213",
-        "makeReports": "0x190fc1bbea242a30baf8a5befe709b89c369f561",
-        "createEvent": "0x77e6db6a22ab6025b9926b7495a5c6dc4731c2ba",
-        "createMarket": "0x8fcd63f1ab2b86c226cbe30d3d7736b09f5790c1",
-        "closeMarket": "0x8512b58d2868c44a5bb2c2171fffb395fd3adbba",
-        "closeMarketOne": "0x7f668cdf010983142fada98d1731e52c0d1a35f9",
-        "closeMarketTwo": "0xee647a5ba4337728165e6a23bb28f3ccc411870b",
-        "closeMarketFour": "0x163fe7bb13b6f852f4005fb36b335530cc2145f9",
-        "closeMarketEight": "0x2ce345cb0cdcbb7dd13f63aca7ccce50a7401533",
-        "dispatch": "0x39493c0aea20ccc3a7571fb8bd6d51a32794c360",
+        "checkQuorum": "0x0de7904a19f3cd77d5a22d56fabf271daeb61cc4",
+        "buyAndSellShares": "0x796fe6c1dd8064439a51f8f1762080f5434baf62",
+        "createBranch": "0x2ce345cb0cdcbb7dd13f63aca7ccce50a7401533",
+        "p2pWagers": "0xb67bc8941ea02b8353eca985ee572db6695614a3",
+        "sendReputation": "0xfe29a60e60eec7d4b91f730fa188d9d8f35a65de",
+        "transferShares": "0x803ab720b1883301fc869b3ed1a61899b0742df9",
+        "makeReports": "0xcad657bf92bf221eaadb3f43247de9ce9d356213",
+        "createEvent": "0xacbd9270c1a1ec8ab7c34b995fe1315b158490ae",
+        "createMarket": "0xc1612c769fda098f7d68b38b1c8b3da5a4f6f8d6",
+        "closeMarket": "0x190fc1bbea242a30baf8a5befe709b89c369f561",
+        "closeMarketOne": "0xee647a5ba4337728165e6a23bb28f3ccc411870b",
+        "closeMarketTwo": "0x17895f30b2facf56413e7356cf5385edcdc48b5e",
+        "closeMarketFour": "0x119d2b859e2b5fe6940f37ca3222f7506d3915af",
+        "closeMarketEight": "0x8512b58d2868c44a5bb2c2171fffb395fd3adbba",
+        "dispatch": "0xe0e0706aa7fc7507009a75e24122b2c400f67d86",
 
-        "cash": "0xc3b183d35754c995dc58b2ac67c49d79958e6287",
-        "info": "0x6191967b297bc02f7dbf06e9270b2ad35b3692bf",
-        "branches": "0xa178f560e5174ef566929549e386495910dd23fc",
-        "events": "0x08163213345163e38b45b2fed9dcfd75594a838a",
+        "cash": "0x08163213345163e38b45b2fed9dcfd75594a838a",
+        "info": "0xa178f560e5174ef566929549e386495910dd23fc",
+        "branches": "0x85693da19f633b8ef0bdbfb527a68cdaf30ff192",
+        "events": "0x67f0ea717bc1587353c1119abf856bc5f68b8b6c",
         "expiringEvents": "0xc0fa90ea6643fc94e6cc43993ade17c43674e7e1",
-        "fxpFunctions": "0xb3626139e8a2772a341111cf7035b72379c59681",
-        "markets": "0xdaba557e6690415c7f81daec3487ea0e8e3205ab",
-        "reporting": "0x85693da19f633b8ef0bdbfb527a68cdaf30ff192",
+        "fxpFunctions": "0x795af763dd0c5627ce6ad590d8734bf4ce64a266",
+        "markets": "0xb14010eb05acce2a0493479db9955cd8967500e6",
+        "reporting": "0xdaba557e6690415c7f81daec3487ea0e8e3205ab",
 
-        "statistics": "0xcda9e4636a1e54d18ba217133dafa2367cd563da",
-        "interpolate": "0x796fe6c1dd8064439a51f8f1762080f5434baf62",
-        "center": "0x681e3e5c3133ff351017fb544c46363a9e2ee8d3",
-        "score": "0x803ab720b1883301fc869b3ed1a61899b0742df9",
-        "adjust": "0xc1612c769fda098f7d68b38b1c8b3da5a4f6f8d6",
-        "resolve": "0x17895f30b2facf56413e7356cf5385edcdc48b5e",
-        "payout": "0xacbd9270c1a1ec8ab7c34b995fe1315b158490ae",
-        "redeem_interpolate": "0x119d2b859e2b5fe6940f37ca3222f7506d3915af",
-        "redeem_center": "0x159c4ce332b8e82110daf3ad5371502207008a4b",
-        "redeem_score": "0x1b103614482bab1afdbc492221cad83ae87552f4",
-        "redeem_adjust": "0xfe29a60e60eec7d4b91f730fa188d9d8f35a65de",
-        "redeem_resolve": "0xb67bc8941ea02b8353eca985ee572db6695614a3",
-        "redeem_payout": "0xc4728649ce1964af65f3910ff2ebcb2d9205c4b5"
+        "statistics": "0xc3b183d35754c995dc58b2ac67c49d79958e6287",
+        "interpolate": "0x8fcd63f1ab2b86c226cbe30d3d7736b09f5790c1",
+        "center": "0x159c4ce332b8e82110daf3ad5371502207008a4b",
+        "score": "0xb3626139e8a2772a341111cf7035b72379c59681",
+        "adjust": "0x77e6db6a22ab6025b9926b7495a5c6dc4731c2ba",
+        "resolve": "0x681e3e5c3133ff351017fb544c46363a9e2ee8d3",
+        "payout": "0x6191967b297bc02f7dbf06e9270b2ad35b3692bf",
+        "redeem_interpolate": "0xcda9e4636a1e54d18ba217133dafa2367cd563da",
+        "redeem_center": "0x39493c0aea20ccc3a7571fb8bd6d51a32794c360",
+        "redeem_score": "0x163fe7bb13b6f852f4005fb36b335530cc2145f9",
+        "redeem_adjust": "0x7f668cdf010983142fada98d1731e52c0d1a35f9",
+        "redeem_resolve": "0xc4728649ce1964af65f3910ff2ebcb2d9205c4b5",
+        "redeem_payout": "0x1b103614482bab1afdbc492221cad83ae87552f4"
     };
 
     // Branch IDs
@@ -1332,39 +1332,45 @@ var Augur = (function (augur) {
      * Call-send-confirm callback sequence *
      ***************************************/
 
-    function check_blockhash(tx, callreturn, txhash, count, callback) {
-        var tx_timeout;
+    augur.notifications = {};
+
+    function clear_notifications(id) {
+        for (var i = 0, len = augur.notifications.length; i < len; ++i) {
+            clearTimeout(augur.notifications[id][i]);
+            augur.notifications[id] = [];
+        }
+    }
+    function check_blockhash(tx, callreturn, itx, txhash, returns, count, onSent, onSuccess, onFailed) {
         if (tx && tx.blockHash && augur.bignum(tx.blockHash).toNumber() !== 0) {
+            clear_notifications(txhash);
             tx.callReturn = callreturn;
             tx.txHash = tx.hash;
             delete tx.hash;
-            clearTimeout(tx_timeout);
             if (augur.BigNumberOnly && tx.returns && tx.returns !== "string" && tx.returns !== "hash[]") {
                 tx.callReturn = augur.bignum(tx.callReturn);
             }
-            if (callback) callback(tx);
-            else return tx;
+            if (onSuccess) onSuccess(tx);
         } else {
             if (count !== undefined && count < augur.TX_POLL_MAX) {
-                clearTimeout(tx_timeout);
-                tx_timeout = setTimeout(function () {
-                    tx_notify(count + 1, callreturn, txhash, callback);
-                }, augur.TX_POLL_INTERVAL);
+                augur.notifications[txhash].push(setTimeout(function () {
+                    tx_notify(count + 1, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed);
+                }, augur.TX_POLL_INTERVAL));
             }
         }
     }
-    function tx_notify(count, callreturn, txhash, callback) {
-        if (callback) {
-            augur.getTx(txhash, function (tx) {
-                check_blockhash(tx, callreturn, txhash, count, callback);
-            });
-        } else {
-            check_blockhash(augur.getTx(txhash), callreturn, txhash, count);
-        }
+    function tx_notify(count, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed) {
+        augur.getTx(txhash, function (tx) {
+            if (tx === null) {
+                if (returns) itx.returns = returns;
+                send_call_confirm(itx, onSent, onSuccess, onFailed);
+            } else {
+                check_blockhash(tx, callreturn, itx, txhash, returns, count, onSent, onSuccess, onFailed);
+            }
+        });
     }
     function call_confirm(tx, txhash, returns, onSent, onSuccess, onFailed) {
-        var numeric;
         if (tx && txhash) {
+            augur.notifications[txhash] = [];
             if (augur.ERRORS[txhash]) {
                 if (onFailed) onFailed({
                     error: txhash,
@@ -1375,10 +1381,11 @@ var Augur = (function (augur) {
                     augur.call({
                         from: sent.from || augur.coinbase,
                         to: sent.to || tx.to,
-                        data: sent.input
+                        data: sent.input,
+                        returns: returns
                     }, function (callreturn) {
                         if (callreturn) {
-                            numeric = augur.bignum(callreturn);
+                            var numeric = augur.bignum(callreturn);
                             if (numeric && numeric.constructor === BigNumber) {
                                 numeric = numeric.toFixed();
                             }
@@ -1395,8 +1402,22 @@ var Augur = (function (augur) {
                             } else if (callreturn.constructor === Object && callreturn.error) {
                                 if (onFailed) onFailed(callreturn);
                             } else {
-                                onSent(callreturn);
-                                if (onSuccess) tx_notify(0, callreturn, txhash, onSuccess);
+                                onSent({
+                                    txHash: txhash,
+                                    callReturn: callreturn
+                                });
+                                if (onSuccess) {
+                                    tx_notify(
+                                        0,
+                                        callreturn,
+                                        tx,
+                                        txhash,
+                                        returns,
+                                        onSent,
+                                        onSuccess,
+                                        onFailed
+                                    );
+                                }
                             }
                         }        
                     });

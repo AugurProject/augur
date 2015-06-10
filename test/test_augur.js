@@ -41,7 +41,7 @@ function on_root_branch(r) {
     assert(r.branch === Augur.branches.dev);
 }
 function is_not_zero(r) {
-    assert(r.id !== "0" && r.id !== "0x" && r.id !== "0x0" && parseInt(r) !== 0);
+    assert(r.id && r.id !== "0" && r.id !== "0x" && r.id !== "0x0" && parseInt(r) !== 0);
 }
 
 describe("Augur API", function () {

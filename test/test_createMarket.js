@@ -31,8 +31,8 @@ var events = [
     ["Will it be revealed that Coinbase has a backdoor for the FBI?", Augur.date_to_block("11-1-2015")]
 ];
 
-describe("createMarket", function () {
-    it.each(events, "creating event/market: %s", ['element'], function (element, next) {
+describe("functions/createMarket", function () {
+    it.each(events, "single-event market: %s", ['element'], function (element, next) {
         this.timeout(TIMEOUT);
         var event_description = element[0];
         var expDate;
@@ -65,7 +65,7 @@ describe("createMarket", function () {
                 var alpha = "0.0079";
                 var initialLiquidity = 100;
                 var tradingFee = "0.02";
-                var events = [ r.id ];
+                var events = [ r.callReturn ];
                 var market_description = event_description;
                 var numOutcomes = 2;
                 var marketObj = {

@@ -1,6 +1,7 @@
+#!/usr/bin/env node
+
 "use strict";
 
-var assert = require("assert");
 var Augur = require("../augur");
 
 Augur.connect();
