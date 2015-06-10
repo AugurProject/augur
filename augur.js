@@ -3253,7 +3253,15 @@ var Augur = (function (augur) {
             branch = branch.branchId;         // sha256 hash
         }
         var tx = augur.tx.createEvent;
-        tx.params = [branch, description, expDate, minValue, maxValue, numOutcomes];
+        tx.params = [
+            branch,
+            description,
+            expDate,
+            minValue,
+            maxValue,
+            numOutcomes,
+            augur.blockNumber()
+        ];
         return send_call_confirm(tx, onSent, onSuccess, onFailed);
     };
 
@@ -3284,7 +3292,8 @@ var Augur = (function (augur) {
             augur.fix(alpha, "hex"),
             augur.fix(liquidity, "hex"),
             augur.fix(tradingFee, "hex"),
-            events
+            events,
+            augur.blockNumber()
         ];
         return send_call_confirm(tx, onSent, onSuccess, onFailed);
     };
