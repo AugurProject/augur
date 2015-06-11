@@ -147,8 +147,8 @@ module.exports = [{
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
-    "name": "setWinningOutcomes(int256[])",
+    "name": "setWinningOutcomes(int256,int256[])",
     "type": "function",
-    "inputs": [{ "name": "outcomes", "type": "int256[]" }],
+    "inputs": [{ "name": "market", "type": "int256" }, { "name": "outcomes", "type": "int256[]" }],
     "outputs": [{ "name": "out", "type": "int256" }]
 }];

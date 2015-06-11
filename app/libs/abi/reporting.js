@@ -15,9 +15,9 @@ module.exports = [{
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
-    "name": "faucet()",
+    "name": "faucet(int256)",
     "type": "function",
-    "inputs": [],
+    "inputs": [{ "name": "branch", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {

@@ -5,7 +5,6 @@ window._ = require('lodash');
 
 // add jQuery to Browserify's global object so plugins attach correctly.
 global.jQuery = $;
-require('jquery.cookie');
 require('bootstrap');
 
 var React = require('react');
