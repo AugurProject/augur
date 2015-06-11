@@ -39,7 +39,8 @@ describe("Consensus", function () {
                     next();
                 },
                 onFailed: function (r) {
-                    throw("dispatch failed: " + JSON.stringify(r, null, 2));
+                    log(JSON.stringify(r, null, 2));
+                    throw("dispatch failed");
                     next();
                 }
             });

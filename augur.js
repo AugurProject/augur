@@ -174,44 +174,44 @@ var Augur = (function (augur) {
 
     /* Augur private chain (networkid 1010101) addresses */
     augur.privatechain_contracts = {
-        "checkQuorum": "0x7fb1264cc59f29c70f8e3d20d6e7bc85a3c40a23",
-        "buyAndSellShares": "0x1669026e27e6cfea78b0535e7646534c03a475c2",
-        "createBranch": "0xe574cdd84d23fce8f2f784401719d4a187176ff0",
-        "p2pWagers": "0x02f4a44188d5de59aa8f5392549d9d6242c4d9d0",
-        "sendReputation": "0x55da61f99238af4e92c6c51d9cb7855287987754",
-        "transferShares": "0xea00745c65a5fc0dd01caa83ffe3d912252dc874",
-        "makeReports": "0x0411bff27ba2662a86f0b036f93cef5688be30f5",
-        "createEvent": "0x7f35ce7fd8b69f93e9f7760a36f21f8d8f61fdf4",
-        "createMarket": "0x397c3bd79be18aada6af1b7d40a0ba2a994b1f25",
-        "closeMarket": "0xa9f802c825d6cafd36153593a7e218061f9dc6bc",
-        "closeMarketOne": "0xe7d7c459a7da0ab5f1e3e3661099598a6fe5c9b8",
-        "closeMarketTwo": "0xb438e147d75744b35840e26c407448cc1bcd85d5",
-        "closeMarketFour": "0x537882720f8e206d20f47136086f480b141b9ccf",
-        "closeMarketEight": "0x9ce021bf76a7a831384fe83a7d6b295059b77fe3",
-        "dispatch": "0x577e5c462239e1cd811b064fbc8539e9e0ea624f",
+        "checkQuorum": "0x8ea19b8199123ef964e21c0c612c634f3c71769a",
+        "buyAndSellShares": "0x356c057e8ba639313bbdf04436a6e58a8f6e7b16",
+        "createBranch": "0x5449d53eaa7eaf7b48414381f9ec4510383abc56",
+        "p2pWagers": "0x9ebdcddc57c310ca0b205f4e41236bde8dcbfe32",
+        "sendReputation": "0x0f1b23e15d3b05945b44a8ec6a348e24ee4238c4",
+        "transferShares": "0x5609cdb024347e756da961eda75ce4b7844fe4cb",
+        "makeReports": "0x099e9ebe62c604ec88b048080f92699e70a13443",
+        "createEvent": "0xc8219d4265d00a0342a9affccf1e4b7e40e9d6e1",
+        "createMarket": "0xab8d935d849a1b6afc87f812487a614f3f619332",
+        "closeMarket": "0xaee5cf77be08409b6ebdb2f53c877c6b6588bcdc",
+        "closeMarketOne": "0x7d7475e03f99a625215f4d6f6d238e01e4a2024b",
+        "closeMarketTwo": "0x45023c25f08c76fe0d7aeef51982e617c956088c",
+        "closeMarketFour": "0x509e88296eaac439b1ae7233f66c75b1116fbe3e",
+        "closeMarketEight": "0xc88e1abe08d129cead8f091f3e2b8765ebe69623",
+        "dispatch": "0x3f419c471b620be7c464c594888143f26daa9c0c",
 
-        "cash": "0xfbbc3c6adfb5f365c569437ff9accfda98072ce3",
-        "info": "0xfc682123eb42994ffbef948853265413b3afb49f",
-        "branches": "0x3ff4617f1ec29f2208274ea9158df772d5f6dc09",
-        "events": "0xb11444802847abe44e62ef36c0c4c99b631459fe",
-        "expiringEvents": "0x59628e9a0b948df0f902d2e56f596cc80aad1e2f",
-        "fxpFunctions": "0x77b2b3d110f046d2fbf03902ec087451de792b46",
-        "markets": "0xbf6cfa3a53b82ba9b167dedd924079333a377f96",
-        "reporting": "0xdae2eb9198fb38d7a5f264f74c6c9e70ac88b18b",
+        "cash": "0xae015f6a8578aeda5de9d5cfdf4bd3fb0a585541",
+        "info": "0x91e2f9773968819c5c7b35017da0e1301d97edc3",
+        "branches": "0xb19fd692611c589ca42be046415e1a6b88ff8d53",
+        "events": "0x55f592cb8a14dda84addcbf52bd68384180f6b5e",
+        "expiringEvents": "0x2b38e40c081722278a1eb285ff5daba4685d4547",
+        "fxpFunctions": "0xa12670aebdff6b9330bdf29e3449d60ca2ec44f6",
+        "markets": "0xbf95bd22e6d11215006286ef8f50b0a42d0bbb48",
+        "reporting": "0xe8854ae220cfecea034f9b47f3cbfe96a141b8cb",
 
-        "statistics": "0xdd4353b797df3fd7bfb10aac332f961f84bb6ac0",
-        "interpolate": "0xc99e10b9593a17d3a56f82f7964f6716783843e9",
-        "center": "0x0f5cbe7ef76caa477d1212436cece601574e3184",
-        "score": "0xa9356378c72439548fe14b5ecccb6ba77094eb37",
-        "adjust": "0x0514b2b07b448a48c0f02380135e6961e33cf1c8",
-        "resolve": "0x9a9036ad4c736889134f61361b6cc2e6ef6fba7f",
-        "payout": "0xeebcf5a154394e5673e60ac6c26c10399814f9a9",
-        "redeem_interpolate": "0xe098bde7bd726714ce73e03428e238aeba20c159",
-        "redeem_center": "0x98c1ec6fa883a80b09a945480502d7f3e473462a",
-        "redeem_score": "0xa287639d193da519631ba7be1521d3fd504dbb27",
-        "redeem_adjust": "0xd20362f3e9e640f062dff0e7809e7f61dc3cccbd",
-        "redeem_resolve": "0xcbaa4c7b84bab6898630dbbf3538ba59468c801f",
-        "redeem_payout": "0x54f2de2716f3676cb127feac1e65951cb14387d9"
+        "statistics": "0x1aedf82f1650f3f4354377ea7b75a7a42bd2bedd",
+        "interpolate": "0x293799de024e22b3e8a1d6230ee6fa03521be4db",
+        "center": "0x223ff9c793708bc3b28e1feca11ff0e70327d731",
+        "score": "0xc9eefbfbecdef8d7b0bacd9fa11059b2e27de041",
+        "adjust": "0x92ce388d35275e683020e00fa7bd8b2ff2cb672e",
+        "resolve": "0x896dec7daa4a7c164e60a995422542a2355eaa54",
+        "payout": "0xcc7452ddbd9e0e9ffaf7b468a0b87132ea77c122",
+        "redeem_interpolate": "0xfbf981231ef6042c40c2303fba21e37ab9465bbc",
+        "redeem_center": "0xf22aa9366bd21eaa967a9bc9c66749328e3e3fd4",
+        "redeem_score": "0xe89b77317dc899655a2ca0cf5743627ed50b8ec2",
+        "redeem_adjust": "0x9d56149b7833399d64fa9ec011397ba04138242d",
+        "redeem_resolve": "0xc720cbe585d3f8220004445678083e0569ec86c8",
+        "redeem_payout": "0x607f732c06d5dd2916c36c6d4b18a205ad67a8f9"
     };
 
     /* Testing private chain (networkid 10101) addresses */
@@ -2274,7 +2274,7 @@ var Augur = (function (augur) {
         to: augur.contracts.expiringEvents,
         method: "getReporterBallot",
         signature: "iii",
-        returns: "number[]"
+        returns: "unfix[]"
     };
     augur.tx.getReport = {
         to: augur.contracts.expiringEvents,
@@ -2297,7 +2297,7 @@ var Augur = (function (augur) {
         to: augur.contracts.expiringEvents,
         method: "getReportsFilled",
         signature: "ii",
-        returns: "number[]"
+        returns: "unfix[]"
     };
     augur.tx.getReportsMask = {
         to: augur.contracts.expiringEvents,
@@ -2315,19 +2315,19 @@ var Augur = (function (augur) {
         to: augur.contracts.expiringEvents,
         method: "getCovarianceMatrixRow",
         signature: "ii",
-        returns: "number[]"
+        returns: "unfix[]"
     };
     augur.tx.getDeflated = {
         to: augur.contracts.expiringEvents,
         method: "getDeflated",
         signature: "ii",
-        returns: "number[]"
+        returns: "unfix[]"
     };
     augur.tx.getLoadingVector = {
         to: augur.contracts.expiringEvents,
         method: "getLoadingVector",
         signature: "ii",
-        returns: "number[]"
+        returns: "unfix[]"
     };
     augur.tx.getLatent = {
         to: augur.contracts.expiringEvents,
@@ -2339,55 +2339,55 @@ var Augur = (function (augur) {
         to: augur.contracts.expiringEvents,
         method: "getScores",
         signature: "ii",
-        returns: "number[]"
+        returns: "unfix[]"
     };
     augur.tx.getSetOne = {
         to: augur.contracts.expiringEvents,
         method: "getSetOne",
         signature: "ii",
-        returns: "number[]"
+        returns: "unfix[]"
     };
     augur.tx.getSetTwo = {
         to: augur.contracts.expiringEvents,
         method: "getSetTwo",
         signature: "ii",
-        returns: "number[]"
+        returns: "unfix[]"
     };
     augur.tx.returnOld = {
         to: augur.contracts.expiringEvents,
         method: "returnOld",
         signature: "ii",
-        returns: "number[]"
+        returns: "unfix[]"
     };
     augur.tx.getNewOne = {
         to: augur.contracts.expiringEvents,
         method: "getNewOne",
         signature: "ii",
-        returns: "number[]"
+        returns: "unfix[]"
     };
     augur.tx.getNewTwo = {
         to: augur.contracts.expiringEvents,
         method: "getNewTwo",
         signature: "ii",
-        returns: "number[]"
+        returns: "unfix[]"
     };
     augur.tx.getAdjPrinComp = {
         to: augur.contracts.expiringEvents,
         method: "getAdjPrinComp",
         signature: "ii",
-        returns: "number[]"
+        returns: "unfix[]"
     };
     augur.tx.getSmoothRep = {
         to: augur.contracts.expiringEvents,
         method: "getSmoothRep",
         signature: "ii",
-        returns: "number[]"
+        returns: "unfix[]"
     };
     augur.tx.getOutcomesFinal = {
         to: augur.contracts.expiringEvents,
         method: "getOutcomesFinal",
         signature: "ii",
-        returns: "number[]"
+        returns: "unfix[]"
     };
     augur.getEvents = function (branch, votePeriod, onSent) {
         // branch: sha256 hash id

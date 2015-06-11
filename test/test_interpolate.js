@@ -73,7 +73,7 @@ describe("testing consensus/interpolate", function () {
         assert.equal(scaled_max.length, num_events);
         assert.equal(scaled_min.length, num_events);
         Augur.interpolate(
-            Augur.unfix(reports, "string"),
+            reports,
             reputation_vector,
             scaled,
             scaled_max,
@@ -83,7 +83,7 @@ describe("testing consensus/interpolate", function () {
             },
             function (r) {
                 // success
-                var interpolated = Augur.unfix(r.callReturn, "number");
+                var interpolated = (r.callReturn, "number");
                 var reports_filled = fold(interpolated.slice(0, flatsize), num_events);
                 var reports_mask = fold(interpolated.slice(flatsize, 2*flatsize), num_events);
                 log("reports (filled):\n", reports_filled);
