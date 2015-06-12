@@ -44,25 +44,6 @@ for (var i = 0; i < num_events; ++i) {
     scaled_max.push(2);
 }
 
-function fold(arr, num_cols) {
-    var folded = [];
-    num_cols = parseInt(num_cols);
-    var num_rows = arr.length / num_cols;
-    if (num_rows !== parseInt(num_rows)) {
-        throw("array length (" + arr.length + ") not divisible by " + num_cols);
-    }
-    num_rows = parseInt(num_rows);
-    var row;
-    for (var i = 0; i < parseInt(num_rows); ++i) {
-        row = [];
-        for (var j = 0; j < num_cols; ++j) {
-            row.push(arr[i*num_cols + j]);
-        }
-        folded.push(row);
-    }
-    return folded;
-}
-
 describe("testing consensus/resolve", function () {
     
     it("resolve", function (done) {

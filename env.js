@@ -10,7 +10,8 @@ GLOBAL.constants = require('./test/constants');
 GLOBAL.augur = Augur;
 GLOBAL.log = console.log;
 GLOBAL.b = Augur.branches.dev;
-GLOBAL.c = Augur.coinbase;
 GLOBAL.ballot=[ 2, 1.5, 1.5, 1, 1.5, 1.5, 1 ]
 
 Augur.connect();
+
+GLOBAL.c = Augur.coinbase;

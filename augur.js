@@ -174,44 +174,44 @@ var Augur = (function (augur) {
 
     /* Augur private chain (networkid 1010101) addresses */
     augur.privatechain_contracts = {
-        "checkQuorum": "0x8ea19b8199123ef964e21c0c612c634f3c71769a",
-        "buyAndSellShares": "0x356c057e8ba639313bbdf04436a6e58a8f6e7b16",
-        "createBranch": "0x5449d53eaa7eaf7b48414381f9ec4510383abc56",
-        "p2pWagers": "0x9ebdcddc57c310ca0b205f4e41236bde8dcbfe32",
-        "sendReputation": "0x0f1b23e15d3b05945b44a8ec6a348e24ee4238c4",
-        "transferShares": "0x5609cdb024347e756da961eda75ce4b7844fe4cb",
-        "makeReports": "0x099e9ebe62c604ec88b048080f92699e70a13443",
-        "createEvent": "0xc8219d4265d00a0342a9affccf1e4b7e40e9d6e1",
-        "createMarket": "0xab8d935d849a1b6afc87f812487a614f3f619332",
-        "closeMarket": "0xaee5cf77be08409b6ebdb2f53c877c6b6588bcdc",
-        "closeMarketOne": "0x7d7475e03f99a625215f4d6f6d238e01e4a2024b",
-        "closeMarketTwo": "0x45023c25f08c76fe0d7aeef51982e617c956088c",
-        "closeMarketFour": "0x509e88296eaac439b1ae7233f66c75b1116fbe3e",
-        "closeMarketEight": "0xc88e1abe08d129cead8f091f3e2b8765ebe69623",
-        "dispatch": "0x3f419c471b620be7c464c594888143f26daa9c0c",
+        "checkQuorum": "0x9df9e2ccba487582436d1a4cb0e969e8424fe930",
+        "buyAndSellShares": "0x7bc0d6ca5747374ddc4ef37c16f0c46e25bb6990",
+        "createBranch": "0xf93a030d8e71271773afc4c5f750e3e5b3f85eb3",
+        "p2pWagers": "0x49b7aa6d1c946b7794c3dd96666f71f990464690",
+        "sendReputation": "0xf9abcc2ed8168fd6fc7c1df1cb0adb6b24a2dac7",
+        "transferShares": "0xa2944eca5b254fde36db63596e7d67a7839261e2",
+        "makeReports": "0xc964cba4fbc9a1cc55a0b7f5c8db76caae63c4f2",
+        "createEvent": "0x89deda7433d18ca71635597613bc99685740e326",
+        "createMarket": "0xe67bb87c363bf129aa8e89e16c62ff9e6627b329",
+        "closeMarket": "0x819cd2691b33bd197cca3bf048157af0fd4e0065",
+        "closeMarketOne": "0xf6cfdf71ed24b4b7ba319826385ea8c72e578628",
+        "closeMarketTwo": "0x09793f57cdd757e15257535a75cf5733e6539348",
+        "closeMarketFour": "0x5c328a7e6b6fd29738d0a8f193566e2f92509cb2",
+        "closeMarketEight": "0xc5434d77f80f18b3604000cf3de2715dc5592861",
+        "dispatch": "0xeb8c3b4b61fef8b85577f4e8fd366953a3106329",
 
-        "cash": "0xae015f6a8578aeda5de9d5cfdf4bd3fb0a585541",
-        "info": "0x91e2f9773968819c5c7b35017da0e1301d97edc3",
-        "branches": "0xb19fd692611c589ca42be046415e1a6b88ff8d53",
-        "events": "0x55f592cb8a14dda84addcbf52bd68384180f6b5e",
-        "expiringEvents": "0x2b38e40c081722278a1eb285ff5daba4685d4547",
-        "fxpFunctions": "0xa12670aebdff6b9330bdf29e3449d60ca2ec44f6",
-        "markets": "0xbf95bd22e6d11215006286ef8f50b0a42d0bbb48",
-        "reporting": "0xe8854ae220cfecea034f9b47f3cbfe96a141b8cb",
+        "cash": "0x795eb46ece56ec7b6b9d74772d062ba67e381067",
+        "info": "0x708433a4a4fa26a97963c347c620eae73675570e",
+        "branches": "0x7b89fad2d632ae5e87fd79ec43b64633cca00cc5",
+        "events": "0xe370f14499b8c9fa0e2995de4a089c89a055b107",
+        "expiringEvents": "0x915894eeb354454489008886a32caf51ff1857eb",
+        "fxpFunctions": "0x5841be439f968c2fc046d0576e44d33463a6a689",
+        "markets": "0xb74ef8bdd789e38a66c1fcf837ee9a3864ea9bb2",
+        "reporting": "0x7f11e846a9256713a0df9cad0c2d30a23643abb1",
 
-        "statistics": "0x1aedf82f1650f3f4354377ea7b75a7a42bd2bedd",
-        "interpolate": "0x293799de024e22b3e8a1d6230ee6fa03521be4db",
-        "center": "0x223ff9c793708bc3b28e1feca11ff0e70327d731",
-        "score": "0xc9eefbfbecdef8d7b0bacd9fa11059b2e27de041",
-        "adjust": "0x92ce388d35275e683020e00fa7bd8b2ff2cb672e",
-        "resolve": "0x896dec7daa4a7c164e60a995422542a2355eaa54",
-        "payout": "0xcc7452ddbd9e0e9ffaf7b468a0b87132ea77c122",
-        "redeem_interpolate": "0xfbf981231ef6042c40c2303fba21e37ab9465bbc",
-        "redeem_center": "0xf22aa9366bd21eaa967a9bc9c66749328e3e3fd4",
-        "redeem_score": "0xe89b77317dc899655a2ca0cf5743627ed50b8ec2",
-        "redeem_adjust": "0x9d56149b7833399d64fa9ec011397ba04138242d",
-        "redeem_resolve": "0xc720cbe585d3f8220004445678083e0569ec86c8",
-        "redeem_payout": "0x607f732c06d5dd2916c36c6d4b18a205ad67a8f9"
+        "statistics": "0x23074924b270fa5d2c3bf3e47be3bc93a20043e2",
+        "interpolate": "0xf8e82b70aaa5427927141f550985f97d82c264b5",
+        "center": "0xa5b10afca6923a7744220d581ce0dbfbbcd5181c",
+        "score": "0x3eba31b4e6932cde3c42cba0dd2559f575bf8654",
+        "adjust": "0xa04f6608c9855cda377d6be62c004e3997eb09e4",
+        "resolve": "0x9ef49e06f32df34f93f850fb469d0f31d2d6eae4",
+        "payout": "0x54fd4167381615fdca374efc76cb598559e4e196",
+        "redeem_interpolate": "0xab323a51aaa179a81dadc489a54a1724cce6d2e0",
+        "redeem_center": "0x0275fdc72a1f8ba3a2fa979610c576763b2425cb",
+        "redeem_score": "0xaf3142460d19546a9dbd68b53ea8817ebfc33113",
+        "redeem_adjust": "0x101d40cde04afa787af4b8b6f56173a075abb628",
+        "redeem_resolve": "0x7679ed95a7a8b51beb285257c03960278e25ddd7",
+        "redeem_payout": "0xa8884e8c45956ae85537cae67636abca28701680"
     };
 
     /* Testing private chain (networkid 10101) addresses */
@@ -242,7 +242,7 @@ var Augur = (function (augur) {
         "reporting": "0xdaba557e6690415c7f81daec3487ea0e8e3205ab",
 
         "statistics": "0xc3b183d35754c995dc58b2ac67c49d79958e6287",
-        "interpolate": "0x8fcd63f1ab2b86c226cbe30d3d7736b09f5790c1",
+        "interpolate": "0x948f3462f5d63ff58316eab4ab503eb3a80e3243",
         "center": "0x159c4ce332b8e82110daf3ad5371502207008a4b",
         "score": "0xb3626139e8a2772a341111cf7035b72379c59681",
         "adjust": "0x77e6db6a22ab6025b9926b7495a5c6dc4731c2ba",
@@ -318,6 +318,24 @@ var Augur = (function (augur) {
             else setTimeout(iterate, 1);
         };
         next();
+    };
+    augur.fold = function(arr, num_cols) {
+        var folded = [];
+        num_cols = parseInt(num_cols);
+        var num_rows = arr.length / num_cols;
+        if (num_rows !== parseInt(num_rows)) {
+            throw("array length (" + arr.length + ") not divisible by " + num_cols);
+        }
+        num_rows = parseInt(num_rows);
+        var row;
+        for (var i = 0; i < parseInt(num_rows); ++i) {
+            row = [];
+            for (var j = 0; j < num_cols; ++j) {
+                row.push(arr[i*num_cols + j]);
+            }
+            folded.push(row);
+        }
+        return folded;
     };
 
     // calculate date from block number
