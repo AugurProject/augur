@@ -174,44 +174,44 @@ var Augur = (function (augur) {
 
     /* Augur private chain (networkid 1010101) addresses */
     augur.privatechain_contracts = {
-        "checkQuorum": "0x9df9e2ccba487582436d1a4cb0e969e8424fe930",
-        "buyAndSellShares": "0x7bc0d6ca5747374ddc4ef37c16f0c46e25bb6990",
-        "createBranch": "0xf93a030d8e71271773afc4c5f750e3e5b3f85eb3",
-        "p2pWagers": "0x49b7aa6d1c946b7794c3dd96666f71f990464690",
-        "sendReputation": "0xf9abcc2ed8168fd6fc7c1df1cb0adb6b24a2dac7",
-        "transferShares": "0xa2944eca5b254fde36db63596e7d67a7839261e2",
-        "makeReports": "0xc964cba4fbc9a1cc55a0b7f5c8db76caae63c4f2",
-        "createEvent": "0x89deda7433d18ca71635597613bc99685740e326",
-        "createMarket": "0xe67bb87c363bf129aa8e89e16c62ff9e6627b329",
-        "closeMarket": "0x819cd2691b33bd197cca3bf048157af0fd4e0065",
-        "closeMarketOne": "0xf6cfdf71ed24b4b7ba319826385ea8c72e578628",
-        "closeMarketTwo": "0x09793f57cdd757e15257535a75cf5733e6539348",
-        "closeMarketFour": "0x5c328a7e6b6fd29738d0a8f193566e2f92509cb2",
-        "closeMarketEight": "0xc5434d77f80f18b3604000cf3de2715dc5592861",
-        "dispatch": "0xeb8c3b4b61fef8b85577f4e8fd366953a3106329",
+        "checkQuorum": "0xc639170573cf9285ef90edf56dc9a0d9c12fef30",
+        "buyAndSellShares": "0x16f9cfc61dfc19b4711f4436d5ec342aa050482b",
+        "createBranch": "0xbb5de41db8bcc8fbe49cd55bb8bed1196d0c2eeb",
+        "p2pWagers": "0x4a790007525e75202a500dd178460d7a3296853e",
+        "sendReputation": "0xf199bcd65e1e7d8b3fb0f0d75ab10a4413f62af3",
+        "transferShares": "0x28f13e094bddd674dc9f385eb4a5725fdf971062",
+        "makeReports": "0xb1d30373d4d9b69b2fa0428c5329544ffdbfdc91",
+        "createEvent": "0xae79e9d6670aa82d5e06884201bb3d922346f2c9",
+        "createMarket": "0xc620ea05b433eeac42b1404de049b85ed58eada8",
+        "closeMarket": "0x427b772841fe666d9200b1183348dcbc2db0b2f9",
+        "closeMarketOne": "0x6694af7cdf3b8d21169fb0f7a9ccf6dc78d90cf9",
+        "closeMarketTwo": "0xc0d23afea0db30ea1876a726738196e4ed6b4472",
+        "closeMarketFour": "0xb56ddb7111e08f7097ed06024dfe3398feabdd57",
+        "closeMarketEight": "0x3a1fb9a601fa6c9a3b6dbfb2d7ad8c5e3f2fd813",
+        "dispatch": "0x5e71ef9add9151f72ceb6708e6cc90898fa475b5",
 
-        "cash": "0x795eb46ece56ec7b6b9d74772d062ba67e381067",
-        "info": "0x708433a4a4fa26a97963c347c620eae73675570e",
-        "branches": "0x7b89fad2d632ae5e87fd79ec43b64633cca00cc5",
-        "events": "0xe370f14499b8c9fa0e2995de4a089c89a055b107",
-        "expiringEvents": "0x915894eeb354454489008886a32caf51ff1857eb",
-        "fxpFunctions": "0x5841be439f968c2fc046d0576e44d33463a6a689",
-        "markets": "0xb74ef8bdd789e38a66c1fcf837ee9a3864ea9bb2",
-        "reporting": "0x7f11e846a9256713a0df9cad0c2d30a23643abb1",
+        "cash": "0x54ad15eefe7b067bf10e2e7fa1da27af0d896f4c",
+        "info": "0x425d9977cc5c8c91dbcf6dc4370af25318fd6a83",
+        "branches": "0x26419ad0d259f95922df72c5d9b284643623cb1c",
+        "events": "0x74ad62fa8967408dbd888923a6318f750b5bbf59",
+        "expiringEvents": "0x26419ad0d259f95922df72c5d9b284643623cb1c",
+        "fxpFunctions": "0xf40c0ba4b4928501717291bc46418bc73132b7e7",
+        "markets": "0x3784100f3bc7506122c972b2720597910f47afb8",
+        "reporting": "0xf40c0ba4b4928501717291bc46418bc73132b7e7",
 
-        "statistics": "0x23074924b270fa5d2c3bf3e47be3bc93a20043e2",
-        "interpolate": "0xf8e82b70aaa5427927141f550985f97d82c264b5",
-        "center": "0xa5b10afca6923a7744220d581ce0dbfbbcd5181c",
-        "score": "0x3eba31b4e6932cde3c42cba0dd2559f575bf8654",
-        "adjust": "0xa04f6608c9855cda377d6be62c004e3997eb09e4",
-        "resolve": "0x9ef49e06f32df34f93f850fb469d0f31d2d6eae4",
-        "payout": "0x54fd4167381615fdca374efc76cb598559e4e196",
-        "redeem_interpolate": "0xab323a51aaa179a81dadc489a54a1724cce6d2e0",
-        "redeem_center": "0x0275fdc72a1f8ba3a2fa979610c576763b2425cb",
-        "redeem_score": "0xaf3142460d19546a9dbd68b53ea8817ebfc33113",
-        "redeem_adjust": "0x101d40cde04afa787af4b8b6f56173a075abb628",
-        "redeem_resolve": "0x7679ed95a7a8b51beb285257c03960278e25ddd7",
-        "redeem_payout": "0xa8884e8c45956ae85537cae67636abca28701680"
+        "statistics": "0xd64222ceb3466f852026097a94c4a904383a3902",
+        "interpolate": "0xd64222ceb3466f852026097a94c4a904383a3902",
+        "center": "0xc0f11c2136b101f0900fbbdd9f9287d736c47ec9",
+        "score": "0xc639170573cf9285ef90edf56dc9a0d9c12fef30",
+        "adjust": "0x091255a6f31f0c110830ceb6173813ebf3e8e802",
+        "resolve": "0xa05a80f4f1f411b58b8ec7f364bbf3bd5b4cb6af",
+        "payout": "0x54ad15eefe7b067bf10e2e7fa1da27af0d896f4c",
+        "redeem_interpolate": "0xd271232bb9b2e420cb05b2370d7d619304043b2a",
+        "redeem_center": "0xc4149064febc8ca729a8957fd451463d0cc2096e",
+        "redeem_score": "0x72d12951bfb7bcd169869dda661545999c9a00c7",
+        "redeem_adjust": "0x159fcc028eeeee7f030da1e0feda96f263da2188",
+        "redeem_resolve": "0x0758037ea3e24cceb472b155f278769a0ebd84da",
+        "redeem_payout": "0xbdc39701ecffe54281aeec90e6956be1a2868f6a"
     };
 
     /* Testing private chain (networkid 10101) addresses */
@@ -242,7 +242,7 @@ var Augur = (function (augur) {
         "reporting": "0xdaba557e6690415c7f81daec3487ea0e8e3205ab",
 
         "statistics": "0xc3b183d35754c995dc58b2ac67c49d79958e6287",
-        "interpolate": "0x948f3462f5d63ff58316eab4ab503eb3a80e3243",
+        "interpolate": "0x8fcd63f1ab2b86c226cbe30d3d7736b09f5790c1",
         "center": "0x159c4ce332b8e82110daf3ad5371502207008a4b",
         "score": "0xb3626139e8a2772a341111cf7035b72379c59681",
         "adjust": "0x77e6db6a22ab6025b9926b7495a5c6dc4731c2ba",
@@ -324,7 +324,7 @@ var Augur = (function (augur) {
         num_cols = parseInt(num_cols);
         var num_rows = arr.length / num_cols;
         if (num_rows !== parseInt(num_rows)) {
-            throw("array length (" + arr.length + ") not divisible by " + num_cols);
+            // throw("array length (" + arr.length + ") not divisible by " + num_cols);
         }
         num_rows = parseInt(num_rows);
         var row;
@@ -2407,6 +2407,12 @@ var Augur = (function (augur) {
         signature: "ii",
         returns: "unfix[]"
     };
+    augur.tx.getReporterPayouts = {
+        to: augur.contracts.expiringEvents,
+        method: "getReporterPayouts",
+        signature: "ii",
+        returns: "unfix[]"
+    };
     augur.getEvents = function (branch, votePeriod, onSent) {
         // branch: sha256 hash id
         // votePeriod: integer
@@ -2591,6 +2597,13 @@ var Augur = (function (augur) {
         // branch: sha256
         // votePeriod: integer
         var tx = copy(augur.tx.getOutcomesFinal);
+        tx.params = [branch, votePeriod];
+        return fire(tx, onSent);
+    };
+    augur.getReporterPayouts = function (branch, votePeriod, onSent) {
+        // branch: sha256
+        // votePeriod: integer
+        var tx = copy(augur.tx.getReporterPayouts);
         tx.params = [branch, votePeriod];
         return fire(tx, onSent);
     };

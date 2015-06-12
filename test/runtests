@@ -3,23 +3,12 @@
 
 trap "exit" INT
 
-# augurcore=$HOME/src/augur-core
-# chain=$HOME/.augur-test
-
-# # echo "Reset Augur test chain..."
-# $chain/reset
-
-# # echo "Start geth on network 10101 (protocol version 71)..."
-# geth --mine --rpc --rpccorsdomain http://localhost:8080 --shh --maxpeers 64 --networkid 10101 --datadir $chain --protocolversion 71 --bootnodes "enode://035b7845dfa0c0980112abdfdf4dc11087f56b77e10d2831f186ca12bc00f5b9327c427d03d9cd8106db01488905fb2200b5706f9e41c5d75885057691d9997c@[::]:30303" --etherbase 0x639b41c4d3d399894f2a57894278e1653e7cd24c --password $chain/.password &
-
-# # upload contracts
-# echo "Upload contracts to test chain..."
-
+# reset test chain
+# start geth on network 10101 (protocol version 71)
+# upload contracts
 # copy gospel -j to augur.js
-
 # stop geth
-
-# start geth with second user account
+# start geth with second, third, etc. user account and call faucet
 
 mocha test_connect.js
 mocha test_fixedpoint.js
@@ -30,13 +19,14 @@ mocha test_ethrpc.js
 # mocha test_expiring.js
 # mocha test_augur.js
 mocha test_createEvent.js
+sleep 2
 mocha test_addEvent.js
-
 sleep 12
-
 mocha test_ballot.js
+sleep 12
 mocha test_interpolate.js
-# mocha test_consensus.js
+sleep 2
+mocha test_consensus.js
 # mocha test_score.js
 # mocha test_resolve.js
 # mocha test_createMarket.js
