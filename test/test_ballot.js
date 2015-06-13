@@ -127,13 +127,13 @@ describe("data and api/expiringEvents", function () {
         this.timeout(TIMEOUT);
         ballot = new Array(num_events);
         for (i = 0; i < num_events; ++i) {
-            ballot[i] = 2.0;
+            ballot[i] = 0.0;
         }
         // ballot[num_events-1] = 0.0;
         // ballot[num_events-2] = 0.0;
-        ballot[num_events-1] = 1.0;
-        ballot[num_events-2] = 1.0;
-        ballot[num_events-3] = 1.0;
+        // ballot[num_events-1] = 1.0;
+        // ballot[num_events-2] = 1.0;
+        // ballot[num_events-3] = 1.0;
         log(ballot);
         reputation = Augur.getRepBalance(
             branch,

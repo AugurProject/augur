@@ -32,7 +32,7 @@ describe("functions/createEvent", function () {
         Augur.createEvent({
             branchId: branch,
             description: event_description,
-            expDate: Augur.blockNumber() + 25,
+            expDate: Augur.blockNumber(),
             minValue: minValue,
             maxValue: maxValue,
             numOutcomes: numOutcomes,

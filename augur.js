@@ -3227,7 +3227,7 @@ var Augur = (function (augur) {
             branch = branch.branchId;
         }
         var tx = copy(augur.tx.report);
-        tx.params = [branch, report, votePeriod, salt];
+        tx.params = [branch, Augur.fix(report, "hex"), votePeriod, salt];
         return send_call_confirm(tx, onSent, onSuccess, onFailed);
     };
     augur.submitReportHash = function (branch, reportHash, votePeriod, onSent, onSuccess, onFailed) {
@@ -3253,7 +3253,7 @@ var Augur = (function (augur) {
             branch = branch.branchId;
         }
         var tx = copy(augur.tx.checkReportValidity);
-        tx.params = [branch, report, votePeriod];
+        tx.params = [branch, Augur.fix(report, "hex"), votePeriod];
         return send_call_confirm(tx, onSent, onSuccess, onFailed);
     };
     augur.slashRep = function (branch, votePeriod, salt, report, reporter, onSent, onSuccess, onFailed) {
@@ -3268,7 +3268,7 @@ var Augur = (function (augur) {
             branch = branch.branchId;
         }
         var tx = copy(augur.tx.slashRep);
-        tx.params = [branch, votePeriod, salt, report, reporter];
+        tx.params = [branch, votePeriod, salt, Augur.fix(report, "hex"), reporter];
         return send_call_confirm(tx, onSent, onSuccess, onFailed);
     };
 
