@@ -174,22 +174,22 @@ var Augur = (function (augur) {
 
     /* Augur private chain (networkid 1010101) addresses */
     augur.privatechain_contracts = {
-        "checkQuorum": "0x0de7904a19f3cd77d5a22d56fabf271daeb61cc4",
+       "checkQuorum": "0x0de7904a19f3cd77d5a22d56fabf271daeb61cc4",
         "buyAndSellShares": "0x796fe6c1dd8064439a51f8f1762080f5434baf62",
         "createBranch": "0x2ce345cb0cdcbb7dd13f63aca7ccce50a7401533",
-        "p2pWagers": "0xb67bc8941ea02b8353eca985ee572db6695614a3",
-        "sendReputation": "0xfe29a60e60eec7d4b91f730fa188d9d8f35a65de",
-        "transferShares": "0x803ab720b1883301fc869b3ed1a61899b0742df9",
+        "p2pWagers": "0x63331c74b7f54e1643d8da36dea797de724b7220",
+        "sendReputation": "0x181c705b02e766f2e1024ca3b6b1b6d7fe7362c1",
+        "transferShares": "0x4ffcf5f975f0dff04b1d829c88c56989a6f509f6",
         "makeReports": "0xcad657bf92bf221eaadb3f43247de9ce9d356213",
-        "createEvent": "0xacbd9270c1a1ec8ab7c34b995fe1315b158490ae",
-        "createMarket": "0xc1612c769fda098f7d68b38b1c8b3da5a4f6f8d6",
-        "closeMarket": "0x190fc1bbea242a30baf8a5befe709b89c369f561",
+        "createEvent": "0x775e9ed9a4d74f3a2b2196c724d8850ebdb6735c",
+        "createMarket": "0x0fe0051f398335eaeb52d8278394184f2294a021",
+        "closeMarket": "0xa4d1e26773580d9f27ad3fdccc8aa8d4f9b8cbce",
         "closeMarketOne": "0xee647a5ba4337728165e6a23bb28f3ccc411870b",
-        "closeMarketTwo": "0x17895f30b2facf56413e7356cf5385edcdc48b5e",
-        "closeMarketFour": "0x119d2b859e2b5fe6940f37ca3222f7506d3915af",
+        "closeMarketTwo": "0xf88a7b4f1e5c3767f5fb0653fa86d570fe9d673c",
+        "closeMarketFour": "0x5fa9bfa9f43dabcc113756892b49e16e3327256f",
         "closeMarketEight": "0x8512b58d2868c44a5bb2c2171fffb395fd3adbba",
-        "dispatch": "0x5dd587559eccaf75cdd8769622c1cec025f9b516",
-
+        "dispatch": "0xaa085d0d9d715a4b458f82216d381a78a8bae2b6",
+    
         "cash": "0x08163213345163e38b45b2fed9dcfd75594a838a",
         "info": "0xa178f560e5174ef566929549e386495910dd23fc",
         "branches": "0x85693da19f633b8ef0bdbfb527a68cdaf30ff192",
@@ -198,20 +198,20 @@ var Augur = (function (augur) {
         "fxpFunctions": "0x795af763dd0c5627ce6ad590d8734bf4ce64a266",
         "markets": "0xb14010eb05acce2a0493479db9955cd8967500e6",
         "reporting": "0xdaba557e6690415c7f81daec3487ea0e8e3205ab",
-
+    
         "statistics": "0xc3b183d35754c995dc58b2ac67c49d79958e6287",
         "interpolate": "0x8fcd63f1ab2b86c226cbe30d3d7736b09f5790c1",
         "center": "0x159c4ce332b8e82110daf3ad5371502207008a4b",
         "score": "0xb3626139e8a2772a341111cf7035b72379c59681",
         "adjust": "0x77e6db6a22ab6025b9926b7495a5c6dc4731c2ba",
-        "resolve": "0x681e3e5c3133ff351017fb544c46363a9e2ee8d3",
+        "resolve": "0xc18950c57a768471925e1daf295f86bfb021d5ab",
         "payout": "0x6191967b297bc02f7dbf06e9270b2ad35b3692bf",
-        "redeem_interpolate": "0xcda9e4636a1e54d18ba217133dafa2367cd563da",
-        "redeem_center": "0x39493c0aea20ccc3a7571fb8bd6d51a32794c360",
+        "redeem_interpolate": "0x471a8c6cc8934b2c8376f2e9835a4921e0b2f5f4",
+        "redeem_center": "0xc9d5927e2344e1df927d06f940d6491fcf8d388f",
         "redeem_score": "0x163fe7bb13b6f852f4005fb36b335530cc2145f9",
         "redeem_adjust": "0x7f668cdf010983142fada98d1731e52c0d1a35f9",
-        "redeem_resolve": "0xc4728649ce1964af65f3910ff2ebcb2d9205c4b5",
-        "redeem_payout": "0x1b103614482bab1afdbc492221cad83ae87552f4"
+        "redeem_resolve": "0x682c254753294b86e4c639e208b5bed3207ccfbf",
+        "redeem_payout": "0xc6e928256515ee5879e9267710cfa51992d1516e"
     };
 
     /* Testing private chain (networkid 10101) addresses */
