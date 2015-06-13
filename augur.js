@@ -3037,7 +3037,7 @@ var Augur = (function (augur) {
         // salt: integer
         if (ballot.constructor === Array) {
             var tx = copy(augur.tx.hashReport);
-            tx.params = [ballot, salt];
+            tx.params = [Augur.fix(ballot, "hex"), salt];
             return fire(tx, onSent);
         }
     };
