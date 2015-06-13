@@ -19,8 +19,8 @@ mocha test_ethrpc.js
 # mocha test_expiring.js
 # mocha test_augur.js
 mocha test_createEvent.js
-sleep 2
-mocha test_addEvent.js
+# sleep 2
+# mocha test_addEvent.js
 sleep 12
 mocha test_ballot.js
 sleep 12

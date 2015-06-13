@@ -188,7 +188,7 @@ var Augur = (function (augur) {
         "closeMarketTwo": "0x17895f30b2facf56413e7356cf5385edcdc48b5e",
         "closeMarketFour": "0x119d2b859e2b5fe6940f37ca3222f7506d3915af",
         "closeMarketEight": "0x8512b58d2868c44a5bb2c2171fffb395fd3adbba",
-        "dispatch": "0xe0e0706aa7fc7507009a75e24122b2c400f67d86",
+        "dispatch": "0x5dd587559eccaf75cdd8769622c1cec025f9b516",
 
         "cash": "0x08163213345163e38b45b2fed9dcfd75594a838a",
         "info": "0xa178f560e5174ef566929549e386495910dd23fc",
