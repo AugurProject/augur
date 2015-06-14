@@ -63,7 +63,7 @@ describe("functions/createMarket", function () {
                 // assert.equal(r.numOutcomes, numOutcomes);
                 // assert.equal(r.description, event_description);
                 var alpha = "0.0079";
-                var initialLiquidity = 100;
+                var initialLiquidity = 1000;
                 var tradingFee = "0.02";
                 var events = [ r.callReturn ];
                 var market_description = event_description;

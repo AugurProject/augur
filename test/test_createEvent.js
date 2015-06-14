@@ -18,10 +18,11 @@ var TIMEOUT = 120000;
 var minValue = 0;
 var maxValue = 1;
 var numOutcomes = 2;
-var num_events = 10;
+var num_events = 2;
 
 var branch = Augur.branches.dev;
 var period = Augur.getVotePeriod(branch);
+var exp_date = Augur.blockNumber() + 20;
 
 describe("functions/createEvent", function () {
     var events = [];
@@ -32,7 +33,7 @@ describe("functions/createEvent", function () {
         Augur.createEvent({
             branchId: branch,
             description: event_description,
-            expDate: Augur.blockNumber() + 1,
+            expDate: exp_date,
             minValue: minValue,
             maxValue: maxValue,
             numOutcomes: numOutcomes,
@@ -40,13 +41,37 @@ describe("functions/createEvent", function () {
                 // log(r);
             },
             onSuccess: function (r) {
-                // log(r);
                 if (element < num_events - 1) {
                     fs.appendFile("events.dat", r.callReturn + "\n");
                 } else {
                     fs.appendFile("events.dat", r.callReturn);
                 }
-                next();
+                var alpha = "0.0079";
+                var initialLiquidity = 1000;
+                var tradingFee = "0.02";
+                var events = [ r.callReturn ];
+                var market_description = event_description;
+                var numOutcomes = 2;
+                var marketObj = {
+                    branchId: Augur.branches.dev,
+                    description: market_description,
+                    alpha: alpha,
+                    initialLiquidity: initialLiquidity,
+                    tradingFee: tradingFee,
+                    events: events,
+                    onSent: function (res) {
+                        // log("createMarket sent: " + JSON.stringify(res, null, 2));
+                    },
+                    onSuccess: function (res) {
+                        // log("createMarket success: " + JSON.stringify(res, null, 2));
+                        next();
+                    },
+                    onFailed: function (res) {
+                        log("createMarket failed: " + JSON.stringify(res, null, 2));
+                        next();
+                    }
+                };
+                Augur.createMarket(marketObj);
             },
             onFailed: function (r) {
                 log("failed: " + JSON.stringify(r, null, 2));

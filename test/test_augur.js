@@ -406,69 +406,6 @@ describe("Augur API", function () {
         });
     });
 
-    // buy&sellShares.se
-    describe("buy&sellShares.se", function () {
-        describe("getNonce(" + market_id + ") ", function () {
-            var test = function (r) {
-                assert.equal(r, "0");
-            };
-            it("sync", function () {
-                test(Augur.getNonce(market_id));
-            });
-            it("async", function (done) {
-                Augur.getNonce(market_id, function (r) {
-                    test(r); done();
-                });
-            });
-        });
-        describe("buyShares(" + branch_id + ", " + market_id + ", " + outcome + ", " + amount + ", null)", function () {
-            it("async", function (done) {
-                // this.timeout(30000);
-                var amount = (Math.random() * 10).toString();
-                Augur.buyShares({
-                    branchId: branch_id,
-                    marketId: market_id,
-                    outcome: outcome,
-                    amount: amount,
-                    nonce: null,
-                    onSent: function (r) {
-                        log(r);
-                    },
-                    onSuccess: function (r) {
-                        log(r); done();
-                    },
-                    onFailed: function (r) {
-                        assert(r.error === "-1");
-                        done();
-                    }
-                });
-            });
-        });
-        describe("sellShares(" + branch_id + ", " + market_id + ", " + outcome + ", " + amount + ", null)", function () {
-            it("async", function (done) {
-                // this.timeout(30000);
-                var amount = (Math.random() * 10).toString();
-                Augur.sellShares({
-                    branchId: branch_id,
-                    marketId: market_id,
-                    outcome: outcome,
-                    amount: amount,
-                    nonce: null,
-                    onSent: function (r) {
-                        log(r);
-                    },
-                    onSuccess: function (r) {
-                        log(r); done();
-                    },
-                    onFailed: function (r) {
-                        assert(r.error === "-1");
-                        done();
-                    }
-                });
-            });
-        });
-    });
-
     // createBranch.se
 
     // p2pWagers.se

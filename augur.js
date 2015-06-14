@@ -9,12 +9,7 @@ var MODULAR = (typeof(module) !== 'undefined');
 var NODE_JS = MODULAR && process && !process.browser;
 if (MODULAR) {
     if (NODE_JS) {
-        var httpsync;
-        try {
-            httpsync = require('http-sync');
-        } catch (e) {
-            httpsync = require('http-sync-win');
-        }
+        var request = require('sync-request');
         var XHR2 = require('xhr2');
     }
     var keccak_256 = require('js-sha3').keccak_256;
@@ -29,7 +24,7 @@ var Augur = (function (augur) {
     // default RPC settings
     augur.RPC = {
         protocol: "http",
-        host: "localhost",
+        host: "127.0.0.1",
         port: 8545
     };
 
@@ -753,7 +748,7 @@ var Augur = (function (augur) {
     function json_rpc(command, callback) {
         var protocol, host, port, rpc_url, num_commands, returns, req = null;
         protocol = augur.RPC.protocol || "http";
-        host = augur.RPC.host || "localhost";
+        host = augur.RPC.host || "127.0.0.1";
         port = augur.RPC.port || "8545";
         rpc_url = protocol + "://" + host + ":" + port;
         if (command.constructor === Array) {
@@ -765,7 +760,6 @@ var Augur = (function (augur) {
         } else {
             returns = strip_returns(command);
         }
-        command = JSON.stringify(command);
         if (NODE_JS) {
             // asynchronous if callback exists
             if (callback && callback.constructor === Function) {
@@ -777,19 +771,14 @@ var Augur = (function (augur) {
                 };
                 req.open("POST", rpc_url, true);
                 req.setRequestHeader("Content-type", "application/json");
-                req.send(command);
+                req.send(JSON.stringify(command));
             } else {
-                req = httpsync.request({
-                    protocol: protocol,
-                    host: host,
-                    path: '/',
-                    port: port,
-                    method: 'POST'
-                });
-                req.write(command);
-                return parse((req.end()).body.toString(), returns);
+                return parse(request('POST', rpc_url, {
+                    json: command
+                }).getBody().toString(), returns);
             }
         } else {
+            command = JSON.stringify(command);
             if (window.XMLHttpRequest) {
                 req = new window.XMLHttpRequest();
             } else {
@@ -885,7 +874,7 @@ var Augur = (function (augur) {
         } else {
             augur.RPC = {
                 protocol: "http",
-                host: "localhost",
+                host: "127.0.0.1",
                 port: 8545
             };
         }
@@ -2141,7 +2130,7 @@ var Augur = (function (augur) {
                     var info = {
                         branch: eventInfo[0],
                         expirationDate: augur.bignum(eventInfo[1]).toFixed(),
-                        outcome: augur.bignum(eventInfo[2]).toFixed(),
+                        outcome: augur.unfix(eventInfo[2], "string"),
                         minValue: augur.bignum(eventInfo[3]).toFixed(),
                         maxValue: augur.bignum(eventInfo[4]).toFixed(),
                         numOutcomes: augur.bignum(eventInfo[5]).toFixed()
@@ -2158,7 +2147,7 @@ var Augur = (function (augur) {
                 var info = {
                     branch: eventInfo[0],
                     expirationDate: augur.bignum(eventInfo[1]).toFixed(),
-                    outcome: augur.bignum(eventInfo[2]).toFixed(),
+                    outcome: augur.unfix(eventInfo[2], "string"),
                     minValue: augur.bignum(eventInfo[3]).toFixed(),
                     maxValue: augur.bignum(eventInfo[4]).toFixed(),
                     numOutcomes: augur.bignum(eventInfo[5]).toFixed()
@@ -2185,7 +2174,7 @@ var Augur = (function (augur) {
         to: augur.contracts.events,
         method: "getOutcome",
         signature: "i",
-        returns: "number"
+        returns: "unfix"
     };
     augur.tx.getMinValue = {
         to: augur.contracts.events,
@@ -3346,12 +3335,17 @@ var Augur = (function (augur) {
         returns: "number",
         send: true
     };
-    augur.closeMarket = function (branch, market, onSent) {
-        // branch: sha256
-        // market: sha256
+    augur.closeMarket = function (branch, market, onSent, onSuccess, onFailed) {
+        if (branch.constructor === Object && branch.branchId) {
+            market = branch.marketId;
+            if (branch.onSent) onSent = branch.onSent;
+            if (branch.onSuccess) onSuccess = branch.onSuccess;
+            if (branch.onFailed) onFailed = branch.onFailed;
+            branch = branch.branchId;
+        }
         var tx = copy(augur.tx.closeMarket);
         tx.params = [branch, market];
-        return fire(tx, onSent);
+        return send_call_confirm(tx, onSent, onSuccess, onFailed);
     };
 
     // dispatch.se
