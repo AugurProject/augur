@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "0.6.2",
+  "version": "0.6.4",
   "description": "Augur JavaScript API",
   "main": "augur.js",
   "scripts": {
@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "bignumber.js": "^2.0.7",
-    "chalk": "^1.0.0",
     "js-sha3": "^0.2.0",
     "moment": "^2.10.3",
     "xhr2": "^0.1.2"
@@ -32,14 +31,10 @@
   },
   "homepage": "https://github.com/AugurProject/augur.js",
   "devDependencies": {
-    "coveralls": "^2.11.2",
-    "istanbul": "^0.3.14",
+    "chalk": "^1.0.0",
     "it-each": "^0.3.1",
     "lodash": "^3.8.0",
     "mocha": "^2.2.4",
-    "mocha-lcov-reporter": "0.0.2",
-    "nock": "^2.0.1",
-    "python-shell": "^0.1.0",
     "rimraf": "^2.4.0"
   },
   "optionalDependencies": {
