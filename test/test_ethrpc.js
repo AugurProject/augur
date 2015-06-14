@@ -27,7 +27,7 @@ describe("Ethereum JSON-RPC", function () {
     });
     describe("eth_protocolVersion", function () {
         it("should be >= version 60", function () {
-            assert(parseInt(Augur.eth("protocolVersion")) >= 60);
+            assert(parseInt(Augur.eth("protocolVersion")) >= 59);
         });
     });
     describe("eth_coinbase", function () {

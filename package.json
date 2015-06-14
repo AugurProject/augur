@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "bignumber.js": "^2.0.7",
+    "chalk": "^1.0.0",
     "js-sha3": "^0.2.0",
     "moment": "^2.10.3",
     "xhr2": "^0.1.2"
@@ -37,7 +38,9 @@
     "lodash": "^3.8.0",
     "mocha": "^2.2.4",
     "mocha-lcov-reporter": "0.0.2",
-    "nock": "^2.0.1"
+    "nock": "^2.0.1",
+    "python-shell": "^0.1.0",
+    "rimraf": "^2.4.0"
   },
   "optionalDependencies": {
     "http-sync": "^0.1.1",
