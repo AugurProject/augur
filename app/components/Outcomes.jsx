@@ -126,6 +126,7 @@ var Overview = React.createClass({
           sharesHeld: newSharesHeld
         });
 
+        // update prices
         for (var i = 0, len = self.props.market.outcomes.length; i < len; ++i) {
           self.props.market.outcomes[i].price = client.price(
             marketId,
@@ -133,6 +134,9 @@ var Overview = React.createClass({
           );
         }
         self.props.outcome.price = client.price(marketId, self.props.outcome.id);
+
+        // TODO make this asynchronous
+        flux.actions.market.loadMarkets();
       },
 
       // on failed
