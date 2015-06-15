@@ -64,18 +64,34 @@ var AccountDetails = React.createClass({
     var holdings = [];
     _.each(this.state.holdings, function (market) {
       _.each(market.outcomes, function(outcome) {
+        var name, className, holding;
         if (outcome.sharesHeld.toNumber()) {
-          var name = outcome.id == 1 ? 'no' : 'yes';
-          var className = 'shares-held ' + name;
-          holdings.push(
-            <tr>
-              <td>
-                <Link to='market' params={ {marketId: market.id.toString(16) } }>{ market.description }</Link>
-              </td>
-              <td><span className={ className }>{ outcome.sharesHeld.toNumber() } { name }</span></td>
-              <td>{ +outcome.price.toFixed(2) }</td>
-            </tr>
-          );
+          name = outcome.id == 1 ? 'no' : 'yes';
+          className = 'shares-held ' + name;
+          if (market.expired && market.authored && !market.closed) {
+            holding = (
+              <tr>
+                <td>
+                  <Link to='market' params={ {marketId: market.id.toString(16) } }>{ market.description }</Link>
+                </td>
+                <td><span className={ className }>{ outcome.sharesHeld.toNumber() } { name }</span></td>
+                <td>{ +outcome.price.toFixed(2) }</td>                
+                <td><CloseMarketTrigger text='close market' params={ { marketId: market.id.toString(16), branchId: market.branchId.toString(16) } } /></td>
+              </tr>
+            );
+          } else {
+            holding = (
+              <tr>
+                <td>
+                  <Link to='market' params={ {marketId: market.id.toString(16) } }>{ market.description }</Link>
+                </td>
+                <td><span className={ className }>{ outcome.sharesHeld.toNumber() } { name }</span></td>
+                <td>{ +outcome.price.toFixed(2) }</td>                
+                <td></td>
+              </tr>
+            );
+          }
+          holdings.push(holding);
         }
       });
     }, this);
@@ -112,6 +128,7 @@ var AccountDetails = React.createClass({
                   <th>Description</th>
                   <th>Shares Held</th>
                   <th>Price</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
