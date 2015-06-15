@@ -11,7 +11,7 @@ var utilities = require('../libs/utilities');
 
 var CloseMarketModal = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin('market', 'branch')],
+  mixins: [FluxMixin, StoreWatchMixin('market')],
 
   getInitialState: function () {
     return {
@@ -23,8 +23,7 @@ var CloseMarketModal = React.createClass({
 
     return {
       ethereumClient: flux.store('config').getEthereumClient(),
-      currentBlock: flux.store('network').getState().blockNumber,
-      branch: flux.store('branch').getCurrentBranch()
+      currentBlock: flux.store('network').getState().blockNumber
     }
   },
 
@@ -34,7 +33,10 @@ var CloseMarketModal = React.createClass({
 
   onConfirm: function (event) {
 
-    this.state.ethereumClient.closeMarket(this.props.params.marketId, this.state.branch.id);
+    this.state.ethereumClient.closeMarket(
+      this.props.params.marketId,
+      this.props.params.branchId
+    );
     this.props.onRequestHide();
   },
 
