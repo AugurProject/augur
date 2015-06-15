@@ -461,16 +461,21 @@ EthereumClient.prototype.getMarket = function(marketId, branchId) {
   });
 
   var price = outcomes.length ? outcomes[1].price : new BigNumber(0);  // hardcoded to outcome 2 (yes)
-  // var winningOutcomes = Augur.getWinningOutcomes(marketId);
 
   // check if this market is ready to be closed
   var events = Augur.getMarketEvents(marketId);
   var expired = true;
-  for (var i = 0, len = events.length; i < len; ++i) {
-    if (Augur.getOutcome(events[i]).toFixed() === "0") {
+  var numEvents = events.length;
+  var closed = false;
+  var winningOutcomes = Augur.getWinningOutcomes(marketId).slice(0, numEvents);
+  for (var i = 0; i < numEvents; ++i) {
+    if (expired && Augur.getOutcome(events[i]).toFixed() === "0") {
       expired = false;
-      break;
     }
+    if (!closed && Number(winningOutcomes[i]) !== 0) {
+      closed = true;
+    }
+    if (!expired && closed) break;
   }
 
   // check if the current user authored this market
@@ -497,7 +502,8 @@ EthereumClient.prototype.getMarket = function(marketId, branchId) {
     comments: [],
     invalid: invalid,
     expired: expired,
-    authored: authored
+    authored: authored,
+    closed: closed
   };
 };
 
@@ -598,6 +604,16 @@ EthereumClient.prototype.addMarket = function(params, onSuccess) {
 };
 
 EthereumClient.prototype.closeMarket = function (marketId, branchId) {
+  try {
+    marketId = Augur.bignum(marketId).toFixed();
+  } catch (e) {
+    marketId = Augur.prefix_hex(marketId);
+  }
+  try {
+    branchId = Augur.bignum(branchId).toFixed();
+  } catch (e) {
+    branchId = Augur.prefix_hex(branchId);
+  }
   utilities.log("Closing market " + marketId + " on branch " + branchId);
   Augur.closeMarket({
     branchId: branchId,

@@ -74,7 +74,7 @@ var MarketPane = React.createClass({
     );
 
     if (linked) {
-      if (market.expired && market.authored) {
+      if (market.expired && market.authored && !market.closed) {
         return (
           <div className='close-market'>
             <CloseMarketTrigger text='close market' params={ { marketId: market.id.toString(16), branchId: market.branchId.toString(16) } } />
