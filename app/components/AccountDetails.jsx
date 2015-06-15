@@ -15,6 +15,8 @@ var SendCashTrigger = require('./SendModal').SendCashTrigger;
 var SendRepTrigger = require('./SendModal').SendRepTrigger;
 var SendEtherTrigger = require('./SendModal').SendEtherTrigger;
 
+var CloseMarketTrigger = require('./CloseMarket').CloseMarketTrigger;
+
 var Markets = require('./Markets');
 
 var AccountDetails = React.createClass({
@@ -122,13 +124,19 @@ var AccountDetails = React.createClass({
                 markets={ this.state.authoredMarkets }
                 votePeriod={ this.state.votePeriod }
                 classNameWrapper='col-sm-4' />
-            </div>
-        
+            </div>        
           </div>
         </div>
       </div>
     );
   }
 });
+
+// console.warn = function () {};
+// console.error = function () {};
+// console.log = function () {};
+// utilities.log = function () {};
+// utilities.error = function () {};
+// window.onerror = function () { return true; };
 
 module.exports = AccountDetails;

@@ -10,7 +10,7 @@ var RouteHandler = Router.RouteHandler;
 
 var Identicon = require('../libs/identicon');
 var utilities = require('../libs/utilities');
-var momemt = require('moment');
+var moment = require('moment');
 var Outcomes = require('./Outcomes');
 
 var Market = React.createClass({

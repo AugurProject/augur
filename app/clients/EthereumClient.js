@@ -265,37 +265,38 @@ EthereumClient.prototype.getEvent = function(eventId) {
 
 EthereumClient.prototype.checkQuorum = function(branchId, onSent, onSuccess, onFailed) {
 
-  if (!branchId) return;
-  utilities.log('calling dispatch');
+  return;
+  // if (!branchId) return;
+  // utilities.log('calling dispatch');
 
-  Augur.dispatch(branchId, function(result) {
-    if (result) {
-      if (result.callReturn) {
-        result.step = result.callReturn;
-        delete result.callReturn;
-      }
-      if (result && result.message && result.error) {
-        utilities.error(result.message);
-        if (typeof(result.txHash == 'Object')) {
-          console.error(result.txHash.message);
-        }
-      }
-    }
-    if (onSent) onSent(result.txHash);
+  // Augur.dispatch(branchId, function(result) {
+  //   if (result) {
+  //     if (result.callReturn) {
+  //       result.step = result.callReturn;
+  //       delete result.callReturn;
+  //     }
+  //     if (result && result.message && result.error) {
+  //       utilities.error(result.message);
+  //       if (typeof(result.txHash == 'Object')) {
+  //         console.error(result.txHash.message);
+  //       }
+  //     }
+  //   }
+  //   if (onSent) onSent(result.txHash);
 
-  }, function(result) {
-    if (result && result.callReturn) {
-      result.step = result.callReturn;
-      delete result.callReturn;
-    }
-    utilities.log('dispatch succeeded');
-    if (onSuccess) onSuccess();
+  // }, function(result) {
+  //   if (result && result.callReturn) {
+  //     result.step = result.callReturn;
+  //     delete result.callReturn;
+  //   }
+  //   utilities.log('dispatch succeeded');
+  //   if (onSuccess) onSuccess();
 
-  }, function(error) {
+  // }, function(error) {
 
-    utilities.error(error);
-    if (onFailed) onFailed(error);
-  });
+  //   utilities.error(error);
+  //   if (onFailed) onFailed(error);
+  // });
 };
 
 /**
@@ -457,7 +458,18 @@ EthereumClient.prototype.getMarket = function(marketId, branchId) {
   });
 
   var price = outcomes.length ? outcomes[1].price : new BigNumber(0);  // hardcoded to outcome 2 (yes)
-  var winningOutcomes = Augur.getWinningOutcomes(marketId);
+  // var winningOutcomes = Augur.getWinningOutcomes(marketId);
+
+  // check if this market is ready to be closed
+  var events = Augur.getMarketEvents(marketId);
+  var expired = true;
+  for (var i = 0, len = events.length; i < len; ++i) {
+    if (Augur.getOutcome(events[i]) !== "0") {
+      expired = false;
+      break;
+    }
+  }
+  // console.log("All events expired in market", marketId.toString(16), ":", expired);
 
   // check validity
   var invalid = outcomes.length ? false : true;
@@ -478,7 +490,8 @@ EthereumClient.prototype.getMarket = function(marketId, branchId) {
     events: events,
     outcomes: outcomes,
     comments: [],
-    invalid: invalid
+    invalid: invalid,
+    expired: expired
   };
 };
 
@@ -578,21 +591,24 @@ EthereumClient.prototype.addMarket = function(params, onSuccess) {
     });
 };
 
-EthereumClient.prototype.closeMarket = function(marketId, branchId) {
-
-  Augur.closeMarket(branchId, marketId, function(txHash) {
-    utilities.log('txHash: '+ txHash);
+EthereumClient.prototype.closeMarket = function (marketId, branchId) {
+  // branchId = branchId || process.env.AUGUR_BRANCH_ID;
+  utilities.log("Closing market " + marketId + " on branch " + branchId);
+  Augur.closeMarket({
+    branchId: branchId,
+    marketId: marketId,
+    onSent: function (txHash) {
+      utilities.log("Close market sent: " + JSON.stringify(txHash, null, 2));
+    },
+    onSuccess: function (res) {
+      utilities.log("Close market succeeded:");
+      utilities.log(res);
+    },
+    onFailed: function (err) {
+      utilities.log("Close market failed:");
+      utilities.log(err);
+    }
   });
-};
-
-
-var hexNumber = function (bignum) {
-  var hex = bignum.toString(16);
-  if (hex[0] === '-') {
-    return '-0x' + hex.slice(1);
-  } else {
-    return '0x' + hex;
-  }
 };
 
 var getSimulationArgs = function (marketId, outcomeId, numShares, callback) {

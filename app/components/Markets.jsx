@@ -7,6 +7,8 @@ var moment = require('moment');
 var Router = require('react-router');
 var Link = Router.Link;
 
+var CloseMarketTrigger = require('./CloseMarket').CloseMarketTrigger;
+
 var Markets = React.createClass({
 
   render: function() {
@@ -45,14 +47,14 @@ var MarketPane = React.createClass({
     if (market.invalid) {
       status = 'Invalid'
       className += ' invalid'; 
-      linked = false;   
+      linked = false;
     } else if (market.matured) {
       status = 'Matured'
       className += ' matured';
     } else if (market.pending) {
       status = 'Pending'
       className += ' pending';
-      linked = false;    
+      linked = false;
     }
 
     var body = (
@@ -72,11 +74,22 @@ var MarketPane = React.createClass({
     );
 
     if (linked) {
-      return (
-        <Link to='market' params={ {marketId: market.id.toString(16) } } className={ className }>
-          { body }
-        </Link>
-      );
+      if (market.expired) {
+        return (
+          <div className='close-market'>
+            <CloseMarketTrigger text='close market' params={ { marketId: market.id.toString(16) } } />
+            <Link to='market' params={ {marketId: market.id.toString(16) } } className={ className }>
+              { body }
+            </Link>
+          </div>
+        );
+      } else {
+        return (
+          <Link to='market' params={ {marketId: market.id.toString(16) } } className={ className }>
+            { body }
+          </Link>
+        );
+      }
     } else {
       return (
         <div className={ className }>

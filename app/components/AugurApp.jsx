@@ -232,14 +232,14 @@ var ErrorModal = React.createClass({
     } else if (this.state.isLoading) {
 
       // augur client failed to load
-      return (
-        <Modal {...this.props} bsSize='small' onRequestHide={ this.handleToggle } backdrop='static'>
-          <div className="modal-body clearfix">
-              <h4>Ethereum loading</h4>
-              <p>The Ethereum block chain is not current and is fetching blocks from peers</p>
-          </div>
-        </Modal>
-      );
+      // return (
+      //   <Modal {...this.props} bsSize='small' onRequestHide={ this.handleToggle } backdrop='static'>
+      //     <div className="modal-body clearfix">
+      //         <h4>Ethereum loading</h4>
+      //         <p>The Ethereum block chain is not current and is fetching blocks from peers</p>
+      //     </div>
+      //   </Modal>
+      // );
     }
   }
 });
