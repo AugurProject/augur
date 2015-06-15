@@ -8,6 +8,7 @@
 var fs = require("fs");
 var assert = require("assert");
 var _ = require("lodash");
+var chalk = require("chalk");
 var Augur = require("../augur");
 require('it-each')({ testPerIteration: true });
 
@@ -22,12 +23,12 @@ var num_events = 5;
 
 var branch = Augur.branches.dev;
 var period = Augur.getVotePeriod(branch);
-var exp_date = Augur.blockNumber() + 100;
+var exp_date = Augur.blockNumber() + 250;
 
-describe("functions/createEvent", function () {
+describe("Creating " + num_events + " events and markets", function () {
     var events = [];
     fs.writeFileSync("events.dat", "");
-    it.each(_.range(0, num_events), "creating event %s", ['element'], function (element, next) {
+    it.each(_.range(0, num_events), "create event/market %s", ['element'], function (element, next) {
         this.timeout(TIMEOUT);
         var event_description = Math.random().toString(36).substring(4);
         Augur.createEvent({
@@ -38,7 +39,7 @@ describe("functions/createEvent", function () {
             maxValue: maxValue,
             numOutcomes: numOutcomes,
             onSent: function (r) {
-                log("    - event ID: " + r.callReturn);
+                log(chalk.green("    ✓ ") + chalk.gray("event ID: " + r.callReturn));
             },
             onSuccess: function (r) {
                 var alpha = "0.0079";
@@ -55,11 +56,9 @@ describe("functions/createEvent", function () {
                     tradingFee: tradingFee,
                     events: events,
                     onSent: function (res) {
-                        // log("createMarket sent: " + JSON.stringify(res, null, 2));
-                        log("    - market ID: " + res.callReturn);
+                        log(chalk.green("    ✓ ") + chalk.gray("market ID: " + res.callReturn));
                     },
                     onSuccess: function (res) {
-                        // log("createMarket success: " + JSON.stringify(res, null, 2));
                         if (element < num_events - 1) {
                             fs.appendFile("events.dat", events[0] + "," + r.callReturn + "\n");
                         } else {

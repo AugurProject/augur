@@ -14,7 +14,7 @@
     "xhr2": "^0.1.2"
   },
   "browser": {
-    "http-sync": false,
+    "sync-request": false,
     "xhr2": false
   },
   "engines": {

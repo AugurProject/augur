@@ -10,10 +10,11 @@ trap "exit" INT
 # stop geth
 # start geth with second, third, etc. user account and call faucet
 
-mocha test_connect.js
-mocha test_fixedpoint.js
-mocha test_encoder.js
-mocha test_ethrpc.js
+# mocha test_connect.js
+# mocha test_fixedpoint.js
+# mocha test_encoder.js
+# mocha test_ethrpc.js
+
 # mocha test_invoke.js
 # mocha test_reporting.js
 # mocha test_expiring.js
@@ -24,9 +25,9 @@ sleep 12
 # sleep 2
 # mocha test_createMarket.js
 # sleep 2
-node test_checkQuorum.js
-sleep 2
 mocha test_buyAndSellShares.js
+sleep 2
+node fastforward.js
 sleep 2
 mocha test_ballot.js
 sleep 12

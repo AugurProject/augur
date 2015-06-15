@@ -18,11 +18,6 @@ var TIMEOUT = 120000;
 var branch = Augur.branches.dev;
 var period = Augur.getVotePeriod(branch);
 
-// var events = fs.readFileSync('events.dat').toString().split("\n");
-// var num_events = events.length;
-
-// log(num_events);
-
 // var ballot = new Array(num_events);
 // for (var i = 0; i < num_events; ++i) {
 //     ballot[i] = Math.random();
@@ -41,7 +36,7 @@ var reporters = [
     "0x4a0cf714e2c1b785ff2d650320acf63be9eb25c6"
 ];
 
-describe("data and api/expiringEvents", function () {
+describe("Set ballots for " + reporters.length + " reporters", function () {
 
     var period = Augur.getVotePeriod(branch);
     var num_events = Augur.getNumberEvents(branch, period);
@@ -127,13 +122,13 @@ describe("data and api/expiringEvents", function () {
         this.timeout(TIMEOUT);
         ballot = new Array(num_events);
         for (i = 0; i < num_events; ++i) {
-            ballot[i] = 0.0;
+            ballot[i] = 2.0;
         }
         // ballot[num_events-1] = 0.0;
         // ballot[num_events-2] = 0.0;
-        // ballot[num_events-1] = 1.0;
-        // ballot[num_events-2] = 1.0;
-        // ballot[num_events-3] = 1.0;
+        ballot[num_events-1] = 1.0;
+        ballot[num_events-2] = 1.0;
+        ballot[num_events-3] = 1.0;
         log(ballot);
         reputation = Augur.getRepBalance(
             branch,

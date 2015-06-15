@@ -24,6 +24,9 @@ var branch = Augur.branches.dev;
 var period = Augur.getVotePeriod(branch);
 var num_events = Augur.getNumberEvents(branch, period);
 
+log("Initial CASH:", Augur.getCashBalance(Augur.coinbase));
+log("Initial REP: ", Augur.getRepBalance(branch, Augur.coinbase));
+
 describe("Consensus", function () {
     Augur.setStep(branch, 0);
     Augur.setSubstep(branch, 0);
@@ -33,10 +36,9 @@ describe("Consensus", function () {
             Augur.dispatch({
                 branchId: branch,
                 onSent: function (r) {
-                    // log("dispatch", r.callReturn);
+
                 },
                 onSuccess: function (r) {
-                    // log("dispatch", r);
                     var step = Augur.getStep(branch);
                     var substep = Augur.getSubstep(branch);
                     log("      - step:   ", step);
@@ -48,8 +50,9 @@ describe("Consensus", function () {
                     //         final_dispatch();
                     //     });
                     // } else {
-                        next();
+                    //     next();
                     // }
+                    next();
                 },
                 onFailed: function (r) {
                     log(JSON.stringify(r, null, 2));

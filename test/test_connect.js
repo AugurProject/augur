@@ -17,7 +17,7 @@ var REMOTE_TIMEOUT = 10000;
 
 Augur.connect();
 
-describe("Reading contracts", function () {
+describe("Read contracts", function () {
     var test = function (c) {
         assert(Augur.read(Augur.contracts[c]) !== "0x");
     };
@@ -31,7 +31,7 @@ describe("Reading contracts", function () {
         next();
     });
 });
-describe("Connection", function () {
+describe("Augur.connect", function () {
     if (LOCAL_NODE) {
         it("should connect successfully to 'http://localhost:8545'", function () {
             assert(Augur.connect("http://localhost:8545"));
@@ -101,7 +101,8 @@ describe("Connection", function () {
         assert(Augur.contracts.branches, Augur.privatechain_contracts.branches);
         assert(Augur.contracts.center, Augur.privatechain_contracts.center);
     });
-    it("should switch to Ethereum testnet contract addresses", function () {
+    it("should switch to Ethereum testnet contract addresses", function (done) {
+        this.timeout(REMOTE_TIMEOUT);
         assert(Augur.connect());
         assert(Augur.contracts.branches, Augur.testnet_contracts.branches);
         assert(Augur.contracts.center, Augur.testnet_contracts.center);
@@ -114,6 +115,7 @@ describe("Connection", function () {
         assert(Augur.connect({ host: '127.0.0.1' }));
         assert(Augur.contracts.branches, Augur.testnet_contracts.branches);
         assert(Augur.contracts.center, Augur.testnet_contracts.center);
+        done();
     });
     if (REMOTE_NODE) {
         it("should connect successfully to 'http://www.poc9.com:8545'", function () {
@@ -151,7 +153,7 @@ describe("Connection", function () {
         assert(Augur.connect());
         assert(Augur.coinbase);
         assert.equal(Augur.RPC.protocol, "http");
-        assert.equal(Augur.RPC.host, "localhost");
+        assert(Augur.RPC.host === "localhost" || Augur.RPC.host === "127.0.0.1");
         assert.equal(Augur.RPC.port, 8545);
     });
 });

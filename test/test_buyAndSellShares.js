@@ -7,84 +7,88 @@
 
 var fs = require("fs");
 var assert = require("assert");
+var async = require("async");
+var chalk = require("chalk");
 var Augur = require("../augur");
+require('it-each')({ testPerIteration: true });
 
 Augur.connect();
 
 var log = console.log;
-var TIMEOUT = 120000;
+var TIMEOUT = 5000;
 
 var branch = Augur.branches.dev;
-var period = Augur.getVotePeriod(branch);
+var outcome = "1.0";
 
-var amount = "1";
-var branch = Augur.branches.dev;
-var outcome = Augur.NO.toString();
+var eventsMarkets = fs.readFileSync("events.dat").toString().split('\n');
 
-var eventsMarkets = fs.readFile("events.dat").toString().split('\n');
-var events = Augur.getEvents(branch, period);
-log("Events in vote period " + period + ":");
-log(events);
-
+log("\n  Search for events");
+var events, period;
+for (var i = 0; i < 200; ++i) {
+    events = Augur.getEvents(branch, i);
+    if (events && events.length && events.length > 1) {
+        log(chalk.green("   ✓ ") + chalk.gray("Found " + events.length) +
+            chalk.gray(" events in vote period " + i));
+        period = i;
+        break;
+    }
+}
+assert(events.length);
 var markets = new Array(events.length);
-var this_event_market;
+
+log("\n  Lookup markets");
+var market, found;
 for (var i = 0; i < eventsMarkets.length; ++i) {
-    this_event_market = eventsMarkets[i].split(',');
+    found = false;
+    market = eventsMarkets[i].split(',');
     for (var j = 0; j < events.length; ++j) {
-        if (this_event_market[0] === events[j]) {
-            markets[i] = this_event_market[1];
+        if (market[0] === events[j]) {
+            markets[i] = market[1];
+            found = true;
             break;
         }
     }
+    assert(found);
+    log(chalk.green("   ✓ ") + chalk.gray("Found ") +
+        chalk.gray(" market for event " + events[j]));
 }
-log("Buying shares of " + markets.length + " markets:");
-log(markets);
-
-// should already be at correct vote period from checkQuorum tests
-
-
-describe("functions/buy&sellShares", function () {
-    describe("getNonce(" + market_id + ") ", function () {
+    
+describe("Buy and sell shares", function () {
+    assert.equal(events.length, markets.length);
+    it.each(markets, "getNonce: %s", ['element'], function (element, next) {
         var test = function (r) {
-            assert.equal(r, "0");
+            assert(Number(r) >= 0);
         };
-        it("sync", function () {
-            test(Augur.getNonce(market_id));
-        });
-        it("async", function (done) {
-            Augur.getNonce(market_id, function (r) {
-                test(r); done();
-            });
+        Augur.getNonce(element, function (r) {
+            test(r); next();
         });
     });
-    it("buyShares(" + branch + ", " + market_id + ", " + outcome + ", " + amount + ", null)", function (done) {
+    it.each(markets, "buyShares: %s", ['element'], function (element, next) {
         this.timeout(TIMEOUT);
-        var amount = (Math.random() * 10 + 1).toString();
+        var amount = "10";
         Augur.buyShares({
             branchId: branch,
-            marketId: market_id,
+            marketId: element,
             outcome: outcome,
             amount: amount,
             nonce: null,
             onSent: function (r) {
-                log(r);
+                log(r); next();
             },
             onSuccess: function (r) {
-                log(r); done();
+                log(r.callReturn); next();
             },
             onFailed: function (r) {
-                // assert(r.error === "-1");
-                log(r);
-                done();
+                throw(r.message); next();
             }
         });
     });
-    it("sellShares(" + branch + ", " + market_id + ", " + outcome + ", " + amount + ", null)", function (done) {
+    it.each(markets, "sellShares: %s", ['element'], function (element, next) {
         this.timeout(TIMEOUT);
-        var amount = (Math.random()).toString();
+        var amount = "1";
         Augur.sellShares({
             branchId: branch,
-            marketId: market_id,
+            marketId: element,
             outcome: outcome,
             amount: amount,
             nonce: null,
@@ -92,12 +96,10 @@ describe("functions/buy&sellShares", function () {
                 log(r);
             },
             onSuccess: function (r) {
-                log(r); done();
+                log(r.callReturn); next();
             },
             onFailed: function (r) {
-                // assert(r.error === "-1");
-                log(r);
-                done();
+                throw(r.message); next();
             }
         });
     });
