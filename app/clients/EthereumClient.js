@@ -298,6 +298,10 @@ EthereumClient.prototype.checkQuorum = function(branchId, onSent, onSuccess, onF
   });
 };
 
+EthereumClient.prototype.price = function (marketId, outcome, f) {
+  return Augur.price(marketId, outcome, f);
+};
+
 /**
  * Get a list of all the market data for the given branch.
  *
@@ -469,6 +473,9 @@ EthereumClient.prototype.getMarket = function(marketId, branchId) {
     }
   }
 
+  // check if the current user authored this market
+  var authored = Augur.coinbase === Augur.getCreator(marketId);
+
   // check validity
   var invalid = outcomes.length ? false : true;
 
@@ -489,7 +496,8 @@ EthereumClient.prototype.getMarket = function(marketId, branchId) {
     outcomes: outcomes,
     comments: [],
     invalid: invalid,
-    expired: expired
+    expired: expired,
+    authored: authored
   };
 };
 

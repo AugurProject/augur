@@ -94,7 +94,7 @@ var Overview = React.createClass({
 
       // on sent
       function(result) {
-        utilities.debug('trade submitted: ' + result);
+        utilities.debug('trade submitted: ' + JSON.stringify(result, null, 2));
         // TODO: check if component is mounted
         self.setState({
           pendingShares: relativeShares,
@@ -105,6 +105,7 @@ var Overview = React.createClass({
 
       // on success
       function(result) {
+
         utilities.debug('trade completed');
 
         // odd problem trying to update the market here
@@ -112,11 +113,26 @@ var Overview = React.createClass({
 
         var newSharesHeld = parseFloat(self.state.sharesHeld) + parseFloat(relativeShares);
 
+        utilities.debug("updating prices");
+
+        var flux = self.getFlux();
+        var client = flux.store('config').getEthereumClient();
+        var marketId = self.props.market.id.toString(16);
+        var branchId = self.props.market.branchId.toString(16);
+
         // TODO: check if component is mounted
         self.setState({
           pendingShares: null,
           sharesHeld: newSharesHeld
         });
+
+        for (var i = 0, len = self.props.market.outcomes.length; i < len; ++i) {
+          self.props.market.outcomes[i].price = client.price(
+            marketId,
+            self.props.market.outcomes[i].id
+          );
+        }
+        self.props.outcome.price = client.price(marketId, self.props.outcome.id);
       },
 
       // on failed
