@@ -18,11 +18,11 @@ var TIMEOUT = 120000;
 var minValue = 0;
 var maxValue = 1;
 var numOutcomes = 2;
-var num_events = 2;
+var num_events = 5;
 
 var branch = Augur.branches.dev;
 var period = Augur.getVotePeriod(branch);
-var exp_date = Augur.blockNumber() + 20;
+var exp_date = Augur.blockNumber() + 100;
 
 describe("functions/createEvent", function () {
     var events = [];
@@ -38,14 +38,9 @@ describe("functions/createEvent", function () {
             maxValue: maxValue,
             numOutcomes: numOutcomes,
             onSent: function (r) {
-                // log(r);
+                log("    - event ID: " + r.callReturn);
             },
             onSuccess: function (r) {
-                if (element < num_events - 1) {
-                    fs.appendFile("events.dat", r.callReturn + "\n");
-                } else {
-                    fs.appendFile("events.dat", r.callReturn);
-                }
                 var alpha = "0.0079";
                 var initialLiquidity = 1000;
                 var tradingFee = "0.02";
@@ -61,9 +56,15 @@ describe("functions/createEvent", function () {
                     events: events,
                     onSent: function (res) {
                         // log("createMarket sent: " + JSON.stringify(res, null, 2));
+                        log("    - market ID: " + res.callReturn);
                     },
                     onSuccess: function (res) {
                         // log("createMarket success: " + JSON.stringify(res, null, 2));
+                        if (element < num_events - 1) {
+                            fs.appendFile("events.dat", events[0] + "," + r.callReturn + "\n");
+                        } else {
+                            fs.appendFile("events.dat", events[0] + "," + r.callReturn);
+                        }
                         next();
                     },
                     onFailed: function (res) {

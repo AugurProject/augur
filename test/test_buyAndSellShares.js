@@ -19,8 +19,28 @@ var period = Augur.getVotePeriod(branch);
 var amount = "1";
 var branch = Augur.branches.dev;
 var outcome = Augur.NO.toString();
-var markets = Augur.getMarkets(branch)
-var market_id = markets[0];
+
+var eventsMarkets = fs.readFile("events.dat").toString().split('\n');
+var events = Augur.getEvents(branch, period);
+log("Events in vote period " + period + ":");
+log(events);
+
+var markets = new Array(events.length);
+var this_event_market;
+for (var i = 0; i < eventsMarkets.length; ++i) {
+    this_event_market = eventsMarkets[i].split(',');
+    for (var j = 0; j < events.length; ++j) {
+        if (this_event_market[0] === events[j]) {
+            markets[i] = this_event_market[1];
+            break;
+        }
+    }
+}
+log("Buying shares of " + markets.length + " markets:");
+log(markets);
+
+// should already be at correct vote period from checkQuorum tests
+
 
 describe("functions/buy&sellShares", function () {
     describe("getNonce(" + market_id + ") ", function () {

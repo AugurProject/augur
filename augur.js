@@ -3044,11 +3044,11 @@ var Augur = (function (augur) {
         signature: "i",
         returns: "number"
     };
-    augur.checkQuorum = function (branch, onSent) {
+    augur.checkQuorum = function (branch, onSent, onSuccess, onFailed) {
         // branch: sha256
         var tx = copy(augur.tx.checkQuorum);
         tx.params = branch;
-        return fire(tx, onSent);
+        return send_call_confirm(tx, onSent, onSuccess, onFailed);
     };
 
     // buy&sellShares.se

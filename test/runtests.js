@@ -19,7 +19,7 @@ var DATADIR = path.join(process.env.HOME, ".augur-test");
 var AUGUR_CORE = path.join(process.env.HOME, "src", "augur-core");
 var NETWORK_ID = "10101";
 var PROTOCOL_VERSION = "59";
-var MINIMUM_ETHER = 40;
+var MINIMUM_ETHER = 30;
 
 var accounts = [
     "0x639b41c4d3d399894f2a57894278e1653e7cd24c",
@@ -81,10 +81,19 @@ function upload_contracts(account) {
     } else {
         log("Upload contracts to test chain...");
         try {
-            var uploader = cp.spawn(
-                path.join(AUGUR_CORE, "load_contracts.py"),
-                ["--BLOCKTIME=1"]
-            );
+            // var test = cp.execSync(path.join(AUGUR_CORE, "load_contracts.py --BLOCKTIME=1"));
+            // log(test);
+            // cp.exec(path.join(AUGUR_CORE, "generate_gospel.py -j"), function (err, stdout, stderr) {
+            //     if (err) throw err;
+            //     log(stdout);
+            //     var contract = stdout;
+            //     log(typeof contract);
+            //     log(contract);
+            // });
+            var uploader = cp.spawn(path.join(AUGUR_CORE, "load_contracts.py"), [
+                "--BLOCKTIME=1",
+                "--verbose"
+            ]);
             uploader.stdout.on("data", function (data) {
                 process.stdout.write(chalk.cyan(data.toString()));
             });
@@ -138,12 +147,12 @@ var geth = cp.spawn("geth", [
     "--password", DATADIR + "/.password"
 ]);
 
-// geth.stderr.on("data", function (data) {
-//     // send to log file
-//     log("stderr: " + data);
-// });
+geth.stderr.on("data", function (data) {
+    // send to log file
+    process.stdout.write(chalk.yellow(data.toString()));
+});
 geth.on("close", function (code) {
-    log(chalk.red.bold("geth closed with code " + code));
+    process.stdout.write(chalk.red.bold("geth closed with code " + code));
 });
 
 async.series([
