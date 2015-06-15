@@ -2792,7 +2792,7 @@ var Augur = (function (augur) {
         to: augur.contracts.markets,
         method: "getWinningOutcomes",
         signature: "i",
-        returns: "hash[]"
+        returns: "number[]"
     };
     augur.tx.price = {
         to: augur.contracts.markets,

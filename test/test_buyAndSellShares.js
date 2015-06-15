@@ -50,7 +50,7 @@ for (var i = 0; i < eventsMarkets.length; ++i) {
     }
     assert(found);
     log(chalk.green("   ✓ ") + chalk.gray("Found ") +
-        chalk.gray(" market for event " + events[j]));
+        chalk.gray("market for event " + events[j]));
 }
     
 describe("Buy and sell shares", function () {
