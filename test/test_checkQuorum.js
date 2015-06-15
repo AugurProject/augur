@@ -34,7 +34,6 @@ function check_quorum() {
     Augur.checkQuorum(branch,
         function (r) {
             // sent
-            log("Check quorum: " + r.callReturn);
         },
         function (r) {
             // success
@@ -46,6 +45,8 @@ function check_quorum() {
                 } else {
                     log("Reached vote period " + period);
                 }
+            } else {
+                log("Check quorum: " + r.callReturn);
             }
         },
         function (r) {
@@ -55,5 +56,5 @@ function check_quorum() {
     );
 }
 
-log("Fast-forward to period " + period);
+log("Fast forwarding to vote period " + period);
 check_quorum();

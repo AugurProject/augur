@@ -22,9 +22,9 @@ mocha test_createEvent.js
 sleep 12
 # mocha test_addEvent.js
 # sleep 2
-mocha test_createMarket.js
-sleep 2
-mocha test_checkQuorum.js
+# mocha test_createMarket.js
+# sleep 2
+node test_checkQuorum.js
 sleep 2
 mocha test_buyAndSellShares.js
 sleep 2
