@@ -265,38 +265,37 @@ EthereumClient.prototype.getEvent = function(eventId) {
 
 EthereumClient.prototype.checkQuorum = function(branchId, onSent, onSuccess, onFailed) {
 
-  return;
-  // if (!branchId) return;
-  // utilities.log('calling dispatch');
+  if (!branchId) return;
+  utilities.log('calling dispatch');
 
-  // Augur.dispatch(branchId, function(result) {
-  //   if (result) {
-  //     if (result.callReturn) {
-  //       result.step = result.callReturn;
-  //       delete result.callReturn;
-  //     }
-  //     if (result && result.message && result.error) {
-  //       utilities.error(result.message);
-  //       if (typeof(result.txHash == 'Object')) {
-  //         console.error(result.txHash.message);
-  //       }
-  //     }
-  //   }
-  //   if (onSent) onSent(result.txHash);
+  Augur.dispatch(branchId, function (result) {
+    if (result) {
+      if (result.callReturn) {
+        result.step = result.callReturn;
+        delete result.callReturn;
+      }
+      if (result && result.message && result.error) {
+        utilities.error(result.message);
+        if (typeof(result.txHash == 'Object')) {
+          console.error(result.txHash.message);
+        }
+      }
+    }
+    if (onSent) onSent(result.txHash);
 
-  // }, function(result) {
-  //   if (result && result.callReturn) {
-  //     result.step = result.callReturn;
-  //     delete result.callReturn;
-  //   }
-  //   utilities.log('dispatch succeeded');
-  //   if (onSuccess) onSuccess();
+  }, function (result) {
+    if (result && result.callReturn) {
+      result.step = result.callReturn;
+      delete result.callReturn;
+    }
+    utilities.log('dispatch succeeded');
+    if (onSuccess) onSuccess();
 
-  // }, function(error) {
+  }, function (error) {
 
-  //   utilities.error(error);
-  //   if (onFailed) onFailed(error);
-  // });
+    utilities.error(error);
+    if (onFailed) onFailed(error);
+  });
 };
 
 /**
@@ -469,7 +468,6 @@ EthereumClient.prototype.getMarket = function(marketId, branchId) {
       break;
     }
   }
-  // console.log("All events expired in market", marketId.toString(16), ":", expired);
 
   // check validity
   var invalid = outcomes.length ? false : true;

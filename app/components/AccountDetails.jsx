@@ -132,11 +132,4 @@ var AccountDetails = React.createClass({
   }
 });
 
-// console.warn = function () {};
-// console.error = function () {};
-// console.log = function () {};
-// utilities.log = function () {};
-// utilities.error = function () {};
-// window.onerror = function () { return true; };
-
 module.exports = AccountDetails;
