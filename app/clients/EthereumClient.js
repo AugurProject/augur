@@ -590,7 +590,6 @@ EthereumClient.prototype.addMarket = function(params, onSuccess) {
 };
 
 EthereumClient.prototype.closeMarket = function (marketId, branchId) {
-  // branchId = branchId || process.env.AUGUR_BRANCH_ID;
   utilities.log("Closing market " + marketId + " on branch " + branchId);
   Augur.closeMarket({
     branchId: branchId,

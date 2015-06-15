@@ -9,8 +9,6 @@ var Modal = ReactBootstrap.Modal;
 var ModalTrigger = ReactBootstrap.ModalTrigger;
 var utilities = require('../libs/utilities');
 
-import { Branch } from '../stores/BranchStore'
-
 var CloseMarketModal = React.createClass({
 
   mixins: [FluxMixin, StoreWatchMixin('market', 'branch')],
