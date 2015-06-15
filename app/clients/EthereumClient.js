@@ -463,7 +463,7 @@ EthereumClient.prototype.getMarket = function(marketId, branchId) {
   var events = Augur.getMarketEvents(marketId);
   var expired = true;
   for (var i = 0, len = events.length; i < len; ++i) {
-    if (Augur.getOutcome(events[i]) !== "0") {
+    if (Augur.getOutcome(events[i]) === "0") {
       expired = false;
       break;
     }
