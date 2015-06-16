@@ -58,6 +58,8 @@ var AccountDetails = React.createClass({
   render: function () {
 
     var cashBalance = this.state.asset.cash ? +this.state.asset.cash.toFixed(2) : '-';
+    var repBalance = this.state.asset.reputation ? +this.state.asset.reputation.toFixed(2) : '-';
+
 
     var holdings = [];
     _.each(this.state.holdings, function (market) {
@@ -90,7 +92,7 @@ var AccountDetails = React.createClass({
             </ButtonGroup>
           </div>
           <div className='col-sm-4 rep-balance'>
-            { this.state.asset.reputation } <span className='unit'>rep</span>
+            { repBalance } <span className='unit'>rep</span>
             <ButtonGroup>
               <SendRepTrigger text='send' />
               <Button bsSize='xsmall' bsStyle='default' onClick={ this.onRepFaucet }>Faucet<i className='fa fa-tint'></i></Button>
