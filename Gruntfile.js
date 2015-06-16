@@ -12,8 +12,8 @@ config.envify.build = {
 
 config.browserify = {};
 config.browserify.build = {
-  src: ['app/app.jsx'],
-  dest: 'app/augur.js',
+  src: ['app/main.jsx'],
+  dest: 'app/app.js',
   options: {
     browserifyOptions: {
       extensions: ['.jsx'],
@@ -43,7 +43,7 @@ module.exports = function (grunt) {
         '**/*.js',
         '!**/*.min.js',
         '!node_modules/**/*',
-        '!app/augur.js',
+        '!app/app.js',
       ],
       options: {
         jshintrc: '.jshintrc'
