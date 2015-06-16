@@ -31,13 +31,12 @@ var CloseMarketModal = React.createClass({
 
   },
 
-  onConfirm: function(event) {
+  onConfirm: function (event) {
 
-    console.log(this.props.market.id);
-
-    var ethereumClient = this.state.ethereumClient;
-    ethereumClient.closeMarket(this.props.market.id, this.props.market.branchId);
-
+    this.state.ethereumClient.closeMarket(
+      this.props.params.marketId,
+      this.props.params.branchId
+    );
     this.props.onRequestHide();
   },
 
@@ -55,7 +54,7 @@ var CloseMarketModal = React.createClass({
         </div>
         <div className="modal-body clearfix">
           <Button bsStyle='default' onClick={ this.onCancel }>Cancel</Button>
-          <Button bsStyle='danger' onClick={ this.onConfirm }>Close</Button>
+          <Button bsStyle='danger' onClick={ this.onConfirm }>Close Market</Button>
         </div>
       </Modal>
     );
@@ -68,7 +67,7 @@ var CloseMarketTrigger = React.createClass({
   render: function () {
     return (
       <ModalTrigger modal={<CloseMarketModal {...this.props} />}>
-        <a href='#'>Submit a Market</a>
+        <Button bsSize='xsmall' bsStyle='primary'>Close Market</Button>
       </ModalTrigger>
     );
   }
