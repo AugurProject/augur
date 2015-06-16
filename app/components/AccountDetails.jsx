@@ -60,7 +60,7 @@ var AccountDetails = React.createClass({
   render: function () {
 
     var cashBalance = this.state.asset.cash ? +this.state.asset.cash.toFixed(2) : '-';
-    var repBalance = this.state.asset.reputation ? +this.state.asset.reputation.toFixed(2) : '-';
+    var repBalance = this.state.asset.reputation ? +this.state.asset.reputation.toFixed(2) : 0;
 
 
     var holdings = [];
