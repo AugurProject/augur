@@ -98,7 +98,7 @@ var NetworkActions = {
 
     this.flux.actions.network.loadNetwork();
     this.flux.actions.asset.loadAssets();
-    this.flux.actions.market.updateMarkets();
+    this.flux.actions.market.loadNewMarkets();
 
     // We pull the branch's block-dependent period information from
     // contract calls that need to be called each block.

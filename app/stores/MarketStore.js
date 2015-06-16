@@ -13,7 +13,8 @@ var MarketStore = Fluxxor.createStore({
       constants.market.UPDATE_MARKETS_SUCCESS, this.handleUpdateMarketsSuccess,
       constants.market.UPDATE_MARKET_SUCCESS, this.handleUpdateMarketSuccess,
       constants.market.ADD_PENDING_MARKET_SUCCESS, this.handleAddPendingMarketSuccess,
-      constants.market.ADD_MARKET_SUCCESS, this.handleAddMarketSuccess
+      constants.market.ADD_MARKET_SUCCESS, this.handleAddMarketSuccess,
+      constants.market.DELETE_MARKET_SUCCESS, this.handleDeleteMarketSuccess
     );
   },
 
@@ -49,7 +50,7 @@ var MarketStore = Fluxxor.createStore({
   },
 
   handleUpdateMarketSuccess: function (payload) {
-    state.market[payload.market.id] = payload.market;
+    state.markets[payload.market.id] = payload.market;
     this.emit(constants.CHANGE_EVENT);
   },
 
@@ -61,8 +62,13 @@ var MarketStore = Fluxxor.createStore({
   handleAddMarketSuccess: function (payload) {
 
     state.markets[payload.market.id] = payload.market;
-    delete state.markets[payload.pendingId];
     this.emit(constants.CHANGE_EVENT);
+  },
+
+  handleDeleteMarketSuccess: function (payload) {
+
+    // delete market if it exists
+    if (payload.marketId && state.markets[marketId]) delete state.markets[payload.marketId];
   }
 
 });

@@ -12,7 +12,7 @@ var file = new(static.Server)(webroot, { cache: 600 });
 http.createServer(function(req, res) {
 
   // static URIs
-  var re = /\/(css|images|augur\.js)/;
+  var re = /\/(css|images|app\.js)/;
 
   // route to app if not static URI
   if (!req.url.match(re)) req.url = '/augur.html';

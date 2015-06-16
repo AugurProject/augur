@@ -136,7 +136,7 @@ var AddMarketModal = React.createClass({
     };
 
     var flux = this.getFlux();
-    var pendingId = flux.actions.market.addMarket(newMarketParams);
+    var pendingId = flux.actions.market.addPendingMarket(newMarketParams);
 
     var ethereumClient = this.state.ethereumClient;
     ethereumClient.addEvent(newEventParams, function(newEvent) {
@@ -147,8 +147,8 @@ var AddMarketModal = React.createClass({
 
         // get new market and add to store on success
         var marketId = new BigNumber(newMarket.id);  // convert hex string returned to Big Number :/
-        var market = ethereumClient.getMarket(marketId, self.state.currentBranch.id);
-        flux.actions.market.addMarket(market, pendingId);
+        flux.actions.market.deleteMarket(pendingId);
+        flux.actions.market.loadMarket(marketId);
       });
     });
 

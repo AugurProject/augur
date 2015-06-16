@@ -31,7 +31,6 @@ function EthereumClient(params) {
   this.contracts = {};
 
   // defaults
-  this.defaultGas = params.defaultGas || 1000000;
   this.defaultBranchId = params.defaultBranchId;
   this.host = params.host || 'localhost:8545';
 
@@ -302,98 +301,8 @@ EthereumClient.prototype.price = function (marketId, outcome, f) {
   return Augur.price(marketId, outcome, f);
 };
 
-/**
- * Get a list of all the market data for the given branch.
- *
- * @param branchId - The ID of the branch to get markets for.
- * @returns {object} Market information keyed by market ID.
- * @returns {Number} object.$id.price - The price of the primary outcome of
- *   the market (the positive outcome in binary markets).
- * @returns {BigNumber} object.$id.author - The account hash of the market
- *   creator. Convert to hexadecimal for display purposes.
- */
-EthereumClient.prototype.getMarketsAsync = function (branchId) {
-  var markets = {};
-  Augur.getMarkets(branchId, function (marketList) {
-    marketList.loop(function (market, nextMarket) {
-      markets[market] = { id: market, comments: [], endDate: null };
-      Augur.getMarketEvents(market, function (events) {
-        markets[market].events = events;
-        Augur.getMarketInfo(market, function (marketInfo) {
-          /**
-           * marketInfo: {
-           *    currentParticipant: BigNumber
-           *    alpha: BigNumber
-           *    cumulativeScale: BigNumber
-           *    description: string (ASCII)
-           *    numOutcomes: int
-           *    tradingFee: BigNumber
-           *    tradingPeriod: BigNumber
-           * }
-           */
-          markets[market].traderId = marketInfo.currentParticipant;
-          markets[market].alpha = marketInfo.alpha;
-          markets[market].description = marketInfo.description;
-          markets[market].numOutcomes = marketInfo.numOutcomes;
-          markets[market].tradingFee = marketInfo.tradingFee;
-          markets[market].tradingPeriod = marketInfo.tradingPeriod;
-          if (!markets[market].outcomes) {
-            markets[market].outcomes = Array(marketInfo.numOutcomes);
-          }
-          Augur.getCreator(market, function (author) {
-            markets[market].author = author;
-            markets[market].totalVolume = new BigNumber(0);
-            _.range(1, marketInfo.numOutcomes + 1).loop(function (outcome, nextOutcome) {
-              markets[market].outcomes[outcome] = { id: outcome };
-              Augur.getSharesPurchased(market, outcome, function (allShares) {
-                markets[market].volume = markets[market].outcomes[outcome].volume = allShares;
-                markets[market].totalVolume = markets[market].totalVolume.plus(markets[market].volume);
-                Augur.price(market, outcome, function (price) {
-                  markets[market].price = price;
-                  Augur.getParticipantSharesPurchased(market, marketInfo.currentParticipant, outcome, function (myShares) {
-                    markets[market].outcomes[outcome].sharesHeld = myShares;
-                    Augur.getExpiration(events[0], function (expiration) {
-                      if (events.length) {
-                        markets[market].endDate = utilities.blockToDate((new BigNumber(expiration)).toNumber());
-                        // markets[market] is ready to append to the DOM -- is there a way to do that
-                        // on-the-fly instead of doing it all-at-once thru the dispatcher?
-                        console.log(markets[market]);
-                      }
-                    });
-                  });
-                });
-              });
-              nextOutcome();
-            });
-          });
-        });
-      });
-      nextMarket();
-    });
-  });
-};
 
-EthereumClient.prototype.getNewMarkets = function(branchId, currentMarkets) {
-
-  branchId = branchId || this.defaultBranchId;
-  var validMarkets = _.filter(Augur.getMarkets(branchId), function (marketId) {
-    return !_.contains(blacklist.markets, marketId.toString(16));
-  });
-
-  // convert to string for comparision
-  validMarkets = _.map(validMarkets, function(marketId) { return marketId.toString() } );
-
-  var markets = _.difference(currentMarkets, validMarkets);  // new markets
-
-  var marketList = _.map(markets, function (marketId) {
-    utilities.debug('new market: '+marketId.toString(16));
-    return this.getMarket(marketId, branchId);
-  }, this);
-
-  return _.indexBy(marketList, 'id');
-};
-
-EthereumClient.prototype.getMarkets = function(branchId, onProgress) {
+EthereumClient.prototype.getMarkets = function(branchId, currentMarkets) {
 
   branchId = branchId || this.defaultBranchId;
   var validMarkets = _.filter(Augur.getMarkets(branchId), function (marketId) {
@@ -401,46 +310,84 @@ EthereumClient.prototype.getMarkets = function(branchId, onProgress) {
     return !_.contains(blacklist.markets, marketId.toString(16));
   });
 
-  var progress = {total: validMarkets.length, current: 0};
+  if (currentMarkets) {    // return new markets only
 
-  var marketList = _.map(validMarkets, function (marketId) {
+    // convert ids to strings for comparision
+    validMarkets = _.map(validMarkets, function(marketId) { return marketId.toString() } );
+    currentMarkets = _.map(currentMarkets, function(marketId) { return marketId.toString() } );
+    var newMarkets = _.difference(currentMarkets, validMarkets);
 
-    // update/call progress
-    if (onProgress) {
-      progress.current += 1;
-      onProgress(progress);
-    }
+    return newMarkets;
 
-    return this.getMarket(marketId, branchId);
+  } else {
 
-  }, this);
-
-  return _.indexBy(marketList, 'id');
+    return validMarkets;
+  }
 };
 
-EthereumClient.prototype.getMarket = function(marketId, branchId) {
+EthereumClient.prototype.getMarketEvents = function(marketId) {
 
   var events = Augur.getMarketEvents(marketId);
+  return events;
+};
+
+EthereumClient.prototype.getMarketDescription = function(marketId) {
+  
   var description = Augur.getDescription(marketId);
+  return description;
+};
+
+EthereumClient.prototype.getMarketAlpha = function(marketId) {
+  
   var alpha = Augur.getAlpha(marketId);
+  return alpha;
+};
+
+EthereumClient.prototype.getMarketAuthor = function(marketId) {
+  
   var author = Augur.getCreator(marketId);
+  return author;
+};
 
+EthereumClient.prototype.getMarketCreationFee = function(marketId) {
+  
   var creationFee = Augur.getCreationFee(marketId);
+  return creationFee;
+};
 
-  // calc end date from first events expiration
-  var endDate;
-  if (events.length) {
-    var expirationBlock = Augur.getExpiration(events[0]);
-    endDate = utilities.blockToDate(expirationBlock.toNumber());
-  }
+EthereumClient.prototype.getEventExpiration = function(eventId) {
+  
+  var expirationBlock = Augur.getExpiration(eventId);
+  return expirationBlock;
+};
 
+EthereumClient.prototype.getMarketTraderCount = function(marketId) {
+  
   var traderCount = Augur.getCurrentParticipantNumber(marketId);
+  return traderCount;
+};
+
+EthereumClient.prototype.getMarketTradingPeriod  = function(marketId) {
+  
   var tradingPeriod = Augur.getTradingPeriod(marketId);
+  return tradingPeriod;
+};
+
+EthereumClient.prototype.getMarketTradingFee  = function(marketId) {
+  
   var tradingFee = Augur.getTradingFee(marketId);
+  return tradingFee;
+};
+
+EthereumClient.prototype.getMarketTraderId  = function(marketId) {
+  
   var traderId = Augur.getParticipantNumber(marketId, this.account);
+  return traderId;
+};
 
+EthereumClient.prototype.getMarketOutcomes  = function(marketId, traderId) {
+  
   var totalVolume = new BigNumber(0);
-
   var outcomeCount = Augur.getMarketNumOutcomes(marketId).toNumber();
   var outcomes = _.map( _.range(1, outcomeCount + 1), function (outcomeId) {
 
@@ -460,52 +407,21 @@ EthereumClient.prototype.getMarket = function(marketId, branchId) {
     };
   });
 
-  var price = outcomes.length ? outcomes[1].price : new BigNumber(0);  // hardcoded to outcome 2 (yes)
-
-  // check if this market is ready to be closed
-  var events = Augur.getMarketEvents(marketId);
-  var expired = true;
-  var numEvents = events.length;
-  var closed = false;
-  var winningOutcomes = Augur.getWinningOutcomes(marketId).slice(0, numEvents);
-  for (var i = 0; i < numEvents; ++i) {
-    if (expired && Augur.getOutcome(events[i]).toFixed() === "0") {
-      expired = false;
-    }
-    if (!closed && Number(winningOutcomes[i]) !== 0) {
-      closed = true;
-    }
-    if (!expired && closed) break;
-  }
-
-  // check if the current user authored this market
-  var authored = Augur.coinbase === Augur.getCreator(marketId);
-
-  // check validity
-  var invalid = outcomes.length ? false : true;
-
-  return {
-    id: marketId,
-    branchId: branchId,
-    price: price,
-    description: description,
-    alpha: alpha,
-    author: author,
-    endDate: endDate,
-    traderCount: traderCount,
-    tradingPeriod: tradingPeriod,
-    tradingFee: tradingFee,
-    traderId: traderId,
-    totalVolume: totalVolume,
-    events: events,
-    outcomes: outcomes,
-    comments: [],
-    invalid: invalid,
-    expired: expired,
-    authored: authored,
-    closed: closed
-  };
+  return outcomes;
 };
+
+EthereumClient.prototype.getMarketWinningOutcomes = function(marketId) {
+
+  var winningOutcomes = Augur.getWinningOutcomes(marketId);
+  return winningOutcomes;
+};
+
+EthereumClient.prototype.getEventOutcome = function(eventId) {
+
+  var outcome = Augur.getOutcome(eventId);
+  return outcome;
+};
+
 
 EthereumClient.prototype.addEvent = function(params, onSuccess) {
 

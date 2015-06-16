@@ -4,8 +4,8 @@ import { Branch } from '../stores/BranchStore'
 import constants from '../libs/constants'
 import utilities from '../libs/utilities'
 
-
 export default {
+  
   loadBranches: function () {
 
     var ethereumClient = this.flux.store('config').getEthereumClient();
