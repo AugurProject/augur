@@ -54,21 +54,32 @@ var NetworkActions = {
     setTimeout(this.flux.actions.network.checkNetwork, 3000);
   },
 
-  loadNetwork: function () {
+  updateNetwork: function () {
 
     var ethereumClient = this.flux.store('config').getEthereumClient();
-    var networkStats = ethereumClient.getStats();
-    var blockMoment = utilities.blockToDate(networkStats.blockNumber);
+    var self = this;
 
-    this.dispatch(constants.network.LOAD_NETWORK, {
-      accounts: ethereumClient.getAccounts(),
-      primaryAccount: ethereumClient.getPrimaryAccount(),
-      peerCount: networkStats.peerCount,
-      blockNumber: networkStats.blockNumber,
-      gasPrice: networkStats.gasPrice,
-      mining: networkStats.mining,
-      hashrate: networkStats.hashrate,
-      blocktime: blockMoment.format('MMM Do, HH:mm')
+    ethereumClient.getAccounts(function(accounts) {
+      self.dispatch(constants.network.UPDATE_NETWORK, { accounts: accounts });
+    });
+    ethereumClient.getPrimaryAccount(function(account) {
+      self.dispatch(constants.network.UPDATE_NETWORK, { primaryAccount: account });
+    });
+    ethereumClient.getPeerCount(function(peerCount) {
+      self.dispatch(constants.network.UPDATE_NETWORK, { peerCount: peerCount });
+    });
+    ethereumClient.getBlockNumber(function(blockNumber) {
+      var blockMoment = utilities.blockToDate(blockNumber);
+      self.dispatch(constants.network.UPDATE_NETWORK, { blockNumber: blockNumber, blocktime: blockMoment.format('MMM Do, HH:mm') });
+    });
+    ethereumClient.getGasPrice(function(gasPrice) {
+      self.dispatch(constants.network.UPDATE_NETWORK, { gasPrice: gasPrice });
+    });
+    ethereumClient.getMining(function(mining) {
+      self.dispatch(constants.network.UPDATE_NETWORK, { mining: mining });
+    });
+    ethereumClient.getHashrate(function(hashrate) {
+      self.dispatch(constants.network.UPDATE_NETWORK, { hashrate: hashrate });
     });
   },
 
@@ -78,7 +89,8 @@ var NetworkActions = {
   loadEverything: function () {
 
     this.flux.actions.config.updateEthereumClient();
-    this.flux.actions.network.loadNetwork();
+    this.flux.actions.network.updateNetwork();
+
     this.flux.actions.branch.loadBranches();
     this.flux.actions.branch.setCurrentBranch();
 
@@ -96,7 +108,7 @@ var NetworkActions = {
    */
   onNewBlock: function () {
 
-    this.flux.actions.network.loadNetwork();
+    this.flux.actions.network.updateNetwork();
     this.flux.actions.asset.loadAssets();
     this.flux.actions.market.loadNewMarkets();
 

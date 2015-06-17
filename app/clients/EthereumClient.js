@@ -74,39 +74,91 @@ EthereumClient.prototype.startMonitoring = function(callback) {
     if (err) utilities.error(err);
     callback();
   });
-}
+};
 
 EthereumClient.prototype.stopMonitoring = function() {
   _.each(this.filters, function(filter) {
     filter.stopWatching()
   });
-}
+};
 
 EthereumClient.prototype.setDefaultBranch = function(branchId) {
   this.defaultBranchId = branchId;
-}
+};
 
-EthereumClient.prototype.getEtherBalance = function() {
-  return Augur.balance(this.account);
-}
+EthereumClient.prototype.getAccounts = function(callback) {
+  web3.eth.getAccounts(function(error, result) {
+    if (error) { 
+      utilities.error(error);
+    } else { 
+      callback(result); 
+    }
+  });
+};
 
-EthereumClient.prototype.getAccounts = function() {
-  return Augur.accounts();
-}
+EthereumClient.prototype.getEtherBalance = function(callback) {
+  return web3.eth.getBalance(this.account);
+};
 
-EthereumClient.prototype.getPrimaryAccount = function() {
-  return Augur.coinbase;
-}
+EthereumClient.prototype.getPrimaryAccount = function(callback) {
+  web3.eth.getCoinbase(function(error, result) {
+    if (error) { 
+      utilities.error(error);
+    } else { 
+      callback(result); 
+    }
+  });
+};
 
-EthereumClient.prototype.getStats = function() {
-  return {
-    gasPrice: Augur.gasPrice(),
-    blockNumber: Augur.blockNumber(),
-    mining: Augur.mining(),
-    hashrate: Augur.hashrate(),
-    peerCount: Augur.peerCount()
-  }
-}
+EthereumClient.prototype.getBlockNumber = function(callback) {
+  web3.eth.getBlockNumber(function(error, result) {
+    if (error) { 
+      utilities.error(error);
+    } else { 
+      callback(result); 
+    }
+  });
+};
+
+EthereumClient.prototype.getGasPrice = function(callback) {
+  web3.eth.getGasPrice(function(error, result) {
+    if (error) { 
+      utilities.error(error);
+    } else { 
+      callback(result); 
+    }
+  });
+};
+
+EthereumClient.prototype.getMining = function(callback) {
+  web3.eth.getMining(function(error, result) {
+    if (error) { 
+      utilities.error(error);
+    } else { 
+      callback(result); 
+    }
+  });
+};
+
+EthereumClient.prototype.getHashrate = function(callback) {
+  web3.eth.getHashrate(function(error, result) {
+    if (error) { 
+      utilities.error(error);
+    } else { 
+      callback(result); 
+    }
+  });
+};
+
+EthereumClient.prototype.getPeerCount = function(callback) {
+  web3.net.getPeerCount(function(error, result) {
+    if (error) { 
+      utilities.error(error);
+    } else { 
+      callback(result); 
+    }
+  });
+};
 
 /**
  * Get the contract object for the given contract name. If it hasn't been
