@@ -111,6 +111,8 @@ var AddMarketModal = React.createClass({
 
     } else if (pageNumber === 3) {
 
+      console.log(this.state.maturationDate);
+      if (this.state.maturationDate === '') return false;
     }
     return true;
   },
@@ -121,6 +123,8 @@ var AddMarketModal = React.createClass({
   },
 
   onSubmit: function(event) {
+
+    if (!this.validatePage(this.state.pageNumber)) return;
 
     var self = this;
 
