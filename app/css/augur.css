@@ -679,6 +679,12 @@ background: linear-gradient(to bottom, rgba(24,55,111,0) 0%,rgba(24,55,111,0.7) 
     margin: 0px 0px 20px 0px;
     padding: 0px;
 }
+#ballots .ballot h4 {
+    padding: 5px 10px;
+}
+#ballots .ballot p {
+    padding: 2px 10px;
+}
 #ballots .ballot .decision {
     padding: 10px 10px 0px 10px;
     border-bottom: 1px dotted #D0C173;
