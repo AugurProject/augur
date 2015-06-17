@@ -67,7 +67,7 @@ var NetworkActions = {
     });
     ethereumClient.getBlockNumber(function(blockNumber) {
       var blockMoment = utilities.blockToDate(blockNumber);
-      self.dispatch(constants.network.UPDATE_NETWORK, { blockNumber: blockNumber, blocktime: blockMoment.format('MMM Do, HH:mm') });
+      self.dispatch(constants.network.UPDATE_NETWORK, { blockNumber: blockNumber, blocktime: blockMoment });
     });
     ethereumClient.getGasPrice(function(gasPrice) {
       self.dispatch(constants.network.UPDATE_NETWORK, { gasPrice: gasPrice });
