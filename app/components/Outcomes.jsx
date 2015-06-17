@@ -204,7 +204,7 @@ var Overview = React.createClass({
             <Button bsStyle='success' onClick={ this.handleBuyClick }>Buy</Button>
           </div>
           { holdings }
-          <p>{ +outcome.price.toFixed(2) }</p>
+          <p>{ outcome.price.toFixed(4) } cash/share</p>
           <p>{ +outcome.volume.toFixed(2) } shares</p>
         </div>
       )
@@ -320,7 +320,7 @@ var TradeBase = {
         <div className='cancel trade-button'>
           <Button bsStyle='default' onClick={ this.props.handleCancel } bsSize='small'>CANCEL</Button>
         </div>
-        <p>{ +outcome.price.toFixed(2) }</p>
+        <p>{ outcome.price.toFixed(4) } cash/share</p>
         <p>{ outcome.sharesHeld.toNumber() } { outcome.sharesHeld.toNumber() === 1 ? 'share' : 'shares' } held</p>
         <p className='new-price'>{ this.getPriceDelta() }</p>
       </div>
