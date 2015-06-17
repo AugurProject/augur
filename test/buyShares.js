@@ -27,7 +27,7 @@ var initial_rep = Augur.getRepBalance(branch, Augur.coinbase);
 var initial_ether = Augur.bignum(Augur.balance(Augur.coinbase)).dividedBy(Augur.ETHER).toFixed();
 var amount = "100";
 
-log(chalk.cyan("\nInitial balances:"));
+log(chalk.cyan("Initial balances:"));
 log("CASH:    " + chalk.green(initial_cash));
 log("REP:     " + chalk.green(initial_rep));
 log("ETHER:   " + chalk.green(initial_ether));

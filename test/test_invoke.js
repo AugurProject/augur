@@ -124,38 +124,3 @@ describe("Invoke contract functions", function () {
         });
     });
 });
-// describe("Batch RPC", function () {
-//     describe("batch(ten.ten, mul2.double(3))", function () {
-//         var test = function (res) {
-//             assert.equal(res.constructor, Array);
-//             assert.equal(res.length, 2);
-//             assert.equal(parseInt(res[0]), 10);
-//             assert.equal(parseInt(res[1]), 6);
-//         };
-//         var txlist = [{
-//             to: constants.examples.ten,
-//             from: Augur.coinbase,
-//             method: "ten",
-//             returns: "number"
-//         }, {
-//             to: constants.examples.mul2,
-//             from: Augur.coinbase,
-//             method: "double",
-//             signature: "i",
-//             returns: "number",
-//             params: 3
-//         }];
-//         it("sync: match separate invocations", function () {
-//             test(Augur.batch(txlist));
-//         });
-//         it("async: match separate invocations", function (done) {
-//             Augur.batch(txlist, function (res) {
-//                 assert.equal(res.constructor, Array);
-//                 assert.equal(res.length, 2);
-//                 assert.equal(parseInt(res[0]), 10);
-//                 assert.equal(parseInt(res[1]), 6);
-//                 done();
-//             });
-//         });
-//     });
-// });

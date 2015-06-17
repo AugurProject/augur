@@ -1218,12 +1218,16 @@ var Augur = (function (augur) {
         }
     };
 
-    // Batched RPC commands
+    /************************
+     * Batched RPC commands *
+     ************************/
+
     augur.batch = function (txlist, f) {
-        var num_commands, rpclist, tx, data_abi, packaged, invocation;
+        var num_commands, rpclist, callbacks, tx, data_abi, packaged, invocation;
         if (txlist.constructor === Array) {
             num_commands = txlist.length;
             rpclist = new Array(num_commands);
+            callbacks = new Array(num_commands);
             for (var i = 0; i < num_commands; ++i) {
                 tx = copy(txlist[i]);
                 if (tx.params) {
@@ -1237,10 +1241,14 @@ var Augur = (function (augur) {
                         tx.params = tx.params.toFixed();
                     }
                 }
-                if (tx.from) tx.from = this.prefix_hex(tx.from);
-                tx.to = this.prefix_hex(tx.to);
-                data_abi = this.encode_abi(tx);
+                if (tx.from) tx.from = augur.prefix_hex(tx.from);
+                tx.to = augur.prefix_hex(tx.to);
+                data_abi = augur.encode_abi(tx);
                 if (data_abi) {
+                    if (tx.callback && tx.callback.constructor === Function) {
+                        callbacks[i] = tx.callback;
+                        delete tx.callback;
+                    }
                     packaged = {
                         from: tx.from || augur.coinbase,
                         to: tx.to,
@@ -1254,14 +1262,67 @@ var Augur = (function (augur) {
                     return rpclist;
                 }
             }
-            return json_rpc(rpclist, f);
+            if (f) {
+                if (f.constructor === Function) { // callback on whole array
+                    json_rpc(rpclist, f);
+                } else if (f === true) {
+                    json_rpc(rpclist, function (res) {
+                        if (res) {
+                            if (res.constructor === Array && res.length) {
+                                for (j = 0; j < num_commands; ++j) {
+                                    if (res[j] && callbacks[j]) {
+                                        callbacks[j](res[j]);
+                                    }
+                                }
+                            } else {
+                                if (callbacks.length && callbacks[0]) {
+                                    callbacks[0](res);
+                                }
+                            }
+                        }
+                    });
+                }
+            } else {
+                return json_rpc(rpclist, f);
+            }
         } else {
             log("expected array for batch RPC, invoking instead");
             return this.invoke(txlist, f);
         }
     };
 
-    // Error handling and propagation
+    /**
+     * User-friendly batch interface:
+     *
+     * var b = Augur.createBatch();
+     * b.add("getCashBalance", [Augur.coinbase], callback);
+     * b.add("getRepBalance", [Augur.branches.dev, Augur.coinbase], callback);
+     * b.execute();
+     */
+    var Batch = function () {
+        this.txlist = [];
+    };
+    Batch.prototype.add = function (method, params, callback) {
+        if (method) {
+            var tx = copy(augur.tx[method]);
+            if (params && params.length !== 0) {
+                tx.params = params;
+            }
+            if (callback) tx.callback = callback;
+            this.txlist.push(tx);
+        }
+    };
+    Batch.prototype.execute = function () {
+        augur.batch(this.txlist, true);
+    };
+    augur.createBatch = function createBatch () {
+        return new Batch();
+    };
+
+    /**********************************
+     * Error handling and propagation *
+     **********************************/
+
     function error_codes(tx, response) {
         if (response && response.constructor === Array) {
             for (var i = 0, len = response.length; i < len; ++i) {
