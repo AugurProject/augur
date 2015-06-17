@@ -2640,6 +2640,7 @@ var Augur = (function (augur) {
     };
 
     // markets.se
+    // TODO return regular number error codes if there is an error
     augur.tx.getSimulatedBuy = {
         to: augur.contracts.markets,
         method: "getSimulatedBuy",
@@ -3062,6 +3063,7 @@ var Augur = (function (augur) {
         to: augur.contracts.buyAndSellShares,
         method: "buyShares",
         signature: "iiiii",
+        // returns: "unfix",
         send: true
     };
     augur.tx.sellShares = {
