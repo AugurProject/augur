@@ -13,6 +13,7 @@ module.exports = {
   NO: ONE_FXP,
   YES: ONE_FXP.mul(2),
   SECONDS_PER_BLOCK: 12,
+  MARKETS_PER_PAGE: 15,
   CHANGE_EVENT: 'change',
   config: keyMirror({
     UPDATE_ETHEREUM_CLIENT_SUCCESS: null,

@@ -12,6 +12,8 @@ var Link = Router.Link;
 var AddMarketTrigger =  require('./AddMarket').AddMarketTrigger;
 var Markets = require('./Markets');
 
+var constants = require('../libs/constants');
+
 var Branch = React.createClass({
 
   // assuming only one branch and all markets in store are of that branch
@@ -19,7 +21,7 @@ var Branch = React.createClass({
 
   getInitialState: function () {
     return {
-      marketsPerPage: 15,
+      marketsPerPage: constants.MARKETS_PER_PAGE,
       visiblePages: 3,
       pageNum: 0
     };

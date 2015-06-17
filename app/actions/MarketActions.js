@@ -106,17 +106,22 @@ var MarketActions = {
     var progress = {total: marketIds.length, current: 0};
     this.flux.actions.config.updatePercentLoaded(100);  // hack no progress bar
 
-    _.each(marketIds, function(marketId) {
+    // breaks ids into pages
+    var marketPageIds = _.chunk(marketIds, constants.MARKETS_PER_PAGE);
 
-      var market = {id: marketId, branchId: currentBranch.id};
-      this.dispatch(constants.market.ADD_MARKET_SUCCESS, {market: market});
-      this.flux.actions.market.loadMarket(market.id);
+    _.each(marketPageIds, function(ids) {
+      _.each(ids, function(marketId) {
 
-      // update progress
-      //progress.current += 1;
-      //var percent = ((progress.current/progress.total) * 100).toFixed(2);
-      //this.flux.actions.config.updatePercentLoaded(percent);
+        var market = {id: marketId, branchId: currentBranch.id};
+        this.dispatch(constants.market.ADD_MARKET_SUCCESS, {market: market});
+        this.flux.actions.market.loadMarket(market.id);
 
+        // update progress
+        //progress.current += 1;
+        //var percent = ((progress.current/progress.total) * 100).toFixed(2);
+        //this.flux.actions.config.updatePercentLoaded(percent);
+
+      }, this);
     }, this);
 
     var seconds = moment().diff(startMoment) / 1000;
