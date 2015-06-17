@@ -4,31 +4,72 @@ var utilities = require('../libs/utilities');
 
 var MarketActions = {
 
+  // returns a function that returns a function that sets a market property to the passed value
+  getMarketSetter: function(marketId) {
+
+    var self = this;
+
+    return function(property) {
+
+      return function(value) {
+
+        var market = {'id': marketId};
+        market[property] = value;
+        self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
+      }
+    }
+  },
+
   loadMarket: function(marketId) {
 
+    var setProp = this.flux.actions.market.getMarketSetter(marketId);
+
+    var self = this;
+
     var market = {'id': marketId};
-    market['description'] = ethereumClient.getMarketDescription(marketId);
-    market['events'] = ethereumClient.getMarketEvents(marketId);
-    market['alpha'] = ethereumClient.getMarketAlpha(marketId);
-    market['author'] = ethereumClient.getMarketAuthor(marketId);
-    market['creationFee'] = ethereumClient.getMarketCreationFee(marketId);
 
-    this.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
-    
-    // calc end date from first events expiration
-    if (market.events.length) {
-      var expirationBlock = ethereumClient.getEventExpiration(market.events[0]);
-      market['endDate'] = utilities.blockToDate(expirationBlock.toNumber());
-    }
+    ethereumClient.getMarketDescription(marketId, setProp('description'));
 
-    market['traderCount'] = ethereumClient.getMarketTraderCount(marketId);
-    market['tradingPeriod'] = ethereumClient.getMarketTradingPeriod(marketId);
-    market['tradingFee']= ethereumClient.getMarketTradingFee(marketId);
-    market['traderId']= ethereumClient.getMarketTraderId(marketId);
-    market['outcomes'] = ethereumClient.getMarketOutcomes(marketId, market['traderId']);
-    market['price'] = market.outcomes.length ? market.outcomes[1].price : new BigNumber(0);  // hardcoded to outcome 2 (yes)
+    ethereumClient.getMarketEvents(marketId, function(events) {
 
-    this.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
+      market['events'] = events;
+      // calc end date from first events expiration
+      if (events.length) {
+        var expirationBlock = ethereumClient.getEventExpiration(market.events[0]);
+        market['endDate'] = utilities.blockToDate(expirationBlock.toNumber());
+      }
+      // check if this market is ready to be closed
+      market['expired'] = true;
+      market['closed'] = false;
+      var winningOutcomes = ethereumClient.getMarketWinningOutcomes(marketId).slice(0, events.length);
+      for (var i = 0; i < events.length; ++i) {
+        if (market['expired'] && ethereumClient.getEventOutcome(events[i]).toFixed() === "0") {
+          market['expired'] = false;
+        }
+        if (!market['closed'] && Number(winningOutcomes[i]) !== 0) {
+          market['closed'] = true;
+        }
+        if (!market['expired'] && market['closed']) break;
+      }
+      self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
+    });
+
+    ethereumClient.getMarketAlpha(marketId, setProp('alpha'));
+    ethereumClient.getMarketAuthor(marketId, setProp('author'));
+    ethereumClient.getMarketCreationFee(marketId, setProp('creationFee'));
+
+    ethereumClient.getMarketTraderCount(marketId, setProp('traderCount'));
+    ethereumClient.getMarketTradingPeriod(marketId, setProp('tradingPeriod'));
+    ethereumClient.getMarketTradingFee(marketId, setProp('tradingFee'));
+    ethereumClient.getMarketTraderId(marketId, function(result) {
+      market['traderId'] = result;
+      self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
+      var outcomes = ethereumClient.getMarketOutcomes(marketId, market['traderId']);
+      market['outcomes'] = outcomes;
+      market['invalid'] = outcomes.length ? false : true;
+      market['price'] = outcomes.length ? outcomes[1].price : new BigNumber(0);  // hardcoded to outcome 2 (yes)
+      self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
+    });
 
     // calc total volume
     var totalVolume =_.reduce(market.outcomes, function(totalVolume, outcome) {
@@ -36,23 +77,8 @@ var MarketActions = {
     }, 0);
     market['totalVolume'] = totalVolume;
 
-    // check if this market is ready to be closed
-    market['expired'] = true;
-    market['closed'] = false;
-    var winningOutcomes = ethereumClient.getMarketWinningOutcomes(marketId).slice(0, market.events.length);
-    for (var i = 0; i < market.events.length; ++i) {
-      if (market['expired'] && ethereumClient.getEventOutcome(market.events[i]).toFixed() === "0") {
-        market['expired'] = false;
-      }
-      if (!market['closed'] && Number(winningOutcomes[i]) !== 0) {
-        market['closed'] = true;
-      }
-      if (!market['expired'] && market['closed']) break;
-    }
-
     var account = this.flux.store('network').getAccount();
     market['authored'] = account === market.author;
-    market['invalid'] = market.outcomes.length ? false : true;
     market['comments'] = [];
 
     this.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});

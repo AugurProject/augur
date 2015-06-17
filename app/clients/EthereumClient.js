@@ -325,64 +325,44 @@ EthereumClient.prototype.getMarkets = function(branchId, currentMarkets) {
   }
 };
 
-EthereumClient.prototype.getMarketEvents = function(marketId) {
-
-  var events = Augur.getMarketEvents(marketId);
-  return events;
+EthereumClient.prototype.getMarketEvents = function(marketId, onResult) {
+  return Augur.getMarketEvents(marketId, onResult);
 };
 
-EthereumClient.prototype.getMarketDescription = function(marketId) {
-  
-  var description = Augur.getDescription(marketId);
-  return description;
+EthereumClient.prototype.getMarketDescription = function(marketId, onResult) {
+  return Augur.getDescription(marketId, onResult)
 };
 
-EthereumClient.prototype.getMarketAlpha = function(marketId) {
-  
-  var alpha = Augur.getAlpha(marketId);
-  return alpha;
+EthereumClient.prototype.getMarketAlpha = function(marketId, onResult) {
+  return Augur.getAlpha(marketId, onResult);
 };
 
-EthereumClient.prototype.getMarketAuthor = function(marketId) {
-  
-  var author = Augur.getCreator(marketId);
-  return author;
+EthereumClient.prototype.getMarketAuthor = function(marketId, onResult) {
+  return Augur.getCreator(marketId, onResult);
 };
 
-EthereumClient.prototype.getMarketCreationFee = function(marketId) {
-  
-  var creationFee = Augur.getCreationFee(marketId);
-  return creationFee;
+EthereumClient.prototype.getMarketCreationFee = function(marketId, onResult) {
+  return Augur.getCreationFee(marketId, onResult);
 };
 
-EthereumClient.prototype.getEventExpiration = function(eventId) {
-  
-  var expirationBlock = Augur.getExpiration(eventId);
-  return expirationBlock;
+EthereumClient.prototype.getEventExpiration = function(eventId, onResult) {
+  return Augur.getExpiration(eventId, onResult);
 };
 
-EthereumClient.prototype.getMarketTraderCount = function(marketId) {
-  
-  var traderCount = Augur.getCurrentParticipantNumber(marketId);
-  return traderCount;
+EthereumClient.prototype.getMarketTraderCount = function(marketId, onResult) {
+  return Augur.getCurrentParticipantNumber(marketId, onResult);
 };
 
-EthereumClient.prototype.getMarketTradingPeriod  = function(marketId) {
-  
-  var tradingPeriod = Augur.getTradingPeriod(marketId);
-  return tradingPeriod;
+EthereumClient.prototype.getMarketTradingPeriod  = function(marketId, onResult) {
+  return Augur.getTradingPeriod(marketId, onResult);
 };
 
-EthereumClient.prototype.getMarketTradingFee  = function(marketId) {
-  
-  var tradingFee = Augur.getTradingFee(marketId);
-  return tradingFee;
+EthereumClient.prototype.getMarketTradingFee  = function(marketId, onResult) {
+  return Augur.getTradingFee(marketId, onResult);
 };
 
-EthereumClient.prototype.getMarketTraderId  = function(marketId) {
-  
-  var traderId = Augur.getParticipantNumber(marketId, this.account);
-  return traderId;
+EthereumClient.prototype.getMarketTraderId  = function(marketId, onResult) {
+  return Augur.getParticipantNumber(marketId, this.account, onResult);
 };
 
 EthereumClient.prototype.getMarketOutcomes  = function(marketId, traderId) {
@@ -421,6 +401,8 @@ EthereumClient.prototype.getEventOutcome = function(eventId) {
   var outcome = Augur.getOutcome(eventId);
   return outcome;
 };
+
+
 
 
 EthereumClient.prototype.addEvent = function(params, onSuccess) {
