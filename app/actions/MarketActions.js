@@ -108,7 +108,7 @@ var MarketActions = {
 
     _.each(marketIds, function(marketId) {
 
-      var market = {id: marketId};
+      var market = {id: marketId, branchId: currentBranch.id};
       this.dispatch(constants.market.ADD_MARKET_SUCCESS, {market: market});
       this.flux.actions.market.loadMarket(market.id);
 
