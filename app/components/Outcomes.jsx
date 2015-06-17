@@ -14,7 +14,11 @@ var NO = 1;
 var YES = 2;
 
 var priceToPercentage = function (price) {
-  return +price.times(100).toFixed(1);
+  if (price) {
+    return +price.times(100).toFixed(1);
+  } else {
+    return 0;
+  }
 };
 
 var getOutcomeName = function (id, count) {
@@ -248,15 +252,16 @@ var TradeBase = {
     var numShares = parseFloat(rawValue);
     var self = this;
 
-    this.setState({
-      value: rawValue,
-      inputError: null
-    });
+    this.setState({ value: rawValue });
 
-    if (!numShares) {
+    this.setState({ inputError: null });
+
+    if (numShares === '') {
+
       this.setState({
         simulation: null
       });
+
     } else {
 
       new Promise((resolve, reject) => {
@@ -267,7 +272,6 @@ var TradeBase = {
           resolve
         );
       }).then((simulation) => {
-        utilities.debug('simulation returned: '+simulation);
         this.setState({
           simulation: simulation
         });

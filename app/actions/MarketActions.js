@@ -68,13 +68,13 @@ var MarketActions = {
     ethereumClient.getMarketTraderId(marketId, function(traderId) {
       market['traderId'] = traderId;
       ethereumClient.getMarketNumOutcomes(marketId, function(numOutcomes) {
-        market['outcomes'] = [];
         _.each(_.range(1, numOutcomes.toNumber() + 1), function (outcomeId) {
           ethereumClient.getMarketSharesPurchased(marketId, outcomeId, function(volume) {
             var sharesHeld = new BigNumber(0);
             if (traderId !== -1) sharesHeld = ethereumClient.getMarketParticipantSharesPurchased(marketId, traderId, outcomeId);
             ethereumClient.getPrice(marketId, outcomeId, function(price) {
               if (outcomeId === 2) market['price'] = price;  // hardcoded to outcome 2
+              if (!market.outcomes) market['outcomes'] = [];
               market['outcomes'][outcomeId-1] = {
                 id: outcomeId,
                 price: price,
