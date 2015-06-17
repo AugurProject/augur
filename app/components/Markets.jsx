@@ -39,7 +39,7 @@ var MarketPane = React.createClass({
     if (this.props.currentBranch.currentPeriod >= market.tradingPeriod) market.matured = true;
 
     var volume =_.reduce(market.outcomes, function(volume, outcome) {
-      return volume + parseFloat(outcome.volume);
+      if (volume && outcome) return volume + parseFloat(outcome.volume);
     }, 0);
 
     var formattedDate = market.endDate ? moment(market.endDate).format('MMM Do, YYYY') : '-';
@@ -52,17 +52,21 @@ var MarketPane = React.createClass({
     var linked = true;
     var className = 'market-pane shadow'
 
-    if (market.invalid) {
+    if (market.pending) {
+      status = 'Pending'
+      className += ' pending';
+      linked = false;
+    } else if (!market.loaded) {
+      status = 'Loading'
+      className += ' loading';
+      linked = false;
+    } else if (market.invalid) {
       status = 'Invalid'
       className += ' invalid'; 
       linked = false;
     } else if (market.matured) {
       status = 'Matured'
       className += ' matured';
-    } else if (market.pending) {
-      status = 'Pending'
-      className += ' pending';
-      linked = false;
     }
 
     var body = (

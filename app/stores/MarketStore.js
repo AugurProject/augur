@@ -18,6 +18,14 @@ var MarketStore = Fluxxor.createStore({
     );
   },
 
+  marketIsLoaded: function(market) {
+
+    var requiredProperties = ["id", "authored", "comments", "events", "expired", "traderId", "endDate", "outcomes", "price"]
+    var loaded = _.intersection(_.keys(market), requiredProperties);
+
+    return loaded.length == requiredProperties.length;
+  },
+
   getState: function () {
     return state;
   },
@@ -50,7 +58,10 @@ var MarketStore = Fluxxor.createStore({
   },
 
   handleUpdateMarketSuccess: function (payload) {
+
+    payload.market.loaded = this.marketIsLoaded(payload.market);
     state.markets[payload.market.id] = _.merge(state.markets[payload.market.id], payload.market);
+
     this.emit(constants.CHANGE_EVENT);
   },
 

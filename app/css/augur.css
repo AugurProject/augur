@@ -317,6 +317,9 @@ nav .navbar-right li div {
 .market-pane.invalid {
     opacity: 0.75;
 }
+.market-pane.loading {
+    opacity: 0.50;
+}
 a.market-pane:hover {
     color: #000;
     text-decoration: none;
