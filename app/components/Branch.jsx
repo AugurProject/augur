@@ -29,11 +29,11 @@ var Branch = React.createClass({
 
     var flux = this.getFlux();
     var marketState = flux.store('market').getState();
-    var votePeriod = flux.store('branch').getState().currentVotePeriod;
+    var currentBranch = flux.store('branch').getCurrentBranch();
 
     return {
       markets: marketState.markets,
-      votePeriod: votePeriod
+      currentBranch: currentBranch
     }
   },
 
@@ -72,6 +72,7 @@ var Branch = React.createClass({
         <div className='markets row'>
           <Markets 
             markets={ marketPage }
+            currentBranch={ this.state.currentBranch }
             classNameWrapper='col-sm-4' />
         </div>
       </div>

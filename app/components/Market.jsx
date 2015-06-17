@@ -27,7 +27,12 @@ var Market = React.createClass({
     var marketId = new BigNumber(this.props.params.marketId, 16);
     var market = marketState.markets[marketId];
 
+    if (currentBranch && market && currentBranch.currentPeriod >= market.tradingPeriod) {
+      market.matured = true;
+    }
+
     return {
+      currentBranch: currentBranch,
       market: market,
       cashBalance: assetState.cashBalance,
       account: account
