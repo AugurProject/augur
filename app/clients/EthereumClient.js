@@ -51,7 +51,7 @@ EthereumClient.prototype.isAvailable = function() {
 
   // attempt an RPC call that should fail if the daemon is unreachable.
   try {
-    return web3.net.listening
+    return this.web3.net.listening
   } catch(err) {
     return false;
   }
