@@ -35,22 +35,26 @@ var MarketActions = {
       market['events'] = events;
       // calc end date from first events expiration
       if (events.length) {
-        var expirationBlock = ethereumClient.getEventExpiration(market.events[0]);
-        market['endDate'] = utilities.blockToDate(expirationBlock.toNumber());
+        ethereumClient.getEventExpiration(market.events[0], function(expirationBlock) {
+          market['endDate'] = utilities.blockToDate(expirationBlock.toNumber());
+          self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
+        });
       }
       // check if this market is ready to be closed
       market['expired'] = true;
       market['closed'] = false;
-      var winningOutcomes = ethereumClient.getMarketWinningOutcomes(marketId).slice(0, events.length);
-      for (var i = 0; i < events.length; ++i) {
-        if (market['expired'] && ethereumClient.getEventOutcome(events[i]).toFixed() === "0") {
-          market['expired'] = false;
+      ethereumClient.getMarketWinningOutcomes(marketId, function(result) {
+        var winningOutcomes = result.slice(0, events.length);
+        for (var i = 0; i < events.length; ++i) {
+          if (market['expired'] && ethereumClient.getEventOutcome(events[i]).toFixed() === "0") {
+            market['expired'] = false;
+          }
+          if (!market['closed'] && Number(winningOutcomes[i]) !== 0) {
+            market['closed'] = true;
+          }
+          if (!market['expired'] && market['closed']) break;
         }
-        if (!market['closed'] && Number(winningOutcomes[i]) !== 0) {
-          market['closed'] = true;
-        }
-        if (!market['expired'] && market['closed']) break;
-      }
+      });
       self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
     });
 
@@ -61,21 +65,29 @@ var MarketActions = {
     ethereumClient.getMarketTraderCount(marketId, setProp('traderCount'));
     ethereumClient.getMarketTradingPeriod(marketId, setProp('tradingPeriod'));
     ethereumClient.getMarketTradingFee(marketId, setProp('tradingFee'));
-    ethereumClient.getMarketTraderId(marketId, function(result) {
-      market['traderId'] = result;
-      self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
-      var outcomes = ethereumClient.getMarketOutcomes(marketId, market['traderId']);
-      market['outcomes'] = outcomes;
-      market['invalid'] = outcomes.length ? false : true;
-      market['price'] = outcomes.length ? outcomes[1].price : new BigNumber(0);  // hardcoded to outcome 2 (yes)
-      self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
+    ethereumClient.getMarketTraderId(marketId, function(traderId) {
+      market['traderId'] = traderId;
+      ethereumClient.getMarketNumOutcomes(marketId, function(numOutcomes) {
+        market['outcomes'] = [];
+        _.each(_.range(1, numOutcomes.toNumber() + 1), function (outcomeId) {
+          ethereumClient.getMarketSharesPurchased(marketId, outcomeId, function(volume) {
+            var sharesHeld = new BigNumber(0);
+            if (traderId !== -1) sharesHeld = ethereumClient.getMarketParticipantSharesPurchased(marketId, traderId, outcomeId);
+            ethereumClient.getPrice(marketId, outcomeId, function(price) {
+              if (outcomeId === 2) market['price'] = price;  // hardcoded to outcome 2
+              market['outcomes'][outcomeId-1] = {
+                id: outcomeId,
+                price: price,
+                priceHistory: [],  // NEED
+                sharesHeld: sharesHeld,
+                volume: volume
+              };
+              self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
+            });
+          });
+        });
+      });
     });
-
-    // calc total volume
-    var totalVolume =_.reduce(market.outcomes, function(totalVolume, outcome) {
-      return totalVolume + parseFloat(outcome.price);
-    }, 0);
-    market['totalVolume'] = totalVolume;
 
     var account = this.flux.store('network').getAccount();
     market['authored'] = account === market.author;
