@@ -65,7 +65,18 @@ var AddMarketModal = React.createClass({
   },
 
   onChangeTradingFee: function (event) {
-    this.setState({tradingFee: event.target.value});
+
+    var amount = event.target.value;
+    if (!amount.match(/^[0-9]*\.?[0-9]*$/) ) {
+      this.setState({tradingFeeError: 'invalid fee'});
+    } else if (parseFloat(amount) > 12.5) {
+      this.setState({tradingFeeError: 'must be less than 12.5%'});
+    } else if (parseFloat(amount) < 0.7) {
+      this.setState({tradingFeeError: 'must be greater than 0.7%'});
+    } else {
+      this.setState({tradingFeeError: null});
+    }
+    this.setState({tradingFee: amount});
   },
 
   onChangeMarketInvestment: function (event) {
@@ -99,6 +110,7 @@ var AddMarketModal = React.createClass({
   validatePage: function(pageNumber) {
 
     if (pageNumber === 1) {
+
       if (this.state.marketText.length > this.state.marketTextMaxLength) {
         this.setState({marketTextError: 'Text exceeds the maximum length of ' + this.state.marketTextMaxLength});
         return false;
@@ -106,10 +118,18 @@ var AddMarketModal = React.createClass({
          this.setState({marketTextError: 'Please enter your question'});
         return false;       
       }
+
     } else if (pageNumber === 2) {
 
-      if (this.state.marketInvestmentError) return false;
-      if (this.state.tradingFeeError) return false;
+      if (this.state.tradingFee === '') {
+        this.setState({ tradingFeeError: 'invalid fee' });
+        return false;
+      } else if (this.state.marketInvestment === '') {
+        this.setState({ marketInvestmentError: 'invalid amount' });
+        return false;
+      }
+
+      if (this.state.marketInvestmentError || this.state.tradingFeeError) return false;
 
     } else if (pageNumber === 3) {
 
@@ -171,8 +191,10 @@ var AddMarketModal = React.createClass({
 
     if (this.state.pageNumber === 2) {
 
-      var helpText = 'CASH: '+ this.state.cashLeft.toFixed(5);
-      var inputStyle = this.state.marketInvestmentError ? 'error' : null;
+      var tradinfFeeHelp = this.state.tradingFeeError ? this.state.tradingFeeError : null;
+      var tradingFeeHelpStyle = this.state.tradingFeeError ? 'error' : null;
+      var marketInvestmentHelp = this.state.marketInvestmentError ? this.state.marketInvestmentError : 'CASH: '+ this.state.cashLeft.toFixed(5);
+      var marketInvestmentHelpStyle = this.state.marketInvestmentError ? 'error' : null;
 
       subheading = 'Fees';
       page = (
@@ -183,6 +205,8 @@ var AddMarketModal = React.createClass({
               type='text'
               label='Trading fee'
               labelClassName='col-xs-3'
+              help={ tradinfFeeHelp }
+              bsStyle={ tradingFeeHelpStyle }
               wrapperClassName='col-xs-3'
               addonAfter='%'
               value={ this.state.tradingFee }
@@ -196,8 +220,8 @@ var AddMarketModal = React.createClass({
             <Input 
               type="text"
               label="Initial liquidity"
-              help={ helpText }
-              bsStyle={ inputStyle }
+              help={ marketInvestmentHelp }
+              bsStyle={ marketInvestmentHelpStyle }
               labelClassName='col-xs-3'
               wrapperClassName='col-xs-3'
               value={ this.state.marketInvestment }
