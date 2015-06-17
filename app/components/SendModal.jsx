@@ -109,7 +109,7 @@ var SendCashModal = React.createClass({
     return (
       <Modal {...this.props} className='send-modal' bsSize='small'>
         <div className='modal-body clearfix'>
-          <h4>Send cash</h4>
+          <h4>Send { this.assetType }</h4>
           <div className='row'>
             <div className="col-sm-12">
               <Input
@@ -237,7 +237,7 @@ var SendRepModal = React.createClass({
     return (
       <Modal {...this.props} className='send-modal' bsSize='small'>
         <div className='modal-body clearfix'>
-          <h4>Send cash</h4>
+          <h4>Send { this.assetType }</h4>
           <div className='row'>
             <div className="col-sm-12">
               <Input
@@ -365,7 +365,7 @@ var SendEtherModal = React.createClass({
     return (
       <Modal {...this.props} className='send-modal' bsSize='small'>
         <div className='modal-body clearfix'>
-          <h4>Send cash</h4>
+          <h4>Send { this.assetType }</h4>
           <div className='row'>
             <div className="col-sm-12">
               <Input

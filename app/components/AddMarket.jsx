@@ -26,6 +26,7 @@ var AddMarketModal = React.createClass({
       marketInvestmentError: null,
       maturationDate: '',
       tradingFee: '2',
+      tradingFeeError: null,
       valid: false,
       cashLeft: 0,
       minDate: moment().format('YYYY-MM-DD')
@@ -108,6 +109,7 @@ var AddMarketModal = React.createClass({
     } else if (pageNumber === 2) {
 
       if (this.state.marketInvestmentError) return false;
+      if (this.state.tradingFeeError) return false;
 
     } else if (pageNumber === 3) {
 
