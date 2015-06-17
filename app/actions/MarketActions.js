@@ -128,7 +128,9 @@ var MarketActions = {
     var currentBranch = this.flux.store('branch').getCurrentBranch();
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var currentMarkets = this.flux.store('market').getState().markets;
-    var currentMarketIds = _.map(currentMarkets, 'id');
+    var currentMarketIds = _.map(_.reject(currentMarkets, function(market){
+      return typeof(market.id) === 'string' && market.id.match(/pending/);
+    }), 'id');
 
     var newMarketIds = ethereumClient.getMarkets(currentBranch.id, currentMarketIds);
 
