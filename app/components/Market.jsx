@@ -55,7 +55,7 @@ var Market = React.createClass({
       }
     }
     var volume =_.reduce(market.outcomes, function(volume, outcome) {
-      if (volume && outcome) return volume + parseFloat(outcome.volume);
+      if (outcome) return volume + parseFloat(outcome.volume);
     }, 0);
 
     var formattedDate = market.endDate ? moment(market.endDate).format('MMM Do, YYYY') : '-';
