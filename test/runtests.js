@@ -153,7 +153,7 @@ function faucets(geth, next) {
     geth_flags[3] = accounts[2];
     setTimeout(function () {
         var cash_balance = Augur.getCashBalance(Augur.coinbase);
-        var rep_balance = Augur.getRepBalance(branch, Augur.coinbase);
+        var rep_balance = Augur.getRepBalance(Augur.branches.dev, Augur.coinbase);
         var ether_balance = Augur.bignum(Augur.balance(Augur.coinbase)).dividedBy(Augur.ETHER).toFixed();
         log(chalk.cyan("\nBalances:"));
         log("Cash:       " + chalk.green(cash_balance));
