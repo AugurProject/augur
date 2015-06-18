@@ -74,6 +74,7 @@ var Ballots = React.createClass({
     var votingDeadlineSpan = '';
 
     if (currentBranch && currentBranch.currentPeriod) {
+
       var [publishStart, publishEnd] = currentBranch.getReportPublishDates(this.state.blockNumber);
 
       if (currentBranch.isCurrent) {
@@ -85,6 +86,10 @@ var Ballots = React.createClass({
           votePercentComplete = percentComplete;
         }
       }
+
+    } else {
+
+      return (<div />);
     }
 
     if (this.state.report) {
@@ -108,6 +113,7 @@ var Ballots = React.createClass({
           <h4>No decisions require your attention</h4>
         </div>
       );
+
     } else {
 
       // build ballot
