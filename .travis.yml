@@ -8,3 +8,4 @@ before_script:
   - npm install jshint
 script:
   - npm run-script lint
+  - jshint test/runtests.js
