@@ -13,6 +13,8 @@ var ReactBootstrap = require('react-bootstrap');
 var ProgressBar = ReactBootstrap.ProgressBar;
 var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
 var Modal = ReactBootstrap.Modal;
+var DropdownButton = ReactBootstrap.DropdownButton;
+var MenuItem = ReactBootstrap.MenuItem;
 
 var utilities = require('../libs/utilities');
 var constants = require('../libs/constants');
@@ -93,18 +95,12 @@ var AugurApp = React.createClass({
               <ul className="nav navbar-nav navbar-right">
                   <li>
                       <div>CASH: <b className="cash-balance">{ cashBalance }</b></div>
-                  </li>
-                  <li className="dropdown visible-xs visible-sm hidden-md">
-                      <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                          <i className="fa fa-navicon"></i>
-                          <span className="caret"></span>
-                      </a>
-                      <ul className="dropdown-menu" role="menu">
-                          <li><Link to="home">Markets</Link></li>
-                          <li><Link to="account">Account</Link></li>
-                          <li><Link to="ballots">Ballot</Link></li>
-                          <li><a className="disabled">Contacts</a></li>
-                      </ul>
+                      <DropdownButton title='...' bsSize='xsmall' className="visible-xs visible-sm hidden-md">
+                        <MenuItem eventKey='1'><Link to="home">Markets</Link></MenuItem>
+                        <MenuItem eventKey='2'><Link to="account">Account</Link></MenuItem>
+                        <MenuItem eventKey='1'><Link to="ballots">Ballot</Link></MenuItem>
+                        <MenuItem eventKey='2'><a className="disabled">Contacts</a></MenuItem>
+                      </DropdownButton>
                   </li>
               </ul>
           </div>

@@ -96,7 +96,7 @@ var Overview = React.createClass({
 
       // on sent
       function(result) {
-        utilities.debug('trade submitted: ' + JSON.stringify(result, null, 2));
+        utilities.debug('trade submitted: ' + result.txHash);
         // TODO: check if component is mounted
         self.setState({
           pendingShares: relativeShares,
