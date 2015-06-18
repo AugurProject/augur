@@ -7,5 +7,5 @@ before_script:
   - npm install
   - npm install jshint
 script:
-  - npm run-script lint
+  - jshint augur.js
   - jshint test/runtests.js
