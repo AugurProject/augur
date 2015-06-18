@@ -10,6 +10,7 @@ var Router = require('react-router');
 var Link = Router.Link;
 
 var utilities = require('../libs/utilities');
+var constants = require('../libs/constants');
 
 var SendCashTrigger = require('./SendModal').SendCashTrigger;
 var SendRepTrigger = require('./SendModal').SendRepTrigger;
@@ -47,13 +48,22 @@ var AccountDetails = React.createClass({
 
   onCashFaucet: function(event) {
 
+    if (this.state.asset.ether.toNumber() < constants.MIN_ETHER_WARNING) {
+      utilities.warn('not enough ether');
+      //var trigger = new SendEtherTrigger();
+      //console.log(trigger);
+      //trigger.setState({isModalOpen: true});
+    }
+
     this.setState({cashFaucetDisabled: true});
     this.state.ethereumClient.cashFaucet();
   },
 
   onRepFaucet: function(event) {
 
-    // low/no ether warning
+    if (this.state.asset.ether.toNumber() < constants.MIN_ETHER_WARNING) {
+      utilities.warn('not enough ether');
+    }
 
     this.setState({repFaucetDisabled: true});
     this.state.ethereumClient.repFaucet();

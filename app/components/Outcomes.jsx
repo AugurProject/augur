@@ -207,7 +207,7 @@ var Overview = React.createClass({
             <Button bsStyle='success' onClick={ this.handleBuyClick }>Buy</Button>
           </div>
           { holdings }
-          <p>{ outcome.price.toFixed(4) } cash/share</p>
+          <p>{ Math.abs(outcome.price).toFixed(4) } cash/share</p>
           <p>{ +outcome.volume.toFixed(2) } shares</p>
         </div>
       )

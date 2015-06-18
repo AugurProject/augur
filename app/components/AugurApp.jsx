@@ -13,8 +13,6 @@ var ReactBootstrap = require('react-bootstrap');
 var ProgressBar = ReactBootstrap.ProgressBar;
 var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
 var Modal = ReactBootstrap.Modal;
-var DropdownButton = ReactBootstrap.DropdownButton;
-var MenuItem = ReactBootstrap.MenuItem;
 
 var utilities = require('../libs/utilities');
 var constants = require('../libs/constants');
@@ -87,22 +85,24 @@ var AugurApp = React.createClass({
 
     return (
       <div id="app" className={ this.state.status }>
-        <nav className="navbar" role="navigation">
+
+        <nav className="header" role="navigation">
           <div className="container">
-              <div className="navbar-header">
-                  <h1 className="navbar-brand">augur<i>𝛂</i></h1>
-              </div>
-              <ul className="nav navbar-nav navbar-right">
-                  <li>
-                      <div>CASH: <b className="cash-balance">{ cashBalance }</b></div>
-                      <DropdownButton title='...' bsSize='xsmall' className="visible-xs visible-sm hidden-md">
-                        <MenuItem eventKey='1'><Link to="home">Markets</Link></MenuItem>
-                        <MenuItem eventKey='2'><Link to="account">Account</Link></MenuItem>
-                        <MenuItem eventKey='1'><Link to="ballots">Ballot</Link></MenuItem>
-                        <MenuItem eventKey='2'><a className="disabled">Contacts</a></MenuItem>
-                      </DropdownButton>
-                  </li>
+            <div className="pull-left">
+              <h1>augur<i>𝛂</i></h1>
+
+              <ul className="menu">
+                <li><p><Link to="home">Markets</Link></p></li>
+                <li><p><Link to="account">Account</Link></p></li>
+                <li><p><Link to="ballots">Ballot</Link></p></li>
+                <li><p><a className="disabled">Contacts</a></p></li>
               </ul>
+            </div>
+
+            <div className="pull-right">
+              <p className='navbar-text'>CASH: <b className="cash-balance">{ cashBalance }</b></p>
+            </div>
+
           </div>
         </nav>
 
@@ -170,7 +170,6 @@ var ErrorModal = React.createClass({
     } else {
       this.setState({ isModalOpen: false, isLoading: false });
     }
-
   },
 
   handleToggle: function() {
@@ -183,7 +182,7 @@ var ErrorModal = React.createClass({
   startDemoMode: function (event) {
 
     this.handleToggle();
-    // start ethereum client demo mode
+    // TODO: start ethereum client demo mode
   },
 
   render: function() {
@@ -227,7 +226,7 @@ var ErrorModal = React.createClass({
 
     } else if (this.state.isLoading) {
 
-      // augur client failed to load
+      // augur client is loading
       return (
         <Modal {...this.props} bsSize='small' onRequestHide={ this.handleToggle } backdrop='static'>
           <div className="modal-body clearfix">

@@ -40,12 +40,6 @@ h1, h2, h3, h4, h5 {
     font-weight: 500;
 }
 
-.navbar-header {
-    float: left;
-}
-nav .navbar-right {
-    float: right;
-}
 #app.stopped {
     height: 100%;
     width: 100%;
@@ -122,31 +116,25 @@ nav .navbar-right {
   text-overflow: ellipsis;
 }
 
-@media (min-width: 990px) {
-    .navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand {
-        margin-left: -5px;
-    }
-}
-
-nav.navbar {
+nav.header {
     background-color: #602A52;
-    border-radius: 0px;
-    border: none;
+    margin-bottom: 20px;
 }
-nav h1.navbar-brand {
+nav.header h1 {
     background-image: url('../images/augur_logo_small_white.png');
     background-repeat: no-repeat;
     background-size: 27px 32px;
-    background-position: 15px 11px;
+    background-position: 8px 10px;
     font-size: 26px;
     margin: 0px 0px 0px 0px;
     position: relative;
+    float: left;
     top: 0px;
     color: #fff;
-    padding-left: 50px;
+    padding: 9px 10px 10px 44px;
     font-weight: 300;
 }
-nav h1.navbar-brand i {
+nav.header h1 > i {
   color: #fff;
   position: relative;
   top: -8px;
@@ -156,26 +144,45 @@ nav h1.navbar-brand i {
   left: 4px;
   opacity: 0.75;
 }
-nav .navbar-right > li {
+nav.header p {
     font-family: 'Core Mellow';
-    font-weight: 400;
-    color: #ECECEC;
+    font-weight: 300;
     font-size: 15px;
+    color: #fff;
 }
-nav .dropdown > a {
-    color: #ECECEC;
+nav.header .navbar-text {
+    margin-right: 0px;
 }
-nav .nav .open > a, 
-nav .nav .open > a:hover, 
-nav .nav .open > a:focus,
-nav .nav > li > a:hover, 
-nav .nav > li > a:focus {
-    background-color: #380B3F;
+nav.header .menu {
+    float: left;
+    display: none;
+    padding: 0px;
+    margin: 16px 10px 0px 20px;
 }
-nav .navbar-right li div {
-    padding: 15px;
-} 
-
+nav.header .menu li {
+    font-family: 'Core Mellow';
+    letter-spacing: 0.05em;
+    float: left;
+    list-style: none;
+    margin-right: 20px;
+}
+nav.header .menu li a {
+    color: #fff;
+}
+@media (max-width: 990px) {
+    nav.header h1 {
+        margin-left: -8px;
+    }
+    nav.header .menu {
+        display: block;
+    }
+}
+@media (max-width: 650px) {
+    nav.header .menu {
+        clear: both;
+        margin: 10px 10px 0px -1px;
+    }
+}
 .shadow {
     box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.4);
     -webkit-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.4);
@@ -198,7 +205,7 @@ nav .navbar-right li div {
 
 .side-nav {
     background-color: #602A52;
-    margin-top: -20px;
+    margin-top: -25px;
     padding: 20px 0px 5px 0px;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
@@ -311,6 +318,7 @@ nav .navbar-right li div {
     font-weight: 400;
 }
 
+
 .market-pane {
     color: #000;
     background-color: #fff;
@@ -401,7 +409,45 @@ background: linear-gradient(to bottom, rgba(24,55,111,0) 0%,rgba(24,55,111,0.7) 
 .market-pane .details b {
     float: right;
 }
-
+@media (max-width: 480px) {
+    .market-pane {
+        margin-bottom: 25px;
+    }
+    .market-pane h5 {
+        margin: 0px;
+        padding: 10px;
+        font-size: 15px;
+        font-weight: 400;
+        line-height: 1.3em;
+        height: 74px;
+    }
+    .market-pane .details {
+        padding: 6px 6px;
+        font-size: 14px;
+    }
+    .market-pane .summary {
+        padding: 3px 12px;
+        background-color: #a3b9e2;
+        font-size: 20px;
+    }
+    .market-pane .summary i {
+        font-weight: 100;
+        font-style: normal;
+        font-size: 16px;
+        margin-top: 3px;
+        height: 25px;
+    }
+    .market-pane .details {
+        padding: 6px 6px;
+        font-size: 14px;
+        color: #333;
+    }
+    .market-pane .details p {
+        margin: 0px;
+        clear: right;
+        padding: 0px 6px;
+    }
+}
 #branch h4 {
     margin: 10px 0px 20px 0px;
 }
