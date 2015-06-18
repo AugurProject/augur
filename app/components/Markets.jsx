@@ -43,7 +43,7 @@ var MarketPane = React.createClass({
     }, 0);
 
     var formattedDate = market.endDate ? moment(market.endDate).format('MMM Do, YYYY') : '-';
-    var price = market.price ? market.price.toFixed(4) : '-';
+    var price = market.price ? Math.abs(market.price).toFixed(3) : '-';
     var percent = market.price ? +market.price.times(100).toFixed(1) + '%' : ''
     var volume = volume ? +volume.toFixed(2) : '-';
     var tradingFee = market.tradingFee ? +market.tradingFee.times(100).toFixed(2)+'%' : '-';

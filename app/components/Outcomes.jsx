@@ -64,7 +64,6 @@ var Overview = React.createClass({
   updateShareHelds: function (relativeShares) {
 
     var currentShares = this.props.outcome.sharesHeld;
-    console.log(currentShares);
     this.props.outcome.sharesHeld = currentShares.plus(new BigNumber(relativeShares));
     this.props.market.outcomes[outcomeId].sharesHeld = currentShares.plus(new BigNumber(relativeShares));
 
@@ -324,14 +323,13 @@ var TradeBase = {
         <div className='cancel trade-button'>
           <Button bsStyle='default' onClick={ this.props.handleCancel } bsSize='small'>CANCEL</Button>
         </div>
-        <p>{ outcome.price.toFixed(4) } cash/share</p>
+        <p>{ Math.abs(outcome.price).toFixed(4) } cash/share</p>
         <p>{ outcome.sharesHeld.toNumber() } { outcome.sharesHeld.toNumber() === 1 ? 'share' : 'shares' } held</p>
         <p className='new-price'>{ this.getPriceDelta() }</p>
       </div>
     );
   }
 };
-
 
 var Buy = React.createClass(_.merge({
 

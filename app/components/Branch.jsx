@@ -40,6 +40,7 @@ var Branch = React.createClass({
   },
 
   handlePageChanged: function (newPageNum) {
+    
     this.setState({ pageNum: newPageNum });
   },
 

@@ -53,6 +53,8 @@ var AccountDetails = React.createClass({
 
   onRepFaucet: function(event) {
 
+    // low/no ether warning
+
     this.setState({repFaucetDisabled: true});
     this.state.ethereumClient.repFaucet();
   },
@@ -61,7 +63,6 @@ var AccountDetails = React.createClass({
 
     var cashBalance = this.state.asset.cash ? +this.state.asset.cash.toFixed(2) : '-';
     var repBalance = this.state.asset.reputation ? +this.state.asset.reputation.toFixed(2) : 0;
-
 
     var holdings = [];
     _.each(this.state.holdings, function (market) {
