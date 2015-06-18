@@ -73,7 +73,7 @@ var Ballots = React.createClass({
     var revealPercentComplete = 0;
     var votingDeadlineSpan = '';
 
-    if (currentBranch.currentPeriod) {
+    if (currentBranch && currentBranch.currentPeriod) {
       var [publishStart, publishEnd] = currentBranch.getReportPublishDates(this.state.blockNumber);
 
       if (currentBranch.isCurrent) {

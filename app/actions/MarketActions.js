@@ -96,6 +96,23 @@ var MarketActions = {
     this.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
   },
 
+  waitForPageLoad: function(ids) {
+
+    var markets = this.flux.store('market').getState().markets;
+    var marketsWatching = _.filter(markets, function(market) { 
+      return _.contains(ids, market.id);
+    });
+    var loaded = _.map(marketsWatching, 'loaded');
+    var self = this;
+    console.log(loaded);
+
+    while (_.includes(loaded, false)) {
+      setTimeout(function() {
+        self.flux.actions.market.waitForPageLoad(ids);
+      }, 2000);
+    }
+  },
+
   loadMarkets: function() {
 
     var startMoment = moment();
@@ -109,8 +126,9 @@ var MarketActions = {
     // breaks ids into pages
     var marketPageIds = _.chunk(marketIds, constants.MARKETS_PER_PAGE);
 
-    _.each(marketPageIds, function(ids) {
-      _.each(ids, function(marketId) {
+    //_.each(marketPageIds, function(ids) {
+
+      _.each(marketPageIds[0], function(marketId) {
 
         var market = {id: marketId, branchId: currentBranch.id};
         this.dispatch(constants.market.ADD_MARKET_SUCCESS, {market: market});
@@ -122,7 +140,11 @@ var MarketActions = {
         //this.flux.actions.config.updatePercentLoaded(percent);
 
       }, this);
-    }, this);
+
+      // wait for page to get fully loaded before fetching next
+      //this.flux.actions.market.waitForPageLoad(ids);
+
+    //}, this);
 
     var seconds = moment().diff(startMoment) / 1000;
     utilities.debug(marketIds.length + ' markets loaded in ' + seconds + ' seconds');
