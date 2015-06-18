@@ -70,9 +70,10 @@ var AccountDetails = React.createClass({
         if (outcome.sharesHeld.toNumber()) {
           name = outcome.id == 1 ? 'no' : 'yes';
           className = 'shares-held ' + name;
+          var key = market.id+outcome.id;
           if (market.expired && market.authored && !market.closed) {
             holding = (
-              <tr key={ market.id }>
+              <tr key={ key }>
                 <td>
                   <Link to='market' params={ {marketId: market.id.toString(16) } }>{ market.description }</Link>
                 </td>
@@ -83,7 +84,7 @@ var AccountDetails = React.createClass({
             );
           } else {
             holding = (
-              <tr key={ market.id }>
+              <tr key={ key }>
                 <td>
                   <Link to='market' params={ {marketId: market.id.toString(16) } }>{ market.description }</Link>
                 </td>
