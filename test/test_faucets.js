@@ -8,7 +8,7 @@ var Augur = require("../augur");
 Augur.connect();
 
 var log = console.log;
-var TIMEOUT = 120000;
+var TIMEOUT = 24000;
 var branch = Augur.branches.dev;
 var coinbase = Augur.coinbase;
 

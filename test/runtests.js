@@ -10,7 +10,8 @@ var fs    = require("fs");
 var path  = require("path");
 var cp = require("child_process");
 var util = require("util");
-var async = require("async");
+var assert = require("chai").assert;
+// var async = require("async");
 var rm = require("rimraf");
 var chalk = require("chalk");
 var Mocha = require("mocha");
@@ -132,15 +133,16 @@ function display_outputs(geth) {
 
     var reporters = accounts;
     var ballots = new Array(flatsize);
-    for (var i = 0; i < num_reports; ++i) {
+    var i, j;
+    for (i = 0; i < num_reports; ++i) {
         var reporterID = Augur.getReporterID(branch, i);
         var ballot = Augur.getReporterBallot(branch, period, reporterID);
-        if (ballot[0] != 0) {
-            for (var j = 0; j < num_events; ++j) {
+        if (ballot[0] !== 0) {
+            for (j = 0; j < num_events; ++j) {
                 ballots[i*num_events + j] = ballot[j];
             }
         } else {
-            for (var j = 0; j < num_events; ++j) {
+            for (j = 0; j < num_events; ++j) {
                 ballots[i*num_events + j] = '0';
             }
         }
@@ -170,7 +172,7 @@ function display_outputs(geth) {
 
     var reputation = [];
     var total_rep = 0;
-    for (var i = 0, len = reporters.length; i < len; ++i) {
+    for (i = 0; i < reporters.length; ++i) {
         reputation.push(Augur.getRepBalance(branch, reporters[i]));
         total_rep += Number(Augur.getRepBalance(branch, reporters[i]));
     }
@@ -243,10 +245,9 @@ function postupload_tests_1(geth) {
 }
 
 function faucets(geth) {
-    var mocha = new Mocha();
-    mocha.addFile(path.join(__dirname, "test_faucets.js"));
-    mocha.run(function (failures) {
-        process.on("exit", function () { process.exit(failures); });
+    require(path.join(__dirname, "faucets.js"));
+    delete require.cache[require.resolve(path.join(__dirname, "faucets.js"))];
+    setTimeout(function () {
         var cash_balance = Augur.getCashBalance(Augur.coinbase);
         var rep_balance = Augur.getRepBalance(Augur.branches.dev, Augur.coinbase);
         var ether_balance = Augur.bignum(Augur.balance(Augur.coinbase)).dividedBy(Augur.ETHER).toFixed();
@@ -258,34 +259,36 @@ function faucets(geth) {
         for (var i = 0, len = accounts.length; i < len; ++i) {
             if (geth_flags[1] === accounts[i]) break;
         }
-        log(chalk.blue.bold("Account " + i));
+        log(chalk.blue.bold("\nAccount " + (i+1) + ": ") + chalk.green(accounts[i+1]));
         if (i < accounts.length - 1) {
-            geth_flags[1] = accounts[i];
-            geth_flags[3] = accounts[i];
-            wait(10);
-            check_connection(
-                spawn_geth(geth_flags),
-                accounts[2],
-                mine_minimum_ether,
-                faucets
-            );
+            geth_flags[1] = accounts[i+1];
+            geth_flags[3] = accounts[i+1];
+            setTimeout(function () {
+                check_connection(
+                    spawn_geth(geth_flags),
+                    accounts[i+1],
+                    mine_minimum_ether,
+                    faucets
+                );
+            }, 5000);
         } else {
             geth_flags[1] = accounts[0];
             geth_flags[3] = accounts[0];
-            wait(10);
-            check_connection(
-                spawn_geth(geth_flags),
-                accounts[0],
-                mine_minimum_ether,
-                postupload_tests_1
-            );
+            setTimeout(function () {
+                check_connection(
+                    spawn_geth(geth_flags),
+                    accounts[0],
+                    mine_minimum_ether,
+                    postupload_tests_1
+                );
+            }, 5000);
         }
-    });
+    }, 10000);
 }
 
 function upload_contracts(geth) {
     log(chalk.red.bold("Upload contracts to test chain..."));
-    var uploader = cp.spawn(UPLOADER, ["--BLOCKTIME=2"]);
+    var uploader = cp.spawn(UPLOADER, ["--BLOCKTIME=1.75"]);
     uploader.stdout.on("data", function (data) {
         process.stdout.write(chalk.cyan(data.toString()));
     });
@@ -300,6 +303,7 @@ function upload_contracts(geth) {
             fs.writeFileSync(gospel_json, stdout.toString());
             CUSTOM_GOSPEL = true;
             kill_geth(geth);
+            log(chalk.blue.bold("\nAccount 1: ") + chalk.green(accounts[1]));
             geth_flags[1] = accounts[1];
             geth_flags[3] = accounts[1];
             wait(10);
@@ -323,7 +327,8 @@ function preupload_tests(geth) {
     });
 }
 
-function check_connection(geth, account, callback, next) {
+function check_connection(geth, account, callback, next, count) {
+    count = count || 0;
     if (CUSTOM_GOSPEL) {
         log("Reading contracts from " + chalk.green(gospel_json));
         Augur.contracts = JSON.parse(fs.readFileSync(gospel_json));
@@ -338,10 +343,13 @@ function check_connection(geth, account, callback, next) {
             log("Balance:", chalk.green(balance), chalk.gray("ETH"));
             callback(geth, account, next);
         } else {
-            check_connection(geth, account, callback, next);
+            kill_geth(geth);
+            check_connection(spawn_geth(geth), account, callback, next);
         }
     } else {
-        check_connection(geth, account, callback, next);
+        if (count && count > 2) {
+            check_connection(geth, account, callback, next, ++count);
+        }
     }
 }
 
@@ -370,6 +378,16 @@ if (args[0] === "reset") {
         accounts[0],
         mine_minimum_ether,
         preupload_tests
+    );
+} else if (args[0] === "faucets") {
+    log(chalk.blue.bold("\nAccount 2: ") + chalk.green(accounts[2]));
+    geth_flags[1] = accounts[2];
+    geth_flags[3] = accounts[2];
+    check_connection(
+        spawn_geth(geth_flags),
+        accounts[2],
+        mine_minimum_ether,
+        faucets
     );
 } else {
     check_connection(
