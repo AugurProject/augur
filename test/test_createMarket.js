@@ -5,11 +5,13 @@
 
 "use strict";
 
+var fs = require("fs");
 var assert = require("assert");
 var Augur = require("../augur");
 
 require('it-each')({ testPerIteration: true });
 
+Augur.contracts = JSON.parse(fs.readFileSync("gospel.json"));
 Augur.connect();
 
 var log = console.log;

@@ -2,10 +2,12 @@
 
 "use strict";
 
+var fs = require("fs");
 var Augur = require("../augur");
 var assert = require("assert");
 var constants = require("./constants");
 
+Augur.contracts = JSON.parse(fs.readFileSync("gospel.json"));
 Augur.connect();
 
 var log = console.log;

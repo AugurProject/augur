@@ -12,6 +12,7 @@ var chalk = require("chalk");
 var Augur = require("../augur");
 require('it-each')({ testPerIteration: true });
 
+Augur.contracts = JSON.parse(fs.readFileSync("gospel.json"));
 Augur.connect();
 
 var log = console.log;
@@ -44,36 +45,37 @@ describe("Creating " + num_events + " events and markets", function () {
                 log(chalk.green("    ✓ ") + chalk.gray("event ID: " + r.callReturn));
             },
             onSuccess: function (r) {
-                var alpha = "0.0079";
-                var initialLiquidity = 1000;
-                var tradingFee = "0.02";
-                var events = [ r.callReturn ];
-                var market_description = event_description;
-                var numOutcomes = 2;
-                var marketObj = {
-                    branchId: Augur.branches.dev,
-                    description: market_description,
-                    alpha: alpha,
-                    initialLiquidity: initialLiquidity,
-                    tradingFee: tradingFee,
-                    events: events,
-                    onSent: function (res) {
-                        log(chalk.green("    ✓ ") + chalk.gray("market ID: " + res.callReturn));
-                    },
-                    onSuccess: function (res) {
-                        if (element < num_events - 1) {
-                            fs.appendFile("events.dat", events[0] + "," + r.callReturn + "\n");
-                        } else {
-                            fs.appendFile("events.dat", events[0] + "," + r.callReturn);
-                        }
-                        next();
-                    },
-                    onFailed: function (res) {
-                        log("createMarket failed: " + JSON.stringify(res, null, 2));
-                        next();
-                    }
-                };
-                Augur.createMarket(marketObj);
+                // var alpha = "0.0079";
+                // var initialLiquidity = 1000;
+                // var tradingFee = "0.02";
+                // var events = [ r.callReturn ];
+                // var market_description = event_description;
+                // var numOutcomes = 2;
+                // var marketObj = {
+                //     branchId: Augur.branches.dev,
+                //     description: market_description,
+                //     alpha: alpha,
+                //     initialLiquidity: initialLiquidity,
+                //     tradingFee: tradingFee,
+                //     events: events,
+                //     onSent: function (res) {
+                //         log(chalk.green("    ✓ ") + chalk.gray("market ID: " + res.callReturn));
+                //     },
+                //     onSuccess: function (res) {
+                //         if (element < num_events - 1) {
+                //             fs.appendFile("events.dat", events[0] + "," + r.callReturn + "\n");
+                //         } else {
+                //             fs.appendFile("events.dat", events[0] + "," + r.callReturn);
+                //         }
+                //         next();
+                //     },
+                //     onFailed: function (res) {
+                //         log("createMarket failed: " + JSON.stringify(res, null, 2));
+                //         next();
+                //     }
+                // };
+                // Augur.createMarket(marketObj);
+                next();
             },
             onFailed: function (r) {
                 throw(r.message);

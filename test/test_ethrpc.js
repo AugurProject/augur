@@ -5,9 +5,11 @@
 
 "use strict";
 
+var fs = require("fs");
 var assert = require("assert");
 var Augur = require("../augur");
 
+Augur.contracts = JSON.parse(fs.readFileSync("gospel.json"));
 Augur.connect();
 
 var log = console.log;

@@ -37,17 +37,17 @@ var accounts = [
     "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b",
     "0x4a0cf714e2c1b785ff2d650320acf63be9eb25c6",
     "0x72caf0651be1bb05eff6d21b005db49654784aee",
-    "0x0da70d5a92d6cfcd4c12e2a83950676fdf4c95f9",
-    "0x676fe049c8f1440a8e3ec1832806b43ae128059f",
-    "0x405be667f1a6b2d5149a61057040cade5aada366",
-    "0x9a5ab02a8b31d1ccd632936574a14f77788dfe6d",
-    "0xebb117ef11769e675e0245062a8e6296dfe42da4",
-    "0x2a7e417ff20606e384526ed42d306943caec2d24",
-    "0xf0c4ee355432a7c7da12bdef04543723d110d591",
-    "0xef2b2ba637921b8cf51b8a89576666a5d4322c69",
-    "0x2c97f31d2db40aa57d0e6ca5fa8aedf7d99592db",
-    "0xcdc2cdaab90909769ccf823246f04f0da827a732",
-    "0xa78ddbe112cb29844d2a26cbc4e52c11e74aaa6c"
+    // "0x0da70d5a92d6cfcd4c12e2a83950676fdf4c95f9",
+    // "0x676fe049c8f1440a8e3ec1832806b43ae128059f",
+    // "0x405be667f1a6b2d5149a61057040cade5aada366",
+    // "0x9a5ab02a8b31d1ccd632936574a14f77788dfe6d",
+    // "0xebb117ef11769e675e0245062a8e6296dfe42da4",
+    // "0x2a7e417ff20606e384526ed42d306943caec2d24",
+    // "0xf0c4ee355432a7c7da12bdef04543723d110d591",
+    // "0xef2b2ba637921b8cf51b8a89576666a5d4322c69",
+    // "0x2c97f31d2db40aa57d0e6ca5fa8aedf7d99592db",
+    // "0xcdc2cdaab90909769ccf823246f04f0da827a732",
+    // "0xa78ddbe112cb29844d2a26cbc4e52c11e74aaa6c"
 ];
 var enodes = [
     "enode://035b7845dfa0c0980112abdfdf4dc11087f56b77e10d2831f186ca12bc00f5b9327c427d03d9cd8106db01488905fb2200b5706f9e41c5d75885057691d9997c@[::]:30303",
@@ -264,8 +264,8 @@ function faucets(geth) {
         for (var i = 0, len = accounts.length; i < len; ++i) {
             if (geth_flags[1] === accounts[i]) break;
         }
-        log(chalk.blue.bold("\nAccount " + (i+1) + ": ") + chalk.cyan(accounts[i+1]));
         if (i < accounts.length - 1) {
+            log(chalk.blue.bold("\nAccount " + (i+1) + ": ") + chalk.cyan(accounts[i+1]));
             geth_flags[1] = accounts[i+1];
             geth_flags[3] = accounts[i+1];
             setTimeout(function () {
@@ -277,6 +277,7 @@ function faucets(geth) {
                 );
             }, 5000);
         } else {
+            log(chalk.blue.bold("\nAccount 0: ") + chalk.cyan(accounts[0]));
             geth_flags[1] = accounts[0];
             geth_flags[3] = accounts[0];
             setTimeout(function () {
@@ -348,9 +349,11 @@ function check_connection(geth, account, callback, next, count) {
     if (CUSTOM_GOSPEL) {
         log("Load contracts from file: " + chalk.green(gospel_json));
         Augur.contracts = JSON.parse(fs.readFileSync(gospel_json));
+        log(Augur.contracts.createEvent);
     }
     wait(5);
     if (Augur.connect()) {
+        log(Augur.contracts.createEvent);
         var balance = Augur.balance(account);
         if (balance && !balance.error) {
             balance = Augur.bignum(balance).dividedBy(Augur.ETHER).toFixed();
@@ -396,6 +399,7 @@ if (args[0] === "reset") {
         preupload_tests
     );
 } else if (args[0] === "faucets") {
+    CUSTOM_GOSPEL = true;
     var starting_account = 2;
     log(chalk.blue.bold("\nAccount " + starting_account + ": ") +
         chalk.cyan(accounts[starting_account]));
@@ -408,12 +412,14 @@ if (args[0] === "reset") {
         faucets
     );
 } else if (args[0] === "ballots") {
+    CUSTOM_GOSPEL = true;
     check_connection(
         spawn_geth(geth_flags),
         accounts[0],
         postupload_tests_3
     );
 } else {
+    CUSTOM_GOSPEL = true;
     check_connection(
         spawn_geth(geth_flags),
         accounts[0],
