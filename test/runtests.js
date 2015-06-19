@@ -18,13 +18,17 @@ var Augur = require("../augur");
 
 var log = console.log;
 
-var DEBUG = true;
+var DEBUG = false;
 // var DATADIR = path.join(process.env.HOME, ".augur");
 var DATADIR = path.join(process.env.HOME, ".augur-test");
 var AUGUR_CORE = path.join(process.env.HOME, "src", "augur-core");
+var UPLOADER = path.join(AUGUR_CORE, "load_contracts.py");
+var GOSPEL = "gospel.json";
+var CUSTOM_GOSPEL = false;
 var NETWORK_ID = "10101";
 var PROTOCOL_VERSION = "59";
 var MINIMUM_ETHER = 30;
+var LOG = "geth.log";
 
 var accounts = [
     "0x639b41c4d3d399894f2a57894278e1653e7cd24c",
@@ -51,51 +55,51 @@ var geth_flags = [
     "--bootnodes", enodes,
     "--password", path.join(DATADIR, ".password")
 ];
+var gospel_json = path.join(__dirname, GOSPEL);
 var check_connection;
 var mocha = new Mocha();
 
-function clear_timeouts(t) {
-    for (var j = 0, len = t.length; j < len; ++j) {
-        clearTimeout(t[j]);
-    }
-    return t;
+log("Create", chalk.magenta("geth"), "log file:", chalk.green(path.join(__dirname, LOG)));
+var geth_log = fs.createWriteStream(path.join(__dirname, LOG), {flags : 'w'});
+
+function wait(seconds) {
+    var start, delay;
+    start = new Date();
+    delay = seconds * 1000;
+    while ((new Date()) - start <= delay) {}
+    return true;
 }
 
-function retry(geth, timers, account, callback, next) {
-    timers.push(
-        setTimeout(function () { check_connection(geth, account, callback, next); }, 2500)
-    );
-    return timers;
-}
-
-function preupload_tests() {
+function preupload_tests(geth, account) {
     mocha.addFile(path.join(__dirname, "test_fixedpoint.js"));
     mocha.addFile(path.join(__dirname, "test_encoder.js"));
     mocha.run(function (failures) {
         process.on("exit", function () {
             process.exit(failures);
         });
+        upload_contracts(geth, account);
     });
 }
 
 function check_connection(geth, account, callback, next) {
-    var balance;
-    try {
-        balance = Augur.balance(account);
+    if (CUSTOM_GOSPEL) {
+        log("Reading contracts from " + chalk.magenta(gospel_json));
+        Augur.contracts = JSON.parse(fs.readFileSync(gospel_json));
+    }
+    wait(3);
+    if (Augur.connect()) {
+        var balance = Augur.balance(account);
         if (balance && !balance.error) {
             balance = Augur.bignum(balance).dividedBy(Augur.ETHER).toFixed();
             log("Connected on account", chalk.green(account));
-            if (next) {
-                Augur.contracts = JSON.parse(fs.readFileSync("gospel.json"));
-                Augur.connect();
-            }
-            timers = clear_timeouts(timers);
+            log(chalk.green(Augur.blockNumber()), chalk.gray("blocks"));
+            log("Balance:", chalk.green(balance), chalk.gray("ETH"));
             callback(geth, account, next);
         } else {
-            timers = retry(geth, timers, account, callback, next);
+            check_connection(geth, account, callback, next);
         }
-    } catch (e) {
-        timers = retry(geth, timers, account, callback, next);
+    } else {
+        check_connection(geth, account, callback, next);
     }
 }
 
@@ -106,20 +110,21 @@ function kill_geth(geth) {
 
 function postupload_tests() {
     mocha.addFile(path.join(__dirname, "test_ethrpc.js"));
-    // mocha.addFile(path.join(__dirname, "test_invoke.js"));
-    // mocha.addFile(path.join(__dirname, "test_reporting.js"));
+    mocha.addFile(path.join(__dirname, "test_invoke.js"));
+    mocha.addFile(path.join(__dirname, "test_reporting.js"));
+    mocha.addFile(path.join(__dirname, "test_batch.js"));
     // mocha.addFile(path.join(__dirname, "test_expiring.js"));
     // mocha.addFile(path.join(__dirname, "test_augur.js"));
     mocha.addFile(path.join(__dirname, "test_createEvent.js"));
     // mocha.addFile(path.join(__dirname, "test_addEvent.js"));
-    // mocha.addFile(path.join(__dirname, "test_createMarket.js"));
+    mocha.addFile(path.join(__dirname, "test_createMarket.js"));
     mocha.addFile(path.join(__dirname, "test_buyAndSellShares.js"));
     mocha.addFile(path.join(__dirname, "fastforward.js"));
     mocha.addFile(path.join(__dirname, "test_ballot.js"));
     mocha.addFile(path.join(__dirname, "test_interpolate.js"));
     mocha.addFile(path.join(__dirname, "test_consensus.js"));
-    // mocha.addFile(path.join(__dirname, "test_score.js"));
-    // mocha.addFile(path.join(__dirname, "test_resolve.js"));
+    mocha.addFile(path.join(__dirname, "test_score.js"));
+    mocha.addFile(path.join(__dirname, "test_resolve.js"));
     // mocha.addFile(path.join(__dirname, "test_payments.js"));
     // mocha.addFile(path.join(__dirname, "test_markets.js"));
     // mocha.addFile(path.join(__dirname, "test_comments.js"));
@@ -134,37 +139,51 @@ function spawn_geth(flags) {
     log("Spawn " + chalk.magenta("geth") + " on network " + chalk.green(NETWORK_ID) +
         " (version " + chalk.green(PROTOCOL_VERSION) + ")...");
     var geth = cp.spawn("geth", flags);
-    var geth_log = fs.createWriteStream(path.join(__dirname, 'geth.log'), {flags : 'w'});
+    geth.stdout.on("data", function (data) {
+        geth_log.write("stdout: " + util.format(data.toString()) + "\n");
+    });
     geth.stderr.on("data", function (data) {
         geth_log.write(util.format(data.toString()) + "\n");
     });
     geth.on("close", function (code) {
         log(chalk.red.bold("geth closed with code " + code));
+        geth.kill();
+        if (code === 1) {
+            wait(5);
+            log("Restarting", chalk.magenta("geth") + "...");
+            return spawn_geth(flags);
+        }
     });
     return geth;
 }
 
 function faucets(geth, next) {
-    log(chalk.yellow("Reputation") + " faucet...");
-    Augur.reputationFaucet(Augur.branches.dev);
-    log(chalk.yellow("Cash") + " faucet...");
-    Augur.cashFaucet();
-    geth_flags[1] = accounts[2];
-    geth_flags[3] = accounts[2];
-    setTimeout(function () {
-        var cash_balance = Augur.getCashBalance(Augur.coinbase);
-        var rep_balance = Augur.getRepBalance(Augur.branches.dev, Augur.coinbase);
-        var ether_balance = Augur.bignum(Augur.balance(Augur.coinbase)).dividedBy(Augur.ETHER).toFixed();
-        log(chalk.cyan("\nBalances:"));
-        log("Cash:       " + chalk.green(cash_balance));
-        log("Reputation: " + chalk.green(rep_balance));
-        log("Ether:      " + chalk.green(ether_balance));
-        kill_geth(geth);
-        next(geth_flags);
-    }, 10000);
+    var cash_balance = Augur.getCashBalance(Augur.coinbase);
+    var rep_balance = Augur.getRepBalance(Augur.branches.dev, Augur.coinbase);
+    var ether_balance = Augur.bignum(Augur.balance(Augur.coinbase)).dividedBy(Augur.ETHER).toFixed();
+    log(chalk.cyan("Balances:"));
+    log("Cash:       " + chalk.green(cash_balance));
+    log("Reputation: " + chalk.green(rep_balance));
+    log("Ether:      " + chalk.green(ether_balance));
+    mocha.addFile(path.join(__dirname, "test_faucets.js"));
+    mocha.run(function (failures) {
+        process.on("exit", function () {
+            process.exit(failures);
+            var cash_balance = Augur.getCashBalance(Augur.coinbase);
+            var rep_balance = Augur.getRepBalance(Augur.branches.dev, Augur.coinbase);
+            var ether_balance = Augur.bignum(Augur.balance(Augur.coinbase)).dividedBy(Augur.ETHER).toFixed();
+            log(chalk.cyan("Balances:"));
+            log("Cash:       " + chalk.green(cash_balance));
+            log("Reputation: " + chalk.green(rep_balance));
+            log("Ether:      " + chalk.green(ether_balance));
+            kill_geth(geth);
+            next(geth_flags);
+        });
+    });
 }
 
 function next_account() {
+    log(chalk.blue.bold("Next account..."));
     check_connection(
         spawn_geth(geth_flags),
         accounts[2],
@@ -173,47 +192,48 @@ function next_account() {
     );
 }
 
-function upload_contracts(geth, account) {
+function mine_minimum_ether(geth, account, next) {
     var balance = Augur.bignum(Augur.balance(account)).dividedBy(Augur.ETHER).toNumber();
     if (balance < MINIMUM_ETHER) {
-        log(chalk.bold("Balance: " + balance + " ETH") +
-            ", waiting for " + chalk.bold(MINIMUM_ETHER) + "...");
-        setTimeout(function () { upload_contracts(geth, account); }, 10000);
-    } else {
-        log("Upload contracts to test chain...");
-        try {
-            var uploader = cp.spawn(path.join(AUGUR_CORE, "load_contracts.py"), [
-                "--BLOCKTIME=1"
-            ]);
-            uploader.stdout.on("data", function (data) {
-                process.stdout.write(chalk.cyan(data.toString()));
-            });
-            uploader.stderr.on("data", function (data) {
-                process.stdout.write(chalk.red(data.toString()));
-            });
-            uploader.on("close", function (code) {
-                log(chalk.red.bold("Uploader closed with code " + code));
-                cp.exec(path.join(AUGUR_CORE, "generate_gospel.py -j"), function (err, stdout) {
-                    if (err) throw err;
-                    log("Write contract addresses to " + chalk.magenta("gospel.json") + "...");
-                    fs.writeFileSync("gospel.json", stdout.toString());
-                    kill_geth(geth);
-                    geth_flags[1] = accounts[1];
-                    geth_flags[3] = accounts[1];
-                    setTimeout(function () {
-                        check_connection(
-                            spawn_geth(geth_flags),
-                            accounts[1],
-                            faucets,
-                            next_account
-                        );
-                    }, 10000);
-                });
-            });
-        } catch (exc) {
-            log(exc);
+        if (balance > 0) {
+            log("Balance: " + chalk.green(balance) + chalk.gray(" ETH, waiting for ") +
+                chalk.green(MINIMUM_ETHER) + chalk.gray("..."));
         }
+        wait(5);
+        mine_minimum_ether(geth, account, next);
+    } else {
+        next(geth, account);
     }
+}
+
+function upload_contracts(geth, account) {
+    log(chalk.red.bold("Upload contracts to test chain..."));
+    var uploader = cp.spawn(UPLOADER, ["--BLOCKTIME=2"]);
+    uploader.stdout.on("data", function (data) {
+        process.stdout.write(chalk.cyan(data.toString()));
+    });
+    uploader.stderr.on("data", function (data) {
+        process.stdout.write(chalk.red(data.toString()));
+    });
+    uploader.on("close", function (code) {
+        log(chalk.red.bold("Uploader closed with code " + code));
+        cp.exec(path.join(AUGUR_CORE, "generate_gospel.py -j"), function (err, stdout) {
+            if (err) throw err;
+            log("Write contract addresses to " + chalk.magenta(gospel_json) + "...");
+            fs.writeFileSync(gospel_json, stdout.toString());
+            kill_geth(geth);
+            geth_flags[1] = accounts[1];
+            geth_flags[3] = accounts[1];
+            setTimeout(function () {
+                check_connection(
+                    spawn_geth(geth_flags),
+                    accounts[1],
+                    mine_minimum_ether,
+                    faucets
+                );
+            }, 10000);
+        });
+    });
 }
 
 var old_spawn = cp.spawn;
@@ -234,6 +254,10 @@ function reset_datadir() {
 
 async.series([
     reset_datadir(),
-    check_connection(spawn_geth(geth_flags), accounts[0], upload_contracts),
-    preupload_tests()
+    check_connection(
+        spawn_geth(geth_flags),
+        accounts[0],
+        mine_minimum_ether,
+        preupload_tests
+    )
 ]);

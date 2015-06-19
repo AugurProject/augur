@@ -318,9 +318,6 @@ var Augur = (function (augur) {
         var folded = [];
         num_cols = parseInt(num_cols);
         var num_rows = arr.length / num_cols;
-        if (num_rows !== parseInt(num_rows)) {
-            // throw("array length (" + arr.length + ") not divisible by " + num_cols);
-        }
         num_rows = parseInt(num_rows);
         var row;
         for (var i = 0; i < parseInt(num_rows); ++i) {
@@ -973,32 +970,34 @@ var Augur = (function (augur) {
         return json_rpc(postdata("getTransactionCount", address || augur.coinbase), f);
     };
     augur.sendEther = augur.pay = function (to, value, from, onSent, onSuccess, onFailed) {
-        var tx, txhash;
-        if (to && to.value) {
-            value = to.value;
-            if (to.from) from = to.from;
-            if (to.onSent) onSent = to.onSent;
-            if (to.onSuccess) onSuccess = to.onSuccess;
-            if (to.onFailed) onFailed = to.onFailed;
-            to = to.to;
-        }
-        tx = {
-            from: from || augur.coinbase,
-            to: to,
-            value: augur.bignum(value).mul(augur.ETHER).toFixed()
-        };
-        if (onSent) {
-            augur.sendTx(tx, function (txhash) {
+        if (typeof document === "undefined" || (document && document.domain !== "demo.augur.net")) {
+            var tx, txhash;
+            if (to && to.value) {
+                value = to.value;
+                if (to.from) from = to.from;
+                if (to.onSent) onSent = to.onSent;
+                if (to.onSuccess) onSuccess = to.onSuccess;
+                if (to.onFailed) onFailed = to.onFailed;
+                to = to.to;
+            }
+            tx = {
+                from: from || augur.coinbase,
+                to: to,
+                value: augur.bignum(value).mul(augur.ETHER).toFixed()
+            };
+            if (onSent) {
+                augur.sendTx(tx, function (txhash) {
+                    if (txhash) {
+                        onSent(txhash);
+                        if (onSuccess) tx_notify(0, null, txhash, onSuccess);
+                    }
+                });
+            } else {
+                txhash = augur.sendTx(tx);
                 if (txhash) {
-                    onSent(txhash);
                     if (onSuccess) tx_notify(0, null, txhash, onSuccess);
+                    return txhash;
                 }
-            });
-        } else {
-            txhash = augur.sendTx(tx);
-            if (txhash) {
-                if (onSuccess) tx_notify(0, null, txhash, onSuccess);
-                return txhash;
             }
         }
     };
@@ -1422,9 +1421,15 @@ var Augur = (function (augur) {
             if (onSuccess) onSuccess(tx);
         } else {
             if (count !== undefined && count < augur.TX_POLL_MAX) {
-                augur.notifications[txhash].push(setTimeout(function () {
-                    tx_notify(count + 1, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed);
-                }, augur.TX_POLL_INTERVAL));
+                if (count === 0) {
+                    augur.notifications[txhash] = [setTimeout(function () {
+                        tx_notify(count + 1, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed);
+                    }, augur.TX_POLL_INTERVAL)];
+                } else {
+                    augur.notifications[txhash].push(setTimeout(function () {
+                        tx_notify(count + 1, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed);
+                    }, augur.TX_POLL_INTERVAL));
+                }
             }
         }
     }
@@ -1539,6 +1544,7 @@ var Augur = (function (augur) {
         from: augur.coinbase,
         to: augur.contracts.cash,
         method: "faucet",
+        returns: "number",
         send: true
     };
     augur.getCashBalance = function (account, onSent) {
@@ -1550,19 +1556,21 @@ var Augur = (function (augur) {
     augur.sendCash = function (to, value, onSent, onSuccess, onFailed) {
         // to: sha256
         // value: number -> fixed-point
-        if (to && to.value) {
-            value = to.value;
-            if (to.onSent) onSent = to.onSent;
-            if (to.onSuccess) onSuccess = to.onSuccess;
-            if (to.onFailed) onFailed = to.onFailed;
-            to = to.to;
+        if (typeof document === "undefined" || (document && document.domain !== "demo.augur.net")) {
+            if (to && to.value) {
+                value = to.value;
+                if (to.onSent) onSent = to.onSent;
+                if (to.onSuccess) onSuccess = to.onSuccess;
+                if (to.onFailed) onFailed = to.onFailed;
+                to = to.to;
+            }
+            var tx = copy(augur.tx.sendCash);
+            tx.params = [to, augur.fix(value)];
+            return send_call_confirm(tx, onSent, onSuccess, onFailed);
         }
-        var tx = copy(augur.tx.sendCash);
-        tx.params = [to, augur.fix(value)];
-        return send_call_confirm(tx, onSent, onSuccess, onFailed);
     };
-    augur.cashFaucet = function (onSent) {
-        return fire(augur.tx.cashFaucet, onSent);
+    augur.cashFaucet = function (onSent, onSuccess, onFailed) {
+        return send_call_confirm(augur.tx.cashFaucet, onSent, onSuccess, onFailed);
     };
 
     // info.se
@@ -3081,9 +3089,10 @@ var Augur = (function (augur) {
         to: augur.contracts.reporting,
         method: "faucet",
         signature: "i",
+        returns: "number",
         send: true
     };
-    augur.hashReport = function (ballot, salt, onSent) {
+    augur.hashReport = function (ballot, salt, onSent, onSuccess, onFailed) {
         // ballot: number[]
         // salt: integer
         if (ballot.constructor === Array) {
@@ -3092,11 +3101,11 @@ var Augur = (function (augur) {
             return fire(tx, onSent);
         }
     };
-    augur.reputationFaucet = function (branch, onSent) {
+    augur.reputationFaucet = function (branch, onSent, onSuccess, onFailed) {
         // branch: sha256
         var tx = copy(augur.tx.reputationFaucet);
         tx.params = branch;
-        return fire(tx, onSent);
+        return send_call_confirm(tx, onSent, onSuccess, onFailed);
     };
 
     // checkQuorum.se
@@ -3225,17 +3234,19 @@ var Augur = (function (augur) {
         // branch: sha256
         // to: sha256
         // value: number -> fixed-point
-        if (branch && branch.branchId && branch.to && branch.value) {
-            to = branch.to;
-            value = branch.value;
-            if (branch.onSent) onSent = branch.onSent;
-            if (branch.onSuccess) onSuccess = branch.onSuccess;
-            if (branch.onFailed) onFailed = branch.onFailed;
-            branch = branch.branchId;
+        if (typeof document === "undefined" || (document && document.domain !== "demo.augur.net")) {
+            if (branch && branch.branchId && branch.to && branch.value) {
+                to = branch.to;
+                value = branch.value;
+                if (branch.onSent) onSent = branch.onSent;
+                if (branch.onSuccess) onSuccess = branch.onSuccess;
+                if (branch.onFailed) onFailed = branch.onFailed;
+                branch = branch.branchId;
+            }
+            var tx = copy(augur.tx.sendReputation);
+            tx.params = [branch, to, augur.fix(value)];
+            return send_call_confirm(tx, onSent, onSuccess, onFailed);
         }
-        var tx = copy(augur.tx.sendReputation);
-        tx.params = [branch, to, augur.fix(value)];
-        return send_call_confirm(tx, onSent, onSuccess, onFailed);
     };
 
     // transferShares.se

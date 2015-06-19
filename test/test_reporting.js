@@ -5,9 +5,8 @@
 
 "use strict";
 
-var assert = require("assert");
+var assert = require("chai").assert;
 var Augur = require("../augur");
-var constants = require("./constants");
 
 Augur.connect();
 
@@ -15,18 +14,15 @@ var log = console.log;
 
 function gteq0(n) { return (parseFloat(n) >= 0); }
 
-var amount = "1";
 var branch_id = Augur.branches.dev;
-var branch_number = "1";
 var reporter_index = "0";
-var reporter_address = constants.accounts.jack;
 var ballot = [Augur.YES, Augur.YES, Augur.NO, Augur.YES];
 var salt = "1337";
 
 describe("data and api/reporting", function () {
     describe("getTotalRep(" + branch_id + ")", function () {
         var test = function (r) {
-            assert.equal(r, "94");
+            assert(parseInt(r) >= 47);
         };
         it("sync", function () {
             test(Augur.getTotalRep(branch_id));
@@ -53,6 +49,7 @@ describe("data and api/reporting", function () {
     describe("getRepByIndex(" + branch_id + ", " + reporter_index + ") ", function () {
         var test = function (r) {
             gteq0(r);
+            assert.equal(Number(r), 47);
         };
         it("sync", function () {
             test(Augur.getRepByIndex(branch_id, reporter_index));
@@ -94,7 +91,6 @@ describe("data and api/reporting", function () {
     });
     describe("getNumberReporters(" + branch_id + ") ", function () {
         var test = function (r) {
-            gteq0(r);
             assert(parseInt(r) >= 1);
         };
         it("sync", function () {
@@ -121,28 +117,13 @@ describe("data and api/reporting", function () {
     });
     describe("hashReport([ballot], " + salt + ") ", function () {
         var test = function (r) {
-            assert.equal(r, "0x6a3e1f23a899abb1e670f9aedd8cdebea1ce0835542beab1cd2ab50e0e2f28a9");
+            assert.equal(r, "0xf3efde92c14172a5498fc449f5d0af2c6017c3ca37b8220164721893bdf93f27");
         };
         it("sync", function () {
             test(Augur.hashReport(ballot, salt));
         });
         it("async", function (done) {
             Augur.hashReport(ballot, salt, function (r) {
-                test(r); done();
-            });
-        });
-    });
-    Augur.tx.reputationFaucet.send = false;
-    Augur.tx.reputationFaucet.returns = "number";
-    describe("reputationFaucet(" + branch_id + ") ", function () {
-        var test = function (r) {
-            assert.equal(r, "1");
-        };
-        it("sync", function () {
-            test(Augur.reputationFaucet(branch_id));
-        });
-        it("async", function (done) {
-            Augur.reputationFaucet(branch_id, function (r) {
                 test(r); done();
             });
         });
