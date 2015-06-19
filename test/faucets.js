@@ -16,35 +16,39 @@ var coinbase = Augur.coinbase;
 
 log("Faucets:");
 
-setTimeout(function () {
-    Augur.reputationFaucet(
-        branch,
-        function (r) {
-            // sent
-        },
-        function (r) {
-            // success
-            log(chalk.green("  ✓ ") + chalk.gray("Reputation faucet"));
-        },
-        function (r) {
-            // failed
+Augur.reputationFaucet(
+    branch,
+    function (r) {
+        // sent
+    },
+    function (r) {
+        // success
+        log(chalk.green("  ✓ ") + chalk.gray("Reputation faucet"));
+    },
+    function (r) {
+        // failed
+        if (r.message) {
             throw r.message;
+        } else {
+            throw r;
         }
-    );
-}, 0);
+    }
+);
 
-setTimeout(function () {
-    Augur.cashFaucet(
-        function (r) {
-            // sent
-        },
-        function (r) {
-            // success
-            log(chalk.green("  ✓ ") + chalk.gray("Cash faucet"));
-        },
-        function (r) {
-            // failed
+Augur.cashFaucet(
+    function (r) {
+        // sent
+    },
+    function (r) {
+        // success
+        log(chalk.green("  ✓ ") + chalk.gray("Cash faucet"));
+    },
+    function (r) {
+        // failed
+        if (r.message) {
             throw r.message;
+        } else {
+            throw r;
         }
-    );
-}, 0);
+    }
+);
