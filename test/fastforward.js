@@ -41,6 +41,8 @@ function check_quorum() {
     );
 }
 
+log("Fast forward...");
+
 var branch = Augur.branches.dev;
 var events, period;
 for (var i = 0; i < 200; ++i) {

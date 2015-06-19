@@ -11,8 +11,6 @@ var log = console.log;
 var TIMEOUT = 120000;
 var branch = Augur.branches.dev;
 var coinbase = Augur.coinbase;
-var init_cash_balance = Augur.getCashBalance(coinbase);
-var init_rep_balance = Augur.getRepBalance(branch, coinbase);
 
 describe("Faucets", function () {
     it("Reputation faucet", function (done) {
@@ -32,7 +30,6 @@ describe("Faucets", function () {
                 var rep_balance = Augur.getRepBalance(branch, coinbase);
                 var cash_balance = Augur.getCashBalance(coinbase);
                 assert.equal(rep_balance, "47");
-                assert.equal(cash_balance, init_cash_balance);
                 done();
             },
             function (r) {
@@ -57,7 +54,6 @@ describe("Faucets", function () {
                 assert(parseInt(r.blockNumber) >= 0);
                 var rep_balance = Augur.getRepBalance(branch, coinbase);
                 var cash_balance = Augur.getCashBalance(coinbase);
-                assert.equal(rep_balance, init_rep_balance);
                 assert.equal(cash_balance, "10000");
                 done();
             },

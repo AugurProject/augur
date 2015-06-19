@@ -21,14 +21,14 @@ mocha test_ethrpc.js
 # mocha test_augur.js
 mocha test_createEvent.js
 sleep 12
-# mocha test_addEvent.js
-# sleep 2
+mocha test_addEvent.js
+sleep 2
 # mocha test_createMarket.js
 # sleep 2
-mocha test_buyAndSellShares.js
-sleep 2
-node fastforward.js
-sleep 2
+# mocha test_buyAndSellShares.js
+# sleep 2
+# node fastforward.js
+# sleep 2
 mocha test_ballot.js
 sleep 12
 mocha test_interpolate.js

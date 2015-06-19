@@ -18,10 +18,14 @@ var TIMEOUT = 120000;
 var branch = Augur.branches.dev;
 var period = Augur.getVotePeriod(branch);
 
-var events = fs.readFileSync('events.dat').toString().split("\n");
+var eventsMarkets = fs.readFileSync('events.dat').toString().split("\n");
+var events = [];
+for (var i = 0; i < eventsMarkets.length; ++i) {
+    events.push(eventsMarkets[i].split(',')[0]);
+}
 var num_events = events.length;
 
-describe("data and api/expiringEvents", function () {
+describe("Add " + num_events + " events manually to vote period " + period, function () {
 
     it.each(events, "addEvent to vote period: %s", ['element'], function (element, next) {
         if (element !== "" && element !== "\n") {

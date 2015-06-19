@@ -4,6 +4,7 @@ GLOBAL.XHR2 = require('xhr2');
 GLOBAL.request = require('sync-request');
 GLOBAL.crypto = require('crypto');
 GLOBAL._ = require('lodash');
+GLOBAL.chalk = require('chalk');
 GLOBAL.moment = require('moment');
 GLOBAL.Augur = require('./augur');
 GLOBAL.constants = require('./test/constants');
@@ -20,3 +21,12 @@ GLOBAL.accounts = [
 Augur.connect();
 
 GLOBAL.c = Augur.coinbase;
+
+var initial_cash = Augur.getCashBalance(Augur.coinbase);
+var initial_rep = Augur.getRepBalance(Augur.branches.dev, Augur.coinbase);
+var initial_ether = Augur.bignum(Augur.balance(Augur.coinbase)).dividedBy(Augur.ETHER).toFixed();
+
+log(chalk.cyan("Balances:"));
+log("Cash:       " + chalk.green(initial_cash));
+log("Reputation: " + chalk.green(initial_rep));
+log("Ether:      " + chalk.green(initial_ether));

@@ -3092,7 +3092,7 @@ var Augur = (function (augur) {
         returns: "number",
         send: true
     };
-    augur.hashReport = function (ballot, salt, onSent, onSuccess, onFailed) {
+    augur.hashReport = function (ballot, salt, onSent) {
         // ballot: number[]
         // salt: integer
         if (ballot.constructor === Array) {

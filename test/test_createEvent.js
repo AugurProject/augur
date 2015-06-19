@@ -19,7 +19,9 @@ var TIMEOUT = 120000;
 var minValue = 0;
 var maxValue = 1;
 var numOutcomes = 2;
-var num_events = 5;
+var num_events = 10;
+// var num_events = 8;
+// var num_reporters = 14;
 
 var branch = Augur.branches.dev;
 var period = Augur.getVotePeriod(branch);
@@ -74,7 +76,7 @@ describe("Creating " + num_events + " events and markets", function () {
                 Augur.createMarket(marketObj);
             },
             onFailed: function (r) {
-                log("failed: " + JSON.stringify(r, null, 2));
+                throw(r.message);
                 next();
             }
         });

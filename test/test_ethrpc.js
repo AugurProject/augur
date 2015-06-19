@@ -63,8 +63,8 @@ describe("Ethereum JSON-RPC", function () {
         });
     });
     describe("gasPrice", function () {
-        it("should be 10 szabo", function () {
-            assert.equal(Augur.gasPrice(), "0x9184e72a000");
+        it("should be > 0", function () {
+            assert(parseInt(Augur.gasPrice()) >= 0);
         });
     });      
     describe("blockNumber", function () {
@@ -75,13 +75,11 @@ describe("Ethereum JSON-RPC", function () {
     describe("balance", function () {
         it("should be a number greater than or equal to 0", function () {
             assert(parseInt(Augur.balance()) >= 0);
-            assert.equal(Augur.balance(), Augur.getBalance());
         });
     });
     describe("txCount", function () {
         it("should be a number greater than or equal to 0", function () {
             assert(parseInt(Augur.txCount()) >= 0);
-            assert.equal(Augur.txCount(), Augur.getTransactionCount());
         });
     });
     describe("peerCount", function () {

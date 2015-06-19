@@ -5,10 +5,8 @@
 
 "use strict";
 
-var fs = require("fs");
-var assert = require("assert");
+var assert = require("chai").assert;
 var _ = require("lodash");
-var cp = require("child_process");
 var Augur = require("../augur");
 require('it-each')({ testPerIteration: true });
 
