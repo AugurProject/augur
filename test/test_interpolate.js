@@ -22,11 +22,7 @@ var period = Augur.getVotePeriod(branch);
 var num_events = Augur.getNumberEvents(branch, period);
 var num_reports = Augur.getNumberReporters(branch);
 var flatsize = num_events * num_reports;
-var reporters = [
-    "0x639b41c4d3d399894f2a57894278e1653e7cd24c",
-    "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b",
-    "0x4a0cf714e2c1b785ff2d650320acf63be9eb25c6"
-];
+var reporters = constants.test_accounts;
 var reputation_vector = [];
 for (var i = 0; i < num_reports; ++i) {
     reputation_vector.push(Augur.getRepBalance(branch, reporters[i]));
