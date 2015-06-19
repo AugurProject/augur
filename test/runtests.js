@@ -83,7 +83,7 @@ function wait(seconds) {
 }
 
 function kill_geth(geth) {
-    log(chalk.yellow("Shut down ") + chalk.magenta("geth") + chalk.yellow("..."));
+    log(chalk.gray("Shut down ") + chalk.magenta("geth") + chalk.gray("..."));
     geth.kill();
 }
 
@@ -116,7 +116,7 @@ function mine_minimum_ether(geth, account, next) {
     var balance = Augur.bignum(Augur.balance(account)).dividedBy(Augur.ETHER).toNumber();
     if (balance < MINIMUM_ETHER) {
         if (balance > 0) {
-            log("Balance: " + chalk.green(balance) + chalk.gray(" ETH, waiting for ") +
+            log(chalk.green(balance) + chalk.gray(" ETH, waiting for ") +
                 chalk.green(MINIMUM_ETHER) + chalk.gray("..."));
         }
         setTimeout(function () {
@@ -301,24 +301,35 @@ function upload_contracts(geth) {
         process.stdout.write(chalk.red(data.toString()));
     });
     uploader.on("close", function (code) {
-        log(chalk.red.bold("Uploader closed with code " + code));
-        cp.exec(path.join(AUGUR_CORE, "generate_gospel.py -j"), function (err, stdout) {
-            if (err) throw err;
-            log("Write contract addresses to " + chalk.green(gospel_json) + "...");
-            fs.writeFileSync(gospel_json, stdout.toString());
-            CUSTOM_GOSPEL = true;
-            kill_geth(geth);
-            log(chalk.blue.bold("\nAccount 1: ") + chalk.cyan(accounts[1]));
-            geth_flags[1] = accounts[1];
-            geth_flags[3] = accounts[1];
-            wait(10);
-            check_connection(
-                spawn_geth(geth_flags),
-                accounts[1],
-                mine_minimum_ether,
-                faucets
-            );
-        });
+        if (code !== 0) {
+            log(chalk.red.bold("Uploader closed with code " + code));
+        } else {
+            cp.exec(path.join(AUGUR_CORE, "generate_gospel.py -j"), function (err, stdout) {
+                if (err) throw err;
+                log("Write contract addresses to " + chalk.green(gospel_json) + "...");
+                fs.writeFileSync(gospel_json, stdout.toString());
+                CUSTOM_GOSPEL = true;
+                log("Send " + MINIMUM_ETHER + " ETH to other addresses:");
+                for (var i = 1, len = accounts.length; i < len; ++i) {
+                    log(chalk.green("  ✓ ") + chalk.gray(accounts[i]));
+                    Augur.pay(accounts[i], MINIMUM_ETHER);
+                }
+                setTimeout(function () {
+                    kill_geth(geth);
+                    log(chalk.blue.bold("\nAccount 1: ") + chalk.cyan(accounts[1]));
+                    geth_flags[1] = accounts[1];
+                    geth_flags[3] = accounts[1];
+                    setTimeout(function () {
+                        check_connection(
+                            spawn_geth(geth_flags),
+                            accounts[1],
+                            mine_minimum_ether,
+                            faucets
+                        );
+                    }, 10000);
+                }, 12000);
+            });
+        }
     });
 }
 
@@ -345,7 +356,7 @@ function check_connection(geth, account, callback, next, count) {
             balance = Augur.bignum(balance).dividedBy(Augur.ETHER).toFixed();
             log("Connected on account", chalk.cyan(account));
             log(chalk.green(Augur.blockNumber()), chalk.gray("blocks"));
-            log("Balance:", chalk.green(balance), chalk.gray("ETH"));
+            log(chalk.green(balance), chalk.gray("ETH"));
             callback(geth, account, next);
         } else {
             kill_geth(geth);
