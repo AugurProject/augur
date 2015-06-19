@@ -286,12 +286,11 @@ var SendEtherModal = React.createClass({
 
   onSend: function(event) {
 
-    if (this.isValid(event)) {
+    if (this.isValid(event) && process.env.RPC_HOST !== 'poc9.com:8545') {
       this.state.ethereumClient.sendEther(this.state.destination, this.state.amount);
       this.props.onRequestHide();
     }
   },
-
 
   // base methods
   // FIXME:  move these to a base class and merge for each modal
@@ -426,11 +425,24 @@ var SendEtherTrigger = React.createClass({
   mixins: [FluxMixin],
 
   render: function() {
-    return (
-      <ModalTrigger modal={<SendEtherModal {...this.props} />}>
-        <Button bsSize='xsmall' bsStyle='primary'>{ this.props.text }</Button>
-      </ModalTrigger>
-    );
+
+    // disabled version for centralized geth node (demo)
+    if (process.env.RPC_HOST === 'poc9.com:8545') {
+
+      return (
+        <ModalTrigger modal={<SendEtherModal {...this.props} />}>
+          <Button bsSize='xsmall' bsStyle='primary' disabled>{ this.props.text }</Button>
+        </ModalTrigger>
+      );
+
+    } else {
+
+      return (
+        <ModalTrigger modal={<SendEtherModal {...this.props} />}>
+          <Button bsSize='xsmall' bsStyle='primary'>{ this.props.text }</Button>
+        </ModalTrigger>
+      );
+    }
   }
 });
 
