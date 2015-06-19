@@ -349,11 +349,9 @@ function check_connection(geth, account, callback, next, count) {
     if (CUSTOM_GOSPEL) {
         log("Load contracts from file: " + chalk.green(gospel_json));
         Augur.contracts = JSON.parse(fs.readFileSync(gospel_json));
-        log(Augur.contracts.createEvent);
     }
     wait(5);
     if (Augur.connect()) {
-        log(Augur.contracts.createEvent);
         var balance = Augur.balance(account);
         if (balance && !balance.error) {
             balance = Augur.bignum(balance).dividedBy(Augur.ETHER).toFixed();
