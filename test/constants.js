@@ -88,7 +88,7 @@ constants.test_accounts = [
     "0xf0c4ee355432a7c7da12bdef04543723d110d591",
     "0xef2b2ba637921b8cf51b8a89576666a5d4322c69",
     "0x2c97f31d2db40aa57d0e6ca5fa8aedf7d99592db",
-    "0xcdc2cdaab90909769ccf823246f04f0da827a732",
+    // "0xcdc2cdaab90909769ccf823246f04f0da827a732",
     "0xa78ddbe112cb29844d2a26cbc4e52c11e74aaa6c"
 ];
 

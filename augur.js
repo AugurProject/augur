@@ -315,14 +315,14 @@ var Augur = (function (augur) {
         next();
     };
     augur.fold = function(arr, num_cols) {
-        var folded = [];
+        var i, j, folded, num_rows, row;
+        folded = [];
         num_cols = parseInt(num_cols);
-        var num_rows = arr.length / num_cols;
+        num_rows = arr.length / num_cols;
         num_rows = parseInt(num_rows);
-        var row;
-        for (var i = 0; i < parseInt(num_rows); ++i) {
+        for (i = 0; i < parseInt(num_rows); ++i) {
             row = [];
-            for (var j = 0; j < num_cols; ++j) {
+            for (j = 0; j < num_cols; ++j) {
                 row.push(arr[i*num_cols + j]);
             }
             folded.push(row);
@@ -1640,21 +1640,32 @@ var Augur = (function (augur) {
     };
 
     // interpolate.se
+    // augur.tx.interpolate = {
+    //     to: augur.contracts.interpolate,
+    //     method: "interpolate",
+    //     signature: "aaaaa",
+    //     returns: "number[]"
+    // };
+    // augur.interpolate = function (reports, reputation, scaled, scaled_max, scaled_min, onSent, onSuccess, onFailed) {
+    //     var tx = copy(augur.tx.interpolate);
+    //     tx.params = [
+    //         Augur.fix(reports, "hex"),
+    //         Augur.fix(reputation, "hex"),
+    //         scaled,
+    //         scaled_max,
+    //         scaled_min
+    //     ];
+    //     return send_call_confirm(tx, onSent, onSuccess, onFailed);
+    // };
     augur.tx.interpolate = {
         to: augur.contracts.interpolate,
         method: "interpolate",
-        signature: "aaaaa",
+        signature: "aa",
         returns: "number[]"
     };
-    augur.interpolate = function (reports, reputation, scaled, scaled_max, scaled_min, onSent, onSuccess, onFailed) {
+    augur.interpolate = function (reports, reputation, onSent, onSuccess, onFailed) {
         var tx = copy(augur.tx.interpolate);
-        tx.params = [
-            Augur.fix(reports, "hex"),
-            Augur.fix(reputation, "hex"),
-            scaled,
-            scaled_max,
-            scaled_min
-        ];
+        tx.params = [Augur.fix(reports, "hex"), Augur.fix(reputation, "hex")];
         return send_call_confirm(tx, onSent, onSuccess, onFailed);
     };
 

@@ -6,7 +6,8 @@
 "use strict";
 
 var fs = require("fs");
-var assert = require("assert");
+var assert = require("chai").assert;
+var chalk = require("chalk");
 var Augur = require("../augur");
 var constants = require("./constants");
 require('it-each')({ testPerIteration: true });
@@ -16,6 +17,16 @@ Augur.connect();
 
 var log = console.log;
 var TIMEOUT = 240000;
+
+function print_matrix(m) {
+    for (var i = 0, rows = m.length; i < rows; ++i) {
+        process.stdout.write("  ");
+        for (var j = 0, cols = m[0].length; j < cols; ++j) {
+            process.stdout.write(chalk.cyan(m[i][j] + " "));
+        }
+        process.stdout.write("\n");
+    }
+}
 
 var branch = Augur.branches.dev;
 var period = Augur.getVotePeriod(branch);
@@ -27,7 +38,7 @@ var reputation_vector = [];
 for (var i = 0; i < num_reports; ++i) {
     reputation_vector.push(Augur.getRepBalance(branch, reporters[i]));
 }
-log(reputation_vector);
+log("Reputation:", chalk.cyan(JSON.stringify(reputation_vector)));
 var ballot = new Array(num_events);
 var reports = new Array(flatsize);
 for (var i = 0; i < num_reports; ++i) {
@@ -43,57 +54,65 @@ for (var i = 0; i < num_reports; ++i) {
         }
     }
 }
-// log(reports);
-var scaled = [];
-var scaled_min = [];
-var scaled_max = [];
-for (var i = 0; i < num_events; ++i) {
-    scaled.push(0);
-    scaled_min.push(1);
-    scaled_max.push(2);
-}
+log("Reports:");
+print_matrix(Augur.fold(reports, num_events));
+// var scaled = [];
+// var scaled_min = [];
+// var scaled_max = [];
+// for (var i = 0; i < num_events; ++i) {
+//     scaled.push(0);
+//     scaled_min.push(1);
+//     scaled_max.push(2);
+// }
+// log("Scaled:");
+// log(scaled);
+// log("Scaled max:");
+// log(scaled_max);
+// log("Scaled min:");
+// log(scaled_min);
 
-describe("testing consensus/interpolate", function () {
+describe("testing consensus: interpolate", function () {
 
     it("interpolate", function (done) {
         this.timeout(TIMEOUT);
         assert.equal(reports.length, flatsize);
         assert.equal(reputation_vector.length, num_reports);
-        assert.equal(scaled.length, num_events);
-        assert.equal(scaled_max.length, num_events);
-        assert.equal(scaled_min.length, num_events);
-        log("Reports:");
-        log(Augur.fold(reports, num_events));
-        log("Reputation:");
-        log(reputation_vector);
-        log("Scaled:");
-        log(scaled);
-        log("Scaled max:");
-        log(scaled_max);
-        log("Scaled min:");
-        log(scaled_min);
+        // assert.equal(scaled.length, num_events);
+        // assert.equal(scaled_max.length, num_events);
+        // assert.equal(scaled_min.length, num_events);
         Augur.interpolate(
             reports,
             reputation_vector,
-            scaled,
-            scaled_max,
-            scaled_min,
+            // scaled,
+            // scaled_max,
+            // scaled_min,
             function (r) {
                 // sent
-                log(Augur.fold(Augur.unfix(r.callReturn, "number"), num_events));
+                // print_matrix(
+                //     Augur.fold(Augur.unfix(r.callReturn, "number"),
+                //         num_events)
+                // );
             },
             function (r) {
                 // success
                 var interpolated = Augur.unfix(r.callReturn, "number");
-                var reports_filled = Augur.fold(interpolated.slice(0, flatsize), num_events);
-                var reports_mask = Augur.fold(interpolated.slice(flatsize, 2*flatsize), num_events);
-                log("reports (filled):\n", reports_filled);
-                log("reports mask:\n", reports_mask);
+                var reports_filled = Augur.fold(
+                    interpolated.slice(0, flatsize),
+                    num_events
+                );
+                var reports_mask = Augur.fold(
+                    Augur.fix(interpolated.slice(flatsize, 2*flatsize), "string"),
+                    num_events
+                );
+                log("Reports (filled):");
+                print_matrix(reports_filled)
+                log("Reports mask:");
+                print_matrix(reports_mask);
                 done();
             },
             function (r) {
                 //failed
-                log("interpolate failed:", r);
+                throw r.message;
                 done();
             }
         );

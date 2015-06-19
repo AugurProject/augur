@@ -48,7 +48,7 @@ describe("Set ballots for " + reporters.length + " reporters", function () {
             ballot[i] = 2.0;
         }
         ballot[num_events-3] = 1.0;
-        log("   ", chalk.cyan(JSON.stringify(ballot)));
+        log("     ", chalk.cyan(JSON.stringify(ballot)));
         reputation = Augur.getRepBalance(branch, reporters[0]);
         assert.equal(Augur.getReporterID(branch, 0), reporters[0]);
         Augur.setReporterBallot(
@@ -84,7 +84,7 @@ describe("Set ballots for " + reporters.length + " reporters", function () {
         // ballot[num_events-1] = 1.0;
         // ballot[num_events-2] = 1.0;
         // ballot[num_events-3] = 1.0;
-        log("   ", chalk.cyan(JSON.stringify(ballot)));
+        log("     ", chalk.cyan(JSON.stringify(ballot)));
         reputation = Augur.getRepBalance(branch, reporters[1]);
         assert.equal(Augur.getReporterID(branch, 1), reporters[1]);
         Augur.setReporterBallot(
@@ -121,7 +121,7 @@ describe("Set ballots for " + reporters.length + " reporters", function () {
         ballot[num_events-1] = 1.0;
         ballot[num_events-2] = 1.0;
         ballot[num_events-3] = 1.0;
-        log("   ", chalk.cyan(JSON.stringify(ballot)));
+        log("     ", chalk.cyan(JSON.stringify(ballot)));
         reputation = Augur.getRepBalance(branch, reporters[2]);
         assert.equal(Augur.getReporterID(branch, 2), reporters[2]);
         Augur.setReporterBallot(
@@ -151,9 +151,9 @@ describe("Set ballots for " + reporters.length + " reporters", function () {
         this.timeout(TIMEOUT);
         ballot = new Array(num_events);
         for (i = 0; i < num_events; ++i) {
-            ballot[i] = 0.0;
+            ballot[i] = 2.0;
         }
-        log("   ", chalk.cyan(JSON.stringify(ballot)));
+        log("     ", chalk.cyan(JSON.stringify(ballot)));
         reputation = Augur.getRepBalance(branch, element);
         Augur.setReporterBallot(
             branch,

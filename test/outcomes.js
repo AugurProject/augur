@@ -18,15 +18,11 @@ var num_reports = Augur.getNumberReporters(branch);
 var num_events = Augur.getNumberEvents(branch, period);
 var flatsize = num_events * num_reports;
 
-var reporters = [
-    "0x639b41c4d3d399894f2a57894278e1653e7cd24c",
-    "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b",
-    "0x4a0cf714e2c1b785ff2d650320acf63be9eb25c6"
-];
+var reporters = constants.test_accounts;
 var ballots = new Array(flatsize);
 for (var i = 0; i < num_reports; ++i) {
     var reporterID = Augur.getReporterID(branch, i);
-    var ballot = Augur.getReporterBallot(branch, period, reporterID);
+    var ballot = Augur.getReporterBallot(branch, period, reporterID).slice(0, num_events);
     if (ballot[0] != 0) {
         for (var j = 0; j < num_events; ++j) {
             ballots[i*num_events + j] = ballot[j];
@@ -70,4 +66,4 @@ log("\nUpdated reputation:");
 log(reputation);
 
 log("\nTotal reputation (" + (47*reporters.length).toString() + " expected): " + total_rep.toString());
-assert.equal(total_rep, 141);
+assert.equal(total_rep, 47*reporters.length);
