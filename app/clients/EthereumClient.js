@@ -201,7 +201,7 @@ EthereumClient.prototype.getCashBalance = function() {
   return Augur.getCashBalance(this.account);
 };
 
-EthereumClient.prototype.sendCash = function(destination, amount, onSuccess) {
+EthereumClient.prototype.sendCash = function(destination, amount, onSent, onSuccess, onFailure) {
   return Augur.sendCash(destination, amount, function(result) {
     utilities.log('sending '+amount+' cash to '+ destination);
   }, function(result) {
@@ -211,10 +211,16 @@ EthereumClient.prototype.sendCash = function(destination, amount, onSuccess) {
   });
 };
 
-EthereumClient.prototype.repFaucet = function(branchId) {
+EthereumClient.prototype.repFaucet = function(branchId, onSent, onSuccess, onFailure) {
 
   branchId = branchId || this.defaultBranchId;
-  return Augur.reputationFaucet(branchId);
+  return Augur.reputationFaucet(branchId, function(result) {
+    utilities.log('requesting rep');
+  }, function(result) {
+    utilities.log('rep request successful');
+  }, function(error) {
+    utilities.error('rep request failed: ' + error);
+  });
 };
 
 EthereumClient.prototype.getRepBalance = function(branchId) {
@@ -320,6 +326,7 @@ EthereumClient.prototype.checkQuorum = function(branchId, onSent, onSuccess, onF
   utilities.log('calling dispatch');
 
   Augur.dispatch(branchId, function (result) {
+
     if (result) {
       if (result.callReturn) {
         result.step = result.callReturn;
@@ -331,10 +338,11 @@ EthereumClient.prototype.checkQuorum = function(branchId, onSent, onSuccess, onF
           console.error(result.txHash.message);
         }
       }
+      if (onSent) onSent(result.txHash);
     }
-    if (onSent) onSent(result.txHash);
 
   }, function (result) {
+
     if (result && result.callReturn) {
       result.step = result.callReturn;
       delete result.callReturn;
@@ -343,7 +351,6 @@ EthereumClient.prototype.checkQuorum = function(branchId, onSent, onSuccess, onF
     if (onSuccess) onSuccess();
 
   }, function (error) {
-
     utilities.error(error);
     if (onFailed) onFailed(error);
   });
