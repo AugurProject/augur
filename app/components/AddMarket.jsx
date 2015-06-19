@@ -22,7 +22,7 @@ var AddMarketModal = React.createClass({
       marketTextMaxLength: 256,
       marketTextCount: '',
       marketTextError: null,
-      marketInvestment: '100',
+      marketInvestment: '501',
       marketInvestmentError: null,
       maturationDate: '',
       tradingFee: '2',
