@@ -28,8 +28,8 @@ var Augur = (function (augur) {
         port: 8545
     };
 
-    // default gas: 3M
-    augur.default_gas = "0x2dc6c0";
+    // default gas: 3.135M
+    augur.default_gas = "0x2fd618";
 
     // if set to true, all numerical results (including hashes)
     // are returned as BigNumber objects
@@ -1625,6 +1625,16 @@ var Augur = (function (augur) {
     };
     augur.redeem_interpolate = function (branch, period, num_events, num_reports, flatsize, onSent, onSuccess, onFailed) {
         var tx = copy(augur.tx.redeem_interpolate);
+        tx.params = [branch, period, num_events, num_reports, flatsize];
+        return send_call_confirm(tx, onSent, onSuccess, onFailed);
+    };
+    augur.tx.read_ballots = {
+        to: augur.contracts.redeem_interpolate,
+        method: "read_ballots",
+        signature: "iiiii"
+    };
+    augur.read_ballots = function (branch, period, num_events, num_reports, flatsize, onSent, onSuccess, onFailed) {
+        var tx = copy(augur.tx.read_ballots);
         tx.params = [branch, period, num_events, num_reports, flatsize];
         return send_call_confirm(tx, onSent, onSuccess, onFailed);
     };

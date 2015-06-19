@@ -12,6 +12,8 @@ var log = console.log;
 var branch = Augur.branches.dev;
 var coinbase = Augur.coinbase;
 
+log("Faucets:");
+
 Augur.reputationFaucet(
     branch,
     function (r) {
@@ -19,7 +21,7 @@ Augur.reputationFaucet(
     },
     function (r) {
         // success
-        log(chalk.green("    ✓ ") + chalk.gray("Reputation faucet"));
+        log(chalk.green("  ✓ ") + chalk.gray("Reputation faucet"));
     },
     function (r) {
         // failed
@@ -33,7 +35,7 @@ Augur.cashFaucet(
     },
     function (r) {
         // success
-        log(chalk.green("    ✓ ") + chalk.gray("Cash faucet"));
+        log(chalk.green("  ✓ ") + chalk.gray("Cash faucet"));
     },
     function (r) {
         // failed

@@ -16,7 +16,7 @@ var log = console.log;
 var TIMEOUT = 120000;
 var num_components = 2;
 var num_iterations = 5;
-var dispatches = 9 + num_components*(4 + num_iterations);
+var dispatches = 10 + num_components*(4 + num_iterations);
 
 var branch = Augur.branches.dev;
 var period = Augur.getVotePeriod(branch);

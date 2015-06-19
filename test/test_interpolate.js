@@ -101,7 +101,42 @@ describe("testing consensus/interpolate", function () {
         );
     });
 
-    it("redeem_interpolate", function (done) {
+    it("redeem_interpolate/read_ballots", function (done) {
+        this.timeout(TIMEOUT);
+        Augur.read_ballots(
+            branch,
+            period,
+            num_events,
+            num_reports,
+            flatsize,
+            function (r) {
+                // sent
+            },
+            function (r) {
+                // success
+                // var i, reports_filled, reports_mask, v_size;
+                assert.equal(r.callReturn, "0x01");
+                // reports_filled = Augur.getReportsFilled(branch, period);
+                // for (i = 0; i < num_events; ++i) {
+                //     assert.equal(reports_filled[i], Augur.fix(ballot[i], "string"));
+                // }
+                // reports_mask = Augur.getReportsMask(branch, period);
+                // for (i = 0; i < num_events; ++i) {
+                //     assert.equal(reports_mask[i], "0");
+                // }
+                // v_size = Augur.getVSize(branch, period);
+                // assert.equal(parseInt(v_size), num_reports * num_events);
+                done();
+            },
+            function (r) {
+                // failed
+                log("read_ballots failed:", r);
+                done();
+            }
+        );
+    });
+
+    it("redeem_interpolate/interpolate", function (done) {
         this.timeout(TIMEOUT);
         Augur.redeem_interpolate(
             branch,
