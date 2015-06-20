@@ -3463,30 +3463,26 @@ var Augur = (function (augur) {
         returns: "number"
     };
     augur.test_dispatch = function (branch, onSent) {
-        if (json_rpc(postdata("coinbase")) !== augur.demo) {
-            if (branch.constructor === Object && branch.branchId) {
-                if (branch.onSent) onSent = branch.onSent;
-                branch = branch.branchId;
-            }
-            var tx = copy(augur.tx.test_dispatch);
-            tx.params = branch;
-            return fire(tx, onSent);
+        if (branch.constructor === Object && branch.branchId) {
+            if (branch.onSent) onSent = branch.onSent;
+            branch = branch.branchId;
         }
+        var tx = copy(augur.tx.test_dispatch);
+        tx.params = branch;
+        return fire(tx, onSent);
     };
     augur.dispatch = function (branch, onSent, onSuccess, onFailed) {
         // branch: sha256 or transaction object
         // var tx, step, pings, txhash, pingTx, err;
-        if (json_rpc(postdata("coinbase")) !== augur.demo) {
-            if (branch.constructor === Object && branch.branchId) {
-                if (branch.onSent) onSent = branch.onSent;
-                if (branch.onSuccess) onSuccess = branch.onSuccess;
-                if (branch.onFailed) onFailed = branch.onFailed;
-                branch = branch.branchId;
-            }
-            var tx = copy(augur.tx.dispatch);
-            tx.params = branch;
-            return send_call_confirm(tx, onSent, onSuccess, onFailed);
+        if (branch.constructor === Object && branch.branchId) {
+            if (branch.onSent) onSent = branch.onSent;
+            if (branch.onSuccess) onSuccess = branch.onSuccess;
+            if (branch.onFailed) onFailed = branch.onFailed;
+            branch = branch.branchId;
         }
+        var tx = copy(augur.tx.dispatch);
+        tx.params = branch;
+        return send_call_confirm(tx, onSent, onSuccess, onFailed);
     };
 
     /***************************
