@@ -973,6 +973,7 @@ var Augur = (function (augur) {
         return json_rpc(postdata("getTransactionCount", address || augur.coinbase), f);
     };
     augur.sendEther = augur.pay = function (to, value, from, onSent, onSuccess, onFailed) {
+        from = from || json_rpc(postdata("coinbase"));
         if (from !== augur.demo) {
             var tx, txhash;
             if (to && to.value) {

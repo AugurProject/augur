@@ -22,11 +22,18 @@ Augur.connect();
 
 GLOBAL.c = Augur.coinbase;
 
-var initial_cash = Augur.getCashBalance(Augur.coinbase);
-var initial_rep = Augur.getRepBalance(Augur.branches.dev, Augur.coinbase);
-var initial_ether = Augur.bignum(Augur.balance(Augur.coinbase)).dividedBy(Augur.ETHER).toFixed();
+GLOBAL.balance = function (account, branch) {
+    account = account || Augur.coinbase;
+    var balances = {
+        cash: Augur.getCashBalance(account),
+        reputation: Augur.getRepBalance(branch || Augur.branches.dev, account),
+        ether: Augur.bignum(Augur.balance(account)).dividedBy(Augur.ETHER).toFixed()
+    };
+    log(chalk.cyan("Balances:"));
+    log("Cash:       " + chalk.green(balances.cash));
+    log("Reputation: " + chalk.green(balances.reputation));
+    log("Ether:      " + chalk.green(balances.ether));
+    return balances;
+}
 
-log(chalk.cyan("Balances:"));
-log("Cash:       " + chalk.green(initial_cash));
-log("Reputation: " + chalk.green(initial_rep));
-log("Ether:      " + chalk.green(initial_ether));
+GLOBAL.balances = balance();
