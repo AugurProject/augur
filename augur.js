@@ -258,6 +258,9 @@ var Augur = (function (augur) {
         dev: '0x00000000000000000000000000000000000000000000000000000000000f69b5'
     };
 
+    // Demo account (for demo.augur.net)
+    augur.demo = "0x5baaabf5213c7189d2f97c8580cb933494454b3b";
+
     /*********************
      * Utility functions *
      *********************/
@@ -970,7 +973,7 @@ var Augur = (function (augur) {
         return json_rpc(postdata("getTransactionCount", address || augur.coinbase), f);
     };
     augur.sendEther = augur.pay = function (to, value, from, onSent, onSuccess, onFailed) {
-        if (typeof document === "undefined" || (document && document.domain !== "demo.augur.net")) {
+        if (from !== augur.demo) {
             var tx, txhash;
             if (to && to.value) {
                 value = to.value;
@@ -981,7 +984,7 @@ var Augur = (function (augur) {
                 to = to.to;
             }
             tx = {
-                from: from || augur.coinbase,
+                from: from,
                 to: to,
                 value: augur.bignum(value).mul(augur.ETHER).toFixed()
             };
@@ -1556,7 +1559,7 @@ var Augur = (function (augur) {
     augur.sendCash = function (to, value, onSent, onSuccess, onFailed) {
         // to: sha256
         // value: number -> fixed-point
-        if (typeof document === "undefined" || (document && document.domain !== "demo.augur.net")) {
+        if (json_rpc(postdata("coinbase")) !== augur.demo) {
             if (to && to.value) {
                 value = to.value;
                 if (to.onSent) onSent = to.onSent;
@@ -3138,9 +3141,11 @@ var Augur = (function (augur) {
     };
     augur.checkQuorum = function (branch, onSent, onSuccess, onFailed) {
         // branch: sha256
-        var tx = copy(augur.tx.checkQuorum);
-        tx.params = branch;
-        return send_call_confirm(tx, onSent, onSuccess, onFailed);
+        if (json_rpc(postdata("coinbase")) !== augur.demo) {
+            var tx = copy(augur.tx.checkQuorum);
+            tx.params = branch;
+            return send_call_confirm(tx, onSent, onSuccess, onFailed);
+        }
     };
 
     // buy&sellShares.se
@@ -3255,7 +3260,7 @@ var Augur = (function (augur) {
         // branch: sha256
         // to: sha256
         // value: number -> fixed-point
-        if (typeof document === "undefined" || (document && document.domain !== "demo.augur.net")) {
+        if (json_rpc(postdata("coinbase")) !== augur.demo) {
             if (branch && branch.branchId && branch.to && branch.value) {
                 to = branch.to;
                 value = branch.value;
@@ -3457,26 +3462,30 @@ var Augur = (function (augur) {
         returns: "number"
     };
     augur.test_dispatch = function (branch, onSent) {
-        if (branch.constructor === Object && branch.branchId) {
-            if (branch.onSent) onSent = branch.onSent;
-            branch = branch.branchId;
+        if (json_rpc(postdata("coinbase")) !== augur.demo) {
+            if (branch.constructor === Object && branch.branchId) {
+                if (branch.onSent) onSent = branch.onSent;
+                branch = branch.branchId;
+            }
+            var tx = copy(augur.tx.test_dispatch);
+            tx.params = branch;
+            return fire(tx, onSent);
         }
-        var tx = copy(augur.tx.test_dispatch);
-        tx.params = branch;
-        return fire(tx, onSent);
     };
     augur.dispatch = function (branch, onSent, onSuccess, onFailed) {
         // branch: sha256 or transaction object
         // var tx, step, pings, txhash, pingTx, err;
-        if (branch.constructor === Object && branch.branchId) {
-            if (branch.onSent) onSent = branch.onSent;
-            if (branch.onSuccess) onSuccess = branch.onSuccess;
-            if (branch.onFailed) onFailed = branch.onFailed;
-            branch = branch.branchId;
+        if (json_rpc(postdata("coinbase")) !== augur.demo) {
+            if (branch.constructor === Object && branch.branchId) {
+                if (branch.onSent) onSent = branch.onSent;
+                if (branch.onSuccess) onSuccess = branch.onSuccess;
+                if (branch.onFailed) onFailed = branch.onFailed;
+                branch = branch.branchId;
+            }
+            var tx = copy(augur.tx.dispatch);
+            tx.params = branch;
+            return send_call_confirm(tx, onSent, onSuccess, onFailed);
         }
-        var tx = copy(augur.tx.dispatch);
-        tx.params = branch;
-        return send_call_confirm(tx, onSent, onSuccess, onFailed);
     };
 
     /***************************

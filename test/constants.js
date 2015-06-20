@@ -47,19 +47,11 @@ constants.examples = {
  * Private chains *
  ******************/
 
-constants.chain1337 = {
-    accounts: {
-        ChrisCalderon: "0xc9bc8c2a9f07810f0f43c94734f859211abfd17e",
-        tinybike: "0x4a0cf714e2c1b785ff2d650320acf63be9eb25c6"
-    },
-    enodes: {
-         tinybike: "enode://4014c7fa323dafbb1ada241b74ce16099efde03f994728a55b9ff09a9a80664920045993978de85cb7f6c2ac7e9218694554433f586c1290a8b8faa186ce072c@[::]:30303"
-    }
-};
 constants.chain1010101 = {
     accounts: {
         loopy: "0xd65cfee2ee985c0ac5d314aa4991ca2ebf482186",
-        tinybike: "0x4a0cf714e2c1b785ff2d650320acf63be9eb25c6"
+        tinybike: "0x4a0cf714e2c1b785ff2d650320acf63be9eb25c6",
+        demo: "0x5baaabf5213c7189d2f97c8580cb933494454b3b"
     },
     enodes: {
         loopy: "enode://035b7845dfa0c0980112abdfdf4dc11087f56b77e10d2831f186ca12bc00f5b9327c427d03d9cd8106db01488905fb2200b5706f9e41c5d75885057691d9997c@[::]:30303",
@@ -88,7 +80,7 @@ constants.test_accounts = [
     "0xf0c4ee355432a7c7da12bdef04543723d110d591",
     "0xef2b2ba637921b8cf51b8a89576666a5d4322c69",
     "0x2c97f31d2db40aa57d0e6ca5fa8aedf7d99592db",
-    // "0xcdc2cdaab90909769ccf823246f04f0da827a732",
+    "0xcdc2cdaab90909769ccf823246f04f0da827a732",
     "0xa78ddbe112cb29844d2a26cbc4e52c11e74aaa6c"
 ];
 
