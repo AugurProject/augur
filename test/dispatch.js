@@ -11,15 +11,12 @@ var log = console.log;
 Augur.dispatch({
     branchId: Augur.branches.dev,
     onSent: function (r) {
-        log("dispatch", r.callReturn);
+        log("dispatch sent:", r.callReturn);
     },
     onSuccess: function (r) {
-        log("dispatch", r);
-        log("    - step:   ", Augur.getStep(branch));
-        log("    - substep:", Augur.getSubstep(branch));
+        log("dispatch success:", r);
     },
     onFailed: function (r) {
-        log("dispatch failed:");
-        log(r);
+        throw r.message;
     }
 });

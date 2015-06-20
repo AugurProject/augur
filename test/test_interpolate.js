@@ -12,7 +12,7 @@ var Augur = require("../augur");
 var constants = require("./constants");
 require('it-each')({ testPerIteration: true });
 
-Augur.contracts = JSON.parse(fs.readFileSync("gospel.json"));
+// Augur.contracts = JSON.parse(fs.readFileSync("gospel.json"));
 Augur.connect();
 
 var log = console.log;
@@ -20,9 +20,9 @@ var TIMEOUT = 240000;
 
 function print_matrix(m) {
     for (var i = 0, rows = m.length; i < rows; ++i) {
-        process.stdout.write("  ");
+        process.stdout.write("\t");
         for (var j = 0, cols = m[0].length; j < cols; ++j) {
-            process.stdout.write(chalk.cyan(m[i][j] + " "));
+            process.stdout.write(chalk.cyan(m[i][j] + "\t"));
         }
         process.stdout.write("\n");
     }
@@ -77,9 +77,6 @@ describe("testing consensus: interpolate", function () {
         this.timeout(TIMEOUT);
         assert.equal(reports.length, flatsize);
         assert.equal(reputation_vector.length, num_reports);
-        // assert.equal(scaled.length, num_events);
-        // assert.equal(scaled_max.length, num_events);
-        // assert.equal(scaled_min.length, num_events);
         Augur.interpolate(
             reports,
             reputation_vector,
@@ -131,18 +128,7 @@ describe("testing consensus: interpolate", function () {
             },
             function (r) {
                 // success
-                // var i, reports_filled, reports_mask, v_size;
                 assert.equal(r.callReturn, "0x01");
-                // reports_filled = Augur.getReportsFilled(branch, period);
-                // for (i = 0; i < num_events; ++i) {
-                //     assert.equal(reports_filled[i], Augur.fix(ballot[i], "string"));
-                // }
-                // reports_mask = Augur.getReportsMask(branch, period);
-                // for (i = 0; i < num_events; ++i) {
-                //     assert.equal(reports_mask[i], "0");
-                // }
-                // v_size = Augur.getVSize(branch, period);
-                // assert.equal(parseInt(v_size), num_reports * num_events);
                 done();
             },
             function (r) {
@@ -155,6 +141,7 @@ describe("testing consensus: interpolate", function () {
 
     it("redeem_interpolate/interpolate", function (done) {
         this.timeout(TIMEOUT);
+        // Augur.tx.redeem_interpolate.returns = "unfix[]";
         Augur.redeem_interpolate(
             branch,
             period,
@@ -163,6 +150,7 @@ describe("testing consensus: interpolate", function () {
             flatsize,
             function (r) {
                 // sent
+                // log(r.callReturn);
             },
             function (r) {
                 // success
@@ -182,7 +170,7 @@ describe("testing consensus: interpolate", function () {
             },
             function (r) {
                 // failed
-                log("redeem_interpolate failed:", r);
+                log(r.message);
                 done();
             }
         );

@@ -151,7 +151,7 @@ describe("Set ballots for " + reporters.length + " reporters", function () {
         this.timeout(TIMEOUT);
         ballot = new Array(num_events);
         for (i = 0; i < num_events; ++i) {
-            ballot[i] = 2.0;
+            ballot[i] = 0.0;
         }
         log("     ", chalk.cyan(JSON.stringify(ballot)));
         reputation = Augur.getRepBalance(branch, element);

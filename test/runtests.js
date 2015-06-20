@@ -21,7 +21,6 @@ var constants = require("./constants");
 var log = console.log;
 
 var DEBUG = false;
-// var DATADIR = path.join(process.env.HOME, ".augur");
 var DATADIR = path.join(process.env.HOME, ".augur-test");
 var AUGUR_CORE = path.join(process.env.HOME, "src", "augur-core");
 var UPLOADER = path.join(AUGUR_CORE, "load_contracts.py");

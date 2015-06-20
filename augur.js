@@ -183,8 +183,8 @@ var Augur = (function (augur) {
         "closeMarketTwo": "0x26bad3f2f51a83b59bfbc9cfb15257290bd0c981",
         "closeMarketFour": "0xb7a553f89b116809dfbabcb93de1ed51c50c7fd3",
         "closeMarketEight": "0x35185da9f690c18286895b933b3794e2aed0ee6d",
-        "dispatch": "0x44c88fc0c8b4efc5c9708ae6e77473b8b162788c",
-    
+        "dispatch": "0x09f8647178d61f73691560fa90098bcb3e51170b",
+
         "cash": "0xff62e09a1374985259da0a05a970172814b50285",
         "info": "0xb1f2223c2ef0f7a4f50076594c426614b32939c1",
         "branches": "0x1d0a4d844ff543d5d32af631e15c7cb42c136e0e",
@@ -193,15 +193,15 @@ var Augur = (function (augur) {
         "fxpFunctions": "0x42a88259280250fc9803f5f9caaa8f607b06e044",
         "markets": "0xb54ecd11ae41c65f53af12a36554eb981e20652a",
         "reporting": "0x0a833f10b1fb3e0764c91fa2f8341aff3d8d100f",
-    
+
         "statistics": "0xbaafd72214725950f5cfda09b44222c2fa055a6f",
-        "interpolate": "0x26b25926392aa26b261b76d2baf7ca158e0c32ad",
+        "interpolate": "0x5e6b04832ea5dce02306d0e57b6c56481eb0517d",
         "center": "0x3c28ffca64b3ff751b0db3f1b6a833a27f1f40e7",
         "score": "0xb1cf92c59fa8eed193bc1788d53bbf54dfe6bac3",
         "adjust": "0x14f3d78578d9b9c76a54cbc92c9bd57816026500",
         "resolve": "0x56d833ceb6f631018e8fa647eeea70c1d217dd60",
         "payout": "0xf46bc561c383ca2bfae2f0bde39336f3fd75a83d",
-        "redeem_interpolate": "0xdeab83451a32afcf5b80d68afa30bf194defcfd0",
+        "redeem_interpolate": "0x03b327a51bfb2198f821c4785dd3c8b6b93c4337",
         "redeem_center": "0xb32454b1ed72efb4200560543b789fbfd9502486",
         "redeem_score": "0x90d179ee9dd4ca587f5cc1b1163507d54ac164db",
         "redeem_adjust": "0x9f128263813539a4751565784f81f3e14eed0145",
@@ -2030,7 +2030,7 @@ var Augur = (function (augur) {
     augur.tx.setReportsFilled = {
         to: augur.contracts.expiringEvents,
         method: "setReportsFilled",
-        signature: "iii",
+        signature: "iia",
         send: true
     };
     augur.setReportsFilled = function (branch, expDateIndex, reportsFilled, onSent) {
@@ -2041,7 +2041,7 @@ var Augur = (function (augur) {
     augur.tx.setReportsMask = {
         to: augur.contracts.expiringEvents,
         method: "setReportsMask",
-        signature: "iii",
+        signature: "iia",
         send: true
     };
     augur.setReportsMask = function (branch, expDateIndex, reportsMask, onSent) {
@@ -2052,7 +2052,7 @@ var Augur = (function (augur) {
     augur.tx.setWeightedCenteredData = {
         to: augur.contracts.expiringEvents,
         method: "setWeightedCenteredData",
-        signature: "iii",
+        signature: "iia",
         send: true
     };
     augur.setWeightedCenteredData = function (branch, expDateIndex, weightedCenteredData, onSent) {
@@ -2063,7 +2063,7 @@ var Augur = (function (augur) {
     augur.tx.setCovarianceMatrixRow = {
         to: augur.contracts.expiringEvents,
         method: "setCovarianceMatrixRow",
-        signature: "iii",
+        signature: "iia",
         send: true
     };
     augur.setCovarianceMatrixRow = function (branch, expDateIndex, covarianceMatrixRow, onSent) {
@@ -2074,7 +2074,7 @@ var Augur = (function (augur) {
     augur.tx.setDeflated = {
         to: augur.contracts.expiringEvents,
         method: "setDeflated",
-        signature: "iii",
+        signature: "iia",
         send: true
     };
     augur.setDeflated = function (branch, expDateIndex, deflated, onSent) {
@@ -2085,7 +2085,7 @@ var Augur = (function (augur) {
     augur.tx.setLoadingVector = {
         to: augur.contracts.expiringEvents,
         method: "setLoadingVector",
-        signature: "iii",
+        signature: "iia",
         send: true
     };
     augur.setLoadingVector = function (branch, expDateIndex, loadingVector, onSent) {
@@ -2096,7 +2096,7 @@ var Augur = (function (augur) {
     augur.tx.setScores = {
         to: augur.contracts.expiringEvents,
         method: "setScores",
-        signature: "iii",
+        signature: "iia",
         send: true
     };
     augur.setScores = function (branch, expDateIndex, scores, onSent) {
@@ -2107,7 +2107,7 @@ var Augur = (function (augur) {
     augur.tx.setSetOne = {
         to: augur.contracts.expiringEvents,
         method: "setSetOne",
-        signature: "iii",
+        signature: "iia",
         send: true
     };
     augur.setSetOne = function (branch, expDateIndex, setOne, onSent) {
@@ -2118,7 +2118,7 @@ var Augur = (function (augur) {
     augur.tx.setSetTwo = {
         to: augur.contracts.expiringEvents,
         method: "setSetTwo",
-        signature: "iii",
+        signature: "iia",
         send: true
     };
     augur.setSetTwo = function (branch, expDateIndex, setTwo, onSent) {
@@ -2129,7 +2129,7 @@ var Augur = (function (augur) {
     augur.tx.setOld = {
         to: augur.contracts.expiringEvents,
         method: "setOld",
-        signature: "iii",
+        signature: "iia",
         send: true
     };
     augur.setOld = function (branch, expDateIndex, setOld, onSent) {
@@ -2140,7 +2140,7 @@ var Augur = (function (augur) {
     augur.tx.setNewOne = {
         to: augur.contracts.expiringEvents,
         method: "setNewOne",
-        signature: "iii",
+        signature: "iia",
         send: true
     };
     augur.setNewOne = function (branch, expDateIndex, newOne, onSent) {
@@ -2151,7 +2151,7 @@ var Augur = (function (augur) {
     augur.tx.setNewTwo = {
         to: augur.contracts.expiringEvents,
         method: "setNewTwo",
-        signature: "iii",
+        signature: "iia",
         send: true
     };
     augur.setNewTwo = function (branch, expDateIndex, newTwo, onSent) {
@@ -2162,7 +2162,7 @@ var Augur = (function (augur) {
     augur.tx.setAdjPrinComp = {
         to: augur.contracts.expiringEvents,
         method: "setAdjPrinComp",
-        signature: "iii",
+        signature: "iia",
         send: true
     };
     augur.setAdjPrinComp = function (branch, expDateIndex, adjPrinComp, onSent) {
@@ -2173,7 +2173,7 @@ var Augur = (function (augur) {
     augur.tx.setSmoothRep = {
         to: augur.contracts.expiringEvents,
         method: "setSmoothRep",
-        signature: "iii",
+        signature: "iia",
         send: true
     };
     augur.setSmoothRep = function (branch, expDateIndex, smoothRep, onSent) {
@@ -2184,7 +2184,7 @@ var Augur = (function (augur) {
     augur.tx.setOutcomesFinal = {
         to: augur.contracts.expiringEvents,
         method: "setOutcomesFinal",
-        signature: "iii",
+        signature: "iia",
         send: true
     };
     augur.setOutcomesFinal = function (branch, expDateIndex, outcomesFinal, onSent) {
