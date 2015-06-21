@@ -209,8 +209,8 @@ function postupload_tests_3(geth) {
 
 function postupload_tests_2(geth) {
     var mocha = new Mocha();
-    mocha.addFile(path.join(__dirname, "test_addEvent.js"));
-    // mocha.addFile(path.join(__dirname, "test_createMarket.js"));
+    // mocha.addFile(path.join(__dirname, "test_addEvent.js"));
+    mocha.addFile(path.join(__dirname, "test_createMarket.js"));
     mocha.run(function (failures) {
         process.on("exit", function () { process.exit(failures); });
         setTimeout(function () {
