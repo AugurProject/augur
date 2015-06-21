@@ -192,8 +192,14 @@ EthereumClient.prototype.getAddress = function (name) {
   return address;
 };
 
-EthereumClient.prototype.cashFaucet = function() {
-  return Augur.cashFaucet();
+EthereumClient.prototype.cashFaucet = function(onSent, onSuccess, onFailure) {
+  return Augur.cashFaucet(function(result) {
+    utilities.log('requesting cash');
+  }, function(result) {
+    utilities.log('cash request successful');
+  }, function(error) {
+    utilities.error('cash request failed: ' + error);
+  });
 };
 
 EthereumClient.prototype.getCashBalance = function() {
@@ -215,11 +221,11 @@ EthereumClient.prototype.repFaucet = function(branchId, onSent, onSuccess, onFai
 
   branchId = branchId || this.defaultBranchId;
   return Augur.reputationFaucet(branchId, function(result) {
-    utilities.log('requesting rep');
+    utilities.log('requesting reputation');
   }, function(result) {
-    utilities.log('rep request successful');
+    utilities.log('reputation request successful');
   }, function(error) {
-    utilities.error('rep request failed: ' + error);
+    utilities.error('reputation request failed: ' + error);
   });
 };
 

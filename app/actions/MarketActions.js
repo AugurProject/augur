@@ -38,6 +38,7 @@ var MarketActions = {
         ethereumClient.getEventExpiration(market.events[0], function(expirationBlock) {
           market['endDate'] = utilities.blockToDate(expirationBlock.toNumber());
           self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
+          //self.dispatch(constants.market.INITIAL_PAGE_IS_LOADED);
         });
       }
       // check if this market is ready to be closed
@@ -56,6 +57,7 @@ var MarketActions = {
         }
       });
       self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
+      //self.dispatch(constants.market.INITIAL_PAGE_IS_LOADED);
     });
 
     ethereumClient.getMarketAlpha(marketId, setProp('alpha'));
@@ -83,6 +85,7 @@ var MarketActions = {
                 volume: volume
               };
               self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
+              self.dispatch(constants.market.INITIAL_PAGE_IS_LOADED);
             });
           });
         });
@@ -94,60 +97,53 @@ var MarketActions = {
     market['comments'] = [];
 
     this.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
-  },
-
-  waitForPageLoad: function(ids) {
-
-    var markets = this.flux.store('market').getState().markets;
-    var marketsWatching = _.filter(markets, function(market) { 
-      return _.contains(ids, market.id);
-    });
-    var loaded = _.map(marketsWatching, 'loaded');
-    var self = this;
-    console.log(loaded);
-
-    while (_.includes(loaded, false)) {
-      setTimeout(function() {
-        self.flux.actions.market.waitForPageLoad(ids);
-      }, 2000);
-    }
+    //this.dispatch(constants.market.INITIAL_PAGE_IS_LOADED);
   },
 
   loadMarkets: function() {
 
-    var startMoment = moment();
+    //var startMoment = moment();
     var currentBranch = this.flux.store('branch').getCurrentBranch();
     var ethereumClient = this.flux.store('config').getEthereumClient();
 
     var marketIds = ethereumClient.getMarkets(currentBranch.id);
-    var progress = {total: marketIds.length, current: 0};
-    this.flux.actions.config.updatePercentLoaded(100);  // hack no progress bar
+    var initialPage = 1;
 
     // breaks ids into pages
     var marketPageIds = _.chunk(marketIds, constants.MARKETS_PER_PAGE);
+    var initialIds = marketPageIds[initialPage - 1];
 
-    //_.each(marketPageIds, function(ids) {
+    // remove initialIds from paged ids and flatten
+    marketPageIds.splice(initialPage - 1, 1);
+    var remainingIds = _.flatten(marketPageIds);
 
-      _.each(marketPageIds[0], function(marketId) {
+    // send initial ids to store so it can keep track of when the page is loaded
+    this.dispatch(constants.market.INITIAL_PAGE_IS_LOADING, {initialIds: initialIds});
 
-        var market = {id: marketId, branchId: currentBranch.id};
-        this.dispatch(constants.market.ADD_MARKET_SUCCESS, {market: market});
-        this.flux.actions.market.loadMarket(market.id);
+    // set event listener to load the remaining ids after initial is loaded
+    this.flux.store('market').once(constants.INITIAL_PAGE_IS_LOADED_EVENT, function() {
+      console.log('initial page loaded');
+      this.flux.actions.market.loadSomeMarkets(remainingIds);
+    });
 
-        // update progress
-        //progress.current += 1;
-        //var percent = ((progress.current/progress.total) * 100).toFixed(2);
-        //this.flux.actions.config.updatePercentLoaded(percent);
+    this.flux.actions.market.loadSomeMarkets(initialIds);
+  },
 
-      }, this);
+  loadSomeMarkets: function(marketIds) {
 
-      // wait for page to get fully loaded before fetching next
-      //this.flux.actions.market.waitForPageLoad(ids);
+    var currentBranch = this.flux.store('branch').getCurrentBranch();
+    console.log('loading', marketIds.length, 'markets');
 
-    //}, this);
+    _.each(marketIds, function(marketId) {
 
-    var seconds = moment().diff(startMoment) / 1000;
-    utilities.debug(marketIds.length + ' markets loaded in ' + seconds + ' seconds');
+      console.log('loading', marketId.toString(16));
+      var market = {id: marketId, branchId: currentBranch.id, loaded: false};
+
+      this.dispatch(constants.market.ADD_MARKET_SUCCESS, {market: market});
+      this.flux.actions.market.loadMarket(market.id);
+
+    }, this);
+
   },
 
   loadNewMarkets: function() {

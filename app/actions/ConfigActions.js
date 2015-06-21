@@ -35,6 +35,8 @@ var ConfigActions = {
 
     this.flux.actions.config.updateEthereumClient();
     this.flux.actions.network.checkNetwork();
+
+    this.flux.actions.config.updatePercentLoaded(100);
   }
 };
 

@@ -3,7 +3,8 @@ var constants = require('../libs/constants');
 var _ = require('lodash');
 
 var state = {
-  markets: {}
+  markets: {},
+  initialMarketIds: null
 };
 
 var MarketStore = Fluxxor.createStore({
@@ -14,7 +15,9 @@ var MarketStore = Fluxxor.createStore({
       constants.market.UPDATE_MARKET_SUCCESS, this.handleUpdateMarketSuccess,
       constants.market.ADD_PENDING_MARKET_SUCCESS, this.handleAddPendingMarketSuccess,
       constants.market.ADD_MARKET_SUCCESS, this.handleAddMarketSuccess,
-      constants.market.DELETE_MARKET_SUCCESS, this.handleDeleteMarketSuccess
+      constants.market.DELETE_MARKET_SUCCESS, this.handleDeleteMarketSuccess,
+      constants.market.INITIAL_PAGE_IS_LOADED, this.handleInitialPageIsLoaded,
+      constants.market.INITIAL_PAGE_IS_LOADING, this.handleInitialPageIsLoading
     );
   },
 
@@ -24,6 +27,32 @@ var MarketStore = Fluxxor.createStore({
     var loaded = _.intersection(_.keys(market), requiredProperties);
 
     return loaded.length == requiredProperties.length;
+  },
+
+  handleInitialPageIsLoading: function(payload) {
+
+    state.initialMarketIds = payload.initialIds;
+    console.log('setting initial ids', payload.initialIds[0].toString(16));
+  },
+
+  handleInitialPageIsLoaded: function() {
+
+      if (!state.initialMarketIds) return;
+
+      console.log('checking if page is loaded');
+
+      var marketsWatching = _.filter(state.markets, function(market) {
+        return _.contains(state.initialMarketIds, market.id);
+      });
+      var loaded = _.map(marketsWatching, 'loaded');
+      
+      console.log('loaded', loaded);
+
+      if (loaded.length && !_.includes(loaded, false)) {
+        console.log('page is loaded');
+        state.initialMarketIds = null;
+        this.emit(constants.MARKET_PAGE_IS_LOADED_EVENT);
+      }
   },
 
   getState: function () {
@@ -59,9 +88,12 @@ var MarketStore = Fluxxor.createStore({
 
   handleUpdateMarketSuccess: function (payload) {
 
-    payload.market.loaded = this.marketIsLoaded(payload.market);
-    state.markets[payload.market.id] = _.merge(state.markets[payload.market.id], payload.market);
-
+    if (state.markets[payload.market.id]) {
+      payload.market.loaded = this.marketIsLoaded(payload.market);
+      state.markets[payload.market.id] = _.merge(state.markets[payload.market.id], payload.market);
+    } else { 
+      state.markets[payload.market.id] = payload.market;
+    }
     this.emit(constants.CHANGE_EVENT);
   },
 
