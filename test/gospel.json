@@ -13,7 +13,7 @@
     "closeMarketTwo": "0xc4728649ce1964af65f3910ff2ebcb2d9205c4b5",
     "closeMarketFour": "0x1b103614482bab1afdbc492221cad83ae87552f4",
     "closeMarketEight": "0xcda9e4636a1e54d18ba217133dafa2367cd563da",
-    "dispatch": "0xe0e0706aa7fc7507009a75e24122b2c400f67d86",
+    "dispatch": "0x1022a5e33164aa0d1c17ccb5b1ba312d3aa0f55f",
 
     "cash": "0x08163213345163e38b45b2fed9dcfd75594a838a",
     "info": "0xa178f560e5174ef566929549e386495910dd23fc",
@@ -31,7 +31,7 @@
     "adjust": "0x795af763dd0c5627ce6ad590d8734bf4ce64a266",
     "resolve": "0x67f0ea717bc1587353c1119abf856bc5f68b8b6c",
     "payout": "0x6191967b297bc02f7dbf06e9270b2ad35b3692bf",
-    "redeem_interpolate": "0x796fe6c1dd8064439a51f8f1762080f5434baf62",
+    "redeem_interpolate": "0x2eb0412031c257b1ee013b26cfc1b73b57abebce",
     "redeem_center": "0xc1612c769fda098f7d68b38b1c8b3da5a4f6f8d6",
     "redeem_score": "0x39493c0aea20ccc3a7571fb8bd6d51a32794c360",
     "redeem_adjust": "0xee647a5ba4337728165e6a23bb28f3ccc411870b",
