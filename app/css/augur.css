@@ -867,7 +867,7 @@ background: linear-gradient(to bottom, rgba(24,55,111,0) 0%,rgba(24,55,111,0.7) 
   display: block;
   text-align: center;
   font-size: 20px;
-  padding: 20px 10px;
+  padding: 8px 8px;
 }
 
 .paginator {
