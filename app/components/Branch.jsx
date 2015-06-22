@@ -4,7 +4,7 @@ var Fluxxor = require("fluxxor");
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 var moment = require('moment');
-var Pager = require('react-pager');
+var Paginate = require('react-paginate');
 var Router = require('react-router');
 var RouteHandler = Router.RouteHandler;
 var Link = Router.Link;
@@ -39,9 +39,9 @@ var Branch = React.createClass({
     }
   },
 
-  handlePageChanged: function (newPageNum) {
+  handlePageChanged: function (data) {
 
-    this.setState({ pageNum: newPageNum });
+    this.setState({ pageNum: data.selected });
   },
 
   render: function () {
@@ -59,17 +59,17 @@ var Branch = React.createClass({
         <h3 className="clearfix">Markets <span className="subheading pull-right"><AddMarketTrigger /></span></h3>
         <div className='subheading clearfix'>
           <span className='showing'>Showing { start+1 } - { end } of { total }</span>
-          <Pager 
-            total={  total / this.state.marketsPerPage }
-            current={ this.state.pageNum }
-            titles={{
-              first:   '\u2758\u25c0',
-              prev:    '\u25c0',
-              next:    '\u25b6',
-              last:    '\u25b6\u2758'
-            }}
-            visiblePages={ this.state.visiblePages }
-            onPageChanged={ this.handlePageChanged }
+          <Paginate 
+            previousLabel={ <i className='fa fa-chevron-left'></i> }
+            nextLabel={ <i className='fa fa-chevron-right'></i> }
+            breakLabel={ <li className="break"><a href="">...</a></li> }
+            pageNum={ total / this.state.marketsPerPage }
+            marginPagesDisplayed={ 2 }
+            pageRangeDisplayed={ 5 }
+            clickCallback={ this.handlePageChanged }
+            containerClassName={ 'paginator' }
+            subContainerClassName={ 'pages' }
+            activeClass={ 'active' } 
           />
         </div>
         <div className='markets row'>

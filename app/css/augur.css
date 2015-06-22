@@ -451,15 +451,6 @@ background: linear-gradient(to bottom, rgba(24,55,111,0) 0%,rgba(24,55,111,0.7) 
 #branch h4 {
     margin: 10px 0px 20px 0px;
 }
-#branch nav {
-    margin-top: 0px;
-    float: right;
-    font-family: 'Source Sans Pro', sans-serif;
-    font-size: 12px;
-}
-#branch nav ul {
-    margin: 0;
-}
 
 #event {
     display: none;
@@ -878,6 +869,42 @@ background: linear-gradient(to bottom, rgba(24,55,111,0) 0%,rgba(24,55,111,0.7) 
   font-size: 20px;
   padding: 20px 10px;
 }
+
+.paginator {
+    float: right;
+    font-family: 'Source Sans Pro', sans-serif;
+    text-align: right;
+    width: auto;
+    list-style: none;
+    margin: 0px 0px 0px 0px;
+    padding: 0px 0px 0px 0px;
+}
+.paginator li {
+    float: left;
+    margin: 0px 4px 0px 4px;
+    padding: 0px 0px 0px 0px;
+}
+.paginator li.disabled a {
+    color: #ccc;
+}
+.paginator li.active a {
+    color: #000;
+}
+.paginator .previous,
+.paginator .next {
+    font-size: 14px;
+    position: relative;
+    top: 2px;
+}
+.paginator > .pages {
+    list-style: none;
+    margin: 0px 0px 0px 0px;
+    padding: 0px 20px 0px 20px;
+}
+.paginator > .pages > li {
+    font-size: 16px;
+}
+
 
 span.debug {
     font-size: 12px;
