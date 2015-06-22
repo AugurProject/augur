@@ -278,6 +278,8 @@ var TradeBase = {
 
   onSubmit: function (event) {
 
+    event.preventDefault();
+    
     var numShares = parseFloat(this.state.value);
 
     if (typeof(numShares) !== 'number' || !numShares) {
