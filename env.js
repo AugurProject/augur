@@ -12,11 +12,7 @@ GLOBAL.augur = Augur;
 GLOBAL.log = console.log;
 GLOBAL.b = Augur.branches.dev;
 GLOBAL.ballot=[ 2, 1.5, 1.5, 1, 1.5, 1.5, 1 ];
-GLOBAL.accounts = [
-    "0x639b41c4d3d399894f2a57894278e1653e7cd24c",
-    "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b",
-    "0x4a0cf714e2c1b785ff2d650320acf63be9eb25c6"
-];
+GLOBAL.accounts = constants.test_accounts;
 
 Augur.connect();
 
@@ -35,5 +31,15 @@ GLOBAL.balance = function (account, branch) {
     log("Ether:      " + chalk.green(balances.ether));
     return balances;
 }
+
+GLOBAL.vote_period = Augur.getVotePeriod(b);
+GLOBAL.current_period = Augur.getCurrentPeriod(b);
+GLOBAL.num_events = Augur.getNumberEvents(b, vote_period);
+GLOBAL.num_reports = Augur.getNumberReporters(b);
+
+log(chalk.cyan("Vote period"), chalk.cyan.bold(vote_period) + chalk.cyan(":"));
+log("Current period:     ", chalk.green(current_period));
+log("Number of events:   ", chalk.green(num_events));
+log("Number of reporters:", chalk.green(num_reports));
 
 GLOBAL.balances = balance();
