@@ -182,7 +182,7 @@ var ErrorModal = React.createClass({
   startDemoMode: function (event) {
 
     this.handleToggle();
-    // TODO: start ethereum client demo mode
+    this.getFlux().actions.config.updateEthereumClient(constants.DEMO_HOST);
   },
 
   render: function() {

@@ -6,9 +6,7 @@ var BigNumber = require('bignumber.js');
 var ONE_FXP = new BigNumber(2).toPower(64);
 
 module.exports = {
-  BRANCH_ID: '0x490ea71a6232f8c905bfb8a0832a1becb5828080e5ed2491b066986ea2161646',
-  ALPHA_BRANCH_ID: '0x3d595622e5444dd258670ab405b82a467117bd9377dc8fa8c4530528242fe0c5',
-  DEV_BRANCH_ID: '0x38a820692912b5f7a3bfefc2a1d4826e1da6beaed5fac6de3d22b18132133991',
+  DEMO_HOST: 'poc9.net:8545',
   ONE_FXP: ONE_FXP,
   NO: ONE_FXP,
   YES: ONE_FXP.mul(2),
@@ -51,9 +49,8 @@ module.exports = {
     ADD_PENDING_MARKET_SUCCESS: null,
     ADD_MARKET_SUCCESS: null,
     DELETE_MARKET_SUCCESS: null,
-    INITIAL_PAGE_IS_LOADED: null,
-    INITIAL_PAGE_IS_LOADING: null,
-    INITIAL_PAGE_IS_LOADED_EVENT: 'marketPageLoaded',
+    MARKETS_LOADING: null,
+    MARKET_PAGE_LOADED: null
   }),
   event: keyMirror({
     LOAD_EVENTS_SUCCESS: null,

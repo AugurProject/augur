@@ -4,7 +4,8 @@ var _ = require('lodash');
 
 var state = {
   markets: {},
-  initialMarketIds: null
+  initialMarketIds: null,
+  remainingMarketIds: null
 };
 
 var MarketStore = Fluxxor.createStore({
@@ -16,8 +17,8 @@ var MarketStore = Fluxxor.createStore({
       constants.market.ADD_PENDING_MARKET_SUCCESS, this.handleAddPendingMarketSuccess,
       constants.market.ADD_MARKET_SUCCESS, this.handleAddMarketSuccess,
       constants.market.DELETE_MARKET_SUCCESS, this.handleDeleteMarketSuccess,
-      constants.market.INITIAL_PAGE_IS_LOADED, this.handleInitialPageIsLoaded,
-      constants.market.INITIAL_PAGE_IS_LOADING, this.handleInitialPageIsLoading
+      constants.market.MARKETS_LOADING, this.handleMarketsLoading,
+      constants.market.MARKET_PAGE_LOADED, this.handleMarketPageLoaded
     );
   },
 
@@ -29,30 +30,15 @@ var MarketStore = Fluxxor.createStore({
     return loaded.length == requiredProperties.length;
   },
 
-  handleInitialPageIsLoading: function(payload) {
+  handleMarketsLoading: function(payload) {
 
-    state.initialMarketIds = payload.initialIds;
-    console.log('setting initial ids', payload.initialIds[0].toString(16));
+    state.initialMarketIds = payload.initialMarketIds;
+    state.remainingMarketIds = payload.remainingMarketIds;
   },
 
-  handleInitialPageIsLoaded: function() {
+  handleMarketPageLoaded: function(payload) {
 
-      if (!state.initialMarketIds) return;
-
-      console.log('checking if page is loaded');
-
-      var marketsWatching = _.filter(state.markets, function(market) {
-        return _.contains(state.initialMarketIds, market.id);
-      });
-      var loaded = _.map(marketsWatching, 'loaded');
-      
-      console.log('loaded', loaded);
-
-      if (loaded.length && !_.includes(loaded, false)) {
-        console.log('page is loaded');
-        state.initialMarketIds = null;
-        this.emit(constants.MARKET_PAGE_IS_LOADED_EVENT);
-      }
+    state.initialMarketIds = null;
   },
 
   getState: function () {

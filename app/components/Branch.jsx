@@ -51,8 +51,8 @@ var Branch = React.createClass({
     var total = _.size(this.state.markets);
     var end = start + this.state.marketsPerPage;
     end = end > total ? total : end;
-    var marketPage = _.sortBy(this.state.markets, 'volume').reverse().slice(start, end);
-
+    //var marketPage = _.sortBy(this.state.markets, 'volume').reverse().slice(start, end);
+    var marketPage = _.map(this.state.markets).slice(start, end);
     
     return (
       <div id="branch">

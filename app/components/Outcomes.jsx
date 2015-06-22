@@ -81,8 +81,6 @@ var Overview = React.createClass({
 
   handleTrade: function (relativeShares) {
 
-    event.preventDefault();
-
     var self = this;
     var absShares = Math.abs(relativeShares);
 

@@ -5,13 +5,13 @@ var EthereumClient = require('../clients/EthereumClient');
 
 var ConfigActions = {
 
-  updateEthereumClient: function () {
+  updateEthereumClient: function (host) {
 
     var configState = this.flux.store('config').getState();
     var branchState = this.flux.store('branch').getState();
 
     var clientParams = {
-      host: configState.host,
+      host: host || configState.host,
       // FIXME: If we can, we should make defaultBranchId unnecessary. We should
       // always know which branch we're acting on in the client, and pass it to
       // EthereumClient functions.
