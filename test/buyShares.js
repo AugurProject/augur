@@ -14,9 +14,15 @@ Augur.connect();
 var log = console.log;
 
 var branch = Augur.branches.dev;
-var branch = Augur.branches.dev;
 var markets = Augur.getMarkets(branch);
-var market_id = markets[markets.length - 1];
+
+var args = process.argv.slice(2);
+var market_id;
+if (args[0]) {
+    market_id = args[0];
+} else {
+    market_id = markets[markets.length - 1];
+}
 var events = Augur.getMarketEvents(market_id);
 var event_id = events[0];
 var outcome = "1.0";
@@ -47,17 +53,17 @@ Augur.buyShares({
     amount: amount,
     onSent: function (r) {
         log(chalk.cyan("\nResponse:"));
-        log("txhash:  " + chalk.green(r.txHash));
-        log("return:  " + chalk.green(r.callReturn));
+        log("txhash: ", chalk.green(r.txHash));
+        log("return: ", chalk.green(Augur.unfix(r.callReturn, "string")));
     },
     onSuccess: function (r) {
         var final_cash = Augur.getCashBalance(Augur.coinbase);
         var final_rep = Augur.getRepBalance(branch, Augur.coinbase);
         var final_ether = Augur.bignum(Augur.balance(Augur.coinbase)).dividedBy(Augur.ETHER).toFixed();
         log(chalk.cyan("\nFinal balances:"));
-        log("CASH:    " + chalk.green(final_cash));
-        log("REP:     " + chalk.green(final_rep));
-        log("ETHER:   " + chalk.green(final_ether));
+        log("CASH:   ", chalk.green(final_cash));
+        log("REP:    ", chalk.green(final_rep));
+        log("ETHER:  ", chalk.green(final_ether));
     },
     onFailed: function (r) {
         throw(r.message);

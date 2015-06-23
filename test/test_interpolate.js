@@ -12,7 +12,7 @@ var Augur = require("../augur");
 var constants = require("./constants");
 require('it-each')({ testPerIteration: true });
 
-// Augur.contracts = JSON.parse(fs.readFileSync("gospel.json"));
+Augur.contracts = JSON.parse(fs.readFileSync("gospel.json"));
 Augur.connect();
 
 var log = console.log;

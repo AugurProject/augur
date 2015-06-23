@@ -7,7 +7,7 @@ var assert = require("chai").assert;
 var chalk = require("chalk");
 var Augur = require("../augur");
 
-Augur.contracts = JSON.parse(fs.readFileSync("gospel.json"));
+// Augur.contracts = JSON.parse(fs.readFileSync("gospel.json"));
 Augur.connect();
 
 var log = console.log;

@@ -1,5 +1,5 @@
 /**
- * price log tests
+ * price logging/filter tests
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -15,8 +15,9 @@ var log = console.log;
 
 var branch = Augur.branches.dev;
 var markets = Augur.getMarkets(branch);
-var market = markets[0];
-log("Market:", chalk.green(market));
+var market = markets[markets.length - 1];
 
-var market_info = Augur.getMarketInfo(market);
-log(market_info);
+require('./buyShares');
+
+// log("Uninstall filter...");
+// Augur.eth_uninstallFilter(eth_filter);

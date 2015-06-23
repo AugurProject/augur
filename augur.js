@@ -18,6 +18,8 @@ if (MODULAR) {
     var chalk = require('chalk');
 }
 
+var log = console.log;
+
 var Augur = (function (augur) {
 
     BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
@@ -65,8 +67,12 @@ var Augur = (function (augur) {
     // whisper filters
     augur.filters = {}; // key: marketId => {filterId: hexstring, polling: bool}
 
-    // eth filters
-    augur.eth_filters = {}; // key: marketId => {filterId: hexstring}
+    // price log filters
+    augur.price_filters = {
+        updatePrice: null,
+        pricePaid: null,
+        priceSold: null
+    };
 
     // contract error codes
     augur.ERRORS = {
@@ -275,17 +281,6 @@ var Augur = (function (augur) {
      * Utility functions *
      *********************/
 
-    function log(msg) {
-        var output = "[augur.js] ";
-        if (msg) {
-            if (msg.constructor === Object || msg.constructor === Array) {
-                output += JSON.stringify(msg, null, 2);
-            } else {
-                output += msg.toString();
-            }
-            console.log(output);
-        }
-    }
     function copy(obj) {
         if (null === obj || "object" !== typeof obj) return obj;
         var clone = obj.constructor();
@@ -833,6 +828,74 @@ var Augur = (function (augur) {
         return augur.data;
     }
 
+    /********************
+     * Ethereum filters *
+     ********************/
+
+    augur.eth_newFilter = function (params, f) {
+        return json_rpc(postdata("newFilter", params), f);
+    };
+    augur.create_price_filter = function (market, f) {
+        return augur.eth_newFilter({ topics: [ market ]}, f);
+    };
+    augur.eth_getFilterChanges = function (filter, f) {
+        return json_rpc(postdata("getFilterChanges", filter), f);
+    };
+    augur.eth_getFilterLogs = function (filter, f) {
+        return json_rpc(postdata("getFilterLogs", filter), f);
+    };
+    augur.eth_getLogs = function (filter, f) {
+        return json_rpc(postdata("getLogs", filter), f);
+    };
+    augur.eth_uninstallFilter = function (filter, f) {
+        return json_rpc(postdata("uninstallFilter", filter), f);
+    };
+    // augur.getMarketPriceHistory = function (market, outcome, f) {
+        // [...{price: BigNumber, timestamp: moment or Date}...]
+    // };
+    augur.poll_eth_filter = function (filter) {
+        augur.eth_getFilterChanges(filter, function (message) {
+            // log("Polling filter " + chalk.green(filter) + "...");
+            if (message) {
+                var num_messages = message.length;
+                if (num_messages) {
+                    for (var i = 0; i < num_messages; ++i) {
+                        log(chalk.cyan(JSON.stringify(message, null, 2)));
+                    }
+                }
+            }
+            setTimeout(function () {
+                augur.poll_eth_filter(filter);
+            }, augur.ETH_POLL_INTERVAL);
+        });
+    };
+    function start_price_listeners() {
+        var filter, filter_types;
+        filter_types = ["updatePrice", "pricePaid", "priceSold"];
+        for (var i = 0, len = filter_types.length; i < len; ++i) {
+            if (augur.price_filters[filter_types[i]] &&
+                augur.price_filters[filter_types[i]].filterId) {
+                filter = augur.price_filters[filter_types[i]].filterId;
+                log(filter_types[i] + " filter found:", chalk.green(filter));
+                augur.poll_eth_filter(filter);
+            } else {
+                filter = augur.create_price_filter(filter_types[i]);
+                if (filter && filter !== "0x") {
+                    log("Create " + filter_types[i] + " filter:",
+                        chalk.green(filter));
+                    augur.price_filters[filter_types[i]] = {
+                        filterId: filter,
+                        polling: true
+                    };
+                    augur.poll_eth_filter(filter);
+                } else {
+                    log("Couldn't create " + filter_types[i] + " filter:",
+                        chalk.green(filter));
+                }
+            }
+        }
+    }
+
     /*******************************
      * Ethereum network connection *
      *******************************/
@@ -888,6 +951,7 @@ var Augur = (function (augur) {
                 port: 8545
             };
         }
+        start_price_listeners();
         try {
             if (JSON.stringify(augur.contracts) === JSON.stringify(augur.init_contracts)) {
                 if (chain) {
@@ -1466,7 +1530,6 @@ var Augur = (function (augur) {
                     message: augur.ERRORS[txhash]
                 });
             } else {
-                // log(txhash);
                 augur.getTx(txhash, function (sent) {
                     augur.call({
                         from: sent.from || augur.coinbase,
@@ -2812,8 +2875,8 @@ var Augur = (function (augur) {
                             info.description = description;
                         }
                         info.filter = augur.initComments(market);
-                        info.eth_filter = augur.init_price_log(market);
-                        info.price_history = augur.eth_getFilterLogs(info.eth_filter);
+                        // info.eth_filter = augur.init_price_log(market);
+                        // info.price_history = augur.eth_getFilterLogs(info.eth_filter);
                         onSent(info);
                     });
                 }
@@ -2834,8 +2897,8 @@ var Augur = (function (augur) {
                     info.description = description;
                 }
                 info.filter = augur.initComments(market);
-                info.eth_filter = augur.init_price_log(market);
-                info.price_history = augur.eth_getFilterLogs(info.eth_filter);
+                // info.eth_filter = augur.init_price_log(market);
+                // info.price_history = augur.eth_getFilterLogs(info.eth_filter);
                 return info;
             }
         }
@@ -3481,92 +3544,6 @@ var Augur = (function (augur) {
             var tx = copy(augur.tx.dispatch);
             tx.params = branch;
             return send_call_confirm(tx, onSent, onSuccess, onFailed);
-        }
-    };
-
-    /********************
-     * Ethereum filters *
-     ********************/
-
-    augur.eth_newFilter = function (params, f) {
-        return json_rpc(postdata("newFilter", params), f);
-    };
-    augur.price_filter = function (market, f) {
-        return augur.eth_newFilter({ topics: [ market ]}, f);
-    };
-    augur.eth_getFilterChanges = function (filter, f) {
-        return json_rpc(postdata("getFilterChanges", filter), f);
-    };
-    augur.eth_getFilterLogs = function (filter, f) {
-        return json_rpc(postdata("getFilterLogs", filter), f);
-    };
-    augur.eth_getLogs = function (filter, f) {
-        return json_rpc(postdata("getLogs", filter), f);
-    };
-    // augur.getMarketPriceHistory = function (market, outcome, f) {
-    //     [...{price: BigNumber, timestamp: moment or Date}...]
-    // };
-    augur.poll_eth_filter = function (market_id, filter_id) {
-        // curl -X POST --data '{"jsonrpc":"2.0","method":"eth_getFilterChanges","params":["0x16"],"id":73}'
-        // {
-        //   "id":1,
-        //   "jsonrpc":"2.0",
-        //   "result": [{
-        //     "logIndex": "0x1", // 1
-        //     "blockNumber":"0x1b4" // 436
-        //     "blockHash": "0x8216c5785ac562ff41e2dcfdf5785ac562ff41e2dcfdf829c5a142f1fccd7d",
-        //     "transactionHash":  "0xdf829c5a142f1fccd7d8216c5785ac562ff41e2dcfdf5785ac562ff41e2dcf",
-        //     "transactionIndex": "0x0", // 0
-        //     "address": "0x16c5785ac562ff41e2dcfdf829c5a142f1fccd7d",
-        //     "data":"0x0000000000000000000000000000000000000000000000000000000000000000",
-        //     "topics": ["0x59ebeb90bc63057b6515673c3ecf9438e5058bca0f92585014eced636878c9a5"]
-        //     },{
-        //       ...
-        //     }]
-        // }
-        augur.eth_getFilterChanges(filter_id, function (message) {
-            if (message) {
-                var num_messages = message.length;
-                if (num_messages) {
-                    for (var i = 0; i < num_messages; ++i) {
-                        log(chalk.blue.bold("poll_eth_filter: ") +
-                            chalk.gray("reading log ") + chalk.cyan(i));
-                        log(chalk.gray(message));
-                    }
-                }
-            }
-            // wait a few seconds, then poll the filter for new messages
-            // setTimeout(function () {
-            //     augur.poll_eth_filter(market_id, filter_id);
-            // }, augur.ETH_POLL_INTERVAL);
-        });
-    };
-    augur.eth_uninstallFilter = function (filter, f) {
-        return json_rpc(postdata("uninstallFilter", filter), f);
-    };
-    augur.init_price_log = function (market) {
-
-        // make sure there's only one eth filter per market
-        if (augur.eth_filters[market] && augur.eth_filters[market].filterId) {
-            log("existing eth filter found: " +
-                chalk.green(augur.eth_filters[market].filterId));
-            augur.pollFilter(market, augur.eth_filters[market].filterId);
-
-        // create a new eth filter for this market
-        } else {
-            var filter = augur.price_filter(market);
-            if (filter && filter !== "0x") {
-                log("create new eth filter: " + chalk.green(filter));
-                augur.eth_filters[market] = {
-                    filterId: filter,
-                    polling: true
-                };
-                augur.poll_eth_filter(market, filter);
-                return filter;
-            } else {
-                log(chalk.red.bold("couldn't create eth filter:\n"));
-                log(filter);
-            }
         }
     };
 
