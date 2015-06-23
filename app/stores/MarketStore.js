@@ -75,9 +75,11 @@ var MarketStore = Fluxxor.createStore({
   handleUpdateMarketSuccess: function (payload) {
 
     if (state.markets[payload.market.id]) {
+      //console.log('market', payload.market.id, 'exists.  updating...');
       payload.market.loaded = this.marketIsLoaded(payload.market);
       state.markets[payload.market.id] = _.merge(state.markets[payload.market.id], payload.market);
-    } else { 
+    } else {
+      //console.log('market', payload.market.id, 'not found.  creating...');
       state.markets[payload.market.id] = payload.market;
     }
     this.emit(constants.CHANGE_EVENT);

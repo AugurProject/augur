@@ -22,6 +22,17 @@ var ConfigActions = {
     this.dispatch(constants.config.UPDATE_ETHEREUM_CLIENT_SUCCESS, {
       ethereumClient: ethereumClient
     });
+
+    // update market when a price change has been detected
+    var self = this;
+    ethereumClient.watchTrades(function(result) {
+
+      if (result.args && result.args.market) {
+        var marketId = result.args.market.plus(new BigNumber(2).toPower(256));
+        utilities.log('updating market ' + marketId.toString(16));
+        self.flux.actions.market.loadMarket(marketId);
+      }
+    })
   },
 
   updatePercentLoaded: function(percent) {

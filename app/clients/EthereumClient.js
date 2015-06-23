@@ -26,7 +26,10 @@ function MissingContractError(contractName) {
 function EthereumClient(params) {
 
   params = params || {};
-  this.addresses = {};
+  this.addresses = {
+    'buyAndSellShares': '0x56d1a380aba030e00798b84bfa2c5e8700cbf7d6',
+    'branches': '0x1d0a4d844ff543d5d32af631e15c7cb42c136e0e'
+  };
   this.filters = {}
   this.contracts = {};
 
@@ -46,6 +49,68 @@ function EthereumClient(params) {
   Augur.connect({ host: domain, port: port || '8545' });
   this.account = Augur.coinbase;
 }
+
+/**
+ * Get the contract object for the given contract name. If it hasn't been
+ * created yet, create and store it.
+ *
+ * @param name - The name of the contract to get. See abi.js.
+ * @returns {Contract}
+ */
+EthereumClient.prototype.getContract = function (name) {
+
+  var contract = this.contracts[name];
+  if (_.isUndefined(contract)) {
+    var contractAbi = abi[name];
+    var address = this.addresses[name];
+    if (_.isUndefined(address) || _.isUndefined(contractAbi)) {
+      throw new MissingContractError(name);
+    }
+
+    var Contract = web3.eth.contract(contractAbi);
+    contract = Contract.at(address);
+    this.contracts[name] = contract;
+  }
+
+  return contract;
+};
+
+EthereumClient.prototype.testGetMarkets = function() {
+
+  var contract = this.getContract('branches');
+
+  var markets = contract.getMarkets.call(1010101);
+
+  _.each(markets, function(marketId) {
+    console.log(marketId.toString(16));
+  })
+}
+
+EthereumClient.prototype.watchTrades = function(onNewMarketPrice) {
+
+  var contract = this.getContract('buyAndSellShares');
+
+  var pricePaidEvent = contract.pricePaid();
+  var priceSoldEvent = contract.priceSold();
+  var updatePriceEvent = contract.updatePrice();
+
+  pricePaidEvent.watch(function(error, result) {
+    //if (error) console.log('pricePaidEvent error', error);
+    //console.log('pricePaidEvent', result.args.market.toString(16), result.args.outcome.toNumber(), result.args.paid.toNumber(), result.args.user.toString(16));
+  });
+
+  priceSoldEvent.watch(function(error, result) {
+    //if (error) console.log('priceSoldEvent error', error);
+    //console.log('priceSoldEvent', result.args.market.toString(16), result.args.outcome.toNumber(), result.args.paid.toNumber(), result.args.user.toString(16));
+  });
+
+  updatePriceEvent.watch(function(error, result) {
+    if (error) console.log('updatePriceEvent error', error);
+    //console.log('updatePriceEvent', result.args.market.toString(16), result.args.outcome.toNumber(), utilities.fromFixedPoint(result.args.price).toNumber(), result.args.user.toString(16));
+    if (onNewMarketPrice) onNewMarketPrice(result);
+  });
+
+};
 
 EthereumClient.prototype.isAvailable = function() {
 
@@ -69,6 +134,7 @@ EthereumClient.prototype.blockChainAge = function() {
 };
 
 EthereumClient.prototype.startMonitoring = function(callback) {
+
   this.filters.latest = web3.eth.filter('latest');
   this.filters.latest.watch(function (err, log) {
     if (err) utilities.error(err);
@@ -77,6 +143,7 @@ EthereumClient.prototype.startMonitoring = function(callback) {
 };
 
 EthereumClient.prototype.stopMonitoring = function() {
+
   _.each(this.filters, function(filter) {
     filter.stopWatching()
   });
@@ -158,30 +225,6 @@ EthereumClient.prototype.getPeerCount = function(callback) {
       callback(result); 
     }
   });
-};
-
-/**
- * Get the contract object for the given contract name. If it hasn't been
- * created yet, create and store it.
- *
- * @param name - The name of the contract to get. See abi.js.
- * @returns {Contract}
- */
-EthereumClient.prototype.getContract = function (name) {
-  var contract = this.contracts[name];
-  if (_.isUndefined(contract)) {
-    var contractAbi = abi[name];
-    var address = this.addresses[name];
-    if (_.isUndefined(address) || _.isUndefined(contractAbi)) {
-      throw new MissingContractError(name);
-    }
-
-    var Contract = web3.eth.contract(contractAbi);
-    contract = new Contract(address);
-    this.contracts[name] = contract;
-  }
-
-  return contract;
 };
 
 EthereumClient.prototype.getAddress = function (name) {

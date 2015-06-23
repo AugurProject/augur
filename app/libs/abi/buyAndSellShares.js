@@ -30,4 +30,5 @@ module.exports = [{
     "name": "updatePrice(int256,int256,int256,int256)",
     "type": "event",
     "inputs": [{ "name": "user", "type": "int256", "indexed": false }, { "name": "market", "type": "int256", "indexed": false }, { "name": "outcome", "type": "int256", "indexed": false }, { "name": "price", "type": "int256", "indexed": false }]
-}];
+}]
+;

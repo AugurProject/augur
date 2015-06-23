@@ -100,6 +100,7 @@ var MarketActions = {
 
     var marketState = this.flux.store('market').getState();
 
+    // check to see if we're in the initial page load state and do a page-has-loaded check if so
     if (!marketState.initialMarketIds) return;
 
     //console.log('checking if page is loaded');
