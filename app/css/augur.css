@@ -90,6 +90,12 @@ h1, h2, h3, h4, h5 {
     text-align: center;
     opacity: 0.7;
 }
+#loading .loading-text {
+    display: inline-block;
+    margin: 220px -15px 0px -15px;
+    font-size: 16px;
+    letter-spacing: 0.2em;
+}
 #loading .progress {
     height: 5px;
     margin: 220px -15px 0px -15px;

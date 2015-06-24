@@ -65,7 +65,7 @@ var AugurApp = React.createClass({
 
   getLoadingProgress: function() {
 
-    var loadingProgress = <span />;
+    var loadingProgress = (<span className="loading-text">loading...</span>);
 
     if (this.state.config.percentLoaded) {
 
