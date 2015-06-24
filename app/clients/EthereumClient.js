@@ -136,9 +136,17 @@ EthereumClient.prototype.blockChainAge = function() {
 EthereumClient.prototype.startMonitoring = function(callback) {
 
   this.filters.latest = web3.eth.filter('latest');
-  this.filters.latest.watch(function (err, log) {
-    if (err) utilities.error(err);
+  this.filters.pending = web3.eth.filter('pending');
+
+  this.filters.latest.watch(function (error, result) {
+    if (error) utilities.error(error);
+    console.log('latest', result);
     callback();
+  });
+
+  this.filters.pending.watch(function (error, result) {
+    if (error) utilities.error(error);
+    console.log('pending', result);
   });
 };
 

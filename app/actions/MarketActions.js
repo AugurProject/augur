@@ -112,16 +112,15 @@ var MarketActions = {
 
     //console.log('loaded', loaded);
 
-    var percentLoaded = (_.remove(loaded).length / constants.MARKETS_PER_PAGE) * 100;
-
-    this.flux.actions.config.updatePercentLoaded(percentLoaded);
-
     if (loaded.length && !_.includes(loaded, false)) {
 
       //console.log('initial page is loaded');
       this.dispatch(constants.market.MARKET_PAGE_LOADED)
       this.flux.actions.market.loadSomeMarkets(marketState.remainingMarketIds);
     }
+
+    var percentLoaded = (_.remove(loaded).length / constants.MARKETS_PER_PAGE) * 100;
+    this.flux.actions.config.updatePercentLoaded(percentLoaded);
   },
 
   initMarket: function(marketId) {
