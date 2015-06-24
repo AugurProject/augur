@@ -216,7 +216,7 @@ var ErrorModal = React.createClass({
         <Modal {...this.props} id="no-eth-modal" onRequestHide={ this.handleToggle } backdrop='static'>
           <div className="modal-body clearfix">
               <h4>Failed to connect to Ethereum</h4>
-              <p>Augur requires a local node of the Ethereum client running</p>
+              <p>Augur requires a local Ethereum node running</p>
               <p>Visit <a href="https://github.com/ethereum/go-ethereum/wiki">the ethereum github wiki</a> for help installing the latest client</p>
               <p>If geth is installed:<br /><span className='cmd'>geth --rpc --rpccorsdomain { host }  --shh --unlock primary</span></p>
               <p style={{display: 'none'}}><a className="pull-right start-demo-mode" onClick={ this.startDemoMode } href="javascript:void(0)">Proceed in demo mode</a></p>
@@ -230,8 +230,8 @@ var ErrorModal = React.createClass({
       return (
         <Modal {...this.props} bsSize='small' onRequestHide={ this.handleToggle } backdrop='static'>
           <div className="modal-body clearfix">
-              <h4>Ethereum loading</h4>
-              <p>The Ethereum block chain is not current and is fetching blocks from peers</p>
+              <h4>Blockchain loading</h4>
+              <p>The Augur blockchain is not current; fetching blocks from peers...</p>
           </div>
         </Modal>
       );
