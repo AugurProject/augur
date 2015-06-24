@@ -83,7 +83,47 @@ EthereumClient.prototype.testGetMarkets = function() {
   })
 }
 
-EthereumClient.prototype.watchTrades = function(onNewMarketPrice) {
+
+EthereumClient.prototype.startMonitoring = function(onNewBlock, onPendingTx) {
+
+  this.filters.latest = web3.eth.filter('latest');
+  this.filters.pending = web3.eth.filter('pending');
+
+  this.filters.latest.watch(function (error, blockHash) {
+    if (error) utilities.error(error);
+    //console.log('latest', blockHash);
+    onNewBlock(blockHash);
+  });
+
+  this.filters.pending.watch(function (error, txHash) {
+    if (error) utilities.error(error);
+    utilities.log('pending tx: ' + txHash);
+    onPendingTx(txHash)
+  });
+};
+
+EthereumClient.prototype.onAugurTx = function(callback) {
+
+  this.filters.augur = web3.eth.filter({
+    addresses: _.map(this.addresses, function(address, contract) { 
+      return address;
+    })
+  });
+
+  this.filters.augur.watch(function (error, result) {
+    if (error) utilities.error(error);
+    callback(result);
+  });
+};
+
+EthereumClient.prototype.stopMonitoring = function() {
+
+  _.each(this.filters, function(filter) {
+    filter.stopWatching()
+  });
+};
+
+EthereumClient.prototype.onMarketChange = function(callback) {
 
   var contract = this.getContract('buyAndSellShares');
 
@@ -94,21 +134,20 @@ EthereumClient.prototype.watchTrades = function(onNewMarketPrice) {
   pricePaidEvent.watch(function(error, result) {
     //if (error) console.log('pricePaidEvent error', error);
     //console.log('pricePaidEvent', result.args.market.toString(16), result.args.outcome.toNumber(), result.args.paid.toNumber(), result.args.user.toString(16));
-    if (onNewMarketPrice) onNewMarketPrice(result);
+    if (callback && result.args) callback(result.args.market);
   });
 
   priceSoldEvent.watch(function(error, result) {
     //if (error) console.log('priceSoldEvent error', error);
     //console.log('priceSoldEvent', result.args.market.toString(16), result.args.outcome.toNumber(), result.args.paid.toNumber(), result.args.user.toString(16));
-    if (onNewMarketPrice) onNewMarketPrice(result);
+    if (callback && result.args) callback(result.args.market);
   });
 
   updatePriceEvent.watch(function(error, result) {
     if (error) console.log('updatePriceEvent error', error);
     //console.log('updatePriceEvent', result.args.market.toString(16), result.args.outcome.toNumber(), utilities.fromFixedPoint(result.args.price).toNumber(), result.args.user.toString(16));
-    //if (onNewMarketPrice) onNewMarketPrice(result);
+    //if (callback && result.args) callback(result.args.market);
   });
-
 };
 
 EthereumClient.prototype.isAvailable = function() {
@@ -130,43 +169,6 @@ EthereumClient.prototype.blockChainAge = function() {
 
     return currentTimeStamp - blockTimeStamp;
   }
-};
-
-EthereumClient.prototype.startMonitoring = function(callback) {
-
-  this.filters.latest = web3.eth.filter('latest');
-  this.filters.pending = web3.eth.filter('pending');
-  this.filters.augur = web3.eth.filter({
-    addresses: _.map(this.addresses, function(address, contract) { 
-      return address;
-    })
-  });
-
-
-  this.filters.latest.watch(function (error, result) {
-    if (error) utilities.error(error);
-    //console.log('latest', result);
-    callback();
-  });
-
-  this.filters.pending.watch(function (error, result) {
-    if (error) utilities.error(error);
-    utilities.log('pending tx: ' + result);
-  });
-
-
-  this.filters.augur.watch(function (error, result) {
-    if (error) utilities.error(error);
-    console.log('augur', result);
-  });
-
-};
-
-EthereumClient.prototype.stopMonitoring = function() {
-
-  _.each(this.filters, function(filter) {
-    filter.stopWatching()
-  });
 };
 
 EthereumClient.prototype.setDefaultBranch = function(branchId) {

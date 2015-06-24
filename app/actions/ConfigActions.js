@@ -25,12 +25,11 @@ var ConfigActions = {
 
     // update market when a price change has been detected
     var self = this;
-    ethereumClient.watchTrades(function(result) {
+    ethereumClient.onMarketChange(function(marketId) {
 
-      if (result.args && result.args.market) {
-        var marketId = result.args.market;
-        if (result.args.market < new BigNumber(2).toPower(255)) {
-          marketId = result.args.market.plus(new BigNumber(2).toPower(256));
+      if (marketId) {
+        if (marketId < new BigNumber(2).toPower(255)) {
+          marketId = marketId.plus(new BigNumber(2).toPower(256));
         }
         utilities.log('updating market ' + marketId.toString(16));
         self.flux.actions.market.loadMarket(marketId);

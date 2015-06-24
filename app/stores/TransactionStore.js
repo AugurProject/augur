@@ -7,11 +7,11 @@ var state = {}
 
 class Transaction {
   constructor (hash) {
-    this.hash = hash;
+    this.txHash = hash;
     this.from = null;
     this.to = null;
     this.timestamp = moment();
-    this.block = null;
+    this.blockNumber = null;
   }
 }
 
@@ -28,24 +28,24 @@ var TransactionStore = Fluxxor.createStore({
   },
 
   handleAddTransaction: function (payload) {
-    state[payload.hash] = new Transaction(payload.hash);
+    state[payload.txHash] = new Transaction(payload.txHash);
     this.emit(constants.CHANGE_EVENT);
   },
 
   /**
    * Update the stored transactions.
    *
-   * @param payload {Object} - Transaction objects keyed by their hashes.
+   * @param payload [Array] - Transaction objects
    */
   handleUpdateTransactions: function (payload) {
     var changed = false;
-    _.forEach(payload, function (transaction, hash) {
+    _.each(payload, function (transaction, hash) {
       if (!state[hash]) {
         changed = true;
       } else if (!_.isEqual(state[hash], transaction)) {
         changed = true;
       }
-      state[hash] = transaction;
+      state[hash] = _.merge(state[hash], transaction);
     });
 
     if (changed) {

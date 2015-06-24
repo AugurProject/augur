@@ -124,10 +124,15 @@ var NetworkActions = {
   },
 
   startMonitoring: function () {
+
     var networkState = this.flux.store('network').getState()
     if (!networkState.isMonitoringBlocks) {
+
       var ethereumClient = this.flux.store('config').getEthereumClient();
-      ethereumClient.startMonitoring(this.flux.actions.network.onNewBlock);
+
+      ethereumClient.startMonitoring(this.flux.actions.network.onNewBlock, this.flux.actions.transaction.onPendingTx);
+      ethereumClient.onAugurTx(this.flux.actions.transaction.onAugurTx);
+
     }
   }
 };
