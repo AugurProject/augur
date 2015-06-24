@@ -2,7 +2,8 @@ var constants = require('../libs/constants');
 
 var TransactionActions = {
 	
-  addTransaction: function (hash) {
+  addTransaction: function (hash, type, callback) {
+
 
   }
 };

@@ -11,8 +11,7 @@ class Transaction {
     this.from = null;
     this.to = null;
     this.timestamp = moment();
-    this.status = 'pending';
-    this.isMined = false;
+    this.block = null;
   }
 }
 
