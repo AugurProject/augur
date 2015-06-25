@@ -160,6 +160,16 @@ EthereumClient.prototype.isAvailable = function() {
   }
 };
 
+EthereumClient.prototype.batch = function(commands) {
+
+  var batch = Augur.createBatch();
+  _.each(commands, function(command) {
+    batch.add(command[0], command[1], command[2]);
+  });
+
+  batch.execute();
+};
+
 EthereumClient.prototype.blockChainAge = function() {
 
   if (web3.net.listening) {

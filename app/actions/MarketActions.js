@@ -25,10 +25,12 @@ var MarketActions = {
     var self = this;
     var setProp = this.flux.actions.market.getMarketSetter(marketId);
     var market = {'id': marketId};
+    var commands = [];
+    var account = ethereumClient.account;
 
-    ethereumClient.getMarketDescription(marketId, setProp('description'));
+    commands.push(['getDescription', [marketId], setProp('description')]);
 
-    ethereumClient.getMarketEvents(marketId, function(events) {
+    commands.push(['getMarketEvents', [marketId], function(events) {
 
       market['events'] = events;
       // calc end date from first events expiration
@@ -54,16 +56,16 @@ var MarketActions = {
         }
       });
       self.flux.actions.market.updateMarket(market);
-    });
+    }]);
 
-    ethereumClient.getMarketAlpha(marketId, setProp('alpha'));
-    ethereumClient.getMarketAuthor(marketId, setProp('author'));
-    ethereumClient.getMarketCreationFee(marketId, setProp('creationFee'));
+    commands.push(['getAlpha', [marketId], setProp('alpha')]);
+    commands.push(['getCreator', [marketId], setProp('author')]);
+    commands.push(['getCreationFee', [marketId], setProp('creationFee')]);
 
-    ethereumClient.getMarketTraderCount(marketId, setProp('traderCount'));
-    ethereumClient.getMarketTradingPeriod(marketId, setProp('tradingPeriod'));
-    ethereumClient.getMarketTradingFee(marketId, setProp('tradingFee'));
-    ethereumClient.getMarketTraderId(marketId, function(traderId) {
+    commands.push(['getCurrentParticipantNumber', [marketId], setProp('traderCount')]);
+    commands.push(['getTradingPeriod',[marketId], setProp('tradingPeriod')]);
+    commands.push(['getTradingFee', [marketId], setProp('tradingFee')]);
+    commands.push(['getParticipantNumber', [marketId, account], function(traderId) {
       market['traderId'] = traderId;
       ethereumClient.getMarketNumOutcomes(marketId, function(numOutcomes) {
         _.each(_.range(1, numOutcomes.toNumber() + 1), function (outcomeId) {
@@ -85,7 +87,9 @@ var MarketActions = {
           });
         });
       });
-    });
+    }]);
+
+    ethereumClient.batch(commands);
 
     var account = this.flux.store('network').getAccount();
     market['authored'] = account === market.author;
