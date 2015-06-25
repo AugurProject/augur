@@ -48,25 +48,31 @@ var AccountDetails = React.createClass({
 
   onCashFaucet: function(event) {
 
-    if (this.state.asset.ether.toNumber() < constants.MIN_ETHER_WARNING) {
-      utilities.warn('not enough ether');
-      //var trigger = new SendEtherTrigger();
-      //console.log(trigger);
-      //trigger.setState({isModalOpen: true});
-    }
+    if (!this.state.cashFaucetDisabled) {
 
-    this.setState({cashFaucetDisabled: true});
-    this.state.ethereumClient.cashFaucet();
+      if (this.state.asset.ether.toNumber() < constants.MIN_ETHER_WARNING) {
+        utilities.warn('not enough ether');
+        //var trigger = new SendEtherTrigger();
+        //console.log(trigger);
+        //trigger.setState({isModalOpen: true});
+      }
+
+      this.setState({cashFaucetDisabled: true});
+      this.state.ethereumClient.cashFaucet();
+    }
   },
 
   onRepFaucet: function(event) {
 
-    if (this.state.asset.ether.toNumber() < constants.MIN_ETHER_WARNING) {
-      utilities.warn('not enough ether');
-    }
+    if (!this.state.repFaucetDisabled) {
 
-    this.setState({repFaucetDisabled: true});
-    this.state.ethereumClient.repFaucet();
+      if (this.state.asset.ether.toNumber() < constants.MIN_ETHER_WARNING) {
+        utilities.warn('not enough ether');
+      }
+
+      this.setState({repFaucetDisabled: true});
+      this.state.ethereumClient.repFaucet();
+    } 
   },
 
   render: function () {
@@ -110,107 +116,59 @@ var AccountDetails = React.createClass({
       });
     }, this);
 
-    var rendered;
-    if (document.domain === "demo.augur.net") {
-      rendered = (
-        <div id="account">
-          <h3>Account<span className='subheading pull-right'>{ this.state.primaryAccount }</span></h3>
-          <div className='subheading row'>
-            <div className='col-sm-4 cash-balance'>
-              { cashBalance } <span className='unit'>cash</span>
-              <ButtonGroup>
-                <Button bsSize='xsmall' bsStyle='default' onClick={ this.onCashFaucet }>Faucet<i className='fa fa-tint'></i></Button>
-              </ButtonGroup>
-            </div>
-            <div className='col-sm-4 rep-balance'>
-              { repBalance } <span className='unit'>rep</span>
-              <ButtonGroup>
-                <Button bsSize='xsmall' bsStyle='default' onClick={ this.onRepFaucet }>Faucet<i className='fa fa-tint'></i></Button>
-              </ButtonGroup>
-            </div>
-            <div className='col-sm-4 ether-balance'>
-              { utilities.formatEther(this.state.asset.ether).value } <span className='unit'>{ utilities.formatEther(this.state.asset.ether).unit }</span>
-            </div>
+    var cashFaucetDisabled = this.state.cashFaucetDisabled ? 'disabled' : null;
+    var repFaucetDisabled = this.state.repFaucetDisabled ? 'disabled' : null;
+
+    var rendered = (
+      <div id="account">
+        <h3>Account<span className='subheading pull-right'>{ this.state.primaryAccount }</span></h3>
+        <div className='subheading row'>
+          <div className='col-sm-4 cash-balance'>
+            { cashBalance } <span className='unit'>cash</span>
+            <ButtonGroup>
+              <SendCashTrigger text='send' />
+              <Button disabled={ cashFaucetDisabled } bsSize='xsmall' bsStyle='default' onClick={ this.onCashFaucet }>Faucet<i className='fa fa-tint'></i></Button>
+            </ButtonGroup>
           </div>
-          <div className='row'>
-            <div className="col-xs-12">
-              <h4>Holdings</h4>
-              <Table responsive striped hover>
-                <thead>
-                  <tr>
-                    <th>Description</th>
-                    <th>Shares Held</th>
-                    <th>Price</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  { holdings }
-                </tbody>
-              </Table>
-              <h4>Authored Markets</h4>
-              <div className='authored-markets row'>
-                <Markets 
-                  markets={ this.state.authoredMarkets }
-                  votePeriod={ this.state.votePeriod }
-                  classNameWrapper='col-sm-4' />
-              </div>        
-            </div>
+          <div className='col-sm-4 rep-balance'>
+            { repBalance } <span className='unit'>rep</span>
+            <ButtonGroup>
+              <SendRepTrigger text='send' />
+              <Button disabled={ repFaucetDisabled } bsSize='xsmall' bsStyle='default' onClick={ this.onRepFaucet }>Faucet<i className='fa fa-tint'></i></Button>
+            </ButtonGroup>
+          </div>
+          <div className='col-sm-4 ether-balance'>
+            { utilities.formatEther(this.state.asset.ether).value } <span className='unit'>{ utilities.formatEther(this.state.asset.ether).unit }</span>
+            <SendEtherTrigger text='send' />
           </div>
         </div>
-      );
-    } else {
-      rendered = (
-        <div id="account">
-          <h3>Account<span className='subheading pull-right'>{ this.state.primaryAccount }</span></h3>
-          <div className='subheading row'>
-            <div className='col-sm-4 cash-balance'>
-              { cashBalance } <span className='unit'>cash</span>
-              <ButtonGroup>
-                <SendCashTrigger text='send' />
-                <Button bsSize='xsmall' bsStyle='default' onClick={ this.onCashFaucet }>Faucet<i className='fa fa-tint'></i></Button>
-              </ButtonGroup>
-            </div>
-            <div className='col-sm-4 rep-balance'>
-              { repBalance } <span className='unit'>rep</span>
-              <ButtonGroup>
-                <SendRepTrigger text='send' />
-                <Button bsSize='xsmall' bsStyle='default' onClick={ this.onRepFaucet }>Faucet<i className='fa fa-tint'></i></Button>
-              </ButtonGroup>
-            </div>
-            <div className='col-sm-4 ether-balance'>
-              { utilities.formatEther(this.state.asset.ether).value } <span className='unit'>{ utilities.formatEther(this.state.asset.ether).unit }</span>
-              <SendEtherTrigger text='send' />
-            </div>
-          </div>
-          <div className='row'>
-            <div className="col-xs-12">
-              <h4>Holdings</h4>
-              <Table responsive striped hover>
-                <thead>
-                  <tr>
-                    <th>Description</th>
-                    <th>Shares Held</th>
-                    <th>Price</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  { holdings }
-                </tbody>
-              </Table>
-              <h4>Authored Markets</h4>
-              <div className='authored-markets row'>
-                <Markets 
-                  markets={ this.state.authoredMarkets }
-                  votePeriod={ this.state.votePeriod }
-                  classNameWrapper='col-sm-4' />
-              </div>        
-            </div>
+        <div className='row'>
+          <div className="col-xs-12">
+            <h4>Holdings</h4>
+            <Table responsive striped hover>
+              <thead>
+                <tr>
+                  <th>Description</th>
+                  <th>Shares Held</th>
+                  <th>Price</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                { holdings }
+              </tbody>
+            </Table>
+            <h4>Authored Markets</h4>
+            <div className='authored-markets row'>
+              <Markets 
+                markets={ this.state.authoredMarkets }
+                votePeriod={ this.state.votePeriod }
+                classNameWrapper='col-sm-4' />
+            </div>        
           </div>
         </div>
-      );
-    }
+      </div>
+    );
 
     return rendered;
   }
