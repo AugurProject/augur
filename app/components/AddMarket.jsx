@@ -28,7 +28,6 @@ var AddMarketModal = React.createClass({
       tradingFee: '2',
       tradingFeeError: null,
       valid: false,
-      cashLeft: 0,
       minDate: moment().format('YYYY-MM-DD')
     };
   },
@@ -42,12 +41,6 @@ var AddMarketModal = React.createClass({
       currentBlock: flux.store('network').getState().blockNumber,
       currentBranch: flux.store('branch').getCurrentBranch()
     }
-  },
-
-  componentDidMount: function(event) {
-
-    // not sure the proper place to put this
-    this.state.cashLeft = this.state.cash;
   },
 
   onChangeMarketText: function (event) {
@@ -90,8 +83,7 @@ var AddMarketModal = React.createClass({
       this.setState({marketInvestmentError: null});
     }
     this.setState({
-      marketInvestment: marketInvestment,
-      casheLeft: cashLeft
+      marketInvestment: marketInvestment
     });
   },
 
@@ -191,9 +183,10 @@ var AddMarketModal = React.createClass({
 
     if (this.state.pageNumber === 2) {
 
+      var cashLeft = this.state.cash - this.state.marketInvestment;
       var tradinfFeeHelp = this.state.tradingFeeError ? this.state.tradingFeeError : null;
       var tradingFeeHelpStyle = this.state.tradingFeeError ? 'error' : null;
-      var marketInvestmentHelp = this.state.marketInvestmentError ? this.state.marketInvestmentError : 'CASH: '+ this.state.cashLeft.toFixed(5);
+      var marketInvestmentHelp = this.state.marketInvestmentError ? this.state.marketInvestmentError : 'CASH: '+ cashLeft.toFixed(5);
       var marketInvestmentHelpStyle = this.state.marketInvestmentError ? 'error' : null;
 
       subheading = 'Fees';
