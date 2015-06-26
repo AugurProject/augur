@@ -2,20 +2,22 @@ var constants = require('../libs/constants');
 
 var AssetActions = {
 
-  loadAssets: function () {
-
-    var networkStore = this.flux.store('network');
-    var account = networkStore.getAccount();
+  updateAssets: function() {
     
     var ethereumClient = this.flux.store('config').getEthereumClient();
-    var cash = ethereumClient.getCashBalance();
-    var reputation = ethereumClient.getRepBalance();
-    var ether = ethereumClient.getEtherBalance();
+    var currentBranch = this.flux.store('branch').getCurrentBranch();
+    var self = this;
 
-    this.dispatch(constants.asset.LOAD_ASSETS_SUCCESS, {
-      cash: cash,
-      reputation: reputation,
-      ether: ether
+    ethereumClient.getCashBalance(function(result) {
+      self.dispatch(constants.asset.UPDATE_ASSETS, { cash: result });
+    });
+
+    ethereumClient.getRepBalance(currentBranch.id, function(result) {
+      self.dispatch(constants.asset.UPDATE_ASSETS, { reputation: result });
+    });
+
+    ethereumClient.getEtherBalance(function(result) {
+      self.dispatch(constants.asset.UPDATE_ASSETS, { ether: result });
     });
   }
 };

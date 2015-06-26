@@ -84,7 +84,7 @@ var AccountDetails = React.createClass({
     _.each(this.state.holdings, function (market) {
       _.each(market.outcomes, function(outcome) {
         var name, className, holding;
-        if (outcome.sharesHeld.toNumber()) {
+        if (outcome && outcome.sharesHeld && outcome.sharesHeld.toNumber()) {
           name = outcome.id == 1 ? 'no' : 'yes';
           className = 'shares-held ' + name;
           var key = market.id+outcome.id;

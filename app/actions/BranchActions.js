@@ -18,10 +18,10 @@ export default {
 
     branchId = branchId || process.env.AUGUR_BRANCH_ID;
     var ethereumClient = this.flux.store('config').getEthereumClient();
-    var periodLength = ethereumClient.getPeriodLength(branchId);
 
     utilities.log('using branch ' + branchId);
 
+    var periodLength = ethereumClient.getPeriodLength(branchId);
     var currentBranch = new Branch(branchId, periodLength);
     this.dispatch(constants.branch.SET_CURRENT_BRANCH_SUCCESS, currentBranch);
     this.flux.actions.branch.updateCurrentBranch();
@@ -32,25 +32,27 @@ export default {
     var currentBranch = this.flux.store('branch').getCurrentBranch();
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var currentBlock = this.flux.store('network').getState().blockNumber;
-    var votePeriod = ethereumClient.getVotePeriod(currentBranch.id);
     var currentPeriod = Math.floor(currentBlock / currentBranch.periodLength);
-
     var percentComplete = (currentBlock % currentBranch.periodLength) / currentBranch.periodLength * 100;
-    var isCurrent = votePeriod < (currentPeriod - 1) ? false : true;
 
-    if (!isCurrent) {
-      var periodsBehind = (currentPeriod - 1) - votePeriod;
-      utilities.warn('branch '+ currentBranch.id + ' behind ' + periodsBehind + ' periods');
-    }
+    ethereumClient.getVotePeriod(currentBranch.id, function(votePeriod) {
 
-    var updatedBranch = _.merge(currentBranch, {
-      currentPeriod: currentPeriod,
-      votePeriod: votePeriod,
-      isCurrent: isCurrent,
-      percentComplete: percentComplete
+      var isCurrent = votePeriod < (currentPeriod - 1) ? false : true;
+
+      if (!isCurrent) {
+        var periodsBehind = (currentPeriod - 1) - votePeriod;
+        utilities.warn('branch '+ currentBranch.id + ' behind ' + periodsBehind + ' periods');
+      }
+
+      var updatedBranch = _.merge(currentBranch, {
+        currentPeriod: currentPeriod,
+        votePeriod: votePeriod,
+        isCurrent: isCurrent,
+        percentComplete: percentComplete
+      });
+
+      this.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, updatedBranch);
     });
-
-    this.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, updatedBranch);
   },
 
   checkQuorum: function () {

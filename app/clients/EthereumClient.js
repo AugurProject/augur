@@ -27,8 +27,9 @@ function EthereumClient(params) {
 
   params = params || {};
   this.addresses = {};
-  this.filters = {}
+  this.filters = [];
   this.contracts = {};
+  this.account = null;
 
   // defaults
   this.defaultBranchId = params.defaultBranchId;
@@ -39,12 +40,18 @@ function EthereumClient(params) {
   // web3 setup
   this.web3 = window.web3 = params.web3 || require('web3');
   this.web3.setProvider(new web3.providers.HttpProvider('//'+this.host));
+}
+
+/**
+ * augur.js doesn't connect correctly if the network isn't available at load
+ * this method allow the client to init augur.js after web3 has given the go ahead
+ */
+EthereumClient.prototype.connect = function() {
 
   // augur.js setup
   var domain, port;
   [domain, port] = this.host.split(':');
   Augur.connect({ host: domain, port: port || '8545' });
-  this.account = Augur.coinbase;
 }
 
 /**
@@ -72,34 +79,17 @@ EthereumClient.prototype.getContract = function (name) {
   return contract;
 };
 
-EthereumClient.prototype.testGetMarkets = function() {
+EthereumClient.prototype.onNewBlock = function(callback) {
 
-  var contract = this.getContract('branches');
+  // add a filter that calls callback on new block
+  var filter = web3.eth.filter('latest');
 
-  var markets = contract.getMarkets.call(1010101);
-
-  _.each(markets, function(marketId) {
-    console.log(marketId.toString(16));
-  })
-}
-
-
-EthereumClient.prototype.startMonitoring = function(onNewBlock, onPendingTx) {
-
-  this.filters.latest = web3.eth.filter('latest');
-  this.filters.pending = web3.eth.filter('pending');
-
-  this.filters.latest.watch(function (error, blockHash) {
+  filter.watch(function (error, blockHash) {
     if (error) utilities.error(error);
-    //console.log('latest', blockHash);
-    onNewBlock(blockHash);
+    callback(blockHash);
   });
 
-  this.filters.pending.watch(function (error, txHash) {
-    if (error) utilities.error(error);
-    utilities.log('pending tx: ' + txHash);
-    onPendingTx(txHash)
-  });
+  this.filters.push(filter);
 };
 
 EthereumClient.prototype.onAugurTx = function(callback) {
@@ -134,13 +124,13 @@ EthereumClient.prototype.onMarketChange = function(callback) {
   pricePaidEvent.watch(function(error, result) {
     //if (error) console.log('pricePaidEvent error', error);
     //console.log('pricePaidEvent', result.args.market.toString(16), result.args.outcome.toNumber(), result.args.paid.toNumber(), result.args.user.toString(16));
-    if (callback && result.args) callback(result.args.market);
+    if (callback && result && result.args) callback(result.args.market);
   });
 
   priceSoldEvent.watch(function(error, result) {
     //if (error) console.log('priceSoldEvent error', error);
     //console.log('priceSoldEvent', result.args.market.toString(16), result.args.outcome.toNumber(), result.args.paid.toNumber(), result.args.user.toString(16));
-    if (callback && result.args) callback(result.args.market);
+    if (callback && result && result.args) callback(result.args.market);
   });
 
   updatePriceEvent.watch(function(error, result) {
@@ -170,15 +160,15 @@ EthereumClient.prototype.batch = function(commands) {
   batch.execute();
 };
 
-EthereumClient.prototype.blockChainAge = function() {
+EthereumClient.prototype.getBlock = function(blockNumber, onResult) {
 
-  if (web3.net.listening) {
-    var blockNumber = web3.eth.blockNumber;
-    var blockTimeStamp = web3.eth.getBlock(blockNumber).timestamp;
-    var currentTimeStamp = moment().unix();
-
-    return currentTimeStamp - blockTimeStamp;
-  }
+  web3.eth.getBlock(blockNumber, function(error, block) {
+    if (error) { 
+      utilities.error(error);
+    } else { 
+      onResult(block); 
+    }
+  })
 };
 
 EthereumClient.prototype.setDefaultBranch = function(branchId) {
@@ -195,18 +185,34 @@ EthereumClient.prototype.getAccounts = function(callback) {
   });
 };
 
-EthereumClient.prototype.getEtherBalance = function(callback) {
-  return web3.eth.getBalance(this.account);
+EthereumClient.prototype.getEtherBalance = function(onResult) {
+
+  web3.eth.getBalance(this.account, function(error, result) {
+    onResult(result);
+  });
 };
 
-EthereumClient.prototype.getPrimaryAccount = function(callback) {
-  web3.eth.getCoinbase(function(error, result) {
-    if (error) { 
-      utilities.error(error);
-    } else { 
-      callback(result); 
-    }
-  });
+EthereumClient.prototype.getPrimaryAccount = function(onResult) {
+
+  // async
+  if (onResult) {
+
+    var self = this;
+    this.web3.eth.getCoinbase(function(error, result) {
+      if (error) { 
+        utilities.error(error);
+      } else {
+        self.account = result; 
+        onResult(result); 
+      }
+    });
+
+  // sync
+  } else {
+
+    if (!this.account) this.account = this.web3.eth.coinbase;
+    return this.account;
+  }
 };
 
 EthereumClient.prototype.getBlockNumber = function(callback) {
@@ -277,9 +283,11 @@ EthereumClient.prototype.cashFaucet = function(onSent, onSuccess, onFailure) {
   });
 };
 
-EthereumClient.prototype.getCashBalance = function() {
+EthereumClient.prototype.getCashBalance = function(onResult) {
 
-  return Augur.getCashBalance(this.account);
+  Augur.getCashBalance(this.getPrimaryAccount(), function(result) {
+    if (result) onResult(result);
+  });
 };
 
 EthereumClient.prototype.sendCash = function(destination, amount, onSent, onSuccess, onFailure) {
@@ -304,15 +312,11 @@ EthereumClient.prototype.repFaucet = function(branchId, onSent, onSuccess, onFai
   });
 };
 
-EthereumClient.prototype.getRepBalance = function(branchId) {
+EthereumClient.prototype.getRepBalance = function(branchId, onResult) {
 
-  var repBalance = Augur.getRepBalance(branchId || this.defaultBranchId, this.account);
-  
-  if (repBalance.error) {
-    utilities.error(repBalance.message);
-  } else {
-    return repBalance.toNumber();
-  }
+  Augur.getRepBalance(branchId || this.defaultBranchId, this.account, function(result) {
+    if (result) onResult(result.toNumber());
+  });
 };
 
 EthereumClient.prototype.sendRep = function(destination, amount, branchId) {
@@ -375,10 +379,11 @@ EthereumClient.prototype.getPeriodLength = function(branchId) {
   }
 };
 
-EthereumClient.prototype.getVotePeriod = function(branchId) {
+EthereumClient.prototype.getVotePeriod = function(branchId, onResult) {
 
-  var votePeriod =  Augur.getVotePeriod(branchId).toNumber();
-  return votePeriod;
+  Augur.getVotePeriod(branchId, function(result) {
+    if (result) onResult(result.toNumber());
+  });
 };
 
 EthereumClient.prototype.getEvents = function(period, branchId) {

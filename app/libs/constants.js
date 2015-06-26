@@ -6,11 +6,12 @@ var BigNumber = require('bignumber.js');
 var ONE_FXP = new BigNumber(2).toPower(64);
 
 module.exports = {
-  DEMO_HOST: 'poc9.net:8545',
+  DEMO_HOST: 'poc9.com:8545',
   ONE_FXP: ONE_FXP,
   NO: ONE_FXP,
   YES: ONE_FXP.mul(2),
   SECONDS_PER_BLOCK: 12,
+  MAX_BLOCKCHAIN_AGE: 120,  // in seconds
   MARKETS_PER_PAGE: 15,
   MIN_ETHER_WARNING: 50000000000000000000,
   CHANGE_EVENT: 'change',
@@ -18,7 +19,8 @@ module.exports = {
     UPDATE_ETHEREUM_CLIENT_SUCCESS: null,
     UPDATE_ETHEREUM_CLIENT_FAILED: null,
     UPDATE_DEBUG: null,
-    UPDATE_PERCENT_LOADED_SUCCESS: null
+    UPDATE_PERCENT_LOADED_SUCCESS: null,
+    LOAD_APPLICATION_DATA_SUCCESS: null
   }),
   network: keyMirror({
     UPDATE_ETHEREUM_STATUS: null,
@@ -30,7 +32,7 @@ module.exports = {
     ETHEREUM_STATUS_LOADING: null
   }),
   asset: keyMirror({
-    LOAD_ASSETS_SUCCESS: null
+    UPDATE_ASSETS: null
   }),
   log: keyMirror({
     UPDATE_LOG: null

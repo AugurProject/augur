@@ -12,7 +12,7 @@ var MarketActions = {
     return function(property) {
 
       return function(value) {
-
+        
         var market = {'id': marketId};
         market[property] = value;
         self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});

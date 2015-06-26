@@ -65,13 +65,17 @@ var AugurApp = React.createClass({
 
   getLoadingProgress: function() {
 
-    var loadingProgress = (<span className="loading-text">loading...</span>);
+    var loadingProgress = <span/>;
 
     if (this.state.config.percentLoaded) {
 
       loadingProgress = (
         <ProgressBar now={ parseFloat(this.state.config.percentLoaded) } className='loading-progress' />
       );
+
+    } else if (this.state.network.blockChainAge && this.state.network.blockChainAge < constants.MAX_BLOCKCHAIN_AGE) {
+
+      loadingProgress = (<span className="loading-text">loading...</span>);
     }
 
     return loadingProgress
@@ -155,7 +159,8 @@ var ErrorModal = React.createClass({
 
     return {
       isModalOpen: false,
-      isLoading: false
+      isLoading: false,
+      startSecondsBehind: null
     }
   },
 
@@ -163,11 +168,17 @@ var ErrorModal = React.createClass({
 
     if (nextProps.network.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED ||
     nextProps.config.ethereumClientFailed === true) {
-      this.setState({ isModalOpen: true });
-    } else if (nextProps.network.blockChainAge > 300) {
-      utilities.warn('last block was '+ nextProps.network.blockChainAge + ' seconds old');
-      this.setState({ isModalOpen: true, isLoading: true });
+
+      // only open if we're not on the demo host
+      if (nextProps.config.host !== constants.DEMO_HOST) this.setState({ isModalOpen: true });
+
+    } else if (nextProps.network.blockChainAge > constants.MAX_BLOCKCHAIN_AGE) {
+
+      if (!this.state.isLoading) {
+        this.setState({ isModalOpen: true, isLoading: true, startSecondsBehind: nextProps.network.blockChainAge});
+      }
     } else {
+
       this.setState({ isModalOpen: false, isLoading: false });
     }
   },
@@ -211,6 +222,14 @@ var ErrorModal = React.createClass({
 
       var host = window.location.origin;
 
+      var demoMode = (
+        <p className="start-demo-mode">
+          Or <a onClick={ this.startDemoMode } href="javascript:void(0)">proceed in demo mode</a> (initial load time will be about 10-30 seconds)
+        </p>
+      );
+      // don't offer demo mode if already using demo rpc host
+      if (process.env.RPC_HOST === constants.DEMO_HOST) demoMode = <span/>;
+
       // no ethereum client detected
       return (
         <Modal {...this.props} id="no-eth-modal" onRequestHide={ this.handleToggle } backdrop='static'>
@@ -218,20 +237,34 @@ var ErrorModal = React.createClass({
               <h4>Failed to connect to Ethereum</h4>
               <p>Augur requires a local node of the Ethereum client running</p>
               <p>Visit <a href="https://github.com/ethereum/go-ethereum/wiki">the ethereum github wiki</a> for help installing the latest client</p>
-              <p>If geth is installed:<br /><span className='cmd'>geth --rpc --rpccorsdomain { host }  --shh --unlock primary</span></p>
-              <p style={{display: 'none'}}><a className="pull-right start-demo-mode" onClick={ this.startDemoMode } href="javascript:void(0)">Proceed in demo mode</a></p>
+              <p>If geth is installed:<br /><span className='cmd'>geth --rpc --rpccorsdomain { host } --shh --unlock primary</span></p>
+              { demoMode }
           </div>
         </Modal>
       );
 
     } else if (this.state.isLoading) {
 
+      var percentCaughtUp = ((this.state.startSecondsBehind - this.props.network.blockChainAge) / this.state.startSecondsBehind) * 100;
+      //console.log(this.state.startSecondsBehind, this.props.network.blockChainAge, percentCaughtUp);
+      var progressBar = (<ProgressBar striped active now={ 100 } className='loading-blocks-progress' />);
+      if (percentCaughtUp > 0) {
+        progressBar = (<ProgressBar now={ parseFloat(percentCaughtUp) } className='loading-blocks-progress' />);
+      }
+
+      var message = (<p>The Ethereum block chain is not current.  Looking for peers.</p>);
+      if (this.props.network.peerCount) {
+        var plural = this.props.network.peerCount === 1 ? '' : 's';
+        message = (<p>The Ethereum block chain is not current and is fetching blocks from <b>{ this.props.network.peerCount }</b> peer{ plural }</p>)
+      }
+
       // augur client is loading
       return (
         <Modal {...this.props} bsSize='small' onRequestHide={ this.handleToggle } backdrop='static'>
           <div className="modal-body clearfix">
               <h4>Ethereum loading</h4>
-              <p>The Ethereum block chain is not current and is fetching blocks from peers</p>
+              { message }
+              { progressBar }
           </div>
         </Modal>
       );

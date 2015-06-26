@@ -4,6 +4,7 @@ var constants = require('../libs/constants');
 var state = {
   host: process.env.RPC_HOST || 'localhost:8545',
   debug: false,
+  loaded: false,
   percentLoaded: null,
   ethereumClient: null
 }
@@ -14,7 +15,8 @@ var ConfigStore = Fluxxor.createStore({
       constants.config.UPDATE_ETHEREUM_CLIENT_SUCCESS, this.handleUpdateEthereumClientSuccess,
       constants.config.UPDATE_ETHEREUM_CLIENT_FAILED, this.handleUpdateEthereumClientFailed,
       constants.config.UPDATE_DEBUG, this.handleUpdateDebug,
-      constants.config.UPDATE_PERCENT_LOADED_SUCCESS, this.handleUpdatePercentLoadedSuccess
+      constants.config.UPDATE_PERCENT_LOADED_SUCCESS, this.handleUpdatePercentLoadedSuccess,
+      constants.config.LOAD_APPLICATION_DATA_SUCCESS, this.handleLoadApplicationDataSuccess
     );
   },
 
@@ -33,6 +35,7 @@ var ConfigStore = Fluxxor.createStore({
 
   handleUpdateEthereumClientSuccess: function (payload) {
     state.ethereumClient = payload.ethereumClient;
+    state.host = payload.host;
     state.ethereumClientFailed = false;
     this.emit(constants.CHANGE_EVENT);
   },
@@ -45,6 +48,11 @@ var ConfigStore = Fluxxor.createStore({
 
   handleUpdateDebug: function (payload) {
     state.debug = payload.debug;
+    this.emit(constants.CHANGE_EVENT);
+  },
+
+  handleLoadApplicationDataSuccess: function (payload) {
+    state.loaded = true;
     this.emit(constants.CHANGE_EVENT);
   }
 });
