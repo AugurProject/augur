@@ -35,7 +35,7 @@ var ConfigActions = {
   /**
    * Load all application data 
    */
-  loadApplicationData: function() {
+  initializeData: function() {
 
     this.flux.actions.branch.loadBranches();
     this.flux.actions.branch.setCurrentBranch();

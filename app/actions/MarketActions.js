@@ -28,8 +28,6 @@ var MarketActions = {
     var commands = [];
     var account = ethereumClient.account;
 
-    commands.push(['getDescription', [marketId], setProp('description')]);
-
     commands.push(['getMarketEvents', [marketId], function(events) {
 
       market['events'] = events;
@@ -58,21 +56,36 @@ var MarketActions = {
       self.flux.actions.market.updateMarket(market);
     }]);
 
-    commands.push(['getAlpha', [marketId], setProp('alpha')]);
     commands.push(['getCreator', [marketId], setProp('author')]);
     commands.push(['getCreationFee', [marketId], setProp('creationFee')]);
 
-    commands.push(['getCurrentParticipantNumber', [marketId], setProp('traderCount')]);
-    commands.push(['getTradingPeriod',[marketId], setProp('tradingPeriod')]);
-    commands.push(['getTradingFee', [marketId], setProp('tradingFee')]);
+    //commands.push(['getAlpha', [marketId], setProp('alpha')]);
+    //commands.push(['getTradingPeriod',[marketId], setProp('tradingPeriod')]);
+    //commands.push(['getTradingFee', [marketId], setProp('tradingFee')]);
+    //commands.push(['getCurrentParticipantNumber', [marketId], setProp('traderCount')]);
+
+    commands.push(['getDescription', [marketId], setProp('description')]);
+
     commands.push(['getParticipantNumber', [marketId, account], function(traderId) {
+
       market['traderId'] = traderId;
-      ethereumClient.getMarketNumOutcomes(marketId, function(numOutcomes) {
-        _.each(_.range(1, numOutcomes.toNumber() + 1), function (outcomeId) {
+
+      ethereumClient.getMarketInfo(marketId, function(result) {
+
+        market['traderCount'] = result[0];
+        market['alpha'] = utilities.fromFixedPoint(result[1])
+        market['tradingPeriod'] = result[4];
+        market['tradingFee'] = utilities.fromFixedPoint(result[5]);
+
+        _.each(_.range(1, result[3].toNumber() + 1), function (outcomeId) {
+
           ethereumClient.getMarketSharesPurchased(marketId, outcomeId, function(volume) {
+
             var sharesHeld = new BigNumber(0);
             if (traderId !== -1) sharesHeld = ethereumClient.getMarketParticipantSharesPurchased(marketId, traderId, outcomeId);
+
             ethereumClient.getPrice(marketId, outcomeId, function(price) {
+
               if (outcomeId === 2) market['price'] = price;  // hardcoded to outcome 2
               if (!market.outcomes) market['outcomes'] = [];
               market['outcomes'][outcomeId - 1] = {
@@ -86,6 +99,8 @@ var MarketActions = {
             });
           });
         });
+
+        self.flux.actions.market.updateMarket(market);
       });
     }]);
 

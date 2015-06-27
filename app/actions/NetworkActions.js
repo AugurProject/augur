@@ -46,6 +46,7 @@ var NetworkActions = {
 
       ethereumClient.connect();  // connect augur.js after web3 has determined the network is available :/
       this.flux.actions.network.initializeNetwork();
+      this.flux.actions.config.initializeData();
     }
 
     // check yo self
@@ -102,13 +103,6 @@ var NetworkActions = {
       ethereumClient.getHashrate(function(hashrate) {
         self.dispatch(constants.network.UPDATE_NETWORK, { hashrate: hashrate });
       });
-
-      // load all application data if the block chain is current
-      if (!configState.loaded) {
-
-        utilities.log('ethereum is current. loading Augur...');
-        this.flux.actions.config.loadApplicationData();
-      }
     }
   },
 

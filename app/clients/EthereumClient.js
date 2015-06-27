@@ -470,6 +470,14 @@ EthereumClient.prototype.getMarkets = function(branchId, currentMarkets) {
   }
 };
 
+EthereumClient.prototype.getMarketInfo = function(marketId, onResult) {
+  var contract = this.getContract('markets');
+  contract.getMarketInfo.call(marketId, function(error, result) {
+    if (error) { utilities.error(error) }
+    else { onResult(result) }
+  })
+};
+
 EthereumClient.prototype.getMarketEvents = function(marketId, onResult) {
   return Augur.getMarketEvents(marketId, onResult);
 };
