@@ -951,7 +951,7 @@ var Augur = (function (augur) {
                 port: 8545
             };
         }
-        start_price_listeners();
+        // start_price_listeners();
         try {
             if (JSON.stringify(augur.contracts) === JSON.stringify(augur.init_contracts)) {
                 if (chain) {
@@ -2870,15 +2870,16 @@ var Augur = (function (augur) {
                         tradingPeriod: augur.bignum(marketInfo[4]).toFixed(),
                         tradingFee: augur.unfix(marketInfo[5], "string")
                     };
-                    augur.getDescription(market, function (description) {
-                        if (description && description.constructor === String) {
-                            info.description = description;
-                        }
-                        // info.filter = augur.initComments(market);
-                        // info.eth_filter = augur.init_price_log(market);
-                        // info.price_history = augur.eth_getFilterLogs(info.eth_filter);
-                        onSent(info);
-                    });
+                    onSent(info);
+                    // augur.getDescription(market, function (description) {
+                    //     if (description && description.constructor === String) {
+                    //         info.description = description;
+                    //     }
+                    //     // info.filter = augur.initComments(market);
+                    //     // info.eth_filter = augur.init_price_log(market);
+                    //     // info.price_history = augur.eth_getFilterLogs(info.eth_filter);
+                    //     onSent(info);
+                    // });
                 }
             });
         } else {
@@ -2892,14 +2893,15 @@ var Augur = (function (augur) {
                     tradingPeriod: augur.bignum(marketInfo[4]).toFixed(),
                     tradingFee: augur.unfix(marketInfo[5], "string")
                 };
-                var description = augur.getDescription(market);
-                if (description && description.constructor === String) {
-                    info.description = description;
-                }
-                // info.filter = augur.initComments(market);
-                // info.eth_filter = augur.init_price_log(market);
-                // info.price_history = augur.eth_getFilterLogs(info.eth_filter);
                 return info;
+                // var description = augur.getDescription(market);
+                // if (description && description.constructor === String) {
+                //     info.description = description;
+                // }
+                // // info.filter = augur.initComments(market);
+                // // info.eth_filter = augur.init_price_log(market);
+                // // info.price_history = augur.eth_getFilterLogs(info.eth_filter);
+                // return info;
             }
         }
     };
