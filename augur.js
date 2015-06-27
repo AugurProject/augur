@@ -869,7 +869,7 @@ var Augur = (function (augur) {
             }, augur.ETH_POLL_INTERVAL);
         });
     };
-    function start_price_listeners() {
+    augur.start_price_listeners = function() {
         var filter, filter_types;
         filter_types = ["updatePrice", "pricePaid", "priceSold"];
         for (var i = 0, len = filter_types.length; i < len; ++i) {
@@ -894,7 +894,7 @@ var Augur = (function (augur) {
                 }
             }
         }
-    }
+    };
 
     /*******************************
      * Ethereum network connection *
@@ -951,7 +951,6 @@ var Augur = (function (augur) {
                 port: 8545
             };
         }
-        // start_price_listeners();
         try {
             if (JSON.stringify(augur.contracts) === JSON.stringify(augur.init_contracts)) {
                 if (chain) {

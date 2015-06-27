@@ -214,9 +214,9 @@ function postupload_tests_2(geth) {
     mocha.addFile(path.join(__dirname, "test_createMarket.js"));
     mocha.run(function (failures) {
         process.on("exit", function () { process.exit(failures); });
-        // setTimeout(function () {
-        //     postupload_tests_3(geth);
-        // }, 18000);
+        setTimeout(function () {
+            postupload_tests_3(geth);
+        }, 18000);
     });
 }
 
