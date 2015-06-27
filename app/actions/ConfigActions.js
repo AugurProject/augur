@@ -42,13 +42,14 @@ var ConfigActions = {
 
     this.flux.actions.asset.updateAssets();
     this.flux.actions.market.loadMarkets();
+
     this.flux.actions.report.loadEventsToReport();
     this.flux.actions.report.loadPendingReports();
 
     this.dispatch(constants.config.LOAD_APPLICATION_DATA_SUCCESS);
 
     // start monitoring new blocks
-    this.flux.actions.config.startMonitoring();
+    //this.flux.actions.config.startMonitoring();
   },
 
   startMonitoring: function() {

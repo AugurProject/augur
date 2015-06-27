@@ -6,19 +6,20 @@ var AssetActions = {
     
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var currentBranch = this.flux.store('branch').getCurrentBranch();
-    var self = this;
 
     ethereumClient.getCashBalance(function(result) {
-      self.dispatch(constants.asset.UPDATE_ASSETS, { cash: result });
-    });
-
-    ethereumClient.getRepBalance(currentBranch.id, function(result) {
-      self.dispatch(constants.asset.UPDATE_ASSETS, { reputation: result });
-    });
+      this.dispatch(constants.asset.UPDATE_ASSETS, { cash: result });
+    }.bind(this));
 
     ethereumClient.getEtherBalance(function(result) {
-      self.dispatch(constants.asset.UPDATE_ASSETS, { ether: result });
-    });
+      this.dispatch(constants.asset.UPDATE_ASSETS, { ether: result });
+    }.bind(this));
+
+    if (currentBranch) {
+      ethereumClient.getRepBalance(currentBranch.id, function(result) {
+        this.dispatch(constants.asset.UPDATE_ASSETS, { reputation: result });
+      }.bind(this));
+    }
   }
 };
 
