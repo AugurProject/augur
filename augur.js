@@ -2853,15 +2853,54 @@ var Augur = (function (augur) {
         to: augur.contracts.markets,
         method: "getMarketInfo",
         signature: "i",
-        returns: "mixed[]"
+        returns: "number[]"
     };
     augur.getMarketInfo = function (market, onSent) {
         // market: sha256 hash id
+        var tx = copy(augur.tx.getMarketInfo);
+        tx.params = market;
+        if (onSent) {
+            fire(tx, function (marketInfo) {
+                if (marketInfo) {
+                    if (augur.BigNumberOnly) {
+                        marketInfo[0] = augur.bignum(marketInfo[0]);
+                        marketInfo[1] = augur.unfix(marketInfo[1], "BigNumber");
+                        marketInfo[2] = augur.bignum(marketInfo[2]);
+                        marketInfo[3] = augur.bignum(marketInfo[3]);
+                        marketInfo[4] = augur.bignum(marketInfo[4]);
+                        marketInfo[5] = augur.unfix(marketInfo[5], "BigNumber");
+                    } else {
+                        marketInfo[1] = augur.unfix(marketInfo[1], "string");
+                        marketInfo[5] = augur.unfix(marketInfo[5], "string");
+                    }
+                    onSent(marketInfo);
+                }
+            });
+        } else {
+            var marketInfo = fire(tx);
+            if (marketInfo) {
+                if (augur.BigNumberOnly) {
+                    marketInfo[0] = augur.bignum(marketInfo[0]);
+                    marketInfo[1] = augur.unfix(marketInfo[1], "BigNumber");
+                    marketInfo[2] = augur.bignum(marketInfo[2]);
+                    marketInfo[3] = augur.bignum(marketInfo[3]);
+                    marketInfo[4] = augur.bignum(marketInfo[4]);
+                    marketInfo[5] = augur.unfix(marketInfo[5], "BigNumber");
+                } else {
+                    marketInfo[1] = augur.unfix(marketInfo[1], "string");
+                    marketInfo[5] = augur.unfix(marketInfo[5], "string");
+                }
+                return marketInfo;
+            }
+        }
+    };
+    augur.getMarketInfoObject = function (market, onSent) {
         augur.tx.getMarketInfo.params = market;
         if (onSent) {
             augur.invoke(augur.tx.getMarketInfo, function (marketInfo) {
+                var info;
                 if (marketInfo && marketInfo.length) {
-                    var info = {
+                    info = {
                         currentParticipant: augur.bignum(marketInfo[0]).toFixed(),
                         alpha: augur.unfix(marketInfo[1], "string"),
                         cumulativeScale: augur.bignum(marketInfo[2]).toFixed(),
