@@ -881,8 +881,8 @@ var Augur = (function (augur) {
             } else {
                 filter = augur.create_price_filter(filter_types[i]);
                 if (filter && filter !== "0x") {
-                    log("Create " + filter_types[i] + " filter:",
-                        chalk.green(filter));
+                    // log("Create " + filter_types[i] + " filter:",
+                    //     chalk.green(filter));
                     augur.price_filters[filter_types[i]] = {
                         filterId: filter,
                         polling: true
@@ -2874,7 +2874,7 @@ var Augur = (function (augur) {
                         if (description && description.constructor === String) {
                             info.description = description;
                         }
-                        info.filter = augur.initComments(market);
+                        // info.filter = augur.initComments(market);
                         // info.eth_filter = augur.init_price_log(market);
                         // info.price_history = augur.eth_getFilterLogs(info.eth_filter);
                         onSent(info);
@@ -2896,7 +2896,7 @@ var Augur = (function (augur) {
                 if (description && description.constructor === String) {
                     info.description = description;
                 }
-                info.filter = augur.initComments(market);
+                // info.filter = augur.initComments(market);
                 // info.eth_filter = augur.init_price_log(market);
                 // info.price_history = augur.eth_getFilterLogs(info.eth_filter);
                 return info;
