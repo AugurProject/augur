@@ -51,8 +51,7 @@ module.exports = {
     ADD_PENDING_MARKET_SUCCESS: null,
     ADD_MARKET_SUCCESS: null,
     DELETE_MARKET_SUCCESS: null,
-    MARKETS_LOADING: null,
-    MARKET_PAGE_LOADED: null
+    MARKETS_LOADING: null
   }),
   event: keyMirror({
     LOAD_EVENTS_SUCCESS: null,

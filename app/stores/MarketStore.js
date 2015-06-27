@@ -4,8 +4,8 @@ var _ = require('lodash');
 
 var state = {
   markets: {},
-  initialMarketIds: null,
-  remainingMarketIds: null
+  marketLoadingIds: null,
+  loadingPage: null
 };
 
 var MarketStore = Fluxxor.createStore({
@@ -17,28 +17,27 @@ var MarketStore = Fluxxor.createStore({
       constants.market.ADD_PENDING_MARKET_SUCCESS, this.handleAddPendingMarketSuccess,
       constants.market.ADD_MARKET_SUCCESS, this.handleAddMarketSuccess,
       constants.market.DELETE_MARKET_SUCCESS, this.handleDeleteMarketSuccess,
-      constants.market.MARKETS_LOADING, this.handleMarketsLoading,
-      constants.market.MARKET_PAGE_LOADED, this.handleMarketPageLoaded
+      constants.market.MARKETS_LOADING, this.handleMarketsLoading
     );
   },
 
   marketIsLoaded: function(marketId) {
 
-    var requiredProperties = ["id", "endDate", "description", "price"];
+    var requiredProperties = ["id", "description", "price", "endDate"];
     var loaded = _.intersection(_.keys(state.markets[marketId]), requiredProperties);
-    //console.log(loaded);
-    return loaded.length == requiredProperties.length;
+    if (loaded.length == requiredProperties.length) {
+      return true;
+    } else if (state.markets[marketId].invalid) {
+      return true;
+    } else {
+      return false;
+    }
   },
 
   handleMarketsLoading: function(payload) {
 
-    state.initialMarketIds = payload.initialMarketIds;
-    state.remainingMarketIds = payload.remainingMarketIds;
-  },
-
-  handleMarketPageLoaded: function(payload) {
-
-    state.initialMarketIds = null;
+    if (payload.marketLoadingIds) state.marketLoadingIds = payload.marketLoadingIds;
+    state.loadingPage = payload.loadingPage;
   },
 
   getState: function () {

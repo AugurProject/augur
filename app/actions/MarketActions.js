@@ -6,12 +6,13 @@ var MarketActions = {
 
   loadMarkets: function() {
 
+    var initialPage = 1;
+
     //var startMoment = moment();
     var currentBranch = this.flux.store('branch').getCurrentBranch();
     var ethereumClient = this.flux.store('config').getEthereumClient();
 
     var marketIds = ethereumClient.getMarkets(currentBranch.id);
-    var initialPage = 1;
 
     // initialize all markets
     var markets = {}
@@ -21,18 +22,14 @@ var MarketActions = {
     this.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {markets: markets});
 
     // breaks ids into pages
-    var marketPageIds = _.chunk(marketIds, constants.MARKETS_PER_PAGE);
-    var initialIds = marketPageIds[initialPage - 1];
+    var marketPageIds = _.chunk(marketIds, constants.MARKETS_PER_PAGE);  // load one page at a time
+    //var marketPageIds = [marketIds];   // load all at once
 
-    // remove initialIds from paged ids and flatten
-    marketPageIds.splice(initialPage - 1, 1);
-    var remainingIds = _.flatten(marketPageIds);
+    // setup page loading
+    this.dispatch(constants.market.MARKETS_LOADING, {marketLoadingIds: marketPageIds, loadingPage: initialPage});
 
-    // send remaining ids to store so we can load them after 
-    this.dispatch(constants.market.MARKETS_LOADING, {initialMarketIds: initialIds, remainingMarketIds: remainingIds});
-
-    // initial all markets
-    this.flux.actions.market.loadSomeMarkets(initialIds);
+    // load initial markets
+    this.flux.actions.market.loadSomeMarkets(marketPageIds[initialPage-1]);
   },
 
   loadNewMarkets: function() {
@@ -67,13 +64,12 @@ var MarketActions = {
         var market = this.flux.actions.market.initMarket(marketId);
         this.dispatch(constants.market.ADD_MARKET_SUCCESS, {market: market});
       }
-
       commands = commands.concat(this.flux.actions.market.batchMarket(marketId));
 
     }, this);
 
     // send batch in chunks
-    _.each(_.chunk(commands, 25), function(chunk) {
+    _.each(_.chunk(commands, 30), function(chunk) {
       ethereumClient.batch(chunk);
     });
   },
@@ -134,6 +130,8 @@ var MarketActions = {
       market['tradingPeriod'] = new BigNumber(result[4]);
       market['tradingFee'] = utilities.fromFixedPoint(new BigNumber(result[5]));
       
+      if (market['numOutcomes'] < 2) market['invalid'] = true;
+
       this.flux.actions.market.updateMarket(market);
 
       ethereumClient.getMarketTraderId(marketId, function(traderId) {
@@ -180,27 +178,39 @@ var MarketActions = {
 
     var marketState = this.flux.store('market').getState();
 
-    // check to see if we're in the initial page load state and do a page-has-loaded check if so
-    if (!marketState.initialMarketIds) return;
+    // initial markets loading
+    if (marketState.loadingPage) {
 
-    //console.log('checking if page is loaded');
+      // use this progressbar for all markets
+      //var totalLoaded = _.map(marketState.markets, 'loaded');
+      //var percentLoaded = (_.filter(totalLoaded).length / totalLoaded.length) * 100;
+      //this.flux.actions.config.updatePercentLoaded(percentLoaded);
 
-    var marketsWatching = _.filter(marketState.markets, function(market) {
-      return _.contains(marketState.initialMarketIds, market.id);
-    });
-    var loaded = _.map(marketsWatching, 'loaded');
+      var marketsPage = _.filter(marketState.markets, function(market) {
+        return _.contains(marketState.marketLoadingIds[marketState.loadingPage-1], market.id);
+      });
+      var pageLoaded = _.map(marketsPage, 'loaded');
 
-    //console.log('loaded', loaded);
+      // use this progress bar for initial page only
+      var percentLoaded = (_.filter(pageLoaded).length / pageLoaded.length) * 100;
+      this.flux.actions.config.updatePercentLoaded(percentLoaded);
 
-    if (loaded.length && !_.includes(loaded, false)) {
+      if (pageLoaded.length && !_.includes(pageLoaded, false)) {
 
-      //console.log('initial page is loaded');
-      this.dispatch(constants.market.MARKET_PAGE_LOADED)
-      this.flux.actions.market.loadSomeMarkets(marketState.remainingMarketIds);
+        // check if next page exists
+        var nextPage = marketState.loadingPage + 1;
+        if (marketState.marketLoadingIds[nextPage-1]) {
+
+          this.dispatch(constants.market.MARKETS_LOADING, {loadingPage: nextPage});
+          this.flux.actions.market.loadSomeMarkets(marketState.marketLoadingIds[nextPage-1]);
+
+        } else {
+
+          this.dispatch(constants.market.MARKETS_LOADING, {loadingPage: null});
+          this.flux.actions.config.updatePercentLoaded(100);
+        }
+      }
     }
-
-    var percentLoaded = (_.remove(loaded).length / constants.MARKETS_PER_PAGE) * 100;
-    this.flux.actions.config.updatePercentLoaded(percentLoaded);
   },
 
   // return a skeleton market (TODO: let's move to a market class!)
