@@ -73,7 +73,7 @@ var MarketActions = {
     }, this);
 
     // send batch in chunks
-    _.each(_.chunk(commands, 10), function(chunk) {
+    _.each(_.chunk(commands, 25), function(chunk) {
       ethereumClient.batch(chunk);
     });
   },
@@ -83,18 +83,28 @@ var MarketActions = {
     var setProp = this.flux.actions.market.getMarketSetter(marketId);
     var commands = [];
     var account = ethereumClient.account;
+    var market = {id: marketId, outcomes: []};
+
+    commands.push(['getCreator', [marketId], setProp('creationFee')]);
+    commands.push(['getCreationFee', [marketId], setProp('creationFee')]);
+    commands.push(['getDescription', [marketId], setProp('description')]);
 
     commands.push(['getMarketEvents', [marketId], function(events) {
 
-      var market = {id: marketId, events: events };
+      market['events'] = events;
 
       // calc end date from first event expiration
       if (events.length) {
+
         ethereumClient.getEventExpiration(market.events[0], function(expirationBlock) {
+
           market['endDate'] = utilities.blockToDate(expirationBlock.toNumber());
           this.flux.actions.market.updateMarket(market);
+
         }.bind(this));
+
       } else {
+
         market['invalid'] = true
       }
 
@@ -110,44 +120,49 @@ var MarketActions = {
 
     }.bind(this)]);
 
-    commands.push(['getCreationFee', [marketId], setProp('creationFee')]);
-    commands.push(['getDescription', [marketId], setProp('description')]);
-    commands.push(['getParticipantNumber', [marketId, account], setProp('traderId')]) ;
-    commands.push(['getCreator', [marketId], setProp('author')]);
-
     commands.push(['getMarketInfo', [marketId], function(result) {
 
-      console.log(result);
-      var market = {id: marketId, comments: []};
+      //console.log(result);
       market['traderCount'] = new BigNumber(result[0]);
       market['alpha'] = utilities.fromFixedPoint(new BigNumber(result[1]));
-      market['numOutcomes'] = new BigNumber(result[2]);
+      market['numOutcomes'] = parseInt(result[3]);
       market['tradingPeriod'] = new BigNumber(result[4]);
       market['tradingFee'] = utilities.fromFixedPoint(new BigNumber(result[5]));
+      
+      this.flux.actions.market.updateMarket(market);
 
-      // populate outcome data
-      _.each(_.range(1, market.numOutcomes.toNumber() + 1), function (outcomeId) {
+      ethereumClient.getMarketTraderId(marketId, function(traderId) {
 
-        market['outcomes'][outcomeId - 1] = {id: outcomeId};
+        // populate outcome data
+        _.each(_.range(1, market.numOutcomes+1), function (outcomeId) {
 
-        ethereumClient.getMarketTraderId(marketId, function(traderId) {
+          market['outcomes'][outcomeId-1] = {id: outcomeId, sharesHeld: new BigNumber(0)};
+          market['outcomes'][outcomeId-1]['priceHistory'] = []  // NEEDED
+          market['outcomes'][outcomeId-1]['volume'] = 0;
 
-          var sharesHeld = new BigNumber(0);
-          if (traderId !== -1) ethereumClient.getMarketParticipantSharesPurchased(marketId, traderId, outcomeId), function(sharesHeld) {
-            market['outcomes'][outcomeId - 1][sharesHeld] = sharesHeld;
+          this.flux.actions.market.updateMarket(market);
+
+          if (traderId !== -1) {
+
+            ethereumClient.getMarketParticipantSharesPurchased(marketId, traderId, outcomeId, function(sharesHeld) {
+
+              market['outcomes'][outcomeId-1]['sharesHeld'] = sharesHeld;
+              this.flux.actions.market.updateMarket(market);
+
+            }.bind(this));
           }
-          this.flux.actions.market.updateMarket(market);
-        });
 
-        ethereumClient.getPrice(marketId, outcomeId, function(price) {
+          ethereumClient.getPrice(marketId, outcomeId, function(price) {
 
-          if (outcomeId === 2) market['price'] = price;  // hardcoded to outcome 2 (yes)
-          market['outcomes'][outcomeId - 1][price] = price;
-          market['outcomes'][outcomeId - 1][priceHistory] = []  // NEEDED
+            if (outcomeId === 2) market['price'] = price;  // hardcoded to outcome 2 (yes)
+            market['outcomes'][outcomeId-1]['price'] = price;
+            this.flux.actions.market.updateMarket(market);
 
-          this.flux.actions.market.updateMarket(market);
-        });
-      }, this);
+          }.bind(this));
+
+        }, this);
+
+      }.bind(this));
 
     }.bind(this)]);
 
@@ -170,7 +185,7 @@ var MarketActions = {
     });
     var loaded = _.map(marketsWatching, 'loaded');
 
-    console.log('loaded', loaded);
+    //console.log('loaded', loaded);
 
     if (loaded.length && !_.includes(loaded, false)) {
 

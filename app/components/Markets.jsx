@@ -34,8 +34,6 @@ var MarketPane = React.createClass({
   render: function() {
 
     var market = this.props.market;
-
-    if (market.outcomes && !market.outcomes.length) market.invalid = true;
     if (this.props.currentBranch && this.props.currentBranch.currentPeriod >= market.tradingPeriod) market.matured = true;
 
     var volume =_.reduce(market.outcomes, function(volume, outcome) {

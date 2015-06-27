@@ -511,7 +511,7 @@ EthereumClient.prototype.getPrice = function(marketId, outcomeId, onResult) {
 
   return Augur.price(marketId, outcomeId, onResult);
 };
-
+                         
 EthereumClient.prototype.getMarketParticipantSharesPurchased = function(marketId, traderId, outcomeId, onResult) {
 
   return Augur.getParticipantSharesPurchased(marketId, traderId, outcomeId, onResult);
@@ -523,7 +523,7 @@ EthereumClient.prototype.getMarketWinningOutcomes = function(marketId, onResult)
 };
 
 EthereumClient.prototype.getEventOutcome = function(eventId, onResult) {
-  
+
   return Augur.getOutcome(eventId, onResult);
 };
 

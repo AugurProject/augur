@@ -24,9 +24,9 @@ var MarketStore = Fluxxor.createStore({
 
   marketIsLoaded: function(marketId) {
 
-    var requiredProperties = ["id", "description", "comments", "events", "traderId"];
+    var requiredProperties = ["id", "endDate", "description", "price"];
     var loaded = _.intersection(_.keys(state.markets[marketId]), requiredProperties);
- 
+    //console.log(loaded);
     return loaded.length == requiredProperties.length;
   },
 
@@ -79,8 +79,7 @@ var MarketStore = Fluxxor.createStore({
       var updatedMarket = _.merge(state.markets[payload.market.id], payload.market);
       updatedMarket.loaded = this.marketIsLoaded(payload.market.id);
       state.markets[payload.market.id] = updatedMarket;
-      console.log(updatedMarket.toString(16));
-      console.log(updatedMarket);
+      //console.log(updatedMarket);
     } else {
       //console.log('market', payload.market.id, 'not found.  creating...');
       state.markets[payload.market.id] = payload.market;
