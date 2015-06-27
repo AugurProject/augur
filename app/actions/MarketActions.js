@@ -83,9 +83,8 @@ var MarketActions = {
     var setProp = this.flux.actions.market.getMarketSetter(marketId);
     var commands = [];
     var account = ethereumClient.account;
-    var market = {id: marketId, outcomes: []};
+    var market = {id: marketId, outcomes: [], comments: []};
 
-    commands.push(['getCreator', [marketId], setProp('creationFee')]);
     commands.push(['getCreationFee', [marketId], setProp('creationFee')]);
     commands.push(['getDescription', [marketId], setProp('description')]);
 
@@ -107,6 +106,12 @@ var MarketActions = {
 
         market['invalid'] = true
       }
+
+      // batch version no worky
+      ethereumClient.getMarketAuthor(marketId, function(author) {
+          market['author'] = author;
+          this.flux.actions.market.updateMarket(market);  
+      }.bind(this));
 
       // assumming one event per market
       //ethereumClient.getMarketWinningOutcomes(marketId, function(result) {

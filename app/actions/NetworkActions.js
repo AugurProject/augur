@@ -50,7 +50,7 @@ var NetworkActions = {
     }
 
     // check yo self
-    //setTimeout(this.flux.actions.network.checkNetwork, 3000);
+    setTimeout(this.flux.actions.network.checkNetwork, 3000);
   },
 
   initializeNetwork: function() {
@@ -58,7 +58,7 @@ var NetworkActions = {
     this.flux.actions.network.updateNetwork();
 
     // start monitoring for updates
-    //this.flux.actions.network.startMonitoring();
+    this.flux.actions.network.startMonitoring();
   },
 
   updateNetwork: function () {

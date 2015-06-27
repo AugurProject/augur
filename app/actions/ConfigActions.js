@@ -49,7 +49,7 @@ var ConfigActions = {
     this.dispatch(constants.config.LOAD_APPLICATION_DATA_SUCCESS);
 
     // start monitoring new blocks
-    //this.flux.actions.config.startMonitoring();
+    this.flux.actions.config.startMonitoring();
   },
 
   startMonitoring: function() {
