@@ -278,6 +278,7 @@ nav.header .menu li a {
     border: none;
     -webkit-box-shadow: none;
     margin-top: 15px;
+    color: #777;
 }
 .network .panel-body,
 .network .panel-heading {
