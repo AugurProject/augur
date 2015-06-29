@@ -34,10 +34,6 @@ var SendCashModal = React.createClass({
 
       this.state.ethereumClient.sendCash(this.state.destination, this.state.amount, function(result) {
         console.log(result);
-      }, function(result) {
-        console.log(result);
-      }, function(result) {
-        console.log(result);
       });
 
       this.props.onRequestHide();

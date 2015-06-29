@@ -5,7 +5,7 @@ var TransactionActions = {
 	
   addTransaction: function(txHash) {
 
-	this.dispatch(constants.transaction.ADD_TRANSACTION, {txHash: txHash});
+    this.dispatch(constants.transaction.ADD_TRANSACTION, {txHash: txHash});
   },
 
   onPendingTx: function(txHash) {

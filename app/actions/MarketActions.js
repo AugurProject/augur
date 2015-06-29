@@ -114,11 +114,35 @@ var MarketActions = {
     var commands = [];
     var account = ethereumClient.account;
 
-    // calc end date from first event expiration
+    // populate outcome data
+    _.each(market.outcomes, function (outcome) {
+
+      commands.push(['price', [market.id, outcome.id], function(price) {
+
+        if (outcome.id === 2) market['price'] = price;  // hardcoded to outcome 2 (yes)
+        outcome['price'] = price;
+
+        this.flux.actions.market.updateMarket(market, true);
+
+      }.bind(this)]);
+
+      if (market.traderId !== -1) {
+
+        commands.push(['getParticipantSharesPurchased', [market.id, market.traderId, outcome.id], function(result) {
+
+          outcome['sharesHeld'] = result;
+          this.flux.actions.market.updateMarket(market, true);
+
+        }.bind(this)]);
+      }
+      
+    }, this);
+    
     if (market.events.length) {
 
       commands.push(['getEventInfo', [market.events[0]], function(eventInfo) {
 
+        // calc end date from first event expiration
         if (eventInfo[1]) {
           var experationBlock = utilities.fromFixedPoint(new BigNumber(eventInfo[1]));
           market['endDate'] = utilities.blockToDate(experationBlock.toNumber());
@@ -148,30 +172,6 @@ var MarketActions = {
 
       market['invalid'] = true
     }
-
-    // populate outcome data
-    _.each(market.outcomes, function (outcome) {
-
-      commands.push(['price', [market.id, outcome.id], function(price) {
-
-        if (outcome.id === 2) market['price'] = price;  // hardcoded to outcome 2 (yes)
-        outcome['price'] = price;
-
-        this.flux.actions.market.updateMarket(market, true);
-
-      }.bind(this)]);
-
-      if (market.traderId !== -1) {
-
-        commands.push(['getParticipantSharesPurchased', [market.id, market.traderId, outcome.id], function(result) {
-
-          outcome['sharesHeld'] = result;
-          this.flux.actions.market.updateMarket(market, true);
-
-        }.bind(this)]);
-      }
-      
-    }, this);
 
     return commands;
   },
