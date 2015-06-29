@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 GLOBAL.BigNumber = require('bignumber.js');
 GLOBAL.keccak_256 = require('js-sha3').keccak_256;
 GLOBAL.XHR2 = require('xhr2');

@@ -59,11 +59,6 @@ describe("Ethereum JSON-RPC", function () {
             assert.equal(Augur.db("getString", ["augur_test_DB", "boomkey"]), "boom!");
         });
     });
-    describe("shh_version", function () {
-        it("should be version 2", function () {
-            assert.equal(Augur.shh("version"), "2");
-        });
-    });
     describe("gasPrice", function () {
         it("should be > 0", function () {
             assert(parseInt(Augur.gasPrice()) >= 0);

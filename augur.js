@@ -374,7 +374,7 @@ var Augur = (function (augur) {
         }
         return n;
     };
-    augur.bignum = function (n, compact) {
+    augur.bignum = function (n, encoding, compact) {
         var bn, len;
         if (n !== null && n !== undefined && n !== "0x") {
             if (n.constructor === Number) {
@@ -416,6 +416,15 @@ var Augur = (function (augur) {
                 var cbn = bn.sub(augur.MAXBITS);
                 if (bn.toString(16).length > cbn.toString(16).length) {
                     bn = cbn;
+                }
+            }
+            if (bn && encoding) {
+                if (encoding === "number") {
+                    bn = bn.toNumber();
+                } else if (encoding === "string") {
+                    bn = bn.toFixed();
+                } else if (encoding === "hex") {
+                    bn = bn.toString(16);
                 }
             }
             return bn;
@@ -601,7 +610,7 @@ var Augur = (function (augur) {
      * Parse Ethereum response JSON *
      ********************************/
 
-    function parse_array(string, returns, stride, init) {
+    augur.parse_array = function (string, returns, stride, init) {
         var elements, array, position;
         if (string.length >= 66) {
             stride = stride || 64;
@@ -639,12 +648,12 @@ var Augur = (function (augur) {
             // expected array, got scalar error code
             return string;
         }
-    }
+    };
     function format_result(returns, result) {
         returns = returns.toLowerCase();
         if (result && result !== "0x") {
             if (returns && returns.slice(-2) === "[]") {
-                result = parse_array(result, returns);
+                result = augur.parse_array(result, returns);
             } else if (returns === "string") {
                 result = augur.decode_hex(result, true);
             } else {
@@ -705,6 +714,7 @@ var Augur = (function (augur) {
                     len = response.length;
                     results = new Array(len);
                     for (var i = 0; i < len; ++i) {
+                        results[i] = response[i].result;
                         if (response.error) {
                             console.error(
                                 "[" + response.error.code + "]",
@@ -765,6 +775,7 @@ var Augur = (function (augur) {
         } else {
             returns = strip_returns(command);
         }
+        // log(JSON.stringify(command, null, 2));
         if (NODE_JS) {
             // asynchronous if callback exists
             if (callback && callback.constructor === Function) {
@@ -835,8 +846,8 @@ var Augur = (function (augur) {
     augur.eth_newFilter = function (params, f) {
         return json_rpc(postdata("newFilter", params), f);
     };
-    augur.create_price_filter = function (market, f) {
-        return augur.eth_newFilter({ topics: [ market ]}, f);
+    augur.create_price_filter = function (label, f) {
+        return augur.eth_newFilter({ topics: [ label ]}, f);
     };
     augur.eth_getFilterChanges = function (filter, f) {
         return json_rpc(postdata("getFilterChanges", filter), f);
@@ -850,48 +861,68 @@ var Augur = (function (augur) {
     augur.eth_uninstallFilter = function (filter, f) {
         return json_rpc(postdata("uninstallFilter", filter), f);
     };
-    // augur.getMarketPriceHistory = function (market, outcome, f) {
-        // [...{price: BigNumber, timestamp: moment or Date}...]
+    // augur.getMarketPriceHistory = function (market_id, outcome_id, f) {
+    //     if (market_id) {
+    //         filterId = augur.price_filters[filter].filterId;
+    //         log("Polling filter " + chalk.green(filterId) + "...");
+    //         augur.eth_getFilterChanges(filterId, function (message) {
+    //             if (message) {
+    //                 var num_messages = message.length;
+    //                 if (num_messages) {
+    //                     for (var i = 0; i < num_messages; ++i) {
+    //                         var data_array = augur.parse_array(message[i].data);
+    //                         var unfix_type = (augur.BigNumberOnly) ? "BigNumber" : "string";
+    //                         var data = {
+    //                             origin: data_array[0],
+    //                             marketId: data_array[1],
+    //                             outcome: Augur.bignum(data_array[2], "string"),
+    //                             price: Augur.unfix(data_array[3], unfix_type)
+    //                         };
+    //                         log(data);
+    //                     }
+    //                 }
+    //             }
+    //         });
+    //     }
     // };
-    augur.poll_eth_filter = function (filter) {
-        augur.eth_getFilterChanges(filter, function (message) {
-            // log("Polling filter " + chalk.green(filter) + "...");
+    augur.poll_eth_listener = function (filter_name, onMessage) {
+        var filterId = augur.price_filters[filter_name].filterId;
+        augur.eth_getFilterChanges(filterId, function (message) {
             if (message) {
                 var num_messages = message.length;
                 if (num_messages) {
                     for (var i = 0; i < num_messages; ++i) {
-                        log(chalk.cyan(JSON.stringify(message, null, 2)));
+                        var data_array = augur.parse_array(message[i].data);
+                        var unfix_type = (augur.BigNumberOnly) ? "BigNumber" : "string";
+                        onMessage({
+                            origin: data_array[0],
+                            marketId: data_array[1],
+                            outcome: Augur.bignum(data_array[2], unfix_type),
+                            price: Augur.unfix(data_array[3], unfix_type)
+                        });
                     }
                 }
             }
-            setTimeout(function () {
-                augur.poll_eth_filter(filter);
-            }, augur.ETH_POLL_INTERVAL);
         });
     };
-    augur.start_price_listeners = function() {
-        var filter, filter_types;
-        filter_types = ["updatePrice", "pricePaid", "priceSold"];
-        for (var i = 0, len = filter_types.length; i < len; ++i) {
-            if (augur.price_filters[filter_types[i]] &&
-                augur.price_filters[filter_types[i]].filterId) {
-                filter = augur.price_filters[filter_types[i]].filterId;
-                log(filter_types[i] + " filter found:", chalk.green(filter));
-                augur.poll_eth_filter(filter);
+    augur.start_eth_listener = function (filter_name, callback) {
+        var filter_id;
+        if (augur.price_filters[filter_name] &&
+            augur.price_filters[filter_name].filterId) {
+            filter_id = augur.price_filters[filter_name].filterId;
+            log(filter_name + " filter found:", chalk.green(filter_id));
+        } else {
+            filter_id = augur.create_price_filter(filter_name);
+            if (filter_id && filter_id !== "0x") {
+                log("Create " + filter_name + " filter:", chalk.green(filter_id));
+                augur.price_filters[filter_name] = {
+                    filterId: filter_id,
+                    polling: false
+                };
+                if (callback) callback(filter_id);
             } else {
-                filter = augur.create_price_filter(filter_types[i]);
-                if (filter && filter !== "0x") {
-                    // log("Create " + filter_types[i] + " filter:",
-                    //     chalk.green(filter));
-                    augur.price_filters[filter_types[i]] = {
-                        filterId: filter,
-                        polling: true
-                    };
-                    augur.poll_eth_filter(filter);
-                } else {
-                    log("Couldn't create " + filter_types[i] + " filter:",
-                        chalk.green(filter));
-                }
+                log("Couldn't create " + filter_name + " filter:",
+                    chalk.green(filter_id));
             }
         }
     };
@@ -1130,7 +1161,8 @@ var Augur = (function (augur) {
     };
 
     // hex-encode a function's ABI data and return it
-    augur.abi_data = augur.encode_abi = function (tx) {
+    augur.abi_data = augur.encode_abi = function (itx) {
+        var tx = copy(itx);
         tx.signature = tx.signature || "";
         var stat, statics = '';
         var dynamic, dynamics = '';
@@ -1265,9 +1297,9 @@ var Augur = (function (augur) {
                 packaged = {
                     from: tx.from || augur.coinbase,
                     to: tx.to,
-                    data: data_abi,
-                    returns: tx.returns
+                    data: data_abi
                 };
+                if (tx.returns) packaged.returns = tx.returns;
                 invocation = (tx.send) ? this.sendTx : this.call;
                 invoked = true;
                 return invocation(packaged, f);
@@ -1328,9 +1360,9 @@ var Augur = (function (augur) {
                     packaged = {
                         from: tx.from || augur.coinbase,
                         to: tx.to,
-                        data: data_abi,
-                        returns: tx.returns
+                        data: data_abi
                     };
+                    if (tx.returns) packaged.returns = tx.returns;
                     invocation = (tx.send) ? "sendTransaction" : "call";
                     rpclist[i] = postdata(invocation, packaged);
                 } else {
@@ -1411,7 +1443,7 @@ var Augur = (function (augur) {
                     message: augur.ERRORS[response]
                 };
             } else {
-                if (tx.returns !== "string" || (response.constructor === String && response.slice(0,2) === "0x")) {
+                if (tx.returns && tx.returns !== "string" || (response.constructor === String && response.slice(0,2) === "0x")) {
                     var response_number = augur.bignum(response);
                     if (response_number) {
                         response_number = augur.bignum(response).toFixed();

@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "0.6.23",
+  "version": "0.6.24",
   "description": "Augur JavaScript API",
   "main": "augur.js",
   "scripts": {
@@ -10,6 +10,7 @@
   "dependencies": {
     "bignumber.js": "^2.0.7",
     "chalk": "^1.0.0",
+    "ethereumjs-lib": "^0.3.1",
     "js-sha3": "^0.2.0",
     "moment": "^2.10.3",
     "xhr2": "^0.1.2"
