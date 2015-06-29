@@ -20,24 +20,19 @@ var market_id = markets[markets.length - 1];
 var outcome = "2";
 var amount = "10";
 
-// describe("updatePrice listener", function () {
-//     it("should return data on buyShares", function (done) {
-        // this.timeout(TIMEOUT);
+describe("updatePrice listener", function () {
+    it("should return data on buyShares", function (done) {
+        this.timeout(TIMEOUT);
         Augur.start_eth_listener("updatePrice", function (filter_id) {
             var listener = setInterval(function () {
                 Augur.poll_eth_listener("updatePrice", function (data) {
-                    log(data);
-                    clearInterval(listener);
-                    // done();
+                    if (data) {
+                        log(data);
+                        clearInterval(listener);
+                        done();
+                    }
                 });
             }, 2000);
-            // require('./buyShares');
-            log({
-                branchId: branch,
-                marketId: market_id,
-                outcome: outcome,
-                amount: amount
-            });
             setTimeout(function () {
                 Augur.buyShares({
                     branchId: branch,
@@ -48,7 +43,7 @@ var amount = "10";
 
                     },
                     onSuccess: function (r) {
-                        log("boom");
+                        log(r);
                     },
                     onFailed: function (r) {
                         throw(r.message);
@@ -56,8 +51,8 @@ var amount = "10";
                 });
             }, 2000);
         });
-    // });
-// });
+    });
+});
 
 // var log = console.log;
 

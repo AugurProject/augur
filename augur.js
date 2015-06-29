@@ -723,6 +723,9 @@ var Augur = (function (augur) {
                         } else if (response[i].result !== undefined) {
                             if (returns[i]) {
                                 results[i] = format_result(returns[i], response[i].result);
+                            } else {
+                                results[i] = remove_leading_zeros(results[i]);
+                                results[i] = augur.prefix_hex(results[i]);
                             }
                         }
                     }
@@ -775,7 +778,6 @@ var Augur = (function (augur) {
         } else {
             returns = strip_returns(command);
         }
-        // log(JSON.stringify(command, null, 2));
         if (NODE_JS) {
             // asynchronous if callback exists
             if (callback && callback.constructor === Function) {
@@ -890,6 +892,7 @@ var Augur = (function (augur) {
         augur.eth_getFilterChanges(filterId, function (message) {
             if (message) {
                 var num_messages = message.length;
+                log(message);
                 if (num_messages) {
                     for (var i = 0; i < num_messages; ++i) {
                         var data_array = augur.parse_array(message[i].data);
