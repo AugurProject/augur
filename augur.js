@@ -872,10 +872,17 @@ var Augur = (function (augur) {
             for (var i = 0, len = logs.length; i < len; ++i) {
                 parsed = augur.parse_array(logs[i].data);
                 if (augur.bignum(parsed[1]).eq(augur.bignum(market_id)) && augur.bignum(parsed[2]).eq(augur.bignum(outcome_id))) {
-                    price_logs.push({
-                        price: augur.unfix(parsed[3], unfix_type),
-                        blockNumber: logs[i].blockNumber
-                    });
+                    if (augur.BigNumberOnly) {
+                        price_logs.push({
+                            price: augur.unfix(parsed[3], unfix_type),
+                            blockNumber: augur.bignum(logs[i].blockNumber)
+                        });
+                    } else {
+                        price_logs.push({
+                            price: augur.unfix(parsed[3], unfix_type),
+                            blockNumber: logs[i].blockNumber
+                        });
+                    }
                 }
             }
             return price_logs;
