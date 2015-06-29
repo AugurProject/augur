@@ -20,19 +20,9 @@ var ConfigActions = {
     var ethereumClient = window.ethereumClient = new EthereumClient(clientParams);
 
     this.dispatch(constants.config.UPDATE_ETHEREUM_CLIENT_SUCCESS, {
-      ethereumClient: ethereumClient
+      ethereumClient: ethereumClient,
+      host: host || configState.host
     });
-
-    // update market when a price change has been detected
-    var self = this;
-    ethereumClient.watchTrades(function(result) {
-
-      if (result.args && result.args.market) {
-        var marketId = result.args.market.plus(new BigNumber(2).toPower(256));
-        utilities.log('updating market ' + marketId.toString(16));
-        self.flux.actions.market.loadMarket(marketId);
-      }
-    })
   },
 
   updatePercentLoaded: function(percent) {
@@ -42,12 +32,71 @@ var ConfigActions = {
     });
   },
 
+  /**
+   * Load all application data 
+   */
+  initializeData: function() {
+
+    this.flux.actions.branch.loadBranches();
+    this.flux.actions.branch.setCurrentBranch();
+
+    this.flux.actions.asset.updateAssets();
+    this.flux.actions.market.loadMarkets();
+
+    this.flux.actions.report.loadEventsToReport();
+    this.flux.actions.report.loadPendingReports();
+
+    this.dispatch(constants.config.LOAD_APPLICATION_DATA_SUCCESS);
+
+    // start monitoring new blocks
+    this.flux.actions.config.startMonitoring();
+  },
+
+  startMonitoring: function() {
+
+    var ethereumClient = this.flux.store('config').getEthereumClient();
+    var self = this;
+
+    ethereumClient.onNewBlock(function(blockHash) {
+
+      self.flux.actions.asset.updateAssets();
+      self.flux.actions.market.loadNewMarkets();
+
+      // We pull the branch's block-dependent period information from
+      // contract calls that need to be called each block.
+      self.flux.actions.branch.updateCurrentBranch();
+
+      // TODO: We can skip loading events to report if the voting period hasn't changed.
+      self.flux.actions.report.loadEventsToReport();
+      self.flux.actions.branch.checkQuorum();
+
+      self.flux.actions.report.submitQualifiedReports();
+
+    });
+
+    // update market when a price change has been detected
+    ethereumClient.onMarketChange(function(marketId) {
+
+      if (marketId) {
+
+        // augur.js market ids are differnt from web3 :/
+        if (marketId < new BigNumber(2).toPower(255)) {
+          marketId = marketId.plus(new BigNumber(2).toPower(256));
+        }
+
+        utilities.log('updating market ' + marketId.toString(16));
+        self.flux.actions.market.loadMarket(marketId);
+      }
+    });
+
+    // start watching for augur transactions
+    ethereumClient.onAugurTx(this.flux.actions.transaction.onAugurTx);
+  },
+
   initializeState: function() {
 
     this.flux.actions.config.updateEthereumClient();
     this.flux.actions.network.checkNetwork();
-
-    this.flux.actions.config.updatePercentLoaded(100);
   }
 };
 

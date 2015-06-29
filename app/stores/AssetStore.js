@@ -11,7 +11,7 @@ var AssetStore = Fluxxor.createStore({
   
   initialize: function () {
     this.bindActions(
-      constants.asset.LOAD_ASSETS_SUCCESS, this.handleLoadAssetsSuccess
+      constants.asset.UPDATE_ASSETS, this.handleUpdateAssets
     );
   },
 
@@ -19,10 +19,8 @@ var AssetStore = Fluxxor.createStore({
     return state;
   },
 
-  handleLoadAssetsSuccess: function (payload) {
-    state.cash = payload.cash;
-    state.ether = payload.ether;
-    state.reputation = payload.reputation;
+  handleUpdateAssets: function (payload) {
+    state = _.merge(state, payload);
     this.emit(constants.CHANGE_EVENT);
   }
 });

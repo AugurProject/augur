@@ -44,90 +44,75 @@ var NetworkActions = {
         }
       );
 
-      this.flux.actions.network.loadEverything();
+      ethereumClient.connect();  // connect augur.js after web3 has determined the network is available :/
+      this.flux.actions.network.initializeNetwork();
+      this.flux.actions.config.initializeData();
     }
 
     // check yo self
     setTimeout(this.flux.actions.network.checkNetwork, 3000);
   },
 
-  updateNetwork: function () {
+  initializeNetwork: function() {
 
-    var ethereumClient = this.flux.store('config').getEthereumClient();
-    var self = this;
-
-    ethereumClient.getAccounts(function(accounts) {
-      self.dispatch(constants.network.UPDATE_NETWORK, { accounts: accounts });
-    });
-    ethereumClient.getPrimaryAccount(function(account) {
-      self.dispatch(constants.network.UPDATE_NETWORK, { primaryAccount: account });
-    });
-    ethereumClient.getPeerCount(function(peerCount) {
-      self.dispatch(constants.network.UPDATE_NETWORK, { peerCount: peerCount });
-    });
-    ethereumClient.getBlockNumber(function(blockNumber) {
-      var blockMoment = utilities.blockToDate(blockNumber);
-      self.dispatch(constants.network.UPDATE_NETWORK, { blockNumber: blockNumber, blocktime: blockMoment });
-    });
-    ethereumClient.getGasPrice(function(gasPrice) {
-      self.dispatch(constants.network.UPDATE_NETWORK, { gasPrice: gasPrice });
-    });
-    ethereumClient.getMining(function(mining) {
-      self.dispatch(constants.network.UPDATE_NETWORK, { mining: mining });
-    });
-    ethereumClient.getHashrate(function(hashrate) {
-      self.dispatch(constants.network.UPDATE_NETWORK, { hashrate: hashrate });
-    });
-
-    var blockChainAge = ethereumClient.blockChainAge();
-    this.dispatch(constants.network.UPDATE_BLOCK_CHAIN_AGE, { blockChainAge: blockChainAge });
-  },
-
-  /**
-   * Load all of the application's data, particularly during initialization.
-   */
-  loadEverything: function () {
-
-    this.flux.actions.config.updateEthereumClient();
     this.flux.actions.network.updateNetwork();
-
-    this.flux.actions.branch.loadBranches();
-    this.flux.actions.branch.setCurrentBranch();
-
-    this.flux.actions.asset.loadAssets();
-    this.flux.actions.market.loadMarkets();
-    this.flux.actions.report.loadEventsToReport();
-    this.flux.actions.report.loadPendingReports();
 
     // start monitoring for updates
     this.flux.actions.network.startMonitoring();
   },
 
-  /**
-   * Update data that should change over time in the UI.
-   */
-  onNewBlock: function () {
+  updateNetwork: function () {
 
-    this.flux.actions.network.updateNetwork();
-    this.flux.actions.asset.loadAssets();
-    this.flux.actions.market.loadNewMarkets();
+    var configState = this.flux.store('config').getState();
+    var networkState = this.flux.store('network').getState();
+    var branchState = this.flux.store('branch').getState();
+    var ethereumClient = this.flux.store('config').getEthereumClient();
 
-    // We pull the branch's block-dependent period information from
-    // contract calls that need to be called each block.
-    this.flux.actions.branch.updateCurrentBranch();
+    // just block age and peer count until we're current
+    ethereumClient.getBlockNumber(function(blockNumber) {
+      var blockMoment = utilities.blockToDate(blockNumber);
+      this.dispatch(constants.network.UPDATE_NETWORK, { blockNumber: blockNumber, blocktime: blockMoment });
+      ethereumClient.getBlock(blockNumber, function(block) {
+        if (block) {
+          var blockTimeStamp = web3.eth.getBlock(blockNumber).timestamp;
+          var currentTimeStamp = moment().unix();
+          var age = currentTimeStamp - blockTimeStamp;
+          this.dispatch(constants.network.UPDATE_BLOCK_CHAIN_AGE, { blockChainAge: age });
+        }
+      }.bind(this));
+    }.bind(this));
 
-    // TODO: We can skip loading events to report if the voting period hasn't changed.
-    this.flux.actions.report.loadEventsToReport();
-    this.flux.actions.branch.checkQuorum();
+    ethereumClient.getPeerCount(function(peerCount) {
+      this.dispatch(constants.network.UPDATE_NETWORK, { peerCount: peerCount });
+    }.bind(this));
 
-    this.flux.actions.report.submitQualifiedReports();
+    if (networkState.blockChainAge && networkState.blockChainAge < constants.MAX_BLOCKCHAIN_AGE) {
+
+      ethereumClient.getAccounts(function(accounts) {
+        this.dispatch(constants.network.UPDATE_NETWORK, { accounts: accounts });
+      }.bind(this));
+      ethereumClient.getPrimaryAccount(function(account) {
+        this.dispatch(constants.network.UPDATE_NETWORK, { primaryAccount: account });
+      }.bind(this));
+      ethereumClient.getGasPrice(function(gasPrice) {
+        this.dispatch(constants.network.UPDATE_NETWORK, { gasPrice: gasPrice });
+      }.bind(this));
+      ethereumClient.getMining(function(mining) {
+        this.dispatch(constants.network.UPDATE_NETWORK, { mining: mining });
+      }.bind(this));
+      ethereumClient.getHashrate(function(hashrate) {
+        this.dispatch(constants.network.UPDATE_NETWORK, { hashrate: hashrate });
+      }.bind(this));
+    }
   },
 
   startMonitoring: function () {
+
     var networkState = this.flux.store('network').getState()
     if (!networkState.isMonitoringBlocks) {
+
       var ethereumClient = this.flux.store('config').getEthereumClient();
-      ethereumClient.startMonitoring(this.flux.actions.network.onNewBlock);
+      ethereumClient.onNewBlock(this.flux.actions.network.updateNetwork);
     }
   }
 };

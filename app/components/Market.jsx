@@ -68,7 +68,7 @@ var Market = React.createClass({
     var outcomes = _.map(this.state.market.outcomes, function (outcome) {
       return (
         <div className="col-sm-6" key={ outcome.id }>
-          <Outcomes.Overview market={ this.state.market } outcome={ outcome }></Outcomes.Overview>
+          <Outcomes.Overview market={ this.state.market } outcome={ _.clone(outcome) }></Outcomes.Overview>
         </div>
       );
     }, this);

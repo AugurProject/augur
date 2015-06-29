@@ -4,8 +4,8 @@ var _ = require('lodash');
 
 var state = {
   markets: {},
-  initialMarketIds: null,
-  remainingMarketIds: null
+  marketLoadingIds: null,
+  loadingPage: null
 };
 
 var MarketStore = Fluxxor.createStore({
@@ -17,28 +17,27 @@ var MarketStore = Fluxxor.createStore({
       constants.market.ADD_PENDING_MARKET_SUCCESS, this.handleAddPendingMarketSuccess,
       constants.market.ADD_MARKET_SUCCESS, this.handleAddMarketSuccess,
       constants.market.DELETE_MARKET_SUCCESS, this.handleDeleteMarketSuccess,
-      constants.market.MARKETS_LOADING, this.handleMarketsLoading,
-      constants.market.MARKET_PAGE_LOADED, this.handleMarketPageLoaded
+      constants.market.MARKETS_LOADING, this.handleMarketsLoading
     );
   },
 
-  marketIsLoaded: function(market) {
+  marketIsLoaded: function(marketId) {
 
-    var requiredProperties = ["id", "authored", "comments", "events", "expired", "traderId", "endDate", "outcomes", "price"]
-    var loaded = _.intersection(_.keys(market), requiredProperties);
-
-    return loaded.length == requiredProperties.length;
+    var requiredProperties = ["id", "description", "price", "endDate"];
+    var loaded = _.intersection(_.keys(state.markets[marketId]), requiredProperties);
+    if (loaded.length == requiredProperties.length) {
+      return true;
+    } else if (state.markets[marketId].invalid) {
+      return true;
+    } else {
+      return false;
+    }
   },
 
   handleMarketsLoading: function(payload) {
 
-    state.initialMarketIds = payload.initialMarketIds;
-    state.remainingMarketIds = payload.remainingMarketIds;
-  },
-
-  handleMarketPageLoaded: function(payload) {
-
-    state.initialMarketIds = null;
+    if (payload.marketLoadingIds) state.marketLoadingIds = payload.marketLoadingIds;
+    state.loadingPage = payload.loadingPage;
   },
 
   getState: function () {
@@ -76,8 +75,10 @@ var MarketStore = Fluxxor.createStore({
 
     if (state.markets[payload.market.id]) {
       //console.log('market', payload.market.id, 'exists.  updating...');
-      payload.market.loaded = this.marketIsLoaded(payload.market);
-      state.markets[payload.market.id] = _.merge(state.markets[payload.market.id], payload.market);
+      var updatedMarket = _.merge(state.markets[payload.market.id], payload.market);
+      updatedMarket.loaded = this.marketIsLoaded(payload.market.id);
+      state.markets[payload.market.id] = updatedMarket;
+      //console.log(updatedMarket);
     } else {
       //console.log('market', payload.market.id, 'not found.  creating...');
       state.markets[payload.market.id] = payload.market;

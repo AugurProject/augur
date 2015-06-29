@@ -41,8 +41,13 @@ var Overview = React.createClass({
     return {
       buyShares: false,
       sellShares: false,
-      sharesHeld: this.props.outcome.sharesHeld.toNumber(),
       pendingShares: null
+    }
+  },
+
+  componentWillReceiveProps: function(nextProps) {
+    if (this.props.outcome.sharesHeld.toNumber() !== nextProps.outcome.sharesHeld.toNumber()) {
+      this.setState({pendingShares: null});
     }
   },
 
@@ -59,16 +64,6 @@ var Overview = React.createClass({
       buyShares: false,
       sellShares: false
     });
-  },
-
-  updateShareHelds: function (relativeShares) {
-
-    var currentShares = this.props.outcome.sharesHeld;
-    this.props.outcome.sharesHeld = currentShares.plus(new BigNumber(relativeShares));
-    this.props.market.outcomes[outcomeId].sharesHeld = currentShares.plus(new BigNumber(relativeShares));
-
-    var flux = this.getFlux();
-    flux.actions.market.updateMarket(this.props.market);
   },
 
   getTradeFunction: function (shares) {
@@ -93,57 +88,13 @@ var Overview = React.createClass({
 
       // on sent
       function(result) {
-        utilities.debug('trade submitted: ' + result.txHash);
         // TODO: check if component is mounted
         self.setState({
           pendingShares: relativeShares,
           buyShares: false,
           sellShares: false
         });
-      },
-
-      // on success
-      function(result) {
-
-        utilities.debug('trade completed');
-
-        // odd problem trying to update the market here
-        //self.updateSharesHeld(relativeShares);
-
-        var newSharesHeld = parseFloat(self.state.sharesHeld) + parseFloat(relativeShares);
-
-        // TODO: check if component is mounted
-        self.setState({
-          pendingShares: null,
-          sharesHeld: newSharesHeld
-        });
-
-        // var flux = self.getFlux();
-        // var client = flux.store('config').getEthereumClient();
-        // var marketId = self.props.market.id.toString(16);
-        // var branchId = self.props.market.branchId.toString(16);
-
-        // update prices
-        // for (var i = 0, len = self.props.market.outcomes.length; i < len; ++i) {
-        //   self.props.market.outcomes[i].price = client.price(
-        //     marketId,
-        //     self.props.market.outcomes[i].id
-        //   );
-        // }
-        // self.props.outcome.price = client.price(marketId, self.props.outcome.id);
-
-        // TODO make this asynchronous
-        // flux.actions.market.loadMarkets();
-      },
-
-      // on failed
-      function(error) {
-        utilities.debug('trade failed: ' + result);
-        // TODO: check if component is mounted
-        self.setState({
-          pendingShares: null
-        });
-      }  
+      }
     );
   },
 
@@ -181,11 +132,12 @@ var Overview = React.createClass({
       }
 
       var holdings;
-      if (this.state.sharesHeld) {
+      var sharesHeld = this.props.outcome.sharesHeld.toNumber();
+      if (sharesHeld) {
         holdings = (
           <div className='sell trade-button'>
             <Button bsStyle='danger' onClick={ this.handleSellClick }>Sell</Button>
-            <span className="shares-held btn">{ this.state.sharesHeld }{ pendingShares } { this.state.sharesHeld === 1 ? 'share' : 'shares' } held</span> 
+            <span className="shares-held btn">{ sharesHeld }{ pendingShares } { sharesHeld === 1 ? 'share' : 'shares' } held</span> 
           </div>);
       } else if (this.state.pendingShares) {
         holdings = (

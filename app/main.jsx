@@ -27,6 +27,7 @@ var EventActions = require('./actions/EventActions');
 var MarketActions = require('./actions/MarketActions');
 var NetworkActions = require('./actions/NetworkActions');
 var ReportActions = require('./actions/ReportActions');
+var TransactionActions = require('./actions/TransactionActions');
 
 var actions = {
   asset: AssetActions,
@@ -35,7 +36,8 @@ var actions = {
   event: EventActions,
   market: MarketActions,
   network: NetworkActions,
-  report: ReportActions
+  report: ReportActions,
+  transaction: TransactionActions
 }
 
 var AssetStore = require('./stores/AssetStore');
@@ -46,6 +48,7 @@ var LogStore = require('./stores/LogStore');
 var MarketStore = require('./stores/MarketStore');
 var NetworkStore = require('./stores/NetworkStore');
 var ReportStore = require('./stores/ReportStore');
+var TransactionStore = require('./stores/TransactionStore');
 
 var stores = {
   asset: new AssetStore(),
@@ -54,7 +57,8 @@ var stores = {
   event: new EventStore(),
   market: new MarketStore(),
   network: new NetworkStore(),
-  report: new ReportStore()
+  report: new ReportStore(),
+  transaction: new TransactionStore
 }
 
 var AugurApp = require("./components/AugurApp");
