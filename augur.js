@@ -757,7 +757,7 @@ var Augur = (function (augur) {
 
     function strip_returns(tx) {
         var returns;
-        if (tx.params && tx.params.length && tx.params[0] && tx.params[0].returns) {
+        if (tx.params !== undefined && tx.params.length && tx.params[0] && tx.params[0].returns) {
             returns = tx.params[0].returns;
             delete tx.params[0].returns;
         }
@@ -829,7 +829,7 @@ var Augur = (function (augur) {
         } else {
             augur.data.method = (prefix || "eth_") + command.toString();
         }
-        if (params) {
+        if (params !== undefined) {
             if (params.constructor === Array) {
                 augur.data.params = params;
             } else {
@@ -1233,7 +1233,7 @@ var Augur = (function (augur) {
                     var arraylen = tx.params[i].length;
                     dynamics += pad_left(encode_int(arraylen));
                     for (var j = 0; j < arraylen; ++j) {
-                        if (tx.params[i][j]) {
+                        if (tx.params[i][j] !== undefined) {
                             if (tx.params[i][j].constructor === Number) {
                                 dynamic = augur.bignum(tx.params[i][j]).mod(augur.MAXBITS).toFixed();
                                 dynamics += pad_left(encode_int(dynamic));
@@ -1275,18 +1275,11 @@ var Augur = (function (augur) {
         var tx, data_abi, packaged, invocation, invoked;
         if (itx) {
             tx = copy(itx);
-            if (tx.params) {
+            if (tx.params !== undefined) {
                 if (tx.params.constructor === Array) {
                     for (var i = 0, len = tx.params.length; i < len; ++i) {
-                        if (tx.params[i] && tx.params[i].constructor === BigNumber) {
+                        if (tx.params[i] !== undefined && tx.params[i].constructor === BigNumber) {
                             tx.params[i] = tx.params[i].toFixed();
-                        }
-                    }
-                } else if (tx.params.constructor === Object) {
-                    for (var p in tx.params) {
-                        if (!tx.params.hasOwnProperty(p)) continue;
-                        if (tx.params[p].constructor === BigNumber) {
-                            tx.params[p] = tx.params[p].toFixed();
                         }
                     }
                 } else if (tx.params.constructor === BigNumber) {
@@ -1341,7 +1334,7 @@ var Augur = (function (augur) {
             callbacks = new Array(num_commands);
             for (var i = 0; i < num_commands; ++i) {
                 tx = copy(txlist[i]);
-                if (tx.params) {
+                if (tx.params !== undefined) {
                     if (tx.params.constructor === Array) {
                         for (var j = 0, len = tx.params.length; j < len; ++j) {
                             if (tx.params[j].constructor === BigNumber) {
@@ -1472,7 +1465,7 @@ var Augur = (function (augur) {
     function fire(itx, onSent) {
         var num_params_expected, num_params_received, tx;
         if (itx.signature && itx.signature.length) {
-            if (itx.params) {
+            if (itx.params !== undefined) {
                 if (itx.params.constructor === Array) {
                     num_params_received = itx.params.length;
                 } else if (itx.params.constructor === Object) {
@@ -1480,7 +1473,7 @@ var Augur = (function (augur) {
                         error: -9,
                         message: "cannot send object parameter to contract"
                     }, onSent);
-                } else if (itx.params) {
+                } else if (itx.params !== null) {
                     num_params_received = 1;
                 } 
             } else {
@@ -1490,7 +1483,7 @@ var Augur = (function (augur) {
             if (num_params_received !== num_params_expected) {
                 return strategy({
                     error: -10,
-                    message: "expected " + num_params_expected.toString()+
+                    message: "expected " + num_params_expected.toString() +
                         " parameters, got " + num_params_received.toString()
                 }, onSent);
             }
@@ -1984,7 +1977,8 @@ var Augur = (function (augur) {
     augur.tx.getBranch = {
         to: augur.contracts.branches,
         method: "getBranch",
-        signature: "i"
+        signature: "i",
+        returns: "hash"
     };
     augur.getBranches = function (onSent) {
         return fire(augur.tx.getBranches, onSent);
@@ -2322,40 +2316,45 @@ var Augur = (function (augur) {
         signature: "i",
         returns: "mixed[]"
     };
-    augur.getEventInfo = function (event, onSent) {
-        // event: sha256 hash id
-        augur.tx.getEventInfo.params = event;
+    augur.getEventInfo = function (event_id, onSent) {
+        // event_id: sha256 hash id
+        augur.tx.getEventInfo.params = event_id;
         if (onSent) {
             augur.invoke(augur.tx.getEventInfo, function (eventInfo) {
                 if (eventInfo && eventInfo.length) {
-                    var info = {
-                        branch: eventInfo[0],
-                        expirationDate: augur.bignum(eventInfo[1]).toFixed(),
-                        outcome: augur.unfix(eventInfo[2], "string"),
-                        minValue: augur.bignum(eventInfo[3]).toFixed(),
-                        maxValue: augur.bignum(eventInfo[4]).toFixed(),
-                        numOutcomes: augur.bignum(eventInfo[5]).toFixed()
-                    };
-                    augur.getDescription(event, function (description) {
-                        if (description) info.description = description;
-                        if (onSent) onSent(info);
-                    });
+                    if (augur.BigNumberOnly) {
+                        eventInfo[1] = augur.bignum(eventInfo[1]);
+                        eventInfo[2] = augur.unfix(eventInfo[2]);
+                        eventInfo[3] = augur.bignum(eventInfo[3]);
+                        eventInfo[4] = augur.bignum(eventInfo[4]);
+                        eventInfo[5] = augur.bignum(eventInfo[5]);
+                    } else {
+                        eventInfo[1] = augur.bignum(eventInfo[1]).toFixed();
+                        eventInfo[2] = augur.unfix(eventInfo[2], "string");
+                        eventInfo[3] = augur.bignum(eventInfo[3]).toFixed();
+                        eventInfo[4] = augur.bignum(eventInfo[4]).toFixed();
+                        eventInfo[5] = augur.bignum(eventInfo[5]).toFixed();
+                    }
+                    onSent(eventInfo);
                 }
             });
         } else {
             var eventInfo = augur.invoke(augur.tx.getEventInfo);
             if (eventInfo && eventInfo.length) {
-                var info = {
-                    branch: eventInfo[0],
-                    expirationDate: augur.bignum(eventInfo[1]).toFixed(),
-                    outcome: augur.unfix(eventInfo[2], "string"),
-                    minValue: augur.bignum(eventInfo[3]).toFixed(),
-                    maxValue: augur.bignum(eventInfo[4]).toFixed(),
-                    numOutcomes: augur.bignum(eventInfo[5]).toFixed()
-                };
-                var description = augur.getDescription(event);
-                if (description) info.description = description;
-                return info;
+                if (augur.BigNumberOnly) {
+                    eventInfo[1] = augur.bignum(eventInfo[1]);
+                    eventInfo[2] = augur.unfix(eventInfo[2]);
+                    eventInfo[3] = augur.bignum(eventInfo[3]);
+                    eventInfo[4] = augur.bignum(eventInfo[4]);
+                    eventInfo[5] = augur.bignum(eventInfo[5]);
+                } else {
+                    eventInfo[1] = augur.bignum(eventInfo[1]).toFixed();
+                    eventInfo[2] = augur.unfix(eventInfo[2], "string");
+                    eventInfo[3] = augur.bignum(eventInfo[3]).toFixed();
+                    eventInfo[4] = augur.bignum(eventInfo[4]).toFixed();
+                    eventInfo[5] = augur.bignum(eventInfo[5]).toFixed();
+                }
+                return eventInfo;
             }
         }
     };
@@ -2363,7 +2362,8 @@ var Augur = (function (augur) {
     augur.tx.getEventBranch = {
         to: augur.contracts.events,
         method: "getEventBranch",
-        signature: "i"
+        signature: "i",
+        returns: "hash"
     };
     augur.tx.getExpiration = {
         to: augur.contracts.events,

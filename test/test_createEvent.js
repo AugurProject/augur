@@ -20,8 +20,7 @@ var TIMEOUT = 120000;
 var minValue = 0;
 var maxValue = 1;
 var numOutcomes = 2;
-var num_events = 16;
-// var num_reporters = 14;
+var num_events = 4;
 
 var branch = Augur.branches.dev;
 var period = Augur.getVotePeriod(branch);

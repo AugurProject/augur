@@ -227,7 +227,7 @@ describe("data and api/expiringEvents", function () {
     });
     describe("getLatent", function () {
         var test = function (r) {
-            gteq0(r);
+            assert(Augur.bignum(r).toNumber >= 0);
             log(r);
         };
         it("sync", function () {

@@ -5,8 +5,7 @@
 
 "use strict";
 
-var BigNumber = require("bignumber.js");
-var assert = require("assert");
+var assert = require("chai").assert;
 var Augur = require("../augur");
 var constants = require("./constants");
 
@@ -19,14 +18,14 @@ describe("Payment methods", function () {
 
     var amount = "1";
     var branch_id = Augur.branches.dev;
-    var receiving_account = constants.accounts.joey;
+    var receiving_account = constants.test_accounts[1];
 
     it("pay: complete call-send-confirm callback sequence", function (done) {
         this.timeout(TIMEOUT);
         var start_balance = Augur.bignum(Augur.balance()).dividedBy(Augur.ETHER);
         var value = 10;
         var tx = {
-            to: constants.accounts.loopy,
+            to: receiving_account,
             value: value,
             onSent: function (res) {
                 log(res);
@@ -45,7 +44,7 @@ describe("Payment methods", function () {
         var start_balance = Augur.bignum(Augur.getCashBalance());
         var value = 10;
         Augur.sendCash({
-            to: constants.accounts.loopy,
+            to: receiving_account,
             value: value,
             onSent: function (res) {
                 log(res);
