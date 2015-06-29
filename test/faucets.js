@@ -9,7 +9,7 @@ var chalk = require("chalk");
 var Augur = require("../augur");
 
 var args = process.argv.slice(2);
-if (args.length && args[0] === "--gospel") {
+if (args.length && (args[0] === "--gospel" || args[0] === "--reset" || args[0] === "--postupload" || args[0] === "--faucets" || args[0] === "--ballots")) {
     var gospel = path.join(__dirname, "gospel.json");
     Augur.contracts = JSON.parse(fs.readFileSync(gospel));
 }

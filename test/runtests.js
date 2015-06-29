@@ -183,34 +183,28 @@ function setup_mocha_tests(tests) {
 }
 
 function postupload_tests_5(geth) {
-    var mocha = new Mocha();
-    mocha.addFile(path.join(__dirname, "test_consensus.js"));
-    // mocha.addFile(path.join(__dirname, "test_score.js"));
-    // mocha.addFile(path.join(__dirname, "test_resolve.js"));
-    // mocha.addFile(path.join(__dirname, "test_payments.js"));
-    // mocha.addFile(path.join(__dirname, "test_markets.js"));
-    // mocha.addFile(path.join(__dirname, "test_comments.js"));
-    mocha.run(function (failures) {
+    setup_mocha_tests([
+        "consensus",
+        "score",
+        "resolve",
+        "payments",
+        "markets",
+        "comments"
+    ]).run(function (failures) {
         process.on("exit", function () { process.exit(failures); });
         display_outputs(geth);
     });
 }
 
 function postupload_tests_4(geth) {
-    var mocha = new Mocha();
-    mocha.addFile(path.join(__dirname, "test_interpolate.js"));
-    mocha.run(function (failures) {
+    setup_mocha_tests([ "interpolate" ]).run(function (failures) {
         process.on("exit", function () { process.exit(failures); });
         postupload_tests_5(geth);
     });
 }
 
 function postupload_tests_3(geth) {
-    var mocha = new Mocha();
-    // mocha.addFile(path.join(__dirname, "test_buyAndSellShares.js"));
-    // mocha.addFile(path.join(__dirname, "fastforward.js"));
-    mocha.addFile(path.join(__dirname, "test_ballot.js"));
-    mocha.run(function (failures) {
+    setup_mocha_tests([ "ballot" ]).run(function (failures) {
         process.on("exit", function () { process.exit(failures); });
         postupload_tests_4(geth);
     });
@@ -254,6 +248,7 @@ function off_workflow_tests(geth) {
         "reporting",
         // "expiring",
         // "createEvent",
+        "priceLog",
         "ballot",
         "payments",
         "markets",
@@ -351,10 +346,10 @@ function upload_contracts(geth) {
 }
 
 function preupload_tests(geth) {
-    var mocha = new Mocha();
-    mocha.addFile(path.join(__dirname, "test_fixedpoint.js"));
-    mocha.addFile(path.join(__dirname, "test_encoder.js"));
-    mocha.run(function (failures) {
+    setup_mocha_tests([
+        "fixedpoint",
+        "encoder"
+    ]).run(function (failures) {
         process.on("exit", function () { process.exit(failures); });
         upload_contracts(geth);
     });

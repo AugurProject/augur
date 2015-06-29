@@ -863,30 +863,40 @@ var Augur = (function (augur) {
     augur.eth_uninstallFilter = function (filter, f) {
         return json_rpc(postdata("uninstallFilter", filter), f);
     };
-    // augur.getMarketPriceHistory = function (market_id, outcome_id, f) {
-    //     if (market_id) {
-    //         filterId = augur.price_filters[filter].filterId;
-    //         log("Polling filter " + chalk.green(filterId) + "...");
-    //         augur.eth_getFilterChanges(filterId, function (message) {
-    //             if (message) {
-    //                 var num_messages = message.length;
-    //                 if (num_messages) {
-    //                     for (var i = 0; i < num_messages; ++i) {
-    //                         var data_array = augur.parse_array(message[i].data);
-    //                         var unfix_type = (augur.BigNumberOnly) ? "BigNumber" : "string";
-    //                         var data = {
-    //                             origin: data_array[0],
-    //                             marketId: data_array[1],
-    //                             outcome: Augur.bignum(data_array[2], "string"),
-    //                             price: Augur.unfix(data_array[3], unfix_type)
-    //                         };
-    //                         log(data);
-    //                     }
-    //                 }
-    //             }
-    //         });
-    //     }
-    // };
+    function search_price_logs(logs, market_id, outcome_id) {
+        // array response: user, market, outcome, price
+        var parsed, unfix_type, price_logs;
+        if (logs) {
+            unfix_type = (augur.BigNumberOnly) ? "BigNumber" : "string";
+            price_logs = [];
+            for (var i = 0, len = logs.length; i < len; ++i) {
+                parsed = augur.parse_array(logs[i].data);
+                if (augur.bignum(parsed[1]).eq(augur.bignum(market_id)) && augur.bignum(parsed[2]).eq(augur.bignum(outcome_id))) {
+                    price_logs.push({
+                        price: augur.unfix(parsed[3], unfix_type),
+                        blockNumber: logs[i].blockNumber
+                    });
+                }
+            }
+            return price_logs;
+        }
+    }
+    augur.getMarketPriceHistory = function (market_id, outcome_id, callback) {
+        if (market_id && outcome_id) {
+            var filter = {
+                fromBlock: "0x1",
+                toBlock: Augur.blockNumber(),
+                topics: ["updatePrice"]
+            };
+            if (callback) {
+                Augur.eth_getLogs(filter, function (logs) {
+                    callback(search_price_logs(logs, market_id, outcome_id));
+                });
+            } else {
+                return search_price_logs(Augur.eth_getLogs(filter), market_id, outcome_id);
+            }
+        }
+    };
     augur.poll_eth_listener = function (filter_name, onMessage) {
         var filterId = augur.price_filters[filter_name].filterId;
         augur.eth_getFilterChanges(filterId, function (message) {
