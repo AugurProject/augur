@@ -80,9 +80,7 @@ var MarketActions = {
 
     commands.push(['getCreationFee', [marketId], setProp('creationFee')]);
     commands.push(['getDescription', [marketId], setProp('description')]);
-    commands.push(['getCreator', [marketId], function(result) {
-      console.log(result);
-    }]);
+    commands.push(['getCreator', [marketId], setProp('author')]);
     commands.push(['getParticipantNumber', [marketId, account], setProp('traderId')]);
     commands.push(['getMarketEvents', [marketId], setProp('events')]);
 
