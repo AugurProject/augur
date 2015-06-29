@@ -6,13 +6,18 @@
 "use strict";
 
 var fs = require("fs");
+var path = require("path");
 var assert = require("chai").assert;
 var Augur = require("../augur");
 var chalk = require("chalk");
 var constants = require("./constants");
 require('it-each')({ testPerIteration: true });
 
-Augur.contracts = JSON.parse(fs.readFileSync("gospel.json"));
+var args = process.argv.slice(2);
+if (args.length && args[0] === "--gospel") {
+    var gospel = path.join(__dirname, "gospel.json");
+    Augur.contracts = JSON.parse(fs.readFileSync(gospel));
+}
 Augur.connect();
 
 var log = console.log;

@@ -3,11 +3,16 @@
 "use strict";
 
 var fs = require("fs");
+var path = require("path");
 var Augur = require("../augur");
 var assert = require("assert");
 var constants = require("./constants");
 
-Augur.contracts = JSON.parse(fs.readFileSync("gospel.json"));
+var args = process.argv.slice(2);
+if (args.length && args[0] === "--gospel") {
+    var gospel = path.join(__dirname, "gospel.json");
+    Augur.contracts = JSON.parse(fs.readFileSync(gospel));
+}
 Augur.connect();
 
 var log = console.log;

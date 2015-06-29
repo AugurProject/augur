@@ -6,11 +6,17 @@
 "use strict";
 
 var fs = require("fs");
-var assert = require("assert");
+var path = require("path");
+var assert = require("chai").assert;
 var Augur = require("../augur");
 var constants = require("./constants");
 
-Augur.contracts = JSON.parse(fs.readFileSync("gospel.json"));
+var args = process.argv.slice(2);
+if (args.length && args[0] === "--gospel") {
+    var gospel = path.join(__dirname, "gospel.json");
+    Augur.contracts = JSON.parse(fs.readFileSync(gospel));
+}
+
 require('it-each')({ testPerIteration: true });
 
 var LOCAL_NODE = true;

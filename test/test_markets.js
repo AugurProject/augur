@@ -5,11 +5,18 @@
 
 "use strict";
 
+var path = require("path");
+var fs = require("fs");
 var BigNumber = require("bignumber.js");
 var assert = require("assert");
 var Augur = require("../augur");
 var constants = require("./constants");
 
+var args = process.argv.slice(2);
+if (args.length && args[0] === "--gospel") {
+    var gospel = path.join(__dirname, "gospel.json");
+    Augur.contracts = JSON.parse(fs.readFileSync(gospel));
+}
 Augur.connect();
 
 // Augur.BigNumberOnly = true;

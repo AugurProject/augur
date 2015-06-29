@@ -1,7 +1,14 @@
 #!/usr/bin/env node
 
-Augur = require('augur.js');
+var fs = require("fs");
+var path = require("path");
+Augur = require('../augur');
 
+var args = process.argv.slice(2);
+if (args.length && args[0] === "--gospel") {
+    var gospel = path.join(__dirname, "gospel.json");
+    Augur.contracts = JSON.parse(fs.readFileSync(gospel));
+}
 Augur.connect();
 
 function read_ballots(address, branch, period) {

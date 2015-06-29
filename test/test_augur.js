@@ -5,12 +5,18 @@
 
 "use strict";
 
+var fs = require("fs");
+var path = require("path");
 var BigNumber = require("bignumber.js");
-var assert = require("assert");
+var assert = require("chai").assert;
 var Augur = require("../augur");
 var constants = require("./constants");
 
-Augur.connect();
+var args = process.argv.slice(2);
+if (args.length && args[0] === "--gospel") {
+    var gospel = path.join(__dirname, "gospel.json");
+    Augur.contracts = JSON.parse(fs.readFileSync(gospel));
+}
 
 var log = console.log;
 var TIMEOUT = 24000;

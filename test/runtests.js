@@ -174,6 +174,14 @@ function display_outputs(geth) {
     kill_geth(geth);
 }
 
+function setup_mocha_tests(tests) {
+    var mocha = new Mocha();
+    for (var i = 0, len = tests.length; i < len; ++i) {
+        mocha.addFile(path.join(__dirname, "test_" + tests[i] + ".js"));
+    }
+    return mocha;
+}
+
 function postupload_tests_5(geth) {
     var mocha = new Mocha();
     mocha.addFile(path.join(__dirname, "test_consensus.js"));
@@ -209,10 +217,10 @@ function postupload_tests_3(geth) {
 }
 
 function postupload_tests_2(geth) {
-    var mocha = new Mocha();
-    // mocha.addFile(path.join(__dirname, "test_addEvent.js"));
-    mocha.addFile(path.join(__dirname, "test_createMarket.js"));
-    mocha.run(function (failures) {
+    setup_mocha_tests([
+        // "addEvent",
+        "createMarket"
+    ]).run(function (failures) {
         process.on("exit", function () { process.exit(failures); });
         setTimeout(function () {
             postupload_tests_3(geth);
@@ -221,17 +229,39 @@ function postupload_tests_2(geth) {
 }
 
 function postupload_tests_1(geth) {
-    var mocha = new Mocha();
-    mocha.addFile(path.join(__dirname, "test_ethrpc.js"));
-    // mocha.addFile(path.join(__dirname, "test_invoke.js"));
-    // mocha.addFile(path.join(__dirname, "test_reporting.js"));
-    mocha.addFile(path.join(__dirname, "test_batch.js"));
-    // mocha.addFile(path.join(__dirname, "test_expiring.js"));
-    // mocha.addFile(path.join(__dirname, "test_augur.js"));
-    mocha.addFile(path.join(__dirname, "test_createEvent.js"));
-    mocha.run(function (failures) {
+    setup_mocha_tests([
+        "ethrpc",
+        "batch",
+        "invoke",
+        "reporting",
+        // "expiring",
+        "augur",
+        "createEvent"
+    ]).run(function (failures) {
         process.on("exit", function () { process.exit(failures); });
         postupload_tests_2(geth);
+    });
+}
+
+function off_workflow_tests(geth) {
+    setup_mocha_tests([
+        "connect",
+        "fixedpoint",
+        "encoder",
+        "ethrpc",
+        "invoke",
+        "batch",
+        "reporting",
+        // "expiring",
+        // "createEvent",
+        "ballot",
+        "payments",
+        "markets",
+        // "comments"
+        "augur"
+    ]).run(function (failures) {
+        process.on("exit", function () { process.exit(failures); });
+        if (geth) kill_geth(geth);
     });
 }
 
@@ -374,7 +404,7 @@ function reset_datadir() {
 
 var args = process.argv.slice(2);
 
-if (args[0] === "reset") {
+if (args[0] === "--reset") {
     reset_datadir();
     check_connection(
         spawn_geth(geth_flags),
@@ -382,7 +412,7 @@ if (args[0] === "reset") {
         mine_minimum_ether,
         preupload_tests
     );
-} else if (args[0] === "faucets") {
+} else if (args[0] === "--faucets") {
     CUSTOM_GOSPEL = true;
     var starting_account = args[1] || 2;
     log(chalk.blue.bold("\nAccount " + starting_account + ": ") +
@@ -395,18 +425,33 @@ if (args[0] === "reset") {
         mine_minimum_ether,
         faucets
     );
-} else if (args[0] === "ballots") {
+} else if (args[0] === "--ballots") {
     CUSTOM_GOSPEL = true;
     check_connection(
         spawn_geth(geth_flags),
         accounts[0],
         postupload_tests_3
     );
-} else {
+} else if (args[0] === "--postupload") {
     CUSTOM_GOSPEL = true;
     check_connection(
         spawn_geth(geth_flags),
         accounts[0],
         postupload_tests_1
     );
+} else {
+    if (args[0] === "--gospel" || args[1] === "--gospel") {
+        log("Load contracts from file: " + chalk.green(gospel_json));
+        Augur.contracts = JSON.parse(fs.readFileSync(gospel_json));
+        CUSTOM_GOSPEL = true;
+    }
+    if (args[0] === "--geth" || args[1] === "--geth") {
+        check_connection(
+            spawn_geth(geth_flags),
+            accounts[0],
+            off_workflow_tests
+        );
+    } else {
+        off_workflow_tests(null);
+    }
 }
