@@ -521,13 +521,13 @@ var Augur = (function (augur) {
         }
         return hex;
     }
-    function remove_trailing_zeros(h) {
+    augur.remove_trailing_zeros = function (h) {
         var hex = h.toString();
         while (hex.slice(-2) === "00") {
             hex = hex.slice(0,-2);
         }
         return hex;
-    }
+    };
     augur.encode_hex = function (str) {
         var hexbyte, hex = '';
         for (var i = 0, len = str.length; i < len; ++i) {
@@ -541,24 +541,11 @@ var Augur = (function (augur) {
         var hex = h.toString();
         var str = '';
         // first 32 bytes = new ABI offset
+        // second 32 bytes = string length
         if (strip) {
-            if (h.slice(0,2) === "0x") h = h.slice(2);
-            h = h.slice(64);
-        }
-        hex = remove_leading_zeros(h);
-        // remove leading byte(s) = string length
-        if (strip) {
-            var len = hex.length;
-            if (len > 16777215) {     // leading 4 bytes if > 16777215
-                hex = hex.slice(8);
-            } else if (len > 65540) { // leading 3 bytes if > 65535
-                hex = hex.slice(6);
-            } else if (len > 259) {   // leading 2 bytes if > 255
-                hex = hex.slice(4);
-            } else {
-                hex = hex.slice(2);
-            }
-            hex = remove_trailing_zeros(hex);
+            if (hex.slice(0,2) === "0x") hex = hex.slice(2);
+            hex = hex.slice(128);
+            hex = augur.remove_trailing_zeros(hex);
         }
         for (var i = 0, l = hex.length; i < l; i += 2) {
             str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));

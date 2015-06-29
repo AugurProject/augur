@@ -80,36 +80,36 @@ describe("getMarketPriceHistory", function () {
     });
 });
 
-describe("updatePrice listener", function () {
-    it("should return data on buyShares", function (done) {
-        this.timeout(TIMEOUT);
-        Augur.start_eth_listener("updatePrice", function (filter_id) {
-            var listener = setInterval(function () {
-                Augur.poll_eth_listener("updatePrice", function (data) {
-                    if (data) {
-                        log(data);
-                        clearInterval(listener);
-                        done();
-                    }
-                });
-            }, 2000);
-            setTimeout(function () {
-                Augur.buyShares({
-                    branchId: branch,
-                    marketId: market_id,
-                    outcome: outcome,
-                    amount: amount,
-                    onSent: function (r) {
+// describe("updatePrice listener", function () {
+//     it("should return data on buyShares", function (done) {
+//         this.timeout(TIMEOUT);
+//         Augur.start_eth_listener("updatePrice", function (filter_id) {
+//             var listener = setInterval(function () {
+//                 Augur.poll_eth_listener("updatePrice", function (data) {
+//                     if (data) {
+//                         log(data);
+//                         clearInterval(listener);
+//                         done();
+//                     }
+//                 });
+//             }, 2000);
+//             setTimeout(function () {
+//                 Augur.buyShares({
+//                     branchId: branch,
+//                     marketId: market_id,
+//                     outcome: outcome,
+//                     amount: amount,
+//                     onSent: function (r) {
 
-                    },
-                    onSuccess: function (r) {
-                        log(r);
-                    },
-                    onFailed: function (r) {
-                        throw(r.message);
-                    }
-                });
-            }, 2000);
-        });
-    });
-});
+//                     },
+//                     onSuccess: function (r) {
+//                         // log(r);
+//                     },
+//                     onFailed: function (r) {
+//                         throw(r.message);
+//                     }
+//                 });
+//             }, 2000);
+//         });
+//     });
+// });
