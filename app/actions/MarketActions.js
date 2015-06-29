@@ -55,7 +55,6 @@ var MarketActions = {
 
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var markets =  this.flux.store('market').getState().markets;
-    var commands = [];
 
     _.each(marketIds, function(marketId) {
       
@@ -64,14 +63,12 @@ var MarketActions = {
         var market = this.flux.actions.market.initMarket(marketId);
         this.dispatch(constants.market.ADD_MARKET_SUCCESS, {market: market});
       }
-      commands = commands.concat(this.flux.actions.market.batchMarket(marketId));
+      var commands = this.flux.actions.market.batchMarket(marketId);
+      _.each(_.chunk(commands, 6), function(chunk) {
+        ethereumClient.batch(chunk);
+      });
 
     }, this);
-
-    // send batch in chunks
-    _.each(_.chunk(commands, 30), function(chunk) {
-      ethereumClient.batch(chunk);
-    });
   },
 
   batchMarket: function(marketId) {
@@ -83,47 +80,14 @@ var MarketActions = {
 
     commands.push(['getCreationFee', [marketId], setProp('creationFee')]);
     commands.push(['getDescription', [marketId], setProp('description')]);
-
-    commands.push(['getMarketEvents', [marketId], function(events) {
-
-      market['events'] = events;
-
-      // calc end date from first event expiration
-      if (events.length) {
-
-        ethereumClient.getEventExpiration(market.events[0], function(expirationBlock) {
-
-          market['endDate'] = utilities.blockToDate(expirationBlock.toNumber());
-          this.flux.actions.market.updateMarket(market);
-
-        }.bind(this));
-
-      } else {
-
-        market['invalid'] = true
-      }
-
-      // batch version no worky
-      ethereumClient.getMarketAuthor(marketId, function(author) {
-          market['author'] = author;
-          this.flux.actions.market.updateMarket(market);  
-      }.bind(this));
-
-      // assumming one event per market
-      //ethereumClient.getMarketWinningOutcomes(marketId, function(result) {
-      //  market['winningOutcomes'] = result.slice(0, events.length);
-      //});
-      //ethereumClient.getEventOutcome(events[0], function(result) {
-      //  market['eventOutcome'] = result.toFixed();
-      //});
-
-      this.flux.actions.market.updateMarket(market);
-
-    }.bind(this)]);
+    commands.push(['getCreator', [marketId], function(result) {
+      console.log(result);
+    }]);
+    commands.push(['getParticipantNumber', [marketId, account], setProp('traderId')]);
+    commands.push(['getMarketEvents', [marketId], setProp('events')]);
 
     commands.push(['getMarketInfo', [marketId], function(result) {
 
-      //console.log(result);
       market['traderCount'] = new BigNumber(result[0]);
       market['alpha'] = utilities.fromFixedPoint(new BigNumber(result[1]));
       market['numOutcomes'] = parseInt(result[3]);
@@ -132,49 +96,102 @@ var MarketActions = {
       
       if (market['numOutcomes'] < 2) market['invalid'] = true;
 
+      // initialize outcomes
+      _.each(_.range(1, market.numOutcomes+1), function (outcomeId) {
+
+        market['outcomes'][outcomeId-1] = {id: outcomeId, sharesHeld: new BigNumber(0)};
+        market['outcomes'][outcomeId-1]['priceHistory'] = []  // NEEDED
+        market['outcomes'][outcomeId-1]['volume'] = 0;
+      });
+
       this.flux.actions.market.updateMarket(market);
-
-      ethereumClient.getMarketTraderId(marketId, function(traderId) {
-
-        // populate outcome data
-        _.each(_.range(1, market.numOutcomes+1), function (outcomeId) {
-
-          market['outcomes'][outcomeId-1] = {id: outcomeId, sharesHeld: new BigNumber(0)};
-          market['outcomes'][outcomeId-1]['priceHistory'] = []  // NEEDED
-          market['outcomes'][outcomeId-1]['volume'] = 0;
-
-          this.flux.actions.market.updateMarket(market);
-
-          if (traderId !== -1) {
-
-            ethereumClient.getMarketParticipantSharesPurchased(marketId, traderId, outcomeId, function(sharesHeld) {
-
-              market['outcomes'][outcomeId-1]['sharesHeld'] = sharesHeld;
-              this.flux.actions.market.updateMarket(market);
-
-            }.bind(this));
-          }
-
-          ethereumClient.getPrice(marketId, outcomeId, function(price) {
-
-            if (outcomeId === 2) market['price'] = price;  // hardcoded to outcome 2 (yes)
-            market['outcomes'][outcomeId-1]['price'] = price;
-            this.flux.actions.market.updateMarket(market);
-
-          }.bind(this));
-
-        }, this);
-
-      }.bind(this));
 
     }.bind(this)]);
 
     return commands;
   },
 
-  updateMarket: function(market) {
+  batchSupplementMarket: function(market) {
+
+    var commands = [];
+    var account = ethereumClient.account;
+
+    // calc end date from first event expiration
+    if (market.events.length) {
+
+      commands.push(['getEventInfo', [market.events[0]], function(eventInfo) {
+
+        if (eventInfo[1]) {
+          var experationBlock = utilities.fromFixedPoint(new BigNumber(eventInfo[1]));
+          market['endDate'] = utilities.blockToDate(experationBlock.toNumber());
+
+          this.flux.actions.market.updateMarket(market, true);
+        }
+
+      }.bind(this)]);
+
+      commands.push(['getWinningOutcomes', [market.id], function(result) {
+
+        market['winningOutcomes'] = result.slice(0, market.events.length)
+
+        this.flux.actions.market.updateMarket(market, true);
+
+      }.bind(this)]);
+
+      commands.push(['getOutcome', [market.events[0]], function(result) {
+
+        market['eventOutcome'] = result.toFixed();
+
+        this.flux.actions.market.updateMarket(market, true);
+
+      }.bind(this)]);
+
+    } else {
+
+      market['invalid'] = true
+    }
+
+    // populate outcome data
+    _.each(market.outcomes, function (outcome) {
+
+      commands.push(['price', [market.id, outcome.id], function(price) {
+
+        if (outcome.id === 2) market['price'] = price;  // hardcoded to outcome 2 (yes)
+        outcome['price'] = price;
+
+        this.flux.actions.market.updateMarket(market, true);
+
+      }.bind(this)]);
+
+      if (market.traderId !== -1) {
+
+        commands.push(['getParticipantSharesPurchased', [market.id, market.traderId, outcome.id], function(result) {
+
+          outcome['sharesHeld'] = result;
+          this.flux.actions.market.updateMarket(market, true);
+
+        }.bind(this)]);
+      }
+      
+    }, this);
+
+    return commands;
+  },
+
+  updateMarket: function(market, supplement) {
 
     this.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
+
+    // supplement ch call if all required properties are present
+    var requiredProperties = ["id", "traderId", "numOutcomes", "events"];
+    var currentMarket = this.flux.store('market').getMarket(market.id);
+    var ready = _.intersection(_.keys(currentMarket), requiredProperties);
+    if (ready.length == requiredProperties.length && !supplement) {
+      var commands = this.flux.actions.market.batchSupplementMarket(currentMarket);
+      _.each(_.chunk(commands, 4), function(chunk) {
+        ethereumClient.batch(chunk);
+      });
+    }
 
     var marketState = this.flux.store('market').getState();
 
@@ -223,15 +240,16 @@ var MarketActions = {
   // returns a function that returns a function that sets a market property to the passed value
   getMarketSetter: function(marketId) {
 
-    var self = this;
-
     return function(property) {
+
       return function(value) {
+
         var market = {'id': marketId};
         market[property] = value;
-        self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
-      }
-    }
+        this.flux.actions.market.updateMarket(market);
+
+      }.bind(this);
+    }.bind(this);
   },
 
   addPendingMarket: function(market, pendingId) {
