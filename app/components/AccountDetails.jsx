@@ -116,8 +116,8 @@ var AccountDetails = React.createClass({
       });
     }, this);
 
-    var cashFaucetDisabled = this.state.cashFaucetDisabled ? 'disabled' : null;
-    var repFaucetDisabled = this.state.repFaucetDisabled ? 'disabled' : null;
+    var cashFaucetDisabled = this.state.cashFaucetDisabled ? true : false;
+    var repFaucetDisabled = this.state.repFaucetDisabled ? true : false;
 
     var rendered = (
       <div id="account">
