@@ -331,16 +331,17 @@ EthereumClient.prototype.sendRep = function(destination, amount, branchId) {
 
 EthereumClient.prototype.sendEther = function(destination, amount) {
 
+  var amountInWei = this.web3.toWei(amount, 'ether');
   var transaction = {
     from: this.account,
     to: destination,
-    value: amount
+    value: amountInWei
   };
 
   var self = this;
   this.web3.eth.sendTransaction(transaction, function(err, txhash) {
     if (!err) {
-      utilities.log(self.account+' sent ' + amount + ' wei to '+ destination)
+      utilities.log(self.account+' sent ' + amount + ' ether to '+ destination)
     } else {
       utilities.error(err);
     }
