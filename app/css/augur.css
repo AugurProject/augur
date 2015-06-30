@@ -945,3 +945,12 @@ span.debug {
     color: #333;
     margin: 0px 8px;
 }
+
+#doorbell-button {
+    left: 5%;
+}
+#doorbell form,
+#doorbell form.dark {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
