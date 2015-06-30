@@ -146,7 +146,6 @@ var MarketActions = {
         if (eventInfo[1]) {
           var experationBlock = utilities.fromFixedPoint(new BigNumber(eventInfo[1]));
           market['endDate'] = utilities.blockToDate(experationBlock.toNumber());
-
           this.flux.actions.market.updateMarket(market, true);
         }
 

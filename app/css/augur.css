@@ -930,7 +930,7 @@ background: linear-gradient(to bottom, rgba(24,55,111,0) 0%,rgba(24,55,111,0.7) 
 .paginator > .pages > li > a {
     display: inline-block;
     padding: 0px 8px 1px 8px;
-    border-radius: 5px;
+    border-radius: 3px;
 }
 .paginator > .pages > li:hover > a {
     text-decoration: none;
