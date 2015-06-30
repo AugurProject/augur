@@ -77,8 +77,12 @@ EthereumClient.prototype.getContract = function (name) {
   }
 
   return contract;
-};
+}
 
+/*
+* general filter that fires on every new block, "the netowrk pulse"
+* used to trigger general update of assets, netowrk data, etc
+*/
 EthereumClient.prototype.onNewBlock = function(callback) {
 
   // add a filter that calls callback on new block
@@ -92,6 +96,10 @@ EthereumClient.prototype.onNewBlock = function(callback) {
   this.filters.push(filter);
 };
 
+/*
+* more specific filter that fires on any augur contract addresss and returns transaction info
+* used to reconcile pending transactions in the transactions store
+*/
 EthereumClient.prototype.onAugurTx = function(callback) {
 
   this.filters.augur = web3.eth.filter({
@@ -106,37 +114,25 @@ EthereumClient.prototype.onAugurTx = function(callback) {
   });
 };
 
+/*
+* market price update event
+* used to trigger partial update of markets
+*/
+EthereumClient.prototype.onMarketChange = function(callback) {
+
+  var contract = this.getContract('buyAndSellShares');
+  var updatePriceEvent = contract.updatePrice();
+
+  updatePriceEvent.watch(function(error, result) {
+    if (error) utilities.error(error);
+    console.log(result);
+  });
+};
+
 EthereumClient.prototype.stopMonitoring = function() {
 
   _.each(this.filters, function(filter) {
     filter.stopWatching()
-  });
-};
-
-EthereumClient.prototype.onMarketChange = function(callback) {
-
-  var contract = this.getContract('buyAndSellShares');
-
-  var pricePaidEvent = contract.pricePaid();
-  var priceSoldEvent = contract.priceSold();
-  var updatePriceEvent = contract.updatePrice();
-
-  pricePaidEvent.watch(function(error, result) {
-    //if (error) console.log('pricePaidEvent error', error);
-    //console.log('pricePaidEvent', result.args.market.toString(16), result.args.outcome.toNumber(), result.args.paid.toNumber(), result.args.user.toString(16));
-    if (callback && result && result.args) callback(result.args.market);
-  });
-
-  priceSoldEvent.watch(function(error, result) {
-    //if (error) console.log('priceSoldEvent error', error);
-    //console.log('priceSoldEvent', result.args.market.toString(16), result.args.outcome.toNumber(), result.args.paid.toNumber(), result.args.user.toString(16));
-    if (callback && result && result.args) callback(result.args.market);
-  });
-
-  updatePriceEvent.watch(function(error, result) {
-    if (error) console.log('updatePriceEvent error', error);
-    //console.log('updatePriceEvent', result.args.market.toString(16), result.args.outcome.toNumber(), utilities.fromFixedPoint(result.args.price).toNumber(), result.args.user.toString(16));
-    //if (callback && result.args) callback(result.args.market);
   });
 };
 
@@ -273,13 +269,9 @@ EthereumClient.prototype.getAddress = function (name) {
   return address;
 };
 
-EthereumClient.prototype.cashFaucet = function(onSent, onSuccess, onFailure) {
-  return Augur.cashFaucet(function(result) {
-    utilities.log('requesting cash');
-  }, function(result) {
-    utilities.log('cash request successful');
-  }, function(error) {
-    utilities.error('cash request failed: ' + error);
+EthereumClient.prototype.cashFaucet = function(onSent) {
+  Augur.cashFaucet(function(result) {
+    onSent(result.txHash);
   });
 };
 
@@ -300,15 +292,11 @@ EthereumClient.prototype.sendCash = function(destination, amount, onSent, onSucc
   });
 };
 
-EthereumClient.prototype.repFaucet = function(branchId, onSent, onSuccess, onFailure) {
+EthereumClient.prototype.repFaucet = function(branchId, onSent) {
 
   branchId = branchId || this.defaultBranchId;
-  return Augur.reputationFaucet(branchId, function(result) {
-    utilities.log('requesting reputation');
-  }, function(result) {
-    utilities.log('reputation request successful');
-  }, function(error) {
-    utilities.error('reputation request failed: ' + error);
+  Augur.reputationFaucet(branchId, function(result) {
+    onSent(result.txHash);
   });
 };
 
@@ -680,11 +668,15 @@ EthereumClient.prototype.getSimulatedSell = function (marketId, outcomeId, numSh
 
 
 EthereumClient.prototype.buyShares = function (branchId, marketId, outcomeId, numShares, onSent) {
-  Augur.buyShares(branchId, marketId, outcomeId, numShares, null, onSent);
+  Augur.buyShares(branchId, marketId, outcomeId, numShares, null, function(result) {
+    onSent(result.txHash);
+  });
 };
 
 EthereumClient.prototype.sellShares = function (branchId, marketId, outcomeId, numShares, onSent) {
-  Augur.sellShares(branchId, marketId, outcomeId, numShares, null, onSent);
+  Augur.sellShares(branchId, marketId, outcomeId, numShares, null, function(result) {
+    onSent(result.txHash);
+  });
 };
 
 module.exports = EthereumClient;

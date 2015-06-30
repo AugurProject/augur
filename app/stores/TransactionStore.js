@@ -6,12 +6,15 @@ var momemnt = require('moment');
 var state = {}
 
 class Transaction {
-  constructor (hash) {
+  constructor (hash, type, description, onComplete) {
     this.txHash = hash;
     this.from = null;
     this.to = null;
     this.timestamp = moment();
     this.blockNumber = null;
+    this.type = type;
+    this.description = description;
+    this.onComplete = onComplete
   }
 }
 

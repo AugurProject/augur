@@ -51,6 +51,12 @@ module.exports = [{
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
+    "name": "getMarketOutcomeInfo(int256,int256)",
+    "type": "function",
+    "inputs": [{ "name": "market", "type": "int256" }, { "name": "outcome", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256[]" }]
+},
+{
     "name": "getNumEvents(int256)",
     "type": "function",
     "inputs": [{ "name": "market", "type": "int256" }],

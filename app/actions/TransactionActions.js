@@ -3,9 +3,16 @@ var utilities = require('../libs/utilities');
 
 var TransactionActions = {
 	
-  addTransaction: function(txHash) {
+  addTransaction: function(txHash, type, description, callback) {
 
-    this.dispatch(constants.transaction.ADD_TRANSACTION, {txHash: txHash});
+    utilities.log(description);
+
+    this.dispatch(constants.transaction.ADD_TRANSACTION, {
+      txHash: txHash,
+      type: type,
+      description: description,
+      onComplete: callback
+    });
   },
 
   onPendingTx: function(txHash) {

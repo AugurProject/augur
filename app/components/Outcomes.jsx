@@ -66,6 +66,22 @@ var Overview = React.createClass({
     });
   },
 
+  // FIXME:  for some reason, the add transaction action doesn't work here.  WTFBBQTWILIGHTZONE?!
+  handleAddTransaction: function(txHash, relativeShares) {
+
+    var absShares = Math.abs(relativeShares);
+
+    var flux = this.getFlux();
+    var sharesString = absShares === 1 ? '1 share of ' : absShares + ' shares of ';
+    if (relativeShares > 0) {
+      var description = 'buying ' + sharesString + getOutcomeName(this.props.outcome.id, 2) + ', 0x'+this.props.market.id.toString(16);
+      flux.actions.transaction.addTransaction(txHash, constants.transaction.BUY_DECISION_TYPE, description);
+    } else {
+      var description = 'selling ' + sharesString + getOutcomeName(this.props.outcome.id, 2) + ', 0x'+this.props.market.id.toString(16);
+      flux.actions.transaction.addTransaction(txHash, constants.transaction.SELL_DECISION_TYPE, description);   
+    }
+  },
+
   getTradeFunction: function (shares) {
 
     var flux = this.getFlux();
@@ -76,7 +92,6 @@ var Overview = React.createClass({
 
   handleTrade: function (relativeShares) {
 
-    var self = this;
     var absShares = Math.abs(relativeShares);
 
     this.getTradeFunction(relativeShares)(
@@ -85,16 +100,18 @@ var Overview = React.createClass({
       this.props.market.id,
       this.props.outcome.id,
       absShares,
+      function(txHash) {
 
-      // on sent
-      function(result) {
         // TODO: check if component is mounted
-        self.setState({
+        this.setState({
           pendingShares: relativeShares,
           buyShares: false,
           sellShares: false
         });
-      }
+
+        this.handleAddTransaction(txHash, relativeShares);
+
+      }.bind(this)
     );
   },
 

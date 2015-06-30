@@ -21,6 +21,7 @@ var Period = require('./Period');
 var Network = require('./Network');
 var Alert = require('./Alert');
 var Confirm = require('./Confirm');
+var EtherWarningModal = require('./EtherWarningModal');
 
 var AugurApp = React.createClass({
 

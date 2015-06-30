@@ -17,18 +17,7 @@ module.exports = [{
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
-    "name": "pricePaid(int256,int256,int256,int256)",
+    "name": "updatePrice(int256,int256,int256,int256,int256)",
     "type": "event",
-    "inputs": [{ "name": "user", "type": "int256", "indexed": false }, { "name": "market", "type": "int256", "indexed": false }, { "name": "outcome", "type": "int256", "indexed": false }, { "name": "paid", "type": "int256", "indexed": false }]
-},
-{
-    "name": "priceSold(int256,int256,int256,int256)",
-    "type": "event",
-    "inputs": [{ "name": "user", "type": "int256", "indexed": false }, { "name": "market", "type": "int256", "indexed": false }, { "name": "outcome", "type": "int256", "indexed": false }, { "name": "paid", "type": "int256", "indexed": false }]
-},
-{
-    "name": "updatePrice(int256,int256,int256,int256)",
-    "type": "event",
-    "inputs": [{ "name": "user", "type": "int256", "indexed": false }, { "name": "market", "type": "int256", "indexed": false }, { "name": "outcome", "type": "int256", "indexed": false }, { "name": "price", "type": "int256", "indexed": false }]
-}]
-;
+    "inputs": [{ "name": "user", "type": "int256", "indexed": true }, { "name": "market", "type": "int256", "indexed": true }, { "name": "outcome", "type": "int256", "indexed": true }, { "name": "price", "type": "int256", "indexed": false }, { "name": "cost", "type": "int256", "indexed": false }]
+}];
