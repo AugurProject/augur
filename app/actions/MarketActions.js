@@ -144,8 +144,8 @@ var MarketActions = {
 
         // calc end date from first event expiration
         if (eventInfo[1]) {
-          var experationBlock = utilities.fromFixedPoint(new BigNumber(eventInfo[1]));
-          market['endDate'] = utilities.blockToDate(experationBlock.toNumber());
+          var expirationBlock = new BigNumber(eventInfo[1]).toNumber();
+          market['endDate'] = utilities.blockToDate(expirationBlock);
           this.flux.actions.market.updateMarket(market, true);
         }
 
