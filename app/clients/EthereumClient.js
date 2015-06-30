@@ -110,6 +110,7 @@ EthereumClient.prototype.onAugurTx = function(callback) {
 
   this.filters.augur.watch(function (error, result) {
     if (error) utilities.error(error);
+    console.log('augurTx', result);
     callback(result);
   });
 };
@@ -413,12 +414,11 @@ EthereumClient.prototype.getMarkets = function(branchId, currentMarkets) {
     return !_.contains(blacklist.markets, marketId.toString(16));
   });
 
-  if (currentMarkets) {    // return new markets only
-
+  if (currentMarkets) {    // return new markets o
     // convert ids to strings for comparision
     validMarkets = _.map(validMarkets, function(marketId) { return marketId.toString() } );
     currentMarkets = _.map(currentMarkets, function(marketId) { return marketId.toString() } );
-    var newMarkets = _.difference(currentMarkets, validMarkets);
+    var newMarkets = _.difference(validMarkets, currentMarkets);
 
     return newMarkets;
 
@@ -534,6 +534,7 @@ EthereumClient.prototype.addEvent = function(params, onSuccess) {
       numOutcomes: numOutcomes,
 
       onSent: function (newEvent) {
+
         if (newEvent && newEvent.callReturn) {
           newEvent.id = newEvent.callReturn;
           delete newEvent.callReturn;
@@ -553,15 +554,11 @@ EthereumClient.prototype.addEvent = function(params, onSuccess) {
           }
           if (onSuccess) onSuccess(newEvent);
         }
-      },
-
-      onFailed: function (error) {
-        utilities.error(error);
-      },
+      }
     });
 };
 
-EthereumClient.prototype.addMarket = function(params, onSuccess) {
+EthereumClient.prototype.addMarket = function(params, onSent) {
 
     var branchId = params.branchId || this.defaultBranchId;
     var description = params.description;
@@ -581,30 +578,7 @@ EthereumClient.prototype.addMarket = function(params, onSuccess) {
       events: events,
 
       onSent: function (newMarket) {
-        if (newMarket && newMarket.callReturn) {
-          newMarket.id = newMarket.callReturn;
-          delete newMarket.callReturn;
-          utilities.debug("submitted new market "+ newMarket.id);
-        }
-      },
-
-      onSuccess: function (newMarket) {
-        if (newMarket) {
-          if (newMarket.callReturn) {
-            newMarket.id = newMarket.callReturn;
-            delete newMarket.callReturn;
-          }
-          if (newMarket.txHash) {
-            utilities.debug("txHash: " + newMarket.txHash);
-          }
-          utilities.log('new market successfully added');
-          if (onSuccess) onSuccess(newMarket);
-        }
-      },
-
-      onFailed: function (error) {
-        utilities.error("error adding new market")
-        utilities.error(error);
+        onSent(newMarket.txHash);
       }
     });
 };

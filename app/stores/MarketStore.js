@@ -100,7 +100,7 @@ var MarketStore = Fluxxor.createStore({
   handleDeleteMarketSuccess: function (payload) {
 
     // delete market if it exists
-    if (payload.marketId && state.markets[marketId]) delete state.markets[payload.marketId];
+    if (payload.marketId && state.markets[payload.marketId]) delete state.markets[payload.marketId];
   }
 
 });

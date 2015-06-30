@@ -7,10 +7,10 @@ var Button = ReactBootstrap.Button;
 var Input = ReactBootstrap.Input;
 var Modal = ReactBootstrap.Modal;
 var ModalTrigger = ReactBootstrap.ModalTrigger;
+var constants = require('../libs/constants');
 var utilities = require('../libs/utilities');
 var DatePicker = require('react-date-picker');
 var moment = require('moment');
-
 var AddMarketModal = React.createClass({
 
   mixins: [FluxMixin, StoreWatchMixin('market', 'network', 'asset')],
@@ -139,8 +139,6 @@ var AddMarketModal = React.createClass({
 
     if (!this.validatePage(this.state.pageNumber)) return;
 
-    var self = this;
-
     var newEventParams = {
       description: this.state.marketText,
       expirationBlock: utilities.dateToBlock(moment(this.state.maturationDate))
@@ -149,7 +147,7 @@ var AddMarketModal = React.createClass({
     var newMarketParams = {
       description: this.state.marketText,
       initialLiquidity: this.state.marketInvestment,
-      tradingFee: new BigNumber(self.state.tradingFee / 100)
+      tradingFee: new BigNumber(this.state.tradingFee / 100)
     };
 
     var flux = this.getFlux();
@@ -160,14 +158,21 @@ var AddMarketModal = React.createClass({
 
       // create associated market on success of event
       newMarketParams.events = [ newEvent.id ];
-      self.state.ethereumClient.addMarket(newMarketParams, function(newMarket) {
+      this.state.ethereumClient.addMarket(newMarketParams, function(txHash) {
 
-        // get new market and add to store on success
-        var marketId = new BigNumber(newMarket.id);  // convert hex string returned to Big Number :/
-        flux.actions.market.deleteMarket(pendingId);
-        flux.actions.market.loadMarket(marketId);
-      });
-    });
+        // add new transaction object and associated callback when mined
+        flux.actions.transaction.addTransaction(
+          txHash, 
+          constants.transaction.ADD_MARKET_TYPE, 
+          'new market submitted', 
+          function(result) {
+            flux.actions.market.deleteMarket(pendingId);
+            utilities.log('new market accepted');
+          }.bind(this)
+        );
+
+      }.bind(this));
+    }.bind(this));
 
     this.props.onRequestHide();
   },

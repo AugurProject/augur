@@ -31,7 +31,7 @@ var TransactionStore = Fluxxor.createStore({
   },
 
   handleAddTransaction: function (payload) {
-    state[payload.txHash] = new Transaction(payload.txHash);
+    state[payload.txHash] = new Transaction(payload.txHash, payload.type, payload.description, payload.onComplete);
     this.emit(constants.CHANGE_EVENT);
   },
 
