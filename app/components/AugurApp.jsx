@@ -223,7 +223,7 @@ var ErrorModal = React.createClass({
 
       var demoMode = (
         <p className="start-demo-mode">
-          Or <a onClick={ this.startDemoMode } href="javascript:void(0)">proceed in demo mode</a> (initial load time will be about 10-30 seconds)
+          Or <a onClick={ this.startDemoMode } href="javascript:void(0)">proceed in demo mode</a> (note: this mode uses a shared, hosted account)
         </p>
       );
       // don't offer demo mode if already using demo rpc host

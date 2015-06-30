@@ -1,4 +1,4 @@
-var constants = require('../libs/constants');
+var constants = require('../libs/constants'); 
 var utilities = require('../libs/utilities');
 
 var NetworkActions = {
@@ -29,6 +29,9 @@ var NetworkActions = {
     if (!nowUp) {
 
       utilities.warn('failed to connect to ethereum');
+
+      // stop monitoring 
+      ethereumClient.stopMonitoring();
 
       this.dispatch(
         constants.network.UPDATE_ETHEREUM_STATUS,
