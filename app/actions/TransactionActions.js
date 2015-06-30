@@ -30,9 +30,6 @@ var TransactionActions = {
   	var transactions = this.flux.store('transaction').getState();
     var hash = result.transactionHash;
 
-  	//console.log('transactions', transactions);
-    //console.log('augurTx', result);
-
   	if (transactions[hash]) {
 
   		utilities.log('block ' + result.blockNumber +' included ' + hash);

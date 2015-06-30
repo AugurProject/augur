@@ -88,6 +88,7 @@ var MarketActions = {
 
       market['traderCount'] = result[0];
       market['alpha'] = utilities.fromFixedPoint(result[1]);
+      //market['traderId'] = result[2].toString(16);   // returns 0 instead of trader id
       market['numOutcomes'] = parseInt(result[3]);
       market['tradingPeriod'] = result[4];
       market['tradingFee'] = utilities.fromFixedPoint(result[5]);
@@ -117,24 +118,20 @@ var MarketActions = {
     // populate outcome data
     _.each(market.outcomes, function (outcome) {
 
-      commands.push(['price', [market.id, outcome.id], function(price) {
+      commands.push(['getMarketOutcomeInfo', [market.id, outcome.id], function(info) {
 
+        outcome['volume'] = utilities.fromFixedPoint(info[0]);
+        if (market.traderId !== -1) outcome['sharesHeld'] = utilities.fromFixedPoint(info[1]);
+        var price = utilities.fromFixedPoint(info[2]);
         if (outcome.id === 2) market['price'] = price;  // hardcoded to outcome 2 (yes)
         outcome['price'] = price;
+
+        // traderCount is really part of the market and not an outcome but whatever
+        market['traderCount'] = info[4];
 
         this.flux.actions.market.updateMarket(market, true);
 
       }.bind(this)]);
-
-      if (market.traderId !== -1) {
-
-        commands.push(['getParticipantSharesPurchased', [market.id, market.traderId, outcome.id], function(result) {
-
-          outcome['sharesHeld'] = result;
-          this.flux.actions.market.updateMarket(market, true);
-
-        }.bind(this)]);
-      }
       
     }, this);
     
@@ -153,6 +150,7 @@ var MarketActions = {
 
       commands.push(['getWinningOutcomes', [market.id], function(result) {
 
+        console.log(result);
         market['winningOutcomes'] = result.slice(0, market.events.length)
 
         this.flux.actions.market.updateMarket(market, true);
@@ -185,7 +183,7 @@ var MarketActions = {
     var ready = _.intersection(_.keys(currentMarket), requiredProperties);
     if (ready.length == requiredProperties.length && !supplement) {
       var commands = this.flux.actions.market.batchSupplementMarket(currentMarket);
-      _.each(_.chunk(commands, 4), function(chunk) {
+      _.each(_.chunk(commands, 5), function(chunk) {
         ethereumClient.batch(chunk);
       });
     }
