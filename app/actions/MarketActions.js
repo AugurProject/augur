@@ -150,7 +150,6 @@ var MarketActions = {
 
       commands.push(['getWinningOutcomes', [market.id], function(result) {
 
-        console.log(result);
         market['winningOutcomes'] = result.slice(0, market.events.length)
 
         this.flux.actions.market.updateMarket(market, true);
