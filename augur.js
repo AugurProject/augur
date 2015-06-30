@@ -2888,98 +2888,89 @@ var Augur = (function (augur) {
         return fire(tx, onSent);
     };
 
+    augur.tx.getMarketOutcomeInfo = {
+        to: augur.contracts.markets,
+        method: "getMarketOutcomeInfo",
+        signature: "ii",
+        returns: "hash[]"
+    };
     augur.tx.getMarketInfo = {
         to: augur.contracts.markets,
         method: "getMarketInfo",
         signature: "i",
-        returns: "number[]"
+        returns: "hash[]"
+    };
+    augur.getMarketOutcomeInfo = function (market, outcome, onSent) {
+        function parse_info(info) {
+            var i, len = info.length;
+            if (augur.BigNumberOnly) {
+                info[0] = augur.unfix(info[0], "BigNumber");
+                info[1] = augur.unfix(info[1], "BigNumber");
+                info[2] = augur.unfix(info[2], "BigNumber");
+                info[3] = augur.bignum(info[3]);
+                info[4] = augur.bignum(info[4]);
+                for (i = 5; i < len; ++i) {
+                    info[i] = augur.bignum(info[i]);
+                }
+            } else {
+                info[0] = augur.unfix(info[0], "string");
+                info[1] = augur.unfix(info[1], "string");
+                info[2] = augur.unfix(info[2], "string");
+                info[3] = augur.bignum(info[3]).toFixed();
+                info[4] = augur.bignum(info[4]).toFixed();
+                for (i = 5; i < len; ++i) {
+                    info[i] = augur.bignum(info[i]).toFixed();
+                }
+            }
+            return info;
+        }
+        var tx = copy(augur.tx.getMarketOutcomeInfo);
+        tx.params = [market, outcome];
+        if (onSent) {
+            fire(tx, function (info) {
+                if (info) onSent(parse_info(info));
+            });
+        } else {
+            return parse_info(fire(tx));
+        }
     };
     augur.getMarketInfo = function (market, onSent) {
-        // market: sha256 hash id
+        function parse_info(info) {
+            var i, len = info.length;
+            if (augur.BigNumberOnly) {
+                info[0] = augur.bignum(info[0]);
+                info[1] = augur.unfix(info[1], "BigNumber");
+                info[2] = augur.bignum(info[2]);
+                info[3] = augur.bignum(info[3]);
+                info[4] = augur.bignum(info[4]);
+                info[5] = augur.unfix(info[5], "BigNumber");
+                for (i = 6; i < len - 8; ++i) {
+                    info[i] = augur.prefix_hex(augur.bignum(info[i]).toString(16));
+                }
+                for (i = len - 8; i < len; ++i) {
+                    info[i] = augur.bignum(info[i]);
+                }
+            } else {
+                info[0] = augur.bignum(info[0]).toFixed();
+                info[1] = augur.unfix(info[1], "string");
+                info[2] = augur.bignum(info[2]).toFixed();
+                info[3] = augur.bignum(info[3]).toFixed();
+                info[4] = augur.bignum(info[4]).toFixed();
+                info[5] = augur.unfix(info[5], "string");
+                for (i = len - 8; i < len; ++i) {
+                    info[i] = augur.bignum(info[i]).toFixed();
+                }
+            }
+            return info;
+        }
         var tx = copy(augur.tx.getMarketInfo);
         tx.params = market;
         if (onSent) {
-            fire(tx, function (marketInfo) {
-                if (marketInfo) {
-                    if (augur.BigNumberOnly) {
-                        marketInfo[0] = augur.bignum(marketInfo[0]);
-                        marketInfo[1] = augur.unfix(marketInfo[1], "BigNumber");
-                        marketInfo[2] = augur.bignum(marketInfo[2]);
-                        marketInfo[3] = augur.bignum(marketInfo[3]);
-                        marketInfo[4] = augur.bignum(marketInfo[4]);
-                        marketInfo[5] = augur.unfix(marketInfo[5], "BigNumber");
-                    } else {
-                        marketInfo[1] = augur.unfix(marketInfo[1], "string");
-                        marketInfo[5] = augur.unfix(marketInfo[5], "string");
-                    }
-                    onSent(marketInfo);
-                }
+            fire(tx, function (info) {
+                if (info) onSent(parse_info(info));
             });
         } else {
-            var marketInfo = fire(tx);
-            if (marketInfo) {
-                if (augur.BigNumberOnly) {
-                    marketInfo[0] = augur.bignum(marketInfo[0]);
-                    marketInfo[1] = augur.unfix(marketInfo[1], "BigNumber");
-                    marketInfo[2] = augur.bignum(marketInfo[2]);
-                    marketInfo[3] = augur.bignum(marketInfo[3]);
-                    marketInfo[4] = augur.bignum(marketInfo[4]);
-                    marketInfo[5] = augur.unfix(marketInfo[5], "BigNumber");
-                } else {
-                    marketInfo[1] = augur.unfix(marketInfo[1], "string");
-                    marketInfo[5] = augur.unfix(marketInfo[5], "string");
-                }
-                return marketInfo;
-            }
-        }
-    };
-    augur.getMarketInfoObject = function (market, onSent) {
-        augur.tx.getMarketInfo.params = market;
-        if (onSent) {
-            augur.invoke(augur.tx.getMarketInfo, function (marketInfo) {
-                var info;
-                if (marketInfo && marketInfo.length) {
-                    info = {
-                        currentParticipant: augur.bignum(marketInfo[0]).toFixed(),
-                        alpha: augur.unfix(marketInfo[1], "string"),
-                        cumulativeScale: augur.bignum(marketInfo[2]).toFixed(),
-                        numOutcomes: augur.bignum(marketInfo[3]).toFixed(),
-                        tradingPeriod: augur.bignum(marketInfo[4]).toFixed(),
-                        tradingFee: augur.unfix(marketInfo[5], "string")
-                    };
-                    onSent(info);
-                    // augur.getDescription(market, function (description) {
-                    //     if (description && description.constructor === String) {
-                    //         info.description = description;
-                    //     }
-                    //     // info.filter = augur.initComments(market);
-                    //     // info.eth_filter = augur.init_price_log(market);
-                    //     // info.price_history = augur.eth_getFilterLogs(info.eth_filter);
-                    //     onSent(info);
-                    // });
-                }
-            });
-        } else {
-            var marketInfo = augur.invoke(augur.tx.getMarketInfo);
-            if (marketInfo && marketInfo.length) {
-                var info = {
-                    currentParticipant: augur.bignum(marketInfo[0]).toFixed(),
-                    alpha: augur.unfix(marketInfo[1], "string"),
-                    cumulativeScale: augur.bignum(marketInfo[2]).toFixed(),
-                    numOutcomes: augur.bignum(marketInfo[3]).toFixed(),
-                    tradingPeriod: augur.bignum(marketInfo[4]).toFixed(),
-                    tradingFee: augur.unfix(marketInfo[5], "string")
-                };
-                return info;
-                // var description = augur.getDescription(market);
-                // if (description && description.constructor === String) {
-                //     info.description = description;
-                // }
-                // // info.filter = augur.initComments(market);
-                // // info.eth_filter = augur.init_price_log(market);
-                // // info.price_history = augur.eth_getFilterLogs(info.eth_filter);
-                // return info;
-            }
+            return parse_info(fire(tx));
         }
     };
 
