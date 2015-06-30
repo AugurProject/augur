@@ -125,7 +125,7 @@ EthereumClient.prototype.onMarketChange = function(callback) {
 
   updatePriceEvent.watch(function(error, result) {
     if (error) utilities.error(error);
-    console.log(result);
+    callback(result);
   });
 };
 
