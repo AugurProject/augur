@@ -227,14 +227,15 @@ nav.header .menu li a {
     padding: 0px 12px;
     font-size: 16px;
 }
-.side-nav p:hover {
-}
 .side-nav p a {
     color: #fff;
     text-decoration: none;
 }
-.side-nav p a {
-    color: #fff;
+.side-nav p a.active {
+    color: #ffe1a8;
+    text-decoration: none;
+}
+.side-nav p a.active:hover {
     text-decoration: none;
 }
 .side-nav p a:hover {

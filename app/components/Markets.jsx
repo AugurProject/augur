@@ -39,7 +39,7 @@ var MarketPane = React.createClass({
     var volume =_.reduce(market.outcomes, function(volume, outcome) {
       if (outcome) return volume + parseFloat(outcome.volume);
     }, 0);
-
+    
     var formattedDate = market.endDate ? moment(market.endDate).format('MMM Do, YYYY') : '-';
     var price = market.price ? Math.abs(market.price).toFixed(3) : '-';
     var percent = market.price ? +market.price.times(100).toFixed(1) + '%' : ''

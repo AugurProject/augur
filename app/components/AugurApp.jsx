@@ -99,7 +99,6 @@ var AugurApp = React.createClass({
                 <li><p><Link to="home">Markets</Link></p></li>
                 <li><p><Link to="account">Account</Link></p></li>
                 <li><p><Link to="ballots">Ballot</Link></p></li>
-                <li><p><a className="disabled">Contacts</a></p></li>
               </ul>
             </div>
 
@@ -117,7 +116,6 @@ var AugurApp = React.createClass({
                   <p><Link to="home">Markets</Link><i>{ _.keys(this.state.market.markets).length }</i></p>
                   <p><Link to="account">Account</Link></p>
                   <p><Link to="ballots">Ballot</Link><i>{ this.state.report.eventsToReport.length }</i></p>
-                  <p><a className="disabled">Contacts</a></p>
               </div>
 
               <Network />
