@@ -367,7 +367,7 @@ EthereumClient.prototype.getEvents = function(period, branchId) {
 
 EthereumClient.prototype.getEvent = function(eventId, onResult) {
 
-  Augur.getEventInfo(eventId, onResult);
+  return Augur.getEventInfo(eventId, onResult);
 };
 
 EthereumClient.prototype.checkQuorum = function(branchId, onSent, onSuccess, onFailed) {
