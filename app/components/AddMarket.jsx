@@ -161,15 +161,15 @@ var AddMarketModal = React.createClass({
       this.state.ethereumClient.addMarket(newMarketParams, function(txHash) {
 
         // add new transaction object and associated callback when mined
-        flux.actions.transaction.addTransaction(
-          txHash, 
-          constants.transaction.ADD_MARKET_TYPE, 
-          'new market submitted', 
-          function(result) {
+        flux.actions.transaction.addTransaction({
+          hash: txHash, 
+          type: constants.transaction.ADD_MARKET_TYPE, 
+          description: 'new market submitted', 
+          onMined: function(result) {
             flux.actions.market.deleteMarket(pendingId);
             utilities.log('new market accepted');
           }.bind(this)
-        );
+        });
 
       }.bind(this));
     }.bind(this));

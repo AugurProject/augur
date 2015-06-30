@@ -75,10 +75,18 @@ var Overview = React.createClass({
     var sharesString = absShares === 1 ? '1 share of ' : absShares + ' shares of ';
     if (relativeShares > 0) {
       var description = 'buying ' + sharesString + getOutcomeName(this.props.outcome.id, 2) + ', 0x'+this.props.market.id.toString(16);
-      flux.actions.transaction.addTransaction(txHash, constants.transaction.BUY_DECISION_TYPE, description);
+      flux.actions.transaction.addTransaction({
+        hash: txHash, 
+        type: constants.transaction.BUY_DECISION_TYPE, 
+        description: description
+      });
     } else {
       var description = 'selling ' + sharesString + getOutcomeName(this.props.outcome.id, 2) + ', 0x'+this.props.market.id.toString(16);
-      flux.actions.transaction.addTransaction(txHash, constants.transaction.SELL_DECISION_TYPE, description);   
+      flux.actions.transaction.addTransaction({
+        hash: txHash, 
+        type: constants.transaction.SELL_DECISION_TYPE, 
+        description: description
+      });   
     }
   },
 

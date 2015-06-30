@@ -58,7 +58,11 @@ var AccountDetails = React.createClass({
       this.setState({cashFaucetDisabled: true});
       this.state.ethereumClient.cashFaucet(function(txHash) {
         var flux = this.getFlux();
-        flux.actions.transaction.addTransaction(txHash, constants.transaction.CASH_FAUCET_TYPE, 'requesting cash');
+        flux.actions.transaction.addTransaction({
+          hash: txHash, 
+          type: constants.transaction.CASH_FAUCET_TYPE, 
+          description: 'requesting cash'
+        });
       }.bind(this));
     }
   },
@@ -74,7 +78,11 @@ var AccountDetails = React.createClass({
       this.setState({repFaucetDisabled: true});
       this.state.ethereumClient.repFaucet(null, function(txHash) {
         var flux = this.getFlux();
-        flux.actions.transaction.addTransaction(txHash, constants.transaction.REP_FAUCET_TYPE, 'requesting reputation');
+        flux.actions.transaction.addTransaction({
+          hash: txHash, 
+          type: constants.transaction.REP_FAUCET_TYPE, 
+          description: 'requesting reputation'
+        });
       }.bind(this));
     } 
   },
