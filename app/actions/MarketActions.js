@@ -86,12 +86,12 @@ var MarketActions = {
 
     commands.push(['getMarketInfo', [marketId], function(result) {
 
-      market['traderCount'] = new BigNumber(result[0]);
-      market['alpha'] = utilities.fromFixedPoint(new BigNumber(result[1]));
+      market['traderCount'] = result[0];
+      market['alpha'] = utilities.fromFixedPoint(result[1]);
       market['numOutcomes'] = parseInt(result[3]);
-      market['tradingPeriod'] = new BigNumber(result[4]);
-      market['tradingFee'] = utilities.fromFixedPoint(new BigNumber(result[5]));
-      
+      market['tradingPeriod'] = result[4];
+      market['tradingFee'] = utilities.fromFixedPoint(result[5]);
+    
       if (market['numOutcomes'] < 2) market['invalid'] = true;
 
       // initialize outcomes
