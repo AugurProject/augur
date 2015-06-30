@@ -116,7 +116,7 @@ var AugurApp = React.createClass({
               <div className="side-nav">
                   <p><Link to="home">Markets</Link><i>{ _.keys(this.state.market.markets).length }</i></p>
                   <p><Link to="account">Account</Link></p>
-                  <p><Link to="ballots">Ballot</Link><i>{ this.state.report.eventsToReport.length }</i></p>
+                  <p><Link to="ballots">Ballot</Link><i>{ _.keys(this.state.report.eventsToReport).length }</i></p>
               </div>
 
               <Network />

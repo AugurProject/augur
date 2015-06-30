@@ -2,7 +2,7 @@ var Fluxxor = require('fluxxor');
 var constants = require('../libs/constants');
 
 var state = {
-  eventsToReport: [],
+  eventsToReport: {},
   pendingReports: []
 };
 
@@ -12,7 +12,8 @@ var ReportStore = Fluxxor.createStore({
     this.bindActions(
       constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, this.handleLoadEventsToReportSuccess,
       constants.report.LOAD_PENDING_REPORTS_SUCCESS, this.handleLoadPendingReportsSuccess,
-      constants.report.UPDATE_PENDING_REPORTS, this.handleLoadPendingReportsSuccess
+      constants.report.UPDATE_PENDING_REPORTS, this.handleLoadPendingReportsSuccess,
+      constants.report.UPDATE_EVENT_TO_REPORT, this.handleUpdateEventToReport
     );
   },
 
@@ -32,8 +33,12 @@ var ReportStore = Fluxxor.createStore({
   handleLoadPendingReportsSuccess: function (payload) {
     state.pendingReports = payload.pendingReports;
     this.emit(constants.CHANGE_EVENT);
-  }
+  },
 
+  handleUpdateEventToReport: function (payload) {
+    state.eventsToReport[payload.id] = _.merge(state.eventsToReport[payload.id], payload);
+    this.emit(constants.CHANGE_EVENT);
+  }
 });
 
 module.exports = ReportStore;

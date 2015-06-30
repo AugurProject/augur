@@ -61,7 +61,8 @@ module.exports = {
     REPORTS_STORAGE: null,
     LOAD_EVENTS_TO_REPORT_SUCCESS: null,
     LOAD_PENDING_REPORTS_SUCCESS: null,
-    UPDATE_PENDING_REPORTS: null
+    UPDATE_PENDING_REPORTS: null,
+    UPDATE_EVENT_TO_REPORT: null
   }),
   transaction: keyMirror({
     ADD_TRANSACTION: null,

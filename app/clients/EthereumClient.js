@@ -338,18 +338,22 @@ EthereumClient.prototype.sendEther = function(destination, amount) {
 };
 
 EthereumClient.prototype.getEventBranch = function(id) {
+
   return Augur.getEventBranch(id);
 };
 
 EthereumClient.prototype.getBranches = function(onResult) {
+
   return Augur.getBranches(onResult);
 };
 
 EthereumClient.prototype.getPeriodLength = function(branchId, onResult) {
+
   return Augur.getPeriodLength(branchId, onResult);
 };
 
 EthereumClient.prototype.getVotePeriod = function(branchId, onResult) {
+
   return Augur.getVotePeriod(branchId, onResult);
 };
 
@@ -358,16 +362,17 @@ EthereumClient.prototype.getEvents = function(period, branchId) {
   if (!period) return;
   branchId = branchId || this.defaultBranchId;
 
-  var events = _.map(Augur.getEvents(branchId, period), function(eventId) {
-    return this.getEvent(eventId);
-  }, this);
+  var validEvents = _.filter(Augur.getEvents(branchId, period), function(eventId) {
+    //console.log('"'+eventId.toString(16)+'",');  
+    return !_.contains(blacklist.events, eventId.toString(16));
+  });
 
-  return events;
+  return validEvents;
 };
 
-EthereumClient.prototype.getEvent = function(eventId, onResult) {
+EthereumClient.prototype.getEventInfo = function(eventId, onResult) {
 
-  return Augur.getEventInfo(eventId, onResult);
+  Augur.getEventInfo(eventId, onResult);
 };
 
 EthereumClient.prototype.checkQuorum = function(branchId, onSent, onSuccess, onFailed) {
@@ -438,29 +443,19 @@ EthereumClient.prototype.getMarketEvents = function(marketId, onResult) {
   return Augur.getMarketEvents(marketId, onResult);
 };
 
-EthereumClient.prototype.getMarketDescription = function(marketId, onResult) {
+EthereumClient.prototype.getDescription = function(id, onResult) {
 
-  return Augur.getDescription(marketId, onResult)
+  return Augur.getDescription(id, onResult)
 };
 
-EthereumClient.prototype.getMarketAlpha = function(marketId, onResult) {
+EthereumClient.prototype.getAuthor = function(id, onResult) {
 
-  return Augur.getAlpha(marketId, onResult);
-};
-
-EthereumClient.prototype.getMarketAuthor = function(marketId, onResult) {
-
-  return Augur.getCreator(marketId, onResult);
+  return Augur.getCreator(id, onResult);
 };
 
 EthereumClient.prototype.getMarketCreationFee = function(marketId, onResult) {
 
   return Augur.getCreationFee(marketId, onResult);
-};
-
-EthereumClient.prototype.getEventExpiration = function(eventId, onResult) {
-
-  return Augur.getExpiration(eventId, onResult);
 };
 
 EthereumClient.prototype.getMarketTraderCount = function(marketId, onResult) {
@@ -492,12 +487,7 @@ EthereumClient.prototype.getMarketSharesPurchased = function(marketId, outcomeId
 
   return Augur.getSharesPurchased(marketId, outcomeId, onResult);
 };
-
-EthereumClient.prototype.getPrice = function(marketId, outcomeId, onResult) {
-
-  return Augur.price(marketId, outcomeId, onResult);
-};
-                         
+                    
 EthereumClient.prototype.getMarketParticipantSharesPurchased = function(marketId, traderId, outcomeId, onResult) {
 
   return Augur.getParticipantSharesPurchased(marketId, traderId, outcomeId, onResult);
@@ -508,10 +498,6 @@ EthereumClient.prototype.getMarketWinningOutcomes = function(marketId, onResult)
   return Augur.getWinningOutcomes(marketId, onResult);
 };
 
-EthereumClient.prototype.getEventOutcome = function(eventId, onResult) {
-
-  return Augur.getOutcome(eventId, onResult);
-};
 
 EthereumClient.prototype.addEvent = function(params, onSuccess) {
 

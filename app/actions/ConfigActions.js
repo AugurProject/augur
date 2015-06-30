@@ -71,7 +71,6 @@ var ConfigActions = {
       self.flux.actions.branch.checkQuorum();
 
       self.flux.actions.report.submitQualifiedReports();
-
     });
 
     // update market when a price change has been detected
