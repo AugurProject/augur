@@ -3304,14 +3304,13 @@ var Augur = (function (augur) {
     augur.tx.buyShares = {
         to: augur.contracts.buyAndSellShares,
         method: "buyShares",
-        signature: "iiiii",
-        // returns: "unfix",
+        signature: "iiiiii",
         send: true
     };
     augur.tx.sellShares = {
         to: augur.contracts.buyAndSellShares,
         method: "sellShares",
-        signature: "iiiii",
+        signature: "iiiiii",
         send: true
     };
     augur.getNonce = function (id, onSent) {
@@ -3320,7 +3319,7 @@ var Augur = (function (augur) {
         tx.params = id;
         return fire(tx, onSent);
     };
-    augur.buyShares = function (branch, market, outcome, amount, nonce, onSent, onSuccess, onFailed) {
+    augur.buyShares = function (branch, market, outcome, amount, nonce, limit, onSent, onSuccess, onFailed) {
         if (branch && branch.constructor === Object && branch.branchId) {
             market = branch.marketId; // sha256
             outcome = branch.outcome; // integer (1 or 2 for binary)
@@ -3328,6 +3327,7 @@ var Augur = (function (augur) {
             if (branch.nonce) {
                 nonce = branch.nonce; // integer (optional)
             }
+            limit = branch.limit || 0;
             if (branch.onSent) onSent = branch.onSent;
             if (branch.onSuccess) onSuccess = branch.onSuccess;
             if (branch.onFailed) onFailed = branch.onFailed;
@@ -3336,16 +3336,16 @@ var Augur = (function (augur) {
         var tx = copy(augur.tx.buyShares);
         if (onSent) {
             augur.getNonce(market, function (nonce) {
-                tx.params = [branch, market, outcome, augur.fix(amount), nonce];
+                tx.params = [branch, market, outcome, augur.fix(amount), nonce, limit || 0];
                 send_call_confirm(tx, onSent, onSuccess, onFailed);
             });
         } else {
             nonce = augur.getNonce(market);
-            tx.params = [branch, market, outcome, augur.fix(amount), nonce];
+            tx.params = [branch, market, outcome, augur.fix(amount), nonce, limit || 0];
             return send_call_confirm(tx);
         }
     };
-    augur.sellShares = function (branch, market, outcome, amount, nonce, onSent, onSuccess, onFailed) {
+    augur.sellShares = function (branch, market, outcome, amount, nonce, limit, onSent, onSuccess, onFailed) {
         if (branch && branch.constructor === Object && branch.branchId) {
             market = branch.marketId; // sha256
             outcome = branch.outcome; // integer (1 or 2 for binary)
@@ -3353,6 +3353,7 @@ var Augur = (function (augur) {
             if (branch.nonce) {
                 nonce = branch.nonce; // integer (optional)
             }
+            limit = branch.limit || 0;
             if (branch.onSent) onSent = branch.onSent;
             if (branch.onSuccess) onSuccess = branch.onSuccess;
             if (branch.onFailed) onFailed = branch.onFailed;
@@ -3361,12 +3362,12 @@ var Augur = (function (augur) {
         var tx = copy(augur.tx.sellShares);
         if (onSent) {
             augur.getNonce(market, function (nonce) {
-                tx.params = [branch, market, outcome, augur.fix(amount), nonce];
+                tx.params = [branch, market, outcome, augur.fix(amount), nonce, limit || 0];
                 send_call_confirm(tx, onSent, onSuccess, onFailed);
             });
         } else {
             nonce = augur.getNonce(market);
-            tx.params = [branch, market, outcome, augur.fix(amount), nonce];
+            tx.params = [branch, market, outcome, augur.fix(amount), nonce, limit || 0];
             return send_call_confirm(tx);
         }
     };
