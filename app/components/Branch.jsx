@@ -9,7 +9,7 @@ var Router = require('react-router');
 var RouteHandler = Router.RouteHandler;
 var Link = Router.Link;
 
-var AddMarketTrigger =  require('./AddMarket').AddMarketTrigger;
+var AddMarketModal =  require('./AddMarketModal')
 var Markets = require('./Markets');
 
 var constants = require('../libs/constants');
@@ -19,8 +19,9 @@ var Branch = React.createClass({
   // assuming only one branch and all markets in store are of that branch
   mixins: [FluxMixin, StoreWatchMixin('market', 'branch')],
 
-  getInitialState: function () {
+  getInitialState: function() {
     return {
+      addMarketModalOpen: false,
       marketsPerPage: constants.MARKETS_PER_PAGE,
       visiblePages: 3,
       pageNum: 0
@@ -37,6 +38,11 @@ var Branch = React.createClass({
       markets: marketState.markets,
       currentBranch: currentBranch
     }
+  },
+
+  toggleAddMarketModal: function(event) {
+
+    this.setState({ addMarketModalOpen: !this.state.addMarketModalOpen });
   },
 
   handlePageChanged: function (data) {
@@ -56,7 +62,7 @@ var Branch = React.createClass({
     
     return (
       <div id="branch">
-        <h3 className="clearfix">Markets <span className="subheading pull-right"><AddMarketTrigger /></span></h3>
+        <h3 className="clearfix">Markets <span className="subheading pull-right"><a href="javascript:void(0);" onClick={ this.toggleAddMarketModal }>Submit a Market</a></span></h3>
         <div className='subheading clearfix'>
           <span className='showing'>Showing { start+1 } - { end } of { total }</span>
           <Paginate 
@@ -78,6 +84,8 @@ var Branch = React.createClass({
             currentBranch={ this.state.currentBranch }
             classNameWrapper='col-sm-4' />
         </div>
+
+        <AddMarketModal show={ this.state.addMarketModalOpen } onHide={ this.toggleAddMarketModal } />
       </div>
     );
   }

@@ -6,11 +6,12 @@ var ReactBootstrap = require('react-bootstrap');
 var Button = ReactBootstrap.Button;
 var Input = ReactBootstrap.Input;
 var Modal = ReactBootstrap.Modal;
-var ModalTrigger = ReactBootstrap.ModalTrigger;
+
 var constants = require('../libs/constants');
 var utilities = require('../libs/utilities');
 var DatePicker = require('react-date-picker');
 var moment = require('moment');
+
 var AddMarketModal = React.createClass({
 
   mixins: [FluxMixin, StoreWatchMixin('market', 'network', 'asset')],
@@ -313,19 +314,4 @@ var AddMarketModal = React.createClass({
   }
 });
 
-var AddMarketTrigger = React.createClass({
-  mixins: [FluxMixin],
-
-  render: function () {
-    return (
-      <ModalTrigger modal={<AddMarketModal {...this.props} />}>
-        <a href='#'>Submit a Market</a>
-      </ModalTrigger>
-    );
-  }
-});
-
-module.exports = {
-  AddMarketModal: AddMarketModal,
-  AddMarketTrigger: AddMarketTrigger
-};
+module.exports = AddMarketModal;

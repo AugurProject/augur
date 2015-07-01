@@ -962,6 +962,11 @@ span.debug {
 
 #doorbell-button {
     left: 5%;
+    padding: 6px 15px;
+    opacity: 0.85;
+}
+#doorbell-button:hover {
+    opacity: 1;
 }
 #doorbell form,
 #doorbell form.dark {

@@ -7,7 +7,6 @@ var ReactBootstrap = require('react-bootstrap');
 var Button = ReactBootstrap.Button;
 var Input = ReactBootstrap.Input;
 var Modal = ReactBootstrap.Modal;
-var ModalTrigger = ReactBootstrap.ModalTrigger;
 
 var utilities = require('../libs/utilities');
 
@@ -398,63 +397,8 @@ var SendEtherModal = React.createClass({
   }
 });
 
-var SendCashTrigger = React.createClass({
-
-  mixins: [FluxMixin],
-
-  render: function() {
-    return (
-      <ModalTrigger modal={<SendCashModal {...this.props} />}>
-        <Button bsSize='xsmall' bsStyle='primary'>{ this.props.text }</Button>
-      </ModalTrigger>
-    );
-  }
-});
-
-var SendRepTrigger = React.createClass({
-
-  mixins: [FluxMixin],
-
-  render: function() {
-    return (
-      <ModalTrigger modal={<SendRepModal {...this.props} />}>
-        <Button bsSize='xsmall' bsStyle='primary'>{ this.props.text }</Button>
-      </ModalTrigger>
-    );
-  }
-});
-
-var SendEtherTrigger = React.createClass({
-
-  mixins: [FluxMixin],
-
-  render: function() {
-
-    // disabled version for centralized geth node (demo)
-    if (process.env.RPC_HOST === 'poc9.com:8545') {
-
-      return (
-        <ModalTrigger modal={<SendEtherModal {...this.props} />}>
-          <Button bsSize='xsmall' bsStyle='primary' disabled>{ this.props.text }</Button>
-        </ModalTrigger>
-      );
-
-    } else {
-
-      return (
-        <ModalTrigger modal={<SendEtherModal {...this.props} />}>
-          <Button bsSize='xsmall' bsStyle='primary'>{ this.props.text }</Button>
-        </ModalTrigger>
-      );
-    }
-  }
-});
-
 module.exports = {
   SendCashModal: SendCashModal,
-  SendCashTrigger: SendCashTrigger,
   SendRepModal: SendRepModal,
-  SendRepTrigger: SendRepTrigger,
-  SendEtherModal: SendEtherModal,
-  SendEtherTrigger: SendEtherTrigger
+  SendEtherModal: SendEtherModal
 };
