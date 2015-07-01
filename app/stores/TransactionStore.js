@@ -6,12 +6,15 @@ var momemnt = require('moment');
 var state = {}
 
 class Transaction {
-  constructor (hash) {
-    this.txHash = hash;
+  constructor (tx) {
+    this.txHash = tx.hash;
     this.from = null;
     this.to = null;
     this.timestamp = moment();
     this.blockNumber = null;
+    this.type = tx.type;
+    this.description = tx.description;
+    this.onMined = tx.onMined
   }
 }
 
@@ -28,7 +31,7 @@ var TransactionStore = Fluxxor.createStore({
   },
 
   handleAddTransaction: function (payload) {
-    state[payload.txHash] = new Transaction(payload.txHash);
+    state[payload.hash] = new Transaction(payload.hash, payload.type, payload.description, payload.onMined);
     this.emit(constants.CHANGE_EVENT);
   },
 

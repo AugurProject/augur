@@ -56,7 +56,7 @@ var EtherWarnModal = React.createClass({
         <Modal {...this.props} bsSize='small' onRequestHide={ this.handleToggle }>
           <div className="modal-body clearfix">
             <h4>Insufficient ether</h4>
-            <p>This requires { the state.requiredEther }.</p>
+            <p>This requires { this.state.requiredEther }.</p>
             <p>Your current balance is { this.props.asset.ether }</p>
           </div>
         </Modal>
@@ -68,13 +68,13 @@ var EtherWarnModal = React.createClass({
         <Modal {...this.props} bsSize='small' onRequestHide={ this.handleToggle }>
           <div className="modal-body clearfix">
             <h4>No ether</h4>
-            <p>This account has no ether and it's required for transactions on the ethereum network.</p>
-            <p>Start your ethereum client's miner or transfer some from another account</p>
+            <p>This account has no ether which is required for transactions on the Ethereum network.</p>
+            <p>Start the Ethereum client's miner or transfer some from another account</p>
           </div>
         </Modal>
       );
     }
-  };
+  }
 
 });
 

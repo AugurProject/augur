@@ -21,6 +21,7 @@ var Period = require('./Period');
 var Network = require('./Network');
 var Alert = require('./Alert');
 var Confirm = require('./Confirm');
+var EtherWarningModal = require('./EtherWarningModal');
 
 var AugurApp = React.createClass({
 
@@ -115,7 +116,7 @@ var AugurApp = React.createClass({
               <div className="side-nav">
                   <p><Link to="home">Markets</Link><i>{ _.keys(this.state.market.markets).length }</i></p>
                   <p><Link to="account">Account</Link></p>
-                  <p><Link to="ballots">Ballot</Link><i>{ this.state.report.eventsToReport.length }</i></p>
+                  <p><Link to="ballots">Ballot</Link><i>{ _.keys(this.state.report.eventsToReport).length }</i></p>
               </div>
 
               <Network />
@@ -222,7 +223,7 @@ var ErrorModal = React.createClass({
 
       var demoMode = (
         <p className="start-demo-mode">
-          Or <a onClick={ this.startDemoMode } href="javascript:void(0)">proceed in demo mode</a> (initial load time will be about 10-30 seconds)
+          Or <a onClick={ this.startDemoMode } href="javascript:void(0)">proceed in demo mode</a> (note: this mode uses a shared, hosted account)
         </p>
       );
       // don't offer demo mode if already using demo rpc host

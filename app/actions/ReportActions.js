@@ -26,11 +26,45 @@ var ReportActions = {
     // move the events from their old periods to the current period. Those
     // events will get voted on in the next period.)
     var isCurrent = currentBranch.votePeriod === currentBranch.currentPeriod - 1;
-    var events = isCurrent ? ethereumClient.getEvents(currentBranch.votePeriod) : [];
 
-    this.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {
-      eventsToReport: events || []
-    });
+    if (isCurrent) {
+
+      var eventIds = ethereumClient.getEvents(currentBranch.votePeriod);
+
+      // initialize all events
+      var eventsToReport = {}
+      _.each(eventIds, function(id) { eventsToReport[id] = {id: id} });
+      this.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {
+        eventsToReport: eventsToReport
+      });
+
+      _.each(eventIds, function(eventId) {
+  
+        var eventToReport = {id: eventId};
+
+        ethereumClient.getDescription(eventId, function(description) {
+          eventToReport['description'] = description;
+          this.dispatch(constants.report.UPDATE_EVENT_TO_REPORT, eventToReport);
+        }.bind(this));
+
+        ethereumClient.getEventInfo(eventId, function(eventInfo) {
+          eventToReport['branchId'] = eventInfo[0];
+          eventToReport['expirationBlock'] = eventInfo[1];
+          eventToReport['outcome'] = eventInfo[2];
+          eventToReport['minValue'] = eventInfo[3];
+          eventToReport['maxValue'] = eventInfo[4];
+          eventToReport['numOutcomes'] = eventInfo[5];
+
+          this.dispatch(constants.report.UPDATE_EVENT_TO_REPORT, eventToReport);
+        }.bind(this));
+      }, this);
+
+    } else {
+
+      this.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {
+        eventsToReport: {}
+      });
+    }
   },
 
   storeReports: function (reports) {

@@ -68,9 +68,9 @@ export default {
     if (!currentBranch.isCurrent && !hasCheckedQuorum) {
       ethereumClient.checkQuorum(currentBranch.id, function(result) {
         this.dispatch(constants.branch.CHECK_QUORUM_SENT);
-      }, function(result) {
+      }.bind(this), function(result) {
         this.dispatch(constants.branch.CHECK_QUORUM_SUCCESS);
-      }, function(result) {
+      }.bind(this), function(result) {
         this.dispatch(constants.branch.CHECK_QUORUM_SENT);
       }.bind(this));
     } else if (hasCheckedQuorum && currentBranch.isCurrent) {

@@ -3,9 +3,21 @@ var utilities = require('../libs/utilities');
 
 var TransactionActions = {
 	
-  addTransaction: function(txHash) {
+  addTransaction: function(tx) {
 
-    this.dispatch(constants.transaction.ADD_TRANSACTION, {txHash: txHash});
+    /*
+    *  tx is an object describing a transaction
+    *  tx is passed to the store here and used in the constructor of an augur transaction object
+    *  {
+    *    hash: '0xaf653...',
+    *    type: constants.transaction.SEND_REP_TYPE, 
+    *    description: 'send reputation to ...', 
+    *    onMined: function(result) { .... }
+    *  }
+    */
+
+    utilities.log(params.description + ' ('+params.hash+')');
+    this.dispatch(constants.transaction.ADD_TRANSACTION, params);
   },
 
   onPendingTx: function(txHash) {
@@ -16,13 +28,17 @@ var TransactionActions = {
   onAugurTx: function(result) {
 
   	var transactions = this.flux.store('transaction').getState();
-  	//console.log(transactions);
-  	var txHash = result.transactionHash;
-  	//console.log(result);
-  	if (transactions[txHash]) {
-  		utilities.log('block ' + result.blockNumber +' included ' + txHash);
+    var hash = result.transactionHash;
+
+  	if (transactions[hash]) {
+
+  		utilities.log('block ' + result.blockNumber +' included ' + hash);
+
+      // fire onMined if exists
+      if (transactions[hash].onMined) transactions[hash].onMined(result);
+
   		this.dispatch(constants.transaction.UPDATE_TRANSACTIONS, [
-  			{txHash: txHash, blockNumber: result.blockNumber}
+  			{hash: hash, blockNumber: result.blockNumber}
   		]);
   	}
   }

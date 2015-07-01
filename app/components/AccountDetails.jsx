@@ -18,6 +18,7 @@ var SendEtherTrigger = require('./SendModal').SendEtherTrigger;
 
 var CloseMarketTrigger = require('./CloseMarket').CloseMarketTrigger;
 
+var EtherWarningModal = require('./EtherWarningModal');
 var Markets = require('./Markets');
 
 var AccountDetails = React.createClass({
@@ -37,7 +38,7 @@ var AccountDetails = React.createClass({
 
     return {
       primaryAccount: account,
-      allAccounts:flux.store('network').getState().accounts,
+      allAccounts: flux.store('network').getState().accounts,
       asset: flux.store('asset').getState(),
       ethereumClient: flux.store('config').getEthereumClient(),
       authoredMarkets: flux.store('market').getMarketsByAuthor(account),
@@ -51,14 +52,18 @@ var AccountDetails = React.createClass({
     if (!this.state.cashFaucetDisabled) {
 
       if (this.state.asset.ether.toNumber() < constants.MIN_ETHER_WARNING) {
-        utilities.warn('not enough ether');
-        //var trigger = new SendEtherTrigger();
-        //console.log(trigger);
-        //trigger.setState({isModalOpen: true});
+        utilities.warn('not enough ether'); 
       }
 
       this.setState({cashFaucetDisabled: true});
-      this.state.ethereumClient.cashFaucet();
+      this.state.ethereumClient.cashFaucet(function(txHash) {
+        var flux = this.getFlux();
+        flux.actions.transaction.addTransaction({
+          hash: txHash, 
+          type: constants.transaction.CASH_FAUCET_TYPE, 
+          description: 'requesting cash'
+        });
+      }.bind(this));
     }
   },
 
@@ -71,7 +76,14 @@ var AccountDetails = React.createClass({
       }
 
       this.setState({repFaucetDisabled: true});
-      this.state.ethereumClient.repFaucet();
+      this.state.ethereumClient.repFaucet(null, function(txHash) {
+        var flux = this.getFlux();
+        flux.actions.transaction.addTransaction({
+          hash: txHash, 
+          type: constants.transaction.REP_FAUCET_TYPE, 
+          description: 'requesting reputation'
+        });
+      }.bind(this));
     } 
   },
 

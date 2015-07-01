@@ -61,25 +61,34 @@ module.exports = {
     REPORTS_STORAGE: null,
     LOAD_EVENTS_TO_REPORT_SUCCESS: null,
     LOAD_PENDING_REPORTS_SUCCESS: null,
-    UPDATE_PENDING_REPORTS: null
+    UPDATE_PENDING_REPORTS: null,
+    UPDATE_EVENT_TO_REPORT: null
   }),
   transaction: keyMirror({
     ADD_TRANSACTION: null,
-    UPDATE_TRANSACTIONS: null
+    UPDATE_TRANSACTIONS: null,
+    CASH_FAUCET_TYPE: null,
+    REP_FAUCET_TYPE: null,
+    SEND_CASH_TYPE: null,
+    SEND_ETHER_TYPE: null,
+    SEND_REP_TYPE: null,
+    ADD_MARKET_TYPE: null,
+    BUY_DECISION_TYPE: null,
+    SELL_DECISION_TYPE: null
   }),
   addresses: {
-    branches: '0x1d0a4d844ff543d5d32af631e15c7cb42c136e0e',
-    cash: '0xff62e09a1374985259da0a05a970172814b50285',
-    createEvent: '0xfdad48538d0d58c983b5b4fec4f5b85f1ab39f88',
-    createMarket: '0xf152244b598d39faa71f973d58b662b927c2ab11',
-    dispatch: '0x09f8647178d61f73691560fa90098bcb3e51170b',
-    events: '0x2b239ef79cb6e0ef8e27b17d2682d70b2f2b969b',
-    expiringEvents: '0x7e433022ebdc8b11444104c0ab4064652dcb1444',
-    info: '0xb1f2223c2ef0f7a4f50076594c426614b32939c1',
-    makeReports: '0x949e2f69cc7aedc68b78549e744b7f492c8494c9',
-    markets: '0xb54ecd11ae41c65f53af12a36554eb981e20652a',
-    reporting: '0x0a833f10b1fb3e0764c91fa2f8341aff3d8d100f',
-    sendReputation: '0x3426b13b188052fc0d2bf7f4849e6286d09645c7',
-    buyAndSellShares: '0x56d1a380aba030e00798b84bfa2c5e8700cbf7d6'
+    branches: '0xc0b22cf697d1327307c7ff3f917ffdbb862cd8e0',
+    cash: '0xb7575542dc836c4a25ccce65283429fa778da38a',
+    createEvent: '0xb45126dedc2b01a118d6185f644830766c50a524',
+    createMarket: '0xc8a8cfbe25db0d523e256c773fd02ed05bab2c2a',
+    dispatch: '0xfb1d30b78ea9b03d3c9f977dae0de8d358778785',
+    events: '0x99054d53d33869554e35e3aa1aa69ab8d34b14fe',
+    expiringEvents: '0xad713d0ff162fba3fd28ccaa8f3c6a05fe952572',
+    info: '0xe23192c4b11d97ba5563442892c28097908717a7',
+    makeReports: '0x15c6afa713cc8f15d798992b817498071812407a',
+    markets: '0x72e15df28b5be821b5dbdb814a17201d60b8a383',
+    reporting: '0x8b3079c483b84d747440d0bf0b2092556c3ac4bf',
+    sendReputation: '0xc5ff1a9dac7583383d19556f7a8894e8811c5b06',
+    buyAndSellShares: '0x29c39ef35cdd1af70f861bdcd2bafaeed7960f42'
   }
 };

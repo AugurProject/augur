@@ -107,7 +107,8 @@ var Ballots = React.createClass({
           </div>
         );
       }
-    } else if (!(this.state.events.length && percentComplete < 50)) {
+    } else if (!(_.keys(this.state.events).length && percentComplete < 50)) {
+
       var ballot = (
         <div className='no-decisions'>
           <h4>No decisions require your attention</h4>
@@ -151,7 +152,7 @@ var Ballots = React.createClass({
       <div id="ballots">
         <h3>Ballot<span className='subheading pull-right'>Period { currentBranch.votePeriod}</span></h3>
         <div className='now-marker' style={{marginLeft: markerPosition}}>&#9662;</div>
-        <ProgressBar className='period-progress'r>
+        <ProgressBar className='period-progress'>
           <ProgressBar bsStyle='primary' now={ votePercentComplete } key={1} />
           <ProgressBar bsStyle='warning' now={ revealPercentComplete } key={2} />
         </ProgressBar>

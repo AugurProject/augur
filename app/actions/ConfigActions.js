@@ -71,17 +71,17 @@ var ConfigActions = {
       self.flux.actions.branch.checkQuorum();
 
       self.flux.actions.report.submitQualifiedReports();
-
     });
 
     // update market when a price change has been detected
-    ethereumClient.onMarketChange(function(marketId) {
+    ethereumClient.onMarketChange(function(result) {
 
-      if (marketId) {
+      if (result.args.market) {
 
+        var marketId = result.args.market;
         // augur.js market ids are differnt from web3 :/
-        if (marketId < new BigNumber(2).toPower(255)) {
-          marketId = marketId.plus(new BigNumber(2).toPower(256));
+        if (result.args.market < new BigNumber(2).toPower(255)) {
+          marketId = result.args.market.plus(new BigNumber(2).toPower(256));
         }
 
         utilities.log('updating market ' + marketId.toString(16));

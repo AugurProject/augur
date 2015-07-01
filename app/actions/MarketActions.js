@@ -86,12 +86,13 @@ var MarketActions = {
 
     commands.push(['getMarketInfo', [marketId], function(result) {
 
-      market['traderCount'] = new BigNumber(result[0]);
-      market['alpha'] = utilities.fromFixedPoint(new BigNumber(result[1]));
+      market['traderCount'] = result[0];
+      market['alpha'] = utilities.fromFixedPoint(result[1]);
+      //market['traderId'] = result[2].toString(16);   // returns 0 instead of trader id
       market['numOutcomes'] = parseInt(result[3]);
-      market['tradingPeriod'] = new BigNumber(result[4]);
-      market['tradingFee'] = utilities.fromFixedPoint(new BigNumber(result[5]));
-      
+      market['tradingPeriod'] = result[4];
+      market['tradingFee'] = utilities.fromFixedPoint(result[5]);
+    
       if (market['numOutcomes'] < 2) market['invalid'] = true;
 
       // initialize outcomes
@@ -117,24 +118,20 @@ var MarketActions = {
     // populate outcome data
     _.each(market.outcomes, function (outcome) {
 
-      commands.push(['price', [market.id, outcome.id], function(price) {
+      commands.push(['getMarketOutcomeInfo', [market.id, outcome.id], function(info) {
 
+        outcome['volume'] = utilities.fromFixedPoint(info[0]);
+        if (market.traderId !== -1) outcome['sharesHeld'] = utilities.fromFixedPoint(info[1]);
+        var price = utilities.fromFixedPoint(info[2]);
         if (outcome.id === 2) market['price'] = price;  // hardcoded to outcome 2 (yes)
         outcome['price'] = price;
+
+        // traderCount is really part of the market and not an outcome but whatever
+        market['traderCount'] = info[4];
 
         this.flux.actions.market.updateMarket(market, true);
 
       }.bind(this)]);
-
-      if (market.traderId !== -1) {
-
-        commands.push(['getParticipantSharesPurchased', [market.id, market.traderId, outcome.id], function(result) {
-
-          outcome['sharesHeld'] = result;
-          this.flux.actions.market.updateMarket(market, true);
-
-        }.bind(this)]);
-      }
       
     }, this);
     
@@ -144,9 +141,8 @@ var MarketActions = {
 
         // calc end date from first event expiration
         if (eventInfo[1]) {
-          var experationBlock = utilities.fromFixedPoint(new BigNumber(eventInfo[1]));
-          market['endDate'] = utilities.blockToDate(experationBlock.toNumber());
-
+          var expirationBlock = new BigNumber(eventInfo[1]).toNumber();
+          market['endDate'] = utilities.blockToDate(expirationBlock);
           this.flux.actions.market.updateMarket(market, true);
         }
 
@@ -186,7 +182,7 @@ var MarketActions = {
     var ready = _.intersection(_.keys(currentMarket), requiredProperties);
     if (ready.length == requiredProperties.length && !supplement) {
       var commands = this.flux.actions.market.batchSupplementMarket(currentMarket);
-      _.each(_.chunk(commands, 4), function(chunk) {
+      _.each(_.chunk(commands, 5), function(chunk) {
         ethereumClient.batch(chunk);
       });
     }
