@@ -80,7 +80,7 @@ EthereumClient.prototype.getContract = function (name) {
 }
 
 /*
-* general filter that fires on every new block, "the netowrk pulse"
+* general filter that fires on every new block, "the network pulse"
 * used to trigger general update of assets, netowrk data, etc
 */
 EthereumClient.prototype.onNewBlock = function(callback) {

@@ -13,6 +13,7 @@ var ReactBootstrap = require('react-bootstrap');
 var ProgressBar = ReactBootstrap.ProgressBar;
 var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
 var Modal = ReactBootstrap.Modal;
+var Button = ReactBootstrap.Button;
 
 var utilities = require('../libs/utilities');
 var constants = require('../libs/constants');
@@ -137,7 +138,7 @@ var AugurApp = React.createClass({
           <div className="row container clearfix"></div>
         </footer>
 
-        <ErrorModal network={ this.state.network } config={ this.state.config } />
+        <ErrorModal network={ this.state.network } config={ this.state.config } asset={ this.state.asset } />
 
         <section id="loading" className="container">
           <div className="logo">
@@ -177,6 +178,11 @@ var ErrorModal = React.createClass({
       if (!this.state.isLoading) {
         this.setState({ isModalOpen: true, isLoading: true, startSecondsBehind: nextProps.network.blockChainAge});
       }
+
+    } else if (nextProps.asset.ether > 0) {
+
+      this.setState({ isModalOpen: true, isLoading: false});
+
     } else {
 
       this.setState({ isModalOpen: false, isLoading: false });
@@ -224,7 +230,7 @@ var ErrorModal = React.createClass({
 
       var demoMode = (
         <p className="start-demo-mode">
-          Or <a onClick={ this.startDemoMode } href="javascript:void(0)">proceed in demo mode</a> (initial load time will be about 10-30 seconds)
+          Or <a onClick={ this.startDemoMode } href="javascript:void(0)">proceed in demo mode</a> (note: this mode uses a shared, hosted account)
         </p>
       );
       // don't offer demo mode if already using demo rpc host
@@ -268,7 +274,23 @@ var ErrorModal = React.createClass({
           </div>
         </Modal>
       );
+
+    } else if ( this.props.asset.ether > 0) {
+
+      // no ether
+      return (
+        <Modal {...this.props} bsSize='small' onRequestHide={ this.handleToggle }>
+          <div className="modal-body clearfix">
+            <h4>Welcome to Augur</h4>
+            <p>Transactions on Augur and the Ethereum network cost ether.</p>
+            <p>Start your Ethereum client's miner or send ether to this account.</p>
+            <p className="address">{ this.props.network.primaryAccount }</p>
+            <Button className='pull-right' bsSize='small' onClick={ this.onDismiss } >Okay</Button>
+          </div>
+        </Modal>
+      );
     }
+
   }
 });
 
