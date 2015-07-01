@@ -5,6 +5,7 @@ var Router = require("react-router");
 var RouteHandler = Router.RouteHandler;
 var Link = Router.Link;
 var Route = Router.Route;
+var cookie = require("react-cookie");
 
 var FluxMixin = Fluxxor.FluxMixin(React),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
@@ -196,6 +197,12 @@ var ErrorModal = React.createClass({
     });
   },
 
+  handleDismiss: function() {
+
+    cookie.save('noEtherDismissed', true);
+    this.handleToggle();
+  },
+
   startDemoMode: function (event) {
 
     this.handleToggle();
@@ -275,7 +282,7 @@ var ErrorModal = React.createClass({
         </Modal>
       );
 
-    } else if ( this.props.asset.ether > 0) {
+    } else if ( this.props.asset.ether > 0 && !cookie.load('noEtherDismissed')) {
 
       // no ether
       return (
@@ -285,7 +292,7 @@ var ErrorModal = React.createClass({
             <p>Transactions on Augur and the Ethereum network cost ether.</p>
             <p>Start your Ethereum client's miner or send ether to this account.</p>
             <p className="address">{ this.props.network.primaryAccount }</p>
-            <Button className='pull-right' bsSize='small' onClick={ this.onDismiss } >Okay</Button>
+            <Button className='pull-right' bsSize='small' onClick={ this.handleDismiss } >Okay</Button>
           </div>
         </Modal>
       );
