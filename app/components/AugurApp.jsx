@@ -173,6 +173,7 @@ var ErrorModal = React.createClass({
 
     } else if (nextProps.network.blockChainAge > constants.MAX_BLOCKCHAIN_AGE) {
 
+      utilities.warn('blockchain ' + nextProps.network.blockChainAge + ' seconds behind');
       if (!this.state.isLoading) {
         this.setState({ isModalOpen: true, isLoading: true, startSecondsBehind: nextProps.network.blockChainAge});
       }
