@@ -111,8 +111,10 @@ var Comments = React.createClass({
     return (
       <div className="comments">
         <h4>{ this.props.comments.length } Comments</h4>
-        <CommentForm account={ this.props.account }/>
-        <CommentList comments={ this.props.comments } />
+        <div>
+          <CommentForm account={ this.props.account }/>
+          <CommentList comments={ this.props.comments } />
+        </div>
       </div>
     );
   }

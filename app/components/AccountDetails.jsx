@@ -12,11 +12,11 @@ var Link = Router.Link;
 var utilities = require('../libs/utilities');
 var constants = require('../libs/constants');
 
-var SendCashTrigger = require('./SendModal').SendCashTrigger;
-var SendRepTrigger = require('./SendModal').SendRepTrigger;
-var SendEtherTrigger = require('./SendModal').SendEtherTrigger;
+var SendCashModal = require('./SendModal').SendCashModal;
+var SendRepModal = require('./SendModal').SendRepModal;
+var SendEtherModal = require('./SendModal').SendEtherModal;
 
-var CloseMarketTrigger = require('./CloseMarket').CloseMarketTrigger;
+var CloseMarketModal = require('./CloseMarket').CloseMarketModal;
 
 var EtherWarningModal = require('./EtherWarningModal');
 var Markets = require('./Markets');
@@ -28,7 +28,10 @@ var AccountDetails = React.createClass({
   getInitialState: function () {
     return {
       repFaucetDisabled: false,
-      cashFaucetDisabled: false
+      cashFaucetDisabled: false,
+      sendCashModalOpen: false,
+      sendRepModalOpen: false,
+      sendEtherModalOpen: false
     };
   },
 
@@ -87,6 +90,21 @@ var AccountDetails = React.createClass({
     } 
   },
 
+  toggleSendCashModal: function(event) {
+
+    this.setState({sendCashModalOpen: !this.state.sendCashModalOpen});
+  },
+
+  toggleSendRepModal: function(event) {
+
+     this.setState({sendRepModalOpen: !this.state.sendRepModalOpen});
+  },
+
+  toggleSendEtherModal: function(event) {
+
+     this.setState({sendEtherModalOpen: !this.state.sendEtherModalOpen});
+  },
+
   render: function () {
 
     var cashBalance = this.state.asset.cash ? +this.state.asset.cash.toFixed(2) : '-';
@@ -138,20 +156,20 @@ var AccountDetails = React.createClass({
           <div className='col-sm-4 cash-balance'>
             { cashBalance } <span className='unit'>cash</span>
             <ButtonGroup>
-              <SendCashTrigger text='send' />
+              <Button bsSize='xsmall' bsStyle='primary' onClick={ this.toggleSendCashModal }>Send</Button>
               <Button disabled={ cashFaucetDisabled } bsSize='xsmall' bsStyle='default' onClick={ this.onCashFaucet }>Faucet<i className='fa fa-tint'></i></Button>
             </ButtonGroup>
           </div>
           <div className='col-sm-4 rep-balance'>
             { repBalance } <span className='unit'>rep</span>
             <ButtonGroup>
-              <SendRepTrigger text='send' />
+              <Button bsSize='xsmall' bsStyle='primary' onClick={ this.toggleSendRepModal }>Send</Button>
               <Button disabled={ repFaucetDisabled } bsSize='xsmall' bsStyle='default' onClick={ this.onRepFaucet }>Faucet<i className='fa fa-tint'></i></Button>
             </ButtonGroup>
           </div>
           <div className='col-sm-4 ether-balance'>
             { utilities.formatEther(this.state.asset.ether).value } <span className='unit'>{ utilities.formatEther(this.state.asset.ether).unit }</span>
-            <SendEtherTrigger text='send' />
+            <Button bsSize='xsmall' bsStyle='primary' onClick={ this.toggleSendEtherModal }>Send</Button>
           </div>
         </div>
         <div className='row'>
@@ -179,6 +197,11 @@ var AccountDetails = React.createClass({
             </div>        
           </div>
         </div>
+
+        <SendEtherModal show={ this.state.sendEtherModalOpen } onHide={ this.toggleSendEtherModal } />
+        <SendRepModal show={ this.state.sendRepModalOpen } onHide={ this.toggleSendRepModal } />
+        <SendCashModal show={ this.state.sendCashModalOpen } onHide={ this.toggleSendCashModal } />
+
       </div>
     );
 

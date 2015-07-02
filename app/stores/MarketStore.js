@@ -25,6 +25,7 @@ var MarketStore = Fluxxor.createStore({
 
     var requiredProperties = ["id", "description", "price", "endDate"];
     var loaded = _.intersection(_.keys(state.markets[marketId]), requiredProperties);
+
     if (loaded.length == requiredProperties.length) {
       return true;
     } else if (state.markets[marketId].invalid) {   // also flag loaded if it's just invalid (ie. no outcomes or price)

@@ -122,6 +122,15 @@ h1, h2, h3, h4, h5 {
   text-overflow: ellipsis;
 }
 
+p.address {
+font-size: 12px;
+  background-color: #333;
+  color: #eee;
+  padding: 5px;
+  border-radius: 3px;
+  margin-top: 15px;
+}
+
 nav.header {
     background-color: #602A52;
     margin-bottom: 20px;
@@ -632,9 +641,14 @@ background: linear-gradient(to bottom, rgba(24,55,111,0) 0%,rgba(24,55,111,0.7) 
 #market .comments {
     margin-top: 40px;
 }
+#market .comments>div {
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
 #market .comment {
     padding: 10px;
     background-color: #fff;
+    border-radius: 5px;
 }
 #market .comment .avatar {
     height: 57px;
@@ -948,6 +962,11 @@ span.debug {
 
 #doorbell-button {
     left: 5%;
+    padding: 6px 15px;
+    opacity: 0.85;
+}
+#doorbell-button:hover {
+    opacity: 1;
 }
 #doorbell form,
 #doorbell form.dark {
