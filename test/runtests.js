@@ -11,7 +11,6 @@ var path  = require("path");
 var cp = require("child_process");
 var util = require("util");
 var assert = require("chai").assert;
-// var async = require("async");
 var rm = require("rimraf");
 var chalk = require("chalk");
 var Mocha = require("mocha");
@@ -22,13 +21,17 @@ var log = console.log;
 
 var DEBUG = false;
 var DATADIR = path.join(process.env.HOME, ".augur-test");
+// var DATADIR = path.join(process.env.HOME, ".augur");
 var AUGUR_CORE = path.join(process.env.HOME, "src", "augur-core");
+// var GETH = "geth";
+var GETH = path.join(process.env.HOME, "src", "go-ethereum", "build", "bin", "geth");
 var UPLOADER = path.join(AUGUR_CORE, "load_contracts.py");
 var FAUCETS = path.join(__dirname, "faucets.js");
 var GOSPEL = "gospel.json";
 var CUSTOM_GOSPEL = false;
 var NETWORK_ID = "10101";
-var PROTOCOL_VERSION = "59";
+// var NETWORK_ID = "1010101";
+var GENESIS_NONCE = "1010101";
 var MINIMUM_ETHER = 32;
 var LOG = "geth.log";
 
@@ -49,8 +52,8 @@ var geth_flags = [
     "--shh",
     "--maxpeers", "64",
     "--networkid", NETWORK_ID,
+    "--genesisnonce", GENESIS_NONCE,
     "--datadir", DATADIR,
-    "--protocolversion", PROTOCOL_VERSION,
     "--bootnodes", enodes,
     "--password", path.join(DATADIR, ".password")
 ];
@@ -75,8 +78,8 @@ function kill_geth(geth) {
 
 function spawn_geth(flags) {
     log("Spawn " + chalk.magenta("geth") + " on network " + chalk.green(NETWORK_ID) +
-        " (version " + chalk.green(PROTOCOL_VERSION) + ")...");
-    var geth = cp.spawn("geth", flags);
+        " (genesis nonce " + chalk.green(GENESIS_NONCE) + ")...");
+    var geth = cp.spawn(GETH, flags);
     geth.stdout.on("data", function (data) {
         geth_log.write("stdout: " + util.format(data.toString()) + "\n");
     });
