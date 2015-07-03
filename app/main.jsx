@@ -62,6 +62,7 @@ var stores = {
 }
 
 var AugurApp = require("./components/AugurApp");
+var Overview = require('./components/Overview');
 var Branch = require('./components/Branch');
 var Market = require('./components/Market');
 var AccountDetails = require('./components/AccountDetails');
@@ -79,6 +80,7 @@ var routes = (
   <Route name="app" handler={ AugurApp } flux={ flux }>
     <DefaultRoute handler={ Branch } flux={ flux } title="Branch" />
     <Route name="home" path="/" handler={ Branch } flux={ flux } title="Branch" />
+    <Route name="overview" path="/overview" handler={ Overview } flux={ flux } title="Overview" />
     <Route name="branch" path="/branches/:branchId" handler={ Branch } flux={ flux } title="Branch" />
     <Route name="market" path="/market/:marketId" handler={ Market } flux={ flux } />
     <Route name="account" path="/account" handler={ AccountDetails } flux={ flux } title="Account Overview" />
