@@ -35,7 +35,7 @@ var SendCashModal = React.createClass({
         console.log(result);
       });
 
-      this.props.onRequestHide();
+      this.props.onRequestai();
     }
   },
 
@@ -163,7 +163,7 @@ var SendRepModal = React.createClass({
 
     if (this.isValid(event)) {
       this.state.ethereumClient.sendRep(this.state.destination, this.state.amount);
-      this.props.onRequestHide();
+      this.props.onHide();
     }
   },
 
@@ -291,7 +291,7 @@ var SendEtherModal = React.createClass({
 
     if (this.isValid(event) && process.env.RPC_HOST !== 'poc9.com:8545') {
       this.state.ethereumClient.sendEther(this.state.destination, this.state.amount);
-      this.props.onRequestHide();
+      this.props.onHide();
     }
   },
 

@@ -30,6 +30,9 @@ var MarketActions = {
 
     // load initial markets
     this.flux.actions.market.loadSomeMarkets(marketPageIds[initialPage-1]);
+
+    // short circuit loading if no markets
+    if (!_.keys(marketIds).length) this.flux.actions.config.updatePercentLoaded(100);
   },
 
   loadNewMarkets: function() {

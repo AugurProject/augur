@@ -12,10 +12,10 @@ var FluxMixin = Fluxxor.FluxMixin(React),
 
 var ReactBootstrap = require('react-bootstrap');
 var ProgressBar = ReactBootstrap.ProgressBar;
-var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
 var Modal = ReactBootstrap.Modal;
 var Button = ReactBootstrap.Button;
 
+var UAParser = require('ua-parser-js');
 var utilities = require('../libs/utilities');
 var constants = require('../libs/constants');
 
@@ -99,6 +99,7 @@ var AugurApp = React.createClass({
               <h1>augur<i>𝛂</i></h1>
 
               <ul className="menu">
+                <li><p><Link to="overview">Overview</Link></p></li>
                 <li><p><Link to="home">Markets</Link></p></li>
                 <li><p><Link to="account">Account</Link></p></li>
                 <li><p><Link to="ballots">Ballot</Link></p></li>
@@ -116,6 +117,7 @@ var AugurApp = React.createClass({
           <div className="dash page row">
             <div className="col-md-3 hidden-xs hidden-sm sidebar">
               <div className="side-nav">
+                  <p><Link to="overview">Overview</Link></p>
                   <p><Link to="home">Markets</Link><i>{ _.keys(this.state.market.markets).length }</i></p>
                   <p><Link to="account">Account</Link></p>
                   <p><Link to="ballots">Ballot</Link><i>{ _.keys(this.state.report.eventsToReport).length }</i></p>
@@ -139,13 +141,13 @@ var AugurApp = React.createClass({
           <div className="row container clearfix"></div>
         </footer>
 
-        <ErrorModal network={ this.state.network } config={ this.state.config } asset={ this.state.asset } />
-
         <section id="loading" className="container">
           <div className="logo">
             { this.getLoadingProgress() }
           </div>
         </section>
+
+        <ErrorModal network={ this.state.network } config={ this.state.config } asset={ this.state.asset } />
 
       </div>
     );
@@ -154,13 +156,15 @@ var AugurApp = React.createClass({
 
 // modal prompt for loading exceptions
 var ErrorModal = React.createClass({
-  mixins: [FluxMixin, OverlayMixin],
+
+  mixins: [FluxMixin],
 
   getInitialState: function () {
 
     return {
       isModalOpen: false,
       isLoading: false,
+      installationHelp: false,
       startSecondsBehind: null
     }
   },
@@ -175,14 +179,10 @@ var ErrorModal = React.createClass({
 
     } else if (nextProps.network.blockChainAge > constants.MAX_BLOCKCHAIN_AGE) {
 
-      utilities.warn('blockchain ' + nextProps.network.blockChainAge + ' seconds behind');
       if (!this.state.isLoading) {
+        utilities.warn('blockchain ' + nextProps.network.blockChainAge + ' seconds behind');
         this.setState({ isModalOpen: true, isLoading: true, startSecondsBehind: nextProps.network.blockChainAge});
       }
-
-    } else if (nextProps.asset.ether > 0) {
-
-      this.setState({ isModalOpen: true, isLoading: false});
 
     } else {
 
@@ -203,25 +203,28 @@ var ErrorModal = React.createClass({
     this.handleToggle();
   },
 
-  startDemoMode: function (event) {
+  showInstallationHelp: function(event) {
+
+    this.setState({ installationHelp: true });
+  },
+
+  startDemoMode: function(event) {
 
     this.handleToggle();
     this.getFlux().actions.config.updateEthereumClient(constants.DEMO_HOST);
   },
 
   render: function() {
-    return <span />;
-  },
-
-  renderOverlay: function () {
 
     if (!this.state.isModalOpen) return <span />;
+
+    var ua = new UAParser(navigator.userAgent);
 
     if (this.props.config.ethereumClientFailed) {
 
       // augur client failed to load
       return (
-        <Modal {...this.props} bsSize='small' onRequestHide={ this.handleToggle } backdrop='static'>
+        <Modal {...this.props} bsSize='small' show={ this.state.isModalOpen } onHide={ this.handleToggle } backdrop='static'>
           <div className="modal-body clearfix">
               <h4>Augur failed to load</h4>
               <p>There was a problem loading Augur</p>
@@ -234,25 +237,45 @@ var ErrorModal = React.createClass({
     } else if (this.props.network.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED) {
 
       var host = window.location.origin;
+      var os = ua.getOS().name;
+      var help = <span />;
 
-      var demoMode = (
-        <p className="start-demo-mode">
-          Or <a onClick={ this.startDemoMode } href="javascript:void(0)">proceed in demo mode</a> (note: this mode uses a shared, hosted account)
-        </p>
-      );
-      // don't offer demo mode if already using demo rpc host
-      if (process.env.RPC_HOST === constants.DEMO_HOST) demoMode = <span/>;
+      if (this.state.installationHelp) {
+
+        var stepOne = (<li>
+          Follow the Ethereum <a href="https://github.com/ethereum/go-ethereum/wiki/Building-Ethereum">install guide</a> on github
+        </li>);
+        if (os === 'Mac OS') {
+          stepOne = (<li>
+          Follow the Ethereum <a href="https://github.com/ethereum/go-ethereum/wiki/Installation-Instructions-for-Mac">install guide</a> for Mac OS
+        </li>);
+        } else if (os = 'Windows') {
+          stepOne = (<li>
+            Download the <a href="https://build.ethdev.com/builds/Windows%20Go%20develop%20branch/Geth-Win64-latest.zip">lastest geth build</a> for Windows
+          </li>);
+        }
+        var help = (
+          <div className="installation-help">
+            <h4>Installing and configuring Ethereum</h4>
+            <ol>
+              { stepOne }
+              <li>Add a new account using <pre>geth account new</pre></li>
+              <li>Start geth with <pre>geth --rpc --rpcorsdomain { host } --unlock primary</pre></li>
+              <li><a href="{ host }">{ host }</a></li>
+            </ol>
+          </div>
+        );
+      }
 
       // no ethereum client detected
       return (
-        <Modal {...this.props} id="no-eth-modal" onRequestHide={ this.handleToggle } backdrop='static'>
+        <Modal {...this.props} id="no-eth-modal" show={ this.state.isModalOpen } onHide={ this.handleToggle } backdrop='static'>
           <div className="modal-body clearfix">
-              <h4>Failed to connect to Ethereum</h4>
-              <p>Augur requires a local node of the Ethereum client running</p>
-              <p>Visit <a href="https://github.com/ethereum/go-ethereum/wiki">the ethereum github wiki</a> for help installing the latest client</p>
-              <p>If geth is installed:<br /><span className='cmd'>geth --rpc --rpccorsdomain { host } --shh --unlock primary</span></p>
-              { demoMode }
-          </div>
+            <h3>Ethereum not found</h3>
+            <p>Augur requires an Ethereum client to be running and current.  Augur could not detect a client running which probably mean it's not installed, running or is misconfigured.</p>
+            <p>Get help <a onClick={ this.showInstallationHelp } href="javascript:void(0)">installing and configuring Ethereum</a> or <a onClick={ this.startDemoMode } href="javascript:void(0)">proceed in demo mode</a></p>
+            { help }
+        </div>
         </Modal>
       );
 
@@ -273,7 +296,7 @@ var ErrorModal = React.createClass({
 
       // augur client is loading
       return (
-        <Modal {...this.props} bsSize='small' onRequestHide={ this.handleToggle } backdrop='static'>
+        <Modal {...this.props} bsSize='small' show={ this.state.isModalOpen } onHide={ this.handleToggle } backdrop='static'>
           <div className="modal-body clearfix">
               <h4>Ethereum loading</h4>
               { message }
@@ -281,23 +304,7 @@ var ErrorModal = React.createClass({
           </div>
         </Modal>
       );
-
-    } else if ( this.props.asset.ether > 0 && !cookie.load('noEtherDismissed')) {
-
-      // no ether
-      return (
-        <Modal {...this.props} bsSize='small' onRequestHide={ this.handleToggle }>
-          <div className="modal-body clearfix">
-            <h4>Welcome to Augur</h4>
-            <p>Transactions on Augur and the Ethereum network cost ether.</p>
-            <p>Start your Ethereum client's miner or send ether to this account.</p>
-            <p className="address">{ this.props.network.primaryAccount }</p>
-            <Button className='pull-right' bsSize='small' onClick={ this.handleDismiss } >Okay</Button>
-          </div>
-        </Modal>
-      );
     }
-
   }
 });
 

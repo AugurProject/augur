@@ -175,7 +175,7 @@ var AddMarketModal = React.createClass({
       }.bind(this));
     }.bind(this));
 
-    this.props.onRequestHide();
+    this.props.onHide();
   },
 
   handleDatePicked: function(dateText, moment, event) {
