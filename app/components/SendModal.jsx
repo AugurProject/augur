@@ -35,7 +35,7 @@ var SendCashModal = React.createClass({
         console.log(result);
       });
 
-      this.props.onRequestHide();
+      this.props.onRequestai();
     }
   },
 

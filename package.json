@@ -49,6 +49,7 @@
     "react-paginate": "^0.1.33",
     "react-router": "^0.13.3",
     "secure-random": "^1.1.1",
+    "ua-parser-js": "^0.7.7",
     "web3": "^0.6.0"
   },
   "devDependencies": {
