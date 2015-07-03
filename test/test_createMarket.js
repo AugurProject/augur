@@ -21,20 +21,20 @@ Augur.connect();
 
 var log = console.log;
 
-var EXPIRING = true;
+var EXPIRING = false;
 var TIMEOUT = 240000;
 var events = [
-    ["Will Jack win the July 2015 Augur Breakdancing Competition?", Augur.date_to_block("8-1-2015")],
-    ["Will the Augur software sale clear $1M?", Augur.date_to_block("9-1-2015")],
-    ["Will the Augur software sale clear $5M?", Augur.date_to_block("9-1-2015")],
+    // ["Will Jack win the July 2015 Augur Breakdancing Competition?", Augur.date_to_block("8-1-2015")],
+    // ["Will the Augur software sale clear $1M?", Augur.date_to_block("9-1-2015")],
+    // ["Will the Augur software sale clear $5M?", Augur.date_to_block("9-1-2015")],
     ["Will the Sun turn into a red giant and engulf the Earth by the end of 2015?", Augur.date_to_block("1-1-2016")],
-    ["Is InfoSec Taylor Swift really Taylor Swift?", Augur.date_to_block("1-1-2020")],
+    // ["Is InfoSec Taylor Swift really Taylor Swift?", Augur.date_to_block("1-1-2020")],
     ["Will Rand Paul win the 2016 U.S. Presidential Election?", Augur.date_to_block("1-2-2017")],
-    ["Will Hillary Clinton win the 2016 U.S. Presidential Election?", Augur.date_to_block("1-2-2017")],
-    ["Will the President of Brazil, Mrs. Dilma Roussef, resign or be impeached?", Augur.date_to_block("12-31-2017")],
+    // ["Will Hillary Clinton win the 2016 U.S. Presidential Election?", Augur.date_to_block("1-2-2017")],
+    // ["Will the President of Brazil, Mrs. Dilma Roussef, resign or be impeached?", Augur.date_to_block("12-31-2017")],
     ["Will it rain in New York City on November 12, 2015?", Augur.date_to_block("11-13-2015")],
     ["Will the Larsen B ice shelf collapse by November 1, 2015?", Augur.date_to_block("11-2-2015")],
-    ["Will it be revealed that Coinbase has a backdoor for the FBI?", Augur.date_to_block("11-1-2015")]
+    // ["Will it be revealed that Coinbase has a backdoor for the FBI?", Augur.date_to_block("11-1-2015")]
 ];
 
 describe("functions/createMarket", function () {

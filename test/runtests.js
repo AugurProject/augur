@@ -21,15 +21,18 @@ var log = console.log;
 
 var DATADIR = path.join(process.env.HOME, ".augur-test");
 // var DATADIR = path.join(process.env.HOME, ".augur");
+// var DATADIR = path.join(process.env.HOME, ".ethereum");
 
 // var GETH = "geth";
 var GETH = path.join(process.env.HOME, "src", "go-ethereum", "build", "bin", "geth");
 
 var NETWORK_ID = "10101";
 // var NETWORK_ID = "1010101";
+// var NETWORK_ID = "0";
 
 var GENESIS_NONCE = "10101";
 // var GENESIS_NONCE = "1010101";
+// var GENESIS_NONCE = "42";
 
 var DEBUG = false;
 var AUGUR_CORE = path.join(process.env.HOME, "src", "augur-core");
