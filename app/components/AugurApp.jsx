@@ -99,6 +99,7 @@ var AugurApp = React.createClass({
               <h1>augur<i>𝛂</i></h1>
 
               <ul className="menu">
+                <li><p><Link to="overview">Overview</Link></p></li>
                 <li><p><Link to="home">Markets</Link></p></li>
                 <li><p><Link to="account">Account</Link></p></li>
                 <li><p><Link to="ballots">Ballot</Link></p></li>
@@ -116,6 +117,7 @@ var AugurApp = React.createClass({
           <div className="dash page row">
             <div className="col-md-3 hidden-xs hidden-sm sidebar">
               <div className="side-nav">
+                  <p><Link to="overview">Overview</Link></p>
                   <p><Link to="home">Markets</Link><i>{ _.keys(this.state.market.markets).length }</i></p>
                   <p><Link to="account">Account</Link></p>
                   <p><Link to="ballots">Ballot</Link><i>{ _.keys(this.state.report.eventsToReport).length }</i></p>
@@ -177,8 +179,8 @@ var ErrorModal = React.createClass({
 
     } else if (nextProps.network.blockChainAge > constants.MAX_BLOCKCHAIN_AGE) {
 
-      utilities.warn('blockchain ' + nextProps.network.blockChainAge + ' seconds behind');
       if (!this.state.isLoading) {
+        utilities.warn('blockchain ' + nextProps.network.blockChainAge + ' seconds behind');
         this.setState({ isModalOpen: true, isLoading: true, startSecondsBehind: nextProps.network.blockChainAge});
       }
 
@@ -270,7 +272,7 @@ var ErrorModal = React.createClass({
         <Modal {...this.props} id="no-eth-modal" show={ this.state.isModalOpen } onHide={ this.handleToggle } backdrop='static'>
           <div className="modal-body clearfix">
             <h3>Ethereum not found</h3>
-            <p>Augur requires an Ethereum client to be running and current.  Augur could not detect a client running which probably mean it's not installed and running or misconfigured.</p>
+            <p>Augur requires an Ethereum client to be running and current.  Augur could not detect a client running which probably mean it's not installed, running or is misconfigured.</p>
             <p>Get help <a onClick={ this.showInstallationHelp } href="javascript:void(0)">installing and configuring Ethereum</a> or <a onClick={ this.startDemoMode } href="javascript:void(0)">proceed in demo mode</a></p>
             { help }
         </div>
