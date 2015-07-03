@@ -182,10 +182,6 @@ var ErrorModal = React.createClass({
         this.setState({ isModalOpen: true, isLoading: true, startSecondsBehind: nextProps.network.blockChainAge});
       }
 
-    } else if (nextProps.asset.ether > 0) {
-
-      this.setState({ isModalOpen: true, isLoading: false});
-
     } else {
 
       this.setState({ isModalOpen: false, isLoading: false });
@@ -306,23 +302,7 @@ var ErrorModal = React.createClass({
           </div>
         </Modal>
       );
-
-    } else if ( this.props.asset.ether > 0 && !cookie.load('noEtherDismissed')) {
-
-      // no ether
-      return (
-        <Modal {...this.props} bsSize='small' show={ this.state.isModalOpen } onHide={ this.handleToggle }>
-          <div className="modal-body clearfix">
-            <h4>Welcome to Augur</h4>
-            <p>Transactions on Augur and the Ethereum network cost ether.</p>
-            <p>Start your Ethereum client's miner or send ether to this account.</p>
-            <p className="address">{ this.props.network.primaryAccount }</p>
-            <Button className='pull-right' bsSize='small' onClick={ this.handleDismiss } >Okay</Button>
-          </div>
-        </Modal>
-      );
     }
-
   }
 });
 
