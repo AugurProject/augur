@@ -19,19 +19,24 @@ var constants = require("./constants");
 
 var log = console.log;
 
-var DEBUG = false;
 var DATADIR = path.join(process.env.HOME, ".augur-test");
 // var DATADIR = path.join(process.env.HOME, ".augur");
-var AUGUR_CORE = path.join(process.env.HOME, "src", "augur-core");
+
 // var GETH = "geth";
 var GETH = path.join(process.env.HOME, "src", "go-ethereum", "build", "bin", "geth");
+
+var NETWORK_ID = "10101";
+// var NETWORK_ID = "1010101";
+
+var GENESIS_NONCE = "10101";
+// var GENESIS_NONCE = "1010101";
+
+var DEBUG = false;
+var AUGUR_CORE = path.join(process.env.HOME, "src", "augur-core");
 var UPLOADER = path.join(AUGUR_CORE, "load_contracts.py");
 var FAUCETS = path.join(__dirname, "faucets.js");
 var GOSPEL = "gospel.json";
 var CUSTOM_GOSPEL = false;
-var NETWORK_ID = "10101";
-// var NETWORK_ID = "1010101";
-var GENESIS_NONCE = "1010101";
 var MINIMUM_ETHER = 32;
 var LOG = "geth.log";
 
