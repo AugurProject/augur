@@ -76,19 +76,36 @@ module.exports = {
     BUY_DECISION_TYPE: null,
     SELL_DECISION_TYPE: null
   }),
-  addresses: {
-    branches: '0xc0b22cf697d1327307c7ff3f917ffdbb862cd8e0',
-    cash: '0xb7575542dc836c4a25ccce65283429fa778da38a',
-    createEvent: '0xb45126dedc2b01a118d6185f644830766c50a524',
-    createMarket: '0xc8a8cfbe25db0d523e256c773fd02ed05bab2c2a',
-    dispatch: '0xfb1d30b78ea9b03d3c9f977dae0de8d358778785',
-    events: '0x99054d53d33869554e35e3aa1aa69ab8d34b14fe',
-    expiringEvents: '0xad713d0ff162fba3fd28ccaa8f3c6a05fe952572',
-    info: '0xe23192c4b11d97ba5563442892c28097908717a7',
-    makeReports: '0x15c6afa713cc8f15d798992b817498071812407a',
-    markets: '0x72e15df28b5be821b5dbdb814a17201d60b8a383',
-    reporting: '0x8b3079c483b84d747440d0bf0b2092556c3ac4bf',
-    sendReputation: '0xc5ff1a9dac7583383d19556f7a8894e8811c5b06',
-    buyAndSellShares: '0x29c39ef35cdd1af70f861bdcd2bafaeed7960f42'
+  contractAddress: {
+    0: {
+      buyAndSellShares: '0xee9da4b5d15bcfc00aed018fb8c3024a9320a8fe',
+      sendReputation: '0x8c650bc90326508bafa0e27ca805c4579d7f7f97',
+      makeReports: '0x7c9dd875d95d03f6adb7758ed487ec37f20075bf',
+      createEvent: '0x64ddab0db008ea87d25296ef8db033920e495f25',
+      createMarket: '0xe56a715d30bb1f00d197b36580948e885dc29d32',
+      dispatch: '0x7fe661f70a686d9275a26361ba1a98aee78b11bd',
+      cash: '0x09dfcb6be0b8927518ab930e93518044c71c5a4f',
+      info: '0x21607adae6f054274a5b7a3970692a31d4bfb896',
+      branches: '0x552454582fe259c644c191448c66e4fce4306437',
+      events: '0xb48e92dfcae19d6962c6dd000f67a7a26ee7e8e6',
+      expiringEvents: '0x915f35711d96b400908737bb82129580991f6021',
+      markets: '0xdb3a35ffe17cf86ffab60857cfe851e6abb7a9ec',
+      reporting: '0x08606bc6f0aa9c41bed0ea1747dd567739751102'
+    },
+    1010101: {
+      buyAndSellShares: '0x29c39ef35cdd1af70f861bdcd2bafaeed7960f42',
+      sendReputation: '0xd2e1a1fe9317fa11737aa6c061084e57f6a2e805',
+      makeReports: '0x80266f7385c02bd1cd96092170b9ad46afc4f867',
+      createEvent: '0xfd26e496ca38f59dfed58ee6a61daf85654aeb1d',
+      createMarket: '0x6b96920528e6fed2c44dfa7d273090afd7767a0f',
+      dispatch: '0x15d9fd16e6188d875db93cb39b03f0002c784aa2',
+      cash: '0xc5d0ee47aa994900d22816271c4fed2718064305',
+      info: '0xaaedfa2e3efe271e1892996a3293c109f52fb52d',
+      branches: '0x266162e4a9556513bd59c349a56026e6373abbfe',
+      events: '0x5da6f084f5349c77bc629c065cbd125d8767edf7',
+      expiringEvents: '0xdb77a2b1b81ac56f5b0f8117187879c7ea03dd12',
+      markets: '0xf57cbab860d2a751433b47e3e7a2e4a4431f2fdf',
+      reporting: '0xe1de4dbfb0219faab35642d79688468a2c72e98b'
+    }
   }
 };

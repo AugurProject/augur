@@ -26,21 +26,27 @@ function MissingContractError(contractName) {
 function EthereumClient(params) {
 
   params = params || {};
-  this.addresses = {};
+  this.contractAddress = {};
   this.filters = [];
   this.contracts = {};
   this.account = null;
+  this.networkId = null;
 
   // defaults
   this.defaultBranchId = params.defaultBranchId;
   this.host = params.host || 'localhost:8545';
 
-  _.defaults(this.addresses, constants.addresses);
+  _.defaults(this.contractAddress, constants.contractAddress);
 
   // web3 setup
   this.web3 = window.web3 = params.web3 || require('web3');
   this.web3.setProvider(new web3.providers.HttpProvider('//'+this.host));
 }
+
+// TODO: migrate off default
+EthereumClient.prototype.setDefaultBranch = function(branchId) {
+  this.defaultBranchId = branchId;
+};
 
 /**
  * augur.js doesn't connect correctly if the network isn't available at load
@@ -66,14 +72,15 @@ EthereumClient.prototype.getContract = function (name) {
   var contract = this.contracts[name];
   if (_.isUndefined(contract)) {
     var contractAbi = abi[name];
-    var address = this.addresses[name];
+    console.log(this.networkId);
+    var address = this.contractAddress[this.networkId][name];
     if (_.isUndefined(address) || _.isUndefined(contractAbi)) {
       throw new MissingContractError(name);
     }
 
     var Contract = web3.eth.contract(contractAbi);
     contract = Contract.at(address);
-    this.contracts[name] = contract;
+    this.contractAddress[name] = contract;
   }
 
   return contract;
@@ -157,6 +164,35 @@ EthereumClient.prototype.batch = function(commands) {
   batch.execute();
 };
 
+EthereumClient.prototype.getNetworkId = function(onResult) {
+
+  if (!onResult) {
+    var result = web3.version.network;
+    this.networkId = result;
+    return result;
+  }  
+
+  web3.version.getNetwork(function(error, result) {
+    if (error) { 
+      utilities.error(error);
+    } else { 
+      this.networkId = result;
+      onResult(result); 
+    }
+  }.bind(this));
+};
+
+EthereumClient.prototype.getClientVersion = function(onResult) {
+
+  web3.version.getClient(function(error, result) {
+    if (error) { 
+      utilities.error(error);
+    } else { 
+      onResult(result); 
+    }
+  })
+};
+
 EthereumClient.prototype.getBlock = function(blockNumber, onResult) {
 
   web3.eth.getBlock(blockNumber, function(error, block) {
@@ -166,10 +202,6 @@ EthereumClient.prototype.getBlock = function(blockNumber, onResult) {
       onResult(block); 
     }
   })
-};
-
-EthereumClient.prototype.setDefaultBranch = function(branchId) {
-  this.defaultBranchId = branchId;
 };
 
 EthereumClient.prototype.getAccounts = function(callback) {

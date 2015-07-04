@@ -990,6 +990,7 @@ span.debug {
 }
 #doorbell form,
 #doorbell form.dark {
+    background-color: #f9f6ea;
     -webkit-box-shadow: none;
     box-shadow: none;
 }

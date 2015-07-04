@@ -14,8 +14,11 @@ var state = {
   ethereumStatus: null,
   mining: null,
   hashrate: null,
+  clientVersion: null,
+  networkId: null,
   blockChainAge: null,
   isMonitoringBlocks: false,
+
   hasCheckedQuorum: false
 };
 
