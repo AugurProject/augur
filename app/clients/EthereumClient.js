@@ -72,7 +72,6 @@ EthereumClient.prototype.getContract = function (name) {
   var contract = this.contracts[name];
   if (_.isUndefined(contract)) {
     var contractAbi = abi[name];
-    console.log(this.networkId);
     var address = this.contractAddress[this.networkId][name];
     if (_.isUndefined(address) || _.isUndefined(contractAbi)) {
       throw new MissingContractError(name);
