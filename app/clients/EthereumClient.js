@@ -244,11 +244,17 @@ EthereumClient.prototype.getAccount = function() {
 
   } else {
 
-    // default account not set for some reason, fallback to account zero
-    var result = this.getAccounts();
+    // default account not set, so fallback to coinbase
+    if (web3.eth.coinbase) {
+      this.account = web3.eth.coinbase;
+      return web3.eth.coinbase;
 
-    this.account = result[0];
-    return result[0];
+    // coinbase not set, so fallback to first account in the list
+    } else {
+      var result = this.getAccounts();
+      this.account = result[0];
+      return result[0];
+    }
   }
 };
 
@@ -458,7 +464,7 @@ EthereumClient.prototype.getMarkets = function(branchId, currentMarkets) {
   branchId = branchId || this.defaultBranchId;
   var validMarkets = _.filter(Augur.getMarkets(branchId), function (marketId) {
     //console.log('"'+marketId.toString(16)+'",');  
-    return !_.contains(blacklist.markets, marketId.toString(16));
+    return !_.contains(blacklist.markets[Augur.network_id][branchId], marketId.toString(16));
   });
 
   if (currentMarkets) {    // return new markets o
