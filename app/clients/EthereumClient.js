@@ -110,7 +110,7 @@ EthereumClient.prototype.onNewBlock = function(callback) {
 EthereumClient.prototype.onAugurTx = function(callback) {
 
   this.filters.augur = web3.eth.filter({
-    addresses: _.map(this.addresses, function(address, contract) { 
+    addresses: _.map(this.contractAddress[this.networkId], function(address, contract) { 
       return address;
     })
   });
@@ -317,9 +317,8 @@ EthereumClient.prototype.getAddress = function (name) {
 };
 
 EthereumClient.prototype.cashFaucet = function(onSent) {
-  console.log('requesting cash');
+
   Augur.cashFaucet(function(result) {
-    console.log(result);
     onSent(result.txHash);
   });
 };
@@ -464,8 +463,8 @@ EthereumClient.prototype.getMarkets = function(branchId, currentMarkets) {
   branchId = branchId || this.defaultBranchId;
   var validMarkets = _.filter(Augur.getMarkets(branchId), function (marketId) {
     //console.log('"'+marketId.toString(16)+'",');  
-    return !_.contains(blacklist.markets[Augur.network_id][branchId], marketId.toString(16));
-  });
+    return !_.contains(blacklist.markets[this.networkId][branchId], marketId.toString(16));
+  }, this);
 
   if (currentMarkets) {    // return new markets o
     // convert ids to strings for comparision

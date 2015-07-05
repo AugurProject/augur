@@ -78,34 +78,36 @@ module.exports = {
   }),
   contractAddress: {
     0: {
-      buyAndSellShares: '0xee9da4b5d15bcfc00aed018fb8c3024a9320a8fe',
-      sendReputation: '0x8c650bc90326508bafa0e27ca805c4579d7f7f97',
-      makeReports: '0x7c9dd875d95d03f6adb7758ed487ec37f20075bf',
-      createEvent: '0x64ddab0db008ea87d25296ef8db033920e495f25',
-      createMarket: '0xe56a715d30bb1f00d197b36580948e885dc29d32',
-      dispatch: '0x7fe661f70a686d9275a26361ba1a98aee78b11bd',
-      cash: '0x09dfcb6be0b8927518ab930e93518044c71c5a4f',
+      buyAndSellShares: '0x4382ef4d06f089ced6ed376be3a501c8c7cea30a',
+      sendReputation: '0xe20508a8f048459e388721476df5c1bc40ce07c2',
+      makeReports: '0x7ee80df8ce2ec9246eb410f4a021d6ba663277f6',
+      createEvent: '0xb5283caadc58fc34eab71fcfbb5fdcf29e2b89a7',
+      createMarket: '0xff526357314ada4fa3679524e1deaeb155950eaa',
+      dispatch: '0xd523d9dadbf00c985d058f7844fabd3f7f10cf98',
+      faucets: '0xe68e5920c263d7ae396ba216ec11eaeeb8d64954',
+      cash: '0x0cc139a358642026c5ae6ade3ed28460f691db4d',
       info: '0x21607adae6f054274a5b7a3970692a31d4bfb896',
       branches: '0x552454582fe259c644c191448c66e4fce4306437',
       events: '0xb48e92dfcae19d6962c6dd000f67a7a26ee7e8e6',
       expiringEvents: '0x915f35711d96b400908737bb82129580991f6021',
       markets: '0xdb3a35ffe17cf86ffab60857cfe851e6abb7a9ec',
-      reporting: '0x08606bc6f0aa9c41bed0ea1747dd567739751102'
+      reporting: '0xc0b05fa75a4b4fbb8e7a2b9e8b08d0b8fbb39f49'
     },
     1010101: {
-      buyAndSellShares: '0x29c39ef35cdd1af70f861bdcd2bafaeed7960f42',
-      sendReputation: '0xd2e1a1fe9317fa11737aa6c061084e57f6a2e805',
-      makeReports: '0x80266f7385c02bd1cd96092170b9ad46afc4f867',
-      createEvent: '0xfd26e496ca38f59dfed58ee6a61daf85654aeb1d',
-      createMarket: '0x6b96920528e6fed2c44dfa7d273090afd7767a0f',
-      dispatch: '0x15d9fd16e6188d875db93cb39b03f0002c784aa2',
-      cash: '0xc5d0ee47aa994900d22816271c4fed2718064305',
+      buyAndSellShares: '0xb083f6ea69afeadfa128bd11c5ac4a1b2d532647',
+      sendReputation: '0x88f8fcd54f0c9058882b5c932bb1a7307aaec5cd',
+      makeReports: '0x0a8ff9e0b5a3fc602f1092e66792a34289d09799',
+      createEvent: '0x4576bb6805b8ad894bde6f5ef35ce2fd96318c45',
+      createMarket: '0x3975c18d35261361e4824af21ab7864754202c5c',
+      dispatch: '0xe1d8887d7e54742b958d4456c8b7a94ed92e984e',
+      faucets: '0x89a428fd820d35253c65ad1c31820a753c33f5ae',
+      cash: '0x36886188cdc4617d27d66b79f8df29c13c2f6211',
       info: '0xaaedfa2e3efe271e1892996a3293c109f52fb52d',
       branches: '0x266162e4a9556513bd59c349a56026e6373abbfe',
       events: '0x5da6f084f5349c77bc629c065cbd125d8767edf7',
       expiringEvents: '0xdb77a2b1b81ac56f5b0f8117187879c7ea03dd12',
       markets: '0xf57cbab860d2a751433b47e3e7a2e4a4431f2fdf',
-      reporting: '0xe1de4dbfb0219faab35642d79688468a2c72e98b'
+      reporting: '0x4b24af7db8a8f91d52f73e585bea6b3336fce32d'
     }
   }
 };
