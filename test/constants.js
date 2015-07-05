@@ -14,6 +14,7 @@ constants.accounts = {
     loopy_old: "0x00e3f8de3ed9d428dc235ce0c25bc1136073be8b",
     jack_new: "0xa18e10a46a36d59cb2ef1fe8ec18a0a5c78a7fbf",
     jack: "0x63524e3fe4791aefce1e932bbfb3fdf375bfad89",
+    jack2: "0x0da70d5a92d6cfcd4c12e2a83950676fdf4c95f9",
     tinybike: "0xac601fc0bd8928374f1648afad8e64e5a954f66b",
     tinybike2: "0x6258d68ce4fd64e7a3a68bbf6e78314dec801b4d",
     jack_eth: "0x32a34974787b46a62dbecc491c8a030185eaeb9d",
