@@ -17,8 +17,6 @@ var LOCAL_NODE = true;
 var REMOTE_NODE = false;
 var REMOTE_TIMEOUT = 10000;
 
-Augur.connect();
-
 describe("Read contracts", function () {
     var test = function (c) {
         assert(Augur.read(Augur.contracts[c]) !== "0x");

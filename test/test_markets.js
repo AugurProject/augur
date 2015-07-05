@@ -5,63 +5,29 @@
 
 "use strict";
 
-var path = require("path");
-var fs = require("fs");
-var BigNumber = require("bignumber.js");
-var assert = require("assert");
+var assert = require("chai").assert;
 var Augur = require("../augur");
 var constants = require("./constants");
-
-Augur = require("./utilities").setup(Augur, process.argv.slice(2));
-
-// Augur.BigNumberOnly = true;
-
+var utilities = require("./utilities");
 var log = console.log;
 
-function array_equal(a, b) {
-    if (a === b) return true;
-    if (a === null || b === null) return false;
-    if (a.length !== b.length) return false;
-    for (var i = 0; i < a.length; ++i) {
-        if (a[i] !== b[i]) return false;
-    }
-    return true;
-}
-function gteq0(n) { return (parseFloat(n) >= 0); }
-function is_array(r) {
-    assert(r.constructor === Array);
-    assert(r.length > 0);
-}
-function is_object(r) {
-    assert(r.constructor === Object);
-}
-function is_empty(o) {
-    for (var i in o) {
-        if (o.hasOwnProperty(i)) return false;
-    }
-    return true;
-}
-function on_root_branch(r) {
-    assert(r.branch === Augur.branches.dev);
-}
-function is_not_zero(r) {
-    assert(r.id !== "0" && r.id !== "0x" && r.id !== "0x0" && parseInt(r) !== 0);
-}
+Augur = utilities.setup(Augur, process.argv.slice(2));
+// Augur.BigNumberOnly = true;
 
 var amount = "1";
 var branch_id = Augur.branches.dev;
-var participant_id = constants.accounts.jack;
+var participant_id = constants.test_accounts[0];
 var participant_number = "1";
 var outcome = Augur.NO.toString();
-
 var markets = Augur.getMarkets(branch_id);
 var market_id = markets[0];
+var event_id = Augur.getMarketEvents(market_id)[0];
 
 // markets.se
 describe("markets.se", function () {
     describe("getSimulatedBuy(" + market_id + ", " + outcome + ", " + amount + ")", function () {
         var test = function (r) {
-            log(r);
+            assert.equal(r.length, 2);
         };
         it("sync", function () {
             test(Augur.getSimulatedBuy(market_id, outcome, amount));
@@ -74,7 +40,7 @@ describe("markets.se", function () {
     });
     describe("getSimulatedSell(" + market_id + ", " + outcome + ", " + amount + ")", function () {
         var test = function (r) {
-            log(r);
+            assert.equal(r.length, 2);
         };
         it("sync", function () {
             test(Augur.getSimulatedSell(market_id, outcome, amount));
@@ -136,7 +102,7 @@ describe("markets.se", function () {
     describe("getMarketEvents(" + market_id + ")", function () {
         function test(r) {
             assert.equal(r.constructor, Array);
-            assert(array_equal(r, [ event_id ]));
+            assert.equal(r[0], event_id);
         }
         it("sync", function () {
             test(Augur.getMarketEvents(market_id));
@@ -175,7 +141,7 @@ describe("markets.se", function () {
     });
     describe("getCurrentParticipantNumber(" + market_id + ") >= 0", function () {
         var test = function (r) {
-            gteq0(r);
+            utilities.gteq0(r);
         };
         it("sync", function () {
             test(Augur.getCurrentParticipantNumber(market_id));
@@ -201,7 +167,7 @@ describe("markets.se", function () {
     });
     describe("getParticipantSharesPurchased(" + market_id + ", " + participant_number + "," + outcome + ") ", function () {
         var test = function (r) {
-            gteq0(r);
+            utilities.gteq0(r);
         };
         it("sync", function () {
             test(Augur.getParticipantSharesPurchased(market_id, participant_number, outcome));
@@ -214,7 +180,7 @@ describe("markets.se", function () {
     });
     describe("getSharesPurchased(" + market_id + ", " + outcome + ") ", function () {
         var test = function (r) {
-            gteq0(r);
+            utilities.gteq0(r);
         };
         it("sync", function () {
             test(Augur.getSharesPurchased(market_id, outcome));
@@ -227,8 +193,7 @@ describe("markets.se", function () {
     });
     describe("getWinningOutcomes(" + market_id + ")", function () {
         var test = function (r) {
-            // log(r);
-            is_array(r);
+            assert.equal(r.constructor, Array);
         };
         it("sync", function () {
             test(Augur.getWinningOutcomes(market_id));
@@ -253,22 +218,22 @@ describe("markets.se", function () {
             });
         });
     });
-    describe("getParticipantNumber(" + market_id + ", " + constants.accounts.jack + ") ", function () {
+    describe("getParticipantNumber(" + market_id + ", " + constants.test_accounts[0] + ") ", function () {
         var test = function (r) {
-            gteq0(r);
+            utilities.gteq0(r);
         };
         it("sync", function () {
-            test(Augur.getParticipantNumber(market_id, constants.accounts.jack));
+            test(Augur.getParticipantNumber(market_id, constants.test_accounts[0]));
         });
         it("async", function (done) {
-            Augur.getParticipantNumber(market_id, constants.accounts.jack, function (r) {
+            Augur.getParticipantNumber(market_id, constants.test_accounts[0], function (r) {
                 test(r); done();
             });
         });
     });
     describe("getParticipantID(" + market_id + ", " + participant_number + ") ", function () {
         var test = function (r) {
-            log(r);
+            assert.equal(parseInt(r), 0);
         };
         it("sync", function () {
             test(Augur.getParticipantID(market_id, participant_number));
@@ -307,7 +272,7 @@ describe("markets.se", function () {
     });
     describe("getTradingPeriod(" + market_id + ") ", function () {
         var test = function (r) {
-            assert.equal(r, "24607");
+            assert(parseInt(r) >= -1);
         };
         it("sync", function () {
             test(Augur.getTradingPeriod(market_id));

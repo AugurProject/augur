@@ -11,7 +11,9 @@ var path = require("path");
 var chalk = require("chalk");
 var Augur = require("../augur");
 
-Augur = require("./utilities").setup(Augur, process.argv.slice(2));
+var gospel = require("path").join(__dirname, "gospel.json");
+Augur.contracts = JSON.parse(require("fs").readFileSync(gospel));
+Augur.connect();
 
 var log = console.log;
 

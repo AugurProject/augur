@@ -23,8 +23,8 @@ var DATADIR = path.join(process.env.HOME, ".augur-test");
 // var DATADIR = path.join(process.env.HOME, ".augur");
 // var DATADIR = path.join(process.env.HOME, ".ethereum");
 
-var GETH = "geth";
-// var GETH = path.join(process.env.HOME, "src", "go-ethereum", "build", "bin", "geth");
+// var GETH = "geth";
+var GETH = path.join(process.env.HOME, "src", "go-ethereum", "build", "bin", "geth");
 
 var NETWORK_ID = "10101";
 // var NETWORK_ID = "1010101";
@@ -242,7 +242,8 @@ function postupload_tests_1(geth) {
         "reporting",
         // "expiring",
         "augur",
-        "createEvent"
+        "createEvent",
+        "createMarket"
     ]).run(function (failures) {
         process.on("exit", function () { process.exit(failures); });
         postupload_tests_2(geth);
@@ -255,18 +256,11 @@ function off_workflow_tests(geth) {
         "connect",
         "fixedpoint",
         "encoder",
-        "ethrpc"
-        // "invoke",
-        // "batch",
-        // "reporting",
-        // "expiring",
-        // "createEvent",
-        // "priceLog",
-        // "ballot",
-        // "payments",
-        // "markets",
-        // "comments"
-        // "augur"
+        "ethrpc",
+        "invoke",
+        "batch",
+        "branches",
+        "reporting"
     ]).run(function (failures) {
         process.on("exit", function () { process.exit(failures); });
         if (geth) kill_geth(geth);
@@ -305,7 +299,7 @@ function faucets(geth) {
             log(chalk.blue.bold("\nAccount 0: ") + chalk.cyan(accounts[0]));
             geth_flags[1] = accounts[0];
             geth_flags[3] = accounts[0];
-            next_test = (OFF_WORKFLOW) ? off_workflow_tests : postupload_tests_1
+            next_test = (OFF_WORKFLOW) ? off_workflow_tests : postupload_tests_1;
             setTimeout(function () {
                 check_connection(
                     spawn_geth(geth_flags),

@@ -5,18 +5,12 @@
 
 "use strict";
 
-var fs = require("fs");
-var path = require("path");
 var assert = require("chai").assert;
 var Augur = require("../augur");
-
-Augur = require("./utilities").setup(Augur, process.argv.slice(2));
-
-Augur.connect();
-
+var utilities = require("./utilities");
 var log = console.log;
 
-function gteq0(n) { return (parseFloat(n) >= 0); }
+Augur = utilities.setup(Augur, process.argv.slice(2));
 
 var branch_id = Augur.branches.dev;
 var reporter_index = "0";
@@ -39,7 +33,7 @@ describe("data and api/reporting", function () {
     });
     describe("getRepBalance(" + branch_id + ") ", function () {
         var test = function (r) {
-            gteq0(r);
+            utilities.gteq0(r);
         };
         it("sync", function () {
             test(Augur.getRepBalance(branch_id, Augur.coinbase));
@@ -52,7 +46,7 @@ describe("data and api/reporting", function () {
     });
     describe("getRepByIndex(" + branch_id + ", " + reporter_index + ") ", function () {
         var test = function (r) {
-            gteq0(r);
+            utilities.gteq0(r);
             assert.equal(Number(r), 47);
         };
         it("sync", function () {
@@ -81,7 +75,7 @@ describe("data and api/reporting", function () {
         var test = function (r) {
             assert(r.length >= 1);
             for (var i = 0, len = r.length; i < len; ++i) {
-                gteq0(r[i]);
+                utilities.gteq0(r[i]);
             }
         };
         it("sync", function () {

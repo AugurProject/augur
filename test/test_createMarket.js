@@ -26,12 +26,8 @@ describe("functions/createMarket", function () {
     it.each(events, "single-event market: %s", ['element'], function (element, next) {
         this.timeout(TIMEOUT);
         var event_description = element[0];
-        var expDate;
-        if (EXPIRING) {
-            expDate = Augur.blockNumber() + Math.round(Math.random() * 1000);
-        } else {
-            expDate = element[1];    
-        }
+        var blockNumber = Augur.blockNumber();
+        var expDate = (EXPIRING) ? blockNumber + Math.round(Math.random() * 1000) : element[1];
         var minValue = 0;
         var maxValue = 1;
         var numOutcomes = 2;
@@ -47,12 +43,6 @@ describe("functions/createMarket", function () {
             },
             onSuccess: function (r) {
                 // log("createEvent success: " + JSON.stringify(r, null, 2));
-                // assert.equal(r.branch, Augur.branches.dev);
-                // assert.equal(r.expirationDate, expDate);
-                // assert.equal(r.minValue, minValue);
-                // assert.equal(r.maxValue, maxValue);
-                // assert.equal(r.numOutcomes, numOutcomes);
-                // assert.equal(r.description, event_description);
                 var alpha = "0.0079";
                 var initialLiquidity = 1000 + Math.round(Math.random() * 1000);
                 var tradingFee = "0.02";
