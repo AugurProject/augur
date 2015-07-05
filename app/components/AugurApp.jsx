@@ -273,7 +273,7 @@ var ErrorModal = React.createClass({
           <div className="modal-body clearfix">
             <h3>Ethereum not found</h3>
             <p>Augur requires an Ethereum client to be running and current.  Augur could not detect a client running which probably mean it's not installed, running or is misconfigured.</p>
-            <p>Get help <a onClick={ this.showInstallationHelp } href="javascript:void(0)">installing and configuring Ethereum</a> or <a onClick={ this.startDemoMode } href="javascript:void(0)">proceed in demo mode</a></p>
+            <p>Get help <a onClick={ this.showInstallationHelp } href="javascript:void(0)">installing and configuring Ethereum</a><br />or <a onClick={ this.startDemoMode } href="javascript:void(0)">proceed in demo mode</a></p>
             { help }
         </div>
         </Modal>

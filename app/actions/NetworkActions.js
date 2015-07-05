@@ -102,9 +102,6 @@ var NetworkActions = {
       ethereumClient.getAccounts(function(accounts) {
         this.dispatch(constants.network.UPDATE_NETWORK, { accounts: accounts });
       }.bind(this));
-      ethereumClient.getPrimaryAccount(function(account) {
-        this.dispatch(constants.network.UPDATE_NETWORK, { primaryAccount: account });
-      }.bind(this));
       ethereumClient.getGasPrice(function(gasPrice) {
         this.dispatch(constants.network.UPDATE_NETWORK, { gasPrice: gasPrice });
       }.bind(this));
@@ -113,6 +110,9 @@ var NetworkActions = {
       }.bind(this));
       ethereumClient.getHashrate(function(hashrate) {
         this.dispatch(constants.network.UPDATE_NETWORK, { hashrate: hashrate });
+      }.bind(this));
+      ethereumClient.getAccount(function(account) {
+        this.dispatch(constants.network.UPDATE_NETWORK, { primaryAccount: account });
       }.bind(this));
     }
   },

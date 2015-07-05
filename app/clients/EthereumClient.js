@@ -29,6 +29,7 @@ function EthereumClient(params) {
   this.contractAddress = {};
   this.filters = [];
   this.contracts = {};
+  this.accounts = null;
   this.account = null;
   this.networkId = null;
 
@@ -203,43 +204,51 @@ EthereumClient.prototype.getBlock = function(blockNumber, onResult) {
   })
 };
 
-EthereumClient.prototype.getAccounts = function(callback) {
+EthereumClient.prototype.getAccounts = function(onResult) {
+
+  if (this.accounts) return this.accounts;
+
+  if (!onResult) {
+    var result = web3.eth.accounts;
+    this.account = result;
+    return result;
+  }
+
   web3.eth.getAccounts(function(error, result) {
     if (error) { 
       utilities.error(error);
     } else { 
-      callback(result); 
+      this.accounts = result;
+      onResult(result); 
     }
-  });
+  }.bind(this));
 };
 
 EthereumClient.prototype.getEtherBalance = function(onResult) {
 
-  web3.eth.getBalance(this.account, function(error, result) {
+  web3.eth.getBalance(this.getAccount(), function(error, result) {
     onResult(result);
   });
 };
 
-EthereumClient.prototype.getPrimaryAccount = function(onResult) {
+EthereumClient.prototype.getAccount = function() {
 
-  // async
-  if (onResult) {
+  if (this.account) return this.account;
 
-    var self = this;
-    this.web3.eth.getCoinbase(function(error, result) {
-      if (error) { 
-        utilities.error(error);
-      } else {
-        self.account = result; 
-        onResult(result); 
-      }
-    });
+  var result = this.web3.eth.defaultAccount  // async version doesn't exist
 
-  // sync
+  if (result) {
+
+    this.account = result; 
+    return result; 
+
   } else {
 
-    if (!this.account) this.account = this.web3.eth.coinbase;
-    return this.account;
+    // default account not set for some reason, fallback to account zero
+    var result = this.getAccounts();
+
+    this.account = result[0];
+    return result[0];
   }
 };
 
@@ -302,14 +311,16 @@ EthereumClient.prototype.getAddress = function (name) {
 };
 
 EthereumClient.prototype.cashFaucet = function(onSent) {
+  console.log('requesting cash');
   Augur.cashFaucet(function(result) {
+    console.log(result);
     onSent(result.txHash);
   });
 };
 
 EthereumClient.prototype.getCashBalance = function(onResult) {
 
-  Augur.getCashBalance(this.getPrimaryAccount(), function(result) {
+  Augur.getCashBalance(this.getAccount(), function(result) {
     if (result) onResult(result);
   });
 };
@@ -334,7 +345,7 @@ EthereumClient.prototype.repFaucet = function(branchId, onSent) {
 
 EthereumClient.prototype.getRepBalance = function(branchId, onResult) {
 
-  Augur.getRepBalance(branchId || this.defaultBranchId, this.account, function(result) {
+  Augur.getRepBalance(branchId || this.defaultBranchId, this.getAccount(), function(result) {
     if (result) onResult(result.toNumber());
   });
 };
@@ -353,7 +364,7 @@ EthereumClient.prototype.sendEther = function(destination, amount) {
 
   var amountInWei = this.web3.toWei(amount, 'ether');
   var transaction = {
-    from: this.account,
+    from: this.getAccount(),
     to: destination,
     value: amountInWei
   };
@@ -506,7 +517,7 @@ EthereumClient.prototype.getMarketTradingFee  = function(marketId, onResult) {
 
 EthereumClient.prototype.getMarketTraderId = function(marketId, onResult) {
 
-  return Augur.getParticipantNumber(marketId, this.account, onResult);
+  return Augur.getParticipantNumber(marketId, this.getAccount(), onResult);
 };
 
 EthereumClient.prototype.getMarketNumOutcomes = function(marketId, onResult) {
