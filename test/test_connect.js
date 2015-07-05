@@ -156,4 +156,14 @@ describe("Augur.connect", function () {
         assert(Augur.RPC.host === "localhost" || Augur.RPC.host === "127.0.0.1");
         assert.equal(Augur.RPC.port, 8545);
     });
+    it("should be on network 0, 10101, or 1010101", function () {
+        assert(Augur.network_id === "0" ||
+               Augur.network_id === "10101" ||
+               Augur.network_id === "1010101");
+    });
+});
+describe("Augur.connected", function () {
+    it("should be connected", function () {
+        assert(Augur.connected());
+    });
 });

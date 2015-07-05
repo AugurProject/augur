@@ -254,6 +254,9 @@ var Augur = (function (augur) {
         redeem_payout: "0xc756cab01ff1a95d741057419acd044fac1558b4"
     };
 
+    // Network ID
+    augur.network_id = "0";
+
     // Branch IDs
     augur.branches = {
         demo: '0x00000000000000000000000000000000000000000000000000000000000f69b5',
@@ -994,6 +997,7 @@ var Augur = (function (augur) {
                         augur.contracts = copy(augur.testnet_contracts);
                     }
                 }
+                augur.network_id = chain;
             }
             augur.coinbase = json_rpc(postdata("coinbase"));
             if (augur.coinbase && augur.coinbase !== "0x") {
