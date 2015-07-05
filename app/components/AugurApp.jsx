@@ -242,26 +242,32 @@ var ErrorModal = React.createClass({
 
       if (this.state.installationHelp) {
 
-        var stepOne = (<li>
-          Follow the Ethereum <a href="https://github.com/ethereum/go-ethereum/wiki/Building-Ethereum">install guide</a> on github
-        </li>);
+        var steps = []
         if (os === 'Mac OS') {
-          stepOne = (<li>
-          Follow the Ethereum <a href="https://github.com/ethereum/go-ethereum/wiki/Installation-Instructions-for-Mac">install guide</a> for Mac OS
-        </li>);
+          steps.push(<li><a target="_new" href="http://brew.sh/">Install Homebrew</a> for Mac OS</li>);
+          steps.push(<li><pre>brew tap ethereum/ethereum</pre><pre>brew install ethereum --devel</pre></li>);
         } else if (os = 'Windows') {
-          stepOne = (<li>
+          steps.push(<li>
             Download the <a href="https://build.ethdev.com/builds/Windows%20Go%20develop%20branch/Geth-Win64-latest.zip">lastest geth build</a> for Windows
           </li>);
+        } else if (os = 'Ubuntu') {
+          steps.push(<li><pre>sudo add-apt-repository ppa:ethereum/ethereum</pre><pre>sudo apt-get update</pre><pre>sudo apt-get install ethereum</pre></li>);
+        } else {
+          steps.push(<li>
+            Follow the Ethereum <a href="https://github.com/ethereum/go-ethereum/wiki/Building-Ethereum">install guide</a> on github
+          </li>);
         }
+        steps.push(<li>Add a new account using <pre>geth account new</pre></li>);
+        steps.push(<li>Start geth with <pre>geth --rpc --rpcorsdomain { host } --unlock primary</pre></li>);
+        steps.push(<li><a href="{ host }">{ host }</a></li>);
+
+        var installSteps = _.map(steps);
+
         var help = (
           <div className="installation-help">
             <h4>Installing and configuring Ethereum</h4>
             <ol>
-              { stepOne }
-              <li>Add a new account using <pre>geth account new</pre></li>
-              <li>Start geth with <pre>geth --rpc --rpcorsdomain { host } --unlock primary</pre></li>
-              <li><a href="{ host }">{ host }</a></li>
+              { installSteps }      
             </ol>
           </div>
         );
@@ -273,7 +279,7 @@ var ErrorModal = React.createClass({
           <div className="modal-body clearfix">
             <h3>Ethereum not found</h3>
             <p>Augur requires an Ethereum client to be running and current.  Augur could not detect a client running which probably mean it's not installed, running or is misconfigured.</p>
-            <p>Get help <a onClick={ this.showInstallationHelp } href="javascript:void(0)">installing and configuring Ethereum</a><br />or <a onClick={ this.startDemoMode } href="javascript:void(0)">proceed in demo mode</a></p>
+            <p>Get help <a onClick={ this.showInstallationHelp } href="javascript:void(0)">installing and configuring Ethereum</a><br /><br />or <a onClick={ this.startDemoMode } href="javascript:void(0)">proceed in demo mode</a></p>
             { help }
         </div>
         </Modal>
