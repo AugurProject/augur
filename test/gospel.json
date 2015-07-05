@@ -14,7 +14,6 @@
     "closeMarketFour": "0x119d2b859e2b5fe6940f37ca3222f7506d3915af",
     "closeMarketEight": "0x8512b58d2868c44a5bb2c2171fffb395fd3adbba",
     "dispatch": "0xe0e0706aa7fc7507009a75e24122b2c400f67d86",
-
     "cash": "0x08163213345163e38b45b2fed9dcfd75594a838a",
     "info": "0xa178f560e5174ef566929549e386495910dd23fc",
     "branches": "0x85693da19f633b8ef0bdbfb527a68cdaf30ff192",
@@ -23,7 +22,6 @@
     "fxpFunctions": "0x795af763dd0c5627ce6ad590d8734bf4ce64a266",
     "markets": "0xb14010eb05acce2a0493479db9955cd8967500e6",
     "reporting": "0xdaba557e6690415c7f81daec3487ea0e8e3205ab",
-
     "statistics": "0xc3b183d35754c995dc58b2ac67c49d79958e6287",
     "interpolate": "0x8fcd63f1ab2b86c226cbe30d3d7736b09f5790c1",
     "center": "0x159c4ce332b8e82110daf3ad5371502207008a4b",

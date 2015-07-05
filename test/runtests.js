@@ -84,8 +84,8 @@ function kill_geth(geth) {
 
 function spawn_geth(flags) {
     log("Spawn " + chalk.magenta("geth") + " on network " +
-        chalk.green(NETWORK_ID) + " (genesis nonce " +
-        chalk.green(GENESIS_NONCE) + ")...");
+        chalk.yellow.bold(NETWORK_ID) + " (genesis nonce " +
+        chalk.yellow(GENESIS_NONCE) + ")...");
     var geth = cp.spawn(GETH, flags);
     geth.stdout.on("data", function (data) {
         if (DEBUG) {
@@ -267,10 +267,7 @@ function off_workflow_tests(geth) {
         process.on("exit", function () { process.exit(failures); });
         setup_mocha_tests([
             "createMarket",
-            "branches",
-            "info",
-            "markets",
-            "events"
+            "branches"
         ]).run(function (failures) {
             process.on("exit", function () { process.exit(failures); });
             if (geth) kill_geth(geth);
@@ -324,7 +321,8 @@ function faucets(geth) {
 }
 
 function upload_contracts(geth) {
-    log(chalk.red.bold("Upload contracts to test chain..."));
+    log(chalk.red.bold("Upload contracts to network ") +
+        chalk.yellow.bold(NETWORK_ID));
     var uploader = cp.spawn(UPLOADER, ["--BLOCKTIME=1.75"]);
     uploader.stdout.on("data", function (data) {
         process.stdout.write(chalk.cyan(data.toString()));
