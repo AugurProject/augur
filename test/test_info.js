@@ -50,7 +50,7 @@ describe("info.se", function () {
     });
     describe("getCreationFee(" + event_id + ") [event]", function () {
         var test = function (r) {
-            assert.equal(r, "0.00000000000000000244");
+            assert(Number(r) > 0);
         };
         it("sync", function () {
             test(Augur.getCreationFee(event_id));
@@ -63,7 +63,7 @@ describe("info.se", function () {
     });
     describe("getCreationFee(" + market_id + ") [market]", function () {
         var test = function (r) {
-            assert.equal(r, "1000");
+            assert(Number(r) >= 1000);
         };
         it("sync", function () {
             test(Augur.getCreationFee(market_id));

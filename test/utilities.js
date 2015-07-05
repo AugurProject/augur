@@ -3,7 +3,9 @@
 var MODULAR = typeof(module) !== 'undefined';
 
 var BigNumber = require("bignumber.js");
+var chalk = require("chalk");
 var assert = require("chai").assert;
+var log = console.log;
 
 var utilities = {};
 
@@ -15,12 +17,9 @@ utilities.setup = function (augur, args) {
         args[0] === "--faucets" ||
         args[0] === "--ballots")) {
         var gospel = require("path").join(__dirname, "gospel.json");
-        var contracts = JSON.parse(require("fs").readFileSync(gospel));
-        augur.contracts = JSON.parse(require("fs").readFileSync(gospel));
-        for (var c in contracts) {
-            if (!contracts.hasOwnProperty(c)) continue;
-            assert.equal(augur.contracts[c], contracts[c]);
-        }
+        log("Load contracts from file: " + chalk.green(gospel));
+        var contracts = require("fs").readFileSync(gospel);
+        augur.contracts = JSON.parse(contracts);
     }
     augur.connect();
     return augur;
@@ -36,6 +35,14 @@ utilities.print_matrix = function (m) {
         }
         process.stdout.write("\n");
     }
+};
+
+utilities.wait = function (seconds) {
+    var start, delay;
+    start = new Date();
+    delay = seconds * 1000;
+    while ((new Date()) - start <= delay) {}
+    return true;
 };
 
 utilities.array_equal = function (a, b) {

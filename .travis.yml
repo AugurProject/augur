@@ -8,4 +8,3 @@ before_script:
   - npm install jshint
 script:
   - jshint augur.js
-  - jshint test/runtests.js

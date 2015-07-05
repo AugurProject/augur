@@ -16,22 +16,23 @@ var chalk = require("chalk");
 var Mocha = require("mocha");
 var Augur = require("../augur");
 var constants = require("./constants");
+var utilities = require("./utilities");
 
 var log = console.log;
 
-// var DATADIR = path.join(process.env.HOME, ".augur-test");
-var DATADIR = path.join(process.env.HOME, ".augur");
+var DATADIR = path.join(process.env.HOME, ".augur-test");
+// var DATADIR = path.join(process.env.HOME, ".augur");
 // var DATADIR = path.join(process.env.HOME, ".ethereum");
 
-var GETH = "geth";
-// var GETH = path.join(process.env.HOME, "src", "go-ethereum", "build", "bin", "geth");
+// var GETH = "geth";
+var GETH = path.join(process.env.HOME, "src", "go-ethereum", "build", "bin", "geth");
 
-// var NETWORK_ID = "10101";
-var NETWORK_ID = "1010101";
+var NETWORK_ID = "10101";
+// var NETWORK_ID = "1010101";
 // var NETWORK_ID = "0";
 
-// var GENESIS_NONCE = "10101";
-var GENESIS_NONCE = "1010101";
+var GENESIS_NONCE = "10101";
+// var GENESIS_NONCE = "1010101";
 // var GENESIS_NONCE = "42";
 
 var DEBUG = false;
@@ -69,16 +70,12 @@ var geth_flags = [
 var gospel_json = path.join(__dirname, GOSPEL);
 var check_connection;
 
-log("Create", chalk.magenta("geth"), "log file:", chalk.green(path.join(__dirname, LOG)));
-var geth_log = fs.createWriteStream(path.join(__dirname, LOG), {flags : 'w'});
-
-function wait(seconds) {
-    var start, delay;
-    start = new Date();
-    delay = seconds * 1000;
-    while ((new Date()) - start <= delay) {}
-    return true;
-}
+log("Create", chalk.magenta("geth"), "log file:",
+    chalk.green(path.join(__dirname, LOG)));
+var geth_log = fs.createWriteStream(
+    path.join(__dirname, LOG),
+    {flags : 'w'}
+);
 
 function kill_geth(geth) {
     log(chalk.gray("Shut down ") + chalk.magenta("geth") + chalk.gray("..."));
@@ -86,22 +83,28 @@ function kill_geth(geth) {
 }
 
 function spawn_geth(flags) {
-    log("Spawn " + chalk.magenta("geth") + " on network " + chalk.green(NETWORK_ID) +
-        " (genesis nonce " + chalk.green(GENESIS_NONCE) + ")...");
+    log("Spawn " + chalk.magenta("geth") + " on network " +
+        chalk.green(NETWORK_ID) + " (genesis nonce " +
+        chalk.green(GENESIS_NONCE) + ")...");
     var geth = cp.spawn(GETH, flags);
     geth.stdout.on("data", function (data) {
+        if (DEBUG) {
+            process.stdout.write(chalk.cyan(data.toString()));
+        }
         geth_log.write("stdout: " + util.format(data.toString()) + "\n");
     });
     geth.stderr.on("data", function (data) {
-        // process.stdout.write(chalk.yellow(data.toString()));
+        if (DEBUG) {
+            process.stdout.write(chalk.yellow(data.toString()));
+        }
         geth_log.write(util.format(data.toString()) + "\n");
     });
     geth.on("close", function (code) {
         if (code !== 2 && code !== 0) {
             log(chalk.red.bold("geth closed with code " + code));
-            geth.kill();
+            kill_geth(geth);
             if (code === 1) {
-                wait(5);
+                utilities.wait(5);
                 log("Restarting", chalk.magenta("geth") + "...");
                 return spawn_geth(flags);
             }
@@ -126,18 +129,19 @@ function mine_minimum_ether(geth, account, next) {
 }
 
 function display_outputs(geth) {
-    var branch = Augur.branches.dev;
-    var period = parseInt(Augur.getVotePeriod(branch)) - 1;
-    var num_reports = Augur.getNumberReporters(branch);
-    var num_events = Augur.getNumberEvents(branch, period);
-    var flatsize = num_events * num_reports;
-
-    var reporters = accounts;
-    var ballots = new Array(flatsize);
-    var i, j;
+    var branch, period, num_reports, num_events, flatsize, reporters, ballots,
+        reporterID, ballot, i, j, wcd, reports_filled, outcomes, smooth_rep,
+        reporter_payouts, reputation, total_rep;
+    branch = Augur.branches.dev;
+    period = parseInt(Augur.getVotePeriod(branch)) - 1;
+    num_reports = Augur.getNumberReporters(branch);
+    num_events = Augur.getNumberEvents(branch, period);
+    flatsize = num_events * num_reports;
+    reporters = accounts;
+    ballots = new Array(flatsize);
     for (i = 0; i < num_reports; ++i) {
-        var reporterID = Augur.getReporterID(branch, i);
-        var ballot = Augur.getReporterBallot(branch, period, reporterID);
+        reporterID = Augur.getReporterID(branch, i);
+        ballot = Augur.getReporterBallot(branch, period, reporterID);
         if (ballot[0] !== 0) {
             for (j = 0; j < num_events; ++j) {
                 ballots[i*num_events + j] = ballot[j];
@@ -152,27 +156,27 @@ function display_outputs(geth) {
     log(Augur.fold(ballots, num_events));
 
     log("\nCentered:");
-    var wcd = Augur.fold(Augur.getWeightedCenteredData(branch, period).slice(0, flatsize), num_events);
+    wcd = Augur.fold(Augur.getWeightedCenteredData(branch, period).slice(0, flatsize), num_events);
     log(wcd);
 
     log("\nInterpolated:");
-    var reports_filled = Augur.fold(Augur.getReportsFilled(branch, period).slice(0, flatsize), num_events);
+    reports_filled = Augur.fold(Augur.getReportsFilled(branch, period).slice(0, flatsize), num_events);
     log(reports_filled);
 
-    var outcomes = Augur.getOutcomesFinal(branch, period).slice(0, num_events);
+    outcomes = Augur.getOutcomesFinal(branch, period).slice(0, num_events);
     log("\nOutcomes:");
     log(outcomes);
 
-    var smooth_rep = Augur.getSmoothRep(branch, period).slice(0, num_reports);
+    smooth_rep = Augur.getSmoothRep(branch, period).slice(0, num_reports);
     log("\nSmoothed reputation fraction:");
     log(smooth_rep);
 
-    var reporter_payouts = Augur.getReporterPayouts(branch, period).slice(0, num_reports);
+    reporter_payouts = Augur.getReporterPayouts(branch, period).slice(0, num_reports);
     log("\nReporter payouts:");
     log(reporter_payouts);
 
-    var reputation = [];
-    var total_rep = 0;
+    reputation = [];
+    total_rep = 0;
     for (i = 0; i < reporters.length; ++i) {
         reputation.push(Augur.getRepBalance(branch, reporters[i]));
         total_rep += Number(Augur.getRepBalance(branch, reporters[i]));
@@ -242,8 +246,7 @@ function postupload_tests_1(geth) {
         "reporting",
         // "expiring",
         "augur",
-        "createEvent",
-        "createMarket"
+        "createEvent"
     ]).run(function (failures) {
         process.on("exit", function () { process.exit(failures); });
         postupload_tests_2(geth);
@@ -259,11 +262,19 @@ function off_workflow_tests(geth) {
         "ethrpc",
         "invoke",
         "batch",
-        "branches",
         "reporting"
     ]).run(function (failures) {
         process.on("exit", function () { process.exit(failures); });
-        if (geth) kill_geth(geth);
+        setup_mocha_tests([
+            "createMarket",
+            "branches",
+            "info",
+            "markets",
+            "events"
+        ]).run(function (failures) {
+            process.on("exit", function () { process.exit(failures); });
+            if (geth) kill_geth(geth);
+        });
     });
 }
 
@@ -365,13 +376,12 @@ function preupload_tests(geth) {
 }
 
 function check_connection(geth, account, callback, next, count) {
-    count = count || 0;
-    if (CUSTOM_GOSPEL) {
-        log("Load contracts from file: " + chalk.green(gospel_json));
-        Augur.contracts = JSON.parse(fs.readFileSync(gospel_json));
+    function retry() {
+        check_connection(geth, account, callback, next, ++count);
     }
-    wait(5);
-    if (Augur.connect()) {
+    count = count || 0;
+    if (CUSTOM_GOSPEL) Augur = utilities.setup(Augur, ["--gospel"]);
+    if (Augur.connected()) {
         var balance = Augur.balance(account);
         if (balance && !balance.error) {
             balance = Augur.bignum(balance).dividedBy(Augur.ETHER).toFixed();
@@ -380,12 +390,16 @@ function check_connection(geth, account, callback, next, count) {
             log(chalk.green(balance), chalk.gray("ETH"));
             callback(geth, account, next);
         } else {
-            kill_geth(geth);
-            check_connection(spawn_geth(geth), account, callback, next);
+            setTimeout(retry, 5000);
         }
     } else {
-        if (count && count > 2) {
-            check_connection(geth, account, callback, next, ++count);
+        if (count < 10) {
+            setTimeout(retry, 5000);
+        } else {
+            kill_geth(geth);
+            utilities.wait(2.5);
+            geth = spawn_geth(geth_flags);
+            setTimeout(retry, 2500);
         }
     }
 }
@@ -399,7 +413,8 @@ cp.spawn = function () {
 };
 
 function reset_datadir() {
-    log("Reset " + chalk.magenta("augur") + " data directory: " + chalk.green(DATADIR));
+    log("Reset " + chalk.magenta("augur") + " data directory: " +
+        chalk.green(DATADIR));
     var directories = [ "blockchain", "extra", "nodes", "state" ];
     for (var i = 0, len = directories.length; i < len; ++i) {
         rm.sync(path.join(DATADIR, directories[i]));
