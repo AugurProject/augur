@@ -39,7 +39,7 @@ GLOBAL.current_period = Augur.getCurrentPeriod(b);
 GLOBAL.num_events = Augur.getNumberEvents(b, vote_period);
 GLOBAL.num_reports = Augur.getNumberReporters(b);
 
-log(chalk.cyan("Vote period"), chalk.cyan.bold(vote_period) + chalk.cyan(":"));
+log(chalk.cyan("Vote period"), chalk.green(vote_period) + chalk.cyan(":"));
 log("Current period:     ", chalk.green(current_period));
 log("Number of events:   ", chalk.green(num_events));
 log("Number of reporters:", chalk.green(num_reports));

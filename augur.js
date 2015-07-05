@@ -272,7 +272,8 @@ var Augur = (function (augur) {
     };
 
     // Demo account (for demo.augur.net)
-    augur.demo = "0x5baaabf5213c7189d2f97c8580cb933494454b3b";
+    // augur.demo = "0x5baaabf5213c7189d2f97c8580cb933494454b3b";
+    augur.demo = "0xaff9cb4dcb19d13b84761c040c91d21dc6c991ec";
 
     /*********************
      * Utility functions *
