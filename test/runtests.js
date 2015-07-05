@@ -6,8 +6,8 @@
 
 "use strict";
 
-var fs    = require("fs");
-var path  = require("path");
+var fs = require("fs");
+var path = require("path");
 var cp = require("child_process");
 var util = require("util");
 var assert = require("chai").assert;
@@ -17,7 +17,6 @@ var Mocha = require("mocha");
 var Augur = require("../augur");
 var constants = require("./constants");
 var utilities = require("./utilities");
-
 var log = console.log;
 
 var DATADIR = path.join(process.env.HOME, ".augur-test");

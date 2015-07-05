@@ -48,17 +48,21 @@ describe("Faucets", function () {
         Augur.cashFaucet(
             function (r) {
                 // sent
-                assert.equal(r.callReturn, "1");
+                assert(r.callReturn === "1" || r.callReturn === "-1");
                 assert(parseInt(r.txHash) >= 0);
             },
             function (r) {
                 // success
-                assert.equal(r.callReturn, "1");
+                assert(r.callReturn === "1" || r.callReturn === "-1");
                 assert(parseInt(r.blockHash) !== 0);
                 assert(parseInt(r.blockNumber) >= 0);
                 var rep_balance = Augur.getRepBalance(branch, coinbase);
                 var cash_balance = Augur.getCashBalance(coinbase);
-                assert.equal(cash_balance, "10000");
+                if (r.callReturn === "1") {
+                    assert.equal(cash_balance, "10000");
+                } else {
+                    assert(Augur.bignum(cash_balance).toNumber() > 5);
+                }
                 done();
             },
             function (r) {

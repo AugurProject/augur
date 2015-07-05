@@ -78,7 +78,7 @@ describe("Ethereum JSON-RPC", function () {
     });
     describe("peerCount", function () {
         it("should be a number greater than or equal to 0", function () {
-            this.timeout(12000);
+            this.timeout(24000);
             assert(parseInt(Augur.peerCount()) >= 0);
         });
     });

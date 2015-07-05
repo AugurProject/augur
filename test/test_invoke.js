@@ -19,13 +19,13 @@ describe("Invoke contract functions", function () {
     // No parameters
     // curl --data '{"jsonrpc":"2.0","method":"eth_call","params":[{"from":"0x63524e3fe4791aefce1e932bbfb3fdf375bfad89","to":"0x3caf506cf3d5bb16ba2c8f89a6591c5160d69cf3","data":"0x643ceff9"}],"id":1}' http://127.0.0.1:8545
     describe("No parameters", function () {
-        describe("cash.se: " + Augur.contracts.cash, function () {
-            var method = "faucet";
+        describe("faucet.se: " + Augur.contracts.faucets, function () {
+            var method = "cashFaucet";
             var params = "";
             var expected = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
             it(method + "(" + params + ") -> " + expected, function () {
                 var tx = {
-                    to: Augur.contracts.cash,
+                    to: Augur.contracts.faucets,
                     from: Augur.coinbase,
                     method: method,
                     params: params,
@@ -38,7 +38,7 @@ describe("Invoke contract functions", function () {
             it(method + "(" + params + ") -> " + expected, function () {
                 var expected = "-1";
                 var tx = {
-                    to: Augur.contracts.cash,
+                    to: Augur.contracts.faucets,
                     from: Augur.coinbase,
                     method: method,
                     params: params,
