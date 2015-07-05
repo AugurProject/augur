@@ -58,6 +58,15 @@ var NetworkActions = {
 
   initializeNetwork: function() {
 
+    var ethereumClient = this.flux.store('config').getEthereumClient();
+
+    var networkId = ethereumClient.getNetworkId();
+    this.dispatch(constants.network.UPDATE_NETWORK, { networkId: networkId });
+
+    ethereumClient.getClientVersion(function(clientVersion) {
+      this.dispatch(constants.network.UPDATE_NETWORK, { clientVersion: clientVersion });
+    }.bind(this));
+
     this.flux.actions.network.updateNetwork();
 
     // start monitoring for updates
@@ -69,7 +78,6 @@ var NetworkActions = {
     var configState = this.flux.store('config').getState();
     var networkState = this.flux.store('network').getState();
     var branchState = this.flux.store('branch').getState();
-    var ethereumClient = this.flux.store('config').getEthereumClient();
 
     // just block age and peer count until we're current
     ethereumClient.getBlockNumber(function(blockNumber) {
@@ -94,9 +102,6 @@ var NetworkActions = {
       ethereumClient.getAccounts(function(accounts) {
         this.dispatch(constants.network.UPDATE_NETWORK, { accounts: accounts });
       }.bind(this));
-      ethereumClient.getPrimaryAccount(function(account) {
-        this.dispatch(constants.network.UPDATE_NETWORK, { primaryAccount: account });
-      }.bind(this));
       ethereumClient.getGasPrice(function(gasPrice) {
         this.dispatch(constants.network.UPDATE_NETWORK, { gasPrice: gasPrice });
       }.bind(this));
@@ -105,6 +110,9 @@ var NetworkActions = {
       }.bind(this));
       ethereumClient.getHashrate(function(hashrate) {
         this.dispatch(constants.network.UPDATE_NETWORK, { hashrate: hashrate });
+      }.bind(this));
+      ethereumClient.getAccount(function(account) {
+        this.dispatch(constants.network.UPDATE_NETWORK, { primaryAccount: account });
       }.bind(this));
     }
   },

@@ -78,7 +78,7 @@ var MarketActions = {
 
     var setProp = this.flux.actions.market.getMarketSetter(marketId);
     var commands = [];
-    var account = ethereumClient.account;
+    var account = ethereumClient.getAccount();
     var market = {id: marketId, outcomes: [], comments: []};
 
     commands.push(['getCreationFee', [marketId], setProp('creationFee')]);
