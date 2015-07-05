@@ -2,20 +2,13 @@
 
 "use strict";
 
-var fs = require("fs");
-var path = require("path");
 var assert = require("chai").assert;
 var Augur = require("../augur");
-
-var args = process.argv.slice(2);
-if (args.length && (args[0] === "--gospel" || args[0] === "--reset" || args[0] === "--postupload" || args[0] === "--faucets" || args[0] === "--ballots")) {
-    var gospel = path.join(__dirname, "gospel.json");
-    Augur.contracts = JSON.parse(fs.readFileSync(gospel));
-}
-Augur.connect();
-
 var log = console.log;
-var TIMEOUT = 24000;
+
+Augur = require("./utilities").setup(Augur, process.argv.slice(2));
+
+var TIMEOUT = 100000;
 var branch = Augur.branches.dev;
 var coinbase = Augur.coinbase;
 
@@ -48,6 +41,10 @@ describe("Faucets", function () {
     });
     it("Cash faucet", function (done) {
         this.timeout(TIMEOUT);
+        var cash_balance = Augur.getCashBalance(coinbase);
+        if (Augur.bignum(cash_balance).toNumber() > 0) {
+            done();
+        }
         Augur.cashFaucet(
             function (r) {
                 // sent

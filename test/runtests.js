@@ -23,8 +23,8 @@ var DATADIR = path.join(process.env.HOME, ".augur-test");
 // var DATADIR = path.join(process.env.HOME, ".augur");
 // var DATADIR = path.join(process.env.HOME, ".ethereum");
 
-// var GETH = "geth";
-var GETH = path.join(process.env.HOME, "src", "go-ethereum", "build", "bin", "geth");
+var GETH = "geth";
+// var GETH = path.join(process.env.HOME, "src", "go-ethereum", "build", "bin", "geth");
 
 var NETWORK_ID = "10101";
 // var NETWORK_ID = "1010101";
@@ -35,6 +35,7 @@ var GENESIS_NONCE = "10101";
 // var GENESIS_NONCE = "42";
 
 var DEBUG = false;
+var OFF_WORKFLOW = true;
 var AUGUR_CORE = path.join(process.env.HOME, "src", "augur-core");
 var UPLOADER = path.join(AUGUR_CORE, "load_contracts.py");
 var FAUCETS = path.join(__dirname, "faucets.js");
@@ -249,22 +250,23 @@ function postupload_tests_1(geth) {
 }
 
 function off_workflow_tests(geth) {
+    log(chalk.red.bold("\nProduction/off-workflow tests"));
     setup_mocha_tests([
         "connect",
         "fixedpoint",
         "encoder",
-        "ethrpc",
-        "invoke",
-        "batch",
-        "reporting",
+        "ethrpc"
+        // "invoke",
+        // "batch",
+        // "reporting",
         // "expiring",
         // "createEvent",
-        "priceLog",
-        "ballot",
-        "payments",
-        "markets",
+        // "priceLog",
+        // "ballot",
+        // "payments",
+        // "markets",
         // "comments"
-        "augur"
+        // "augur"
     ]).run(function (failures) {
         process.on("exit", function () { process.exit(failures); });
         if (geth) kill_geth(geth);
@@ -272,6 +274,7 @@ function off_workflow_tests(geth) {
 }
 
 function faucets(geth) {
+    var next_test;
     require(FAUCETS);
     delete require.cache[require.resolve(FAUCETS)];
     setTimeout(function () {
@@ -302,12 +305,13 @@ function faucets(geth) {
             log(chalk.blue.bold("\nAccount 0: ") + chalk.cyan(accounts[0]));
             geth_flags[1] = accounts[0];
             geth_flags[3] = accounts[0];
+            next_test = (OFF_WORKFLOW) ? off_workflow_tests : postupload_tests_1
             setTimeout(function () {
                 check_connection(
                     spawn_geth(geth_flags),
                     accounts[0],
                     mine_minimum_ether,
-                    postupload_tests_1
+                    next_test
                 );
             }, 5000);
         }
@@ -411,6 +415,9 @@ function reset_datadir() {
 var args = process.argv.slice(2);
 
 if (args[0] === "--reset") {
+    if (args.length > 1 && args[1] === "--workflow") {
+        OFF_WORKFLOW = false;
+    }
     reset_datadir();
     check_connection(
         spawn_geth(geth_flags),

@@ -1,7 +1,7 @@
 /** 
  * constants for augur.js unit tests
  */
-var MODULAR = typeof(module) != 'undefined';
+var MODULAR = typeof(module) !== 'undefined';
 
 var constants = {};
 

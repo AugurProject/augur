@@ -10,16 +10,11 @@ var assert = require("assert");
 var async = require("async");
 var chalk = require("chalk");
 var Augur = require("../augur");
-require('it-each')({ testPerIteration: true });
-var path = require("path");
-var args = process.argv.slice(2);
-if (args.length && (args[0] === "--gospel" || args[0] === "--reset" || args[0] === "--postupload" || args[0] === "--faucets" || args[0] === "--ballots")) {
-    var gospel = path.join(__dirname, "gospel.json");
-    Augur.contracts = JSON.parse(fs.readFileSync(gospel));
-}
-Augur.connect();
-
 var log = console.log;
+require('it-each')({ testPerIteration: true });
+
+Augur = require("./utilities").setup(Augur, process.argv.slice(2));
+
 var TIMEOUT = 5000;
 
 var branch = Augur.branches.dev;

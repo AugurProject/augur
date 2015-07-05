@@ -11,65 +11,9 @@ var BigNumber = require("bignumber.js");
 var assert = require("assert");
 var Augur = require("../augur");
 var constants = require("./constants");
+var utilities = require("./utilities");
 
-var args = process.argv.slice(2);
-if (args.length && (args[0] === "--gospel" || args[0] === "--reset" || args[0] === "--postupload" || args[0] === "--faucets" || args[0] === "--ballots")) {
-    var gospel = path.join(__dirname, "gospel.json");
-    Augur.contracts = JSON.parse(fs.readFileSync(gospel));
-}
-Augur.connect();
-
-function array_equal(a, b) {
-    if (a === b) return true;
-    if (a === null || b === null) return false;
-    if (a.length !== b.length) return false;
-    for (var i = 0; i < a.length; ++i) {
-        if (a[i] !== b[i]) return false;
-    }
-    return true;
-}
-function check_results(res, expected, apply) {
-    if (res) {
-        if (apply) {
-            if (res && res.constructor === Array) {
-                assert(array_equal(apply(res), apply(expected)));
-            } else {
-                assert(apply(res) === apply(expected));
-            }
-        } else {
-            if (res && res.constructor === Array) {
-                assert(array_equal(res, expected));
-            } else {
-                assert(res === expected);
-            }
-        }
-    } else {
-        console.error("no or incorrect response", res);
-    }
-}
-function runtest(tx, expected, apply) {
-    if (tx && expected) {
-        var res = Augur.invoke(tx);
-        check_results(res, expected, apply);
-    }
-}
-function copy(obj) {
-    if (null === obj || "object" !== typeof obj) return obj;
-    var copy = obj.constructor();
-    for (var attr in obj) {
-        if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
-    }
-    return copy;
-}
-function test(itx, expected, apply) {
-    var tx = copy(itx);
-    if (tx.send === undefined) {
-        tx.send = false;
-        runtest(tx, expected, apply);
-    } else {
-        runtest(tx, expected, apply);
-    }
-}
+Augur = utilities.setup(Augur, process.argv.slice(2));
 
 describe("Invoke contract functions", function () {
     // No parameters
@@ -78,7 +22,7 @@ describe("Invoke contract functions", function () {
         describe("cash.se: " + Augur.contracts.cash, function () {
             var method = "faucet";
             var params = "";
-            var expected = "0x01";
+            var expected = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
             it(method + "(" + params + ") -> " + expected, function () {
                 var tx = {
                     to: Augur.contracts.cash,
@@ -87,12 +31,12 @@ describe("Invoke contract functions", function () {
                     params: params,
                     send: false
                 };
-                var expected = "0x01";
-                test(tx, expected);
+                var expected = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+                utilities.test_invoke(Augur, tx, expected);
             });
-            expected = "1";
+            expected = "-1";
             it(method + "(" + params + ") -> " + expected, function () {
-                var expected = "1";
+                var expected = "-1";
                 var tx = {
                     to: Augur.contracts.cash,
                     from: Augur.coinbase,
@@ -101,7 +45,7 @@ describe("Invoke contract functions", function () {
                     send: false,
                     returns: "number"
                 };
-                test(tx, expected);
+                utilities.test_invoke(Augur, tx, expected);
             });
         });
     });
@@ -121,7 +65,7 @@ describe("Invoke contract functions", function () {
                     "..."
                 ]), function () {
                 tx.returns = "hash[]";
-                test(tx, [
+                utilities.test_invoke(Augur, tx, [
                     "0xe8",
                     "0xe8"
                 ], function (a) {

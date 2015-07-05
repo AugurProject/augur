@@ -6,18 +6,11 @@
 
 "use strict";
 
-var fs = require("fs");
-var path = require("path");
 var chalk = require("chalk");
 var assert = require("chai").assert;
 var Augur = require("../augur");
 
-var args = process.argv.slice(2);
-if (args.length && (args[0] === "--gospel" || args[0] === "--reset" || args[0] === "--postupload" || args[0] === "--faucets" || args[0] === "--ballots")) {
-    var gospel = path.join(__dirname, "gospel.json");
-    Augur.contracts = JSON.parse(fs.readFileSync(gospel));
-}
-Augur.connect();
+Augur = require("./utilities").setup(Augur, process.argv.slice(2));
 
 var log = console.log;
 var TIMEOUT = 120000;

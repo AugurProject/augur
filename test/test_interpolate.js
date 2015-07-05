@@ -11,27 +11,13 @@ var assert = require("chai").assert;
 var chalk = require("chalk");
 var Augur = require("../augur");
 var constants = require("./constants");
+var utilities = require("./utilities");
 require('it-each')({ testPerIteration: true });
 
-var args = process.argv.slice(2);
-if (args.length && (args[0] === "--gospel" || args[0] === "--reset" || args[0] === "--postupload" || args[0] === "--faucets" || args[0] === "--ballots")) {
-    var gospel = path.join(__dirname, "gospel.json");
-    Augur.contracts = JSON.parse(fs.readFileSync(gospel));
-}
-Augur.connect();
+Augur = utilities.setup(Augur, process.argv.slice(2));
 
 var log = console.log;
 var TIMEOUT = 240000;
-
-function print_matrix(m) {
-    for (var i = 0, rows = m.length; i < rows; ++i) {
-        process.stdout.write("\t");
-        for (var j = 0, cols = m[0].length; j < cols; ++j) {
-            process.stdout.write(chalk.cyan(m[i][j] + "\t"));
-        }
-        process.stdout.write("\n");
-    }
-}
 
 var branch = Augur.branches.dev;
 var period = Augur.getVotePeriod(branch);
@@ -60,7 +46,7 @@ for (var i = 0; i < num_reports; ++i) {
     }
 }
 log("Reports:");
-print_matrix(Augur.fold(reports, num_events));
+utilities.print_matrix(Augur.fold(reports, num_events));
 // var scaled = [];
 // var scaled_min = [];
 // var scaled_max = [];
@@ -90,7 +76,7 @@ describe("testing consensus: interpolate", function () {
             // scaled_min,
             function (r) {
                 // sent
-                // print_matrix(
+                // utilities.print_matrix(
                 //     Augur.fold(Augur.unfix(r.callReturn, "number"),
                 //         num_events)
                 // );
@@ -107,9 +93,9 @@ describe("testing consensus: interpolate", function () {
                     num_events
                 );
                 log("Reports (filled):");
-                print_matrix(reports_filled)
+                utilities.print_matrix(reports_filled)
                 log("Reports mask:");
-                print_matrix(reports_mask);
+                utilities.print_matrix(reports_mask);
                 done();
             },
             function (r) {

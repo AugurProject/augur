@@ -1542,7 +1542,6 @@ var Augur = (function (augur) {
         augur.getTx(txhash, function (tx) {
             if (tx === null) {
                 if (returns) itx.returns = returns;
-                send_call_confirm(itx, onSent, onSuccess, onFailed);
             } else {
                 check_blockhash(tx, callreturn, itx, txhash, returns, count, onSent, onSuccess, onFailed);
             }

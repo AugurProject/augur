@@ -5,46 +5,19 @@
 
 "use strict";
 
-var fs = require("fs");
-var path = require("path");
-var assert = require("assert");
+var assert = require("chai").assert;
 var Augur = require("../augur");
 var constants = require("./constants");
-
-var args = process.argv.slice(2);
-if (args.length && (args[0] === "--gospel" || args[0] === "--reset" || args[0] === "--postupload" || args[0] === "--faucets" || args[0] === "--ballots")) {
-    var gospel = path.join(__dirname, "gospel.json");
-    Augur.contracts = JSON.parse(fs.readFileSync(gospel));
-}
-Augur.connect();
-
 var log = console.log;
 
-function fold(arr, num_cols) {
-    var folded = [];
-    num_cols = parseInt(num_cols);
-    var num_rows = arr.length / num_cols;
-    if (num_rows !== parseInt(num_rows)) {
-        throw("array length (" + arr.length + ") not divisible by " + num_cols);
-    }
-    num_rows = parseInt(num_rows);
-    var row;
-    for (var i = 0; i < parseInt(num_rows); ++i) {
-        row = [];
-        for (var j = 0; j < num_cols; ++j) {
-            row.push(arr[i*num_cols + j]);
-        }
-        folded.push(row);
-    }
-    return folded;
-}
+Augur = require("./utilities").setup(Augur, process.argv.slice(2));
 
 var branch = Augur.branches.dev;
 var period = Augur.getVotePeriod(branch);
 var num_events = parseInt(Augur.getNumberEvents(branch, period));
 var num_reports = parseInt(Augur.getNumberReporters(branch));
 var flatsize = num_events * num_reports;
-var receiving_account = constants.chain10101.accounts.tinybike_new;
+var receiving_account = constants.test_accounts[1];
 
 describe("data and api/expiringEvents", function () {
     describe("getEvents(" + branch + ", " + period + ")", function () {
