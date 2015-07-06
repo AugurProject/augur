@@ -8,30 +8,33 @@
 var assert = require("chai").assert;
 var Augur = require("../augur");
 var constants = require("./constants");
+var utilities = require("./utilities");
 var log = console.log;
 
-Augur = require("./utilities").setup(Augur, process.argv.slice(2));
+Augur = utilities.setup(Augur, process.argv.slice(2));
 
-var TIMEOUT = 24000;
 var branch_id = Augur.branches.dev;
 var branch_number = "0";
+var accounts = utilities.get_test_accounts(Augur, constants.max_test_accounts);
+var test_account = accounts[0];
 var markets = Augur.getMarkets(branch_id);
 var market_id = markets[0];
-var market_creator_1 = constants.test_accounts[0];
+var market_creator_1 = test_account;
 var market_id2 = markets[1];
-var market_creator_2 = constants.test_accounts[0];
+var market_creator_2 = test_account;
 var event_id = Augur.getMarketEvents(market_id)[0];
+var accounts = 
 
 // info.se
 describe("info.se", function () {
     describe("getCreator(" + event_id + ") [event]", function () {
         it("sync", function () {
             var res = Augur.getCreator(event_id);
-            assert.equal(res, constants.test_accounts[0]);
+            assert.equal(res, test_account);
         });
         it("async", function (done) {
             Augur.getCreator(event_id, function (r) {
-                assert.equal(r, constants.test_accounts[0]);
+                assert.equal(r, test_account);
                 done();
             });
         });
@@ -39,11 +42,11 @@ describe("info.se", function () {
     describe("getCreator(" + market_id + ") [market]", function () {
         it("sync", function () {
             var res = Augur.getCreator(market_id);
-            assert.equal(res, constants.test_accounts[0]);
+            assert.equal(res, test_account);
         });
         it("async", function (done) {
             Augur.getCreator(market_id, function (r) {
-                assert.equal(r, constants.test_accounts[0]);
+                assert.equal(r, test_account);
                 done();
             });
         });

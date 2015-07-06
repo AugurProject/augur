@@ -271,8 +271,7 @@ var Augur = (function (augur) {
         dev: '0x00000000000000000000000000000000000000000000000000000000000f69b5'
     };
 
-    // Demo account (for demo.augur.net)
-    // augur.demo = "0x5baaabf5213c7189d2f97c8580cb933494454b3b";
+    // Demo account (demo.augur.net)
     augur.demo = "0xaff9cb4dcb19d13b84761c040c91d21dc6c991ec";
 
     /*********************
@@ -296,45 +295,6 @@ var Augur = (function (augur) {
             }
         }
     }
-    augur.loop = function(list, iterator) {
-        var n = list.length;
-        var i = -1;
-        var calls = 0;
-        var looping = false;
-        var iterate = function () {
-            calls -= 1;
-            i += 1;
-            if (i === n) return;
-            iterator(list[i], next);
-        };
-        var runloop = function () {
-            if (looping) return;
-            looping = true;
-            while (calls > 0) iterate();
-            looping = false;
-        };
-        var next = function () {
-            calls += 1;
-            if (typeof setTimeout === 'undefined') runloop();
-            else setTimeout(iterate, 1);
-        };
-        next();
-    };
-    augur.fold = function(arr, num_cols) {
-        var i, j, folded, num_rows, row;
-        folded = [];
-        num_cols = parseInt(num_cols);
-        num_rows = arr.length / num_cols;
-        num_rows = parseInt(num_rows);
-        for (i = 0; i < parseInt(num_rows); ++i) {
-            row = [];
-            for (j = 0; j < num_cols; ++j) {
-                row.push(arr[i*num_cols + j]);
-            }
-            folded.push(row);
-        }
-        return folded;
-    };
 
     // calculate date from block number
     augur.block_to_date = function (block) {
@@ -687,9 +647,6 @@ var Augur = (function (augur) {
                             response.result = augur.prefix_hex(response.result);
                         }
                     }
-                    // if (augur.BigNumberOnly) {
-                    //     response.result = augur.bignum(response.result);
-                    // }
                     if (callback) {
                         callback(response.result);
                     } else {
@@ -719,7 +676,8 @@ var Augur = (function (augur) {
                     } else {
                         return results;
                     }
-                } else { // no result or error field :(
+                // no result or error field
+                } else {
                     if (callback) {
                         callback(response);
                     } else {
@@ -787,6 +745,7 @@ var Augur = (function (augur) {
             } else {
                 req = new window.ActiveXObject("Microsoft.XMLHTTP");
             }
+            // asynchronous if callback exists
             if (callback && callback.constructor === Function) {
                 req.onreadystatechange = function () {
                     if (req.readyState === 4) {

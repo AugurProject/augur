@@ -6,19 +6,16 @@
 "use strict";
 
 var assert = require("chai").assert;
-var Augur = require("../augur");
 var constants = require("./constants");
 var utilities = require("./utilities");
+var Augur = utilities.setup(require("../augur"), process.argv.slice(2));
 var log = console.log;
-
-Augur = utilities.setup(Augur, process.argv.slice(2));
-// Augur.BigNumberOnly = true;
 
 var amount = "1";
 var branch_id = Augur.branches.dev;
-var participant_id = constants.test_accounts[0];
+var accounts = utilities.get_test_accounts(Augur, constants.max_test_accounts);
 var participant_number = "1";
-var outcome = Augur.NO.toString();
+var outcome = Augur.NO;
 var markets = Augur.getMarkets(branch_id);
 var market_id = markets[0];
 var event_id = Augur.getMarketEvents(market_id)[0];
@@ -218,15 +215,15 @@ describe("markets.se", function () {
             });
         });
     });
-    describe("getParticipantNumber(" + market_id + ", " + constants.test_accounts[0] + ") ", function () {
+    describe("getParticipantNumber(" + market_id + ", " + accounts[0] + ") ", function () {
         var test = function (r) {
             utilities.gteq0(r);
         };
         it("sync", function () {
-            test(Augur.getParticipantNumber(market_id, constants.test_accounts[0]));
+            test(Augur.getParticipantNumber(market_id, accounts[0]));
         });
         it("async", function (done) {
-            Augur.getParticipantNumber(market_id, constants.test_accounts[0], function (r) {
+            Augur.getParticipantNumber(market_id, accounts[0], function (r) {
                 test(r); done();
             });
         });

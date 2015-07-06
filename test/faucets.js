@@ -15,13 +15,9 @@ Augur.reputationFaucet(
     Augur.branches.dev,
     function (r) {
         // sent
-        // log("rep sent");
-        // log(r);
     },
     function (r) {
         // success
-        // log("rep ok");
-        // log(r);
         log(chalk.green("  ✓ ") + chalk.gray("Reputation faucet"));
     },
     function (r) {
@@ -38,13 +34,9 @@ if (Augur.bignum(Augur.getCashBalance(Augur.coinbase)).toNumber() === 0) {
     Augur.cashFaucet(
         function (r) {
             // sent
-            // log("cash sent");
-            // log(r);
         },
         function (r) {
             // success
-            // log("cash ok");
-            // log(r);
             log(chalk.green("  ✓ ") + chalk.gray("Cash faucet"));
         },
         function (r) {

@@ -5,32 +5,22 @@
 
 "use strict";
 
+var chalk = require("chalk");
 var assert = require("chai").assert;
 var Augur = require("../augur");
-var chalk = require("chalk");
 var constants = require("./constants");
+var utilities = require("./utilities");
+var log = console.log;
+
 require('it-each')({ testPerIteration: true });
 
-Augur = require("./utilities").setup(Augur, process.argv.slice(2));
+Augur = utilities.setup(Augur, process.argv.slice(2));
 
-var log = console.log;
 var TIMEOUT = 120000;
 var branch = Augur.branches.dev;
 var period = Augur.getVotePeriod(branch);
 
-// var ballot = new Array(num_events);
-// for (var i = 0; i < num_events; ++i) {
-//     ballot[i] = Math.random();
-//     if (ballot[i] > 0.6) {
-//         ballot[i] = 2.0;
-//     } else if (ballot[i] >= 0.4) {
-//         ballot[i] = 1.5;
-//     } else {
-//         ballot[i] = 1.0;
-//     }
-// }
-
-var reporters = constants.test_accounts;
+var reporters = utilities.get_test_accounts(Augur, constants.max_test_accounts);
 
 describe("Set ballots for " + reporters.length + " reporters", function () {
 

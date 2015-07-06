@@ -2,21 +2,19 @@
 
 "use strict";
 
-var Augur = require("../augur");
-var assert = require("assert");
+var assert = require("chai").assert;
 var constants = require("./constants");
-
-Augur = require("./utilities").setup(Augur, process.argv.slice(2));
-
+var utilities = require("./utilities");
+var Augur = utilities.setup(require("../augur"), process.argv.slice(2));
 var log = console.log;
 
 var branch = Augur.branches.dev;
-var period = parseInt(Augur.getVotePeriod(branch)) - 1;
+var period = Augur.bignum(Augur.getVotePeriod(branch)).toNumber() - 1;
 var num_reports = Augur.getNumberReporters(branch);
 var num_events = Augur.getNumberEvents(branch, period);
 var flatsize = num_events * num_reports;
 
-var reporters = constants.test_accounts;
+var reporters = utilities.get_test_accounts(Augur, constants.max_test_accounts);
 var ballots = new Array(flatsize);
 for (var i = 0; i < num_reports; ++i) {
     var reporterID = Augur.getReporterID(branch, i);
@@ -32,14 +30,14 @@ for (var i = 0; i < num_reports; ++i) {
     }
 }
 log("Ballots:");
-log(Augur.fold(ballots, num_events));
+log(utilities.fold(ballots, num_events));
 
 log("\nCentered:");
-var wcd = Augur.fold(Augur.getWeightedCenteredData(branch, period).slice(0, flatsize), num_events);
+var wcd = utilities.fold(Augur.getWeightedCenteredData(branch, period).slice(0, flatsize), num_events);
 log(wcd);
 
 log("\nInterpolated:");
-var reports_filled = Augur.fold(Augur.getReportsFilled(branch, period).slice(0, flatsize), num_events);
+var reports_filled = utilities.fold(Augur.getReportsFilled(branch, period).slice(0, flatsize), num_events);
 log(reports_filled);
 
 var outcomes = Augur.getOutcomesFinal(branch, period).slice(0, num_events);

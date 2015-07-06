@@ -1,23 +1,24 @@
 #!/usr/bin/env node
 
-GLOBAL.BigNumber = require('bignumber.js');
-GLOBAL.keccak_256 = require('js-sha3').keccak_256;
-GLOBAL.XHR2 = require('xhr2');
-GLOBAL.request = require('sync-request');
-GLOBAL.crypto = require('crypto');
-GLOBAL._ = require('lodash');
-GLOBAL.chalk = require('chalk');
-GLOBAL.moment = require('moment');
-GLOBAL.Augur = require('./augur');
-GLOBAL.constants = require('./test/constants');
+GLOBAL.BigNumber = require("bignumber.js");
+GLOBAL.keccak_256 = require("js-sha3").keccak_256;
+GLOBAL.XHR2 = require("xhr2");
+GLOBAL.request = require("sync-request");
+GLOBAL.crypto = require("crypto");
+GLOBAL._ = require("lodash");
+GLOBAL.chalk = require("chalk");
+GLOBAL.moment = require("moment");
+GLOBAL.Augur = require("./augur");
+GLOBAL.constants = require("./test/constants");
+GLOBAL.utilities = require("./test/utilities");
 GLOBAL.augur = Augur;
 GLOBAL.log = console.log;
 GLOBAL.b = Augur.branches.dev;
-GLOBAL.ballot=[ 2, 1.5, 1.5, 1, 1.5, 1.5, 1 ];
-GLOBAL.accounts = constants.test_accounts;
+GLOBAL.ballot = [ 2, 1.5, 1.5, 1, 1.5, 1.5, 1 ];
 
 Augur.connect();
 
+GLOBAL.accounts = utilities.get_test_accounts(Augur, constants.max_test_accounts);
 GLOBAL.c = Augur.coinbase;
 
 GLOBAL.balance = function (account, branch) {

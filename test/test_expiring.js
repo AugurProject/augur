@@ -8,16 +8,19 @@
 var assert = require("chai").assert;
 var Augur = require("../augur");
 var constants = require("./constants");
+var utilities = require("./utilities");
 var log = console.log;
 
-Augur = require("./utilities").setup(Augur, process.argv.slice(2));
+Augur = utilities.setup(Augur, process.argv.slice(2));
 
 var branch = Augur.branches.dev;
 var period = Augur.getVotePeriod(branch);
 var num_events = parseInt(Augur.getNumberEvents(branch, period));
 var num_reports = parseInt(Augur.getNumberReporters(branch));
 var flatsize = num_events * num_reports;
-var receiving_account = constants.test_accounts[1];
+
+var accounts = utilities.get_test_accounts(Augur, constants.max_test_accounts);
+var receiving_account = accounts[1];
 
 describe("data and api/expiringEvents", function () {
     describe("getEvents(" + branch + ", " + period + ")", function () {

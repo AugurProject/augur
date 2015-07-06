@@ -1,6 +1,6 @@
 "use strict";
 
-var MODULAR = typeof(module) !== 'undefined';
+var MODULAR = typeof module !== "undefined";
 
 var BigNumber = require("bignumber.js");
 var chalk = require("chalk");
@@ -16,7 +16,7 @@ utilities.setup = function (augur, args) {
         args[0] === "--postupload" ||
         args[0] === "--faucets" ||
         args[0] === "--ballots")) {
-        var gospel = require("path").join(__dirname, "gospel.json");
+        var gospel = require("path").join(__dirname || "", "gospel.json");
         log("Load contracts from file: " + chalk.green(gospel));
         var contracts = require("fs").readFileSync(gospel);
         augur.contracts = JSON.parse(contracts);
@@ -92,6 +92,41 @@ utilities.copy = function (obj) {
     return copy;
 };
 
+utilities.has_value = function (o, v) {
+    for (var p in o) {
+        if (o.hasOwnProperty(p)) {
+            if (o[p] === v) {
+                return p;
+            }
+        }
+    }
+};
+
+utilities.loop = function (list, iterator) {
+    var n = list.length;
+    var i = -1;
+    var calls = 0;
+    var looping = false;
+    var iterate = function () {
+        calls -= 1;
+        i += 1;
+        if (i === n) return;
+        iterator(list[i], next);
+    };
+    var runloop = function () {
+        if (looping) return;
+        looping = true;
+        while (calls > 0) iterate();
+        looping = false;
+    };
+    var next = function () {
+        calls += 1;
+        if (typeof setTimeout === 'undefined') runloop();
+        else setTimeout(iterate, 1);
+    };
+    next();
+};
+
 utilities.test_invoke = function (augur, itx, expected, apply) {
     var tx = utilities.copy(itx);
     if (tx.send === undefined) {
@@ -99,6 +134,62 @@ utilities.test_invoke = function (augur, itx, expected, apply) {
         utilities.runtest(augur, tx, expected, apply);
     } else {
         utilities.runtest(augur, tx, expected, apply);
+    }
+};
+
+utilities.fold = function (arr, num_cols) {
+    var i, j, folded, num_rows, row;
+    folded = [];
+    num_cols = parseInt(num_cols);
+    num_rows = arr.length / num_cols;
+    num_rows = parseInt(num_rows);
+    for (i = 0; i < parseInt(num_rows); ++i) {
+        row = [];
+        for (j = 0; j < num_cols; ++j) {
+            row.push(arr[i*num_cols + j]);
+        }
+        folded.push(row);
+    }
+    return folded;
+};
+
+utilities.get_test_accounts = function (augur, max_accounts) {
+    var accounts;
+    if (augur) {
+        if (typeof augur === "object") {
+            accounts = augur.accounts();
+        } else if (typeof augur === "string") {
+            accounts = require("fs").readdirSync(require("path").join(augur, "keystore"));
+        }
+        if (max_accounts && accounts.length > max_accounts) {
+            accounts = accounts.slice(0, max_accounts);
+        }
+        return accounts;
+    }
+};
+
+utilities.get_balances = function (augur, account, branch) {
+    if (augur) {
+        branch = branch || augur.branches.dev;
+        account = account || augur.coinbase;
+        return {
+            cash: augur.getCashBalance(account),
+            reputation: augur.getRepBalance(branch || augur.branches.dev, account),
+            ether: augur.bignum(augur.balance(account)).dividedBy(augur.ETHER).toFixed()
+        };
+    }
+};
+
+utilities.read_ballots = function (augur, address, branch, period) {
+    var ballot, num_events;
+    log("Looking up ballots for", chalk.green(address));
+    for (var i = 0; i < period; ++i) {
+        ballot = augur.getReporterBallot(branch, i, address);
+        if (ballot.length && ballot[0] !== undefined) {
+            num_events = augur.getNumberEvents(branch, i);
+            log("Period", chalk.cyan(i), "\t",
+                chalk.green(augur.fix(ballot.slice(0, num_events), "hex")));
+        }
     }
 };
 

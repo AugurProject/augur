@@ -5,26 +5,21 @@
 
 "use strict";
 
-var fs = require("fs");
-var path = require("path");
 var assert = require("chai").assert;
 var chalk = require("chalk");
-var Augur = require("../augur");
 var constants = require("./constants");
 var utilities = require("./utilities");
-require('it-each')({ testPerIteration: true });
-
-Augur = utilities.setup(Augur, process.argv.slice(2));
-
+var Augur = utilities.setup(require("../augur"), process.argv.slice(2));
 var log = console.log;
-var TIMEOUT = 240000;
+
+require('it-each')({ testPerIteration: true });
 
 var branch = Augur.branches.dev;
 var period = Augur.getVotePeriod(branch);
 var num_events = Augur.getNumberEvents(branch, period);
 var num_reports = Augur.getNumberReporters(branch);
 var flatsize = num_events * num_reports;
-var reporters = constants.test_accounts;
+var reporters = utilities.get_test_accounts(Augur, constants.max_test_accounts);
 var reputation_vector = [];
 for (var i = 0; i < num_reports; ++i) {
     reputation_vector.push(Augur.getRepBalance(branch, reporters[i]));
@@ -46,7 +41,7 @@ for (var i = 0; i < num_reports; ++i) {
     }
 }
 log("Reports:");
-utilities.print_matrix(Augur.fold(reports, num_events));
+utilities.print_matrix(utilities.fold(reports, num_events));
 // var scaled = [];
 // var scaled_min = [];
 // var scaled_max = [];
@@ -65,7 +60,7 @@ utilities.print_matrix(Augur.fold(reports, num_events));
 describe("testing consensus: interpolate", function () {
 
     it("interpolate", function (done) {
-        this.timeout(TIMEOUT);
+        this.timeout(constants.timeout);
         assert.equal(reports.length, flatsize);
         assert.equal(reputation_vector.length, num_reports);
         Augur.interpolate(
@@ -77,18 +72,18 @@ describe("testing consensus: interpolate", function () {
             function (r) {
                 // sent
                 // utilities.print_matrix(
-                //     Augur.fold(Augur.unfix(r.callReturn, "number"),
+                //     utilities.fold(Augur.unfix(r.callReturn, "number"),
                 //         num_events)
                 // );
             },
             function (r) {
                 // success
                 var interpolated = Augur.unfix(r.callReturn, "number");
-                var reports_filled = Augur.fold(
+                var reports_filled = utilities.fold(
                     interpolated.slice(0, flatsize),
                     num_events
                 );
-                var reports_mask = Augur.fold(
+                var reports_mask = utilities.fold(
                     Augur.fix(interpolated.slice(flatsize, 2*flatsize), "string"),
                     num_events
                 );
@@ -107,7 +102,7 @@ describe("testing consensus: interpolate", function () {
     });
 
     it("redeem_interpolate/read_ballots", function (done) {
-        this.timeout(TIMEOUT);
+        this.timeout(constants.timeout);
         Augur.read_ballots(
             branch,
             period,
@@ -131,7 +126,7 @@ describe("testing consensus: interpolate", function () {
     });
 
     it("redeem_interpolate/interpolate", function (done) {
-        this.timeout(TIMEOUT);
+        this.timeout(constants.timeout);
         // Augur.tx.redeem_interpolate.returns = "unfix[]";
         Augur.redeem_interpolate(
             branch,
