@@ -1008,6 +1008,10 @@ var Augur = (function (augur) {
                 augur.network_id = chain;
             }
             augur.coinbase = json_rpc(postdata("coinbase"));
+            if (!augur.coinbase) {
+                var accounts = augur.accounts();
+                if (accounts.length === 1) augur.coinbase = accounts[0];
+            }
             if (augur.coinbase && augur.coinbase !== "0x") {
                 for (var method in augur.tx) {
                     if (!augur.tx.hasOwnProperty(method)) continue;

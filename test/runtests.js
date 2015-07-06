@@ -45,6 +45,7 @@ var MINIMUM_ETHER = 32;
 var LOG = "geth.log";
 
 var accounts = constants.test_accounts;
+// var accounts = Augur.accounts();
 var enodes = [
     "enode://035b7845dfa0c0980112abdfdf4dc11087f56b77e10d2831f186ca12bc00f5b9327c427d03d9cd8106db01488905fb2200b5706f9e41c5d75885057691d9997c@[::]:30303",
     "enode://4014c7fa323dafbb1ada241b74ce16099efde03f994728a55b9ff09a9a80664920045993978de85cb7f6c2ac7e9218694554433f586c1290a8b8faa186ce072c@[::]:30303",
