@@ -16,25 +16,11 @@ Ethereum Dapps store their data on the Ethereum blockchain, and their frontends 
 
 ## Getting Started
 
-### Running Ethereum
+For most people, visiting the hosted [Augur client](http://client.augur.net) is enough to get started.
 
-Install go-ethereum ([installation instructions](https://github.com/ethereum/go-ethereum/wiki)). Add a new account with `geth account new` and then start the client with `geth --rpc --rpccorsdomain 'http://localhost:8080' --datadir directory_of_your_choice --shh --unlock primary --bootnodes "enode://035b7845dfa0c0980112abdfdf4dc11087f56b77e10d2831f186ca12bc00f5b9327c427d03d9cd8106db01488905fb2200b5706f9e41c5d75885057691d9997c@[::]:30303" console`.
+You still need to run ethereum locally; the client will walk you through setting it up.  For background, check out the Alpha [launch post](http://www.augur.net/blog/the-augur-alpha-is-now-available-to-download).
 
-For more info checkout: http://www.augur.net/blog/the-augur-alpha-is-now-available-to-download
-
-### Local or Docker
-
-You can launch augur-client locally with the instructions in the following sections, or run it in [docker](https://docs.docker.com/) with one of:
-```
-# get a quick start with a pre-built image:
-docker run -p 8080:8080 carver/augur-client
-
-# or rebuild your own image with:
-git clone https://github.com/AugurProject/augur-client.git
-cd augur-client
-docker build -t augur-client .
-docker run -p 8080:8080 augur-client
-```
+If you want to hack on Augur, or just really enjoy working at the terminal, use the following to set up.
 
 ### Building augur-client
 
