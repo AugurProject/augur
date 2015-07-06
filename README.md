@@ -22,16 +22,20 @@ You still need to run ethereum locally; the client will walk you through platfor
 
 ### Running Ethereum
 
-[Install go-ethereum](https://github.com/ethereum/go-ethereum/wiki). 
+Install [go-ethereum](https://github.com/ethereum/go-ethereum/wiki). 
 
 Add a new account with 
-```geth account new``` 
+```
+geth account new
+``` 
 and then start the client with 
-```geth --rpc --rpccorsdomain 'http://client.augur.net' --shh --unlock 0 console```
+```
+geth --rpc --rpccorsdomain 'http://client.augur.net' --shh --unlock 0 console
+```
 
 ### Building the augur-client
 
-Install [Node.js](https://nodejs.org/), then:
+Install [Node.js](https://nodejs.org/).
 
 ```
 git clone https://github.com/AugurProject/augur-client.git
@@ -48,11 +52,11 @@ Start the local web server
 
 [http://localhost:8080](http://localhost:8080)
 
-### For development
+### Notes for development
 
 use `grunt watchify` to have grunt watch for changes.  `grunt browserify:debug` for helpful (yet slow) module mappings in console.
 
-*NOTE:*  a seperate dev branch is used when building in this manner and data will be seperate from the default build and hosted option above.
+also, a seperate dev branch is used when building in this manner and data will be seperate from the default build and hosted option above.
 
 ## Contributing
 
