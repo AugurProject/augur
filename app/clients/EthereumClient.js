@@ -231,30 +231,18 @@ EthereumClient.prototype.getEtherBalance = function(onResult) {
   });
 };
 
-EthereumClient.prototype.getAccount = function() {
+EthereumClient.prototype.getAccount = function(onResult) {
 
   if (this.account) return this.account;
 
-  var result = this.web3.eth.defaultAccount  // async version doesn't exist
+  var result = this.web3.eth.coinbase  // async version doesn't exist
 
   if (result) {
-
     this.account = result; 
-    return result; 
-
-  } else {
-
-    // default account not set, so fallback to coinbase
-    var coinbase = web3.eth.coinbase || Augur.coinbase;
-    if (coinbase) {
-      this.account = coinbase;
-      return coinbase;
-
-    // coinbase not set, so fallback to first account in the list
+    if (onResult) {
+      onResult(result); 
     } else {
-      var result = this.getAccounts();
-      this.account = result[0];
-      return result[0];
+      return result;
     }
   }
 };

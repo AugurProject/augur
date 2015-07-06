@@ -67,6 +67,10 @@ var NetworkActions = {
       this.dispatch(constants.network.UPDATE_NETWORK, { clientVersion: clientVersion });
     }.bind(this));
 
+    ethereumClient.getAccount(function(account) {
+      this.dispatch(constants.network.UPDATE_NETWORK, { primaryAccount: account });
+    }.bind(this));
+
     this.flux.actions.network.updateNetwork();
 
     // start monitoring for updates
@@ -110,9 +114,6 @@ var NetworkActions = {
       }.bind(this));
       ethereumClient.getHashrate(function(hashrate) {
         this.dispatch(constants.network.UPDATE_NETWORK, { hashrate: hashrate });
-      }.bind(this));
-      ethereumClient.getAccount(function(account) {
-        this.dispatch(constants.network.UPDATE_NETWORK, { primaryAccount: account });
       }.bind(this));
     }
   },

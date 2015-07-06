@@ -258,7 +258,7 @@ var ErrorModal = React.createClass({
           </li>);
         }
         steps.push(<li>Add a new account using <pre>geth account new</pre></li>);
-        steps.push(<li>Start geth with <pre>geth --rpc --rpcorsdomain { host } --unlock 0</pre></li>);
+        steps.push(<li>Start geth with <pre>geth --rpc --rpccorsdomain { host } --unlock 0</pre>and enter your password.</li>);
         steps.push(<li><a href="{ host }">{ host }</a></li>);
 
         var installSteps = _.map(steps);
