@@ -22,9 +22,12 @@ You still need to run ethereum locally; the client will walk you through platfor
 
 ### Running Ethereum
 
-Install go-ethereum ([installation instructions](https://github.com/ethereum/go-ethereum/wiki)). 
+[Install go-ethereum](https://github.com/ethereum/go-ethereum/wiki). 
 
-Add a new account with ```geth account new``` and then start the client with ```geth --rpc --rpccorsdomain 'http://client.augur.net' --shh --unlock 0 console```
+Add a new account with 
+```geth account new``` 
+and then start the client with 
+```geth --rpc --rpccorsdomain 'http://client.augur.net' --shh --unlock 0 console```
 
 ### Building the augur-client
 
