@@ -40,7 +40,7 @@ var AccountDetails = React.createClass({
     var account = flux.store('network').getAccount();
 
     return {
-      primaryAccount: account,
+      account: account,
       allAccounts: flux.store('network').getState().accounts,
       asset: flux.store('asset').getState(),
       ethereumClient: flux.store('config').getEthereumClient(),
@@ -151,7 +151,7 @@ var AccountDetails = React.createClass({
 
     var rendered = (
       <div id="account">
-        <h3>Account<span className='subheading pull-right'>{ this.state.primaryAccount }</span></h3>
+        <h3>Account<span className='subheading pull-right'>{ this.state.account }</span></h3>
         <div className='subheading row'>
           <div className='col-sm-4 cash-balance'>
             { cashBalance } <span className='unit'>cash</span>
