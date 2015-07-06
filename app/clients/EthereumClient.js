@@ -245,9 +245,10 @@ EthereumClient.prototype.getAccount = function() {
   } else {
 
     // default account not set, so fallback to coinbase
-    if (web3.eth.coinbase) {
-      this.account = web3.eth.coinbase;
-      return web3.eth.coinbase;
+    var coinbase = web3.eth.coinbase || Augur.coinbase;
+    if (coinbase) {
+      this.account = coinbase;
+      return coinbase;
 
     // coinbase not set, so fallback to first account in the list
     } else {
