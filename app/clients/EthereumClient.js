@@ -238,11 +238,18 @@ EthereumClient.prototype.getAccount = function(onResult) {
   var result = this.web3.eth.coinbase  // async version doesn't exist
 
   if (result) {
-    this.account = result; 
+    this.account = result;
     if (onResult) {
       onResult(result); 
     } else {
       return result;
+    }
+  } else if (Augur.coinbase) {
+    this.account = Augur.coinbase;
+    if (onResult) {
+      onResult(this.account);
+    } else {
+      return this.account;
     }
   }
 };
