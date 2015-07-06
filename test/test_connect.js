@@ -8,6 +8,7 @@
 var assert = require("chai").assert;
 var Augur = require("../augur");
 var constants = require("./constants");
+var log = console.log;
 
 Augur = require("./utilities").setup(Augur, process.argv.slice(2));
 
@@ -15,7 +16,25 @@ require('it-each')({ testPerIteration: true });
 
 var LOCAL_NODE = true;
 var REMOTE_NODE = false;
-var REMOTE_TIMEOUT = 10000;
+var LOCAL_TIMEOUT = 24000;
+var REMOTE_TIMEOUT = 48000;
+
+var connect_args = [
+    null,
+    "http://localhost:8545",
+    "http://localhost",
+    "localhost:8545",
+    "localhost",
+    { host: 'localhost', port: 8545, protocol: 'http' },
+    { host: 'localhost', port: 8545 },
+    { host: 'localhost' },
+    { port: 8545 },
+    { host: 'localhost:8545' },
+    '127.0.0.1:8545',
+    '127.0.0.1',
+    'http://127.0.0.1:8545',
+    'http://127.0.0.1'
+];
 
 describe("Read contracts", function () {
     var test = function (c) {
@@ -33,60 +52,16 @@ describe("Read contracts", function () {
 });
 describe("Augur.connect", function () {
     if (LOCAL_NODE) {
-        it("should connect successfully to 'http://localhost:8545'", function () {
-            assert(Augur.connect("http://localhost:8545"));
+        it.each(connect_args, "should connect successfully to %s", ['element'], function (element, next) {
+            this.timeout(LOCAL_TIMEOUT);
+            assert(Augur.connect());
+            assert(Augur.connected());
             assert(Augur.coinbase);
-        });
-        it("should connect successfully to 'http://localhost'", function () {
-            assert(Augur.connect("http://localhost"));
-            assert(Augur.coinbase);
-        });
-        it("should connect successfully to 'localhost:8545'", function () {
-            assert(Augur.connect("localhost:8545"));
-            assert(Augur.coinbase);
-        });
-        it("should connect successfully to 'localhost'", function () {
-            assert(Augur.connect("localhost"));
-            assert(Augur.coinbase);
-        });
-        it("should connect successfully to { host: 'localhost', port: 8545, protocol: 'http' }", function () {
-            assert(Augur.connect({ host: 'localhost', port: 8545, protocol: 'http' }));
-            assert(Augur.coinbase);
-        });
-        it("should connect successfully to { host: 'localhost', port: 8545 }", function () {
-            assert(Augur.connect({ host: 'localhost', port: 8545 }));
-            assert(Augur.coinbase);
-        });
-        it("should connect successfully to { host: 'localhost' }", function () {
-            assert(Augur.connect({ host: 'localhost' }));
-            assert(Augur.coinbase);
-        });
-        it("should connect successfully to { port: 8545 }", function () {
-            assert(Augur.connect({ port: 8545 }));
-            assert(Augur.coinbase);
-        });
-        it("should connect successfully to { host: 'localhost:8545' }", function () {
-            assert(Augur.connect({ host: 'localhost:8545' }));
-            assert(Augur.coinbase);
-        });
-        it("should connect successfully to '127.0.0.1:8545'", function () {
-            assert(Augur.connect('127.0.0.1:8545'));
-            assert(Augur.coinbase);
-        });
-        it("should connect successfully to '127.0.0.1'", function () {
-            assert(Augur.connect('127.0.0.1'));
-            assert(Augur.coinbase);
-        });
-        it("should connect successfully to 'http://127.0.0.1:8545'", function () {
-            assert(Augur.connect('http://127.0.0.1:8545'));
-            assert(Augur.coinbase);
-        });
-        it("should connect successfully to 'http://127.0.0.1'", function () {
-            assert(Augur.connect('http://127.0.0.1'));
-            assert(Augur.coinbase);
+            next();
         });
     }
     it("should update the transaction object addresses if the contracts are changed", function () {
+        this.timeout(LOCAL_TIMEOUT);
         var new_address = "0x01";
         Augur.contracts.branches = new_address;
         Augur.connect();
@@ -94,6 +69,7 @@ describe("Augur.connect", function () {
         assert.equal(Augur.init_contracts.branches, new_address);
     });
     it("should switch to 1010101 (private chain) contract addresses", function () {
+        this.timeout(LOCAL_TIMEOUT);
         assert(Augur.connect("http://localhost:8545", 1010101));
         assert(Augur.contracts.branches, Augur.privatechain_contracts.branches);
         assert(Augur.contracts.center, Augur.privatechain_contracts.center);
@@ -102,19 +78,19 @@ describe("Augur.connect", function () {
         assert(Augur.contracts.center, Augur.privatechain_contracts.center);
     });
     it("should switch to Ethereum testnet contract addresses", function (done) {
-        this.timeout(REMOTE_TIMEOUT);
+        this.timeout(LOCAL_TIMEOUT);
         assert(Augur.connect());
         assert(Augur.contracts.branches, Augur.testnet_contracts.branches);
-        assert(Augur.contracts.center, Augur.testnet_contracts.center);
+        assert(Augur.contracts.createMarket, Augur.testnet_contracts.createMarket);
         assert(Augur.connect("http://localhost:8545"));
         assert(Augur.contracts.branches, Augur.testnet_contracts.branches);
-        assert(Augur.contracts.center, Augur.testnet_contracts.center);
+        assert(Augur.contracts.createMarket, Augur.testnet_contracts.createMarket);
         assert(Augur.connect({ host: 'localhost', port: 8545, chain: null }));
         assert(Augur.contracts.branches, Augur.testnet_contracts.branches);
-        assert(Augur.contracts.center, Augur.testnet_contracts.center);
+        assert(Augur.contracts.createMarket, Augur.testnet_contracts.createMarket);
         assert(Augur.connect({ host: '127.0.0.1' }));
         assert(Augur.contracts.branches, Augur.testnet_contracts.branches);
-        assert(Augur.contracts.center, Augur.testnet_contracts.center);
+        assert(Augur.contracts.createMarket, Augur.testnet_contracts.createMarket);
         done();
     });
     if (REMOTE_NODE) {
@@ -150,6 +126,7 @@ describe("Augur.connect", function () {
         });
     }
     it("should connect successfully with no parameters and reset the RPC settings", function () {
+        this.timeout(LOCAL_TIMEOUT);
         assert(Augur.connect());
         assert(Augur.coinbase);
         assert.equal(Augur.RPC.protocol, "http");
@@ -160,10 +137,5 @@ describe("Augur.connect", function () {
         assert(Augur.network_id === "0" ||
                Augur.network_id === "10101" ||
                Augur.network_id === "1010101");
-    });
-});
-describe("Augur.connected", function () {
-    it("should be connected", function () {
-        assert(Augur.connected());
     });
 });

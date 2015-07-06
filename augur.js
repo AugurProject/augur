@@ -932,111 +932,6 @@ var Augur = (function (augur) {
         }
     };
 
-    /*******************************
-     * Ethereum network connection *
-     *******************************/
-
-    augur.connect = function (rpcinfo, chain) {
-        var rpc, key;
-        if (rpcinfo) {
-            if (rpcinfo.constructor === Object) {
-                if (rpcinfo.protocol) augur.RPC.protocol = rpcinfo.protocol;
-                if (rpcinfo.host) augur.RPC.host = rpcinfo.host;
-                if (rpcinfo.port) {
-                    augur.RPC.port = rpcinfo.port;
-                } else {
-                    if (rpcinfo.host) {
-                        rpc = rpcinfo.host.split(":");
-                        if (rpc.length === 2) {
-                            augur.RPC.host = rpc[0];
-                            augur.RPC.port = rpc[1];
-                        }
-                    }
-                }
-                if (rpcinfo.chain) chain = rpcinfo.chain;
-            } else if (rpcinfo.constructor === String) {
-                try {
-                    rpc = rpcinfo.split("://");
-                    console.assert(rpc.length === 2);
-                    augur.RPC.protocol = rpc[0];
-                    rpc = rpc[1].split(':');
-                    if (rpc.length === 2) {
-                        augur.RPC.host = rpc[0];
-                        augur.RPC.port = rpc[1];
-                    } else {
-                        augur.RPC.host = rpc;
-                    }
-                } catch (e) {
-                    try {
-                        rpc = rpcinfo.split(':');
-                        if (rpc.length === 2) {
-                            augur.RPC.host = rpc[0];
-                            augur.RPC.port = rpc[1];
-                        } else {
-                            augur.RPC.host = rpc;
-                        }
-                    } catch (exc) {
-                        return false;
-                    }
-                }
-            }
-        } else {
-            augur.RPC = {
-                protocol: "http",
-                host: "127.0.0.1",
-                port: 8545
-            };
-        }
-        try {
-            if (JSON.stringify(augur.contracts) === JSON.stringify(augur.init_contracts)) {
-                if (chain) {
-                    if (chain === "1010101" || chain === 1010101) {
-                        augur.contracts = copy(augur.privatechain_contracts);
-                    } else if (chain === "10101" || chain === 10101) {
-                        augur.contracts = copy(augur.testchain_contracts);
-                    }
-                } else {
-                    chain = json_rpc(postdata("version", [], "net_"));
-                    if (chain === "1010101" || chain === 1010101) {
-                        augur.contracts = copy(augur.privatechain_contracts);
-                    } else if (chain === "10101" || chain === 10101) {
-                        augur.contracts = copy(augur.testchain_contracts);
-                    } else {
-                        augur.contracts = copy(augur.testnet_contracts);
-                    }
-                }
-                augur.network_id = chain;
-            }
-            augur.coinbase = json_rpc(postdata("coinbase"));
-            if (!augur.coinbase) {
-                var accounts = augur.accounts();
-                if (accounts.length === 1) augur.coinbase = accounts[0];
-            }
-            if (augur.coinbase && augur.coinbase !== "0x") {
-                for (var method in augur.tx) {
-                    if (!augur.tx.hasOwnProperty(method)) continue;
-                    augur.tx[method].from = augur.coinbase;
-                    key = has_value(augur.init_contracts, augur.tx[method].to);
-                    if (key) {
-                        augur.tx[method].to = augur.contracts[key];
-                    }
-                }
-            }
-            augur.init_contracts = copy(augur.contracts);
-            return true;
-        } catch (exc) {
-            return false;
-        }
-    };
-    augur.connected = function () {
-        try {
-            json_rpc(postdata("coinbase"));
-            return true;
-        } catch (e) {
-            return false;
-        }
-    };
-
     /******************************
      * Ethereum JSON-RPC bindings *
      ******************************/
@@ -1116,6 +1011,9 @@ var Augur = (function (augur) {
             }
         }
     };
+    augur.sign = function (address, data, f) {
+        return json_rpc(postdata("sign", [address, data]), f);
+    };
     augur.getTransactionByHash = augur.getTx = function (hash, f) {
         return json_rpc(postdata("getTransactionByHash", hash), f);
     };
@@ -1165,6 +1063,121 @@ var Augur = (function (augur) {
     // publish a new contract to the blockchain (from the coinbase account)
     augur.publish = function (compiled, f) {
         return this.sendTx({ from: augur.coinbase, data: compiled }, f);
+    };
+
+    /*******************************
+     * Ethereum network connection *
+     *******************************/
+
+    augur.connect = function (rpcinfo, chain) {
+        var rpc, key;
+        if (rpcinfo) {
+            if (rpcinfo.constructor === Object) {
+                if (rpcinfo.protocol) augur.RPC.protocol = rpcinfo.protocol;
+                if (rpcinfo.host) augur.RPC.host = rpcinfo.host;
+                if (rpcinfo.port) {
+                    augur.RPC.port = rpcinfo.port;
+                } else {
+                    if (rpcinfo.host) {
+                        rpc = rpcinfo.host.split(":");
+                        if (rpc.length === 2) {
+                            augur.RPC.host = rpc[0];
+                            augur.RPC.port = rpc[1];
+                        }
+                    }
+                }
+                if (rpcinfo.chain) chain = rpcinfo.chain;
+            } else if (rpcinfo.constructor === String) {
+                try {
+                    rpc = rpcinfo.split("://");
+                    console.assert(rpc.length === 2);
+                    augur.RPC.protocol = rpc[0];
+                    rpc = rpc[1].split(':');
+                    if (rpc.length === 2) {
+                        augur.RPC.host = rpc[0];
+                        augur.RPC.port = rpc[1];
+                    } else {
+                        augur.RPC.host = rpc;
+                    }
+                } catch (e) {
+                    try {
+                        rpc = rpcinfo.split(':');
+                        if (rpc.length === 2) {
+                            augur.RPC.host = rpc[0];
+                            augur.RPC.port = rpc[1];
+                        } else {
+                            augur.RPC.host = rpc;
+                        }
+                    } catch (exc) {
+                        return false;
+                    }
+                }
+            }
+        } else {
+            augur.RPC = {
+                protocol: "http",
+                host: "127.0.0.1",
+                port: 8545
+            };
+        }
+        try {
+            if (JSON.stringify(augur.contracts) === JSON.stringify(augur.init_contracts)) {
+                if (chain) {
+                    if (chain === "1010101" || chain === 1010101) {
+                        augur.contracts = copy(augur.privatechain_contracts);
+                    } else if (chain === "10101" || chain === 10101) {
+                        augur.contracts = copy(augur.testchain_contracts);
+                    }
+                } else {
+                    chain = json_rpc(postdata("version", [], "net_"));
+                    if (chain === "1010101" || chain === 1010101) {
+                        augur.contracts = copy(augur.privatechain_contracts);
+                    } else if (chain === "10101" || chain === 10101) {
+                        augur.contracts = copy(augur.testchain_contracts);
+                    } else {
+                        augur.contracts = copy(augur.testnet_contracts);
+                    }
+                }
+                augur.network_id = chain;
+            }
+            augur.coinbase = json_rpc(postdata("coinbase"));
+            if (!augur.coinbase) {
+                var accounts = augur.accounts();
+                var num_accounts = accounts.length;
+                if (num_accounts === 1) {
+                    augur.coinbase = accounts[0];
+                } else {
+                    for (var i = 0; i < num_accounts; ++i) {
+                        if (!augur.sign(accounts[i], "1010101").error) {
+                            augur.coinbase = accounts[i];
+                            break;
+                        }
+                    }
+                }
+            }
+            if (augur.coinbase && augur.coinbase !== "0x") {
+                for (var method in augur.tx) {
+                    if (!augur.tx.hasOwnProperty(method)) continue;
+                    augur.tx[method].from = augur.coinbase;
+                    key = has_value(augur.init_contracts, augur.tx[method].to);
+                    if (key) {
+                        augur.tx[method].to = augur.contracts[key];
+                    }
+                }
+            }
+            augur.init_contracts = copy(augur.contracts);
+            return true;
+        } catch (exc) {
+            return false;
+        }
+    };
+    augur.connected = function () {
+        try {
+            json_rpc(postdata("coinbase"));
+            return true;
+        } catch (e) {
+            return false;
+        }
     };
 
     // hex-encode a function's ABI data and return it
