@@ -172,6 +172,7 @@ var ErrorModal = React.createClass({
   componentWillReceiveProps: function(nextProps) {
 
     if (nextProps.network.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED ||
+    nextProps.network.ethereumStatus === constants.network.ETHEREUM_STATUS_NO_ACCOUNT ||
     nextProps.config.ethereumClientFailed === true) {
 
       // only open if we're not on the demo host
@@ -234,6 +235,17 @@ var ErrorModal = React.createClass({
         </Modal>
       );
 
+    } else if (this.props.network.ethereumStatus === constants.network.ETHEREUM_STATUS_NO_ACCOUNT) {
+      // no etherbase is set
+      return (
+        <Modal show={ this.state.isModalOpen } onHide={ this.handleToggle } backdrop='static'>
+          <div className="modal-body clearfix">
+            <h3>Ethereum Account not found</h3>
+            <p>Augur requires you to set a primary account in your Ethereum client.  Please confirm that you have added this to your geth command line: <pre>--etherbase "0x0123-your-address-here-feebdaed"</pre></p>
+            <p>or <a onClick={ this.startDemoMode } href="javascript:void(0)">proceed in demo mode</a></p>
+          </div>
+        </Modal>
+      );
     } else if (this.props.network.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED) {
 
       var host = window.location.origin;
