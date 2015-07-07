@@ -74,6 +74,7 @@ var MarketActions = {
     }, this);
   },
 
+  // first batch of data fetch from market
   batchMarket: function(marketId) {
 
     var setProp = this.flux.actions.market.getMarketSetter(marketId);
@@ -113,6 +114,7 @@ var MarketActions = {
     return commands;
   },
 
+  // second, supplement batch of data fetched after above prereqs are aquired
   batchSupplementMarket: function(market) {
 
     var commands = [];
@@ -121,10 +123,18 @@ var MarketActions = {
     // populate outcome data
     _.each(market.outcomes, function (outcome) {
 
+      // temp fix for sharesHeld
+      if (market.traderId !== -1) {
+        commands.push(['getParticipantSharesPurchased', [market.id, market.traderId, outcome.id], function(result) {
+          //console.log(utilities.fromFixedPoint(result).toNumber());
+          outcome['sharesHeld'] = utilities.fromFixedPoint(result);
+        }.bind(this)]);
+      }
+
       commands.push(['getMarketOutcomeInfo', [market.id, outcome.id], function(info) {
 
         outcome['volume'] = utilities.fromFixedPoint(info[0]);
-        if (market.traderId !== -1) outcome['sharesHeld'] = utilities.fromFixedPoint(info[1]);
+        //if (market.traderId !== -1) outcome['sharesHeld'] = utilities.fromFixedPoint(info[1]);
         var price = utilities.fromFixedPoint(info[2]);
         if (outcome.id === 2) market['price'] = price;  // hardcoded to outcome 2 (yes)
         outcome['price'] = price;

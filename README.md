@@ -18,17 +18,19 @@ Ethereum Dapps store their data on the Ethereum blockchain, and their frontends 
 
 The client is built and hosted at [http://client.augur.net](http://client.augur.net)
 
-You still need to run ethereum locally; the client will walk you through platform specific installation instructions. Alternatively, If you want to hack on Augur, or just really enjoy working at the terminal, you can following the "Building the augur-client" instructions below.
+You still need to run ethereum locally; the client will walk you through platform specific installation instructions. 
+
+Alternatively, If you want to hack on Augur, or just really enjoy working at the terminal, you can following the "Building the augur-client" instructions below.
 
 ### Running Ethereum
 
 Install [go-ethereum](https://github.com/ethereum/go-ethereum/wiki). 
 
-Add a new account with 
+Add a new account 
 ```
 geth account new
 ``` 
-and then start the client with 
+and then start the client 
 ```
 geth --rpc --rpccorsdomain 'http://client.augur.net' --shh --unlock 0 console
 ```
@@ -47,8 +49,9 @@ grunt browserify:build
 ```
 
 Start the local web server
-
-`npm start`
+```
+npm start
+```
 
 [http://localhost:8080](http://localhost:8080)
 
@@ -60,7 +63,7 @@ also, a seperate dev branch is used when building in this manner and data will b
 
 ## Contributing
 
-We think Augur and Ethereum are pretty awesome, and they're going to change the world. You encourage you to be a part of this.
+We think Augur and Ethereum are pretty awesome, and they're going to change the world. We encourage you to be a part of this.
 
 We use [ZenHub](https://zenhub.io) to organize our GitHub issues. Find an issue in the To Do column that looks good, comment on it to let us know you want to tackle it, and we'll help you get it done.
 
