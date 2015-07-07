@@ -16,7 +16,7 @@ config.browserify.build = {
   dest: 'app/app.js',
   options: {
     browserifyOptions: {
-      extensions: ['.jsx'],
+      extensions: ['.jsx', '.js'],
       transform: [
         ['babelify', {}],
         ['envify', config.envify.build]

@@ -33,7 +33,7 @@
     "babelify": "^6.1.1",
     "bignumber.js": "^2.0.7",
     "bootstrap": "^3.3.4",
-    "browserify": "^9.0.8",
+    "browserify": "^10.2.4",
     "envify": "^3.4.0",
     "es6-promise": "^2.0.1",
     "fluxxor": "^1.6.0",
