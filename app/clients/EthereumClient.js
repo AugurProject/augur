@@ -231,28 +231,31 @@ EthereumClient.prototype.getEtherBalance = function(onResult) {
   });
 };
 
+EthereumClient.prototype.getAccountSync = function() {
+  if (this.account)
+      return this.account;
+
+  this.account = this.web3.eth.coinbase;
+
+  if (!this.account)
+      this.account = Augur.coinbase;
+
+  return this.account;
+};
+
 EthereumClient.prototype.getAccount = function(onResult, onError) {
 
-  if (this.account) return this.account;
+  // async version doesn't exist, so simulate using Sync for now
+  var result = this.getAccountSync();
 
-  var result = this.web3.eth.coinbase  // async version doesn't exist
+  //backwards compatibility with calls using this method synchronously
+  if (!onResult) return result;
 
   if (result) {
-    this.account = result;
-    if (onResult) {
-      onResult(result); 
-    } else {
-      return result;
-    }
-  } else if (Augur.coinbase) {
-    this.account = Augur.coinbase;
-    if (onResult) {
-      onResult(this.account);
-    } else {
-      return this.account;
-    }
+      onResult(result);
+  } else if (onError) {
+      onError();
   }
-  if (onError) onError();
 };
 
 EthereumClient.prototype.getBlockNumber = function(callback) {
