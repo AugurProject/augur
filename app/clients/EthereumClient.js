@@ -166,6 +166,14 @@ EthereumClient.prototype.batch = function(commands) {
 
 EthereumClient.prototype.getNetworkId = function(onResult) {
 
+  // short circuiting this for now as geth is not supporting this rpc call
+  this.networkId = "0";
+  if (onResult) {
+    onResult(this.networkId);
+  } else {
+    return this.networkId;
+  }
+
   if (!onResult) {
     var result = web3.version.network;
     this.networkId = result;
