@@ -70,10 +70,7 @@ var NetworkActions = {
     ethereumClient.getAccount(function(account) {
       this.dispatch(constants.network.UPDATE_NETWORK, { primaryAccount: account });
     }.bind(this), function () {
-      utilities.warn('failed to discover primary ether account (aka etherbase, aka coinbase)');
-
-      // stop monitoring
-      ethereumClient.stopMonitoring();
+      utilities.error('failed to discover primary ether account (aka etherbase, aka coinbase)');
 
       this.dispatch(
         constants.network.UPDATE_ETHEREUM_STATUS,
