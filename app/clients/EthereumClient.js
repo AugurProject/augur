@@ -231,7 +231,7 @@ EthereumClient.prototype.getEtherBalance = function(onResult) {
   });
 };
 
-EthereumClient.prototype.getAccount = function(onResult) {
+EthereumClient.prototype.getAccount = function(onResult, onError) {
 
   if (this.account) return this.account;
 
@@ -252,6 +252,7 @@ EthereumClient.prototype.getAccount = function(onResult) {
       return this.account;
     }
   }
+  if (onError) onError();
 };
 
 EthereumClient.prototype.getBlockNumber = function(callback) {
@@ -320,9 +321,10 @@ EthereumClient.prototype.cashFaucet = function(onSent) {
 };
 
 EthereumClient.prototype.getCashBalance = function(onResult) {
-
-  Augur.getCashBalance(this.getAccount(), function(result) {
-    if (result) onResult(result);
+  this.getAccount(function (account) {
+    Augur.getCashBalance(account, function(result) {
+      if (result) onResult(result);
+    });
   });
 };
 
