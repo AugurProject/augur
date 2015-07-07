@@ -17,9 +17,9 @@ if (MODULAR) {
     var moment = require("moment");
     var chalk = require("chalk");
     var keccak_256 = require("js-sha3").keccak_256;
-    var bcrypt = require("bcrypt");
+    var bcrypt = require("bcryptjs");
     var EthUtil = require("ethereumjs-util");
-    var ecdsa = require("secp256k1");
+    var elliptic = require("eccrypto");
 }
 
 var log = console.log;
@@ -1331,7 +1331,7 @@ var Augur = (function (augur) {
 
                 // generate private key, derive public key and address
                 var privKey = crypto.randomBytes(32);
-                var pubKey = ecdsa.createPublicKey(privKey);
+                var pubKey = elliptic.getPublic(privKey);
                 var address = EthUtil.pubToAddress(pubKey).toString("hex");
 
                 // password used as secret key to aes-256 encrypt private key

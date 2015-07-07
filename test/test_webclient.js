@@ -12,8 +12,8 @@ var chalk = require("chalk");
 var Transaction = require("ethereumjs-tx");
 var EthUtil = require("ethereumjs-util");
 // var rlp = require("rlp");
-var ecdsa = require("secp256k1");
-var bcrypt = require("bcrypt");
+var elliptic = require("eccrypto");
+var bcrypt = require("bcryptjs");
 var constants = require("./constants");
 var utilities = require("./utilities");
 var Augur = utilities.setup(require("../augur"), process.argv.slice(2));
@@ -23,7 +23,7 @@ var log = console.log;
 var privateKey = crypto.randomBytes(32);
 
 describe("Accounts", function () {
-    var publicKey = ecdsa.createPublicKey(privateKey);
+    var publicKey = elliptic.getPublic(privateKey);
     var address = EthUtil.pubToAddress(publicKey).toString("hex");
 
     // user specified handle and password
@@ -44,8 +44,7 @@ describe("Accounts", function () {
     });
 
     // hash and salt the password
-    var salt = bcrypt.genSaltSync(10);
-    var passwordHash = bcrypt.hashSync(password, salt);
+    var passwordHash = bcrypt.hashSync(password, 10);
     
     // verify the password against the hash
     it("password should verify against the stored hash", function () {
