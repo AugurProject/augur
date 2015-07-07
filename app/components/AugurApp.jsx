@@ -161,11 +161,37 @@ var ErrorModal = React.createClass({
 
   getInitialState: function () {
 
+    var ua = new UAParser(navigator.userAgent);
+    var os = ua.getOS().name;
+    var host = window.location.origin;
+
+    var steps = []
+    if (os === 'Mac OS') {
+      steps.push(<li><a target="_new" href="http://brew.sh/">Install Homebrew</a> for Mac OS</li>);
+      steps.push(<li><pre>brew tap ethereum/ethereum</pre><pre>brew install ethereum --devel</pre></li>);
+    } else if (os = 'Windows') {
+      steps.push(<li>
+        Download the <a href="https://build.ethdev.com/builds/Windows%20Go%20develop%20branch/Geth-Win64-latest.zip">lastest geth build</a> for Windows
+      </li>);
+    } else if (os = 'Ubuntu') {
+      steps.push(<li><pre>sudo add-apt-repository ppa:ethereum/ethereum</pre><pre>sudo apt-get update</pre><pre>sudo apt-get install ethereum</pre></li>);
+    } else {
+      steps.push(<li>
+        Follow the Ethereum <a href="https://github.com/ethereum/go-ethereum/wiki/Building-Ethereum">install guide</a> on github
+      </li>);
+    }
+    steps.push(<li>Add a new account using <pre>geth account new</pre></li>);
+    steps.push(<li>Start geth with <pre>geth --rpc --rpccorsdomain { host } --unlock 0</pre>and enter your password.</li>);
+    steps.push(<li><a href="{ host }">{ host }</a></li>);
+
     return {
       isModalOpen: false,
       isLoading: false,
-      installationHelp: false,
-      startSecondsBehind: null
+      installHelpIsOpen: false,
+      installHelpSteps: _.map(steps),
+      startSecondsBehind: null,
+      progressBar: (<ProgressBar striped active now={ 100 } className='loading-blocks-progress' />),
+      message: (<p>The Ethereum block chain is not current.  Looking for peers.</p>)
     }
   },
 
@@ -182,6 +208,16 @@ var ErrorModal = React.createClass({
       if (!this.state.isLoading) {
         utilities.warn('blockchain ' + nextProps.network.blockChainAge + ' seconds behind');
         this.setState({ isModalOpen: true, isLoading: true, startSecondsBehind: nextProps.network.blockChainAge});
+      }
+
+      var percentCaughtUp = ((this.state.startSecondsBehind - this.props.network.blockChainAge) / this.state.startSecondsBehind) * 100;
+      if (percentCaughtUp > 0) {
+        this.setState({progressBar: (<ProgressBar now={ parseFloat(percentCaughtUp) } className='loading-blocks-progress' />) });
+      }
+
+      if (this.props.network.peerCount) {
+        var plural = this.props.network.peerCount === 1 ? '' : 's';
+        this.setState({ message: (<p>The Ethereum block chain is not current and is fetching blocks from <b>{ this.props.network.peerCount }</b> peer{ plural }</p>) });
       }
 
     } else {
@@ -203,9 +239,9 @@ var ErrorModal = React.createClass({
     this.handleToggle();
   },
 
-  showInstallationHelp: function(event) {
+  showInstallHelp: function(event) {
 
-    this.setState({ installationHelp: true });
+    this.setState({ installHelpIsOpen: true });
   },
 
   startDemoMode: function(event) {
@@ -217,8 +253,6 @@ var ErrorModal = React.createClass({
   render: function() {
 
     if (!this.state.isModalOpen) return <span />;
-
-    var ua = new UAParser(navigator.userAgent);
 
     if (this.props.config.ethereumClientFailed) {
 
@@ -236,38 +270,13 @@ var ErrorModal = React.createClass({
 
     } else if (this.props.network.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED) {
 
-      var host = window.location.origin;
-      var os = ua.getOS().name;
-      var help = <span />;
-
-      if (this.state.installationHelp) {
-
-        var steps = []
-        if (os === 'Mac OS') {
-          steps.push(<li><a target="_new" href="http://brew.sh/">Install Homebrew</a> for Mac OS</li>);
-          steps.push(<li><pre>brew tap ethereum/ethereum</pre><pre>brew install ethereum --devel</pre></li>);
-        } else if (os = 'Windows') {
-          steps.push(<li>
-            Download the <a href="https://build.ethdev.com/builds/Windows%20Go%20develop%20branch/Geth-Win64-latest.zip">lastest geth build</a> for Windows
-          </li>);
-        } else if (os = 'Ubuntu') {
-          steps.push(<li><pre>sudo add-apt-repository ppa:ethereum/ethereum</pre><pre>sudo apt-get update</pre><pre>sudo apt-get install ethereum</pre></li>);
-        } else {
-          steps.push(<li>
-            Follow the Ethereum <a href="https://github.com/ethereum/go-ethereum/wiki/Building-Ethereum">install guide</a> on github
-          </li>);
-        }
-        steps.push(<li>Add a new account using <pre>geth account new</pre></li>);
-        steps.push(<li>Start geth with <pre>geth --rpc --rpccorsdomain { host } --unlock 0</pre>and enter your password.</li>);
-        steps.push(<li><a href="{ host }">{ host }</a></li>);
-
-        var installSteps = _.map(steps);
-
-        var help = (
+      var installHelp = <span />;
+      if (this.state.installHelpIsOpen) {
+        installHelp = (
           <div className="installation-help">
             <h4>Installing and configuring Ethereum</h4>
             <ol>
-              { installSteps }      
+              { this.state.installHelpSteps }      
             </ol>
           </div>
         );
@@ -279,35 +288,22 @@ var ErrorModal = React.createClass({
           <div className="modal-body clearfix">
             <h3>Ethereum not found</h3>
             <p>Augur requires an Ethereum client to be running and current.  Augur could not detect a client running which probably means it's not installed, running or is misconfigured.</p>
-            <p>Get help <a onClick={ this.showInstallationHelp } href="javascript:void(0)">installing and configuring Ethereum</a></p>
+            <p>Get help <a onClick={ this.showInstallHelp } href="javascript:void(0)">installing and configuring Ethereum</a></p>
             <p>or <a onClick={ this.startDemoMode } href="javascript:void(0)">proceed in demo mode</a></p>
-            { help }
-        </div>
+            { installHelp }
+          </div>
         </Modal>
       );
 
     } else if (this.state.isLoading) {
-
-      var percentCaughtUp = ((this.state.startSecondsBehind - this.props.network.blockChainAge) / this.state.startSecondsBehind) * 100;
-      //console.log(this.state.startSecondsBehind, this.props.network.blockChainAge, percentCaughtUp);
-      var progressBar = (<ProgressBar striped active now={ 100 } className='loading-blocks-progress' />);
-      if (percentCaughtUp > 0) {
-        progressBar = (<ProgressBar now={ parseFloat(percentCaughtUp) } className='loading-blocks-progress' />);
-      }
-
-      var message = (<p>The Ethereum block chain is not current.  Looking for peers.</p>);
-      if (this.props.network.peerCount) {
-        var plural = this.props.network.peerCount === 1 ? '' : 's';
-        message = (<p>The Ethereum block chain is not current and is fetching blocks from <b>{ this.props.network.peerCount }</b> peer{ plural }</p>)
-      }
 
       // augur client is loading
       return (
         <Modal {...this.props} bsSize='small' show={ this.state.isModalOpen } onHide={ this.handleToggle } backdrop='static'>
           <div className="modal-body clearfix">
               <h4>Ethereum loading</h4>
-              { message }
-              { progressBar }
+              { this.state.message }
+              { this.state.progressBar }
           </div>
         </Modal>
       );
