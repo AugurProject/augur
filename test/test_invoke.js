@@ -5,15 +5,12 @@
 
 "use strict";
 
-var fs = require("fs");
-var path = require("path");
 var BigNumber = require("bignumber.js");
-var assert = require("assert");
-var Augur = require("../augur");
+var assert = require("chai").assert;
 var constants = require("./constants");
 var utilities = require("./utilities");
-
-Augur = utilities.setup(Augur, process.argv.slice(2));
+var Augur = utilities.setup(require("../augur"), process.argv.slice(2));
+var log = console.log;
 
 describe("Invoke contract functions", function () {
     // No parameters
@@ -22,8 +19,7 @@ describe("Invoke contract functions", function () {
         describe("faucet.se: " + Augur.contracts.faucets, function () {
             var method = "cashFaucet";
             var params = "";
-            var expected = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
-            it(method + "(" + params + ") -> " + expected, function () {
+            it(method + "(" + params + ")", function () {
                 var tx = {
                     to: Augur.contracts.faucets,
                     from: Augur.coinbase,
@@ -31,12 +27,11 @@ describe("Invoke contract functions", function () {
                     params: params,
                     send: false
                 };
-                var expected = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
-                utilities.test_invoke(Augur, tx, expected);
+                var result = Augur.invoke(tx);
+                assert(result === "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+                    || result === "0x01");
             });
-            expected = "-1";
-            it(method + "(" + params + ") -> " + expected, function () {
-                var expected = "-1";
+            it(method + "(" + params + ")", function () {
                 var tx = {
                     to: Augur.contracts.faucets,
                     from: Augur.coinbase,
@@ -45,7 +40,8 @@ describe("Invoke contract functions", function () {
                     send: false,
                     returns: "number"
                 };
-                utilities.test_invoke(Augur, tx, expected);
+                var result = Augur.invoke(tx);
+                assert(result === "1" || result === "-1");
             });
         });
     });

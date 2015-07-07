@@ -11,7 +11,7 @@ var Augur = require("../augur");
 var constants = require("./constants");
 var log = console.log;
 
-Augur = require("./utilities").setup(Augur, process.argv.slice(2));
+Augur.connect();
 
 describe("Fixed point tests", function () {
 

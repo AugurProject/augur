@@ -5,13 +5,14 @@
 
 "use strict";
 
+var crypto = require("crypto");
 var assert = require("chai").assert;
-var Augur = require("../augur");
+var constants = require("./constants");
 var utilities = require("./utilities");
+var Augur = utilities.setup(require("../augur"), process.argv.slice(2));
 var log = console.log;
 
-Augur = utilities.setup(Augur, process.argv.slice(2));
-
+var accounts = utilities.get_test_accounts(Augur, constants.max_test_accounts);
 var branch_id = Augur.branches.dev;
 var reporter_index = "0";
 var ballot = [Augur.YES, Augur.YES, Augur.NO, Augur.YES];
@@ -36,10 +37,10 @@ describe("data and api/reporting", function () {
             utilities.gteq0(r);
         };
         it("sync", function () {
-            test(Augur.getRepBalance(branch_id, Augur.coinbase));
+            test(Augur.getRepBalance(branch_id, accounts[0]));
         });
         it("async", function (done) {
-            Augur.getRepBalance(branch_id, Augur.coinbase, function (r) {
+            Augur.getRepBalance(branch_id, accounts[0], function (r) {
                 test(r); done();
             });
         });
@@ -60,7 +61,7 @@ describe("data and api/reporting", function () {
     });
     describe("getReporterID(" + branch_id + ", " + reporter_index + ") ", function () {
         var test = function (r) {
-            assert.equal(r, Augur.coinbase);
+            assert.equal(r, accounts[0]);
         };
         it("sync", function () {
             test(Augur.getReporterID(branch_id, reporter_index));
@@ -71,7 +72,7 @@ describe("data and api/reporting", function () {
             });
         });
     });
-    describe("getReputation(" + Augur.coinbase + ")", function () {
+    describe("getReputation(" + accounts[0] + ")", function () {
         var test = function (r) {
             assert(r.length >= 1);
             for (var i = 0, len = r.length; i < len; ++i) {
@@ -79,10 +80,10 @@ describe("data and api/reporting", function () {
             }
         };
         it("sync", function () {
-            test(Augur.getReputation(Augur.coinbase));
+            test(Augur.getReputation(accounts[0]));
         });
         it("async", function (done) {
-            Augur.getReputation(Augur.coinbase, function (r) {
+            Augur.getReputation(accounts[0], function (r) {
                 test(r); done();
             });
         });
@@ -100,21 +101,29 @@ describe("data and api/reporting", function () {
             });
         });
     });
-    describe("repIDToIndex(" + branch_id + ", " + Augur.coinbase + ") ", function () {
+    describe("repIDToIndex(" + branch_id + ", " + accounts[0] + ") ", function () {
         var test = function (r) {
             assert.equal(r, reporter_index);
         };
         it("sync", function () {
-            test(Augur.repIDToIndex(branch_id, Augur.coinbase));
+            test(Augur.repIDToIndex(branch_id, accounts[0]));
         });
         it("async", function (done) {
-            Augur.repIDToIndex(branch_id, Augur.coinbase, function (r) {
+            Augur.repIDToIndex(branch_id, accounts[0], function (r) {
                 test(r); done();
             });
         });
     });
     describe("hashReport([ballot], " + salt + ") ", function () {
         var test = function (r) {
+            var b = Augur.fix(ballot);
+            for (var i = 0, len = b.length; i < len; ++i) {
+                b[i] = b[i].toString(16);
+            }
+            var hashable = [accounts[0], Augur.bignum(salt).toString(16)].concat(b).toString();
+            var hashed = utilities.sha256(hashable);
+            // TODO lookup how arrays hashed by evm sha256, this doesn't work
+            // assert.equal(r, hashed);
             assert.equal(r, "0xf3efde92c14172a5498fc449f5d0af2c6017c3ca37b8220164721893bdf93f27");
         };
         it("sync", function () {

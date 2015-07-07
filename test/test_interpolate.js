@@ -95,7 +95,7 @@ describe("testing consensus: interpolate", function () {
             },
             function (r) {
                 //failed
-                throw r.message;
+                throw new Error(r.message);
                 done();
             }
         );
@@ -119,7 +119,7 @@ describe("testing consensus: interpolate", function () {
             },
             function (r) {
                 // failed
-                log("read_ballots failed:", r);
+                throw new Error("read_ballots failed:", r);
                 done();
             }
         );
@@ -156,7 +156,7 @@ describe("testing consensus: interpolate", function () {
             },
             function (r) {
                 // failed
-                log(r.message);
+                throw new Error(r.message);
                 done();
             }
         );

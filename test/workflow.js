@@ -14,25 +14,36 @@ var assert = require("chai").assert;
 var rm = require("rimraf");
 var chalk = require("chalk");
 var Mocha = require("mocha");
+var longjohn = require("longjohn");
 var Augur = require("../augur");
 var constants = require("./constants");
 var utilities = require("./utilities");
 var log = console.log;
 
-// Test network (networkid 10101, genesisnonce 10101)
-var DATADIR = path.join(process.env.HOME, ".augur-test");
+longjohn.async_trace_limit = 25;
+longjohn.empty_frame = "";
+
 var NETWORK_ID = "10101";
-var GENESIS_NONCE = "10101";
+// var NETWORK_ID = "1010101";
+// var NETWORK_ID = "0";
+
+// Test network (networkid 10101, genesisnonce 10101)
+if (NETWORK_ID === "10101") {
+    var DATADIR = path.join(process.env.HOME, ".augur-test");
+    var GENESIS_NONCE = "10101";
+}
 
 // Private alpha network (networkid 1010101, genesisnonce 1010101)
-// var DATADIR = path.join(process.env.HOME, ".augur");
-// var NETWORK_ID = "1010101";
-// var GENESIS_NONCE = "1010101";
+else if (NETWORK_ID === "1010101") {
+    var DATADIR = path.join(process.env.HOME, ".augur");
+    var GENESIS_NONCE = "1010101";
+}
 
 // Public Ethereum testnet (networkid 0, genesisnonce 42)
-// var DATADIR = path.join(process.env.HOME, ".ethereum");
-// var NETWORK_ID = "0";
-// var GENESIS_NONCE = "42";
+else if (NETWORK_ID === "0") {
+    var DATADIR = path.join(process.env.HOME, ".ethereum");
+    var GENESIS_NONCE = "42";
+}
 
 // var GETH = "geth";
 var GETH = path.join(process.env.HOME, "src", "go-ethereum", "build", "bin", "geth");
@@ -244,6 +255,7 @@ function postupload_tests_2(geth) {
 
 function postupload_tests_1(geth) {
     setup_mocha_tests([
+        "contracts",
         "ethrpc",
         "batch",
         "invoke",
@@ -261,6 +273,7 @@ function off_workflow_tests(geth) {
     log(chalk.red.bold("\nProduction/off-workflow tests"));
     setup_mocha_tests([
         "connect",
+        "contracts",
         "fixedpoint",
         "encoder",
         "ethrpc",
@@ -389,13 +402,13 @@ function check_connection(geth, account, callback, next, count) {
     }
     if (Augur.connected()) {
         accounts = utilities.get_test_accounts(Augur, constants.max_test_accounts);
-        if (!verified_accounts && account !== accounts[0].slice(2)) {
+        verified_accounts = true;
+        if (!verified_accounts && account !== accounts[0]) {
             kill_geth(geth);
             account = accounts[0];
             log(chalk.blue.bold("\nAccount 0: ") + chalk.cyan(account));
             geth_flags[1] = account;
             geth_flags[3] = account;
-            verified_accounts = true;
             setTimeout(function () {
                 check_connection(spawn_geth(geth_flags), account, callback, next, ++count);
             }, 5000);

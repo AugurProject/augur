@@ -9,10 +9,9 @@ var assert = require("chai").assert;
 var Augur = require("../augur");
 var constants = require("./constants");
 var coder = require("./solidity/coder");
-
-Augur = require("./utilities").setup(Augur, process.argv.slice(2));
-
 var log = console.log;
+
+Augur.connect();
 
 describe("Hex/ASCII conversion", function () {
     var test = function (t) {

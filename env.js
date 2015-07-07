@@ -8,6 +8,7 @@ GLOBAL.crypto = require("crypto");
 GLOBAL._ = require("lodash");
 GLOBAL.chalk = require("chalk");
 GLOBAL.moment = require("moment");
+GLOBAL.sjcl = require("sjcl");
 GLOBAL.Augur = require("./augur");
 GLOBAL.constants = require("./test/constants");
 GLOBAL.utilities = require("./test/utilities");
@@ -35,14 +36,14 @@ GLOBAL.balance = function (account, branch) {
     return balances;
 }
 
-GLOBAL.vote_period = Augur.getVotePeriod(b);
-GLOBAL.current_period = Augur.getCurrentPeriod(b);
-GLOBAL.num_events = Augur.getNumberEvents(b, vote_period);
-GLOBAL.num_reports = Augur.getNumberReporters(b);
-
-log(chalk.cyan("Vote period"), chalk.green(vote_period) + chalk.cyan(":"));
-log("Current period:     ", chalk.green(current_period));
-log("Number of events:   ", chalk.green(num_events));
-log("Number of reporters:", chalk.green(num_reports));
-
 GLOBAL.balances = balance();
+
+// GLOBAL.vote_period = Augur.getVotePeriod(b);
+// GLOBAL.current_period = Augur.getCurrentPeriod(b);
+// GLOBAL.num_events = Augur.getNumberEvents(b, vote_period);
+// GLOBAL.num_reports = Augur.getNumberReporters(b);
+
+// log(chalk.cyan("Vote period"), chalk.green(vote_period) + chalk.cyan(":"));
+// log("Current period:     ", chalk.green(current_period));
+// log("Number of events:   ", chalk.green(num_events));
+// log("Number of reporters:", chalk.green(num_reports));

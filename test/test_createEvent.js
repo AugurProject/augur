@@ -67,7 +67,7 @@ describe("Creating " + num_events + " events and markets", function () {
                         next();
                     },
                     onFailed: function (res) {
-                        log("createMarket failed: " + JSON.stringify(res, null, 2));
+                        throw new Error("createMarket failed: " + JSON.stringify(res, null, 2));
                         next();
                     }
                 };
@@ -75,7 +75,7 @@ describe("Creating " + num_events + " events and markets", function () {
                 // next();
             },
             onFailed: function (r) {
-                throw(r.message);
+                throw new Error(r.message);
                 next();
             }
         });

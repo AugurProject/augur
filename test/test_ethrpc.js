@@ -6,10 +6,8 @@
 "use strict";
 
 var assert = require("chai").assert;
-var Augur = require("../augur");
+var Augur = require("./utilities").setup(require("../augur"), process.argv.slice(2));
 var log = console.log;
-
-Augur = require("./utilities").setup(Augur, process.argv.slice(2));
 
 describe("Ethereum JSON-RPC", function () {
     describe("coinbase", function () {

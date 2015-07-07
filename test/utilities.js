@@ -153,6 +153,20 @@ utilities.fold = function (arr, num_cols) {
     return folded;
 };
 
+utilities.prefix_hex = function (n) {
+    if (n.constructor === Number || n.constructor === BigNumber) {
+        n = n.toString(16);
+    }
+    if (n.slice(0,2) !== "0x" && n.slice(0,3) !== "-0x") {
+        if (n.slice(0,1) === '-') {
+            n = "-0x" + n.slice(1);
+        } else {
+            n = "0x" + n;
+        }
+    }
+    return n;
+};
+
 utilities.get_test_accounts = function (augur, max_accounts) {
     var accounts;
     if (augur) {
@@ -160,6 +174,9 @@ utilities.get_test_accounts = function (augur, max_accounts) {
             accounts = augur.accounts();
         } else if (typeof augur === "string") {
             accounts = require("fs").readdirSync(require("path").join(augur, "keystore"));
+            for (var i = 0, len = accounts.length; i < len; ++i) {
+                accounts[i] = utilities.prefix_hex(accounts[i]);
+            }
         }
         if (max_accounts && accounts.length > max_accounts) {
             accounts = accounts.slice(0, max_accounts);
@@ -191,6 +208,27 @@ utilities.read_ballots = function (augur, address, branch, period) {
                 chalk.green(augur.fix(ballot.slice(0, num_events), "hex")));
         }
     }
+};
+
+utilities.chunk32 = function (string, stride) {
+    var elements, chunked, position;
+    if (string.length >= 66) {
+        stride = stride || 64;
+        elements = Math.ceil(string.length / stride);
+        chunked = new Array(elements);
+        position = 0;
+        for (var i = 0; i < elements; ++i) {
+            chunked[i] = string.slice(position, position + stride);
+            position += stride;
+        }
+        return chunked;
+    } else {
+        return string;
+    }
+};
+
+utilities.sha256 = function (x) {
+    return "0x" + require("crypto").createHash("sha256").update(x).digest("hex");
 };
 
 if (MODULAR) module.exports = utilities;

@@ -9,13 +9,16 @@
 var fs = require("fs");
 var path = require("path");
 var chalk = require("chalk");
+var longjohn = require("longjohn");
 var Augur = require("../augur");
+var log = console.log;
 
 var gospel = require("path").join(__dirname, "gospel.json");
 Augur.contracts = JSON.parse(require("fs").readFileSync(gospel));
 Augur.connect();
 
-var log = console.log;
+longjohn.async_trace_limit = 25;
+longjohn.empty_frame = "";
 
 var branch = Augur.branches.dev;
 var markets = Augur.getMarkets(branch);
@@ -70,6 +73,6 @@ Augur.buyShares({
         log("ETHER:  ", chalk.green(final_ether));
     },
     onFailed: function (r) {
-        throw(r.message);
+        throw new Error(r);
     }
 });

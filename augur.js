@@ -5,17 +5,21 @@
 
 "use strict";
 
-var MODULAR = (typeof(module) !== 'undefined');
+var MODULAR = (typeof(module) !== "undefined");
 var NODE_JS = MODULAR && process && !process.browser;
 if (MODULAR) {
     if (NODE_JS) {
-        var request = require('sync-request');
-        var XHR2 = require('xhr2');
+        var crypto = require("crypto");
+        var request = require("sync-request");
+        var XHR2 = require("xhr2");
     }
-    var keccak_256 = require('js-sha3').keccak_256;
-    var BigNumber = require('bignumber.js');
-    var moment = require('moment');
-    var chalk = require('chalk');
+    var BigNumber = require("bignumber.js");
+    var moment = require("moment");
+    var chalk = require("chalk");
+    var keccak_256 = require("js-sha3").keccak_256;
+    var bcrypt = require("bcrypt");
+    var EthUtil = require("ethereumjs-util");
+    var ecdsa = require("secp256k1");
 }
 
 var log = console.log;
@@ -39,7 +43,7 @@ var Augur = (function (augur) {
     augur.BigNumberOnly = false;
 
     // max number of tx verification attempts
-    augur.TX_POLL_MAX = 24;
+    augur.TX_POLL_MAX = 12;
 
     // comment polling interval (in milliseconds)
     augur.COMMENT_POLL_INTERVAL = 10000;
@@ -167,7 +171,6 @@ var Augur = (function (augur) {
         markets: "0xdb3a35ffe17cf86ffab60857cfe851e6abb7a9ec",
         reporting: "0xc0b05fa75a4b4fbb8e7a2b9e8b08d0b8fbb39f49",
         statistics: "0xc9e4983d90f2cd9a83391c19e01f1a37551a4ae8",
-        interpolate: "0x6ac0f934609caabb8ebc294ccfdd34e6ae62e694",
         center: "0x483fafce5e476792f726428b76a80abbb46522b9",
         score: "0xbbd95558ff1dd01ba9e2f014da65c9394ef0ddea",
         adjust: "0xa70f5e35b9d4891a36bdb13f1de37a3ecefd4feb",
@@ -223,42 +226,42 @@ var Augur = (function (augur) {
 
     /* Testing private chain (networkid 10101) addresses */
     augur.testchain_contracts = {
-        checkQuorum: "0xc0fa90ea6643fc94e6cc43993ade17c43674e7e1",
-        buyAndSellShares: "0x796fe6c1dd8064439a51f8f1762080f5434baf62",
-        createBranch: "0x2ce345cb0cdcbb7dd13f63aca7ccce50a7401533",
-        p2pWagers: "0xb67bc8941ea02b8353eca985ee572db6695614a3",
-        sendReputation: "0xfe29a60e60eec7d4b91f730fa188d9d8f35a65de",
-        transferShares: "0x803ab720b1883301fc869b3ed1a61899b0742df9",
-        makeReports: "0xcad657bf92bf221eaadb3f43247de9ce9d356213",
-        createEvent: "0xacbd9270c1a1ec8ab7c34b995fe1315b158490ae",
-        createMarket: "0xc1612c769fda098f7d68b38b1c8b3da5a4f6f8d6",
-        closeMarket: "0x190fc1bbea242a30baf8a5befe709b89c369f561",
-        closeMarketOne: "0xee647a5ba4337728165e6a23bb28f3ccc411870b",
-        closeMarketTwo: "0x17895f30b2facf56413e7356cf5385edcdc48b5e",
-        closeMarketFour: "0x119d2b859e2b5fe6940f37ca3222f7506d3915af",
-        closeMarketEight: "0x8512b58d2868c44a5bb2c2171fffb395fd3adbba",
-        dispatch: "0xe0e0706aa7fc7507009a75e24122b2c400f67d86",
-        faucets: "0x163fe7bb13b6f852f4005fb36b335530cc2145f9",
-        cash: "0x08163213345163e38b45b2fed9dcfd75594a838a",
-        info: "0xa178f560e5174ef566929549e386495910dd23fc",
-        branches: "0x85693da19f633b8ef0bdbfb527a68cdaf30ff192",
-        events: "0x67f0ea717bc1587353c1119abf856bc5f68b8b6c",
-        expiringEvents: "0x8fcd63f1ab2b86c226cbe30d3d7736b09f5790c1",
-        fxpFunctions: "0x0de7904a19f3cd77d5a22d56fabf271daeb61cc4",
-        markets: "0xb14010eb05acce2a0493479db9955cd8967500e6",
-        reporting: "0xdaba557e6690415c7f81daec3487ea0e8e3205ab",
-        statistics: "0xc3b183d35754c995dc58b2ac67c49d79958e6287",
-        center: "0x159c4ce332b8e82110daf3ad5371502207008a4b",
-        score: "0xb3626139e8a2772a341111cf7035b72379c59681",
-        adjust: "0x795af763dd0c5627ce6ad590d8734bf4ce64a266",
-        resolve: "0x681e3e5c3133ff351017fb544c46363a9e2ee8d3",
-        payout: "0x6191967b297bc02f7dbf06e9270b2ad35b3692bf",
-        redeem_interpolate: "0xcda9e4636a1e54d18ba217133dafa2367cd563da",
-        redeem_center: "0x39493c0aea20ccc3a7571fb8bd6d51a32794c360",
-        redeem_score: "0x77e6db6a22ab6025b9926b7495a5c6dc4731c2ba",
-        redeem_adjust: "0x7f668cdf010983142fada98d1731e52c0d1a35f9",
-        redeem_resolve: "0xc4728649ce1964af65f3910ff2ebcb2d9205c4b5",
-        redeem_payout: "0x1b103614482bab1afdbc492221cad83ae87552f4"
+        checkQuorum: "0x4a61f3db785f1e2a23ffefeafaceeef2df551667",
+        buyAndSellShares: "0x3f3276849a878a176b2f02dd48a483e8182a49e4",
+        createBranch: "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea",
+        p2pWagers: "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f",
+        sendReputation: "0x7d4b581a0868204b7481c316b430a97fd292a2fb",
+        transferShares: "0x8c19616de17acdfbc933b99d9f529a689d22098f",
+        makeReports: "0xabe47f122a496a732d6c4b38b3ca376d597d75dd",
+        createEvent: "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7",
+        createMarket: "0x9308cf21b5a11f182f9707ca284bbb71bb84f893",
+        closeMarket: "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945",
+        closeMarketOne: "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d",
+        closeMarketTwo: "0xcd6c7bc634257f82903b182142aae7156d72a200",
+        closeMarketFour: "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79",
+        closeMarketEight: "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7",
+        dispatch: "0xcece47d6c0a6a1c90521f38ec5bf7550df983804",
+        faucets: "0x81a7621e9a286d061b3dea040888a51c96693b1c",
+        cash: "0x482c57abdce592b39434e3f619ffc3db62ab6d01",
+        info: "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c",
+        branches: "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7",
+        events: "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645",
+        expiringEvents: "0xe4714fcbdcdba49629bc408183ef40d120700b8d",
+        fxpFunctions: "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6",
+        markets: "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7",
+        reporting: "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55",
+        statistics: "0x708fdfe18bf28afe861a69e95419d183ace003eb",
+        center: "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df",
+        score: "0x0fbddb6bfb81c8d0965a894567cf4061446072c2",
+        adjust: "0x5069d883e31429c6dd1325d961f443007747c7a2",
+        resolve: "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68",
+        payout: "0x8a4e2993a9972ee035453bb5674816fc3a698718",
+        redeem_interpolate: "0x35152caa07026203a1add680771afb690d872d7d",
+        redeem_center: "0x031d9d02520cc708ea3c865278508c9cdb92bd51",
+        redeem_score: "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e",
+        redeem_adjust: "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3",
+        redeem_resolve: "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3",
+        redeem_payout: "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2"
     };
 
     // Network ID
@@ -559,7 +562,7 @@ var Augur = (function (augur) {
         var elements, array, position;
         if (string.length >= 66) {
             stride = stride || 64;
-            elements = (string.length - 2) / stride;
+            elements = Math.ceil((string.length - 2) / stride);
             array = new Array(elements);
             position = init || 2;
             for (var i = 0; i < elements; ++i) {
@@ -569,7 +572,8 @@ var Augur = (function (augur) {
             if (array.length) {
                 if (parseInt(array[0]) === array.length - 1) {
                     array.splice(0, 1);
-                } else if (parseInt(array[1]) === array.length - 2 || parseInt(array[1]) / 32 === array.length - 2) {
+                } else if (parseInt(array[1]) === array.length - 2 ||
+                    parseInt(array[1]) / 32 === array.length - 2) {
                     array.splice(0, 2);
                 }
             }
@@ -832,6 +836,22 @@ var Augur = (function (augur) {
             return price_logs;
         }
     }
+    augur.getCreationBlock = function (market_id, callback) {
+        if (market_id) {
+            var filter = {
+                fromBlock: "0x1",
+                toBlock: Augur.blockNumber(),
+                topics: ["creationBlock"]
+            };
+            if (callback) {
+                Augur.eth_getLogs(filter, function (logs) {
+                    callback(logs);
+                });
+            } else {
+                return Augur.eth_getFilterLogs(filter);
+            }
+        }
+    };
     augur.getMarketPriceHistory = function (market_id, outcome_id, callback) {
         if (market_id && outcome_id) {
             var filter = {
@@ -1029,7 +1049,8 @@ var Augur = (function (augur) {
      *******************************/
 
     augur.connect = function (rpcinfo, chain) {
-        var rpc, key;
+        var rpc, key, first = true;
+        if (augur.coinbase) first = false;
         if (rpcinfo) {
             if (rpcinfo.constructor === Object) {
                 if (rpcinfo.protocol) augur.RPC.protocol = rpcinfo.protocol;
@@ -1080,24 +1101,26 @@ var Augur = (function (augur) {
             };
         }
         try {
-            if (JSON.stringify(augur.contracts) === JSON.stringify(augur.init_contracts)) {
-                if (chain) {
-                    if (chain === "1010101" || chain === 1010101) {
-                        augur.contracts = copy(augur.privatechain_contracts);
-                    } else if (chain === "10101" || chain === 10101) {
-                        augur.contracts = copy(augur.testchain_contracts);
-                    }
-                } else {
-                    chain = json_rpc(postdata("version", [], "net_"));
-                    if (chain === "1010101" || chain === 1010101) {
-                        augur.contracts = copy(augur.privatechain_contracts);
-                    } else if (chain === "10101" || chain === 10101) {
-                        augur.contracts = copy(augur.testchain_contracts);
+            if (first) {
+                if (JSON.stringify(augur.contracts) === JSON.stringify(augur.init_contracts)) {
+                    if (chain) {
+                        if (chain === "1010101" || chain === 1010101) {
+                            augur.contracts = copy(augur.privatechain_contracts);
+                        } else if (chain === "10101" || chain === 10101) {
+                            augur.contracts = copy(augur.testchain_contracts);
+                        }
                     } else {
-                        augur.contracts = copy(augur.testnet_contracts);
+                        chain = json_rpc(postdata("version", [], "net_"));
+                        if (chain === "1010101" || chain === 1010101) {
+                            augur.contracts = copy(augur.privatechain_contracts);
+                        } else if (chain === "10101" || chain === 10101) {
+                            augur.contracts = copy(augur.testchain_contracts);
+                        } else {
+                            augur.contracts = copy(augur.testnet_contracts);
+                        }
                     }
+                    augur.network_id = chain;
                 }
-                augur.network_id = chain;
             }
             augur.coinbase = json_rpc(postdata("coinbase"));
             if (!augur.coinbase) {
@@ -1124,7 +1147,7 @@ var Augur = (function (augur) {
                     }
                 }
             }
-            augur.init_contracts = copy(augur.contracts);
+            if (first) augur.init_contracts = copy(augur.contracts);
             return true;
         } catch (exc) {
             return false;
@@ -1295,6 +1318,74 @@ var Augur = (function (augur) {
     augur.getCode = augur.read = function (address, block, f) {
         if (address) {
             return json_rpc(postdata("getCode", [address, block || "latest"]), f);
+        }
+    };
+
+    // centralized-but-trustless web client
+    augur.web = {
+
+        register: function (handle, password) {
+
+            // make sure this handle isn't taken already
+            if (augur.getString(handle).error) {
+
+                // generate private key, derive public key and address
+                var privKey = crypto.randomBytes(32);
+                var pubKey = ecdsa.createPublicKey(privKey);
+                var address = EthUtil.pubToAddress(pubKey).toString("hex");
+
+                // password used as secret key to aes-256 encrypt private key
+                var cipher = crypto.createCipher("aes-256-cbc", password);
+                var encryptedPrivKey = cipher.update(privKey, "hex", "base64");
+                encryptedPrivKey += cipher.final("base64");
+
+                // salt and hash the password using bcrypt
+                var passwordHash = bcrypt.hashSync(password, 10);
+
+                // store encrypted key & password hash, indexed by handle
+                augur.putString(handle, JSON.stringify({
+                    handle: handle,
+                    password: passwordHash,
+                    privateKey: encryptedPrivKey,
+                    address: "0x" + address
+                }));
+
+                return true;
+            } else {
+                return false;
+            }
+        },
+
+        login: function (handle, password) {
+            var badCredentialsError = {
+                error: 403,
+                message: "incorrect handle or password"
+            };
+            var storedInfo = augur.getString(handle);
+
+            // check to make sure the account exists
+            if (!storedInfo.error) {
+                storedInfo = JSON.parse(storedInfo);
+
+                // compare user-entered password to the stored hash
+                if (bcrypt.compareSync(password, storedInfo.password)) {
+
+                    // use the plaintext password to decrypt the private key
+                    var decipher = crypto.createDecipher("aes-256-cbc", password);
+                    var privateKey = decipher.update(storedInfo.privateKey, "base64", "hex");
+                    privateKey += decipher.final("hex");
+                    privateKey = new Buffer(privateKey, "hex");
+
+                    return {
+                        privateKey: privateKey,
+                        address: storedInfo.address
+                    };
+                } else {
+                    return badCredentialsError;
+                }
+            } else {
+                return badCredentialsError;
+            }
         }
     };
 
@@ -1641,12 +1732,6 @@ var Augur = (function (augur) {
         send: true,
         signature: "ii"
     };
-    // augur.tx.cashFaucet = {
-    //     to: augur.contracts.cash,
-    //     method: "faucet",
-    //     returns: "number",
-    //     send: true
-    // };
     augur.getCashBalance = function (account, onSent) {
         // account: ethereum address (hexstring)
         var tx = copy(augur.tx.getCashBalance);
@@ -3223,19 +3308,6 @@ var Augur = (function (augur) {
             return fire(tx, onSent);
         }
     };
-    // augur.tx.reputationFaucet = {
-    //     to: augur.contracts.reporting,
-    //     method: "faucet",
-    //     signature: "i",
-    //     returns: "number",
-    //     send: true
-    // };
-    // augur.reputationFaucet = function (branch, onSent, onSuccess, onFailed) {
-    //     // branch: sha256
-    //     var tx = copy(augur.tx.reputationFaucet);
-    //     tx.params = branch;
-    //     return send_call_confirm(tx, onSent, onSuccess, onFailed);
-    // };
 
     // checkQuorum.se
     augur.tx.checkQuorum = {

@@ -70,14 +70,14 @@ describe("functions/createMarket", function () {
                         next();
                     },
                     onFailed: function (res) {
-                        log("createMarket failed: " + JSON.stringify(res, null, 2));
+                        throw new Error("createMarket failed: " + JSON.stringify(res, null, 2));
                         next();
                     }
                 };
                 Augur.createMarket(marketObj);
             },
             onFailed: function (r) {
-                log("createEvent failed: " + JSON.stringify(r, null, 2));
+                throw new Error("createEvent failed: " + JSON.stringify(r, null, 2));
                 next();
             }
         };

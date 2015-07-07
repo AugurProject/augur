@@ -53,7 +53,7 @@ describe("Payment methods", function () {
                 done();
             },
             onFailed: function (res) {
-                log("failed: " + JSON.stringify(res, null, 2));
+                throw new Error(JSON.stringify(res, null, 2));
                 done();
             }
         });
@@ -75,7 +75,7 @@ describe("Payment methods", function () {
                 done();
             },
             onFailed: function (res) {
-                log("failed: " + JSON.stringify(res, null, 2));
+                throw new Error(JSON.stringify(res, null, 2));
                 done();
             }
         });
