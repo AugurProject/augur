@@ -124,7 +124,7 @@ var MarketActions = {
     _.each(market.outcomes, function (outcome) {
 
       // temp fix for sharesHeld
-      if (market.traderId !== -1) {
+      if (market.traderId !== -1 ) {
         commands.push(['getParticipantSharesPurchased', [market.id, market.traderId, outcome.id], function(result) {
           //console.log(utilities.fromFixedPoint(result).toNumber());
           outcome['sharesHeld'] = utilities.fromFixedPoint(result);
@@ -134,7 +134,7 @@ var MarketActions = {
       commands.push(['getMarketOutcomeInfo', [market.id, outcome.id], function(info) {
 
         outcome['volume'] = utilities.fromFixedPoint(info[0]);
-        //if (market.traderId !== -1) outcome['sharesHeld'] = utilities.fromFixedPoint(info[1]);
+        if (market.traderId.toNumber() !== -1) outcome['sharesHeld'] = utilities.fromFixedPoint(info[1]);
         var price = utilities.fromFixedPoint(info[2]);
         if (outcome.id === 2) market['price'] = price;  // hardcoded to outcome 2 (yes)
         outcome['price'] = price;
