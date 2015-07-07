@@ -29,6 +29,7 @@ module.exports = {
     UPDATE_NETWORK: null,
     ETHEREUM_STATUS_CONNECTED: null,
     ETHEREUM_STATUS_FAILED: null,
+    ETHEREUM_STATUS_NO_ACCOUNT: null,
     ETHEREUM_STATUS_LOADING: null
   }),
   asset: keyMirror({

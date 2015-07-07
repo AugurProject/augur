@@ -239,26 +239,30 @@ EthereumClient.prototype.getEtherBalance = function(onResult) {
   });
 };
 
-EthereumClient.prototype.getAccount = function(onResult) {
+EthereumClient.prototype.getAccountSync = function() {
+  if (this.account)
+      return this.account;
 
-  if (this.account) return this.account;
+  this.account = this.web3.eth.coinbase;
 
-  var result = this.web3.eth.coinbase  // async version doesn't exist
+  if (!this.account)
+      this.account = Augur.coinbase;
+
+  return this.account;
+};
+
+EthereumClient.prototype.getAccount = function(onResult, onError) {
+
+  // async version doesn't exist, so simulate using Sync for now
+  var result = this.getAccountSync();
+
+  //backwards compatibility with calls using this method synchronously
+  if (!onResult) return result;
 
   if (result) {
-    this.account = result;
-    if (onResult) {
-      onResult(result); 
-    } else {
-      return result;
-    }
-  } else if (Augur.coinbase) {
-    this.account = Augur.coinbase;
-    if (onResult) {
-      onResult(this.account);
-    } else {
-      return this.account;
-    }
+      onResult(result);
+  } else if (onError) {
+      onError();
   }
 };
 
@@ -328,9 +332,10 @@ EthereumClient.prototype.cashFaucet = function(onSent) {
 };
 
 EthereumClient.prototype.getCashBalance = function(onResult) {
-
-  Augur.getCashBalance(this.getAccount(), function(result) {
-    if (result) onResult(result);
+  this.getAccount(function (account) {
+    Augur.getCashBalance(account, function(result) {
+      if (result) onResult(result);
+    });
   });
 };
 
