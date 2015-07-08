@@ -46,7 +46,6 @@ describe("Augur.connect", function () {
         Augur.contracts.branches = new_address;
         Augur.connect();
         assert.equal(Augur.contracts.branches, new_address);
-        assert.equal(Augur.init_contracts.branches, new_address);
     });
     it("should switch to 1010101 (private chain) contract addresses", function () {
         this.timeout(constants.timeout);

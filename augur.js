@@ -15,11 +15,12 @@ if (MODULAR) {
     } else {
         var crypto = require("crypto-browserify");
     }
-    var BigNumber = require("bignumber.js");
+    var BN = require("bignumber.js");
     var moment = require("moment");
     var chalk = require("chalk");
     var keccak_256 = require("js-sha3").keccak_256;
     var EthUtil = require("ethereumjs-util");
+    var EthTx = require("ethereumjs-tx");
     var elliptic = require("eccrypto");
 }
 
@@ -27,7 +28,7 @@ var log = console.log;
 
 var Augur = (function (augur) {
 
-    BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
+    BN.config({ MODULO_MODE: BN.EUCLID });
 
     // default RPC settings
     augur.RPC = {
@@ -56,12 +57,12 @@ var Augur = (function (augur) {
     augur.TX_POLL_INTERVAL = 6000;
 
     // constants
-    augur.MAXBITS = (new BigNumber(2)).toPower(256);
-    augur.MAXNUM = (new BigNumber(2)).toPower(255);
-    augur.ONE = (new BigNumber(2)).toPower(64);
-    augur.TWO = (new BigNumber(2)).toPower(65);
-    augur.BAD = ((new BigNumber(2)).toPower(63)).mul(new BigNumber(3));
-    augur.ETHER = (new BigNumber(10)).toPower(18);
+    augur.MAXBITS = (new BN(2)).toPower(256);
+    augur.MAXNUM = (new BN(2)).toPower(255);
+    augur.ONE = (new BN(2)).toPower(64);
+    augur.TWO = (new BN(2)).toPower(65);
+    augur.BAD = ((new BN(2)).toPower(63)).mul(new BN(3));
+    augur.ETHER = (new BN(10)).toPower(18);
     augur.AGAINST = augur.NO = 1; // against: "won't happen"
     augur.ON = augur.YES = 2;     // on: "will happen"
     augur.SECONDS_PER_BLOCK = 12;
@@ -324,7 +325,7 @@ var Augur = (function (augur) {
      **************************/
 
     augur.prefix_hex = function (n) {
-        if (n.constructor === Number || n.constructor === BigNumber) {
+        if (n.constructor === Number || n.constructor === BN) {
             n = n.toString(16);
         }
         if (n.slice(0,2) !== "0x" && n.slice(0,3) !== "-0x") {
@@ -341,28 +342,28 @@ var Augur = (function (augur) {
         if (n !== null && n !== undefined && n !== "0x") {
             if (n.constructor === Number) {
                 if (Math.floor(Math.log(n) / Math.log(10) + 1) <= 15) {
-                    bn = new BigNumber(n);
+                    bn = new BN(n);
                 } else {
                     n = n.toString();
                     try {
-                        bn = new BigNumber(n);
+                        bn = new BN(n);
                     } catch (exc) {
                         if (n.slice(0,1) === '-') {
-                            bn = new BigNumber("-0x" + n.slice(1));
+                            bn = new BN("-0x" + n.slice(1));
                         }
-                        bn = new BigNumber("0x" + n);
+                        bn = new BN("0x" + n);
                     }
                 }
             } else if (n.constructor === String) {
                 try {
-                    bn = new BigNumber(n);
+                    bn = new BN(n);
                 } catch (exc) {
                     if (n.slice(0,1) === '-') {
-                        bn = new BigNumber("-0x" + n.slice(1));
+                        bn = new BN("-0x" + n.slice(1));
                     }
-                    bn = new BigNumber("0x" + n);
+                    bn = new BN("0x" + n);
                 }
-            } else if (n.constructor === BigNumber) {
+            } else if (n.constructor === BN) {
                 bn = n;
             } else if (n.constructor === Array ) {
                 len = n.length;
@@ -405,7 +406,7 @@ var Augur = (function (augur) {
                     fixed[i] = augur.fix(n[i], encode);
                 }
             } else {
-                if (n.constructor === BigNumber) {
+                if (n.constructor === BN) {
                     fixed = n.mul(augur.ONE).round();
                 } else {
                     fixed = augur.bignum(n).mul(augur.ONE).round();
@@ -437,7 +438,7 @@ var Augur = (function (augur) {
                     unfixed[i] = augur.unfix(n[i], encode);
                 }
             } else {
-                if (n.constructor === BigNumber) {
+                if (n.constructor === BN) {
                     unfixed = n.dividedBy(augur.ONE);
                 } else {
                     unfixed = augur.bignum(n).dividedBy(augur.ONE);
@@ -464,10 +465,10 @@ var Augur = (function (augur) {
 
     function encode_int(value) {
         var cs = [];
-        var x = new BigNumber(value);
-        while (x.gt(new BigNumber(0))) {
-            cs.push(String.fromCharCode(x.mod(new BigNumber(256))));
-            x = x.dividedBy(new BigNumber(256)).floor();
+        var x = new BN(value);
+        while (x.gt(new BN(0))) {
+            cs.push(String.fromCharCode(x.mod(new BN(256))));
+            x = x.dividedBy(new BN(256)).floor();
         }
         return (cs.reverse()).join('');
     }
@@ -611,7 +612,7 @@ var Augur = (function (augur) {
                     if (returns === "unfix") {
                         result = augur.unfix(result);
                     }
-                    if (result.constructor !== BigNumber) {
+                    if (result.constructor !== BN) {
                         result = augur.bignum(result);
                     }
                 } else {
@@ -768,6 +769,7 @@ var Augur = (function (augur) {
             }
         }
     }
+    
     function postdata(command, params, prefix) {
         augur.data = {
             id: augur.id++,
@@ -979,13 +981,13 @@ var Augur = (function (augur) {
                 augur.sendTx(tx, function (txhash) {
                     if (txhash) {
                         onSent(txhash);
-                        if (onSuccess) tx_notify(0, null, txhash, onSuccess);
+                        if (onSuccess) tx_notify(0, value, tx, txhash, null, onSent, onSuccess, onFailed);
                     }
                 });
             } else {
                 txhash = augur.sendTx(tx);
                 if (txhash) {
-                    if (onSuccess) tx_notify(0, null, txhash, onSuccess);
+                    if (onSuccess) tx_notify(0, value, tx, txhash, null, onSent, onSuccess, onFailed);
                     return txhash;
                 }
             }
@@ -1017,6 +1019,14 @@ var Augur = (function (augur) {
             return parseInt(json_rpc(postdata("hashrate")));
         }
     };
+    augur.getBlockByHash = function (hash, full, f) {
+        return json_rpc(postdata("getBlockByHash", [hash, full || false]), f);
+    };
+    augur.getBlockByNumber = function (number, full, f) {
+        return json_rpc(postdata("getBlockByNumber", [number, full || false]), f);
+    };
+
+    // deprecated (?)
     augur.protocolversion = augur.protocolVersion = augur.version = function (f) {
         return json_rpc(postdata("version", [], "net_"), f);
     };
@@ -1038,6 +1048,16 @@ var Augur = (function (augur) {
         tx.gas = (tx.gas) ? augur.prefix_hex(tx.gas.toString(16)) : augur.default_gas;
         // tx.gasPrice = "15000000000000";
         return json_rpc(postdata("sendTransaction", tx), f);
+    };
+
+    // IN: RLP(tx.signed(privateKey))
+    // OUT: txhash
+    augur.sendRawTx = augur.sendRawTransaction = function (rawTx, f) {
+        return json_rpc(postdata("sendRawTransaction", rawTx), f);
+    };
+
+    augur.receipt = augur.getTransactionReceipt = function (txhash, f) {
+        return json_rpc(postdata("getTransactionReceipt", txhash), f);
     };
 
     // publish a new contract to the blockchain (from the coinbase account)
@@ -1278,11 +1298,12 @@ var Augur = (function (augur) {
             if (tx.params !== undefined) {
                 if (tx.params.constructor === Array) {
                     for (var i = 0, len = tx.params.length; i < len; ++i) {
-                        if (tx.params[i] !== undefined && tx.params[i].constructor === BigNumber) {
+                        if (tx.params[i] !== undefined &&
+                            tx.params[i].constructor === BN) {
                             tx.params[i] = tx.params[i].toFixed();
                         }
                     }
-                } else if (tx.params.constructor === BigNumber) {
+                } else if (tx.params.constructor === BN) {
                     tx.params = tx.params.toFixed();
                 }
             }
@@ -1325,12 +1346,53 @@ var Augur = (function (augur) {
     // centralized-but-trustless web client
     augur.web = {
 
+        account: {},
+
+        db: {
+
+            write: function (handle, data, f) {
+                return json_rpc(postdata(
+                    "putString",
+                    ["accounts", handle, data],
+                    "db_"
+                ), f);
+            },
+
+            get: function (handle, f) {
+                return json_rpc(postdata(
+                    "getString",
+                    ["accounts", handle],
+                    "db_"
+                ), f);
+            }
+        },
+
+        hash: function (text) {
+            return crypto.createHash("sha256").update(text).digest("hex");
+        },
+
+        encrypt: function (plaintext, key) {
+            var cipher, ciphertext;
+            cipher = crypto.createCipher("aes-256-cbc", key);
+            ciphertext = cipher.update(plaintext, "hex", "base64");
+            ciphertext += cipher.final("base64");
+            return ciphertext;
+        },
+
+        decrypt: function (ciphertext, key) {
+            var decipher, plaintext;
+            decipher = crypto.createDecipher("aes-256-cbc", key);
+            plaintext = decipher.update(ciphertext, "base64", "hex");
+            plaintext += decipher.final("hex");
+            return plaintext;
+        },
+
         register: function (handle, password) {
 
-            var privKey, pubKey, address, secret, cipher, encryptedPrivKey;
+            var privKey, pubKey, address, encryptedPrivKey;
 
             // make sure this handle isn't taken already
-            if (augur.getString(handle).error) {
+            if (augur.web.db.get(handle).error) {
 
                 // generate private key, derive public key and address
                 privKey = crypto.randomBytes(32);
@@ -1338,22 +1400,26 @@ var Augur = (function (augur) {
                 address = "0x" + EthUtil.pubToAddress(pubKey).toString("hex");
 
                 // password hash used as secret key to aes-256 encrypt private key
-                secret = crypto.createHash("sha256").update(password);
-                cipher = crypto.createCipher("aes-256-cbc", secret.digest("hex"));
-                encryptedPrivKey = cipher.update(privKey, "hex", "base64");
-                encryptedPrivKey += cipher.final("base64");
+                encryptedPrivKey = augur.web.encrypt(privKey, augur.web.hash(password));
 
                 // store encrypted key & password hash, indexed by handle
-                augur.putString(handle, JSON.stringify({
+                augur.web.db.write(handle, JSON.stringify({
                     handle: handle,
                     privateKey: encryptedPrivKey,
-                    address: address
+                    address: address,
+                    nonce: 0
                 }));
 
-                return {
+                augur.web.account = {
+                    handle: handle,
                     privateKey: privKey,
-                    address: address
+                    address: address,
+                    nonce: 0
                 };
+
+                return augur.web.account;
+
+            // account already exists
             } else {
                 return {
                     error: 422, // unprocessable entity
@@ -1364,33 +1430,36 @@ var Augur = (function (augur) {
 
         login: function (handle, password) {
 
-            var badCredentialsError, storedInfo, secret, decipher, privateKey;
+            var badCredentialsError, storedInfo, privateKey;
 
             badCredentialsError = {
                 error: 403, // forbidden
                 message: "incorrect handle or password"
             };
-            
-            storedInfo = augur.getString(handle);
+
+            storedInfo = augur.web.db.get(handle);
 
             // check to make sure the account exists
             if (!storedInfo.error) {
+
                 storedInfo = JSON.parse(storedInfo);
 
-                // compare user-entered password to the stored hash
+                // use the hashed password to decrypt the private key
                 try {
 
-                    // use the plaintext password to decrypt the private key
-                    secret = crypto.createHash("sha256").update(password);
-                    decipher = crypto.createDecipher("aes-256-cbc", secret.digest("hex"));
-                    privateKey = decipher.update(storedInfo.privateKey, "base64", "hex");
-                    privateKey += decipher.final("hex");
-                    privateKey = new Buffer(privateKey, "hex");
+                    privateKey = new Buffer(augur.web.decrypt(
+                        storedInfo.privateKey,
+                        augur.web.hash(password)
+                    ), "hex");
 
-                    return {
+                    augur.web.account = {
+                        handle: handle,
                         privateKey: privateKey,
-                        address: storedInfo.address
+                        address: storedInfo.address,
+                        nonce: storedInfo.nonce
                     };
+
+                    return augur.web.account;
 
                 // decryption failure: bad password
                 } catch (e) {
@@ -1400,6 +1469,66 @@ var Augur = (function (augur) {
             // account does not exist
             } else {
                 return badCredentialsError;
+            }
+        },
+
+        invoke: function (itx, callback) {
+            var txError, tx, data_abi, packaged, stored;
+            if (itx.send) {
+                txError = {
+                    error: 500,
+                    message: "transaction failed"
+                };
+                if (augur.web.account.privateKey && itx && itx.constructor === Object) {
+                    tx = copy(itx);
+                    if (tx.params !== undefined) {
+                        if (tx.params.constructor === Array) {
+                            for (var i = 0, len = tx.params.length; i < len; ++i) {
+                                if (tx.params[i] !== undefined &&
+                                    tx.params[i].constructor === BN) {
+                                    tx.params[i] = tx.params[i].toFixed();
+                                }
+                            }
+                        } else if (tx.params.constructor === BN) {
+                            tx.params = tx.params.toFixed();
+                        }
+                    }
+                    data_abi = augur.encode_abi(tx);
+                    if (data_abi) {
+                        // log(Augur.balance(augur.web.account.address)/1e18);
+                        packaged = postdata("sendTransaction", {
+                            from: augur.web.account.address,
+                            to: tx.to,
+                            data: data_abi
+                        });
+                        packaged = new EthTx({
+                            to: tx.to,
+                            gasPrice: "0xda475abf000", // 0.000015 ether
+                            gasLimit: (tx.gas) ? tx.gas : augur.default_gas,
+                            nonce: ++augur.web.account.nonce,
+                            value: tx.value || "0x0",
+                            data: data_abi
+                        });
+                        stored = JSON.parse(augur.web.db.get(augur.web.account.handle));
+                        stored.nonce = augur.web.account.nonce;
+                        augur.web.db.write(augur.web.account.handle, JSON.stringify(stored));
+                        packaged.sign(augur.web.account.privateKey);
+                        if (packaged.validate()) {
+                            return augur.sendRawTx(packaged.serialize().toString("hex"), callback);
+                        } else {
+                            return {
+                                error: 412,
+                                message: "transaction validation failed"
+                            };
+                        }
+                    } else {
+                        return txError;
+                    }
+                } else {
+                    return txError;
+                }
+            } else {
+                return augur.invoke(itx, callback);
             }
         }
     };
@@ -1419,11 +1548,11 @@ var Augur = (function (augur) {
                 if (tx.params !== undefined) {
                     if (tx.params.constructor === Array) {
                         for (var j = 0, len = tx.params.length; j < len; ++j) {
-                            if (tx.params[j].constructor === BigNumber) {
+                            if (tx.params[j].constructor === BN) {
                                 tx.params[j] = tx.params[j].toFixed();
                             }
                         }
-                    } else if (tx.params.constructor === BigNumber) {
+                    } else if (tx.params.constructor === BN) {
                         tx.params = tx.params.toFixed();
                     }
                 }
@@ -1656,7 +1785,7 @@ var Augur = (function (augur) {
                             } else {
                                 try {
                                     var numeric = augur.bignum(callreturn);
-                                    if (numeric && numeric.constructor === BigNumber) {
+                                    if (numeric && numeric.constructor === BN) {
                                         numeric = numeric.toFixed();
                                     }
                                     if (numeric && augur.ERRORS[tx.method] && augur.ERRORS[tx.method][numeric]) {
@@ -3664,6 +3793,17 @@ var Augur = (function (augur) {
         }
     };
 
+    /***********************
+     * Manual database I/O *
+     **********************/
+
+    augur.putString = function (key, string, f) {
+        return json_rpc(postdata("putString", ["augur", key, string], "db_"), f);
+    };
+    augur.getString = function (key, f) {
+        return json_rpc(postdata("getString", ["augur", key], "db_"), f);
+    };
+
     /***************************
      * Whisper comments system *
      ***************************/
@@ -3673,12 +3813,6 @@ var Augur = (function (augur) {
     };
     augur.getFilterChanges = function (filter, f) {
         return json_rpc(postdata("getFilterChanges", filter, "shh_"), f);
-    };
-    augur.putString = function (key, string, f) {
-        return json_rpc(postdata("putString", ["augur", key, string], "db_"), f);
-    };
-    augur.getString = function (key, f) {
-        return json_rpc(postdata("getString", ["augur", key], "db_"), f);
     };
     augur.newIdentity = function (f) {
         return json_rpc(postdata("newIdentity", null, "shh_"), f);

@@ -20,22 +20,6 @@ var markets = Augur.getMarkets(branch_id);
 var market_id = markets[0];
 var event_id = Augur.getMarketEvents(market_id)[0];
 
-// broken -- has the log/filter syntax changed?
-describe("event creationBlock", function () {
-    var test = function (r) {
-        log(r);
-    };
-    it("sync", function () {
-        test(Augur.getCreationBlock(market_id));
-    });
-    it("async", function (done) {
-        this.timeout(constants.timeout);
-        Augur.getCreationBlock(market_id, function (r) {
-            test(r); done();
-        });
-    });
-});
-
 // markets.se
 describe("markets.se", function () {
     describe("getSimulatedBuy(" + market_id + ", " + outcome + ", " + amount + ")", function () {

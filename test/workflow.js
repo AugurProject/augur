@@ -262,6 +262,7 @@ function postupload_tests_1(geth) {
         "reporting",
         // "expiring",
         "augur",
+        "webclient",
         "createEvent"
     ]).run(function (failures) {
         process.on("exit", function () { process.exit(failures); });
@@ -284,7 +285,8 @@ function off_workflow_tests(geth) {
         process.on("exit", function () { process.exit(failures); });
         setup_mocha_tests([
             "createMarket",
-            "branches"
+            "branches",
+            "webclient"
         ]).run(function (failures) {
             process.on("exit", function () { process.exit(failures); });
             if (geth) kill_geth(geth);

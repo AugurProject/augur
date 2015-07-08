@@ -15,13 +15,6 @@ describe("Ethereum JSON-RPC", function () {
             assert.equal(Augur.coinbase.length, 42);
         });
     });
-    describe("net_version", function () {
-        it("should be version 0, 10101, or 1010101", function () {
-            assert(Augur.rpc("net_version") === "0"
-                || Augur.rpc("net_version") === "10101"
-                || Augur.rpc("net_version") === "1010101");
-        });
-    });
     describe("eth_protocolVersion", function () {
         it("should be >= version 60", function () {
             assert(parseInt(Augur.eth("protocolVersion")) >= 59);

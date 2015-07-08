@@ -8,10 +8,8 @@
 var crypto = require("crypto");
 var assert = require("chai").assert;
 var chalk = require("chalk");
-// var Ethereum = require("ethereumjs-lib");
-var Transaction = require("ethereumjs-tx");
+var EthTx = require("ethereumjs-tx");
 var EthUtil = require("ethereumjs-util");
-// var rlp = require("rlp");
 var elliptic = require("eccrypto");
 var constants = require("./constants");
 var utilities = require("./utilities");
@@ -54,7 +52,7 @@ describe("Transactions", function () {
 
     // sign tx with private key
     it("sign raw transaction using private key", function () {
-        var tx = new Transaction({
+        var tx = new EthTx({
             nonce: "00",
             gasPrice: "09184e72a000", 
             gasLimit: "2710",
@@ -70,12 +68,13 @@ describe("Transactions", function () {
         assert.equal(serializedTx.slice(0, 144), signed);
         assert.equal(serializedTx.length, 278);
 
+        // RLP serialization
         // log("Serialized tx:", chalk.green(tx.serialize().toString("hex")));
     });
 
     // create a new contract
     it("transaction to create a new contract", function () {
-        var tx = new Transaction();
+        var tx = new EthTx();
         tx.nonce = 0;
         tx.gasPrice = 100;
         tx.gasLimit = 1000;
@@ -118,7 +117,7 @@ describe("Transactions", function () {
             "5e1d3a76fbf824220eafc8c79ad578ad2b67d01b0c2425eb1f1347e8f50882ab",
             "5bd428537f05f9830e93792f90ea6a3e2d1ee84952dd96edbae9f658f831ab13"
         ];
-        var tx2 = new Transaction(rawTx);
+        var tx2 = new EthTx(rawTx);
         var sender = "1f36f546477cda21bf2296c50976f2740247906f";
         assert.equal(tx2.getSenderAddress().toString("hex"), sender);
         assert(tx2.verifySignature());
@@ -137,12 +136,12 @@ describe("Web client", function () {
 
     it("should register successfully: " + handle + " / " + password, function () {
         this.timeout(constants.timeout);
-        assert(Augur.getString(handle).error);
+        assert(Augur.web.db.get(handle).error);
         var result = Augur.web.register(handle, password);
         assert(result.privateKey);
         assert(result.address);
         assert(!result.error);
-        assert(!Augur.getString(handle).error);
+        assert(!Augur.web.db.get(handle).error);
     });
 
     it("should fail to register the same handle again", function () {
@@ -151,7 +150,7 @@ describe("Web client", function () {
         assert(!result.privateKey);
         assert(!result.address);
         assert(result.error);
-        assert(!Augur.getString(handle).error);
+        assert(!Augur.web.db.get(handle).error);
     });
 
     it("should login successfully and decrypt the stored private key", function () {
@@ -184,4 +183,23 @@ describe("Web client", function () {
         var bad_password = utilities.sha256(Math.random().toString(36).substring(4)).slice(2);
         assert.equal(Augur.web.login(handle, bad_password).error, 403);
     });
+
+    it("should sign and send transaction to geth", function () {
+        var handle = "tester";
+        var password = "testpass";
+        var user = Augur.web.login(handle, password);
+        // Augur.web.pay(handle, 50);
+        // Augur.pay(user.address, 50);
+        var tx = utilities.copy(Augur.tx.reputationFaucet);
+        tx.params = Augur.branches.dev;
+        var txhash = Augur.web.invoke(tx);
+        var confirmTx = Augur.getTx(txhash);
+        assert(confirmTx.hash);
+        assert(confirmTx.from);
+        assert(confirmTx.to);
+        assert.equal(txhash, confirmTx.hash);
+        assert.equal(confirmTx.from, user.address);
+        assert.equal(confirmTx.to, tx.to);
+    });
+
 });
