@@ -343,12 +343,9 @@ nav.header .menu li a {
 }
 
 .assets {
-    background-color: #FAFAFA;
-    border-color: #EAE8E8;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
+    background-color: #fff;
+    border-color: #D7D7D7;
+    border-radius: 3px;
     padding: 5px 10px 10px 10px;
     margin-top: 20px;
 }
