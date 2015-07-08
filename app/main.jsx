@@ -81,7 +81,7 @@ var routes = (
     <DefaultRoute handler={ Branch } flux={ flux } title="Branch" />
     <Route name="home" path="/" handler={ Branch } flux={ flux } title="Branch" />
     <Route name="overview" path="/overview" handler={ Overview } flux={ flux } title="Overview" />
-    <Route name="branch" path="/branches/:branchId" handler={ Branch } flux={ flux } title="Branch" />
+    <Route name="branch" path="/markets/:page" handler={ Branch } flux={ flux } title="Markets" />
     <Route name="market" path="/market/:marketId" handler={ Market } flux={ flux } />
     <Route name="account" path="/account" handler={ AccountDetails } flux={ flux } title="Account Overview" />
     <Route name="ballots" path="/ballots" handler={ Ballots } flux={ flux } title="Ballots" />
