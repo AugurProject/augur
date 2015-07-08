@@ -139,7 +139,7 @@ nav.header h1 {
     background-image: url('../images/augur_logo_small_white.png');
     background-repeat: no-repeat;
     background-size: 27px 32px;
-    background-position: 8px 10px;
+    background-position: 8px 8px;
     font-size: 26px;
     margin: 0px 0px 0px 0px;
     position: relative;
@@ -242,46 +242,48 @@ nav.header .menu li a {
     color: #333;
 }
 
-.side-nav {
+.sidebar .nav {
+    position: relative;
+    z-index: 100;
     background-color: #602A52;
     margin-top: -25px;
     padding: 20px 0px 5px 0px;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
 }
-.side-nav p {
+.sidebar .nav p {
     font-family: 'Core Mellow';
     font-weight: 300;
     letter-spacing: 0.05em;
     padding: 0px 12px;
     font-size: 16px;
 }
-.side-nav p a {
+.sidebar .nav p a {
     color: #fff;
     text-decoration: none;
 }
-.side-nav p a.active {
+.sidebar .nav p a.active {
     color: #ffe1a8;
     text-decoration: none;
 }
-.side-nav p a.active:hover {
+.sidebar .nav p a.active:hover {
     text-decoration: none;
 }
-.side-nav p a:hover {
+.sidebar .nav p a:hover {
     text-decoration: underline;
 }
-.side-nav p a.disabled:hover {
+.sidenar .nav p a.disabled:hover {
     text-decoration: none;
 }
-.side-nav p a.disabled {
+.sidebar .nav p a.disabled {
     opacity: 0.5;
 }
-.side-nav div.divider {
+.sidebar .nav div.divider {
     margin: 10px 10px;
     height: 1px;
     border-bottom: 1px solid #eee;
 }
-.side-nav p i {
+.sidebar .nav p i {
     letter-spacing: 0.02em;
     font-style: normal;
     display: inline-block;
@@ -338,6 +340,33 @@ nav.header .menu li a {
 .network fieldset legend {
     font-size: 12px;
     margin-bottom: 10px;
+}
+
+.assets {
+    background-color: #FAFAFA;
+    border-color: #EAE8E8;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    padding: 5px 10px 10px 10px;
+    margin-top: 20px;
+}
+.assets > div {
+    margin: 5px 0px 0px 0px;
+}
+.assets .unit {
+    font-weight: 300;
+    text-transform: uppercase;
+}
+.assets button {
+    font-size: 12px;
+    text-transform: uppercase;
+    position: relative;
+    top: -2px;
+}
+.assets button i {
+    margin-left: 8px;
 }
 
 #main h3 {
@@ -704,38 +733,17 @@ background: linear-gradient(to bottom, rgba(24,55,111,0) 0%,rgba(24,55,111,0.7) 
     right: 8px;
 }
 
-#account h3 {
+#overview h3 {
     margin-bottom: 0px;
 }
-#account h4 {
+#overview h4 {
     margin-bottom: 20px;
 }
-#account div.subheading {
+#overview div.subheading {
     margin-left: -15px;
     margin-right: -15px;
 }
-#account div.subheading .unit {
-    font-weight: 200;
-    color: #696969;
-    text-transform: uppercase;
-    margin-right: 10px;
-}
-#account div.subheading .rep-balance {
-    text-align: center;
-}
-#account div.subheading .ether-balance {
-    text-align: right;
-}
-#account div.subheading button {
-    font-size: 12px;
-    text-transform: uppercase;
-    position: relative;
-    top: -2px;
-}
-#account div.subheading button i {
-    margin-left: 8px;
-}
-#account .shares-held {
+#overview .shares-held {
     display: inline-block;
     text-transform: uppercase;
     font-size: 12px;
@@ -743,10 +751,10 @@ background: linear-gradient(to bottom, rgba(24,55,111,0) 0%,rgba(24,55,111,0.7) 
     border-radius: 3px;
     color: #fff;
 }
-#account .yes.shares-held {
+#overview .yes.shares-held {
     background-color: green;
 }
-#account .no.shares-held {
+#overview .no.shares-held {
     background-color: rgb(194, 64, 64);
 }
 #ballots h3 {
