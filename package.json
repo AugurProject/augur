@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "0.7.15",
+  "version": "0.7.16",
   "description": "Augur JavaScript API",
   "main": "augur.js",
   "scripts": {
@@ -8,7 +8,6 @@
     "lint": "jshint augur.js"
   },
   "dependencies": {
-    "bcryptjs": "^2.1.0",
     "bignumber.js": "^2.0.7",
     "chalk": "^1.0.0",
     "eccrypto": "^1.0.0",
@@ -18,6 +17,7 @@
     "xhr2": "^0.1.2"
   },
   "browser": {
+    "crypto-browserify": "^3.9.14",
     "sync-request": false,
     "xhr2": false
   },
@@ -35,7 +35,6 @@
   },
   "homepage": "https://github.com/AugurProject/augur.js",
   "devDependencies": {
-    "async": "^1.2.1",
     "chai": "^3.0.0",
     "ethereumjs-tx": "^0.5.3",
     "it-each": "^0.3.1",

@@ -13,7 +13,6 @@ var Transaction = require("ethereumjs-tx");
 var EthUtil = require("ethereumjs-util");
 // var rlp = require("rlp");
 var elliptic = require("eccrypto");
-var bcrypt = require("bcryptjs");
 var constants = require("./constants");
 var utilities = require("./utilities");
 var Augur = utilities.setup(require("../augur"), process.argv.slice(2));
@@ -31,36 +30,24 @@ describe("Accounts", function () {
     var password = "wheethereum";
 
     // password used as secret key for aes-256 cipher
-    var cipher = crypto.createCipher("aes-256-cbc", password);
+    var secret = crypto.createHash("sha256").update(password).digest("hex");
+    var cipher = crypto.createCipher("aes-256-cbc", secret);
     var encryptedPrivateKey = cipher.update(privateKey, "hex", "base64");
     encryptedPrivateKey += cipher.final("base64");
 
     // verify private key is recovered by decryption
     it("private key should be recovered using the password to decrypt", function () {
-        var decipher = crypto.createDecipher("aes-256-cbc", password);
+        var decipher = crypto.createDecipher("aes-256-cbc", secret);
         var decryptedPrivateKey = decipher.update(encryptedPrivateKey, "base64", "hex");
         decryptedPrivateKey += decipher.final("hex");
         assert.equal(decryptedPrivateKey, privateKey.toString("hex"));
     });
-
-    // hash and salt the password
-    var passwordHash = bcrypt.hashSync(password, 10);
     
-    // verify the password against the hash
-    it("password should verify against the stored hash", function () {
-        assert(bcrypt.compareSync(password, passwordHash));
-    });
-    it("incorrect password should fail to verify", function () {
-        assert(!bcrypt.compareSync("wintheoreum", passwordHash));
-    });
-
     // log("Private key:  ", chalk.green(privateKey.toString("hex")));
     // log("Address:      ", chalk.green(address));
     // log("Handle:       ", chalk.red(handle));
     // log("Password:     ", chalk.red(password));
     // log("Encrypted key:", chalk.cyan(encryptedPrivateKey));
-    // log("Salt:         ", chalk.green(salt));
-    // log("Password hash:", chalk.yellow(passwordHash));
 });
 
 describe("Transactions", function () {
@@ -151,13 +138,19 @@ describe("Web client", function () {
     it("should register successfully: " + handle + " / " + password, function () {
         this.timeout(constants.timeout);
         assert(Augur.getString(handle).error);
-        assert(Augur.web.register(handle, password));
+        var result = Augur.web.register(handle, password);
+        assert(result.privateKey);
+        assert(result.address);
+        assert(!result.error);
         assert(!Augur.getString(handle).error);
     });
 
     it("should fail to register the same handle again", function () {
         this.timeout(constants.timeout);
-        assert(!Augur.web.register(handle, password));
+        var result = Augur.web.register(handle, password);
+        assert(!result.privateKey);
+        assert(!result.address);
+        assert(result.error);
         assert(!Augur.getString(handle).error);
     });
 

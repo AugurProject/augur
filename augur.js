@@ -12,12 +12,13 @@ if (MODULAR) {
         var crypto = require("crypto");
         var request = require("sync-request");
         var XHR2 = require("xhr2");
+    } else {
+        var crypto = require("crypto-browserify");
     }
     var BigNumber = require("bignumber.js");
     var moment = require("moment");
     var chalk = require("chalk");
     var keccak_256 = require("js-sha3").keccak_256;
-    var bcrypt = require("bcryptjs");
     var EthUtil = require("ethereumjs-util");
     var elliptic = require("eccrypto");
 }
@@ -1326,53 +1327,63 @@ var Augur = (function (augur) {
 
         register: function (handle, password) {
 
+            var privKey, pubKey, address, secret, cipher, encryptedPrivKey;
+
             // make sure this handle isn't taken already
             if (augur.getString(handle).error) {
 
                 // generate private key, derive public key and address
-                var privKey = crypto.randomBytes(32);
-                var pubKey = elliptic.getPublic(privKey);
-                var address = EthUtil.pubToAddress(pubKey).toString("hex");
+                privKey = crypto.randomBytes(32);
+                pubKey = elliptic.getPublic(privKey);
+                address = "0x" + EthUtil.pubToAddress(pubKey).toString("hex");
 
-                // password used as secret key to aes-256 encrypt private key
-                var cipher = crypto.createCipher("aes-256-cbc", password);
-                var encryptedPrivKey = cipher.update(privKey, "hex", "base64");
+                // password hash used as secret key to aes-256 encrypt private key
+                secret = crypto.createHash("sha256").update(password);
+                cipher = crypto.createCipher("aes-256-cbc", secret.digest("hex"));
+                encryptedPrivKey = cipher.update(privKey, "hex", "base64");
                 encryptedPrivKey += cipher.final("base64");
-
-                // salt and hash the password using bcrypt
-                var passwordHash = bcrypt.hashSync(password, 10);
 
                 // store encrypted key & password hash, indexed by handle
                 augur.putString(handle, JSON.stringify({
                     handle: handle,
-                    password: passwordHash,
                     privateKey: encryptedPrivKey,
-                    address: "0x" + address
+                    address: address
                 }));
 
-                return true;
+                return {
+                    privateKey: privKey,
+                    address: address
+                };
             } else {
-                return false;
+                return {
+                    error: 422, // unprocessable entity
+                    message: "handle already taken"
+                };
             }
         },
 
         login: function (handle, password) {
-            var badCredentialsError = {
-                error: 403,
+
+            var badCredentialsError, storedInfo, secret, decipher, privateKey;
+
+            badCredentialsError = {
+                error: 403, // forbidden
                 message: "incorrect handle or password"
             };
-            var storedInfo = augur.getString(handle);
+            
+            storedInfo = augur.getString(handle);
 
             // check to make sure the account exists
             if (!storedInfo.error) {
                 storedInfo = JSON.parse(storedInfo);
 
                 // compare user-entered password to the stored hash
-                if (bcrypt.compareSync(password, storedInfo.password)) {
+                try {
 
                     // use the plaintext password to decrypt the private key
-                    var decipher = crypto.createDecipher("aes-256-cbc", password);
-                    var privateKey = decipher.update(storedInfo.privateKey, "base64", "hex");
+                    secret = crypto.createHash("sha256").update(password);
+                    decipher = crypto.createDecipher("aes-256-cbc", secret.digest("hex"));
+                    privateKey = decipher.update(storedInfo.privateKey, "base64", "hex");
                     privateKey += decipher.final("hex");
                     privateKey = new Buffer(privateKey, "hex");
 
@@ -1380,9 +1391,13 @@ var Augur = (function (augur) {
                         privateKey: privateKey,
                         address: storedInfo.address
                     };
-                } else {
+
+                // decryption failure: bad password
+                } catch (e) {
                     return badCredentialsError;
                 }
+
+            // account does not exist
             } else {
                 return badCredentialsError;
             }
