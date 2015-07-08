@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "0.7.16",
+  "version": "0.7.17",
   "description": "Augur JavaScript API",
   "main": "augur.js",
   "scripts": {
@@ -10,6 +10,7 @@
   "dependencies": {
     "bignumber.js": "^2.0.7",
     "chalk": "^1.0.0",
+    "crypto-browserify": "^3.9.14",
     "eccrypto": "^1.0.0",
     "ethereumjs-util": "^1.3.2",
     "js-sha3": "^0.2.0",
@@ -17,7 +18,6 @@
     "xhr2": "^0.1.2"
   },
   "browser": {
-    "crypto-browserify": "^3.9.14",
     "sync-request": false,
     "xhr2": false
   },
