@@ -134,7 +134,10 @@ describe("Web client", function () {
     var handle = utilities.sha256(new Date().toString()).slice(2);
     var password = utilities.sha256(Math.random().toString(36).substring(4)).slice(2);
 
-    it("should register successfully: " + handle + " / " + password, function () {
+    var handle2 = utilities.sha256(new Date().toString()).slice(10);
+    var password2 = utilities.sha256(Math.random().toString(36).substring(4)).slice(10);
+
+    it("should register first account successfully: " + handle + " / " + password, function () {
         this.timeout(constants.timeout);
         assert(Augur.web.db.get(handle).error);
         var result = Augur.web.register(handle, password);
@@ -144,7 +147,17 @@ describe("Web client", function () {
         assert(!Augur.web.db.get(handle).error);
     });
 
-    it("should fail to register the same handle again", function () {
+    it("should register second account successfully: " + handle2 + " / " + password2, function () {
+        this.timeout(constants.timeout);
+        assert(Augur.web.db.get(handle2).error);
+        var result = Augur.web.register(handle2, password2);
+        assert(result.privateKey);
+        assert(result.address);
+        assert(!result.error);
+        assert(!Augur.web.db.get(handle2).error);
+    });
+
+    it("should fail to register the first handle again", function () {
         this.timeout(constants.timeout);
         var result = Augur.web.register(handle, password);
         assert(!result.privateKey);
@@ -184,12 +197,26 @@ describe("Web client", function () {
         assert.equal(Augur.web.login(handle, bad_password).error, 403);
     });
 
-    it("should sign and send transaction to geth", function () {
-        var handle = "tester";
-        var password = "testpass";
+    it("should send 32 ether to account 1 using pay, then to account 2 using web.pay", function (done) {
+        this.timeout(constants.timeout*2);
+        Augur.pay(Augur.web.db.get(handle).address, 64, Augur.coinbase,
+            function (r) {
+                // sent
+            },
+            function (r) {
+                Augur.web.pay.ether(handle2, 32);
+                done();
+            },
+            function (r) {
+                throw new Error(r);
+                done();
+            }
+        );
+    });
+
+    it("should sign and send transaction to geth using account 1", function () {
+        this.timeout(constants.timeout);
         var user = Augur.web.login(handle, password);
-        // Augur.web.pay(handle, 50);
-        // Augur.pay(user.address, 50);
         var tx = utilities.copy(Augur.tx.reputationFaucet);
         tx.params = Augur.branches.dev;
         var txhash = Augur.web.invoke(tx);

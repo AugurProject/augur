@@ -1354,22 +1354,78 @@ var Augur = (function (augur) {
 
         account: {},
 
+        errors: {
+            BAD_CREDENTIALS: {
+                error: 403, // forbidden
+                message: "incorrect handle or password"
+            },
+            HANDLE_TAKEN: {
+                error: 422, // unprocessable entity
+                message: "handle already taken"
+            },
+            TRANSACTION_INVALID: {
+                error: 412,
+                message: "transaction validation failed"
+            },
+            TRANSACTION_FAILED: {
+                error: 500,
+                message: "transaction failed"
+            },
+            DB_WRITE_FAILED: {
+                error: 98,
+                message: "database write failed"
+            },
+            DB_READ_FAILED: {
+                error: 99,
+                message: "database read failed"
+            }
+        },
+
         db: {
 
             write: function (handle, data, f) {
-                return json_rpc(postdata(
-                    "putString",
-                    ["accounts", handle, data],
-                    "db_"
-                ), f);
+                try {
+                    return json_rpc(postdata(
+                        "putString",
+                        ["accounts", handle, JSON.stringify(data)],
+                        "db_"
+                    ), f);
+                } catch (e) {
+                    return augur.web.errors.DB_WRITE_FAILED;
+                }
             },
 
             get: function (handle, f) {
-                return json_rpc(postdata(
-                    "getString",
-                    ["accounts", handle],
-                    "db_"
-                ), f);
+                try {
+                    if (f) {
+                        json_rpc(postdata(
+                            "getString",
+                            ["accounts", handle],
+                            "db_"
+                        ), function (account) {
+                            if (!account.error) {
+                                f(JSON.parse(account));
+                            } else {
+                                // account does not exist
+                                f(augur.web.errors.BAD_CREDENTIALS);
+                            }
+                        });
+                    } else {
+                        var account = json_rpc(postdata(
+                            "getString",
+                            ["accounts", handle],
+                            "db_"
+                        ));
+                        if (!account.error) {
+                            return JSON.parse(account);
+                        } else {
+                            // account does not exist
+                            return augur.web.errors.BAD_CREDENTIALS;
+                        }
+                    }
+                } catch (e) {
+                    return augur.web.errors.DB_READ_FAILED;
+                }
             }
         },
 
@@ -1409,12 +1465,12 @@ var Augur = (function (augur) {
                 encryptedPrivKey = augur.web.encrypt(privKey, augur.web.hash(password));
 
                 // store encrypted key & password hash, indexed by handle
-                augur.web.db.write(handle, JSON.stringify({
+                augur.web.db.write(handle, {
                     handle: handle,
                     privateKey: encryptedPrivKey,
                     address: address,
                     nonce: 0
-                }));
+                });
 
                 augur.web.account = {
                     handle: handle,
@@ -1427,65 +1483,95 @@ var Augur = (function (augur) {
 
             // account already exists
             } else {
-                return {
-                    error: 422, // unprocessable entity
-                    message: "handle already taken"
-                };
+                return augur.web.errors.HANDLE_TAKEN;
             }
         },
 
         login: function (handle, password) {
+            var storedInfo, privateKey;
 
-            var badCredentialsError, storedInfo, privateKey;
-
-            badCredentialsError = {
-                error: 403, // forbidden
-                message: "incorrect handle or password"
-            };
-
+            // retrieve account info from database
             storedInfo = augur.web.db.get(handle);
 
-            // check to make sure the account exists
-            if (!storedInfo.error) {
+            // use the hashed password to decrypt the private key
+            try {
 
-                storedInfo = JSON.parse(storedInfo);
+                privateKey = new Buffer(augur.web.decrypt(
+                    storedInfo.privateKey,
+                    augur.web.hash(password)
+                ), "hex");
 
-                // use the hashed password to decrypt the private key
-                try {
+                augur.web.account = {
+                    handle: handle,
+                    privateKey: privateKey,
+                    address: storedInfo.address,
+                    nonce: storedInfo.nonce
+                };
 
-                    privateKey = new Buffer(augur.web.decrypt(
-                        storedInfo.privateKey,
-                        augur.web.hash(password)
-                    ), "hex");
+                return augur.web.account;
 
-                    augur.web.account = {
-                        handle: handle,
-                        privateKey: privateKey,
-                        address: storedInfo.address,
-                        nonce: storedInfo.nonce
-                    };
+            // decryption failure: bad password
+            } catch (e) {
+                return augur.web.errors.BAD_CREDENTIALS;
+            }
+        },
 
-                    return augur.web.account;
+        logout: function () {
+            augur.web.account = {};
+        },
 
-                // decryption failure: bad password
-                } catch (e) {
-                    return badCredentialsError;
+        pay: {
+            
+            ether: function (toHandle, value, callback) {
+                if (augur.web.account.address) {
+                    var toAccount = augur.web.db.get(toHandle);
+                    if (toAccount && toAccount.address) {
+                        return augur.web.invoke({
+                            value: value,
+                            from: augur.web.account.address,
+                            to: toAccount.address
+                        }, callback);
+                    } else {
+                        return augur.web.errors.TRANSACTION_FAILED;
+                    }
                 }
+            },
 
-            // account does not exist
-            } else {
-                return badCredentialsError;
+            cash: function (toHandle, value, callback) {
+                if (augur.web.account.address) {
+                    var toAccount = augur.web.db.get(toHandle);
+                    if (toAccount && toAccount.address) {
+                        var tx = copy(augur.tx.sendCash);
+                        tx.params = [toAccount.address, augur.fix(value)];
+                        return augur.web.invoke(tx, callback);
+                    } else {
+                        return augur.web.errors.TRANSACTION_FAILED;
+                    }
+                }
+            },
+
+            reputation: function (toHandle, value, callback) {
+                if (augur.web.account.address) {
+                    var toAccount = augur.web.db.get(toHandle);
+                    if (toAccount && toAccount.address) {
+                        var tx = copy(augur.tx.sendReputation);
+                        tx.params = [toAccount.address, augur.fix(value)];
+                        return augur.web.invoke(tx, callback);
+                    } else {
+                        return augur.web.errors.TRANSACTION_FAILED;
+                    }
+                }
             }
         },
 
         invoke: function (itx, callback) {
-            var txError, tx, data_abi, packaged, stored;
+            var tx, data_abi, packaged, stored;
+
+            // client-side transactions only needed for sendTransactions
             if (itx.send) {
-                txError = {
-                    error: 500,
-                    message: "transaction failed"
-                };
                 if (augur.web.account.privateKey && itx && itx.constructor === Object) {
+
+                    // parse and serialize transaction parameters
                     tx = copy(itx);
                     if (tx.params !== undefined) {
                         if (tx.params.constructor === Array) {
@@ -1498,35 +1584,38 @@ var Augur = (function (augur) {
                         } else if (tx.params.constructor === BN) {
                             tx.params = tx.params.toFixed();
                         }
+                        data_abi = augur.encode_abi(tx);
                     }
-                    data_abi = augur.encode_abi(tx);
-                    if (data_abi) {
-                        packaged = new EthTx({
-                            to: tx.to,
-                            gasPrice: "0xda475abf000", // 0.000015 ether
-                            gasLimit: (tx.gas) ? tx.gas : augur.default_gas,
-                            nonce: ++augur.web.account.nonce,
-                            value: tx.value || "0x0",
-                            data: data_abi
-                        });
-                        stored = JSON.parse(augur.web.db.get(augur.web.account.handle));
-                        stored.nonce = augur.web.account.nonce;
-                        augur.web.db.write(augur.web.account.handle, JSON.stringify(stored));
-                        packaged.sign(augur.web.account.privateKey);
-                        if (packaged.validate()) {
-                            return augur.sendRawTx(packaged.serialize().toString("hex"), callback);
-                        } else {
-                            return {
-                                error: 412,
-                                message: "transaction validation failed"
-                            };
-                        }
+
+                    // package up the transaction and submit it to the network
+                    packaged = new EthTx({
+                        to: tx.to,
+                        gasPrice: "0xda475abf000", // 0.000015 ether
+                        gasLimit: (tx.gas) ? tx.gas : augur.default_gas,
+                        nonce: ++augur.web.account.nonce,
+                        value: tx.value || "0x0",
+                        data: data_abi
+                    });
+
+                    // write the incremented nonce to the database
+                    stored = augur.web.db.get(augur.web.account.handle);
+                    stored.nonce = augur.web.account.nonce;
+                    augur.web.db.write(augur.web.account.handle, stored);
+                    
+                    // sign, validate, and send the transaction
+                    packaged.sign(augur.web.account.privateKey);
+                    if (packaged.validate()) {
+                        return augur.sendRawTx(packaged.serialize().toString("hex"), callback);
+
+                    // transaction validation failed
                     } else {
-                        return txError;
+                        return augur.web.errors.TRANSACTION_INVALID;
                     }
                 } else {
-                    return txError;
+                    return augur.web.errors.TRANSACTION_FAILED;
                 }
+
+            // if this is just a call, use the regular invoke method
             } else {
                 return augur.invoke(itx, callback);
             }
