@@ -1495,12 +1495,6 @@ var Augur = (function (augur) {
                     }
                     data_abi = augur.encode_abi(tx);
                     if (data_abi) {
-                        // log(Augur.balance(augur.web.account.address)/1e18);
-                        packaged = postdata("sendTransaction", {
-                            from: augur.web.account.address,
-                            to: tx.to,
-                            data: data_abi
-                        });
                         packaged = new EthTx({
                             to: tx.to,
                             gasPrice: "0xda475abf000", // 0.000015 ether
