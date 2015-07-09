@@ -11,8 +11,6 @@ var constants = require("./constants");
 var coder = require("./solidity/coder");
 var log = console.log;
 
-Augur.connect();
-
 describe("Hex/ASCII conversion", function () {
     var test = function (t) {
         it("should convert " + t.hex + " to " + t.ascii, function () {

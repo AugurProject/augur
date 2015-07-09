@@ -31,9 +31,9 @@ var Augur = (function (augur) {
     BN.config({ MODULO_MODE: BN.EUCLID });
 
     // default RPC settings
-    augur.default_protocol = (typeof window !== "undefined")
-                           ? window.location.protocol.slice(0,-1)
-                           : "http";
+    augur.default_protocol = (typeof window !== "undefined") ?
+                                window.location.protocol.slice(0,-1) :
+                                "http";
     augur.RPC = {
         protocol: augur.default_protocol,
         host: "127.0.0.1",
