@@ -187,6 +187,13 @@ var MarketActions = {
 
   updateMarket: function(market, supplement) {
 
+    // Calculate market properties before dispatch (seems to belong in a Market class)
+    if (!market.volume && market.volume !== 0) {
+      market.volume = _.reduce(market.outcomes, function(volume, outcome) {
+        if (outcome) return volume + parseFloat(outcome.volume);
+      }, 0);
+    }
+
     this.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
 
     // supplement ch call if all required properties are present
