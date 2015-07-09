@@ -25,6 +25,11 @@ utilities.setup = function (augur, args) {
     return augur;
 };
 
+utilities.reset = function (module) {
+    delete require.cache[require.resolve(module)];
+    return require(module);
+};
+
 utilities.gteq0 = function (n) { return (new BigNumber(n)).toNumber() >= 0; };
 
 utilities.print_matrix = function (m) {

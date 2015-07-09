@@ -31,8 +31,11 @@ var Augur = (function (augur) {
     BN.config({ MODULO_MODE: BN.EUCLID });
 
     // default RPC settings
+    augur.default_protocol = (typeof window !== "undefined")
+                           ? window.location.protocol.slice(0,-1)
+                           : "http";
     augur.RPC = {
-        protocol: "http",
+        protocol: augur.default_protocol,
         host: "127.0.0.1",
         port: 8545
     };
@@ -1070,8 +1073,15 @@ var Augur = (function (augur) {
      *******************************/
 
     augur.connect = function (rpcinfo, chain) {
-        var rpc, key, first = true;
-        if (augur.coinbase) first = false;
+        function default_rpc() {
+            augur.RPC = {
+                protocol: augur.default_protocol,
+                host: "127.0.0.1",
+                port: 8545
+            };
+            return false;
+        }
+        var rpc, key;
         if (rpcinfo) {
             if (rpcinfo.constructor === Object) {
                 if (rpcinfo.protocol) augur.RPC.protocol = rpcinfo.protocol;
@@ -1110,38 +1120,32 @@ var Augur = (function (augur) {
                             augur.RPC.host = rpc;
                         }
                     } catch (exc) {
-                        return false;
+                        return default_rpc();
                     }
                 }
             }
         } else {
-            augur.RPC = {
-                protocol: "http",
-                host: "127.0.0.1",
-                port: 8545
-            };
+            default_rpc();
         }
         try {
-            if (first) {
-                if (JSON.stringify(augur.contracts) === JSON.stringify(augur.init_contracts)) {
-                    if (chain) {
-                        if (chain === "1010101" || chain === 1010101) {
-                            augur.contracts = copy(augur.privatechain_contracts);
-                        } else if (chain === "10101" || chain === 10101) {
-                            augur.contracts = copy(augur.testchain_contracts);
-                        }
-                    } else {
-                        chain = json_rpc(postdata("version", [], "net_"));
-                        if (chain === "1010101" || chain === 1010101) {
-                            augur.contracts = copy(augur.privatechain_contracts);
-                        } else if (chain === "10101" || chain === 10101) {
-                            augur.contracts = copy(augur.testchain_contracts);
-                        } else {
-                            augur.contracts = copy(augur.testnet_contracts);
-                        }
+            if (JSON.stringify(augur.contracts) === JSON.stringify(augur.init_contracts)) {
+                if (chain) {
+                    if (chain === "1010101" || chain === 1010101) {
+                        augur.contracts = copy(augur.privatechain_contracts);
+                    } else if (chain === "10101" || chain === 10101) {
+                        augur.contracts = copy(augur.testchain_contracts);
                     }
-                    augur.network_id = chain;
+                } else {
+                    chain = json_rpc(postdata("version", [], "net_"));
+                    if (chain === "1010101" || chain === 1010101) {
+                        augur.contracts = copy(augur.privatechain_contracts);
+                    } else if (chain === "10101" || chain === 10101) {
+                        augur.contracts = copy(augur.testchain_contracts);
+                    } else {
+                        augur.contracts = copy(augur.testnet_contracts);
+                    }
                 }
+                augur.network_id = chain;
             }
             augur.coinbase = json_rpc(postdata("coinbase"));
             if (!augur.coinbase) {
@@ -1167,11 +1171,13 @@ var Augur = (function (augur) {
                         augur.tx[method].to = augur.contracts[key];
                     }
                 }
+            } else {
+                return default_rpc();
             }
-            if (first) augur.init_contracts = copy(augur.contracts);
+            if (augur.coinbase) augur.init_contracts = copy(augur.contracts);
             return true;
         } catch (exc) {
-            return false;
+            return default_rpc();
         }
     };
     augur.connected = function () {
