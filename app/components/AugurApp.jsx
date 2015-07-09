@@ -22,7 +22,7 @@ var constants = require('../libs/constants');
 var Period = require('./Period');
 var Network = require('./Network');
 var Assets = require('./Assets');
-var Alert = require('./Alert');
+var Welcome = require('./Welcome');
 var Confirm = require('./Confirm');
 var EtherWarningModal = require('./EtherWarningModal');
 
