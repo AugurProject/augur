@@ -93,6 +93,11 @@ var Market = React.createClass({
         </div>
         <div className='row'>
           <div className='col-xs-12'>
+            <Twitter marketName={ market.description } />
+          </div>
+        </div>
+        <div className='row'>
+          <div className='col-xs-12'>
             <Comments comments={ market.comments } account={ this.state.account } />
           </div>
         </div>
@@ -100,6 +105,30 @@ var Market = React.createClass({
     );
   }
 });
+
+class Twitter extends React.Component {
+  componentDidMount() {
+    // load twitter widget js
+    !function(d,s,id){
+      var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
+      if(!d.getElementById(id)){
+        js=d.createElement(s);
+        js.id=id;
+        js.src=p+'://platform.twitter.com/widgets.js';
+        fjs.parentNode.insertBefore(js,fjs);
+      }
+    }(document, 'script', 'twitter-wjs');
+  }
+
+  render() {
+    let tweet = this.props.marketName;
+    return (
+      <div className="twitter-share-block">
+        <a href="https://twitter.com/share" className="twitter-share-button" data-text={ tweet } data-via="AugurProject" data-hashtags="CashPrediction">Tweet</a>
+      </div>
+    )
+  }
+}
 
 var Comments = React.createClass({
 
