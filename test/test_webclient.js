@@ -197,7 +197,7 @@ describe("Web client", function () {
         assert.equal(Augur.web.login(handle, bad_password).error, 403);
     });
 
-    it("should send 32 ether to account 1 using pay, then to account 2 using web.pay", function (done) {
+    it("send 32 ether to account 1 using pay, then to account 2 using web.pay.ether", function (done) {
         this.timeout(constants.timeout*2);
         Augur.pay(Augur.web.db.get(handle).address, 64, Augur.coinbase,
             function (r) {
@@ -212,6 +212,15 @@ describe("Web client", function () {
                 done();
             }
         );
+    });
+
+    it("should successfully call the getBranches method", function () {
+        this.timeout(constants.timeout);
+        var user = Augur.web.login(handle, password);
+        var branches = Augur.web.invoke(Augur.tx.getBranches);
+        assert(branches.length);
+        assert.equal(branches.constructor, Array);
+        assert.equal(branches[0], Augur.branches.dev);
     });
 
     it("should sign and send transaction to geth using account 1", function () {
@@ -229,4 +238,14 @@ describe("Web client", function () {
         assert.equal(confirmTx.to, tx.to);
     });
 
+    it("should logout and unset the account object", function () {
+        this.timeout(constants.timeout);
+        var user = Augur.web.login(handle, password);
+        assert.equal(user.handle, handle);
+        Augur.web.logout();
+        assert(!Augur.web.account.handle);
+        assert(!Augur.web.account.address);
+        assert(!Augur.web.account.privateKey);
+        assert(!Augur.web.account.nonce);
+    });
 });
