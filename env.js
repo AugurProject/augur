@@ -2,7 +2,7 @@
 
 GLOBAL.path = require("path");
 GLOBAL.fs = require("fs");
-GLOBAL.BigNumber = require("bignumber.js");
+GLOBAL.BN = require("bignumber.js");
 GLOBAL.keccak_256 = require("js-sha3").keccak_256;
 GLOBAL.XHR2 = require("xhr2");
 GLOBAL.request = require("sync-request");
@@ -31,7 +31,7 @@ GLOBAL.balance = function (account, branch) {
     var balances = {
         cash: Augur.getCashBalance(account),
         reputation: Augur.getRepBalance(branch || Augur.branches.dev, account),
-        ether: Augur.bignum(Augur.balance(account)).dividedBy(Augur.ETHER).toFixed()
+        ether: Augur.numeric.bignum(Augur.rpc.balance(account)).dividedBy(Augur.ETHER).toFixed()
     };
     log(chalk.cyan("Balances:"));
     log("Cash:       " + chalk.green(balances.cash));
@@ -59,9 +59,9 @@ GLOBAL.reporting = function (branch) {
     var info = {
         vote_period: Augur.getVotePeriod(b),
         current_period: Augur.getCurrentPeriod(b),
-        num_events: Augur.getNumberEvents(b, vote_period),
         num_reports: Augur.getNumberReporters(b)
     };
+    info.num_events = Augur.getNumberEvents(b, info.vote_period);
     log(chalk.cyan("Vote period"), chalk.green(info.vote_period) + chalk.cyan(":"));
     log("Current period:     ", chalk.green(info.current_period));
     log("Number of events:   ", chalk.green(info.num_events));
@@ -69,9 +69,9 @@ GLOBAL.reporting = function (branch) {
     return info;
 };
 
-// var reportingInfo = reporting(b)
+var reportingInfo = reporting(b)
 
-// GLOBAL.vote_period = reportingInfo.vote_period;
-// GLOBAL.current_period = reportingInfo.current_period;
-// GLOBAL.num_events = reportingInfo.num_events;
-// GLOBAL.num_reports = reportingInfo.num_reports;
+GLOBAL.vote_period = reportingInfo.vote_period;
+GLOBAL.current_period = reportingInfo.current_period;
+GLOBAL.num_events = reportingInfo.num_events;
+GLOBAL.num_reports = reportingInfo.num_reports;

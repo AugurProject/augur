@@ -5,122 +5,82 @@
 
 "use strict";
 
+var assert = require("chai").assert;
+var constants = require("./constants");
+var Augur = require("./utilities").setup(require("../augur"), process.argv.slice(2));
 var log = console.log;
 
-var Augur = require("../augur");
-Augur = require("./utilities").setup(Augur, process.argv.slice(2));
+describe("Comments (whisper)", function () {
 
-function test_comments() {
     var market = "0x01";
-
-    log("\nReset comments");
-    log(Augur.resetComments(market));
     
-    log("\nAugur.getMarketComments:");
-    var comments = Augur.getMarketComments(market);
-    log(comments);
-    
-    log("\nAugur.initComments:");
-    if (Augur.initComments(market)) {
-        var pkg = {
-            marketId: market,
-            message: Math.random().toString(36).substring(4),
-            author: Augur.coinbase
-        };
-        log("\nAugur.addMarketComment(" + JSON.stringify(pkg, null, 2) + "):");
-        var updated_comments = Augur.addMarketComment(pkg);
+    var pkg = { marketId: market, author: Augur.coinbase };
 
-        pkg.message = Math.random().toString(36).substring(4);
-        log("\nAugur.addMarketComment(" + JSON.stringify(pkg, null, 2) + "):");
-        updated_comments = Augur.addMarketComment(pkg);
-        log(updated_comments.length.toString() + " comments found");
-        log(updated_comments);
-
-        log("\nAugur.getMarketComments:");
-        comments = Augur.getMarketComments(market);
-        log(comments);
-
-        pkg.message = Math.random().toString(36).substring(4);
-        log("\nAugur.addMarketComment(" + JSON.stringify(pkg, null, 2) + "):");
-        updated_comments = Augur.addMarketComment(pkg);
-        log(updated_comments.length.toString() + " comments found");
-        log(updated_comments);
-
-        log("\nReset comments");
-        log(Augur.resetComments(market));
-
-        // crashes geth (!)
-        // log("\nUninstalling filter " + filter);
-        // log(Augur.uninstallFilter(filter));
-    }
-}
-
-function interlocutor() {
-    var market = "0x01";
-
-    log("\nAugur.getMarketComments:");
-    var comments = Augur.getMarketComments(market);
-    log(comments);
-
-    var pkg = {
-        marketId: market,
-        message: Math.random().toString(36).substring(4),
-        author: Augur.coinbase
-    };
-    log("\nAugur.addMarketComment(" + JSON.stringify(pkg, null, 2) + "):");
-    var updated_comments = Augur.addMarketComment(pkg);
-    pkg.message = Math.random().toString(36).substring(4);
-    log("\nAugur.addMarketComment(" + JSON.stringify(pkg, null, 2) + "):");
-    updated_comments = Augur.addMarketComment(pkg);
-    pkg.message = Math.random().toString(36).substring(4);
-    log("\nAugur.addMarketComment(" + JSON.stringify(pkg, null, 2) + "):");
-    updated_comments = Augur.addMarketComment(pkg);
-    log(updated_comments.length.toString() + " comments found");
-    log(updated_comments);
-}
-
-function test_whisper() {
-    var comment_text = Math.random().toString(36).substring(4);
-    var market_id = "0x00000003";
-    Augur.newIdentity(function (whisper_id) {
-        if (whisper_id) {
-            var post_params = {
-                from: whisper_id,
-                topics: [ market_id ],
-                priority: '0x64',
-                ttl: "0x500" // time-to-live (until expiration) in seconds
-            };
-            Augur.commentFilter(market_id, function (filter) {
-                post_params.payload = Augur.prefix_hex(Augur.encode_hex(comment_text));
-                Augur.post(post_params, function (post_ok) {
-                    if (post_ok) {
-                        Augur.getFilterChanges(filter, function (message) {
-                            if (message) {
-                                var updated_comments = JSON.stringify([{
-                                    whisperId: message[0].from, // whisper ID
-                                    from: Augur.coinbase, // ethereum account
-                                    comment: Augur.decode_hex(message[0].payload),
-                                    time: message[0].sent
-                                }]);
-                                // get existing comment(s) stored locally
-                                Augur.getString(market_id, function (comments) {
-                                    if (comments) {
-                                        updated_comments = updated_comments.slice(0,-1) + "," + comments.slice(1);
-                                    }
-                                    Augur.putString(market_id, updated_comments, function (put_ok) {
-                                        if (put_ok && updated_comments) {
-                                            log(JSON.parse(updated_comments));
-                                        }
-                                    });
-                                });
-                            }
-                        });
-                    }
-                });
-            });
-        }
+    it("should reset comments", function () {
+        this.timeout(constants.timeout);
+        assert(Augur.comments.resetComments(market));
     });
-}
 
-test_comments();
-// test_whisper();
+    it("should initally be no comments on market " + market, function () {
+        this.timeout(constants.timeout);
+        assert(!Augur.comments.getMarketComments(market));
+    });
+        
+    it("should set up comments for market " + market + " and return the filter id", function () {
+        this.timeout(constants.timeout);
+        var filter = Augur.comments.initComments(market);
+        assert(filter);
+        assert(filter !== "0x");
+        assert(Augur.comments.resetComments(market));
+    });
+
+    it("should add a comment to market " + market, function () {
+        this.timeout(constants.timeout);
+        Augur.comments.initComments(market);
+        pkg.message = Math.random().toString(36).substring(4);
+        var updated_comments = Augur.comments.addMarketComment(pkg);
+        assert(updated_comments);
+        assert.equal(updated_comments.constructor, Array);
+        assert.equal(updated_comments.length, 1);
+        assert(!updated_comments.error);
+    });
+
+    it("should add another comment to market " + market, function () {
+        this.timeout(constants.timeout);
+        pkg.message = Math.random().toString(36).substring(4);
+        var updated_comments = Augur.comments.addMarketComment(pkg);
+        assert(updated_comments);
+        assert.equal(updated_comments.constructor, Array);
+        assert.equal(updated_comments.length, 2);
+        assert(!updated_comments.error);
+    });
+
+    it("should get the two comments for market " + market, function () {
+        this.timeout(constants.timeout);
+        var comments = Augur.comments.getMarketComments(market);
+        assert(comments);
+        assert.equal(comments.length, 2);
+    });
+
+    it("should add a third comment to market " + market, function () {
+        this.timeout(constants.timeout);
+        pkg.message = Math.random().toString(36).substring(4);
+        var updated_comments = Augur.comments.addMarketComment(pkg);
+        assert(updated_comments);
+        assert.equal(updated_comments.constructor, Array);
+        assert.equal(updated_comments.length, 3);
+        assert(!updated_comments.error);
+    });
+
+    it("should reset comments for market " + market, function () {
+        this.timeout(constants.timeout);
+        assert(Augur.comments.resetComments(market));
+        assert(!Augur.comments.getMarketComments(market));
+    });
+
+    // crashes geth (!)
+    // it("should uninstall filter " + filter, function () {
+    //     this.timeout(constants.timeout);
+    //     assert(Augur.comments.uninstallFilter(filter));
+    // });
+});

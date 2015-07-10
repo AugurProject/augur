@@ -21,35 +21,33 @@ describe("Payment methods", function () {
 
     it("pay: complete call-send-confirm callback sequence", function (done) {
         this.timeout(constants.timeout);
-        var start_balance = Augur.bignum(Augur.balance()).dividedBy(Augur.ETHER);
+        var start_balance = Augur.numeric.bignum(Augur.rpc.balance(receiver)).dividedBy(Augur.ETHER);
         var tx = {
             to: receiver,
             value: payment_value,
             onSent: function (res) {
-                log(res);
+                // log(res);
             },
             onSuccess: function (res) {
-                log("success: " + JSON.stringify(res, null, 2));
-                var final_balance = Augur.bignum(Augur.balance()).dividedBy(Augur.ETHER);
-                assert.equal(start_balance.sub(final_balance).toNumber(), value);
+                var final_balance = Augur.numeric.bignum(Augur.rpc.balance(receiver)).dividedBy(Augur.ETHER);
+                assert.equal(final_balance.sub(start_balance).toNumber(), payment_value);
                 done();
             }
         };
-        Augur.pay(tx);
+        Augur.rpc.pay(tx);
     });
     it("sendCash: complete call-send-confirm callback sequence", function (done) {
         this.timeout(constants.timeout);
-        var start_balance = Augur.bignum(Augur.getCashBalance());
+        var start_balance = Augur.numeric.bignum(Augur.getCashBalance(Augur.coinbase));
         Augur.sendCash({
             to: receiver,
             value: payment_value,
             onSent: function (res) {
-                log(res);
+                // log(res);
             },
             onSuccess: function (res) {
-                log("success: " + JSON.stringify(res, null, 2));
-                var final_balance = Augur.bignum(Augur.getCashBalance());
-                assert.equal(start_balance.sub(final_balance).toNumber(), value);
+                var final_balance = Augur.numeric.bignum(Augur.getCashBalance(Augur.coinbase));
+                assert.equal(start_balance.sub(final_balance).toNumber(), payment_value);
                 done();
             },
             onFailed: function (res) {
@@ -60,18 +58,17 @@ describe("Payment methods", function () {
     });
     it("sendReputation: complete call-send-confirm callback sequence", function (done) {
         this.timeout(constants.timeout);
-        var start_balance = Augur.bignum(Augur.getRepBalance(Augur.branches.demo));
+        var start_balance = Augur.numeric.bignum(Augur.getRepBalance(Augur.branches.dev));
         Augur.sendReputation({
-            branchId: Augur.branches.demo,
-            to: constants.accounts.joey,
+            branchId: Augur.branches.dev,
+            to: receiver,
             value: payment_value,
             onSent: function (res) {
-                log(res);
+                // log(res);
             },
             onSuccess: function (res) {
-                log("success: " + JSON.stringify(res, null, 2));
-                var final_balance = Augur.bignum(Augur.getRepBalance(Augur.branches.dev));
-                assert.equal(start_balance.sub(final_balance).toNumber(), value);
+                var final_balance = Augur.numeric.bignum(Augur.getRepBalance(Augur.branches.dev));
+                assert.equal(start_balance.sub(final_balance).toNumber(), payment_value);
                 done();
             },
             onFailed: function (res) {

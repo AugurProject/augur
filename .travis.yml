@@ -9,3 +9,4 @@ before_script:
 script:
   - jshint augur.js
   - mocha test/test_encoder.js
+  - mocha test/test_fixedpoint.js

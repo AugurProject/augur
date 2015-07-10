@@ -9,7 +9,7 @@ var Augur = utilities.setup(require("../augur"), process.argv.slice(2));
 var log = console.log;
 
 var branch = Augur.branches.dev;
-var period = Augur.bignum(Augur.getVotePeriod(branch)).toNumber() - 1;
+var period = Augur.numeric.bignum(Augur.getVotePeriod(branch)).toNumber() - 1;
 var num_reports = Augur.getNumberReporters(branch);
 var num_events = Augur.getNumberEvents(branch, period);
 var flatsize = num_events * num_reports;

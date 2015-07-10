@@ -199,7 +199,7 @@ describe("Web client", function () {
 
     it("send 32 ether to account 1 using pay, then to account 2 using web.pay.ether", function (done) {
         this.timeout(constants.timeout*2);
-        Augur.pay(Augur.web.db.get(handle).address, 64, Augur.coinbase,
+        Augur.rpc.pay(Augur.web.db.get(handle).address, 64, Augur.coinbase,
             function (r) {
                 // sent
             },
@@ -229,7 +229,7 @@ describe("Web client", function () {
         var tx = utilities.copy(Augur.tx.reputationFaucet);
         tx.params = Augur.branches.dev;
         var txhash = Augur.web.invoke(tx);
-        var confirmTx = Augur.getTx(txhash);
+        var confirmTx = Augur.rpc.getTx(txhash);
         assert(confirmTx.hash);
         assert(confirmTx.from);
         assert(confirmTx.to);

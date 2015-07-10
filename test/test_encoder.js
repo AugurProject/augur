@@ -14,10 +14,10 @@ var log = console.log;
 describe("Hex/ASCII conversion", function () {
     var test = function (t) {
         it("should convert " + t.hex + " to " + t.ascii, function () {
-            assert.equal(Augur.decode_hex(t.hex, true), t.ascii);
+            assert.equal(Augur.abi.decode_hex(t.hex, true), t.ascii);
         });
-        it("should convert " + t.ascii + " to " + Augur.remove_trailing_zeros(t.hex.slice(130)), function () {
-            assert.equal(Augur.encode_hex(t.ascii), Augur.remove_trailing_zeros(t.hex.slice(130)));
+        it("should convert " + t.ascii + " to " + Augur.abi.remove_trailing_zeros(t.hex.slice(130)), function () {
+            assert.equal(Augur.abi.encode_hex(t.ascii), Augur.abi.remove_trailing_zeros(t.hex.slice(130)));
         });
     };
     test({
@@ -84,15 +84,15 @@ describe("Contract ABI data serialization", function () {
     describe("No parameters", function () {
         it("ten()", function () {
             var tx = { method: "ten" };
-            assert.equal(Augur.encode_abi(tx), "0x643ceff9");
+            assert.equal(Augur.abi.encode(tx), "0x643ceff9");
         });
         it("faucet()", function () {
             var tx = { method: "faucet" };
-            assert.equal(Augur.encode_abi(tx), "0xde5f72fd");
+            assert.equal(Augur.abi.encode(tx), "0xde5f72fd");
         });
         it("getBranches()", function () {
             var tx = { method: "getBranches" };
-            assert.equal(Augur.encode_abi(tx), "0xc3387858");
+            assert.equal(Augur.abi.encode(tx), "0xc3387858");
         });
     });
     describe("One int256 parameter", function () {
@@ -115,10 +115,10 @@ describe("Contract ABI data serialization", function () {
                     }
                 }
                 if (params) tx.params = params;
-                encoded = Augur.encode_abi(tx);
+                encoded = Augur.abi.encode(tx);
                 solcoded = coder.encodeParams(types, [params]);
                 assert.equal(encoded, expected);
-                assert.equal(encoded, Augur.get_prefix(method, signature) + solcoded);
+                assert.equal(encoded, Augur.abi.get_prefix(method, signature) + solcoded);
             });
         };
 
@@ -154,20 +154,20 @@ describe("Contract ABI data serialization", function () {
             var expected = "0x3c4308a8"+
                 "0000000000000000000000000000000000000000000000000000000000000002"+
                 "0000000000000000000000000000000000000000000000000000000000000003";
-            assert.equal(Augur.encode_abi(tx), expected);
+            assert.equal(Augur.abi.encode(tx), expected);
         });
         it("sendReputation", function () {
             var tx = Augur.tx.sendReputation;
             tx.params = [
                 Augur.branches.alpha,
                 constants.accounts.scottzer0,
-                Augur.fix("5").toFixed()
+                Augur.numeric.fix("5").toFixed()
             ];
             var expected = "0xa677135c"+
                 "00000000000000000000000000000000000000000000000000000000000f69b5"+
                 "0000000000000000000000006fc0a64e2dce367e35417bfd1568fa35af9f3e4b"+
                 "0000000000000000000000000000000000000000000000050000000000000000";
-            var actual = Augur.encode_abi(tx);
+            var actual = Augur.abi.encode(tx);
             var types = ["int256", "int256", "int256"];
             assert.equal(actual, expected);
             assert.equal(actual, "0xa677135c" + coder.encodeParams(types, tx.params));
@@ -187,7 +187,7 @@ describe("Contract ABI data serialization", function () {
                 "0000000000000000000000000000000000000000000000000000000000000002"+
                 "0000000000000000000000000000000000000000000000000000000000000004"+
                 "0000000000000000000000000000000000000000000000000000000000000007";
-            assert.equal(Augur.encode_abi(tx), expected);
+            assert.equal(Augur.abi.encode(tx), expected);
         });
     });
     describe("Multiple parameters: int256, int256[]", function () {
@@ -210,7 +210,7 @@ describe("Contract ABI data serialization", function () {
                 "0000000000000000000000000000000000000000000000000000000000000001";
             var tx = Augur.tx.slashRep;
             tx.params = [branch_id, vote_period, salt, report, reporter];
-            assert.equal(Augur.encode_abi(tx), expected);
+            assert.equal(Augur.abi.encode(tx), expected);
         });
     });
     describe("Multiple parameters: int256, string", function () {
@@ -235,7 +235,7 @@ describe("Contract ABI data serialization", function () {
                 "0000000000000000000000000000000000000000000000000000000000000002"+
                 "0000000000000000000000000000000000000000000000000000000000000008"+
                 "6d79206576656e74000000000000000000000000000000000000000000000000";
-            assert.equal(Augur.encode_abi(tx), expected);
+            assert.equal(Augur.abi.encode(tx), expected);
         });
         it("createEvent('augur ragefest 2015')", function () {
             var tx = {
@@ -259,7 +259,7 @@ describe("Contract ABI data serialization", function () {
                 "0000000000000000000000000000000000000000000000000000000000000002"+
                 "0000000000000000000000000000000000000000000000000000000000000013"+
                 "6175677572207261676566657374203230313500000000000000000000000000";
-            assert.equal(Augur.encode_abi(tx), expected);
+            assert.equal(Augur.abi.encode(tx), expected);
         });
         it("createEvent('')", function () {
             var tx = {
@@ -315,7 +315,7 @@ describe("Contract ABI data serialization", function () {
                 "b2a6de45f349b5ac384b01a785e640f519f0a8597ab2031c964c7f572d96b13c"+
                 "4f37814757b7d0e2dde46de18bb4bf4a85e6716a06849d5cfcebf8f1d7270b12"+
                 "412b3c588f9be08d54e99bf5095ef910c5e84080f048e3af8a2718b7b693cb83";
-            assert.equal(Augur.encode_abi(tx), expected);
+            assert.equal(Augur.abi.encode(tx), expected);
         });
         // negative hash
         it("createMarket('unicorns are real')", function () {
@@ -342,7 +342,7 @@ describe("Contract ABI data serialization", function () {
                 "756e69636f726e7320617265207265616c000000000000000000000000000000"+
                 "0000000000000000000000000000000000000000000000000000000000000001"+
                 "d51ce0fe7b05c1ee5eae85ee1c039ce63483cef311c94df071fd9cfb64e0c591";
-            assert.equal(Augur.encode_abi(tx), expected);
+            assert.equal(Augur.abi.encode(tx), expected);
         });
     });
 });

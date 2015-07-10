@@ -30,7 +30,7 @@ Augur.reputationFaucet(
     }
 );
 
-if (Augur.bignum(Augur.getCashBalance(Augur.coinbase)).toNumber() === 0) {
+if (Augur.numeric.bignum(Augur.getCashBalance(Augur.coinbase)).toNumber() === 0) {
     Augur.cashFaucet(
         function (r) {
             // sent

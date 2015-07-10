@@ -176,7 +176,7 @@ utilities.get_test_accounts = function (augur, max_accounts) {
     var accounts;
     if (augur) {
         if (typeof augur === "object") {
-            accounts = augur.accounts();
+            accounts = augur.rpc.accounts();
         } else if (typeof augur === "string") {
             accounts = require("fs").readdirSync(require("path").join(augur, "keystore"));
             for (var i = 0, len = accounts.length; i < len; ++i) {
@@ -197,7 +197,7 @@ utilities.get_balances = function (augur, account, branch) {
         return {
             cash: augur.getCashBalance(account),
             reputation: augur.getRepBalance(branch || augur.branches.dev, account),
-            ether: augur.bignum(augur.balance(account)).dividedBy(augur.ETHER).toFixed()
+            ether: augur.numeric.bignum(augur.rpc.balance(account)).dividedBy(augur.ETHER).toFixed()
         };
     }
 };
@@ -210,7 +210,7 @@ utilities.read_ballots = function (augur, address, branch, period) {
         if (ballot.length && ballot[0] !== undefined) {
             num_events = augur.getNumberEvents(branch, i);
             log("Period", chalk.cyan(i), "\t",
-                chalk.green(augur.fix(ballot.slice(0, num_events), "hex")));
+                chalk.green(augur.numeric.fix(ballot.slice(0, num_events), "hex")));
         }
     }
 };

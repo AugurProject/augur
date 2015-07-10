@@ -224,12 +224,12 @@ The `raw` method allows you to send in raw commands (similar to sending in via c
 > Augur.raw("net_peerCount")
 "0x10"
 
-> Augur.eth("gasPrice")
+> Augur.rpc.eth("gasPrice")
 "0x015f90"
 ```
 Many of the commonly used functions have named wrappers.  For example, `blockNumber` fetches the current block number:
 ```javascript
-> Augur.blockNumber()
+> Augur.rpc.blockNumber()
 217153
 ```
 
