@@ -105,8 +105,7 @@ var Comments = React.createClass({
 
   render: function() {
 
-    // return nothing until we have an account
-    if (!this.props.account) return (<div />);
+    if (!this.props.comments) return (<div />);
 
     return (
       <div className="comments">
