@@ -29,26 +29,41 @@ var Markets = React.createClass({
   }
 });
 
-var MarketPane = React.createClass({
+class MarketPane extends React.Component {
 
-  render: function() {
+  constructor(props) {
+    super(props);
 
+    this.relevantMarketAttrs = ['volume', 'tradingPeriod', 'endDate', 'price', 'tradingFee'];
+    this.lastMarket = {};
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    for (let attr of this.relevantMarketAttrs) {
+      if (this.lastMarket[attr] != nextProps.market[attr])
+        return true;
+    }
+    return Boolean(this.props.currentBranch != nextProps.currentBranch ||
+      (nextProps.currentBranch &&
+       this.props.currentBranch.currentPeriod != nextProps.currentBranch.currentPeriod));
+  }
+
+  render() {
     var market = this.props.market;
-    if (this.props.currentBranch && this.props.currentBranch.currentPeriod >= market.tradingPeriod) market.matured = true;
-
-    var volume =_.reduce(market.outcomes, function(volume, outcome) {
-      if (outcome) return volume + parseFloat(outcome.volume);
-    }, 0);
-    
+    var matured = this.props.currentBranch && this.props.currentBranch.currentPeriod >= this.props.market.tradingPeriod;
     var formattedDate = market.endDate ? moment(market.endDate).format('MMM Do, YYYY') : '-';
     var price = market.price ? Math.abs(market.price).toFixed(3) : '-';
     var percent = market.price ? +market.price.times(100).toFixed(1) + '%' : ''
-    var volume = volume ? +volume.toFixed(2) : '-';
+    var volume = market.volume ? +market.volume.toFixed(2) : '-';
     var tradingFee = market.tradingFee ? +market.tradingFee.times(100).toFixed(2)+'%' : '-';
+
+    for (let attr of this.relevantMarketAttrs) {
+      this.lastMarket[attr] = market[attr];
+    }
 
     var status = '';
     var linked = true;
-    var className = 'market-pane shadow'
+    var className = 'market-pane shadow';
 
     if (market.pending) {
       status = 'Pending'
@@ -62,7 +77,7 @@ var MarketPane = React.createClass({
       status = 'Invalid'
       className += ' invalid'; 
       linked = false;
-    } else if (market.matured) {
+    } else if (matured) {
       status = 'Matured'
       className += ' matured';
     }
@@ -108,6 +123,6 @@ var MarketPane = React.createClass({
       );
     }
   }
-});
+}
 
 module.exports = Markets;
