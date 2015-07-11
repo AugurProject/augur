@@ -13,8 +13,8 @@ var longjohn = require("longjohn");
 var Augur = require("../augur");
 var log = console.log;
 
-var gospel = require("path").join(__dirname, "gospel.json");
-Augur.contracts = JSON.parse(require("fs").readFileSync(gospel));
+// var gospel = require("path").join(__dirname, "gospel.json");
+// Augur.contracts = JSON.parse(require("fs").readFileSync(gospel));
 Augur.connect();
 
 longjohn.async_trace_limit = 25;

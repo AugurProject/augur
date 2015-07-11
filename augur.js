@@ -1761,19 +1761,19 @@ Augur.prototype.postdata = function (command, params, prefix) {
 
 Augur.prototype.raw = function (command, params, f) {
     return this.json_rpc(this.postdata(command, params, "null"), f);
-},
+};
 
 Augur.prototype.eth = function (command, params, f) {
     return this.json_rpc(this.postdata(command, params), f);
-},
+};
 
 Augur.prototype.net = function (command, params, f) {
     return this.json_rpc(this.postdata(command, params, "net_"), f);
-},
+};
 
 Augur.prototype.web3 = function (command, params, f) {
     return this.json_rpc(this.postdata(command, params, "web3_"), f);
-},
+};
 
 Augur.prototype.db = function (command, params, f) {
     return this.json_rpc(this.postdata(command, params, "db_"), f);
@@ -3341,8 +3341,6 @@ Augur.prototype.getSimulatedBuy = function (market, outcome, amount, onSent) {
     // amount: number -> fixed-point
     var tx = utilities.copy(this.tx.getSimulatedBuy);
     tx.params = [market, outcome, this.abi.fix(amount)];
-    log(tx.params);
-    log(this.fire(tx));
     return this.fire(tx, onSent);
 };
 Augur.prototype.getSimulatedSell = function (market, outcome, amount, onSent) {
@@ -4041,7 +4039,7 @@ Augur.prototype.eth_newFilter = function (params, f) {
 
 Augur.prototype.create_price_filter = function (label, f) {
     return this.eth_newFilter({ topics: [ label ]}, f);
-},
+};
 
 Augur.prototype.eth_getFilterChanges = function (filter, f) {
     return this.json_rpc(this.postdata("getFilterChanges", filter), f);
