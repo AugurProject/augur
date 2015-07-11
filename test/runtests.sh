@@ -11,8 +11,8 @@ mocha test_ethrpc.js $1
 mocha test_invoke.js $1
 # mocha test_expiring.js $1
 mocha test_batch.js $1
-mocha test_createEvent.js $1
-mocha test_createMarket.js $1
+# mocha test_createEvent.js $1
+# mocha test_createMarket.js $1
 mocha test_branches.js $1
 mocha test_info.js $1
 mocha test_markets.js $1

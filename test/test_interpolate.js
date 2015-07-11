@@ -72,19 +72,19 @@ describe("testing consensus: interpolate", function () {
             function (r) {
                 // sent
                 // utilities.print_matrix(
-                //     utilities.fold(Augur.numeric.unfix(r.callReturn, "number"),
+                //     utilities.fold(Augur.abi.unfix(r.callReturn, "number"),
                 //         num_events)
                 // );
             },
             function (r) {
                 // success
-                var interpolated = Augur.numeric.unfix(r.callReturn, "number");
+                var interpolated = Augur.abi.unfix(r.callReturn, "number");
                 var reports_filled = utilities.fold(
                     interpolated.slice(0, flatsize),
                     num_events
                 );
                 var reports_mask = utilities.fold(
-                    Augur.numeric.fix(interpolated.slice(flatsize, 2*flatsize), "string"),
+                    Augur.abi.fix(interpolated.slice(flatsize, 2*flatsize), "string"),
                     num_events
                 );
                 log("Reports (filled):");
@@ -144,7 +144,7 @@ describe("testing consensus: interpolate", function () {
                 assert.equal(r.callReturn, "0x01");
                 // reports_filled = Augur.getReportsFilled(branch, period);
                 // for (i = 0; i < num_events; ++i) {
-                //     assert.equal(reports_filled[i], Augur.numeric.fix(ballot[i], "string"));
+                //     assert.equal(reports_filled[i], Augur.abi.fix(ballot[i], "string"));
                 // }
                 // reports_mask = Augur.getReportsMask(branch, period);
                 // for (i = 0; i < num_events; ++i) {

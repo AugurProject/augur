@@ -17,7 +17,7 @@ var markets = Augur.getMarkets(branch);
 var market_id = markets[markets.length - 1];
 var outcome = "1";
 var amount = "10";
-var block = Augur.rpc.blockNumber();
+var block = Augur.blockNumber();
 
 describe("getMarketPriceHistory", function () {
     it("price history: " + market_id + " outcome " + outcome + " (async)", function (done) {

@@ -161,7 +161,7 @@ describe("Contract ABI data serialization", function () {
             tx.params = [
                 Augur.branches.alpha,
                 constants.accounts.scottzer0,
-                Augur.numeric.fix("5").toFixed()
+                Augur.abi.fix("5").toFixed()
             ];
             var expected = "0xa677135c"+
                 "00000000000000000000000000000000000000000000000000000000000f69b5"+

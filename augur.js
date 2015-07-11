@@ -56,10 +56,6 @@ function Augur() {
     this.TX_POLL_INTERVAL = 6000;
 
     // constants
-    this.MAXBITS = (new BN(2)).toPower(256);
-    this.MAXNUM = (new BN(2)).toPower(255);
-    this.ONE = (new BN(2)).toPower(64);
-    this.TWO = (new BN(2)).toPower(65);
     this.BAD = ((new BN(2)).toPower(63)).mul(new BN(3));
     this.ETHER = (new BN(10)).toPower(18);
     this.AGAINST = this.NO = 1; // against: "won't happen"
@@ -71,6 +67,9 @@ function Augur() {
 
     // whisper filters
     this.filters = {}; // key: marketId => {filterId: hexstring, polling: bool}
+
+    // send_call_confirm notifications
+    this.notifications = {};
 
     // price log filters
     this.price_filters = {
@@ -136,6 +135,38 @@ function Augur() {
             "-2": "entered a negative number of shares",
             "-3": "not enough money",
             "-4": "bad nonce/hash"
+        },
+        comments: {
+            WHISPER_POST_FAILED: {
+                error: 65,
+                message: "could not post message to whisper"
+            }
+        },
+        web: {
+            BAD_CREDENTIALS: {
+                error: 403, // forbidden
+                message: "incorrect handle or password"
+            },
+            HANDLE_TAKEN: {
+                error: 422, // unprocessable entity
+                message: "handle already taken"
+            },
+            TRANSACTION_INVALID: {
+                error: 412,
+                message: "transaction validation failed"
+            },
+            TRANSACTION_FAILED: {
+                error: 500,
+                message: "transaction failed"
+            },
+            DB_WRITE_FAILED: {
+                error: 98,
+                message: "database write failed"
+            },
+            DB_READ_FAILED: {
+                error: 99,
+                message: "database read failed"
+            }
         }
     };
     this.ERRORS.getSimulatedSell = this.ERRORS.getSimulatedBuy;
@@ -1110,39 +1141,42 @@ var augur = new Augur();
  * Utility functions *
  *********************/
 
-Augur.prototype.utils = {
-
-    has_value: function (o, v) {
-        for (var p in o) {
-            if (o.hasOwnProperty(p)) {
-                if (o[p] === v) return p;
-            }
+Augur.prototype.has_value = function (o, v) {
+    for (var p in o) {
+        if (o.hasOwnProperty(p)) {
+            if (o[p] === v) return p;
         }
-    },
-
-    // calculate date from block number
-    block_to_date: function (block) {
-        var current_block = this.rpc.blockNumber();
-        var seconds = (block - current_block) * this.SECONDS_PER_BLOCK;
-        var date = moment().add(seconds, 'seconds');
-        return date;
-    }.bind(augur),
-
-    date_to_block: function (date) {
-        date = moment(new Date(date));
-        var current_block = this.rpc.blockNumber();
-        var now = moment();
-        var seconds_delta = date.diff(now, 'seconds');
-        var block_delta = parseInt(seconds_delta / this.SECONDS_PER_BLOCK);
-        return current_block + block_delta;
-    }.bind(augur)
+    }
 };
 
-/**************************
- * Fixed-point conversion *
- **************************/
+// calculate date from block number
+Augur.prototype.block_to_date = function (block) {
+    var current_block = this.blockNumber();
+    var seconds = (block - current_block) * this.SECONDS_PER_BLOCK;
+    var date = moment().add(seconds, 'seconds');
+    return date;
+};
 
-Augur.prototype.numeric = {
+Augur.prototype.date_to_block = function (date) {
+    date = moment(new Date(date));
+    var current_block = this.blockNumber();
+    var now = moment();
+    var seconds_delta = date.diff(now, 'seconds');
+    var block_delta = parseInt(seconds_delta / this.SECONDS_PER_BLOCK);
+    return current_block + block_delta;
+};
+
+/***********************************
+ * Contract ABI data serialization *
+ ***********************************/
+
+Augur.prototype.abi = {
+
+    ONE: (new BN(2)).toPower(64),
+
+    MAXBITS: (new BN(2)).toPower(256),
+
+    MAXNUM: (new BN(2)).toPower(255),
 
     prefix_hex: function (n) {
         if (n.constructor === Number || n.constructor === BN) {
@@ -1190,7 +1224,7 @@ Augur.prototype.numeric = {
                 len = n.length;
                 bn = new Array(len);
                 for (var i = 0; i < len; ++i) {
-                    bn[i] = this.numeric.bignum(n[i]);
+                    bn[i] = this.bignum(n[i]);
                 }
             }
             if (bn && bn.constructor !== Array && bn.gt(this.MAXNUM)) {
@@ -1215,7 +1249,11 @@ Augur.prototype.numeric = {
         } else {
             return n;
         }
-    }.bind(augur),
+    },
+
+    /**************************
+     * Fixed-point conversion *
+     **************************/
 
     fix: function (n, encode) {
         var fixed;
@@ -1225,13 +1263,13 @@ Augur.prototype.numeric = {
                 var len = n.length;
                 fixed = new Array(len);
                 for (var i = 0; i < len; ++i) {
-                    fixed[i] = this.numeric.fix(n[i], encode);
+                    fixed[i] = this.fix(n[i], encode);
                 }
             } else {
                 if (n.constructor === BN) {
                     fixed = n.mul(this.ONE).round();
                 } else {
-                    fixed = this.numeric.bignum(n).mul(this.ONE).round();
+                    fixed = this.bignum(n).mul(this.ONE).round();
                 }
                 if (fixed && fixed.gt(this.MAXNUM)) {
                     fixed = fixed.sub(this.MAXBITS);
@@ -1240,7 +1278,7 @@ Augur.prototype.numeric = {
                     if (encode === "string") {
                         fixed = fixed.toFixed();
                     } else if (encode === "hex") {
-                        fixed = this.numeric.prefix_hex(fixed);
+                        fixed = this.prefix_hex(fixed);
                     }
                 }
             }
@@ -1248,7 +1286,7 @@ Augur.prototype.numeric = {
         } else {
             return n;
         }
-    }.bind(augur),
+    },
 
     unfix: function (n, encode) {
         var unfixed;
@@ -1258,17 +1296,17 @@ Augur.prototype.numeric = {
                 var len = n.length;
                 unfixed = new Array(len);
                 for (var i = 0; i < len; ++i) {
-                    unfixed[i] = this.numeric.unfix(n[i], encode);
+                    unfixed[i] = this.unfix(n[i], encode);
                 }
             } else {
                 if (n.constructor === BN) {
                     unfixed = n.dividedBy(this.ONE);
                 } else {
-                    unfixed = this.numeric.bignum(n).dividedBy(this.ONE);
+                    unfixed = this.bignum(n).dividedBy(this.ONE);
                 }
                 if (encode) {
                     if (encode === "hex") {
-                        unfixed = this.numeric.prefix_hex(unfixed);
+                        unfixed = this.prefix_hex(unfixed);
                     } else if (encode === "string") {
                         unfixed = unfixed.toFixed();
                     } else if (encode === "number") {
@@ -1280,14 +1318,7 @@ Augur.prototype.numeric = {
         } else {
             return n;
         }
-    }.bind(augur)
-};
-
-/***********************************
- * Contract ABI data serialization *
- ***********************************/
-
-Augur.prototype.abi = {
+    },
 
     encode_int: function (value) {
         var cs = [];
@@ -1338,13 +1369,13 @@ Augur.prototype.abi = {
         if (strip) {
             if (hex.slice(0,2) === "0x") hex = hex.slice(2);
             hex = hex.slice(128);
-            hex = this.abi.remove_trailing_zeros(hex);
+            hex = this.remove_trailing_zeros(hex);
         }
         for (var i = 0, l = hex.length; i < l; i += 2) {
             str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
         }
         return str;
-    }.bind(augur),
+    },
 
     pad_right: function (s) {
         var output = s;
@@ -1396,7 +1427,7 @@ Augur.prototype.abi = {
         var stat, statics = '';
         var dynamic, dynamics = '';
         var num_params = tx.signature.length;
-        var data_abi = this.abi.get_prefix(tx.method, tx.signature);
+        var data_abi = this.get_prefix(tx.method, tx.signature);
         var types = [];
         for (var i = 0, len = tx.signature.length; i < len; ++i) {
             if (tx.signature[i] === 's') {
@@ -1426,52 +1457,52 @@ Augur.prototype.abi = {
                 if (types[i] === "int256") {
                     if (tx.params[i] !== undefined && tx.params[i] !== null && tx.params[i] !== [] && tx.params[i] !== "") {
                         if (tx.params[i].constructor === Number) {
-                            stat = this.numeric.bignum(tx.params[i]);
+                            stat = this.bignum(tx.params[i]);
                             if (stat !== 0) {
                                 stat = stat.mod(this.MAXBITS).toFixed();
                             } else {
                                 stat = stat.toFixed();
                             }
-                            statics += this.abi.pad_left(this.abi.encode_int(stat));
+                            statics += this.pad_left(this.encode_int(stat));
                         } else if (tx.params[i].constructor === String) {
                             if (tx.params[i].slice(0,1) === '-') {
-                                stat = this.numeric.bignum(tx.params[i]).mod(this.MAXBITS).toFixed();
-                                statics += this.abi.pad_left(this.abi.encode_int(stat));
+                                stat = this.bignum(tx.params[i]).mod(this.MAXBITS).toFixed();
+                                statics += this.pad_left(this.encode_int(stat));
                             } else if (tx.params[i].slice(0,2) === "0x") {
-                                statics += this.abi.pad_left(tx.params[i].slice(2), true);
+                                statics += this.pad_left(tx.params[i].slice(2), true);
                             } else {
-                                stat = this.numeric.bignum(tx.params[i]).mod(this.MAXBITS);
-                                statics += this.abi.pad_left(this.abi.encode_int(stat));
+                                stat = this.bignum(tx.params[i]).mod(this.MAXBITS);
+                                statics += this.pad_left(this.encode_int(stat));
                             }
                         }
                     }
                 } else if (types[i] === "bytes" || types[i] === "string") {
                     // offset (in 32-byte chunks)
                     stat = 32*num_params + 0.5*dynamics.length;
-                    stat = this.numeric.bignum(stat).mod(this.MAXBITS).toFixed();
-                    statics += this.abi.pad_left(this.abi.encode_int(stat));
-                    dynamics += this.abi.pad_left(this.abi.encode_int(tx.params[i].length));
-                    dynamics += this.abi.pad_right(this.abi.encode_hex(tx.params[i]));
+                    stat = this.bignum(stat).mod(this.MAXBITS).toFixed();
+                    statics += this.pad_left(this.encode_int(stat));
+                    dynamics += this.pad_left(this.encode_int(tx.params[i].length));
+                    dynamics += this.pad_right(this.encode_hex(tx.params[i]));
                 } else if (types[i] === "int256[]") {
                     stat = 32*num_params + 0.5*dynamics.length;
-                    stat = this.numeric.bignum(stat).mod(this.MAXBITS).toFixed();
-                    statics += this.abi.pad_left(this.abi.encode_int(stat));
+                    stat = this.bignum(stat).mod(this.MAXBITS).toFixed();
+                    statics += this.pad_left(this.encode_int(stat));
                     var arraylen = tx.params[i].length;
-                    dynamics += this.abi.pad_left(this.abi.encode_int(arraylen));
+                    dynamics += this.pad_left(this.encode_int(arraylen));
                     for (var j = 0; j < arraylen; ++j) {
                         if (tx.params[i][j] !== undefined) {
                             if (tx.params[i][j].constructor === Number) {
-                                dynamic = this.numeric.bignum(tx.params[i][j]).mod(this.MAXBITS).toFixed();
-                                dynamics += this.abi.pad_left(this.abi.encode_int(dynamic));
+                                dynamic = this.bignum(tx.params[i][j]).mod(this.MAXBITS).toFixed();
+                                dynamics += this.pad_left(this.encode_int(dynamic));
                             } else if (tx.params[i][j].constructor === String) {
                                 if (tx.params[i][j].slice(0,1) === '-') {
-                                    dynamic = this.numeric.bignum(tx.params[i][j]).mod(this.MAXBITS).toFixed();
-                                    dynamics += this.abi.pad_left(this.abi.encode_int(dynamic));
+                                    dynamic = this.bignum(tx.params[i][j]).mod(this.MAXBITS).toFixed();
+                                    dynamics += this.pad_left(this.encode_int(dynamic));
                                 } else if (tx.params[i][j].slice(0,2) === "0x") {
-                                    dynamics += this.abi.pad_left(tx.params[i][j].slice(2), true);
+                                    dynamics += this.pad_left(tx.params[i][j].slice(2), true);
                                 } else {
-                                    dynamic = this.numeric.bignum(tx.params[i][j]).mod(this.MAXBITS);
-                                    dynamics += this.abi.pad_left(this.abi.encode_int(dynamic));
+                                    dynamic = this.bignum(tx.params[i][j]).mod(this.MAXBITS);
+                                    dynamics += this.pad_left(this.encode_int(dynamic));
                                 }
                             }
                         }
@@ -1482,421 +1513,416 @@ Augur.prototype.abi = {
         } else {
             return new Error("wrong number of parameters");
         }
-    }.bind(augur)
+    }
 };
 
-Augur.prototype.rpc = {
+/********************************
+ * Parse Ethereum response JSON *
+ ********************************/
 
-    /********************************
-     * Parse Ethereum response JSON *
-     ********************************/
-
-    parse_array: function (string, returns, stride, init) {
-        var elements, array, position;
-        if (string.length >= 66) {
-            stride = stride || 64;
-            elements = Math.ceil((string.length - 2) / stride);
-            array = new Array(elements);
-            position = init || 2;
-            for (var i = 0; i < elements; ++i) {
-                array[i] = this.numeric.prefix_hex(string.slice(position, position + stride));
-                position += stride;
-            }
-            if (array.length) {
-                if (parseInt(array[0]) === array.length - 1) {
-                    array.splice(0, 1);
-                } else if (parseInt(array[1]) === array.length - 2 ||
-                    parseInt(array[1]) / 32 === array.length - 2) {
-                    array.splice(0, 2);
-                }
-            }
-            for (i = 0; i < array.length; ++i) {
-                if (returns === "hash[]" && this.BigNumberOnly) {
-                    array[i] = this.numeric.bignum(array[i]);
-                } else {
-                    if (returns === "number[]") {
-                        array[i] = this.numeric.bignum(array[i]).toFixed();
-                    } else if (returns === "unfix[]") {
-                        if (this.BigNumberOnly) {
-                            array[i] = this.numeric.unfix(array[i]);
-                        } else {
-                            array[i] = this.numeric.unfix(array[i], "string");
-                        }
-                    }
-                }
-            }
-            return array;
-        } else {
-            return string;
+Augur.prototype.parse_array = function (string, returns, stride, init) {
+    var elements, array, position;
+    if (string.length >= 66) {
+        stride = stride || 64;
+        elements = Math.ceil((string.length - 2) / stride);
+        array = new Array(elements);
+        position = init || 2;
+        for (var i = 0; i < elements; ++i) {
+            array[i] = this.abi.prefix_hex(string.slice(position, position + stride));
+            position += stride;
         }
-    }.bind(augur),
-
-    format_result: function (returns, result) {
-        returns = returns.toLowerCase();
-        if (result && result !== "0x") {
-            if (returns && returns.slice(-2) === "[]") {
-                result = this.rpc.parse_array(result, returns);
-            } else if (returns === "string") {
-                result = this.abi.decode_hex(result, true);
+        if (array.length) {
+            if (parseInt(array[0]) === array.length - 1) {
+                array.splice(0, 1);
+            } else if (parseInt(array[1]) === array.length - 2 ||
+                parseInt(array[1]) / 32 === array.length - 2) {
+                array.splice(0, 2);
+            }
+        }
+        for (i = 0; i < array.length; ++i) {
+            if (returns === "hash[]" && this.BigNumberOnly) {
+                array[i] = this.abi.bignum(array[i]);
             } else {
-                if (this.BigNumberOnly) {
-                    if (returns === "unfix") {
-                        result = this.numeric.unfix(result);
-                    }
-                    if (result.constructor !== BN) {
-                        result = this.numeric.bignum(result);
-                    }
-                } else {
-                    if (returns === "number") {
-                        result = this.numeric.bignum(result).toFixed();
-                    } else if (returns === "bignumber") {
-                        result = this.numeric.bignum(result);
-                    } else if (returns === "unfix") {
-                        result = this.numeric.unfix(result, "string");
+                if (returns === "number[]") {
+                    array[i] = this.abi.bignum(array[i]).toFixed();
+                } else if (returns === "unfix[]") {
+                    if (this.BigNumberOnly) {
+                        array[i] = this.abi.unfix(array[i]);
+                    } else {
+                        array[i] = this.abi.unfix(array[i], "string");
                     }
                 }
             }
         }
-        return result;
-    }.bind(augur),
+        return array;
+    } else {
+        return string;
+    }
+};
 
-    parse: function (response, returns, callback) {
-        var results, len;
-        try {
-            if (response !== undefined) {
-                response = JSON.parse(response);
-                if (response.error) {
-                    response = {
-                        error: response.error.code,
-                        message: response.error.message
-                    };
-                    if (callback) {
-                        callback(response);
-                    } else {
-                        return response;
-                    }
-                } else if (response.result !== undefined) {
-                    if (returns) {
-                        response.result = this.rpc.format_result(returns, response.result);
-                    } else {
-                        if (response.result && response.result.length > 2 && response.result.slice(0,2) === "0x") {
-                            response.result = this.abi.remove_leading_zeros(response.result);
-                            response.result = this.numeric.prefix_hex(response.result);
-                        }
-                    }
-                    if (callback) {
-                        callback(response.result);
-                    } else {
-                        return response.result;
-                    }
-                } else if (response.constructor === Array && response.length) {
-                    len = response.length;
-                    results = new Array(len);
-                    for (var i = 0; i < len; ++i) {
-                        results[i] = response[i].result;
-                        if (response.error) {
-                            console.error(
-                                "[" + response.error.code + "]",
-                                response.error.message
-                            );
-                        } else if (response[i].result !== undefined) {
-                            if (returns[i]) {
-                                results[i] = this.rpc.format_result(returns[i], response[i].result);
-                            } else {
-                                results[i] = this.abi.remove_leading_zeros(results[i]);
-                                results[i] = this.numeric.prefix_hex(results[i]);
-                            }
-                        }
-                    }
-                    if (callback) {
-                        callback(results);
-                    } else {
-                        return results;
-                    }
-                // no result or error field
-                } else {
-                    if (callback) {
-                        callback(response);
-                    } else {
-                        return response;
-                    }
+Augur.prototype.format_result = function (returns, result) {
+    returns = returns.toLowerCase();
+    if (result && result !== "0x") {
+        if (returns && returns.slice(-2) === "[]") {
+            result = this.parse_array(result, returns);
+        } else if (returns === "string") {
+            result = this.abi.decode_hex(result, true);
+        } else {
+            if (this.BigNumberOnly) {
+                if (returns === "unfix") {
+                    result = this.abi.unfix(result);
+                }
+                if (result.constructor !== BN) {
+                    result = this.abi.bignum(result);
+                }
+            } else {
+                if (returns === "number") {
+                    result = this.abi.bignum(result).toFixed();
+                } else if (returns === "bignumber") {
+                    result = this.abi.bignum(result);
+                } else if (returns === "unfix") {
+                    result = this.abi.unfix(result, "string");
                 }
             }
-        } catch (e) {
-            if (callback) {
-                callback(e);
-            } else {
-                return e;
-            }
-        }
-    }.bind(augur),
-
-    /********************************************
-     * Post JSON-RPC command to Ethereum client *
-     ********************************************/
-
-    strip_returns: function (tx) {
-        var returns;
-        if (tx.params !== undefined && tx.params.length && tx.params[0] && tx.params[0].returns) {
-            returns = tx.params[0].returns;
-            delete tx.params[0].returns;
-        }
-        return returns;
-    },
-
-    json_rpc: function (command, callback) {
-        var self, protocol, host, port, rpc_url, num_commands, returns, req;
-        self = this;
-        req = null;
-        protocol = this.RPC.protocol || "http";
-        host = this.RPC.host || "127.0.0.1";
-        port = this.RPC.port || "8545";
-        rpc_url = protocol + "://" + host + ":" + port;
-        if (command.constructor === Array) {
-            num_commands = command.length;
-            returns = new Array(num_commands);
-            for (var i = 0; i < num_commands; ++i) {
-                returns[i] = this.rpc.strip_returns(command[i]);
-            }
-        } else {
-            returns = this.rpc.strip_returns(command);
-        }
-        if (NODE_JS) {
-            // asynchronous if callback exists
-            if (callback && callback.constructor === Function) {
-                req = new XHR2();
-                req.onreadystatechange = function () {
-                    if (req.readyState === 4) {
-                        self.rpc.parse(req.responseText, returns, callback);
-                    }
-                };
-                req.open("POST", rpc_url, true);
-                req.setRequestHeader("Content-type", "application/json");
-                req.send(JSON.stringify(command));
-            } else {
-                return this.rpc.parse(request('POST', rpc_url, {
-                    json: command
-                }).getBody().toString(), returns);
-            }
-        } else {
-            command = JSON.stringify(command);
-            if (window.XMLHttpRequest) {
-                req = new window.XMLHttpRequest();
-            } else {
-                req = new window.ActiveXObject("Microsoft.XMLHTTP");
-            }
-            // asynchronous if callback exists
-            if (callback && callback.constructor === Function) {
-                req.onreadystatechange = function () {
-                    if (req.readyState === 4) {
-                        self.rpc.parse(req.responseText, returns, callback);
-                    }
-                };
-                req.open("POST", rpc_url, true);
-                req.setRequestHeader("Content-type", "application/json");
-                req.send(command);
-            } else {
-                req.open("POST", rpc_url, false);
-                req.setRequestHeader("Content-type", "application/json");
-                req.send(command);
-                return this.rpc.parse(req.responseText, returns);
-            }
-        }
-    }.bind(augur),
-
-    postdata: function (command, params, prefix) {
-        this.data = {
-            id: this.id++,
-            jsonrpc: "2.0"
-        };
-        if (prefix === "null") {
-            this.data.method = command.toString();
-        } else {
-            this.data.method = (prefix || "eth_") + command.toString();
-        }
-        if (params !== undefined && params !== null) {
-            if (params.constructor === Array) {
-                this.data.params = params;
-            } else {
-                this.data.params = [params];
-            }
-        } else {
-            this.data.params = [];
-        }
-        return this.data;
-    }.bind(augur),
-
-    /******************************
-     * Ethereum JSON-RPC bindings *
-     ******************************/
-
-    raw: function (command, params, f) {
-        return this.json_rpc(this.postdata(command, params, "null"), f);
-    },
-
-    eth: function (command, params, f) {
-        return this.json_rpc(this.postdata(command, params), f);
-    },
-
-    net: function (command, params, f) {
-        return this.json_rpc(this.postdata(command, params, "net_"), f);
-    },
-
-    web3: function (command, params, f) {
-        return this.json_rpc(this.postdata(command, params, "web3_"), f);
-    },
-
-    db: function (command, params, f) {
-        return this.json_rpc(this.postdata(command, params, "db_"), f);
-    },
-
-    shh: function (command, params, f) {
-        return this.json_rpc(this.postdata(command, params, "shh_"), f);
-    },
-
-    sha3: function (data, f) {
-        return this.json_rpc(this.postdata("sha3", data.toString(), "web3_"), f);
-    },
-
-    gasPrice: function (f) {
-        return this.json_rpc(this.postdata("gasPrice"), f);
-    },
-
-    blockNumber: function (f) {
-        if (f) {
-            this.json_rpc(this.postdata("blockNumber"), f);
-        } else {
-            return parseInt(this.json_rpc(this.postdata("blockNumber")));
-        }
-    },
-
-    balance: function (address, block, f) {
-        return this.json_rpc(this.postdata("getBalance", [address || augur.coinbase, block || "latest"]), f);
-    },
-
-    txCount: function (address, f) {
-        return this.json_rpc(this.postdata("getTransactionCount", address || augur.coinbase), f);
-    },
-
-    pay: function (to, value, from, onSent, onSuccess, onFailed) {
-        var self = this;
-        from = from || this.rpc.json_rpc(this.rpc.postdata("coinbase"));
-        if (from !== this.demo) {
-            var tx, txhash;
-            if (to && to.value) {
-                value = to.value;
-                if (to.from) from = to.from || this.coinbase;
-                if (to.onSent) onSent = to.onSent;
-                if (to.onSuccess) onSuccess = to.onSuccess;
-                if (to.onFailed) onFailed = to.onFailed;
-                to = to.to;
-            }
-            tx = {
-                from: from,
-                to: to,
-                value: this.numeric.bignum(value).mul(this.ETHER).toFixed()
-            };
-            if (onSent) {
-                this.rpc.sendTx(tx, function (txhash) {
-                    if (txhash) {
-                        onSent(txhash);
-                        if (onSuccess) self.relay.tx_notify(0, value, tx, txhash, null, onSent, onSuccess, onFailed);
-                    }
-                });
-            } else {
-                txhash = this.rpc.sendTx(tx);
-                if (txhash) {
-                    if (onSuccess) this.relay.tx_notify(0, value, tx, txhash, null, onSent, onSuccess, onFailed);
-                    return txhash;
-                }
-            }
-        }
-    }.bind(augur),
-
-    sign: function (address, data, f) {
-        return this.json_rpc(this.postdata("sign", [address, data]), f);
-    },
-
-    getTx: function (hash, f) {
-        return this.json_rpc(this.postdata("getTransactionByHash", hash), f);
-    },
-
-    peerCount: function (f) {
-        if (f) {
-            this.json_rpc(this.postdata("peerCount", [], "net_"), f);
-        } else {
-            return parseInt(this.json_rpc(this.postdata("peerCount", [], "net_")));
-        }
-    },
-
-    accounts: function (f) {
-        return this.json_rpc(this.postdata("accounts"), f);
-    },
-
-    mining: function (f) {
-        return this.json_rpc(this.postdata("mining"), f);
-    },
-
-    hashrate: function (f) {
-        if (f) {
-            this.json_rpc(this.postdata("hashrate"), f);
-        } else {
-            return parseInt(this.json_rpc(this.postdata("hashrate")));
-        }
-    },
-
-    getBlockByHash: function (hash, full, f) {
-        return this.json_rpc(this.postdata("getBlockByHash", [hash, full || false]), f);
-    },
-
-    getBlockByNumber: function (number, full, f) {
-        return this.json_rpc(this.postdata("getBlockByNumber", [number, full || false]), f);
-    },
-
-    version: function (f) {
-        return this.json_rpc(this.postdata("version", [], "net_"), f);
-    },
-
-    // estimate a transaction's gas cost
-    estimateGas: function (tx, f) {
-        tx.to = tx.to || "";
-        return this.json_rpc(this.postdata("estimateGas", tx), f);
-    },
-
-    // execute functions on contracts on the blockchain
-    call: function (tx, f) {
-        tx.to = tx.to || "";
-        tx.gas = (tx.gas) ? this.numeric.prefix_hex(tx.gas.toString(16)) : this.default_gas;
-        return this.rpc.json_rpc(this.rpc.postdata("call", tx), f);
-    }.bind(augur),
-
-    sendTx: function (tx, f) {
-        tx.to = tx.to || "";
-        tx.gas = (tx.gas) ? this.numeric.prefix_hex(tx.gas.toString(16)) : this.default_gas;
-        return this.rpc.json_rpc(this.rpc.postdata("sendTransaction", tx), f);
-    }.bind(augur),
-
-    // IN: RLP(tx.signed(privateKey))
-    // OUT: txhash
-    sendRawTx: function (rawTx, f) {
-        return this.json_rpc(this.postdata("sendRawTransaction", rawTx), f);
-    },
-
-    receipt: function (txhash, f) {
-        return this.json_rpc(this.postdata("getTransactionReceipt", txhash), f);
-    },
-
-    // publish a new contract to the blockchain (from the coinbase account)
-    publish: function (compiled, f) {
-        return this.sendTx({ from: augur.coinbase, data: compiled }, f);
-    },
-
-    // Read the code in a contract on the blockchain
-    read: function (address, block, f) {
-        if (address) {
-            return this.json_rpc(this.postdata("getCode", [address, block || "latest"]), f);
         }
     }
+    return result;
+};
+
+Augur.prototype.parse = function (response, returns, callback) {
+    var results, len;
+    try {
+        if (response !== undefined) {
+            response = JSON.parse(response);
+            if (response.error) {
+                response = {
+                    error: response.error.code,
+                    message: response.error.message
+                };
+                if (callback) {
+                    callback(response);
+                } else {
+                    return response;
+                }
+            } else if (response.result !== undefined) {
+                if (returns) {
+                    response.result = this.format_result(returns, response.result);
+                } else {
+                    if (response.result && response.result.length > 2 && response.result.slice(0,2) === "0x") {
+                        response.result = this.abi.remove_leading_zeros(response.result);
+                        response.result = this.abi.prefix_hex(response.result);
+                    }
+                }
+                if (callback) {
+                    callback(response.result);
+                } else {
+                    return response.result;
+                }
+            } else if (response.constructor === Array && response.length) {
+                len = response.length;
+                results = new Array(len);
+                for (var i = 0; i < len; ++i) {
+                    results[i] = response[i].result;
+                    if (response.error) {
+                        console.error(
+                            "[" + response.error.code + "]",
+                            response.error.message
+                        );
+                    } else if (response[i].result !== undefined) {
+                        if (returns[i]) {
+                            results[i] = this.format_result(returns[i], response[i].result);
+                        } else {
+                            results[i] = this.abi.remove_leading_zeros(results[i]);
+                            results[i] = this.abi.prefix_hex(results[i]);
+                        }
+                    }
+                }
+                if (callback) {
+                    callback(results);
+                } else {
+                    return results;
+                }
+            // no result or error field
+            } else {
+                if (callback) {
+                    callback(response);
+                } else {
+                    return response;
+                }
+            }
+        }
+    } catch (e) {
+        if (callback) {
+            callback(e);
+        } else {
+            return e;
+        }
+    }
+};
+
+/********************************************
+ * Post JSON-RPC command to Ethereum client *
+ ********************************************/
+
+Augur.prototype.strip_returns = function (tx) {
+    var returns;
+    if (tx.params !== undefined && tx.params.length && tx.params[0] && tx.params[0].returns) {
+        returns = tx.params[0].returns;
+        delete tx.params[0].returns;
+    }
+    return returns;
+};
+
+Augur.prototype.json_rpc = function (command, callback) {
+    var self, protocol, host, port, rpc_url, num_commands, returns, req;
+    self = this;
+    req = null;
+    protocol = this.RPC.protocol || "http";
+    host = this.RPC.host || "127.0.0.1";
+    port = this.RPC.port || "8545";
+    rpc_url = protocol + "://" + host + ":" + port;
+    if (command.constructor === Array) {
+        num_commands = command.length;
+        returns = new Array(num_commands);
+        for (var i = 0; i < num_commands; ++i) {
+            returns[i] = this.strip_returns(command[i]);
+        }
+    } else {
+        returns = this.strip_returns(command);
+    }
+    if (NODE_JS) {
+        // asynchronous if callback exists
+        if (callback && callback.constructor === Function) {
+            req = new XHR2();
+            req.onreadystatechange = function () {
+                if (req.readyState === 4) {
+                    self.parse(req.responseText, returns, callback);
+                }
+            };
+            req.open("POST", rpc_url, true);
+            req.setRequestHeader("Content-type", "application/json");
+            req.send(JSON.stringify(command));
+        } else {
+            return this.parse(request('POST', rpc_url, {
+                json: command
+            }).getBody().toString(), returns);
+        }
+    } else {
+        command = JSON.stringify(command);
+        if (window.XMLHttpRequest) {
+            req = new window.XMLHttpRequest();
+        } else {
+            req = new window.ActiveXObject("Microsoft.XMLHTTP");
+        }
+        // asynchronous if callback exists
+        if (callback && callback.constructor === Function) {
+            req.onreadystatechange = function () {
+                if (req.readyState === 4) {
+                    self.parse(req.responseText, returns, callback);
+                }
+            };
+            req.open("POST", rpc_url, true);
+            req.setRequestHeader("Content-type", "application/json");
+            req.send(command);
+        } else {
+            req.open("POST", rpc_url, false);
+            req.setRequestHeader("Content-type", "application/json");
+            req.send(command);
+            return this.parse(req.responseText, returns);
+        }
+    }
+};
+
+Augur.prototype.postdata = function (command, params, prefix) {
+    this.data = {
+        id: this.id++,
+        jsonrpc: "2.0"
+    };
+    if (prefix === "null") {
+        this.data.method = command.toString();
+    } else {
+        this.data.method = (prefix || "eth_") + command.toString();
+    }
+    if (params !== undefined && params !== null) {
+        if (params.constructor === Array) {
+            this.data.params = params;
+        } else {
+            this.data.params = [params];
+        }
+    } else {
+        this.data.params = [];
+    }
+    return this.data;
+};
+
+/******************************
+ * Ethereum JSON-RPC bindings *
+ ******************************/
+
+Augur.prototype.raw = function (command, params, f) {
+    return this.json_rpc(this.postdata(command, params, "null"), f);
+},
+
+Augur.prototype.eth = function (command, params, f) {
+    return this.json_rpc(this.postdata(command, params), f);
+},
+
+Augur.prototype.net = function (command, params, f) {
+    return this.json_rpc(this.postdata(command, params, "net_"), f);
+},
+
+Augur.prototype.web3 = function (command, params, f) {
+    return this.json_rpc(this.postdata(command, params, "web3_"), f);
+},
+
+Augur.prototype.db = function (command, params, f) {
+    return this.json_rpc(this.postdata(command, params, "db_"), f);
+};
+
+Augur.prototype.shh = function (command, params, f) {
+    return this.json_rpc(this.postdata(command, params, "shh_"), f);
+};
+
+Augur.prototype.hash = Augur.prototype.sha3 = function (data, f) {
+    return this.json_rpc(this.postdata("sha3", data.toString(), "web3_"), f);
+};
+
+Augur.prototype.gasPrice = function (f) {
+    return this.json_rpc(this.postdata("gasPrice"), f);
+};
+
+Augur.prototype.blockNumber = function (f) {
+    if (f) {
+        this.json_rpc(this.postdata("blockNumber"), f);
+    } else {
+        return parseInt(this.json_rpc(this.postdata("blockNumber")));
+    }
+};
+
+Augur.prototype.getBalance = Augur.prototype.balance = function (address, block, f) {
+    return this.json_rpc(this.postdata("getBalance", [address || this.coinbase, block || "latest"]), f);
+};
+
+Augur.prototype.getTransactionCount = Augur.prototype.txCount = function (address, f) {
+    return this.json_rpc(this.postdata("getTransactionCount", address || this.coinbase), f);
+};
+
+Augur.prototype.sendEther = Augur.prototype.pay = function (to, value, from, onSent, onSuccess, onFailed) {
+    var self = this;
+    from = from || this.json_rpc(this.postdata("coinbase"));
+    if (from !== this.demo) {
+        var tx, txhash;
+        if (to && to.value) {
+            value = to.value;
+            if (to.from) from = to.from || this.coinbase;
+            if (to.onSent) onSent = to.onSent;
+            if (to.onSuccess) onSuccess = to.onSuccess;
+            if (to.onFailed) onFailed = to.onFailed;
+            to = to.to;
+        }
+        tx = {
+            from: from,
+            to: to,
+            value: this.abi.bignum(value).mul(this.ETHER).toFixed()
+        };
+        if (onSent) {
+            this.sendTx(tx, function (txhash) {
+                if (txhash) {
+                    onSent(txhash);
+                    if (onSuccess) self.tx_notify(0, value, tx, txhash, null, onSent, onSuccess, onFailed);
+                }
+            });
+        } else {
+            txhash = this.sendTx(tx);
+            if (txhash) {
+                if (onSuccess) this.tx_notify(0, value, tx, txhash, null, onSent, onSuccess, onFailed);
+                return txhash;
+            }
+        }
+    }
+};
+
+Augur.prototype.sign = function (address, data, f) {
+    return this.json_rpc(this.postdata("sign", [address, data]), f);
+};
+
+Augur.prototype.getTransaction = Augur.prototype.getTx = function (hash, f) {
+    return this.json_rpc(this.postdata("getTransactionByHash", hash), f);
+};
+
+Augur.prototype.peerCount = function (f) {
+    if (f) {
+        this.json_rpc(this.postdata("peerCount", [], "net_"), f);
+    } else {
+        return parseInt(this.json_rpc(this.postdata("peerCount", [], "net_")));
+    }
+};
+
+Augur.prototype.accounts = function (f) {
+    return this.json_rpc(this.postdata("accounts"), f);
+};
+
+Augur.prototype.mining = function (f) {
+    return this.json_rpc(this.postdata("mining"), f);
+};
+
+Augur.prototype.hashrate = function (f) {
+    if (f) {
+        this.json_rpc(this.postdata("hashrate"), f);
+    } else {
+        return parseInt(this.json_rpc(this.postdata("hashrate")));
+    }
+};
+
+Augur.prototype.getBlockByHash = function (hash, full, f) {
+    return this.json_rpc(this.postdata("getBlockByHash", [hash, full || false]), f);
+};
+
+Augur.prototype.getBlockByNumber = function (number, full, f) {
+    return this.json_rpc(this.postdata("getBlockByNumber", [number, full || false]), f);
+};
+
+Augur.prototype.netVersion = Augur.prototype.version = function (f) {
+    return this.json_rpc(this.postdata("version", [], "net_"), f);
+};
+
+// estimate a transaction's gas cost
+Augur.prototype.estimateGas = function (tx, f) {
+    tx.to = tx.to || "";
+    return this.json_rpc(this.postdata("estimateGas", tx), f);
+};
+
+// execute functions on contracts on the blockchain
+Augur.prototype.call = function (tx, f) {
+    tx.to = tx.to || "";
+    tx.gas = (tx.gas) ? this.abi.prefix_hex(tx.gas.toString(16)) : this.default_gas;
+    return this.json_rpc(this.postdata("call", tx), f);
+};
+
+Augur.prototype.sendTransaction = Augur.prototype.sendTx = function (tx, f) {
+    tx.to = tx.to || "";
+    tx.gas = (tx.gas) ? this.abi.prefix_hex(tx.gas.toString(16)) : this.default_gas;
+    return this.json_rpc(this.postdata("sendTransaction", tx), f);
+};
+
+// IN: RLP(tx.signed(privateKey))
+// OUT: txhash
+Augur.prototype.sendRawTransaction = Augur.prototype.sendRawTx = function (rawTx, f) {
+    return this.json_rpc(this.postdata("sendRawTransaction", rawTx), f);
+};
+
+Augur.prototype.getTransactionReceipt = Augur.prototype.receipt = function (txhash, f) {
+    return this.json_rpc(this.postdata("getTransactionReceipt", txhash), f);
+};
+
+// publish a new contract to the blockchain (from the coinbase account)
+Augur.prototype.publish = function (compiled, f) {
+    return this.sendTx({ from: this.coinbase, data: compiled }, f);
+};
+
+// Read the code in a contract on the blockchain
+Augur.prototype.getCode = Augur.prototype.read = function (address, block, f) {
+    return this.json_rpc(this.postdata("getCode", [address, block || "latest"]), f);
 };
 
 /*******************************
@@ -1969,7 +1995,7 @@ Augur.prototype.connect = function (rpcinfo, chain) {
                     this.contracts = utilities.copy(this.testchain_contracts);
                 }
             } else {
-                chain = this.rpc.json_rpc(this.rpc.postdata("version", [], "net_"));
+                chain = this.json_rpc(this.postdata("version", [], "net_"));
                 if (chain === "1010101" || chain === 1010101) {
                     this.contracts = utilities.copy(this.privatechain_contracts);
                 } else if (chain === "10101" || chain === 10101) {
@@ -1980,15 +2006,15 @@ Augur.prototype.connect = function (rpcinfo, chain) {
             }
             this.network_id = chain || "0";
         }
-        this.coinbase = this.rpc.json_rpc(this.rpc.postdata("coinbase"));
+        this.coinbase = this.json_rpc(this.postdata("coinbase"));
         if (!this.coinbase) {
-            var accounts = this.rpc.accounts();
+            var accounts = this.accounts();
             var num_accounts = accounts.length;
             if (num_accounts === 1) {
                 this.coinbase = accounts[0];
             } else {
                 for (var i = 0; i < num_accounts; ++i) {
-                    if (!this.rpc.sign(accounts[i], "1010101").error) {
+                    if (!this.sign(accounts[i], "1010101").error) {
                         this.coinbase = accounts[i];
                         break;
                     }
@@ -1999,7 +2025,7 @@ Augur.prototype.connect = function (rpcinfo, chain) {
             for (var method in this.tx) {
                 if (!this.tx.hasOwnProperty(method)) continue;
                 this.tx[method].from = this.coinbase;
-                key = this.utils.has_value(this.init_contracts, this.tx[method].to);
+                key = this.has_value(this.init_contracts, this.tx[method].to);
                 if (key) {
                     this.tx[method].to = this.contracts[key];
                 }
@@ -2016,7 +2042,7 @@ Augur.prototype.connect = function (rpcinfo, chain) {
 
 Augur.prototype.connected = function () {
     try {
-        this.rpc.json_rpc(this.rpc.postdata("coinbase"));
+        this.json_rpc(this.postdata("coinbase"));
         return true;
     } catch (e) {
         return false;
@@ -2053,8 +2079,8 @@ Augur.prototype.invoke = function (itx, f) {
                 tx.params = tx.params.toFixed();
             }
         }
-        if (tx.to) tx.to = this.numeric.prefix_hex(tx.to);
-        if (tx.from) tx.from = this.numeric.prefix_hex(tx.from);
+        if (tx.to) tx.to = this.abi.prefix_hex(tx.to);
+        if (tx.from) tx.from = this.abi.prefix_hex(tx.from);
         data_abi = this.abi.encode(tx);
         if (data_abi) {
             packaged = {
@@ -2063,9 +2089,9 @@ Augur.prototype.invoke = function (itx, f) {
                 data: data_abi
             };
             if (tx.returns) packaged.returns = tx.returns;
-            invocation = (tx.send) ? this.rpc.sendTx : this.rpc.call;
+            invocation = (tx.send) ? this.sendTx : this.call;
             invoked = true;
-            return invocation(packaged, f);
+            return invocation.call(this, packaged, f);
         }
     }
     if (!invoked) {
@@ -2105,8 +2131,8 @@ Augur.prototype.batch = function (txlist, f) {
                     tx.params = tx.params.toFixed();
                 }
             }
-            if (tx.from) tx.from = this.numeric.prefix_hex(tx.from);
-            tx.to = this.numeric.prefix_hex(tx.to);
+            if (tx.from) tx.from = this.abi.prefix_hex(tx.from);
+            tx.to = this.abi.prefix_hex(tx.to);
             data_abi = this.abi.encode(tx);
             if (data_abi) {
                 if (tx.callback && tx.callback.constructor === Function) {
@@ -2120,7 +2146,7 @@ Augur.prototype.batch = function (txlist, f) {
                 };
                 if (tx.returns) packaged.returns = tx.returns;
                 invocation = (tx.send) ? "sendTransaction" : "call";
-                rpclist[i] = this.rpc.postdata(invocation, packaged);
+                rpclist[i] = this.postdata(invocation, packaged);
             } else {
                 log("unable to package commands for batch RPC");
                 return rpclist;
@@ -2128,9 +2154,9 @@ Augur.prototype.batch = function (txlist, f) {
         }
         if (f) {
             if (f.constructor === Function) { // callback on whole array
-                this.rpc.json_rpc(rpclist, f);
+                this.json_rpc(rpclist, f);
             } else if (f === true) {
-                this.rpc.json_rpc(rpclist, function (res) {
+                this.json_rpc(rpclist, function (res) {
                     if (res) {
                         if (res.constructor === Array && res.length) {
                             for (j = 0; j < num_commands; ++j) {
@@ -2147,7 +2173,7 @@ Augur.prototype.batch = function (txlist, f) {
                 });
             }
         } else {
-            return this.rpc.json_rpc(rpclist, f);
+            return this.json_rpc(rpclist, f);
         }
     } else {
         log("expected array for batch RPC, invoking instead");
@@ -2183,210 +2209,205 @@ Augur.prototype.createBatch = function createBatch () {
     return new Batch();
 };
 
-Augur.prototype.relay = {
+Augur.prototype.clear_notifications = function (id) {
+    for (var i = 0, len = this.notifications.length; i < len; ++i) {
+        clearTimeout(this.notifications[id][i]);
+        this.notifications[id] = [];
+    }
+};
 
-    notifications: {},
-
-    clear_notifications: function (id) {
-        for (var i = 0, len = this.notifications.length; i < len; ++i) {
-            clearTimeout(this.notifications[id][i]);
-            this.notifications[id] = [];
+Augur.prototype.error_codes = function (tx, response) {
+    if (response && response.constructor === Array) {
+        for (var i = 0, len = response.length; i < len; ++i) {
+            response[i] = this.error_codes(tx.method, response[i]);
         }
-    },
-
-    error_codes: function (tx, response) {
-        if (response && response.constructor === Array) {
-            for (var i = 0, len = response.length; i < len; ++i) {
-                response[i] = this.relay.error_codes(tx.method, response[i]);
-            }
+    } else {
+        if (this.ERRORS[response]) {
+            response = {
+                error: response,
+                message: this.ERRORS[response]
+            };
         } else {
-            if (this.ERRORS[response]) {
-                response = {
-                    error: response,
-                    message: this.ERRORS[response]
-                };
-            } else {
-                if (tx.returns && tx.returns !== "string" ||
-                    (response.constructor === String && response.slice(0,2) === "0x")) {
-                    var response_number = this.numeric.bignum(response);
-                    if (response_number) {
-                        response_number = this.numeric.bignum(response).toFixed();
-                        if (this.ERRORS[tx.method] && this.ERRORS[tx.method][response_number]) {
-                            response = {
-                                error: response_number,
-                                message: this.ERRORS[tx.method][response_number]
-                            };
-                        }
+            if (tx.returns && tx.returns !== "string" ||
+                (response.constructor === String && response.slice(0,2) === "0x")) {
+                var response_number = this.abi.bignum(response);
+                if (response_number) {
+                    response_number = this.abi.bignum(response).toFixed();
+                    if (this.ERRORS[tx.method] && this.ERRORS[tx.method][response_number]) {
+                        response = {
+                            error: response_number,
+                            message: this.ERRORS[tx.method][response_number]
+                        };
                     }
                 }
             }
         }
-        return response;
-    }.bind(augur),
+    }
+    return response;
+};
 
-    strategy: function (target, callback) {
-        if (callback) {
-            callback(target);
-        } else {
-            return target;
-        }
-    },
+Augur.prototype.strategy = function (target, callback) {
+    if (callback) {
+        callback(target);
+    } else {
+        return target;
+    }
+};
 
-    fire: function (itx, onSent) {
-        var num_params_expected, num_params_received, tx, self = this;
-        if (itx.signature && itx.signature.length) {
-            if (itx.params !== undefined) {
-                if (itx.params.constructor === Array) {
-                    num_params_received = itx.params.length;
-                } else if (itx.params.constructor === Object) {
-                    return this.relay.strategy({
-                        error: -9,
-                        message: "cannot send object parameter to contract"
-                    }, onSent);
-                } else if (itx.params !== null) {
-                    num_params_received = 1;
-                } 
-            } else {
-                num_params_received = 0;
-            }
-            num_params_expected = itx.signature.length;
-            if (num_params_received !== num_params_expected) {
-                return this.relay.strategy({
-                    error: -10,
-                    message: "expected " + num_params_expected.toString() +
-                        " parameters, got " + num_params_received.toString()
+Augur.prototype.fire = function (itx, onSent) {
+    var num_params_expected, num_params_received, tx, self = this;
+    if (itx.signature && itx.signature.length) {
+        if (itx.params !== undefined) {
+            if (itx.params.constructor === Array) {
+                num_params_received = itx.params.length;
+            } else if (itx.params.constructor === Object) {
+                return this.strategy({
+                    error: -9,
+                    message: "cannot send object parameter to contract"
                 }, onSent);
+            } else if (itx.params !== null) {
+                num_params_received = 1;
+            } 
+        } else {
+            num_params_received = 0;
+        }
+        num_params_expected = itx.signature.length;
+        if (num_params_received !== num_params_expected) {
+            return this.strategy({
+                error: -10,
+                message: "expected " + num_params_expected.toString() +
+                    " parameters, got " + num_params_received.toString()
+            }, onSent);
+        }
+    }
+    tx = utilities.copy(itx);
+    if (onSent) {
+        this.invoke(tx, function (res) {
+            res = self.error_codes(tx, res);
+            if (res && self.BigNumberOnly && itx.returns && itx.returns !== "string" && itx.returns !== "hash[]") {
+                res = self.abi.bignum(res);
+            }
+            onSent(res);
+        });
+    } else {
+        return this.error_codes(tx, this.invoke(tx, onSent));
+    }        
+};
+
+/***************************************
+ * Call-send-confirm callback sequence *
+ ***************************************/
+
+Augur.prototype.check_blockhash =  function (tx, callreturn, itx, txhash, returns, count, onSent, onSuccess, onFailed) {
+    var self = this;
+    if (tx && tx.blockHash && this.abi.bignum(tx.blockHash).toNumber() !== 0) {
+        this.clear_notifications(txhash);
+        tx.callReturn = callreturn;
+        tx.txHash = tx.hash;
+        delete tx.hash;
+        if (this.BigNumberOnly && tx.returns && tx.returns !== "string" && tx.returns !== "hash[]") {
+            tx.callReturn = this.abi.bignum(tx.callReturn);
+        }
+        if (onSuccess) onSuccess(tx);
+    } else {
+        if (count !== undefined && count < this.TX_POLL_MAX) {
+            if (count === 0) {
+                this.notifications[txhash] = [setTimeout(function () {
+                    self.tx_notify(count + 1, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed);
+                }, this.TX_POLL_INTERVAL)];
+            } else {
+                this.notifications[txhash].push(setTimeout(function () {
+                    self.tx_notify(count + 1, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed);
+                }, this.TX_POLL_INTERVAL));
             }
         }
-        tx = utilities.copy(itx);
-        if (onSent) {
-            this.invoke(tx, function (res) {
-                res = self.relay.error_codes(tx, res);
-                if (res && self.BigNumberOnly && itx.returns && itx.returns !== "string" && itx.returns !== "hash[]") {
-                    res = self.numeric.bignum(res);
-                }
-                onSent(res);
+    }
+};
+
+Augur.prototype.tx_notify =  function (count, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed) {
+    var self = this;
+    this.getTx(txhash, function (tx) {
+        if (tx === null) {
+            if (returns) itx.returns = returns;
+        } else {
+            self.check_blockhash(tx, callreturn, itx, txhash, returns, count, onSent, onSuccess, onFailed);
+        }
+    });
+};
+
+Augur.prototype.call_confirm = function (tx, txhash, returns, onSent, onSuccess, onFailed) {
+    var self = this;
+    if (tx && txhash) {
+        this.notifications[txhash] = [];
+        if (this.ERRORS[txhash]) {
+            if (onFailed) onFailed({
+                error: txhash,
+                message: this.ERRORS[txhash]
             });
         } else {
-            return this.relay.error_codes(tx, this.invoke(tx, onSent));
-        }        
-    }.bind(augur),
-
-    /***************************************
-     * Call-send-confirm callback sequence *
-     ***************************************/
-
-    check_blockhash: function (tx, callreturn, itx, txhash, returns, count, onSent, onSuccess, onFailed) {
-        var self = this;
-        if (tx && tx.blockHash && this.numeric.bignum(tx.blockHash).toNumber() !== 0) {
-            this.relay.clear_notifications(txhash);
-            tx.callReturn = callreturn;
-            tx.txHash = tx.hash;
-            delete tx.hash;
-            if (this.BigNumberOnly && tx.returns && tx.returns !== "string" && tx.returns !== "hash[]") {
-                tx.callReturn = this.numeric.bignum(tx.callReturn);
-            }
-            if (onSuccess) onSuccess(tx);
-        } else {
-            if (count !== undefined && count < this.TX_POLL_MAX) {
-                if (count === 0) {
-                    this.relay.notifications[txhash] = [setTimeout(function () {
-                        self.relay.tx_notify(count + 1, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed);
-                    }, this.TX_POLL_INTERVAL)];
-                } else {
-                    this.relay.notifications[txhash].push(setTimeout(function () {
-                        self.relay.tx_notify(count + 1, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed);
-                    }, this.TX_POLL_INTERVAL));
-                }
-            }
-        }
-    }.bind(augur),
-
-    tx_notify: function (count, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed) {
-        var self = this;
-        this.rpc.getTx(txhash, function (tx) {
-            if (tx === null) {
-                if (returns) itx.returns = returns;
-            } else {
-                self.relay.check_blockhash(tx, callreturn, itx, txhash, returns, count, onSent, onSuccess, onFailed);
-            }
-        });
-    }.bind(augur),
-
-    call_confirm: function (tx, txhash, returns, onSent, onSuccess, onFailed) {
-        var self = this;
-        if (tx && txhash) {
-            this.relay.notifications[txhash] = [];
-            if (this.ERRORS[txhash]) {
-                if (onFailed) onFailed({
-                    error: txhash,
-                    message: this.ERRORS[txhash]
-                });
-            } else {
-                this.rpc.getTx(txhash, function (sent) {
-                    self.rpc.call({
-                        from: sent.from || self.coinbase,
-                        to: sent.to || tx.to,
-                        data: sent.input,
-                        returns: returns
-                    }, function (callreturn) {
-                        if (callreturn) {
-                            if (callreturn.constructor === Object && callreturn.error) {
-                                if (onFailed) onFailed(callreturn);
-                            } else if (self.ERRORS[callreturn]) {
-                                if (onFailed) onFailed({
-                                    error: callreturn,
-                                    message: self.ERRORS[callreturn]
-                                });
-                            } else {
-                                try {
-                                    var num = self.numeric.bignum(callreturn);
-                                    if (num && num.constructor === BN) {
-                                        num = num.toFixed();
-                                    }
-                                    if (num && self.ERRORS[tx.method] && self.ERRORS[tx.method][num]) {
-                                        if (onFailed) onFailed({
-                                            error: num,
-                                            message: self.ERRORS[tx.method][num]
-                                        });
-                                    } else {
-                                        onSent({
-                                            txHash: txhash,
-                                            callReturn: callreturn
-                                        });
-                                        if (onSuccess) {
-                                            self.relay.tx_notify(
-                                                0,
-                                                callreturn,
-                                                tx,
-                                                txhash,
-                                                returns,
-                                                onSent,
-                                                onSuccess,
-                                                onFailed
-                                            );
-                                        }
-                                    }
-                                } catch (e) {
-                                    if (onFailed) onFailed(e);
+            this.getTx(txhash, function (sent) {
+                self.call({
+                    from: sent.from || self.coinbase,
+                    to: sent.to || tx.to,
+                    data: sent.input,
+                    returns: returns
+                }, function (callreturn) {
+                    if (callreturn) {
+                        if (callreturn.constructor === Object && callreturn.error) {
+                            if (onFailed) onFailed(callreturn);
+                        } else if (self.ERRORS[callreturn]) {
+                            if (onFailed) onFailed({
+                                error: callreturn,
+                                message: self.ERRORS[callreturn]
+                            });
+                        } else {
+                            try {
+                                var num = self.abi.bignum(callreturn);
+                                if (num && num.constructor === BN) {
+                                    num = num.toFixed();
                                 }
+                                if (num && self.ERRORS[tx.method] && self.ERRORS[tx.method][num]) {
+                                    if (onFailed) onFailed({
+                                        error: num,
+                                        message: self.ERRORS[tx.method][num]
+                                    });
+                                } else {
+                                    onSent({
+                                        txHash: txhash,
+                                        callReturn: callreturn
+                                    });
+                                    if (onSuccess) {
+                                        self.tx_notify(
+                                            0,
+                                            callreturn,
+                                            tx,
+                                            txhash,
+                                            returns,
+                                            onSent,
+                                            onSuccess,
+                                            onFailed
+                                        );
+                                    }
+                                }
+                            } catch (e) {
+                                if (onFailed) onFailed(e);
                             }
                         }
-                    });
+                    }
                 });
-            }
+            });
         }
-    }.bind(augur),
+    }
+};
 
-    send_call_confirm: function (tx, onSent, onSuccess, onFailed) {
-        var self = this;
-        var returns = tx.returns;
-        tx.send = true;
-        delete tx.returns;
-        this.invoke(tx, function (txhash) {
-            self.relay.call_confirm(tx, txhash, returns, onSent, onSuccess, onFailed);
-        });
-    }.bind(augur)
+Augur.prototype.send_call_confirm = function (tx, onSent, onSuccess, onFailed) {
+    var self = this;
+    var returns = tx.returns;
+    tx.send = true;
+    delete tx.returns;
+    this.invoke(tx, function (txhash) {
+        self.call_confirm(tx, txhash, returns, onSent, onSuccess, onFailed);
+    });
 };
 
 /************************************
@@ -2397,51 +2418,24 @@ Augur.prototype.web = {
 
     account: {},
 
-    errors: {
-        BAD_CREDENTIALS: {
-            error: 403, // forbidden
-            message: "incorrect handle or password"
-        },
-        HANDLE_TAKEN: {
-            error: 422, // unprocessable entity
-            message: "handle already taken"
-        },
-        TRANSACTION_INVALID: {
-            error: 412,
-            message: "transaction validation failed"
-        },
-        TRANSACTION_FAILED: {
-            error: 500,
-            message: "transaction failed"
-        },
-        DB_WRITE_FAILED: {
-            error: 98,
-            message: "database write failed"
-        },
-        DB_READ_FAILED: {
-            error: 99,
-            message: "database read failed"
-        }
-    },
-
     db: {
 
         write: function (handle, data, f) {
             try {
-                return this.rpc.json_rpc(this.rpc.postdata(
+                return this.json_rpc(this.postdata(
                     "putString",
                     ["accounts", handle, JSON.stringify(data)],
                     "db_"
                 ), f);
             } catch (e) {
-                return this.web.errors.DB_WRITE_FAILED;
+                return this.ERRORS.web.DB_WRITE_FAILED;
             }
         }.bind(augur),
 
         get: function (handle, f) {
             try {
                 if (f) {
-                    this.rpc.json_rpc(this.rpc.postdata(
+                    this.json_rpc(this.postdata(
                         "getString",
                         ["accounts", handle],
                         "db_"
@@ -2450,11 +2444,11 @@ Augur.prototype.web = {
                             f(JSON.parse(account));
                         } else {
                             // account does not exist
-                            f(this.web.errors.BAD_CREDENTIALS);
+                            f(this.ERRORS.web.BAD_CREDENTIALS);
                         }
                     }.bind(augur));
                 } else {
-                    var account = this.rpc.json_rpc(this.rpc.postdata(
+                    var account = this.json_rpc(this.postdata(
                         "getString",
                         ["accounts", handle],
                         "db_"
@@ -2463,11 +2457,11 @@ Augur.prototype.web = {
                         return JSON.parse(account);
                     } else {
                         // account does not exist
-                        return this.web.errors.BAD_CREDENTIALS;
+                        return this.ERRORS.web.BAD_CREDENTIALS;
                     }
                 }
             } catch (e) {
-                return this.web.errors.DB_READ_FAILED;
+                return this.ERRORS.web.DB_READ_FAILED;
             }
         }.bind(augur)
     },
@@ -2526,7 +2520,7 @@ Augur.prototype.web = {
 
         // account already exists
         } else {
-            return this.errors.HANDLE_TAKEN;
+            return augur.ERRORS.web.HANDLE_TAKEN;
         }
     },
 
@@ -2555,7 +2549,7 @@ Augur.prototype.web = {
 
         // decryption failure: bad password
         } catch (e) {
-            return this.errors.BAD_CREDENTIALS;
+            return augur.ERRORS.web.BAD_CREDENTIALS;
         }
     },
 
@@ -2575,7 +2569,7 @@ Augur.prototype.web = {
                         to: toAccount.address
                     }, callback);
                 } else {
-                    return this.web.errors.TRANSACTION_FAILED;
+                    return this.ERRORS.web.TRANSACTION_FAILED;
                 }
             }
         }.bind(augur),
@@ -2585,10 +2579,10 @@ Augur.prototype.web = {
                 var toAccount = this.web.db.get(toHandle);
                 if (toAccount && toAccount.address) {
                     var tx = utilities.copy(this.tx.sendCash);
-                    tx.params = [toAccount.address, this.numeric.fix(value)];
+                    tx.params = [toAccount.address, this.abi.fix(value)];
                     return this.web.invoke(tx, callback);
                 } else {
-                    return this.web.errors.TRANSACTION_FAILED;
+                    return this.ERRORS.web.TRANSACTION_FAILED;
                 }
             }
         }.bind(augur),
@@ -2598,10 +2592,10 @@ Augur.prototype.web = {
                 var toAccount = this.web.db.get(toHandle);
                 if (toAccount && toAccount.address) {
                     var tx = utilities.copy(this.tx.sendReputation);
-                    tx.params = [toAccount.address, this.numeric.fix(value)];
+                    tx.params = [toAccount.address, this.abi.fix(value)];
                     return this.web.invoke(tx, callback);
                 } else {
-                    return this.web.errors.TRANSACTION_FAILED;
+                    return this.ERRORS.web.TRANSACTION_FAILED;
                 }
             }
         }.bind(augur)
@@ -2648,14 +2642,14 @@ Augur.prototype.web = {
                 // sign, validate, and send the transaction
                 packaged.sign(this.web.account.privateKey);
                 if (packaged.validate()) {
-                    return this.rpc.sendRawTx(packaged.serialize().toString("hex"), callback);
+                    return this.sendRawTx(packaged.serialize().toString("hex"), callback);
 
                 // transaction validation failed
                 } else {
-                    return this.web.errors.TRANSACTION_INVALID;
+                    return this.ERRORS.web.TRANSACTION_INVALID;
                 }
             } else {
-                return this.web.errors.TRANSACTION_FAILED;
+                return this.ERRORS.web.TRANSACTION_FAILED;
             }
 
         // if this is just a call, use the regular invoke method
@@ -2671,13 +2665,13 @@ Augur.prototype.web = {
 
 // faucets.se
 Augur.prototype.cashFaucet = function (onSent, onSuccess, onFailed) {
-    return this.relay.send_call_confirm(this.tx.cashFaucet, onSent, onSuccess, onFailed);
+    return this.send_call_confirm(this.tx.cashFaucet, onSent, onSuccess, onFailed);
 };
 Augur.prototype.reputationFaucet = function (branch, onSent, onSuccess, onFailed) {
     // branch: sha256
     var tx = utilities.copy(this.tx.reputationFaucet);
     tx.params = branch;
-    return this.relay.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
 };
 
 // cash.se
@@ -2685,12 +2679,12 @@ Augur.prototype.getCashBalance = function (account, onSent) {
     // account: ethereum address (hexstring)
     var tx = utilities.copy(this.tx.getCashBalance);
     tx.params = account || this.coinbase;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.sendCash = function (to, value, onSent, onSuccess, onFailed) {
     // to: sha256
     // value: number -> fixed-point
-    if (this.rpc.json_rpc(this.rpc.postdata("coinbase")) !== this.demo) {
+    if (this.json_rpc(this.postdata("coinbase")) !== this.demo) {
         if (to && to.value) {
             value = to.value;
             if (to.onSent) onSent = to.onSent;
@@ -2699,8 +2693,8 @@ Augur.prototype.sendCash = function (to, value, onSent, onSuccess, onFailed) {
             to = to.to;
         }
         var tx = utilities.copy(this.tx.sendCash);
-        tx.params = [to, this.numeric.fix(value)];
-        return this.relay.send_call_confirm(tx, onSent, onSuccess, onFailed);
+        tx.params = [to, this.abi.fix(value)];
+        return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
     }
 };
 
@@ -2709,23 +2703,23 @@ Augur.prototype.getCreator = function (id, onSent) {
     // id: sha256 hash id
     var tx = utilities.copy(this.tx.getCreator);
     tx.params = id;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getCreationFee = function (id, onSent) {
     // id: sha256 hash id
     var tx = utilities.copy(this.tx.getCreationFee);
     tx.params = id;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getDescription = function (item, onSent) {
     // item: sha256 hash id
     var tx = utilities.copy(this.tx.getDescription);
     tx.params = item;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.checkPeriod = function (branch) {
     var period = Number(this.getVotePeriod(branch));
-    var currentPeriod = Math.floor(Augur.rpc.blockNumber() / Number(Augur.getPeriodLength(branch)));
+    var currentPeriod = Math.floor(Augur.blockNumber() / Number(Augur.getPeriodLength(branch)));
     var periodsBehind = (currentPeriod - 1) - period;
     return periodsBehind;
 };
@@ -2734,175 +2728,175 @@ Augur.prototype.checkPeriod = function (branch) {
 Augur.prototype.redeem_interpolate = function (branch, period, num_events, num_reports, flatsize, onSent, onSuccess, onFailed) {
     var tx = utilities.copy(this.tx.redeem_interpolate);
     tx.params = [branch, period, num_events, num_reports, flatsize];
-    return this.relay.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
 };
 Augur.prototype.read_ballots = function (branch, period, num_events, num_reports, flatsize, onSent, onSuccess, onFailed) {
     var tx = utilities.copy(this.tx.read_ballots);
     tx.params = [branch, period, num_events, num_reports, flatsize];
-    return this.relay.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
 };
 
 // center.se
 Augur.prototype.center = function (reports, reputation, scaled, scaled_max, scaled_min, max_iterations, max_components, onSent, onSuccess, onFailed) {
     var tx = utilities.copy(this.tx.center);
     tx.params = [
-        Augur.numeric.fix(reports, "hex"),
-        Augur.numeric.fix(reputation, "hex"),
+        Augur.abi.fix(reports, "hex"),
+        Augur.abi.fix(reputation, "hex"),
         scaled,
         scaled_max,
         scaled_min,
         max_iterations,
         max_components
     ];
-    return this.relay.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
 };
 
 // redeem_center.se
 Augur.prototype.redeem_center = function (branch, period, num_events, num_reports, flatsize, onSent, onSuccess, onFailed) {
     var tx = utilities.copy(this.tx.redeem_center);
     tx.params = [branch, period, num_events, num_reports, flatsize];
-    return this.relay.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
 };
 Augur.prototype.redeem_covariance = function (branch, period, num_events, num_reports, flatsize, onSent, onSuccess, onFailed) {
     var tx = utilities.copy(this.tx.redeem_covariance);
     tx.params = [branch, period, num_events, num_reports, flatsize];
-    return this.relay.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
 };
 
 // redeem_score.se
 Augur.prototype.redeem_blank = function (branch, period, num_events, num_reports, flatsize, onSent, onSuccess, onFailed) {
     var tx = utilities.copy(this.tx.redeem_blank);
     tx.params = [branch, period, num_events, num_reports, flatsize];
-    return this.relay.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
 };
 Augur.prototype.redeem_loadings = function (branch, period, num_events, num_reports, flatsize, onSent, onSuccess, onFailed) {
     var tx = utilities.copy(this.tx.redeem_loadings);
     tx.params = [branch, period, num_events, num_reports, flatsize];
-    return this.relay.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
 };
 
 // score.se
 Augur.prototype.blank = function (components_remaining, max_iterations, num_events, onSent, onSuccess, onFailed) {
     var tx = utilities.copy(this.tx.blank);
     tx.params = [components_remaining, max_iterations, num_events];
-    return this.relay.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
 };
 Augur.prototype.loadings = function (iv, wcd, reputation, num_reports, num_events, onSent, onSuccess, onFailed) {
     var tx = utilities.copy(this.tx.loadings);
     tx.params = [
-        Augur.numeric.fix(iv, "hex"),
-        Augur.numeric.fix(wcd, "hex"),
-        Augur.numeric.fix(reputation, "hex"),
+        Augur.abi.fix(iv, "hex"),
+        Augur.abi.fix(wcd, "hex"),
+        Augur.abi.fix(reputation, "hex"),
         num_reports,
         num_events
     ];
-    return this.relay.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
 };
 
 // resolve.se
 Augur.prototype.resolve = function (smooth_rep, reports, scaled, scaled_max, scaled_min, num_reports, num_events, onSent, onSuccess, onFailed) {
     var tx = utilities.copy(this.tx.resolve);
     tx.params = [
-        Augur.numeric.fix(smooth_rep, "hex"),
-        Augur.numeric.fix(reports, "hex"),
+        Augur.abi.fix(smooth_rep, "hex"),
+        Augur.abi.fix(reports, "hex"),
         scaled,
         scaled_max,
         scaled_min,
         num_reports,
         num_events
     ];
-    return this.relay.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
 };
 
 // redeem_resolve.se
 Augur.prototype.redeem_resolve = function (branch, period, num_events, num_reports, flatsize, onSent, onSuccess, onFailed) {
     var tx = utilities.copy(this.tx.redeem_resolve);
     tx.params = [branch, period, num_events, num_reports, flatsize];
-    return this.relay.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
 };
 
 // branches.se
 Augur.prototype.getBranches = function (onSent) {
-    return this.relay.fire(this.tx.getBranches, onSent);
+    return this.fire(this.tx.getBranches, onSent);
 };
 Augur.prototype.getMarkets = function (branch, onSent) {
     // branch: sha256 hash id
     var tx = utilities.copy(this.tx.getMarkets);
     tx.params = branch;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getPeriodLength = function (branch, onSent) {
     // branch: sha256 hash id
     var tx = utilities.copy(this.tx.getPeriodLength);
     tx.params = branch;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getVotePeriod = function (branch, onSent) {
     // branch: sha256 hash id
     var tx = utilities.copy(this.tx.getVotePeriod);
     tx.params = branch;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getStep = function (branch, onSent) {
     // branch: sha256
     var tx = utilities.copy(this.tx.getStep);
     tx.params = branch;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.setStep = function (branch, step, onSent) {
     var tx = utilities.copy(this.tx.setStep);
     tx.params = [branch, step];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getSubstep = function (branch, onSent) {
     // branch: sha256
     var tx = utilities.copy(this.tx.getSubstep);
     tx.params = branch;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.setSubstep = function (branch, substep, onSent) {
     var tx = utilities.copy(this.tx.setSubstep);
     tx.params = [branch, substep];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.incrementSubstep = function (branch, onSent) {
     var tx = utilities.copy(this.tx.incrementSubstep);
     tx.params = branch;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getNumMarkets = function (branch, onSent) {
     // branch: sha256
     var tx = utilities.copy(this.tx.getNumMarkets);
     tx.params = branch;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getMinTradingFee = function (branch, onSent) {
     // branch: sha256
     var tx = utilities.copy(this.tx.getMinTradingFee);
     tx.params = branch;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getNumBranches = function (onSent) {
-    return this.relay.fire(this.tx.getNumBranches, onSent);
+    return this.fire(this.tx.getNumBranches, onSent);
 };
 Augur.prototype.getBranch = function (branchNumber, onSent) {
     // branchNumber: integer
     var tx = utilities.copy(this.tx.getBranch);
     tx.params = branchNumber;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.incrementPeriod = function (branch, onSent) {
     var tx = utilities.copy(this.tx.incrementPeriod);
     tx.params = branch;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.moveEventsToCurrentPeriod = function (branch, currentVotePeriod, currentPeriod, onSent) {
     var tx = utilities.copy(this.tx.moveEventsToCurrentPeriod);
     tx.params = [branch, currentVotePeriod, currentPeriod];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getCurrentPeriod = function (branch) {
-    return parseInt(this.rpc.blockNumber()) / parseInt(this.getPeriodLength(branch));
+    return parseInt(this.blockNumber()) / parseInt(this.getPeriodLength(branch));
 };
 Augur.prototype.updatePeriod = function (branch) {
     var currentPeriod = this.getCurrentPeriod(branch);
@@ -2920,102 +2914,102 @@ Augur.prototype.sprint = function (branch, length) {
 Augur.prototype.addEvent = function (branch, futurePeriod, eventID, onSent) {
     var tx = utilities.copy(this.tx.addEvent);
     tx.params = [branch, futurePeriod, eventID];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.setTotalRepReported = function (branch, expDateIndex, repReported, onSent) {
     var tx = utilities.copy(this.tx.setTotalRepReported);
     tx.params = [branch, expDateIndex, repReported];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.setReporterBallot = function (branch, expDateIndex, reporterID, report, reputation, onSent, onSuccess, onFailed) {
     var tx = utilities.copy(this.tx.setReporterBallot);
-    tx.params = [branch, expDateIndex, reporterID, Augur.numeric.fix(report, "hex"), reputation];
-    return this.relay.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    tx.params = [branch, expDateIndex, reporterID, Augur.abi.fix(report, "hex"), reputation];
+    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
 };
 Augur.prototype.setVSize = function (branch, expDateIndex, vSize, onSent) {
     var tx = utilities.copy(this.tx.setVSize);
     tx.params = [branch, expDateIndex, vSize];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.setReportsFilled = function (branch, expDateIndex, reportsFilled, onSent) {
     var tx = utilities.copy(this.tx.setVSize);
     tx.params = [branch, expDateIndex, reportsFilled];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.setReportsMask = function (branch, expDateIndex, reportsMask, onSent) {
     var tx = utilities.copy(this.tx.setReportsMask);
     tx.params = [branch, expDateIndex, reportsMask];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.setWeightedCenteredData = function (branch, expDateIndex, weightedCenteredData, onSent) {
     var tx = utilities.copy(this.tx.setWeightedCenteredData);
     tx.params = [branch, expDateIndex, weightedCenteredData];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.setCovarianceMatrixRow = function (branch, expDateIndex, covarianceMatrixRow, onSent) {
     var tx = utilities.copy(this.tx.setCovarianceMatrixRow);
     tx.params = [branch, expDateIndex, covarianceMatrixRow];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.setDeflated = function (branch, expDateIndex, deflated, onSent) {
     var tx = utilities.copy(this.tx.setDeflated);
     tx.params = [branch, expDateIndex, deflated];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.setLoadingVector = function (branch, expDateIndex, loadingVector, onSent) {
     var tx = utilities.copy(this.tx.setLoadingVector);
     tx.params = [branch, expDateIndex, loadingVector];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.setScores = function (branch, expDateIndex, scores, onSent) {
     var tx = utilities.copy(this.tx.setScores);
     tx.params = [branch, expDateIndex, scores];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.setSetOne = function (branch, expDateIndex, setOne, onSent) {
     var tx = utilities.copy(this.tx.setOne);
     tx.params = [branch, expDateIndex, setOne];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.setSetTwo = function (branch, expDateIndex, setTwo, onSent) {
     var tx = utilities.copy(this.tx.setSetTwo);
     tx.params = [branch, expDateIndex, setTwo];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.setOld = function (branch, expDateIndex, setOld, onSent) {
     var tx = utilities.copy(this.tx.setOld);
     tx.params = [branch, expDateIndex, setOld];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.setNewOne = function (branch, expDateIndex, newOne, onSent) {
     var tx = utilities.copy(this.tx.setNewOne);
     tx.params = [branch, expDateIndex, newOne];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.setNewTwo = function (branch, expDateIndex, newTwo, onSent) {
     var tx = utilities.copy(this.tx.setNewTwo);
     tx.params = [branch, expDateIndex, newTwo];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.setAdjPrinComp = function (branch, expDateIndex, adjPrinComp, onSent) {
     var tx = utilities.copy(this.tx.setAdjPrinComp);
     tx.params = [branch, expDateIndex, adjPrinComp];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.setSmoothRep = function (branch, expDateIndex, smoothRep, onSent) {
     var tx = utilities.copy(this.tx.setSmoothRep);
     tx.params = [branch, expDateIndex, smoothRep];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.setOutcomesFinal = function (branch, expDateIndex, outcomesFinal, onSent) {
     var tx = utilities.copy(this.tx.setOutcomesFinal);
     tx.params = [branch, expDateIndex, outcomesFinal];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.setReportHash = function (branch, expDateIndex, reportHash, onSent) {
     var tx = utilities.copy(this.tx.setReportHash);
     tx.params = [branch, expDateIndex, reportHash];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 
 // events.se
@@ -3027,17 +3021,17 @@ Augur.prototype.getEventInfo = function (event_id, onSent) {
         this.invoke(this.tx.getEventInfo, function (eventInfo) {
             if (eventInfo && eventInfo.length) {
                 if (self.BigNumberOnly) {
-                    eventInfo[1] = self.numeric.bignum(eventInfo[1]);
-                    eventInfo[2] = self.numeric.unfix(eventInfo[2]);
-                    eventInfo[3] = self.numeric.bignum(eventInfo[3]);
-                    eventInfo[4] = self.numeric.bignum(eventInfo[4]);
-                    eventInfo[5] = self.numeric.bignum(eventInfo[5]);
+                    eventInfo[1] = self.abi.bignum(eventInfo[1]);
+                    eventInfo[2] = self.abi.unfix(eventInfo[2]);
+                    eventInfo[3] = self.abi.bignum(eventInfo[3]);
+                    eventInfo[4] = self.abi.bignum(eventInfo[4]);
+                    eventInfo[5] = self.abi.bignum(eventInfo[5]);
                 } else {
-                    eventInfo[1] = self.numeric.bignum(eventInfo[1]).toFixed();
-                    eventInfo[2] = self.numeric.unfix(eventInfo[2], "string");
-                    eventInfo[3] = self.numeric.bignum(eventInfo[3]).toFixed();
-                    eventInfo[4] = self.numeric.bignum(eventInfo[4]).toFixed();
-                    eventInfo[5] = self.numeric.bignum(eventInfo[5]).toFixed();
+                    eventInfo[1] = self.abi.bignum(eventInfo[1]).toFixed();
+                    eventInfo[2] = self.abi.unfix(eventInfo[2], "string");
+                    eventInfo[3] = self.abi.bignum(eventInfo[3]).toFixed();
+                    eventInfo[4] = self.abi.bignum(eventInfo[4]).toFixed();
+                    eventInfo[5] = self.abi.bignum(eventInfo[5]).toFixed();
                 }
                 onSent(eventInfo);
             }
@@ -3046,17 +3040,17 @@ Augur.prototype.getEventInfo = function (event_id, onSent) {
         var eventInfo = this.invoke(this.tx.getEventInfo);
         if (eventInfo && eventInfo.length) {
             if (this.BigNumberOnly) {
-                eventInfo[1] = this.numeric.bignum(eventInfo[1]);
-                eventInfo[2] = this.numeric.unfix(eventInfo[2]);
-                eventInfo[3] = this.numeric.bignum(eventInfo[3]);
-                eventInfo[4] = this.numeric.bignum(eventInfo[4]);
-                eventInfo[5] = this.numeric.bignum(eventInfo[5]);
+                eventInfo[1] = this.abi.bignum(eventInfo[1]);
+                eventInfo[2] = this.abi.unfix(eventInfo[2]);
+                eventInfo[3] = this.abi.bignum(eventInfo[3]);
+                eventInfo[4] = this.abi.bignum(eventInfo[4]);
+                eventInfo[5] = this.abi.bignum(eventInfo[5]);
             } else {
-                eventInfo[1] = this.numeric.bignum(eventInfo[1]).toFixed();
-                eventInfo[2] = this.numeric.unfix(eventInfo[2], "string");
-                eventInfo[3] = this.numeric.bignum(eventInfo[3]).toFixed();
-                eventInfo[4] = this.numeric.bignum(eventInfo[4]).toFixed();
-                eventInfo[5] = this.numeric.bignum(eventInfo[5]).toFixed();
+                eventInfo[1] = this.abi.bignum(eventInfo[1]).toFixed();
+                eventInfo[2] = this.abi.unfix(eventInfo[2], "string");
+                eventInfo[3] = this.abi.bignum(eventInfo[3]).toFixed();
+                eventInfo[4] = this.abi.bignum(eventInfo[4]).toFixed();
+                eventInfo[5] = this.abi.bignum(eventInfo[5]).toFixed();
             }
             return eventInfo;
         }
@@ -3066,37 +3060,37 @@ Augur.prototype.getEventBranch = function (branchNumber, onSent) {
     // branchNumber: integer
     var tx = utilities.copy(this.tx.getEventBranch);
     tx.params = branchNumber;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getExpiration = function (event, onSent) {
     // event: sha256
     var tx = utilities.copy(this.tx.getExpiration);
     tx.params = event;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getOutcome = function (event, onSent) {
     // event: sha256
     var tx = utilities.copy(this.tx.getOutcome);
     tx.params = event;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getMinValue = function (event, onSent) {
     // event: sha256
     var tx = utilities.copy(this.tx.getMinValue);
     tx.params = event;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getMaxValue = function (event, onSent) {
     // event: sha256
     var tx = utilities.copy(this.tx.getMaxValue);
     tx.params = event;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getNumOutcomes = function (event, onSent) {
     // event: sha256
     var tx = utilities.copy(this.tx.getNumOutcomes);
     tx.params = event;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getCurrentVotePeriod = function (branch, onSent) {
     // branch: sha256
@@ -3105,9 +3099,9 @@ Augur.prototype.getCurrentVotePeriod = function (branch, onSent) {
     if (onSent) {
         this.invoke(this.tx.getPeriodLength, function (periodLength) {
             if (periodLength) {
-                periodLength = this.numeric.bignum(periodLength);
+                periodLength = this.abi.bignum(periodLength);
                 this.blockNumber(function (blockNum) {
-                    blockNum = this.numeric.bignum(blockNum);
+                    blockNum = this.abi.bignum(blockNum);
                     onSent(blockNum.dividedBy(periodLength).floor().sub(1));
                 });
             }
@@ -3115,8 +3109,8 @@ Augur.prototype.getCurrentVotePeriod = function (branch, onSent) {
     } else {
         periodLength = this.invoke(this.tx.getPeriodLength);
         if (periodLength) {
-            blockNum = this.numeric.bignum(this.rpc.blockNumber());
-            return blockNum.dividedBy(this.numeric.bignum(periodLength)).floor().sub(1);
+            blockNum = this.abi.bignum(this.blockNumber());
+            return blockNum.dividedBy(this.abi.bignum(periodLength)).floor().sub(1);
         }
     }
 };
@@ -3127,7 +3121,7 @@ Augur.prototype.getEvents = function (branch, votePeriod, onSent) {
     // votePeriod: integer
     var tx = utilities.copy(this.tx.getEvents);
     tx.params = [branch, votePeriod];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getEventsRange = function (branch, vpStart, vpEnd, onSent) {
     // branch: sha256
@@ -3153,168 +3147,168 @@ Augur.prototype.getNumberEvents = function (branch, votePeriod, onSent) {
     // votePeriod: integer
     var tx = utilities.copy(this.tx.getNumberEvents);
     tx.params = [branch, votePeriod];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getEvent = function (branch, votePeriod, eventIndex, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = utilities.copy(this.tx.getEvent);
     tx.params = [branch, votePeriod, eventIndex];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getTotalRepReported = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = utilities.copy(this.tx.getTotalRepReported);
     tx.params = [branch, votePeriod];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getReporterBallot = function (branch, votePeriod, reporterID, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = utilities.copy(this.tx.getReporterBallot);
     tx.params = [branch, votePeriod, reporterID];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getReport = function (branch, votePeriod, reporter, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = utilities.copy(this.tx.getReports);
     tx.params = [branch, votePeriod, reporter];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getReportHash = function (branch, votePeriod, reporter, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = utilities.copy(this.tx.getReportHash);
     tx.params = [branch, votePeriod, reporter];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getVSize = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = utilities.copy(this.tx.getVSize);
     tx.params = [branch, votePeriod];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getReportsFilled = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = utilities.copy(this.tx.getReportsFilled);
     tx.params = [branch, votePeriod];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getReportsMask = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = utilities.copy(this.tx.getReportsMask);
     tx.params = [branch, votePeriod];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getWeightedCenteredData = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = utilities.copy(this.tx.getWeightedCenteredData);
     tx.params = [branch, votePeriod];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getCovarianceMatrixRow = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = utilities.copy(this.tx.getCovarianceMatrixRow);
     tx.params = [branch, votePeriod];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getDeflated = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = utilities.copy(this.tx.getDeflated);
     tx.params = [branch, votePeriod];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getLoadingVector = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = utilities.copy(this.tx.getLoadingVector);
     tx.params = [branch, votePeriod];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getLatent = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = utilities.copy(this.tx.getLatent);
     tx.params = [branch, votePeriod];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getScores = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = utilities.copy(this.tx.getScores);
     tx.params = [branch, votePeriod];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getSetOne = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = utilities.copy(this.tx.getSetOne);
     tx.params = [branch, votePeriod];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getSetTwo = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = utilities.copy(this.tx.getSetTwo);
     tx.params = [branch, votePeriod];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.returnOld = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = utilities.copy(this.tx.returnOld);
     tx.params = [branch, votePeriod];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getNewOne = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = utilities.copy(this.tx.getNewOne);
     tx.params = [branch, votePeriod];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getNewTwo = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = utilities.copy(this.tx.getNewTwo);
     tx.params = [branch, votePeriod];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getAdjPrinComp = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = utilities.copy(this.tx.getAdjPrinComp);
     tx.params = [branch, votePeriod];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getSmoothRep = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = utilities.copy(this.tx.getSmoothRep);
     tx.params = [branch, votePeriod];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getOutcomesFinal = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = utilities.copy(this.tx.getOutcomesFinal);
     tx.params = [branch, votePeriod];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getReporterPayouts = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = utilities.copy(this.tx.getReporterPayouts);
     tx.params = [branch, votePeriod];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 
 Augur.prototype.getTotalReputation = function (branch, votePeriod, onSent) {
@@ -3322,22 +3316,22 @@ Augur.prototype.getTotalReputation = function (branch, votePeriod, onSent) {
     // votePeriod: integer
     var tx = utilities.copy(this.tx.getTotalReputation);
     tx.params = [branch, votePeriod];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.setTotalReputation = function (branch, votePeriod, totalReputation, onSent, onSuccess, onFailed) {
     // branch: sha256
     // votePeriod: integer
     // totalReputation: number -> fixed
     var tx = utilities.copy(this.tx.setTotalReputation);
-    tx.params = [branch, votePeriod, Augur.numeric.fix(totalReputation, "hex")];
-    return this.relay.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    tx.params = [branch, votePeriod, Augur.abi.fix(totalReputation, "hex")];
+    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
 };
 Augur.prototype.makeBallot = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = utilities.copy(this.tx.makeBallot);
     tx.params = [branch, votePeriod];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 
 // markets.se
@@ -3346,43 +3340,45 @@ Augur.prototype.getSimulatedBuy = function (market, outcome, amount, onSent) {
     // outcome: integer (1 or 2 for binary events)
     // amount: number -> fixed-point
     var tx = utilities.copy(this.tx.getSimulatedBuy);
-    tx.params = [market, outcome, this.numeric.fix(amount)];
-    return this.relay.fire(tx, onSent);
+    tx.params = [market, outcome, this.abi.fix(amount)];
+    log(tx.params);
+    log(this.fire(tx));
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getSimulatedSell = function (market, outcome, amount, onSent) {
     // market: sha256 hash id
     // outcome: integer (1 or 2 for binary events)
     // amount: number -> fixed-point
     var tx = utilities.copy(this.tx.getSimulatedSell);
-    tx.params = [market, outcome, this.numeric.fix(amount)];
-    return this.relay.fire(tx, onSent);
+    tx.params = [market, outcome, this.abi.fix(amount)];
+    return this.fire(tx, onSent);
 };
 Augur.prototype.lsLmsr = function (market, onSent) {
     // market: sha256
     var tx = utilities.copy(this.tx.lsLmsr);
     tx.params = market;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getMarketOutcomeInfo = function (market, outcome, onSent) {
     var parse_info = function (info) {
         var i, len = info.length;
         if (this.BigNumberOnly) {
-            info[0] = this.numeric.unfix(info[0], "BigNumber");
-            info[1] = this.numeric.unfix(info[1], "BigNumber");
-            info[2] = this.numeric.unfix(info[2], "BigNumber");
-            info[3] = this.numeric.bignum(info[3]);
-            info[4] = this.numeric.bignum(info[4]);
+            info[0] = this.abi.unfix(info[0], "BigNumber");
+            info[1] = this.abi.unfix(info[1], "BigNumber");
+            info[2] = this.abi.unfix(info[2], "BigNumber");
+            info[3] = this.abi.bignum(info[3]);
+            info[4] = this.abi.bignum(info[4]);
             for (i = 5; i < len; ++i) {
-                info[i] = this.numeric.bignum(info[i]);
+                info[i] = this.abi.bignum(info[i]);
             }
         } else {
-            info[0] = this.numeric.unfix(info[0], "string");
-            info[1] = this.numeric.unfix(info[1], "string");
-            info[2] = this.numeric.unfix(info[2], "string");
-            info[3] = this.numeric.bignum(info[3]).toFixed();
-            info[4] = this.numeric.bignum(info[4]).toFixed();
+            info[0] = this.abi.unfix(info[0], "string");
+            info[1] = this.abi.unfix(info[1], "string");
+            info[2] = this.abi.unfix(info[2], "string");
+            info[3] = this.abi.bignum(info[3]).toFixed();
+            info[4] = this.abi.bignum(info[4]).toFixed();
             for (i = 5; i < len; ++i) {
-                info[i] = this.numeric.bignum(info[i]).toFixed();
+                info[i] = this.abi.bignum(info[i]).toFixed();
             }
         }
         return info;
@@ -3390,38 +3386,38 @@ Augur.prototype.getMarketOutcomeInfo = function (market, outcome, onSent) {
     var tx = utilities.copy(this.tx.getMarketOutcomeInfo);
     tx.params = [market, outcome];
     if (onSent) {
-        this.relay.fire(tx, function (info) {
+        this.fire(tx, function (info) {
             if (info) onSent(parse_info(info));
         });
     } else {
-        return parse_info(this.relay.fire(tx));
+        return parse_info(this.fire(tx));
     }
 };
 Augur.prototype.getMarketInfo = function (market, onSent) {
     var parse_info = function (info) {
         var i, len = info.length;
         if (this.BigNumberOnly) {
-            info[0] = this.numeric.bignum(info[0]);
-            info[1] = this.numeric.unfix(info[1], "BigNumber");
-            info[2] = this.numeric.bignum(info[2]);
-            info[3] = this.numeric.bignum(info[3]);
-            info[4] = this.numeric.bignum(info[4]);
-            info[5] = this.numeric.unfix(info[5], "BigNumber");
+            info[0] = this.abi.bignum(info[0]);
+            info[1] = this.abi.unfix(info[1], "BigNumber");
+            info[2] = this.abi.bignum(info[2]);
+            info[3] = this.abi.bignum(info[3]);
+            info[4] = this.abi.bignum(info[4]);
+            info[5] = this.abi.unfix(info[5], "BigNumber");
             for (i = 6; i < len - 8; ++i) {
-                info[i] = this.numeric.prefix_hex(this.numeric.bignum(info[i]).toString(16));
+                info[i] = this.abi.prefix_hex(this.abi.bignum(info[i]).toString(16));
             }
             for (i = len - 8; i < len; ++i) {
-                info[i] = this.numeric.bignum(info[i]);
+                info[i] = this.abi.bignum(info[i]);
             }
         } else {
-            info[0] = this.numeric.bignum(info[0]).toFixed();
-            info[1] = this.numeric.unfix(info[1], "string");
-            info[2] = this.numeric.bignum(info[2]).toFixed();
-            info[3] = this.numeric.bignum(info[3]).toFixed();
-            info[4] = this.numeric.bignum(info[4]).toFixed();
-            info[5] = this.numeric.unfix(info[5], "string");
+            info[0] = this.abi.bignum(info[0]).toFixed();
+            info[1] = this.abi.unfix(info[1], "string");
+            info[2] = this.abi.bignum(info[2]).toFixed();
+            info[3] = this.abi.bignum(info[3]).toFixed();
+            info[4] = this.abi.bignum(info[4]).toFixed();
+            info[5] = this.abi.unfix(info[5], "string");
             for (i = len - 8; i < len; ++i) {
-                info[i] = this.numeric.bignum(info[i]).toFixed();
+                info[i] = this.abi.bignum(info[i]).toFixed();
             }
         }
         return info;
@@ -3429,67 +3425,67 @@ Augur.prototype.getMarketInfo = function (market, onSent) {
     var tx = utilities.copy(this.tx.getMarketInfo);
     tx.params = market;
     if (onSent) {
-        this.relay.fire(tx, function (info) {
+        this.fire(tx, function (info) {
             if (info) onSent(parse_info(info));
         });
     } else {
-        return parse_info(this.relay.fire(tx));
+        return parse_info(this.fire(tx));
     }
 };
 Augur.prototype.getMarketEvents = function (market, onSent) {
     // market: sha256 hash id
     var tx = utilities.copy(this.tx.getMarketEvents);
     tx.params = market;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getNumEvents = function (market, onSent) {
     // market: sha256 hash id
     var tx = utilities.copy(this.tx.getNumEvents);
     tx.params = market;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getBranchID = function (branch, onSent) {
     // branch: sha256 hash id
     var tx = utilities.copy(this.tx.getBranchID);
     tx.params = branch;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 // Get the current number of participants in this market
 Augur.prototype.getCurrentParticipantNumber = function (market, onSent) {
     // market: sha256 hash id
     var tx = utilities.copy(this.tx.getCurrentParticipantNumber);
     tx.params = market;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getMarketNumOutcomes = function (market, onSent) {
     // market: sha256 hash id
     var tx = utilities.copy(this.tx.getMarketNumOutcomes);
     tx.params = market;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getParticipantSharesPurchased = function (market, participationNumber, outcome, onSent) {
     // market: sha256 hash id
     var tx = utilities.copy(this.tx.getParticipantSharesPurchased);
     tx.params = [market, participationNumber, outcome];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getSharesPurchased = function (market, outcome, onSent) {
     // market: sha256 hash id
     var tx = utilities.copy(this.tx.getSharesPurchased);
     tx.params = [market, outcome];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getWinningOutcomes = function (market, onSent) {
     // market: sha256 hash id
     var tx = utilities.copy(this.tx.getWinningOutcomes);
     tx.params = market;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.price = function (market, outcome, onSent) {
     // market: sha256 hash id
     var tx = utilities.copy(this.tx.price);
     tx.params = [market, outcome];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 // Get the participant number (the array index) for specified address
 Augur.prototype.getParticipantNumber = function (market, address, onSent) {
@@ -3497,38 +3493,38 @@ Augur.prototype.getParticipantNumber = function (market, address, onSent) {
     // address: ethereum account
     var tx = utilities.copy(this.tx.getParticipantNumber);
     tx.params = [market, address];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 // Get the address for the specified participant number (array index) 
 Augur.prototype.getParticipantID = function (market, participantNumber, onSent) {
     // market: sha256
     var tx = utilities.copy(this.tx.getParticipantID);
     tx.params = [market, participantNumber];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getAlpha = function (market, onSent) {
     // market: sha256
     var tx = utilities.copy(this.tx.getAlpha);
     tx.params = market;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getCumScale = function (market, onSent) {
     // market: sha256
     var tx = utilities.copy(this.tx.getCumScale);
     tx.params = market;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getTradingPeriod = function (market, onSent) {
     // market: sha256
     var tx = utilities.copy(this.tx.getTradingPeriod);
     tx.params = market;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getTradingFee = function (market, onSent) {
     // market: sha256
     var tx = utilities.copy(this.tx.getTradingFee);
     tx.params = market;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 
 // reporting.se
@@ -3537,64 +3533,64 @@ Augur.prototype.getRepBalance = function (branch, account, onSent) {
     // account: ethereum address (hexstring)
     var tx = utilities.copy(this.tx.getRepBalance);
     tx.params = [branch, account || this.coinbase];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getRepByIndex = function (branch, repIndex, onSent) {
     // branch: sha256
     // repIndex: integer
     var tx = utilities.copy(this.tx.getRepByIndex);
     tx.params = [branch, repIndex];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getReporterID = function (branch, index, onSent) {
     // branch: sha256
     // index: integer
     var tx = utilities.copy(this.tx.getReporterID);
     tx.params = [branch, index];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 // reputation of a single address over all branches
 Augur.prototype.getReputation = function (address, onSent) {
     // address: ethereum account
     var tx = utilities.copy(this.tx.getReputation);
     tx.params = address;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getNumberReporters = function (branch, onSent) {
     // branch: sha256
     var tx = utilities.copy(this.tx.getNumberReporters);
     tx.params = branch;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.repIDToIndex = function (branch, repID, onSent) {
     // branch: sha256
     // repID: ethereum account
     var tx = utilities.copy(this.tx.repIDToIndex);
     tx.params = [branch, repID];
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.getTotalRep = function (branch, onSent) {
     var tx = utilities.copy(this.tx.getTotalRep);
     tx.params = branch;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.hashReport = function (ballot, salt, onSent) {
     // ballot: number[]
     // salt: integer
     if (ballot.constructor === Array) {
         var tx = utilities.copy(this.tx.hashReport);
-        tx.params = [this.numeric.fix(ballot, "hex"), salt];
-        return this.relay.fire(tx, onSent);
+        tx.params = [this.abi.fix(ballot, "hex"), salt];
+        return this.fire(tx, onSent);
     }
 };
 
 // checkQuorum.se
 Augur.prototype.checkQuorum = function (branch, onSent, onSuccess, onFailed) {
     // branch: sha256
-    if (this.rpc.json_rpc(this.rpc.postdata("coinbase")) !== this.demo) {
+    if (this.json_rpc(this.postdata("coinbase")) !== this.demo) {
         var tx = utilities.copy(this.tx.checkQuorum);
         tx.params = branch;
-        return this.relay.send_call_confirm(tx, onSent, onSuccess, onFailed);
+        return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
     }
 };
 
@@ -3603,7 +3599,7 @@ Augur.prototype.getNonce = function (id, onSent) {
     // id: sha256 hash id
     var tx = utilities.copy(this.tx.getNonce);
     tx.params = id;
-    return this.relay.fire(tx, onSent);
+    return this.fire(tx, onSent);
 };
 Augur.prototype.buyShares = function (branch, market, outcome, amount, nonce, limit, onSent, onSuccess, onFailed) {
     if (branch && branch.constructor === Object && branch.branchId) {
@@ -3622,13 +3618,13 @@ Augur.prototype.buyShares = function (branch, market, outcome, amount, nonce, li
     var tx = utilities.copy(this.tx.buyShares);
     if (onSent) {
         this.getNonce(market, function (nonce) {
-            tx.params = [branch, market, outcome, this.numeric.fix(amount), nonce, limit || 0];
-            this.relay.send_call_confirm(tx, onSent, onSuccess, onFailed);
+            tx.params = [branch, market, outcome, this.abi.fix(amount), nonce, limit || 0];
+            this.send_call_confirm(tx, onSent, onSuccess, onFailed);
         }.bind(this));
     } else {
         nonce = this.getNonce(market);
-        tx.params = [branch, market, outcome, this.numeric.fix(amount), nonce, limit || 0];
-        return this.relay.send_call_confirm(tx);
+        tx.params = [branch, market, outcome, this.abi.fix(amount), nonce, limit || 0];
+        return this.send_call_confirm(tx);
     }
 };
 Augur.prototype.sellShares = function (branch, market, outcome, amount, nonce, limit, onSent, onSuccess, onFailed) {
@@ -3648,13 +3644,13 @@ Augur.prototype.sellShares = function (branch, market, outcome, amount, nonce, l
     var tx = utilities.copy(this.tx.sellShares);
     if (onSent) {
         this.getNonce(market, function (nonce) {
-            tx.params = [branch, market, outcome, this.numeric.fix(amount), nonce, limit || 0];
-            this.relay.send_call_confirm(tx, onSent, onSuccess, onFailed);
+            tx.params = [branch, market, outcome, this.abi.fix(amount), nonce, limit || 0];
+            this.send_call_confirm(tx, onSent, onSuccess, onFailed);
         });
     } else {
         nonce = this.getNonce(market);
-        tx.params = [branch, market, outcome, this.numeric.fix(amount), nonce, limit || 0];
-        return this.relay.send_call_confirm(tx);
+        tx.params = [branch, market, outcome, this.abi.fix(amount), nonce, limit || 0];
+        return this.send_call_confirm(tx);
     }
 };
 
@@ -3671,7 +3667,7 @@ Augur.prototype.createSubbranch = function (description, periodLength, parent, t
     }
     var tx = utilities.copy(this.tx.sendReputation);
     tx.params = [description, periodLength, parent, tradingFee];
-    return this.relay.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
 };
 
 // p2pWagers.se
@@ -3681,7 +3677,7 @@ Augur.prototype.sendReputation = function (branch, to, value, onSent, onSuccess,
     // branch: sha256
     // to: sha256
     // value: number -> fixed-point
-    if (this.rpc.json_rpc(this.rpc.postdata("coinbase")) !== this.demo) {
+    if (this.json_rpc(this.postdata("coinbase")) !== this.demo) {
         if (branch && branch.branchId && branch.to && branch.value) {
             to = branch.to;
             value = branch.value;
@@ -3691,8 +3687,8 @@ Augur.prototype.sendReputation = function (branch, to, value, onSent, onSuccess,
             branch = branch.branchId;
         }
         var tx = utilities.copy(this.tx.sendReputation);
-        tx.params = [branch, to, this.numeric.fix(value)];
-        return this.relay.send_call_confirm(tx, onSent, onSuccess, onFailed);
+        tx.params = [branch, to, this.abi.fix(value)];
+        return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
     }
 };
 
@@ -3710,8 +3706,8 @@ Augur.prototype.report = function (branch, report, votePeriod, salt, onSent, onS
         branch = branch.branchId;
     }
     var tx = utilities.copy(this.tx.report);
-    tx.params = [branch, Augur.numeric.fix(report, "hex"), votePeriod, salt];
-    return this.relay.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    tx.params = [branch, Augur.abi.fix(report, "hex"), votePeriod, salt];
+    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
 };
 Augur.prototype.submitReportHash = function (branch, reportHash, votePeriod, onSent, onSuccess, onFailed) {
     if (branch.constructor === Object && branch.branchId) {
@@ -3724,7 +3720,7 @@ Augur.prototype.submitReportHash = function (branch, reportHash, votePeriod, onS
     }
     var tx = utilities.copy(this.tx.submitReportHash);
     tx.params = [branch, reportHash, votePeriod];
-    return this.relay.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
 };
 Augur.prototype.checkReportValidity = function (branch, report, votePeriod, onSent, onSuccess, onFailed) {
     if (branch.constructor === Object && branch.branchId) {
@@ -3736,8 +3732,8 @@ Augur.prototype.checkReportValidity = function (branch, report, votePeriod, onSe
         branch = branch.branchId;
     }
     var tx = utilities.copy(this.tx.checkReportValidity);
-    tx.params = [branch, Augur.numeric.fix(report, "hex"), votePeriod];
-    return this.relay.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    tx.params = [branch, Augur.abi.fix(report, "hex"), votePeriod];
+    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
 };
 Augur.prototype.slashRep = function (branch, votePeriod, salt, report, reporter, onSent, onSuccess, onFailed) {
     if (branch.constructor === Object && branch.branchId) {
@@ -3751,8 +3747,8 @@ Augur.prototype.slashRep = function (branch, votePeriod, salt, report, reporter,
         branch = branch.branchId;
     }
     var tx = utilities.copy(this.tx.slashRep);
-    tx.params = [branch, votePeriod, salt, Augur.numeric.fix(report, "hex"), reporter];
-    return this.relay.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    tx.params = [branch, votePeriod, salt, Augur.abi.fix(report, "hex"), reporter];
+    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
 };
 
 // createEvent.se
@@ -3777,9 +3773,9 @@ Augur.prototype.createEvent = function (branch, description, expDate, minValue, 
         minValue,
         maxValue,
         numOutcomes,
-        this.rpc.blockNumber()
+        this.blockNumber()
     ];
-    return this.relay.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
 };
 
 // createMarket.se
@@ -3800,13 +3796,13 @@ Augur.prototype.createMarket = function (branch, description, alpha, liquidity, 
     tx.params = [
         branch,
         description,
-        this.numeric.fix(alpha, "hex"),
-        this.numeric.fix(liquidity, "hex"),
-        this.numeric.fix(tradingFee, "hex"),
+        this.abi.fix(alpha, "hex"),
+        this.abi.fix(liquidity, "hex"),
+        this.abi.fix(tradingFee, "hex"),
         events,
-        this.rpc.blockNumber()
+        this.blockNumber()
     ];
-    return this.relay.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
 };
 
 // closeMarket.se
@@ -3820,13 +3816,13 @@ Augur.prototype.closeMarket = function (branch, market, onSent, onSuccess, onFai
     }
     var tx = utilities.copy(this.tx.closeMarket);
     tx.params = [branch, market];
-    return this.relay.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
 };
 
 // dispatch.se
 Augur.prototype.dispatch = function (branch, onSent, onSuccess, onFailed) {
     // branch: sha256 or transaction object
-    if (this.rpc.json_rpc(this.rpc.postdata("coinbase")) !== this.demo) {
+    if (this.json_rpc(this.postdata("coinbase")) !== this.demo) {
         if (branch.constructor === Object && branch.branchId) {
             if (branch.onSent) onSent = branch.onSent;
             if (branch.onSuccess) onSuccess = branch.onSuccess;
@@ -3835,349 +3831,336 @@ Augur.prototype.dispatch = function (branch, onSent, onSuccess, onFailed) {
         }
         var tx = utilities.copy(this.tx.dispatch);
         tx.params = branch;
-        return this.relay.send_call_confirm(tx, onSent, onSuccess, onFailed);
+        return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
     }
 };
 
-Augur.prototype.comments = {
-    
-    /***********************
-     * Manual database I/O *
-     **********************/
+/***********************
+ * Manual database I/O *
+ **********************/
 
-    putString: function (key, string, f) {
-        return this.json_rpc(this.postdata("putString", ["augur", key, string], "db_"), f);
-    }.bind(augur.rpc),
+Augur.prototype.putString =  function (key, string, f) {
+    return this.json_rpc(this.postdata("putString", ["augur", key, string], "db_"), f);
+};
 
-    getString: function (key, f) {
-        return this.json_rpc(this.postdata("getString", ["augur", key], "db_"), f);
-    }.bind(augur.rpc),
+Augur.prototype.getString =  function (key, f) {
+    return this.json_rpc(this.postdata("getString", ["augur", key], "db_"), f);
+};
 
-    /***************************
-     * Whisper comments system *
-     ***************************/
+/***************************
+ * Whisper comments system *
+ ***************************/
 
-    getMessages: function (filter, f) {
-        return this.json_rpc(this.postdata("getMessages", filter, "shh_"), f);
-    }.bind(augur.rpc),
+Augur.prototype.getMessages =  function (filter, f) {
+    return this.json_rpc(this.postdata("getMessages", filter, "shh_"), f);
+};
 
-    getFilterChanges: function (filter, f) {
-        return this.json_rpc(this.postdata("getFilterChanges", filter, "shh_"), f);
-    }.bind(augur.rpc),
+Augur.prototype.getFilterChanges =  function (filter, f) {
+    return this.json_rpc(this.postdata("getFilterChanges", filter, "shh_"), f);
+};
 
-    newIdentity: function (f) {
-        return this.json_rpc(this.postdata("newIdentity", null, "shh_"), f);
-    }.bind(augur.rpc),
+Augur.prototype.newIdentity =  function (f) {
+    return this.json_rpc(this.postdata("newIdentity", null, "shh_"), f);
+};
 
-    post: function (params, f) {
-        return this.json_rpc(this.postdata("post", params, "shh_"), f);
-    }.bind(augur.rpc),
+Augur.prototype.post =  function (params, f) {
+    return this.json_rpc(this.postdata("post", params, "shh_"), f);
+};
 
-    whisperFilter: function (params, f) {
-        return this.json_rpc(this.postdata("newFilter", params, "shh_"), f);
-    }.bind(augur.rpc),
+Augur.prototype.whisperFilter =  function (params, f) {
+    return this.json_rpc(this.postdata("newFilter", params, "shh_"), f);
+};
 
-    commentFilter: function (market, f) {
-        return this.whisperFilter({ topics: [ market ]}, f);
-    },
+Augur.prototype.commentFilter =  function (market, f) {
+    return this.whisperFilter({ topics: [ market ]}, f);
+};
 
-    uninstallFilter: function (filter, f) {
-        return this.json_rpc(this.postdata("uninstallFilter", filter, "shh_"), f);
-    }.bind(augur.rpc),
+Augur.prototype.uninstallFilter =  function (filter, f) {
+    return this.json_rpc(this.postdata("uninstallFilter", filter, "shh_"), f);
+};
 
-    /**
-     * Incoming comment filter:
-     *  - compare comment string length, write the longest to leveldb
-     *  - 10 second ethereum network polling interval
-     */
-    pollFilter: function (market_id, filter_id) {
-        var self = this;
-        var incoming_comments, stored_comments, num_messages, incoming_parsed, stored_parsed;
-        this.comments.getFilterChanges(filter_id, function (message) {
-            if (message) {
-                num_messages = message.length;
-                if (num_messages) {
-                    for (var i = 0; i < num_messages; ++i) {
-                        // log("\n\nPOLLFILTER: reading incoming message " + i.toString());
-                        incoming_comments = self.abi.decode_hex(message[i].payload);
-                        if (incoming_comments) {
-                            incoming_parsed = JSON.parse(incoming_comments);
-                            // log(incoming_parsed);
-                
-                            // get existing comment(s) stored locally
-                            stored_comments = self.comments.getString(market_id);
+/**
+ * Incoming comment filter:
+ *  - compare comment string length, write the longest to leveldb
+ *  - 10 second ethereum network polling interval
+ */
+Augur.prototype.pollFilter = function (market_id, filter_id) {
+    var self = this;
+    var incoming_comments, stored_comments, num_messages, incoming_parsed, stored_parsed;
+    this.getFilterChanges(filter_id, function (message) {
+        if (message) {
+            num_messages = message.length;
+            if (num_messages) {
+                for (var i = 0; i < num_messages; ++i) {
+                    // log("\n\nPOLLFILTER: reading incoming message " + i.toString());
+                    incoming_comments = self.abi.decode_hex(message[i].payload);
+                    if (incoming_comments) {
+                        incoming_parsed = JSON.parse(incoming_comments);
+                        // log(incoming_parsed);
+            
+                        // get existing comment(s) stored locally
+                        stored_comments = self.getString(market_id);
 
-                            // check if incoming comments length > stored
-                            if (stored_comments && stored_comments.length) {
-                                stored_parsed = JSON.parse(stored_comments);
-                                if (incoming_parsed.length > stored_parsed.length ) {
-                                    // log(incoming_parsed.length.toString() + " incoming comments");
-                                    // log("[" + filter_id + "] overwriting comments for market: " + market_id);
-                                    if (self.comments.putString(market_id, incoming_comments)) {
-                                        // log("[" + filter_id + "] overwrote comments for market: " + market_id);
-                                    }
-                                } else {
-                                    // log(stored_parsed.length.toString() + " stored comments");
-                                    // log("[" + filter_id + "] retaining comments for market: " + market_id);
-                                }
-                            } else {
+                        // check if incoming comments length > stored
+                        if (stored_comments && stored_comments.length) {
+                            stored_parsed = JSON.parse(stored_comments);
+                            if (incoming_parsed.length > stored_parsed.length ) {
                                 // log(incoming_parsed.length.toString() + " incoming comments");
-                                // log("[" + filter_id + "] inserting first comments for market: " + market_id);
-                                if (self.comments.putString(market_id, incoming_comments)) {
+                                // log("[" + filter_id + "] overwriting comments for market: " + market_id);
+                                if (self.putString(market_id, incoming_comments)) {
                                     // log("[" + filter_id + "] overwrote comments for market: " + market_id);
                                 }
+                            } else {
+                                // log(stored_parsed.length.toString() + " stored comments");
+                                // log("[" + filter_id + "] retaining comments for market: " + market_id);
+                            }
+                        } else {
+                            // log(incoming_parsed.length.toString() + " incoming comments");
+                            // log("[" + filter_id + "] inserting first comments for market: " + market_id);
+                            if (self.putString(market_id, incoming_comments)) {
+                                // log("[" + filter_id + "] overwrote comments for market: " + market_id);
                             }
                         }
                     }
                 }
             }
-            // wait a few seconds, then poll the filter for new messages
-            setTimeout(function () {
-                self.comments.pollFilter(market_id, filter_id);
-            }, self.COMMENT_POLL_INTERVAL);
-        });
-    }.bind(augur),
-
-    errors: {
-        WHISPER_POST_FAILED: {
-            error: 65,
-            message: "could not post message to whisper"
         }
-    },
+        // wait a few seconds, then poll the filter for new messages
+        setTimeout(function () {
+            self.pollFilter(market_id, filter_id);
+        }, self.COMMENT_POLL_INTERVAL);
+    });
+};
 
-    initComments: function (market) {
-        var filter, comments, whisper_id;
+Augur.prototype.initComments = function (market) {
+    var filter, comments, whisper_id;
 
-        // make sure there's only one shh filter per market
-        if (this.filters[market] && this.filters[market].filterId) {
-            // log("existing filter found");
-            this.comments.pollFilter(market, this.filters[market].filterId);
-            return this.filters[market].filterId;
+    // make sure there's only one shh filter per market
+    if (this.filters[market] && this.filters[market].filterId) {
+        // log("existing filter found");
+        this.pollFilter(market, this.filters[market].filterId);
+        return this.filters[market].filterId;
 
-        // create a new shh filter for this market
-        } else {
-            filter = this.comments.commentFilter(market);
-            if (filter && filter !== "0x") {
-                // log("creating new filter");
-                this.filters[market] = {
-                    filterId: filter,
-                    polling: true
-                };
-    
-                // broadcast all comments in local leveldb
-                comments = this.comments.getString(market);
-                if (comments) {
-                    whisper_id = this.comments.newIdentity();
-                    if (whisper_id) {
-                        var transmission = {
-                            from: whisper_id,
-                            topics: [market],
-                            payload: this.numeric.prefix_hex(this.abi.encode_hex(comments)),
-                            priority: "0x64",
-                            ttl: "0x500" // time-to-live (until expiration) in seconds
-                        };
-                        if (!this.comments.post(transmission)) {
-                            return this.comments.errors.WHISPER_POST_FAILED;
-                        }
+    // create a new shh filter for this market
+    } else {
+        filter = this.commentFilter(market);
+        if (filter && filter !== "0x") {
+            // log("creating new filter");
+            this.filters[market] = {
+                filterId: filter,
+                polling: true
+            };
+
+            // broadcast all comments in local leveldb
+            comments = this.getString(market);
+            if (comments) {
+                whisper_id = this.newIdentity();
+                if (whisper_id) {
+                    var transmission = {
+                        from: whisper_id,
+                        topics: [market],
+                        payload: this.abi.prefix_hex(this.abi.encode_hex(comments)),
+                        priority: "0x64",
+                        ttl: "0x500" // time-to-live (until expiration) in seconds
+                    };
+                    if (!this.post(transmission)) {
+                        return this.errors.WHISPER_POST_FAILED;
                     }
                 }
-                this.comments.pollFilter(market, filter);
-                return filter;
             }
+            this.pollFilter(market, filter);
+            return filter;
         }
-    }.bind(augur),
+    }
+};
 
-    resetComments: function (market) {
-        return this.putString(market, "");
-    },
+Augur.prototype.resetComments = function (market) {
+    return this.putString(market, "");
+};
 
-    getMarketComments: function (market) {
-        var comments = this.getString(market);
+Augur.prototype.getMarketComments = function (market) {
+    var comments = this.getString(market);
+    if (comments) {
+        return JSON.parse(comments);
+    } else {
+        return null;
+    }
+};
+
+Augur.prototype.addMarketComment = function (pkg) {
+    var market, comment_text, author, updated, transmission, whisper_id, comments;
+    market = pkg.marketId;
+    comment_text = pkg.message;
+    author = pkg.author || this.coinbase;
+
+    whisper_id = this.newIdentity();
+    if (whisper_id && !whisper_id.error) {
+        updated = JSON.stringify([{
+            whisperId: whisper_id,
+            from: author, // ethereum account
+            comment: comment_text,
+            time: Math.floor((new Date()).getTime() / 1000)
+        }]);
+
+        // get existing comment(s) stored locally
+        // (note: build with DFATDB=1 if DBUNDLE=minimal)
+        comments = this.getString(market);
         if (comments) {
-            return JSON.parse(comments);
-        } else {
-            return null;
+            updated = updated.slice(0,-1) + "," + comments.slice(1);
         }
-    },
-
-    addMarketComment: function (pkg) {
-        var market, comment_text, author, updated, transmission, whisper_id, comments;
-        market = pkg.marketId;
-        comment_text = pkg.message;
-        author = pkg.author || this.coinbase;
-
-        whisper_id = this.comments.newIdentity();
-        if (whisper_id && !whisper_id.error) {
-            updated = JSON.stringify([{
-                whisperId: whisper_id,
-                from: author, // ethereum account
-                comment: comment_text,
-                time: Math.floor((new Date()).getTime() / 1000)
-            }]);
-
-            // get existing comment(s) stored locally
-            // (note: build with DFATDB=1 if DBUNDLE=minimal)
-            comments = this.comments.getString(market);
-            if (comments) {
-                updated = updated.slice(0,-1) + "," + comments.slice(1);
-            }
-            if (this.comments.putString(market, updated)) {
-                transmission = {
-                    from: whisper_id,
-                    topics: [market],
-                    payload: this.numeric.prefix_hex(this.abi.encode_hex(updated)),
-                    priority: "0x64",
-                    ttl: "0x600" // 10 minutes
-                };
-                if (this.comments.post(transmission)) {
-                    var decoded = this.abi.decode_hex(transmission.payload);
-                    // TODO figure out why slice(1) is needed here...
-                    return JSON.parse(decoded.slice(1));
-                } else {
-                    return this.comments.errors.WHISPER_POST_FAILED;
-                }
+        if (this.putString(market, updated)) {
+            transmission = {
+                from: whisper_id,
+                topics: [market],
+                payload: this.abi.prefix_hex(this.abi.encode_hex(updated)),
+                priority: "0x64",
+                ttl: "0x600" // 10 minutes
+            };
+            if (this.post(transmission)) {
+                var decoded = this.abi.decode_hex(transmission.payload);
+                // TODO figure out why slice(1) is needed here...
+                return JSON.parse(decoded.slice(1));
             } else {
-                return this.web.errors.DB_WRITE_FAILED;
+                return this.errors.WHISPER_POST_FAILED;
             }
         } else {
-            return whisper_id;
+            return this.ERRORS.web.DB_WRITE_FAILED;
         }
-    }.bind(augur)
+    } else {
+        return whisper_id;
+    }
 };
 
 /********************
  * Ethereum filters *
  ********************/
 
-Augur.prototype.filters = {
+Augur.prototype.eth_newFilter = function (params, f) {
+    return this.json_rpc(this.postdata("newFilter", params), f);
+};
 
-    eth_newFilter: function (params, f) {
-        return this.json_rpc(this.postdata("newFilter", params), f);
-    }.bind(augur.rpc),
+Augur.prototype.create_price_filter = function (label, f) {
+    return this.eth_newFilter({ topics: [ label ]}, f);
+},
 
-    create_price_filter: function (label, f) {
-        return this.eth_newFilter({ topics: [ label ]}, f);
-    },
+Augur.prototype.eth_getFilterChanges = function (filter, f) {
+    return this.json_rpc(this.postdata("getFilterChanges", filter), f);
+};
 
-    eth_getFilterChanges: function (filter, f) {
-        return this.json_rpc(this.postdata("getFilterChanges", filter), f);
-    }.bind(augur.rpc),
+Augur.prototype.eth_getFilterLogs = function (filter, f) {
+    return this.json_rpc(this.postdata("getFilterLogs", filter), f);
+};
 
-    eth_getFilterLogs: function (filter, f) {
-        return this.json_rpc(this.postdata("getFilterLogs", filter), f);
-    }.bind(augur.rpc),
+Augur.prototype.eth_getLogs = function (filter, f) {
+    return this.json_rpc(this.postdata("getLogs", filter), f);
+};
 
-    eth_getLogs: function (filter, f) {
-        return this.json_rpc(this.postdata("getLogs", filter), f);
-    }.bind(augur.rpc),
+Augur.prototype.eth_uninstallFilter = function (filter, f) {
+    return this.json_rpc(this.postdata("uninstallFilter", filter), f);
+};
 
-    eth_uninstallFilter: function (filter, f) {
-        return this.json_rpc(this.postdata("uninstallFilter", filter), f);
-    }.bind(augur.rpc),
-
-    search_price_logs: function (logs, market_id, outcome_id) {
-        // array response: user, market, outcome, price
-        var parsed, unfix_type, price_logs;
-        if (logs) {
-            unfix_type = (this.BigNumberOnly) ? "BigNumber" : "string";
-            price_logs = [];
-            for (var i = 0, len = logs.length; i < len; ++i) {
-                parsed = this.rpc.parse_array(logs[i].data);
-                if (this.numeric.bignum(parsed[1]).eq(this.numeric.bignum(market_id)) && this.numeric.bignum(parsed[2]).eq(this.numeric.bignum(outcome_id))) {
-                    if (this.BigNumberOnly) {
-                        price_logs.push({
-                            price: this.numeric.unfix(parsed[3], unfix_type),
-                            blockNumber: this.numeric.bignum(logs[i].blockNumber)
-                        });
-                    } else {
-                        price_logs.push({
-                            price: this.numeric.unfix(parsed[3], unfix_type),
-                            blockNumber: logs[i].blockNumber
-                        });
-                    }
+Augur.prototype.search_price_logs = function (logs, market_id, outcome_id) {
+    // array response: user, market, outcome, price
+    var parsed, unfix_type, price_logs;
+    if (logs) {
+        unfix_type = (this.BigNumberOnly) ? "BigNumber" : "string";
+        price_logs = [];
+        for (var i = 0, len = logs.length; i < len; ++i) {
+            parsed = this.parse_array(logs[i].data);
+            if (this.abi.bignum(parsed[1]).eq(this.abi.bignum(market_id)) && this.abi.bignum(parsed[2]).eq(this.abi.bignum(outcome_id))) {
+                if (this.BigNumberOnly) {
+                    price_logs.push({
+                        price: this.abi.unfix(parsed[3], unfix_type),
+                        blockNumber: this.abi.bignum(logs[i].blockNumber)
+                    });
+                } else {
+                    price_logs.push({
+                        price: this.abi.unfix(parsed[3], unfix_type),
+                        blockNumber: logs[i].blockNumber
+                    });
                 }
             }
-            return price_logs;
         }
-    }.bind(augur),
+        return price_logs;
+    }
+};
 
-    getCreationBlock: function (market_id, callback) {
-        if (market_id) {
-            var filter = {
-                fromBlock: "0x1",
-                toBlock: this.rpc.blockNumber(),
-                topics: ["creationBlock"]
-            };
-            if (callback) {
-                this.filters.eth_getLogs(filter, function (logs) {
-                    callback(logs);
-                });
-            } else {
-                return this.filters.eth_getFilterLogs(filter);
-            }
-        }
-    }.bind(augur),
-
-    getMarketPriceHistory: function (market_id, outcome_id, callback) {
-        if (market_id && outcome_id) {
-            var filter = {
-                fromBlock: "0x1",
-                toBlock: this.rpc.blockNumber(),
-                topics: ["updatePrice"]
-            };
-            if (callback) {
-                this.filters.eth_getLogs(filter, function (logs) {
-                    callback(this.filters.search_price_logs(logs, market_id, outcome_id));
-                });
-            } else {
-                return this.filters.search_price_logs(this.filters.eth_getLogs(filter), market_id, outcome_id);
-            }
-        }
-    }.bind(augur),
-
-    poll_eth_listener: function (filter_name, onMessage) {
-        var filterId = this.price_filters[filter_name].filterId;
-        this.filters.eth_getFilterChanges(filterId, function (message) {
-            if (message) {
-                var num_messages = message.length;
-                log(message);
-                if (num_messages) {
-                    for (var i = 0; i < num_messages; ++i) {
-                        var data_array = this.rpc.parse_array(message[i].data);
-                        var unfix_type = (this.BigNumberOnly) ? "BigNumber" : "string";
-                        onMessage({
-                            origin: data_array[0],
-                            marketId: data_array[1],
-                            outcome: this.numeric.bignum(data_array[2], unfix_type),
-                            price: this.numeric.unfix(data_array[3], unfix_type)
-                        });
-                    }
-                }
-            }
-        });
-    }.bind(augur),
-
-    start_eth_listener: function (filter_name, callback) {
-        var filter_id;
-        if (this.price_filters[filter_name] &&
-            this.price_filters[filter_name].filterId) {
-            filter_id = this.price_filters[filter_name].filterId;
-            log(filter_name + " filter found:", chalk.green(filter_id));
+Augur.prototype.getCreationBlock = function (market_id, callback) {
+    if (market_id) {
+        var filter = {
+            fromBlock: "0x1",
+            toBlock: this.blockNumber(),
+            topics: ["creationBlock"]
+        };
+        if (callback) {
+            this.filters.eth_getLogs(filter, function (logs) {
+                callback(logs);
+            });
         } else {
-            filter_id = this.filters.create_price_filter(filter_name);
-            if (filter_id && filter_id !== "0x") {
-                log("Create " + filter_name + " filter:", chalk.green(filter_id));
-                this.price_filters[filter_name] = {
-                    filterId: filter_id,
-                    polling: false
-                };
-                if (callback) callback(filter_id);
-            } else {
-                log("Couldn't create " + filter_name + " filter:",
-                    chalk.green(filter_id));
+            return this.filters.eth_getFilterLogs(filter);
+        }
+    }
+};
+
+Augur.prototype.getMarketPriceHistory = function (market_id, outcome_id, callback) {
+    if (market_id && outcome_id) {
+        var filter = {
+            fromBlock: "0x1",
+            toBlock: this.blockNumber(),
+            topics: ["updatePrice"]
+        };
+        if (callback) {
+            this.filters.eth_getLogs(filter, function (logs) {
+                callback(this.filters.search_price_logs(logs, market_id, outcome_id));
+            });
+        } else {
+            return this.filters.search_price_logs(this.filters.eth_getLogs(filter), market_id, outcome_id);
+        }
+    }
+};
+
+Augur.prototype.poll_eth_listener = function (filter_name, onMessage) {
+    var filterId = this.price_filters[filter_name].filterId;
+    this.filters.eth_getFilterChanges(filterId, function (message) {
+        if (message) {
+            var num_messages = message.length;
+            log(message);
+            if (num_messages) {
+                for (var i = 0; i < num_messages; ++i) {
+                    var data_array = this.parse_array(message[i].data);
+                    var unfix_type = (this.BigNumberOnly) ? "BigNumber" : "string";
+                    onMessage({
+                        origin: data_array[0],
+                        marketId: data_array[1],
+                        outcome: this.abi.bignum(data_array[2], unfix_type),
+                        price: this.abi.unfix(data_array[3], unfix_type)
+                    });
+                }
             }
         }
-    }.bind(augur)
+    });
+};
+
+Augur.prototype.start_eth_listener = function (filter_name, callback) {
+    var filter_id;
+    if (this.price_filters[filter_name] &&
+        this.price_filters[filter_name].filterId) {
+        filter_id = this.price_filters[filter_name].filterId;
+        log(filter_name + " filter found:", chalk.green(filter_id));
+    } else {
+        filter_id = this.filters.create_price_filter(filter_name);
+        if (filter_id && filter_id !== "0x") {
+            log("Create " + filter_name + " filter:", chalk.green(filter_id));
+            this.price_filters[filter_name] = {
+                filterId: filter_id,
+                polling: false
+            };
+            if (callback) callback(filter_id);
+        } else {
+            log("Couldn't create " + filter_name + " filter:",
+                chalk.green(filter_id));
+        }
+    }
 };
 
 module.exports = augur;

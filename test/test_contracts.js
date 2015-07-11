@@ -16,7 +16,7 @@ require('it-each')({ testPerIteration: true });
 
 describe("Read contracts", function () {
     var test = function (c) {
-        assert(Augur.rpc.read(Augur.contracts[c]) !== "0x");
+        assert(Augur.read(Augur.contracts[c]) !== "0x");
     };
     var contract_list = [];
     for (var c in Augur.contracts) {

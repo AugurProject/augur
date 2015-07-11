@@ -50,7 +50,7 @@ describe("markets.se", function () {
     });
     describe("lsLmsr", function () {
         var test = function (r) {
-            assert(Augur.numeric.bignum(r).toNumber() > 0);
+            assert(Augur.abi.bignum(r).toNumber() > 0);
         };
         it("sync", function () {
             test(Augur.lsLmsr(market_id));

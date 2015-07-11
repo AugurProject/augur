@@ -141,7 +141,7 @@ All Augur functions have an optional callback (or callbacks; see below) as their
 - getSimulatedBuy(market, outcome, amount[, callback])
 
     ```javascript
-    > Augur.getSimulatedBuy("0xb13d98f933cbd602a3d9d4626260077678ab210d1e63b3108b231c1758ff9971", 1, Augur.ONE.toString(16))
+    > Augur.getSimulatedBuy("0xb13d98f933cbd602a3d9d4626260077678ab210d1e63b3108b231c1758ff9971", 1, Augur.abi.ONE.toString(16))
     ["0x0000000000000000000000000000000000000000000000000013b073172aceb2",
      "0x0000000000000000000000000000000000000000000000008de39f2500000000"]
     ```
@@ -149,7 +149,7 @@ All Augur functions have an optional callback (or callbacks; see below) as their
 - getSimulatedSell(market, outcome, amount[, callback])
 
     ```javascript
-    > Augur.getSimulatedSell("0xb13d98f933cbd602a3d9d4626260077678ab210d1e63b3108b231c1758ff9971", 1, Augur.ONE.toString(16))
+    > Augur.getSimulatedSell("0xb13d98f933cbd602a3d9d4626260077678ab210d1e63b3108b231c1758ff9971", 1, Augur.abi.ONE.toString(16))
     ["0x0000000000000000000000000000000000000000000000000013af84d04feba9",
      "0x0000000000000000000000000000000000000000000000008dd635b900000000"]
      ```
@@ -187,7 +187,7 @@ All Augur functions have an optional callback (or callbacks; see below) as their
 - price(market, outcome[, callback]): Get the current (instantaneous) price of an outcome.
 
     ```javascript
-    > Augur.price(market_id, 1, function (r) { console.log(r.dividedBy(Augur.ONE).toFixed()); })
+    > Augur.price(market_id, 1, function (r) { console.log(r.dividedBy(Augur.abi.ONE).toFixed()); })
     0.55415210523642599583
     ```
 
@@ -224,12 +224,12 @@ The `raw` method allows you to send in raw commands (similar to sending in via c
 > Augur.raw("net_peerCount")
 "0x10"
 
-> Augur.rpc.eth("gasPrice")
+> Augur.eth("gasPrice")
 "0x015f90"
 ```
 Many of the commonly used functions have named wrappers.  For example, `blockNumber` fetches the current block number:
 ```javascript
-> Augur.rpc.blockNumber()
+> Augur.blockNumber()
 217153
 ```
 

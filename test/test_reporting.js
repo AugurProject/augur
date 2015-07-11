@@ -116,11 +116,11 @@ describe("data and api/reporting", function () {
     });
     describe("hashReport([ballot], " + salt + ") ", function () {
         var test = function (r) {
-            var b = Augur.numeric.fix(ballot);
+            var b = Augur.abi.fix(ballot);
             for (var i = 0, len = b.length; i < len; ++i) {
                 b[i] = b[i].toString(16);
             }
-            var hashable = [accounts[0], Augur.numeric.bignum(salt).toString(16)].concat(b).toString();
+            var hashable = [accounts[0], Augur.abi.bignum(salt).toString(16)].concat(b).toString();
             var hashed = utilities.sha256(hashable);
             // TODO lookup how arrays hashed by evm sha256, this doesn't work
             // assert.equal(r, hashed);

@@ -19,13 +19,13 @@ describe("Faucets", function () {
             function (r) {
                 // sent
                 assert.equal(r.callReturn, "1");
-                assert(Augur.numeric.bignum(r.txHash).toNumber() >= 0);
+                assert(Augur.abi.bignum(r.txHash).toNumber() >= 0);
             },
             function (r) {
                 // success
                 assert.equal(r.callReturn, "1");
-                assert(Augur.numeric.bignum(r.blockHash).toNumber() !== 0);
-                assert(Augur.numeric.bignum(r.blockNumber).toNumber() >= 0);
+                assert(Augur.abi.bignum(r.blockHash).toNumber() !== 0);
+                assert(Augur.abi.bignum(r.blockNumber).toNumber() >= 0);
                 var rep_balance = Augur.getRepBalance(branch, coinbase);
                 var cash_balance = Augur.getCashBalance(coinbase);
                 assert.equal(rep_balance, "47");
@@ -41,26 +41,26 @@ describe("Faucets", function () {
     it("Cash faucet", function (done) {
         this.timeout(constants.timeout);
         var cash_balance = Augur.getCashBalance(coinbase);
-        if (Augur.numeric.bignum(cash_balance).toNumber() > 0) {
+        if (Augur.abi.bignum(cash_balance).toNumber() > 0) {
             done();
         }
         Augur.cashFaucet(
             function (r) {
                 // sent
                 assert(r.callReturn === "1" || r.callReturn === "-1");
-                assert(Augur.numeric.bignum(r.txHash).toNumber() >= 0);
+                assert(Augur.abi.bignum(r.txHash).toNumber() >= 0);
             },
             function (r) {
                 // success
                 assert(r.callReturn === "1" || r.callReturn === "-1");
-                assert(Augur.numeric.bignum(r.blockHash).toNumber() !== 0);
-                assert(Augur.numeric.bignum(r.blockNumber).toNumber() >= 0);
+                assert(Augur.abi.bignum(r.blockHash).toNumber() !== 0);
+                assert(Augur.abi.bignum(r.blockNumber).toNumber() >= 0);
                 var rep_balance = Augur.getRepBalance(branch, coinbase);
                 var cash_balance = Augur.getCashBalance(coinbase);
                 if (r.callReturn === "1") {
                     assert.equal(cash_balance, "10000");
                 } else {
-                    assert(Augur.numeric.bignum(cash_balance).toNumber() > 5);
+                    assert(Augur.abi.bignum(cash_balance).toNumber() > 5);
                 }
                 done();
             },

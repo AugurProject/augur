@@ -2,7 +2,7 @@
 
 var MODULAR = typeof module !== "undefined";
 
-var BigNumber = require("bignumber.js");
+var BN = require("bignumber.js");
 var chalk = require("chalk");
 var assert = require("chai").assert;
 var log = console.log;
@@ -30,7 +30,7 @@ utilities.reset = function (module) {
     return require(module);
 };
 
-utilities.gteq0 = function (n) { return (new BigNumber(n)).toNumber() >= 0; };
+utilities.gteq0 = function (n) { return (new BN(n)).toNumber() >= 0; };
 
 utilities.print_matrix = function (m) {
     for (var i = 0, rows = m.length; i < rows; ++i) {
@@ -159,7 +159,7 @@ utilities.fold = function (arr, num_cols) {
 };
 
 utilities.prefix_hex = function (n) {
-    if (n.constructor === Number || n.constructor === BigNumber) {
+    if (n.constructor === Number || n.constructor === BN) {
         n = n.toString(16);
     }
     if (n.slice(0,2) !== "0x" && n.slice(0,3) !== "-0x") {
@@ -176,7 +176,7 @@ utilities.get_test_accounts = function (augur, max_accounts) {
     var accounts;
     if (augur) {
         if (typeof augur === "object") {
-            accounts = augur.rpc.accounts();
+            accounts = augur.accounts();
         } else if (typeof augur === "string") {
             accounts = require("fs").readdirSync(require("path").join(augur, "keystore"));
             for (var i = 0, len = accounts.length; i < len; ++i) {
@@ -197,7 +197,7 @@ utilities.get_balances = function (augur, account, branch) {
         return {
             cash: augur.getCashBalance(account),
             reputation: augur.getRepBalance(branch || augur.branches.dev, account),
-            ether: augur.numeric.bignum(augur.rpc.balance(account)).dividedBy(augur.ETHER).toFixed()
+            ether: augur.numeric.bignum(augur.balance(account)).dividedBy(augur.ETHER).toFixed()
         };
     }
 };

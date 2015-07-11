@@ -129,7 +129,7 @@ function spawn_geth(flags) {
 }
 
 function mine_minimum_ether(geth, account, next) {
-    var balance = Augur.numeric.bignum(Augur.rpc.balance(account)).dividedBy(Augur.ETHER).toNumber();
+    var balance = Augur.abi.bignum(Augur.balance(account)).dividedBy(Augur.ETHER).toNumber();
     if (balance < MINIMUM_ETHER) {
         if (balance > 0) {
             log(chalk.green(balance) + chalk.gray(" ETH, waiting for ") +
@@ -301,7 +301,7 @@ function faucets(geth) {
     setTimeout(function () {
         var cash_balance = Augur.getCashBalance(Augur.coinbase);
         var rep_balance = Augur.getRepBalance(Augur.branches.dev, Augur.coinbase);
-        var ether_balance = Augur.numeric.bignum(Augur.rpc.balance(Augur.coinbase)).dividedBy(Augur.ETHER).toFixed();
+        var ether_balance = Augur.abi.bignum(Augur.balance(Augur.coinbase)).dividedBy(Augur.ETHER).toFixed();
         log(chalk.cyan("\nBalances:"));
         log("Cash:       " + chalk.green(cash_balance));
         log("Reputation: " + chalk.green(rep_balance));
@@ -361,7 +361,7 @@ function upload_contracts(geth) {
                 log("Send " + MINIMUM_ETHER + " ETH to other addresses:");
                 for (var i = 1, len = accounts.length; i < len; ++i) {
                     log(chalk.green("  ✓ ") + chalk.gray(accounts[i]));
-                    Augur.rpc.pay(accounts[i], MINIMUM_ETHER);
+                    Augur.pay(accounts[i], MINIMUM_ETHER);
                 }
                 setTimeout(function () {
                     kill_geth(geth);
@@ -415,11 +415,11 @@ function check_connection(geth, account, callback, next, count) {
                 check_connection(spawn_geth(geth_flags), account, callback, next, ++count);
             }, 5000);
         } else {
-            var balance = Augur.rpc.balance(account);
+            var balance = Augur.balance(account);
             if (balance && !balance.error) {
-                balance = Augur.numeric.bignum(balance).dividedBy(Augur.ETHER).toFixed();
+                balance = Augur.abi.bignum(balance).dividedBy(Augur.ETHER).toFixed();
                 log("Connected on account", chalk.cyan(account));
-                log(chalk.green(Augur.rpc.blockNumber()), chalk.gray("blocks"));
+                log(chalk.green(Augur.blockNumber()), chalk.gray("blocks"));
                 log(chalk.green(balance), chalk.gray("ETH"));
                 callback(geth, account, next);
             } else {

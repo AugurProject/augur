@@ -23,7 +23,7 @@ var num_events = 4;
 
 var branch = Augur.branches.dev;
 var period = Augur.getVotePeriod(branch);
-var exp_date = Augur.rpc.blockNumber() + 250;
+var exp_date = Augur.blockNumber() + 250;
 
 describe("Creating " + num_events + " events and markets", function () {
     var events = [];

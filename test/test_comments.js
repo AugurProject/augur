@@ -18,27 +18,27 @@ describe("Comments (whisper)", function () {
 
     it("should reset comments", function () {
         this.timeout(constants.timeout);
-        assert(Augur.comments.resetComments(market));
+        assert(Augur.resetComments(market));
     });
 
     it("should initally be no comments on market " + market, function () {
         this.timeout(constants.timeout);
-        assert(!Augur.comments.getMarketComments(market));
+        assert(!Augur.getMarketComments(market));
     });
         
     it("should set up comments for market " + market + " and return the filter id", function () {
         this.timeout(constants.timeout);
-        var filter = Augur.comments.initComments(market);
+        var filter = Augur.initComments(market);
         assert(filter);
         assert(filter !== "0x");
-        assert(Augur.comments.resetComments(market));
+        assert(Augur.resetComments(market));
     });
 
     it("should add a comment to market " + market, function () {
         this.timeout(constants.timeout);
-        Augur.comments.initComments(market);
+        Augur.initComments(market);
         pkg.message = Math.random().toString(36).substring(4);
-        var updated_comments = Augur.comments.addMarketComment(pkg);
+        var updated_comments = Augur.addMarketComment(pkg);
         assert(updated_comments);
         assert.equal(updated_comments.constructor, Array);
         assert.equal(updated_comments.length, 1);
@@ -48,7 +48,7 @@ describe("Comments (whisper)", function () {
     it("should add another comment to market " + market, function () {
         this.timeout(constants.timeout);
         pkg.message = Math.random().toString(36).substring(4);
-        var updated_comments = Augur.comments.addMarketComment(pkg);
+        var updated_comments = Augur.addMarketComment(pkg);
         assert(updated_comments);
         assert.equal(updated_comments.constructor, Array);
         assert.equal(updated_comments.length, 2);
@@ -57,7 +57,7 @@ describe("Comments (whisper)", function () {
 
     it("should get the two comments for market " + market, function () {
         this.timeout(constants.timeout);
-        var comments = Augur.comments.getMarketComments(market);
+        var comments = Augur.getMarketComments(market);
         assert(comments);
         assert.equal(comments.length, 2);
     });
@@ -65,7 +65,7 @@ describe("Comments (whisper)", function () {
     it("should add a third comment to market " + market, function () {
         this.timeout(constants.timeout);
         pkg.message = Math.random().toString(36).substring(4);
-        var updated_comments = Augur.comments.addMarketComment(pkg);
+        var updated_comments = Augur.addMarketComment(pkg);
         assert(updated_comments);
         assert.equal(updated_comments.constructor, Array);
         assert.equal(updated_comments.length, 3);
@@ -74,13 +74,13 @@ describe("Comments (whisper)", function () {
 
     it("should reset comments for market " + market, function () {
         this.timeout(constants.timeout);
-        assert(Augur.comments.resetComments(market));
-        assert(!Augur.comments.getMarketComments(market));
+        assert(Augur.resetComments(market));
+        assert(!Augur.getMarketComments(market));
     });
 
     // crashes geth (!)
     // it("should uninstall filter " + filter, function () {
     //     this.timeout(constants.timeout);
-    //     assert(Augur.comments.uninstallFilter(filter));
+    //     assert(Augur.uninstallFilter(filter));
     // });
 });
