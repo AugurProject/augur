@@ -8,40 +8,33 @@ var Alert = ReactBootstrap.Alert;
 
 var Welcome = React.createClass({
 
-  mixins: [FluxMixin],
-
   getInitialState: function() {
     return {
-      alertVisible: false
+      alertVisible: true
     };
-  },
-
-  getStateFromFlux: function() {
-
-    var flux = this.getFlux();
-
-    return {};
   },
 
   render: function () {
 
     if (this.state.alertVisible) {
+
       return (
-        <Alert onDismiss={ this.handleAlertDismiss } id='alert'>
-          <MessageList prop={ this.state.messages } />
+        <Alert bsStyle='success' onDismiss={ this.handleAlertDismiss }>
+          <h4>Welcome to the Augur Alpha release!</h4>
+          <p>This release showcases the basic features of our decentralized prediction market. It's by no means feature complete and certainly prone to bugs.</p>
+          <p>Tell us what you think and report any issues you have using the "Feedback" link below.</p>
         </Alert>
       );
+
+    } else {
+
+      return <span />;
     }
   },
 
   handleAlertDismiss: function() {
 
     this.setState({alertVisible: false});
-  },
-
-  handleAlertShow: function() {
-
-    this.setState({alertVisible: true});
   }
 
 });

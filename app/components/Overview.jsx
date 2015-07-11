@@ -12,8 +12,8 @@ var utilities = require('../libs/utilities');
 var constants = require('../libs/constants');
 
 var CloseMarketModal = require('./CloseMarket').CloseMarketModal;
-
 var EtherWarningModal = require('./EtherWarningModal');
+var Welcome = require('./Welcome');
 var Markets = require('./Markets');
 
 var Overview = React.createClass({
@@ -76,34 +76,40 @@ var Overview = React.createClass({
       });
     }, this);
 
+    var holdingsSection = <span />
+    if (holdings.length) {
+      holdingsSection = (
+        <div>
+          <h4>Holdings</h4>
+          <Table responsive striped hover>
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th>Shares Held</th>
+                <th>Price</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              { holdings }
+            </tbody>
+          </Table>
+        </div>
+      );
+    }
+
     var cashFaucetDisabled = this.state.cashFaucetDisabled ? true : false;
     var repFaucetDisabled = this.state.repFaucetDisabled ? true : false;
+
+    var trendingMarkets = <span />;
 
     var rendered = (
       <div id="overview">
         <div className='row'>
           <div className="col-xs-12">
-            <h4>Holdings</h4>
-            <Table responsive striped hover>
-              <thead>
-                <tr>
-                  <th>Description</th>
-                  <th>Shares Held</th>
-                  <th>Price</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                { holdings }
-              </tbody>
-            </Table>
-            <h4>Authored Markets</h4>
-            <div className='authored-markets row'>
-              <Markets 
-                markets={ this.state.authoredMarkets }
-                votePeriod={ this.state.votePeriod }
-                classNameWrapper='col-sm-4' />
-            </div>        
+            <Welcome /> 
+            { holdingsSection }
+            { trendingMarkets }     
           </div>
         </div>
       </div>

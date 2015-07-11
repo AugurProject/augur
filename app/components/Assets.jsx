@@ -91,32 +91,33 @@ var Assets = React.createClass({
 
     return (
       <div className="panel panel-info assets">
+        <div className="panel-heading">Balances</div>
+        <div className="panel-body">
+          <div className='cash-balance'>
+            <span className="unit">cash</span><span className='pull-right'>{ cashBalance }</span>
+            <ButtonGroup  className="hide">
+              <Button bsSize='xsmall' bsStyle='primary' onClick={ this.toggleSendCashModal }>Send</Button>
+              <Button disabled={ this.state.cashFaucetDisabled } bsSize='xsmall' bsStyle='default' onClick={ this.onCashFaucet }>Faucet<i className='fa fa-tint'></i></Button>
+            </ButtonGroup>
+          </div>
 
-        <div className='cash-balance'>
-          <span className="unit">cash</span><span className='pull-right'>{ cashBalance }</span>
-          <ButtonGroup  className="hide">
-            <Button bsSize='xsmall' bsStyle='primary' onClick={ this.toggleSendCashModal }>Send</Button>
-            <Button disabled={ this.state.cashFaucetDisabled } bsSize='xsmall' bsStyle='default' onClick={ this.onCashFaucet }>Faucet<i className='fa fa-tint'></i></Button>
-          </ButtonGroup>
+          <div className='rep-balance'>
+            <span className="unit">reputation</span><span className='pull-right'>{ repBalance }</span>
+            <ButtonGroup className="hide">
+              <Button bsSize='xsmall' bsStyle='primary' onClick={ this.toggleSendRepModal }>Send</Button>
+              <Button disabled={ this.state.repFaucetDisabled } bsSize='xsmall' bsStyle='default' onClick={ this.onRepFaucet }>Faucet<i className='fa fa-tint'></i></Button>
+            </ButtonGroup>
+          </div>
+
+          <div className='ether-balance'>
+            <span className="unit">{ utilities.formatEther(this.props.asset.ether).unit }</span><span className='pull-right'>{ utilities.formatEther(this.props.asset.ether).value }</span>
+            <Button  className="hide" bsSize='xsmall' bsStyle='primary' onClick={ this.toggleSendEtherModal }>Send</Button>
+          </div>
+
+          <SendEtherModal show={ this.state.sendEtherModalOpen } onHide={ this.toggleSendEtherModal } />
+          <SendRepModal show={ this.state.sendRepModalOpen } onHide={ this.toggleSendRepModal } />
+          <SendCashModal show={ this.state.sendCashModalOpen } onHide={ this.toggleSendCashModal } />
         </div>
-
-        <div className='rep-balance'>
-          <span className="unit">reputation</span><span className='pull-right'>{ repBalance }</span>
-          <ButtonGroup className="hide">
-            <Button bsSize='xsmall' bsStyle='primary' onClick={ this.toggleSendRepModal }>Send</Button>
-            <Button disabled={ this.state.repFaucetDisabled } bsSize='xsmall' bsStyle='default' onClick={ this.onRepFaucet }>Faucet<i className='fa fa-tint'></i></Button>
-          </ButtonGroup>
-        </div>
-
-        <div className='ether-balance'>
-          <span className="unit">{ utilities.formatEther(this.props.asset.ether).unit }</span><span className='pull-right'>{ utilities.formatEther(this.props.asset.ether).value }</span>
-          <Button  className="hide" bsSize='xsmall' bsStyle='primary' onClick={ this.toggleSendEtherModal }>Send</Button>
-        </div>
-
-        <SendEtherModal show={ this.state.sendEtherModalOpen } onHide={ this.toggleSendEtherModal } />
-        <SendRepModal show={ this.state.sendRepModalOpen } onHide={ this.toggleSendRepModal } />
-        <SendCashModal show={ this.state.sendCashModalOpen } onHide={ this.toggleSendCashModal } />
-
       </div>
     );
   }
