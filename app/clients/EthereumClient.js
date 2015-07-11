@@ -675,14 +675,13 @@ var getSimulationArgs = function (marketId, outcomeId, numShares, callback) {
 
 EthereumClient.prototype.getSimulatedBuy = function (marketId, outcomeId, numShares, callback) {
   var args = getSimulationArgs(marketId, outcomeId, numShares, callback);
-  Augur.getSimulatedBuy.apply(null, args);
+  Augur.getSimulatedBuy.apply(Augur, args);
 };
 
 EthereumClient.prototype.getSimulatedSell = function (marketId, outcomeId, numShares, callback) {
   var args = getSimulationArgs(marketId, outcomeId, numShares, callback);
-  Augur.getSimulatedSell.apply(null, args);
+  Augur.getSimulatedSell.apply(Augur, args);
 };
-
 
 EthereumClient.prototype.buyShares = function (branchId, marketId, outcomeId, numShares, onSent) {
   Augur.buyShares({

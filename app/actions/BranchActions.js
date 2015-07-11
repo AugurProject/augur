@@ -36,7 +36,7 @@ export default {
     var percentComplete = (currentBlock % currentBranch.periodLength) / currentBranch.periodLength * 100;
 
     ethereumClient.getVotePeriod(currentBranch.id, function(result) {
-      
+
       if (!result) return;  // hack for augur.js bug
       var votePeriod = result.toNumber();
       var isCurrent = votePeriod < (currentPeriod - 1) ? false : true;
@@ -54,7 +54,7 @@ export default {
       });
 
       this.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, updatedBranch);
-    });
+    }.bind(this));
   },
 
   checkQuorum: function () {
