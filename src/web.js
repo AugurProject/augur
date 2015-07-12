@@ -179,7 +179,7 @@ module.exports = function (augur) {
             if (this.account.address) {
                 var toAccount = this.db.get(toHandle);
                 if (toAccount && toAccount.address) {
-                    var tx = utilities.copy(this.tx.sendCash);
+                    var tx = utilities.copy(augur.tx.sendCash);
                     tx.params = [toAccount.address, numeric.fix(value)];
                     return this.invoke(tx, callback);
                 } else {
@@ -192,7 +192,7 @@ module.exports = function (augur) {
             if (this.account.address) {
                 var toAccount = this.db.get(toHandle);
                 if (toAccount && toAccount.address) {
-                    var tx = utilities.copy(this.tx.sendReputation);
+                    var tx = utilities.copy(augur.tx.sendReputation);
                     tx.params = [toAccount.address, numeric.fix(value)];
                     return this.invoke(tx, callback);
                 } else {
