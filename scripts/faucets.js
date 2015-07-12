@@ -8,7 +8,7 @@ var Augur = require("../src/augur");
 var numeric = require("../src/numeric");
 var log = console.log;
 
-Augur = require("./utilities").setup(Augur, process.argv.slice(2));
+Augur = require("../src/utilities").setup(Augur, process.argv.slice(2));
 
 log("Faucets:");
 

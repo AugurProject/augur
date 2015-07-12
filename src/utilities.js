@@ -12,6 +12,7 @@ if (NODE_JS) {
     crypto = require("crypto-browserify");
 }
 var BigNumber = require("bignumber.js");
+var moment = require("moment");
 var chalk = require("chalk");
 var constants = require("./constants");
 var log = console.log;
@@ -113,7 +114,7 @@ utilities.check_results = function (res, expected, apply) {
     } else {
         console.error("no or incorrect response", res);
     }
-}
+};
 
 utilities.runtest = function (augur, tx, expected, apply) {
     if (tx && expected) {

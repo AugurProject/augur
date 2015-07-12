@@ -18,7 +18,6 @@ var errors = require("./errors");
 var constants = require("./constants");
 var utilities = require("./utilities");
 var numeric = require("./numeric");
-var RPC = require("./rpc");
 
 module.exports = function (augur) {
 

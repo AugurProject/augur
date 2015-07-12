@@ -10,25 +10,16 @@ var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 var crypto;
 if (NODE_JS) {
     crypto = require("crypto");
-    var request = require("sync-request");
-    var XHR2 = require("xhr2");
 } else {
     crypto = require("crypto-browserify");
 }
 var BigNumber = require("bignumber.js");
-var moment = require("moment");
-var chalk = require("chalk");
-var keccak_256 = require("js-sha3").keccak_256;
-var EthUtil = require("ethereumjs-util");
-var EthTx = require("ethereumjs-tx");
-var eccrypto = require("eccrypto");
 
 var constants = require("./constants");
 var errors = require("./errors");
 var numeric = require("./numeric");
 var contracts = require("./contracts");
 var utilities = require("./utilities");
-
 var RPC = require("./rpc");
 var WebClient = require("./web");
 var Comments = require("./comments");
@@ -819,7 +810,7 @@ augur.getDescription = function (item, onSent) {
 };
 augur.checkPeriod = function (branch) {
     var period = Number(this.getVotePeriod(branch));
-    var currentPeriod = Math.floor(Augur.blockNumber() / Number(Augur.getPeriodLength(branch)));
+    var currentPeriod = Math.floor(this.blockNumber() / Number(this.getPeriodLength(branch)));
     var periodsBehind = (currentPeriod - 1) - period;
     return periodsBehind;
 };
@@ -840,8 +831,8 @@ augur.read_ballots = function (branch, period, num_events, num_reports, flatsize
 augur.center = function (reports, reputation, scaled, scaled_max, scaled_min, max_iterations, max_components, onSent, onSuccess, onFailed) {
     var tx = utilities.copy(this.tx.center);
     tx.params = [
-        Augur.abi.fix(reports, "hex"),
-        Augur.abi.fix(reputation, "hex"),
+        numeric.fix(reports, "hex"),
+        numeric.fix(reputation, "hex"),
         scaled,
         scaled_max,
         scaled_min,
@@ -884,9 +875,9 @@ augur.blank = function (components_remaining, max_iterations, num_events, onSent
 augur.loadings = function (iv, wcd, reputation, num_reports, num_events, onSent, onSuccess, onFailed) {
     var tx = utilities.copy(this.tx.loadings);
     tx.params = [
-        Augur.abi.fix(iv, "hex"),
-        Augur.abi.fix(wcd, "hex"),
-        Augur.abi.fix(reputation, "hex"),
+        numeric.fix(iv, "hex"),
+        numeric.fix(wcd, "hex"),
+        numeric.fix(reputation, "hex"),
         num_reports,
         num_events
     ];
@@ -897,8 +888,8 @@ augur.loadings = function (iv, wcd, reputation, num_reports, num_events, onSent,
 augur.resolve = function (smooth_rep, reports, scaled, scaled_max, scaled_min, num_reports, num_events, onSent, onSuccess, onFailed) {
     var tx = utilities.copy(this.tx.resolve);
     tx.params = [
-        Augur.abi.fix(smooth_rep, "hex"),
-        Augur.abi.fix(reports, "hex"),
+        numeric.fix(smooth_rep, "hex"),
+        numeric.fix(reports, "hex"),
         scaled,
         scaled_max,
         scaled_min,
@@ -1023,7 +1014,7 @@ augur.setTotalRepReported = function (branch, expDateIndex, repReported, onSent)
 };
 augur.setReporterBallot = function (branch, expDateIndex, reporterID, report, reputation, onSent, onSuccess, onFailed) {
     var tx = utilities.copy(this.tx.setReporterBallot);
-    tx.params = [branch, expDateIndex, reporterID, Augur.abi.fix(report, "hex"), reputation];
+    tx.params = [branch, expDateIndex, reporterID, numeric.fix(report, "hex"), reputation];
     return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
 };
 augur.setVSize = function (branch, expDateIndex, vSize, onSent) {
@@ -1422,7 +1413,7 @@ augur.setTotalReputation = function (branch, votePeriod, totalReputation, onSent
     // votePeriod: integer
     // totalReputation: number -> fixed
     var tx = utilities.copy(this.tx.setTotalReputation);
-    tx.params = [branch, votePeriod, Augur.abi.fix(totalReputation, "hex")];
+    tx.params = [branch, votePeriod, numeric.fix(totalReputation, "hex")];
     return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
 };
 augur.makeBallot = function (branch, votePeriod, onSent) {
@@ -1805,7 +1796,7 @@ augur.report = function (branch, report, votePeriod, salt, onSent, onSuccess, on
         branch = branch.branchId;
     }
     var tx = utilities.copy(this.tx.report);
-    tx.params = [branch, Augur.abi.fix(report, "hex"), votePeriod, salt];
+    tx.params = [branch, numeric.fix(report, "hex"), votePeriod, salt];
     return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
 };
 augur.submitReportHash = function (branch, reportHash, votePeriod, onSent, onSuccess, onFailed) {
@@ -1831,7 +1822,7 @@ augur.checkReportValidity = function (branch, report, votePeriod, onSent, onSucc
         branch = branch.branchId;
     }
     var tx = utilities.copy(this.tx.checkReportValidity);
-    tx.params = [branch, Augur.abi.fix(report, "hex"), votePeriod];
+    tx.params = [branch, numeric.fix(report, "hex"), votePeriod];
     return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
 };
 augur.slashRep = function (branch, votePeriod, salt, report, reporter, onSent, onSuccess, onFailed) {
@@ -1846,7 +1837,7 @@ augur.slashRep = function (branch, votePeriod, salt, report, reporter, onSent, o
         branch = branch.branchId;
     }
     var tx = utilities.copy(this.tx.slashRep);
-    tx.params = [branch, votePeriod, salt, Augur.abi.fix(report, "hex"), reporter];
+    tx.params = [branch, votePeriod, salt, numeric.fix(report, "hex"), reporter];
     return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
 };
 

@@ -4,10 +4,8 @@
 
 "use strict";
 
-var BigNumber = require("bignumber.js");
 var errors = require("./errors");
 var constants = require("./constants");
-var utilities = require("./utilities");
 var numeric = require("./numeric");
 
 module.exports = function (augur) {

@@ -7,4 +7,4 @@ before_script:
   - npm install
   - npm install jshint mocha
 script:
-  - npm test
+  - npm run-script skim
