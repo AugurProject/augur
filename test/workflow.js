@@ -17,7 +17,7 @@ var Mocha = require("mocha");
 var longjohn = require("longjohn");
 var Augur = require("../augur");
 var constants = require("./constants");
-var utilities = require("./utilities");
+var utilities = require("../utilities");
 var log = console.log;
 
 longjohn.async_trace_limit = 25;
@@ -49,7 +49,7 @@ else if (NETWORK_ID === "0") {
 var GETH = path.join(process.env.HOME, "src", "go-ethereum", "build", "bin", "geth");
 
 var DEBUG = false;
-var OFF_WORKFLOW = true;
+var OFF_WORKFLOW = false;
 var AUGUR_CORE = path.join(process.env.HOME, "src", "augur-core");
 var UPLOADER = path.join(AUGUR_CORE, "load_contracts.py");
 var FAUCETS = path.join(__dirname || "", "faucets.js");

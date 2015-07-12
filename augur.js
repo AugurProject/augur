@@ -6,12 +6,14 @@
 "use strict";
 
 var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
+
+var crypto;
 if (NODE_JS) {
-    var crypto = require("crypto");
+    crypto = require("crypto");
     var request = require("sync-request");
     var XHR2 = require("xhr2");
 } else {
-    var crypto = require("crypto-browserify");
+    crypto = require("crypto-browserify");
 }
 var BN = require("bignumber.js");
 var moment = require("moment");
@@ -20,7 +22,7 @@ var keccak_256 = require("js-sha3").keccak_256;
 var EthUtil = require("ethereumjs-util");
 var EthTx = require("ethereumjs-tx");
 var elliptic = require("eccrypto");
-var utilities = require("./test/utilities");
+var utilities = require("./utilities");
 var log = console.log;
 
 BN.config({ MODULO_MODE: BN.EUCLID });

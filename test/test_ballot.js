@@ -9,7 +9,7 @@ var chalk = require("chalk");
 var assert = require("chai").assert;
 var Augur = require("../augur");
 var constants = require("./constants");
-var utilities = require("./utilities");
+var utilities = require("../utilities");
 var log = console.log;
 
 require('it-each')({ testPerIteration: true });

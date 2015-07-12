@@ -27,7 +27,8 @@ constants.accounts = {
     ChrisCalderon: "0x1328affcdf271aaea43e1cd203beede65779401a",
     scottzer0: "0x6fc0a64e2dce367e35417bfd1568fa35af9f3e4b",
     niran: "0xff5938864b2a6414aaa7ab6783c2ea0fb5e3b39f",
-    bassguitarman: "0xa381f37f23cb99ca036997008403ba1366fd8259"
+    bassguitarman: "0xa381f37f23cb99ca036997008403ba1366fd8259",
+    evand: "0xc5f35f38e20e64a61e664a233e195c5377edd5ed"
 };
 constants.enodes = {
     ChrisCalderon: "enode://2c3bf2515ab634f66cea590f1ee8c7d9a5750681b6cb60cd8d24aa28719ac7d8c7f05f68680726331ae7dd55719382ce89ad203ba0f3841693a9d20129053f04@76.14.85.30:30303",

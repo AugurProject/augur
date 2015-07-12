@@ -12,7 +12,7 @@ var EthTx = require("ethereumjs-tx");
 var EthUtil = require("ethereumjs-util");
 var elliptic = require("eccrypto");
 var constants = require("./constants");
-var utilities = require("./utilities");
+var utilities = require("../utilities");
 var Augur = utilities.setup(require("../augur"), process.argv.slice(2));
 var log = console.log;
 
