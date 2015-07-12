@@ -41,7 +41,7 @@ var options = {
 
     // If set to true, all numerical results (excluding hashes)
     // are returned as BigNumber objects
-    BigNumberOnly: false
+    BigNumberOnly: true
 
 };
 
@@ -1924,7 +1924,5 @@ augur.dispatch = function (branch, onSent, onSuccess, onFailed) {
         return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
     }
 };
-
-augur.update_options(options);
 
 module.exports = augur;

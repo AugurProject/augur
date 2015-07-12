@@ -50,7 +50,7 @@ else if (NETWORK_ID === "0") {
 var GETH = path.join(process.env.HOME, "src", "go-ethereum", "build", "bin", "geth");
 
 var DEBUG = false;
-var OFF_WORKFLOW = false;
+var OFF_WORKFLOW = true;
 var AUGUR_CORE = path.join(process.env.HOME, "src", "augur-core");
 var UPLOADER = path.join(AUGUR_CORE, "load_contracts.py");
 var TESTPATH = path.join(__dirname, "..", "test");
