@@ -7,9 +7,9 @@
 
 var assert = require("chai").assert;
 var chalk = require("chalk");
-var constants = require("./constants");
-var utilities = require("../utilities");
-var Augur = utilities.setup(require("../augur"), process.argv.slice(2));
+var constants = require("../src/constants");
+var utilities = require("../src/utilities");
+var Augur = utilities.setup(require("../src/augur"), process.argv.slice(2));
 var log = console.log;
 
 var branch = Augur.branches.dev;
@@ -20,7 +20,7 @@ var amount = "10";
 var block = Augur.blockNumber();
 
 describe("getMarketPriceHistory", function () {
-    it("price history: " + market_id + " outcome " + outcome + " (async)", function (done) {
+    it("price history (async)", function (done) {
         this.timeout(constants.timeout);
         Augur.buyShares({
             branchId: branch,
@@ -31,7 +31,7 @@ describe("getMarketPriceHistory", function () {
 
             },
             onSuccess: function (r) {
-                Augur.getMarketPriceHistory(market_id, outcome, function (price_logs) {
+                Augur.filters.getMarketPriceHistory(market_id, outcome, function (price_logs) {
                     log(price_logs);
                     assert.equal(price_logs.constructor, Array);
                     assert(price_logs.length);
@@ -45,7 +45,7 @@ describe("getMarketPriceHistory", function () {
             }
         });
     });
-    it("price history: " + market_id + " outcome " + outcome + " (sync)", function (done) {
+    it("price history (sync)", function (done) {
         this.timeout(constants.timeout);
         Augur.buyShares({
             branchId: branch,
@@ -56,7 +56,7 @@ describe("getMarketPriceHistory", function () {
 
             },
             onSuccess: function (r) {
-                var price_logs = Augur.getMarketPriceHistory(market_id, outcome);
+                var price_logs = Augur.filters.getMarketPriceHistory(market_id, outcome);
                 log(price_logs);
                 assert.equal(price_logs.constructor, Array);
                 assert(price_logs.length);
@@ -74,9 +74,9 @@ describe("getMarketPriceHistory", function () {
 describe("updatePrice listener", function () {
     it("should return data on buyShares", function (done) {
         this.timeout(constants.timeout);
-        Augur.start_eth_listener("updatePrice", function (filter_id) {
+        Augur.filters.start_eth_listener("updatePrice", function (filter_id) {
             var listener = setInterval(function () {
-                Augur.poll_eth_listener("updatePrice", function (data) {
+                Augur.filters.poll_eth_listener("updatePrice", function (data) {
                     if (data) {
                         log(data);
                         clearInterval(listener);

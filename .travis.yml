@@ -7,6 +7,4 @@ before_script:
   - npm install
   - npm install jshint mocha
 script:
-  - jshint augur.js
-  - mocha test/test_encoder.js
-  - mocha test/test_fixedpoint.js
+  - npm test

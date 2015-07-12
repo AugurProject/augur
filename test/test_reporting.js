@@ -7,15 +7,16 @@
 
 var crypto = require("crypto");
 var assert = require("chai").assert;
-var constants = require("./constants");
-var utilities = require("../utilities");
-var Augur = utilities.setup(require("../augur"), process.argv.slice(2));
+var constants = require("../src/constants");
+var utilities = require("../src/utilities");
+var numeric = require("../src/numeric");
+var Augur = utilities.setup(require("../src/augur"), process.argv.slice(2));
 var log = console.log;
 
 var accounts = utilities.get_test_accounts(Augur, constants.max_test_accounts);
 var branch_id = Augur.branches.dev;
 var reporter_index = "0";
-var ballot = [Augur.YES, Augur.YES, Augur.NO, Augur.YES];
+var ballot = [2, 2, 1, 2];
 var salt = "1337";
 
 describe("data and api/reporting", function () {
@@ -116,11 +117,11 @@ describe("data and api/reporting", function () {
     });
     describe("hashReport([ballot], " + salt + ") ", function () {
         var test = function (r) {
-            var b = Augur.abi.fix(ballot);
+            var b = numeric.fix(ballot);
             for (var i = 0, len = b.length; i < len; ++i) {
                 b[i] = b[i].toString(16);
             }
-            var hashable = [accounts[0], Augur.abi.bignum(salt).toString(16)].concat(b).toString();
+            var hashable = [accounts[0], numeric.bignum(salt).toString(16)].concat(b).toString();
             var hashed = utilities.sha256(hashable);
             // TODO lookup how arrays hashed by evm sha256, this doesn't work
             // assert.equal(r, hashed);

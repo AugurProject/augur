@@ -6,16 +6,17 @@
 "use strict";
 
 var assert = require("chai").assert;
-var constants = require("./constants");
-var utilities = require("../utilities");
-var Augur = utilities.setup(require("../augur"), process.argv.slice(2));
+var constants = require("../src/constants");
+var utilities = require("../src/utilities");
+var numeric = require("../src/numeric");
+var Augur = utilities.setup(require("../src/augur"), process.argv.slice(2));
 var log = console.log;
 
 var amount = "1";
 var branch_id = Augur.branches.dev;
 var accounts = utilities.get_test_accounts(Augur, constants.max_test_accounts);
 var participant_number = "1";
-var outcome = Augur.NO;
+var outcome = 1;
 var markets = Augur.getMarkets(branch_id);
 var market_id = markets[0];
 var event_id = Augur.getMarketEvents(market_id)[0];
@@ -50,7 +51,7 @@ describe("markets.se", function () {
     });
     describe("lsLmsr", function () {
         var test = function (r) {
-            assert(Augur.abi.bignum(r).toNumber() > 0);
+            assert(numeric.bignum(r).toNumber() > 0);
         };
         it("sync", function () {
             test(Augur.lsLmsr(market_id));
@@ -61,41 +62,20 @@ describe("markets.se", function () {
             });
         });
     });
-    // describe("getMarketInfo", function () {
-    //     var marketInfo = Augur.getMarketInfo(market_id);
-    //     it("should have 2 outcomes", function () {
-    //         assert.equal("2", marketInfo.numOutcomes);
-    //     });
-    //     it("should have description '" + market_info_1.description + "'", function () {
-    //         assert.equal(market_info_1.description, marketInfo.description);
-    //     });
-    // });
-    // describe("getMarketInfo(" + market_id + ")", function () {
-    //     var test = function (r) {
-    //         assert.equal(r.description, market_info_1.description);
-    //     };
-    //     it("sync", function () {
-    //         test(Augur.getMarketInfo(market_id));
-    //     });
-    //     it("async", function (done) {
-    //         Augur.getMarketInfo(market_id, function (r) {
-    //             test(r); done();
-    //         });
-    //     });
-    // });
-    // describe("getMarketInfo(" + market_id2 + ")", function () {
-    //     var test = function (r) {
-    //         assert.equal(r.description, market_info_2.description);
-    //     };
-    //     it("sync", function () {
-    //         test(Augur.getMarketInfo(market_id2));
-    //     });
-    //     it("async", function (done) {
-    //         Augur.getMarketInfo(market_id2, function (r) {
-    //             test(r); done();
-    //         });
-    //     });
-    // });
+    describe("getMarketInfo(" + market_id + ")", function () {
+        var test = function (r) {
+            assert.equal(r.constructor, Array);
+            assert(r.length >= 6);
+        };
+        it("sync", function () {
+            test(Augur.getMarketInfo(market_id));
+        });
+        it("async", function (done) {
+            Augur.getMarketInfo(market_id, function (r) {
+                test(r); done();
+            });
+        });
+    });
     describe("getMarketEvents(" + market_id + ")", function () {
         function test(r) {
             assert.equal(r.constructor, Array);

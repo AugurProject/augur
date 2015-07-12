@@ -6,20 +6,20 @@
 "use strict";
 
 var assert = require("chai").assert;
-var Augur = require("../augur");
+var Augur = require("../src/augur");
 var log = console.log;
 
 require('it-each')({ testPerIteration: true });
 
-Augur = require("./utilities").setup(Augur, process.argv.slice(2));
+Augur = require("../src/utilities").setup(Augur, process.argv.slice(2));
 
 var EXPIRING = false;
 var TIMEOUT = 240000;
 var events = [
-    ["Will the Sun turn into a red giant and engulf the Earth by the end of 2015?", Augur.date_to_block("1-1-2016")],
-    ["Will Rand Paul win the 2016 U.S. Presidential Election?", Augur.date_to_block("1-2-2017")],
-    ["Will it rain in New York City on November 12, 2015?", Augur.date_to_block("11-13-2015")],
-    ["Will the Larsen B ice shelf collapse by November 1, 2015?", Augur.date_to_block("11-2-2015")]
+    ["Will the Sun turn into a red giant and engulf the Earth by the end of 2015?", utilities.date_to_block("1-1-2016")],
+    ["Will Rand Paul win the 2016 U.S. Presidential Election?", utilities.date_to_block("1-2-2017")],
+    ["Will it rain in New York City on November 12, 2015?", utilities.date_to_block("11-13-2015")],
+    ["Will the Larsen B ice shelf collapse by November 1, 2015?", utilities.date_to_block("11-2-2015")]
 ];
 
 describe("functions/createMarket", function () {

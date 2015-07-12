@@ -6,11 +6,11 @@
 "use strict";
 
 var assert = require("chai").assert;
-var Augur = require("../augur");
-var constants = require("./constants");
+var Augur = require("../src/augur");
+var constants = require("../src/constants");
 var log = console.log;
 
-Augur = require("./utilities").setup(Augur, process.argv.slice(2));
+Augur = require("../src/utilities").setup(Augur, process.argv.slice(2));
 
 require('it-each')({ testPerIteration: true });
 

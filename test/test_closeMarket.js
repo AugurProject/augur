@@ -7,10 +7,10 @@
 
 var assert = require("chai").assert;
 var chalk = require("chalk");
-var Augur = require("../augur");
+var Augur = require("../src/augur");
 require('it-each')({ testPerIteration: true });
 
-Augur = require("./utilities").setup(Augur, process.argv.slice(2));
+Augur = require("../src/utilities").setup(Augur, process.argv.slice(2));
 
 var log = console.log;
 var TIMEOUT = 120000;

@@ -9,11 +9,11 @@ var fs = require("fs");
 var assert = require("assert");
 var async = require("async");
 var chalk = require("chalk");
-var Augur = require("../augur");
+var Augur = require("../src/augur");
 var log = console.log;
 require('it-each')({ testPerIteration: true });
 
-Augur = require("./utilities").setup(Augur, process.argv.slice(2));
+Augur = require("../src/utilities").setup(Augur, process.argv.slice(2));
 
 var TIMEOUT = 5000;
 

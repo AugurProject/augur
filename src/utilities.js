@@ -5,42 +5,66 @@ var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 var fs = require("fs");
 var path = require("path");
 var assert = (NODE_JS) ? require("assert") : console.assert;
-var BN = require("bignumber.js");
+var crypto;
+if (NODE_JS) {
+    crypto = require("crypto");
+} else {
+    crypto = require("crypto-browserify");
+}
+var BigNumber = require("bignumber.js");
 var chalk = require("chalk");
+var constants = require("./constants");
 var log = console.log;
 
 var utilities = {};
+
+// calculate date from block number
+utilities.block_to_date = function (block) {
+    var current_block = this.blockNumber();
+    var seconds = (block - current_block) * constants.SECONDS_PER_BLOCK;
+    var date = moment().add(seconds, 'seconds');
+    return date;
+};
+
+// calculate block number from date
+utilities.date_to_block = function (date) {
+    date = moment(new Date(date));
+    var current_block = this.blockNumber();
+    var now = moment();
+    var seconds_delta = date.diff(now, 'seconds');
+    var block_delta = parseInt(seconds_delta / constants.SECONDS_PER_BLOCK);
+    return current_block + block_delta;
+};
+
+utilities.has_value = function (o, v) {
+    for (var p in o) {
+        if (o.hasOwnProperty(p)) {
+            if (o[p] === v) return p;
+        }
+    }
+};
 
 utilities.setup = function (augur, args) {
     if (NODE_JS && args.length && (args[0] === "--gospel" ||
         (args.length > 1 && args[1] === "--gospel") ||
         args[0] === "--reset" || args[0] === "--postupload" ||
         args[0] === "--faucets" || args[0] === "--ballots")) {
-        var gospel, contracts;
-        if (path.parse(__dirname).base === "augur.js") {
-            gospel = path.join(__dirname, "test", "gospel.json");
-        } else {
-            gospel = path.join(__dirname, "gospel.json");
-        }
+        var gospel = path.join(__dirname, "..", "test", "gospel.json");
         log("Load contracts from file: " + chalk.green(gospel));
-        contracts = fs.readFileSync(gospel);
+        var contracts = fs.readFileSync(gospel);
         augur.contracts = JSON.parse(contracts);
     }
     augur.connect();
     return augur;
 };
 
-utilities.reset = function (module) {
-    if (path.parse(__dirname).base === "augur.js") {
-        module = path.join(__dirname, path.parse(module).name);
-    } else {
-        module = path.join(__dirname, module);
-    }
-    delete require.cache[require.resolve(module)];
-    return require(module);
+utilities.reset = function (mod) {
+    mod = path.join(__dirname, path.parse(mod).name);
+    delete require.cache[require.resolve(mod)];
+    return require(mod);
 };
 
-utilities.gteq0 = function (n) { return (new BN(n)).toNumber() >= 0; };
+utilities.gteq0 = function (n) { return (new BigNumber(n)).toNumber() >= 0; };
 
 utilities.print_matrix = function (m) {
     for (var i = 0, rows = m.length; i < rows; ++i) {
@@ -169,7 +193,7 @@ utilities.fold = function (arr, num_cols) {
 };
 
 utilities.prefix_hex = function (n) {
-    if (n.constructor === Number || n.constructor === BN) {
+    if (n.constructor === Number || n.constructor === BigNumber) {
         n = n.toString(16);
     }
     if (n.slice(0,2) !== "0x" && n.slice(0,3) !== "-0x") {
@@ -207,7 +231,7 @@ utilities.get_balances = function (augur, account, branch) {
         return {
             cash: augur.getCashBalance(account),
             reputation: augur.getRepBalance(branch || augur.branches.dev, account),
-            ether: augur.numeric.bignum(augur.balance(account)).dividedBy(augur.ETHER).toFixed()
+            ether: augur.numeric.bignum(augur.balance(account)).dividedBy(constants.ETHER).toFixed()
         };
     }
 };
@@ -243,7 +267,7 @@ utilities.chunk32 = function (string, stride) {
 };
 
 utilities.sha256 = function (x) {
-    return "0x" + require("crypto").createHash("sha256").update(x).digest("hex");
+    return crypto.createHash("sha256").update(x).digest("hex");
 };
 
 module.exports = utilities;

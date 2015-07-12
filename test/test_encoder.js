@@ -6,18 +6,19 @@
 "use strict";
 
 var assert = require("chai").assert;
-var Augur = require("../augur");
-var constants = require("./constants");
+var Augur = require("../src/augur");
+var constants = require("../src/constants");
+var numeric = require("../src/numeric");
 var coder = require("./solidity/coder");
 var log = console.log;
 
 describe("Hex/ASCII conversion", function () {
     var test = function (t) {
         it("should convert " + t.hex + " to " + t.ascii, function () {
-            assert.equal(Augur.abi.decode_hex(t.hex, true), t.ascii);
+            assert.equal(numeric.decode_hex(t.hex, true), t.ascii);
         });
-        it("should convert " + t.ascii + " to " + Augur.abi.remove_trailing_zeros(t.hex.slice(130)), function () {
-            assert.equal(Augur.abi.encode_hex(t.ascii), Augur.abi.remove_trailing_zeros(t.hex.slice(130)));
+        it("should convert " + t.ascii + " to " + numeric.remove_trailing_zeros(t.hex.slice(130)), function () {
+            assert.equal(numeric.encode_hex(t.ascii), numeric.remove_trailing_zeros(t.hex.slice(130)));
         });
     };
     test({
@@ -118,7 +119,7 @@ describe("Contract ABI data serialization", function () {
                 encoded = Augur.abi.encode(tx);
                 solcoded = coder.encodeParams(types, [params]);
                 assert.equal(encoded, expected);
-                assert.equal(encoded, Augur.abi.get_prefix(method, signature) + solcoded);
+                assert.equal(encoded, Augur.abi.abi_prefix(method, signature) + solcoded);
             });
         };
 
@@ -161,7 +162,7 @@ describe("Contract ABI data serialization", function () {
             tx.params = [
                 Augur.branches.alpha,
                 constants.accounts.scottzer0,
-                Augur.abi.fix("5").toFixed()
+                numeric.fix("5").toFixed()
             ];
             var expected = "0xa677135c"+
                 "00000000000000000000000000000000000000000000000000000000000f69b5"+

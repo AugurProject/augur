@@ -10,7 +10,8 @@ var fs = require("fs");
 var path = require("path");
 var chalk = require("chalk");
 var longjohn = require("longjohn");
-var Augur = require("../augur");
+var numeric = require("../src/numeric");
+var Augur = require("../src/augur");
 var log = console.log;
 
 // var gospel = require("path").join(__dirname, "gospel.json");
@@ -37,7 +38,7 @@ var price = Augur.price(market_id, outcome);
 var cost = Augur.getSimulatedBuy(market_id, outcome, amount);
 var initial_cash = Augur.getCashBalance(Augur.coinbase);
 var initial_rep = Augur.getRepBalance(branch, Augur.coinbase);
-var initial_ether = Augur.abi.bignum(Augur.balance(Augur.coinbase)).dividedBy(Augur.ETHER).toFixed();
+var initial_ether = numeric.bignum(Augur.balance(Augur.coinbase)).dividedBy(constants.ETHER).toFixed();
 var amount = "100";
 
 log(chalk.cyan("Initial balances:"));
@@ -50,8 +51,8 @@ log("Market:  " + chalk.green(market_id));
 log("Event:   " + chalk.green(event_id));
 log("Outcome: " + chalk.green(outcome));
 log("Buy:     " + chalk.green(amount) + chalk.gray(" shares"));
-log("Price:   " + chalk.green(Augur.abi.bignum(price).toFixed()) + chalk.gray(" CASH/share"));
-log("Cost:    " + chalk.green(Augur.abi.fix(cost, "string")) + chalk.gray(" CASH"));
+log("Price:   " + chalk.green(numeric.bignum(price).toFixed()) + chalk.gray(" CASH/share"));
+log("Cost:    " + chalk.green(numeric.fix(cost, "string")) + chalk.gray(" CASH"));
 
 Augur.buyShares({
     branchId: branch,
@@ -61,12 +62,12 @@ Augur.buyShares({
     onSent: function (r) {
         log(chalk.cyan("\nResponse:"));
         log("txhash: ", chalk.green(r.txHash));
-        log("return: ", chalk.green(Augur.abi.unfix(r.callReturn, "string")));
+        log("return: ", chalk.green(numeric.unfix(r.callReturn, "string")));
     },
     onSuccess: function (r) {
         var final_cash = Augur.getCashBalance(Augur.coinbase);
         var final_rep = Augur.getRepBalance(branch, Augur.coinbase);
-        var final_ether = Augur.abi.bignum(Augur.balance(Augur.coinbase)).dividedBy(Augur.ETHER).toFixed();
+        var final_ether = numeric.bignum(Augur.balance(Augur.coinbase)).dividedBy(constants.ETHER).toFixed();
         log(chalk.cyan("\nFinal balances:"));
         log("CASH:   ", chalk.green(final_cash));
         log("REP:    ", chalk.green(final_rep));

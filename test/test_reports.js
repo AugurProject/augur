@@ -9,10 +9,10 @@ var fs = require("fs");
 var path = require("path");
 var BigNumber = require("bignumber.js");
 var assert = require("chai").assert;
-var Augur = require("../augur");
-var constants = require("./constants");
+var Augur = require("../src/augur");
+var constants = require("../src/constants");
 
-Augur = require("./utilities").setup(Augur, process.argv.slice(2));
+Augur = require("../src/utilities").setup(Augur, process.argv.slice(2));
 
 var log = console.log;
 var TIMEOUT = 120000;

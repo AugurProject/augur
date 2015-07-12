@@ -4,7 +4,8 @@
 
 var assert = require("chai").assert;
 var chalk = require("chalk");
-var Augur = require("../augur");
+var Augur = require("../src/augur");
+var numeric = require("../src/numeric");
 var log = console.log;
 
 Augur = require("./utilities").setup(Augur, process.argv.slice(2));
@@ -30,7 +31,7 @@ Augur.reputationFaucet(
     }
 );
 
-if (Augur.abi.bignum(Augur.getCashBalance(Augur.coinbase)).toNumber() === 0) {
+if (numeric.bignum(Augur.getCashBalance(Augur.coinbase)).toNumber() === 0) {
     Augur.cashFaucet(
         function (r) {
             // sent

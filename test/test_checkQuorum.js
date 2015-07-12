@@ -6,10 +6,10 @@
 "use strict";
 
 var assert = require("chai").assert;
-var Augur = require("../augur");
+var Augur = require("../src/augur");
 var log = console.log;
 
-Augur = require("./utilities").setup(Augur, process.argv.slice(2));
+Augur = require("../src/utilities").setup(Augur, process.argv.slice(2));
 
 var branch_id = Augur.branches.dev;
 

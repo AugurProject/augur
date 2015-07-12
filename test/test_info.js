@@ -6,9 +6,9 @@
 "use strict";
 
 var assert = require("chai").assert;
-var Augur = require("../augur");
-var constants = require("./constants");
-var utilities = require("../utilities");
+var Augur = require("../src/augur");
+var constants = require("../src/constants");
+var utilities = require("../src/utilities");
 var log = console.log;
 
 Augur = utilities.setup(Augur, process.argv.slice(2));

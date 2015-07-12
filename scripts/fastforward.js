@@ -8,12 +8,8 @@
 
 var chalk = require("chalk");
 var assert = require("chai").assert;
-var Augur = require("../augur");
-
-Augur = require("./utilities").setup(Augur, process.argv.slice(2));
-
 var log = console.log;
-var TIMEOUT = 120000;
+var Augur = require("./utilities").setup(require("../src/augur"), process.argv.slice(2));
 
 function check_quorum() {
     Augur.checkQuorum(branch,

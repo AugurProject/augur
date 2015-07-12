@@ -10,17 +10,17 @@ var assert = require("chai").assert;
 var chalk = require("chalk");
 var EthTx = require("ethereumjs-tx");
 var EthUtil = require("ethereumjs-util");
-var elliptic = require("eccrypto");
-var constants = require("./constants");
-var utilities = require("../utilities");
-var Augur = utilities.setup(require("../augur"), process.argv.slice(2));
+var eccrypto = require("eccrypto");
+var constants = require("../src/constants");
+var utilities = require("../src/utilities");
+var Augur = utilities.setup(require("../src/augur"), process.argv.slice(2));
 var log = console.log;
 
 // create private key, get public key and address
 var privateKey = crypto.randomBytes(32);
 
 describe("Accounts", function () {
-    var publicKey = elliptic.getPublic(privateKey);
+    var publicKey = eccrypto.getPublic(privateKey);
     var address = EthUtil.pubToAddress(publicKey).toString("hex");
 
     // user specified handle and password
@@ -39,13 +39,7 @@ describe("Accounts", function () {
         var decryptedPrivateKey = decipher.update(encryptedPrivateKey, "base64", "hex");
         decryptedPrivateKey += decipher.final("hex");
         assert.equal(decryptedPrivateKey, privateKey.toString("hex"));
-    });
-    
-    // log("Private key:  ", chalk.green(privateKey.toString("hex")));
-    // log("Address:      ", chalk.green(address));
-    // log("Handle:       ", chalk.red(handle));
-    // log("Password:     ", chalk.red(password));
-    // log("Encrypted key:", chalk.cyan(encryptedPrivateKey));
+    });    
 });
 
 describe("Transactions", function () {
@@ -99,12 +93,10 @@ describe("Transactions", function () {
         //     + 500 Default transaction fee
         //     + gasAmount * gasPrice
         assert.equal(tx.getUpfrontCost().toString(), "100000");
-
-        // log("Serialized tx:", chalk.green(tx.serialize().toString("hex")));
-        // log("Total fee:    ", chalk.green(tx.getUpfrontCost().toString()), chalk.gray("wei"));
     });
 
     // decode incoming tx using rlp: rlp.decode(itx)
+    // (also need to check sender's account to see if they have at least amount of the fee)
     it("should verify sender's signature", function () {
         var rawTx = [
             "00",
@@ -120,10 +112,7 @@ describe("Transactions", function () {
         var tx2 = new EthTx(rawTx);
         var sender = "1f36f546477cda21bf2296c50976f2740247906f";
         assert.equal(tx2.getSenderAddress().toString("hex"), sender);
-        assert(tx2.verifySignature());
-        
-        // also need to check sender's account to see if they have at least amount of the fee
-        // log("Sender:        " + chalk.green(tx2.getSenderAddress().toString("hex")));
+        assert(tx2.verifySignature());        
     });
 
 });
@@ -131,8 +120,8 @@ describe("Transactions", function () {
 describe("Web client", function () {
 
     // generate random handle and password
-    var handle = utilities.sha256(new Date().toString()).slice(2);
-    var password = utilities.sha256(Math.random().toString(36).substring(4)).slice(2);
+    var handle = utilities.sha256(new Date().toString());
+    var password = utilities.sha256(Math.random().toString(36).substring(4));
 
     var handle2 = utilities.sha256(new Date().toString()).slice(10);
     var password2 = utilities.sha256(Math.random().toString(36).substring(4)).slice(10);
@@ -180,38 +169,21 @@ describe("Web client", function () {
 
     it("should fail with error 403 when given an incorrect handle", function () {
         this.timeout(constants.timeout);
-        var bad_handle = utilities.sha256(new Date().toString()).slice(2);
+        var bad_handle = utilities.sha256(new Date().toString());
         assert.equal(Augur.web.login(bad_handle, password).error, 403);
     });
 
     it("should fail with error 403 when given an incorrect password", function () {
         this.timeout(constants.timeout);
-        var bad_password = utilities.sha256(Math.random().toString(36).substring(4)).slice(2);
+        var bad_password = utilities.sha256(Math.random().toString(36).substring(4));
         assert.equal(Augur.web.login(handle, bad_password).error, 403);
     });
 
     it("should fail with error 403 when given an incorrect handle and an incorrect password", function () {
         this.timeout(constants.timeout);
-        var bad_handle = utilities.sha256(new Date().toString()).slice(2);
-        var bad_password = utilities.sha256(Math.random().toString(36).substring(4)).slice(2);
+        var bad_handle = utilities.sha256(new Date().toString());
+        var bad_password = utilities.sha256(Math.random().toString(36).substring(4));
         assert.equal(Augur.web.login(handle, bad_password).error, 403);
-    });
-
-    it("send 32 ether to account 1 using pay, then to account 2 using web.pay.ether", function (done) {
-        this.timeout(constants.timeout*2);
-        Augur.pay(Augur.web.db.get(handle).address, 64, Augur.coinbase,
-            function (r) {
-                // sent
-            },
-            function (r) {
-                Augur.web.pay.ether(handle2, 32);
-                done();
-            },
-            function (r) {
-                throw new Error(r);
-                done();
-            }
-        );
     });
 
     it("should successfully call the getBranches method", function () {
@@ -221,6 +193,23 @@ describe("Web client", function () {
         assert(branches.length);
         assert.equal(branches.constructor, Array);
         assert.equal(branches[0], Augur.branches.dev);
+    });
+
+    it("send ether to account 1 using sendEther, then to account 2 using web.sendEther", function (done) {
+        this.timeout(constants.timeout*2);
+        Augur.sendEther(Augur.web.db.get(handle).address, 64, Augur.coinbase,
+            function (r) {
+                // sent
+            },
+            function (r) {
+                Augur.web.sendEther(handle2, 32);
+                done();
+            },
+            function (r) {
+                throw new Error(r);
+                done();
+            }
+        );
     });
 
     it("should sign and send transaction to geth using account 1", function () {

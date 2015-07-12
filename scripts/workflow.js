@@ -15,9 +15,10 @@ var rm = require("rimraf");
 var chalk = require("chalk");
 var Mocha = require("mocha");
 var longjohn = require("longjohn");
-var Augur = require("../augur");
-var constants = require("./constants");
-var utilities = require("../utilities");
+var Augur = require("../src/augur");
+var constants = require("../src/constants");
+var utilities = require("../src/utilities");
+var numeric = require("../src/numeric");
 var log = console.log;
 
 longjohn.async_trace_limit = 25;
@@ -52,6 +53,7 @@ var DEBUG = false;
 var OFF_WORKFLOW = false;
 var AUGUR_CORE = path.join(process.env.HOME, "src", "augur-core");
 var UPLOADER = path.join(AUGUR_CORE, "load_contracts.py");
+var TESTPATH = path.join(__dirname, "..", "test");
 var FAUCETS = path.join(__dirname || "", "faucets.js");
 var GOSPEL = "gospel.json";
 var CUSTOM_GOSPEL = false;
@@ -81,7 +83,7 @@ var geth_flags = [
     "--bootnodes", enodes,
     "--password", path.join(DATADIR, ".password")
 ];
-var gospel_json = path.join(__dirname || "", GOSPEL);
+var gospel_json = path.join(TESTPATH, GOSPEL);
 var verified_accounts = false;
 var check_connection;
 
@@ -129,7 +131,7 @@ function spawn_geth(flags) {
 }
 
 function mine_minimum_ether(geth, account, next) {
-    var balance = Augur.abi.bignum(Augur.balance(account)).dividedBy(Augur.ETHER).toNumber();
+    var balance = numeric.bignum(Augur.balance(account)).dividedBy(constants.ETHER).toNumber();
     if (balance < MINIMUM_ETHER) {
         if (balance > 0) {
             log(chalk.green(balance) + chalk.gray(" ETH, waiting for ") +
@@ -208,7 +210,7 @@ function display_outputs(geth) {
 function setup_mocha_tests(tests) {
     var mocha = new Mocha();
     for (var i = 0, len = tests.length; i < len; ++i) {
-        mocha.addFile(path.join(__dirname || "", "test_" + tests[i] + ".js"));
+        mocha.addFile(path.join(TESTPATH, "test_" + tests[i] + ".js"));
     }
     return mocha;
 }
@@ -301,7 +303,7 @@ function faucets(geth) {
     setTimeout(function () {
         var cash_balance = Augur.getCashBalance(Augur.coinbase);
         var rep_balance = Augur.getRepBalance(Augur.branches.dev, Augur.coinbase);
-        var ether_balance = Augur.abi.bignum(Augur.balance(Augur.coinbase)).dividedBy(Augur.ETHER).toFixed();
+        var ether_balance = numeric.bignum(Augur.balance(Augur.coinbase)).dividedBy(constants.ETHER).toFixed();
         log(chalk.cyan("\nBalances:"));
         log("Cash:       " + chalk.green(cash_balance));
         log("Reputation: " + chalk.green(rep_balance));
@@ -353,7 +355,8 @@ function upload_contracts(geth) {
         if (code !== 0) {
             log(chalk.red.bold("Uploader closed with code " + code));
         } else {
-            cp.exec(path.join(AUGUR_CORE, "generate_gospel.py -j"), function (err, stdout) {
+            var gospelcmd = path.join(AUGUR_CORE, "generate_gospel.py -j");
+            cp.exec(gospelcmd, function (err, stdout) {
                 if (err) throw err;
                 log("Write contract addresses to " + chalk.green(gospel_json) + "...");
                 fs.writeFileSync(gospel_json, stdout.toString());
@@ -417,7 +420,7 @@ function check_connection(geth, account, callback, next, count) {
         } else {
             var balance = Augur.balance(account);
             if (balance && !balance.error) {
-                balance = Augur.abi.bignum(balance).dividedBy(Augur.ETHER).toFixed();
+                balance = numeric.bignum(balance).dividedBy(constants.ETHER).toFixed();
                 log("Connected on account", chalk.cyan(account));
                 log(chalk.green(Augur.blockNumber()), chalk.gray("blocks"));
                 log(chalk.green(balance), chalk.gray("ETH"));
