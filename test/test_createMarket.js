@@ -6,7 +6,7 @@
 "use strict";
 
 var assert = require("chai").assert;
-var Augur = require("../src/augur");
+var Augur = require("../src");
 var log = console.log;
 
 require('it-each')({ testPerIteration: true });

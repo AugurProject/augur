@@ -4,7 +4,7 @@
 
 var fs = require("fs");
 var path = require("path");
-var Augur = require("../src/augur");
+var Augur = require("../src");
 
 Augur = require("../src/utilities").setup(Augur, process.argv.slice(2));
 

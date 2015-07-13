@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var Augur = require("../src/augur");
+var Augur = require("../src");
 var utilities = require("../src/utilities");
 
 Augur = utilities.setup(Augur, process.argv.slice(2));

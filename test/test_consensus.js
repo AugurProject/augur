@@ -9,7 +9,7 @@ var fs = require("fs");
 var path = require("path");
 var assert = require("chai").assert;
 var _ = require("lodash");
-var Augur = require("../src/augur");
+var Augur = require("../src");
 require('it-each')({ testPerIteration: true });
 
 Augur = require("../src/utilities").setup(Augur, process.argv.slice(2));

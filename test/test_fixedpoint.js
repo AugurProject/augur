@@ -7,7 +7,7 @@
 
 var BN = require("bignumber.js");
 var assert = require("chai").assert;
-var Augur = require("../src/augur");
+var Augur = require("../src");
 var constants = require("../src/constants");
 var numeric = require("../src/numeric");
 var log = console.log;

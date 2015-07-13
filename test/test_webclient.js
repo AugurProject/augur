@@ -13,7 +13,7 @@ var EthUtil = require("ethereumjs-util");
 var eccrypto = require("eccrypto");
 var constants = require("../src/constants");
 var utilities = require("../src/utilities");
-var Augur = utilities.setup(require("../src/augur"), process.argv.slice(2));
+var Augur = utilities.setup(require("../src"), process.argv.slice(2));
 var log = console.log;
 
 // create private key, get public key and address

@@ -9,7 +9,7 @@
 var chalk = require("chalk");
 var assert = require("chai").assert;
 var log = console.log;
-var Augur = require("../src/utilities").setup(require("../src/augur"), process.argv.slice(2));
+var Augur = require("../src/utilities").setup(require("../src"), process.argv.slice(2));
 
 function check_quorum() {
     Augur.checkQuorum(branch,

@@ -9,7 +9,7 @@ var fs = require("fs");
 var path = require("path");
 var BigNumber = require("bignumber.js");
 var assert = require("chai").assert;
-var Augur = require("../src/augur");
+var Augur = require("../src");
 var constants = require("../src/constants");
 
 Augur = require("../src/utilities").setup(Augur, process.argv.slice(2));

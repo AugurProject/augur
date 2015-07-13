@@ -11,7 +11,7 @@ var path = require("path");
 var chalk = require("chalk");
 var longjohn = require("longjohn");
 var numeric = require("../src/numeric");
-var Augur = require("../src/augur");
+var Augur = require("../src");
 var log = console.log;
 
 // var gospel = require("path").join(__dirname, "gospel.json");

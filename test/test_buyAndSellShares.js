@@ -9,7 +9,7 @@ var fs = require("fs");
 var assert = require("assert");
 var async = require("async");
 var chalk = require("chalk");
-var Augur = require("../src/augur");
+var Augur = require("../src");
 var log = console.log;
 require('it-each')({ testPerIteration: true });
 

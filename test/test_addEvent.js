@@ -7,7 +7,7 @@
 
 var fs = require("fs");
 var assert = require("assert");
-var Augur = require("../src/augur");
+var Augur = require("../src");
 var constants = require("../src/constants");
 require('it-each')({ testPerIteration: true });
 

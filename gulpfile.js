@@ -1,7 +1,10 @@
+"use strict";
+
 var browserify = require("browserify");
 var gulp = require("gulp");
 var source = require("vinyl-source-stream");
 var buffer = require("vinyl-buffer");
+var rename = require("gulp-rename");
 var uglify = require("gulp-uglify");
 var sourcemaps = require("gulp-sourcemaps");
 var gutil = require("gulp-util");
@@ -9,7 +12,7 @@ var gutil = require("gulp-util");
 gulp.task("default", function () {
 
     var b = browserify({
-        entries: "./src/augur.js",
+        entries: "./src/index.js",
         debug: true
     });
 
@@ -21,4 +24,5 @@ gulp.task("default", function () {
             .on("error", gutil.log)
         .pipe(sourcemaps.write("./"))
         .pipe(gulp.dest("./dist/"));
+
 });

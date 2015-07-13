@@ -9,7 +9,7 @@ var assert = require("chai").assert;
 var constants = require("../src/constants");
 var utilities = require("../src/utilities");
 var numeric = require("../src/numeric");
-var Augur = utilities.setup(require("../src/augur"), process.argv.slice(2));
+var Augur = utilities.setup(require("../src"), process.argv.slice(2));
 var log = console.log;
 
 var amount = "1";

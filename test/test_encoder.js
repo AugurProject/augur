@@ -6,7 +6,7 @@
 "use strict";
 
 var assert = require("chai").assert;
-var Augur = require("../src/augur");
+var Augur = require("../src");
 var constants = require("../src/constants");
 var numeric = require("../src/numeric");
 var coder = require("./solidity/coder");

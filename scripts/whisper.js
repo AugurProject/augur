@@ -1,4 +1,4 @@
-var Augur = require("../src/augur");
+var Augur = require("../src");
 
 function test_whisper() {
     var comment_text = Math.random().toString(36).substring(4);

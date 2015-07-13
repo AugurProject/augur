@@ -19,7 +19,9 @@ module.exports = function (options) {
 
         BigNumberOnly: options.BigNumberOnly,
 
-        RPC: options.RPC,
+        url: options.RPC,
+
+        nodes: [options.RPC].concat(options.nodes),
 
         id: 1,
 
@@ -174,65 +176,76 @@ module.exports = function (options) {
             return returns;
         },
 
-        /**
-         * Post JSON-RPC command to Ethereum client
-         */
-
-        json_rpc: function (command, callback) {
-            var protocol, host, port, rpc_url, num_commands, returns, req;
-            req = null;
-            protocol = this.RPC.protocol || "http";
-            host = this.RPC.host || "127.0.0.1";
-            port = this.RPC.port || "8545";
-            rpc_url = protocol + "://" + host + ":" + port;
-            if (command.constructor === Array) {
-                num_commands = command.length;
-                returns = new Array(num_commands);
-                for (var i = 0; i < num_commands; ++i) {
-                    returns[i] = this.strip_returns(command[i]);
-                }
-            } else {
-                returns = this.strip_returns(command);
-            }
+        postSync: function (rpc_url, command, returns) {
+            var req = null;
             if (NODE_JS) {
-                // asynchronous if callback exists
-                if (callback && callback.constructor === Function) {
-                    req = new XHR2();
-                    req.onreadystatechange = function () {
-                        if (req.readyState === 4) {
-                            this.parse(req.responseText, returns, callback);
-                        }
-                    }.bind(this);
-                    req.open("POST", rpc_url, true);
-                    req.setRequestHeader("Content-type", "application/json");
-                    req.send(JSON.stringify(command));
-                } else {
-                    return this.parse(request('POST', rpc_url, {
-                        json: command
-                    }).getBody().toString(), returns);
-                }
+                return this.parse(request('POST', rpc_url, {
+                    json: command
+                }).getBody().toString(), returns);
             } else {
-                command = JSON.stringify(command);
                 if (window.XMLHttpRequest) {
                     req = new window.XMLHttpRequest();
                 } else {
                     req = new window.ActiveXObject("Microsoft.XMLHTTP");
                 }
-                // asynchronous if callback exists
-                if (callback && callback.constructor === Function) {
-                    req.onreadystatechange = function () {
-                        if (req.readyState === 4) {
-                            this.parse(req.responseText, returns, callback);
-                        }
-                    }.bind(this);
-                    req.open("POST", rpc_url, true);
-                    req.setRequestHeader("Content-type", "application/json");
-                    req.send(command);
+                req.open("POST", rpc_url, false);
+                req.setRequestHeader("Content-type", "application/json");
+                req.send(command);
+                return this.parse(req.responseText, returns);
+            }
+        },
+
+        post: function (rpc_url, command, returns, callback) {
+            var req = null;
+            if (NODE_JS) {
+                req = new XHR2();
+            } else {
+                if (window.XMLHttpRequest) {
+                    req = new window.XMLHttpRequest();
                 } else {
-                    req.open("POST", rpc_url, false);
-                    req.setRequestHeader("Content-type", "application/json");
-                    req.send(command);
-                    return this.parse(req.responseText, returns);
+                    req = new window.ActiveXObject("Microsoft.XMLHTTP");
+                }
+            }
+            req.onreadystatechange = function () {
+                if (req.readyState === 4) {
+                    this.parse(req.responseText, returns, callback);
+                }
+            }.bind(this);
+            req.open("POST", rpc_url, true);
+            req.setRequestHeader("Content-type", "application/json");
+            req.send(command);
+        },
+
+        // Post JSON-RPC command to Ethereum node
+        json_rpc: function (command, callback) {
+            var i, j, num_nodes, num_commands, returns, result;
+
+            num_nodes = this.nodes.length;
+
+            // parse batched commands and strip "returns" fields
+            if (command.constructor === Array) {
+                num_commands = command.length;
+                returns = new Array(num_commands);
+                for (i = 0; i < num_commands; ++i) {
+                    returns[i] = this.strip_returns(command[i]);
+                }
+            } else {
+                returns = this.strip_returns(command);
+            }
+
+            // asynchronous request if callback exists
+            if (callback && callback.constructor === Function) {
+                command = JSON.stringify(command);
+                for (j = 0; j < num_nodes; ++j) {
+                    this.post(this.nodes[j], command, returns, callback);
+                }
+
+            // use synchronous http if no callback provided
+            } else {
+                if (!NODE_JS) command = JSON.stringify(command);
+                for (j = 0; j < num_nodes; ++j) {
+                    result = this.postSync(this.nodes[j], command, returns);
+                    if (result && result !== "0x") return result;
                 }
             }
         },

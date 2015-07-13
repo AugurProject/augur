@@ -45,17 +45,21 @@ utilities.has_value = function (o, v) {
     }
 };
 
-utilities.setup = function (augur, args) {
-    if (NODE_JS && args.length && (args[0] === "--gospel" ||
+utilities.setup = function (augur, args, rpcinfo) {
+    var connected, gospel, contracts;
+    if (NODE_JS && args && args.length && (args[0] === "--gospel" ||
         (args.length > 1 && args[1] === "--gospel") ||
         args[0] === "--reset" || args[0] === "--postupload" ||
         args[0] === "--faucets" || args[0] === "--ballots")) {
-        var gospel = path.join(__dirname, "..", "test", "gospel.json");
+        gospel = path.join(__dirname, "..", "test", "gospel.json");
         log("Load contracts from file: " + chalk.green(gospel));
-        var contracts = fs.readFileSync(gospel);
+        contracts = fs.readFileSync(gospel);
         augur.contracts = JSON.parse(contracts);
     }
-    augur.connect();
+    connected = (rpcinfo) ? augur.connect(rpcinfo) : augur.connect();
+    if (connected) {
+        log(chalk.magenta("augur"), "connected:", chalk.cyan(augur.options.RPC));
+    }
     return augur;
 };
 
@@ -63,6 +67,10 @@ utilities.reset = function (mod) {
     mod = path.join(__dirname, path.parse(mod).name);
     delete require.cache[require.resolve(mod)];
     return require(mod);
+};
+
+utilities.urlstring = function (obj) {
+    return obj.protocol + "://" + obj.host + ":" + obj.port;
 };
 
 utilities.gteq0 = function (n) { return (new BigNumber(n)).toNumber() >= 0; };

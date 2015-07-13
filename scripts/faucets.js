@@ -4,7 +4,7 @@
 
 var assert = require("chai").assert;
 var chalk = require("chalk");
-var Augur = require("../src/augur");
+var Augur = require("../src");
 var numeric = require("../src/numeric");
 var log = console.log;
 

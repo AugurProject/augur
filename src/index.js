@@ -29,15 +29,19 @@ var log = console.log;
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
-var protocol = (NODE_JS) ? "http" : window.location.protocol.slice(0, -1);
+var DEFAULT_RPC = utilities.urlstring({
+    protocol: (NODE_JS) ? "http" : window.location.protocol.slice(0, -1),
+    host: "127.0.0.1",
+    port: 8545
+});
 
 var options = {
 
-    RPC: {
-        protocol: protocol,
-        host: "127.0.0.1",
-        port: 8545
-    },
+    // primary Ethereum RPC connection info
+    RPC: DEFAULT_RPC,
+
+    // multicast RPC nodes
+    nodes: [],
 
     // If set to true, all numerical results (excluding hashes)
     // are returned as BigNumber objects
@@ -78,7 +82,7 @@ var augur = {
 
 };
 
-augur.update_options = function (options) {
+augur.reload_modules = function (options) {
     if (JSON.stringify(this.options) !== JSON.stringify(options)) {
         this.options = options;
         this.rpc = new RPC(options);
@@ -88,7 +92,7 @@ augur.update_options = function (options) {
     }
 };
 
-augur.update_options(options);
+augur.reload_modules(options);
 
 /******************************
  * Ethereum JSON-RPC bindings *
@@ -266,28 +270,24 @@ augur.getCode = augur.read = function (address, block, f) {
 augur.connect = function (rpcinfo, chain) {
 
     var default_rpc = function () {
-        this.options.RPC = {
-            protocol: protocol,
-            host: "127.0.0.1",
-            port: 8545
-        };
-        this.update_options(this.options);
+        this.options.RPC = DEFAULT_RPC;
+        this.reload_modules(this.options);
         return false;
     }.bind(this);
 
-    var rpc, key;
+    var rpc, key, rpc_obj = {};
     if (rpcinfo) {
         if (rpcinfo.constructor === Object) {
-            if (rpcinfo.protocol) this.options.RPC.protocol = rpcinfo.protocol;
-            if (rpcinfo.host) this.options.RPC.host = rpcinfo.host;
+            if (rpcinfo.protocol) rpc_obj.protocol = rpcinfo.protocol;
+            if (rpcinfo.host) rpc_obj.host = rpcinfo.host;
             if (rpcinfo.port) {
-                this.options.RPC.port = rpcinfo.port;
+                rpc_obj.port = rpcinfo.port;
             } else {
                 if (rpcinfo.host) {
                     rpc = rpcinfo.host.split(":");
                     if (rpc.length === 2) {
-                        this.options.RPC.host = rpc[0];
-                        this.options.RPC.port = rpc[1];
+                        rpc_obj.host = rpc[0];
+                        rpc_obj.port = rpc[1];
                     }
                 }
             }
@@ -296,88 +296,81 @@ augur.connect = function (rpcinfo, chain) {
             try {
                 rpc = rpcinfo.split("://");
                 console.assert(rpc.length === 2);
-                this.options.RPC.protocol = rpc[0];
+                rpc_obj.protocol = rpc[0];
                 rpc = rpc[1].split(':');
                 if (rpc.length === 2) {
-                    this.options.RPC.host = rpc[0];
-                    this.options.RPC.port = rpc[1];
+                    rpc_obj.host = rpc[0];
+                    rpc_obj.port = rpc[1];
                 } else {
-                    this.options.RPC.host = rpc;
+                    rpc_obj.host = rpc;
                 }
             } catch (e) {
                 try {
                     rpc = rpcinfo.split(':');
                     if (rpc.length === 2) {
-                        this.options.RPC.host = rpc[0];
-                        this.options.RPC.port = rpc[1];
+                        rpc_obj.host = rpc[0];
+                        rpc_obj.port = rpc[1];
                     } else {
-                        this.options.RPC.host = rpc;
+                        rpc_obj.host = rpc;
                     }
                 } catch (exc) {
                     return default_rpc();
                 }
             }
         }
+        this.options.RPC = utilities.urlstring(rpc_obj);
     } else {
-        this.options.RPC = {
-            protocol: protocol,
-            host: "127.0.0.1",
-            port: 8545
-        };
+        this.options.RPC = DEFAULT_RPC;
     }
-    this.update_options(this.options);
-    try {
-        if (JSON.stringify(this.contracts) === JSON.stringify(this.init_contracts)) {
-            if (chain) {
-                if (chain === "1010101" || chain === 1010101) {
-                    this.contracts = utilities.copy(contracts.privatechain);
-                } else if (chain === "10101" || chain === 10101) {
-                    this.contracts = utilities.copy(contracts.testchain);
-                }
-            } else {
-                chain = this.rpc.json_rpc(this.rpc.postdata("version", [], "net_"));
-                if (chain === "1010101" || chain === 1010101) {
-                    this.contracts = utilities.copy(contracts.privatechain);
-                } else if (chain === "10101" || chain === 10101) {
-                    this.contracts = utilities.copy(contracts.testchain);
-                } else {
-                    this.contracts = utilities.copy(this.testnet_contracts);
-                }
-            }
-            this.network_id = chain || "0";
-        }
-        this.coinbase = this.rpc.json_rpc(this.rpc.postdata("coinbase"));
-        if (!this.coinbase) {
-            var accounts = this.accounts();
-            var num_accounts = accounts.length;
-            if (num_accounts === 1) {
-                this.coinbase = accounts[0];
-            } else {
-                for (var i = 0; i < num_accounts; ++i) {
-                    if (!this.sign(accounts[i], "1010101").error) {
-                        this.coinbase = accounts[i];
-                        break;
-                    }
-                }
-            }
-        }
-        if (this.coinbase && this.coinbase !== "0x") {
-            for (var method in this.tx) {
-                if (!this.tx.hasOwnProperty(method)) continue;
-                this.tx[method].from = this.coinbase;
-                key = utilities.has_value(this.init_contracts, this.tx[method].to);
-                if (key) {
-                    this.tx[method].to = this.contracts[key];
-                }
+    this.reload_modules(this.options);
+    if (JSON.stringify(this.contracts) === JSON.stringify(this.init_contracts)) {
+        if (chain) {
+            if (chain === "1010101" || chain === 1010101) {
+                this.contracts = utilities.copy(contracts.privatechain);
+            } else if (chain === "10101" || chain === 10101) {
+                this.contracts = utilities.copy(contracts.testchain);
             }
         } else {
-            return default_rpc();
+            chain = this.rpc.json_rpc(this.rpc.postdata("version", [], "net_"));
+            if (chain === "1010101" || chain === 1010101) {
+                this.contracts = utilities.copy(contracts.privatechain);
+            } else if (chain === "10101" || chain === 10101) {
+                this.contracts = utilities.copy(contracts.testchain);
+            } else {
+                this.contracts = utilities.copy(contracts.testnet);
+            }
         }
-        if (this.coinbase) this.init_contracts = utilities.copy(this.contracts);
-        return true;
-    } catch (exc) {
+        this.network_id = chain || "0";
+    }
+    this.coinbase = this.rpc.json_rpc(this.rpc.postdata("coinbase"));
+    if (!this.coinbase) {
+        var accounts = this.accounts();
+        var num_accounts = accounts.length;
+        if (num_accounts === 1) {
+            this.coinbase = accounts[0];
+        } else {
+            for (var i = 0; i < num_accounts; ++i) {
+                if (!this.sign(accounts[i], "1010101").error) {
+                    this.coinbase = accounts[i];
+                    break;
+                }
+            }
+        }
+    }
+    if (this.coinbase && this.coinbase !== "0x") {
+        for (var method in this.tx) {
+            if (!this.tx.hasOwnProperty(method)) continue;
+            this.tx[method].from = this.coinbase;
+            key = utilities.has_value(this.init_contracts, this.tx[method].to);
+            if (key) {
+                this.tx[method].to = this.contracts[key];
+            }
+        }
+    } else {
         return default_rpc();
     }
+    if (this.coinbase) this.init_contracts = utilities.copy(this.contracts);
+    return true;
 };
 
 augur.connected = function () {
