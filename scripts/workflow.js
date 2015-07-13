@@ -340,9 +340,9 @@ function check_connection(geth, account, callback, next, count) {
     }
     count = count || 0;
     if (options.CUSTOM_GOSPEL) {
-        Augur = utilities.setup(Augur, ["--gospel"], { host: "127.0.0.1", port: options.RPC_PORT });
+        Augur = utilities.setup(Augur, ["--gospel"], { protocol: "http", host: "127.0.0.1", port: options.RPC_PORT });
     } else {
-        Augur = utilities.setup(Augur, null, { host: "127.0.0.1", port: options.RPC_PORT });
+        Augur = utilities.setup(Augur, null, { protocol: "http", host: "127.0.0.1", port: options.RPC_PORT });
     }
     if (Augur.connected()) {
         accounts = utilities.get_test_accounts(Augur, constants.max_test_accounts);
@@ -401,10 +401,10 @@ var args = process.argv.slice(2);
 
 var options = {
     DEBUG: false,
-    OFF_WORKFLOW: true,
+    OFF_WORKFLOW: false,
     NETWORK_ID: "10101",
-    PEER_PORT: "30303",
-    RPC_PORT: "8545",
+    PEER_PORT: 30303,
+    RPC_PORT: 8545,
     MINIMUM_ETHER: 32,
     AUGUR_CORE: path.join(process.env.HOME, "src", "augur-core"),
     FAUCETS: path.join(__dirname || "", "faucets.js"),
@@ -467,7 +467,7 @@ var geth_flags = [
     "--networkid", options.NETWORK_ID,
     "--genesisnonce", options.GENESIS_NONCE,
     "--datadir", options.DATADIR,
-    "--bootnodes", enodes,
+    // "--bootnodes", enodes,
     "--password", path.join(options.DATADIR, ".password")
 ];
 

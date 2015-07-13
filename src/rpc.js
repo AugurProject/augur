@@ -19,8 +19,6 @@ module.exports = function (options) {
 
         BigNumberOnly: options.BigNumberOnly,
 
-        url: options.RPC,
-
         nodes: [options.RPC].concat(options.nodes),
 
         id: 1,

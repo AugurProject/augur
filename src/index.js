@@ -322,54 +322,58 @@ augur.connect = function (rpcinfo, chain) {
         this.options.RPC = DEFAULT_RPC;
     }
     this.reload_modules();
-    if (JSON.stringify(this.contracts) === JSON.stringify(this.init_contracts)) {
-        if (chain) {
-            if (chain === "1010101" || chain === 1010101) {
-                this.contracts = utilities.copy(contracts.privatechain);
-            } else if (chain === "10101" || chain === 10101) {
-                this.contracts = utilities.copy(contracts.testchain);
-            }
-        } else {
-            chain = this.rpc.json_rpc(this.rpc.postdata("version", [], "net_"));
-            if (chain === "1010101" || chain === 1010101) {
-                this.contracts = utilities.copy(contracts.privatechain);
-            } else if (chain === "10101" || chain === 10101) {
-                this.contracts = utilities.copy(contracts.testchain);
+    try {
+        if (JSON.stringify(this.contracts) === JSON.stringify(this.init_contracts)) {
+            if (chain) {
+                if (chain === "1010101" || chain === 1010101) {
+                    this.contracts = utilities.copy(contracts.privatechain);
+                } else if (chain === "10101" || chain === 10101) {
+                    this.contracts = utilities.copy(contracts.testchain);
+                }
             } else {
-                this.contracts = utilities.copy(contracts.testnet);
+                chain = this.rpc.json_rpc(this.rpc.postdata("version", [], "net_"));
+                if (chain === "1010101" || chain === 1010101) {
+                    this.contracts = utilities.copy(contracts.privatechain);
+                } else if (chain === "10101" || chain === 10101) {
+                    this.contracts = utilities.copy(contracts.testchain);
+                } else {
+                    this.contracts = utilities.copy(contracts.testnet);
+                }
             }
+            this.network_id = chain || "0";
         }
-        this.network_id = chain || "0";
-    }
-    this.coinbase = this.rpc.json_rpc(this.rpc.postdata("coinbase"));
-    if (!this.coinbase) {
-        var accounts = this.accounts();
-        var num_accounts = accounts.length;
-        if (num_accounts === 1) {
-            this.coinbase = accounts[0];
-        } else {
-            for (var i = 0; i < num_accounts; ++i) {
-                if (!this.sign(accounts[i], "1010101").error) {
-                    this.coinbase = accounts[i];
-                    break;
+        this.coinbase = this.rpc.json_rpc(this.rpc.postdata("coinbase"));
+        if (!this.coinbase) {
+            var accounts = this.accounts();
+            var num_accounts = accounts.length;
+            if (num_accounts === 1) {
+                this.coinbase = accounts[0];
+            } else {
+                for (var i = 0; i < num_accounts; ++i) {
+                    if (!this.sign(accounts[i], "1010101").error) {
+                        this.coinbase = accounts[i];
+                        break;
+                    }
                 }
             }
         }
-    }
-    if (this.coinbase && this.coinbase !== "0x") {
-        for (var method in this.tx) {
-            if (!this.tx.hasOwnProperty(method)) continue;
-            this.tx[method].from = this.coinbase;
-            key = utilities.has_value(this.init_contracts, this.tx[method].to);
-            if (key) {
-                this.tx[method].to = this.contracts[key];
+        if (this.coinbase && this.coinbase !== "0x") {
+            for (var method in this.tx) {
+                if (!this.tx.hasOwnProperty(method)) continue;
+                this.tx[method].from = this.coinbase;
+                key = utilities.has_value(this.init_contracts, this.tx[method].to);
+                if (key) {
+                    this.tx[method].to = this.contracts[key];
+                }
             }
+        } else {
+            return default_rpc();
         }
-    } else {
+        if (this.coinbase) this.init_contracts = utilities.copy(this.contracts);
+        return true;
+    } catch (e) {
         return default_rpc();
     }
-    if (this.coinbase) this.init_contracts = utilities.copy(this.contracts);
-    return true;
 };
 
 augur.connected = function () {
