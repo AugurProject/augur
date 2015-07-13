@@ -56,6 +56,7 @@ utilities.setup = function (augur, args, rpcinfo) {
         contracts = fs.readFileSync(gospel);
         augur.contracts = JSON.parse(contracts);
     }
+    augur.options.BigNumberOnly = false;
     connected = (rpcinfo) ? augur.connect(rpcinfo) : augur.connect();
     if (connected) {
         log(chalk.magenta("augur"), "connected:", chalk.cyan(augur.options.RPC));
@@ -70,7 +71,7 @@ utilities.reset = function (mod) {
 };
 
 utilities.urlstring = function (obj) {
-    return obj.protocol + "://" + obj.host + ":" + obj.port;
+    return (obj.protocol || "http") + "://" + (obj.host || "127.0.0.1") + ":" + (obj.port || 8545);
 };
 
 utilities.gteq0 = function (n) { return (new BigNumber(n)).toNumber() >= 0; };

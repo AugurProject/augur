@@ -30,7 +30,8 @@ var log = console.log;
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
 var DEFAULT_RPC = utilities.urlstring({
-    protocol: (NODE_JS) ? "http" : window.location.protocol.slice(0, -1),
+    // protocol: (NODE_JS) ? "http" : window.location.protocol.slice(0, -1),
+    protocol: "http",
     host: "127.0.0.1",
     port: 8545
 });
@@ -83,13 +84,11 @@ var augur = {
 };
 
 augur.reload_modules = function (options) {
-    if (JSON.stringify(this.options) !== JSON.stringify(options)) {
-        this.options = options;
-        this.rpc = new RPC(options);
-        this.web = new WebClient(this);
-        this.comments = new Comments(this);
-        this.filters = new Filters(this);
-    }
+    if (options) this.options = options;
+    this.rpc = new RPC(this.options);
+    this.web = new WebClient(this);
+    this.comments = new Comments(this);
+    this.filters = new Filters(this);
 };
 
 augur.reload_modules(options);
@@ -271,7 +270,7 @@ augur.connect = function (rpcinfo, chain) {
 
     var default_rpc = function () {
         this.options.RPC = DEFAULT_RPC;
-        this.reload_modules(this.options);
+        this.reload_modules();
         return false;
     }.bind(this);
 
@@ -322,7 +321,7 @@ augur.connect = function (rpcinfo, chain) {
     } else {
         this.options.RPC = DEFAULT_RPC;
     }
-    this.reload_modules(this.options);
+    this.reload_modules();
     if (JSON.stringify(this.contracts) === JSON.stringify(this.init_contracts)) {
         if (chain) {
             if (chain === "1010101" || chain === 1010101) {

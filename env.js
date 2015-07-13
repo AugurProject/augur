@@ -22,6 +22,7 @@ GLOBAL.log = console.log;
 GLOBAL.b = Augur.branches.dev;
 GLOBAL.ballot = [ 2, 1.5, 1.5, 1, 1.5, 1.5, 1 ];
 
+Augur.options.BigNumberOnly = false;
 Augur.connect();
 
 GLOBAL.accounts = utilities.get_test_accounts(Augur, constants.max_test_accounts);
