@@ -23,15 +23,11 @@ Augur.reputationFaucet(
     },
     function (r) {
         // failed
-        if (r.message) {
-            throw r.message;
-        } else {
-            throw r;
-        }
+        throw new Error(r);
     }
 );
 
-if (numeric.bignum(Augur.getCashBalance(Augur.coinbase)).toNumber() === 0) {
+// if (Number(Augur.getCashBalance(Augur.coinbase)) < 5) {
     Augur.cashFaucet(
         function (r) {
             // sent
@@ -42,11 +38,7 @@ if (numeric.bignum(Augur.getCashBalance(Augur.coinbase)).toNumber() === 0) {
         },
         function (r) {
             // failed
-            if (r.message) {
-                throw r.message;
-            } else {
-                throw r;
-            }
+            throw new Error(r);
         }
     );
-}
+// }

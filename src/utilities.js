@@ -54,7 +54,7 @@ utilities.setup = function (augur, args, rpcinfo) {
         gospel = path.join(__dirname, "..", "test", "gospel.json");
         log("Load contracts from file: " + chalk.green(gospel));
         contracts = fs.readFileSync(gospel);
-        augur.contracts = JSON.parse(contracts);
+        augur.contracts = JSON.parse(contracts.toString());
     }
     augur.options.BigNumberOnly = false;
     connected = (rpcinfo) ? augur.connect(rpcinfo) : augur.connect();

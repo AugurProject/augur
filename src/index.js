@@ -369,7 +369,6 @@ augur.connect = function (rpcinfo, chain) {
         } else {
             return default_rpc();
         }
-        if (this.coinbase) this.init_contracts = utilities.copy(this.contracts);
         return true;
     } catch (e) {
         return default_rpc();

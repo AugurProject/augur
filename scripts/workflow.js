@@ -199,7 +199,7 @@ function postupload_tests_1(geth) {
         "invoke",
         "reporting",
         // "expiring",
-        "augur",
+        "comments",
         "webclient",
         "createEvent"
     ]).run(function (failures) {
@@ -224,6 +224,7 @@ function off_workflow_tests(geth) {
         setup_mocha_tests([
             "createMarket",
             "branches",
+            "comments",
             "webclient"
         ]).run(function (failures) {
             process.on("exit", function () { process.exit(failures); });
@@ -401,7 +402,7 @@ var args = process.argv.slice(2);
 
 var options = {
     DEBUG: false,
-    OFF_WORKFLOW: false,
+    OFF_WORKFLOW: true,
     NETWORK_ID: "10101",
     PEER_PORT: 30303,
     RPC_PORT: 8545,
