@@ -68,11 +68,11 @@ var tests = {
         runtests(geth, [
             "fixedpoint",
             "encoder",
-            // "connect",
-            // "contracts",
-            // "ethrpc",
-            // "invoke",
-            // "batch",
+            "connect",
+            "contracts",
+            "ethrpc",
+            "invoke",
+            "batch",
             "faucets",
             "reporting",
             "createMarket",
@@ -80,8 +80,7 @@ var tests = {
             "info",
             "markets",
             "events",
-            "payments",
-            "buyAndSellShares"
+            "payments"
         ]);
     },
 
@@ -91,6 +90,7 @@ var tests = {
             "createEvent",
             // "expiring",
             "addEvent",
+            "buyAndSellShares",
             "checkQuorum",
             "ballot",
             "interpolate",
@@ -241,8 +241,9 @@ function faucets(geth) {
         log("Cash:       " + chalk.green(cash_balance));
         log("Reputation: " + chalk.green(rep_balance));
         log("Ether:      " + chalk.green(ether_balance));
-        kill_geth(geth);
+        if (geth) kill_geth(geth);
         for (var i = 0, len = accounts.length; i < len; ++i) {
+            log("account:", i);
             if (options.GETH_FLAGS[1] === accounts[i]) break;
         }
         if (i < accounts.length - 1) {
@@ -261,18 +262,14 @@ function faucets(geth) {
             log(chalk.blue.bold("\nAccount 0: ") + chalk.cyan(accounts[0]));
             options.GETH_FLAGS[1] = accounts[0];
             options.GETH_FLAGS[3] = accounts[0];
+            if (geth) kill_geth(geth);
+            geth = spawn_geth(options.GETH_FLAGS);
             setTimeout(function () {
-                init(
-                    spawn_geth(options.GETH_FLAGS),
-                    accounts[0],
-                    mine_minimum_ether,
-                    function () {
-                        if (geth) kill_geth(geth);
-                        if (options.SUITE.length) {
-                            init_test_suite(accounts[0], options);
-                        }
+                init(geth, accounts[0], mine_minimum_ether, function () {
+                    if (options.SUITE.length) {
+                        init_test_suite(accounts[0], options, geth);
                     }
-                );
+                });
             }, 5000);
         }
     }, 10000);
@@ -414,11 +411,11 @@ function reset_datadir() {
     }
 }
 
-function init_test_suite(account, options) {
+function init_test_suite(account, options, geth) {
     var test_suite;
     if (options.SPAWN_GETH) {
         test_suite = function (test) {
-            init(spawn_geth(options.GETH_FLAGS), account, tests[test]);
+            init(geth || spawn_geth(options.GETH_FLAGS), account, tests[test]);
         };
     } else {
         test_suite = function (test) { tests[test](null); };
@@ -510,6 +507,7 @@ while ((option = parser.getopt()) !== undefined) {
     switch (option.option) {
         case 'r':
             options.RESET = true;
+            options.SPAWN_GETH = true;
             break;
         case 'g':
             options.SPAWN_GETH = false;
