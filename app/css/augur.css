@@ -346,24 +346,30 @@ nav.header .menu li a {
     background-color: #fff;
     border-color: #D7D7D7;
     border-radius: 3px;
-    padding: 5px 10px 10px 10px;
     margin-top: 20px;
     font-size: 13px;
 }
-.assets > div {
+.assets .panel-heading {
+    text-transform: uppercase;
+    padding: 5px 10px;
+}
+.assets .panel-body {
+    padding: 5px 10px 10px 10px;
+}
+.assets .panel-body > div {
     margin: 5px 0px 0px 0px;
 }
-.assets .unit {
+.assets .panel-body .unit {
     font-weight: 300;
     text-transform: uppercase;
 }
-.assets button {
+.assets .panel-body button {
     font-size: 12px;
     text-transform: uppercase;
     position: relative;
     top: -2px;
 }
-.assets button i {
+.assets .panel-body button i {
     margin-left: 8px;
 }
 
