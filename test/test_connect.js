@@ -151,9 +151,7 @@ describe("Augur.connect", function () {
         var Augur = utilities.reset("../src/index");
         assert(Augur.connect());
         assert(Augur.coinbase);
-        assert.equal(Augur.options.RPC.protocol, "http");
-        assert(Augur.options.RPC.host === "localhost" || Augur.options.RPC.host === "127.0.0.1");
-        assert.equal(Augur.options.RPC.port, 8545);
+        assert.equal(Augur.options.RPC, "http://127.0.0.1:8545");
     });
     it("should be on network 0, 10101, or 1010101", function () {
         assert(Augur.network_id === "0" ||

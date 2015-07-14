@@ -10,6 +10,7 @@ var fs = require("fs");
 var path = require("path");
 var cp = require("child_process");
 var util = require("util");
+var async = require("async");
 var assert = require("chai").assert;
 var rm = require("rimraf");
 var chalk = require("chalk");
@@ -151,6 +152,21 @@ function setup_mocha_tests(tests) {
     return mocha;
 }
 
+function runtests(geth, tests, next) {
+    async.series(tests.map(function (test) {
+        return function () {
+            setup_mocha_tests([test]).run(function (failures) {
+                process.on("exit", function () { process.exit(failures); });
+                if (next) {
+                    next(geth);
+                } else {
+                    kill_geth(geth);
+                }
+            });
+        };
+    }));
+}
+
 function postupload_tests_5(geth) {
     setup_mocha_tests([
         "consensus",
@@ -192,7 +208,7 @@ function postupload_tests_2(geth) {
 }
 
 function postupload_tests_1(geth) {
-    setup_mocha_tests([
+    runtests(geth, [
         "contracts",
         "ethrpc",
         "batch",
@@ -202,15 +218,12 @@ function postupload_tests_1(geth) {
         "comments",
         "webclient",
         "createEvent"
-    ]).run(function (failures) {
-        process.on("exit", function () { process.exit(failures); });
-        postupload_tests_2(geth);
-    });
+    ], postupload_tests_2);
 }
 
 function off_workflow_tests(geth) {
     log(chalk.red.bold("\nProduction/off-workflow tests"));
-    setup_mocha_tests([
+    runtests(geth, [
         "connect",
         "contracts",
         "fixedpoint",
@@ -218,19 +231,17 @@ function off_workflow_tests(geth) {
         "ethrpc",
         "invoke",
         "batch",
-        "reporting"
-    ]).run(function (failures) {
-        process.on("exit", function () { process.exit(failures); });
-        setup_mocha_tests([
-            "createMarket",
-            "branches",
-            "comments",
-            "webclient"
-        ]).run(function (failures) {
-            process.on("exit", function () { process.exit(failures); });
-            if (geth) kill_geth(geth);
-        });
-    });
+        "reporting",
+        "createEvent",
+        "createMarket",
+        "branches",
+        "comments",
+        "webclient",
+        "info",
+        "events",
+        "markets",
+        "payments"
+    ]);
 }
 
 function faucets(geth) {
