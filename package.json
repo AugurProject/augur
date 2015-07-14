@@ -49,6 +49,7 @@
     "lodash": "^3.8.0",
     "longjohn": "^0.2.7",
     "mocha": "^2.2.4",
+    "posix-getopt": "^1.1.0",
     "rimraf": "^2.4.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"

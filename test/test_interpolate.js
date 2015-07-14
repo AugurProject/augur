@@ -59,48 +59,6 @@ utilities.print_matrix(utilities.fold(reports, num_events));
 
 describe("testing consensus: interpolate", function () {
 
-    it("interpolate", function (done) {
-        this.timeout(constants.timeout);
-        assert.equal(reports.length, flatsize);
-        assert.equal(reputation_vector.length, num_reports);
-        Augur.interpolate(
-            reports,
-            reputation_vector,
-            // scaled,
-            // scaled_max,
-            // scaled_min,
-            function (r) {
-                // sent
-                // utilities.print_matrix(
-                //     utilities.fold(Augur.abi.unfix(r.callReturn, "number"),
-                //         num_events)
-                // );
-            },
-            function (r) {
-                // success
-                var interpolated = Augur.abi.unfix(r.callReturn, "number");
-                var reports_filled = utilities.fold(
-                    interpolated.slice(0, flatsize),
-                    num_events
-                );
-                var reports_mask = utilities.fold(
-                    Augur.abi.fix(interpolated.slice(flatsize, 2*flatsize), "string"),
-                    num_events
-                );
-                log("Reports (filled):");
-                utilities.print_matrix(reports_filled)
-                log("Reports mask:");
-                utilities.print_matrix(reports_mask);
-                done();
-            },
-            function (r) {
-                //failed
-                throw new Error(r.message);
-                done();
-            }
-        );
-    });
-
     it("redeem_interpolate/read_ballots", function (done) {
         this.timeout(constants.timeout);
         Augur.read_ballots(
