@@ -43,7 +43,7 @@ class MarketPane extends React.Component {
       if (this.lastMarket[attr] != nextProps.market[attr])
         return true;
     }
-    return (this.props.currentBranch != nextProps.currentBranch ||
+    return Boolean(this.props.currentBranch != nextProps.currentBranch ||
       (nextProps.currentBranch &&
        this.props.currentBranch.currentPeriod != nextProps.currentBranch.currentPeriod));
   }
