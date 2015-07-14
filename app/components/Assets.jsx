@@ -94,24 +94,26 @@ var Assets = React.createClass({
         <div className="panel-heading">Balances</div>
         <div className="panel-body">
           <div className='cash-balance'>
-            <span className="unit">cash</span><span className='pull-right'>{ cashBalance }</span>
-            <ButtonGroup  className="hide">
-              <Button bsSize='xsmall' bsStyle='primary' onClick={ this.toggleSendCashModal }>Send</Button>
-              <Button disabled={ this.state.cashFaucetDisabled } bsSize='xsmall' bsStyle='default' onClick={ this.onCashFaucet }>Faucet<i className='fa fa-tint'></i></Button>
+            <span className="unit">cash</span>
+            <ButtonGroup className='pull-right send-button'>
+              <Button bsSize='xsmall' bsStyle='default' onClick={ this.toggleSendCashModal }>Send</Button>
+              <Button disabled={ this.state.cashFaucetDisabled } bsSize='xsmall' bsStyle='default' onClick={ this.onCashFaucet }><i className='fa fa-tint'></i></Button>
             </ButtonGroup>
+            <span className='pull-right'>{ cashBalance }</span>
           </div>
 
           <div className='rep-balance'>
-            <span className="unit">reputation</span><span className='pull-right'>{ repBalance }</span>
-            <ButtonGroup className="hide">
-              <Button bsSize='xsmall' bsStyle='primary' onClick={ this.toggleSendRepModal }>Send</Button>
-              <Button disabled={ this.state.repFaucetDisabled } bsSize='xsmall' bsStyle='default' onClick={ this.onRepFaucet }>Faucet<i className='fa fa-tint'></i></Button>
+            <span className="unit">reputation</span>
+            <ButtonGroup className='pull-right send-button'>
+              <Button bsSize='xsmall' bsStyle='default' onClick={ this.toggleSendRepModal }>Send</Button>
+              <Button disabled={ this.state.repFaucetDisabled } bsSize='xsmall' bsStyle='default' onClick={ this.onRepFaucet }><i className='fa fa-tint'></i></Button>
             </ButtonGroup>
+            <span className='pull-right'>{ repBalance }</span>
           </div>
 
           <div className='ether-balance'>
+            <Button className='pull-right send-button' bsSize='xsmall' bsStyle='default' onClick={ this.toggleSendEtherModal }>Send</Button>
             <span className="unit">{ utilities.formatEther(this.props.asset.ether).unit }</span><span className='pull-right'>{ utilities.formatEther(this.props.asset.ether).value }</span>
-            <Button  className="hide" bsSize='xsmall' bsStyle='primary' onClick={ this.toggleSendEtherModal }>Send</Button>
           </div>
 
           <SendEtherModal show={ this.state.sendEtherModalOpen } onHide={ this.toggleSendEtherModal } />

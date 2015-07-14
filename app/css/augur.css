@@ -364,13 +364,16 @@ nav.header .menu li a {
     text-transform: uppercase;
 }
 .assets .panel-body button {
-    font-size: 12px;
+    font-size: 11px;
     text-transform: uppercase;
     position: relative;
     top: -2px;
 }
-.assets .panel-body button i {
-    margin-left: 8px;
+.assets .panel-body .send-button {
+    margin-left: 5px;
+}
+.assets .panel-body .send-button:last-child {
+    margin-right: 17px;
 }
 
 #main h3 {
