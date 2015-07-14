@@ -6,25 +6,24 @@
 "use strict";
 
 var assert = require("chai").assert;
-var Augur = require("../src");
+var constants = require("../src/constants");
+var utilities = require("../src/utilities");
+var Augur = utilities.setup(require("../src"), process.argv.slice(2));
 var log = console.log;
 
 require('it-each')({ testPerIteration: true });
 
-Augur = require("../src/utilities").setup(Augur, process.argv.slice(2));
-
 var EXPIRING = false;
-var TIMEOUT = 240000;
 var events = [
-    ["Will the Sun turn into a red giant and engulf the Earth by the end of 2015?", utilities.date_to_block("1-1-2016")],
-    ["Will Rand Paul win the 2016 U.S. Presidential Election?", utilities.date_to_block("1-2-2017")],
-    ["Will it rain in New York City on November 12, 2015?", utilities.date_to_block("11-13-2015")],
-    ["Will the Larsen B ice shelf collapse by November 1, 2015?", utilities.date_to_block("11-2-2015")]
+    ["Will the Sun turn into a red giant and engulf the Earth by the end of 2015?", utilities.date_to_block(Augur, "1-1-2016")],
+    ["Will Rand Paul win the 2016 U.S. Presidential Election?", utilities.date_to_block(Augur, "1-2-2017")],
+    ["Will it rain in New York City on November 12, 2015?", utilities.date_to_block(Augur, "11-13-2015")],
+    ["Will the Larsen B ice shelf collapse by November 1, 2015?", utilities.date_to_block(Augur, "11-2-2015")]
 ];
 
 describe("functions/createMarket", function () {
     it.each(events, "single-event market: %s", ['element'], function (element, next) {
-        this.timeout(TIMEOUT);
+        this.timeout(constants.timeout*4);
         var event_description = element[0];
         var blockNumber = Augur.blockNumber();
         var expDate = (EXPIRING) ? blockNumber + Math.round(Math.random() * 1000) : element[1];

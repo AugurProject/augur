@@ -9,18 +9,17 @@ var fs = require("fs");
 var assert = require("chai").assert;
 var _ = require("lodash");
 var chalk = require("chalk");
-var Augur = require("../src");
+var utilities = require("../src/utilities");
+var constants = require("../src/constants");
+var Augur = utilities.setup(require("../src"), process.argv.slice(2));
+var log = console.log;
+
 require('it-each')({ testPerIteration: true });
 
-Augur = require("../src/utilities").setup(Augur, process.argv.slice(2));
-
-var log = console.log;
-var TIMEOUT = 120000;
 var minValue = 0;
 var maxValue = 1;
 var numOutcomes = 2;
 var num_events = 4;
-
 var branch = Augur.branches.dev;
 var period = Augur.getVotePeriod(branch);
 var exp_date = Augur.blockNumber() + 250;
@@ -29,7 +28,7 @@ describe("Creating " + num_events + " events and markets", function () {
     var events = [];
     fs.writeFileSync("events.dat", "");
     it.each(_.range(0, num_events), "create event/market %s", ['element'], function (element, next) {
-        this.timeout(TIMEOUT);
+        this.timeout(constants.timeout);
         var event_description = Math.random().toString(36).substring(4);
         Augur.createEvent({
             branchId: branch,

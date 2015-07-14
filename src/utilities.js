@@ -20,17 +20,17 @@ var log = console.log;
 var utilities = {};
 
 // calculate date from block number
-utilities.block_to_date = function (block) {
-    var current_block = this.blockNumber();
+utilities.block_to_date = function (augur, block) {
+    var current_block = augur.blockNumber();
     var seconds = (block - current_block) * constants.SECONDS_PER_BLOCK;
     var date = moment().add(seconds, 'seconds');
     return date;
 };
 
 // calculate block number from date
-utilities.date_to_block = function (date) {
+utilities.date_to_block = function (augur, date) {
     date = moment(new Date(date));
-    var current_block = this.blockNumber();
+    var current_block = augur.blockNumber();
     var now = moment();
     var seconds_delta = date.diff(now, 'seconds');
     var block_delta = parseInt(seconds_delta / constants.SECONDS_PER_BLOCK);
@@ -47,10 +47,7 @@ utilities.has_value = function (o, v) {
 
 utilities.setup = function (augur, args, rpcinfo) {
     var connected, gospel, contracts;
-    if (NODE_JS && args && args.length && (args[0] === "--gospel" ||
-        (args.length > 1 && args[1] === "--gospel") ||
-        args[0] === "--reset" || args[0] === "--postupload" ||
-        args[0] === "--faucets" || args[0] === "--ballots")) {
+    if (NODE_JS && args && (args.indexOf("--gospel") > -1 || args.indexOf("--reset") > -1)) {
         gospel = path.join(__dirname, "..", "test", "gospel.json");
         log("Load contracts from file: " + chalk.green(gospel));
         contracts = fs.readFileSync(gospel);

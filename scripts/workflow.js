@@ -34,12 +34,12 @@ var options = {
     RPC_PORT: 8545,
     MINIMUM_ETHER: 32,
     AUGUR_CORE: path.join(process.env.HOME, "src", "augur-core"),
-    FAUCETS: path.join(__dirname || "", "faucets.js"),
+    FAUCETS: path.join(__dirname, "faucets.js"),
     GOSPEL: "gospel.json",
     CUSTOM_GOSPEL: false,
     TESTPATH: path.join(__dirname, "..", "test"),
     LOG: "geth.log",
-    GETH: path.join(process.env.HOME, "src", "go-ethereum", "build", "bin", "geth"),
+    GETH: "geth",
     SPAWN_GETH: true,
     SUITE: []
 };
@@ -51,7 +51,11 @@ function runtests(geth, tests) {
     async.forEachSeries(tests, function (test, next) {
         var mocha = new Mocha();
         mocha.addFile(path.join(options.TESTPATH, "test_" + test + ".js"));
-        mocha.run(next);
+        log(path.join(options.TESTPATH, "test_" + test + ".js"));
+        mocha.run(function (failures) {
+            if (failures) log(chalk.red("Failed tests:"), chalk.red.bold(failures));
+            next();
+        });
     }, function (err) {
         if (err) log(chalk.red.bold(err));
     });
@@ -64,11 +68,11 @@ var tests = {
         runtests(geth, [
             "fixedpoint",
             "encoder",
-            "connect",
-            "contracts",
-            "ethrpc",
-            "invoke",
-            "batch",
+            // "connect",
+            // "contracts",
+            // "ethrpc",
+            // "invoke",
+            // "batch",
             "faucets",
             "reporting",
             "createMarket",
@@ -262,7 +266,12 @@ function faucets(geth) {
                     spawn_geth(options.GETH_FLAGS),
                     accounts[0],
                     mine_minimum_ether,
-                    function () { init_test_suite(accounts[0], options); }
+                    function () {
+                        if (geth) kill_geth(geth);
+                        if (options.SUITE.length) {
+                            init_test_suite(accounts[0], options);
+                        }
+                    }
                 );
             }, 5000);
         }
@@ -414,7 +423,7 @@ function init_test_suite(account, options) {
     } else {
         test_suite = function (test) { tests[test](null); };
     }
-    _.each(options.SUITE, test_suite);
+    async.forEachSeries(options.SUITE, test_suite);
 }
 
 function main(account, options) {
@@ -426,8 +435,9 @@ function main(account, options) {
             mine_minimum_ether,
             preupload_tests
         );
+    } else if (options.SUITE.length) {
+        init_test_suite(account, options);
     }
-    if (options.SUITE.length) init_test_suite(account, options);
 }
 
 options.GOSPEL_JSON = path.join(options.TESTPATH, options.GOSPEL);
@@ -492,8 +502,8 @@ var geth_log = fs.createWriteStream(
     {flags : 'w'}
 );
 
-var option, optstring, parser;
-optstring = "r(reset)g(geth)a(aux)c(core)s(consensus)o(gospel)A(all)";
+var option, optstring, parser, done;
+optstring = "r(reset)g(geth)a(aux)c(core)s(consensus)o(gospel)A(all)u(augur)";
 parser = new mod_getopt.BasicParser(optstring, process.argv);
 
 while ((option = parser.getopt()) !== undefined) {
@@ -521,10 +531,15 @@ while ((option = parser.getopt()) !== undefined) {
             Augur.contracts = JSON.parse(fs.readFileSync(options.GOSPEL_JSON));
             options.CUSTOM_GOSPEL = true;
             break;
+        case 'u':
+            options.AUGUR_CORE = option.optarg;
+            break;
         default:
-            mod_assert.equal('?', option.option);
+            assert.equal('?', option.option);
+            done = true;
             break;
     }
+    if (done) break;
 }
 
 main(accounts[0], options);
