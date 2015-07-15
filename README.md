@@ -40,8 +40,8 @@ geth --rpc --rpccorsdomain 'http://client.augur.net' --shh --unlock 0 console
 Install [Node.js](https://nodejs.org/).
 
 ```
-git clone https://github.com/AugurProject/augur-client.git
-cd augur-client
+git clone https://github.com/AugurProject/augur.git
+cd augur
 git checkout develop
 npm install -g grunt-cli
 npm install

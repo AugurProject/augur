@@ -9,6 +9,7 @@ var state = {
 };
 
 var MarketStore = Fluxxor.createStore({
+
   initialize: function () {
     this.bindActions(
       constants.market.LOAD_MARKETS_SUCCESS, this.handleLoadMarketsSuccess,
@@ -43,6 +44,19 @@ var MarketStore = Fluxxor.createStore({
 
   getState: function () {
     return state;
+  },
+
+  getTrendingMarkets: function(number, currentBranch) {
+
+    var nonMatureMarkets = _.reject(state.markets, function(market) {
+      return currentBranch && currentBranch.currentPeriod >= market.tradingPeriod;
+    });
+
+    var trendingMarkets = _.sortBy(nonMatureMarkets, function(market) {
+        return market.traderCount;
+    });
+
+    return _.indexBy(_.slice(trendingMarkets.reverse(), 0, number), 'id');
   },
 
   getMarketsHeld: function() {

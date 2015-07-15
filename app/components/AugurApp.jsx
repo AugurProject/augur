@@ -21,7 +21,8 @@ var constants = require('../libs/constants');
 
 var Period = require('./Period');
 var Network = require('./Network');
-var Alert = require('./Alert');
+var Assets = require('./Assets');
+var Welcome = require('./Welcome');
 var Confirm = require('./Confirm');
 var EtherWarningModal = require('./EtherWarningModal');
 
@@ -57,13 +58,10 @@ var AugurApp = React.createClass({
 
   componentDidMount: function() {
 
-    this.setState({status: 'stopped'});
-    //console.log('initializing');
+    //this.setState({status: 'stopped'});
 
     // Initialize the EthereumClient and load the current Augur data.
     this.getFlux().actions.config.initializeState();
-
-    //console.log('initialized');
   },
 
   getLoadingProgress: function() {
@@ -86,10 +84,6 @@ var AugurApp = React.createClass({
 
   render: function() {
 
-    //console.log('rendering', this.state.status);
-
-    var cashBalance = this.state.asset.cash ? +this.state.asset.cash.toFixed(2) : '-';
-
     return (
       <div id="app" className={ this.state.status }>
 
@@ -100,14 +94,13 @@ var AugurApp = React.createClass({
 
               <ul className="menu">
                 <li><p><Link to="overview">Overview</Link></p></li>
-                <li><p><Link to="home">Markets</Link></p></li>
-                <li><p><Link to="account">Account</Link></p></li>
+                <li><p><Link to="markets">Markets</Link></p></li>
                 <li><p><Link to="ballots">Ballot</Link></p></li>
               </ul>
             </div>
 
             <div className="pull-right">
-              <p className='navbar-text'>CASH: <b className="cash-balance">{ cashBalance }</b></p>
+              <p className='navbar-text'>{ this.state.network.primaryAccount }</p>
             </div>
 
           </div>
@@ -116,13 +109,12 @@ var AugurApp = React.createClass({
         <section id="main" className="container">
           <div className="dash page row">
             <div className="col-md-3 hidden-xs hidden-sm sidebar">
-              <div className="side-nav">
+              <div className="nav">
                   <p><Link to="overview">Overview</Link></p>
-                  <p><Link to="home">Markets</Link><i>{ _.keys(this.state.market.markets).length }</i></p>
-                  <p><Link to="account">Account</Link></p>
+                  <p><Link to="markets">Markets</Link><i>{ _.keys(this.state.market.markets).length }</i></p>
                   <p><Link to="ballots">Ballot</Link><i>{ _.keys(this.state.report.eventsToReport).length }</i></p>
               </div>
-
+              <Assets asset={ this.state.asset } />
               <Network />
             </div>
 
@@ -205,7 +197,7 @@ var ErrorModal = React.createClass({
       if (nextProps.config.host !== constants.DEMO_HOST) this.setState({ isModalOpen: true });
 
     } else if (nextProps.network.blockChainAge > constants.MAX_BLOCKCHAIN_AGE) {
-
+      
       if (!this.state.isLoading) {
         utilities.warn('blockchain ' + nextProps.network.blockChainAge + ' seconds behind');
         this.setState({ isModalOpen: true, isLoading: true, startSecondsBehind: nextProps.network.blockChainAge});

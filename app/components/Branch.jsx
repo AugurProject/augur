@@ -7,6 +7,7 @@ var moment = require('moment');
 var Paginate = require('react-paginate');
 var Router = require('react-router');
 var RouteHandler = Router.RouteHandler;
+var Navigation = Router.Navigation;
 var Link = Router.Link;
 
 var AddMarketModal =  require('./AddMarketModal')
@@ -17,14 +18,14 @@ var constants = require('../libs/constants');
 var Branch = React.createClass({
 
   // assuming only one branch and all markets in store are of that branch
-  mixins: [FluxMixin, StoreWatchMixin('market', 'branch')],
+  mixins: [FluxMixin, StoreWatchMixin('market', 'branch'), Navigation],
 
   getInitialState: function() {
     return {
       addMarketModalOpen: false,
       marketsPerPage: constants.MARKETS_PER_PAGE,
       visiblePages: 3,
-      pageNum: 0
+      pageNum: this.props.params.page ? this.props.params.page - 1 : 0
     };
   },
 
@@ -47,6 +48,7 @@ var Branch = React.createClass({
 
   handlePageChanged: function (data) {
 
+    this.transitionTo('/markets/' + (parseInt(data.selected) + 1));
     this.setState({ pageNum: data.selected });
   },
 
@@ -72,6 +74,7 @@ var Branch = React.createClass({
             pageNum={ total / this.state.marketsPerPage }
             marginPagesDisplayed={ 2 }
             pageRangeDisplayed={ 5 }
+            initialSelected={ this.state.pageNum }
             clickCallback={ this.handlePageChanged }
             containerClassName={ 'paginator' }
             subContainerClassName={ 'pages' }
