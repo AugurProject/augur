@@ -20,19 +20,22 @@ var Markets = require('./Markets');
 
 var Overview = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin('asset')],
+  mixins: [FluxMixin, StoreWatchMixin('asset', 'market')],
 
   getStateFromFlux: function () {
     var flux = this.getFlux();
     var account = flux.store('network').getAccount();
+    var currentBranch = flux.store('branch').getCurrentBranch();
 
     return {
       account: account,
       allAccounts: flux.store('network').getState().accounts,
       asset: flux.store('asset').getState(),
+      trendingMarkets: flux.store('market').getTrendingMarkets(3, currentBranch),
       ethereumClient: flux.store('config').getEthereumClient(),
       authoredMarkets: flux.store('market').getMarketsByAuthor(account),
       votePeriod: flux.store('branch').getState().currentVotePeriod,
+      currentBranch: currentBranch,
       holdings: flux.store('market').getMarketsHeld()
     }
   },
@@ -55,7 +58,6 @@ var Overview = React.createClass({
           if (market.expired && market.authored && !market.closed) {
            closeMarket = <CloseMarketTrigger text='close market' params={ { marketId: market.id.toString(16), branchId: market.branchId.toString(16) } } />;
           }
-
           
           holding = (
             <Link key={ key } className="list-group-item" to='market' params={ {marketId: market.id.toString(16) } }>
@@ -85,14 +87,27 @@ var Overview = React.createClass({
     var cashFaucetDisabled = this.state.cashFaucetDisabled ? true : false;
     var repFaucetDisabled = this.state.repFaucetDisabled ? true : false;
 
-    var trendingMarkets = <span />;
+    var trendingMarketsSection = <span />;
+    if (this.state.trendingMarkets) {
+      trendingMarketsSection = (
+        <div>
+          <h4>Trending Markets</h4>
+          <div className='row'>
+            <Markets 
+              markets={ this.state.trendingMarkets }
+              currentBranch={ this.state.currentBranch }
+              classNameWrapper='col-sm-4' />
+            </div>
+        </div>
+      );
+    }
 
     var rendered = (
       <div id="overview">
         <div className='row'>
           <div className="col-xs-12">
             <Welcome />
-            { trendingMarkets }
+            { trendingMarketsSection }
             { holdingsSection }
           </div>
         </div>
