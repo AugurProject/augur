@@ -7,6 +7,8 @@ var Button = ReactBootstrap.Button;
 var Table = ReactBootstrap.Table;
 var Router = require('react-router');
 var Link = Router.Link;
+var ListGroup = ReactBootstrap.ListGroup;
+var ListGroupItem = ReactBootstrap.ListGroupItem;
 
 var utilities = require('../libs/utilities');
 var constants = require('../libs/constants');
@@ -46,31 +48,23 @@ var Overview = React.createClass({
         var name, className, holding;
         if (outcome && outcome.sharesHeld && outcome.sharesHeld.toNumber()) {
           name = outcome.id == 1 ? 'no' : 'yes';
-          className = 'shares-held ' + name;
+          className = 'pull-right shares-held ' + name;
           var key = market.id+outcome.id;
+          var percent = +outcome.price.toFixed(2) * 100 + '%';
+          var closeMarket = <span />;
           if (market.expired && market.authored && !market.closed) {
-            holding = (
-              <tr key={ key }>
-                <td>
-                  <Link to='market' params={ {marketId: market.id.toString(16) } }>{ market.description }</Link>
-                </td>
-                <td><span className={ className }>{ outcome.sharesHeld.toNumber() } { name }</span></td>
-                <td>{ +outcome.price.toFixed(2) }</td>                
-                <td><CloseMarketTrigger text='close market' params={ { marketId: market.id.toString(16), branchId: market.branchId.toString(16) } } /></td>
-              </tr>
-            );
-          } else {
-            holding = (
-              <tr key={ key }>
-                <td>
-                  <Link to='market' params={ {marketId: market.id.toString(16) } }>{ market.description }</Link>
-                </td>
-                <td><span className={ className }>{ outcome.sharesHeld.toNumber() } { name }</span></td>
-                <td>{ +outcome.price.toFixed(2) }</td>                
-                <td></td>
-              </tr>
-            );
+           closeMarket = <CloseMarketTrigger text='close market' params={ { marketId: market.id.toString(16), branchId: market.branchId.toString(16) } } />;
           }
+
+          
+          holding = (
+            <Link key={ key } className="list-group-item" to='market' params={ {marketId: market.id.toString(16) } }>
+              <span className="price">{ percent }</span>
+              <span className="description">{ market.description }</span>
+              <span className={ className }>{ outcome.sharesHeld.toNumber() } { name }</span>            
+            </Link>
+          );
+
           holdings.push(holding);
         }
       });
@@ -80,20 +74,10 @@ var Overview = React.createClass({
     if (holdings.length) {
       holdingsSection = (
         <div>
-          <h4>Holdings</h4>
-          <Table responsive striped hover>
-            <thead>
-              <tr>
-                <th>Description</th>
-                <th>Shares Held</th>
-                <th>Price</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              { holdings }
-            </tbody>
-          </Table>
+          <h4>Current Holdings</h4>
+          <ListGroup className='holdings'>
+            { holdings }
+          </ListGroup>
         </div>
       );
     }
@@ -107,9 +91,9 @@ var Overview = React.createClass({
       <div id="overview">
         <div className='row'>
           <div className="col-xs-12">
-            <Welcome /> 
+            <Welcome />
+            { trendingMarkets }
             { holdingsSection }
-            { trendingMarkets }     
           </div>
         </div>
       </div>

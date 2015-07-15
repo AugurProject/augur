@@ -352,6 +352,9 @@ nav.header .menu li a {
 .assets .panel-heading {
     text-transform: uppercase;
     padding: 5px 10px;
+    color: #F0F0F0;
+    background-color: #a15684;
+    border-color: #7C4065;
 }
 .assets .panel-body {
     padding: 5px 10px 10px 10px;
@@ -743,11 +746,17 @@ background: linear-gradient(to bottom, rgba(24,55,111,0) 0%,rgba(24,55,111,0.7) 
     margin: 10px;
 }
 
+#overview .welcome.alert h3 {
+    border: none;
+}
+#overview .welcome.alert p {
+    font-size: 15px;
+}
 #overview h3 {
     margin-bottom: 0px;
 }
 #overview h4 {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 #overview div.subheading {
     margin-left: -15px;
@@ -766,6 +775,27 @@ background: linear-gradient(to bottom, rgba(24,55,111,0) 0%,rgba(24,55,111,0.7) 
 }
 #overview .no.shares-held {
     background-color: rgb(194, 64, 64);
+}
+
+.holdings .description {
+    margin-left: 40px
+}
+.holdings .price {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 45px;
+    text-align: right;
+    padding: 10px 5px;
+    color: #fff;
+    background-color: #18376f;
+}
+.holdings .list-group-item:first-child .price {
+    border-top-left-radius: 4px;
+}
+.holdings .list-group-item:last-child .price {
+    border-bottom-left-radius: 4px;
 }
 #ballots h3 {
     border-bottom: none;

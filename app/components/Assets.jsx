@@ -29,11 +29,21 @@ var Assets = React.createClass({
     };
   },
 
+  getStateFromFlux: function () {
+
+    var flux = this.getFlux();
+    var ethereumClient = flux.store('config').getState().percentLoaded;
+
+    return {
+      ethereumClient: flux.store('config').getEthereumClient()
+    }
+  },
+
   onCashFaucet: function(event) {
 
     if (!this.state.cashFaucetDisabled) {
 
-      if (this.state.asset.ether.toNumber() < constants.MIN_ETHER_WARNING) {
+      if (this.props.asset.ether.toNumber() < constants.MIN_ETHER_WARNING) {
         utilities.warn('not enough ether'); 
       }
 
@@ -53,7 +63,7 @@ var Assets = React.createClass({
 
     if (!this.state.repFaucetDisabled) {
 
-      if (this.state.asset.ether.toNumber() < constants.MIN_ETHER_WARNING) {
+      if (this.props.asset.ether.toNumber() < constants.MIN_ETHER_WARNING) {
         utilities.warn('not enough ether');
       }
 
