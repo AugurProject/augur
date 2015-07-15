@@ -102,7 +102,7 @@ describe("testing consensus: interpolate", function () {
                 assert.equal(r.callReturn, "0x01");
                 // reports_filled = Augur.getReportsFilled(branch, period);
                 // for (i = 0; i < num_events; ++i) {
-                //     assert.equal(reports_filled[i], Augur.abi.fix(ballot[i], "string"));
+                //     assert.equal(reports_filled[i], numeric.fix(ballot[i], "string"));
                 // }
                 // reports_mask = Augur.getReportsMask(branch, period);
                 // for (i = 0; i < num_events; ++i) {

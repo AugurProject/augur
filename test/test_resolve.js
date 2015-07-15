@@ -52,7 +52,7 @@ describe("testing consensus/resolve", function () {
         this.timeout(TIMEOUT);
         Augur.resolve(
             reputation_vector,
-            Augur.abi.unfix(reports, "string"),
+            numeric.unfix(reports, "string"),
             scaled,
             scaled_max,
             scaled_min,

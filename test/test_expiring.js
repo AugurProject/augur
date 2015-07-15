@@ -6,12 +6,11 @@
 "use strict";
 
 var assert = require("chai").assert;
-var Augur = require("../src");
+var numeric = require("../src/numeric");
 var constants = require("../src/constants");
 var utilities = require("../src/utilities");
+var Augur = utilities.setup(require("../src"), process.argv.slice(2));
 var log = console.log;
-
-Augur = utilities.setup(Augur, process.argv.slice(2));
 
 var branch = Augur.branches.dev;
 var period = Augur.getVotePeriod(branch);
@@ -208,7 +207,7 @@ describe("data and api/expiringEvents", function () {
     });
     describe("getLatent", function () {
         var test = function (r) {
-            assert(Augur.abi.bignum(r).toNumber >= 0);
+            assert(numeric.bignum(r).toNumber >= 0);
             log(r);
         };
         it("sync", function () {

@@ -48,12 +48,16 @@ var verified_accounts = false;
 var init;
 
 function runtests(geth, tests) {
+    var index = 0;
     async.forEachSeries(tests, function (test, next) {
         var mocha = new Mocha();
         mocha.addFile(path.join(options.TESTPATH, "test_" + test + ".js"));
         log(path.join(options.TESTPATH, "test_" + test + ".js"));
         mocha.run(function (failures) {
             if (failures) log(chalk.red("Failed tests:"), chalk.red.bold(failures));
+            if (index++ === tests.length - 1) {
+                process.exit(failures);
+            }
             next();
         });
     }, function (err) {
@@ -63,13 +67,19 @@ function runtests(geth, tests) {
 
 var tests = {
 
+    connection: function (geth) {
+        log(chalk.red.bold("\nConnection tests"));
+        runtests(geth, [
+            "connect",
+            "contracts"
+        ]);
+    },
+
     core: function (geth) {
         log(chalk.red.bold("\nCore tests"));
         runtests(geth, [
             "fixedpoint",
             "encoder",
-            "connect",
-            "contracts",
             "ethrpc",
             "invoke",
             "batch",
@@ -500,7 +510,7 @@ var geth_log = fs.createWriteStream(
 );
 
 var option, optstring, parser, done;
-optstring = "r(reset)g(geth)a(aux)c(core)s(consensus)o(gospel)A(all)u(augur)";
+optstring = "r(reset)g(geth)a(aux)c(core)s(consensus)n(connection)o(gospel)A(all)u:(augur)";
 parser = new mod_getopt.BasicParser(optstring, process.argv);
 
 while ((option = parser.getopt()) !== undefined) {
@@ -521,8 +531,11 @@ while ((option = parser.getopt()) !== undefined) {
         case 's':
             options.SUITE.push("consensus");
             break;
+        case 'n':
+            options.SUITE.push("connection");
+            break;
         case 'A':
-            options.SUITE = ["core", "auxiliary", "consensus"];
+            options.SUITE = ["connection", "core", "auxiliary", "consensus"];
             break;
         case 'o':
             log("Load contracts from file: " + chalk.green(options.GOSPEL_JSON));
