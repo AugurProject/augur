@@ -11,7 +11,6 @@ var fromFixedPoint = utilities.fromFixedPoint;
 var toFixedPoint = utilities.toFixedPoint;
 
 var Augur = window.Augur = require('augur.js');
-Augur.options.BigNumberOnly = true;
 
 function MissingContractError(contractName) {
   this.name = 'MissingContractError';
