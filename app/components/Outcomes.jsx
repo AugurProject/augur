@@ -222,6 +222,7 @@ var TradeBase = {
 
   handleChange: function () {
 
+    var self = this;
     var rawValue = this.refs.input.getValue()
     var numShares = parseFloat(rawValue);
 
@@ -238,14 +239,14 @@ var TradeBase = {
     } else {
 
       new Promise((resolve, reject) => {
-        this.getSimulationFunction()(
-          this.props.market.id,
-          this.props.outcome.id,
+        self.getSimulationFunction()(
+          self.props.market.id,
+          self.props.outcome.id,
           numShares,
           resolve
         );
       }).then((simulation) => {
-        this.setState({
+        self.setState({
           simulation: simulation
         });
       });
