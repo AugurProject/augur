@@ -196,8 +196,8 @@ var ErrorModal = React.createClass({
       // only open if we're not on the demo host
       if (nextProps.config.host !== constants.DEMO_HOST) this.setState({ isModalOpen: true });
 
-    //} else if (nextProps.network.blockChainAge > constants.MAX_BLOCKCHAIN_AGE) {
-    } else if (false) {   // WOO FUCK YEA!
+    } else if (nextProps.network.blockChainAge > constants.MAX_BLOCKCHAIN_AGE) {
+      
       if (!this.state.isLoading) {
         utilities.warn('blockchain ' + nextProps.network.blockChainAge + ' seconds behind');
         this.setState({ isModalOpen: true, isLoading: true, startSecondsBehind: nextProps.network.blockChainAge});
