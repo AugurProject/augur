@@ -48,7 +48,6 @@ describe("data and api/reporting", function () {
     });
     describe("getRepByIndex(" + branch_id + ", " + reporter_index + ") ", function () {
         var test = function (r) {
-            utilities.gteq0(r);
             assert.equal(Number(r), 47);
         };
         it("sync", function () {

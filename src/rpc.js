@@ -11,7 +11,9 @@ if (NODE_JS) {
     var XHR2 = require("xhr2");
 }
 var BigNumber = require("bignumber.js");
+var async = require("async");
 var numeric = require("./numeric");
+var utilities = require("./utilities");
 
 module.exports = function (options) {
 
@@ -214,9 +216,9 @@ module.exports = function (options) {
             req.send(command);
         },
 
-        // Post JSON-RPC command to Ethereum node
+        // Post JSON-RPC command to all Ethereum nodes
         json_rpc: function (command, callback) {
-            var i, j, num_nodes, num_commands, returns, result;
+            var i, j, num_nodes, num_commands, returns, result, complete;
 
             num_nodes = this.nodes.length;
 
@@ -234,9 +236,20 @@ module.exports = function (options) {
             // asynchronous request if callback exists
             if (callback && callback.constructor === Function) {
                 command = JSON.stringify(command);
-                for (j = 0; j < num_nodes; ++j) {
-                    this.post(this.nodes[j], command, returns, callback);
-                }
+                async.forEach(this.nodes, function (node, next) {
+                    this.post(node, command, returns, function (result) {
+                        if (result && result !== "0x") {
+                            return next({ data: result });
+                        } else {
+                            next();
+                        }
+                    });
+                }.bind(this), function (res) {
+                    if (!complete && res && res.data) {
+                        complete = true;
+                        callback(res.data);
+                    }
+                });
 
             // use synchronous http if no callback provided
             } else {

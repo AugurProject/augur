@@ -32,6 +32,11 @@ var constants = {
     timeout: 60000
 };
 
+constants.nodes = [
+    "http://69.164.196.239:8545",
+    "http://45.33.59.27:8545"
+];
+
 /********************
  * Ethereum testnet *
  ********************/

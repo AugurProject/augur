@@ -54,6 +54,12 @@ utilities.setup = function (augur, args, rpcinfo) {
         augur.contracts = JSON.parse(contracts.toString());
     }
     augur.options.BigNumberOnly = false;
+    augur.options.nodes = [
+        "http://localhost:8545",
+        "http://69.164.196.239:8545",
+        "http://poc9.com:8545",
+        "http://45.33.59.27:8545"
+    ];
     connected = (rpcinfo) ? augur.connect(rpcinfo) : augur.connect();
     if (connected) {
         log(chalk.magenta("augur"), "connected:", chalk.cyan(augur.options.RPC));
@@ -255,6 +261,25 @@ utilities.read_ballots = function (augur, address, branch, period) {
         }
     }
 };
+
+utilities.mode = function (array) {
+    if (array.length == 0) return null;
+    var modeMap = {};
+    var maxEl = array[0], maxCount = 1;
+    for (var i = 0, len = array.length; i < len; ++i) {
+        var el = array[i];
+        if(!modeMap[el]) {
+            modeMap[el] = 1;
+        } else {
+            modeMap[el]++;
+        }
+        if (modeMap[el] > maxCount) {
+            maxEl = el;
+            maxCount = modeMap[el];
+        }
+    }
+    return maxEl;
+}
 
 utilities.chunk32 = function (string, stride) {
     var elements, chunked, position;
