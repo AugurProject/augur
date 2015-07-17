@@ -7,7 +7,6 @@ Augur JavaScript API
 [![Bugs](https://badge.waffle.io/AugurProject/augur.js.svg?label=bugs&title=Bugs)](http://waffle.io/AugurProject/augur.js)
 [![Ready](https://badge.waffle.io/AugurProject/augur.js.svg?label=ready&title=Ready)](http://waffle.io/AugurProject/augur.js)
 [![In Progress](https://badge.waffle.io/AugurProject/augur.js.svg?label=in%20progress&title=In%20Progress)](http://waffle.io/AugurProject/augur.js)
-[![Gitter chat https://gitter.im/AugurProject/augur.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/AugurProject/augur.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 To use augur.js, you must be running a local Ethereum node.  By default, it expects your Ethereum client to be listening on port 8545.  Note that we've only tested with [geth](https://github.com/ethereum/go-ethereum) so far; use with [eth](https://github.com/ethereum/cpp-ethereum) or [pyethapp](https://github.com/ethereum/pyethapp) at your own risk.
 

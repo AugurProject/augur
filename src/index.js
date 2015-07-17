@@ -401,32 +401,36 @@ augur.connected = function () {
 augur.invoke = function (itx, f) {
     var tx, data_abi, packaged, invocation, invoked;
     if (itx) {
-        tx = utilities.copy(itx);
-        if (tx.params !== undefined) {
-            if (tx.params.constructor === Array) {
-                for (var i = 0, len = tx.params.length; i < len; ++i) {
-                    if (tx.params[i] !== undefined &&
-                        tx.params[i].constructor === BigNumber) {
-                        tx.params[i] = tx.params[i].toFixed();
+        if (itx.send && this.web && this.web.account.address) {
+            return this.web.invoke(itx, f);
+        } else {
+            tx = utilities.copy(itx);
+            if (tx.params !== undefined) {
+                if (tx.params.constructor === Array) {
+                    for (var i = 0, len = tx.params.length; i < len; ++i) {
+                        if (tx.params[i] !== undefined &&
+                            tx.params[i].constructor === BigNumber) {
+                            tx.params[i] = tx.params[i].toFixed();
+                        }
                     }
+                } else if (tx.params.constructor === BigNumber) {
+                    tx.params = tx.params.toFixed();
                 }
-            } else if (tx.params.constructor === BigNumber) {
-                tx.params = tx.params.toFixed();
             }
-        }
-        if (tx.to) tx.to = numeric.prefix_hex(tx.to);
-        if (tx.from) tx.from = numeric.prefix_hex(tx.from);
-        data_abi = this.abi.encode(tx);
-        if (data_abi) {
-            packaged = {
-                from: tx.from || this.coinbase,
-                to: tx.to,
-                data: data_abi
-            };
-            if (tx.returns) packaged.returns = tx.returns;
-            invocation = (tx.send) ? this.sendTx : this.call;
-            invoked = true;
-            return invocation.call(this, packaged, f);
+            if (tx.to) tx.to = numeric.prefix_hex(tx.to);
+            if (tx.from) tx.from = numeric.prefix_hex(tx.from);
+            data_abi = this.abi.encode(tx);
+            if (data_abi) {
+                packaged = {
+                    from: tx.from || this.coinbase,
+                    to: tx.to,
+                    data: data_abi
+                };
+                if (tx.returns) packaged.returns = tx.returns;
+                invocation = (tx.send) ? this.sendTx : this.call;
+                invoked = true;
+                return invocation.call(this, packaged, f);
+            }
         }
     }
     if (!invoked) {
@@ -764,7 +768,7 @@ augur.reputationFaucet = function (branch, onSent, onSuccess, onFailed) {
 augur.getCashBalance = function (account, onSent) {
     // account: ethereum address (hexstring)
     var tx = utilities.copy(this.tx.getCashBalance);
-    tx.params = account || this.coinbase;
+    tx.params = account || this.web.account.address || this.coinbase;
     return this.fire(tx, onSent);
 };
 augur.sendCash = function (to, value, onSent, onSuccess, onFailed) {

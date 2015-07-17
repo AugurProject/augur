@@ -13,7 +13,6 @@ if (NODE_JS) {
 var BigNumber = require("bignumber.js");
 var async = require("async");
 var numeric = require("./numeric");
-var utilities = require("./utilities");
 
 module.exports = function (options) {
 
@@ -240,14 +239,20 @@ module.exports = function (options) {
                     this.post(node, command, returns, function (result) {
                         if (result && result !== "0x") {
                             return next({ data: result });
+                        } else if (result && result.error) {
+                            return next(result);
                         } else {
                             next();
                         }
                     });
                 }.bind(this), function (res) {
-                    if (!complete && res && res.data) {
-                        complete = true;
-                        callback(res.data);
+                    if (!complete && res) {
+                        if (res.data) {
+                            complete = true;
+                            callback(res.data);
+                        } else if (res.error) {
+                            callback(res);
+                        }
                     }
                 });
 

@@ -7,9 +7,19 @@ var buffer = require("vinyl-buffer");
 var rename = require("gulp-rename");
 var uglify = require("gulp-uglify");
 var sourcemaps = require("gulp-sourcemaps");
+var del = require("del");
 var gutil = require("gulp-util");
+var runSequence = require("run-sequence");
 
-gulp.task("default", function () {
+gulp.task("clean", function (callback) {
+    del(["dist"], callback);
+});
+
+gulp.task("test", function (callback) {
+    require("./scripts/workflow")(callback);
+});
+
+gulp.task("build", function () {
 
     var b = browserify({
         entries: "./src/index.js",
@@ -19,10 +29,18 @@ gulp.task("default", function () {
     return b.bundle()
         .pipe(source("augur.js"))
         .pipe(buffer())
-        .pipe(sourcemaps.init({loadMaps: true}))
+        .pipe(sourcemaps.init({ loadMaps: true }))
             .pipe(uglify())
             .on("error", gutil.log)
         .pipe(sourcemaps.write("./"))
         .pipe(gulp.dest("./dist/"));
 
+});
+
+gulp.task("watch", function() {
+    gulp.watch("src/*", ["build"]);
+});
+
+gulp.task("default", ["clean"], function (callback) {
+    runSequence(["test", "build"], callback);
 });

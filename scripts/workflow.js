@@ -114,10 +114,10 @@ var tests = {
     auxiliary: function (geth) {
         log(chalk.red.bold("\nAuxiliary tests"));
         runtests(geth, [
-            "comments",
-            "webclient",
+            // "comments",
+            "webclient"
             // "priceLog",
-            "multicast"
+            // "multicast"
         ]);
     }
 
@@ -503,54 +503,75 @@ options.GETH_FLAGS = [
 ];
 
 log("Create", chalk.magenta("geth"), "log file:",
-        chalk.green(path.join(__dirname || "", options.LOG)));
+    chalk.green(path.join(__dirname || "", options.LOG)));
 var geth_log = fs.createWriteStream(
     path.join(__dirname || "", options.LOG),
     {flags : 'w'}
 );
 
-var option, optstring, parser, done;
-optstring = "r(reset)g(geth)a(aux)c(core)s(consensus)n(connection)o(gospel)A(all)u:(augur)";
-parser = new mod_getopt.BasicParser(optstring, process.argv);
+if (module.parent && !process.argv.slice(2).length) {
 
-while ((option = parser.getopt()) !== undefined) {
-    switch (option.option) {
-        case 'r':
-            options.RESET = true;
-            options.SPAWN_GETH = true;
-            break;
-        case 'g':
-            options.SPAWN_GETH = false;
-            break;
-        case 'a':
-            options.SUITE.push("auxiliary");
-            break;
-        case 'c':
-            options.SUITE.push("core");
-            break;
-        case 's':
-            options.SUITE.push("consensus");
-            break;
-        case 'n':
-            options.SUITE.push("connection");
-            break;
-        case 'A':
-            options.SUITE = ["connection", "core", "auxiliary", "consensus"];
-            break;
-        case 'o':
-            log("Load contracts from file: " + chalk.green(options.GOSPEL_JSON));
-            Augur.contracts = JSON.parse(fs.readFileSync(options.GOSPEL_JSON));
-            options.CUSTOM_GOSPEL = true;
-            break;
-        case 'u':
-            options.AUGUR_CORE = option.optarg;
-            break;
-        default:
-            assert.equal('?', option.option);
-            done = true;
-            break;
+    options.RESET = false;
+    options.SPAWN_GETH = true;
+    options.SUITE = ["connection", "core", "auxiliary"];
+
+    log("Load contracts from file: " + chalk.green(options.GOSPEL_JSON));
+    Augur.contracts = JSON.parse(fs.readFileSync(options.GOSPEL_JSON));
+    options.CUSTOM_GOSPEL = true;
+
+    module.exports = function (callback) {
+        if (callback) {
+            callback(main(accounts[0], options));
+        } else {
+            main(accounts[0], options);
+        }
+    };
+
+} else {
+
+    var option, optstring, parser, done;
+    optstring = "r(reset)g(geth)a(aux)c(core)s(consensus)n(connection)o(gospel)A(all)u:(augur)";
+    parser = new mod_getopt.BasicParser(optstring, process.argv);
+
+    while ((option = parser.getopt()) !== undefined) {
+        switch (option.option) {
+            case 'r':
+                options.RESET = true;
+                options.SPAWN_GETH = true;
+                break;
+            case 'g':
+                options.SPAWN_GETH = false;
+                break;
+            case 'a':
+                options.SUITE.push("auxiliary");
+                break;
+            case 'c':
+                options.SUITE.push("core");
+                break;
+            case 's':
+                options.SUITE.push("consensus");
+                break;
+            case 'n':
+                options.SUITE.push("connection");
+                break;
+            case 'A':
+                options.SUITE = ["connection", "core", "auxiliary", "consensus"];
+                break;
+            case 'o':
+                log("Load contracts from file: " + chalk.green(options.GOSPEL_JSON));
+                Augur.contracts = JSON.parse(fs.readFileSync(options.GOSPEL_JSON));
+                options.CUSTOM_GOSPEL = true;
+                break;
+            case 'u':
+                options.AUGUR_CORE = option.optarg;
+                break;
+            default:
+                assert.equal('?', option.option);
+                done = true;
+                break;
+        }
+        if (done) break;
     }
-    if (done) break;
-}
 
-main(accounts[0], options);
+    main(accounts[0], options);
+}

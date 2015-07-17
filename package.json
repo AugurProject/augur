@@ -38,8 +38,10 @@
   },
   "homepage": "https://github.com/AugurProject/augur.js",
   "devDependencies": {
+    "async-require": "^1.1.0",
     "browserify": "^10.2.6",
     "chai": "^3.0.0",
+    "del": "^1.2.0",
     "gulp": "^3.9.0",
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^1.5.2",
@@ -51,6 +53,7 @@
     "mocha": "^2.2.4",
     "posix-getopt": "^1.1.0",
     "rimraf": "^2.4.0",
+    "run-sequence": "^1.1.1",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
   },

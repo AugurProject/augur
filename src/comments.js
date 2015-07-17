@@ -172,7 +172,11 @@ module.exports = function (augur) {
         getMarketComments: function (market) {
             var comments = this.db.get(market);
             if (comments) {
-                return JSON.parse(comments);
+                if (!comments.error) {
+                    return JSON.parse(comments);
+                } else {
+                    return comments;
+                }
             } else {
                 return null;
             }
@@ -196,28 +200,32 @@ module.exports = function (augur) {
                 // get existing comment(s) stored locally
                 // (note: build with DFATDB=1 if DBUNDLE=minimal)
                 comments = this.db.get(market);
-                if (comments && comments !== '""') {
-                    // console.log("stored:", comments);
-                    // console.log("incoming:", updated);
-                    updated = updated.slice(0,-1) + "," + comments.slice(1);
-                    // console.log("concat:", updated);
-                }
-                if (this.db.write(market, updated)) {
-                    transmission = {
-                        from: whisper_id,
-                        topics: [market],
-                        payload: numeric.prefix_hex(numeric.encode_hex(updated)),
-                        priority: "0x64",
-                        ttl: "0x600" // 10 minutes
-                    };
-                    if (this.post(transmission)) {
-                        var decoded = numeric.decode_hex(transmission.payload);
-                        return JSON.parse(decoded.slice(1));
+                if (comments && !comments.error) {
+                    if (comments && comments !== '""') {
+                        // console.log("stored:", comments);
+                        // console.log("incoming:", updated);
+                        updated = updated.slice(0,-1) + "," + comments.slice(1);
+                        // console.log("concat:", updated);
+                    }
+                    if (this.db.write(market, updated)) {
+                        transmission = {
+                            from: whisper_id,
+                            topics: [market],
+                            payload: numeric.prefix_hex(numeric.encode_hex(updated)),
+                            priority: "0x64",
+                            ttl: "0x600" // 10 minutes
+                        };
+                        if (this.post(transmission)) {
+                            var decoded = numeric.decode_hex(transmission.payload);
+                            return JSON.parse(decoded.slice(1));
+                        } else {
+                            return errors.WHISPER_POST_FAILED;
+                        }
                     } else {
-                        return errors.WHISPER_POST_FAILED;
+                        return errors.DB_WRITE_FAILED;
                     }
                 } else {
-                    return errors.DB_WRITE_FAILED;
+                    return comments;
                 }
             } else {
                 return whisper_id;
