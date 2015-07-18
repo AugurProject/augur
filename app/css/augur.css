@@ -454,6 +454,7 @@ background: linear-gradient(to bottom, rgba(24,55,111,0) 0%,rgba(24,55,111,0.7) 
     padding: 3px 12px;
     background-color: #a3b9e2;
     font-size: 20px;
+    height: 34px;
 }
 .market-pane .summary i {
     font-weight: 100;
