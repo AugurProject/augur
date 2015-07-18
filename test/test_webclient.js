@@ -227,23 +227,24 @@ describe("Web client", function () {
         assert.equal(confirmTx.to, tx.to);
     });
 
-    it("should automatically detect login and default to using web.invoke", function () {
+    it("should automatically detect login and default to using web.invoke", function (done) {
         this.timeout(constants.timeout);
         var user = Augur.web.login(handle, password);
         Augur.reputationFaucet(
             Augur.branches.dev,
             function (r) {
                 // sent
-                log("sent:", r);
             },
             function (r) {
                 // success
                 log("success!", r);
                 assert.equal(r.from, Augur.web.account.address);
+                done();
             },
             function (r) {
                 // failed
-                log("failed:", r);
+                throw new Error(r);
+                done();
             }
         );
     });
