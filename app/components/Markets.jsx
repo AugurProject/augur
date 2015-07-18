@@ -39,6 +39,7 @@ class MarketPane extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    
     for (let attr of this.relevantMarketAttrs) {
       if (this.lastMarket[attr] != nextProps.market[attr])
         return true;
@@ -49,12 +50,17 @@ class MarketPane extends React.Component {
   }
 
   render() {
+
     var market = this.props.market;
     var matured = this.props.currentBranch && this.props.currentBranch.currentPeriod >= this.props.market.tradingPeriod;
+    var volume =_.reduce(market.outcomes, function(volume, outcome) {
+      if (outcome) return volume + parseFloat(outcome.volume);
+    }, 0);
+
     var formattedDate = market.endDate ? moment(market.endDate).format('MMM Do, YYYY') : '-';
     var price = market.price ? Math.abs(market.price).toFixed(3) : '-';
     var percent = market.price ? +market.price.times(100).toFixed(1) + '%' : ''
-    var volume = market.volume ? +market.volume.toFixed(2) : '-';
+    var volume = volume ? +volume.toFixed(2) : '-';
     var tradingFee = market.tradingFee ? +market.tradingFee.times(100).toFixed(2)+'%' : '-';
 
     for (let attr of this.relevantMarketAttrs) {
