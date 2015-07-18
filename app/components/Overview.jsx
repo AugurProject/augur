@@ -53,7 +53,7 @@ var Overview = React.createClass({
           name = outcome.id == 1 ? 'no' : 'yes';
           className = 'pull-right shares-held ' + name;
           var key = market.id+outcome.id;
-          var percent = +outcome.price.toFixed(2) * 100 + '%';
+          var percent = market.price ? +market.price.toFixed(2) * 100 + '%': '-';
           var closeMarket = <span />;
           if (market.expired && market.authored && !market.closed) {
            closeMarket = <CloseMarketTrigger text='close market' params={ { marketId: market.id.toString(16), branchId: market.branchId.toString(16) } } />;

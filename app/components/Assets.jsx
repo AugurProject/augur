@@ -4,6 +4,7 @@ var Fluxxor = require("fluxxor");
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 var utilities = require('../libs/utilities');
+var constants = require('../libs/constants');
 
 var ReactBootstrap = require('react-bootstrap');
 var Button = ReactBootstrap.Button;
@@ -32,7 +33,6 @@ var Assets = React.createClass({
   getStateFromFlux: function () {
 
     var flux = this.getFlux();
-    var ethereumClient = flux.store('config').getState().percentLoaded;
 
     return {
       ethereumClient: flux.store('config').getEthereumClient()

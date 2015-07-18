@@ -11,7 +11,7 @@ module.exports = {
   NO: ONE_FXP,
   YES: ONE_FXP.mul(2),
   SECONDS_PER_BLOCK: 12,
-  MAX_BLOCKCHAIN_AGE: 120,  // in seconds
+  MAX_BLOCKCHAIN_AGE: 300,  // in seconds
   MARKETS_PER_PAGE: 15,
   MIN_ETHER_WARNING: 50000000000000000000,
   CHANGE_EVENT: 'change',
