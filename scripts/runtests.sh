@@ -2,16 +2,16 @@
 
 trap "exit" INT
 
-# jshint src/augur.js
+jshint src
 
-mocha test/test_connect.js $1
-mocha test/test_contracts.js $1
 mocha test/test_fixedpoint.js $1
 mocha test/test_encoder.js $1
 mocha test/test_ethrpc.js $1
 mocha test/test_invoke.js $1
 # mocha test/test_expiring.js $1
 mocha test/test_batch.js $1
+mocha test/test_connect.js $1
+mocha test/test_contracts.js $1
 # mocha test/test_createEvent.js $1
 mocha test/test_createMarket.js $1
 mocha test/test_branches.js $1

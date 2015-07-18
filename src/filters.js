@@ -69,46 +69,6 @@ module.exports = function (augur) {
             }
         },
 
-        getCreationBlock: function (market_id, callback) {
-            if (market_id) {
-                var filter = {
-                    fromBlock: "0x1",
-                    toBlock: augur.blockNumber(),
-                    topics: ["creationBlock"]
-                };
-                if (callback) {
-                    augur.filters.eth_getLogs(filter, function (logs) {
-                        callback(logs);
-                    });
-                } else {
-                    return augur.filters.eth_getFilterLogs(filter);
-                }
-            }
-        },
-
-        getMarketPriceHistory: function (market_id, outcome_id, callback) {
-            if (market_id && outcome_id) {
-                var filter = {
-                    fromBlock: "0x1",
-                    toBlock: augur.blockNumber(),
-                    topics: ["updatePrice"]
-                };
-                if (callback) {
-                    this.eth_getLogs(filter, function (logs) {
-                        callback(
-                            this.search_price_logs(logs, market_id, outcome_id)
-                        );
-                    }.bind(this));
-                } else {
-                    return this.search_price_logs(
-                        this.eth_getLogs(filter),
-                        market_id,
-                        outcome_id
-                    );
-                }
-            }
-        },
-
         poll_eth_listener: function (filter_name, onMessage) {
             var filterId = this.price_filters[filter_name].filterId;
             this.filters.eth_getFilterChanges(filterId, function (message) {

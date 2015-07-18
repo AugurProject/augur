@@ -7,6 +7,8 @@
 var BigNumber = require("bignumber.js");
 var constants = require("./constants");
 
+BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
+
 module.exports = {
 
     encode_int: function (value) {

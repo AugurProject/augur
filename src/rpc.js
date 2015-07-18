@@ -14,6 +14,8 @@ var BigNumber = require("bignumber.js");
 var async = require("async");
 var numeric = require("./numeric");
 
+BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
+
 module.exports = function (options) {
 
     return {
@@ -219,8 +221,6 @@ module.exports = function (options) {
         json_rpc: function (command, callback) {
             var i, j, num_nodes, num_commands, returns, result, complete;
 
-            num_nodes = this.nodes.length;
-
             // parse batched commands and strip "returns" fields
             if (command.constructor === Array) {
                 num_commands = command.length;
@@ -259,6 +259,7 @@ module.exports = function (options) {
             // use synchronous http if no callback provided
             } else {
                 if (!NODE_JS) command = JSON.stringify(command);
+                num_nodes = this.nodes.length;
                 for (j = 0; j < num_nodes; ++j) {
                     result = this.postSync(this.nodes[j], command, returns);
                     if (result && result !== "0x") return result;

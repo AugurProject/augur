@@ -6,6 +6,8 @@
 
 var BigNumber = require("bignumber.js");
 
+BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
+
 var constants = {
 
     ONE: (new BigNumber(2)).toPower(64),
@@ -29,7 +31,7 @@ var constants = {
 
     max_test_accounts: 4,
 
-    timeout: 60000
+    timeout: 120000
 };
 
 constants.nodes = [

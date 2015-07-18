@@ -1,5 +1,7 @@
 "use strict";
 
+var cp = require("child_process");
+var chalk = require("chalk");
 var browserify = require("browserify");
 var gulp = require("gulp");
 var source = require("vinyl-source-stream");
@@ -16,6 +18,17 @@ gulp.task("clean", function (callback) {
 });
 
 gulp.task("test", function (callback) {
+    var runtests = cp.spawn("./scripts/runtests.sh", ["--gospel"]);
+    runtests.stdout.on("data", function (data) {
+        process.stdout.write(data);
+    });
+    runtests.stderr.on("data", function (data) {
+        process.stdout.write(chalk.yellow(data.toString()));
+    });
+    runtests.on("close", callback);
+});
+
+gulp.task("workflow", function (callback) {
     require("./scripts/workflow")(callback);
 });
 
@@ -38,5 +51,5 @@ gulp.task("watch", function() {
 });
 
 gulp.task("default", ["clean"], function (callback) {
-    runSequence(["build"], callback);
+    runSequence(["test", "build"], callback);
 });

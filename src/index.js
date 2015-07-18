@@ -268,6 +268,14 @@ augur.getCode = augur.read = function (address, block, f) {
  * Ethereum network connection *
  *******************************/
 
+augur.listening = function () {
+    try {
+        return this.net("listening");
+    } catch (e) {
+        return false;
+    }
+};
+
 augur.connect = function (rpcinfo, chain) {
 
     var default_rpc = function () {
@@ -1923,6 +1931,48 @@ augur.dispatch = function (branch, onSent, onSuccess, onFailed) {
         var tx = utilities.copy(this.tx.dispatch);
         tx.params = branch;
         return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    }
+};
+
+// filters
+
+augur.getCreationBlock = function (market_id, callback) {
+    if (market_id) {
+        var filter = {
+            fromBlock: "0x1",
+            toBlock: this.blockNumber(),
+            topics: ["creationBlock"]
+        };
+        if (callback) {
+            this.filters.eth_getLogs(filter, function (logs) {
+                callback(logs);
+            });
+        } else {
+            return this.filters.eth_getFilterLogs(filter);
+        }
+    }
+};
+
+augur.getMarketPriceHistory = function (market_id, outcome_id, callback) {
+    if (market_id && outcome_id) {
+        var filter = {
+            fromBlock: "0x1",
+            toBlock: this.blockNumber(),
+            topics: ["updatePrice"]
+        };
+        if (callback) {
+            this.filters.eth_getLogs(filter, function (logs) {
+                callback(
+                    this.filters.search_price_logs(logs, market_id, outcome_id)
+                );
+            }.bind(this));
+        } else {
+            return this.filters.search_price_logs(
+                this.filters.eth_getLogs(filter),
+                market_id,
+                outcome_id
+            );
+        }
     }
 };
 

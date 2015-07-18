@@ -19,6 +19,8 @@ var constants = require("./constants");
 var utilities = require("./utilities");
 var numeric = require("./numeric");
 
+BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
+
 module.exports = function (augur) {
 
     return {
@@ -205,57 +207,61 @@ module.exports = function (augur) {
         invoke: function (itx, callback) {
             var tx, data_abi, packaged, stored;
 
-            // client-side transactions only needed for sendTransactions
-            if (itx.send) {
-                if (this.account.privateKey && itx && itx.constructor === Object) {
+            if (this.account.address) {
+                itx.from = this.account.address;
 
-                    // parse and serialize transaction parameters
-                    tx = utilities.copy(itx);
-                    if (tx.params !== undefined) {
-                        if (tx.params.constructor === Array) {
-                            for (var i = 0, len = tx.params.length; i < len; ++i) {
-                                if (tx.params[i] !== undefined &&
-                                    tx.params[i].constructor === BigNumber) {
-                                    tx.params[i] = tx.params[i].toFixed();
+                // client-side transactions only needed for sendTransactions
+                if (itx.send) {
+                    if (this.account.privateKey && itx && itx.constructor === Object) {
+
+                        // parse and serialize transaction parameters
+                        tx = utilities.copy(itx);
+                        if (tx.params !== undefined) {
+                            if (tx.params.constructor === Array) {
+                                for (var i = 0, len = tx.params.length; i < len; ++i) {
+                                    if (tx.params[i] !== undefined &&
+                                        tx.params[i].constructor === BigNumber) {
+                                        tx.params[i] = tx.params[i].toFixed();
+                                    }
                                 }
+                            } else if (tx.params.constructor === BigNumber) {
+                                tx.params = tx.params.toFixed();
                             }
-                        } else if (tx.params.constructor === BigNumber) {
-                            tx.params = tx.params.toFixed();
+                            data_abi = augur.abi.encode(tx);
                         }
-                        data_abi = augur.abi.encode(tx);
-                    }
 
-                    // package up the transaction and submit it to the network
-                    packaged = new EthTx({
-                        to: tx.to,
-                        gasPrice: "0xda475abf000", // 0.000015 ether
-                        gasLimit: (tx.gas) ? tx.gas : constants.default_gas,
-                        nonce: ++this.account.nonce,
-                        value: tx.value || "0x0",
-                        data: data_abi
-                    });
+                        // package up the transaction and submit it to the network
+                        packaged = new EthTx({
+                            to: tx.to,
+                            gasPrice: "0xda475abf000", // 0.000015 ether
+                            gasLimit: (tx.gas) ? tx.gas : constants.default_gas,
+                            nonce: ++this.account.nonce,
+                            value: tx.value || "0x0",
+                            data: data_abi
+                        });
 
-                    // write the incremented nonce to the database
-                    stored = this.db.get(this.account.handle);
-                    stored.nonce = this.account.nonce;
-                    this.db.write(this.account.handle, stored);
+                        // write the incremented nonce to the database
+                        stored = this.db.get(this.account.handle);
+                        stored.nonce = this.account.nonce;
+                        this.db.write(this.account.handle, stored);
 
-                    // sign, validate, and send the transaction
-                    packaged.sign(this.account.privateKey);
-                    if (packaged.validate()) {
-                        return augur.sendRawTx(packaged.serialize().toString("hex"), callback);
+                        // sign, validate, and send the transaction
+                        packaged.sign(this.account.privateKey);
+                        if (packaged.validate()) {
+                            return augur.sendRawTx(packaged.serialize().toString("hex"), callback);
 
-                    // transaction validation failed
+                        // transaction validation failed
+                        } else {
+                            return errors.TRANSACTION_INVALID;
+                        }
                     } else {
-                        return errors.TRANSACTION_INVALID;
+                        return errors.TRANSACTION_FAILED;
                     }
-                } else {
-                    return errors.TRANSACTION_FAILED;
-                }
 
-            // if this is just a call, use the regular invoke method
-            } else {
-                return augur.invoke(itx, callback);
+                // if this is just a call, use the regular invoke method
+                } else {
+                    return augur.invoke(itx, callback);
+                }
             }
         }
 

@@ -234,10 +234,10 @@ describe("Web client", function () {
             Augur.branches.dev,
             function (r) {
                 // sent
+                assert.equal(r.callReturn, "1");
             },
             function (r) {
                 // success
-                log("success!", r);
                 assert.equal(r.from, Augur.web.account.address);
                 done();
             },

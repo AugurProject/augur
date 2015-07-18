@@ -13,6 +13,8 @@ var constants = require("./constants");
 var numeric = require("./numeric");
 var log = console.log;
 
+BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
+
 module.exports = {
 
     // calculate date from block number
