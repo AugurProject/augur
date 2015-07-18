@@ -56,6 +56,7 @@ var augur = {
 
     tx: require("./tx"),
     abi: require("./abi"),
+    utilities: utilities,
 
     rpc: {},
     web: {},

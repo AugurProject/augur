@@ -13,7 +13,7 @@ mocha test/test_invoke.js $1
 # mocha test/test_expiring.js $1
 mocha test/test_batch.js $1
 # mocha test/test_createEvent.js $1
-# mocha test/test_createMarket.js $1
+mocha test/test_createMarket.js $1
 mocha test/test_branches.js $1
 mocha test/test_info.js $1
 mocha test/test_markets.js $1

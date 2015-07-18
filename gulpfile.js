@@ -20,13 +20,10 @@ gulp.task("test", function (callback) {
 });
 
 gulp.task("build", function () {
-
-    var b = browserify({
-        entries: "./src/index.js",
-        debug: true
-    });
-
-    return b.bundle()
+    return browserify({
+            entries: "./src/index.js",
+            debug: true
+        }).bundle()
         .pipe(source("augur.js"))
         .pipe(buffer())
         .pipe(sourcemaps.init({ loadMaps: true }))
@@ -34,7 +31,6 @@ gulp.task("build", function () {
             .on("error", gutil.log)
         .pipe(sourcemaps.write("./"))
         .pipe(gulp.dest("./dist/"));
-
 });
 
 gulp.task("watch", function() {
@@ -42,5 +38,5 @@ gulp.task("watch", function() {
 });
 
 gulp.task("default", ["clean"], function (callback) {
-    runSequence(["test", "build"], callback);
+    runSequence(["build"], callback);
 });

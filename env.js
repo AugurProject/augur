@@ -12,6 +12,7 @@ GLOBAL.moment = require("moment");
 GLOBAL.EthTx = require("ethereumjs-tx");
 GLOBAL.EthUtil = require("ethereumjs-util");
 GLOBAL.eccrypto = require("eccrypto");
+GLOBAL.web3 = require("web3");
 GLOBAL.Augur = require("./src");
 GLOBAL.constants = require("./src/constants");
 GLOBAL.utilities = require("./src/utilities");
@@ -24,6 +25,8 @@ GLOBAL.ballot = [ 2, 1.5, 1.5, 1, 1.5, 1.5, 1 ];
 
 Augur.options.BigNumberOnly = false;
 Augur.connect();
+
+web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"));
 
 GLOBAL.accounts = utilities.get_test_accounts(Augur, constants.max_test_accounts);
 GLOBAL.c = Augur.coinbase;

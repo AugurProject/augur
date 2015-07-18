@@ -96,19 +96,19 @@ module.exports = {
                         if (tx.params[i].constructor === Number) {
                             stat = numeric.bignum(tx.params[i]);
                             if (stat !== 0) {
-                                stat = stat.mod(constants.MAXBITS).toFixed();
+                                stat = stat.mod(constants.MOD).toFixed();
                             } else {
                                 stat = stat.toFixed();
                             }
                             statics += this.pad_left(numeric.encode_int(stat));
                         } else if (tx.params[i].constructor === String) {
                             if (tx.params[i].slice(0,1) === '-') {
-                                stat = numeric.bignum(tx.params[i]).mod(constants.MAXBITS).toFixed();
+                                stat = numeric.bignum(tx.params[i]).mod(constants.MOD).toFixed();
                                 statics += this.pad_left(numeric.encode_int(stat));
                             } else if (tx.params[i].slice(0,2) === "0x") {
                                 statics += this.pad_left(tx.params[i].slice(2), true);
                             } else {
-                                stat = numeric.bignum(tx.params[i]).mod(constants.MAXBITS);
+                                stat = numeric.bignum(tx.params[i]).mod(constants.MOD);
                                 statics += this.pad_left(numeric.encode_int(stat));
                             }
                         }
@@ -116,29 +116,29 @@ module.exports = {
                 } else if (types[i] === "bytes" || types[i] === "string") {
                     // offset (in 32-byte chunks)
                     stat = 32*num_params + 0.5*dynamics.length;
-                    stat = numeric.bignum(stat).mod(constants.MAXBITS).toFixed();
+                    stat = numeric.bignum(stat).mod(constants.MOD).toFixed();
                     statics += this.pad_left(numeric.encode_int(stat));
                     dynamics += this.pad_left(numeric.encode_int(tx.params[i].length));
                     dynamics += this.pad_right(numeric.encode_hex(tx.params[i]));
                 } else if (types[i] === "int256[]") {
                     stat = 32*num_params + 0.5*dynamics.length;
-                    stat = numeric.bignum(stat).mod(constants.MAXBITS).toFixed();
+                    stat = numeric.bignum(stat).mod(constants.MOD).toFixed();
                     statics += this.pad_left(numeric.encode_int(stat));
                     var arraylen = tx.params[i].length;
                     dynamics += this.pad_left(numeric.encode_int(arraylen));
                     for (var j = 0; j < arraylen; ++j) {
                         if (tx.params[i][j] !== undefined) {
                             if (tx.params[i][j].constructor === Number) {
-                                dynamic = numeric.bignum(tx.params[i][j]).mod(constants.MAXBITS).toFixed();
+                                dynamic = numeric.bignum(tx.params[i][j]).mod(constants.MOD).toFixed();
                                 dynamics += this.pad_left(numeric.encode_int(dynamic));
                             } else if (tx.params[i][j].constructor === String) {
                                 if (tx.params[i][j].slice(0,1) === '-') {
-                                    dynamic = numeric.bignum(tx.params[i][j]).mod(constants.MAXBITS).toFixed();
+                                    dynamic = numeric.bignum(tx.params[i][j]).mod(constants.MOD).toFixed();
                                     dynamics += this.pad_left(numeric.encode_int(dynamic));
                                 } else if (tx.params[i][j].slice(0,2) === "0x") {
                                     dynamics += this.pad_left(tx.params[i][j].slice(2), true);
                                 } else {
-                                    dynamic = numeric.bignum(tx.params[i][j]).mod(constants.MAXBITS);
+                                    dynamic = numeric.bignum(tx.params[i][j]).mod(constants.MOD);
                                     dynamics += this.pad_left(numeric.encode_int(dynamic));
                                 }
                             }
