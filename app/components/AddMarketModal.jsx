@@ -131,6 +131,12 @@ var AddMarketModal = React.createClass({
     return true;
   },
 
+  onHide: function() {
+
+    this.setState(this.getInitialState());
+    this.props.onHide();
+  },
+
   onBack: function(event) {
     var newPageNumber = this.state.pageNumber - 1;
     this.setState({pageNumber: newPageNumber});
@@ -175,7 +181,7 @@ var AddMarketModal = React.createClass({
       }.bind(this));
     }.bind(this));
 
-    this.props.onHide();
+    this.onHide();
   },
 
   handleDatePicked: function(dateText, moment, event) {
@@ -299,7 +305,7 @@ var AddMarketModal = React.createClass({
     }
 
     return (
-      <Modal {...this.props} id='add-market-modal'>
+      <Modal {...this.props} onHide={ this.onHide } id='add-market-modal'>
         <div className="modal-header clearfix">
           <h4>New Market<span className='subheading pull-right'>{ subheading }</span></h4>
         </div>
