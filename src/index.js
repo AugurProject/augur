@@ -692,7 +692,7 @@ augur.fire = function (itx, onSent) {
 augur.check_blockhash =  function (tx, callreturn, itx, txhash, returns, count, onSent, onSuccess, onFailed) {
     if (tx && tx.blockHash && numeric.bignum(tx.blockHash).toNumber() !== 0) {
         this.clear_notifications(txhash);
-        tx.callReturn = this.encode_result(callreturn, tx.returns);
+        tx.callReturn = this.encode_result(callreturn, returns);
         tx.txHash = tx.hash;
         delete tx.hash;
         if (onSuccess) onSuccess(tx);

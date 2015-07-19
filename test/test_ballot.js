@@ -50,7 +50,7 @@ describe("Set ballots for " + reporters.length + " reporters", function () {
             },
             function (r) {
                 // success
-                assert.equal(r.callReturn, "0x01");
+                assert.equal(r.callReturn, "1");
                 done();
             },
             function (r) {
@@ -86,7 +86,7 @@ describe("Set ballots for " + reporters.length + " reporters", function () {
             },
             function (r) {
                 // success
-                assert.equal(r.callReturn, "0x01");
+                assert.equal(r.callReturn, "1");
                 done();
             },
             function (r) {
@@ -123,7 +123,7 @@ describe("Set ballots for " + reporters.length + " reporters", function () {
             },
             function (r) {
                 // success
-                assert.equal(r.callReturn, "0x01");
+                assert.equal(r.callReturn, "1");
                 done();
             },
             function (r) {
@@ -154,7 +154,7 @@ describe("Set ballots for " + reporters.length + " reporters", function () {
             },
             function (r) {
                 // success
-                assert.equal(r.callReturn, "0x01");
+                assert.equal(r.callReturn, "1");
                 next();
             },
             function (r) {

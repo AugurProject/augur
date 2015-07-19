@@ -107,8 +107,9 @@ module.exports = {
                     } catch (exc) {
                         if (n.slice(0, 1) === '-') {
                             bn = new BigNumber("-0x" + n.slice(1));
+                        } else {
+                            bn = new BigNumber("0x" + n);
                         }
-                        bn = new BigNumber("0x" + n);
                     }
                     break;
                 case BigNumber:
