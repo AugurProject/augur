@@ -44,22 +44,21 @@ module.exports = {
     },
 
     setup: function (augur, args, rpcinfo) {
-        var connected, gospel, contracts;
+        var gospel, contracts;
         if (NODE_JS && args && (args.indexOf("--gospel") > -1 || args.indexOf("--reset") > -1)) {
             gospel = path.join(__dirname, "..", "test", "gospel.json");
             log("Load contracts from file: " + chalk.green(gospel));
             contracts = fs.readFileSync(gospel);
             augur.contracts = JSON.parse(contracts.toString());
+            augur.init_contracts = this.copy(augur.contracts);
         }
         augur.options.BigNumberOnly = false;
         // augur.options.nodes = [
         //     "http://localhost:8545",
         //     "http://69.164.196.239:8545",
-        //     "http://poc9.com:8545",
         //     "http://45.33.59.27:8545"
         // ];
-        connected = (rpcinfo) ? augur.connect(rpcinfo) : augur.connect();
-        if (connected) {
+        if (augur.connect(rpcinfo)) {
             log(chalk.magenta("augur"), "connected:", chalk.cyan(augur.options.RPC));
         }
         return augur;
@@ -173,10 +172,16 @@ module.exports = {
         var i = -1;
         var calls = 0;
         var looping = false;
-        var iterate = function () {
+        var iterate = function (quit, breaker) {
             calls -= 1;
             i += 1;
-            if (i === n) return;
+            if (i === n || quit) {
+                if (breaker) {
+                    return breaker();
+                } else {
+                    return;
+                }
+            }
             iterator(list[i], next);
         };
         var runloop = function () {
@@ -185,10 +190,13 @@ module.exports = {
             while (calls > 0) iterate();
             looping = false;
         };
-        var next = function () {
+        var next = function (quit, breaker) {
             calls += 1;
-            if (typeof setTimeout === "undefined") runloop();
-            else setTimeout(iterate, 1);
+            if (typeof setTimeout === "undefined") {
+                runloop();
+            } else {
+                setTimeout(function () { iterate(quit, breaker); }, 1);
+            }
         };
         next();
     },

@@ -9,19 +9,25 @@ GLOBAL.crypto = require("crypto");
 GLOBAL._ = require("lodash");
 GLOBAL.chalk = require("chalk");
 GLOBAL.moment = require("moment");
+GLOBAL.longjohn = require("longjohn");
 GLOBAL.EthTx = require("ethereumjs-tx");
 GLOBAL.EthUtil = require("ethereumjs-util");
 GLOBAL.eccrypto = require("eccrypto");
 GLOBAL.web3 = require("web3");
 GLOBAL.Augur = require("./src");
+GLOBAL.contracts = require("./src/contracts");
 GLOBAL.constants = require("./src/constants");
 GLOBAL.utilities = require("./src/utilities");
 GLOBAL.numeric = require("./src/numeric");
 GLOBAL.RPC = require("./src/rpc");
+GLOBAL.Tx = require("./src/tx");
 GLOBAL.augur = Augur;
 GLOBAL.log = console.log;
 GLOBAL.b = Augur.branches.dev;
 GLOBAL.ballot = [ 2, 1.5, 1.5, 1, 1.5, 1.5, 1 ];
+
+longjohn.async_trace_limit = 25;
+longjohn.empty_frame = "";
 
 Augur.options.BigNumberOnly = false;
 Augur.connect();

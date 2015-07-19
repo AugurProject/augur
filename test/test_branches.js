@@ -18,6 +18,8 @@ var log = console.log;
 Augur = utilities.setup(Augur, process.argv.slice(2));
 web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"));
 
+Augur.connect();
+
 var branch_id = Augur.branches.dev;
 var branch_number = "0";
 
@@ -129,33 +131,33 @@ var branches_full_abi = [
 // branches.se
 describe("branches.se", function () {
     describe("getBranches", function () {
-      var test = function (r) {
-        assert.equal(r.constructor, Array);
-        assert.equal(r.length, 1);
-        assert.equal(r[0], branch_id);
-      };
-      it("sync", function () {
-        test(Augur.getBranches());
-      });
-      it("async", function (done) {
-        Augur.getBranches(function (r) {
-          test(r); done();
+        var test = function (r) {
+            assert.equal(r.constructor, Array);
+            assert.equal(r.length, 1);
+            assert.equal(r[0], branch_id);
+        };
+        it("sync", function () {
+            test(Augur.getBranches());
         });
-      });
+        it("async", function (done) {
+            Augur.getBranches(function (r) {
+                test(r); done();
+            });
+        });
     });
     describe("getMarkets(" + branch_id + ")", function () {
-      var test = function (r) {
-        assert.equal(r.constructor, Array);
-        assert(r.length > 1);
-      };
-      it("sync", function () {
-        test(Augur.getMarkets(branch_id));
-      });
-      it("async", function (done) {
-        Augur.getMarkets(branch_id, function (r) {
-          test(r); done();
+        var test = function (r) {
+            assert.equal(r.constructor, Array);
+            assert(r.length > 1);
+        };
+        it("sync", function () {
+            test(Augur.getMarkets(branch_id));
         });
-      });
+        it("async", function (done) {
+            Augur.getMarkets(branch_id, function (r) {
+                test(r); done();
+            });
+        });
     });
     describe("getPeriodLength(" + branch_id + ") == '1800'", function () {
         var test = function (r) {

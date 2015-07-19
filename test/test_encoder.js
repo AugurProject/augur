@@ -12,6 +12,9 @@ var numeric = require("../src/numeric");
 var coder = require("./solidity/coder");
 var log = console.log;
 
+Augur.contracts = require("../src/contracts").testnet;
+Augur.tx = new require("../src/tx")(Augur.contracts);
+
 describe("Hex/ASCII conversion", function () {
     var test = function (t) {
         it("should convert " + t.hex + " to " + t.ascii, function () {

@@ -11,18 +11,23 @@ if (NODE_JS) {
     var XHR2 = require("xhr2");
 }
 var BigNumber = require("bignumber.js");
-var async = require("async");
 var numeric = require("./numeric");
+var utilities = require("./utilities");
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
 module.exports = function (options) {
 
+    var nodes = [options.RPC];
+    if (options.nodes && options.nodes.length) {
+        nodes = nodes.concat(options.nodes);
+    }
+
     return {
 
         BigNumberOnly: options.BigNumberOnly,
 
-        nodes: [options.RPC].concat(options.nodes),
+        nodes: nodes,
 
         id: 1,
 
@@ -221,6 +226,8 @@ module.exports = function (options) {
         json_rpc: function (command, callback) {
             var i, j, num_nodes, num_commands, returns, result, complete;
 
+            // console.log(command);
+
             // parse batched commands and strip "returns" fields
             if (command.constructor === Array) {
                 num_commands = command.length;
@@ -235,26 +242,16 @@ module.exports = function (options) {
             // asynchronous request if callback exists
             if (callback && callback.constructor === Function) {
                 command = JSON.stringify(command);
-                async.forEach(this.nodes, function (node, next) {
+                utilities.loop(this.nodes, function (node, next) {
                     this.post(node, command, returns, function (result) {
-                        if (result && result !== "0x") {
-                            return next({ data: result });
-                        } else if (result && result.error) {
-                            return next(result);
-                        } else {
-                            next();
-                        }
-                    });
-                }.bind(this), function (res) {
-                    if (!complete && res) {
-                        if (res.data) {
+                        if (result !== undefined && result !== "0x") {
                             complete = true;
-                            callback(res.data);
-                        } else if (res.error) {
-                            callback(res);
+                        } else if (result !== undefined && result.error) {
+                            complete = true;
                         }
-                    }
-                });
+                        next(complete, function () { callback(result); });
+                    });
+                }.bind(this));
 
             // use synchronous http if no callback provided
             } else {

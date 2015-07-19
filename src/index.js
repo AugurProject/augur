@@ -24,6 +24,7 @@ var RPC = require("./rpc");
 var WebClient = require("./web");
 var Comments = require("./comments");
 var Filters = require("./filters");
+var Tx = require("./tx");
 
 var log = console.log;
 
@@ -54,7 +55,6 @@ var augur = {
 
     options: {},
 
-    tx: require("./tx"),
     abi: require("./abi"),
     utilities: utilities,
     numeric: numeric,
@@ -64,8 +64,8 @@ var augur = {
     comments: {},
     filters: {},
 
-    contracts: utilities.copy(contracts.testnet),
-    init_contracts: utilities.copy(contracts.testnet),
+    // contracts: utilities.copy(contracts.testnet),
+    // init_contracts: utilities.copy(contracts.testnet),
 
     // send_call_confirm notifications
     notifications: {},
@@ -88,6 +88,7 @@ var augur = {
 augur.reload_modules = function (options) {
     if (options) this.options = options;
     this.rpc = new RPC(this.options);
+    if (this.contracts) this.tx = new Tx(this.contracts);
     this.web = new WebClient(this);
     this.comments = new Comments(this);
     this.filters = new Filters(this);
@@ -284,7 +285,7 @@ augur.connect = function (rpcinfo, chain) {
         return false;
     }.bind(this);
 
-    var rpc, key, rpc_obj = {};
+    var rpc, key, method, rpc_obj = {};
     if (rpcinfo) {
         if (rpcinfo.constructor === Object) {
             if (rpcinfo.protocol) rpc_obj.protocol = rpcinfo.protocol;
@@ -332,25 +333,24 @@ augur.connect = function (rpcinfo, chain) {
         this.options.RPC = DEFAULT_RPC;
     }
     this.reload_modules();
+    // if (!this.listening()) {
+    //    // TODO if no local ethereum node, default to web client
+    // }
     try {
-        if (JSON.stringify(this.contracts) === JSON.stringify(this.init_contracts)) {
-            if (chain) {
-                if (chain === "1010101" || chain === 1010101) {
+        if (!this.init_contracts) {
+            this.network_id = chain || this.rpc.json_rpc(this.rpc.postdata("version", [], "net_")) || "0";
+            switch (this.network_id.toString()) {
+                case "1010101":
                     this.contracts = utilities.copy(contracts.privatechain);
-                } else if (chain === "10101" || chain === 10101) {
+                    break;
+                case "10101":
                     this.contracts = utilities.copy(contracts.testchain);
-                }
-            } else {
-                chain = this.rpc.json_rpc(this.rpc.postdata("version", [], "net_"));
-                if (chain === "1010101" || chain === 1010101) {
-                    this.contracts = utilities.copy(contracts.privatechain);
-                } else if (chain === "10101" || chain === 10101) {
-                    this.contracts = utilities.copy(contracts.testchain);
-                } else {
+                    break;
+                default:
                     this.contracts = utilities.copy(contracts.testnet);
-                }
             }
-            this.network_id = chain || "0";
+            this.tx = new Tx(this.contracts);
+            this.init_contracts = utilities.copy(this.contracts);
         }
         this.coinbase = this.rpc.json_rpc(this.rpc.postdata("coinbase"));
         if (!this.coinbase) {
@@ -368,16 +368,23 @@ augur.connect = function (rpcinfo, chain) {
             }
         }
         if (this.coinbase && this.coinbase !== "0x") {
-            for (var method in this.tx) {
+            for (method in this.tx) {
                 if (!this.tx.hasOwnProperty(method)) continue;
                 this.tx[method].from = this.coinbase;
+            }
+        } else {
+            return default_rpc();
+        }
+        if (JSON.stringify(this.init_contracts) !== JSON.stringify(this.contracts)) {
+            for (method in this.tx) {
+                if (!this.tx.hasOwnProperty(method)) continue;
                 key = utilities.has_value(this.init_contracts, this.tx[method].to);
                 if (key) {
                     this.tx[method].to = this.contracts[key];
                 }
             }
-        } else {
-            return default_rpc();
+            this.tx = new Tx(this.contracts);
+            this.init_contracts = utilities.copy(this.contracts);
         }
         return true;
     } catch (e) {
@@ -1745,7 +1752,7 @@ augur.sellShares = function (branch, market, outcome, amount, nonce, limit, onSe
         this.getNonce(market, function (nonce) {
             tx.params = [branch, market, outcome, numeric.fix(amount), nonce, limit || 0];
             this.send_call_confirm(tx, onSent, onSuccess, onFailed);
-        });
+        }.bind(this));
     } else {
         nonce = this.getNonce(market);
         tx.params = [branch, market, outcome, numeric.fix(amount), nonce, limit || 0];

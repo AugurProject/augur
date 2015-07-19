@@ -8,14 +8,17 @@
 var fs = require("fs");
 var assert = require("assert");
 var async = require("async");
+var longjohn = require("longjohn");
 var chalk = require("chalk");
-var Augur = require("../src");
+var constants = require("../src/constants");
+var utilities = require("../src/utilities");
+var Augur = utilities.setup(require("../src"), process.argv.slice(2));
 var log = console.log;
+
+longjohn.async_trace_limit = 25;
+longjohn.empty_frame = "";
+
 require('it-each')({ testPerIteration: true });
-
-Augur = require("../src/utilities").setup(Augur, process.argv.slice(2));
-
-var TIMEOUT = 5000;
 
 var branch = Augur.branches.dev;
 var outcome = "1.0";
@@ -52,9 +55,16 @@ for (var i = 0; i < eventsMarkets.length; ++i) {
     log(chalk.green("   ✓ ") + chalk.gray("Found ") +
         chalk.gray("market for event " + events[j]));
 }
+
+// describe("Market/event lookup", function () {
+//     it("should have the same number of events and markets", function () {
+//         assert.equal(events.length, markets.length);
+//     });
+// });
     
 describe("Buy and sell shares", function () {
-    assert.equal(events.length, markets.length);
+    var markets = Augur.getMarkets(branch);
+    markets = markets.slice(markets.length - 1);
     it.each(markets, "getNonce: %s", ['element'], function (element, next) {
         var test = function (r) {
             assert(Number(r) >= 0);
@@ -64,7 +74,7 @@ describe("Buy and sell shares", function () {
         });
     });
     it.each(markets, "buyShares: %s", ['element'], function (element, next) {
-        this.timeout(TIMEOUT);
+        this.timeout(constants.timeout);
         var amount = "10";
         Augur.buyShares({
             branchId: branch,
@@ -73,18 +83,21 @@ describe("Buy and sell shares", function () {
             amount: amount,
             nonce: null,
             onSent: function (r) {
-                log(r); next();
+                assert(parseInt(r.callReturn) > 0);
             },
             onSuccess: function (r) {
-                log(r.callReturn); next();
+                assert(r.txHash);
+                assert(parseInt(r.callReturn) > 0);
+                next();
             },
             onFailed: function (r) {
-                throw(r.message); next();
+                throw new Error(r);
+                next();
             }
         });
     });
     it.each(markets, "sellShares: %s", ['element'], function (element, next) {
-        this.timeout(TIMEOUT);
+        this.timeout(constants.timeout);
         var amount = "1";
         Augur.sellShares({
             branchId: branch,
@@ -93,13 +106,16 @@ describe("Buy and sell shares", function () {
             amount: amount,
             nonce: null,
             onSent: function (r) {
-                log(r);
+                assert(parseInt(r.callReturn) > 0);
             },
             onSuccess: function (r) {
-                log(r.callReturn); next();
+                assert(r.txHash);
+                assert(parseInt(r.callReturn) > 0);
+                next();
             },
             onFailed: function (r) {
-                throw(r.message); next();
+                throw new Error(r);
+                next();
             }
         });
     });
