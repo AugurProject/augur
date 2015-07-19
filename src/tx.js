@@ -36,11 +36,13 @@ module.exports = function (contracts) {
             send: true,
             signature: "ii"
         },
+
         // info.se
         getCreator: {
             to: contracts.info,
             method: "getCreator",
-            signature: "i"
+            signature: "i",
+            returns: "address"
         },
         getCreationFee: {
             to: contracts.info,
@@ -274,7 +276,8 @@ module.exports = function (contracts) {
         getEvent: {
             to: contracts.expiringEvents,
             method: "getEvent",
-            signature: "iii"
+            signature: "iii",
+            returns: "hash"
         },
         getTotalRepReported: {
             to: contracts.expiringEvents,
@@ -297,7 +300,8 @@ module.exports = function (contracts) {
         getReportHash: {
             to: contracts.expiringEvents,
             method: "getReportHash",
-            signature: "iii"
+            signature: "iii",
+            returns: "hash"
         },
         getVSize: {
             to: contracts.expiringEvents,
@@ -429,7 +433,8 @@ module.exports = function (contracts) {
             to: contracts.expiringEvents,
             method: "setReporterBallot",
             signature: "iiiai",
-            send: true
+            send: true,
+            returns: "number"
         },
         setVSize: {
             to: contracts.expiringEvents,
@@ -598,7 +603,8 @@ module.exports = function (contracts) {
         getBranchID: {
             to: contracts.markets,
             method: "getBranchID",
-            signature: "i"
+            signature: "i",
+            returns: "hash"
         },
         getCurrentParticipantNumber: {
             to: contracts.markets,
@@ -645,7 +651,8 @@ module.exports = function (contracts) {
         getParticipantID: {
             to: contracts.markets,
             method: "getParticipantID",
-            signature: "ii"
+            signature: "ii",
+            returns: "address"
         },
         getAlpha: {
             to: contracts.markets,
@@ -688,7 +695,8 @@ module.exports = function (contracts) {
         getReporterID: {
             to: contracts.reporting,
             method: "getReporterID",
-            signature: "ii"
+            signature: "ii",
+            returns: "address"
         },
         getReputation: {
             to: contracts.reporting,

@@ -53,6 +53,8 @@ var options = {
 
 var augur = {
 
+    connection: null,
+
     options: {},
 
     abi: require("./abi"),
@@ -64,8 +66,8 @@ var augur = {
     comments: {},
     filters: {},
 
-    // contracts: utilities.copy(contracts.testnet),
-    // init_contracts: utilities.copy(contracts.testnet),
+    contracts: utilities.copy(contracts.testnet),
+    init_contracts: utilities.copy(contracts.testnet),
 
     // send_call_confirm notifications
     notifications: {},
@@ -75,9 +77,9 @@ var augur = {
 
     // Branch IDs
     branches: {
-        demo: '0x00000000000000000000000000000000000000000000000000000000000f69b5',
-        alpha: '0x00000000000000000000000000000000000000000000000000000000000f69b5',
-        dev: '0x00000000000000000000000000000000000000000000000000000000000f69b5'
+        demo: '0xf69b5',
+        alpha: '0xf69b5',
+        dev: '0xf69b5'
     },
 
     // Demo account (demo.augur.net)
@@ -334,11 +336,12 @@ augur.connect = function (rpcinfo, chain) {
     }
     this.reload_modules();
     // if (!this.listening()) {
-    //    // TODO if no local ethereum node, default to web client
+       // TODO if no local ethereum node, default to web client
     // }
     try {
-        if (!this.init_contracts) {
-            this.network_id = chain || this.rpc.json_rpc(this.rpc.postdata("version", [], "net_")) || "0";
+        if (this.connection === null &&
+            JSON.stringify(this.init_contracts) === JSON.stringify(this.contracts)) {
+            this.network_id = chain || this.version() || "0";
             switch (this.network_id.toString()) {
                 case "1010101":
                     this.contracts = utilities.copy(contracts.privatechain);
@@ -349,8 +352,14 @@ augur.connect = function (rpcinfo, chain) {
                 default:
                     this.contracts = utilities.copy(contracts.testnet);
             }
-            this.tx = new Tx(this.contracts);
-            this.init_contracts = utilities.copy(this.contracts);
+            for (method in this.tx) {
+                if (!this.tx.hasOwnProperty(method)) continue;
+                key = utilities.has_value(this.init_contracts, this.tx[method].to);
+                if (key) {
+                    this.tx[method].to = this.contracts[key];
+                }
+            }
+            this.reload_modules();
         }
         this.coinbase = this.rpc.json_rpc(this.rpc.postdata("coinbase"));
         if (!this.coinbase) {
@@ -383,9 +392,10 @@ augur.connect = function (rpcinfo, chain) {
                     this.tx[method].to = this.contracts[key];
                 }
             }
-            this.tx = new Tx(this.contracts);
-            this.init_contracts = utilities.copy(this.contracts);
+            this.reload_modules();
         }
+        this.init_contracts = utilities.copy(this.contracts);
+        this.connection = true;
         return true;
     } catch (e) {
         return default_rpc();
@@ -575,6 +585,26 @@ augur.clear_notifications = function (id) {
     }
 };
 
+augur.encode_result = function (result, returns) {
+    if (result) {
+        if (returns === "address" || returns === "address[]") {
+            result = numeric.prefix_hex(numeric.remove_leading_zeros(result));
+        } else {
+            if (this.options.BigNumberOnly && returns !== "string") {
+                result = numeric.bignum(result);
+            }
+            if (!this.options.BigNumberOnly) {
+                if (!returns || returns === "hash[]" || returns === "hash") {
+                    result = numeric.bignum(result, "hex");
+                } else if (returns === "number") {
+                    result = numeric.bignum(result, "string");
+                }
+            }
+        }
+    }
+    return result;
+};
+
 augur.error_codes = function (tx, response) {
     if (response && response.constructor === Array) {
         for (var i = 0, len = response.length; i < len; ++i) {
@@ -642,14 +672,16 @@ augur.fire = function (itx, onSent) {
     tx = utilities.copy(itx);
     if (onSent) {
         this.invoke(tx, function (res) {
-            res = this.error_codes(tx, res);
-            if (res && this.options.BigNumberOnly && itx.returns && itx.returns !== "string" && itx.returns !== "hash[]") {
-                res = numeric.bignum(res);
-            }
-            onSent(res);
+            onSent(this.encode_result(
+                this.error_codes(tx, res),
+                itx.returns
+            ));
         }.bind(this));
     } else {
-        return this.error_codes(tx, this.invoke(tx, onSent));
+        return this.encode_result(
+            this.error_codes(tx, this.invoke(tx, onSent)),
+            itx.returns
+        );
     }        
 };
 
@@ -660,12 +692,9 @@ augur.fire = function (itx, onSent) {
 augur.check_blockhash =  function (tx, callreturn, itx, txhash, returns, count, onSent, onSuccess, onFailed) {
     if (tx && tx.blockHash && numeric.bignum(tx.blockHash).toNumber() !== 0) {
         this.clear_notifications(txhash);
-        tx.callReturn = callreturn;
+        tx.callReturn = this.encode_result(callreturn, tx.returns);
         tx.txHash = tx.hash;
         delete tx.hash;
-        if (this.options.BigNumberOnly && tx.returns && tx.returns !== "string" && tx.returns !== "hash[]") {
-            tx.callReturn = numeric.bignum(tx.callReturn);
-        }
         if (onSuccess) onSuccess(tx);
     } else {
         if (count !== undefined && count < constants.TX_POLL_MAX) {
@@ -731,7 +760,7 @@ augur.call_confirm = function (tx, txhash, returns, onSent, onSuccess, onFailed)
                                 } else {
                                     onSent({
                                         txHash: txhash,
-                                        callReturn: callreturn
+                                        callReturn: self.encode_result(callreturn, returns)
                                     });
                                     if (onSuccess) {
                                         self.tx_notify(

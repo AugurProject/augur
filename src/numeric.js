@@ -82,57 +82,60 @@ module.exports = {
         return n;
     },
 
-    bignum: function (n, encoding, compact) {
+    bignum: function (n, encoding) {
         var bn, len;
         if (n !== null && n !== undefined && n !== "0x") {
-            if (n.constructor === Number) {
-                if (Math.floor(Math.log(n) / Math.log(10) + 1) <= 15) {
-                    bn = new BigNumber(n);
-                } else {
-                    n = n.toString();
+            switch (n.constructor) {
+                case Number:
+                    if (Math.floor(Math.log(n) / Math.log(10) + 1) <= 15) {
+                        bn = new BigNumber(n);
+                    } else {
+                        n = n.toString();
+                        try {
+                            bn = new BigNumber(n);
+                        } catch (exc) {
+                            if (n.slice(0,1) === '-') {
+                                bn = new BigNumber("-0x" + n.slice(1));
+                            }
+                            bn = new BigNumber("0x" + n);
+                        }
+                    }
+                    break;
+                case String:
                     try {
                         bn = new BigNumber(n);
                     } catch (exc) {
-                        if (n.slice(0,1) === '-') {
+                        if (n.slice(0, 1) === '-') {
                             bn = new BigNumber("-0x" + n.slice(1));
                         }
                         bn = new BigNumber("0x" + n);
                     }
-                }
-            } else if (n.constructor === String) {
-                try {
-                    bn = new BigNumber(n);
-                } catch (exc) {
-                    if (n.slice(0,1) === '-') {
-                        bn = new BigNumber("-0x" + n.slice(1));
+                    break;
+                case BigNumber:
+                    bn = n;
+                    break;
+                case Array:
+                    len = n.length;
+                    bn = new Array(len);
+                    for (var i = 0; i < len; ++i) {
+                        bn[i] = this.bignum(n[i], encoding);
                     }
-                    bn = new BigNumber("0x" + n);
-                }
-            } else if (n.constructor === BigNumber) {
-                bn = n;
-            } else if (n.constructor === Array ) {
-                len = n.length;
-                bn = new Array(len);
-                for (var i = 0; i < len; ++i) {
-                    bn[i] = this.bignum(n[i]);
-                }
+                    break;
+                default:
+                    return n;
             }
-            if (bn && bn.constructor !== Array && bn.gt(constants.BYTES_32)) {
-                bn = bn.sub(constants.MOD);
-            }
-            if (compact && bn.constructor !== Array) {
-                var cbn = bn.sub(constants.MOD);
-                if (bn.toString(16).length > cbn.toString(16).length) {
-                    bn = cbn;
+            if (bn !== undefined && bn !== null && bn.constructor === BigNumber) {
+                if (bn.gt(constants.BYTES_32)) {
+                    bn = bn.sub(constants.MOD);
                 }
-            }
-            if (bn && encoding) {
-                if (encoding === "number") {
-                    bn = bn.toNumber();
-                } else if (encoding === "string") {
-                    bn = bn.toFixed();
-                } else if (encoding === "hex") {
-                    bn = bn.toString(16);
+                if (encoding) {
+                    if (encoding === "number") {
+                        bn = bn.toNumber();
+                    } else if (encoding === "string") {
+                        bn = bn.toFixed();
+                    } else if (encoding === "hex") {
+                        bn = this.prefix_hex(bn.toString(16));
+                    }
                 }
             }
             return bn;

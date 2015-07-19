@@ -18,8 +18,6 @@ var log = console.log;
 Augur = utilities.setup(Augur, process.argv.slice(2));
 web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"));
 
-Augur.connect();
-
 var branch_id = Augur.branches.dev;
 var branch_number = "0";
 
@@ -172,10 +170,9 @@ describe("branches.se", function () {
             });
         });
     });
-    describe("getVotePeriod(" + branch_id + ") in [-1, 100]", function () {
+    describe("getVotePeriod(" + branch_id + ") >= -1", function () {
         var test = function (r) {
             assert(parseInt(r) >= -1);
-            assert(parseInt(r) <= 100);
         };
         it("sync", function () {
             test(Augur.getVotePeriod(branch_id));
@@ -256,18 +253,25 @@ describe("branches.se", function () {
 
 describe("augur.js / web3 interoperability", function () {
     it("market IDs should be identical", function () {
+        this.timeout(constants.timeout);
         var web3markets = web3.eth.contract(branches_full_abi)
                                   .at(Augur.contracts.branches)
                                   .getMarkets
                                   .call(branch_id);
         Augur.options.BigNumberOnly = true;
-        Augur.connect();
+        Augur = utilities.setup(Augur, process.argv.slice(2), null, true);
         var markets = {
             augurjs: Augur.getMarkets(branch_id),
             web3: web3markets
         };
         for (var i = 0, len = markets.augurjs.length; i < len; ++i) {
+            // log("augurjs:", chalk.green(markets.augurjs[i].toString(16)));
+            // log("web3:   ", chalk.green(markets.web3[i].toString(16)));
             assert(markets.augurjs[i].eq(markets.web3[i]));
+            assert.equal(
+                markets.augurjs[i].toString(16),
+                markets.web3[i].toString(16)
+            );
         }
     });
 });

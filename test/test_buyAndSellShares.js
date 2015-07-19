@@ -56,11 +56,11 @@ for (var i = 0; i < eventsMarkets.length; ++i) {
         chalk.gray("market for event " + events[j]));
 }
 
-// describe("Market/event lookup", function () {
-//     it("should have the same number of events and markets", function () {
-//         assert.equal(events.length, markets.length);
-//     });
-// });
+describe("Market/event lookup", function () {
+    it("should have the same number of events and markets", function () {
+        assert.equal(events.length, markets.length);
+    });
+});
     
 describe("Buy and sell shares", function () {
     var markets = Augur.getMarkets(branch);

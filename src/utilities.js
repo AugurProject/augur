@@ -43,16 +43,15 @@ module.exports = {
         }
     },
 
-    setup: function (augur, args, rpcinfo) {
+    setup: function (augur, args, rpcinfo, bignum) {
         var gospel, contracts;
         if (NODE_JS && args && (args.indexOf("--gospel") > -1 || args.indexOf("--reset") > -1)) {
             gospel = path.join(__dirname, "..", "test", "gospel.json");
             log("Load contracts from file: " + chalk.green(gospel));
             contracts = fs.readFileSync(gospel);
             augur.contracts = JSON.parse(contracts.toString());
-            augur.init_contracts = this.copy(augur.contracts);
         }
-        augur.options.BigNumberOnly = false;
+        if (!bignum) augur.options.BigNumberOnly = false;
         // augur.options.nodes = [
         //     "http://localhost:8545",
         //     "http://69.164.196.239:8545",
