@@ -240,12 +240,12 @@ describe("Web client", function () {
                 // sent
                 assert(r.txHash);
                 assert.equal(r.callReturn, "1");
-                console.log("sent:", r);
+                // console.log("sent:", r);
             },
             function (r) {
                 // success
-                console.log("success:", r);
-                // assert.equal(r.from, Augur.web.account.address);
+                // console.log("success:", r);
+                assert.equal(r.from, Augur.web.account.address);
                 done();
             },
             function (r) {

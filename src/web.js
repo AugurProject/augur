@@ -236,11 +236,9 @@ module.exports = function (augur) {
                         packaged = new EthTx({
                             to: tx.to,
                             from: this.account.address,
-                            // gasPrice: "0xda475abf000", // 0.000015 ether
-                            gasPrice: "0x10b3274548a",
+                            gasPrice: "0xda475abf000", // 0.000015 ether
                             gasLimit: (tx.gas) ? tx.gas : constants.default_gas,
-                            // nonce: ++this.account.nonce,
-                            nonce: 1338,
+                            nonce: ++this.account.nonce,
                             value: tx.value || "0x0",
                             data: data_abi
                         });
@@ -253,7 +251,6 @@ module.exports = function (augur) {
                         // sign, validate, and send the transaction
                         packaged.sign(this.account.privateKey);
                         if (packaged.validate()) {
-                            console.log(packaged.serialize().toString("hex"));
                             return augur.sendRawTx(
                                 packaged.serialize().toString("hex"),
                                 callback
