@@ -42,6 +42,7 @@ module.exports = {
         return hex;
     },
 
+    // convert bytes to hex
     encode_hex: function (str) {
         var hexbyte, hex = '';
         for (var i = 0, len = str.length; i < len; ++i) {
@@ -69,20 +70,22 @@ module.exports = {
     },
 
     prefix_hex: function (n) {
-        if (n.constructor === Number || n.constructor === BigNumber) {
-            n = n.toString(16);
-        }
-        if (n.slice(0,2) !== "0x" && n.slice(0,3) !== "-0x") {
-            if (n.slice(0,1) === '-') {
-                n = "-0x" + n.slice(1);
-            } else {
-                n = "0x" + n;
+        if (n !== undefined && n !== null) {
+            if (n.constructor === Number || n.constructor === BigNumber) {
+                n = n.toString(16);
+            }
+            if (n.slice(0,2) !== "0x" && n.slice(0,3) !== "-0x") {
+                if (n.slice(0,1) === '-') {
+                    n = "-0x" + n.slice(1);
+                } else {
+                    n = "0x" + n;
+                }
             }
         }
         return n;
     },
 
-    bignum: function (n, encoding) {
+    bignum: function (n, encoding, nowrap) {
         var bn, len;
         if (n !== null && n !== undefined && n !== "0x") {
             switch (n.constructor) {
@@ -126,7 +129,7 @@ module.exports = {
                     return n;
             }
             if (bn !== undefined && bn !== null && bn.constructor === BigNumber) {
-                if (bn.gt(constants.BYTES_32)) {
+                if (!nowrap && bn.gte(constants.BYTES_32)) {
                     bn = bn.sub(constants.MOD);
                 }
                 if (encoding) {
@@ -143,6 +146,44 @@ module.exports = {
         } else {
             return n;
         }
+    },
+
+    hex: function (n, nowrap) {
+        var h;
+        if (n !== undefined && n !== null && n.constructor) {
+            switch (n.constructor) {
+                case Object:
+                    h = this.encode_hex(JSON.stringify(n));
+                    break;
+                case Array:
+                    h = this.encode_hex(JSON.stringify(n));
+                    break;
+                case BigNumber:
+                    h = n.toString(16);
+                    break;
+                case String:
+                    if (n === "-0x0") {
+                        h = "0x0";
+                    } else if (n === "-0") {
+                        h = "0";
+                    } else if (n.slice(0, 3) === "-0x" || n.slice(0, 2) === "-0x") {
+                        h = n;
+                    } else {
+                        if (isFinite(n)) {
+                            h = this.bignum(n, "hex", nowrap);
+                        } else {
+                            h = this.encode_hex(n);
+                        }
+                    }
+                    break;
+                case Boolean:
+                    h = (n) ? "0x1" : "0x0";
+                    break;
+                default:
+                    h = this.bignum(n, "hex");
+            }
+        }
+        return this.prefix_hex(h);
     },
 
     /**************************
@@ -165,7 +206,7 @@ module.exports = {
                 } else {
                     fixed = this.bignum(n).mul(constants.ONE).round();
                 }
-                if (fixed && fixed.gt(constants.BYTES_32)) {
+                if (fixed && fixed.gte(constants.BYTES_32)) {
                     fixed = fixed.sub(constants.MOD);
                 }
                 if (encode) {

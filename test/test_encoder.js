@@ -6,6 +6,8 @@
 "use strict";
 
 var assert = require("chai").assert;
+var BigNumber = require("bignumber.js");
+var chalk = require("chalk");
 var Augur = require("../src");
 var constants = require("../src/constants");
 var numeric = require("../src/numeric");
@@ -14,6 +16,50 @@ var log = console.log;
 
 Augur.contracts = require("../src/contracts").testnet;
 Augur.tx = new require("../src/tx")(Augur.contracts);
+
+// from web3.js toHex tests
+var tests = [
+    { value: 1, expected: "0x1" },
+    { value: "1", expected: "0x1" },
+    { value: "0x1", expected: "0x1"},
+    { value: "15", expected: "0xf"},
+    { value: "0xf", expected: "0xf"},
+    { value: -1, expected: "-0x1"},
+    { value: "-1", expected: "-0x1"},
+    { value: "-0x1", expected: "-0x1"},
+    { value: "-15", expected: "-0xf"},
+    { value: "-0xf", expected: "-0xf"},
+    { value: "0x657468657265756d", expected: "0x657468657265756d"},
+    { value: "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd",
+      expected: "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd" },
+    { value: "-0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      expected: "-0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" },
+    { value: "-0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd",
+      expected: "-0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd" },
+    { value: 0, expected: "0x0"},
+    { value: "0", expected: "0x0"},
+    { value: "0x0", expected: "0x0"},
+    { value: -0, expected: "0x0"},
+    { value: "-0", expected: "0x0"},
+    { value: "-0x0", expected: "0x0"},
+    { value: [1,2,3,{test: "data"}], expected: "0x5b312c322c332c7b2274657374223a2264617461227d5d"},
+    { value: {test: "test"}, expected: "0x7b2274657374223a2274657374227d"},
+    { value: '{"test": "test"}', expected: "0x7b2274657374223a202274657374227d"},
+    { value: "myString", expected: "0x6d79537472696e67"},
+    { value: new BigNumber(15), expected: "0xf"},
+    { value: true, expected: "0x1"},
+    { value: false, expected: "0x0"}
+];
+
+describe("Hex conversion", function () {
+    tests.forEach(function (test) {
+        it("should turn " + test.value + " to " + test.expected, function () {
+            // log("numeric.hex:       ", chalk.green(numeric.hex(test.value, true)));
+            // log("expected (web3):   ", chalk.green(test.expected) + "\n");
+            assert.strictEqual(numeric.hex(test.value, true), test.expected);
+        });
+    });
+});
 
 describe("Hex/ASCII conversion", function () {
     var test = function (t) {
