@@ -51,8 +51,8 @@ function runtests(geth, tests) {
     var index = 0;
     async.forEachSeries(tests, function (test, next) {
         var mocha = new Mocha();
-        mocha.addFile(path.join(options.TESTPATH, "test_" + test + ".js"));
-        log(path.join(options.TESTPATH, "test_" + test + ".js"));
+        mocha.addFile(path.join(options.TESTPATH, test + ".js"));
+        log(path.join(options.TESTPATH, test + ".js"));
         mocha.run(function (failures) {
             if (failures) log(chalk.red("Failed tests:"), chalk.red.bold(failures));
             if (index++ === tests.length - 1) {
@@ -98,13 +98,14 @@ var tests = {
         log(chalk.red.bold("\nConsensus workflow tests"));
         runtests(geth, [
             "createEvent",
-            // "expiring",
+            "expiring",
             "addEvent",
             "buyAndSellShares",
-            "checkQuorum",
             "ballot",
+            "makeReports",
+            "checkQuorum",
             "interpolate",
-            "consensus",
+            "dispatch",
             "score",
             "resolve",
             "closeMarket"
@@ -114,10 +115,10 @@ var tests = {
     auxiliary: function (geth) {
         log(chalk.red.bold("\nAuxiliary tests"));
         runtests(geth, [
+            "web",
+            "multicast"
             // "comments",
-            "webclient"
-            // "priceLog",
-            // "multicast"
+            // "priceLog"
         ]);
     }
 
@@ -335,7 +336,7 @@ function upload_contracts(geth) {
 function setup_mocha_tests(tests) {
     var mocha = new Mocha();
     for (var i = 0, len = tests.length; i < len; ++i) {
-        mocha.addFile(path.join(options.TESTPATH, "test_" + tests[i] + ".js"));
+        mocha.addFile(path.join(options.TESTPATH, tests[i] + ".js"));
     }
     return mocha;
 }

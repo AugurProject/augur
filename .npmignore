@@ -2,7 +2,9 @@ node_modules
 .gitignore
 .npmignore
 .travis.yml
+lib
 test
 scripts
 env.js
 coverage
+overflow

@@ -11,7 +11,7 @@ var chalk = require("chalk");
 var Augur = require("../src");
 var constants = require("../src/constants");
 var numeric = require("../src/numeric");
-var coder = require("./solidity/coder");
+var coder = require("../lib/solidity/coder");
 var log = console.log;
 
 Augur.contracts = require("../src/contracts").testnet;

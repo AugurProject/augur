@@ -1,3 +1,3 @@
 jshint src
-mocha test/test_fixedpoint.js
-mocha test/test_encoder.js
+mocha test/fixedpoint.js
+mocha test/encoder.js
