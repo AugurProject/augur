@@ -124,7 +124,7 @@ describe("data and api/reporting", function () {
             var hashed = utilities.sha256(hashable);
             // TODO lookup how arrays hashed by evm sha256, this doesn't work
             // assert.equal(r, hashed);
-            assert.equal(r, "0xc43cd258fbd1fb4ac8e9f4c4db0ace9d349de3b7d049ea55ef7f7876729e7c05");
+            assert.equal(r, "-0x3bc32da7042e04b537160b3b24f53162cb621c482fb615aa108087898d6183fb");
         };
         it("sync", function () {
             test(Augur.hashReport(ballot, salt));

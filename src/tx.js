@@ -221,7 +221,7 @@ module.exports = function (contracts) {
             to: contracts.events,
             method: "getEventInfo",
             signature: "i",
-            returns: "mixed[]"
+            returns: "hash[]"
         },
         getEventBranch: {
             to: contracts.events,

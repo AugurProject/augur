@@ -1151,44 +1151,34 @@ augur.setReportHash = function (branch, expDateIndex, reportHash, onSent) {
 // events.se
 augur.getEventInfo = function (event_id, onSent) {
     // event_id: sha256 hash id
+    var self = this;
+    var parse_info = function (info) {
+        if (info && info.length) {
+            if (self.options.BigNumberOnly) {
+                info[0] = numeric.hex(info[0]);
+                info[1] = numeric.bignum(info[1]);
+                info[2] = numeric.unfix(info[2]);
+                info[3] = numeric.bignum(info[3]);
+                info[4] = numeric.bignum(info[4]);
+                info[5] = numeric.bignum(info[5]);
+            } else {
+                info[0] = numeric.hex(info[0]);
+                info[1] = numeric.bignum(info[1]).toFixed();
+                info[2] = numeric.unfix(info[2], "string");
+                info[3] = numeric.bignum(info[3]).toFixed();
+                info[4] = numeric.bignum(info[4]).toFixed();
+                info[5] = numeric.bignum(info[5]).toFixed();
+            }
+        }
+        return info;
+    };
     this.tx.getEventInfo.params = event_id;
     if (onSent) {
-        this.invoke(this.tx.getEventInfo, function (eventInfo) {
-            if (eventInfo && eventInfo.length) {
-                if (this.options.BigNumberOnly) {
-                    eventInfo[1] = numeric.bignum(eventInfo[1]);
-                    eventInfo[2] = numeric.unfix(eventInfo[2]);
-                    eventInfo[3] = numeric.bignum(eventInfo[3]);
-                    eventInfo[4] = numeric.bignum(eventInfo[4]);
-                    eventInfo[5] = numeric.bignum(eventInfo[5]);
-                } else {
-                    eventInfo[1] = numeric.bignum(eventInfo[1]).toFixed();
-                    eventInfo[2] = numeric.unfix(eventInfo[2], "string");
-                    eventInfo[3] = numeric.bignum(eventInfo[3]).toFixed();
-                    eventInfo[4] = numeric.bignum(eventInfo[4]).toFixed();
-                    eventInfo[5] = numeric.bignum(eventInfo[5]).toFixed();
-                }
-                onSent(eventInfo);
-            }
-        }.bind(this));
+        this.fire(this.tx.getEventInfo, function (info) {
+            onSent(parse_info(info));
+        });
     } else {
-        var eventInfo = this.invoke(this.tx.getEventInfo);
-        if (eventInfo && eventInfo.length) {
-            if (this.options.BigNumberOnly) {
-                eventInfo[1] = numeric.bignum(eventInfo[1]);
-                eventInfo[2] = numeric.unfix(eventInfo[2]);
-                eventInfo[3] = numeric.bignum(eventInfo[3]);
-                eventInfo[4] = numeric.bignum(eventInfo[4]);
-                eventInfo[5] = numeric.bignum(eventInfo[5]);
-            } else {
-                eventInfo[1] = numeric.bignum(eventInfo[1]).toFixed();
-                eventInfo[2] = numeric.unfix(eventInfo[2], "string");
-                eventInfo[3] = numeric.bignum(eventInfo[3]).toFixed();
-                eventInfo[4] = numeric.bignum(eventInfo[4]).toFixed();
-                eventInfo[5] = numeric.bignum(eventInfo[5]).toFixed();
-            }
-            return eventInfo;
-        }
+        return parse_info(this.fire(this.tx.getEventInfo));
     }
 };
 augur.getEventBranch = function (branchNumber, onSent) {
@@ -1495,24 +1485,27 @@ augur.lsLmsr = function (market, onSent) {
 augur.getMarketOutcomeInfo = function (market, outcome, onSent) {
     var self = this;
     var parse_info = function (info) {
-        var i, len = info.length;
-        if (self.options.BigNumberOnly) {
-            info[0] = numeric.unfix(info[0], "BigNumber");
-            info[1] = numeric.unfix(info[1], "BigNumber");
-            info[2] = numeric.unfix(info[2], "BigNumber");
-            info[3] = numeric.bignum(info[3]);
-            info[4] = numeric.bignum(info[4]);
-            for (i = 5; i < len; ++i) {
-                info[i] = numeric.bignum(info[i]);
-            }
-        } else {
-            info[0] = numeric.unfix(info[0], "string");
-            info[1] = numeric.unfix(info[1], "string");
-            info[2] = numeric.unfix(info[2], "string");
-            info[3] = numeric.bignum(info[3]).toFixed();
-            info[4] = numeric.bignum(info[4]).toFixed();
-            for (i = 5; i < len; ++i) {
-                info[i] = numeric.bignum(info[i]).toFixed();
+        var i, len;
+        if (info && info.length) {
+            len = info.length;
+            if (self.options.BigNumberOnly) {
+                info[0] = numeric.unfix(info[0], "BigNumber");
+                info[1] = numeric.unfix(info[1], "BigNumber");
+                info[2] = numeric.unfix(info[2], "BigNumber");
+                info[3] = numeric.bignum(info[3]);
+                info[4] = numeric.bignum(info[4]);
+                for (i = 5; i < len; ++i) {
+                    info[i] = numeric.bignum(info[i]);
+                }
+            } else {
+                info[0] = numeric.unfix(info[0], "string");
+                info[1] = numeric.unfix(info[1], "string");
+                info[2] = numeric.unfix(info[2], "string");
+                info[3] = numeric.bignum(info[3]).toFixed();
+                info[4] = numeric.bignum(info[4]).toFixed();
+                for (i = 5; i < len; ++i) {
+                    info[i] = numeric.bignum(info[i]).toFixed();
+                }
             }
         }
         return info;
@@ -1521,7 +1514,7 @@ augur.getMarketOutcomeInfo = function (market, outcome, onSent) {
     tx.params = [market, outcome];
     if (onSent) {
         this.fire(tx, function (info) {
-            if (info) onSent(parse_info(info));
+            onSent(parse_info(info));
         });
     } else {
         return parse_info(this.fire(tx));
@@ -1530,29 +1523,32 @@ augur.getMarketOutcomeInfo = function (market, outcome, onSent) {
 augur.getMarketInfo = function (market, onSent) {
     var self = this;
     var parse_info = function (info) {
-        var i, len = info.length;
-        if (self.options.BigNumberOnly) {
-            info[0] = numeric.bignum(info[0]);
-            info[1] = numeric.unfix(info[1], "BigNumber");
-            info[2] = numeric.bignum(info[2]);
-            info[3] = numeric.bignum(info[3]);
-            info[4] = numeric.bignum(info[4]);
-            info[5] = numeric.unfix(info[5], "BigNumber");
-            for (i = 6; i < len - 8; ++i) {
-                info[i] = numeric.prefix_hex(numeric.bignum(info[i]).toString(16));
-            }
-            for (i = len - 8; i < len; ++i) {
-                info[i] = numeric.bignum(info[i]);
-            }
-        } else {
-            info[0] = numeric.bignum(info[0]).toFixed();
-            info[1] = numeric.unfix(info[1], "string");
-            info[2] = numeric.bignum(info[2]).toFixed();
-            info[3] = numeric.bignum(info[3]).toFixed();
-            info[4] = numeric.bignum(info[4]).toFixed();
-            info[5] = numeric.unfix(info[5], "string");
-            for (i = len - 8; i < len; ++i) {
-                info[i] = numeric.bignum(info[i]).toFixed();
+        var i, len;
+        if (info && info.length) {
+            len = info.length;
+            if (self.options.BigNumberOnly) {
+                info[0] = numeric.bignum(info[0]);
+                info[1] = numeric.unfix(info[1], "BigNumber");
+                info[2] = numeric.bignum(info[2]);
+                info[3] = numeric.bignum(info[3]);
+                info[4] = numeric.bignum(info[4]);
+                info[5] = numeric.unfix(info[5], "BigNumber");
+                for (i = 6; i < len - 8; ++i) {
+                    info[i] = numeric.prefix_hex(numeric.bignum(info[i]).toString(16));
+                }
+                for (i = len - 8; i < len; ++i) {
+                    info[i] = numeric.bignum(info[i]);
+                }
+            } else {
+                info[0] = numeric.bignum(info[0]).toFixed();
+                info[1] = numeric.unfix(info[1], "string");
+                info[2] = numeric.bignum(info[2]).toFixed();
+                info[3] = numeric.bignum(info[3]).toFixed();
+                info[4] = numeric.bignum(info[4]).toFixed();
+                info[5] = numeric.unfix(info[5], "string");
+                for (i = len - 8; i < len; ++i) {
+                    info[i] = numeric.bignum(info[i]).toFixed();
+                }
             }
         }
         return info;
@@ -1561,7 +1557,7 @@ augur.getMarketInfo = function (market, onSent) {
     tx.params = market;
     if (onSent) {
         this.fire(tx, function (info) {
-            if (info) onSent(parse_info(info));
+            onSent(parse_info(info));
         });
     } else {
         return parse_info(this.fire(tx));

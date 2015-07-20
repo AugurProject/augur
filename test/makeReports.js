@@ -17,6 +17,8 @@ var log = console.log;
 var branch_id = Augur.branches.dev;
 var salt = "1337";
 
+var accounts = utilities.get_test_accounts(Augur, constants.max_test_accounts);
+
 var period = Augur.getCurrentVotePeriod(branch_id);
 var num_events = Augur.getNumberEvents(branch_id, period);
 var ballot = new Array(num_events);
@@ -99,14 +101,14 @@ describe("functions/makeReports", function () {
         Augur.submitReportHash(reportHashObj);
     });
 
-    it("slash account " + constants.test_accounts[0] + "'s reputation", function (done) {
+    it("slash account " + accounts[0] + "'s reputation", function (done) {
         this.timeout(constants.timeout);
         var slashRepObj = {
             branchId: branch_id,
             votePeriod: Augur.getCurrentVotePeriod(branch_id),
             salt: salt,
             report: ballot,
-            reporter: constants.test_accounts[0],
+            reporter: accounts[0],
             onSent: function (res) {
                 log("slashRep sent: " + JSON.stringify(res, null, 2));
             },

@@ -105,7 +105,7 @@ describe("markets.se", function () {
     });
     describe("getBranchID(" + market_id + ")", function () {
         var test = function (r) {
-            assert.equal(r, "0x0f69b5");
+            assert.equal(r, Augur.branches.dev);
         };
         it("sync", function () {
             test(Augur.getBranchID(market_id));
