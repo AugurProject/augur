@@ -1,5 +1,5 @@
 /**
- * Centralized/trustless web client *
+ * Centralized/trustless web client
  */
 
 "use strict";
@@ -103,7 +103,11 @@ module.exports = function (augur) {
 
                 // password hash used as secret key to aes-256 encrypt private key
                 iv = crypto.randomBytes(16);
-                encryptedPrivKey = this.encrypt(privKey, new Buffer(utilities.sha256(password), "hex"), iv);
+                encryptedPrivKey = this.encrypt(
+                    privKey,
+                    new Buffer(utilities.sha256(password), "hex"),
+                    iv
+                );
 
                 // store encrypted key & password hash, indexed by handle
                 this.db.write(handle, {
@@ -206,9 +210,7 @@ module.exports = function (augur) {
 
         invoke: function (itx, callback) {
             var tx, data_abi, packaged, stored;
-
             if (this.account.address) {
-                itx.from = this.account.address;
 
                 // client-side transactions only needed for sendTransactions
                 if (itx.send) {
@@ -233,9 +235,12 @@ module.exports = function (augur) {
                         // package up the transaction and submit it to the network
                         packaged = new EthTx({
                             to: tx.to,
-                            gasPrice: "0xda475abf000", // 0.000015 ether
+                            from: this.account.address,
+                            // gasPrice: "0xda475abf000", // 0.000015 ether
+                            gasPrice: "0x10b3274548a",
                             gasLimit: (tx.gas) ? tx.gas : constants.default_gas,
-                            nonce: ++this.account.nonce,
+                            // nonce: ++this.account.nonce,
+                            nonce: 1338,
                             value: tx.value || "0x0",
                             data: data_abi
                         });
@@ -248,7 +253,11 @@ module.exports = function (augur) {
                         // sign, validate, and send the transaction
                         packaged.sign(this.account.privateKey);
                         if (packaged.validate()) {
-                            return augur.sendRawTx(packaged.serialize().toString("hex"), callback);
+                            console.log(packaged.serialize().toString("hex"));
+                            return augur.sendRawTx(
+                                packaged.serialize().toString("hex"),
+                                callback
+                            );
 
                         // transaction validation failed
                         } else {

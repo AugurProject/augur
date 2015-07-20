@@ -61,10 +61,13 @@ GLOBAL.gospel = function () {
     log("Load contracts from file: " + chalk.green(gospel_file));
     Augur.contracts = JSON.parse(fs.readFileSync(gospel_file));
     Augur.connect();
-    balance();
+    return balance();
 };
 
 GLOBAL.balances = balance();
+if (balances.cash === undefined && balances.reputation === undefined) {
+    GLOBAL.balances = gospel();
+}
 
 GLOBAL.reporting = function (branch) {
     var info = {

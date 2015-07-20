@@ -1222,7 +1222,7 @@ augur.getCurrentVotePeriod = function (branch, onSent) {
     var periodLength, blockNum;
     this.tx.getPeriodLength.params = branch;
     if (onSent) {
-        this.invoke(this.tx.getPeriodLength, function (periodLength) {
+        this.fire(this.tx.getPeriodLength, function (periodLength) {
             if (periodLength) {
                 periodLength = numeric.bignum(periodLength);
                 this.blockNumber(function (blockNum) {
@@ -1232,7 +1232,7 @@ augur.getCurrentVotePeriod = function (branch, onSent) {
             }
         });
     } else {
-        periodLength = this.invoke(this.tx.getPeriodLength);
+        periodLength = this.fire(this.tx.getPeriodLength);
         if (periodLength) {
             blockNum = numeric.bignum(this.blockNumber());
             return blockNum.dividedBy(numeric.bignum(periodLength)).floor().sub(1);

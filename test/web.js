@@ -209,7 +209,7 @@ describe("Web client", function () {
                 done();
             },
             function (r) {
-                throw new Error(r);
+                throw new Error(r.message);
                 done();
             }
         );
@@ -221,6 +221,7 @@ describe("Web client", function () {
         var tx = utilities.copy(Augur.tx.reputationFaucet);
         tx.params = Augur.branches.dev;
         var txhash = Augur.web.invoke(tx);
+        assert(txhash);
         var confirmTx = Augur.getTx(txhash);
         assert(confirmTx.hash);
         assert(confirmTx.from);
@@ -237,16 +238,19 @@ describe("Web client", function () {
             Augur.branches.dev,
             function (r) {
                 // sent
+                assert(r.txHash);
                 assert.equal(r.callReturn, "1");
+                console.log("sent:", r);
             },
             function (r) {
                 // success
-                assert.equal(r.from, Augur.web.account.address);
+                console.log("success:", r);
+                // assert.equal(r.from, Augur.web.account.address);
                 done();
             },
             function (r) {
                 // failed
-                throw new Error(r);
+                throw new Error(r.message);
                 done();
             }
         );
