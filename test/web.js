@@ -205,11 +205,11 @@ describe("Web client", function () {
                 // sent
             },
             function (r) {
-                Augur.web.sendEther(handle2, 32);
+                // Augur.web.sendEther(handle2, 32);
                 done();
             },
             function (r) {
-                throw new Error(r.message);
+                throw r;
                 done();
             }
         );
@@ -250,7 +250,7 @@ describe("Web client", function () {
             },
             function (r) {
                 // failed
-                throw new Error(r.message);
+                throw r;
                 done();
             }
         );

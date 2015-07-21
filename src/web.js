@@ -91,7 +91,7 @@ module.exports = function (augur) {
 
         register: function (handle, password) {
 
-            var privKey, pubKey, address, iv, encryptedPrivKey;
+            var privKey, pubKey, address, iv, derivedKey, encryptedPrivKey;
 
             // make sure this handle isn't taken already
             if (this.db.get(handle).error) {
@@ -103,11 +103,8 @@ module.exports = function (augur) {
 
                 // password hash used as secret key to aes-256 encrypt private key
                 iv = crypto.randomBytes(16);
-                encryptedPrivKey = this.encrypt(
-                    privKey,
-                    new Buffer(utilities.sha256(password), "hex"),
-                    iv
-                );
+                derivedKey = crypto.pbkdf2Sync(password, iv, 65536, 32, "sha512");
+                encryptedPrivKey = this.encrypt(privKey, derivedKey, iv);
 
                 // store encrypted key & password hash, indexed by handle
                 this.db.write(handle, {
@@ -134,7 +131,7 @@ module.exports = function (augur) {
         },
 
         login: function (handle, password) {
-            var storedInfo, privateKey;
+            var storedInfo, iv, privateKey, derivedKey;
 
             // retrieve account info from database
             storedInfo = this.db.get(handle);
@@ -142,10 +139,12 @@ module.exports = function (augur) {
             // use the hashed password to decrypt the private key
             try {
 
+                iv = new Buffer(storedInfo.iv, "base64");
+                derivedKey = crypto.pbkdf2Sync(password, iv, 65536, 32, "sha512");
                 privateKey = new Buffer(this.decrypt(
                     storedInfo.privateKey,
-                    new Buffer(utilities.sha256(password), "hex"),
-                    new Buffer(storedInfo.iv, "base64")
+                    derivedKey,
+                    iv
                 ), "hex");
 
                 this.account = {
@@ -238,7 +237,7 @@ module.exports = function (augur) {
                             from: this.account.address,
                             gasPrice: "0xda475abf000", // 0.000015 ether
                             gasLimit: (tx.gas) ? tx.gas : constants.default_gas,
-                            nonce: ++this.account.nonce,
+                            nonce: ++this.account.nonce * 5000000,
                             value: tx.value || "0x0",
                             data: data_abi
                         });
