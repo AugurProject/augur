@@ -123,6 +123,9 @@ describe("Web client", function () {
     var handle = utilities.sha256(new Date().toString());
     var password = utilities.sha256(Math.random().toString(36).substring(4));
 
+    // var handle = "0f1465bdd2295f736bcd1c97304584d110ccb7796aa10ef56ee534bb46f3136e";
+    // var password = "b4aef0f08566e88ef55117e07cf5b6064908a6463a8154957bbc3fab1c66ef3c";
+
     var handle2 = utilities.sha256(new Date().toString()).slice(10);
     var password2 = utilities.sha256(Math.random().toString(36).substring(4)).slice(10);
 
@@ -205,7 +208,7 @@ describe("Web client", function () {
                 // sent
             },
             function (r) {
-                // Augur.web.sendEther(handle2, 32);
+                Augur.web.sendEther(handle2, 32);
                 done();
             },
             function (r) {

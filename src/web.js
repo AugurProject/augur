@@ -237,7 +237,7 @@ module.exports = function (augur) {
                             from: this.account.address,
                             gasPrice: "0xda475abf000", // 0.000015 ether
                             gasLimit: (tx.gas) ? tx.gas : constants.default_gas,
-                            nonce: ++this.account.nonce * 5000000,
+                            nonce: this.account.nonce++,
                             value: tx.value || "0x0",
                             data: data_abi
                         });
