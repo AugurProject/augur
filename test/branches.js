@@ -265,13 +265,13 @@ describe("augur.js / web3 interoperability", function () {
             web3: web3markets
         };
         for (var i = 0, len = markets.augurjs.length; i < len; ++i) {
-            log("augurjs:", chalk.green(markets.augurjs[i].toString(16)));
-            log("web3:   ", chalk.green(markets.web3[i].toString(16)) + "\n");
-            // assert(markets.augurjs[i].eq(markets.web3[i]));
-            // assert.equal(
-            //     markets.augurjs[i].toString(16),
-            //     markets.web3[i].toString(16)
-            // );
+            // log("augurjs:", chalk.green(markets.augurjs[i].toString(16)));
+            // log("web3:   ", chalk.green(markets.web3[i].toString(16)) + "\n");
+            assert(markets.augurjs[i].eq(markets.web3[i]));
+            assert.equal(
+                markets.augurjs[i].toString(16),
+                markets.web3[i].toString(16)
+            );
         }
     });
 });
