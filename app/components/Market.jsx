@@ -54,14 +54,14 @@ var Market = React.createClass({
         subheading = 'Resolves after ' + market.endDate.format("MMMM Do, YYYY");
       }
     }
-    var volume =_.reduce(market.outcomes, function(volume, outcome) {
-      if (outcome) return volume + parseFloat(outcome.volume);
+    var outstandingShares =_.reduce(market.outcomes, function(outstandingShares, outcome) {
+      if (outcome) return outstandingShares + parseFloat(outcome.outstandingShares);
     }, 0);
 
     var formattedDate = market.endDate ? moment(market.endDate).format('MMM Do, YYYY') : '-';
     var price = market.price ? Math.abs(market.price).toFixed(3) : '-';
     var percent = market.price ? +market.price.times(100).toFixed(1) + '%' : '';
-    var volume = volume ? +volume.toFixed(2) : '-';
+    var outstandingShares = outstandingShares ? +outstandingShares.toFixed(2) : '-';
     var tradingFee = market.tradingFee ? +market.tradingFee.times(100).toFixed(2)+'%' : '-';
     var traderCount = market.traderCount ? +market.traderCount.toNumber() : '-';
 
@@ -82,7 +82,7 @@ var Market = React.createClass({
         </div>
         <div className='details col-sm-4'>
           <p>Price: <b>{ price }</b></p>
-          <p className='alt'>Volume: <b>{ volume }</b></p>
+          <p className='alt'>Outstanding Shares: <b>{ outstandingShares }</b></p>
           <p>Fee: <b>{ tradingFee }</b></p>
           <p className='alt'>Traders: <b>{ traderCount }</b></p>
           <p>Author: <b className='truncate author'>{ market.author || '' }</b></p>
