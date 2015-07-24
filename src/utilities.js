@@ -52,11 +52,7 @@ module.exports = {
             augur.contracts = JSON.parse(contracts.toString());
         }
         if (!bignum) augur.options.BigNumberOnly = false;
-        // augur.options.nodes = [
-        //     "http://localhost:8545",
-        //     "http://69.164.196.239:8545",
-        //     "http://45.33.59.27:8545"
-        // ];
+        augur.options.nodes = constants.nodes;
         if (augur.connect(rpcinfo)) {
             log(chalk.magenta("augur"), "connected:", chalk.cyan(augur.options.RPC));
         }
