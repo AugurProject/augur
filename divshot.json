@@ -4,9 +4,9 @@
   "cache_control": {},
   "routes": {
     "**": "augur.html",
-    "/app.js": "app.js",
+    "/fonts/**": "fonts/**",
     "/css/**": "css/**",
     "/images/**": "images/**",  
-    "/fonts/**": "fonts/**"
+    "/app.js": "app.js"
   }
 }
