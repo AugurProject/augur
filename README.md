@@ -24,4 +24,4 @@ Augur.connect();
 Documentation
 -------------
 
-[http://augurproject.github.io/augur.js-docs/](http://augurproject.github.io/augur.js-docs/)
+[http://api.augur.net](http://api.augur.net)
