@@ -60,9 +60,9 @@ var Overview = React.createClass({
           }
           
           holding = (
-            <Link key={ key } className="list-group-item" to='market' params={ {marketId: market.id.toString(16) } }>
+            <Link key={ key } className="list-group-item clearfix" to='market' params={ {marketId: market.id.toString(16) } }>
               <span className="price">{ percent }</span>
-              <span className="description">{ market.description }</span>
+              <p className="description">{ market.description }</p>
               <span className={ className }>{ outcome.sharesHeld.toNumber() } { name }</span>            
             </Link>
           );

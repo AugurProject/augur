@@ -6,6 +6,7 @@ var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 var ReactBootstrap = require('react-bootstrap');
 var Modal = ReactBootstrap.Modal;
 var Router = require("react-router");
+var State = Router.State;
 var RouteHandler = Router.RouteHandler;
 
 var Identicon = require('../libs/identicon');
@@ -15,7 +16,7 @@ var Outcomes = require('./Outcomes');
 
 var Market = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin('market', 'asset', 'branch')],
+  mixins: [FluxMixin, StoreWatchMixin('market', 'asset', 'branch'), State],
 
   getStateFromFlux: function () {
 
@@ -54,14 +55,14 @@ var Market = React.createClass({
         subheading = 'Resolves after ' + market.endDate.format("MMMM Do, YYYY");
       }
     }
-    var volume =_.reduce(market.outcomes, function(volume, outcome) {
-      if (outcome) return volume + parseFloat(outcome.volume);
+    var outstandingShares =_.reduce(market.outcomes, function(outstandingShares, outcome) {
+      if (outcome) return outstandingShares + parseFloat(outcome.outstandingShares);
     }, 0);
 
     var formattedDate = market.endDate ? moment(market.endDate).format('MMM Do, YYYY') : '-';
     var price = market.price ? Math.abs(market.price).toFixed(3) : '-';
     var percent = market.price ? +market.price.times(100).toFixed(1) + '%' : '';
-    var volume = volume ? +volume.toFixed(2) : '-';
+    var outstandingShares = outstandingShares ? +outstandingShares.toFixed(2) : '-';
     var tradingFee = market.tradingFee ? +market.tradingFee.times(100).toFixed(2)+'%' : '-';
     var traderCount = market.traderCount ? +market.traderCount.toNumber() : '-';
 
@@ -76,13 +77,16 @@ var Market = React.createClass({
     return (
       <div id='market'>
         <h3>{ market.description }</h3>
-        <div className="subheading">{ subheading }</div>
+        <div className="subheading clearfix">
+          <span className="pull-left">{ subheading }</span> 
+          <Twitter marketName={ market.description } pathname={ this.getPathname } />
+        </div>
         <div className='row'>
           { outcomes } 
         </div>
         <div className='details col-sm-4'>
           <p>Price: <b>{ price }</b></p>
-          <p className='alt'>Volume: <b>{ volume }</b></p>
+          <p className='alt'>Outstanding Shares: <b>{ outstandingShares }</b></p>
           <p>Fee: <b>{ tradingFee }</b></p>
           <p className='alt'>Traders: <b>{ traderCount }</b></p>
           <p>Author: <b className='truncate author'>{ market.author || '' }</b></p>
@@ -90,11 +94,6 @@ var Market = React.createClass({
         </div>
         <div className='price-history col-sm-8'>
           <h4>Price history soon...</h4>
-        </div>
-        <div className='row'>
-          <div className='col-xs-12'>
-            <Twitter marketName={ market.description } />
-          </div>
         </div>
         <div className='row'>
           <div className='col-xs-12'>
@@ -107,7 +106,9 @@ var Market = React.createClass({
 });
 
 class Twitter extends React.Component {
+
   componentDidMount() {
+
     // load twitter widget js
     !function(d,s,id){
       var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
@@ -121,10 +122,13 @@ class Twitter extends React.Component {
   }
 
   render() {
-    let tweet = this.props.marketName;
+
+    let tweetText = this.props.marketName;
+    let tweetUrl = 'http://client.augur.net' + this.props.pathname;
+
     return (
-      <div className="twitter-share-block">
-        <a href="https://twitter.com/share" className="twitter-share-button" data-text={ tweet } data-via="AugurProject" data-hashtags="CashPrediction">Tweet</a>
+      <div className="twitter-share-block pull-right">
+        <a href="https://twitter.com/share" className="twitter-share-button" data-count='none' data-url={ tweetUrl } data-text={ tweetText } data-via="AugurProject"></a>
       </div>
     )
   }

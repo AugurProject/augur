@@ -627,14 +627,14 @@ EthereumClient.prototype.addMarket = function(params, onSent) {
 
 EthereumClient.prototype.closeMarket = function (marketId, branchId) {
   try {
-    marketId = Augur.bignum(marketId).toFixed();
+    marketId = Augur.numeric.bignum(marketId).toFixed();
   } catch (e) {
-    marketId = Augur.prefix_hex(marketId);
+    marketId = Augur.numeric.prefix_hex(marketId);
   }
   try {
-    branchId = Augur.bignum(branchId).toFixed();
+    branchId = Augur.numeric.bignum(branchId).toFixed();
   } catch (e) {
-    branchId = Augur.prefix_hex(branchId);
+    branchId = Augur.numeric.prefix_hex(branchId);
   }
   utilities.log("Closing market " + marketId + " on branch " + branchId);
   Augur.closeMarket({

@@ -104,7 +104,7 @@ var MarketActions = {
 
         market['outcomes'][outcomeId-1] = {id: outcomeId, sharesHeld: new BigNumber(0)};
         market['outcomes'][outcomeId-1]['priceHistory'] = []  // NEEDED
-        market['outcomes'][outcomeId-1]['volume'] = 0;
+        market['outcomes'][outcomeId-1]['outstandingShares'] = 0;
       });
 
       this.flux.actions.market.updateMarket(market);
@@ -133,7 +133,7 @@ var MarketActions = {
 
       commands.push(['getMarketOutcomeInfo', [market.id, outcome.id], function(info) {
 
-        outcome['volume'] = utilities.fromFixedPoint(info[0]);
+        outcome['outstandingShares'] = utilities.fromFixedPoint(info[0]);
         if (market.traderId.toNumber() !== -1) outcome['sharesHeld'] = utilities.fromFixedPoint(info[1]);
         var price = utilities.fromFixedPoint(info[2]);
         if (outcome.id === 2) market['price'] = price;  // hardcoded to outcome 2 (yes)
@@ -188,9 +188,9 @@ var MarketActions = {
   updateMarket: function(market, supplement) {
 
     // Calculate market properties before dispatch (seems to belong in a Market class)
-    if (!market.volume && market.volume !== 0) {
-      market.volume = _.reduce(market.outcomes, function(volume, outcome) {
-        if (outcome) return volume + parseFloat(outcome.volume);
+    if (!market.outstandingShares && market.outstandingShares !== 0) {
+      market.outstandingShares = _.reduce(market.outcomes, function(outstandingShares, outcome) {
+        if (outcome) return outstandingShares + parseFloat(outcome.outstandingShares);
       }, 0);
     }
 

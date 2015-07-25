@@ -34,7 +34,7 @@ class MarketPane extends React.Component {
   constructor(props) {
     super(props);
 
-    this.relevantMarketAttrs = ['volume', 'tradingPeriod', 'endDate', 'price', 'tradingFee'];
+    this.relevantMarketAttrs = ['outstandingShares', 'tradingPeriod', 'endDate', 'price', 'tradingFee'];
     this.lastMarket = {};
   }
 
@@ -53,14 +53,14 @@ class MarketPane extends React.Component {
 
     var market = this.props.market;
     var matured = this.props.currentBranch && this.props.currentBranch.currentPeriod >= this.props.market.tradingPeriod;
-    var volume =_.reduce(market.outcomes, function(volume, outcome) {
-      if (outcome) return volume + parseFloat(outcome.volume);
+    var outstandingShares =_.reduce(market.outcomes, function(outstandingShares, outcome) {
+      if (outcome) return outstandingShares + parseFloat(outcome.outstandingShares);
     }, 0);
 
     var formattedDate = market.endDate ? moment(market.endDate).format('MMM Do, YYYY') : '-';
     var price = market.price ? Math.abs(market.price).toFixed(3) : '-';
     var percent = market.price ? +market.price.times(100).toFixed(1) + '%' : ''
-    var volume = volume ? +volume.toFixed(2) : '-';
+    var outstandingShares = outstandingShares ? +outstandingShares.toFixed(2) : '-';
     var tradingFee = market.tradingFee ? +market.tradingFee.times(100).toFixed(2)+'%' : '-';
 
     for (let attr of this.relevantMarketAttrs) {
@@ -97,7 +97,7 @@ class MarketPane extends React.Component {
         </div>
         <div className='details'>
           <p>Price: <b>{ price }</b></p>
-          <p className='alt'>Volume: <b>{ volume }</b></p>
+          <p className='alt'>Outstanding Shares: <b>{ outstandingShares }</b></p>
           <p>Fee: <b>{ tradingFee }</b></p>
           <p className='alt'>End date: <b>{ formattedDate }</b></p>
         </div>
