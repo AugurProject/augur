@@ -1,0 +1,12 @@
+{
+  "name": "augur",
+  "root": "./app",
+  "cache_control": {},
+  "routes": {
+    "**": "augur.html",
+    "/app.js": "app.js",
+    "/css/**": "css/**",
+    "/images/**": "images/**",  
+    "/fonts/**": "fonts/**"
+  }
+}
