@@ -8,7 +8,7 @@ var errors = {
 
     "0x": "no response or bad input",
 
-    cash: {
+    cashFaucet: {
         "-1": "Hey, you're not broke!"
     },
 

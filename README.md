@@ -24,4 +24,4 @@ Augur.connect();
 Documentation
 -------------
 
-[http://api.augur.net](http://api.augur.net)
+[http://docs.augur.net](http://docs.augur.net)
