@@ -183,7 +183,7 @@ var Overview = React.createClass({
           </div>
           { holdings }
           <p>{ Math.abs(outcome.price).toFixed(4) } cash/share</p>
-          <p>{ +outcome.outstandingShares.toFixed(2) } shares</p>
+          <p>{ +outcome.outstandingShares.toFixed(2) } shares outstanding</p>
         </div>
       )
     }
