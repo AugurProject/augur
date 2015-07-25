@@ -812,13 +812,13 @@ augur.reputationFaucet = function (branch, onSent, onSuccess, onFailed) {
 
 // cash.se
 augur.getCashBalance = function (account, onSent) {
-    // account: ethereum address (hexstring)
+    // account: ethereum account
     var tx = utilities.copy(this.tx.getCashBalance);
     tx.params = account || this.web.account.address || this.coinbase;
     return this.fire(tx, onSent);
 };
 augur.sendCash = function (to, value, onSent, onSuccess, onFailed) {
-    // to: sha256
+    // to: ethereum account
     // value: number -> fixed-point
     if (this.rpc.json_rpc(this.rpc.postdata("coinbase")) !== this.demo) {
         if (to && to.value) {
@@ -830,6 +830,24 @@ augur.sendCash = function (to, value, onSent, onSuccess, onFailed) {
         }
         var tx = utilities.copy(this.tx.sendCash);
         tx.params = [to, numeric.fix(value)];
+        return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    }
+};
+augur.sendCashFrom = function (to, value, from, onSent, onSuccess, onFailed) {
+    // to: ethereum account
+    // value: number -> fixed-point
+    // from: ethereum account
+    if (this.rpc.json_rpc(this.rpc.postdata("coinbase")) !== this.demo) {
+        if (to && to.value) {
+            value = to.value;
+            from = to.from;
+            if (to.onSent) onSent = to.onSent;
+            if (to.onSuccess) onSuccess = to.onSuccess;
+            if (to.onFailed) onFailed = to.onFailed;
+            to = to.to;
+        }
+        var tx = utilities.copy(this.tx.sendCashFrom);
+        tx.params = [to, numeric.fix(value), from];
         return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
     }
 };

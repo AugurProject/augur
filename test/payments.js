@@ -20,7 +20,7 @@ describe("Payment methods", function () {
     var branch_id = Augur.branches.dev;
     var receiver = utilities.get_test_accounts(Augur, constants.max_test_accounts)[1];
 
-    it("pay: complete call-send-confirm callback sequence", function (done) {
+    it("pay: complete send-call-confirm callback sequence", function (done) {
         this.timeout(constants.timeout);
         var start_balance = numeric.bignum(Augur.balance(receiver)).dividedBy(constants.ETHER);
         var tx = {
@@ -37,7 +37,7 @@ describe("Payment methods", function () {
         };
         Augur.pay(tx);
     });
-    it("sendCash: complete call-send-confirm callback sequence", function (done) {
+    it("sendCash: complete send-call-confirm callback sequence", function (done) {
         this.timeout(constants.timeout);
         var start_balance = numeric.bignum(Augur.getCashBalance(Augur.coinbase));
         Augur.sendCash({
@@ -52,12 +52,33 @@ describe("Payment methods", function () {
                 done();
             },
             onFailed: function (res) {
-                throw new Error(JSON.stringify(res, null, 2));
+                throw new Error(res);
                 done();
             }
         });
     });
-    it("sendReputation: complete call-send-confirm callback sequence", function (done) {
+    it("sendCashFrom: complete send-call-confirm callback sequence", function (done) {
+        this.timeout(constants.timeout);
+        var start_balance = numeric.bignum(Augur.getCashBalance(Augur.coinbase));
+        Augur.sendCashFrom({
+            to: receiver,
+            value: payment_value,
+            from: Augur.coinbase,
+            onSent: function (res) {
+                // log(res);
+            },
+            onSuccess: function (res) {
+                var final_balance = numeric.bignum(Augur.getCashBalance(Augur.coinbase));
+                assert.equal(start_balance.sub(final_balance).toNumber(), payment_value);
+                done();
+            },
+            onFailed: function (res) {
+                throw new Error(res);
+                done();
+            }
+        });
+    });
+    it("sendReputation: complete send-call-confirm callback sequence", function (done) {
         this.timeout(constants.timeout);
         var start_balance = numeric.bignum(Augur.getRepBalance(Augur.branches.dev));
         Augur.sendReputation({
@@ -73,7 +94,7 @@ describe("Payment methods", function () {
                 done();
             },
             onFailed: function (res) {
-                throw new Error(JSON.stringify(res, null, 2));
+                throw new Error(res);
                 done();
             }
         });

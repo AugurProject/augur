@@ -41,7 +41,14 @@ module.exports = function (contracts) {
             method: "send",
             send: true,
             signature: "ii",
-            returns: "number"
+            returns: "unfix"
+        },
+        sendCashFrom: {
+            to: contracts.cash,
+            method: "sendFrom",
+            send: true,
+            signature: "iii",
+            returns: "unfix"
         },
 
         // info.se
@@ -777,7 +784,7 @@ module.exports = function (contracts) {
             method: "sendReputation",
             signature: "iii",
             send: true,
-            returns: "number"
+            returns: "unfix"
         },
 
         // makeReports.se
