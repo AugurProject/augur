@@ -73,14 +73,18 @@ var Overview = React.createClass({
 
     var flux = this.getFlux();
     var sharesString = absShares === 1 ? '1 share of ' : absShares + ' shares of ';
+
     if (relativeShares > 0) {
+
       var description = 'buying ' + sharesString + getOutcomeName(this.props.outcome.id, 2) + ', 0x'+this.props.market.id.toString(16);
       flux.actions.transaction.addTransaction({
         hash: txHash, 
         type: constants.transaction.BUY_DECISION_TYPE, 
         description: description
       });
+
     } else {
+
       var description = 'selling ' + sharesString + getOutcomeName(this.props.outcome.id, 2) + ', 0x'+this.props.market.id.toString(16);
       flux.actions.transaction.addTransaction({
         hash: txHash, 
@@ -128,6 +132,7 @@ var Overview = React.createClass({
     var summary;
     var outcome = this.props.outcome;
     var className = 'outcome outcome-'+outcome.id+' shadow';
+    
     if (this.props.market.matured) className += ' matured';
 
     if (this.state.buyShares) {
@@ -146,7 +151,8 @@ var Overview = React.createClass({
 
     } else {
 
-      var pendingShares = ( <span /> )
+      var pendingShares = ( <span /> );
+
       if (this.state.pendingShares) {
         var shares = this.state.pendingShares;
         var sharesString = shares < 0 ? shares.toString() : '+'+shares;
@@ -158,22 +164,31 @@ var Overview = React.createClass({
 
       var holdings;
       var sharesHeld = this.props.outcome.sharesHeld.toNumber();
+
       if (sharesHeld) {
+
         holdings = (
           <div className='sell trade-button'>
             <Button bsStyle='danger' onClick={ this.handleSellClick }>Sell</Button>
             <span className="shares-held btn">{ sharesHeld }{ pendingShares } { sharesHeld === 1 ? 'share' : 'shares' } held</span> 
-          </div>);
+          </div>
+        );
+
       } else if (this.state.pendingShares) {
+
         holdings = (
           <div className='sell trade-button'>
             <span className="shares-held none">{ this.state.pendingShares } shares pending</span> 
-          </div>);    
+          </div>
+        );  
+
       } else {
+
         holdings = (
           <div className='sell trade-button'>
             <span className="shares-held none">no shares held</span> 
-          </div>);      
+          </div>
+        );      
       }
 
       summary = (
@@ -185,7 +200,7 @@ var Overview = React.createClass({
           <p>{ Math.abs(outcome.price).toFixed(4) } cash/share</p>
           <p>{ +outcome.outstandingShares.toFixed(2) } shares outstanding</p>
         </div>
-      )
+      );
     }
 
     return (

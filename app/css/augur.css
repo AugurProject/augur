@@ -742,8 +742,15 @@ background: linear-gradient(to bottom, rgba(24,55,111,0) 0%,rgba(24,55,111,0.7) 
     top: 5px;
     right: 8px;
 }
-#market .twitter-share-block {
-    margin: 10px;
+
+#custom-tweet-button a {
+    border: none;
+    background: none;
+    text-shadow: none;
+    height: 25px;
+}
+#custom-tweet-button a .label {
+    display: none;
 }
 
 #overview .welcome.alert h3 {

@@ -6,6 +6,7 @@ var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 var ReactBootstrap = require('react-bootstrap');
 var Modal = ReactBootstrap.Modal;
 var Router = require("react-router");
+var State = Router.State;
 var RouteHandler = Router.RouteHandler;
 
 var Identicon = require('../libs/identicon');
@@ -15,7 +16,7 @@ var Outcomes = require('./Outcomes');
 
 var Market = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin('market', 'asset', 'branch')],
+  mixins: [FluxMixin, StoreWatchMixin('market', 'asset', 'branch'), State],
 
   getStateFromFlux: function () {
 
@@ -76,7 +77,10 @@ var Market = React.createClass({
     return (
       <div id='market'>
         <h3>{ market.description }</h3>
-        <div className="subheading">{ subheading }</div>
+        <div className="subheading clearfix">
+          <span className="pull-left">{ subheading }</span> 
+          <Twitter marketName={ market.description } pathname={ this.getPathname } />
+        </div>
         <div className='row'>
           { outcomes } 
         </div>
@@ -93,11 +97,6 @@ var Market = React.createClass({
         </div>
         <div className='row'>
           <div className='col-xs-12'>
-            <Twitter marketName={ market.description } />
-          </div>
-        </div>
-        <div className='row'>
-          <div className='col-xs-12'>
             <Comments comments={ market.comments } account={ this.state.account } />
           </div>
         </div>
@@ -107,7 +106,9 @@ var Market = React.createClass({
 });
 
 class Twitter extends React.Component {
+
   componentDidMount() {
+
     // load twitter widget js
     !function(d,s,id){
       var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
@@ -121,10 +122,13 @@ class Twitter extends React.Component {
   }
 
   render() {
-    let tweet = this.props.marketName;
+
+    let tweetText = this.props.marketName;
+    let tweetUrl = 'http://client.augur.net' + this.props.pathname;
+
     return (
-      <div className="twitter-share-block">
-        <a href="https://twitter.com/share" className="twitter-share-button" data-text={ tweet } data-via="AugurProject" data-hashtags="CashPrediction">Tweet</a>
+      <div className="twitter-share-block pull-right">
+        <a href="https://twitter.com/share" className="twitter-share-button" data-count='none' data-url={ tweetUrl } data-text={ tweetText } data-via="AugurProject"></a>
       </div>
     )
   }
