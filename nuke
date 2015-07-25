@@ -1,0 +1,15 @@
+#!/bin/bash
+# nukes the site from orbit (it's the only way to be sure)
+
+# nuke
+rm -Rf node_modules
+if [ -f "app/app.js" ]; then
+    rm app/app.js
+fi
+
+# rebuild
+npm install
+grunt browserify:build
+
+# run server
+node server.js
