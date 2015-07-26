@@ -5,9 +5,7 @@
 
 "use strict";
 
-var fs = require("fs");
-var path = require("path");
-var assert = require("assert");
+var assert = require("chai").assert;
 var Augur = require("../src");
 var constants = require("../src/constants");
 require('it-each')({ testPerIteration: true });
@@ -15,7 +13,6 @@ require('it-each')({ testPerIteration: true });
 Augur = require("../src/utilities").setup(Augur, process.argv.slice(2));
 
 var log = console.log;
-var TIMEOUT = 120000;
 var num_components = "2";
 var num_iterations = "5";
 var branch = Augur.branches.dev;
@@ -49,7 +46,7 @@ for (var i = 0; i < num_events; ++i) {
 describe("testing consensus/resolve", function () {
     
     it("resolve", function (done) {
-        this.timeout(TIMEOUT);
+        this.timeout(constants.timeout);
         Augur.resolve(
             reputation_vector,
             numeric.unfix(reports, "string"),
@@ -68,14 +65,14 @@ describe("testing consensus/resolve", function () {
             },
             function (r) {
                 // failed
-                throw("resolve: " + r);
+                r.name = r.error; throw r;
                 done();
             }
         );
     });
 
     it("redeem_resolve", function (done) {
-        this.timeout(TIMEOUT);
+        this.timeout(constants.timeout);
         Augur.redeem_resolve(
             branch,
             period,
@@ -92,7 +89,7 @@ describe("testing consensus/resolve", function () {
             },
             function (r) {
                 // failed
-                throw("redeem_resolve: " + r);
+                r.name = r.error; throw r;
                 done();
             }
         );

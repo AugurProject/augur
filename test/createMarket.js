@@ -68,15 +68,17 @@ describe("functions/createMarket", function () {
                         // log("description: ", res.description);
                         next();
                     },
-                    onFailed: function (res) {
-                        throw new Error("createMarket failed: " + JSON.stringify(res, null, 2));
+                    onFailed: function (r) {
+                        r.name = r.error;
+                        throw r;
                         next();
                     }
                 };
                 Augur.createMarket(marketObj);
             },
             onFailed: function (r) {
-                throw new Error("createEvent failed: " + JSON.stringify(r, null, 2));
+                r.name = r.error;
+                throw r;
                 next();
             }
         };

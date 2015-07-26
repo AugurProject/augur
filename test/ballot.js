@@ -55,7 +55,7 @@ describe("Set ballots for " + reporters.length + " reporters", function () {
             },
             function (r) {
                 // failed
-                throw r.message;
+                r.name = r.error; throw r;
                 done();
             }
         );
@@ -91,7 +91,7 @@ describe("Set ballots for " + reporters.length + " reporters", function () {
             },
             function (r) {
                 // failed
-                throw r.message;
+                r.name = r.error; throw r;
                 done();
             }
         );
@@ -128,7 +128,7 @@ describe("Set ballots for " + reporters.length + " reporters", function () {
             },
             function (r) {
                 // failed
-                throw r.message;
+                r.name = r.error; throw r;
                 done();
             }
         );
@@ -159,7 +159,7 @@ describe("Set ballots for " + reporters.length + " reporters", function () {
             },
             function (r) {
                 // failed
-                throw r.message;
+                r.name = r.error; throw r;
                 next();
             }
         );

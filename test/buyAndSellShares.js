@@ -6,8 +6,7 @@
 "use strict";
 
 var fs = require("fs");
-var assert = require("assert");
-var async = require("async");
+var assert = require("chai").assert;
 var longjohn = require("longjohn");
 var chalk = require("chalk");
 var constants = require("../src/constants");
@@ -91,7 +90,7 @@ describe("Buy and sell shares", function () {
                 next();
             },
             onFailed: function (r) {
-                throw new Error(r);
+                r.name = r.error; throw r;
                 next();
             }
         });
@@ -114,7 +113,7 @@ describe("Buy and sell shares", function () {
                 next();
             },
             onFailed: function (r) {
-                throw new Error(r);
+                r.name = r.error; throw r;
                 next();
             }
         });

@@ -41,7 +41,7 @@ describe("getMarketPriceHistory", function () {
                 });
             },
             onFailed: function (r) {
-                throw new Error(r);
+                r.name = r.error; throw r;
             }
         });
     });
@@ -65,7 +65,7 @@ describe("getMarketPriceHistory", function () {
                 done();
             },
             onFailed: function (r) {
-                throw new Error(r);
+                r.name = r.error; throw r;
             }
         });
     });
@@ -100,7 +100,7 @@ describe("updatePrice listener", function () {
                         log(JSON.stringify(r.callReturn));
                     },
                     onFailed: function (r) {
-                        throw new Error(r);
+                        r.name = r.error; throw r;
                     }
                 });
             }, 2000);

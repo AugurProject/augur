@@ -19,7 +19,13 @@ var log = console.log;
 // create private key, get public key and address
 var privateKey = crypto.randomBytes(32);
 
-describe("Accounts", function () {
+// generate random handles and passwords
+var handle = utilities.sha256(new Date().toString());
+var password = utilities.sha256(Math.random().toString(36).substring(4));
+var handle2 = utilities.sha256(new Date().toString()).slice(10);
+var password2 = utilities.sha256(Math.random().toString(36).substring(4)).slice(10);
+
+describe("Crypto", function () {
     var publicKey = eccrypto.getPublic(privateKey);
     var address = EthUtil.pubToAddress(publicKey).toString("hex");
 
@@ -40,6 +46,10 @@ describe("Accounts", function () {
         decryptedPrivateKey += decipher.final("hex");
         assert.equal(decryptedPrivateKey, privateKey.toString("hex"));
     });    
+
+    it("derive address from private key", function () {
+        assert.equal(Augur.web.privateKeyToAddress(privateKey), "0x" + address);
+    });
 });
 
 describe("Transactions", function () {
@@ -117,156 +127,419 @@ describe("Transactions", function () {
 
 });
 
-describe("Web client", function () {
+describe("Database", function () {
 
-    // generate random handle and password
-    var handle = utilities.sha256(new Date().toString());
-    var password = utilities.sha256(Math.random().toString(36).substring(4));
+    var account = {
+        handle: "tinybike",
+        privateKey: "deadbeef",
+        iv: "zombeef",
+        nonce: 0
+    };
 
-    // var handle = "0f1465bdd2295f736bcd1c97304584d110ccb7796aa10ef56ee534bb46f3136e";
-    // var password = "b4aef0f08566e88ef55117e07cf5b6064908a6463a8154957bbc3fab1c66ef3c";
+    describe("Firebase", function () {
 
-    var handle2 = utilities.sha256(new Date().toString()).slice(10);
-    var password2 = utilities.sha256(Math.random().toString(36).substring(4)).slice(10);
-
-    it("should register first account successfully: " + handle + " / " + password, function () {
-        this.timeout(constants.timeout);
-        assert(Augur.web.db.get(handle).error);
-        var result = Augur.web.register(handle, password);
-        assert(result.privateKey);
-        assert(result.address);
-        assert(!result.error);
-        assert(!Augur.web.db.get(handle).error);
-    });
-
-    it("should register second account successfully: " + handle2 + " / " + password2, function () {
-        this.timeout(constants.timeout);
-        assert(Augur.web.db.get(handle2).error);
-        var result = Augur.web.register(handle2, password2);
-        assert(result.privateKey);
-        assert(result.address);
-        assert(!result.error);
-        assert(!Augur.web.db.get(handle2).error);
-    });
-
-    it("should fail to register the first handle again", function () {
-        this.timeout(constants.timeout);
-        var result = Augur.web.register(handle, password);
-        assert(!result.privateKey);
-        assert(!result.address);
-        assert(result.error);
-        assert(!Augur.web.db.get(handle).error);
-    });
-
-    it("should login successfully and decrypt the stored private key", function () {
-        this.timeout(constants.timeout);
-        var user = Augur.web.login(handle, password);
-        assert(user.privateKey);
-        assert(user.address);
-        assert.equal(user.privateKey.toString("hex").length, 64);
-        assert.equal(user.address.length, 42);
-        var same_user = Augur.web.login(handle, password);
-        assert.equal(user.privateKey.toString("hex"), same_user.privateKey.toString("hex"));
-        assert.equal(user.address, same_user.address);
-    });
-
-    it("should fail with error 403 when given an incorrect handle", function () {
-        this.timeout(constants.timeout);
-        var bad_handle = utilities.sha256(new Date().toString());
-        assert.equal(Augur.web.login(bad_handle, password).error, 403);
-    });
-
-    it("should fail with error 403 when given an incorrect password", function () {
-        this.timeout(constants.timeout);
-        var bad_password = utilities.sha256(Math.random().toString(36).substring(4));
-        assert.equal(Augur.web.login(handle, bad_password).error, 403);
-    });
-
-    it("should fail with error 403 when given an incorrect handle and an incorrect password", function () {
-        this.timeout(constants.timeout);
-        var bad_handle = utilities.sha256(new Date().toString());
-        var bad_password = utilities.sha256(Math.random().toString(36).substring(4));
-        assert.equal(Augur.web.login(handle, bad_password).error, 403);
-    });
-
-    it("should successfully call the getBranches method using web.invoke", function () {
-        this.timeout(constants.timeout);
-        var user = Augur.web.login(handle, password);
-        var branches = Augur.web.invoke(Augur.tx.getBranches);
-        assert(branches.length);
-        assert.equal(branches.constructor, Array);
-        assert.equal(
-            Augur.encode_result(branches[0], Augur.tx.getBranches.returns),
-            Augur.branches.dev
-        );
-    });
-
-    it("send ether to account 1 using sendEther, then to account 2 using web.sendEther", function (done) {
-        this.timeout(constants.timeout*2);
-        Augur.sendEther(Augur.web.db.get(handle).address, 64, Augur.coinbase,
-            function (r) {
-                // sent
-            },
-            function (r) {
-                Augur.web.sendEther(handle2, 32);
+        it("save account", function (done) {
+            Augur.web.db.put(account.handle, account, function (url) {
+                assert.equal(url, constants.FIREBASE_URL + "/" + account.handle);
                 done();
-            },
-            function (r) {
-                throw r;
+            });
+        });
+
+        it("retrieve account", function (done) {
+            Augur.web.db.get(account.handle, function (retrieved_account) {
+                assert.equal(account.handle, retrieved_account.handle);
+                assert.equal(account.privateKey, retrieved_account.privateKey);
+                assert.equal(account.iv, retrieved_account.iv);
+                assert.equal(account.nonce, retrieved_account.nonce);
                 done();
-            }
-        );
+            });
+        });
+
     });
 
-    it("should sign and send transaction to geth using account 1", function () {
-        this.timeout(constants.timeout);
-        var user = Augur.web.login(handle, password);
-        var tx = utilities.copy(Augur.tx.reputationFaucet);
-        tx.params = Augur.branches.dev;
-        var txhash = Augur.web.invoke(tx);
-        assert(txhash);
-        var confirmTx = Augur.getTx(txhash);
-        assert(confirmTx.hash);
-        assert(confirmTx.from);
-        assert(confirmTx.to);
-        assert.equal(txhash, confirmTx.hash);
-        assert.equal(confirmTx.from, user.address);
-        assert.equal(confirmTx.to, tx.to);
+    describe("Ethereum LevelDB", function () {
+
+        it("save account", function (done) {
+            Augur.web.db.put(account.handle, account);
+            done();
+        });
+
+        it("retrieve account", function (done) {
+            Augur.web.db.get(account.handle, function (retrieved_account) {
+                assert.equal(account.handle, retrieved_account.handle);
+                assert.equal(account.privateKey, retrieved_account.privateKey);
+                assert.equal(account.iv, retrieved_account.iv);
+                assert.equal(account.nonce, retrieved_account.nonce);
+                done();
+            });
+        });
+
     });
 
-    it("should automatically detect login and default to using web.invoke", function (done) {
-        this.timeout(constants.timeout);
-        var user = Augur.web.login(handle, password);
-        Augur.reputationFaucet(
-            Augur.branches.dev,
-            function (r) {
-                // sent
-                assert(r.txHash);
-                assert.equal(r.callReturn, "1");
-                // console.log("sent:", r);
-            },
-            function (r) {
-                // success
-                // console.log("success:", r);
-                assert.equal(r.from, Augur.web.account.address);
-                done();
-            },
-            function (r) {
-                // failed
-                throw r;
-                done();
-            }
-        );
+});
+
+describe("Accounts", function () {
+
+    describe("Register", function () {
+
+        it("register account 1: " + handle + " / " + password, function (done) {
+            this.timeout(constants.timeout);
+            Augur.web.db.get(handle, function (record) {
+                assert(record.error);
+                assert.equal(record.error, 99);
+                Augur.web.register(handle, password, function (result) {
+                    assert(result.privateKey);
+                    assert(result.address);
+                    assert(!result.error);
+                    Augur.web.db.get(handle, function (rec) {
+                        assert(!rec.error);
+                        done();
+                    });
+                });
+            });
+        });
+
+        it("register account 2: " + handle2 + " / " + password2, function (done) {
+            this.timeout(constants.timeout);
+            Augur.web.db.get(handle2, function (record) {
+                assert(record.error);
+                Augur.web.register(handle2, password2, function (result) {
+                    assert(result.privateKey);
+                    assert(result.address);
+                    assert(!result.error);
+                    Augur.web.db.get(handle2, function (rec) {
+                        assert(!rec.error);
+                        done();
+                    });
+                });
+            });
+        });
+
+        it("fail to register account 1's handle again", function (done) {
+            this.timeout(constants.timeout);
+            Augur.web.register(handle, password, function (result) {
+                assert(!result.privateKey);
+                assert(!result.address);
+                assert(result.error);
+                Augur.web.db.get(handle, function (record) {
+                    assert(!record.error);
+                    done();
+                });
+            });
+        });
+
     });
 
-    it("should logout and unset the account object", function () {
-        this.timeout(constants.timeout);
-        var user = Augur.web.login(handle, password);
-        assert.equal(user.handle, handle);
-        Augur.web.logout();
-        assert(!Augur.web.account.handle);
-        assert(!Augur.web.account.address);
-        assert(!Augur.web.account.privateKey);
-        assert(!Augur.web.account.nonce);
+    describe("Login/logout", function () {
+
+        it("login and decrypt the stored private key", function (done) {
+            this.timeout(constants.timeout);
+            Augur.web.login(handle, password, function (user) {
+                assert(!user.error);
+                assert(user.privateKey);
+                assert(user.address);
+                assert.equal(user.privateKey.toString("hex").length, 64);
+                assert.equal(user.address.length, 42);
+                Augur.web.login(handle, password, function (same_user) {
+                    assert(!same_user.error);
+                    assert.equal(user.privateKey.toString("hex"), same_user.privateKey.toString("hex"));
+                    assert.equal(user.address, same_user.address);
+                    done();
+                });
+            });
+        });
+
+        it("fail with error 403 when given an incorrect handle", function (done) {
+            this.timeout(constants.timeout);
+            var bad_handle = utilities.sha256(new Date().toString());
+            Augur.web.login(bad_handle, password, function (user) {
+                assert.equal(user.error, 403);
+                done();
+            });
+        });
+
+        it("fail with error 403 when given an incorrect password", function (done) {
+            this.timeout(constants.timeout);
+            var bad_password = utilities.sha256(Math.random().toString(36).substring(4));
+            Augur.web.login(handle, bad_password, function (user) {
+                assert.equal(user.error, 403);
+                done();
+            });
+        });
+
+        it("fail with error 403 when given an incorrect handle and an incorrect password", function (done) {
+            this.timeout(constants.timeout);
+            var bad_handle = utilities.sha256(new Date().toString());
+            var bad_password = utilities.sha256(Math.random().toString(36).substring(4));
+            Augur.web.login(handle, bad_password, function (user) {
+                assert.equal(user.error, 403);
+                done();
+            });
+        });
+
+        it("logout and unset the account object", function (done) {
+            this.timeout(constants.timeout);
+            Augur.web.login(handle, password, function (user) {
+                assert.equal(user.handle, handle);
+                Augur.web.logout();
+                assert(!Augur.web.account.handle);
+                assert(!Augur.web.account.address);
+                assert(!Augur.web.account.privateKey);
+                assert(!Augur.web.account.nonce);
+                done();
+            });
+        });
+
+    });
+
+    // describe("Send Ether", function () {
+
+    //     var amount = 64;
+
+    //     it("coinbase -> account 1 [" + amount + "]", function (done) {
+    //         this.timeout(constants.timeout);
+    //         Augur.web.db.get(handle, function (toAccount) {
+    //             Augur.sendEther(
+    //                 toAccount.address,
+    //                 amount,
+    //                 Augur.coinbase,
+    //                 function (r) {
+    //                     // sent
+    //                     // log("sent:", r);
+    //                 },
+    //                 function (r) {
+    //                     // log("success:", r);
+    //                     done();
+    //                 },
+    //                 function (r) {
+    //                     r.name = r.error; throw r;
+    //                     done(r);
+    //                 }
+    //             );
+    //         });
+    //     });
+
+    //     it("account 1 -> account 2 [" + amount / 2 + "]", function (done) {
+    //         this.timeout(constants.timeout);
+    //         Augur.web.login(handle, password, function (user) {
+    //             Augur.web.sendEther(
+    //                 handle2,
+    //                 amount / 2,
+    //                 function (r) {
+    //                     log("sent:", r);
+    //                 },
+    //                 function (r) {
+    //                     log("success:", r);
+    //                     done();
+    //                 },
+    //                 function (r) {
+    //                     done(r);
+    //                 }
+    //             );
+    //         });
+    //     });
+
+    // });
+
+    // describe("Send Cash", function () {
+
+    //     var amount = 10;
+
+    //     it("coinbase -> account 1 [" + amount + "]", function (done) {
+    //         this.timeout(constants.timeout);
+    //         Augur.web.db.get(handle, function (toAccount) {
+    //             Augur.sendCash(
+    //                 toAccount.address,
+    //                 amount,
+    //                 Augur.coinbase,
+    //                 function (r) {
+    //                     // sent
+    //                 },
+    //                 function (r) {
+    //                     done();
+    //                 },
+    //                 function (r) {
+    //                     r.name = r.error; throw r;
+    //                     done(r);
+    //                 }
+    //             );
+    //         });
+    //     });
+
+    //     it("account 1 -> account 2 [" + amount / 2 + "]", function (done) {
+    //         this.timeout(constants.timeout);
+    //         Augur.web.login(handle, password, function (user) {
+    //             Augur.web.sendCash(
+    //                 handle2,
+    //                 amount / 2,
+    //                 function (r) {
+    //                     log("sent:", r);
+    //                 },
+    //                 function (r) {
+    //                     log("success:", r);
+    //                     done();
+    //                 },
+    //                 function (r) {
+    //                     r.name = r.error; throw r;
+    //                     done();
+    //                 }
+    //             );
+    //         });
+    //     });
+
+    // });
+
+    // describe("Send Reputation", function () {
+
+    //     var amount = 2;
+
+    //     it("coinbase -> account 1 [" + amount + "]", function (done) {
+    //         this.timeout(constants.timeout);
+    //         Augur.web.db.get(handle, function (toAccount) {
+    //             Augur.sendReputation(
+    //                 Augur.branches.dev,
+    //                 toAccount.address,
+    //                 amount,
+    //                 Augur.coinbase,
+    //                 function (r) {
+    //                     // sent
+    //                 },
+    //                 function (r) {
+    //                     done();
+    //                 },
+    //                 function (r) {
+    //                     r.name = r.error; throw r;
+    //                     done(r);
+    //                 }
+    //             );
+    //         });
+    //     });
+
+    //     it("account 1 -> account 2 [" + amount / 2 + "]", function (done) {
+    //         this.timeout(constants.timeout);
+    //         Augur.web.login(handle, password, function (user) {
+    //             Augur.web.sendReputation(
+    //                 handle2,
+    //                 amount / 2,
+    //                 function (r) {
+    //                     log("sent:", r);
+    //                 },
+    //                 function (r) {
+    //                     log("success:", r);
+    //                     done();
+    //                 },
+    //                 function (r) {
+    //                     r.name = r.error; throw r;
+    //                     done();
+    //                 }
+    //             );
+    //         });
+    //     });
+
+    // });
+
+    describe("Contract methods", function () {
+
+        describe("Call", function () {
+
+            it("call getBranches using web.invoke", function (done) {
+                this.timeout(constants.timeout);
+                Augur.web.login(handle, password, function (user) {
+
+                    // sync
+                    var branches = Augur.web.invoke(Augur.tx.getBranches);
+                    assert(branches.length);
+                    assert.equal(branches.constructor, Array);
+                    assert.equal(
+                        Augur.encode_result(branches[0], Augur.tx.getBranches.returns),
+                        Augur.branches.dev
+                    );
+
+                    // async
+                    Augur.web.invoke(Augur.tx.getBranches, function (branches) {
+                        assert(branches.length);
+                        assert.equal(branches.constructor, Array);
+                        assert.equal(
+                            Augur.encode_result(branches[0], Augur.tx.getBranches.returns),
+                            Augur.branches.dev
+                        );
+                        done();
+                    });
+                });
+            });
+        
+        });
+
+        describe("Send transaction", function () {
+
+            it("send ether from coinbase to account 1", function (done) {
+                var amount = 64;
+                this.timeout(constants.timeout);
+                Augur.web.login(handle, password, function (toAccount) {
+                    Augur.sendEther(
+                        toAccount.address,
+                        amount,
+                        Augur.coinbase,
+                        function (r) {
+                            // sent
+                        },
+                        function (r) {
+                            done();
+                        },
+                        function (r) {
+                            r.name = r.error; throw r;
+                            done(r);
+                        }
+                    );
+                });
+            });
+
+            it("detect logged in user and default to web.invoke", function (done) {
+                this.timeout(constants.timeout);
+                Augur.web.login(handle, password, function (user) {
+                    assert.equal(user.address, Augur.web.account.address);
+                    Augur.reputationFaucet(
+                        Augur.branches.dev,
+                        function (r) {
+                            // sent
+                            assert(r.txHash);
+                            assert.equal(r.callReturn, "1");
+                        },
+                        function (r) {
+                            // success
+                            assert.equal(r.from, Augur.web.account.address);
+                            assert.equal(r.from, user.address);
+                            assert(r.blockHash);
+                            done();
+                        },
+                        function (r) {
+                            // failed
+                            done(r);
+                        }
+                    );
+                });
+            });
+
+            it("sign and send transaction using account 1", function (done) {
+                this.timeout(constants.timeout);
+                Augur.web.login(handle, password, function (user) {
+                    var tx = utilities.copy(Augur.tx.reputationFaucet);
+                    tx.params = Augur.branches.dev;
+                    Augur.web.invoke(tx, function (txhash) {
+                        assert(txhash);
+                        Augur.getTx(txhash, function (confirmTx) {
+                            assert(confirmTx.hash);
+                            assert(confirmTx.from);
+                            assert(confirmTx.to);
+                            assert.equal(txhash, confirmTx.hash);
+                            assert.equal(confirmTx.from, user.address);
+                            assert.equal(confirmTx.to, tx.to);
+                            done();                    
+                        });
+                    });
+                });
+            });
+
+        });
     });
 });

@@ -69,7 +69,7 @@ var augur = {
     contracts: utilities.copy(contracts.testnet),
     init_contracts: utilities.copy(contracts.testnet),
 
-    // send_call_confirm notifications
+    // transact notifications
     notifications: {},
 
     // Network ID
@@ -721,7 +721,7 @@ augur.tx_notify =  function (count, callreturn, itx, txhash, returns, onSent, on
     }.bind(this));
 };
 
-augur.call_confirm = function (tx, txhash, returns, onSent, onSuccess, onFailed) {
+augur.confirmTx = function (tx, txhash, returns, onSent, onSuccess, onFailed) {
     var self = this;
     if (tx && txhash) {
         this.notifications[txhash] = [];
@@ -786,12 +786,12 @@ augur.call_confirm = function (tx, txhash, returns, onSent, onSuccess, onFailed)
     }
 };
 
-augur.send_call_confirm = function (tx, onSent, onSuccess, onFailed) {
+augur.transact = function (tx, onSent, onSuccess, onFailed) {
     var returns = tx.returns;
     tx.send = true;
     delete tx.returns;
     this.invoke(tx, function (txhash) {
-        this.call_confirm(tx, txhash, returns, onSent, onSuccess, onFailed);
+        this.confirmTx(tx, txhash, returns, onSent, onSuccess, onFailed);
     }.bind(this));
 };
 
@@ -801,13 +801,13 @@ augur.send_call_confirm = function (tx, onSent, onSuccess, onFailed) {
 
 // faucets.se
 augur.cashFaucet = function (onSent, onSuccess, onFailed) {
-    return this.send_call_confirm(this.tx.cashFaucet, onSent, onSuccess, onFailed);
+    return this.transact(this.tx.cashFaucet, onSent, onSuccess, onFailed);
 };
 augur.reputationFaucet = function (branch, onSent, onSuccess, onFailed) {
     // branch: sha256
     var tx = utilities.copy(this.tx.reputationFaucet);
     tx.params = branch;
-    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
 // cash.se
@@ -830,7 +830,7 @@ augur.sendCash = function (to, value, onSent, onSuccess, onFailed) {
         }
         var tx = utilities.copy(this.tx.sendCash);
         tx.params = [to, numeric.fix(value)];
-        return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+        return this.transact(tx, onSent, onSuccess, onFailed);
     }
 };
 augur.sendCashFrom = function (to, value, from, onSent, onSuccess, onFailed) {
@@ -848,7 +848,7 @@ augur.sendCashFrom = function (to, value, from, onSent, onSuccess, onFailed) {
         }
         var tx = utilities.copy(this.tx.sendCashFrom);
         tx.params = [to, numeric.fix(value), from];
-        return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+        return this.transact(tx, onSent, onSuccess, onFailed);
     }
 };
 
@@ -882,12 +882,12 @@ augur.checkPeriod = function (branch) {
 augur.redeem_interpolate = function (branch, period, num_events, num_reports, flatsize, onSent, onSuccess, onFailed) {
     var tx = utilities.copy(this.tx.redeem_interpolate);
     tx.params = [branch, period, num_events, num_reports, flatsize];
-    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.transact(tx, onSent, onSuccess, onFailed);
 };
 augur.read_ballots = function (branch, period, num_events, num_reports, flatsize, onSent, onSuccess, onFailed) {
     var tx = utilities.copy(this.tx.read_ballots);
     tx.params = [branch, period, num_events, num_reports, flatsize];
-    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
 // center.se
@@ -902,38 +902,38 @@ augur.center = function (reports, reputation, scaled, scaled_max, scaled_min, ma
         max_iterations,
         max_components
     ];
-    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
 // redeem_center.se
 augur.redeem_center = function (branch, period, num_events, num_reports, flatsize, onSent, onSuccess, onFailed) {
     var tx = utilities.copy(this.tx.redeem_center);
     tx.params = [branch, period, num_events, num_reports, flatsize];
-    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.transact(tx, onSent, onSuccess, onFailed);
 };
 augur.redeem_covariance = function (branch, period, num_events, num_reports, flatsize, onSent, onSuccess, onFailed) {
     var tx = utilities.copy(this.tx.redeem_covariance);
     tx.params = [branch, period, num_events, num_reports, flatsize];
-    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
 // redeem_score.se
 augur.redeem_blank = function (branch, period, num_events, num_reports, flatsize, onSent, onSuccess, onFailed) {
     var tx = utilities.copy(this.tx.redeem_blank);
     tx.params = [branch, period, num_events, num_reports, flatsize];
-    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.transact(tx, onSent, onSuccess, onFailed);
 };
 augur.redeem_loadings = function (branch, period, num_events, num_reports, flatsize, onSent, onSuccess, onFailed) {
     var tx = utilities.copy(this.tx.redeem_loadings);
     tx.params = [branch, period, num_events, num_reports, flatsize];
-    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
 // score.se
 augur.blank = function (components_remaining, max_iterations, num_events, onSent, onSuccess, onFailed) {
     var tx = utilities.copy(this.tx.blank);
     tx.params = [components_remaining, max_iterations, num_events];
-    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.transact(tx, onSent, onSuccess, onFailed);
 };
 augur.loadings = function (iv, wcd, reputation, num_reports, num_events, onSent, onSuccess, onFailed) {
     var tx = utilities.copy(this.tx.loadings);
@@ -944,7 +944,7 @@ augur.loadings = function (iv, wcd, reputation, num_reports, num_events, onSent,
         num_reports,
         num_events
     ];
-    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
 // resolve.se
@@ -959,14 +959,14 @@ augur.resolve = function (smooth_rep, reports, scaled, scaled_max, scaled_min, n
         num_reports,
         num_events
     ];
-    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
 // redeem_resolve.se
 augur.redeem_resolve = function (branch, period, num_events, num_reports, flatsize, onSent, onSuccess, onFailed) {
     var tx = utilities.copy(this.tx.redeem_resolve);
     tx.params = [branch, period, num_events, num_reports, flatsize];
-    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
 // branches.se
@@ -1078,7 +1078,7 @@ augur.setTotalRepReported = function (branch, expDateIndex, repReported, onSent)
 augur.setReporterBallot = function (branch, expDateIndex, reporterID, report, reputation, onSent, onSuccess, onFailed) {
     var tx = utilities.copy(this.tx.setReporterBallot);
     tx.params = [branch, expDateIndex, reporterID, numeric.fix(report, "hex"), reputation];
-    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.transact(tx, onSent, onSuccess, onFailed);
 };
 augur.setVSize = function (branch, expDateIndex, vSize, onSent) {
     var tx = utilities.copy(this.tx.setVSize);
@@ -1467,7 +1467,7 @@ augur.setTotalReputation = function (branch, votePeriod, totalReputation, onSent
     // totalReputation: number -> fixed
     var tx = utilities.copy(this.tx.setTotalReputation);
     tx.params = [branch, votePeriod, numeric.fix(totalReputation, "hex")];
-    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.transact(tx, onSent, onSuccess, onFailed);
 };
 augur.makeBallot = function (branch, votePeriod, onSent) {
     // branch: sha256
@@ -1739,7 +1739,7 @@ augur.checkQuorum = function (branch, onSent, onSuccess, onFailed) {
     if (this.rpc.json_rpc(this.rpc.postdata("coinbase")) !== this.demo) {
         var tx = utilities.copy(this.tx.checkQuorum);
         tx.params = branch;
-        return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+        return this.transact(tx, onSent, onSuccess, onFailed);
     }
 };
 
@@ -1768,12 +1768,12 @@ augur.buyShares = function (branch, market, outcome, amount, nonce, limit, onSen
     if (onSent) {
         this.getNonce(market, function (nonce) {
             tx.params = [branch, market, outcome, numeric.fix(amount), nonce, limit || 0];
-            this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+            this.transact(tx, onSent, onSuccess, onFailed);
         }.bind(this));
     } else {
         nonce = this.getNonce(market);
         tx.params = [branch, market, outcome, numeric.fix(amount), nonce, limit || 0];
-        return this.send_call_confirm(tx);
+        return this.transact(tx);
     }
 };
 augur.sellShares = function (branch, market, outcome, amount, nonce, limit, onSent, onSuccess, onFailed) {
@@ -1794,12 +1794,12 @@ augur.sellShares = function (branch, market, outcome, amount, nonce, limit, onSe
     if (onSent) {
         this.getNonce(market, function (nonce) {
             tx.params = [branch, market, outcome, numeric.fix(amount), nonce, limit || 0];
-            this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+            this.transact(tx, onSent, onSuccess, onFailed);
         }.bind(this));
     } else {
         nonce = this.getNonce(market);
         tx.params = [branch, market, outcome, numeric.fix(amount), nonce, limit || 0];
-        return this.send_call_confirm(tx);
+        return this.transact(tx);
     }
 };
 
@@ -1816,7 +1816,7 @@ augur.createSubbranch = function (description, periodLength, parent, tradingFee,
     }
     var tx = utilities.copy(this.tx.sendReputation);
     tx.params = [description, periodLength, parent, tradingFee];
-    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
 // p2pWagers.se
@@ -1837,7 +1837,7 @@ augur.sendReputation = function (branch, to, value, onSent, onSuccess, onFailed)
         }
         var tx = utilities.copy(this.tx.sendReputation);
         tx.params = [branch, to, numeric.fix(value)];
-        return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+        return this.transact(tx, onSent, onSuccess, onFailed);
     }
 };
 
@@ -1856,7 +1856,7 @@ augur.report = function (branch, report, votePeriod, salt, onSent, onSuccess, on
     }
     var tx = utilities.copy(this.tx.report);
     tx.params = [branch, numeric.fix(report, "hex"), votePeriod, salt];
-    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.transact(tx, onSent, onSuccess, onFailed);
 };
 augur.submitReportHash = function (branch, reportHash, votePeriod, onSent, onSuccess, onFailed) {
     if (branch.constructor === Object && branch.branchId) {
@@ -1869,7 +1869,7 @@ augur.submitReportHash = function (branch, reportHash, votePeriod, onSent, onSuc
     }
     var tx = utilities.copy(this.tx.submitReportHash);
     tx.params = [branch, reportHash, votePeriod];
-    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.transact(tx, onSent, onSuccess, onFailed);
 };
 augur.checkReportValidity = function (branch, report, votePeriod, onSent, onSuccess, onFailed) {
     if (branch.constructor === Object && branch.branchId) {
@@ -1882,7 +1882,7 @@ augur.checkReportValidity = function (branch, report, votePeriod, onSent, onSucc
     }
     var tx = utilities.copy(this.tx.checkReportValidity);
     tx.params = [branch, numeric.fix(report, "hex"), votePeriod];
-    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.transact(tx, onSent, onSuccess, onFailed);
 };
 augur.slashRep = function (branch, votePeriod, salt, report, reporter, onSent, onSuccess, onFailed) {
     if (branch.constructor === Object && branch.branchId) {
@@ -1897,7 +1897,7 @@ augur.slashRep = function (branch, votePeriod, salt, report, reporter, onSent, o
     }
     var tx = utilities.copy(this.tx.slashRep);
     tx.params = [branch, votePeriod, salt, numeric.fix(report, "hex"), reporter];
-    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
 // createEvent.se
@@ -1924,7 +1924,7 @@ augur.createEvent = function (branch, description, expDate, minValue, maxValue, 
         numOutcomes,
         this.blockNumber()
     ];
-    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
 // createMarket.se
@@ -1951,7 +1951,7 @@ augur.createMarket = function (branch, description, alpha, liquidity, tradingFee
         events,
         this.blockNumber()
     ];
-    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
 // closeMarket.se
@@ -1965,7 +1965,7 @@ augur.closeMarket = function (branch, market, onSent, onSuccess, onFailed) {
     }
     var tx = utilities.copy(this.tx.closeMarket);
     tx.params = [branch, market];
-    return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+    return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
 // dispatch.se
@@ -1980,7 +1980,7 @@ augur.dispatch = function (branch, onSent, onSuccess, onFailed) {
         }
         var tx = utilities.copy(this.tx.dispatch);
         tx.params = branch;
-        return this.send_call_confirm(tx, onSent, onSuccess, onFailed);
+        return this.transact(tx, onSent, onSuccess, onFailed);
     }
 };
 

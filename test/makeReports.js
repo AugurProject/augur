@@ -51,8 +51,8 @@ describe("functions/makeReports", function () {
             onSuccess: function (res) {
                 log("report success: " + JSON.stringify(res));
             },
-            onFailed: function (res) {
-                throw new Error(res);
+            onFailed: function (r) {
+                r.name = r.error; throw r;
                 done();
             }
         };
@@ -86,15 +86,15 @@ describe("functions/makeReports", function () {
                         log("checkReportValidity success: " + JSON.stringify(res, null, 2));
                         done();
                     },
-                    onFailed: function (res) {
-                        throw new Error(res);
+                    onFailed: function (r) {
+                        r.name = r.error; throw r;
                         done();
                     }
                 };
                 Augur.checkReportValidity(checkReportObj);
             },
-            onFailed: function (res) {
-                throw new Error(res);
+            onFailed: function (r) {
+                r.name = r.error; throw r;
                 done();
             }
         };
@@ -116,8 +116,8 @@ describe("functions/makeReports", function () {
                 log("slashRep success: " + JSON.stringify(res, null, 2));
                 done();
             },
-            onFailed: function (res) {
-                throw new Error(res);
+            onFailed: function (r) {
+                r.name = r.error; throw r;
                 done();
             }
         };

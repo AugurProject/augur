@@ -79,26 +79,6 @@ var errors = {
         message: "could not post message to whisper"
     },
 
-    BAD_CREDENTIALS: {
-        error: 403, // forbidden
-        message: "incorrect handle or password"
-    },
-
-    HANDLE_TAKEN: {
-        error: 422, // unprocessable entity
-        message: "handle already taken"
-    },
-
-    TRANSACTION_INVALID: {
-        error: 412,
-        message: "transaction validation failed"
-    },
-
-    TRANSACTION_FAILED: {
-        error: 500,
-        message: "transaction failed"
-    },
-
     DB_WRITE_FAILED: {
         error: 98,
         message: "database write failed"
@@ -107,6 +87,31 @@ var errors = {
     DB_READ_FAILED: {
         error: 99,
         message: "database read failed"
+    },
+
+    NOT_LOGGED_IN: {
+        error: 401, // unauthorized
+        message: "not logged in"
+    },
+
+    BAD_CREDENTIALS: {
+        error: 403, // forbidden
+        message: "incorrect handle or password"
+    },
+
+    TRANSACTION_INVALID: {
+        error: 412,
+        message: "transaction validation failed"
+    },
+
+    HANDLE_TAKEN: {
+        error: 422, // unprocessable entity
+        message: "handle already taken"
+    },
+
+    TRANSACTION_FAILED: {
+        error: 500,
+        message: "transaction failed"
     }
 
 };

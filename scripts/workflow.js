@@ -467,7 +467,7 @@ if (options.NETWORK_ID !== "0") {
 // Test network (networkid 10101, genesisnonce 10101)
 if (options.NETWORK_ID === "10101") {
     options.DATADIR = path.join(process.env.HOME, ".augur-test");
-    options.GENESIS_NONCE = "10101";
+    options.GENESIS_NONCE = "42";
 }
 
 // Private alpha network (networkid 1010101, genesisnonce 1010101)

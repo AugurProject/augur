@@ -44,10 +44,6 @@ GLOBAL.balance = function (account, branch) {
         reputation: Augur.getRepBalance(branch || Augur.branches.dev, account),
         ether: numeric.bignum(Augur.balance(account)).dividedBy(constants.ETHER).toFixed()
     };
-    log(chalk.cyan("Balances:"));
-    log("Cash:       " + chalk.green(balances.cash));
-    log("Reputation: " + chalk.green(balances.reputation));
-    log("Ether:      " + chalk.green(balances.ether));
     return balances;
 }
 
@@ -69,6 +65,11 @@ if (balances.cash === undefined && balances.reputation === undefined) {
     GLOBAL.balances = gospel();
 }
 
+log(chalk.cyan("Balances:"));
+log("Cash:       " + chalk.green(balances.cash));
+log("Reputation: " + chalk.green(balances.reputation));
+log("Ether:      " + chalk.green(balances.ether));
+
 GLOBAL.reporting = function (branch) {
     var info = {
         vote_period: Augur.getVotePeriod(b),
@@ -76,14 +77,16 @@ GLOBAL.reporting = function (branch) {
         num_reports: Augur.getNumberReporters(b)
     };
     info.num_events = Augur.getNumberEvents(b, info.vote_period);
-    log(chalk.cyan("Vote period"), chalk.green(info.vote_period) + chalk.cyan(":"));
-    log("Current period:     ", chalk.green(info.current_period));
-    log("Number of events:   ", chalk.green(info.num_events));
-    log("Number of reporters:", chalk.green(info.num_reports));
     return info;
 };
 
-var reportingInfo = reporting(b)
+var reportingInfo = reporting(b);
+
+log(chalk.cyan("Vote period"), chalk.green(reportingInfo.vote_period) + chalk.cyan(":"));
+log("Current period:     ", chalk.green(reportingInfo.current_period));
+log("Number of events:   ", chalk.green(reportingInfo.num_events));
+log("Number of reporters:", chalk.green(reportingInfo.num_reports));
+
 
 GLOBAL.vote_period = reportingInfo.vote_period;
 GLOBAL.current_period = reportingInfo.current_period;

@@ -14,7 +14,6 @@ var constants = require("../src/constants");
 Augur = require("../src/utilities").setup(Augur, process.argv.slice(2));
 
 var log = console.log;
-var TIMEOUT = 120000;
 var num_components = "2";
 var num_iterations = "5";
 var branch = Augur.branches.dev;
@@ -48,7 +47,7 @@ for (var i = 0; i < num_events; ++i) {
 describe("testing consensus/score", function () {
 
     it("blank", function (done) {
-        this.timeout(TIMEOUT);
+        this.timeout(constants.timeout);
         Augur.blank(
             num_components,
             num_iterations,
@@ -66,14 +65,14 @@ describe("testing consensus/score", function () {
             },
             function (r) {
                 // failed
-                throw("blank failed: " + r);
+                r.name = r.error; throw r;
                 done();
             }
         );
     });
 
     it("redeem_blank", function (done) {
-        this.timeout(TIMEOUT);
+        this.timeout(constants.timeout);
         Augur.redeem_blank(
             branch,
             period,
@@ -90,14 +89,14 @@ describe("testing consensus/score", function () {
             },
             function (r) {
                 // failed
-                throw("redeem_blank failed: " + r);
+                r.name = r.error; throw r;
                 done();
             }
         );
     });
 
     it("loadings", function (done) {
-        this.timeout(TIMEOUT*4);
+        this.timeout(constants.timeout*4);
         Augur.blank(
             num_components,
             num_iterations,
@@ -129,21 +128,21 @@ describe("testing consensus/score", function () {
                     },
                     function (r) {
                         // failed
-                        throw("loadings failed: " + r);
+                        r.name = r.error; throw r;
                         done();
                     }
                 );
             },
             function (r) {
                 // failed
-                throw("loadings (blank) failed: " + r);
+                r.name = r.error; throw r;
                 done();
             }
         );
     });
 
     it("redeem_loadings", function (done) {
-        this.timeout(TIMEOUT);
+        this.timeout(constants.timeout);
         Augur.redeem_loadings(
             branch,
             period,
@@ -161,7 +160,7 @@ describe("testing consensus/score", function () {
             },
             function (r) {
                 // failed
-                throw("redeem_loadings failed: " + r);
+                r.name = r.error; throw r;
                 done();
             }
         );

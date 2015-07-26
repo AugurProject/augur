@@ -31,13 +31,23 @@ var constants = {
 
     max_test_accounts: 4,
 
-    timeout: 120000
+    timeout: 120000,
+
+    KEYSIZE: 32,
+    IVSIZE: 16,
+
+    pbkdf2: {
+        ITERATIONS: 65536,
+        ALGORITHM: "sha512"
+    },
+
+    FIREBASE_URL: "https://resplendent-inferno-1997.firebaseio-demo.com/"
 };
 
 constants.nodes = [
-    "http://69.164.196.239:8545", // loopy/poc9
-    "http://45.33.59.27:8545",    // miner
-    "http://45.79.204.139:8545"   // prospector
+    "eth1.augur.net", // miner:      45.33.59.27:8545
+    "eth2.augur.net", // prospector: 45.79.204.139:8545
+    "eth3.augur.net", // loopy/poc9: 69.164.196.239:8545
 ];
 
 /********************

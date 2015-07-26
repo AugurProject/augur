@@ -52,7 +52,7 @@ module.exports = {
             augur.contracts = JSON.parse(contracts.toString());
         }
         if (!bignum) augur.options.BigNumberOnly = false;
-        augur.options.nodes = constants.nodes;
+        // augur.options.nodes = constants.nodes;
         if (augur.connect(rpcinfo)) {
             log(chalk.magenta("augur"), "connected:", chalk.cyan(augur.options.RPC));
         }

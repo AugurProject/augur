@@ -10,6 +10,7 @@ var path = require("path");
 var assert = require("chai").assert;
 var _ = require("lodash");
 var Augur = require("../src");
+var constants = require("../src/constants");
 require('it-each')({ testPerIteration: true });
 
 Augur = require("../src/utilities").setup(Augur, process.argv.slice(2));
@@ -32,7 +33,7 @@ describe("Consensus", function () {
     Augur.setSubstep(branch, 0);
     describe("calling dispatch " + dispatches + " times", function () {
         it.each(_.range(0, dispatches), "dispatch %s", ['element'], function (element, next) {
-            this.timeout(TIMEOUT);
+            this.timeout(constants.timeout);
             Augur.dispatch({
                 branchId: branch,
                 onSent: function (r) {
@@ -46,8 +47,7 @@ describe("Consensus", function () {
                     next();
                 },
                 onFailed: function (r) {
-                    log(JSON.stringify(r, null, 2));
-                    throw("dispatch failed");
+                    r.name = r.error; throw r;
                     next();
                 }
             });

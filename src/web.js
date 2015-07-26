@@ -14,10 +14,11 @@ var BigNumber = require("bignumber.js");
 var EthUtil = require("ethereumjs-util");
 var EthTx = require("ethereumjs-tx");
 var eccrypto = require("eccrypto");
+var Firebase = require("firebase");
 var errors = require("./errors");
 var constants = require("./constants");
 var utilities = require("./utilities");
-var numeric = require("./numeric");
+// var numeric = require("./numeric");
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
@@ -25,11 +26,59 @@ module.exports = function (augur) {
 
     return {
 
+        // The account object is set when logged in
         account: {},
 
+        // Read and write methods for Firebase
         db: {
 
-            write: function (handle, data, f) {
+            put: function (handle, data, callback) {
+                var url = constants.FIREBASE_URL + "/" + handle;
+                try {
+                    new Firebase(url).set(data);
+                    if (callback) callback(url);
+                } catch (e) {
+                    if (callback) {
+                        callback(errors.DB_WRITE_FAILED);
+                    } else {
+                        return errors.DB_WRITE_FAILED;
+                    }
+                }
+            },
+
+            get: function (handle, callback) {
+                try {
+                    if (handle !== undefined && callback && callback.constructor === Function) {
+                        var ref = new Firebase(constants.FIREBASE_URL + "/" + handle);
+                        ref.once("value", function (data) {
+                            var account = data.val();
+                            if (account && account.handle) {
+                                callback(account);
+                            } else {
+                                callback(errors.DB_READ_FAILED);
+                            }
+                        });
+                    } else {
+                        if (callback) {
+                            callback(errors.DB_READ_FAILED);
+                        } else {
+                            return errors.DB_READ_FAILED;
+                        }
+                    }
+                } catch (e) {
+                    if (callback) {
+                        callback(errors.DB_READ_FAILED);
+                    } else {
+                        return errors.DB_READ_FAILED;
+                    }
+                }
+            }
+        },
+
+        // Read and write methods for Ethereum's LevelDB (deprecated)
+        leveldb: {
+
+            put: function (handle, data, f) {
                 try {
                     return augur.rpc.json_rpc(augur.rpc.postdata(
                         "putString",
@@ -37,7 +86,11 @@ module.exports = function (augur) {
                         "db_"
                     ), f);
                 } catch (e) {
-                    return errors.DB_WRITE_FAILED;
+                    if (f) {
+                        f(errors.DB_WRITE_FAILED);
+                    } else {
+                        return errors.DB_WRITE_FAILED;
+                    }
                 }
             },
 
@@ -70,7 +123,11 @@ module.exports = function (augur) {
                         }
                     }
                 } catch (e) {
-                    return errors.DB_READ_FAILED;
+                    if (f) {
+                        f(errors.DB_READ_FAILED);
+                    } else {
+                        return errors.DB_READ_FAILED;
+                    }
                 }
             }
         },
@@ -89,126 +146,170 @@ module.exports = function (augur) {
             return plaintext + decipher.final("hex");
         },
 
-        register: function (handle, password) {
-
-            var privKey, pubKey, address, iv, derivedKey, encryptedPrivKey;
-
-            // make sure this handle isn't taken already
-            if (this.db.get(handle).error) {
-
-                // generate private key, derive public key and address
-                privKey = crypto.randomBytes(32);
-                pubKey = eccrypto.getPublic(privKey);
-                address = "0x" + EthUtil.pubToAddress(pubKey).toString("hex");
-
-                // password hash used as secret key to aes-256 encrypt private key
-                iv = crypto.randomBytes(16);
-                derivedKey = crypto.pbkdf2Sync(password, iv, 65536, 32, "sha512");
-                encryptedPrivKey = this.encrypt(privKey, derivedKey, iv);
-
-                // store encrypted key & password hash, indexed by handle
-                this.db.write(handle, {
-                    handle: handle,
-                    privateKey: encryptedPrivKey,
-                    iv: iv.toString("base64"),
-                    address: address,
-                    nonce: 0
-                });
-
-                this.account = {
-                    handle: handle,
-                    privateKey: privKey,
-                    address: address,
-                    nonce: 0
-                };
-
-                return this.account;
-
-            // account already exists
-            } else {
-                return errors.HANDLE_TAKEN;
-            }
+        privateKeyToAddress: function (privateKey) {
+            var pubKey = eccrypto.getPublic(privateKey);
+            return "0x" + EthUtil.pubToAddress(pubKey).toString("hex");
         },
 
-        login: function (handle, password) {
-            var storedInfo, iv, privateKey, derivedKey;
+        register: function (handle, password, callback) {
+            var self = this;
+            this.db.get(handle, function (record) {
+                if (record.error) {
+
+                    // generate private key, derive public key and address
+                    crypto.randomBytes(constants.KEYSIZE, function (ex, privKey) {
+
+                        // generate random initialization vector
+                        crypto.randomBytes(constants.IVSIZE, function (ex, iv) {
+
+                            // derive secret key from password using PBKDF2
+                            crypto.pbkdf2(password, iv,
+                                constants.pbkdf2.ITERATIONS,
+                                constants.KEYSIZE,
+                                constants.pbkdf2.ALGORITHM,
+                                function (ex, derivedKey) {
+                                    if (ex) throw ex;
+
+                                    // AES-256 encrypt private key
+                                    var encryptedPrivKey = self.encrypt(privKey, derivedKey, iv);
+
+                                    // store encrypted key & IV, indexed by handle
+                                    self.db.put(handle, {
+                                        handle: handle,
+                                        privateKey: encryptedPrivKey,
+                                        iv: iv.toString("base64"),
+                                        nonce: 0
+                                    }, function () {
+
+                                        // while logged in, web.account object is set
+                                        self.account = {
+                                            handle: handle,
+                                            privateKey: privKey,
+                                            address: self.privateKeyToAddress(privKey),
+                                            nonce: 0
+                                        };
+
+                                        if (callback) callback(self.account);
+                                    });
+                                }
+                            );
+                        });
+                    });
+                
+                } else {
+                    if (callback) callback(errors.HANDLE_TAKEN);
+                }
+            });
+        },
+
+        login: function (handle, password, callback) {
+            var self = this;
 
             // retrieve account info from database
-            storedInfo = this.db.get(handle);
+            this.db.get(handle, function (storedInfo) {
+                if (!storedInfo.error) {
 
-            // use the hashed password to decrypt the private key
-            try {
+                    // use the password to decrypt the private key
+                    var iv = new Buffer(storedInfo.iv, "base64");
 
-                iv = new Buffer(storedInfo.iv, "base64");
-                derivedKey = crypto.pbkdf2Sync(password, iv, 65536, 32, "sha512");
-                privateKey = new Buffer(this.decrypt(
-                    storedInfo.privateKey,
-                    derivedKey,
-                    iv
-                ), "hex");
+                    // derive secret key from password using PBKDF2                    
+                    crypto.pbkdf2(password, iv,
+                        constants.pbkdf2.ITERATIONS,
+                        constants.KEYSIZE,
+                        constants.pbkdf2.ALGORITHM,
+                        function (ex, derivedKey) {
+                            if (ex) throw ex;
+                            try {
 
-                this.account = {
-                    handle: handle,
-                    privateKey: privateKey,
-                    address: storedInfo.address,
-                    nonce: storedInfo.nonce
-                };
+                                // decrypt stored private key using secret key
+                                var privateKey = new Buffer(self.decrypt(
+                                    storedInfo.privateKey,
+                                    derivedKey,
+                                    iv
+                                ), "hex");
 
-                return this.account;
+                                // while logged in, web.account object is set
+                                self.account = {
+                                    handle: handle,
+                                    privateKey: privateKey,
+                                    address: self.privateKeyToAddress(privateKey),
+                                    nonce: storedInfo.nonce
+                                };
 
-            // decryption failure: bad password
-            } catch (e) {
-                return errors.BAD_CREDENTIALS;
-            }
+                                if (callback) callback(self.account);
+                            
+                            // decryption failure: bad password
+                            } catch (e) {
+                                if (callback) callback(errors.BAD_CREDENTIALS);
+                            }
+                        }
+                    );
+
+                // handle not found
+                } else {
+                    if (callback) callback(errors.BAD_CREDENTIALS);
+                }
+            });
         },
 
         logout: function () {
             this.account = {};
         },
 
-        sendEther: function (toHandle, value, callback) {
-            if (this.account.address) {
-                var toAccount = this.db.get(toHandle);
-                if (toAccount && toAccount.address) {
-                    return this.invoke({
-                        value: value,
-                        from: this.account.address,
-                        to: toAccount.address
-                    }, callback);
-                } else {
-                    return errors.TRANSACTION_FAILED;
-                }
-            }
-        },
+        // Handle-to-handle payment methods (send ether/cash/rep without needing address)
+        // TODO decide if we should store addresses for users
+        // (maybe an opt-in system is best?)
 
-        sendCash: function (toHandle, value, callback) {
-            if (this.account.address) {
-                var toAccount = this.db.get(toHandle);
-                if (toAccount && toAccount.address) {
-                    var tx = utilities.copy(augur.tx.sendCash);
-                    tx.params = [toAccount.address, numeric.fix(value)];
-                    return this.invoke(tx, callback);
-                } else {
-                    return errors.TRANSACTION_FAILED;
-                }
-            }
-        },
+        // sendEther: function (toHandle, value, onSent, onSuccess, onFailed) {
+        //     var self = this;
+        //     if (this.account.address) {
+        //         this.db.get(toHandle, function (toAccount) {
+        //             if (toAccount && toAccount.address) {
+        //                 self.transact({
+        //                     value: value,
+        //                     from: self.account.address,
+        //                     to: toAccount.address
+        //                 }, onSent, onSuccess, onFailed);
+        //             } else {
+        //                 if (onFailed) onFailed(errors.TRANSACTION_FAILED);
+        //             }
+        //         });
+        //     }
+        // },
 
-        sendReputation: function (toHandle, value, callback) {
-            if (this.account.address) {
-                var toAccount = this.db.get(toHandle);
-                if (toAccount && toAccount.address) {
-                    var tx = utilities.copy(augur.tx.sendReputation);
-                    tx.params = [toAccount.address, numeric.fix(value)];
-                    return this.invoke(tx, callback);
-                } else {
-                    return errors.TRANSACTION_FAILED;
-                }
-            }
-        },
+        // sendCash: function (toHandle, value, onSent, onSuccess, onFailed) {
+        //     var self = this;
+        //     if (this.account.address) {
+        //         this.db.get(toHandle, function (toAccount) {
+        //             if (!toAccount.error) {
+        //                 var tx = utilities.copy(augur.tx.sendCash);
+        //                 tx.params = [toAccount.address, numeric.fix(value)];
+        //                 log(tx);
+        //                 return self.transact(tx, onSent, onSuccess, onFailed);
+        //             } else {
+        //                 if (onFailed) onFailed(errors.TRANSACTION_FAILED);
+        //             }
+        //         });
+        //     }
+        // },
+
+        // sendReputation: function (toHandle, value, onSent, onSuccess, onFailed) {
+        //     var self = this;
+        //     if (this.account.address) {
+        //         this.db.get(toHandle, function (toAccount) {
+        //             if (!toAccount.error) {
+        //                 var tx = utilities.copy(augur.tx.sendReputation);
+        //                 tx.params = [toAccount.address, numeric.fix(value)];
+        //                 return self.transact(tx, onSent, onSuccess, onFailed);
+        //             } else {
+        //                 if (onFailed) onFailed(errors.TRANSACTION_FAILED);
+        //             }
+        //         });
+        //     }
+        // },
 
         invoke: function (itx, callback) {
-            var tx, data_abi, packaged, stored;
+            var tx, data_abi, packaged;
             if (this.account.address) {
 
                 // client-side transactions only needed for sendTransactions
@@ -243,13 +344,15 @@ module.exports = function (augur) {
                         });
 
                         // write the incremented nonce to the database
-                        stored = this.db.get(this.account.handle);
-                        stored.nonce = this.account.nonce;
-                        this.db.write(this.account.handle, stored);
+                        this.db.get(this.account.handle, function (stored) {
+                            stored.nonce = this.account.nonce;
+                            this.db.put(this.account.handle, stored);
+                        }.bind(this));
 
                         // sign, validate, and send the transaction
                         packaged.sign(this.account.privateKey);
                         if (packaged.validate()) {
+
                             return augur.sendRawTx(
                                 packaged.serialize().toString("hex"),
                                 callback
@@ -267,7 +370,26 @@ module.exports = function (augur) {
                 } else {
                     return augur.invoke(itx, callback);
                 }
+            
+            // not logged in
+            } else {
+                if (itx.send) {
+                    return errors.NOT_LOGGED_IN;
+                } else {
+                    return augur.invoke(itx, callback);
+                }
             }
+        },
+
+        transact: function (tx, onSent, onSuccess, onFailed) {
+            var returns = tx.returns;
+
+            delete tx.returns;
+            tx.send = true;
+
+            this.invoke(tx, function (txhash) {
+                augur.confirmTx(tx, txhash, returns, onSent, onSuccess, onFailed);
+            });
         }
 
     };

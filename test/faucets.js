@@ -34,7 +34,7 @@ describe("Faucets", function () {
             },
             function (r) {
                 // failed
-                throw new Error(r.message);
+                r.name = r.error; throw r;
                 done();
             }
         );
@@ -67,7 +67,7 @@ describe("Faucets", function () {
                 },
                 function (r) {
                     // failed
-                    throw new Error(r.message);
+                    r.name = r.error; throw r;
                     done();
                 }
             );
