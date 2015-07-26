@@ -160,12 +160,12 @@ describe("Database", function () {
     describe("Ethereum LevelDB", function () {
 
         it("save account", function (done) {
-            Augur.web.db.put(account.handle, account);
+            Augur.web.leveldb.put(account.handle, account);
             done();
         });
 
         it("retrieve account", function (done) {
-            Augur.web.db.get(account.handle, function (retrieved_account) {
+            Augur.web.leveldb.get(account.handle, function (retrieved_account) {
                 assert.equal(account.handle, retrieved_account.handle);
                 assert.equal(account.privateKey, retrieved_account.privateKey);
                 assert.equal(account.iv, retrieved_account.iv);
