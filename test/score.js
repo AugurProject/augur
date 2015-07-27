@@ -47,7 +47,7 @@ for (var i = 0; i < num_events; ++i) {
 describe("testing consensus/score", function () {
 
     it("blank", function (done) {
-        this.timeout(constants.timeout);
+        this.timeout(constants.TIMEOUT);
         Augur.blank(
             num_components,
             num_iterations,
@@ -72,7 +72,7 @@ describe("testing consensus/score", function () {
     });
 
     it("redeem_blank", function (done) {
-        this.timeout(constants.timeout);
+        this.timeout(constants.TIMEOUT);
         Augur.redeem_blank(
             branch,
             period,
@@ -96,7 +96,7 @@ describe("testing consensus/score", function () {
     });
 
     it("loadings", function (done) {
-        this.timeout(constants.timeout*4);
+        this.timeout(constants.TIMEOUT*4);
         Augur.blank(
             num_components,
             num_iterations,
@@ -142,7 +142,7 @@ describe("testing consensus/score", function () {
     });
 
     it("redeem_loadings", function (done) {
-        this.timeout(constants.timeout);
+        this.timeout(constants.TIMEOUT);
         Augur.redeem_loadings(
             branch,
             period,

@@ -23,7 +23,7 @@ var events = [
 
 describe("functions/createMarket", function () {
     it.each(events, "single-event market: %s", ['element'], function (element, next) {
-        this.timeout(constants.timeout*4);
+        this.timeout(constants.TIMEOUT*4);
         var event_description = element[0];
         var blockNumber = Augur.blockNumber();
         var expDate = (EXPIRING) ? blockNumber + Math.round(Math.random() * 1000) : element[1];

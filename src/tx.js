@@ -8,6 +8,74 @@ module.exports = function (contracts) {
 
     return {
 
+        // namereg
+        namereg: {
+
+            // register name
+            reserve: {
+                to: contracts.namereg,
+                method: "reserve",
+                signature: "s",
+                send: true,
+                returns: "null"
+            },
+
+            // address that owns a name
+            owner: {
+                to: contracts.namereg,
+                method: "owner",
+                signature: "s",
+                send: false,
+                returns: "address"
+            },
+
+            // set name to address
+            setAddress: {
+                to: contracts.namereg,
+                method: "setAddress",
+                signature: "sii",
+                send: true,
+                returns: "null"
+            },
+
+            // get address from name
+            addr: {
+                to: contracts.namereg,
+                method: "addr",
+                signature: "s",
+                send: false,
+                returns: "address"
+            },
+
+            // get name from address
+            name: {
+                to: contracts.namereg,
+                method: "name",
+                signature: "i",
+                send: false,
+                returns: "string"
+            },
+
+            // transfer name to a new owner
+            transfer: {
+                to: contracts.namereg,
+                method: "transfer",
+                signature: "si",
+                send: true,
+                returns: "null"
+            },
+
+            // give up ownership of a name
+            disown: {
+                to: contracts.namereg,
+                method: "disown",
+                signature: "s",
+                send: true,
+                returns: "null"
+            }
+
+        },
+
         // faucets.se
         cashFaucet: {
             to: contracts.faucets,

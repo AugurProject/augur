@@ -20,7 +20,7 @@ var TIMEOUT = 120000;
 var branch = Augur.branches.dev;
 var period = Augur.getVotePeriod(branch);
 
-var reporters = utilities.get_test_accounts(Augur, constants.max_test_accounts);
+var reporters = utilities.get_test_accounts(Augur, constants.MAX_TEST_ACCOUNTS);
 
 describe("Set ballots for " + reporters.length + " reporters", function () {
 

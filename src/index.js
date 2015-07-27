@@ -25,6 +25,7 @@ var WebClient = require("./web");
 var Comments = require("./comments");
 var Filters = require("./filters");
 var Tx = require("./tx");
+var Namereg = require("./namereg");
 
 var log = console.log;
 
@@ -65,6 +66,7 @@ var augur = {
     web: {},
     comments: {},
     filters: {},
+    namereg: {},
 
     contracts: utilities.copy(contracts.testnet),
     init_contracts: utilities.copy(contracts.testnet),
@@ -94,6 +96,7 @@ augur.reload_modules = function (options) {
     this.web = new WebClient(this);
     this.comments = new Comments(this);
     this.filters = new Filters(this);
+    this.namereg = new Namereg(this);
 };
 
 augur.reload_modules(options);
@@ -237,13 +240,13 @@ augur.estimateGas = function (tx, f) {
 // execute functions on contracts on the blockchain
 augur.call = function (tx, f) {
     tx.to = tx.to || "";
-    tx.gas = (tx.gas) ? numeric.prefix_hex(tx.gas.toString(16)) : constants.default_gas;
+    tx.gas = (tx.gas) ? numeric.prefix_hex(tx.gas.toString(16)) : constants.DEFAULT_GAS;
     return this.rpc.json_rpc(this.rpc.postdata("call", tx), f);
 };
 
 augur.sendTransaction = augur.sendTx = function (tx, f) {
     tx.to = tx.to || "";
-    tx.gas = (tx.gas) ? numeric.prefix_hex(tx.gas.toString(16)) : constants.default_gas;
+    tx.gas = (tx.gas) ? numeric.prefix_hex(tx.gas.toString(16)) : constants.DEFAULT_GAS;
     return this.rpc.json_rpc(this.rpc.postdata("sendTransaction", tx), f);
 };
 
@@ -587,7 +590,9 @@ augur.clear_notifications = function (id) {
 
 augur.encode_result = function (result, returns) {
     if (result) {
-        if (returns === "address" || returns === "address[]") {
+        if (returns === "null") {
+            result = null;
+        } else if (returns === "address" || returns === "address[]") {
             result = numeric.prefix_hex(numeric.remove_leading_zeros(result));
         } else {
             if (this.options.BigNumberOnly && returns !== "string") {
@@ -732,55 +737,76 @@ augur.confirmTx = function (tx, txhash, returns, onSent, onSuccess, onFailed) {
             });
         } else {
             this.getTx(txhash, function (sent) {
-                self.call({
-                    from: sent.from || self.coinbase,
-                    to: sent.to || tx.to,
-                    data: sent.input,
-                    returns: returns
-                }, function (callreturn) {
-                    if (callreturn) {
-                        if (callreturn.constructor === Object && callreturn.error) {
-                            if (onFailed) onFailed(callreturn);
-                        } else if (errors[callreturn]) {
-                            if (onFailed) onFailed({
-                                error: callreturn,
-                                message: errors[callreturn]
-                            });
-                        } else {
-                            try {
-                                var num = numeric.bignum(callreturn);
-                                if (num && num.constructor === BigNumber) {
-                                    num = num.toFixed();
-                                }
-                                if (num && errors[tx.method] && errors[tx.method][num]) {
-                                    if (onFailed) onFailed({
-                                        error: num,
-                                        message: errors[tx.method][num]
-                                    });
-                                } else {
-                                    onSent({
-                                        txHash: txhash,
-                                        callReturn: self.encode_result(callreturn, returns)
-                                    });
-                                    if (onSuccess) {
-                                        self.tx_notify(
-                                            0,
-                                            callreturn,
-                                            tx,
-                                            txhash,
-                                            returns,
-                                            onSent,
-                                            onSuccess,
-                                            onFailed
-                                        );
+                if (returns !== "null") {
+                    self.call({
+                        from: sent.from || self.coinbase,
+                        to: sent.to || tx.to,
+                        data: sent.input,
+                        returns: returns
+                    }, function (callreturn) {
+                        if (callreturn) {
+                            if (callreturn.constructor === Object && callreturn.error) {
+                                if (onFailed) onFailed(callreturn);
+                            } else if (errors[callreturn]) {
+                                if (onFailed) onFailed({
+                                    error: callreturn,
+                                    message: errors[callreturn]
+                                });
+                            } else {
+                                try {
+                                    var num = numeric.bignum(callreturn);
+                                    if (num && num.constructor === BigNumber) {
+                                        num = num.toFixed();
                                     }
+                                    if (num && errors[tx.method] && errors[tx.method][num]) {
+                                        if (onFailed) onFailed({
+                                            error: num,
+                                            message: errors[tx.method][num]
+                                        });
+                                    } else {
+                                        onSent({
+                                            txHash: txhash,
+                                            callReturn: self.encode_result(callreturn, returns)
+                                        });
+                                        if (onSuccess) {
+                                            self.tx_notify(
+                                                0,
+                                                callreturn,
+                                                tx,
+                                                txhash,
+                                                returns,
+                                                onSent,
+                                                onSuccess,
+                                                onFailed
+                                            );
+                                        }
+                                    }
+                                } catch (e) {
+                                    if (onFailed) onFailed(e);
                                 }
-                            } catch (e) {
-                                if (onFailed) onFailed(e);
                             }
                         }
+                    });
+
+                // if returns type is null, skip the intermediate call
+                } else {
+                    onSent({
+                        txHash: txhash,
+                        callReturn: null
+                    });
+                    if (onSuccess) {
+                        self.tx_notify(
+                            0,
+                            null,
+                            tx,
+                            txhash,
+                            returns,
+                            onSent,
+                            onSuccess,
+                            onFailed
+                        );
                     }
-                });
+                }
             });
         }
     }

@@ -46,7 +46,7 @@ for (var i = 0; i < num_events; ++i) {
 describe("testing consensus/resolve", function () {
     
     it("resolve", function (done) {
-        this.timeout(constants.timeout);
+        this.timeout(constants.TIMEOUT);
         Augur.resolve(
             reputation_vector,
             numeric.unfix(reports, "string"),
@@ -72,7 +72,7 @@ describe("testing consensus/resolve", function () {
     });
 
     it("redeem_resolve", function (done) {
-        this.timeout(constants.timeout);
+        this.timeout(constants.TIMEOUT);
         Augur.redeem_resolve(
             branch,
             period,

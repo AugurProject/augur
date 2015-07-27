@@ -33,7 +33,7 @@ describe("Consensus", function () {
     Augur.setSubstep(branch, 0);
     describe("calling dispatch " + dispatches + " times", function () {
         it.each(_.range(0, dispatches), "dispatch %s", ['element'], function (element, next) {
-            this.timeout(constants.timeout);
+            this.timeout(constants.TIMEOUT);
             Augur.dispatch({
                 branchId: branch,
                 onSent: function (r) {

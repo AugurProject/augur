@@ -8,6 +8,7 @@ module.exports = {
 
     /* Ethereum testnet addresses */
     testnet: {
+        namereg: "0xc6d9d2cd449a754c494264e1809c50e34d64562b",
         checkQuorum: "0xe26c5a52d23d259f452eba1855123cf08e388095",
         buyAndSellShares: "0x4382ef4d06f089ced6ed376be3a501c8c7cea30a",
         createBranch: "0x6b35d1d114beae2202c4c7deae2de9ed5d6c4fc0",

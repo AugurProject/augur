@@ -13,7 +13,7 @@ var log = console.log;
 
 var branch_id = Augur.branches.dev;
 var branch_number = "0";
-var accounts = utilities.get_test_accounts(Augur, constants.max_test_accounts);
+var accounts = utilities.get_test_accounts(Augur, constants.MAX_TEST_ACCOUNTS);
 var test_account = accounts[0];
 var markets = Augur.getMarkets(branch_id);
 var market_id = markets[0];

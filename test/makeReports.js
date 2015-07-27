@@ -17,7 +17,7 @@ var log = console.log;
 var branch_id = Augur.branches.dev;
 var salt = "1337";
 
-var accounts = utilities.get_test_accounts(Augur, constants.max_test_accounts);
+var accounts = utilities.get_test_accounts(Augur, constants.MAX_TEST_ACCOUNTS);
 
 var period = Augur.getCurrentVotePeriod(branch_id);
 var num_events = Augur.getNumberEvents(branch_id, period);
@@ -37,7 +37,7 @@ for (var i = 0; i < num_events; ++i) {
 describe("functions/makeReports", function () {
 
     it("submit report: " + JSON.stringify(ballot), function (done) {
-        this.timeout(constants.timeout);
+        this.timeout(constants.TIMEOUT);
 
         // make report
         var report = {
@@ -62,7 +62,7 @@ describe("functions/makeReports", function () {
     it("submit report hash and check validity", function (done) {
 
         // submit report hash
-        this.timeout(constants.timeout);
+        this.timeout(constants.TIMEOUT);
         var reportHashObj = {
             branchId: branch_id,
             reportHash: Augur.hash(JSON.stringify(ballot)),
@@ -74,7 +74,7 @@ describe("functions/makeReports", function () {
                 log("submitReportHash success: " + JSON.stringify(res, null, 2));
 
                 // check report validity
-                this.timeout(constants.timeout);
+                this.timeout(constants.TIMEOUT);
                 var checkReportObj = {
                     branchId: branch_id,
                     report: ballot,
@@ -102,7 +102,7 @@ describe("functions/makeReports", function () {
     });
 
     it("slash account " + accounts[0] + "'s reputation", function (done) {
-        this.timeout(constants.timeout);
+        this.timeout(constants.TIMEOUT);
         var slashRepObj = {
             branchId: branch_id,
             votePeriod: Augur.getCurrentVotePeriod(branch_id),

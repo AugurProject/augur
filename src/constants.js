@@ -16,7 +16,7 @@ var constants = {
     ETHER: (new BigNumber(10)).toPower(18),
 
     // default gas: 3.135M
-    default_gas: "0x2fd618",
+    DEFAULT_GAS: "0x2fd618",
 
     // max number of tx verification attempts
     TX_POLL_MAX: 12,
@@ -29,9 +29,9 @@ var constants = {
 
     SECONDS_PER_BLOCK: 12,
 
-    max_test_accounts: 4,
+    MAX_TEST_ACCOUNTS: 4,
 
-    timeout: 120000,
+    TIMEOUT: 120000,
 
     KEYSIZE: 32,
     IVSIZE: 16,

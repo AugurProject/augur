@@ -19,7 +19,7 @@ var period = Augur.getVotePeriod(branch);
 var num_events = Augur.getNumberEvents(branch, period);
 var num_reports = Augur.getNumberReporters(branch);
 var flatsize = num_events * num_reports;
-var reporters = utilities.get_test_accounts(Augur, constants.max_test_accounts);
+var reporters = utilities.get_test_accounts(Augur, constants.MAX_TEST_ACCOUNTS);
 var reputation_vector = [];
 for (var i = 0; i < num_reports; ++i) {
     reputation_vector.push(Augur.getRepBalance(branch, reporters[i]));
@@ -60,7 +60,7 @@ utilities.print_matrix(utilities.fold(reports, num_events));
 describe("testing consensus: interpolate", function () {
 
     it("redeem_interpolate/read_ballots", function (done) {
-        this.timeout(constants.timeout);
+        this.timeout(constants.TIMEOUT);
         Augur.read_ballots(
             branch,
             period,
@@ -84,7 +84,7 @@ describe("testing consensus: interpolate", function () {
     });
 
     it("redeem_interpolate/interpolate", function (done) {
-        this.timeout(constants.timeout);
+        this.timeout(constants.TIMEOUT);
         // Augur.tx.redeem_interpolate.returns = "unfix[]";
         Augur.redeem_interpolate(
             branch,

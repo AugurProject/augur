@@ -28,7 +28,7 @@ describe("Creating " + num_events + " events and markets", function () {
     var events = [];
     fs.writeFileSync("events.dat", "");
     it.each(_.range(0, num_events), "create event/market %s", ['element'], function (element, next) {
-        this.timeout(constants.timeout);
+        this.timeout(constants.TIMEOUT);
         var event_description = Math.random().toString(36).substring(4);
         Augur.createEvent({
             branchId: branch,

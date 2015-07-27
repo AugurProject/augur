@@ -21,7 +21,7 @@ var block = Augur.blockNumber();
 
 describe("getMarketPriceHistory", function () {
     it("price history (async)", function (done) {
-        this.timeout(constants.timeout);
+        this.timeout(constants.TIMEOUT);
         Augur.buyShares({
             branchId: branch,
             marketId: market_id,
@@ -46,7 +46,7 @@ describe("getMarketPriceHistory", function () {
         });
     });
     it("price history (sync)", function (done) {
-        this.timeout(constants.timeout);
+        this.timeout(constants.TIMEOUT);
         Augur.buyShares({
             branchId: branch,
             marketId: market_id,
@@ -73,7 +73,7 @@ describe("getMarketPriceHistory", function () {
 
 describe("updatePrice listener", function () {
     it("should return data on buyShares", function (done) {
-        this.timeout(constants.timeout);
+        this.timeout(constants.TIMEOUT);
         Augur.filters.start_eth_listener("updatePrice", function (filter_id) {
             var listener = setInterval(function () {
                 Augur.filters.poll_eth_listener("updatePrice", function (data) {

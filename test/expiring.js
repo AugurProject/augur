@@ -18,7 +18,7 @@ var num_events = parseInt(Augur.getNumberEvents(branch, period));
 var num_reports = parseInt(Augur.getNumberReporters(branch));
 var flatsize = num_events * num_reports;
 
-var accounts = utilities.get_test_accounts(Augur, constants.max_test_accounts);
+var accounts = utilities.get_test_accounts(Augur, constants.MAX_TEST_ACCOUNTS);
 var receiving_account = accounts[1];
 
 describe("data and api/expiringEvents", function () {

@@ -18,10 +18,10 @@ describe("Payments", function () {
 
     var amount = "1";
     var branch_id = Augur.branches.dev;
-    var receiver = utilities.get_test_accounts(Augur, constants.max_test_accounts)[1];
+    var receiver = utilities.get_test_accounts(Augur, constants.MAX_TEST_ACCOUNTS)[1];
 
     it("sendEther", function (done) {
-        this.timeout(constants.timeout);
+        this.timeout(constants.TIMEOUT);
         var start_balance = numeric.bignum(Augur.balance(receiver)).dividedBy(constants.ETHER);
         var tx = {
             to: receiver,
@@ -38,7 +38,7 @@ describe("Payments", function () {
         Augur.pay(tx);
     });
     it("sendCash", function (done) {
-        this.timeout(constants.timeout);
+        this.timeout(constants.TIMEOUT);
         var start_balance = numeric.bignum(Augur.getCashBalance(Augur.coinbase));
         Augur.sendCash({
             to: receiver,
@@ -58,7 +58,7 @@ describe("Payments", function () {
         });
     });
     it("sendCashFrom", function (done) {
-        this.timeout(constants.timeout);
+        this.timeout(constants.TIMEOUT);
         var start_balance = numeric.bignum(Augur.getCashBalance(Augur.coinbase));
         Augur.sendCashFrom({
             to: receiver,
@@ -79,7 +79,7 @@ describe("Payments", function () {
         });
     });
     it("sendReputation", function (done) {
-        this.timeout(constants.timeout);
+        this.timeout(constants.TIMEOUT);
         var start_balance = numeric.bignum(Augur.getRepBalance(Augur.branches.dev));
         Augur.sendReputation({
             branchId: Augur.branches.dev,

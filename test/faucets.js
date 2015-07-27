@@ -14,7 +14,7 @@ var coinbase = Augur.coinbase;
 
 describe("Faucets", function () {
     it("Reputation faucet", function (done) {
-        this.timeout(constants.timeout);
+        this.timeout(constants.TIMEOUT);
         Augur.reputationFaucet(
             branch,
             function (r) {
@@ -40,7 +40,7 @@ describe("Faucets", function () {
         );
     });
     it("Cash faucet", function (done) {
-        this.timeout(constants.timeout);
+        this.timeout(constants.TIMEOUT);
         var cash_balance = Augur.getCashBalance(coinbase);
         if (numeric.bignum(cash_balance).toNumber() >= 5) {
             done();

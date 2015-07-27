@@ -17,6 +17,68 @@ BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
 module.exports = {
 
+    pp: function (obj) {
+        var o = this.copy(obj);
+        for (var k in o) {
+            if (!o.hasOwnProperty(k)) continue;
+            if (o[k] && o[k].constructor === Function) {
+                o[k] = o[k].toString();
+                if (o[k].length > 64) {
+                    o[k] = o[k].match(/function (\w*)/).slice(0, 1).join('');
+                }
+            }
+        }
+        return chalk.green(JSON.stringify(o, null, 2));
+    },
+
+    STRIP_COMMENTS: /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg,
+
+    ARGUMENT_NAMES: /([^\s,]+)/g,
+
+    labels: function (func) {
+        var fnStr = func.toString().replace(this.STRIP_COMMENTS, '');
+        var result = fnStr.slice(fnStr.indexOf('(')+1, fnStr.indexOf(')')).match(this.ARGUMENT_NAMES);
+        if (result === null) result = [];
+        return result;
+    },
+
+    unpack: function (o, labels, args) {
+        var params = [], cb = [];
+
+        // unpack object argument
+        if (o !== undefined && o !== null && o.constructor === Object &&
+            labels && labels.constructor === Array && labels.length)
+        {
+            for (var i = 0, len = labels.length; i < len; ++i) {
+                if (o[labels[i]] !== undefined) {
+                    if (o[labels[i]].constructor === Function) {
+                        cb.push(o[labels[i]]);
+                    } else {
+                        params.push(o[labels[i]]);
+                    }
+                } else {
+                    return null;
+                }
+            }
+
+        // unpack positional arguments
+        } else {
+            for (var j = 0, arglen = args.length; j < arglen; ++j) {
+                if (args[j] !== undefined) {
+                    if (args[j] && args[j].constructor === Function) {
+                        cb.push(args[j]);
+                    } else {
+                        params.push(args[j]);
+                    }
+                } else {
+                    return null;
+                }
+            }
+        }
+
+        return { params: params, cb: cb };
+    },
+
     // calculate date from block number
     block_to_date: function (augur, block) {
         var current_block = augur.blockNumber();
@@ -45,7 +107,9 @@ module.exports = {
 
     setup: function (augur, args, rpcinfo, bignum) {
         var gospel, contracts;
-        if (NODE_JS && args && (args.indexOf("--gospel") > -1 || args.indexOf("--reset") > -1)) {
+        if (NODE_JS && args &&
+            (args.indexOf("--gospel") > -1 || args.indexOf("--reset") > -1))
+        {
             gospel = path.join(__dirname, "..", "test", "gospel.json");
             log("Load contracts from file: " + chalk.green(gospel));
             contracts = fs.readFileSync(gospel);

@@ -15,7 +15,7 @@ var num_reports = Augur.getNumberReporters(branch);
 var num_events = Augur.getNumberEvents(branch, period);
 var flatsize = num_events * num_reports;
 
-var reporters = utilities.get_test_accounts(Augur, constants.max_test_accounts);
+var reporters = utilities.get_test_accounts(Augur, constants.MAX_TEST_ACCOUNTS);
 var ballots = new Array(flatsize);
 for (var i = 0; i < num_reports; ++i) {
     var reporterID = Augur.getReporterID(branch, i);

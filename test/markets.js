@@ -14,7 +14,7 @@ var log = console.log;
 
 var amount = "1";
 var branch_id = Augur.branches.dev;
-var accounts = utilities.get_test_accounts(Augur, constants.max_test_accounts);
+var accounts = utilities.get_test_accounts(Augur, constants.MAX_TEST_ACCOUNTS);
 var participant_number = "1";
 var outcome = 1;
 var markets = Augur.getMarkets(branch_id);

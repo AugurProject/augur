@@ -253,7 +253,7 @@ describe("branches.se", function () {
 
 describe("augur.js / web3 interoperability", function () {
     it("market IDs should be identical", function () {
-        this.timeout(constants.timeout);
+        this.timeout(constants.TIMEOUT);
         var web3markets = web3.eth.contract(branches_full_abi)
                                   .at(Augur.contracts.branches)
                                   .getMarkets

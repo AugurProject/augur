@@ -13,7 +13,7 @@ var numeric = require("../src/numeric");
 var Augur = utilities.setup(require("../src"), process.argv.slice(2));
 var log = console.log;
 
-var accounts = utilities.get_test_accounts(Augur, constants.max_test_accounts);
+var accounts = utilities.get_test_accounts(Augur, constants.MAX_TEST_ACCOUNTS);
 var branch_id = Augur.branches.dev;
 var reporter_index = "0";
 var ballot = [2, 2, 1, 2];

@@ -85,7 +85,7 @@ if (events.length) {
             });
         });
         it.each(markets, "buyShares: %s", ['element'], function (element, next) {
-            this.timeout(constants.timeout);
+            this.timeout(constants.TIMEOUT);
             var amount = "10";
             Augur.buyShares({
                 branchId: branch,
@@ -108,7 +108,7 @@ if (events.length) {
             });
         });
         it.each(markets, "sellShares: %s", ['element'], function (element, next) {
-            this.timeout(constants.timeout);
+            this.timeout(constants.TIMEOUT);
             var amount = "1";
             Augur.sellShares({
                 branchId: branch,

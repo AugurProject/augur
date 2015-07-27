@@ -183,7 +183,7 @@ describe("Accounts", function () {
     describe("Register", function () {
 
         it("register account 1: " + handle + " / " + password, function (done) {
-            this.timeout(constants.timeout);
+            this.timeout(constants.TIMEOUT);
             Augur.web.db.get(handle, function (record) {
                 assert(record.error);
                 assert.equal(record.error, 99);
@@ -200,7 +200,7 @@ describe("Accounts", function () {
         });
 
         it("register account 2: " + handle2 + " / " + password2, function (done) {
-            this.timeout(constants.timeout);
+            this.timeout(constants.TIMEOUT);
             Augur.web.db.get(handle2, function (record) {
                 assert(record.error);
                 Augur.web.register(handle2, password2, function (result) {
@@ -216,7 +216,7 @@ describe("Accounts", function () {
         });
 
         it("fail to register account 1's handle again", function (done) {
-            this.timeout(constants.timeout);
+            this.timeout(constants.TIMEOUT);
             Augur.web.register(handle, password, function (result) {
                 assert(!result.privateKey);
                 assert(!result.address);
@@ -233,7 +233,7 @@ describe("Accounts", function () {
     describe("Login/logout", function () {
 
         it("login and decrypt the stored private key", function (done) {
-            this.timeout(constants.timeout);
+            this.timeout(constants.TIMEOUT);
             Augur.web.login(handle, password, function (user) {
                 assert(!user.error);
                 assert(user.privateKey);
@@ -250,7 +250,7 @@ describe("Accounts", function () {
         });
 
         it("fail with error 403 when given an incorrect handle", function (done) {
-            this.timeout(constants.timeout);
+            this.timeout(constants.TIMEOUT);
             var bad_handle = utilities.sha256(new Date().toString());
             Augur.web.login(bad_handle, password, function (user) {
                 assert.equal(user.error, 403);
@@ -259,7 +259,7 @@ describe("Accounts", function () {
         });
 
         it("fail with error 403 when given an incorrect password", function (done) {
-            this.timeout(constants.timeout);
+            this.timeout(constants.TIMEOUT);
             var bad_password = utilities.sha256(Math.random().toString(36).substring(4));
             Augur.web.login(handle, bad_password, function (user) {
                 assert.equal(user.error, 403);
@@ -268,7 +268,7 @@ describe("Accounts", function () {
         });
 
         it("fail with error 403 when given an incorrect handle and an incorrect password", function (done) {
-            this.timeout(constants.timeout);
+            this.timeout(constants.TIMEOUT);
             var bad_handle = utilities.sha256(new Date().toString());
             var bad_password = utilities.sha256(Math.random().toString(36).substring(4));
             Augur.web.login(handle, bad_password, function (user) {
@@ -278,7 +278,7 @@ describe("Accounts", function () {
         });
 
         it("logout and unset the account object", function (done) {
-            this.timeout(constants.timeout);
+            this.timeout(constants.TIMEOUT);
             Augur.web.login(handle, password, function (user) {
                 assert.equal(user.handle, handle);
                 Augur.web.logout();
@@ -297,7 +297,7 @@ describe("Accounts", function () {
     //     var amount = 64;
 
     //     it("coinbase -> account 1 [" + amount + "]", function (done) {
-    //         this.timeout(constants.timeout);
+    //         this.timeout(constants.TIMEOUT);
     //         Augur.web.db.get(handle, function (toAccount) {
     //             Augur.sendEther(
     //                 toAccount.address,
@@ -320,7 +320,7 @@ describe("Accounts", function () {
     //     });
 
     //     it("account 1 -> account 2 [" + amount / 2 + "]", function (done) {
-    //         this.timeout(constants.timeout);
+    //         this.timeout(constants.TIMEOUT);
     //         Augur.web.login(handle, password, function (user) {
     //             Augur.web.sendEther(
     //                 handle2,
@@ -346,7 +346,7 @@ describe("Accounts", function () {
     //     var amount = 10;
 
     //     it("coinbase -> account 1 [" + amount + "]", function (done) {
-    //         this.timeout(constants.timeout);
+    //         this.timeout(constants.TIMEOUT);
     //         Augur.web.db.get(handle, function (toAccount) {
     //             Augur.sendCash(
     //                 toAccount.address,
@@ -367,7 +367,7 @@ describe("Accounts", function () {
     //     });
 
     //     it("account 1 -> account 2 [" + amount / 2 + "]", function (done) {
-    //         this.timeout(constants.timeout);
+    //         this.timeout(constants.TIMEOUT);
     //         Augur.web.login(handle, password, function (user) {
     //             Augur.web.sendCash(
     //                 handle2,
@@ -394,7 +394,7 @@ describe("Accounts", function () {
     //     var amount = 2;
 
     //     it("coinbase -> account 1 [" + amount + "]", function (done) {
-    //         this.timeout(constants.timeout);
+    //         this.timeout(constants.TIMEOUT);
     //         Augur.web.db.get(handle, function (toAccount) {
     //             Augur.sendReputation(
     //                 Augur.branches.dev,
@@ -416,7 +416,7 @@ describe("Accounts", function () {
     //     });
 
     //     it("account 1 -> account 2 [" + amount / 2 + "]", function (done) {
-    //         this.timeout(constants.timeout);
+    //         this.timeout(constants.TIMEOUT);
     //         Augur.web.login(handle, password, function (user) {
     //             Augur.web.sendReputation(
     //                 handle2,
@@ -443,7 +443,7 @@ describe("Accounts", function () {
         describe("Call", function () {
 
             it("call getBranches using web.invoke", function (done) {
-                this.timeout(constants.timeout);
+                this.timeout(constants.TIMEOUT);
                 Augur.web.login(handle, password, function (user) {
 
                     // sync
@@ -474,7 +474,7 @@ describe("Accounts", function () {
 
             it("send ether from coinbase to account 1", function (done) {
                 var amount = 64;
-                this.timeout(constants.timeout);
+                this.timeout(constants.TIMEOUT);
                 Augur.web.login(handle, password, function (toAccount) {
                     Augur.sendEther(
                         toAccount.address,
@@ -495,7 +495,7 @@ describe("Accounts", function () {
             });
 
             it("detect logged in user and default to web.invoke", function (done) {
-                this.timeout(constants.timeout);
+                this.timeout(constants.TIMEOUT);
                 Augur.web.login(handle, password, function (user) {
                     assert.equal(user.address, Augur.web.account.address);
                     Augur.reputationFaucet(
@@ -521,7 +521,7 @@ describe("Accounts", function () {
             });
 
             it("sign and send transaction using account 1", function (done) {
-                this.timeout(constants.timeout);
+                this.timeout(constants.TIMEOUT);
                 Augur.web.login(handle, password, function (user) {
                     var tx = utilities.copy(Augur.tx.reputationFaucet);
                     tx.params = Augur.branches.dev;

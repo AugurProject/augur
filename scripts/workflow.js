@@ -370,7 +370,7 @@ function init(geth, account, callback, next, count) {
         );
     }
     if (Augur.connected()) {
-        accounts = utilities.get_test_accounts(Augur, constants.max_test_accounts);
+        accounts = utilities.get_test_accounts(Augur, constants.MAX_TEST_ACCOUNTS);
         verified_accounts = true;
         if (!verified_accounts && account !== accounts[0]) {
             kill_geth(geth);
@@ -482,7 +482,7 @@ else if (options.NETWORK_ID === "0") {
     options.GENESIS_NONCE = "42";
 }
 
-var accounts = utilities.get_test_accounts(options.DATADIR, constants.max_test_accounts);
+var accounts = utilities.get_test_accounts(options.DATADIR, constants.MAX_TEST_ACCOUNTS);
 
 options.GETH_FLAGS = [
     "--etherbase", accounts[0],
@@ -504,9 +504,9 @@ options.GETH_FLAGS = [
 ];
 
 log("Create", chalk.magenta("geth"), "log file:",
-    chalk.green(path.join(__dirname || "", options.LOG)));
+    chalk.green(path.join(__dirname, options.LOG)));
 var geth_log = fs.createWriteStream(
-    path.join(__dirname || "", options.LOG),
+    path.join(__dirname, options.LOG),
     {flags : 'w'}
 );
 

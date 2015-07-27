@@ -43,13 +43,13 @@ describe("RPC multicast", function () {
     Augur.reload_modules(Augur.options);
     
     it.each(Augur.rpc.nodes, "should synchronously post eth_coinbase RPC to %s", ["element"], function (element, next) {
-        this.timeout(constants.timeout);
+        this.timeout(constants.TIMEOUT);
         assert.equal(Augur.rpc.postSync(element, command).length, 42);
         next();
     });
 
     it.each(Augur.rpc.nodes, "should asynchronously post eth_coinbase RPC to %s", ["element"], function (element, next) {
-        this.timeout(constants.timeout);
+        this.timeout(constants.TIMEOUT);
         Augur.rpc.post(element, JSON.stringify(command), null, function (response) {
             assert.equal(response.length, 42);
             next();
@@ -57,7 +57,7 @@ describe("RPC multicast", function () {
     });
 
     it("should call back after first successful asynchronous responses", function (done) {
-        this.timeout(constants.timeout);
+        this.timeout(constants.TIMEOUT);
         Augur.rpc.json_rpc(command, function (response) {
             assert.equal(response.length, 42);
             done();
