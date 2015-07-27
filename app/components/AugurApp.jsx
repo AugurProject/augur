@@ -82,6 +82,11 @@ var AugurApp = React.createClass({
     return loadingProgress
   },
 
+  handleSignOut: function() {
+
+
+  },
+
   render: function() {
 
     return (
@@ -100,7 +105,10 @@ var AugurApp = React.createClass({
             </div>
 
             <div className="pull-right">
-              <p className='navbar-text'>{ this.state.network.primaryAccount }</p>
+              <p className='navbar-text'>
+                <span className="account">{ this.state.network.currentAccount }</span>
+                <a className="signout" onClick={ this.handleSignOut }>sign out</a>
+              </p>
             </div>
 
           </div>
@@ -243,6 +251,12 @@ var ErrorModal = React.createClass({
     this.getFlux().actions.config.updateEthereumClient(constants.DEMO_HOST);
   },
 
+  startHostedMode: function(event) {
+
+    this.handleToggle();
+    this.getFlux().actions.config.updateEthereumClient(constants.REMOTE_HOSTS[0]);
+  },
+
   render: function() {
 
     if (!this.state.isModalOpen) return <span />;
@@ -293,6 +307,7 @@ var ErrorModal = React.createClass({
             <h3>Ethereum not found</h3>
             <p>Augur requires an Ethereum client to be running and current.  Augur could not detect a client running which probably means it's not installed, running or is misconfigured.</p>
             <p>Get help <a onClick={ this.showInstallHelp } href="javascript:void(0)">installing and configuring Ethereum</a></p>
+            <p>or <a onClick={ this.startHostedMode } href="javascript:void(0)">use hosted client</a></p>
             <p>or <a onClick={ this.startDemoMode } href="javascript:void(0)">proceed in demo mode</a></p>
             { installHelp }
           </div>

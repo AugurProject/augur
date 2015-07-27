@@ -168,6 +168,9 @@ nav.header p {
 nav.header .navbar-text {
     margin-right: 0px;
 }
+nav.header .account {
+    margin-right: 8px;
+}
 nav.header .menu {
     float: left;
     display: none;

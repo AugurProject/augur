@@ -5,7 +5,7 @@ var utilities = require('../libs/utilities');
 
 var state = {
   accounts: null,
-  primaryAccount: null,
+  currentAccount: null,
   peerCount: null,
   blockNumber: null,
   blocktime: null,
@@ -39,11 +39,11 @@ var NetworkStore = Fluxxor.createStore({
   },
 
   getAccount: function () {
-    if (_.isNull(state.primaryAccount)) {
+    if (_.isNull(state.currentAccount)) {
       return null;
     }
 
-    var account = state.primaryAccount;
+    var account = state.currentAccount;
     if (_.isUndefined(account)) {
       return null;
     }
