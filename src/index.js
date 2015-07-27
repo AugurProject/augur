@@ -648,7 +648,7 @@ augur.strategy = function (target, callback) {
     }
 };
 
-augur.fire = function (itx, onSent) {
+augur.fire = function (itx, callback) {
     var num_params_expected, num_params_received, tx;
     if (itx.signature && itx.signature.length) {
         if (itx.params !== undefined) {
@@ -658,7 +658,7 @@ augur.fire = function (itx, onSent) {
                 return this.strategy({
                     error: -9,
                     message: "cannot send object parameter to contract"
-                }, onSent);
+                }, callback);
             } else if (itx.params !== null) {
                 num_params_received = 1;
             } 
@@ -671,20 +671,20 @@ augur.fire = function (itx, onSent) {
                 error: -10,
                 message: "expected " + num_params_expected.toString() +
                     " parameters, got " + num_params_received.toString()
-            }, onSent);
+            }, callback);
         }
     }
     tx = utilities.copy(itx);
-    if (onSent) {
+    if (callback) {
         this.invoke(tx, function (res) {
-            onSent(this.encode_result(
+            callback(this.encode_result(
                 this.error_codes(tx, res),
                 itx.returns
             ));
         }.bind(this));
     } else {
         return this.encode_result(
-            this.error_codes(tx, this.invoke(tx, onSent)),
+            this.error_codes(tx, this.invoke(tx, callback)),
             itx.returns
         );
     }        

@@ -49,6 +49,7 @@ module.exports = {
 
     /* Augur private chain (networkid 1010101) addresses */
     privatechain: {
+        namereg: "0xc6d9d2cd449a754c494264e1809c50e34d64562b",
         checkQuorum: "0xd59846f812fad1eec973b93607836bbab70ec011",
         buyAndSellShares: "0xb083f6ea69afeadfa128bd11c5ac4a1b2d532647",
         createBranch: "0xc5fd2b72a8a555e1308e7a6856638d3c33d971da",
@@ -89,6 +90,7 @@ module.exports = {
 
     /* Testing private chain (networkid 10101) addresses */
     testchain: {
+        namereg: "0xc6d9d2cd449a754c494264e1809c50e34d64562b",
         checkQuorum: "0xbcc9cc1bbe63d3779328b7cd0bd407219253d125",
         buyAndSellShares: "0x387b0eedcb4f4b8bbaa595de1c3d88eadf20a186",
         createBranch: "0x7c98ca488205f3496fb894282939f51fbada58d0",
