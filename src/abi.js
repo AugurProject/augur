@@ -34,13 +34,20 @@ module.exports = {
     abi_prefix: function (funcname, signature) {
         signature = signature || "";
         var summary = funcname + "(";
+        console.log(signature);
         for (var i = 0, len = signature.length; i < len; ++i) {
             switch (signature[i]) {
                 case 's':
                     summary += "bytes";
                     break;
                 case 'b':
-                    summary += "bytes32";
+                    summary += "bytes";
+                    var j = 1;
+                    while (utils.isNumeric(signature[i+j])) {
+                        summary += signature[i+j].toString();
+                        j++;
+                    }
+                    i += j;
                     break;
                 case 'i':
                     summary += "int256";
@@ -53,6 +60,7 @@ module.exports = {
             }
             if (i !== len - 1) summary += ",";
         }
+        console.log(summary);
         var prefix = keccak_256(summary + ")").slice(0, 8);
         while (prefix.slice(0, 1) === '0') {
             prefix = prefix.slice(1);
@@ -182,8 +190,8 @@ module.exports = {
         tx = utils.copy(itx);
         
         // parse signature and parameter array
-        num_params = tx.signature.replace(/\d+/g, '').length;
         types = this.parse_signature(tx.signature);
+        num_params = tx.signature.replace(/\d+/g, '').length;
         tx.params = this.parse_params(tx.params);
 
         // chunks: size of the static encoding (in multiples of 32)
@@ -194,13 +202,13 @@ module.exports = {
             for (var i = 0; i < num_params; ++i) {
                 if (types[i] === "int256") {
                     encoding = this.encode_int256(encoding, tx.params[i]);
-                } else if (types[i] === "bytes32") {
-                    var num_bytes = parseInt(types[i].replace("bytes", ''));
-                    encoding = this.encode_bytesN(encoding, tx.params[i], num_bytes);
                 } else if (types[i] === "bytes" || types[i] === "string") {
                     encoding = this.encode_bytes(encoding, tx.params[i], num_params);
                 } else if (types[i] === "int256[]") {
                     encoding = this.encode_int256a(encoding, tx.params[i], num_params);
+                } else {
+                    var num_bytes = parseInt(types[i].replace("bytes", ''));
+                    encoding = this.encode_bytesN(encoding, tx.params[i], num_bytes);
                 }
             }
             return encoding.statics + encoding.dynamics;
