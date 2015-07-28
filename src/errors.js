@@ -89,9 +89,22 @@ var errors = {
         message: "database read failed"
     },
 
+    INVALID_CONTRACT_PARAMETER: {
+        error: 400, // bad request
+        message: "cannot send object parameter to contract"
+    },
+
     NOT_LOGGED_IN: {
         error: 401, // unauthorized
         message: "not logged in"
+    },
+
+    PARAMETER_NUMBER_ERROR: function (params) {
+        return {
+            error: 402,
+            message: "expected " + params.expected.toString() +
+                " parameters, got " + params.received.toString()
+        };
     },
 
     BAD_CREDENTIALS: {

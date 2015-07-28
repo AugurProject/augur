@@ -34,7 +34,6 @@ module.exports = {
     abi_prefix: function (funcname, signature) {
         signature = signature || "";
         var summary = funcname + "(";
-        console.log(signature);
         for (var i = 0, len = signature.length; i < len; ++i) {
             switch (signature[i]) {
                 case 's':
@@ -60,7 +59,6 @@ module.exports = {
             }
             if (i !== len - 1) summary += ",";
         }
-        console.log(summary);
         var prefix = keccak_256(summary + ")").slice(0, 8);
         while (prefix.slice(0, 1) === '0') {
             prefix = prefix.slice(1);
@@ -126,6 +124,7 @@ module.exports = {
 
                 // negative hex
                 if (param.slice(0,1) === '-') {
+                    param = numeric.bignum(param).add(constants.MOD).toFixed();
                     encoding.statics += this.pad_left(numeric.encode_int(param));
 
                 // positive hex
@@ -164,7 +163,7 @@ module.exports = {
     },
 
     encode_int256a: function (encoding, param, num_params) {
-        encoding.statics += this.pad_left(numeric.encode_int(32 * (num_params + Math.ceil(encoding.dynamics.length / 64))));
+        encoding.statics += this.pad_left(numeric.encode_int(Math.ceil(32 * (num_params + encoding.dynamics.length / 64))));
         var arraylen = param.length;
         encoding.dynamics += this.pad_left(numeric.encode_int(arraylen));
         for (var j = 0; j < arraylen; ++j) {

@@ -6,13 +6,15 @@ jshint src
 
 mocha test/numeric.js $1
 mocha test/abi.js $1
+mocha test/utilities.js $1
 mocha test/ethrpc.js $1
 mocha test/invoke.js $1
 mocha test/batch.js $1
+mocha test/namereg.js $1
 mocha test/connect.js $1
 mocha test/contracts.js $1
 mocha test/faucets.js $1
-mocha test/createMarket.js $1
+# mocha test/createMarket.js $1
 mocha test/branches.js $1
 mocha test/info.js $1
 mocha test/markets.js $1
@@ -25,8 +27,8 @@ mocha test/web.js $1
 mocha test/multicast.js $1
 
 # mocha test/expiring.js $1
-mocha test/createEvent.js $1
-mocha test/buyAndSellShares.js $1
+# mocha test/createEvent.js $1
+# mocha test/buyAndSellShares.js $1
 # mocha test/ballot.js $1
 # mocha test/makeReports.js $1
 # mocha test/checkQuorum.js $1

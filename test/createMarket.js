@@ -7,18 +7,18 @@
 
 var assert = require("chai").assert;
 var constants = require("../src/constants");
-var utilities = require("../src/utilities");
-var Augur = utilities.setup(require("../src"), process.argv.slice(2));
+var utils = require("../src/utilities");
+var Augur = utils.setup(require("../src"), process.argv.slice(2));
 var log = console.log;
 
 require('it-each')({ testPerIteration: true });
 
 var EXPIRING = false;
 var events = [
-    ["Will the Sun turn into a red giant and engulf the Earth by the end of 2015?", utilities.date_to_block(Augur, "1-1-2016")],
-    ["Will Rand Paul win the 2016 U.S. Presidential Election?", utilities.date_to_block(Augur, "1-2-2017")],
-    ["Will it rain in New York City on November 12, 2015?", utilities.date_to_block(Augur, "11-13-2015")],
-    ["Will the Larsen B ice shelf collapse by November 1, 2015?", utilities.date_to_block(Augur, "11-2-2015")]
+    ["Will the Sun turn into a red giant and engulf the Earth by the end of 2015?", utils.date_to_block(Augur, "1-1-2016")],
+    ["Will Rand Paul win the 2016 U.S. Presidential Election?", utils.date_to_block(Augur, "1-2-2017")],
+    ["Will it rain in New York City on November 12, 2015?", utils.date_to_block(Augur, "11-13-2015")],
+    ["Will the Larsen B ice shelf collapse by November 1, 2015?", utils.date_to_block(Augur, "11-2-2015")]
 ];
 
 describe("functions/createMarket", function () {
@@ -56,16 +56,14 @@ describe("functions/createMarket", function () {
                     tradingFee: tradingFee,
                     events: events,
                     onSent: function (res) {
-                        // log("createMarket sent: " + JSON.stringify(res, null, 2));
+                        log("createMarket sent: " + JSON.stringify(res, null, 2));
                     },
                     onSuccess: function (res) {
-                        // log("createMarket success: " + JSON.stringify(res, null, 2));
+                        log("createMarket success: " + JSON.stringify(res, null, 2));
                         // assert.equal(res.numOutcomes, numOutcomes);
                         // assert.equal(parseFloat(res.alpha).toFixed(5), parseFloat(alpha).toFixed(5));
                         // assert.equal(res.numOutcomes, numOutcomes);
                         // assert.equal(parseFloat(res.tradingFee).toFixed(5), parseFloat(tradingFee).toFixed(5));
-                        // assert.equal(res.description, market_description);
-                        // log("description: ", res.description);
                         next();
                     },
                     onFailed: function (r) {

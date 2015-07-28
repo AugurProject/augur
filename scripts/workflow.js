@@ -80,6 +80,7 @@ var tests = {
         runtests(geth, [
             "numeric",
             "abi",
+            "utilities",
             "ethrpc",
             "invoke",
             "batch",
@@ -115,6 +116,7 @@ var tests = {
     auxiliary: function (geth) {
         log(chalk.red.bold("\nAuxiliary tests"));
         runtests(geth, [
+            "namereg",
             "web",
             "multicast"
             // "comments",
@@ -467,7 +469,7 @@ if (options.NETWORK_ID !== "0") {
 // Test network (networkid 10101, genesisnonce 10101)
 if (options.NETWORK_ID === "10101") {
     options.DATADIR = path.join(process.env.HOME, ".augur-test");
-    options.GENESIS_NONCE = "42";
+    options.GENESIS_NONCE = "10101";
 }
 
 // Private alpha network (networkid 1010101, genesisnonce 1010101)

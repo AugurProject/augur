@@ -464,16 +464,11 @@ augur.invoke = function (itx, f) {
         }
     }
     if (!invoked) {
-        return "Error invoking " + tx.method + "@" + tx.to + "\n"+
-            "Expected transaction format:" + JSON.stringify({
-                from: "<sender's address> (hexstring; optional, coinbase default)",
-                to: "<contract address> (hexstring)",
-                method: "<function name> (string)",
-                signature: '<function signature, e.g. "iia"> (string)',
-                params: "<parameters passed to the function> (optional)",
-                returns: '<"number[]", "int", "BigNumber", or "string" (default)>',
-                send: '<true to sendTransaction, false to call (default)>'
-            });
+        if (f) {
+            f(errors.TRANSACTION_FAILED);
+        } else {
+            return errors.TRANSACTION_FAILED;
+        }
     }
 };
 
@@ -640,41 +635,8 @@ augur.error_codes = function (tx, response) {
     return response;
 };
 
-augur.strategy = function (target, callback) {
-    if (callback) {
-        callback(target);
-    } else {
-        return target;
-    }
-};
-
 augur.fire = function (itx, callback) {
-    var num_params_expected, num_params_received, tx;
-    if (itx.signature && itx.signature.length) {
-        if (itx.params !== undefined) {
-            if (itx.params.constructor === Array) {
-                num_params_received = itx.params.length;
-            } else if (itx.params.constructor === Object) {
-                return this.strategy({
-                    error: -9,
-                    message: "cannot send object parameter to contract"
-                }, callback);
-            } else if (itx.params !== null) {
-                num_params_received = 1;
-            } 
-        } else {
-            num_params_received = 0;
-        }
-        num_params_expected = itx.signature.length;
-        if (num_params_received !== num_params_expected) {
-            return this.strategy({
-                error: -10,
-                message: "expected " + num_params_expected.toString() +
-                    " parameters, got " + num_params_received.toString()
-            }, callback);
-        }
-    }
-    tx = utilities.copy(itx);
+    var tx = utilities.copy(itx);
     if (callback) {
         this.invoke(tx, function (res) {
             callback(this.encode_result(
@@ -684,10 +646,10 @@ augur.fire = function (itx, callback) {
         }.bind(this));
     } else {
         return this.encode_result(
-            this.error_codes(tx, this.invoke(tx, callback)),
+            this.error_codes(tx, this.invoke(tx)),
             itx.returns
         );
-    }        
+    }
 };
 
 /***************************************
