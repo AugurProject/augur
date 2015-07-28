@@ -62,7 +62,7 @@ var MarketStore = Fluxxor.createStore({
   getMarketsHeld: function() {
 
     var marketsHeld = _.filter(state.markets, function(market) {
-      if ( _.filter(market.outcomes, function(outcome) {  return outcome.sharesHeld.toNumber != 0}) ) return true;
+      if (market.traderId != -1 || market.traderId) return true;
     });
     return _.indexBy(marketsHeld, 'id');
   },

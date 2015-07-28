@@ -97,7 +97,7 @@ class MarketPane extends React.Component {
         </div>
         <div className='details'>
           <p>Price: <b>{ price }</b></p>
-          <p className='alt'>Outstanding Shares: <b>{ outstandingShares }</b></p>
+          <p className='alt'>Outstanding shares: <b>{ outstandingShares }</b></p>
           <p>Fee: <b>{ tradingFee }</b></p>
           <p className='alt'>End date: <b>{ formattedDate }</b></p>
         </div>

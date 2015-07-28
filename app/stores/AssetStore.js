@@ -4,7 +4,8 @@ var constants = require('../libs/constants');
 var state = {
   cash: null,
   reputation: null,
-  ether: null
+  ether: null,
+  marketsHeld: {}
 }
 
 var AssetStore = Fluxxor.createStore({

@@ -6,8 +6,8 @@ var BigNumber = require('bignumber.js');
 var ONE_FXP = new BigNumber(2).toPower(64);
 
 module.exports = {
-  DEMO_HOST: 'poc9.com:8545',
-  REMOTE_HOSTS: ['eth1.augur.net', 'eth2.augur.net'],
+  DEMO_HOST: 'eth3.augur.net:8545',
+  REMOTE_HOSTS: ['eth1.augur.net:8545', 'eth2.augur.net:8545'],
   ONE_FXP: ONE_FXP,
   NO: ONE_FXP,
   YES: ONE_FXP.mul(2),
@@ -19,6 +19,7 @@ module.exports = {
   config: keyMirror({
     UPDATE_ETHEREUM_CLIENT_SUCCESS: null,
     UPDATE_ETHEREUM_CLIENT_FAILED: null,
+    UPDATE_ACCOUNT: null,
     UPDATE_DEBUG: null,
     UPDATE_PERCENT_LOADED_SUCCESS: null,
     LOAD_APPLICATION_DATA_SUCCESS: null

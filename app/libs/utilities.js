@@ -38,6 +38,22 @@ module.exports = {
 
   },
 
+  priceToPercent: function(price) {
+
+    // assumes price is a BigNumber object
+    var percent = price.times(100).toFixed(2);
+
+    if (price >= .999) {
+      percent = 100;
+    } else if (price <= .001) {
+      percent = 0;
+    } else if (price >= 0.1) {
+      percent = price.times(100).toFixed(1);
+    }
+
+    return +percent + '%'
+  },
+
   formatEther: function(wei) {
 
     // detect format and convert

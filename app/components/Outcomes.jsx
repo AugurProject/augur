@@ -133,7 +133,7 @@ var Overview = React.createClass({
     var outcome = this.props.outcome;
     var className = 'outcome outcome-'+outcome.id+' shadow';
     
-    if (this.props.market.matured) className += ' matured';
+    if (this.props.market.matured || !this.props.account) className += ' read-only';
 
     if (this.state.buyShares) {
 
@@ -147,7 +147,7 @@ var Overview = React.createClass({
       className += ' sell';
       summary = (
         <Sell {...this.props} handleTrade={ this.handleTrade } handleCancel={ this.handleCancel } /> 
-      );
+      ); 
 
     } else {
 

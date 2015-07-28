@@ -18,7 +18,7 @@ var SendEtherModal = require('./SendModal').SendEtherModal;
 
 var Assets = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin('config')],
+  mixins: [FluxMixin, StoreWatchMixin('config', 'network')],
 
   getInitialState: function () {
     return {
@@ -35,7 +35,8 @@ var Assets = React.createClass({
     var flux = this.getFlux();
 
     return {
-      ethereumClient: flux.store('config').getEthereumClient()
+      ethereumClient: flux.store('config').getEthereumClient(),
+      currentAccount: flux.store('config').getAccount()
     }
   },
 
@@ -95,6 +96,8 @@ var Assets = React.createClass({
   },
 
   render: function () {
+
+    if (!this.state.currentAccount) return ( <span /> );
 
     var cashBalance = this.props.asset.cash ? this.props.asset.cash.toFixed(4) : '-';
     var repBalance = this.props.asset.reputation ? this.props.asset.reputation : '-';

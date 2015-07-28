@@ -68,9 +68,10 @@ var NetworkActions = {
     }.bind(this));
 
     ethereumClient.getAccount(function(account) {
-      this.dispatch(constants.network.UPDATE_NETWORK, { currentAccount: account });
+      this.dispatch(constants.config.UPDATE_ACCOUNT, { currentAccount: account });
     }.bind(this), function () {
-      utilities.error('failed to discover primary ether account (aka etherbase, aka coinbase)');
+
+      utilities.log('no unlocked account detected');
 
       this.dispatch(
         constants.network.UPDATE_ETHEREUM_STATUS,

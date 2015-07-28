@@ -29,7 +29,7 @@ function EthereumClient(params) {
   this.filters = [];
   this.contracts = {};
   this.accounts = null;
-  this.account = null;
+  this.currentAccount = null;
   this.networkId = null;
 
   // defaults
@@ -50,7 +50,7 @@ EthereumClient.prototype.setDefaultBranch = function(branchId) {
 
 /**
  * augur.js doesn't connect correctly if the network isn't available at load
- * this method allow the client to init augur.js after web3 has given the go ahead
+ * this method allows the client to init augur.js after web3 has given the go ahead
  */
 EthereumClient.prototype.connect = function() {
 
@@ -218,7 +218,7 @@ EthereumClient.prototype.getAccounts = function(onResult) {
 
   if (!onResult) {
     var result = web3.eth.accounts;
-    this.account = result;
+    this.currentAccount = result;
     return result;
   }
 
@@ -240,15 +240,15 @@ EthereumClient.prototype.getEtherBalance = function(onResult) {
 };
 
 EthereumClient.prototype.getAccountSync = function() {
-  if (this.account)
-      return this.account;
+  if (this.currentAccount)
+      return this.currentAccount;
 
-  this.account = this.web3.eth.coinbase;
+  this.currentAccount = this.web3.eth.coinbase;
 
-  if (!this.account)
-      this.account = Augur.coinbase;
+  if (!this.currentAccount)
+      this.currentAccount = Augur.coinbase;
 
-  return this.account;
+  return this.currentAccount;
 };
 
 EthereumClient.prototype.getAccount = function(onResult, onError) {
@@ -386,7 +386,7 @@ EthereumClient.prototype.sendEther = function(destination, amount) {
   var self = this;
   this.web3.eth.sendTransaction(transaction, function(err, txhash) {
     if (!err) {
-      utilities.log(self.account+' sent ' + amount + ' ether to '+ destination)
+      utilities.log(self.currentAccount+' sent ' + amount + ' ether to '+ destination)
     } else {
       utilities.error(err);
     }

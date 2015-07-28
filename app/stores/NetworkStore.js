@@ -5,7 +5,6 @@ var utilities = require('../libs/utilities');
 
 var state = {
   accounts: null,
-  currentAccount: null,
   peerCount: null,
   blockNumber: null,
   blocktime: null,
@@ -18,7 +17,6 @@ var state = {
   networkId: null,
   blockChainAge: null,
   isMonitoringBlocks: false,
-
   hasCheckedQuorum: false
 };
 
@@ -36,19 +34,6 @@ var NetworkStore = Fluxxor.createStore({
 
   getState: function () {
     return state;
-  },
-
-  getAccount: function () {
-    if (_.isNull(state.currentAccount)) {
-      return null;
-    }
-
-    var account = state.currentAccount;
-    if (_.isUndefined(account)) {
-      return null;
-    }
-
-    return account;
   },
 
   handleUpdateNetwork: function (payload) {

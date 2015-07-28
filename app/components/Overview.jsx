@@ -20,16 +20,15 @@ var Markets = require('./Markets');
 
 var Overview = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin('asset', 'market')],
+  mixins: [FluxMixin, StoreWatchMixin('asset', 'market', 'config')],
 
   getStateFromFlux: function () {
     var flux = this.getFlux();
-    var account = flux.store('network').getAccount();
+    var account = flux.store('config').getAccount();
     var currentBranch = flux.store('branch').getCurrentBranch();
 
     return {
       account: account,
-      allAccounts: flux.store('network').getState().accounts,
       asset: flux.store('asset').getState(),
       trendingMarkets: flux.store('market').getTrendingMarkets(3, currentBranch),
       ethereumClient: flux.store('config').getEthereumClient(),
@@ -48,26 +47,8 @@ var Overview = React.createClass({
     var holdings = [];
     _.each(this.state.holdings, function (market) {
       _.each(market.outcomes, function(outcome) {
-        var name, className, holding;
         if (outcome && outcome.sharesHeld && outcome.sharesHeld.toNumber()) {
-          name = outcome.id == 1 ? 'no' : 'yes';
-          className = 'pull-right shares-held ' + name;
-          var key = market.id+outcome.id;
-          var percent = market.price ? +market.price.toFixed(2) * 100 + '%' : '-'; 
-          var closeMarket = <span />;
-          if (market.expired && market.authored && !market.closed) {
-           closeMarket = <CloseMarketTrigger text='close market' params={ { marketId: market.id.toString(16), branchId: market.branchId.toString(16) } } />;
-          }
-          
-          holding = (
-            <Link key={ key } className="list-group-item clearfix" to='market' params={ {marketId: market.id.toString(16) } }>
-              <span className="price">{ percent }</span>
-              <p className="description">{ market.description }</p>
-              <span className={ className }>{ outcome.sharesHeld.toNumber() } { name }</span>            
-            </Link>
-          );
-
-          holdings.push(holding);
+          holdings.push( <Holding market={ market } outcome={ outcome } /> );
         }
       });
     }, this);
@@ -115,6 +96,38 @@ var Overview = React.createClass({
     );
 
     return rendered;
+  }
+});
+
+var Holding = React.createClass({
+
+  shouldComponentUpdate: function(nextProps, nextState) {
+    
+    if (!this.nextProps) return true;
+
+    if (this.props.market.price != this.nextProps.market.price ||
+        this.props.outcome.sharesHeld != this.nextProps.outcome.sharesHeld) return true;
+
+  },
+
+  render: function() {
+
+    var name = this.props.outcome.id == 1 ? 'no' : 'yes';
+    var className = 'pull-right shares-held ' + name;
+    var key = this.props.market.id+this.props.outcome.id;
+    var percent = this.props.market.price ? utilities.priceToPercent(this.props.market.price) : '-'; 
+    var closeMarket = <span />;
+    if (this.props.market.expired && this.props.market.authored && !this.props.market.closed) {
+     closeMarket = <CloseMarketTrigger text='close market' params={ { marketId: this.props.market.id.toString(16), branchId: this.props.market.branchId.toString(16) } } />;
+    }
+    
+    return (
+      <Link key={ key } className="list-group-item clearfix" to='market' params={ {marketId: this.props.market.id.toString(16) } }>
+        <span className="price">{ percent }</span>
+        <p className="description">{ this.props.market.description }</p>
+        <span className={ className }>{ this.props.outcome.sharesHeld.toNumber() } { name }</span>            
+      </Link>
+    );
   }
 });
 

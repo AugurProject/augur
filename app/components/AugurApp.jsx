@@ -84,10 +84,32 @@ var AugurApp = React.createClass({
 
   handleSignOut: function() {
 
+    var flux = this.getFlux();
+    flux.actions.config.signOut();
+  },
+
+  handleSignIn: function() {
+
 
   },
 
   render: function() {
+
+    var accountStatus;
+    if (this.state.config.currentAccount) {
+      accountStatus = (
+        <p className='navbar-text'>
+          <span className="account">{ this.state.config.currentAccount }</span>
+          <a className="signout" onClick={ this.handleSignOut }>| sign out</a>
+        </p>
+      );
+    } else {
+       accountStatus = (
+        <p className='navbar-text'>
+          <a className="signin" onClick={ this.handleSignIn }>sign in</a>
+        </p>
+      );     
+    }
 
     return (
       <div id="app" className={ this.state.status }>
@@ -105,10 +127,7 @@ var AugurApp = React.createClass({
             </div>
 
             <div className="pull-right">
-              <p className='navbar-text'>
-                <span className="account">{ this.state.network.currentAccount }</span>
-                <a className="signout" onClick={ this.handleSignOut }>sign out</a>
-              </p>
+              { accountStatus }
             </div>
 
           </div>
@@ -198,7 +217,6 @@ var ErrorModal = React.createClass({
   componentWillReceiveProps: function(nextProps) {
 
     if (nextProps.network.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED ||
-    nextProps.network.ethereumStatus === constants.network.ETHEREUM_STATUS_NO_ACCOUNT ||
     nextProps.config.ethereumClientFailed === true) {
 
       // only open if we're not on the demo host
@@ -251,12 +269,6 @@ var ErrorModal = React.createClass({
     this.getFlux().actions.config.updateEthereumClient(constants.DEMO_HOST);
   },
 
-  startHostedMode: function(event) {
-
-    this.handleToggle();
-    this.getFlux().actions.config.updateEthereumClient(constants.REMOTE_HOSTS[0]);
-  },
-
   render: function() {
 
     if (!this.state.isModalOpen) return <span />;
@@ -275,17 +287,6 @@ var ErrorModal = React.createClass({
         </Modal>
       );
 
-    } else if (this.props.network.ethereumStatus === constants.network.ETHEREUM_STATUS_NO_ACCOUNT) {
-      // no etherbase is set
-      return (
-        <Modal show={ this.state.isModalOpen } onHide={ this.handleToggle } backdrop='static'>
-          <div className="modal-body clearfix">
-            <h3>Ethereum Account not found</h3>
-            <p>Augur requires you to set a primary account in your Ethereum client.  Please confirm that you have added this to your geth command line: <pre>--etherbase "0x0123-your-address-here-feebdaed"</pre></p>
-            <p>or <a onClick={ this.startDemoMode } href="javascript:void(0)">proceed in demo mode</a></p>
-          </div>
-        </Modal>
-      );
     } else if (this.props.network.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED) {
 
       var installHelp = <span />;
@@ -307,7 +308,6 @@ var ErrorModal = React.createClass({
             <h3>Ethereum not found</h3>
             <p>Augur requires an Ethereum client to be running and current.  Augur could not detect a client running which probably means it's not installed, running or is misconfigured.</p>
             <p>Get help <a onClick={ this.showInstallHelp } href="javascript:void(0)">installing and configuring Ethereum</a></p>
-            <p>or <a onClick={ this.startHostedMode } href="javascript:void(0)">use hosted client</a></p>
             <p>or <a onClick={ this.startDemoMode } href="javascript:void(0)">proceed in demo mode</a></p>
             { installHelp }
           </div>

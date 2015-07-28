@@ -16,13 +16,13 @@ var Outcomes = require('./Outcomes');
 
 var Market = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin('market', 'asset', 'branch'), State],
+  mixins: [FluxMixin, StoreWatchMixin('market', 'asset', 'branch', 'config'), State],
 
   getStateFromFlux: function () {
 
     var flux = this.getFlux();
     var marketState = flux.store('market').getState();
-    var account = flux.store('network').getAccount();
+    var account = flux.store('config').getAccount();
     var assetState = flux.store('asset').getState();
     var currentBranch = flux.store('branch').getCurrentBranch();
     var marketId = new BigNumber(this.props.params.marketId, 16);
@@ -69,7 +69,7 @@ var Market = React.createClass({
     var outcomes = _.map(this.state.market.outcomes, function (outcome) {
       return (
         <div className="col-sm-6" key={ outcome.id }>
-          <Outcomes.Overview market={ this.state.market } outcome={ _.clone(outcome) }></Outcomes.Overview>
+          <Outcomes.Overview market={ this.state.market } outcome={ _.clone(outcome) } account={ this.state.account } />
         </div>
       );
     }, this);
@@ -86,7 +86,7 @@ var Market = React.createClass({
         </div>
         <div className='details col-sm-4'>
           <p>Price: <b>{ price }</b></p>
-          <p className='alt'>Outstanding Shares: <b>{ outstandingShares }</b></p>
+          <p className='alt'>Outstanding shares: <b>{ outstandingShares }</b></p>
           <p>Fee: <b>{ tradingFee }</b></p>
           <p className='alt'>Traders: <b>{ traderCount }</b></p>
           <p>Author: <b className='truncate author'>{ market.author || '' }</b></p>
@@ -184,6 +184,8 @@ var CommentForm = React.createClass({
 
   render: function() {
 
+    if (!this.props.account) return ( <span /> );
+    
     var userIdenticon = 'data:image/png;base64,' + new Identicon(this.props.account, 50).toString();
 
     return (

@@ -94,6 +94,17 @@ var ConfigActions = {
 
     this.flux.actions.config.updateEthereumClient();
     this.flux.actions.network.checkNetwork();
+  },
+
+  signIn: function() {
+
+
+  },
+
+  signOut: function() {
+
+    this.flux.actions.market.updateSharesHeld(null);
+    this.dispatch(constants.config.UPDATE_ACCOUNT, { currentAccount: null });
   }
 };
 

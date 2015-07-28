@@ -3,6 +3,7 @@ var constants = require('../libs/constants');
 
 var state = {
   host: process.env.RPC_HOST || 'localhost:8545',
+  currentAccount: null,
   debug: false,
   loaded: false,
   percentLoaded: null,
@@ -14,6 +15,7 @@ var ConfigStore = Fluxxor.createStore({
     this.bindActions(
       constants.config.UPDATE_ETHEREUM_CLIENT_SUCCESS, this.handleUpdateEthereumClientSuccess,
       constants.config.UPDATE_ETHEREUM_CLIENT_FAILED, this.handleUpdateEthereumClientFailed,
+      constants.config.UPDATE_ACCOUNT, this.handleUpdateAccount,
       constants.config.UPDATE_DEBUG, this.handleUpdateDebug,
       constants.config.UPDATE_PERCENT_LOADED_SUCCESS, this.handleUpdatePercentLoadedSuccess,
       constants.config.LOAD_APPLICATION_DATA_SUCCESS, this.handleLoadApplicationDataSuccess
@@ -26,6 +28,19 @@ var ConfigStore = Fluxxor.createStore({
 
   getEthereumClient: function () {
     return state.ethereumClient;
+  },
+
+  getAccount: function () {
+    if (_.isNull(state.currentAccount)) {
+      return null;
+    }
+
+    var account = state.currentAccount;
+    if (_.isUndefined(account)) {
+      return null;
+    }
+
+    return account;
   },
 
   handleUpdatePercentLoadedSuccess: function (payload) {
@@ -43,6 +58,11 @@ var ConfigStore = Fluxxor.createStore({
   handleUpdateEthereumClientFailed: function () {
     state.ethereumClient = null;
     state.ethereumClientFailed = true;
+    this.emit(constants.CHANGE_EVENT);
+  },
+
+  handleUpdateAccount: function (payload) {
+    state.currentAccount = payload.currentAccount;
     this.emit(constants.CHANGE_EVENT);
   },
 

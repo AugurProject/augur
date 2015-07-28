@@ -79,20 +79,19 @@ var MarketActions = {
 
     var setProp = this.flux.actions.market.getMarketSetter(marketId);
     var commands = [];
-    var account = ethereumClient.getAccount();
+    var account = this.flux.store('config').getAccount();
+
     var market = {id: marketId, outcomes: [], comments: []};
 
     commands.push(['getCreationFee', [marketId], setProp('creationFee')]);
     commands.push(['getDescription', [marketId], setProp('description')]);
     commands.push(['getCreator', [marketId], setProp('author')]);
-    commands.push(['getParticipantNumber', [marketId, account], setProp('traderId')]);
     commands.push(['getMarketEvents', [marketId], setProp('events')]);
-
+    commands.push(['getParticipantNumber', [marketId, account], setProp('traderId')]);
     commands.push(['getMarketInfo', [marketId], function(result) {
 
       market['traderCount'] = result[0];
       market['alpha'] = utilities.fromFixedPoint(result[1]);
-      //market['traderId'] = result[2].toString(16);   // returns 0 instead of trader id
       market['numOutcomes'] = parseInt(result[3]);
       market['tradingPeriod'] = result[4];
       market['tradingFee'] = utilities.fromFixedPoint(result[5]);
@@ -123,11 +122,10 @@ var MarketActions = {
     // populate outcome data
     _.each(market.outcomes, function (outcome) {
 
-      // temp fix for sharesHeld
       if (market.traderId !== -1 ) {
         commands.push(['getParticipantSharesPurchased', [market.id, market.traderId, outcome.id], function(result) {
-          //console.log(utilities.fromFixedPoint(result).toNumber());
           outcome['sharesHeld'] = utilities.fromFixedPoint(result);
+          this.flux.actions.market.updateMarket(market, true);
         }.bind(this)]);
       }
 
@@ -287,7 +285,52 @@ var MarketActions = {
   deleteMarket: function(marketId) {
 
     this.dispatch(constants.market.DELETE_MARKET_SUCCESS, {marketId: marketId});
+  },
+
+  updateSharesHeld: function(account) {
+
+    var markets =  this.flux.store('market').getState().markets;
+
+    // zero out trader id and shares held if no account
+    if (!account) {
+      _.each(markets, function(market) {
+          market.traderId = null;
+          _.each(market.outcomes, function(outcome) {
+              outcome.sharesHeld = new BigNumber(0);
+          }.bind(this));
+          this.flux.actions.market.updateMarket(market, true);
+      }.bind(this));
+
+    } else {
+
+      var ethereumClient = this.flux.store('config').getEthereumClient();
+
+      var commands = _.map(markets, function(market) {
+        
+        return ['getParticipantNumber', [market.id, account], function(traderId) {
+
+          market.traderId = traderId;
+
+          if (traderId !== -1 ) {
+
+            _.each(market.outcomes, function (outcome) {
+              ethereumClient.getParticipantSharesPurchased(market.id, market.traderId, outcome.id, function(result) {
+                outcome['sharesHeld'] = utilities.fromFixedPoint(result);
+              }.bind(this));
+            }.bind(this));
+
+            this.flux.actions.market.updateMarket(market, true);
+          }
+        }];
+
+      }.bind(this));
+
+      _.each(_.chunk(commands, 6), function(chunk) {
+        ethereumClient.batch(chunk);
+      });
+    }
   }
+
 };
 
 module.exports = MarketActions;
