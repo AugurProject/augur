@@ -78,8 +78,8 @@ var tests = {
     core: function (geth) {
         log(chalk.red.bold("\nCore tests"));
         runtests(geth, [
-            "fixedpoint",
-            "encoder",
+            "numeric",
+            "abi",
             "ethrpc",
             "invoke",
             "batch",
@@ -343,8 +343,8 @@ function setup_mocha_tests(tests) {
 
 function preupload_tests(geth) {
     setup_mocha_tests([
-        "fixedpoint",
-        "encoder"
+        "numeric",
+        "abi"
     ]).run(function (failures) {
         process.on("exit", function () { process.exit(failures); });
         upload_contracts(geth);

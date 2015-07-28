@@ -17,6 +17,10 @@ BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
 module.exports = {
 
+    isNumeric: function (n) {
+        return Number(parseFloat(n)) == n;
+    },
+
     pp: function (obj) {
         var o = this.copy(obj);
         for (var k in o) {

@@ -12,7 +12,7 @@
     "strict": true,
     "boss": false,
     "laxbreak": false,
-    "eqeqeq": true,
+    "eqeqeq": false,
     "evil": false,
     "expr": false,
     "forin": false,

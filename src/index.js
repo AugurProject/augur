@@ -816,9 +816,13 @@ augur.transact = function (tx, onSent, onSuccess, onFailed) {
     var returns = tx.returns;
     tx.send = true;
     delete tx.returns;
-    this.invoke(tx, function (txhash) {
-        this.confirmTx(tx, txhash, returns, onSent, onSuccess, onFailed);
-    }.bind(this));
+    if (onSent && onSent.constructor === Function) {
+        this.invoke(tx, function (txhash) {
+            this.confirmTx(tx, txhash, returns, onSent, onSuccess, onFailed);
+        }.bind(this));
+    } else {
+        return this.invoke(tx);
+    }
 };
 
 /*************

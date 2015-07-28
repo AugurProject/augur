@@ -4,8 +4,8 @@ trap "exit" INT
 
 jshint src
 
-mocha test/fixedpoint.js $1
-mocha test/encoder.js $1
+mocha test/numeric.js $1
+mocha test/abi.js $1
 mocha test/ethrpc.js $1
 mocha test/invoke.js $1
 mocha test/batch.js $1

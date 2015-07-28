@@ -19,7 +19,6 @@ GLOBAL.contracts = require("./src/contracts");
 GLOBAL.constants = require("./src/constants");
 GLOBAL.utilities = require("./src/utilities");
 GLOBAL.numeric = require("./src/numeric");
-GLOBAL.namereg = contracts.namereg;
 GLOBAL.RPC = require("./src/rpc");
 GLOBAL.Tx = require("./src/tx");
 GLOBAL.augur = Augur;
@@ -88,8 +87,9 @@ log("Current period:     ", chalk.green(reportingInfo.current_period));
 log("Number of events:   ", chalk.green(reportingInfo.num_events));
 log("Number of reporters:", chalk.green(reportingInfo.num_reports));
 
-
 GLOBAL.vote_period = reportingInfo.vote_period;
 GLOBAL.current_period = reportingInfo.current_period;
 GLOBAL.num_events = reportingInfo.num_events;
 GLOBAL.num_reports = reportingInfo.num_reports;
+
+GLOBAL.namereg = Augur.namereg;

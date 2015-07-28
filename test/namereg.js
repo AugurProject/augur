@@ -134,6 +134,7 @@ describe("Namereg", function () {
         it("should report that coinbase owns 'jack'", function (done) {
             this.timeout(constants.TIMEOUT);
             Augur.namereg.owner("jack", function (address) {
+                log(address);
                 assert.equal(address, Augur.coinbase);
                 done();
             });
@@ -142,6 +143,7 @@ describe("Namereg", function () {
         it("should report that the web account owns 'tinybike'", function (done) {
             this.timeout(constants.TIMEOUT);
             Augur.namereg.owner("tinybike", function (address) {
+                log(address);
                 assert.equal(address, newAccountAddress);
                 done();
             });

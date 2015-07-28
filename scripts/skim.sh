@@ -1,4 +1,4 @@
 jshint src
-mocha test/fixedpoint.js
-mocha test/encoder.js
+mocha test/numeric.js
+mocha test/abi.js
 mocha test/utilities.js

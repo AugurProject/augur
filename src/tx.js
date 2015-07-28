@@ -15,7 +15,7 @@ module.exports = function (contracts) {
             reserve: {
                 to: contracts.namereg,
                 method: "reserve",
-                signature: "s",
+                signature: "b32",
                 send: true,
                 returns: "null"
             },
@@ -24,7 +24,7 @@ module.exports = function (contracts) {
             owner: {
                 to: contracts.namereg,
                 method: "owner",
-                signature: "s",
+                signature: "b32",
                 send: false,
                 returns: "address"
             },
@@ -33,7 +33,7 @@ module.exports = function (contracts) {
             setAddress: {
                 to: contracts.namereg,
                 method: "setAddress",
-                signature: "sii",
+                signature: "b32ii",
                 send: true,
                 returns: "null"
             },
@@ -42,7 +42,7 @@ module.exports = function (contracts) {
             addr: {
                 to: contracts.namereg,
                 method: "addr",
-                signature: "s",
+                signature: "b32",
                 send: false,
                 returns: "address"
             },
@@ -60,7 +60,7 @@ module.exports = function (contracts) {
             transfer: {
                 to: contracts.namereg,
                 method: "transfer",
-                signature: "si",
+                signature: "b32i",
                 send: true,
                 returns: "null"
             },
@@ -69,7 +69,7 @@ module.exports = function (contracts) {
             disown: {
                 to: contracts.namereg,
                 method: "disown",
-                signature: "s",
+                signature: "b32",
                 send: true,
                 returns: "null"
             }

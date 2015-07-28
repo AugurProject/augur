@@ -19,7 +19,7 @@ module.exports = function (augur) {
             var tx = utils.copy(this.namereg.reserve);
             var unpacked = utils.unpack(name, utils.labels(this.reserve), arguments);
             tx.params = unpacked.params;
-            augur.transact.apply(augur, [tx].concat(unpacked.cb));
+            return augur.transact.apply(augur, [tx].concat(unpacked.cb));
         },
 
         // get name owner's address
@@ -28,7 +28,7 @@ module.exports = function (augur) {
             var tx = utils.copy(this.namereg.owner);
             var unpacked = utils.unpack(name, utils.labels(this.owner), arguments);
             tx.params = unpacked.params;
-            augur.fire.apply(augur, [tx].concat(unpacked.cb));
+            return augur.fire.apply(augur, [tx].concat(unpacked.cb));
         },
 
         // set name to address
@@ -38,7 +38,7 @@ module.exports = function (augur) {
             var tx = utils.copy(this.namereg.setAddress);
             var unpacked = utils.unpack(name, utils.labels(this.setAddress), arguments);
             tx.params = unpacked.params;
-            augur.transact.apply(augur, [tx].concat(unpacked.cb));
+            return augur.transact.apply(augur, [tx].concat(unpacked.cb));
         },
 
         // get address from name
@@ -47,7 +47,7 @@ module.exports = function (augur) {
             var tx = utils.copy(this.namereg.addr);
             var unpacked = utils.unpack(name, utils.labels(this.addr), arguments);
             tx.params = unpacked.params;
-            augur.fire.apply(augur, [tx].concat(unpacked.cb));
+            return augur.fire.apply(augur, [tx].concat(unpacked.cb));
         },
 
         // get name from address
@@ -56,7 +56,7 @@ module.exports = function (augur) {
             var tx = utils.copy(this.namereg.name);
             var unpacked = utils.unpack(address, utils.labels(this.name), arguments);
             tx.params = unpacked.params;
-            augur.fire.apply(augur, [tx].concat(unpacked.cb));
+            return augur.fire.apply(augur, [tx].concat(unpacked.cb));
         },
 
         // transfer name to a new owner
@@ -66,7 +66,7 @@ module.exports = function (augur) {
             var tx = utils.copy(this.namereg.transfer);
             var unpacked = utils.unpack(name, utils.labels(this.transfer), arguments);
             tx.params = unpacked.params;
-            augur.transact.apply(augur, [tx].concat(unpacked.cb));            
+            return augur.transact.apply(augur, [tx].concat(unpacked.cb));            
         },
 
         // give up ownership of a name
@@ -74,7 +74,7 @@ module.exports = function (augur) {
             var tx = utils.copy(this.namereg.disown);
             var unpacked = utils.unpack(name, utils.labels(this.disown), arguments);
             tx.params = unpacked.params;
-            augur.transact.apply(augur, [tx].concat(unpacked.cb));
+            return augur.transact.apply(augur, [tx].concat(unpacked.cb));
         }
 
     };
