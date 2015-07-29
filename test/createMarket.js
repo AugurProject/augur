@@ -75,7 +75,7 @@ describe("functions/createMarket", function () {
                         var event_list = Augur.getMarketEvents(res.callReturn);
                         assert(event_list);
                         assert.equal(event_list.length, 1);
-                        assert.equal(event_list.constructor, Array);
+                        assert.equal(Object.prototype.toString.call(event_list), "[object Array]");
                         assert.equal(event_list[0], r.callReturn);
                         next();
                     },

@@ -618,7 +618,9 @@ augur.error_codes = function (tx, response) {
             };
         } else {
             if (tx.returns && tx.returns !== "string" ||
-                (response.constructor === String && response.slice(0,2) === "0x")) {
+                (response && response.constructor === String &&
+                response.slice(0,2) === "0x"))
+            {
                 var response_number = numeric.bignum(response);
                 if (response_number) {
                     response_number = numeric.bignum(response).toFixed();
