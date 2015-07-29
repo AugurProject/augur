@@ -29,7 +29,7 @@ longjohn.empty_frame = "";
 
 var options = {
     DEBUG: false,
-    NETWORK_ID: "10101",
+    NETWORK_ID: "0",
     PEER_PORT: 30303,
     RPC_PORT: 8545,
     MINIMUM_ETHER: 32,
@@ -480,7 +480,8 @@ else if (options.NETWORK_ID === "1010101") {
 
 // Public Ethereum testnet (networkid 0, genesisnonce 42)
 else if (options.NETWORK_ID === "0") {
-    options.DATADIR = path.join(process.env.HOME, ".ethereum");
+    // options.DATADIR = path.join(process.env.HOME, ".ethereum");
+    options.DATADIR = path.join(process.env.HOME, ".augur-test");
     options.GENESIS_NONCE = "42";
 }
 
@@ -497,11 +498,12 @@ options.GETH_FLAGS = [
     "--rpcapi", "shh,db,eth,net,web3,miner",
     "--ipcapi", "admin,db,eth,debug,miner,net,shh,txpool,personal,web3",
     "--shh",
+    "--nodiscover",
     "--maxpeers", "64",
     "--networkid", options.NETWORK_ID,
     "--genesisnonce", options.GENESIS_NONCE,
     "--datadir", options.DATADIR,
-    "--bootnodes", enodes,
+    // "--bootnodes", enodes,
     "--password", path.join(options.DATADIR, ".password")
 ];
 

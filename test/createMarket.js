@@ -24,6 +24,8 @@ var events = [
 describe("functions/createMarket", function () {
     it.each(events, "single-event market: %s", ['element'], function (element, next) {
         this.timeout(constants.TIMEOUT*4);
+
+        // first create a single event
         var event_description = element[0];
         var blockNumber = Augur.blockNumber();
         var expDate = (EXPIRING) ? blockNumber + Math.round(Math.random() * 1000) : element[1];
@@ -39,9 +41,15 @@ describe("functions/createMarket", function () {
             numOutcomes: numOutcomes,
             onSent: function (r) {
                 // log("createEvent sent: " + JSON.stringify(r, null, 2));
+                assert(r.txHash);
+                assert(r.callReturn);
             },
             onSuccess: function (r) {
                 // log("createEvent success: " + JSON.stringify(r, null, 2));
+                assert.equal(Augur.getDescription(r.callReturn), event_description);
+                assert.equal(Augur.getCreator(r.callReturn), Augur.coinbase);
+
+                // incorporate the new event into a market
                 var alpha = "0.0079";
                 var initialLiquidity = 1000 + Math.round(Math.random() * 1000);
                 var tradingFee = "0.02";
@@ -56,27 +64,30 @@ describe("functions/createMarket", function () {
                     tradingFee: tradingFee,
                     events: events,
                     onSent: function (res) {
-                        log("createMarket sent: " + JSON.stringify(res, null, 2));
+                        // log("createMarket sent: " + JSON.stringify(res, null, 2));
+                        assert(res.txHash);
+                        assert(res.callReturn);
                     },
                     onSuccess: function (res) {
-                        log("createMarket success: " + JSON.stringify(res, null, 2));
-                        // assert.equal(res.numOutcomes, numOutcomes);
-                        // assert.equal(parseFloat(res.alpha).toFixed(5), parseFloat(alpha).toFixed(5));
-                        // assert.equal(res.numOutcomes, numOutcomes);
-                        // assert.equal(parseFloat(res.tradingFee).toFixed(5), parseFloat(tradingFee).toFixed(5));
+                        // log("createMarket success: " + JSON.stringify(res, null, 2));
+                        assert.equal(Augur.getDescription(res.callReturn), event_description);
+                        assert.equal(Augur.getCreator(res.callReturn), Augur.coinbase);
+                        var event_list = Augur.getMarketEvents(res.callReturn);
+                        assert(event_list);
+                        assert.equal(event_list.length, 1);
+                        assert.equal(event_list.constructor, Array);
+                        assert.equal(event_list[0], r.callReturn);
                         next();
                     },
                     onFailed: function (r) {
-                        r.name = r.error;
-                        throw r;
+                        r.name = r.error; throw r;
                         next();
                     }
                 };
                 Augur.createMarket(marketObj);
             },
             onFailed: function (r) {
-                r.name = r.error;
-                throw r;
+                r.name = r.error; throw r;
                 next();
             }
         };
