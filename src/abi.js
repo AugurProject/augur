@@ -31,7 +31,7 @@ module.exports = {
         return output;
     },
 
-    abi_prefix: function (funcname, signature) {
+    encode_prefix: function (funcname, signature) {
         signature = signature || "";
         var summary = funcname + "(";
         for (var i = 0, len = signature.length; i < len; ++i) {
@@ -184,7 +184,7 @@ module.exports = {
         return encoding;
     },
 
-    abi_data: function (itx) {
+    encode_data: function (itx) {
         var tx, num_params, types, encoding;
         tx = utils.copy(itx);
         
@@ -221,6 +221,6 @@ module.exports = {
     // hex-encode a function's ABI data and return it
     encode: function (tx) {
         tx.signature = tx.signature || "";
-        return this.abi_prefix(tx.method, tx.signature) + this.abi_data(tx);
+        return this.encode_prefix(tx.method, tx.signature) + this.encode_data(tx);
     }
 };

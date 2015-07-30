@@ -200,16 +200,26 @@ module.exports = {
         }
     },
 
-    chunk32: function (string, stride) {
+    // chop a string up into an array of smaller strings
+    chunk32: function (string, stride, offset) {
         var elements, chunked, position;
         if (string.length >= 66) {
             stride = stride || 64;
-            elements = Math.ceil(string.length / stride);
+            if (offset) {
+                elements = Math.ceil(string.slice(offset).length / stride) + 1;
+            } else {
+                elements = Math.ceil(string.length / stride);
+            }
             chunked = new Array(elements);
             position = 0;
             for (var i = 0; i < elements; ++i) {
-                chunked[i] = string.slice(position, position + stride);
-                position += stride;
+                if (offset && i === 0) {
+                    chunked[i] = string.slice(position, position + offset);
+                    position += offset;
+                } else {
+                    chunked[i] = string.slice(position, position + stride);
+                    position += stride;
+                }
             }
             return chunked;
         } else {
