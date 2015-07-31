@@ -29,8 +29,8 @@ var events, period;
 for (var i = 0; i < 200; ++i) {
     events = Augur.getEvents(branch, i);
     if (events && events.length && events.length > 1) {
-        log(chalk.green("   ✓ ") + chalk.gray("Found " + events.length) +
-            chalk.gray(" events in vote period " + i));
+        // log(chalk.green("   ✓ ") + chalk.gray("Found " + events.length) +
+        //     chalk.gray(" events in vote period " + i));
         period = i;
         break;
     }
@@ -59,12 +59,12 @@ if (events.length) {
                 break;
             }
         }
-        if (found) {
-            log(chalk.green("   ✓ ") + chalk.gray("Found ") +
-                chalk.gray("market for event " + events[j]));
-        } else {
-            log(chalk.red("Found market for event " + events[j]));
-        }
+        // if (found) {
+        //     log(chalk.green("   ✓ ") + chalk.gray("Found ") +
+        //         chalk.gray("market for event " + events[j]));
+        // } else {
+        //     log(chalk.red("Found market for event " + events[j]));
+        // }
     }
 
     describe("Market/event lookup", function () {

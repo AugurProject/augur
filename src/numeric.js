@@ -11,16 +11,6 @@ BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
 module.exports = {
 
-    encode_int: function (value) {
-        var cs = [];
-        var x = new BigNumber(value);
-        while (x.gt(new BigNumber(0))) {
-            cs.push(String.fromCharCode(x.mod(new BigNumber(256))));
-            x = x.dividedBy(new BigNumber(256)).floor();
-        }
-        return (cs.reverse()).join('');
-    },
-
     remove_leading_zeros: function (h) {
         var hex = h.toString();
         if (hex.slice(0, 2) === "0x") {

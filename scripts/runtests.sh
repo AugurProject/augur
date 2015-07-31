@@ -6,7 +6,7 @@ set -e
 trap "exit" INT
 
 gospel=0
-basic=0
+offline=0
 connect=0
 core=0
 markets=0
@@ -17,7 +17,7 @@ for arg in "$@"; do
     shift
     case "$arg" in
         "--gospel") set -- "$@" "-g" ;;
-        "--basic") set -- "$@" "-b" ;;
+        "--offline") set -- "$@" "-o" ;;
         "--connect") set -- "$@" "-n" ;;
         "--core") set -- "$@" "-c" ;;
         "--markets") set -- "$@" "-m" ;;
@@ -27,10 +27,10 @@ for arg in "$@"; do
     esac
 done
 OPTIND=1
-while getopts "gbncmsxa" opt; do
+while getopts "goncmsxa" opt; do
     case "$opt" in
         g) gospel="--gospel" ;;
-        b) basic=1 ;;
+        o) offline=1 ;;
         n) connect=1 ;;
         c) core=1 ;;
         m) markets=1 ;;
@@ -40,10 +40,10 @@ while getopts "gbncmsxa" opt; do
 done
 shift $(expr $OPTIND - 1)
 
-if [ "${basic}" == "0" ] && [ "${connect}" == "0" ] &&
+if [ "${offline}" == "0" ] && [ "${connect}" == "0" ] &&
    [ "${core}" == "0" ] && [ "${markets}" == "0" ] &&
    [ "${consensus}" == "0" ] && [ "${aux}" == "0" ]; then
-    basic=1
+    offline=1
     connect=1
     core=1
     markets=1
@@ -66,13 +66,13 @@ echo -e "${BLUE}jshint:${NC}\n"
 echo -e "  ${CYAN}src/*\n"
 jshint src
 
-if [ "${basic}" == "1" ]; then
+if [ "${offline}" == "1" ]; then
 
-    declare -a basic_tests=("utilities" "numeric" "abi")
+    declare -a offline_tests=("utilities" "numeric" "abi")
 
-    echo -e "${BLUE}basic:${NC}\n"
+    echo -e "${BLUE}offline:${NC}\n"
 
-    for i in "${basic_tests[@]}"; do
+    for i in "${offline_tests[@]}"; do
         printf "  ${CYAN}test/$i${NC}"
         mocha test/$i.js
     done

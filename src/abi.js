@@ -14,21 +14,24 @@ BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
 module.exports = {
 
-    pad_right: function (s) {
-        var output = s;
-        while (output.length < 64) {
-            output += '0';
-        }
-        return output;
+    chunk: function (len) {
+        return Math.ceil(len / 64);
     },
 
-    pad_left: function (r, ishex) {
-        var output = r;
-        if (!ishex) output = numeric.encode_hex(output);
-        while (output.length < 64) {
-            output = '0' + output;
+    pad_right: function (s) {
+        var multipleOf64 = 64 * this.chunk(s.length);
+        while (s.length < multipleOf64) {
+            s += '0';
         }
-        return output;
+        return s;
+    },
+
+    pad_left: function (s) {
+        var multipleOf64 = 64 * this.chunk(s.length);
+        while (s.length < multipleOf64) {
+            s = '0' + s;
+        }
+        return s;
     },
 
     encode_prefix: function (funcname, signature) {
@@ -108,6 +111,23 @@ module.exports = {
         return params;
     },
 
+    encode_int: function (value) {
+        var cs, x, output;
+        cs = [];
+        x = new BigNumber(value);
+        while (x.gt(new BigNumber(0))) {
+            cs.push(String.fromCharCode(x.mod(new BigNumber(256))));
+            x = x.dividedBy(new BigNumber(256)).floor();
+        }
+        output = numeric.encode_hex((cs.reverse()).join(''));
+        while (output.length < 64) {
+            output = '0' + output;
+        }
+        return output;
+    },
+
+    // static parameter encoding
+
     encode_int256: function (encoding, param) {
         if (param !== undefined && param !== null && param !== [] && param !== "") {
 
@@ -117,7 +137,7 @@ module.exports = {
                 if (param.lt(new BigNumber(0))) {
                     param = param.add(constants.MOD);
                 }
-                encoding.statics += this.pad_left(numeric.encode_int(param));
+                encoding.statics += this.encode_int(param);
 
             // input is a string
             } else if (param.constructor === String) {
@@ -125,20 +145,20 @@ module.exports = {
                 // negative hex
                 if (param.slice(0,1) === '-') {
                     param = numeric.bignum(param).add(constants.MOD).toFixed();
-                    encoding.statics += this.pad_left(numeric.encode_int(param));
+                    encoding.statics += this.encode_int(param);
 
                 // positive hex
                 } else if (param.slice(0,2) === "0x") {
-                    encoding.statics += this.pad_left(param.slice(2), true);
+                    encoding.statics += this.pad_left(param.slice(2));
 
                 // decimal (base-10 integer)
                 } else {
-                    encoding.statics += this.pad_left(numeric.encode_int(param));
+                    encoding.statics += this.encode_int(param);
                 }
             }
 
             // size in multiples of 32
-            encoding.chunks += Math.ceil(encoding.statics.length / 64);
+            encoding.chunks += this.chunk(encoding.statics.length);
         }
         return encoding;
     },
@@ -149,36 +169,43 @@ module.exports = {
                 encoding.statics += this.pad_right(numeric.encode_hex(param.slice(0, 64)));
                 param = param.slice(64);
             }
-            encoding.chunks += Math.ceil(encoding.statics.length / 64);
+            encoding.chunks += this.chunk(encoding.statics.length);
         }
         return encoding;
     },
 
+    // dynamic parameter encoding
+
+    // offset (in multiples of 32)
+    offset: function (len, num_params) {
+        return this.encode_int(32 * (num_params + this.chunk(len)));
+    },
+
     encode_bytes: function (encoding, param, num_params) {
-        // offset (in 32-byte chunks)
-        encoding.statics += this.pad_left(numeric.encode_int(32 * (num_params + Math.ceil(encoding.dynamics.length / 64))));
-        encoding.dynamics += this.pad_left(numeric.encode_int(param.length));
+        encoding.statics += this.offset(encoding.dynamics.length, num_params);
+        encoding.dynamics += this.encode_int(param.length);
         encoding.dynamics += this.pad_right(numeric.encode_hex(param));
         return encoding;
     },
 
     encode_int256a: function (encoding, param, num_params) {
-        encoding.statics += this.pad_left(numeric.encode_int(Math.ceil(32 * (num_params + encoding.dynamics.length / 64))));
+        encoding.statics += this.offset(encoding.dynamics.length, num_params);
         var arraylen = param.length;
-        encoding.dynamics += this.pad_left(numeric.encode_int(arraylen));
+        encoding.dynamics += this.encode_int(arraylen);
         for (var j = 0; j < arraylen; ++j) {
             if (param[j] !== undefined) {
                 if (param[j].constructor === Number) {
-                    encoding.dynamics += this.pad_left(numeric.encode_int(numeric.bignum(param[j]).mod(constants.MOD).toFixed()));
+                    encoding.dynamics += this.encode_int(numeric.bignum(param[j]).mod(constants.MOD).toFixed());
                 } else if (param[j].constructor === String) {
                     if (param[j].slice(0,1) === '-') {
-                        encoding.dynamics += this.pad_left(numeric.encode_int(numeric.bignum(param[j]).mod(constants.MOD).toFixed()));
+                        encoding.dynamics += this.encode_int(numeric.bignum(param[j]).mod(constants.MOD).toFixed());
                     } else if (param[j].slice(0,2) === "0x") {
-                        encoding.dynamics += this.pad_left(param[j].slice(2), true);
+                        encoding.dynamics += this.pad_left(param[j].slice(2));
                     } else {
-                        encoding.dynamics += this.pad_left(numeric.encode_int(numeric.bignum(param[j]).mod(constants.MOD).toFixed()));
+                        encoding.dynamics += this.encode_int(numeric.bignum(param[j]).mod(constants.MOD).toFixed());
                     }
                 }
+                encoding.dynamics = this.pad_right(encoding.dynamics);
             }
         }
         return encoding;

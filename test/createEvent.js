@@ -38,7 +38,7 @@ describe("Creating " + num_events + " events and markets", function () {
             maxValue: maxValue,
             numOutcomes: numOutcomes,
             onSent: function (r) {
-                log(chalk.green("    ✓ ") + chalk.gray("event ID: " + r.callReturn));
+                // log(chalk.green("    ✓ ") + chalk.gray("event ID: " + r.callReturn));
             },
             onSuccess: function (r) {
                 var alpha = "0.0079";
@@ -55,7 +55,7 @@ describe("Creating " + num_events + " events and markets", function () {
                     tradingFee: tradingFee,
                     events: events,
                     onSent: function (res) {
-                        log(chalk.green("    ✓ ") + chalk.gray("market ID: " + res.callReturn));
+                        // log(chalk.green("    ✓ ") + chalk.gray("market ID: " + res.callReturn));
                     },
                     onSuccess: function (res) {
                         if (element < num_events - 1) {

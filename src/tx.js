@@ -760,6 +760,27 @@ module.exports = function (contracts) {
             signature: "i",
             returns: "unfix"
         },
+        initialLiquiditySetup: {
+            to: contracts.markets,
+            method: "initialLiquiditySetup",
+            signature: "iii",
+            returns: "number",
+            send: true
+        },
+        modifyShares: {
+            to: contracts.markets,
+            method: "modifyShares",
+            signature: "iii",
+            returns: "number",
+            send: true
+        },
+        initializeMarket: {
+            to: contracts.markets,
+            method: "initializeMarket",
+            signature: "iaiii",
+            returns: "number",
+            send: true
+        },
 
         // reporting.se
         getRepBalance: {
