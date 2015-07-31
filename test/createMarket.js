@@ -26,7 +26,7 @@ describe("functions/createMarket", function () {
         this.timeout(constants.TIMEOUT*4);
 
         // first create a single event
-        var event_description = element[0];
+        var description = element[0];
         var blockNumber = Augur.blockNumber();
         var expDate = (EXPIRING) ? blockNumber + Math.round(Math.random() * 1000) : element[1];
         var minValue = 0;
@@ -34,46 +34,112 @@ describe("functions/createMarket", function () {
         var numOutcomes = 2;
         var eventObj = {
             branchId: Augur.branches.dev,
-            description: event_description,
+            description: description,
             expDate: expDate,
             minValue: minValue,
             maxValue: maxValue,
             numOutcomes: numOutcomes,
             onSent: function (r) {
+                // log("createEvent sent: " + JSON.stringify(r, null, 2));
                 assert(r.txHash);
                 assert(r.callReturn);
             },
             onSuccess: function (r) {
-                assert.equal(Augur.getDescription(r.callReturn), event_description);
-                assert.equal(Augur.getCreator(r.callReturn), Augur.coinbase);
+                log("createEvent success: " + JSON.stringify(r, null, 2));
+                log("txReceipt:", Augur.receipt(r.txHash));
+                log("getEventInfo:", Augur.getEventInfo(r.callReturn));
+                // assert.equal(Augur.getDescription(r.callReturn), description);
+                // assert.equal(Augur.getCreator(r.callReturn), Augur.coinbase);
 
                 // incorporate the new event into a market
                 var alpha = "0.0079";
                 var initialLiquidity = 1000 + Math.round(Math.random() * 1000);
                 var tradingFee = "0.02";
                 var events = [ r.callReturn ];
-                var market_description = event_description;
                 var numOutcomes = 2;
                 var marketObj = {
                     branchId: Augur.branches.dev,
-                    description: market_description,
+                    description: description,
                     alpha: alpha,
                     initialLiquidity: initialLiquidity,
                     tradingFee: tradingFee,
                     events: events,
                     onSent: function (res) {
+                        log("createMarket sent: " + JSON.stringify(res, null, 2));
                         assert(res.txHash);
                         assert(res.callReturn);
+                        Augur.setInfo(
+                            res.callReturn,
+                            description,
+                            Augur.coinbase,
+                            initialLiquidity,
+                            function (s) {
+                                // sent
+                                log("sent setInfo:", s);
+                            },
+                            function (s) {
+                                // success
+                                log("success setInfo:", s);
+                                log("setInfo description:", Augur.getDescription(res.callReturn));
+                                // next();
+                            },
+                            function (s) {
+                                // failed
+                                log("failed setInfo:", s);
+                                // next();
+                            }
+                        );
+                        Augur.initializeMarket(
+                            res.callReturn,
+                            events,
+                            tradingPeriod,
+                            initialLiquidity,
+                            function (s) {
+                                // sent
+                                log("sent initializeMarket:", s);
+                            },
+                            function (s) {
+                                // success
+                                log("success initializeMarket:", s);
+                                // next();
+                            },
+                            function (s) {
+                                // failed
+                                log("failed initializeMarket:", s);
+                                // next();
+                            }
+                        );
+                        Augur.addMarket(
+                            branch,
+                            res.callReturn,
+                            function (s) {
+                                // sent
+                                log("sent addMarket:", s);
+                            },
+                            function (s) {
+                                // success
+                                log("success addMarket:", s);
+                                // next();
+                            },
+                            function (s) {
+                                // failed
+                                log("failed addMarket:", s);
+                                // next();
+                            }
+                        );
                     },
                     onSuccess: function (res) {
-                        assert.equal(Augur.getDescription(res.callReturn), event_description);
-                        assert.equal(Augur.getCreator(res.callReturn), Augur.coinbase);
-                        var event_list = Augur.getMarketEvents(res.callReturn);
-                        assert(event_list);
-                        assert.equal(event_list.length, 1);
-                        assert.equal(Object.prototype.toString.call(event_list), "[object Array]");
-                        assert.equal(event_list[0], r.callReturn);
-                        next();
+                        log("createMarket success: " + JSON.stringify(res, null, 2));
+                        log("txReceipt:", Augur.receipt(res.txHash));
+                        log("getMarketInfo:", Augur.getMarketInfo(res.callReturn));
+                        // assert.equal(Augur.getDescription(res.callReturn), description);
+                        // assert.equal(Augur.getCreator(res.callReturn), Augur.coinbase);
+                        // var event_list = Augur.getMarketEvents(res.callReturn);
+                        // assert(event_list);
+                        // assert.equal(event_list.length, 1);
+                        // assert.equal(Object.prototype.toString.call(event_list), "[object Array]");
+                        // assert.equal(event_list[0], r.callReturn);
+                        // next();
                     },
                     onFailed: function (r) {
                         r.name = r.error; throw r;

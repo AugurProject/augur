@@ -29,6 +29,7 @@ longjohn.empty_frame = "";
 
 var options = {
     DEBUG: false,
+    MOCHA_REPORTER: "progress",
     NETWORK_ID: "0",
     PEER_PORT: 30303,
     RPC_PORT: 8545,
@@ -47,16 +48,20 @@ var options = {
 var verified_accounts = false;
 var init;
 
-function runtests(geth, tests) {
+function runtests(geth, tests, callback) {
     var index = 0;
     async.forEachSeries(tests, function (test, next) {
-        var mocha = new Mocha();
+        var mocha = new Mocha({ reporter: options.MOCHA_REPORTER });
         mocha.addFile(path.join(options.TESTPATH, test + ".js"));
         log(path.join(options.TESTPATH, test + ".js"));
         mocha.run(function (failures) {
             if (failures) log(chalk.red("Failed tests:"), chalk.red.bold(failures));
             if (index++ === tests.length - 1) {
-                process.exit(failures);
+                if (callback) {
+                    callback(geth);
+                } else {
+                    process.exit(failures);
+                }
             }
             next();
         });
@@ -336,21 +341,16 @@ function upload_contracts(geth) {
 }
 
 function setup_mocha_tests(tests) {
-    var mocha = new Mocha();
+    var mocha = new Mocha({ reporter: options.MOCHA_REPORTER });
     for (var i = 0, len = tests.length; i < len; ++i) {
         mocha.addFile(path.join(options.TESTPATH, tests[i] + ".js"));
     }
     return mocha;
 }
 
-function preupload_tests(geth) {
-    setup_mocha_tests([
-        "numeric",
-        "abi"
-    ]).run(function (failures) {
-        process.on("exit", function () { process.exit(failures); });
-        upload_contracts(geth);
-    });
+function offline_tests(geth) {
+    log(chalk.red.bold("\nOffline tests"));
+    runtests(geth, ["utilities", "numeric", "abi"], upload_contracts);
 }
 
 function init(geth, account, callback, next, count) {
@@ -443,7 +443,7 @@ function main(account, options) {
             spawn_geth(options.GETH_FLAGS),
             account,
             mine_minimum_ether,
-            preupload_tests
+            offline_tests
         );
     } else if (options.SUITE.length) {
         init_test_suite(account, options);

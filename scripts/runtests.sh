@@ -58,12 +58,12 @@ GRAY='\033[1;30m'
 GREEN='\033[0;32m'
 NC='\033[0m'
 
-echo -e "${GRAY}+=====================+"
-echo -e "|${PURPLE} augur.js${NC} test suite ${GRAY}|"
-echo -e "+=====================+${NC}\n"
+echo -e "${GRAY}+=====================+${NC}"
+echo -e "${GRAY}|${PURPLE} augur.js${NC} test suite ${GRAY}|${NC}"
+echo -e "${GRAY}+=====================+${NC}\n"
 
 echo -e "${BLUE}jshint:${NC}\n"
-echo -e "  ${CYAN}src/*\n"
+echo -e "  ${CYAN}src/*${NC}\n"
 jshint src
 
 if [ "${offline}" == "1" ]; then

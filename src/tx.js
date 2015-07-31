@@ -138,6 +138,13 @@ module.exports = function (contracts) {
             signature: "i",
             returns: "string"
         },
+        setInfo: {
+            to: contracts.info,
+            method: "setInfo",
+            signature: "isii",
+            returns: "number",
+            send: true
+        },
 
         // redeem_interpolate.se
         redeem_interpolate: {

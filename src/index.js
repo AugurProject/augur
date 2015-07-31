@@ -865,11 +865,11 @@ augur.getDescription = function (item, onSent) {
     tx.params = item;
     return this.fire(tx, onSent);
 };
-augur.checkPeriod = function (branch) {
-    var period = Number(this.getVotePeriod(branch));
-    var currentPeriod = Math.floor(this.blockNumber() / Number(this.getPeriodLength(branch)));
-    var periodsBehind = (currentPeriod - 1) - period;
-    return periodsBehind;
+augur.setInfo = function (id, description, creator, fee, onSent, onSuccess, onFailed) {
+    var tx = utils.copy(this.tx.setInfo);
+    var unpacked = utils.unpack(id, utils.labels(this.setInfo), arguments);
+    tx.params = unpacked.params;
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
 
 // redeem_interpolate.se
@@ -1693,12 +1693,6 @@ augur.addMarket = function (branch, marketID, onSent, onSuccess, onFailed) {
     tx.params = unpacked.params;
     return this.transact.apply(this, [tx].concat(unpacked.cb));    
 };
-augur.setInfo = function (marketID, description, sender, initialLiquidity, onSent, onSuccess, onFailed) { // info.se
-    var tx = utils.copy(this.tx.setInfo);
-    var unpacked = utils.unpack(marketID, utils.labels(this.setInfo), arguments);
-    tx.params = unpacked.params;
-    return this.transact.apply(this, [tx].concat(unpacked.cb));
-};
 
 // reporting.se
 augur.getRepBalance = function (branch, account, onSent) {
@@ -2006,6 +2000,13 @@ augur.dispatch = function (branch, onSent, onSuccess, onFailed) {
         tx.params = branch;
         return this.transact(tx, onSent, onSuccess, onFailed);
     }
+};
+
+augur.checkPeriod = function (branch) {
+    var period = Number(this.getVotePeriod(branch));
+    var currentPeriod = Math.floor(this.blockNumber() / Number(this.getPeriodLength(branch)));
+    var periodsBehind = (currentPeriod - 1) - period;
+    return periodsBehind;
 };
 
 // filters
