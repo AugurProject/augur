@@ -40,14 +40,10 @@ describe("functions/createMarket", function () {
             maxValue: maxValue,
             numOutcomes: numOutcomes,
             onSent: function (r) {
-                // log("createEvent sent: " + JSON.stringify(r, null, 2));
                 assert(r.txHash);
                 assert(r.callReturn);
             },
             onSuccess: function (r) {
-                log("createEvent success: " + JSON.stringify(r, null, 2));
-                log("txReceipt:", Augur.receipt(r.txHash));
-                log("getEventInfo:", Augur.getEventInfo(r.callReturn));
                 assert.equal(Augur.getDescription(r.callReturn), event_description);
                 assert.equal(Augur.getCreator(r.callReturn), Augur.coinbase);
 
@@ -66,17 +62,10 @@ describe("functions/createMarket", function () {
                     tradingFee: tradingFee,
                     events: events,
                     onSent: function (res) {
-                        // log("onSent sent: " + JSON.stringify(res, null, 2));
-                        // assert(res.txHash);
-                        // assert(res.callReturn);
+                        assert(res.txHash);
+                        assert(res.callReturn);
                     },
                     onSuccess: function (res) {
-                        // var tx = utils.copy(Augur.initializeMarket);
-                        // Augur.initialzeMarket(res.callReturn, events);
-                        // Augur.addMarket(branch, marketID, onSent, onSuccess, onFailed);
-                        // log("createMarket success: " + JSON.stringify(res, null, 2));
-                        // log("txReceipt:", Augur.receipt(res.txHash));
-                        // log("getMarketInfo:", Augur.getMarketInfo(res.callReturn));
                         assert.equal(Augur.getDescription(res.callReturn), event_description);
                         assert.equal(Augur.getCreator(res.callReturn), Augur.coinbase);
                         var event_list = Augur.getMarketEvents(res.callReturn);
