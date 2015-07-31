@@ -1,1 +1,1 @@
---recursive
+-R dot --recursive

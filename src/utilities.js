@@ -115,13 +115,13 @@ module.exports = {
             (args.indexOf("--gospel") > -1 || args.indexOf("--reset") > -1))
         {
             gospel = path.join(__dirname, "..", "test", "gospel.json");
-            log("Load contracts from file: " + chalk.green(gospel));
+            // log("Load contracts from file: " + chalk.green(gospel));
             contracts = fs.readFileSync(gospel);
             augur.contracts = JSON.parse(contracts.toString());
         }
         if (!bignum) augur.options.BigNumberOnly = false;
         // augur.options.nodes = constants.nodes;
-        if (augur.connect(rpcinfo)) {
+        if (augur.connect(rpcinfo) && rpcinfo) {
             log(chalk.magenta("augur"), "connected:", chalk.cyan(augur.options.RPC));
         }
         return augur;

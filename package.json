@@ -4,7 +4,7 @@
   "description": "Augur JavaScript API",
   "main": "src/index.js",
   "scripts": {
-    "skim": "scripts/skim.sh",
+    "test-basic": "scripts/runtests.sh --basic",
     "test": "scripts/runtests.sh",
     "lint": "jshint src"
   },

@@ -23,8 +23,8 @@ gulp.task("clean", function (callback) {
     del(["dist"], callback);
 });
 
-gulp.task("skim", function (callback) {
-    var runtests = cp.spawn("./scripts/skim.sh");
+gulp.task("test-basic", function (callback) {
+    var runtests = cp.spawn("./scripts/runtests.sh", ["--basic"]);
     runtests.stdout.on("data", function (data) {
         gulp_log.write(nodeUtil.format(data.toString()) + "\n");
     });
@@ -68,5 +68,5 @@ gulp.task("watch", function() {
 });
 
 gulp.task("default", ["clean"], function (callback) {
-    runSequence(["skim", "build"], callback);
+    runSequence(["test-basic", "build"], callback);
 });
