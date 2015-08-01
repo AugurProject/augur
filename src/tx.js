@@ -304,6 +304,13 @@ module.exports = function (contracts) {
             signature: "i",
             send: true
         },
+        addMarket: {
+            to: contracts.branches,
+            method: "addMarket",
+            signature: "ii",
+            returns: "number",
+            send: true
+        },
 
         // events.se
         getEventInfo: {
@@ -770,7 +777,7 @@ module.exports = function (contracts) {
         initialLiquiditySetup: {
             to: contracts.markets,
             method: "initialLiquiditySetup",
-            signature: "iii",
+            signature: "iiii",
             returns: "number",
             send: true
         },

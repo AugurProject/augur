@@ -1,1 +1,1 @@
--R dot --recursive
+-R progress --recursive

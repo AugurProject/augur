@@ -261,7 +261,6 @@ function faucets(geth) {
         log("Ether:      " + chalk.green(ether_balance));
         if (geth) kill_geth(geth);
         for (var i = 0, len = accounts.length; i < len; ++i) {
-            log("account:", i);
             if (options.GETH_FLAGS[1] === accounts[i]) break;
         }
         if (i < accounts.length - 1) {

@@ -62,30 +62,29 @@ echo -e "${GRAY}+=====================+${NC}"
 echo -e "${GRAY}|${PURPLE} augur.js${NC} test suite ${GRAY}|${NC}"
 echo -e "${GRAY}+=====================+${NC}\n"
 
-echo -e "${BLUE}jshint:${NC}\n"
-echo -e "  ${CYAN}src/*${NC}\n"
-jshint src
-
 if [ "${offline}" == "1" ]; then
 
     declare -a offline_tests=("utilities" "numeric" "abi")
 
     echo -e "${BLUE}offline:${NC}\n"
 
+    echo -e "  ${CYAN}jshint src/*${NC}\n"
+    jshint src/*
+
     for i in "${offline_tests[@]}"; do
-        printf "  ${CYAN}test/$i${NC}"
+        echo -e "  ${CYAN}test/$i${NC}"
         mocha test/$i.js
     done
 fi
 
-if [ "${connection}" == "1" ]; then
+if [ "${connect}" == "1" ]; then
 
-    declare -a connection_tests=("connect" "contracts")
+    declare -a connect_tests=("connect" "contracts")
 
-    echo -e "${BLUE}connection:${NC}\n"
+    echo -e "${BLUE}connect:${NC}\n"
 
-    for i in "${connection_tests[@]}"; do
-        printf "  ${CYAN}test/$i ${GRAY}$gospel${NC}"
+    for i in "${connect_tests[@]}"; do
+        echo -e "  ${CYAN}test/$i ${GRAY}$gospel${NC}"
         mocha test/$i.js $gospel
     done
 fi
@@ -97,7 +96,7 @@ if [ "${core}" == "1" ]; then
     echo -e "${BLUE}core:${NC}\n"
 
     for i in "${core_tests[@]}"; do
-        printf "  ${CYAN}test/$i ${GRAY}$gospel${NC}"
+        echo -e "  ${CYAN}test/$i ${GRAY}$gospel${NC}"
         mocha test/$i.js $gospel
     done
 fi
@@ -109,7 +108,7 @@ if [ "${markets}" == "1" ]; then
     echo -e "${BLUE}markets:${NC}\n"
 
     for i in "${markets_tests[@]}"; do
-        printf "  ${CYAN}test/$i ${GRAY}$gospel${NC}"
+        echo -e "  ${CYAN}test/$i ${GRAY}$gospel${NC}"
         mocha test/$i.js $gospel
     done
 fi
@@ -121,7 +120,7 @@ if [ "${consensus}" == "1" ]; then
     echo -e "${BLUE}consensus:${NC}\n"
 
     for i in "${consensus_tests[@]}"; do
-        printf "  ${CYAN}test/$i ${GRAY}$gospel${NC}"
+        echo -e "  ${CYAN}test/$i ${GRAY}$gospel${NC}"
         mocha test/$i.js $gospel
     done
 fi
@@ -133,7 +132,7 @@ if [ "${aux}" == "1" ]; then
     echo -e "${BLUE}aux:${NC}\n"
 
     for i in "${aux_tests[@]}"; do
-        printf "  ${CYAN}test/$i ${GRAY}$gospel${NC}"
+        echo -e "  ${CYAN}test/$i ${GRAY}$gospel${NC}"
         mocha test/$i.js $gospel
     done
 fi

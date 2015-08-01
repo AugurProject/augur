@@ -869,6 +869,7 @@ augur.setInfo = function (id, description, creator, fee, onSent, onSuccess, onFa
     var tx = utils.copy(this.tx.setInfo);
     var unpacked = utils.unpack(id, utils.labels(this.setInfo), arguments);
     tx.params = unpacked.params;
+    tx.params[3] = numeric.fix(tx.params[3], "hex");
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
 
@@ -1038,6 +1039,15 @@ augur.incrementPeriod = function (branch, onSent) {
     tx.params = branch;
     return this.fire(tx, onSent);
 };
+augur.addMarket = function (branch, marketID, onSent, onSuccess, onFailed) {
+    var tx = utils.copy(this.tx.addMarket);
+    var unpacked = utils.unpack(branch, utils.labels(this.addMarket), arguments);
+    tx.params = unpacked.params;
+    return this.transact.apply(this, [tx].concat(unpacked.cb));    
+};
+
+// misc utility functions
+
 augur.moveEventsToCurrentPeriod = function (branch, currentVotePeriod, currentPeriod, onSent) {
     var tx = utils.copy(this.tx.moveEventsToCurrentPeriod);
     tx.params = [branch, currentVotePeriod, currentPeriod];
@@ -1673,6 +1683,8 @@ augur.initialLiquiditySetup = function (marketID, alpha, cumulativeScale, numOut
     var tx = utils.copy(this.tx.initialLiquiditySetup);
     var unpacked = utils.unpack(marketID, utils.labels(this.initialLiquiditySetup), arguments);
     tx.params = unpacked.params;
+    tx.params[1] = numeric.fix(tx.params[1], "hex");
+    tx.params[2] = numeric.fix(tx.params[2], "hex");
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
 augur.modifyShares = function (marketID, outcome, amount, onSent, onSuccess, onFailed) {
@@ -1683,15 +1695,10 @@ augur.modifyShares = function (marketID, outcome, amount, onSent, onSuccess, onF
 };
 augur.initializeMarket = function (marketID, events, tradingPeriod, tradingFee, branch, onSent, onSuccess, onFailed) {
     var tx = utils.copy(this.tx.initializeMarket);
-    var unpacked = utils.unpack(marketID, utils.labels(this.initiaizeMarket), arguments);
+    var unpacked = utils.unpack(marketID, utils.labels(this.initializeMarket), arguments);
     tx.params = unpacked.params;
+    tx.params[3] = numeric.fix(tx.params[3], "hex");
     return this.transact.apply(this, [tx].concat(unpacked.cb));
-};
-augur.addMarket = function (branch, marketID, onSent, onSuccess, onFailed) {
-    var tx = utils.copy(this.tx.initializeMarket);
-    var unpacked = utils.unpack(marketID, utils.labels(this.initiaizeMarket), arguments);
-    tx.params = unpacked.params;
-    return this.transact.apply(this, [tx].concat(unpacked.cb));    
 };
 
 // reporting.se
