@@ -24,9 +24,9 @@ gulp.task("clean", function (callback) {
 });
 
 gulp.task("test", function (callback) {
-    var runtests = cp.spawn("npm", ["test"]);
+    var runtests = cp.spawn("npm", ["test", "--", "--offline"]);
     runtests.stdout.on("data", function (data) {
-        gulp_log.write(nodeUtil.format(data.toString()) + "\n");
+        gulp_log.write(nodeUtil.format(data.toString()));
     });
     runtests.stderr.on("data", function (data) {
         process.stdout.write(data);
@@ -35,7 +35,7 @@ gulp.task("test", function (callback) {
 });
 
 gulp.task("test-full", function (callback) {
-    var runtests = cp.spawn("./scripts/runtests.sh", ["--gospel"]);
+    var runtests = cp.spawn("npm", ["test", "--", "--gospel"]);
     runtests.stdout.on("data", function (data) {
         process.stdout.write(data);
     });

@@ -7,7 +7,7 @@ trap "exit" INT
 
 gospel=0
 offline=0
-connect=0
+connection=0
 core=0
 markets=0
 consensus=0
@@ -18,7 +18,7 @@ for arg in "$@"; do
     case "$arg" in
         "--gospel") set -- "$@" "-g" ;;
         "--offline") set -- "$@" "-o" ;;
-        "--connect") set -- "$@" "-n" ;;
+        "--connection") set -- "$@" "-n" ;;
         "--core") set -- "$@" "-c" ;;
         "--markets") set -- "$@" "-m" ;;
         "--consensus") set -- "$@" "-s" ;;
@@ -31,7 +31,7 @@ while getopts "goncmsxa" opt; do
     case "$opt" in
         g) gospel="--gospel" ;;
         o) offline=1 ;;
-        n) connect=1 ;;
+        n) connection=1 ;;
         c) core=1 ;;
         m) markets=1 ;;
         s) consensus=1 ;;
@@ -40,11 +40,11 @@ while getopts "goncmsxa" opt; do
 done
 shift $(expr $OPTIND - 1)
 
-if [ "${offline}" == "0" ] && [ "${connect}" == "0" ] &&
+if [ "${offline}" == "0" ] && [ "${connection}" == "0" ] &&
    [ "${core}" == "0" ] && [ "${markets}" == "0" ] &&
    [ "${consensus}" == "0" ] && [ "${aux}" == "0" ]; then
     offline=1
-    connect=1
+    connection=1
     core=1
     markets=1
     consensus=0
@@ -58,18 +58,19 @@ GRAY='\033[1;30m'
 GREEN='\033[0;32m'
 NC='\033[0m'
 
-echo -e "${GRAY}+=====================+${NC}"
+echo -e "+${GRAY}=====================${NC}+"
 echo -e "${GRAY}|${PURPLE} augur.js${NC} test suite ${GRAY}|${NC}"
-echo -e "${GRAY}+=====================+${NC}\n"
+echo -e "+${GRAY}=====================${NC}+\n"
 
 if [ "${offline}" == "1" ]; then
 
     declare -a offline_tests=("utilities" "numeric" "abi")
 
-    echo -e "${BLUE}offline:${NC}\n"
+    echo -e "${BLUE}jshint:${NC}\n"
+    echo -e "  ${CYAN}src/*${NC}\n"
+    jshint src
 
-    echo -e "  ${CYAN}jshint src/*${NC}\n"
-    jshint src/*
+    echo -e "${BLUE}offline:${NC}\n"
 
     for i in "${offline_tests[@]}"; do
         echo -e "  ${CYAN}test/$i${NC}"
@@ -77,13 +78,13 @@ if [ "${offline}" == "1" ]; then
     done
 fi
 
-if [ "${connect}" == "1" ]; then
+if [ "${connection}" == "1" ]; then
 
-    declare -a connect_tests=("connect" "contracts")
+    declare -a connection_tests=("connect" "contracts")
 
-    echo -e "${BLUE}connect:${NC}\n"
+    echo -e "${BLUE}connection:${NC}\n"
 
-    for i in "${connect_tests[@]}"; do
+    for i in "${connection_tests[@]}"; do
         echo -e "  ${CYAN}test/$i ${GRAY}$gospel${NC}"
         mocha test/$i.js $gospel
     done

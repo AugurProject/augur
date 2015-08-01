@@ -21,7 +21,7 @@ module.exports = {
         return Number(parseFloat(n)) == n;
     },
 
-    pp: function (obj) {
+    pp: function (obj, indent) {
         var o = this.copy(obj);
         for (var k in o) {
             if (!o.hasOwnProperty(k)) continue;
@@ -32,7 +32,7 @@ module.exports = {
                 }
             }
         }
-        return chalk.green(JSON.stringify(o, null, 2));
+        return chalk.green(JSON.stringify(o, null, indent || 4));
     },
 
     STRIP_COMMENTS: /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg,
@@ -115,7 +115,6 @@ module.exports = {
             (args.indexOf("--gospel") > -1 || args.indexOf("--reset") > -1))
         {
             gospel = path.join(__dirname, "..", "test", "gospel.json");
-            // log("Load contracts from file: " + chalk.green(gospel));
             contracts = fs.readFileSync(gospel);
             augur.contracts = JSON.parse(contracts.toString());
         }

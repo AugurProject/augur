@@ -705,37 +705,55 @@ augur.confirmTx = function (tx, txhash, returns, onSent, onSuccess, onFailed) {
                     self.call({
                         from: sent.from || self.coinbase,
                         to: sent.to || tx.to,
-                        data: sent.input,
-                        returns: returns
-                    }, function (callreturn) {
-                        if (callreturn) {
-                            if (callreturn.constructor === Object && callreturn.error) {
-                                if (onFailed) onFailed(callreturn);
-                            } else if (errors[callreturn]) {
+                        data: sent.input
+                    }, function (callReturn) {
+                        if (callReturn) {
+                            callReturn = JSON.stringify({ result: callReturn });
+
+                            // transform callReturn to a number
+                            var numReturn = self.rpc.parse(callReturn, "number");
+
+                            // check if numReturn is an error object
+                            if (numReturn.constructor === Object && numReturn.error) {
+                                if (onFailed) onFailed(numReturn);
+                            } else if (errors[numReturn]) {
                                 if (onFailed) onFailed({
-                                    error: callreturn,
-                                    message: errors[callreturn]
+                                    error: numReturn,
+                                    message: errors[numReturn]
                                 });
                             } else {
                                 try {
-                                    var num = numeric.bignum(callreturn);
-                                    if (num && num.constructor === BigNumber) {
-                                        num = num.toFixed();
+
+                                    // check if numReturn is an error code
+                                    if (numReturn && numReturn.constructor === BigNumber) {
+                                        numReturn = numReturn.toFixed();
                                     }
-                                    if (num && errors[tx.method] && errors[tx.method][num]) {
+                                    if (numReturn && errors[tx.method] && errors[tx.method][numReturn]) {
                                         if (onFailed) onFailed({
-                                            error: num,
-                                            message: errors[tx.method][num]
+                                            error: numReturn,
+                                            message: errors[tx.method][numReturn]
                                         });
                                     } else {
+
+                                        // no errors found, so transform to the requested
+                                        // return type, specified by "returns" parameter
+                                        callReturn = self.rpc.parse(callReturn, returns);
+
+                                        // send the transaction hash and return value back
+                                        // to the client, using the onSent callback
                                         onSent({
                                             txHash: txhash,
-                                            callReturn: self.encode_result(callreturn, returns)
+                                            callReturn: self.encode_result(callReturn, returns)
                                         });
+
+                                        // if an onSuccess callback was supplied, then
+                                        // poll the network until the transaction is
+                                        // included in a block (i.e., has a non-null
+                                        // blockHash field)
                                         if (onSuccess) {
                                             self.tx_notify(
                                                 0,
-                                                callreturn,
+                                                callReturn,
                                                 tx,
                                                 txhash,
                                                 returns,
@@ -745,6 +763,8 @@ augur.confirmTx = function (tx, txhash, returns, onSent, onSuccess, onFailed) {
                                             );
                                         }
                                     }
+
+                                // something went wrong :(
                                 } catch (e) {
                                     if (onFailed) onFailed(e);
                                 }

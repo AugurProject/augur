@@ -9,7 +9,7 @@
 var fs = require("fs");
 var path = require("path");
 var cp = require("child_process");
-var util = require("util");
+var nodeUtil = require("util");
 var async = require("async");
 var assert = require("chai").assert;
 var _ = require("lodash");
@@ -20,7 +20,7 @@ var longjohn = require("longjohn");
 var mod_getopt = require('posix-getopt');
 var Augur = require("../src");
 var constants = require("../src/constants");
-var utilities = require("../src/utilities");
+var utils = require("../src/utilities");
 var numeric = require("../src/numeric");
 var log = console.log;
 
@@ -123,8 +123,8 @@ var tests = {
         runtests(geth, [
             "namereg",
             "web",
-            "multicast"
-            // "comments",
+            "multicast",
+            "comments"
             // "priceLog"
         ]);
     }
@@ -137,36 +137,39 @@ function kill_geth(geth) {
 }
 
 function spawn_geth(flags) {
-    log("Spawn " + chalk.magenta(options.GETH) + " on network " +
-        chalk.yellow.bold(options.NETWORK_ID) + " (genesis nonce " +
-        chalk.yellow(options.GENESIS_NONCE) + ")...");
-    var geth = cp.spawn(options.GETH, flags);
-    log(chalk.magenta("geth"), "listening on ports:");
-    log(chalk.gray(" - Peer:"), chalk.cyan(options.PEER_PORT));
-    log(chalk.gray(" - RPC: "), chalk.cyan(options.RPC_PORT));
-    geth.stdout.on("data", function (data) {
-        if (options.DEBUG) {
-            process.stdout.write(chalk.cyan(data.toString()));
-        }
-        geth_log.write("stdout: " + util.format(data.toString()) + "\n");
-    });
-    geth.stderr.on("data", function (data) {
-        if (options.DEBUG) {
-            process.stdout.write(chalk.yellow(data.toString()));
-        }
-        geth_log.write(util.format(data.toString()) + "\n");
-    });
-    geth.on("close", function (code) {
-        if (code !== 2 && code !== 0) {
-            log(chalk.red.bold("geth closed with code " + code));
-            kill_geth(geth);
-            if (code === 1) {
-                utilities.wait(5);
-                log("Restarting", chalk.magenta("geth") + "...");
-                return spawn_geth(flags);
+    var geth = null;
+    if (options.SPAWN_GETH) {
+        log("Spawn " + chalk.magenta(options.GETH) + " on network " +
+            chalk.yellow.bold(options.NETWORK_ID) + " (genesis nonce " +
+            chalk.yellow.bold(options.GENESIS_NONCE) + ")...");
+        geth = cp.spawn(options.GETH, flags);
+        log(chalk.magenta("geth"), "listening on ports:");
+        log(chalk.gray(" - Peer:"), chalk.cyan(options.PEER_PORT));
+        log(chalk.gray(" - RPC: "), chalk.cyan(options.RPC_PORT));
+        geth.stdout.on("data", function (data) {
+            if (options.DEBUG) {
+                process.stdout.write(chalk.cyan(data.toString()));
             }
-        }
-    });
+            geth_log.write("stdout: " + nodeUtil.format(data.toString()) + "\n");
+        });
+        geth.stderr.on("data", function (data) {
+            if (options.DEBUG) {
+                process.stdout.write(chalk.yellow(data.toString()));
+            }
+            geth_log.write(nodeUtil.format(data.toString()) + "\n");
+        });
+        geth.on("close", function (code) {
+            if (code !== 2 && code !== 0) {
+                log(chalk.red.bold("geth closed with code " + code));
+                kill_geth(geth);
+                if (code === 1) {
+                    utils.wait(5);
+                    log("Restarting", chalk.magenta("geth") + "...");
+                    return spawn_geth(flags);
+                }
+            }
+        });
+    }
     return geth;
 }
 
@@ -210,14 +213,14 @@ function display_outputs(geth) {
         }
     }
     log("Ballots:");
-    log(utilities.fold(ballots, num_events));
+    log(utils.fold(ballots, num_events));
 
     log("\nCentered:");
-    wcd = utilities.fold(Augur.getWeightedCenteredData(branch, period).slice(0, flatsize), num_events);
+    wcd = utils.fold(Augur.getWeightedCenteredData(branch, period).slice(0, flatsize), num_events);
     log(wcd);
 
     log("\nInterpolated:");
-    reports_filled = utilities.fold(Augur.getReportsFilled(branch, period).slice(0, flatsize), num_events);
+    reports_filled = utils.fold(Augur.getReportsFilled(branch, period).slice(0, flatsize), num_events);
     log(reports_filled);
 
     outcomes = Augur.getOutcomesFinal(branch, period).slice(0, num_events);
@@ -248,7 +251,6 @@ function display_outputs(geth) {
 }
 
 function faucets(geth) {
-    var next_test;
     require(options.FAUCETS);
     delete require.cache[require.resolve(options.FAUCETS)];
     setTimeout(function () {
@@ -276,31 +278,47 @@ function faucets(geth) {
                 );
             }, 5000);
         } else {
-            log(chalk.blue.bold("\nAccount 0: ") + chalk.cyan(accounts[0]));
-            options.GETH_FLAGS[1] = accounts[0];
-            options.GETH_FLAGS[3] = accounts[0];
             if (geth) kill_geth(geth);
-            geth = spawn_geth(options.GETH_FLAGS);
-            setTimeout(function () {
-                init(geth, accounts[0], mine_minimum_ether, function () {
-                    if (options.SUITE.length) {
+            if (options.SUITE.length) {
+                log(chalk.blue.bold("\nAccount 0: ") + chalk.cyan(accounts[0]));
+                options.GETH_FLAGS[1] = accounts[0];
+                options.GETH_FLAGS[3] = accounts[0];
+                utils.wait(5);
+                geth = spawn_geth(options.GETH_FLAGS);
+                setTimeout(function () {
+                    init(geth, accounts[0], mine_minimum_ether, function () {
                         init_test_suite(accounts[0], options, geth);
-                    }
-                });
-            }, 5000);
+                    });
+                }, 5000);
+            } else {
+                process.exit(0);
+            }
         }
-    }, 10000);
+    }, 1000);
 }
 
 function upload_contracts(geth) {
-    log(chalk.red.bold("Upload contracts to network ") +
-        chalk.yellow.bold(options.NETWORK_ID));
-    var uploader = cp.spawn(options.UPLOADER, [
+    if (!options.UPLOAD_CONTRACT) {
+        log(chalk.red.bold("Upload contracts to network ")+
+            chalk.yellow.bold(options.NETWORK_ID)+
+            chalk.red.bold(":"));
+    } else {
+        log(chalk.red.bold("Uploading ")+
+            chalk.yellow.bold(options.UPLOAD_CONTRACT)+
+            chalk.red.bold(" contract to network ")+
+            chalk.yellow.bold(options.NETWORK_ID)+
+            chalk.red.bold(":"));
+    }
+    var uploader_options = [
         "--BLOCKTIME=1.75",
         "--port=" + options.RPC_PORT
-    ]);
+    ];
+    if (options.UPLOAD_CONTRACT) {
+        uploader_options.push("--contract=" + options.UPLOAD_CONTRACT);
+    }
+    var uploader = cp.spawn(options.UPLOADER, uploader_options);
     uploader.stdout.on("data", function (data) {
-        process.stdout.write(chalk.cyan(data.toString()));
+        process.stdout.write(chalk.cyan.dim(data.toString()));
     });
     uploader.stderr.on("data", function (data) {
         process.stdout.write(chalk.red(data.toString()));
@@ -312,31 +330,62 @@ function upload_contracts(geth) {
             var gospelcmd = path.join(options.AUGUR_CORE, "generate_gospel.py -j");
             cp.exec(gospelcmd, function (err, stdout) {
                 if (err) throw err;
-                log("Write contract addresses to " + chalk.green(options.GOSPEL_JSON) + "...");
                 fs.writeFileSync(options.GOSPEL_JSON, stdout.toString());
+                log("Saved contract addresses: " + chalk.green(options.GOSPEL_JSON));
                 options.CUSTOM_GOSPEL = true;
-                log("Send " + options.MINIMUM_ETHER + " ETH to other addresses:");
-                for (var i = 1, len = accounts.length; i < len; ++i) {
-                    log(chalk.green("  ✓ ") + chalk.gray(accounts[i]));
-                    Augur.pay(accounts[i], options.MINIMUM_ETHER);
+                if (options.LOAD_ACCOUNTS) {
+                    log("Send " + options.MINIMUM_ETHER + " ETH to other addresses:");
+                    for (var i = 1, len = accounts.length; i < len; ++i) {
+                        log(chalk.green("  ✓ ") + chalk.gray(accounts[i]));
+                        Augur.pay(accounts[i], options.MINIMUM_ETHER);
+                    }
                 }
-                setTimeout(function () {
-                    kill_geth(geth);
-                    log(chalk.blue.bold("\nAccount 1: ") + chalk.cyan(accounts[1]));
-                    options.GETH_FLAGS[1] = accounts[1];
-                    options.GETH_FLAGS[3] = accounts[1];
+                if (options.SUITE.length || options.LOAD_ACCOUNTS) {
                     setTimeout(function () {
-                        init(
-                            spawn_geth(options.GETH_FLAGS),
-                            accounts[1],
-                            mine_minimum_ether,
-                            faucets
-                        );
-                    }, 10000);
-                }, 12000);
+                        if (geth) kill_geth(geth);
+                        var next;
+                        if (options.LOAD_ACCOUNTS) {
+                            log(chalk.blue.bold("\nAccount 1: ") + chalk.cyan(accounts[1]));
+                            options.GETH_FLAGS[1] = accounts[1];
+                            options.GETH_FLAGS[3] = accounts[1];
+                            next = faucets;
+                        } else {
+                            next = function (geth) {
+                                test_suite_prep(accounts[0], options, geth);
+                            };
+                        }
+                        setTimeout(function () {
+                            init(
+                                spawn_geth(options.GETH_FLAGS),
+                                accounts[1],
+                                mine_minimum_ether,
+                                next
+                            );
+                        }, 10000);
+                    }, 12000);
+                } else {
+                    process.exit(0);
+                }
             });
         }
     });
+}
+
+function test_suite_prep(account, options, geth) {
+    if (options.SUITE.length) {
+        log(chalk.blue.bold("\nAccount 0: ") + chalk.cyan(account));
+        options.GETH_FLAGS[1] = account;
+        options.GETH_FLAGS[3] = account;
+        utils.wait(5);
+        geth = spawn_geth(options.GETH_FLAGS);
+        setTimeout(function () {
+            init(geth, account, mine_minimum_ether, function () {
+                init_test_suite(account, options, geth);
+            });
+        }, 5000);
+    } else {
+        process.exit(0);
+    }
 }
 
 function setup_mocha_tests(tests) {
@@ -358,29 +407,35 @@ function init(geth, account, callback, next, count) {
     }
     count = count || 0;
     if (options.CUSTOM_GOSPEL) {
-        Augur = utilities.setup(
+        Augur = utils.setup(
             Augur,
             ["--gospel"],
-            { protocol: "http", host: "127.0.0.1", port: options.RPC_PORT }
+            { port: options.RPC_PORT }
         );
     } else {
-        Augur = utilities.setup(
+        Augur = utils.setup(
             Augur,
             null,
-            { protocol: "http", host: "127.0.0.1", port: options.RPC_PORT }
+            { port: options.RPC_PORT }
         );
     }
     if (Augur.connected()) {
-        accounts = utilities.get_test_accounts(Augur, constants.MAX_TEST_ACCOUNTS);
+        accounts = utils.get_test_accounts(Augur, constants.MAX_TEST_ACCOUNTS);
         verified_accounts = true;
         if (!verified_accounts && account !== accounts[0]) {
-            kill_geth(geth);
+            if (geth) kill_geth(geth);
             account = accounts[0];
             log(chalk.blue.bold("\nAccount 0: ") + chalk.cyan(account));
             options.GETH_FLAGS[1] = account;
             options.GETH_FLAGS[3] = account;
             setTimeout(function () {
-                init(spawn_geth(options.GETH_FLAGS), account, callback, next, ++count);
+                init(
+                    spawn_geth(options.GETH_FLAGS),
+                    account,
+                    callback,
+                    next,
+                    ++count
+                );
             }, 5000);
         } else {
             var balance = Augur.balance(account);
@@ -398,9 +453,11 @@ function init(geth, account, callback, next, count) {
         if (count < 10) {
             setTimeout(retry, 5000);
         } else {
-            kill_geth(geth);
-            utilities.wait(2.5);
-            geth = spawn_geth(options.GETH_FLAGS);
+            if (options.SPAWN_GETH) {
+                if (geth) kill_geth(geth);
+                utils.wait(2.5);
+                geth = spawn_geth(options.GETH_FLAGS);
+            }
             setTimeout(retry, 2500);
         }
     }
@@ -444,6 +501,30 @@ function main(account, options) {
             mine_minimum_ether,
             offline_tests
         );
+    } else if (options.UPLOAD_CONTRACT) {
+        init(
+            spawn_geth(options.GETH_FLAGS),
+            account,
+            mine_minimum_ether,
+            upload_contracts
+        );
+    } else if (options.FAUCETS_ONLY) {
+        var geth = spawn_geth(options.GETH_FLAGS);
+        setTimeout(function () {
+            if (options.LOAD_ACCOUNTS) {
+                log("Send " + options.MINIMUM_ETHER + " ETH to other addresses:");
+                for (var i = 1, len = accounts.length; i < len; ++i) {
+                    log(chalk.green("  ✓ ") + chalk.gray(accounts[i]));
+                    Augur.pay(accounts[i], options.MINIMUM_ETHER);
+                }
+            }
+            init(
+                geth,
+                account,
+                mine_minimum_ether,
+                faucets
+            );
+        }, 5000);
     } else if (options.SUITE.length) {
         init_test_suite(account, options);
     }
@@ -484,7 +565,7 @@ else if (options.NETWORK_ID === "0") {
     options.GENESIS_NONCE = "42";
 }
 
-var accounts = utilities.get_test_accounts(options.DATADIR, constants.MAX_TEST_ACCOUNTS);
+var accounts = utils.get_test_accounts(options.DATADIR, constants.MAX_TEST_ACCOUNTS);
 
 options.GETH_FLAGS = [
     "--etherbase", accounts[0],
@@ -534,7 +615,8 @@ if (module.parent && !process.argv.slice(2).length) {
 } else {
 
     var option, optstring, parser, done;
-    optstring = "r(reset)g(geth)a(aux)c(core)s(consensus)n(connection)o(gospel)A(all)u:(augur)";
+    optstring = "r(reset)g(geth)a(aux)c(core)s(consensus)n(connection)"+
+                "o(gospel)f(faucets)A(all)l(load)u:(augur)t:(contract)";
     parser = new mod_getopt.BasicParser(optstring, process.argv);
 
     while ((option = parser.getopt()) !== undefined) {
@@ -558,8 +640,16 @@ if (module.parent && !process.argv.slice(2).length) {
             case 'n':
                 options.SUITE.push("connection");
                 break;
+            case 'f':
+                options.FAUCETS_ONLY = true;
+                options.RESET = false;
+                options.SPAWN_GETH = true;
+                break;
             case 'A':
                 options.SUITE = ["connection", "core", "auxiliary", "consensus"];
+                break;
+            case 'l':
+                options.LOAD_ACCOUNTS = true;
                 break;
             case 'o':
                 log("Load contracts from file: " + chalk.green(options.GOSPEL_JSON));
@@ -568,6 +658,10 @@ if (module.parent && !process.argv.slice(2).length) {
                 break;
             case 'u':
                 options.AUGUR_CORE = option.optarg;
+                break;
+            case 't':
+                options.UPLOAD_CONTRACT = option.optarg;
+                options.RESET = false;
                 break;
             default:
                 assert.equal('?', option.option);
