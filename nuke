@@ -12,4 +12,4 @@ npm install
 grunt browserify:build
 
 # run server
-node server.js
+npm start
