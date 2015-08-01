@@ -21,8 +21,8 @@ var needs = {
     cash: !balance.cash || balance.cash.lt(new BigNumber(5))
 };
 
-// log("Cash:      ", chalk.green(balance.cash));
-// log("Reputation:", chalk.green(balance.reputation));
+log("Cash:      ", chalk.green(balance.cash));
+log("Reputation:", chalk.green(balance.reputation));
 
 if (needs.reputation || needs.cash) {
 

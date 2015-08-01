@@ -5,8 +5,10 @@
   "main": "src/index.js",
   "scripts": {
     "test": "scripts/runtests.sh",
+    "test-offline": "scripts/runtests.sh --offline",
     "workflow": "scripts/workflow.js",
-    "test-offline": "scripts/runtests.sh --offline"
+    "reset": "scripts/workflow.js --reset --load",
+    "faucets": "scripts/faucets.js"
   },
   "dependencies": {
     "bignumber.js": "^2.0.7",
