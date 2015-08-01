@@ -5,10 +5,11 @@
 set -e
 trap "exit" INT
 
-gospel=0
+gospel=''
 offline=0
 connection=0
 core=0
+creation=0
 markets=0
 consensus=0
 aux=0
@@ -20,6 +21,7 @@ for arg in "$@"; do
         "--offline") set -- "$@" "-o" ;;
         "--connection") set -- "$@" "-n" ;;
         "--core") set -- "$@" "-c" ;;
+        "--creation") set -- "$@" "-r" ;;
         "--markets") set -- "$@" "-m" ;;
         "--consensus") set -- "$@" "-s" ;;
         "--aux") set -- "$@" "-x" ;;
@@ -27,12 +29,13 @@ for arg in "$@"; do
     esac
 done
 OPTIND=1
-while getopts "goncmsxa" opt; do
+while getopts "goncrmsxa" opt; do
     case "$opt" in
         g) gospel="--gospel" ;;
         o) offline=1 ;;
         n) connection=1 ;;
         c) core=1 ;;
+        r) creation=1 ;;
         m) markets=1 ;;
         s) consensus=1 ;;
         x) aux=1 ;;
@@ -41,11 +44,12 @@ done
 shift $(expr $OPTIND - 1)
 
 if [ "${offline}" == "0" ] && [ "${connection}" == "0" ] &&
-   [ "${core}" == "0" ] && [ "${markets}" == "0" ] &&
+   [ "${core}" == "0" ] &&  [ "${creation}" == "0" ] && [ "${markets}" == "0" ] &&
    [ "${consensus}" == "0" ] && [ "${aux}" == "0" ]; then
     offline=1
     connection=1
     core=1
+    creation=1
     markets=1
     consensus=0
     aux=1
@@ -102,9 +106,21 @@ if [ "${core}" == "1" ]; then
     done
 fi
 
+if [ "${creation}" == "1" ]; then
+
+    declare -a creation_tests=("createMarket" "createEvent")
+
+    echo -e "${BLUE}creation:${NC}\n"
+
+    for i in "${creation_tests[@]}"; do
+        echo -e "  ${CYAN}test/$i ${GRAY}$gospel${NC}"
+        mocha test/$i.js $gospel
+    done
+fi
+
 if [ "${markets}" == "1" ]; then
 
-    declare -a markets_tests=("createMarket" "branches" "info" "markets" "events" "reporting" "payments" "createEvent" "buyAndSellShares")
+    declare -a markets_tests=("branches" "info" "markets" "events" "reporting" "payments" "buyAndSellShares")
 
     echo -e "${BLUE}markets:${NC}\n"
 

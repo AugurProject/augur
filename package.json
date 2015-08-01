@@ -6,6 +6,7 @@
   "scripts": {
     "test": "scripts/runtests.sh",
     "test-offline": "scripts/runtests.sh --offline",
+    "testnet": "scripts/runtests.sh --offline --core --connection --core --markets --aux",
     "workflow": "scripts/workflow.js",
     "reset": "scripts/workflow.js --reset --load",
     "faucets": "scripts/faucets.js"
