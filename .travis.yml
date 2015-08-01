@@ -6,6 +6,5 @@ node_js:
 before_script:
   - npm install
   - npm install jshint mocha
-  - npm update npm
 script:
-  - npm test -- --offline
+  - npm run-script test-offline
