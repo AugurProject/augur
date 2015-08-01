@@ -1966,8 +1966,7 @@ augur.createEvent = function (branch, description, expDate, minValue, maxValue, 
         expDate,
         minValue,
         maxValue,
-        numOutcomes,
-        this.blockNumber()
+        numOutcomes
     ];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
@@ -1993,8 +1992,7 @@ augur.createMarket = function (branch, description, alpha, liquidity, tradingFee
         numeric.fix(alpha, "hex"),
         numeric.fix(liquidity, "hex"),
         numeric.fix(tradingFee, "hex"),
-        events,
-        this.blockNumber()
+        events
     ];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };

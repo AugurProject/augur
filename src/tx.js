@@ -923,7 +923,7 @@ module.exports = function (contracts) {
         createEvent: {
             to: contracts.createEvent,
             method: "createEvent",
-            signature: "isiiiii",
+            signature: "isiiii",
             send: true
         },
 
@@ -931,7 +931,7 @@ module.exports = function (contracts) {
         createMarket: {
             to: contracts.createMarket,
             method: "createMarket",
-            signature: "isiiiai",
+            signature: "isiiia",
             send: true
         },
 
