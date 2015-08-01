@@ -130,7 +130,7 @@ if [ "${aux}" == "1" ]; then
 
     declare -a aux_tests=("web" "multicast" "namereg" "comments" "priceLog")
 
-    echo -e "${BLUE}aux:${NC}\n"
+    echo -e "${BLUE}auxiliary:${NC}\n"
 
     for i in "${aux_tests[@]}"; do
         echo -e "  ${CYAN}test/$i ${GRAY}$gospel${NC}"
