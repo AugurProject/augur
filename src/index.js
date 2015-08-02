@@ -32,7 +32,6 @@ var log = console.log;
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
 var DEFAULT_RPC = utils.urlstring({
-    // protocol: (NODE_JS) ? "http" : window.location.protocol.slice(0, -1),
     protocol: "http",
     host: "127.0.0.1",
     port: 8545
@@ -42,9 +41,6 @@ var options = {
 
     // primary Ethereum RPC connection info
     RPC: DEFAULT_RPC,
-
-    // multicast RPC nodes
-    nodes: [],
 
     // If set to true, all numerical results (excluding hashes)
     // are returned as BigNumber objects
@@ -67,6 +63,9 @@ var augur = {
     comments: {},
     filters: {},
     namereg: {},
+
+    // multicast RPC nodes
+    nodes: constants.nodes,
 
     contracts: utils.copy(contracts.testnet),
     init_contracts: utils.copy(contracts.testnet),

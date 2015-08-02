@@ -15,7 +15,7 @@ var gutil = require("gulp-util");
 var runSequence = require("run-sequence");
 
 var gulp_log = require("fs").createWriteStream(
-    require("path").join(__dirname, "gulp.log"),
+    require("path").join(__dirname, "data", "gulp.log"),
     {flags : 'w'}
 );
 
@@ -23,8 +23,8 @@ gulp.task("clean", function (callback) {
     del(["dist"], callback);
 });
 
-gulp.task("test", function (callback) {
-    var runtests = cp.spawn("npm", ["test", "--", "--offline"]);
+gulp.task("offline", function (callback) {
+    var runtests = cp.spawn("npm", ["run", "offline"]);
     runtests.stdout.on("data", function (data) {
         gulp_log.write(nodeUtil.format(data.toString()));
     });
@@ -34,8 +34,8 @@ gulp.task("test", function (callback) {
     runtests.on("close", callback);
 });
 
-gulp.task("test-full", function (callback) {
-    var runtests = cp.spawn("npm", ["test", "--", "--gospel"]);
+gulp.task("test", function (callback) {
+    var runtests = cp.spawn("npm", ["run", "tests"]);
     runtests.stdout.on("data", function (data) {
         process.stdout.write(data);
     });
@@ -43,10 +43,6 @@ gulp.task("test-full", function (callback) {
         process.stdout.write(chalk.yellow(data.toString()));
     });
     runtests.on("close", callback);
-});
-
-gulp.task("workflow", function (callback) {
-    require("./scripts/workflow")(callback);
 });
 
 gulp.task("build", function () {
@@ -68,5 +64,5 @@ gulp.task("watch", function() {
 });
 
 gulp.task("default", ["clean"], function (callback) {
-    runSequence(["test", "build"], callback);
+    runSequence(["offline", "build"], callback);
 });

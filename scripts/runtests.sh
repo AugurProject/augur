@@ -2,17 +2,31 @@
 # augur.js test suite
 # @author Jack Peterson (jack@tinybike.net)
 
-set -e
+# set -e
 trap "exit" INT
 
-reporter="progress"
+TEAL='\033[0;36m'
+GRAY='\033[1;30m'
+NC='\033[0m'
 
+runtest()
+{
+    echo -e " ${TEAL}test/${1}${NC}"
+
+    if [ "${coverage}" == "1" ]; then
+        istanbul cover _mocha test/${1} --gospel -- -R ${reporter}
+    else
+        mocha -R ${reporter} test/${1} ${gospel}
+    fi
+}
+
+reporter="progress"
 gospel=''
 coverage=0
 offline=0
-connection=0
+connect=0
 core=0
-creation=0
+create=0
 markets=0
 consensus=0
 aux=0
@@ -23,9 +37,9 @@ for arg in "$@"; do
         "--gospel") set -- "$@" "-g" ;;
         "--coverage") set -- "$@" "-v" ;;
         "--offline") set -- "$@" "-o" ;;
-        "--connection") set -- "$@" "-n" ;;
+        "--connect") set -- "$@" "-n" ;;
         "--core") set -- "$@" "-c" ;;
-        "--creation") set -- "$@" "-r" ;;
+        "--create") set -- "$@" "-r" ;;
         "--markets") set -- "$@" "-m" ;;
         "--consensus") set -- "$@" "-s" ;;
         "--aux") set -- "$@" "-x" ;;
@@ -38,9 +52,9 @@ while getopts "gvoncrmsxa" opt; do
         g) gospel="--gospel" ;;
         v) coverage=1 ;;
         o) offline=1 ;;
-        n) connection=1 ;;
+        n) connect=1 ;;
         c) core=1 ;;
-        r) creation=1 ;;
+        r) create=1 ;;
         m) markets=1 ;;
         s) consensus=1 ;;
         x) aux=1 ;;
@@ -48,39 +62,9 @@ while getopts "gvoncrmsxa" opt; do
 done
 shift $(expr $OPTIND - 1)
 
-if [ "${offline}" == "0" ] && [ "${connection}" == "0" ] &&
-   [ "${core}" == "0" ] &&  [ "${creation}" == "0" ] && [ "${markets}" == "0" ] &&
-   [ "${consensus}" == "0" ] && [ "${aux}" == "0" ]; then
-    offline=1
-    connection=1
-    core=1
-    creation=1
-    markets=1
-    consensus=0
-    aux=1
-fi
-
-runtest()
-{
-    echo -e " ${CYAN}test/${1}${NC}"
-
-    if [ "${coverage}" == "1" ]; then
-        istanbul cover _mocha test/${1} --gospel -- -R ${reporter}
-    else
-        mocha -R ${reporter} test/${1} ${gospel}
-    fi
-}
-
-CYAN='\033[0;36m'
-PURPLE='\033[1;35m'
-BLUE='\033[1;34m'
-GRAY='\033[1;30m'
-GREEN='\033[0;32m'
-NC='\033[0m'
-
-echo -e "+${GRAY}=====================${NC}+"
-echo -e "${GRAY}|${PURPLE} augur.js${NC} test suite ${GRAY}|${NC}"
-echo -e "+${GRAY}=====================${NC}+\n"
+echo -e "+${GRAY}================${NC}+"
+echo -e "${GRAY}| \033[1;35maugur.js${NC} tests ${GRAY}|${NC}"
+echo -e "+${GRAY}================${NC}+\n"
 
 [ "${offline}" == "1" ] && runtest "offline"
 [ "${core}" == "1" ] && runtest "core"
@@ -91,6 +75,14 @@ echo -e "+${GRAY}=====================${NC}+\n"
 [ "${aux}" == "1" ] && runtest "auxiliary"
 
 if [ "${offline}" == "1" ]; then
-    echo -e " ${CYAN}jshint src${NC}\n"
-    jshint src
+
+    echo -e " ${TEAL}jshint${NC}\n"
+
+    declare -a targets=("gulpfile.js" "src/*" "scripts/setup.js")
+    for target in "${targets[@]}"
+    do
+        jshint ${target}
+        echo -e "   \033[1;32m✓${NC}  ${GRAY}${target}${NC}"
+    done
+    echo
 fi

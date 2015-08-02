@@ -8,12 +8,12 @@
 var crypto = require("crypto");
 var assert = require("chai").assert;
 var constants = require("../../src/constants");
-var utilities = require("../../src/utilities");
+var utils = require("../../src/utilities");
 var numeric = require("../../src/numeric");
-var Augur = utilities.setup(require("../../src"), process.argv.slice(2));
+var Augur = utils.setup(require("../../src"), process.argv.slice(2));
 var log = console.log;
 
-var accounts = utilities.get_test_accounts(Augur, constants.MAX_TEST_ACCOUNTS);
+var accounts = utils.get_test_accounts(Augur, constants.MAX_TEST_ACCOUNTS);
 var branch_id = Augur.branches.dev;
 var reporter_index = "0";
 var ballot = [2, 2, 1, 2];
@@ -22,7 +22,7 @@ var salt = "1337";
 describe("data and api/reporting", function () {
     describe("getTotalRep(" + branch_id + ")", function () {
         var test = function (r) {
-            assert(parseInt(r) >= 47);
+            assert(parseInt(r) >= 44);
         };
         it("sync", function () {
             test(Augur.getTotalRep(branch_id));
@@ -35,7 +35,7 @@ describe("data and api/reporting", function () {
     });
     describe("getRepBalance(" + branch_id + ") ", function () {
         var test = function (r) {
-            utilities.gteq0(r);
+            utils.gteq0(r);
         };
         it("sync", function () {
             test(Augur.getRepBalance(branch_id, accounts[0]));
@@ -48,7 +48,7 @@ describe("data and api/reporting", function () {
     });
     describe("getRepByIndex(" + branch_id + ", " + reporter_index + ") ", function () {
         var test = function (r) {
-            assert.strictEqual(Number(r), 47);
+            assert(Number(r) >= 44);
         };
         it("sync", function () {
             test(Augur.getRepByIndex(branch_id, reporter_index));
@@ -76,7 +76,7 @@ describe("data and api/reporting", function () {
         var test = function (r) {
             assert(r.length >= 1);
             for (var i = 0, len = r.length; i < len; ++i) {
-                utilities.gteq0(r[i]);
+                utils.gteq0(r[i]);
             }
         };
         it("sync", function () {
@@ -121,7 +121,7 @@ describe("data and api/reporting", function () {
                 b[i] = b[i].toString(16);
             }
             var hashable = [accounts[0], numeric.bignum(salt).toString(16)].concat(b).toString();
-            var hashed = utilities.sha256(hashable);
+            var hashed = utils.sha256(hashable);
             // TODO lookup how arrays hashed by evm sha256, this doesn't work
             // assert.strictEqual(r, hashed);
             assert.strictEqual(r, "-0x3bc32da7042e04b537160b3b24f53162cb621c482fb615aa108087898d6183fb");

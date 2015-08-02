@@ -26,7 +26,7 @@ var exp_date = Augur.blockNumber() + 250;
 
 describe("Creating " + num_events + " events and markets", function () {
     var events = [];
-    fs.writeFileSync("events.dat", "");
+    fs.writeFileSync("../../data/events.dat", "");
     it.each(_.range(0, num_events), "create event/market %s", ['element'], function (element, next) {
         this.timeout(constants.TIMEOUT);
         var event_description = Math.random().toString(36).substring(4);
@@ -59,9 +59,9 @@ describe("Creating " + num_events + " events and markets", function () {
                     },
                     onSuccess: function (res) {
                         if (element < num_events - 1) {
-                            fs.appendFile("events.dat", events[0] + "," + r.callReturn + "\n");
+                            fs.appendFile("../../data/events.dat", events[0] + "," + r.callReturn + "\n");
                         } else {
-                            fs.appendFile("events.dat", events[0] + "," + r.callReturn);
+                            fs.appendFile("../../data/events.dat", events[0] + "," + r.callReturn);
                         }
                         next();
                     },

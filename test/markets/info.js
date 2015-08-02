@@ -76,7 +76,7 @@ describe("info.se", function () {
     });
     describe("getDescription(" + event_id + ")", function () {
         var test = function (r) {
-            assert(r.length >= 13);
+            assert(r.length);
         };
         it("sync", function () {
             test(Augur.getDescription(event_id));

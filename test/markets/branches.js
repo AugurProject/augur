@@ -11,11 +11,11 @@ var chalk = require("chalk");
 var web3 = require("web3");
 var Augur = require("../../src");
 var constants = require("../../src/constants");
-var utilities = require("../../src/utilities");
+var utils = require("../../src/utilities");
 var numeric = require("../../src/numeric");
 var log = console.log;
 
-Augur = utilities.setup(Augur, process.argv.slice(2));
+Augur = utils.setup(Augur, process.argv.slice(2));
 web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"));
 
 var branch_id = Augur.branches.dev;
@@ -125,6 +125,33 @@ var branches_full_abi = [
         "outputs": [{ "name": "out", "type": "int256" }]
     }
 ];
+
+describe("augur.js / web3 interoperability", function () {
+    it("market IDs should be identical", function () {
+        this.timeout(constants.TIMEOUT);
+        var web3markets = web3.eth.contract(branches_full_abi)
+                                  .at(Augur.contracts.branches)
+                                  .getMarkets
+                                  .call(branch_id);
+        Augur.options.BigNumberOnly = true;
+        Augur = utils.setup(Augur, process.argv.slice(2), null, true);
+        var markets = {
+            augurjs: Augur.getMarkets(branch_id),
+            web3: web3markets
+        };
+        for (var i = 0, len = markets.augurjs.length; i < len; ++i) {
+            // log("augurjs:", chalk.green(markets.augurjs[i].toString(16)));
+            // log("web3:   ", chalk.green(markets.web3[i].toString(16)) + "\n");
+            assert(markets.augurjs[i].eq(markets.web3[i]));
+            assert.strictEqual(
+                markets.augurjs[i].toString(16),
+                markets.web3[i].toString(16)
+            );
+        }
+        Augur.options.BigNumberOnly = false;
+        Augur = utils.setup(Augur, process.argv.slice(2));
+    });
+});
 
 // branches.se
 describe("branches.se", function () {
@@ -248,30 +275,5 @@ describe("branches.se", function () {
                 test(r); done();
             });
         });
-    });
-});
-
-describe("augur.js / web3 interoperability", function () {
-    it("market IDs should be identical", function () {
-        this.timeout(constants.TIMEOUT);
-        var web3markets = web3.eth.contract(branches_full_abi)
-                                  .at(Augur.contracts.branches)
-                                  .getMarkets
-                                  .call(branch_id);
-        Augur.options.BigNumberOnly = true;
-        Augur = utilities.setup(Augur, process.argv.slice(2), null, true);
-        var markets = {
-            augurjs: Augur.getMarkets(branch_id),
-            web3: web3markets
-        };
-        for (var i = 0, len = markets.augurjs.length; i < len; ++i) {
-            // log("augurjs:", chalk.green(markets.augurjs[i].toString(16)));
-            // log("web3:   ", chalk.green(markets.web3[i].toString(16)) + "\n");
-            assert(markets.augurjs[i].eq(markets.web3[i]));
-            assert.strictEqual(
-                markets.augurjs[i].toString(16),
-                markets.web3[i].toString(16)
-            );
-        }
     });
 });

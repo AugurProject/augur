@@ -6,13 +6,11 @@
 "use strict";
 
 var assert = require("chai").assert;
-var Augur = require("../../src");
 var constants = require("../../src/constants");
+var utils = require("../../src/utilities");
+var Augur = utils.setup(require("../../src"), process.argv.slice(2));
 var log = console.log;
 
-Augur = require("../../src/utilities").setup(Augur, process.argv.slice(2));
-
-var TIMEOUT = 24000;
 var amount = "1";
 var branch_id = Augur.branches.dev;
 var markets = Augur.getMarkets(branch_id);

@@ -22,9 +22,9 @@ require('it-each')({ testPerIteration: true });
 var branch = Augur.branches.dev;
 var outcome = "1.0";
 
-var eventsMarkets = fs.readFileSync("events.dat").toString().split('\n');
+var eventsMarkets = fs.readFileSync("../../events.dat").toString().split('\n');
 
-log("\n  Search for events");
+// log("\n  Search for events");
 var events, period;
 for (var i = 0; i < 200; ++i) {
     events = Augur.getEvents(branch, i);
@@ -44,10 +44,8 @@ describe("Search for events", function () {
 });
 
 if (events.length) {
-
     var markets = new Array(events.length);
-
-    log("\n  Lookup markets");
+    // log("\n  Lookup markets");
     var market, found;
     for (var i = 0; i < eventsMarkets.length; ++i) {
         found = false;

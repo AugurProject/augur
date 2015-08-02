@@ -14,11 +14,10 @@ require('it-each')({ testPerIteration: true });
 Augur = require("../../src/utilities").setup(Augur, process.argv.slice(2));
 
 var log = console.log;
-var TIMEOUT = 120000;
 var branch = Augur.branches.dev;
 var period = Augur.getVotePeriod(branch);
 
-var eventsMarkets = fs.readFileSync('events.dat').toString().split("\n");
+var eventsMarkets = fs.readFileSync("../../data/events.dat").toString().split("\n");
 var events = [];
 for (var i = 0; i < eventsMarkets.length; ++i) {
     events.push(eventsMarkets[i].split(',')[0]);

@@ -39,7 +39,6 @@ describe("Comments (whisper)", function () {
         this.timeout(constants.TIMEOUT);
         Augur.comments.initComments(market);
         pkg.message = Math.random().toString(36).substring(4);
-        log(pkg);
         var updated_comments = Augur.comments.addMarketComment(pkg);
         assert(updated_comments);
         assert.strictEqual(updated_comments.constructor, Array);
