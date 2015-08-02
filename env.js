@@ -48,12 +48,7 @@ GLOBAL.balance = function (account, branch) {
 }
 
 GLOBAL.gospel = function () {
-    var gospel_file;
-    try {
-        gospel_file = path.join(__dirname || "", "test", "gospel.json");
-    } catch (e) {
-        gospel_file = path.join(__dirname || "", "gospel.json");
-    }
+    var gospel_file = path.join(__dirname, "data", "gospel.json");
     log("Load contracts from file: " + chalk.green(gospel_file));
     Augur.contracts = JSON.parse(fs.readFileSync(gospel_file));
     Augur.connect();
