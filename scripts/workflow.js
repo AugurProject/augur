@@ -46,7 +46,6 @@ var options = {
 };
 
 var verified_accounts = false;
-var init;
 
 function runtests(geth, tests, callback) {
     var index = 0;
@@ -121,11 +120,11 @@ var tests = {
     auxiliary: function (geth) {
         log(chalk.red.bold("\nAuxiliary tests"));
         runtests(geth, [
-            "namereg",
             "web",
             "multicast",
-            "comments"
-            // "priceLog"
+            "namereg",
+            "comments",
+            "filters"
         ]);
     }
 
@@ -245,7 +244,7 @@ function display_outputs(geth) {
     log(reputation);
 
     log("\nTotal reputation (" + (47*reporters.length).toString() + " expected): " + total_rep.toString());
-    assert.equal(total_rep, reporters.length * 47);
+    assert.strictEqual(total_rep, reporters.length * 47);
 
     kill_geth(geth);
 }
@@ -664,7 +663,7 @@ if (module.parent && !process.argv.slice(2).length) {
                 options.RESET = false;
                 break;
             default:
-                assert.equal('?', option.option);
+                assert.strictEqual('?', option.option);
                 done = true;
                 break;
         }

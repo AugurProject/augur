@@ -6,6 +6,7 @@
   "scripts": {
     "test": "scripts/runtests.sh",
     "test-offline": "scripts/runtests.sh --offline",
+    "coverage": "scripts/runtests.sh --coverage",
     "testnet": "scripts/runtests.sh --offline --core --connection --core --markets --aux",
     "workflow": "scripts/workflow.js",
     "reset": "scripts/workflow.js --reset --load",
@@ -51,6 +52,7 @@
     "gulp-sourcemaps": "^1.5.2",
     "gulp-uglify": "^1.2.0",
     "gulp-util": "^3.0.6",
+    "istanbul": "^0.3.17",
     "it-each": "^0.3.1",
     "lodash": "^3.8.0",
     "longjohn": "^0.2.7",

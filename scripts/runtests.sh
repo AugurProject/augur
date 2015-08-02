@@ -5,7 +5,10 @@
 set -e
 trap "exit" INT
 
+reporter="progress"
+
 gospel=''
+coverage=0
 offline=0
 connection=0
 core=0
@@ -18,6 +21,7 @@ for arg in "$@"; do
     shift
     case "$arg" in
         "--gospel") set -- "$@" "-g" ;;
+        "--coverage") set -- "$@" "-v" ;;
         "--offline") set -- "$@" "-o" ;;
         "--connection") set -- "$@" "-n" ;;
         "--core") set -- "$@" "-c" ;;
@@ -29,9 +33,10 @@ for arg in "$@"; do
     esac
 done
 OPTIND=1
-while getopts "goncrmsxa" opt; do
+while getopts "gvoncrmsxa" opt; do
     case "$opt" in
         g) gospel="--gospel" ;;
+        v) coverage=1 ;;
         o) offline=1 ;;
         n) connection=1 ;;
         c) core=1 ;;
@@ -55,6 +60,17 @@ if [ "${offline}" == "0" ] && [ "${connection}" == "0" ] &&
     aux=1
 fi
 
+runtest()
+{
+    echo -e " ${CYAN}test/${1}${NC}"
+
+    if [ "${coverage}" == "1" ]; then
+        istanbul cover _mocha test/${1} --gospel -- -R ${reporter}
+    else
+        mocha -R ${reporter} test/${1} ${gospel}
+    fi
+}
+
 CYAN='\033[0;36m'
 PURPLE='\033[1;35m'
 BLUE='\033[1;34m'
@@ -66,90 +82,15 @@ echo -e "+${GRAY}=====================${NC}+"
 echo -e "${GRAY}|${PURPLE} augur.js${NC} test suite ${GRAY}|${NC}"
 echo -e "+${GRAY}=====================${NC}+\n"
 
+[ "${offline}" == "1" ] && runtest "offline"
+[ "${core}" == "1" ] && runtest "core"
+[ "${connect}" == "1" ] && runtest "connect"
+[ "${create}" == "1" ] && runtest "create"
+[ "${markets}" == "1" ] && runtest "markets"
+[ "${consensus}" == "1" ] && runtest "consensus"
+[ "${aux}" == "1" ] && runtest "auxiliary"
+
 if [ "${offline}" == "1" ]; then
-
-    declare -a offline_tests=("utilities" "numeric" "abi")
-
-    echo -e "${BLUE}jshint:${NC}\n"
-    echo -e "  ${CYAN}src/*${NC}\n"
+    echo -e " ${CYAN}jshint src${NC}\n"
     jshint src
-
-    echo -e "${BLUE}offline:${NC}\n"
-
-    for i in "${offline_tests[@]}"; do
-        echo -e "  ${CYAN}test/$i${NC}"
-        mocha test/$i.js
-    done
-fi
-
-if [ "${connection}" == "1" ]; then
-
-    declare -a connection_tests=("connect" "contracts")
-
-    echo -e "${BLUE}connection:${NC}\n"
-
-    for i in "${connection_tests[@]}"; do
-        echo -e "  ${CYAN}test/$i ${GRAY}$gospel${NC}"
-        mocha test/$i.js $gospel
-    done
-fi
-
-if [ "${core}" == "1" ]; then
-
-    declare -a core_tests=("ethrpc" "invoke" "batch" "faucets")
-
-    echo -e "${BLUE}core:${NC}\n"
-
-    for i in "${core_tests[@]}"; do
-        echo -e "  ${CYAN}test/$i ${GRAY}$gospel${NC}"
-        mocha test/$i.js $gospel
-    done
-fi
-
-if [ "${creation}" == "1" ]; then
-
-    declare -a creation_tests=("createMarket" "createEvent")
-
-    echo -e "${BLUE}creation:${NC}\n"
-
-    for i in "${creation_tests[@]}"; do
-        echo -e "  ${CYAN}test/$i ${GRAY}$gospel${NC}"
-        mocha test/$i.js $gospel
-    done
-fi
-
-if [ "${markets}" == "1" ]; then
-
-    declare -a markets_tests=("branches" "info" "markets" "events" "reporting" "payments" "buyAndSellShares")
-
-    echo -e "${BLUE}markets:${NC}\n"
-
-    for i in "${markets_tests[@]}"; do
-        echo -e "  ${CYAN}test/$i ${GRAY}$gospel${NC}"
-        mocha test/$i.js $gospel
-    done
-fi
-
-if [ "${consensus}" == "1" ]; then
-
-    declare -a consensus_tests=("expiring" "addEvent" "ballot" "makeReports" "checkQuorum" "closeMarket" "dispatch" "interpolate" "resolve" "score")
-
-    echo -e "${BLUE}consensus:${NC}\n"
-
-    for i in "${consensus_tests[@]}"; do
-        echo -e "  ${CYAN}test/$i ${GRAY}$gospel${NC}"
-        mocha test/$i.js $gospel
-    done
-fi
-
-if [ "${aux}" == "1" ]; then
-
-    declare -a aux_tests=("web" "multicast" "namereg" "comments" "priceLog")
-
-    echo -e "${BLUE}auxiliary:${NC}\n"
-
-    for i in "${aux_tests[@]}"; do
-        echo -e "  ${CYAN}test/$i ${GRAY}$gospel${NC}"
-        mocha test/$i.js $gospel
-    done
 fi

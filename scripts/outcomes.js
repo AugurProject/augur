@@ -63,4 +63,4 @@ log("\nUpdated reputation:");
 log(reputation);
 
 log("\nTotal reputation (" + (47*reporters.length).toString() + " expected): " + total_rep.toString());
-assert.equal(total_rep, 47*reporters.length);
+assert.strictEqual(total_rep, 47*reporters.length);

@@ -37,7 +37,7 @@ if (needs.reputation || needs.cash) {
             function (r) {
                 // success
                 assert(r.txHash);
-                assert.equal(r.callReturn, "1");
+                assert.strictEqual(r.callReturn, "1");
                 log(chalk.green("  ✓ ") + chalk.gray("Reputation faucet"));
             },
             function (r) {
@@ -55,7 +55,7 @@ if (needs.reputation || needs.cash) {
             function (r) {
                 // success
                 assert(r.txHash);
-                assert.equal(r.callReturn, "1");
+                assert.strictEqual(r.callReturn, "1");
                 log(chalk.green("  ✓ ") + chalk.gray("Cash faucet"));
             },
             function (r) {

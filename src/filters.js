@@ -49,7 +49,7 @@ module.exports = function (augur) {
                 unfix_type = (augur.options.BigNumberOnly) ? "BigNumber" : "string";
                 price_logs = [];
                 for (var i = 0, len = logs.length; i < len; ++i) {
-                    parsed = augur.parse_array(logs[i].data);
+                    parsed = augur.rpc.parse_array(logs[i].data);
                     if (numeric.bignum(parsed[1]).eq(numeric.bignum(market_id)) &&
                         numeric.bignum(parsed[2]).eq(numeric.bignum(outcome_id))) {
                         if (augur.options.BigNumberOnly) {
@@ -71,7 +71,7 @@ module.exports = function (augur) {
 
         poll_eth_listener: function (filter_name, onMessage) {
             var filterId = this.price_filters[filter_name].filterId;
-            this.filters.eth_getFilterChanges(filterId, function (message) {
+            this.eth_getFilterChanges(filterId, function (message) {
                 if (message) {
                     var num_messages = message.length;
                     log(message);
@@ -98,7 +98,7 @@ module.exports = function (augur) {
                 filter_id = this.price_filters[filter_name].filterId;
                 log(filter_name + " filter found:", chalk.green(filter_id));
             } else {
-                filter_id = this.filters.create_price_filter(filter_name);
+                filter_id = this.create_price_filter(filter_name);
                 if (filter_id && filter_id !== "0x") {
                     log("Create " + filter_name + " filter:", chalk.green(filter_id));
                     this.price_filters[filter_name] = {
