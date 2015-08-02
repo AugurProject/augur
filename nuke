@@ -1,6 +1,9 @@
 #!/bin/bash
 # nukes the site from orbit (it's the only way to be sure)
 
+set -e
+trap "exit" INT
+
 # nuke
 rm -Rf node_modules
 if [ -f "app/app.js" ]; then
