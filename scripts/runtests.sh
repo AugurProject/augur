@@ -2,7 +2,6 @@
 # augur.js test suite
 # @author Jack Peterson (jack@tinybike.net)
 
-# set -e
 trap "exit" INT
 
 TEAL='\033[0;36m'

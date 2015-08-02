@@ -307,9 +307,10 @@ augur.connect = function (rpcinfo, chain) {
             }
             if (rpcinfo.chain) chain = rpcinfo.chain;
         } else if (rpcinfo.constructor === String) {
-            try {
+            if (rpcinfo.indexOf("://") === -1 && rpcinfo.indexOf(':') === -1) {
+                rpc_obj.host = rpcinfo;
+            } else if (rpcinfo.indexOf("://") > -1) {
                 rpc = rpcinfo.split("://");
-                console.assert(rpc.length === 2);
                 rpc_obj.protocol = rpc[0];
                 rpc = rpc[1].split(':');
                 if (rpc.length === 2) {
@@ -318,21 +319,21 @@ augur.connect = function (rpcinfo, chain) {
                 } else {
                     rpc_obj.host = rpc;
                 }
-            } catch (e) {
-                try {
-                    rpc = rpcinfo.split(':');
-                    if (rpc.length === 2) {
-                        rpc_obj.host = rpc[0];
-                        rpc_obj.port = rpc[1];
-                    } else {
-                        rpc_obj.host = rpc;
-                    }
-                } catch (exc) {
-                    return default_rpc();
+            } else if (rpcinfo.indexOf(':') > -1) {
+                rpc = rpcinfo.split(':');
+                if (rpc.length === 2) {
+                    rpc_obj.host = rpc[0];
+                    rpc_obj.port = rpc[1];
+                } else {
+                    rpc_obj.host = rpc;
                 }
+            } else {
+                return default_rpc();
             }
         }
+        log("\n\nobj:", rpc_obj);
         this.options.RPC = utils.urlstring(rpc_obj);
+        log("this.options.rpc:", this.options.RPC);
     } else {
         this.options.RPC = DEFAULT_RPC;
     }
