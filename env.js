@@ -17,7 +17,7 @@ GLOBAL.web3 = require("web3");
 GLOBAL.Augur = require("./src");
 GLOBAL.contracts = require("./src/contracts");
 GLOBAL.constants = require("./src/constants");
-GLOBAL.utilities = require("./src/utilities");
+GLOBAL.utils = require("./src/utilities");
 GLOBAL.numeric = require("./src/numeric");
 GLOBAL.RPC = require("./src/rpc");
 GLOBAL.Tx = require("./src/tx");
@@ -34,7 +34,7 @@ Augur.connect();
 
 web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"));
 
-GLOBAL.accounts = utilities.get_test_accounts(Augur, constants.MAX_TEST_ACCOUNTS);
+GLOBAL.accounts = utils.get_test_accounts(Augur, constants.MAX_TEST_ACCOUNTS);
 GLOBAL.c = Augur.coinbase;
 
 GLOBAL.balance = function (account, branch) {

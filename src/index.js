@@ -55,6 +55,7 @@ var augur = {
     options: {},
 
     abi: require("./abi"),
+    db: require("./db"),
     utils: utils,
     numeric: numeric,
 
@@ -120,7 +121,7 @@ augur.web3 = function (command, params, f) {
     return this.rpc.json_rpc(this.rpc.postdata(command, params, "web3_"), f);
 };
 
-augur.db = function (command, params, f) {
+augur.leveldb = function (command, params, f) {
     return this.rpc.json_rpc(this.rpc.postdata(command, params, "db_"), f);
 };
 
@@ -331,9 +332,7 @@ augur.connect = function (rpcinfo, chain) {
                 return default_rpc();
             }
         }
-        log("\n\nobj:", rpc_obj);
         this.options.RPC = utils.urlstring(rpc_obj);
-        log("this.options.rpc:", this.options.RPC);
     } else {
         this.options.RPC = DEFAULT_RPC;
     }
@@ -456,6 +455,7 @@ augur.invoke = function (itx, f) {
                     to: tx.to,
                     data: data_abi
                 };
+                if (tx.value) packaged.value = tx.value;
                 if (tx.returns) packaged.returns = tx.returns;
                 invocation = (tx.send) ? this.sendTx : this.call;
                 invoked = true;
@@ -508,6 +508,7 @@ augur.batch = function (txlist, f) {
                     to: tx.to,
                     data: data_abi
                 };
+                if (tx.value) packaged.value = tx.value;
                 if (tx.returns) packaged.returns = tx.returns;
                 invocation = (tx.send) ? "sendTransaction" : "call";
                 rpclist[i] = this.rpc.postdata(invocation, packaged);
@@ -705,6 +706,7 @@ augur.confirmTx = function (tx, txhash, returns, onSent, onSuccess, onFailed) {
                     self.call({
                         from: sent.from || self.coinbase,
                         to: sent.to || tx.to,
+                        value: sent.value || tx.value,
                         data: sent.input
                     }, function (callReturn) {
                         if (callReturn) {

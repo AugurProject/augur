@@ -14,7 +14,6 @@ var BigNumber = require("bignumber.js");
 var EthUtil = require("ethereumjs-util");
 var EthTx = require("ethereumjs-tx");
 var eccrypto = require("eccrypto");
-var Firebase = require("firebase");
 var errors = require("./errors");
 var constants = require("./constants");
 var utilities = require("./utilities");
@@ -28,109 +27,6 @@ module.exports = function (augur) {
 
         // The account object is set when logged in
         account: {},
-
-        // Read and write methods for Firebase
-        db: {
-
-            put: function (handle, data, callback) {
-                var url = constants.FIREBASE_URL + "/" + handle;
-                try {
-                    new Firebase(url).set(data);
-                    if (callback) callback(url);
-                } catch (e) {
-                    if (callback) {
-                        callback(errors.DB_WRITE_FAILED);
-                    } else {
-                        return errors.DB_WRITE_FAILED;
-                    }
-                }
-            },
-
-            get: function (handle, callback) {
-                try {
-                    if (handle !== undefined && callback && callback.constructor === Function) {
-                        var ref = new Firebase(constants.FIREBASE_URL + "/" + handle);
-                        ref.once("value", function (data) {
-                            var account = data.val();
-                            if (account && account.handle) {
-                                callback(account);
-                            } else {
-                                callback(errors.DB_READ_FAILED);
-                            }
-                        });
-                    } else {
-                        if (callback) {
-                            callback(errors.DB_READ_FAILED);
-                        } else {
-                            return errors.DB_READ_FAILED;
-                        }
-                    }
-                } catch (e) {
-                    if (callback) {
-                        callback(errors.DB_READ_FAILED);
-                    } else {
-                        return errors.DB_READ_FAILED;
-                    }
-                }
-            }
-        },
-
-        // Read and write methods for Ethereum's LevelDB (deprecated)
-        leveldb: {
-
-            put: function (handle, data, f) {
-                try {
-                    return augur.rpc.json_rpc(augur.rpc.postdata(
-                        "putString",
-                        ["accounts", handle, JSON.stringify(data)],
-                        "db_"
-                    ), f);
-                } catch (e) {
-                    if (f) {
-                        f(errors.DB_WRITE_FAILED);
-                    } else {
-                        return errors.DB_WRITE_FAILED;
-                    }
-                }
-            },
-
-            get: function (handle, f) {
-                try {
-                    if (f) {
-                        augur.rpc.json_rpc(augur.rpc.postdata(
-                            "getString",
-                            ["accounts", handle],
-                            "db_"
-                        ), function (account) {
-                            if (!account.error) {
-                                f(JSON.parse(account));
-                            } else {
-                                // account does not exist
-                                f(errors.BAD_CREDENTIALS);
-                            }
-                        });
-                    } else {
-                        var account = augur.rpc.json_rpc(augur.rpc.postdata(
-                            "getString",
-                            ["accounts", handle],
-                            "db_"
-                        ));
-                        if (!account.error) {
-                            return JSON.parse(account);
-                        } else {
-                            // account does not exist
-                            return errors.BAD_CREDENTIALS;
-                        }
-                    }
-                } catch (e) {
-                    if (f) {
-                        f(errors.DB_READ_FAILED);
-                    } else {
-                        return errors.DB_READ_FAILED;
-                    }
-                }
-            }
-        },
 
         encrypt: function (plaintext, key, iv) {
             var cipher, ciphertext;
@@ -153,7 +49,7 @@ module.exports = function (augur) {
 
         register: function (handle, password, callback) {
             var self = this;
-            this.db.get(handle, function (record) {
+            augur.db.get(handle, function (record) {
                 if (record.error) {
 
                     // generate private key, derive public key and address
@@ -206,7 +102,7 @@ module.exports = function (augur) {
             var self = this;
 
             // retrieve account info from database
-            this.db.get(handle, function (storedInfo) {
+            augur.db.get(handle, function (storedInfo) {
                 if (!storedInfo.error) {
 
                     // use the password to decrypt the private key
@@ -263,7 +159,7 @@ module.exports = function (augur) {
         // sendEther: function (toHandle, value, onSent, onSuccess, onFailed) {
         //     var self = this;
         //     if (this.account.address) {
-        //         this.db.get(toHandle, function (toAccount) {
+        //         augur.db.get(toHandle, function (toAccount) {
         //             if (toAccount && toAccount.address) {
         //                 self.transact({
         //                     value: value,
@@ -280,7 +176,7 @@ module.exports = function (augur) {
         // sendCash: function (toHandle, value, onSent, onSuccess, onFailed) {
         //     var self = this;
         //     if (this.account.address) {
-        //         this.db.get(toHandle, function (toAccount) {
+        //         augur.db.get(toHandle, function (toAccount) {
         //             if (!toAccount.error) {
         //                 var tx = utilities.copy(augur.tx.sendCash);
         //                 tx.params = [toAccount.address, numeric.fix(value)];
@@ -296,7 +192,7 @@ module.exports = function (augur) {
         // sendReputation: function (toHandle, value, onSent, onSuccess, onFailed) {
         //     var self = this;
         //     if (this.account.address) {
-        //         this.db.get(toHandle, function (toAccount) {
+        //         augur.db.get(toHandle, function (toAccount) {
         //             if (!toAccount.error) {
         //                 var tx = utilities.copy(augur.tx.sendReputation);
         //                 tx.params = [toAccount.address, numeric.fix(value)];
@@ -344,9 +240,9 @@ module.exports = function (augur) {
                         });
 
                         // write the incremented nonce to the database
-                        this.db.get(this.account.handle, function (stored) {
+                        augur.db.get(this.account.handle, function (stored) {
                             stored.nonce = this.account.nonce;
-                            this.db.put(this.account.handle, stored);
+                            augur.db.put(this.account.handle, stored);
                         }.bind(this));
 
                         // sign, validate, and send the transaction

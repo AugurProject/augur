@@ -37,13 +37,13 @@ describe("Ethereum JSON-RPC", function () {
     });
     describe("db_putString", function () {
         it("should return true", function () {
-            assert.strictEqual(Augur.db("putString", ["augur_test_DB", "boomkey", "boom!"]), true);
+            assert.strictEqual(Augur.leveldb("putString", ["augur_test_DB", "boomkey", "boom!"]), true);
         });
     });
     describe("db_getString", function () {
         it("should fetch 'boom!' using key 'boomkey'", function () {
-            Augur.db("putString", ["augur_test_DB", "boomkey", "boom!"]);
-            assert.strictEqual(Augur.db("getString", ["augur_test_DB", "boomkey"]), "boom!");
+            Augur.leveldb("putString", ["augur_test_DB", "boomkey", "boom!"]);
+            assert.strictEqual(Augur.leveldb("getString", ["augur_test_DB", "boomkey"]), "boom!");
         });
     });
     describe("gasPrice", function () {

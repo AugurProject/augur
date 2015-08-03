@@ -22,7 +22,7 @@ require('it-each')({ testPerIteration: true });
 var branch = Augur.branches.dev;
 var outcome = "1.0";
 
-var eventsMarkets = fs.readFileSync("../../events.dat").toString().split('\n');
+var eventsMarkets = fs.readFileSync("../../data/events.dat").toString().split('\n');
 
 // log("\n  Search for events");
 var events, period;

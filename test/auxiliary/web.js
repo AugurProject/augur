@@ -127,57 +127,6 @@ describe("Transactions", function () {
 
 });
 
-describe("Database", function () {
-
-    var account = {
-        handle: "tinybike",
-        privateKey: "deadbeef",
-        iv: "zombeef",
-        nonce: 0
-    };
-
-    describe("Firebase", function () {
-
-        it("save account", function (done) {
-            Augur.web.db.put(account.handle, account, function (url) {
-                assert.strictEqual(url, constants.FIREBASE_URL + "/" + account.handle);
-                done();
-            });
-        });
-
-        it("retrieve account", function (done) {
-            Augur.web.db.get(account.handle, function (retrieved_account) {
-                assert.strictEqual(account.handle, retrieved_account.handle);
-                assert.strictEqual(account.privateKey, retrieved_account.privateKey);
-                assert.strictEqual(account.iv, retrieved_account.iv);
-                assert.strictEqual(account.nonce, retrieved_account.nonce);
-                done();
-            });
-        });
-
-    });
-
-    describe("Ethereum LevelDB", function () {
-
-        it("save account", function (done) {
-            Augur.web.leveldb.put(account.handle, account);
-            done();
-        });
-
-        it("retrieve account", function (done) {
-            Augur.web.leveldb.get(account.handle, function (retrieved_account) {
-                assert.strictEqual(account.handle, retrieved_account.handle);
-                assert.strictEqual(account.privateKey, retrieved_account.privateKey);
-                assert.strictEqual(account.iv, retrieved_account.iv);
-                assert.strictEqual(account.nonce, retrieved_account.nonce);
-                done();
-            });
-        });
-
-    });
-
-});
-
 describe("Accounts", function () {
 
     describe("Register", function () {
