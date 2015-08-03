@@ -100,13 +100,11 @@ var AugurApp = React.createClass({
       accountStatus = (
         <p className='navbar-text'>
           <span className="account">{ this.state.config.currentAccount }</span>
-          <a className="signout" onClick={ this.handleSignOut }>| sign out</a>
         </p>
       );
     } else {
        accountStatus = (
         <p className='navbar-text'>
-          <a className="signin" onClick={ this.handleSignIn }>sign in</a>
         </p>
       );     
     }
