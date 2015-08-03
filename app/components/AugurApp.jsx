@@ -104,8 +104,7 @@ var AugurApp = React.createClass({
       );
     } else {
        accountStatus = (
-        <p className='navbar-text'>
-        </p>
+        <p className='navbar-text'></p>
       );     
     }
 
