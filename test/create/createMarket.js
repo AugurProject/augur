@@ -16,14 +16,13 @@ var log = console.log;
 require('it-each')({ testPerIteration: true });
 
 var EXPIRING = false;
-var events = [
-    ["Will the Sun turn into a red giant and engulf the Earth by the end of 2015?", utils.date_to_block(Augur, "1-1-2016")],
-    ["Will Rand Paul win the 2016 U.S. Presidential Election?", utils.date_to_block(Augur, "1-2-2017")],
-    ["Will it rain in New York City on November 12, 2016?", utils.date_to_block(Augur, "11-13-2016")],
-    ["Will the Larsen B ice shelf collapse by November 1, 2016?", utils.date_to_block(Augur, "11-2-2016")]
-];
 
 describe("functions/createMarket", function () {
+
+    var events = [
+        ["Will the Sun turn into a red giant and engulf the Earth by the end of 2015?", utils.date_to_block(Augur, "1-1-2016")],
+        ["Will Rand Paul win the 2016 U.S. Presidential Election?", utils.date_to_block(Augur, "1-2-2017")],
+    ];
 
     it.each(
         events,
@@ -117,6 +116,11 @@ describe("functions/createMarket", function () {
 
         }
     );
+    
+    var events = [
+        ["Will it rain in New York City on November 12, 2016?", utils.date_to_block(Augur, "11-13-2016")],
+        ["Will the Larsen B ice shelf collapse by November 1, 2016?", utils.date_to_block(Augur, "11-2-2016")]
+    ];
 
     it.each(
         events,

@@ -133,14 +133,14 @@ describe("Accounts", function () {
 
         it("register account 1: " + handle + " / " + password, function (done) {
             this.timeout(constants.TIMEOUT);
-            Augur.web.db.get(handle, function (record) {
+            Augur.db.get(handle, function (record) {
                 assert(record.error);
                 assert.strictEqual(record.error, 99);
                 Augur.web.register(handle, password, function (result) {
                     assert(result.privateKey);
                     assert(result.address);
                     assert(!result.error);
-                    Augur.web.db.get(handle, function (rec) {
+                    Augur.db.get(handle, function (rec) {
                         assert(!rec.error);
                         done();
                     });
@@ -150,13 +150,13 @@ describe("Accounts", function () {
 
         it("register account 2: " + handle2 + " / " + password2, function (done) {
             this.timeout(constants.TIMEOUT);
-            Augur.web.db.get(handle2, function (record) {
+            Augur.db.get(handle2, function (record) {
                 assert(record.error);
                 Augur.web.register(handle2, password2, function (result) {
                     assert(result.privateKey);
                     assert(result.address);
                     assert(!result.error);
-                    Augur.web.db.get(handle2, function (rec) {
+                    Augur.db.get(handle2, function (rec) {
                         assert(!rec.error);
                         done();
                     });
@@ -170,7 +170,7 @@ describe("Accounts", function () {
                 assert(!result.privateKey);
                 assert(!result.address);
                 assert(result.error);
-                Augur.web.db.get(handle, function (record) {
+                Augur.db.get(handle, function (record) {
                     assert(!record.error);
                     done();
                 });
@@ -247,7 +247,7 @@ describe("Accounts", function () {
 
     //     it("coinbase -> account 1 [" + amount + "]", function (done) {
     //         this.timeout(constants.TIMEOUT);
-    //         Augur.web.db.get(handle, function (toAccount) {
+    //         Augur.db.get(handle, function (toAccount) {
     //             Augur.sendEther(
     //                 toAccount.address,
     //                 amount,
@@ -296,7 +296,7 @@ describe("Accounts", function () {
 
     //     it("coinbase -> account 1 [" + amount + "]", function (done) {
     //         this.timeout(constants.TIMEOUT);
-    //         Augur.web.db.get(handle, function (toAccount) {
+    //         Augur.db.get(handle, function (toAccount) {
     //             Augur.sendCash(
     //                 toAccount.address,
     //                 amount,
@@ -344,7 +344,7 @@ describe("Accounts", function () {
 
     //     it("coinbase -> account 1 [" + amount + "]", function (done) {
     //         this.timeout(constants.TIMEOUT);
-    //         Augur.web.db.get(handle, function (toAccount) {
+    //         Augur.db.get(handle, function (toAccount) {
     //             Augur.sendReputation(
     //                 Augur.branches.dev,
     //                 toAccount.address,

@@ -70,25 +70,27 @@ module.exports = function (augur) {
         },
 
         poll_eth_listener: function (filter_name, onMessage) {
-            var filterId = this.price_filters[filter_name].filterId;
-            this.eth_getFilterChanges(filterId, function (message) {
-                if (message) {
-                    var num_messages = message.length;
-                    log(message);
-                    if (num_messages) {
-                        for (var i = 0; i < num_messages; ++i) {
-                            var data_array = this.parse_array(message[i].data);
-                            var unfix_type = (this.options.BigNumberOnly) ? "BigNumber" : "string";
-                            onMessage({
-                                origin: data_array[0],
-                                marketId: data_array[1],
-                                outcome: numeric.bignum(data_array[2], unfix_type),
-                                price: numeric.unfix(data_array[3], unfix_type)
-                            });
+            if (this.price_filters[filter_name]) {
+                var filterId = this.price_filters[filter_name].filterId;
+                this.eth_getFilterChanges(filterId, function (message) {
+                    if (message) {
+                        var num_messages = message.length;
+                        log(message);
+                        if (num_messages) {
+                            for (var i = 0; i < num_messages; ++i) {
+                                var data_array = this.parse_array(message[i].data);
+                                var unfix_type = (this.options.BigNumberOnly) ? "BigNumber" : "string";
+                                onMessage({
+                                    origin: data_array[0],
+                                    marketId: data_array[1],
+                                    outcome: numeric.bignum(data_array[2], unfix_type),
+                                    price: numeric.unfix(data_array[3], unfix_type)
+                                });
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
         },
 
         start_eth_listener: function (filter_name, callback) {

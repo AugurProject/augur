@@ -70,7 +70,7 @@ module.exports = function (augur) {
                                     var encryptedPrivKey = self.encrypt(privKey, derivedKey, iv);
 
                                     // store encrypted key & IV, indexed by handle
-                                    self.db.put(handle, {
+                                    augur.db.put(handle, {
                                         handle: handle,
                                         privateKey: encryptedPrivKey,
                                         iv: iv.toString("base64"),

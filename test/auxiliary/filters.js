@@ -8,8 +8,8 @@
 var assert = require("chai").assert;
 var chalk = require("chalk");
 var constants = require("../../src/constants");
-var utilities = require("../../src/utilities");
-var Augur = utilities.setup(require("../../src"), process.argv.slice(2));
+var utils = require("../../src/utilities");
+var Augur = utils.setup(require("../../src"), process.argv.slice(2));
 var log = console.log;
 
 var branch = Augur.branches.dev;
