@@ -164,7 +164,6 @@ describe("functions/createMarket", function () {
                     var initialLiquidity = 1000 + Math.round(Math.random() * 1000);
                     var tradingFee = "0.02";
                     var events = [ r.callReturn ];
-                    var blockNumber = Augur.blockNumber();
                     var tx = utils.copy(Augur.tx.createMarket);
                     tx.params = [
                         branch,
@@ -172,8 +171,7 @@ describe("functions/createMarket", function () {
                         numeric.fix(alpha, "hex"),
                         numeric.fix(initialLiquidity, "hex"),
                         numeric.fix(tradingFee, "hex"),
-                        events,
-                        blockNumber
+                        events
                     ];
                     tx.send = false;
 
@@ -258,28 +256,25 @@ describe("functions/createMarket", function () {
 
                                                     },
                                                     onFailed: function (t) {
-                                                        t.name = t.error; throw t;
-                                                        next();
+                                                        next(t);
                                                     }
                                                 }); // markets.initializeMarket
 
                                             },
                                             onFailed: function (s) {
-                                                s.name = s.error; throw s;
-                                                next();
+                                                next(s);
                                             }
                                         }); // branches.addMarket
+
                                     },
                                     onFailed: function (s) {
-                                        s.name = s.error; throw s;
-                                        next();
+                                        next(s);
                                     }
                                 }); // info.setInfo
 
                             },
                             onFailed: function (s) {
-                                s.name = s.error; throw s;
-                                next();
+                                next(s);
                             }
                         }); // markets.initialLiquiditySetup
 
@@ -287,8 +282,7 @@ describe("functions/createMarket", function () {
 
                 },
                 onFailed: function (r) {
-                    r.name = r.error; throw r;
-                    next();
+                    next(r);
                 }
             }); // createEvent.createEvent
 
