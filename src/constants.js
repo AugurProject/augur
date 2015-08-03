@@ -22,10 +22,10 @@ var constants = {
     TX_POLL_MAX: 12,
 
     // comment polling interval (in milliseconds)
-    COMMENT_POLL_INTERVAL: 10000,
+    COMMENT_POLL_INTERVAL: 12000,
 
     // transaction polling interval
-    TX_POLL_INTERVAL: 6000,
+    TX_POLL_INTERVAL: 12000,
 
     SECONDS_PER_BLOCK: 12,
 

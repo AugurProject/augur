@@ -80,12 +80,8 @@ options.GETH_FLAGS = [
     "--password", path.join(options.DATADIR, ".password")
 ];
 
-log("Create", chalk.magenta("geth"), "log file:",
-    chalk.green(path.join(__dirname, options.LOG)));
-var geth_log = fs.createWriteStream(
-    path.join(__dirname, options.LOG),
-    {flags : 'w'}
-);
+log("Create", chalk.magenta("geth"), "log file:", chalk.green(options.LOG));
+var geth_log = fs.createWriteStream(options.LOG, {flags : 'w'});
 
 function kill_geth(geth) {
     log(chalk.gray("Shut down ") + chalk.magenta("geth") + chalk.gray("..."));
