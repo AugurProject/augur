@@ -864,12 +864,14 @@ module.exports = function (contracts) {
             to: contracts.buyAndSellShares,
             method: "buyShares",
             signature: "iiiiii",
+            returns: "unfix",
             send: true
         },
         sellShares: {
             to: contracts.buyAndSellShares,
             method: "sellShares",
             signature: "iiiiii",
+            returns: "unfix",
             send: true
         },
 

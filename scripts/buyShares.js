@@ -11,12 +11,11 @@ var path = require("path");
 var chalk = require("chalk");
 var longjohn = require("longjohn");
 var numeric = require("../src/numeric");
-var Augur = require("../src");
+var constants = require("../src/constants");
+var utils = require("../src/utilities");
 var log = console.log;
 
-// var gospel = require("path").join(__dirname, "gospel.json");
-// Augur.contracts = JSON.parse(require("fs").readFileSync(gospel));
-Augur.connect();
+var Augur = utils.setup(require("../src"), process.argv.slice(2));
 
 longjohn.async_trace_limit = 25;
 longjohn.empty_frame = "";
@@ -33,7 +32,7 @@ if (args[0]) {
 }
 var events = Augur.getMarketEvents(market_id);
 var event_id = events[0];
-var outcome = "1.0";
+var outcome = "1";
 var price = Augur.price(market_id, outcome);
 var cost = Augur.getSimulatedBuy(market_id, outcome, amount);
 var initial_cash = Augur.getCashBalance(Augur.coinbase);
@@ -74,6 +73,7 @@ Augur.buyShares({
         log("ETHER:  ", chalk.green(final_ether));
     },
     onFailed: function (r) {
-        throw new Error(r);
+        // throw new Error(r);
+        log("failed:",r);
     }
 });
