@@ -13,7 +13,7 @@ if ((typeof module !== "undefined") && process && !process.browser) {
 var BigNumber = require("bignumber.js");
 var EthUtil = require("ethereumjs-util");
 var EthTx = require("ethereumjs-tx");
-var eccrypto = require("eccrypto");
+var EC = require("elliptic").ec;
 var errors = require("./errors");
 var constants = require("./constants");
 var utilities = require("./utilities");
@@ -27,6 +27,8 @@ module.exports = function (augur) {
 
         // The account object is set when logged in
         account: {},
+
+        ecdsa: new EC("secp256k1"),
 
         encrypt: function (plaintext, key, iv) {
             var cipher, ciphertext;
@@ -43,7 +45,7 @@ module.exports = function (augur) {
         },
 
         privateKeyToAddress: function (privateKey) {
-            var pubKey = eccrypto.getPublic(privateKey);
+            var pubKey = new Buffer(this.ecdsa.keyFromPrivate(privateKey).getPublic("arr"));
             return "0x" + EthUtil.pubToAddress(pubKey).toString("hex");
         },
 

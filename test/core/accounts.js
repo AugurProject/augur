@@ -10,13 +10,14 @@ var assert = require("chai").assert;
 var chalk = require("chalk");
 var EthTx = require("ethereumjs-tx");
 var EthUtil = require("ethereumjs-util");
-var eccrypto = require("eccrypto");
+var EC = require("elliptic").ec;
 var constants = require("../../src/constants");
 var utilities = require("../../src/utilities");
 var Augur = utilities.setup(require("../../src"), process.argv.slice(2));
 var log = console.log;
 
 // create private key, get public key and address
+var ecdsa = new EC("secp256k1");
 var privateKey = crypto.randomBytes(32);
 
 // generate random handles and passwords
@@ -26,7 +27,7 @@ var handle2 = utilities.sha256(new Date().toString()).slice(10);
 var password2 = utilities.sha256(Math.random().toString(36).substring(4)).slice(10);
 
 describe("Crypto", function () {
-    var publicKey = eccrypto.getPublic(privateKey);
+    var publicKey = new Buffer(ecdsa.keyFromPrivate(privateKey).getPublic("arr"));
     var address = EthUtil.pubToAddress(publicKey).toString("hex");
 
     // user specified handle and password

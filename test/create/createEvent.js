@@ -20,10 +20,10 @@ require('it-each')({ testPerIteration: true });
 var minValue = 0;
 var maxValue = 1;
 var numOutcomes = 2;
-var num_events = 1;
+var num_events = 4;
 var branch = Augur.branches.dev;
 var period = Augur.getVotePeriod(branch);
-var exp_date = Augur.blockNumber() + 250;
+var exp_date = Augur.blockNumber() + 2500;
 
 var datafile = path.join(__dirname, "..", "..", "data", "events.dat");
 fs.writeFileSync(datafile, "");
@@ -42,7 +42,7 @@ describe("Creating " + num_events + " events and markets", function () {
             maxValue: maxValue,
             numOutcomes: numOutcomes,
             onSent: function (r) {
-                log(chalk.green("    ✓ ") + chalk.gray("event ID: " + r.callReturn));
+                // log(chalk.green("    ✓ ") + chalk.gray("event ID: " + r.callReturn));
             },
             onSuccess: function (r) {
                 var alpha = "0.0079";
@@ -60,7 +60,7 @@ describe("Creating " + num_events + " events and markets", function () {
                     tradingFee: tradingFee,
                     events: events,
                     onSent: function (res) {
-                        log(chalk.green("    ✓ ") + chalk.gray("market ID: " + res.callReturn));
+                        // log(chalk.green("    ✓ ") + chalk.gray("market ID: " + res.callReturn));
                     },
                     onSuccess: function (res) {
                         if (element < num_events - 1) {
