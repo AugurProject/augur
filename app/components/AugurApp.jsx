@@ -314,15 +314,7 @@ var ErrorModal = React.createClass({
     } else if (this.state.isLoading) {
 
       // augur client is loading
-      return (
-        <Modal {...this.props} bsSize='small' show={ this.state.isModalOpen } onHide={ this.handleToggle } backdrop='static'>
-          <div className="modal-body clearfix">
-              <h4>Ethereum loading</h4>
-              { this.state.message }
-              { this.state.progressBar }
-          </div>
-        </Modal>
-      );
+      return <span />;
     }
   }
 });
