@@ -6,6 +6,7 @@
 "use strict";
 
 var fs = require("fs");
+var path = require("path");
 var assert = require("chai").assert;
 var _ = require("lodash");
 var chalk = require("chalk");
@@ -24,12 +25,15 @@ var branch = Augur.branches.dev;
 var period = Augur.getVotePeriod(branch);
 var exp_date = Augur.blockNumber() + 250;
 
+var datafile = path.join(__dirname, "..", "..", "data", "events.dat");
+
 describe("Creating " + num_events + " events and markets", function () {
     var events = [];
-    fs.writeFileSync("../../data/events.dat", "");
+    fs.writeFileSync(datafile, "");
     it.each(_.range(0, num_events), "create event/market %s", ['element'], function (element, next) {
         this.timeout(constants.TIMEOUT);
         var event_description = Math.random().toString(36).substring(4);
+
         Augur.createEvent({
             branchId: branch,
             description: event_description,
@@ -47,7 +51,8 @@ describe("Creating " + num_events + " events and markets", function () {
                 var events = [ r.callReturn ];
                 var market_description = event_description;
                 var numOutcomes = 2;
-                var marketObj = {
+
+                Augur.createMarket({
                     branchId: Augur.branches.dev,
                     description: market_description,
                     alpha: alpha,
@@ -59,23 +64,22 @@ describe("Creating " + num_events + " events and markets", function () {
                     },
                     onSuccess: function (res) {
                         if (element < num_events - 1) {
-                            fs.appendFile("../../data/events.dat", events[0] + "," + r.callReturn + "\n");
+                            fs.appendFile(datafile, events[0] + "," + res.callReturn + "\n");
                         } else {
-                            fs.appendFile("../../data/events.dat", events[0] + "," + r.callReturn);
+                            fs.appendFile(datafile, events[0] + "," + res.callReturn);
                         }
                         next();
                     },
-                    onFailed: function (r) {
-                        r.name = r.error; throw r;
-                        next();
+                    onFailed: function (res) {
+                        next(res);
                     }
-                };
-                Augur.createMarket(marketObj);
+                }); // createMarket
+            
             },
             onFailed: function (r) {
-                r.name = r.error; throw r;
-                next();
+                next(r);
             }
-        });
+        }); // createEvent
+
     });
 });

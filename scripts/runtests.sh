@@ -19,7 +19,7 @@ runtest()
     fi
 }
 
-reporter="progress"
+reporter="spec"
 gospel=''
 coverage=0
 offline=0

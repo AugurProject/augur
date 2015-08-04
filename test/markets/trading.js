@@ -6,6 +6,7 @@
 "use strict";
 
 var fs = require("fs");
+var path = require("path");
 var assert = require("chai").assert;
 var longjohn = require("longjohn");
 var chalk = require("chalk");
@@ -22,15 +23,17 @@ require('it-each')({ testPerIteration: true });
 var branch = Augur.branches.dev;
 var outcome = "1.0";
 
-var eventsMarkets = fs.readFileSync("../../data/events.dat").toString().split('\n');
+var datafile = path.join(__dirname, "..", "..", "data", "events.dat");
+var eventsMarkets = fs.readFileSync(datafile).toString().split('\n');
 
-// log("\n  Search for events");
+log("\n  Search for events");
 var events, period;
 for (var i = 0; i < 200; ++i) {
     events = Augur.getEvents(branch, i);
+    log(events);
     if (events && events.length && events.length > 1) {
-        // log(chalk.green("   ✓ ") + chalk.gray("Found " + events.length) +
-        //     chalk.gray(" events in vote period " + i));
+        log(chalk.green("   ✓ ") + chalk.gray("Found " + events.length) +
+            chalk.gray(" events in vote period " + i));
         period = i;
         break;
     }
@@ -45,11 +48,12 @@ describe("Search for events", function () {
 
 if (events.length) {
     var markets = new Array(events.length);
-    // log("\n  Lookup markets");
+    log("\n  Lookup markets");
     var market, found;
     for (var i = 0; i < eventsMarkets.length; ++i) {
         found = false;
         market = eventsMarkets[i].split(',');
+        log("market", i, market);
         for (var j = 0; j < events.length; ++j) {
             if (market[0] === events[j]) {
                 markets[i] = market[1];
@@ -57,12 +61,12 @@ if (events.length) {
                 break;
             }
         }
-        // if (found) {
-        //     log(chalk.green("   ✓ ") + chalk.gray("Found ") +
-        //         chalk.gray("market for event " + events[j]));
-        // } else {
-        //     log(chalk.red("Found market for event " + events[j]));
-        // }
+        if (found) {
+            log(chalk.green("   ✓ ") + chalk.gray("Found ") +
+                chalk.gray("market for event " + events[j]));
+        } else {
+            log(chalk.red("Did not find market for event " + events[j]));
+        }
     }
 
     describe("Market/event lookup", function () {
