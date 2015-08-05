@@ -16,7 +16,7 @@ var assert = require("chai").assert;
 var _ = require("lodash");
 var rm = require("rimraf");
 var chalk = require("chalk");
-var Mocha = require("mocha");
+var mocha = new (require("mocha"))();
 var mod_getopt = require("posix-getopt");
 var Augur = require(path.join(__dirname, "..", "src"));
 var constants = require(path.join(__dirname, "..", "src", "constants"));
@@ -26,7 +26,7 @@ var log = console.log;
 
 var options = {
     DEBUG: false,
-    MOCHA_REPORTER: "progress",
+    MOCHA_REPORTER: "spec",
     NETWORK_ID: "10101",
     GENESIS_BLOCK: path.join(__dirname, "..", "data", "genesis-10101.json"),
     PEER_PORT: 30303,
@@ -36,8 +36,7 @@ var options = {
     GOSPEL: path.join(__dirname, "..", "data", "gospel.json"),
     CUSTOM_GOSPEL: false,
     LOG: path.join(__dirname, "..", "data", "geth.log"),
-    // GETH: path.join(process.env.HOME, "src", "go-ethereum", "build", "bin", "geth"),
-    GETH: "geth",
+    GETH: process.env.GETH || "geth",
     SPAWN_GETH: true,
     SUITE: []
 };
@@ -76,6 +75,7 @@ options.GETH_FLAGS = [
     "--maxpeers", "64",
     "--networkid", options.NETWORK_ID,
     "--datadir", options.DATADIR,
+    "--olympic",
     // "--genesis", options.GENESIS_BLOCK,
     "--password", path.join(options.DATADIR, ".password")
 ];
@@ -139,11 +139,8 @@ function mine_minimum_ether(geth, account, next) {
     }
 }
 
-function init(geth, account, callback, next, count) {
-    function retry() {
-        init(geth, account, callback, next, ++count);
-    }
-    count = count || 0;
+function connect_augur() {
+    Augur.options.BigNumberOnly = false;
     if (options.CUSTOM_GOSPEL) {
         Augur = utils.setup(
             Augur,
@@ -157,6 +154,14 @@ function init(geth, account, callback, next, count) {
             { port: options.RPC_PORT }
         );
     }
+}
+
+function init(geth, account, callback, next, count) {
+    function retry() {
+        init(geth, account, callback, next, ++count);
+    }
+    connect_augur();
+    count = count || 0;
     if (Augur.connected()) {
         accounts = utils.get_test_accounts(Augur, constants.MAX_TEST_ACCOUNTS);
         verified_accounts = true;
@@ -201,7 +206,16 @@ function init(geth, account, callback, next, count) {
     }
 }
 
+function reset_tests(suite) {
+    suite.tests.forEach(function (t) {
+        delete t.state;
+        t.timedOut = false;
+    });
+    suite.suites.forEach(reset_tests);
+}
+
 function faucets(geth) {
+    connect_augur();
     var branch = Augur.branches.dev;
     var coinbase = Augur.coinbase;
     var balance = {
@@ -212,48 +226,12 @@ function faucets(geth) {
         reputation: !balance.reputation || balance.reputation.lt(new BigNumber(47)),
         cash: !balance.cash || balance.cash.lt(new BigNumber(5))
     };
-    if (needs.reputation || needs.cash) {
-        log("Faucets:");
-        if (needs.reputation) {
-            Augur.reputationFaucet(
-                branch,
-                function (r) {
-                    // sent
-                },
-                function (r) {
-                    // success
-                    assert(r.txHash);
-                    assert.strictEqual(r.callReturn, "1");
-                    log(chalk.green("  ✓"), chalk.gray("Reputation faucet"));
-                },
-                function (r) {
-                    // failed
-                    log("reputationFaucet failed:", r);
-                }
-            );
-        }
-        if (needs.cash) {
-            Augur.cashFaucet(
-                function (r) {
-                    // sent
-                },
-                function (r) {
-                    // success
-                    assert(r.txHash);
-                    assert.strictEqual(r.callReturn, "1");
-                    log(chalk.green("  ✓"), chalk.gray("Cash faucet"));
-                },
-                function (r) {
-                    // failed
-                    log("cashFaucet failed:", r);
-                }
-            );
-        }
-    }
-    setTimeout(function () {
-        var cash_balance = Augur.getCashBalance(Augur.coinbase);
-        var rep_balance = Augur.getRepBalance(Augur.branches.dev, Augur.coinbase);
-        var ether_balance = numeric.bignum(Augur.balance(Augur.coinbase)).dividedBy(constants.ETHER).toFixed();
+    reset_tests(mocha.suite);
+    mocha.addFile(path.join(__dirname, "..", "test", "core", "faucets.js"));
+    mocha.reporter(options.MOCHA_REPORTER).run(function (failures) {
+        var cash_balance = Augur.getCashBalance(coinbase);
+        var rep_balance = Augur.getRepBalance(branch, coinbase);
+        var ether_balance = numeric.bignum(Augur.balance(coinbase)).dividedBy(constants.ETHER).toFixed();
         log(chalk.cyan("\nBalances:"));
         log("Cash:       " + chalk.green(cash_balance));
         log("Reputation: " + chalk.green(rep_balance));
@@ -274,8 +252,10 @@ function faucets(geth) {
                     faucets
                 );
             }, 5000);
+        } else {
+            process.exit(failures);
         }
-    }, 1000);
+    });
 }
 
 function upload_contracts(geth) {
@@ -322,22 +302,20 @@ function upload_contracts(geth) {
                     }
                 }
                 if (options.FAUCETS) {
-                    setTimeout(function () {
-                        if (geth) kill_geth(geth);
-                        if (options.FAUCETS) {
-                            log(chalk.blue.bold("\nAccount 1:"), chalk.cyan(accounts[1]));
-                            options.GETH_FLAGS[1] = accounts[1];
-                            options.GETH_FLAGS[3] = accounts[1];
-                            setTimeout(function () {
-                                init(
-                                    spawn_geth(options.GETH_FLAGS),
-                                    accounts[1],
-                                    mine_minimum_ether,
-                                    faucets
-                                );
-                            }, 10000);
-                        }
-                    }, 12000);
+                    if (geth) kill_geth(geth);
+                    if (options.FAUCETS) {
+                        log(chalk.blue.bold("\nAccount 1:"), chalk.cyan(accounts[1]));
+                        options.GETH_FLAGS[1] = accounts[1];
+                        options.GETH_FLAGS[3] = accounts[1];
+                        setTimeout(function () {
+                            init(
+                                spawn_geth(options.GETH_FLAGS),
+                                accounts[1],
+                                mine_minimum_ether,
+                                faucets
+                            );
+                        }, 10000);
+                    }
                 } else {
                     process.exit(0);
                 }
@@ -389,8 +367,8 @@ function main(account, options) {
 }
 
 var option, optstring, parser, done;
-optstring = "d(debug)r(reset)g(geth)"+
-            "o(gospel)f(faucets)A(all)l(load)u:(augur)t:(contract)";
+optstring = "d(debug)r(reset)g(geth)o(gospel)f(faucets)"+
+            "u:(augur)t:(contract)";
 parser = new mod_getopt.BasicParser(optstring, process.argv);
 
 while ((option = parser.getopt()) !== undefined) {

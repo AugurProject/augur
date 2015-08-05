@@ -9,12 +9,11 @@ var utilities = require("../../src/utilities");
 var Augur = utilities.setup(require("../../src"), process.argv.slice(2));
 var log = console.log;
 
-var branch = Augur.branches.dev;
-var coinbase = Augur.coinbase;
-
 describe("Faucets", function () {
     it("Reputation faucet", function (done) {
         this.timeout(constants.TIMEOUT);
+        var branch = Augur.branches.dev;
+        var coinbase = Augur.coinbase;
         Augur.reputationFaucet(
             branch,
             function (r) {
@@ -34,13 +33,14 @@ describe("Faucets", function () {
             },
             function (r) {
                 // failed
-                r.name = r.error; throw r;
-                done();
+                done(r);
             }
         );
     });
     it("Cash faucet", function (done) {
         this.timeout(constants.TIMEOUT);
+        var branch = Augur.branches.dev;
+        var coinbase = Augur.coinbase;
         var cash_balance = Augur.getCashBalance(coinbase);
         if (numeric.bignum(cash_balance).toNumber() >= 5) {
             done();
@@ -67,8 +67,7 @@ describe("Faucets", function () {
                 },
                 function (r) {
                     // failed
-                    r.name = r.error; throw r;
-                    done();
+                    done(r);
                 }
             );
         }

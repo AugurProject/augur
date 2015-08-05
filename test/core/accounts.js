@@ -143,6 +143,7 @@ describe("Accounts", function () {
                     assert(!result.error);
                     Augur.db.get(handle, function (rec) {
                         assert(!rec.error);
+                        Augur.web.logout();
                         done();
                     });
                 });
@@ -159,6 +160,7 @@ describe("Accounts", function () {
                     assert(!result.error);
                     Augur.db.get(handle2, function (rec) {
                         assert(!rec.error);
+                        Augur.web.logout();
                         done();
                     });
                 });
@@ -413,6 +415,7 @@ describe("Accounts", function () {
                             Augur.encode_result(branches[0], Augur.tx.getBranches.returns),
                             Augur.branches.dev
                         );
+                        Augur.web.logout();
                         done();
                     });
                 });
@@ -460,10 +463,12 @@ describe("Accounts", function () {
                             assert.strictEqual(r.from, Augur.web.account.address);
                             assert.strictEqual(r.from, user.address);
                             assert(r.blockHash);
+                            Augur.web.logout();
                             done();
                         },
                         function (r) {
                             // failed
+                            Augur.web.logout();
                             done(r);
                         }
                     );
@@ -484,6 +489,7 @@ describe("Accounts", function () {
                             assert.strictEqual(txhash, confirmTx.hash);
                             assert.strictEqual(confirmTx.from, user.address);
                             assert.strictEqual(confirmTx.to, tx.to);
+                            Augur.web.logout();
                             done();                    
                         });
                     });
