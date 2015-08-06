@@ -6,8 +6,12 @@
 "use strict";
 
 var utils = require("./utilities");
+// var web3 = require("web3");
 
 module.exports = function (augur) {
+
+    // web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"));
+    // web3.eth.defaultAccount = augur.coinbase;
 
     return {
 
@@ -25,6 +29,7 @@ module.exports = function (augur) {
         // get name owner's address
         owner: function (name, callback) {
             // name: string
+            // return web3.eth.namereg.owner(name, callback);
             var tx = utils.copy(this.namereg.owner);
             var unpacked = utils.unpack(name, utils.labels(this.owner), arguments);
             tx.params = unpacked.params;
@@ -44,6 +49,7 @@ module.exports = function (augur) {
         // get address from name
         addr: function (name, callback) {
             // name: string
+            // return web3.eth.namereg.addr(name, callback);
             var tx = utils.copy(this.namereg.addr);
             var unpacked = utils.unpack(name, utils.labels(this.addr), arguments);
             tx.params = unpacked.params;
@@ -53,6 +59,7 @@ module.exports = function (augur) {
         // get name from address
         name: function (address, callback) {
             // address: ethereum address
+            // return web3.eth.namereg.name(address, callback);
             var tx = utils.copy(this.namereg.name);
             var unpacked = utils.unpack(address, utils.labels(this.name), arguments);
             tx.params = unpacked.params;

@@ -5,12 +5,8 @@
 
 "use strict";
 
-var crypto = require("crypto");
 var assert = require("chai").assert;
 var chalk = require("chalk");
-var EthTx = require("ethereumjs-tx");
-var EthUtil = require("ethereumjs-util");
-var eccrypto = require("eccrypto");
 var constants = require("../../src/constants");
 var utils = require("../../src/utilities");
 var Augur = utils.setup(require("../../src"), process.argv.slice(2));

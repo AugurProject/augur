@@ -31,6 +31,7 @@ var log = console.log;
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
+// p=/^http:/.test(d.location)?'http':'https'
 var DEFAULT_RPC = utils.urlstring({
     protocol: "http",
     host: "127.0.0.1",
@@ -154,12 +155,12 @@ augur.getTransactionCount = augur.txCount = function (address, f) {
 };
 
 augur.sendEther = augur.pay = function (to, value, from, onSent, onSuccess, onFailed) {
-    from = from || this.rpc.json_rpc(this.rpc.postdata("coinbase"));
+    from = from || this.web.account.address || this.rpc.json_rpc(this.rpc.postdata("coinbase"));
     if (from !== this.demo) {
         var tx, txhash;
         if (to && to.value) {
             value = to.value;
-            if (to.from) from = to.from || this.coinbase;
+            if (to.from) from = to.from;
             if (to.onSent) onSent = to.onSent;
             if (to.onSuccess) onSuccess = to.onSuccess;
             if (to.onFailed) onFailed = to.onFailed;

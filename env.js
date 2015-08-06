@@ -12,7 +12,6 @@ GLOBAL.moment = require("moment");
 GLOBAL.longjohn = require("longjohn");
 GLOBAL.EthTx = require("ethereumjs-tx");
 GLOBAL.EthUtil = require("ethereumjs-util");
-GLOBAL.eccrypto = require("eccrypto");
 GLOBAL.web3 = require("web3");
 GLOBAL.Augur = require("./src");
 GLOBAL.contracts = require("./src/contracts");

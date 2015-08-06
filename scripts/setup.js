@@ -75,7 +75,7 @@ options.GETH_FLAGS = [
     "--maxpeers", "64",
     "--networkid", options.NETWORK_ID,
     "--datadir", options.DATADIR,
-    "--olympic",
+    // "--olympic",
     // "--genesis", options.GENESIS_BLOCK,
     "--password", path.join(options.DATADIR, ".password")
 ];

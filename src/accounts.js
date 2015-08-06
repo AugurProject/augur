@@ -17,7 +17,7 @@ var EC = require("elliptic").ec;
 var errors = require("./errors");
 var constants = require("./constants");
 var utilities = require("./utilities");
-// var numeric = require("./numeric");
+var numeric = require("./numeric");
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
@@ -207,6 +207,7 @@ module.exports = function (augur) {
         // },
 
         invoke: function (itx, callback) {
+            var self = this;
             var tx, data_abi, packaged;
             if (this.account.address) {
 
@@ -227,8 +228,9 @@ module.exports = function (augur) {
                             } else if (tx.params.constructor === BigNumber) {
                                 tx.params = tx.params.toFixed();
                             }
-                            data_abi = augur.abi.encode(tx);
                         }
+                        if (tx.to) tx.to = numeric.prefix_hex(tx.to);
+                        data_abi = augur.abi.encode(tx);
 
                         // package up the transaction and submit it to the network
                         packaged = new EthTx({
@@ -236,16 +238,10 @@ module.exports = function (augur) {
                             from: this.account.address,
                             gasPrice: "0xda475abf000", // 0.000015 ether
                             gasLimit: (tx.gas) ? tx.gas : constants.DEFAULT_GAS,
-                            nonce: this.account.nonce++,
+                            nonce: this.account.nonce,
                             value: tx.value || "0x0",
                             data: data_abi
                         });
-
-                        // write the incremented nonce to the database
-                        augur.db.get(this.account.handle, function (stored) {
-                            stored.nonce = this.account.nonce;
-                            augur.db.put(this.account.handle, stored);
-                        }.bind(this));
 
                         // sign, validate, and send the transaction
                         packaged.sign(this.account.privateKey);
@@ -253,7 +249,16 @@ module.exports = function (augur) {
 
                             return augur.sendRawTx(
                                 packaged.serialize().toString("hex"),
-                                callback
+                                function (r) {
+
+                                    // increment nonce, write to database
+                                    augur.db.get(self.account.handle, function (stored) {
+                                        stored.nonce = ++self.account.nonce;
+                                        augur.db.put(self.account.handle, stored);
+                                    });
+
+                                    if (callback) callback(r);
+                                }
                             );
 
                         // transaction validation failed

@@ -42,11 +42,12 @@ for arg in "$@"; do
         "--markets") set -- "$@" "-m" ;;
         "--consensus") set -- "$@" "-s" ;;
         "--aux") set -- "$@" "-x" ;;
+        "--spec") set -- "$@" "-k" ;;
         *) set -- "$@" "$arg"
     esac
 done
 OPTIND=1
-while getopts "gvoncrmsxa" opt; do
+while getopts "gvoncrmsxak" opt; do
     case "$opt" in
         g) gospel="--gospel" ;;
         v) coverage=1 ;;
@@ -57,6 +58,7 @@ while getopts "gvoncrmsxa" opt; do
         m) markets=1 ;;
         s) consensus=1 ;;
         x) aux=1 ;;
+        k) reporter="spec" ;;
     esac
 done
 shift $(expr $OPTIND - 1)
