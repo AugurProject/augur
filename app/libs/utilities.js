@@ -62,7 +62,7 @@ module.exports = {
     } else if (wei != null && wei != undefined && wei.toNumber) {
       wei = wei.toNumber();
     } else {
-      return {value: '', unit: '-', withUnit: '-'};
+      return {value: '', unit: 'ether', withUnit: '-'};
     }
 
     var value;

@@ -96,14 +96,67 @@ var ConfigActions = {
     this.flux.actions.network.checkNetwork();
   },
 
-  signIn: function() {
+  register: function (handle, password) {
 
+    var self = this;
+    var client = this.flux.store('config').getEthereumClient();
 
+    client.register(handle, password, function (account) {
+
+      if (account && account.address) {
+
+        // TODO put this info in a modal + make a button so user can look it up
+        utilities.log("new account registered: " + account.handle);
+        utilities.log("address: " + account.address);
+        utilities.log("private key: " + account.privateKey.toString("hex"));
+
+        self.flux.actions.asset.updateAssets();
+
+        self.dispatch(constants.config.UPDATE_ACCOUNT, {
+          currentAccount: account.address,
+          privateKey: account.privateKey,
+          handle: account.handle
+        });
+
+      } else {
+        utilities.log("sign in failed");
+      }
+    });
+  },
+
+  signIn: function (handle, password) {
+
+    var self = this;
+    var client = this.flux.store('config').getEthereumClient();
+
+    client.signIn(handle, password, function (account) {
+
+      if (account && account.address) {
+
+        // TODO put this info in a modal + make a button so user can look it up
+        utilities.log("signed in to account: " + account.handle);
+        utilities.log("address: " + account.address);
+        utilities.log("private key: " + account.privateKey.toString("hex"));
+
+        self.flux.actions.asset.updateAssets();
+
+        self.dispatch(constants.config.UPDATE_ACCOUNT, {
+            currentAccount: account.address,
+            privateKey: account.privateKey,
+            handle: account.handle
+        });
+
+      } else {
+        utilities.log("sign in failed");
+      }
+    });
   },
 
   signOut: function() {
 
-    this.flux.actions.market.updateSharesHeld(null);
+    this.flux.store('config').getEthereumClient().signOut();
+    this.flux.actions.market.updateSharesHeld(null);    
+    utilities.log("signed out");
     this.dispatch(constants.config.UPDATE_ACCOUNT, { currentAccount: null });
   }
 };

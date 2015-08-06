@@ -24,6 +24,9 @@ var Network = require('./Network');
 var Assets = require('./Assets');
 var Welcome = require('./Welcome');
 var Confirm = require('./Confirm');
+
+var SignInModal = require('./SignIn');
+var RegisterModal = require('./Register');
 var EtherWarningModal = require('./EtherWarningModal');
 
 var AugurApp = React.createClass({
@@ -32,6 +35,8 @@ var AugurApp = React.createClass({
 
   getInitialState: function () {
     return {
+      signInModalOpen: false,
+      registerModalOpen: false,
       status: 'stopped'
     };
   },
@@ -82,15 +87,19 @@ var AugurApp = React.createClass({
     return loadingProgress
   },
 
-  handleSignOut: function() {
+  handleSignOut: function (event) {
 
-    var flux = this.getFlux();
-    flux.actions.config.signOut();
+    this.getFlux().actions.config.signOut();
   },
 
-  handleSignIn: function() {
+  toggleSignInModal: function (event) {
 
+    this.setState({ signInModalOpen: !this.state.signInModalOpen });
+  },
 
+  toggleRegisterModal: function (event) {
+
+    this.setState({ registerModalOpen: !this.state.registerModalOpen });
   },
 
   render: function() {
@@ -99,15 +108,20 @@ var AugurApp = React.createClass({
     if (this.state.config.currentAccount) {
       accountStatus = (
         <p className='navbar-text'>
-          <span className="account">{ this.state.config.currentAccount }</span>
-          <a className="signout" onClick={ this.handleSignOut }>| sign out</a>
+          <span className="account">{ this.state.config.currentAccount }</span> | 
+          <a className="signout" onClick={ this.handleSignOut }>sign out</a>
         </p>
       );
     } else {
        accountStatus = (
-        <p className='navbar-text'>
-          <a className="signin" onClick={ this.handleSignIn }>sign in</a>
-        </p>
+        <div>
+          <p className='navbar-text'>
+            <a className="signin" onClick={ this.toggleSignInModal }>sign in</a> | 
+          </p>
+          <p className='navbar-text'>
+            <a className="register" onClick={ this.toggleRegisterModal }>register</a>
+          </p>
+        </div>
       );     
     }
 
@@ -155,6 +169,9 @@ var AugurApp = React.createClass({
           </div>
 
         </section>
+
+        <RegisterModal show={ this.state.registerModalOpen } onHide={ this.toggleRegisterModal } />
+        <SignInModal show={ this.state.signInModalOpen } onHide={ this.toggleSignInModal } />
 
         <footer>
           <div className="row container clearfix"></div>

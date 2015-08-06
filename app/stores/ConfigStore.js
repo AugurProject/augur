@@ -4,6 +4,8 @@ var constants = require('../libs/constants');
 var state = {
   host: process.env.RPC_HOST || 'localhost:8545',
   currentAccount: null,
+  privateKey: null,
+  handle: null,
   debug: false,
   loaded: false,
   percentLoaded: null,
@@ -63,6 +65,8 @@ var ConfigStore = Fluxxor.createStore({
 
   handleUpdateAccount: function (payload) {
     state.currentAccount = payload.currentAccount;
+    state.privateKey = payload.privateKey;
+    state.handle = payload.handle;
     this.emit(constants.CHANGE_EVENT);
   },
 
