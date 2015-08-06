@@ -19,10 +19,19 @@ var EXPIRING = false;
 
 describe("functions/createMarket", function () {
 
-    var events = [
-        ["Will the Sun turn into a red giant and engulf the Earth by the end of 2015?", utils.date_to_block(Augur, "1-1-2016")],
-        ["Will Rand Paul win the 2016 U.S. Presidential Election?", utils.date_to_block(Augur, "1-2-2017")],
-    ];
+    var events = [[
+        "Will the Sun turn into a red giant and engulf the Earth by the end of 2015?",
+        utils.date_to_block(Augur, "1-1-2016")
+    ], [
+        "Will Rand Paul win the 2016 U.S. Presidential Election?",
+        utils.date_to_block(Augur, "1-2-2017")
+    ], [
+        "Will it rain in New York City on November 12, 2016?",
+        utils.date_to_block(Augur, "11-13-2016")
+    ], [
+        "Will the Larsen B ice shelf collapse by November 1, 2016?",
+        utils.date_to_block(Augur, "11-2-2016")
+    ]];
 
     it.each(
         events,
@@ -117,176 +126,179 @@ describe("functions/createMarket", function () {
         }
     );
     
-    var events = [
-        ["Will it rain in New York City on November 12, 2016?", utils.date_to_block(Augur, "11-13-2016")],
-        ["Will the Larsen B ice shelf collapse by November 1, 2016?", utils.date_to_block(Augur, "11-2-2016")]
-    ];
+    // var events = [[
+    //     "Will it rain in New York City on November 12, 2016?",
+    //     utils.date_to_block(Augur, "11-13-2016")
+    // ], [
+    //     "Will the Larsen B ice shelf collapse by November 1, 2016?",
+    //     utils.date_to_block(Augur, "11-2-2016")
+    // ]];
 
-    it.each(
-        events,
-        "create single-event market using createMarket's sub-methods: %s", ['element'],
-        function (element, next) {
-            this.timeout(constants.TIMEOUT*8);
+    // it.each(
+    //     events,
+    //     "create single-event market using createMarket's sub-methods: %s", ['element'],
+    //     function (element, next) {
+    //         this.timeout(constants.TIMEOUT*8);
 
-            // welcome to callback hell :)
+    //         // welcome to callback hell :)
 
-            // first create a single event
-            var branch = Augur.branches.dev;
-            var description = element[0];
-            var blockNumber = Augur.blockNumber();
-            var expDate = (EXPIRING) ?
-                blockNumber + Math.round(Math.random() * 1000) : element[1];
-            var minValue = 0;
-            var maxValue = 1;
-            var numOutcomes = 2;
+    //         // first create a single event
+    //         var branch = Augur.branches.dev;
+    //         var description = element[0];
+    //         var blockNumber = Augur.blockNumber();
+    //         var expDate = (EXPIRING) ?
+    //             blockNumber + Math.round(Math.random() * 1000) : element[1];
+    //         var minValue = 0;
+    //         var maxValue = 1;
+    //         var numOutcomes = 2;
 
-            Augur.createEvent({
-                branchId: branch,
-                description: description,
-                expDate: expDate,
-                minValue: minValue,
-                maxValue: maxValue,
-                numOutcomes: numOutcomes,
-                onSent: function (r) {
-                    assert(r.txHash);
-                    assert(r.callReturn);
-                },
-                onSuccess: function (r) {
-                    var creator = Augur.getCreator(r.callReturn);
-                    if (creator !== Augur.coinbase) {
-                        log("\n  createEvent.createEvent:", utils.pp(r));
-                    }
-                    assert.strictEqual(creator, Augur.coinbase);
-                    assert.strictEqual(Augur.getDescription(r.callReturn), description);
+    //         Augur.createEvent({
+    //             branchId: branch,
+    //             description: description,
+    //             expDate: expDate,
+    //             minValue: minValue,
+    //             maxValue: maxValue,
+    //             numOutcomes: numOutcomes,
+    //             onSent: function (r) {
+    //                 assert(r.txHash);
+    //                 assert(r.callReturn);
+    //             },
+    //             onSuccess: function (r) {
+    //                 var creator = Augur.getCreator(r.callReturn);
+    //                 if (creator !== Augur.coinbase) {
+    //                     log("\n  createEvent.createEvent:", utils.pp(r));
+    //                 }
+    //                 assert.strictEqual(creator, Augur.coinbase);
+    //                 assert.strictEqual(Augur.getDescription(r.callReturn), description);
 
-                    // manually incorporate the new event into a market
-                    var alpha = "0.0079";
-                    var initialLiquidity = 1000 + Math.round(Math.random() * 1000);
-                    var tradingFee = "0.02";
-                    var events = [ r.callReturn ];
-                    var tx = utils.copy(Augur.tx.createMarket);
-                    tx.params = [
-                        branch,
-                        description,
-                        numeric.fix(alpha, "hex"),
-                        numeric.fix(initialLiquidity, "hex"),
-                        numeric.fix(tradingFee, "hex"),
-                        events
-                    ];
-                    tx.send = false;
+    //                 // manually incorporate the new event into a market
+    //                 var alpha = "0.0079";
+    //                 var initialLiquidity = 1000 + Math.round(Math.random() * 1000);
+    //                 var tradingFee = "0.02";
+    //                 var events = [ r.callReturn ];
+    //                 var tx = utils.copy(Augur.tx.createMarket);
+    //                 tx.params = [
+    //                     branch,
+    //                     description,
+    //                     numeric.fix(alpha, "hex"),
+    //                     numeric.fix(initialLiquidity, "hex"),
+    //                     numeric.fix(tradingFee, "hex"),
+    //                     events
+    //                 ];
+    //                 tx.send = false;
 
-                    Augur.fire(tx, function (marketID) {
-                        assert(marketID);
+    //                 Augur.fire(tx, function (marketID) {
+    //                     assert(marketID);
 
-                        Augur.initialLiquiditySetup({
-                            marketID: marketID,
-                            alpha: alpha,
-                            cumulativeScale: 1,
-                            numOutcomes: numOutcomes,
-                            onSent: function (s) {
-                                assert(s.txHash);
-                                if (s.callReturn === "0") {
-                                    log("\n  markets.initialLiquiditySetup:", utils.pp(s));
-                                    log("  market ID:", chalk.green(marketID));
-                                }
-                                assert.strictEqual(s.callReturn, "1");
-                            },
-                            onSuccess: function (s) {
+    //                     Augur.initialLiquiditySetup({
+    //                         marketID: marketID,
+    //                         alpha: alpha,
+    //                         cumulativeScale: 1,
+    //                         numOutcomes: numOutcomes,
+    //                         onSent: function (s) {
+    //                             assert(s.txHash);
+    //                             if (s.callReturn === "0") {
+    //                                 log("\n  markets.initialLiquiditySetup:", utils.pp(s));
+    //                                 log("  market ID:", chalk.green(marketID));
+    //                             }
+    //                             assert.strictEqual(s.callReturn, "1");
+    //                         },
+    //                         onSuccess: function (s) {
 
-                                Augur.setInfo({
-                                    id: marketID,
-                                    description: description,
-                                    creator: Augur.coinbase,
-                                    fee: initialLiquidity,
-                                    onSent: function (s) {
-                                        assert(s.txHash);
-                                        if (s.callReturn === "0") {
-                                            log("\n  info.setInfo:", utils.pp(s));
-                                            log("  market ID:", chalk.green(marketID));
-                                        }
-                                        assert.strictEqual(s.callReturn, "1");
-                                    },
-                                    onSuccess: function (s) {
-                                        assert.strictEqual(Augur.getDescription(marketID), description);
+    //                             Augur.setInfo({
+    //                                 id: marketID,
+    //                                 description: description,
+    //                                 creator: Augur.coinbase,
+    //                                 fee: initialLiquidity,
+    //                                 onSent: function (s) {
+    //                                     assert(s.txHash);
+    //                                     if (s.callReturn === "0") {
+    //                                         log("\n  info.setInfo:", utils.pp(s));
+    //                                         log("  market ID:", chalk.green(marketID));
+    //                                     }
+    //                                     assert.strictEqual(s.callReturn, "1");
+    //                                 },
+    //                                 onSuccess: function (s) {
+    //                                     assert.strictEqual(Augur.getDescription(marketID), description);
 
-                                        Augur.addMarket({
-                                            branch: branch,
-                                            marketID: marketID,
-                                            onSent: function (s) {
-                                                assert(s.txHash);
-                                                if (s.callReturn === "0") {
-                                                    log("\n  branches.addMarket:", utils.pp(s));
-                                                    log("  market ID:", chalk.green(marketID));
-                                                }
-                                                assert.strictEqual(s.callReturn, "1");
-                                            },
-                                            onSuccess: function (s) {
+    //                                     Augur.addMarket({
+    //                                         branch: branch,
+    //                                         marketID: marketID,
+    //                                         onSent: function (s) {
+    //                                             assert(s.txHash);
+    //                                             if (s.callReturn === "0") {
+    //                                                 log("\n  branches.addMarket:", utils.pp(s));
+    //                                                 log("  market ID:", chalk.green(marketID));
+    //                                             }
+    //                                             assert.strictEqual(s.callReturn, "1");
+    //                                         },
+    //                                         onSuccess: function (s) {
 
-                                                Augur.initializeMarket({
-                                                    marketID: marketID,
-                                                    events: events,
-                                                    tradingPeriod: expDate,
-                                                    tradingFee: initialLiquidity,
-                                                    branch: branch,
-                                                    onSent: function (t) {
-                                                        assert(t.txHash);
-                                                        if (t.callReturn === "0") {
-                                                            log("\n  markets.initializeMarket:", utils.pp(t));
-                                                            log("  market ID:", chalk.green(marketID));
-                                                        }
-                                                        assert.strictEqual(t.callReturn, "1");
-                                                    },
-                                                    onSuccess: function (t) {
+    //                                             Augur.initializeMarket({
+    //                                                 marketID: marketID,
+    //                                                 events: events,
+    //                                                 tradingPeriod: expDate,
+    //                                                 tradingFee: initialLiquidity,
+    //                                                 branch: branch,
+    //                                                 onSent: function (t) {
+    //                                                     assert(t.txHash);
+    //                                                     if (t.callReturn === "0") {
+    //                                                         log("\n  markets.initializeMarket:", utils.pp(t));
+    //                                                         log("  market ID:", chalk.green(marketID));
+    //                                                     }
+    //                                                     assert.strictEqual(t.callReturn, "1");
+    //                                                 },
+    //                                                 onSuccess: function (t) {
 
-                                                        Augur.getMarketInfo(marketID, function (info) {
-                                                            assert.strictEqual(info[0], "0");
-                                                            assert.strictEqual(
-                                                                numeric.bignum(info[1]).toNumber().toFixed(5),
-                                                                numeric.bignum(alpha).toNumber().toFixed(5)
-                                                            );
-                                                            assert.strictEqual(info[2], "0");
-                                                            assert.strictEqual(parseInt(info[3]), numOutcomes);
-                                                            assert.strictEqual(parseInt(info[4]), expDate);
-                                                            assert.strictEqual(parseInt(info[5]), initialLiquidity);
-                                                            assert.strictEqual(info[6], events[0]);
-                                                            assert.strictEqual(info[7], "0");
-                                                            assert.strictEqual(info.length, 15);
-                                                            next();
-                                                        }); // markets.getMarketInfo
+    //                                                     Augur.getMarketInfo(marketID, function (info) {
+    //                                                         assert.strictEqual(info[0], "0");
+    //                                                         assert.strictEqual(
+    //                                                             numeric.bignum(info[1]).toNumber().toFixed(5),
+    //                                                             numeric.bignum(alpha).toNumber().toFixed(5)
+    //                                                         );
+    //                                                         assert.strictEqual(info[2], "0");
+    //                                                         assert.strictEqual(parseInt(info[3]), numOutcomes);
+    //                                                         assert.strictEqual(parseInt(info[4]), expDate);
+    //                                                         assert.strictEqual(parseInt(info[5]), initialLiquidity);
+    //                                                         assert.strictEqual(info[6], events[0]);
+    //                                                         assert.strictEqual(info[7], "0");
+    //                                                         assert.strictEqual(info.length, 15);
+    //                                                         next();
+    //                                                     }); // markets.getMarketInfo
 
-                                                    },
-                                                    onFailed: function (t) {
-                                                        next(t);
-                                                    }
-                                                }); // markets.initializeMarket
+    //                                                 },
+    //                                                 onFailed: function (t) {
+    //                                                     next(t);
+    //                                                 }
+    //                                             }); // markets.initializeMarket
 
-                                            },
-                                            onFailed: function (s) {
-                                                next(s);
-                                            }
-                                        }); // branches.addMarket
+    //                                         },
+    //                                         onFailed: function (s) {
+    //                                             next(s);
+    //                                         }
+    //                                     }); // branches.addMarket
 
-                                    },
-                                    onFailed: function (s) {
-                                        next(s);
-                                    }
-                                }); // info.setInfo
+    //                                 },
+    //                                 onFailed: function (s) {
+    //                                     next(s);
+    //                                 }
+    //                             }); // info.setInfo
 
-                            },
-                            onFailed: function (s) {
-                                next(s);
-                            }
-                        }); // markets.initialLiquiditySetup
+    //                         },
+    //                         onFailed: function (s) {
+    //                             next(s);
+    //                         }
+    //                     }); // markets.initialLiquiditySetup
 
-                    }); // createMarket.createMarket [invoke:call]
+    //                 }); // createMarket.createMarket [invoke:call]
 
-                },
-                onFailed: function (r) {
-                    next(r);
-                }
-            }); // createEvent.createEvent
+    //             },
+    //             onFailed: function (r) {
+    //                 next(r);
+    //             }
+    //         }); // createEvent.createEvent
 
-        }
-    );
+    //     }
+    // );
 
 });
