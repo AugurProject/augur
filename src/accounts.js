@@ -1,5 +1,5 @@
 /**
- * Centralized/trustless web client
+ * Client-side accounts / transactions
  */
 
 "use strict";
@@ -14,6 +14,7 @@ var BigNumber = require("bignumber.js");
 var EthUtil = require("ethereumjs-util");
 var EthTx = require("ethereumjs-tx");
 var EC = require("elliptic").ec;
+// var scrypt = require("../lib/scrypt");
 var errors = require("./errors");
 var constants = require("./constants");
 var utilities = require("./utilities");
@@ -32,21 +33,58 @@ module.exports = function (augur) {
 
         encrypt: function (plaintext, key, iv) {
             var cipher, ciphertext;
-            cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
+            cipher = crypto.createCipheriv(constants.CIPHER, key, iv);
             ciphertext = cipher.update(plaintext, "hex", "base64");
             return ciphertext + cipher.final("base64");
         },
 
         decrypt: function (ciphertext, key, iv) {
             var decipher, plaintext;
-            decipher = crypto.createDecipheriv("aes-256-cbc", key, iv);
+            decipher = crypto.createDecipheriv(constants.CIPHER, key, iv);
             plaintext = decipher.update(ciphertext, "base64", "hex");
             return plaintext + decipher.final("hex");
         },
 
+        // derive public key and address from private key
         privateKeyToAddress: function (privateKey) {
             var pubKey = new Buffer(this.ecdsa.keyFromPrivate(privateKey).getPublic("arr"));
             return "0x" + EthUtil.pubToAddress(pubKey).toString("hex");
+        },
+
+        // derive secret key from password using scrypt
+        deriveKey: function (password, plain, callback) {
+            var self = this;
+
+            // derive secret key from password using PBKDF2
+            crypto.pbkdf2(password, plain.iv,
+                constants.pbkdf2.ITERATIONS,
+                constants.KEYSIZE,
+                constants.pbkdf2.ALGORITHM,
+                function (ex, derivedKey) {
+                    if (ex) throw ex;
+
+                    // encrypt private key using derived key and IV
+                    var encrypted = self.encrypt(plain.privateKey, derivedKey, plain.iv);
+                    if (callback) callback(encrypted);
+                }
+            );
+        },
+
+        generateKey: function (callback) {
+
+            // generate ECDSA private key
+            crypto.randomBytes(constants.KEYSIZE, function (ex, privateKey) {
+                if (ex) throw ex;
+
+                // generate random initialization vector
+                crypto.randomBytes(constants.IVSIZE, function (ex, iv) {
+                    if (ex) throw ex;
+
+                    if (callback) callback({ privateKey: privateKey, iv: iv });
+
+                }); // crypto.randomBytes
+
+            }); // crypto.randomBytes
         },
 
         register: function (handle, password, callback) {
@@ -54,50 +92,41 @@ module.exports = function (augur) {
             augur.db.get(handle, function (record) {
                 if (record.error) {
 
-                    // generate private key, derive public key and address
-                    crypto.randomBytes(constants.KEYSIZE, function (ex, privKey) {
+                    // generate ECDSA private key and IV
+                    self.generateKey(function (plain) {
 
-                        // generate random initialization vector
-                        crypto.randomBytes(constants.IVSIZE, function (ex, iv) {
+                        // derive secret key from password
+                        self.deriveKey(password, plain, function (encryptedPrivateKey) {
 
-                            // derive secret key from password using PBKDF2
-                            crypto.pbkdf2(password, iv,
-                                constants.pbkdf2.ITERATIONS,
-                                constants.KEYSIZE,
-                                constants.pbkdf2.ALGORITHM,
-                                function (ex, derivedKey) {
-                                    if (ex) throw ex;
+                            // store encrypted key & IV, indexed by handle
+                            augur.db.put(handle, {
+                                handle: handle,
+                                privateKey: encryptedPrivateKey,
+                                iv: plain.iv.toString("base64"),
+                                nonce: 0
+                            }, function () {
 
-                                    // AES-256 encrypt private key
-                                    var encryptedPrivKey = self.encrypt(privKey, derivedKey, iv);
+                                // set web.account object
+                                self.account = {
+                                    handle: handle,
+                                    privateKey: plain.privateKey,
+                                    address: self.privateKeyToAddress(plain.privateKey),
+                                    nonce: 0
+                                };
 
-                                    // store encrypted key & IV, indexed by handle
-                                    augur.db.put(handle, {
-                                        handle: handle,
-                                        privateKey: encryptedPrivKey,
-                                        iv: iv.toString("base64"),
-                                        nonce: 0
-                                    }, function () {
+                                if (callback) callback(self.account);
 
-                                        // while logged in, web.account object is set
-                                        self.account = {
-                                            handle: handle,
-                                            privateKey: privKey,
-                                            address: self.privateKeyToAddress(privKey),
-                                            nonce: 0
-                                        };
+                            }); // db.put
 
-                                        if (callback) callback(self.account);
-                                    });
-                                }
-                            );
-                        });
-                    });
+                        }); // deriveKey
+                    
+                    }); // generateKey
                 
                 } else {
                     if (callback) callback(errors.HANDLE_TAKEN);
                 }
-            });
+
+            }); // db.get
         },
 
         login: function (handle, password, callback) {

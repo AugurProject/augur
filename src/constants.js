@@ -36,6 +36,8 @@ var constants = {
     KEYSIZE: 32,
     IVSIZE: 16,
 
+    CIPHER: "aes-256-cbc",
+
     pbkdf2: {
         ITERATIONS: 65536,
         ALGORITHM: "sha512"
