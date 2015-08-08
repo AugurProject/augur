@@ -33,14 +33,22 @@ var constants = {
 
     TIMEOUT: 120000,
 
+    CIPHER: "aes-256-cbc",
+    // CIPHER: "aes-128-cbc",
+    // CIPHER: "aes-128-ctr",
+
     KEYSIZE: 32,
     IVSIZE: 16,
 
-    CIPHER: "aes-256-cbc",
-
+    // key derivation functions
     pbkdf2: {
-        ITERATIONS: 65536,
-        ALGORITHM: "sha512"
+        ITERATIONS: 262144,
+        ALGORITHM: "sha256"
+    },
+    scrypt: {
+        n: 65536,
+        r: 8,
+        p: 1
     },
 
     FIREBASE_URL: "https://resplendent-inferno-1997.firebaseio-demo.com/"

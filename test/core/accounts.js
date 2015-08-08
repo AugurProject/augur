@@ -11,6 +11,7 @@ var chalk = require("chalk");
 var EthTx = require("ethereumjs-tx");
 var EthUtil = require("ethereumjs-util");
 var EC = require("elliptic").ec;
+var numeric = require("../../src/numeric");
 var constants = require("../../src/constants");
 var utilities = require("../../src/utilities");
 var Augur = utilities.setup(require("../../src"), process.argv.slice(2));
@@ -190,7 +191,19 @@ describe("Accounts", function () {
                 assert(!user.error);
                 assert(user.privateKey);
                 assert(user.address);
-                assert.strictEqual(user.privateKey.toString("hex").length, 64);
+                assert.strictEqual(user.privateKey.toString("hex").length, constants.KEYSIZE*2);
+                assert.strictEqual(user.address.length, 42);
+                done();
+            });
+        });
+
+        it("login twice as the same user", function (done) {
+            this.timeout(constants.TIMEOUT);
+            Augur.web.login(handle, password, function (user) {
+                assert(!user.error);
+                assert(user.privateKey);
+                assert(user.address);
+                assert.strictEqual(user.privateKey.toString("hex").length, constants.KEYSIZE*2);
                 assert.strictEqual(user.address.length, 42);
                 Augur.web.login(handle, password, function (same_user) {
                     assert(!same_user.error);
@@ -429,18 +442,29 @@ describe("Accounts", function () {
                 var amount = 64;
                 this.timeout(constants.TIMEOUT);
                 Augur.web.login(handle, password, function (toAccount) {
+                    assert.strictEqual(toAccount.address, Augur.web.account.address);
                     Augur.sendEther(
                         toAccount.address,
                         amount,
                         Augur.coinbase,
                         function (r) {
                             // sent
+                            assert(r);
                         },
                         function (r) {
+                            // success
+                            assert(r.blockHash);
+                            assert.strictEqual(parseInt(r.callReturn), amount);
+                            assert.strictEqual(r.from, Augur.coinbase);
+                            assert.strictEqual(r.to, toAccount.address);
+                            assert.strictEqual(r.to, Augur.web.account.address);
+                            assert.strictEqual(numeric.bignum(Augur.balance(r.to)).dividedBy(constants.ETHER).toNumber(), amount);
+                            Augur.web.logout();
                             done();
                         },
                         function (r) {
-                            r.name = r.error; throw r;
+                            // failed
+                            Augur.web.logout();
                             done(r);
                         }
                     );

@@ -11,10 +11,11 @@ if ((typeof module !== "undefined") && process && !process.browser) {
     crypto = require("crypto-browserify");
 }
 var BigNumber = require("bignumber.js");
+var scrypt = require("scryptsy");
+var uuid = require("node-uuid");
 var EthUtil = require("ethereumjs-util");
 var EthTx = require("ethereumjs-tx");
 var EC = require("elliptic").ec;
-// var scrypt = require("../lib/scrypt");
 var errors = require("./errors");
 var constants = require("./constants");
 var utilities = require("./utilities");
@@ -29,7 +30,54 @@ module.exports = function (augur) {
         // The account object is set when logged in
         account: {},
 
+        // Option to use scrypt key derivation function
+        scrypt: augur.options.scrypt,
+
         ecdsa: new EC("secp256k1"),
+
+        // export private key to geth-readable json
+        dumpPrivateKey: function (password, privateKey, iv, callback) {
+            var self = this;
+            var hmac = crypto.createHmac("sha256", privateKey);
+            self.deriveKey(password, iv, function (derivedKey) {
+                var json = {
+                    address: this.privateKeyToAddress(privateKey),
+                    Crypto: {
+                        cipher: constants.CIPHER,
+                        ciphertext: self.encrypt(privateKey, derivedKey, iv).toString("hex"),
+                        cipherparams: { iv: iv },
+                        mac: ""
+                    },
+                    id: uuid.v4(),
+                    version: 3
+                };
+                if (this.scrypt) {
+                    json.Crypto.kdf = "scrypt";
+                    json.Crypto.kdfparams = {
+                        dklen: constants.KEYSIZE,
+                        n: constants.scrypt.n,
+                        r: constants.scrypt.r,
+                        p: constants.scrypt.p,
+                        salt: iv
+                    };
+                } else {
+                    json.Crypto.kdf = "pbkdf2";
+                    json.Crypto.kdfparams = {
+                        c: constants.pbkdf2.ITERATIONS,
+                        dklen: constants.KEYSIZE,
+                        pdf: "hmac-sha256",
+                        salt: iv
+                    };
+                }
+                console.log(json);
+                if (callback) callback(json);
+            });
+        },
+
+        // import private key from geth json
+        loadPrivateKey: function (json) {
+
+        },
 
         encrypt: function (plaintext, key, iv) {
             var cipher, ciphertext;
@@ -51,23 +99,37 @@ module.exports = function (augur) {
             return "0x" + EthUtil.pubToAddress(pubKey).toString("hex");
         },
 
-        // derive secret key from password using scrypt
-        deriveKey: function (password, plain, callback) {
-            var self = this;
+        // derive secret key from password
+        deriveKey: function (password, iv, callback) {
 
-            // derive secret key from password using PBKDF2
-            crypto.pbkdf2(password, plain.iv,
-                constants.pbkdf2.ITERATIONS,
-                constants.KEYSIZE,
-                constants.pbkdf2.ALGORITHM,
-                function (ex, derivedKey) {
-                    if (ex) throw ex;
+            // use scrypt if augur.options.scrypt = true
+            if (this.scrypt) {
+                var derivedKey = scrypt(
+                    password,
+                    iv,
+                    constants.scrypt.n,
+                    constants.scrypt.r,
+                    constants.scrypt.p,
+                    constants.KEYSIZE
+                );
+                if (callback) {
+                    callback(derivedKey);
+                } else {
+                    return derivedKey;
+                }                
 
-                    // encrypt private key using derived key and IV
-                    var encrypted = self.encrypt(plain.privateKey, derivedKey, plain.iv);
-                    if (callback) callback(encrypted);
-                }
-            );
+            // default key derivation function is PBKDF2
+            } else {
+                crypto.pbkdf2(password, iv,
+                    constants.pbkdf2.ITERATIONS,
+                    constants.KEYSIZE,
+                    constants.pbkdf2.ALGORITHM,
+                    function (ex, derivedKey) {
+                        if (ex) throw ex;
+                        if (callback) callback(derivedKey);
+                    }
+                );
+            }
         },
 
         generateKey: function (callback) {
@@ -92,16 +154,17 @@ module.exports = function (augur) {
             augur.db.get(handle, function (record) {
                 if (record.error) {
 
-                    // generate ECDSA private key and IV
+                    // generate ECDSA private key and initialization vector
                     self.generateKey(function (plain) {
 
                         // derive secret key from password
-                        self.deriveKey(password, plain, function (encryptedPrivateKey) {
+                        self.deriveKey(password, plain.iv, function (derivedKey) {
 
+                            // encrypt private key using derived key and IV, then
                             // store encrypted key & IV, indexed by handle
                             augur.db.put(handle, {
                                 handle: handle,
-                                privateKey: encryptedPrivateKey,
+                                privateKey: self.encrypt(plain.privateKey, derivedKey, plain.iv),
                                 iv: plain.iv.toString("base64"),
                                 nonce: 0
                             }, function () {
@@ -134,49 +197,46 @@ module.exports = function (augur) {
 
             // retrieve account info from database
             augur.db.get(handle, function (storedInfo) {
+
                 if (!storedInfo.error) {
 
                     // use the password to decrypt the private key
                     var iv = new Buffer(storedInfo.iv, "base64");
 
-                    // derive secret key from password using PBKDF2                    
-                    crypto.pbkdf2(password, iv,
-                        constants.pbkdf2.ITERATIONS,
-                        constants.KEYSIZE,
-                        constants.pbkdf2.ALGORITHM,
-                        function (ex, derivedKey) {
-                            if (ex) throw ex;
-                            try {
+                    // derive secret key from password
+                    self.deriveKey(password, iv, function (derivedKey) {
+                        try {
 
-                                // decrypt stored private key using secret key
-                                var privateKey = new Buffer(self.decrypt(
-                                    storedInfo.privateKey,
-                                    derivedKey,
-                                    iv
-                                ), "hex");
+                            // decrypt stored private key using secret key
+                            var privateKey = new Buffer(self.decrypt(
+                                storedInfo.privateKey,
+                                derivedKey,
+                                iv
+                            ), "hex");
 
-                                // while logged in, web.account object is set
-                                self.account = {
-                                    handle: handle,
-                                    privateKey: privateKey,
-                                    address: self.privateKeyToAddress(privateKey),
-                                    nonce: storedInfo.nonce
-                                };
+                            // while logged in, web.account object is set
+                            self.account = {
+                                handle: handle,
+                                privateKey: privateKey,
+                                address: self.privateKeyToAddress(privateKey),
+                                nonce: storedInfo.nonce
+                            };
 
-                                if (callback) callback(self.account);
-                            
-                            // decryption failure: bad password
-                            } catch (e) {
-                                if (callback) callback(errors.BAD_CREDENTIALS);
-                            }
+                            if (callback) callback(self.account);
+                        
+                        // decryption failure: bad password
+                        } catch (e) {
+                            if (callback) callback(errors.BAD_CREDENTIALS);
                         }
-                    );
+                    
+                    }); // deriveKey
 
                 // handle not found
                 } else {
                     if (callback) callback(errors.BAD_CREDENTIALS);
                 }
-            });
+
+            }); // db.get
         },
 
         logout: function () {
