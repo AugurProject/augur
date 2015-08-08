@@ -55,10 +55,24 @@ EthereumClient.prototype.setDefaultBranch = function(branchId) {
 EthereumClient.prototype.connect = function() {
 
   // augur.js setup
-  var domain, port;
-  [domain, port] = this.host.split(':');
-  Augur.connect({ host: domain, port: port || '8545' });
-}
+  Augur.connect(this.host);
+};
+
+EthereumClient.prototype.register = function (handle, password, callback) {
+  if (handle && password) {
+    Augur.web.register(handle, password, callback);
+  }
+};
+
+EthereumClient.prototype.signIn = function (handle, password, callback) {
+  if (handle && password) {
+    Augur.web.login(handle, password, callback);
+  }
+};
+
+EthereumClient.prototype.signOut = function () {
+  Augur.web.logout();
+};
 
 /**
  * Get the contract object for the given contract name. If it hasn't been
@@ -240,14 +254,23 @@ EthereumClient.prototype.getEtherBalance = function(onResult) {
 };
 
 EthereumClient.prototype.getAccountSync = function() {
-  if (this.currentAccount)
-      return this.currentAccount;
 
-  this.currentAccount = this.web3.eth.coinbase;
+  // if signed in, then use the signed-in account
+  if (Augur.web.account.address) {
+    
+    this.currentAccount = Augur.web.account.address;
 
-  if (!this.currentAccount)
-      this.currentAccount = Augur.coinbase;
+  // otherwise, use the coinbase
+  } else {
 
+    if (this.currentAccount)
+        return this.currentAccount;
+
+    this.currentAccount = this.web3.eth.coinbase;
+
+    if (!this.currentAccount)
+        this.currentAccount = Augur.coinbase;
+  }
   return this.currentAccount;
 };
 
