@@ -6,6 +6,10 @@ GLOBAL.BigNumber = require("bignumber.js");
 GLOBAL.XHR2 = require("xhr2");
 GLOBAL.request = require("sync-request");
 GLOBAL.crypto = require("crypto");
+GLOBAL.sha3 = require("js-sha3");
+GLOBAL.scrypt = require("scryptsy");
+GLOBAL.keccak = require("js-sha3").keccak_256;
+GLOBAL.uuid = require("node-uuid");
 GLOBAL._ = require("lodash");
 GLOBAL.chalk = require("chalk");
 GLOBAL.moment = require("moment");
@@ -35,6 +39,7 @@ web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"));
 
 GLOBAL.accounts = utils.get_test_accounts(Augur, constants.MAX_TEST_ACCOUNTS);
 GLOBAL.c = Augur.coinbase;
+GLOBAL.web = Augur.web;
 
 GLOBAL.balance = function (account, branch) {
     account = account || Augur.coinbase;

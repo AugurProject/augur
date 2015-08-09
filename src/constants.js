@@ -33,19 +33,23 @@ var constants = {
 
     TIMEOUT: 120000,
 
-    CIPHER: "aes-256-cbc",
-    // CIPHER: "aes-128-cbc",
-    // CIPHER: "aes-128-ctr",
+    // CIPHER: "aes-256-cbc",
+    // KEYSIZE: 32,
 
-    KEYSIZE: 32,
+    CIPHER: "aes-128-ctr",
+    KEYSIZE: 16,
+
     IVSIZE: 16,
 
     // key derivation functions
     pbkdf2: {
-        ITERATIONS: 262144,
-        ALGORITHM: "sha256"
+        c: 262144,
+        dklen: 32,
+        hash: "sha256",
+        prf: "hmac-sha256"
     },
     scrypt: {
+        dklen: 32,
         n: 65536,
         r: 8,
         p: 1

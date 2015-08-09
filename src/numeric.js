@@ -46,10 +46,10 @@ module.exports = {
     decode_hex: function (h, strip) {
         var hex = h.toString();
         var str = '';
+        if (hex.slice(0,2) === "0x") hex = hex.slice(2);
         // first 32 bytes = offset
         // second 32 bytes = string length
         if (strip) {
-            if (hex.slice(0,2) === "0x") hex = hex.slice(2);
             hex = hex.slice(128);
             hex = this.remove_trailing_zeros(hex);
         }

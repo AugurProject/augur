@@ -129,6 +129,83 @@ describe("Transactions", function () {
 
 });
 
+describe("Crypto", function () {
+    
+    // Crypto test vectors:
+    // https://github.com/ethereum/wiki/wiki/Web3-Secret-Storage-Definition
+
+    describe("deriveKey (PBKDF2)", function () {
+        var test = function (t) {
+            it("convert " + JSON.stringify(t.input) + " -> " + t.output, function () {
+                var derivedKey = Augur.web.deriveKey(t.input.password, t.input.salt);
+                assert.strictEqual(derivedKey.toString("hex"), t.output);
+            });
+        };        
+
+        test({
+            input: {
+                password: "testpassword",
+                salt: "ae3cd4e7013836a3df6bd7241b12db061dbe2c6785853cce422d148a624ce0bd"
+            },
+            output: "f06d69cdc7da0faffb1008270bca38f5e31891a3a773950e6d0fea48a7188551"
+        });
+    });
+
+    describe("getMAC", function () {
+
+        var test = function (t) {
+            it("convert " + JSON.stringify(t.input) + " -> " + t.output, function () {
+                var mac = Augur.web.getMAC(t.input.derivedKey, t.input.ciphertext);
+                assert.strictEqual(mac, t.output);
+            });
+        };
+
+        test({
+            input: {
+                derivedKey: "f06d69cdc7da0faffb1008270bca38f5e31891a3a773950e6d0fea48a7188551",
+                ciphertext: "5318b4d5bcd28de64ee5559e671353e16f075ecae9f99c7a79a38af5f869aa46"
+            },
+            output: "517ead924a9d0dc3124507e3393d175ce3ff7c1e96529c6c555ce9e51205e9b2"
+        });
+
+        test({
+            input: {
+                derivedKey: "fac192ceb5fd772906bea3e118a69e8bbb5cc24229e20d8766fd298291bba6bd",
+                ciphertext: "d172bf743a674da9cdad04534d56926ef8358534d458fffccd4e6ad2fbde479c"
+            },
+            output: "2103ac29920d71da29f15d75b4a16dbe95cfd7ff8faea1056c33131d846e3097"
+        });
+
+    });
+
+    // describe("dumpPrivateKey", function () {
+
+    //     var derivedKey = "f06d69cdc7da0faffb1008270bca38f5e31891a3a773950e6d0fea48a7188551";
+
+    //     var expected = {
+    //         crypto: {
+    //             cipher: "aes-128-ctr",
+    //             cipherparams: {
+    //                 iv: "6087dab2f9fdbbfaddc31a909735c1e6"
+    //             },
+    //             ciphertext: "5318b4d5bcd28de64ee5559e671353e16f075ecae9f99c7a79a38af5f869aa46",
+    //             kdf: "pbkdf2",
+    //             kdfparams: {
+    //                 c: 262144,
+    //                 dklen: 32,
+    //                 prf: "hmac-sha256",
+    //                 salt: "ae3cd4e7013836a3df6bd7241b12db061dbe2c6785853cce422d148a624ce0bd"
+    //             },
+    //             mac: "517ead924a9d0dc3124507e3393d175ce3ff7c1e96529c6c555ce9e51205e9b2"
+    //         },
+    //         id: "3198bc9c-6672-5ab3-d995-4942343ae5b6",
+    //         version: 3
+    //     };
+
+    // });
+
+});
+
 describe("Accounts", function () {
 
     describe("Register", function () {

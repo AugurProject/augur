@@ -45,7 +45,11 @@ var options = {
 
     // If set to true, all numerical results (excluding hashes)
     // are returned as BigNumber objects
-    BigNumberOnly: true
+    BigNumberOnly: true,
+
+    // If set to true, client-side accounts use scrypt for key derivation
+    // instead of PBKDF2
+    scrypt: false
 
 };
 

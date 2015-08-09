@@ -18,8 +18,9 @@ var EthTx = require("ethereumjs-tx");
 var EC = require("elliptic").ec;
 var errors = require("./errors");
 var constants = require("./constants");
-var utilities = require("./utilities");
+var utils = require("./utilities");
 var numeric = require("./numeric");
+var keccak = require("../lib/keccak");
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
@@ -35,42 +36,72 @@ module.exports = function (augur) {
 
         ecdsa: new EC("secp256k1"),
 
-        // export private key to geth-readable json
+        getMAC: function (derivedKey, ciphertext) {
+            return keccak(utils.hex2utf16le(derivedKey.slice(32, 64) + ciphertext));
+        },
+
+        // export private key to secret-storage format specified by:
+        // https://github.com/ethereum/wiki/wiki/Web3-Secret-Storage-Definition
         dumpPrivateKey: function (password, privateKey, iv, callback) {
             var self = this;
-            var hmac = crypto.createHmac("sha256", privateKey);
             self.deriveKey(password, iv, function (derivedKey) {
+
+                // encryption key: first 16 bytes of derived key
+                var ciphertext = self.encrypt(
+                    privateKey,
+                    derivedKey.slice(0, 16),
+                    iv
+                ).toString("hex");
+
+                // MAC: Keccak hash of the byte array formed by concatenating
+                // the second 16 bytes of the derived key with the ciphertext
+                // key's contents
+                var mac = self.getMAC(derivedKey, ciphertext);
+
+                // ID: random 128-bit UUID given to the secret key (a
+                // privacy-preserving proxy for the secret key's address)
+                var id = uuid.v4();
+
+                // ethereum address
+                var address = self.privateKeyToAddress(privateKey);
+
+                // random 128-bit salt
+                // var salt = crypto.randomBytes(constants.KEYSIZE);
+                var salt = iv;
+
                 var json = {
-                    address: this.privateKeyToAddress(privateKey),
+                    address: address,
                     Crypto: {
                         cipher: constants.CIPHER,
-                        ciphertext: self.encrypt(privateKey, derivedKey, iv).toString("hex"),
+                        ciphertext: ciphertext,
                         cipherparams: { iv: iv },
-                        mac: ""
+                        mac: mac
                     },
-                    id: uuid.v4(),
+                    id: id,
                     version: 3
                 };
-                if (this.scrypt) {
+                if (self.scrypt) {
                     json.Crypto.kdf = "scrypt";
                     json.Crypto.kdfparams = {
-                        dklen: constants.KEYSIZE,
+                        dklen: constants.scrypt.dklen,
                         n: constants.scrypt.n,
                         r: constants.scrypt.r,
                         p: constants.scrypt.p,
-                        salt: iv
+                        salt: salt
                     };
                 } else {
                     json.Crypto.kdf = "pbkdf2";
                     json.Crypto.kdfparams = {
-                        c: constants.pbkdf2.ITERATIONS,
-                        dklen: constants.KEYSIZE,
-                        pdf: "hmac-sha256",
-                        salt: iv
+                        c: constants.pbkdf2.c,
+                        dklen: constants.pbkdf2.dklen,
+                        prf: constants.pbkdf2.prf,
+                        salt: salt
                     };
                 }
                 console.log(json);
-                if (callback) callback(json);
+                if (callback && callback.constructor === Function) {
+                    callback(json);
+                }
             });
         },
 
@@ -100,53 +131,88 @@ module.exports = function (augur) {
         },
 
         // derive secret key from password
-        deriveKey: function (password, iv, callback) {
+        deriveKey: function (password, salt, callback) {
 
-            // use scrypt if augur.options.scrypt = true
+            // use scrypt kdf if augur.options.scrypt = true
             if (this.scrypt) {
                 var derivedKey = scrypt(
                     password,
-                    iv,
+                    salt,
                     constants.scrypt.n,
                     constants.scrypt.r,
                     constants.scrypt.p,
-                    constants.KEYSIZE
+                    constants.scrypt.dklen
                 );
-                if (callback) {
+                if (callback && callback.constructor === Function) {
                     callback(derivedKey);
                 } else {
                     return derivedKey;
-                }                
+                }
 
-            // default key derivation function is PBKDF2
+            // use default key derivation function (PBKDF2)
             } else {
-                crypto.pbkdf2(password, iv,
-                    constants.pbkdf2.ITERATIONS,
-                    constants.KEYSIZE,
-                    constants.pbkdf2.ALGORITHM,
-                    function (ex, derivedKey) {
-                        if (ex) throw ex;
-                        if (callback) callback(derivedKey);
+                if (callback && callback.constructor === Function) {
+                    crypto.pbkdf2(
+                        password,
+                        salt,
+                        constants.pbkdf2.c,
+                        constants.pbkdf2.dklen,
+                        constants.pbkdf2.hash,
+                        function (ex, derivedKey) {
+                            if (ex) throw ex;
+                            callback(derivedKey);
+                        }
+                    );
+                } else {
+                    
+                    try {
+                        return crypto.pbkdf2Sync(
+                            password,
+                            salt,
+                            constants.pbkdf2.c,
+                            constants.pbkdf2.dklen,
+                            constants.pbkdf2.hash
+                        );
+
+                    } catch (ex) {
+                        throw ex;
                     }
-                );
+                }
             }
         },
 
         generateKey: function (callback) {
 
-            // generate ECDSA private key
-            crypto.randomBytes(constants.KEYSIZE, function (ex, privateKey) {
-                if (ex) throw ex;
+            // asynchronous key generation if callback provided
+            if (callback && callback.constructor === Function) {
 
-                // generate random initialization vector
-                crypto.randomBytes(constants.IVSIZE, function (ex, iv) {
-                    if (ex) throw ex;
+                // generate ECDSA private key
+                crypto.randomBytes(constants.KEYSIZE, function (ex, privateKey) {
+                    if (ex) callback(ex);
 
-                    if (callback) callback({ privateKey: privateKey, iv: iv });
+                    // generate random initialization vector
+                    crypto.randomBytes(constants.IVSIZE, function (ex, iv) {
+                        if (ex) callback(ex);
+                        callback({ privateKey: privateKey, iv: iv });
+
+                    }); // crypto.randomBytes
 
                 }); // crypto.randomBytes
 
-            }); // crypto.randomBytes
+            // synchronous key generation
+            } else {
+
+                try {
+                    return {
+                        privateKey: crypto.randomBytes(constants.KEYSIZE),
+                        iv: crypto.randomBytes(constants.IVSIZE)
+                    };
+
+                // couldn't generate key: not enough entropy?
+                } catch (ex) {
+                    return ex;
+                }
+            }
         },
 
         register: function (handle, password, callback) {
@@ -164,7 +230,11 @@ module.exports = function (augur) {
                             // store encrypted key & IV, indexed by handle
                             augur.db.put(handle, {
                                 handle: handle,
-                                privateKey: self.encrypt(plain.privateKey, derivedKey, plain.iv),
+                                privateKey: self.encrypt(
+                                    plain.privateKey,
+                                    derivedKey.slice(0, 16),
+                                    plain.iv
+                                ),
                                 iv: plain.iv.toString("base64"),
                                 nonce: 0
                             }, function () {
@@ -210,7 +280,7 @@ module.exports = function (augur) {
                             // decrypt stored private key using secret key
                             var privateKey = new Buffer(self.decrypt(
                                 storedInfo.privateKey,
-                                derivedKey,
+                                derivedKey.slice(0, 16),
                                 iv
                             ), "hex");
 
@@ -269,7 +339,7 @@ module.exports = function (augur) {
         //     if (this.account.address) {
         //         augur.db.get(toHandle, function (toAccount) {
         //             if (!toAccount.error) {
-        //                 var tx = utilities.copy(augur.tx.sendCash);
+        //                 var tx = utils.copy(augur.tx.sendCash);
         //                 tx.params = [toAccount.address, numeric.fix(value)];
         //                 log(tx);
         //                 return self.transact(tx, onSent, onSuccess, onFailed);
@@ -285,7 +355,7 @@ module.exports = function (augur) {
         //     if (this.account.address) {
         //         augur.db.get(toHandle, function (toAccount) {
         //             if (!toAccount.error) {
-        //                 var tx = utilities.copy(augur.tx.sendReputation);
+        //                 var tx = utils.copy(augur.tx.sendReputation);
         //                 tx.params = [toAccount.address, numeric.fix(value)];
         //                 return self.transact(tx, onSent, onSuccess, onFailed);
         //             } else {
@@ -305,7 +375,7 @@ module.exports = function (augur) {
                     if (this.account.privateKey && itx && itx.constructor === Object) {
 
                         // parse and serialize transaction parameters
-                        tx = utilities.copy(itx);
+                        tx = utils.copy(itx);
                         if (tx.params !== undefined) {
                             if (tx.params.constructor === Array) {
                                 for (var i = 0, len = tx.params.length; i < len; ++i) {
@@ -342,6 +412,7 @@ module.exports = function (augur) {
 
                                     // increment nonce, write to database
                                     augur.db.get(self.account.handle, function (stored) {
+                                        console.log(stored);
                                         stored.nonce = ++self.account.nonce;
                                         augur.db.put(self.account.handle, stored);
                                     });

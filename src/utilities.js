@@ -101,6 +101,75 @@ module.exports = {
         return current_block + block_delta;
     },
 
+    // a few handy conversion functions, mostly from
+    // http://michael-rushanan.blogspot.ca/2014/03/javascript-uint8array-hacks-and-cheat.html
+
+    str2ua: function (s) {
+        var ua = new Uint8Array(s.length);
+        for (var i = 0; i < s.length; i++) {
+            ua[i] = s.charCodeAt(i);
+        }
+        return ua;
+    },
+     
+    ua2str: function (ua) {
+        var s = '';
+        for (var i = 0; i < ua.length; i++) {
+            s += String.fromCharCode(ua[i]);
+        }
+        return s;
+    },
+
+    ua2hex: function (ua) {
+        var h = '';
+        for (var i = 0; i < ua.length; i++) {
+            h += "\\0x" + ua[i].toString(16);
+        }
+        return h;
+    },
+
+    ua2b64: function (ua) {
+        return this.btoa(String.fromCharCode.apply(null, ua));
+    },
+
+    b642ua: function (b64) {
+        return new Uint8Array(this.atob(b64).split('').map(function (c) {
+            return c.charCodeAt(0);
+        }));
+    },
+
+    btoa: function (str) {
+        var buffer;
+        if (str instanceof Buffer) {
+            buffer = str;
+        } else {
+            buffer = new Buffer(str.toString(), "binary");
+        }
+        return buffer.toString("base64");
+    },
+
+    atob: function (str) {
+        return new Buffer(str, "base64").toString("binary");
+    },
+
+    unescape_unicode: function (u) {
+        return JSON.parse('"' + u + '"');
+    },
+
+    escape_unicode: function (str) {
+        return str.replace(/[\s\S]/g, function (escape) {
+            return '\\u' + ('0000' + escape.charCodeAt().toString(16)).slice(-4);
+        });
+    },
+
+    hex2utf16le: function (input) {
+        var output = '';
+        for (var i = 0, l = input.length; i < l; i += 4) {
+            output += '\\u' + input.slice(i+2, i+4) + input.slice(i, i+2);
+        }
+        return this.unescape_unicode(output);
+    },
+
     has_value: function (o, v) {
         for (var p in o) {
             if (o.hasOwnProperty(p)) {
