@@ -10,9 +10,9 @@ var path = require("path");
 var assert = require("chai").assert;
 var _ = require("lodash");
 var chalk = require("chalk");
-var utilities = require("../../src/utilities");
-var constants = require("../../src/constants");
-var Augur = utilities.setup(require("../../src"), process.argv.slice(2));
+var utils = require("../../src/utilities");
+var augur = utils.setup(require("../../src"), process.argv.slice(2));
+var constants = augur.constants;
 var log = console.log;
 
 require('it-each')({ testPerIteration: true });
@@ -21,9 +21,9 @@ var minValue = 0;
 var maxValue = 1;
 var numOutcomes = 2;
 var num_events = 4;
-var branch = Augur.branches.dev;
-var period = Augur.getVotePeriod(branch);
-var exp_date = Augur.blockNumber() + 2500;
+var branch = augur.branches.dev;
+var period = augur.getVotePeriod(branch);
+var exp_date = augur.blockNumber() + 2500;
 
 var datafile = path.join(__dirname, "..", "..", "data", "events.dat");
 fs.writeFileSync(datafile, "");
@@ -34,7 +34,7 @@ describe("Creating " + num_events + " events and markets", function () {
         this.timeout(constants.TIMEOUT);
         var event_description = Math.random().toString(36).substring(4);
 
-        Augur.createEvent({
+        augur.createEvent({
             branchId: branch,
             description: event_description,
             expDate: exp_date,
@@ -52,8 +52,8 @@ describe("Creating " + num_events + " events and markets", function () {
                 var market_description = event_description;
                 var numOutcomes = 2;
 
-                Augur.createMarket({
-                    branchId: Augur.branches.dev,
+                augur.createMarket({
+                    branchId: augur.branches.dev,
                     description: market_description,
                     alpha: alpha,
                     initialLiquidity: initialLiquidity,

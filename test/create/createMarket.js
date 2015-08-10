@@ -111,28 +111,18 @@ describe("functions/createMarket", function () {
 
                         },
                         onFailed: function (r) {
-                            r.name = r.error; throw r;
-                            next();
+                            next(r);
                         }
                     }); // createMarket.createMarket
                 
                 },
                 onFailed: function (r) {
-                    r.name = r.error; throw r;
-                    next();
+                    next(r);
                 }
             }); // createEvent.createEvent
 
         }
     );
-    
-    // var events = [[
-    //     "Will it rain in New York City on November 12, 2016?",
-    //     utils.date_to_block(Augur, "11-13-2016")
-    // ], [
-    //     "Will the Larsen B ice shelf collapse by November 1, 2016?",
-    //     utils.date_to_block(Augur, "11-2-2016")
-    // ]];
 
     // it.each(
     //     events,
