@@ -3,7 +3,7 @@ node_js:
   - "0.12"
   - "0.11"
 before_script:
-  - apt-get install scrypt
+  - sudo apt-get install scrypt
   - npm install
   - npm install jshint mocha
 script:
