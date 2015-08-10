@@ -50,67 +50,89 @@ describe("Crypto", function () {
     // Test vectors:
     // https://github.com/ethereum/wiki/wiki/Web3-Secret-Storage-Definition
 
-    // describe("scrypt kdf", function () {)
-    //     augur.options.scrypt = true;
-    //     augur.connect();
-    //     describe("deriveKey", function () {
-    //         var test = function (t) {
-    //             it("convert " + JSON.stringify(t.input) + " -> " + t.output, function () {
-    //                 var derivedKey = augur.Crypto.deriveKey(t.input.password, t.input.salt);
-    //                 assert.strictEqual(derivedKey.toString("hex"), t.output);
-    //             });
-    //         };
-    //         test({
-    //             input: {
-    //                 password: "testpassword",
-    //                 salt: "ab0c7876052600dd703518d6fc3fe8984592145b591fc8fb5c6d43190334ba19"
-    //             },
-    //             output: "fac192ceb5fd772906bea3e118a69e8bbb5cc24229e20d8766fd298291bba6bd"
-    //         });
-    //     });
-    // });
+    describe("generateKey", function () {
 
-    describe("pbkdf2-sha256", function () {
-        augur.options.scrypt = false;
-        augur.connect();
-        describe("deriveKey", function () {
-            var test = function (t) {
-                it("convert " + JSON.stringify(t.input) + " -> " + t.output, function () {
-                    var derivedKey = augur.Crypto.deriveKey(t.input.password, t.input.salt);
-                    assert.strictEqual(derivedKey.toString("hex"), t.output);
-                });
-            };
-            test({
-                input: {
-                    password: "testpassword",
-                    salt: "ae3cd4e7013836a3df6bd7241b12db061dbe2c6785853cce422d148a624ce0bd"
-                },
-                output: "f06d69cdc7da0faffb1008270bca38f5e31891a3a773950e6d0fea48a7188551"
-            });
+        it("random 256-bit private key & salt, 128-bit initialization vector", function () {
+            var plaintext = augur.Crypto.generateKey();
+            assert.property(plaintext, "privateKey");
+            assert.isNotNull(plaintext.privateKey);
+            assert.property(plaintext, "iv");
+            assert.isNotNull(plaintext.iv);
+            assert.property(plaintext, "salt");
+            assert.isNotNull(plaintext.salt);
         });
-        describe("getMAC", function () {
-            var test = function (t) {
-                it("convert " + JSON.stringify(t.input) + " -> " + t.output, function () {
-                    var mac = augur.Crypto.getMAC(t.input.derivedKey, t.input.ciphertext);
-                    assert.strictEqual(mac, t.output);
-                });
-            };
-            test({
-                input: {
-                    derivedKey: "f06d69cdc7da0faffb1008270bca38f5e31891a3a773950e6d0fea48a7188551",
-                    ciphertext: "5318b4d5bcd28de64ee5559e671353e16f075ecae9f99c7a79a38af5f869aa46"
-                },
-                output: "517ead924a9d0dc3124507e3393d175ce3ff7c1e96529c6c555ce9e51205e9b2"
-            });
-            test({
-                input: {
-                    derivedKey: "fac192ceb5fd772906bea3e118a69e8bbb5cc24229e20d8766fd298291bba6bd",
-                    ciphertext: "d172bf743a674da9cdad04534d56926ef8358534d458fffccd4e6ad2fbde479c"
-                },
-                output: "2103ac29920d71da29f15d75b4a16dbe95cfd7ff8faea1056c33131d846e3097"
-            });
-        });
+
     });
+
+    describe("deriveKey: scrypt", function () {
+
+        var test = function (t) {
+            it("convert " + JSON.stringify(t.input) + " -> " + t.output, function () {
+                this.timeout(constants.TIMEOUT);
+                augur.options.scrypt = true;
+                augur.connect();
+                var derivedKey = augur.Crypto.deriveKey(t.input.password, t.input.salt);
+                assert.strictEqual(derivedKey, t.output);
+            });
+        };
+        
+        test({
+            input: {
+                password: "testpassword",
+                salt: "ab0c7876052600dd703518d6fc3fe8984592145b591fc8fb5c6d43190334ba19"
+            },
+            output: "fac192ceb5fd772906bea3e118a69e8bbb5cc24229e20d8766fd298291bba6bd"
+        });
+
+    });
+
+    describe("deriveKey: pbkdf2-sha256", function () {
+
+        var test = function (t) {
+            it("convert " + JSON.stringify(t.input) + " -> " + t.output, function () {
+                augur.options.scrypt = false;
+                augur.connect();
+                var derivedKey = augur.Crypto.deriveKey(t.input.password, t.input.salt);
+                assert.strictEqual(derivedKey.toString("hex"), t.output);
+            });
+        };
+
+        test({
+            input: {
+                password: "testpassword",
+                salt: "ae3cd4e7013836a3df6bd7241b12db061dbe2c6785853cce422d148a624ce0bd"
+            },
+            output: "f06d69cdc7da0faffb1008270bca38f5e31891a3a773950e6d0fea48a7188551"
+        });
+
+    });
+
+    describe("getMAC", function () {
+
+        var test = function (t) {
+            it("convert " + JSON.stringify(t.input) + " -> " + t.output, function () {
+                var mac = augur.Crypto.getMAC(t.input.derivedKey, t.input.ciphertext);
+                assert.strictEqual(mac, t.output);
+            });
+        };
+
+        test({
+            input: {
+                derivedKey: "f06d69cdc7da0faffb1008270bca38f5e31891a3a773950e6d0fea48a7188551",
+                ciphertext: "5318b4d5bcd28de64ee5559e671353e16f075ecae9f99c7a79a38af5f869aa46"
+            },
+            output: "517ead924a9d0dc3124507e3393d175ce3ff7c1e96529c6c555ce9e51205e9b2"
+        });
+        test({
+            input: {
+                derivedKey: "fac192ceb5fd772906bea3e118a69e8bbb5cc24229e20d8766fd298291bba6bd",
+                ciphertext: "d172bf743a674da9cdad04534d56926ef8358534d458fffccd4e6ad2fbde479c"
+            },
+            output: "2103ac29920d71da29f15d75b4a16dbe95cfd7ff8faea1056c33131d846e3097"
+        });
+
+    });
+
     // describe("dumpPrivateKey", function () {
     //     var derivedKey = "f06d69cdc7da0faffb1008270bca38f5e31891a3a773950e6d0fea48a7188551";
     //     var expected = {

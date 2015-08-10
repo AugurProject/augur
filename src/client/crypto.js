@@ -11,7 +11,6 @@ if ((typeof module !== "undefined") && process && !process.browser) {
     crypto = require("crypto-browserify");
 }
 var BigNumber = require("bignumber.js");
-var scrypt = require("scryptsy");
 var uuid = require("node-uuid");
 var EthUtil = require("ethereumjs-util");
 var EC = require("elliptic").ec;
@@ -20,16 +19,17 @@ var constants = require("../constants");
 var utils = require("../utilities");
 var numeric = require("../core/numeric");
 var keccak = require("../../lib/keccak");
+var scrypt = require("../../lib/scrypt")(constants.scrypt.maxmem);
 var log = console.log;
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
-module.exports = function (scrypt) {
+module.exports = function (kdf) {
 
     return {
 
         // Option to use scrypt key derivation function
-        scrypt: scrypt,
+        scrypt: kdf,
 
         ecdsa: new EC("secp256k1"),
 
@@ -63,8 +63,7 @@ module.exports = function (scrypt) {
                 var address = self.privateKeyToAddress(privateKey);
 
                 // random 128-bit salt
-                // var salt = crypto.randomBytes(constants.KEYSIZE);
-                var salt = iv;
+                var salt = crypto.randomBytes(constants.KEYSIZE);
 
                 var json = {
                     address: address,
@@ -132,18 +131,19 @@ module.exports = function (scrypt) {
 
             // use scrypt kdf if augur.options.scrypt = true
             if (this.scrypt) {
-                var derivedKey = scrypt(
-                    password,
-                    salt,
-                    constants.scrypt.n,
-                    constants.scrypt.r,
-                    constants.scrypt.p,
-                    constants.scrypt.dklen
-                );
-                if (callback && callback.constructor === Function) {
-                    callback(derivedKey);
-                } else {
-                    return derivedKey;
+
+                try {
+                    return scrypt.to_hex(scrypt.crypto_scrypt(
+                        new Buffer(password, "utf8"),
+                        new Buffer(salt, "hex"),
+                        constants.scrypt.n,
+                        constants.scrypt.r,
+                        constants.scrypt.p,
+                        constants.scrypt.dklen
+                    ));
+
+                } catch (ex) {
+                    return ex;
                 }
 
             // use default key derivation function (PBKDF2)
@@ -151,12 +151,12 @@ module.exports = function (scrypt) {
                 if (callback && callback.constructor === Function) {
                     crypto.pbkdf2(
                         password,
-                        salt,
+                        new Buffer(salt, "hex"),
                         constants.pbkdf2.c,
                         constants.pbkdf2.dklen,
                         constants.pbkdf2.hash,
                         function (ex, derivedKey) {
-                            if (ex) throw ex;
+                            if (ex) return ex;
                             callback(derivedKey);
                         }
                     );
@@ -165,14 +165,14 @@ module.exports = function (scrypt) {
                     try {
                         return crypto.pbkdf2Sync(
                             password,
-                            salt,
+                            new Buffer(salt, "hex"),
                             constants.pbkdf2.c,
                             constants.pbkdf2.dklen,
                             constants.pbkdf2.hash
                         );
 
                     } catch (ex) {
-                        throw ex;
+                        return ex;
                     }
                 }
             }
@@ -190,7 +190,17 @@ module.exports = function (scrypt) {
                     // generate random initialization vector
                     crypto.randomBytes(constants.IVSIZE, function (ex, iv) {
                         if (ex) callback(ex);
-                        callback({ privateKey: privateKey, iv: iv });
+
+                        // generate random salt
+                        crypto.randomBytes(constants.KEYSIZE, function (ex, salt) {
+                            if (ex) callback(ex);
+
+                            callback({
+                                privateKey: privateKey,
+                                iv: iv,
+                                salt: salt
+                            });
+                        });
 
                     }); // crypto.randomBytes
 
@@ -202,7 +212,8 @@ module.exports = function (scrypt) {
                 try {
                     return {
                         privateKey: crypto.randomBytes(constants.KEYSIZE),
-                        iv: crypto.randomBytes(constants.IVSIZE)
+                        iv: crypto.randomBytes(constants.IVSIZE),
+                        salt: crypto.randomBytes(constants.KEYSIZE)
                     };
 
                 // couldn't generate key: not enough entropy?

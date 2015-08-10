@@ -36,7 +36,6 @@ var constants = {
     // timeout for asynchronous unit tests
     TIMEOUT: 120000,
 
-    // CIPHER: "aes-256-cbc",
     CIPHER: "aes-128-ctr",
     IVSIZE: 16,
 
@@ -52,9 +51,10 @@ var constants = {
     },
     scrypt: {
         dklen: 32,
-        n: 65536,
-        r: 8,
-        p: 1
+        n: 262144,
+        r: 1,
+        p: 8,
+        maxmem: 67108864
     },
 
     FIREBASE_URL: "https://resplendent-inferno-1997.firebaseio-demo.com/"

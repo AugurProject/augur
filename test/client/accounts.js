@@ -350,7 +350,7 @@ describe("Accounts", function () {
                     }
                 });
             });
-        
+
         });
 
         describe("Send transaction", function () {
