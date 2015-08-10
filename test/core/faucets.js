@@ -2,7 +2,6 @@
 
 "use strict";
 
-var BigNumber = require("bignumber.js");
 var assert = require("chai").assert;
 var utils = require("../../src/utilities");
 var augur = utils.setup(require("../../src"), process.argv.slice(2));
@@ -86,10 +85,7 @@ describe("Faucets", function () {
                     var final_balance = numeric.bignum(
                         augur.getCashBalance(augur.coinbase)
                     );
-                    assert.strictEqual(
-                        start_balance.sub(final_balance).toFixed(),
-                        new BigNumber(1).toFixed()
-                    );
+                    assert.strictEqual(final_balance.toFixed(), "1");
                     faucet();
                 },
                 onFailed: function (r) {
