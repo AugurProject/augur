@@ -34,17 +34,6 @@ module.exports = function (augur) {
 
                             // encrypt private key using derived key and IV, then
                             // store encrypted key & IV, indexed by handle
-                            log({
-                                handle: handle,
-                                privateKey: augur.Crypto.encrypt(
-                                    plain.privateKey,
-                                    derivedKey.slice(0, 16),
-                                    plain.iv
-                                ),
-                                iv: plain.iv.toString("base64"),
-                                nonce: 0
-                            });
-
                             augur.db.put(handle, {
                                 handle: handle,
                                 privateKey: augur.Crypto.encrypt(
@@ -108,8 +97,6 @@ module.exports = function (augur) {
                                 address: augur.Crypto.privateKeyToAddress(privateKey),
                                 nonce: storedInfo.nonce
                             };
-
-                            log("logged in:", self.account);
 
                             if (callback) callback(self.account);
                         
@@ -214,7 +201,7 @@ module.exports = function (augur) {
                         packaged = new EthTx({
                             to: tx.to,
                             from: this.account.address,
-                            gasPrice: "0xda475abf000", // 0.000015 ether
+                            gasPrice: (tx.gasPrice) ? tx.gasPrice : augur.gasPrice(),
                             gasLimit: (tx.gas) ? tx.gas : constants.DEFAULT_GAS,
                             nonce: this.account.nonce,
                             value: tx.value || "0x0",
@@ -229,9 +216,8 @@ module.exports = function (augur) {
                                 packaged.serialize().toString("hex"),
                                 function (r) {
 
-                                    // increment nonce, write to database
+                                    // increment nonce and write to database
                                     augur.db.get(self.account.handle, function (stored) {
-                                        console.log(stored);
                                         stored.nonce = ++self.account.nonce;
                                         augur.db.put(self.account.handle, stored);
                                     });
@@ -261,18 +247,15 @@ module.exports = function (augur) {
                     return augur.invoke(itx, callback);
                 }
             }
-        },
-
-        transact: function (tx, onSent, onSuccess, onFailed) {
-            var returns = tx.returns;
-
-            delete tx.returns;
-            tx.send = true;
-
-            this.invoke(tx, function (txhash) {
-                augur.confirmTx(tx, txhash, returns, onSent, onSuccess, onFailed);
-            });
         }
 
+        // transact: function (tx, onSent, onSuccess, onFailed) {
+        //     var returns = tx.returns;
+        //     delete tx.returns;
+        //     tx.send = true;
+        //     this.invoke(tx, function (txhash) {
+        //         augur.confirmTx(tx, txhash, returns, onSent, onSuccess, onFailed);
+        //     });
+        // }
     };
 };

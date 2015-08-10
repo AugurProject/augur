@@ -6,11 +6,10 @@
 "use strict";
 
 var assert = require("chai").assert;
-var async = require("async");
-var constants = require("../../src/constants");
 var contracts = require("../../src/contracts");
-var utilities = require("../../src/utilities");
-var Augur = utilities.setup(require("../../src"), process.argv.slice(2));
+var utils = require("../../src/utilities");
+var augur = utils.setup(require("../../src"), process.argv.slice(2));
+var constants = augur.constants;
 var log = console.log;
 
 require('it-each')({ testPerIteration: true });
@@ -33,24 +32,24 @@ describe("RPC multicast", function () {
         params: []
     };
 
-    it("should reload modules with new nodes in Augur.rpc.nodes", function () {
-        Augur.options.nodes = nodes;
-        Augur.reload_modules(Augur.options);
-        assert(utilities.array_equal(Augur.rpc.nodes.slice(1), nodes));
+    it("should reload modules with new nodes in augur.rpc.nodes", function () {
+        augur.options.nodes = nodes;
+        augur.reload_modules(augur.options);
+        assert(utils.array_equal(augur.rpc.nodes.slice(1), nodes));
     });
 
-    Augur.options.nodes = nodes;
-    Augur.reload_modules(Augur.options);
+    augur.options.nodes = nodes;
+    augur.reload_modules(augur.options);
     
-    it.each(Augur.rpc.nodes, "should synchronously post eth_coinbase RPC to %s", ["element"], function (element, next) {
+    it.each(augur.rpc.nodes, "should synchronously post eth_coinbase RPC to %s", ["element"], function (element, next) {
         this.timeout(constants.TIMEOUT);
-        assert.strictEqual(Augur.rpc.postSync(element, command).length, 42);
+        assert.strictEqual(augur.rpc.postSync(element, command).length, 42);
         next();
     });
 
-    it.each(Augur.rpc.nodes, "should asynchronously post eth_coinbase RPC to %s", ["element"], function (element, next) {
+    it.each(augur.rpc.nodes, "should asynchronously post eth_coinbase RPC to %s", ["element"], function (element, next) {
         this.timeout(constants.TIMEOUT);
-        Augur.rpc.post(element, JSON.stringify(command), null, function (response) {
+        augur.rpc.post(element, JSON.stringify(command), null, function (response) {
             assert.strictEqual(response.length, 42);
             next();
         });
@@ -58,14 +57,14 @@ describe("RPC multicast", function () {
 
     it("should call back after first successful asynchronous responses", function (done) {
         this.timeout(constants.TIMEOUT);
-        Augur.rpc.json_rpc(command, function (response) {
+        augur.rpc.json_rpc(command, function (response) {
             assert.strictEqual(response.length, 42);
             done();
         });
     }); 
 
     it("should return after first successful synchronous response", function (done) {
-        assert.strictEqual(Augur.rpc.json_rpc(command).length, 42);
+        assert.strictEqual(augur.rpc.json_rpc(command).length, 42);
         done();
     });
 

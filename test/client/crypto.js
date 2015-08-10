@@ -21,12 +21,6 @@ var log = console.log;
 var ecdsa = new EC("secp256k1");
 var privateKey = crypto.randomBytes(32);
 
-// generate random handles and passwords
-var handle = utils.sha256(new Date().toString());
-var password = utils.sha256(Math.random().toString(36).substring(4));
-var handle2 = utils.sha256(new Date().toString()).slice(10);
-var password2 = utils.sha256(Math.random().toString(36).substring(4)).slice(10);
-
 describe("Crypto", function () {
     var publicKey = new Buffer(ecdsa.keyFromPrivate(privateKey).getPublic("arr"));
     var address = EthUtil.pubToAddress(publicKey).toString("hex");
@@ -53,7 +47,7 @@ describe("Crypto", function () {
         assert.strictEqual(augur.Crypto.privateKeyToAddress(privateKey), "0x" + address);
     });
 
-    // Crypto test vectors:
+    // Test vectors:
     // https://github.com/ethereum/wiki/wiki/Web3-Secret-Storage-Definition
 
     // describe("scrypt kdf", function () {)
@@ -211,7 +205,7 @@ describe("Transactions", function () {
         var tx2 = new EthTx(rawTx);
         var sender = "1f36f546477cda21bf2296c50976f2740247906f";
         assert.strictEqual(tx2.getSenderAddress().toString("hex"), sender);
-        assert(tx2.verifySignature());        
+        assert(tx2.verifySignature());
     });
 
 });

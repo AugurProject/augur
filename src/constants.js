@@ -27,19 +27,21 @@ var constants = {
     // transaction polling interval
     TX_POLL_INTERVAL: 12000,
 
+    // expected block interval
     SECONDS_PER_BLOCK: 12,
 
+    // maximum number of accounts to use for unit tests
     MAX_TEST_ACCOUNTS: 4,
 
+    // timeout for asynchronous unit tests
     TIMEOUT: 120000,
 
     // CIPHER: "aes-256-cbc",
-    // KEYSIZE: 32,
-
     CIPHER: "aes-128-ctr",
-    KEYSIZE: 16,
-
     IVSIZE: 16,
+
+    // ecdsa private key size (bytes)
+    KEYSIZE: 32,
 
     // key derivation functions
     pbkdf2: {
