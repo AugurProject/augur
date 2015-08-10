@@ -60,7 +60,7 @@ describe("Crypto", function () {
     // Test vectors:
     // https://github.com/ethereum/wiki/wiki/Web3-Secret-Storage-Definition
 
-    describe("deriveKey: scrypt", function () {
+    describe("Key derivation using scrypt", function () {
 
         var test = function (t) {
             it("convert " + JSON.stringify(t.input) + " -> " + t.output, function () {
@@ -82,7 +82,7 @@ describe("Crypto", function () {
 
     });
 
-    describe("deriveKey: pbkdf2-sha256", function () {
+    describe("Key derivation using pbkdf2-sha256", function () {
 
         var test = function (t) {
             it("convert " + JSON.stringify(t.input) + " -> " + t.output, function () {
@@ -103,7 +103,7 @@ describe("Crypto", function () {
 
     });
 
-    describe("getMAC", function () {
+    describe("Message authentication code", function () {
 
         var test = function (t) {
             it("convert " + JSON.stringify(t.input) + " -> " + t.output, function () {
@@ -129,7 +129,7 @@ describe("Crypto", function () {
 
     });
 
-    describe("dumpPrivateKey", function () {
+    it("Dump private key", function (done) {
         var derivedKey = "f06d69cdc7da0faffb1008270bca38f5e31891a3a773950e6d0fea48a7188551";
         var expected = {
             crypto: {
@@ -150,6 +150,7 @@ describe("Crypto", function () {
             id: "3198bc9c-6672-5ab3-d995-4942343ae5b6",
             version: 3
         };
+        done();
     });
 
 });
