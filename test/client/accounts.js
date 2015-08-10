@@ -36,13 +36,45 @@ describe("Accounts", function () {
                     if (result.error) {
                         augur.web.logout(); done(result);
                     } else {
+                        assert(!result.error);
+                        assert.property(result, "nonce");
                         assert(result.privateKey);
                         assert(result.address);
-                        assert(!result.error);
+                        assert.strictEqual(
+                            result.privateKey.toString("hex").length,
+                            constants.KEYSIZE*2
+                        );
+                        assert.strictEqual(result.address.length, 42);
                         augur.db.get(handle, function (rec) {
-                            assert(!rec.error);
-                            augur.web.logout();
-                            done();
+                            if (rec.error) {
+                                augur.web.logout(); done(rec);
+                            } else {
+                                assert(!rec.error);
+                                assert.property(rec, "nonce");
+                                assert(rec.privateKey);
+                                assert(rec.iv);
+                                assert(rec.salt);
+                                assert.strictEqual(
+                                    new Buffer(rec.iv, "base64")
+                                        .toString("hex")
+                                        .length,
+                                    constants.IVSIZE*2
+                                );
+                                assert.strictEqual(
+                                    new Buffer(rec.salt, "base64")
+                                        .toString("hex")
+                                        .length,
+                                    constants.KEYSIZE*2
+                                );
+                                assert.strictEqual(
+                                    new Buffer(rec.privateKey, "base64")
+                                        .toString("hex")
+                                        .length,
+                                    constants.KEYSIZE*2
+                                );
+                                augur.web.logout();
+                                done();
+                            }
                         });
                     }
                 });
@@ -57,13 +89,45 @@ describe("Accounts", function () {
                     if (result.error) {
                         augur.web.logout(); done(result);
                     } else {
+                        assert(!result.error);
+                        assert.property(result, "nonce");
                         assert(result.privateKey);
                         assert(result.address);
-                        assert(!result.error);
+                        assert.strictEqual(
+                            result.privateKey.toString("hex").length,
+                            constants.KEYSIZE*2
+                        );
+                        assert.strictEqual(result.address.length, 42);
                         augur.db.get(handle2, function (rec) {
-                            assert(!rec.error);
-                            augur.web.logout();
-                            done();
+                            if (rec.error) {
+                                augur.web.logout(); done(rec);
+                            } else {
+                                assert(!rec.error);
+                                assert.property(rec, "nonce");
+                                assert(rec.privateKey);
+                                assert(rec.iv);
+                                assert(rec.salt);
+                                assert.strictEqual(
+                                    new Buffer(rec.iv, "base64")
+                                        .toString("hex")
+                                        .length,
+                                    constants.IVSIZE*2
+                                );
+                                assert.strictEqual(
+                                    new Buffer(rec.salt, "base64")
+                                        .toString("hex")
+                                        .length,
+                                    constants.KEYSIZE*2
+                                );
+                                assert.strictEqual(
+                                    new Buffer(rec.privateKey, "base64")
+                                        .toString("hex")
+                                        .length,
+                                    constants.KEYSIZE*2
+                                );
+                                augur.web.logout();
+                                done();
+                            }
                         });
                     }
                 });
@@ -93,9 +157,14 @@ describe("Accounts", function () {
                 if (user.error) {
                     augur.web.logout(); done(user);
                 } else {
+                    assert(!user.error);
+                    assert.property(user, "nonce");
                     assert(user.privateKey);
                     assert(user.address);
-                    assert.strictEqual(user.privateKey.toString("hex").length, constants.KEYSIZE*2);
+                    assert.strictEqual(
+                        user.privateKey.toString("hex").length,
+                        constants.KEYSIZE*2
+                    );
                     assert.strictEqual(user.address.length, 42);
                     augur.web.logout();
                     done();
@@ -109,15 +178,20 @@ describe("Accounts", function () {
                 if (user.error) {
                     augur.web.logout(); done(user);
                 } else {
+                    assert.property(user, "nonce");
                     assert(user.privateKey);
                     assert(user.address);
                     assert.strictEqual(user.privateKey.toString("hex").length, constants.KEYSIZE*2);
                     assert.strictEqual(user.address.length, 42);
                     augur.web.login(handle, password, function (same_user) {
-                        assert(!same_user.error);
-                        assert.strictEqual(user.privateKey.toString("hex"), same_user.privateKey.toString("hex"));
-                        assert.strictEqual(user.address, same_user.address);
-                        done();
+                        if (same_user.error) {
+                            augur.web.logout(); done(same_user);
+                        } else {
+                            assert(!same_user.error);
+                            assert.strictEqual(user.privateKey.toString("hex"), same_user.privateKey.toString("hex"));
+                            assert.strictEqual(user.address, same_user.address);
+                            done();
+                        }
                     });
                 }
             });

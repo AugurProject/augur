@@ -37,75 +37,6 @@ module.exports = function (kdf) {
             return keccak(utils.hex2utf16le(derivedKey.slice(32, 64) + ciphertext));
         },
 
-        // export private key to secret-storage format specified by:
-        // https://github.com/ethereum/wiki/wiki/Web3-Secret-Storage-Definition
-        dumpPrivateKey: function (password, privateKey, iv, callback) {
-            var self = this;
-            self.deriveKey(password, iv, function (derivedKey) {
-
-                // encryption key: first 16 bytes of derived key
-                var ciphertext = self.encrypt(
-                    privateKey,
-                    derivedKey.slice(0, 16),
-                    iv
-                ).toString("hex");
-
-                // MAC: Keccak hash of the byte array formed by concatenating
-                // the second 16 bytes of the derived key with the ciphertext
-                // key's contents
-                var mac = self.getMAC(derivedKey, ciphertext);
-
-                // ID: random 128-bit UUID given to the secret key (a
-                // privacy-preserving proxy for the secret key's address)
-                var id = uuid.v4();
-
-                // ethereum address
-                var address = self.privateKeyToAddress(privateKey);
-
-                // random 128-bit salt
-                var salt = crypto.randomBytes(constants.KEYSIZE);
-
-                var json = {
-                    address: address,
-                    Crypto: {
-                        cipher: constants.CIPHER,
-                        ciphertext: ciphertext,
-                        cipherparams: { iv: iv },
-                        mac: mac
-                    },
-                    id: id,
-                    version: 3
-                };
-                if (self.scrypt) {
-                    json.Crypto.kdf = "scrypt";
-                    json.Crypto.kdfparams = {
-                        dklen: constants.scrypt.dklen,
-                        n: constants.scrypt.n,
-                        r: constants.scrypt.r,
-                        p: constants.scrypt.p,
-                        salt: salt
-                    };
-                } else {
-                    json.Crypto.kdf = "pbkdf2";
-                    json.Crypto.kdfparams = {
-                        c: constants.pbkdf2.c,
-                        dklen: constants.pbkdf2.dklen,
-                        prf: constants.pbkdf2.prf,
-                        salt: salt
-                    };
-                }
-                console.log(json);
-                if (callback && callback.constructor === Function) {
-                    callback(json);
-                }
-            });
-        },
-
-        // import private key from geth json
-        loadPrivateKey: function (json) {
-
-        },
-
         encrypt: function (plaintext, key, iv) {
             var cipher, ciphertext;
             cipher = crypto.createCipheriv(constants.CIPHER, key, iv);
@@ -221,6 +152,75 @@ module.exports = function (kdf) {
                     return ex;
                 }
             }
+        },
+
+        // export private key to secret-storage format specified by:
+        // https://github.com/ethereum/wiki/wiki/Web3-Secret-Storage-Definition
+        dumpPrivateKey: function (password, privateKey, iv, callback) {
+            var self = this;
+            self.deriveKey(password, iv, function (derivedKey) {
+
+                // encryption key: first 16 bytes of derived key
+                var ciphertext = self.encrypt(
+                    privateKey,
+                    derivedKey.slice(0, 16),
+                    iv
+                ).toString("hex");
+
+                // MAC: Keccak hash of the byte array formed by concatenating
+                // the second 16 bytes of the derived key with the ciphertext
+                // key's contents
+                var mac = self.getMAC(derivedKey, ciphertext);
+
+                // ID: random 128-bit UUID given to the secret key (a
+                // privacy-preserving proxy for the secret key's address)
+                var id = uuid.v4();
+
+                // ethereum address
+                var address = self.privateKeyToAddress(privateKey);
+
+                // random 128-bit salt
+                var salt = crypto.randomBytes(constants.KEYSIZE);
+
+                var json = {
+                    address: address,
+                    Crypto: {
+                        cipher: constants.CIPHER,
+                        ciphertext: ciphertext,
+                        cipherparams: { iv: iv },
+                        mac: mac
+                    },
+                    id: id,
+                    version: 3
+                };
+                if (self.scrypt) {
+                    json.Crypto.kdf = "scrypt";
+                    json.Crypto.kdfparams = {
+                        dklen: constants.scrypt.dklen,
+                        n: constants.scrypt.n,
+                        r: constants.scrypt.r,
+                        p: constants.scrypt.p,
+                        salt: salt
+                    };
+                } else {
+                    json.Crypto.kdf = "pbkdf2";
+                    json.Crypto.kdfparams = {
+                        c: constants.pbkdf2.c,
+                        dklen: constants.pbkdf2.dklen,
+                        prf: constants.pbkdf2.prf,
+                        salt: salt
+                    };
+                }
+                console.log(json);
+                if (callback && callback.constructor === Function) {
+                    callback(json);
+                }
+            });
+        },
+
+        // import private key from geth json
+        loadPrivateKey: function (json) {
+
         }
 
     };

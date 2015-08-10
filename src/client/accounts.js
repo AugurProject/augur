@@ -42,6 +42,7 @@ module.exports = function (augur) {
                                     plain.iv
                                 ),
                                 iv: plain.iv.toString("base64"),
+                                salt: plain.salt.toString("base64"),
                                 nonce: 0
                             }, function () {
 
@@ -58,9 +59,9 @@ module.exports = function (augur) {
                             }); // db.put
 
                         }); // deriveKey
-                    
+
                     }); // generateKey
-                
+
                 } else {
                     if (callback) callback(errors.HANDLE_TAKEN);
                 }
@@ -76,11 +77,11 @@ module.exports = function (augur) {
 
                 if (!storedInfo.error) {
 
-                    // use the password to decrypt the private key
                     var iv = new Buffer(storedInfo.iv, "base64");
+                    var salt = new Buffer(storedInfo.salt, "base64");
 
                     // derive secret key from password
-                    augur.Crypto.deriveKey(password, iv, function (derivedKey) {
+                    augur.Crypto.deriveKey(password, salt, function (derivedKey) {
                         try {
 
                             // decrypt stored private key using secret key
