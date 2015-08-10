@@ -46,7 +46,7 @@ describe("Creating " + num_events + " events and markets", function () {
             },
             onSuccess: function (r) {
                 var alpha = "0.0079";
-                var initialLiquidity = 1000;
+                var initialLiquidity = 10;
                 var tradingFee = "0.02";
                 var events = [ r.callReturn ];
                 var market_description = event_description;

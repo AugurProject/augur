@@ -44,7 +44,7 @@ describe("functions/createMarket", function () {
             var branch = Augur.branches.dev;
             var description = element[0];
             var expDate = (EXPIRING) ?
-                blockNumber + Math.round(Math.random() * 1000) : element[1];
+                5*blockNumber + Math.round(Math.random() * 1000) : element[1];
             var minValue = 0;
             var maxValue = 1;
             var numOutcomes = 2;
@@ -70,7 +70,7 @@ describe("functions/createMarket", function () {
 
                     // incorporate the new event into a market
                     var alpha = "0.0079";
-                    var initialLiquidity = 1000 + Math.round(Math.random() * 1000);
+                    var initialLiquidity = 10 + Math.round(Math.random() * 10);
                     var tradingFee = "0.02";
                     var events = [ eventID ];
 

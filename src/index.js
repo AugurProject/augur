@@ -1206,6 +1206,13 @@ augur.getEventInfo = function (event_id, onSent) {
     // event_id: sha256 hash id
     var self = this;
     var parse_info = function (info) {
+        // info = array(6)
+        // info[0] = self.Events[event].branch
+        // info[1] = self.Events[event].expirationDate
+        // info[2] = self.Events[event].outcome
+        // info[3] = self.Events[event].minValue
+        // info[4] = self.Events[event].maxValue
+        // info[5] = self.Events[event].numOutcomes
         if (info && info.length) {
             if (self.options.BigNumberOnly) {
                 info[0] = numeric.hex(info[0]);
@@ -1576,6 +1583,13 @@ augur.getMarketOutcomeInfo = function (market, outcome, onSent) {
 augur.getMarketInfo = function (market, onSent) {
     var self = this;
     var parse_info = function (info) {
+        // info[0] = self.Markets[market].currentParticipant
+        // info[1] = self.Markets[market].alpha
+        // info[2] = self.Markets[market].addr2participant[tx.origin]
+        // info[3] = self.Markets[market].numOutcomes
+        // info[4] = self.Markets[market].tradingPeriod
+        // info[5] = self.Markets[market].tradingFee
+        // info[6+] = winningOutcomes
         var i, len;
         if (info && info.length) {
             len = info.length;

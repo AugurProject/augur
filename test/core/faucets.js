@@ -39,7 +39,7 @@ describe("Faucets", function () {
 
     it("Cash faucet", function (done) {
 
-        this.timeout(constants.TIMEOUT);
+        this.timeout(constants.TIMEOUT*2);
 
         function faucet() {
             augur.cashFaucet(

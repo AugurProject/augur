@@ -7,108 +7,147 @@
 
 var assert = require("chai").assert;
 var chalk = require("chalk");
-var constants = require("../../src/constants");
-var utilities = require("../../src/utilities");
-var Augur = utilities.setup(require("../../src"), process.argv.slice(2));
+var utils = require("../../src/utilities");
+var augur = utils.setup(require("../../src"), process.argv.slice(2));
+var constants = augur.constants;
 var log = console.log;
 
 require('it-each')({ testPerIteration: true });
 
-var branch = Augur.branches.dev;
+var branch = augur.branches.dev;
 var outcome = "1";
-var markets = Augur.getMarkets(branch);
-var market_id = markets[markets.length - 1];
-markets = markets.slice(markets.length - 1);
-        
+var amount = "1";
+
 describe("Buy and sell shares", function () {
 
-    it.each(markets, "getNonce: %s", ['element'], function (element, next) {
-        var test = function (r) {
-            assert.isDefined(r);
-            assert.isNotNull(r);
-            assert(Number(r) >= 0);
-        };
-        Augur.getNonce(element, function (r) {
-            test(r); next();
-        });
-    });
-
-    it.each(markets, "buyShares: %s", ['element'], function (element, next) {
-        this.timeout(constants.TIMEOUT);
-        var amount = "10";
-        Augur.buyShares({
-            branchId: branch,
-            marketId: element,
-            outcome: outcome,
-            amount: amount,
-            nonce: null,
-            onSent: function (r) {
-                assert.isDefined(r);
-                assert.isNotNull(r);
-                assert.isDefined(r.callReturn);
-                assert.isNotNull(r.callReturn);
-                assert.isDefined(r.txHash);
-                assert.isNotNull(r.txHash);
-                assert.isAbove(Number(r.callReturn), 0);
-            },
-            onSuccess: function (r) {
-                assert.isDefined(r);
-                assert.isNotNull(r);
-                assert.isDefined(r.callReturn);
-                assert.isNotNull(r.callReturn);
-                assert.isDefined(r.txHash);
-                assert.isNotNull(r.txHash);
-                assert.isDefined(r.blockHash);
-                assert.isNotNull(r.blockHash);
-                assert.isDefined(r.blockNumber);
-                assert.isNotNull(r.blockNumber);
-                assert.isAbove(parseInt(r.blockNumber), 0);
-                assert.isAbove(Number(r.callReturn), 0);
-                next();
-            },
-            onFailed: function (r) {
-                next(r);
+    it("Look up / sanity check most recent market ID", function (done) {
+        augur.getMarkets(branch, function (markets) {
+            if (markets.error) {
+                done(markets);
+            } else {
+                assert.instanceOf(markets, Array);
+                assert.isAbove(markets.length, 0);
+                var market_id = markets[markets.length - 1];
+                assert.isDefined(market_id);
+                assert.isNotNull(market_id);
+                augur.getMarketInfo(market_id, function (info) {
+                    if (info.error) {
+                        done(info);
+                    } else {
+                        assert.instanceOf(info, Array);
+                        assert.isAbove(info.length, 5);
+                        assert.isAbove(Number(info[1]), 0); // alpha > 0
+                        assert.isAbove(Number(info[3]), 1); // numOutcomes > 1
+                        done();
+                    }
+                });
             }
         });
     });
 
-    it.each(markets, "sellShares: %s", ['element'], function (element, next) {
-        this.timeout(constants.TIMEOUT);
-        var amount = "1";
-        Augur.sellShares({
-            branchId: branch,
-            marketId: element,
-            outcome: outcome,
-            amount: amount,
-            nonce: null,
-            onSent: function (r) {
+    var markets = augur.getMarkets(branch);
+    var market_id = markets[markets.length - 1];
+
+    it.each(
+        markets.slice(markets.length - 1),
+        "getNonce: %s",
+        ["element"],
+        function (element, next) {
+            var test = function (r) {
                 assert.isDefined(r);
                 assert.isNotNull(r);
-                assert.isDefined(r.callReturn);
-                assert.isNotNull(r.callReturn);
-                assert.isDefined(r.txHash);
-                assert.isNotNull(r.txHash);
-                assert.isAbove(Number(r.callReturn), 0);
-            },
-            onSuccess: function (r) {
-                assert.isDefined(r);
-                assert.isNotNull(r);
-                assert.isDefined(r.callReturn);
-                assert.isNotNull(r.callReturn);
-                assert.isDefined(r.txHash);
-                assert.isNotNull(r.txHash);
-                assert.isDefined(r.blockHash);
-                assert.isNotNull(r.blockHash);
-                assert.isDefined(r.blockNumber);
-                assert.isNotNull(r.blockNumber);
-                assert.isAbove(parseInt(r.blockNumber), 0);
-                assert.isAbove(Number(r.callReturn), 0);
-                next();
-            },
-            onFailed: function (r) {
-                next(r);
-            }
-        });
-    });
+                assert(Number(r) >= 0);
+            };
+            augur.getNonce(element, function (r) {
+                test(r); next();
+            });
+        }
+    );
+
+    it.each(
+        markets.slice(markets.length - 1),
+        "buyShares: %s",
+        ["element"],
+        function (element, next) {
+            this.timeout(constants.TIMEOUT);
+            augur.buyShares({
+                branchId: branch,
+                marketId: element,
+                outcome: outcome,
+                amount: amount,
+                nonce: null,
+                onSent: function (r) {
+                    assert.isDefined(r);
+                    assert.isNotNull(r);
+                    assert.isDefined(r.callReturn);
+                    assert.isNotNull(r.callReturn);
+                    assert.isDefined(r.txHash);
+                    assert.isNotNull(r.txHash);
+                    assert.isAbove(Number(r.callReturn), 0);
+                },
+                onSuccess: function (r) {
+                    assert.isDefined(r);
+                    assert.isNotNull(r);
+                    assert.isDefined(r.callReturn);
+                    assert.isNotNull(r.callReturn);
+                    assert.isDefined(r.txHash);
+                    assert.isNotNull(r.txHash);
+                    assert.isDefined(r.blockHash);
+                    assert.isNotNull(r.blockHash);
+                    assert.isDefined(r.blockNumber);
+                    assert.isNotNull(r.blockNumber);
+                    assert.isAbove(parseInt(r.blockNumber), 0);
+                    assert.isAbove(Number(r.callReturn), 0);
+                    next();
+                },
+                onFailed: function (r) {
+                    next(r);
+                }
+            });
+        }
+    );
+
+    it.each(
+        markets.slice(markets.length - 1),
+        "sellShares: %s",
+        ["element"],
+        function (element, next) {
+            this.timeout(constants.TIMEOUT);
+            augur.sellShares({
+                branchId: branch,
+                marketId: element,
+                outcome: outcome,
+                amount: amount,
+                nonce: null,
+                onSent: function (r) {
+                    assert.isDefined(r);
+                    assert.isNotNull(r);
+                    assert.isDefined(r.callReturn);
+                    assert.isNotNull(r.callReturn);
+                    assert.isDefined(r.txHash);
+                    assert.isNotNull(r.txHash);
+                    assert.isAbove(Number(r.callReturn), 0);
+                },
+                onSuccess: function (r) {
+                    assert.isDefined(r);
+                    assert.isNotNull(r);
+                    assert.isDefined(r.callReturn);
+                    assert.isNotNull(r.callReturn);
+                    assert.isDefined(r.txHash);
+                    assert.isNotNull(r.txHash);
+                    assert.isDefined(r.blockHash);
+                    assert.isNotNull(r.blockHash);
+                    assert.isDefined(r.blockNumber);
+                    assert.isNotNull(r.blockNumber);
+                    assert.isAbove(parseInt(r.blockNumber), 0);
+                    assert.isAbove(Number(r.callReturn), 0);
+                    next();
+                },
+                onFailed: function (r) {
+                    next(r);
+                }
+            });
+        }
+    );
 
 });
