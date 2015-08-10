@@ -48,6 +48,7 @@ GLOBAL.balance = function (account, branch) {
         reputation: Augur.getRepBalance(branch || Augur.branches.dev, account),
         ether: numeric.bignum(Augur.balance(account)).dividedBy(constants.ETHER).toFixed()
     };
+    log(balances);
     return balances;
 }
 

@@ -6,9 +6,9 @@
 
 var BigNumber = require("bignumber.js");
 var keccak_256 = require("js-sha3").keccak_256;
-var constants = require("./constants");
-var utils = require("./utilities");
-var numeric = require("./numeric");
+var constants = require("../constants");
+var utils = require("../utilities");
+var numeric = require("../core/numeric");
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 

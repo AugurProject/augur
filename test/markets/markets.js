@@ -6,15 +6,15 @@
 "use strict";
 
 var assert = require("chai").assert;
-var constants = require("../../src/constants");
-var utilities = require("../../src/utilities");
-var numeric = require("../../src/numeric");
-var Augur = utilities.setup(require("../../src"), process.argv.slice(2));
+var utils = require("../../src/utilities");
+var Augur = utils.setup(require("../../src"), process.argv.slice(2));
+var numeric = Augur.numeric;
+var constants = Augur.constants;
 var log = console.log;
 
 var amount = "1";
 var branch_id = Augur.branches.dev;
-var accounts = utilities.get_test_accounts(Augur, constants.MAX_TEST_ACCOUNTS);
+var accounts = utils.get_test_accounts(Augur, constants.MAX_TEST_ACCOUNTS);
 var participant_number = "1";
 var outcome = 1;
 var markets = Augur.getMarkets(branch_id);
@@ -118,7 +118,7 @@ describe("markets.se", function () {
     });
     describe("getCurrentParticipantNumber(" + market_id + ") >= 0", function () {
         var test = function (r) {
-            utilities.gteq0(r);
+            utils.gteq0(r);
         };
         it("sync", function () {
             test(Augur.getCurrentParticipantNumber(market_id));
@@ -144,7 +144,7 @@ describe("markets.se", function () {
     });
     describe("getParticipantSharesPurchased(" + market_id + ", " + participant_number + "," + outcome + ") ", function () {
         var test = function (r) {
-            utilities.gteq0(r);
+            utils.gteq0(r);
         };
         it("sync", function () {
             test(Augur.getParticipantSharesPurchased(market_id, participant_number, outcome));
@@ -157,7 +157,7 @@ describe("markets.se", function () {
     });
     describe("getSharesPurchased(" + market_id + ", " + outcome + ") ", function () {
         var test = function (r) {
-            utilities.gteq0(r);
+            utils.gteq0(r);
         };
         it("sync", function () {
             test(Augur.getSharesPurchased(market_id, outcome));
@@ -197,7 +197,7 @@ describe("markets.se", function () {
     });
     describe("getParticipantNumber(" + market_id + ", " + accounts[0] + ") ", function () {
         var test = function (r) {
-            utilities.gteq0(r);
+            utils.gteq0(r);
         };
         it("sync", function () {
             test(Augur.getParticipantNumber(market_id, accounts[0]));

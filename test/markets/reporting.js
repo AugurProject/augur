@@ -7,10 +7,10 @@
 
 var crypto = require("crypto");
 var assert = require("chai").assert;
-var constants = require("../../src/constants");
 var utils = require("../../src/utilities");
-var numeric = require("../../src/numeric");
 var Augur = utils.setup(require("../../src"), process.argv.slice(2));
+var constants = Augur.constants;
+var numeric = Augur.numeric;
 var log = console.log;
 
 var accounts = utils.get_test_accounts(Augur, constants.MAX_TEST_ACCOUNTS);

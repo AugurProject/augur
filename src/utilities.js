@@ -10,7 +10,7 @@ var BigNumber = require("bignumber.js");
 var moment = require("moment");
 var chalk = require("chalk");
 var constants = require("./constants");
-var numeric = require("./numeric");
+var numeric = require("./core/numeric");
 var log = console.log;
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });

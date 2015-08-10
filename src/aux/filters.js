@@ -5,7 +5,7 @@
 "use strict";
 
 var chalk = require("chalk");
-var numeric = require("./numeric");
+var numeric = require("../core/numeric");
 var log = console.log;
 
 module.exports = function (augur) {

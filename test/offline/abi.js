@@ -9,14 +9,14 @@ var assert = require("chai").assert;
 var BigNumber = require("bignumber.js");
 var chalk = require("chalk");
 var Augur = require("../../src");
-var constants = require("../../src/constants");
-var utils = require("../../src/utilities");
-var numeric = require("../../src/numeric");
+var constants = Augur.constants;
+var utils = Augur.utils;
+var numeric = Augur.numeric;
 var coder = require("../../lib/solidity/coder");
 var log = console.log;
 
 Augur.contracts = require("../../src/contracts").testnet;
-Augur.tx = new require("../../src/tx")(Augur.contracts);
+Augur.tx = new require("../../src/core/tx")(Augur.contracts);
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 

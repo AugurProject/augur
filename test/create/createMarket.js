@@ -8,9 +8,9 @@
 var assert = require("chai").assert;
 var chalk = require("chalk");
 var constants = require("../../src/constants");
-var numeric = require("../../src/numeric");
 var utils = require("../../src/utilities");
 var Augur = utils.setup(require("../../src"), process.argv.slice(2));
+var numeric = Augur.numeric;
 var log = console.log;
 
 require('it-each')({ testPerIteration: true });

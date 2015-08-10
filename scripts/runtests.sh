@@ -28,6 +28,7 @@ core=0
 create=0
 markets=0
 consensus=0
+client=0
 aux=0
 
 for arg in "$@"; do
@@ -41,13 +42,14 @@ for arg in "$@"; do
         "--create") set -- "$@" "-r" ;;
         "--markets") set -- "$@" "-m" ;;
         "--consensus") set -- "$@" "-s" ;;
+        "--client") set -- "$@" "-l" ;;
         "--aux") set -- "$@" "-x" ;;
         "--spec") set -- "$@" "-k" ;;
         *) set -- "$@" "$arg"
     esac
 done
 OPTIND=1
-while getopts "gvoncrmsxak" opt; do
+while getopts "gvoncrmslxk" opt; do
     case "$opt" in
         g) gospel="--gospel" ;;
         v) coverage=1 ;;
@@ -57,6 +59,7 @@ while getopts "gvoncrmsxak" opt; do
         r) create=1 ;;
         m) markets=1 ;;
         s) consensus=1 ;;
+        l) client=1 ;;
         x) aux=1 ;;
         k) reporter="spec" ;;
     esac
@@ -73,13 +76,14 @@ echo -e "+${GRAY}================${NC}+\n"
 [ "${create}" == "1" ] && runtest "create"
 [ "${markets}" == "1" ] && runtest "markets"
 [ "${consensus}" == "1" ] && runtest "consensus"
-[ "${aux}" == "1" ] && runtest "auxiliary"
+[ "${client}" == "1" ] && runtest "client"
+[ "${aux}" == "1" ] && runtest "aux"
 
 if [ "${offline}" == "1" ]; then
 
     echo -e " ${TEAL}jshint${NC}\n"
 
-    declare -a targets=("gulpfile.js" "src/*" "scripts/setup.js")
+    declare -a targets=("gulpfile.js" "src/*.js" "src/core" "src/client" "src/aux" "scripts/setup.js")
     for target in "${targets[@]}"
     do
         jshint ${target}

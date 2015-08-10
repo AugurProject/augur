@@ -6,19 +6,19 @@
 "use strict";
 
 var assert = require("chai").assert;
-var numeric = require("../../src/numeric");
-var constants = require("../../src/constants");
-var utilities = require("../../src/utilities");
-var Augur = utilities.setup(require("../../src"), process.argv.slice(2));
+var utils = require("../../src/utilities");
+var augur = utils.setup(require("../../src"), process.argv.slice(2));
+var constants = augur.constants;
+var numeric = augur.numeric;
 var log = console.log;
 
-var branch = Augur.branches.dev;
-var period = Augur.getVotePeriod(branch);
-var num_events = parseInt(Augur.getNumberEvents(branch, period));
-var num_reports = parseInt(Augur.getNumberReporters(branch));
+var branch = augur.branches.dev;
+var period = augur.getVotePeriod(branch);
+var num_events = parseInt(augur.getNumberEvents(branch, period));
+var num_reports = parseInt(augur.getNumberReporters(branch));
 var flatsize = num_events * num_reports;
 
-var accounts = utilities.get_test_accounts(Augur, constants.MAX_TEST_ACCOUNTS);
+var accounts = utils.get_test_accounts(augur, constants.MAX_TEST_ACCOUNTS);
 var receiving_account = accounts[1];
 
 describe("data and api/expiringEvents", function () {
@@ -27,10 +27,10 @@ describe("data and api/expiringEvents", function () {
             log(r);
         };
         it("sync", function () {
-            test(Augur.getEvents(branch, period));
+            test(augur.getEvents(branch, period));
         });
         it("async", function (done) {
-            Augur.getEvents(branch, period, function (r) {
+            augur.getEvents(branch, period, function (r) {
                 test(r); done();
             });
         });
@@ -40,10 +40,10 @@ describe("data and api/expiringEvents", function () {
             log(r);
         };
         it("sync", function () {
-            test(Augur.getNumberEvents(branch, period));
+            test(augur.getNumberEvents(branch, period));
         });
         it("async", function (done) {
-            Augur.getNumberEvents(branch, period, function (r) {
+            augur.getNumberEvents(branch, period, function (r) {
                 test(r); done();
             });
         });
@@ -53,10 +53,10 @@ describe("data and api/expiringEvents", function () {
             log(r);
         };
         it("sync", function () {
-            test(Augur.getEvent(branch, period, 0));
+            test(augur.getEvent(branch, period, 0));
         });
         it("async", function (done) {
-            Augur.getEvent(branch, period, 0, function (r) {
+            augur.getEvent(branch, period, 0, function (r) {
                 test(r); done();
             });
         });
@@ -66,10 +66,10 @@ describe("data and api/expiringEvents", function () {
             log(r);
         };
         it("sync", function () {
-            test(Augur.getTotalRepReported(branch, period));
+            test(augur.getTotalRepReported(branch, period));
         });
         it("async", function (done) {
-            Augur.getTotalRepReported(branch, period, function (r) {
+            augur.getTotalRepReported(branch, period, function (r) {
                 test(r); done();
             });
         });
@@ -79,10 +79,10 @@ describe("data and api/expiringEvents", function () {
             log(r);
         };
         it("sync", function () {
-            test(Augur.getReporterBallot(branch, period));
+            test(augur.getReporterBallot(branch, period));
         });
         it("async", function (done) {
-            Augur.getReporterBallot(branch, period, function (r) {
+            augur.getReporterBallot(branch, period, function (r) {
                 test(r); done();
             });
         });
@@ -92,10 +92,10 @@ describe("data and api/expiringEvents", function () {
             log(r);
         };
         it("sync", function () {
-            test(Augur.getReport(branch, period, Augur.coinbase, 0));
+            test(augur.getReport(branch, period, augur.coinbase, 0));
         });
         it("async", function (done) {
-            Augur.getReport(branch, period, Augur.coinbase, 0, function (r) {
+            augur.getReport(branch, period, augur.coinbase, 0, function (r) {
                 test(r); done();
             });
         });
@@ -105,10 +105,10 @@ describe("data and api/expiringEvents", function () {
             log(r);
         };
         it("sync", function () {
-            test(Augur.getReportHash(branch, period, Augur.coinbase));
+            test(augur.getReportHash(branch, period, augur.coinbase));
         });
         it("async", function (done) {
-            Augur.getReportHash(branch, period, Augur.coinbase, function (r) {
+            augur.getReportHash(branch, period, augur.coinbase, function (r) {
                 test(r); done();
             });
         });
@@ -119,10 +119,10 @@ describe("data and api/expiringEvents", function () {
             log(r);
         };
         it("sync", function () {
-            test(Augur.getVSize(branch, period));
+            test(augur.getVSize(branch, period));
         });
         it("async", function (done) {
-            Augur.getVSize(branch, period, function (r) {
+            augur.getVSize(branch, period, function (r) {
                 test(r); done();
             });
         });
@@ -132,10 +132,10 @@ describe("data and api/expiringEvents", function () {
             log(r);
         };
         it("sync", function () {
-            test(Augur.getReportsFilled(branch, period));
+            test(augur.getReportsFilled(branch, period));
         });
         it("async", function (done) {
-            Augur.getReportsFilled(branch, period, function (r) {
+            augur.getReportsFilled(branch, period, function (r) {
                 test(r); done();
             });
         });
@@ -145,10 +145,10 @@ describe("data and api/expiringEvents", function () {
             log(r);
         };
         it("sync", function () {
-            test(Augur.getReportsMask(branch, period));
+            test(augur.getReportsMask(branch, period));
         });
         it("async", function (done) {
-            Augur.getReportsMask(branch, period, function (r) {
+            augur.getReportsMask(branch, period, function (r) {
                 test(r); done();
             });
         });
@@ -158,10 +158,10 @@ describe("data and api/expiringEvents", function () {
             log(r);
         };
         it("sync", function () {
-            test(Augur.getWeightedCenteredData(branch, period));
+            test(augur.getWeightedCenteredData(branch, period));
         });
         it("async", function (done) {
-            Augur.getWeightedCenteredData(branch, period, function (r) {
+            augur.getWeightedCenteredData(branch, period, function (r) {
                 test(r); done();
             });
         });
@@ -171,10 +171,10 @@ describe("data and api/expiringEvents", function () {
             log(r);
         };
         it("sync", function () {
-            test(Augur.getCovarianceMatrixRow(branch, period));
+            test(augur.getCovarianceMatrixRow(branch, period));
         });
         it("async", function (done) {
-            Augur.getCovarianceMatrixRow(branch, period, function (r) {
+            augur.getCovarianceMatrixRow(branch, period, function (r) {
                 test(r); done();
             });
         });
@@ -184,10 +184,10 @@ describe("data and api/expiringEvents", function () {
             log(r);
         };
         it("sync", function () {
-            test(Augur.getDeflated(branch, period));
+            test(augur.getDeflated(branch, period));
         });
         it("async", function (done) {
-            Augur.getDeflated(branch, period, function (r) {
+            augur.getDeflated(branch, period, function (r) {
                 test(r); done();
             });
         });
@@ -197,10 +197,10 @@ describe("data and api/expiringEvents", function () {
             log(r);
         };
         it("sync", function () {
-            test(Augur.getLoadingVector(branch, period));
+            test(augur.getLoadingVector(branch, period));
         });
         it("async", function (done) {
-            Augur.getLoadingVector(branch, period, function (r) {
+            augur.getLoadingVector(branch, period, function (r) {
                 test(r); done();
             });
         });
@@ -211,10 +211,10 @@ describe("data and api/expiringEvents", function () {
             log(r);
         };
         it("sync", function () {
-            test(Augur.getLatent(branch, period));
+            test(augur.getLatent(branch, period));
         });
         it("async", function (done) {
-            Augur.getLatent(branch, period, function (r) {
+            augur.getLatent(branch, period, function (r) {
                 test(r); done();
             });
         });
@@ -224,10 +224,10 @@ describe("data and api/expiringEvents", function () {
             log(r);
         };
         it("sync", function () {
-            test(Augur.getScores(branch, period));
+            test(augur.getScores(branch, period));
         });
         it("async", function (done) {
-            Augur.getScores(branch, period, function (r) {
+            augur.getScores(branch, period, function (r) {
                 test(r); done();
             });
         });
@@ -237,10 +237,10 @@ describe("data and api/expiringEvents", function () {
             log(r);
         };
         it("sync", function () {
-            test(Augur.getSetOne(branch, period));
+            test(augur.getSetOne(branch, period));
         });
         it("async", function (done) {
-            Augur.getSetOne(branch, period, function (r) {
+            augur.getSetOne(branch, period, function (r) {
                 test(r); done();
             });
         });
@@ -250,10 +250,10 @@ describe("data and api/expiringEvents", function () {
             log(r);
         };
         it("sync", function () {
-            test(Augur.getSetTwo(branch, period));
+            test(augur.getSetTwo(branch, period));
         });
         it("async", function (done) {
-            Augur.getSetTwo(branch, period, function (r) {
+            augur.getSetTwo(branch, period, function (r) {
                 test(r); done();
             });
         });
@@ -263,10 +263,10 @@ describe("data and api/expiringEvents", function () {
             log(r);
         };
         it("sync", function () {
-            test(Augur.returnOld(branch, period));
+            test(augur.returnOld(branch, period));
         });
         it("async", function (done) {
-            Augur.returnOld(branch, period, function (r) {
+            augur.returnOld(branch, period, function (r) {
                 test(r); done();
             });
         });
@@ -276,10 +276,10 @@ describe("data and api/expiringEvents", function () {
             log(r);
         };
         it("sync", function () {
-            test(Augur.getNewOne(branch, period));
+            test(augur.getNewOne(branch, period));
         });
         it("async", function (done) {
-            Augur.getNewOne(branch, period, function (r) {
+            augur.getNewOne(branch, period, function (r) {
                 test(r); done();
             });
         });
@@ -289,10 +289,10 @@ describe("data and api/expiringEvents", function () {
             log(r);
         };
         it("sync", function () {
-            test(Augur.getNewTwo(branch, period));
+            test(augur.getNewTwo(branch, period));
         });
         it("async", function (done) {
-            Augur.getNewTwo(branch, period, function (r) {
+            augur.getNewTwo(branch, period, function (r) {
                 test(r); done();
             });
         });
@@ -302,10 +302,10 @@ describe("data and api/expiringEvents", function () {
             log(r);
         };
         it("sync", function () {
-            test(Augur.getAdjPrinComp(branch, period));
+            test(augur.getAdjPrinComp(branch, period));
         });
         it("async", function (done) {
-            Augur.getAdjPrinComp(branch, period, function (r) {
+            augur.getAdjPrinComp(branch, period, function (r) {
                 test(r); done();
             });
         });
@@ -315,10 +315,10 @@ describe("data and api/expiringEvents", function () {
             log(r);
         };
         it("sync", function () {
-            test(Augur.getSmoothRep(branch, period));
+            test(augur.getSmoothRep(branch, period));
         });
         it("async", function (done) {
-            Augur.getSmoothRep(branch, period, function (r) {
+            augur.getSmoothRep(branch, period, function (r) {
                 test(r); done();
             });
         });
@@ -328,10 +328,10 @@ describe("data and api/expiringEvents", function () {
             log(r);
         };
         it("sync", function () {
-            test(Augur.getOutcomesFinal(branch, period));
+            test(augur.getOutcomesFinal(branch, period));
         });
         it("async", function (done) {
-            Augur.getOutcomesFinal(branch, period, function (r) {
+            augur.getOutcomesFinal(branch, period, function (r) {
                 test(r); done();
             });
         });
@@ -341,10 +341,10 @@ describe("data and api/expiringEvents", function () {
             log(r);
         };
         it("sync", function () {
-            test(Augur.getTotalReputation(branch, period));
+            test(augur.getTotalReputation(branch, period));
         });
         it("async", function (done) {
-            Augur.getTotalReputation(branch, period, function (r) {
+            augur.getTotalReputation(branch, period, function (r) {
                 test(r); done();
             });
         });
@@ -354,10 +354,10 @@ describe("data and api/expiringEvents", function () {
             log(r);
         };
         it("sync", function () {
-            test(Augur.setTotalReputation(branch, period, 10));
+            test(augur.setTotalReputation(branch, period, 10));
         });
         it("async", function (done) {
-            Augur.setTotalReputation(branch, period, 10, function (r) {
+            augur.setTotalReputation(branch, period, 10, function (r) {
                 test(r); done();
             });
         });

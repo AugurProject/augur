@@ -6,10 +6,10 @@
 "use strict";
 
 var assert = require("chai").assert;
-var constants = require("../../src/constants");
 var utils = require("../../src/utilities");
-var numeric = require("../../src/numeric");
 var Augur = utils.setup(require("../../src"), process.argv.slice(2));
+var numeric = Augur.numeric;
+var constants = Augur.constants;
 var log = console.log;
 
 var payment_value = 1;

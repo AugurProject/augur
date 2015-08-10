@@ -17,15 +17,16 @@ var BigNumber = require("bignumber.js");
 
 var constants = require("./constants");
 var errors = require("./errors");
-var numeric = require("./numeric");
+var numeric = require("./core/numeric");
 var contracts = require("./contracts");
 var utils = require("./utilities");
-var RPC = require("./rpc");
-var Accounts = require("./accounts");
-var Comments = require("./comments");
-var Filters = require("./filters");
-var Tx = require("./tx");
-var Namereg = require("./namereg");
+var RPC = require("./core/rpc");
+var Accounts = require("./client/accounts");
+var Crypto = require("./client/crypto");
+var Comments = require("./aux/comments");
+var Filters = require("./aux/filters");
+var Tx = require("./core/tx");
+var Namereg = require("./aux/namereg");
 
 var log = console.log;
 
@@ -59,10 +60,12 @@ var augur = {
 
     options: {},
 
-    abi: require("./abi"),
-    db: require("./db"),
+    abi: require("./core/abi"),
+    db: require("./client/db"),
     utils: utils,
     numeric: numeric,
+    constants: constants,
+    errors: errors,
 
     rpc: {},
     web: {},
@@ -98,6 +101,7 @@ augur.reload_modules = function (options) {
     if (options) this.options = options;
     this.rpc = new RPC(this.options);
     if (this.contracts) this.tx = new Tx(this.contracts);
+    this.Crypto = new Crypto(this.options.scrypt);
     this.web = new Accounts(this);
     this.comments = new Comments(this);
     this.filters = new Filters(this);

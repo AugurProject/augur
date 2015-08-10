@@ -12,7 +12,7 @@ if (NODE_JS) {
 }
 var BigNumber = require("bignumber.js");
 var numeric = require("./numeric");
-var utilities = require("./utilities");
+var utilities = require("../utilities");
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 

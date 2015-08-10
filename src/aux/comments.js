@@ -4,9 +4,9 @@
 
 "use strict";
 
-var errors = require("./errors");
-var constants = require("./constants");
-var numeric = require("./numeric");
+var errors = require("../errors");
+var constants = require("../constants");
+var numeric = require("../core/numeric");
 
 module.exports = function (augur) {
 

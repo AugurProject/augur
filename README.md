@@ -2,11 +2,9 @@ Augur JavaScript API
 ====================
 
 [![Build Status](https://travis-ci.org/AugurProject/augur.js.svg?branch=master)](https://travis-ci.org/AugurProject/augur.js)
-[![npm version](https://badge.fury.io/js/augur.js.svg)](http://badge.fury.io/js/augur.js)
+[![Coverage Status](https://coveralls.io/repos/AugurProject/augur.js/badge.svg?branch=master&service=github)](https://coveralls.io/github/AugurProject/augur.js?branch=master)
 
-[![Bugs](https://badge.waffle.io/AugurProject/augur.js.svg?label=bugs&title=Bugs)](http://waffle.io/AugurProject/augur.js)
-[![Ready](https://badge.waffle.io/AugurProject/augur.js.svg?label=ready&title=Ready)](http://waffle.io/AugurProject/augur.js)
-[![In Progress](https://badge.waffle.io/AugurProject/augur.js.svg?label=in%20progress&title=In%20Progress)](http://waffle.io/AugurProject/augur.js)
+[![NPM](https://nodei.co/npm/augur.js.png?downloads=true)](https://nodei.co/npm/augur.js/)
 
 Installation
 ------------

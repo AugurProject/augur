@@ -5,8 +5,8 @@
 "use strict";
 
 var Firebase = require("firebase");
-var errors = require("./errors");
-var constants = require("./constants");
+var errors = require("../errors");
+var constants = require("../constants");
 
 module.exports = {
 

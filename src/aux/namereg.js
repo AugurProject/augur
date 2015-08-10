@@ -5,7 +5,7 @@
 
 "use strict";
 
-var utils = require("./utilities");
+var utils = require("../utilities");
 // var web3 = require("web3");
 
 module.exports = function (augur) {

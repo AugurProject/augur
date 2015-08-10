@@ -9,12 +9,12 @@ var assert = require("chai").assert;
 var BigNumber = require("bignumber.js");
 var chalk = require("chalk");
 var Augur = require("../../src");
-var constants = require("../../src/constants");
-var numeric = require("../../src/numeric");
+var constants = Augur.constants;
+var numeric = Augur.numeric;
 var log = console.log;
 
 Augur.contracts = require("../../src/contracts").testnet;
-Augur.tx = new require("../../src/tx")(Augur.contracts);
+Augur.tx = new require("../../src/core/tx")(Augur.contracts);
 
 // from web3.js toHex tests
 var tests = [

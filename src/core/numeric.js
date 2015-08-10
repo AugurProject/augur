@@ -5,7 +5,7 @@
 "use strict";
 
 var BigNumber = require("bignumber.js");
-var constants = require("./constants");
+var constants = require("../constants");
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
