@@ -33,10 +33,6 @@ module.exports = function (kdf) {
 
         ecdsa: new EC("secp256k1"),
 
-        getMAC: function (derivedKey, ciphertext) {
-            return keccak(utils.hex2utf16le(derivedKey.slice(32, 64) + ciphertext));
-        },
-
         encrypt: function (plaintext, key, iv) {
             var cipher, ciphertext;
             cipher = crypto.createCipheriv(constants.CIPHER, key, iv);
@@ -55,6 +51,10 @@ module.exports = function (kdf) {
         privateKeyToAddress: function (privateKey) {
             var pubKey = new Buffer(this.ecdsa.keyFromPrivate(privateKey).getPublic("arr"));
             return "0x" + EthUtil.pubToAddress(pubKey).toString("hex");
+        },
+
+        getMAC: function (derivedKey, ciphertext) {
+            return keccak(utils.hex2utf16le(derivedKey.slice(32, 64) + ciphertext));
         },
 
         // derive secret key from password
@@ -156,9 +156,9 @@ module.exports = function (kdf) {
 
         // export private key to secret-storage format specified by:
         // https://github.com/ethereum/wiki/wiki/Web3-Secret-Storage-Definition
-        dumpPrivateKey: function (password, privateKey, iv, callback) {
+        dumpPrivateKey: function (password, privateKey, salt, iv, callback) {
             var self = this;
-            self.deriveKey(password, iv, function (derivedKey) {
+            self.deriveKey(password, salt, function (derivedKey) {
 
                 // encryption key: first 16 bytes of derived key
                 var ciphertext = self.encrypt(
@@ -178,9 +178,6 @@ module.exports = function (kdf) {
 
                 // ethereum address
                 var address = self.privateKeyToAddress(privateKey);
-
-                // random 128-bit salt
-                var salt = crypto.randomBytes(constants.KEYSIZE);
 
                 var json = {
                     address: address,
@@ -211,7 +208,6 @@ module.exports = function (kdf) {
                         salt: salt
                     };
                 }
-                console.log(json);
                 if (callback && callback.constructor === Function) {
                     callback(json);
                 }

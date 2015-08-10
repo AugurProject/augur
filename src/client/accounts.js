@@ -30,7 +30,7 @@ module.exports = function (augur) {
                     augur.Crypto.generateKey(function (plain) {
 
                         // derive secret key from password
-                        augur.Crypto.deriveKey(password, plain.iv, function (derivedKey) {
+                        augur.Crypto.deriveKey(password, plain.salt, function (derivedKey) {
 
                             // encrypt private key using derived key and IV, then
                             // store encrypted key & IV, indexed by handle
