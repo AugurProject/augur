@@ -181,10 +181,24 @@ describe("Transactions", function () {
         var serializedTx = tx.serialize().toString("hex");
         assert.strictEqual(serializedTx.slice(0, 324), signed);
         assert.strictEqual(serializedTx.length, 458)
+    });
 
-        // fee = data length in bytes * 5
-        //     + 500 Default transaction fee
-        //     + gasAmount * gasPrice
+    // up-front cost calculation:
+    // fee = data length in bytes * 5
+    //     + 500 Default transaction fee
+    //     + gasAmount * gasPrice
+    it("calculate up-front transaction cost", function () {
+        var tx = new EthTx();
+        tx.nonce = 0;
+        tx.gasPrice = 100;
+        tx.gasLimit = 1000;
+        tx.value = 0;
+        tx.data = "7f4e616d65526567000000000000000000000000000000000000000000000000"+
+                  "003057307f4e616d655265670000000000000000000000000000000000000000"+
+                  "0000000000573360455760415160566000396000f20036602259604556330e0f"+
+                  "600f5933ff33560f601e5960003356576000335700604158600035560f602b59"+
+                  "0033560f60365960003356573360003557600035335700";
+        tx.sign(privateKey);
         assert.strictEqual(tx.getUpfrontCost().toString(), "100000");
     });
 

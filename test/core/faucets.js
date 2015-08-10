@@ -23,7 +23,7 @@ describe("Faucets", function () {
             function (r) {
                 // success
                 assert.strictEqual(r.callReturn, "1");
-                assert.isAbove(numeric.bignum(r.blockHash).toNumber(), 0);
+                assert.notStrictEqual(numeric.bignum(r.blockHash).toNumber(), 0);
                 assert(numeric.bignum(r.blockNumber).toNumber() >= 0);
                 var rep_balance = augur.getRepBalance(augur.branches.dev, augur.coinbase);
                 var cash_balance = augur.getCashBalance(augur.coinbase);
@@ -51,8 +51,7 @@ describe("Faucets", function () {
                 function (r) {
                     // success
                     assert(r.callReturn === "1" || r.callReturn === "-1");
-                    assert(numeric.bignum(r.blockHash).toNumber() !== 0);
-                    assert.isAbove(numeric.bignum(r.blockHash).toNumber(), 0);
+                    assert.notStrictEqual(numeric.bignum(r.blockHash).toNumber(), 0);
                     var rep_balance = augur.getRepBalance(augur.branches.dev, augur.coinbase);
                     var cash_balance = augur.getCashBalance(augur.coinbase);
                     if (r.callReturn === "1") {
