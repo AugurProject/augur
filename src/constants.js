@@ -36,27 +36,6 @@ var constants = {
     // timeout for asynchronous unit tests
     TIMEOUT: 120000,
 
-    CIPHER: "aes-128-ctr",
-    IVSIZE: 16,
-
-    // ecdsa private key size (bytes)
-    KEYSIZE: 32,
-
-    // key derivation functions
-    pbkdf2: {
-        c: 262144,
-        dklen: 32,
-        hash: "sha256",
-        prf: "hmac-sha256"
-    },
-    scrypt: {
-        dklen: 32,
-        n: 262144,
-        r: 1,
-        p: 8,
-        maxmem: 67108864
-    },
-
     FIREBASE_URL: "https://resplendent-inferno-1997.firebaseio-demo.com/"
 };
 

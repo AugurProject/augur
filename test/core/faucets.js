@@ -2,6 +2,7 @@
 
 "use strict";
 
+var BigNumber = require("bignumber.js");
 var assert = require("chai").assert;
 var utils = require("../../src/utilities");
 var augur = utils.setup(require("../../src"), process.argv.slice(2));

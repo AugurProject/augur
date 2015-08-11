@@ -5,7 +5,8 @@
 "use strict";
 
 var BigNumber = require("bignumber.js");
-var EthTx = require("ethereumjs-tx");
+var ethTx = require("ethereumjs-tx");
+var ethKeys = require("ethereumjs-keys");
 var errors = require("../errors");
 var constants = require("../constants");
 var utils = require("../utilities");
@@ -27,17 +28,17 @@ module.exports = function (augur) {
                 if (record.error) {
 
                     // generate ECDSA private key and initialization vector
-                    augur.Crypto.generateKey(function (plain) {
+                    ethKeys.create(function (plain) {
 
                         // derive secret key from password
-                        augur.Crypto.deriveKey(password, plain.salt, function (derivedKey) {
+                        ethKeys.deriveKey(password, plain.salt, function (derivedKey) {
 
                             // encrypt private key using derived key and IV, then
                             // store encrypted key & IV, indexed by handle
                             // TODO store mac + uuid
                             augur.db.put(handle, {
                                 handle: handle,
-                                privateKey: augur.Crypto.encrypt(
+                                privateKey: ethKeys.encrypt(
                                     plain.privateKey,
                                     derivedKey.slice(0, 16),
                                     plain.iv
@@ -51,7 +52,7 @@ module.exports = function (augur) {
                                 self.account = {
                                     handle: handle,
                                     privateKey: plain.privateKey,
-                                    address: augur.Crypto.privateKeyToAddress(plain.privateKey),
+                                    address: ethKeys.privateKeyToAddress(plain.privateKey),
                                     nonce: 0
                                 };
 
@@ -61,7 +62,7 @@ module.exports = function (augur) {
 
                         }); // deriveKey
 
-                    }); // generateKey
+                    }); // create
 
                 } else {
                     if (callback) callback(errors.HANDLE_TAKEN);
@@ -82,11 +83,11 @@ module.exports = function (augur) {
                     var salt = new Buffer(storedInfo.salt, "base64");
 
                     // derive secret key from password
-                    augur.Crypto.deriveKey(password, salt, function (derivedKey) {
+                    ethKeys.deriveKey(password, salt, function (derivedKey) {
                         try {
 
                             // decrypt stored private key using secret key
-                            var privateKey = new Buffer(augur.Crypto.decrypt(
+                            var privateKey = new Buffer(ethKeys.decrypt(
                                 storedInfo.privateKey,
                                 derivedKey.slice(0, 16),
                                 iv
@@ -96,7 +97,7 @@ module.exports = function (augur) {
                             self.account = {
                                 handle: handle,
                                 privateKey: privateKey,
-                                address: augur.Crypto.privateKeyToAddress(privateKey),
+                                address: ethKeys.privateKeyToAddress(privateKey),
                                 nonce: storedInfo.nonce
                             };
 
@@ -200,7 +201,7 @@ module.exports = function (augur) {
                         data_abi = augur.abi.encode(tx);
 
                         // package up the transaction and submit it to the network
-                        packaged = new EthTx({
+                        packaged = new ethTx({
                             to: tx.to,
                             from: this.account.address,
                             gasPrice: (tx.gasPrice) ? tx.gasPrice : augur.gasPrice(),

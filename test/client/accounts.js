@@ -17,11 +17,102 @@ var constants = augur.constants;
 var numeric = augur.numeric;
 var log = console.log;
 
+// generate random private key
+var privateKey = crypto.randomBytes(32);
+
 // generate random handles and passwords
 var handle = utils.sha256(new Date().toString());
 var password = utils.sha256(Math.random().toString(36).substring(4));
 var handle2 = utils.sha256(new Date().toString()).slice(10);
 var password2 = utils.sha256(Math.random().toString(36).substring(4)).slice(10);
+
+describe("Transactions", function () {
+
+    // sign tx with private key
+    it("sign raw transaction using private key", function () {
+        var tx = new EthTx({
+            nonce: "00",
+            gasPrice: "09184e72a000", 
+            gasLimit: "2710",
+            to: "0000000000000000000000000000000000000000", 
+            value: "00", 
+            data: "7f7465737432000000000000000000000000000000000000000000000000000000600057"
+        });
+        tx.sign(privateKey);
+        var signed = "f889808609184e72a00082271094000000000000000000000000000000000000"+
+                     "000080a47f746573743200000000000000000000000000000000000000000000"+
+                     "0000000000600057";
+
+        // RLP serialization
+        var serializedTx = tx.serialize().toString("hex");
+        assert.strictEqual(serializedTx.slice(0, 144), signed);
+        assert.strictEqual(serializedTx.length, 278);
+    });
+
+    // create a new contract
+    it("transaction to create a new contract", function () {
+        var tx = new EthTx();
+        tx.nonce = 0;
+        tx.gasPrice = 100;
+        tx.gasLimit = 1000;
+        tx.value = 0;
+        tx.data = "7f4e616d65526567000000000000000000000000000000000000000000000000"+
+                  "003057307f4e616d655265670000000000000000000000000000000000000000"+
+                  "0000000000573360455760415160566000396000f20036602259604556330e0f"+
+                  "600f5933ff33560f601e5960003356576000335700604158600035560f602b59"+
+                  "0033560f60365960003356573360003557600035335700";
+        tx.sign(privateKey);
+        var signed = "f8e380648203e88080b8977f4e616d6552656700000000000000000000000000"+
+                     "0000000000000000000000003057307f4e616d65526567000000000000000000"+
+                     "00000000000000000000000000000000573360455760415160566000396000f2"+
+                     "0036602259604556330e0f600f5933ff33560f601e5960003356576000335700"+
+                     "604158600035560f602b590033560f6036596000335657336000355760003533"+
+                     "5700";
+        var serializedTx = tx.serialize().toString("hex");
+        assert.strictEqual(serializedTx.slice(0, 324), signed);
+        assert.strictEqual(serializedTx.length, 458)
+    });
+
+    // up-front cost calculation:
+    // fee = data length in bytes * 5
+    //     + 500 Default transaction fee
+    //     + gasAmount * gasPrice
+    it("calculate up-front transaction cost", function () {
+        var tx = new EthTx();
+        tx.nonce = 0;
+        tx.gasPrice = 100;
+        tx.gasLimit = 1000;
+        tx.value = 0;
+        tx.data = "7f4e616d65526567000000000000000000000000000000000000000000000000"+
+                  "003057307f4e616d655265670000000000000000000000000000000000000000"+
+                  "0000000000573360455760415160566000396000f20036602259604556330e0f"+
+                  "600f5933ff33560f601e5960003356576000335700604158600035560f602b59"+
+                  "0033560f60365960003356573360003557600035335700";
+        tx.sign(privateKey);
+        assert.strictEqual(tx.getUpfrontCost().toString(), "100000");
+    });
+
+    // decode incoming tx using rlp: rlp.decode(itx)
+    // (also need to check sender's account to see if they have at least amount of the fee)
+    it("should verify sender's signature", function () {
+        var rawTx = [
+            "00",
+            "09184e72a000",
+            "2710",
+            "0000000000000000000000000000000000000000",
+            "00",
+            "7f7465737432000000000000000000000000000000000000000000000000000000600057",
+            "1c",
+            "5e1d3a76fbf824220eafc8c79ad578ad2b67d01b0c2425eb1f1347e8f50882ab",
+            "5bd428537f05f9830e93792f90ea6a3e2d1ee84952dd96edbae9f658f831ab13"
+        ];
+        var tx2 = new EthTx(rawTx);
+        var sender = "1f36f546477cda21bf2296c50976f2740247906f";
+        assert.strictEqual(tx2.getSenderAddress().toString("hex"), sender);
+        assert(tx2.verifySignature());
+    });
+
+});
 
 describe("Accounts", function () {
 
