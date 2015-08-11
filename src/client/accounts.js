@@ -34,6 +34,7 @@ module.exports = function (augur) {
 
                             // encrypt private key using derived key and IV, then
                             // store encrypted key & IV, indexed by handle
+                            // TODO store mac + uuid
                             augur.db.put(handle, {
                                 handle: handle,
                                 privateKey: augur.Crypto.encrypt(

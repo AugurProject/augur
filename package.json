@@ -25,6 +25,7 @@
     "js-sha3": "^0.2.0",
     "moment": "^2.10.3",
     "node-uuid": "^1.4.3",
+    "validator": "^4.0.2",
     "xhr2": "^0.1.2"
   },
   "browser": {

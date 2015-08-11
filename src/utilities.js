@@ -7,6 +7,7 @@ var path = (NODE_JS) ? require("path") : null;
 var assert = (NODE_JS) ? require("assert") : console.assert;
 var crypto = (NODE_JS) ? require("crypto") : require("crypto-browserify");
 var BigNumber = require("bignumber.js");
+var validator = require("validator");
 var moment = require("moment");
 var chalk = require("chalk");
 var constants = require("./constants");
@@ -120,6 +121,27 @@ module.exports = {
         return s;
     },
 
+    str2buf: function (str) {
+        if (str !== undefined && str !== null && str.constructor === String) {
+            if (str.slice(0, 2) === "0x" && str.length > 2) {
+                str = str.slice(0, 2);
+                if (this.is_hex(str)) {
+                   str = new Buffer(str, "hex");
+                }
+            } else if (str.slice(0, 3) === "-0x" && str.length > 3) {
+                str = str.slice(0, 3);
+                if (this.is_hex(str.slice(1))) {
+                   str = new Buffer(str, "hex");
+                }
+            } else if (validator.isBase64(str)) {
+                str = new Buffer(str, "base64");
+            } else {
+                str = new Buffer(str, "utf8");
+            }
+        }
+        return str;
+    },
+
     ua2hex: function (ua) {
         var h = '';
         for (var i = 0; i < ua.length; i++) {
@@ -136,6 +158,14 @@ module.exports = {
         return new Uint8Array(this.atob(b64).split('').map(function (c) {
             return c.charCodeAt(0);
         }));
+    },
+
+    hex2b64: function (str) {
+        return new Buffer(str, "hex").toString("base64");
+    },
+
+    b642hex: function (str) {
+        return new Buffer(str, "base64").toString("hex");
     },
 
     btoa: function (str) {
@@ -222,6 +252,33 @@ module.exports = {
         delay = seconds * 1000;
         while ((new Date()) - start <= delay) {}
         return true;
+    },
+
+    is_hex: function (str) {
+        if (str && str.constructor === String) {
+            if (str.slice(0, 1) === '-' && str.length > 1) {
+                return /^[0-9A-F]+$/i.test(str.slice(1));
+            }
+            return /^[0-9A-F]+$/i.test(str);
+        }
+        return false;
+    },
+
+    strip_0x: function (str) {
+        var h = str;
+        if (h === "-0x0" || h === "0x0") {
+            return "0";
+        }
+        if (h.slice(0, 2) === "0x" && h.length > 2) {
+            h = h.slice(2);
+        } else if (h.slice(0, 3) === "-0x" && h.length > 3) {
+            h = '-' + h.slice(3);
+        }
+        if (this.is_hex(h)) {
+            return h;
+        } else {
+            return str;
+        }
     },
 
     get_test_accounts: function (augur, max_accounts) {
