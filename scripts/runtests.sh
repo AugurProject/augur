@@ -13,7 +13,7 @@ runtest()
     echo -e " ${TEAL}test/${1}${NC}"
 
     if [ "${coverage}" == "1" ]; then
-        istanbul cover _mocha test/${1} --gospel -- -R ${reporter}
+        istanbul cover -x **/lib/**,**/scripts/**,**/dist/** _mocha test/${1} --gospel -- -R ${reporter}
     else
         mocha -R ${reporter} test/${1} ${gospel}
     fi
