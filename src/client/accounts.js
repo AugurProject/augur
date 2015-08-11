@@ -6,7 +6,7 @@
 
 var BigNumber = require("bignumber.js");
 var ethTx = require("ethereumjs-tx");
-var ethKeys = require("ethereumjs-keys");
+var keythereum = require("keythereum");
 var errors = require("../errors");
 var constants = require("../constants");
 var utils = require("../utilities");
@@ -28,17 +28,17 @@ module.exports = function (augur) {
                 if (record.error) {
 
                     // generate ECDSA private key and initialization vector
-                    ethKeys.create(function (plain) {
+                    keythereum.create(function (plain) {
 
                         // derive secret key from password
-                        ethKeys.deriveKey(password, plain.salt, function (derivedKey) {
+                        keythereum.deriveKey(password, plain.salt, function (derivedKey) {
 
                             // encrypt private key using derived key and IV, then
                             // store encrypted key & IV, indexed by handle
                             // TODO store mac + uuid
                             augur.db.put(handle, {
                                 handle: handle,
-                                privateKey: ethKeys.encrypt(
+                                privateKey: keythereum.encrypt(
                                     plain.privateKey,
                                     derivedKey.slice(0, 16),
                                     plain.iv
@@ -52,7 +52,7 @@ module.exports = function (augur) {
                                 self.account = {
                                     handle: handle,
                                     privateKey: plain.privateKey,
-                                    address: ethKeys.privateKeyToAddress(plain.privateKey),
+                                    address: keythereum.privateKeyToAddress(plain.privateKey),
                                     nonce: 0
                                 };
 
@@ -83,11 +83,11 @@ module.exports = function (augur) {
                     var salt = new Buffer(storedInfo.salt, "base64");
 
                     // derive secret key from password
-                    ethKeys.deriveKey(password, salt, function (derivedKey) {
+                    keythereum.deriveKey(password, salt, function (derivedKey) {
                         try {
 
                             // decrypt stored private key using secret key
-                            var privateKey = new Buffer(ethKeys.decrypt(
+                            var privateKey = new Buffer(keythereum.decrypt(
                                 storedInfo.privateKey,
                                 derivedKey.slice(0, 16),
                                 iv
@@ -97,7 +97,7 @@ module.exports = function (augur) {
                             self.account = {
                                 handle: handle,
                                 privateKey: privateKey,
-                                address: ethKeys.privateKeyToAddress(privateKey),
+                                address: keythereum.privateKeyToAddress(privateKey),
                                 nonce: storedInfo.nonce
                             };
 
