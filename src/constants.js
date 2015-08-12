@@ -36,6 +36,9 @@ var constants = {
     // timeout for asynchronous unit tests
     TIMEOUT: 120000,
 
+    KEYSIZE: 32,
+    IVSIZE: 16,
+
     FIREBASE_URL: "https://resplendent-inferno-1997.firebaseio-demo.com/"
 };
 

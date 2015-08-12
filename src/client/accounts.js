@@ -7,6 +7,7 @@
 var BigNumber = require("bignumber.js");
 var ethTx = require("ethereumjs-tx");
 var keythereum = require("keythereum");
+var uuid = require("node-uuid");
 var errors = require("../errors");
 var constants = require("../constants");
 var utils = require("../utilities");
@@ -31,34 +32,48 @@ module.exports = function (augur) {
                     keythereum.create(function (plain) {
 
                         // derive secret key from password
-                        keythereum.deriveKey(password, plain.salt, function (derivedKey) {
-
-                            // encrypt private key using derived key and IV, then
-                            // store encrypted key & IV, indexed by handle
-                            // TODO store mac + uuid
-                            augur.db.put(handle, {
-                                handle: handle,
-                                privateKey: keythereum.encrypt(
+                        keythereum.deriveKey(password, plain.salt, null, function (derivedKey) {
+                            if (derivedKey.error) {
+                                if (callback) callback(derivedKey);
+                            } else {
+                                var encryptedPrivateKey = keythereum.encrypt(
                                     plain.privateKey,
                                     derivedKey.slice(0, 16),
                                     plain.iv
-                                ),
-                                iv: plain.iv.toString("base64"),
-                                salt: plain.salt.toString("base64"),
-                                nonce: 0
-                            }, function () {
+                                );
+                                var mac = new Buffer(
+                                    keythereum.getMAC(
+                                        derivedKey,
+                                        new Buffer(encryptedPrivateKey, "base64")
+                                    ),
+                                    "hex"
+                                ).toString("base64");
 
-                                // set web.account object
-                                self.account = {
+                                // encrypt private key using derived key and IV, then
+                                // store encrypted key & IV, indexed by handle
+                                augur.db.put(handle, {
                                     handle: handle,
-                                    privateKey: plain.privateKey,
-                                    address: keythereum.privateKeyToAddress(plain.privateKey),
+                                    privateKey: encryptedPrivateKey,
+                                    iv: plain.iv.toString("base64"),
+                                    salt: plain.salt.toString("base64"),
+                                    mac: mac,
+                                    id: uuid.v4(),
                                     nonce: 0
-                                };
+                                }, function () {
 
-                                if (callback) callback(self.account);
+                                    // set web.account object
+                                    self.account = {
+                                        handle: handle,
+                                        privateKey: plain.privateKey,
+                                        address: keythereum.privateKeyToAddress(plain.privateKey),
+                                        nonce: 0
+                                    };
 
-                            }); // db.put
+                                    if (callback) callback(self.account);
+
+                                }); // db.put
+
+                            }
 
                         }); // deriveKey
 
@@ -76,38 +91,52 @@ module.exports = function (augur) {
 
             // retrieve account info from database
             augur.db.get(handle, function (storedInfo) {
-
                 if (!storedInfo.error) {
 
                     var iv = new Buffer(storedInfo.iv, "base64");
                     var salt = new Buffer(storedInfo.salt, "base64");
 
                     // derive secret key from password
-                    keythereum.deriveKey(password, salt, function (derivedKey) {
-                        try {
+                    keythereum.deriveKey(password, salt, null, function (derivedKey) {
+                        if (derivedKey) {
 
-                            // decrypt stored private key using secret key
-                            var privateKey = new Buffer(keythereum.decrypt(
-                                storedInfo.privateKey,
-                                derivedKey.slice(0, 16),
-                                iv
-                            ), "hex");
+                            // verify that message authentication codes match
+                            var mac = new Buffer(keythereum.getMAC(
+                                derivedKey,
+                                new Buffer(storedInfo.privateKey, "base64")
+                            ), "hex").toString("base64");
+                            
+                            if (mac === storedInfo.mac) {
+                                try {
 
-                            // while logged in, web.account object is set
-                            self.account = {
-                                handle: handle,
-                                privateKey: privateKey,
-                                address: keythereum.privateKeyToAddress(privateKey),
-                                nonce: storedInfo.nonce
-                            };
+                                    // decrypt stored private key using secret key
+                                    var privateKey = new Buffer(keythereum.decrypt(
+                                        storedInfo.privateKey,
+                                        derivedKey.slice(0, 16),
+                                        iv
+                                    ), "hex");
 
-                            if (callback) callback(self.account);
-                        
-                        // decryption failure: bad password
-                        } catch (e) {
-                            if (callback) callback(errors.BAD_CREDENTIALS);
+                                    // while logged in, web.account object is set
+                                    self.account = {
+                                        handle: handle,
+                                        privateKey: privateKey,
+                                        address: keythereum.privateKeyToAddress(privateKey),
+                                        nonce: storedInfo.nonce
+                                    };
+
+                                    if (callback) callback(self.account);
+                                
+                                // decryption failure: bad password
+                                } catch (e) {
+                                    if (callback) callback(errors.BAD_CREDENTIALS);
+                                }
+
+                            // message authentication code mismatch
+                            } else {
+                                if (callback) callback(errors.BAD_CREDENTIALS);
+                            }
                         }
-                    
+
                     }); // deriveKey
 
                 // handle not found
@@ -123,8 +152,6 @@ module.exports = function (augur) {
         },
 
         // Handle-to-handle payment methods (send ether/cash/rep without needing address)
-        // TODO decide if we should store addresses for users
-        // (maybe an opt-in system is best?)
 
         // sendEther: function (toHandle, value, onSent, onSuccess, onFailed) {
         //     var self = this;
