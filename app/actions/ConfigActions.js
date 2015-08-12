@@ -82,7 +82,6 @@ var ConfigActions = {
 
         utilities.log('updating market ' + marketId.toString(16));
         self.flux.actions.market.loadMarket(marketId);
-        //self.flux.actions.market.loadSomeMarkets([ marketId, marketId.plus(new BigNumber(2).toPower(256)) ]);  // JUST LOAD EM BOTH!!!
       }
     });
 
@@ -94,6 +93,12 @@ var ConfigActions = {
 
     this.flux.actions.config.updateEthereumClient();
     this.flux.actions.network.checkNetwork();
+
+    // start signed out if we're using the demo
+    if (this.flux.store('config').getEthereumClient().isDemoAccount) {
+      this.flux.actions.market.updateSharesHeld(null);
+      this.dispatch(constants.config.UPDATE_ACCOUNT, { currentAccount: null });
+    }
   },
 
   register: function (handle, password) {
@@ -155,7 +160,7 @@ var ConfigActions = {
   signOut: function() {
 
     this.flux.store('config').getEthereumClient().signOut();
-    this.flux.actions.market.updateSharesHeld(null);    
+    this.flux.actions.market.updateSharesHeld(null);
     utilities.log("signed out");
     this.dispatch(constants.config.UPDATE_ACCOUNT, { currentAccount: null });
   }

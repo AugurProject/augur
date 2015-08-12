@@ -271,6 +271,14 @@ EthereumClient.prototype.getAccountSync = function() {
     if (!this.currentAccount)
         this.currentAccount = Augur.coinbase;
   }
+
+  // check if this is the demo account
+  if (this.currentAccount === Augur.demo) {
+    this.isDemoAccount = true;
+  } else {
+    this.isDemoAccount = false;
+  }
+
   return this.currentAccount;
 };
 
@@ -457,7 +465,7 @@ EthereumClient.prototype.getEventInfo = function(eventId, onResult) {
 EthereumClient.prototype.checkQuorum = function(branchId, onSent, onSuccess, onFailed) {
 
   if (!branchId) return;
-  utilities.log('calling dispatch');
+  // utilities.log('calling dispatch');
 
   Augur.dispatch(branchId, function (result) {
 

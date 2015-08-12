@@ -43,7 +43,7 @@ export default {
 
       if (!isCurrent) {
         var periodsBehind = (currentPeriod - 1) - votePeriod;
-        utilities.warn('branch '+ currentBranch.id + ' behind ' + periodsBehind + ' periods');
+        // utilities.warn('branch '+ currentBranch.id + ' behind ' + periodsBehind + ' periods');
       }
 
       var updatedBranch = _.merge(currentBranch, {
