@@ -499,7 +499,9 @@ augur.batch = function (txlist, f) {
             if (tx.params !== undefined) {
                 if (tx.params.constructor === Array) {
                     for (var j = 0, len = tx.params.length; j < len; ++j) {
-                        if (tx.params[j].constructor === BigNumber) {
+                        if (tx.params[j] !== undefined &&
+                            tx.params[j] !== null &&
+                            tx.params[j].constructor === BigNumber) {
                             tx.params[j] = tx.params[j].toFixed();
                         }
                     }
