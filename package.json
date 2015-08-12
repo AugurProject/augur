@@ -30,7 +30,7 @@
     ]
   },
   "dependencies": {
-    "augur.js": "^0.9.4",
+    "augur.js": "^0.9.5",
     "babelify": "^6.1.1",
     "bignumber.js": "^2.0.7",
     "bootstrap": "^3.3.4",
