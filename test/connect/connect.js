@@ -74,13 +74,13 @@ describe("Augur.connect", function () {
         Augur.connect();
         assert.strictEqual(Augur.contracts.branches, newer_address);
     });
-    it("should switch to 1010101 (private chain) contract addresses", function () {
+    it("should switch to 7 (private chain) contract addresses", function () {
         this.timeout(constants.TIMEOUT);
         var Augur = utils.reset("../../src/index");
-        assert(Augur.connect("http://localhost:8545", 1010101));
+        assert(Augur.connect("http://localhost:8545", 7));
         assert(Augur.contracts.branches, contracts.privatechain.branches);
         assert(Augur.contracts.center, contracts.privatechain.center);
-        assert(Augur.connect({ host: "localhost", port: 8545, chain: 1010101 }));
+        assert(Augur.connect({ host: "localhost", port: 8545, chain: 7 }));
         assert(Augur.contracts.branches, contracts.privatechain.branches);
         assert(Augur.contracts.center, contracts.privatechain.center);
     });
@@ -162,10 +162,10 @@ describe("Augur.connect", function () {
         assert(Augur.coinbase);
         assert.strictEqual(Augur.options.RPC, "http://127.0.0.1:8545");
     });
-    it("should be on network 0, 10101, or 1010101", function () {
+    it("should be on network 0, 10101, or 7", function () {
         assert(Augur.network_id === "0" ||
                Augur.network_id === "1" ||
                Augur.network_id === "10101" ||
-               Augur.network_id === "1010101");
+               Augur.network_id === "7");
     });
 });

@@ -352,7 +352,7 @@ augur.connect = function (rpcinfo, chain) {
             JSON.stringify(this.init_contracts) === JSON.stringify(this.contracts)) {
             this.network_id = chain || this.version() || "0";
             switch (this.network_id.toString()) {
-                case "1010101":
+                case "7":
                     this.contracts = utils.copy(contracts.privatechain);
                     break;
                 case "10101":
