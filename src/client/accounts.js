@@ -16,6 +16,9 @@ var log = console.log;
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
+keythereum.constants.pbkdf2.c = 65536;
+keythereum.constants.scrypt.n = 65536;
+
 module.exports = function (augur) {
 
     return {
