@@ -674,15 +674,19 @@ augur.check_blockhash =  function (tx, callreturn, itx, txhash, returns, count, 
         delete tx.hash;
         if (onSuccess) onSuccess(tx);
     } else {
-        if (count !== undefined && count < constants.TX_POLL_MAX) {
-            if (count === 0) {
-                this.notifications[txhash] = [setTimeout(function () {
-                    this.tx_notify(count + 1, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed);
-                }.bind(this), constants.TX_POLL_INTERVAL)];
+        if (count !== undefined) {
+            if (count < constants.TX_POLL_MAX) {
+                if (count === 0) {
+                    this.notifications[txhash] = [setTimeout(function () {
+                        this.tx_notify(count + 1, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed);
+                    }.bind(this), constants.TX_POLL_INTERVAL)];
+                } else {
+                    this.notifications[txhash].push(setTimeout(function () {
+                        this.tx_notify(count + 1, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed);
+                    }.bind(this), constants.TX_POLL_INTERVAL));
+                }
             } else {
-                this.notifications[txhash].push(setTimeout(function () {
-                    this.tx_notify(count + 1, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed);
-                }.bind(this), constants.TX_POLL_INTERVAL));
+                if (onFailed) onFailed(errors.TRANSACTION_NOT_CONFIRMED);
             }
         }
     }

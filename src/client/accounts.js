@@ -1,5 +1,5 @@
 /**
- * Client-side accounts / transactions
+ * Client-side accounts
  */
 
 "use strict";
@@ -22,6 +22,26 @@ module.exports = function (augur) {
 
         // The account object is set when logged in
         account: {},
+
+        // free (testnet) ether for new accounts on registration
+        fund: function (account, callback) {
+            augur.sendEther(
+                account.address,
+                constants.FREEBIE,
+                augur.coinbase,
+                function (r) {
+                    // sent
+                },
+                function (r) {
+                    // success
+                    if (callback) callback(account);
+                },
+                function (r) {
+                    // failed
+                    if (callback) callback(r);
+                }
+            );
+        },
 
         register: function (handle, password, callback) {
             var self = this;
@@ -69,7 +89,7 @@ module.exports = function (augur) {
                                         nonce: 0
                                     };
 
-                                    if (callback) callback(self.account);
+                                    self.fund(self.account, callback);
 
                                 }); // db.put
 

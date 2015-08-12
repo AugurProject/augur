@@ -125,6 +125,11 @@ var errors = {
     TRANSACTION_FAILED: {
         error: 500,
         message: "transaction failed"
+    },
+
+    TRANSACTION_NOT_CONFIRMED: {
+        error: 501,
+        message: "polled network but could not confirm transaction"
     }
 
 };

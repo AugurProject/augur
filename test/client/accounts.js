@@ -149,7 +149,7 @@ describe("Register", function () {
 
 });
 
-describe("Login/logout", function () {
+describe("Login", function () {
 
     it("login and decrypt the stored private key", function (done) {
         this.timeout(constants.TIMEOUT);
@@ -225,6 +225,10 @@ describe("Login/logout", function () {
         });
     });
 
+});
+
+describe("Logout", function () {
+
     it("logout and unset the account object", function (done) {
         this.timeout(constants.TIMEOUT);
         augur.web.login(handle, password, function (user) {
@@ -238,6 +242,92 @@ describe("Login/logout", function () {
                 assert(!augur.web.account.privateKey);
                 assert(!augur.web.account.nonce);
                 done();
+            }
+        });
+    });
+
+});
+
+describe("Fund", function () {
+
+    var recipient = "0x639b41c4d3d399894f2a57894278e1653e7cd24c";
+
+    it("send " + constants.FREEBIE + " ether to " + recipient, function (done) {
+
+        this.timeout(constants.TIMEOUT);
+
+        var initial_balance = numeric
+            .bignum(augur.balance(recipient))
+            .dividedBy(constants.ETHER);
+
+        augur.web.fund({ address: recipient }, function (account) {
+            if (account.error) {
+                done(account);
+            } else {
+                assert.property(account, "address");
+                assert.strictEqual(account.address, recipient);
+
+                var final_balance = numeric
+                    .bignum(augur.balance(recipient))
+                    .dividedBy(constants.ETHER);
+
+                assert.strictEqual(
+                    final_balance.sub(initial_balance).toFixed(),
+                    "100"
+                );
+                done();
+            }
+        });
+    });
+
+    it("send ether from coinbase to account 1", function (done) {
+        var amount = 64;
+        this.timeout(constants.TIMEOUT);
+        augur.web.login(handle, password, function (toAccount) {
+            if (toAccount.error) {
+                augur.web.logout(); done(toAccount);
+            } else {
+                assert.strictEqual(
+                    toAccount.address,
+                    augur.web.account.address
+                );
+                augur.sendEther(
+                    toAccount.address,
+                    amount,
+                    augur.coinbase,
+                    function (r) {
+                        // sent
+                        assert(r);
+                    },
+                    function (r) {
+                        // success
+                        assert(r.blockHash);
+                        assert.strictEqual(
+                            parseInt(r.callReturn),
+                            amount
+                        );
+                        assert.strictEqual(r.from, augur.coinbase);
+                        assert.strictEqual(r.to, toAccount.address);
+                        assert.strictEqual(
+                            r.to,
+                            augur.web.account.address
+                        );
+                        assert.strictEqual(
+                            numeric
+                                .bignum(augur.balance(r.to))
+                                .dividedBy(constants.ETHER)
+                                .toNumber(),
+                            amount + 100
+                        );
+                        augur.web.logout();
+                        done();
+                    },
+                    function (r) {
+                        // failed
+                        augur.web.logout();
+                        done(r);
+                    }
+                );
             }
         });
     });
@@ -390,6 +480,94 @@ describe("Login/logout", function () {
 
 // });
 
+describe("Transaction signing", function () {
+
+    // sign tx with private key
+    it("sign raw transaction using private key", function () {
+        var tx = new EthTx({
+            nonce: "00",
+            gasPrice: "09184e72a000", 
+            gasLimit: "2710",
+            to: "0000000000000000000000000000000000000000", 
+            value: "00", 
+            data: "7f7465737432000000000000000000000000000000000000000000000000000000600057"
+        });
+        tx.sign(privateKey);
+        var signed = "f889808609184e72a00082271094000000000000000000000000000000000000"+
+                     "000080a47f746573743200000000000000000000000000000000000000000000"+
+                     "0000000000600057";
+
+        // RLP serialization
+        var serializedTx = tx.serialize().toString("hex");
+        assert.strictEqual(serializedTx.slice(0, 144), signed);
+        assert.strictEqual(serializedTx.length, 278);
+    });
+
+    // create a new contract
+    it("transaction to create a new contract", function () {
+        var tx = new EthTx();
+        tx.nonce = 0;
+        tx.gasPrice = 100;
+        tx.gasLimit = 1000;
+        tx.value = 0;
+        tx.data = "7f4e616d65526567000000000000000000000000000000000000000000000000"+
+                  "003057307f4e616d655265670000000000000000000000000000000000000000"+
+                  "0000000000573360455760415160566000396000f20036602259604556330e0f"+
+                  "600f5933ff33560f601e5960003356576000335700604158600035560f602b59"+
+                  "0033560f60365960003356573360003557600035335700";
+        tx.sign(privateKey);
+        var signed = "f8e380648203e88080b8977f4e616d6552656700000000000000000000000000"+
+                     "0000000000000000000000003057307f4e616d65526567000000000000000000"+
+                     "00000000000000000000000000000000573360455760415160566000396000f2"+
+                     "0036602259604556330e0f600f5933ff33560f601e5960003356576000335700"+
+                     "604158600035560f602b590033560f6036596000335657336000355760003533"+
+                     "5700";
+        var serializedTx = tx.serialize().toString("hex");
+        assert.strictEqual(serializedTx.slice(0, 324), signed);
+        assert.strictEqual(serializedTx.length, 458)
+    });
+
+    // up-front cost calculation:
+    // fee = data length in bytes * 5
+    //     + 500 Default transaction fee
+    //     + gasAmount * gasPrice
+    it("calculate up-front transaction cost", function () {
+        var tx = new EthTx();
+        tx.nonce = 0;
+        tx.gasPrice = 100;
+        tx.gasLimit = 1000;
+        tx.value = 0;
+        tx.data = "7f4e616d65526567000000000000000000000000000000000000000000000000"+
+                  "003057307f4e616d655265670000000000000000000000000000000000000000"+
+                  "0000000000573360455760415160566000396000f20036602259604556330e0f"+
+                  "600f5933ff33560f601e5960003356576000335700604158600035560f602b59"+
+                  "0033560f60365960003356573360003557600035335700";
+        tx.sign(privateKey);
+        assert.strictEqual(tx.getUpfrontCost().toString(), "100000");
+    });
+
+    // decode incoming tx using rlp: rlp.decode(itx)
+    // (also need to check sender's account to see if they have at least amount of the fee)
+    it("should verify sender's signature", function () {
+        var rawTx = [
+            "00",
+            "09184e72a000",
+            "2710",
+            "0000000000000000000000000000000000000000",
+            "00",
+            "7f7465737432000000000000000000000000000000000000000000000000000000600057",
+            "1c",
+            "5e1d3a76fbf824220eafc8c79ad578ad2b67d01b0c2425eb1f1347e8f50882ab",
+            "5bd428537f05f9830e93792f90ea6a3e2d1ee84952dd96edbae9f658f831ab13"
+        ];
+        var tx2 = new EthTx(rawTx);
+        var sender = "1f36f546477cda21bf2296c50976f2740247906f";
+        assert.strictEqual(tx2.getSenderAddress().toString("hex"), sender);
+        assert(tx2.verifySignature());
+    });
+
+});
+
 describe("Contract methods", function () {
 
     describe("Call", function () {
@@ -427,147 +605,7 @@ describe("Contract methods", function () {
 
     });
 
-    describe("Raw transactions", function () {
-
-        // sign tx with private key
-        it("sign raw transaction using private key", function () {
-            var tx = new EthTx({
-                nonce: "00",
-                gasPrice: "09184e72a000", 
-                gasLimit: "2710",
-                to: "0000000000000000000000000000000000000000", 
-                value: "00", 
-                data: "7f7465737432000000000000000000000000000000000000000000000000000000600057"
-            });
-            tx.sign(privateKey);
-            var signed = "f889808609184e72a00082271094000000000000000000000000000000000000"+
-                         "000080a47f746573743200000000000000000000000000000000000000000000"+
-                         "0000000000600057";
-
-            // RLP serialization
-            var serializedTx = tx.serialize().toString("hex");
-            assert.strictEqual(serializedTx.slice(0, 144), signed);
-            assert.strictEqual(serializedTx.length, 278);
-        });
-
-        // create a new contract
-        it("transaction to create a new contract", function () {
-            var tx = new EthTx();
-            tx.nonce = 0;
-            tx.gasPrice = 100;
-            tx.gasLimit = 1000;
-            tx.value = 0;
-            tx.data = "7f4e616d65526567000000000000000000000000000000000000000000000000"+
-                      "003057307f4e616d655265670000000000000000000000000000000000000000"+
-                      "0000000000573360455760415160566000396000f20036602259604556330e0f"+
-                      "600f5933ff33560f601e5960003356576000335700604158600035560f602b59"+
-                      "0033560f60365960003356573360003557600035335700";
-            tx.sign(privateKey);
-            var signed = "f8e380648203e88080b8977f4e616d6552656700000000000000000000000000"+
-                         "0000000000000000000000003057307f4e616d65526567000000000000000000"+
-                         "00000000000000000000000000000000573360455760415160566000396000f2"+
-                         "0036602259604556330e0f600f5933ff33560f601e5960003356576000335700"+
-                         "604158600035560f602b590033560f6036596000335657336000355760003533"+
-                         "5700";
-            var serializedTx = tx.serialize().toString("hex");
-            assert.strictEqual(serializedTx.slice(0, 324), signed);
-            assert.strictEqual(serializedTx.length, 458)
-        });
-
-        // up-front cost calculation:
-        // fee = data length in bytes * 5
-        //     + 500 Default transaction fee
-        //     + gasAmount * gasPrice
-        it("calculate up-front transaction cost", function () {
-            var tx = new EthTx();
-            tx.nonce = 0;
-            tx.gasPrice = 100;
-            tx.gasLimit = 1000;
-            tx.value = 0;
-            tx.data = "7f4e616d65526567000000000000000000000000000000000000000000000000"+
-                      "003057307f4e616d655265670000000000000000000000000000000000000000"+
-                      "0000000000573360455760415160566000396000f20036602259604556330e0f"+
-                      "600f5933ff33560f601e5960003356576000335700604158600035560f602b59"+
-                      "0033560f60365960003356573360003557600035335700";
-            tx.sign(privateKey);
-            assert.strictEqual(tx.getUpfrontCost().toString(), "100000");
-        });
-
-        // decode incoming tx using rlp: rlp.decode(itx)
-        // (also need to check sender's account to see if they have at least amount of the fee)
-        it("should verify sender's signature", function () {
-            var rawTx = [
-                "00",
-                "09184e72a000",
-                "2710",
-                "0000000000000000000000000000000000000000",
-                "00",
-                "7f7465737432000000000000000000000000000000000000000000000000000000600057",
-                "1c",
-                "5e1d3a76fbf824220eafc8c79ad578ad2b67d01b0c2425eb1f1347e8f50882ab",
-                "5bd428537f05f9830e93792f90ea6a3e2d1ee84952dd96edbae9f658f831ab13"
-            ];
-            var tx2 = new EthTx(rawTx);
-            var sender = "1f36f546477cda21bf2296c50976f2740247906f";
-            assert.strictEqual(tx2.getSenderAddress().toString("hex"), sender);
-            assert(tx2.verifySignature());
-        });
-
-    });
-
     describe("Send transaction", function () {
-
-        it("send ether from coinbase to account 1", function (done) {
-            var amount = 64;
-            this.timeout(constants.TIMEOUT);
-            augur.web.login(handle, password, function (toAccount) {
-                if (toAccount.error) {
-                    augur.web.logout(); done(toAccount);
-                } else {
-                    assert.strictEqual(
-                        toAccount.address,
-                        augur.web.account.address
-                    );
-                    augur.sendEther(
-                        toAccount.address,
-                        amount,
-                        augur.coinbase,
-                        function (r) {
-                            // sent
-                            assert(r);
-                        },
-                        function (r) {
-                            // success
-                            assert(r.blockHash);
-                            assert.strictEqual(
-                                parseInt(r.callReturn),
-                                amount
-                            );
-                            assert.strictEqual(r.from, augur.coinbase);
-                            assert.strictEqual(r.to, toAccount.address);
-                            assert.strictEqual(
-                                r.to,
-                                augur.web.account.address
-                            );
-                            assert.strictEqual(
-                                numeric
-                                    .bignum(augur.balance(r.to))
-                                    .dividedBy(constants.ETHER)
-                                    .toNumber(),
-                                amount
-                            );
-                            augur.web.logout();
-                            done();
-                        },
-                        function (r) {
-                            // failed
-                            augur.web.logout();
-                            done(r);
-                        }
-                    );
-                }
-            });
-        });
 
         it("detect logged in user and default to web.invoke", function (done) {
             this.timeout(constants.TIMEOUT);
