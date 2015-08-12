@@ -34,10 +34,12 @@ module.exports = function (augur) {
                 augur.coinbase,
                 function (r) {
                     // sent
+                    if (callback) callback(account);
                 },
                 function (r) {
                     // success
-                    if (callback) callback(account);
+                    log("Account", account.address, "funded");
+                    // if (callback) callback(account);
                 },
                 function (r) {
                     // failed

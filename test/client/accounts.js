@@ -267,67 +267,15 @@ describe("Fund", function () {
                 assert.property(account, "address");
                 assert.strictEqual(account.address, recipient);
 
-                var final_balance = numeric
-                    .bignum(augur.balance(recipient))
-                    .dividedBy(constants.ETHER);
+                // var final_balance = numeric
+                //     .bignum(augur.balance(recipient))
+                //     .dividedBy(constants.ETHER);
 
-                assert.strictEqual(
-                    final_balance.sub(initial_balance).toFixed(),
-                    "100"
-                );
+                // assert.strictEqual(
+                //     final_balance.sub(initial_balance).toFixed(),
+                //     "100"
+                // );
                 done();
-            }
-        });
-    });
-
-    it("send ether from coinbase to account 1", function (done) {
-        var amount = 64;
-        this.timeout(constants.TIMEOUT);
-        augur.web.login(handle, password, function (toAccount) {
-            if (toAccount.error) {
-                augur.web.logout(); done(toAccount);
-            } else {
-                assert.strictEqual(
-                    toAccount.address,
-                    augur.web.account.address
-                );
-                augur.sendEther(
-                    toAccount.address,
-                    amount,
-                    augur.coinbase,
-                    function (r) {
-                        // sent
-                        assert(r);
-                    },
-                    function (r) {
-                        // success
-                        assert(r.blockHash);
-                        assert.strictEqual(
-                            parseInt(r.callReturn),
-                            amount
-                        );
-                        assert.strictEqual(r.from, augur.coinbase);
-                        assert.strictEqual(r.to, toAccount.address);
-                        assert.strictEqual(
-                            r.to,
-                            augur.web.account.address
-                        );
-                        assert.strictEqual(
-                            numeric
-                                .bignum(augur.balance(r.to))
-                                .dividedBy(constants.ETHER)
-                                .toNumber(),
-                            amount + 100
-                        );
-                        augur.web.logout();
-                        done();
-                    },
-                    function (r) {
-                        // failed
-                        augur.web.logout();
-                        done(r);
-                    }
-                );
             }
         });
     });
