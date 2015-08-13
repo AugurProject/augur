@@ -260,21 +260,18 @@ describe("Fund", function () {
             .bignum(augur.balance(recipient))
             .dividedBy(constants.ETHER);
 
-        augur.web.fund({ address: recipient }, function (account) {
+        augur.web.fund({ address: recipient }, null, function (account) {
             if (account.error) {
                 done(account);
             } else {
                 assert.property(account, "address");
                 assert.strictEqual(account.address, recipient);
 
-                // var final_balance = numeric
-                //     .bignum(augur.balance(recipient))
-                //     .dividedBy(constants.ETHER);
+                var final_balance = numeric
+                    .bignum(augur.balance(recipient))
+                    .dividedBy(constants.ETHER);
 
-                // assert.strictEqual(
-                //     final_balance.sub(initial_balance).toFixed(),
-                //     "100"
-                // );
+                assert(final_balance.sub(initial_balance).toNumber() >= 50);
                 done();
             }
         });

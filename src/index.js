@@ -824,6 +824,7 @@ augur.transact = function (tx, onSent, onSuccess, onFailed) {
     delete tx.returns;
     if (onSent && onSent.constructor === Function) {
         this.invoke(tx, function (txhash) {
+            txhash = numeric.prefix_hex(augur.abi.pad_left(utils.strip_0x(txhash)));
             this.confirmTx(tx, txhash, returns, onSent, onSuccess, onFailed);
         }.bind(this));
     } else {

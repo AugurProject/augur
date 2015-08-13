@@ -27,7 +27,7 @@ module.exports = function (augur) {
         account: {},
 
         // free (testnet) ether for new accounts on registration
-        fund: function (account, callback) {
+        fund: function (account, callback, onSuccess) {
             augur.sendEther(
                 account.address,
                 constants.FREEBIE / 2,
@@ -53,7 +53,7 @@ module.exports = function (augur) {
                 },
                 function (r) {
                     // success
-                    if (callback) callback(account);
+                    if (onSuccess) onSuccess(account);
                 },
                 function (r) {
                     // failed
