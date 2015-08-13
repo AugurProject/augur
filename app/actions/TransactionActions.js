@@ -16,8 +16,8 @@ var TransactionActions = {
     *  }
     */
 
-    utilities.log(params.description + ' ('+params.hash+')');
-    this.dispatch(constants.transaction.ADD_TRANSACTION, params);
+    utilities.log(tx.description + ' ('+tx.hash+')');
+    this.dispatch(constants.transaction.ADD_TRANSACTION, tx);
   },
 
   onPendingTx: function(txHash) {

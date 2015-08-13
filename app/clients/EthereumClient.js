@@ -611,7 +611,7 @@ EthereumClient.prototype.addEvent = function(params, onSuccess) {
         if (newEvent && newEvent.callReturn) {
           newEvent.id = newEvent.callReturn;
           delete newEvent.callReturn;
-          utilities.debug("submitted new event "+ newEvent.id);
+          utilities.debug("submitted new event: " + newEvent.id.toString(16));
         }
       },
 
@@ -627,6 +627,10 @@ EthereumClient.prototype.addEvent = function(params, onSuccess) {
           }
           if (onSuccess) onSuccess(newEvent);
         }
+      },
+
+      onFailed: function (r) {
+        console.log("createEvent failed:", r);
       }
     });
 };
@@ -647,11 +651,17 @@ EthereumClient.prototype.addMarket = function(params, onSent) {
       description: description,
       alpha: alpha,
       initialLiquidity: initialLiquidity,
-      tradingFee: tradingFee,
+      tradingFee: tradingFee.toFixed(),
       events: events,
 
       onSent: function (newMarket) {
         onSent(newMarket.txHash);
+      },
+      onSuccess: function (r) {
+        console.log("createMarket successful:", r);
+      },
+      onFailed: function (r) {
+        console.log("createMarket failed:", r);
       }
     });
 };
