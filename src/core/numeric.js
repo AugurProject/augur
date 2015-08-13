@@ -64,7 +64,9 @@ module.exports = {
             if (n.constructor === Number || n.constructor === BigNumber) {
                 n = n.toString(16);
             }
-            if (n.slice(0,2) !== "0x" && n.slice(0,3) !== "-0x") {
+            if (n.constructor === String &&
+                n.slice(0,2) !== "0x" && n.slice(0,3) !== "-0x")
+            {
                 if (n.slice(0,1) === '-') {
                     n = "-0x" + n.slice(1);
                 } else {
@@ -183,7 +185,9 @@ module.exports = {
     fix: function (n, encode) {
         var fixed;
         if (n && n !== "0x") {
-            if (encode) encode = encode.toLowerCase();
+            if (encode && n.constructor === String) {
+                encode = encode.toLowerCase();
+            }
             if (n.constructor === Array) {
                 var len = n.length;
                 fixed = new Array(len);
@@ -203,6 +207,9 @@ module.exports = {
                     if (encode === "string") {
                         fixed = fixed.toFixed();
                     } else if (encode === "hex") {
+                        if (fixed.constructor === BigNumber) {
+                            fixed = fixed.toString(16);
+                        }
                         fixed = this.prefix_hex(fixed);
                     }
                 }

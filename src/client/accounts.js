@@ -30,7 +30,7 @@ module.exports = function (augur) {
         fund: function (account, callback) {
             augur.sendEther(
                 account.address,
-                constants.FREEBIE,
+                constants.FREEBIE / 2,
                 augur.coinbase,
                 function (r) {
                     // sent
@@ -38,8 +38,22 @@ module.exports = function (augur) {
                 },
                 function (r) {
                     // success
-                    log("Account", account.address, "funded");
-                    // if (callback) callback(account);
+                },
+                function (r) {
+                    // failed
+                    if (callback) callback(r);
+                }
+            );
+            augur.sendEther(
+                account.address,
+                constants.FREEBIE / 2,
+                augur.coinbase,
+                function (r) {
+                    // sent
+                },
+                function (r) {
+                    // success
+                    if (callback) callback(account);
                 },
                 function (r) {
                     // failed

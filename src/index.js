@@ -679,7 +679,8 @@ augur.check_blockhash =  function (tx, callreturn, itx, txhash, returns, count, 
         tx.callReturn = this.encode_result(callreturn, returns);
         tx.txHash = tx.hash;
         delete tx.hash;
-        if (onSuccess) onSuccess(tx);
+        log("check blockhash:", tx);
+        if (onSuccess && onSuccess.constructor === Function) onSuccess(tx);
     } else {
         if (count !== undefined) {
             if (count < constants.TX_POLL_MAX) {
@@ -693,7 +694,9 @@ augur.check_blockhash =  function (tx, callreturn, itx, txhash, returns, count, 
                     }.bind(this), constants.TX_POLL_INTERVAL));
                 }
             } else {
-                if (onFailed) onFailed(errors.TRANSACTION_NOT_CONFIRMED);
+                if (onFailed && onFailed.constructor === Function) {
+                    onFailed(errors.TRANSACTION_NOT_CONFIRMED);
+                }
             }
         }
     }
@@ -820,8 +823,10 @@ augur.transact = function (tx, onSent, onSuccess, onFailed) {
     var returns = tx.returns;
     tx.send = true;
     delete tx.returns;
+    log(tx);
     if (onSent && onSent.constructor === Function) {
         this.invoke(tx, function (txhash) {
+            log(txhash);
             this.confirmTx(tx, txhash, returns, onSent, onSuccess, onFailed);
         }.bind(this));
     } else {
@@ -2014,6 +2019,13 @@ augur.createMarket = function (branch, description, alpha, liquidity, tradingFee
         branch = branch.branchId;            // sha256 hash
     }
     var tx = this.tx.createMarket;
+    if (events && events.length) {
+        for (var i = 0, len = events.length; i < len; ++i) {
+            if (events[i] && events[i].constructor === BigNumber) {
+                events[i] = events[i].toString(16);
+            }
+        }
+    }
     tx.params = [
         branch,
         description,
