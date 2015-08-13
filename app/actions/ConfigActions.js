@@ -95,10 +95,10 @@ var ConfigActions = {
     this.flux.actions.network.checkNetwork();
 
     // start signed out if we're using the demo
-    // if (this.flux.store('config').getEthereumClient().isDemoAccount) {
-    //   this.flux.actions.market.updateSharesHeld(null);
-    //   this.dispatch(constants.config.UPDATE_ACCOUNT, { currentAccount: null });
-    // }
+    if (this.flux.store('config').getEthereumClient().isDemoAccount) {
+      this.flux.actions.market.updateSharesHeld(null);
+      this.dispatch(constants.config.UPDATE_ACCOUNT, { currentAccount: null });
+    }
   },
 
   register: function (handle, password) {
