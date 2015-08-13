@@ -124,7 +124,7 @@ var ConfigActions = {
         });
 
       } else {
-        utilities.log("sign in failed");
+        utilities.log("register failed");
       }
     });
   },
