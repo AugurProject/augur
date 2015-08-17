@@ -18,10 +18,10 @@ var rm = require("rimraf");
 var chalk = require("chalk");
 var mocha = new (require("mocha"))();
 var mod_getopt = require("posix-getopt");
-var Augur = require(path.join(__dirname, "..", "src"));
-var constants = require(path.join(__dirname, "..", "src", "constants"));
-var utils = require(path.join(__dirname, "..", "src", "utilities"));
-var numeric = require(path.join(__dirname, "..", "src", "numeric"));
+var augur = require(path.join(__dirname, "..", "src"));
+var constants = augur.constants;
+var utils = augur.utils;
+var numeric = augur.numeric;
 var log = console.log;
 
 var options = {
@@ -36,7 +36,7 @@ var options = {
     GOSPEL: path.join(__dirname, "..", "data", "gospel.json"),
     CUSTOM_GOSPEL: false,
     LOG: path.join(__dirname, "..", "data", "geth.log"),
-    GETH: process.env.GETH || "geth",
+    GETH: process.env.GETH || "/usr/local/bin/geth",
     SPAWN_GETH: true,
     SUITE: []
 };
@@ -75,8 +75,7 @@ options.GETH_FLAGS = [
     "--maxpeers", "64",
     "--networkid", options.NETWORK_ID,
     "--datadir", options.DATADIR,
-    // "--olympic",
-    // "--genesis", options.GENESIS_BLOCK,
+    "--genesis", options.GENESIS_BLOCK,
     "--password", path.join(options.DATADIR, ".password")
 ];
 
@@ -125,7 +124,7 @@ function spawn_geth(flags) {
 }
 
 function mine_minimum_ether(geth, account, next) {
-    var balance = numeric.bignum(Augur.balance(account)).dividedBy(constants.ETHER).toNumber();
+    var balance = numeric.bignum(augur.balance(account)).dividedBy(constants.ETHER).toNumber();
     if (balance < options.MINIMUM_ETHER) {
         if (balance > 0) {
             log(chalk.green(balance) + chalk.gray(" ETH, waiting for ") +
@@ -140,16 +139,16 @@ function mine_minimum_ether(geth, account, next) {
 }
 
 function connect_augur() {
-    Augur.options.BigNumberOnly = false;
+    augur.options.BigNumberOnly = false;
     if (options.CUSTOM_GOSPEL) {
-        Augur = utils.setup(
-            Augur,
+        augur = utils.setup(
+            augur,
             ["--gospel"],
             { port: options.RPC_PORT }
         );
     } else {
-        Augur = utils.setup(
-            Augur,
+        augur = utils.setup(
+            augur,
             null,
             { port: options.RPC_PORT }
         );
@@ -162,8 +161,8 @@ function init(geth, account, callback, next, count) {
     }
     connect_augur();
     count = count || 0;
-    if (Augur.connected()) {
-        accounts = utils.get_test_accounts(Augur, constants.MAX_TEST_ACCOUNTS);
+    if (augur.connected()) {
+        accounts = utils.get_test_accounts(augur, constants.MAX_TEST_ACCOUNTS);
         verified_accounts = true;
         if (!verified_accounts && account !== accounts[0]) {
             if (geth) kill_geth(geth);
@@ -181,11 +180,11 @@ function init(geth, account, callback, next, count) {
                 );
             }, 5000);
         } else {
-            var balance = Augur.balance(account);
+            var balance = augur.balance(account);
             if (balance && !balance.error) {
                 balance = numeric.bignum(balance).dividedBy(constants.ETHER).toFixed();
                 log("Connected on account", chalk.cyan(account));
-                log(chalk.green(Augur.blockNumber()), chalk.gray("blocks"));
+                log(chalk.green(augur.blockNumber()), chalk.gray("blocks"));
                 log(chalk.green(balance), chalk.gray("ETH"));
                 callback(geth, account, next);
             } else {
@@ -216,11 +215,11 @@ function reset_tests(suite) {
 
 function faucets(geth) {
     connect_augur();
-    var branch = Augur.branches.dev;
-    var coinbase = Augur.coinbase;
+    var branch = augur.branches.dev;
+    var coinbase = augur.coinbase;
     var balance = {
-        reputation: numeric.bignum(Augur.getRepBalance(branch, coinbase)),
-        cash: numeric.bignum(Augur.getCashBalance(coinbase))
+        reputation: numeric.bignum(augur.getRepBalance(branch, coinbase)),
+        cash: numeric.bignum(augur.getCashBalance(coinbase))
     };
     var needs = {
         reputation: !balance.reputation || balance.reputation.lt(new BigNumber(47)),
@@ -229,9 +228,9 @@ function faucets(geth) {
     reset_tests(mocha.suite);
     mocha.addFile(path.join(__dirname, "..", "test", "core", "faucets.js"));
     mocha.reporter(options.MOCHA_REPORTER).run(function (failures) {
-        var cash_balance = Augur.getCashBalance(coinbase);
-        var rep_balance = Augur.getRepBalance(branch, coinbase);
-        var ether_balance = numeric.bignum(Augur.balance(coinbase)).dividedBy(constants.ETHER).toFixed();
+        var cash_balance = augur.getCashBalance(coinbase);
+        var rep_balance = augur.getRepBalance(branch, coinbase);
+        var ether_balance = numeric.bignum(augur.balance(coinbase)).dividedBy(constants.ETHER).toFixed();
         log(chalk.cyan("\nBalances:"));
         log("Cash:       " + chalk.green(cash_balance));
         log("Reputation: " + chalk.green(rep_balance));
@@ -271,8 +270,8 @@ function upload_contracts(geth) {
             chalk.red.bold(":"));
     }
     var uploader_options = [
-        "--BLOCKTIME=1.75",
-        "--port=" + options.RPC_PORT
+        "--blocktime", "1.75",
+        "--rpcport", options.RPC_PORT
     ];
     if (options.UPLOAD_CONTRACT) {
         uploader_options.push("--contract=" + options.UPLOAD_CONTRACT);
@@ -298,7 +297,7 @@ function upload_contracts(geth) {
                     log("Send", options.MINIMUM_ETHER, "ETH to:");
                     for (var i = 1, len = accounts.length; i < len; ++i) {
                         log(chalk.green("  ✓ ") + chalk.gray(accounts[i]));
-                        Augur.pay(accounts[i], options.MINIMUM_ETHER);
+                        augur.pay(accounts[i], options.MINIMUM_ETHER);
                     }
                 }
                 if (options.FAUCETS) {
@@ -334,7 +333,7 @@ cp.spawn = function () {
 function reset_datadir() {
     log("Reset " + chalk.magenta("augur") + " data directory: " +
         chalk.green(options.DATADIR));
-    var directories = [ "blockchain", "extra", "nodes", "state" ];
+    var directories = [ "blockchain", "chaindata", "dapp", "extra", "nodes", "state" ];
     for (var i = 0, len = directories.length; i < len; ++i) {
         rm.sync(path.join(options.DATADIR, directories[i]));
     }
@@ -389,7 +388,7 @@ while ((option = parser.getopt()) !== undefined) {
             break;
         case 'o':
             log("Load contracts from file:", chalk.green(options.GOSPEL));
-            Augur.contracts = JSON.parse(fs.readFileSync(options.GOSPEL));
+            augur.contracts = JSON.parse(fs.readFileSync(options.GOSPEL));
             options.CUSTOM_GOSPEL = true;
             break;
         case 'u':

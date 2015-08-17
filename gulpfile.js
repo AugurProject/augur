@@ -1,11 +1,10 @@
 "use strict";
 
+var path = require("path");
 var cp = require("child_process");
 var nodeUtil = require("util");
 var gulp = require("gulp");
-var rename = require("gulp-rename");
 var del = require("del");
-var runSequence = require("run-sequence");
 
 var gulp_log = require("fs").createWriteStream(
     require("path").join(__dirname, "data", "gulp.log"),
@@ -28,15 +27,22 @@ gulp.task("test", function (callback) {
 });
 
 gulp.task("build", function (callback) {
-    cp.exec("./node_modules/browserify/bin/cmd.js ./exports.js | "+
-            "./node_modules/uglify-js/bin/uglifyjs > ./dist/augur.js",
-            function (err, stdout) {
-        if (err) throw err;
-        if (stdout) process.stdout.write(stdout);
-        callback();
+    del([path.join("dist", "*.js")], function (ex) {
+        if (ex) throw ex;
+        cp.exec("./node_modules/browserify/bin/cmd.js ./exports.js | "+
+                "./node_modules/uglify-js/bin/uglifyjs > ./dist/augur.min.js",
+                function (err, stdout) {
+            if (err) throw err;
+            if (stdout) process.stdout.write(stdout);
+            cp.exec("./node_modules/browserify/bin/cmd.js ./exports.js "+
+                    "> ./dist/augur.js",
+                    function (err, stdout) {
+                if (err) throw err;
+                if (stdout) process.stdout.write(stdout);
+                callback();
+            });
+        });
     });
 });
 
-gulp.task("default", ["clean"], function (callback) {
-    runSequence(["test", "build"], callback);
-});
+gulp.task("default", ["test", "build"]);

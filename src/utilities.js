@@ -121,27 +121,6 @@ module.exports = {
         return s;
     },
 
-    str2buf: function (str) {
-        if (str !== undefined && str !== null && str.constructor === String) {
-            if (str.slice(0, 2) === "0x" && str.length > 2) {
-                str = str.slice(0, 2);
-                if (this.is_hex(str)) {
-                   str = new Buffer(str, "hex");
-                }
-            } else if (str.slice(0, 3) === "-0x" && str.length > 3) {
-                str = str.slice(0, 3);
-                if (this.is_hex(str.slice(1))) {
-                   str = new Buffer(str, "hex");
-                }
-            } else if (validator.isBase64(str)) {
-                str = new Buffer(str, "base64");
-            } else {
-                str = new Buffer(str, "utf8");
-            }
-        }
-        return str;
-    },
-
     ua2hex: function (ua) {
         var h = '';
         for (var i = 0; i < ua.length; i++) {
@@ -182,14 +161,27 @@ module.exports = {
         return new Buffer(str, "base64").toString("binary");
     },
 
-    unescape_unicode: function (u) {
-        return JSON.parse('"' + u + '"');
-    },
-
     escape_unicode: function (str) {
         return str.replace(/[\s\S]/g, function (escape) {
             return '\\u' + ('0000' + escape.charCodeAt().toString(16)).slice(-4);
         });
+    },
+
+    str2buf: function (str, enc) {
+        if (str.constructor === String) {
+            if (enc) {
+                str = new Buffer(str, enc);
+            } else {
+                if (validator.isHexadecimal(str)) {
+                    str = new Buffer(str, "hex");
+                } else if (validator.isBase64(str)) {
+                    str = new Buffer(str, "base64");
+                } else {
+                    str = new Buffer(str);
+                }
+            }
+        }
+        return str;
     },
 
     hex2utf16le: function (input) {
@@ -197,7 +189,7 @@ module.exports = {
         for (var i = 0, l = input.length; i < l; i += 4) {
             output += '\\u' + input.slice(i+2, i+4) + input.slice(i, i+2);
         }
-        return this.unescape_unicode(output);
+        return JSON.parse('"' + output + '"');
     },
 
     has_value: function (o, v) {

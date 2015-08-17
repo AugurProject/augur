@@ -9,16 +9,16 @@ var assert = require("chai").assert;
 var BigNumber = require("bignumber.js");
 var chalk = require("chalk");
 var web3 = require("web3");
-var Augur = require("../../src");
+var augur = require("../../src");
 var constants = require("../../src/constants");
 var utils = require("../../src/utilities");
-var numeric = Augur.numeric;
+var numeric = augur.numeric;
 var log = console.log;
 
-Augur = utils.setup(Augur, process.argv.slice(2));
+augur = utils.setup(augur, process.argv.slice(2));
 web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"));
 
-var branch_id = Augur.branches.dev;
+var branch_id = augur.branches.dev;
 var branch_number = "0";
 
 var branches_full_abi = [
@@ -130,13 +130,13 @@ describe("augur.js / web3 interoperability", function () {
     it("market IDs should be identical", function () {
         this.timeout(constants.TIMEOUT);
         var web3markets = web3.eth.contract(branches_full_abi)
-                                  .at(Augur.contracts.branches)
+                                  .at(augur.contracts.branches)
                                   .getMarkets
-                                  .call(branch_id);
-        Augur.options.BigNumberOnly = true;
-        Augur = utils.setup(Augur, process.argv.slice(2), null, true);
+                                  .call(new BigNumber(branch_id));
+        augur.options.BigNumberOnly = true;
+        augur = utils.setup(augur, process.argv.slice(2), null, true);
         var markets = {
-            augurjs: Augur.getMarkets(branch_id),
+            augurjs: augur.getMarkets(branch_id),
             web3: web3markets
         };
         for (var i = 0, len = markets.augurjs.length; i < len; ++i) {
@@ -148,8 +148,8 @@ describe("augur.js / web3 interoperability", function () {
                 markets.web3[i].toString(16)
             );
         }
-        Augur.options.BigNumberOnly = false;
-        Augur = utils.setup(Augur, process.argv.slice(2));
+        augur.options.BigNumberOnly = false;
+        augur = utils.setup(augur, process.argv.slice(2));
     });
 });
 
@@ -162,10 +162,10 @@ describe("branches.se", function () {
             assert.strictEqual(r[0], branch_id);
         };
         it("sync", function () {
-            test(Augur.getBranches());
+            test(augur.getBranches());
         });
         it("async", function (done) {
-            Augur.getBranches(function (r) {
+            augur.getBranches(function (r) {
                 test(r); done();
             });
         });
@@ -176,10 +176,10 @@ describe("branches.se", function () {
             assert(r.length > 1);
         };
         it("sync", function () {
-            test(Augur.getMarkets(branch_id));
+            test(augur.getMarkets(branch_id));
         });
         it("async", function (done) {
-            Augur.getMarkets(branch_id, function (r) {
+            augur.getMarkets(branch_id, function (r) {
                 test(r); done();
             });
         });
@@ -189,10 +189,10 @@ describe("branches.se", function () {
             assert.strictEqual(r, "1800");
         };
         it("sync", function () {
-            test(Augur.getPeriodLength(branch_id));
+            test(augur.getPeriodLength(branch_id));
         });
         it("async", function (done) {
-            Augur.getPeriodLength(branch_id, function (r) {
+            augur.getPeriodLength(branch_id, function (r) {
                 test(r); done();
             });
         });
@@ -202,10 +202,10 @@ describe("branches.se", function () {
             assert(parseInt(r) >= -1);
         };
         it("sync", function () {
-            test(Augur.getVotePeriod(branch_id));
+            test(augur.getVotePeriod(branch_id));
         });
         it("async", function (done) {
-            Augur.getVotePeriod(branch_id, function (r) {
+            augur.getVotePeriod(branch_id, function (r) {
                 test(r); done();
             });
         });
@@ -215,10 +215,10 @@ describe("branches.se", function () {
             assert.strictEqual(parseInt(r), 0);
         };
         it("sync", function () {
-            test(Augur.getStep(branch_id));
+            test(augur.getStep(branch_id));
         });
         it("async", function (done) {
-            Augur.getStep(branch_id, function (r) {
+            augur.getStep(branch_id, function (r) {
                 test(r); done();
             });
         });
@@ -228,10 +228,10 @@ describe("branches.se", function () {
             assert(parseInt(r) >= 1);
         };
         it("sync", function () {
-            test(Augur.getNumMarkets(branch_id));
+            test(augur.getNumMarkets(branch_id));
         });
         it("async", function (done) {
-            Augur.getNumMarkets(branch_id, function (r) {
+            augur.getNumMarkets(branch_id, function (r) {
                 test(r); done();
             });
         });
@@ -242,10 +242,10 @@ describe("branches.se", function () {
             assert(Number(r) <= 1.0);
         };
         it("sync", function () {
-            test(Augur.getMinTradingFee(branch_id));
+            test(augur.getMinTradingFee(branch_id));
         });
         it("async", function (done) {
-            Augur.getMinTradingFee(branch_id, function (r) {
+            augur.getMinTradingFee(branch_id, function (r) {
                 test(r); done();
             });
         });
@@ -255,10 +255,10 @@ describe("branches.se", function () {
             assert.strictEqual(parseInt(r), 1);
         };
         it("sync", function () {
-            test(Augur.getNumBranches());
+            test(augur.getNumBranches());
         });
         it("async", function (done) {
-            Augur.getNumBranches(function (r) {
+            augur.getNumBranches(function (r) {
                 test(r); done();
             });
         });
@@ -268,10 +268,10 @@ describe("branches.se", function () {
             assert.strictEqual(r, branch_id);
         };
         it("sync", function () {
-            test(Augur.getBranch(branch_number));
+            test(augur.getBranch(branch_number));
         });
         it("async", function (done) {
-            Augur.getBranch(branch_number, function (r) {
+            augur.getBranch(branch_number, function (r) {
                 test(r); done();
             });
         });
