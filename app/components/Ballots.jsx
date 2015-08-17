@@ -23,7 +23,7 @@ var Ballots = React.createClass({
     var flux = this.getFlux();
 
     var state = {
-      account: flux.store('network').getAccount(),
+      account: flux.store('config').getAccount(),
       asset: flux.store('asset').getState(),
       blockNumber: flux.store('network').getState().blockNumber,
       ethereumClient: flux.store('config').getEthereumClient(),
