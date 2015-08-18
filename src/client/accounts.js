@@ -68,7 +68,7 @@ module.exports = function (augur) {
                 if (record.error) {
 
                     // generate ECDSA private key and initialization vector
-                    keythereum.create(function (plain) {
+                    keythereum.create(null, function (plain) {
 
                         // derive secret key from password
                         keythereum.deriveKey(password, plain.salt, null, function (derivedKey) {
