@@ -283,7 +283,7 @@ var ErrorModal = React.createClass({
   startDemoMode: function(event) {
 
     this.handleToggle();
-    this.getFlux().actions.config.updateEthereumClient(constants.DEMO_HOST);
+    this.getFlux().actions.config.updateEthereumClient(constants.REMOTE_HOSTS[0]);
   },
 
   render: function() {
@@ -323,9 +323,9 @@ var ErrorModal = React.createClass({
         <Modal {...this.props} id="no-eth-modal" show={ this.state.isModalOpen } onHide={ this.handleToggle } backdrop='static'>
           <div className="modal-body clearfix">
             <h3>Ethereum not found</h3>
-            <p>Augur requires an Ethereum client to be running and current.  Augur could not detect a client running which probably means it's not installed, running or is misconfigured.</p>
-            <p>Get help <a onClick={ this.showInstallHelp } href="javascript:void(0)">installing and configuring Ethereum</a></p>
-            <p>or <a onClick={ this.startDemoMode } href="javascript:void(0)">proceed in demo mode</a></p>
+            <p>Augur is a decentralized application that runs on the Ethereum network.  It requires an Ethereum node to be running and current.  Augur could not find a local node which probably means it's not installed, running or is misconfigured.</p>
+            <p>Get help <a onClick={ this.showInstallHelp } href="javascript:void(0)">installing and configuring an Ethereum client node</a></p>
+            <p>or <a onClick={ this.startDemoMode } href="javascript:void(0)">proceed using a hosted node.</a></p>
             { installHelp }
           </div>
         </Modal>
