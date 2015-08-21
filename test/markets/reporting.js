@@ -10,7 +10,7 @@ var assert = require("chai").assert;
 var utils = require("../../src/utilities");
 var augur = utils.setup(require("../../src"), process.argv.slice(2));
 var constants = augur.constants;
-var numeric = augur.numeric;
+var abi = require("augur-abi");
 var log = console.log;
 
 var accounts = utils.get_test_accounts(augur, constants.MAX_TEST_ACCOUNTS);
@@ -100,11 +100,11 @@ describe("data and api/reporting", function () {
     });
     describe("hashReport([ballot], " + salt + ") ", function () {
         var test = function (r) {
-            var b = numeric.fix(ballot);
+            var b = abi.fix(ballot);
             for (var i = 0, len = b.length; i < len; ++i) {
                 b[i] = b[i].toString(16);
             }
-            var hashable = [accounts[0], numeric.bignum(salt).toString(16)].concat(b).toString();
+            var hashable = [accounts[0], abi.bignum(salt).toString(16)].concat(b).toString();
             var hashed = utils.sha256(hashable);
             // TODO lookup how arrays hashed by evm sha256, this doesn't work
             // assert.strictEqual(r, hashed);

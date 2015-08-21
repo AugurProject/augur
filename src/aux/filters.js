@@ -5,7 +5,7 @@
 "use strict";
 
 var chalk = require("chalk");
-var numeric = require("../core/numeric");
+var abi = require("augur-abi");
 var log = console.log;
 
 module.exports = function (augur) {
@@ -50,16 +50,16 @@ module.exports = function (augur) {
                 price_logs = [];
                 for (var i = 0, len = logs.length; i < len; ++i) {
                     parsed = augur.rpc.parse_array(logs[i].data);
-                    if (numeric.bignum(parsed[1]).eq(numeric.bignum(market_id)) &&
-                        numeric.bignum(parsed[2]).eq(numeric.bignum(outcome_id))) {
+                    if (abi.bignum(parsed[1]).eq(abi.bignum(market_id)) &&
+                        abi.bignum(parsed[2]).eq(abi.bignum(outcome_id))) {
                         if (augur.options.BigNumberOnly) {
                             price_logs.push({
-                                price: numeric.unfix(parsed[3], unfix_type),
-                                blockNumber: numeric.bignum(logs[i].blockNumber)
+                                price: abi.unfix(parsed[3], unfix_type),
+                                blockNumber: abi.bignum(logs[i].blockNumber)
                             });
                         } else {
                             price_logs.push({
-                                price: numeric.unfix(parsed[3], unfix_type),
+                                price: abi.unfix(parsed[3], unfix_type),
                                 blockNumber: logs[i].blockNumber
                             });
                         }
@@ -83,8 +83,8 @@ module.exports = function (augur) {
                                 onMessage({
                                     origin: data_array[0],
                                     marketId: data_array[1],
-                                    outcome: numeric.bignum(data_array[2], unfix_type),
-                                    price: numeric.unfix(data_array[3], unfix_type)
+                                    outcome: abi.bignum(data_array[2], unfix_type),
+                                    price: abi.unfix(data_array[3], unfix_type)
                                 });
                             }
                         }

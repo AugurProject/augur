@@ -12,7 +12,7 @@ var web3 = require("web3");
 var augur = require("../../src");
 var constants = require("../../src/constants");
 var utils = require("../../src/utilities");
-var numeric = augur.numeric;
+var abi = require("augur-abi");
 var log = console.log;
 
 augur = utils.setup(augur, process.argv.slice(2));

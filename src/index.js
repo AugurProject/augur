@@ -1,5 +1,5 @@
 /**
- * JavaScript bindings for the Augur API
+ * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -14,10 +14,9 @@ if (NODE_JS) {
     crypto = require("crypto-browserify");
 }
 var BigNumber = require("bignumber.js");
-
 var constants = require("./constants");
 var errors = require("./errors");
-var numeric = require("./core/numeric");
+var abi = require("augur-abi");
 var contracts = require("./contracts");
 var utils = require("./utilities");
 var RPC = require("./core/rpc");
@@ -59,10 +58,9 @@ var augur = {
 
     options: {},
 
-    abi: require("./core/abi"),
+    abi: abi,
     db: require("./client/db"),
     utils: utils,
-    numeric: numeric,
     constants: constants,
     errors: errors,
 
@@ -174,7 +172,7 @@ augur.sendEther = augur.pay = function (to, value, from, onSent, onSuccess, onFa
     tx = {
         from: from,
         to: to,
-        value: numeric.bignum(value).mul(constants.ETHER).toFixed()
+        value: abi.bignum(value).mul(constants.ETHER).toFixed()
     };
     if (onSent) {
         this.sendTx(tx, function (txhash) {
@@ -245,13 +243,13 @@ augur.estimateGas = function (tx, f) {
 // execute functions on contracts on the blockchain
 augur.call = function (tx, f) {
     tx.to = tx.to || "";
-    tx.gas = (tx.gas) ? numeric.prefix_hex(tx.gas.toString(16)) : constants.DEFAULT_GAS;
+    tx.gas = (tx.gas) ? abi.prefix_hex(tx.gas.toString(16)) : constants.DEFAULT_GAS;
     return this.rpc.json_rpc(this.rpc.postdata("call", tx), f);
 };
 
 augur.sendTransaction = augur.sendTx = function (tx, f) {
     tx.to = tx.to || "";
-    tx.gas = (tx.gas) ? numeric.prefix_hex(tx.gas.toString(16)) : constants.DEFAULT_GAS;
+    tx.gas = (tx.gas) ? abi.prefix_hex(tx.gas.toString(16)) : constants.DEFAULT_GAS;
     return this.rpc.json_rpc(this.rpc.postdata("sendTransaction", tx), f);
 };
 
@@ -458,8 +456,8 @@ augur.invoke = function (itx, f) {
                     tx.params = tx.params.toFixed();
                 }
             }
-            if (tx.to) tx.to = numeric.prefix_hex(tx.to);
-            if (tx.from) tx.from = numeric.prefix_hex(tx.from);
+            if (tx.to) tx.to = abi.prefix_hex(tx.to);
+            if (tx.from) tx.from = abi.prefix_hex(tx.from);
             data_abi = this.abi.encode(tx);
             if (data_abi) {
                 packaged = {
@@ -509,8 +507,8 @@ augur.batch = function (txlist, f) {
                     tx.params = tx.params.toFixed();
                 }
             }
-            if (tx.from) tx.from = numeric.prefix_hex(tx.from);
-            tx.to = numeric.prefix_hex(tx.to);
+            if (tx.from) tx.from = abi.prefix_hex(tx.from);
+            tx.to = abi.prefix_hex(tx.to);
             data_abi = this.abi.encode(tx);
             if (data_abi) {
                 if (tx.callback && tx.callback.constructor === Function) {
@@ -603,16 +601,16 @@ augur.encode_result = function (result, returns) {
         if (returns === "null") {
             result = null;
         } else if (returns === "address" || returns === "address[]") {
-            result = numeric.prefix_hex(numeric.remove_leading_zeros(result));
+            result = abi.prefix_hex(abi.remove_leading_zeros(result));
         } else {
             if (this.options.BigNumberOnly && returns !== "string") {
-                result = numeric.bignum(result);
+                result = abi.bignum(result);
             }
             if (!this.options.BigNumberOnly) {
                 if (!returns || returns === "hash[]" || returns === "hash") {
-                    result = numeric.bignum(result, "hex");
+                    result = abi.bignum(result, "hex");
                 } else if (returns === "number") {
-                    result = numeric.bignum(result, "string");
+                    result = abi.bignum(result, "string");
                 }
             }
         }
@@ -636,9 +634,9 @@ augur.error_codes = function (tx, response) {
                 (response && response.constructor === String &&
                 response.slice(0,2) === "0x"))
             {
-                var response_number = numeric.bignum(response);
+                var response_number = abi.bignum(response);
                 if (response_number) {
-                    response_number = numeric.bignum(response).toFixed();
+                    response_number = abi.bignum(response).toFixed();
                     if (errors[tx.method] && errors[tx.method][response_number]) {
                         response = {
                             error: response_number,
@@ -674,7 +672,7 @@ augur.fire = function (itx, callback) {
  ***************************************/
 
 augur.check_blockhash =  function (tx, callreturn, itx, txhash, returns, count, onSent, onSuccess, onFailed) {
-    if (tx && tx.blockHash && numeric.bignum(tx.blockHash).toNumber() !== 0) {
+    if (tx && tx.blockHash && abi.bignum(tx.blockHash).toNumber() !== 0) {
         this.clear_notifications(txhash);
         tx.callReturn = this.encode_result(callreturn, returns);
         tx.txHash = tx.hash;
@@ -824,7 +822,7 @@ augur.transact = function (tx, onSent, onSuccess, onFailed) {
     delete tx.returns;
     if (onSent && onSent.constructor === Function) {
         this.invoke(tx, function (txhash) {
-            txhash = numeric.prefix_hex(augur.abi.pad_left(utils.strip_0x(txhash)));
+            txhash = abi.prefix_hex(augur.abi.pad_left(utils.strip_0x(txhash)));
             this.confirmTx(tx, txhash, returns, onSent, onSuccess, onFailed);
         }.bind(this));
     } else {
@@ -865,7 +863,7 @@ augur.sendCash = function (to, value, onSent, onSuccess, onFailed) {
         to = to.to;
     }
     var tx = utils.copy(this.tx.sendCash);
-    tx.params = [to, numeric.fix(value)];
+    tx.params = [to, abi.fix(value)];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 augur.sendCashFrom = function (to, value, from, onSent, onSuccess, onFailed) {
@@ -881,7 +879,7 @@ augur.sendCashFrom = function (to, value, from, onSent, onSuccess, onFailed) {
         to = to.to;
     }
     var tx = utils.copy(this.tx.sendCashFrom);
-    tx.params = [to, numeric.fix(value), from];
+    tx.params = [to, abi.fix(value), from];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
@@ -908,7 +906,7 @@ augur.setInfo = function (id, description, creator, fee, onSent, onSuccess, onFa
     var tx = utils.copy(this.tx.setInfo);
     var unpacked = utils.unpack(id, utils.labels(this.setInfo), arguments);
     tx.params = unpacked.params;
-    tx.params[3] = numeric.fix(tx.params[3], "hex");
+    tx.params[3] = abi.fix(tx.params[3], "hex");
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
 
@@ -928,8 +926,8 @@ augur.read_ballots = function (branch, period, num_events, num_reports, flatsize
 augur.center = function (reports, reputation, scaled, scaled_max, scaled_min, max_iterations, max_components, onSent, onSuccess, onFailed) {
     var tx = utils.copy(this.tx.center);
     tx.params = [
-        numeric.fix(reports, "hex"),
-        numeric.fix(reputation, "hex"),
+        abi.fix(reports, "hex"),
+        abi.fix(reputation, "hex"),
         scaled,
         scaled_max,
         scaled_min,
@@ -972,9 +970,9 @@ augur.blank = function (components_remaining, max_iterations, num_events, onSent
 augur.loadings = function (iv, wcd, reputation, num_reports, num_events, onSent, onSuccess, onFailed) {
     var tx = utils.copy(this.tx.loadings);
     tx.params = [
-        numeric.fix(iv, "hex"),
-        numeric.fix(wcd, "hex"),
-        numeric.fix(reputation, "hex"),
+        abi.fix(iv, "hex"),
+        abi.fix(wcd, "hex"),
+        abi.fix(reputation, "hex"),
         num_reports,
         num_events
     ];
@@ -985,8 +983,8 @@ augur.loadings = function (iv, wcd, reputation, num_reports, num_events, onSent,
 augur.resolve = function (smooth_rep, reports, scaled, scaled_max, scaled_min, num_reports, num_events, onSent, onSuccess, onFailed) {
     var tx = utils.copy(this.tx.resolve);
     tx.params = [
-        numeric.fix(smooth_rep, "hex"),
-        numeric.fix(reports, "hex"),
+        abi.fix(smooth_rep, "hex"),
+        abi.fix(reports, "hex"),
         scaled,
         scaled_max,
         scaled_min,
@@ -1120,7 +1118,7 @@ augur.setTotalRepReported = function (branch, expDateIndex, repReported, onSent)
 };
 augur.setReporterBallot = function (branch, expDateIndex, reporterID, report, reputation, onSent, onSuccess, onFailed) {
     var tx = utils.copy(this.tx.setReporterBallot);
-    tx.params = [branch, expDateIndex, reporterID, numeric.fix(report, "hex"), reputation];
+    tx.params = [branch, expDateIndex, reporterID, abi.fix(report, "hex"), reputation];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 augur.setVSize = function (branch, expDateIndex, vSize, onSent) {
@@ -1223,19 +1221,19 @@ augur.getEventInfo = function (event_id, onSent) {
         // info[5] = self.Events[event].numOutcomes
         if (info && info.length) {
             if (self.options.BigNumberOnly) {
-                info[0] = numeric.hex(info[0]);
-                info[1] = numeric.bignum(info[1]);
-                info[2] = numeric.unfix(info[2]);
-                info[3] = numeric.bignum(info[3]);
-                info[4] = numeric.bignum(info[4]);
-                info[5] = numeric.bignum(info[5]);
+                info[0] = abi.hex(info[0]);
+                info[1] = abi.bignum(info[1]);
+                info[2] = abi.unfix(info[2]);
+                info[3] = abi.bignum(info[3]);
+                info[4] = abi.bignum(info[4]);
+                info[5] = abi.bignum(info[5]);
             } else {
-                info[0] = numeric.hex(info[0]);
-                info[1] = numeric.bignum(info[1]).toFixed();
-                info[2] = numeric.unfix(info[2], "string");
-                info[3] = numeric.bignum(info[3]).toFixed();
-                info[4] = numeric.bignum(info[4]).toFixed();
-                info[5] = numeric.bignum(info[5]).toFixed();
+                info[0] = abi.hex(info[0]);
+                info[1] = abi.bignum(info[1]).toFixed();
+                info[2] = abi.unfix(info[2], "string");
+                info[3] = abi.bignum(info[3]).toFixed();
+                info[4] = abi.bignum(info[4]).toFixed();
+                info[5] = abi.bignum(info[5]).toFixed();
             }
         }
         return info;
@@ -1292,9 +1290,9 @@ augur.getCurrentVotePeriod = function (branch, onSent) {
     if (onSent) {
         this.fire(this.tx.getPeriodLength, function (periodLength) {
             if (periodLength) {
-                periodLength = numeric.bignum(periodLength);
+                periodLength = abi.bignum(periodLength);
                 this.blockNumber(function (blockNum) {
-                    blockNum = numeric.bignum(blockNum);
+                    blockNum = abi.bignum(blockNum);
                     onSent(blockNum.dividedBy(periodLength).floor().sub(1));
                 });
             }
@@ -1302,8 +1300,8 @@ augur.getCurrentVotePeriod = function (branch, onSent) {
     } else {
         periodLength = this.fire(this.tx.getPeriodLength);
         if (periodLength) {
-            blockNum = numeric.bignum(this.blockNumber());
-            return blockNum.dividedBy(numeric.bignum(periodLength)).floor().sub(1);
+            blockNum = abi.bignum(this.blockNumber());
+            return blockNum.dividedBy(abi.bignum(periodLength)).floor().sub(1);
         }
     }
 };
@@ -1516,7 +1514,7 @@ augur.setTotalReputation = function (branch, votePeriod, totalReputation, onSent
     // votePeriod: integer
     // totalReputation: number -> fixed
     var tx = utils.copy(this.tx.setTotalReputation);
-    tx.params = [branch, votePeriod, numeric.fix(totalReputation, "hex")];
+    tx.params = [branch, votePeriod, abi.fix(totalReputation, "hex")];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 augur.makeBallot = function (branch, votePeriod, onSent) {
@@ -1533,7 +1531,7 @@ augur.getSimulatedBuy = function (market, outcome, amount, onSent) {
     // outcome: integer (1 or 2 for binary events)
     // amount: number -> fixed-point
     var tx = utils.copy(this.tx.getSimulatedBuy);
-    tx.params = [market, outcome, numeric.fix(amount)];
+    tx.params = [market, outcome, abi.fix(amount)];
     return this.fire(tx, onSent);
 };
 augur.getSimulatedSell = function (market, outcome, amount, onSent) {
@@ -1541,7 +1539,7 @@ augur.getSimulatedSell = function (market, outcome, amount, onSent) {
     // outcome: integer (1 or 2 for binary events)
     // amount: number -> fixed-point
     var tx = utils.copy(this.tx.getSimulatedSell);
-    tx.params = [market, outcome, numeric.fix(amount)];
+    tx.params = [market, outcome, abi.fix(amount)];
     return this.fire(tx, onSent);
 };
 augur.lsLmsr = function (market, onSent) {
@@ -1557,22 +1555,22 @@ augur.getMarketOutcomeInfo = function (market, outcome, onSent) {
         if (info && info.length) {
             len = info.length;
             if (self.options.BigNumberOnly) {
-                info[0] = numeric.unfix(info[0], "BigNumber");
-                info[1] = numeric.unfix(info[1], "BigNumber");
-                info[2] = numeric.unfix(info[2], "BigNumber");
-                info[3] = numeric.bignum(info[3]);
-                info[4] = numeric.bignum(info[4]);
+                info[0] = abi.unfix(info[0], "BigNumber");
+                info[1] = abi.unfix(info[1], "BigNumber");
+                info[2] = abi.unfix(info[2], "BigNumber");
+                info[3] = abi.bignum(info[3]);
+                info[4] = abi.bignum(info[4]);
                 for (i = 5; i < len; ++i) {
-                    info[i] = numeric.bignum(info[i]);
+                    info[i] = abi.bignum(info[i]);
                 }
             } else {
-                info[0] = numeric.unfix(info[0], "string");
-                info[1] = numeric.unfix(info[1], "string");
-                info[2] = numeric.unfix(info[2], "string");
-                info[3] = numeric.bignum(info[3]).toFixed();
-                info[4] = numeric.bignum(info[4]).toFixed();
+                info[0] = abi.unfix(info[0], "string");
+                info[1] = abi.unfix(info[1], "string");
+                info[2] = abi.unfix(info[2], "string");
+                info[3] = abi.bignum(info[3]).toFixed();
+                info[4] = abi.bignum(info[4]).toFixed();
                 for (i = 5; i < len; ++i) {
-                    info[i] = numeric.bignum(info[i]).toFixed();
+                    info[i] = abi.bignum(info[i]).toFixed();
                 }
             }
         }
@@ -1602,27 +1600,27 @@ augur.getMarketInfo = function (market, onSent) {
         if (info && info.length) {
             len = info.length;
             if (self.options.BigNumberOnly) {
-                info[0] = numeric.bignum(info[0]);
-                info[1] = numeric.unfix(info[1], "BigNumber");
-                info[2] = numeric.bignum(info[2]);
-                info[3] = numeric.bignum(info[3]);
-                info[4] = numeric.bignum(info[4]);
-                info[5] = numeric.unfix(info[5], "BigNumber");
+                info[0] = abi.bignum(info[0]);
+                info[1] = abi.unfix(info[1], "BigNumber");
+                info[2] = abi.bignum(info[2]);
+                info[3] = abi.bignum(info[3]);
+                info[4] = abi.bignum(info[4]);
+                info[5] = abi.unfix(info[5], "BigNumber");
                 for (i = 6; i < len - 8; ++i) {
-                    info[i] = numeric.prefix_hex(numeric.bignum(info[i]).toString(16));
+                    info[i] = abi.prefix_hex(abi.bignum(info[i]).toString(16));
                 }
                 for (i = len - 8; i < len; ++i) {
-                    info[i] = numeric.bignum(info[i]);
+                    info[i] = abi.bignum(info[i]);
                 }
             } else {
-                info[0] = numeric.bignum(info[0]).toFixed();
-                info[1] = numeric.unfix(info[1], "string");
-                info[2] = numeric.bignum(info[2]).toFixed();
-                info[3] = numeric.bignum(info[3]).toFixed();
-                info[4] = numeric.bignum(info[4]).toFixed();
-                info[5] = numeric.unfix(info[5], "string");
+                info[0] = abi.bignum(info[0]).toFixed();
+                info[1] = abi.unfix(info[1], "string");
+                info[2] = abi.bignum(info[2]).toFixed();
+                info[3] = abi.bignum(info[3]).toFixed();
+                info[4] = abi.bignum(info[4]).toFixed();
+                info[5] = abi.unfix(info[5], "string");
                 for (i = len - 8; i < len; ++i) {
-                    info[i] = numeric.bignum(info[i]).toFixed();
+                    info[i] = abi.bignum(info[i]).toFixed();
                 }
             }
         }
@@ -1736,8 +1734,8 @@ augur.initialLiquiditySetup = function (marketID, alpha, cumulativeScale, numOut
     var tx = utils.copy(this.tx.initialLiquiditySetup);
     var unpacked = utils.unpack(marketID, utils.labels(this.initialLiquiditySetup), arguments);
     tx.params = unpacked.params;
-    tx.params[1] = numeric.fix(tx.params[1], "hex");
-    tx.params[2] = numeric.fix(tx.params[2], "hex");
+    tx.params[1] = abi.fix(tx.params[1], "hex");
+    tx.params[2] = abi.fix(tx.params[2], "hex");
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
 augur.modifyShares = function (marketID, outcome, amount, onSent, onSuccess, onFailed) {
@@ -1750,7 +1748,7 @@ augur.initializeMarket = function (marketID, events, tradingPeriod, tradingFee, 
     var tx = utils.copy(this.tx.initializeMarket);
     var unpacked = utils.unpack(marketID, utils.labels(this.initializeMarket), arguments);
     tx.params = unpacked.params;
-    tx.params[3] = numeric.fix(tx.params[3], "hex");
+    tx.params[3] = abi.fix(tx.params[3], "hex");
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
 
@@ -1806,7 +1804,7 @@ augur.hashReport = function (ballot, salt, onSent) {
     // salt: integer
     if (ballot.constructor === Array) {
         var tx = utils.copy(this.tx.hashReport);
-        tx.params = [numeric.fix(ballot, "hex"), salt];
+        tx.params = [abi.fix(ballot, "hex"), salt];
         return this.fire(tx, onSent);
     }
 };
@@ -1845,12 +1843,12 @@ augur.buyShares = function (branch, market, outcome, amount, nonce, limit, onSen
     var tx = utils.copy(this.tx.buyShares);
     if (onSent) {
         this.getNonce(market, function (nonce) {
-            tx.params = [branch, market, outcome, numeric.fix(amount), nonce, limit || 0];
+            tx.params = [branch, market, outcome, abi.fix(amount), nonce, limit || 0];
             this.transact(tx, onSent, onSuccess, onFailed);
         }.bind(this));
     } else {
         nonce = this.getNonce(market);
-        tx.params = [branch, market, outcome, numeric.fix(amount), nonce, limit || 0];
+        tx.params = [branch, market, outcome, abi.fix(amount), nonce, limit || 0];
         return this.transact(tx);
     }
 };
@@ -1871,12 +1869,12 @@ augur.sellShares = function (branch, market, outcome, amount, nonce, limit, onSe
     var tx = utils.copy(this.tx.sellShares);
     if (onSent) {
         this.getNonce(market, function (nonce) {
-            tx.params = [branch, market, outcome, numeric.fix(amount), nonce, limit || 0];
+            tx.params = [branch, market, outcome, abi.fix(amount), nonce, limit || 0];
             this.transact(tx, onSent, onSuccess, onFailed);
         }.bind(this));
     } else {
         nonce = this.getNonce(market);
-        tx.params = [branch, market, outcome, numeric.fix(amount), nonce, limit || 0];
+        tx.params = [branch, market, outcome, abi.fix(amount), nonce, limit || 0];
         return this.transact(tx);
     }
 };
@@ -1913,7 +1911,7 @@ augur.sendReputation = function (branch, to, value, onSent, onSuccess, onFailed)
         branch = branch.branchId;
     }
     var tx = utils.copy(this.tx.sendReputation);
-    tx.params = [branch, to, numeric.fix(value)];
+    tx.params = [branch, to, abi.fix(value)];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
@@ -1931,7 +1929,7 @@ augur.report = function (branch, report, votePeriod, salt, onSent, onSuccess, on
         branch = branch.branchId;
     }
     var tx = utils.copy(this.tx.report);
-    tx.params = [branch, numeric.fix(report, "hex"), votePeriod, salt];
+    tx.params = [branch, abi.fix(report, "hex"), votePeriod, salt];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 augur.submitReportHash = function (branch, reportHash, votePeriod, onSent, onSuccess, onFailed) {
@@ -1957,7 +1955,7 @@ augur.checkReportValidity = function (branch, report, votePeriod, onSent, onSucc
         branch = branch.branchId;
     }
     var tx = utils.copy(this.tx.checkReportValidity);
-    tx.params = [branch, numeric.fix(report, "hex"), votePeriod];
+    tx.params = [branch, abi.fix(report, "hex"), votePeriod];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 augur.slashRep = function (branch, votePeriod, salt, report, reporter, onSent, onSuccess, onFailed) {
@@ -1972,7 +1970,7 @@ augur.slashRep = function (branch, votePeriod, salt, report, reporter, onSent, o
         branch = branch.branchId;
     }
     var tx = utils.copy(this.tx.slashRep);
-    tx.params = [branch, votePeriod, salt, numeric.fix(report, "hex"), reporter];
+    tx.params = [branch, votePeriod, salt, abi.fix(report, "hex"), reporter];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
@@ -2027,9 +2025,9 @@ augur.createMarket = function (branch, description, alpha, liquidity, tradingFee
     tx.params = [
         branch,
         description,
-        numeric.fix(alpha, "hex"),
-        numeric.fix(liquidity, "hex"),
-        numeric.fix(tradingFee, "hex"),
+        abi.fix(alpha, "hex"),
+        abi.fix(liquidity, "hex"),
+        abi.fix(tradingFee, "hex"),
         events
     ];
     return this.transact(tx, onSent, onSuccess, onFailed);

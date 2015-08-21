@@ -107,7 +107,7 @@ describe("testing consensus/score", function () {
             function (r) {
                 // success
                 Augur.loadings(
-                    numeric.unfix(r.callReturn.slice(0, num_events+2), "string"),
+                    abi.unfix(r.callReturn.slice(0, num_events+2), "string"),
                     Augur.getWeightedCenteredData(branch, period).slice(0, flatsize),
                     reputation_vector,
                     num_reports,
@@ -119,7 +119,7 @@ describe("testing consensus/score", function () {
                         // success
                         var lv = r.callReturn;
                         log("loadings:");
-                        log(numeric.unfix(lv.slice(0, lv.length-2), "string"));
+                        log(abi.unfix(lv.slice(0, lv.length-2), "string"));
                         log("remaining:");
                         log(lv.slice(lv.length-2, lv.length));
                         // assert.strictEqual(lv[lv.length-2], num_iterations);

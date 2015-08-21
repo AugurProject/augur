@@ -6,7 +6,7 @@
 
 var errors = require("../errors");
 var constants = require("../constants");
-var numeric = require("../core/numeric");
+var abi = require("augur-abi");
 
 module.exports = function (augur) {
 
@@ -150,7 +150,7 @@ module.exports = function (augur) {
                             var transmission = {
                                 from: whisper_id,
                                 topics: [market],
-                                payload: numeric.prefix_hex(numeric.encode_hex(comments)),
+                                payload: abi.prefix_hex(abi.encode_hex(comments)),
                                 priority: "0x64",
                                 ttl: "0x500" // time-to-live (until expiration) in seconds
                             };
@@ -211,12 +211,13 @@ module.exports = function (augur) {
                         transmission = {
                             from: whisper_id,
                             topics: [market],
-                            payload: numeric.prefix_hex(numeric.encode_hex(updated)),
+                            payload: abi.prefix_hex(abi.encode_hex(updated)),
                             priority: "0x64",
                             ttl: "0x600" // 10 minutes
                         };
                         if (this.post(transmission)) {
-                            var decoded = numeric.decode_hex(transmission.payload);
+                            var decoded = abi.decode_hex(transmission.payload);
+                            console.log(decoded);
                             return JSON.parse(decoded.slice(1));
                         } else {
                             return errors.WHISPER_POST_FAILED;

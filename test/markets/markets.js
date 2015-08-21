@@ -8,7 +8,7 @@
 var assert = require("chai").assert;
 var utils = require("../../src/utilities");
 var Augur = utils.setup(require("../../src"), process.argv.slice(2));
-var numeric = Augur.numeric;
+var abi = require("augur-abi");
 var constants = Augur.constants;
 var log = console.log;
 
@@ -51,7 +51,7 @@ describe("markets.se", function () {
     });
     describe("lsLmsr", function () {
         var test = function (r) {
-            assert(numeric.bignum(r).toNumber() > 0);
+            assert(abi.bignum(r).toNumber() > 0);
         };
         it("sync", function () {
             test(Augur.lsLmsr(market_id));

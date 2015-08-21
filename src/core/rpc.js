@@ -11,7 +11,7 @@ if (NODE_JS) {
     var XHR2 = require("xhr2");
 }
 var BigNumber = require("bignumber.js");
-var numeric = require("./numeric");
+var abi = require("augur-abi");
 var utils = require("../utilities");
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
@@ -41,7 +41,7 @@ module.exports = function (options) {
                 array = new Array(elements);
                 position = init || 2;
                 for (var i = 0; i < elements; ++i) {
-                    array[i] = numeric.prefix_hex(string.slice(position, position + stride));
+                    array[i] = abi.prefix_hex(string.slice(position, position + stride));
                     position += stride;
                 }
                 if (array.length) {
@@ -54,15 +54,15 @@ module.exports = function (options) {
                 }
                 for (i = 0; i < array.length; ++i) {
                     if (returns === "hash[]" && this.BigNumberOnly) {
-                        array[i] = numeric.bignum(array[i]);
+                        array[i] = abi.bignum(array[i]);
                     } else {
                         if (returns === "number[]") {
-                            array[i] = numeric.bignum(array[i]).toFixed();
+                            array[i] = abi.bignum(array[i]).toFixed();
                         } else if (returns === "unfix[]") {
                             if (this.BigNumberOnly) {
-                                array[i] = numeric.unfix(array[i]);
+                                array[i] = abi.unfix(array[i]);
                             } else {
-                                array[i] = numeric.unfix(array[i], "string");
+                                array[i] = abi.unfix(array[i], "string");
                             }
                         }
                     }
@@ -79,22 +79,22 @@ module.exports = function (options) {
                 if (returns && returns.slice(-2) === "[]") {
                     result = this.parse_array(result, returns);
                 } else if (returns === "string") {
-                    result = numeric.decode_hex(result, true);
+                    result = abi.decode_hex(result, true);
                 } else {
                     if (this.BigNumberOnly) {
                         if (returns === "unfix") {
-                            result = numeric.unfix(result);
+                            result = abi.unfix(result);
                         }
                         if (result.constructor !== BigNumber) {
-                            result = numeric.bignum(result);
+                            result = abi.bignum(result);
                         }
                     } else {
                         if (returns === "number") {
-                            result = numeric.bignum(result).toFixed();
+                            result = abi.bignum(result).toFixed();
                         } else if (returns === "bignumber") {
-                            result = numeric.bignum(result);
+                            result = abi.bignum(result);
                         } else if (returns === "unfix") {
-                            result = numeric.unfix(result, "string");
+                            result = abi.unfix(result, "string");
                         }
                     }
                 }
@@ -122,8 +122,8 @@ module.exports = function (options) {
                             response.result = this.format_result(returns, response.result);
                         } else {
                             if (response.result && response.result.length > 2 && response.result.slice(0,2) === "0x") {
-                                response.result = numeric.remove_leading_zeros(response.result);
-                                response.result = numeric.prefix_hex(response.result);
+                                response.result = abi.remove_leading_zeros(response.result);
+                                response.result = abi.prefix_hex(response.result);
                             }
                         }
                         if (callback) {
@@ -145,8 +145,8 @@ module.exports = function (options) {
                                 if (returns[i]) {
                                     results[i] = this.format_result(returns[i], response[i].result);
                                 } else {
-                                    results[i] = numeric.remove_leading_zeros(results[i]);
-                                    results[i] = numeric.prefix_hex(results[i]);
+                                    results[i] = abi.remove_leading_zeros(results[i]);
+                                    results[i] = abi.prefix_hex(results[i]);
                                 }
                             }
                         }

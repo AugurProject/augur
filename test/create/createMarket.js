@@ -11,7 +11,7 @@ var chalk = require("chalk");
 var constants = require("../../src/constants");
 var utils = require("../../src/utilities");
 var augur = utils.setup(require("../../src"), process.argv.slice(2));
-var numeric = augur.numeric;
+var abi = require("augur-abi");
 var log = console.log;
 
 require('it-each')({ testPerIteration: true });

@@ -10,17 +10,13 @@ var BigNumber = require("bignumber.js");
 var validator = require("validator");
 var moment = require("moment");
 var chalk = require("chalk");
+var abi = require("augur-abi");
 var constants = require("./constants");
-var numeric = require("./core/numeric");
 var log = console.log;
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
 module.exports = {
-
-    isNumeric: function (n) {
-        return Number(parseFloat(n)) == n;
-    },
 
     pp: function (obj, indent) {
         var o = this.copy(obj);
@@ -281,7 +277,7 @@ module.exports = {
             } else if (typeof augur === "string") {
                 accounts = require("fs").readdirSync(require("path").join(augur, "keystore"));
                 for (var i = 0, len = accounts.length; i < len; ++i) {
-                    accounts[i] = numeric.prefix_hex(accounts[i]);
+                    accounts[i] = abi.prefix_hex(accounts[i]);
                 }
             }
             if (max_accounts && accounts.length > max_accounts) {
@@ -298,7 +294,7 @@ module.exports = {
             return {
                 cash: augur.getCashBalance(account),
                 reputation: augur.getRepBalance(branch || augur.branches.dev, account),
-                ether: numeric.bignum(augur.balance(account)).dividedBy(constants.ETHER).toFixed()
+                ether: abi.bignum(augur.balance(account)).dividedBy(constants.ETHER).toFixed()
             };
         }
     },
@@ -311,7 +307,7 @@ module.exports = {
             if (ballot.length && ballot[0] !== undefined) {
                 num_events = augur.getNumberEvents(branch, i);
                 log("Period", chalk.cyan(i), "\t",
-                    chalk.green(numeric.fix(ballot.slice(0, num_events), "hex")));
+                    chalk.green(abi.fix(ballot.slice(0, num_events), "hex")));
             }
         }
     },

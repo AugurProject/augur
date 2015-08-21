@@ -9,7 +9,7 @@ var assert = require("chai").assert;
 var utils = require("../../src/utilities");
 var augur = utils.setup(require("../../src"), process.argv.slice(2));
 var constants = augur.constants;
-var numeric = augur.numeric;
+var abi = require("augur-abi");
 var log = console.log;
 
 var branch = augur.branches.dev;
@@ -207,7 +207,7 @@ describe("data and api/expiringEvents", function () {
     });
     describe("getLatent", function () {
         var test = function (r) {
-            assert(numeric.bignum(r).toNumber >= 0);
+            assert(abi.bignum(r).toNumber >= 0);
             log(r);
         };
         it("sync", function () {

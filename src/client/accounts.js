@@ -11,7 +11,7 @@ var uuid = require("node-uuid");
 var errors = require("../errors");
 var constants = require("../constants");
 var utils = require("../utilities");
-var numeric = require("../core/numeric");
+var abi = require("augur-abi");
 var log = console.log;
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
@@ -215,7 +215,7 @@ module.exports = function (augur) {
         //         augur.db.get(toHandle, function (toAccount) {
         //             if (!toAccount.error) {
         //                 var tx = utils.copy(augur.tx.sendCash);
-        //                 tx.params = [toAccount.address, numeric.fix(value)];
+        //                 tx.params = [toAccount.address, abi.fix(value)];
         //                 log(tx);
         //                 return self.transact(tx, onSent, onSuccess, onFailed);
         //             } else {
@@ -231,7 +231,7 @@ module.exports = function (augur) {
         //         augur.db.get(toHandle, function (toAccount) {
         //             if (!toAccount.error) {
         //                 var tx = utils.copy(augur.tx.sendReputation);
-        //                 tx.params = [toAccount.address, numeric.fix(value)];
+        //                 tx.params = [toAccount.address, abi.fix(value)];
         //                 return self.transact(tx, onSent, onSuccess, onFailed);
         //             } else {
         //                 if (onFailed) onFailed(errors.TRANSACTION_FAILED);
@@ -263,7 +263,7 @@ module.exports = function (augur) {
                                 tx.params = tx.params.toFixed();
                             }
                         }
-                        if (tx.to) tx.to = numeric.prefix_hex(tx.to);
+                        if (tx.to) tx.to = abi.prefix_hex(tx.to);
                         data_abi = augur.abi.encode(tx);
 
                         // package up the transaction and submit it to the network

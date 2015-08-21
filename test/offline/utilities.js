@@ -177,23 +177,6 @@ describe("utilities.strip_0x", function () {
     });
 });
 
-describe("utilities.isNumeric", function () {
-
-    var test_numbers = [ 1, -2, "1", "10", 2.5, 0, "125000", 2.15315135, -10000 ];
-    var test_nans = [ "hello", "testing", NaN, "1oo" ];
-
-    it.each(test_numbers, "%s is a number", ["element"], function (element, next) {
-        assert(utils.isNumeric(element));
-        next();
-    });
-    
-    it.each(test_nans, "%s is not a number", ["element"], function (element, next) {
-        assert(!utils.isNumeric(element));
-        next();
-    });
-
-});
-
 describe("utilities.labels", function () {
 
     it("should extract parameter names", function () {

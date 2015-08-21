@@ -13,7 +13,7 @@ var EthUtil = require("ethereumjs-util");
 var utils = require("../../src/utilities");
 var augur = utils.setup(require("../../src"), process.argv.slice(2));
 var constants = augur.constants;
-var numeric = augur.numeric;
+var abi = require("augur-abi");
 var log = console.log;
 
 // generate random private key
@@ -256,7 +256,7 @@ describe("Fund", function () {
 
         this.timeout(constants.TIMEOUT);
 
-        var initial_balance = numeric
+        var initial_balance = abi
             .bignum(augur.balance(recipient))
             .dividedBy(constants.ETHER);
 
@@ -267,7 +267,7 @@ describe("Fund", function () {
                 assert.property(account, "address");
                 assert.strictEqual(account.address, recipient);
 
-                var final_balance = numeric
+                var final_balance = abi
                     .bignum(augur.balance(recipient))
                     .dividedBy(constants.ETHER);
 
