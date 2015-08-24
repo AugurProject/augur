@@ -133,7 +133,7 @@ describe("augur.js / web3 interoperability", function () {
                                   .at(augur.contracts.branches)
                                   .getMarkets
                                   .call(new BigNumber(branch_id));
-        augur.options.BigNumberOnly = true;
+        augur.bignumbers = true;
         augur = utils.setup(augur, process.argv.slice(2), null, true);
         var markets = {
             augurjs: augur.getMarkets(branch_id),
@@ -148,7 +148,7 @@ describe("augur.js / web3 interoperability", function () {
                 markets.web3[i].toString(16)
             );
         }
-        augur.options.BigNumberOnly = false;
+        augur.bignumbers = false;
         augur = utils.setup(augur, process.argv.slice(2));
     });
 });

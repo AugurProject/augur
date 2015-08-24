@@ -83,7 +83,7 @@ if [ "${offline}" == "1" ]; then
 
     echo -e " ${TEAL}jshint${NC}\n"
 
-    declare -a targets=("gulpfile.js" "src/*.js" "src/core" "src/client" "src/aux" "scripts/setup.js")
+    declare -a targets=("gulpfile.js" "src/*.js" "src/client" "src/aux" "scripts/setup.js")
     for target in "${targets[@]}"
     do
         jshint ${target}

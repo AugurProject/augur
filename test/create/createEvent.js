@@ -23,7 +23,7 @@ var numOutcomes = 2;
 var num_events = 4;
 var branch = augur.branches.dev;
 var period = augur.getVotePeriod(branch);
-var exp_date = augur.blockNumber() + 2500;
+var exp_date = augur.rpc.blockNumber() + 2500;
 
 var datafile = path.join(__dirname, "..", "..", "data", "events.dat");
 fs.writeFileSync(datafile, "");

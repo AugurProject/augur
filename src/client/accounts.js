@@ -8,10 +8,11 @@ var BigNumber = require("bignumber.js");
 var ethTx = require("ethereumjs-tx");
 var keythereum = require("keythereum");
 var uuid = require("node-uuid");
+var abi = require("augur-abi");
+var db = require("./db");
 var errors = require("../errors");
 var constants = require("../constants");
 var utils = require("../utilities");
-var abi = require("augur-abi");
 var log = console.log;
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
@@ -19,7 +20,7 @@ BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 keythereum.constants.pbkdf2.c = 10000;
 keythereum.constants.scrypt.n = 10000;
 
-module.exports = function (augur) {
+module.exports = function (augur, ethrpc) {
 
     return {
 
@@ -28,7 +29,7 @@ module.exports = function (augur) {
 
         // free (testnet) ether for new accounts on registration
         fund: function (account, callback, onSuccess) {
-            augur.sendEther(
+            ethrpc.sendEther(
                 account.address,
                 constants.FREEBIE / 2,
                 augur.coinbase,
@@ -44,7 +45,7 @@ module.exports = function (augur) {
                     if (callback) callback(r);
                 }
             );
-            augur.sendEther(
+            ethrpc.sendEther(
                 account.address,
                 constants.FREEBIE / 2,
                 augur.coinbase,
@@ -64,7 +65,7 @@ module.exports = function (augur) {
 
         register: function (handle, password, callback) {
             var self = this;
-            augur.db.get(handle, function (record) {
+            db.get(handle, function (record) {
                 if (record.error) {
 
                     // generate ECDSA private key and initialization vector
@@ -90,7 +91,7 @@ module.exports = function (augur) {
 
                                 // encrypt private key using derived key and IV, then
                                 // store encrypted key & IV, indexed by handle
-                                augur.db.put(handle, {
+                                db.put(handle, {
                                     handle: handle,
                                     privateKey: encryptedPrivateKey,
                                     iv: plain.iv.toString("base64"),
@@ -129,7 +130,7 @@ module.exports = function (augur) {
             var self = this;
 
             // retrieve account info from database
-            augur.db.get(handle, function (storedInfo) {
+            db.get(handle, function (storedInfo) {
                 if (!storedInfo.error) {
 
                     var iv = new Buffer(storedInfo.iv, "base64");
@@ -190,56 +191,6 @@ module.exports = function (augur) {
             this.account = {};
         },
 
-        // Handle-to-handle payment methods (send ether/cash/rep without needing address)
-
-        // sendEther: function (toHandle, value, onSent, onSuccess, onFailed) {
-        //     var self = this;
-        //     if (this.account.address) {
-        //         augur.db.get(toHandle, function (toAccount) {
-        //             if (toAccount && toAccount.address) {
-        //                 self.transact({
-        //                     value: value,
-        //                     from: self.account.address,
-        //                     to: toAccount.address
-        //                 }, onSent, onSuccess, onFailed);
-        //             } else {
-        //                 if (onFailed) onFailed(errors.TRANSACTION_FAILED);
-        //             }
-        //         });
-        //     }
-        // },
-
-        // sendCash: function (toHandle, value, onSent, onSuccess, onFailed) {
-        //     var self = this;
-        //     if (this.account.address) {
-        //         augur.db.get(toHandle, function (toAccount) {
-        //             if (!toAccount.error) {
-        //                 var tx = utils.copy(augur.tx.sendCash);
-        //                 tx.params = [toAccount.address, abi.fix(value)];
-        //                 log(tx);
-        //                 return self.transact(tx, onSent, onSuccess, onFailed);
-        //             } else {
-        //                 if (onFailed) onFailed(errors.TRANSACTION_FAILED);
-        //             }
-        //         });
-        //     }
-        // },
-
-        // sendReputation: function (toHandle, value, onSent, onSuccess, onFailed) {
-        //     var self = this;
-        //     if (this.account.address) {
-        //         augur.db.get(toHandle, function (toAccount) {
-        //             if (!toAccount.error) {
-        //                 var tx = utils.copy(augur.tx.sendReputation);
-        //                 tx.params = [toAccount.address, abi.fix(value)];
-        //                 return self.transact(tx, onSent, onSuccess, onFailed);
-        //             } else {
-        //                 if (onFailed) onFailed(errors.TRANSACTION_FAILED);
-        //             }
-        //         });
-        //     }
-        // },
-
         invoke: function (itx, callback) {
             var self = this;
             var tx, data_abi, packaged;
@@ -264,13 +215,13 @@ module.exports = function (augur) {
                             }
                         }
                         if (tx.to) tx.to = abi.prefix_hex(tx.to);
-                        data_abi = augur.abi.encode(tx);
+                        data_abi = abi.encode(tx);
 
                         // package up the transaction and submit it to the network
                         packaged = new ethTx({
                             to: tx.to,
                             from: this.account.address,
-                            gasPrice: (tx.gasPrice) ? tx.gasPrice : augur.gasPrice(),
+                            gasPrice: (tx.gasPrice) ? tx.gasPrice : ethrpc.gasPrice(),
                             gasLimit: (tx.gas) ? tx.gas : constants.DEFAULT_GAS,
                             nonce: this.account.nonce,
                             value: tx.value || "0x0",
@@ -281,14 +232,14 @@ module.exports = function (augur) {
                         packaged.sign(this.account.privateKey);
                         if (packaged.validate()) {
 
-                            return augur.sendRawTx(
+                            return ethrpc.sendRawTx(
                                 packaged.serialize().toString("hex"),
                                 function (r) {
 
                                     // increment nonce and write to database
-                                    augur.db.get(self.account.handle, function (stored) {
+                                    db.get(self.account.handle, function (stored) {
                                         stored.nonce = ++self.account.nonce;
-                                        augur.db.put(self.account.handle, stored);
+                                        db.put(self.account.handle, stored);
                                     });
 
                                     if (callback) callback(r);
@@ -305,7 +256,7 @@ module.exports = function (augur) {
 
                 // if this is just a call, use the regular invoke method
                 } else {
-                    return augur.invoke(itx, callback);
+                    return ethrpc.invoke(itx, callback);
                 }
             
             // not logged in
@@ -313,7 +264,7 @@ module.exports = function (augur) {
                 if (itx.send) {
                     return errors.NOT_LOGGED_IN;
                 } else {
-                    return augur.invoke(itx, callback);
+                    return ethrpc.invoke(itx, callback);
                 }
             }
         }
@@ -325,6 +276,57 @@ module.exports = function (augur) {
         //     this.invoke(tx, function (txhash) {
         //         augur.confirmTx(tx, txhash, returns, onSent, onSuccess, onFailed);
         //     });
+        // },
+
+        // Handle-to-handle payment methods (send ether/cash/rep without needing address)
+
+        // sendEther: function (toHandle, value, onSent, onSuccess, onFailed) {
+        //     var self = this;
+        //     if (this.account.address) {
+        //         db.get(toHandle, function (toAccount) {
+        //             if (toAccount && toAccount.address) {
+        //                 self.transact({
+        //                     value: value,
+        //                     from: self.account.address,
+        //                     to: toAccount.address
+        //                 }, onSent, onSuccess, onFailed);
+        //             } else {
+        //                 if (onFailed) onFailed(errors.TRANSACTION_FAILED);
+        //             }
+        //         });
+        //     }
+        // },
+
+        // sendCash: function (toHandle, value, onSent, onSuccess, onFailed) {
+        //     var self = this;
+        //     if (this.account.address) {
+        //         db.get(toHandle, function (toAccount) {
+        //             if (!toAccount.error) {
+        //                 var tx = utils.copy(augur.tx.sendCash);
+        //                 tx.params = [toAccount.address, abi.fix(value)];
+        //                 log(tx);
+        //                 return self.transact(tx, onSent, onSuccess, onFailed);
+        //             } else {
+        //                 if (onFailed) onFailed(errors.TRANSACTION_FAILED);
+        //             }
+        //         });
+        //     }
+        // },
+
+        // sendReputation: function (toHandle, value, onSent, onSuccess, onFailed) {
+        //     var self = this;
+        //     if (this.account.address) {
+        //         db.get(toHandle, function (toAccount) {
+        //             if (!toAccount.error) {
+        //                 var tx = utils.copy(augur.tx.sendReputation);
+        //                 tx.params = [toAccount.address, abi.fix(value)];
+        //                 return self.transact(tx, onSent, onSuccess, onFailed);
+        //             } else {
+        //                 if (onFailed) onFailed(errors.TRANSACTION_FAILED);
+        //             }
+        //         });
+        //     }
         // }
+
     };
 };

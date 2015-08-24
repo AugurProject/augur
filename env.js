@@ -17,36 +17,33 @@ GLOBAL.longjohn = require("longjohn");
 GLOBAL.EthTx = require("ethereumjs-tx");
 GLOBAL.EthUtil = require("ethereumjs-util");
 GLOBAL.web3 = require("web3");
-GLOBAL.Augur = require("./src");
+GLOBAL.augur = require("./src");
 GLOBAL.contracts = require("./src/contracts");
 GLOBAL.constants = require("./src/constants");
 GLOBAL.utils = require("./src/utilities");
-GLOBAL.numeric = require("./src/core/numeric");
-GLOBAL.RPC = require("./src/core/rpc");
-GLOBAL.Tx = require("./src/core/tx");
-GLOBAL.augur = Augur;
+GLOBAL.Tx = require("./src/tx");
 GLOBAL.log = console.log;
-GLOBAL.b = Augur.branches.dev;
+GLOBAL.b = augur.branches.dev;
 GLOBAL.ballot = [ 2, 1.5, 1.5, 1, 1.5, 1.5, 1 ];
 
 longjohn.async_trace_limit = 25;
 longjohn.empty_frame = "";
 
-Augur.options.BigNumberOnly = false;
-Augur.connect();
+augur.options.bignumbers = false;
+augur.connect();
 
 web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"));
 
-GLOBAL.accounts = utils.get_test_accounts(Augur, constants.MAX_TEST_ACCOUNTS);
-GLOBAL.c = Augur.coinbase;
-GLOBAL.web = Augur.web;
+GLOBAL.accounts = utils.get_test_accounts(augur, constants.MAX_TEST_ACCOUNTS);
+GLOBAL.c = augur.coinbase;
+GLOBAL.web = augur.web;
 
 GLOBAL.balance = function (account, branch) {
-    account = account || Augur.coinbase;
+    account = account || augur.coinbase;
     var balances = {
-        cash: Augur.getCashBalance(account),
-        reputation: Augur.getRepBalance(branch || Augur.branches.dev, account),
-        ether: numeric.bignum(Augur.balance(account)).dividedBy(constants.ETHER).toFixed()
+        cash: augur.getCashBalance(account),
+        reputation: augur.getRepBalance(branch || augur.branches.dev, account),
+        ether: numeric.bignum(augur.balance(account)).dividedBy(constants.ETHER).toFixed()
     };
     log(balances);
     return balances;
@@ -55,8 +52,8 @@ GLOBAL.balance = function (account, branch) {
 GLOBAL.gospel = function () {
     var gospel_file = path.join(__dirname, "data", "gospel.json");
     log("Load contracts from file: " + chalk.green(gospel_file));
-    Augur.contracts = JSON.parse(fs.readFileSync(gospel_file));
-    Augur.connect();
+    augur.contracts = JSON.parse(fs.readFileSync(gospel_file));
+    augur.connect();
     return balance();
 };
 
@@ -72,11 +69,11 @@ log("Ether:      " + chalk.green(balances.ether));
 
 GLOBAL.reporting = function (branch) {
     var info = {
-        vote_period: Augur.getVotePeriod(b),
-        current_period: Augur.getCurrentPeriod(b),
-        num_reports: Augur.getNumberReporters(b)
+        vote_period: augur.getVotePeriod(b),
+        current_period: augur.getCurrentPeriod(b),
+        num_reports: augur.getNumberReporters(b)
     };
-    info.num_events = Augur.getNumberEvents(b, info.vote_period);
+    info.num_events = augur.getNumberEvents(b, info.vote_period);
     return info;
 };
 
@@ -92,4 +89,4 @@ GLOBAL.current_period = reportingInfo.current_period;
 GLOBAL.num_events = reportingInfo.num_events;
 GLOBAL.num_reports = reportingInfo.num_reports;
 
-GLOBAL.namereg = Augur.namereg;
+GLOBAL.namereg = augur.namereg;

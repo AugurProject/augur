@@ -6,25 +6,31 @@
 "use strict";
 
 var assert = require("chai").assert;
-var Augur = require("../../src");
-var constants = require("../../src/constants");
+var ethrpc = require("ethrpc");
+var contracts = require("augur-contracts").testchain;
 var log = console.log;
-
-Augur = require("../../src/utilities").setup(Augur, process.argv.slice(2));
 
 require('it-each')({ testPerIteration: true });
 
+ethrpc.nodes = ["http://127.0.0.1:8545"];
+
 describe("Read contracts", function () {
+
     var test = function (c) {
-        assert(Augur.read(Augur.contracts[c]) !== "0x");
+        var res = ethrpc.read(contracts[c]);
+        assert.notProperty(res, "error");
+        assert.notStrictEqual(res, "0x");
     };
+
     var contract_list = [];
-    for (var c in Augur.contracts) {
-        if (!Augur.contracts.hasOwnProperty(c)) continue;
+    for (var c in contracts) {
+        if (!contracts.hasOwnProperty(c)) continue;
         contract_list.push(c);
     }
+
     it.each(contract_list, "read contract: %s", ['element'], function (element, next) {
         test(element);
         next();
     });
+
 });

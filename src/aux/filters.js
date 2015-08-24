@@ -8,7 +8,7 @@ var chalk = require("chalk");
 var abi = require("augur-abi");
 var log = console.log;
 
-module.exports = function (augur) {
+module.exports = function (augur, rpc) {
 
     return {
 
@@ -19,7 +19,7 @@ module.exports = function (augur) {
         },
 
         eth_newFilter: function (params, f) {
-            return augur.rpc.json_rpc(augur.rpc.postdata("newFilter", params), f);
+            return rpc.broadcast(rpc.postdata("newFilter", params), f);
         },
 
         create_price_filter: function (label, f) {
@@ -27,32 +27,32 @@ module.exports = function (augur) {
         },
 
         eth_getFilterChanges: function (filter, f) {
-            return augur.rpc.json_rpc(augur.rpc.postdata("getFilterChanges", filter), f);
+            return rpc.broadcast(rpc.postdata("getFilterChanges", filter), f);
         },
 
         eth_getFilterLogs: function (filter, f) {
-            return augur.rpc.json_rpc(augur.rpc.postdata("getFilterLogs", filter), f);
+            return rpc.broadcast(rpc.postdata("getFilterLogs", filter), f);
         },
 
         eth_getLogs: function (filter, f) {
-            return augur.rpc.json_rpc(augur.rpc.postdata("getLogs", filter), f);
+            return rpc.broadcast(rpc.postdata("getLogs", filter), f);
         },
 
         eth_uninstallFilter: function (filter, f) {
-            return augur.rpc.json_rpc(augur.rpc.postdata("uninstallFilter", filter), f);
+            return rpc.broadcast(rpc.postdata("uninstallFilter", filter), f);
         },
 
         search_price_logs: function (logs, market_id, outcome_id) {
             // array response: user, market, outcome, price
             var parsed, unfix_type, price_logs;
             if (logs) {
-                unfix_type = (augur.options.BigNumberOnly) ? "BigNumber" : "string";
+                unfix_type = (augur.bignumbers) ? "BigNumber" : "string";
                 price_logs = [];
                 for (var i = 0, len = logs.length; i < len; ++i) {
-                    parsed = augur.rpc.parse_array(logs[i].data);
+                    parsed = rpc.parse_array(logs[i].data);
                     if (abi.bignum(parsed[1]).eq(abi.bignum(market_id)) &&
                         abi.bignum(parsed[2]).eq(abi.bignum(outcome_id))) {
-                        if (augur.options.BigNumberOnly) {
+                        if (augur.bignumbers) {
                             price_logs.push({
                                 price: abi.unfix(parsed[3], unfix_type),
                                 blockNumber: abi.bignum(logs[i].blockNumber)
@@ -79,7 +79,7 @@ module.exports = function (augur) {
                         if (num_messages) {
                             for (var i = 0; i < num_messages; ++i) {
                                 var data_array = this.parse_array(message[i].data);
-                                var unfix_type = (this.options.BigNumberOnly) ? "BigNumber" : "string";
+                                var unfix_type = (this.bignumbers) ? "BigNumber" : "string";
                                 onMessage({
                                     origin: data_array[0],
                                     marketId: data_array[1],

@@ -58,7 +58,7 @@ module.exports = {
 
         put: function (rpc, handle, data, f) {
             try {
-                return rpc.json_rpc(rpc.postdata(
+                return rpc.broadcast(rpc.postdata(
                     "putString",
                     ["accounts", handle, JSON.stringify(data)],
                     "db_"
@@ -75,7 +75,7 @@ module.exports = {
         get: function (rpc, handle, f) {
             try {
                 if (f) {
-                    rpc.json_rpc(rpc.postdata(
+                    rpc.broadcast(rpc.postdata(
                         "getString",
                         ["accounts", handle],
                         "db_"
@@ -87,7 +87,7 @@ module.exports = {
                         }
                     });
                 } else {
-                    var account = rpc.json_rpc(rpc.postdata(
+                    var account = rpc.broadcast(rpc.postdata(
                         "getString",
                         ["accounts", handle],
                         "db_"

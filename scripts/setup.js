@@ -184,7 +184,7 @@ function init(geth, account, callback, next, count) {
             if (balance && !balance.error) {
                 balance = numeric.bignum(balance).dividedBy(constants.ETHER).toFixed();
                 log("Connected on account", chalk.cyan(account));
-                log(chalk.green(augur.blockNumber()), chalk.gray("blocks"));
+                log(chalk.green(augur.rpc.blockNumber()), chalk.gray("blocks"));
                 log(chalk.green(balance), chalk.gray("ETH"));
                 callback(geth, account, next);
             } else {

@@ -6,10 +6,10 @@
 "use strict";
 
 var assert = require("chai").assert;
+var contracts = require("augur-contracts");
 var augur = require("../../src");
-var constants = require("../../src/constants");
-var contracts = require("../../src/contracts");
-var utils = require("../../src/utilities");
+var constants = augur.constants;
+var utils = augur.utils;
 var log = console.log;
 
 require('it-each')({ testPerIteration: true });
@@ -160,7 +160,7 @@ describe("augur.connect", function () {
         var augur = utils.reset("../../src/index");
         assert(augur.connect());
         assert(augur.coinbase);
-        assert.strictEqual(augur.options.RPC, "http://127.0.0.1:8545");
+        assert.strictEqual(augur.nodes[0], "http://127.0.0.1:8545");
     });
     it("should be on network 0, 10101, or 7", function () {
         assert(augur.network_id === "0" ||

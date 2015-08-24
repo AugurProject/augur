@@ -46,12 +46,12 @@ describe("Database", function () {
     describe("Ethereum LevelDB", function () {
 
         it("save account", function (done) {
-            augur.db.leveldb.put(augur.rpc, account.handle, account);
+            augur.db.leveldb.put(ethrpc, account.handle, account);
             done();
         });
 
         it("retrieve account", function (done) {
-            augur.db.leveldb.get(augur.rpc, account.handle, function (retrieved_account) {
+            augur.db.leveldb.get(ethrpc, account.handle, function (retrieved_account) {
                 assert.strictEqual(account.handle, retrieved_account.handle);
                 assert.strictEqual(account.privateKey, retrieved_account.privateKey);
                 assert.strictEqual(account.iv, retrieved_account.iv);

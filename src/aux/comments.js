@@ -8,7 +8,7 @@ var errors = require("../errors");
 var constants = require("../constants");
 var abi = require("augur-abi");
 
-module.exports = function (augur) {
+module.exports = function (augur, rpc) {
 
     return {
 
@@ -19,7 +19,7 @@ module.exports = function (augur) {
 
             write: function (handle, data, f) {
                 try {
-                    return augur.rpc.json_rpc(augur.rpc.postdata(
+                    return rpc.broadcast(rpc.postdata(
                         "putString",
                         ["comments", handle, data],
                         "db_"
@@ -31,7 +31,7 @@ module.exports = function (augur) {
 
             get: function (handle, f) {
                 try {
-                    return augur.rpc.json_rpc(augur.rpc.postdata(
+                    return rpc.broadcast(rpc.postdata(
                         "getString",
                         ["comments", handle],
                         "db_"
@@ -43,23 +43,23 @@ module.exports = function (augur) {
         },
 
         getMessages: function (filter, f) {
-            return augur.rpc.json_rpc(augur.rpc.postdata("getMessages", filter, "shh_"), f);
+            return rpc.broadcast(rpc.postdata("getMessages", filter, "shh_"), f);
         },
 
         getFilterChanges: function (filter, f) {
-            return augur.rpc.json_rpc(augur.rpc.postdata("getFilterChanges", filter, "shh_"), f);
+            return rpc.broadcast(rpc.postdata("getFilterChanges", filter, "shh_"), f);
         },
 
         newIdentity: function (f) {
-            return augur.rpc.json_rpc(augur.rpc.postdata("newIdentity", null, "shh_"), f);
+            return rpc.broadcast(rpc.postdata("newIdentity", null, "shh_"), f);
         },
 
         post: function (params, f) {
-            return augur.rpc.json_rpc(augur.rpc.postdata("post", params, "shh_"), f);
+            return rpc.broadcast(rpc.postdata("post", params, "shh_"), f);
         },
 
         whisperFilter: function (params, f) {
-            return augur.rpc.json_rpc(augur.rpc.postdata("newFilter", params, "shh_"), f);
+            return rpc.broadcast(rpc.postdata("newFilter", params, "shh_"), f);
         },
 
         commentFilter: function (market, f) {
@@ -67,7 +67,7 @@ module.exports = function (augur) {
         },
 
         uninstallFilter: function (filter, f) {
-            return augur.rpc.json_rpc(augur.rpc.postdata("uninstallFilter", filter, "shh_"), f);
+            return rpc.broadcast(rpc.postdata("uninstallFilter", filter, "shh_"), f);
         },
 
         /**
@@ -84,7 +84,7 @@ module.exports = function (augur) {
                     if (num_messages) {
                         for (var i = 0; i < num_messages; ++i) {
                             // log("\n\nPOLLFILTER: reading incoming message " + i.toString());
-                            incoming_comments = augur.abi.decode_hex(message[i].payload);
+                            incoming_comments = abi.decode_hex(message[i].payload);
                             if (incoming_comments) {
                                 incoming_parsed = JSON.parse(incoming_comments);
                                 // log(incoming_parsed);

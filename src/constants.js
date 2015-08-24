@@ -16,14 +16,8 @@ module.exports = {
     // default gas: 3.135M
     DEFAULT_GAS: "0x2fd618",
 
-    // max number of tx verification attempts
-    TX_POLL_MAX: 12,
-
     // comment polling interval (in milliseconds)
     COMMENT_POLL_INTERVAL: 12000,
-
-    // transaction polling interval
-    TX_POLL_INTERVAL: 12000,
 
     // expected block interval
     SECONDS_PER_BLOCK: 12,
@@ -43,9 +37,9 @@ module.exports = {
     FIREBASE_URL: "https://resplendent-inferno-1997.firebaseio-demo.com/",
     
     nodes: [
+        "http://eth3.augur.net", // loopy/poc9: 69.164.196.239:8545
         "http://eth1.augur.net", // miner:      45.33.59.27:8545
         // "http://eth2.augur.net", // prospector: 45.79.204.139:8545
-        "http://eth3.augur.net", // loopy/poc9: 69.164.196.239:8545
         "http://eth4.augur.net", // singapore
         "http://eth5.augur.net"  // tokyo
     ]

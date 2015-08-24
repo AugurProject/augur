@@ -82,7 +82,7 @@ module.exports = {
 
     // calculate date from block number
     block_to_date: function (augur, block) {
-        var current_block = augur.blockNumber();
+        var current_block = augur.rpc.blockNumber();
         var seconds = (block - current_block) * constants.SECONDS_PER_BLOCK;
         var date = moment().add(seconds, 'seconds');
         return date;
@@ -91,7 +91,7 @@ module.exports = {
     // calculate block number from date
     date_to_block: function (augur, date) {
         date = moment(new Date(date));
-        var current_block = augur.blockNumber();
+        var current_block = augur.rpc.blockNumber();
         var now = moment();
         var seconds_delta = date.diff(now, 'seconds');
         var block_delta = parseInt(seconds_delta / constants.SECONDS_PER_BLOCK);
@@ -205,9 +205,9 @@ module.exports = {
             contracts = fs.readFileSync(gospel);
             augur.contracts = JSON.parse(contracts.toString());
         }
-        if (!bignum) augur.options.BigNumberOnly = false;
+        if (!bignum) augur.bignumbers = false;
         if (augur.connect(rpcinfo) && rpcinfo) {
-            // log(chalk.magenta("augur"), "connected:", chalk.cyan(augur.options.RPC));
+            log(chalk.magenta("augur"), "connected:", chalk.cyan(augur.nodes[0]));
         }
         return augur;
     },
@@ -242,38 +242,11 @@ module.exports = {
         return true;
     },
 
-    is_hex: function (str) {
-        if (str && str.constructor === String) {
-            if (str.slice(0, 1) === '-' && str.length > 1) {
-                return /^[0-9A-F]+$/i.test(str.slice(1));
-            }
-            return /^[0-9A-F]+$/i.test(str);
-        }
-        return false;
-    },
-
-    strip_0x: function (str) {
-        var h = str;
-        if (h === "-0x0" || h === "0x0") {
-            return "0";
-        }
-        if (h.slice(0, 2) === "0x" && h.length > 2) {
-            h = h.slice(2);
-        } else if (h.slice(0, 3) === "-0x" && h.length > 3) {
-            h = '-' + h.slice(3);
-        }
-        if (this.is_hex(h)) {
-            return h;
-        } else {
-            return str;
-        }
-    },
-
     get_test_accounts: function (augur, max_accounts) {
         var accounts;
         if (augur) {
             if (typeof augur === "object") {
-                accounts = augur.accounts();
+                accounts = augur.rpc.accounts();
             } else if (typeof augur === "string") {
                 accounts = require("fs").readdirSync(require("path").join(augur, "keystore"));
                 for (var i = 0, len = accounts.length; i < len; ++i) {
@@ -400,54 +373,6 @@ module.exports = {
             folded.push(row);
         }
         return folded;
-    },
-
-    array_equal: function (a, b) {
-        if (a === b) return true;
-        if (a === null || b === null) return false;
-        var a_length = a.length;
-        if (a_length !== b.length) return false;
-        for (var i = 0; i < a_length; ++i) {
-            if (a[i] !== b[i]) return false;
-        }
-        return true;
-    },
-
-    check_results: function (res, expected, apply) {
-        if (res) {
-            if (apply) {
-                if (res && res.constructor === Array) {
-                    assert(this.array_equal(apply(res), apply(expected)));
-                } else {
-                    assert(apply(res) === apply(expected));
-                }
-            } else {
-                if (res && res.constructor === Array) {
-                    assert(this.array_equal(res, expected));
-                } else {
-                    assert(res === expected);
-                }
-            }
-        } else {
-            throw new Error("no or incorrect response: " + JSON.stringify(res));
-        }
-    },
-
-    runtest: function (augur, tx, expected, apply) {
-        if (tx && expected) {
-            var res = augur.invoke(tx);
-            this.check_results(res, expected, apply);
-        }
-    },
-
-    test_invoke: function (augur, itx, expected, apply) {
-        var tx = this.copy(itx);
-        if (tx.send === undefined) {
-            tx.send = false;
-            this.runtest(augur, tx, expected, apply);
-        } else {
-            this.runtest(augur, tx, expected, apply);
-        }
     }
 
 };
