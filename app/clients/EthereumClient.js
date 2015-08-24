@@ -10,6 +10,7 @@ var blacklist = require('../libs/blacklist');
 var fromFixedPoint = utilities.fromFixedPoint;
 var toFixedPoint = utilities.toFixedPoint;
 
+var augur_abi = require('augur-abi');
 var Augur = window.Augur = require('augur.js');
 
 function MissingContractError(contractName) {
@@ -668,14 +669,14 @@ EthereumClient.prototype.addMarket = function(params, onSent) {
 
 EthereumClient.prototype.closeMarket = function (marketId, branchId) {
   try {
-    marketId = Augur.numeric.bignum(marketId).toFixed();
+    marketId = augur_abi.bignum(marketId).toFixed();
   } catch (e) {
-    marketId = Augur.numeric.prefix_hex(marketId);
+    marketId = augur_abi.prefix_hex(marketId);
   }
   try {
-    branchId = Augur.numeric.bignum(branchId).toFixed();
+    branchId = augur_abi.bignum(branchId).toFixed();
   } catch (e) {
-    branchId = Augur.numeric.prefix_hex(branchId);
+    branchId = augur_abi.prefix_hex(branchId);
   }
   utilities.log("Closing market " + marketId + " on branch " + branchId);
   Augur.closeMarket({
