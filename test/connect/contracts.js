@@ -25,7 +25,9 @@ describe("Read contracts", function () {
     var contract_list = [];
     for (var c in contracts) {
         if (!contracts.hasOwnProperty(c)) continue;
-        contract_list.push(c);
+        if (c !== "namereg") {
+            contract_list.push(c);
+        }
     }
 
     it.each(contract_list, "read contract: %s", ['element'], function (element, next) {

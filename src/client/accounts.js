@@ -20,7 +20,7 @@ BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 keythereum.constants.pbkdf2.c = 10000;
 keythereum.constants.scrypt.n = 10000;
 
-module.exports = function (augur, ethrpc) {
+module.exports = function (augur) {
 
     return {
 
@@ -29,7 +29,7 @@ module.exports = function (augur, ethrpc) {
 
         // free (testnet) ether for new accounts on registration
         fund: function (account, callback, onSuccess) {
-            ethrpc.sendEther(
+            augur.rpc.sendEther(
                 account.address,
                 constants.FREEBIE / 2,
                 augur.coinbase,
@@ -45,7 +45,7 @@ module.exports = function (augur, ethrpc) {
                     if (callback) callback(r);
                 }
             );
-            ethrpc.sendEther(
+            augur.rpc.sendEther(
                 account.address,
                 constants.FREEBIE / 2,
                 augur.coinbase,
@@ -201,7 +201,7 @@ module.exports = function (augur, ethrpc) {
                     if (this.account.privateKey && itx && itx.constructor === Object) {
 
                         // parse and serialize transaction parameters
-                        tx = utils.copy(itx);
+                        tx = abi.copy(itx);
                         if (tx.params !== undefined) {
                             if (tx.params.constructor === Array) {
                                 for (var i = 0, len = tx.params.length; i < len; ++i) {
@@ -221,7 +221,7 @@ module.exports = function (augur, ethrpc) {
                         packaged = new ethTx({
                             to: tx.to,
                             from: this.account.address,
-                            gasPrice: (tx.gasPrice) ? tx.gasPrice : ethrpc.gasPrice(),
+                            gasPrice: (tx.gasPrice) ? tx.gasPrice : augur.rpc.gasPrice(),
                             gasLimit: (tx.gas) ? tx.gas : constants.DEFAULT_GAS,
                             nonce: this.account.nonce,
                             value: tx.value || "0x0",
@@ -232,7 +232,7 @@ module.exports = function (augur, ethrpc) {
                         packaged.sign(this.account.privateKey);
                         if (packaged.validate()) {
 
-                            return ethrpc.sendRawTx(
+                            return augur.rpc.sendRawTx(
                                 packaged.serialize().toString("hex"),
                                 function (r) {
 
@@ -256,7 +256,7 @@ module.exports = function (augur, ethrpc) {
 
                 // if this is just a call, use the regular invoke method
                 } else {
-                    return ethrpc.invoke(itx, callback);
+                    return augur.rpc.invoke(itx, callback);
                 }
             
             // not logged in
@@ -264,7 +264,7 @@ module.exports = function (augur, ethrpc) {
                 if (itx.send) {
                     return errors.NOT_LOGGED_IN;
                 } else {
-                    return ethrpc.invoke(itx, callback);
+                    return augur.rpc.invoke(itx, callback);
                 }
             }
         }
@@ -302,7 +302,7 @@ module.exports = function (augur, ethrpc) {
         //     if (this.account.address) {
         //         db.get(toHandle, function (toAccount) {
         //             if (!toAccount.error) {
-        //                 var tx = utils.copy(augur.tx.sendCash);
+        //                 var tx = abi.copy(augur.tx.sendCash);
         //                 tx.params = [toAccount.address, abi.fix(value)];
         //                 log(tx);
         //                 return self.transact(tx, onSent, onSuccess, onFailed);
@@ -318,7 +318,7 @@ module.exports = function (augur, ethrpc) {
         //     if (this.account.address) {
         //         db.get(toHandle, function (toAccount) {
         //             if (!toAccount.error) {
-        //                 var tx = utils.copy(augur.tx.sendReputation);
+        //                 var tx = abi.copy(augur.tx.sendReputation);
         //                 tx.params = [toAccount.address, abi.fix(value)];
         //                 return self.transact(tx, onSent, onSuccess, onFailed);
         //             } else {

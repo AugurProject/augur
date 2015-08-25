@@ -8,7 +8,7 @@ var errors = require("../errors");
 var constants = require("../constants");
 var abi = require("augur-abi");
 
-module.exports = function (augur, rpc) {
+module.exports = function (augur) {
 
     return {
 
@@ -19,7 +19,7 @@ module.exports = function (augur, rpc) {
 
             write: function (handle, data, f) {
                 try {
-                    return rpc.broadcast(rpc.postdata(
+                    return augur.rpc.broadcast(augur.rpc.marshal(
                         "putString",
                         ["comments", handle, data],
                         "db_"
@@ -31,7 +31,7 @@ module.exports = function (augur, rpc) {
 
             get: function (handle, f) {
                 try {
-                    return rpc.broadcast(rpc.postdata(
+                    return augur.rpc.broadcast(augur.rpc.marshal(
                         "getString",
                         ["comments", handle],
                         "db_"
@@ -43,23 +43,23 @@ module.exports = function (augur, rpc) {
         },
 
         getMessages: function (filter, f) {
-            return rpc.broadcast(rpc.postdata("getMessages", filter, "shh_"), f);
+            return augur.rpc.broadcast(augur.rpc.marshal("getMessages", filter, "shh_"), f);
         },
 
         getFilterChanges: function (filter, f) {
-            return rpc.broadcast(rpc.postdata("getFilterChanges", filter, "shh_"), f);
+            return augur.rpc.broadcast(augur.rpc.marshal("getFilterChanges", filter, "shh_"), f);
         },
 
         newIdentity: function (f) {
-            return rpc.broadcast(rpc.postdata("newIdentity", null, "shh_"), f);
+            return augur.rpc.broadcast(augur.rpc.marshal("newIdentity", null, "shh_"), f);
         },
 
         post: function (params, f) {
-            return rpc.broadcast(rpc.postdata("post", params, "shh_"), f);
+            return augur.rpc.broadcast(augur.rpc.marshal("post", params, "shh_"), f);
         },
 
         whisperFilter: function (params, f) {
-            return rpc.broadcast(rpc.postdata("newFilter", params, "shh_"), f);
+            return augur.rpc.broadcast(augur.rpc.marshal("newFilter", params, "shh_"), f);
         },
 
         commentFilter: function (market, f) {
@@ -67,7 +67,7 @@ module.exports = function (augur, rpc) {
         },
 
         uninstallFilter: function (filter, f) {
-            return rpc.broadcast(rpc.postdata("uninstallFilter", filter, "shh_"), f);
+            return augur.rpc.broadcast(augur.rpc.marshal("uninstallFilter", filter, "shh_"), f);
         },
 
         /**

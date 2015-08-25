@@ -124,7 +124,7 @@ function spawn_geth(flags) {
 }
 
 function mine_minimum_ether(geth, account, next) {
-    var balance = numeric.bignum(augur.balance(account)).dividedBy(constants.ETHER).toNumber();
+    var balance = numeric.bignum(augur.rpc.balance(account)).dividedBy(constants.ETHER).toNumber();
     if (balance < options.MINIMUM_ETHER) {
         if (balance > 0) {
             log(chalk.green(balance) + chalk.gray(" ETH, waiting for ") +
@@ -180,7 +180,7 @@ function init(geth, account, callback, next, count) {
                 );
             }, 5000);
         } else {
-            var balance = augur.balance(account);
+            var balance = augur.rpc.balance(account);
             if (balance && !balance.error) {
                 balance = numeric.bignum(balance).dividedBy(constants.ETHER).toFixed();
                 log("Connected on account", chalk.cyan(account));
@@ -230,7 +230,7 @@ function faucets(geth) {
     mocha.reporter(options.MOCHA_REPORTER).run(function (failures) {
         var cash_balance = augur.getCashBalance(coinbase);
         var rep_balance = augur.getRepBalance(branch, coinbase);
-        var ether_balance = numeric.bignum(augur.balance(coinbase)).dividedBy(constants.ETHER).toFixed();
+        var ether_balance = numeric.bignum(augur.rpc.balance(coinbase)).dividedBy(constants.ETHER).toFixed();
         log(chalk.cyan("\nBalances:"));
         log("Cash:       " + chalk.green(cash_balance));
         log("Reputation: " + chalk.green(rep_balance));

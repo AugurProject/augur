@@ -8,7 +8,7 @@ var chalk = require("chalk");
 var abi = require("augur-abi");
 var log = console.log;
 
-module.exports = function (augur, rpc) {
+module.exports = function (augur) {
 
     return {
 
@@ -19,7 +19,7 @@ module.exports = function (augur, rpc) {
         },
 
         eth_newFilter: function (params, f) {
-            return rpc.broadcast(rpc.postdata("newFilter", params), f);
+            return augur.rpc.broadcast(augur.rpc.marshal("newFilter", params), f);
         },
 
         create_price_filter: function (label, f) {
@@ -27,19 +27,19 @@ module.exports = function (augur, rpc) {
         },
 
         eth_getFilterChanges: function (filter, f) {
-            return rpc.broadcast(rpc.postdata("getFilterChanges", filter), f);
+            return augur.rpc.broadcast(augur.rpc.marshal("getFilterChanges", filter), f);
         },
 
         eth_getFilterLogs: function (filter, f) {
-            return rpc.broadcast(rpc.postdata("getFilterLogs", filter), f);
+            return augur.rpc.broadcast(augur.rpc.marshal("getFilterLogs", filter), f);
         },
 
         eth_getLogs: function (filter, f) {
-            return rpc.broadcast(rpc.postdata("getLogs", filter), f);
+            return augur.rpc.broadcast(augur.rpc.marshal("getLogs", filter), f);
         },
 
         eth_uninstallFilter: function (filter, f) {
-            return rpc.broadcast(rpc.postdata("uninstallFilter", filter), f);
+            return augur.rpc.broadcast(augur.rpc.marshal("uninstallFilter", filter), f);
         },
 
         search_price_logs: function (logs, market_id, outcome_id) {
@@ -49,7 +49,7 @@ module.exports = function (augur, rpc) {
                 unfix_type = (augur.bignumbers) ? "BigNumber" : "string";
                 price_logs = [];
                 for (var i = 0, len = logs.length; i < len; ++i) {
-                    parsed = rpc.parse_array(logs[i].data);
+                    parsed = augur.rpc.parse_array(logs[i].data);
                     if (abi.bignum(parsed[1]).eq(abi.bignum(market_id)) &&
                         abi.bignum(parsed[2]).eq(abi.bignum(outcome_id))) {
                         if (augur.bignumbers) {

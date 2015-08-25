@@ -267,7 +267,7 @@ module.exports = {
             return {
                 cash: augur.getCashBalance(account),
                 reputation: augur.getRepBalance(branch || augur.branches.dev, account),
-                ether: abi.bignum(augur.balance(account)).dividedBy(constants.ETHER).toFixed()
+                ether: abi.bignum(augur.rpc.balance(account)).dividedBy(constants.ETHER).toFixed()
             };
         }
     },

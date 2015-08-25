@@ -64,10 +64,10 @@ augur.reload_modules = function () {
     rpc.bignumbers = this.bignumbers;
     rpc.nodes = this.nodes;
     this.rpc = rpc;
-    this.web = new Accounts(this, rpc);
-    this.comments = new Comments(this, rpc);
-    this.filters = new Filters(this, rpc);
-    this.namereg = new Namereg(this, rpc);
+    this.web = new Accounts(this);
+    this.comments = new Comments(this);
+    this.filters = new Filters(this);
+    this.namereg = new Namereg(this);
 };
 
 augur.reload_modules();
@@ -244,7 +244,7 @@ augur.createBatch = function createBatch () {
 
 augur.transact = function (tx, onSent, onSuccess, onFailed) {
     if (tx.send && this.web && this.web.account && this.web.account.address) {
-        tx.invoke = this.web.invoke;
+        tx.invocation = { invoke: this.web.invoke, context: this.web };
     }
     rpc.transact(tx, onSent, onSuccess, onFailed);
 };
@@ -282,7 +282,7 @@ augur.sendCash = function (to, value, onSent, onSuccess, onFailed) {
         to = to.to;
     }
     var tx = this.utils.copy(this.tx.sendCash);
-    tx.params = [to, abi.fix(value)];
+    tx.params = [to, abi.fix(value, "hex")];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 augur.sendCashFrom = function (to, value, from, onSent, onSuccess, onFailed) {
@@ -298,7 +298,7 @@ augur.sendCashFrom = function (to, value, from, onSent, onSuccess, onFailed) {
         to = to.to;
     }
     var tx = this.utils.copy(this.tx.sendCashFrom);
-    tx.params = [to, abi.fix(value), from];
+    tx.params = [to, abi.fix(value, "hex"), from];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
@@ -950,7 +950,7 @@ augur.getSimulatedBuy = function (market, outcome, amount, onSent) {
     // outcome: integer (1 or 2 for binary events)
     // amount: number -> fixed-point
     var tx = this.utils.copy(this.tx.getSimulatedBuy);
-    tx.params = [market, outcome, abi.fix(amount)];
+    tx.params = [market, outcome, abi.fix(amount, "hex")];
     return rpc.fire(tx, onSent);
 };
 augur.getSimulatedSell = function (market, outcome, amount, onSent) {
@@ -958,7 +958,7 @@ augur.getSimulatedSell = function (market, outcome, amount, onSent) {
     // outcome: integer (1 or 2 for binary events)
     // amount: number -> fixed-point
     var tx = this.utils.copy(this.tx.getSimulatedSell);
-    tx.params = [market, outcome, abi.fix(amount)];
+    tx.params = [market, outcome, abi.fix(amount, "hex")];
     return rpc.fire(tx, onSent);
 };
 augur.lsLmsr = function (market, onSent) {
@@ -1262,12 +1262,12 @@ augur.buyShares = function (branch, market, outcome, amount, nonce, limit, onSen
     var tx = this.utils.copy(this.tx.buyShares);
     if (onSent) {
         this.getNonce(market, function (nonce) {
-            tx.params = [branch, market, outcome, abi.fix(amount), nonce, limit || 0];
+            tx.params = [branch, market, outcome, abi.fix(amount, "hex"), nonce, limit || 0];
             this.transact(tx, onSent, onSuccess, onFailed);
         }.bind(this));
     } else {
         nonce = this.getNonce(market);
-        tx.params = [branch, market, outcome, abi.fix(amount), nonce, limit || 0];
+        tx.params = [branch, market, outcome, abi.fix(amount, "hex"), nonce, limit || 0];
         return this.transact(tx);
     }
 };
@@ -1288,12 +1288,12 @@ augur.sellShares = function (branch, market, outcome, amount, nonce, limit, onSe
     var tx = this.utils.copy(this.tx.sellShares);
     if (onSent) {
         this.getNonce(market, function (nonce) {
-            tx.params = [branch, market, outcome, abi.fix(amount), nonce, limit || 0];
+            tx.params = [branch, market, outcome, abi.fix(amount, "hex"), nonce, limit || 0];
             this.transact(tx, onSent, onSuccess, onFailed);
         }.bind(this));
     } else {
         nonce = this.getNonce(market);
-        tx.params = [branch, market, outcome, abi.fix(amount), nonce, limit || 0];
+        tx.params = [branch, market, outcome, abi.fix(amount, "hex"), nonce, limit || 0];
         return this.transact(tx);
     }
 };
@@ -1330,7 +1330,7 @@ augur.sendReputation = function (branch, to, value, onSent, onSuccess, onFailed)
         branch = branch.branchId;
     }
     var tx = this.utils.copy(this.tx.sendReputation);
-    tx.params = [branch, to, abi.fix(value)];
+    tx.params = [branch, to, abi.fix(value, "hex")];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 

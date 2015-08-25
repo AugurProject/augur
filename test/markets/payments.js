@@ -7,30 +7,31 @@
 
 var assert = require("chai").assert;
 var utils = require("../../src/utilities");
-var Augur = utils.setup(require("../../src"), process.argv.slice(2));
+var augur = utils.setup(require("../../src"), process.argv.slice(2));
 var abi = require("augur-abi");
-var constants = Augur.constants;
+var constants = augur.constants;
 var log = console.log;
 
 var payment_value = 1;
-var branch = Augur.branches.dev;
-var coinbase = Augur.coinbase;
-var receiver = utils.get_test_accounts(Augur, constants.MAX_TEST_ACCOUNTS)[1];
+var branch = augur.branches.dev;
+var coinbase = augur.coinbase;
+var receiver = utils.get_test_accounts(augur, constants.MAX_TEST_ACCOUNTS)[1];
 
 describe("Payments", function () {
 
     it("sendEther", function (done) {
         this.timeout(constants.TIMEOUT);
-        var start_balance = abi.bignum(Augur.balance(receiver));
+        var start_balance = abi.bignum(augur.rpc.balance(receiver));
         start_balance = start_balance.dividedBy(constants.ETHER);
-        Augur.sendEther({
+        augur.rpc.sendEther({
             to: receiver,
             value: payment_value,
+            from: augur.coinbase,
             onSent: function (res) {
                 // log(res);
             },
             onSuccess: function (res) {
-                var final_balance = Augur.balance(receiver);
+                var final_balance = augur.rpc.balance(receiver);
                 final_balance = abi.bignum(final_balance).dividedBy(constants.ETHER);
                 assert.strictEqual(final_balance.sub(start_balance).toNumber(), payment_value);
                 done();
@@ -40,15 +41,15 @@ describe("Payments", function () {
 
     it("sendCash", function (done) {
         this.timeout(constants.TIMEOUT);
-        var start_balance = abi.bignum(Augur.getCashBalance(coinbase));
-        Augur.sendCash({
+        var start_balance = abi.bignum(augur.getCashBalance(coinbase));
+        augur.sendCash({
             to: receiver,
             value: payment_value,
             onSent: function (res) {
                 // log(res);
             },
             onSuccess: function (res) {
-                var final_balance = abi.bignum(Augur.getCashBalance(coinbase));
+                var final_balance = abi.bignum(augur.getCashBalance(coinbase));
                 assert.strictEqual(start_balance.sub(final_balance).toNumber(), payment_value);
                 done();
             },
@@ -60,8 +61,8 @@ describe("Payments", function () {
 
     it("sendCashFrom", function (done) {
         this.timeout(constants.TIMEOUT);
-        var start_balance = abi.bignum(Augur.getCashBalance(coinbase));
-        Augur.sendCashFrom({
+        var start_balance = abi.bignum(augur.getCashBalance(coinbase));
+        augur.sendCashFrom({
             to: receiver,
             value: payment_value,
             from: coinbase,
@@ -69,7 +70,7 @@ describe("Payments", function () {
                 // log(res);
             },
             onSuccess: function (res) {
-                var final_balance = abi.bignum(Augur.getCashBalance(coinbase));
+                var final_balance = abi.bignum(augur.getCashBalance(coinbase));
                 assert.strictEqual(start_balance.sub(final_balance).toNumber(), payment_value);
                 done();
             },
@@ -82,10 +83,10 @@ describe("Payments", function () {
 
     it("sendReputation", function (done) {
         this.timeout(constants.TIMEOUT);
-        var start_balance = Augur.getRepBalance(branch, coinbase);
+        var start_balance = augur.getRepBalance(branch, coinbase);
         start_balance = abi.bignum(start_balance);
-        Augur.tx.sendReputation.returns = "number";
-        Augur.sendReputation({
+        augur.tx.sendReputation.returns = "number";
+        augur.sendReputation({
             branchId: branch,
             to: receiver,
             value: payment_value,
@@ -93,7 +94,7 @@ describe("Payments", function () {
                 // log(res);
             },
             onSuccess: function (res) {
-                var final_balance = Augur.getRepBalance(branch, coinbase);
+                var final_balance = augur.getRepBalance(branch, coinbase);
                 final_balance = abi.bignum(final_balance);
                 assert.strictEqual(start_balance.sub(final_balance).toNumber(), payment_value);
                 done();

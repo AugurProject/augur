@@ -9,6 +9,7 @@ var assert = require("chai").assert;
 var constants = require("../../src/constants");
 var utils = require("../../src/utilities");
 var augur = utils.setup(require("../../src"), process.argv.slice(2));
+var db = require("../../src/client/db");
 var log = console.log;
 
 describe("Database", function () {
@@ -24,14 +25,14 @@ describe("Database", function () {
     describe("Firebase", function () {
 
         it("save account", function (done) {
-            augur.db.put(account.handle, account, function (url) {
+            db.put(account.handle, account, function (url) {
                 assert.strictEqual(url, constants.FIREBASE_URL + "/" + account.handle);
                 done();
             });
         });
 
         it("retrieve account", function (done) {
-            augur.db.get(account.handle, function (retrieved_account) {
+            db.get(account.handle, function (retrieved_account) {
                 assert.strictEqual(account.handle, retrieved_account.handle);
                 assert.strictEqual(account.privateKey, retrieved_account.privateKey);
                 assert.strictEqual(account.iv, retrieved_account.iv);
@@ -46,12 +47,12 @@ describe("Database", function () {
     describe("Ethereum LevelDB", function () {
 
         it("save account", function (done) {
-            augur.db.leveldb.put(ethrpc, account.handle, account);
+            db.leveldb.put(augur.rpc, account.handle, account);
             done();
         });
 
         it("retrieve account", function (done) {
-            augur.db.leveldb.get(ethrpc, account.handle, function (retrieved_account) {
+            db.leveldb.get(augur.rpc, account.handle, function (retrieved_account) {
                 assert.strictEqual(account.handle, retrieved_account.handle);
                 assert.strictEqual(account.privateKey, retrieved_account.privateKey);
                 assert.strictEqual(account.iv, retrieved_account.iv);
