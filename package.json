@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "0.9.12",
+  "version": "0.9.13",
   "description": "Augur JavaScript API",
   "main": "src/index.js",
   "scripts": {
@@ -19,6 +19,7 @@
     "augur-contracts": "^0.1.0",
     "bignumber.js": "^2.0.7",
     "chalk": "^1.0.0",
+    "crypto-browserify": "^3.9.14",
     "ethereumjs-tx": "^0.6.0",
     "ethereumjs-util": "^1.3.2",
     "ethrpc": "^0.1.4",
@@ -48,7 +49,6 @@
     "browserify": "^10.2.6",
     "chai": "^3.0.0",
     "coveralls": "^2.11.3",
-    "crypto-browserify": "^3.9.14",
     "del": "^1.2.0",
     "gulp": "^3.9.0",
     "istanbul": "^0.3.17",
