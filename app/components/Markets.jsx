@@ -82,7 +82,7 @@ class MarketPane extends React.Component {
     } else if (market.invalid) {
       status = 'Invalid'
       className += ' invalid'; 
-      linked = false;
+      linked = true;
     } else if (matured) {
       status = 'Matured'
       className += ' matured';
