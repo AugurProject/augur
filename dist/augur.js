@@ -4,7 +4,7 @@ var augur = global.augur || require("./src/index");
 global.augur = augur;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./src/index":295}],2:[function(require,module,exports){
+},{"./src/index":297}],2:[function(require,module,exports){
 /**
  * Ethereum contract ABI data serialization.
  * @author Jack Peterson (jack@tinybike.net)
@@ -31135,2411 +31135,8 @@ function padToEven(a){
 
 }).call(this,require("buffer").Buffer)
 },{"assert":8,"bn.js":226,"buffer":10,"elliptic":229,"rlp":254,"sha3":227}],226:[function(require,module,exports){
-(function (module, exports) {
-
-'use strict';
-
-// Utils
-
-function assert(val, msg) {
-  if (!val)
-    throw new Error(msg || 'Assertion failed');
-}
-
-// Could use `inherits` module, but don't want to move from single file
-// architecture yet.
-function inherits(ctor, superCtor) {
-  ctor.super_ = superCtor;
-  var TempCtor = function () {};
-  TempCtor.prototype = superCtor.prototype;
-  ctor.prototype = new TempCtor();
-  ctor.prototype.constructor = ctor;
-}
-
-// BN
-
-function BN(number, base, endian) {
-  // May be `new BN(bn)` ?
-  if (number !== null &&
-      typeof number === 'object' &&
-      Array.isArray(number.words)) {
-    return number;
-  }
-
-  this.sign = false;
-  this.words = null;
-  this.length = 0;
-
-  // Reduction context
-  this.red = null;
-
-  if (base === 'le' || base === 'be') {
-    endian = base;
-    base = 10;
-  }
-
-  if (number !== null)
-    this._init(number || 0, base || 10, endian || 'be');
-}
-if (typeof module === 'object')
-  module.exports = BN;
-else
-  exports.BN = BN;
-
-BN.BN = BN;
-BN.wordSize = 26;
-
-BN.prototype._init = function init(number, base, endian) {
-  if (typeof number === 'number') {
-    return this._initNumber(number, base, endian);
-  } else if (typeof number === 'object') {
-    return this._initArray(number, base, endian);
-  }
-  if (base === 'hex')
-    base = 16;
-  assert(base === (base | 0) && base >= 2 && base <= 36);
-
-  number = number.toString().replace(/\s+/g, '');
-  var start = 0;
-  if (number[0] === '-')
-    start++;
-
-  if (base === 16)
-    this._parseHex(number, start);
-  else
-    this._parseBase(number, base, start);
-
-  if (number[0] === '-')
-    this.sign = true;
-
-  this.strip();
-
-  if (endian !== 'le')
-    return;
-
-  this._initArray(this.toArray(), base, endian);
-};
-
-BN.prototype._initNumber = function _initNumber(number, base, endian) {
-  if (number < 0) {
-    this.sign = true;
-    number = -number;
-  }
-  if (number < 0x4000000) {
-    this.words = [ number & 0x3ffffff ];
-    this.length = 1;
-  } else if (number < 0x10000000000000) {
-    this.words = [
-      number & 0x3ffffff,
-      (number / 0x4000000) & 0x3ffffff
-    ];
-    this.length = 2;
-  } else {
-    assert(number < 0x20000000000000); // 2 ^ 53 (unsafe)
-    this.words = [
-      number & 0x3ffffff,
-      (number / 0x4000000) & 0x3ffffff,
-      1
-    ];
-    this.length = 3;
-  }
-
-  if (endian !== 'le')
-    return;
-
-  // Reverse the bytes
-  this._initArray(this.toArray(), base, endian);
-};
-
-BN.prototype._initArray = function _initArray(number, base, endian) {
-  // Perhaps a Uint8Array
-  assert(typeof number.length === 'number');
-  if (number.length <= 0) {
-    this.words = [ 0 ];
-    this.length = 1;
-    return this;
-  }
-
-  this.length = Math.ceil(number.length / 3);
-  this.words = new Array(this.length);
-  for (var i = 0; i < this.length; i++)
-    this.words[i] = 0;
-
-  var off = 0;
-  if (endian === 'be') {
-    for (var i = number.length - 1, j = 0; i >= 0; i -= 3) {
-      var w = number[i] | (number[i - 1] << 8) | (number[i - 2] << 16);
-      this.words[j] |= (w << off) & 0x3ffffff;
-      this.words[j + 1] = (w >>> (26 - off)) & 0x3ffffff;
-      off += 24;
-      if (off >= 26) {
-        off -= 26;
-        j++;
-      }
-    }
-  } else if (endian === 'le') {
-    for (var i = 0, j = 0; i < number.length; i += 3) {
-      var w = number[i] | (number[i + 1] << 8) | (number[i + 2] << 16);
-      this.words[j] |= (w << off) & 0x3ffffff;
-      this.words[j + 1] = (w >>> (26 - off)) & 0x3ffffff;
-      off += 24;
-      if (off >= 26) {
-        off -= 26;
-        j++;
-      }
-    }
-  }
-  return this.strip();
-};
-
-function parseHex(str, start, end) {
-  var r = 0;
-  var len = Math.min(str.length, end);
-  for (var i = start; i < len; i++) {
-    var c = str.charCodeAt(i) - 48;
-
-    r <<= 4;
-
-    // 'a' - 'f'
-    if (c >= 49 && c <= 54)
-      r |= c - 49 + 0xa;
-
-    // 'A' - 'F'
-    else if (c >= 17 && c <= 22)
-      r |= c - 17 + 0xa;
-
-    // '0' - '9'
-    else
-      r |= c & 0xf;
-  }
-  return r;
-}
-
-BN.prototype._parseHex = function _parseHex(number, start) {
-  // Create possibly bigger array to ensure that it fits the number
-  this.length = Math.ceil((number.length - start) / 6);
-  this.words = new Array(this.length);
-  for (var i = 0; i < this.length; i++)
-    this.words[i] = 0;
-
-  // Scan 24-bit chunks and add them to the number
-  var off = 0;
-  for (var i = number.length - 6, j = 0; i >= start; i -= 6) {
-    var w = parseHex(number, i, i + 6);
-    this.words[j] |= (w << off) & 0x3ffffff;
-    this.words[j + 1] |= w >>> (26 - off) & 0x3fffff;
-    off += 24;
-    if (off >= 26) {
-      off -= 26;
-      j++;
-    }
-  }
-  if (i + 6 !== start) {
-    var w = parseHex(number, start, i + 6);
-    this.words[j] |= (w << off) & 0x3ffffff;
-    this.words[j + 1] |= w >>> (26 - off) & 0x3fffff;
-  }
-  this.strip();
-};
-
-function parseBase(str, start, end, mul) {
-  var r = 0;
-  var len = Math.min(str.length, end);
-  for (var i = start; i < len; i++) {
-    var c = str.charCodeAt(i) - 48;
-
-    r *= mul;
-
-    // 'a'
-    if (c >= 49)
-      r += c - 49 + 0xa;
-
-    // 'A'
-    else if (c >= 17)
-      r += c - 17 + 0xa;
-
-    // '0' - '9'
-    else
-      r += c;
-  }
-  return r;
-}
-
-BN.prototype._parseBase = function _parseBase(number, base, start) {
-  // Initialize as zero
-  this.words = [ 0 ];
-  this.length = 1;
-
-  // Find length of limb in base
-  for (var limbLen = 0, limbPow = 1; limbPow <= 0x3ffffff; limbPow *= base)
-    limbLen++;
-  limbLen--;
-  limbPow = (limbPow / base) | 0;
-
-  var total = number.length - start;
-  var mod = total % limbLen;
-  var end = Math.min(total, total - mod) + start;
-
-  var word = 0;
-  for (var i = start; i < end; i += limbLen) {
-    word = parseBase(number, i, i + limbLen, base);
-
-    this.imuln(limbPow);
-    if (this.words[0] + word < 0x4000000)
-      this.words[0] += word;
-    else
-      this._iaddn(word);
-  }
-
-  if (mod !== 0) {
-    var pow = 1;
-    var word = parseBase(number, i, number.length, base);
-
-    for (var i = 0; i < mod; i++)
-      pow *= base;
-    this.imuln(pow);
-    if (this.words[0] + word < 0x4000000)
-      this.words[0] += word;
-    else
-      this._iaddn(word);
-  }
-};
-
-BN.prototype.copy = function copy(dest) {
-  dest.words = new Array(this.length);
-  for (var i = 0; i < this.length; i++)
-    dest.words[i] = this.words[i];
-  dest.length = this.length;
-  dest.sign = this.sign;
-  dest.red = this.red;
-};
-
-BN.prototype.clone = function clone() {
-  var r = new BN(null);
-  this.copy(r);
-  return r;
-};
-
-// Remove leading `0` from `this`
-BN.prototype.strip = function strip() {
-  while (this.length > 1 && this.words[this.length - 1] === 0)
-    this.length--;
-  return this._normSign();
-};
-
-BN.prototype._normSign = function _normSign() {
-  // -0 = 0
-  if (this.length === 1 && this.words[0] === 0)
-    this.sign = false;
-  return this;
-};
-
-BN.prototype.inspect = function inspect() {
-  return (this.red ? '<BN-R: ' : '<BN: ') + this.toString(16) + '>';
-};
-
-/*
-
-var zeros = [];
-var groupSizes = [];
-var groupBases = [];
-
-var s = '';
-var i = -1;
-while (++i < BN.wordSize) {
-  zeros[i] = s;
-  s += '0';
-}
-groupSizes[0] = 0;
-groupSizes[1] = 0;
-groupBases[0] = 0;
-groupBases[1] = 0;
-var base = 2 - 1;
-while (++base < 36 + 1) {
-  var groupSize = 0;
-  var groupBase = 1;
-  while (groupBase < (1 << BN.wordSize) / base) {
-    groupBase *= base;
-    groupSize += 1;
-  }
-  groupSizes[base] = groupSize;
-  groupBases[base] = groupBase;
-}
-
-*/
-
-var zeros = [
-  '',
-  '0',
-  '00',
-  '000',
-  '0000',
-  '00000',
-  '000000',
-  '0000000',
-  '00000000',
-  '000000000',
-  '0000000000',
-  '00000000000',
-  '000000000000',
-  '0000000000000',
-  '00000000000000',
-  '000000000000000',
-  '0000000000000000',
-  '00000000000000000',
-  '000000000000000000',
-  '0000000000000000000',
-  '00000000000000000000',
-  '000000000000000000000',
-  '0000000000000000000000',
-  '00000000000000000000000',
-  '000000000000000000000000',
-  '0000000000000000000000000'
-];
-
-var groupSizes = [
-  0, 0,
-  25, 16, 12, 11, 10, 9, 8,
-  8, 7, 7, 7, 7, 6, 6,
-  6, 6, 6, 6, 6, 5, 5,
-  5, 5, 5, 5, 5, 5, 5,
-  5, 5, 5, 5, 5, 5, 5
-];
-
-var groupBases = [
-  0, 0,
-  33554432, 43046721, 16777216, 48828125, 60466176, 40353607, 16777216,
-  43046721, 10000000, 19487171, 35831808, 62748517, 7529536, 11390625,
-  16777216, 24137569, 34012224, 47045881, 64000000, 4084101, 5153632,
-  6436343, 7962624, 9765625, 11881376, 14348907, 17210368, 20511149,
-  24300000, 28629151, 33554432, 39135393, 45435424, 52521875, 60466176
-];
-
-BN.prototype.toString = function toString(base, padding) {
-  base = base || 10;
-  if (base === 16 || base === 'hex') {
-    var out = '';
-    var off = 0;
-    var padding = padding | 0 || 1;
-    var carry = 0;
-    for (var i = 0; i < this.length; i++) {
-      var w = this.words[i];
-      var word = (((w << off) | carry) & 0xffffff).toString(16);
-      carry = (w >>> (24 - off)) & 0xffffff;
-      if (carry !== 0 || i !== this.length - 1)
-        out = zeros[6 - word.length] + word + out;
-      else
-        out = word + out;
-      off += 2;
-      if (off >= 26) {
-        off -= 26;
-        i--;
-      }
-    }
-    if (carry !== 0)
-      out = carry.toString(16) + out;
-    while (out.length % padding !== 0)
-      out = '0' + out;
-    if (this.sign)
-      out = '-' + out;
-    return out;
-  } else if (base === (base | 0) && base >= 2 && base <= 36) {
-    // var groupSize = Math.floor(BN.wordSize * Math.LN2 / Math.log(base));
-    var groupSize = groupSizes[base];
-    // var groupBase = Math.pow(base, groupSize);
-    var groupBase = groupBases[base];
-    var out = '';
-    var c = this.clone();
-    c.sign = false;
-    while (c.cmpn(0) !== 0) {
-      var r = c.modn(groupBase).toString(base);
-      c = c.idivn(groupBase);
-
-      if (c.cmpn(0) !== 0)
-        out = zeros[groupSize - r.length] + r + out;
-      else
-        out = r + out;
-    }
-    if (this.cmpn(0) === 0)
-      out = '0' + out;
-    if (this.sign)
-      out = '-' + out;
-    return out;
-  } else {
-    assert(false, 'Base should be between 2 and 36');
-  }
-};
-
-BN.prototype.toJSON = function toJSON() {
-  return this.toString(16);
-};
-
-BN.prototype.toArray = function toArray(endian, length) {
-  this.strip();
-  var littleEndian = endian === 'le';
-  var res = new Array(this.byteLength());
-  res[0] = 0;
-
-  var q = this.clone();
-  if (!littleEndian) {
-    // Assume big-endian
-    for (var i = 0; q.cmpn(0) !== 0; i++) {
-      var b = q.andln(0xff);
-      q.iushrn(8);
-
-      res[res.length - i - 1] = b;
-    }
-  } else {
-    for (var i = 0; q.cmpn(0) !== 0; i++) {
-      var b = q.andln(0xff);
-      q.iushrn(8);
-
-      res[i] = b;
-    }
-  }
-
-  if (length) {
-    assert(res.length <= length, 'byte array longer than desired length');
-
-    while (res.length < length) {
-      if (littleEndian)
-        res.push(0);
-      else
-        res.unshift(0);
-    }
-  }
-
-  return res;
-};
-
-if (Math.clz32) {
-  BN.prototype._countBits = function _countBits(w) {
-    return 32 - Math.clz32(w);
-  };
-} else {
-  BN.prototype._countBits = function _countBits(w) {
-    var t = w;
-    var r = 0;
-    if (t >= 0x1000) {
-      r += 13;
-      t >>>= 13;
-    }
-    if (t >= 0x40) {
-      r += 7;
-      t >>>= 7;
-    }
-    if (t >= 0x8) {
-      r += 4;
-      t >>>= 4;
-    }
-    if (t >= 0x02) {
-      r += 2;
-      t >>>= 2;
-    }
-    return r + t;
-  };
-}
-
-BN.prototype._zeroBits = function _zeroBits(w) {
-  // Short-cut
-  if (w === 0)
-    return 26;
-
-  var t = w;
-  var r = 0;
-  if ((t & 0x1fff) === 0) {
-    r += 13;
-    t >>>= 13;
-  }
-  if ((t & 0x7f) === 0) {
-    r += 7;
-    t >>>= 7;
-  }
-  if ((t & 0xf) === 0) {
-    r += 4;
-    t >>>= 4;
-  }
-  if ((t & 0x3) === 0) {
-    r += 2;
-    t >>>= 2;
-  }
-  if ((t & 0x1) === 0)
-    r++;
-  return r;
-};
-
-// Return number of used bits in a BN
-BN.prototype.bitLength = function bitLength() {
-  var hi = 0;
-  var w = this.words[this.length - 1];
-  var hi = this._countBits(w);
-  return (this.length - 1) * 26 + hi;
-};
-
-// Number of trailing zero bits
-BN.prototype.zeroBits = function zeroBits() {
-  if (this.cmpn(0) === 0)
-    return 0;
-
-  var r = 0;
-  for (var i = 0; i < this.length; i++) {
-    var b = this._zeroBits(this.words[i]);
-    r += b;
-    if (b !== 26)
-      break;
-  }
-  return r;
-};
-
-BN.prototype.byteLength = function byteLength() {
-  return Math.ceil(this.bitLength() / 8);
-};
-
-// Return negative clone of `this`
-BN.prototype.neg = function neg() {
-  if (this.cmpn(0) === 0)
-    return this.clone();
-
-  var r = this.clone();
-  r.sign = !this.sign;
-  return r;
-};
-
-
-// Or `num` with `this` in-place
-BN.prototype.iuor = function iuor(num) {
-  while (this.length < num.length)
-    this.words[this.length++] = 0;
-
-  for (var i = 0; i < num.length; i++)
-    this.words[i] = this.words[i] | num.words[i];
-
-  return this.strip();
-};
-
-BN.prototype.ior = function ior(num) {
-  assert(!this.sign && !num.sign);
-  return this.iuor(num);
-};
-
-
-// Or `num` with `this`
-BN.prototype.or = function or(num) {
-  if (this.length > num.length)
-    return this.clone().ior(num);
-  else
-    return num.clone().ior(this);
-};
-
-BN.prototype.uor = function uor(num) {
-  if (this.length > num.length)
-    return this.clone().iuor(num);
-  else
-    return num.clone().iuor(this);
-};
-
-
-// And `num` with `this` in-place
-BN.prototype.iuand = function iuand(num) {
-  // b = min-length(num, this)
-  var b;
-  if (this.length > num.length)
-    b = num;
-  else
-    b = this;
-
-  for (var i = 0; i < b.length; i++)
-    this.words[i] = this.words[i] & num.words[i];
-
-  this.length = b.length;
-
-  return this.strip();
-};
-
-BN.prototype.iand = function iand(num) {
-  assert(!this.sign && !num.sign);
-  return this.iuand(num);
-};
-
-
-// And `num` with `this`
-BN.prototype.and = function and(num) {
-  if (this.length > num.length)
-    return this.clone().iand(num);
-  else
-    return num.clone().iand(this);
-};
-
-BN.prototype.uand = function uand(num) {
-  if (this.length > num.length)
-    return this.clone().iuand(num);
-  else
-    return num.clone().iuand(this);
-};
-
-
-// Xor `num` with `this` in-place
-BN.prototype.iuxor = function iuxor(num) {
-  // a.length > b.length
-  var a;
-  var b;
-  if (this.length > num.length) {
-    a = this;
-    b = num;
-  } else {
-    a = num;
-    b = this;
-  }
-
-  for (var i = 0; i < b.length; i++)
-    this.words[i] = a.words[i] ^ b.words[i];
-
-  if (this !== a)
-    for (; i < a.length; i++)
-      this.words[i] = a.words[i];
-
-  this.length = a.length;
-
-  return this.strip();
-};
-
-BN.prototype.ixor = function ixor(num) {
-  assert(!this.sign && !num.sign);
-  return this.iuxor(num);
-};
-
-
-// Xor `num` with `this`
-BN.prototype.xor = function xor(num) {
-  if (this.length > num.length)
-    return this.clone().ixor(num);
-  else
-    return num.clone().ixor(this);
-};
-
-BN.prototype.uxor = function uxor(num) {
-  if (this.length > num.length)
-    return this.clone().iuxor(num);
-  else
-    return num.clone().iuxor(this);
-};
-
-
-// Set `bit` of `this`
-BN.prototype.setn = function setn(bit, val) {
-  assert(typeof bit === 'number' && bit >= 0);
-
-  var off = (bit / 26) | 0;
-  var wbit = bit % 26;
-
-  while (this.length <= off)
-    this.words[this.length++] = 0;
-
-  if (val)
-    this.words[off] = this.words[off] | (1 << wbit);
-  else
-    this.words[off] = this.words[off] & ~(1 << wbit);
-
-  return this.strip();
-};
-
-
-// Add `num` to `this` in-place
-BN.prototype.iadd = function iadd(num) {
-  // negative + positive
-  if (this.sign && !num.sign) {
-    this.sign = false;
-    var r = this.isub(num);
-    this.sign = !this.sign;
-    return this._normSign();
-
-  // positive + negative
-  } else if (!this.sign && num.sign) {
-    num.sign = false;
-    var r = this.isub(num);
-    num.sign = true;
-    return r._normSign();
-  }
-
-  // a.length > b.length
-  var a;
-  var b;
-  if (this.length > num.length) {
-    a = this;
-    b = num;
-  } else {
-    a = num;
-    b = this;
-  }
-
-  var carry = 0;
-  for (var i = 0; i < b.length; i++) {
-    var r = a.words[i] + b.words[i] + carry;
-    this.words[i] = r & 0x3ffffff;
-    carry = r >>> 26;
-  }
-  for (; carry !== 0 && i < a.length; i++) {
-    var r = a.words[i] + carry;
-    this.words[i] = r & 0x3ffffff;
-    carry = r >>> 26;
-  }
-
-  this.length = a.length;
-  if (carry !== 0) {
-    this.words[this.length] = carry;
-    this.length++;
-  // Copy the rest of the words
-  } else if (a !== this) {
-    for (; i < a.length; i++)
-      this.words[i] = a.words[i];
-  }
-
-  return this;
-};
-
-// Add `num` to `this`
-BN.prototype.add = function add(num) {
-  if (num.sign && !this.sign) {
-    num.sign = false;
-    var res = this.sub(num);
-    num.sign = true;
-    return res;
-  } else if (!num.sign && this.sign) {
-    this.sign = false;
-    var res = num.sub(this);
-    this.sign = true;
-    return res;
-  }
-
-  if (this.length > num.length)
-    return this.clone().iadd(num);
-  else
-    return num.clone().iadd(this);
-};
-
-// Subtract `num` from `this` in-place
-BN.prototype.isub = function isub(num) {
-  // this - (-num) = this + num
-  if (num.sign) {
-    num.sign = false;
-    var r = this.iadd(num);
-    num.sign = true;
-    return r._normSign();
-
-  // -this - num = -(this + num)
-  } else if (this.sign) {
-    this.sign = false;
-    this.iadd(num);
-    this.sign = true;
-    return this._normSign();
-  }
-
-  // At this point both numbers are positive
-  var cmp = this.cmp(num);
-
-  // Optimization - zeroify
-  if (cmp === 0) {
-    this.sign = false;
-    this.length = 1;
-    this.words[0] = 0;
-    return this;
-  }
-
-  // a > b
-  var a;
-  var b;
-  if (cmp > 0) {
-    a = this;
-    b = num;
-  } else {
-    a = num;
-    b = this;
-  }
-
-  var carry = 0;
-  for (var i = 0; i < b.length; i++) {
-    var r = a.words[i] - b.words[i] + carry;
-    carry = r >> 26;
-    this.words[i] = r & 0x3ffffff;
-  }
-  for (; carry !== 0 && i < a.length; i++) {
-    var r = a.words[i] + carry;
-    carry = r >> 26;
-    this.words[i] = r & 0x3ffffff;
-  }
-
-  // Copy rest of the words
-  if (carry === 0 && i < a.length && a !== this)
-    for (; i < a.length; i++)
-      this.words[i] = a.words[i];
-  this.length = Math.max(this.length, i);
-
-  if (a !== this)
-    this.sign = true;
-
-  return this.strip();
-};
-
-// Subtract `num` from `this`
-BN.prototype.sub = function sub(num) {
-  return this.clone().isub(num);
-};
-
-/*
-// NOTE: This could be potentionally used to generate loop-less multiplications
-function _genCombMulTo(alen, blen) {
-  var len = alen + blen - 1;
-  var src = [
-    'var a = this.words, b = num.words, o = out.words, c = 0, w, ' +
-        'mask = 0x3ffffff, shift = 0x4000000;',
-    'out.length = ' + len + ';'
-  ];
-  for (var k = 0; k < len; k++) {
-    var minJ = Math.max(0, k - alen + 1);
-    var maxJ = Math.min(k, blen - 1);
-
-    for (var j = minJ; j <= maxJ; j++) {
-      var i = k - j;
-      var mul = 'a[' + i + '] * b[' + j + ']';
-
-      if (j === minJ) {
-        src.push('w = ' + mul + ' + c;');
-        src.push('c = (w / shift) | 0;');
-      } else {
-        src.push('w += ' + mul + ';');
-        src.push('c += (w / shift) | 0;');
-      }
-      src.push('w &= mask;');
-    }
-    src.push('o[' + k + '] = w;');
-  }
-  src.push('if (c !== 0) {',
-           '  o[' + k + '] = c;',
-           '  out.length++;',
-           '}',
-           'return out;');
-
-  return src.join('\n');
-}
-*/
-
-BN.prototype._smallMulTo = function _smallMulTo(num, out) {
-  out.sign = num.sign !== this.sign;
-  out.length = this.length + num.length;
-
-  var carry = 0;
-  for (var k = 0; k < out.length - 1; k++) {
-    // Sum all words with the same `i + j = k` and accumulate `ncarry`,
-    // note that ncarry could be >= 0x3ffffff
-    var ncarry = carry >>> 26;
-    var rword = carry & 0x3ffffff;
-    var maxJ = Math.min(k, num.length - 1);
-    for (var j = Math.max(0, k - this.length + 1); j <= maxJ; j++) {
-      var i = k - j;
-      var a = this.words[i] | 0;
-      var b = num.words[j] | 0;
-      var r = a * b;
-
-      var lo = r & 0x3ffffff;
-      ncarry = (ncarry + ((r / 0x4000000) | 0)) | 0;
-      lo = (lo + rword) | 0;
-      rword = lo & 0x3ffffff;
-      ncarry = (ncarry + (lo >>> 26)) | 0;
-    }
-    out.words[k] = rword;
-    carry = ncarry;
-  }
-  if (carry !== 0) {
-    out.words[k] = carry;
-  } else {
-    out.length--;
-  }
-
-  return out.strip();
-};
-
-BN.prototype._bigMulTo = function _bigMulTo(num, out) {
-  out.sign = num.sign !== this.sign;
-  out.length = this.length + num.length;
-
-  var carry = 0;
-  var hncarry = 0;
-  for (var k = 0; k < out.length - 1; k++) {
-    // Sum all words with the same `i + j = k` and accumulate `ncarry`,
-    // note that ncarry could be >= 0x3ffffff
-    var ncarry = hncarry;
-    hncarry = 0;
-    var rword = carry & 0x3ffffff;
-    var maxJ = Math.min(k, num.length - 1);
-    for (var j = Math.max(0, k - this.length + 1); j <= maxJ; j++) {
-      var i = k - j;
-      var a = this.words[i] | 0;
-      var b = num.words[j] | 0;
-      var r = a * b;
-
-      var lo = r & 0x3ffffff;
-      ncarry = (ncarry + ((r / 0x4000000) | 0)) | 0;
-      lo = (lo + rword) | 0;
-      rword = lo & 0x3ffffff;
-      ncarry = (ncarry + (lo >>> 26)) | 0;
-
-      hncarry += ncarry >>> 26;
-      ncarry &= 0x3ffffff;
-    }
-    out.words[k] = rword;
-    carry = ncarry;
-    ncarry = hncarry;
-  }
-  if (carry !== 0) {
-    out.words[k] = carry;
-  } else {
-    out.length--;
-  }
-
-  return out.strip();
-};
-
-BN.prototype.mulTo = function mulTo(num, out) {
-  var res;
-  if (this.length + num.length < 63)
-    res = this._smallMulTo(num, out);
-  else
-    res = this._bigMulTo(num, out);
-  return res;
-};
-
-// Multiply `this` by `num`
-BN.prototype.mul = function mul(num) {
-  var out = new BN(null);
-  out.words = new Array(this.length + num.length);
-  return this.mulTo(num, out);
-};
-
-// In-place Multiplication
-BN.prototype.imul = function imul(num) {
-  if (this.cmpn(0) === 0 || num.cmpn(0) === 0) {
-    this.words[0] = 0;
-    this.length = 1;
-    return this;
-  }
-
-  var tlen = this.length;
-  var nlen = num.length;
-
-  this.sign = num.sign !== this.sign;
-  this.length = this.length + num.length;
-  this.words[this.length - 1] = 0;
-
-  for (var k = this.length - 2; k >= 0; k--) {
-    // Sum all words with the same `i + j = k` and accumulate `carry`,
-    // note that carry could be >= 0x3ffffff
-    var carry = 0;
-    var rword = 0;
-    var maxJ = Math.min(k, nlen - 1);
-    for (var j = Math.max(0, k - tlen + 1); j <= maxJ; j++) {
-      var i = k - j;
-      var a = this.words[i];
-      var b = num.words[j];
-      var r = a * b;
-
-      var lo = r & 0x3ffffff;
-      carry += (r / 0x4000000) | 0;
-      lo += rword;
-      rword = lo & 0x3ffffff;
-      carry += lo >>> 26;
-    }
-    this.words[k] = rword;
-    this.words[k + 1] += carry;
-    carry = 0;
-  }
-
-  // Propagate overflows
-  var carry = 0;
-  for (var i = 1; i < this.length; i++) {
-    var w = this.words[i] + carry;
-    this.words[i] = w & 0x3ffffff;
-    carry = w >>> 26;
-  }
-
-  return this.strip();
-};
-
-BN.prototype.imuln = function imuln(num) {
-  assert(typeof num === 'number');
-
-  // Carry
-  var carry = 0;
-  for (var i = 0; i < this.length; i++) {
-    var w = this.words[i] * num;
-    var lo = (w & 0x3ffffff) + (carry & 0x3ffffff);
-    carry >>= 26;
-    carry += (w / 0x4000000) | 0;
-    // NOTE: lo is 27bit maximum
-    carry += lo >>> 26;
-    this.words[i] = lo & 0x3ffffff;
-  }
-
-  if (carry !== 0) {
-    this.words[i] = carry;
-    this.length++;
-  }
-
-  return this;
-};
-
-BN.prototype.muln = function muln(num) {
-  return this.clone().imuln(num);
-};
-
-// `this` * `this`
-BN.prototype.sqr = function sqr() {
-  return this.mul(this);
-};
-
-// `this` * `this` in-place
-BN.prototype.isqr = function isqr() {
-  return this.mul(this);
-};
-
-// Shift-left in-place
-BN.prototype.iushln = function iushln(bits) {
-  assert(typeof bits === 'number' && bits >= 0);
-  var r = bits % 26;
-  var s = (bits - r) / 26;
-  var carryMask = (0x3ffffff >>> (26 - r)) << (26 - r);
-
-  if (r !== 0) {
-    var carry = 0;
-    for (var i = 0; i < this.length; i++) {
-      var newCarry = this.words[i] & carryMask;
-      var c = (this.words[i] - newCarry) << r;
-      this.words[i] = c | carry;
-      carry = newCarry >>> (26 - r);
-    }
-    if (carry) {
-      this.words[i] = carry;
-      this.length++;
-    }
-  }
-
-  if (s !== 0) {
-    for (var i = this.length - 1; i >= 0; i--)
-      this.words[i + s] = this.words[i];
-    for (var i = 0; i < s; i++)
-      this.words[i] = 0;
-    this.length += s;
-  }
-
-  return this.strip();
-};
-
-BN.prototype.ishln = function ishln(bits) {
-  // TODO(indutny): implement me
-  assert(!this.sign);
-  return this.iushln(bits);
-};
-
-// Shift-right in-place
-// NOTE: `hint` is a lowest bit before trailing zeroes
-// NOTE: if `extended` is present - it will be filled with destroyed bits
-BN.prototype.iushrn = function iushrn(bits, hint, extended) {
-  assert(typeof bits === 'number' && bits >= 0);
-  var h;
-  if (hint)
-    h = (hint - (hint % 26)) / 26;
-  else
-    h = 0;
-
-  var r = bits % 26;
-  var s = Math.min((bits - r) / 26, this.length);
-  var mask = 0x3ffffff ^ ((0x3ffffff >>> r) << r);
-  var maskedWords = extended;
-
-  h -= s;
-  h = Math.max(0, h);
-
-  // Extended mode, copy masked part
-  if (maskedWords) {
-    for (var i = 0; i < s; i++)
-      maskedWords.words[i] = this.words[i];
-    maskedWords.length = s;
-  }
-
-  if (s === 0) {
-    // No-op, we should not move anything at all
-  } else if (this.length > s) {
-    this.length -= s;
-    for (var i = 0; i < this.length; i++)
-      this.words[i] = this.words[i + s];
-  } else {
-    this.words[0] = 0;
-    this.length = 1;
-  }
-
-  var carry = 0;
-  for (var i = this.length - 1; i >= 0 && (carry !== 0 || i >= h); i--) {
-    var word = this.words[i];
-    this.words[i] = (carry << (26 - r)) | (word >>> r);
-    carry = word & mask;
-  }
-
-  // Push carried bits as a mask
-  if (maskedWords && carry !== 0)
-    maskedWords.words[maskedWords.length++] = carry;
-
-  if (this.length === 0) {
-    this.words[0] = 0;
-    this.length = 1;
-  }
-
-  this.strip();
-
-  return this;
-};
-
-BN.prototype.ishrn = function ishrn(bits, hint, extended) {
-  // TODO(indutny): implement me
-  assert(!this.sign);
-  return this.iushrn(bits, hint, extended);
-};
-
-// Shift-left
-BN.prototype.shln = function shln(bits) {
-  return this.clone().ishln(bits);
-};
-
-BN.prototype.ushln = function ushln(bits) {
-  return this.clone().iushln(bits);
-};
-
-// Shift-right
-BN.prototype.shrn = function shrn(bits) {
-  return this.clone().ishrn(bits);
-};
-
-BN.prototype.ushrn = function ushrn(bits) {
-  return this.clone().iushrn(bits);
-};
-
-// Test if n bit is set
-BN.prototype.testn = function testn(bit) {
-  assert(typeof bit === 'number' && bit >= 0);
-  var r = bit % 26;
-  var s = (bit - r) / 26;
-  var q = 1 << r;
-
-  // Fast case: bit is much higher than all existing words
-  if (this.length <= s) {
-    return false;
-  }
-
-  // Check bit and return
-  var w = this.words[s];
-
-  return !!(w & q);
-};
-
-// Return only lowers bits of number (in-place)
-BN.prototype.imaskn = function imaskn(bits) {
-  assert(typeof bits === 'number' && bits >= 0);
-  var r = bits % 26;
-  var s = (bits - r) / 26;
-
-  assert(!this.sign, 'imaskn works only with positive numbers');
-
-  if (r !== 0)
-    s++;
-  this.length = Math.min(s, this.length);
-
-  if (r !== 0) {
-    var mask = 0x3ffffff ^ ((0x3ffffff >>> r) << r);
-    this.words[this.length - 1] &= mask;
-  }
-
-  return this.strip();
-};
-
-// Return only lowers bits of number
-BN.prototype.maskn = function maskn(bits) {
-  return this.clone().imaskn(bits);
-};
-
-// Add plain number `num` to `this`
-BN.prototype.iaddn = function iaddn(num) {
-  assert(typeof num === 'number');
-  if (num < 0)
-    return this.isubn(-num);
-
-  // Possible sign change
-  if (this.sign) {
-    if (this.length === 1 && this.words[0] < num) {
-      this.words[0] = num - this.words[0];
-      this.sign = false;
-      return this;
-    }
-
-    this.sign = false;
-    this.isubn(num);
-    this.sign = true;
-    return this;
-  }
-
-  // Add without checks
-  return this._iaddn(num);
-};
-
-BN.prototype._iaddn = function _iaddn(num) {
-  this.words[0] += num;
-
-  // Carry
-  for (var i = 0; i < this.length && this.words[i] >= 0x4000000; i++) {
-    this.words[i] -= 0x4000000;
-    if (i === this.length - 1)
-      this.words[i + 1] = 1;
-    else
-      this.words[i + 1]++;
-  }
-  this.length = Math.max(this.length, i + 1);
-
-  return this;
-};
-
-// Subtract plain number `num` from `this`
-BN.prototype.isubn = function isubn(num) {
-  assert(typeof num === 'number');
-  if (num < 0)
-    return this.iaddn(-num);
-
-  if (this.sign) {
-    this.sign = false;
-    this.iaddn(num);
-    this.sign = true;
-    return this;
-  }
-
-  this.words[0] -= num;
-
-  // Carry
-  for (var i = 0; i < this.length && this.words[i] < 0; i++) {
-    this.words[i] += 0x4000000;
-    this.words[i + 1] -= 1;
-  }
-
-  return this.strip();
-};
-
-BN.prototype.addn = function addn(num) {
-  return this.clone().iaddn(num);
-};
-
-BN.prototype.subn = function subn(num) {
-  return this.clone().isubn(num);
-};
-
-BN.prototype.iabs = function iabs() {
-  this.sign = false;
-
-  return this;
-};
-
-BN.prototype.abs = function abs() {
-  return this.clone().iabs();
-};
-
-BN.prototype._ishlnsubmul = function _ishlnsubmul(num, mul, shift) {
-  // Bigger storage is needed
-  var len = num.length + shift;
-  var i;
-  if (this.words.length < len) {
-    var t = new Array(len);
-    for (var i = 0; i < this.length; i++)
-      t[i] = this.words[i];
-    this.words = t;
-  } else {
-    i = this.length;
-  }
-
-  // Zeroify rest
-  this.length = Math.max(this.length, len);
-  for (; i < this.length; i++)
-    this.words[i] = 0;
-
-  var carry = 0;
-  for (var i = 0; i < num.length; i++) {
-    var w = this.words[i + shift] + carry;
-    var right = num.words[i] * mul;
-    w -= right & 0x3ffffff;
-    carry = (w >> 26) - ((right / 0x4000000) | 0);
-    this.words[i + shift] = w & 0x3ffffff;
-  }
-  for (; i < this.length - shift; i++) {
-    var w = this.words[i + shift] + carry;
-    carry = w >> 26;
-    this.words[i + shift] = w & 0x3ffffff;
-  }
-
-  if (carry === 0)
-    return this.strip();
-
-  // Subtraction overflow
-  assert(carry === -1);
-  carry = 0;
-  for (var i = 0; i < this.length; i++) {
-    var w = -this.words[i] + carry;
-    carry = w >> 26;
-    this.words[i] = w & 0x3ffffff;
-  }
-  this.sign = true;
-
-  return this.strip();
-};
-
-BN.prototype._wordDiv = function _wordDiv(num, mode) {
-  var shift = this.length - num.length;
-
-  var a = this.clone();
-  var b = num;
-
-  // Normalize
-  var bhi = b.words[b.length - 1];
-  var bhiBits = this._countBits(bhi);
-  shift = 26 - bhiBits;
-  if (shift !== 0) {
-    b = b.ushln(shift);
-    a.iushln(shift);
-    bhi = b.words[b.length - 1];
-  }
-
-  // Initialize quotient
-  var m = a.length - b.length;
-  var q;
-
-  if (mode !== 'mod') {
-    q = new BN(null);
-    q.length = m + 1;
-    q.words = new Array(q.length);
-    for (var i = 0; i < q.length; i++)
-      q.words[i] = 0;
-  }
-
-  var diff = a.clone()._ishlnsubmul(b, 1, m);
-  if (!diff.sign) {
-    a = diff;
-    if (q)
-      q.words[m] = 1;
-  }
-
-  for (var j = m - 1; j >= 0; j--) {
-    var qj = a.words[b.length + j] * 0x4000000 + a.words[b.length + j - 1];
-
-    // NOTE: (qj / bhi) is (0x3ffffff * 0x4000000 + 0x3ffffff) / 0x2000000 max
-    // (0x7ffffff)
-    qj = Math.min((qj / bhi) | 0, 0x3ffffff);
-
-    a._ishlnsubmul(b, qj, j);
-    while (a.sign) {
-      qj--;
-      a.sign = false;
-      a._ishlnsubmul(b, 1, j);
-      if (a.cmpn(0) !== 0)
-        a.sign = !a.sign;
-    }
-    if (q)
-      q.words[j] = qj;
-  }
-  if (q)
-    q.strip();
-  a.strip();
-
-  // Denormalize
-  if (mode !== 'div' && shift !== 0)
-    a.iushrn(shift);
-  return { div: q ? q : null, mod: a };
-};
-
-BN.prototype.divmod = function divmod(num, mode, positive) {
-  assert(num.cmpn(0) !== 0);
-
-  if (this.sign && !num.sign) {
-    var res = this.neg().divmod(num, mode);
-    var div;
-    var mod;
-    if (mode !== 'mod')
-      div = res.div.neg();
-    if (mode !== 'div') {
-      mod = res.mod.neg();
-      if (positive && mod.neg)
-        mod = mod.add(num);
-    }
-    return {
-      div: div,
-      mod: mod
-    };
-  } else if (!this.sign && num.sign) {
-    var res = this.divmod(num.neg(), mode);
-    var div;
-    if (mode !== 'mod')
-      div = res.div.neg();
-    return { div: div, mod: res.mod };
-  } else if (this.sign && num.sign) {
-    var res = this.neg().divmod(num.neg(), mode);
-    var mod;
-    if (mode !== 'div') {
-      mod = res.mod.neg();
-      if (positive && mod.neg)
-        mod = mod.isub(num);
-    }
-    return {
-      div: res.div,
-      mod: mod
-    };
-  }
-
-  // Both numbers are positive at this point
-
-  // Strip both numbers to approximate shift value
-  if (num.length > this.length || this.cmp(num) < 0)
-    return { div: new BN(0), mod: this };
-
-  // Very short reduction
-  if (num.length === 1) {
-    if (mode === 'div')
-      return { div: this.divn(num.words[0]), mod: null };
-    else if (mode === 'mod')
-      return { div: null, mod: new BN(this.modn(num.words[0])) };
-    return {
-      div: this.divn(num.words[0]),
-      mod: new BN(this.modn(num.words[0]))
-    };
-  }
-
-  return this._wordDiv(num, mode);
-};
-
-// Find `this` / `num`
-BN.prototype.div = function div(num) {
-  return this.divmod(num, 'div', false).div;
-};
-
-// Find `this` % `num`
-BN.prototype.mod = function mod(num) {
-  return this.divmod(num, 'mod', false).mod;
-};
-
-BN.prototype.umod = function umod(num) {
-  return this.divmod(num, 'mod', true).mod;
-};
-
-// Find Round(`this` / `num`)
-BN.prototype.divRound = function divRound(num) {
-  var dm = this.divmod(num);
-
-  // Fast case - exact division
-  if (dm.mod.cmpn(0) === 0)
-    return dm.div;
-
-  var mod = dm.div.sign ? dm.mod.isub(num) : dm.mod;
-
-  var half = num.ushrn(1);
-  var r2 = num.andln(1);
-  var cmp = mod.cmp(half);
-
-  // Round down
-  if (cmp < 0 || r2 === 1 && cmp === 0)
-    return dm.div;
-
-  // Round up
-  return dm.div.sign ? dm.div.isubn(1) : dm.div.iaddn(1);
-};
-
-BN.prototype.modn = function modn(num) {
-  assert(num <= 0x3ffffff);
-  var p = (1 << 26) % num;
-
-  var acc = 0;
-  for (var i = this.length - 1; i >= 0; i--)
-    acc = (p * acc + this.words[i]) % num;
-
-  return acc;
-};
-
-// In-place division by number
-BN.prototype.idivn = function idivn(num) {
-  assert(num <= 0x3ffffff);
-
-  var carry = 0;
-  for (var i = this.length - 1; i >= 0; i--) {
-    var w = this.words[i] + carry * 0x4000000;
-    this.words[i] = (w / num) | 0;
-    carry = w % num;
-  }
-
-  return this.strip();
-};
-
-BN.prototype.divn = function divn(num) {
-  return this.clone().idivn(num);
-};
-
-BN.prototype.egcd = function egcd(p) {
-  assert(!p.sign);
-  assert(p.cmpn(0) !== 0);
-
-  var x = this;
-  var y = p.clone();
-
-  if (x.sign)
-    x = x.umod(p);
-  else
-    x = x.clone();
-
-  // A * x + B * y = x
-  var A = new BN(1);
-  var B = new BN(0);
-
-  // C * x + D * y = y
-  var C = new BN(0);
-  var D = new BN(1);
-
-  var g = 0;
-
-  while (x.isEven() && y.isEven()) {
-    x.iushrn(1);
-    y.iushrn(1);
-    ++g;
-  }
-
-  var yp = y.clone();
-  var xp = x.clone();
-
-  while (x.cmpn(0) !== 0) {
-    while (x.isEven()) {
-      x.iushrn(1);
-      if (A.isEven() && B.isEven()) {
-        A.iushrn(1);
-        B.iushrn(1);
-      } else {
-        A.iadd(yp).iushrn(1);
-        B.isub(xp).iushrn(1);
-      }
-    }
-
-    while (y.isEven()) {
-      y.iushrn(1);
-      if (C.isEven() && D.isEven()) {
-        C.iushrn(1);
-        D.iushrn(1);
-      } else {
-        C.iadd(yp).iushrn(1);
-        D.isub(xp).iushrn(1);
-      }
-    }
-
-    if (x.cmp(y) >= 0) {
-      x.isub(y);
-      A.isub(C);
-      B.isub(D);
-    } else {
-      y.isub(x);
-      C.isub(A);
-      D.isub(B);
-    }
-  }
-
-  return {
-    a: C,
-    b: D,
-    gcd: y.iushln(g)
-  };
-};
-
-// This is reduced incarnation of the binary EEA
-// above, designated to invert members of the
-// _prime_ fields F(p) at a maximal speed
-BN.prototype._invmp = function _invmp(p) {
-  assert(!p.sign);
-  assert(p.cmpn(0) !== 0);
-
-  var a = this;
-  var b = p.clone();
-
-  if (a.sign)
-    a = a.umod(p);
-  else
-    a = a.clone();
-
-  var x1 = new BN(1);
-  var x2 = new BN(0);
-
-  var delta = b.clone();
-
-  while (a.cmpn(1) > 0 && b.cmpn(1) > 0) {
-    while (a.isEven()) {
-      a.iushrn(1);
-      if (x1.isEven())
-        x1.iushrn(1);
-      else
-        x1.iadd(delta).iushrn(1);
-    }
-    while (b.isEven()) {
-      b.iushrn(1);
-      if (x2.isEven())
-        x2.iushrn(1);
-      else
-        x2.iadd(delta).iushrn(1);
-    }
-    if (a.cmp(b) >= 0) {
-      a.isub(b);
-      x1.isub(x2);
-    } else {
-      b.isub(a);
-      x2.isub(x1);
-    }
-  }
-
-  var res;
-  if (a.cmpn(1) === 0)
-    res = x1;
-  else
-    res = x2;
-
-  if (res.cmpn(0) < 0)
-    res.iadd(p);
-
-  return res;
-};
-
-BN.prototype.gcd = function gcd(num) {
-  if (this.cmpn(0) === 0)
-    return num.clone();
-  if (num.cmpn(0) === 0)
-    return this.clone();
-
-  var a = this.clone();
-  var b = num.clone();
-  a.sign = false;
-  b.sign = false;
-
-  // Remove common factor of two
-  for (var shift = 0; a.isEven() && b.isEven(); shift++) {
-    a.iushrn(1);
-    b.iushrn(1);
-  }
-
-  do {
-    while (a.isEven())
-      a.iushrn(1);
-    while (b.isEven())
-      b.iushrn(1);
-
-    var r = a.cmp(b);
-    if (r < 0) {
-      // Swap `a` and `b` to make `a` always bigger than `b`
-      var t = a;
-      a = b;
-      b = t;
-    } else if (r === 0 || b.cmpn(1) === 0) {
-      break;
-    }
-
-    a.isub(b);
-  } while (true);
-
-  return b.iushln(shift);
-};
-
-// Invert number in the field F(num)
-BN.prototype.invm = function invm(num) {
-  return this.egcd(num).a.umod(num);
-};
-
-BN.prototype.isEven = function isEven() {
-  return (this.words[0] & 1) === 0;
-};
-
-BN.prototype.isOdd = function isOdd() {
-  return (this.words[0] & 1) === 1;
-};
-
-// And first word and num
-BN.prototype.andln = function andln(num) {
-  return this.words[0] & num;
-};
-
-// Increment at the bit position in-line
-BN.prototype.bincn = function bincn(bit) {
-  assert(typeof bit === 'number');
-  var r = bit % 26;
-  var s = (bit - r) / 26;
-  var q = 1 << r;
-
-  // Fast case: bit is much higher than all existing words
-  if (this.length <= s) {
-    for (var i = this.length; i < s + 1; i++)
-      this.words[i] = 0;
-    this.words[s] |= q;
-    this.length = s + 1;
-    return this;
-  }
-
-  // Add bit and propagate, if needed
-  var carry = q;
-  for (var i = s; carry !== 0 && i < this.length; i++) {
-    var w = this.words[i];
-    w += carry;
-    carry = w >>> 26;
-    w &= 0x3ffffff;
-    this.words[i] = w;
-  }
-  if (carry !== 0) {
-    this.words[i] = carry;
-    this.length++;
-  }
-  return this;
-};
-
-BN.prototype.cmpn = function cmpn(num) {
-  var sign = num < 0;
-  if (sign)
-    num = -num;
-
-  if (this.sign && !sign)
-    return -1;
-  else if (!this.sign && sign)
-    return 1;
-
-  num &= 0x3ffffff;
-  this.strip();
-
-  var res;
-  if (this.length > 1) {
-    res = 1;
-  } else {
-    var w = this.words[0];
-    res = w === num ? 0 : w < num ? -1 : 1;
-  }
-  if (this.sign)
-    res = -res;
-  return res;
-};
-
-// Compare two numbers and return:
-// 1 - if `this` > `num`
-// 0 - if `this` == `num`
-// -1 - if `this` < `num`
-BN.prototype.cmp = function cmp(num) {
-  if (this.sign && !num.sign)
-    return -1;
-  else if (!this.sign && num.sign)
-    return 1;
-
-  var res = this.ucmp(num);
-  if (this.sign)
-    return -res;
-  else
-    return res;
-};
-
-// Unsigned comparison
-BN.prototype.ucmp = function ucmp(num) {
-  // At this point both numbers have the same sign
-  if (this.length > num.length)
-    return 1;
-  else if (this.length < num.length)
-    return -1;
-
-  var res = 0;
-  for (var i = this.length - 1; i >= 0; i--) {
-    var a = this.words[i];
-    var b = num.words[i];
-
-    if (a === b)
-      continue;
-    if (a < b)
-      res = -1;
-    else if (a > b)
-      res = 1;
-    break;
-  }
-  return res;
-};
-
-//
-// A reduce context, could be using montgomery or something better, depending
-// on the `m` itself.
-//
-BN.red = function red(num) {
-  return new Red(num);
-};
-
-BN.prototype.toRed = function toRed(ctx) {
-  assert(!this.red, 'Already a number in reduction context');
-  assert(!this.sign, 'red works only with positives');
-  return ctx.convertTo(this)._forceRed(ctx);
-};
-
-BN.prototype.fromRed = function fromRed() {
-  assert(this.red, 'fromRed works only with numbers in reduction context');
-  return this.red.convertFrom(this);
-};
-
-BN.prototype._forceRed = function _forceRed(ctx) {
-  this.red = ctx;
-  return this;
-};
-
-BN.prototype.forceRed = function forceRed(ctx) {
-  assert(!this.red, 'Already a number in reduction context');
-  return this._forceRed(ctx);
-};
-
-BN.prototype.redAdd = function redAdd(num) {
-  assert(this.red, 'redAdd works only with red numbers');
-  return this.red.add(this, num);
-};
-
-BN.prototype.redIAdd = function redIAdd(num) {
-  assert(this.red, 'redIAdd works only with red numbers');
-  return this.red.iadd(this, num);
-};
-
-BN.prototype.redSub = function redSub(num) {
-  assert(this.red, 'redSub works only with red numbers');
-  return this.red.sub(this, num);
-};
-
-BN.prototype.redISub = function redISub(num) {
-  assert(this.red, 'redISub works only with red numbers');
-  return this.red.isub(this, num);
-};
-
-BN.prototype.redShl = function redShl(num) {
-  assert(this.red, 'redShl works only with red numbers');
-  return this.red.ushl(this, num);
-};
-
-BN.prototype.redMul = function redMul(num) {
-  assert(this.red, 'redMul works only with red numbers');
-  this.red._verify2(this, num);
-  return this.red.mul(this, num);
-};
-
-BN.prototype.redIMul = function redIMul(num) {
-  assert(this.red, 'redMul works only with red numbers');
-  this.red._verify2(this, num);
-  return this.red.imul(this, num);
-};
-
-BN.prototype.redSqr = function redSqr() {
-  assert(this.red, 'redSqr works only with red numbers');
-  this.red._verify1(this);
-  return this.red.sqr(this);
-};
-
-BN.prototype.redISqr = function redISqr() {
-  assert(this.red, 'redISqr works only with red numbers');
-  this.red._verify1(this);
-  return this.red.isqr(this);
-};
-
-// Square root over p
-BN.prototype.redSqrt = function redSqrt() {
-  assert(this.red, 'redSqrt works only with red numbers');
-  this.red._verify1(this);
-  return this.red.sqrt(this);
-};
-
-BN.prototype.redInvm = function redInvm() {
-  assert(this.red, 'redInvm works only with red numbers');
-  this.red._verify1(this);
-  return this.red.invm(this);
-};
-
-// Return negative clone of `this` % `red modulo`
-BN.prototype.redNeg = function redNeg() {
-  assert(this.red, 'redNeg works only with red numbers');
-  this.red._verify1(this);
-  return this.red.neg(this);
-};
-
-BN.prototype.redPow = function redPow(num) {
-  assert(this.red && !num.red, 'redPow(normalNum)');
-  this.red._verify1(this);
-  return this.red.pow(this, num);
-};
-
-// Prime numbers with efficient reduction
-var primes = {
-  k256: null,
-  p224: null,
-  p192: null,
-  p25519: null
-};
-
-// Pseudo-Mersenne prime
-function MPrime(name, p) {
-  // P = 2 ^ N - K
-  this.name = name;
-  this.p = new BN(p, 16);
-  this.n = this.p.bitLength();
-  this.k = new BN(1).iushln(this.n).isub(this.p);
-
-  this.tmp = this._tmp();
-}
-
-MPrime.prototype._tmp = function _tmp() {
-  var tmp = new BN(null);
-  tmp.words = new Array(Math.ceil(this.n / 13));
-  return tmp;
-};
-
-MPrime.prototype.ireduce = function ireduce(num) {
-  // Assumes that `num` is less than `P^2`
-  // num = HI * (2 ^ N - K) + HI * K + LO = HI * K + LO (mod P)
-  var r = num;
-  var rlen;
-
-  do {
-    this.split(r, this.tmp);
-    r = this.imulK(r);
-    r = r.iadd(this.tmp);
-    rlen = r.bitLength();
-  } while (rlen > this.n);
-
-  var cmp = rlen < this.n ? -1 : r.ucmp(this.p);
-  if (cmp === 0) {
-    r.words[0] = 0;
-    r.length = 1;
-  } else if (cmp > 0) {
-    r.isub(this.p);
-  } else {
-    r.strip();
-  }
-
-  return r;
-};
-
-MPrime.prototype.split = function split(input, out) {
-  input.iushrn(this.n, 0, out);
-};
-
-MPrime.prototype.imulK = function imulK(num) {
-  return num.imul(this.k);
-};
-
-function K256() {
-  MPrime.call(
-    this,
-    'k256',
-    'ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff fffffffe fffffc2f');
-}
-inherits(K256, MPrime);
-
-K256.prototype.split = function split(input, output) {
-  // 256 = 9 * 26 + 22
-  var mask = 0x3fffff;
-
-  var outLen = Math.min(input.length, 9);
-  for (var i = 0; i < outLen; i++)
-    output.words[i] = input.words[i];
-  output.length = outLen;
-
-  if (input.length <= 9) {
-    input.words[0] = 0;
-    input.length = 1;
-    return;
-  }
-
-  // Shift by 9 limbs
-  var prev = input.words[9];
-  output.words[output.length++] = prev & mask;
-
-  for (var i = 10; i < input.length; i++) {
-    var next = input.words[i];
-    input.words[i - 10] = ((next & mask) << 4) | (prev >>> 22);
-    prev = next;
-  }
-  input.words[i - 10] = prev >>> 22;
-  input.length -= 9;
-};
-
-K256.prototype.imulK = function imulK(num) {
-  // K = 0x1000003d1 = [ 0x40, 0x3d1 ]
-  num.words[num.length] = 0;
-  num.words[num.length + 1] = 0;
-  num.length += 2;
-
-  // bounded at: 0x40 * 0x3ffffff + 0x3d0 = 0x100000390
-  var hi;
-  var lo = 0;
-  for (var i = 0; i < num.length; i++) {
-    var w = num.words[i];
-    hi = w * 0x40;
-    lo += w * 0x3d1;
-    hi += (lo / 0x4000000) | 0;
-    lo &= 0x3ffffff;
-
-    num.words[i] = lo;
-
-    lo = hi;
-  }
-
-  // Fast length reduction
-  if (num.words[num.length - 1] === 0) {
-    num.length--;
-    if (num.words[num.length - 1] === 0)
-      num.length--;
-  }
-  return num;
-};
-
-function P224() {
-  MPrime.call(
-    this,
-    'p224',
-    'ffffffff ffffffff ffffffff ffffffff 00000000 00000000 00000001');
-}
-inherits(P224, MPrime);
-
-function P192() {
-  MPrime.call(
-    this,
-    'p192',
-    'ffffffff ffffffff ffffffff fffffffe ffffffff ffffffff');
-}
-inherits(P192, MPrime);
-
-function P25519() {
-  // 2 ^ 255 - 19
-  MPrime.call(
-    this,
-    '25519',
-    '7fffffffffffffff ffffffffffffffff ffffffffffffffff ffffffffffffffed');
-}
-inherits(P25519, MPrime);
-
-P25519.prototype.imulK = function imulK(num) {
-  // K = 0x13
-  var carry = 0;
-  for (var i = 0; i < num.length; i++) {
-    var hi = num.words[i] * 0x13 + carry;
-    var lo = hi & 0x3ffffff;
-    hi >>>= 26;
-
-    num.words[i] = lo;
-    carry = hi;
-  }
-  if (carry !== 0)
-    num.words[num.length++] = carry;
-  return num;
-};
-
-// Exported mostly for testing purposes, use plain name instead
-BN._prime = function prime(name) {
-  // Cached version of prime
-  if (primes[name])
-    return primes[name];
-
-  var prime;
-  if (name === 'k256')
-    prime = new K256();
-  else if (name === 'p224')
-    prime = new P224();
-  else if (name === 'p192')
-    prime = new P192();
-  else if (name === 'p25519')
-    prime = new P25519();
-  else
-    throw new Error('Unknown prime ' + name);
-  primes[name] = prime;
-
-  return prime;
-};
-
-//
-// Base reduction engine
-//
-function Red(m) {
-  if (typeof m === 'string') {
-    var prime = BN._prime(m);
-    this.m = prime.p;
-    this.prime = prime;
-  } else {
-    this.m = m;
-    this.prime = null;
-  }
-}
-
-Red.prototype._verify1 = function _verify1(a) {
-  assert(!a.sign, 'red works only with positives');
-  assert(a.red, 'red works only with red numbers');
-};
-
-Red.prototype._verify2 = function _verify2(a, b) {
-  assert(!a.sign && !b.sign, 'red works only with positives');
-  assert(a.red && a.red === b.red,
-         'red works only with red numbers');
-};
-
-Red.prototype.imod = function imod(a) {
-  if (this.prime)
-    return this.prime.ireduce(a)._forceRed(this);
-  return a.umod(this.m)._forceRed(this);
-};
-
-Red.prototype.neg = function neg(a) {
-  var r = a.clone();
-  r.sign = !r.sign;
-  return r.iadd(this.m)._forceRed(this);
-};
-
-Red.prototype.add = function add(a, b) {
-  this._verify2(a, b);
-
-  var res = a.add(b);
-  if (res.cmp(this.m) >= 0)
-    res.isub(this.m);
-  return res._forceRed(this);
-};
-
-Red.prototype.iadd = function iadd(a, b) {
-  this._verify2(a, b);
-
-  var res = a.iadd(b);
-  if (res.cmp(this.m) >= 0)
-    res.isub(this.m);
-  return res;
-};
-
-Red.prototype.sub = function sub(a, b) {
-  this._verify2(a, b);
-
-  var res = a.sub(b);
-  if (res.cmpn(0) < 0)
-    res.iadd(this.m);
-  return res._forceRed(this);
-};
-
-Red.prototype.isub = function isub(a, b) {
-  this._verify2(a, b);
-
-  var res = a.isub(b);
-  if (res.cmpn(0) < 0)
-    res.iadd(this.m);
-  return res;
-};
-
-Red.prototype.shl = function shl(a, num) {
-  this._verify1(a);
-  return this.imod(a.ushln(num));
-};
-
-Red.prototype.imul = function imul(a, b) {
-  this._verify2(a, b);
-  return this.imod(a.imul(b));
-};
-
-Red.prototype.mul = function mul(a, b) {
-  this._verify2(a, b);
-  return this.imod(a.mul(b));
-};
-
-Red.prototype.isqr = function isqr(a) {
-  return this.imul(a, a);
-};
-
-Red.prototype.sqr = function sqr(a) {
-  return this.mul(a, a);
-};
-
-Red.prototype.sqrt = function sqrt(a) {
-  if (a.cmpn(0) === 0)
-    return a.clone();
-
-  var mod3 = this.m.andln(3);
-  assert(mod3 % 2 === 1);
-
-  // Fast case
-  if (mod3 === 3) {
-    var pow = this.m.add(new BN(1)).iushrn(2);
-    var r = this.pow(a, pow);
-    return r;
-  }
-
-  // Tonelli-Shanks algorithm (Totally unoptimized and slow)
-  //
-  // Find Q and S, that Q * 2 ^ S = (P - 1)
-  var q = this.m.subn(1);
-  var s = 0;
-  while (q.cmpn(0) !== 0 && q.andln(1) === 0) {
-    s++;
-    q.iushrn(1);
-  }
-  assert(q.cmpn(0) !== 0);
-
-  var one = new BN(1).toRed(this);
-  var nOne = one.redNeg();
-
-  // Find quadratic non-residue
-  // NOTE: Max is such because of generalized Riemann hypothesis.
-  var lpow = this.m.subn(1).iushrn(1);
-  var z = this.m.bitLength();
-  z = new BN(2 * z * z).toRed(this);
-  while (this.pow(z, lpow).cmp(nOne) !== 0)
-    z.redIAdd(nOne);
-
-  var c = this.pow(z, q);
-  var r = this.pow(a, q.addn(1).iushrn(1));
-  var t = this.pow(a, q);
-  var m = s;
-  while (t.cmp(one) !== 0) {
-    var tmp = t;
-    for (var i = 0; tmp.cmp(one) !== 0; i++)
-      tmp = tmp.redSqr();
-    assert(i < m);
-    var b = this.pow(c, new BN(1).iushln(m - i - 1));
-
-    r = r.redMul(b);
-    c = b.redSqr();
-    t = t.redMul(c);
-    m = i;
-  }
-
-  return r;
-};
-
-Red.prototype.invm = function invm(a) {
-  var inv = a._invmp(this.m);
-  if (inv.sign) {
-    inv.sign = false;
-    return this.imod(inv).redNeg();
-  } else {
-    return this.imod(inv);
-  }
-};
-
-Red.prototype.pow = function pow(a, num) {
-  var w = [];
-
-  if (num.cmpn(0) === 0)
-    return new BN(1);
-
-  var q = num.clone();
-
-  while (q.cmpn(0) !== 0) {
-    w.push(q.andln(1));
-    q.iushrn(1);
-  }
-
-  // Skip leading zeroes
-  var res = a;
-  for (var i = 0; i < w.length; i++, res = this.sqr(res))
-    if (w[i] !== 0)
-      break;
-
-  if (++i < w.length) {
-    for (var q = this.sqr(res); i < w.length; i++, q = this.sqr(q)) {
-      if (w[i] === 0)
-        continue;
-      res = this.mul(res, q);
-    }
-  }
-
-  return res;
-};
-
-Red.prototype.convertTo = function convertTo(num) {
-  var r = num.umod(this.m);
-  if (r === num)
-    return r.clone();
-  else
-    return r;
-};
-
-Red.prototype.convertFrom = function convertFrom(num) {
-  var res = num.clone();
-  res.red = null;
-  return res;
-};
-
-//
-// Montgomery method engine
-//
-
-BN.mont = function mont(num) {
-  return new Mont(num);
-};
-
-function Mont(m) {
-  Red.call(this, m);
-
-  this.shift = this.m.bitLength();
-  if (this.shift % 26 !== 0)
-    this.shift += 26 - (this.shift % 26);
-  this.r = new BN(1).iushln(this.shift);
-  this.r2 = this.imod(this.r.sqr());
-  this.rinv = this.r._invmp(this.m);
-
-  this.minv = this.rinv.mul(this.r).isubn(1).div(this.m);
-  this.minv = this.minv.umod(this.r);
-  this.minv = this.r.sub(this.minv);
-}
-inherits(Mont, Red);
-
-Mont.prototype.convertTo = function convertTo(num) {
-  return this.imod(num.ushln(this.shift));
-};
-
-Mont.prototype.convertFrom = function convertFrom(num) {
-  var r = this.imod(num.mul(this.rinv));
-  r.red = null;
-  return r;
-};
-
-Mont.prototype.imul = function imul(a, b) {
-  if (a.cmpn(0) === 0 || b.cmpn(0) === 0) {
-    a.words[0] = 0;
-    a.length = 1;
-    return a;
-  }
-
-  var t = a.imul(b);
-  var c = t.maskn(this.shift).mul(this.minv).imaskn(this.shift).mul(this.m);
-  var u = t.isub(c).iushrn(this.shift);
-  var res = u;
-  if (u.cmp(this.m) >= 0)
-    res = u.isub(this.m);
-  else if (u.cmpn(0) < 0)
-    res = u.iadd(this.m);
-
-  return res._forceRed(this);
-};
-
-Mont.prototype.mul = function mul(a, b) {
-  if (a.cmpn(0) === 0 || b.cmpn(0) === 0)
-    return new BN(0)._forceRed(this);
-
-  var t = a.mul(b);
-  var c = t.maskn(this.shift).mul(this.minv).imaskn(this.shift).mul(this.m);
-  var u = t.isub(c).iushrn(this.shift);
-  var res = u;
-  if (u.cmp(this.m) >= 0)
-    res = u.isub(this.m);
-  else if (u.cmpn(0) < 0)
-    res = u.iadd(this.m);
-
-  return res._forceRed(this);
-};
-
-Mont.prototype.invm = function invm(a) {
-  // (AR)^-1 * R^2 = (A^-1 * R^-1) * R^2 = A^-1 * R
-  var res = this.imod(a._invmp(this.m).mul(this.r2));
-  return res._forceRed(this);
-};
-
-})(typeof module === 'undefined' || module, this);
-
-},{}],227:[function(require,module,exports){
+arguments[4][199][0].apply(exports,arguments)
+},{"dup":199}],227:[function(require,module,exports){
 (function (Buffer){
 const Sha3 = require('js-sha3')
 
@@ -33849,6 +31446,1031 @@ function toBuffer (input) {
 
 }).call(this,require("buffer").Buffer)
 },{"assert":8,"buffer":10}],255:[function(require,module,exports){
+module.exports={
+    "0x": "no response or bad input",
+    "cashFaucet": {
+        "-1": "Hey, you're not broke!"
+    },
+    "getSimulatedBuy": {
+        "-2": "cost updating error (did you enter a valid quantity?)"
+    },
+    "getSimulatedSell": {
+        "-2": "cost updating error (did you enter a valid quantity?)"
+    },
+    "closeMarket": {
+        "-1": "market has no cash",
+        "-2": "0 outcome",
+        "-3": "outcome indeterminable"
+    },
+    "report": {
+        "0": "could not set reporter ballot",
+        "-1": "report length does not match number of expiring events",
+        "-2": "voting period expired",
+        "-3": "incorrect hash"
+    },
+    "submitReportHash": {
+        "0": "could not set report hash",
+        "-1": "reporter doesn't exist, voting period is over, or voting period hasn't started yet",
+        "-2": "not in hash submitting timeframe"
+    },
+    "checkReportValidity": {
+        "-1": "report isn't long enough",
+        "-2": "reporter doesn't exist, voting period is over, or voting period hasn't started yet"
+    },
+    "slashRep": {
+        "0": "incorrect hash",
+        "-2": "incorrect reporter ID"
+    },
+    "createEvent": {
+        "0": "not enough money to pay fees or event already exists",
+        "-1": "we're either already past that date, branch doesn't exist, or description is bad"
+    },
+    "createMarket": {
+        "-1": "bad input or parent doesn't exist",
+        "-2": "too many events",
+        "-3": "too many outcomes",
+        "-4": "not enough money or market already exists"
+    },
+    "sendReputation": {
+        "0": "not enough reputation",
+        "-1": "Your reputation account was just created! Earn some reputation before you can send to others",
+        "-2": "Receiving address doesn't exist"
+    },
+    "buyShares": {
+        "-1": "invalid outcome or trading closed",
+        "-2": "entered a negative number of shares",
+        "-3": "not enough money",
+        "-4": "bad nonce/hash"
+    },
+    "sellShares": {
+        "-1": "invalid outcome or trading closed",
+        "-2": "entered a negative number of shares",
+        "-3": "not enough money",
+        "-4": "bad nonce/hash"
+    },
+    "TRANSACTION_FAILED": {
+        "error": 500,
+        "message": "transaction failed"
+    },
+    "TRANSACTION_NOT_CONFIRMED": {
+        "error": 501,
+        "message": "polled network but could not confirm transaction"
+    }
+}
+
+},{}],256:[function(require,module,exports){
+(function (process){
+/**
+ * Basic JSON RPC methods for Ethereum
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
+
+var http = require("http");
+var url = require("url");
+var BigNumber = require("bignumber.js");
+var request = (NODE_JS) ? require("sync-request") : null;
+var abi = require("augur-abi");
+var errors = require("./errors");
+var log = console.log;
+
+BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
+
+// asynchronous loop
+function loop(list, iterator) {
+    var n = list.length;
+    var i = -1;
+    var calls = 0;
+    var looping = false;
+    var iterate = function (quit, breaker) {
+        calls -= 1;
+        i += 1;
+        if (i === n || quit) {
+            if (breaker) {
+                return breaker();
+            } else {
+                return;
+            }
+        }
+        iterator(list[i], next);
+    };
+    var runloop = function () {
+        if (looping) return;
+        looping = true;
+        while (calls > 0) iterate();
+        looping = false;
+    };
+    var next = function (quit, breaker) {
+        calls += 1;
+        if (typeof setTimeout === "undefined") {
+            runloop();
+        } else {
+            setTimeout(function () { iterate(quit, breaker); }, 1);
+        }
+    };
+    next();
+}
+
+module.exports = {
+
+    bignumbers: true,
+
+    // Maximum number of transaction verification attempts
+    TX_POLL_MAX: 12,
+
+    // Transaction polling interval
+    TX_POLL_INTERVAL: 12000,
+
+    DEFAULT_GAS: "0x2fd618",
+
+    ETHER: new BigNumber(10).toPower(18),
+
+    nodes: ["http://eth1.augur.net:8545"],
+
+    requests: 1,
+
+    notifications: {},
+
+    unmarshal: function (string, returns, stride, init) {
+        var elements, array, position;
+        if (string.length >= 66) {
+            stride = stride || 64;
+            elements = Math.ceil((string.length - 2) / stride);
+            array = new Array(elements);
+            position = init || 2;
+            for (var i = 0; i < elements; ++i) {
+                array[i] = abi.prefix_hex(
+                    string.slice(position, position + stride)
+                );
+                position += stride;
+            }
+            if (array.length) {
+                if (parseInt(array[0]) === array.length - 1) {
+                    array.splice(0, 1);
+                } else if (parseInt(array[1]) === array.length - 2 ||
+                    parseInt(array[1]) / 32 === array.length - 2) {
+                    array.splice(0, 2);
+                }
+            }
+            for (i = 0; i < array.length; ++i) {
+                if (returns === "hash[]" && this.bignumbers) {
+                    array[i] = abi.bignum(array[i]);
+                } else {
+                    if (returns === "number[]") {
+                        array[i] = abi.bignum(array[i]).toFixed();
+                    } else if (returns === "unfix[]") {
+                        if (this.bignumbers) {
+                            array[i] = abi.unfix(array[i]);
+                        } else {
+                            array[i] = abi.unfix(array[i], "string");
+                        }
+                    }
+                }
+            }
+            return array;
+        } else {
+            return string;
+        }
+    },
+
+    applyReturns: function (returns, result) {
+        returns = returns.toLowerCase();
+        if (result && result !== "0x") {
+            if (returns && returns.slice(-2) === "[]") {
+                result = this.unmarshal(result, returns);
+            } else if (returns === "string") {
+                result = abi.decode_hex(result, true);
+            } else {
+                if (this.bignumbers) {
+                    if (returns === "unfix") {
+                        result = abi.unfix(result);
+                    }
+                    if (result.constructor !== BigNumber) {
+                        result = abi.bignum(result);
+                    }
+                } else {
+                    if (returns === "number") {
+                        result = abi.bignum(result).toFixed();
+                    } else if (returns === "bignumber") {
+                        result = abi.bignum(result);
+                    } else if (returns === "unfix") {
+                        result = abi.unfix(result, "string");
+                    }
+                }
+            }
+        }
+        return result;
+    },
+
+    parse: function (response, returns, callback) {
+        var results, len;
+        try {
+            if (response !== undefined) {
+                response = JSON.parse(response);
+                if (response.error) {
+                    response = {
+                        error: response.error.code,
+                        message: response.error.message
+                    };
+                    if (callback) {
+                        callback(response);
+                    } else {
+                        return response;
+                    }
+                } else if (response.result !== undefined) {
+                    if (returns) {
+                        response.result = this.applyReturns(returns, response.result);
+                    } else {
+                        if (response.result && response.result.length > 2 &&
+                            response.result.slice(0,2) === "0x")
+                        {
+                            response.result = abi.remove_leading_zeros(response.result);
+                            response.result = abi.prefix_hex(response.result);
+                        }
+                    }
+                    if (callback) {
+                        callback(response.result);
+                    } else {
+                        return response.result;
+                    }
+                } else if (response.constructor === Array && response.length) {
+                    len = response.length;
+                    results = new Array(len);
+                    for (var i = 0; i < len; ++i) {
+                        results[i] = response[i].result;
+                        if (response.error) {
+                            console.error(
+                                "[" + response.error.code + "]",
+                                response.error.message
+                            );
+                        } else if (response[i].result !== undefined) {
+                            if (returns[i]) {
+                                results[i] = this.applyReturns(returns[i], response[i].result);
+                            } else {
+                                results[i] = abi.remove_leading_zeros(results[i]);
+                                results[i] = abi.prefix_hex(results[i]);
+                            }
+                        }
+                    }
+                    if (callback) {
+                        callback(results);
+                    } else {
+                        return results;
+                    }
+                // no result or error field
+                } else {
+                    if (callback) {
+                        callback(response);
+                    } else {
+                        return response;
+                    }
+                }
+            }
+        } catch (e) {
+            if (callback) {
+                callback(e);
+            } else {
+                return e;
+            }
+        }
+    },
+
+    stripReturns: function (tx) {
+        var returns;
+        if (tx.params !== undefined && tx.params.length &&
+            tx.params[0] && tx.params[0].returns)
+        {
+            returns = tx.params[0].returns;
+            delete tx.params[0].returns;
+        }
+        return returns;
+    },
+
+    postSync: function (rpc_url, command, returns) {
+        var req = null;
+        if (NODE_JS) {
+            return this.parse(request('POST', rpc_url, {
+                json: command
+            }).getBody().toString(), returns);
+        } else {
+            if (window.XMLHttpRequest) {
+                req = new window.XMLHttpRequest();
+            } else {
+                req = new window.ActiveXObject("Microsoft.XMLHTTP");
+            }
+            req.open("POST", rpc_url, false);
+            req.setRequestHeader("Content-type", "application/json");
+            req.send(command);
+            return this.parse(req.responseText, returns);
+        }
+    },
+
+    post: function (rpc_url, command, returns, callback) {
+        var req, self = this;
+        if (NODE_JS) {
+            var rpc_obj = url.parse(rpc_url);
+            req = http.request({
+                host: rpc_obj.hostname,
+                port: rpc_obj.port,
+                path: '/',
+                method: "POST",
+                headers: {"Content-type": "application/json"}
+            }, function (response) {
+                var str = '';
+                response.on('data', function (chunk) {
+                    str += chunk;
+                });
+                response.on('end', function () {
+                    if (str) self.parse(str, returns, callback);
+                });
+            });
+            req.write(command);
+            req.end();
+        } else {
+            if (window.XMLHttpRequest) {
+                req = new window.XMLHttpRequest();
+            } else {
+                req = new window.ActiveXObject("Microsoft.XMLHTTP");
+            }
+            req.onreadystatechange = function () {
+                if (req.readyState === 4) {
+                    self.parse(req.responseText, returns, callback);
+                }
+            };
+            req.open("POST", rpc_url, true);
+            req.setRequestHeader("Content-type", "application/json");
+            req.send(command);
+        }
+    },
+
+    // Post JSON-RPC command to all Ethereum nodes
+    broadcast: function (command, callback) {
+        var i, j, num_nodes, num_commands, returns, result, complete;
+
+        // parse batched commands and strip "returns" fields
+        if (command.constructor === Array) {
+            num_commands = command.length;
+            returns = new Array(num_commands);
+            for (i = 0; i < num_commands; ++i) {
+                returns[i] = this.stripReturns(command[i]);
+            }
+        } else {
+            returns = this.stripReturns(command);
+        }
+
+        // asynchronous request if callback exists
+        if (callback && callback.constructor === Function) {
+            command = JSON.stringify(command);
+            loop(this.nodes, function (node, next) {
+                this.post(node, command, returns, function (result) {
+                    if (result !== undefined && result !== "0x") {
+                        complete = true;
+                    } else if (result !== undefined && result.error) {
+                        complete = true;
+                    }
+                    next(complete, function () { callback(result); });
+                });
+            }.bind(this));
+
+        // use synchronous http if no callback provided
+        } else {
+            if (!NODE_JS) command = JSON.stringify(command);
+            num_nodes = this.nodes.length;
+            for (j = 0; j < num_nodes; ++j) {
+                result = this.postSync(this.nodes[j], command, returns);
+                if (result && result !== "0x") return result;
+            }
+        }
+    },
+
+    marshal: function (command, params, prefix) {
+        var payload = {
+            id: this.requests++,
+            jsonrpc: "2.0"
+        };
+        if (prefix === "null") {
+            payload.method = command.toString();
+        } else {
+            payload.method = (prefix || "eth_") + command.toString();
+        }
+        if (params !== undefined && params !== null) {
+            if (params.constructor === Array) {
+                payload.params = params;
+            } else {
+                payload.params = [params];
+            }
+        } else {
+            payload.params = [];
+        }
+        return payload;
+    },
+
+    /******************************
+     * Ethereum JSON-RPC bindings *
+     ******************************/
+
+    raw: function (command, params, f) {
+        return this.broadcast(this.marshal(command, params, "null"), f);
+    },
+
+    eth: function (command, params, f) {
+        return this.broadcast(this.marshal(command, params), f);
+    },
+
+    net: function (command, params, f) {
+        return this.broadcast(this.marshal(command, params, "net_"), f);
+    },
+
+    web3: function (command, params, f) {
+        return this.broadcast(this.marshal(command, params, "web3_"), f);
+    },
+
+    leveldb: function (command, params, f) {
+        return this.broadcast(this.marshal(command, params, "db_"), f);
+    },
+
+    shh: function (command, params, f) {
+        return this.broadcast(this.marshal(command, params, "shh_"), f);
+    },
+
+    sha3: function (data, f) {
+        return this.broadcast(this.marshal("sha3", data.toString(), "web3_"), f);
+    },
+    hash: function (data, f) {
+        return this.broadcast(this.marshal("sha3", data.toString(), "web3_"), f);
+    },
+
+    gasPrice: function (f) {
+        return this.broadcast(this.marshal("gasPrice"), f);
+    },
+
+    blockNumber: function (f) {
+        if (f) {
+            this.broadcast(this.marshal("blockNumber"), f);
+        } else {
+            return parseInt(this.broadcast(this.marshal("blockNumber")));
+        }
+    },
+
+    balance: function (address, block, f) {
+        return this.broadcast(
+            this.marshal("getBalance", [
+                address || this.eth("coinbase"), block || "latest"
+            ]), f
+        );
+    },
+    getBalance: function (address, block, f) {
+        return this.broadcast(
+            this.marshal("getBalance", [
+                address || this.eth("coinbase"), block || "latest"
+            ]), f
+        );
+    },
+
+    txCount: function (address, f) {
+        return this.broadcast(
+            this.marshal("getTransactionCount", address || this.eth("coinbase")), f
+        );
+    },
+    getTransactionCount: function (address, f) {
+        return this.broadcast(
+            this.marshal("getTransactionCount", address || this.eth("coinbase")), f
+        );
+    },
+
+    sendEther: function (to, value, from, onSent, onSuccess, onFailed) {
+        from = from || this.broadcast(this.marshal("coinbase"));
+        var tx, txhash;
+        if (to && to.value) {
+            value = to.value;
+            if (to.from) from = to.from;
+            if (to.onSent) onSent = to.onSent;
+            if (to.onSuccess) onSuccess = to.onSuccess;
+            if (to.onFailed) onFailed = to.onFailed;
+            to = to.to;
+        }
+        tx = {
+            from: from,
+            to: to,
+            value: abi.bignum(value).mul(this.ETHER).toFixed()
+        };
+        if (onSent) {
+            this.sendTx(tx, function (txhash) {
+                if (txhash) {
+                    onSent(txhash);
+                    if (onSuccess)
+                        this.txNotify(0, value, tx, txhash, null, onSent, onSuccess, onFailed);
+                }
+            }.bind(this));
+        } else {
+            txhash = this.sendTx(tx);
+            if (txhash) {
+                if (onSuccess)
+                    this.txNotify(0, value, tx, txhash, null, onSent, onSuccess, onFailed);
+                return txhash;
+            }
+        }
+    },
+
+    sign: function (address, data, f) {
+        return this.broadcast(this.marshal("sign", [address, data]), f);
+    },
+
+    getTx: function (hash, f) {
+        return this.broadcast(this.marshal("getTransactionByHash", hash), f);
+    },
+    getTransaction: function (hash, f) {
+        return this.broadcast(this.marshal("getTransactionByHash", hash), f);
+    },
+
+    peerCount: function (f) {
+        if (f) {
+            this.broadcast(this.marshal("peerCount", [], "net_"), f);
+        } else {
+            return parseInt(this.broadcast(this.marshal("peerCount", [], "net_")));
+        }
+    },
+
+    accounts: function (f) {
+        return this.broadcast(this.marshal("accounts"), f);
+    },
+
+    mining: function (f) {
+        return this.broadcast(this.marshal("mining"), f);
+    },
+
+    hashrate: function (f) {
+        if (f) {
+            this.broadcast(this.marshal("hashrate"), f);
+        } else {
+            return parseInt(this.broadcast(this.marshal("hashrate")));
+        }
+    },
+
+    getBlockByHash: function (hash, full, f) {
+        return this.broadcast(this.marshal("getBlockByHash", [hash, full || false]), f);
+    },
+
+    getBlock: function (number, full, f) {
+        return this.broadcast(this.marshal("getBlockByNumber", [number, full || false]), f);
+    },
+    getBlockByNumber: function (number, full, f) {
+        return this.broadcast(this.marshal("getBlockByNumber", [number, full || false]), f);
+    },
+
+    version: function (f) {
+        return this.broadcast(this.marshal("version", [], "net_"), f);
+    },
+    netVersion: function (f) {
+        return this.broadcast(this.marshal("version", [], "net_"), f);
+    },
+
+    // estimate a transaction's gas cost
+    estimateGas: function (tx, f) {
+        tx.to = tx.to || "";
+        return this.broadcast(this.marshal("estimateGas", tx), f);
+    },
+
+    // execute functions on contracts on the blockchain
+    call: function (tx, f) {
+        tx.to = tx.to || "";
+        tx.gas = (tx.gas) ? abi.prefix_hex(tx.gas.toString(16)) : this.DEFAULT_GAS;
+        return this.broadcast(this.marshal("call", tx), f);
+    },
+
+    sendTx: function (tx, f) {
+        tx.to = tx.to || "";
+        tx.gas = (tx.gas) ? abi.prefix_hex(tx.gas.toString(16)) : this.DEFAULT_GAS;
+        return this.broadcast(this.marshal("sendTransaction", tx), f);
+    },
+    sendTransaction: function (tx, f) {
+        tx.to = tx.to || "";
+        tx.gas = (tx.gas) ? abi.prefix_hex(tx.gas.toString(16)) : this.DEFAULT_GAS;
+        return this.broadcast(this.marshal("sendTransaction", tx), f);
+    },
+
+    // IN: RLP(tx.signed(privateKey))
+    // OUT: txhash
+    sendRawTx: function (rawTx, f) {
+        return this.broadcast(this.marshal("sendRawTransaction", rawTx), f);
+    },
+    sendRawTransaction: function (rawTx, f) {
+        return this.broadcast(this.marshal("sendRawTransaction", rawTx), f);
+    },
+
+    receipt: function (txhash, f) {
+        return this.broadcast(this.marshal("getTransactionReceipt", txhash), f);
+    },
+    getTransactionReceipt: function (txhash, f) {
+        return this.broadcast(this.marshal("getTransactionReceipt", txhash), f);
+    },
+
+    // publish a new contract to the blockchain (from the coinbase account)
+    publish: function (compiled, f) {
+        return this.sendTx({ from: this.eth("coinbase"), data: compiled }, f);
+    },
+
+    // Read the code in a contract on the blockchain
+    read: function (address, block, f) {
+        return this.broadcast(this.marshal("getCode", [address, block || "latest"]), f);
+    },
+    getCode: function (address, block, f) {
+        return this.broadcast(this.marshal("getCode", [address, block || "latest"]), f);
+    },
+
+    listening: function () {
+        try {
+            return this.net("listening");
+        } catch (e) {
+            return false;
+        }
+    },
+
+    /**
+     * Invoke a function from a contract on the blockchain.
+     *
+     * Input tx format:
+     * {
+     *    from: <sender's address> (hexstring; optional, coinbase default)
+     *    to: <contract address> (hexstring)
+     *    method: <function name> (string)
+     *    signature: <function signature, e.g. "iia"> (string)
+     *    params: <parameters passed to the function> (optional)
+     *    returns: <"number[]", "int", "BigNumber", or "string" (default)>
+     *    send: <true to sendTransaction, false to call (default)>
+     * }
+     */
+    invoke: function (itx, f) {
+        var tx, data_abi, packaged, invocation, invoked;
+        if (itx) {
+            if (itx.send && itx.invocation && itx.invocation.invoke &&
+                itx.invocation.invoke.constructor === Function)
+            {
+                return itx.invocation.invoke.call(itx.invocation.context, itx, f);
+            } else {
+                tx = abi.copy(itx);
+                if (tx.params !== undefined) {
+                    if (tx.params.constructor === Array) {
+                        for (var i = 0, len = tx.params.length; i < len; ++i) {
+                            if (tx.params[i] !== undefined &&
+                                tx.params[i].constructor === BigNumber) {
+                                tx.params[i] = tx.params[i].toFixed();
+                            }
+                        }
+                    } else if (tx.params.constructor === BigNumber) {
+                        tx.params = tx.params.toFixed();
+                    }
+                }
+                if (tx.to) tx.to = abi.prefix_hex(tx.to);
+                if (tx.from) tx.from = abi.prefix_hex(tx.from);
+                data_abi = abi.encode(tx);
+                if (data_abi) {
+                    packaged = {
+                        from: tx.from || this.eth("coinbase"),
+                        to: tx.to,
+                        data: data_abi
+                    };
+                    if (tx.value) packaged.value = tx.value;
+                    if (tx.returns) packaged.returns = tx.returns;
+                    invocation = (tx.send) ? this.sendTx : this.call;
+                    invoked = true;
+                    return invocation.call(this, packaged, f);
+                }
+            }
+        }
+        if (!invoked) {
+            if (f) {
+                f(errors.TRANSACTION_FAILED);
+            } else {
+                return errors.TRANSACTION_FAILED;
+            }
+        }
+    },
+
+    /**
+     * Batched RPC commands
+     */
+    batch: function (txlist, f) {
+        var num_commands, rpclist, callbacks, tx, data_abi, packaged, invocation;
+        if (txlist.constructor === Array) {
+            num_commands = txlist.length;
+            rpclist = new Array(num_commands);
+            callbacks = new Array(num_commands);
+            for (var i = 0; i < num_commands; ++i) {
+                tx = abi.copy(txlist[i]);
+                if (tx.params !== undefined) {
+                    if (tx.params.constructor === Array) {
+                        for (var j = 0, len = tx.params.length; j < len; ++j) {
+                            if (tx.params[j] !== undefined &&
+                                tx.params[j] !== null &&
+                                tx.params[j].constructor === BigNumber) {
+                                tx.params[j] = tx.params[j].toFixed();
+                            }
+                        }
+                    } else if (tx.params.constructor === BigNumber) {
+                        tx.params = tx.params.toFixed();
+                    }
+                }
+                if (tx.from) tx.from = abi.prefix_hex(tx.from);
+                tx.to = abi.prefix_hex(tx.to);
+                data_abi = abi.encode(tx);
+                if (data_abi) {
+                    if (tx.callback && tx.callback.constructor === Function) {
+                        callbacks[i] = tx.callback;
+                        delete tx.callback;
+                    }
+                    packaged = {
+                        from: tx.from || this.eth("coinbase"),
+                        to: tx.to,
+                        data: data_abi
+                    };
+                    if (tx.value) packaged.value = tx.value;
+                    if (tx.returns) packaged.returns = tx.returns;
+                    invocation = (tx.send) ? "sendTransaction" : "call";
+                    rpclist[i] = this.marshal(invocation, packaged);
+                } else {
+                    log("unable to package commands for batch RPC");
+                    return rpclist;
+                }
+            }
+            if (f) {
+                if (f.constructor === Function) { // callback on whole array
+                    this.broadcast(rpclist, f);
+                } else if (f === true) {
+                    this.broadcast(rpclist, function (res) {
+                        if (res) {
+                            if (res.constructor === Array && res.length) {
+                                for (j = 0; j < num_commands; ++j) {
+                                    if (res[j] && callbacks[j]) {
+                                        callbacks[j](res[j]);
+                                    }
+                                }
+                            } else {
+                                if (callbacks.length && callbacks[0]) {
+                                    callbacks[0](res);
+                                }
+                            }
+                        }
+                    });
+                }
+            } else {
+                return this.broadcast(rpclist, f);
+            }
+        } else {
+            log("expected array for batch RPC, invoking instead");
+            return this.invoke(txlist, f);
+        }
+    },
+
+    clearNotifications: function (id) {
+        for (var i = 0, len = this.notifications.length; i < len; ++i) {
+            clearTimeout(this.notifications[id][i]);
+            this.notifications[id] = [];
+        }
+    },
+
+    encodeResult: function (result, returns) {
+        if (result) {
+            if (returns === "null") {
+                result = null;
+            } else if (returns === "address" || returns === "address[]") {
+                result = abi.prefix_hex(abi.remove_leading_zeros(result));
+            } else {
+                if (this.bignumbers && returns !== "string") {
+                    result = abi.bignum(result);
+                }
+                if (!this.bignumbers) {
+                    if (!returns || returns === "hash[]" || returns === "hash") {
+                        result = abi.bignum(result, "hex");
+                    } else if (returns === "number") {
+                        result = abi.bignum(result, "string");
+                    }
+                }
+            }
+        }
+        return result;
+    },
+
+    errorCodes: function (tx, response) {
+        if (response && response.constructor === Array) {
+            for (var i = 0, len = response.length; i < len; ++i) {
+                response[i] = this.errorCodes(tx.method, response[i]);
+            }
+        } else {
+            if (errors[response]) {
+                response = {
+                    error: response,
+                    message: errors[response]
+                };
+            } else {
+                if (tx.returns && tx.returns !== "string" ||
+                    (response && response.constructor === String &&
+                    response.slice(0,2) === "0x"))
+                {
+                    var response_number = abi.bignum(response);
+                    if (response_number) {
+                        response_number = abi.bignum(response).toFixed();
+                        if (errors[tx.method] && errors[tx.method][response_number]) {
+                            response = {
+                                error: response_number,
+                                message: errors[tx.method][response_number]
+                            };
+                        }
+                    }
+                }
+            }
+        }
+        return response;
+    },
+
+    fire: function (itx, callback) {
+        var tx = abi.copy(itx);
+        if (callback) {
+            this.invoke(tx, function (res) {
+                callback(this.encodeResult(
+                    this.errorCodes(tx, res),
+                    itx.returns
+                ));
+            }.bind(this));
+        } else {
+            return this.encodeResult(
+                this.errorCodes(tx, this.invoke(tx)),
+                itx.returns
+            );
+        }
+    },
+
+    /***************************************
+     * Send-call-confirm callback sequence *
+     ***************************************/
+
+    checkBlockHash: function (tx, callreturn, itx, txhash, returns, count, onSent, onSuccess, onFailed) {
+        if (tx && tx.blockHash && abi.bignum(tx.blockHash).toNumber() !== 0) {
+            this.clearNotifications(txhash);
+            tx.callReturn = this.encodeResult(callreturn, returns);
+            tx.txHash = tx.hash;
+            delete tx.hash;
+            if (onSuccess && onSuccess.constructor === Function) onSuccess(tx);
+        } else {
+            if (count !== undefined) {
+                if (count < this.TX_POLL_MAX) {
+                    if (count === 0) {
+                        this.notifications[txhash] = [setTimeout(function () {
+                            this.txNotify(count + 1, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed);
+                        }.bind(this), this.TX_POLL_INTERVAL)];
+                    } else {
+                        this.notifications[txhash].push(setTimeout(function () {
+                            this.txNotify(count + 1, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed);
+                        }.bind(this), this.TX_POLL_INTERVAL));
+                    }
+                } else {
+                    if (onFailed && onFailed.constructor === Function) {
+                        onFailed(errors.TRANSACTION_NOT_CONFIRMED);
+                    }
+                }
+            }
+        }
+    },
+
+    txNotify: function (count, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed) {
+        this.getTx(txhash, function (tx) {
+            if (tx === null) {
+                if (returns) itx.returns = returns;
+            } else {
+                this.checkBlockHash(tx, callreturn, itx, txhash, returns, count, onSent, onSuccess, onFailed);
+            }
+        }.bind(this));
+    },
+
+    confirmTx: function (tx, txhash, returns, onSent, onSuccess, onFailed) {
+        var self = this;
+        if (tx && txhash) {
+            this.notifications[txhash] = [];
+            if (errors[txhash]) {
+                if (onFailed) onFailed({
+                    error: txhash,
+                    message: errors[txhash]
+                });
+            } else {
+                this.getTx(txhash, function (sent) {
+                    if (returns !== "null") {
+                        self.call({
+                            from: sent.from || self.eth("coinbase"),
+                            to: sent.to || tx.to,
+                            value: sent.value || tx.value,
+                            data: sent.input
+                        }, function (callReturn) {
+                            if (callReturn) {
+                                callReturn = JSON.stringify({ result: callReturn });
+
+                                // transform callReturn to a number
+                                var numReturn = self.parse(callReturn, "number");
+
+                                // check if numReturn is an error object
+                                if (numReturn.constructor === Object && numReturn.error) {
+                                    if (onFailed) onFailed(numReturn);
+                                } else if (errors[numReturn]) {
+                                    if (onFailed) onFailed({
+                                        error: numReturn,
+                                        message: errors[numReturn]
+                                    });
+                                } else {
+                                    try {
+
+                                        // check if numReturn is an error code
+                                        if (numReturn && numReturn.constructor === BigNumber) {
+                                            numReturn = numReturn.toFixed();
+                                        }
+                                        if (numReturn && errors[tx.method] && errors[tx.method][numReturn]) {
+                                            if (onFailed) onFailed({
+                                                error: numReturn,
+                                                message: errors[tx.method][numReturn]
+                                            });
+                                        } else {
+
+                                            // no errors found, so transform to the requested
+                                            // return type, specified by "returns" parameter
+                                            callReturn = self.parse(callReturn, returns);
+
+                                            // send the transaction hash and return value back
+                                            // to the client, using the onSent callback
+                                            onSent({
+                                                txHash: txhash,
+                                                callReturn: self.encodeResult(callReturn, returns)
+                                            });
+
+                                            // if an onSuccess callback was supplied, then
+                                            // poll the network until the transaction is
+                                            // included in a block (i.e., has a non-null
+                                            // blockHash field)
+                                            if (onSuccess) {
+                                                self.txNotify(
+                                                    0,
+                                                    callReturn,
+                                                    tx,
+                                                    txhash,
+                                                    returns,
+                                                    onSent,
+                                                    onSuccess,
+                                                    onFailed
+                                                );
+                                            }
+                                        }
+
+                                    // something went wrong :(
+                                    } catch (e) {
+                                        if (onFailed) onFailed(e);
+                                    }
+                                }
+                            }
+                        });
+
+                    // if returns type is null, skip the intermediate call
+                    } else {
+                        onSent({ txHash: txhash, callReturn: null });
+                        if (onSuccess) {
+                            self.txNotify(
+                                0,
+                                null,
+                                tx,
+                                txhash,
+                                returns,
+                                onSent,
+                                onSuccess,
+                                onFailed
+                            );
+                        }
+                    }
+                });
+            }
+        }
+    },
+
+    transact: function (tx, onSent, onSuccess, onFailed) {
+        var returns = tx.returns;
+        tx.send = true;
+        delete tx.returns;
+        if (onSent && onSent.constructor === Function) {
+            this.invoke(tx, function (txhash) {
+                if (txhash.error) {
+                    if (onFailed) onFailed(txhash);
+                } else {
+                    txhash = abi.prefix_hex(abi.pad_left(abi.strip_0x(txhash)));
+                    this.confirmTx(tx, txhash, returns, onSent, onSuccess, onFailed);
+                }
+            }.bind(this));
+        } else {
+            return this.invoke(tx);
+        }
+    }
+
+};
+
+}).call(this,require('_process'))
+},{"./errors":255,"_process":22,"augur-abi":2,"bignumber.js":6,"http":15,"sync-request":9,"url":40}],257:[function(require,module,exports){
 /*! @license Firebase v2.2.9
     License: https://www.firebase.com/terms/terms-of-service.html */
 (function() {var g,aa=this;function n(a){return void 0!==a}function ba(){}function ca(a){a.vb=function(){return a.uf?a.uf:a.uf=new a}}
@@ -34115,7 +32737,7 @@ U.prototype.We=function(a,b){x("Firebase.resetPassword",2,2,arguments.length);fg
 
 module.exports = Firebase;
 
-},{}],256:[function(require,module,exports){
+},{}],258:[function(require,module,exports){
 (function (process,Buffer){
 /**
  * keythereum: create/import/export ethereum keys
@@ -34732,7 +33354,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./lib/keccak":257,"./lib/scrypt":258,"_process":22,"buffer":10,"crypto":53,"crypto-browserify":53,"elliptic":259,"ethereumjs-util":225,"fs":7,"node-uuid":286,"path":21,"validator":287}],257:[function(require,module,exports){
+},{"./lib/keccak":259,"./lib/scrypt":260,"_process":22,"buffer":10,"crypto":53,"crypto-browserify":53,"elliptic":261,"ethereumjs-util":225,"fs":7,"node-uuid":288,"path":21,"validator":289}],259:[function(require,module,exports){
 /* keccak.js
  * A Javascript implementation of the Keccak SHA-3 candidate from Bertoni,
  * Daemen, Peeters and van Assche. This version is not optimized with any of 
@@ -34926,7 +33548,7 @@ module.exports = (function () {
     };
 }());
 
-},{}],258:[function(require,module,exports){
+},{}],260:[function(require,module,exports){
 (function (process,__dirname){
 // https://github.com/tonyg/js-scrypt
 module.exports = function (requested_total_memory) {
@@ -46647,59 +45269,59 @@ module.exports = function (requested_total_memory) {
 };
 
 }).call(this,require('_process'),"/node_modules/keythereum/lib")
-},{"_process":22,"fs":7,"path":21}],259:[function(require,module,exports){
+},{"_process":22,"fs":7,"path":21}],261:[function(require,module,exports){
 arguments[4][200][0].apply(exports,arguments)
-},{"../package.json":284,"./elliptic/curve":262,"./elliptic/curves":265,"./elliptic/ec":266,"./elliptic/eddsa":269,"./elliptic/hmac-drbg":272,"./elliptic/utils":274,"brorand":276,"dup":200}],260:[function(require,module,exports){
+},{"../package.json":286,"./elliptic/curve":264,"./elliptic/curves":267,"./elliptic/ec":268,"./elliptic/eddsa":271,"./elliptic/hmac-drbg":274,"./elliptic/utils":276,"brorand":278,"dup":200}],262:[function(require,module,exports){
 arguments[4][201][0].apply(exports,arguments)
-},{"../../elliptic":259,"bn.js":275,"dup":201}],261:[function(require,module,exports){
+},{"../../elliptic":261,"bn.js":277,"dup":201}],263:[function(require,module,exports){
 arguments[4][202][0].apply(exports,arguments)
-},{"../../elliptic":259,"../curve":262,"bn.js":275,"dup":202,"inherits":283}],262:[function(require,module,exports){
+},{"../../elliptic":261,"../curve":264,"bn.js":277,"dup":202,"inherits":285}],264:[function(require,module,exports){
 arguments[4][80][0].apply(exports,arguments)
-},{"./base":260,"./edwards":261,"./mont":263,"./short":264,"dup":80}],263:[function(require,module,exports){
+},{"./base":262,"./edwards":263,"./mont":265,"./short":266,"dup":80}],265:[function(require,module,exports){
 arguments[4][204][0].apply(exports,arguments)
-},{"../../elliptic":259,"../curve":262,"bn.js":275,"dup":204,"inherits":283}],264:[function(require,module,exports){
+},{"../../elliptic":261,"../curve":264,"bn.js":277,"dup":204,"inherits":285}],266:[function(require,module,exports){
 arguments[4][205][0].apply(exports,arguments)
-},{"../../elliptic":259,"../curve":262,"bn.js":275,"dup":205,"inherits":283}],265:[function(require,module,exports){
+},{"../../elliptic":261,"../curve":264,"bn.js":277,"dup":205,"inherits":285}],267:[function(require,module,exports){
 arguments[4][83][0].apply(exports,arguments)
-},{"../elliptic":259,"./precomputed/secp256k1":273,"dup":83,"hash.js":277}],266:[function(require,module,exports){
+},{"../elliptic":261,"./precomputed/secp256k1":275,"dup":83,"hash.js":279}],268:[function(require,module,exports){
 arguments[4][207][0].apply(exports,arguments)
-},{"../../elliptic":259,"./key":267,"./signature":268,"bn.js":275,"dup":207}],267:[function(require,module,exports){
+},{"../../elliptic":261,"./key":269,"./signature":270,"bn.js":277,"dup":207}],269:[function(require,module,exports){
 arguments[4][208][0].apply(exports,arguments)
-},{"bn.js":275,"dup":208}],268:[function(require,module,exports){
+},{"bn.js":277,"dup":208}],270:[function(require,module,exports){
 arguments[4][86][0].apply(exports,arguments)
-},{"../../elliptic":259,"bn.js":275,"dup":86}],269:[function(require,module,exports){
+},{"../../elliptic":261,"bn.js":277,"dup":86}],271:[function(require,module,exports){
 arguments[4][210][0].apply(exports,arguments)
-},{"../../elliptic":259,"./key":270,"./signature":271,"dup":210,"hash.js":277}],270:[function(require,module,exports){
+},{"../../elliptic":261,"./key":272,"./signature":273,"dup":210,"hash.js":279}],272:[function(require,module,exports){
 arguments[4][211][0].apply(exports,arguments)
-},{"../../elliptic":259,"dup":211}],271:[function(require,module,exports){
+},{"../../elliptic":261,"dup":211}],273:[function(require,module,exports){
 arguments[4][212][0].apply(exports,arguments)
-},{"../../elliptic":259,"bn.js":275,"dup":212}],272:[function(require,module,exports){
+},{"../../elliptic":261,"bn.js":277,"dup":212}],274:[function(require,module,exports){
 arguments[4][87][0].apply(exports,arguments)
-},{"../elliptic":259,"dup":87,"hash.js":277}],273:[function(require,module,exports){
+},{"../elliptic":261,"dup":87,"hash.js":279}],275:[function(require,module,exports){
 arguments[4][88][0].apply(exports,arguments)
-},{"dup":88}],274:[function(require,module,exports){
+},{"dup":88}],276:[function(require,module,exports){
 arguments[4][215][0].apply(exports,arguments)
-},{"bn.js":275,"dup":215}],275:[function(require,module,exports){
-arguments[4][226][0].apply(exports,arguments)
-},{"dup":226}],276:[function(require,module,exports){
+},{"bn.js":277,"dup":215}],277:[function(require,module,exports){
+arguments[4][199][0].apply(exports,arguments)
+},{"dup":199}],278:[function(require,module,exports){
 arguments[4][90][0].apply(exports,arguments)
-},{"dup":90}],277:[function(require,module,exports){
+},{"dup":90}],279:[function(require,module,exports){
 arguments[4][91][0].apply(exports,arguments)
-},{"./hash/common":278,"./hash/hmac":279,"./hash/ripemd":280,"./hash/sha":281,"./hash/utils":282,"dup":91}],278:[function(require,module,exports){
+},{"./hash/common":280,"./hash/hmac":281,"./hash/ripemd":282,"./hash/sha":283,"./hash/utils":284,"dup":91}],280:[function(require,module,exports){
 arguments[4][92][0].apply(exports,arguments)
-},{"../hash":277,"dup":92}],279:[function(require,module,exports){
+},{"../hash":279,"dup":92}],281:[function(require,module,exports){
 arguments[4][93][0].apply(exports,arguments)
-},{"../hash":277,"dup":93}],280:[function(require,module,exports){
+},{"../hash":279,"dup":93}],282:[function(require,module,exports){
 arguments[4][94][0].apply(exports,arguments)
-},{"../hash":277,"dup":94}],281:[function(require,module,exports){
+},{"../hash":279,"dup":94}],283:[function(require,module,exports){
 arguments[4][95][0].apply(exports,arguments)
-},{"../hash":277,"dup":95}],282:[function(require,module,exports){
+},{"../hash":279,"dup":95}],284:[function(require,module,exports){
 arguments[4][96][0].apply(exports,arguments)
-},{"dup":96,"inherits":283}],283:[function(require,module,exports){
+},{"dup":96,"inherits":285}],285:[function(require,module,exports){
 arguments[4][19][0].apply(exports,arguments)
-},{"dup":19}],284:[function(require,module,exports){
+},{"dup":19}],286:[function(require,module,exports){
 arguments[4][224][0].apply(exports,arguments)
-},{"dup":224}],285:[function(require,module,exports){
+},{"dup":224}],287:[function(require,module,exports){
 //! moment.js
 //! version : 2.10.6
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -49895,7 +48517,7 @@ arguments[4][224][0].apply(exports,arguments)
     return _moment;
 
 }));
-},{}],286:[function(require,module,exports){
+},{}],288:[function(require,module,exports){
 //     uuid.js
 //
 //     Copyright (c) 2010-2012 Robert Kieffer
@@ -50144,7 +48766,7 @@ arguments[4][224][0].apply(exports,arguments)
   }
 }).call(this);
 
-},{}],287:[function(require,module,exports){
+},{}],289:[function(require,module,exports){
 /*!
  * Copyright (c) 2015 Chris O'Hara <cohara87@gmail.com>
  *
@@ -50935,7 +49557,7 @@ arguments[4][224][0].apply(exports,arguments)
 
 });
 
-},{}],288:[function(require,module,exports){
+},{}],290:[function(require,module,exports){
 /**
  * Whisper comments system
  */
@@ -51174,7 +49796,7 @@ module.exports = function (augur) {
     };
 };
 
-},{"../constants":293,"../errors":294,"augur-abi":2}],289:[function(require,module,exports){
+},{"../constants":295,"../errors":296,"augur-abi":2}],291:[function(require,module,exports){
 /**
  * Ethereum filters / logging
  */
@@ -51296,7 +49918,7 @@ module.exports = function (augur) {
 };
 
 
-},{"augur-abi":2,"chalk":45}],290:[function(require,module,exports){
+},{"augur-abi":2,"chalk":45}],292:[function(require,module,exports){
 /**
  * Bindings for the Namereg contract:
  * https://github.com/ethereum/dapp-bin/blob/master/registrar/registrar.sol
@@ -51386,7 +50008,7 @@ module.exports = function (augur) {
     };
 };
 
-},{"../utilities":297}],291:[function(require,module,exports){
+},{"../utilities":299}],293:[function(require,module,exports){
 (function (Buffer){
 /**
  * Client-side accounts
@@ -51722,7 +50344,7 @@ module.exports = function (augur) {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"../constants":293,"../errors":294,"../utilities":297,"./db":292,"augur-abi":2,"bignumber.js":6,"buffer":10,"ethereumjs-tx":195,"keythereum":256,"node-uuid":286}],292:[function(require,module,exports){
+},{"../constants":295,"../errors":296,"../utilities":299,"./db":294,"augur-abi":2,"bignumber.js":6,"buffer":10,"ethereumjs-tx":195,"keythereum":258,"node-uuid":288}],294:[function(require,module,exports){
 /**
  * Database methods
  */
@@ -51835,7 +50457,7 @@ module.exports = {
     } // leveldb
 };
 
-},{"../constants":293,"../errors":294,"firebase":255}],293:[function(require,module,exports){
+},{"../constants":295,"../errors":296,"firebase":257}],295:[function(require,module,exports){
 /** 
  * constants for augur.js unit tests
  */
@@ -51883,7 +50505,7 @@ module.exports = {
     ]
 };
 
-},{"bignumber.js":6}],294:[function(require,module,exports){
+},{"bignumber.js":6}],296:[function(require,module,exports){
 /************************
  * augur.js error codes *
  ************************/
@@ -52025,7 +50647,7 @@ errors.sellShares = errors.buyShares;
 
 module.exports = errors;
 
-},{}],295:[function(require,module,exports){
+},{}],297:[function(require,module,exports){
 (function (process){
 /**
  * Augur JavaScript API
@@ -52085,8 +50707,8 @@ var augur = {
 var DEFAULT_RPC = ["http://127.0.0.1:8545"].concat(augur.constants.nodes);
 
 augur.nodes = DEFAULT_RPC;
-augur.contracts = augur.utils.copy(contracts.testnet);
-augur.init_contracts = augur.utils.copy(contracts.testnet);
+augur.contracts = augur.utils.copy(contracts["0"]);
+augur.init_contracts = augur.utils.copy(contracts["0"]);
 
 augur.reload_modules = function () {
     if (this.contracts) this.tx = new Tx(this.contracts);
@@ -52174,13 +50796,13 @@ augur.connect = function (rpcinfo, chain) {
             this.network_id = chain || rpc.version() || "0";
             switch (this.network_id.toString()) {
                 case "7":
-                    this.contracts = this.utils.copy(contracts.privatechain);
+                    this.contracts = this.utils.copy(contracts["7"]);
                     break;
                 case "10101":
-                    this.contracts = this.utils.copy(contracts.testchain);
+                    this.contracts = this.utils.copy(contracts["10101"]);
                     break;
                 default:
-                    this.contracts = this.utils.copy(contracts.testnet);
+                    this.contracts = this.utils.copy(contracts["0"]);
             }
             for (method in this.tx) {
                 if (!this.tx.hasOwnProperty(method)) continue;
@@ -53563,7 +52185,7 @@ augur.getMarketPriceHistory = function (market_id, outcome_id, callback) {
 module.exports = augur;
 
 }).call(this,require('_process'))
-},{"./aux/comments":288,"./aux/filters":289,"./aux/namereg":290,"./client/accounts":291,"./constants":293,"./errors":294,"./tx":296,"./utilities":297,"_process":22,"augur-abi":2,"augur-contracts":5,"bignumber.js":6,"ethrpc":299}],296:[function(require,module,exports){
+},{"./aux/comments":290,"./aux/filters":291,"./aux/namereg":292,"./client/accounts":293,"./constants":295,"./errors":296,"./tx":298,"./utilities":299,"_process":22,"augur-abi":2,"augur-contracts":5,"bignumber.js":6,"ethrpc":256}],298:[function(require,module,exports){
 /**
  * Augur transaction objects
  */
@@ -54523,7 +53145,7 @@ module.exports = function (contracts) {
 
 };
 
-},{}],297:[function(require,module,exports){
+},{}],299:[function(require,module,exports){
 (function (process,Buffer,__dirname){
 "use strict";
 
@@ -54905,1038 +53527,4 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer,"/src")
-},{"./constants":293,"_process":22,"assert":8,"augur-abi":2,"bignumber.js":6,"buffer":10,"chalk":45,"crypto":53,"crypto-browserify":53,"fs":7,"moment":285,"path":21,"validator":287}],298:[function(require,module,exports){
-module.exports={
-    "0x": "no response or bad input",
-    "cashFaucet": {
-        "-1": "Hey, you're not broke!"
-    },
-    "getSimulatedBuy": {
-        "-2": "cost updating error (did you enter a valid quantity?)"
-    },
-    "getSimulatedSell": {
-        "-2": "cost updating error (did you enter a valid quantity?)"
-    },
-    "closeMarket": {
-        "-1": "market has no cash",
-        "-2": "0 outcome",
-        "-3": "outcome indeterminable"
-    },
-    "report": {
-        "0": "could not set reporter ballot",
-        "-1": "report length does not match number of expiring events",
-        "-2": "voting period expired",
-        "-3": "incorrect hash"
-    },
-    "submitReportHash": {
-        "0": "could not set report hash",
-        "-1": "reporter doesn't exist, voting period is over, or voting period hasn't started yet",
-        "-2": "not in hash submitting timeframe"
-    },
-    "checkReportValidity": {
-        "-1": "report isn't long enough",
-        "-2": "reporter doesn't exist, voting period is over, or voting period hasn't started yet"
-    },
-    "slashRep": {
-        "0": "incorrect hash",
-        "-2": "incorrect reporter ID"
-    },
-    "createEvent": {
-        "0": "not enough money to pay fees or event already exists",
-        "-1": "we're either already past that date, branch doesn't exist, or description is bad"
-    },
-    "createMarket": {
-        "-1": "bad input or parent doesn't exist",
-        "-2": "too many events",
-        "-3": "too many outcomes",
-        "-4": "not enough money or market already exists"
-    },
-    "sendReputation": {
-        "0": "not enough reputation",
-        "-1": "Your reputation account was just created! Earn some reputation before you can send to others",
-        "-2": "Receiving address doesn't exist"
-    },
-    "buyShares": {
-        "-1": "invalid outcome or trading closed",
-        "-2": "entered a negative number of shares",
-        "-3": "not enough money",
-        "-4": "bad nonce/hash"
-    },
-    "sellShares": {
-        "-1": "invalid outcome or trading closed",
-        "-2": "entered a negative number of shares",
-        "-3": "not enough money",
-        "-4": "bad nonce/hash"
-    },
-    "TRANSACTION_FAILED": {
-        "error": 500,
-        "message": "transaction failed"
-    },
-    "TRANSACTION_NOT_CONFIRMED": {
-        "error": 501,
-        "message": "polled network but could not confirm transaction"
-    }
-}
-
-},{}],299:[function(require,module,exports){
-(function (process){
-/**
- * Basic JSON RPC methods for Ethereum
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
-
-var http = require("http");
-var url = require("url");
-var BigNumber = require("bignumber.js");
-var request = (NODE_JS) ? require("sync-request") : null;
-var abi = require("augur-abi");
-var errors = require("./errors");
-var log = console.log;
-
-BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
-
-// asynchronous loop
-function loop(list, iterator) {
-    var n = list.length;
-    var i = -1;
-    var calls = 0;
-    var looping = false;
-    var iterate = function (quit, breaker) {
-        calls -= 1;
-        i += 1;
-        if (i === n || quit) {
-            if (breaker) {
-                return breaker();
-            } else {
-                return;
-            }
-        }
-        iterator(list[i], next);
-    };
-    var runloop = function () {
-        if (looping) return;
-        looping = true;
-        while (calls > 0) iterate();
-        looping = false;
-    };
-    var next = function (quit, breaker) {
-        calls += 1;
-        if (typeof setTimeout === "undefined") {
-            runloop();
-        } else {
-            setTimeout(function () { iterate(quit, breaker); }, 1);
-        }
-    };
-    next();
-}
-
-module.exports = {
-
-    bignumbers: true,
-
-    // Maximum number of transaction verification attempts
-    TX_POLL_MAX: 12,
-
-    // Transaction polling interval
-    TX_POLL_INTERVAL: 12000,
-
-    DEFAULT_GAS: "0x2fd618",
-
-    ETHER: new BigNumber(10).toPower(18),
-
-    nodes: ["http://eth1.augur.net:8545"],
-
-    requests: 1,
-
-    notifications: {},
-
-    unmarshal: function (string, returns, stride, init) {
-        var elements, array, position;
-        if (string.length >= 66) {
-            stride = stride || 64;
-            elements = Math.ceil((string.length - 2) / stride);
-            array = new Array(elements);
-            position = init || 2;
-            for (var i = 0; i < elements; ++i) {
-                array[i] = abi.prefix_hex(
-                    string.slice(position, position + stride)
-                );
-                position += stride;
-            }
-            if (array.length) {
-                if (parseInt(array[0]) === array.length - 1) {
-                    array.splice(0, 1);
-                } else if (parseInt(array[1]) === array.length - 2 ||
-                    parseInt(array[1]) / 32 === array.length - 2) {
-                    array.splice(0, 2);
-                }
-            }
-            for (i = 0; i < array.length; ++i) {
-                if (returns === "hash[]" && this.bignumbers) {
-                    array[i] = abi.bignum(array[i]);
-                } else {
-                    if (returns === "number[]") {
-                        array[i] = abi.bignum(array[i]).toFixed();
-                    } else if (returns === "unfix[]") {
-                        if (this.bignumbers) {
-                            array[i] = abi.unfix(array[i]);
-                        } else {
-                            array[i] = abi.unfix(array[i], "string");
-                        }
-                    }
-                }
-            }
-            return array;
-        } else {
-            return string;
-        }
-    },
-
-    applyReturns: function (returns, result) {
-        returns = returns.toLowerCase();
-        if (result && result !== "0x") {
-            if (returns && returns.slice(-2) === "[]") {
-                result = this.unmarshal(result, returns);
-            } else if (returns === "string") {
-                result = abi.decode_hex(result, true);
-            } else {
-                if (this.bignumbers) {
-                    if (returns === "unfix") {
-                        result = abi.unfix(result);
-                    }
-                    if (result.constructor !== BigNumber) {
-                        result = abi.bignum(result);
-                    }
-                } else {
-                    if (returns === "number") {
-                        result = abi.bignum(result).toFixed();
-                    } else if (returns === "bignumber") {
-                        result = abi.bignum(result);
-                    } else if (returns === "unfix") {
-                        result = abi.unfix(result, "string");
-                    }
-                }
-            }
-        }
-        return result;
-    },
-
-    parse: function (response, returns, callback) {
-        var results, len;
-        try {
-            if (response !== undefined) {
-                response = JSON.parse(response);
-                if (response.error) {
-                    response = {
-                        error: response.error.code,
-                        message: response.error.message
-                    };
-                    if (callback) {
-                        callback(response);
-                    } else {
-                        return response;
-                    }
-                } else if (response.result !== undefined) {
-                    if (returns) {
-                        response.result = this.applyReturns(returns, response.result);
-                    } else {
-                        if (response.result && response.result.length > 2 &&
-                            response.result.slice(0,2) === "0x")
-                        {
-                            response.result = abi.remove_leading_zeros(response.result);
-                            response.result = abi.prefix_hex(response.result);
-                        }
-                    }
-                    if (callback) {
-                        callback(response.result);
-                    } else {
-                        return response.result;
-                    }
-                } else if (response.constructor === Array && response.length) {
-                    len = response.length;
-                    results = new Array(len);
-                    for (var i = 0; i < len; ++i) {
-                        results[i] = response[i].result;
-                        if (response.error) {
-                            console.error(
-                                "[" + response.error.code + "]",
-                                response.error.message
-                            );
-                        } else if (response[i].result !== undefined) {
-                            if (returns[i]) {
-                                results[i] = this.applyReturns(returns[i], response[i].result);
-                            } else {
-                                results[i] = abi.remove_leading_zeros(results[i]);
-                                results[i] = abi.prefix_hex(results[i]);
-                            }
-                        }
-                    }
-                    if (callback) {
-                        callback(results);
-                    } else {
-                        return results;
-                    }
-                // no result or error field
-                } else {
-                    if (callback) {
-                        callback(response);
-                    } else {
-                        return response;
-                    }
-                }
-            }
-        } catch (e) {
-            if (callback) {
-                callback(e);
-            } else {
-                return e;
-            }
-        }
-    },
-
-    stripReturns: function (tx) {
-        var returns;
-        if (tx.params !== undefined && tx.params.length &&
-            tx.params[0] && tx.params[0].returns)
-        {
-            returns = tx.params[0].returns;
-            delete tx.params[0].returns;
-        }
-        return returns;
-    },
-
-    postSync: function (rpc_url, command, returns) {
-        var req = null;
-        if (NODE_JS) {
-            return this.parse(request('POST', rpc_url, {
-                json: command
-            }).getBody().toString(), returns);
-        } else {
-            if (window.XMLHttpRequest) {
-                req = new window.XMLHttpRequest();
-            } else {
-                req = new window.ActiveXObject("Microsoft.XMLHTTP");
-            }
-            req.open("POST", rpc_url, false);
-            req.setRequestHeader("Content-type", "application/json");
-            req.send(command);
-            return this.parse(req.responseText, returns);
-        }
-    },
-
-    post: function (rpc_url, command, returns, callback) {
-        var req, self = this;
-        if (NODE_JS) {
-            var rpc_obj = url.parse(rpc_url);
-            req = http.request({
-                host: rpc_obj.hostname,
-                port: rpc_obj.port,
-                path: '/',
-                method: "POST",
-                headers: {"Content-type": "application/json"}
-            }, function (response) {
-                var str = '';
-                response.on('data', function (chunk) {
-                    str += chunk;
-                });
-                response.on('end', function () {
-                    if (str) self.parse(str, returns, callback);
-                });
-            });
-            req.write(command);
-            req.end();
-        } else {
-            if (window.XMLHttpRequest) {
-                req = new window.XMLHttpRequest();
-            } else {
-                req = new window.ActiveXObject("Microsoft.XMLHTTP");
-            }
-            req.onreadystatechange = function () {
-                if (req.readyState === 4) {
-                    self.parse(req.responseText, returns, callback);
-                }
-            };
-            req.open("POST", rpc_url, true);
-            req.setRequestHeader("Content-type", "application/json");
-            req.send(command);
-        }
-    },
-
-    // Post JSON-RPC command to all Ethereum nodes
-    broadcast: function (command, callback) {
-        var i, j, num_nodes, num_commands, returns, result, complete;
-
-        // parse batched commands and strip "returns" fields
-        if (command.constructor === Array) {
-            num_commands = command.length;
-            returns = new Array(num_commands);
-            for (i = 0; i < num_commands; ++i) {
-                returns[i] = this.stripReturns(command[i]);
-            }
-        } else {
-            returns = this.stripReturns(command);
-        }
-
-        // asynchronous request if callback exists
-        if (callback && callback.constructor === Function) {
-            command = JSON.stringify(command);
-            loop(this.nodes, function (node, next) {
-                this.post(node, command, returns, function (result) {
-                    if (result !== undefined && result !== "0x") {
-                        complete = true;
-                    } else if (result !== undefined && result.error) {
-                        complete = true;
-                    }
-                    next(complete, function () { callback(result); });
-                });
-            }.bind(this));
-
-        // use synchronous http if no callback provided
-        } else {
-            if (!NODE_JS) command = JSON.stringify(command);
-            num_nodes = this.nodes.length;
-            for (j = 0; j < num_nodes; ++j) {
-                result = this.postSync(this.nodes[j], command, returns);
-                if (result && result !== "0x") return result;
-            }
-        }
-    },
-
-    marshal: function (command, params, prefix) {
-        var payload = {
-            id: this.requests++,
-            jsonrpc: "2.0"
-        };
-        if (prefix === "null") {
-            payload.method = command.toString();
-        } else {
-            payload.method = (prefix || "eth_") + command.toString();
-        }
-        if (params !== undefined && params !== null) {
-            if (params.constructor === Array) {
-                payload.params = params;
-            } else {
-                payload.params = [params];
-            }
-        } else {
-            payload.params = [];
-        }
-        return payload;
-    },
-
-    /******************************
-     * Ethereum JSON-RPC bindings *
-     ******************************/
-
-    raw: function (command, params, f) {
-        return this.broadcast(this.marshal(command, params, "null"), f);
-    },
-
-    eth: function (command, params, f) {
-        return this.broadcast(this.marshal(command, params), f);
-    },
-
-    net: function (command, params, f) {
-        return this.broadcast(this.marshal(command, params, "net_"), f);
-    },
-
-    web3: function (command, params, f) {
-        return this.broadcast(this.marshal(command, params, "web3_"), f);
-    },
-
-    leveldb: function (command, params, f) {
-        return this.broadcast(this.marshal(command, params, "db_"), f);
-    },
-
-    shh: function (command, params, f) {
-        return this.broadcast(this.marshal(command, params, "shh_"), f);
-    },
-
-    sha3: function (data, f) {
-        return this.broadcast(this.marshal("sha3", data.toString(), "web3_"), f);
-    },
-    hash: function (data, f) {
-        return this.broadcast(this.marshal("sha3", data.toString(), "web3_"), f);
-    },
-
-    gasPrice: function (f) {
-        return this.broadcast(this.marshal("gasPrice"), f);
-    },
-
-    blockNumber: function (f) {
-        if (f) {
-            this.broadcast(this.marshal("blockNumber"), f);
-        } else {
-            return parseInt(this.broadcast(this.marshal("blockNumber")));
-        }
-    },
-
-    balance: function (address, block, f) {
-        return this.broadcast(
-            this.marshal("getBalance", [
-                address || this.eth("coinbase"), block || "latest"
-            ]), f
-        );
-    },
-    getBalance: function (address, block, f) {
-        return this.broadcast(
-            this.marshal("getBalance", [
-                address || this.eth("coinbase"), block || "latest"
-            ]), f
-        );
-    },
-
-    txCount: function (address, f) {
-        return this.broadcast(
-            this.marshal("getTransactionCount", address || this.eth("coinbase")), f
-        );
-    },
-    getTransactionCount: function (address, f) {
-        return this.broadcast(
-            this.marshal("getTransactionCount", address || this.eth("coinbase")), f
-        );
-    },
-
-    sendEther: function (to, value, from, onSent, onSuccess, onFailed) {
-        from = from || this.broadcast(this.marshal("coinbase"));
-        var tx, txhash;
-        if (to && to.value) {
-            value = to.value;
-            if (to.from) from = to.from;
-            if (to.onSent) onSent = to.onSent;
-            if (to.onSuccess) onSuccess = to.onSuccess;
-            if (to.onFailed) onFailed = to.onFailed;
-            to = to.to;
-        }
-        tx = {
-            from: from,
-            to: to,
-            value: abi.bignum(value).mul(this.ETHER).toFixed()
-        };
-        if (onSent) {
-            this.sendTx(tx, function (txhash) {
-                if (txhash) {
-                    onSent(txhash);
-                    if (onSuccess)
-                        this.txNotify(0, value, tx, txhash, null, onSent, onSuccess, onFailed);
-                }
-            }.bind(this));
-        } else {
-            txhash = this.sendTx(tx);
-            if (txhash) {
-                if (onSuccess)
-                    this.txNotify(0, value, tx, txhash, null, onSent, onSuccess, onFailed);
-                return txhash;
-            }
-        }
-    },
-
-    sign: function (address, data, f) {
-        return this.broadcast(this.marshal("sign", [address, data]), f);
-    },
-
-    getTx: function (hash, f) {
-        return this.broadcast(this.marshal("getTransactionByHash", hash), f);
-    },
-    getTransaction: function (hash, f) {
-        return this.broadcast(this.marshal("getTransactionByHash", hash), f);
-    },
-
-    peerCount: function (f) {
-        if (f) {
-            this.broadcast(this.marshal("peerCount", [], "net_"), f);
-        } else {
-            return parseInt(this.broadcast(this.marshal("peerCount", [], "net_")));
-        }
-    },
-
-    accounts: function (f) {
-        return this.broadcast(this.marshal("accounts"), f);
-    },
-
-    mining: function (f) {
-        return this.broadcast(this.marshal("mining"), f);
-    },
-
-    hashrate: function (f) {
-        if (f) {
-            this.broadcast(this.marshal("hashrate"), f);
-        } else {
-            return parseInt(this.broadcast(this.marshal("hashrate")));
-        }
-    },
-
-    getBlockByHash: function (hash, full, f) {
-        return this.broadcast(this.marshal("getBlockByHash", [hash, full || false]), f);
-    },
-
-    getBlock: function (number, full, f) {
-        return this.broadcast(this.marshal("getBlockByNumber", [number, full || false]), f);
-    },
-    getBlockByNumber: function (number, full, f) {
-        return this.broadcast(this.marshal("getBlockByNumber", [number, full || false]), f);
-    },
-
-    version: function (f) {
-        return this.broadcast(this.marshal("version", [], "net_"), f);
-    },
-    netVersion: function (f) {
-        return this.broadcast(this.marshal("version", [], "net_"), f);
-    },
-
-    // estimate a transaction's gas cost
-    estimateGas: function (tx, f) {
-        tx.to = tx.to || "";
-        return this.broadcast(this.marshal("estimateGas", tx), f);
-    },
-
-    // execute functions on contracts on the blockchain
-    call: function (tx, f) {
-        tx.to = tx.to || "";
-        tx.gas = (tx.gas) ? abi.prefix_hex(tx.gas.toString(16)) : this.DEFAULT_GAS;
-        return this.broadcast(this.marshal("call", tx), f);
-    },
-
-    sendTx: function (tx, f) {
-        tx.to = tx.to || "";
-        tx.gas = (tx.gas) ? abi.prefix_hex(tx.gas.toString(16)) : this.DEFAULT_GAS;
-        return this.broadcast(this.marshal("sendTransaction", tx), f);
-    },
-    sendTransaction: function (tx, f) {
-        tx.to = tx.to || "";
-        tx.gas = (tx.gas) ? abi.prefix_hex(tx.gas.toString(16)) : this.DEFAULT_GAS;
-        return this.broadcast(this.marshal("sendTransaction", tx), f);
-    },
-
-    // IN: RLP(tx.signed(privateKey))
-    // OUT: txhash
-    sendRawTx: function (rawTx, f) {
-        return this.broadcast(this.marshal("sendRawTransaction", rawTx), f);
-    },
-    sendRawTransaction: function (rawTx, f) {
-        return this.broadcast(this.marshal("sendRawTransaction", rawTx), f);
-    },
-
-    receipt: function (txhash, f) {
-        return this.broadcast(this.marshal("getTransactionReceipt", txhash), f);
-    },
-    getTransactionReceipt: function (txhash, f) {
-        return this.broadcast(this.marshal("getTransactionReceipt", txhash), f);
-    },
-
-    // publish a new contract to the blockchain (from the coinbase account)
-    publish: function (compiled, f) {
-        return this.sendTx({ from: this.eth("coinbase"), data: compiled }, f);
-    },
-
-    // Read the code in a contract on the blockchain
-    read: function (address, block, f) {
-        return this.broadcast(this.marshal("getCode", [address, block || "latest"]), f);
-    },
-    getCode: function (address, block, f) {
-        return this.broadcast(this.marshal("getCode", [address, block || "latest"]), f);
-    },
-
-    listening: function () {
-        try {
-            return this.net("listening");
-        } catch (e) {
-            return false;
-        }
-    },
-
-    /**
-     * Invoke a function from a contract on the blockchain.
-     *
-     * Input tx format:
-     * {
-     *    from: <sender's address> (hexstring; optional, coinbase default)
-     *    to: <contract address> (hexstring)
-     *    method: <function name> (string)
-     *    signature: <function signature, e.g. "iia"> (string)
-     *    params: <parameters passed to the function> (optional)
-     *    returns: <"number[]", "int", "BigNumber", or "string" (default)>
-     *    send: <true to sendTransaction, false to call (default)>
-     * }
-     */
-    invoke: function (itx, f) {
-        var tx, data_abi, packaged, invocation, invoked;
-        if (itx) {
-            if (itx.send && itx.invocation && itx.invocation.invoke &&
-                itx.invocation.invoke.constructor === Function)
-            {
-                // var evoke = itx.invocation.invoke;
-                // var context = itx.invocation.context;
-                // delete itx.invocation;
-                return itx.invocation.invoke.call(itx.invocation.context, itx, f);
-            } else {
-                tx = abi.copy(itx);
-                if (tx.params !== undefined) {
-                    if (tx.params.constructor === Array) {
-                        for (var i = 0, len = tx.params.length; i < len; ++i) {
-                            if (tx.params[i] !== undefined &&
-                                tx.params[i].constructor === BigNumber) {
-                                tx.params[i] = tx.params[i].toFixed();
-                            }
-                        }
-                    } else if (tx.params.constructor === BigNumber) {
-                        tx.params = tx.params.toFixed();
-                    }
-                }
-                if (tx.to) tx.to = abi.prefix_hex(tx.to);
-                if (tx.from) tx.from = abi.prefix_hex(tx.from);
-                data_abi = abi.encode(tx);
-                if (data_abi) {
-                    packaged = {
-                        from: tx.from || this.eth("coinbase"),
-                        to: tx.to,
-                        data: data_abi
-                    };
-                    if (tx.value) packaged.value = tx.value;
-                    if (tx.returns) packaged.returns = tx.returns;
-                    invocation = (tx.send) ? this.sendTx : this.call;
-                    invoked = true;
-                    return invocation.call(this, packaged, f);
-                }
-            }
-        }
-        if (!invoked) {
-            if (f) {
-                f(errors.TRANSACTION_FAILED);
-            } else {
-                return errors.TRANSACTION_FAILED;
-            }
-        }
-    },
-
-    /**
-     * Batched RPC commands
-     */
-    batch: function (txlist, f) {
-        var num_commands, rpclist, callbacks, tx, data_abi, packaged, invocation;
-        if (txlist.constructor === Array) {
-            num_commands = txlist.length;
-            rpclist = new Array(num_commands);
-            callbacks = new Array(num_commands);
-            for (var i = 0; i < num_commands; ++i) {
-                tx = abi.copy(txlist[i]);
-                if (tx.params !== undefined) {
-                    if (tx.params.constructor === Array) {
-                        for (var j = 0, len = tx.params.length; j < len; ++j) {
-                            if (tx.params[j] !== undefined &&
-                                tx.params[j] !== null &&
-                                tx.params[j].constructor === BigNumber) {
-                                tx.params[j] = tx.params[j].toFixed();
-                            }
-                        }
-                    } else if (tx.params.constructor === BigNumber) {
-                        tx.params = tx.params.toFixed();
-                    }
-                }
-                if (tx.from) tx.from = abi.prefix_hex(tx.from);
-                tx.to = abi.prefix_hex(tx.to);
-                data_abi = abi.encode(tx);
-                if (data_abi) {
-                    if (tx.callback && tx.callback.constructor === Function) {
-                        callbacks[i] = tx.callback;
-                        delete tx.callback;
-                    }
-                    packaged = {
-                        from: tx.from || this.eth("coinbase"),
-                        to: tx.to,
-                        data: data_abi
-                    };
-                    if (tx.value) packaged.value = tx.value;
-                    if (tx.returns) packaged.returns = tx.returns;
-                    invocation = (tx.send) ? "sendTransaction" : "call";
-                    rpclist[i] = this.marshal(invocation, packaged);
-                } else {
-                    log("unable to package commands for batch RPC");
-                    return rpclist;
-                }
-            }
-            if (f) {
-                if (f.constructor === Function) { // callback on whole array
-                    this.broadcast(rpclist, f);
-                } else if (f === true) {
-                    this.broadcast(rpclist, function (res) {
-                        if (res) {
-                            if (res.constructor === Array && res.length) {
-                                for (j = 0; j < num_commands; ++j) {
-                                    if (res[j] && callbacks[j]) {
-                                        callbacks[j](res[j]);
-                                    }
-                                }
-                            } else {
-                                if (callbacks.length && callbacks[0]) {
-                                    callbacks[0](res);
-                                }
-                            }
-                        }
-                    });
-                }
-            } else {
-                return this.broadcast(rpclist, f);
-            }
-        } else {
-            log("expected array for batch RPC, invoking instead");
-            return this.invoke(txlist, f);
-        }
-    },
-
-    clearNotifications: function (id) {
-        for (var i = 0, len = this.notifications.length; i < len; ++i) {
-            clearTimeout(this.notifications[id][i]);
-            this.notifications[id] = [];
-        }
-    },
-
-    encodeResult: function (result, returns) {
-        if (result) {
-            if (returns === "null") {
-                result = null;
-            } else if (returns === "address" || returns === "address[]") {
-                result = abi.prefix_hex(abi.remove_leading_zeros(result));
-            } else {
-                if (this.bignumbers && returns !== "string") {
-                    result = abi.bignum(result);
-                }
-                if (!this.bignumbers) {
-                    if (!returns || returns === "hash[]" || returns === "hash") {
-                        result = abi.bignum(result, "hex");
-                    } else if (returns === "number") {
-                        result = abi.bignum(result, "string");
-                    }
-                }
-            }
-        }
-        return result;
-    },
-
-    errorCodes: function (tx, response) {
-        if (response && response.constructor === Array) {
-            for (var i = 0, len = response.length; i < len; ++i) {
-                response[i] = this.errorCodes(tx.method, response[i]);
-            }
-        } else {
-            if (errors[response]) {
-                response = {
-                    error: response,
-                    message: errors[response]
-                };
-            } else {
-                if (tx.returns && tx.returns !== "string" ||
-                    (response && response.constructor === String &&
-                    response.slice(0,2) === "0x"))
-                {
-                    var response_number = abi.bignum(response);
-                    if (response_number) {
-                        response_number = abi.bignum(response).toFixed();
-                        if (errors[tx.method] && errors[tx.method][response_number]) {
-                            response = {
-                                error: response_number,
-                                message: errors[tx.method][response_number]
-                            };
-                        }
-                    }
-                }
-            }
-        }
-        return response;
-    },
-
-    fire: function (itx, callback) {
-        var tx = abi.copy(itx);
-        if (callback) {
-            this.invoke(tx, function (res) {
-                callback(this.encodeResult(
-                    this.errorCodes(tx, res),
-                    itx.returns
-                ));
-            }.bind(this));
-        } else {
-            return this.encodeResult(
-                this.errorCodes(tx, this.invoke(tx)),
-                itx.returns
-            );
-        }
-    },
-
-    /***************************************
-     * Send-call-confirm callback sequence *
-     ***************************************/
-
-    checkBlockHash: function (tx, callreturn, itx, txhash, returns, count, onSent, onSuccess, onFailed) {
-        if (tx && tx.blockHash && abi.bignum(tx.blockHash).toNumber() !== 0) {
-            this.clearNotifications(txhash);
-            tx.callReturn = this.encodeResult(callreturn, returns);
-            tx.txHash = tx.hash;
-            delete tx.hash;
-            if (onSuccess && onSuccess.constructor === Function) onSuccess(tx);
-        } else {
-            if (count !== undefined) {
-                if (count < this.TX_POLL_MAX) {
-                    if (count === 0) {
-                        this.notifications[txhash] = [setTimeout(function () {
-                            this.txNotify(count + 1, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed);
-                        }.bind(this), this.TX_POLL_INTERVAL)];
-                    } else {
-                        this.notifications[txhash].push(setTimeout(function () {
-                            this.txNotify(count + 1, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed);
-                        }.bind(this), this.TX_POLL_INTERVAL));
-                    }
-                } else {
-                    if (onFailed && onFailed.constructor === Function) {
-                        onFailed(errors.TRANSACTION_NOT_CONFIRMED);
-                    }
-                }
-            }
-        }
-    },
-
-    txNotify: function (count, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed) {
-        this.getTx(txhash, function (tx) {
-            if (tx === null) {
-                if (returns) itx.returns = returns;
-            } else {
-                this.checkBlockHash(tx, callreturn, itx, txhash, returns, count, onSent, onSuccess, onFailed);
-            }
-        }.bind(this));
-    },
-
-    confirmTx: function (tx, txhash, returns, onSent, onSuccess, onFailed) {
-        var self = this;
-        if (tx && txhash) {
-            this.notifications[txhash] = [];
-            if (errors[txhash]) {
-                if (onFailed) onFailed({
-                    error: txhash,
-                    message: errors[txhash]
-                });
-            } else {
-                this.getTx(txhash, function (sent) {
-                    if (returns !== "null") {
-                        self.call({
-                            from: sent.from || self.eth("coinbase"),
-                            to: sent.to || tx.to,
-                            value: sent.value || tx.value,
-                            data: sent.input
-                        }, function (callReturn) {
-                            if (callReturn) {
-                                callReturn = JSON.stringify({ result: callReturn });
-
-                                // transform callReturn to a number
-                                var numReturn = self.parse(callReturn, "number");
-
-                                // check if numReturn is an error object
-                                if (numReturn.constructor === Object && numReturn.error) {
-                                    if (onFailed) onFailed(numReturn);
-                                } else if (errors[numReturn]) {
-                                    if (onFailed) onFailed({
-                                        error: numReturn,
-                                        message: errors[numReturn]
-                                    });
-                                } else {
-                                    try {
-
-                                        // check if numReturn is an error code
-                                        if (numReturn && numReturn.constructor === BigNumber) {
-                                            numReturn = numReturn.toFixed();
-                                        }
-                                        if (numReturn && errors[tx.method] && errors[tx.method][numReturn]) {
-                                            if (onFailed) onFailed({
-                                                error: numReturn,
-                                                message: errors[tx.method][numReturn]
-                                            });
-                                        } else {
-
-                                            // no errors found, so transform to the requested
-                                            // return type, specified by "returns" parameter
-                                            callReturn = self.parse(callReturn, returns);
-
-                                            // send the transaction hash and return value back
-                                            // to the client, using the onSent callback
-                                            onSent({
-                                                txHash: txhash,
-                                                callReturn: self.encodeResult(callReturn, returns)
-                                            });
-
-                                            // if an onSuccess callback was supplied, then
-                                            // poll the network until the transaction is
-                                            // included in a block (i.e., has a non-null
-                                            // blockHash field)
-                                            if (onSuccess) {
-                                                self.txNotify(
-                                                    0,
-                                                    callReturn,
-                                                    tx,
-                                                    txhash,
-                                                    returns,
-                                                    onSent,
-                                                    onSuccess,
-                                                    onFailed
-                                                );
-                                            }
-                                        }
-
-                                    // something went wrong :(
-                                    } catch (e) {
-                                        if (onFailed) onFailed(e);
-                                    }
-                                }
-                            }
-                        });
-
-                    // if returns type is null, skip the intermediate call
-                    } else {
-                        onSent({ txHash: txhash, callReturn: null });
-                        if (onSuccess) {
-                            self.txNotify(
-                                0,
-                                null,
-                                tx,
-                                txhash,
-                                returns,
-                                onSent,
-                                onSuccess,
-                                onFailed
-                            );
-                        }
-                    }
-                });
-            }
-        }
-    },
-
-    transact: function (tx, onSent, onSuccess, onFailed) {
-        var returns = tx.returns;
-        tx.send = true;
-        delete tx.returns;
-        if (onSent && onSent.constructor === Function) {
-            this.invoke(tx, function (txhash) {
-                if (txhash.error) {
-                    if (onFailed) onFailed(txhash);
-                } else {
-                    txhash = abi.prefix_hex(abi.pad_left(abi.strip_0x(txhash)));
-                    this.confirmTx(tx, txhash, returns, onSent, onSuccess, onFailed);
-                }
-            }.bind(this));
-        } else {
-            return this.invoke(tx);
-        }
-    }
-
-};
-
-}).call(this,require('_process'))
-},{"./errors":298,"_process":22,"augur-abi":300,"bignumber.js":302,"http":15,"sync-request":9,"url":40}],300:[function(require,module,exports){
-arguments[4][2][0].apply(exports,arguments)
-},{"bignumber.js":302,"dup":2,"js-sha3":301}],301:[function(require,module,exports){
-arguments[4][3][0].apply(exports,arguments)
-},{"dup":3}],302:[function(require,module,exports){
-arguments[4][6][0].apply(exports,arguments)
-},{"crypto":53,"dup":6}]},{},[1]);
+},{"./constants":295,"_process":22,"assert":8,"augur-abi":2,"bignumber.js":6,"buffer":10,"chalk":45,"crypto":53,"crypto-browserify":53,"fs":7,"moment":287,"path":21,"validator":289}]},{},[1]);

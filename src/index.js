@@ -56,8 +56,8 @@ var augur = {
 var DEFAULT_RPC = ["http://127.0.0.1:8545"].concat(augur.constants.nodes);
 
 augur.nodes = DEFAULT_RPC;
-augur.contracts = augur.utils.copy(contracts.testnet);
-augur.init_contracts = augur.utils.copy(contracts.testnet);
+augur.contracts = augur.utils.copy(contracts["0"]);
+augur.init_contracts = augur.utils.copy(contracts["0"]);
 
 augur.reload_modules = function () {
     if (this.contracts) this.tx = new Tx(this.contracts);
@@ -145,13 +145,13 @@ augur.connect = function (rpcinfo, chain) {
             this.network_id = chain || rpc.version() || "0";
             switch (this.network_id.toString()) {
                 case "7":
-                    this.contracts = this.utils.copy(contracts.privatechain);
+                    this.contracts = this.utils.copy(contracts["7"]);
                     break;
                 case "10101":
-                    this.contracts = this.utils.copy(contracts.testchain);
+                    this.contracts = this.utils.copy(contracts["10101"]);
                     break;
                 default:
-                    this.contracts = this.utils.copy(contracts.testnet);
+                    this.contracts = this.utils.copy(contracts["0"]);
             }
             for (method in this.tx) {
                 if (!this.tx.hasOwnProperty(method)) continue;
