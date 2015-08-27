@@ -30,15 +30,14 @@
     ]
   },
   "dependencies": {
-    "augur-abi": "^0.1.0",
-    "augur.js": "^0.9.11",
+    "augur-abi": "^0.1.1",
+    "augur.js": "^0.9.13",
     "babelify": "^6.1.1",
     "bignumber.js": "^2.0.7",
     "bootstrap": "^3.3.4",
     "browserify": "^10.2.4",
     "envify": "^3.4.0",
     "es6-promise": "^2.0.1",
-    "firebase-token-generator": "^2.0.0",
     "fluxxor": "^1.6.0",
     "jquery": "^2.1.3",
     "lodash": "^3.9.0",
