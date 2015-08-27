@@ -39,6 +39,9 @@ var Network = React.createClass({
           <p className="client">
             CLIENT<span className="pull-right">{this.state.network.clientVersion}</span>
           </p>
+          <p className="network-id">
+            NETWORK ID<span className="pull-right">{this.state.network.networkId}</span>
+          </p>
           <p className="host">
             HOST<span className="pull-right">{this.state.host}</span>
           </p>

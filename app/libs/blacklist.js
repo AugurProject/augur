@@ -1,8 +1,8 @@
 // blacklist markets & events by network id then branch id
 
 // initialize blacklists with network ids
-var markets = { 0: {}, 1010101:{} };
-var events = { 0: {}, 1010101:{} };
+var markets = { 0: {}, 7:{} };
+var events = { 0: {}, 7:{} };
 
 // [ network id ][ branch id ]
 markets['0']['1010101'] = [
@@ -18,6 +18,10 @@ markets['0']['1010101'] = [
     "-81635174e39d2ddf7e978e7891ecdba821fd3cae44e0351f64c8dedc383bb771",
     "-78e4a8b5dbd3a013a42cf8976654045ad1614e2882515791ba43876922b37802",
     "-e055740a84abada89dfc997cb33083f24f1fd2d5788088888d3f41febaece0c5"
+];
+
+markets['7']['1010101'] = [
+
 ];
 
 module.exports = {

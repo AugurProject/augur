@@ -181,26 +181,31 @@ EthereumClient.prototype.batch = function(commands) {
 
 EthereumClient.prototype.getNetworkId = function(onResult) {
 
-  if (onResult) {
-    onResult(this.networkId);
-  } else {
-    return this.networkId;
-  }
+  if (this.networkId) {
 
-  if (!onResult) {
-    var result = web3.version.network;
-    this.networkId = result;
-    return result;
-  }  
-
-  web3.version.getNetwork(function(error, result) {
-    if (error) { 
-      utilities.error(error);
-    } else { 
-      this.networkId = result;
-      onResult(result); 
+    if (onResult) {
+      onResult(this.networkId);
+    } else {
+      return this.networkId;
     }
-  }.bind(this));
+
+  } else {
+
+    if (!onResult) {
+      var result = web3.version.network;
+      this.networkId = result;
+      return result;
+    }  
+
+    web3.version.getNetwork(function(error, result) {
+      if (error) { 
+        utilities.error(error);
+      } else { 
+        this.networkId = result;
+        onResult(result); 
+      }
+    }.bind(this));
+  }
 };
 
 EthereumClient.prototype.getClientVersion = function(onResult) {
