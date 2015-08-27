@@ -31,7 +31,13 @@ var TransactionStore = Fluxxor.createStore({
   },
 
   handleAddTransaction: function (payload) {
-    state[payload.hash] = new Transaction(payload.hash, payload.type, payload.description, payload.onMined);
+
+    state[payload.hash] = new Transaction(payload.hash);
+
+    state[payload.hash].type = payload.type;
+    state[payload.hash].description = payload.description;
+    state[payload.hash].onMined = payload.onMined;
+
     this.emit(constants.CHANGE_EVENT);
   },
 

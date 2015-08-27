@@ -624,7 +624,7 @@ EthereumClient.prototype.addEvent = function(params, onSuccess) {
           }
           if (newEvent.txHash) {
             utilities.debug("txHash: " + newEvent.txHash);
-            Augur.getTx(newEvent.txHash);
+            Augur.rpc.getTx(newEvent.txHash);
           }
           if (onSuccess) onSuccess(newEvent);
         }
