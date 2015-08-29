@@ -56,11 +56,11 @@ module.exports = {
     // Read and write methods for Ethereum's LevelDB (deprecated)
     leveldb: {
 
-        put: function (rpc, handle, data, f) {
+        put: function (rpc, handle, data, label, f) {
             try {
                 return rpc.broadcast(rpc.marshal(
                     "putString",
-                    ["accounts", handle, JSON.stringify(data)],
+                    [label, handle, JSON.stringify(data)],
                     "db_"
                 ), f);
             } catch (e) {
@@ -72,28 +72,28 @@ module.exports = {
             }
         }, // put
 
-        get: function (rpc, handle, f) {
+        get: function (rpc, handle, label, f) {
             try {
                 if (f) {
                     rpc.broadcast(rpc.marshal(
                         "getString",
-                        ["accounts", handle],
+                        [label, handle],
                         "db_"
-                    ), function (account) {
-                        if (!account.error) {
-                            f(JSON.parse(account));
+                    ), function (record) {
+                        if (!record.error) {
+                            f(JSON.parse(record));
                         } else {
                             f(errors.BAD_CREDENTIALS);
                         }
                     });
                 } else {
-                    var account = rpc.broadcast(rpc.marshal(
+                    var record = rpc.broadcast(rpc.marshal(
                         "getString",
-                        ["accounts", handle],
+                        [label, handle],
                         "db_"
                     ));
-                    if (!account.error) {
-                        return JSON.parse(account);
+                    if (!record.error) {
+                        return JSON.parse(record);
                     } else {
                         return errors.BAD_CREDENTIALS;
                     }

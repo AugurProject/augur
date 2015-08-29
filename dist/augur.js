@@ -978,7 +978,7 @@ module.exports = {
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],4:[function(require,module,exports){
 module.exports={
-    "testnet": {
+    "0": {
         "namereg": "0xc6d9d2cd449a754c494264e1809c50e34d64562b",
         "checkQuorum": "0xe26c5a52d23d259f452eba1855123cf08e388095",
         "buyAndSellShares": "0x4382ef4d06f089ced6ed376be3a501c8c7cea30a",
@@ -1017,7 +1017,7 @@ module.exports={
         "redeem_resolve": "0x88ba7d757f80eb1edfd0eb11dca3b1c835fb040a",
         "redeem_payout": "0xcded3f69a0e82c3be134159b20c4596660755236"
     },
-    "privatechain": {
+    "7": {
         "namereg": "0xc6d9d2cd449a754c494264e1809c50e34d64562b",
         "buyAndSellShares": "0xcb41186d3fa3eae83aa828eb776a913ffe94bcb7",
         "checkQuorum": "0x7ad6e15cedf2a82651b5b407d1e98cbdf7c9e0e4",
@@ -1056,7 +1056,7 @@ module.exports={
         "score": "0xe7fd9f29b2fbd3623574f303bee4355ca4645d62",
         "statistics": "0xb44c5dffcb5092c06e8240b1d300b3287b0ca279"
     },
-    "testchain": {
+    "10101": {
         "namereg": "0xc6d9d2cd449a754c494264e1809c50e34d64562b",
         "buyAndSellShares": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79",
         "checkQuorum": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68",
@@ -49567,6 +49567,7 @@ arguments[4][224][0].apply(exports,arguments)
 var errors = require("../errors");
 var constants = require("../constants");
 var abi = require("augur-abi");
+var db = require("../client/db");
 
 module.exports = function (augur) {
 
@@ -49574,33 +49575,6 @@ module.exports = function (augur) {
 
         // key: marketId => {filterId: hexstring, polling: bool}
         filters: {},
-
-        db: {
-
-            write: function (handle, data, f) {
-                try {
-                    return augur.rpc.broadcast(augur.rpc.marshal(
-                        "putString",
-                        ["comments", handle, data],
-                        "db_"
-                    ), f);
-                } catch (e) {
-                    return errors.DB_WRITE_FAILED;
-                }
-            },
-
-            get: function (handle, f) {
-                try {
-                    return augur.rpc.broadcast(augur.rpc.marshal(
-                        "getString",
-                        ["comments", handle],
-                        "db_"
-                    ), f);
-                } catch (e) {
-                    return errors.DB_READ_FAILED;
-                }
-            }
-        },
 
         getMessages: function (filter, f) {
             return augur.rpc.broadcast(augur.rpc.marshal("getMessages", filter, "shh_"), f);
@@ -49650,7 +49624,7 @@ module.exports = function (augur) {
                                 // log(incoming_parsed);
                     
                                 // get existing comment(s) stored locally
-                                stored_comments = self.db.get(market_id);
+                                stored_comments = db.leveldb.get(augur.rpc, market_id, "comments");
 
                                 // check if incoming comments length > stored
                                 if (stored_comments && stored_comments.length) {
@@ -49658,7 +49632,7 @@ module.exports = function (augur) {
                                     if (incoming_parsed.length > stored_parsed.length ) {
                                         // log(incoming_parsed.length.toString() + " incoming comments");
                                         // log("[" + filter_id + "] overwriting comments for market: " + market_id);
-                                        if (self.db.write(market_id, incoming_comments)) {
+                                        if (db.leveldb.put(augur.rpc, market_id, incoming_comments, "comments")) {
                                             // log("[" + filter_id + "] overwrote comments for market: " + market_id);
                                         }
                                     } else {
@@ -49668,7 +49642,7 @@ module.exports = function (augur) {
                                 } else {
                                     // log(incoming_parsed.length.toString() + " incoming comments");
                                     // log("[" + filter_id + "] inserting first comments for market: " + market_id);
-                                    if (self.db.write(market_id, incoming_comments)) {
+                                    if (db.leveldb.put(augur.rpc, market_id, incoming_comments, "comments")) {
                                         // log("[" + filter_id + "] overwrote comments for market: " + market_id);
                                     }
                                 }
@@ -49703,7 +49677,7 @@ module.exports = function (augur) {
                     };
 
                     // broadcast all comments in local leveldb
-                    comments = this.db.get(market);
+                    comments = db.leveldb.get(augur.rpc, market, "comments");
                     if (comments) {
                         whisper_id = this.newIdentity();
                         if (whisper_id) {
@@ -49726,11 +49700,11 @@ module.exports = function (augur) {
         },
 
         resetComments: function (market) {
-            return this.db.write(market, "");
+            return db.leveldb.put(augur.rpc, market, "", "comments");
         },
 
         getMarketComments: function (market) {
-            var comments = this.db.get(market);
+            var comments = db.leveldb.get(augur.rpc, market, "comments");
             if (comments) {
                 if (!comments.error) {
                     return JSON.parse(comments);
@@ -49758,8 +49732,7 @@ module.exports = function (augur) {
                 }]);
 
                 // get existing comment(s) stored locally
-                // (note: build with DFATDB=1 if DBUNDLE=minimal)
-                comments = this.db.get(market);
+                comments = db.leveldb.get(augur.rpc, market, "comments");
                 if (comments && !comments.error) {
                     if (comments && comments !== '""') {
                         // console.log("stored:", comments);
@@ -49767,7 +49740,7 @@ module.exports = function (augur) {
                         updated = updated.slice(0,-1) + "," + comments.slice(1);
                         // console.log("concat:", updated);
                     }
-                    if (this.db.write(market, updated)) {
+                    if (db.leveldb.put(augur.rpc, market, updated, "comments")) {
                         transmission = {
                             from: whisper_id,
                             topics: [market],
@@ -49796,7 +49769,7 @@ module.exports = function (augur) {
     };
 };
 
-},{"../constants":295,"../errors":296,"augur-abi":2}],291:[function(require,module,exports){
+},{"../client/db":294,"../constants":295,"../errors":296,"augur-abi":2}],291:[function(require,module,exports){
 /**
  * Ethereum filters / logging
  */
@@ -50403,11 +50376,11 @@ module.exports = {
     // Read and write methods for Ethereum's LevelDB (deprecated)
     leveldb: {
 
-        put: function (rpc, handle, data, f) {
+        put: function (rpc, handle, data, label, f) {
             try {
                 return rpc.broadcast(rpc.marshal(
                     "putString",
-                    ["accounts", handle, JSON.stringify(data)],
+                    [label, handle, JSON.stringify(data)],
                     "db_"
                 ), f);
             } catch (e) {
@@ -50419,28 +50392,28 @@ module.exports = {
             }
         }, // put
 
-        get: function (rpc, handle, f) {
+        get: function (rpc, handle, label, f) {
             try {
                 if (f) {
                     rpc.broadcast(rpc.marshal(
                         "getString",
-                        ["accounts", handle],
+                        [label, handle],
                         "db_"
-                    ), function (account) {
-                        if (!account.error) {
-                            f(JSON.parse(account));
+                    ), function (record) {
+                        if (!record.error) {
+                            f(JSON.parse(record));
                         } else {
                             f(errors.BAD_CREDENTIALS);
                         }
                     });
                 } else {
-                    var account = rpc.broadcast(rpc.marshal(
+                    var record = rpc.broadcast(rpc.marshal(
                         "getString",
-                        ["accounts", handle],
+                        [label, handle],
                         "db_"
                     ));
-                    if (!account.error) {
-                        return JSON.parse(account);
+                    if (!record.error) {
+                        return JSON.parse(record);
                     } else {
                         return errors.BAD_CREDENTIALS;
                     }
