@@ -297,7 +297,7 @@ function upload_contracts(geth) {
                     log("Send", options.MINIMUM_ETHER, "ETH to:");
                     for (var i = 1, len = accounts.length; i < len; ++i) {
                         log(chalk.green("  ✓ ") + chalk.gray(accounts[i]));
-                        augur.pay(accounts[i], options.MINIMUM_ETHER);
+                        augur.rpc.sendEther(accounts[i], options.MINIMUM_ETHER);
                     }
                 }
                 if (options.FAUCETS) {
