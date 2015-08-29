@@ -15,13 +15,13 @@ var BigNumber = require("bignumber.js");
 var assert = require("chai").assert;
 var _ = require("lodash");
 var rm = require("rimraf");
+var abi = require("augur-abi");
 var chalk = require("chalk");
 var mocha = new (require("mocha"))();
 var mod_getopt = require("posix-getopt");
 var augur = require(path.join(__dirname, "..", "src"));
 var constants = augur.constants;
 var utils = augur.utils;
-var numeric = augur.numeric;
 var log = console.log;
 
 var options = {
@@ -124,7 +124,7 @@ function spawn_geth(flags) {
 }
 
 function mine_minimum_ether(geth, account, next) {
-    var balance = numeric.bignum(augur.rpc.balance(account)).dividedBy(constants.ETHER).toNumber();
+    var balance = abi.bignum(augur.rpc.balance(account)).dividedBy(constants.ETHER).toNumber();
     if (balance < options.MINIMUM_ETHER) {
         if (balance > 0) {
             log(chalk.green(balance) + chalk.gray(" ETH, waiting for ") +
@@ -139,7 +139,7 @@ function mine_minimum_ether(geth, account, next) {
 }
 
 function connect_augur() {
-    augur.options.BigNumberOnly = false;
+    augur.rpc.bignumbers = false;
     if (options.CUSTOM_GOSPEL) {
         augur = utils.setup(
             augur,
@@ -182,7 +182,7 @@ function init(geth, account, callback, next, count) {
         } else {
             var balance = augur.rpc.balance(account);
             if (balance && !balance.error) {
-                balance = numeric.bignum(balance).dividedBy(constants.ETHER).toFixed();
+                balance = abi.bignum(balance).dividedBy(constants.ETHER).toFixed();
                 log("Connected on account", chalk.cyan(account));
                 log(chalk.green(augur.rpc.blockNumber()), chalk.gray("blocks"));
                 log(chalk.green(balance), chalk.gray("ETH"));
@@ -218,8 +218,8 @@ function faucets(geth) {
     var branch = augur.branches.dev;
     var coinbase = augur.coinbase;
     var balance = {
-        reputation: numeric.bignum(augur.getRepBalance(branch, coinbase)),
-        cash: numeric.bignum(augur.getCashBalance(coinbase))
+        reputation: abi.bignum(augur.getRepBalance(branch, coinbase)),
+        cash: abi.bignum(augur.getCashBalance(coinbase))
     };
     var needs = {
         reputation: !balance.reputation || balance.reputation.lt(new BigNumber(47)),
@@ -230,7 +230,7 @@ function faucets(geth) {
     mocha.reporter(options.MOCHA_REPORTER).run(function (failures) {
         var cash_balance = augur.getCashBalance(coinbase);
         var rep_balance = augur.getRepBalance(branch, coinbase);
-        var ether_balance = numeric.bignum(augur.rpc.balance(coinbase)).dividedBy(constants.ETHER).toFixed();
+        var ether_balance = abi.bignum(augur.rpc.balance(coinbase)).dividedBy(constants.ETHER).toFixed();
         log(chalk.cyan("\nBalances:"));
         log("Cash:       " + chalk.green(cash_balance));
         log("Reputation: " + chalk.green(rep_balance));
