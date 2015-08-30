@@ -8,6 +8,7 @@ var errors = require("../errors");
 var constants = require("../constants");
 var abi = require("augur-abi");
 var db = require("../client/db");
+var log = console.log;
 
 module.exports = function (augur) {
 
@@ -128,6 +129,7 @@ module.exports = function (augur) {
                                 priority: "0x64",
                                 ttl: "0x500" // time-to-live (until expiration) in seconds
                             };
+                            log(transmission);
                             if (!this.post(transmission)) {
                                 return errors.WHISPER_POST_FAILED;
                             }
@@ -173,12 +175,9 @@ module.exports = function (augur) {
 
                 // get existing comment(s) stored locally
                 comments = db.leveldb.get(augur.rpc, market, "comments");
-                if (comments && !comments.error) {
+                if (comments !== undefined && comments !== null && !comments.error) {
                     if (comments && comments !== '""') {
-                        // console.log("stored:", comments);
-                        // console.log("incoming:", updated);
-                        updated = updated.slice(0,-1) + "," + comments.slice(1);
-                        // console.log("concat:", updated);
+                        updated = updated.slice(0, -1) + "," + comments.slice(1);
                     }
                     if (db.leveldb.put(augur.rpc, market, updated, "comments")) {
                         transmission = {
@@ -189,9 +188,7 @@ module.exports = function (augur) {
                             ttl: "0x600" // 10 minutes
                         };
                         if (this.post(transmission)) {
-                            var decoded = abi.decode_hex(transmission.payload);
-                            console.log(decoded);
-                            return JSON.parse(decoded.slice(1));
+                            return JSON.parse(abi.decode_hex(transmission.payload));
                         } else {
                             return errors.WHISPER_POST_FAILED;
                         }

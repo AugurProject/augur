@@ -14,7 +14,7 @@ var log = console.log;
 describe("Comments (whisper)", function () {
 
     var market = "0x01";
-    
+
     var pkg = { marketId: market, author: augur.coinbase };
 
     it("should reset comments", function () {
@@ -40,7 +40,6 @@ describe("Comments (whisper)", function () {
         augur.comments.initComments(market);
         pkg.message = Math.random().toString(36).substring(4);
         var updated_comments = augur.comments.addMarketComment(pkg);
-        log(updated_comments);
         assert(updated_comments);
         assert.strictEqual(updated_comments.constructor, Array);
         assert.strictEqual(updated_comments.length, 1);
