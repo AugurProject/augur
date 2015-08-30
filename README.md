@@ -15,8 +15,8 @@ Usage
 -----
 
 ```javascript
-var Augur = require('augur.js');
-Augur.connect();
+var augur = require('augur.js');
+augur.connect();
 ```
 
 Documentation

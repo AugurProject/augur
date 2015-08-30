@@ -67,7 +67,7 @@ augur.reload_modules = function () {
     this.web = new Accounts(this);
     this.comments = new Comments(this);
     this.filters = new Filters(this);
-    this.namereg = new Namereg(this);
+    // this.namereg = new Namereg(this);
 };
 
 augur.reload_modules();
@@ -510,7 +510,7 @@ augur.moveEventsToCurrentPeriod = function (branch, currentVotePeriod, currentPe
     return rpc.fire(tx, onSent);
 };
 augur.getCurrentPeriod = function (branch) {
-    return parseInt(this.blockNumber()) / parseInt(this.getPeriodLength(branch));
+    return parseInt(this.rpc.blockNumber()) / parseInt(this.getPeriodLength(branch));
 };
 augur.updatePeriod = function (branch) {
     var currentPeriod = this.getCurrentPeriod(branch);
@@ -710,7 +710,7 @@ augur.getCurrentVotePeriod = function (branch, onSent) {
         rpc.fire(this.tx.getPeriodLength, function (periodLength) {
             if (periodLength) {
                 periodLength = abi.bignum(periodLength);
-                this.blockNumber(function (blockNum) {
+                this.rpc.blockNumber(function (blockNum) {
                     blockNum = abi.bignum(blockNum);
                     onSent(blockNum.dividedBy(periodLength).floor().sub(1));
                 });
@@ -719,7 +719,7 @@ augur.getCurrentVotePeriod = function (branch, onSent) {
     } else {
         periodLength = rpc.fire(this.tx.getPeriodLength);
         if (periodLength) {
-            blockNum = abi.bignum(this.blockNumber());
+            blockNum = abi.bignum(this.rpc.blockNumber());
             return blockNum.dividedBy(abi.bignum(periodLength)).floor().sub(1);
         }
     }
@@ -1484,7 +1484,7 @@ augur.dispatch = function (branch, onSent, onSuccess, onFailed) {
 
 augur.checkPeriod = function (branch) {
     var period = Number(this.getVotePeriod(branch));
-    var currentPeriod = Math.floor(this.blockNumber() / Number(this.getPeriodLength(branch)));
+    var currentPeriod = Math.floor(this.rpc.blockNumber() / Number(this.getPeriodLength(branch)));
     var periodsBehind = (currentPeriod - 1) - period;
     return periodsBehind;
 };
@@ -1495,7 +1495,7 @@ augur.getCreationBlock = function (market_id, callback) {
     if (market_id) {
         var filter = {
             fromBlock: "0x1",
-            toBlock: this.blockNumber(),
+            toBlock: this.rpc.blockNumber(),
             topics: ["creationBlock"]
         };
         if (callback) {
@@ -1512,7 +1512,8 @@ augur.getMarketPriceHistory = function (market_id, outcome_id, callback) {
     if (market_id && outcome_id) {
         var filter = {
             fromBlock: "0x1",
-            toBlock: this.blockNumber(),
+            toBlock: this.rpc.blockNumber(),
+            address: this.contracts.buyAndSellShares,
             topics: ["updatePrice"]
         };
         if (callback) {

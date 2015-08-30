@@ -7,35 +7,113 @@
 
 var assert = require("chai").assert;
 var chalk = require("chalk");
-var constants = require("../../src/constants");
+var abi = require("augur-abi");
 var utils = require("../../src/utilities");
-var Augur = utils.setup(require("../../src"), process.argv.slice(2));
+var augur = utils.setup(require("../../src"), process.argv.slice(2));
+var constants = augur.constants;
 var log = console.log;
 
-var branch = Augur.branches.dev;
-var markets = Augur.getMarkets(branch);
+var branch = augur.branches.dev;
+var markets = augur.getMarkets(branch);
 var market_id = markets[markets.length - 1];
 var outcome = "1";
 var amount = "10";
 
-describe("getMarketPriceHistory", function () {
-    it("price history (async)", function (done) {
+describe("updatePrice listener", function () {
+
+    it("should return data on buyShares", function (done) {
         this.timeout(constants.TIMEOUT);
-        Augur.buyShares({
+        
+        augur.filters.start_eth_listener("updatePrice", function (filter_id) {
+
+            var listener = setInterval(function () {
+                augur.filters.poll_eth_listener("updatePrice", function (data) {
+                    if (data) {
+                        if (data.error) {
+                            done(data);
+                        } else {
+                            clearInterval(listener);
+                            assert.isObject(data);
+                            assert.property(data, "user");
+                            assert.property(data, "marketId");
+                            assert.property(data, "outcome");
+                            assert.property(data, "price");
+                            assert.property(data, "cost");
+                            assert.property(data, "blockNumber");
+                            assert(abi.bignum(data.user).eq(abi.bignum(augur.coinbase)));
+                            var market = abi.bignum(data.marketId[2]);
+                            var marketplus = market.plus(abi.constants.MOD);
+                            if (marketplus.lt(abi.constants.BYTES_32)) {
+                                market = marketplus;
+                            }
+                            assert(market.eq(abi.bignum(data.marketId[2])));
+                            assert(abi.bignum(data.outcome).eq(abi.bignum(outcome)));
+                            assert.isAbove(parseInt(data.blockNumber), 0);
+                            done();
+                        }
+                    }
+                });
+            }, 2000);
+
+            setTimeout(function () {
+                augur.buyShares({
+                    branchId: branch,
+                    marketId: market_id,
+                    outcome: outcome,
+                    amount: amount,
+                    onSent: function (r) {
+                        assert.property(r, "txHash");
+                        assert.property(r, "callReturn");
+                    },
+                    onSuccess: function (r) {
+                        assert.property(r, "txHash");
+                        assert.property(r, "callReturn");
+                        assert.property(r, "blockHash");
+                        assert.property(r, "blockNumber");
+                        assert.isAbove(parseInt(r.blockNumber), 0);
+                        assert.strictEqual(r.from, augur.coinbase);
+                        assert.strictEqual(r.to, augur.contracts.buyAndSellShares);
+                        assert.strictEqual(parseInt(r.value), 0);
+                    },
+                    onFailed: function (r) {
+                        done(r);
+                    }
+                });
+            }, 2000);
+
+        });
+    });
+
+});
+
+describe("getMarketPriceHistory", function () {
+
+    it("[async] price history", function (done) {
+        this.timeout(constants.TIMEOUT);
+        augur.buyShares({
             branchId: branch,
             marketId: market_id,
             outcome: outcome,
             amount: amount,
             onSent: function (r) {
-
+                assert.property(r, "txHash");
+                assert.property(r, "callReturn");
             },
             onSuccess: function (r) {
-                Augur.getMarketPriceHistory(market_id, outcome, function (price_logs) {
-                    assert.isArray(price_logs);
-                    assert.property(price_logs, "length");
-                    assert.isAbove(price_logs.length, 0);
-                    assert.property(price_logs[0], "price");
-                    assert.property(price_logs[0], "blockNumber");
+                assert.property(r, "txHash");
+                assert.property(r, "callReturn");
+                assert.property(r, "blockHash");
+                assert.property(r, "blockNumber");
+                assert.isAbove(parseInt(r.blockNumber), 0);
+                assert.strictEqual(r.from, augur.coinbase);
+                assert.strictEqual(r.to, augur.contracts.buyAndSellShares);
+                assert.strictEqual(parseInt(r.value), 0);
+                augur.getMarketPriceHistory(market_id, outcome, function (logs) {
+                    assert.isArray(logs);
+                    assert.property(logs, "length");
+                    assert.isAbove(logs.length, 0);
+                    assert.property(logs[0], "price");
+                    assert.property(logs[0], "blockNumber");
                     done();
                 });
             },
@@ -44,23 +122,33 @@ describe("getMarketPriceHistory", function () {
             }
         });
     });
-    it("price history (sync)", function (done) {
+
+    it("[sync] price history", function (done) {
         this.timeout(constants.TIMEOUT);
-        Augur.buyShares({
+        augur.buyShares({
             branchId: branch,
             marketId: market_id,
             outcome: outcome,
             amount: amount,
             onSent: function (r) {
-
+                assert.property(r, "txHash");
+                assert.property(r, "callReturn");
             },
             onSuccess: function (r) {
-                var price_logs = Augur.getMarketPriceHistory(market_id, outcome);
-                assert.isArray(price_logs);
-                assert.property(price_logs, "length");
-                assert.isAbove(price_logs.length, 0);
-                assert.property(price_logs[0], "price");
-                assert.property(price_logs[0], "blockNumber");
+                assert.property(r, "txHash");
+                assert.property(r, "callReturn");
+                assert.property(r, "blockHash");
+                assert.property(r, "blockNumber");
+                assert.isAbove(parseInt(r.blockNumber), 0);
+                assert.strictEqual(r.from, augur.coinbase);
+                assert.strictEqual(r.to, augur.contracts.buyAndSellShares);
+                assert.strictEqual(parseInt(r.value), 0);
+                var logs = augur.getMarketPriceHistory(market_id, outcome);
+                assert.isArray(logs);
+                assert.property(logs, "length");
+                assert.isAbove(logs.length, 0);
+                assert.property(logs[0], "price");
+                assert.property(logs[0], "blockNumber");
                 done();
             },
             onFailed: function (r) {
@@ -68,39 +156,5 @@ describe("getMarketPriceHistory", function () {
             }
         });
     });
-});
 
-describe("updatePrice listener", function () {
-    it("should return data on buyShares", function (done) {
-        this.timeout(constants.TIMEOUT);
-        Augur.filters.start_eth_listener("updatePrice", function (filter_id) {
-            var listener = setInterval(function () {
-                Augur.filters.poll_eth_listener("updatePrice", function (data) {
-                    if (data) {
-                        log(data);
-                        clearInterval(listener);
-                        done();
-                    }
-                });
-            }, 2000);
-            setTimeout(function () {
-                Augur.buyShares({
-                    branchId: branch,
-                    marketId: market_id,
-                    outcome: outcome,
-                    amount: amount,
-                    onSent: function (r) {
-                        log("sent:", r);
-                        log(utils.pp(r));
-                    },
-                    onSuccess: function (r) {
-                        log("success", utils.pp(r));
-                    },
-                    onFailed: function (r) {
-                        done(r);
-                    }
-                });
-            }, 2000);
-        });
-    });
 });

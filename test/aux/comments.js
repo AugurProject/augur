@@ -26,7 +26,7 @@ describe("Comments (whisper)", function () {
         this.timeout(constants.TIMEOUT);
         assert(!augur.comments.getMarketComments(market));
     });
-        
+
     it("should set up comments for market " + market + " and return the filter id", function () {
         this.timeout(constants.TIMEOUT);
         var filter = augur.comments.initComments(market);
