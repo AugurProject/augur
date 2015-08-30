@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "augur-abi": "^0.1.1",
-    "augur.js": "^0.9.13",
+    "augur.js": "^0.9.15",
     "babelify": "^6.1.1",
     "bignumber.js": "^2.0.7",
     "bootstrap": "^3.3.4",
