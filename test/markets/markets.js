@@ -64,8 +64,8 @@ describe("markets.se", function () {
     });
     describe("getMarketInfo(" + market_id + ")", function () {
         var test = function (r) {
-            assert.strictEqual(r.constructor, Array);
-            assert(r.length >= 6);
+            assert.isArray(r);
+            assert.isAbove(r.length, 5);
         };
         it("sync", function () {
             test(Augur.getMarketInfo(market_id));

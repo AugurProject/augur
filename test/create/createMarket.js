@@ -5,13 +5,11 @@
 
 "use strict";
 
-var BigNumber = require("bignumber.js");
 var assert = require("chai").assert;
-var chalk = require("chalk");
-var constants = require("../../src/constants");
+var abi = require("augur-abi");
 var utils = require("../../src/utilities");
 var augur = utils.setup(require("../../src"), process.argv.slice(2));
-var abi = require("augur-abi");
+var constants = augur.constants;
 var log = console.log;
 
 require('it-each')({ testPerIteration: true });
@@ -104,8 +102,8 @@ describe("functions/createMarket", function () {
                                     log("  description:", utils.pp(augur.getDescription(marketID)));
                                 }
                                 assert(event_list);
+                                assert.isArray(event_list);
                                 assert.strictEqual(event_list.length, 1);
-                                assert.strictEqual(Object.prototype.toString.call(event_list), "[object Array]");
                                 assert.strictEqual(event_list[0], eventID);
                                 next();
                             }); // markets.getMarketEvents

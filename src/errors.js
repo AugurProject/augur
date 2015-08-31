@@ -122,6 +122,11 @@ var errors = {
         message: "handle already taken"
     },
 
+    FILTER_NOT_CREATED: {
+        error: 450,
+        message: "filter could not be created"
+    },
+
     TRANSACTION_FAILED: {
         error: 500,
         message: "transaction failed"

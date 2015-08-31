@@ -6,6 +6,7 @@
 
 var chalk = require("chalk");
 var abi = require("augur-abi");
+var errors = require("../errors");
 var log = console.log;
 
 module.exports = function (augur) {
@@ -117,8 +118,30 @@ module.exports = function (augur) {
             {
                 filter_id = this.price_filters[filter_name].filterId;
 
+                if (callback) {
+                    callback(filter_id);
+                } else {
+                    return filter_id;
+                }
+
             } else {
-                this.create_price_filter(filter_name, function (filter_id) {
+                if (callback && callback.constructor === Function) {
+                    this.create_price_filter(filter_name, function (filter_id) {
+                        if (filter_id && filter_id !== "0x") {
+
+                            this.price_filters[filter_name] = {
+                                filterId: filter_id,
+                                polling: false
+                            };
+                            callback(filter_id);
+
+                        } else {
+                            callback(errors.FILTER_NOT_CREATED);
+                        }
+                    }.bind(this));
+
+                } else {
+                    var filter_id = this.create_price_filter(filter_name);
 
                     if (filter_id && filter_id !== "0x") {
 
@@ -126,13 +149,12 @@ module.exports = function (augur) {
                             filterId: filter_id,
                             polling: false
                         };
-                        if (callback) callback(filter_id);
+                        return filter_id;
 
                     } else {
-                        log("Couldn't create " + filter_name + " filter:",
-                            chalk.green(filter_id));
-                    }
-                }.bind(this));
+                        return errors.FILTER_NOT_CREATED;
+                    }                    
+                }
             }
         }
 
