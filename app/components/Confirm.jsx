@@ -2,13 +2,10 @@ var React = require('react');
 var Fluxxor = require("fluxxor");
 var FluxMixin = Fluxxor.FluxMixin(React);
 var ReactBootstrap = require('react-bootstrap');
-var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
 var Button = ReactBootstrap.Button;
 var Modal = ReactBootstrap.Modal;
 
 var ConfirmModal = React.createClass({
-
-  mixins: [OverlayMixin],
 
   getInitialState: function () {
     return {

@@ -33,20 +33,20 @@
     "augur-abi": "^0.1.1",
     "augur-contracts": "^0.1.1",
     "augur.js": "^0.9.15",
-    "babelify": "^6.1.1",
+    "babelify": "^6.3.0",
     "bignumber.js": "^2.0.7",
     "bootstrap": "^3.3.4",
-    "browserify": "^10.2.4",
+    "browserify": "^10.2.6",
     "envify": "^3.4.0",
     "es6-promise": "^2.0.1",
     "fluxxor": "^1.6.0",
-    "jquery": "^2.1.3",
-    "lodash": "^3.9.0",
+    "jquery": "^2.1.4",
+    "lodash": "^3.10.1",
     "moment": "^2.10.2",
     "node-static": "~0.7.6",
     "pnglib": "0.0.1",
     "react": "^0.13.3",
-    "react-bootstrap": "^0.23.7",
+    "react-bootstrap": "^0.25.1",
     "react-cookie": "^0.2.3",
     "react-date-picker": "^2.1.3",
     "react-intl": "^1.2.0",
@@ -58,7 +58,7 @@
   },
   "devDependencies": {
     "grunt": "^0.4.5",
-    "grunt-browserify": "^3.6.0",
-    "grunt-contrib-jshint": "^0.11.1"
+    "grunt-browserify": "^4.0.0",
+    "grunt-contrib-jshint": "^0.11.2"
   }
 }

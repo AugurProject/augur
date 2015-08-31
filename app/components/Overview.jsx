@@ -48,7 +48,8 @@ var Overview = React.createClass({
     _.each(this.state.holdings, function (market) {
       _.each(market.outcomes, function(outcome) {
         if (outcome && outcome.sharesHeld && outcome.sharesHeld.toNumber()) {
-          holdings.push( <Holding market={ market } outcome={ outcome } /> );
+          var key = market.id+outcome.id;
+          holdings.push( <Holding market={ market } outcome={ outcome } key={ key } /> );
         }
       });
     }, this);

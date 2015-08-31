@@ -67,18 +67,13 @@ var MarketActions = {
         this.dispatch(constants.market.ADD_MARKET_SUCCESS, {market: market});
       }
       var commands = this.flux.actions.market.batchMarket(marketId);
-      _.each(_.chunk(commands, 6), function(chunk) {
-
-        new Promise(function(resolve, reject) {
+      _.each(_.chunk(commands, 5), function(chunk) {
 
           ethereumClient.batch(chunk);
 
-        });
       });
 
     }, this);
-
-    //console.log(markets[marketIds[0]]);
   },
 
   // first batch of data fetch from market
@@ -102,7 +97,7 @@ var MarketActions = {
       market['numOutcomes'] = parseInt(result[3]);
       market['tradingPeriod'] = result[4];
       market['tradingFee'] = utilities.fromFixedPoint(result[5]);
-    
+
       if (market['numOutcomes'] < 2) market['invalid'] = true;
 
       // initialize outcomes

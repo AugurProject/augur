@@ -30,6 +30,7 @@ config.browserify.watch = _.merge({
     keepAlive: true
   }
 }, config.browserify.build);
+
 config.browserify.watch.options.browserifyOptions.transform = [
   ['babelify', {}],
   ['envify', config.envify.debug]

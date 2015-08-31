@@ -5,7 +5,6 @@ var FluxMixin = Fluxxor.FluxMixin(React),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
 var ReactBootstrap = require('react-bootstrap');
-var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
 var Modal = ReactBootstrap.Modal;
 
 var utilities = require('../libs/utilities');
@@ -13,7 +12,7 @@ var constants = require('../libs/constants');
 
 var EtherWarnModal = React.createClass({
 
-  mixins: [FluxMixin, OverlayMixin],
+  mixins: [FluxMixin],
 
   getInitialState: function () {
 
