@@ -5,12 +5,11 @@
 
 "use strict";
 
-var crypto = require("crypto");
 var assert = require("chai").assert;
+var abi = require("augur-abi");
 var utils = require("../../src/utilities");
 var augur = utils.setup(require("../../src"), process.argv.slice(2));
 var constants = augur.constants;
-var abi = require("augur-abi");
 var log = console.log;
 
 var accounts = utils.get_test_accounts(augur, constants.MAX_TEST_ACCOUNTS);
@@ -32,6 +31,16 @@ describe("data and api/reporting", function () {
                 test(r); done();
             });
         });
+        it("batched-async", function (done) {
+            var batch = augur.createBatch();
+            batch.add("getTotalRep", [branch_id], function (r) {
+                test(r);
+            });
+            batch.add("getTotalRep", [branch_id], function (r) {
+                test(r); done();
+            });
+            batch.execute();
+        });
     });
     describe("getRepBalance(" + branch_id + ") ", function () {
         var test = function (r) {
@@ -44,6 +53,17 @@ describe("data and api/reporting", function () {
             augur.getRepBalance(branch_id, accounts[0], function (r) {
                 test(r); done();
             });
+        });
+        it("batched-async", function (done) {
+            var batch = augur.createBatch();
+            var params = [branch_id, accounts[0]];
+            batch.add("getRepBalance", params, function (r) {
+                test(r);
+            });
+            batch.add("getRepBalance", params, function (r) {
+                test(r); done();
+            });
+            batch.execute();
         });
     });
     describe("getRepByIndex(" + branch_id + ", " + reporter_index + ") ", function () {
@@ -58,10 +78,21 @@ describe("data and api/reporting", function () {
                 test(r); done();
             });
         });
+        it("batched-async", function (done) {
+            var batch = augur.createBatch();
+            var params = [branch_id, reporter_index];
+            batch.add("getRepByIndex", params, function (r) {
+                test(r);
+            });
+            batch.add("getRepByIndex", params, function (r) {
+                test(r); done();
+            });
+            batch.execute();
+        });
     });
     describe("getReporterID(" + branch_id + ", " + reporter_index + ") ", function () {
         var test = function (r) {
-            assert.strictEqual(r, accounts[0]);
+            assert(abi.bignum(r).eq(abi.bignum(accounts[0])));
         };
         it("sync", function () {
             test(augur.getReporterID(branch_id, reporter_index));
@@ -70,6 +101,17 @@ describe("data and api/reporting", function () {
             augur.getReporterID(branch_id, reporter_index, function (r) {
                 test(r); done();
             });
+        });
+        it("batched-async", function (done) {
+            var batch = augur.createBatch();
+            var params = [branch_id, reporter_index];
+            batch.add("getReporterID", params, function (r) {
+                test(r);
+            });
+            batch.add("getReporterID", params, function (r) {
+                test(r); done();
+            });
+            batch.execute();
         });
     });
     describe("getNumberReporters(" + branch_id + ") ", function () {
@@ -84,6 +126,17 @@ describe("data and api/reporting", function () {
                 test(r); done();
             });
         });
+        it("batched-async", function (done) {
+            var batch = augur.createBatch();
+            var params = [branch_id];
+            batch.add("getNumberReporters", params, function (r) {
+                test(r);
+            });
+            batch.add("getNumberReporters", params, function (r) {
+                test(r); done();
+            });
+            batch.execute();
+        });
     });
     describe("repIDToIndex(" + branch_id + ", " + accounts[0] + ") ", function () {
         var test = function (r) {
@@ -97,6 +150,17 @@ describe("data and api/reporting", function () {
                 test(r); done();
             });
         });
+        it("batched-async", function (done) {
+            var batch = augur.createBatch();
+            var params = [branch_id, accounts[0]];
+            batch.add("repIDToIndex", params, function (r) {
+                test(r);
+            });
+            batch.add("repIDToIndex", params, function (r) {
+                test(r); done();
+            });
+            batch.execute();
+        });
     });
     describe("hashReport([ballot], " + salt + ") ", function () {
         var test = function (r) {
@@ -108,7 +172,15 @@ describe("data and api/reporting", function () {
             var hashed = utils.sha256(hashable);
             // TODO lookup how arrays hashed by evm sha256, this doesn't work
             // assert.strictEqual(r, hashed);
-            assert.strictEqual(r, "-0x3bc32da7042e04b537160b3b24f53162cb621c482fb615aa108087898d6183fb");
+            var r = abi.bignum(r);
+            var rplus = r.plus(abi.constants.MOD);
+            if (rplus.lt(abi.constants.BYTES_32)) {
+                r = rplus;
+            }
+            assert.strictEqual(
+                r.toString(16),
+                "-3bc32da7042e04b537160b3b24f53162cb621c482fb615aa108087898d6183fb"
+            );
         };
         it("sync", function () {
             test(augur.hashReport(ballot, salt));
@@ -117,6 +189,17 @@ describe("data and api/reporting", function () {
             augur.hashReport(ballot, salt, function (r) {
                 test(r); done();
             });
+        });
+        it("batched-async", function (done) {
+            var batch = augur.createBatch();
+            var params = [abi.fix(ballot, "hex"), salt];
+            batch.add("hashReport", params, function (r) {
+                test(r);
+            });
+            batch.add("hashReport", params, function (r) {
+                test(r); done();
+            });
+            batch.execute();
         });
     });
 });

@@ -6,45 +6,66 @@
 "use strict";
 
 var assert = require("chai").assert;
-var constants = require("../../src/constants");
+var abi = require("augur-abi");
 var utils = require("../../src/utilities");
-var Augur = utils.setup(require("../../src"), process.argv.slice(2));
+var augur = utils.setup(require("../../src"), process.argv.slice(2));
+var constants = augur.constants;
 var log = console.log;
 
 var amount = "1";
-var branch_id = Augur.branches.dev;
-var markets = Augur.getMarkets(branch_id);
+var branch_id = augur.branches.dev;
+var markets = augur.getMarkets(branch_id);
 var market_id = markets[markets.length - 1];
-var event_id = Augur.getMarketEvents(market_id)[0];
+var event_id = augur.getMarketEvents(market_id)[0];
 
 // events.se
 describe("events.se", function () {
     describe("getEventInfo(" + event_id + ")", function () {
         var test = function (res) {
-            assert.strictEqual(res[0], branch_id);
+            assert(abi.bignum(res[0]).eq(abi.bignum(branch_id)));
             assert.strictEqual(res.length, 6);
         };
         it("sync", function () {
-            test(Augur.getEventInfo(event_id));
+            test(augur.getEventInfo(event_id));
         });
         it("async", function (done) {
-            Augur.getEventInfo(event_id, function (r) {
+            augur.getEventInfo(event_id, function (r) {
                 test(r); done();
             });
+        });
+        it("batched-async", function (done) {
+            var batch = augur.createBatch();
+            batch.add("getEventInfo", [event_id], function (r) {
+                test(r);
+            });
+            batch.add("getEventInfo", [event_id], function (r) {
+                test(r); done();
+            });
+            batch.execute();
         });
     });
 
     describe("getEventBranch(" + event_id + ")", function () {
         var test = function (r) {
-            assert.strictEqual(r, branch_id);
+            assert(abi.bignum(r).eq(abi.bignum(branch_id)));
         };
         it("sync", function () {
-            test(Augur.getEventBranch(event_id));
+            test(augur.getEventBranch(event_id));
         });
         it("async", function (done) {
-            Augur.getEventBranch(event_id, function (r) {
+            augur.getEventBranch(event_id, function (r) {
                 test(r); done();
             });
+        });
+        it("batched-async", function (done) {
+            var batch = augur.createBatch();
+            batch.add("getEventBranch", [event_id], function (r) {
+                test(r);
+            });
+            batch.add("getEventBranch", [event_id], function (r) {
+                test(r); done();
+            });
+            batch.execute();
         });
     });
     describe("getExpiration(" + event_id + ")", function () {
@@ -52,12 +73,22 @@ describe("events.se", function () {
             assert(parseInt(r) >= 10);
         };
         it("sync", function () {
-            test(Augur.getExpiration(event_id));
+            test(augur.getExpiration(event_id));
         });
         it("async", function (done) {
-            Augur.getExpiration(event_id, function (r) {
+            augur.getExpiration(event_id, function (r) {
                 test(r); done();
             });
+        });
+        it("batched-async", function (done) {
+            var batch = augur.createBatch();
+            batch.add("getExpiration", [event_id], function (r) {
+                test(r);
+            });
+            batch.add("getExpiration", [event_id], function (r) {
+                test(r); done();
+            });
+            batch.execute();
         });
     });
     describe("getOutcome(" + event_id + ")", function () {
@@ -65,12 +96,22 @@ describe("events.se", function () {
             assert.strictEqual(r, "0");
         };
         it("sync", function () {
-            test(Augur.getOutcome(event_id));
+            test(augur.getOutcome(event_id));
         });
         it("async", function (done) {
-            Augur.getOutcome(event_id, function (r) {
+            augur.getOutcome(event_id, function (r) {
                 test(r); done();
             });
+        });
+        it("batched-async", function (done) {
+            var batch = augur.createBatch();
+            batch.add("getOutcome", [event_id], function (r) {
+                test(r);
+            });
+            batch.add("getOutcome", [event_id], function (r) {
+                test(r); done();
+            });
+            batch.execute();
         });
     });
     describe("getMinValue(" + event_id + ") == '1'", function () {
@@ -78,12 +119,22 @@ describe("events.se", function () {
             assert.strictEqual(r, "0");
         };
         it("sync", function () {
-            test(Augur.getMinValue(event_id));
+            test(augur.getMinValue(event_id));
         });
         it("async", function (done) {
-            Augur.getMinValue(event_id, function (r) {
+            augur.getMinValue(event_id, function (r) {
                 test(r); done();
             });
+        });
+        it("batched-async", function (done) {
+            var batch = augur.createBatch();
+            batch.add("getMinValue", [event_id], function (r) {
+                test(r);
+            });
+            batch.add("getMinValue", [event_id], function (r) {
+                test(r); done();
+            });
+            batch.execute();
         });
     });
     describe("getMaxValue(" + event_id + ") == '2'", function () {
@@ -91,12 +142,22 @@ describe("events.se", function () {
             assert.strictEqual(r, "1");
         };
         it("sync", function () {
-            test(Augur.getMaxValue(event_id));
+            test(augur.getMaxValue(event_id));
         });
         it("async", function (done) {
-            Augur.getMaxValue(event_id, function (r) {
+            augur.getMaxValue(event_id, function (r) {
                 test(r); done();
             });
+        });
+        it("batched-async", function (done) {
+            var batch = augur.createBatch();
+            batch.add("getMaxValue", [event_id], function (r) {
+                test(r);
+            });
+            batch.add("getMaxValue", [event_id], function (r) {
+                test(r); done();
+            });
+            batch.execute();
         });
     });
     describe("getNumOutcomes(" + event_id + ") == '2'", function () {
@@ -104,12 +165,22 @@ describe("events.se", function () {
             assert.strictEqual(r, "2");
         };
         it("sync", function () {
-            test(Augur.getNumOutcomes(event_id));
+            test(augur.getNumOutcomes(event_id));
         });
         it("async", function (done) {
-            Augur.getNumOutcomes(event_id, function (r) {
+            augur.getNumOutcomes(event_id, function (r) {
                 test(r); done();
             });
+        });
+        it("batched-async", function (done) {
+            var batch = augur.createBatch();
+            batch.add("getNumOutcomes", [event_id], function (r) {
+                test(r);
+            });
+            batch.add("getNumOutcomes", [event_id], function (r) {
+                test(r); done();
+            });
+            batch.execute();
         });
     });
 });

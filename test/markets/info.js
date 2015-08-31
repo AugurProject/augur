@@ -6,6 +6,7 @@
 "use strict";
 
 var assert = require("chai").assert;
+var abi = require("augur-abi");
 var utils = require("../../src/utilities");
 var augur = utils.setup(require("../../src"), process.argv.slice(2));
 var constants = augur.constants;
@@ -25,27 +26,49 @@ var event_id = augur.getMarketEvents(market_id)[0];
 // info.se
 describe("info.se", function () {
     describe("getCreator(" + event_id + ") [event]", function () {
+        var test = function (r) {
+            assert(abi.bignum(r).eq(abi.bignum(test_account)));
+        };
         it("sync", function () {
-            var res = augur.getCreator(event_id);
-            assert.strictEqual(res, test_account);
+            test(augur.getCreator(event_id));
         });
         it("async", function (done) {
             augur.getCreator(event_id, function (r) {
-                assert.strictEqual(r, test_account);
-                done();
+                test(r); done();
             });
+        });
+        it("batched-async", function (done) {
+            var batch = augur.createBatch();
+            batch.add("getCreator", [event_id], function (r) {
+                test(r);
+            });
+            batch.add("getCreator", [event_id], function (r) {
+                test(r); done();
+            });
+            batch.execute();
         });
     });
     describe("getCreator(" + market_id + ") [market]", function () {
+        var test = function (r) {
+            assert(abi.bignum(r).eq(abi.bignum(test_account)));
+        };
         it("sync", function () {
-            var res = augur.getCreator(market_id);
-            assert.strictEqual(res, test_account);
+            test(augur.getCreator(market_id));
         });
         it("async", function (done) {
             augur.getCreator(market_id, function (r) {
-                assert.strictEqual(r, test_account);
-                done();
+                test(r); done();
             });
+        });
+        it("batched-async", function (done) {
+            var batch = augur.createBatch();
+            batch.add("getCreator", [market_id], function (r) {
+                test(r);
+            });
+            batch.add("getCreator", [market_id], function (r) {
+                test(r); done();
+            });
+            batch.execute();
         });
     });
     describe("getCreationFee(" + event_id + ") [event]", function () {
@@ -60,6 +83,16 @@ describe("info.se", function () {
                 test(r); done();
             });
         });
+        it("batched-async", function (done) {
+            var batch = augur.createBatch();
+            batch.add("getCreationFee", [event_id], function (r) {
+                test(r);
+            });
+            batch.add("getCreationFee", [event_id], function (r) {
+                test(r); done();
+            });
+            batch.execute();
+        });
     });
     describe("getCreationFee(" + market_id + ") [market]", function () {
         var test = function (r) {
@@ -73,10 +106,20 @@ describe("info.se", function () {
                 test(r); done();
             });
         });
+        it("batched-async", function (done) {
+            var batch = augur.createBatch();
+            batch.add("getCreationFee", [market_id], function (r) {
+                test(r);
+            });
+            batch.add("getCreationFee", [market_id], function (r) {
+                test(r); done();
+            });
+            batch.execute();
+        });
     });
     describe("getDescription(" + event_id + ")", function () {
         var test = function (r) {
-            assert(r.length);
+            assert.isAbove(r.length, 0);
         };
         it("sync", function () {
             test(augur.getDescription(event_id));
@@ -85,6 +128,16 @@ describe("info.se", function () {
             augur.getDescription(event_id, function (r) {
                 test(r); done();
             });
+        });
+        it("batched-async", function (done) {
+            var batch = augur.createBatch();
+            batch.add("getDescription", [event_id], function (r) {
+                test(r);
+            });
+            batch.add("getDescription", [event_id], function (r) {
+                test(r); done();
+            });
+            batch.execute();
         });
     });
 });
