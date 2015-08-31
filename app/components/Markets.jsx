@@ -29,27 +29,24 @@ var Markets = React.createClass({
   }
 });
 
-class MarketPane extends React.Component {
+var MarketPane = React.createClass({
 
-  constructor(props) {
-    super(props);
+  relevantMarketAttrs: ['outstandingShares', 'tradingPeriod', 'endDate', 'price', 'tradingFee'],
+  lastMarket: {},
 
-    this.relevantMarketAttrs = ['outstandingShares', 'tradingPeriod', 'endDate', 'price', 'tradingFee'];
-    this.lastMarket = {};
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate: function(nextProps, nextState) {
     
-    for (let attr of this.relevantMarketAttrs) {
+    _.each(this.relevantMarketAttrs, function(attr) {
       if (this.lastMarket[attr] != nextProps.market[attr])
         return true;
-    }
+    }, this);
+
     return Boolean(this.props.currentBranch != nextProps.currentBranch ||
       (nextProps.currentBranch &&
        this.props.currentBranch.currentPeriod != nextProps.currentBranch.currentPeriod));
-  }
+  },
 
-  render() {
+  render: function() {
 
     var market = this.props.market;
     var matured = this.props.currentBranch && this.props.currentBranch.currentPeriod >= this.props.market.tradingPeriod;
@@ -63,9 +60,9 @@ class MarketPane extends React.Component {
     var outstandingShares = outstandingShares ? +outstandingShares.toFixed(2) : '-';
     var tradingFee = market.tradingFee ? +market.tradingFee.times(100).toFixed(2)+'%' : '-';
 
-    for (let attr of this.relevantMarketAttrs) {
+    _.each(this.relevantMarketAttrs, function(attr) {
       this.lastMarket[attr] = market[attr];
-    }
+    }, this);
 
     var status = '';
     var linked = true;
@@ -129,6 +126,6 @@ class MarketPane extends React.Component {
       );
     }
   }
-}
+});
 
 module.exports = Markets;
