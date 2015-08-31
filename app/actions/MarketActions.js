@@ -68,10 +68,17 @@ var MarketActions = {
       }
       var commands = this.flux.actions.market.batchMarket(marketId);
       _.each(_.chunk(commands, 6), function(chunk) {
-        ethereumClient.batch(chunk);
+
+        new Promise(function(resolve, reject) {
+
+          ethereumClient.batch(chunk);
+
+        });
       });
 
     }, this);
+
+    //console.log(markets[marketIds[0]]);
   },
 
   // first batch of data fetch from market
@@ -260,6 +267,8 @@ var MarketActions = {
         market[property] = value;
         this.flux.actions.market.updateMarket(market);
 
+        return;
+
       }.bind(this);
     }.bind(this);
   },
@@ -317,7 +326,7 @@ var MarketActions = {
               ethereumClient.getParticipantSharesPurchased(market.id, market.traderId, outcome.id, function(result) {
                 outcome['sharesHeld'] = utilities.fromFixedPoint(result);
               }.bind(this));
-            }.bind(this));
+            }.bind(this)); 
 
             this.flux.actions.market.updateMarket(market, true);
           }

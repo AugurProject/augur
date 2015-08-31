@@ -11,6 +11,7 @@ var fromFixedPoint = utilities.fromFixedPoint;
 var toFixedPoint = utilities.toFixedPoint;
 
 var augur_abi = require('augur-abi');
+var augurContracts = require('augur-contracts');
 var Augur = window.Augur = require('augur.js');
 
 function MissingContractError(contractName) {
@@ -28,7 +29,7 @@ function EthereumClient(params) {
   params = params || {};
   this.contractAddress = {};
   this.filters = [];
-  this.contracts = {};
+  this.contracts = augurContracts;
   this.accounts = null;
   this.currentAccount = null;
   this.networkId = null;

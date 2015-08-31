@@ -80,7 +80,7 @@ var ConfigActions = {
 
         var marketId = result.args.market;
 
-        utilities.log('updating market ' + marketId.toString(16));
+        utilities.log('market change detected: updating market ' + marketId.toString(16));
         self.flux.actions.market.loadMarket(marketId);
       }
     });

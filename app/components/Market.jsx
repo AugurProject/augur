@@ -28,7 +28,7 @@ var Market = React.createClass({
     var marketId = new BigNumber(this.props.params.marketId, 16);
     var market = marketState.markets[marketId];
 
-    if (currentBranch && market && currentBranch.currentPeriod >= market.tradingPeriod) {
+    if (currentBranch && market && market.tradingPeriod && currentBranch.currentPeriod >= market.tradingPeriod.toNumber()) {
       market.matured = true;
     }
 
@@ -43,7 +43,7 @@ var Market = React.createClass({
   render: function() {
 
     // return nothing until we have an actual market loaded
-    if (_.isUndefined(this.state.market)) return (<div />);
+    if (_.isUndefined(this.state.market) || (this.state.market && !this.state.market.loaded) ) return (<div />);
 
     var market = this.state.market;
 
@@ -51,8 +51,10 @@ var Market = React.createClass({
     if (market.endDate) {
       if (market.matured) {
         subheading = 'Matured on ' + market.endDate.format("MMMM Do, YYYY");
-      } else {
+      } else if (market.endDate) {
         subheading = 'Resolves after ' + market.endDate.format("MMMM Do, YYYY");
+      } else {
+        subheading = 'Loading...';
       }
     }
     var outstandingShares =_.reduce(market.outcomes, function(outstandingShares, outcome) {
