@@ -10,11 +10,11 @@ var assert = require("chai").assert;
 var chalk = require("chalk");
 var EthTx = require("ethereumjs-tx");
 var EthUtil = require("ethereumjs-util");
+var abi = require("augur-abi");
 var utils = require("../../src/utilities");
 var db = require("../../src/client/db");
 var augur = utils.setup(require("../../src"), process.argv.slice(2));
 var constants = augur.constants;
-var abi = require("augur-abi");
 var log = console.log;
 
 // generate random private key
@@ -29,13 +29,14 @@ var password2 = utils.sha256(Math.random().toString(36).substring(4)).slice(10);
 describe("Register", function () {
 
     it("register account 1: " + handle + " / " + password, function (done) {
-        this.timeout(constants.TIMEOUT);
+        this.timeout(constants.TIMEOUT*4);
         db.get(handle, function (record) {
             assert(record.error);
             assert.strictEqual(record.error, 99);
             augur.web.register(handle, password, function (result) {
                 if (result.error) {
-                    augur.web.logout(); done(result);
+                    augur.web.logout();
+                    done(result);
                 } else {
                     assert(!result.error);
                     assert.property(result, "nonce");
@@ -83,12 +84,13 @@ describe("Register", function () {
     });
 
     it("register account 2: " + handle2 + " / " + password2, function (done) {
-        this.timeout(constants.TIMEOUT);
+        this.timeout(constants.TIMEOUT*4);
         db.get(handle2, function (record) {
             assert(record.error);
             augur.web.register(handle2, password2, function (result) {
                 if (result.error) {
-                    augur.web.logout(); done(result);
+                    augur.web.logout();
+                    done(result);
                 } else {
                     assert(!result.error);
                     assert.property(result, "nonce");
@@ -263,27 +265,32 @@ describe("Fund", function () {
 
     it("send " + constants.FREEBIE + " ether to " + recipient, function (done) {
 
-        this.timeout(constants.TIMEOUT*2);
+        this.timeout(constants.TIMEOUT*4);
 
         var initial_balance = abi
             .bignum(augur.rpc.balance(recipient))
             .dividedBy(constants.ETHER);
 
-        augur.web.fund({ address: recipient }, null, function (account) {
-            if (account.error) {
-                done(account);
-            } else {
-                assert.property(account, "address");
-                assert.strictEqual(account.address, recipient);
+        augur.web.fund(
+            { address: recipient },
+            function (acc) {
+                if (acc.error) throw acc;
+            }, function (account) {
+                if (account.error) {
+                    done(account);
+                } else {
+                    assert.property(account, "address");
+                    assert.strictEqual(account.address, recipient);
 
-                var final_balance = abi
-                    .bignum(augur.rpc.balance(recipient))
-                    .dividedBy(constants.ETHER);
+                    var final_balance = abi
+                        .bignum(augur.rpc.balance(recipient))
+                        .dividedBy(constants.ETHER);
 
-                assert(final_balance.sub(initial_balance).toNumber() >= 50);
-                done();
+                    assert(final_balance.sub(initial_balance).toNumber() >= 50);
+                    done();
+                }
             }
-        });
+        );
     });
 
 });
@@ -425,38 +432,38 @@ describe("Contract methods", function () {
 
     describe("Send transaction", function () {
 
-        // it("sign and send transaction using account 1", function (done) {
-        //     this.timeout(constants.TIMEOUT);
-        //     augur.web.login(handle, password, function (user) {
-        //         if (user.error) {
-        //             augur.web.logout(); done(user);
-        //         } else {
-        //             var tx = utils.copy(augur.tx.reputationFaucet);
-        //             tx.params = augur.branches.dev;
-        //             augur.web.invoke(tx, function (txhash) {
-        //                 if (txhash.error) {
-        //                     augur.web.logout(); done(txhash);
-        //                 } else {
-        //                     assert(txhash);
-        //                     augur.rpc.getTx(txhash, function (confirmTx) {
-        //                         if (confirmTx.error) {
-        //                             augur.web.logout(); done(confirmTx);
-        //                         } else {
-        //                             assert(confirmTx.hash);
-        //                             assert(confirmTx.from);
-        //                             assert(confirmTx.to);
-        //                             assert.strictEqual(txhash, confirmTx.hash);
-        //                             assert.strictEqual(confirmTx.from, user.address);
-        //                             assert.strictEqual(confirmTx.to, tx.to);
-        //                             augur.web.logout();
-        //                             done();
-        //                         }
-        //                     });
-        //                 }
-        //             });
-        //         }
-        //     });
-        // });
+        it("sign and send transaction using account 1", function (done) {
+            this.timeout(constants.TIMEOUT);
+            augur.web.login(handle, password, function (user) {
+                if (user.error) {
+                    augur.web.logout(); done(user);
+                } else {
+                    var tx = utils.copy(augur.tx.reputationFaucet);
+                    tx.params = augur.branches.dev;
+                    augur.web.invoke(tx, function (txhash) {
+                        if (txhash.error) {
+                            augur.web.logout(); done(txhash);
+                        } else {
+                            assert(txhash);
+                            augur.rpc.getTx(txhash, function (confirmTx) {
+                                if (confirmTx.error) {
+                                    augur.web.logout(); done(confirmTx);
+                                } else {
+                                    assert(confirmTx.hash);
+                                    assert(confirmTx.from);
+                                    assert(confirmTx.to);
+                                    assert.strictEqual(txhash, confirmTx.hash);
+                                    assert.strictEqual(confirmTx.from, user.address);
+                                    assert.strictEqual(confirmTx.to, tx.to);
+                                    augur.web.logout();
+                                    done();
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        });
 
         it("detect logged in user and default to web.invoke", function (done) {
             this.timeout(constants.TIMEOUT);

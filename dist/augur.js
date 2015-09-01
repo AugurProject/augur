@@ -48763,6 +48763,10 @@ module.exports = function (augur) {
             priceSold: null
         },
 
+        contracts_filter: null,
+
+        heart: null,
+
         eth_newFilter: function (params, f) {
             return augur.rpc.broadcast(augur.rpc.marshal("newFilter", params), f);
         },
@@ -48822,35 +48826,68 @@ module.exports = function (augur) {
             }
         },
 
+        sift: function (filtrate, onMessage) {
+            /**
+             * filtrate (array) example:
+             * [{
+             *     address: '0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79',
+             *     topics: [
+             *        '0x1a653a04916ffd3d6f74d5966492bda358e560be296ecf5307c2e2c2fdedd35a',
+             *        '0x00000000000000000000000005ae1d0ca6206c6168b42efcd1fbe0ed144e821b',
+             *        '0x4fe60eb31b13f1c0afdb7735111513f27cbecf312170c6e68e3c7c1f8a1239f8',
+             *        '0x0000000000000000000000000000000000000000000000000000000000000001'
+             *     ],
+             *     data: '0x000000000000000000000000000000000000000000000000ffffffffffffd570ffffffffffffffffffffffffffffffffffffffffffffffff00000000000002f7',
+             *   blockNumber: '0x11db',
+             *   logIndex: '0x0',
+             *   blockHash: '0x0000000000000000000000000000000000000000000000000000000000000000',
+             *   transactionHash: '0x2d3dc5dea7fe6b14e034acb3b95d3d40bd45392dcd2e8030c2d15df3ddbd0594',
+             *   transactionIndex: '0x0'
+             * }, ...]
+             */
+            var stringify, hexify, data_array, market, marketplus,
+                message, messages = [];
+            if (augur.bignumbers) {
+                stringify = hexify = "BigNumber";
+            } else {
+                stringify = "string";
+                hexify = "hex";
+            }
+            for (var i = 0, len = filtrate.length; i < len; ++i) {
+                data_array = augur.rpc.unmarshal(filtrate[i].data);
+                market = abi.bignum(filtrate[i].topics[2]);
+                marketplus = market.plus(abi.constants.MOD);
+                if (marketplus.lt(abi.constants.BYTES_32)) market = marketplus;
+
+                // updatePrice message
+                message = {
+                    user: filtrate[i].topics[1],
+                    marketId: abi.bignum(market, hexify),
+                    outcome: abi.bignum(filtrate[i].topics[3], stringify),
+                    price: abi.unfix(data_array[0], stringify),
+                    cost: abi.unfix(data_array[1], stringify),
+                    blockNumber: abi.bignum(filtrate[i].blockNumber, stringify)
+                };
+                if (onMessage) onMessage(message);
+                messages.push(message);
+            }
+            if (messages && messages.length) return messages;
+        },
+
         poll_eth_listener: function (filter_name, onMessage) {
             if (this.price_filters[filter_name]) {
                 var filterId = this.price_filters[filter_name].filterId;
+                this.eth_getFilterChanges(filterId, function (filtrate) {
+                    if (filtrate) this.sift(filtrate, onMessage);
+                }.bind(this)); // eth_getFilterChanges
+            }
+        },
 
-                this.eth_getFilterChanges(filterId, function (message) {
-                    if (message) {
-                        var num_messages = message.length;
-
-                        if (num_messages) {
-                            for (var i = 0; i < num_messages; ++i) {
-                                var data_array = augur.rpc.unmarshal(message[i].data);
-                                var rtype = (augur.bignumbers) ? "BigNumber" : "string";
-                                var market = abi.bignum(message[i].topics[2]);
-                                var marketplus = market.plus(abi.constants.MOD);
-                                if (marketplus.lt(abi.constants.BYTES_32)) {
-                                    market = marketplus;
-                                }
-                                onMessage({
-                                    user: message[i].topics[1],
-                                    marketId: abi.bignum(market, rtype),
-                                    outcome: abi.bignum(message[i].topics[3], rtype),
-                                    price: abi.unfix(data_array[0], rtype),
-                                    cost: abi.unfix(data_array[1], rtype),
-                                    blockNumber: abi.bignum(message[i].blockNumber, rtype)
-                                });
-                            }
-                        }
-                    }
-                }); // eth_getFilterChanges
+        poll_listeners: function (onMessage) {
+            if (onMessage && onMessage.constructor === Function) {
+                this.eth_getFilterChanges(this.contracts_filter, function (filtrate) {
+                    if (filtrate) this.sift(filtrate, onMessage);
+                }.bind(this));
             }
         },
 
@@ -48885,7 +48922,7 @@ module.exports = function (augur) {
                     }.bind(this));
 
                 } else {
-                    var filter_id = this.create_price_filter(filter_name);
+                    filter_id = this.create_price_filter(filter_name);
 
                     if (filter_id && filter_id !== "0x") {
 
@@ -48900,11 +48937,64 @@ module.exports = function (augur) {
                     }                    
                 }
             }
+        },
+
+        clear_contracts_filter: function (callback) {
+            if (callback && callback.constructor === Function) {
+                this.eth_uninstallFilter(this.contracts_filter, function (uninst) {
+                    if (uninst) this.contracts_filter = null;
+                    callback(uninst);
+                }.bind(this));
+            } else {
+                var uninst = this.eth_uninstallFilter(this.contracts_filter);
+                if (uninst) this.contracts_filter = null;
+                return uninst;
+            }
+        },
+
+        setup_contracts_filter: function () {
+            var contract_list = [];
+            for (var c in augur.contracts) {
+                if (!augur.contracts.hasOwnProperty(c)) continue;
+                contract_list.push(augur.contracts[c]);
+            }
+            var params = {
+                address: contract_list,
+                fromBlock: "0x01",
+                toBlock: "latest"
+            };
+            this.contracts_filter = this.eth_newFilter(params);
+            return this.contracts_filter;
+        },
+
+        start_contracts_listener: function (callback) {
+
+            // set up contracts filter (if needed)
+            if (this.contracts_filter === null) {
+                if (callback && callback.constructor === Function) {
+                    setTimeout(function () {
+                        callback(this.setup_contracts_filter());
+                    }.bind(this), 0);
+                } else {
+                    return this.setup_contracts_filter();
+                }
+            }
+        },
+
+        heartbeat: function (pulse, callback) {
+            this.poll_listeners(callback);
+            this.heart = setInterval(function () {
+                this.poll_listeners(callback);
+            }.bind(this), pulse || 5000);
+        },
+
+        stop_heartbeat: function () {
+            clearInterval(this.heart);
+            this.heart = null;
         }
 
     };
 };
-
 
 },{"../errors":294,"augur-abi":2,"chalk":45}],290:[function(require,module,exports){
 /**
@@ -49028,37 +49118,50 @@ module.exports = function (augur) {
         account: {},
 
         // free (testnet) ether for new accounts on registration
-        fund: function (account, callback, onSuccess) {
+        fund: function (account, callback, onConfirm) {
+            var count = 0;
             augur.rpc.sendEther(
                 account.address,
                 constants.FREEBIE / 2,
                 augur.coinbase,
                 function (r) {
                     // sent
+                    // log("sent:", r);
                     if (callback) callback(account);
+                    augur.rpc.sendEther(
+                        account.address,
+                        constants.FREEBIE / 2,
+                        augur.coinbase,
+                        function (r) {
+                            // sent
+                        },
+                        function (r) {
+                            // success
+                            if (onConfirm && !(count++)) onConfirm(account);
+                        },
+                        function (r) {
+                            // failed
+                            r.which = 2;
+                            if (onConfirm && !(count++)) {
+                                onConfirm(r);
+                            } else {
+                                log("account.fund failed:", r);
+                            }
+                        }
+                    );
                 },
                 function (r) {
                     // success
+                    if (onConfirm && !(count++)) onConfirm(account);
                 },
                 function (r) {
                     // failed
-                    if (callback) callback(r);
-                }
-            );
-            augur.rpc.sendEther(
-                account.address,
-                constants.FREEBIE / 2,
-                augur.coinbase,
-                function (r) {
-                    // sent
-                },
-                function (r) {
-                    // success
-                    if (onSuccess) onSuccess(account);
-                },
-                function (r) {
-                    // failed
-                    if (callback) callback(r);
+                    r.which = 1;
+                    if (onConfirm && !(count++)) {
+                        onConfirm(r);
+                    } else {
+                        log("account.fund failed:", r);
+                    }
                 }
             );
         },
@@ -49711,7 +49814,7 @@ augur.reload_modules = function () {
     this.web = new Accounts(this);
     this.comments = new Comments(this);
     this.filters = new Filters(this);
-    // this.namereg = new Namereg(this);
+    this.namereg = new Namereg(this);
 };
 
 augur.reload_modules();

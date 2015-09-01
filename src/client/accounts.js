@@ -28,37 +28,50 @@ module.exports = function (augur) {
         account: {},
 
         // free (testnet) ether for new accounts on registration
-        fund: function (account, callback, onSuccess) {
+        fund: function (account, callback, onConfirm) {
+            var count = 0;
             augur.rpc.sendEther(
                 account.address,
                 constants.FREEBIE / 2,
                 augur.coinbase,
                 function (r) {
                     // sent
+                    // log("sent:", r);
                     if (callback) callback(account);
+                    augur.rpc.sendEther(
+                        account.address,
+                        constants.FREEBIE / 2,
+                        augur.coinbase,
+                        function (r) {
+                            // sent
+                        },
+                        function (r) {
+                            // success
+                            if (onConfirm && !(count++)) onConfirm(account);
+                        },
+                        function (r) {
+                            // failed
+                            r.which = 2;
+                            if (onConfirm && !(count++)) {
+                                onConfirm(r);
+                            } else {
+                                log("account.fund failed:", r);
+                            }
+                        }
+                    );
                 },
                 function (r) {
                     // success
+                    if (onConfirm && !(count++)) onConfirm(account);
                 },
                 function (r) {
                     // failed
-                    if (callback) callback(r);
-                }
-            );
-            augur.rpc.sendEther(
-                account.address,
-                constants.FREEBIE / 2,
-                augur.coinbase,
-                function (r) {
-                    // sent
-                },
-                function (r) {
-                    // success
-                    if (onSuccess) onSuccess(account);
-                },
-                function (r) {
-                    // failed
-                    if (callback) callback(r);
+                    r.which = 1;
+                    if (onConfirm && !(count++)) {
+                        onConfirm(r);
+                    } else {
+                        log("account.fund failed:", r);
+                    }
                 }
             );
         },

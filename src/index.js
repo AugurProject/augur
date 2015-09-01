@@ -67,7 +67,7 @@ augur.reload_modules = function () {
     this.web = new Accounts(this);
     this.comments = new Comments(this);
     this.filters = new Filters(this);
-    // this.namereg = new Namereg(this);
+    this.namereg = new Namereg(this);
 };
 
 augur.reload_modules();

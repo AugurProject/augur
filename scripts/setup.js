@@ -36,7 +36,7 @@ var options = {
     GOSPEL: path.join(__dirname, "..", "data", "gospel.json"),
     CUSTOM_GOSPEL: false,
     LOG: path.join(__dirname, "..", "data", "geth.log"),
-    GETH: process.env.GETH || "/usr/local/bin/geth",
+    GETH: process.env.GETH || "geth",
     SPAWN_GETH: true,
     SUITE: []
 };
@@ -47,8 +47,8 @@ if (options.NETWORK_ID === "10101") {
     options.DATADIR = path.join(process.env.HOME, ".augur-test");
 }
 
-// Private alpha network (networkid 1010101)
-else if (options.NETWORK_ID === "1010101") {
+// Private alpha network (networkid 7)
+else if (options.NETWORK_ID === "7") {
     options.DATADIR = path.join(process.env.HOME, ".augur");
 }
 
@@ -274,7 +274,7 @@ function upload_contracts(geth) {
         "--rpcport", options.RPC_PORT
     ];
     if (options.UPLOAD_CONTRACT) {
-        uploader_options.push("--contract=" + options.UPLOAD_CONTRACT);
+        uploader_options.concat(["--contract", options.UPLOAD_CONTRACT]);
     }
     var uploader = cp.spawn(options.UPLOADER, uploader_options);
     uploader.stdout.on("data", function (data) {
