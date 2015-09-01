@@ -30,8 +30,25 @@ describe("contract listeners", function () {
         var contracts_filter = augur.filters.start_contracts_listener();
         assert.strictEqual(augur.filters.contracts_filter, contracts_filter);
 
-        // poll contract filters
-        augur.filters.heartbeat(null, function (message) {
+        // poll contracts filter
+        augur.filters.heartbeat(function (message) {
+            assert.property(message, "address");
+            assert.property(message, "topics");
+            assert.property(message, "data");
+            assert.property(message, "blockNumber");
+            assert.property(message, "logIndex");
+            assert.property(message, "blockHash");
+            assert.property(message, "transactionHash");
+            assert.property(message, "transactionIndex");
+            assert.strictEqual(
+                message.address,
+                augur.contracts.buyAndSellShares
+            );
+            assert.isArray(message.topics);
+            assert.strictEqual(message.topics.length, 4);
+            assert.isArray(message.data);
+            assert.strictEqual(message.data.length, 2);
+            assert.isAbove(parseInt(message.blockNumber), 0);
 
             // stop heartbeat
             augur.filters.stop_heartbeat();
@@ -72,19 +89,39 @@ describe("contract listeners", function () {
     });
 
     it("[async] set up, test, tear down contract filters", function (done) {
-        this.timeout(constants.TIMEOUT*8);
+        this.timeout(constants.TIMEOUT);
 
         // synchronous
         augur.filters.start_contracts_listener(function (contracts_filter) {
-            assert.strictEqual(augur.filters.contracts_filter, contracts_filter);
+            assert.strictEqual(
+                augur.filters.contracts_filter,
+                contracts_filter
+            );
 
-            // poll contract filters
-            augur.filters.heartbeat(null, function (message) {
+            // poll contracts filter
+            augur.filters.heartbeat(function (message) {
+                assert.property(message, "address");
+                assert.property(message, "topics");
+                assert.property(message, "data");
+                assert.property(message, "blockNumber");
+                assert.property(message, "logIndex");
+                assert.property(message, "blockHash");
+                assert.property(message, "transactionHash");
+                assert.property(message, "transactionIndex");
+                assert.strictEqual(
+                    message.address,
+                    augur.contracts.buyAndSellShares
+                );
+                assert.isArray(message.topics);
+                assert.strictEqual(message.topics.length, 4);
+                assert.isArray(message.data);
+                assert.strictEqual(message.data.length, 2);
+                assert.isAbove(parseInt(message.blockNumber), 0);
 
                 // stop heartbeat
                 augur.filters.stop_heartbeat();
 
-                // tear down filters
+                // tear down filter
                 augur.filters.clear_contracts_filter();
                 assert.isNull(augur.filters.contracts_filter);
                 done();

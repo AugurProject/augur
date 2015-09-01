@@ -48828,16 +48828,16 @@ module.exports = function (augur) {
 
         sift: function (filtrate, onMessage) {
             /**
-             * filtrate (array) example:
+             * filtrate example (array):
              * [{
-             *     address: '0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79',
-             *     topics: [
-             *        '0x1a653a04916ffd3d6f74d5966492bda358e560be296ecf5307c2e2c2fdedd35a',
-             *        '0x00000000000000000000000005ae1d0ca6206c6168b42efcd1fbe0ed144e821b',
-             *        '0x4fe60eb31b13f1c0afdb7735111513f27cbecf312170c6e68e3c7c1f8a1239f8',
-             *        '0x0000000000000000000000000000000000000000000000000000000000000001'
-             *     ],
-             *     data: '0x000000000000000000000000000000000000000000000000ffffffffffffd570ffffffffffffffffffffffffffffffffffffffffffffffff00000000000002f7',
+             *   address: '0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79',
+             *   topics: [
+             *      '0x1a653a04916ffd3d6f74d5966492bda358e560be296ecf5307c2e2c2fdedd35a',
+             *      '0x00000000000000000000000005ae1d0ca6206c6168b42efcd1fbe0ed144e821b',
+             *      '0x4fe60eb31b13f1c0afdb7735111513f27cbecf312170c6e68e3c7c1f8a1239f8',
+             *      '0x0000000000000000000000000000000000000000000000000000000000000001'
+             *   ],
+             *   data: '0x000000000000000000000000000000000000000000000000ffffffffffffd570ffffffffffffffffffffffffffffffffffffffffffffffff00000000000002f7',
              *   blockNumber: '0x11db',
              *   logIndex: '0x0',
              *   blockHash: '0x0000000000000000000000000000000000000000000000000000000000000000',
@@ -48845,8 +48845,7 @@ module.exports = function (augur) {
              *   transactionIndex: '0x0'
              * }, ...]
              */
-            var stringify, hexify, data_array, market, marketplus,
-                message, messages = [];
+            var stringify, hexify, messages = [];
             if (augur.bignumbers) {
                 stringify = hexify = "BigNumber";
             } else {
@@ -48854,22 +48853,9 @@ module.exports = function (augur) {
                 hexify = "hex";
             }
             for (var i = 0, len = filtrate.length; i < len; ++i) {
-                data_array = augur.rpc.unmarshal(filtrate[i].data);
-                market = abi.bignum(filtrate[i].topics[2]);
-                marketplus = market.plus(abi.constants.MOD);
-                if (marketplus.lt(abi.constants.BYTES_32)) market = marketplus;
-
-                // updatePrice message
-                message = {
-                    user: filtrate[i].topics[1],
-                    marketId: abi.bignum(market, hexify),
-                    outcome: abi.bignum(filtrate[i].topics[3], stringify),
-                    price: abi.unfix(data_array[0], stringify),
-                    cost: abi.unfix(data_array[1], stringify),
-                    blockNumber: abi.bignum(filtrate[i].blockNumber, stringify)
-                };
-                if (onMessage) onMessage(message);
-                messages.push(message);
+                filtrate[i].data = augur.rpc.unmarshal(filtrate[i].data);
+                if (onMessage) onMessage(filtrate[i]);
+                messages.push(filtrate[i]);
             }
             if (messages && messages.length) return messages;
         },
@@ -48878,7 +48864,27 @@ module.exports = function (augur) {
             if (this.price_filters[filter_name]) {
                 var filterId = this.price_filters[filter_name].filterId;
                 this.eth_getFilterChanges(filterId, function (filtrate) {
-                    if (filtrate) this.sift(filtrate, onMessage);
+                    var stringify, hexify, data_array, market, marketplus;
+                    if (augur.bignumbers) {
+                        stringify = hexify = "BigNumber";
+                    } else {
+                        stringify = "string";
+                        hexify = "hex";
+                    }
+                    for (var i = 0, len = filtrate.length; i < len; ++i) {
+                        data_array = augur.rpc.unmarshal(filtrate[i].data);
+                        market = abi.bignum(filtrate[i].topics[2]);
+                        marketplus = market.plus(abi.constants.MOD);
+                        if (marketplus.lt(abi.constants.BYTES_32)) market = marketplus;
+                        onMessage({
+                            user: filtrate[i].topics[1],
+                            marketId: abi.bignum(market, hexify),
+                            outcome: abi.bignum(filtrate[i].topics[3], stringify),
+                            price: abi.unfix(data_array[0], stringify),
+                            cost: abi.unfix(data_array[1], stringify),
+                            blockNumber: abi.bignum(filtrate[i].blockNumber, stringify)
+                        });
+                    }
                 }.bind(this)); // eth_getFilterChanges
             }
         },
@@ -48981,11 +48987,12 @@ module.exports = function (augur) {
             }
         },
 
-        heartbeat: function (pulse, callback) {
+        heartbeat: function (callback) {
+            callback = callback || function (msg) { log(msg); };
             this.poll_listeners(callback);
             this.heart = setInterval(function () {
                 this.poll_listeners(callback);
-            }.bind(this), pulse || 5000);
+            }.bind(this), 5000);
         },
 
         stop_heartbeat: function () {
