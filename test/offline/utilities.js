@@ -13,6 +13,111 @@ var log = console.log;
 
 require('it-each')({ testPerIteration: true });
 
+describe("utilities.is_function", function () {
+
+    var test = function (t) {
+        it(t.label + " -> " + t.expected, function () {
+            assert.strictEqual(utils.is_function(t.input), t.expected);
+        });
+    };
+
+    function ima_function() {
+        log("I'm a function!");
+    }
+
+    test({
+        label: "utils.unpack",
+        input: utils.unpack,
+        expected: true
+    });
+    test({
+        label: "utils.labels",
+        input: utils.labels,
+        expected: true
+    });
+    test({
+        label: "declared function",
+        input: ima_function,
+        expected: true
+    });
+    test({
+        label: "function literal",
+        input: test,
+        expected: true
+    });
+    test({
+        label: "anonymous function",
+        input: function () { log("hello world!"); },
+        expected: true
+    });
+    test({
+        label: "Function",
+        input: Function,
+        expected: true
+    });
+    test({
+        label: "Object",
+        input: Object,
+        expected: true
+    });
+    test({
+        label: "5",
+        input: 5,
+        expected: false
+    });
+    test({
+        label: "'5'",
+        input: '5',
+        expected: false
+    });
+    test({
+        label: "'[object Function]'",
+        input: "[object Function]",
+        expected: false
+    });
+    test({
+        label: "{}",
+        input: {},
+        expected: false
+    });
+    test({
+        label: "{ hello: 'world' }",
+        input: { hello: "world" },
+        expected: false
+    });
+    test({
+        label: "{ f: Function }",
+        input: { f: Function },
+        expected: false
+    });
+    test({
+        label: "[]",
+        input: [],
+        expected: false
+    });
+    test({
+        label: "[1, 2, 3]",
+        input: [1, 2, 3],
+        expected: false
+    });
+    test({
+        label: "[Function]",
+        input: [Function],
+        expected: false
+    });
+    test({
+        label: "utils.ARGUMENT_NAMES",
+        input: utils.ARGUMENT_NAMES,
+        expected: false
+    });
+    test({
+        label: "constants.ETHER",
+        input: constants.ETHER,
+        expected: false
+    });
+
+});
+
 describe("utilities.labels", function () {
 
     it("should extract parameter names", function () {

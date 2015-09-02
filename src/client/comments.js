@@ -1,5 +1,5 @@
 /**
- * Whisper comments system
+ * Whisper-based comments system
  */
 
 "use strict";
@@ -7,7 +7,7 @@
 var errors = require("../errors");
 var constants = require("../constants");
 var abi = require("augur-abi");
-var db = require("../client/db");
+var db = require("./db");
 var log = console.log;
 
 module.exports = function (augur) {

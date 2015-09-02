@@ -71,12 +71,12 @@ echo -e "${GRAY}| \033[1;35maugur.js${NC} tests ${GRAY}|${NC}"
 echo -e "+${GRAY}================${NC}+\n"
 
 [ "${offline}" == "1" ] && runtest "offline"
-[ "${core}" == "1" ] && runtest "core"
 [ "${connect}" == "1" ] && runtest "connect"
 [ "${create}" == "1" ] && runtest "create"
 [ "${markets}" == "1" ] && runtest "markets"
-[ "${consensus}" == "1" ] && runtest "consensus"
+[ "${core}" == "1" ] && runtest "core"
 [ "${client}" == "1" ] && runtest "client"
+[ "${consensus}" == "1" ] && runtest "consensus"
 [ "${aux}" == "1" ] && runtest "aux"
 
 if [ "${offline}" == "1" ]; then

@@ -100,13 +100,13 @@ function spawn_geth(flags) {
             if (options.DEBUG) {
                 process.stdout.write(chalk.cyan(data.toString()));
             }
-            geth_log.write("stdout: " + nodeUtil.format(data.toString()) + "\n");
+            geth_log.write(chalk.cyan(nodeUtil.format(data.toString())));
         });
         geth.stderr.on("data", function (data) {
             if (options.DEBUG) {
                 process.stdout.write(chalk.yellow(data.toString()));
             }
-            geth_log.write(nodeUtil.format(data.toString()) + "\n");
+            geth_log.write(chalk.green(nodeUtil.format(data.toString())));
         });
         geth.on("close", function (code) {
             if (code !== 2 && code !== 0) {
@@ -270,6 +270,8 @@ function upload_contracts(geth) {
             chalk.red.bold(":"));
     }
     var uploader_options = [
+        "--source", "./src-extern",
+        "--externs",
         "--blocktime", "1.75",
         "--rpcport", options.RPC_PORT
     ];
@@ -278,10 +280,10 @@ function upload_contracts(geth) {
     }
     var uploader = cp.spawn(options.UPLOADER, uploader_options);
     uploader.stdout.on("data", function (data) {
-        process.stdout.write(chalk.cyan.dim(data.toString()));
+        process.stdout.write(chalk.cyan.dim(nodeUtil.format(data.toString())));
     });
     uploader.stderr.on("data", function (data) {
-        process.stdout.write(chalk.red(data.toString()));
+        process.stdout.write(chalk.red(nodeUtil.format(data.toString())));
     });
     uploader.on("close", function (code) {
         if (code !== 0) {

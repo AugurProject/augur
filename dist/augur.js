@@ -48534,477 +48534,6 @@ arguments[4][224][0].apply(exports,arguments)
 
 },{}],288:[function(require,module,exports){
 /**
- * Whisper comments system
- */
-
-"use strict";
-
-var errors = require("../errors");
-var constants = require("../constants");
-var abi = require("augur-abi");
-var db = require("../client/db");
-var log = console.log;
-
-module.exports = function (augur) {
-
-    return {
-
-        // key: marketId => {filterId: hexstring, polling: bool}
-        filters: {},
-
-        getMessages: function (filter, f) {
-            return augur.rpc.broadcast(augur.rpc.marshal("getMessages", filter, "shh_"), f);
-        },
-
-        getFilterChanges: function (filter, f) {
-            return augur.rpc.broadcast(augur.rpc.marshal("getFilterChanges", filter, "shh_"), f);
-        },
-
-        newIdentity: function (f) {
-            return augur.rpc.broadcast(augur.rpc.marshal("newIdentity", null, "shh_"), f);
-        },
-
-        post: function (params, f) {
-            return augur.rpc.broadcast(augur.rpc.marshal("post", params, "shh_"), f);
-        },
-
-        whisperFilter: function (params, f) {
-            return augur.rpc.broadcast(augur.rpc.marshal("newFilter", params, "shh_"), f);
-        },
-
-        commentFilter: function (market, f) {
-            return this.whisperFilter({ topics: [ market ]}, f);
-        },
-
-        uninstallFilter: function (filter, f) {
-            return augur.rpc.broadcast(augur.rpc.marshal("uninstallFilter", filter, "shh_"), f);
-        },
-
-        /**
-         * Incoming comment filter:
-         *  - compare comment string length, write the longest to leveldb
-         *  - 10 second ethereum network polling interval
-         */
-        pollFilter: function (market_id, filter_id) {
-            var self = this;
-            var incoming_comments, stored_comments, num_messages, incoming_parsed, stored_parsed;
-            this.getFilterChanges(filter_id, function (message) {
-                if (message) {
-                    num_messages = message.length;
-                    if (num_messages) {
-                        for (var i = 0; i < num_messages; ++i) {
-                            // log("\n\nPOLLFILTER: reading incoming message " + i.toString());
-                            incoming_comments = abi.decode_hex(message[i].payload);
-                            if (incoming_comments) {
-                                incoming_parsed = JSON.parse(incoming_comments);
-                                // log(incoming_parsed);
-                    
-                                // get existing comment(s) stored locally
-                                stored_comments = db.leveldb.get(augur.rpc, market_id, "comments");
-
-                                // check if incoming comments length > stored
-                                if (stored_comments && stored_comments.length) {
-                                    stored_parsed = JSON.parse(stored_comments);
-                                    if (incoming_parsed.length > stored_parsed.length ) {
-                                        // log(incoming_parsed.length.toString() + " incoming comments");
-                                        // log("[" + filter_id + "] overwriting comments for market: " + market_id);
-                                        if (db.leveldb.put(augur.rpc, market_id, incoming_comments, "comments")) {
-                                            // log("[" + filter_id + "] overwrote comments for market: " + market_id);
-                                        }
-                                    } else {
-                                        // log(stored_parsed.length.toString() + " stored comments");
-                                        // log("[" + filter_id + "] retaining comments for market: " + market_id);
-                                    }
-                                } else {
-                                    // log(incoming_parsed.length.toString() + " incoming comments");
-                                    // log("[" + filter_id + "] inserting first comments for market: " + market_id);
-                                    if (db.leveldb.put(augur.rpc, market_id, incoming_comments, "comments")) {
-                                        // log("[" + filter_id + "] overwrote comments for market: " + market_id);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                // wait a few seconds, then poll the filter for new messages
-                setTimeout(function () {
-                    self.pollFilter(market_id, filter_id);
-                }, constants.COMMENT_POLL_INTERVAL);
-            });
-        },
-
-        initComments: function (market) {
-            var filter, comments, whisper_id;
-
-            // make sure there's only one shh filter per market
-            if (this.filters[market] && this.filters[market].filterId) {
-                // log("existing filter found");
-                this.pollFilter(market, this.filters[market].filterId);
-                return this.filters[market].filterId;
-
-            // create a new shh filter for this market
-            } else {
-                filter = this.commentFilter(market);
-                if (filter && filter !== "0x") {
-                    // log("creating new filter");
-                    this.filters[market] = {
-                        filterId: filter,
-                        polling: true
-                    };
-
-                    // broadcast all comments in local leveldb
-                    comments = db.leveldb.get(augur.rpc, market, "comments");
-                    if (comments) {
-                        whisper_id = this.newIdentity();
-                        if (whisper_id) {
-                            var transmission = {
-                                from: whisper_id,
-                                topics: [market],
-                                payload: abi.prefix_hex(abi.encode_hex(comments)),
-                                priority: "0x64",
-                                ttl: "0x500" // time-to-live (until expiration) in seconds
-                            };
-                            log(transmission);
-                            if (!this.post(transmission)) {
-                                return errors.WHISPER_POST_FAILED;
-                            }
-                        }
-                    }
-                    this.pollFilter(market, filter);
-                    return filter;
-                }
-            }
-        },
-
-        resetComments: function (market) {
-            return db.leveldb.put(augur.rpc, market, "", "comments");
-        },
-
-        getMarketComments: function (market) {
-            var comments = db.leveldb.get(augur.rpc, market, "comments");
-            if (comments) {
-                if (!comments.error) {
-                    return JSON.parse(comments);
-                } else {
-                    return comments;
-                }
-            } else {
-                return null;
-            }
-        },
-
-        addMarketComment: function (pkg) {
-            var market, comment_text, author, updated, transmission, whisper_id, comments;
-            market = pkg.marketId;
-            comment_text = pkg.message;
-            author = pkg.author || augur.coinbase;
-
-            whisper_id = this.newIdentity();
-            if (whisper_id && !whisper_id.error) {
-                updated = JSON.stringify([{
-                    whisperId: whisper_id,
-                    from: author, // ethereum account
-                    comment: comment_text,
-                    time: Math.floor((new Date()).getTime() / 1000)
-                }]);
-
-                // get existing comment(s) stored locally
-                comments = db.leveldb.get(augur.rpc, market, "comments");
-                if (comments !== undefined && comments !== null && !comments.error) {
-                    if (comments && comments !== '""') {
-                        updated = updated.slice(0, -1) + "," + comments.slice(1);
-                    }
-                    if (db.leveldb.put(augur.rpc, market, updated, "comments")) {
-                        transmission = {
-                            from: whisper_id,
-                            topics: [market],
-                            payload: abi.prefix_hex(abi.encode_hex(updated)),
-                            priority: "0x64",
-                            ttl: "0x600" // 10 minutes
-                        };
-                        if (this.post(transmission)) {
-                            return JSON.parse(abi.decode_hex(transmission.payload));
-                        } else {
-                            return errors.WHISPER_POST_FAILED;
-                        }
-                    } else {
-                        return errors.DB_WRITE_FAILED;
-                    }
-                } else {
-                    return comments;
-                }
-            } else {
-                return whisper_id;
-            }
-        }
-
-    };
-};
-
-},{"../client/db":292,"../constants":293,"../errors":294,"augur-abi":2}],289:[function(require,module,exports){
-/**
- * Filters / logging
- */
-
-"use strict";
-
-var chalk = require("chalk");
-var abi = require("augur-abi");
-var errors = require("../errors");
-var log = console.log;
-
-module.exports = function (augur) {
-
-    return {
-
-        price_filters: {
-            updatePrice: null,
-            pricePaid: null,
-            priceSold: null
-        },
-
-        contracts_filter: null,
-
-        heart: null,
-
-        eth_newFilter: function (params, f) {
-            return augur.rpc.broadcast(augur.rpc.marshal("newFilter", params), f);
-        },
-
-        create_price_filter: function (label, f) {
-            return augur.rpc.broadcast(augur.rpc.marshal("newFilter", {
-                address: augur.contracts.buyAndSellShares,
-                topics: [ label ]
-            }), f);
-        },
-
-        eth_getFilterChanges: function (filter, f) {
-            return augur.rpc.broadcast(augur.rpc.marshal("getFilterChanges", filter), f);
-        },
-
-        eth_getFilterLogs: function (filter, f) {
-            return augur.rpc.broadcast(augur.rpc.marshal("getFilterLogs", filter), f);
-        },
-
-        eth_getLogs: function (filter, f) {
-            return augur.rpc.broadcast(augur.rpc.marshal("getLogs", filter), f);
-        },
-
-        eth_uninstallFilter: function (filter, f) {
-            return augur.rpc.broadcast(augur.rpc.marshal("uninstallFilter", filter), f);
-        },
-
-        search_price_logs: function (logs, market_id, outcome_id) {
-            // topics: [?, user, unadjusted marketid, outcome]
-            // array data: [price, cost]
-            var parsed, rtype, price_logs;
-            if (logs) {
-                rtype = (augur.bignumbers) ? "BigNumber" : "string";
-                price_logs = [];
-                for (var i = 0, len = logs.length; i < len; ++i) {
-                    if (logs[i] && logs[i].data !== undefined &&
-                        logs[i].data !== null && logs[i].data !== "0x")
-                    {
-                        parsed = augur.rpc.unmarshal(logs[i].data);
-                        var market = abi.bignum(logs[i].topics[2]);
-                        var marketplus = market.plus(abi.constants.MOD);
-                        if (marketplus.lt(abi.constants.BYTES_32)) {
-                            market = marketplus;
-                        }
-                        if (market.eq(abi.bignum(market_id)) &&
-                            abi.bignum(logs[i].topics[3]).eq(abi.bignum(outcome_id)))
-                        {
-                            price_logs.push({
-                                price: abi.unfix(parsed[0], rtype),
-                                cost: abi.unfix(parsed[1], rtype),
-                                blockNumber: abi.bignum(logs[i].blockNumber, rtype)
-                            });
-                        }
-                    }
-                }
-                return price_logs;
-            }
-        },
-
-        sift: function (filtrate, onMessage) {
-            /**
-             * filtrate example (array):
-             * [{
-             *   address: '0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79',
-             *   topics: [
-             *      '0x1a653a04916ffd3d6f74d5966492bda358e560be296ecf5307c2e2c2fdedd35a',
-             *      '0x00000000000000000000000005ae1d0ca6206c6168b42efcd1fbe0ed144e821b',
-             *      '0x4fe60eb31b13f1c0afdb7735111513f27cbecf312170c6e68e3c7c1f8a1239f8',
-             *      '0x0000000000000000000000000000000000000000000000000000000000000001'
-             *   ],
-             *   data: '0x000000000000000000000000000000000000000000000000ffffffffffffd570ffffffffffffffffffffffffffffffffffffffffffffffff00000000000002f7',
-             *   blockNumber: '0x11db',
-             *   logIndex: '0x0',
-             *   blockHash: '0x0000000000000000000000000000000000000000000000000000000000000000',
-             *   transactionHash: '0x2d3dc5dea7fe6b14e034acb3b95d3d40bd45392dcd2e8030c2d15df3ddbd0594',
-             *   transactionIndex: '0x0'
-             * }, ...]
-             */
-            var stringify, hexify, messages = [];
-            if (augur.bignumbers) {
-                stringify = hexify = "BigNumber";
-            } else {
-                stringify = "string";
-                hexify = "hex";
-            }
-            for (var i = 0, len = filtrate.length; i < len; ++i) {
-                filtrate[i].data = augur.rpc.unmarshal(filtrate[i].data);
-                if (onMessage) onMessage(filtrate[i]);
-                messages.push(filtrate[i]);
-            }
-            if (messages && messages.length) return messages;
-        },
-
-        poll_eth_listener: function (filter_name, onMessage) {
-            if (this.price_filters[filter_name]) {
-                var filterId = this.price_filters[filter_name].filterId;
-                this.eth_getFilterChanges(filterId, function (filtrate) {
-                    var stringify, hexify, data_array, market, marketplus;
-                    if (augur.bignumbers) {
-                        stringify = hexify = "BigNumber";
-                    } else {
-                        stringify = "string";
-                        hexify = "hex";
-                    }
-                    for (var i = 0, len = filtrate.length; i < len; ++i) {
-                        data_array = augur.rpc.unmarshal(filtrate[i].data);
-                        market = abi.bignum(filtrate[i].topics[2]);
-                        marketplus = market.plus(abi.constants.MOD);
-                        if (marketplus.lt(abi.constants.BYTES_32)) market = marketplus;
-                        onMessage({
-                            user: filtrate[i].topics[1],
-                            marketId: abi.bignum(market, hexify),
-                            outcome: abi.bignum(filtrate[i].topics[3], stringify),
-                            price: abi.unfix(data_array[0], stringify),
-                            cost: abi.unfix(data_array[1], stringify),
-                            blockNumber: abi.bignum(filtrate[i].blockNumber, stringify)
-                        });
-                    }
-                }.bind(this)); // eth_getFilterChanges
-            }
-        },
-
-        poll_listeners: function (onMessage) {
-            if (onMessage && onMessage.constructor === Function) {
-                this.eth_getFilterChanges(this.contracts_filter, function (filtrate) {
-                    if (filtrate) this.sift(filtrate, onMessage);
-                }.bind(this));
-            }
-        },
-
-        start_eth_listener: function (filter_name, callback) {
-            var filter_id;
-
-            if (this.price_filters[filter_name] &&
-                this.price_filters[filter_name].filterId)
-            {
-                filter_id = this.price_filters[filter_name].filterId;
-
-                if (callback) {
-                    callback(filter_id);
-                } else {
-                    return filter_id;
-                }
-
-            } else {
-                if (callback && callback.constructor === Function) {
-                    this.create_price_filter(filter_name, function (filter_id) {
-                        if (filter_id && filter_id !== "0x") {
-
-                            this.price_filters[filter_name] = {
-                                filterId: filter_id,
-                                polling: false
-                            };
-                            callback(filter_id);
-
-                        } else {
-                            callback(errors.FILTER_NOT_CREATED);
-                        }
-                    }.bind(this));
-
-                } else {
-                    filter_id = this.create_price_filter(filter_name);
-
-                    if (filter_id && filter_id !== "0x") {
-
-                        this.price_filters[filter_name] = {
-                            filterId: filter_id,
-                            polling: false
-                        };
-                        return filter_id;
-
-                    } else {
-                        return errors.FILTER_NOT_CREATED;
-                    }                    
-                }
-            }
-        },
-
-        clear_contracts_filter: function (callback) {
-            if (callback && callback.constructor === Function) {
-                this.eth_uninstallFilter(this.contracts_filter, function (uninst) {
-                    if (uninst) this.contracts_filter = null;
-                    callback(uninst);
-                }.bind(this));
-            } else {
-                var uninst = this.eth_uninstallFilter(this.contracts_filter);
-                if (uninst) this.contracts_filter = null;
-                return uninst;
-            }
-        },
-
-        setup_contracts_filter: function () {
-            var contract_list = [];
-            for (var c in augur.contracts) {
-                if (!augur.contracts.hasOwnProperty(c)) continue;
-                contract_list.push(augur.contracts[c]);
-            }
-            var params = {
-                address: contract_list,
-                fromBlock: "0x01",
-                toBlock: "latest"
-            };
-            this.contracts_filter = this.eth_newFilter(params);
-            return this.contracts_filter;
-        },
-
-        start_contracts_listener: function (callback) {
-
-            // set up contracts filter (if needed)
-            if (this.contracts_filter === null) {
-                if (callback && callback.constructor === Function) {
-                    setTimeout(function () {
-                        callback(this.setup_contracts_filter());
-                    }.bind(this), 0);
-                } else {
-                    return this.setup_contracts_filter();
-                }
-            }
-        },
-
-        heartbeat: function (callback) {
-            callback = callback || function (msg) { log(msg); };
-            this.poll_listeners(callback);
-            this.heart = setInterval(function () {
-                this.poll_listeners(callback);
-            }.bind(this), 5000);
-        },
-
-        stop_heartbeat: function () {
-            clearInterval(this.heart);
-            this.heart = null;
-        }
-
-    };
-};
-
-},{"../errors":294,"augur-abi":2,"chalk":45}],290:[function(require,module,exports){
-/**
  * Bindings for the Namereg contract:
  * https://github.com/ethereum/dapp-bin/blob/master/registrar/registrar.sol
  */
@@ -49093,7 +48622,7 @@ module.exports = function (augur) {
     };
 };
 
-},{"../utilities":297}],291:[function(require,module,exports){
+},{"../utilities":297}],289:[function(require,module,exports){
 (function (Buffer){
 /**
  * Client-side accounts
@@ -49442,7 +48971,216 @@ module.exports = function (augur) {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"../constants":293,"../errors":294,"../utilities":297,"./db":292,"augur-abi":2,"bignumber.js":6,"buffer":10,"ethereumjs-tx":195,"keythereum":256,"node-uuid":286}],292:[function(require,module,exports){
+},{"../constants":292,"../errors":293,"../utilities":297,"./db":291,"augur-abi":2,"bignumber.js":6,"buffer":10,"ethereumjs-tx":195,"keythereum":256,"node-uuid":286}],290:[function(require,module,exports){
+/**
+ * Whisper-based comments system
+ */
+
+"use strict";
+
+var errors = require("../errors");
+var constants = require("../constants");
+var abi = require("augur-abi");
+var db = require("./db");
+var log = console.log;
+
+module.exports = function (augur) {
+
+    return {
+
+        // key: marketId => {filterId: hexstring, polling: bool}
+        filters: {},
+
+        getMessages: function (filter, f) {
+            return augur.rpc.broadcast(augur.rpc.marshal("getMessages", filter, "shh_"), f);
+        },
+
+        getFilterChanges: function (filter, f) {
+            return augur.rpc.broadcast(augur.rpc.marshal("getFilterChanges", filter, "shh_"), f);
+        },
+
+        newIdentity: function (f) {
+            return augur.rpc.broadcast(augur.rpc.marshal("newIdentity", null, "shh_"), f);
+        },
+
+        post: function (params, f) {
+            return augur.rpc.broadcast(augur.rpc.marshal("post", params, "shh_"), f);
+        },
+
+        whisperFilter: function (params, f) {
+            return augur.rpc.broadcast(augur.rpc.marshal("newFilter", params, "shh_"), f);
+        },
+
+        commentFilter: function (market, f) {
+            return this.whisperFilter({ topics: [ market ]}, f);
+        },
+
+        uninstallFilter: function (filter, f) {
+            return augur.rpc.broadcast(augur.rpc.marshal("uninstallFilter", filter, "shh_"), f);
+        },
+
+        /**
+         * Incoming comment filter:
+         *  - compare comment string length, write the longest to leveldb
+         *  - 10 second ethereum network polling interval
+         */
+        pollFilter: function (market_id, filter_id) {
+            var self = this;
+            var incoming_comments, stored_comments, num_messages, incoming_parsed, stored_parsed;
+            this.getFilterChanges(filter_id, function (message) {
+                if (message) {
+                    num_messages = message.length;
+                    if (num_messages) {
+                        for (var i = 0; i < num_messages; ++i) {
+                            // log("\n\nPOLLFILTER: reading incoming message " + i.toString());
+                            incoming_comments = abi.decode_hex(message[i].payload);
+                            if (incoming_comments) {
+                                incoming_parsed = JSON.parse(incoming_comments);
+                                // log(incoming_parsed);
+                    
+                                // get existing comment(s) stored locally
+                                stored_comments = db.leveldb.get(augur.rpc, market_id, "comments");
+
+                                // check if incoming comments length > stored
+                                if (stored_comments && stored_comments.length) {
+                                    stored_parsed = JSON.parse(stored_comments);
+                                    if (incoming_parsed.length > stored_parsed.length ) {
+                                        // log(incoming_parsed.length.toString() + " incoming comments");
+                                        // log("[" + filter_id + "] overwriting comments for market: " + market_id);
+                                        if (db.leveldb.put(augur.rpc, market_id, incoming_comments, "comments")) {
+                                            // log("[" + filter_id + "] overwrote comments for market: " + market_id);
+                                        }
+                                    } else {
+                                        // log(stored_parsed.length.toString() + " stored comments");
+                                        // log("[" + filter_id + "] retaining comments for market: " + market_id);
+                                    }
+                                } else {
+                                    // log(incoming_parsed.length.toString() + " incoming comments");
+                                    // log("[" + filter_id + "] inserting first comments for market: " + market_id);
+                                    if (db.leveldb.put(augur.rpc, market_id, incoming_comments, "comments")) {
+                                        // log("[" + filter_id + "] overwrote comments for market: " + market_id);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                // wait a few seconds, then poll the filter for new messages
+                setTimeout(function () {
+                    self.pollFilter(market_id, filter_id);
+                }, constants.COMMENT_POLL_INTERVAL);
+            });
+        },
+
+        initComments: function (market) {
+            var filter, comments, whisper_id;
+
+            // make sure there's only one shh filter per market
+            if (this.filters[market] && this.filters[market].filterId) {
+                // log("existing filter found");
+                this.pollFilter(market, this.filters[market].filterId);
+                return this.filters[market].filterId;
+
+            // create a new shh filter for this market
+            } else {
+                filter = this.commentFilter(market);
+                if (filter && filter !== "0x") {
+                    // log("creating new filter");
+                    this.filters[market] = {
+                        filterId: filter,
+                        polling: true
+                    };
+
+                    // broadcast all comments in local leveldb
+                    comments = db.leveldb.get(augur.rpc, market, "comments");
+                    if (comments) {
+                        whisper_id = this.newIdentity();
+                        if (whisper_id) {
+                            var transmission = {
+                                from: whisper_id,
+                                topics: [market],
+                                payload: abi.prefix_hex(abi.encode_hex(comments)),
+                                priority: "0x64",
+                                ttl: "0x500" // time-to-live (until expiration) in seconds
+                            };
+                            log(transmission);
+                            if (!this.post(transmission)) {
+                                return errors.WHISPER_POST_FAILED;
+                            }
+                        }
+                    }
+                    this.pollFilter(market, filter);
+                    return filter;
+                }
+            }
+        },
+
+        resetComments: function (market) {
+            return db.leveldb.put(augur.rpc, market, "", "comments");
+        },
+
+        getMarketComments: function (market) {
+            var comments = db.leveldb.get(augur.rpc, market, "comments");
+            if (comments) {
+                if (!comments.error) {
+                    return JSON.parse(comments);
+                } else {
+                    return comments;
+                }
+            } else {
+                return null;
+            }
+        },
+
+        addMarketComment: function (pkg) {
+            var market, comment_text, author, updated, transmission, whisper_id, comments;
+            market = pkg.marketId;
+            comment_text = pkg.message;
+            author = pkg.author || augur.coinbase;
+
+            whisper_id = this.newIdentity();
+            if (whisper_id && !whisper_id.error) {
+                updated = JSON.stringify([{
+                    whisperId: whisper_id,
+                    from: author, // ethereum account
+                    comment: comment_text,
+                    time: Math.floor((new Date()).getTime() / 1000)
+                }]);
+
+                // get existing comment(s) stored locally
+                comments = db.leveldb.get(augur.rpc, market, "comments");
+                if (comments !== undefined && comments !== null && !comments.error) {
+                    if (comments && comments !== '""') {
+                        updated = updated.slice(0, -1) + "," + comments.slice(1);
+                    }
+                    if (db.leveldb.put(augur.rpc, market, updated, "comments")) {
+                        transmission = {
+                            from: whisper_id,
+                            topics: [market],
+                            payload: abi.prefix_hex(abi.encode_hex(updated)),
+                            priority: "0x64",
+                            ttl: "0x600" // 10 minutes
+                        };
+                        if (this.post(transmission)) {
+                            return JSON.parse(abi.decode_hex(transmission.payload));
+                        } else {
+                            return errors.WHISPER_POST_FAILED;
+                        }
+                    } else {
+                        return errors.DB_WRITE_FAILED;
+                    }
+                } else {
+                    return comments;
+                }
+            } else {
+                return whisper_id;
+            }
+        }
+
+    };
+};
+
+},{"../constants":292,"../errors":293,"./db":291,"augur-abi":2}],291:[function(require,module,exports){
 /**
  * Database methods
  */
@@ -49555,7 +49293,7 @@ module.exports = {
     } // leveldb
 };
 
-},{"../constants":293,"../errors":294,"firebase":255}],293:[function(require,module,exports){
+},{"../constants":292,"../errors":293,"firebase":255}],292:[function(require,module,exports){
 /** 
  * constants for augur.js unit tests
  */
@@ -49603,7 +49341,7 @@ module.exports = {
     ]
 };
 
-},{"bignumber.js":6}],294:[function(require,module,exports){
+},{"bignumber.js":6}],293:[function(require,module,exports){
 /************************
  * augur.js error codes *
  ************************/
@@ -49750,7 +49488,325 @@ errors.sellShares = errors.buyShares;
 
 module.exports = errors;
 
-},{}],295:[function(require,module,exports){
+},{}],294:[function(require,module,exports){
+/**
+ * Filters / logging
+ */
+
+"use strict";
+
+var chalk = require("chalk");
+var abi = require("augur-abi");
+var utils = require("./utilities");
+var errors = require("./errors");
+var log = console.log;
+
+module.exports = function (augur) {
+
+    return {
+
+        PULSE: 5000,
+
+        price_filter: { id: null, heartbeat: null },
+
+        contracts_filter: { id: null, heartbeat: null },
+
+        eth_newFilter: function (params, f) {
+            return augur.rpc.broadcast(augur.rpc.marshal("newFilter", params), f);
+        },
+
+        eth_getFilterChanges: function (filter, f) {
+            return augur.rpc.broadcast(augur.rpc.marshal("getFilterChanges", filter), f);
+        },
+
+        eth_getFilterLogs: function (filter, f) {
+            return augur.rpc.broadcast(augur.rpc.marshal("getFilterLogs", filter), f);
+        },
+
+        eth_getLogs: function (filter, f) {
+            return augur.rpc.broadcast(augur.rpc.marshal("getLogs", filter), f);
+        },
+
+        eth_uninstallFilter: function (filter, f) {
+            return augur.rpc.broadcast(augur.rpc.marshal("uninstallFilter", filter), f);
+        },
+
+        search_price_logs: function (logs, market_id, outcome_id) {
+            // topics: [?, user, unadjusted marketid, outcome]
+            // array data: [price, cost]
+            var parsed, rtype, price_logs;
+            if (logs) {
+                rtype = (augur.bignumbers) ? "BigNumber" : "string";
+                price_logs = [];
+                for (var i = 0, len = logs.length; i < len; ++i) {
+                    if (logs[i] && logs[i].data !== undefined &&
+                        logs[i].data !== null && logs[i].data !== "0x")
+                    {
+                        parsed = augur.rpc.unmarshal(logs[i].data);
+                        var market = abi.bignum(logs[i].topics[2]);
+                        var marketplus = market.plus(abi.constants.MOD);
+                        if (marketplus.lt(abi.constants.BYTES_32)) {
+                            market = marketplus;
+                        }
+                        if (market.eq(abi.bignum(market_id)) &&
+                            abi.bignum(logs[i].topics[3]).eq(abi.bignum(outcome_id)))
+                        {
+                            price_logs.push({
+                                price: abi.unfix(parsed[0], rtype),
+                                cost: abi.unfix(parsed[1], rtype),
+                                blockNumber: abi.bignum(logs[i].blockNumber, rtype)
+                            });
+                        }
+                    }
+                }
+                return price_logs;
+            }
+        },
+
+        sift: function (filtrate, onMessage) {
+            /**
+             * filtrate example (array):
+             * [{
+             *   address: '0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79',
+             *   topics: [
+             *      '0x1a653a04916ffd3d6f74d5966492bda358e560be296ecf5307c2e2c2fdedd35a',
+             *      '0x00000000000000000000000005ae1d0ca6206c6168b42efcd1fbe0ed144e821b',
+             *      '0x4fe60eb31b13f1c0afdb7735111513f27cbecf312170c6e68e3c7c1f8a1239f8',
+             *      '0x0000000000000000000000000000000000000000000000000000000000000001'
+             *   ],
+             *   data: '0x000000000000000000000000000000000000000000000000ffffffffffffd570ffffffffffffffffffffffffffffffffffffffffffffffff00000000000002f7',
+             *   blockNumber: '0x11db',
+             *   logIndex: '0x0',
+             *   blockHash: '0x0000000000000000000000000000000000000000000000000000000000000000',
+             *   transactionHash: '0x2d3dc5dea7fe6b14e034acb3b95d3d40bd45392dcd2e8030c2d15df3ddbd0594',
+             *   transactionIndex: '0x0'
+             * }, ...]
+             */
+            var stringify, hexify, messages = [];
+            if (augur.bignumbers) {
+                stringify = hexify = "BigNumber";
+            } else {
+                stringify = "string";
+                hexify = "hex";
+            }
+            for (var i = 0, len = filtrate.length; i < len; ++i) {
+                filtrate[i].data = augur.rpc.unmarshal(filtrate[i].data);
+                if (onMessage) onMessage(filtrate[i]);
+                messages.push(filtrate[i]);
+            }
+            if (messages && messages.length) return messages;
+        },
+
+        poll_contracts_listener: function (onMessage) {
+            if (utils.is_function(onMessage)) {
+                this.eth_getFilterChanges(this.contracts_filter.id, function (filtrate) {
+                    if (filtrate) this.sift(filtrate, onMessage);
+                }.bind(this));
+            }
+        },
+
+        poll_price_listener: function (onMessage) {
+            if (this.price_filter) {
+                this.eth_getFilterChanges(this.price_filter.id, function (filtrate) {
+                    var stringify, hexify, data_array, market, marketplus;
+                    if (augur.bignumbers) {
+                        stringify = hexify = "BigNumber";
+                    } else {
+                        stringify = "string";
+                        hexify = "hex";
+                    }
+                    for (var i = 0, len = filtrate.length; i < len; ++i) {
+                        data_array = augur.rpc.unmarshal(filtrate[i].data);
+                        market = abi.bignum(filtrate[i].topics[2]);
+                        marketplus = market.plus(abi.constants.MOD);
+                        if (marketplus.lt(abi.constants.BYTES_32)) market = marketplus;
+                        onMessage({
+                            user: filtrate[i].topics[1],
+                            marketId: abi.bignum(market, hexify),
+                            outcome: abi.bignum(filtrate[i].topics[3], stringify),
+                            price: abi.unfix(data_array[0], stringify),
+                            cost: abi.unfix(data_array[1], stringify),
+                            blockNumber: abi.bignum(filtrate[i].blockNumber, stringify)
+                        });
+                    }
+                }.bind(this)); // eth_getFilterChanges
+            }
+        },
+
+        create_price_filter: function (label, f) {
+            return augur.rpc.broadcast(augur.rpc.marshal("newFilter", {
+                address: augur.contracts.buyAndSellShares,
+                topics: [ label ]
+            }), f);
+        },
+
+        start_price_listener: function (filter_name, cb) {
+            var filter_id;
+            if (this.price_filter && this.price_filter.id) {
+                if (cb) {
+                    cb(this.price_filter.id);
+                } else {
+                    return this.price_filter.id;
+                }
+            } else {
+                if (utils.is_function(cb)) {
+                    this.create_price_filter(filter_name, function (filter_id) {
+                        if (filter_id && filter_id !== "0x") {
+                            this.price_filter = {
+                                id: filter_id,
+                                heartbeat: null
+                            };
+                            cb(filter_id);
+                        } else {
+                            cb(errors.FILTER_NOT_CREATED);
+                        }
+                    }.bind(this));
+                } else {
+                    filter_id = this.create_price_filter(filter_name);
+                    if (filter_id && filter_id !== "0x") {
+                        this.price_filter = {
+                            id: filter_id,
+                            heartbeat: null
+                        };
+                        return filter_id;
+                    } else {
+                        return errors.FILTER_NOT_CREATED;
+                    }
+                }
+            }
+        },
+
+        clear_price_filter: function (cb) {
+            if (utils.is_function(cb)) {
+                this.eth_uninstallFilter(this.price_filter.id, function (uninst) {
+                    if (uninst) this.price_filter.id = null;
+                    cb(uninst);
+                }.bind(this));
+            } else {
+                var uninst = this.eth_uninstallFilter(this.price_filter.id);
+                if (uninst) this.price_filter.id = null;
+                return uninst;
+            }
+        },
+
+        clear_contracts_filter: function (cb) {
+            if (utils.is_function(cb)) {
+                this.eth_uninstallFilter(this.contracts_filter.id, function (uninst) {
+                    if (uninst) this.contracts_filter.id = null;
+                    cb(uninst);
+                }.bind(this));
+            } else {
+                var uninst = this.eth_uninstallFilter(this.contracts_filter.id);
+                if (uninst) this.contracts_filter.id = null;
+                return uninst;
+            }
+        },
+
+        setup_contracts_filter: function () {
+            var contract_list = [];
+            for (var c in augur.contracts) {
+                if (!augur.contracts.hasOwnProperty(c)) continue;
+                contract_list.push(augur.contracts[c]);
+            }
+            this.contracts_filter = {
+                id: this.eth_newFilter({
+                    address: contract_list,
+                    fromBlock: "0x01",
+                    toBlock: "latest"
+                }),
+                heartbeat: null
+            };
+            return this.contracts_filter;
+        },
+
+        start_contracts_listener: function (cb) {
+
+            // set up contracts filter (if needed)
+            if (this.contracts_filter.id === null) {
+                if (utils.is_function(cb)) {
+                    setTimeout(function () {
+                        cb(this.setup_contracts_filter());
+                    }.bind(this), 0);
+                } else {
+                    return this.setup_contracts_filter();
+                }
+            }
+        },
+
+        pacemaker: function (cb) {
+            var self = this;
+            if (cb && cb.constructor === Object) {
+                if (utils.is_function(cb.contracts)) {
+                    this.poll_contracts_listener(cb.contracts);
+                    this.contracts_filter.heartbeat = setInterval(function () {
+                        self.poll_contracts_listener(cb.contracts);
+                    }, this.PULSE);
+                }
+                if (utils.is_function(cb.price)) {
+                    this.poll_price_listener(cb.price);
+                    this.price_filter.heartbeat = setInterval(function () {
+                        self.poll_price_listener(cb.price);
+                    }, this.PULSE);
+                }
+            }
+        },
+
+        start_heartbeat: function (cb) {
+            var self = this;
+            if (this.contracts_filter.id === null && cb.contracts) {
+                this.start_contracts_listener(function () {
+                    self.pacemaker({ contracts: cb.contracts });
+                });
+            }
+            if (this.price_filter.id === null && cb.price) {
+                this.start_price_listener(function () {
+                    self.pacemaker({ price: cb.price });
+                });
+            }
+            else {
+                this.pacemaker(cb);
+            }
+        },
+
+        stop_heartbeat: function (uninstall, cb) {
+            if (uninstall && uninstall.constructor === Object) {
+                cb = {};
+                if (utils.is_function(uninstall.price)) {
+                    cb.price = uninstall.price;
+                }
+                if (utils.is_function(uninstall.contracts)) {
+                    cb.contracts = uninstall.contracts;
+                }
+                uninstall = false;
+            }
+            if (this.price_filter.heartbeat !== null) {
+                clearInterval(this.price_filter.heartbeat);
+                this.price_filter.heartbeat = null;
+                if (!uninstall && utils.is_function(cb.price)) {
+                    cb.price();
+                }
+            }
+            if (this.contracts_filter.heartbeat !== null) {
+                clearInterval(this.contracts_filter.heartbeat);
+                this.contracts_filter.heartbeat = null;
+                if (!uninstall && utils.is_function(cb.contracts)) {
+                    cb.contracts();
+                }
+            }
+            if (uninstall) {
+                if (this.price_filter.id !== null) {
+                    this.clear_price_filter(cb.price);
+                }
+                if (this.contracts_filter.id !== null) {
+                    this.clear_contracts_filter(cb.contracts);
+                }
+            }
+        }
+
+    };
+};
+
+},{"./errors":293,"./utilities":297,"augur-abi":2,"chalk":45}],295:[function(require,module,exports){
 (function (process){
 /**
  * Augur JavaScript API
@@ -49766,9 +49822,9 @@ var abi = require("augur-abi");
 var rpc = require("ethrpc");
 var contracts = require("augur-contracts");
 var Tx = require("./tx");
+var Filters = require("./filters");
 var Accounts = require("./client/accounts");
-var Comments = require("./aux/comments");
-var Filters = require("./aux/filters");
+var Comments = require("./client/comments");
 var Namereg = require("./aux/namereg");
 var log = console.log;
 
@@ -51289,7 +51345,7 @@ augur.getMarketPriceHistory = function (market_id, outcome_id, callback) {
 module.exports = augur;
 
 }).call(this,require('_process'))
-},{"./aux/comments":288,"./aux/filters":289,"./aux/namereg":290,"./client/accounts":291,"./constants":293,"./errors":294,"./tx":296,"./utilities":297,"_process":22,"augur-abi":2,"augur-contracts":5,"bignumber.js":6,"ethrpc":299}],296:[function(require,module,exports){
+},{"./aux/namereg":288,"./client/accounts":289,"./client/comments":290,"./constants":292,"./errors":293,"./filters":294,"./tx":296,"./utilities":297,"_process":22,"augur-abi":2,"augur-contracts":5,"bignumber.js":6,"ethrpc":299}],296:[function(require,module,exports){
 /**
  * Augur transaction objects
  */
@@ -52271,6 +52327,10 @@ BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
 module.exports = {
 
+    is_function: function (f) {
+        return Object.prototype.toString.call(f) === "[object Function]";
+    },
+
     pp: function (obj, indent) {
         var o = this.copy(obj);
         for (var k in o) {
@@ -52471,6 +52531,7 @@ module.exports = {
         return require(mod);
     },
 
+    // use url.format instead
     urlstring: function (obj) {
         return (obj.protocol || "http") + "://" + (obj.host || "127.0.0.1") + ":" + (obj.port || 8545);
     },
@@ -52631,7 +52692,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer,"/src")
-},{"./constants":293,"_process":22,"assert":8,"augur-abi":2,"bignumber.js":6,"buffer":10,"chalk":45,"crypto":53,"crypto-browserify":53,"fs":7,"moment":285,"path":21,"validator":287}],298:[function(require,module,exports){
+},{"./constants":292,"_process":22,"assert":8,"augur-abi":2,"bignumber.js":6,"buffer":10,"chalk":45,"crypto":53,"crypto-browserify":53,"fs":7,"moment":285,"path":21,"validator":287}],298:[function(require,module,exports){
 module.exports={
     "0x": "no response or bad input",
     "cashFaucet": {

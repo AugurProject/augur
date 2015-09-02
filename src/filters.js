@@ -6,32 +6,22 @@
 
 var chalk = require("chalk");
 var abi = require("augur-abi");
-var errors = require("../errors");
+var utils = require("./utilities");
+var errors = require("./errors");
 var log = console.log;
 
 module.exports = function (augur) {
 
     return {
 
-        price_filters: {
-            updatePrice: null,
-            pricePaid: null,
-            priceSold: null
-        },
+        PULSE: 5000,
 
-        contracts_filter: null,
+        price_filter: { id: null, heartbeat: null },
 
-        heart: null,
+        contracts_filter: { id: null, heartbeat: null },
 
         eth_newFilter: function (params, f) {
             return augur.rpc.broadcast(augur.rpc.marshal("newFilter", params), f);
-        },
-
-        create_price_filter: function (label, f) {
-            return augur.rpc.broadcast(augur.rpc.marshal("newFilter", {
-                address: augur.contracts.buyAndSellShares,
-                topics: [ label ]
-            }), f);
         },
 
         eth_getFilterChanges: function (filter, f) {
@@ -116,10 +106,17 @@ module.exports = function (augur) {
             if (messages && messages.length) return messages;
         },
 
-        poll_eth_listener: function (filter_name, onMessage) {
-            if (this.price_filters[filter_name]) {
-                var filterId = this.price_filters[filter_name].filterId;
-                this.eth_getFilterChanges(filterId, function (filtrate) {
+        poll_contracts_listener: function (onMessage) {
+            if (utils.is_function(onMessage)) {
+                this.eth_getFilterChanges(this.contracts_filter.id, function (filtrate) {
+                    if (filtrate) this.sift(filtrate, onMessage);
+                }.bind(this));
+            }
+        },
+
+        poll_price_listener: function (onMessage) {
+            if (this.price_filter) {
+                this.eth_getFilterChanges(this.price_filter.id, function (filtrate) {
                     var stringify, hexify, data_array, market, marketplus;
                     if (augur.bignumbers) {
                         stringify = hexify = "BigNumber";
@@ -145,71 +142,71 @@ module.exports = function (augur) {
             }
         },
 
-        poll_listeners: function (onMessage) {
-            if (onMessage && onMessage.constructor === Function) {
-                this.eth_getFilterChanges(this.contracts_filter, function (filtrate) {
-                    if (filtrate) this.sift(filtrate, onMessage);
-                }.bind(this));
-            }
+        create_price_filter: function (label, f) {
+            return augur.rpc.broadcast(augur.rpc.marshal("newFilter", {
+                address: augur.contracts.buyAndSellShares,
+                topics: [ label ]
+            }), f);
         },
 
-        start_eth_listener: function (filter_name, callback) {
+        start_price_listener: function (filter_name, cb) {
             var filter_id;
-
-            if (this.price_filters[filter_name] &&
-                this.price_filters[filter_name].filterId)
-            {
-                filter_id = this.price_filters[filter_name].filterId;
-
-                if (callback) {
-                    callback(filter_id);
+            if (this.price_filter && this.price_filter.id) {
+                if (cb) {
+                    cb(this.price_filter.id);
                 } else {
-                    return filter_id;
+                    return this.price_filter.id;
                 }
-
             } else {
-                if (callback && callback.constructor === Function) {
+                if (utils.is_function(cb)) {
                     this.create_price_filter(filter_name, function (filter_id) {
                         if (filter_id && filter_id !== "0x") {
-
-                            this.price_filters[filter_name] = {
-                                filterId: filter_id,
-                                polling: false
+                            this.price_filter = {
+                                id: filter_id,
+                                heartbeat: null
                             };
-                            callback(filter_id);
-
+                            cb(filter_id);
                         } else {
-                            callback(errors.FILTER_NOT_CREATED);
+                            cb(errors.FILTER_NOT_CREATED);
                         }
                     }.bind(this));
-
                 } else {
                     filter_id = this.create_price_filter(filter_name);
-
                     if (filter_id && filter_id !== "0x") {
-
-                        this.price_filters[filter_name] = {
-                            filterId: filter_id,
-                            polling: false
+                        this.price_filter = {
+                            id: filter_id,
+                            heartbeat: null
                         };
                         return filter_id;
-
                     } else {
                         return errors.FILTER_NOT_CREATED;
-                    }                    
+                    }
                 }
             }
         },
 
-        clear_contracts_filter: function (callback) {
-            if (callback && callback.constructor === Function) {
-                this.eth_uninstallFilter(this.contracts_filter, function (uninst) {
-                    if (uninst) this.contracts_filter = null;
-                    callback(uninst);
+        clear_price_filter: function (cb) {
+            if (utils.is_function(cb)) {
+                this.eth_uninstallFilter(this.price_filter.id, function (uninst) {
+                    if (uninst) this.price_filter.id = null;
+                    cb(uninst);
                 }.bind(this));
             } else {
-                var uninst = this.eth_uninstallFilter(this.contracts_filter);
-                if (uninst) this.contracts_filter = null;
+                var uninst = this.eth_uninstallFilter(this.price_filter.id);
+                if (uninst) this.price_filter.id = null;
+                return uninst;
+            }
+        },
+
+        clear_contracts_filter: function (cb) {
+            if (utils.is_function(cb)) {
+                this.eth_uninstallFilter(this.contracts_filter.id, function (uninst) {
+                    if (uninst) this.contracts_filter.id = null;
+                    cb(uninst);
+                }.bind(this));
+            } else {
+                var uninst = this.eth_uninstallFilter(this.contracts_filter.id);
+                if (uninst) this.contracts_filter.id = null;
                 return uninst;
             }
         },
@@ -220,22 +217,24 @@ module.exports = function (augur) {
                 if (!augur.contracts.hasOwnProperty(c)) continue;
                 contract_list.push(augur.contracts[c]);
             }
-            var params = {
-                address: contract_list,
-                fromBlock: "0x01",
-                toBlock: "latest"
+            this.contracts_filter = {
+                id: this.eth_newFilter({
+                    address: contract_list,
+                    fromBlock: "0x01",
+                    toBlock: "latest"
+                }),
+                heartbeat: null
             };
-            this.contracts_filter = this.eth_newFilter(params);
             return this.contracts_filter;
         },
 
-        start_contracts_listener: function (callback) {
+        start_contracts_listener: function (cb) {
 
             // set up contracts filter (if needed)
-            if (this.contracts_filter === null) {
-                if (callback && callback.constructor === Function) {
+            if (this.contracts_filter.id === null) {
+                if (utils.is_function(cb)) {
                     setTimeout(function () {
-                        callback(this.setup_contracts_filter());
+                        cb(this.setup_contracts_filter());
                     }.bind(this), 0);
                 } else {
                     return this.setup_contracts_filter();
@@ -243,17 +242,74 @@ module.exports = function (augur) {
             }
         },
 
-        heartbeat: function (callback) {
-            callback = callback || function (msg) { log(msg); };
-            this.poll_listeners(callback);
-            this.heart = setInterval(function () {
-                this.poll_listeners(callback);
-            }.bind(this), 5000);
+        pacemaker: function (cb) {
+            var self = this;
+            if (cb && cb.constructor === Object) {
+                if (utils.is_function(cb.contracts)) {
+                    this.poll_contracts_listener(cb.contracts);
+                    this.contracts_filter.heartbeat = setInterval(function () {
+                        self.poll_contracts_listener(cb.contracts);
+                    }, this.PULSE);
+                }
+                if (utils.is_function(cb.price)) {
+                    this.poll_price_listener(cb.price);
+                    this.price_filter.heartbeat = setInterval(function () {
+                        self.poll_price_listener(cb.price);
+                    }, this.PULSE);
+                }
+            }
         },
 
-        stop_heartbeat: function () {
-            clearInterval(this.heart);
-            this.heart = null;
+        start_heartbeat: function (cb) {
+            var self = this;
+            if (this.contracts_filter.id === null && cb.contracts) {
+                this.start_contracts_listener(function () {
+                    self.pacemaker({ contracts: cb.contracts });
+                });
+            }
+            if (this.price_filter.id === null && cb.price) {
+                this.start_price_listener(function () {
+                    self.pacemaker({ price: cb.price });
+                });
+            }
+            else {
+                this.pacemaker(cb);
+            }
+        },
+
+        stop_heartbeat: function (uninstall, cb) {
+            if (uninstall && uninstall.constructor === Object) {
+                cb = {};
+                if (utils.is_function(uninstall.price)) {
+                    cb.price = uninstall.price;
+                }
+                if (utils.is_function(uninstall.contracts)) {
+                    cb.contracts = uninstall.contracts;
+                }
+                uninstall = false;
+            }
+            if (this.price_filter.heartbeat !== null) {
+                clearInterval(this.price_filter.heartbeat);
+                this.price_filter.heartbeat = null;
+                if (!uninstall && utils.is_function(cb.price)) {
+                    cb.price();
+                }
+            }
+            if (this.contracts_filter.heartbeat !== null) {
+                clearInterval(this.contracts_filter.heartbeat);
+                this.contracts_filter.heartbeat = null;
+                if (!uninstall && utils.is_function(cb.contracts)) {
+                    cb.contracts();
+                }
+            }
+            if (uninstall) {
+                if (this.price_filter.id !== null) {
+                    this.clear_price_filter(cb.price);
+                }
+                if (this.contracts_filter.id !== null) {
+                    this.clear_contracts_filter(cb.contracts);
+                }
+            }
         }
 
     };

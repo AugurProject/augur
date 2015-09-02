@@ -12,9 +12,9 @@ var abi = require("augur-abi");
 var rpc = require("ethrpc");
 var contracts = require("augur-contracts");
 var Tx = require("./tx");
+var Filters = require("./filters");
 var Accounts = require("./client/accounts");
-var Comments = require("./aux/comments");
-var Filters = require("./aux/filters");
+var Comments = require("./client/comments");
 var Namereg = require("./aux/namereg");
 var log = console.log;
 

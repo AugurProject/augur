@@ -18,6 +18,10 @@ BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
 module.exports = {
 
+    is_function: function (f) {
+        return Object.prototype.toString.call(f) === "[object Function]";
+    },
+
     pp: function (obj, indent) {
         var o = this.copy(obj);
         for (var k in o) {
@@ -218,6 +222,7 @@ module.exports = {
         return require(mod);
     },
 
+    // use url.format instead
     urlstring: function (obj) {
         return (obj.protocol || "http") + "://" + (obj.host || "127.0.0.1") + ":" + (obj.port || 8545);
     },
