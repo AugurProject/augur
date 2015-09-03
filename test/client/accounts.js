@@ -26,6 +26,9 @@ var password = utils.sha256(Math.random().toString(36).substring(4));
 var handle2 = utils.sha256(new Date().toString()).slice(10);
 var password2 = utils.sha256(Math.random().toString(36).substring(4)).slice(10);
 
+var markets = augur.getMarkets(augur.branches.dev);
+var market_id = markets[markets.length - 1];
+
 describe("Register", function () {
 
     it("register account 1: " + handle + " / " + password, function (done) {
@@ -466,7 +469,7 @@ describe("Contract methods", function () {
         });
 
         it("detect logged in user and default to web.invoke", function (done) {
-            this.timeout(constants.TIMEOUT);
+            this.timeout(constants.TIMEOUT*12);
             augur.web.login(handle, password, function (user) {
                 if (user.error) {
                     augur.web.logout(); done(user);
@@ -475,27 +478,16 @@ describe("Contract methods", function () {
                         user.address,
                         augur.web.account.address
                     );
-                    augur.reputationFaucet(
-                        augur.branches.dev,
+                    augur.cashFaucet(
                         function (r) {
                             // sent
-                            assert(r.txHash);
-                            assert.strictEqual(r.callReturn, "1");
                         },
                         function (r) {
                             // success
-                            assert.strictEqual(
-                                r.from,
-                                augur.web.account.address
-                            );
-                            assert.strictEqual(r.from, user.address);
-                            assert(r.blockHash);
-                            augur.web.logout();
                             done();
                         },
                         function (r) {
                             // failed
-                            augur.web.logout();
                             done(r);
                         }
                     );

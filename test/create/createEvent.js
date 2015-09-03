@@ -31,7 +31,7 @@ fs.writeFileSync(datafile, "");
 describe("Creating " + num_events + " events and markets", function () {
     var events = [];
     it.each(_.range(0, num_events), "create event/market %s", ['element'], function (element, next) {
-        this.timeout(constants.TIMEOUT);
+        this.timeout(constants.TIMEOUT*4);
         var event_description = Math.random().toString(36).substring(4);
 
         augur.createEvent({
