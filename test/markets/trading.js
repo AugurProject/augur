@@ -69,7 +69,7 @@ describe("Buy and sell shares", function () {
         "buyShares: %s",
         ["element"],
         function (element, next) {
-            this.timeout(constants.TIMEOUT);
+            this.timeout(constants.TIMEOUT*2);
             augur.buyShares({
                 branchId: branch,
                 marketId: element,
@@ -112,7 +112,7 @@ describe("Buy and sell shares", function () {
         "sellShares: %s",
         ["element"],
         function (element, next) {
-            this.timeout(constants.TIMEOUT);
+            this.timeout(constants.TIMEOUT*2);
             augur.sellShares({
                 branchId: branch,
                 marketId: element,
