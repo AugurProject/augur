@@ -288,6 +288,7 @@ module.exports = function (augur) {
                 }
                 uninstall = false;
             }
+            cb = cb || {};
             if (this.price_filter.heartbeat !== null) {
                 clearInterval(this.price_filter.heartbeat);
                 this.price_filter.heartbeat = null;

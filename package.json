@@ -4,11 +4,11 @@
   "description": "Augur JavaScript API",
   "main": "src/index.js",
   "scripts": {
-    "test": "scripts/runtests.sh --offline --connect --core --create --markets --client",
+    "test": "scripts/runtests.sh --connect --core --create --markets --client",
     "lint": "scripts/runtests.sh",
     "consensus": "scripts/runtests.sh --consensus",
-    "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha test/offline test/core test/markets test/client --report lcovonly && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
-    "testnet": "scripts/runtests.sh --coverage --connect --core --markets --client",
+    "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha test/core test/markets test/client --report lcovonly && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
+    "testnet": "scripts/runtests.sh --connect --core --markets --client",
     "setup": "scripts/setup.js --reset --faucets"
   },
   "dependencies": {
