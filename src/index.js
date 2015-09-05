@@ -1,5 +1,5 @@
 /**
- * Augur JavaScript API
+ * augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -22,6 +22,8 @@ BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
 var augur = {
 
+    options: {},
+
     // If set to true, all numerical results (excluding hashes)
     // are returned as BigNumber objects
     bignumbers: true,
@@ -31,6 +33,7 @@ var augur = {
     utils: require("./utilities"),
     constants: require("./constants"),
     errors: require("./errors"),
+    numeric: abi,
 
     rpc: {},
     web: {},
@@ -76,136 +79,154 @@ augur.reload_modules();
  * Ethereum network connection *
  *******************************/
 
-augur.unlocked = function () {
-    if (rpc.sign(this.coinbase, "1010101").error) {
+augur.unlocked = function (account) {
+    if (rpc.sign(account || this.coinbase, "1010101").error) {
         return false;
     }
     return true;
 };
 
-augur.connect = function (rpcinfo, chain) {
+augur.detect_network = function (chain) {
+    var key, method;
+    this.network_id = chain || rpc.version() || "0";
+    switch (this.network_id.toString()) {
+        case "7":
+            this.contracts = this.utils.copy(contracts["7"]);
+            break;
+        case "10101":
+            this.contracts = this.utils.copy(contracts["10101"]);
+            break;
+        default:
+            this.contracts = this.utils.copy(contracts["0"]);
+    }
+    for (method in this.tx) {
+        if (!this.tx.hasOwnProperty(method)) continue;
+        key = this.utils.has_value(this.init_contracts, this.tx[method].to);
+        if (key) {
+            this.tx[method].to = this.contracts[key];
+        }
+    }
+    this.reload_modules();
+    return this.network_id;
+};
 
-    var default_rpc = function () {
-        this.nodes = DEFAULT_RPC;
-        this.reload_modules();
-        return false;
-    }.bind(this);
-
-    var rpcstr, key, method, rpc_obj = {};
-    if (rpcinfo) {
-        if (rpcinfo.constructor === Object) {
-            if (rpcinfo.protocol) rpc_obj.protocol = rpcinfo.protocol;
-            if (rpcinfo.host) rpc_obj.host = rpcinfo.host;
-            if (rpcinfo.port) {
-                rpc_obj.port = rpcinfo.port;
-            } else {
-                if (rpcinfo.host) {
-                    rpcstr = rpcinfo.host.split(":");
-                    if (rpcstr.length === 2) {
-                        rpc_obj.host = rpcstr[0];
-                        rpc_obj.port = rpcstr[1];
-                    }
-                }
+augur.get_coinbase = function () {
+    var accounts, num_accounts, i, method;
+    this.coinbase = rpc.coinbase();
+    if (!this.coinbase) {
+        accounts = this.accounts();
+        num_accounts = accounts.length;
+        if (num_accounts === 1) {
+            if (this.unlocked(accounts[0])) {
+                this.coinbase = accounts[0];
             }
-            if (rpcinfo.chain) chain = rpcinfo.chain;
-        } else if (rpcinfo.constructor === String) {
-            if (rpcinfo.indexOf("://") === -1 && rpcinfo.indexOf(':') === -1) {
-                rpc_obj.host = rpcinfo;
-            } else if (rpcinfo.indexOf("://") > -1) {
-                rpcstr = rpcinfo.split("://");
-                rpc_obj.protocol = rpc[0];
-                rpcstr = rpcstr[1].split(':');
-                if (rpcstr.length === 2) {
-                    rpc_obj.host = rpcstr[0];
-                    rpc_obj.port = rpcstr[1];
-                } else {
-                    rpc_obj.host = rpcstr;
+        } else {
+            for (i = 0; i < num_accounts; ++i) {
+                if (this.unlocked(accounts[i])) {
+                    this.coinbase = accounts[i];
+                    break;
                 }
-            } else if (rpcinfo.indexOf(':') > -1) {
-                rpcstr = rpcinfo.split(':');
-                if (rpcstr.length === 2) {
-                    rpc_obj.host = rpcstr[0];
-                    rpc_obj.port = rpcstr[1];
-                } else {
-                    rpc_obj.host = rpcstr;
-                }
-            } else {
-                return default_rpc();
             }
         }
-        this.nodes = [this.utils.urlstring(rpc_obj)];
-    } else {
-        this.nodes = DEFAULT_RPC;
     }
+    if (this.coinbase && this.coinbase !== "0x") {
+        for (method in this.tx) {
+            if (!this.tx.hasOwnProperty(method)) continue;
+            this.tx[method].from = this.coinbase;
+        }
+    } else {
+        return this.default_rpc();
+    }
+};
+
+augur.default_rpc = function () {
+    this.nodes = DEFAULT_RPC;
+    this.reload_modules();
+    return false;
+};
+
+augur.update_contracts = function () {
+    var key, method;
+    if (JSON.stringify(this.init_contracts) !== JSON.stringify(this.contracts)) {
+        for (method in this.tx) {
+            if (!this.tx.hasOwnProperty(method)) continue;
+            key = this.utils.has_value(this.init_contracts, this.tx[method].to);
+            if (key) {
+                this.tx[method].to = this.contracts[key];
+            }
+        }
+        this.reload_modules();
+    }
+    this.init_contracts = this.utils.copy(this.contracts);
+};
+
+augur.parse_rpcinfo = function (rpcinfo, chain) {
+    var rpcstr, rpc_obj = {};
+    if (rpcinfo.constructor === Object) {
+        if (rpcinfo.protocol) rpc_obj.protocol = rpcinfo.protocol;
+        if (rpcinfo.host) rpc_obj.host = rpcinfo.host;
+        if (rpcinfo.port) {
+            rpc_obj.port = rpcinfo.port;
+        } else {
+            if (rpcinfo.host) {
+                rpcstr = rpcinfo.host.split(":");
+                if (rpcstr.length === 2) {
+                    rpc_obj.host = rpcstr[0];
+                    rpc_obj.port = rpcstr[1];
+                }
+            }
+        }
+        if (rpcinfo.chain) chain = rpcinfo.chain;
+    } else if (rpcinfo.constructor === String) {
+        if (rpcinfo.indexOf("://") === -1 && rpcinfo.indexOf(':') === -1) {
+            rpc_obj.host = rpcinfo;
+        } else if (rpcinfo.indexOf("://") > -1) {
+            rpcstr = rpcinfo.split("://");
+            rpc_obj.protocol = rpc[0];
+            rpcstr = rpcstr[1].split(':');
+            if (rpcstr.length === 2) {
+                rpc_obj.host = rpcstr[0];
+                rpc_obj.port = rpcstr[1];
+            } else {
+                rpc_obj.host = rpcstr;
+            }
+        } else if (rpcinfo.indexOf(':') > -1) {
+            rpcstr = rpcinfo.split(':');
+            if (rpcstr.length === 2) {
+                rpc_obj.host = rpcstr[0];
+                rpc_obj.port = rpcstr[1];
+            } else {
+                rpc_obj.host = rpcstr;
+            }
+        } else {
+            return this.default_rpc();
+        }
+    }
+    return [this.utils.urlstring(rpc_obj)].concat(this.constants.nodes);
+};
+
+augur.connect = function (rpcinfo, chain) {
+    this.nodes = (rpcinfo) ? this.parse_rpcinfo(rpcinfo, chain) : DEFAULT_RPC;
     this.reload_modules();
     try {
         if (this.connection === null &&
             JSON.stringify(this.init_contracts) === JSON.stringify(this.contracts))
         {
-            this.network_id = chain || rpc.version() || "0";
-            switch (this.network_id.toString()) {
-                case "7":
-                    this.contracts = this.utils.copy(contracts["7"]);
-                    break;
-                case "10101":
-                    this.contracts = this.utils.copy(contracts["10101"]);
-                    break;
-                default:
-                    this.contracts = this.utils.copy(contracts["0"]);
-            }
-            for (method in this.tx) {
-                if (!this.tx.hasOwnProperty(method)) continue;
-                key = this.utils.has_value(this.init_contracts, this.tx[method].to);
-                if (key) {
-                    this.tx[method].to = this.contracts[key];
-                }
-            }
-            this.reload_modules();
+            this.detect_network(chain);
         }
-        this.coinbase = rpc.broadcast(rpc.marshal("coinbase"));
-        if (!this.coinbase) {
-            var accounts = this.accounts();
-            var num_accounts = accounts.length;
-            if (num_accounts === 1) {
-                this.coinbase = accounts[0];
-            } else {
-                for (var i = 0; i < num_accounts; ++i) {
-                    if (!this.sign(accounts[i], "1010101").error) {
-                        this.coinbase = accounts[i];
-                        break;
-                    }
-                }
-            }
-        }
-        if (this.coinbase && this.coinbase !== "0x") {
-            for (method in this.tx) {
-                if (!this.tx.hasOwnProperty(method)) continue;
-                this.tx[method].from = this.coinbase;
-            }
-        } else {
-            return default_rpc();
-        }
-        if (JSON.stringify(this.init_contracts) !== JSON.stringify(this.contracts)) {
-            for (method in this.tx) {
-                if (!this.tx.hasOwnProperty(method)) continue;
-                key = this.utils.has_value(this.init_contracts, this.tx[method].to);
-                if (key) {
-                    this.tx[method].to = this.contracts[key];
-                }
-            }
-            this.reload_modules();
-        }
-        this.init_contracts = this.utils.copy(this.contracts);
+        this.get_coinbase();
+        this.update_contracts();
         this.connection = true;
         return true;
     } catch (e) {
-        return default_rpc();
+        log("connection error, using default rpc settings", e);
+        return this.default_rpc();
     }
 };
 
 augur.connected = function () {
     try {
-        rpc.broadcast(rpc.marshal("coinbase"));
+        rpc.coinbase();
         return true;
     } catch (e) {
         return false;
@@ -214,9 +235,9 @@ augur.connected = function () {
 
 /**
  * Batch interface:
- * var b = Augur.createBatch();
- * b.add("getCashBalance", [Augur.coinbase], callback);
- * b.add("getRepBalance", [Augur.branches.dev, Augur.coinbase], callback);
+ * var b = augur.createBatch();
+ * b.add("getCashBalance", [augur.coinbase], callback);
+ * b.add("getRepBalance", [augur.branches.dev, augur.coinbase], callback);
  * b.execute();
  */
 var Batch = function () {
@@ -250,15 +271,26 @@ augur.transact = function (tx, onSent, onSuccess, onFailed) {
 };
 
 /*************
- * Augur API *
+ * augur API *
  *************/
 
 // faucets.se
 augur.cashFaucet = function (onSent, onSuccess, onFailed) {
+    if (onSent && onSent.constructor === Object) {
+        if (onSent.onSuccess) onSuccess = onSent.onSuccess;
+        if (onSent.onFailed) onFailed = onSent.onFailed;
+        if (onSent.onSent) onSent = onSent.onSent;
+    }
     return this.transact(this.tx.cashFaucet, onSent, onSuccess, onFailed);
 };
 augur.reputationFaucet = function (branch, onSent, onSuccess, onFailed) {
     // branch: sha256
+    if (branch && branch.constructor === Object && branch.branch) {
+        if (branch.onSuccess) onSuccess = branch.onSuccess;
+        if (branch.onFailed) onFailed = branch.onFailed;
+        if (branch.onSent) onSent = branch.onSent;
+        branch = branch.branch;
+    }
     var tx = this.utils.copy(this.tx.reputationFaucet);
     tx.params = branch;
     return this.transact(tx, onSent, onSuccess, onFailed);
@@ -1231,7 +1263,7 @@ augur.hashReport = function (ballot, salt, onSent) {
 // checkQuorum.se
 augur.checkQuorum = function (branch, onSent, onSuccess, onFailed) {
     // branch: sha256
-    if (rpc.broadcast(rpc.marshal("coinbase")) !== this.demo) {
+    if (rpc.coinbase() !== this.demo) {
         var tx = this.utils.copy(this.tx.checkQuorum);
         tx.params = branch;
         return this.transact(tx, onSent, onSuccess, onFailed);
@@ -1469,7 +1501,7 @@ augur.closeMarket = function (branch, market, onSent, onSuccess, onFailed) {
 // dispatch.se
 augur.dispatch = function (branch, onSent, onSuccess, onFailed) {
     // branch: sha256 or transaction object
-    if (rpc.broadcast(rpc.marshal("coinbase")) !== this.demo) {
+    if (rpc.coinbase() !== this.demo) {
         if (branch.constructor === Object && branch.branchId) {
             if (branch.onSent) onSent = branch.onSent;
             if (branch.onSuccess) onSuccess = branch.onSuccess;

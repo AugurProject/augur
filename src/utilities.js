@@ -222,7 +222,6 @@ module.exports = {
         return require(mod);
     },
 
-    // use url.format instead
     urlstring: function (obj) {
         return (obj.protocol || "http") + "://" + (obj.host || "127.0.0.1") + ":" + (obj.port || 8545);
     },

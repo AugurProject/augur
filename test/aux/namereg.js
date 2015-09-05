@@ -9,7 +9,7 @@ var assert = require("chai").assert;
 var chalk = require("chalk");
 var constants = require("../../src/constants");
 var utils = require("../../src/utilities");
-var Augur = utils.setup(require("../../src"), process.argv.slice(2));
+var augur = utils.setup(require("../../src"), process.argv.slice(2));
 var log = console.log;
 
 // create random handle and password
@@ -23,7 +23,7 @@ describe("Namereg", function () {
 
         it("should reserve name 'jack' for coinbase", function (done) {
             this.timeout(constants.TIMEOUT);
-            Augur.namereg.reserve("jack",
+            augur.namereg.reserve("jack",
                 function (r) {
                     // sent
                     assert(r.txHash);
@@ -34,8 +34,8 @@ describe("Namereg", function () {
                     assert(r.txHash);
                     assert(r.blockHash);
                     assert(r.blockNumber);
-                    assert.strictEqual(r.from, Augur.coinbase);
-                    assert.strictEqual(r.to, Augur.contracts.namereg);
+                    assert.strictEqual(r.from, augur.coinbase);
+                    assert.strictEqual(r.to, augur.contracts.namereg);
                     assert.strictEqual(r.callReturn, null);
                     done();
                 },
@@ -48,7 +48,7 @@ describe("Namereg", function () {
 
         it("should reserve name 'zombiejack' for coinbase", function (done) {
             this.timeout(constants.TIMEOUT);
-            Augur.namereg.reserve("zombiejack",
+            augur.namereg.reserve("zombiejack",
                 function (r) {
                     // sent
                     assert(r.txHash);
@@ -59,8 +59,8 @@ describe("Namereg", function () {
                     assert(r.txHash);
                     assert(r.blockHash);
                     assert(r.blockNumber);
-                    assert.strictEqual(r.from, Augur.coinbase);
-                    assert.strictEqual(r.to, Augur.contracts.namereg);
+                    assert.strictEqual(r.from, augur.coinbase);
+                    assert.strictEqual(r.to, augur.contracts.namereg);
                     assert.strictEqual(r.callReturn, null);
                     done();
                 },
@@ -74,13 +74,13 @@ describe("Namereg", function () {
         it("create and fund web account", function (done) {
             var amount = 64;
             this.timeout(constants.TIMEOUT);
-            Augur.web.register(handle, password, function (toAccount) {
+            augur.web.register(handle, password, function (toAccount) {
                 assert.strictEqual(toAccount.handle, handle);
                 newAccountAddress = toAccount.address;
-                Augur.sendEther(
+                augur.sendEther(
                     toAccount.address,
                     amount,
-                    Augur.coinbase,
+                    augur.coinbase,
                     function (r) {
                         // sent
                     },
@@ -96,9 +96,9 @@ describe("Namereg", function () {
 
         it("reserve 'tinybike' for web account", function (done) {
             this.timeout(constants.TIMEOUT);
-            Augur.web.login(handle, password, function (account) {
+            augur.web.login(handle, password, function (account) {
                 assert.strictEqual(account.handle, handle);
-                Augur.namereg.reserve("tinybike",
+                augur.namereg.reserve("tinybike",
                     function (r) {
                         // sent
                         assert(r.txHash);
@@ -110,9 +110,9 @@ describe("Namereg", function () {
                         assert(r.blockHash);
                         assert(r.blockNumber);
                         assert.strictEqual(r.from, account.address);
-                        assert.strictEqual(r.to, Augur.contracts.namereg);
+                        assert.strictEqual(r.to, augur.contracts.namereg);
                         assert.strictEqual(r.callReturn, null);
-                        Augur.web.logout();
+                        augur.web.logout();
                         done();
                     },
                     function (r) {
@@ -129,16 +129,16 @@ describe("Namereg", function () {
 
         it("should report that coinbase owns 'jack'", function (done) {
             this.timeout(constants.TIMEOUT);
-            Augur.namereg.owner("jack", function (address) {
+            augur.namereg.owner("jack", function (address) {
                 log(address);
-                assert.strictEqual(address, Augur.coinbase);
+                assert.strictEqual(address, augur.coinbase);
                 done();
             });
         });
 
         it("should report that the web account owns 'tinybike'", function (done) {
             this.timeout(constants.TIMEOUT);
-            Augur.namereg.owner("tinybike", function (address) {
+            augur.namereg.owner("tinybike", function (address) {
                 log(address);
                 assert.strictEqual(address, newAccountAddress);
                 done();
@@ -151,7 +151,7 @@ describe("Namereg", function () {
 
         it("should set address for 'jack' to coinbase", function (done) {
             this.timeout(constants.TIMEOUT);
-            Augur.namereg.setAddress("jack", Augur.coinbase, true,
+            augur.namereg.setAddress("jack", augur.coinbase, true,
                 function (r) {
                     // sent
                     assert(r.txHash);
@@ -162,8 +162,8 @@ describe("Namereg", function () {
                     assert(r.txHash);
                     assert(r.blockHash);
                     assert(r.blockNumber);
-                    assert.strictEqual(r.from, Augur.coinbase);
-                    assert.strictEqual(r.to, Augur.contracts.namereg);
+                    assert.strictEqual(r.from, augur.coinbase);
+                    assert.strictEqual(r.to, augur.contracts.namereg);
                     assert.strictEqual(r.callReturn, null);
                     done();
                 },
@@ -176,8 +176,8 @@ describe("Namereg", function () {
 
         it("should set address for 'tinybike' to web account", function (done) {
             this.timeout(constants.TIMEOUT);
-            Augur.web.login(handle, password, function (account) {
-                Augur.namereg.setAddress("tinybike", account.address, true,
+            augur.web.login(handle, password, function (account) {
+                augur.namereg.setAddress("tinybike", account.address, true,
                     function (r) {
                         // sent
                         assert(r.txHash);
@@ -189,7 +189,7 @@ describe("Namereg", function () {
                         assert(r.blockHash);
                         assert(r.blockNumber);
                         assert.strictEqual(r.from, account.address);
-                        assert.strictEqual(r.to, Augur.contracts.namereg);
+                        assert.strictEqual(r.to, augur.contracts.namereg);
                         assert.strictEqual(r.callReturn, null);
                         done();
                     },
@@ -207,7 +207,7 @@ describe("Namereg", function () {
 
         it("should get coinbase from name 'jack'", function (done) {
             this.timeout(constants.TIMEOUT);
-            Augur.namereg.addr("jack", function (address) {
+            augur.namereg.addr("jack", function (address) {
                 log(address);
                 done();
             });
@@ -219,7 +219,7 @@ describe("Namereg", function () {
 
         it("should get 'jack' from coinbase address", function (done) {
             this.timeout(constants.TIMEOUT);
-            Augur.namereg.name(Augur.coinbase, function (name) {
+            augur.namereg.name(augur.coinbase, function (name) {
                 log(name);
                 done();
             });
@@ -231,7 +231,7 @@ describe("Namereg", function () {
 
         it("should transfer 'jack' from coinbase to web account", function (done) {
             this.timeout(constants.TIMEOUT);
-            Augur.namereg.transfer("jack", newAccountAddress,
+            augur.namereg.transfer("jack", newAccountAddress,
                 function (r) {
                     // sent
                     assert(r.txHash);
@@ -242,8 +242,8 @@ describe("Namereg", function () {
                     assert(r.txHash);
                     assert(r.blockHash);
                     assert(r.blockNumber);
-                    assert.strictEqual(r.from, Augur.coinbase);
-                    assert.strictEqual(r.to, Augur.contracts.namereg);
+                    assert.strictEqual(r.from, augur.coinbase);
+                    assert.strictEqual(r.to, augur.contracts.namereg);
                     assert.strictEqual(r.callReturn, null);
                     done();
                 },
@@ -260,7 +260,7 @@ describe("Namereg", function () {
 
         it("should remove ownership of 'zombiejack' from coinbase", function (done) {
             this.timeout(constants.TIMEOUT);
-            Augur.namereg.disown("zombiejack",
+            augur.namereg.disown("zombiejack",
                 function (r) {
                     // sent
                     assert(r.txHash);
@@ -271,8 +271,8 @@ describe("Namereg", function () {
                     assert(r.txHash);
                     assert(r.blockHash);
                     assert(r.blockNumber);
-                    assert.strictEqual(r.from, Augur.coinbase);
-                    assert.strictEqual(r.to, Augur.contracts.namereg);
+                    assert.strictEqual(r.from, augur.coinbase);
+                    assert.strictEqual(r.to, augur.contracts.namereg);
                     assert.strictEqual(r.callReturn, null);
                     done();
                 },

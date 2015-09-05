@@ -3,9 +3,6 @@
 GLOBAL.path = require("path");
 GLOBAL.fs = require("fs");
 GLOBAL.BigNumber = require("bignumber.js");
-GLOBAL.XHR2 = require("xhr2");
-GLOBAL.request = require("sync-request");
-GLOBAL.crypto = require("crypto");
 GLOBAL.sha3 = require("js-sha3");
 GLOBAL.scrypt = require("./lib/scrypt");
 GLOBAL.keccak = require("./lib/keccak");
@@ -17,8 +14,9 @@ GLOBAL.longjohn = require("longjohn");
 GLOBAL.EthTx = require("ethereumjs-tx");
 GLOBAL.EthUtil = require("ethereumjs-util");
 GLOBAL.web3 = require("web3");
+GLOBAL.contracts = require("augur-contracts");
+GLOBAL.abi = require("augur-abi");
 GLOBAL.augur = require("./src");
-GLOBAL.contracts = require("./src/contracts");
 GLOBAL.constants = require("./src/constants");
 GLOBAL.utils = require("./src/utilities");
 GLOBAL.Tx = require("./src/tx");
@@ -29,7 +27,7 @@ GLOBAL.ballot = [ 2, 1.5, 1.5, 1, 1.5, 1.5, 1 ];
 longjohn.async_trace_limit = 25;
 longjohn.empty_frame = "";
 
-augur.options.bignumbers = false;
+augur.bignumbers = false;
 augur.connect();
 
 web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"));
@@ -43,7 +41,7 @@ GLOBAL.balance = function (account, branch) {
     var balances = {
         cash: augur.getCashBalance(account),
         reputation: augur.getRepBalance(branch || augur.branches.dev, account),
-        ether: numeric.bignum(augur.balance(account)).dividedBy(constants.ETHER).toFixed()
+        ether: abi.bignum(augur.rpc.balance(account)).dividedBy(constants.ETHER).toFixed()
     };
     log(balances);
     return balances;

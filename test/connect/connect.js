@@ -36,6 +36,7 @@ var connectObj = [
 ];
 
 describe("augur.connect", function () {
+
     it.each(
         connectString,
         "should connect to %s",

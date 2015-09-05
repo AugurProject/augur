@@ -153,6 +153,19 @@ describe("Register", function () {
         });
     });
 
+    it("fail to register account 2's handle again", function (done) {
+        this.timeout(constants.TIMEOUT);
+        augur.web.register(handle, password, function (result) {
+            assert(!result.privateKey);
+            assert(!result.address);
+            assert(result.error);
+            db.get(handle, function (record) {
+                assert(!record.error);
+                done();
+            });
+        });
+    });
+
 });
 
 describe("Login", function () {
@@ -213,6 +226,30 @@ describe("Login", function () {
         this.timeout(constants.TIMEOUT);
         var bad_handle = utils.sha256(new Date().toString());
         augur.web.login(bad_handle, password, function (user) {
+            assert.strictEqual(user.error, 403);
+            done();
+        });
+    });
+
+    it("fail with error 403 when given a blank handle", function (done) {
+        this.timeout(constants.TIMEOUT);
+        augur.web.login("", password, function (user) {
+            assert.strictEqual(user.error, 403);
+            done();
+        });
+    });
+
+    it("fail with error 403 when given a blank password", function (done) {
+        this.timeout(constants.TIMEOUT);
+        augur.web.login(handle, "", function (user) {
+            assert.strictEqual(user.error, 403);
+            done();
+        });
+    });
+
+    it("fail with error 403 when given a blank handle and a blank password", function (done) {
+        this.timeout(constants.TIMEOUT);
+        augur.web.login("", "", function (user) {
             assert.strictEqual(user.error, 403);
             done();
         });
@@ -478,19 +515,29 @@ describe("Contract methods", function () {
                         user.address,
                         augur.web.account.address
                     );
-                    augur.cashFaucet(
-                        function (r) {
+                    augur.cashFaucet({
+                        onSent: function (r) {
                             // sent
+                            assert.property(r, "txHash");
+                            assert.property(r, "callReturn");
                         },
-                        function (r) {
+                        onSuccess: function (r) {
                             // success
+                            assert.property(r, "txHash");
+                            assert.property(r, "callReturn");
+                            assert.property(r, "blockHash");
+                            assert.property(r, "blockNumber");
+                            assert.isAbove(parseInt(r.blockNumber), 0);
+                            assert.strictEqual(r.from, user.address);
+                            assert.strictEqual(r.to, augur.contracts.faucets);
+                            assert.strictEqual(parseInt(r.value), 0);
                             done();
                         },
-                        function (r) {
+                        onFailed: function (r) {
                             // failed
                             done(r);
                         }
-                    );
+                    });
                 }
             });
         });

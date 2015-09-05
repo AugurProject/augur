@@ -11,16 +11,16 @@ var BigNumber = require("bignumber.js");
 var assert = require("chai").assert;
 var constants = require("../../src/constants");
 var utilities = require("../../src/utilities");
-var Augur = utilities.setup(require("../../src"), process.argv.slice(2));
+var augur = utilities.setup(require("../../src"), process.argv.slice(2));
 var log = console.log;
 
-var branch_id = Augur.branches.dev;
+var branch_id = augur.branches.dev;
 var salt = "1337";
 
-var accounts = utilities.get_test_accounts(Augur, constants.MAX_TEST_ACCOUNTS);
+var accounts = utilities.get_test_accounts(augur, constants.MAX_TEST_ACCOUNTS);
 
-var period = Augur.getCurrentVotePeriod(branch_id);
-var num_events = Augur.getNumberEvents(branch_id, period);
+var period = augur.getCurrentVotePeriod(branch_id);
+var num_events = augur.getNumberEvents(branch_id, period);
 var ballot = new Array(num_events);
 for (var i = 0; i < num_events; ++i) {
     ballot[i] = Math.random();
@@ -43,7 +43,7 @@ describe("functions/makeReports", function () {
         var report = {
             branchId: branch_id,
             report: ballot,
-            votePeriod: Augur.getCurrentVotePeriod(branch_id),
+            votePeriod: augur.getCurrentVotePeriod(branch_id),
             salt: salt,
             onSent: function (res) {
                 log("report sent: " + JSON.stringify(res));
@@ -56,7 +56,7 @@ describe("functions/makeReports", function () {
                 done();
             }
         };
-        Augur.report(report);
+        augur.report(report);
     });
 
     it("submit report hash and check validity", function (done) {
@@ -65,8 +65,8 @@ describe("functions/makeReports", function () {
         this.timeout(constants.TIMEOUT);
         var reportHashObj = {
             branchId: branch_id,
-            reportHash: Augur.hash(JSON.stringify(ballot)),
-            votePeriod: Augur.getCurrentVotePeriod(branch_id),
+            reportHash: augur.hash(JSON.stringify(ballot)),
+            votePeriod: augur.getCurrentVotePeriod(branch_id),
             onSent: function (res) {
                 log("submitReportHash sent: " + JSON.stringify(res, null, 2));
             },
@@ -78,7 +78,7 @@ describe("functions/makeReports", function () {
                 var checkReportObj = {
                     branchId: branch_id,
                     report: ballot,
-                    votePeriod: Augur.getCurrentVotePeriod(branch_id),
+                    votePeriod: augur.getCurrentVotePeriod(branch_id),
                     onSent: function (res) {
                         log("checkReportValidity sent: " + JSON.stringify(res, null, 2));
                     },
@@ -91,21 +91,21 @@ describe("functions/makeReports", function () {
                         done();
                     }
                 };
-                Augur.checkReportValidity(checkReportObj);
+                augur.checkReportValidity(checkReportObj);
             },
             onFailed: function (r) {
                 r.name = r.error; throw r;
                 done();
             }
         };
-        Augur.submitReportHash(reportHashObj);
+        augur.submitReportHash(reportHashObj);
     });
 
     it("slash account " + accounts[0] + "'s reputation", function (done) {
         this.timeout(constants.TIMEOUT);
         var slashRepObj = {
             branchId: branch_id,
-            votePeriod: Augur.getCurrentVotePeriod(branch_id),
+            votePeriod: augur.getCurrentVotePeriod(branch_id),
             salt: salt,
             report: ballot,
             reporter: accounts[0],
@@ -121,7 +121,7 @@ describe("functions/makeReports", function () {
                 done();
             }
         };
-        Augur.slashRep(slashRepObj);
+        augur.slashRep(slashRepObj);
     });
 
 });

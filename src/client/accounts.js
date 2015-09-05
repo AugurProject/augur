@@ -51,7 +51,7 @@ module.exports = function (augur) {
                         },
                         function (r) {
                             // failed
-                            r.which = 2;
+                            r.number = 2;
                             if (onConfirm && !(count++)) {
                                 onConfirm(r);
                             } else {
@@ -66,7 +66,7 @@ module.exports = function (augur) {
                 },
                 function (r) {
                     // failed
-                    r.which = 1;
+                    r.number = 1;
                     if (onConfirm && !(count++)) {
                         onConfirm(r);
                     } else {
@@ -78,126 +78,135 @@ module.exports = function (augur) {
 
         register: function (handle, password, callback) {
             var self = this;
-            db.get(handle, function (record) {
-                if (record.error) {
+            if (password && password.length > 5) {
+                db.get(handle, function (record) {
+                    if (record.error) {
 
-                    // generate ECDSA private key and initialization vector
-                    keythereum.create(null, function (plain) {
+                        // generate ECDSA private key and initialization vector
+                        keythereum.create(null, function (plain) {
 
-                        // derive secret key from password
-                        keythereum.deriveKey(password, plain.salt, null, function (derivedKey) {
-                            if (derivedKey.error) {
-                                if (callback) callback(derivedKey);
-                            } else {
-                                var encryptedPrivateKey = keythereum.encrypt(
-                                    plain.privateKey,
-                                    derivedKey.slice(0, 16),
-                                    plain.iv
-                                );
-                                var mac = new Buffer(
-                                    keythereum.getMAC(
-                                        derivedKey,
-                                        new Buffer(encryptedPrivateKey, "base64")
-                                    ),
-                                    "hex"
-                                ).toString("base64");
+                            // derive secret key from password
+                            keythereum.deriveKey(password, plain.salt, null, function (derivedKey) {
+                                if (derivedKey.error) {
+                                    if (callback) callback(derivedKey);
+                                } else {
+                                    var encryptedPrivateKey = keythereum.encrypt(
+                                        plain.privateKey,
+                                        derivedKey.slice(0, 16),
+                                        plain.iv
+                                    );
+                                    var mac = new Buffer(
+                                        keythereum.getMAC(
+                                            derivedKey,
+                                            new Buffer(encryptedPrivateKey, "base64")
+                                        ),
+                                        "hex"
+                                    ).toString("base64");
 
-                                // encrypt private key using derived key and IV, then
-                                // store encrypted key & IV, indexed by handle
-                                db.put(handle, {
-                                    handle: handle,
-                                    privateKey: encryptedPrivateKey,
-                                    iv: plain.iv.toString("base64"),
-                                    salt: plain.salt.toString("base64"),
-                                    mac: mac,
-                                    id: uuid.v4(),
-                                    nonce: 0
-                                }, function () {
-
-                                    // set web.account object
-                                    self.account = {
+                                    // encrypt private key using derived key and IV, then
+                                    // store encrypted key & IV, indexed by handle
+                                    db.put(handle, {
                                         handle: handle,
-                                        privateKey: plain.privateKey,
-                                        address: keythereum.privateKeyToAddress(plain.privateKey),
+                                        privateKey: encryptedPrivateKey,
+                                        iv: plain.iv.toString("base64"),
+                                        salt: plain.salt.toString("base64"),
+                                        mac: mac,
+                                        id: uuid.v4(),
                                         nonce: 0
-                                    };
+                                    }, function () {
 
-                                    self.fund(self.account, callback);
+                                        // set web.account object
+                                        self.account = {
+                                            handle: handle,
+                                            privateKey: plain.privateKey,
+                                            address: keythereum.privateKeyToAddress(plain.privateKey),
+                                            nonce: 0
+                                        };
 
-                                }); // db.put
+                                        self.fund(self.account, callback);
 
-                            }
+                                    }); // db.put
 
-                        }); // deriveKey
+                                }
 
-                    }); // create
+                            }); // deriveKey
 
-                } else {
-                    if (callback) callback(errors.HANDLE_TAKEN);
-                }
+                        }); // create
 
-            }); // db.get
+                    } else {
+                        if (callback) callback(errors.HANDLE_TAKEN);
+                    }
+                }); // db.get
+            } else {
+                if (callback) callback(errors.PASSWORD_TOO_SHORT);
+            }
         },
 
         login: function (handle, password, callback) {
             var self = this;
 
             // retrieve account info from database
-            db.get(handle, function (storedInfo) {
-                if (!storedInfo.error) {
+            if (password) {
+                db.get(handle, function (storedInfo) {
+                    if (!storedInfo.error) {
 
-                    var iv = new Buffer(storedInfo.iv, "base64");
-                    var salt = new Buffer(storedInfo.salt, "base64");
+                        var iv = new Buffer(storedInfo.iv, "base64");
+                        var salt = new Buffer(storedInfo.salt, "base64");
 
-                    // derive secret key from password
-                    keythereum.deriveKey(password, salt, null, function (derivedKey) {
-                        if (derivedKey) {
+                        // derive secret key from password
+                        keythereum.deriveKey(password, salt, null, function (derivedKey) {
+                            if (derivedKey) {
 
-                            // verify that message authentication codes match
-                            var mac = new Buffer(keythereum.getMAC(
-                                derivedKey,
-                                new Buffer(storedInfo.privateKey, "base64")
-                            ), "hex").toString("base64");
-                            
-                            if (mac === storedInfo.mac) {
-                                try {
-
-                                    // decrypt stored private key using secret key
-                                    var privateKey = new Buffer(keythereum.decrypt(
-                                        storedInfo.privateKey,
-                                        derivedKey.slice(0, 16),
-                                        iv
-                                    ), "hex");
-
-                                    // while logged in, web.account object is set
-                                    self.account = {
-                                        handle: handle,
-                                        privateKey: privateKey,
-                                        address: keythereum.privateKeyToAddress(privateKey),
-                                        nonce: storedInfo.nonce
-                                    };
-
-                                    if (callback) callback(self.account);
+                                // verify that message authentication codes match
+                                var mac = new Buffer(keythereum.getMAC(
+                                    derivedKey,
+                                    new Buffer(storedInfo.privateKey, "base64")
+                                ), "hex").toString("base64");
                                 
-                                // decryption failure: bad password
-                                } catch (e) {
+                                if (mac === storedInfo.mac) {
+                                    try {
+
+                                        // decrypt stored private key using secret key
+                                        var privateKey = new Buffer(keythereum.decrypt(
+                                            storedInfo.privateKey,
+                                            derivedKey.slice(0, 16),
+                                            iv
+                                        ), "hex");
+
+                                        // while logged in, web.account object is set
+                                        self.account = {
+                                            handle: handle,
+                                            privateKey: privateKey,
+                                            address: keythereum.privateKeyToAddress(privateKey),
+                                            nonce: storedInfo.nonce
+                                        };
+
+                                        if (callback) callback(self.account);
+                                    
+                                    // decryption failure: bad password
+                                    } catch (e) {
+                                        if (callback) callback(errors.BAD_CREDENTIALS);
+                                    }
+
+                                // message authentication code mismatch
+                                } else {
                                     if (callback) callback(errors.BAD_CREDENTIALS);
                                 }
-
-                            // message authentication code mismatch
-                            } else {
-                                if (callback) callback(errors.BAD_CREDENTIALS);
                             }
-                        }
 
-                    }); // deriveKey
+                        }); // deriveKey
 
-                // handle not found
-                } else {
-                    if (callback) callback(errors.BAD_CREDENTIALS);
-                }
+                    // handle not found
+                    } else {
+                        if (callback) callback(errors.BAD_CREDENTIALS);
+                    }
 
-            }); // db.get
+                }); // db.get
+
+            // blank password
+            } else {
+                if (callback) callback(errors.BAD_CREDENTIALS);
+            }
         },
 
         logout: function () {

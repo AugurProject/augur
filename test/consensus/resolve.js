@@ -6,28 +6,28 @@
 "use strict";
 
 var assert = require("chai").assert;
-var Augur = require("../../src");
+var augur = require("../../src");
 var constants = require("../../src/constants");
 require('it-each')({ testPerIteration: true });
 
-Augur = require("../../src/utilities").setup(Augur, process.argv.slice(2));
+augur = require("../../src/utilities").setup(augur, process.argv.slice(2));
 
 var log = console.log;
 var num_components = "2";
 var num_iterations = "5";
-var branch = Augur.branches.dev;
-var period = Augur.getVotePeriod(branch);
-var num_events = Augur.getNumberEvents(branch, period);
-var num_reports = Augur.getNumberReporters(branch);
+var branch = augur.branches.dev;
+var period = augur.getVotePeriod(branch);
+var num_events = augur.getNumberEvents(branch, period);
+var num_reports = augur.getNumberReporters(branch);
 var flatsize = num_events * num_reports;
 var reputation_vector = [
-    Augur.getRepBalance(branch, Augur.coinbase),
-    Augur.getRepBalance(branch, constants.chain10101.accounts.tinybike_new)
+    augur.getRepBalance(branch, augur.coinbase),
+    augur.getRepBalance(branch, constants.chain10101.accounts.tinybike_new)
 ];
 var ballot = new Array(num_events);
 var reports = new Array(flatsize);
 for (var i = 0; i < num_reports; ++i) {
-    ballot = Augur.getReporterBallot(branch, period, Augur.getReporterID(branch, i));
+    ballot = augur.getReporterBallot(branch, period, augur.getReporterID(branch, i));
     if (ballot[0] != 0) {
         for (var j = 0; j < num_events; ++j) {
             reports[i*num_events + j] = ballot[j];
@@ -47,7 +47,7 @@ describe("testing consensus/resolve", function () {
     
     it("resolve", function (done) {
         this.timeout(constants.TIMEOUT);
-        Augur.resolve(
+        augur.resolve(
             reputation_vector,
             abi.unfix(reports, "string"),
             scaled,
@@ -73,7 +73,7 @@ describe("testing consensus/resolve", function () {
 
     it("redeem_resolve", function (done) {
         this.timeout(constants.TIMEOUT);
-        Augur.redeem_resolve(
+        augur.redeem_resolve(
             branch,
             period,
             num_events,

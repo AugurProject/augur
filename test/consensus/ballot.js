@@ -7,26 +7,26 @@
 
 var chalk = require("chalk");
 var assert = require("chai").assert;
-var Augur = require("../../src");
+var augur = require("../../src");
 var constants = require("../../src/constants");
 var utilities = require("../../src/utilities");
 var log = console.log;
 
 require('it-each')({ testPerIteration: true });
 
-Augur = utilities.setup(Augur, process.argv.slice(2));
+augur = utilities.setup(augur, process.argv.slice(2));
 
 var TIMEOUT = 120000;
-var branch = Augur.branches.dev;
-var period = Augur.getVotePeriod(branch);
+var branch = augur.branches.dev;
+var period = augur.getVotePeriod(branch);
 
-var reporters = utilities.get_test_accounts(Augur, constants.MAX_TEST_ACCOUNTS);
+var reporters = utilities.get_test_accounts(augur, constants.MAX_TEST_ACCOUNTS);
 
 describe("Set ballots for " + reporters.length + " reporters", function () {
 
-    var period = Augur.getVotePeriod(branch);
-    var num_events = Augur.getNumberEvents(branch, period);
-    var events = Augur.getEvents(branch, period);
+    var period = augur.getVotePeriod(branch);
+    var num_events = augur.getNumberEvents(branch, period);
+    var events = augur.getEvents(branch, period);
 
     it("setReporterBallot: " + reporters[0], function (done) {
         var i, ballot, reputation;
@@ -37,9 +37,9 @@ describe("Set ballots for " + reporters.length + " reporters", function () {
         }
         ballot[num_events-3] = 1.0;
         log("     ", chalk.cyan(JSON.stringify(ballot)));
-        reputation = Augur.getRepBalance(branch, reporters[0]);
-        assert.strictEqual(Augur.getReporterID(branch, 0), reporters[0]);
-        Augur.setReporterBallot(
+        reputation = augur.getRepBalance(branch, reporters[0]);
+        assert.strictEqual(augur.getReporterID(branch, 0), reporters[0]);
+        augur.setReporterBallot(
             branch,
             period,
             reporters[0],
@@ -73,9 +73,9 @@ describe("Set ballots for " + reporters.length + " reporters", function () {
         // ballot[num_events-2] = 1.0;
         // ballot[num_events-3] = 1.0;
         log("     ", chalk.cyan(JSON.stringify(ballot)));
-        reputation = Augur.getRepBalance(branch, reporters[1]);
-        assert.strictEqual(Augur.getReporterID(branch, 1), reporters[1]);
-        Augur.setReporterBallot(
+        reputation = augur.getRepBalance(branch, reporters[1]);
+        assert.strictEqual(augur.getReporterID(branch, 1), reporters[1]);
+        augur.setReporterBallot(
             branch,
             period,
             reporters[1],
@@ -110,9 +110,9 @@ describe("Set ballots for " + reporters.length + " reporters", function () {
         ballot[num_events-2] = 1.0;
         ballot[num_events-3] = 1.0;
         log("     ", chalk.cyan(JSON.stringify(ballot)));
-        reputation = Augur.getRepBalance(branch, reporters[2]);
-        assert.strictEqual(Augur.getReporterID(branch, 2), reporters[2]);
-        Augur.setReporterBallot(
+        reputation = augur.getRepBalance(branch, reporters[2]);
+        assert.strictEqual(augur.getReporterID(branch, 2), reporters[2]);
+        augur.setReporterBallot(
             branch,
             period,
             reporters[2],
@@ -142,8 +142,8 @@ describe("Set ballots for " + reporters.length + " reporters", function () {
             ballot[i] = 0.0;
         }
         log("     ", chalk.cyan(JSON.stringify(ballot)));
-        reputation = Augur.getRepBalance(branch, element);
-        Augur.setReporterBallot(
+        reputation = augur.getRepBalance(branch, element);
+        augur.setReporterBallot(
             branch,
             period,
             element,

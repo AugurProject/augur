@@ -9,27 +9,27 @@ var assert = require("chai").assert;
 var chalk = require("chalk");
 var constants = require("../../src/constants");
 var utilities = require("../../src/utilities");
-var Augur = utilities.setup(require("../../src"), process.argv.slice(2));
+var augur = utilities.setup(require("../../src"), process.argv.slice(2));
 var log = console.log;
 
 require('it-each')({ testPerIteration: true });
 
-var branch = Augur.branches.dev;
-var period = Augur.getVotePeriod(branch);
-var num_events = Augur.getNumberEvents(branch, period);
-var num_reports = Augur.getNumberReporters(branch);
+var branch = augur.branches.dev;
+var period = augur.getVotePeriod(branch);
+var num_events = augur.getNumberEvents(branch, period);
+var num_reports = augur.getNumberReporters(branch);
 var flatsize = num_events * num_reports;
-var reporters = utilities.get_test_accounts(Augur, constants.MAX_TEST_ACCOUNTS);
+var reporters = utilities.get_test_accounts(augur, constants.MAX_TEST_ACCOUNTS);
 var reputation_vector = [];
 for (var i = 0; i < num_reports; ++i) {
-    reputation_vector.push(Augur.getRepBalance(branch, reporters[i]));
+    reputation_vector.push(augur.getRepBalance(branch, reporters[i]));
 }
 log("Reputation:", chalk.cyan(JSON.stringify(reputation_vector)));
 var ballot = new Array(num_events);
 var reports = new Array(flatsize);
 for (var i = 0; i < num_reports; ++i) {
-    var reporterID = Augur.getReporterID(branch, i);
-    ballot = Augur.getReporterBallot(branch, period, reporterID);
+    var reporterID = augur.getReporterID(branch, i);
+    ballot = augur.getReporterBallot(branch, period, reporterID);
     if (ballot[0] != 0) {
         for (var j = 0; j < num_events; ++j) {
             reports[i*num_events + j] = ballot[j];
@@ -61,7 +61,7 @@ describe("testing consensus: interpolate", function () {
 
     it("redeem_interpolate/read_ballots", function (done) {
         this.timeout(constants.TIMEOUT);
-        Augur.read_ballots(
+        augur.read_ballots(
             branch,
             period,
             num_events,
@@ -85,8 +85,8 @@ describe("testing consensus: interpolate", function () {
 
     it("redeem_interpolate/interpolate", function (done) {
         this.timeout(constants.TIMEOUT);
-        // Augur.tx.redeem_interpolate.returns = "unfix[]";
-        Augur.redeem_interpolate(
+        // augur.tx.redeem_interpolate.returns = "unfix[]";
+        augur.redeem_interpolate(
             branch,
             period,
             num_events,
@@ -100,15 +100,15 @@ describe("testing consensus: interpolate", function () {
                 // success
                 // var i, reports_filled, reports_mask, v_size;
                 assert.strictEqual(r.callReturn, "0x01");
-                // reports_filled = Augur.getReportsFilled(branch, period);
+                // reports_filled = augur.getReportsFilled(branch, period);
                 // for (i = 0; i < num_events; ++i) {
                 //     assert.strictEqual(reports_filled[i], abi.fix(ballot[i], "string"));
                 // }
-                // reports_mask = Augur.getReportsMask(branch, period);
+                // reports_mask = augur.getReportsMask(branch, period);
                 // for (i = 0; i < num_events; ++i) {
                 //     assert.strictEqual(reports_mask[i], "0");
                 // }
-                // v_size = Augur.getVSize(branch, period);
+                // v_size = augur.getVSize(branch, period);
                 // assert.strictEqual(parseInt(v_size), num_reports * num_events);
                 done();
             },

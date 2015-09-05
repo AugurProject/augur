@@ -112,6 +112,11 @@ var errors = {
         message: "incorrect handle or password"
     },
 
+    PASSWORD_TOO_SHORT: {
+        error: 405,
+        message: "password must be at least 6 characters long"
+    },
+
     TRANSACTION_INVALID: {
         error: 412,
         message: "transaction validation failed"
