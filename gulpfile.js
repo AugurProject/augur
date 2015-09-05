@@ -15,8 +15,8 @@ gulp.task("clean", function (callback) {
     del(["dist/*"], callback);
 });
 
-gulp.task("test", function (callback) {
-    var runtests = cp.spawn("npm", ["run", "offline"]);
+gulp.task("lint", function (callback) {
+    var runtests = cp.spawn("npm", ["run", "lint"]);
     runtests.stdout.on("data", function (data) {
         gulp_log.write(nodeUtil.format(data.toString()));
     });
@@ -45,4 +45,4 @@ gulp.task("build", function (callback) {
     });
 });
 
-gulp.task("default", ["test", "build"]);
+gulp.task("default", ["lint", "build"]);

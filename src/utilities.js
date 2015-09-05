@@ -102,96 +102,6 @@ module.exports = {
         return current_block + block_delta;
     },
 
-    // a few handy conversion functions, mostly from
-    // http://michael-rushanan.blogspot.ca/2014/03/javascript-uint8array-hacks-and-cheat.html
-
-    str2ua: function (s) {
-        var ua = new Uint8Array(s.length);
-        for (var i = 0; i < s.length; i++) {
-            ua[i] = s.charCodeAt(i);
-        }
-        return ua;
-    },
-     
-    ua2str: function (ua) {
-        var s = '';
-        for (var i = 0; i < ua.length; i++) {
-            s += String.fromCharCode(ua[i]);
-        }
-        return s;
-    },
-
-    ua2hex: function (ua) {
-        var h = '';
-        for (var i = 0; i < ua.length; i++) {
-            h += "\\0x" + ua[i].toString(16);
-        }
-        return h;
-    },
-
-    ua2b64: function (ua) {
-        return this.btoa(String.fromCharCode.apply(null, ua));
-    },
-
-    b642ua: function (b64) {
-        return new Uint8Array(this.atob(b64).split('').map(function (c) {
-            return c.charCodeAt(0);
-        }));
-    },
-
-    hex2b64: function (str) {
-        return new Buffer(str, "hex").toString("base64");
-    },
-
-    b642hex: function (str) {
-        return new Buffer(str, "base64").toString("hex");
-    },
-
-    btoa: function (str) {
-        var buffer;
-        if (str instanceof Buffer) {
-            buffer = str;
-        } else {
-            buffer = new Buffer(str.toString(), "binary");
-        }
-        return buffer.toString("base64");
-    },
-
-    atob: function (str) {
-        return new Buffer(str, "base64").toString("binary");
-    },
-
-    escape_unicode: function (str) {
-        return str.replace(/[\s\S]/g, function (escape) {
-            return '\\u' + ('0000' + escape.charCodeAt().toString(16)).slice(-4);
-        });
-    },
-
-    str2buf: function (str, enc) {
-        if (str.constructor === String) {
-            if (enc) {
-                str = new Buffer(str, enc);
-            } else {
-                if (validator.isHexadecimal(str)) {
-                    str = new Buffer(str, "hex");
-                } else if (validator.isBase64(str)) {
-                    str = new Buffer(str, "base64");
-                } else {
-                    str = new Buffer(str);
-                }
-            }
-        }
-        return str;
-    },
-
-    hex2utf16le: function (input) {
-        var output = '';
-        for (var i = 0, l = input.length; i < l; i += 4) {
-            output += '\\u' + input.slice(i+2, i+4) + input.slice(i, i+2);
-        }
-        return JSON.parse('"' + output + '"');
-    },
-
     has_value: function (o, v) {
         for (var p in o) {
             if (o.hasOwnProperty(p)) {
@@ -210,8 +120,9 @@ module.exports = {
             augur.contracts = JSON.parse(contracts.toString());
         }
         if (!bignum) augur.bignumbers = false;
+        augur.nodes = ["http://eth1.augur.net"].concat(augur.nodes);
         if (augur.connect(rpcinfo) && rpcinfo) {
-            log(chalk.magenta("augur"), "connected:", chalk.cyan(augur.nodes[0]));
+            log(chalk.magenta("augur"), "connected:", chalk.cyan(augur.nodes));
         }
         return augur;
     },
@@ -289,33 +200,6 @@ module.exports = {
         }
     },
 
-    // chop a string up into an array of smaller strings
-    chunk32: function (string, stride, offset) {
-        var elements, chunked, position;
-        if (string.length >= 66) {
-            stride = stride || 64;
-            if (offset) {
-                elements = Math.ceil(string.slice(offset).length / stride) + 1;
-            } else {
-                elements = Math.ceil(string.length / stride);
-            }
-            chunked = new Array(elements);
-            position = 0;
-            for (var i = 0; i < elements; ++i) {
-                if (offset && i === 0) {
-                    chunked[i] = string.slice(position, position + offset);
-                    position += offset;
-                } else {
-                    chunked[i] = string.slice(position, position + stride);
-                    position += stride;
-                }
-            }
-            return chunked;
-        } else {
-            return string;
-        }
-    },
-
     sha256: function (x) {
         return crypto.createHash("sha256").update(x).digest("hex");
     },
@@ -327,40 +211,6 @@ module.exports = {
             if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
         }
         return copy;
-    },
-
-    loop: function (list, iterator) {
-        var n = list.length;
-        var i = -1;
-        var calls = 0;
-        var looping = false;
-        var iterate = function (quit, breaker) {
-            calls -= 1;
-            i += 1;
-            if (i === n || quit) {
-                if (breaker) {
-                    return breaker();
-                } else {
-                    return;
-                }
-            }
-            iterator(list[i], next);
-        };
-        var runloop = function () {
-            if (looping) return;
-            looping = true;
-            while (calls > 0) iterate();
-            looping = false;
-        };
-        var next = function (quit, breaker) {
-            calls += 1;
-            if (typeof setTimeout === "undefined") {
-                runloop();
-            } else {
-                setTimeout(function () { iterate(quit, breaker); }, 1);
-            }
-        };
-        next();
     },
 
     fold: function (arr, num_cols) {

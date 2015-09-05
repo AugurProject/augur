@@ -1,5 +1,5 @@
 /** 
- * constants for augur.js unit tests
+ * augur.js constants
  */
 
 "use strict";
@@ -28,8 +28,8 @@ module.exports = {
     // 100 free ether for new accounts on registration
     FREEBIE: 100,
 
-    // timeout for asynchronous unit tests
-    TIMEOUT: 120000,
+    // unit test timeout
+    TIMEOUT: 600000,
 
     KEYSIZE: 32,
     IVSIZE: 16,
@@ -37,9 +37,9 @@ module.exports = {
     FIREBASE_URL: "https://resplendent-inferno-1997.firebaseio-demo.com/",
     
     nodes: [
-        "http://eth3.augur.net", // loopy/poc9: 69.164.196.239:8545
-        "http://eth1.augur.net", // miner:      45.33.59.27:8545
-        // "http://eth2.augur.net", // prospector: 45.79.204.139:8545
+        "http://eth3.augur.net", // loopy/poc9:    69.164.196.239:8545
+        "http://eth1.augur.net", // miner:         45.33.59.27:8545
+        // "http://eth2.augur.net", // prospector:    45.79.204.139:8545
         "http://eth4.augur.net", // singapore
         "http://eth5.augur.net"  // tokyo
     ]

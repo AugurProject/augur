@@ -12,8 +12,6 @@ var log = console.log;
 
 require('it-each')({ testPerIteration: true });
 
-ethrpc.nodes = ["http://127.0.0.1:8545"];
-
 describe("Read contracts", function () {
 
     var test = function (c) {

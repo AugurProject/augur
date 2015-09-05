@@ -4,7 +4,7 @@ var augur = global.augur || require("./src/index");
 global.augur = augur;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./src/index":297}],2:[function(require,module,exports){
+},{"./src/index":295}],2:[function(require,module,exports){
 /**
  * Ethereum contract ABI data serialization.
  * @author Jack Peterson (jack@tinybike.net)
@@ -31461,1049 +31461,6 @@ function toBuffer (input) {
 
 }).call(this,require("buffer").Buffer)
 },{"assert":8,"buffer":10}],255:[function(require,module,exports){
-module.exports={
-    "0x": "no response or bad input",
-    "cashFaucet": {
-        "-1": "Hey, you're not broke!"
-    },
-    "getSimulatedBuy": {
-        "-2": "cost updating error (did you enter a valid quantity?)"
-    },
-    "getSimulatedSell": {
-        "-2": "cost updating error (did you enter a valid quantity?)"
-    },
-    "closeMarket": {
-        "-1": "market has no cash",
-        "-2": "0 outcome",
-        "-3": "outcome indeterminable"
-    },
-    "report": {
-        "0": "could not set reporter ballot",
-        "-1": "report length does not match number of expiring events",
-        "-2": "voting period expired",
-        "-3": "incorrect hash"
-    },
-    "submitReportHash": {
-        "0": "could not set report hash",
-        "-1": "reporter doesn't exist, voting period is over, or voting period hasn't started yet",
-        "-2": "not in hash submitting timeframe"
-    },
-    "checkReportValidity": {
-        "-1": "report isn't long enough",
-        "-2": "reporter doesn't exist, voting period is over, or voting period hasn't started yet"
-    },
-    "slashRep": {
-        "0": "incorrect hash",
-        "-2": "incorrect reporter ID"
-    },
-    "createEvent": {
-        "0": "not enough money to pay fees or event already exists",
-        "-1": "we're either already past that date, branch doesn't exist, or description is bad"
-    },
-    "createMarket": {
-        "-1": "bad input or parent doesn't exist",
-        "-2": "too many events",
-        "-3": "too many outcomes",
-        "-4": "not enough money or market already exists"
-    },
-    "sendReputation": {
-        "0": "not enough reputation",
-        "-1": "Your reputation account was just created! Earn some reputation before you can send to others",
-        "-2": "Receiving address doesn't exist"
-    },
-    "buyShares": {
-        "-1": "invalid outcome or trading closed",
-        "-2": "entered a negative number of shares",
-        "-3": "not enough money",
-        "-4": "bad nonce/hash"
-    },
-    "sellShares": {
-        "-1": "invalid outcome or trading closed",
-        "-2": "entered a negative number of shares",
-        "-3": "not enough money",
-        "-4": "bad nonce/hash"
-    },
-    "TRANSACTION_FAILED": {
-        "error": 500,
-        "message": "transaction failed"
-    },
-    "TRANSACTION_NOT_CONFIRMED": {
-        "error": 501,
-        "message": "polled network but could not confirm transaction"
-    },
-    "ETHEREUM_NOT_FOUND": {
-        "error": 651,
-        "message": "no active ethereum node(s) found"
-    }
-}
-
-},{}],256:[function(require,module,exports){
-(function (process){
-/**
- * Basic JSON RPC methods for Ethereum
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
-
-var http = require("http");
-var url = require("url");
-var BigNumber = require("bignumber.js");
-var request = (NODE_JS) ? require("sync-request") : null;
-var abi = require("augur-abi");
-var errors = require("./errors");
-var log = console.log;
-
-BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
-
-module.exports = {
-
-    debug: false,
-
-    bignumbers: true,
-
-    // Maximum number of transaction verification attempts
-    TX_POLL_MAX: 12,
-
-    // Transaction polling interval
-    TX_POLL_INTERVAL: 12000,
-
-    DEFAULT_GAS: "0x2fd618",
-
-    ETHER: new BigNumber(10).toPower(18),
-
-    nodes: ["http://eth1.augur.net:8545"],
-
-    requests: 1,
-
-    notifications: {},
-
-    unmarshal: function (string, returns, stride, init) {
-        var elements, array, position;
-        if (string.length >= 66) {
-            stride = stride || 64;
-            elements = Math.ceil((string.length - 2) / stride);
-            array = new Array(elements);
-            position = init || 2;
-            for (var i = 0; i < elements; ++i) {
-                array[i] = abi.prefix_hex(
-                    string.slice(position, position + stride)
-                );
-                position += stride;
-            }
-            if (array.length) {
-                if (parseInt(array[0]) === array.length - 1) {
-                    array.splice(0, 1);
-                } else if (parseInt(array[1]) === array.length - 2 ||
-                    parseInt(array[1]) / 32 === array.length - 2) {
-                    array.splice(0, 2);
-                }
-            }
-            for (i = 0; i < array.length; ++i) {
-                if (returns === "hash[]" && this.bignumbers) {
-                    array[i] = abi.bignum(array[i]);
-                } else {
-                    if (returns === "number[]") {
-                        array[i] = abi.bignum(array[i]).toFixed();
-                    } else if (returns === "unfix[]") {
-                        if (this.bignumbers) {
-                            array[i] = abi.unfix(array[i]);
-                        } else {
-                            array[i] = abi.unfix(array[i], "string");
-                        }
-                    }
-                }
-            }
-            return array;
-        } else {
-            return string;
-        }
-    },
-
-    applyReturns: function (returns, result) {
-        returns = returns.toLowerCase();
-        if (result && result !== "0x") {
-            if (returns && returns.slice(-2) === "[]") {
-                result = this.unmarshal(result, returns);
-            } else if (returns === "string") {
-                result = abi.decode_hex(result, true);
-            } else {
-                if (this.bignumbers) {
-                    if (returns === "unfix") {
-                        result = abi.unfix(result);
-                    }
-                    if (result.constructor !== BigNumber) {
-                        result = abi.bignum(result);
-                    }
-                } else {
-                    if (returns === "number") {
-                        result = abi.bignum(result).toFixed();
-                    } else if (returns === "bignumber") {
-                        result = abi.bignum(result);
-                    } else if (returns === "unfix") {
-                        result = abi.unfix(result, "string");
-                    }
-                }
-            }
-        }
-        return result;
-    },
-
-    parse: function (response, returns, callback) {
-        var results, len;
-        try {
-            if (response !== undefined) {
-                response = JSON.parse(response);
-                if (response.error) {
-                    response = {
-                        error: response.error.code,
-                        message: response.error.message
-                    };
-                    if (callback) {
-                        callback(response);
-                    } else {
-                        return response;
-                    }
-                } else if (response.result !== undefined) {
-                    if (returns) {
-                        response.result = this.applyReturns(returns, response.result);
-                    } else {
-                        if (response.result && response.result.length > 2 &&
-                            response.result.slice(0,2) === "0x")
-                        {
-                            response.result = abi.remove_leading_zeros(response.result);
-                            response.result = abi.prefix_hex(response.result);
-                        }
-                    }
-                    if (callback) {
-                        callback(response.result);
-                    } else {
-                        return response.result;
-                    }
-                } else if (response.constructor === Array && response.length) {
-                    len = response.length;
-                    results = new Array(len);
-                    for (var i = 0; i < len; ++i) {
-                        results[i] = response[i].result;
-                        if (response.error) {
-                            console.error(
-                                "[" + response.error.code + "]",
-                                response.error.message
-                            );
-                        } else if (response[i].result !== undefined) {
-                            if (returns[i]) {
-                                results[i] = this.applyReturns(returns[i], response[i].result);
-                            } else {
-                                results[i] = abi.remove_leading_zeros(results[i]);
-                                results[i] = abi.prefix_hex(results[i]);
-                            }
-                        }
-                    }
-                    if (callback) {
-                        callback(results);
-                    } else {
-                        return results;
-                    }
-                // no result or error field
-                } else {
-                    if (callback) {
-                        callback(response);
-                    } else {
-                        return response;
-                    }
-                }
-            }
-        } catch (e) {
-            if (callback) {
-                callback(e);
-            } else {
-                return e;
-            }
-        }
-    },
-
-    stripReturns: function (tx) {
-        var returns;
-        if (tx.params !== undefined && tx.params.length &&
-            tx.params[0] && tx.params[0].returns)
-        {
-            returns = tx.params[0].returns;
-            delete tx.params[0].returns;
-        }
-        return returns;
-    },
-
-    postSync: function (rpc_url, command, returns) {
-        var req = null;
-        if (NODE_JS) {
-            return this.parse(request('POST', rpc_url, {
-                json: command
-            }).getBody().toString(), returns);
-        } else {
-            if (window.XMLHttpRequest) {
-                req = new window.XMLHttpRequest();
-            } else {
-                req = new window.ActiveXObject("Microsoft.XMLHTTP");
-            }
-            req.open("POST", rpc_url, false);
-            req.setRequestHeader("Content-type", "application/json");
-            req.send(command);
-            return this.parse(req.responseText, returns);
-        }
-    },
-
-    post: function (rpc_url, command, returns, callback) {
-        var req, self = this;
-        if (NODE_JS) {
-            var rpc_obj = url.parse(rpc_url);
-            req = http.request({
-                host: rpc_obj.hostname,
-                port: rpc_obj.port,
-                path: '/',
-                method: "POST",
-                headers: {"Content-type": "application/json"}
-            }, function (response) {
-                var str = '';
-                response.on('data', function (chunk) {
-                    str += chunk;
-                });
-                response.on('end', function () {
-                    if (str) self.parse(str, returns, callback);
-                });
-            });
-            req.on("error", function (err) {
-                if (self.debug) {
-                    log("RPC request to", rpc_url, "failed:", err.code);
-                }
-                if (rpc_url.indexOf(".augur.net") === -1) {
-                    self.nodes.splice(self.nodes.indexOf(rpc_url), 1);
-                }
-                callback();
-            });
-            req.write(command);
-            req.end();
-        } else {
-            if (window.XMLHttpRequest) {
-                req = new window.XMLHttpRequest();
-            } else {
-                req = new window.ActiveXObject("Microsoft.XMLHTTP");
-            }
-            req.onreadystatechange = function () {
-                if (req.readyState === 4) {
-                    self.parse(req.responseText, returns, callback);
-                } else {
-                    if (rpc_url.indexOf(".augur.net") === -1) {
-                        self.nodes.splice(self.nodes.indexOf(rpc_url), 1);
-                    }
-                    callback();
-                }
-            };
-            req.onerror = function () {
-                if (rpc_url.indexOf(".augur.net") === -1) {
-                    self.nodes.splice(self.nodes.indexOf(rpc_url), 1);
-                }
-                callback();
-            };
-            req.open("POST", rpc_url, true);
-            req.setRequestHeader("Content-type", "application/json");
-            req.send(command);
-        }
-    },
-
-    // Post JSON-RPC command to all Ethereum nodes
-    broadcast: function (command, callback) {
-        var i, j, num_nodes, num_commands, returns, result, complete;
-
-        // make sure the ethereum node list isn't empty
-        if (!this.nodes || !this.nodes.length) {
-            if (callback && callback.constructor === Function) {
-                return callback(errors.ETHEREUM_NOT_FOUND);
-            } else {
-                return errors.ETHEREUM_NOT_FOUND;
-            }
-        }
-
-        // parse batched commands and strip "returns" fields
-        if (command.constructor === Array) {
-            num_commands = command.length;
-            returns = new Array(num_commands);
-            for (i = 0; i < num_commands; ++i) {
-                returns[i] = this.stripReturns(command[i]);
-            }
-        } else {
-            returns = this.stripReturns(command);
-        }
-
-        // asynchronous request if callback exists
-        if (callback && callback.constructor === Function) {
-            var self = this;
-            command = JSON.stringify(command);
-            num_nodes = this.nodes.length;
-            for (j = 0; j < num_nodes; ++j) {
-                (function (node) {
-                    self.post(node, command, returns, function (result) {
-                        if (result !== undefined &&
-                            result !== "0x" && !result.error)
-                        {
-                            if (!complete) callback(result);
-                            complete = true;
-                        }
-                    });
-                })(this.nodes[j]);
-            }
-
-        // use synchronous http if no callback provided
-        } else {
-            if (!NODE_JS) command = JSON.stringify(command);
-            num_nodes = this.nodes.length;
-            for (j = 0; j < num_nodes; ++j) {
-                try {
-                    result = this.postSync(this.nodes[j], command, returns);
-                } catch (e) {
-                    if (this.debug) {
-                        log("RPC request to", this.nodes[j], "failed:", e);
-                    }
-                    if (this.nodes[j].indexOf(".augur.net") === -1) {
-                        this.nodes.splice(j--, 1);
-                    }
-                }
-                if (result && result !== "0x") return result;
-            }
-        }
-    },
-
-    marshal: function (command, params, prefix) {
-        var payload = {
-            id: this.requests++,
-            jsonrpc: "2.0"
-        };
-        if (prefix === "null") {
-            payload.method = command.toString();
-        } else {
-            payload.method = (prefix || "eth_") + command.toString();
-        }
-        if (params !== undefined && params !== null) {
-            if (params.constructor === Array) {
-                payload.params = params;
-            } else {
-                payload.params = [params];
-            }
-        } else {
-            payload.params = [];
-        }
-        return payload;
-    },
-
-    /******************************
-     * Ethereum JSON-RPC bindings *
-     ******************************/
-
-    raw: function (command, params, f) {
-        return this.broadcast(this.marshal(command, params, "null"), f);
-    },
-
-    eth: function (command, params, f) {
-        return this.broadcast(this.marshal(command, params), f);
-    },
-
-    net: function (command, params, f) {
-        return this.broadcast(this.marshal(command, params, "net_"), f);
-    },
-
-    web3: function (command, params, f) {
-        return this.broadcast(this.marshal(command, params, "web3_"), f);
-    },
-
-    leveldb: function (command, params, f) {
-        return this.broadcast(this.marshal(command, params, "db_"), f);
-    },
-
-    shh: function (command, params, f) {
-        return this.broadcast(this.marshal(command, params, "shh_"), f);
-    },
-
-    sha3: function (data, f) {
-        return this.broadcast(this.marshal("sha3", data.toString(), "web3_"), f);
-    },
-    hash: function (data, f) {
-        return this.broadcast(this.marshal("sha3", data.toString(), "web3_"), f);
-    },
-
-    gasPrice: function (f) {
-        return this.broadcast(this.marshal("gasPrice"), f);
-    },
-
-    blockNumber: function (f) {
-        if (f) {
-            this.broadcast(this.marshal("blockNumber"), f);
-        } else {
-            return parseInt(this.broadcast(this.marshal("blockNumber")));
-        }
-    },
-
-    coinbase: function (f) {
-        return this.broadcast(this.marshal("coinbase"), f);
-    },
-
-    balance: function (address, block, f) {
-        return this.broadcast(
-            this.marshal("getBalance", [
-                address || this.eth("coinbase"), block || "latest"
-            ]), f
-        );
-    },
-    getBalance: function (address, block, f) {
-        return this.broadcast(
-            this.marshal("getBalance", [
-                address || this.eth("coinbase"), block || "latest"
-            ]), f
-        );
-    },
-
-    txCount: function (address, f) {
-        return this.broadcast(
-            this.marshal("getTransactionCount", address || this.eth("coinbase")), f
-        );
-    },
-    getTransactionCount: function (address, f) {
-        return this.broadcast(
-            this.marshal("getTransactionCount", address || this.eth("coinbase")), f
-        );
-    },
-
-    sendEther: function (to, value, from, onSent, onSuccess, onFailed) {
-        from = from || this.broadcast(this.marshal("coinbase"));
-        var tx, txhash;
-        if (to && to.value) {
-            value = to.value;
-            if (to.from) from = to.from;
-            if (to.onSent) onSent = to.onSent;
-            if (to.onSuccess) onSuccess = to.onSuccess;
-            if (to.onFailed) onFailed = to.onFailed;
-            to = to.to;
-        }
-        tx = {
-            from: from,
-            to: to,
-            value: abi.bignum(value).mul(this.ETHER).toFixed()
-        };
-        if (onSent) {
-            this.sendTx(tx, function (txhash) {
-                if (txhash) {
-                    onSent(txhash);
-                    if (onSuccess)
-                        this.txNotify(0, value, tx, txhash, null, onSent, onSuccess, onFailed);
-                }
-            }.bind(this));
-        } else {
-            txhash = this.sendTx(tx);
-            if (txhash) {
-                if (onSuccess)
-                    this.txNotify(0, value, tx, txhash, null, onSent, onSuccess, onFailed);
-                return txhash;
-            }
-        }
-    },
-
-    sign: function (address, data, f) {
-        return this.broadcast(this.marshal("sign", [address, data]), f);
-    },
-
-    getTx: function (hash, f) {
-        return this.broadcast(this.marshal("getTransactionByHash", hash), f);
-    },
-    getTransaction: function (hash, f) {
-        return this.broadcast(this.marshal("getTransactionByHash", hash), f);
-    },
-
-    peerCount: function (f) {
-        if (f) {
-            this.broadcast(this.marshal("peerCount", [], "net_"), f);
-        } else {
-            return parseInt(this.broadcast(this.marshal("peerCount", [], "net_")));
-        }
-    },
-
-    accounts: function (f) {
-        return this.broadcast(this.marshal("accounts"), f);
-    },
-
-    mining: function (f) {
-        return this.broadcast(this.marshal("mining"), f);
-    },
-
-    hashrate: function (f) {
-        if (f) {
-            this.broadcast(this.marshal("hashrate"), f);
-        } else {
-            return parseInt(this.broadcast(this.marshal("hashrate")));
-        }
-    },
-
-    getBlockByHash: function (hash, full, f) {
-        return this.broadcast(this.marshal("getBlockByHash", [hash, full || false]), f);
-    },
-
-    getBlock: function (number, full, f) {
-        return this.broadcast(this.marshal("getBlockByNumber", [number, full || false]), f);
-    },
-    getBlockByNumber: function (number, full, f) {
-        return this.broadcast(this.marshal("getBlockByNumber", [number, full || false]), f);
-    },
-
-    version: function (f) {
-        return this.broadcast(this.marshal("version", [], "net_"), f);
-    },
-    netVersion: function (f) {
-        return this.broadcast(this.marshal("version", [], "net_"), f);
-    },
-
-    // estimate a transaction's gas cost
-    estimateGas: function (tx, f) {
-        tx.to = tx.to || "";
-        return this.broadcast(this.marshal("estimateGas", tx), f);
-    },
-
-    // execute functions on contracts on the blockchain
-    call: function (tx, f) {
-        tx.to = tx.to || "";
-        tx.gas = (tx.gas) ? abi.prefix_hex(tx.gas.toString(16)) : this.DEFAULT_GAS;
-        return this.broadcast(this.marshal("call", tx), f);
-    },
-
-    sendTx: function (tx, f) {
-        tx.to = tx.to || "";
-        tx.gas = (tx.gas) ? abi.prefix_hex(tx.gas.toString(16)) : this.DEFAULT_GAS;
-        return this.broadcast(this.marshal("sendTransaction", tx), f);
-    },
-    sendTransaction: function (tx, f) {
-        tx.to = tx.to || "";
-        tx.gas = (tx.gas) ? abi.prefix_hex(tx.gas.toString(16)) : this.DEFAULT_GAS;
-        return this.broadcast(this.marshal("sendTransaction", tx), f);
-    },
-
-    // IN: RLP(tx.signed(privateKey))
-    // OUT: txhash
-    sendRawTx: function (rawTx, f) {
-        return this.broadcast(this.marshal("sendRawTransaction", rawTx), f);
-    },
-    sendRawTransaction: function (rawTx, f) {
-        return this.broadcast(this.marshal("sendRawTransaction", rawTx), f);
-    },
-
-    receipt: function (txhash, f) {
-        return this.broadcast(this.marshal("getTransactionReceipt", txhash), f);
-    },
-    getTransactionReceipt: function (txhash, f) {
-        return this.broadcast(this.marshal("getTransactionReceipt", txhash), f);
-    },
-
-    // publish a new contract to the blockchain (from the coinbase account)
-    publish: function (compiled, f) {
-        return this.sendTx({ from: this.eth("coinbase"), data: compiled }, f);
-    },
-
-    // Read the code in a contract on the blockchain
-    read: function (address, block, f) {
-        return this.broadcast(this.marshal("getCode", [address, block || "latest"]), f);
-    },
-    getCode: function (address, block, f) {
-        return this.broadcast(this.marshal("getCode", [address, block || "latest"]), f);
-    },
-
-    listening: function () {
-        try {
-            return this.net("listening");
-        } catch (e) {
-            return false;
-        }
-    },
-
-    /**
-     * Invoke a function from a contract on the blockchain.
-     *
-     * Input tx format:
-     * {
-     *    from: <sender's address> (hexstring; optional, coinbase default)
-     *    to: <contract address> (hexstring)
-     *    method: <function name> (string)
-     *    signature: <function signature, e.g. "iia"> (string)
-     *    params: <parameters passed to the function> (optional)
-     *    returns: <"number[]", "int", "BigNumber", or "string" (default)>
-     *    send: <true to sendTransaction, false to call (default)>
-     * }
-     */
-    invoke: function (itx, f) {
-        var tx, data_abi, packaged, invocation, invoked;
-        if (itx) {
-            if (itx.send && itx.invocation && itx.invocation.invoke &&
-                itx.invocation.invoke.constructor === Function)
-            {
-                return itx.invocation.invoke.call(itx.invocation.context, itx, f);
-            } else {
-                tx = abi.copy(itx);
-                if (tx.params !== undefined) {
-                    if (tx.params.constructor === Array) {
-                        for (var i = 0, len = tx.params.length; i < len; ++i) {
-                            if (tx.params[i] !== undefined &&
-                                tx.params[i].constructor === BigNumber) {
-                                tx.params[i] = tx.params[i].toFixed();
-                            }
-                        }
-                    } else if (tx.params.constructor === BigNumber) {
-                        tx.params = tx.params.toFixed();
-                    }
-                }
-                if (tx.to) tx.to = abi.prefix_hex(tx.to);
-                if (tx.from) tx.from = abi.prefix_hex(tx.from);
-                data_abi = abi.encode(tx);
-                if (data_abi) {
-                    packaged = {
-                        from: tx.from || this.eth("coinbase"),
-                        to: tx.to,
-                        data: data_abi
-                    };
-                    if (tx.value) packaged.value = tx.value;
-                    if (tx.returns) packaged.returns = tx.returns;
-                    invocation = (tx.send) ? this.sendTx : this.call;
-                    invoked = true;
-                    return invocation.call(this, packaged, f);
-                }
-            }
-        }
-        if (!invoked) {
-            if (f) {
-                f(errors.TRANSACTION_FAILED);
-            } else {
-                return errors.TRANSACTION_FAILED;
-            }
-        }
-    },
-
-    /**
-     * Batched RPC commands
-     */
-    batch: function (txlist, f) {
-        var num_commands, rpclist, callbacks, tx, data_abi, packaged, invocation;
-        if (txlist.constructor === Array) {
-            num_commands = txlist.length;
-            rpclist = new Array(num_commands);
-            callbacks = new Array(num_commands);
-            for (var i = 0; i < num_commands; ++i) {
-                tx = abi.copy(txlist[i]);
-                if (tx.params !== undefined) {
-                    if (tx.params.constructor === Array) {
-                        for (var j = 0, len = tx.params.length; j < len; ++j) {
-                            if (tx.params[j] !== undefined &&
-                                tx.params[j] !== null &&
-                                tx.params[j].constructor === BigNumber) {
-                                tx.params[j] = tx.params[j].toFixed();
-                            }
-                        }
-                    } else if (tx.params.constructor === BigNumber) {
-                        tx.params = tx.params.toFixed();
-                    }
-                }
-                if (tx.from) tx.from = abi.prefix_hex(tx.from);
-                tx.to = abi.prefix_hex(tx.to);
-                data_abi = abi.encode(tx);
-                if (data_abi) {
-                    if (tx.callback && tx.callback.constructor === Function) {
-                        callbacks[i] = tx.callback;
-                        delete tx.callback;
-                    }
-                    packaged = {
-                        from: tx.from || this.eth("coinbase"),
-                        to: tx.to,
-                        data: data_abi
-                    };
-                    if (tx.value) packaged.value = tx.value;
-                    if (tx.returns) packaged.returns = tx.returns;
-                    invocation = (tx.send) ? "sendTransaction" : "call";
-                    rpclist[i] = this.marshal(invocation, packaged);
-                } else {
-                    log("unable to package commands for batch RPC");
-                    return rpclist;
-                }
-            }
-            if (f) {
-                if (f.constructor === Function) { // callback on whole array
-                    this.broadcast(rpclist, f);
-                } else if (f === true) {
-                    this.broadcast(rpclist, function (res) {
-                        if (res) {
-                            if (res.constructor === Array && res.length) {
-                                for (j = 0; j < num_commands; ++j) {
-                                    if (res[j] && callbacks[j]) {
-                                        callbacks[j](res[j]);
-                                    }
-                                }
-                            } else {
-                                if (callbacks.length && callbacks[0]) {
-                                    callbacks[0](res);
-                                }
-                            }
-                        }
-                    });
-                }
-            } else {
-                return this.broadcast(rpclist, f);
-            }
-        } else {
-            log("expected array for batch RPC, invoking instead");
-            return this.invoke(txlist, f);
-        }
-    },
-
-    clearNotifications: function (id) {
-        for (var i = 0, len = this.notifications.length; i < len; ++i) {
-            clearTimeout(this.notifications[id][i]);
-            this.notifications[id] = [];
-        }
-    },
-
-    encodeResult: function (result, returns) {
-        if (result) {
-            if (returns === "null") {
-                result = null;
-            } else if (returns === "address" || returns === "address[]") {
-                result = abi.prefix_hex(abi.remove_leading_zeros(result));
-            } else {
-                if (this.bignumbers && returns !== "string") {
-                    result = abi.bignum(result);
-                }
-                if (!this.bignumbers) {
-                    if (!returns || returns === "hash[]" || returns === "hash") {
-                        result = abi.bignum(result, "hex");
-                    } else if (returns === "number") {
-                        result = abi.bignum(result, "string");
-                    }
-                }
-            }
-        }
-        return result;
-    },
-
-    errorCodes: function (tx, response) {
-        if (response && response.constructor === Array) {
-            for (var i = 0, len = response.length; i < len; ++i) {
-                response[i] = this.errorCodes(tx.method, response[i]);
-            }
-        } else {
-            if (errors[response]) {
-                response = {
-                    error: response,
-                    message: errors[response]
-                };
-            } else {
-                if (tx.returns && tx.returns !== "string" ||
-                    (response && response.constructor === String &&
-                    response.slice(0,2) === "0x"))
-                {
-                    var response_number = abi.bignum(response);
-                    if (response_number) {
-                        response_number = abi.bignum(response).toFixed();
-                        if (errors[tx.method] && errors[tx.method][response_number]) {
-                            response = {
-                                error: response_number,
-                                message: errors[tx.method][response_number]
-                            };
-                        }
-                    }
-                }
-            }
-        }
-        return response;
-    },
-
-    fire: function (itx, callback) {
-        var tx = abi.copy(itx);
-        if (callback) {
-            this.invoke(tx, function (res) {
-                callback(this.encodeResult(
-                    this.errorCodes(tx, res),
-                    itx.returns
-                ));
-            }.bind(this));
-        } else {
-            return this.encodeResult(
-                this.errorCodes(tx, this.invoke(tx)),
-                itx.returns
-            );
-        }
-    },
-
-    /***************************************
-     * Send-call-confirm callback sequence *
-     ***************************************/
-
-    checkBlockHash: function (tx, callreturn, itx, txhash, returns, count, onSent, onSuccess, onFailed) {
-        if (tx && tx.blockHash && abi.bignum(tx.blockHash).toNumber() !== 0) {
-            this.clearNotifications(txhash);
-            tx.callReturn = this.encodeResult(callreturn, returns);
-            tx.txHash = tx.hash;
-            delete tx.hash;
-            if (onSuccess && onSuccess.constructor === Function) onSuccess(tx);
-        } else {
-            if (count !== undefined) {
-                if (count < this.TX_POLL_MAX) {
-                    if (count === 0) {
-                        this.notifications[txhash] = [setTimeout(function () {
-                            this.txNotify(count + 1, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed);
-                        }.bind(this), this.TX_POLL_INTERVAL)];
-                    } else {
-                        this.notifications[txhash].push(setTimeout(function () {
-                            this.txNotify(count + 1, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed);
-                        }.bind(this), this.TX_POLL_INTERVAL));
-                    }
-                } else {
-                    if (onFailed && onFailed.constructor === Function) {
-                        onFailed(errors.TRANSACTION_NOT_CONFIRMED);
-                    }
-                }
-            }
-        }
-    },
-
-    txNotify: function (count, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed) {
-        this.getTx(txhash, function (tx) {
-            if (tx === null) {
-                if (returns) itx.returns = returns;
-            } else {
-                this.checkBlockHash(tx, callreturn, itx, txhash, returns, count, onSent, onSuccess, onFailed);
-            }
-        }.bind(this));
-    },
-
-    confirmTx: function (tx, txhash, returns, onSent, onSuccess, onFailed) {
-        var self = this;
-        if (tx && txhash) {
-            this.notifications[txhash] = [];
-            if (errors[txhash]) {
-                if (onFailed) onFailed({
-                    error: txhash,
-                    message: errors[txhash]
-                });
-            } else {
-                this.getTx(txhash, function (sent) {
-                    if (returns !== "null") {
-                        self.call({
-                            from: sent.from || self.eth("coinbase"),
-                            to: sent.to || tx.to,
-                            value: sent.value || tx.value,
-                            data: sent.input
-                        }, function (callReturn) {
-                            if (callReturn) {
-                                callReturn = JSON.stringify({ result: callReturn });
-
-                                // transform callReturn to a number
-                                var numReturn = self.parse(callReturn, "number");
-
-                                // check if numReturn is an error object
-                                if (numReturn.constructor === Object && numReturn.error) {
-                                    if (onFailed) onFailed(numReturn);
-                                } else if (errors[numReturn]) {
-                                    if (onFailed) onFailed({
-                                        error: numReturn,
-                                        message: errors[numReturn]
-                                    });
-                                } else {
-                                    try {
-
-                                        // check if numReturn is an error code
-                                        if (numReturn && numReturn.constructor === BigNumber) {
-                                            numReturn = numReturn.toFixed();
-                                        }
-                                        if (numReturn && errors[tx.method] && errors[tx.method][numReturn]) {
-                                            if (onFailed) onFailed({
-                                                error: numReturn,
-                                                message: errors[tx.method][numReturn]
-                                            });
-                                        } else {
-
-                                            // no errors found, so transform to the requested
-                                            // return type, specified by "returns" parameter
-                                            callReturn = self.parse(callReturn, returns);
-
-                                            // send the transaction hash and return value back
-                                            // to the client, using the onSent callback
-                                            onSent({
-                                                txHash: txhash,
-                                                callReturn: self.encodeResult(callReturn, returns)
-                                            });
-
-                                            // if an onSuccess callback was supplied, then
-                                            // poll the network until the transaction is
-                                            // included in a block (i.e., has a non-null
-                                            // blockHash field)
-                                            if (onSuccess) {
-                                                self.txNotify(
-                                                    0,
-                                                    callReturn,
-                                                    tx,
-                                                    txhash,
-                                                    returns,
-                                                    onSent,
-                                                    onSuccess,
-                                                    onFailed
-                                                );
-                                            }
-                                        }
-
-                                    // something went wrong :(
-                                    } catch (e) {
-                                        if (onFailed) onFailed(e);
-                                    }
-                                }
-                            }
-                        });
-
-                    // if returns type is null, skip the intermediate call
-                    } else {
-                        onSent({ txHash: txhash, callReturn: null });
-                        if (onSuccess) {
-                            self.txNotify(
-                                0,
-                                null,
-                                tx,
-                                txhash,
-                                returns,
-                                onSent,
-                                onSuccess,
-                                onFailed
-                            );
-                        }
-                    }
-                });
-            }
-        }
-    },
-
-    transact: function (tx, onSent, onSuccess, onFailed) {
-        var returns = tx.returns;
-        tx.send = true;
-        delete tx.returns;
-        if (onSent && onSent.constructor === Function) {
-            this.invoke(tx, function (txhash) {
-                if (txhash.error) {
-                    if (onFailed) onFailed(txhash);
-                } else {
-                    if (tx.invocation) delete tx.invocation;
-                    txhash = abi.prefix_hex(abi.pad_left(abi.strip_0x(txhash)));
-                    this.confirmTx(tx, txhash, returns, onSent, onSuccess, onFailed);
-                }
-            }.bind(this));
-        } else {
-            return this.invoke(tx);
-        }
-    }
-
-};
-
-}).call(this,require('_process'))
-},{"./errors":255,"_process":22,"augur-abi":2,"bignumber.js":6,"http":15,"sync-request":9,"url":40}],257:[function(require,module,exports){
 /*! @license Firebase v2.2.9
     License: https://www.firebase.com/terms/terms-of-service.html */
 (function() {var g,aa=this;function n(a){return void 0!==a}function ba(){}function ca(a){a.vb=function(){return a.uf?a.uf:a.uf=new a}}
@@ -32770,7 +31727,7 @@ U.prototype.We=function(a,b){x("Firebase.resetPassword",2,2,arguments.length);fg
 
 module.exports = Firebase;
 
-},{}],258:[function(require,module,exports){
+},{}],256:[function(require,module,exports){
 (function (process,Buffer){
 /**
  * keythereum: create/import/export ethereum keys
@@ -33387,7 +32344,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./lib/keccak":259,"./lib/scrypt":260,"_process":22,"buffer":10,"crypto":53,"crypto-browserify":53,"elliptic":261,"ethereumjs-util":225,"fs":7,"node-uuid":288,"path":21,"validator":289}],259:[function(require,module,exports){
+},{"./lib/keccak":257,"./lib/scrypt":258,"_process":22,"buffer":10,"crypto":53,"crypto-browserify":53,"elliptic":259,"ethereumjs-util":225,"fs":7,"node-uuid":286,"path":21,"validator":287}],257:[function(require,module,exports){
 /* keccak.js
  * A Javascript implementation of the Keccak SHA-3 candidate from Bertoni,
  * Daemen, Peeters and van Assche. This version is not optimized with any of 
@@ -33581,7 +32538,7 @@ module.exports = (function () {
     };
 }());
 
-},{}],260:[function(require,module,exports){
+},{}],258:[function(require,module,exports){
 (function (process,__dirname){
 // https://github.com/tonyg/js-scrypt
 module.exports = function (requested_total_memory) {
@@ -45302,59 +44259,59 @@ module.exports = function (requested_total_memory) {
 };
 
 }).call(this,require('_process'),"/node_modules/keythereum/lib")
-},{"_process":22,"fs":7,"path":21}],261:[function(require,module,exports){
+},{"_process":22,"fs":7,"path":21}],259:[function(require,module,exports){
 arguments[4][200][0].apply(exports,arguments)
-},{"../package.json":286,"./elliptic/curve":264,"./elliptic/curves":267,"./elliptic/ec":268,"./elliptic/eddsa":271,"./elliptic/hmac-drbg":274,"./elliptic/utils":276,"brorand":278,"dup":200}],262:[function(require,module,exports){
+},{"../package.json":284,"./elliptic/curve":262,"./elliptic/curves":265,"./elliptic/ec":266,"./elliptic/eddsa":269,"./elliptic/hmac-drbg":272,"./elliptic/utils":274,"brorand":276,"dup":200}],260:[function(require,module,exports){
 arguments[4][201][0].apply(exports,arguments)
-},{"../../elliptic":261,"bn.js":277,"dup":201}],263:[function(require,module,exports){
+},{"../../elliptic":259,"bn.js":275,"dup":201}],261:[function(require,module,exports){
 arguments[4][202][0].apply(exports,arguments)
-},{"../../elliptic":261,"../curve":264,"bn.js":277,"dup":202,"inherits":285}],264:[function(require,module,exports){
+},{"../../elliptic":259,"../curve":262,"bn.js":275,"dup":202,"inherits":283}],262:[function(require,module,exports){
 arguments[4][80][0].apply(exports,arguments)
-},{"./base":262,"./edwards":263,"./mont":265,"./short":266,"dup":80}],265:[function(require,module,exports){
+},{"./base":260,"./edwards":261,"./mont":263,"./short":264,"dup":80}],263:[function(require,module,exports){
 arguments[4][204][0].apply(exports,arguments)
-},{"../../elliptic":261,"../curve":264,"bn.js":277,"dup":204,"inherits":285}],266:[function(require,module,exports){
+},{"../../elliptic":259,"../curve":262,"bn.js":275,"dup":204,"inherits":283}],264:[function(require,module,exports){
 arguments[4][205][0].apply(exports,arguments)
-},{"../../elliptic":261,"../curve":264,"bn.js":277,"dup":205,"inherits":285}],267:[function(require,module,exports){
+},{"../../elliptic":259,"../curve":262,"bn.js":275,"dup":205,"inherits":283}],265:[function(require,module,exports){
 arguments[4][83][0].apply(exports,arguments)
-},{"../elliptic":261,"./precomputed/secp256k1":275,"dup":83,"hash.js":279}],268:[function(require,module,exports){
+},{"../elliptic":259,"./precomputed/secp256k1":273,"dup":83,"hash.js":277}],266:[function(require,module,exports){
 arguments[4][207][0].apply(exports,arguments)
-},{"../../elliptic":261,"./key":269,"./signature":270,"bn.js":277,"dup":207}],269:[function(require,module,exports){
+},{"../../elliptic":259,"./key":267,"./signature":268,"bn.js":275,"dup":207}],267:[function(require,module,exports){
 arguments[4][208][0].apply(exports,arguments)
-},{"bn.js":277,"dup":208}],270:[function(require,module,exports){
+},{"bn.js":275,"dup":208}],268:[function(require,module,exports){
 arguments[4][86][0].apply(exports,arguments)
-},{"../../elliptic":261,"bn.js":277,"dup":86}],271:[function(require,module,exports){
+},{"../../elliptic":259,"bn.js":275,"dup":86}],269:[function(require,module,exports){
 arguments[4][210][0].apply(exports,arguments)
-},{"../../elliptic":261,"./key":272,"./signature":273,"dup":210,"hash.js":279}],272:[function(require,module,exports){
+},{"../../elliptic":259,"./key":270,"./signature":271,"dup":210,"hash.js":277}],270:[function(require,module,exports){
 arguments[4][211][0].apply(exports,arguments)
-},{"../../elliptic":261,"dup":211}],273:[function(require,module,exports){
+},{"../../elliptic":259,"dup":211}],271:[function(require,module,exports){
 arguments[4][212][0].apply(exports,arguments)
-},{"../../elliptic":261,"bn.js":277,"dup":212}],274:[function(require,module,exports){
+},{"../../elliptic":259,"bn.js":275,"dup":212}],272:[function(require,module,exports){
 arguments[4][87][0].apply(exports,arguments)
-},{"../elliptic":261,"dup":87,"hash.js":279}],275:[function(require,module,exports){
+},{"../elliptic":259,"dup":87,"hash.js":277}],273:[function(require,module,exports){
 arguments[4][88][0].apply(exports,arguments)
-},{"dup":88}],276:[function(require,module,exports){
+},{"dup":88}],274:[function(require,module,exports){
 arguments[4][215][0].apply(exports,arguments)
-},{"bn.js":277,"dup":215}],277:[function(require,module,exports){
+},{"bn.js":275,"dup":215}],275:[function(require,module,exports){
 arguments[4][199][0].apply(exports,arguments)
-},{"dup":199}],278:[function(require,module,exports){
+},{"dup":199}],276:[function(require,module,exports){
 arguments[4][90][0].apply(exports,arguments)
-},{"dup":90}],279:[function(require,module,exports){
+},{"dup":90}],277:[function(require,module,exports){
 arguments[4][91][0].apply(exports,arguments)
-},{"./hash/common":280,"./hash/hmac":281,"./hash/ripemd":282,"./hash/sha":283,"./hash/utils":284,"dup":91}],280:[function(require,module,exports){
+},{"./hash/common":278,"./hash/hmac":279,"./hash/ripemd":280,"./hash/sha":281,"./hash/utils":282,"dup":91}],278:[function(require,module,exports){
 arguments[4][92][0].apply(exports,arguments)
-},{"../hash":279,"dup":92}],281:[function(require,module,exports){
+},{"../hash":277,"dup":92}],279:[function(require,module,exports){
 arguments[4][93][0].apply(exports,arguments)
-},{"../hash":279,"dup":93}],282:[function(require,module,exports){
+},{"../hash":277,"dup":93}],280:[function(require,module,exports){
 arguments[4][94][0].apply(exports,arguments)
-},{"../hash":279,"dup":94}],283:[function(require,module,exports){
+},{"../hash":277,"dup":94}],281:[function(require,module,exports){
 arguments[4][95][0].apply(exports,arguments)
-},{"../hash":279,"dup":95}],284:[function(require,module,exports){
+},{"../hash":277,"dup":95}],282:[function(require,module,exports){
 arguments[4][96][0].apply(exports,arguments)
-},{"dup":96,"inherits":285}],285:[function(require,module,exports){
+},{"dup":96,"inherits":283}],283:[function(require,module,exports){
 arguments[4][19][0].apply(exports,arguments)
-},{"dup":19}],286:[function(require,module,exports){
+},{"dup":19}],284:[function(require,module,exports){
 arguments[4][224][0].apply(exports,arguments)
-},{"dup":224}],287:[function(require,module,exports){
+},{"dup":224}],285:[function(require,module,exports){
 //! moment.js
 //! version : 2.10.6
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -48550,7 +47507,7 @@ arguments[4][224][0].apply(exports,arguments)
     return _moment;
 
 }));
-},{}],288:[function(require,module,exports){
+},{}],286:[function(require,module,exports){
 //     uuid.js
 //
 //     Copyright (c) 2010-2012 Robert Kieffer
@@ -48799,7 +47756,7 @@ arguments[4][224][0].apply(exports,arguments)
   }
 }).call(this);
 
-},{}],289:[function(require,module,exports){
+},{}],287:[function(require,module,exports){
 /*!
  * Copyright (c) 2015 Chris O'Hara <cohara87@gmail.com>
  *
@@ -49590,7 +48547,7 @@ arguments[4][224][0].apply(exports,arguments)
 
 });
 
-},{}],290:[function(require,module,exports){
+},{}],288:[function(require,module,exports){
 /**
  * Bindings for the Namereg contract:
  * https://github.com/ethereum/dapp-bin/blob/master/registrar/registrar.sol
@@ -49680,7 +48637,7 @@ module.exports = function (augur) {
     };
 };
 
-},{"../utilities":299}],291:[function(require,module,exports){
+},{"../utilities":297}],289:[function(require,module,exports){
 (function (Buffer){
 /**
  * Client-side accounts
@@ -50038,7 +48995,7 @@ module.exports = function (augur) {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"../constants":294,"../errors":295,"../utilities":299,"./db":293,"augur-abi":2,"bignumber.js":6,"buffer":10,"ethereumjs-tx":195,"keythereum":258,"node-uuid":288}],292:[function(require,module,exports){
+},{"../constants":292,"../errors":293,"../utilities":297,"./db":291,"augur-abi":2,"bignumber.js":6,"buffer":10,"ethereumjs-tx":195,"keythereum":256,"node-uuid":286}],290:[function(require,module,exports){
 /**
  * Whisper-based comments system
  */
@@ -50247,7 +49204,7 @@ module.exports = function (augur) {
     };
 };
 
-},{"../constants":294,"../errors":295,"./db":293,"augur-abi":2}],293:[function(require,module,exports){
+},{"../constants":292,"../errors":293,"./db":291,"augur-abi":2}],291:[function(require,module,exports){
 /**
  * Database methods
  */
@@ -50360,9 +49317,9 @@ module.exports = {
     } // leveldb
 };
 
-},{"../constants":294,"../errors":295,"firebase":257}],294:[function(require,module,exports){
+},{"../constants":292,"../errors":293,"firebase":255}],292:[function(require,module,exports){
 /** 
- * constants for augur.js unit tests
+ * augur.js constants
  */
 
 "use strict";
@@ -50391,8 +49348,8 @@ module.exports = {
     // 100 free ether for new accounts on registration
     FREEBIE: 100,
 
-    // timeout for asynchronous unit tests
-    TIMEOUT: 120000,
+    // unit test timeout
+    TIMEOUT: 600000,
 
     KEYSIZE: 32,
     IVSIZE: 16,
@@ -50400,15 +49357,15 @@ module.exports = {
     FIREBASE_URL: "https://resplendent-inferno-1997.firebaseio-demo.com/",
     
     nodes: [
-        "http://eth3.augur.net", // loopy/poc9: 69.164.196.239:8545
-        "http://eth1.augur.net", // miner:      45.33.59.27:8545
-        // "http://eth2.augur.net", // prospector: 45.79.204.139:8545
+        "http://eth3.augur.net", // loopy/poc9:    69.164.196.239:8545
+        "http://eth1.augur.net", // miner:         45.33.59.27:8545
+        // "http://eth2.augur.net", // prospector:    45.79.204.139:8545
         "http://eth4.augur.net", // singapore
         "http://eth5.augur.net"  // tokyo
     ]
 };
 
-},{"bignumber.js":6}],295:[function(require,module,exports){
+},{"bignumber.js":6}],293:[function(require,module,exports){
 /************************
  * augur.js error codes *
  ************************/
@@ -50560,7 +49517,7 @@ errors.sellShares = errors.buyShares;
 
 module.exports = errors;
 
-},{}],296:[function(require,module,exports){
+},{}],294:[function(require,module,exports){
 /**
  * Filters / logging
  */
@@ -50878,7 +49835,7 @@ module.exports = function (augur) {
     };
 };
 
-},{"./errors":295,"./utilities":299,"augur-abi":2,"chalk":45}],297:[function(require,module,exports){
+},{"./errors":293,"./utilities":297,"augur-abi":2,"chalk":45}],295:[function(require,module,exports){
 (function (process){
 /**
  * augur JavaScript API
@@ -51101,6 +50058,7 @@ augur.connect = function (rpcinfo, chain) {
         this.connection = true;
         return true;
     } catch (e) {
+        log(rpcinfo);
         log("connection error, using default rpc settings", e);
         return this.default_rpc();
     }
@@ -52449,7 +51407,7 @@ augur.getMarketPriceHistory = function (market_id, outcome_id, callback) {
 module.exports = augur;
 
 }).call(this,require('_process'))
-},{"./aux/namereg":290,"./client/accounts":291,"./client/comments":292,"./constants":294,"./errors":295,"./filters":296,"./tx":298,"./utilities":299,"_process":22,"augur-abi":2,"augur-contracts":5,"bignumber.js":6,"ethrpc":256}],298:[function(require,module,exports){
+},{"./aux/namereg":288,"./client/accounts":289,"./client/comments":290,"./constants":292,"./errors":293,"./filters":294,"./tx":296,"./utilities":297,"_process":22,"augur-abi":2,"augur-contracts":5,"bignumber.js":6,"ethrpc":299}],296:[function(require,module,exports){
 /**
  * Augur transaction objects
  */
@@ -53409,8 +52367,8 @@ module.exports = function (contracts) {
 
 };
 
-},{}],299:[function(require,module,exports){
-(function (process,Buffer,__dirname){
+},{}],297:[function(require,module,exports){
+(function (process,__dirname){
 "use strict";
 
 var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
@@ -53515,96 +52473,6 @@ module.exports = {
         return current_block + block_delta;
     },
 
-    // a few handy conversion functions, mostly from
-    // http://michael-rushanan.blogspot.ca/2014/03/javascript-uint8array-hacks-and-cheat.html
-
-    str2ua: function (s) {
-        var ua = new Uint8Array(s.length);
-        for (var i = 0; i < s.length; i++) {
-            ua[i] = s.charCodeAt(i);
-        }
-        return ua;
-    },
-     
-    ua2str: function (ua) {
-        var s = '';
-        for (var i = 0; i < ua.length; i++) {
-            s += String.fromCharCode(ua[i]);
-        }
-        return s;
-    },
-
-    ua2hex: function (ua) {
-        var h = '';
-        for (var i = 0; i < ua.length; i++) {
-            h += "\\0x" + ua[i].toString(16);
-        }
-        return h;
-    },
-
-    ua2b64: function (ua) {
-        return this.btoa(String.fromCharCode.apply(null, ua));
-    },
-
-    b642ua: function (b64) {
-        return new Uint8Array(this.atob(b64).split('').map(function (c) {
-            return c.charCodeAt(0);
-        }));
-    },
-
-    hex2b64: function (str) {
-        return new Buffer(str, "hex").toString("base64");
-    },
-
-    b642hex: function (str) {
-        return new Buffer(str, "base64").toString("hex");
-    },
-
-    btoa: function (str) {
-        var buffer;
-        if (str instanceof Buffer) {
-            buffer = str;
-        } else {
-            buffer = new Buffer(str.toString(), "binary");
-        }
-        return buffer.toString("base64");
-    },
-
-    atob: function (str) {
-        return new Buffer(str, "base64").toString("binary");
-    },
-
-    escape_unicode: function (str) {
-        return str.replace(/[\s\S]/g, function (escape) {
-            return '\\u' + ('0000' + escape.charCodeAt().toString(16)).slice(-4);
-        });
-    },
-
-    str2buf: function (str, enc) {
-        if (str.constructor === String) {
-            if (enc) {
-                str = new Buffer(str, enc);
-            } else {
-                if (validator.isHexadecimal(str)) {
-                    str = new Buffer(str, "hex");
-                } else if (validator.isBase64(str)) {
-                    str = new Buffer(str, "base64");
-                } else {
-                    str = new Buffer(str);
-                }
-            }
-        }
-        return str;
-    },
-
-    hex2utf16le: function (input) {
-        var output = '';
-        for (var i = 0, l = input.length; i < l; i += 4) {
-            output += '\\u' + input.slice(i+2, i+4) + input.slice(i, i+2);
-        }
-        return JSON.parse('"' + output + '"');
-    },
-
     has_value: function (o, v) {
         for (var p in o) {
             if (o.hasOwnProperty(p)) {
@@ -53623,8 +52491,9 @@ module.exports = {
             augur.contracts = JSON.parse(contracts.toString());
         }
         if (!bignum) augur.bignumbers = false;
+        augur.nodes = ["http://eth1.augur.net"].concat(augur.nodes);
         if (augur.connect(rpcinfo) && rpcinfo) {
-            log(chalk.magenta("augur"), "connected:", chalk.cyan(augur.nodes[0]));
+            log(chalk.magenta("augur"), "connected:", chalk.cyan(augur.nodes));
         }
         return augur;
     },
@@ -53702,33 +52571,6 @@ module.exports = {
         }
     },
 
-    // chop a string up into an array of smaller strings
-    chunk32: function (string, stride, offset) {
-        var elements, chunked, position;
-        if (string.length >= 66) {
-            stride = stride || 64;
-            if (offset) {
-                elements = Math.ceil(string.slice(offset).length / stride) + 1;
-            } else {
-                elements = Math.ceil(string.length / stride);
-            }
-            chunked = new Array(elements);
-            position = 0;
-            for (var i = 0; i < elements; ++i) {
-                if (offset && i === 0) {
-                    chunked[i] = string.slice(position, position + offset);
-                    position += offset;
-                } else {
-                    chunked[i] = string.slice(position, position + stride);
-                    position += stride;
-                }
-            }
-            return chunked;
-        } else {
-            return string;
-        }
-    },
-
     sha256: function (x) {
         return crypto.createHash("sha256").update(x).digest("hex");
     },
@@ -53740,40 +52582,6 @@ module.exports = {
             if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
         }
         return copy;
-    },
-
-    loop: function (list, iterator) {
-        var n = list.length;
-        var i = -1;
-        var calls = 0;
-        var looping = false;
-        var iterate = function (quit, breaker) {
-            calls -= 1;
-            i += 1;
-            if (i === n || quit) {
-                if (breaker) {
-                    return breaker();
-                } else {
-                    return;
-                }
-            }
-            iterator(list[i], next);
-        };
-        var runloop = function () {
-            if (looping) return;
-            looping = true;
-            while (calls > 0) iterate();
-            looping = false;
-        };
-        var next = function (quit, breaker) {
-            calls += 1;
-            if (typeof setTimeout === "undefined") {
-                runloop();
-            } else {
-                setTimeout(function () { iterate(quit, breaker); }, 1);
-            }
-        };
-        next();
     },
 
     fold: function (arr, num_cols) {
@@ -53794,5 +52602,1058 @@ module.exports = {
 
 };
 
-}).call(this,require('_process'),require("buffer").Buffer,"/src")
-},{"./constants":294,"_process":22,"assert":8,"augur-abi":2,"bignumber.js":6,"buffer":10,"chalk":45,"crypto":53,"crypto-browserify":53,"fs":7,"moment":287,"path":21,"validator":289}]},{},[1]);
+}).call(this,require('_process'),"/src")
+},{"./constants":292,"_process":22,"assert":8,"augur-abi":2,"bignumber.js":6,"chalk":45,"crypto":53,"crypto-browserify":53,"fs":7,"moment":285,"path":21,"validator":287}],298:[function(require,module,exports){
+module.exports={
+    "0x": "no response or bad input",
+    "cashFaucet": {
+        "-1": "Hey, you're not broke!"
+    },
+    "getSimulatedBuy": {
+        "-2": "cost updating error (did you enter a valid quantity?)"
+    },
+    "getSimulatedSell": {
+        "-2": "cost updating error (did you enter a valid quantity?)"
+    },
+    "closeMarket": {
+        "-1": "market has no cash",
+        "-2": "0 outcome",
+        "-3": "outcome indeterminable"
+    },
+    "report": {
+        "0": "could not set reporter ballot",
+        "-1": "report length does not match number of expiring events",
+        "-2": "voting period expired",
+        "-3": "incorrect hash"
+    },
+    "submitReportHash": {
+        "0": "could not set report hash",
+        "-1": "reporter doesn't exist, voting period is over, or voting period hasn't started yet",
+        "-2": "not in hash submitting timeframe"
+    },
+    "checkReportValidity": {
+        "-1": "report isn't long enough",
+        "-2": "reporter doesn't exist, voting period is over, or voting period hasn't started yet"
+    },
+    "slashRep": {
+        "0": "incorrect hash",
+        "-2": "incorrect reporter ID"
+    },
+    "createEvent": {
+        "0": "not enough money to pay fees or event already exists",
+        "-1": "we're either already past that date, branch doesn't exist, or description is bad"
+    },
+    "createMarket": {
+        "-1": "bad input or parent doesn't exist",
+        "-2": "too many events",
+        "-3": "too many outcomes",
+        "-4": "not enough money or market already exists"
+    },
+    "sendReputation": {
+        "0": "not enough reputation",
+        "-1": "Your reputation account was just created! Earn some reputation before you can send to others",
+        "-2": "Receiving address doesn't exist"
+    },
+    "buyShares": {
+        "-1": "invalid outcome or trading closed",
+        "-2": "entered a negative number of shares",
+        "-3": "not enough money",
+        "-4": "bad nonce/hash"
+    },
+    "sellShares": {
+        "-1": "invalid outcome or trading closed",
+        "-2": "entered a negative number of shares",
+        "-3": "not enough money",
+        "-4": "bad nonce/hash"
+    },
+    "TRANSACTION_FAILED": {
+        "error": 500,
+        "message": "transaction failed"
+    },
+    "TRANSACTION_NOT_CONFIRMED": {
+        "error": 501,
+        "message": "polled network but could not confirm transaction"
+    },
+    "ETHEREUM_NOT_FOUND": {
+        "error": 651,
+        "message": "no active ethereum node(s) found"
+    }
+}
+
+},{}],299:[function(require,module,exports){
+(function (process){
+/**
+ * Basic JSON RPC methods for Ethereum
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
+
+var http = require("http");
+var url = require("url");
+var BigNumber = require("bignumber.js");
+var request = (NODE_JS) ? require("sync-request") : null;
+var abi = require("augur-abi");
+var errors = require("./errors");
+var log = console.log;
+
+BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
+
+module.exports = {
+
+    debug: false,
+
+    bignumbers: true,
+
+    // Maximum number of transaction verification attempts
+    TX_POLL_MAX: 12,
+
+    // Transaction polling interval
+    TX_POLL_INTERVAL: 12000,
+
+    DEFAULT_GAS: "0x2fd618",
+
+    ETHER: new BigNumber(10).toPower(18),
+
+    nodes: [
+        "http://eth1.augur.net:8545",
+        "http://eth3.augur.net:8545",
+        "http://eth4.augur.net:8545"
+    ],
+
+    requests: 1,
+
+    notifications: {},
+
+    unmarshal: function (string, returns, stride, init) {
+        var elements, array, position;
+        if (string.length >= 66) {
+            stride = stride || 64;
+            elements = Math.ceil((string.length - 2) / stride);
+            array = new Array(elements);
+            position = init || 2;
+            for (var i = 0; i < elements; ++i) {
+                array[i] = abi.prefix_hex(
+                    string.slice(position, position + stride)
+                );
+                position += stride;
+            }
+            if (array.length) {
+                if (parseInt(array[0]) === array.length - 1) {
+                    array.splice(0, 1);
+                } else if (parseInt(array[1]) === array.length - 2 ||
+                    parseInt(array[1]) / 32 === array.length - 2) {
+                    array.splice(0, 2);
+                }
+            }
+            for (i = 0; i < array.length; ++i) {
+                if (returns === "hash[]" && this.bignumbers) {
+                    array[i] = abi.bignum(array[i]);
+                } else {
+                    if (returns === "number[]") {
+                        array[i] = abi.bignum(array[i]).toFixed();
+                    } else if (returns === "unfix[]") {
+                        if (this.bignumbers) {
+                            array[i] = abi.unfix(array[i]);
+                        } else {
+                            array[i] = abi.unfix(array[i], "string");
+                        }
+                    }
+                }
+            }
+            return array;
+        } else {
+            return string;
+        }
+    },
+
+    applyReturns: function (returns, result) {
+        returns = returns.toLowerCase();
+        if (result && result !== "0x") {
+            if (returns && returns.slice(-2) === "[]") {
+                result = this.unmarshal(result, returns);
+            } else if (returns === "string") {
+                result = abi.decode_hex(result, true);
+            } else {
+                if (this.bignumbers) {
+                    if (returns === "unfix") {
+                        result = abi.unfix(result);
+                    }
+                    if (result.constructor !== BigNumber) {
+                        result = abi.bignum(result);
+                    }
+                } else {
+                    if (returns === "number") {
+                        result = abi.bignum(result).toFixed();
+                    } else if (returns === "bignumber") {
+                        result = abi.bignum(result);
+                    } else if (returns === "unfix") {
+                        result = abi.unfix(result, "string");
+                    }
+                }
+            }
+        }
+        return result;
+    },
+
+    parse: function (response, returns, callback) {
+        var results, len;
+        try {
+            if (response !== undefined) {
+                response = JSON.parse(response);
+                if (response.error) {
+                    response = {
+                        error: response.error.code,
+                        message: response.error.message
+                    };
+                    if (callback) {
+                        callback(response);
+                    } else {
+                        return response;
+                    }
+                } else if (response.result !== undefined) {
+                    if (returns) {
+                        response.result = this.applyReturns(returns, response.result);
+                    } else {
+                        if (response.result && response.result.length > 2 &&
+                            response.result.slice(0,2) === "0x")
+                        {
+                            response.result = abi.remove_leading_zeros(response.result);
+                            response.result = abi.prefix_hex(response.result);
+                        }
+                    }
+                    if (callback) {
+                        callback(response.result);
+                    } else {
+                        return response.result;
+                    }
+                } else if (response.constructor === Array && response.length) {
+                    len = response.length;
+                    results = new Array(len);
+                    for (var i = 0; i < len; ++i) {
+                        results[i] = response[i].result;
+                        if (response.error) {
+                            console.error(
+                                "[" + response.error.code + "]",
+                                response.error.message
+                            );
+                        } else if (response[i].result !== undefined) {
+                            if (returns[i]) {
+                                results[i] = this.applyReturns(returns[i], response[i].result);
+                            } else {
+                                results[i] = abi.remove_leading_zeros(results[i]);
+                                results[i] = abi.prefix_hex(results[i]);
+                            }
+                        }
+                    }
+                    if (callback) {
+                        callback(results);
+                    } else {
+                        return results;
+                    }
+                // no result or error field
+                } else {
+                    if (callback) {
+                        callback(response);
+                    } else {
+                        return response;
+                    }
+                }
+            }
+        } catch (e) {
+            if (callback) {
+                callback(e);
+            } else {
+                return e;
+            }
+        }
+    },
+
+    stripReturns: function (tx) {
+        var returns;
+        if (tx.params !== undefined && tx.params.length &&
+            tx.params[0] && tx.params[0].returns)
+        {
+            returns = tx.params[0].returns;
+            delete tx.params[0].returns;
+        }
+        return returns;
+    },
+
+    postSync: function (rpc_url, command, returns) {
+        var req = null;
+        if (NODE_JS) {
+            return this.parse(request('POST', rpc_url, {
+                json: command
+            }).getBody().toString(), returns);
+        } else {
+            if (window.XMLHttpRequest) {
+                req = new window.XMLHttpRequest();
+            } else {
+                req = new window.ActiveXObject("Microsoft.XMLHTTP");
+            }
+            req.open("POST", rpc_url, false);
+            req.setRequestHeader("Content-type", "application/json");
+            req.send(command);
+            return this.parse(req.responseText, returns);
+        }
+    },
+
+    post: function (rpc_url, command, returns, callback) {
+        var req, self = this;
+        if (NODE_JS) {
+            var rpc_obj = url.parse(rpc_url);
+            req = http.request({
+                host: rpc_obj.hostname,
+                port: rpc_obj.port,
+                path: '/',
+                method: "POST",
+                headers: {"Content-type": "application/json"}
+            }, function (response) {
+                var str = '';
+                response.on('data', function (chunk) {
+                    str += chunk;
+                });
+                response.on('end', function () {
+                    if (str) self.parse(str, returns, callback);
+                });
+            });
+            req.on("error", function (err) {
+                if (self.debug) {
+                    log("RPC request to", rpc_url, "failed:", err.code);
+                }
+                if (rpc_url.indexOf(".augur.net") === -1) {
+                    self.nodes.splice(self.nodes.indexOf(rpc_url), 1);
+                }
+                callback();
+            });
+            req.write(command);
+            req.end();
+        } else {
+            if (window.XMLHttpRequest) {
+                req = new window.XMLHttpRequest();
+            } else {
+                req = new window.ActiveXObject("Microsoft.XMLHTTP");
+            }
+            req.onreadystatechange = function () {
+                if (req.readyState === 4) {
+                    self.parse(req.responseText, returns, callback);
+                } else {
+                    if (rpc_url.indexOf(".augur.net") === -1) {
+                        self.nodes.splice(self.nodes.indexOf(rpc_url), 1);
+                    }
+                    callback();
+                }
+            };
+            req.onerror = function () {
+                if (rpc_url.indexOf(".augur.net") === -1) {
+                    self.nodes.splice(self.nodes.indexOf(rpc_url), 1);
+                }
+                callback();
+            };
+            req.open("POST", rpc_url, true);
+            req.setRequestHeader("Content-type", "application/json");
+            req.send(command);
+        }
+    },
+
+    // Post JSON-RPC command to all Ethereum nodes
+    broadcast: function (command, callback) {
+        var i, j, num_nodes, num_commands, returns, result, complete;
+
+        // make sure the ethereum node list isn't empty
+        if (!this.nodes || !this.nodes.length) {
+            if (callback && callback.constructor === Function) {
+                return callback(errors.ETHEREUM_NOT_FOUND);
+            } else {
+                return errors.ETHEREUM_NOT_FOUND;
+            }
+        }
+
+        // parse batched commands and strip "returns" fields
+        if (command.constructor === Array) {
+            num_commands = command.length;
+            returns = new Array(num_commands);
+            for (i = 0; i < num_commands; ++i) {
+                returns[i] = this.stripReturns(command[i]);
+            }
+        } else {
+            returns = this.stripReturns(command);
+        }
+
+        // asynchronous request if callback exists
+        if (callback && callback.constructor === Function) {
+            var self = this;
+            command = JSON.stringify(command);
+            num_nodes = this.nodes.length;
+            for (j = 0; j < num_nodes; ++j) {
+                (function (node) {
+                    self.post(node, command, returns, function (result) {
+                        if (result !== undefined &&
+                            result !== "0x" && !result.error)
+                        {
+                            if (!complete) callback(result);
+                            complete = true;
+                        }
+                    });
+                })(this.nodes[j]);
+            }
+
+        // use synchronous http if no callback provided
+        } else {
+            if (!NODE_JS) command = JSON.stringify(command);
+            num_nodes = this.nodes.length;
+            for (j = 0; j < num_nodes; ++j) {
+                try {
+                    result = this.postSync(this.nodes[j], command, returns);
+                } catch (e) {
+                    if (this.debug) {
+                        log("RPC request to", this.nodes[j], "failed:", e);
+                    }
+                    if (this.nodes[j].indexOf(".augur.net") === -1) {
+                        this.nodes.splice(j--, 1);
+                    }
+                }
+                if (result && result !== "0x") return result;
+            }
+        }
+    },
+
+    marshal: function (command, params, prefix) {
+        var payload = {
+            id: this.requests++,
+            jsonrpc: "2.0"
+        };
+        if (prefix === "null") {
+            payload.method = command.toString();
+        } else {
+            payload.method = (prefix || "eth_") + command.toString();
+        }
+        if (params !== undefined && params !== null) {
+            if (params.constructor === Array) {
+                payload.params = params;
+            } else {
+                payload.params = [params];
+            }
+        } else {
+            payload.params = [];
+        }
+        return payload;
+    },
+
+    /******************************
+     * Ethereum JSON-RPC bindings *
+     ******************************/
+
+    raw: function (command, params, f) {
+        return this.broadcast(this.marshal(command, params, "null"), f);
+    },
+
+    eth: function (command, params, f) {
+        return this.broadcast(this.marshal(command, params), f);
+    },
+
+    net: function (command, params, f) {
+        return this.broadcast(this.marshal(command, params, "net_"), f);
+    },
+
+    web3: function (command, params, f) {
+        return this.broadcast(this.marshal(command, params, "web3_"), f);
+    },
+
+    leveldb: function (command, params, f) {
+        return this.broadcast(this.marshal(command, params, "db_"), f);
+    },
+
+    shh: function (command, params, f) {
+        return this.broadcast(this.marshal(command, params, "shh_"), f);
+    },
+
+    sha3: function (data, f) {
+        return this.broadcast(this.marshal("sha3", data.toString(), "web3_"), f);
+    },
+    hash: function (data, f) {
+        return this.broadcast(this.marshal("sha3", data.toString(), "web3_"), f);
+    },
+
+    gasPrice: function (f) {
+        return this.broadcast(this.marshal("gasPrice"), f);
+    },
+
+    blockNumber: function (f) {
+        if (f) {
+            this.broadcast(this.marshal("blockNumber"), f);
+        } else {
+            return parseInt(this.broadcast(this.marshal("blockNumber")));
+        }
+    },
+
+    coinbase: function (f) {
+        return this.broadcast(this.marshal("coinbase"), f);
+    },
+
+    balance: function (address, block, f) {
+        return this.broadcast(
+            this.marshal("getBalance", [
+                address || this.eth("coinbase"), block || "latest"
+            ]), f
+        );
+    },
+    getBalance: function (address, block, f) {
+        return this.broadcast(
+            this.marshal("getBalance", [
+                address || this.eth("coinbase"), block || "latest"
+            ]), f
+        );
+    },
+
+    txCount: function (address, f) {
+        return this.broadcast(
+            this.marshal("getTransactionCount", address || this.eth("coinbase")), f
+        );
+    },
+    getTransactionCount: function (address, f) {
+        return this.broadcast(
+            this.marshal("getTransactionCount", address || this.eth("coinbase")), f
+        );
+    },
+
+    sendEther: function (to, value, from, onSent, onSuccess, onFailed) {
+        from = from || this.broadcast(this.marshal("coinbase"));
+        var tx, txhash;
+        if (to && to.value) {
+            value = to.value;
+            if (to.from) from = to.from;
+            if (to.onSent) onSent = to.onSent;
+            if (to.onSuccess) onSuccess = to.onSuccess;
+            if (to.onFailed) onFailed = to.onFailed;
+            to = to.to;
+        }
+        tx = {
+            from: from,
+            to: to,
+            value: abi.bignum(value).mul(this.ETHER).toFixed()
+        };
+        if (onSent) {
+            this.sendTx(tx, function (txhash) {
+                if (txhash) {
+                    onSent(txhash);
+                    if (onSuccess)
+                        this.txNotify(0, value, tx, txhash, null, onSent, onSuccess, onFailed);
+                }
+            }.bind(this));
+        } else {
+            txhash = this.sendTx(tx);
+            if (txhash) {
+                if (onSuccess)
+                    this.txNotify(0, value, tx, txhash, null, onSent, onSuccess, onFailed);
+                return txhash;
+            }
+        }
+    },
+
+    sign: function (address, data, f) {
+        return this.broadcast(this.marshal("sign", [address, data]), f);
+    },
+
+    getTx: function (hash, f) {
+        return this.broadcast(this.marshal("getTransactionByHash", hash), f);
+    },
+    getTransaction: function (hash, f) {
+        return this.broadcast(this.marshal("getTransactionByHash", hash), f);
+    },
+
+    peerCount: function (f) {
+        if (f) {
+            this.broadcast(this.marshal("peerCount", [], "net_"), f);
+        } else {
+            return parseInt(this.broadcast(this.marshal("peerCount", [], "net_")));
+        }
+    },
+
+    accounts: function (f) {
+        return this.broadcast(this.marshal("accounts"), f);
+    },
+
+    mining: function (f) {
+        return this.broadcast(this.marshal("mining"), f);
+    },
+
+    hashrate: function (f) {
+        if (f) {
+            this.broadcast(this.marshal("hashrate"), f);
+        } else {
+            return parseInt(this.broadcast(this.marshal("hashrate")));
+        }
+    },
+
+    getBlockByHash: function (hash, full, f) {
+        return this.broadcast(this.marshal("getBlockByHash", [hash, full || false]), f);
+    },
+
+    getBlock: function (number, full, f) {
+        return this.broadcast(this.marshal("getBlockByNumber", [number, full || false]), f);
+    },
+    getBlockByNumber: function (number, full, f) {
+        return this.broadcast(this.marshal("getBlockByNumber", [number, full || false]), f);
+    },
+
+    version: function (f) {
+        return this.broadcast(this.marshal("version", [], "net_"), f);
+    },
+    netVersion: function (f) {
+        return this.broadcast(this.marshal("version", [], "net_"), f);
+    },
+
+    // estimate a transaction's gas cost
+    estimateGas: function (tx, f) {
+        tx.to = tx.to || "";
+        return this.broadcast(this.marshal("estimateGas", tx), f);
+    },
+
+    // execute functions on contracts on the blockchain
+    call: function (tx, f) {
+        tx.to = tx.to || "";
+        tx.gas = (tx.gas) ? abi.prefix_hex(tx.gas.toString(16)) : this.DEFAULT_GAS;
+        return this.broadcast(this.marshal("call", tx), f);
+    },
+
+    sendTx: function (tx, f) {
+        tx.to = tx.to || "";
+        tx.gas = (tx.gas) ? abi.prefix_hex(tx.gas.toString(16)) : this.DEFAULT_GAS;
+        return this.broadcast(this.marshal("sendTransaction", tx), f);
+    },
+    sendTransaction: function (tx, f) {
+        tx.to = tx.to || "";
+        tx.gas = (tx.gas) ? abi.prefix_hex(tx.gas.toString(16)) : this.DEFAULT_GAS;
+        return this.broadcast(this.marshal("sendTransaction", tx), f);
+    },
+
+    // IN: RLP(tx.signed(privateKey))
+    // OUT: txhash
+    sendRawTx: function (rawTx, f) {
+        return this.broadcast(this.marshal("sendRawTransaction", rawTx), f);
+    },
+    sendRawTransaction: function (rawTx, f) {
+        return this.broadcast(this.marshal("sendRawTransaction", rawTx), f);
+    },
+
+    receipt: function (txhash, f) {
+        return this.broadcast(this.marshal("getTransactionReceipt", txhash), f);
+    },
+    getTransactionReceipt: function (txhash, f) {
+        return this.broadcast(this.marshal("getTransactionReceipt", txhash), f);
+    },
+
+    // publish a new contract to the blockchain (from the coinbase account)
+    publish: function (compiled, f) {
+        return this.sendTx({ from: this.eth("coinbase"), data: compiled }, f);
+    },
+
+    // Read the code in a contract on the blockchain
+    read: function (address, block, f) {
+        return this.broadcast(this.marshal("getCode", [address, block || "latest"]), f);
+    },
+    getCode: function (address, block, f) {
+        return this.broadcast(this.marshal("getCode", [address, block || "latest"]), f);
+    },
+
+    listening: function () {
+        try {
+            return this.net("listening");
+        } catch (e) {
+            return false;
+        }
+    },
+
+    /**
+     * Invoke a function from a contract on the blockchain.
+     *
+     * Input tx format:
+     * {
+     *    from: <sender's address> (hexstring; optional, coinbase default)
+     *    to: <contract address> (hexstring)
+     *    method: <function name> (string)
+     *    signature: <function signature, e.g. "iia"> (string)
+     *    params: <parameters passed to the function> (optional)
+     *    returns: <"number[]", "int", "BigNumber", or "string" (default)>
+     *    send: <true to sendTransaction, false to call (default)>
+     * }
+     */
+    invoke: function (itx, f) {
+        var tx, data_abi, packaged, invocation, invoked;
+        if (itx) {
+            if (itx.send && itx.invocation && itx.invocation.invoke &&
+                itx.invocation.invoke.constructor === Function)
+            {
+                return itx.invocation.invoke.call(itx.invocation.context, itx, f);
+            } else {
+                tx = abi.copy(itx);
+                if (tx.params !== undefined) {
+                    if (tx.params.constructor === Array) {
+                        for (var i = 0, len = tx.params.length; i < len; ++i) {
+                            if (tx.params[i] !== undefined &&
+                                tx.params[i].constructor === BigNumber) {
+                                tx.params[i] = tx.params[i].toFixed();
+                            }
+                        }
+                    } else if (tx.params.constructor === BigNumber) {
+                        tx.params = tx.params.toFixed();
+                    }
+                }
+                if (tx.to) tx.to = abi.prefix_hex(tx.to);
+                if (tx.from) tx.from = abi.prefix_hex(tx.from);
+                data_abi = abi.encode(tx);
+                if (data_abi) {
+                    packaged = {
+                        from: tx.from || this.eth("coinbase"),
+                        to: tx.to,
+                        data: data_abi
+                    };
+                    if (tx.value) packaged.value = tx.value;
+                    if (tx.returns) packaged.returns = tx.returns;
+                    invocation = (tx.send) ? this.sendTx : this.call;
+                    invoked = true;
+                    return invocation.call(this, packaged, f);
+                }
+            }
+        }
+        if (!invoked) {
+            if (f) {
+                f(errors.TRANSACTION_FAILED);
+            } else {
+                return errors.TRANSACTION_FAILED;
+            }
+        }
+    },
+
+    /**
+     * Batched RPC commands
+     */
+    batch: function (txlist, f) {
+        var num_commands, rpclist, callbacks, tx, data_abi, packaged, invocation;
+        if (txlist.constructor === Array) {
+            num_commands = txlist.length;
+            rpclist = new Array(num_commands);
+            callbacks = new Array(num_commands);
+            for (var i = 0; i < num_commands; ++i) {
+                tx = abi.copy(txlist[i]);
+                if (tx.params !== undefined) {
+                    if (tx.params.constructor === Array) {
+                        for (var j = 0, len = tx.params.length; j < len; ++j) {
+                            if (tx.params[j] !== undefined &&
+                                tx.params[j] !== null &&
+                                tx.params[j].constructor === BigNumber) {
+                                tx.params[j] = tx.params[j].toFixed();
+                            }
+                        }
+                    } else if (tx.params.constructor === BigNumber) {
+                        tx.params = tx.params.toFixed();
+                    }
+                }
+                if (tx.from) tx.from = abi.prefix_hex(tx.from);
+                tx.to = abi.prefix_hex(tx.to);
+                data_abi = abi.encode(tx);
+                if (data_abi) {
+                    if (tx.callback && tx.callback.constructor === Function) {
+                        callbacks[i] = tx.callback;
+                        delete tx.callback;
+                    }
+                    packaged = {
+                        from: tx.from || this.eth("coinbase"),
+                        to: tx.to,
+                        data: data_abi
+                    };
+                    if (tx.value) packaged.value = tx.value;
+                    if (tx.returns) packaged.returns = tx.returns;
+                    invocation = (tx.send) ? "sendTransaction" : "call";
+                    rpclist[i] = this.marshal(invocation, packaged);
+                } else {
+                    log("unable to package commands for batch RPC");
+                    return rpclist;
+                }
+            }
+            if (f) {
+                if (f.constructor === Function) { // callback on whole array
+                    this.broadcast(rpclist, f);
+                } else if (f === true) {
+                    this.broadcast(rpclist, function (res) {
+                        if (res) {
+                            if (res.constructor === Array && res.length) {
+                                for (j = 0; j < num_commands; ++j) {
+                                    if (res[j] && callbacks[j]) {
+                                        callbacks[j](res[j]);
+                                    }
+                                }
+                            } else {
+                                if (callbacks.length && callbacks[0]) {
+                                    callbacks[0](res);
+                                }
+                            }
+                        }
+                    });
+                }
+            } else {
+                return this.broadcast(rpclist, f);
+            }
+        } else {
+            log("expected array for batch RPC, invoking instead");
+            return this.invoke(txlist, f);
+        }
+    },
+
+    clearNotifications: function (id) {
+        for (var i = 0, len = this.notifications.length; i < len; ++i) {
+            clearTimeout(this.notifications[id][i]);
+            this.notifications[id] = [];
+        }
+    },
+
+    encodeResult: function (result, returns) {
+        if (result) {
+            if (returns === "null") {
+                result = null;
+            } else if (returns === "address" || returns === "address[]") {
+                result = abi.prefix_hex(abi.remove_leading_zeros(result));
+            } else {
+                if (this.bignumbers && returns !== "string") {
+                    result = abi.bignum(result);
+                }
+                if (!this.bignumbers) {
+                    if (!returns || returns === "hash[]" || returns === "hash") {
+                        result = abi.bignum(result, "hex");
+                    } else if (returns === "number") {
+                        result = abi.bignum(result, "string");
+                    }
+                }
+            }
+        }
+        return result;
+    },
+
+    errorCodes: function (tx, response) {
+        if (response && response.constructor === Array) {
+            for (var i = 0, len = response.length; i < len; ++i) {
+                response[i] = this.errorCodes(tx.method, response[i]);
+            }
+        } else {
+            if (errors[response]) {
+                response = {
+                    error: response,
+                    message: errors[response]
+                };
+            } else {
+                if (tx.returns && tx.returns !== "string" ||
+                    (response && response.constructor === String &&
+                    response.slice(0,2) === "0x"))
+                {
+                    var response_number = abi.bignum(response);
+                    if (response_number) {
+                        response_number = abi.bignum(response).toFixed();
+                        if (errors[tx.method] && errors[tx.method][response_number]) {
+                            response = {
+                                error: response_number,
+                                message: errors[tx.method][response_number]
+                            };
+                        }
+                    }
+                }
+            }
+        }
+        return response;
+    },
+
+    fire: function (itx, callback) {
+        var tx = abi.copy(itx);
+        if (callback) {
+            this.invoke(tx, function (res) {
+                callback(this.encodeResult(
+                    this.errorCodes(tx, res),
+                    itx.returns
+                ));
+            }.bind(this));
+        } else {
+            return this.encodeResult(
+                this.errorCodes(tx, this.invoke(tx)),
+                itx.returns
+            );
+        }
+    },
+
+    /***************************************
+     * Send-call-confirm callback sequence *
+     ***************************************/
+
+    checkBlockHash: function (tx, callreturn, itx, txhash, returns, count, onSent, onSuccess, onFailed) {
+        if (tx && tx.blockHash && abi.bignum(tx.blockHash).toNumber() !== 0) {
+            this.clearNotifications(txhash);
+            tx.callReturn = this.encodeResult(callreturn, returns);
+            tx.txHash = tx.hash;
+            delete tx.hash;
+            if (onSuccess && onSuccess.constructor === Function) onSuccess(tx);
+        } else {
+            if (count !== undefined) {
+                if (count < this.TX_POLL_MAX) {
+                    if (count === 0) {
+                        this.notifications[txhash] = [setTimeout(function () {
+                            this.txNotify(count + 1, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed);
+                        }.bind(this), this.TX_POLL_INTERVAL)];
+                    } else {
+                        this.notifications[txhash].push(setTimeout(function () {
+                            this.txNotify(count + 1, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed);
+                        }.bind(this), this.TX_POLL_INTERVAL));
+                    }
+                } else {
+                    if (onFailed && onFailed.constructor === Function) {
+                        onFailed(errors.TRANSACTION_NOT_CONFIRMED);
+                    }
+                }
+            }
+        }
+    },
+
+    txNotify: function (count, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed) {
+        this.getTx(txhash, function (tx) {
+            if (tx === null) {
+                if (returns) itx.returns = returns;
+            } else {
+                this.checkBlockHash(tx, callreturn, itx, txhash, returns, count, onSent, onSuccess, onFailed);
+            }
+        }.bind(this));
+    },
+
+    confirmTx: function (tx, txhash, returns, onSent, onSuccess, onFailed) {
+        var self = this;
+        if (tx && txhash) {
+            this.notifications[txhash] = [];
+            if (errors[txhash]) {
+                if (onFailed) onFailed({
+                    error: txhash,
+                    message: errors[txhash]
+                });
+            } else {
+                this.getTx(txhash, function (sent) {
+                    if (returns !== "null") {
+                        self.call({
+                            from: sent.from || self.eth("coinbase"),
+                            to: sent.to || tx.to,
+                            value: sent.value || tx.value,
+                            data: sent.input
+                        }, function (callReturn) {
+                            if (callReturn) {
+                                callReturn = JSON.stringify({ result: callReturn });
+
+                                // transform callReturn to a number
+                                var numReturn = self.parse(callReturn, "number");
+
+                                // check if numReturn is an error object
+                                if (numReturn.constructor === Object && numReturn.error) {
+                                    if (onFailed) onFailed(numReturn);
+                                } else if (errors[numReturn]) {
+                                    if (onFailed) onFailed({
+                                        error: numReturn,
+                                        message: errors[numReturn]
+                                    });
+                                } else {
+                                    try {
+
+                                        // check if numReturn is an error code
+                                        if (numReturn && numReturn.constructor === BigNumber) {
+                                            numReturn = numReturn.toFixed();
+                                        }
+                                        if (numReturn && errors[tx.method] && errors[tx.method][numReturn]) {
+                                            if (onFailed) onFailed({
+                                                error: numReturn,
+                                                message: errors[tx.method][numReturn]
+                                            });
+                                        } else {
+
+                                            // no errors found, so transform to the requested
+                                            // return type, specified by "returns" parameter
+                                            callReturn = self.parse(callReturn, returns);
+
+                                            // send the transaction hash and return value back
+                                            // to the client, using the onSent callback
+                                            onSent({
+                                                txHash: txhash,
+                                                callReturn: self.encodeResult(callReturn, returns)
+                                            });
+
+                                            // if an onSuccess callback was supplied, then
+                                            // poll the network until the transaction is
+                                            // included in a block (i.e., has a non-null
+                                            // blockHash field)
+                                            if (onSuccess) {
+                                                self.txNotify(
+                                                    0,
+                                                    callReturn,
+                                                    tx,
+                                                    txhash,
+                                                    returns,
+                                                    onSent,
+                                                    onSuccess,
+                                                    onFailed
+                                                );
+                                            }
+                                        }
+
+                                    // something went wrong :(
+                                    } catch (e) {
+                                        if (onFailed) onFailed(e);
+                                    }
+                                }
+                            }
+                        });
+
+                    // if returns type is null, skip the intermediate call
+                    } else {
+                        onSent({ txHash: txhash, callReturn: null });
+                        if (onSuccess) {
+                            self.txNotify(
+                                0,
+                                null,
+                                tx,
+                                txhash,
+                                returns,
+                                onSent,
+                                onSuccess,
+                                onFailed
+                            );
+                        }
+                    }
+                });
+            }
+        }
+    },
+
+    transact: function (tx, onSent, onSuccess, onFailed) {
+        var returns = tx.returns;
+        tx.send = true;
+        delete tx.returns;
+        if (onSent && onSent.constructor === Function) {
+            this.invoke(tx, function (txhash) {
+                if (txhash.error) {
+                    if (onFailed) onFailed(txhash);
+                } else {
+                    if (tx.invocation) delete tx.invocation;
+                    txhash = abi.prefix_hex(abi.pad_left(abi.strip_0x(txhash)));
+                    this.confirmTx(tx, txhash, returns, onSent, onSuccess, onFailed);
+                }
+            }.bind(this));
+        } else {
+            return this.invoke(tx);
+        }
+    }
+
+};
+
+}).call(this,require('_process'))
+},{"./errors":298,"_process":22,"augur-abi":300,"bignumber.js":302,"http":15,"sync-request":9,"url":40}],300:[function(require,module,exports){
+arguments[4][2][0].apply(exports,arguments)
+},{"bignumber.js":302,"dup":2,"js-sha3":301}],301:[function(require,module,exports){
+arguments[4][3][0].apply(exports,arguments)
+},{"dup":3}],302:[function(require,module,exports){
+arguments[4][6][0].apply(exports,arguments)
+},{"crypto":53,"dup":6}]},{},[1]);

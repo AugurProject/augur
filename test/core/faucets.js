@@ -12,7 +12,7 @@ var log = console.log;
 
 describe("Faucets", function () {
 
-    it("Reputation faucet", function (done) {
+    it("reputationFaucet", function (done) {
         this.timeout(constants.TIMEOUT);
         augur.reputationFaucet(
             augur.branches.dev,
@@ -38,7 +38,7 @@ describe("Faucets", function () {
         );
     });
 
-    it("Cash faucet", function (done) {
+    it("cashFaucet", function (done) {
 
         this.timeout(constants.TIMEOUT*2);
 
@@ -74,10 +74,7 @@ describe("Faucets", function () {
         if (Number(cash_balance) >= 5) {
             var start_balance = abi.bignum(cash_balance);
             augur.sendCash({
-                to: utils.get_test_accounts(
-                    augur,
-                    constants.MAX_TEST_ACCOUNTS
-                )[1],
+                to: "0x405be667f1a6b2d5149a61057040cade5aada366",
                 value: start_balance.sub(new BigNumber(1)),
                 onSent: function (r) {
                     // log(r);

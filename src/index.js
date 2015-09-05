@@ -219,6 +219,7 @@ augur.connect = function (rpcinfo, chain) {
         this.connection = true;
         return true;
     } catch (e) {
+        log(rpcinfo);
         log("connection error, using default rpc settings", e);
         return this.default_rpc();
     }

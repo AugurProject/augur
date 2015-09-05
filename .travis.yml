@@ -3,8 +3,7 @@ node_js:
   - "0.12"
   - "0.11"
 before_script:
-  - sudo apt-get install scrypt
   - npm install
   - npm install jshint mocha
 script:
-  - istanbul cover ./node_modules/mocha/bin/_mocha test/offline --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
+  - istanbul cover ./node_modules/mocha/bin/_mocha test/core test/markets test/client --report lcovonly && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage

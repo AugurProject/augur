@@ -22,7 +22,6 @@ runtest()
 reporter="progress"
 gospel=''
 coverage=0
-offline=0
 connect=0
 core=0
 create=0
@@ -36,7 +35,6 @@ for arg in "$@"; do
     case "$arg" in
         "--gospel") set -- "$@" "-g" ;;
         "--coverage") set -- "$@" "-v" ;;
-        "--offline") set -- "$@" "-o" ;;
         "--connect") set -- "$@" "-n" ;;
         "--core") set -- "$@" "-c" ;;
         "--create") set -- "$@" "-r" ;;
@@ -53,7 +51,6 @@ while getopts "gvoncrmslxk" opt; do
     case "$opt" in
         g) gospel="--gospel" ;;
         v) coverage=1 ;;
-        o) offline=1 ;;
         n) connect=1 ;;
         c) core=1 ;;
         r) create=1 ;;
@@ -70,7 +67,6 @@ echo -e "+${GRAY}================${NC}+"
 echo -e "${GRAY}| \033[1;35maugur.js${NC} tests ${GRAY}|${NC}"
 echo -e "+${GRAY}================${NC}+\n"
 
-[ "${offline}" == "1" ] && runtest "offline"
 [ "${connect}" == "1" ] && runtest "connect"
 [ "${create}" == "1" ] && runtest "create"
 [ "${markets}" == "1" ] && runtest "markets"
@@ -79,15 +75,12 @@ echo -e "+${GRAY}================${NC}+\n"
 [ "${consensus}" == "1" ] && runtest "consensus"
 [ "${aux}" == "1" ] && runtest "aux"
 
-if [ "${offline}" == "1" ]; then
+echo -e " ${TEAL}jshint${NC}\n"
 
-    echo -e " ${TEAL}jshint${NC}\n"
-
-    declare -a targets=("gulpfile.js" "src/*.js" "src/client" "src/aux" "scripts/setup.js")
-    for target in "${targets[@]}"
-    do
-        jshint ${target}
-        echo -e "   \033[1;32m✓${NC}  ${GRAY}${target}${NC}"
-    done
-    echo
-fi
+declare -a targets=("gulpfile.js" "src/*.js" "src/client" "src/aux" "scripts/setup.js")
+for target in "${targets[@]}"
+do
+    jshint ${target}
+    echo -e "   \033[1;32m✓${NC}  ${GRAY}${target}${NC}"
+done
+echo

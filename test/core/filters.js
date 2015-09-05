@@ -6,7 +6,6 @@
 "use strict";
 
 var assert = require("chai").assert;
-var chalk = require("chalk");
 var abi = require("augur-abi");
 var utils = require("../../src/utilities");
 var augur = utils.setup(require("../../src"), process.argv.slice(2));
@@ -74,7 +73,7 @@ function sellShares() {
     });
 }
 
-describe("price listener", function () {
+describe("Price listener", function () {
 
     var listeners = [];
 
@@ -160,7 +159,7 @@ describe("price listener", function () {
 
 });
 
-describe("contracts listener", function () {
+describe("Contracts listener", function () {
 
     it("should find message after buyShares", function (done) {
         this.timeout(constants.TIMEOUT);
@@ -346,7 +345,7 @@ describe("getMarketPriceHistory", function () {
 
 });
 
-describe("heartbeat", function () {
+describe("Heartbeat", function () {
 
     it("start and stop heartbeat", function (done) {
         this.timeout(constants.TIMEOUT);
