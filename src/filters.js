@@ -118,25 +118,27 @@ module.exports = function (augur) {
             if (this.price_filter) {
                 this.eth_getFilterChanges(this.price_filter.id, function (filtrate) {
                     var stringify, hexify, data_array, market, marketplus;
-                    if (augur.bignumbers) {
-                        stringify = hexify = "BigNumber";
-                    } else {
-                        stringify = "string";
-                        hexify = "hex";
-                    }
-                    for (var i = 0, len = filtrate.length; i < len; ++i) {
-                        data_array = augur.rpc.unmarshal(filtrate[i].data);
-                        market = abi.bignum(filtrate[i].topics[2]);
-                        marketplus = market.plus(abi.constants.MOD);
-                        if (marketplus.lt(abi.constants.BYTES_32)) market = marketplus;
-                        onMessage({
-                            user: filtrate[i].topics[1],
-                            marketId: abi.bignum(market, hexify),
-                            outcome: abi.bignum(filtrate[i].topics[3], stringify),
-                            price: abi.unfix(data_array[0], stringify),
-                            cost: abi.unfix(data_array[1], stringify),
-                            blockNumber: abi.bignum(filtrate[i].blockNumber, stringify)
-                        });
+                    if (filtrate && filtrate.length) {
+                        if (augur.bignumbers) {
+                            stringify = hexify = "BigNumber";
+                        } else {
+                            stringify = "string";
+                            hexify = "hex";
+                        }
+                        for (var i = 0, len = filtrate.length; i < len; ++i) {
+                            data_array = augur.rpc.unmarshal(filtrate[i].data);
+                            market = abi.bignum(filtrate[i].topics[2]);
+                            marketplus = market.plus(abi.constants.MOD);
+                            if (marketplus.lt(abi.constants.BYTES_32)) market = marketplus;
+                            onMessage({
+                                user: filtrate[i].topics[1],
+                                marketId: abi.bignum(market, hexify),
+                                outcome: abi.bignum(filtrate[i].topics[3], stringify),
+                                price: abi.unfix(data_array[0], stringify),
+                                cost: abi.unfix(data_array[1], stringify),
+                                blockNumber: abi.bignum(filtrate[i].blockNumber, stringify)
+                            });
+                        }
                     }
                 }.bind(this)); // eth_getFilterChanges
             }
