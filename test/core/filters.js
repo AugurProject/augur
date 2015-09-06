@@ -19,7 +19,7 @@ var outcome = "1";
 var amount = "10";
 var sellAmount = (Number(amount) / 2).toString();
 
-function buyShares() {
+function buyShares(done) {
     augur.buyShares({
         branchId: branch,
         marketId: market_id,
@@ -40,13 +40,12 @@ function buyShares() {
             assert.strictEqual(parseInt(r.value), 0);
         },
         onFailed: function (r) {
-            augur.filters.stop_heartbeat(true);
-            throw r;
+            done(r);
         }
     });
 }
 
-function sellShares() {
+function sellShares(done) {
     augur.sellShares({
         branchId: branch,
         marketId: market_id,
@@ -67,8 +66,7 @@ function sellShares() {
             assert.strictEqual(parseInt(r.value), 0);
         },
         onFailed: function (r) {
-            augur.filters.stop_heartbeat(true);
-            throw r;
+            done(r);
         }
     });
 }
@@ -114,7 +112,9 @@ describe("Price listener", function () {
                 });
             }, augur.filters.PULSE));
 
-            buyShares();
+            setTimeout(function () {
+                buyShares(done);
+            }, 5000);
         });
     });
 
@@ -153,7 +153,9 @@ describe("Price listener", function () {
                 });
             }, augur.filters.PULSE));
 
-            sellShares();
+            setTimeout(function () {
+                sellShares(done)
+            }, 5000);
         });
     });
 
@@ -197,7 +199,9 @@ describe("Contracts listener", function () {
                 });
             }, augur.filters.PULSE);
 
-            setTimeout(buyShares, 2000);
+            setTimeout(function () {
+                buyShares(done);
+            }, 5000);
         });
     });
 
@@ -391,7 +395,9 @@ describe("Heartbeat", function () {
                 });
             }
         });
-        setTimeout(buyShares, 2000);
+        setTimeout(function () {
+            buyShares(done);
+        }, 5000);
     });
 
 });
