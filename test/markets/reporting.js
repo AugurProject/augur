@@ -19,6 +19,7 @@ var ballot = [2, 2, 1, 2];
 var salt = "1337";
 
 describe("data and api/reporting", function () {
+
     describe("getTotalRep(" + branch_id + ")", function () {
         var test = function (r) {
             assert(parseInt(r) >= 44);
@@ -42,6 +43,7 @@ describe("data and api/reporting", function () {
             batch.execute();
         });
     });
+
     describe("getRepBalance(" + branch_id + ") ", function () {
         var test = function (r) {
             utils.gteq0(r);
@@ -66,6 +68,7 @@ describe("data and api/reporting", function () {
             batch.execute();
         });
     });
+
     describe("getRepByIndex(" + branch_id + ", " + reporter_index + ") ", function () {
         var test = function (r) {
             assert(Number(r) >= 44);
@@ -90,9 +93,13 @@ describe("data and api/reporting", function () {
             batch.execute();
         });
     });
+
     describe("getReporterID(" + branch_id + ", " + reporter_index + ") ", function () {
         var test = function (r) {
-            assert(abi.bignum(r).eq(abi.bignum(accounts[0])));
+            assert.isAbove(abi.bignum(r).toNumber(), 0);
+            if (augur.rpc.nodes[0].indexOf("127.0.0.1") > -1) {
+                assert(abi.bignum(r).eq(abi.bignum(accounts[0])));
+            }
         };
         it("sync", function () {
             test(augur.getReporterID(branch_id, reporter_index));
@@ -114,6 +121,7 @@ describe("data and api/reporting", function () {
             batch.execute();
         });
     });
+
     describe("getNumberReporters(" + branch_id + ") ", function () {
         var test = function (r) {
             assert(parseInt(r) >= 1);
@@ -138,6 +146,7 @@ describe("data and api/reporting", function () {
             batch.execute();
         });
     });
+
     describe("repIDToIndex(" + branch_id + ", " + accounts[0] + ") ", function () {
         var test = function (r) {
             assert.strictEqual(r, reporter_index);
@@ -162,14 +171,15 @@ describe("data and api/reporting", function () {
             batch.execute();
         });
     });
+
     describe("hashReport([ballot], " + salt + ") ", function () {
         var test = function (r) {
-            var b = abi.fix(ballot);
-            for (var i = 0, len = b.length; i < len; ++i) {
-                b[i] = b[i].toString(16);
-            }
-            var hashable = [accounts[0], abi.bignum(salt).toString(16)].concat(b).toString();
-            var hashed = utils.sha256(hashable);
+            // var b = abi.fix(ballot);
+            // for (var i = 0, len = b.length; i < len; ++i) {
+            //     b[i] = b[i].toString(16);
+            // }
+            // var hashable = [accounts[0], abi.bignum(salt).toString(16)].concat(b).toString();
+            // var hashed = utils.sha256(hashable);
             // TODO lookup how arrays hashed by evm sha256, this doesn't work
             // assert.strictEqual(r, hashed);
             var r = abi.bignum(r);
@@ -177,10 +187,10 @@ describe("data and api/reporting", function () {
             if (rplus.lt(abi.constants.BYTES_32)) {
                 r = rplus;
             }
-            assert.strictEqual(
-                r.toString(16),
-                "-3bc32da7042e04b537160b3b24f53162cb621c482fb615aa108087898d6183fb"
-            );
+            var expected = (augur.network_id === '7') ?
+                "-3be4c66e938ac10deff020022958af94584a35a5ce661a31522ff91bd40b990" :
+                "-3bc32da7042e04b537160b3b24f53162cb621c482fb615aa108087898d6183fb";
+            assert.strictEqual(r.toString(16), expected);
         };
         it("sync", function () {
             test(augur.hashReport(ballot, salt));
@@ -202,4 +212,5 @@ describe("data and api/reporting", function () {
             batch.execute();
         });
     });
+
 });

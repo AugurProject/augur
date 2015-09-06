@@ -161,6 +161,77 @@ describe("utilities.urlstring", function () {
 
 });
 
+describe("utilities.remove_duplicates", function () {
+
+    var test = function (t) {
+        it(JSON.stringify(t.array) + " -> " + JSON.stringify(t.expected), function () {
+            assert.deepEqual(utils.remove_duplicates(t.array), t.expected);
+        });
+    };
+
+    test({
+        array: [1, 1, 2, 3, 4],
+        expected: [1, 2, 3, 4]
+    });
+    test({
+        array: [1, "1", 2, 3, 4],
+        expected: [1, "1", 2, 3, 4]
+    });
+    test({
+        array: [1, 1, 1, 1, 1],
+        expected: [1]
+    });
+    test({
+        array: [2, 1, 1, 3, 4],
+        expected: [2, 1, 3, 4]
+    });
+    test({
+        array: ['a', 'b', 'c', 'c', 'c', 'c'],
+        expected: ['a', 'b', 'c']
+    });
+    test({
+        array: ['c', 'b', 'a', 'c', 'c', 'c'],
+        expected: ['c', 'b', 'a']
+    });
+    test({
+        array: ['abc', null, null, 'xyz', undefined],
+        expected: ['abc', null, 'xyz', undefined]
+    });
+    test({
+        array: [1, 2, 3],
+        expected: [1, 2, 3]
+    });
+    test({
+        array: [3, 2, 5],
+        expected: [3, 2, 5]
+    });
+    test({
+        array: [1, 2, 3, 'a', 'abc', 'ab'],
+        expected: [1, 2, 3, 'a', 'abc', 'ab']
+    });
+    test({
+        array: [],
+        expected: []
+    });
+    test({
+        array: [{}],
+        expected: [{}]
+    });
+    test({
+        array: [{}, {}],
+        expected: [{}, {}]
+    });
+    test({
+        array: [[]],
+        expected: [[]]
+    });
+    test({
+        array: [[], []],
+        expected: [[], []]
+    });
+
+});
+
 describe("utilities.has_value", function () {
 
     var test = function (t) {

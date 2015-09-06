@@ -110,6 +110,22 @@ module.exports = {
         }
     },
 
+    remove_duplicates: function (arr) {
+        return arr.filter(function (element, position, array) {
+            return array.indexOf(element) === position;
+        });
+    },
+
+    print_nodes: function (nodes) {
+        var node;
+        for (var i = 0, len = nodes.length; i < len; ++i) {
+            node = nodes[i].split("//")[1].split(':')[0];
+            node = (i === 0) ? chalk.green(node) : chalk.gray(node);
+            process.stdout.write(node + ' ');
+            if (i === len - 1) process.stdout.write('\n');
+        }
+    },
+
     setup: function (augur, args, rpcinfo, bignum) {
         var gospel, contracts;
         if (NODE_JS && args &&
@@ -120,9 +136,14 @@ module.exports = {
             augur.contracts = JSON.parse(contracts.toString());
         }
         if (!bignum) augur.bignumbers = false;
-        augur.nodes = ["http://eth1.augur.net"].concat(augur.nodes);
-        if (augur.connect(rpcinfo) && rpcinfo) {
-            log(chalk.magenta("augur"), "connected:", chalk.cyan(augur.nodes));
+        // augur.options.debug = true;
+        if (augur.connect(rpcinfo)) {
+            augur.rpc.nodes = this.remove_duplicates([
+                "http://127.0.0.1:8545",
+                "http://eth1.augur.net"
+            ].concat(augur.rpc.nodes).sort());
+            if (augur.options.debug) this.print_nodes(augur.rpc.nodes);
+            augur.nodes = augur.rpc.nodes;
         }
         return augur;
     },

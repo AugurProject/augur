@@ -22,7 +22,7 @@ BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
 var augur = {
 
-    options: {},
+    options: { debug: false },
 
     // If set to true, all numerical results (excluding hashes)
     // are returned as BigNumber objects
@@ -35,7 +35,7 @@ var augur = {
     errors: require("./errors"),
     numeric: abi,
 
-    rpc: {},
+    rpc: rpc,
     web: {},
     comments: {},
     filters: {},
@@ -46,9 +46,9 @@ var augur = {
 
     // Branch IDs
     branches: {
-        demo: "0xf69b5",
-        alpha: "0xf69b5",
-        dev: "0xf69b5"
+        demo: "0x0f69b5",
+        alpha: "0x0f69b5",
+        dev: "0x0f69b5"
     },
 
     // Demo account (demo.augur.net)
@@ -58,15 +58,15 @@ var augur = {
 
 var DEFAULT_RPC = ["http://127.0.0.1:8545"].concat(augur.constants.nodes);
 
-augur.nodes = DEFAULT_RPC;
+augur.nodes = rpc.nodes = DEFAULT_RPC;
 augur.contracts = augur.utils.copy(contracts["0"]);
 augur.init_contracts = augur.utils.copy(contracts["0"]);
 
 augur.reload_modules = function () {
     if (this.contracts) this.tx = new Tx(this.contracts);
     rpc.bignumbers = this.bignumbers;
-    rpc.nodes = this.nodes;
-    this.rpc = rpc;
+    rpc.debug = this.options.debug;
+    this.nodes = rpc.nodes;
     this.web = new Accounts(this);
     this.comments = new Comments(this);
     this.filters = new Filters(this);
@@ -78,13 +78,6 @@ augur.reload_modules();
 /*******************************
  * Ethereum network connection *
  *******************************/
-
-augur.unlocked = function (account) {
-    if (rpc.sign(account || this.coinbase, "1010101").error) {
-        return false;
-    }
-    return true;
-};
 
 augur.detect_network = function (chain) {
     var key, method;
@@ -140,7 +133,7 @@ augur.get_coinbase = function () {
 };
 
 augur.default_rpc = function () {
-    this.nodes = DEFAULT_RPC;
+    this.rpc.nodes = DEFAULT_RPC;
     this.reload_modules();
     return false;
 };
@@ -202,11 +195,11 @@ augur.parse_rpcinfo = function (rpcinfo, chain) {
             return this.default_rpc();
         }
     }
-    return [this.utils.urlstring(rpc_obj)].concat(this.constants.nodes);
+    return [this.utils.urlstring(rpc_obj)].concat(rpc.nodes);
 };
 
 augur.connect = function (rpcinfo, chain) {
-    this.nodes = (rpcinfo) ? this.parse_rpcinfo(rpcinfo, chain) : DEFAULT_RPC;
+    rpc.nodes = (rpcinfo) ? this.parse_rpcinfo(rpcinfo, chain) : DEFAULT_RPC;
     this.reload_modules();
     try {
         if (this.connection === null &&
@@ -219,7 +212,6 @@ augur.connect = function (rpcinfo, chain) {
         this.connection = true;
         return true;
     } catch (e) {
-        log(rpcinfo);
         log("connection error, using default rpc settings", e);
         return this.default_rpc();
     }
@@ -543,7 +535,7 @@ augur.moveEventsToCurrentPeriod = function (branch, currentVotePeriod, currentPe
     return rpc.fire(tx, onSent);
 };
 augur.getCurrentPeriod = function (branch) {
-    return parseInt(this.rpc.blockNumber()) / parseInt(this.getPeriodLength(branch));
+    return parseInt(rpc.blockNumber()) / parseInt(this.getPeriodLength(branch));
 };
 augur.updatePeriod = function (branch) {
     var currentPeriod = this.getCurrentPeriod(branch);
@@ -743,7 +735,7 @@ augur.getCurrentVotePeriod = function (branch, onSent) {
         rpc.fire(this.tx.getPeriodLength, function (periodLength) {
             if (periodLength) {
                 periodLength = abi.bignum(periodLength);
-                this.rpc.blockNumber(function (blockNum) {
+                rpc.blockNumber(function (blockNum) {
                     blockNum = abi.bignum(blockNum);
                     onSent(blockNum.dividedBy(periodLength).floor().sub(1));
                 });
@@ -752,7 +744,7 @@ augur.getCurrentVotePeriod = function (branch, onSent) {
     } else {
         periodLength = rpc.fire(this.tx.getPeriodLength);
         if (periodLength) {
-            blockNum = abi.bignum(this.rpc.blockNumber());
+            blockNum = abi.bignum(rpc.blockNumber());
             return blockNum.dividedBy(abi.bignum(periodLength)).floor().sub(1);
         }
     }
@@ -1517,7 +1509,7 @@ augur.dispatch = function (branch, onSent, onSuccess, onFailed) {
 
 augur.checkPeriod = function (branch) {
     var period = Number(this.getVotePeriod(branch));
-    var currentPeriod = Math.floor(this.rpc.blockNumber() / Number(this.getPeriodLength(branch)));
+    var currentPeriod = Math.floor(rpc.blockNumber() / Number(this.getPeriodLength(branch)));
     var periodsBehind = (currentPeriod - 1) - period;
     return periodsBehind;
 };
@@ -1528,7 +1520,7 @@ augur.getCreationBlock = function (market_id, callback) {
     if (market_id) {
         var filter = {
             fromBlock: "0x1",
-            toBlock: this.rpc.blockNumber(),
+            toBlock: rpc.blockNumber(),
             topics: ["creationBlock"]
         };
         if (callback) {
@@ -1545,7 +1537,7 @@ augur.getMarketPriceHistory = function (market_id, outcome_id, callback) {
     if (market_id && outcome_id) {
         var filter = {
             fromBlock: "0x1",
-            toBlock: this.rpc.blockNumber(),
+            toBlock: rpc.blockNumber(),
             address: this.contracts.buyAndSellShares,
             topics: ["updatePrice"]
         };

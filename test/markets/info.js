@@ -23,11 +23,18 @@ var market_id2 = markets[1];
 var market_creator_2 = test_account;
 var event_id = augur.getMarketEvents(market_id)[0];
 
+function check_account(account, test_account) {
+    assert.isAbove(abi.bignum(account).toNumber(), 0);
+    if (augur.rpc.nodes[0].indexOf("127.0.0.1") > -1) {
+        assert(abi.bignum(account).eq(abi.bignum(test_account)));
+    }
+}
+
 // info.se
 describe("info.se", function () {
     describe("getCreator(" + event_id + ") [event]", function () {
         var test = function (r) {
-            assert(abi.bignum(r).eq(abi.bignum(test_account)));
+            check_account(r, test_account);
         };
         it("sync", function () {
             test(augur.getCreator(event_id));
@@ -50,7 +57,7 @@ describe("info.se", function () {
     });
     describe("getCreator(" + market_id + ") [market]", function () {
         var test = function (r) {
-            assert(abi.bignum(r).eq(abi.bignum(test_account)));
+            check_account(r, test_account);
         };
         it("sync", function () {
             test(augur.getCreator(market_id));

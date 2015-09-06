@@ -6,8 +6,8 @@
 "use strict";
 
 var assert = require("chai").assert;
-var ethrpc = require("ethrpc");
-var contracts = require("augur-contracts").testchain;
+var rpc = require("ethrpc");
+var contracts = require("augur-contracts")[rpc.version()];
 var log = console.log;
 
 require('it-each')({ testPerIteration: true });
@@ -15,7 +15,7 @@ require('it-each')({ testPerIteration: true });
 describe("Read contracts", function () {
 
     var test = function (c) {
-        var res = ethrpc.read(contracts[c]);
+        var res = rpc.read(contracts[c]);
         assert.notProperty(res, "error");
         assert.notStrictEqual(res, "0x");
     };
@@ -28,9 +28,14 @@ describe("Read contracts", function () {
         }
     }
 
-    it.each(contract_list, "read contract: %s", ['element'], function (element, next) {
-        test(element);
-        next();
-    });
+    it.each(
+        contract_list,
+        "read contract: %s",
+        ['element'],
+        function (element, next) {
+            test(element);
+            next();
+        }
+    );
 
 });

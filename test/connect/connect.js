@@ -7,7 +7,7 @@
 
 var assert = require("chai").assert;
 var contracts = require("augur-contracts");
-var augurpath = "../../src";
+var augurpath = "../../src/index";
 var augur = require(augurpath);
 var constants = augur.constants;
 var utils = augur.utils;
@@ -169,9 +169,9 @@ describe("augur.connect", function () {
                augur.network_id === "10101" ||
                augur.network_id === "7");
     });
-    if (augur.nodes[0] === "http://127.0.0.1:8545") {
-        it("should be unlocked", function () {
-            assert.isTrue(augur.unlocked());
-        });
-    }
+    it("should be unlocked", function () {
+        if (augur.rpc.nodes[0].indexOf("127.0.0.1") > -1) {
+            assert.isTrue(augur.rpc.unlocked());
+        }
+    });
 });

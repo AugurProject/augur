@@ -40,7 +40,7 @@ describe("Faucets", function () {
 
     it("cashFaucet", function (done) {
 
-        this.timeout(constants.TIMEOUT*2);
+        this.timeout(constants.TIMEOUT*4);
 
         function faucet() {
             augur.cashFaucet(
@@ -78,6 +78,8 @@ describe("Faucets", function () {
                 value: start_balance.sub(new BigNumber(1)),
                 onSent: function (r) {
                     // log(r);
+                    assert.property(r, "txHash");
+                    assert.property(r, "callReturn");
                 },
                 onSuccess: function (r) {
                     var final_balance = abi.bignum(
