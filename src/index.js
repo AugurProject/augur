@@ -58,6 +58,7 @@ var augur = {
 
 var DEFAULT_RPC = ["http://127.0.0.1:8545"].concat(augur.constants.nodes);
 
+rpc.TX_POLL_MAX = 64;
 augur.nodes = rpc.nodes = DEFAULT_RPC;
 augur.contracts = augur.utils.copy(contracts["0"]);
 augur.init_contracts = augur.utils.copy(contracts["0"]);
@@ -133,7 +134,7 @@ augur.get_coinbase = function () {
 };
 
 augur.default_rpc = function () {
-    this.rpc.nodes = DEFAULT_RPC;
+    rpc.nodes = DEFAULT_RPC;
     this.reload_modules();
     return false;
 };

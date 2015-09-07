@@ -33,7 +33,7 @@ module.exports = function (augur) {
             var tx = utils.copy(this.namereg.owner);
             var unpacked = utils.unpack(name, utils.labels(this.owner), arguments);
             tx.params = unpacked.params;
-            return augur.fire.apply(augur, [tx].concat(unpacked.cb));
+            return augur.rpc.fire.apply(augur.rpc, [tx].concat(unpacked.cb));
         },
 
         // set name to address
@@ -53,7 +53,7 @@ module.exports = function (augur) {
             var tx = utils.copy(this.namereg.addr);
             var unpacked = utils.unpack(name, utils.labels(this.addr), arguments);
             tx.params = unpacked.params;
-            return augur.fire.apply(augur, [tx].concat(unpacked.cb));
+            return augur.rpc.fire.apply(augur.rpc, [tx].concat(unpacked.cb));
         },
 
         // get name from address
@@ -63,7 +63,7 @@ module.exports = function (augur) {
             var tx = utils.copy(this.namereg.name);
             var unpacked = utils.unpack(address, utils.labels(this.name), arguments);
             tx.params = unpacked.params;
-            return augur.fire.apply(augur, [tx].concat(unpacked.cb));
+            return augur.rpc.fire.apply(augur.rpc, [tx].concat(unpacked.cb));
         },
 
         // transfer name to a new owner
