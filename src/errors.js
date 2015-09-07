@@ -117,6 +117,11 @@ var errors = {
         message: "password must be at least 6 characters long"
     },
 
+    NO_RESPONSE: {
+        error: 408,
+        message: "no response"
+    },
+
     TRANSACTION_INVALID: {
         error: 412,
         message: "transaction validation failed"
@@ -140,6 +145,11 @@ var errors = {
     TRANSACTION_NOT_CONFIRMED: {
         error: 501,
         message: "polled network but could not confirm transaction"
+    },
+
+    ETHEREUM_NOT_FOUND: {
+        error: 651,
+        message: "no active ethereum node(s) found"
     }
 
 };
