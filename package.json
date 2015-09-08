@@ -19,7 +19,7 @@
     "crypto-browserify": "^3.9.14",
     "ethereumjs-tx": "^0.6.0",
     "ethereumjs-util": "^1.3.2",
-    "ethrpc": "^0.2.5",
+    "ethrpc": "^0.2.7",
     "firebase": "^2.2.7",
     "js-sha3": "^0.2.0",
     "keythereum": "^0.1.8",
