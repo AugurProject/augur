@@ -15,20 +15,22 @@ export default {
   },
 
   setCurrentBranch: function (branchId) {
+    var self = this;
 
     branchId = branchId || process.env.AUGUR_BRANCH_ID;
     utilities.log('using branch ' + branchId);
 
     var ethereumClient = this.flux.store('config').getEthereumClient();
-    var periodLength = ethereumClient.getPeriodLength(branchId);
-    var currentBranch = new Branch(branchId, periodLength.toNumber());
+    ethereumClient.getPeriodLength(branchId, function (periodLength) {
+      var currentBranch = new Branch(branchId, Number(periodLength.toString()));
 
-    this.dispatch(constants.branch.SET_CURRENT_BRANCH_SUCCESS, currentBranch);
-    this.flux.actions.branch.updateCurrentBranch();
+      self.dispatch(constants.branch.SET_CURRENT_BRANCH_SUCCESS, currentBranch);
+      self.flux.actions.branch.updateCurrentBranch();
+    });
   },
 
   updateCurrentBranch: function () {
-
+    var self = this;
     var currentBranch = this.flux.store('branch').getCurrentBranch();
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var currentBlock = this.flux.store('network').getState().blockNumber;
@@ -37,7 +39,8 @@ export default {
 
     ethereumClient.getVotePeriod(currentBranch.id, function(result) {
 
-      if (!result) return;  // hack for augur.js bug
+      if (result.error) return console.log("votePeriod error:", result);
+
       var votePeriod = result.toNumber();
       var isCurrent = votePeriod < (currentPeriod - 1) ? false : true;
 
@@ -53,8 +56,8 @@ export default {
         percentComplete: percentComplete
       });
 
-      this.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, updatedBranch);
-    }.bind(this));
+      self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, updatedBranch);
+    });
   },
 
   checkQuorum: function () {
