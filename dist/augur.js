@@ -80036,9 +80036,6 @@ module.exports = function (augur) {
                     self.pacemaker({ price: cb.price });
                 });
             }
-            else {
-                this.pacemaker(cb);
-            }
         },
 
         stop_heartbeat: function (uninstall, cb) {
