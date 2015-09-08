@@ -13,7 +13,6 @@ var toFixedPoint = utilities.toFixedPoint;
 var abi = require('augur-abi');
 var augurContracts = require('augur-contracts');
 var augur = window.augur = require('augur.js');
-var log = console.log;
 
 function MissingContractError(contractName) {
   this.name = 'MissingContractError';
@@ -98,50 +97,8 @@ EthereumClient.prototype.onNewBlock = function(callback) {
 * more specific filter that fires on any augur contract addresss and returns transaction info
 * used to reconcile pending transactions in the transactions store
 */
-EthereumClient.prototype.onAugurTx = function (callback) {
-
-  augur.filters.start_heartbeat({
-    contracts: function (result) {
-      if (result && result.error) return utilities.error(result);
-      callback(result);
-    }
-  });
-
-  // if (this.networkId === null) this.networkId = augur.rpc.version();
-
-  // this.filters.augur = web3.eth.filter({
-  //   addresses: _.map(this.contractAddress[this.networkId], function(address, contract) { 
-  //     return address;
-  //   })
-  // });
-
-  // this.filters.augur.watch(function (error, result) {
-  //   if (error) utilities.error(error);
-  //   log('augurTx', result);
-  //   callback(result);
-  // });
-};
-
-/*
-* market price update event
-* used to trigger partial update of markets
-*/
-EthereumClient.prototype.onMarketChange = function (callback) {
-
-  augur.filters.start_heartbeat({
-    price: function (result) {
-      if (result && result.error) return utilities.error(result);
-      callback(result);
-    }
-  });
-
-  // var contract = this.getContract('buyAndSellShares');
-  // var updatePriceEvent = contract.updatePrice();
-
-  // updatePriceEvent.watch(function(error, result) {
-  //   if (error) utilities.error(error);
-  //   callback(result);
-  // });
+EthereumClient.prototype.startFiltering = function (callbacks) {
+  augur.filters.start_heartbeat(callbacks);
 };
 
 EthereumClient.prototype.stopMonitoring = function() {

@@ -73,20 +73,21 @@ var ConfigActions = {
       self.flux.actions.report.submitQualifiedReports();
     });
 
-    // update market when a price change has been detected
-    ethereumClient.onMarketChange(function(result) {
+    ethereumClient.startFiltering({
 
-      if (result.args.market) {
+      // listen for augur transactions
+      contracts: this.flux.actions.transaction.onAugurTx,
 
-        var marketId = result.args.market;
-
-        utilities.log('market change detected: updating market ' + marketId.toString(16));
-        self.flux.actions.market.loadMarket(marketId);
+      // update market when a price change has been detected
+      price: function (result) {
+        if (result.args.market) {
+          var marketId = result.args.market;
+          log('market change detected: updating market', marketId.toString(16));
+          self.flux.actions.market.loadMarket(marketId);
+        }
       }
     });
 
-    // start watching for augur transactions
-    ethereumClient.onAugurTx(this.flux.actions.transaction.onAugurTx);
   },
 
   initializeState: function() {
