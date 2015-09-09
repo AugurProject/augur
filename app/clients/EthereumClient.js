@@ -6,9 +6,6 @@ var constants = require('../libs/constants');
 var utilities = require('../libs/utilities');
 var blacklist = require('../libs/blacklist');
 
-var fromFixedPoint = utilities.fromFixedPoint;
-var toFixedPoint = utilities.toFixedPoint;
-
 var abi = require('augur-abi');
 var augurContracts = require('augur-contracts');
 

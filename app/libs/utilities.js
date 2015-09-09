@@ -26,18 +26,6 @@ module.exports = {
     return currentBlock + blockDelta;
   },
 
-  bigNumify: function(num) {
-
-    //console.log(typeof(num));
-    //console.log(num);
-    if (typeof(num) === 'string') {
-      return new BigNumber(num);
-    } else {
-      return num;
-    }
-
-  },
-
   priceToPercent: function(price) {
 
     // assumes price is a BigNumber object
@@ -64,20 +52,16 @@ module.exports = {
     } else {
       unit = 'wei';
     }
+    log({
+      value: +value.toFixed(4),
+      unit: unit,
+      withUnit: value.toNumber() + ' ' + unit
+    });
     return {
       value: +value.toFixed(4),
       unit: unit,
-      withUnit: +value.toFixed(4) + ' ' + unit
+      withUnit: value.toNumber() + ' ' + unit
     };
-  },
-
-  /**
-   * Convert a number to a fixed-point BigNumber.
-   *
-   * Multiplies the value by 2^64, then floors it to get a round BigNumber.
-   */
-  toFixedPoint: function (value) {
-    return constants.ONE_FXP.times(value).floor();
   },
 
   // check if account address is correctly formatted
@@ -85,13 +69,6 @@ module.exports = {
 
     address = address.replace(/^0x/, '');  // strip leading '0x' is it exists
     return address.match(/^[0-9a-fA-F]{40}$/) ? true : false;
-  },
-
-  /**
-   * Convert a fixed-point BigNumber to an unshifted BigNumber.
-   */
-  fromFixedPoint: function (value) {
-    return value.dividedBy(constants.ONE_FXP);
   },
 
   consoleStyle: 'background-color: #602A52; color: #fff; padding: 2px 6px;',
