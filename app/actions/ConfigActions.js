@@ -57,33 +57,32 @@ var ConfigActions = {
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var self = this;
 
-    ethereumClient.onNewBlock(function(blockHash) {
-
-      self.flux.actions.asset.updateAssets();
-      self.flux.actions.market.loadNewMarkets();
-
-      // We pull the branch's block-dependent period information from
-      // contract calls that need to be called each block.
-      self.flux.actions.branch.updateCurrentBranch();
-
-      // TODO: We can skip loading events to report if the voting period hasn't changed.
-      self.flux.actions.report.loadEventsToReport();
-      self.flux.actions.branch.checkQuorum();
-
-      self.flux.actions.report.submitQualifiedReports();
-    });
-
     ethereumClient.startFiltering({
 
+      block: function (blockHash) {
+        self.flux.actions.asset.updateAssets();
+        self.flux.actions.market.loadNewMarkets();
+
+        // We pull the branch's block-dependent period information from
+        // contract calls that need to be called each block.
+        self.flux.actions.branch.updateCurrentBranch();
+
+        // TODO: We can skip loading events to report if the voting period hasn't changed.
+        self.flux.actions.report.loadEventsToReport();
+        self.flux.actions.branch.checkQuorum();
+
+        self.flux.actions.report.submitQualifiedReports();
+      },
+
       // listen for augur transactions
-      contracts: this.flux.actions.transaction.onAugurTx,
+      contracts: self.flux.actions.transaction.onAugurTx,
 
       // update market when a price change has been detected
       price: function (result) {
-        if (result.args.market) {
-          var marketId = result.args.market;
-          log('market change detected: updating market', marketId.toString(16));
-          self.flux.actions.market.loadMarket(marketId);
+        log("market changed:", result);
+        if (result && result.marketId) {
+          log("market change detected; updating market", result.marketId.toString(16));
+          self.flux.actions.market.loadMarket(result.marketId);
         }
       }
     });

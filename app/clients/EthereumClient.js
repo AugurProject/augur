@@ -14,11 +14,6 @@ var abi = require('augur-abi');
 var augurContracts = require('augur-contracts');
 var augur = window.augur = require('augur.js');
 
-function MissingContractError(contractName) {
-  this.name = 'MissingContractError';
-  this.message = contractName;
-}
-
 /**
  * augur is implemented as several Ethereum contracts, mainly due to size
  * limitations. EthereumClient wraps the calls to those contracts to abstract
@@ -27,9 +22,6 @@ function MissingContractError(contractName) {
 function EthereumClient(params) {
 
   params = params || {};
-  this.contractAddress = {};
-  this.filters = [];
-  this.contracts = augurContracts;
   this.accounts = null;
   this.currentAccount = null;
   this.networkId = null;
@@ -37,12 +29,6 @@ function EthereumClient(params) {
   // defaults
   this.defaultBranchId = params.defaultBranchId;
   this.host = params.host || 'localhost:8545';
-
-  _.defaults(this.contractAddress, constants.contractAddress);
-
-  // web3 setup
-  this.web3 = window.web3 = params.web3 || require('web3');
-  this.web3.setProvider(new web3.providers.HttpProvider('//'+this.host));
 }
 
 // TODO: migrate off default
@@ -77,45 +63,19 @@ EthereumClient.prototype.signOut = function () {
 };
 
 /*
-* general filter that fires on every new block, "the network pulse"
-* used to trigger general update of assets, netowrk data, etc
-*/
-EthereumClient.prototype.onNewBlock = function(callback) {
-
-  // add a filter that calls callback on new block
-  var filter = web3.eth.filter('latest');
-
-  filter.watch(function (error, blockHash) {
-    if (error) utilities.error(error);
-    callback(blockHash);
-  });
-
-  this.filters.push(filter);
-};
-
-/*
 * more specific filter that fires on any augur contract addresss and returns transaction info
 * used to reconcile pending transactions in the transactions store
 */
 EthereumClient.prototype.startFiltering = function (callbacks) {
-  augur.filters.start_heartbeat(callbacks);
+  return augur.filters.listen(callbacks);
 };
 
-EthereumClient.prototype.stopMonitoring = function() {
-
-  _.each(this.filters, function(filter) {
-    filter.stopWatching()
-  });
+EthereumClient.prototype.stopMonitoring = function (uninstall) {
+  return augur.filters.ignore(uninstall);
 };
 
 EthereumClient.prototype.isAvailable = function() {
-
-  // attempt an RPC call that should fail if the daemon is unreachable.
-  try {
-    return this.web3.net.listening
-  } catch(err) {
-    return false;
-  }
+  return augur.rpc.listening();
 };
 
 EthereumClient.prototype.batch = function(commands) {
@@ -129,61 +89,70 @@ EthereumClient.prototype.batch = function(commands) {
 };
 
 EthereumClient.prototype.getNetworkId = function (onResult) {
+  var self = this;
   if (this.networkId === null) {
-    this.networkId = augur.rpc.version();
+    if (onResult) {
+      augur.rpc.version(function (version) {
+        if (version) {
+          if (version.error) return utilities.error(version);
+          self.networkId = version;
+          onResult(version);
+        }
+      });
+    } else {
+      this.networkId = augur.rpc.version();
+      return this.networkId;
+    }
+  } else {
+    if (onResult) {
+      return onResult(this.networkId);
+    }
+    return this.networkId;
   }
-  if (onResult) {
-    return onResult(this.networkId);
-  }
-  return this.networkId;
 };
 
-EthereumClient.prototype.getClientVersion = function(onResult) {
-
-  web3.version.getClient(function(error, result) {
-    if (error) { 
-      utilities.error(error);
-    } else { 
-      onResult(result); 
-    }
-  })
+EthereumClient.prototype.getClientVersion = function (onResult) {
+  augur.rpc.clientVersion(function (clientVersion) {
+    if (clientVersion.error) return utilities.error(clientVersion);
+    if (onResult) onResult(clientVersion);
+  });
 };
 
 EthereumClient.prototype.getBlock = function(blockNumber, onResult) {
-
-  web3.eth.getBlock(blockNumber, function(error, block) {
-    if (error) { 
-      utilities.error(error);
-    } else { 
-      onResult(block); 
+  augur.rpc.getBlock(blockNumber, function (block) {
+    if (block) {
+      if (block.error) return utilities.error(block)
+      if (onResult) onResult(block);
     }
-  })
+  });
 };
 
 EthereumClient.prototype.getAccounts = function(onResult) {
-
+  var self = this;
   if (this.accounts) return this.accounts;
-
-  if (!onResult) {
-    var result = web3.eth.accounts;
-    this.currentAccount = result;
-    return result;
-  }
-
-  web3.eth.getAccounts(function(error, result) {
-    if (error) { 
-      utilities.error(error);
-    } else { 
-      this.accounts = result;
-      onResult(result); 
+  if (onResult && onResult.constructor === Function) {
+    augur.rpc.accounts(function (accounts) {
+      if (accounts.error) return utilities.error(accounts);
+      self.accounts = accounts;
+      if (onResult) onResult(accounts);
+    });
+  } else {
+    var accounts = augur.rpc.accounts();
+    if (accounts && accounts.constructor === Array) {
+      this.currentAccount = accounts[0];
+    } else {
+      this.currentAccount = accounts;
     }
-  }.bind(this));
+    return accounts;
+  }
 };
 
 EthereumClient.prototype.getEtherBalance = function(onResult) {
-
-  web3.eth.getBalance(this.getAccount(), function(error, result) {
-    onResult(result);
+  augur.rpc.balance(this.getAccount(), function (balance) {
+    if (balance) {
+      if (balance.error) return utilities.error(balance);
+      if (onResult) onResult(result);
+    }
   });
 };
 
@@ -191,19 +160,13 @@ EthereumClient.prototype.getAccountSync = function() {
 
   // if signed in, then use the signed-in account
   if (augur.web.account.address) {
-    
     this.currentAccount = augur.web.account.address;
 
   // otherwise, use the coinbase
   } else {
-
-    if (this.currentAccount)
-        return this.currentAccount;
-
-    this.currentAccount = this.web3.eth.coinbase;
-
-    if (!this.currentAccount)
-        this.currentAccount = augur.coinbase;
+    if (this.currentAccount) return this.currentAccount;
+    this.currentAccount = augur.coinbase;
+    if (!this.currentAccount) this.currentAccount = augur.coinbase;
   }
 
   // check if this is the demo account
@@ -216,7 +179,7 @@ EthereumClient.prototype.getAccountSync = function() {
   return this.currentAccount;
 };
 
-EthereumClient.prototype.getAccount = function(onResult, onError) {
+EthereumClient.prototype.getAccount = function (onResult, onError) {
 
   // async version doesn't exist, so simulate using Sync for now
   var result = this.getAccountSync();
@@ -231,54 +194,77 @@ EthereumClient.prototype.getAccount = function(onResult, onError) {
   }
 };
 
-EthereumClient.prototype.getBlockNumber = function(callback) {
-  web3.eth.getBlockNumber(function(error, result) {
-    if (error) { 
-      utilities.error(error);
-    } else { 
-      callback(result); 
-    }
-  });
+EthereumClient.prototype.getBlockNumber = function (callback) {
+  if (augur.utils.is_function(callback)) {
+    augur.rpc.blockNumber(function (blockNumber) {
+      if (blockNumber) {
+        if (blockNumber.error) return utilities.error(blockNumber);
+        callback(blockNumber);
+      }
+    });
+  } else {
+    var blockNumber = augur.rpc.blockNumber();
+    if (blockNumber && blockNumber.error) return utilities.error(blockNumber);
+    return blockNumber;
+  }
 };
 
-EthereumClient.prototype.getGasPrice = function(callback) {
-  web3.eth.getGasPrice(function(error, result) {
-    if (error) { 
-      utilities.error(error);
-    } else { 
-      callback(result); 
-    }
-  });
+EthereumClient.prototype.getGasPrice = function (callback) {
+  if (augur.utils.is_function(callback)) {
+    augur.rpc.gasPrice(function (gasPrice) {
+      if (gasPrice) {
+        if (gasPrice.error) return utilities.error(gasPrice);
+        callback(gasPrice);
+      }
+    });
+  } else {
+    var gasPrice = augur.rpc.gasPrice();
+    if (gasPrice) {
+        if (gasPrice.error) return utilities.error(gasPrice);
+        return gasPrice;
+      }
+  }
 };
 
-EthereumClient.prototype.getMining = function(callback) {
-  web3.eth.getMining(function(error, result) {
-    if (error) { 
-      utilities.error(error);
-    } else { 
-      callback(result); 
-    }
-  });
+EthereumClient.prototype.getMining = function (callback) {
+  if (augur.utils.is_function(callback)) {
+    augur.rpc.mining(function (mining) {
+      if (mining && mining.error) return utilities.error(mining);
+      callback(mining);
+    });
+  } else {
+    var mining = augur.rpc.mining();
+    if (mining && mining.error) return utilities.error(mining);
+    return mining;
+  }
 };
 
-EthereumClient.prototype.getHashrate = function(callback) {
-  web3.eth.getHashrate(function(error, result) {
-    if (error) { 
-      utilities.error(error);
-    } else { 
-      callback(result); 
-    }
-  });
+EthereumClient.prototype.getHashrate = function (callback) {
+  return augur.rpc.hashrate(callback);
+  // if (augur.utils.is_function(callback)) {
+  //   augur.rpc.hashrate(function (hashrate) {
+  //     if (hashrate && hashrate.error) return utilities.error(hashrate);
+  //     callback(hashrate);
+  //   });
+  // } else {
+  //   var hashrate = augur.rpc.hashrate();
+  //   if (hashrate && hashrate.error) return utilities.error(hashrate);
+  //   return hashrate;
+  // }
 };
 
-EthereumClient.prototype.getPeerCount = function(callback) {
-  web3.net.getPeerCount(function(error, result) {
-    if (error) { 
-      utilities.error(error);
-    } else { 
-      callback(result); 
-    }
-  });
+EthereumClient.prototype.getPeerCount = function (callback) {
+  return augur.rpc.peerCount(callback);
+  // if (augur.utils.is_function(callback)) {
+  //   augur.rpc.peerCount(function (peerCount) {
+  //     if (peerCount && peerCount.error) return utilities.error(peerCount);
+  //     callback(peerCount);
+  //   });
+  // } else {
+  //   var peerCount = augur.rpc.peerCount();
+  //   if (peerCount && peerCount.error) return utilities.error(peerCount);
+  //   return peerCount;
+  // }
 };
 
 EthereumClient.prototype.getAddress = function (name) {
@@ -346,21 +332,21 @@ EthereumClient.prototype.sendRep = function(destination, amount, branchId) {
   });
 };
 
-EthereumClient.prototype.sendEther = function(destination, amount) {
-
-  var amountInWei = this.web3.toWei(amount, 'ether');
-  var transaction = {
-    from: this.getAccount(),
-    to: destination,
-    value: amountInWei
-  };
-
+EthereumClient.prototype.sendEther = function (destination, amount) {
   var self = this;
-  this.web3.eth.sendTransaction(transaction, function(err, txhash) {
-    if (!err) {
-      utilities.log(self.currentAccount+' sent ' + amount + ' ether to '+ destination)
-    } else {
-      utilities.error(err);
+  augur.rpc.sendEther({
+    to: destination,
+    value: amount,
+    from: this.getAccount(),
+    onSent: function (result) {
+      if (result && result.error) return utilities.error(result);
+    },
+    onSuccess: function (result) {
+      if (result) {
+        if (result.error) return utilities.error(result);
+        log(self.currentAccount, 'sent', amount, 'ether to', destination);
+        log("txhash:", result.txHash);
+      }
     }
   });
 };
@@ -375,14 +361,20 @@ EthereumClient.prototype.getBranches = function(onResult) {
   return augur.getBranches(onResult);
 };
 
-EthereumClient.prototype.getPeriodLength = function(branchId, onResult) {
-
-  return augur.getPeriodLength(branchId, function (periodLength) {
-    if (periodLength) {
-      if (onResult) return onResult(periodLength);
-      return periodLength;
-    }
-  });
+EthereumClient.prototype.getPeriodLength = function (branchId, onResult) {
+  return augur.getPeriodLength(branchId, onResult);
+  // if (augur.utils.is_function(onResult)) {
+  //   augur.getPeriodLength(branchId, function (periodLength) {
+  //     if (periodLength && periodLength.error)
+  //       return utilities.error(periodLength);
+  //     onResult(periodLength);
+  //   });
+  // } else {
+  //   var periodLength = augur.getPeriodLength(branchId);
+  //   if (periodLength && periodLength.error)
+  //     return utilities.error(periodLength);
+  //   return periodLength;
+  // }
 };
 
 EthereumClient.prototype.getVotePeriod = function(branchId, onResult) {
@@ -445,10 +437,8 @@ EthereumClient.prototype.checkQuorum = function(branchId, onSent, onSuccess, onF
 };
 
 EthereumClient.prototype.getMarkets = function(branchId, currentMarkets) {
-
   branchId = branchId || this.defaultBranchId;
   var validMarkets = _.filter(augur.getMarkets(branchId), function (marketId) {
-    //log('"'+marketId.toString(16)+'",');  
     return !_.contains(blacklist.markets[this.networkId][branchId], marketId.toString(16));
   }, this);
 

@@ -28,7 +28,7 @@ var TransactionActions = {
   onAugurTx: function(result) {
 
   	var transactions = this.flux.store('transaction').getState();
-    var hash = result.transactionHash;
+    var hash = result.txHash;
 
   	if (transactions[hash]) {
 
