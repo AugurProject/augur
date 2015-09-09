@@ -1,5 +1,5 @@
 var BigNumber = require('bignumber.js');
-var web3 = require('web3');
+var abi = require('augur-abi');
 var constants = require('./constants.js')
 var moment = window.moment = require('moment');
 
@@ -8,7 +8,7 @@ module.exports = {
   blockToDate: function(block) {
 
     // calculate date from block number
-    var currentBlock = web3.eth.blockNumber;
+    var currentBlock = augur.rpc.blockNumber();
     var seconds = (block - currentBlock) * constants.SECONDS_PER_BLOCK;
     var date = moment().add(seconds, 'seconds');
 
@@ -18,7 +18,7 @@ module.exports = {
   dateToBlock: function(date) {
 
     // assuming date is moment for now
-    var currentBlock = web3.eth.blockNumber;
+    var currentBlock = augur.rpc.blockNumber();
     var now = moment();
     var secondsDelta = date.diff(now, 'seconds');
     var blockDelta = parseInt(secondsDelta / constants.SECONDS_PER_BLOCK);
@@ -54,35 +54,21 @@ module.exports = {
     return +percent + '%'
   },
 
-  formatEther: function(wei) {
-
-    // detect format and convert
-    if (typeof(wei) === 'string' && wei.match(/^0x\w+/)) {
-      wei = web3.toWei(wei, 'wei');
-    } else if (wei != null && wei != undefined && wei.toNumber) {
-      wei = wei.toNumber();
-    } else {
-      return {value: '', unit: 'ether', withUnit: '-'};
-    }
-
-    var value;
-    var unit;
-
-    if (wei >= 1000000000000 && wei < 1000000000000000) {
-      value = wei / 1000000000000;
-      unit = 'szabo';
-    } else if (wei >= 1000000000000000 && wei < 1000000000000000000) {
-      value = wei / 1000000000000000;
-      unit = 'finney';
-    } else if (wei >= 1000000000000000000) {
-      value = wei / 1000000000000000000;
+  formatEther: function (wei) {
+    var value, unit;
+    if (!wei) return { value: '', unit: 'ether', withUnit: '-' };
+    value = abi.bignum(wei);
+    if (value.gte(augur.constants.ETHER)) {
+      value = value.dividedBy(augur.constants.ETHER);
       unit = 'ether';
     } else {
-      value = wei;
       unit = 'wei';
     }
-
-    return {value: +value.toFixed(4), unit: unit, withUnit: value+' '+unit};
+    return {
+      value: +value.toFixed(4),
+      unit: unit,
+      withUnit: +value.toFixed(4) + ' ' + unit
+    };
   },
 
   /**

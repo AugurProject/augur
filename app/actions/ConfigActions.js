@@ -1,4 +1,3 @@
-var abi = require('../libs/abi');
 var constants = require('../libs/constants');
 var utilities = require('../libs/utilities');
 var EthereumClient = require('../clients/EthereumClient');

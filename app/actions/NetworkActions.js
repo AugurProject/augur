@@ -67,7 +67,9 @@ var NetworkActions = {
     }.bind(this));
 
     ethereumClient.getAccount(function(account) {
-      this.dispatch(constants.config.UPDATE_ACCOUNT, { currentAccount: account });
+      this.dispatch(constants.config.UPDATE_ACCOUNT, {
+        currentAccount: account
+      });
     }.bind(this), function () {
 
       utilities.log('no unlocked account detected');
@@ -95,10 +97,12 @@ var NetworkActions = {
       });
       ethereumClient.getBlock(blockNumber, function(block) {
         if (block) {
-          var blockTimeStamp = web3.eth.getBlock(blockNumber).timestamp;
+          var blockTimeStamp = augur.rpc.getBlock(blockNumber).timestamp;
           var currentTimeStamp = moment().unix();
           var age = currentTimeStamp - blockTimeStamp;
-          this.dispatch(constants.network.UPDATE_BLOCK_CHAIN_AGE, { blockChainAge: age });
+          this.dispatch(constants.network.UPDATE_BLOCK_CHAIN_AGE, {
+            blockChainAge: age
+          });
         }
       }.bind(this));
     }.bind(this));

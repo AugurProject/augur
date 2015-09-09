@@ -2,7 +2,6 @@ var _ = require('lodash');
 var Promise = require('es6-promise').Promise;
 var moment = require('moment');
 
-var abi = require('../libs/abi');
 var constants = require('../libs/constants');
 var utilities = require('../libs/utilities');
 var blacklist = require('../libs/blacklist');
@@ -12,7 +11,6 @@ var toFixedPoint = utilities.toFixedPoint;
 
 var abi = require('augur-abi');
 var augurContracts = require('augur-contracts');
-var augur = window.augur = require('augur.js');
 
 /**
  * augur is implemented as several Ethereum contracts, mainly due to size
