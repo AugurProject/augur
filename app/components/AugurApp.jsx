@@ -63,8 +63,6 @@ var AugurApp = React.createClass({
 
   componentDidMount: function() {
 
-    //this.setState({status: 'stopped'});
-
     // Initialize the EthereumClient and load the current Augur data.
     this.getFlux().actions.config.initializeState();
   },
@@ -84,21 +82,18 @@ var AugurApp = React.createClass({
       loadingProgress = (<span className="loading-text">loading...</span>);
     }
 
-    return loadingProgress
+    return loadingProgress;
   },
 
   handleSignOut: function (event) {
-
     this.getFlux().actions.config.signOut();
   },
 
   toggleSignInModal: function (event) {
-
     this.setState({ signInModalOpen: !this.state.signInModalOpen });
   },
 
   toggleRegisterModal: function (event) {
-
     this.setState({ registerModalOpen: !this.state.registerModalOpen });
   },
 

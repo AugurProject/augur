@@ -16,7 +16,7 @@ var NetworkActions = {
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var networkState = this.flux.store('network').getState()
 
-    var nowUp = ethereumClient.isAvailable();
+    var nowUp = augur.rpc.listening();
 
     var wasUp = (
       networkState.ethereumStatus === constants.network.ETHEREUM_STATUS_CONNECTED
@@ -30,8 +30,8 @@ var NetworkActions = {
 
       utilities.warn('failed to connect to ethereum');
 
-      // stop monitoring 
-      ethereumClient.stopMonitoring();
+      // stop monitoring filters
+      augur.filters.ignore(true);
 
       this.dispatch(
         constants.network.UPDATE_ETHEREUM_STATUS,
@@ -55,76 +55,79 @@ var NetworkActions = {
     setTimeout(this.flux.actions.network.checkNetwork, 3000);
   },
 
-  initializeNetwork: function() {
+  initializeNetwork: function () {
+    var self = this;
+
+    augur.rpc.version(function (networkId) {
+      self.dispatch(constants.network.UPDATE_NETWORK, { networkId: networkId });
+    });
+
+    augur.rpc.clientVersion(function (clientVersion) {
+      self.dispatch(constants.network.UPDATE_NETWORK, { clientVersion: clientVersion });
+    });
 
     var ethereumClient = this.flux.store('config').getEthereumClient();
 
-    var networkId = ethereumClient.getNetworkId();
-    this.dispatch(constants.network.UPDATE_NETWORK, { networkId: networkId });
-
-    ethereumClient.getClientVersion(function(clientVersion) {
-      this.dispatch(constants.network.UPDATE_NETWORK, { clientVersion: clientVersion });
-    }.bind(this));
-
-    ethereumClient.getAccount(function(account) {
-      this.dispatch(constants.config.UPDATE_ACCOUNT, {
+    ethereumClient.getAccount(function (account) {
+      self.dispatch(constants.config.UPDATE_ACCOUNT, {
         currentAccount: account
       });
-    }.bind(this), function () {
-
+    }, function () {
       utilities.log('no unlocked account detected');
-
-      this.dispatch(
+      self.dispatch(
         constants.network.UPDATE_ETHEREUM_STATUS,
         {ethereumStatus: constants.network.ETHEREUM_STATUS_NO_ACCOUNT}
       );
-    }.bind(this));
+    });
 
     this.flux.actions.network.updateNetwork();
   },
 
   updateNetwork: function () {
+    var self = this;
     var configState = this.flux.store('config').getState();
     var networkState = this.flux.store('network').getState();
     var branchState = this.flux.store('branch').getState();
 
     // just block age and peer count until we're current
-    ethereumClient.getBlockNumber(function(blockNumber) {
+    augur.rpc.blockNumber(function (blockNumber) {
       var blockMoment = utilities.blockToDate(blockNumber);
-      this.dispatch(constants.network.UPDATE_NETWORK, {
+      self.dispatch(constants.network.UPDATE_NETWORK, {
         blockNumber: blockNumber,
         blocktime: blockMoment
       });
-      ethereumClient.getBlock(blockNumber, function(block) {
+      augur.rpc.getBlock(blockNumber, function (block) {
+        // log("block:", block);
         if (block) {
-          var blockTimeStamp = augur.rpc.getBlock(blockNumber).timestamp;
+          var blockTimeStamp = block.timestamp;
           var currentTimeStamp = moment().unix();
           var age = currentTimeStamp - blockTimeStamp;
-          this.dispatch(constants.network.UPDATE_BLOCK_CHAIN_AGE, {
+          self.dispatch(constants.network.UPDATE_BLOCK_CHAIN_AGE, {
             blockChainAge: age
           });
         }
-      }.bind(this));
-    }.bind(this));
+      });
+    });
 
-    ethereumClient.getPeerCount(function(peerCount) {
-      this.dispatch(constants.network.UPDATE_NETWORK, { peerCount: peerCount });
-    }.bind(this));
+    augur.rpc.peerCount(function (peerCount) {
+      self.dispatch(constants.network.UPDATE_NETWORK, { peerCount: peerCount });
+    });
 
-    if (networkState.blockChainAge && networkState.blockChainAge < constants.MAX_BLOCKCHAIN_AGE) {
-
-      ethereumClient.getAccounts(function(accounts) {
-        this.dispatch(constants.network.UPDATE_NETWORK, { accounts: accounts });
-      }.bind(this));
-      ethereumClient.getGasPrice(function(gasPrice) {
-        this.dispatch(constants.network.UPDATE_NETWORK, { gasPrice: gasPrice });
-      }.bind(this));
-      ethereumClient.getMining(function(mining) {
-        this.dispatch(constants.network.UPDATE_NETWORK, { mining: mining });
-      }.bind(this));
-      ethereumClient.getHashrate(function(hashrate) {
-        this.dispatch(constants.network.UPDATE_NETWORK, { hashrate: hashrate });
-      }.bind(this));
+    if (networkState.blockChainAge &&
+        networkState.blockChainAge < constants.MAX_BLOCKCHAIN_AGE)
+    {
+      ethereumClient.getAccounts(function (accounts) {
+        self.dispatch(constants.network.UPDATE_NETWORK, { accounts: accounts });
+      });
+      augur.rpc.gasPrice(function (gasPrice) {
+        self.dispatch(constants.network.UPDATE_NETWORK, { gasPrice: gasPrice });
+      });
+      augur.rpc.mining(function (mining) {
+        self.dispatch(constants.network.UPDATE_NETWORK, { mining: mining });
+      });
+      augur.rpc.hashrate(function (hashrate) {
+        self.dispatch(constants.network.UPDATE_NETWORK, { hashrate: hashrate });
+      });
     }
   }
 

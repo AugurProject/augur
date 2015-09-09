@@ -27,12 +27,22 @@ var SendCashModal = React.createClass({
     }
   },
 
-  onSend: function(event) {
+  onSend: function (event) {
 
     if (this.isValid(event)) {
 
-      this.state.ethereumClient.sendCash(this.state.destination, this.state.amount, function(result) {
-        console.log(result);
+      augur.sendCash({
+        to: this.state.destination,
+        value: this.state.amount,
+        onSent: function (result) {
+          utilities.log('sending '+amount+' cash to '+ destination);
+        },
+        onSuccess: function (result) {
+          utilities.log('cash sent successfully');
+        },
+        onFailed: function (result) {
+          utilities.error('failed to send cash: ' + error);
+        }
       });
 
       this.props.onRequestai();

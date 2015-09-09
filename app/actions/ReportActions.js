@@ -17,7 +17,7 @@ var ReportActions = {
    * TODO: Load events across all branches that need reports.
    */
   loadEventsToReport: function() {
-
+    var self = this;
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var currentBranch = this.flux.store('branch').getState().currentBranch;
 
@@ -28,35 +28,33 @@ var ReportActions = {
     var isCurrent = currentBranch.votePeriod === currentBranch.currentPeriod - 1;
 
     if (isCurrent) {
-
       var eventIds = ethereumClient.getEvents(currentBranch.votePeriod);
 
       // initialize all events
-      var eventsToReport = {}
-      _.each(eventIds, function(id) { eventsToReport[id] = {id: id} });
+      var eventsToReport = {};
+      _.each(eventIds, function (id) { eventsToReport[id] = { id: id }; });
       this.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {
         eventsToReport: eventsToReport
       });
 
-      _.each(eventIds, function(eventId) {
+      _.each(eventIds, function (eventId) {
   
-        var eventToReport = {id: eventId};
+        var eventToReport = { id: eventId };
 
-        ethereumClient.getDescription(eventId, function(description) {
+        augur.getDescription(eventId, function(description) {
           eventToReport['description'] = description;
-          this.dispatch(constants.report.UPDATE_EVENT_TO_REPORT, eventToReport);
-        }.bind(this));
+          self.dispatch(constants.report.UPDATE_EVENT_TO_REPORT, eventToReport);
+        });
 
-        ethereumClient.getEventInfo(eventId, function(eventInfo) {
+        augur.getEventInfo(eventId, function (eventInfo) {
           eventToReport['branchId'] = eventInfo[0];
           eventToReport['expirationBlock'] = eventInfo[1];
           eventToReport['outcome'] = eventInfo[2];
           eventToReport['minValue'] = eventInfo[3];
           eventToReport['maxValue'] = eventInfo[4];
           eventToReport['numOutcomes'] = eventInfo[5];
-
-          this.dispatch(constants.report.UPDATE_EVENT_TO_REPORT, eventToReport);
-        }.bind(this));
+          self.dispatch(constants.report.UPDATE_EVENT_TO_REPORT, eventToReport);
+        });
       }, this);
 
     } else {
@@ -117,13 +115,12 @@ var ReportActions = {
    */
   submitQualifiedReports: function () {
     let currentBlock = this.flux.store('network').getState().blockNumber;
-    let ethereumClient = this.flux.store('config').getEthereumClient();
     let reports = this.flux.store('report').getState().pendingReports;
     let unsentReports = _.filter(reports, r => !r.reported);
     let didSendReports = false;
 
     _.forEach(unsentReports, (report) => {
-      let periodLength = ethereumClient.getPeriodLength(report.branchId);
+      let periodLength = augur.getPeriodLength(report.branchId);
       let reportingStartBlock = (report.votePeriod + 1) * periodLength;
       let reportingCurrentBlock = currentBlock - reportingStartBlock;
       let shouldSend = reportingCurrentBlock > (periodLength / 2);

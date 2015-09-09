@@ -57,17 +57,12 @@ export default Fluxxor.createStore({
     return state;
   },
 
-  getCurrentBranch: function() {
+  getCurrentBranch: function () {
     return state.currentBranch;
   },
 
   handleLoadBranchesSuccess: function (payload) {
     state.branches = payload.branches;
-    this.emit(constants.CHANGE_EVENT);
-  },
-
-  handleSetCurrentBranchSuccess: function (branch) {
-    state.currentBranch = branch;
     this.emit(constants.CHANGE_EVENT);
   },
 

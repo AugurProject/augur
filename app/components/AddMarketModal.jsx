@@ -161,7 +161,7 @@ var AddMarketModal = React.createClass({
     var pendingId = flux.actions.market.addPendingMarket(newMarketParams);
 
     var ethereumClient = this.state.ethereumClient;
-    ethereumClient.addEvent(newEventParams, function(newEvent) {
+    ethereumClient.addEvent(newEventParams, function (newEvent) {
 
       // create associated market on success of event
       newMarketParams.events = [ newEvent.id ];

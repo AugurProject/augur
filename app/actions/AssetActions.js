@@ -2,27 +2,27 @@ var constants = require('../libs/constants');
 
 var AssetActions = {
 
-  updateAssets: function() {
+  updateAssets: function () {
     
     var currentAccount = this.flux.store('config').getAccount();
 
     if (currentAccount) {
-
-      var ethereumClient = this.flux.store('config').getEthereumClient();
+      var self = this;
       var currentBranch = this.flux.store('branch').getCurrentBranch();
+      // log("currentBranch:", currentBranch);
 
-      ethereumClient.getCashBalance(function(result) {
-        this.dispatch(constants.asset.UPDATE_ASSETS, { cash: result });
-      }.bind(this));
+      augur.getCashBalance(function (result) {
+        self.dispatch(constants.asset.UPDATE_ASSETS, { cash: result });
+      });
 
-      ethereumClient.getEtherBalance(function(result) {
-        this.dispatch(constants.asset.UPDATE_ASSETS, { ether: result });
-      }.bind(this));
+      augur.rpc.balance(currentAccount, function (result) {
+        self.dispatch(constants.asset.UPDATE_ASSETS, { ether: result });
+      });
 
       if (currentBranch) {
-        ethereumClient.getRepBalance(currentBranch.id, function(result) {
-          this.dispatch(constants.asset.UPDATE_ASSETS, { reputation: result });
-        }.bind(this));
+        augur.getRepBalance(currentBranch.id, currentAccount, function (result) {
+          self.dispatch(constants.asset.UPDATE_ASSETS, { reputation: result });
+        });
       }
 
     } else {

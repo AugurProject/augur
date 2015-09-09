@@ -34,30 +34,18 @@ var ConfigActions = {
   /**
    * Load all application data 
    */
-  initializeData: function() {
-
+  initializeData: function () {
+    var self = this;
     this.flux.actions.branch.loadBranches();
     this.flux.actions.branch.setCurrentBranch();
-
     this.flux.actions.asset.updateAssets();
     this.flux.actions.market.loadMarkets();
-
     this.flux.actions.report.loadEventsToReport();
     this.flux.actions.report.loadPendingReports();
-
     this.dispatch(constants.config.LOAD_APPLICATION_DATA_SUCCESS);
+    augur.filters.listen({
 
-    // start monitoring block, contract and price filters
-    this.flux.actions.config.startMonitoring();
-  },
-
-  startMonitoring: function() {
-
-    var ethereumClient = this.flux.store('config').getEthereumClient();
-    var self = this;
-
-    ethereumClient.startFiltering({
-
+      // listen for new blocks
       block: function (blockHash) {
         self.flux.actions.network.updateNetwork();
         self.flux.actions.asset.updateAssets();
@@ -85,7 +73,6 @@ var ConfigActions = {
         }
       }
     });
-
   },
 
   initializeState: function() {
@@ -101,15 +88,10 @@ var ConfigActions = {
   },
 
   register: function (handle, password) {
-
     var self = this;
-    var client = this.flux.store('config').getEthereumClient();
-
-    client.register(handle, password, function (account) {
-
+    augur.web.register(handle, password, function (account) {
       if (account && account.address) {
 
-        // TODO put this info in a modal + make a button so user can look it up
         utilities.log("new account registered: " + account.handle);
         utilities.log("address: " + account.address);
         utilities.log("private key: " + account.privateKey.toString("hex"));
@@ -129,15 +111,10 @@ var ConfigActions = {
   },
 
   signIn: function (handle, password) {
-
     var self = this;
-    var client = this.flux.store('config').getEthereumClient();
-
-    client.signIn(handle, password, function (account) {
-
+    augur.web.login(handle, password, function (account) {
       if (account && account.address) {
 
-        // TODO put this info in a modal + make a button so user can look it up
         utilities.log("signed in to account: " + account.handle);
         utilities.log("address: " + account.address);
         utilities.log("private key: " + account.privateKey.toString("hex"));
@@ -157,10 +134,8 @@ var ConfigActions = {
   },
 
   signOut: function() {
-
-    this.flux.store('config').getEthereumClient().signOut();
+    augur.web.logout();
     this.flux.actions.market.updateSharesHeld(null);
-    utilities.log("signed out");
     this.dispatch(constants.config.UPDATE_ACCOUNT, { currentAccount: null });
   }
 };

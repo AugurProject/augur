@@ -7,11 +7,10 @@ import utilities from '../libs/utilities'
 export default {
   
   loadBranches: function () {
-
-    var ethereumClient = this.flux.store('config').getEthereumClient();
-    ethereumClient.getBranches(function(branches) {
-      this.dispatch(constants.branch.LOAD_BRANCHES_SUCCESS, {branches: branches});
-    }.bind(this));
+    var self = this;
+    augur.getBranches(function (branches) {
+      self.dispatch(constants.branch.LOAD_BRANCHES_SUCCESS, { branches: branches });
+    });
   },
 
   setCurrentBranch: function (branchId) {
@@ -20,8 +19,7 @@ export default {
     branchId = branchId || process.env.AUGUR_BRANCH_ID;
     utilities.log('using branch ' + branchId);
 
-    var ethereumClient = this.flux.store('config').getEthereumClient();
-    ethereumClient.getPeriodLength(branchId, function (periodLength) {
+    augur.getPeriodLength(branchId, function (periodLength) {
       var currentBranch = new Branch(branchId, Number(periodLength.toString()));
 
       self.dispatch(constants.branch.SET_CURRENT_BRANCH_SUCCESS, currentBranch);
@@ -31,13 +29,12 @@ export default {
 
   updateCurrentBranch: function () {
     var self = this;
-    var currentBranch = this.flux.store('branch').getCurrentBranch();
-    var ethereumClient = this.flux.store('config').getEthereumClient();
     var currentBlock = this.flux.store('network').getState().blockNumber;
+    var currentBranch = this.flux.store('branch').getCurrentBranch();
     var currentPeriod = Math.floor(currentBlock / currentBranch.periodLength);
     var percentComplete = (currentBlock % currentBranch.periodLength) / currentBranch.periodLength * 100;
 
-    ethereumClient.getVotePeriod(currentBranch.id, function(result) {
+    augur.getVotePeriod(currentBranch.id, function (result) {
 
       if (result.error) return console.log("votePeriod error:", result);
 
@@ -46,7 +43,7 @@ export default {
 
       if (!isCurrent) {
         var periodsBehind = (currentPeriod - 1) - votePeriod;
-        // utilities.warn('branch '+ currentBranch.id + ' behind ' + periodsBehind + ' periods');
+        utilities.warn('branch '+ currentBranch.id + ' behind ' + periodsBehind + ' periods');
       }
 
       var updatedBranch = _.merge(currentBranch, {
@@ -69,7 +66,7 @@ export default {
 
     // check quorum if branch isn't current and we havn't already
     if (!currentBranch.isCurrent && !hasCheckedQuorum) {
-      ethereumClient.checkQuorum(currentBranch.id, function(result) {
+      ethereumClient.checkQuorum(currentBranch.id, function (result) {
         this.dispatch(constants.branch.CHECK_QUORUM_SENT);
       }.bind(this), function(result) {
         this.dispatch(constants.branch.CHECK_QUORUM_SUCCESS);

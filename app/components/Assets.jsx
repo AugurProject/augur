@@ -49,9 +49,9 @@ var Assets = React.createClass({
       }
 
       var self = this;
-      this.state.ethereumClient.cashFaucet(function (txHash) {
+      augur.cashFaucet(function (result) {
         self.getFlux().actions.transaction.addTransaction({
-          hash: txHash, 
+          hash: result.txHash, 
           type: constants.transaction.CASH_FAUCET_TYPE, 
           description: 'requesting cash'
         });
@@ -68,9 +68,9 @@ var Assets = React.createClass({
       }
 
       var self = this;
-      this.state.ethereumClient.repFaucet(null, function (txHash) {
+      this.state.ethereumClient.repFaucet(null, function (result) {
         self.getFlux().actions.transaction.addTransaction({
-          hash: txHash, 
+          hash: result.txHash, 
           type: constants.transaction.REP_FAUCET_TYPE, 
           description: 'requesting reputation'
         });

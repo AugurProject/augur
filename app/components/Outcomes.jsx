@@ -6,6 +6,7 @@ var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
 var ReactBootstrap = require('react-bootstrap');
 var utilities = require('../libs/utilities');
+var constants = require('../libs/constants');
 var Input = ReactBootstrap.Input;
 var Button = ReactBootstrap.Button;
 var Promise = require('es6-promise').Promise;
@@ -77,7 +78,7 @@ var Overview = React.createClass({
 
     if (relativeShares > 0) {
 
-      description = 'buying ' + sharesString + getOutcomeName(this.props.outcome.id, 2) + ', 0x'+this.props.market.id.toString(16);
+      description = 'buying ' + sharesString + getOutcomeName(this.props.outcome.id, 2) + ', '+this.props.market.id.toString(16);
       flux.actions.transaction.addTransaction({
         hash: txHash, 
         type: constants.transaction.BUY_DECISION_TYPE, 
@@ -86,7 +87,7 @@ var Overview = React.createClass({
 
     } else {
 
-      description = 'selling ' + sharesString + getOutcomeName(this.props.outcome.id, 2) + ', 0x'+this.props.market.id.toString(16);
+      description = 'selling ' + sharesString + getOutcomeName(this.props.outcome.id, 2) + ', '+this.props.market.id.toString(16);
       flux.actions.transaction.addTransaction({
         hash: txHash, 
         type: constants.transaction.SELL_DECISION_TYPE, 
@@ -98,36 +99,31 @@ var Overview = React.createClass({
   },
 
   getTradeFunction: function (shares) {
-
-    var flux = this.getFlux();
-    var client = flux.store('config').getEthereumClient();
-
-    return (shares < 0) ? client.sellShares : client.buyShares;
+    var client = this.getFlux().store('config').getEthereumClient();
+    return (shares < 0) ? augur.sellShares : augur.buyShares;
   },
 
   handleTrade: function (relativeShares) {
-
-    var absShares = Math.abs(relativeShares);
-
-    this.getTradeFunction(relativeShares)(
-
-      this.props.market.branchId,
-      this.props.market.id,
-      this.props.outcome.id,
-      absShares,
-      function(txHash) {
-
+    var self = this;
+    this.getTradeFunction(relativeShares).call(augur, {
+      branchId: self.props.market.branchId,
+      marketId: self.props.market.id,
+      outcome: self.props.outcome.id,
+      amount: Math.abs(relativeShares),
+      nonce: null,
+      limit: 0,
+      onSent: function (result) {
         // TODO: check if component is mounted
-        this.setState({
+        self.setState({
           pendingShares: relativeShares,
           buyShares: false,
           sellShares: false
         });
-
-        this.handleAddTransaction(txHash, relativeShares);
-
-      }.bind(this)
-    )
+        self.handleAddTransaction(result.txHash, relativeShares);
+      },
+      onSuccess: function (res) { log("trade succeeded:", res); },
+      onFailed: function (res) { log("trade failed:", res); }
+    });
   },
 
   render: function () {

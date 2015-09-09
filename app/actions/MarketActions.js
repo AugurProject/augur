@@ -163,8 +163,10 @@ var MarketActions = {
       }]);
 
       commands.push(['getWinningOutcomes', [market.id], function (result) {
-        market['winningOutcomes'] = result.slice(0, market.events.length)
-        self.flux.actions.market.updateMarket(market, true);
+        if (result && result.length) {
+          market['winningOutcomes'] = result.slice(0, market.events.length)
+          self.flux.actions.market.updateMarket(market, true);
+        }
       }]);
 
       commands.push(['getOutcome', [market.events[0]], function (result) {
