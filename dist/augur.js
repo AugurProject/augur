@@ -14568,7 +14568,9 @@ function drainQueue() {
         currentQueue = queue;
         queue = [];
         while (++queueIndex < len) {
-            currentQueue[queueIndex].run();
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
         }
         queueIndex = -1;
         len = queue.length;
@@ -14620,7 +14622,6 @@ process.binding = function (name) {
     throw new Error('process.binding is not supported');
 };
 
-// TODO(shtylman)
 process.cwd = function () { return '/' };
 process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
@@ -39652,6 +39653,10 @@ module.exports = {
     },
     getTransactionReceipt: function (txhash, f) {
         return this.broadcast(this.marshal("getTransactionReceipt", txhash), f);
+    },
+
+    clientVersion: function (f) {
+        return this.broadcast(this.marshal("clientVersion", [], "web3_"), f);
     },
 
     // publish a new contract to the blockchain (from the coinbase account)
@@ -79575,13 +79580,13 @@ module.exports = {
     SECONDS_PER_BLOCK: 12,
 
     // maximum number of accounts to use for unit tests
-    MAX_TEST_ACCOUNTS: 4,
+    MAX_TEST_ACCOUNTS: 2,
 
     // 100 free ether for new accounts on registration
     FREEBIE: 100,
 
     // unit test timeout
-    TIMEOUT: 600000,
+    TIMEOUT: 1000000,
 
     KEYSIZE: 32,
     IVSIZE: 16,
@@ -79770,7 +79775,6 @@ var chalk = require("chalk");
 var abi = require("augur-abi");
 var utils = require("./utilities");
 var errors = require("./errors");
-var log = console.log;
 
 module.exports = function (augur) {
 
@@ -79782,8 +79786,18 @@ module.exports = function (augur) {
 
         contracts_filter: { id: null, heartbeat: null },
 
+        block_filter: { id: null, heartbeat: null },
+
         eth_newFilter: function (params, f) {
             return augur.rpc.broadcast(augur.rpc.marshal("newFilter", params), f);
+        },
+
+        eth_newBlockFilter: function (f) {
+            return augur.rpc.broadcast(augur.rpc.marshal("newBlockFilter"), f);
+        },
+
+        eth_newPendingTransactionFilter: function (f) {
+            return augur.rpc.broadcast(augur.rpc.marshal("newPendingTransactionFilter"), f);
         },
 
         eth_getFilterChanges: function (filter, f) {
@@ -79876,6 +79890,14 @@ module.exports = function (augur) {
             }
         },
 
+        poll_block_listener: function (onMessage) {
+            if (utils.is_function(onMessage)) {
+                this.eth_getFilterChanges(this.block_filter.id, function (filtrate) {
+                    if (filtrate && filtrate.length) onMessage(filtrate[0]);
+                });
+            }
+        },
+
         poll_price_listener: function (onMessage) {
             if (this.price_filter) {
                 this.eth_getFilterChanges(this.price_filter.id, function (filtrate) {
@@ -79949,6 +79971,19 @@ module.exports = function (augur) {
             }
         },
 
+        clear_block_filter: function (cb) {
+            if (utils.is_function(cb)) {
+                this.eth_uninstallFilter(this.block_filter.id, function (uninst) {
+                    if (uninst) this.block_filter.id = null;
+                    cb(uninst);
+                }.bind(this));
+            } else {
+                var uninst = this.eth_uninstallFilter(this.block_filter.id);
+                if (uninst) this.block_filter.id = null;
+                return uninst;
+            }
+        },
+
         clear_price_filter: function (cb) {
             if (utils.is_function(cb)) {
                 this.eth_uninstallFilter(this.price_filter.id, function (uninst) {
@@ -79992,9 +80027,27 @@ module.exports = function (augur) {
             return this.contracts_filter;
         },
 
-        start_contracts_listener: function (cb) {
+        setup_block_filter: function () {
+            this.block_filter = {
+                id: this.eth_newBlockFilter(),
+                heartbeat: null
+            };
+            return this.block_filter;
+        },
 
-            // set up contracts filter (if needed)
+        start_block_listener: function (cb) {
+            if (this.block_filter.id === null) {
+                if (utils.is_function(cb)) {
+                    setTimeout(function () {
+                        cb(this.setup_block_filter());
+                    }.bind(this), 0);
+                } else {
+                    return this.setup_block_filter();
+                }
+            }
+        },
+
+        start_contracts_listener: function (cb) {
             if (this.contracts_filter.id === null) {
                 if (utils.is_function(cb)) {
                     setTimeout(function () {
@@ -80021,10 +80074,16 @@ module.exports = function (augur) {
                         self.poll_price_listener(cb.price);
                     }, this.PULSE);
                 }
+                if (utils.is_function(cb.block)) {
+                    this.poll_block_listener(cb.block);
+                    this.block_filter.heartbeat = setInterval(function () {
+                        self.poll_block_listener(cb.block);
+                    }, this.PULSE);
+                }
             }
         },
 
-        start_heartbeat: function (cb) {
+        listen: function (cb) {
             var self = this;
             if (this.contracts_filter.id === null && cb.contracts) {
                 this.start_contracts_listener(function () {
@@ -80032,13 +80091,18 @@ module.exports = function (augur) {
                 });
             }
             if (this.price_filter.id === null && cb.price) {
-                this.start_price_listener(function () {
+                this.start_price_listener("updatePrice", function () {
                     self.pacemaker({ price: cb.price });
+                });
+            }
+            if (this.block_filter.id === null && cb.block) {
+                this.start_block_listener(function () {
+                    self.pacemaker({ block: cb.block });
                 });
             }
         },
 
-        stop_heartbeat: function (uninstall, cb) {
+        ignore: function (uninstall, cb) {
             if (uninstall && uninstall.constructor === Object) {
                 cb = {};
                 if (utils.is_function(uninstall.price)) {
@@ -80064,12 +80128,22 @@ module.exports = function (augur) {
                     cb.contracts();
                 }
             }
+            if (this.block_filter.heartbeat !== null) {
+                clearInterval(this.block_filter.heartbeat);
+                this.block_filter.heartbeat = null;
+                if (!uninstall && utils.is_function(cb.block)) {
+                    cb.block();
+                }
+            }
             if (uninstall) {
                 if (this.price_filter.id !== null) {
                     this.clear_price_filter(cb.price);
                 }
                 if (this.contracts_filter.id !== null) {
                     this.clear_contracts_filter(cb.contracts);
+                }
+                if (this.block_filter.id !== null) {
+                    this.clear_block_filter(cb.block);
                 }
             }
         }

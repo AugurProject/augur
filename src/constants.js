@@ -23,13 +23,13 @@ module.exports = {
     SECONDS_PER_BLOCK: 12,
 
     // maximum number of accounts to use for unit tests
-    MAX_TEST_ACCOUNTS: 4,
+    MAX_TEST_ACCOUNTS: 2,
 
     // 100 free ether for new accounts on registration
     FREEBIE: 100,
 
     // unit test timeout
-    TIMEOUT: 600000,
+    TIMEOUT: 1000000,
 
     KEYSIZE: 32,
     IVSIZE: 16,
