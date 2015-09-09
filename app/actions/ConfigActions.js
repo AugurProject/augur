@@ -48,7 +48,7 @@ var ConfigActions = {
 
     this.dispatch(constants.config.LOAD_APPLICATION_DATA_SUCCESS);
 
-    // start monitoring new blocks
+    // start monitoring block, contract and price filters
     this.flux.actions.config.startMonitoring();
   },
 
@@ -60,6 +60,7 @@ var ConfigActions = {
     ethereumClient.startFiltering({
 
       block: function (blockHash) {
+        self.flux.actions.network.updateNetwork();
         self.flux.actions.asset.updateAssets();
         self.flux.actions.market.loadNewMarkets();
 
@@ -79,9 +80,8 @@ var ConfigActions = {
 
       // update market when a price change has been detected
       price: function (result) {
-        log("market changed:", result);
         if (result && result.marketId) {
-          log("market change detected; updating market", result.marketId.toString(16));
+          log("price updated:", result.marketId.toString(16));
           self.flux.actions.market.loadMarket(result.marketId);
         }
       }

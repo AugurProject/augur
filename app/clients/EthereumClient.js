@@ -241,30 +241,10 @@ EthereumClient.prototype.getMining = function (callback) {
 
 EthereumClient.prototype.getHashrate = function (callback) {
   return augur.rpc.hashrate(callback);
-  // if (augur.utils.is_function(callback)) {
-  //   augur.rpc.hashrate(function (hashrate) {
-  //     if (hashrate && hashrate.error) return utilities.error(hashrate);
-  //     callback(hashrate);
-  //   });
-  // } else {
-  //   var hashrate = augur.rpc.hashrate();
-  //   if (hashrate && hashrate.error) return utilities.error(hashrate);
-  //   return hashrate;
-  // }
 };
 
 EthereumClient.prototype.getPeerCount = function (callback) {
   return augur.rpc.peerCount(callback);
-  // if (augur.utils.is_function(callback)) {
-  //   augur.rpc.peerCount(function (peerCount) {
-  //     if (peerCount && peerCount.error) return utilities.error(peerCount);
-  //     callback(peerCount);
-  //   });
-  // } else {
-  //   var peerCount = augur.rpc.peerCount();
-  //   if (peerCount && peerCount.error) return utilities.error(peerCount);
-  //   return peerCount;
-  // }
 };
 
 EthereumClient.prototype.getAddress = function (name) {
@@ -363,18 +343,6 @@ EthereumClient.prototype.getBranches = function(onResult) {
 
 EthereumClient.prototype.getPeriodLength = function (branchId, onResult) {
   return augur.getPeriodLength(branchId, onResult);
-  // if (augur.utils.is_function(onResult)) {
-  //   augur.getPeriodLength(branchId, function (periodLength) {
-  //     if (periodLength && periodLength.error)
-  //       return utilities.error(periodLength);
-  //     onResult(periodLength);
-  //   });
-  // } else {
-  //   var periodLength = augur.getPeriodLength(branchId);
-  //   if (periodLength && periodLength.error)
-  //     return utilities.error(periodLength);
-  //   return periodLength;
-  // }
 };
 
 EthereumClient.prototype.getVotePeriod = function(branchId, onResult) {
@@ -401,9 +369,7 @@ EthereumClient.prototype.getEventInfo = function(eventId, onResult) {
 };
 
 EthereumClient.prototype.checkQuorum = function(branchId, onSent, onSuccess, onFailed) {
-
   if (!branchId) return;
-  // utilities.log('calling dispatch');
 
   augur.dispatch(branchId, function (result) {
 

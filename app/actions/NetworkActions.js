@@ -47,12 +47,11 @@ var NetworkActions = {
         }
       );
 
-      ethereumClient.connect();  // connect augur.js after web3 has determined the network is available :/
+      ethereumClient.connect();
       this.flux.actions.network.initializeNetwork();
       this.flux.actions.config.initializeData();
     }
 
-    // check yo self
     setTimeout(this.flux.actions.network.checkNetwork, 3000);
   },
 
@@ -80,13 +79,9 @@ var NetworkActions = {
     }.bind(this));
 
     this.flux.actions.network.updateNetwork();
-
-    // start monitoring for updates
-    this.flux.actions.network.startMonitoring();
   },
 
   updateNetwork: function () {
-
     var configState = this.flux.store('config').getState();
     var networkState = this.flux.store('network').getState();
     var branchState = this.flux.store('branch').getState();
@@ -94,7 +89,10 @@ var NetworkActions = {
     // just block age and peer count until we're current
     ethereumClient.getBlockNumber(function(blockNumber) {
       var blockMoment = utilities.blockToDate(blockNumber);
-      this.dispatch(constants.network.UPDATE_NETWORK, { blockNumber: blockNumber, blocktime: blockMoment });
+      this.dispatch(constants.network.UPDATE_NETWORK, {
+        blockNumber: blockNumber,
+        blocktime: blockMoment
+      });
       ethereumClient.getBlock(blockNumber, function(block) {
         if (block) {
           var blockTimeStamp = web3.eth.getBlock(blockNumber).timestamp;
@@ -124,17 +122,8 @@ var NetworkActions = {
         this.dispatch(constants.network.UPDATE_NETWORK, { hashrate: hashrate });
       }.bind(this));
     }
-  },
-
-  startMonitoring: function () {
-
-    var networkState = this.flux.store('network').getState()
-    if (!networkState.isMonitoringBlocks) {
-
-      var ethereumClient = this.flux.store('config').getEthereumClient();
-      ethereumClient.onNewBlock(this.flux.actions.network.updateNetwork);
-    }
   }
+
 };
 
 module.exports = NetworkActions;
