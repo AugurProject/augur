@@ -3,6 +3,7 @@ window.BigNumber = require('bignumber.js');
 window.$ = require('jquery');
 window._ = require('lodash');
 window.augur = require('augur.js');
+window.socket = io();
 window.log = console.log;
 
 // add jQuery to Browserify's global object so plugins attach correctly.
