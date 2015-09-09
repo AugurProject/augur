@@ -40,7 +40,7 @@ var Assets = React.createClass({
     }
   },
 
-  onCashFaucet: function(event) {
+  onCashFaucet: function (event) {
 
     if (!this.state.cashFaucetDisabled) {
 
@@ -48,15 +48,14 @@ var Assets = React.createClass({
         utilities.warn('not enough ether'); 
       }
 
-      this.setState({cashFaucetDisabled: true});
-      this.state.ethereumClient.cashFaucet(function(txHash) {
-        var flux = this.getFlux();
-        flux.actions.transaction.addTransaction({
+      var self = this;
+      this.state.ethereumClient.cashFaucet(function (txHash) {
+        self.getFlux().actions.transaction.addTransaction({
           hash: txHash, 
           type: constants.transaction.CASH_FAUCET_TYPE, 
           description: 'requesting cash'
         });
-      }.bind(this));
+      });
     }
   },
 
@@ -68,15 +67,14 @@ var Assets = React.createClass({
         utilities.warn('not enough ether');
       }
 
-      this.setState({repFaucetDisabled: true});
-      this.state.ethereumClient.repFaucet(null, function(txHash) {
-        var flux = this.getFlux();
-        flux.actions.transaction.addTransaction({
+      var self = this;
+      this.state.ethereumClient.repFaucet(null, function (txHash) {
+        self.getFlux().actions.transaction.addTransaction({
           hash: txHash, 
           type: constants.transaction.REP_FAUCET_TYPE, 
           description: 'requesting reputation'
         });
-      }.bind(this));
+      });
     } 
   },
 
