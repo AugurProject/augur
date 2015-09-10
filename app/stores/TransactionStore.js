@@ -26,6 +26,14 @@ var TransactionStore = Fluxxor.createStore({
     );
   },
 
+  addChangeListener: function (callback) {
+    this.on(constants.CHANGE_EVENT, callback);
+  },
+
+  removeChangeListener: function (callback) {
+    this.removeListener(constants.CHANGE_EVENT, callback);
+  },
+
   getState: function () {
     return state;
   },

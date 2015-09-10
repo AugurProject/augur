@@ -53,12 +53,24 @@ export default Fluxxor.createStore({
     );
   },
 
+  addChangeListener: function (callback) {
+    this.on(constants.CHANGE_EVENT, callback);
+  },
+
+  removeChangeListener: function (callback) {
+    this.removeListener(constants.CHANGE_EVENT, callback);
+  },
+
   getState: function () {
     return state;
   },
 
   getCurrentBranch: function () {
-    return state.currentBranch;
+    if (state.currentBranch && state.currentBranch.id) {
+      return state.currentBranch;
+    } else {
+      return { id: process.env.AUGUR_BRANCH_ID };
+    }
   },
 
   handleLoadBranchesSuccess: function (payload) {

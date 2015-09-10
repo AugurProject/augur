@@ -16,6 +16,29 @@ var SendCashModal = React.createClass({
 
   mixins: [FluxMixin, StoreWatchMixin('asset')],
 
+  _onAssetChange: function () {
+    var assetStore = this.getFlux().store('asset');
+    var balance = assetStore.getState().cash;
+    this.setState({ balance: balance ? +balance.toFixed(2) : '-' });
+  },
+
+  _onConfigChange: function () {
+    var configStore = this.getFlux().store('config');
+    this.setState({ ethereumClient: configStore.getEthereumClient() });
+  },
+
+  componentDidMount: function () {
+    var flux = this.getFlux();
+    flux.store('asset').addChangeListener(this._onAssetChange);
+    flux.store('config').addChangeListener(this._onConfigChange);
+  },
+
+  componentWillUnmount: function () {
+    var flux = this.getFlux();
+    flux.store('asset').removeChangeListener(this._onAssetChange);
+    flux.store('config').removeChangeListener(this._onConfigChange);
+  },
+
   getStateFromFlux: function() {
 
     var flux = this.getFlux();
@@ -158,6 +181,29 @@ var SendRepModal = React.createClass({
 
   mixins: [FluxMixin, StoreWatchMixin('asset')],
 
+  _onAssetChange: function () {
+    var assetStore = this.getFlux().store('asset');
+    var balance = assetStore.getState().reputation;
+    this.setState({ balance: balance ? +balance.toFixed(2) : '-' });
+  },
+
+  _onConfigChange: function () {
+    var configStore = this.getFlux().store('config');
+    this.setState({ ethereumClient: configStore.getEthereumClient() });
+  },
+
+  componentDidMount: function () {
+    var flux = this.getFlux();
+    flux.store('asset').addChangeListener(this._onAssetChange);
+    flux.store('config').addChangeListener(this._onConfigChange);
+  },
+
+  componentWillUnmount: function () {
+    var flux = this.getFlux();
+    flux.store('asset').removeChangeListener(this._onAssetChange);
+    flux.store('config').removeChangeListener(this._onConfigChange);
+  },
+
   getStateFromFlux: function() {
 
     var flux = this.getFlux();
@@ -285,6 +331,30 @@ var SendEtherModal = React.createClass({
   assetType: 'ether',
 
   mixins: [FluxMixin, StoreWatchMixin('asset')],
+
+  _onAssetChange: function () {
+    var assetStore = this.getFlux().store('asset');
+    var balance = assetStore.getState().ether;
+    this.setState({ balance: balance ? utilities.formatEther(balance).value : '-' });
+  },
+
+  _onConfigChange: function () {
+    var configStore = this.getFlux().store('config');
+    this.setState({ ethereumClient: configStore.getEthereumClient() });
+  },
+
+  componentDidMount: function () {
+    var flux = this.getFlux();
+    flux.store('asset').addChangeListener(this._onAssetChange);
+    flux.store('config').addChangeListener(this._onConfigChange);
+  },
+
+  componentWillUnmount: function () {
+    var flux = this.getFlux();
+    flux.store('asset').removeChangeListener(this._onAssetChange);
+    flux.store('config').removeChangeListener(this._onConfigChange);
+  },
+
 
   getStateFromFlux: function() {
 

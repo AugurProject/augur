@@ -96,9 +96,8 @@ var NetworkActions = {
         blockNumber: blockNumber,
         blocktime: blockMoment
       });
-      augur.rpc.getBlock(blockNumber, function (block) {
-        // log("block:", block);
-        if (block) {
+      augur.rpc.getBlock(blockNumber, true, function (block) {
+        if (block && block.constructor === Object) {
           var blockTimeStamp = block.timestamp;
           var currentTimeStamp = moment().unix();
           var age = currentTimeStamp - blockTimeStamp;

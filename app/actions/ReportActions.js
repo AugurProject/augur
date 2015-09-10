@@ -25,9 +25,9 @@ var ReportActions = {
     // previous period. (Otherwise, dispatch needs to be run, which will
     // move the events from their old periods to the current period. Those
     // events will get voted on in the next period.)
-    var isCurrent = currentBranch.votePeriod === currentBranch.currentPeriod - 1;
-
-    if (isCurrent) {
+    if (currentBranch &&
+        currentBranch.votePeriod === currentBranch.currentPeriod - 1)
+    {
       var eventIds = ethereumClient.getEvents(currentBranch.votePeriod);
 
       // initialize all events

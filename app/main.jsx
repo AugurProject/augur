@@ -4,7 +4,7 @@ window.$ = require('jquery');
 window._ = require('lodash');
 window.augur = require('augur.js');
 window.socket = io();
-window.log = console.log;
+window.log = function (s) { console.log(s); };
 
 // add jQuery to Browserify's global object so plugins attach correctly.
 global.jQuery = $;
