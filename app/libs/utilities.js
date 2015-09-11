@@ -59,7 +59,6 @@ module.exports = {
         withUnit: value.toNumber() + ' ' + unit
       };
     } else {
-      console.log(value, value.toString());
       return { value: '', unit: 'ether', withUnit: '-' };
     }
   },
