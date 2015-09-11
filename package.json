@@ -12,17 +12,17 @@
     "setup": "scripts/setup.js --reset --faucets"
   },
   "dependencies": {
-    "augur-abi": "^0.1.3",
-    "augur-contracts": "^0.1.1",
+    "augur-abi": "AugurProject/augur-abi",
+    "augur-contracts": "AugurProject/augur-contracts",
     "bignumber.js": "^2.0.7",
     "chalk": "^1.0.0",
     "crypto-browserify": "^3.9.14",
     "ethereumjs-tx": "^0.6.0",
     "ethereumjs-util": "^1.3.2",
-    "ethrpc": "^0.2.11",
+    "ethrpc": "AugurProject/ethrpc",
     "firebase": "^2.2.7",
     "js-sha3": "^0.2.0",
-    "keythereum": "^0.1.8",
+    "keythereum": "AugurProject/keythereum",
     "moment": "^2.10.3",
     "node-uuid": "^1.4.3",
     "validator": "^4.0.2"
