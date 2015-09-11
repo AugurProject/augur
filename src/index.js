@@ -242,6 +242,17 @@ Batch.prototype.add = function (method, params, callback) {
     if (method) {
         var tx = abi.copy(augur.tx[method]);
         if (params && params.length !== 0) {
+            if (params.constructor === Array) {
+                for (var i = 0; i < params.length; ++i) {
+                    if (params[i] && params[i].constructor === BigNumber) {
+                        params[i] = params[i].toString(16);
+                    }
+                }
+            } else {
+                if (params && params.constructor === BigNumber) {
+                    params = params.toString(16);
+                }
+            }
             tx.params = params;
         }
         if (callback) tx.callback = callback;
@@ -776,7 +787,7 @@ augur.getEventsRange = function (branch, vpStart, vpEnd, onSent) {
             params: [branch, i + vpStart]
         };
     }
-    return this.batch(txlist, onSent);
+    return rpc.batch(txlist, onSent);
 };
 augur.getNumberEvents = function (branch, votePeriod, onSent) {
     // branch: sha256
@@ -976,6 +987,9 @@ augur.getSimulatedBuy = function (market, outcome, amount, onSent) {
     // outcome: integer (1 or 2 for binary events)
     // amount: number -> fixed-point
     var tx = this.utils.copy(this.tx.getSimulatedBuy);
+    if (market && market.constructor === BigNumber) {
+        market = abi.prefix_hex(market.toString(16));
+    }
     tx.params = [market, outcome, abi.fix(amount, "hex")];
     return rpc.fire(tx, onSent);
 };
@@ -1072,6 +1086,9 @@ augur.getMarketInfo = function (market, onSent) {
         return info;
     };
     var tx = this.utils.copy(this.tx.getMarketInfo);
+    if (market && market.constructor === BigNumber) {
+        market = market.toString(16);
+    }
     tx.params = market;
     if (onSent) {
         rpc.fire(tx, function (info) {
@@ -1286,6 +1303,12 @@ augur.buyShares = function (branch, market, outcome, amount, nonce, limit, onSen
         branch = branch.branchId; // sha256
     }
     var tx = this.utils.copy(this.tx.buyShares);
+    if (market && market.constructor === BigNumber) {
+        market = abi.prefix_hex(market.toString(16));
+    }
+    if (branch && branch.constructor === BigNumber) {
+        branch = abi.prefix_hex(branch.toString(16));
+    }
     if (onSent) {
         this.getNonce(market, function (nonce) {
             tx.params = [branch, market, outcome, abi.fix(amount, "hex"), nonce, limit || 0];
@@ -1312,6 +1335,12 @@ augur.sellShares = function (branch, market, outcome, amount, nonce, limit, onSe
         branch = branch.branchId; // sha256
     }
     var tx = this.utils.copy(this.tx.sellShares);
+    if (market && market.constructor === BigNumber) {
+        market = abi.prefix_hex(market.toString(16));
+    }
+    if (branch && branch.constructor === BigNumber) {
+        branch = abi.prefix_hex(branch.toString(16));
+    }
     if (onSent) {
         this.getNonce(market, function (nonce) {
             tx.params = [branch, market, outcome, abi.fix(amount, "hex"), nonce, limit || 0];
