@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var abi = require('augur-abi');
 var React = require('react');
 var Fluxxor = require('fluxxor');
 var FluxMixin = Fluxxor.FluxMixin(React);
@@ -91,7 +92,7 @@ var Market = React.createClass({
           <p className='alt'>Outstanding shares: <b>{ outstandingShares }</b></p>
           <p>Fee: <b>{ tradingFee }</b></p>
           <p className='alt'>Traders: <b>{ traderCount }</b></p>
-          <p>Author: <b className='truncate author'>{ market.author || '' }</b></p>
+          <p>Author: <b className='truncate author'>{ abi.prefix_hex(abi.bignum(market.author).toString(16)) || '' }</b></p>
           <p className='alt'>End date: <b>{ formattedDate }</b></p>
         </div>
         <div className='price-history col-sm-8'>
