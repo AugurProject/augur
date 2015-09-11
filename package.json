@@ -30,9 +30,9 @@
     ]
   },
   "dependencies": {
-    "augur-abi": "^0.1.3",
-    "augur-contracts": "^0.1.1",
-    "augur.js": "^0.9.25",
+    "augur-abi": "AugurProject/augur-abi",
+    "augur-contracts": "AugurProject/augur-contracts",
+    "augur.js": "AugurProject/augur.js",
     "babelify": "^6.3.0",
     "bignumber.js": "^2.0.7",
     "bootstrap": "^3.3.4",
