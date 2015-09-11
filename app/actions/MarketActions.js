@@ -187,61 +187,62 @@ var MarketActions = {
   },
 
   updateMarket: function(market, supplement) {
+    if (market && market.id && market.id !== "0x") {
+      var marketId = abi.prefix_hex(abi.bignum(market.id).toString(16));
 
-    var marketId = abi.prefix_hex(abi.bignum(market.id).toString(16));
+      // Calculate market properties before dispatch (seems to belong in a Market class)
+      if (!market.outstandingShares && market.outstandingShares !== 0) {
+        market.outstandingShares = _.reduce(market.outcomes, function(outstandingShares, outcome) {
+          if (outcome) return outstandingShares + parseFloat(outcome.outstandingShares);
+        }, 0);
+      }
 
-    // Calculate market properties before dispatch (seems to belong in a Market class)
-    if (!market.outstandingShares && market.outstandingShares !== 0) {
-      market.outstandingShares = _.reduce(market.outcomes, function(outstandingShares, outcome) {
-        if (outcome) return outstandingShares + parseFloat(outcome.outstandingShares);
-      }, 0);
-    }
+      this.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
 
-    this.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
+      // supplement ch call if all required properties are present
+      var requiredProperties = ["id", "traderId", "numOutcomes", "events"];
+      var currentMarket = this.flux.store('market').getMarket(market.id);
+      var ready = _.intersection(_.keys(currentMarket), requiredProperties);
+      if (ready.length == requiredProperties.length && !supplement) {
+        var commands = this.flux.actions.market.batchSupplementMarket(currentMarket);
+        _.each(_.chunk(commands, 5), function(chunk) {
+          ethereumClient.batch(chunk);
+        });
+      }
 
-    // supplement ch call if all required properties are present
-    var requiredProperties = ["id", "traderId", "numOutcomes", "events"];
-    var currentMarket = this.flux.store('market').getMarket(market.id);
-    var ready = _.intersection(_.keys(currentMarket), requiredProperties);
-    if (ready.length == requiredProperties.length && !supplement) {
-      var commands = this.flux.actions.market.batchSupplementMarket(currentMarket);
-      _.each(_.chunk(commands, 5), function(chunk) {
-        ethereumClient.batch(chunk);
-      });
-    }
+      var marketState = this.flux.store('market').getState();
 
-    var marketState = this.flux.store('market').getState();
+      // initial markets loading
+      if (marketState.loadingPage) {
 
-    // initial markets loading
-    if (marketState.loadingPage) {
+        // use this progressbar for all markets
+        // var totalLoaded = _.map(marketState.markets, 'loaded');
+        // var percentLoaded = (_.filter(totalLoaded).length / totalLoaded.length) * 100;
+        // this.flux.actions.config.updatePercentLoaded(percentLoaded);
 
-      // use this progressbar for all markets
-      // var totalLoaded = _.map(marketState.markets, 'loaded');
-      // var percentLoaded = (_.filter(totalLoaded).length / totalLoaded.length) * 100;
-      // this.flux.actions.config.updatePercentLoaded(percentLoaded);
+        var marketsPage = _.filter(marketState.markets, function(market) {
+          return _.contains(marketState.marketLoadingIds[marketState.loadingPage-1], market.id);
+        });
+        var pageLoaded = _.map(marketsPage, 'loaded');
 
-      var marketsPage = _.filter(marketState.markets, function(market) {
-        return _.contains(marketState.marketLoadingIds[marketState.loadingPage-1], market.id);
-      });
-      var pageLoaded = _.map(marketsPage, 'loaded');
+        // use this progress bar for initial page only
+        var percentLoaded = (_.filter(pageLoaded).length / pageLoaded.length) * 100;
+        this.flux.actions.config.updatePercentLoaded(percentLoaded);
 
-      // use this progress bar for initial page only
-      var percentLoaded = (_.filter(pageLoaded).length / pageLoaded.length) * 100;
-      this.flux.actions.config.updatePercentLoaded(percentLoaded);
+        if (pageLoaded.length && !_.includes(pageLoaded, false)) {
 
-      if (pageLoaded.length && !_.includes(pageLoaded, false)) {
+          // check if next page exists
+          var nextPage = marketState.loadingPage + 1;
+          if (marketState.marketLoadingIds[nextPage-1]) {
 
-        // check if next page exists
-        var nextPage = marketState.loadingPage + 1;
-        if (marketState.marketLoadingIds[nextPage-1]) {
+            this.dispatch(constants.market.MARKETS_LOADING, {loadingPage: nextPage});
+            this.flux.actions.market.loadSomeMarkets(marketState.marketLoadingIds[nextPage-1]);
 
-          this.dispatch(constants.market.MARKETS_LOADING, {loadingPage: nextPage});
-          this.flux.actions.market.loadSomeMarkets(marketState.marketLoadingIds[nextPage-1]);
+          } else {
 
-        } else {
-
-          this.dispatch(constants.market.MARKETS_LOADING, {loadingPage: null});
-          this.flux.actions.config.updatePercentLoaded(100);
+            this.dispatch(constants.market.MARKETS_LOADING, {loadingPage: null});
+            this.flux.actions.config.updatePercentLoaded(100);
+          }
         }
       }
     }

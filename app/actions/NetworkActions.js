@@ -48,6 +48,7 @@ var NetworkActions = {
         }
       );
 
+      ethereumClient.connect();
       this.flux.actions.network.initializeNetwork();
       this.flux.actions.config.initializeData();
     }
