@@ -25,6 +25,7 @@ EthereumClient.prototype.setDefaultBranch = function (branchId) {
 
 EthereumClient.prototype.connect = function () {
   augur.connect(this.host);
+  augur.rpc.nodes = ["http://eth3.augur.net", this.host];
 };
 
 EthereumClient.prototype.batch = function (commands) {
