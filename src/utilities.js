@@ -12,7 +12,6 @@ var moment = require("moment");
 var chalk = require("chalk");
 var abi = require("augur-abi");
 var constants = require("./constants");
-var log = console.log;
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
@@ -210,12 +209,12 @@ module.exports = {
 
     read_ballots: function (augur, address, branch, period) {
         var ballot, num_events;
-        log("Looking up ballots for", chalk.green(address));
+        console.log("Looking up ballots for", chalk.green(address));
         for (var i = 0; i < period; ++i) {
             ballot = augur.getReporterBallot(branch, i, address);
             if (ballot.length && ballot[0] !== undefined) {
                 num_events = augur.getNumberEvents(branch, i);
-                log("Period", chalk.cyan(i), "\t",
+                console.log("Period", chalk.cyan(i), "\t",
                     chalk.green(abi.fix(ballot.slice(0, num_events), "hex")));
             }
         }

@@ -55296,11 +55296,10 @@ module.exports = function (augur) {
 
 "use strict";
 
+var abi = require("augur-abi");
 var errors = require("../errors");
 var constants = require("../constants");
-var abi = require("augur-abi");
 var db = require("./db");
-var log = console.log;
 
 module.exports = function (augur) {
 
@@ -55350,11 +55349,11 @@ module.exports = function (augur) {
                     num_messages = message.length;
                     if (num_messages) {
                         for (var i = 0; i < num_messages; ++i) {
-                            // log("\n\nPOLLFILTER: reading incoming message " + i.toString());
+                            // console.log("\n\nPOLLFILTER: reading incoming message " + i.toString());
                             incoming_comments = abi.decode_hex(message[i].payload);
                             if (incoming_comments) {
                                 incoming_parsed = JSON.parse(incoming_comments);
-                                // log(incoming_parsed);
+                                // console.log(incoming_parsed);
                     
                                 // get existing comment(s) stored locally
                                 stored_comments = db.leveldb.get(augur.rpc, market_id, "comments");
@@ -55363,20 +55362,20 @@ module.exports = function (augur) {
                                 if (stored_comments && stored_comments.length) {
                                     stored_parsed = JSON.parse(stored_comments);
                                     if (incoming_parsed.length > stored_parsed.length ) {
-                                        // log(incoming_parsed.length.toString() + " incoming comments");
-                                        // log("[" + filter_id + "] overwriting comments for market: " + market_id);
+                                        // console.log(incoming_parsed.length.toString() + " incoming comments");
+                                        // console.log("[" + filter_id + "] overwriting comments for market: " + market_id);
                                         if (db.leveldb.put(augur.rpc, market_id, incoming_comments, "comments")) {
-                                            // log("[" + filter_id + "] overwrote comments for market: " + market_id);
+                                            // console.log("[" + filter_id + "] overwrote comments for market: " + market_id);
                                         }
                                     } else {
-                                        // log(stored_parsed.length.toString() + " stored comments");
-                                        // log("[" + filter_id + "] retaining comments for market: " + market_id);
+                                        // console.log(stored_parsed.length.toString() + " stored comments");
+                                        // console.log("[" + filter_id + "] retaining comments for market: " + market_id);
                                     }
                                 } else {
-                                    // log(incoming_parsed.length.toString() + " incoming comments");
-                                    // log("[" + filter_id + "] inserting first comments for market: " + market_id);
+                                    // console.log(incoming_parsed.length.toString() + " incoming comments");
+                                    // console.log("[" + filter_id + "] inserting first comments for market: " + market_id);
                                     if (db.leveldb.put(augur.rpc, market_id, incoming_comments, "comments")) {
-                                        // log("[" + filter_id + "] overwrote comments for market: " + market_id);
+                                        // console.log("[" + filter_id + "] overwrote comments for market: " + market_id);
                                     }
                                 }
                             }
@@ -55395,7 +55394,7 @@ module.exports = function (augur) {
 
             // make sure there's only one shh filter per market
             if (this.filters[market] && this.filters[market].filterId) {
-                // log("existing filter found");
+                // console.log("existing filter found");
                 this.pollFilter(market, this.filters[market].filterId);
                 return this.filters[market].filterId;
 
@@ -55403,7 +55402,7 @@ module.exports = function (augur) {
             } else {
                 filter = this.commentFilter(market);
                 if (filter && filter !== "0x") {
-                    // log("creating new filter");
+                    // console.log("creating new filter");
                     this.filters[market] = {
                         filterId: filter,
                         polling: true
@@ -55421,7 +55420,7 @@ module.exports = function (augur) {
                                 priority: "0x64",
                                 ttl: "0x500" // time-to-live (until expiration) in seconds
                             };
-                            log(transmission);
+                            // console.log(transmission);
                             if (!this.post(transmission)) {
                                 return errors.WHISPER_POST_FAILED;
                             }
@@ -56228,7 +56227,6 @@ var Filters = require("./filters");
 var Accounts = require("./client/accounts");
 var Comments = require("./client/comments");
 var Namereg = require("./aux/namereg");
-var log = console.log;
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
@@ -56425,7 +56423,7 @@ augur.connect = function (rpcinfo, chain) {
         this.connection = true;
         return true;
     } catch (e) {
-        log("connection error, using default rpc settings", e);
+        console.log("connection error, using default rpc settings", e);
         return this.default_rpc();
     }
 };
@@ -58778,7 +58776,6 @@ var moment = require("moment");
 var chalk = require("chalk");
 var abi = require("augur-abi");
 var constants = require("./constants");
-var log = console.log;
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
@@ -58976,12 +58973,12 @@ module.exports = {
 
     read_ballots: function (augur, address, branch, period) {
         var ballot, num_events;
-        log("Looking up ballots for", chalk.green(address));
+        console.log("Looking up ballots for", chalk.green(address));
         for (var i = 0; i < period; ++i) {
             ballot = augur.getReporterBallot(branch, i, address);
             if (ballot.length && ballot[0] !== undefined) {
                 num_events = augur.getNumberEvents(branch, i);
-                log("Period", chalk.cyan(i), "\t",
+                console.log("Period", chalk.cyan(i), "\t",
                     chalk.green(abi.fix(ballot.slice(0, num_events), "hex")));
             }
         }
@@ -59121,7 +59118,6 @@ var request = require("request");
 var syncRequest = (NODE_JS) ? require("sync-request") : null;
 var abi = require("augur-abi");
 var errors = require("./errors");
-var log = console.log;
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
@@ -59317,7 +59313,7 @@ module.exports = {
     exciseNode: function (err, deadNode, deadIndex) {
         if (deadNode || deadIndex) {
             if (this.debug) {
-                log("[ethrpc] request to", deadNode, "failed:", err);
+                console.log("[ethrpc] request to", deadNode, "failed:", err);
             }
             if (deadIndex === null || deadIndex === undefined) {
                 deadIndex = this.nodes.indexOf(deadNode);

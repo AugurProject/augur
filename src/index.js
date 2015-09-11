@@ -16,7 +16,6 @@ var Filters = require("./filters");
 var Accounts = require("./client/accounts");
 var Comments = require("./client/comments");
 var Namereg = require("./aux/namereg");
-var log = console.log;
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
@@ -213,7 +212,7 @@ augur.connect = function (rpcinfo, chain) {
         this.connection = true;
         return true;
     } catch (e) {
-        log("connection error, using default rpc settings", e);
+        console.log("connection error, using default rpc settings", e);
         return this.default_rpc();
     }
 };
