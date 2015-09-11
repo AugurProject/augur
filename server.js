@@ -5,27 +5,33 @@
 
 "use strict";
 
-var express = require("express");
-var NeDB = require("nedb");
-var app = express();
-var http = require("http").Server(app);
-var io = require("socket.io")(http);
-var log = console.log;
+var nodeStatic = require('node-static'),
+    http = require('http'),
+    util = require('util');
 
-var webroot = __dirname + "/app";
-var port = process.env.PORT || 8080;
-var local = new NeDB({ filename: "augur.db", autoload: true });
+var webroot = './app',
+    port = process.env.PORT || 8080;
 
-app.use(express.static(webroot));
+var file = new(nodeStatic.Server)(webroot, { cache: 600 });
 
-app.get("/", function (req, res) {
-    res.sendFile(webroot + "/augur.html");
-});
+http.createServer(function (req, res) {
 
-io.on("connection", function (socket) {
+    // static URIs
+    var re = /\/(css|images|fonts|app\.js)/;
 
-});
+    // route to app if not static URI
+    if (!req.url.match(re)) req.url = '/augur.html';
 
-http.listen(port, function () {
-    log("http://localhost:" + port.toString());
-});
+    file.serve(req, res, function (err, result) {
+        if (err) {
+            console.error('Error serving %s - %s', req.url, err.message);
+            res.writeHead(err.status, err.headers);
+            res.end();
+        } else {
+            console.log('%s', req.url);
+        }
+    });
+
+}).listen(port);
+
+console.log('node-static running at http://localhost:%d', port);

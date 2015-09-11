@@ -68,7 +68,7 @@ var ConfigActions = {
       // update market when a price change has been detected
       price: function (result) {
         if (result && result.marketId) {
-          log("price updated:", result.marketId.toString(16));
+          console.log("price updated:", result.marketId.toString(16));
           self.flux.actions.market.loadMarket(result.marketId);
         }
       }

@@ -25,7 +25,7 @@ EthereumClient.prototype.setDefaultBranch = function (branchId) {
 
 EthereumClient.prototype.connect = function () {
   augur.connect(this.host);
-  augur.rpc.nodes = ["http://eth3.augur.net", this.host];
+  // augur.rpc.nodes = ["http://eth3.augur.net", this.host];
 };
 
 EthereumClient.prototype.batch = function (commands) {
@@ -136,8 +136,8 @@ EthereumClient.prototype.sendEther = function (destination, amount) {
     onSuccess: function (result) {
       if (result) {
         if (result.error) return utilities.error(result);
-        log(self.currentAccount, 'sent', amount, 'ether to', destination);
-        log("txhash:", result.txHash);
+        console.log(self.currentAccount, 'sent', amount, 'ether to', destination);
+        console.log("txhash:", result.txHash);
       }
     }
   });
@@ -149,7 +149,6 @@ EthereumClient.prototype.getEvents = function (period, branchId) {
   branchId = branchId || this.defaultBranchId;
 
   var validEvents = _.filter(augur.getEvents(branchId, period), function (eventId) {
-    //log('"'+eventId.toString(16)+'",');  
     return !_.contains(blacklist.events, eventId.toString(16));
   });
 
@@ -246,7 +245,7 @@ EthereumClient.prototype.addEvent = function (params, onSuccess) {
         }
       },
       onFailed: function (r) {
-        log("createEvent failed:", r);
+        console.log("createEvent failed:", r);
       }
     });
 };
@@ -270,10 +269,10 @@ EthereumClient.prototype.addMarket = function (params, onSent) {
         onSent(newMarket.txHash);
       },
       onSuccess: function (r) {
-        log("createMarket successful:", r);
+        console.log("createMarket successful:", r);
       },
       onFailed: function (r) {
-        log("createMarket failed:", r);
+        console.log("createMarket failed:", r);
       }
     });
 };
@@ -289,13 +288,13 @@ EthereumClient.prototype.closeMarket = function (marketId, branchId) {
   } catch (e) {
     branchId = abi.prefix_hex(branchId);
   }
-  log("Closing market", marketId, "on branch", branchId);
+  console.log("Closing market", marketId, "on branch", branchId);
   augur.closeMarket({
     branchId: branchId,
     marketId: marketId,
-    onSent: function (txHash) { log("Close market sent:", txHash); },
-    onSuccess: function (res) { log("Close market succeeded:", res); },
-    onFailed: function (err) { log("Close market failed:", err); }
+    onSent: function (txHash) { console.log("Close market sent:", txHash); },
+    onSuccess: function (res) { console.log("Close market succeeded:", res); },
+    onFailed: function (err) { console.log("Close market failed:", err); }
   });
 };
 
