@@ -174,7 +174,7 @@ var AddMarketModal = React.createClass({
           description: 'new market submitted', 
           onMined: function (result) {
             flux.actions.market.deleteMarket(pendingId);
-            utilities.log('new market accepted');
+            console.log('new market accepted');
           }
         });
 

@@ -92,10 +92,12 @@ var Overview = React.createClass({
 
     var holdings = [];
     _.each(this.state.holdings, function (market) {
-      _.each(market.outcomes, function(outcome) {
-        if (outcome && outcome.sharesHeld && outcome.sharesHeld.toNumber()) {
-          var key = market.id+outcome.id;
-          holdings.push( <Holding market={ market } outcome={ outcome } key={ key } /> );
+      _.each(market.outcomes, function (outcome) {
+        if (outcome && outcome.sharesHeld) {
+          if (outcome.sharesHeld.constructor === BigNumber && outcome.sharesHeld.toNumber()) {
+            var key = market.id + outcome.id;
+            holdings.push( <Holding market={ market } outcome={ outcome } key={ key } /> );
+          }
         }
       });
     }, this);

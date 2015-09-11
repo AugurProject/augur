@@ -98,7 +98,7 @@ var Assets = React.createClass({
     if (!this.state.currentAccount) return ( <span /> );
 
     var cashBalance = this.props.asset.cash ? this.props.asset.cash.toFixed(4) : '-';
-    var repBalance = this.props.asset.reputation ? this.props.asset.reputation : '-';
+    var repBalance = this.props.asset.reputation ? this.props.asset.reputation.toFixed() : '-';
 
     return (
       <div className="panel panel-info assets">

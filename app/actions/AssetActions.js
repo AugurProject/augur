@@ -1,3 +1,4 @@
+var abi = require('augur-abi');
 var constants = require('../libs/constants');
 
 var AssetActions = {
@@ -9,21 +10,24 @@ var AssetActions = {
     if (currentAccount) {
       var self = this;
       var currentBranch = this.flux.store('branch').getCurrentBranch();
-      // log("currentBranch:", currentBranch);
 
-      augur.getCashBalance(function (result) {
-        self.dispatch(constants.asset.UPDATE_ASSETS, { cash: result });
+      augur.getCashBalance(currentAccount, function (result) {
+        if (result && !result.error) {
+          self.dispatch(constants.asset.UPDATE_ASSETS, { cash: result });
+        }
       });
 
-      augur.rpc.balance(currentAccount, function (result) {
-        self.dispatch(constants.asset.UPDATE_ASSETS, { ether: result });
+      augur.rpc.balance(currentAccount, null, function (result) {
+        if (result && !result.error) {
+          self.dispatch(constants.asset.UPDATE_ASSETS, { ether: abi.bignum(result) });
+        }
       });
 
-      if (currentBranch) {
-        augur.getRepBalance(currentBranch.id, currentAccount, function (result) {
+      augur.getRepBalance(currentBranch.id, currentAccount, function (result) {
+        if (result && !result.error) {
           self.dispatch(constants.asset.UPDATE_ASSETS, { reputation: result });
-        });
-      }
+        }
+      });
 
     } else {
 

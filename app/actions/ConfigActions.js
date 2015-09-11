@@ -76,7 +76,6 @@ var ConfigActions = {
   },
 
   initializeState: function() {
-
     this.flux.actions.config.updateEthereumClient();
     this.flux.actions.network.checkNetwork();
 
@@ -92,9 +91,9 @@ var ConfigActions = {
     augur.web.register(handle, password, function (account) {
       if (account && account.address) {
 
-        utilities.log("new account registered: " + account.handle);
-        utilities.log("address: " + account.address);
-        utilities.log("private key: " + account.privateKey.toString("hex"));
+        console.log("new account registered: " + account.handle);
+        console.log("address: " + account.address);
+        console.log("private key: " + account.privateKey.toString("hex"));
 
         self.flux.actions.asset.updateAssets();
 
@@ -105,7 +104,7 @@ var ConfigActions = {
         });
 
       } else {
-        utilities.log("register failed");
+        console.log("register failed");
       }
     });
   },
@@ -115,9 +114,9 @@ var ConfigActions = {
     augur.web.login(handle, password, function (account) {
       if (account && account.address) {
 
-        utilities.log("signed in to account: " + account.handle);
-        utilities.log("address: " + account.address);
-        utilities.log("private key: " + account.privateKey.toString("hex"));
+        console.log("signed in to account: " + account.handle);
+        console.log("address: " + account.address);
+        console.log("private key: " + account.privateKey.toString("hex"));
 
         self.flux.actions.asset.updateAssets();
 
@@ -128,7 +127,7 @@ var ConfigActions = {
         });
 
       } else {
-        utilities.log("sign in failed");
+        console.log("sign in failed");
       }
     });
   },

@@ -16,7 +16,7 @@ var TransactionActions = {
     *  }
     */
 
-    utilities.log(tx.description + ' ('+tx.hash+')');
+    console.log(tx.description + ' ('+tx.hash+')');
     this.dispatch(constants.transaction.ADD_TRANSACTION, tx);
   },
 
@@ -32,7 +32,7 @@ var TransactionActions = {
 
   	if (transactions[hash]) {
 
-  		utilities.log('block ' + result.blockNumber +' included ' + hash);
+  		console.log('block ' + result.blockNumber +' included ' + hash);
 
       // fire onMined if exists
       if (transactions[hash].onMined) transactions[hash].onMined(result);

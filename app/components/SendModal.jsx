@@ -58,10 +58,10 @@ var SendCashModal = React.createClass({
         to: this.state.destination,
         value: this.state.amount,
         onSent: function (result) {
-          utilities.log('sending '+amount+' cash to '+ destination);
+          console.log('sending '+amount+' cash to '+ destination);
         },
         onSuccess: function (result) {
-          utilities.log('cash sent successfully');
+          console.log('cash sent successfully');
         },
         onFailed: function (result) {
           utilities.error('failed to send cash: ' + error);
@@ -354,7 +354,6 @@ var SendEtherModal = React.createClass({
     flux.store('asset').removeChangeListener(this._onAssetChange);
     flux.store('config').removeChangeListener(this._onConfigChange);
   },
-
 
   getStateFromFlux: function() {
 

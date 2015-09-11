@@ -69,7 +69,7 @@ export default Fluxxor.createStore({
     if (state.currentBranch && state.currentBranch.id) {
       return state.currentBranch;
     } else {
-      return { id: process.env.AUGUR_BRANCH_ID };
+      return { id: process.env.AUGUR_BRANCH_ID || 1010101 };
     }
   },
 

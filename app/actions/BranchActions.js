@@ -17,7 +17,7 @@ export default {
     var self = this;
 
     branchId = branchId || process.env.AUGUR_BRANCH_ID;
-    utilities.log('using branch ' + branchId);
+    console.log('using branch ' + branchId);
 
     augur.getPeriodLength(branchId, function (periodLength) {
       var currentBranch = new Branch(branchId, Number(periodLength.toString()));
@@ -35,25 +35,24 @@ export default {
     var percentComplete = (currentBlock % currentBranch.periodLength) / currentBranch.periodLength * 100;
 
     augur.getVotePeriod(currentBranch.id, function (result) {
+      if (result && !result.error) {
+        var votePeriod = result.toNumber();
+        var isCurrent = votePeriod < (currentPeriod - 1) ? false : true;
 
-      if (result.error) return console.log("votePeriod error:", result);
+        if (!isCurrent) {
+          var periodsBehind = (currentPeriod - 1) - votePeriod;
+          utilities.warn('branch '+ currentBranch.id + ' behind ' + periodsBehind + ' periods');
+        }
 
-      var votePeriod = result.toNumber();
-      var isCurrent = votePeriod < (currentPeriod - 1) ? false : true;
+        var updatedBranch = _.merge(currentBranch, {
+          currentPeriod: currentPeriod,
+          votePeriod: votePeriod,
+          isCurrent: isCurrent,
+          percentComplete: percentComplete
+        });
 
-      if (!isCurrent) {
-        var periodsBehind = (currentPeriod - 1) - votePeriod;
-        utilities.warn('branch '+ currentBranch.id + ' behind ' + periodsBehind + ' periods');
+        self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, updatedBranch);
       }
-
-      var updatedBranch = _.merge(currentBranch, {
-        currentPeriod: currentPeriod,
-        votePeriod: votePeriod,
-        isCurrent: isCurrent,
-        percentComplete: percentComplete
-      });
-
-      self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, updatedBranch);
     });
   },
 

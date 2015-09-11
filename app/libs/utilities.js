@@ -52,11 +52,6 @@ module.exports = {
     } else {
       unit = 'wei';
     }
-    log({
-      value: +value.toFixed(4),
-      unit: unit,
-      withUnit: value.toNumber() + ' ' + unit
-    });
     return {
       value: +value.toFixed(4),
       unit: unit,

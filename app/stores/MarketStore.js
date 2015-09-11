@@ -1,3 +1,4 @@
+var abi = require('augur-abi');
 var Fluxxor = require('fluxxor');
 var constants = require('../libs/constants');
 var _ = require('lodash');

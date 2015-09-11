@@ -47,8 +47,10 @@ var Overview = React.createClass({
   },
 
   componentWillReceiveProps: function(nextProps) {
-    if (this.props.outcome.sharesHeld.toNumber() !== nextProps.outcome.sharesHeld.toNumber()) {
-      this.setState({pendingShares: null});
+    if (this.props.outcome.sharesHeld && nextProps.outcome.sharesHeld) {
+      if (this.props.outcome.sharesHeld.toNumber() !== nextProps.outcome.sharesHeld.toNumber()) {
+        this.setState({pendingShares: null});
+      }
     }
   },
 
@@ -107,7 +109,7 @@ var Overview = React.createClass({
     var self = this;
     this.getTradeFunction(relativeShares).call(augur, {
       branchId: self.props.market.branchId,
-      marketId: self.props.market.id,
+      marketId: self.props.market.id.toString(16),
       outcome: self.props.outcome.id,
       amount: Math.abs(relativeShares),
       nonce: null,
@@ -254,7 +256,7 @@ var TradeBase = {
 
       new Promise((resolve, reject) => {
         self.getSimulationFunction()(
-          self.props.market.id,
+          self.props.market.id.toString(16),
           self.props.outcome.id,
           numShares,
           resolve

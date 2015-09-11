@@ -30,6 +30,7 @@ EthereumClient.prototype.connect = function () {
 EthereumClient.prototype.batch = function (commands) {
 
   var batch = augur.createBatch();
+
   _.each(commands, function (command) {
     batch.add(command[0], command[1], command[2]);
   });
@@ -111,10 +112,10 @@ EthereumClient.prototype.sendRep = function (destination, amount, branchId) {
     to: destination,
     value: amount,
     onSent: function (result) {
-      utilities.log('sending '+amount+' rep to '+ destination);
+      console.log('sending '+amount+' rep to '+ destination);
     },
     onSuccess: function (result) {
-      utilities.log('rep sent successfully');
+      console.log('rep sent successfully');
     },
     onFailed: function (error) {
       utilities.error('failed to send rep: ' + error);
@@ -179,7 +180,7 @@ EthereumClient.prototype.checkQuorum = function (branchId, onSent, onSuccess, on
       result.step = result.callReturn;
       delete result.callReturn;
     }
-    utilities.log('dispatch succeeded');
+    console.log('dispatch succeeded');
     if (onSuccess) onSuccess();
 
   }, function (error) {

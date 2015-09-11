@@ -1,4 +1,5 @@
-var constants = require('../libs/constants'); 
+var abi = require('augur-abi');
+var constants = require('../libs/constants');
 var utilities = require('../libs/utilities');
 
 var NetworkActions = {
@@ -73,7 +74,7 @@ var NetworkActions = {
         currentAccount: account
       });
     }, function () {
-      utilities.log('no unlocked account detected');
+      console.log('no unlocked account detected');
       self.dispatch(
         constants.network.UPDATE_ETHEREUM_STATUS,
         {ethereumStatus: constants.network.ETHEREUM_STATUS_NO_ACCOUNT}
@@ -91,25 +92,32 @@ var NetworkActions = {
 
     // just block age and peer count until we're current
     augur.rpc.blockNumber(function (blockNumber) {
-      var blockMoment = utilities.blockToDate(blockNumber);
-      self.dispatch(constants.network.UPDATE_NETWORK, {
-        blockNumber: blockNumber,
-        blocktime: blockMoment
-      });
-      augur.rpc.getBlock(blockNumber, true, function (block) {
-        if (block && block.constructor === Object) {
-          var blockTimeStamp = block.timestamp;
-          var currentTimeStamp = moment().unix();
-          var age = currentTimeStamp - blockTimeStamp;
-          self.dispatch(constants.network.UPDATE_BLOCK_CHAIN_AGE, {
-            blockChainAge: age
-          });
-        }
-      });
+      if (blockNumber && !blockNumber.error) {
+        blockNumber = abi.bignum(blockNumber).toNumber();
+        var blockMoment = utilities.blockToDate(blockNumber);
+        self.dispatch(constants.network.UPDATE_NETWORK, {
+          blockNumber: blockNumber,
+          blocktime: blockMoment
+        });
+        augur.rpc.getBlock(blockNumber, true, function (block) {
+          if (block && block.constructor === Object && !block.error) {
+            var blockTimeStamp = block.timestamp;
+            var currentTimeStamp = moment().unix();
+            var age = currentTimeStamp - blockTimeStamp;
+            self.dispatch(constants.network.UPDATE_BLOCK_CHAIN_AGE, {
+              blockChainAge: age
+            });
+          }
+        });
+      }
     });
 
     augur.rpc.peerCount(function (peerCount) {
-      self.dispatch(constants.network.UPDATE_NETWORK, { peerCount: peerCount });
+      if (peerCount && !peerCount.error) {
+        self.dispatch(constants.network.UPDATE_NETWORK, {
+          peerCount: abi.bignum(peerCount).toFixed()
+        });
+      }
     });
 
     if (networkState.blockChainAge &&
@@ -119,7 +127,11 @@ var NetworkActions = {
         self.dispatch(constants.network.UPDATE_NETWORK, { accounts: accounts });
       });
       augur.rpc.gasPrice(function (gasPrice) {
-        self.dispatch(constants.network.UPDATE_NETWORK, { gasPrice: gasPrice });
+        if (gasPrice && !gasPrice.error) {
+          self.dispatch(constants.network.UPDATE_NETWORK, {
+            gasPrice: abi.bignum(gasPrice).toNumber()
+          });
+        }
       });
       augur.rpc.mining(function (mining) {
         self.dispatch(constants.network.UPDATE_NETWORK, { mining: mining });

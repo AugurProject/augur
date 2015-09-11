@@ -15,11 +15,12 @@ var MarketActions = {
     var marketIds = ethereumClient.getMarkets(currentBranch.id);
 
     // initialize all markets
-    var markets = {}
-    _.each(marketIds, function(id) {
+    var markets = {};
+    _.each(marketIds, function (id) {
       markets[id] = this.flux.actions.market.initMarket(id);
     }, this);
-    this.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {markets: markets});
+
+    this.dispatch(constants.market.LOAD_MARKETS_SUCCESS, { markets: markets });
 
     // breaks ids into pages
     // load one page at a time
@@ -41,16 +42,14 @@ var MarketActions = {
   },
 
   loadNewMarkets: function() {
-
     var currentBranch = this.flux.store('branch').getCurrentBranch();
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var currentMarkets = this.flux.store('market').getState().markets;
-    var currentMarketIds = _.map(_.reject(currentMarkets, function(market){
+    var currentMarketIds = _.map(_.reject(currentMarkets, function (market) {
       return typeof(market.id) === 'string' && market.id.match(/pending/);
     }), 'id');
 
     var newMarketIds = ethereumClient.getMarkets(currentBranch.id, currentMarketIds);
-
     if (newMarketIds.length) this.flux.actions.market.loadSomeMarkets(newMarketIds);
   },
 
@@ -69,7 +68,7 @@ var MarketActions = {
       // initialize market if it doesn't exist
       if (!markets[marketId]) {
         var market = this.flux.actions.market.initMarket(marketId);
-        this.dispatch(constants.market.ADD_MARKET_SUCCESS, {market: market});
+        this.dispatch(constants.market.ADD_MARKET_SUCCESS, { market: market });
       }
       var commands = this.flux.actions.market.batchMarket(marketId);
       _.each(_.chunk(commands, 5), function(chunk) {
@@ -86,12 +85,15 @@ var MarketActions = {
     var market = { id: marketId, outcomes: [], comments: [] };
     var commands = [];
 
+    marketId = abi.prefix_hex(marketId.toString(16));
+
     commands.push(['getCreationFee', [marketId], setProp('creationFee')]);
     commands.push(['getDescription', [marketId], setProp('description')]);
     commands.push(['getCreator', [marketId], setProp('author')]);
     commands.push(['getMarketEvents', [marketId], setProp('events')]);
     commands.push(['getParticipantNumber', [marketId, account], setProp('traderId')]);
     commands.push(['getMarketInfo', [marketId], function (result) {
+
       market['traderCount'] = result[0];
       market['alpha'] = abi.unfix(result[1]);
       market['numOutcomes'] = parseInt(result[3]);
@@ -114,11 +116,12 @@ var MarketActions = {
     return commands;
   },
 
-  // second, supplement batch of data fetched after above prereqs are aquired
+  // second, supplement batch of data fetched after above prereqs are acquired
   batchSupplementMarket: function(market) {
     var self = this;
     var commands = [];
-    var account = ethereumClient.account;
+    var account = this.flux.store('config').getAccount();
+    var marketId = abi.prefix_hex(abi.bignum(market.id).toString(16));
 
     // populate outcome data
     _.each(market.outcomes, function (outcome) {
@@ -126,7 +129,7 @@ var MarketActions = {
       if (market.traderId !== -1 ) {
         commands.push([
           'getParticipantSharesPurchased',
-          [market.id, market.traderId, outcome.id],
+          [marketId, market.traderId, outcome.id],
           function (result) {
             outcome['sharesHeld'] = abi.unfix(result);
             self.flux.actions.market.updateMarket(market, true);
@@ -134,7 +137,7 @@ var MarketActions = {
         ]);
       }
 
-      commands.push(['getMarketOutcomeInfo', [market.id, outcome.id], function (info) {
+      commands.push(['getMarketOutcomeInfo', [marketId, outcome.id], function (info) {
 
         outcome['outstandingShares'] = abi.unfix(info[0]);
         if (market.traderId.toNumber() !== -1) {
@@ -150,10 +153,12 @@ var MarketActions = {
       }]);
       
     }, this);
-    
+
     if (market.events.length) {
 
-      commands.push(['getEventInfo', [market.events[0]], function (eventInfo) {
+      var marketEvent = abi.prefix_hex(market.events[0].toString(16));
+
+      commands.push(['getEventInfo', [marketEvent], function (eventInfo) {
         if (eventInfo[1]) {
           // calc end date from first event expiration
           var expirationBlock = new BigNumber(eventInfo[1]).toNumber();
@@ -162,20 +167,19 @@ var MarketActions = {
         }
       }]);
 
-      commands.push(['getWinningOutcomes', [market.id], function (result) {
+      commands.push(['getWinningOutcomes', [marketId], function (result) {
         if (result && result.length) {
           market['winningOutcomes'] = result.slice(0, market.events.length)
           self.flux.actions.market.updateMarket(market, true);
         }
       }]);
 
-      commands.push(['getOutcome', [market.events[0]], function (result) {
+      commands.push(['getOutcome', [marketEvent], function (result) {
         market['eventOutcome'] = result.toFixed();
         self.flux.actions.market.updateMarket(market, true);
       }]);
 
     } else {
-
       market['invalid'] = true
     }
 
@@ -183,6 +187,8 @@ var MarketActions = {
   },
 
   updateMarket: function(market, supplement) {
+
+    var marketId = abi.prefix_hex(abi.bignum(market.id).toString(16));
 
     // Calculate market properties before dispatch (seems to belong in a Market class)
     if (!market.outstandingShares && market.outstandingShares !== 0) {
@@ -210,9 +216,9 @@ var MarketActions = {
     if (marketState.loadingPage) {
 
       // use this progressbar for all markets
-      //var totalLoaded = _.map(marketState.markets, 'loaded');
-      //var percentLoaded = (_.filter(totalLoaded).length / totalLoaded.length) * 100;
-      //this.flux.actions.config.updatePercentLoaded(percentLoaded);
+      // var totalLoaded = _.map(marketState.markets, 'loaded');
+      // var percentLoaded = (_.filter(totalLoaded).length / totalLoaded.length) * 100;
+      // this.flux.actions.config.updatePercentLoaded(percentLoaded);
 
       var marketsPage = _.filter(marketState.markets, function(market) {
         return _.contains(marketState.marketLoadingIds[marketState.loadingPage-1], market.id);
@@ -302,12 +308,13 @@ var MarketActions = {
       var ethereumClient = this.flux.store('config').getEthereumClient();
 
       var commands = _.map(markets, function (market) {
-        return ['getParticipantNumber', [market.id, account], function (traderId) {
+        var marketId = abi.prefix_hex(abi.bignum(market.id).toString(16));
+        return ['getParticipantNumber', [marketId, account], function (traderId) {
           market.traderId = traderId;
           if (traderId !== -1 ) {
             _.each(market.outcomes, function (outcome) {
               ethereumClient.getParticipantSharesPurchased(
-                market.id,
+                marketId,
                 market.traderId,
                 outcome.id,
                 function (result) {
