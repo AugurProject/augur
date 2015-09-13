@@ -50,15 +50,12 @@ var augur = {
         dev: "0x0f69b5"
     },
 
-    // Demo account (demo.augur.net)
+    // Demo/shared account
     demo: "0xaff9cb4dcb19d13b84761c040c91d21dc6c991ec"
 
 };
 
-var DEFAULT_RPC = ["http://127.0.0.1:8545"].concat(augur.constants.nodes);
-
 rpc.TX_POLL_MAX = 64;
-augur.nodes = rpc.nodes = DEFAULT_RPC;
 augur.contracts = augur.utils.copy(contracts["0"]);
 augur.init_contracts = augur.utils.copy(contracts["0"]);
 
@@ -66,7 +63,7 @@ augur.reload_modules = function () {
     if (this.contracts) this.tx = new Tx(this.contracts);
     rpc.bignumbers = this.bignumbers;
     rpc.debug = this.options.debug;
-    this.nodes = rpc.nodes;
+    this.nodes = rpc.nodes.hosted;
     this.web = new Accounts(this);
     this.comments = new Comments(this);
     this.filters = new Filters(this);
@@ -79,19 +76,16 @@ augur.reload_modules();
  * Ethereum network connection *
  *******************************/
 
+ augur.default_rpc = function () {
+    rpc.reset();
+    this.reload_modules();
+    return false;
+};
+
 augur.detect_network = function (chain) {
     var key, method;
     this.network_id = chain || rpc.version() || "0";
-    switch (this.network_id.toString()) {
-        case "7":
-            this.contracts = this.utils.copy(contracts["7"]);
-            break;
-        case "10101":
-            this.contracts = this.utils.copy(contracts["10101"]);
-            break;
-        default:
-            this.contracts = this.utils.copy(contracts["0"]);
-    }
+    this.contracts = this.utils.copy(contracts[this.network_id]);
     for (method in this.tx) {
         if (!this.tx.hasOwnProperty(method)) continue;
         key = this.utils.has_value(this.init_contracts, this.tx[method].to);
@@ -107,7 +101,7 @@ augur.get_coinbase = function () {
     var accounts, num_accounts, i, method;
     this.coinbase = rpc.coinbase();
     if (!this.coinbase) {
-        accounts = this.accounts();
+        accounts = rpc.accounts();
         num_accounts = accounts.length;
         if (num_accounts === 1) {
             if (this.unlocked(accounts[0])) {
@@ -130,12 +124,6 @@ augur.get_coinbase = function () {
     } else {
         return this.default_rpc();
     }
-};
-
-augur.default_rpc = function () {
-    rpc.nodes = DEFAULT_RPC;
-    this.reload_modules();
-    return false;
 };
 
 augur.update_contracts = function () {
@@ -195,11 +183,14 @@ augur.parse_rpcinfo = function (rpcinfo, chain) {
             return this.default_rpc();
         }
     }
-    return [this.utils.urlstring(rpc_obj)].concat(rpc.nodes);
+    return this.utils.urlstring(rpc_obj);
 };
 
 augur.connect = function (rpcinfo, chain) {
-    rpc.nodes = (rpcinfo) ? this.parse_rpcinfo(rpcinfo, chain) : DEFAULT_RPC;
+    if (rpcinfo) {
+        var localnode = this.parse_rpcinfo(rpcinfo, chain);
+        if (localnode) rpc.nodes.local = localnode;
+    }
     this.reload_modules();
     try {
         if (this.connection === null &&

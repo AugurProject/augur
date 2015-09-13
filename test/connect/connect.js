@@ -170,8 +170,6 @@ describe("augur.connect", function () {
                augur.network_id === "7");
     });
     it("should be unlocked", function () {
-        if (augur.rpc.nodes[0].indexOf("127.0.0.1") > -1) {
-            assert.isTrue(augur.rpc.unlocked());
-        }
+        if (augur.rpc.nodes.local) assert.isTrue(augur.rpc.unlocked());
     });
 });

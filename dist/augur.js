@@ -177,10 +177,11 @@ module.exports = {
                         try {
                             bn = new BigNumber(n);
                         } catch (exc) {
-                            if (n.slice(0,1) === '-') {
-                                bn = new BigNumber("-0x" + n.slice(1));
+                            if (this.is_hex(n)) {
+                                bn = new BigNumber(this.prefix_hex(n));
+                            } else {
+                                return console.error(exc);
                             }
-                            bn = new BigNumber("0x" + n);
                         }
                     }
                     break;
@@ -188,7 +189,11 @@ module.exports = {
                     try {
                         bn = new BigNumber(n);
                     } catch (exc) {
-                        bn = new BigNumber(this.prefix_hex(n));
+                        if (this.is_hex(n)) {
+                            bn = new BigNumber(this.prefix_hex(n));
+                        } else {
+                            return console.error(exc);
+                        }
                     }
                     break;
                 case BigNumber:
@@ -202,8 +207,7 @@ module.exports = {
                     }
                     break;
                 default:
-                    console.log("[augur-abi] Couldn't convert", n, "to BigNumber");
-                    return;
+                    return console.error("Couldn't convert", n, "to BigNumber");
             }
             if (bn !== undefined && bn !== null && bn.constructor === BigNumber) {
                 if (!nowrap && bn.gte(this.constants.BYTES_32)) {
@@ -55647,15 +55651,7 @@ module.exports = {
     KEYSIZE: 32,
     IVSIZE: 16,
 
-    FIREBASE_URL: "https://resplendent-inferno-1997.firebaseio-demo.com/",
-    
-    nodes: [
-        "http://eth3.augur.net", // loopy/poc9:    69.164.196.239:8545
-        "http://eth1.augur.net", // miner:         45.33.59.27:8545
-        // "http://eth2.augur.net", // prospector:    45.79.204.139:8545
-        "http://eth4.augur.net", // singapore
-        "http://eth5.augur.net"  // tokyo
-    ]
+    FIREBASE_URL: "https://resplendent-inferno-1997.firebaseio-demo.com/"
 };
 
 },{"bignumber.js":7}],308:[function(require,module,exports){
@@ -56261,15 +56257,12 @@ var augur = {
         dev: "0x0f69b5"
     },
 
-    // Demo account (demo.augur.net)
+    // Demo/shared account
     demo: "0xaff9cb4dcb19d13b84761c040c91d21dc6c991ec"
 
 };
 
-var DEFAULT_RPC = ["http://127.0.0.1:8545"].concat(augur.constants.nodes);
-
 rpc.TX_POLL_MAX = 64;
-augur.nodes = rpc.nodes = DEFAULT_RPC;
 augur.contracts = augur.utils.copy(contracts["0"]);
 augur.init_contracts = augur.utils.copy(contracts["0"]);
 
@@ -56277,7 +56270,7 @@ augur.reload_modules = function () {
     if (this.contracts) this.tx = new Tx(this.contracts);
     rpc.bignumbers = this.bignumbers;
     rpc.debug = this.options.debug;
-    this.nodes = rpc.nodes;
+    this.nodes = rpc.nodes.hosted;
     this.web = new Accounts(this);
     this.comments = new Comments(this);
     this.filters = new Filters(this);
@@ -56290,19 +56283,16 @@ augur.reload_modules();
  * Ethereum network connection *
  *******************************/
 
+ augur.default_rpc = function () {
+    rpc.reset();
+    this.reload_modules();
+    return false;
+};
+
 augur.detect_network = function (chain) {
     var key, method;
     this.network_id = chain || rpc.version() || "0";
-    switch (this.network_id.toString()) {
-        case "7":
-            this.contracts = this.utils.copy(contracts["7"]);
-            break;
-        case "10101":
-            this.contracts = this.utils.copy(contracts["10101"]);
-            break;
-        default:
-            this.contracts = this.utils.copy(contracts["0"]);
-    }
+    this.contracts = this.utils.copy(contracts[this.network_id]);
     for (method in this.tx) {
         if (!this.tx.hasOwnProperty(method)) continue;
         key = this.utils.has_value(this.init_contracts, this.tx[method].to);
@@ -56318,7 +56308,7 @@ augur.get_coinbase = function () {
     var accounts, num_accounts, i, method;
     this.coinbase = rpc.coinbase();
     if (!this.coinbase) {
-        accounts = this.accounts();
+        accounts = rpc.accounts();
         num_accounts = accounts.length;
         if (num_accounts === 1) {
             if (this.unlocked(accounts[0])) {
@@ -56341,12 +56331,6 @@ augur.get_coinbase = function () {
     } else {
         return this.default_rpc();
     }
-};
-
-augur.default_rpc = function () {
-    rpc.nodes = DEFAULT_RPC;
-    this.reload_modules();
-    return false;
 };
 
 augur.update_contracts = function () {
@@ -56406,11 +56390,14 @@ augur.parse_rpcinfo = function (rpcinfo, chain) {
             return this.default_rpc();
         }
     }
-    return [this.utils.urlstring(rpc_obj)].concat(rpc.nodes);
+    return this.utils.urlstring(rpc_obj);
 };
 
 augur.connect = function (rpcinfo, chain) {
-    rpc.nodes = (rpcinfo) ? this.parse_rpcinfo(rpcinfo, chain) : DEFAULT_RPC;
+    if (rpcinfo) {
+        var localnode = this.parse_rpcinfo(rpcinfo, chain);
+        if (localnode) rpc.nodes.local = localnode;
+    }
     this.reload_modules();
     try {
         if (this.connection === null &&
@@ -58901,12 +58888,8 @@ module.exports = {
         if (!bignum) augur.bignumbers = false;
         // augur.options.debug = true;
         if (augur.connect(rpcinfo)) {
-            augur.rpc.nodes = this.remove_duplicates([
-                "http://127.0.0.1:8545",
-                "http://eth1.augur.net"
-            ].concat(augur.rpc.nodes).sort());
             if (augur.options.debug) this.print_nodes(augur.rpc.nodes);
-            augur.nodes = augur.rpc.nodes;
+            augur.nodes = augur.rpc.nodes.hosted;
         }
         return augur;
     },
@@ -59083,9 +59066,17 @@ module.exports={
         "error": 408,
         "message": "no response"
     },
-    "INVALID_JSON": {
+    "INVALID_RESPONSE": {
         "error": 409,
         "message": "could not parse response from Ethereum node"
+    },
+    "LOCAL_NODE_FAILURE": {
+        "error": 410,
+        "message": "RPC request to local Ethereum node failed"
+    },
+    "HOSTED_NODE_FAILURE": {
+        "error": 411,
+        "message": "RPC request to hosted nodes failed"
     },
     "TRANSACTION_FAILED": {
         "error": 500,
@@ -59121,7 +59112,13 @@ var errors = require("./errors");
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
-var NODES = [
+function RPCError(err) {
+    this.message = err.error || err.name + ": " + err.message;
+}
+
+RPCError.prototype = new Error();
+
+var HOSTED_NODES = [
     "http://eth3.augur.net",
     "http://eth1.augur.net",
     "http://eth4.augur.net",
@@ -59134,6 +59131,8 @@ module.exports = {
 
     bignumbers: true,
 
+    RPCError: RPCError,
+
     // Maximum number of transaction verification attempts
     TX_POLL_MAX: 24,
 
@@ -59144,7 +59143,10 @@ module.exports = {
 
     ETHER: new BigNumber(10).toPower(18),
 
-    nodes: NODES.slice(),
+    nodes: {
+        hosted: HOSTED_NODES.slice(),
+        local: null
+    },
 
     requests: 1,
 
@@ -59281,21 +59283,19 @@ module.exports = {
 
                 // no result or error field
                 } else {
-                    if (callback) {
-                        callback(response);
-                    } else {
-                        return response;
-                    }
+                    var err = errors.NO_RESPONSE;
+                    err.response = response;
+                    return console.error(err);
                 }
             }
         } catch (e) {
-            var results = e;
+            var err = e;
             if (e && e.name === "SyntaxError") {
-                results = errors.INVALID_JSON;
-                results.response = response;
+                err = errors.INVALID_RESPONSE;
+                err.response = response;
             }
-            if (callback) return callback(results);
-            return results;
+            console.error(err);
+            // throw new RPCError(err);
         }
     },
 
@@ -59310,18 +59310,23 @@ module.exports = {
         return returns;
     },
 
-    exciseNode: function (err, deadNode, deadIndex) {
-        if (deadNode || deadIndex) {
+    exciseNode: function (err, deadNode, callback) {
+        if (deadNode && !this.nodes.local) {
             if (this.debug) {
                 console.log("[ethrpc] request to", deadNode, "failed:", err);
             }
-            if (deadIndex === null || deadIndex === undefined) {
-                deadIndex = this.nodes.indexOf(deadNode);
-            }
+            var deadIndex = this.nodes.hosted.indexOf(deadNode);
             if (deadIndex > -1) {
-                this.nodes.splice(deadIndex, 1);
-                if (!this.nodes.length) this.reset();
+                this.nodes.hosted.splice(deadIndex, 1);
+                if (!this.nodes.hosted.length) {
+                    if (callback) {
+                        callback(errors.HOSTED_NODE_FAILURE);
+                    } else {
+                        throw new RPCError(errors.HOSTED_NODE_FAILURE);
+                    }
+                }
             }
+            if (callback) callback();
         }
     },
 
@@ -59354,16 +59359,12 @@ module.exports = {
                 timeout: this.TX_POLL_INTERVAL
             }, function (err, response, body) {
                 if (err) {
-                    self.exciseNode(err.code, rpcUrl);
-                    err.error = errors.NO_RESPONSE.error;
-                    err.message = errors.NO_RESPONSE.message;
-                    callback(err);
+                    if (self.nodes.local) {
+                        return callback(errors.LOCAL_NODE_FAILURE);
+                    }
+                    self.exciseNode(err.code, rpcUrl, callback);
                 } else if (response.statusCode === 200) {
                     self.parse(body, returns, callback);
-                } else {
-                    var ret = errors.NO_RESPONSE;
-                    if (body) ret.body = body;
-                    callback(ret);
                 }
             });
         } else {
@@ -59392,14 +59393,14 @@ module.exports = {
         var self, nodes, num_commands, returns, result, completed;
 
         // make sure the ethereum node list isn't empty
-        if (!this.nodes || !this.nodes.length) {
+        if (!this.nodes.local && !this.nodes.hosted.length) {
             if (callback && callback.constructor === Function) {
                 return callback(errors.ETHEREUM_NOT_FOUND);
             } else {
-                return errors.ETHEREUM_NOT_FOUND;
+                throw new RPCError(errors.ETHEREUM_NOT_FOUND);
             }
         }
-        nodes = this.nodes.slice();
+        nodes = (this.nodes.local) ? [this.nodes.local] : this.nodes.hosted.slice();
 
         // parse batched commands and strip "returns" fields
         if (command.constructor === Array) {
@@ -59418,19 +59419,20 @@ module.exports = {
             async.eachSeries(nodes, function (node, nextNode) {
                 if (!completed) {
                     if (self.debug) {
-                        log("nodes:", JSON.stringify(nodes));
-                        log("post", command.method, "to:", node);
+                        console.log("nodes:", JSON.stringify(nodes));
+                        console.log("post", command.method, "to:", node);
                     }
                     self.post(node, command, returns, function (res) {
                         if (self.debug) {
                             if (res && res.constructor === BigNumber) {
-                                log(node, "response:", res.toFixed());
+                                console.log(node, "response:", res.toFixed());
                             } else {
-                                log(node, "response:", res);
+                                console.log(node, "response:", res);
                             }
                         }
                         if (node === nodes[nodes.length - 1] ||
-                            (res !== undefined && !res.error && res !== "0x"))
+                            (res !== undefined && res !== null &&
+                            !res.error && res !== "0x"))
                         {
                             completed = true;
                             return nextNode(res);
@@ -59446,11 +59448,15 @@ module.exports = {
                 try {
                     result = this.postSync(nodes[j], command, returns);
                 } catch (e) {
-                    this.exciseNode(e, nodes[j], j);
+                    if (this.nodes.local) {
+                        throw new RPCError(errors.LOCAL_NODE_FAILURE);
+                    } else {
+                        this.exciseNode(e, nodes[j]);
+                    }
                 }
                 if (result) return result;
             }
-            return errors.NO_RESPONSE;
+            throw new RPCError(errors.NO_RESPONSE);
         }
     },
 
@@ -59476,9 +59482,20 @@ module.exports = {
         return payload;
     },
 
+    setLocalNode: function (urlstr) {
+        this.nodes.local = urlstr;
+    },
+
+    useHostedNode: function () {
+        this.nodes.local = null;
+    },
+
     // reset to default Ethereum nodes
     reset: function () {
-        this.nodes = NODES.slice();
+        this.nodes = {
+            hosted: HOSTED_NODES.slice(),
+            local: null
+        };
     },
 
     /******************************
@@ -59716,16 +59733,21 @@ module.exports = {
     // Ethereum node status checks
 
     listening: function (f) {
+        var response, self = this;
         try {
-            if (!this.nodes || !this.nodes.length ||
-                (this.nodes.length === 1 && !this.nodes[0].length))
-            {
-                throw new Error();
+            if (!this.nodes.hosted.length && !this.nodes.local) {
+                throw new RPCError(errors.ETHEREUM_NOT_FOUND);
             }
             if (f && f.constructor === Function) {
-                this.net("listening", [], function (res) {
-                    f(!!res);
-                });
+                var timeout = setTimeout(function () {
+                    if (!response) f(false);
+                }, 2500);
+                setTimeout(function () {
+                    self.net("listening", [], function (res) {
+                        clearTimeout(timeout);
+                        f(!!res);
+                    });
+                }, 0);
             } else {
                 return !!this.net("listening");
             }
@@ -59739,12 +59761,10 @@ module.exports = {
     },
 
     unlocked: function (account) {
+        if (!this.nodes.hosted.length && !this.nodes.local) {
+            throw new RPCError(errors.ETHEREUM_NOT_FOUND);
+        }
         try {
-            if (!this.nodes || !this.nodes.length ||
-                (this.nodes.length === 1 && !this.nodes[0].length))
-            {
-                throw new Error();
-            }
             if (this.sign(account || this.coinbase(), "1010101").error) {
                 return false;
             }
@@ -59770,50 +59790,54 @@ module.exports = {
      */
     invoke: function (itx, f) {
         var tx, data_abi, packaged, invocation, invoked;
-        if (itx) {
-            if (itx.send && itx.invocation && itx.invocation.invoke &&
-                itx.invocation.invoke.constructor === Function)
-            {
-                return itx.invocation.invoke.call(itx.invocation.context, itx, f);
-            } else {
-                tx = abi.copy(itx);
-                if (tx.params !== undefined) {
-                    if (tx.params.constructor === Array) {
-                        for (var i = 0, len = tx.params.length; i < len; ++i) {
-                            if (tx.params[i] !== undefined &&
-                                tx.params[i].constructor === BigNumber) {
-                                tx.params[i] = tx.params[i].toFixed();
+        try {
+            if (itx) {
+                if (itx.send && itx.invocation && itx.invocation.invoke &&
+                    itx.invocation.invoke.constructor === Function)
+                {
+                    return itx.invocation.invoke.call(itx.invocation.context, itx, f);
+                } else {
+                    tx = abi.copy(itx);
+                    if (tx.params !== undefined) {
+                        if (tx.params.constructor === Array) {
+                            for (var i = 0, len = tx.params.length; i < len; ++i) {
+                                if (tx.params[i] !== undefined &&
+                                    tx.params[i].constructor === BigNumber) {
+                                    tx.params[i] = tx.params[i].toFixed();
+                                }
                             }
+                        } else if (tx.params.constructor === BigNumber) {
+                            tx.params = tx.params.toFixed();
                         }
-                    } else if (tx.params.constructor === BigNumber) {
-                        tx.params = tx.params.toFixed();
+                    }
+                    if (tx.to) tx.to = abi.prefix_hex(tx.to);
+                    if (tx.from) tx.from = abi.prefix_hex(tx.from);
+                    data_abi = abi.encode(tx);
+                    if (data_abi) {
+                        packaged = {
+                            from: tx.from || this.coinbase(),
+                            to: tx.to,
+                            data: data_abi,
+                            gas: tx.gas || this.DEFAULT_GAS,
+                            gasPrice: tx.gasPrice || this.gasPrice()
+                        };
+                        if (tx.value) packaged.value = tx.value;
+                        if (tx.returns) packaged.returns = tx.returns;
+                        invocation = (tx.send) ? this.sendTx : this.call;
+                        invoked = true;
+                        return invocation.call(this, packaged, f);
                     }
                 }
-                if (tx.to) tx.to = abi.prefix_hex(tx.to);
-                if (tx.from) tx.from = abi.prefix_hex(tx.from);
-                data_abi = abi.encode(tx);
-                if (data_abi) {
-                    packaged = {
-                        from: tx.from || this.coinbase(),
-                        to: tx.to,
-                        data: data_abi,
-                        gas: tx.gas || this.DEFAULT_GAS,
-                        gasPrice: tx.gasPrice || this.gasPrice()
-                    };
-                    if (tx.value) packaged.value = tx.value;
-                    if (tx.returns) packaged.returns = tx.returns;
-                    invocation = (tx.send) ? this.sendTx : this.call;
-                    invoked = true;
-                    return invocation.call(this, packaged, f);
-                }
             }
+
+        // stopgap: console.error
+        } catch (exc) {
+            if (f) return f(errors.TRANSACTION_FAILED);
+            console.error(errors.TRANSACTION_FAILED);
         }
         if (!invoked) {
-            if (f) {
-                f(errors.TRANSACTION_FAILED);
-            } else {
-                return errors.TRANSACTION_FAILED;
-            }
+            if (f) return f(errors.TRANSACTION_FAILED);
+            console.error(errors.TRANSACTION_FAILED);
         }
     },
 
@@ -59861,7 +59885,7 @@ module.exports = {
                     invocation = (tx.send) ? "sendTransaction" : "call";
                     rpclist[i] = this.marshal(invocation, packaged);
                 } else {
-                    log("unable to package commands for batch RPC");
+                    console.log("unable to package commands for batch RPC");
                     return rpclist;
                 }
             }
@@ -59889,7 +59913,7 @@ module.exports = {
                 return this.broadcast(rpclist, f);
             }
         } else {
-            log("expected array for batch RPC, invoking instead");
+            console.log("expected array for batch RPC, invoking instead");
             return this.invoke(txlist, f);
         }
     },
@@ -59976,7 +60000,7 @@ module.exports = {
                 if (res.error) return res;
                 return this.encodeResult(res, itx.returns);
             }
-            return errors.NO_RESPONSE;
+            throw new RPCError(errors.NO_RESPONSE);
         }
     },
 

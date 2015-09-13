@@ -97,7 +97,7 @@ describe("data and api/reporting", function () {
     describe("getReporterID(" + branch_id + ", " + reporter_index + ") ", function () {
         var test = function (r) {
             assert.isAbove(abi.bignum(r).toNumber(), 0);
-            if (augur.rpc.nodes[0].indexOf("127.0.0.1") > -1) {
+            if (augur.rpc.nodes.local) {
                 assert(abi.bignum(r).eq(abi.bignum(accounts[0])));
             }
         };

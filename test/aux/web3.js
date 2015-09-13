@@ -13,7 +13,7 @@ var augur = utils.setup(require("../../src"), process.argv.slice(2));
 var constants = augur.constants;
 var log = console.log;
 
-web3.setProvider(new web3.providers.HttpProvider(augur.rpc.nodes[0]));
+web3.setProvider(new web3.providers.HttpProvider(augur.rpc.nodes.local || augur.rpc.nodes.hosted[0]));
 
 var branch_id = augur.branches.dev;
 var branch_number = "0";

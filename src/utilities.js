@@ -137,12 +137,8 @@ module.exports = {
         if (!bignum) augur.bignumbers = false;
         // augur.options.debug = true;
         if (augur.connect(rpcinfo)) {
-            augur.rpc.nodes = this.remove_duplicates([
-                "http://127.0.0.1:8545",
-                "http://eth1.augur.net"
-            ].concat(augur.rpc.nodes).sort());
             if (augur.options.debug) this.print_nodes(augur.rpc.nodes);
-            augur.nodes = augur.rpc.nodes;
+            augur.nodes = augur.rpc.nodes.hosted;
         }
         return augur;
     },

@@ -25,9 +25,7 @@ var event_id = augur.getMarketEvents(market_id)[0];
 
 function check_account(account, test_account) {
     assert.isAbove(abi.bignum(account).toNumber(), 0);
-    if (augur.rpc.nodes[0].indexOf("127.0.0.1") > -1 &&
-        augur.rpc.version() === "10101")
-    {
+    if (augur.rpc.nodes.local && augur.rpc.version() === "10101") {
         assert(abi.bignum(account).eq(abi.bignum(test_account)));
     }
 }
