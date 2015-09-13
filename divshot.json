@@ -6,7 +6,7 @@
     "**": "augur.html",
     "/fonts/**": "fonts/**",
     "/css/**": "css/**",
-    "/images/**": "images/**",  
+    "/images/**": "images/**",
     "/app.js": "app.js"
   }
 }

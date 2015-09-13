@@ -7,7 +7,6 @@ var ONE_FXP = new BigNumber(2).toPower(64);
 
 module.exports = {
   DEMO_HOST: 'eth3.augur.net:8545',
-  REMOTE_HOSTS: ['eth1.augur.net:8545', 'eth2.augur.net:8545'],
   ONE_FXP: ONE_FXP,
   NO: ONE_FXP,
   YES: ONE_FXP.mul(2),

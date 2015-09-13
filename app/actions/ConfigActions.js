@@ -6,21 +6,20 @@ var ConfigActions = {
 
   updateEthereumClient: function (host) {
 
-    var configState = this.flux.store('config').getState();
-    var branchState = this.flux.store('branch').getState();
+    host = host || this.flux.store('config').getState().host;
+    var branch = this.flux.store('branch').getState().currentBranch || { id: process.env.AUGUR_BRANCH_ID };
 
-    var clientParams = {
-      host: host || configState.host,
-      // FIXME: If we can, we should make defaultBranchId unnecessary. We should
-      // always know which branch we're acting on in the client, and pass it to
-      // EthereumClient functions.
-      defaultBranchId: branchState.currentBranch ? branchState.currentBranch.id : process.env.AUGUR_BRANCH_ID
-    }
-    var ethereumClient = window.ethereumClient = new EthereumClient(clientParams);
+    // FIXME: If we can, we should make defaultBranchId unnecessary. We should
+    // always know which branch we're acting on in the client, and pass it to
+    // EthereumClient functions.
+    var ethereumClient = window.ethereumClient = new EthereumClient({
+      host: host,
+      defaultBranchId: branch.id
+    });
 
     this.dispatch(constants.config.UPDATE_ETHEREUM_CLIENT_SUCCESS, {
       ethereumClient: ethereumClient,
-      host: host || configState.host
+      host: host
     });
   },
 
@@ -90,7 +89,6 @@ var ConfigActions = {
     var self = this;
     augur.web.register(handle, password, function (account) {
       if (account && account.address) {
-
         console.log("new account registered: " + account.handle);
         console.log("address: " + account.address);
         console.log("private key: " + account.privateKey.toString("hex"));

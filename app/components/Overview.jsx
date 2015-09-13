@@ -22,52 +22,6 @@ var Overview = React.createClass({
 
   mixins: [FluxMixin, StoreWatchMixin('asset', 'market', 'config')],
 
-  _onBranchChange: function () {
-    var branchStore = this.getFlux().store('branch');
-    this.setState({
-      currentBranch: branchStore.getCurrentBranch(),
-      votePeriod: branchStore.getState().currentVotePeriod
-    });
-  },
-
-  _onMarketChange: function () {
-    var marketStore = this.getFlux().store('market');
-    this.setState({
-      trendingMarkets: marketStore.getTrendingMarkets(3, this.state.currentBranch),
-      authoredMarkets: marketStore.getMarketsByAuthor(this.state.account),
-      holdings: marketStore.getMarketsHeld()
-    });
-  },
-
-  _onAssetChange: function () {
-    var assetStore = this.getFlux().store('asset');
-    this.setState({ asset: assetStore.getState() });
-  },
-
-  _onConfigChange: function () {
-    var configStore = this.getFlux().store('config');
-    this.setState({
-      account: configStore.getAccount(),
-      ethereumClient: configStore.getEthereumClient()
-    });
-  },
-
-  componentDidMount: function () {
-    var flux = this.getFlux();
-    flux.store('branch').addChangeListener(this._onBranchChange);
-    flux.store('market').addChangeListener(this._onMarketChange);
-    flux.store('asset').addChangeListener(this._onAssetChange);
-    flux.store('config').addChangeListener(this._onConfigChange);
-  },
-
-  componentWillUnmount: function () {
-    var flux = this.getFlux();
-    flux.store('branch').removeChangeListener(this._onBranchChange);
-    flux.store('market').removeChangeListener(this._onMarketChange);
-    flux.store('asset').removeChangeListener(this._onAssetChange);
-    flux.store('config').removeChangeListener(this._onConfigChange);
-  },
-
   getStateFromFlux: function () {
     var flux = this.getFlux();
     var account = flux.store('config').getAccount();

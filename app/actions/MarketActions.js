@@ -138,18 +138,19 @@ var MarketActions = {
       }
 
       commands.push(['getMarketOutcomeInfo', [marketId, outcome.id], function (info) {
+        if (info && info.length) {
 
-        outcome['outstandingShares'] = abi.unfix(info[0]);
-        if (market.traderId.toNumber() !== -1) {
-          outcome['sharesHeld'] = abi.unfix(info[1]);
+          outcome['outstandingShares'] = abi.unfix(info[0]);
+          if (market.traderId && market.traderId.toNumber() !== -1) {
+            outcome['sharesHeld'] = abi.unfix(info[1]);
+          }
+          var price = abi.unfix(info[2]);
+          if (outcome.id === 2) market['price'] = price;  // hardcoded to outcome 2 (yes)
+          outcome['price'] = price;
+          market['traderCount'] = info[4];
+
+          self.flux.actions.market.updateMarket(market, true);
         }
-        var price = abi.unfix(info[2]);
-        if (outcome.id === 2) market['price'] = price;  // hardcoded to outcome 2 (yes)
-        outcome['price'] = price;
-        market['traderCount'] = info[4];
-
-        self.flux.actions.market.updateMarket(market, true);
-
       }]);
       
     }, this);

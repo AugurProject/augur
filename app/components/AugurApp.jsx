@@ -278,7 +278,7 @@ var ErrorModal = React.createClass({
   startDemoMode: function(event) {
 
     this.handleToggle();
-    this.getFlux().actions.config.updateEthereumClient(constants.REMOTE_HOSTS[0]);
+    this.getFlux().actions.config.updateEthereumClient(constants.DEMO_HOST);
   },
 
   render: function() {
