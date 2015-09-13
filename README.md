@@ -22,6 +22,8 @@ You still need to run ethereum locally; the client will walk you through platfor
 
 Alternatively, if you want to hack on Augur, or just really enjoy working at the terminal, you can follow the "Building the augur-client" instructions below.
 
+Working Instructions to get on priv. chain: http://www.augur.net/blog/the-augur-alpha-is-now-available-to-download
+
 ### Running Ethereum
 
 Install [go-ethereum](https://github.com/ethereum/go-ethereum/wiki). 
