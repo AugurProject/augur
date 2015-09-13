@@ -231,20 +231,7 @@ var Batch = function () {
 Batch.prototype.add = function (method, params, callback) {
     if (method) {
         var tx = abi.copy(augur.tx[method]);
-        if (params && params.length !== 0) {
-            if (params.constructor === Array) {
-                for (var i = 0; i < params.length; ++i) {
-                    if (params[i] && params[i].constructor === BigNumber) {
-                        params[i] = params[i].toString(16);
-                    }
-                }
-            } else {
-                if (params && params.constructor === BigNumber) {
-                    params = params.toString(16);
-                }
-            }
-            tx.params = params;
-        }
+        tx.params = params;
         if (callback) tx.callback = callback;
         this.txlist.push(tx);
     }

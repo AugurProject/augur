@@ -56438,20 +56438,7 @@ var Batch = function () {
 Batch.prototype.add = function (method, params, callback) {
     if (method) {
         var tx = abi.copy(augur.tx[method]);
-        if (params && params.length !== 0) {
-            if (params.constructor === Array) {
-                for (var i = 0; i < params.length; ++i) {
-                    if (params[i] && params[i].constructor === BigNumber) {
-                        params[i] = params[i].toString(16);
-                    }
-                }
-            } else {
-                if (params && params.constructor === BigNumber) {
-                    params = params.toString(16);
-                }
-            }
-            tx.params = params;
-        }
+        tx.params = params;
         if (callback) tx.callback = callback;
         this.txlist.push(tx);
     }
@@ -58877,17 +58864,20 @@ module.exports = {
     },
 
     setup: function (augur, args, rpcinfo, bignum) {
-        var gospel, contracts;
+        var gospel, contracts, defaulthost;
         if (NODE_JS && args &&
             (args.indexOf("--gospel") > -1 || args.indexOf("--reset") > -1))
         {
             gospel = path.join(__dirname, "..", "data", "gospel.json");
             contracts = fs.readFileSync(gospel);
             augur.contracts = JSON.parse(contracts.toString());
+            if (!process.env.CONTINUOUS_INTEGRATION) {
+                defaulthost = "http://127.0.0.1:8545";
+            }
         }
         if (!bignum) augur.bignumbers = false;
         // augur.options.debug = true;
-        if (augur.connect(rpcinfo)) {
+        if (augur.connect(rpcinfo || defaulthost)) {
             if (augur.options.debug) this.print_nodes(augur.rpc.nodes);
             augur.nodes = augur.rpc.nodes.hosted;
         }
@@ -59118,6 +59108,8 @@ function RPCError(err) {
 
 RPCError.prototype = new Error();
 
+function rotate(a) { a.unshift(a.pop()); }
+
 var HOSTED_NODES = [
     "http://eth3.augur.net",
     "http://eth1.augur.net",
@@ -59130,6 +59122,8 @@ module.exports = {
     debug: false,
 
     bignumbers: true,
+
+    rotation: true,
 
     RPCError: RPCError,
 
@@ -59399,6 +59393,9 @@ module.exports = {
             } else {
                 throw new RPCError(errors.ETHEREUM_NOT_FOUND);
             }
+        }
+        if (this.rotation && this.nodes.hosted.length > 1) {
+            rotate(this.nodes.hosted);
         }
         nodes = (this.nodes.local) ? [this.nodes.local] : this.nodes.hosted.slice();
 
