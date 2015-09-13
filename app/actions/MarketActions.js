@@ -71,7 +71,7 @@ var MarketActions = {
         this.dispatch(constants.market.ADD_MARKET_SUCCESS, { market: market });
       }
       var commands = this.flux.actions.market.batchMarket(marketId);
-      _.each(_.chunk(commands, 5), function(chunk) {
+      _.each(_.chunk(commands, 10), function(chunk) {
           ethereumClient.batch(chunk);
       });
     }, this);
@@ -129,7 +129,7 @@ var MarketActions = {
       if (market.traderId !== -1 ) {
         commands.push([
           'getParticipantSharesPurchased',
-          [marketId, market.traderId, outcome.id],
+          [marketId, abi.prefix_hex(market.traderId), outcome.id],
           function (result) {
             outcome['sharesHeld'] = abi.unfix(result);
             self.flux.actions.market.updateMarket(market, true);
@@ -206,7 +206,7 @@ var MarketActions = {
       var ready = _.intersection(_.keys(currentMarket), requiredProperties);
       if (ready.length == requiredProperties.length && !supplement) {
         var commands = this.flux.actions.market.batchSupplementMarket(currentMarket);
-        _.each(_.chunk(commands, 5), function(chunk) {
+        _.each(_.chunk(commands, 10), function(chunk) {
           ethereumClient.batch(chunk);
         });
       }
