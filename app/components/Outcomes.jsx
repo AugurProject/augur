@@ -123,8 +123,8 @@ var Overview = React.createClass({
         });
         self.handleAddTransaction(result.txHash, relativeShares);
       },
-      onSuccess: function (res) { log("trade succeeded:", res); },
-      onFailed: function (res) { log("trade failed:", res); }
+      onSuccess: function (res) { console.log("trade succeeded:", res); },
+      onFailed: function (res) { console.log("trade failed:", res); }
     });
   },
 
