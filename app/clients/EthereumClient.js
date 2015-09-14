@@ -16,6 +16,9 @@ function EthereumClient(params) {
   this.currentAccount = null;
   this.defaultBranchId = params.defaultBranchId;
   this.host = params.host;
+
+  // basically set rpc host in augur.js here
+  this.connect();
 }
 
 // TODO: migrate off default
@@ -25,9 +28,13 @@ EthereumClient.prototype.setDefaultBranch = function (branchId) {
 
 EthereumClient.prototype.connect = function () {
 
-  console.log(this.host);
-  augur.connect(this.host);
-  augur.rpc.nodes.hosted = ["http://eth3.augur.net", "http://eth1.augur.net"];
+  utilities.log('setting rpc host to ' + this.host);
+  try {
+    augur.connect(this.host);
+    //augur.rpc.nodes.hosted = ["http://eth3.augur.net", "http://eth1.augur.net"];
+  } catch(error) {
+    // don't really need to do anything here or even log yet
+  }
 };
 
 EthereumClient.prototype.batch = function (commands) {

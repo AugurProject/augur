@@ -83,6 +83,7 @@ var ConfigActions = {
   },
 
   initializeState: function() {
+
     this.flux.actions.config.updateEthereumClient();
     this.flux.actions.network.checkNetwork();
 
@@ -94,6 +95,7 @@ var ConfigActions = {
   },
 
   register: function (handle, password) {
+
     var self = this;
     augur.web.register(handle, password, function (account) {
       if (account && account.address) {

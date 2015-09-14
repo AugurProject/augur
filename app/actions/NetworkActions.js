@@ -18,6 +18,7 @@ var NetworkActions = {
     var networkState = this.flux.store('network').getState()
 
     var nowUp = augur.rpc.listening();
+    console.log(nowUp);
 
     var wasUp = (
       networkState.ethereumStatus === constants.network.ETHEREUM_STATUS_CONNECTED
@@ -48,7 +49,6 @@ var NetworkActions = {
         }
       );
 
-      ethereumClient.connect();
       this.flux.store('config').setHost();
       this.flux.actions.network.initializeNetwork();
       this.flux.actions.config.initializeData();
