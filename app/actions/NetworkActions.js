@@ -49,6 +49,7 @@ var NetworkActions = {
       );
 
       ethereumClient.connect();
+      this.flux.store('config').setHost();
       this.flux.actions.network.initializeNetwork();
       this.flux.actions.config.initializeData();
     }
