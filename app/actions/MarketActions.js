@@ -27,8 +27,8 @@ var MarketActions = {
           if (!blacklisted && !markets[i].invalid && markets[i].price &&
               markets[i].description)
           {
-            markets[i].expDate = moment().add(
-              (markets[i].expDate - block)*constants.SECONDS_PER_BLOCK,
+            markets[i].endDate = moment().add(
+              (markets[i].endDate - block)*constants.SECONDS_PER_BLOCK,
               "seconds"
             );
             markets[i].price = abi.bignum(markets[i].price);
@@ -52,7 +52,7 @@ var MarketActions = {
           }
         }
         self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {
-          markets: _.sortBy(realMarkets, "expDate").reverse()
+          markets: _.sortBy(realMarkets, "endDate").reverse()
         });
         self.flux.actions.config.updatePercentLoaded(100);
       });
@@ -102,9 +102,64 @@ var MarketActions = {
     if (newMarketIds.length) this.flux.actions.market.loadSomeMarkets(newMarketIds);
   },
 
-  loadMarket: function(marketId) {
-
-    this.flux.actions.market.loadSomeMarkets([marketId]);
+  loadMarket: function (marketId) {
+    var self = this;
+    if (!augur.rpc.nodes.local) {
+      var branchId = currentBranch.id;
+      var block = augur.rpc.blockNumber();
+      var account = this.flux.store('config').getAccount();
+      var market = this.flux.store('markets').getMarket(marketId);
+      if (market) {
+        console.log(market);
+        this.dispatch(constants.market.UPDATE_MARKET_SUCCESS, { market: market });
+      } else {
+        var marketId = abi.prefix_hex(abi.bignum(marketId).toString(16));
+        $.get(constants.MONGODB, function (data) {
+          var markets, blacklisted;
+          markets = JSON.parse(data).rows;
+          for (var i = 0, len = markets.length; i < len; ++i) {
+            blacklisted = _.contains(
+              blacklist.markets[augur.network_id][branchId],
+              abi.strip_0x(markets[i]._id)
+            );
+            if (!blacklisted && !markets[i].invalid && markets[i].price &&
+                markets[i].description)
+            {
+              console.log(markets[i]._id);
+              console.log(marketId);
+              if (markets[i]._id === marketId) {
+                market = markets[i];
+                market.endDate = moment().add(
+                  (market.endDate - block)*constants.SECONDS_PER_BLOCK,
+                  "seconds"
+                );
+                market.price = abi.bignum(market.price);
+                market.tradingFee = abi.bignum(market.tradingFee);
+                market.creationFee = abi.bignum(market.creationFee);
+                market.traderCount = abi.bignum(market.traderCount);
+                market.alpha = abi.bignum(market.alpha);
+                market.numOutcomes = parseInt(market.numOutcomes);
+                market.tradingPeriod = abi.bignum(market.tradingPeriod);
+                market.branchId = branchId;
+                market.loaded = true;
+                market.traderId = abi.bignum(market.participants[account]);
+                if (market.outcomes && market.outcomes.length) {
+                  for (var j = 0; j < market.outcomes.length; ++j) {
+                    market.outcomes[j].sharesHeld = abi.bignum(
+                      market.outcomes[j].shares[account]
+                    );
+                  }
+                }
+                break;
+              }
+            }
+          }
+          self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, { market: market });
+        });
+      }
+    } else {
+      this.flux.actions.market.loadSomeMarkets([marketId]);
+    }
   },
 
   loadSomeMarkets: function(marketIds) {
@@ -122,7 +177,7 @@ var MarketActions = {
         this.dispatch(constants.market.ADD_MARKET_SUCCESS, { market: market });
       }
       var commands = this.flux.actions.market.batchMarket(marketId);
-      _.each(_.chunk(commands, 10), function(chunk) {
+      _.each(_.chunk(commands, 5), function(chunk) {
           ethereumClient.batch(chunk);
       });
     }, this);
@@ -265,7 +320,7 @@ var MarketActions = {
       var ready = _.intersection(_.keys(currentMarket), requiredProperties);
       if (ready.length == requiredProperties.length && !supplement) {
         var commands = this.flux.actions.market.batchSupplementMarket(currentMarket);
-        _.each(_.chunk(commands, 10), function(chunk) {
+        _.each(_.chunk(commands, 5), function(chunk) {
           ethereumClient.batch(chunk);
         });
       }
