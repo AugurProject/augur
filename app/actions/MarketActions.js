@@ -15,6 +15,7 @@ var MarketActions = {
     if (!augur.rpc.nodes.local) {
       var branchId = currentBranch.id;
       var block = augur.rpc.blockNumber();
+      var account = this.flux.store('config').getAccount();
       $.get(constants.MONGODB, function (data) {
         var blacklisted, markets, realMarkets = [];
         markets = JSON.parse(data).rows;
@@ -33,8 +34,20 @@ var MarketActions = {
             markets[i].price = abi.bignum(markets[i].price);
             markets[i].tradingFee = abi.bignum(markets[i].tradingFee);
             markets[i].creationFee = abi.bignum(markets[i].creationFee);
+            markets[i].traderCount = abi.bignum(markets[i].traderCount);
+            markets[i].alpha = abi.bignum(markets[i].alpha);
+            markets[i].numOutcomes = parseInt(markets[i].numOutcomes);
+            markets[i].tradingPeriod = abi.bignum(markets[i].tradingPeriod);
             markets[i].branchId = branchId;
             markets[i].loaded = true;
+            markets[i].traderId = abi.bignum(markets[i].participants[account]);
+            if (markets[i].outcomes && markets[i].outcomes.length) {
+              for (var j = 0; j < markets[i].outcomes.length; ++j) {
+                markets[i].outcomes[j].sharesHeld = abi.bignum(
+                  markets[i].outcomes[j].shares[account]
+                );
+              }
+            }
             realMarkets.push(markets[i]);
           }
         }
