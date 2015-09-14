@@ -37,22 +37,22 @@ var Network = React.createClass({
         </div>
         <div className="panel-body">
           <p className="client">
-            CLIENT<span className="pull-right">{this.state.network.clientVersion}</span>
+            CLIENT<span className="pull-right">{ this.state.network.clientVersion }</span>
           </p>
           <p className="network-id">
-            NETWORK ID<span className="pull-right">{this.state.network.networkId}</span>
+            NETWORK ID<span className="pull-right">{ this.state.network.networkId }</span>
           </p>
           <p className="host">
-            HOST<span className="pull-right">{this.state.host}</span>
+            HOST<span className="pull-right">{ this.state.host }</span>
           </p>
           <p className="peers">
-            PEERS<span className="pull-right">{this.state.network.peerCount || '-'}</span>
+            PEERS<span className="pull-right">{ this.state.network.peerCount || '-' }</span>
           </p>
           <p className="blocks">
-            BLOCKS<span className="pull-right">{this.state.network.blockNumber || '-'}</span>
+            BLOCKS<span className="pull-right">{ this.state.network.blockNumber || '-' }</span>
           </p>
           <p className="miner">
-            MINER<span className="pull-right">{this.state.network.mining ? this.state.network.hashrate : 'off'}</span>
+            MINER<span className="pull-right">{ this.state.network.mining ? this.state.network.hashrate : 'off' }</span>
           </p>
           <p className="gas-price">
             GAS PRICE<span className="pull-right">{ formattedGasPrice }</span>

@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var abi = require('augur-abi');
+var Bignumber = require('bignumber.js');
 var constants = require('../libs/constants');
 var utilities = require('../libs/utilities');
 var blacklist = require('../libs/blacklist');
@@ -7,59 +8,80 @@ var blacklist = require('../libs/blacklist');
 var MarketActions = {
 
   loadMarkets: function () {
+
     var self = this;
     var initialPage = 1;
     var currentBranch = this.flux.store('branch').getCurrentBranch();
+    var configState = this.flux.store('config').getState();
 
     // if we're on a hosted node, load preprocessed market data
-    if (!augur.rpc.nodes.local) {
+    if (configState.isHosted) {
+
       var branchId = currentBranch.id;
       var account = this.flux.store('config').getAccount();
-      augur.rpc.blockNumber(function (block) {
+
+      augur.rpc.blockNumber(function (block) {   // why this?
+
+        // fetch markets from mongodb
         $.get(constants.MONGODB, function (data) {
-          var blacklisted, markets, realMarkets = [];
-          markets = JSON.parse(data).rows;
-          for (var i = 0, len = markets.length; i < len; ++i) {
-            blacklisted = _.contains(
-              blacklist.markets[augur.network_id][branchId],
-              abi.strip_0x(markets[i]._id)
-            );
-            if (!blacklisted && !markets[i].invalid && markets[i].price &&
-                markets[i].description)
-            {
-              markets[i].endDate = moment().add(
-                (markets[i].endDate - block)*constants.SECONDS_PER_BLOCK,
+
+          var markets = {};
+          var cachedMarkets = JSON.parse(data).rows;
+
+          for (var i = 0, len = cachedMarkets.length; i < len; ++i) {
+
+            var marketId = new Bignumber(cachedMarkets[i]._id);
+            var blacklisted = _.contains(blacklist.markets[augur.network_id][branchId], abi.strip_0x(cachedMarkets[i]._id));
+
+            if (!blacklisted && !cachedMarkets[i].invalid && cachedMarkets[i].price && cachedMarkets[i].description) {
+
+              cachedMarkets[i].id = marketId;
+              cachedMarkets[i].endDate = moment().add(
+                (cachedMarkets[i].endDate - block)*constants.SECONDS_PER_BLOCK,
                 "seconds"
               );
-              markets[i].price = abi.bignum(markets[i].price);
-              markets[i].tradingFee = abi.bignum(markets[i].tradingFee);
-              markets[i].creationFee = abi.bignum(markets[i].creationFee);
-              markets[i].traderCount = abi.bignum(markets[i].traderCount);
-              markets[i].alpha = abi.bignum(markets[i].alpha);
-              markets[i].numOutcomes = parseInt(markets[i].numOutcomes);
-              markets[i].tradingPeriod = abi.bignum(markets[i].tradingPeriod);
-              markets[i].branchId = branchId;
-              markets[i].loaded = true;
-              markets[i].traderId = abi.bignum(markets[i].participants[account]);
-              if (markets[i].outcomes && markets[i].outcomes.length) {
-                for (var j = 0; j < markets[i].outcomes.length; ++j) {
-                  markets[i].outcomes[j].sharesHeld = abi.bignum(
-                    markets[i].outcomes[j].shares[account]
-                  );
+              cachedMarkets[i].price = abi.bignum(cachedMarkets[i].price);
+              cachedMarkets[i].tradingFee = abi.bignum(cachedMarkets[i].tradingFee);
+              cachedMarkets[i].creationFee = abi.bignum(cachedMarkets[i].creationFee);
+              cachedMarkets[i].traderCount = abi.bignum(cachedMarkets[i].traderCount);
+              cachedMarkets[i].alpha = abi.bignum(cachedMarkets[i].alpha);
+              cachedMarkets[i].numOutcomes = parseInt(cachedMarkets[i].numOutcomes);
+              cachedMarkets[i].tradingPeriod = abi.bignum(cachedMarkets[i].tradingPeriod);
+              cachedMarkets[i].branchId = branchId;
+              cachedMarkets[i].loaded = true;
+              cachedMarkets[i].traderId = abi.bignum(cachedMarkets[i].participants[account]);
+
+              if (cachedMarkets[i].outcomes && cachedMarkets[i].outcomes.length) {
+                for (var j = 0; j < cachedMarkets[i].outcomes.length; ++j) {
+                  if (cachedMarkets[i].outcomes[j].shares[account]) {
+                    cachedMarkets[i].outcomes[j].sharesHeld = abi.bignum(cachedMarkets[i].outcomes[j].shares[account]);
+                  } else {
+                    cachedMarkets[i].outcomes[j].sharesHeld = new Bignumber(0);
+                  }
+
+                  cachedMarkets[i].outcomes[j].outstandingShares = new Bignumber(0);
+                  cachedMarkets[i].outcomes[j].price = new Bignumber(cachedMarkets[i].outcomes[j].price);
                 }
               }
-              realMarkets.push(markets[i]);
+
+              markets[marketId] = cachedMarkets[i];
             }
           }
+
+          //console.log(markets);
+
+          // store markets
           self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {
-            markets: _.sortBy(realMarkets, "endDate").reverse()
+            markets: markets
           });
+
           self.flux.actions.config.updatePercentLoaded(100);
         });
       });
 
     // if we're on a local node, get data directly from geth via RPC
     } else {
+
       var ethereumClient = this.flux.store('config').getEthereumClient();
       var marketIds = ethereumClient.getMarkets(currentBranch.id);
 
@@ -92,9 +114,15 @@ var MarketActions = {
   },
 
   loadNewMarkets: function () {
-    if (!augur.rpc.nodes.local) {
+
+    var configState = this.flux.store('config').getState();
+
+    if (configState.isHosted) {
+
       this.flux.actions.market.loadMarkets();
+
     } else {
+
       var currentBranch = this.flux.store('branch').getCurrentBranch();
       var ethereumClient = this.flux.store('config').getEthereumClient();
       var currentMarkets = this.flux.store('market').getState().markets;
@@ -107,8 +135,12 @@ var MarketActions = {
   },
 
   loadMarket: function (marketId) {
+
+    var configState = this.flux.store('config').getState();
     var self = this;
-    if (!augur.rpc.nodes.local) {
+
+    if (configState.isHosted) {
+
       var currentBranch = this.flux.store('branch').getCurrentBranch();
       var branchId = currentBranch.id;
       var block = augur.rpc.blockNumber();
@@ -161,7 +193,9 @@ var MarketActions = {
           });
         }
       });
+
     } else {
+
       this.flux.actions.market.loadSomeMarkets([marketId]);
     }
   },
@@ -189,6 +223,7 @@ var MarketActions = {
 
   // first batch of data fetch from market
   batchMarket: function (marketId) {
+
     var self = this;
     var setProp = this.flux.actions.market.getMarketSetter(marketId);
     var account = this.flux.store('config').getAccount();
@@ -223,11 +258,13 @@ var MarketActions = {
 
       self.flux.actions.market.updateMarket(market);
     }]);
+
     return commands;
   },
 
   // second, supplement batch of data fetched after above prereqs are acquired
   batchSupplementMarket: function(market) {
+
     var self = this;
     var commands = [];
     var account = this.flux.store('config').getAccount();
@@ -248,6 +285,7 @@ var MarketActions = {
       }
 
       commands.push(['getMarketOutcomeInfo', [marketId, outcome.id], function (info) {
+
         if (info && info.length) {
 
           outcome['outstandingShares'] = abi.unfix(info[0]);
@@ -270,6 +308,7 @@ var MarketActions = {
       var marketEvent = abi.prefix_hex(market.events[0].toString(16));
 
       commands.push(['getEventInfo', [marketEvent], function (eventInfo) {
+
         if (eventInfo[1]) {
           // calc end date from first event expiration
           var expirationBlock = new BigNumber(eventInfo[1]).toNumber();
@@ -281,7 +320,9 @@ var MarketActions = {
       }]);
 
       commands.push(['getWinningOutcomes', [marketId], function (result) {
+
         if (result && result.length) {
+
           market['winningOutcomes'] = result.slice(0, market.events.length);
 
           // TODO each of these should not trigger an update
@@ -299,6 +340,7 @@ var MarketActions = {
       }]);
 
     } else {
+
       market['invalid'] = true
     }
 
@@ -306,7 +348,9 @@ var MarketActions = {
   },
 
   updateMarket: function(market, supplement) {
+
     if (market && market.id && market.id !== "0x") {
+
       var marketId = abi.prefix_hex(abi.bignum(market.id).toString(16));
 
       // Calculate market properties before dispatch (seems to belong in a Market class)

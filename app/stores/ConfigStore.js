@@ -2,17 +2,19 @@ var Fluxxor = require('fluxxor');
 var constants = require('../libs/constants');
 
 var state = {
-  host: process.env.RPC_HOST || 'localhost:8545',
+  host: 'localhost:8545',
   currentAccount: null,
   privateKey: null,
   handle: null,
   debug: false,
   loaded: false,
+  isHosted: false,
   percentLoaded: null,
   ethereumClient: null
 }
 
 var ConfigStore = Fluxxor.createStore({
+
   initialize: function () {
     this.bindActions(
       constants.config.UPDATE_ETHEREUM_CLIENT_SUCCESS, this.handleUpdateEthereumClientSuccess,
@@ -29,7 +31,7 @@ var ConfigStore = Fluxxor.createStore({
   },
 
   removeChangeListener: function (callback) {
-    this.removeListener(constants.CHANGE_EVENT, callback);
+    this.removeListener(constants.CHANGE_EENT, callback);
   },
 
   setHost: function () {
@@ -69,6 +71,7 @@ var ConfigStore = Fluxxor.createStore({
   handleUpdateEthereumClientSuccess: function (payload) {
     state.ethereumClient = payload.ethereumClient;
     state.host = payload.host;
+    state.isHosted = payload.isHosted;
     state.ethereumClientFailed = false;
     this.emit(constants.CHANGE_EVENT);
   },
@@ -80,9 +83,11 @@ var ConfigStore = Fluxxor.createStore({
   },
 
   handleUpdateAccount: function (payload) {
+
     state.currentAccount = payload.currentAccount;
     state.privateKey = payload.privateKey;
     state.handle = payload.handle;
+
     this.emit(constants.CHANGE_EVENT);
   },
 

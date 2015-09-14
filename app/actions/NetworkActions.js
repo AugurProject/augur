@@ -70,6 +70,7 @@ var NetworkActions = {
 
     var ethereumClient = this.flux.store('config').getEthereumClient();
 
+    // get account
     ethereumClient.getAccount(function (account) {
       self.dispatch(constants.config.UPDATE_ACCOUNT, {
         currentAccount: account
@@ -80,6 +81,20 @@ var NetworkActions = {
         constants.network.UPDATE_ETHEREUM_STATUS,
         {ethereumStatus: constants.network.ETHEREUM_STATUS_NO_ACCOUNT}
       );
+    });
+
+    // get all possible accounts from network
+    ethereumClient.getAccounts(function (accounts) {
+      self.dispatch(constants.network.UPDATE_NETWORK, { accounts: accounts });
+    });
+
+    // fetch gasprice once
+    augur.rpc.gasPrice(function (gasPrice) {
+      if (gasPrice && !gasPrice.error) {
+        self.dispatch(constants.network.UPDATE_NETWORK, {
+          gasPrice: new Bignumber(gasPrice).toNumber()
+        });
+      }
     });
 
     this.flux.actions.network.updateNetwork();
@@ -132,22 +147,12 @@ var NetworkActions = {
     if (networkState.blockChainAge &&
         networkState.blockChainAge < constants.MAX_BLOCKCHAIN_AGE)
     {
-      //ethereumClient.getAccounts(function (accounts) {
-      //  self.dispatch(constants.network.UPDATE_NETWORK, { accounts: accounts });
-      //});
-      //augur.rpc.gasPrice(function (gasPrice) {
-      //  if (gasPrice && !gasPrice.error) {
-      //    self.dispatch(constants.network.UPDATE_NETWORK, {
-      //      gasPrice: new Bignumber(gasPrice).toNumber()
-      //    });
-      //  }
-      //});
-      //augur.rpc.mining(function (mining) {
-      //  self.dispatch(constants.network.UPDATE_NETWORK, { mining: mining });
-      //});
-      //augur.rpc.hashrate(function (hashrate) {
-      //  self.dispatch(constants.network.UPDATE_NETWORK, { hashrate: hashrate });
-      //});
+      augur.rpc.mining(function (mining) {
+        self.dispatch(constants.network.UPDATE_NETWORK, { mining: mining });
+      });
+      augur.rpc.hashrate(function (hashrate) {
+        self.dispatch(constants.network.UPDATE_NETWORK, { hashrate: new Bignumber(hashrate).toNumber() });
+      });
     }
   }
 

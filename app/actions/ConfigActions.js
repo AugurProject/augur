@@ -8,18 +8,31 @@ var ConfigActions = {
 
     host = host || this.flux.store('config').getState().host;
     var branch = this.flux.store('branch').getState().currentBranch || { id: process.env.AUGUR_BRANCH_ID };
+    var isHosted = false;
+
+    // start signed out if we're not localhost
+    // TODO: use a better trigger for local v. hosted than a regex
+    if (!host.match(/localhost/)) {
+
+      console.log('unsetting account');
+      this.flux.actions.market.updateSharesHeld(null);
+      this.dispatch(constants.config.UPDATE_ACCOUNT, { currentAccount: null });
+      isHosted = true;
+    }
 
     // FIXME: If we can, we should make defaultBranchId unnecessary. We should
     // always know which branch we're acting on in the client, and pass it to
     // EthereumClient functions.
     var ethereumClient = window.ethereumClient = new EthereumClient({
       host: host,
-      defaultBranchId: branch.id
+      defaultBranchId: branch.id,
+      isHosted: isHosted
     });
 
     this.dispatch(constants.config.UPDATE_ETHEREUM_CLIENT_SUCCESS, {
       ethereumClient: ethereumClient,
-      host: host
+      host: host,
+      isHosted: isHosted
     });
   },
 
@@ -86,12 +99,6 @@ var ConfigActions = {
 
     this.flux.actions.config.updateEthereumClient();
     this.flux.actions.network.checkNetwork();
-
-    // start signed out if we're using the demo
-    if (this.flux.store('config').getEthereumClient().isDemoAccount) {
-      this.flux.actions.market.updateSharesHeld(null);
-      this.dispatch(constants.config.UPDATE_ACCOUNT, { currentAccount: null });
-    }
   },
 
   register: function (handle, password) {
