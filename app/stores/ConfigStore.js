@@ -2,7 +2,7 @@ var Fluxxor = require('fluxxor');
 var constants = require('../libs/constants');
 
 var state = {
-  host: process.env.RPC_HOST || 'eth1.augur.net:8545',  // hardcoding to eth1 for now
+  host: process.env.RPC_HOST || 'localhost:8545',
   currentAccount: null,
   privateKey: null,
   handle: null,

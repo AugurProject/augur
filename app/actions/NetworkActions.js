@@ -1,4 +1,4 @@
-var abi = require('augur-abi');
+var Bignumber = require('bignumber.js');
 var constants = require('../libs/constants');
 var utilities = require('../libs/utilities');
 
@@ -57,6 +57,7 @@ var NetworkActions = {
   },
 
   initializeNetwork: function () {
+
     var self = this;
 
     augur.rpc.version(function (networkId) {
@@ -92,18 +93,25 @@ var NetworkActions = {
 
     // just block age and peer count until we're current
     augur.rpc.blockNumber(function (blockNumber) {
+
       if (blockNumber && !blockNumber.error) {
-        blockNumber = abi.bignum(blockNumber).toNumber();
+
+        blockNumber = new Bignumber(blockNumber).toNumber();
         var blockMoment = utilities.blockToDate(blockNumber);
+
         self.dispatch(constants.network.UPDATE_NETWORK, {
           blockNumber: blockNumber,
           blocktime: blockMoment
         });
+
         augur.rpc.getBlock(blockNumber, true, function (block) {
+
           if (block && block.constructor === Object && !block.error) {
+
             var blockTimeStamp = block.timestamp;
             var currentTimeStamp = moment().unix();
             var age = currentTimeStamp - blockTimeStamp;
+
             self.dispatch(constants.network.UPDATE_BLOCK_CHAIN_AGE, {
               blockChainAge: age
             });
@@ -113,9 +121,10 @@ var NetworkActions = {
     });
 
     augur.rpc.peerCount(function (peerCount) {
+
       if (peerCount && !peerCount.error) {
         self.dispatch(constants.network.UPDATE_NETWORK, {
-          peerCount: abi.bignum(peerCount).toFixed()
+          peerCount: new Bignumber(peerCount).toFixed()
         });
       }
     });
@@ -123,22 +132,22 @@ var NetworkActions = {
     if (networkState.blockChainAge &&
         networkState.blockChainAge < constants.MAX_BLOCKCHAIN_AGE)
     {
-      ethereumClient.getAccounts(function (accounts) {
-        self.dispatch(constants.network.UPDATE_NETWORK, { accounts: accounts });
-      });
-      augur.rpc.gasPrice(function (gasPrice) {
-        if (gasPrice && !gasPrice.error) {
-          self.dispatch(constants.network.UPDATE_NETWORK, {
-            gasPrice: abi.bignum(gasPrice).toNumber()
-          });
-        }
-      });
-      augur.rpc.mining(function (mining) {
-        self.dispatch(constants.network.UPDATE_NETWORK, { mining: mining });
-      });
-      augur.rpc.hashrate(function (hashrate) {
-        self.dispatch(constants.network.UPDATE_NETWORK, { hashrate: hashrate });
-      });
+      //ethereumClient.getAccounts(function (accounts) {
+      //  self.dispatch(constants.network.UPDATE_NETWORK, { accounts: accounts });
+      //});
+      //augur.rpc.gasPrice(function (gasPrice) {
+      //  if (gasPrice && !gasPrice.error) {
+      //    self.dispatch(constants.network.UPDATE_NETWORK, {
+      //      gasPrice: new Bignumber(gasPrice).toNumber()
+      //    });
+      //  }
+      //});
+      //augur.rpc.mining(function (mining) {
+      //  self.dispatch(constants.network.UPDATE_NETWORK, { mining: mining });
+      //});
+      //augur.rpc.hashrate(function (hashrate) {
+      //  self.dispatch(constants.network.UPDATE_NETWORK, { hashrate: hashrate });
+      //});
     }
   }
 
