@@ -20,24 +20,27 @@ var Market = React.createClass({
   mixins: [FluxMixin, StoreWatchMixin('market', 'asset', 'branch', 'config'), State],
 
   getStateFromFlux: function () {
+    if (this.props.market.markets && this.props.market.markets.length) {
+      var flux = this.getFlux();
+      var account = flux.store('config').getAccount();
+      var assetState = flux.store('asset').getState();
+      var currentBranch = flux.store('branch').getCurrentBranch();
+      var marketId = new BigNumber(this.props.params.marketId, 16);
+      var market = flux.store('market').getState().markets[marketId];
 
-    var flux = this.getFlux();
-    var marketState = flux.store('market').getState();
-    var account = flux.store('config').getAccount();
-    var assetState = flux.store('asset').getState();
-    var currentBranch = flux.store('branch').getCurrentBranch();
-    var marketId = new BigNumber(this.props.params.marketId, 16);
-    var market = marketState.markets[marketId];
+      if (currentBranch && market && market.tradingPeriod && currentBranch.currentPeriod >= market.tradingPeriod.toNumber()) {
+        market.matured = true;
+      }
 
-    if (currentBranch && market && market.tradingPeriod && currentBranch.currentPeriod >= market.tradingPeriod.toNumber()) {
-      market.matured = true;
-    }
+      return {
+        currentBranch: currentBranch,
+        market: market,
+        cashBalance: assetState.cashBalance,
+        account: account
+      };
+    } else {
 
-    return {
-      currentBranch: currentBranch,
-      market: market,
-      cashBalance: assetState.cashBalance,
-      account: account
+      return {};
     }
   },
 

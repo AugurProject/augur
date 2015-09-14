@@ -12,7 +12,7 @@ var ConfigActions = {
 
     // start signed out if we're not localhost
     // TODO: use a better trigger for local v. hosted than a regex
-    if (!host.match(/localhost/)) {
+    if (!host.match(/localhost/) && !host.match(/127.0.0.1/)) {
 
       console.log('unsetting account');
       this.flux.actions.market.updateSharesHeld(null);

@@ -14,14 +14,6 @@ var AssetStore = Fluxxor.createStore({
     this.bindActions(constants.asset.UPDATE_ASSETS, this.handleUpdateAssets);
   },
 
-  addChangeListener: function (callback) {
-    this.on(constants.CHANGE_EVENT, callback);
-  },
-
-  removeChangeListener: function (callback) {
-    this.removeListener(constants.CHANGE_EVENT, callback);
-  },
-
   getState: function () {
     return state;
   },
