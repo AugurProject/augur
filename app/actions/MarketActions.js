@@ -109,6 +109,7 @@ var MarketActions = {
   loadMarket: function (marketId) {
     var self = this;
     if (!augur.rpc.nodes.local) {
+      var currentBranch = this.flux.store('branch').getCurrentBranch();
       var branchId = currentBranch.id;
       var block = augur.rpc.blockNumber();
       var account = this.flux.store('config').getAccount();
