@@ -2,43 +2,79 @@ var _ = require('lodash');
 var abi = require('augur-abi');
 var constants = require('../libs/constants');
 var utilities = require('../libs/utilities');
+var blacklist = require('../libs/blacklist');
 
 var MarketActions = {
 
   loadMarkets: function() {
-
+    var self = this;
     var initialPage = 1;
-
-    //var startMoment = moment();
     var currentBranch = this.flux.store('branch').getCurrentBranch();
-    var ethereumClient = this.flux.store('config').getEthereumClient();
-    var marketIds = ethereumClient.getMarkets(currentBranch.id);
 
-    // initialize all markets
-    var markets = {};
-    _.each(marketIds, function (id) {
-      markets[id] = this.flux.actions.market.initMarket(id);
-    }, this);
+    // if we're on a hosted node, load preprocessed market data
+    if (!augur.rpc.nodes.local) {
+      var branchId = currentBranch.id;
+      var block = augur.rpc.blockNumber();
+      $.get(constants.MONGODB, function (data) {
+        var blacklisted, markets, realMarkets = [];
+        markets = JSON.parse(data).rows;
+        for (var i = 0, len = markets.length; i < len; ++i) {
+          blacklisted = _.contains(
+            blacklist.markets[augur.network_id][branchId],
+            abi.strip_0x(markets[i]._id)
+          );
+          if (!blacklisted && !markets[i].invalid && markets[i].price &&
+              markets[i].description)
+          {
+            markets[i].expDate = moment().add(
+              (markets[i].expDate - block)*constants.SECONDS_PER_BLOCK,
+              "seconds"
+            );
+            markets[i].price = abi.bignum(markets[i].price);
+            markets[i].tradingFee = abi.bignum(markets[i].tradingFee);
+            markets[i].creationFee = abi.bignum(markets[i].creationFee);
+            markets[i].branchId = branchId;
+            markets[i].loaded = true;
+            realMarkets.push(markets[i]);
+          }
+        }
+        self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {
+          markets: _.sortBy(realMarkets, "expDate").reverse()
+        });
+        self.flux.actions.config.updatePercentLoaded(100);
+      });
 
-    this.dispatch(constants.market.LOAD_MARKETS_SUCCESS, { markets: markets });
+    // if we're on a local node, get data directly from geth via RPC
+    } else {
+      var ethereumClient = this.flux.store('config').getEthereumClient();
+      var marketIds = ethereumClient.getMarkets(currentBranch.id);
 
-    // breaks ids into pages
-    // load one page at a time
-    var marketPageIds = _.chunk(marketIds, constants.MARKETS_PER_PAGE);
-    // load all at once
-    // var marketPageIds = [marketIds];
+      // initialize all markets
+      var markets = {};
+      _.each(marketIds, function (id) {
+        markets[id] = this.flux.actions.market.initMarket(id);
+      }, this);
 
-    // setup page loading
-    this.dispatch(constants.market.MARKETS_LOADING, {
-      marketLoadingIds: marketPageIds,
-      loadingPage: initialPage
-    });
+      this.dispatch(constants.market.LOAD_MARKETS_SUCCESS, { markets: markets });
 
-    // load initial markets
-    this.flux.actions.market.loadSomeMarkets(marketPageIds[initialPage-1]);
+      // breaks ids into pages
+      // load one page at a time
+      var marketPageIds = _.chunk(marketIds, constants.MARKETS_PER_PAGE);
+      // load all at once
+      // var marketPageIds = [marketIds];
 
-    // short circuit loading if no markets
-    if (!_.keys(marketIds).length) this.flux.actions.config.updatePercentLoaded(100);
+      // setup page loading
+      this.dispatch(constants.market.MARKETS_LOADING, {
+        marketLoadingIds: marketPageIds,
+        loadingPage: initialPage
+      });
+
+      // load initial markets
+      this.flux.actions.market.loadSomeMarkets(marketPageIds[initialPage-1]);
+
+      // short circuit loading if no markets
+      if (!_.keys(marketIds).length) this.flux.actions.config.updatePercentLoaded(100);
+    }
   },
 
   loadNewMarkets: function() {
@@ -68,6 +104,8 @@ var MarketActions = {
       // initialize market if it doesn't exist
       if (!markets[marketId]) {
         var market = this.flux.actions.market.initMarket(marketId);
+
+        // TODO each of these should not be a separate event
         this.dispatch(constants.market.ADD_MARKET_SUCCESS, { market: market });
       }
       var commands = this.flux.actions.market.batchMarket(marketId);
@@ -164,19 +202,27 @@ var MarketActions = {
           // calc end date from first event expiration
           var expirationBlock = new BigNumber(eventInfo[1]).toNumber();
           market['endDate'] = utilities.blockToDate(expirationBlock);
+
+          // TODO each of these should not trigger an update
           self.flux.actions.market.updateMarket(market, true);
         }
       }]);
 
       commands.push(['getWinningOutcomes', [marketId], function (result) {
         if (result && result.length) {
-          market['winningOutcomes'] = result.slice(0, market.events.length)
+          market['winningOutcomes'] = result.slice(0, market.events.length);
+
+          // TODO each of these should not trigger an update
           self.flux.actions.market.updateMarket(market, true);
         }
       }]);
 
       commands.push(['getOutcome', [marketEvent], function (result) {
+
+        // TODO there will need to be an outcome for each event
         market['eventOutcome'] = result.toFixed();
+
+        // TODO each of these should not trigger an update
         self.flux.actions.market.updateMarket(market, true);
       }]);
 
@@ -253,7 +299,7 @@ var MarketActions = {
   initMarket: function(marketId) {
 
     var currentBranch = this.flux.store('branch').getCurrentBranch();
-    return {id: marketId, branchId: currentBranch.id, loaded: false};  
+    return {id: marketId, branchId: currentBranch.id, loaded: false};
   },
 
   // returns a function that returns a function that sets a market property to the passed value
