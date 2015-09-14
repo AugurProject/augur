@@ -116,7 +116,6 @@ var MarketStore = Fluxxor.createStore({
   },
 
   handleAddMarketSuccess: function (payload) {
-
     state.markets[payload.market.id] = payload.market;
     this.emit(constants.CHANGE_EVENT);
   },

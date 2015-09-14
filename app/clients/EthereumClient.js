@@ -27,7 +27,7 @@ EthereumClient.prototype.connect = function () {
 
   console.log(this.host);
   augur.connect(this.host);
-  console.log("nodes:", augur.rpc.nodes);
+  augur.rpc.nodes.hosted = ["http://eth3.augur.net", "http://eth1.augur.net"];
 };
 
 EthereumClient.prototype.batch = function (commands) {

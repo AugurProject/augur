@@ -32,6 +32,14 @@ var ConfigStore = Fluxxor.createStore({
     this.removeListener(constants.CHANGE_EVENT, callback);
   },
 
+  setHost: function () {
+    if (augur.rpc.nodes.local) {
+      state.host = augur.rpc.nodes.local;
+    } else if (augur.rpc.nodes.hosted.length) {
+      state.host = augur.rpc.nodes.hosted[0];
+    }
+  },
+
   getState: function () {
     return state;
   },

@@ -42,36 +42,44 @@ var ConfigActions = {
     this.flux.actions.report.loadEventsToReport();
     this.flux.actions.report.loadPendingReports();
     this.dispatch(constants.config.LOAD_APPLICATION_DATA_SUCCESS);
-    augur.filters.listen({
 
-      // listen for new blocks
-      block: function (blockHash) {
-        self.flux.actions.network.updateNetwork();
-        self.flux.actions.asset.updateAssets();
-        self.flux.actions.market.loadNewMarkets();
+    // if we're on a hosted node, update via push notification
+    // if (!augur.rpc.nodes.local) {
+    // pubsub yayayayay
 
-        // We pull the branch's block-dependent period information from
-        // contract calls that need to be called each block.
-        self.flux.actions.branch.updateCurrentBranch();
+    // if we're on a local node, set up filters
+    // } else {
+      augur.filters.listen({
 
-        // TODO: We can skip loading events to report if the voting period hasn't changed.
-        self.flux.actions.report.loadEventsToReport();
-        self.flux.actions.branch.checkQuorum();
+        // listen for new blocks
+        block: function (blockHash) {
+          self.flux.actions.network.updateNetwork();
+          self.flux.actions.asset.updateAssets();
+          self.flux.actions.market.loadNewMarkets();
 
-        self.flux.actions.report.submitQualifiedReports();
-      },
+          // We pull the branch's block-dependent period information from
+          // contract calls that need to be called each block.
+          self.flux.actions.branch.updateCurrentBranch();
 
-      // listen for augur transactions
-      contracts: self.flux.actions.transaction.onAugurTx,
+          // TODO: We can skip loading events to report if the voting period hasn't changed.
+          self.flux.actions.report.loadEventsToReport();
+          self.flux.actions.branch.checkQuorum();
 
-      // update market when a price change has been detected
-      price: function (result) {
-        if (result && result.marketId) {
-          console.log("price updated:", result.marketId.toString(16));
-          self.flux.actions.market.loadMarket(result.marketId);
+          self.flux.actions.report.submitQualifiedReports();
+        },
+
+        // listen for augur transactions
+        contracts: self.flux.actions.transaction.onAugurTx,
+
+        // update market when a price change has been detected
+        price: function (result) {
+          if (result && result.marketId) {
+            console.log("price updated:", result.marketId.toString(16));
+            self.flux.actions.market.loadMarket(result.marketId);
+          }
         }
-      }
-    });
+      });
+    // }
   },
 
   initializeState: function() {
