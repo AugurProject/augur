@@ -10,13 +10,8 @@ var ConfigActions = {
     var branch = this.flux.store('branch').getState().currentBranch || { id: process.env.AUGUR_BRANCH_ID };
     var isHosted = false;
 
-    // start signed out if we're not localhost
     // TODO: use a better trigger for local v. hosted than a regex
     if (!host.match(/localhost/)) {
-
-      console.log('unsetting account');
-      this.flux.actions.market.updateSharesHeld(null);
-      this.dispatch(constants.config.UPDATE_ACCOUNT, { currentAccount: null });
       isHosted = true;
     }
 

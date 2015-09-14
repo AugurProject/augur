@@ -69,19 +69,23 @@ var NetworkActions = {
     });
 
     var ethereumClient = this.flux.store('config').getEthereumClient();
+    var configState = this.flux.store('config').getState();
 
-    // get account
-    ethereumClient.getAccount(function (account) {
-      self.dispatch(constants.config.UPDATE_ACCOUNT, {
-        currentAccount: account
+    // get account if we're not hosted
+    if (!configState.isHosted) {
+
+      ethereumClient.getAccount(function (account) {
+        self.dispatch(constants.config.UPDATE_ACCOUNT, {
+          currentAccount: account
+        });
+      }, function () {
+        console.log('no unlocked account detected');
+        self.dispatch(
+          constants.network.UPDATE_ETHEREUM_STATUS,
+          {ethereumStatus: constants.network.ETHEREUM_STATUS_NO_ACCOUNT}
+        );
       });
-    }, function () {
-      console.log('no unlocked account detected');
-      self.dispatch(
-        constants.network.UPDATE_ETHEREUM_STATUS,
-        {ethereumStatus: constants.network.ETHEREUM_STATUS_NO_ACCOUNT}
-      );
-    });
+    }
 
     // get all possible accounts from network
     ethereumClient.getAccounts(function (accounts) {
