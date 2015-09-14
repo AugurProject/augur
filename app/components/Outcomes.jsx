@@ -96,8 +96,6 @@ var Overview = React.createClass({
         description: description
       });   
     }
-
-    console.log(description);
   },
 
   getTradeFunction: function (shares) {
