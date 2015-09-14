@@ -191,20 +191,15 @@ augur.connect = function (rpcinfo, chain) {
         if (localnode) rpc.nodes.local = localnode;
     }
     this.reload_modules();
-    try {
-        if (this.connection === null &&
-            JSON.stringify(this.init_contracts) === JSON.stringify(this.contracts))
-        {
-            this.detect_network(chain);
-        }
-        this.get_coinbase();
-        this.update_contracts();
-        this.connection = true;
-        return true;
-    } catch (e) {
-        console.log("connection error, using default rpc settings", e);
-        return this.default_rpc();
+    if (this.connection === null &&
+        JSON.stringify(this.init_contracts) === JSON.stringify(this.contracts))
+    {
+        this.detect_network(chain);
     }
+    this.get_coinbase();
+    this.update_contracts();
+    this.connection = true;
+    return true;
 };
 
 augur.connected = function () {
