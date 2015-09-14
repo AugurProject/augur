@@ -28,9 +28,9 @@ longjohn.async_trace_limit = 25;
 longjohn.empty_frame = "";
 
 augur.bignumbers = false;
-augur.connect();
+augur.connect("http://127.0.0.1:8545");
 
-web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"));
+web3.setProvider(new web3.providers.HttpProvider("http://127.0.0.1:8545"));
 
 GLOBAL.accounts = utils.get_test_accounts(augur, constants.MAX_TEST_ACCOUNTS);
 GLOBAL.c = augur.coinbase;

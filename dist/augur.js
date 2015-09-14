@@ -56270,7 +56270,6 @@ augur.reload_modules = function () {
     if (this.contracts) this.tx = new Tx(this.contracts);
     rpc.bignumbers = this.bignumbers;
     rpc.debug = this.options.debug;
-    this.nodes = rpc.nodes.hosted;
     this.web = new Accounts(this);
     this.comments = new Comments(this);
     this.filters = new Filters(this);
@@ -58865,20 +58864,23 @@ module.exports = {
 
     setup: function (augur, args, rpcinfo, bignum) {
         var gospel, contracts, defaulthost;
+        if (NODE_JS && !process.env.CONTINUOUS_INTEGRATION) {
+            defaulthost = "http://127.0.0.1:8545";
+        }
         if (NODE_JS && args &&
             (args.indexOf("--gospel") > -1 || args.indexOf("--reset") > -1))
         {
             gospel = path.join(__dirname, "..", "data", "gospel.json");
             contracts = fs.readFileSync(gospel);
             augur.contracts = JSON.parse(contracts.toString());
-            if (!process.env.CONTINUOUS_INTEGRATION) {
-                defaulthost = "http://127.0.0.1:8545";
-            }
         }
         if (!bignum) augur.bignumbers = false;
         // augur.options.debug = true;
         if (augur.connect(rpcinfo || defaulthost)) {
-            if (augur.options.debug) this.print_nodes(augur.rpc.nodes);
+            if (augur.options.debug) {
+                console.log("local:", chalk.cyan(augur.rpc.nodes.local));
+                this.print_nodes(augur.rpc.nodes);
+            }
             augur.nodes = augur.rpc.nodes.hosted;
         }
         return augur;
@@ -59394,7 +59396,7 @@ module.exports = {
                 throw new RPCError(errors.ETHEREUM_NOT_FOUND);
             }
         }
-        if (this.rotation && this.nodes.hosted.length > 1) {
+        if (this.rotation && !this.nodes.local && this.nodes.hosted.length > 1) {
             rotate(this.nodes.hosted);
         }
         nodes = (this.nodes.local) ? [this.nodes.local] : this.nodes.hosted.slice();

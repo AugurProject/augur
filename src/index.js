@@ -63,7 +63,6 @@ augur.reload_modules = function () {
     if (this.contracts) this.tx = new Tx(this.contracts);
     rpc.bignumbers = this.bignumbers;
     rpc.debug = this.options.debug;
-    this.nodes = rpc.nodes.hosted;
     this.web = new Accounts(this);
     this.comments = new Comments(this);
     this.filters = new Filters(this);

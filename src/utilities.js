@@ -127,20 +127,23 @@ module.exports = {
 
     setup: function (augur, args, rpcinfo, bignum) {
         var gospel, contracts, defaulthost;
+        if (NODE_JS && !process.env.CONTINUOUS_INTEGRATION) {
+            defaulthost = "http://127.0.0.1:8545";
+        }
         if (NODE_JS && args &&
             (args.indexOf("--gospel") > -1 || args.indexOf("--reset") > -1))
         {
             gospel = path.join(__dirname, "..", "data", "gospel.json");
             contracts = fs.readFileSync(gospel);
             augur.contracts = JSON.parse(contracts.toString());
-            if (!process.env.CONTINUOUS_INTEGRATION) {
-                defaulthost = "http://127.0.0.1:8545";
-            }
         }
         if (!bignum) augur.bignumbers = false;
         // augur.options.debug = true;
         if (augur.connect(rpcinfo || defaulthost)) {
-            if (augur.options.debug) this.print_nodes(augur.rpc.nodes);
+            if (augur.options.debug) {
+                console.log("local:", chalk.cyan(augur.rpc.nodes.local));
+                this.print_nodes(augur.rpc.nodes);
+            }
             augur.nodes = augur.rpc.nodes.hosted;
         }
         return augur;
