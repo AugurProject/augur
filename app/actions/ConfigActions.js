@@ -12,7 +12,7 @@ var ConfigActions = {
 
     // TODO: use a better trigger for local v. hosted than a regex
     if (!host.match(/localhost/) && !host.match(/127.0.0.1/)) {
-      isHosted = false;
+      isHosted = true;
     }
 
     // FIXME: If we can, we should make defaultBranchId unnecessary. We should
