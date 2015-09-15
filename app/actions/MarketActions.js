@@ -32,9 +32,11 @@ var MarketActions = {
 
             var marketId = abi.bignum(cachedMarkets[i]._id);
             var blacklisted = _.contains(blacklist.markets[augur.network_id][branchId], abi.strip_0x(cachedMarkets[i]._id));
+            var onBranch = abi.bignum(cachedMarkets[i].branchId).eq(abi.bignum(branchId));
 
-            if (!blacklisted && !cachedMarkets[i].invalid && cachedMarkets[i].price && cachedMarkets[i].description) {
-
+            if (onBranch && !blacklisted && !cachedMarkets[i].invalid &&
+                cachedMarkets[i].price && cachedMarkets[i].description)
+            {
               cachedMarkets[i].id = marketId;
               cachedMarkets[i].endDate = moment().add(
                 (cachedMarkets[i].endDate - block)*constants.SECONDS_PER_BLOCK,
@@ -48,9 +50,7 @@ var MarketActions = {
               cachedMarkets[i].numOutcomes = parseInt(cachedMarkets[i].numOutcomes);
               cachedMarkets[i].tradingPeriod = abi.bignum(cachedMarkets[i].tradingPeriod);
               cachedMarkets[i].branchId = branchId;
-              cachedMarkets[i].loaded = true;
               cachedMarkets[i].traderId = abi.bignum(cachedMarkets[i].participants[account]);
-
               if (cachedMarkets[i].outcomes && cachedMarkets[i].outcomes.length) {
                 for (var j = 0; j < cachedMarkets[i].outcomes.length; ++j) {
                   if (cachedMarkets[i].outcomes[j].shares[account]) {
@@ -63,7 +63,7 @@ var MarketActions = {
                   cachedMarkets[i].outcomes[j].price = abi.bignum(cachedMarkets[i].outcomes[j].price);
                 }
               }
-
+              cachedMarkets[i].loaded = true;
               markets[marketId] = cachedMarkets[i];
             }
           }
