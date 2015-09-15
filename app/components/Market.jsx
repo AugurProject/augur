@@ -17,7 +17,7 @@ var Outcomes = require('./Outcomes');
 
 var Market = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin('market', 'asset', 'branch', 'config'), State],
+  mixins: [FluxMixin, StoreWatchMixin('market', 'asset', 'branch', 'config')],
 
   getStateFromFlux: function () {
 
@@ -70,6 +70,7 @@ var Market = React.createClass({
     var outstandingShares = outstandingShares ? +outstandingShares.toFixed(2) : '-';
     var tradingFee = market.tradingFee ? +market.tradingFee.times(100).toFixed(2)+'%' : '-';
     var traderCount = market.traderCount ? +market.traderCount.toNumber() : '-';
+    var author = market.author ? abi.hex(market.author) : '-';
 
     var outcomes = _.map(this.state.market.outcomes, function (outcome) {
       return (
@@ -94,7 +95,7 @@ var Market = React.createClass({
           <p className='alt'>Outstanding shares: <b>{ outstandingShares }</b></p>
           <p>Fee: <b>{ tradingFee }</b></p>
           <p className='alt'>Traders: <b>{ traderCount }</b></p>
-          <p>Author: <b className='truncate author'>{ abi.hex(market.author) || '' }</b></p>
+          <p>Author: <b className='truncate author'>{ author }</b></p>
           <p className='alt'>End date: <b>{ formattedDate }</b></p>
         </div>
         <div className='price-history col-sm-8'>

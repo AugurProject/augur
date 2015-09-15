@@ -220,11 +220,11 @@ var MarketActions = {
 
   loadMarket: function (marketId) {
 
-    if (this.flux.store('config').getState().isHosted) {
-      this.flux.actions.market.loadMarketFromMarketeer(marketId);
-    } else {
+    //if (this.flux.store('config').getState().isHosted) {
+    //  this.flux.actions.market.loadMarketFromMarketeer(marketId);
+    //} else {
       this.flux.actions.market.loadSomeMarkets([marketId]);
-    }
+    //}
   },
 
   loadSomeMarkets: function(marketIds) {
@@ -241,6 +241,8 @@ var MarketActions = {
         // TODO each of these should not be a separate event
         this.dispatch(constants.market.ADD_MARKET_SUCCESS, { market: market });
       }
+
+      //console.log('loading', marketId.toString(16));
       var commands = this.flux.actions.market.batchMarket(marketId);
       _.each(_.chunk(commands, 5), function(chunk) {
           ethereumClient.batch(chunk);
