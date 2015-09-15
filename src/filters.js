@@ -52,17 +52,16 @@ module.exports = function (augur) {
         search_price_logs: function (logs, market_id, outcome_id) {
             // topics: [?, user, unadjusted marketid, outcome]
             // array data: [price, cost]
-            var parsed, rtype, price_logs;
+            var parsed, price_logs, market, marketplus;
             if (logs) {
-                rtype = (augur.bignumbers) ? "BigNumber" : "string";
                 price_logs = [];
                 for (var i = 0, len = logs.length; i < len; ++i) {
                     if (logs[i] && logs[i].data !== undefined &&
                         logs[i].data !== null && logs[i].data !== "0x")
                     {
                         parsed = augur.rpc.unmarshal(logs[i].data);
-                        var market = abi.bignum(logs[i].topics[2]);
-                        var marketplus = market.plus(abi.constants.MOD);
+                        market = abi.bignum(logs[i].topics[2]);
+                        marketplus = market.plus(abi.constants.MOD);
                         if (marketplus.lt(abi.constants.BYTES_32)) {
                             market = marketplus;
                         }
@@ -70,9 +69,9 @@ module.exports = function (augur) {
                             abi.bignum(logs[i].topics[3]).eq(abi.bignum(outcome_id)))
                         {
                             price_logs.push({
-                                price: abi.unfix(parsed[0], rtype),
-                                cost: abi.unfix(parsed[1], rtype),
-                                blockNumber: abi.bignum(logs[i].blockNumber, rtype)
+                                price: abi.unfix(parsed[0], "string"),
+                                cost: abi.unfix(parsed[1], "string"),
+                                blockNumber: abi.hex(logs[i].blockNumber)
                             });
                         }
                     }

@@ -13,7 +13,10 @@ var log = console.log;
 
 describe("Comments (whisper)", function () {
 
+    var filter;
     var market = "0x01";
+    // var markets = augur.getMarkets(augur.branches.dev);
+    // var market = markets[markets.length - 1];
 
     var pkg = { marketId: market, author: augur.coinbase };
 
@@ -29,7 +32,7 @@ describe("Comments (whisper)", function () {
 
     it("should set up comments for market " + market + " and return the filter id", function () {
         this.timeout(constants.TIMEOUT);
-        var filter = augur.comments.initComments(market);
+        filter = augur.comments.initComments(market);
         assert(filter);
         assert.notStrictEqual(filter, "0x");
         assert.isTrue(augur.comments.resetComments(market));
@@ -59,7 +62,7 @@ describe("Comments (whisper)", function () {
     it("should get the two comments for market " + market, function () {
         this.timeout(constants.TIMEOUT);
         var comments = augur.comments.getMarketComments(market);
-        assert(comments);
+        assert.isArray(comments);
         assert.strictEqual(comments.length, 2);
     });
 
@@ -79,9 +82,8 @@ describe("Comments (whisper)", function () {
         assert(!augur.comments.getMarketComments(market));
     });
 
-    // crashes geth (!)
-    // it("should uninstall filter " + filter, function () {
-    //     this.timeout(constants.TIMEOUT);
-    //     assert(augur.comments.uninstallFilter(filter));
-    // });
+    it("should uninstall filter " + filter, function () {
+        this.timeout(constants.TIMEOUT);
+        assert(augur.comments.uninstallFilter(filter));
+    });
 });
