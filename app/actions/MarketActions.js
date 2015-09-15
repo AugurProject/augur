@@ -7,16 +7,19 @@ var blacklist = require('../libs/blacklist');
 var MarketActions = {
 
   loadMarketsFromMarketeer: function () {
+
     var self = this;
-    var block = this.flux.store('network').getState().blockNumber;
+    var currentBlock = this.flux.store('network').getState().blockNumber;
     var account = this.flux.store('config').getAccount();
     var branchId = this.flux.store('branch').getCurrentBranch().id;
 
     // fetch markets from mongodb
     $.get(constants.MARKETEER, function (data) {
+
       var markets, cached, marketId, blacklisted, onBranch, numOutcomes;
       cached = JSON.parse(data).rows;
       markets = {};
+
       for (var i = 0, len = cached.length; i < len; ++i) {
         marketId = abi.bignum(cached[i]._id);
         blacklisted = _.contains(
@@ -28,10 +31,7 @@ var MarketActions = {
             cached[i].price && cached[i].description)
         {
           cached[i].id = marketId;
-          cached[i].endDate = moment().add(
-            (cached[i].endDate - block)*constants.SECONDS_PER_BLOCK,
-            "seconds"
-          );
+          cached[i].endDate = utilities.blockToDate(cached[i].endDate, currentBlock)
           cached[i].price = abi.bignum(cached[i].price);
           cached[i].tradingFee = abi.bignum(cached[i].tradingFee);
           cached[i].creationFee = abi.bignum(cached[i].creationFee);
@@ -78,6 +78,7 @@ var MarketActions = {
   },
 
   loadMarkets: function () {
+
     var initialPage = 1;
     var branchId = this.flux.store('branch').getCurrentBranch().id;
 
@@ -120,6 +121,7 @@ var MarketActions = {
   },
 
   loadNewMarkets: function () {
+
     if (this.flux.store('config').getState().isHosted) {
       this.flux.actions.market.loadMarkets();
     } else {
@@ -137,30 +139,38 @@ var MarketActions = {
   },
 
   loadMarketFromMarketeer: function (marketId) {
+
     var self = this;
-    var block = this.flux.store('network').getState().blockNumber;
+    var currentBlock = this.flux.store('network').getState().blockNumber;
     var account = this.flux.store('config').getAccount();
     var branchId = this.flux.store('branch').getCurrentBranch().id;
 
     // TODO install a real mongo rest api with working filters
     $.get(constants.MARKETEER, function (data) {
-      var market, cached, marketId, blacklisted, onBranch, numOutcomes;
+
+      var market, cached, blacklisted, onBranch, numOutcomes;
       cached = JSON.parse(data).rows;
+
       for (var i = 0, len = cached.length; i < len; ++i) {
-        if (abi.bignum(cached[i]._id).eq(marketId)) {
+
+        var id = marketId.toString(16);
+        var cachedId = abi.bignum(cached[i]._id).toString(16);
+
+        if (id === cachedId) {
+
+          console.log('loading market', cached[i]._id);
+
           blacklisted = _.contains(
             blacklist.markets[augur.network_id][branchId],
             abi.strip_0x(cached[i]._id)
           );
+
           onBranch = abi.bignum(cached[i].branchId).eq(abi.bignum(branchId));
           if (onBranch && !blacklisted && !cached[i].invalid &&
               cached[i].price && cached[i].description)
           {
             cached[i].id = marketId;
-            cached[i].endDate = moment().add(
-              (cached[i].endDate - block)*constants.SECONDS_PER_BLOCK,
-              "seconds"
-            );
+            cached[i].endDate = utilities.blockToDate(cached[i].endDate, currentBlock);
             cached[i].price = abi.bignum(cached[i].price);
             cached[i].tradingFee = abi.bignum(cached[i].tradingFee);
             cached[i].creationFee = abi.bignum(cached[i].creationFee);
@@ -204,6 +214,7 @@ var MarketActions = {
   },
 
   loadMarket: function (marketId) {
+
     if (this.flux.store('config').getState().isHosted) {
       this.flux.actions.market.loadMarketFromMarketeer(marketId);
     } else {

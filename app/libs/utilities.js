@@ -5,10 +5,10 @@ var moment = window.moment = require('moment');
 
 module.exports = {
 
-  blockToDate: function(block) {
+  blockToDate: function(block, currentBlock) {
 
     // calculate date from block number
-    var currentBlock = augur.rpc.blockNumber();
+    var currentBlock = currentBlock || augur.rpc.blockNumber();
     var seconds = (block - currentBlock) * constants.SECONDS_PER_BLOCK;
     var date = moment().add(seconds, 'seconds');
 
