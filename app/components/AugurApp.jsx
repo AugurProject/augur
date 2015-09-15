@@ -320,7 +320,7 @@ var ErrorModal = React.createClass({
             <h3>Ethereum not found</h3>
             <p>Augur is a decentralized application that runs on the Ethereum network.  It requires an Ethereum node to be running and current.  Augur could not find a local node which probably means it's not installed, running or is misconfigured.</p>
             <p>Get help <a onClick={ this.showInstallHelp } href="javascript:void(0)">installing and configuring an Ethereum client node</a></p>
-            <p>or <a onClick={ this.startDemoMode } href="javascript:void(0)">proceed using a hosted node.</a></p>
+            <a onClick={ this.startDemoMode } className="btn btn-primary pull-right" href="javascript:void(0)">Use Hosted Nodes</a>
             { installHelp }
           </div>
         </Modal>
