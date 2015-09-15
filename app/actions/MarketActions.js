@@ -158,17 +158,17 @@ var MarketActions = {
 
         if (id === cachedId) {
 
-          console.log('loading market', cached[i]._id);
-
           blacklisted = _.contains(
             blacklist.markets[augur.network_id][branchId],
             abi.strip_0x(cached[i]._id)
           );
 
           onBranch = abi.bignum(cached[i].branchId).eq(abi.bignum(branchId));
+
           if (onBranch && !blacklisted && !cached[i].invalid &&
               cached[i].price && cached[i].description)
           {
+
             cached[i].id = marketId;
             cached[i].endDate = utilities.blockToDate(cached[i].endDate, currentBlock);
             cached[i].price = abi.bignum(cached[i].price);
@@ -180,6 +180,7 @@ var MarketActions = {
             cached[i].tradingPeriod = abi.bignum(cached[i].tradingPeriod);
             cached[i].traderId = abi.bignum(cached[i].participants[account]);
             numOutcomes = cached[i].outcomes.length;
+
             if (cached[i].outcomes && numOutcomes) {
               for (var j = 0; j < numOutcomes; ++j) {
                 if (cached[i].outcomes[j].outstandingShares) {
@@ -203,13 +204,17 @@ var MarketActions = {
             }
             cached[i].loaded = true;
             market = cached[i];
+
+            //console.log(market);
+      
+            self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {
+              market: market
+            });
+
             break;
           }
         }
       }
-      self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {
-        market: market
-      });
     });
   },
 
