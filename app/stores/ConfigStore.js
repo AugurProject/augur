@@ -9,6 +9,7 @@ var state = {
   debug: false,
   loaded: false,
   isHosted: false,
+  useMarketCache: false,
   percentLoaded: null,
   ethereumClient: null
 }
@@ -64,6 +65,7 @@ var ConfigStore = Fluxxor.createStore({
     state.ethereumClient = payload.ethereumClient;
     state.host = payload.host;
     state.isHosted = payload.isHosted;
+    state.useMarketCache = payload.useMarketCache;
     state.ethereumClientFailed = false;
     this.emit(constants.CHANGE_EVENT);
   },

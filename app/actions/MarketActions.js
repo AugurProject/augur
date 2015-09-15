@@ -83,7 +83,7 @@ var MarketActions = {
     var branchId = this.flux.store('branch').getCurrentBranch().id;
 
     // if we're on a hosted node, load preprocessed market data
-    if (this.flux.store('config').getState().isHosted) {
+    if (this.flux.store('config').getState().useMarketCache) {
       return this.flux.actions.market.loadMarketsFromMarketeer();
     }
 
@@ -122,7 +122,7 @@ var MarketActions = {
 
   loadNewMarkets: function () {
 
-    if (this.flux.store('config').getState().isHosted) {
+    if (this.flux.store('config').getState().useMarketCache) {
       this.flux.actions.market.loadMarkets();
     } else {
       var branchId = this.flux.store('branch').getCurrentBranch().id;
@@ -220,7 +220,7 @@ var MarketActions = {
 
   loadMarket: function (marketId) {
 
-    //if (this.flux.store('config').getState().isHosted) {
+    //if (this.flux.store('config').getState().useMarketCache) {
     //  this.flux.actions.market.loadMarketFromMarketeer(marketId);
     //} else {
       this.flux.actions.market.loadSomeMarkets([marketId]);

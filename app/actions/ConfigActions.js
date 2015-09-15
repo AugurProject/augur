@@ -9,10 +9,12 @@ var ConfigActions = {
     host = host || this.flux.store('config').getState().host;
     var branch = this.flux.store('branch').getState().currentBranch || { id: process.env.AUGUR_BRANCH_ID };
     var isHosted = false;
+    var useMarketCache = this.flux.store('config').getState().useMarketCache;
 
     // TODO: use a better trigger for local v. hosted than a regex
     if (!host.match(/localhost/) && !host.match(/127.0.0.1/)) {
       isHosted = true;
+      // useMarketCache = true;  // uncomment when out of experimental mode
     }
 
     // FIXME: If we can, we should make defaultBranchId unnecessary. We should
@@ -27,7 +29,17 @@ var ConfigActions = {
     this.dispatch(constants.config.UPDATE_ETHEREUM_CLIENT_SUCCESS, {
       ethereumClient: ethereumClient,
       host: host,
-      isHosted: isHosted
+      isHosted: isHosted,
+      useMarketCache: useMarketCache
+    });
+  },
+
+  useMarketCache: function(useMarketCache) {
+
+    console.log(useMarketCache);
+
+    this.dispatch(constants.config.UPDATE_ETHEREUM_CLIENT_SUCCESS, {
+      useMarketCache: useMarketCache
     });
   },
 
