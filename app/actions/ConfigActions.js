@@ -101,6 +101,7 @@ var ConfigActions = {
     var self = this;
     augur.web.register(handle, password, function (account) {
       if (account && account.address) {
+
         console.log("new account registered: " + account.handle);
         console.log("address: " + account.address);
         console.log("private key: " + account.privateKey.toString("hex"));

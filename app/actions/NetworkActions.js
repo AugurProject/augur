@@ -15,7 +15,7 @@ var NetworkActions = {
   checkNetwork: function() {
 
     var ethereumClient = this.flux.store('config').getEthereumClient();
-    var networkState = this.flux.store('network').getState()
+    var networkState = this.flux.store('network').getState();
 
     var nowUp = augur.rpc.listening();
 
@@ -34,19 +34,15 @@ var NetworkActions = {
       // stop monitoring filters
       augur.filters.ignore(true);
 
-      this.dispatch(
-        constants.network.UPDATE_ETHEREUM_STATUS,
-        {ethereumStatus: constants.network.ETHEREUM_STATUS_FAILED}
-      );
+      this.dispatch(constants.network.UPDATE_ETHEREUM_STATUS, {
+        ethereumStatus: constants.network.ETHEREUM_STATUS_FAILED
+      });
 
     } else if (wasDown && nowUp) {
 
-      this.dispatch(
-        constants.network.UPDATE_ETHEREUM_STATUS,
-        {
-          ethereumStatus: constants.network.ETHEREUM_STATUS_CONNECTED
-        }
-      );
+      this.dispatch(constants.network.UPDATE_ETHEREUM_STATUS, {
+        ethereumStatus: constants.network.ETHEREUM_STATUS_CONNECTED
+      });
 
       this.flux.store('config').setHost();
       this.flux.actions.network.initializeNetwork();

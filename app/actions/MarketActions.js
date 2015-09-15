@@ -1,197 +1,212 @@
 var _ = require('lodash');
 var abi = require('augur-abi');
-var Bignumber = require('bignumber.js');
 var constants = require('../libs/constants');
 var utilities = require('../libs/utilities');
 var blacklist = require('../libs/blacklist');
 
 var MarketActions = {
 
-  loadMarkets: function () {
-
+  loadMarketsFromMarketeer: function () {
     var self = this;
-    var initialPage = 1;
-    var currentBranch = this.flux.store('branch').getCurrentBranch();
-    var configState = this.flux.store('config').getState();
+    var block = this.flux.store('network').getState().blockNumber;
+    var account = this.flux.store('config').getAccount();
+    var branchId = this.flux.store('branch').getCurrentBranch().id;
 
-    // if we're on a hosted node, load preprocessed market data
-    if (configState.isHosted) {
-
-      var branchId = currentBranch.id;
-      var account = this.flux.store('config').getAccount();
-
-      augur.rpc.blockNumber(function (block) {   // why this?
-
-        // fetch markets from mongodb
-        $.get(constants.MONGODB, function (data) {
-
-          var markets = {};
-          var cachedMarkets = JSON.parse(data).rows;
-
-          for (var i = 0, len = cachedMarkets.length; i < len; ++i) {
-
-            var marketId = abi.bignum(cachedMarkets[i]._id);
-            var blacklisted = _.contains(blacklist.markets[augur.network_id][branchId], abi.strip_0x(cachedMarkets[i]._id));
-            var onBranch = abi.bignum(cachedMarkets[i].branchId).eq(abi.bignum(branchId));
-
-            if (onBranch && !blacklisted && !cachedMarkets[i].invalid &&
-                cachedMarkets[i].price && cachedMarkets[i].description)
-            {
-              cachedMarkets[i].id = marketId;
-              cachedMarkets[i].endDate = moment().add(
-                (cachedMarkets[i].endDate - block)*constants.SECONDS_PER_BLOCK,
-                "seconds"
-              );
-              cachedMarkets[i].price = abi.bignum(cachedMarkets[i].price);
-              cachedMarkets[i].tradingFee = abi.bignum(cachedMarkets[i].tradingFee);
-              cachedMarkets[i].creationFee = abi.bignum(cachedMarkets[i].creationFee);
-              cachedMarkets[i].traderCount = abi.bignum(cachedMarkets[i].traderCount);
-              cachedMarkets[i].alpha = abi.bignum(cachedMarkets[i].alpha);
-              cachedMarkets[i].numOutcomes = parseInt(cachedMarkets[i].numOutcomes);
-              cachedMarkets[i].tradingPeriod = abi.bignum(cachedMarkets[i].tradingPeriod);
-              cachedMarkets[i].branchId = branchId;
-              cachedMarkets[i].traderId = abi.bignum(cachedMarkets[i].participants[account]);
-              if (cachedMarkets[i].outcomes && cachedMarkets[i].outcomes.length) {
-                for (var j = 0; j < cachedMarkets[i].outcomes.length; ++j) {
-                  if (cachedMarkets[i].outcomes[j].shares[account]) {
-                    cachedMarkets[i].outcomes[j].sharesHeld = abi.bignum(cachedMarkets[i].outcomes[j].shares[account]);
-                  } else {
-                    cachedMarkets[i].outcomes[j].sharesHeld = abi.bignum(0);
-                  }
-
-                  cachedMarkets[i].outcomes[j].outstandingShares = abi.bignum(0);
-                  cachedMarkets[i].outcomes[j].price = abi.bignum(cachedMarkets[i].outcomes[j].price);
-                }
+    // fetch markets from mongodb
+    $.get(constants.MARKETEER, function (data) {
+      var markets, cached, marketId, blacklisted, onBranch, numOutcomes;
+      cached = JSON.parse(data).rows;
+      markets = {};
+      for (var i = 0, len = cached.length; i < len; ++i) {
+        marketId = abi.bignum(cached[i]._id);
+        blacklisted = _.contains(
+          blacklist.markets[augur.network_id][branchId],
+          abi.strip_0x(cached[i]._id)
+        );
+        onBranch = abi.bignum(cached[i].branchId).eq(abi.bignum(branchId));
+        if (onBranch && !blacklisted && !cached[i].invalid &&
+            cached[i].price && cached[i].description)
+        {
+          cached[i].id = marketId;
+          cached[i].endDate = moment().add(
+            (cached[i].endDate - block)*constants.SECONDS_PER_BLOCK,
+            "seconds"
+          );
+          cached[i].price = abi.bignum(cached[i].price);
+          cached[i].tradingFee = abi.bignum(cached[i].tradingFee);
+          cached[i].creationFee = abi.bignum(cached[i].creationFee);
+          cached[i].traderCount = abi.bignum(cached[i].traderCount);
+          cached[i].alpha = abi.bignum(cached[i].alpha);
+          cached[i].numOutcomes = parseInt(cached[i].numOutcomes);
+          cached[i].tradingPeriod = abi.bignum(cached[i].tradingPeriod);
+          cached[i].traderId = abi.bignum(cached[i].participants[account]);
+          numOutcomes = cached[i].outcomes.length;
+          if (cached[i].outcomes && numOutcomes) {
+            for (var j = 0; j < numOutcomes; ++j) {
+              if (cached[i].outcomes[j].outstandingShares) {
+                cached[i].outcomes[j].outstandingShares = abi.bignum(
+                  cached[i].outcomes[j].outstandingShares
+                );
+              } else {
+                cached[i].outcomes[j].outstandingShares = abi.bignum(0);
               }
-              cachedMarkets[i].loaded = true;
-              markets[marketId] = cachedMarkets[i];
+              if (cached[i].outcomes[j].shares[account]) {
+                cached[i].outcomes[j].sharesHeld = abi.bignum(
+                  cached[i].outcomes[j].shares[account]
+                );
+              } else {
+                cached[i].outcomes[j].sharesHeld = abi.bignum(0);
+              }
+              cached[i].outcomes[j].price = abi.bignum(
+                cached[i].outcomes[j].price
+              );
             }
           }
+          cached[i].loaded = true;
+          markets[marketId] = cached[i];
+        }
+      }
 
-          // store markets
-          self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {
-            markets: _.sortBy(markets, "endDate").reverse()
-          });
-
-          self.flux.actions.config.updatePercentLoaded(100);
-        });
+      // save markets to MarketStore
+      self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {
+        markets: markets
       });
+
+      // loading complete!
+      self.flux.actions.config.updatePercentLoaded(100);
+    });
+  },
+
+  loadMarkets: function () {
+    var initialPage = 1;
+    var branchId = this.flux.store('branch').getCurrentBranch().id;
+
+    // if we're on a hosted node, load preprocessed market data
+    if (this.flux.store('config').getState().isHosted) {
+      return this.flux.actions.market.loadMarketsFromMarketeer();
+    }
 
     // if we're on a local node, get data directly from geth via RPC
-    } else {
+    var ethereumClient = this.flux.store('config').getEthereumClient();
+    var marketIds = ethereumClient.getMarkets(branchId);
 
-      var ethereumClient = this.flux.store('config').getEthereumClient();
-      var marketIds = ethereumClient.getMarkets(currentBranch.id);
+    // initialize all markets
+    var markets = {};
+    _.each(marketIds, function (id) {
+      markets[id] = this.flux.actions.market.initMarket(id);
+    }, this);
 
-      // initialize all markets
-      var markets = {};
-      _.each(marketIds, function (id) {
-        markets[id] = this.flux.actions.market.initMarket(id);
-      }, this);
+    this.dispatch(constants.market.LOAD_MARKETS_SUCCESS, { markets: markets });
 
-      this.dispatch(constants.market.LOAD_MARKETS_SUCCESS, { markets: markets });
+    // breaks ids into pages
+    // load one page at a time
+    var marketPageIds = _.chunk(marketIds, constants.MARKETS_PER_PAGE);
+    // load all at once
+    // var marketPageIds = [marketIds];
 
-      // breaks ids into pages
-      // load one page at a time
-      var marketPageIds = _.chunk(marketIds, constants.MARKETS_PER_PAGE);
-      // load all at once
-      // var marketPageIds = [marketIds];
+    // setup page loading
+    this.dispatch(constants.market.MARKETS_LOADING, {
+      marketLoadingIds: marketPageIds,
+      loadingPage: initialPage
+    });
 
-      // setup page loading
-      this.dispatch(constants.market.MARKETS_LOADING, {
-        marketLoadingIds: marketPageIds,
-        loadingPage: initialPage
-      });
+    // load initial markets
+    this.flux.actions.market.loadSomeMarkets(marketPageIds[initialPage-1]);
 
-      // load initial markets
-      this.flux.actions.market.loadSomeMarkets(marketPageIds[initialPage-1]);
-
-      // short circuit loading if no markets
-      if (!_.keys(marketIds).length) this.flux.actions.config.updatePercentLoaded(100);
+    // short circuit loading if no markets
+    if (!_.keys(marketIds).length) {
+      this.flux.actions.config.updatePercentLoaded(100);
     }
   },
 
   loadNewMarkets: function () {
-
-    var configState = this.flux.store('config').getState();
-
-    if (configState.isHosted) {
-
+    if (this.flux.store('config').getState().isHosted) {
       this.flux.actions.market.loadMarkets();
-
     } else {
-
-      var currentBranch = this.flux.store('branch').getCurrentBranch();
+      var branchId = this.flux.store('branch').getCurrentBranch().id;
       var ethereumClient = this.flux.store('config').getEthereumClient();
       var currentMarkets = this.flux.store('market').getState().markets;
       var currentMarketIds = _.map(_.reject(currentMarkets, function (market) {
         return typeof(market.id) === 'string' && market.id.match(/pending/);
       }), 'id');
-      var newMarketIds = ethereumClient.getMarkets(currentBranch.id, currentMarketIds);
-      if (newMarketIds.length) this.flux.actions.market.loadSomeMarkets(newMarketIds);
+      var newMarketIds = ethereumClient.getMarkets(branchId, currentMarketIds);
+      if (newMarketIds.length) {
+        this.flux.actions.market.loadSomeMarkets(newMarketIds);
+      }
     }
   },
 
-  loadMarket: function (marketId) {
+  loadMarketFromMarketeer: function (marketId) {
     var self = this;
-    var configState = this.flux.store('config').getState();
-    if (configState.isHosted) {
+    var block = this.flux.store('network').getState().blockNumber;
+    var account = this.flux.store('config').getAccount();
+    var branchId = this.flux.store('branch').getCurrentBranch().id;
 
-      var branchId = this.flux.store('branch').getCurrentBranch().id;
-      var account = this.flux.store('config').getAccount();
-
-      augur.rpc.blockNumber(function (block) {
-        var market, marketId;
-        market = self.flux.store('markets').getMarket(marketId);
-        if (market) {
-          self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, { market: market });
-        } else {
-          marketId = abi.bignum(marketId, "hex");
-          $.get(constants.MONGODB, function (data) {
-            var cachedMarkets, blacklisted;
-            cachedMarkets = JSON.parse(data).rows;
-            for (var i = 0, len = cachedMarkets.length; i < len; ++i) {
-              blacklisted = _.contains(
-                blacklist.cachedMarkets[augur.network_id][branchId],
-                abi.strip_0x(cachedMarkets[i]._id)
-              );
-              if (!blacklisted && !cachedMarkets[i].invalid &&
-                  cachedMarkets[i].price && cachedMarkets[i].description)
-              {
-                if (cachedMarkets[i]._id === marketId) {
-                  market = cachedMarkets[i];
-                  market.endDate = moment().add(
-                    (market.endDate - block)*constants.SECONDS_PER_BLOCK,
-                    "seconds"
+    // TODO install a real mongo rest api with working filters
+    $.get(constants.MARKETEER, function (data) {
+      var market, cached, marketId, blacklisted, onBranch, numOutcomes;
+      cached = JSON.parse(data).rows;
+      for (var i = 0, len = cached.length; i < len; ++i) {
+        if (abi.bignum(cached[i]._id).eq(marketId)) {
+          blacklisted = _.contains(
+            blacklist.markets[augur.network_id][branchId],
+            abi.strip_0x(cached[i]._id)
+          );
+          onBranch = abi.bignum(cached[i].branchId).eq(abi.bignum(branchId));
+          if (onBranch && !blacklisted && !cached[i].invalid &&
+              cached[i].price && cached[i].description)
+          {
+            cached[i].id = marketId;
+            cached[i].endDate = moment().add(
+              (cached[i].endDate - block)*constants.SECONDS_PER_BLOCK,
+              "seconds"
+            );
+            cached[i].price = abi.bignum(cached[i].price);
+            cached[i].tradingFee = abi.bignum(cached[i].tradingFee);
+            cached[i].creationFee = abi.bignum(cached[i].creationFee);
+            cached[i].traderCount = abi.bignum(cached[i].traderCount);
+            cached[i].alpha = abi.bignum(cached[i].alpha);
+            cached[i].numOutcomes = parseInt(cached[i].numOutcomes);
+            cached[i].tradingPeriod = abi.bignum(cached[i].tradingPeriod);
+            cached[i].traderId = abi.bignum(cached[i].participants[account]);
+            numOutcomes = cached[i].outcomes.length;
+            if (cached[i].outcomes && numOutcomes) {
+              for (var j = 0; j < numOutcomes; ++j) {
+                if (cached[i].outcomes[j].outstandingShares) {
+                  cached[i].outcomes[j].outstandingShares = abi.bignum(
+                    cached[i].outcomes[j].outstandingShares
                   );
-                  market.price = abi.bignum(market.price);
-                  market.tradingFee = abi.bignum(market.tradingFee);
-                  market.creationFee = abi.bignum(market.creationFee);
-                  market.traderCount = abi.bignum(market.traderCount);
-                  market.alpha = abi.bignum(market.alpha);
-                  market.numOutcomes = parseInt(market.numOutcomes);
-                  market.tradingPeriod = abi.bignum(market.tradingPeriod);
-                  market.branchId = branchId;
-                  market.loaded = true;
-                  market.traderId = abi.bignum(market.participants[account]);
-                  if (market.outcomes && market.outcomes.length) {
-                    for (var j = 0; j < market.outcomes.length; ++j) {
-                      market.outcomes[j].sharesHeld = abi.bignum(
-                        market.outcomes[j].shares[account]
-                      );
-                    }
-                  }
-                  break;
+                } else {
+                  cached[i].outcomes[j].outstandingShares = abi.bignum(0);
                 }
+                if (cached[i].outcomes[j].shares[account]) {
+                  cached[i].outcomes[j].sharesHeld = abi.bignum(
+                    cached[i].outcomes[j].shares[account]
+                  );
+                } else {
+                  cached[i].outcomes[j].sharesHeld = abi.bignum(0);
+                }
+                cached[i].outcomes[j].price = abi.bignum(
+                  cached[i].outcomes[j].price
+                );
               }
             }
-            self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, { market: market });
-          });
+            cached[i].loaded = true;
+            market = cached[i];
+            break;
+          }
         }
+      }
+      self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {
+        market: market
       });
+    });
+  },
 
+  loadMarket: function (marketId) {
+    if (this.flux.store('config').getState().isHosted) {
+      this.flux.actions.market.loadMarketFromMarketeer(marketId);
     } else {
-
       this.flux.actions.market.loadSomeMarkets([marketId]);
     }
   },

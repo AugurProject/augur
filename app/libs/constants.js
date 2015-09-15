@@ -7,7 +7,7 @@ var ONE_FXP = new BigNumber(2).toPower(64);
 
 module.exports = {
   DEMO_HOST: 'eth1.augur.net:8545',
-  MONGODB: 'http://db1.augur.net/marketeer/markets/?',
+  MARKETEER: 'http://db1.augur.net/marketeer/markets/?',
   ONE_FXP: ONE_FXP,
   NO: ONE_FXP,
   YES: ONE_FXP.mul(2),

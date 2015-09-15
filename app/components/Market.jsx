@@ -20,31 +20,30 @@ var Market = React.createClass({
   mixins: [FluxMixin, StoreWatchMixin('market', 'asset', 'branch', 'config'), State],
 
   getStateFromFlux: function () {
-    if (this.props.market.markets && this.props.market.markets.length) {
-      var flux = this.getFlux();
-      var account = flux.store('config').getAccount();
-      var assetState = flux.store('asset').getState();
-      var currentBranch = flux.store('branch').getCurrentBranch();
-      var marketId = new BigNumber(this.props.params.marketId, 16);
-      var market = flux.store('market').getState().markets[marketId];
 
-      if (currentBranch && market && market.tradingPeriod && currentBranch.currentPeriod >= market.tradingPeriod.toNumber()) {
-        market.matured = true;
-      }
+    var flux = this.getFlux();
 
-      return {
-        currentBranch: currentBranch,
-        market: market,
-        cashBalance: assetState.cashBalance,
-        account: account
-      };
-    } else {
+    var account = flux.store('config').getAccount();
+    var assetState = flux.store('asset').getState();
+    var currentBranch = flux.store('branch').getCurrentBranch();
+    var marketId = new BigNumber(this.props.params.marketId, 16);
+    var market = flux.store('market').getState().markets[marketId];
 
-      return {};
+    if (currentBranch && market && market.tradingPeriod &&
+        currentBranch.currentPeriod >= market.tradingPeriod.toNumber())
+    {
+      market.matured = true;
     }
+
+    return {
+      currentBranch: currentBranch,
+      market: market,
+      cashBalance: assetState.cashBalance,
+      account: account
+    };
   },
 
-  render: function() {
+  render: function () {
 
     // return nothing until we have an actual market loaded
     if (_.isUndefined(this.state.market) || (this.state.market && !this.state.market.loaded) ) return (<div />);
@@ -95,7 +94,7 @@ var Market = React.createClass({
           <p className='alt'>Outstanding shares: <b>{ outstandingShares }</b></p>
           <p>Fee: <b>{ tradingFee }</b></p>
           <p className='alt'>Traders: <b>{ traderCount }</b></p>
-          <p>Author: <b className='truncate author'>{ abi.prefix_hex(abi.bignum(market.author).toString(16)) || '' }</b></p>
+          <p>Author: <b className='truncate author'>{ abi.hex(market.author) || '' }</b></p>
           <p className='alt'>End date: <b>{ formattedDate }</b></p>
         </div>
         <div className='price-history col-sm-8'>

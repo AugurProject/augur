@@ -1,4 +1,3 @@
-var abi = require('augur-abi');
 var Fluxxor = require('fluxxor');
 var constants = require('../libs/constants');
 var _ = require('lodash');
@@ -88,15 +87,11 @@ var MarketStore = Fluxxor.createStore({
   },
 
   handleUpdateMarketSuccess: function (payload) {
-
     if (state.markets[payload.market.id]) {
-      //console.log('market', payload.market.id, 'exists.  updating...');
       var updatedMarket = _.merge(state.markets[payload.market.id], payload.market);
       updatedMarket.loaded = this.marketIsLoaded(payload.market.id);
       state.markets[payload.market.id] = updatedMarket;
-      //console.log(updatedMarket);
     } else {
-      //console.log('market', payload.market.id, 'not found.  creating...');
       state.markets[payload.market.id] = payload.market;
     }
     this.emit(constants.CHANGE_EVENT);
@@ -115,7 +110,9 @@ var MarketStore = Fluxxor.createStore({
   handleDeleteMarketSuccess: function (payload) {
 
     // delete market if it exists
-    if (payload.marketId && state.markets[payload.marketId]) delete state.markets[payload.marketId];
+    if (payload.marketId && state.markets[payload.marketId]) {
+      delete state.markets[payload.marketId];
+    }
   }
 
 });
