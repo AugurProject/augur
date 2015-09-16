@@ -148,15 +148,12 @@ var MarketActions = {
     // TODO install a real mongo rest api with working filters
     $.get(constants.MARKETEER, function (data) {
 
-      var market, cached, blacklisted, onBranch, numOutcomes;
+      var cached, blacklisted, onBranch, numOutcomes;
       cached = JSON.parse(data).rows;
 
       for (var i = 0, len = cached.length; i < len; ++i) {
 
-        var id = marketId.toString(16);
-        var cachedId = abi.bignum(cached[i]._id).toString(16);
-
-        if (id === cachedId) {
+        if (abi.bignum(cached[i]._id).eq(marketId)) {
 
           blacklisted = _.contains(
             blacklist.markets[augur.network_id][branchId],
@@ -203,12 +200,9 @@ var MarketActions = {
               }
             }
             cached[i].loaded = true;
-            market = cached[i];
-
-            //console.log(market);
       
             self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {
-              market: market
+              market: cached[i]
             });
 
             break;
@@ -220,11 +214,11 @@ var MarketActions = {
 
   loadMarket: function (marketId) {
 
-    //if (this.flux.store('config').getState().useMarketCache) {
-    //  this.flux.actions.market.loadMarketFromMarketeer(marketId);
-    //} else {
+    // if (this.flux.store('config').getState().useMarketCache) {
+    //   this.flux.actions.market.loadMarketFromMarketeer(marketId);
+    // } else {
       this.flux.actions.market.loadSomeMarkets([marketId]);
-    //}
+    // }
   },
 
   loadSomeMarkets: function(marketIds) {

@@ -46,21 +46,17 @@ module.exports = {
     var value, unit;
     if (!wei) return { value: '', unit: 'ether', withUnit: '-' };
     value = abi.bignum(wei);
-    if (value !== undefined && value !== null && value.constructor === BigNumber) {
-      if (value.gte(augur.constants.ETHER)) {
-        value = value.dividedBy(augur.constants.ETHER);
-        unit = 'ether';
-      } else {
-        unit = 'wei';
-      }
-      return {
-        value: +value.toFixed(4),
-        unit: unit,
-        withUnit: value.toNumber() + ' ' + unit
-      };
+    if (value.gte(augur.constants.ETHER)) {
+      value = value.dividedBy(augur.constants.ETHER);
+      unit = 'ether';
     } else {
-      return { value: '', unit: 'ether', withUnit: '-' };
+      unit = 'wei';
     }
+    return {
+      value: +value.toFixed(4),
+      unit: unit,
+      withUnit: value.toNumber() + ' ' + unit
+    };
   },
 
   // check if account address is correctly formatted

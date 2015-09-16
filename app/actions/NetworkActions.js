@@ -32,7 +32,7 @@ var NetworkActions = {
       utilities.warn('failed to connect to ethereum');
 
       // stop monitoring filters
-      augur.filters.ignore(true);
+      // augur.filters.ignore(true);
 
       this.dispatch(constants.network.UPDATE_ETHEREUM_STATUS, {
         ethereumStatus: constants.network.ETHEREUM_STATUS_FAILED

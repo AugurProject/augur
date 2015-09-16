@@ -1,3 +1,4 @@
+var BigNumber = require('bignumber.js');
 var constants = require('../libs/constants');
 var utilities = require('../libs/utilities');
 var EthereumClient = require('../clients/EthereumClient');
@@ -12,9 +13,11 @@ var ConfigActions = {
     var useMarketCache = this.flux.store('config').getState().useMarketCache;
 
     // TODO: use a better trigger for local v. hosted than a regex
-    if (!host.match(/localhost/) && !host.match(/127.0.0.1/)) {
+    if (host.match(/localhost/) || host.match(/127.0.0.1/)) {
+      useMarketCache = false;
+    } else {
       isHosted = true;
-      // useMarketCache = true;  // uncomment when out of experimental mode
+      useMarketCache = true;
     }
 
     // FIXME: If we can, we should make defaultBranchId unnecessary. We should
@@ -92,8 +95,8 @@ var ConfigActions = {
         // update market when a price change has been detected
         price: function (result) {
           if (result && result.marketId) {
-            console.log("price updated:", result.marketId.toString(16));
-            self.flux.actions.market.loadMarket(result.marketId);
+            console.log("price updated:", result.marketId);
+            self.flux.actions.market.loadMarket(new BigNumber(result.marketId));
           }
         }
       });
