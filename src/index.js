@@ -1517,16 +1517,16 @@ augur.checkPeriod = function (branch) {
 
 // filters
 
-augur.getCreationBlock = function (market_id, callback) {
-    if (market_id) {
+augur.getCreationBlock = function (market, cb) {
+    if (market) {
         var filter = {
             fromBlock: "0x1",
             toBlock: rpc.blockNumber(),
             topics: ["creationBlock"]
         };
-        if (callback) {
+        if (this.utils.is_function(cb)) {
             this.filters.eth_getLogs(filter, function (logs) {
-                callback(logs);
+                if (logs) cb(logs);
             });
         } else {
             return this.filters.eth_getFilterLogs(filter);
@@ -1534,26 +1534,39 @@ augur.getCreationBlock = function (market_id, callback) {
     }
 };
 
-augur.getMarketPriceHistory = function (market_id, outcome_id, callback) {
-    if (market_id && outcome_id) {
+augur.getMarketPriceHistory = function (market, outcome, cb) {
+    if (market && outcome) {
         var filter = {
             fromBlock: "0x1",
-            toBlock: rpc.blockNumber(),
+            // toBlock: rpc.blockNumber(),
+            toBlock: "latest",
             address: this.contracts.buyAndSellShares,
             topics: ["updatePrice"]
         };
-        if (callback) {
+        if (this.utils.is_function(cb)) {
+            var self = this;
             this.filters.eth_getLogs(filter, function (logs) {
-                callback(
-                    this.filters.search_price_logs(logs, market_id, outcome_id)
-                );
-            }.bind(this));
+                if (logs) {
+                    if (logs.error) return console.error("eth_getLogs:", logs);
+                    var price_logs = self.filters.search_price_logs(logs, market, outcome);
+                    if (price_logs) {
+                        if (price_logs.error) {
+                            return console.error("search_price_logs:", price_logs);
+                        }
+                        cb(price_logs);
+                    }
+                }
+            });
         } else {
-            return this.filters.search_price_logs(
-                this.filters.eth_getLogs(filter),
-                market_id,
-                outcome_id
-            );
+            var logs = this.filters.eth_getLogs(filter);
+            if (logs) {
+                if (logs.error) throw logs;
+                var price_logs = self.filters.search_price_logs(logs, market, outcome);
+                if (price_logs) {
+                    if (price_logs.error) throw price_logs;
+                    return price_logs;
+                }
+            }
         }
     }
 };
