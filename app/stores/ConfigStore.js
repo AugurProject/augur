@@ -9,7 +9,7 @@ var state = {
   debug: false,
   loaded: false,
   isHosted: false,
-  useMarketCache: false,
+  useMarketCache: true,
   percentLoaded: null,
   ethereumClient: null
 }
@@ -23,7 +23,8 @@ var ConfigStore = Fluxxor.createStore({
       constants.config.UPDATE_ACCOUNT, this.handleUpdateAccount,
       constants.config.UPDATE_DEBUG, this.handleUpdateDebug,
       constants.config.UPDATE_PERCENT_LOADED_SUCCESS, this.handleUpdatePercentLoadedSuccess,
-      constants.config.LOAD_APPLICATION_DATA_SUCCESS, this.handleLoadApplicationDataSuccess
+      constants.config.LOAD_APPLICATION_DATA_SUCCESS, this.handleLoadApplicationDataSuccess,
+      constants.config.UPDATE_USE_MARKET_CACHE, this.handleUpdateUseMarketCache
     );
   },
 
@@ -56,8 +57,13 @@ var ConfigStore = Fluxxor.createStore({
     return account;
   },
 
+  handleUpdateUseMarketCache: function (payload) {
+    state.useMarketCache = payload.useMarketCache;
+    this.emit(constants.CHANGE_EVENT);
+  },
+
   handleUpdatePercentLoadedSuccess: function (payload) {
-    state.percentLoaded = payload.percentLoaded
+    state.percentLoaded = payload.percentLoaded;
     this.emit(constants.CHANGE_EVENT);
   },
 

@@ -22,7 +22,8 @@ module.exports = {
     UPDATE_ACCOUNT: null,
     UPDATE_DEBUG: null,
     UPDATE_PERCENT_LOADED_SUCCESS: null,
-    LOAD_APPLICATION_DATA_SUCCESS: null
+    LOAD_APPLICATION_DATA_SUCCESS: null,
+    UPDATE_USE_MARKET_CACHE: null
   }),
   network: keyMirror({
     UPDATE_ETHEREUM_STATUS: null,
