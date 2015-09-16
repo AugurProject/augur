@@ -128,6 +128,19 @@ module.exports = {
         return false;
     },
 
+    format_address: function (addr) {
+        if (addr && addr.constructor === String) {
+            addr = this.strip_0x(addr);
+            while (addr.length > 40 && addr.slice(0, 1) === "0") {
+                addr = addr.slice(1);
+            }
+            while (addr.length < 40) {
+                addr = "0" + addr;
+            }
+            return this.prefix_hex(addr);
+        }
+    },
+
     strip_0x: function (str) {
         var h = str;
         if (h === "-0x0" || h === "0x0") {
@@ -165,10 +178,11 @@ module.exports = {
 
     bignum: function (n, encoding, nowrap) {
         var bn, len;
-        if (n !== null && n !== undefined && n !== "0x" &&
-            !n.error && !n.message)
-        {
+        if (n !== null && n !== undefined && n !== "0x" && !n.error && !n.message) {
             switch (n.constructor) {
+                case BigNumber:
+                    bn = n;
+                    break;
                 case Number:
                     if (Math.floor(Math.log(n) / Math.log(10) + 1) <= 15) {
                         bn = new BigNumber(n);
@@ -178,9 +192,9 @@ module.exports = {
                             bn = new BigNumber(n);
                         } catch (exc) {
                             if (this.is_hex(n)) {
-                                bn = new BigNumber(this.prefix_hex(n));
+                                bn = new BigNumber(n, 16);
                             } else {
-                                console.log("Couldn't convert", n, "to BigNumber");
+                                console.log("Couldn't convert Number", n.toString(), "to BigNumber");
                                 console.error(exc);
                                 console.log(exc.stack);
                                 return n;
@@ -193,28 +207,37 @@ module.exports = {
                         bn = new BigNumber(n);
                     } catch (exc) {
                         if (this.is_hex(n)) {
-                            bn = new BigNumber(this.prefix_hex(n));
+                            bn = new BigNumber(n, 16);
                         } else {
-                            console.log("Couldn't convert", n, "to BigNumber");
+                            console.log("Couldn't convert String", n.toString(), "to BigNumber");
                             console.error(exc);
                             console.log(exc.stack);
                             return n;
                         }
                     }
                     break;
-                case BigNumber:
-                    bn = n;
-                    break;
                 case Array:
                     len = n.length;
                     bn = new Array(len);
                     for (var i = 0; i < len; ++i) {
-                        bn[i] = this.bignum(n[i], encoding);
+                        bn[i] = this.bignum(n[i], encoding, nowrap);
                     }
                     break;
                 default:
-                    console.log("Couldn't convert", n, "to BigNumber");
-                    return n;
+                    try {
+                        bn = new BigNumber(n);
+                    } catch (ex) {
+                        try {
+                            bn = new BigNumber(n, 16);
+                        } catch (exc) {                    
+                            console.log("Couldn't convert", n.toString(), "to BigNumber");
+                            console.error(ex);
+                            console.error(exc);
+                            console.log(ex.stack);
+                            console.log(exc.stack);
+                            return n;
+                        }
+                    }
             }
             if (bn !== undefined && bn !== null && bn.constructor === BigNumber) {
                 if (!nowrap && bn.gte(this.constants.BYTES_32)) {
@@ -55925,33 +55948,32 @@ module.exports = function (augur) {
              *   transactionIndex: '0x0'
              * }, ...]
              */
-            var stringify, hexify, messages = [];
-            if (augur.bignumbers) {
-                stringify = hexify = "BigNumber";
-            } else {
-                stringify = "string";
-                hexify = "hex";
-            }
+            var messages = [];
             for (var i = 0, len = filtrate.length; i < len; ++i) {
                 filtrate[i].data = augur.rpc.unmarshal(filtrate[i].data);
                 if (onMessage) onMessage(filtrate[i]);
                 messages.push(filtrate[i]);
             }
-            if (messages && messages.length) return messages;
+            if (messages.length) return messages;
         },
 
         poll_contracts_listener: function (onMessage) {
             if (utils.is_function(onMessage)) {
+                var self = this;
                 this.eth_getFilterChanges(this.contracts_filter.id, function (filtrate) {
-                    if (filtrate) this.sift(filtrate, onMessage);
-                }.bind(this));
+                    if (filtrate) self.sift(filtrate, onMessage);
+                });
             }
         },
 
         poll_block_listener: function (onMessage) {
             if (utils.is_function(onMessage)) {
                 this.eth_getFilterChanges(this.block_filter.id, function (filtrate) {
-                    if (filtrate && filtrate.length) onMessage(filtrate[0]);
+                    if (filtrate && filtrate.length && filtrate.constructor === Array) {
+                        for (var i = 0, len = filtrate.length; i < len; ++i) {
+                            onMessage(filtrate[i]);
+                        }
+                    }
                 });
             }
         },
@@ -55959,30 +55981,26 @@ module.exports = function (augur) {
         poll_price_listener: function (onMessage) {
             if (this.price_filter) {
                 this.eth_getFilterChanges(this.price_filter.id, function (filtrate) {
-                    var stringify, hexify, data_array, market, marketplus;
+                    var data_array, market, marketplus;
                     if (filtrate && filtrate.length) {
-                        if (augur.bignumbers) {
-                            stringify = hexify = "BigNumber";
-                        } else {
-                            stringify = "string";
-                            hexify = "hex";
-                        }
                         for (var i = 0, len = filtrate.length; i < len; ++i) {
                             data_array = augur.rpc.unmarshal(filtrate[i].data);
                             market = abi.bignum(filtrate[i].topics[2]);
                             marketplus = market.plus(abi.constants.MOD);
-                            if (marketplus.lt(abi.constants.BYTES_32)) market = marketplus;
+                            if (marketplus.lt(abi.constants.BYTES_32)) {
+                                market = marketplus;
+                            }
                             onMessage({
-                                user: filtrate[i].topics[1],
-                                marketId: abi.bignum(market, hexify),
-                                outcome: abi.bignum(filtrate[i].topics[3], stringify),
-                                price: abi.unfix(data_array[0], stringify),
-                                cost: abi.unfix(data_array[1], stringify),
-                                blockNumber: abi.bignum(filtrate[i].blockNumber, stringify)
+                                user: abi.format_address(filtrate[i].topics[1]),
+                                marketId: abi.hex(market),
+                                outcome: abi.bignum(filtrate[i].topics[3], "string"),
+                                price: abi.unfix(data_array[0], "string"),
+                                cost: abi.unfix(data_array[1], "string"),
+                                blockNumber: abi.bignum(filtrate[i].blockNumber, "string")
                             });
                         }
                     }
-                }.bind(this)); // eth_getFilterChanges
+                }); // eth_getFilterChanges
             }
         },
 
@@ -56003,9 +56021,10 @@ module.exports = function (augur) {
                 }
             } else {
                 if (utils.is_function(cb)) {
+                    var self = this;
                     this.create_price_filter(filter_name, function (filter_id) {
                         if (filter_id && filter_id !== "0x") {
-                            this.price_filter = {
+                            self.price_filter = {
                                 id: filter_id,
                                 heartbeat: null
                             };
@@ -56013,7 +56032,7 @@ module.exports = function (augur) {
                         } else {
                             cb(errors.FILTER_NOT_CREATED);
                         }
-                    }.bind(this));
+                    });
                 } else {
                     filter_id = this.create_price_filter(filter_name);
                     if (filter_id && filter_id !== "0x") {
@@ -56031,10 +56050,11 @@ module.exports = function (augur) {
 
         clear_block_filter: function (cb) {
             if (utils.is_function(cb)) {
+                var self = this;
                 this.eth_uninstallFilter(this.block_filter.id, function (uninst) {
-                    if (uninst) this.block_filter.id = null;
+                    if (uninst) self.block_filter.id = null;
                     cb(uninst);
-                }.bind(this));
+                });
             } else {
                 var uninst = this.eth_uninstallFilter(this.block_filter.id);
                 if (uninst) this.block_filter.id = null;
@@ -56044,10 +56064,11 @@ module.exports = function (augur) {
 
         clear_price_filter: function (cb) {
             if (utils.is_function(cb)) {
+                var self = this;
                 this.eth_uninstallFilter(this.price_filter.id, function (uninst) {
-                    if (uninst) this.price_filter.id = null;
+                    if (uninst) self.price_filter.id = null;
                     cb(uninst);
-                }.bind(this));
+                });
             } else {
                 var uninst = this.eth_uninstallFilter(this.price_filter.id);
                 if (uninst) this.price_filter.id = null;
@@ -56057,10 +56078,11 @@ module.exports = function (augur) {
 
         clear_contracts_filter: function (cb) {
             if (utils.is_function(cb)) {
+                var self = this;
                 this.eth_uninstallFilter(this.contracts_filter.id, function (uninst) {
-                    if (uninst) this.contracts_filter.id = null;
+                    if (uninst) self.contracts_filter.id = null;
                     cb(uninst);
-                }.bind(this));
+                });
             } else {
                 var uninst = this.eth_uninstallFilter(this.contracts_filter.id);
                 if (uninst) this.contracts_filter.id = null;
@@ -56096,9 +56118,10 @@ module.exports = function (augur) {
         start_block_listener: function (cb) {
             if (this.block_filter.id === null) {
                 if (utils.is_function(cb)) {
+                    var self = this;
                     setTimeout(function () {
-                        cb(this.setup_block_filter());
-                    }.bind(this), 0);
+                        cb(self.setup_block_filter());
+                    }, 0);
                 } else {
                     return this.setup_block_filter();
                 }
@@ -56108,9 +56131,10 @@ module.exports = function (augur) {
         start_contracts_listener: function (cb) {
             if (this.contracts_filter.id === null) {
                 if (utils.is_function(cb)) {
+                    var self = this;
                     setTimeout(function () {
-                        cb(this.setup_contracts_filter());
-                    }.bind(this), 0);
+                        cb(self.setup_contracts_filter());
+                    }, 0);
                 } else {
                     return this.setup_contracts_filter();
                 }

@@ -25,7 +25,7 @@ describe("Faucets", function () {
                 // success
                 assert.strictEqual(r.callReturn, "1");
                 assert.notStrictEqual(abi.bignum(r.blockHash).toNumber(), 0);
-                assert(abi.bignum(r.blockNumber).toNumber() >= 0);
+                assert.isAbove(parseInt(r.blockNumber), 0);
                 var rep_balance = augur.getRepBalance(augur.branches.dev, augur.coinbase);
                 var cash_balance = augur.getCashBalance(augur.coinbase);
                 assert.strictEqual(rep_balance, "47");

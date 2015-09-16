@@ -39,49 +39,48 @@ describe("Register", function () {
             augur.web.register(handle, password, function (result) {
                 if (result.error) {
                     augur.web.logout();
-                    done(result);
-                } else {
-                    assert(!result.error);
-                    assert.property(result, "nonce");
-                    assert(result.privateKey);
-                    assert(result.address);
+                    return done(result);
+                }
+                assert(!result.error);
+                assert.property(result, "nonce");
+                assert(result.privateKey);
+                assert(result.address);
+                assert.strictEqual(
+                    result.privateKey.toString("hex").length,
+                    constants.KEYSIZE*2
+                );
+                assert.strictEqual(result.address.length, 42);
+                db.get(handle, function (rec) {
+                    if (rec.error) {
+                        augur.web.logout();
+                        return done(rec);
+                    }
+                    assert(!rec.error);
+                    assert.property(rec, "nonce");
+                    assert(rec.privateKey);
+                    assert(rec.iv);
+                    assert(rec.salt);
                     assert.strictEqual(
-                        result.privateKey.toString("hex").length,
+                        new Buffer(rec.iv, "base64")
+                            .toString("hex")
+                            .length,
+                        constants.IVSIZE*2
+                    );
+                    assert.strictEqual(
+                        new Buffer(rec.salt, "base64")
+                            .toString("hex")
+                            .length,
                         constants.KEYSIZE*2
                     );
-                    assert.strictEqual(result.address.length, 42);
-                    db.get(handle, function (rec) {
-                        if (rec.error) {
-                            augur.web.logout(); done(rec);
-                        } else {
-                            assert(!rec.error);
-                            assert.property(rec, "nonce");
-                            assert(rec.privateKey);
-                            assert(rec.iv);
-                            assert(rec.salt);
-                            assert.strictEqual(
-                                new Buffer(rec.iv, "base64")
-                                    .toString("hex")
-                                    .length,
-                                constants.IVSIZE*2
-                            );
-                            assert.strictEqual(
-                                new Buffer(rec.salt, "base64")
-                                    .toString("hex")
-                                    .length,
-                                constants.KEYSIZE*2
-                            );
-                            assert.strictEqual(
-                                new Buffer(rec.privateKey, "base64")
-                                    .toString("hex")
-                                    .length,
-                                constants.KEYSIZE*2
-                            );
-                            augur.web.logout();
-                            done();
-                        }
-                    });
-                }
+                    assert.strictEqual(
+                        new Buffer(rec.privateKey, "base64")
+                            .toString("hex")
+                            .length,
+                        constants.KEYSIZE*2
+                    );
+                    augur.web.logout();
+                    done();
+                });
             });
         });
     });
@@ -93,49 +92,48 @@ describe("Register", function () {
             augur.web.register(handle2, password2, function (result) {
                 if (result.error) {
                     augur.web.logout();
-                    done(result);
-                } else {
-                    assert(!result.error);
-                    assert.property(result, "nonce");
-                    assert(result.privateKey);
-                    assert(result.address);
+                    return done(result);
+                }
+                assert(!result.error);
+                assert.property(result, "nonce");
+                assert(result.privateKey);
+                assert(result.address);
+                assert.strictEqual(
+                    result.privateKey.toString("hex").length,
+                    constants.KEYSIZE*2
+                );
+                assert.strictEqual(result.address.length, 42);
+                db.get(handle2, function (rec) {
+                    if (rec.error) {
+                        augur.web.logout();
+                        return done(rec);
+                    }
+                    assert(!rec.error);
+                    assert.property(rec, "nonce");
+                    assert(rec.privateKey);
+                    assert(rec.iv);
+                    assert(rec.salt);
                     assert.strictEqual(
-                        result.privateKey.toString("hex").length,
+                        new Buffer(rec.iv, "base64")
+                            .toString("hex")
+                            .length,
+                        constants.IVSIZE*2
+                    );
+                    assert.strictEqual(
+                        new Buffer(rec.salt, "base64")
+                            .toString("hex")
+                            .length,
                         constants.KEYSIZE*2
                     );
-                    assert.strictEqual(result.address.length, 42);
-                    db.get(handle2, function (rec) {
-                        if (rec.error) {
-                            augur.web.logout(); done(rec);
-                        } else {
-                            assert(!rec.error);
-                            assert.property(rec, "nonce");
-                            assert(rec.privateKey);
-                            assert(rec.iv);
-                            assert(rec.salt);
-                            assert.strictEqual(
-                                new Buffer(rec.iv, "base64")
-                                    .toString("hex")
-                                    .length,
-                                constants.IVSIZE*2
-                            );
-                            assert.strictEqual(
-                                new Buffer(rec.salt, "base64")
-                                    .toString("hex")
-                                    .length,
-                                constants.KEYSIZE*2
-                            );
-                            assert.strictEqual(
-                                new Buffer(rec.privateKey, "base64")
-                                    .toString("hex")
-                                    .length,
-                                constants.KEYSIZE*2
-                            );
-                            augur.web.logout();
-                            done();
-                        }
-                    });
-                }
+                    assert.strictEqual(
+                        new Buffer(rec.privateKey, "base64")
+                            .toString("hex")
+                            .length,
+                        constants.KEYSIZE*2
+                    );
+                    augur.web.logout();
+                    done();
+                });
             });
         });
     });
@@ -174,20 +172,20 @@ describe("Login", function () {
         this.timeout(constants.TIMEOUT);
         augur.web.login(handle, password, function (user) {
             if (user.error) {
-                augur.web.logout(); done(user);
-            } else {
-                assert(!user.error);
-                assert.property(user, "nonce");
-                assert(user.privateKey);
-                assert(user.address);
-                assert.strictEqual(
-                    user.privateKey.toString("hex").length,
-                    constants.KEYSIZE*2
-                );
-                assert.strictEqual(user.address.length, 42);
                 augur.web.logout();
-                done();
+                return done(user);
             }
+            assert(!user.error);
+            assert.property(user, "nonce");
+            assert(user.privateKey);
+            assert(user.address);
+            assert.strictEqual(
+                user.privateKey.toString("hex").length,
+                constants.KEYSIZE*2
+            );
+            assert.strictEqual(user.address.length, 42);
+            augur.web.logout();
+            done();
         });
     });
 
@@ -195,30 +193,30 @@ describe("Login", function () {
         this.timeout(constants.TIMEOUT);
         augur.web.login(handle, password, function (user) {
             if (user.error) {
-                augur.web.logout(); done(user);
-            } else {
-                assert.property(user, "nonce");
-                assert(user.privateKey);
-                assert(user.address);
-                assert.strictEqual(
-                    user.privateKey.toString("hex").length,
-                    constants.KEYSIZE*2
-                );
-                assert.strictEqual(user.address.length, 42);
-                augur.web.login(handle, password, function (same_user) {
-                    if (same_user.error) {
-                        augur.web.logout(); done(same_user);
-                    } else {
-                        assert(!same_user.error);
-                        assert.strictEqual(
-                            user.privateKey.toString("hex"),
-                            same_user.privateKey.toString("hex")
-                        );
-                        assert.strictEqual(user.address, same_user.address);
-                        done();
-                    }
-                });
+                augur.web.logout();
+                return done(user);
             }
+            assert.property(user, "nonce");
+            assert(user.privateKey);
+            assert(user.address);
+            assert.strictEqual(
+                user.privateKey.toString("hex").length,
+                constants.KEYSIZE*2
+            );
+            assert.strictEqual(user.address.length, 42);
+            augur.web.login(handle, password, function (same_user) {
+                if (same_user.error) {
+                    augur.web.logout();
+                    return done(same_user);
+                }
+                assert(!same_user.error);
+                assert.strictEqual(
+                    user.privateKey.toString("hex"),
+                    same_user.privateKey.toString("hex")
+                );
+                assert.strictEqual(user.address, same_user.address);
+                done();
+            });
         });
     });
 
@@ -282,18 +280,18 @@ describe("Logout", function () {
         this.timeout(constants.TIMEOUT);
         augur.web.login(handle, password, function (user) {
             if (user.error) {
-                augur.web.logout(); done(user);
-            } else {
-                assert.strictEqual(user.handle, handle);
-                for (var i = 0; i < 2; ++i) {
-                    augur.web.logout();
-                    assert.notProperty(augur.web.account, "handle");
-                    assert.notProperty(augur.web.account, "address");
-                    assert.notProperty(augur.web.account, "privateKey");
-                    assert.notProperty(augur.web.account, "nonce");
-                }
-                done();
+                augur.web.logout();
+                return done(user);
             }
+            assert.strictEqual(user.handle, handle);
+            for (var i = 0; i < 2; ++i) {
+                augur.web.logout();
+                assert.notProperty(augur.web.account, "handle");
+                assert.notProperty(augur.web.account, "address");
+                assert.notProperty(augur.web.account, "privateKey");
+                assert.notProperty(augur.web.account, "nonce");
+            }
+            done();
         });
     });
 
@@ -313,22 +311,29 @@ describe("Fund", function () {
 
         augur.web.fund(
             { address: recipient },
-            function (acc) {
-                if (acc.error) throw acc;
+            function (account) {
+                if (account.error) {
+                    augur.web.logout();
+                    return done(account);
+                }
+                assert.property(account, "address");
+                assert.strictEqual(account.address, recipient);
             }, function (account) {
                 if (account.error) {
-                    done(account);
-                } else {
-                    assert.property(account, "address");
-                    assert.strictEqual(account.address, recipient);
-
-                    var final_balance = abi
-                        .bignum(augur.rpc.balance(recipient))
-                        .dividedBy(constants.ETHER);
-
-                    assert(final_balance.sub(initial_balance).toNumber() >= 50);
-                    done();
+                    augur.web.logout();
+                    return done(account);
                 }
+                assert.property(account, "address");
+                assert.strictEqual(account.address, recipient);
+
+                var final_balance = abi
+                    .bignum(augur.rpc.balance(recipient))
+                    .dividedBy(constants.ETHER);
+
+                var delta = final_balance.sub(initial_balance).toNumber();
+                assert.isAbove(Math.abs(delta), 49);
+
+                done();
             }
         );
     });
@@ -431,16 +436,35 @@ describe("Contract methods", function () {
             this.timeout(constants.TIMEOUT);
             augur.web.login(handle, password, function (user) {
                 if (user.error) {
-                    augur.web.logout(); done(user);
-                } else {
-                    assert.strictEqual(
-                        user.address,
-                        augur.web.account.address
-                    );
+                    augur.web.logout();
+                    return done(user);
+                }
+                assert.strictEqual(
+                    user.address,
+                    augur.web.account.address
+                );
 
-                    // sync
-                    var branches = augur.web.invoke(augur.tx.getBranches);
-                    assert(branches.length);
+                // sync
+                var branches = augur.web.invoke(augur.tx.getBranches);
+                console.log(branches);
+                console.log("encoded:", augur.rpc.encodeResult(
+                    branches[0],
+                    augur.tx.getBranches.returns
+                ));
+                assert.isAbove(branches.length, 0);
+                assert.isArray(branches);
+                assert.strictEqual(
+                    augur.rpc.encodeResult(
+                        branches[0],
+                        augur.tx.getBranches.returns
+                    ),
+                    augur.branches.dev
+                );
+
+                // async
+                augur.web.invoke(augur.tx.getBranches, function (branches) {
+                    console.log("async:", branches);
+                    assert.isAbove(branches.length, 0);
                     assert.isArray(branches);
                     assert.strictEqual(
                         augur.rpc.encodeResult(
@@ -449,22 +473,9 @@ describe("Contract methods", function () {
                         ),
                         augur.branches.dev
                     );
-
-                    // async
-                    augur.web.invoke(augur.tx.getBranches, function (branches) {
-                        assert(branches.length);
-                        assert.isArray(branches);
-                        assert.strictEqual(
-                            augur.rpc.encodeResult(
-                                branches[0],
-                                augur.tx.getBranches.returns
-                            ),
-                            augur.branches.dev
-                        );
-                        augur.web.logout();
-                        done();
-                    });
-                }
+                    augur.web.logout();
+                    done();
+                });
             });
         });
 
@@ -476,32 +487,32 @@ describe("Contract methods", function () {
             this.timeout(constants.TIMEOUT);
             augur.web.login(handle, password, function (user) {
                 if (user.error) {
-                    augur.web.logout(); done(user);
-                } else {
-                    var tx = utils.copy(augur.tx.reputationFaucet);
-                    tx.params = augur.branches.dev;
-                    augur.web.invoke(tx, function (txhash) {
-                        if (txhash.error) {
-                            augur.web.logout(); done(txhash);
-                        } else {
-                            assert(txhash);
-                            augur.rpc.getTx(txhash, function (confirmTx) {
-                                if (confirmTx.error) {
-                                    augur.web.logout(); done(confirmTx);
-                                } else {
-                                    assert(confirmTx.hash);
-                                    assert(confirmTx.from);
-                                    assert(confirmTx.to);
-                                    assert.strictEqual(txhash, confirmTx.hash);
-                                    assert.strictEqual(confirmTx.from, user.address);
-                                    assert.strictEqual(confirmTx.to, tx.to);
-                                    augur.web.logout();
-                                    done();
-                                }
-                            });
-                        }
-                    });
+                    augur.web.logout();
+                    return done(user);
                 }
+                var tx = utils.copy(augur.tx.reputationFaucet);
+                tx.params = augur.branches.dev;
+                augur.web.invoke(tx, function (txhash) {
+                    if (txhash.error) {
+                        augur.web.logout();
+                        return done(txhash);
+                    }
+                    assert(txhash);
+                    augur.rpc.getTx(txhash, function (confirmTx) {
+                        if (confirmTx.error) {
+                            augur.web.logout();
+                            return done(confirmTx);
+                        }
+                        assert(confirmTx.hash);
+                        assert(confirmTx.from);
+                        assert(confirmTx.to);
+                        assert.strictEqual(txhash, confirmTx.hash);
+                        assert.strictEqual(confirmTx.from, user.address);
+                        assert.strictEqual(confirmTx.to, tx.to);
+                        augur.web.logout();
+                        done();
+                    });
+                });
             });
         });
 
@@ -509,36 +520,36 @@ describe("Contract methods", function () {
             this.timeout(constants.TIMEOUT*12);
             augur.web.login(handle, password, function (user) {
                 if (user.error) {
-                    augur.web.logout(); done(user);
-                } else {
-                    assert.strictEqual(
-                        user.address,
-                        augur.web.account.address
-                    );
-                    augur.cashFaucet({
-                        onSent: function (r) {
-                            // sent
-                            assert.property(r, "txHash");
-                            assert.property(r, "callReturn");
-                        },
-                        onSuccess: function (r) {
-                            // success
-                            assert.property(r, "txHash");
-                            assert.property(r, "callReturn");
-                            assert.property(r, "blockHash");
-                            assert.property(r, "blockNumber");
-                            assert.isAbove(parseInt(r.blockNumber), 0);
-                            assert.strictEqual(r.from, user.address);
-                            assert.strictEqual(r.to, augur.contracts.faucets);
-                            assert.strictEqual(parseInt(r.value), 0);
-                            done();
-                        },
-                        onFailed: function (r) {
-                            // failed
-                            done(r);
-                        }
-                    });
+                    augur.web.logout();
+                    return done(user);
                 }
+                assert.strictEqual(
+                    user.address,
+                    augur.web.account.address
+                );
+                augur.cashFaucet({
+                    onSent: function (r) {
+                        // sent
+                        assert.property(r, "txHash");
+                        assert.property(r, "callReturn");
+                    },
+                    onSuccess: function (r) {
+                        // success
+                        assert.property(r, "txHash");
+                        assert.property(r, "callReturn");
+                        assert.property(r, "blockHash");
+                        assert.property(r, "blockNumber");
+                        assert.isAbove(parseInt(r.blockNumber), 0);
+                        assert.strictEqual(r.from, user.address);
+                        assert.strictEqual(r.to, augur.contracts.faucets);
+                        assert.strictEqual(parseInt(r.value), 0);
+                        done();
+                    },
+                    onFailed: function (r) {
+                        // failed
+                        done(r);
+                    }
+                });
             });
         });
 
