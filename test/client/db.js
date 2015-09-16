@@ -15,7 +15,7 @@ var log = console.log;
 describe("Database", function () {
 
     var account = {
-        handle: "tinybike",
+        handle: "jack@tinybike.net",
         privateKey: "deadbeef",
         iv: "zombeef",
         nonce: 0
@@ -26,7 +26,7 @@ describe("Database", function () {
 
         it("save account", function (done) {
             db.put(account.handle, account, function (url) {
-                assert.strictEqual(url, constants.FIREBASE_URL + "/" + account.handle);
+                assert.strictEqual(url, constants.FIREBASE_URL + db.encode(account.handle));
                 done();
             });
         });

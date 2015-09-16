@@ -21,7 +21,7 @@ BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
 var augur = {
 
-    options: { debug: false },
+    options: { debug: { broadcast: false, fallback: false } },
 
     // If set to true, all numerical results (excluding hashes)
     // are returned as BigNumber objects
@@ -45,9 +45,9 @@ var augur = {
 
     // Branch IDs
     branches: {
-        demo: "0x0f69b5",
-        alpha: "0x0f69b5",
-        dev: "0x0f69b5"
+        demo: "0xf69b5",
+        alpha: "0xf69b5",
+        dev: "0xf69b5"
     },
 
     // Demo/shared account
@@ -239,10 +239,16 @@ augur.createBatch = function createBatch () {
     return new Batch();
 };
 
+augur.fire = function (tx, callback) {
+    tx.from = tx.from || augur.coinbase;
+    return rpc.fire(tx, callback);
+};
+
 augur.transact = function (tx, onSent, onSuccess, onFailed) {
     if (tx.send && this.web && this.web.account && this.web.account.address) {
         tx.invocation = { invoke: this.web.invoke, context: this.web };
     }
+    tx.from = tx.from || augur.coinbase;
     rpc.transact(tx, onSent, onSuccess, onFailed);
 };
 
@@ -277,7 +283,7 @@ augur.getCashBalance = function (account, onSent) {
     // account: ethereum account
     var tx = this.utils.copy(this.tx.getCashBalance);
     tx.params = account || this.web.account.address || this.coinbase;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.sendCash = function (to, value, onSent, onSuccess, onFailed) {
     // to: ethereum account
@@ -315,19 +321,19 @@ augur.getCreator = function (id, onSent) {
     // id: sha256 hash id
     var tx = this.utils.copy(this.tx.getCreator);
     tx.params = id;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getCreationFee = function (id, onSent) {
     // id: sha256 hash id
     var tx = this.utils.copy(this.tx.getCreationFee);
     tx.params = id;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getDescription = function (item, onSent) {
     // item: sha256 hash id
     var tx = this.utils.copy(this.tx.getDescription);
     tx.params = item;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.setInfo = function (id, description, creator, fee, onSent, onSuccess, onFailed) {
     var tx = this.utils.copy(this.tx.setInfo);
@@ -430,78 +436,78 @@ augur.redeem_resolve = function (branch, period, num_events, num_reports, flatsi
 
 // branches.se
 augur.getBranches = function (onSent) {
-    return rpc.fire(this.tx.getBranches, onSent);
+    return augur.fire(this.tx.getBranches, onSent);
 };
 augur.getMarkets = function (branch, onSent) {
     // branch: sha256 hash id
     var tx = this.utils.copy(this.tx.getMarkets);
     tx.params = branch;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getPeriodLength = function (branch, onSent) {
     // branch: sha256 hash id
     var tx = this.utils.copy(this.tx.getPeriodLength);
     tx.params = branch;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getVotePeriod = function (branch, onSent) {
     // branch: sha256 hash id
     var tx = this.utils.copy(this.tx.getVotePeriod);
     tx.params = branch;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getStep = function (branch, onSent) {
     // branch: sha256
     var tx = this.utils.copy(this.tx.getStep);
     tx.params = branch;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.setStep = function (branch, step, onSent) {
     var tx = this.utils.copy(this.tx.setStep);
     tx.params = [branch, step];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getSubstep = function (branch, onSent) {
     // branch: sha256
     var tx = this.utils.copy(this.tx.getSubstep);
     tx.params = branch;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.setSubstep = function (branch, substep, onSent) {
     var tx = this.utils.copy(this.tx.setSubstep);
     tx.params = [branch, substep];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.incrementSubstep = function (branch, onSent) {
     var tx = this.utils.copy(this.tx.incrementSubstep);
     tx.params = branch;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getNumMarkets = function (branch, onSent) {
     // branch: sha256
     var tx = this.utils.copy(this.tx.getNumMarkets);
     tx.params = branch;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getMinTradingFee = function (branch, onSent) {
     // branch: sha256
     var tx = this.utils.copy(this.tx.getMinTradingFee);
     tx.params = branch;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getNumBranches = function (onSent) {
-    return rpc.fire(this.tx.getNumBranches, onSent);
+    return augur.fire(this.tx.getNumBranches, onSent);
 };
 augur.getBranch = function (branchNumber, onSent) {
     // branchNumber: integer
     var tx = this.utils.copy(this.tx.getBranch);
     tx.params = branchNumber;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.incrementPeriod = function (branch, onSent) {
     var tx = this.utils.copy(this.tx.incrementPeriod);
     tx.params = branch;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.addMarket = function (branch, marketID, onSent, onSuccess, onFailed) {
     var tx = this.utils.copy(this.tx.addMarket);
@@ -515,7 +521,7 @@ augur.addMarket = function (branch, marketID, onSent, onSuccess, onFailed) {
 augur.moveEventsToCurrentPeriod = function (branch, currentVotePeriod, currentPeriod, onSent) {
     var tx = this.utils.copy(this.tx.moveEventsToCurrentPeriod);
     tx.params = [branch, currentVotePeriod, currentPeriod];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getCurrentPeriod = function (branch) {
     return parseInt(rpc.blockNumber()) / parseInt(this.getPeriodLength(branch));
@@ -536,12 +542,12 @@ augur.sprint = function (branch, length) {
 augur.addEvent = function (branch, futurePeriod, eventID, onSent) {
     var tx = this.utils.copy(this.tx.addEvent);
     tx.params = [branch, futurePeriod, eventID];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.setTotalRepReported = function (branch, expDateIndex, repReported, onSent) {
     var tx = this.utils.copy(this.tx.setTotalRepReported);
     tx.params = [branch, expDateIndex, repReported];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.setReporterBallot = function (branch, expDateIndex, reporterID, report, reputation, onSent, onSuccess, onFailed) {
     var tx = this.utils.copy(this.tx.setReporterBallot);
@@ -551,87 +557,87 @@ augur.setReporterBallot = function (branch, expDateIndex, reporterID, report, re
 augur.setVSize = function (branch, expDateIndex, vSize, onSent) {
     var tx = this.utils.copy(this.tx.setVSize);
     tx.params = [branch, expDateIndex, vSize];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.setReportsFilled = function (branch, expDateIndex, reportsFilled, onSent) {
     var tx = this.utils.copy(this.tx.setVSize);
     tx.params = [branch, expDateIndex, reportsFilled];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.setReportsMask = function (branch, expDateIndex, reportsMask, onSent) {
     var tx = this.utils.copy(this.tx.setReportsMask);
     tx.params = [branch, expDateIndex, reportsMask];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.setWeightedCenteredData = function (branch, expDateIndex, weightedCenteredData, onSent) {
     var tx = this.utils.copy(this.tx.setWeightedCenteredData);
     tx.params = [branch, expDateIndex, weightedCenteredData];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.setCovarianceMatrixRow = function (branch, expDateIndex, covarianceMatrixRow, onSent) {
     var tx = this.utils.copy(this.tx.setCovarianceMatrixRow);
     tx.params = [branch, expDateIndex, covarianceMatrixRow];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.setDeflated = function (branch, expDateIndex, deflated, onSent) {
     var tx = this.utils.copy(this.tx.setDeflated);
     tx.params = [branch, expDateIndex, deflated];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.setLoadingVector = function (branch, expDateIndex, loadingVector, onSent) {
     var tx = this.utils.copy(this.tx.setLoadingVector);
     tx.params = [branch, expDateIndex, loadingVector];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.setScores = function (branch, expDateIndex, scores, onSent) {
     var tx = this.utils.copy(this.tx.setScores);
     tx.params = [branch, expDateIndex, scores];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.setSetOne = function (branch, expDateIndex, setOne, onSent) {
     var tx = this.utils.copy(this.tx.setOne);
     tx.params = [branch, expDateIndex, setOne];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.setSetTwo = function (branch, expDateIndex, setTwo, onSent) {
     var tx = this.utils.copy(this.tx.setSetTwo);
     tx.params = [branch, expDateIndex, setTwo];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.setOld = function (branch, expDateIndex, setOld, onSent) {
     var tx = this.utils.copy(this.tx.setOld);
     tx.params = [branch, expDateIndex, setOld];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.setNewOne = function (branch, expDateIndex, newOne, onSent) {
     var tx = this.utils.copy(this.tx.setNewOne);
     tx.params = [branch, expDateIndex, newOne];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.setNewTwo = function (branch, expDateIndex, newTwo, onSent) {
     var tx = this.utils.copy(this.tx.setNewTwo);
     tx.params = [branch, expDateIndex, newTwo];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.setAdjPrinComp = function (branch, expDateIndex, adjPrinComp, onSent) {
     var tx = this.utils.copy(this.tx.setAdjPrinComp);
     tx.params = [branch, expDateIndex, adjPrinComp];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.setSmoothRep = function (branch, expDateIndex, smoothRep, onSent) {
     var tx = this.utils.copy(this.tx.setSmoothRep);
     tx.params = [branch, expDateIndex, smoothRep];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.setOutcomesFinal = function (branch, expDateIndex, outcomesFinal, onSent) {
     var tx = this.utils.copy(this.tx.setOutcomesFinal);
     tx.params = [branch, expDateIndex, outcomesFinal];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.setReportHash = function (branch, expDateIndex, reportHash, onSent) {
     var tx = this.utils.copy(this.tx.setReportHash);
     tx.params = [branch, expDateIndex, reportHash];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 
 // events.se
@@ -667,55 +673,55 @@ augur.getEventInfo = function (event_id, onSent) {
     };
     this.tx.getEventInfo.params = event_id;
     if (onSent) {
-        rpc.fire(this.tx.getEventInfo, function (info) {
+        augur.fire(this.tx.getEventInfo, function (info) {
             onSent(parse_info(info));
         });
     } else {
-        return parse_info(rpc.fire(this.tx.getEventInfo));
+        return parse_info(augur.fire(this.tx.getEventInfo));
     }
 };
 augur.getEventBranch = function (branchNumber, onSent) {
     // branchNumber: integer
     var tx = this.utils.copy(this.tx.getEventBranch);
     tx.params = branchNumber;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getExpiration = function (event, onSent) {
     // event: sha256
     var tx = this.utils.copy(this.tx.getExpiration);
     tx.params = event;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getOutcome = function (event, onSent) {
     // event: sha256
     var tx = this.utils.copy(this.tx.getOutcome);
     tx.params = event;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getMinValue = function (event, onSent) {
     // event: sha256
     var tx = this.utils.copy(this.tx.getMinValue);
     tx.params = event;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getMaxValue = function (event, onSent) {
     // event: sha256
     var tx = this.utils.copy(this.tx.getMaxValue);
     tx.params = event;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getNumOutcomes = function (event, onSent) {
     // event: sha256
     var tx = this.utils.copy(this.tx.getNumOutcomes);
     tx.params = event;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getCurrentVotePeriod = function (branch, onSent) {
     // branch: sha256
     var periodLength, blockNum;
     this.tx.getPeriodLength.params = branch;
     if (onSent) {
-        rpc.fire(this.tx.getPeriodLength, function (periodLength) {
+        augur.fire(this.tx.getPeriodLength, function (periodLength) {
             if (periodLength) {
                 periodLength = abi.bignum(periodLength);
                 rpc.blockNumber(function (blockNum) {
@@ -725,7 +731,7 @@ augur.getCurrentVotePeriod = function (branch, onSent) {
             }
         });
     } else {
-        periodLength = rpc.fire(this.tx.getPeriodLength);
+        periodLength = augur.fire(this.tx.getPeriodLength);
         if (periodLength) {
             blockNum = abi.bignum(rpc.blockNumber());
             return blockNum.dividedBy(abi.bignum(periodLength)).floor().sub(1);
@@ -739,7 +745,7 @@ augur.getEvents = function (branch, votePeriod, onSent) {
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getEvents);
     tx.params = [branch, votePeriod];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getEventsRange = function (branch, vpStart, vpEnd, onSent) {
     // branch: sha256
@@ -765,168 +771,168 @@ augur.getNumberEvents = function (branch, votePeriod, onSent) {
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getNumberEvents);
     tx.params = [branch, votePeriod];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getEvent = function (branch, votePeriod, eventIndex, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getEvent);
     tx.params = [branch, votePeriod, eventIndex];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getTotalRepReported = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getTotalRepReported);
     tx.params = [branch, votePeriod];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getReporterBallot = function (branch, votePeriod, reporterID, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getReporterBallot);
     tx.params = [branch, votePeriod, reporterID];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getReport = function (branch, votePeriod, reporter, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getReports);
     tx.params = [branch, votePeriod, reporter];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getReportHash = function (branch, votePeriod, reporter, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getReportHash);
     tx.params = [branch, votePeriod, reporter];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getVSize = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getVSize);
     tx.params = [branch, votePeriod];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getReportsFilled = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getReportsFilled);
     tx.params = [branch, votePeriod];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getReportsMask = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getReportsMask);
     tx.params = [branch, votePeriod];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getWeightedCenteredData = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getWeightedCenteredData);
     tx.params = [branch, votePeriod];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getCovarianceMatrixRow = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getCovarianceMatrixRow);
     tx.params = [branch, votePeriod];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getDeflated = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getDeflated);
     tx.params = [branch, votePeriod];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getLoadingVector = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getLoadingVector);
     tx.params = [branch, votePeriod];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getLatent = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getLatent);
     tx.params = [branch, votePeriod];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getScores = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getScores);
     tx.params = [branch, votePeriod];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getSetOne = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getSetOne);
     tx.params = [branch, votePeriod];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getSetTwo = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getSetTwo);
     tx.params = [branch, votePeriod];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.returnOld = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.returnOld);
     tx.params = [branch, votePeriod];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getNewOne = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getNewOne);
     tx.params = [branch, votePeriod];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getNewTwo = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getNewTwo);
     tx.params = [branch, votePeriod];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getAdjPrinComp = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getAdjPrinComp);
     tx.params = [branch, votePeriod];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getSmoothRep = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getSmoothRep);
     tx.params = [branch, votePeriod];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getOutcomesFinal = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getOutcomesFinal);
     tx.params = [branch, votePeriod];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getReporterPayouts = function (branch, votePeriod, onSent) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getReporterPayouts);
     tx.params = [branch, votePeriod];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 
 augur.getTotalReputation = function (branch, votePeriod, onSent) {
@@ -934,7 +940,7 @@ augur.getTotalReputation = function (branch, votePeriod, onSent) {
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getTotalReputation);
     tx.params = [branch, votePeriod];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.setTotalReputation = function (branch, votePeriod, totalReputation, onSent, onSuccess, onFailed) {
     // branch: sha256
@@ -949,7 +955,7 @@ augur.makeBallot = function (branch, votePeriod, onSent) {
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.makeBallot);
     tx.params = [branch, votePeriod];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 
 // markets.se
@@ -962,7 +968,7 @@ augur.getSimulatedBuy = function (market, outcome, amount, onSent) {
         market = abi.prefix_hex(market.toString(16));
     }
     tx.params = [market, outcome, abi.fix(amount, "hex")];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getSimulatedSell = function (market, outcome, amount, onSent) {
     // market: sha256 hash id
@@ -970,13 +976,13 @@ augur.getSimulatedSell = function (market, outcome, amount, onSent) {
     // amount: number -> fixed-point
     var tx = this.utils.copy(this.tx.getSimulatedSell);
     tx.params = [market, outcome, abi.fix(amount, "hex")];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.lsLmsr = function (market, onSent) {
     // market: sha256
     var tx = this.utils.copy(this.tx.lsLmsr);
     tx.params = market;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getMarketOutcomeInfo = function (market, outcome, onSent) {
     var self = this;
@@ -1009,11 +1015,11 @@ augur.getMarketOutcomeInfo = function (market, outcome, onSent) {
     var tx = this.utils.copy(this.tx.getMarketOutcomeInfo);
     tx.params = [market, outcome];
     if (onSent) {
-        rpc.fire(tx, function (info) {
+        augur.fire(tx, function (info) {
             onSent(parse_info(info));
         });
     } else {
-        return parse_info(rpc.fire(tx));
+        return parse_info(augur.fire(tx));
     }
 };
 augur.getMarketInfo = function (market, onSent) {
@@ -1062,67 +1068,67 @@ augur.getMarketInfo = function (market, onSent) {
     }
     tx.params = market;
     if (onSent) {
-        rpc.fire(tx, function (info) {
+        augur.fire(tx, function (info) {
             onSent(parse_info(info));
         });
     } else {
-        return parse_info(rpc.fire(tx));
+        return parse_info(augur.fire(tx));
     }
 };
 augur.getMarketEvents = function (market, onSent) {
     // market: sha256 hash id
     var tx = this.utils.copy(this.tx.getMarketEvents);
     tx.params = market;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getNumEvents = function (market, onSent) {
     // market: sha256 hash id
     var tx = this.utils.copy(this.tx.getNumEvents);
     tx.params = market;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getBranchID = function (branch, onSent) {
     // branch: sha256 hash id
     var tx = this.utils.copy(this.tx.getBranchID);
     tx.params = branch;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 // Get the current number of participants in this market
 augur.getCurrentParticipantNumber = function (market, onSent) {
     // market: sha256 hash id
     var tx = this.utils.copy(this.tx.getCurrentParticipantNumber);
     tx.params = market;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getMarketNumOutcomes = function (market, onSent) {
     // market: sha256 hash id
     var tx = this.utils.copy(this.tx.getMarketNumOutcomes);
     tx.params = market;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getParticipantSharesPurchased = function (market, participationNumber, outcome, onSent) {
     // market: sha256 hash id
     var tx = this.utils.copy(this.tx.getParticipantSharesPurchased);
     tx.params = [market, participationNumber, outcome];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getSharesPurchased = function (market, outcome, onSent) {
     // market: sha256 hash id
     var tx = this.utils.copy(this.tx.getSharesPurchased);
     tx.params = [market, outcome];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getWinningOutcomes = function (market, onSent) {
     // market: sha256 hash id
     var tx = this.utils.copy(this.tx.getWinningOutcomes);
     tx.params = market;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.price = function (market, outcome, onSent) {
     // market: sha256 hash id
     var tx = this.utils.copy(this.tx.price);
     tx.params = [market, outcome];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 // Get the participant number (the array index) for specified address
 augur.getParticipantNumber = function (market, address, onSent) {
@@ -1130,38 +1136,38 @@ augur.getParticipantNumber = function (market, address, onSent) {
     // address: ethereum account
     var tx = this.utils.copy(this.tx.getParticipantNumber);
     tx.params = [market, address];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 // Get the address for the specified participant number (array index) 
 augur.getParticipantID = function (market, participantNumber, onSent) {
     // market: sha256
     var tx = this.utils.copy(this.tx.getParticipantID);
     tx.params = [market, participantNumber];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getAlpha = function (market, onSent) {
     // market: sha256
     var tx = this.utils.copy(this.tx.getAlpha);
     tx.params = market;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getCumScale = function (market, onSent) {
     // market: sha256
     var tx = this.utils.copy(this.tx.getCumScale);
     tx.params = market;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getTradingPeriod = function (market, onSent) {
     // market: sha256
     var tx = this.utils.copy(this.tx.getTradingPeriod);
     tx.params = market;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getTradingFee = function (market, onSent) {
     // market: sha256
     var tx = this.utils.copy(this.tx.getTradingFee);
     tx.params = market;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.initialLiquiditySetup = function (marketID, alpha, cumulativeScale, numOutcomes, onSent, onSuccess, onFailed) {
     var tx = this.utils.copy(this.tx.initialLiquiditySetup);
@@ -1191,46 +1197,46 @@ augur.getRepBalance = function (branch, account, onSent) {
     // account: ethereum address (hexstring)
     var tx = this.utils.copy(this.tx.getRepBalance);
     tx.params = [branch, account || this.coinbase];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getRepByIndex = function (branch, repIndex, onSent) {
     // branch: sha256
     // repIndex: integer
     var tx = this.utils.copy(this.tx.getRepByIndex);
     tx.params = [branch, repIndex];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getReporterID = function (branch, index, onSent) {
     // branch: sha256
     // index: integer
     var tx = this.utils.copy(this.tx.getReporterID);
     tx.params = [branch, index];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 // reputation of a single address over all branches
 augur.getReputation = function (address, onSent) {
     // address: ethereum account
     var tx = this.utils.copy(this.tx.getReputation);
     tx.params = address;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getNumberReporters = function (branch, onSent) {
     // branch: sha256
     var tx = this.utils.copy(this.tx.getNumberReporters);
     tx.params = branch;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.repIDToIndex = function (branch, repID, onSent) {
     // branch: sha256
     // repID: ethereum account
     var tx = this.utils.copy(this.tx.repIDToIndex);
     tx.params = [branch, repID];
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.getTotalRep = function (branch, onSent) {
     var tx = this.utils.copy(this.tx.getTotalRep);
     tx.params = branch;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.hashReport = function (ballot, salt, onSent) {
     // ballot: number[]
@@ -1238,7 +1244,7 @@ augur.hashReport = function (ballot, salt, onSent) {
     if (ballot.constructor === Array) {
         var tx = this.utils.copy(this.tx.hashReport);
         tx.params = [abi.fix(ballot, "hex"), salt];
-        return rpc.fire(tx, onSent);
+        return augur.fire(tx, onSent);
     }
 };
 
@@ -1257,7 +1263,7 @@ augur.getNonce = function (id, onSent) {
     // id: sha256 hash id
     var tx = this.utils.copy(this.tx.getNonce);
     tx.params = id;
-    return rpc.fire(tx, onSent);
+    return augur.fire(tx, onSent);
 };
 augur.buyShares = function (branch, market, outcome, amount, nonce, limit, onSent, onSuccess, onFailed) {
     if (branch && branch.constructor === Object && branch.branchId) {
@@ -1538,7 +1544,6 @@ augur.getMarketPriceHistory = function (market, outcome, cb) {
     if (market && outcome) {
         var filter = {
             fromBlock: "0x1",
-            // toBlock: rpc.blockNumber(),
             toBlock: "latest",
             address: this.contracts.buyAndSellShares,
             topics: ["updatePrice"]

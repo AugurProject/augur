@@ -170,6 +170,7 @@ describe("augur.connect", function () {
                augur.network_id === "7");
     });
     it("should be unlocked", function () {
+        augur.connect("http://127.0.0.1:8545");
         if (augur.rpc.nodes.local) {
             assert.isTrue(augur.rpc.unlocked(augur.coinbase));
         }

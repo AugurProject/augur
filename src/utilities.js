@@ -117,6 +117,7 @@ module.exports = {
 
     print_nodes: function (nodes) {
         var node;
+        process.stdout.write(chalk.green.bold("hosts: "));
         for (var i = 0, len = nodes.length; i < len; ++i) {
             node = nodes[i].split("//")[1].split(':')[0];
             node = (i === 0) ? chalk.green(node) : chalk.gray(node);
@@ -138,11 +139,11 @@ module.exports = {
             augur.contracts = JSON.parse(contracts.toString());
         }
         if (!bignum) augur.bignumbers = false;
-        // augur.options.debug = true;
         if (augur.connect(rpcinfo || defaulthost)) {
-            if (augur.options.debug) {
-                console.log("local:", chalk.cyan(augur.rpc.nodes.local));
-                this.print_nodes(augur.rpc.nodes);
+            if (augur.options.debug.broadcast || augur.options.debug.fallback) {
+                console.log(chalk.red.bold("debug:"), augur.options.debug);
+                console.log(chalk.blue.bold("local:"), chalk.cyan(augur.rpc.nodes.local));
+                this.print_nodes(augur.rpc.nodes.hosted);
             }
             augur.nodes = augur.rpc.nodes.hosted;
         }

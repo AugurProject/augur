@@ -10,9 +10,13 @@ var constants = require("../constants");
 
 module.exports = {
 
+    encode: function (str) {
+        return encodeURIComponent(encodeURIComponent(str)).replace(/\./g, "%252E").toString();
+    },
+
     // Firebase read and write methods
     put: function (handle, data, callback) {
-        var url = constants.FIREBASE_URL + "/" + handle;
+        var url = constants.FIREBASE_URL + this.encode(handle);
         try {
             new Firebase(url).set(data);
             if (callback) callback(url);
@@ -28,7 +32,7 @@ module.exports = {
     get: function (handle, callback) {
         try {
             if (handle !== undefined && callback && callback.constructor === Function) {
-                var ref = new Firebase(constants.FIREBASE_URL + "/" + handle);
+                var ref = new Firebase(constants.FIREBASE_URL + "/" + this.encode(handle));
                 ref.once("value", function (data) {
                     var account = data.val();
                     if (account && account.handle) {

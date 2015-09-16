@@ -278,27 +278,21 @@ module.exports = function (augur) {
 
                 // if this is just a call, use the regular invoke method
                 } else {
-                    return augur.rpc.invoke(itx, callback);
+                    return augur.rpc.fire(itx, callback);
                 }
             
             // not logged in
             } else {
                 if (itx.send) {
+                    if (callback && callback.constructor === Function) {
+                        return callback(errors.NOT_LOGGED_IN);
+                    }
                     return errors.NOT_LOGGED_IN;
                 } else {
-                    return augur.rpc.invoke(itx, callback);
+                    return augur.rpc.fire(itx, callback);
                 }
             }
         }
-
-        // transact: function (tx, onSent, onSuccess, onFailed) {
-        //     var returns = tx.returns;
-        //     delete tx.returns;
-        //     tx.send = true;
-        //     this.invoke(tx, function (txhash) {
-        //         augur.confirmTx(tx, txhash, returns, onSent, onSuccess, onFailed);
-        //     });
-        // },
 
         // Handle-to-handle payment methods (send ether/cash/rep without needing address)
 

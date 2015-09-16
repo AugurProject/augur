@@ -23,7 +23,8 @@ var privateKey = crypto.randomBytes(32);
 // generate random handles and passwords
 var handle = utils.sha256(new Date().toString());
 var password = utils.sha256(Math.random().toString(36).substring(4));
-var handle2 = utils.sha256(new Date().toString()).slice(10);
+var handle2 = utils.sha256(new Date().toString()).slice(10) + "@" +
+    utils.sha256(new Date().toString()).slice(10) + ".com";
 var password2 = utils.sha256(Math.random().toString(36).substring(4)).slice(10);
 
 var markets = augur.getMarkets(augur.branches.dev);
@@ -446,11 +447,6 @@ describe("Contract methods", function () {
 
                 // sync
                 var branches = augur.web.invoke(augur.tx.getBranches);
-                console.log(branches);
-                console.log("encoded:", augur.rpc.encodeResult(
-                    branches[0],
-                    augur.tx.getBranches.returns
-                ));
                 assert.isAbove(branches.length, 0);
                 assert.isArray(branches);
                 assert.strictEqual(
@@ -463,7 +459,6 @@ describe("Contract methods", function () {
 
                 // async
                 augur.web.invoke(augur.tx.getBranches, function (branches) {
-                    console.log("async:", branches);
                     assert.isAbove(branches.length, 0);
                     assert.isArray(branches);
                     assert.strictEqual(
