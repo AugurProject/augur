@@ -113,8 +113,11 @@ var ConfigActions = {
 
     var self = this;
     augur.web.register(handle, password, function (account) {
-      if (account && account.address) {
-
+      if (account) {
+        if (account.error) {
+          return console.error(account.error, account.message);
+        }
+        
         console.log("new account registered: " + account.handle);
         console.log("address: " + account.address);
         console.log("private key: " + account.privateKey.toString("hex"));
@@ -126,9 +129,6 @@ var ConfigActions = {
           privateKey: account.privateKey,
           handle: account.handle
         });
-
-      } else {
-        console.log("register failed");
       }
     });
   },
@@ -136,7 +136,10 @@ var ConfigActions = {
   signIn: function (handle, password) {
     var self = this;
     augur.web.login(handle, password, function (account) {
-      if (account && account.address) {
+      if (account) {
+        if (account.error) {
+          return console.error(account.error, account.message);
+        }
 
         console.log("signed in to account: " + account.handle);
         console.log("address: " + account.address);
@@ -149,9 +152,6 @@ var ConfigActions = {
             privateKey: account.privateKey,
             handle: account.handle
         });
-
-      } else {
-        console.log("sign in failed");
       }
     });
   },
