@@ -56,9 +56,9 @@ EthereumClient.prototype.getAccounts = function (onResult) {
       if (accounts.error) return utilities.error(accounts);
       self.accounts = accounts;
       if (accounts && accounts.constructor === Array) {
-        this.currentAccount = accounts[0];
+        self.currentAccount = accounts[0];
       } else {
-        this.currentAccount = accounts;
+        self.currentAccount = accounts;
       }
       if (onResult) onResult(accounts);
     });

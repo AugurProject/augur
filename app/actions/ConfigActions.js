@@ -115,20 +115,27 @@ var ConfigActions = {
     augur.web.register(handle, password, function (account) {
       if (account) {
         if (account.error) {
-          return console.error(account.error, account.message);
+          console.error(account.error, account.message);
+          self.flux.actions.market.updateSharesHeld(null);
+          self.dispatch(constants.config.UPDATE_ACCOUNT, {
+            currentAccount: null,
+            privateKey: null,
+            handle: null
+          });
+          self.flux.actions.asset.updateAssets();
+          return;
         }
         
         console.log("new account registered: " + account.handle);
         console.log("address: " + account.address);
         console.log("private key: " + account.privateKey.toString("hex"));
 
-        self.flux.actions.asset.updateAssets();
-
         self.dispatch(constants.config.UPDATE_ACCOUNT, {
           currentAccount: account.address,
           privateKey: account.privateKey,
           handle: account.handle
         });
+        self.flux.actions.asset.updateAssets();
       }
     });
   },
@@ -138,20 +145,27 @@ var ConfigActions = {
     augur.web.login(handle, password, function (account) {
       if (account) {
         if (account.error) {
-          return console.error(account.error, account.message);
+          console.error(account.error, account.message);
+          self.flux.actions.market.updateSharesHeld(null);
+          self.dispatch(constants.config.UPDATE_ACCOUNT, {
+            currentAccount: null,
+            privateKey: null,
+            handle: null
+          });
+          self.flux.actions.asset.updateAssets();
+          return;
         }
 
         console.log("signed in to account: " + account.handle);
         console.log("address: " + account.address);
         console.log("private key: " + account.privateKey.toString("hex"));
 
-        self.flux.actions.asset.updateAssets();
-
         self.dispatch(constants.config.UPDATE_ACCOUNT, {
             currentAccount: account.address,
             privateKey: account.privateKey,
             handle: account.handle
         });
+        self.flux.actions.asset.updateAssets();
       }
     });
   },
@@ -160,6 +174,7 @@ var ConfigActions = {
     augur.web.logout();
     this.flux.actions.market.updateSharesHeld(null);
     this.dispatch(constants.config.UPDATE_ACCOUNT, { currentAccount: null });
+    this.flux.actions.asset.updateAssets();
   }
 };
 
