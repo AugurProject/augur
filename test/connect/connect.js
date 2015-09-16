@@ -170,6 +170,8 @@ describe("augur.connect", function () {
                augur.network_id === "7");
     });
     it("should be unlocked", function () {
-        if (augur.rpc.nodes.local) assert.isTrue(augur.rpc.unlocked());
+        if (augur.rpc.nodes.local) {
+            assert.isTrue(augur.rpc.unlocked(augur.coinbase));
+        }
     });
 });
