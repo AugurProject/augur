@@ -1566,7 +1566,7 @@ augur.getMarketPriceHistory = function (market, outcome, cb) {
             var logs = this.filters.eth_getLogs(filter);
             if (logs) {
                 if (logs.error) throw logs;
-                var price_logs = self.filters.search_price_logs(logs, market, outcome);
+                var price_logs = this.filters.search_price_logs(logs, market, outcome);
                 if (price_logs) {
                     if (price_logs.error) throw price_logs;
                     return price_logs;
