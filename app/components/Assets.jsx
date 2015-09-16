@@ -18,7 +18,7 @@ var SendEtherModal = require('./SendModal').SendEtherModal;
 
 var Assets = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin('config', 'network')],
+  mixins: [FluxMixin, StoreWatchMixin('config')],
 
   getInitialState: function () {
     return {

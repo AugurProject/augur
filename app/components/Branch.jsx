@@ -18,7 +18,7 @@ var constants = require('../libs/constants');
 var Branch = React.createClass({
 
   // assuming only one branch and all markets in store are of that branch
-  mixins: [FluxMixin, StoreWatchMixin('market', 'branch'), Navigation],
+  mixins: [FluxMixin, StoreWatchMixin('market', 'branch', 'config'), Navigation],
 
   getInitialState: function() {
     return {
@@ -34,10 +34,12 @@ var Branch = React.createClass({
     var flux = this.getFlux();
     var marketState = flux.store('market').getState();
     var currentBranch = flux.store('branch').getCurrentBranch();
+    var account = flux.store('config').getAccount();
 
     return {
       markets: marketState.markets,
-      currentBranch: currentBranch
+      currentBranch: currentBranch,
+      account: account
     }
   },
 
@@ -61,10 +63,18 @@ var Branch = React.createClass({
     end = end > total ? total : end;
     //var marketPage = _.sortBy(this.state.markets, 'volume').reverse().slice(start, end);
     var marketPage = _.map(this.state.markets).slice(start, end);
-    
+    var submitMarketAction = (
+      <span className="subheading pull-right">
+        <a href="javascript:void(0);" onClick={ this.toggleAddMarketModal }>Submit a Market</a>
+      </span>
+    );
+    if (!this.state.account) { 
+      submitMarketAction = <span />;
+    }
+
     return (
       <div id="branch">
-        <h3 className="clearfix">Markets <span className="subheading pull-right"><a href="javascript:void(0);" onClick={ this.toggleAddMarketModal }>Submit a Market</a></span></h3>
+        <h3 className="clearfix">Markets { submitMarketAction }</h3>
         <div className='subheading clearfix'>
           <span className='showing'>Showing { start+1 } - { end } of { total }</span>
           <Paginate 

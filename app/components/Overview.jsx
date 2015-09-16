@@ -20,7 +20,7 @@ var Markets = require('./Markets');
 
 var Overview = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin('asset', 'market', 'config')],
+  mixins: [FluxMixin, StoreWatchMixin('market')],
 
   getStateFromFlux: function () {
     var flux = this.getFlux();
