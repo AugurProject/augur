@@ -18,8 +18,6 @@ var SendEtherModal = require('./SendModal').SendEtherModal;
 
 var Assets = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin('config')],
-
   getInitialState: function () {
     return {
       repFaucetDisabled: false,
@@ -28,16 +26,6 @@ var Assets = React.createClass({
       sendRepModalOpen: false,
       sendEtherModalOpen: false
     };
-  },
-
-  getStateFromFlux: function () {
-
-    var flux = this.getFlux();
-
-    return {
-      ethereumClient: flux.store('config').getEthereumClient(),
-      currentAccount: flux.store('config').getAccount()
-    }
   },
 
   onCashFaucet: function (event) {
@@ -68,7 +56,9 @@ var Assets = React.createClass({
       }
 
       var self = this;
-      this.state.ethereumClient.repFaucet(null, function (result) {
+      var ethereumClient = this.props.config.getEthereumClient();
+
+      ethereumClient.repFaucet(null, function (result) {
         self.getFlux().actions.transaction.addTransaction({
           hash: result.txHash, 
           type: constants.transaction.REP_FAUCET_TYPE, 
@@ -95,10 +85,11 @@ var Assets = React.createClass({
 
   render: function () {
 
-    if (!this.state.currentAccount) return ( <span /> );
+    if (!this.props.config.currentAccount) return ( <span /> );
 
     var cashBalance = this.props.asset.cash ? this.props.asset.cash.toFixed(4) : '-';
     var repBalance = this.props.asset.reputation ? this.props.asset.reputation.toFixed() : '-';
+    var etherBalance = this.props.asset.ether ? utilities.formatEther(this.props.asset.ether).value : '-';
 
     return (
       <div className="panel panel-info assets">
@@ -124,7 +115,7 @@ var Assets = React.createClass({
 
           <div className='ether-balance'>
             <Button className='pull-right send-button' bsSize='xsmall' bsStyle='default' onClick={ this.toggleSendEtherModal }>Send</Button>
-            <span className="unit">{ utilities.formatEther(this.props.asset.ether).unit }</span><span className='pull-right'>{ utilities.formatEther(this.props.asset.ether).value }</span>
+            <span className="unit">{ utilities.formatEther(this.props.asset.ether).unit }</span><span className='pull-right'>{ etherBalance }</span>
           </div>
 
           <SendEtherModal show={ this.state.sendEtherModalOpen } onHide={ this.toggleSendEtherModal } />

@@ -151,7 +151,7 @@ var AugurApp = React.createClass({
                   <p><Link to="markets">Markets</Link><i>{ _.keys(this.state.market.markets).length }</i></p>
                   <p><Link to="ballots">Ballot</Link><i>{ _.keys(this.state.report.eventsToReport).length }</i></p>
               </div>
-              <Assets asset={ this.state.asset } />
+              <Assets asset={ this.state.asset } config={ this.state.config } />
               <Network />
             </div>
 

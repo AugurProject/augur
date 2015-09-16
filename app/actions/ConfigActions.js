@@ -36,8 +36,6 @@ var ConfigActions = {
 
   useMarketCache: function(useMarketCache) {
 
-    console.log(useMarketCache);
-
     this.dispatch(constants.config.UPDATE_ETHEREUM_CLIENT_SUCCESS, {
       useMarketCache: useMarketCache
     });
