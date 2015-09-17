@@ -76,6 +76,7 @@ module.exports = function (augur) {
                         }
                     }
                 }
+                price_logs.reverse();
                 return price_logs;
             }
         },
