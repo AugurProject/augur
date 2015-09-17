@@ -55049,7 +55049,7 @@ module.exports = function (augur) {
             var self = this;
             if (password && password.length > 5) {
                 db.get(handle, function (record) {
-                    if (record.error) {
+                    if (!record) {
 
                         // generate ECDSA private key and initialization vector
                         keythereum.create(null, function (plain) {
@@ -55117,7 +55117,7 @@ module.exports = function (augur) {
             // retrieve account info from database
             if (password) {
                 db.get(handle, function (storedInfo) {
-                    if (!storedInfo.error) {
+                    if (storedInfo && !storedInfo.error) {
 
                         var iv = new Buffer(storedInfo.iv, "base64");
                         var salt = new Buffer(storedInfo.salt, "base64");
@@ -55535,6 +55535,7 @@ module.exports = function (augur) {
 var Firebase = require("firebase");
 var errors = require("../errors");
 var constants = require("../constants");
+var utils = require("../utilities");
 
 module.exports = {
 
@@ -55544,11 +55545,16 @@ module.exports = {
 
     // Firebase read and write methods
     put: function (handle, data, callback) {
-        var url = constants.FIREBASE_URL + this.encode(handle);
-        try {
-            new Firebase(url).set(data);
-            if (callback) callback(url);
-        } catch (e) {
+        if (handle !== null && handle !== undefined && handle !== '' && data) {
+            var url = constants.FIREBASE_URL + this.encode(handle);
+            try {
+                new Firebase(url).set(data);
+                if (callback) callback(url);
+            } catch (e) {
+                if (!callback) return errors.DB_WRITE_FAILED;
+                callback(errors.DB_WRITE_FAILED);
+            }
+        } else {
             if (!callback) return errors.DB_WRITE_FAILED;
             callback(errors.DB_WRITE_FAILED);
         }
@@ -55556,7 +55562,8 @@ module.exports = {
 
     get: function (handle, callback) {
         try {
-            if (handle !== undefined && callback && callback.constructor === Function) {
+            if (handle !== null && handle !== undefined &&
+                handle !== '' && utils.is_function(callback)) {
                 var ref = new Firebase(constants.FIREBASE_URL + "/" + this.encode(handle));
                 ref.once("value", function (data) {
                     callback(data.val());
@@ -55631,7 +55638,7 @@ module.exports = {
     } // leveldb
 };
 
-},{"../constants":307,"../errors":308,"firebase":270}],307:[function(require,module,exports){
+},{"../constants":307,"../errors":308,"../utilities":312,"firebase":270}],307:[function(require,module,exports){
 /** 
  * augur.js constants
  */

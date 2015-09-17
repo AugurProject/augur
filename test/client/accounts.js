@@ -35,8 +35,7 @@ describe("Register", function () {
     it("register account 1: " + handle + " / " + password, function (done) {
         this.timeout(constants.TIMEOUT*4);
         db.get(handle, function (record) {
-            assert(record.error);
-            assert.strictEqual(record.error, 99);
+            assert.isNull(record);
             augur.web.register(handle, password, function (result) {
                 if (result.error) {
                     augur.web.logout();
@@ -89,7 +88,7 @@ describe("Register", function () {
     it("register account 2: " + handle2 + " / " + password2, function (done) {
         this.timeout(constants.TIMEOUT*4);
         db.get(handle2, function (record) {
-            assert(record.error);
+            assert.isNull(record);
             augur.web.register(handle2, password2, function (result) {
                 if (result.error) {
                     augur.web.logout();
@@ -105,11 +104,11 @@ describe("Register", function () {
                 );
                 assert.strictEqual(result.address.length, 42);
                 db.get(handle2, function (rec) {
+                    assert.isNotNull(rec);
                     if (rec.error) {
                         augur.web.logout();
                         return done(rec);
                     }
-                    assert(!rec.error);
                     assert.property(rec, "nonce");
                     assert(rec.privateKey);
                     assert(rec.iv);
@@ -146,7 +145,7 @@ describe("Register", function () {
             assert(!result.address);
             assert(result.error);
             db.get(handle, function (record) {
-                assert(!record.error);
+                assert.isNotNull(record);
                 done();
             });
         });
@@ -159,7 +158,7 @@ describe("Register", function () {
             assert(!result.address);
             assert(result.error);
             db.get(handle, function (record) {
-                assert(!record.error);
+                assert.isNotNull(record);
                 done();
             });
         });

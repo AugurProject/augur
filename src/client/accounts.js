@@ -80,7 +80,7 @@ module.exports = function (augur) {
             var self = this;
             if (password && password.length > 5) {
                 db.get(handle, function (record) {
-                    if (record.error) {
+                    if (!record) {
 
                         // generate ECDSA private key and initialization vector
                         keythereum.create(null, function (plain) {
@@ -148,7 +148,7 @@ module.exports = function (augur) {
             // retrieve account info from database
             if (password) {
                 db.get(handle, function (storedInfo) {
-                    if (!storedInfo.error) {
+                    if (storedInfo && !storedInfo.error) {
 
                         var iv = new Buffer(storedInfo.iv, "base64");
                         var salt = new Buffer(storedInfo.salt, "base64");

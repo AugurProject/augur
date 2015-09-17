@@ -7,6 +7,7 @@
 var Firebase = require("firebase");
 var errors = require("../errors");
 var constants = require("../constants");
+var utils = require("../utilities");
 
 module.exports = {
 
@@ -16,11 +17,16 @@ module.exports = {
 
     // Firebase read and write methods
     put: function (handle, data, callback) {
-        var url = constants.FIREBASE_URL + this.encode(handle);
-        try {
-            new Firebase(url).set(data);
-            if (callback) callback(url);
-        } catch (e) {
+        if (handle !== null && handle !== undefined && handle !== '' && data) {
+            var url = constants.FIREBASE_URL + this.encode(handle);
+            try {
+                new Firebase(url).set(data);
+                if (callback) callback(url);
+            } catch (e) {
+                if (!callback) return errors.DB_WRITE_FAILED;
+                callback(errors.DB_WRITE_FAILED);
+            }
+        } else {
             if (!callback) return errors.DB_WRITE_FAILED;
             callback(errors.DB_WRITE_FAILED);
         }
@@ -28,7 +34,8 @@ module.exports = {
 
     get: function (handle, callback) {
         try {
-            if (handle !== undefined && callback && callback.constructor === Function) {
+            if (handle !== null && handle !== undefined &&
+                handle !== '' && utils.is_function(callback)) {
                 var ref = new Firebase(constants.FIREBASE_URL + "/" + this.encode(handle));
                 ref.once("value", function (data) {
                     callback(data.val());
