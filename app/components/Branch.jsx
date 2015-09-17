@@ -38,6 +38,7 @@ var Branch = React.createClass({
 
     return {
       markets: marketState.markets,
+      pendingMarkets: marketState.pendingMarkets,
       currentBranch: currentBranch,
       account: account
     }
@@ -56,7 +57,6 @@ var Branch = React.createClass({
 
   render: function () {
 
-
     var start = 0 + (this.state.pageNum) * this.state.marketsPerPage;
     var total = _.size(this.state.markets);
     var end = start + this.state.marketsPerPage;
@@ -72,8 +72,22 @@ var Branch = React.createClass({
       submitMarketAction = <span />;
     }
 
+    var pendingMarkets = _.map(this.state.pendingMarkets);
+    var pendingMarketsSection = <span />;
+    if (this.state.pendingMarkets) {
+      pendingMarketsSection = (
+        <div className='pendingMarkets row'>
+          <Markets 
+            markets={ pendingMarkets }
+            currentBranch={ this.state.currentBranch }
+            classNameWrapper='col-sm-4' />
+        </div>
+      );
+    }
+
     return (
       <div id="branch">
+        { pendingMarketsSection }
         <h3 className="clearfix">Markets { submitMarketAction }</h3>
         <div className='subheading clearfix'>
           <span className='showing'>Showing { start+1 } - { end } of { total }</span>

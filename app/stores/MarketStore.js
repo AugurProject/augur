@@ -4,6 +4,7 @@ var _ = require('lodash');
 
 var state = {
   markets: {},
+  pendingMarkets: {},
   marketLoadingIds: null,
   loadingPage: null
 };
@@ -98,7 +99,7 @@ var MarketStore = Fluxxor.createStore({
   },
 
   handleAddPendingMarketSuccess: function (payload) {
-    state.markets[payload.market.id] = payload.market
+    state.pendingMarkets[payload.market.id] = payload.market
     this.emit(constants.CHANGE_EVENT);
   },
 
@@ -109,9 +110,9 @@ var MarketStore = Fluxxor.createStore({
 
   handleDeleteMarketSuccess: function (payload) {
 
-    // delete market if it exists
+    // delete (pending) market if it exists
     if (payload.marketId && state.markets[payload.marketId]) {
-      delete state.markets[payload.marketId];
+      delete state.pendingMarkets[payload.marketId];
     }
   }
 
