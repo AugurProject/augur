@@ -109,6 +109,18 @@ var ConfigActions = {
     this.flux.actions.network.checkNetwork();
   },
 
+  updateAccount: function(credentials) {
+
+    this.dispatch(constants.config.UPDATE_ACCOUNT, {
+      currentAccount: credentials.currentAccount,
+      privateKey: credentials.privateKey,
+      handle: credentials.handle
+    });
+
+    this.flux.actions.asset.updateAssets();
+  },
+
+  // NOTE: leaving here for now but have moved this to the register component to capture return values from server
   register: function (handle, password) {
 
     var self = this;

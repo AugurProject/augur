@@ -84,7 +84,7 @@ var ConfigStore = Fluxxor.createStore({
 
   handleUpdateAccount: function (payload) {
 
-    console.log(payload);
+    //console.log(payload);
     
     state.currentAccount = payload.currentAccount;
     state.privateKey = payload.privateKey;

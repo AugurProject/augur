@@ -13,7 +13,12 @@ var SignInModal = React.createClass({
 
   getInitialState: function () {
 
-    return {};
+    return {
+      handle: '',
+      password: '',
+      handleHelp: null,
+      passwordHelp: null
+    };
   },
 
   getStateFromFlux: function() {
@@ -24,7 +29,9 @@ var SignInModal = React.createClass({
   onSignIn: function (event) {
 
     var flux = this.getFlux();
+
     flux.actions.config.signIn(this.state.handle, this.state.password);
+
     this.props.onHide();
   },
 
@@ -34,9 +41,9 @@ var SignInModal = React.createClass({
 
   handleChange: function (event) {
 
-    var updated = {};
-    updated[event.target.name] = event.target.value;
-    this.setState(updated);
+    var form = {};
+    form[event.target.name] = event.target.value;
+    this.setState(form);
   },
 
   render: function () {
