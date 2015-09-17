@@ -55549,11 +55549,8 @@ module.exports = {
             new Firebase(url).set(data);
             if (callback) callback(url);
         } catch (e) {
-            if (callback) {
-                callback(errors.DB_WRITE_FAILED);
-            } else {
-                return errors.DB_WRITE_FAILED;
-            }
+            if (!callback) return errors.DB_WRITE_FAILED;
+            callback(errors.DB_WRITE_FAILED);
         }
     },
 
@@ -55562,26 +55559,15 @@ module.exports = {
             if (handle !== undefined && callback && callback.constructor === Function) {
                 var ref = new Firebase(constants.FIREBASE_URL + "/" + this.encode(handle));
                 ref.once("value", function (data) {
-                    var account = data.val();
-                    if (account && account.handle) {
-                        callback(account);
-                    } else {
-                        callback(errors.DB_READ_FAILED);
-                    }
+                    callback(data.val());
                 });
             } else {
-                if (callback) {
-                    callback(errors.DB_READ_FAILED);
-                } else {
-                    return errors.DB_READ_FAILED;
-                }
+                if (!callback) return errors.DB_READ_FAILED;
+                callback(errors.DB_READ_FAILED);
             }
         } catch (e) {
-            if (callback) {
-                callback(errors.DB_READ_FAILED);
-            } else {
-                return errors.DB_READ_FAILED;
-            }
+            if (!callback) return errors.DB_READ_FAILED;
+            callback(errors.DB_READ_FAILED);
         }
     },
 
@@ -55596,11 +55582,8 @@ module.exports = {
                     "db_"
                 ), f);
             } catch (e) {
-                if (f) {
-                    f(errors.DB_WRITE_FAILED);
-                } else {
-                    return errors.DB_WRITE_FAILED;
-                }
+                if (!f) return errors.DB_WRITE_FAILED;
+                f(errors.DB_WRITE_FAILED);
             }
         }, // put
 
@@ -55612,10 +55595,14 @@ module.exports = {
                         [label, handle],
                         "db_"
                     ), function (record) {
-                        if (!record.error) {
-                            f(JSON.parse(record));
-                        } else {
-                            f(errors.BAD_CREDENTIALS);
+                        if (record) {
+                            if (!record.error) {
+                                return f(JSON.parse(record));
+                            } else if (record.error === -32603) {
+                                return f('');
+                            } else {
+                                f(record);
+                            }
                         }
                     });
                 } else {
@@ -55624,18 +55611,20 @@ module.exports = {
                         [label, handle],
                         "db_"
                     ));
-                    if (!record.error) {
-                        return JSON.parse(record);
-                    } else {
-                        return errors.BAD_CREDENTIALS;
+                    if (record) {
+                        if (!record.error) {
+                            return JSON.parse(record);
+                        } else if (record.error === -32603) {
+                            return '';
+                        } else {
+                            return record;
+                        }
                     }
                 }
             } catch (e) {
-                if (f) {
-                    f(errors.DB_READ_FAILED);
-                } else {
-                    return errors.DB_READ_FAILED;
-                }
+                console.log(e);
+                if (!f) return errors.DB_READ_FAILED;
+                f(errors.DB_READ_FAILED);
             }
         } // get
     
@@ -55674,7 +55663,7 @@ module.exports = {
     FREEBIE: 100,
 
     // unit test timeout
-    TIMEOUT: 1000000,
+    TIMEOUT: 64000,
 
     KEYSIZE: 32,
     IVSIZE: 16,
@@ -59148,6 +59137,7 @@ var errors = require("./errors");
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
 function RPCError(err) {
+    this.name = err.error || err.name;
     this.message = (err.error || err.name) + ": " + err.message;
 }
 
