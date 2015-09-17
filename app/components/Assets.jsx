@@ -18,6 +18,8 @@ var SendEtherModal = require('./SendModal').SendEtherModal;
 
 var Assets = React.createClass({
 
+  mixins: [FluxMixin],
+
   getInitialState: function () {
     return {
       repFaucetDisabled: false,
@@ -55,11 +57,12 @@ var Assets = React.createClass({
         utilities.warn('not enough ether');
       }
 
+      var flux = this.getFlux();
+      var branchId = flux.store('branch').getCurrentBranch();
       var self = this;
-      var ethereumClient = this.props.config.getEthereumClient();
 
-      ethereumClient.repFaucet(null, function (result) {
-        self.getFlux().actions.transaction.addTransaction({
+      augur.reputationFaucet(branchId, function (result) {
+        flux.actions.transaction.addTransaction({
           hash: result.txHash, 
           type: constants.transaction.REP_FAUCET_TYPE, 
           description: 'requesting reputation'
