@@ -205,6 +205,26 @@ describe("Contracts listener", function () {
 
 });
 
+describe("getPriceHistory", function () {
+
+    it("price history for branch " + augur.branches.dev, function (done) {
+        this.timeout(constants.TIMEOUT*8);
+        augur.getPriceHistory(augur.branches.dev, function (priceHistory) {
+            if (priceHistory.error) done(priceHistory);
+            assert.isObject(priceHistory);
+            assert.property(priceHistory, market_id);
+            assert.property(priceHistory[market_id], outcome);
+            assert.isArray(priceHistory[market_id][outcome]);
+            assert.isAbove(priceHistory[market_id][outcome].length, 0);
+            assert.property(priceHistory[market_id][outcome][0], "price");
+            assert.property(priceHistory[market_id][outcome][0], "cost");
+            assert.property(priceHistory[market_id][outcome][0], "blockNumber");
+            done();
+        });
+    });
+
+});
+
 describe("getMarketPriceHistory", function () {
 
     it("[async] price history after buy", function (done) {

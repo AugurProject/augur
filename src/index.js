@@ -1540,6 +1540,43 @@ augur.getCreationBlock = function (market, cb) {
     }
 };
 
+augur.getPriceHistory = function (branch, cb) {
+    var self = this;
+    var filter = {
+        fromBlock: "0x1",
+        toBlock: "latest",
+        address: this.contracts.buyAndSellShares,
+        topics: ["updatePrice"]
+    };
+    if (this.utils.is_function(cb)) {
+        this.filters.eth_getLogs(filter, function (logs) {
+            if (logs) {
+                if (logs.error) return console.error("eth_getLogs:", logs);
+                self.getMarkets(branch, function (markets) {
+                    var priceHistory, outcomes;
+                    if (markets) {
+                        if (markets.error) return cb(markets);
+                        priceHistory = {};
+                        outcomes = [1, 2];
+                        for (var i = 0, len = markets.length; i < len; ++i) {
+                            priceHistory[markets[i]] = {};
+                            for (var j = 0, numOutcomes = outcomes.length; j < numOutcomes; ++j) {
+                                priceHistory[markets[i]][outcomes[j]] = self.filters.search_price_logs(
+                                    logs,
+                                    markets[i],
+                                    outcomes[j]
+                                );
+                            }
+                        }
+                        // console.log(JSON.stringify(priceHistory, null, 2));
+                        cb(priceHistory);
+                    }
+                });
+            }
+        });
+    }
+};
+
 augur.getMarketPriceHistory = function (market, outcome, cb) {
     if (market && outcome) {
         var filter = {
@@ -1552,11 +1589,11 @@ augur.getMarketPriceHistory = function (market, outcome, cb) {
             var self = this;
             this.filters.eth_getLogs(filter, function (logs) {
                 if (logs) {
-                    if (logs.error) return console.error("eth_getLogs:", logs);
+                    if (logs.error) return; // console.error("eth_getLogs:", logs);
                     var price_logs = self.filters.search_price_logs(logs, market, outcome);
                     if (price_logs) {
                         if (price_logs.error) {
-                            return console.error("search_price_logs:", price_logs);
+                            return; // console.error("search_price_logs:", price_logs);
                         }
                         cb(price_logs);
                     }
