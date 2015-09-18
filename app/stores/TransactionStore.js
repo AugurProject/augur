@@ -14,7 +14,6 @@ class Transaction {
     this.blockNumber = null;
     this.type = tx.type;
     this.description = tx.description;
-    this.onMined = tx.onMined
   }
 }
 
@@ -36,7 +35,6 @@ var TransactionStore = Fluxxor.createStore({
 
     state[payload.hash].type = payload.type;
     state[payload.hash].description = payload.description;
-    state[payload.hash].onMined = payload.onMined;
 
     this.emit(constants.CHANGE_EVENT);
   },

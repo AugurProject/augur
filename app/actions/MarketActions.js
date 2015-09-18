@@ -144,6 +144,7 @@ var MarketActions = {
     var currentBlock = this.flux.store('network').getState().blockNumber;
     var account = this.flux.store('config').getAccount();
     var branchId = this.flux.store('branch').getCurrentBranch().id;
+    var markets =  this.flux.store('market').getState().markets;
 
     // TODO install a real mongo rest api with working filters
     $.get(constants.MARKETEER, function (data) {
@@ -165,6 +166,12 @@ var MarketActions = {
           if (onBranch && !blacklisted && !cached[i].invalid &&
               cached[i].price && cached[i].description)
           {
+            // initialize market if it doesn't exist
+            if (!markets[marketId]) {
+              this.dispatch(constants.market.ADD_MARKET_SUCCESS, {
+                market: this.flux.actions.market.initMarket(marketId)
+              });
+            }
 
             cached[i].id = marketId;
             cached[i].endDate = utilities.blockToDate(cached[i].endDate, currentBlock);

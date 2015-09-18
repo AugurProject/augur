@@ -8,7 +8,7 @@ var ConfigActions = {
   updateEthereumClient: function (host) {
 
     host = host || this.flux.store('config').getState().host;
-    var branch = this.flux.store('branch').getState().currentBranch || { id: process.env.AUGUR_BRANCH_ID };
+    var branch = this.flux.store('branch').getCurrentBranch();
     var isHosted = false;
     var useMarketCache = this.flux.store('config').getState().useMarketCache;
 
@@ -74,28 +74,57 @@ var ConfigActions = {
 
         // listen for new blocks
         block: function (blockHash) {
-          self.flux.actions.network.updateNetwork();
-          self.flux.actions.asset.updateAssets();
-          self.flux.actions.market.loadNewMarkets();
+          var account = self.flux.store('config').getAccount();
+          if (account) {
+            augur.rpc.balance(account, null, function (result) {
+              if (result) {
+                if (result.error) {
+                  return console.log("block filter error:", result);
+                }
+                self.dispatch(constants.asset.UPDATE_ASSETS, {
+                  ether: abi.bignum(result)
+                });
+              }
+            });
 
-          // We pull the branch's block-dependent period information from
-          // contract calls that need to be called each block.
-          self.flux.actions.branch.updateCurrentBranch();
-
-          // TODO: We can skip loading events to report if the voting period hasn't changed.
-          self.flux.actions.report.loadEventsToReport();
-          self.flux.actions.branch.checkQuorum();
-
-          self.flux.actions.report.submitQualifiedReports();
+            // TODO: We can skip loading events to report
+            // if the voting period hasn't changed.
+            self.flux.actions.report.loadEventsToReport();
+            self.flux.actions.branch.checkQuorum();
+            self.flux.actions.report.submitQualifiedReports();
+          }
         },
 
         // listen for augur transactions
-        contracts: self.flux.actions.transaction.onAugurTx,
+        contracts: function (filtrate) {
+          if (filtrate) {
+            if (filtrate.error) {
+              return console.log("contracts filter error:", filtrate);
+            }
+            console.log("[filter] contracts:", filtrate.address);
+
+            self.flux.actions.network.updateNetwork();
+            self.flux.actions.asset.updateAssets();
+            self.flux.actions.market.loadNewMarkets();
+
+            // We pull the branch's block-dependent period information from
+            // contract calls that need to be called each block.
+            self.flux.actions.branch.updateCurrentBranch();
+          }
+        },
 
         // update market when a price change has been detected
         price: function (result) {
           if (result && result.marketId) {
-            console.log("price updated:", result.marketId);
+            console.log("[filter] updatePrice:", result.marketId);
+            self.flux.actions.market.loadMarkets(new BigNumber(result.marketId));
+          }
+        },
+
+        // listen for new markets
+        creation: function (result) {
+          if (result && result.marketId) {
+            console.log("[filter] creationBlock:", result.marketId, result.blockNumber);
             self.flux.actions.market.loadMarket(new BigNumber(result.marketId));
           }
         }
@@ -118,38 +147,6 @@ var ConfigActions = {
     });
 
     this.flux.actions.asset.updateAssets();
-  },
-
-  // NOTE: leaving here for now but have moved this to the register component to capture return values from server
-  register: function (handle, password) {
-
-    var self = this;
-    augur.web.register(handle, password, function (account) {
-      if (account) {
-        if (account.error) {
-          console.error(account.error, account.message);
-          self.flux.actions.market.updateSharesHeld(null);
-          self.dispatch(constants.config.UPDATE_ACCOUNT, {
-            currentAccount: null,
-            privateKey: null,
-            handle: null
-          });
-          self.flux.actions.asset.updateAssets();
-          return;
-        }
-        
-        console.log("new account registered: " + account.handle);
-        console.log("address: " + account.address);
-        console.log("private key: " + account.privateKey.toString("hex"));
-
-        self.dispatch(constants.config.UPDATE_ACCOUNT, {
-          currentAccount: account.address,
-          privateKey: account.privateKey,
-          handle: account.handle
-        });
-        self.flux.actions.asset.updateAssets();
-      }
-    });
   },
 
   signIn: function (handle, password) {

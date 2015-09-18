@@ -111,7 +111,7 @@ var MarketStore = Fluxxor.createStore({
   handleDeleteMarketSuccess: function (payload) {
 
     // delete (pending) market if it exists
-    if (payload.marketId && state.markets[payload.marketId]) {
+    if (payload.marketId && state.pendingMarkets[payload.marketId]) {
       delete state.pendingMarkets[payload.marketId];
     }
   }

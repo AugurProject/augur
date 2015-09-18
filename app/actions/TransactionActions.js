@@ -23,24 +23,6 @@ var TransactionActions = {
   onPendingTx: function(txHash) {
 
   	this.flux.actions.transaction.addTransaction(txHash);
-  },
-
-  onAugurTx: function(result) {
-
-  	var transactions = this.flux.store('transaction').getState();
-    var hash = result.txHash;
-
-  	if (transactions[hash]) {
-
-  		console.log('block ' + result.blockNumber +' included ' + hash);
-
-      // fire onMined if exists
-      if (transactions[hash].onMined) transactions[hash].onMined(result);
-
-  		this.dispatch(constants.transaction.UPDATE_TRANSACTIONS, [
-  			{hash: hash, blockNumber: result.blockNumber}
-  		]);
-  	}
   }
 };
 

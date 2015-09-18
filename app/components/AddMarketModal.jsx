@@ -143,44 +143,58 @@ var AddMarketModal = React.createClass({
   },
 
   onSubmit: function(event) {
-    var self = this;
     if (!this.validatePage(this.state.pageNumber)) return;
-
-    var newEventParams = {
-      description: this.state.marketText,
-      expirationBlock: utilities.dateToBlock(moment(this.state.maturationDate))
-    }
-
+    var self = this;
+    var flux = this.getFlux();
     var newMarketParams = {
       description: this.state.marketText,
       initialLiquidity: this.state.marketInvestment,
       tradingFee: new BigNumber(this.state.tradingFee / 100)
     };
-
-    var flux = this.getFlux();
     var pendingId = flux.actions.market.addPendingMarket(newMarketParams);
-
-    var ethereumClient = this.state.ethereumClient;
-    ethereumClient.addEvent(newEventParams, function (newEvent) {
-
-      // create associated market on success of event
-      newMarketParams.events = [ newEvent.id ];
-      self.state.ethereumClient.addMarket(newMarketParams, function(txHash) {
-
-        // add new transaction object and associated callback when mined
-        flux.actions.transaction.addTransaction({
-          hash: txHash, 
-          type: constants.transaction.ADD_MARKET_TYPE, 
-          description: 'new market submitted', 
-          onMined: function (result) {
-            flux.actions.market.deleteMarket(pendingId);
-            console.log('new market accepted');
+    var branchId = flux.store("branch").getCurrentBranch().id;
+    augur.createEvent({
+      branchId: branchId,
+      description: this.state.marketText,
+      expDate: utilities.dateToBlock(moment(this.state.maturationDate)),
+      minValue: 0,
+      maxValue: 1,
+      numOutcomes: 2,
+      onSent: function (res) {
+        if (res && res.txHash) {
+          console.log("new event submitted:", abi.bignum(res.txHash, "hex"));
+        }
+      },
+      onSuccess: function (res) {
+        if (res && res.callReturn && res.txHash) {
+          console.log("new event ID:", abi.bignum(res.callReturn, "hex"));
+          var events = abi.bignum(res.callReturn, "hex");
+          if (events.constructor !== Array) {
+            events = [events];
           }
-        });
-
-      });
+          augur.createMarket({
+            branchId: branchId,
+            description: newMarketParams.description,
+            alpha: "0.0079",
+            initialLiquidity: newMarketParams.initialLiquidity,
+            tradingFee: newMarketParams.tradingFee.toFixed(),
+            events: events,
+            onSent: function (r) {
+              console.log("new market submitted:", r.txHash);
+            },
+            onSuccess: function (r) {
+              console.log("new market ID:", abi.bignum(r.callReturn, "hex"));
+            },
+            onFailed: function (r) {
+              console.error("market creation failed:", r);
+            }
+          });
+        }
+      },
+      onFailed: function (r) {
+        console.error("event creation failed:", r);
+      }
     });
-
     this.onHide();
   },
 
