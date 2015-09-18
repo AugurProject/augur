@@ -28,47 +28,53 @@ var SignInModal = React.createClass({
 
   onSignIn: function (event) {
 
-    if (this.isValid()) {
+    var flux = this.getFlux();
 
-      var flux = this.getFlux();
-      var self = this;
+    flux.actions.config.signIn(this.state.handle, this.state.password);
 
-      console.log(this.state.handle, this.state.password);
-      augur.web.login(this.state.handle, this.state.password, function (account) {
+    this.props.onHide();
 
-        if (account) {
+    // if (this.isValid()) {
 
-          if (account.error) {
+    //   var flux = this.getFlux();
+    //   var self = this;
 
-            console.error(account.error, account.message);
+    //   console.log(this.state.handle, this.state.password);
+    //   augur.web.login(this.state.handle, this.state.password, function (account) {
 
-            flux.actions.market.updateSharesHeld(null);
+    //     if (account) {
 
-            flux.actions.config.updateAccount({
-              currentAccount: null,
-              privateKey: null,
-              handle: null
-            });
+    //       if (account.error) {
 
-            self.setState({ handleHelp: account.message });
+    //         console.error(account.error, account.message);
 
-            return;
-          }
+    //         flux.actions.market.updateSharesHeld(null);
 
-          console.log("signed in to account: " + account.handle);
-          console.log("address: " + account.address);
-          console.log("private key: " + account.privateKey.toString("hex"));
+    //         flux.actions.config.updateAccount({
+    //           currentAccount: null,
+    //           privateKey: null,
+    //           handle: null
+    //         });
 
-          flux.actions.config.updateAccount({
-            currentAccount: account.address,
-            privateKey: account.privateKey,
-            handle: account.handle
-          });
+    //         self.setState({ handleHelp: account.message });
 
-          this.props.onHide();
-        }
-      });
-    }
+    //         return;
+    //       }
+
+    //       console.log("signed in to account: " + account.handle);
+    //       console.log("address: " + account.address);
+    //       console.log("private key: " + account.privateKey.toString("hex"));
+
+    //       flux.actions.config.updateAccount({
+    //         currentAccount: account.address,
+    //         privateKey: account.privateKey,
+    //         handle: account.handle
+    //       });
+
+    //       this.props.onHide();
+    //     }
+    //   });
+    // }
   },
 
   isValid: function () {
