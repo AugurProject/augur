@@ -107,13 +107,11 @@ var ConfigActions = {
           if (result && result.marketId) {
             console.log("[filter] updatePrice:", result.marketId);
             self.flux.actions.asset.updateAssets();
-            self.flux.actions.network.updateNetwork();
             if (self.flux.store("config").getState().useMarketCache) {
-              self.flux.actions.market.loadMarkets();
+              setTimeout(self.flux.actions.market.loadMarkets, 3000);
             } else {
               self.flux.actions.market.loadMarket(new BigNumber(result.marketId));
             }
-            self.flux.actions.branch.updateCurrentBranch();
           }
         },
 
@@ -122,11 +120,10 @@ var ConfigActions = {
           if (result && result.marketId) {
             console.log("[filter] creationBlock:", result.blockNumber);
             if (self.flux.store("config").getState().useMarketCache) {
-              self.flux.actions.market.loadMarkets();
+              setTimeout(self.flux.actions.market.loadMarkets, 3000);
             } else {
               self.flux.actions.market.loadMarket(new BigNumber(result.marketId));
             }
-            self.flux.actions.branch.updateCurrentBranch();
           }
         }
       });
