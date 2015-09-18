@@ -108,7 +108,7 @@ var ConfigActions = {
         price: function (result) {
           if (result && result.marketId) {
             console.log("[filter] updatePrice:", result.marketId);
-            self.flux.actions.market.loadMarkets(new BigNumber(result.marketId));
+            self.flux.actions.market.loadMarket(new BigNumber(result.marketId));
           }
         },
 
