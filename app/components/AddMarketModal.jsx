@@ -184,15 +184,18 @@ var AddMarketModal = React.createClass({
             },
             onSuccess: function (r) {
               console.log("new market ID:", abi.bignum(r.callReturn, "hex"));
+              flux.actions.market.deleteMarket(pendingId);
             },
             onFailed: function (r) {
               console.error("market creation failed:", r);
+              flux.actions.market.deleteMarket(pendingId);
             }
           });
         }
       },
       onFailed: function (r) {
         console.error("event creation failed:", r);
+        flux.actions.market.deleteMarket(pendingId);
       }
     });
     this.onHide();

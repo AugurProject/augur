@@ -124,7 +124,7 @@ var ConfigActions = {
         // listen for new markets
         creation: function (result) {
           if (result && result.marketId) {
-            console.log("[filter] creationBlock:", result.marketId, result.blockNumber);
+            console.log("[filter] creationBlock:", result.blockNumber);
             self.flux.actions.market.loadMarket(new BigNumber(result.marketId));
           }
         }
