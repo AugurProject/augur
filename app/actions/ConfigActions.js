@@ -76,7 +76,7 @@ var ConfigActions = {
         block: function (blockHash) {
           var account = self.flux.store('config').getAccount();
           if (account) {
-            this.flux.actions.asset.updateAssets();
+            self.flux.actions.asset.updateAssets();
 
             // TODO: We can skip loading events to report
             // if the voting period hasn't changed.
