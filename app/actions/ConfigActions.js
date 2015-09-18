@@ -7,13 +7,13 @@ var ConfigActions = {
 
   updateEthereumClient: function (host) {
 
-    host = host || this.flux.store('config').getState().host;
+    host = (host === undefined) ? this.flux.store('config').getState().host : host;
     var branch = this.flux.store('branch').getCurrentBranch();
     var isHosted = false;
     var useMarketCache = false;
 
     // TODO: use a better trigger for local v. hosted than a regex
-    if (!host.match(/localhost/) && !host.match(/127.0.0.1/)) {
+    if (host && !host.match(/localhost/) && !host.match(/127.0.0.1/)) {
       useMarketCache = true;
       isHosted = true;
     }

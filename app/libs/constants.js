@@ -6,7 +6,7 @@ var BigNumber = require('bignumber.js');
 var ONE_FXP = new BigNumber(2).toPower(64);
 
 module.exports = {
-  DEMO_HOST: 'eth1.augur.net:8545',
+  DEMO_HOST: 'eth3.augur.net',
   MARKETEER: 'http://db1.augur.net/marketeer/markets/?',
   ONE_FXP: ONE_FXP,
   NO: ONE_FXP,
