@@ -28,53 +28,10 @@ var SignInModal = React.createClass({
 
   onSignIn: function (event) {
 
-    var flux = this.getFlux();
-
-    flux.actions.config.signIn(this.state.handle, this.state.password);
-
-    this.props.onHide();
-
-    // if (this.isValid()) {
-
-    //   var flux = this.getFlux();
-    //   var self = this;
-
-    //   console.log(this.state.handle, this.state.password);
-    //   augur.web.login(this.state.handle, this.state.password, function (account) {
-
-    //     if (account) {
-
-    //       if (account.error) {
-
-    //         console.error(account.error, account.message);
-
-    //         flux.actions.market.updateSharesHeld(null);
-
-    //         flux.actions.config.updateAccount({
-    //           currentAccount: null,
-    //           privateKey: null,
-    //           handle: null
-    //         });
-
-    //         self.setState({ handleHelp: account.message });
-
-    //         return;
-    //       }
-
-    //       console.log("signed in to account: " + account.handle);
-    //       console.log("address: " + account.address);
-    //       console.log("private key: " + account.privateKey.toString("hex"));
-
-    //       flux.actions.config.updateAccount({
-    //         currentAccount: account.address,
-    //         privateKey: account.privateKey,
-    //         handle: account.handle
-    //       });
-
-    //       this.props.onHide();
-    //     }
-    //   });
-    // }
+    if (this.isValid()) {
+      this.getFlux().actions.config.signIn(this.state.handle, this.state.password);
+      this.props.onHide();
+    }
   },
 
   isValid: function () {

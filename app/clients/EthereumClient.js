@@ -111,11 +111,6 @@ EthereumClient.prototype.getAccount = function (onResult, onError) {
   }
 };
 
-// NOTE: no longer called from component.  safe to remove.
-EthereumClient.prototype.repFaucet = function (branchId, onSent) {
-  return augur.reputationFaucet(branchId || this.defaultBranchId, onSent);
-};
-
 EthereumClient.prototype.sendRep = function (destination, amount, branchId) {
   return augur.sendReputation({
     branchId: branchId || this.defaultBranchId,

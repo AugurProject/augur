@@ -65,6 +65,7 @@ var Market = React.createClass({
     }, 0);
 
     var formattedDate = market.endDate ? moment(market.endDate).format('MMM Do, YYYY') : '-';
+    var formattedCreationDate = market.creationDate ? moment(market.creationDate).format('MMM Do, YYYY') : '-';
     var price = market.price ? Math.abs(market.price).toFixed(3) : '-';
     var percent = market.price ? +market.price.times(100).toFixed(1) + '%' : '';
     var outstandingShares = outstandingShares ? +outstandingShares.toFixed(2) : '-';
@@ -96,7 +97,8 @@ var Market = React.createClass({
           <p>Fee: <b>{ tradingFee }</b></p>
           <p className='alt'>Traders: <b>{ traderCount }</b></p>
           <p>Author: <b className='truncate author'>{ author }</b></p>
-          <p className='alt'>End date: <b>{ formattedDate }</b></p>
+          <p className='alt'>Creation date: <b>{ formattedCreationDate }</b></p>
+          <p>End date: <b>{ formattedDate }</b></p>
         </div>
         <div className='price-history col-sm-8'>
           <h4>Price history soon...</h4>

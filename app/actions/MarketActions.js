@@ -32,6 +32,12 @@ var MarketActions = {
         {
           cached[i].id = marketId;
           cached[i].endDate = utilities.blockToDate(cached[i].endDate, currentBlock)
+          if (cached[i].creationBlock) {
+            cached[i].creationDate = utilities.blockToDate(
+              cached[i].creationBlock,
+              currentBlock
+            )
+          }
           cached[i].price = abi.bignum(cached[i].price);
           cached[i].tradingFee = abi.bignum(cached[i].tradingFee);
           cached[i].creationFee = abi.bignum(cached[i].creationFee);
@@ -175,6 +181,12 @@ var MarketActions = {
 
             cached[i].id = marketId;
             cached[i].endDate = utilities.blockToDate(cached[i].endDate, currentBlock);
+            if (cached[i].creationBlock) {
+              cached[i].creationDate = utilities.blockToDate(
+                cached[i].creationBlock,
+                currentBlock
+              )
+            }
             cached[i].price = abi.bignum(cached[i].price);
             cached[i].tradingFee = abi.bignum(cached[i].tradingFee);
             cached[i].creationFee = abi.bignum(cached[i].creationFee);
@@ -184,7 +196,6 @@ var MarketActions = {
             cached[i].tradingPeriod = abi.bignum(cached[i].tradingPeriod);
             cached[i].traderId = abi.bignum(cached[i].participants[account]);
             numOutcomes = cached[i].outcomes.length;
-
             if (cached[i].outcomes && numOutcomes) {
               for (var j = 0; j < numOutcomes; ++j) {
                 if (cached[i].outcomes[j].outstandingShares) {
@@ -207,11 +218,9 @@ var MarketActions = {
               }
             }
             cached[i].loaded = true;
-      
             self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {
               market: cached[i]
             });
-
             break;
           }
         }

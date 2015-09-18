@@ -106,8 +106,14 @@ var ConfigActions = {
         price: function (result) {
           if (result && result.marketId) {
             console.log("[filter] updatePrice:", result.marketId);
-            self.flux.actions.market.loadMarket(new BigNumber(result.marketId));
             self.flux.actions.asset.updateAssets();
+            self.flux.actions.network.updateNetwork();
+            if (self.flux.store("config").getState().useMarketCache) {
+              self.flux.actions.market.loadMarkets();
+            } else {
+              self.flux.actions.market.loadMarket(new BigNumber(result.marketId));
+            }
+            self.flux.actions.branch.updateCurrentBranch();
           }
         },
 
@@ -115,7 +121,12 @@ var ConfigActions = {
         creation: function (result) {
           if (result && result.marketId) {
             console.log("[filter] creationBlock:", result.blockNumber);
-            self.flux.actions.market.loadMarket(new BigNumber(result.marketId));
+            if (self.flux.store("config").getState().useMarketCache) {
+              self.flux.actions.market.loadMarkets();
+            } else {
+              self.flux.actions.market.loadMarket(new BigNumber(result.marketId));
+            }
+            self.flux.actions.branch.updateCurrentBranch();
           }
         }
       });
@@ -165,6 +176,11 @@ var ConfigActions = {
             handle: account.handle
         });
         self.flux.actions.asset.updateAssets();
+        self.flux.actions.report.loadEventsToReport();
+        self.flux.actions.report.loadPendingReports();
+        if (self.flux.store("config").getState().useMarketCache) {
+          self.flux.actions.market.loadMarkets();
+        }
       }
     });
   },
