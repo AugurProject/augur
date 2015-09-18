@@ -72,10 +72,7 @@ var RegisterModal = React.createClass({
 
   isValid: function () {
 
-    if (this.state.handle.length < 6) {
-      this.setState({handleHelp: 'must be at least 6 characters'});
-      return false;
-    } else if (this.state.handle === '') {
+    if (this.state.handle === '') {
       this.setState({handleHelp: 'enter a valid handle'});
       return false;
     } else if (this.state.password.length < 6) {

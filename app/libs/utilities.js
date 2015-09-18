@@ -43,15 +43,9 @@ module.exports = {
   },
 
   formatEther: function (wei) {
-    var value, unit;
     if (!wei) return { value: '', unit: 'ether', withUnit: '-' };
-    value = abi.bignum(wei);
-    if (value.gte(augur.constants.ETHER)) {
-      value = value.dividedBy(augur.constants.ETHER);
-      unit = 'ether';
-    } else {
-      unit = 'wei';
-    }
+    var value = abi.bignum(wei).dividedBy(augur.constants.ETHER);
+    var unit = 'ether';
     return {
       value: +value.toFixed(4),
       unit: unit,

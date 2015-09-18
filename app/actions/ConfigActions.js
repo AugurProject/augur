@@ -76,16 +76,7 @@ var ConfigActions = {
         block: function (blockHash) {
           var account = self.flux.store('config').getAccount();
           if (account) {
-            augur.rpc.balance(account, null, function (result) {
-              if (result) {
-                if (result.error) {
-                  return console.log("block filter error:", result);
-                }
-                self.dispatch(constants.asset.UPDATE_ASSETS, {
-                  ether: abi.bignum(result)
-                });
-              }
-            });
+            this.flux.actions.asset.updateAssets();
 
             // TODO: We can skip loading events to report
             // if the voting period hasn't changed.
