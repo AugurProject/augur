@@ -58,7 +58,7 @@ var Assets = React.createClass({
       }
 
       var flux = this.getFlux();
-      var branchId = flux.store('branch').getCurrentBranch();
+      var branchId = flux.store('branch').getCurrentBranch().id;
       var self = this;
 
       augur.reputationFaucet(branchId, function (result) {

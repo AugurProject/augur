@@ -57,7 +57,7 @@ export default {
   },
 
   checkQuorum: function () {
-
+    var self = this;
     var ethereumClient = this.flux.store('config').getEthereumClient();
     var branchState = this.flux.store('branch').getState();
     var currentBranch = branchState.currentBranch;
@@ -65,13 +65,21 @@ export default {
 
     // check quorum if branch isn't current and we havn't already
     if (!currentBranch.isCurrent && !hasCheckedQuorum) {
-      ethereumClient.checkQuorum(currentBranch.id, function (result) {
-        this.dispatch(constants.branch.CHECK_QUORUM_SENT);
-      }.bind(this), function(result) {
-        this.dispatch(constants.branch.CHECK_QUORUM_SUCCESS);
-      }.bind(this), function(result) {
-        this.dispatch(constants.branch.CHECK_QUORUM_SENT);
-      }.bind(this));
+      ethereumClient.checkQuorum(
+        currentBranch.id,
+        function (result) {
+          // sent
+          self.dispatch(constants.branch.CHECK_QUORUM_SENT);
+        },
+        function (result) {
+          // success
+          self.dispatch(constants.branch.CHECK_QUORUM_SUCCESS);
+        },
+        function (result) {
+          // failed
+          self.dispatch(constants.branch.CHECK_QUORUM_SENT);
+        }
+      );
     } else if (hasCheckedQuorum && currentBranch.isCurrent) {
       this.dispatch(constants.branch.CHECK_QUORUM_SUCCESS);
     }
