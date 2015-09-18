@@ -294,55 +294,5 @@ module.exports = function (augur) {
             }
         }
 
-        // Handle-to-handle payment methods (send ether/cash/rep without needing address)
-
-        // sendEther: function (toHandle, value, onSent, onSuccess, onFailed) {
-        //     var self = this;
-        //     if (this.account.address) {
-        //         db.get(toHandle, function (toAccount) {
-        //             if (toAccount && toAccount.address) {
-        //                 self.transact({
-        //                     value: value,
-        //                     from: self.account.address,
-        //                     to: toAccount.address
-        //                 }, onSent, onSuccess, onFailed);
-        //             } else {
-        //                 if (onFailed) onFailed(errors.TRANSACTION_FAILED);
-        //             }
-        //         });
-        //     }
-        // },
-
-        // sendCash: function (toHandle, value, onSent, onSuccess, onFailed) {
-        //     var self = this;
-        //     if (this.account.address) {
-        //         db.get(toHandle, function (toAccount) {
-        //             if (!toAccount.error) {
-        //                 var tx = abi.copy(augur.tx.sendCash);
-        //                 tx.params = [toAccount.address, abi.fix(value)];
-        //                 log(tx);
-        //                 return self.transact(tx, onSent, onSuccess, onFailed);
-        //             } else {
-        //                 if (onFailed) onFailed(errors.TRANSACTION_FAILED);
-        //             }
-        //         });
-        //     }
-        // },
-
-        // sendReputation: function (toHandle, value, onSent, onSuccess, onFailed) {
-        //     var self = this;
-        //     if (this.account.address) {
-        //         db.get(toHandle, function (toAccount) {
-        //             if (!toAccount.error) {
-        //                 var tx = abi.copy(augur.tx.sendReputation);
-        //                 tx.params = [toAccount.address, abi.fix(value)];
-        //                 return self.transact(tx, onSent, onSuccess, onFailed);
-        //             } else {
-        //                 if (onFailed) onFailed(errors.TRANSACTION_FAILED);
-        //             }
-        //         });
-        //     }
-        // }
-
     };
 };

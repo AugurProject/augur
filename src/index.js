@@ -240,15 +240,21 @@ augur.createBatch = function createBatch () {
 };
 
 augur.fire = function (tx, callback) {
-    tx.from = tx.from || augur.coinbase;
+    if (tx.send && this.web && this.web.account && this.web.account.address) {
+        tx.from = this.web.account.address;
+    } else {
+        tx.from = tx.from || this.coinbase;
+    }
     return rpc.fire(tx, callback);
 };
 
 augur.transact = function (tx, onSent, onSuccess, onFailed) {
     if (tx.send && this.web && this.web.account && this.web.account.address) {
+        tx.from = this.web.account.address;
         tx.invocation = { invoke: this.web.invoke, context: this.web };
+    } else {
+        tx.from = tx.from || this.coinbase;
     }
-    tx.from = tx.from || augur.coinbase;
     rpc.transact(tx, onSent, onSuccess, onFailed);
 };
 
@@ -756,7 +762,7 @@ augur.getEventsRange = function (branch, vpStart, vpEnd, onSent) {
     txlist = new Array(vp_range);
     for (var i = 0; i < vp_range; ++i) {
         txlist[i] = {
-            from: this.coinbase,
+            from: this.web.account.address || this.coinbase,
             to: this.contracts.expiringEvents,
             method: "getEvents",
             signature: "ii",
@@ -1196,7 +1202,7 @@ augur.getRepBalance = function (branch, account, onSent) {
     // branch: sha256 hash id
     // account: ethereum address (hexstring)
     var tx = this.utils.copy(this.tx.getRepBalance);
-    tx.params = [branch, account || this.coinbase];
+    tx.params = [branch, account || this.web.account.address || this.coinbase];
     return augur.fire(tx, onSent);
 };
 augur.getRepByIndex = function (branch, repIndex, onSent) {
@@ -1251,11 +1257,9 @@ augur.hashReport = function (ballot, salt, onSent) {
 // checkQuorum.se
 augur.checkQuorum = function (branch, onSent, onSuccess, onFailed) {
     // branch: sha256
-    if (rpc.coinbase() !== this.demo) {
-        var tx = this.utils.copy(this.tx.checkQuorum);
-        tx.params = branch;
-        return this.transact(tx, onSent, onSuccess, onFailed);
-    }
+    var tx = this.utils.copy(this.tx.checkQuorum);
+    tx.params = branch;
+    return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
 // buy&sellShares.se
@@ -1501,17 +1505,15 @@ augur.closeMarket = function (branch, market, onSent, onSuccess, onFailed) {
 // dispatch.se
 augur.dispatch = function (branch, onSent, onSuccess, onFailed) {
     // branch: sha256 or transaction object
-    if (rpc.coinbase() !== this.demo) {
-        if (branch.constructor === Object && branch.branchId) {
-            if (branch.onSent) onSent = branch.onSent;
-            if (branch.onSuccess) onSuccess = branch.onSuccess;
-            if (branch.onFailed) onFailed = branch.onFailed;
-            branch = branch.branchId;
-        }
-        var tx = this.utils.copy(this.tx.dispatch);
-        tx.params = branch;
-        return this.transact(tx, onSent, onSuccess, onFailed);
+    if (branch.constructor === Object && branch.branchId) {
+        if (branch.onSent) onSent = branch.onSent;
+        if (branch.onSuccess) onSuccess = branch.onSuccess;
+        if (branch.onFailed) onFailed = branch.onFailed;
+        branch = branch.branchId;
     }
+    var tx = this.utils.copy(this.tx.dispatch);
+    tx.params = branch;
+    return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
 augur.checkPeriod = function (branch) {
@@ -1521,27 +1523,97 @@ augur.checkPeriod = function (branch) {
     return periodsBehind;
 };
 
-// filters
+// filter API
 
-augur.getCreationBlock = function (market, cb) {
-    if (market) {
-        var filter = {
-            fromBlock: "0x1",
-            toBlock: rpc.blockNumber(),
-            topics: ["creationBlock"]
-        };
-        if (this.utils.is_function(cb)) {
-            this.filters.eth_getLogs(filter, function (logs) {
-                if (logs) cb(logs);
-            });
-        } else {
-            return this.filters.eth_getFilterLogs(filter);
+augur.getCreationBlocks = function (branch, cb) {
+    var self = this;
+    if (!branch || !this.utils.is_function(cb)) return;
+    this.filters.eth_getLogs({
+        fromBlock: "0x1",
+        toBlock: "latest",
+        address: this.contracts.createMarket,
+        topics: ["creationBlock"]
+    }, function (logs) {
+        if (!logs) return;
+        if (logs.error) {
+            return console.error("getCreationBlocks:", logs);
         }
-    }
+        self.getMarkets(branch, function (markets) {
+            if (!markets) return;
+            if (markets.error) {
+                return console.error("getCreationBlocks[getMarkets]:", markets);
+            }
+            var block, blocks = {};
+            for (var i = 0, len = markets.length; i < len; ++i) {
+                block = self.filters.search_creation_logs(logs, markets[i]);
+                if (block && block.constructor === Array && block.length &&
+                    block[0].constructor === Object && block[0].blockNumber) {
+                    blocks[markets[i]] = abi.bignum(block[0].blockNumber).toNumber();
+                }
+            }
+            cb(blocks);
+        });
+    });
+};
+
+augur.getMarketCreationBlock = function (market, cb) {
+    var self = this;
+    if (!market || !this.utils.is_function(cb)) return;
+    this.filters.eth_getLogs({
+        fromBlock: "0x1",
+        toBlock: "latest",
+        address: this.contracts.createMarket,
+        topics: ["creationBlock"]
+    }, function (logs) {
+        if (!logs) return;
+        if (logs.error) {
+            return console.error("getMarketCreationBlock:", logs);
+        }
+        var block = self.filters.search_creation_logs(logs, market);
+        if (block && block.constructor === Array && block.length &&
+            block[0].constructor === Object && block[0].blockNumber) {
+            cb(abi.bignum(block[0].blockNumber).toNumber());
+        }
+    });
 };
 
 augur.getPriceHistory = function (branch, cb) {
     var self = this;
+    if (!branch || !this.utils.is_function(cb)) return;
+    this.filters.eth_getLogs({
+        fromBlock: "0x1",
+        toBlock: "latest",
+        address: this.contracts.buyAndSellShares,
+        topics: ["updatePrice"]
+    }, function (logs) {
+        if (!logs) return;
+        if (logs.error) {
+            return console.error("getPriceHistory:", logs);
+        }
+        self.getMarkets(branch, function (markets) {
+            if (!markets) return;
+            if (markets.error) {
+                return console.error("getPriceHistory[getMarkets]:", markets);
+            }
+            var priceHistory = {};
+            var outcomes = [1, 2];
+            for (var i = 0, len = markets.length; i < len; ++i) {
+                priceHistory[markets[i]] = {};
+                for (var j = 0, numOutcomes = outcomes.length; j < numOutcomes; ++j) {
+                    priceHistory[markets[i]][outcomes[j]] = self.filters.search_price_logs(
+                        logs,
+                        markets[i],
+                        outcomes[j]
+                    );
+                }
+            }
+            cb(priceHistory);
+        });
+    });
+};
+
+augur.getMarketPriceHistory = function (market, outcome, cb) {
+    if (!market || !outcome) return;
     var filter = {
         fromBlock: "0x1",
         toBlock: "latest",
@@ -1549,67 +1621,19 @@ augur.getPriceHistory = function (branch, cb) {
         topics: ["updatePrice"]
     };
     if (this.utils.is_function(cb)) {
+        var self = this;
         this.filters.eth_getLogs(filter, function (logs) {
-            if (logs) {
-                if (logs.error) return console.error("eth_getLogs:", logs);
-                self.getMarkets(branch, function (markets) {
-                    var priceHistory, outcomes;
-                    if (markets) {
-                        if (markets.error) return cb(markets);
-                        priceHistory = {};
-                        outcomes = [1, 2];
-                        for (var i = 0, len = markets.length; i < len; ++i) {
-                            priceHistory[markets[i]] = {};
-                            for (var j = 0, numOutcomes = outcomes.length; j < numOutcomes; ++j) {
-                                priceHistory[markets[i]][outcomes[j]] = self.filters.search_price_logs(
-                                    logs,
-                                    markets[i],
-                                    outcomes[j]
-                                );
-                            }
-                        }
-                        // console.log(JSON.stringify(priceHistory, null, 2));
-                        cb(priceHistory);
-                    }
-                });
+            if (!logs) return;
+            if (logs.error) {
+                return console.error("eth_getLogs:", logs);
             }
+            cb(self.filters.search_price_logs(logs, market, outcome));
         });
-    }
-};
-
-augur.getMarketPriceHistory = function (market, outcome, cb) {
-    if (market && outcome) {
-        var filter = {
-            fromBlock: "0x1",
-            toBlock: "latest",
-            address: this.contracts.buyAndSellShares,
-            topics: ["updatePrice"]
-        };
-        if (this.utils.is_function(cb)) {
-            var self = this;
-            this.filters.eth_getLogs(filter, function (logs) {
-                if (logs) {
-                    if (logs.error) return; // console.error("eth_getLogs:", logs);
-                    var price_logs = self.filters.search_price_logs(logs, market, outcome);
-                    if (price_logs) {
-                        if (price_logs.error) {
-                            return; // console.error("search_price_logs:", price_logs);
-                        }
-                        cb(price_logs);
-                    }
-                }
-            });
-        } else {
-            var logs = this.filters.eth_getLogs(filter);
-            if (logs) {
-                if (logs.error) throw logs;
-                var price_logs = this.filters.search_price_logs(logs, market, outcome);
-                if (price_logs) {
-                    if (price_logs.error) throw price_logs;
-                    return price_logs;
-                }
-            }
-        }
+    } else {
+        var logs = this.filters.eth_getLogs(filter);
+        if (!logs) return;
+        if (logs.error) throw logs;
+        return this.filters.search_price_logs(logs, market, outcome);
     }
 };
 

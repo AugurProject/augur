@@ -117,7 +117,7 @@ describe("Price listener", function () {
     var listeners = [];
 
     it("should find message after buyShares", function (done) {
-        this.timeout(constants.TIMEOUT);
+        this.timeout(constants.TIMEOUT*4);
 
         augur.filters.start_price_listener("updatePrice", function (filter_id) {
 
@@ -160,7 +160,7 @@ describe("Price listener", function () {
     });
 
     it("should find message after sellShares", function (done) {
-        this.timeout(constants.TIMEOUT);
+        this.timeout(constants.TIMEOUT*4);
 
         augur.filters.start_price_listener("updatePrice", function (filter_id) {
 
@@ -203,7 +203,7 @@ describe("Price listener", function () {
 describe("Contracts listener", function () {
 
     it("should find message after buyShares", function (done) {
-        this.timeout(constants.TIMEOUT);
+        this.timeout(constants.TIMEOUT*4);
         augur.filters.start_contracts_listener(function (contracts_filter) {
             assert.deepEqual(augur.filters.contracts_filter, contracts_filter);
 
@@ -244,11 +244,35 @@ describe("Contracts listener", function () {
 
 });
 
-describe("getPriceHistory", function () {
+describe("Creation blocks", function () {
 
-    it("price history for branch " + augur.branches.dev, function (done) {
-        this.timeout(constants.TIMEOUT*8);
-        augur.getPriceHistory(augur.branches.dev, function (priceHistory) {
+    it("getCreationBlocks(" + branch + ")", function (done) {
+        this.timeout(constants.TIMEOUT);
+        augur.getCreationBlocks(branch, function (blocks) {
+            assert.isObject(blocks);
+            assert.property(blocks, market_id);
+            assert.isNumber(blocks[market_id]);
+            assert.isAbove(blocks[market_id], 0);
+            done();
+        });
+    });
+
+    it("getMarketCreationBlock(" + market_id + ")", function (done) {
+        this.timeout(constants.TIMEOUT);
+        augur.getMarketCreationBlock(market_id, function (blockNumber) {
+            assert.isNumber(blockNumber);
+            assert.isAbove(blockNumber, 0);
+            done();
+        });
+    });
+
+});
+
+describe("Price history", function () {
+
+    it("getPriceHistory(" + branch + ")", function (done) {
+        this.timeout(constants.TIMEOUT);
+        augur.getPriceHistory(branch, function (priceHistory) {
             if (priceHistory.error) done(priceHistory);
             assert.isObject(priceHistory);
             assert.property(priceHistory, market_id);
@@ -262,12 +286,8 @@ describe("getPriceHistory", function () {
         });
     });
 
-});
-
-describe("getMarketPriceHistory", function () {
-
-    it("async", function (done) {
-        this.timeout(constants.TIMEOUT);
+    it("[async] getMarketPriceHistory(" + market_id + ")", function (done) {
+        this.timeout(constants.TIMEOUT*4);
         augur.buyShares({
             branchId: branch,
             marketId: market_id,
@@ -301,7 +321,7 @@ describe("getMarketPriceHistory", function () {
         });
     });
 
-    it("sync", function () {
+    it("[sync] getMarketPriceHistory(" + market_id + ")", function () {
         this.timeout(constants.TIMEOUT);
         var logs = augur.getMarketPriceHistory(market_id, outcome);
         assert.isArray(logs);
@@ -315,7 +335,7 @@ describe("getMarketPriceHistory", function () {
 
 describe("listen/ignore", function () {
 
-    it("block", function (done) {
+    it("block filter", function (done) {
         this.timeout(constants.TIMEOUT);
         augur.filters.listen({
             block: function (blockHash) {
@@ -347,7 +367,7 @@ describe("listen/ignore", function () {
         setTimeout(function () { buyShares(done); }, DELAY);
     });
 
-    it("contracts", function (done) {
+    it("contracts filter", function (done) {
         this.timeout(constants.TIMEOUT);
         augur.filters.listen({
             contracts: function (tx) {
@@ -413,7 +433,7 @@ describe("listen/ignore", function () {
         setTimeout(function () { buyShares(done); }, DELAY);
     });
 
-    it("price", function (done) {
+    it("price filter", function (done) {
         this.timeout(constants.TIMEOUT);
         augur.filters.listen({
             price: function (update) {
@@ -457,7 +477,7 @@ describe("listen/ignore", function () {
         setTimeout(function () { buyShares(done); }, DELAY);
     });
 
-    it("creation", function (done) {
+    it("creation filter", function (done) {
         this.timeout(constants.TIMEOUT*12);
         augur.filters.listen({
             creation: function (update) {
@@ -577,10 +597,6 @@ describe("listen/ignore", function () {
                 assert.property(tx, "blockHash");
                 assert.property(tx, "transactionHash");
                 assert.property(tx, "transactionIndex");
-                assert.strictEqual(
-                    tx.address,
-                    augur.contracts.buyAndSellShares
-                );
                 assert.isArray(tx.topics);
                 assert.strictEqual(tx.topics.length, 4);
                 assert.isArray(tx.data);
