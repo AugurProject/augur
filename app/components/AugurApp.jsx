@@ -282,15 +282,6 @@ var ErrorModal = React.createClass({
     this.getFlux().actions.config.updateEthereumClient(constants.DEMO_HOST);
   },
 
-  useExpMarketCache: function(event) {
-
-    if (event.target.checked) {
-      this.getFlux().actions.config.useMarketCache(true);
-    } else {
-      this.getFlux().actions.config.useMarketCache(false);
-    }
-  },
-
   render: function() {
 
     if (!this.state.isModalOpen) return <span />;
@@ -331,7 +322,6 @@ var ErrorModal = React.createClass({
             <p>Augur is a decentralized application that runs on the Ethereum network.  It requires an Ethereum node to be running and current.  Augur could not find a local node which probably means it's not installed, running or is misconfigured.</p>
             <p>Get help <a onClick={ this.showInstallHelp } href="javascript:void(0)">installing and configuring an Ethereum client node</a></p>
             <a onClick={ this.startHostedMode } className="btn btn-primary pull-right" href="javascript:void(0)">Use Hosted Nodes</a>
-            <Input onClick={ this.useExpMarketCache } className="use-market-cache" type="checkbox" defaultChecked="checked" label="Use experimental market cache" />
             { installHelp }
           </div>
         </Modal>

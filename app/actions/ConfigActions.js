@@ -10,14 +10,12 @@ var ConfigActions = {
     host = host || this.flux.store('config').getState().host;
     var branch = this.flux.store('branch').getCurrentBranch();
     var isHosted = false;
-    var useMarketCache = this.flux.store('config').getState().useMarketCache;
+    var useMarketCache = false;
 
     // TODO: use a better trigger for local v. hosted than a regex
-    if (host.match(/localhost/) || host.match(/127.0.0.1/)) {
-      useMarketCache = false;
-    } else {
-      isHosted = true;
+    if (!host.match(/localhost/) && !host.match(/127.0.0.1/)) {
       useMarketCache = true;
+      isHosted = true;
     }
 
     // FIXME: If we can, we should make defaultBranchId unnecessary. We should
