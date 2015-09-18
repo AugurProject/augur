@@ -55851,18 +55851,21 @@ var chalk = require("chalk");
 var abi = require("augur-abi");
 var utils = require("./utilities");
 var errors = require("./errors");
+var constants = require("./constants");
 
 module.exports = function (augur) {
 
     return {
 
-        PULSE: 5000,
+        PULSE: constants.SECONDS_PER_BLOCK * 500,
 
         price_filter: { id: null, heartbeat: null },
 
         contracts_filter: { id: null, heartbeat: null },
 
         block_filter: { id: null, heartbeat: null },
+
+        creation_filter: { id: null, heartbeat: null },        
 
         eth_newFilter: function (params, f) {
             return augur.rpc.broadcast(augur.rpc.marshal("newFilter", params), f);
@@ -55979,83 +55982,58 @@ module.exports = function (augur) {
                     var data_array, market, marketplus;
                     if (filtrate && filtrate.length) {
                         for (var i = 0, len = filtrate.length; i < len; ++i) {
-                            data_array = augur.rpc.unmarshal(filtrate[i].data);
-                            market = abi.bignum(filtrate[i].topics[2]);
-                            marketplus = market.plus(abi.constants.MOD);
-                            if (marketplus.lt(abi.constants.BYTES_32)) {
-                                market = marketplus;
+                            if (filtrate[i] && filtrate[i].topics && filtrate[i].topics.length > 3) {
+                                try {
+                                    data_array = augur.rpc.unmarshal(filtrate[i].data);
+                                    if (data_array && data_array.constructor === Array && data_array.length > 1) {
+                                        market = abi.bignum(filtrate[i].topics[2]);
+                                        marketplus = market.plus(abi.constants.MOD);
+                                        if (marketplus.lt(abi.constants.BYTES_32)) {
+                                            market = marketplus;
+                                        }
+                                        onMessage({
+                                            user: abi.format_address(filtrate[i].topics[1]),
+                                            marketId: abi.hex(market),
+                                            outcome: abi.bignum(filtrate[i].topics[3], "string"),
+                                            price: abi.unfix(data_array[0], "string"),
+                                            cost: abi.unfix(data_array[1], "string"),
+                                            blockNumber: abi.bignum(filtrate[i].blockNumber, "string")
+                                        });
+                                    }
+                                } catch (exc) {
+                                    console.error("couldn't unmarshal price filtrate:", exc);
+                                }
                             }
-                            onMessage({
-                                user: abi.format_address(filtrate[i].topics[1]),
-                                marketId: abi.hex(market),
-                                outcome: abi.bignum(filtrate[i].topics[3], "string"),
-                                price: abi.unfix(data_array[0], "string"),
-                                cost: abi.unfix(data_array[1], "string"),
-                                blockNumber: abi.bignum(filtrate[i].blockNumber, "string")
-                            });
                         }
                     }
                 }); // eth_getFilterChanges
             }
         },
 
-        create_price_filter: function (label, f) {
-            return augur.rpc.broadcast(augur.rpc.marshal("newFilter", {
-                address: augur.contracts.buyAndSellShares,
-                topics: [ label ]
-            }), f);
-        },
-
-        start_price_listener: function (filter_name, cb) {
-            var filter_id;
-            if (this.price_filter && this.price_filter.id) {
-                if (cb) {
-                    cb(this.price_filter.id);
-                } else {
-                    return this.price_filter.id;
-                }
-            } else {
-                if (utils.is_function(cb)) {
-                    var self = this;
-                    this.create_price_filter(filter_name, function (filter_id) {
-                        if (filter_id && filter_id !== "0x") {
-                            self.price_filter = {
-                                id: filter_id,
-                                heartbeat: null
-                            };
-                            cb(filter_id);
-                        } else {
-                            cb(errors.FILTER_NOT_CREATED);
+        poll_creation_listener: function (onMessage) {
+            if (this.creation_filter) {
+                this.eth_getFilterChanges(this.creation_filter.id, function (filtrate) {
+                    var market, marketplus;
+                    if (filtrate && filtrate.length) {
+                        for (var i = 0, len = filtrate.length; i < len; ++i) {
+                            if (filtrate[i] && filtrate[i].topics && filtrate[i].topics.length > 1) {
+                                market = abi.bignum(filtrate[i].topics[1]);
+                                marketplus = market.plus(abi.constants.MOD);
+                                if (marketplus.lt(abi.constants.BYTES_32)) {
+                                    market = marketplus;
+                                }
+                                onMessage({
+                                    marketId: abi.hex(market),
+                                    blockNumber: abi.bignum(filtrate[i].blockNumber, "string")
+                                });
+                            }
                         }
-                    });
-                } else {
-                    filter_id = this.create_price_filter(filter_name);
-                    if (filter_id && filter_id !== "0x") {
-                        this.price_filter = {
-                            id: filter_id,
-                            heartbeat: null
-                        };
-                        return filter_id;
-                    } else {
-                        return errors.FILTER_NOT_CREATED;
                     }
-                }
+                }); // eth_getFilterChanges
             }
         },
 
-        clear_block_filter: function (cb) {
-            if (utils.is_function(cb)) {
-                var self = this;
-                this.eth_uninstallFilter(this.block_filter.id, function (uninst) {
-                    if (uninst) self.block_filter.id = null;
-                    cb(uninst);
-                });
-            } else {
-                var uninst = this.eth_uninstallFilter(this.block_filter.id);
-                if (uninst) this.block_filter.id = null;
-                return uninst;
-            }
-        },
+        // clear/uninstall filters
 
         clear_price_filter: function (cb) {
             if (utils.is_function(cb)) {
@@ -56085,7 +56063,44 @@ module.exports = function (augur) {
             }
         },
 
-        setup_contracts_filter: function () {
+        clear_block_filter: function (cb) {
+            if (utils.is_function(cb)) {
+                var self = this;
+                this.eth_uninstallFilter(this.block_filter.id, function (uninst) {
+                    if (uninst) self.block_filter.id = null;
+                    cb(uninst);
+                });
+            } else {
+                var uninst = this.eth_uninstallFilter(this.block_filter.id);
+                if (uninst) this.block_filter.id = null;
+                return uninst;
+            }
+        },
+
+        clear_creation_filter: function (cb) {
+            if (utils.is_function(cb)) {
+                var self = this;
+                this.eth_uninstallFilter(this.creation_filter.id, function (uninst) {
+                    if (uninst) self.creation_filter.id = null;
+                    cb(uninst);
+                });
+            } else {
+                var uninst = this.eth_uninstallFilter(this.creation_filter.id);
+                if (uninst) this.creation_filter.id = null;
+                return uninst;
+            }
+        },
+
+        // set up filters
+
+        setup_price_filter: function (label, f) {
+            return this.eth_newFilter({
+                address: augur.contracts.buyAndSellShares,
+                topics: [ label ]
+            }, f);
+        },
+
+        setup_contracts_filter: function (f) {
             var contract_list = [];
             for (var c in augur.contracts) {
                 if (!augur.contracts.hasOwnProperty(c)) continue;
@@ -56099,26 +56114,60 @@ module.exports = function (augur) {
                 }),
                 heartbeat: null
             };
-            return this.contracts_filter;
+            if (!utils.is_function(f)) return this.contracts_filter;
+            f(this.contracts_filter);
         },
 
-        setup_block_filter: function () {
+        setup_block_filter: function (f) {
             this.block_filter = {
                 id: this.eth_newBlockFilter(),
                 heartbeat: null
             };
-            return this.block_filter;
+            if (!utils.is_function(f)) return this.block_filter;
+            f(this.block_filter);
         },
 
-        start_block_listener: function (cb) {
-            if (this.block_filter.id === null) {
+        setup_creation_filter: function (f) {
+            return this.eth_newFilter({
+                address: augur.contracts.createMarket,
+                topics: [ "creationBlock" ]
+            }, f);
+        },
+
+        // start listeners
+
+        start_price_listener: function (filter_name, cb) {
+            if (this.price_filter && this.price_filter.id) {
+                if (utils.is_function(cb)) {
+                    cb(this.price_filter.id);
+                } else {
+                    return this.price_filter.id;
+                }
+            } else {
                 if (utils.is_function(cb)) {
                     var self = this;
-                    setTimeout(function () {
-                        cb(self.setup_block_filter());
-                    }, 0);
+                    this.setup_price_filter(filter_name, function (filter_id) {
+                        if (filter_id && filter_id !== "0x") {
+                            self.price_filter = {
+                                id: filter_id,
+                                heartbeat: null
+                            };
+                            cb(filter_id);
+                        } else {
+                            cb(errors.FILTER_NOT_CREATED);
+                        }
+                    });
                 } else {
-                    return this.setup_block_filter();
+                    var filter_id = this.setup_price_filter(filter_name);
+                    if (filter_id && filter_id !== "0x") {
+                        this.price_filter = {
+                            id: filter_id,
+                            heartbeat: null
+                        };
+                        return filter_id;
+                    } else {
+                        return errors.FILTER_NOT_CREATED;
+                    }
                 }
             }
         },
@@ -56135,6 +56184,57 @@ module.exports = function (augur) {
                 }
             }
         },
+
+        start_block_listener: function (cb) {
+            if (this.block_filter.id === null) {
+                if (utils.is_function(cb)) {
+                    var self = this;
+                    setTimeout(function () {
+                        cb(self.setup_block_filter());
+                    }, 0);
+                } else {
+                    return this.setup_block_filter();
+                }
+            }
+        },
+
+        start_creation_listener: function (cb) {
+            if (this.price_filter && this.price_filter.id) {
+                if (utils.is_function(cb)) {
+                    cb(this.price_filter.id);
+                } else {
+                    return this.price_filter.id;
+                }
+            } else {
+                if (utils.is_function(cb)) {
+                    var self = this;
+                    this.setup_creation_filter(function (filter_id) {
+                        if (filter_id && filter_id !== "0x") {
+                            self.creation_filter = {
+                                id: filter_id,
+                                heartbeat: null
+                            };
+                            cb(filter_id);
+                        } else {
+                            cb(errors.FILTER_NOT_CREATED);
+                        }
+                    });
+                } else {
+                    var filter_id = this.setup_creation_filter();
+                    if (filter_id && filter_id !== "0x") {
+                        this.creation_filter = {
+                            id: filter_id,
+                            heartbeat: null
+                        };
+                        return filter_id;
+                    } else {
+                        return errors.FILTER_NOT_CREATED;
+                    }
+                }
+            }
+        },
+
+        // start/stop polling
 
         pacemaker: function (cb) {
             var self = this;
@@ -56157,6 +56257,12 @@ module.exports = function (augur) {
                         self.poll_block_listener(cb.block);
                     }, this.PULSE);
                 }
+                if (utils.is_function(cb.creation)) {
+                    this.poll_creation_listener(cb.creation);
+                    this.creation_filter.heartbeat = setInterval(function () {
+                        self.poll_creation_listener(cb.creation);
+                    }, this.PULSE);
+                }
             }
         },
 
@@ -56177,6 +56283,11 @@ module.exports = function (augur) {
                     self.pacemaker({ block: cb.block });
                 });
             }
+            if (this.creation_filter.id === null && cb.creation) {
+                this.start_creation_listener(function () {
+                    self.pacemaker({ creation: cb.creation });
+                });
+            }
         },
 
         ignore: function (uninstall, cb) {
@@ -56187,6 +56298,12 @@ module.exports = function (augur) {
                 }
                 if (utils.is_function(uninstall.contracts)) {
                     cb.contracts = uninstall.contracts;
+                }
+                if (utils.is_function(uninstall.block)) {
+                    cb.block = uninstall.block;
+                }
+                if (utils.is_function(uninstall.creation)) {
+                    cb.creation = uninstall.creation;
                 }
                 uninstall = false;
             }
@@ -56212,6 +56329,13 @@ module.exports = function (augur) {
                     cb.block();
                 }
             }
+            if (this.creation_filter.heartbeat !== null) {
+                clearInterval(this.creation_filter.heartbeat);
+                this.creation_filter.heartbeat = null;
+                if (!uninstall && utils.is_function(cb.creation)) {
+                    cb.creation();
+                }
+            }
             if (uninstall) {
                 if (this.price_filter.id !== null) {
                     this.clear_price_filter(cb.price);
@@ -56222,13 +56346,16 @@ module.exports = function (augur) {
                 if (this.block_filter.id !== null) {
                     this.clear_block_filter(cb.block);
                 }
+                if (this.creation_filter.id !== null) {
+                    this.clear_creation_filter(cb.creation);
+                }
             }
         }
 
     };
 };
 
-},{"./errors":308,"./utilities":312,"augur-abi":1,"chalk":60}],310:[function(require,module,exports){
+},{"./constants":307,"./errors":308,"./utilities":312,"augur-abi":1,"chalk":60}],310:[function(require,module,exports){
 (function (process){
 /**
  * augur JavaScript API
