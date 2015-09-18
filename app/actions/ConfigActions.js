@@ -94,7 +94,12 @@ var ConfigActions = {
 
             self.flux.actions.network.updateNetwork();
             self.flux.actions.asset.updateAssets();
-            self.flux.actions.market.loadNewMarkets();
+
+            if (self.flux.store("config").getState().useMarketCache) {
+              setTimeout(self.flux.actions.market.loadMarkets, 3000);
+            } else {
+              self.flux.actions.market.loadNewMarkets();
+            }
 
             // We pull the branch's block-dependent period information from
             // contract calls that need to be called each block.
