@@ -73,7 +73,8 @@ var ConfigActions = {
         // listen for new blocks
         block: function (blockHash) {
           var account = self.flux.store('config').getAccount();
-          if (account) {
+          if (account && blockHash) {
+            self.flux.actions.network.updateNetwork();
             self.flux.actions.asset.updateAssets();
 
             // TODO: We can skip loading events to report
@@ -81,6 +82,8 @@ var ConfigActions = {
             self.flux.actions.report.loadEventsToReport();
             self.flux.actions.branch.checkQuorum();
             self.flux.actions.report.submitQualifiedReports();
+
+            self.flux.actions.branch.updateCurrentBranch();
           }
         },
 
@@ -92,7 +95,6 @@ var ConfigActions = {
             }
             console.log("[filter] contracts:", filtrate.address);
 
-            self.flux.actions.network.updateNetwork();
             self.flux.actions.asset.updateAssets();
 
             if (self.flux.store("config").getState().useMarketCache) {
@@ -100,10 +102,6 @@ var ConfigActions = {
             } else {
               self.flux.actions.market.loadNewMarkets();
             }
-
-            // We pull the branch's block-dependent period information from
-            // contract calls that need to be called each block.
-            self.flux.actions.branch.updateCurrentBranch();
           }
         },
 
