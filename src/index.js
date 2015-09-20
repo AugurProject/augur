@@ -23,10 +23,6 @@ var augur = {
 
     options: { debug: { broadcast: false, fallback: false } },
 
-    // If set to true, all numerical results (excluding hashes)
-    // are returned as BigNumber objects
-    bignumbers: true,
-
     connection: null,
 
     utils: require("./utilities"),
@@ -55,13 +51,11 @@ var augur = {
 
 };
 
-rpc.TX_POLL_MAX = 64;
 augur.contracts = augur.utils.copy(contracts["0"]);
 augur.init_contracts = augur.utils.copy(contracts["0"]);
 
 augur.reload_modules = function () {
     if (this.contracts) this.tx = new Tx(this.contracts);
-    rpc.bignumbers = this.bignumbers;
     rpc.debug = this.options.debug;
     this.web = new Accounts(this);
     this.comments = new Comments(this);
@@ -190,16 +184,24 @@ augur.connect = function (rpcinfo, chain) {
         var localnode = this.parse_rpcinfo(rpcinfo, chain);
         if (localnode) rpc.nodes.local = localnode;
     }
-    this.reload_modules();
-    if (this.connection === null &&
-        JSON.stringify(this.init_contracts) === JSON.stringify(this.contracts))
-    {
-        this.detect_network(chain);
+    try {
+        this.reload_modules();
+        if (this.connection === null &&
+            JSON.stringify(this.init_contracts) === JSON.stringify(this.contracts))
+        {
+            this.detect_network(chain);
+        }
+        this.get_coinbase();
+        this.update_contracts();
+        this.connection = true;
+        return true;
+    } catch (exc) {
+        if (!rpcinfo) {
+            this.default_rpc();
+            return true;
+        }
+        return false;
     }
-    this.get_coinbase();
-    this.update_contracts();
-    this.connection = true;
-    return true;
 };
 
 augur.connected = function () {
@@ -659,21 +661,12 @@ augur.getEventInfo = function (event_id, onSent) {
         // info[4] = self.Events[event].maxValue
         // info[5] = self.Events[event].numOutcomes
         if (info && info.length) {
-            if (self.bignumbers) {
-                info[0] = abi.hex(info[0]);
-                info[1] = abi.bignum(info[1]);
-                info[2] = abi.unfix(info[2]);
-                info[3] = abi.bignum(info[3]);
-                info[4] = abi.bignum(info[4]);
-                info[5] = abi.bignum(info[5]);
-            } else {
-                info[0] = abi.hex(info[0]);
-                info[1] = abi.bignum(info[1]).toFixed();
-                info[2] = abi.unfix(info[2], "string");
-                info[3] = abi.bignum(info[3]).toFixed();
-                info[4] = abi.bignum(info[4]).toFixed();
-                info[5] = abi.bignum(info[5]).toFixed();
-            }
+            info[0] = abi.hex(info[0]);
+            info[1] = abi.bignum(info[1]).toFixed();
+            info[2] = abi.unfix(info[2], "string");
+            info[3] = abi.bignum(info[3]).toFixed();
+            info[4] = abi.bignum(info[4]).toFixed();
+            info[5] = abi.bignum(info[5]).toFixed();
         }
         return info;
     };
@@ -996,24 +989,13 @@ augur.getMarketOutcomeInfo = function (market, outcome, onSent) {
         var i, len;
         if (info && info.length) {
             len = info.length;
-            if (self.bignumbers) {
-                info[0] = abi.unfix(info[0], "BigNumber");
-                info[1] = abi.unfix(info[1], "BigNumber");
-                info[2] = abi.unfix(info[2], "BigNumber");
-                info[3] = abi.bignum(info[3]);
-                info[4] = abi.bignum(info[4]);
-                for (i = 5; i < len; ++i) {
-                    info[i] = abi.bignum(info[i]);
-                }
-            } else {
-                info[0] = abi.unfix(info[0], "string");
-                info[1] = abi.unfix(info[1], "string");
-                info[2] = abi.unfix(info[2], "string");
-                info[3] = abi.bignum(info[3]).toFixed();
-                info[4] = abi.bignum(info[4]).toFixed();
-                for (i = 5; i < len; ++i) {
-                    info[i] = abi.bignum(info[i]).toFixed();
-                }
+            info[0] = abi.unfix(info[0], "string");
+            info[1] = abi.unfix(info[1], "string");
+            info[2] = abi.unfix(info[2], "string");
+            info[3] = abi.bignum(info[3]).toFixed();
+            info[4] = abi.bignum(info[4]).toFixed();
+            for (i = 5; i < len; ++i) {
+                info[i] = abi.bignum(info[i]).toFixed();
             }
         }
         return info;
@@ -1041,29 +1023,14 @@ augur.getMarketInfo = function (market, onSent) {
         var i, len;
         if (info && info.length) {
             len = info.length;
-            if (self.bignumbers) {
-                info[0] = abi.bignum(info[0]);
-                info[1] = abi.unfix(info[1], "BigNumber");
-                info[2] = abi.bignum(info[2]);
-                info[3] = abi.bignum(info[3]);
-                info[4] = abi.bignum(info[4]);
-                info[5] = abi.unfix(info[5], "BigNumber");
-                for (i = 6; i < len - 8; ++i) {
-                    info[i] = abi.prefix_hex(abi.bignum(info[i]).toString(16));
-                }
-                for (i = len - 8; i < len; ++i) {
-                    info[i] = abi.bignum(info[i]);
-                }
-            } else {
-                info[0] = abi.bignum(info[0]).toFixed();
-                info[1] = abi.unfix(info[1], "string");
-                info[2] = abi.bignum(info[2]).toFixed();
-                info[3] = abi.bignum(info[3]).toFixed();
-                info[4] = abi.bignum(info[4]).toFixed();
-                info[5] = abi.unfix(info[5], "string");
-                for (i = len - 8; i < len; ++i) {
-                    info[i] = abi.bignum(info[i]).toFixed();
-                }
+            info[0] = abi.bignum(info[0]).toFixed();
+            info[1] = abi.unfix(info[1], "string");
+            info[2] = abi.bignum(info[2]).toFixed();
+            info[3] = abi.bignum(info[3]).toFixed();
+            info[4] = abi.bignum(info[4]).toFixed();
+            info[5] = abi.unfix(info[5], "string");
+            for (i = len - 8; i < len; ++i) {
+                info[i] = abi.bignum(info[i]).toFixed();
             }
         }
         return info;

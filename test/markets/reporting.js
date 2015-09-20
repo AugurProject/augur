@@ -172,45 +172,48 @@ describe("data and api/reporting", function () {
         });
     });
 
-    describe("hashReport([ballot], " + salt + ") ", function () {
-        var test = function (r) {
-            // var b = abi.fix(ballot);
-            // for (var i = 0, len = b.length; i < len; ++i) {
-            //     b[i] = b[i].toString(16);
-            // }
-            // var hashable = [accounts[0], abi.bignum(salt).toString(16)].concat(b).toString();
-            // var hashed = utils.sha256(hashable);
-            // TODO lookup how arrays hashed by evm sha256, this doesn't work
-            // assert.strictEqual(r, hashed);
-            var r = abi.bignum(r);
-            var rplus = r.plus(abi.constants.MOD);
-            if (rplus.lt(abi.constants.BYTES_32)) {
-                r = rplus;
-            }
-            var expected = (augur.network_id === '7') ?
-                "-3be4c66e938ac10deff020022958af94584a35a5ce661a31522ff91bd40b990" :
-                "-3bc32da7042e04b537160b3b24f53162cb621c482fb615aa108087898d6183fb";
-            assert.strictEqual(r.toString(16), expected);
-        };
-        it("sync", function () {
-            test(augur.hashReport(ballot, salt));
-        });
-        it("async", function (done) {
-            augur.hashReport(ballot, salt, function (r) {
-                test(r); done();
-            });
-        });
-        it("batched-async", function (done) {
-            var batch = augur.createBatch();
-            var params = [abi.fix(ballot, "hex"), salt];
-            batch.add("hashReport", params, function (r) {
-                test(r);
-            });
-            batch.add("hashReport", params, function (r) {
-                test(r); done();
-            });
-            batch.execute();
-        });
-    });
+    if (augur.network_id === "10101") {
 
+        describe("hashReport([ballot], " + salt + ") ", function () {
+            var test = function (r) {
+                // var b = abi.fix(ballot);
+                // for (var i = 0, len = b.length; i < len; ++i) {
+                //     b[i] = b[i].toString(16);
+                // }
+                // var hashable = [accounts[0], abi.bignum(salt).toString(16)].concat(b).toString();
+                // var hashed = utils.sha256(hashable);
+                // TODO lookup how arrays hashed by evm sha256, this doesn't work
+                // assert.strictEqual(r, hashed);
+                var r = abi.bignum(r);
+                var rplus = r.plus(abi.constants.MOD);
+                if (rplus.lt(abi.constants.BYTES_32)) {
+                    r = rplus;
+                }
+                var expected = (augur.network_id === '7') ?
+                    "-3be4c66e938ac10deff020022958af94584a35a5ce661a31522ff91bd40b990" :
+                    "-3bc32da7042e04b537160b3b24f53162cb621c482fb615aa108087898d6183fb";
+                assert.strictEqual(r.toString(16), expected);
+            };
+            it("sync", function () {
+                test(augur.hashReport(ballot, salt));
+            });
+            it("async", function (done) {
+                augur.hashReport(ballot, salt, function (r) {
+                    test(r); done();
+                });
+            });
+            it("batched-async", function (done) {
+                var batch = augur.createBatch();
+                var params = [abi.fix(ballot, "hex"), salt];
+                batch.add("hashReport", params, function (r) {
+                    test(r);
+                });
+                batch.add("hashReport", params, function (r) {
+                    test(r); done();
+                });
+                batch.execute();
+            });
+        });
+
+    }
 });

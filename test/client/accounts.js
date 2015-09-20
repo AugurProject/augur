@@ -34,6 +34,7 @@ describe("Register", function () {
 
     it("register account 1: " + handle + " / " + password, function (done) {
         this.timeout(constants.TIMEOUT*4);
+        var augur = utils.setup(require("../../src"), process.argv.slice(2));
         db.get(handle, function (record) {
             assert.isNull(record);
             augur.web.register(handle, password, function (result) {
@@ -87,6 +88,7 @@ describe("Register", function () {
 
     it("register account 2: " + handle2 + " / " + password2, function (done) {
         this.timeout(constants.TIMEOUT*4);
+        var augur = utils.setup(require("../../src"), process.argv.slice(2));
         db.get(handle2, function (record) {
             assert.isNull(record);
             augur.web.register(handle2, password2, function (result) {
@@ -140,6 +142,7 @@ describe("Register", function () {
 
     it("fail to register account 1's handle again", function (done) {
         this.timeout(constants.TIMEOUT);
+        var augur = utils.setup(require("../../src"), process.argv.slice(2));
         augur.web.register(handle, password, function (result) {
             assert(!result.privateKey);
             assert(!result.address);
@@ -153,6 +156,7 @@ describe("Register", function () {
 
     it("fail to register account 2's handle again", function (done) {
         this.timeout(constants.TIMEOUT);
+        var augur = utils.setup(require("../../src"), process.argv.slice(2));
         augur.web.register(handle, password, function (result) {
             assert(!result.privateKey);
             assert(!result.address);
@@ -170,6 +174,7 @@ describe("Login", function () {
 
     it("login and decrypt the stored private key", function (done) {
         this.timeout(constants.TIMEOUT);
+        var augur = utils.setup(require("../../src"), process.argv.slice(2));
         augur.web.login(handle, password, function (user) {
             if (user.error) {
                 augur.web.logout();
@@ -191,6 +196,7 @@ describe("Login", function () {
 
     it("login twice as the same user", function (done) {
         this.timeout(constants.TIMEOUT);
+        var augur = utils.setup(require("../../src"), process.argv.slice(2));
         augur.web.login(handle, password, function (user) {
             if (user.error) {
                 augur.web.logout();
@@ -222,6 +228,7 @@ describe("Login", function () {
 
     it("fail with error 403 when given an incorrect handle", function (done) {
         this.timeout(constants.TIMEOUT);
+        var augur = utils.setup(require("../../src"), process.argv.slice(2));
         var bad_handle = utils.sha256(new Date().toString());
         augur.web.login(bad_handle, password, function (user) {
             assert.strictEqual(user.error, 403);
@@ -231,6 +238,7 @@ describe("Login", function () {
 
     it("fail with error 403 when given a blank handle", function (done) {
         this.timeout(constants.TIMEOUT);
+        var augur = utils.setup(require("../../src"), process.argv.slice(2));
         augur.web.login("", password, function (user) {
             assert.strictEqual(user.error, 403);
             done();
@@ -239,6 +247,7 @@ describe("Login", function () {
 
     it("fail with error 403 when given a blank password", function (done) {
         this.timeout(constants.TIMEOUT);
+        var augur = utils.setup(require("../../src"), process.argv.slice(2));
         augur.web.login(handle, "", function (user) {
             assert.strictEqual(user.error, 403);
             done();
@@ -247,6 +256,7 @@ describe("Login", function () {
 
     it("fail with error 403 when given a blank handle and a blank password", function (done) {
         this.timeout(constants.TIMEOUT);
+        var augur = utils.setup(require("../../src"), process.argv.slice(2));
         augur.web.login("", "", function (user) {
             assert.strictEqual(user.error, 403);
             done();
@@ -255,6 +265,7 @@ describe("Login", function () {
 
     it("fail with error 403 when given an incorrect password", function (done) {
         this.timeout(constants.TIMEOUT);
+        var augur = utils.setup(require("../../src"), process.argv.slice(2));
         var bad_password = utils.sha256(Math.random().toString(36).substring(4));
         augur.web.login(handle, bad_password, function (user) {
             assert.strictEqual(user.error, 403);
@@ -264,6 +275,7 @@ describe("Login", function () {
 
     it("fail with error 403 when given an incorrect handle and an incorrect password", function (done) {
         this.timeout(constants.TIMEOUT);
+        var augur = utils.setup(require("../../src"), process.argv.slice(2));
         var bad_handle = utils.sha256(new Date().toString());
         var bad_password = utils.sha256(Math.random().toString(36).substring(4));
         augur.web.login(handle, bad_password, function (user) {
@@ -278,6 +290,7 @@ describe("Logout", function () {
 
     it("logout and unset the account object", function (done) {
         this.timeout(constants.TIMEOUT);
+        var augur = utils.setup(require("../../src"), process.argv.slice(2));
         augur.web.login(handle, password, function (user) {
             if (user.error) {
                 augur.web.logout();
@@ -297,48 +310,49 @@ describe("Logout", function () {
 
 });
 
-describe("Fund", function () {
+if (!process.env.CONTINUOUS_INTEGRATION) {
 
-    var recipient = "0x639b41c4d3d399894f2a57894278e1653e7cd24c";
+    describe("Fund", function () {
 
-    it("send " + constants.FREEBIE + " ether to " + recipient, function (done) {
+        var recipient = "0x639b41c4d3d399894f2a57894278e1653e7cd24c";
 
-        this.timeout(constants.TIMEOUT*4);
+        it("send " + constants.FREEBIE + " ether to " + recipient, function (done) {
+            this.timeout(constants.TIMEOUT*4);
+            var augur = utils.setup(require("../../src"), process.argv.slice(2));
+            var initial_balance = abi
+                .bignum(augur.rpc.balance(recipient))
+                .dividedBy(constants.ETHER);
+            augur.web.fund(
+                { address: recipient },
+                function (account) {
+                    if (account.error) {
+                        augur.web.logout();
+                        return done(account);
+                    }
+                    assert.property(account, "address");
+                    assert.strictEqual(account.address, recipient);
+                }, function (account) {
+                    if (account.error) {
+                        augur.web.logout();
+                        return done(account);
+                    }
+                    assert.property(account, "address");
+                    assert.strictEqual(account.address, recipient);
 
-        var initial_balance = abi
-            .bignum(augur.rpc.balance(recipient))
-            .dividedBy(constants.ETHER);
+                    var final_balance = abi
+                        .bignum(augur.rpc.balance(recipient))
+                        .dividedBy(constants.ETHER);
 
-        augur.web.fund(
-            { address: recipient },
-            function (account) {
-                if (account.error) {
-                    augur.web.logout();
-                    return done(account);
+                    var delta = final_balance.sub(initial_balance).toNumber();
+                    assert.isAbove(Math.abs(delta), 49);
+
+                    done();
                 }
-                assert.property(account, "address");
-                assert.strictEqual(account.address, recipient);
-            }, function (account) {
-                if (account.error) {
-                    augur.web.logout();
-                    return done(account);
-                }
-                assert.property(account, "address");
-                assert.strictEqual(account.address, recipient);
+            );
+        });
 
-                var final_balance = abi
-                    .bignum(augur.rpc.balance(recipient))
-                    .dividedBy(constants.ETHER);
-
-                var delta = final_balance.sub(initial_balance).toNumber();
-                assert.isAbove(Math.abs(delta), 49);
-
-                done();
-            }
-        );
     });
-
-});
+}
 
 describe("Transaction signing", function () {
 
@@ -434,6 +448,7 @@ describe("Contract methods", function () {
 
         it("call getBranches using web.invoke", function (done) {
             this.timeout(constants.TIMEOUT);
+            var augur = utils.setup(require("../../src"), process.argv.slice(2));
             augur.web.login(handle, password, function (user) {
                 if (user.error) {
                     augur.web.logout();
@@ -475,78 +490,82 @@ describe("Contract methods", function () {
 
     });
 
-    describe("Send transaction", function () {
+    if (!process.env.CONTINUOUS_INTEGRATION) {
 
-        it("sign and send transaction using account 1", function (done) {
-            this.timeout(constants.TIMEOUT);
-            augur.web.login(handle, password, function (user) {
-                if (user.error) {
-                    augur.web.logout();
-                    return done(user);
-                }
-                var tx = utils.copy(augur.tx.reputationFaucet);
-                tx.params = augur.branches.dev;
-                augur.web.invoke(tx, function (txhash) {
-                    if (txhash.error) {
+        describe("Send transaction", function () {
+
+            it("sign and send transaction using account 1", function (done) {
+                this.timeout(constants.TIMEOUT);
+                var augur = utils.setup(require("../../src"), process.argv.slice(2));
+                augur.web.login(handle, password, function (user) {
+                    if (user.error) {
                         augur.web.logout();
-                        return done(txhash);
+                        return done(user);
                     }
-                    assert(txhash);
-                    augur.rpc.getTx(txhash, function (confirmTx) {
-                        if (confirmTx.error) {
+                    var tx = utils.copy(augur.tx.reputationFaucet);
+                    tx.params = augur.branches.dev;
+                    augur.web.invoke(tx, function (txhash) {
+                        if (txhash.error) {
                             augur.web.logout();
-                            return done(confirmTx);
+                            return done(txhash);
                         }
-                        assert(confirmTx.hash);
-                        assert(confirmTx.from);
-                        assert(confirmTx.to);
-                        assert.strictEqual(txhash, confirmTx.hash);
-                        assert.strictEqual(confirmTx.from, user.address);
-                        assert.strictEqual(confirmTx.to, tx.to);
-                        augur.web.logout();
-                        done();
+                        assert(txhash);
+                        augur.rpc.getTx(txhash, function (confirmTx) {
+                            if (confirmTx.error) {
+                                augur.web.logout();
+                                return done(confirmTx);
+                            }
+                            assert(confirmTx.hash);
+                            assert(confirmTx.from);
+                            assert(confirmTx.to);
+                            assert.strictEqual(txhash, confirmTx.hash);
+                            assert.strictEqual(confirmTx.from, user.address);
+                            assert.strictEqual(confirmTx.to, tx.to);
+                            augur.web.logout();
+                            done();
+                        });
                     });
                 });
             });
-        });
 
-        it("detect logged in user and default to web.invoke", function (done) {
-            this.timeout(constants.TIMEOUT*12);
-            augur.web.login(handle, password, function (user) {
-                if (user.error) {
-                    augur.web.logout();
-                    return done(user);
-                }
-                assert.strictEqual(
-                    user.address,
-                    augur.web.account.address
-                );
-                augur.cashFaucet({
-                    onSent: function (r) {
-                        // sent
-                        assert.property(r, "txHash");
-                        assert.property(r, "callReturn");
-                    },
-                    onSuccess: function (r) {
-                        // success
-                        assert.property(r, "txHash");
-                        assert.property(r, "callReturn");
-                        assert.property(r, "blockHash");
-                        assert.property(r, "blockNumber");
-                        assert.isAbove(parseInt(r.blockNumber), 0);
-                        assert.strictEqual(r.from, user.address);
-                        assert.strictEqual(r.to, augur.contracts.faucets);
-                        assert.strictEqual(parseInt(r.value), 0);
-                        done();
-                    },
-                    onFailed: function (r) {
-                        // failed
-                        done(r);
+            it("detect logged in user and default to web.invoke", function (done) {
+                this.timeout(constants.TIMEOUT*12);
+                var augur = utils.setup(require("../../src"), process.argv.slice(2));
+                augur.web.login(handle, password, function (user) {
+                    if (user.error) {
+                        augur.web.logout();
+                        return done(user);
                     }
+                    assert.strictEqual(
+                        user.address,
+                        augur.web.account.address
+                    );
+                    augur.cashFaucet({
+                        onSent: function (r) {
+                            // sent
+                            assert.property(r, "txHash");
+                            assert.property(r, "callReturn");
+                        },
+                        onSuccess: function (r) {
+                            // success
+                            assert.property(r, "txHash");
+                            assert.property(r, "callReturn");
+                            assert.property(r, "blockHash");
+                            assert.property(r, "blockNumber");
+                            assert.isAbove(parseInt(r.blockNumber), 0);
+                            assert.strictEqual(r.from, user.address);
+                            assert.strictEqual(r.to, augur.contracts.faucets);
+                            assert.strictEqual(parseInt(r.value), 0);
+                            done();
+                        },
+                        onFailed: function (r) {
+                            // failed
+                            done(r);
+                        }
+                    });
                 });
             });
+
         });
-
-    });
-
+    }
 });

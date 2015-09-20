@@ -14,6 +14,7 @@ describe("Faucets", function () {
 
     it("reputationFaucet", function (done) {
         this.timeout(constants.TIMEOUT);
+        var augur = utils.setup(require("../../src"), process.argv.slice(2));
         augur.reputationFaucet(
             augur.branches.dev,
             function (r) {
@@ -25,7 +26,7 @@ describe("Faucets", function () {
                 // success
                 assert.strictEqual(r.callReturn, "1");
                 assert.notStrictEqual(abi.bignum(r.blockHash).toNumber(), 0);
-                assert.isAbove(parseInt(r.blockNumber), 0);
+                assert.isAbove(abi.number(r.blockNumber), 0);
                 var rep_balance = augur.getRepBalance(augur.branches.dev, augur.coinbase);
                 var cash_balance = augur.getCashBalance(augur.coinbase);
                 assert.strictEqual(rep_balance, "47");
@@ -39,7 +40,6 @@ describe("Faucets", function () {
     });
 
     it("cashFaucet", function (done) {
-
         this.timeout(constants.TIMEOUT*4);
 
         function faucet() {
@@ -69,9 +69,10 @@ describe("Faucets", function () {
             );
         }
 
+        var augur = utils.setup(require("../../src"), process.argv.slice(2));
         var cash_balance = augur.getCashBalance(augur.coinbase);
 
-        if (Number(cash_balance) >= 5) {
+        if (abi.number(cash_balance) >= 5) {
             var start_balance = abi.bignum(cash_balance);
             augur.sendCash({
                 to: "0x405be667f1a6b2d5149a61057040cade5aada366",

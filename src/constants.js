@@ -29,7 +29,7 @@ module.exports = {
     FREEBIE: 100,
 
     // unit test timeout
-    TIMEOUT: 64000,
+    TIMEOUT: 600000,
 
     KEYSIZE: 32,
     IVSIZE: 16,

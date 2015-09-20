@@ -226,8 +226,7 @@ describe("augur.js / web3 interoperability", function () {
                                   .at(augur.contracts.branches)
                                   .getMarkets
                                   .call(new BigNumber(branch_id));
-        augur.bignumbers = true;
-        augur = utils.setup(augur, process.argv.slice(2), null, true);
+        augur = utils.setup(augur, process.argv.slice(2));
         var markets = {
             augurjs: augur.getMarkets(branch_id),
             web3: web3markets

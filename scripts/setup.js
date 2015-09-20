@@ -139,7 +139,6 @@ function mine_minimum_ether(geth, account, next) {
 }
 
 function connect_augur() {
-    augur.rpc.bignumbers = false;
     if (options.CUSTOM_GOSPEL) {
         augur = utils.setup(
             augur,

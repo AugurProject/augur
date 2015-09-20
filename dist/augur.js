@@ -72,6 +72,9 @@ module.exports = {
     // convert bytes to hex
     encode_hex: function (str) {
         var hexbyte, hex = '';
+        if (str && str.constructor === Object || str.constructor === Array) {
+            str = JSON.stringify(str);
+        }
         for (var i = 0, len = str.length; i < len; ++i) {
             hexbyte = str.charCodeAt(i).toString(16);
             if (hexbyte.length === 1) hexbyte = "0" + hexbyte;
@@ -88,7 +91,7 @@ module.exports = {
                     h = this.encode_hex(JSON.stringify(n));
                     break;
                 case Array:
-                    h = this.encode_hex(JSON.stringify(n));
+                    h = this.bignum(n, "hex");
                     break;
                 case BigNumber:
                     h = n.toString(16);
@@ -327,6 +330,14 @@ module.exports = {
         } else {
             return n;
         }
+    },
+
+    string: function (n) {
+        return this.bignum(n, "string");
+    },
+
+    number: function (s) {
+        return this.bignum(s, "number");
     },
 
     chunk: function (len) {
@@ -54885,7 +54896,24 @@ arguments[4][239][0].apply(exports,arguments)
 },{}],303:[function(require,module,exports){
 /**
  * Bindings for the Namereg contract:
- * https://github.com/ethereum/dapp-bin/blob/master/registrar/registrar.sol
+     https://github.com/ethereum/dapp-bin/blob/master/registrar/GlobalRegistrar.sol
+     https://github.com/ethereum/dapp-bin/blob/master/NatSpecReg/contract.sol
+     https://github.com/ethereum/dapp-bin/blob/master/registrar/registrar.sol
+Example:
+ primary = eth.accounts[0];
+ "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b"
+
+ globalRegistrarAddr = admin.setGlobalRegistrar("", primary);
+ I0918 16:39:27.519950    4991 xeth.go:985] Tx(0x3b732dc5d4b6f3d1fd6f04867e7791024f3f456ee716c579ab0f92b3031c5289) created: 0x5d1479943c297d93bfc6cb8525d18fdff79cbb2b
+ "0x3b732dc5d4b6f3d1fd6f04867e7791024f3f456ee716c579ab0f92b3031c5289"
+
+ hashRegAddr = admin.setHashReg("", primary);
+ I0918 16:39:27.523845    4991 xeth.go:985] Tx(0xfeb91d5fb23558d30a0a96bf9a0e92b87730a9e5ac849c82a2d1b2ec93383ff9) created: 0x02de4f01f7b16db565ad7c036faaf3b7bc39abbd
+ "0xfeb91d5fb23558d30a0a96bf9a0e92b87730a9e5ac849c82a2d1b2ec93383ff9"
+
+ urlHintAddr = admin.setUrlHint("", primary);
+ I0918 16:39:32.450294    4991 xeth.go:985] Tx(0x64dc95cf6c758a4b2f0af657e39132d69839a63dac594408e8082c82c961a3e5) created: 0xadd008234f45e614800c2960de5779b70bac8922
+ "0x64dc95cf6c758a4b2f0af657e39132d69839a63dac594408e8082c82c961a3e5"
  */
 
 "use strict";
@@ -55198,11 +55226,11 @@ module.exports = function (augur) {
                                 for (var i = 0, len = tx.params.length; i < len; ++i) {
                                     if (tx.params[i] !== undefined &&
                                         tx.params[i].constructor === BigNumber) {
-                                        tx.params[i] = tx.params[i].toFixed();
+                                        tx.params[i] = abi.hex(tx.params[i]);
                                     }
                                 }
                             } else if (tx.params.constructor === BigNumber) {
-                                tx.params = tx.params.toFixed();
+                                tx.params = abi.hex(tx.params);
                             }
                         }
                         if (tx.to) tx.to = abi.prefix_hex(tx.to);
@@ -55620,7 +55648,7 @@ module.exports = {
     FREEBIE: 100,
 
     // unit test timeout
-    TIMEOUT: 64000,
+    TIMEOUT: 600000,
 
     KEYSIZE: 32,
     IVSIZE: 16,
@@ -56354,10 +56382,6 @@ var augur = {
 
     options: { debug: { broadcast: false, fallback: false } },
 
-    // If set to true, all numerical results (excluding hashes)
-    // are returned as BigNumber objects
-    bignumbers: true,
-
     connection: null,
 
     utils: require("./utilities"),
@@ -56386,13 +56410,11 @@ var augur = {
 
 };
 
-rpc.TX_POLL_MAX = 64;
 augur.contracts = augur.utils.copy(contracts["0"]);
 augur.init_contracts = augur.utils.copy(contracts["0"]);
 
 augur.reload_modules = function () {
     if (this.contracts) this.tx = new Tx(this.contracts);
-    rpc.bignumbers = this.bignumbers;
     rpc.debug = this.options.debug;
     this.web = new Accounts(this);
     this.comments = new Comments(this);
@@ -56521,16 +56543,24 @@ augur.connect = function (rpcinfo, chain) {
         var localnode = this.parse_rpcinfo(rpcinfo, chain);
         if (localnode) rpc.nodes.local = localnode;
     }
-    this.reload_modules();
-    if (this.connection === null &&
-        JSON.stringify(this.init_contracts) === JSON.stringify(this.contracts))
-    {
-        this.detect_network(chain);
+    try {
+        this.reload_modules();
+        if (this.connection === null &&
+            JSON.stringify(this.init_contracts) === JSON.stringify(this.contracts))
+        {
+            this.detect_network(chain);
+        }
+        this.get_coinbase();
+        this.update_contracts();
+        this.connection = true;
+        return true;
+    } catch (exc) {
+        if (!rpcinfo) {
+            this.default_rpc();
+            return true;
+        }
+        return false;
     }
-    this.get_coinbase();
-    this.update_contracts();
-    this.connection = true;
-    return true;
 };
 
 augur.connected = function () {
@@ -56990,21 +57020,12 @@ augur.getEventInfo = function (event_id, onSent) {
         // info[4] = self.Events[event].maxValue
         // info[5] = self.Events[event].numOutcomes
         if (info && info.length) {
-            if (self.bignumbers) {
-                info[0] = abi.hex(info[0]);
-                info[1] = abi.bignum(info[1]);
-                info[2] = abi.unfix(info[2]);
-                info[3] = abi.bignum(info[3]);
-                info[4] = abi.bignum(info[4]);
-                info[5] = abi.bignum(info[5]);
-            } else {
-                info[0] = abi.hex(info[0]);
-                info[1] = abi.bignum(info[1]).toFixed();
-                info[2] = abi.unfix(info[2], "string");
-                info[3] = abi.bignum(info[3]).toFixed();
-                info[4] = abi.bignum(info[4]).toFixed();
-                info[5] = abi.bignum(info[5]).toFixed();
-            }
+            info[0] = abi.hex(info[0]);
+            info[1] = abi.bignum(info[1]).toFixed();
+            info[2] = abi.unfix(info[2], "string");
+            info[3] = abi.bignum(info[3]).toFixed();
+            info[4] = abi.bignum(info[4]).toFixed();
+            info[5] = abi.bignum(info[5]).toFixed();
         }
         return info;
     };
@@ -57327,24 +57348,13 @@ augur.getMarketOutcomeInfo = function (market, outcome, onSent) {
         var i, len;
         if (info && info.length) {
             len = info.length;
-            if (self.bignumbers) {
-                info[0] = abi.unfix(info[0], "BigNumber");
-                info[1] = abi.unfix(info[1], "BigNumber");
-                info[2] = abi.unfix(info[2], "BigNumber");
-                info[3] = abi.bignum(info[3]);
-                info[4] = abi.bignum(info[4]);
-                for (i = 5; i < len; ++i) {
-                    info[i] = abi.bignum(info[i]);
-                }
-            } else {
-                info[0] = abi.unfix(info[0], "string");
-                info[1] = abi.unfix(info[1], "string");
-                info[2] = abi.unfix(info[2], "string");
-                info[3] = abi.bignum(info[3]).toFixed();
-                info[4] = abi.bignum(info[4]).toFixed();
-                for (i = 5; i < len; ++i) {
-                    info[i] = abi.bignum(info[i]).toFixed();
-                }
+            info[0] = abi.unfix(info[0], "string");
+            info[1] = abi.unfix(info[1], "string");
+            info[2] = abi.unfix(info[2], "string");
+            info[3] = abi.bignum(info[3]).toFixed();
+            info[4] = abi.bignum(info[4]).toFixed();
+            for (i = 5; i < len; ++i) {
+                info[i] = abi.bignum(info[i]).toFixed();
             }
         }
         return info;
@@ -57372,29 +57382,14 @@ augur.getMarketInfo = function (market, onSent) {
         var i, len;
         if (info && info.length) {
             len = info.length;
-            if (self.bignumbers) {
-                info[0] = abi.bignum(info[0]);
-                info[1] = abi.unfix(info[1], "BigNumber");
-                info[2] = abi.bignum(info[2]);
-                info[3] = abi.bignum(info[3]);
-                info[4] = abi.bignum(info[4]);
-                info[5] = abi.unfix(info[5], "BigNumber");
-                for (i = 6; i < len - 8; ++i) {
-                    info[i] = abi.prefix_hex(abi.bignum(info[i]).toString(16));
-                }
-                for (i = len - 8; i < len; ++i) {
-                    info[i] = abi.bignum(info[i]);
-                }
-            } else {
-                info[0] = abi.bignum(info[0]).toFixed();
-                info[1] = abi.unfix(info[1], "string");
-                info[2] = abi.bignum(info[2]).toFixed();
-                info[3] = abi.bignum(info[3]).toFixed();
-                info[4] = abi.bignum(info[4]).toFixed();
-                info[5] = abi.unfix(info[5], "string");
-                for (i = len - 8; i < len; ++i) {
-                    info[i] = abi.bignum(info[i]).toFixed();
-                }
+            info[0] = abi.bignum(info[0]).toFixed();
+            info[1] = abi.unfix(info[1], "string");
+            info[2] = abi.bignum(info[2]).toFixed();
+            info[3] = abi.bignum(info[3]).toFixed();
+            info[4] = abi.bignum(info[4]).toFixed();
+            info[5] = abi.unfix(info[5], "string");
+            for (i = len - 8; i < len; ++i) {
+                info[i] = abi.bignum(info[i]).toFixed();
             }
         }
         return info;
@@ -59061,7 +59056,7 @@ module.exports = {
         }
     },
 
-    setup: function (augur, args, rpcinfo, bignum) {
+    setup: function (augur, args, rpcinfo) {
         var gospel, contracts, defaulthost;
         if (NODE_JS && !process.env.CONTINUOUS_INTEGRATION) {
             defaulthost = "http://127.0.0.1:8545";
@@ -59073,7 +59068,6 @@ module.exports = {
             contracts = fs.readFileSync(gospel);
             augur.contracts = JSON.parse(contracts.toString());
         }
-        if (!bignum) augur.bignumbers = false;
         if (augur.connect(rpcinfo || defaulthost)) {
             if (augur.options.debug.broadcast || augur.options.debug.fallback) {
                 console.log(chalk.red.bold("debug:"), augur.options.debug);
@@ -59286,7 +59280,7 @@ module.exports={
 },{}],314:[function(require,module,exports){
 (function (process){
 /**
- * Basic JSON RPC methods for Ethereum
+ * JSON RPC methods for Ethereum
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -59297,8 +59291,8 @@ var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 var async = require("async");
 var BigNumber = require("bignumber.js");
 var request = require("request");
-var contracts = require("augur-contracts");
 var syncRequest = (NODE_JS) ? require("sync-request") : null;
+var contracts = require("augur-contracts");
 var abi = require("augur-abi");
 var errors = require("./errors");
 
@@ -59332,14 +59326,10 @@ module.exports = {
 
     debug: { broadcast: false, fallback: false },
 
-    bignumbers: true,
-
     rotation: true,
 
-    RPCError: RPCError,
-
     // Maximum number of transaction verification attempts
-    TX_POLL_MAX: 24,
+    TX_POLL_MAX: 64,
 
     // Transaction polling interval
     TX_POLL_INTERVAL: 12000,
@@ -59381,18 +59371,10 @@ module.exports = {
                 }
             }
             for (i = 0; i < array.length; ++i) {
-                if (returns === "hash[]" && this.bignumbers) {
-                    array[i] = abi.bignum(array[i]);
-                } else {
-                    if (returns === "number[]") {
-                        array[i] = abi.bignum(array[i]).toFixed();
-                    } else if (returns === "unfix[]") {
-                        if (this.bignumbers) {
-                            array[i] = abi.unfix(array[i]);
-                        } else {
-                            array[i] = abi.unfix(array[i], "string");
-                        }
-                    }
+                if (returns === "number[]") {
+                    array[i] = abi.string(array[i]);
+                } else if (returns === "unfix[]") {
+                    array[i] = abi.unfix(array[i], "string");
                 }
             }
             return array;
@@ -59408,23 +59390,12 @@ module.exports = {
                 result = this.unmarshal(result, returns);
             } else if (returns === "string") {
                 result = abi.decode_hex(result, true);
-            } else {
-                if (this.bignumbers) {
-                    if (returns === "unfix") {
-                        result = abi.unfix(result);
-                    }
-                    if (result.constructor !== BigNumber) {
-                        result = abi.bignum(result);
-                    }
-                } else {
-                    if (returns === "number") {
-                        result = abi.bignum(result).toFixed();
-                    } else if (returns === "bignumber") {
-                        result = abi.bignum(result);
-                    } else if (returns === "unfix") {
-                        result = abi.unfix(result, "string");
-                    }
-                }
+            } else if (returns === "number") {
+                result = abi.string(result);
+            } else if (returns === "bignumber") {
+                result = abi.bignum(result);
+            } else if (returns === "unfix") {
+                result = abi.unfix(result, "string");
             }
         }
         return result;
@@ -59661,7 +59632,7 @@ module.exports = {
                     self.post(node, command, returns, function (res) {
                         if (self.debug.fallback && self.debug.broadcast) {
                             if (res && res.constructor === BigNumber) {
-                                console.log(node, "response:", res.toFixed());
+                                console.log(node, "response:", abi.string(res));
                             } else {
                                 console.log(node, "response:", res);
                             }
@@ -60051,11 +60022,11 @@ module.exports = {
                             for (var i = 0, len = tx.params.length; i < len; ++i) {
                                 if (tx.params[i] !== undefined &&
                                     tx.params[i].constructor === BigNumber) {
-                                    tx.params[i] = tx.params[i].toFixed();
+                                    tx.params[i] = abi.hex(tx.params[i]);
                                 }
                             }
                         } else if (tx.params.constructor === BigNumber) {
-                            tx.params = tx.params.toFixed();
+                            tx.params = abi.hex(tx.params);
                         }
                     }
                     if (tx.to) tx.to = abi.prefix_hex(tx.to);
@@ -60081,8 +60052,6 @@ module.exports = {
                     }
                 }
             }
-
-        // stopgap: console.error
         } catch (exc) {
             if (f) return f(errors.TRANSACTION_FAILED);
             return errors.TRANSACTION_FAILED;
@@ -60110,11 +60079,11 @@ module.exports = {
                             if (tx.params[j] !== undefined &&
                                 tx.params[j] !== null &&
                                 tx.params[j].constructor === BigNumber) {
-                                tx.params[j] = tx.params[j].toFixed();
+                                tx.params[j] = abi.hex(tx.params[j]);
                             }
                         }
                     } else if (tx.params.constructor === BigNumber) {
-                        tx.params = tx.params.toFixed();
+                        tx.params = abi.hex(tx.params);
                     }
                 }
                 if (tx.from) tx.from = abi.prefix_hex(tx.from);
@@ -60186,17 +60155,12 @@ module.exports = {
             if (returns === "null") {
                 result = null;
             } else if (returns === "address" || returns === "address[]") {
-                result = abi.prefix_hex(abi.remove_leading_zeros(result));
+                result = abi.format_address(result);
             } else {
-                if (this.bignumbers && returns !== "string") {
-                    result = abi.bignum(result);
-                }
-                if (!this.bignumbers) {
-                    if (!returns || returns === "hash[]" || returns === "hash") {
-                        result = abi.bignum(result, "hex");
-                    } else if (returns === "number") {
-                        result = abi.bignum(result, "string");
-                    }
+                if (!returns || returns === "hash[]" || returns === "hash") {
+                    result = abi.hex(result);
+                } else if (returns === "number") {
+                    result = abi.string(result);
                 }
             }
         }
@@ -60224,7 +60188,7 @@ module.exports = {
                     {
                         var responseNumber = abi.bignum(response);
                         if (responseNumber) {
-                            responseNumber = responseNumber.toFixed();
+                            responseNumber = abi.string(responseNumber);
                             if (errors[tx.method] && errors[tx.method][responseNumber]) {
                                 response = {
                                     error: responseNumber,
@@ -60265,7 +60229,7 @@ module.exports = {
      ***************************************/
 
     checkBlockHash: function (tx, callreturn, itx, txhash, returns, count, onSent, onSuccess, onFailed) {
-        if (tx && tx.blockHash && abi.bignum(tx.blockHash).toNumber() !== 0) {
+        if (tx && tx.blockHash && abi.number(tx.blockHash) !== 0) {
             this.clearNotifications(txhash);
             tx.callReturn = this.encodeResult(callreturn, returns);
             tx.txHash = tx.hash;

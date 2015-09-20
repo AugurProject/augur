@@ -126,7 +126,7 @@ module.exports = {
         }
     },
 
-    setup: function (augur, args, rpcinfo, bignum) {
+    setup: function (augur, args, rpcinfo) {
         var gospel, contracts, defaulthost;
         if (NODE_JS && !process.env.CONTINUOUS_INTEGRATION) {
             defaulthost = "http://127.0.0.1:8545";
@@ -138,7 +138,6 @@ module.exports = {
             contracts = fs.readFileSync(gospel);
             augur.contracts = JSON.parse(contracts.toString());
         }
-        if (!bignum) augur.bignumbers = false;
         if (augur.connect(rpcinfo || defaulthost)) {
             if (augur.options.debug.broadcast || augur.options.debug.fallback) {
                 console.log(chalk.red.bold("debug:"), augur.options.debug);

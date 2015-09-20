@@ -229,11 +229,11 @@ module.exports = function (augur) {
                                 for (var i = 0, len = tx.params.length; i < len; ++i) {
                                     if (tx.params[i] !== undefined &&
                                         tx.params[i].constructor === BigNumber) {
-                                        tx.params[i] = tx.params[i].toFixed();
+                                        tx.params[i] = abi.hex(tx.params[i]);
                                     }
                                 }
                             } else if (tx.params.constructor === BigNumber) {
-                                tx.params = tx.params.toFixed();
+                                tx.params = abi.hex(tx.params);
                             }
                         }
                         if (tx.to) tx.to = abi.prefix_hex(tx.to);
