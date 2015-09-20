@@ -45,8 +45,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 maxValue: maxValue,
                 numOutcomes: numOutcomes,
                 onSent: function (r) {
-                    log(chalk.green("    ✓ ") + chalk.gray("event hash:  " + r.txHash));
-                    log(chalk.green("    ✓ ") + chalk.gray("event ID:    " + r.callReturn));
+                    // log(chalk.green("    ✓ ") + chalk.gray("event hash:  " + r.txHash));
+                    // log(chalk.green("    ✓ ") + chalk.gray("event ID:    " + r.callReturn));
                 },
                 onSuccess: function (r) {
                     var alpha = "0.0079";
@@ -63,8 +63,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                         tradingFee: tradingFee,
                         events: events,
                         onSent: function (res) {
-                            log(chalk.green("    ✓ ") + chalk.gray("market hash: " + res.txHash));
-                            log(chalk.green("    ✓ ") + chalk.gray("market ID:   " + res.callReturn));
+                            // log(chalk.green("    ✓ ") + chalk.gray("market hash: " + res.txHash));
+                            // log(chalk.green("    ✓ ") + chalk.gray("market ID:   " + res.callReturn));
                         },
                         onSuccess: function (res) {
                             if (element < num_events - 1) {
