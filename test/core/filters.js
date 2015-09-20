@@ -292,50 +292,54 @@ describe("Price history", function () {
         });
     });
 
-    it("[async] getMarketPriceHistory(" + market_id + ")", function (done) {
-        this.timeout(constants.TIMEOUT*4);
-        augur.buyShares({
-            branchId: branch,
-            marketId: market_id,
-            outcome: outcome,
-            amount: amount,
-            onSent: function (r) {
-                assert.property(r, "txHash");
-                assert.property(r, "callReturn");
-            },
-            onSuccess: function (r) {
-                assert.property(r, "txHash");
-                assert.property(r, "callReturn");
-                assert.property(r, "blockHash");
-                assert.property(r, "blockNumber");
-                assert.isAbove(parseInt(r.blockNumber), 0);
-                assert.strictEqual(r.from, augur.coinbase);
-                assert.strictEqual(r.to, augur.contracts.buyAndSellShares);
-                assert.strictEqual(parseInt(r.value), 0);
-                augur.getMarketPriceHistory(market_id, outcome, function (logs) {
-                    assert.isArray(logs);
-                    assert.property(logs, "length");
-                    assert.isAbove(logs.length, 0);
-                    assert.property(logs[0], "price");
-                    assert.property(logs[0], "blockNumber");
-                    done();
-                });
-            },
-            onFailed: function (r) {
-                done(r);
-            }
-        });
-    });
+    if (!process.env.CONTINUOUS_INTEGRATION) {
 
-    it("[sync] getMarketPriceHistory(" + market_id + ")", function () {
-        this.timeout(constants.TIMEOUT);
-        var logs = augur.getMarketPriceHistory(market_id, outcome);
-        assert.isArray(logs);
-        assert.property(logs, "length");
-        assert.isAbove(logs.length, 0);
-        assert.property(logs[0], "price");
-        assert.property(logs[0], "blockNumber");
-    });
+        it("[async] getMarketPriceHistory(" + market_id + ")", function (done) {
+            this.timeout(constants.TIMEOUT*4);
+            augur.buyShares({
+                branchId: branch,
+                marketId: market_id,
+                outcome: outcome,
+                amount: amount,
+                onSent: function (r) {
+                    assert.property(r, "txHash");
+                    assert.property(r, "callReturn");
+                },
+                onSuccess: function (r) {
+                    assert.property(r, "txHash");
+                    assert.property(r, "callReturn");
+                    assert.property(r, "blockHash");
+                    assert.property(r, "blockNumber");
+                    assert.isAbove(parseInt(r.blockNumber), 0);
+                    assert.strictEqual(r.from, augur.coinbase);
+                    assert.strictEqual(r.to, augur.contracts.buyAndSellShares);
+                    assert.strictEqual(parseInt(r.value), 0);
+                    augur.getMarketPriceHistory(market_id, outcome, function (logs) {
+                        assert.isArray(logs);
+                        assert.property(logs, "length");
+                        assert.isAbove(logs.length, 0);
+                        assert.property(logs[0], "price");
+                        assert.property(logs[0], "blockNumber");
+                        done();
+                    });
+                },
+                onFailed: function (r) {
+                    done(r);
+                }
+            });
+        });
+
+        it("[sync] getMarketPriceHistory(" + market_id + ")", function () {
+            this.timeout(constants.TIMEOUT);
+            var logs = augur.getMarketPriceHistory(market_id, outcome);
+            assert.isArray(logs);
+            assert.property(logs, "length");
+            assert.isAbove(logs.length, 0);
+            assert.property(logs[0], "price");
+            assert.property(logs[0], "blockNumber");
+        });
+
+    }
 
 });
 
