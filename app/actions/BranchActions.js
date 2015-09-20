@@ -9,7 +9,9 @@ export default {
   loadBranches: function () {
     var self = this;
     augur.getBranches(function (branches) {
-      self.dispatch(constants.branch.LOAD_BRANCHES_SUCCESS, { branches: branches });
+      self.dispatch(constants.branch.LOAD_BRANCHES_SUCCESS, {
+        branches: branches
+      });
     });
   },
 
@@ -20,7 +22,8 @@ export default {
     console.log('using branch ' + branchId);
 
     augur.getPeriodLength(branchId, function (periodLength) {
-      var currentBranch = new Branch(branchId, Number(periodLength.toString()));
+      var currentBranch = new Branch(branchId, abi.number(periodLength));
+      // var currentBranch = new Branch(branchId, Number(periodLength.toString()));
 
       self.dispatch(constants.branch.SET_CURRENT_BRANCH_SUCCESS, currentBranch);
       self.flux.actions.branch.updateCurrentBranch();
@@ -36,7 +39,7 @@ export default {
 
     augur.getVotePeriod(currentBranch.id, function (result) {
       if (result && !result.error) {
-        var votePeriod = result.toNumber();
+        var votePeriod = abi.number(result);
         var isCurrent = votePeriod < (currentPeriod - 1) ? false : true;
 
         if (!isCurrent) {
@@ -65,21 +68,20 @@ export default {
 
     // check quorum if branch isn't current and we havn't already
     if (!currentBranch.isCurrent && !hasCheckedQuorum) {
-      ethereumClient.checkQuorum(
-        currentBranch.id,
-        function (result) {
-          // sent
+      augur.dispatch({
+        branchId: currentBranch.id,
+        onSent: function (r) {
           self.dispatch(constants.branch.CHECK_QUORUM_SENT);
         },
-        function (result) {
-          // success
+        onSuccess: function (r) {
+          console.log("augur.dispatch succeeded", r.callReturn);
           self.dispatch(constants.branch.CHECK_QUORUM_SUCCESS);
         },
-        function (result) {
-          // failed
+        onFailed: function (r) {
+          console.error("augur.dispatch failed:", r);
           self.dispatch(constants.branch.CHECK_QUORUM_SENT);
         }
-      );
+      });
     } else if (hasCheckedQuorum && currentBranch.isCurrent) {
       this.dispatch(constants.branch.CHECK_QUORUM_SUCCESS);
     }

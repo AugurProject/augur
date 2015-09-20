@@ -32,11 +32,16 @@ var CloseMarketModal = React.createClass({
   },
 
   onConfirm: function (event) {
-
-    this.state.ethereumClient.closeMarket(
-      this.props.params.marketId,
-      this.props.params.branchId
-    );
+    var marketId = abi.hex(this.props.params.marketId);
+    var branchId = abi.hex(this.props.params.branchId);
+    console.log("Closing market", marketId, "on branch", branchId);
+    augur.closeMarket({
+      branchId: branchId,
+      marketId: marketId,
+      onSent: function (txHash) { console.log("Close market sent:", txHash); },
+      onSuccess: function (res) { console.log("Close market succeeded:", res); },
+      onFailed: function (err) { console.log("Close market failed:", err); }
+    });
     this.props.onRequestHide();
   },
 

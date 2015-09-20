@@ -18,44 +18,51 @@ var ReportActions = {
    */
   loadEventsToReport: function() {
     var self = this;
-    var ethereumClient = this.flux.store('config').getEthereumClient();
-    var currentBranch = this.flux.store('branch').getState().currentBranch;
+    var branch = this.flux.store('branch').getState().currentBranch;
 
     // Only load events if the vote period indicated by the chain is the
     // previous period. (Otherwise, dispatch needs to be run, which will
     // move the events from their old periods to the current period. Those
     // events will get voted on in the next period.)
-    if (currentBranch &&
-        currentBranch.votePeriod === currentBranch.currentPeriod - 1)
-    {
-      var eventIds = ethereumClient.getEvents(currentBranch.votePeriod);
+    if (branch && branch.votePeriod === branch.currentPeriod - 1) {
+      augur.getEvents(branch.id, branch.votePeriod, function (eventIds) {
+        if (!eventIds || eventIds.error) {
+          return self.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {
+            eventsToReport: {}
+          });
+        }
+        eventIds = abi.bignum(eventIds);
 
-      // initialize all events
-      var eventsToReport = {};
-      _.each(eventIds, function (id) { eventsToReport[id] = { id: id }; });
-      this.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {
-        eventsToReport: eventsToReport
+        // initialize all events
+        var eventsToReport = {};
+        _.each(eventIds, function (id) { eventsToReport[id] = { id: id }; });
+        self.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {
+          eventsToReport: eventsToReport
+        });
+
+        _.each(eventIds, function (eventId) {
+          var eventToReport = { id: eventId };
+          augur.getDescription(eventId, function (description) {
+            if (description && !description.error) {
+              eventToReport['description'] = description;
+            }
+            augur.getEventInfo(eventId, function (eventInfo) {
+              if (eventInfo && !eventInfo.error) {
+                eventToReport['branchId'] = eventInfo[0];
+                eventToReport['expirationBlock'] = abi.bignum(eventInfo[1]);
+                eventToReport['outcome'] = abi.bignum(eventInfo[2]);
+                eventToReport['minValue'] = abi.bignum(eventInfo[3]);
+                eventToReport['maxValue'] = abi.bignum(eventInfo[4]);
+                eventToReport['numOutcomes'] = abi.bignum(eventInfo[5]);
+              }
+              self.dispatch(
+                constants.report.UPDATE_EVENT_TO_REPORT,
+                eventToReport
+              );
+            });
+          });
+        }, self);
       });
-
-      _.each(eventIds, function (eventId) {
-  
-        var eventToReport = { id: eventId };
-
-        augur.getDescription(eventId, function(description) {
-          eventToReport['description'] = description;
-          self.dispatch(constants.report.UPDATE_EVENT_TO_REPORT, eventToReport);
-        });
-
-        augur.getEventInfo(eventId, function (eventInfo) {
-          eventToReport['branchId'] = eventInfo[0];
-          eventToReport['expirationBlock'] = eventInfo[1];
-          eventToReport['outcome'] = eventInfo[2];
-          eventToReport['minValue'] = eventInfo[3];
-          eventToReport['maxValue'] = eventInfo[4];
-          eventToReport['numOutcomes'] = eventInfo[5];
-          self.dispatch(constants.report.UPDATE_EVENT_TO_REPORT, eventToReport);
-        });
-      }, this);
 
     } else {
 
@@ -120,16 +127,21 @@ var ReportActions = {
     let didSendReports = false;
 
     _.forEach(unsentReports, (report) => {
-      let periodLength = augur.getPeriodLength(report.branchId);
-      let reportingStartBlock = (report.votePeriod + 1) * periodLength;
-      let reportingCurrentBlock = currentBlock - reportingStartBlock;
-      let shouldSend = reportingCurrentBlock > (periodLength / 2);
+      if (report && report.branchId && report.votePeriod) {
+        augur.getPeriodLength(report.branchId, function (periodLength) {
+          periodLength = abi.number(periodLength);
 
-      if (shouldSend) {
-        console.log('Sending report for period', report.votePeriod);
-        this.flux.actions.report.submitReport(report);
-        report.reported = true;
-        didSendReports = true;
+          let reportingStartBlock = (report.votePeriod + 1) * periodLength;
+          let reportingCurrentBlock = currentBlock - reportingStartBlock;
+          let shouldSend = reportingCurrentBlock > (periodLength / 2);
+
+          if (shouldSend) {
+            console.log('Sending report for period', report.votePeriod);
+            this.flux.actions.report.submitReport(report);
+            report.reported = true;
+            didSendReports = true;
+          }
+        });
       }
     });
 

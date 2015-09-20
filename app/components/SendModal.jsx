@@ -35,7 +35,7 @@ var SendCashModal = React.createClass({
         to: this.state.destination,
         value: this.state.amount,
         onSent: function (result) {
-          console.log('sending '+amount+' cash to '+ destination);
+          console.log('sending', abi.string(amount), 'cash to', destination);
         },
         onSuccess: function (result) {
           console.log('cash sent successfully');

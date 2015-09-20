@@ -13,7 +13,7 @@ var AssetActions = {
 
       augur.getCashBalance(currentAccount, function (result) {
         if (result && !result.error) {
-          self.dispatch(constants.asset.UPDATE_ASSETS, { cash: result });
+          self.dispatch(constants.asset.UPDATE_ASSETS, { cash: abi.bignum(result) });
         }
       });
 
@@ -25,7 +25,7 @@ var AssetActions = {
 
       augur.getRepBalance(currentBranch.id, currentAccount, function (result) {
         if (result && !result.error) {
-          self.dispatch(constants.asset.UPDATE_ASSETS, { reputation: result });
+          self.dispatch(constants.asset.UPDATE_ASSETS, { reputation: abi.bignum(result) });
         }
       });
 

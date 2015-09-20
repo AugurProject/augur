@@ -1,4 +1,3 @@
-var Bignumber = require('bignumber.js');
 var constants = require('../libs/constants');
 var utilities = require('../libs/utilities');
 
@@ -92,7 +91,7 @@ var NetworkActions = {
     augur.rpc.gasPrice(function (gasPrice) {
       if (gasPrice && !gasPrice.error) {
         self.dispatch(constants.network.UPDATE_NETWORK, {
-          gasPrice: new Bignumber(gasPrice).toNumber()
+          gasPrice: abi.number(gasPrice)
         });
       }
     });
@@ -111,7 +110,7 @@ var NetworkActions = {
 
       if (blockNumber && !blockNumber.error) {
 
-        blockNumber = new Bignumber(blockNumber).toNumber();
+        blockNumber = abi.number(blockNumber);
         var blockMoment = utilities.blockToDate(blockNumber);
 
         self.dispatch(constants.network.UPDATE_NETWORK, {
@@ -120,7 +119,6 @@ var NetworkActions = {
         });
 
         augur.rpc.getBlock(blockNumber, true, function (block) {
-
           if (block && block.constructor === Object && !block.error) {
 
             var blockTimeStamp = block.timestamp;
@@ -139,7 +137,7 @@ var NetworkActions = {
 
       if (peerCount && !peerCount.error) {
         self.dispatch(constants.network.UPDATE_NETWORK, {
-          peerCount: new Bignumber(peerCount).toFixed()
+          peerCount: abi.string(peerCount)
         });
       }
     });
@@ -148,10 +146,14 @@ var NetworkActions = {
         networkState.blockChainAge < constants.MAX_BLOCKCHAIN_AGE)
     {
       augur.rpc.mining(function (mining) {
-        self.dispatch(constants.network.UPDATE_NETWORK, { mining: mining });
+        self.dispatch(constants.network.UPDATE_NETWORK, {
+          mining: mining
+        });
       });
       augur.rpc.hashrate(function (hashrate) {
-        self.dispatch(constants.network.UPDATE_NETWORK, { hashrate: new Bignumber(hashrate).toNumber() });
+        self.dispatch(constants.network.UPDATE_NETWORK, {
+          hashrate: abi.number(hashrate)
+        });
       });
     }
   }

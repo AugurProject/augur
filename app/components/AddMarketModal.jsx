@@ -162,16 +162,14 @@ var AddMarketModal = React.createClass({
       numOutcomes: 2,
       onSent: function (res) {
         if (res && res.txHash) {
-          console.log("new event submitted:", abi.bignum(res.txHash, "hex"));
+          console.log("new event submitted:", res.txHash);
         }
       },
       onSuccess: function (res) {
         if (res && res.callReturn && res.txHash) {
-          console.log("new event ID:", abi.bignum(res.callReturn, "hex"));
-          var events = abi.bignum(res.callReturn, "hex");
-          if (events.constructor !== Array) {
-            events = [events];
-          }
+          console.log("new event ID:", res.callReturn);
+          var events = res.callReturn;
+          if (events.constructor !== Array) events = [events];
           augur.createMarket({
             branchId: branchId,
             description: newMarketParams.description,
@@ -183,7 +181,7 @@ var AddMarketModal = React.createClass({
               console.log("new market submitted:", r.txHash);
             },
             onSuccess: function (r) {
-              console.log("new market ID:", abi.bignum(r.callReturn, "hex"));
+              console.log("new market ID:", r.callReturn);
               flux.actions.market.deleteMarket(pendingId);
             },
             onFailed: function (r) {

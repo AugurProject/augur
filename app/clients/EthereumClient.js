@@ -1,6 +1,4 @@
 var _ = require('lodash');
-var abi = require('augur-abi');
-var augurContracts = require('augur-contracts');
 var constants = require('../libs/constants');
 var utilities = require('../libs/utilities');
 var blacklist = require('../libs/blacklist');
@@ -143,94 +141,10 @@ EthereumClient.prototype.sendEther = function (destination, amount) {
         console.log(self.currentAccount, 'sent', amount, 'ether to', destination);
         console.log("txhash:", result.txHash);
       }
+    },
+    onFailed: function (result) {
+      utilities.error("sendEther failed:", result);
     }
-  });
-};
-
-EthereumClient.prototype.getEvents = function (period, branchId) {
-
-  if (!period) return;
-  branchId = branchId || this.defaultBranchId;
-
-  var validEvents = _.filter(augur.getEvents(branchId, period), function (eventId) {
-    return !_.contains(blacklist.events, eventId.toString(16));
-  });
-
-  return validEvents;
-};
-
-EthereumClient.prototype.checkQuorum = function (branchId, onSent, onSuccess, onFailed) {
-  if (!branchId) return;
-
-  augur.dispatch(branchId, function (result) {
-
-    if (result) {
-      if (result.callReturn) {
-        result.step = result.callReturn;
-        delete result.callReturn;
-      }
-      if (result && result.message && result.error) {
-        utilities.error(result.message);
-        if (typeof(result.txHash == 'Object')) {
-          console.error(result.txHash.message);
-        }
-      }
-      if (onSent) onSent(result.txHash);
-    }
-
-  }, function (result) {
-
-    if (result && result.callReturn) {
-      result.step = result.callReturn;
-      delete result.callReturn;
-    }
-    console.log('dispatch succeeded');
-    if (onSuccess) onSuccess();
-
-  }, function (error) {
-    utilities.error(error);
-    if (onFailed) onFailed(error);
-  });
-};
-
-EthereumClient.prototype.getMarkets = function (branchId, currentMarkets) {
-  branchId = branchId || this.defaultBranchId;
-  var validMarkets = _.filter(augur.getMarkets(branchId), function (marketId) {
-    return !_.contains(blacklist.markets[augur.network_id][branchId], marketId.toString(16));
-  }, this);
-
-  if (currentMarkets) {    // return new markets o
-    // convert ids to strings for comparision
-    validMarkets = _.map(validMarkets, function(marketId) { return marketId.toString() } );
-    currentMarkets = _.map(currentMarkets, function(marketId) { return marketId.toString() } );
-    var newMarkets = _.difference(validMarkets, currentMarkets);
-
-    return newMarkets;
-
-  } else {
-
-    return validMarkets;
-  }
-};
-
-EthereumClient.prototype.closeMarket = function (marketId, branchId) {
-  try {
-    marketId = abi.bignum(marketId).toFixed();
-  } catch (e) {
-    marketId = abi.prefix_hex(marketId);
-  }
-  try {
-    branchId = abi.bignum(branchId).toFixed();
-  } catch (e) {
-    branchId = abi.prefix_hex(branchId);
-  }
-  console.log("Closing market", marketId, "on branch", branchId);
-  augur.closeMarket({
-    branchId: branchId,
-    marketId: marketId,
-    onSent: function (txHash) { console.log("Close market sent:", txHash); },
-    onSuccess: function (res) { console.log("Close market succeeded:", res); },
-    onFailed: function (err) { console.log("Close market failed:", err); }
   });
 };
 
@@ -238,7 +152,7 @@ var getSimulationArgs = function (marketId, outcomeId, numShares, callback) {
   var wrappedCallback = function (result) {
     // Pass the callback the result with its values converted from fixed point
     // and assigned to keys.
-    callback({ cost: result[0], newPrice: result[1] });
+    callback({ cost: abi.bignum(result[0]), newPrice: abi.bignum(result[1]) });
   };
   return [ marketId, outcomeId, numShares, wrappedCallback ];
 };

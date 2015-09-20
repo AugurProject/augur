@@ -31,20 +31,19 @@ var Assets = React.createClass({
   },
 
   onCashFaucet: function (event) {
-
     if (!this.state.cashFaucetDisabled) {
-
+      var self = this;
       if (this.props.asset.ether.toNumber() < constants.MIN_ETHER_WARNING) {
         utilities.warn('not enough ether'); 
       }
-
-      var self = this;
       augur.cashFaucet(function (result) {
-        self.getFlux().actions.transaction.addTransaction({
-          hash: result.txHash, 
-          type: constants.transaction.CASH_FAUCET_TYPE, 
-          description: 'requesting cash'
-        });
+        if (result && !result.error) {
+          self.getFlux().actions.transaction.addTransaction({
+            hash: result.txHash, 
+            type: constants.transaction.CASH_FAUCET_TYPE, 
+            description: 'requesting cash'
+          });
+        }
       });
     }
   },
@@ -61,11 +60,13 @@ var Assets = React.createClass({
       var branchId = flux.store('branch').getCurrentBranch().id;
 
       augur.reputationFaucet(branchId, function (result) {
-        flux.actions.transaction.addTransaction({
-          hash: result.txHash, 
-          type: constants.transaction.REP_FAUCET_TYPE, 
-          description: 'requesting reputation'
-        });
+        if (result && !result.error) {
+          flux.actions.transaction.addTransaction({
+            hash: result.txHash,
+            type: constants.transaction.REP_FAUCET_TYPE, 
+            description: 'requesting reputation'
+          });
+        }
       });
     } 
   },
