@@ -76,7 +76,7 @@ module.exports = function (augur) {
             );
         },
 
-        register: function (handle, password, callback) {
+        register: function (handle, password, callback, donotfund) {
             var self = this;
             if (password && password.length > 5) {
                 db.get(handle, function (record) {
@@ -123,7 +123,7 @@ module.exports = function (augur) {
                                             nonce: 0
                                         };
 
-                                        self.fund(self.account, callback);
+                                        if (!donotfund) self.fund(self.account, callback);
 
                                     }); // db.put
 

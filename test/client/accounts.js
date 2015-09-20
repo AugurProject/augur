@@ -29,6 +29,7 @@ var password2 = utils.sha256(Math.random().toString(36).substring(4)).slice(10);
 
 var markets = augur.getMarkets(augur.branches.dev);
 var market_id = markets[markets.length - 1];
+var donotfund = process.env.CONTINUOUS_INTEGRATION;
 
 describe("Register", function () {
 
@@ -81,7 +82,7 @@ describe("Register", function () {
                     );
                     augur.web.logout();
                     done();
-                });
+                }, donotfund);
             });
         });
     });
@@ -136,7 +137,7 @@ describe("Register", function () {
                     augur.web.logout();
                     done();
                 });
-            });
+            }, donotfund);
         });
     });
 
@@ -151,7 +152,7 @@ describe("Register", function () {
                 assert.isNotNull(record);
                 done();
             });
-        });
+        }, donotfund);
     });
 
     it("fail to register account 2's handle again", function (done) {
@@ -165,7 +166,7 @@ describe("Register", function () {
                 assert.isNotNull(record);
                 done();
             });
-        });
+        }, donotfund);
     });
 
 });
