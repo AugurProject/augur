@@ -99,7 +99,6 @@ var Overview = React.createClass({
   },
 
   getTradeFunction: function (shares) {
-    var client = this.getFlux().store('config').getEthereumClient();
     return (shares < 0) ? augur.sellShares : augur.buyShares;
   },
 
@@ -237,7 +236,7 @@ var TradeBase = {
   handleChange: function () {
 
     var self = this;
-    var rawValue = this.refs.input.getValue()
+    var rawValue = this.refs.input.getValue();
     var numShares = parseFloat(rawValue);
 
     this.setState({ value: rawValue });
@@ -260,9 +259,9 @@ var TradeBase = {
           resolve
         );
       }).then((simulation) => {
-        self.setState({
-          simulation: simulation
-        });
+        simulation.cost = abi.bignum(simulation.cost);
+        simulation.newPrice = abi.bignum(simulation.newPrice);
+        self.setState({ simulation: simulation });
       });
     }
   },
