@@ -287,7 +287,7 @@ describe("Price history", function () {
                 assert.property(priceHistory[market_id][outcome][0], "price");
                 assert.property(priceHistory[market_id][outcome][0], "cost");
                 assert.property(priceHistory[market_id][outcome][0], "blockNumber");
-            |
+            }
             done();
         });
     });
