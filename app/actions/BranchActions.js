@@ -74,11 +74,11 @@ export default {
           self.dispatch(constants.branch.CHECK_QUORUM_SENT);
         },
         onSuccess: function (r) {
-          console.log("augur.dispatch succeeded", r.callReturn);
+          // console.log("augur.dispatch succeeded", r.callReturn);
           self.dispatch(constants.branch.CHECK_QUORUM_SUCCESS);
         },
         onFailed: function (r) {
-          console.error("augur.dispatch failed:", r);
+          // console.error("augur.dispatch failed:", r);
           self.dispatch(constants.branch.CHECK_QUORUM_SENT);
         }
       });

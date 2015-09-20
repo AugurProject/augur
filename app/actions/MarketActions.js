@@ -249,7 +249,7 @@ var MarketActions = {
     });
   },
 
-  loadMarket: function (marketId) {
+  loadMarket: function (marketId) {  
     this.flux.actions.market.loadSomeMarkets([marketId]);
   },
 

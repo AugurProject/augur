@@ -1,4 +1,3 @@
-var BigNumber = require('bignumber.js');
 var constants = require('../libs/constants');
 var utilities = require('../libs/utilities');
 var EthereumClient = require('../clients/EthereumClient');
@@ -62,75 +61,89 @@ var ConfigActions = {
     this.flux.actions.report.loadPendingReports();
     this.dispatch(constants.config.LOAD_APPLICATION_DATA_SUCCESS);
 
-    // if we're on a hosted node, update via push notification
-    // if (!augur.rpc.nodes.local) {
-    // pubsub yayayayay
+    // set up filters to watch the blockchain
+    augur.filters.listen({
 
-    // if we're on a local node, set up filters
-    // } else {
-      augur.filters.listen({
+      // listen for new blocks
+      block: function (blockHash) {
+        var account = self.flux.store('config').getAccount();
+        if (account && blockHash) {
+          self.flux.actions.network.updateNetwork();
+          self.flux.actions.asset.updateAssets();
 
-        // listen for new blocks
-        block: function (blockHash) {
-          var account = self.flux.store('config').getAccount();
-          if (account && blockHash) {
-            self.flux.actions.network.updateNetwork();
-            self.flux.actions.asset.updateAssets();
+          // TODO: We can skip loading events to report
+          // if the voting period hasn't changed.
+          self.flux.actions.report.loadEventsToReport();
+          self.flux.actions.branch.checkQuorum();
+          self.flux.actions.report.submitQualifiedReports();
 
-            // TODO: We can skip loading events to report
-            // if the voting period hasn't changed.
-            self.flux.actions.report.loadEventsToReport();
-            self.flux.actions.branch.checkQuorum();
-            self.flux.actions.report.submitQualifiedReports();
+          self.flux.actions.branch.updateCurrentBranch();
+        }
+      },
 
-            self.flux.actions.branch.updateCurrentBranch();
+      // listen for augur transactions
+      contracts: function (filtrate) {
+        if (filtrate) {
+          if (filtrate.error) {
+            return console.log("contracts filter error:", filtrate);
           }
-        },
+          console.log("[filter] contracts:", filtrate.address);
 
-        // listen for augur transactions
-        contracts: function (filtrate) {
-          if (filtrate) {
-            if (filtrate.error) {
-              return console.log("contracts filter error:", filtrate);
-            }
-            console.log("[filter] contracts:", filtrate.address);
+          self.flux.actions.asset.updateAssets();
 
-            self.flux.actions.asset.updateAssets();
-
-            if (self.flux.store("config").getState().useMarketCache) {
-              setTimeout(self.flux.actions.market.loadMarkets, 3000);
-            } else {
-              self.flux.actions.market.loadNewMarkets();
-            }
-          }
-        },
-
-        // update market when a price change has been detected
-        price: function (result) {
-          if (result && result.marketId) {
-            console.log("[filter] updatePrice:", result.marketId);
-            self.flux.actions.asset.updateAssets();
-            if (self.flux.store("config").getState().useMarketCache) {
-              setTimeout(self.flux.actions.market.loadMarkets, 3000);
-            } else {
-              self.flux.actions.market.loadMarket(new BigNumber(result.marketId));
-            }
-          }
-        },
-
-        // listen for new markets
-        creation: function (result) {
-          if (result && result.marketId) {
-            console.log("[filter] creationBlock:", result.blockNumber);
-            if (self.flux.store("config").getState().useMarketCache) {
-              setTimeout(self.flux.actions.market.loadMarkets, 3000);
-            } else {
-              self.flux.actions.market.loadMarket(new BigNumber(result.marketId));
-            }
+          if (self.flux.store("config").getState().useMarketCache) {
+            setTimeout(self.flux.actions.market.loadMarkets, 5000);
+          } else {
+            self.flux.actions.market.loadNewMarkets();
           }
         }
-      });
-    // }
+      },
+
+      // update market when a price change has been detected
+      price: function (result) {
+        if (result && result.marketId) {
+          console.log("[filter] updatePrice:", result.marketId);
+          var checks = 0;
+          var marketId = abi.bignum(result.marketId);
+          var getMarket = self.flux.store("market").getMarket;
+          var outcomeIdx = result.outcome - 1;
+          var oldPrice = getMarket(marketId).outcomes[outcomeIdx].price;
+          self.flux.actions.asset.updateAssets();
+          if (self.flux.store("config").getState().useMarketCache) {
+            (function checkMarketCache() {
+              self.flux.actions.market.loadMarketsFromMarketeer();
+              if (getMarket(marketId).outcomes[outcomeIdx].price.eq(oldPrice)) {
+                if (++checks < 10) return setTimeout(checkMarketCache, 2500);
+                self.flux.actions.market.loadMarket(marketId);
+              }
+            })();
+          } else {
+            self.flux.actions.market.loadMarket(marketId);
+          }
+        }
+      },
+
+      // listen for new markets
+      creation: function (result) {
+        console.log("creationBlock:", result);
+        if (result && result.marketId) {
+          console.log("[filter] creationBlock:", result.blockNumber);
+          var checks = 0;
+          var marketId = abi.bignum(result.marketId);
+          if (self.flux.store("config").getState().useMarketCache) {
+            (function checkMarketCache() {
+              self.flux.actions.market.loadMarketsFromMarketeer();
+              if (!self.flux.store("market").getMarket(marketId)) {
+                if (++checks < 10) return setTimeout(checkMarketCache, 2500);
+                self.flux.actions.market.loadMarket(marketId);
+              }
+            })();
+          } else {
+            self.flux.actions.market.loadMarket(marketId);
+          }
+        }
+      }
+    });
   },
 
   initializeState: function() {
