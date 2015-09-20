@@ -171,6 +171,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                             if (data.error) {
                                 done(data);
                             } else {
+                                clearInterval(listeners[listeners.length - 1]);
                                 augur.filters.clear_price_filter(function () {
                                     assert.isObject(data);
                                     assert.property(data, "user");
