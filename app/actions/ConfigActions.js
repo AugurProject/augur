@@ -13,10 +13,10 @@ var ConfigActions = {
     var useMarketCache = false;
 
     // TODO: use a better trigger for local v. hosted than a regex
-    // if (host && !host.match(/localhost/) && !host.match(/127.0.0.1/)) {
+    if (host && !host.match(/localhost/) && !host.match(/127.0.0.1/)) {
       useMarketCache = true;
       isHosted = true;
-    // }
+    }
 
     // FIXME: If we can, we should make defaultBranchId unnecessary. We should
     // always know which branch we're acting on in the client, and pass it to
