@@ -82,8 +82,8 @@ describe("Register", function () {
                     );
                     augur.web.logout();
                     done();
-                }, donotfund);
-            });
+                });
+            }, donotfund);
         });
     });
 

@@ -55026,6 +55026,7 @@ module.exports = function (augur) {
 
         // free (testnet) ether for new accounts on registration
         fund: function (account, callback, onConfirm) {
+            console.log("lolfunding");
             var count = 0;
             augur.rpc.sendEther(
                 account.address,
@@ -55120,7 +55121,9 @@ module.exports = function (augur) {
                                             nonce: 0
                                         };
 
-                                        if (!donotfund) self.fund(self.account, callback);
+                                        if (donotfund) return callback(self.account);
+
+                                        self.fund(self.account, callback);
 
                                     }); // db.put
 

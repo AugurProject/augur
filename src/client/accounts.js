@@ -123,7 +123,9 @@ module.exports = function (augur) {
                                             nonce: 0
                                         };
 
-                                        if (!donotfund) self.fund(self.account, callback);
+                                        if (donotfund) return callback(self.account);
+
+                                        self.fund(self.account, callback);
 
                                     }); // db.put
 
