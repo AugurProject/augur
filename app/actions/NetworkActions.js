@@ -91,7 +91,7 @@ var NetworkActions = {
     augur.rpc.gasPrice(function (gasPrice) {
       if (gasPrice && !gasPrice.error) {
         self.dispatch(constants.network.UPDATE_NETWORK, {
-          gasPrice: abi.number(gasPrice)
+          gasPrice: utilities.formatEther(gasPrice)
         });
       }
     });

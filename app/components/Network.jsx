@@ -6,15 +6,13 @@ var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 var utilities = require('../libs/utilities');
 
 var Network = React.createClass({
-  mixins: [FluxMixin, StoreWatchMixin('asset', 'config', 'network')],
+  mixins: [FluxMixin, StoreWatchMixin('config', 'network')],
 
   getStateFromFlux: function () {
     var flux = this.getFlux();
-    var networkState = flux.store('network').getState();
 
     return {
-      assets: flux.store('asset').getState(),
-      network: networkState,
+      network: flux.store('network').getState(),
       host: flux.store('config').getState().host
     }
   },
@@ -22,8 +20,8 @@ var Network = React.createClass({
   render: function () {
 
     var formattedGasPrice = '-';
-    if (this.state.assets.ether) {
-      formattedGasPrice = utilities.formatEther(this.state.network.gasPrice).value + ' ' +  utilities.formatEther(this.state.network.gasPrice).unit;
+    if (this.state.network.gasPrice) {
+      formattedGasPrice = this.state.network.gasPrice.value + ' ' +  this.state.network.gasPrice.unit;
     }
     var formattedBlockTime = '-';
     if (this.state.network.blocktime) {

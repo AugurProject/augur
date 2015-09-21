@@ -49,9 +49,9 @@ module.exports = {
     var value = abi.bignum(wei).dividedBy(augur.constants.ETHER);
     var unit = 'ether';
     return {
-      value: +value.toFixed(4),
+      value: +value.toPrecision(8),
       unit: unit,
-      withUnit: value.toNumber() + ' ' + unit
+      withUnit: value.toPrecision(8) + ' ' + unit
     };
   },
 
