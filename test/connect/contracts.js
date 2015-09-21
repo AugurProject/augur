@@ -7,6 +7,7 @@
 
 var assert = require("chai").assert;
 var rpc = require("ethrpc");
+rpc.reset();
 var contracts = require("augur-contracts")[rpc.version()];
 var log = console.log;
 
