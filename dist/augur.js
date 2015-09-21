@@ -55026,7 +55026,6 @@ module.exports = function (augur) {
 
         // free (testnet) ether for new accounts on registration
         fund: function (account, callback, onConfirm) {
-            console.log("lolfunding");
             var count = 0;
             augur.rpc.sendEther(
                 account.address,
@@ -59063,6 +59062,9 @@ module.exports = {
         var gospel, contracts, defaulthost;
         if (NODE_JS && !process.env.CONTINUOUS_INTEGRATION) {
             defaulthost = "http://127.0.0.1:8545";
+        }
+        if (process.env.CONTINUOUS_INTEGRATION) {
+            augur.constants.TIMEOUT = 131072;
         }
         if (NODE_JS && args &&
             (args.indexOf("--gospel") > -1 || args.indexOf("--reset") > -1))

@@ -131,6 +131,9 @@ module.exports = {
         if (NODE_JS && !process.env.CONTINUOUS_INTEGRATION) {
             defaulthost = "http://127.0.0.1:8545";
         }
+        if (process.env.CONTINUOUS_INTEGRATION) {
+            augur.constants.TIMEOUT = 131072;
+        }
         if (NODE_JS && args &&
             (args.indexOf("--gospel") > -1 || args.indexOf("--reset") > -1))
         {
