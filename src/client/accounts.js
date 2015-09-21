@@ -242,7 +242,7 @@ module.exports = function (augur) {
                         data_abi = abi.encode(tx);
 
                         // package up the transaction and submit it to the network
-                        packaged = new ethTx({
+                        packaged = {
                             to: tx.to,
                             from: this.account.address,
                             gasPrice: (tx.gasPrice) ? tx.gasPrice : augur.rpc.gasPrice(),
@@ -250,28 +250,69 @@ module.exports = function (augur) {
                             nonce: this.account.nonce,
                             value: tx.value || "0x0",
                             data: data_abi
-                        });
+                        };
 
-                        // sign, validate, and send the transaction
-                        packaged.sign(this.account.privateKey);
-                        if (packaged.validate()) {
-
-                            return augur.rpc.sendRawTx(
-                                packaged.serialize().toString("hex"),
-                                function (r) {
-
-                                    // increment nonce and write to database
-                                    db.get(self.account.handle, function (stored) {
-                                        stored.nonce = ++self.account.nonce;
-                                        db.put(self.account.handle, stored);
-                                    });
-
-                                    if (callback) callback(r);
+                        // set the nonce using this address's transaction count
+                        if (utils.is_function(callback)) {
+                            augur.rpc.getTransactionCount(this.account.address, function (txCount) {
+                                if (txCount !== undefined && txCount !== null && !txCount.error) {
+                                    packaged.nonce = parseInt(txCount);
+                                    self.account.nonce = packaged.nonce;
                                 }
-                            );
+                                packaged = new ethTx(packaged);
 
-                        // transaction validation failed
+                                // sign, validate, and send the transaction
+                                packaged.sign(self.account.privateKey);
+
+                                // transaction validation ok
+                                if (packaged.validate()) {
+                                    return augur.rpc.sendRawTx(
+                                        packaged.serialize().toString("hex"),
+                                        function (txhash) {
+
+                                            // increment nonce and write to database
+                                            db.get(self.account.handle, function (stored) {
+                                                stored.nonce = ++self.account.nonce;
+                                                db.put(self.account.handle, stored);
+                                            });
+
+                                            callback(txhash);
+                                        }
+                                    );
+                                }
+
+                                // transaction validation failed
+                                callback(errors.TRANSACTION_INVALID);
+                            });
+
                         } else {
+                            var txCount = augur.rpc.getTransactionCount(this.account.address);
+                            if (txCount !== undefined && txCount !== null) {
+                                packaged.nonce = parseInt(txCount);
+                                this.account.nonce = packaged.nonce;
+                            }
+                            packaged = new ethTx(packaged);
+
+                            // sign, validate, and send the transaction
+                            packaged.sign(this.account.privateKey);
+
+                            // transaction validation ok
+                            if (packaged.validate()) {
+
+                                // hex serialize the signed transaction
+                                var serialized = packaged.serialize().toString("hex");
+                                var txhash = augur.rpc.sendRawTx(serialized);
+
+                                // increment nonce and write to database
+                                db.get(self.account.handle, function (stored) {
+                                    stored.nonce = ++self.account.nonce;
+                                    db.put(self.account.handle, stored);
+                                });
+
+                                return txhash;
+                            }
+
+                            // transaction validation failed
                             return errors.TRANSACTION_INVALID;
                         }
                     } else {

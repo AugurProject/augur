@@ -34,8 +34,7 @@ module.exports = {
 
     get: function (handle, callback) {
         try {
-            if (handle !== null && handle !== undefined &&
-                handle !== '' && utils.is_function(callback)) {
+            if (handle && handle !== '' && utils.is_function(callback)) {
                 var ref = new Firebase(constants.FIREBASE_URL + "/" + this.encode(handle));
                 ref.once("value", function (data) {
                     callback(data.val());
