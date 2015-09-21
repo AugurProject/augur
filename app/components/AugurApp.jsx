@@ -32,7 +32,7 @@ var EtherWarningModal = require('./EtherWarningModal');
 
 var AugurApp = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin('branch', 'asset', 'network', 'config', 'report')],
+  mixins: [FluxMixin, StoreWatchMixin('branch', 'asset', 'network', 'config', 'report', 'market')],
 
   getInitialState: function () {
     return {

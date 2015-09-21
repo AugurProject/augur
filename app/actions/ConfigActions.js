@@ -111,7 +111,7 @@ var ConfigActions = {
           self.flux.actions.asset.updateAssets();
           if (self.flux.store("config").getState().useMarketCache) {
             (function checkMarketCache() {
-              self.flux.actions.market.loadMarketsFromMarketeer();
+              self.flux.actions.market.loadMarketCache();
               if (getMarket(marketId).outcomes[outcomeIdx].price.eq(oldPrice)) {
                 if (++checks < 10) return setTimeout(checkMarketCache, 2500);
                 self.flux.actions.market.loadMarket(marketId);
@@ -132,7 +132,7 @@ var ConfigActions = {
           var marketId = abi.bignum(result.marketId);
           if (self.flux.store("config").getState().useMarketCache) {
             (function checkMarketCache() {
-              self.flux.actions.market.loadMarketsFromMarketeer();
+              self.flux.actions.market.loadMarketCache();
               if (!self.flux.store("market").getMarket(marketId)) {
                 if (++checks < 10) return setTimeout(checkMarketCache, 2500);
                 self.flux.actions.market.loadMarket(marketId);

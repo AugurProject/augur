@@ -55,6 +55,7 @@ module.exports = {
     CHECK_QUORUM_SUCCESS: null
   }),
   market: keyMirror({
+    GOT_CACHED_MARKETS: null,
     LOAD_MARKETS_SUCCESS: null,
     UPDATE_MARKETS_SUCCESS: null,
     UPDATE_MARKET_SUCCESS: null,

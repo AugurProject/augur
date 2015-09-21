@@ -30,6 +30,7 @@
     ]
   },
   "dependencies": {
+    "async": "^1.4.2",
     "augur-abi": "AugurProject/augur-abi",
     "augur-contracts": "AugurProject/augur-contracts",
     "augur.js": "AugurProject/augur.js",
