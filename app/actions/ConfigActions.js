@@ -192,7 +192,7 @@ var ConfigActions = {
         self.flux.actions.report.loadEventsToReport();
         self.flux.actions.report.loadPendingReports();
         if (self.flux.store("config").getState().useMarketCache) {
-          self.flux.actions.market.loadMarkets();
+          self.flux.actions.market.loadMarketCache();
         }
       }
     });
