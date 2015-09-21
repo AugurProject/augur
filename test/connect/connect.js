@@ -67,13 +67,6 @@ describe("augur.connect", function () {
             }
         );
 
-    } else {
-        it("should connect successfully with no argument provided", function () {
-            this.timeout(constants.TIMEOUT);
-            var augur = utils.reset(augurpath);
-            assert(augur.connect());
-            assert.strictEqual(augur.coinbase, augur.demo);
-        });
     }
 
     if (!process.env.CONTINUOUS_INTEGRATION) {
@@ -184,7 +177,6 @@ describe("augur.connect", function () {
                augur.network_id === "1" ||
                augur.network_id === "10101" ||
                augur.network_id === "7");
-        // augur.connect();
     });
 
     if (!process.env.CONTINUOUS_INTEGRATION) {
