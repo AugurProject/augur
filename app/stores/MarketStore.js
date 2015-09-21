@@ -6,8 +6,7 @@ var state = {
   markets: {},
   pendingMarkets: {},
   marketLoadingIds: null,
-  loadingPage: null,
-  cachedMarkets: []
+  loadingPage: null
 };
 
 var MarketStore = Fluxxor.createStore({
@@ -26,7 +25,6 @@ var MarketStore = Fluxxor.createStore({
   },
 
   handleGotCachedMarkets: function (payload) {
-    state.cachedMarkets = payload.cachedMarkets;
     this.emit(constants.CHANGE_EVENT);
   },
 

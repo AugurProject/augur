@@ -106,7 +106,7 @@ var Overview = React.createClass({
     var self = this;
     this.getTradeFunction(relativeShares).call(augur, {
       branchId: self.props.market.branchId,
-      marketId: self.props.market.id.toString(16),
+      marketId: abi.hex(self.props.market.id),
       outcome: self.props.outcome.id,
       amount: Math.abs(relativeShares),
       nonce: null,
@@ -234,32 +234,26 @@ var TradeBase = {
   },
 
   handleChange: function () {
-
     var self = this;
     var rawValue = this.refs.input.getValue();
-    var numShares = parseFloat(rawValue);
+    var numShares = abi.number(rawValue);
 
     this.setState({ value: rawValue });
-
     this.setState({ inputError: null });
 
     if (numShares === '') {
-
       this.setState({
         simulation: null
       });
-
     } else {
-
       new Promise((resolve, reject) => {
         self.getSimulationFunction()(
-          self.props.market.id.toString(16),
+          abi.hex(self.props.market.id),
           self.props.outcome.id,
           numShares,
           resolve
         );
       }).then((simulation) => {
-        console.log(simulation);
         simulation.cost = abi.bignum(simulation.cost);
         simulation.newPrice = abi.bignum(simulation.newPrice);
         self.setState({ simulation: simulation });
@@ -327,11 +321,16 @@ var Buy = React.createClass(_.merge({
   actionLabel: 'Buy',
 
   getHelpText: function () {
-
+    var cost;
+    if (this.state.simulation && this.state.simulation.cost) {
+      cost = this.state.simulation.cost.toFixed(3);
+    } else {
+      cost = "error :(";
+    }
     if (this.state.inputError) {
       return ( this.state.inputError );
     } else if (this.state.simulation) {
-      return ( 'Cost: ' + this.state.simulation.cost.toFixed(3) );
+      return ( 'Cost: ' + cost );
     } else {
       return '';
     }
