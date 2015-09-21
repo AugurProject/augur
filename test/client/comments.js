@@ -38,49 +38,53 @@ describe("Comments (whisper)", function () {
         assert.isTrue(augur.comments.resetComments(market));
     });
 
-    it("should add a comment to market " + market, function () {
-        this.timeout(constants.TIMEOUT);
-        augur.comments.initComments(market);
-        pkg.message = Math.random().toString(36).substring(4);
-        var updated_comments = augur.comments.addMarketComment(pkg);
-        assert(updated_comments);
-        assert.strictEqual(updated_comments.constructor, Array);
-        assert.strictEqual(updated_comments.length, 1);
-        assert(!updated_comments.error);
-    });
+    if (!process.env.CONTINUOUS_INTEGRATION) {
 
-    it("should add another comment to market " + market, function () {
-        this.timeout(constants.TIMEOUT);
-        pkg.message = Math.random().toString(36).substring(4);
-        var updated_comments = augur.comments.addMarketComment(pkg);
-        assert(updated_comments);
-        assert.strictEqual(updated_comments.constructor, Array);
-        assert.strictEqual(updated_comments.length, 2);
-        assert(!updated_comments.error);
-    });
+        it("should add a comment to market " + market, function () {
+            this.timeout(constants.TIMEOUT);
+            augur.comments.initComments(market);
+            pkg.message = Math.random().toString(36).substring(4);
+            var updated_comments = augur.comments.addMarketComment(pkg);
+            assert(updated_comments);
+            assert.strictEqual(updated_comments.constructor, Array);
+            assert.strictEqual(updated_comments.length, 1);
+            assert(!updated_comments.error);
+        });
 
-    it("should get the two comments for market " + market, function () {
-        this.timeout(constants.TIMEOUT);
-        var comments = augur.comments.getMarketComments(market);
-        assert.isArray(comments);
-        assert.strictEqual(comments.length, 2);
-    });
+        it("should add another comment to market " + market, function () {
+            this.timeout(constants.TIMEOUT);
+            pkg.message = Math.random().toString(36).substring(4);
+            var updated_comments = augur.comments.addMarketComment(pkg);
+            assert(updated_comments);
+            assert.strictEqual(updated_comments.constructor, Array);
+            assert.strictEqual(updated_comments.length, 2);
+            assert(!updated_comments.error);
+        });
 
-    it("should add a third comment to market " + market, function () {
-        this.timeout(constants.TIMEOUT);
-        pkg.message = Math.random().toString(36).substring(4);
-        var updated_comments = augur.comments.addMarketComment(pkg);
-        assert(updated_comments);
-        assert.strictEqual(updated_comments.constructor, Array);
-        assert.strictEqual(updated_comments.length, 3);
-        assert(!updated_comments.error);
-    });
+        it("should get the two comments for market " + market, function () {
+            this.timeout(constants.TIMEOUT);
+            var comments = augur.comments.getMarketComments(market);
+            assert.isArray(comments);
+            assert.strictEqual(comments.length, 2);
+        });
 
-    it("should reset comments for market " + market, function () {
-        this.timeout(constants.TIMEOUT);
-        assert(augur.comments.resetComments(market));
-        assert(!augur.comments.getMarketComments(market));
-    });
+        it("should add a third comment to market " + market, function () {
+            this.timeout(constants.TIMEOUT);
+            pkg.message = Math.random().toString(36).substring(4);
+            var updated_comments = augur.comments.addMarketComment(pkg);
+            assert(updated_comments);
+            assert.strictEqual(updated_comments.constructor, Array);
+            assert.strictEqual(updated_comments.length, 3);
+            assert(!updated_comments.error);
+        });
+
+        it("should reset comments for market " + market, function () {
+            this.timeout(constants.TIMEOUT);
+            assert(augur.comments.resetComments(market));
+            assert(!augur.comments.getMarketComments(market));
+        });
+
+    }
 
     it("should uninstall filter " + filter, function () {
         this.timeout(constants.TIMEOUT);

@@ -70,21 +70,27 @@ describe("Database", function () {
         }];
 
         it("save comment", function (done) {
+            this.timeout(constants.TIMEOUT);
             db.leveldb.put(augur.rpc, market, comment, "comments");
             done();
         });
 
-        it("retrieve comment", function (done) {
-            db.leveldb.get(augur.rpc, market, "comments", function (retrieved_comment) {
-                assert.isArray(retrieved_comment);
-                assert.strictEqual(retrieved_comment.length, 1);
-                assert.strictEqual(comment[0].whisperId, retrieved_comment[0].whisperId);
-                assert.strictEqual(comment[0].from, retrieved_comment[0].from);
-                assert.strictEqual(comment[0].comment, retrieved_comment[0].comment);
-                assert.strictEqual(comment[0].time, retrieved_comment[0].time);
-                done();
+        if (!process.env.CONTINUOUS_INTEGRATION) {
+
+            it("retrieve comment", function (done) {
+                db.leveldb.get(augur.rpc, market, "comments", function (retrieved_comment) {
+                    this.timeout(constants.TIMEOUT);
+                    assert.isArray(retrieved_comment);
+                    assert.strictEqual(retrieved_comment.length, 1);
+                    assert.strictEqual(comment[0].whisperId, retrieved_comment[0].whisperId);
+                    assert.strictEqual(comment[0].from, retrieved_comment[0].from);
+                    assert.strictEqual(comment[0].comment, retrieved_comment[0].comment);
+                    assert.strictEqual(comment[0].time, retrieved_comment[0].time);
+                    done();
+                });
             });
-        });
+
+        }
 
     });
 });
