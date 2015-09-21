@@ -78,6 +78,7 @@ var MarketActions = {
       self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, { markets: markets });
 
       // loading complete!
+      self.dispatch(constants.market.MARKETS_LOADING, { loadingPage: null });
       self.flux.actions.config.updatePercentLoaded(100);
     });
   },
@@ -96,7 +97,6 @@ var MarketActions = {
       }
       if (pulse) clearTimeout(pulse);
       got = true;
-      self.dispatch(constants.market.MARKETS_LOADING, { loadingPage: 1 });
       self.dispatch(constants.market.GOT_CACHED_MARKETS, { cachedMarkets: cached });
       self.flux.actions.config.updatePercentLoaded(20);
       setTimeout(function () { self.flux.actions.market.parseCache(cached); }, 0);
