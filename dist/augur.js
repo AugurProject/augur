@@ -197,9 +197,7 @@ module.exports = {
                             if (this.is_hex(n)) {
                                 bn = new BigNumber(n, 16);
                             } else {
-                                console.log("Couldn't convert Number", n.toString(), "to BigNumber");
-                                console.error(exc);
-                                console.log(exc.stack);
+                                // console.log("Couldn't convert Number", n.toString(), "to BigNumber");
                                 return n;
                             }
                         }
@@ -212,9 +210,7 @@ module.exports = {
                         if (this.is_hex(n)) {
                             bn = new BigNumber(n, 16);
                         } else {
-                            console.log("Couldn't convert String", n.toString(), "to BigNumber");
-                            console.error(exc);
-                            console.log(exc.stack);
+                            // console.log("Couldn't convert String", n.toString(), "to BigNumber");
                             return n;
                         }
                     }
@@ -233,11 +229,7 @@ module.exports = {
                         try {
                             bn = new BigNumber(n, 16);
                         } catch (exc) {
-                            console.log("Couldn't convert", n.toString(), "to BigNumber");
-                            console.error(ex);
-                            console.error(exc);
-                            console.log(ex.stack);
-                            console.log(exc.stack);
+                            // console.log("Couldn't convert", n.toString(), "to BigNumber");
                             return n;
                         }
                     }
@@ -55180,7 +55172,13 @@ module.exports = function (augur) {
                                             nonce: storedInfo.nonce
                                         };
 
-                                        if (callback) callback(self.account);
+                                        // set the nonce using this address's transaction count
+                                        augur.rpc.txCount(self.account.address, function (txCount) {
+                                            if (txCount && !txCount.error) {
+                                                self.account.nonce = parseInt(txCount);
+                                            }
+                                            if (callback) callback(self.account);
+                                        });
                                     
                                     // decryption failure: bad password
                                     } catch (e) {
@@ -55239,7 +55237,7 @@ module.exports = function (augur) {
                         data_abi = abi.encode(tx);
 
                         // package up the transaction and submit it to the network
-                        packaged = {
+                        packaged = new ethTx({
                             to: tx.to,
                             from: this.account.address,
                             gasPrice: (tx.gasPrice) ? tx.gasPrice : augur.rpc.gasPrice(),
@@ -55247,71 +55245,34 @@ module.exports = function (augur) {
                             nonce: this.account.nonce,
                             value: tx.value || "0x0",
                             data: data_abi
-                        };
+                        });
 
-                        // set the nonce using this address's transaction count
-                        if (utils.is_function(callback)) {
-                            augur.rpc.getTransactionCount(this.account.address, function (txCount) {
-                                if (txCount !== undefined && txCount !== null && !txCount.error) {
-                                    packaged.nonce = parseInt(txCount);
-                                    self.account.nonce = packaged.nonce;
+                        // sign, validate, and send the transaction
+                        packaged.sign(this.account.privateKey);
+
+                        // transaction validation ok
+                        if (packaged.validate()) {
+                            return augur.rpc.sendRawTx(
+                                packaged.serialize().toString("hex"),
+                                function (txhash) {
+
+                                    // increment nonce and write to database
+                                    db.get(self.account.handle, function (stored) {
+                                        stored.nonce = ++self.account.nonce;
+                                        db.put(self.account.handle, stored);
+                                    });
+
+                                    if (callback) callback(txhash);
                                 }
-                                packaged = new ethTx(packaged);
+                            );
+                        }
 
-                                // sign, validate, and send the transaction
-                                packaged.sign(self.account.privateKey);
-
-                                // transaction validation ok
-                                if (packaged.validate()) {
-                                    return augur.rpc.sendRawTx(
-                                        packaged.serialize().toString("hex"),
-                                        function (txhash) {
-
-                                            // increment nonce and write to database
-                                            db.get(self.account.handle, function (stored) {
-                                                stored.nonce = ++self.account.nonce;
-                                                db.put(self.account.handle, stored);
-                                            });
-
-                                            callback(txhash);
-                                        }
-                                    );
-                                }
-
-                                // transaction validation failed
-                                callback(errors.TRANSACTION_INVALID);
-                            });
-
-                        } else {
-                            var txCount = augur.rpc.getTransactionCount(this.account.address);
-                            if (txCount !== undefined && txCount !== null) {
-                                packaged.nonce = parseInt(txCount);
-                                this.account.nonce = packaged.nonce;
-                            }
-                            packaged = new ethTx(packaged);
-
-                            // sign, validate, and send the transaction
-                            packaged.sign(this.account.privateKey);
-
-                            // transaction validation ok
-                            if (packaged.validate()) {
-
-                                // hex serialize the signed transaction
-                                var serialized = packaged.serialize().toString("hex");
-                                var txhash = augur.rpc.sendRawTx(serialized);
-
-                                // increment nonce and write to database
-                                db.get(self.account.handle, function (stored) {
-                                    stored.nonce = ++self.account.nonce;
-                                    db.put(self.account.handle, stored);
-                                });
-
-                                return txhash;
-                            }
-
-                            // transaction validation failed
+                        // transaction validation failed
+                        if (!utils.is_function(callback)) {
                             return errors.TRANSACTION_INVALID;
                         }
+                        callback(errors.TRANSACTION_INVALID);
+
                     } else {
                         return errors.TRANSACTION_FAILED;
                     }
@@ -59821,6 +59782,11 @@ module.exports = {
     },
     getTransactionCount: function (address, f) {
         return this.broadcast(this.marshal("getTransactionCount", address), f);
+    },
+    pendingTxCount: function (address, f) {
+        return this.broadcast(
+            this.marshal("getTransactionCount", [ address, "pending" ]), f
+        );
     },
 
     sendEther: function (to, value, from, onSent, onSuccess, onFailed) {
