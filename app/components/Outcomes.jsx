@@ -259,6 +259,7 @@ var TradeBase = {
           resolve
         );
       }).then((simulation) => {
+        console.log(simulation);
         simulation.cost = abi.bignum(simulation.cost);
         simulation.newPrice = abi.bignum(simulation.newPrice);
         self.setState({ simulation: simulation });

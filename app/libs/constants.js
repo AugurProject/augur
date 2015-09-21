@@ -7,7 +7,13 @@ var ONE_FXP = new BigNumber(2).toPower(64);
 
 module.exports = {
   DEMO_HOST: 'eth3.augur.net',
-  MARKETEER: 'http://db1.augur.net/marketeer/markets/?',
+  MARKET_CACHE: [
+    'http://db1.augur.net/marketeer/markets/?',
+    'http://db3.augur.net/marketeer/markets/?',
+    'http://db4.augur.net/marketeer/markets/?',
+    'http://db5.augur.net/marketeer/markets/?'
+  ],
+  CACHE_PULSE: 5000,
   ONE_FXP: ONE_FXP,
   NO: ONE_FXP,
   YES: ONE_FXP.mul(2),

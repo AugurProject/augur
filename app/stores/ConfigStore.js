@@ -64,6 +64,7 @@ var ConfigStore = Fluxxor.createStore({
 
   handleUpdatePercentLoadedSuccess: function (payload) {
     state.percentLoaded = payload.percentLoaded;
+    console.log("percent loaded:", payload);
     this.emit(constants.CHANGE_EVENT);
   },
 
