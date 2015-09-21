@@ -38,71 +38,87 @@ var connectObj = [
 
 describe("augur.connect", function () {
 
-    it.each(
-        connectString,
-        "should connect to %s",
-        ["element"],
-        function (element, next) {
+    if (!process.env.CONTINUOUS_INTEGRATION) {
+
+        it.each(
+            connectString,
+            "should connect to %s",
+            ["element"],
+            function (element, next) {
+                this.timeout(constants.TIMEOUT);
+                var augur = utils.reset(augurpath);
+                assert(augur.connect(element));
+                assert.isTrue(augur.connected());
+                assert(augur.coinbase);
+                next();
+            }
+        );
+        it.each(
+            connectObj,
+            "should connect to { protocol: '%s', host: '%s', port: '%s' }",
+            ["protocol", "host", "port"],
+            function (element, next) {
+                this.timeout(constants.TIMEOUT);
+                var augur = utils.reset(augurpath);
+                assert(augur.connect(element));
+                assert.isTrue(augur.connected());
+                assert(augur.coinbase);
+                next();
+            }
+        );
+
+    } else {
+        it("should connect successfully with no argument provided", function () {
             this.timeout(constants.TIMEOUT);
             var augur = utils.reset(augurpath);
-            assert(augur.connect(element));
-            assert.isTrue(augur.connected());
-            assert(augur.coinbase);
-            next();
-        }
-    );
-    it.each(
-        connectObj,
-        "should connect to { protocol: '%s', host: '%s', port: '%s' }",
-        ["protocol", "host", "port"],
-        function (element, next) {
+            assert(augur.connect());
+            assert.strictEqual(augur.coinbase, augur.demo);
+        });
+    }
+
+    if (!process.env.CONTINUOUS_INTEGRATION) {
+
+        it("should update the transaction object addresses when contracts are changed", function () {
+            this.timeout(constants.TIMEOUT);
+            var new_address = "0x01";
+            var augur = utils.reset(augurpath);
+            augur.contracts.branches = new_address;
+            augur.connect();
+            assert.strictEqual(augur.contracts.branches, new_address);
+            var newer_address = "0x02";
+            augur.contracts.branches = newer_address;
+            augur.connect();
+            assert.strictEqual(augur.contracts.branches, newer_address);
+        });
+        it("should switch to 7 (private chain) contract addresses", function () {
             this.timeout(constants.TIMEOUT);
             var augur = utils.reset(augurpath);
-            assert(augur.connect(element));
-            assert.isTrue(augur.connected());
-            assert(augur.coinbase);
-            next();
-        }
-    );
-    it("should update the transaction object addresses when contracts are changed", function () {
-        this.timeout(constants.TIMEOUT);
-        var new_address = "0x01";
-        var augur = utils.reset(augurpath);
-        augur.contracts.branches = new_address;
-        augur.connect();
-        assert.strictEqual(augur.contracts.branches, new_address);
-        var newer_address = "0x02";
-        augur.contracts.branches = newer_address;
-        augur.connect();
-        assert.strictEqual(augur.contracts.branches, newer_address);
-    });
-    it("should switch to 7 (private chain) contract addresses", function () {
-        this.timeout(constants.TIMEOUT);
-        var augur = utils.reset(augurpath);
-        assert(augur.connect("http://localhost:8545", 7));
-        assert(augur.contracts.branches, contracts["7"].branches);
-        assert(augur.contracts.center, contracts["7"].center);
-        assert(augur.connect({ host: "localhost", port: 8545, chain: 7 }));
-        assert(augur.contracts.branches, contracts["7"].branches);
-        assert(augur.contracts.center, contracts["7"].center);
-    });
-    it("should switch to Ethereum testnet contract addresses", function (done) {
-        this.timeout(constants.TIMEOUT);
-        var augur = utils.reset(augurpath);
-        assert(augur.connect());
-        assert(augur.contracts.branches, contracts["0"].branches);
-        assert(augur.contracts.createMarket, contracts["0"].createMarket);
-        assert(augur.connect("http://localhost:8545"));
-        assert(augur.contracts.branches, contracts["0"].branches);
-        assert(augur.contracts.createMarket, contracts["0"].createMarket);
-        assert(augur.connect({ host: "localhost", port: 8545, chain: null }));
-        assert(augur.contracts.branches, contracts["0"].branches);
-        assert(augur.contracts.createMarket, contracts["0"].createMarket);
-        assert(augur.connect({ host: "127.0.0.1" }));
-        assert(augur.contracts.branches, contracts["0"].branches);
-        assert(augur.contracts.createMarket, contracts["0"].createMarket);
-        done();
-    });
+            assert(augur.connect("http://localhost:8545", 7));
+            assert(augur.contracts.branches, contracts["7"].branches);
+            assert(augur.contracts.center, contracts["7"].center);
+            assert(augur.connect({ host: "localhost", port: 8545, chain: 7 }));
+            assert(augur.contracts.branches, contracts["7"].branches);
+            assert(augur.contracts.center, contracts["7"].center);
+        });
+        it("should switch to Ethereum testnet contract addresses", function (done) {
+            this.timeout(constants.TIMEOUT);
+            var augur = utils.reset(augurpath);
+            assert(augur.connect());
+            assert(augur.contracts.branches, contracts["0"].branches);
+            assert(augur.contracts.createMarket, contracts["0"].createMarket);
+            assert(augur.connect("http://localhost:8545"));
+            assert(augur.contracts.branches, contracts["0"].branches);
+            assert(augur.contracts.createMarket, contracts["0"].createMarket);
+            assert(augur.connect({ host: "localhost", port: 8545, chain: null }));
+            assert(augur.contracts.branches, contracts["0"].branches);
+            assert(augur.contracts.createMarket, contracts["0"].createMarket);
+            assert(augur.connect({ host: "127.0.0.1" }));
+            assert(augur.contracts.branches, contracts["0"].branches);
+            assert(augur.contracts.createMarket, contracts["0"].createMarket);
+            done();
+        });
+
+    }
     it("should connect successfully to 'http://www.poc9.com:8545'", function () {
         this.timeout(constants.TIMEOUT);
         var augur = utils.reset(augurpath);
@@ -168,11 +184,17 @@ describe("augur.connect", function () {
                augur.network_id === "1" ||
                augur.network_id === "10101" ||
                augur.network_id === "7");
+        // augur.connect();
     });
-    it("should be unlocked", function () {
-        augur.connect("http://127.0.0.1:8545");
-        if (augur.rpc.nodes.local) {
-            assert.isTrue(augur.rpc.unlocked(augur.coinbase));
-        }
-    });
+
+    if (!process.env.CONTINUOUS_INTEGRATION) {
+
+        it("should be unlocked", function () {
+            augur.connect("http://127.0.0.1:8545");
+            if (augur.rpc.nodes.local) {
+                assert.isTrue(augur.rpc.unlocked(augur.coinbase));
+            }
+        });
+
+    }
 });

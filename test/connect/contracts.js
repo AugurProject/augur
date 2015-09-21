@@ -15,6 +15,7 @@ require('it-each')({ testPerIteration: true });
 describe("Read contracts", function () {
 
     var test = function (c) {
+        rpc.reset();
         var res = rpc.read(contracts[c]);
         assert.notProperty(res, "error");
         assert.notStrictEqual(res, "0x");
