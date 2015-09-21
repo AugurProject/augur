@@ -47,10 +47,8 @@ var Overview = React.createClass({
   },
 
   componentWillReceiveProps: function(nextProps) {
-    if (this.props.outcome.sharesHeld && nextProps.outcome.sharesHeld) {
-      if (this.props.outcome.sharesHeld.toNumber() !== nextProps.outcome.sharesHeld.toNumber()) {
-        this.setState({pendingShares: null});
-      }
+    if (abi.number(this.props.outcome.sharesHeld) !== abi.number(nextProps.outcome.sharesHeld)) {
+      this.setState({pendingShares: null});
     }
   },
 
@@ -112,9 +110,12 @@ var Overview = React.createClass({
       nonce: null,
       limit: 0,
       onSent: function (result) {
-        // TODO: check if component is mounted
+        var pendingShares = +relativeShares;
+        if (self.state.pendingShares) {
+          pendingShares += +self.state.pendingShares;
+        }
         self.setState({
-          pendingShares: relativeShares,
+          pendingShares: pendingShares,
           buyShares: false,
           sellShares: false
         });
@@ -241,7 +242,7 @@ var TradeBase = {
     this.setState({ value: rawValue });
     this.setState({ inputError: null });
 
-    if (numShares === '') {
+    if (!numShares || numShares === '') {
       this.setState({
         simulation: null
       });
@@ -254,8 +255,12 @@ var TradeBase = {
           resolve
         );
       }).then((simulation) => {
-        simulation.cost = abi.bignum(simulation.cost);
-        simulation.newPrice = abi.bignum(simulation.newPrice);
+        if (simulation.cost) {
+          simulation.cost = abi.bignum(simulation.cost);
+        }
+        if (simulation.newPrice) {
+          simulation.newPrice = abi.bignum(simulation.newPrice);
+        }
         self.setState({ simulation: simulation });
       });
     }
