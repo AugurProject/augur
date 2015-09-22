@@ -30,7 +30,7 @@ module.exports = function (augur) {
         // free (testnet) ether for new accounts on registration
         fund: function (account, callback, onConfirm1, onConfirm2) {
             var self = this;
-            ethrpc.rotation = false;
+            ethrpc.balancer = false;
             ethrpc.reset();
             var funder = ethrpc.coinbase();
             ethrpc.sendEther({
@@ -38,14 +38,14 @@ module.exports = function (augur) {
                 value: constants.FREEBIE / 2,
                 from: funder,
                 onSent: function (txhash) {
-                    console.log("fund tx 1:", txhash);
+                    // console.log("fund tx 1:", txhash);
                     if (callback) callback(account);
                     ethrpc.sendEther({
                         to: account.address,
                         value: constants.FREEBIE / 2,
                         from: funder,
                         onSent: function (txhash) {
-                            console.log("fund tx 2:", txhash);
+                            // console.log("fund tx 2:", txhash);
                         },
                         onSuccess: function (r) {
                             if (onConfirm2) onConfirm2(account);

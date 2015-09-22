@@ -93,7 +93,7 @@ augur.detect_network = function (chain) {
 augur.get_coinbase = function () {
     var accounts, num_accounts, i, method;
     this.coinbase = rpc.coinbase();
-    if (!this.coinbase) {
+    if (!this.coinbase && rpc.nodes.local) {
         accounts = rpc.accounts();
         num_accounts = accounts.length;
         if (num_accounts === 1) {
@@ -193,11 +193,12 @@ augur.connect = function (rpcinfo, chain) {
         }
         this.get_coinbase();
         this.update_contracts();
+        this.reload_modules();
         this.connection = true;
         return true;
     } catch (exc) {
-        // console.log(rpcinfo, "connection failed", exc);
-        rpc.reset();
+        console.log(rpcinfo, "connection failed", exc);
+        this.default_rpc();
         return false;
     }
 };

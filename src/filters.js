@@ -177,10 +177,10 @@ module.exports = function (augur) {
                                         onMessage({
                                             user: abi.format_address(filtrate[i].topics[1]),
                                             marketId: abi.hex(market),
-                                            outcome: abi.bignum(filtrate[i].topics[3], "string"),
+                                            outcome: abi.string(filtrate[i].topics[3]),
                                             price: abi.unfix(data_array[0], "string"),
                                             cost: abi.unfix(data_array[1], "string"),
-                                            blockNumber: abi.bignum(filtrate[i].blockNumber, "string")
+                                            blockNumber: abi.string(filtrate[i].blockNumber)
                                         });
                                     }
                                 } catch (exc) {
@@ -207,7 +207,7 @@ module.exports = function (augur) {
                                 }
                                 onMessage({
                                     marketId: abi.hex(market),
-                                    blockNumber: abi.bignum(filtrate[i].blockNumber, "string")
+                                    blockNumber: abi.string(filtrate[i].blockNumber)
                                 });
                             }
                         }
