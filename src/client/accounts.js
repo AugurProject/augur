@@ -13,7 +13,7 @@ var db = require("./db");
 var errors = require("../errors");
 var constants = require("../constants");
 var utils = require("../utilities");
-var log = console.log;
+var ethrpc = require("ethrpc");
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
@@ -28,52 +28,48 @@ module.exports = function (augur) {
         account: {},
 
         // free (testnet) ether for new accounts on registration
-        fund: function (account, callback, onConfirm) {
-            var count = 0;
-            augur.rpc.sendEther(
-                account.address,
-                constants.FREEBIE / 2,
-                augur.coinbase,
-                function (r) {
-                    // sent
-                    // log("sent:", r);
+        fund: function (account, callback, onConfirm1, onConfirm2) {
+            var self = this;
+            ethrpc.rotation = false;
+            ethrpc.reset();
+            var funder = ethrpc.coinbase();
+            ethrpc.sendEther({
+                to: account.address,
+                value: constants.FREEBIE / 2,
+                from: funder,
+                onSent: function (txhash) {
+                    console.log("fund tx 1:", txhash);
                     if (callback) callback(account);
-                    augur.rpc.sendEther(
-                        account.address,
-                        constants.FREEBIE / 2,
-                        augur.coinbase,
-                        function (r) {
-                            // sent
+                    ethrpc.sendEther({
+                        to: account.address,
+                        value: constants.FREEBIE / 2,
+                        from: funder,
+                        onSent: function (txhash) {
+                            console.log("fund tx 2:", txhash);
                         },
-                        function (r) {
-                            // success
-                            if (onConfirm && !(count++)) onConfirm(account);
+                        onSuccess: function (r) {
+                            if (onConfirm2) onConfirm2(account);
                         },
-                        function (r) {
-                            // failed
+                        onFailed: function (r) {
                             r.number = 2;
-                            if (onConfirm && !(count++)) {
-                                onConfirm(r);
-                            } else {
-                                log("account.fund failed:", r);
-                            }
+                            if (onConfirm2) return onConfirm2(r);
+                            console.error("account.fund failed:", r);
                         }
-                    );
+                    });
                 },
-                function (r) {
+                onSuccess: function (r) {
                     // success
-                    if (onConfirm && !(count++)) onConfirm(account);
+                    if (onConfirm1) onConfirm1(account);
                 },
-                function (r) {
+                onFailed: function (r) {
                     // failed
                     r.number = 1;
-                    if (onConfirm && !(count++)) {
-                        onConfirm(r);
-                    } else {
-                        log("account.fund failed:", r);
+                    if (onConfirm1) {
+                        return onConfirm1(r);
                     }
+                    console.error("account.fund failed:", r);
                 }
-            );
+            });
         },
 
         register: function (handle, password, callback, donotfund) {
@@ -125,6 +121,14 @@ module.exports = function (augur) {
 
                                         if (donotfund) return callback(self.account);
 
+                                        if (callback && callback.constructor === Array) {
+                                            return self.fund(
+                                                self.account,
+                                                callback[0],
+                                                callback[1],
+                                                callback[2]
+                                            );
+                                        }
                                         self.fund(self.account, callback);
 
                                     }); // db.put
@@ -164,7 +168,7 @@ module.exports = function (augur) {
                                     derivedKey,
                                     new Buffer(storedInfo.privateKey, "base64")
                                 ), "hex").toString("base64");
-                                
+
                                 if (mac === storedInfo.mac) {
                                     try {
 

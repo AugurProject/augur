@@ -55002,7 +55002,7 @@ var db = require("./db");
 var errors = require("../errors");
 var constants = require("../constants");
 var utils = require("../utilities");
-var log = console.log;
+var ethrpc = require("ethrpc");
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
@@ -55017,52 +55017,48 @@ module.exports = function (augur) {
         account: {},
 
         // free (testnet) ether for new accounts on registration
-        fund: function (account, callback, onConfirm) {
-            var count = 0;
-            augur.rpc.sendEther(
-                account.address,
-                constants.FREEBIE / 2,
-                augur.coinbase,
-                function (r) {
-                    // sent
-                    // log("sent:", r);
+        fund: function (account, callback, onConfirm1, onConfirm2) {
+            var self = this;
+            ethrpc.rotation = false;
+            ethrpc.reset();
+            var funder = ethrpc.coinbase();
+            ethrpc.sendEther({
+                to: account.address,
+                value: constants.FREEBIE / 2,
+                from: funder,
+                onSent: function (txhash) {
+                    console.log("fund tx 1:", txhash);
                     if (callback) callback(account);
-                    augur.rpc.sendEther(
-                        account.address,
-                        constants.FREEBIE / 2,
-                        augur.coinbase,
-                        function (r) {
-                            // sent
+                    ethrpc.sendEther({
+                        to: account.address,
+                        value: constants.FREEBIE / 2,
+                        from: funder,
+                        onSent: function (txhash) {
+                            console.log("fund tx 2:", txhash);
                         },
-                        function (r) {
-                            // success
-                            if (onConfirm && !(count++)) onConfirm(account);
+                        onSuccess: function (r) {
+                            if (onConfirm2) onConfirm2(account);
                         },
-                        function (r) {
-                            // failed
+                        onFailed: function (r) {
                             r.number = 2;
-                            if (onConfirm && !(count++)) {
-                                onConfirm(r);
-                            } else {
-                                log("account.fund failed:", r);
-                            }
+                            if (onConfirm2) return onConfirm2(r);
+                            console.error("account.fund failed:", r);
                         }
-                    );
+                    });
                 },
-                function (r) {
+                onSuccess: function (r) {
                     // success
-                    if (onConfirm && !(count++)) onConfirm(account);
+                    if (onConfirm1) onConfirm1(account);
                 },
-                function (r) {
+                onFailed: function (r) {
                     // failed
                     r.number = 1;
-                    if (onConfirm && !(count++)) {
-                        onConfirm(r);
-                    } else {
-                        log("account.fund failed:", r);
+                    if (onConfirm1) {
+                        return onConfirm1(r);
                     }
+                    console.error("account.fund failed:", r);
                 }
-            );
+            });
         },
 
         register: function (handle, password, callback, donotfund) {
@@ -55114,6 +55110,14 @@ module.exports = function (augur) {
 
                                         if (donotfund) return callback(self.account);
 
+                                        if (callback && callback.constructor === Array) {
+                                            return self.fund(
+                                                self.account,
+                                                callback[0],
+                                                callback[1],
+                                                callback[2]
+                                            );
+                                        }
                                         self.fund(self.account, callback);
 
                                     }); // db.put
@@ -55153,7 +55157,7 @@ module.exports = function (augur) {
                                     derivedKey,
                                     new Buffer(storedInfo.privateKey, "base64")
                                 ), "hex").toString("base64");
-                                
+
                                 if (mac === storedInfo.mac) {
                                     try {
 
@@ -55299,7 +55303,7 @@ module.exports = function (augur) {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"../constants":307,"../errors":308,"../utilities":312,"./db":306,"augur-abi":1,"bignumber.js":7,"buffer":24,"ethereumjs-tx":210,"keythereum":271,"node-uuid":301}],305:[function(require,module,exports){
+},{"../constants":307,"../errors":308,"../utilities":312,"./db":306,"augur-abi":1,"bignumber.js":7,"buffer":24,"ethereumjs-tx":210,"ethrpc":314,"keythereum":271,"node-uuid":301}],305:[function(require,module,exports){
 /**
  * Whisper-based comments system
  */
@@ -55951,9 +55955,13 @@ module.exports = function (augur) {
              */
             var messages = [];
             for (var i = 0, len = filtrate.length; i < len; ++i) {
-                filtrate[i].data = augur.rpc.unmarshal(filtrate[i].data);
-                if (onMessage) onMessage(filtrate[i]);
-                messages.push(filtrate[i]);
+                if (filtrate[i]) {
+                    if (filtrate[i].data) {
+                        filtrate[i].data = augur.rpc.unmarshal(filtrate[i].data);
+                    }
+                    if (onMessage) onMessage(filtrate[i]);
+                    messages.push(filtrate[i]);
+                }
             }
             if (messages.length) return messages;
         },
@@ -55962,7 +55970,7 @@ module.exports = function (augur) {
             if (utils.is_function(onMessage)) {
                 var self = this;
                 this.eth_getFilterChanges(this.contracts_filter.id, function (filtrate) {
-                    if (filtrate) self.sift(filtrate, onMessage);
+                    if (filtrate && filtrate.length) self.sift(filtrate, onMessage);
                 });
             }
         },
@@ -56558,10 +56566,8 @@ augur.connect = function (rpcinfo, chain) {
         this.connection = true;
         return true;
     } catch (exc) {
-        if (!rpcinfo) {
-            this.default_rpc();
-            return true;
-        }
+        // console.log(rpcinfo, "connection failed", exc);
+        rpc.reset();
         return false;
     }
 };
@@ -59322,8 +59328,8 @@ function has_value(o, v) {
 }
 
 var HOSTED_NODES = [
-    "http://eth3.augur.net",
     "http://eth1.augur.net",
+    "http://eth3.augur.net",
     "http://eth4.augur.net",
     "http://eth5.augur.net"
 ];
@@ -59357,7 +59363,7 @@ module.exports = {
 
     unmarshal: function (string, returns, stride, init) {
         var elements, array, position;
-        if (string.length >= 66) {
+        if (string && string.length >= 66) {
             stride = stride || 64;
             elements = Math.ceil((string.length - 2) / stride);
             array = new Array(elements);
@@ -59446,10 +59452,12 @@ module.exports = {
                     for (var i = 0; i < len; ++i) {
                         results[i] = response[i].result;
                         if (response.error || (response[i] && response[i].error)) {
-                            console.error(
-                                "[" + response.error.code + "]",
-                                response.error.message
-                            );
+                            if (this.debug.broadcast) {
+                                console.error(
+                                    "[" + response.error.code + "]",
+                                    response.error.message
+                                );
+                            }
                         } else if (response[i].result !== undefined) {
                             if (returns[i]) {
                                 results[i] = this.applyReturns(returns[i], response[i].result);
@@ -59459,28 +59467,28 @@ module.exports = {
                             }
                         }
                     }
-                    if (callback) {
-                        callback(results);
-                    } else {
-                        return results;
-                    }
+                    if (!callback) return results;
+                    callback(results);
 
                 // no result or error field
                 } else {
-                    var err = errors.NO_RESPONSE;
-                    err.response = response;
-                    return console.error(err);
+                    if (this.debug.broadcast) {
+                        var err = errors.NO_RESPONSE;
+                        err.response = response;
+                        console.error(err);
+                    }
                 }
             }
         } catch (e) {
-            var err = e;
-            if (e && e.name === "SyntaxError") {
-                err = errors.INVALID_RESPONSE;
-                err.response = response;
+            if (this.debug.broadcast) {
+                var err = e;
+                if (e && e.name === "SyntaxError") {
+                    err = errors.INVALID_RESPONSE;
+                    err.response = response;
+                }
+                // console.log(err.stack);
+                throw new RPCError(err);
             }
-            console.error(err);
-            console.log(err.stack);
-            // throw new RPCError(err);
         }
     },
 
@@ -59503,9 +59511,9 @@ module.exports = {
             var deadIndex = this.nodes.hosted.indexOf(deadNode);
             if (deadIndex > -1) {
                 this.nodes.hosted.splice(deadIndex, 1);
-                if (!this.nodes.hosted.length) {
+                if (!this.nodes.hosted.length && this.debug.fallback) {
                     if (callback) {
-                        callback(errors.HOSTED_NODE_FAILURE);
+                        return callback(errors.HOSTED_NODE_FAILURE);
                     } else {
                         throw new RPCError(errors.HOSTED_NODE_FAILURE);
                     }
@@ -59545,11 +59553,14 @@ module.exports = {
             }, function (err, response, body) {
                 if (err) {
                     if (self.nodes.local) {
-                        var e = errors.LOCAL_NODE_FAILURE;
-                        e.detail = err;
-                        return callback(e);
+                        if (self.debug.broadcast) {
+                            var e = errors.LOCAL_NODE_FAILURE;
+                            e.detail = err;
+                            return callback(e);
+                        }
+                    } else {
+                        self.exciseNode(err.code, rpcUrl, callback);
                     }
-                    self.exciseNode(err.code, rpcUrl, callback);
                 } else if (response.statusCode === 200) {
                     self.parse(body, returns, callback);
                 }
@@ -59662,7 +59673,9 @@ module.exports = {
                     result = this.postSync(nodes[j], command, returns);
                 } catch (e) {
                     if (this.nodes.local) {
-                        throw new RPCError(errors.LOCAL_NODE_FAILURE);
+                        if (self.debug.broadcast) {
+                            throw new RPCError(errors.LOCAL_NODE_FAILURE);
+                        }
                     } else {
                         this.exciseNode(e, nodes[j]);
                     }

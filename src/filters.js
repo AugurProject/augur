@@ -127,9 +127,13 @@ module.exports = function (augur) {
              */
             var messages = [];
             for (var i = 0, len = filtrate.length; i < len; ++i) {
-                filtrate[i].data = augur.rpc.unmarshal(filtrate[i].data);
-                if (onMessage) onMessage(filtrate[i]);
-                messages.push(filtrate[i]);
+                if (filtrate[i]) {
+                    if (filtrate[i].data) {
+                        filtrate[i].data = augur.rpc.unmarshal(filtrate[i].data);
+                    }
+                    if (onMessage) onMessage(filtrate[i]);
+                    messages.push(filtrate[i]);
+                }
             }
             if (messages.length) return messages;
         },
@@ -138,7 +142,7 @@ module.exports = function (augur) {
             if (utils.is_function(onMessage)) {
                 var self = this;
                 this.eth_getFilterChanges(this.contracts_filter.id, function (filtrate) {
-                    if (filtrate) self.sift(filtrate, onMessage);
+                    if (filtrate && filtrate.length) self.sift(filtrate, onMessage);
                 });
             }
         },
