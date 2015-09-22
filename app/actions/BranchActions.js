@@ -22,9 +22,13 @@ export default {
     console.log('using branch ' + branchId);
 
     augur.getPeriodLength(branchId, function (periodLength) {
-      var currentBranch = new Branch(branchId, abi.number(periodLength));
-      self.dispatch(constants.branch.SET_CURRENT_BRANCH_SUCCESS, currentBranch);
-      self.flux.actions.branch.updateCurrentBranch();
+      if (periodLength && !periodLength.error) {
+        var currentBranch = new Branch(branchId, abi.number(periodLength));
+        self.dispatch(constants.branch.SET_CURRENT_BRANCH_SUCCESS, currentBranch);
+        self.flux.actions.branch.updateCurrentBranch();
+      } else {
+        console.error("augur.periodLength error:", periodLength);
+      }
     });
   },
 
@@ -53,6 +57,8 @@ export default {
         });
 
         self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, updatedBranch);
+      } else {
+        console.error("augur.getVotePeriod error:", result);
       }
     });
   },

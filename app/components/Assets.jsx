@@ -50,6 +50,7 @@ var Assets = React.createClass({
         },
         onSuccess: function (result) {
           console.log("cash faucet success:", result.txHash);
+          flux.actions.asset.updateAssets();
         },
         onFailed: function (err) {
           console.error("cash faucet failed:", err);
@@ -79,6 +80,7 @@ var Assets = React.createClass({
         },
         onSuccess: function (result) {
           console.log("reputation faucet success:", result.txHash);
+          flux.actions.asset.updateAssets();
         },
         onFailed: function (err) {
           console.error("reputation faucet failed:", err);

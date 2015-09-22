@@ -64,6 +64,12 @@ var NetworkActions = {
         privateKey: augur.web.account.privateKey,
         handle: augur.web.account.handle
       });
+      this.flux.actions.asset.updateAssets();
+      this.flux.actions.report.loadEventsToReport();
+      this.flux.actions.report.loadPendingReports();
+      if (this.flux.store("config").getState().useMarketCache) {
+        this.flux.actions.market.loadMarketCache();
+      }
 
     // hosted node: no unlocked account available
     } else if (this.flux.store('config').getState().isHosted) {

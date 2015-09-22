@@ -119,8 +119,29 @@ var Overview = React.createClass({
         });
         self.handleAddTransaction(result.txHash, relativeShares);
       },
-      onSuccess: function (res) { console.log("trade succeeded:", res); },
-      onFailed: function (res) { console.log("trade failed:", res); }
+      onSuccess: function (res) {
+        console.log("trade succeeded:", res);
+        var checks = 0;
+        var marketId = self.props.market.id;
+        var getMarket = self.flux.store("market").getMarket;
+        var outcomeIdx = self.props.outcome.id - 1;
+        var oldPrice = getMarket(marketId).outcomes[outcomeIdx].price;
+        self.flux.actions.asset.updateAssets();
+        if (self.flux.store("config").getState().useMarketCache) {
+          (function checkMarketCache() {
+            self.flux.actions.market.loadMarketCache();
+            if (getMarket(marketId).outcomes[outcomeIdx].price.eq(oldPrice)) {
+              if (++checks < 10) return setTimeout(checkMarketCache, 2500);
+              self.flux.actions.market.loadMarket(marketId);
+            }
+          })();
+        } else {
+          self.flux.actions.market.loadMarket(marketId);
+        }
+      },
+      onFailed: function (err) {
+        console.error("trade failed:", err);
+      }
     });
   },
 

@@ -181,7 +181,19 @@ var AddMarketModal = React.createClass({
             },
             onSuccess: function (r) {
               console.log("new market ID:", r.callReturn);
+              var marketId = abi.bignum(r.callReturn);
               flux.actions.market.deleteMarket(pendingId);
+              if (self.flux.store("config").getState().useMarketCache) {
+                (function checkMarketCache() {
+                  self.flux.actions.market.loadMarketCache();
+                  if (!self.flux.store("market").getMarket(marketId)) {
+                    if (++checks < 10) return setTimeout(checkMarketCache, 2500);
+                    self.flux.actions.market.loadMarket(marketId);
+                  }
+                })();
+              } else {
+                self.flux.actions.market.loadMarket(marketId);
+              }
             },
             onFailed: function (r) {
               console.error("market creation failed:", r);

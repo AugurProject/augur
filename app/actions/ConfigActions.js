@@ -61,6 +61,7 @@ var ConfigActions = {
 
       // listen for new blocks
       block: function (blockHash) {
+        console.log("new block:", blockHash);
         var account = self.flux.store('config').getAccount();
         if (account && blockHash) {
           self.flux.actions.network.updateNetwork();
@@ -118,7 +119,6 @@ var ConfigActions = {
 
       // listen for new markets
       creation: function (result) {
-        console.log("creationBlock:", result);
         if (result && result.marketId) {
           console.log("[filter] creationBlock:", result.blockNumber);
           var checks = 0;
@@ -137,6 +137,7 @@ var ConfigActions = {
         }
       }
     });
+
   },
 
   updateAccount: function (credentials) {
