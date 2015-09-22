@@ -11,8 +11,7 @@ var TransactionActions = {
     *  {
     *    hash: '0xaf653...',
     *    type: constants.transaction.SEND_REP_TYPE, 
-    *    description: 'send reputation to ...', 
-    *    onMined: function(result) { .... }
+    *    description: 'send reputation to ...',
     *  }
     */
 

@@ -23,8 +23,6 @@ export default {
 
     augur.getPeriodLength(branchId, function (periodLength) {
       var currentBranch = new Branch(branchId, abi.number(periodLength));
-      // var currentBranch = new Branch(branchId, Number(periodLength.toString()));
-
       self.dispatch(constants.branch.SET_CURRENT_BRANCH_SUCCESS, currentBranch);
       self.flux.actions.branch.updateCurrentBranch();
     });
@@ -61,7 +59,6 @@ export default {
 
   checkQuorum: function () {
     var self = this;
-    var ethereumClient = this.flux.store('config').getEthereumClient();
     var branchState = this.flux.store('branch').getState();
     var currentBranch = branchState.currentBranch;
     var hasCheckedQuorum = branchState.hasCheckedQuorum;

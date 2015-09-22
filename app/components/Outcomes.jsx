@@ -3,13 +3,11 @@ var React = require('react');
 var Fluxxor = require('fluxxor');
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
-
 var ReactBootstrap = require('react-bootstrap');
 var utilities = require('../libs/utilities');
 var constants = require('../libs/constants');
 var Input = ReactBootstrap.Input;
 var Button = ReactBootstrap.Button;
-var Promise = require('es6-promise').Promise;
 
 var NO = 1;
 var YES = 2;
@@ -243,41 +241,32 @@ var TradeBase = {
     this.setState({ inputError: null });
 
     if (!numShares || numShares === '') {
-      this.setState({
-        simulation: null
-      });
-    } else {
-      new Promise((resolve, reject) => {
-        self.getSimulationFunction()(
-          abi.hex(self.props.market.id),
-          self.props.outcome.id,
-          numShares,
-          resolve
-        );
-      }).then((simulation) => {
-        if (simulation.cost) {
-          simulation.cost = abi.bignum(simulation.cost);
-        }
-        if (simulation.newPrice) {
-          simulation.newPrice = abi.bignum(simulation.newPrice);
-        }
-        self.setState({ simulation: simulation });
-      });
+      return this.setState({ simulation: null });
     }
+    self.getSimulationFunction().call(augur,
+      abi.hex(self.props.market.id),
+      self.props.outcome.id,
+      numShares,
+      function (sim) {
+        self.setState({
+          simulation: {
+            cost: abi.bignum(sim[0]),
+            newPrice: abi.bignum(sim[1])
+          }
+        });  
+      }
+    );
   },
 
   onSubmit: function (event) {
-
     event.preventDefault();
-    
-    var numShares = parseFloat(this.state.value);
+    var numShares = abi.number(this.state.value);
 
     if (typeof(numShares) !== 'number' || !numShares) {
       this.setState({inputError: 'Shares must be a numeric value'});
     } else if (this.state.simulation.cost > this.props.cashBalance) {
       this.setState({inputError: 'Cost of shares exceeds funds'});
     } else {
-
       var relativeShares = this.getRelativeShares();
       this.props.handleTrade(relativeShares);
     }
@@ -342,16 +331,13 @@ var Buy = React.createClass(_.merge({
   },
 
   getPriceDelta: function () {
-
     if (!this.state.simulation) {
       return '';
     }
-
-    var newPrice = priceToPercentage(this.state.simulation.newPrice);
     return (
       <span>
         <i className='fa fa-chevron-up' style={{color: 'green'}}></i>
-        <span className='new-price'>{ newPrice }%</span>
+        <span className='new-price'>{ priceToPercentage(this.state.simulation.newPrice) }%</span>
       </span>
     );
   },
@@ -361,9 +347,7 @@ var Buy = React.createClass(_.merge({
   },
 
   getSimulationFunction: function () {
-    var flux = this.getFlux();
-    var client = flux.store('config').getEthereumClient();
-    return client.getSimulatedBuy;
+    return augur.getSimulatedBuy;
   }
 
 }, TradeBase));
@@ -383,15 +367,13 @@ var Sell = React.createClass(_.merge({
   },
 
   getPriceDelta: function () {
-
     if (!this.state.simulation) {
       return '';
     }
-    var newPrice = priceToPercentage(this.state.simulation.newPrice);
     return (
       <span>
         <i className='fa fa-chevron-down' style={{color: 'red'}}></i>
-        <span className='new-price'>{ newPrice }%</span>
+        <span className='new-price'>{ priceToPercentage(this.state.simulation.newPrice) }%</span>
       </span>
     );
   },
@@ -401,9 +383,7 @@ var Sell = React.createClass(_.merge({
   },
 
   getSimulationFunction: function () {
-    var flux = this.getFlux();
-    var client = flux.store('config').getEthereumClient();
-    return client.getSimulatedSell;
+    return augur.getSimulatedSell;
   }
 
 }, TradeBase));

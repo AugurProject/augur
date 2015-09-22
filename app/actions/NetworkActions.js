@@ -11,83 +11,89 @@ var NetworkActions = {
    * stores. If our Ethereum daemon just became unreachable, dispatch an event so
    * an error dialog can be display.
    */
-  checkNetwork: function() {
-
-    var ethereumClient = this.flux.store('config').getEthereumClient();
-    var networkState = this.flux.store('network').getState();
-
-    var nowUp = augur.rpc.listening();
-
-    var wasUp = (
-      networkState.ethereumStatus === constants.network.ETHEREUM_STATUS_CONNECTED
-    );
-    var wasDown = (
-      !networkState.ethereumStatus ||
-      networkState.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED
-    );
-
-    if (!nowUp) {
-
-      utilities.warn('failed to connect to ethereum');
-
-      // stop monitoring filters
-      // augur.filters.ignore(true);
-
-      this.dispatch(constants.network.UPDATE_ETHEREUM_STATUS, {
-        ethereumStatus: constants.network.ETHEREUM_STATUS_FAILED
-      });
-
-    } else if (wasDown && nowUp) {
-
-      this.dispatch(constants.network.UPDATE_ETHEREUM_STATUS, {
-        ethereumStatus: constants.network.ETHEREUM_STATUS_CONNECTED
-      });
-
-      this.flux.store('config').setHost();
-      this.flux.actions.network.initializeNetwork();
-      this.flux.actions.config.initializeData();
-    }
-
-    setTimeout(this.flux.actions.network.checkNetwork, 3000);
+  checkNetwork: function () {
+    var self = this;
+    var network = this.flux.store('network').getState();
+    augur.rpc.listening(function (nowUp) {
+      var wasUp = (
+        network.ethereumStatus === constants.network.ETHEREUM_STATUS_CONNECTED
+      );
+      var wasDown = (
+        !network.ethereumStatus ||
+        network.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED
+      );
+      if (!nowUp) {
+        utilities.warn('failed to connect to ethereum');
+        self.dispatch(constants.network.UPDATE_ETHEREUM_STATUS, {
+          ethereumStatus: constants.network.ETHEREUM_STATUS_FAILED
+        });
+      } else if (wasDown && nowUp) {
+        self.dispatch(constants.network.UPDATE_ETHEREUM_STATUS, {
+          ethereumStatus: constants.network.ETHEREUM_STATUS_CONNECTED
+        });
+        self.flux.actions.config.setHost(
+          augur.rpc.nodes.local || augur.rpc.nodes.hosted[0]
+        );
+        self.flux.actions.network.initializeNetwork();
+        self.flux.actions.config.initializeData();
+      }
+      setTimeout(self.flux.actions.network.checkNetwork, 3000);
+    });
   },
 
   initializeNetwork: function () {
-
     var self = this;
 
-    augur.rpc.version(function (networkId) {
-      self.dispatch(constants.network.UPDATE_NETWORK, { networkId: networkId });
+    // get network and client versions
+    this.dispatch(constants.network.UPDATE_NETWORK, {
+      networkId: augur.network_id
     });
-
     augur.rpc.clientVersion(function (clientVersion) {
-      self.dispatch(constants.network.UPDATE_NETWORK, { clientVersion: clientVersion });
+      if (clientVersion && !clientVersion.error) {
+        self.dispatch(constants.network.UPDATE_NETWORK, {
+          clientVersion: clientVersion
+        });
+      }
     });
 
-    var ethereumClient = this.flux.store('config').getEthereumClient();
-    var configState = this.flux.store('config').getState();
+    // if available, use the client-side account
+    if (augur.web.account.address && augur.web.account.privateKey) {
+      console.log("using client-side account:", augur.web.account.address);
+      this.dispatch(constants.config.UPDATE_ACCOUNT, {
+        currentAccount: augur.web.account.address,
+        privateKey: augur.web.account.privateKey,
+        handle: augur.web.account.handle
+      });
 
-    // get account if we're not hosted
-    if (!configState.isHosted) {
+    // hosted node: no unlocked account available
+    } else if (this.flux.store('config').getState().isHosted) {
+      console.log("no unlocked account available");
+      this.dispatch(constants.network.UPDATE_ETHEREUM_STATUS, {
+        ethereumStatus: constants.network.ETHEREUM_STATUS_NO_ACCOUNT
+      });
 
-      ethereumClient.getAccount(function (account) {
-        self.dispatch(constants.config.UPDATE_ACCOUNT, {
-          currentAccount: account
+    // local node: if it's unlocked, use the coinbase account
+    } else {
+
+      // check to make sure the account is unlocked
+      augur.rpc.unlocked(augur.coinbase, function (unlocked) {
+
+        // use coinbase if unlocked
+        if (unlocked && !unlocked.error) {
+          console.log("using unlocked account:", augur.coinbase);
+          return self.dispatch(constants.config.UPDATE_ACCOUNT, {
+            currentAccount: augur.coinbase
+          });
+        }
+
+        // otherwise, no account available
+        console.log("account", augur.coinbase, "is locked");
+        self.dispatch(constants.network.UPDATE_ETHEREUM_STATUS, {
+          ethereumStatus: constants.network.ETHEREUM_STATUS_NO_ACCOUNT
         });
-      }, function () {
-        console.log('no unlocked account detected');
-        self.dispatch(
-          constants.network.UPDATE_ETHEREUM_STATUS,
-          {ethereumStatus: constants.network.ETHEREUM_STATUS_NO_ACCOUNT}
-        );
       });
     }
 
-    // get all possible accounts from network
-    ethereumClient.getAccounts(function (accounts) {
-      self.dispatch(constants.network.UPDATE_NETWORK, { accounts: accounts });
-    });
-
-    // fetch gasprice once
     augur.rpc.gasPrice(function (gasPrice) {
       if (gasPrice && !gasPrice.error) {
         self.dispatch(constants.network.UPDATE_NETWORK, {

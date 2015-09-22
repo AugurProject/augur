@@ -4,7 +4,6 @@ var constants = require('../libs/constants');
 var utilities = require('../libs/utilities');
 
 var state = {
-  accounts: null,
   peerCount: null,
   blockNumber: null,
   blocktime: null,

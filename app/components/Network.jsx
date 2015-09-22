@@ -10,7 +10,6 @@ var Network = React.createClass({
 
   getStateFromFlux: function () {
     var flux = this.getFlux();
-
     return {
       network: flux.store('network').getState(),
       host: flux.store('config').getState().host

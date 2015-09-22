@@ -16,43 +16,6 @@ var SendCashModal = React.createClass({
 
   mixins: [FluxMixin, StoreWatchMixin('asset')],
 
-  getStateFromFlux: function() {
-
-    var flux = this.getFlux();
-    var balance = flux.store('asset').getState().cash;
-
-    return {
-      ethereumClient: flux.store('config').getEthereumClient(),
-      balance: balance ? +balance.toFixed(2) : '-'
-    }
-  },
-
-  onSend: function (event) {
-
-    if (this.isValid(event)) {
-
-      augur.sendCash({
-        to: this.state.destination,
-        value: this.state.amount,
-        onSent: function (result) {
-          console.log('sending', abi.string(amount), 'cash to', destination);
-        },
-        onSuccess: function (result) {
-          console.log('cash sent successfully');
-        },
-        onFailed: function (result) {
-          utilities.error('failed to send cash: ' + error);
-        }
-      });
-
-      this.props.onRequestai();
-    }
-  },
-
-
-  // base methods
-  // FIXME:  move these to a base class and merge for each modal
-
   getInitialState: function () {
     return {
       amount: '',
@@ -60,6 +23,32 @@ var SendCashModal = React.createClass({
       destinationError: null,
       amountError: null
     };
+  },
+
+  getStateFromFlux: function () {
+    var balance = this.getFlux().store('asset').getState().cash;
+    return { balance: balance ? +balance.toFixed(2) : '-' };
+  },
+
+  onSend: function (event) {
+    var self = this;
+    if (this.isValid(event)) {
+      augur.sendCash({
+        to: this.state.destination,
+        value: this.state.amount,
+        onSent: function (result) {
+          console.log(abi.string(self.state.amount), "cash ->", self.state.destination);
+        },
+        onSuccess: function (result) {
+          console.log("cash sent successfully");
+        },
+        onFailed: function (err) {
+          console.error("failed to send cash:", err);
+        }
+      });
+      this.props.onHide();
+      // this.props.onRequestai();
+    }
   },
 
   onChangeDestination: function (event) {
@@ -156,30 +145,7 @@ var SendRepModal = React.createClass({
 
   assetType: 'rep',
 
-  mixins: [FluxMixin, StoreWatchMixin('asset')],
-
-  getStateFromFlux: function() {
-
-    var flux = this.getFlux();
-    var balance = flux.store('asset').getState().reputation;
-
-    return {
-      ethereumClient: flux.store('config').getEthereumClient(),
-      balance: balance ? +balance.toFixed(2) : '-'
-    }
-  },
-
-  onSend: function(event) {
-
-    if (this.isValid(event)) {
-      this.state.ethereumClient.sendRep(this.state.destination, this.state.amount);
-      this.props.onHide();
-    }
-  },
-
-
-  // base methods
-  // FIXME:  move these to a base class and merge for each modal
+  mixins: [FluxMixin, StoreWatchMixin('asset', 'branch')],
 
   getInitialState: function () {
     return {
@@ -188,6 +154,36 @@ var SendRepModal = React.createClass({
       destinationError: null,
       amountError: null
     };
+  },
+
+  getStateFromFlux: function () {
+    var flux = this.getFlux();
+    var balance = flux.store('asset').getState().reputation;
+    return {
+      branchId: flux.store("branch").getCurrentBranch().id,
+      balance: balance ? +balance.toFixed(2) : '-'
+    };
+  },
+
+  onSend: function (event) {
+    var self = this;
+    if (this.isValid(event)) {
+      augur.sendReputation({
+        branchId: this.state.branchId,
+        to: this.state.destination,
+        value: this.state.amount,
+        onSent: function (result) {
+          console.log(abi.number(self.state.amount), "rep ->", self.state.destination);
+        },
+        onSuccess: function (result) {
+          console.log('rep sent successfully');
+        },
+        onFailed: function (error) {
+          console.error("failed to send rep:", error);
+        }
+      });
+      this.props.onHide();
+    }
   },
 
   onChangeDestination: function (event) {
@@ -286,28 +282,6 @@ var SendEtherModal = React.createClass({
 
   mixins: [FluxMixin, StoreWatchMixin('asset')],
 
-  getStateFromFlux: function() {
-
-    var flux = this.getFlux();
-    var balance = flux.store('asset').getState().ether;
-
-    return {
-      ethereumClient: flux.store('config').getEthereumClient(),
-      balance: balance ? utilities.formatEther(balance).value : '-'
-    }
-  },
-
-  onSend: function(event) {
-
-    if (this.isValid(event) && process.env.RPC_HOST !== 'poc9.com:8545') {
-      this.state.ethereumClient.sendEther(this.state.destination, this.state.amount);
-      this.props.onHide();
-    }
-  },
-
-  // base methods
-  // FIXME:  move these to a base class and merge for each modal
-
   getInitialState: function () {
     return {
       amount: '',
@@ -315,6 +289,37 @@ var SendEtherModal = React.createClass({
       destinationError: null,
       amountError: null
     };
+  },
+
+  getStateFromFlux: function () {
+    var balance = this.getFlux().store('asset').getState().ether;
+    return {
+      balance: balance ? utilities.formatEther(balance).value : '-'
+    };
+  },
+
+  onSend: function(event) {
+    if (this.isValid(event)) {
+      augur.rpc.sendEther({
+        to: this.state.destination,
+        value: this.state.amount,
+        from: this.getAccount(),
+        onSent: function (result) {
+          if (result && result.error) return utilities.error(result);
+        },
+        onSuccess: function (result) {
+          if (result) {
+            if (result.error) return utilities.error(result);
+            console.log(self.currentAccount, 'sent', amount, 'ether to', destination);
+            console.log("txhash:", result.txHash);
+          }
+        },
+        onFailed: function (result) {
+          utilities.error("sendEther failed:", result);
+        }
+      });
+      this.props.onHide();
+    }
   },
 
   onChangeDestination: function (event) {

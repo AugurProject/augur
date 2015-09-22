@@ -37,7 +37,6 @@ var AddMarketModal = React.createClass({
     var flux = this.getFlux();
 
     return {
-      ethereumClient: flux.store('config').getEthereumClient(),
       cash: flux.store('asset').getState().cash,
       currentBlock: flux.store('network').getState().blockNumber,
       currentBranch: flux.store('branch').getCurrentBranch()

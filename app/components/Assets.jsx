@@ -36,36 +36,52 @@ var Assets = React.createClass({
       if (this.props.asset.ether.toNumber() < constants.MIN_ETHER_WARNING) {
         utilities.warn('not enough ether'); 
       }
-      augur.cashFaucet(function (result) {
-        if (result && !result.error) {
-          self.getFlux().actions.transaction.addTransaction({
-            hash: result.txHash, 
-            type: constants.transaction.CASH_FAUCET_TYPE, 
-            description: 'requesting cash'
-          });
+      augur.cashFaucet({
+        onSent: function (result) {
+          if (result && !result.error) {
+            self.getFlux().actions.transaction.addTransaction({
+              hash: result.txHash, 
+              type: constants.transaction.CASH_FAUCET_TYPE, 
+              description: 'requesting cash'
+            });
+          } else {
+            console.error("cash faucet failed:", result);
+          }
+        },
+        onSuccess: function (result) {
+          console.log("cash faucet success:", result.txHash);
+        },
+        onFailed: function (err) {
+          console.error("cash faucet failed:", err);
         }
       });
     }
   },
 
-  onRepFaucet: function(event) {
-
+  onRepFaucet: function (event) {
     if (!this.state.repFaucetDisabled) {
-
       if (this.props.asset.ether.toNumber() < constants.MIN_ETHER_WARNING) {
         utilities.warn('not enough ether');
       }
-
       var flux = this.getFlux();
-      var branchId = flux.store('branch').getCurrentBranch().id;
-
-      augur.reputationFaucet(branchId, function (result) {
-        if (result && !result.error) {
-          flux.actions.transaction.addTransaction({
-            hash: result.txHash,
-            type: constants.transaction.REP_FAUCET_TYPE, 
-            description: 'requesting reputation'
-          });
+      augur.reputationFaucet({
+        branchId: flux.store('branch').getCurrentBranch().id, 
+        onSent: function (result) {
+          if (result && !result.error) {
+            flux.actions.transaction.addTransaction({
+              hash: result.txHash,
+              type: constants.transaction.REP_FAUCET_TYPE, 
+              description: 'requesting reputation'
+            });
+          } else {
+            console.error("reputation faucet failed:", result);
+          }
+        },
+        onSuccess: function (result) {
+          console.log("reputation faucet success:", result.txHash);
+        },
+        onFailed: function (err) {
+          console.error("reputation faucet failed:", err);
         }
       });
     } 

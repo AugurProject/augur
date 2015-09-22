@@ -19,12 +19,9 @@ var CloseMarketModal = React.createClass({
   },
 
   getStateFromFlux: function () {
-    var flux = this.getFlux();
-
     return {
-      ethereumClient: flux.store('config').getEthereumClient(),
-      currentBlock: flux.store('network').getState().blockNumber
-    }
+      currentBlock: this.getFlux().store('network').getState().blockNumber
+    };
   },
 
   componentDidMount: function(event) {

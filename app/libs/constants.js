@@ -6,7 +6,6 @@ var BigNumber = require('bignumber.js');
 var ONE_FXP = new BigNumber(2).toPower(64);
 
 module.exports = {
-  DEMO_HOST: 'eth3.augur.net',
   MARKET_CACHE: [
     'http://db1.augur.net/marketeer/markets/?',
     'http://db3.augur.net/marketeer/markets/?',
@@ -23,13 +22,12 @@ module.exports = {
   MIN_ETHER_WARNING: 50000000000000000000,
   CHANGE_EVENT: 'change',
   config: keyMirror({
-    UPDATE_ETHEREUM_CLIENT_SUCCESS: null,
-    UPDATE_ETHEREUM_CLIENT_FAILED: null,
+    SET_HOST: null,
+    SET_IS_HOSTED: null,
+    USE_MARKET_CACHE: null,
     UPDATE_ACCOUNT: null,
-    UPDATE_DEBUG: null,
     UPDATE_PERCENT_LOADED_SUCCESS: null,
-    LOAD_APPLICATION_DATA_SUCCESS: null,
-    UPDATE_USE_MARKET_CACHE: null
+    LOAD_APPLICATION_DATA_SUCCESS: null
   }),
   network: keyMirror({
     UPDATE_ETHEREUM_STATUS: null,

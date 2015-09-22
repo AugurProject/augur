@@ -39,7 +39,6 @@
     "bootstrap": "^3.3.4",
     "browserify": "^10.2.6",
     "envify": "^3.4.0",
-    "es6-promise": "^2.0.1",
     "fluxxor": "^1.6.0",
     "jquery": "^2.1.4",
     "lodash": "^3.10.1",
@@ -53,8 +52,7 @@
     "react-intl": "^1.2.0",
     "react-paginate": "^0.1.33",
     "react-router": "^0.13.3",
-    "secure-random": "^1.1.1",
-    "ua-parser-js": "^0.7.7"
+    "secure-random": "^1.1.1"
   },
   "devDependencies": {
     "grunt": "^0.4.5",

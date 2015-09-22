@@ -31,7 +31,6 @@ var Overview = React.createClass({
       account: account,
       asset: flux.store('asset').getState(),
       trendingMarkets: flux.store('market').getTrendingMarkets(3, currentBranch),
-      ethereumClient: flux.store('config').getEthereumClient(),
       authoredMarkets: flux.store('market').getMarketsByAuthor(account),
       votePeriod: flux.store('branch').getState().currentVotePeriod,
       currentBranch: currentBranch,

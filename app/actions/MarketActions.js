@@ -162,17 +162,15 @@ var MarketActions = {
   },
 
   loadNewMarkets: function () {
-
-    var branchId = this.flux.store('branch').getCurrentBranch().id;
-    var ethereumClient = this.flux.store('config').getEthereumClient();
-    var currentMarkets = this.flux.store('market').getState().markets;
-    var currentMarketIds = _.map(_.reject(currentMarkets, function (market) {
+    var branchId, currentMarkets, currentMarketIds;
+    branchId = this.flux.store('branch').getCurrentBranch().id;
+    currentMarkets = this.flux.store('market').getState().markets;
+    currentMarketIds = _.map(_.reject(currentMarkets, function (market) {
       return typeof(market.id) === 'string' && market.id.match(/pending/);
     }), 'id');
-
     augur.getMarkets(branchId, function (markets) {
+      var newMarketIds, validMarkets;
       if (markets && !markets.error) {
-        var newMarketIds, validMarkets;
         validMarkets = _.filter(markets, function (marketId) {
           return !_.contains(
             blacklist.markets[augur.network_id][branchId],
@@ -196,26 +194,25 @@ var MarketActions = {
   },
 
   loadSomeMarkets: function(marketIds) {
-
-    var ethereumClient = this.flux.store('config').getEthereumClient();
+    var self = this;
     var markets =  this.flux.store('market').getState().markets;
 
     _.each(marketIds, function (marketId) {
 
       // initialize market if it doesn't exist
       if (!markets[marketId]) {
-        var market = this.flux.actions.market.initMarket(marketId);
+        var market = self.flux.actions.market.initMarket(marketId);
 
         // TODO each of these should not be a separate event
-        this.dispatch(constants.market.ADD_MARKET_SUCCESS, { market: market });
+        self.dispatch(constants.market.ADD_MARKET_SUCCESS, { market: market });
       }
 
       //console.log('loading', marketId.toString(16));
-      var commands = this.flux.actions.market.batchMarket(marketId);
-      _.each(_.chunk(commands, 5), function(chunk) {
-          ethereumClient.batch(chunk);
+      var commands = self.flux.actions.market.batchMarket(marketId);
+      _.each(_.chunk(commands, 5), function (chunk) {
+          self.flux.actions.market.batch(chunk);
       });
-    }, this);
+    });
   },
 
   // first batch of data fetch from market
@@ -362,8 +359,14 @@ var MarketActions = {
     return commands;
   },
 
-  updateMarket: function (market, supplement) {
+  batch: function (commands) {
+    var batch = augur.createBatch();
+    _.each(commands, function (cmd) { batch.add(cmd[0], cmd[1], cmd[2]); });
+    batch.execute();
+  },
 
+  updateMarket: function (market, supplement) {
+    var self = this;
     if (market && market.id && market.id !== "0x") {
 
       var marketId = abi.hex(market.id);
@@ -371,7 +374,7 @@ var MarketActions = {
       // Calculate market properties before dispatch (seems to belong in a Market class)
       if (!market.outstandingShares && market.outstandingShares !== 0) {
         market.outstandingShares = _.reduce(market.outcomes, function(outstandingShares, outcome) {
-          if (outcome) return outstandingShares + parseFloat(outcome.outstandingShares);
+          if (outcome) return outstandingShares + abi.number(outcome.outstandingShares);
         }, 0);
       }
 
@@ -383,8 +386,8 @@ var MarketActions = {
       var ready = _.intersection(_.keys(currentMarket), requiredProperties);
       if (ready.length == requiredProperties.length && !supplement) {
         var commands = this.flux.actions.market.batchSupplementMarket(currentMarket);
-        _.each(_.chunk(commands, 5), function(chunk) {
-          ethereumClient.batch(chunk);
+        _.each(_.chunk(commands, 5), function (chunk) {
+          self.flux.actions.market.batch(chunk);
         });
       }
 
@@ -473,30 +476,22 @@ var MarketActions = {
       });
 
     } else {
-      var ethereumClient = this.flux.store('config').getEthereumClient();
-
       var commands = _.map(markets, function (market) {
         var marketId = abi.hex(market.id);
         return ['getParticipantNumber', [marketId, account], function (traderId) {
           market.traderId = abi.bignum(traderId);
           if (traderId !== -1) {
             _.each(market.outcomes, function (outcome) {
-              ethereumClient.getParticipantSharesPurchased(
-                marketId,
-                market.traderId,
-                outcome.id,
-                function (result) {
-                  outcome['sharesHeld'] = abi.unfix(result);
-                }
-              );
-            }); 
+              augur.getParticipantSharesPurchased(marketId, traderId, outcome.id, function (r) {
+                outcome['sharesHeld'] = abi.unfix(r.callReturn);
+              });
+            });
             self.flux.actions.market.updateMarket(market, true);
           }
         }];
       });
-
       _.each(_.chunk(commands, 6), function (chunk) {
-        ethereumClient.batch(chunk);
+        self.flux.actions.market.batch(chunk);
       });
     }
   }

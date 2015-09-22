@@ -30,39 +30,34 @@ var RegisterModal = React.createClass({
       var flux = this.getFlux();
       var self = this;
 
-      augur.web.register(this.state.handle, this.state.password, function (account) {
-
-        if (account) {
-
-          if (account.error) {
-
-            console.error(account.error, account.message);
-            flux.actions.market.updateSharesHeld(null);
-
+      augur.web.register(this.state.handle, this.state.password, [
+        function (account) {
+          if (account) {
+            if (account.error) {
+              console.error(account);
+              flux.actions.market.updateSharesHeld(null);
+              flux.actions.config.updateAccount({
+                currentAccount: null,
+                privateKey: null,
+                handle: null
+              });
+              self.setState({ handleHelp: account.message });
+              return;
+            }
+            console.log("registered account:", account.handle, account.address);
             flux.actions.config.updateAccount({
-              currentAccount: null,
-              privateKey: null,
-              handle: null
+              currentAccount: account.address,
+              privateKey: account.privateKey,
+              handle: account.handle
             });
-
-            self.setState({ handleHelp: account.message });
-
-            return;
+            self.props.onHide();
+          } else {
+            console.error(account);
           }
-          
-          console.log("new account registered: " + account.handle);
-          console.log("address: " + account.address);
-          console.log("private key: " + account.privateKey.toString("hex"));
-
-          flux.actions.config.updateAccount({
-            currentAccount: account.address,
-            privateKey: account.privateKey,
-            handle: account.handle
-          });
-
-          self.props.onHide();
-        }
-      });
+        },
+        flux.actions.asset.updateAssets,
+        flux.actions.asset.updateAssets
+      ]);
     }
   },
 

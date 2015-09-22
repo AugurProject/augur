@@ -26,7 +26,6 @@ var Ballots = React.createClass({
       account: flux.store('config').getAccount(),
       asset: flux.store('asset').getState(),
       blockNumber: flux.store('network').getState().blockNumber,
-      ethereumClient: flux.store('config').getEthereumClient(),
       branchState: flux.store('branch').getState(),
       events: flux.store('report').getState().eventsToReport
     };

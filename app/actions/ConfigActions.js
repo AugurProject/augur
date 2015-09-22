@@ -1,48 +1,43 @@
 var constants = require('../libs/constants');
 var utilities = require('../libs/utilities');
-var EthereumClient = require('../clients/EthereumClient');
 
 var ConfigActions = {
 
-  updateEthereumClient: function (host) {
-
-    host = (host === undefined) ? this.flux.store('config').getState().host : host;
-    var branch = this.flux.store('branch').getCurrentBranch();
-    var isHosted = false;
-    var useMarketCache = false;
-
-    // TODO: use a better trigger for local v. hosted than a regex
-    if (host && !host.match(/localhost/) && !host.match(/127.0.0.1/)) {
-      useMarketCache = true;
-      isHosted = true;
+  connect: function (hosted) {
+    var host;
+    if (hosted) {
+      host = this.flux.actions.config.connectHosted();
+    } else {
+      host = this.flux.store('config').getState().host;
+      if (!augur.connect(host)) {
+        host = this.flux.actions.config.connectHosted();
+      }
     }
-
-    // FIXME: If we can, we should make defaultBranchId unnecessary. We should
-    // always know which branch we're acting on in the client, and pass it to
-    // EthereumClient functions.
-    var ethereumClient = window.ethereumClient = new EthereumClient({
-      host: host,
-      defaultBranchId: branch.id,
-      isHosted: isHosted
-    });
-
-    this.dispatch(constants.config.UPDATE_ETHEREUM_CLIENT_SUCCESS, {
-      ethereumClient: ethereumClient,
-      host: host,
-      isHosted: isHosted,
-      useMarketCache: useMarketCache
-    });
+    console.log("connected to host:", augur.rpc.nodes.local || augur.rpc.nodes.hosted[0]);
+    this.flux.actions.network.checkNetwork();
   },
 
-  useMarketCache: function(useMarketCache) {
-
-    this.dispatch(constants.config.UPDATE_USE_MARKET_CACHE, {
-      useMarketCache: useMarketCache
-    });
+  connectHosted: function () {
+    augur.rpc.reset();
+    augur.connect();
+    this.flux.actions.config.setIsHosted(true);
+    this.flux.actions.config.useMarketCache(true);
+    return augur.rpc.nodes.hosted[0];
   },
 
-  updatePercentLoaded: function(percent) {
+  setIsHosted: function (isHosted) {
+    this.dispatch(constants.config.SET_IS_HOSTED, { isHosted: isHosted });
+  },
 
+  setHost: function (host) {
+    this.dispatch(constants.config.SET_HOST, { host: host });
+  },
+
+  useMarketCache: function (use) {
+    this.dispatch(constants.config.USE_MARKET_CACHE, { useMarketCache: use });
+  },
+
+  updatePercentLoaded: function (percent) {
     this.dispatch(constants.config.UPDATE_PERCENT_LOADED_SUCCESS, {
       percentLoaded: percent
     });
@@ -88,9 +83,7 @@ var ConfigActions = {
             return console.log("contracts filter error:", filtrate);
           }
           console.log("[filter] contracts:", filtrate.address);
-
           self.flux.actions.asset.updateAssets();
-
           if (self.flux.store("config").getState().useMarketCache) {
             setTimeout(self.flux.actions.market.loadMarkets, 5000);
           } else {
@@ -146,20 +139,12 @@ var ConfigActions = {
     });
   },
 
-  initializeState: function() {
-
-    this.flux.actions.config.updateEthereumClient();
-    this.flux.actions.network.checkNetwork();
-  },
-
-  updateAccount: function(credentials) {
-
+  updateAccount: function (credentials) {
     this.dispatch(constants.config.UPDATE_ACCOUNT, {
       currentAccount: credentials.currentAccount,
       privateKey: credentials.privateKey,
       handle: credentials.handle
     });
-
     this.flux.actions.asset.updateAssets();
   },
 
@@ -178,15 +163,11 @@ var ConfigActions = {
           self.flux.actions.asset.updateAssets();
           return;
         }
-
-        console.log("signed in to account: " + account.handle);
-        console.log("address: " + account.address);
-        console.log("private key: " + account.privateKey.toString("hex"));
-
+        console.log("signed in to account:", account.handle, account.address);
         self.dispatch(constants.config.UPDATE_ACCOUNT, {
-            currentAccount: account.address,
-            privateKey: account.privateKey,
-            handle: account.handle
+          currentAccount: account.address,
+          privateKey: account.privateKey,
+          handle: account.handle
         });
         self.flux.actions.asset.updateAssets();
         self.flux.actions.report.loadEventsToReport();
@@ -194,6 +175,8 @@ var ConfigActions = {
         if (self.flux.store("config").getState().useMarketCache) {
           self.flux.actions.market.loadMarketCache();
         }
+      } else {
+        console.error(account);
       }
     });
   },
@@ -201,7 +184,11 @@ var ConfigActions = {
   signOut: function() {
     augur.web.logout();
     this.flux.actions.market.updateSharesHeld(null);
-    this.dispatch(constants.config.UPDATE_ACCOUNT, { currentAccount: null });
+    this.dispatch(constants.config.UPDATE_ACCOUNT, {
+      currentAccount: null,
+      privateKey: null,
+      handle: null
+    });
     this.flux.actions.asset.updateAssets();
   }
 };
