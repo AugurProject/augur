@@ -470,7 +470,6 @@ var MarketActions = {
       var checks = 0;
       (function checkMarketCache() {
         self.flux.actions.market.loadMarketCache();
-        console.log("check:", checks);
         if (getMarket(tx.marketId).outcomes[outcomeIdx].price.eq(tx.oldPrice)) {
           if (++checks < 10) return setTimeout(checkMarketCache, 2500);
           self.flux.actions.market.loadMarket(tx.marketId);

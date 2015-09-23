@@ -33,7 +33,6 @@ var ConfigStore = Fluxxor.createStore({
 
   handleSetHost: function (payload) {
     state.host = payload.host;
-    console.log(payload);
     this.emit(constants.CHANGE_EVENT);
   },
 
