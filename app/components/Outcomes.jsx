@@ -38,6 +38,7 @@ var Overview = React.createClass({
 
   getInitialState: function () {
     return {
+      pending: {},
       buyShares: false,
       sellShares: false,
       pendingShares: null
@@ -100,47 +101,55 @@ var Overview = React.createClass({
 
   handleTrade: function (relativeShares) {
     var self = this;
+    var txhash;
+    var marketId = this.props.market.id;
+    var branchId = this.props.market.branchId;
+    var outcomeId = this.props.outcome.id;
     this.getTradeFunction(relativeShares).call(augur, {
-      branchId: self.props.market.branchId,
-      marketId: abi.hex(self.props.market.id),
-      outcome: self.props.outcome.id,
+      branchId: branchId,
+      marketId: abi.hex(marketId),
+      outcome: outcomeId,
       amount: Math.abs(relativeShares),
       nonce: null,
       limit: 0,
-      onSent: function (result) {
+      onSent: function (res) {
+        txhash = res.txHash;
         var pendingShares = +relativeShares;
         if (self.state.pendingShares) {
           pendingShares += +self.state.pendingShares;
         }
-        self.setState({
+        var newState = {
+          pending: self.state.pending,
           pendingShares: pendingShares,
           buyShares: false,
           sellShares: false
-        });
-        self.handleAddTransaction(result.txHash, relativeShares);
+        };
+        var oldPrice = self.getFlux().store("market").getMarket(
+          marketId
+        ).outcomes[abi.number(outcomeId) - 1].price;
+        newState.pending[res.txHash] = {
+          branchId: branchId,
+          marketId: marketId,
+          outcome: outcomeId,
+          oldPrice: oldPrice
+        };
+        self.setState(newState);
+        console.log("trade sent:", res.txHash);
+        // self.handleAddTransaction(res.txHash, relativeShares);
       },
       onSuccess: function (res) {
-        console.log("trade succeeded:", res);
-        var checks = 0;
-        var marketId = self.props.market.id;
-        var getMarket = self.flux.store("market").getMarket;
-        var outcomeIdx = self.props.outcome.id - 1;
-        var oldPrice = getMarket(marketId).outcomes[outcomeIdx].price;
-        self.flux.actions.asset.updateAssets();
-        if (self.flux.store("config").getState().useMarketCache) {
-          (function checkMarketCache() {
-            self.flux.actions.market.loadMarketCache();
-            if (getMarket(marketId).outcomes[outcomeIdx].price.eq(oldPrice)) {
-              if (++checks < 10) return setTimeout(checkMarketCache, 2500);
-              self.flux.actions.market.loadMarket(marketId);
-            }
-          })();
-        } else {
-          self.flux.actions.market.loadMarket(marketId);
-        }
+        console.log("trade succeeded:", res.txHash);
+        self.getFlux().actions.market.tradeSucceeded(self.state.pending[res.txHash]);
+        var pending = self.state.pending;
+        delete pending[res.txHash];
+        self.setState({ pending: pending })
+        // console.log(JSON.stringify(self.state.pending, null, 2));
       },
       onFailed: function (err) {
         console.error("trade failed:", err);
+        var pending = self.state.pending;
+        delete pending[res.txHash];
+        self.setState({ pending: pending })
       }
     });
   },

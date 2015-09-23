@@ -1,9 +1,10 @@
 Augur Client
-------------
+============
 
 This is the frontend for [Augur](http://augur.net), a decentralized prediction market platform that runs on Ethereum.
 
-## How Dapps Work
+How Dapps Work
+--------------
 
 Ethereum Dapps store their data on the Ethereum blockchain, and their frontends are web pages that use the JavaScript API to access blockchain data.
 
@@ -14,7 +15,8 @@ Ethereum Dapps store their data on the Ethereum blockchain, and their frontends 
 * [Ethereum Builders](http://ethereum.builders/) ([YouTube Channel](https://www.youtube.com/channel/UCYlXQeVJ__t7T5kgHWhhiXQ))
 * [State of the Dapps](https://docs.google.com/spreadsheets/d/1VdRMFENPzjL2V-vZhcc_aa5-ysf243t5vXlxC2b054g/edit#gid=0), a spreadsheet of Dapps in development
 
-## Getting Started
+Getting Started
+---------------
 
 The client is built and hosted at [http://client.augur.net](http://client.augur.net)
 
@@ -63,7 +65,8 @@ use `grunt watchify` to have grunt watch for changes.  `grunt browserify:debug` 
 
 also, a seperate dev branch is used when building in this manner and data will be seperate from the default build and hosted option above.
 
-## Contributing
+Contributing
+------------
 
 We think Augur and Ethereum are pretty awesome, and they're going to change the world. We encourage you to be a part of this.
 

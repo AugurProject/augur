@@ -461,6 +461,28 @@ var MarketActions = {
     this.dispatch(constants.market.DELETE_MARKET_SUCCESS, {marketId: marketId});
   },
 
+  tradeSucceeded: function (tx) {
+    var self = this;
+    var outcomeIdx = abi.number(tx.outcome) - 1;
+    this.flux.actions.asset.updateAssets();
+    if (this.flux.store("config").getState().useMarketCache) {
+      var getMarket = this.flux.store("market").getMarket;
+      var checks = 0;
+      (function checkMarketCache() {
+        self.flux.actions.market.loadMarketCache();
+        console.log("check:", checks);
+        if (getMarket(tx.marketId).outcomes[outcomeIdx].price.eq(tx.oldPrice)) {
+          if (++checks < 10) return setTimeout(checkMarketCache, 2500);
+          self.flux.actions.market.loadMarket(tx.marketId);
+        } else {
+          console.log("market", abi.hex(tx.marketId), "cache updated");
+        }
+      })();
+    } else {
+      this.flux.actions.market.loadMarket(marketId);
+    }
+  },
+
   updateSharesHeld: function(account) {
     var self = this;
     var markets =  this.flux.store('market').getState().markets;
