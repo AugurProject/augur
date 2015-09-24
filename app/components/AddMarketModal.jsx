@@ -188,7 +188,6 @@ var AddMarketModal = React.createClass({
                   flux.actions.market.loadMarketCache();
                   if (!flux.store("market").getMarket(marketId)) {
                     if (++checks < 10) return setTimeout(checkMarketCache, 2500);
-                    flux.actions.market.loadMarket(marketId);
                   }
                 })();
               } else {

@@ -55,8 +55,10 @@ var RegisterModal = React.createClass({
             console.error(account);
           }
         },
-        flux.actions.asset.updateAssets,
-        flux.actions.asset.updateAssets
+        function (res) {
+          augur.filters.ignore(true);
+          flux.actions.config.initializeData();
+        },
       ]);
     }
   },

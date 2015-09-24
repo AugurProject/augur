@@ -472,7 +472,7 @@ var MarketActions = {
         self.flux.actions.market.loadMarketCache();
         if (getMarket(tx.marketId).outcomes[outcomeIdx].price.eq(tx.oldPrice)) {
           if (++checks < 10) return setTimeout(checkMarketCache, 2500);
-          self.flux.actions.market.loadMarket(tx.marketId);
+          // self.flux.actions.market.loadMarket(tx.marketId);
         } else {
           console.log("market", abi.hex(tx.marketId), "cache updated");
         }

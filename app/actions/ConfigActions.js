@@ -108,7 +108,6 @@ var ConfigActions = {
               self.flux.actions.market.loadMarketCache();
               if (getMarket(marketId).outcomes[outcomeIdx].price.eq(oldPrice)) {
                 if (++checks < 10) return setTimeout(checkMarketCache, 2500);
-                self.flux.actions.market.loadMarket(marketId);
               }
             })();
           } else {
@@ -128,7 +127,6 @@ var ConfigActions = {
               self.flux.actions.market.loadMarketCache();
               if (!self.flux.store("market").getMarket(marketId)) {
                 if (++checks < 10) return setTimeout(checkMarketCache, 2500);
-                self.flux.actions.market.loadMarket(marketId);
               }
             })();
           } else {
