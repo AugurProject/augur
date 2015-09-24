@@ -79541,6 +79541,10 @@ module.exports = function (augur) {
         invoke: function (itx, callback) {
             var self = this;
             var tx, packaged;
+
+            // if this is just a call, use ethrpc's regular invoke method
+            if (!itx.send) return augur.rpc.fire(itx, callback);
+
             if (this.account.address) {
                 if (this.account.privateKey && itx && itx.constructor === Object) {
 
@@ -79628,18 +79632,13 @@ module.exports = function (augur) {
                     }
                     return callback(errors.TRANSACTION_FAILED);
                 }
-            }
-          
-            // not logged in
-            if (itx.send) {
+
+            } else {
                 if (!utils.is_function(callback)) {
                     return errors.NOT_LOGGED_IN;
                 }
                 return callback(errors.NOT_LOGGED_IN);
             }
-
-            // if this is just a call, use ethrpc's regular invoke method
-            return augur.rpc.fire(itx, callback);
         }
 
     };
