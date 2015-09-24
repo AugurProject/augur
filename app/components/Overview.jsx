@@ -108,7 +108,8 @@ var Holding = React.createClass({
     if (!this.nextProps) return true;
 
     if (this.props.market.price != this.nextProps.market.price ||
-        this.props.outcome.sharesHeld != this.nextProps.outcome.sharesHeld) return true;
+        this.props.outcome.sharesHeld != this.nextProps.outcome.sharesHeld ||
+        this.props.outcome.pendingShares != this.nextProps.outcome.pendingShares) return true;
 
   },
 
@@ -122,12 +123,17 @@ var Holding = React.createClass({
     if (this.props.market.expired && this.props.market.authored && !this.props.market.closed) {
      closeMarket = <CloseMarketTrigger text='close market' params={ { marketId: this.props.market.id.toString(16), branchId: this.props.market.branchId.toString(16) } } />;
     }
+    var pendingShares = <span />;
+    if (!this.props.outcome.pendingShares.equals(0)) {
+      pendingShares = <span className="pull-right pending-shares">{ this.props.outcome.pendingShares.toNumber() } pending</span>;
+    }
     
     return (
       <Link key={ key } className="list-group-item clearfix" to='market' params={ {marketId: this.props.market.id.toString(16) } }>
         <span className="price">{ percent }</span>
         <p className="description">{ this.props.market.description }</p>
         <span className={ className }>{ this.props.outcome.sharesHeld.toNumber() } { name }</span>
+        { pendingShares }
         { closeMarket }            
       </Link>
     );
