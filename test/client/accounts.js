@@ -445,16 +445,13 @@ describe("Transaction signing", function () {
 
 describe("Contract methods", function () {
 
-    var handle = "5830b26853b2237a2adbdd324fb3ec9bae734ac09cfc2a7bed243c52287f8c2d";
-    var password = "fd23fe65e2ae4cc24990704c8cece5bec67775f632ff963ec61846471f52fcac";
-
     describe("Set transaction nonce", function () {
 
         it("high nonce", function (done) {
             this.timeout(constants.TIMEOUT*2);
             var augur = utils.setup(require("../../src"), process.argv.slice(2));
-            var handle = "5830b26853b2237a2adbdd324fb3ec9bae734ac09cfc2a7bed243c52287f8c2d";
-            var password = "fd23fe65e2ae4cc24990704c8cece5bec67775f632ff963ec61846471f52fcac";
+            // var handle = "5830b26853b2237a2adbdd324fb3ec9bae734ac09cfc2a7bed243c52287f8c2d";
+            // var password = "fd23fe65e2ae4cc24990704c8cece5bec67775f632ff963ec61846471f52fcac";
             augur.web.login(handle, password, function (user) {
                 if (user.error) {
                     augur.web.logout();
@@ -498,8 +495,8 @@ describe("Contract methods", function () {
         it("duplicate transaction / high nonce: invoke reputationFaucet twice", function (done) {
             this.timeout(constants.TIMEOUT*2);
             var augur = utils.setup(require("../../src"), process.argv.slice(2));
-            var handle = "5830b26853b2237a2adbdd324fb3ec9bae734ac09cfc2a7bed243c52287f8c2d";
-            var password = "fd23fe65e2ae4cc24990704c8cece5bec67775f632ff963ec61846471f52fcac";
+            // var handle = "5830b26853b2237a2adbdd324fb3ec9bae734ac09cfc2a7bed243c52287f8c2d";
+            // var password = "fd23fe65e2ae4cc24990704c8cece5bec67775f632ff963ec61846471f52fcac";
             augur.web.login(handle, password, function (user) {
                 if (user.error) {
                     augur.web.logout();
@@ -561,8 +558,8 @@ describe("Contract methods", function () {
         it("duplicate transaction / low nonce: invoke reputationFaucet twice", function (done) {
             this.timeout(constants.TIMEOUT*2);
             var augur = utils.setup(require("../../src"), process.argv.slice(2));
-            var handle = "5830b26853b2237a2adbdd324fb3ec9bae734ac09cfc2a7bed243c52287f8c2d";
-            var password = "fd23fe65e2ae4cc24990704c8cece5bec67775f632ff963ec61846471f52fcac";
+            // var handle = "5830b26853b2237a2adbdd324fb3ec9bae734ac09cfc2a7bed243c52287f8c2d";
+            // var password = "fd23fe65e2ae4cc24990704c8cece5bec67775f632ff963ec61846471f52fcac";
             augur.web.login(handle, password, function (user) {
                 if (user.error) {
                     augur.web.logout();
