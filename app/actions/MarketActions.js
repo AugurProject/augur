@@ -489,7 +489,9 @@ var MarketActions = {
     // relativeShares is a signed integer representing a trade (buy/sell)
     if (market && outcomeId && relativeShares) {
 
-      market.outcomes[outcomeId-1].pendingShares += relativeShares;
+      var pendingShares = market.outcomes[outcomeId-1].pendingShares.toNumber() + parseFloat(relativeShares);
+      market.outcomes[outcomeId-1].pendingShares = abi.bignum(pendingShares);
+
       this.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
     }
   },

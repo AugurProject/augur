@@ -40,8 +40,7 @@ var Overview = React.createClass({
     return {
       pending: {},
       buyShares: false,
-      sellShares: false,
-      pendingShares: null
+      sellShares: false
     }
   },
 
@@ -101,6 +100,7 @@ var Overview = React.createClass({
 
   handleTrade: function (relativeShares) {
     var self = this;
+    var flux = this.getFlux();
     var txhash;
     var marketId = this.props.market.id;
     var branchId = this.props.market.branchId;
@@ -114,13 +114,11 @@ var Overview = React.createClass({
       limit: 0,
       onSent: function (res) {
         txhash = res.txHash;
-        var pendingShares = +relativeShares;
-        if (self.state.pendingShares) {
-          pendingShares += +self.state.pendingShares;
-        }
+
+        flux.actions.market.updatePendingShares(self.props.market, self.props.outcome.id, relativeShares);
+
         var newState = {
           pending: self.state.pending,
-          pendingShares: pendingShares,
           buyShares: false,
           sellShares: false
         };
@@ -180,8 +178,9 @@ var Overview = React.createClass({
 
       var pendingShares = ( <span /> );
 
-      if (this.state.pendingShares) {
-        var shares = this.state.pendingShares;
+      if (!this.props.outcome.pendingShares.equals(0)) {
+
+        var shares = this.props.outcome.pendingShares.toNumber();
         var sharesString = shares < 0 ? shares.toString() : '+'+shares;
         var color = shares < 0 ? 'red' : 'green';
         pendingShares = (
@@ -201,11 +200,11 @@ var Overview = React.createClass({
           </div>
         );
 
-      } else if (this.state.pendingShares) {
+      } else if (!this.props.outcome.pendingShares.equals(0)) {
 
         holdings = (
           <div className='sell trade-button'>
-            <span className="shares-held none">{ this.state.pendingShares } shares pending</span> 
+            <span className="shares-held none">{ this.props.outcome.pendingShares.toNumber() } shares pending</span> 
           </div>
         );  
 
