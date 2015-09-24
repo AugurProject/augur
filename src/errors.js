@@ -117,9 +117,28 @@ var errors = {
         message: "password must be at least 6 characters long"
     },
 
+    NULL_RESPONSE: {
+        error: 407,
+        message: "expected transaction hash from Ethereum node, received null"
+    },
+
     NO_RESPONSE: {
         error: 408,
         message: "no response"
+    },
+
+    INVALID_RESPONSE: {
+        error: 409,
+        message: "could not parse response from Ethereum node"
+    },
+
+    LOCAL_NODE_FAILURE: {
+        error: 410,
+        message: "RPC request to local Ethereum node failed"
+    },
+    HOSTED_NODE_FAILURE: {
+        error: 411,
+        message: "RPC request to hosted nodes failed"
     },
 
     TRANSACTION_INVALID: {
@@ -145,6 +164,11 @@ var errors = {
     TRANSACTION_NOT_CONFIRMED: {
         error: 501,
         message: "polled network but could not confirm transaction"
+    },
+
+    DUPLICATE_TRANSACTION: {
+        error: 502,
+        message: "duplicate transaction"
     },
 
     ETHEREUM_NOT_FOUND: {

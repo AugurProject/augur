@@ -197,7 +197,6 @@ augur.connect = function (rpcinfo, chain) {
         this.connection = true;
         return true;
     } catch (exc) {
-        console.log(rpcinfo, "connection failed", exc);
         this.default_rpc();
         return false;
     }

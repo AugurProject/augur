@@ -28,46 +28,21 @@ module.exports = function (augur) {
         account: {},
 
         // free (testnet) ether for new accounts on registration
-        fund: function (account, callback, onConfirm1, onConfirm2) {
+        fund: function (account, onSent, onConfirm) {
             var self = this;
-            ethrpc.balancer = false;
-            ethrpc.reset();
-            var funder = ethrpc.coinbase();
-            ethrpc.sendEther({
+            var funder = augur.rpc.coinbase();
+            augur.rpc.sendEther({
                 to: account.address,
-                value: constants.FREEBIE / 2,
+                value: constants.FREEBIE,
                 from: funder,
-                onSent: function (txhash) {
-                    // console.log("fund tx 1:", txhash);
-                    if (callback) callback(account);
-                    ethrpc.sendEther({
-                        to: account.address,
-                        value: constants.FREEBIE / 2,
-                        from: funder,
-                        onSent: function (txhash) {
-                            // console.log("fund tx 2:", txhash);
-                        },
-                        onSuccess: function (r) {
-                            if (onConfirm2) onConfirm2(account);
-                        },
-                        onFailed: function (r) {
-                            r.number = 2;
-                            if (onConfirm2) return onConfirm2(r);
-                            console.error("account.fund failed:", r);
-                        }
-                    });
+                onSent: function (r) {
+                    if (onSent) onSent(account);
                 },
                 onSuccess: function (r) {
-                    // success
-                    if (onConfirm1) onConfirm1(account);
+                    if (onConfirm) onConfirm(account);
                 },
                 onFailed: function (r) {
-                    // failed
-                    r.number = 1;
-                    if (onConfirm1) {
-                        return onConfirm1(r);
-                    }
-                    console.error("account.fund failed:", r);
+                    if (onConfirm) onConfirm(r);
                 }
             });
         },
@@ -125,8 +100,7 @@ module.exports = function (augur) {
                                             return self.fund(
                                                 self.account,
                                                 callback[0],
-                                                callback[1],
-                                                callback[2]
+                                                callback[1]
                                             );
                                         }
                                         self.fund(self.account, callback);
@@ -227,87 +201,106 @@ module.exports = function (augur) {
 
         invoke: function (itx, callback) {
             var self = this;
-            var tx, data_abi, packaged;
+            var tx, packaged;
             if (this.account.address) {
+                if (this.account.privateKey && itx && itx.constructor === Object) {
 
-                // client-side transactions only needed for sendTransactions
-                if (itx.send) {
-                    if (this.account.privateKey && itx && itx.constructor === Object) {
-
-                        // parse and serialize transaction parameters
-                        tx = abi.copy(itx);
-                        if (tx.params !== undefined) {
-                            if (tx.params.constructor === Array) {
-                                for (var i = 0, len = tx.params.length; i < len; ++i) {
-                                    if (tx.params[i] !== undefined &&
-                                        tx.params[i].constructor === BigNumber) {
-                                        tx.params[i] = abi.hex(tx.params[i]);
-                                    }
+                    // parse and serialize transaction parameters
+                    tx = abi.copy(itx);
+                    if (tx.params !== undefined) {
+                        if (tx.params.constructor === Array) {
+                            for (var i = 0, len = tx.params.length; i < len; ++i) {
+                                if (tx.params[i] !== undefined &&
+                                    tx.params[i].constructor === BigNumber) {
+                                    tx.params[i] = abi.hex(tx.params[i]);
                                 }
-                            } else if (tx.params.constructor === BigNumber) {
-                                tx.params = abi.hex(tx.params);
                             }
+                        } else if (tx.params.constructor === BigNumber) {
+                            tx.params = abi.hex(tx.params);
                         }
-                        if (tx.to) tx.to = abi.prefix_hex(tx.to);
-                        data_abi = abi.encode(tx);
+                    }
+                    if (tx.to) tx.to = abi.prefix_hex(tx.to);
 
-                        // package up the transaction and submit it to the network
-                        packaged = new ethTx({
-                            to: tx.to,
-                            from: this.account.address,
-                            gasPrice: (tx.gasPrice) ? tx.gasPrice : augur.rpc.gasPrice(),
-                            gasLimit: (tx.gas) ? tx.gas : constants.DEFAULT_GAS,
-                            nonce: this.account.nonce,
-                            value: tx.value || "0x0",
-                            data: data_abi
-                        });
+                    // package up the transaction and submit it to the network
+                    packaged = {
+                        to: tx.to,
+                        from: this.account.address,
+                        gasPrice: (tx.gasPrice) ? tx.gasPrice : augur.rpc.gasPrice(),
+                        gasLimit: (tx.gas) ? tx.gas : constants.DEFAULT_GAS,
+                        nonce: this.account.nonce,
+                        value: tx.value || "0x0",
+                        data: abi.encode(tx)
+                    };
 
-                        // sign, validate, and send the transaction
-                        packaged.sign(this.account.privateKey);
-
-                        // transaction validation ok
-                        if (packaged.validate()) {
-                            return augur.rpc.sendRawTx(
-                                packaged.serialize().toString("hex"),
-                                function (txhash) {
-
-                                    // increment nonce and write to database
-                                    db.get(self.account.handle, function (stored) {
-                                        stored.nonce = ++self.account.nonce;
-                                        db.put(self.account.handle, stored);
-                                    });
-
-                                    if (callback) callback(txhash);
-                                }
-                            );
+                    // get nonce: number of transactions
+                    return augur.rpc.txCount(this.account.address, function (txCount) {
+                        if (txCount && !txCount.error) {
+                            packaged.nonce = parseInt(txCount);
+                            self.account.nonce = packaged.nonce;
                         }
+                        (function sendPackage(packaged) {
+                            var etx = new ethTx(packaged);
 
-                        // transaction validation failed
-                        if (!utils.is_function(callback)) {
-                            return errors.TRANSACTION_INVALID;
-                        }
-                        callback(errors.TRANSACTION_INVALID);
+                            // sign, validate, and send the transaction
+                            etx.sign(self.account.privateKey);
 
-                    } else {
+                            // transaction validation
+                            if (etx.validate()) {
+                                augur.rpc.sendRawTx(etx.serialize().toString("hex"), function (res) {
+                                    if (res) {
+
+                                        // geth error -32603: nonce too low / known tx
+                                        if (res.error === -32603) {
+
+                                            // rlp encoding error also has -32603 error code
+                                            if (res.message.indexOf("rlp") > -1) {
+                                                console.log("mysterious RLP encoding error:", res);
+                                                return console.log(packaged);
+                                            }
+
+                                            self.account.nonce = ++packaged.nonce;
+                                            return sendPackage(packaged);
+
+                                        // other errors
+                                        } else if (res.error) {
+                                            console.log("something bad went down", res);
+                                            return console.log(packaged);
+                                        }
+
+                                        // nonce ok, save and execute callback
+                                        db.get(self.account.handle, function (stored) {
+                                            stored.nonce = self.account.nonce;
+                                            db.put(self.account.handle, stored);
+                                        });
+                                        if (callback) return callback(res);
+                                    }
+                                });
+
+                            // transaction validation failed
+                            } else {
+                                if (callback) callback(errors.TRANSACTION_INVALID);
+                            }
+                        })(packaged);
+                    });
+
+                } else {
+                    if (!utils.is_function(callback)) {
                         return errors.TRANSACTION_FAILED;
                     }
-
-                // if this is just a call, use the regular invoke method
-                } else {
-                    return augur.rpc.fire(itx, callback);
-                }
-            
-            // not logged in
-            } else {
-                if (itx.send) {
-                    if (callback && callback.constructor === Function) {
-                        return callback(errors.NOT_LOGGED_IN);
-                    }
-                    return errors.NOT_LOGGED_IN;
-                } else {
-                    return augur.rpc.fire(itx, callback);
+                    return callback(errors.TRANSACTION_FAILED);
                 }
             }
+          
+            // not logged in
+            if (itx.send) {
+                if (!utils.is_function(callback)) {
+                    return errors.NOT_LOGGED_IN;
+                }
+                return callback(errors.NOT_LOGGED_IN);
+            }
+
+            // if this is just a call, use ethrpc's regular invoke method
+            return augur.rpc.fire(itx, callback);
         }
 
     };
