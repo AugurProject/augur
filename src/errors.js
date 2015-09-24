@@ -112,9 +112,19 @@ var errors = {
         message: "incorrect handle or password"
     },
 
+    TRANSACTION_NOT_FOUND: {
+        error: 404,
+        message: "transaction not found"
+    },
+
     PASSWORD_TOO_SHORT: {
         error: 405,
         message: "password must be at least 6 characters long"
+    },
+
+    NULL_CALL_RETURN: {
+        error: 406,
+        message: "expected contract call to return value, received null"
     },
 
     NULL_RESPONSE: {

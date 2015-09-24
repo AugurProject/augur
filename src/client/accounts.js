@@ -197,6 +197,7 @@ module.exports = function (augur) {
 
         logout: function () {
             this.account = {};
+            augur.rpc.clear();
         },
 
         invoke: function (itx, callback) {
@@ -242,7 +243,7 @@ module.exports = function (augur) {
                             packaged.nonce = parseInt(txCount);
                             self.account.nonce = packaged.nonce;
                         }
-                        (function sendPackage(packaged) {
+                        (function repack(packaged) {
                             var etx = new ethTx(packaged);
 
                             // sign, validate, and send the transaction
@@ -258,18 +259,22 @@ module.exports = function (augur) {
 
                                             // rlp encoding error also has -32603 error code
                                             if (res.message.indexOf("rlp") > -1) {
-                                                console.log("mysterious RLP encoding error:", res);
-                                                return console.log(packaged);
+                                                console.error("mysterious RLP encoding error:", res);
+                                                return console.log(JSON.stringify(packaged, null, 2));
                                             }
 
                                             self.account.nonce = ++packaged.nonce;
-                                            return sendPackage(packaged);
+                                            return repack(packaged);
 
                                         // other errors
                                         } else if (res.error) {
-                                            console.log("something bad went down", res);
-                                            return console.log(packaged);
+                                            console.error("repack error:", res);
+                                            return console.log(JSON.stringify(packaged, null, 2));
                                         }
+
+                                        // res is the txhash if nothing failed immediately
+                                        // (even if the tx is nulled, still index the hash)
+                                        augur.rpc.rawTxs[res] = { tx: packaged };
 
                                         // nonce ok, save and execute callback
                                         db.get(self.account.handle, function (stored) {

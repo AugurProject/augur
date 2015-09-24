@@ -142,7 +142,28 @@ module.exports = function (augur) {
             if (utils.is_function(onMessage)) {
                 var self = this;
                 this.eth_getFilterChanges(this.contracts_filter.id, function (filtrate) {
-                    if (filtrate && filtrate.length) self.sift(filtrate, onMessage);
+                    // example: [
+                    //     "0xd92826bcb659b0b01c94930ca200d2abfddcaddce567d02f39ca48533db4086c",
+                    //     "0x0591cdaa9178ed34d1f148f57ca463d7c50c93401329e7c501682a8f5b747f75",
+                    //     "0xdbe9a517e5cc8464bbb845260c6a2cf38895013c3b306d8b8360a8570d7bfb28",
+                    //     "0x41bdc70080b7c06fad9fff76b1224ef0a5f5fa9f96df0252a536ab2479ccddb4",
+                    //     "0xb2b13a913991892f1dafe6aba3f575bef1695a5f313c4134b0cacb79b51e177f",
+                    //     "0xa157d06679a1e564175242d088862d61bd851a057ba4f196db50c69de900655b",
+                    //     "0xe14ebc4b6a25b49239672d9a426c1ded9bc5c7855ba665b0e4f62435e403ec93",
+                    //     "0x1d6b342692927ad89224e14df71b179d59ff7bd1ab85789411dd8a1742e8b0c1",
+                    //     "0xfa3b3d86e6f5650ecc1de4cb28981aa563616353a785591bdb82c3d7162e763e",
+                    //     "0x7a6f4effa4bafb8cd5f3f4e0b32562e422dc8e187ffc64367a4ddf51a9452e11",
+                    //     "0xd66431b7ac1714b93aac11a047a2e2dcd2ae2d8c08449e9ef3240a5c088fbaa6",
+                    //     "0xb968d8781a39e6925180914ce1994210efc08b4eb9f7dcd118d0c91e6f2382e1",
+                    //     "0xd68d71df25929468cd17ca67611e28a98920a693b9e96925787ba6f4e7684e24",
+                    //     "0x74808c29ae08accce5c74b5d12cf6f2fe92d96cfd12c3eb08535f4e92bd97a02"
+                    // ]
+                    if (filtrate && filtrate.length && filtrate.constructor === Array) {
+                        // self.sift(filtrate, onMessage);
+                        for (var i = 0, len = filtrate.length; i < len; ++i) {
+                            onMessage(filtrate[i]);
+                        }
+                    }
                 });
             }
         },
