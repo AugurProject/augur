@@ -57,6 +57,7 @@ var MarketActions = {
             } else {
               thisOutcome.sharesHeld = abi.bignum(0);
             }
+            thisOutcome.pendingShares = abi.bignum(0);
             thisOutcome.price = abi.bignum(thisOutcome.price);
             nextOutcome();
           }, function (err) {
@@ -269,7 +270,8 @@ var MarketActions = {
         _.each(_.range(1, market.numOutcomes+1), function (outcomeId) {
           market['outcomes'][outcomeId-1] = {
             id: outcomeId,
-            sharesHeld: new BigNumber(0)
+            sharesHeld: new BigNumber(0),
+            pendingShares: new BigNumber(0)
           };
           market['outcomes'][outcomeId-1]['priceHistory'] = []  // NEEDED
           market['outcomes'][outcomeId-1]['outstandingShares'] = 0;
@@ -479,6 +481,16 @@ var MarketActions = {
       })();
     } else {
       this.flux.actions.market.loadMarket(marketId);
+    }
+  },
+
+  updatePendingShares: function(market, outcomeId, relativeShares) {
+
+    // relativeShares is a signed integer representing a trade (buy/sell)
+    if (market && outcomeId && relativeShares) {
+
+      market.outcomes[outcomeId-1].pendingShares += relativeShares;
+      this.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
     }
   },
 
