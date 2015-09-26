@@ -149,7 +149,7 @@ var ConfigActions = {
 
   signIn: function (handle, password) {
     var self = this;
-    augur.web.login(handle, password, function (account) {
+    augur.web.login(handle, password, function (account) { 
       if (account) {
         if (account.error) {
           console.error(account.error, account.message);

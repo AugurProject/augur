@@ -29,8 +29,44 @@ var SignInModal = React.createClass({
   onSignIn: function (event) {
 
     if (this.isValid()) {
-      this.getFlux().actions.config.signIn(this.state.handle, this.state.password);
-      this.props.onHide();
+
+      var flux = this.getFlux();
+      var self = this;
+
+      // NOTE: this is here because the signin flux action in config does not
+      // return a value and it's important to communicate any server-side error
+      // to the user here
+      augur.web.login(this.state.handle, this.state.password, function (account) { 
+        if (account) {
+          if (account.error) {
+            self.setState({handleHelp: account.message});
+            console.error(account.error, account.message);
+            flux.actions.market.updateSharesHeld(null);
+            flux.actions.config.updateAccount({
+              currentAccount: null,
+              privateKey: null,
+              handle: null
+            });
+            flux.actions.asset.updateAssets();
+            return;
+          }
+          console.log("signed in to account:", account.handle, account.address);
+          flux.actions.config.updateAccount({
+            currentAccount: account.address,
+            privateKey: account.privateKey,
+            handle: account.handle
+          });
+          flux.actions.asset.updateAssets();
+          flux.actions.report.loadEventsToReport();
+          flux.actions.report.loadPendingReports();
+          if (flux.store("config").getState().useMarketCache) {
+            flux.actions.market.loadMarketCache();
+          }
+          self.props.onHide();
+        } else {
+          console.error(account);
+        }
+      });
     }
   },
 
