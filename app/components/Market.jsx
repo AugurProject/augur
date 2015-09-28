@@ -40,7 +40,8 @@ var Market = React.createClass({
       currentBranch: currentBranch,
       market: market,
       cashBalance: assetState.cashBalance,
-      account: account
+      account: account,
+      blockNumber: flux.store('network').getState().blockNumber
     };
   },
 
@@ -60,7 +61,7 @@ var Market = React.createClass({
       yes: new Array(numPoints.yes),
       no: new Array(numPoints.no)
     };
-    var block = augur.rpc.blockNumber();
+    var block = this.state.blockNumber;
     for (var i = 0; i < numPoints.yes; ++i) {
       data.yes[i] = [
         utilities.blockToDate(market.priceHistory[2][i].blockNumber, block).unix() * 1000,
