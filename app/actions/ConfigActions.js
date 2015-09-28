@@ -78,20 +78,20 @@ var ConfigActions = {
       },
 
       // listen for augur transactions
-      contracts: function (filtrate) {
-        if (filtrate) {
-          if (filtrate.error) {
-            return console.log("contracts filter error:", filtrate);
-          }
-          console.log("[filter] contracts:", filtrate.address);
-          self.flux.actions.asset.updateAssets();
-          if (self.flux.store("config").getState().useMarketCache) {
-            setTimeout(self.flux.actions.market.loadMarkets, 5000);
-          } else {
-            self.flux.actions.market.loadNewMarkets();
-          }
-        }
-      },
+      // contracts: function (filtrate) {
+      //   if (filtrate) {
+      //     if (filtrate.error) {
+      //       return console.log("contracts filter error:", filtrate);
+      //     }
+      //     console.log("[filter] contracts:", filtrate.address);
+      //     self.flux.actions.asset.updateAssets();
+      //     if (self.flux.store("config").getState().useMarketCache) {
+      //       setTimeout(self.flux.actions.market.loadMarkets, 5000);
+      //     } else {
+      //       self.flux.actions.market.loadNewMarkets();
+      //     }
+      //   }
+      // },
 
       // update market when a price change has been detected
       price: function (result) {

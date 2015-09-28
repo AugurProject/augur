@@ -9,6 +9,7 @@ var Modal = ReactBootstrap.Modal;
 var Router = require("react-router");
 var State = Router.State;
 var RouteHandler = Router.RouteHandler;
+var Highstock = require('react-highcharts/highstock');
 
 var Identicon = require('../libs/identicon');
 var utilities = require('../libs/utilities');
@@ -49,6 +50,78 @@ var Market = React.createClass({
     if (_.isUndefined(this.state.market) || (this.state.market && !this.state.market.loaded) ) return (<div />);
 
     var market = this.state.market;
+
+    // TODO move this data juggling stuff to marketeer
+    var numPoints = {
+      yes: market.priceHistory[2].length,
+      no: market.priceHistory[1].length
+    };
+    var data = {
+      yes: new Array(numPoints.yes),
+      no: new Array(numPoints.no)
+    };
+    var block = augur.rpc.blockNumber();
+    for (var i = 0; i < numPoints.yes; ++i) {
+      data.yes[i] = [
+        utilities.blockToDate(market.priceHistory[2][i].blockNumber, block).unix() * 1000,
+        Number(market.priceHistory[2][i].price)
+      ];
+    }
+    for (i = 0; i < numPoints.no; ++i) {
+      data.no[i] = [
+        utilities.blockToDate(market.priceHistory[1][i].blockNumber, block).unix() * 1000,
+        Number(market.priceHistory[1][i].price)
+      ];
+    }
+    var seriesOptions = [
+      { name: "Yes", data: data.yes, color: "#4422CE" },
+      { name: "No", data: data.no, color: "#D00030" }
+    ];
+    var config = {
+      chart: {
+        renderTo: "highstock",
+        height: 250,
+        marginRight: 22,
+        marginBottom: 10,
+        reflow: true
+      },
+      legend: {
+        enabled: true,
+        align: 'right',
+        backgroundColor: '#FCFFC5',
+        borderColor: 'black',
+        borderWidth: 2,
+        layout: 'horizontal',
+        verticalAlign: 'top',
+        y: 100,
+        shadow: true
+      },
+      rangeSelector: { selected: 1 },
+      yAxis: {
+        title: {
+          text: 'price'
+        },
+        min: 0,
+        max: 1,
+        plotLines: [{
+          value: 0,
+          width: 1,
+          color: '#808080'
+        }]
+      },
+      legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle',
+        borderWidth: 0
+      },
+      // plotOptions: { series: { compare: 'percent' } },
+      tooltip: {
+        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.change}%)<br/>',
+        valueDecimals: 2
+      },
+      series: seriesOptions
+    };
 
     var subheading = '';
     if (market.endDate) {
@@ -101,7 +174,7 @@ var Market = React.createClass({
           <p>End date: <b>{ formattedDate }</b></p>
         </div>
         <div className='price-history col-sm-8'>
-          <h4>Price history soon...</h4>
+          <Highstock id="highchart" className='price-chart' config={ config }></Highstock>
         </div>
         <div className='row'>
           <div className='col-xs-12'>
