@@ -146,7 +146,7 @@ var Overview = React.createClass({
       onFailed: function (err) {
         console.error("trade failed:", err);
         var pending = self.state.pending;
-        delete pending[res.txHash];
+        delete pending[txhash];
         self.setState({ pending: pending })
       }
     });
