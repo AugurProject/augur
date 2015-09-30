@@ -61,9 +61,9 @@ var ConfigActions = {
 
       // listen for new blocks
       block: function (blockHash) {
-        console.log("new block:", blockHash);
         var account = self.flux.store('config').getAccount();
         if (account && blockHash) {
+          // console.log("new block:", blockHash);
           self.flux.actions.network.updateNetwork();
           self.flux.actions.asset.updateAssets();
 
@@ -78,20 +78,20 @@ var ConfigActions = {
       },
 
       // listen for augur transactions
-      // contracts: function (filtrate) {
-      //   if (filtrate) {
-      //     if (filtrate.error) {
-      //       return console.log("contracts filter error:", filtrate);
-      //     }
-      //     console.log("[filter] contracts:", filtrate.address);
-      //     self.flux.actions.asset.updateAssets();
-      //     if (self.flux.store("config").getState().useMarketCache) {
-      //       setTimeout(self.flux.actions.market.loadMarkets, 5000);
-      //     } else {
-      //       self.flux.actions.market.loadNewMarkets();
-      //     }
-      //   }
-      // },
+      contracts: function (filtrate) {
+        if (filtrate) {
+          if (filtrate.error) {
+            return console.log("contracts filter error:", filtrate);
+          }
+          console.log("[filter] contracts:", filtrate.address);
+          self.flux.actions.asset.updateAssets();
+          if (self.flux.store("config").getState().useMarketCache) {
+            setTimeout(self.flux.actions.market.loadMarkets, 5000);
+          } else {
+            self.flux.actions.market.loadNewMarkets();
+          }
+        }
+      },
 
       // update market when a price change has been detected
       price: function (result) {
@@ -143,40 +143,6 @@ var ConfigActions = {
       currentAccount: credentials.currentAccount,
       privateKey: credentials.privateKey,
       handle: credentials.handle
-    });
-    this.flux.actions.asset.updateAssets();
-  },
-
-  signIn: function (handle, password) {
-    var self = this;
-    augur.web.login(handle, password, function (account) { 
-      if (account) {
-        if (account.error) {
-          console.error(account.error, account.message);
-          self.flux.actions.market.updateSharesHeld(null);
-          self.dispatch(constants.config.UPDATE_ACCOUNT, {
-            currentAccount: null,
-            privateKey: null,
-            handle: null
-          });
-          self.flux.actions.asset.updateAssets();
-          return;
-        }
-        console.log("signed in to account:", account.handle, account.address);
-        self.dispatch(constants.config.UPDATE_ACCOUNT, {
-          currentAccount: account.address,
-          privateKey: account.privateKey,
-          handle: account.handle
-        });
-        self.flux.actions.asset.updateAssets();
-        self.flux.actions.report.loadEventsToReport();
-        self.flux.actions.report.loadPendingReports();
-        if (self.flux.store("config").getState().useMarketCache) {
-          self.flux.actions.market.loadMarketCache();
-        }
-      } else {
-        console.error(account);
-      }
     });
   },
 

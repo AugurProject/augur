@@ -40,7 +40,6 @@ var SignInModal = React.createClass({
         if (account) {
           if (account.error) {
             self.setState({handleHelp: account.message});
-            console.error(account.error, account.message);
             flux.actions.market.updateSharesHeld(null);
             flux.actions.config.updateAccount({
               currentAccount: null,
