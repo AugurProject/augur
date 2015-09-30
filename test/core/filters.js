@@ -44,9 +44,7 @@ function buyShares(done, augur) {
             assert.strictEqual(r.to, augur.contracts.buyAndSellShares);
             assert.strictEqual(parseInt(r.value), 0);
         },
-        onFailed: function (r) {
-            done(r);
-        }
+        onFailed: done
     });
 }
 
@@ -70,9 +68,7 @@ function sellShares(done, augur) {
             assert.strictEqual(r.to, augur.contracts.buyAndSellShares);
             assert.strictEqual(parseInt(r.value), 0);
         },
-        onFailed: function (r) {
-            done(r);
-        }
+        onFailed: done
     });
 }
 
@@ -102,14 +98,10 @@ function createMarket(done, augur) {
                 onSuccess: function (res) {
 
                 },
-                onFailed: function (res) {
-                    done(res);
-                }
+                onFailed: done
             }); // createMarket
         },
-        onFailed: function (r) {
-            done(r);
-        }
+        onFailed: done
     }); // createEvent
 }
 
@@ -495,7 +487,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
 
         it("creation filter", function (done) {
             this.timeout(constants.TIMEOUT*12);
-            var augur = utils.setup(require("../../src"), process.argv.slice(2));
+            var augur = utils.setup(utils.reset("../../src/index"), process.argv.slice(2));
             augur.filters.listen({
                 creation: function (update) {
                     // log: [{
@@ -551,7 +543,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
 
         it("combined", function (done) {
             this.timeout(constants.TIMEOUT*12);
-            var augur = utils.setup(require("../../src"), process.argv.slice(2));
+            var augur = utils.setup(utils.reset("../../src/index"), process.argv.slice(2));
 
             // stop heartbeat and tear down filters
             function teardown(done) {
@@ -572,19 +564,16 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                         assert.isNull(augur.filters.contracts_filter.heartbeat);
                         assert.isNull(augur.filters.contracts_filter.id);
                         down.contracts = true;
-                        if (down.block && down.price && down.creation) done();
                     },
                     price: function () {
                         assert.isNull(augur.filters.price_filter.heartbeat);
                         assert.isNull(augur.filters.price_filter.id);
                         down.price = true;
-                        if (down.contracts && down.block && down.creation) done();
                     },
                     creation: function () {
                         assert.isNull(augur.filters.creation_filter.heartbeat);
                         assert.isNull(augur.filters.creation_filter.id);
                         down.creation = true;
-                        if (down.contracts && down.price && down.block) done();
                     }
                 });
             }
