@@ -1,3 +1,4 @@
+(function () {
 /**
  * augur.js unit tests
  * @author Jack Peterson (jack@tinybike.net)
@@ -41,3 +42,5 @@ describe("Read contracts", function () {
     );
 
 });
+
+})();

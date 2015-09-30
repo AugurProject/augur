@@ -4,6 +4,7 @@
 
 "use strict";
 
+var async = require("async");
 var chalk = require("chalk");
 var abi = require("augur-abi");
 var utils = require("./utilities");
@@ -127,12 +128,17 @@ module.exports = function (augur) {
              */
             var messages = [];
             for (var i = 0, len = filtrate.length; i < len; ++i) {
-                if (filtrate[i]) {
-                    if (filtrate[i].data) {
-                        filtrate[i].data = augur.rpc.unmarshal(filtrate[i].data);
+                try {
+                    if (filtrate[i]) {
+                        if (filtrate[i].constructor === Object && filtrate[i].data) {
+                            filtrate[i].data = augur.rpc.unmarshal(filtrate[i].data);
+                        }
+                        if (onMessage) onMessage(filtrate[i]);
+                        messages.push(filtrate[i]);
                     }
-                    if (onMessage) onMessage(filtrate[i]);
-                    messages.push(filtrate[i]);
+                } catch (exc) {
+                    console.error("contracts filter:", exc);
+                    console.log(i, filtrate[i]);
                 }
             }
             if (messages.length) return messages;
@@ -159,10 +165,7 @@ module.exports = function (augur) {
                     //     "0x74808c29ae08accce5c74b5d12cf6f2fe92d96cfd12c3eb08535f4e92bd97a02"
                     // ]
                     if (filtrate && filtrate.length && filtrate.constructor === Array) {
-                        // self.sift(filtrate, onMessage);
-                        for (var i = 0, len = filtrate.length; i < len; ++i) {
-                            onMessage(filtrate[i]);
-                        }
+                        self.sift(filtrate, onMessage);
                     }
                 });
             }
@@ -183,13 +186,16 @@ module.exports = function (augur) {
         poll_price_listener: function (onMessage) {
             if (this.price_filter) {
                 this.eth_getFilterChanges(this.price_filter.id, function (filtrate) {
+                    // console.log("price filtrate:", filtrate);
                     var data_array, market, marketplus;
                     if (filtrate && filtrate.length) {
                         for (var i = 0, len = filtrate.length; i < len; ++i) {
                             if (filtrate[i] && filtrate[i].topics && filtrate[i].topics.length > 3) {
                                 try {
                                     data_array = augur.rpc.unmarshal(filtrate[i].data);
-                                    if (data_array && data_array.constructor === Array && data_array.length > 1) {
+                                    if (data_array && data_array.constructor === Array &&
+                                        data_array.length > 1)
+                                    {
                                         market = abi.bignum(filtrate[i].topics[2]);
                                         marketplus = market.plus(abi.constants.MOD);
                                         if (marketplus.lt(abi.constants.BYTES_32)) {
@@ -205,7 +211,8 @@ module.exports = function (augur) {
                                         });
                                     }
                                 } catch (exc) {
-                                    console.error("couldn't unmarshal price filtrate:", exc);
+                                    console.error("updatePrice filter:", exc);
+                                    console.log(i, filtrate[i]);
                                 }
                             }
                         }
@@ -217,19 +224,25 @@ module.exports = function (augur) {
         poll_creation_listener: function (onMessage) {
             if (this.creation_filter) {
                 this.eth_getFilterChanges(this.creation_filter.id, function (filtrate) {
+                    // console.log("creation filtrate:", filtrate);
                     var market, marketplus;
                     if (filtrate && filtrate.length) {
                         for (var i = 0, len = filtrate.length; i < len; ++i) {
-                            if (filtrate[i] && filtrate[i].topics && filtrate[i].topics.length > 1) {
-                                market = abi.bignum(filtrate[i].topics[1]);
-                                marketplus = market.plus(abi.constants.MOD);
-                                if (marketplus.lt(abi.constants.BYTES_32)) {
-                                    market = marketplus;
+                            try {
+                                if (filtrate[i] && filtrate[i].topics && filtrate[i].topics.length > 1) {
+                                    market = abi.bignum(filtrate[i].topics[1]);
+                                    marketplus = market.plus(abi.constants.MOD);
+                                    if (marketplus.lt(abi.constants.BYTES_32)) {
+                                        market = marketplus;
+                                    }
+                                    onMessage({
+                                        marketId: abi.hex(market),
+                                        blockNumber: abi.string(filtrate[i].blockNumber)
+                                    });
                                 }
-                                onMessage({
-                                    marketId: abi.hex(market),
-                                    blockNumber: abi.string(filtrate[i].blockNumber)
-                                });
+                            } catch (exc) {
+                                console.error("creationBlock filter:", exc);
+                                console.log(i, filtrate[i]);
                             }
                         }
                     }
@@ -305,30 +318,49 @@ module.exports = function (augur) {
         },
 
         setup_contracts_filter: function (f) {
+            var self = this;
             var contract_list = [];
             for (var c in augur.contracts) {
                 if (!augur.contracts.hasOwnProperty(c)) continue;
                 contract_list.push(augur.contracts[c]);
             }
-            this.contracts_filter = {
-                id: this.eth_newFilter({
-                    address: contract_list,
-                    fromBlock: "0x01",
-                    toBlock: "latest"
-                }),
-                heartbeat: null
+            var params = {
+                address: contract_list,
+                fromBlock: "0x01",
+                toBlock: "latest"
             };
-            if (!utils.is_function(f)) return this.contracts_filter;
-            f(this.contracts_filter);
+            if (!utils.is_function(f)) {
+                this.contracts_filter = {
+                    id: this.eth_newFilter(params),
+                    heartbeat: null
+                };
+                return this.contracts_filter;
+            }
+            this.eth_newFilter(params, function (filter_id) {
+                self.contracts_filter = {
+                    id: filter_id,
+                    heartbeat: null
+                };
+                f(self.contracts_filter);
+            });
         },
 
         setup_block_filter: function (f) {
-            this.block_filter = {
-                id: this.eth_newBlockFilter(),
-                heartbeat: null
-            };
-            if (!utils.is_function(f)) return this.block_filter;
-            f(this.block_filter);
+            var self = this;
+            if (!utils.is_function(f)) {
+                this.block_filter = {
+                    id: this.eth_newBlockFilter(),
+                    heartbeat: null
+                };
+                return this.block_filter;
+            }
+            this.eth_newBlockFilter(function (filter_id) {
+                self.block_filter = {
+                    id: filter_id,
+                    heartbeat: null
+                };
+                f(self.block_filter);
+            });
         },
 
         setup_creation_filter: function (f) {
@@ -379,10 +411,7 @@ module.exports = function (augur) {
         start_contracts_listener: function (cb) {
             if (this.contracts_filter.id === null) {
                 if (utils.is_function(cb)) {
-                    var self = this;
-                    setTimeout(function () {
-                        cb(self.setup_contracts_filter());
-                    }, 0);
+                    this.setup_contracts_filter(cb);
                 } else {
                     return this.setup_contracts_filter();
                 }
@@ -392,10 +421,7 @@ module.exports = function (augur) {
         start_block_listener: function (cb) {
             if (this.block_filter.id === null) {
                 if (utils.is_function(cb)) {
-                    var self = this;
-                    setTimeout(function () {
-                        cb(self.setup_block_filter());
-                    }, 0);
+                    this.setup_block_filter(cb);
                 } else {
                     return this.setup_block_filter();
                 }
@@ -403,37 +429,33 @@ module.exports = function (augur) {
         },
 
         start_creation_listener: function (cb) {
-            if (this.price_filter && this.price_filter.id) {
-                if (utils.is_function(cb)) {
-                    cb(this.price_filter.id);
-                } else {
-                    return this.price_filter.id;
-                }
-            } else {
-                if (utils.is_function(cb)) {
-                    var self = this;
-                    this.setup_creation_filter(function (filter_id) {
-                        if (filter_id && filter_id !== "0x") {
-                            self.creation_filter = {
-                                id: filter_id,
-                                heartbeat: null
-                            };
-                            cb(filter_id);
-                        } else {
-                            cb(errors.FILTER_NOT_CREATED);
-                        }
-                    });
-                } else {
-                    var filter_id = this.setup_creation_filter();
+            if (this.creation_filter && this.creation_filter.id) {
+                if (utils.is_function(cb)) return cb(this.creation_filter.id);
+                return this.creation_filter.id;
+            }
+            if (utils.is_function(cb)) {
+                var self = this;
+                this.setup_creation_filter(function (filter_id) {
                     if (filter_id && filter_id !== "0x") {
-                        this.creation_filter = {
+                        self.creation_filter = {
                             id: filter_id,
                             heartbeat: null
                         };
-                        return filter_id;
+                        cb(filter_id);
                     } else {
-                        return errors.FILTER_NOT_CREATED;
+                        cb(errors.FILTER_NOT_CREATED);
                     }
+                });
+            } else {
+                var filter_id = this.setup_creation_filter();
+                if (filter_id && filter_id !== "0x") {
+                    this.creation_filter = {
+                        id: filter_id,
+                        heartbeat: null
+                    };
+                    return filter_id;
+                } else {
+                    return errors.FILTER_NOT_CREATED;
                 }
             }
         },
@@ -470,27 +492,83 @@ module.exports = function (augur) {
             }
         },
 
-        listen: function (cb) {
+        listen: function (cb, setupComplete) {
             var self = this;
-            if (this.contracts_filter.id === null && cb.contracts) {
-                this.start_contracts_listener(function () {
-                    self.pacemaker({ contracts: cb.contracts });
+            if (utils.is_function(setupComplete)) {
+                async.series([
+                    function (callback) {
+                        if (this.contracts_filter.id === null && cb.contracts) {
+                            this.start_contracts_listener(function () {
+                                self.pacemaker({ contracts: cb.contracts });
+                                // console.log("contracts filter:", self.contracts_filter);
+                                callback(null, { contracts: self.contracts_filter.id });
+                            });
+                        } else {
+                            callback();
+                        }
+                    }.bind(this),
+                    function (callback) {
+                        var self = this;
+                        if (this.price_filter.id === null && cb.price) {
+                            this.start_price_listener("updatePrice", function () {
+                                self.pacemaker({ price: cb.price });
+                                // console.log("price filter:", self.price_filter);
+                                callback(null, { price: self.price_filter.id });
+                            });
+                        } else {
+                            callback();
+                        }
+                    }.bind(this),
+                    function (callback) {
+                        if (this.block_filter.id === null && cb.block) {
+                            this.start_block_listener(function () {
+                                self.pacemaker({ block: cb.block });
+                                // console.log("block filter:", self.block_filter);
+                                callback(null, { block: self.block_filter.id });
+                            });
+                        } else {
+                            callback();
+                        }
+                    }.bind(this),
+                    function (callback) {
+                        var self = this;
+                        if (this.creation_filter.id === null && cb.creation) {
+                            this.start_creation_listener(function () {
+                                self.pacemaker({ creation: cb.creation });
+                                // console.log("creation filter:", self.creation_filter);
+                                callback(null, { creation: self.creation_filter.id });
+                            });
+                        } else {
+                            callback();
+                        }
+                    }.bind(this)
+                ], function (err, filter_ids) {
+                    if (err) console.error("listen error:", err);
+                    console.log(filter_ids);
+                    if (setupComplete) setupComplete(filter_ids);
                 });
             }
-            if (this.price_filter.id === null && cb.price) {
-                this.start_price_listener("updatePrice", function () {
-                    self.pacemaker({ price: cb.price });
-                });
-            }
-            if (this.block_filter.id === null && cb.block) {
-                this.start_block_listener(function () {
-                    self.pacemaker({ block: cb.block });
-                });
-            }
-            if (this.creation_filter.id === null && cb.creation) {
-                this.start_creation_listener(function () {
-                    self.pacemaker({ creation: cb.creation });
-                });
+            else {
+                if (this.contracts_filter.id === null && cb.contracts) {
+                    this.start_contracts_listener(function () {
+                        self.pacemaker({ contracts: cb.contracts });
+                    });
+                }
+                if (this.price_filter.id === null && cb.price) {
+                    this.start_price_listener("updatePrice", function () {
+                        self.pacemaker({ price: cb.price });
+                    });
+                }
+                if (this.block_filter.id === null && cb.block) {
+                    this.start_block_listener(function () {
+                        self.pacemaker({ block: cb.block });
+                    });
+                }
+                if (this.creation_filter.id === null && cb.creation) {
+                    this.start_creation_listener(function () {
+                        self.pacemaker({ creation: cb.creation });
+                    });
+                }
             }
         },
 

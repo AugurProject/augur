@@ -1,3 +1,4 @@
+(function () {
 /**
  * price logging/filter tests
  * @author Jack Peterson (jack@tinybike.net)
@@ -660,3 +661,5 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
     });
 
 }
+
+})();

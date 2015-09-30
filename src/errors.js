@@ -181,6 +181,11 @@ var errors = {
         message: "duplicate transaction"
     },
 
+    LOOPBACK_NOT_FOUND: {
+        error: 650,
+        message: "loopback interface required for synchronous local commands"
+    },
+
     ETHEREUM_NOT_FOUND: {
         error: 651,
         message: "no active ethereum node(s) found"

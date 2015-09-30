@@ -1,3 +1,4 @@
+(function () {
 /**
  * augur.js unit tests
  * @author Jack Peterson (jack@tinybike.net)
@@ -89,3 +90,5 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
     });
 
 }
+
+})();
