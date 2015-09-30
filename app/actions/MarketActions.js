@@ -7,6 +7,37 @@ var blacklist = require('../libs/blacklist');
 
 var MarketActions = {
 
+  loadComments: function (market) {
+    var self = this;
+    if (market && market.id) {
+      console.log("checking for new comments...");
+      augur.comments.getMarketComments(abi.hex(market.id), function (comments) {
+        console.log("got comments:", comments);
+        if (comments && comments.constructor === Array && comments.length) {
+          market.comments = comments;
+          self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, { market: market });
+        }
+      });
+    }
+  },
+
+  updateComments: function (comments, marketId) {
+    var market = this.flux.store("market").getMarket(marketId);
+    market.comments = comments;
+    this.dispatch(constants.market.UPDATE_MARKET_SUCCESS, { market: market });
+  },
+
+  addComment: function (commentText, marketId, account) {
+    if (commentText && marketId) {
+      var updatedComments = augur.comments.addMarketComment({
+        marketId: abi.hex(marketId),
+        author: account.address || this.flux.store("config").getAccount(),
+        message: commentText
+      });
+      this.flux.actions.market.updateComments(updatedComments, marketId);
+    }
+  },
+
   clear: function (pulse, xhr) {
     if (pulse) clearTimeout(pulse);
     if (xhr) xhr.abort();
@@ -27,7 +58,7 @@ var MarketActions = {
     var branchId = self.flux.store('branch').getCurrentBranch().id;
     var blackmarkets = blacklist.markets[augur.network_id][branchId];
     var markets = {};
-    async.each(cached, function (thisMarket, nextMarket) {
+    async.eachSeries(cached, function (thisMarket, nextMarket) {
       var marketId = abi.bignum(thisMarket._id);
       if (abi.bignum(thisMarket.branchId).eq(abi.bignum(branchId)) &&
           !_.contains(blackmarkets, marketId.toString(16)) &&
@@ -91,6 +122,7 @@ var MarketActions = {
 
     // fetch markets from mongodb via HTTP GET request
     xhr = $.get(constants.MARKET_CACHE[0], function (cached) {
+      console.log("downloaded cached markets from:", constants.MARKET_CACHE[0]);
       if (!cached) return self.flux.actions.market.nextNode(got, pulse, xhr, startNode);
       cached = JSON.parse(cached).rows;
       if (!cached || cached.constructor !== Array || !cached.length) {

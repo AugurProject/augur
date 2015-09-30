@@ -23,10 +23,11 @@ var NetworkActions = {
         network.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED
       );
       if (!nowUp) {
-        utilities.warn('failed to connect to ethereum');
+        console.log('warning: failed to connect to ethereum');
         self.dispatch(constants.network.UPDATE_ETHEREUM_STATUS, {
           ethereumStatus: constants.network.ETHEREUM_STATUS_FAILED
         });
+        setTimeout(self.flux.actions.network.checkNetwork, 3000);
       } else if (wasDown && nowUp) {
         self.dispatch(constants.network.UPDATE_ETHEREUM_STATUS, {
           ethereumStatus: constants.network.ETHEREUM_STATUS_CONNECTED
@@ -37,7 +38,6 @@ var NetworkActions = {
         self.flux.actions.network.initializeNetwork();
         self.flux.actions.config.initializeData();
       }
-      setTimeout(self.flux.actions.network.checkNetwork, 3000);
     });
   },
 

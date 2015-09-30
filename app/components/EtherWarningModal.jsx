@@ -25,7 +25,7 @@ var EtherWarnModal = React.createClass({
   componentWillReceiveProps: function(nextProps) {
 
     if (!nextProps.asset.ether) {
-      utilities.warn('no ether');
+      console.log('warning: no ether');
       this.setState({ isModalOpen: true });
     } else if (nextProps.asset.ether < nextProps.requiredEther) {
       this.setState({ isModalOpen: true, requiredEther: nextProps.requiredEther });

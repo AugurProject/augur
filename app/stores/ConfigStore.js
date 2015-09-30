@@ -45,6 +45,11 @@ var ConfigStore = Fluxxor.createStore({
     return state.currentAccount;
   },
 
+  getHandle: function () {
+    if (_.isUndefined(state.handle)) return null;
+    return state.handle;
+  },
+
   handleUseMarketCache: function (payload) {
     state.useMarketCache = payload.useMarketCache;
     this.emit(constants.CHANGE_EVENT);

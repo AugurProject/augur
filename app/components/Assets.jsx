@@ -34,7 +34,7 @@ var Assets = React.createClass({
     if (!this.state.cashFaucetDisabled) {
       var self = this;
       if (this.props.asset.ether.toNumber() < constants.MIN_ETHER_WARNING) {
-        utilities.warn('not enough ether'); 
+        console.log('warning: not enough ether'); 
       }
       augur.cashFaucet({
         onSent: function (result) {
@@ -62,7 +62,7 @@ var Assets = React.createClass({
   onRepFaucet: function (event) {
     if (!this.state.repFaucetDisabled) {
       if (this.props.asset.ether.toNumber() < constants.MIN_ETHER_WARNING) {
-        utilities.warn('not enough ether');
+        console.log('warning: not enough ether');
       }
       var flux = this.getFlux();
       augur.reputationFaucet({

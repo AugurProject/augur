@@ -5,6 +5,8 @@ var Fluxxor = require('fluxxor');
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 var ReactBootstrap = require('react-bootstrap');
+var Button = ReactBootstrap.Button;
+var ButtonGroup = ReactBootstrap.ButtonGroup;
 var Modal = ReactBootstrap.Modal;
 var Router = require("react-router");
 var State = Router.State;
@@ -21,14 +23,14 @@ var Market = React.createClass({
   mixins: [FluxMixin, StoreWatchMixin('market', 'asset', 'branch', 'config')],
 
   getStateFromFlux: function () {
-
     var flux = this.getFlux();
 
     var account = flux.store('config').getAccount();
+    var handle = flux.store('config').getHandle();
     var assetState = flux.store('asset').getState();
     var currentBranch = flux.store('branch').getCurrentBranch();
     var marketId = new BigNumber(this.props.params.marketId, 16);
-    var market = flux.store('market').getState().markets[marketId];
+    var market = flux.store('market').getMarket(marketId);
 
     if (currentBranch && market && market.tradingPeriod &&
         currentBranch.currentPeriod >= market.tradingPeriod.toNumber())
@@ -39,9 +41,12 @@ var Market = React.createClass({
     return {
       currentBranch: currentBranch,
       market: market,
+      comments: (market && market.comments) ? market.comments : null,
       cashBalance: assetState.cashBalance,
       account: account,
-      blockNumber: flux.store('network').getState().blockNumber
+      handle: handle,
+      blockNumber: flux.store('network').getState().blockNumber,
+      commentFilter: (market && market.id) ? augur.comments.initComments(abi.hex(market.id)) : null
     };
   },
 
@@ -116,7 +121,6 @@ var Market = React.createClass({
         verticalAlign: 'middle',
         borderWidth: 0
       },
-      // plotOptions: { series: { compare: 'percent' } },
       tooltip: {
         pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.change}%)<br/>',
         valueDecimals: 2
@@ -179,7 +183,7 @@ var Market = React.createClass({
         </div>
         <div className='row'>
           <div className='col-xs-12'>
-            <Comments comments={ market.comments } account={ this.state.account } />
+            <Comments comments={ this.state.comments } account={ this.state.account } handle={ this.state.handle } market={ this.state.market } />
           </div>
         </div>
       </div>
@@ -218,15 +222,20 @@ class Twitter extends React.Component {
 
 var Comments = React.createClass({
 
-  render: function() {
+  mixins: [FluxMixin],
 
-    if (!this.props.comments) return (<div />);
+  componentDidMount: function () {
+    if (this.props.market && this.props.market.id) {
+      this.getFlux().actions.market.loadComments(this.props.market);
+    }
+  },
 
+  render: function () {
     return (
       <div className="comments">
         <h4>{ this.props.comments.length } Comments</h4>
         <div>
-          <CommentForm account={ this.props.account }/>
+          <CommentForm account={ this.props.account } handle={ this.props.handle } marketId={ this.props.market.id } />
           <CommentList comments={ this.props.comments } />
         </div>
       </div>
@@ -235,20 +244,31 @@ var Comments = React.createClass({
 });
 
 var CommentList = React.createClass({
-
-  render: function() {
-
+  /**
+   * comment format:
+   * [ { whisperId: '0x04aec3e929a511be478cab0de7...',
+   *     from: '0x639b41c4d3d399894f2a57894278e1653e7cd24c',
+   *     comment: 'o3g50msfpnl8fr',
+   *     time: 1442272587 },
+   *   { whisperId: '0x04d2f7b8e6fa3a4ba00f988091...',
+   *     from: '0x639b41c4d3d399894f2a57894278e1653e7cd24c',
+   *     comment: 'lgn7ch1sdzpvi',
+   *     time: 1442272586 }, ... ]
+   */
+  render: function () {
     var commentList = _.map(this.props.comments, function (c) {
 
-      var identicon = 'data:image/png;base64,' + new Identicon(c.author, 50).toString();
+      var identicon = 'data:image/png;base64,' + new Identicon(c.from, 50).toString();
+      var commentId = c.whisperId + c.time.toString();
+      var author = (c.handle) ? c.handle + " | " + c.from : c.from;
 
       return (
-        <div className="comment" key={ c.id }>
+        <div className="comment" key={ commentId }>
           <div className="user avatar" style={{ backgroundImage: 'url(' + identicon + ')' }}></div>
           <div className="box">
             <p>{ c.comment }</p>
-            <div className="date">{ c.date }</div>
-            <div className="address">{ c.author }</div>
+            <div className="date">{ moment(c.time * 1000).fromNow() }</div>
+            <div className="address">{ author }</div>
           </div>
         </div>
       );
@@ -264,7 +284,18 @@ var CommentList = React.createClass({
 
 var CommentForm = React.createClass({
 
-  render: function() {
+  mixins: [FluxMixin],
+
+  submitComment: function (event) {
+    var commentText = document.getElementById("comment-text").value;
+    $("#comment-text").val('');
+    this.getFlux().actions.market.addComment(commentText, this.props.marketId, {
+      address: this.props.account,
+      handle: this.props.handle
+    });
+  },
+
+  render: function () {
 
     if (!this.props.account) return ( <span /> );
     
@@ -274,8 +305,11 @@ var CommentForm = React.createClass({
       <form className="comment">
         <div className="user avatar" style={{ backgroundImage: 'url(' + userIdenticon + ')' }}></div>
         <div className="box">
-          <input type="textarea" className="form-control" placeholder="Also coming soon..." />
+          <input type="textarea" className="form-control" id="comment-text" placeholder="Enter comments here" />
           <div className="user address"></div>
+          <ButtonGroup className='pull-right send-button'>
+            <Button bsStyle='default' bsSize='xsmall' onClick={ this.submitComment }>Babble</Button>
+          </ButtonGroup>
         </div>
       </form>
     );
