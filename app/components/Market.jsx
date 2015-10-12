@@ -22,6 +22,12 @@ var Market = React.createClass({
 
   mixins: [FluxMixin, StoreWatchMixin('market', 'asset', 'branch', 'config')],
 
+  getInitialState: function() {
+    return {
+      fullAuthor: false
+    }
+  },
+
   getStateFromFlux: function () {
     var flux = this.getFlux();
 
@@ -48,6 +54,14 @@ var Market = React.createClass({
       blockNumber: flux.store('network').getState().blockNumber,
       commentFilter: (market && market.id) ? augur.comments.initComments(abi.hex(market.id)) : null
     };
+  },
+
+  showFullAuthor: function() {
+    this.setState({fullAuthor: true});
+  },
+
+  truncateAuthor: function() {
+    this.setState({fullAuthor: false});
   },
 
   render: function () {
@@ -174,7 +188,7 @@ var Market = React.createClass({
           <p className='alt'>Outstanding shares: <b>{ outstandingShares }</b></p>
           <p>Fee: <b>{ tradingFee }</b></p>
           <p className='alt'>Traders: <b>{ traderCount }</b></p>
-          <p>Author: <b className='truncate author'>{ author }</b></p>
+          <p onMouseEnter={this.showFullAuthor} onMouseLeave={this.truncateAuthor}>Author: <b className={this.state.fullAuthor ? 'no-truncate author-full' : 'truncate author'}>{ author }</b></p>
           <p className='alt'>Creation date: <b>{ formattedCreationDate }</b></p>
           <p>End date: <b>{ formattedDate }</b></p>
         </div>
