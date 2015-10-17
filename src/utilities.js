@@ -143,7 +143,6 @@ module.exports = {
             augur.contracts = JSON.parse(contracts.toString());
         }
         if (augur.connect(rpcinfo || defaulthost, ipcpath)) {
-        // if (augur.connect(rpcinfo, ipcpath)) {
             if (augur.options.debug.broadcast || augur.options.debug.fallback) {
                 console.log(chalk.red.bold("debug:"), augur.options.debug);
                 console.log(chalk.blue.bold("local:"), chalk.cyan(augur.rpc.nodes.local));

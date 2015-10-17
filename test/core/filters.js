@@ -280,6 +280,10 @@ describe("Price history", function () {
                 assert.property(priceHistory[market_id][outcome][0], "price");
                 assert.property(priceHistory[market_id][outcome][0], "cost");
                 assert.property(priceHistory[market_id][outcome][0], "blockNumber");
+                assert.property(priceHistory[market_id][outcome][0], "market");
+                assert.property(priceHistory[market_id][outcome][0], "user");
+                assert.isAbove(priceHistory[market_id][outcome][0].market.length, 65);
+                assert.strictEqual(priceHistory[market_id][outcome][0].user.length, 42);
             }
             done();
         });
@@ -313,6 +317,10 @@ describe("Price history", function () {
                         assert.isAbove(logs.length, 0);
                         assert.property(logs[0], "price");
                         assert.property(logs[0], "blockNumber");
+                        assert.property(logs[0], "market");
+                        assert.property(logs[0], "user");
+                        assert.isAbove(logs[0].market.length, 65);
+                        assert.strictEqual(logs[0].user.length, 42);
                         done();
                     });
                 },
@@ -330,6 +338,10 @@ describe("Price history", function () {
             assert.isAbove(logs.length, 0);
             assert.property(logs[0], "price");
             assert.property(logs[0], "blockNumber");
+            assert.property(logs[0], "market");
+            assert.property(logs[0], "user");
+            assert.isAbove(logs[0].market.length, 65);
+            assert.strictEqual(logs[0].user.length, 42);
         });
 
     }

@@ -75,6 +75,8 @@ module.exports = function (augur) {
                         abi.bignum(logs[i].topics[3]).eq(outcome_id))
                     {
                         price_logs.push({
+                            market: abi.hex(market_id),
+                            user: abi.format_address(logs[i].topics[1]),
                             price: abi.unfix(parsed[0], "string"),
                             cost: abi.unfix(parsed[1], "string"),
                             blockNumber: abi.hex(logs[i].blockNumber)
