@@ -8,6 +8,27 @@ module.exports = function (contracts) {
 
     return {
 
+        // IPFS/IPNS
+        ipfs: {
+
+            setMarketsDirectoryHash: {
+                to: contracts.ipfs,
+                method: "setMarketsDirectoryHash",
+                signature: "ii",
+                send: true,
+                returns: "number"
+            },
+
+            getMarketsDirectoryHash: {
+                to: contracts.ipfs,
+                method: "getMarketsDirectoryHash",
+                signature: "i",
+                send: false,
+                returns: "hash"
+            }
+
+        },
+
         // namereg
         namereg: {
 

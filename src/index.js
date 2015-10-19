@@ -9,6 +9,7 @@ var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 
 var async = require("async");
 var BigNumber = require("bignumber.js");
+var bs58 = require("bs58");
 var abi = require("augur-abi");
 var rpc = require("ethrpc");
 var contracts = require("augur-contracts");
@@ -1702,6 +1703,64 @@ augur.getMarketPriceHistory = function (market, outcome, cb) {
         if (logs.error) throw logs;
         return this.filters.search_price_logs(logs, market, outcome);
     }
+};
+
+/**
+ * Remove IPFS hash tag (assume sha256, which is the default):
+ * 1. Remove leading two characters (Qm)
+ * 2. Decode base58 string to 33 byte array
+ * 3. Remove the leading byte, which is part of the hash tag
+ * Untagged 32 byte hash can now be stored on-contract as a single int256!
+ */
+augur.decodeMultihash = function (ipfsHash) {
+    if (ipfsHash && ipfsHash.constructor === String && ipfsHash.slice(0, 2) === "Qm") {
+        return abi.hex(new Buffer(bs58.decode(ipfsHash.slice(2)).splice(1)), true);
+    }
+};
+
+/**
+ * Add multihash prefix to hex-encoded IPFS hash and convert to base58:
+ *  - prefix 1 if leading byte > 60
+ *  - prefix 2 otherwise
+ */
+augur.encodeMultihash = function (ipfsHash) {
+    if (ipfsHash && ipfsHash.constructor === String) {
+        ipfsHash = abi.unfork(ipfsHash);
+        if (parseInt(ipfsHash.slice(0, 2), 16) > 60) {
+            ipfsHash = "01" + ipfsHash;
+        } else {
+            ipfsHash = "02" + ipfsHash;
+        }
+        return "Qm" + bs58.encode(new Buffer(ipfsHash, "hex"));
+    }
+};
+
+augur.setMarketsDirectoryHash = function (name, dirHash, onSent, onSuccess, onFailed) {
+    if (name.constructor === Object && name.name && name.hash) {
+        dirHash = name.hash;
+        if (name.onSent) onSent = name.onSent;
+        if (name.onSuccess) onSuccess = name.onSuccess;
+        if (name.onFailed) onFailed = name.onFailed;
+        name = name.name;
+    }
+    var tx = this.utils.copy(this.tx.ipfs.setMarketsDirectoryHash);
+    tx.params = [name, this.decodeMultihash(dirHash)];
+    return this.transact(tx, onSent, onSuccess, onFailed);
+};
+
+augur.getMarketsDirectoryHash = function (name, callback) {
+    var self = this;
+    var tx = this.utils.copy(this.tx.ipfs.getMarketsDirectoryHash);
+    tx.params = name;
+    if (!this.utils.is_function(callback)) {
+        var dirHash = this.fire(tx);
+        if (!dirHash || dirHash.error) throw dirHash;
+        return this.encodeMultihash(dirHash);
+    }
+    this.fire(tx, function (dirHash) {
+        if (!dirHash || dirHash.error) return callback(dirHash);
+        callback(self.encodeMultihash(dirHash));
+    });
 };
 
 module.exports = augur;
