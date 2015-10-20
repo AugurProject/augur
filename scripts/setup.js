@@ -7,54 +7,58 @@
 "use strict";
 
 var fs = require("fs");
-var path = require("path");
+var join = require("path").join;
 var cp = require("child_process");
 var nodeUtil = require("util");
 var async = require("async");
 var BigNumber = require("bignumber.js");
-var assert = require("chai").assert;
-var _ = require("lodash");
 var rm = require("rimraf");
 var abi = require("augur-abi");
 var chalk = require("chalk");
 var mocha = new (require("mocha"))();
 var mod_getopt = require("posix-getopt");
-var augur = require(path.join(__dirname, "..", "src"));
+var augur = require(join(__dirname, "..", "src"));
 var constants = augur.constants;
 var utils = augur.utils;
 var log = console.log;
 
 var options = {
-    DEBUG: false,
+    DEBUG: true,
     MOCHA_REPORTER: "spec",
     NETWORK_ID: "10101",
-    GENESIS_BLOCK: path.join(__dirname, "..", "data", "genesis-10101.json"),
-    PEER_PORT: 30303,
-    RPC_PORT: 8545,
+    GENESIS_BLOCK: join(__dirname, "..", "data", "genesis-10101.json"),
+    RPC_HOST: "127.0.0.1",
+    RPC_PORT: "8545",
+    PEER_PORT: "30303",
     MINIMUM_ETHER: 32,
-    AUGUR_CORE: path.join(process.env.HOME, "src", "augur-core"),
-    GOSPEL: path.join(__dirname, "..", "data", "gospel.json"),
+    AUGUR_CORE: join(process.env.HOME, "src", "augur-core"),
+    GOSPEL: join(__dirname, "..", "data", "gospel.json"),
     CUSTOM_GOSPEL: false,
-    LOG: path.join(__dirname, "..", "data", "geth.log"),
+    LOG: join(__dirname, "..", "data", "geth.log"),
+    DATADIR: join(process.env.HOME, ".ethereum-of-the-moment"),
     GETH: process.env.GETH || "geth",
-    SPAWN_GETH: true,
-    SUITE: []
+    SPAWN_GETH: true
 };
-options.UPLOADER = path.join(options.AUGUR_CORE, "load_contracts.py");
+options.UPLOADER = join(options.AUGUR_CORE, "load_contracts.py");
+
+// Remove existing symlink to data directory (if one exists)
+if (fs.existsSync(options.DATADIR)) fs.unlinkSync(options.DATADIR);
+
+switch (options.NETWORK_ID) {
 
 // Test network (networkid 10101)
-if (options.NETWORK_ID === "10101") {
-    options.DATADIR = path.join(process.env.HOME, ".augur-test");
-}
+case "10101":
+    fs.symlinkSync(join(process.env.HOME, ".augur-test"), options.DATADIR);
+    break;
 
 // Private alpha network (networkid 7)
-else if (options.NETWORK_ID === "7") {
-    options.DATADIR = path.join(process.env.HOME, ".augur");
-}
+case "7":
+    fs.symlinkSync(join(process.env.HOME, ".ethereum-augur"), options.DATADIR);
+    break;
 
 // Public testnet (networkid 0)
-else if (options.NETWORK_ID === "0") {
-    options.DATADIR = path.join(process.env.HOME, ".ethereum-augur");
+default:
+    fs.symlinkSync(join(process.env.HOME, ".ethereum"), options.DATADIR);
 }
 
 var accounts = utils.get_test_accounts(options.DATADIR, constants.MAX_TEST_ACCOUNTS);
@@ -76,7 +80,7 @@ options.GETH_FLAGS = [
     "--networkid", options.NETWORK_ID,
     "--datadir", options.DATADIR,
     "--genesis", options.GENESIS_BLOCK,
-    "--password", path.join(options.DATADIR, ".password")
+    "--password", join(options.DATADIR, ".password")
 ];
 
 log("Create", chalk.magenta("geth"), "log file:", chalk.green(options.LOG));
@@ -93,7 +97,7 @@ function spawn_geth(flags) {
         log("Spawn " + chalk.magenta(options.GETH) + " on network " +
             chalk.yellow.bold(options.NETWORK_ID) + "...");
         geth = cp.spawn(options.GETH, flags);
-        log(chalk.magenta("geth"), "listening on ports:");
+        log(chalk.magenta(options.GETH), "listening on ports:");
         log(chalk.gray(" - Peer:"), chalk.cyan(options.PEER_PORT));
         log(chalk.gray(" - RPC: "), chalk.cyan(options.RPC_PORT));
         geth.stdout.on("data", function (data) {
@@ -143,13 +147,13 @@ function connect_augur() {
         augur = utils.setup(
             augur,
             ["--gospel"],
-            { port: options.RPC_PORT }
+            options.RPC_HOST + ":" + options.RPC_PORT
         );
     } else {
         augur = utils.setup(
             augur,
             null,
-            { port: options.RPC_PORT }
+            options.RPC_HOST + ":" + options.RPC_PORT
         );
     }
 }
@@ -225,7 +229,7 @@ function faucets(geth) {
         cash: !balance.cash || balance.cash.lt(new BigNumber(5))
     };
     reset_tests(mocha.suite);
-    mocha.addFile(path.join(__dirname, "..", "test", "core", "faucets.js"));
+    mocha.addFile(join(__dirname, "..", "test", "core", "faucets.js"));
     mocha.reporter(options.MOCHA_REPORTER).run(function (failures) {
         var cash_balance = augur.getCashBalance(coinbase);
         var rep_balance = augur.getRepBalance(branch, coinbase);
@@ -269,8 +273,8 @@ function upload_contracts(geth) {
             chalk.red.bold(":"));
     }
     var uploader_options = [
-        "--source", "./src-extern",
-        "--externs",
+        // "--source", "./src-extern",
+        // "--externs",
         "--blocktime", "1.75",
         "--rpcport", options.RPC_PORT
     ];
@@ -288,7 +292,7 @@ function upload_contracts(geth) {
         if (code !== 0) {
             log(chalk.red.bold("Uploader closed with code", code));
         } else {
-            var gospelcmd = path.join(options.AUGUR_CORE, "generate_gospel.py -j");
+            var gospelcmd = join(options.AUGUR_CORE, "generate_gospel.py -j");
             cp.exec(gospelcmd, function (err, stdout) {
                 if (err) throw err;
                 fs.writeFileSync(options.GOSPEL, stdout.toString());
@@ -334,9 +338,9 @@ cp.spawn = function () {
 function reset_datadir() {
     log("Reset " + chalk.magenta("augur") + " data directory: " +
         chalk.green(options.DATADIR));
-    var directories = [ "blockchain", "chaindata", "dapp", "extra", "nodes", "state" ];
+    var directories = ["blockchain", "chaindata", "dapp", "extra", "nodes", "state"];
     for (var i = 0, len = directories.length; i < len; ++i) {
-        rm.sync(path.join(options.DATADIR, directories[i]));
+        rm.sync(join(options.DATADIR, directories[i]));
     }
 }
 
@@ -373,36 +377,36 @@ parser = new mod_getopt.BasicParser(optstring, process.argv);
 
 while ((option = parser.getopt()) !== undefined) {
     switch (option.option) {
-        case 'd':
-            options.DEBUG = true;
-            break;
-        case 'r':
-            options.RESET = true;
-            options.SPAWN_GETH = true;
-            break;
-        case 'g':
-            options.SPAWN_GETH = false;
-            break;
-        case 'f':
-            options.FAUCETS = true;
-            options.SPAWN_GETH = true;
-            break;
-        case 'o':
-            log("Load contracts from file:", chalk.green(options.GOSPEL));
-            augur.contracts = JSON.parse(fs.readFileSync(options.GOSPEL));
-            options.CUSTOM_GOSPEL = true;
-            break;
-        case 'u':
-            options.AUGUR_CORE = option.optarg;
-            break;
-        case 't':
-            options.UPLOAD_CONTRACT = option.optarg;
-            options.RESET = false;
-            break;
-        default:
-            assert.strictEqual('?', option.option);
-            done = true;
-            break;
+    case 'd':
+        options.DEBUG = true;
+        break;
+    case 'r':
+        options.RESET = true;
+        options.SPAWN_GETH = true;
+        break;
+    case 'g':
+        options.SPAWN_GETH = false;
+        break;
+    case 'f':
+        options.FAUCETS = true;
+        options.SPAWN_GETH = true;
+        break;
+    case 'o':
+        log("Load contracts from file:", chalk.green(options.GOSPEL));
+        augur.contracts = JSON.parse(fs.readFileSync(options.GOSPEL));
+        options.CUSTOM_GOSPEL = true;
+        break;
+    case 'u':
+        options.AUGUR_CORE = option.optarg;
+        break;
+    case 't':
+        options.UPLOAD_CONTRACT = option.optarg;
+        options.RESET = false;
+        break;
+    default:
+        console.assert('?' === option.option);
+        done = true;
+        break;
     }
     if (done) break;
 }
