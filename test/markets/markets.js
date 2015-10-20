@@ -18,11 +18,54 @@ var accounts = utils.get_test_accounts(augur, constants.MAX_TEST_ACCOUNTS);
 var participant_number = "1";
 var outcome = 1;
 var markets = augur.getMarkets(branch_id);
-var market_id = markets[0];
+var market_id = markets[markets.length - 1];
 var event_id = augur.getMarketEvents(market_id)[0];
 
 // markets.se
 describe("markets.se", function () {
+    describe("getFullMarketInfo", function () {
+        var test = function (r, done) {
+            // console.log(JSON.stringify(r, null, 2));
+            assert.isObject(r);
+            if (done) done();
+        };
+        it("sync", function () {
+            test(augur.getFullMarketInfo(market_id));
+        });
+        it("async", function (done) {
+            augur.getFullMarketInfo(market_id, function (info) {
+                if (!info || info.error) return done(info);
+                test(info, done);
+            });
+        });
+    });
+    describe("getMarketInfo(" + market_id + ")", function () {
+        var test = function (r) {
+            assert.isArray(r);
+            assert.isAbove(r.length, 5);
+            assert.isAbove(Number(r[1]), 0);
+            assert.strictEqual(Number(r[3]), 2);
+            assert.isAbove(Number(r[5]), 0);
+        };
+        it("sync", function () {
+            test(augur.getMarketInfo(market_id));
+        });
+        it("async", function (done) {
+            augur.getMarketInfo(market_id, function (r) {
+                test(r); done();
+            });
+        });
+        it("batched-async", function (done) {
+            var batch = augur.createBatch();
+            batch.add("getMarketInfo", [market_id], function (r) {
+                test(r);
+            });
+            batch.add("getMarketInfo", [market_id], function (r) {
+                test(r); done();
+            });
+            batch.execute();
+        });
+    });
     describe("getSimulatedBuy(" + market_id + ", " + outcome + ", " + amount + ")", function () {
         var test = function (r) {
             assert.strictEqual(r.length, 2);
@@ -89,33 +132,6 @@ describe("markets.se", function () {
                 test(r);
             });
             batch.add("lsLmsr", [market_id], function (r) {
-                test(r); done();
-            });
-            batch.execute();
-        });
-    });
-    describe("getMarketInfo(" + market_id + ")", function () {
-        var test = function (r) {
-            assert.isArray(r);
-            assert.isAbove(r.length, 5);
-            assert.isAbove(Number(r[1]), 0);
-            assert.strictEqual(Number(r[3]), 2);
-            assert.isAbove(Number(r[5]), 0);
-        };
-        it("sync", function () {
-            test(augur.getMarketInfo(market_id));
-        });
-        it("async", function (done) {
-            augur.getMarketInfo(market_id, function (r) {
-                test(r); done();
-            });
-        });
-        it("batched-async", function (done) {
-            var batch = augur.createBatch();
-            batch.add("getMarketInfo", [market_id], function (r) {
-                test(r);
-            });
-            batch.add("getMarketInfo", [market_id], function (r) {
                 test(r); done();
             });
             batch.execute();

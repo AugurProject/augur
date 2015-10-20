@@ -23,7 +23,7 @@ module.exports = {
     SECONDS_PER_BLOCK: 12,
 
     // maximum number of accounts to use for unit tests
-    MAX_TEST_ACCOUNTS: 2,
+    MAX_TEST_ACCOUNTS: 4,
 
     // 100 free ether for new accounts on registration
     FREEBIE: 100,

@@ -3803,46 +3803,45 @@ module.exports={
     },
     "10101": {
         "namereg": "0xc6d9d2cd449a754c494264e1809c50e34d64562b",
-        "buyAndSellShares": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79",
-        "checkQuorum": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68",
-        "closeMarket": "0x031d9d02520cc708ea3c865278508c9cdb92bd51",
-        "closeMarketEight": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7",
+        "buyAndSellShares": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68",
+        "checkQuorum": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df",
+        "closeMarket": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945",
+        "closeMarketEight": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645",
         "closeMarketFour": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd",
-        "closeMarketOne": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6",
+        "closeMarketOne": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3",
         "closeMarketTwo": "0x81a7621e9a286d061b3dea040888a51c96693b1c",
-        "createBranch": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f",
-        "createEvent": "0x35152caa07026203a1add680771afb690d872d7d",
-        "createMarket": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945",
-        "dispatch": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3",
-        "faucets": "0xcece47d6c0a6a1c90521f38ec5bf7550df983804",
-        "ipfs": "0x8edd1dde44a905284866a0941bbe29a82abeb8fd",
-        "makeReports": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893",
-        "p2pWagers": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e",
-        "sendReputation": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2",
-        "transferShares": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3",
-        "branches": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea",
-        "cash": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667",
-        "events": "0x5069d883e31429c6dd1325d961f443007747c7a2",
-        "expiringEvents": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7",
+        "createBranch": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7",
+        "createEvent": "0x3f3276849a878a176b2f02dd48a483e8182a49e4",
+        "createMarket": "0xcece47d6c0a6a1c90521f38ec5bf7550df983804",
+        "dispatch": "0x031d9d02520cc708ea3c865278508c9cdb92bd51",
+        "faucets": "0x509592c96eee7e19f6a34772fd8783cb072ca3c6",
+        "makeReports": "0x7d4b581a0868204b7481c316b430a97fd292a2fb",
+        "p2pWagers": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6",
+        "sendReputation": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893",
+        "transferShares": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7",
+        "branches": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7",
+        "cash": "0xe4714fcbdcdba49629bc408183ef40d120700b8d",
+        "events": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667",
+        "expiringEvents": "0x35152caa07026203a1add680771afb690d872d7d",
         "fxpFunctions": "0x482c57abdce592b39434e3f619ffc3db62ab6d01",
-        "info": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645",
-        "markets": "0xe4714fcbdcdba49629bc408183ef40d120700b8d",
-        "reporting": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d",
+        "info": "0x5069d883e31429c6dd1325d961f443007747c7a2",
+        "ipfs": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d",
+        "markets": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e",
+        "reporting": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea",
         "adjust": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55",
         "center": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c",
         "payout": "0x8a4e2993a9972ee035453bb5674816fc3a698718",
-        "redeem_adjust": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7",
-        "redeem_center": "0x7d4b581a0868204b7481c316b430a97fd292a2fb",
-        "redeem_interpolate": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df",
-        "redeem_payout": "0x3f3276849a878a176b2f02dd48a483e8182a49e4",
-        "redeem_resolve": "0xcd6c7bc634257f82903b182142aae7156d72a200",
-        "redeem_score": "0x8c19616de17acdfbc933b99d9f529a689d22098f",
+        "redeem_adjust": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3",
+        "redeem_center": "0xcd6c7bc634257f82903b182142aae7156d72a200",
+        "redeem_interpolate": "0x8c19616de17acdfbc933b99d9f529a689d22098f",
+        "redeem_payout": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79",
+        "redeem_resolve": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f",
+        "redeem_score": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2",
         "resolve": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2",
         "score": "0x708fdfe18bf28afe861a69e95419d183ace003eb",
         "statistics": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7"
     }
 }
-
 },{}],5:[function(require,module,exports){
 module.exports = require("./contracts");
 
@@ -81545,7 +81544,7 @@ module.exports = {
     SECONDS_PER_BLOCK: 12,
 
     // maximum number of accounts to use for unit tests
-    MAX_TEST_ACCOUNTS: 2,
+    MAX_TEST_ACCOUNTS: 4,
 
     // 100 free ether for new accounts on registration
     FREEBIE: 100,
@@ -82697,7 +82696,6 @@ augur.connect = function (rpcinfo, ipcpath, callback) {
             this.connection = true;
             return true;
         } catch (exc) {
-            console.error("connect error:", exc);
             this.default_rpc();
             return false;
         }
@@ -83154,7 +83152,7 @@ augur.setReportHash = function (branch, expDateIndex, reportHash, onSent) {
 };
 
 // events.se
-augur.getEventInfo = function (event_id, onSent) {
+augur.getEventInfo = function (event_id, callback) {
     // event_id: sha256 hash id
     var self = this;
     var parse_info = function (info) {
@@ -83176,61 +83174,61 @@ augur.getEventInfo = function (event_id, onSent) {
         return info;
     };
     this.tx.getEventInfo.params = event_id;
-    if (onSent) {
+    if (this.utils.is_function(callback)) {
         this.fire(this.tx.getEventInfo, function (info) {
-            onSent(parse_info(info));
+            callback(parse_info(info));
         });
     } else {
         return parse_info(this.fire(this.tx.getEventInfo));
     }
 };
-augur.getEventBranch = function (branchNumber, onSent) {
+augur.getEventBranch = function (branchNumber, callback) {
     // branchNumber: integer
     var tx = this.utils.copy(this.tx.getEventBranch);
     tx.params = branchNumber;
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getExpiration = function (event, onSent) {
+augur.getExpiration = function (event, callback) {
     // event: sha256
     var tx = this.utils.copy(this.tx.getExpiration);
     tx.params = event;
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getOutcome = function (event, onSent) {
+augur.getOutcome = function (event, callback) {
     // event: sha256
     var tx = this.utils.copy(this.tx.getOutcome);
     tx.params = event;
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getMinValue = function (event, onSent) {
+augur.getMinValue = function (event, callback) {
     // event: sha256
     var tx = this.utils.copy(this.tx.getMinValue);
     tx.params = event;
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getMaxValue = function (event, onSent) {
+augur.getMaxValue = function (event, callback) {
     // event: sha256
     var tx = this.utils.copy(this.tx.getMaxValue);
     tx.params = event;
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getNumOutcomes = function (event, onSent) {
+augur.getNumOutcomes = function (event, callback) {
     // event: sha256
     var tx = this.utils.copy(this.tx.getNumOutcomes);
     tx.params = event;
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getCurrentVotePeriod = function (branch, onSent) {
+augur.getCurrentVotePeriod = function (branch, callback) {
     // branch: sha256
     var periodLength, blockNum;
     this.tx.getPeriodLength.params = branch;
-    if (onSent) {
+    if (callback) {
         this.fire(this.tx.getPeriodLength, function (periodLength) {
             if (periodLength) {
                 periodLength = abi.bignum(periodLength);
                 rpc.blockNumber(function (blockNum) {
                     blockNum = abi.bignum(blockNum);
-                    onSent(blockNum.dividedBy(periodLength).floor().sub(1));
+                    callback(blockNum.dividedBy(periodLength).floor().sub(1));
                 });
             }
         });
@@ -83244,14 +83242,14 @@ augur.getCurrentVotePeriod = function (branch, onSent) {
 };
 
 // expiringEvents.se
-augur.getEvents = function (branch, votePeriod, onSent) {
+augur.getEvents = function (branch, votePeriod, callback) {
     // branch: sha256 hash id
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getEvents);
     tx.params = [branch, votePeriod];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getEventsRange = function (branch, vpStart, vpEnd, onSent) {
+augur.getEventsRange = function (branch, vpStart, vpEnd, callback) {
     // branch: sha256
     // vpStart: integer
     // vpEnd: integer
@@ -83268,183 +83266,183 @@ augur.getEventsRange = function (branch, vpStart, vpEnd, onSent) {
             params: [branch, i + vpStart]
         };
     }
-    return rpc.batch(txlist, onSent);
+    return rpc.batch(txlist, callback);
 };
-augur.getNumberEvents = function (branch, votePeriod, onSent) {
+augur.getNumberEvents = function (branch, votePeriod, callback) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getNumberEvents);
     tx.params = [branch, votePeriod];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getEvent = function (branch, votePeriod, eventIndex, onSent) {
+augur.getEvent = function (branch, votePeriod, eventIndex, callback) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getEvent);
     tx.params = [branch, votePeriod, eventIndex];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getTotalRepReported = function (branch, votePeriod, onSent) {
+augur.getTotalRepReported = function (branch, votePeriod, callback) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getTotalRepReported);
     tx.params = [branch, votePeriod];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getReporterBallot = function (branch, votePeriod, reporterID, onSent) {
+augur.getReporterBallot = function (branch, votePeriod, reporterID, callback) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getReporterBallot);
     tx.params = [branch, votePeriod, reporterID];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getReport = function (branch, votePeriod, reporter, onSent) {
+augur.getReport = function (branch, votePeriod, reporter, callback) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getReports);
     tx.params = [branch, votePeriod, reporter];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getReportHash = function (branch, votePeriod, reporter, onSent) {
+augur.getReportHash = function (branch, votePeriod, reporter, callback) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getReportHash);
     tx.params = [branch, votePeriod, reporter];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getVSize = function (branch, votePeriod, onSent) {
+augur.getVSize = function (branch, votePeriod, callback) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getVSize);
     tx.params = [branch, votePeriod];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getReportsFilled = function (branch, votePeriod, onSent) {
+augur.getReportsFilled = function (branch, votePeriod, callback) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getReportsFilled);
     tx.params = [branch, votePeriod];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getReportsMask = function (branch, votePeriod, onSent) {
+augur.getReportsMask = function (branch, votePeriod, callback) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getReportsMask);
     tx.params = [branch, votePeriod];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getWeightedCenteredData = function (branch, votePeriod, onSent) {
+augur.getWeightedCenteredData = function (branch, votePeriod, callback) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getWeightedCenteredData);
     tx.params = [branch, votePeriod];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getCovarianceMatrixRow = function (branch, votePeriod, onSent) {
+augur.getCovarianceMatrixRow = function (branch, votePeriod, callback) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getCovarianceMatrixRow);
     tx.params = [branch, votePeriod];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getDeflated = function (branch, votePeriod, onSent) {
+augur.getDeflated = function (branch, votePeriod, callback) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getDeflated);
     tx.params = [branch, votePeriod];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getLoadingVector = function (branch, votePeriod, onSent) {
+augur.getLoadingVector = function (branch, votePeriod, callback) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getLoadingVector);
     tx.params = [branch, votePeriod];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getLatent = function (branch, votePeriod, onSent) {
+augur.getLatent = function (branch, votePeriod, callback) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getLatent);
     tx.params = [branch, votePeriod];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getScores = function (branch, votePeriod, onSent) {
+augur.getScores = function (branch, votePeriod, callback) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getScores);
     tx.params = [branch, votePeriod];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getSetOne = function (branch, votePeriod, onSent) {
+augur.getSetOne = function (branch, votePeriod, callback) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getSetOne);
     tx.params = [branch, votePeriod];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getSetTwo = function (branch, votePeriod, onSent) {
+augur.getSetTwo = function (branch, votePeriod, callback) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getSetTwo);
     tx.params = [branch, votePeriod];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.returnOld = function (branch, votePeriod, onSent) {
+augur.returnOld = function (branch, votePeriod, callback) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.returnOld);
     tx.params = [branch, votePeriod];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getNewOne = function (branch, votePeriod, onSent) {
+augur.getNewOne = function (branch, votePeriod, callback) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getNewOne);
     tx.params = [branch, votePeriod];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getNewTwo = function (branch, votePeriod, onSent) {
+augur.getNewTwo = function (branch, votePeriod, callback) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getNewTwo);
     tx.params = [branch, votePeriod];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getAdjPrinComp = function (branch, votePeriod, onSent) {
+augur.getAdjPrinComp = function (branch, votePeriod, callback) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getAdjPrinComp);
     tx.params = [branch, votePeriod];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getSmoothRep = function (branch, votePeriod, onSent) {
+augur.getSmoothRep = function (branch, votePeriod, callback) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getSmoothRep);
     tx.params = [branch, votePeriod];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getOutcomesFinal = function (branch, votePeriod, onSent) {
+augur.getOutcomesFinal = function (branch, votePeriod, callback) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getOutcomesFinal);
     tx.params = [branch, votePeriod];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getReporterPayouts = function (branch, votePeriod, onSent) {
+augur.getReporterPayouts = function (branch, votePeriod, callback) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getReporterPayouts);
     tx.params = [branch, votePeriod];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
 
-augur.getTotalReputation = function (branch, votePeriod, onSent) {
+augur.getTotalReputation = function (branch, votePeriod, callback) {
     // branch: sha256
     // votePeriod: integer
     var tx = this.utils.copy(this.tx.getTotalReputation);
     tx.params = [branch, votePeriod];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
 augur.setTotalReputation = function (branch, votePeriod, totalReputation, onSent, onSuccess, onFailed) {
     // branch: sha256
@@ -83463,7 +83461,7 @@ augur.makeBallot = function (branch, votePeriod, onSent) {
 };
 
 // markets.se
-augur.getSimulatedBuy = function (market, outcome, amount, onSent) {
+augur.getSimulatedBuy = function (market, outcome, amount, callback) {
     // market: sha256 hash id
     // outcome: integer (1 or 2 for binary events)
     // amount: number -> fixed-point
@@ -83472,23 +83470,23 @@ augur.getSimulatedBuy = function (market, outcome, amount, onSent) {
         market = abi.prefix_hex(market.toString(16));
     }
     tx.params = [market, outcome, abi.fix(amount, "hex")];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getSimulatedSell = function (market, outcome, amount, onSent) {
+augur.getSimulatedSell = function (market, outcome, amount, callback) {
     // market: sha256 hash id
     // outcome: integer (1 or 2 for binary events)
     // amount: number -> fixed-point
     var tx = this.utils.copy(this.tx.getSimulatedSell);
     tx.params = [market, outcome, abi.fix(amount, "hex")];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.lsLmsr = function (market, onSent) {
+augur.lsLmsr = function (market, callback) {
     // market: sha256
     var tx = this.utils.copy(this.tx.lsLmsr);
     tx.params = market;
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getMarketOutcomeInfo = function (market, outcome, onSent) {
+augur.getMarketOutcomeInfo = function (market, outcome, callback) {
     var self = this;
     var parse_info = function (info) {
         var i, len;
@@ -83507,15 +83505,114 @@ augur.getMarketOutcomeInfo = function (market, outcome, onSent) {
     };
     var tx = this.utils.copy(this.tx.getMarketOutcomeInfo);
     tx.params = [market, outcome];
-    if (onSent) {
+    if (callback) {
         this.fire(tx, function (info) {
-            onSent(parse_info(info));
+            callback(parse_info(info));
         });
     } else {
         return parse_info(this.fire(tx));
     }
 };
-augur.getMarketInfo = function (market, onSent) {
+augur.getFullMarketInfo = function (market, callback) {
+    var self = this;
+    var parse_info = function (rawInfo) {
+        var TRADER_FIELDS = 3;
+        var EVENTS_FIELDS = 6;
+        var OUTCOMES_FIELDS =12;
+        var WINNING_OUTCOMES_FIELDS = 8;
+        var info;
+        if (rawInfo && rawInfo.length) {
+
+            // all-inclusive except comments & price history
+            // info[0] = traderCount (self.Markets[market].currentParticipant)
+            // info[1] = self.Markets[market].alpha
+            // info[2] = self.Markets[market].addr2participant[tx.origin]
+            // info[3] = self.Markets[market].numOutcomes
+            // info[4] = self.Markets[market].tradingPeriod
+            // info[5] = self.Markets[market].tradingFee
+            // info[6] = self.Markets[market].branch
+            // info[7] = numEvents (self.Markets[market].lenEvents)
+            // info[8] = self.Markets[market].cumulativeScale
+            // info[9] = INFO.getCreationFee(market)
+            // info[10] = INFO.getCreator(market)
+            var index = 11;
+            info = {
+                _id: market,
+                network: self.network_id || rpc.version(),
+                traderCount: abi.number(rawInfo[0]),
+                alpha: abi.unfix(rawInfo[1], "string"),
+                traderIndex: abi.unfix(rawInfo[2], "number"),
+                numOutcomes: abi.number(rawInfo[3]),
+                tradingPeriod: abi.number(rawInfo[4]),
+                tradingFee: abi.unfix(rawInfo[5], "string"),
+                branchId: rawInfo[6],
+                numEvents: abi.number(rawInfo[7]),
+                cumulativeScale: abi.string(rawInfo[8]),
+                creationFee: abi.unfix(rawInfo[9], "string"),
+                author: abi.format_address(rawInfo[10]),
+                invalid: null,
+                endDate: null,
+                participants: {}
+            };
+            info.outcomes = new Array(info.numOutcomes);
+            info.events = new Array(info.numEvents);
+
+            // organize trader info
+            var addr;
+            for (var i = 0; i < info.traderCount; ++i) {
+                addr = abi.format_address(rawInfo[i + index]);
+                info.participants[addr] = i;
+            }
+
+            // organize event info
+            // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
+            index += info.traderCount*TRADER_FIELDS;
+            for (i = 0; i < info.numEvents; ++i) {
+                var endDate = abi.number(rawInfo[i + index + 1]);
+                info.events[i] = {
+                    id: rawInfo[i + index],
+                    endDate: endDate,
+                    outcome: abi.string(rawInfo[i + index + 2]),
+                    minValue: abi.string(rawInfo[i + index + 3]),
+                    maxValue: abi.string(rawInfo[i + index + 4]),
+                    numOutcomes: abi.number(rawInfo[i + index + 5])
+                };
+                if (info.endDate === null || endDate < info.endDate) {
+                    info.endDate = endDate;
+                }
+            }
+
+            // organize outcome info
+            index += info.numEvents*EVENTS_FIELDS;
+            for (i = 0; i < info.numOutcomes; ++i) {
+                info.outcomes[i] = {
+                    id: i + 1,
+                    outstandingShares: abi.unfix(rawInfo[i + index], "string"),
+                    price: abi.unfix(rawInfo[i + index + 1], "string"),
+                    shares: {}
+                };
+                for (var j = 0; j < info.traderCount; ++j) {
+                    addr = abi.format_address(rawInfo[j + 11]);
+                    info.outcomes[i].shares[addr] = abi.unfix(rawInfo[j + 12], "string");
+                }
+            }
+        }
+        return info;
+    };
+    var tx = this.utils.copy(this.tx.getFullMarketInfo);
+    if (market && market.constructor === BigNumber) {
+        market = market.toString(16);
+    }
+    tx.params = market;
+    if (this.utils.is_function(callback)) {
+        this.fire(tx, function (info) {
+            callback(parse_info(info));
+        });
+    } else {
+        return parse_info(this.fire(tx));
+    }
+};
+augur.getMarketInfo = function (market, callback) {
     var self = this;
     var parse_info = function (info) {
         // info[0] = self.Markets[market].currentParticipant
@@ -83545,107 +83642,107 @@ augur.getMarketInfo = function (market, onSent) {
         market = market.toString(16);
     }
     tx.params = market;
-    if (onSent) {
+    if (this.utils.is_function(callback)) {
         this.fire(tx, function (info) {
-            onSent(parse_info(info));
+            callback(parse_info(info));
         });
     } else {
         return parse_info(this.fire(tx));
     }
 };
-augur.getMarketEvents = function (market, onSent) {
+augur.getMarketEvents = function (market, callback) {
     // market: sha256 hash id
     var tx = this.utils.copy(this.tx.getMarketEvents);
     tx.params = market;
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getNumEvents = function (market, onSent) {
+augur.getNumEvents = function (market, callback) {
     // market: sha256 hash id
     var tx = this.utils.copy(this.tx.getNumEvents);
     tx.params = market;
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getBranchID = function (branch, onSent) {
+augur.getBranchID = function (branch, callback) {
     // branch: sha256 hash id
     var tx = this.utils.copy(this.tx.getBranchID);
     tx.params = branch;
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
 // Get the current number of participants in this market
-augur.getCurrentParticipantNumber = function (market, onSent) {
+augur.getCurrentParticipantNumber = function (market, callback) {
     // market: sha256 hash id
     var tx = this.utils.copy(this.tx.getCurrentParticipantNumber);
     tx.params = market;
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getMarketNumOutcomes = function (market, onSent) {
+augur.getMarketNumOutcomes = function (market, callback) {
     // market: sha256 hash id
     var tx = this.utils.copy(this.tx.getMarketNumOutcomes);
     tx.params = market;
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getParticipantSharesPurchased = function (market, participationNumber, outcome, onSent) {
+augur.getParticipantSharesPurchased = function (market, participationNumber, outcome, callback) {
     // market: sha256 hash id
     var tx = this.utils.copy(this.tx.getParticipantSharesPurchased);
     tx.params = [market, participationNumber, outcome];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getSharesPurchased = function (market, outcome, onSent) {
+augur.getSharesPurchased = function (market, outcome, callback) {
     // market: sha256 hash id
     var tx = this.utils.copy(this.tx.getSharesPurchased);
     tx.params = [market, outcome];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getWinningOutcomes = function (market, onSent) {
+augur.getWinningOutcomes = function (market, callback) {
     // market: sha256 hash id
     var tx = this.utils.copy(this.tx.getWinningOutcomes);
     tx.params = market;
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.price = function (market, outcome, onSent) {
+augur.price = function (market, outcome, callback) {
     // market: sha256 hash id
     var tx = this.utils.copy(this.tx.price);
     tx.params = [market, outcome];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
 // Get the participant number (the array index) for specified address
-augur.getParticipantNumber = function (market, address, onSent) {
+augur.getParticipantNumber = function (market, address, callback) {
     // market: sha256
     // address: ethereum account
     var tx = this.utils.copy(this.tx.getParticipantNumber);
     tx.params = [market, address];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
 // Get the address for the specified participant number (array index) 
-augur.getParticipantID = function (market, participantNumber, onSent) {
+augur.getParticipantID = function (market, participantNumber, callback) {
     // market: sha256
     var tx = this.utils.copy(this.tx.getParticipantID);
     tx.params = [market, participantNumber];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getAlpha = function (market, onSent) {
+augur.getAlpha = function (market, callback) {
     // market: sha256
     var tx = this.utils.copy(this.tx.getAlpha);
     tx.params = market;
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getCumScale = function (market, onSent) {
+augur.getCumScale = function (market, callback) {
     // market: sha256
     var tx = this.utils.copy(this.tx.getCumScale);
     tx.params = market;
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getTradingPeriod = function (market, onSent) {
+augur.getTradingPeriod = function (market, callback) {
     // market: sha256
     var tx = this.utils.copy(this.tx.getTradingPeriod);
     tx.params = market;
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-augur.getTradingFee = function (market, onSent) {
+augur.getTradingFee = function (market, callback) {
     // market: sha256
     var tx = this.utils.copy(this.tx.getTradingFee);
     tx.params = market;
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
 augur.initialLiquiditySetup = function (marketID, alpha, cumulativeScale, numOutcomes, onSent, onSuccess, onFailed) {
     var tx = this.utils.copy(this.tx.initialLiquiditySetup);
@@ -84873,6 +84970,13 @@ module.exports = function (contracts) {
             method: "getMarketOutcomeInfo",
             signature: "ii",
             returns: "hash[]"
+        },
+        getFullMarketInfo: {
+            to: contracts.markets,
+            method: "getFullMarketInfo",
+            signature: "i",
+            returns: "hash[]"
+            // returns: "string"
         },
         getMarketInfo: {
             to: contracts.markets,

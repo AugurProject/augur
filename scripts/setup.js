@@ -16,14 +16,16 @@ var rm = require("rimraf");
 var abi = require("augur-abi");
 var chalk = require("chalk");
 var mocha = new (require("mocha"))();
-var mod_getopt = require("posix-getopt");
+var getopt = require("posix-getopt");
 var augur = require(join(__dirname, "..", "src"));
 var constants = augur.constants;
 var utils = augur.utils;
+var augur_contracts_path = join(process.env.HOME, "src", "augur-contracts", "contracts");
+var augur_contracts = require(augur_contracts_path);
 var log = console.log;
 
 var options = {
-    DEBUG: true,
+    DEBUG: false,
     MOCHA_REPORTER: "spec",
     NETWORK_ID: "10101",
     GENESIS_BLOCK: join(__dirname, "..", "data", "genesis-10101.json"),
@@ -143,7 +145,7 @@ function mine_minimum_ether(geth, account, next) {
 }
 
 function connect_augur() {
-    if (options.CUSTOM_GOSPEL) {
+    if (options.CUSTOM_GOSPEL || options.RESET) {
         augur = utils.setup(
             augur,
             ["--gospel"],
@@ -279,7 +281,7 @@ function upload_contracts(geth) {
         "--rpcport", options.RPC_PORT
     ];
     if (options.UPLOAD_CONTRACT) {
-        uploader_options.concat(["--contract", options.UPLOAD_CONTRACT]);
+        uploader_options = uploader_options.concat(["--contract", options.UPLOAD_CONTRACT]);
     }
     var uploader = cp.spawn(options.UPLOADER, uploader_options);
     uploader.stdout.on("data", function (data) {
@@ -296,7 +298,10 @@ function upload_contracts(geth) {
             cp.exec(gospelcmd, function (err, stdout) {
                 if (err) throw err;
                 fs.writeFileSync(options.GOSPEL, stdout.toString());
-                log("Saved contract addresses:", chalk.green(options.GOSPEL));
+                augur_contracts[options.NETWORK_ID] = JSON.parse(stdout);
+                var jsonpath = augur_contracts_path + ".json";
+                fs.writeFileSync(jsonpath, JSON.stringify(augur_contracts, null, 4));
+                log("Saved contracts:", chalk.green(options.GOSPEL), chalk.magenta(jsonpath));
                 options.CUSTOM_GOSPEL = true;
                 if (options.FAUCETS) {
                     log("Send", options.MINIMUM_ETHER, "ETH to:");
@@ -373,9 +378,9 @@ function main(account, options) {
 var option, optstring, parser, done;
 optstring = "d(debug)r(reset)g(geth)o(gospel)f(faucets)"+
             "u:(augur)t:(contract)";
-parser = new mod_getopt.BasicParser(optstring, process.argv);
+parser = new getopt.BasicParser(optstring, process.argv);
 
-while ((option = parser.getopt()) !== undefined) {
+while ( (option = parser.getopt()) !== undefined) {
     switch (option.option) {
     case 'd':
         options.DEBUG = true;

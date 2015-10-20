@@ -699,6 +699,13 @@ module.exports = function (contracts) {
             signature: "ii",
             returns: "hash[]"
         },
+        getFullMarketInfo: {
+            to: contracts.markets,
+            method: "getFullMarketInfo",
+            signature: "i",
+            returns: "hash[]"
+            // returns: "string"
+        },
         getMarketInfo: {
             to: contracts.markets,
             method: "getMarketInfo",
