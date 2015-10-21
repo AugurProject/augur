@@ -23,7 +23,7 @@ var event_id = augur.getMarketEvents(market_id)[0];
 
 // markets.se
 describe("markets.se", function () {
-    if (augur.network_id !== 10101) {
+    if (augur.network_id === "10101") {
         describe("getFullMarketInfo", function () {
             var test = function (r, done) {
                 assert.isObject(r);
