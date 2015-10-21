@@ -21,134 +21,137 @@ describe("Database", function () {
         iv: "zombeef"
     };
 
-    describe("IPFS", function () {
+    if (!process.env.CONTINUOUS_INTEGRATION) {
 
-        describe("set/getHash", function () {
+        describe("IPFS", function () {
 
-            var test = function (t) {
-                it(t.name + ": " + t.hash, function (done) {
-                    this.timeout(augur.constants.TIMEOUT);
-                    augur.db.ipfs.setHash({
-                        name: t.name,
-                        hash: t.hash,
-                        onSent: function (r) {
-                            assert.property(r, "txHash");
-                            assert.property(r, "callReturn");
-                            assert.strictEqual(r.callReturn, "1");
-                        },
-                        onSuccess: function (r) {
-                            assert.property(r, "txHash");
-                            assert.property(r, "callReturn");
-                            assert.property(r, "blockHash");
-                            assert.property(r, "blockNumber");
-                            assert.isAbove(parseInt(r.blockNumber), 0);
-                            assert.strictEqual(r.from, augur.coinbase);
-                            assert.strictEqual(r.to, augur.contracts.ipfs);
-                            assert.strictEqual(parseInt(r.value), 0);
-                            assert.strictEqual(r.callReturn, "1");
+            describe("set/getHash", function () {
 
-                            // asynchronous
-                            augur.db.ipfs.getHash(t.name, function (ipfsHash) {
-                                if (!ipfsHash) return done("no response");
-                                if (ipfsHash.error) return done(ipfsHash);
-                                assert.strictEqual(ipfsHash, t.hash);
+                var test = function (t) {
+                    it(t.name + ": " + t.hash, function (done) {
+                        this.timeout(augur.constants.TIMEOUT*2);
+                        augur.db.ipfs.setHash({
+                            name: t.name,
+                            hash: t.hash,
+                            onSent: function (r) {
+                                assert.property(r, "txHash");
+                                assert.property(r, "callReturn");
+                                assert.strictEqual(r.callReturn, "1");
+                            },
+                            onSuccess: function (r) {
+                                assert.property(r, "txHash");
+                                assert.property(r, "callReturn");
+                                assert.property(r, "blockHash");
+                                assert.property(r, "blockNumber");
+                                assert.isAbove(parseInt(r.blockNumber), 0);
+                                assert.strictEqual(r.from, augur.coinbase);
+                                assert.strictEqual(r.to, augur.contracts.ipfs);
+                                assert.strictEqual(parseInt(r.value), 0);
+                                assert.strictEqual(r.callReturn, "1");
 
-                                // synchronous
-                                var syncIpfsHash = augur.db.ipfs.getHash(t.name);
-                                if (!syncIpfsHash) return done("no response");
-                                if (syncIpfsHash.error) return done(syncIpfsHash);
-                                assert.strictEqual(syncIpfsHash, t.hash);
+                                // asynchronous
+                                augur.db.ipfs.getHash(t.name, function (ipfsHash) {
+                                    if (!ipfsHash) return done("no response");
+                                    if (ipfsHash.error) return done(ipfsHash);
+                                    assert.strictEqual(ipfsHash, t.hash);
 
-                                done();
-                            });
-                        },
-                        onFailed: done
+                                    // synchronous
+                                    var syncIpfsHash = augur.db.ipfs.getHash(t.name);
+                                    if (!syncIpfsHash) return done("no response");
+                                    if (syncIpfsHash.error) return done(syncIpfsHash);
+                                    assert.strictEqual(syncIpfsHash, t.hash);
+
+                                    done();
+                                });
+                            },
+                            onFailed: done
+                        });
                     });
-                });
-            };
+                };
 
-            test({
-                name: "7",
-                hash: "QmaUJ4XspR3XhQ4fsjmqHSkkTHYiTJigKZSPa8i4xgVuAt"
+                test({
+                    name: "7",
+                    hash: "QmaUJ4XspR3XhQ4fsjmqHSkkTHYiTJigKZSPa8i4xgVuAt"
+                });
+                test({
+                    name: "10101",
+                    hash: "QmeWQshJxTpnvAq58A51KhBkEi6YGJDKRe7rssPFRnX2EX"
+                });
+                test({
+                    name: "7",
+                    hash: "Qmehkp3udWtoLzJvxNJMtCkPmSExSr7ibHy3fdwJg2Z1Ju"
+                });
+                test({
+                    name: "10101",
+                    hash: "QmQKmU43G12uAF8HfWL7e3gUgxFm1C8F7CzMVm8FiHdW2G"
+                });
+
             });
-            test({
-                name: "10101",
-                hash: "QmeWQshJxTpnvAq58A51KhBkEi6YGJDKRe7rssPFRnX2EX"
+
+            var test_cases = [{
+                label: "oh-hi.py",
+                data: "hello world",
+                hash: "Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD"
+            }, {
+                label: "zero",
+                data: "0",
+                hash: "QmS6mcrMTFsZnT3wAptqEb8NpBPnv1H6WwZBMzEjT8SSDv"
+            }, {
+                label: "a to b",
+                data: { "a": "b" },
+                hash: "QmUi9xHYZA13QS7yHSFzaaeHzxF4MGEBSZfHfkz79rENAX"
+            }, {
+                label: "stringified a to b",
+                data: JSON.stringify({ "a": "b" }),
+                hash: "QmUi9xHYZA13QS7yHSFzaaeHzxF4MGEBSZfHfkz79rENAX"
+            }, {
+                label: account.handle,
+                data: account,
+                hash: "QmeaNZPGPupiHF8CrviZ2x2nvMBYGwDTmcGWGBh4K97Co1"
+            }];
+
+            describe("put", function () {
+                var test = function (t) {
+                    it(JSON.stringify(t.data) + " -> " + t.hash, function (done) {
+                        this.timeout(augur.constants.TIMEOUT);
+                        augur.db.ipfs.put(t.label, t.data, function (ipfsHash) {
+                            if (!ipfsHash) return done("no response");
+                            if (ipfsHash.error) return done(ipfsHash);
+                            assert.strictEqual(ipfsHash, t.hash);
+                            done();
+                        });
+                    });
+                };
+                for (var i = 0; i < test_cases.length; ++i) {
+                    test(test_cases[i]);
+                }
             });
-            test({
-                name: "7",
-                hash: "Qmehkp3udWtoLzJvxNJMtCkPmSExSr7ibHy3fdwJg2Z1Ju"
-            });
-            test({
-                name: "10101",
-                hash: "QmQKmU43G12uAF8HfWL7e3gUgxFm1C8F7CzMVm8FiHdW2G"
+
+            describe("get", function () {
+                var test = function (t) {
+                    it(t.label + " -> " + JSON.stringify(t.data), function (done) {
+                        this.timeout(augur.constants.TIMEOUT);
+                        augur.db.ipfs.get(t.label, function (data) {
+                            if (data === null || data === undefined) {
+                                return done("no response");
+                            }
+                            if (data.error) return done(data);
+                            if (data.constructor === Object) {
+                                assert.deepEqual(data, t.data);
+                            } else {
+                                assert.strictEqual(data, t.data);
+                            }
+                            done();
+                        });
+                    });
+                };
+                for (var i = 0; i < test_cases.length; ++i) {
+                    test(test_cases[i]);
+                }
             });
 
         });
-
-        var test_cases = [{
-            label: "oh-hi.py",
-            data: "hello world",
-            hash: "Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD"
-        }, {
-            label: "zero",
-            data: "0",
-            hash: "QmS6mcrMTFsZnT3wAptqEb8NpBPnv1H6WwZBMzEjT8SSDv"
-        }, {
-            label: "a to b",
-            data: { "a": "b" },
-            hash: "QmUi9xHYZA13QS7yHSFzaaeHzxF4MGEBSZfHfkz79rENAX"
-        }, {
-            label: "stringified a to b",
-            data: JSON.stringify({ "a": "b" }),
-            hash: "QmUi9xHYZA13QS7yHSFzaaeHzxF4MGEBSZfHfkz79rENAX"
-        }, {
-            label: account.handle,
-            data: account,
-            hash: "QmeaNZPGPupiHF8CrviZ2x2nvMBYGwDTmcGWGBh4K97Co1"
-        }];
-
-        describe("put", function () {
-            var test = function (t) {
-                it(JSON.stringify(t.data) + " -> " + t.hash, function (done) {
-                    this.timeout(augur.constants.TIMEOUT);
-                    augur.db.ipfs.put(t.label, t.data, function (ipfsHash) {
-                        if (!ipfsHash) return done("no response");
-                        if (ipfsHash.error) return done(ipfsHash);
-                        assert.strictEqual(ipfsHash, t.hash);
-                        done();
-                    });
-                });
-            };
-            for (var i = 0; i < test_cases.length; ++i) {
-                test(test_cases[i]);
-            }
-        });
-
-        describe("get", function () {
-            var test = function (t) {
-                it(t.label + " -> " + JSON.stringify(t.data), function (done) {
-                    this.timeout(augur.constants.TIMEOUT);
-                    augur.db.ipfs.get(t.label, function (data) {
-                        if (data === null || data === undefined) {
-                            return done("no response");
-                        }
-                        if (data.error) return done(data);
-                        if (data.constructor === Object) {
-                            assert.deepEqual(data, t.data);
-                        } else {
-                            assert.strictEqual(data, t.data);
-                        }
-                        done();
-                    });
-                });
-            };
-            for (var i = 0; i < test_cases.length; ++i) {
-                test(test_cases[i]);
-            }
-        });
-
-    });
+    }
 
     // Firebase read and write methods
     describe("Firebase", function () {

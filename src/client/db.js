@@ -208,5 +208,5 @@ module.exports = function () {
             } // get
         
         } // leveldb
-    }
+    };
 };

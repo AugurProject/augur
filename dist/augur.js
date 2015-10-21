@@ -93543,7 +93543,7 @@ module.exports = function () {
             } // get
         
         } // leveldb
-    }
+    };
 };
 
 }).call(this,require("buffer").Buffer)
