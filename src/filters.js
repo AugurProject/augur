@@ -11,7 +11,9 @@ var utils = require("./utilities");
 var errors = require("./errors");
 var constants = require("./constants");
 
-module.exports = function (augur) {
+module.exports = function () {
+
+    var augur = this;
 
     return {
 

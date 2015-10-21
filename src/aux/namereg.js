@@ -24,7 +24,9 @@ Example:
 
 var utils = require("../utilities");
 
-module.exports = function (augur) {
+module.exports = function () {
+
+    var augur = this;
 
     return {
 

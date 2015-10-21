@@ -9,7 +9,6 @@ var ethTx = require("ethereumjs-tx");
 var keythereum = require("keythereum");
 var uuid = require("node-uuid");
 var abi = require("augur-abi");
-var db = require("./db");
 var errors = require("../errors");
 var constants = require("../constants");
 var utils = require("../utilities");
@@ -20,7 +19,9 @@ BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 keythereum.constants.pbkdf2.c = 10000;
 keythereum.constants.scrypt.n = 10000;
 
-module.exports = function (augur) {
+module.exports = function () {
+
+    var augur = this;
 
     return {
 
@@ -30,19 +31,22 @@ module.exports = function (augur) {
         // free (testnet) ether for new accounts on registration
         fund: function (account, onSent, onConfirm) {
             var self = this;
-            var funder = augur.rpc.coinbase();
-            augur.rpc.sendEther({
-                to: account.address,
-                value: constants.FREEBIE,
-                from: funder,
-                onSent: function (r) {
-                    if (onSent) onSent(account);
-                },
-                onSuccess: function (r) {
-                    if (onConfirm) onConfirm(account);
-                },
-                onFailed: function (r) {
-                    if (onConfirm) onConfirm(r);
+            augur.rpc.coinbase(function (funder) {
+                if (funder && !funder.error) {
+                    augur.rpc.sendEther({
+                        to: account.address,
+                        value: constants.FREEBIE,
+                        from: funder,
+                        onSent: function (r) {
+                            if (onSent) onSent(account);
+                        },
+                        onSuccess: function (r) {
+                            if (onConfirm) onConfirm(account);
+                        },
+                        onFailed: function (r) {
+                            if (onConfirm) onConfirm(r);
+                        }
+                    });
                 }
             });
         },
@@ -50,7 +54,7 @@ module.exports = function (augur) {
         register: function (handle, password, callback, donotfund) {
             var self = this;
             if (password && password.length > 5) {
-                db.get(handle, function (record) {
+                augur.db.ipfs.get(handle, function (record) {
                     if (!record) {
 
                         // generate ECDSA private key and initialization vector
@@ -59,7 +63,7 @@ module.exports = function (augur) {
                             // derive secret key from password
                             keythereum.deriveKey(password, plain.salt, null, function (derivedKey) {
                                 if (derivedKey.error) {
-                                    if (callback) callback(derivedKey);
+                                    if (utils.is_function(callback)) callback(derivedKey);
                                 } else {
                                     var encryptedPrivateKey = keythereum.encrypt(
                                         plain.privateKey,
@@ -76,22 +80,21 @@ module.exports = function (augur) {
 
                                     // encrypt private key using derived key and IV, then
                                     // store encrypted key & IV, indexed by handle
-                                    db.put(handle, {
+                                    augur.db.ipfs.put(handle, {
                                         handle: handle,
                                         privateKey: encryptedPrivateKey,
                                         iv: plain.iv.toString("base64"),
                                         salt: plain.salt.toString("base64"),
                                         mac: mac,
-                                        id: uuid.v4(),
-                                        nonce: 0
-                                    }, function () {
+                                        id: uuid.v4()
+                                    }, function (ipfsHash) {
+                                        if (!ipfsHash || ipfsHash.error) return callback(ipfsHash);
 
                                         // set web.account object
                                         self.account = {
                                             handle: handle,
                                             privateKey: plain.privateKey,
-                                            address: keythereum.privateKeyToAddress(plain.privateKey),
-                                            nonce: 0
+                                            address: keythereum.privateKeyToAddress(plain.privateKey)
                                         };
 
                                         if (donotfund) return callback(self.account);
@@ -105,7 +108,7 @@ module.exports = function (augur) {
                                         }
                                         self.fund(self.account, callback);
 
-                                    }); // db.put
+                                    }); // augur.db.ipfs.put
 
                                 }
 
@@ -114,11 +117,12 @@ module.exports = function (augur) {
                         }); // create
 
                     } else {
-                        if (callback) callback(errors.HANDLE_TAKEN);
+                        if (utils.is_function(callback)) callback(errors.HANDLE_TAKEN);
                     }
-                }); // db.get
+                }); // augur.db.ipfs.get
+
             } else {
-                if (callback) callback(errors.PASSWORD_TOO_SHORT);
+                if (utils.is_function(callback)) callback(errors.PASSWORD_TOO_SHORT);
             }
         },
 
@@ -126,8 +130,8 @@ module.exports = function (augur) {
             var self = this;
 
             // retrieve account info from database
-            if (password) {
-                db.get(handle, function (storedInfo) {
+            if (password && password !== "") {
+                augur.db.ipfs.get(handle, function (storedInfo) {
                     if (storedInfo && !storedInfo.error) {
 
                         var iv = new Buffer(storedInfo.iv, "base64");
@@ -161,22 +165,16 @@ module.exports = function (augur) {
                                             nonce: storedInfo.nonce
                                         };
 
-                                        // set the nonce using this address's transaction count
-                                        augur.rpc.txCount(self.account.address, function (txCount) {
-                                            if (txCount && !txCount.error) {
-                                                self.account.nonce = parseInt(txCount);
-                                            }
-                                            if (callback) callback(self.account);
-                                        });
+                                        if (utils.is_function(callback)) callback(self.account);
                                     
                                     // decryption failure: bad password
                                     } catch (e) {
-                                        if (callback) callback(errors.BAD_CREDENTIALS);
+                                        if (utils.is_function(callback)) callback(errors.BAD_CREDENTIALS);
                                     }
 
                                 // message authentication code mismatch
                                 } else {
-                                    if (callback) callback(errors.BAD_CREDENTIALS);
+                                    if (utils.is_function(callback)) callback(errors.BAD_CREDENTIALS);
                                 }
                             }
 
@@ -184,14 +182,14 @@ module.exports = function (augur) {
 
                     // handle not found
                     } else {
-                        if (callback) callback(errors.BAD_CREDENTIALS);
+                        if (utils.is_function(callback)) callback(errors.BAD_CREDENTIALS);
                     }
 
-                }); // db.get
+                }); // augur.db.ipfs.get
 
             // blank password
             } else {
-                if (callback) callback(errors.BAD_CREDENTIALS);
+                if (utils.is_function(callback)) callback(errors.BAD_CREDENTIALS);
             }
         },
 
@@ -232,7 +230,7 @@ module.exports = function (augur) {
                         from: this.account.address,
                         gasPrice: (tx.gasPrice) ? tx.gasPrice : augur.rpc.gasPrice(),
                         gasLimit: (tx.gas) ? tx.gas : constants.DEFAULT_GAS,
-                        nonce: this.account.nonce,
+                        nonce: 0,
                         value: tx.value || "0x0",
                         data: abi.encode(tx)
                     };
@@ -241,7 +239,6 @@ module.exports = function (augur) {
                     return augur.rpc.txCount(this.account.address, function (txCount) {
                         if (txCount && !txCount.error) {
                             packaged.nonce = parseInt(txCount);
-                            self.account.nonce = packaged.nonce;
                         }
                         (function repack(packaged) {
                             var etx = new ethTx(packaged);
@@ -263,7 +260,7 @@ module.exports = function (augur) {
                                                 return console.log(JSON.stringify(packaged, null, 2));
                                             }
 
-                                            self.account.nonce = ++packaged.nonce;
+                                            ++packaged.nonce;
                                             return repack(packaged);
 
                                         // other errors
@@ -276,18 +273,14 @@ module.exports = function (augur) {
                                         // (even if the tx is nulled, still index the hash)
                                         augur.rpc.rawTxs[res] = { tx: packaged };
 
-                                        // nonce ok, save and execute callback
-                                        db.get(self.account.handle, function (stored) {
-                                            stored.nonce = self.account.nonce;
-                                            db.put(self.account.handle, stored);
-                                        });
-                                        if (callback) return callback(res);
+                                        // nonce ok, execute callback
+                                        if (utils.is_function(callback)) return callback(res);
                                     }
                                 });
 
                             // transaction validation failed
                             } else {
-                                if (callback) callback(errors.TRANSACTION_INVALID);
+                                if (utils.is_function(callback)) callback(errors.TRANSACTION_INVALID);
                             }
                         })(packaged);
                     });

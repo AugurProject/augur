@@ -23,22 +23,33 @@ var event_id = augur.getMarketEvents(market_id)[0];
 
 // markets.se
 describe("markets.se", function () {
-    describe("getFullMarketInfo", function () {
-        var test = function (r, done) {
-            // console.log(JSON.stringify(r, null, 2));
-            assert.isObject(r);
-            if (done) done();
-        };
-        it("sync", function () {
-            test(augur.getFullMarketInfo(market_id));
-        });
-        it("async", function (done) {
-            augur.getFullMarketInfo(market_id, function (info) {
-                if (!info || info.error) return done(info);
-                test(info, done);
+    if (augur.network_id !== 10101) {
+        describe("getFullMarketInfo", function () {
+            var test = function (r, done) {
+                assert.isObject(r);
+                if (done) done();
+            };
+            it("sync", function () {
+                test(augur.getFullMarketInfo(market_id));
+            });
+            it("async", function (done) {
+                augur.getFullMarketInfo(market_id, function (info) {
+                    if (info.error) return done(info);
+                    test(info, done);
+                });
+            });
+            it("batched-async", function (done) {
+                var batch = augur.createBatch();
+                batch.add("getFullMarketInfo", [market_id], function (r) {
+                    test(r, done);
+                });
+                batch.add("getFullMarketInfo", [market_id], function (r) {
+                    test(r, done);
+                });
+                batch.execute();
             });
         });
-    });
+    }
     describe("getMarketInfo(" + market_id + ")", function () {
         var test = function (r) {
             assert.isArray(r);

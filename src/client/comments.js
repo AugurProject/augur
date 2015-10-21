@@ -8,9 +8,10 @@
 var abi = require("augur-abi");
 var errors = require("../errors");
 var constants = require("../constants");
-var db = require("./db");
 
-module.exports = function (augur) {
+module.exports = function () {
+
+    var augur = this;
 
     return {
 
@@ -74,7 +75,7 @@ module.exports = function (augur) {
                                 // console.log(incoming_parsed);
                     
                                 // get existing comment(s) stored locally
-                                stored_comments = db.leveldb.get(augur.rpc, market_id, "comments");
+                                stored_comments = augur.db.leveldb.get(augur.rpc, market_id, "comments");
 
                                 // check if incoming comments length > stored
                                 if (stored_comments && stored_comments.length) {
@@ -82,7 +83,7 @@ module.exports = function (augur) {
                                     if (incoming_parsed.length > stored_parsed.length ) {
                                         // console.log(incoming_parsed.length.toString() + " incoming comments");
                                         // console.log("[" + filter_id + "] overwriting comments for market: " + market_id);
-                                        if (db.leveldb.put(augur.rpc, market_id, incoming_comments, "comments")) {
+                                        if (augur.db.leveldb.put(augur.rpc, market_id, incoming_comments, "comments")) {
                                             // console.log("[" + filter_id + "] overwrote comments for market: " + market_id);
                                         }
                                     } else {
@@ -92,7 +93,7 @@ module.exports = function (augur) {
                                 } else {
                                     // console.log(incoming_parsed.length.toString() + " incoming comments");
                                     // console.log("[" + filter_id + "] inserting first comments for market: " + market_id);
-                                    if (db.leveldb.put(augur.rpc, market_id, incoming_comments, "comments")) {
+                                    if (augur.db.leveldb.put(augur.rpc, market_id, incoming_comments, "comments")) {
                                         // console.log("[" + filter_id + "] overwrote comments for market: " + market_id);
                                     }
                                 }
@@ -127,7 +128,7 @@ module.exports = function (augur) {
                     };
 
                     // broadcast all comments in local leveldb
-                    comments = db.leveldb.get(augur.rpc, market, "comments");
+                    comments = augur.db.leveldb.get(augur.rpc, market, "comments");
                     if (comments) {
                         whisper_id = this.shh_newIdentity();
                         if (whisper_id) {
@@ -151,19 +152,19 @@ module.exports = function (augur) {
         },
 
         resetComments: function (market) {
-            return db.leveldb.put(augur.rpc, market, "", "comments");
+            return augur.db.leveldb.put(augur.rpc, market, "", "comments");
         },
 
         getMarketComments: function (market, callback) {
             if (callback && callback.constructor === Function) {
-                db.leveldb.get(augur.rpc, market, "comments", function (comments) {
+                augur.db.leveldb.get(augur.rpc, market, "comments", function (comments) {
                     if (comments && !comments.error) {
                         return callback(JSON.parse(comments));
                     }
                     callback(comments);
                 });
             } else {
-                var comments = db.leveldb.get(augur.rpc, market, "comments");
+                var comments = augur.db.leveldb.get(augur.rpc, market, "comments");
                 if (comments) {
                     if (!comments.error) {
                         return JSON.parse(comments);
@@ -193,12 +194,12 @@ module.exports = function (augur) {
                 }]);
 
                 // get existing comment(s) stored locally
-                comments = db.leveldb.get(augur.rpc, market, "comments");
+                comments = augur.db.leveldb.get(augur.rpc, market, "comments");
                 if (comments !== undefined && comments !== null && !comments.error) {
                     if (comments && comments !== '""') {
                         updated = updated.slice(0, -1) + "," + comments.slice(1);
                     }
-                    if (db.leveldb.put(augur.rpc, market, updated, "comments")) {
+                    if (augur.db.leveldb.put(augur.rpc, market, updated, "comments")) {
                         transmission = {
                             from: whisper_id,
                             topics: [market],

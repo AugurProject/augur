@@ -4,24 +4,26 @@
 
 "use strict";
 
-module.exports = function (contracts) {
+module.exports = function (network) {
+
+    var contracts = require("augur-contracts")[network];
 
     return {
 
-        // IPFS/IPNS
+        // IPFS/IPNS name => hash lookup
         ipfs: {
 
-            setMarketsDirectoryHash: {
+            setHash: {
                 to: contracts.ipfs,
-                method: "setMarketsDirectoryHash",
+                method: "setHash",
                 signature: "ii",
                 send: true,
                 returns: "number"
             },
 
-            getMarketsDirectoryHash: {
+            getHash: {
                 to: contracts.ipfs,
-                method: "getMarketsDirectoryHash",
+                method: "getHash",
                 signature: "i",
                 send: false,
                 returns: "hash"

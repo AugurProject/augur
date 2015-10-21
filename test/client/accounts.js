@@ -13,7 +13,6 @@ var EthTx = require("ethereumjs-tx");
 var EthUtil = require("ethereumjs-util");
 var abi = require("augur-abi");
 var utils = require("../../src/utilities");
-var db = require("../../src/client/db");
 var augur = utils.setup(require("../../src"), process.argv.slice(2));
 var constants = augur.constants;
 var log = console.log;
@@ -37,7 +36,7 @@ describe("Register", function () {
     it("register account 1: " + handle + " / " + password, function (done) {
         this.timeout(constants.TIMEOUT*4);
         var augur = utils.setup(require("../../src"), process.argv.slice(2));
-        db.get(handle, function (record) {
+        augur.db.ipfs.get(handle, function (record) {
             assert.isNull(record);
             augur.web.register(handle, password, function (result) {
                 if (result.error) {
@@ -45,7 +44,6 @@ describe("Register", function () {
                     return done(result);
                 }
                 assert(!result.error);
-                assert.property(result, "nonce");
                 assert(result.privateKey);
                 assert(result.address);
                 assert.strictEqual(
@@ -53,13 +51,12 @@ describe("Register", function () {
                     constants.KEYSIZE*2
                 );
                 assert.strictEqual(result.address.length, 42);
-                db.get(handle, function (rec) {
+                augur.db.ipfs.get(handle, function (rec) {
                     if (rec.error) {
                         augur.web.logout();
                         return done(rec);
                     }
                     assert(!rec.error);
-                    assert.property(rec, "nonce");
                     assert(rec.privateKey);
                     assert(rec.iv);
                     assert(rec.salt);
@@ -91,7 +88,7 @@ describe("Register", function () {
     it("register account 2: " + handle2 + " / " + password2, function (done) {
         this.timeout(constants.TIMEOUT*4);
         var augur = utils.setup(require("../../src"), process.argv.slice(2));
-        db.get(handle2, function (record) {
+        augur.db.ipfs.get(handle2, function (record) {
             assert.isNull(record);
             augur.web.register(handle2, password2, function (result) {
                 if (result.error) {
@@ -99,7 +96,6 @@ describe("Register", function () {
                     return done(result);
                 }
                 assert(!result.error);
-                assert.property(result, "nonce");
                 assert(result.privateKey);
                 assert(result.address);
                 assert.strictEqual(
@@ -107,13 +103,12 @@ describe("Register", function () {
                     constants.KEYSIZE*2
                 );
                 assert.strictEqual(result.address.length, 42);
-                db.get(handle2, function (rec) {
+                augur.db.ipfs.get(handle2, function (rec) {
                     assert.isNotNull(rec);
                     if (rec.error) {
                         augur.web.logout();
                         return done(rec);
                     }
-                    assert.property(rec, "nonce");
                     assert(rec.privateKey);
                     assert(rec.iv);
                     assert(rec.salt);
@@ -149,7 +144,7 @@ describe("Register", function () {
             assert(!result.privateKey);
             assert(!result.address);
             assert(result.error);
-            db.get(handle, function (record) {
+            augur.db.ipfs.get(handle, function (record) {
                 assert.isNotNull(record);
                 done();
             });
@@ -163,7 +158,7 @@ describe("Register", function () {
             assert(!result.privateKey);
             assert(!result.address);
             assert(result.error);
-            db.get(handle, function (record) {
+            augur.db.ipfs.get(handle, function (record) {
                 assert.isNotNull(record);
                 done();
             });
@@ -183,7 +178,6 @@ describe("Login", function () {
                 return done(user);
             }
             assert(!user.error);
-            assert.property(user, "nonce");
             assert(user.privateKey);
             assert(user.address);
             assert.strictEqual(
@@ -204,7 +198,6 @@ describe("Login", function () {
                 augur.web.logout();
                 return done(user);
             }
-            assert.property(user, "nonce");
             assert(user.privateKey);
             assert(user.address);
             assert.strictEqual(
@@ -304,7 +297,6 @@ describe("Logout", function () {
                 assert.notProperty(augur.web.account, "handle");
                 assert.notProperty(augur.web.account, "address");
                 assert.notProperty(augur.web.account, "privateKey");
-                assert.notProperty(augur.web.account, "nonce");
             }
             done();
         });
