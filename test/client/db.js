@@ -9,7 +9,8 @@
 var assert = require("chai").assert;
 var constants = require("../../src/constants");
 var utils = require("../../src/utilities");
-var augur = utils.setup(require("../../src"), process.argv.slice(2));
+var augurpath = "../../src/index";
+var augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
 var db = require("../../src/client/db");
 var log = console.log;
 
@@ -20,6 +21,10 @@ describe("Database", function () {
         privateKey: "deadbeef",
         iv: "zombeef"
     };
+
+    beforeEach(function () {
+        augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
+    });
 
     if (!process.env.CONTINUOUS_INTEGRATION) {
 

@@ -127,20 +127,13 @@ module.exports = {
     },
 
     setup: function (augur, args, rpcinfo) {
-        var gospel, contracts, defaulthost, ipcpath;
+        var defaulthost, ipcpath;
         if (NODE_JS && !process.env.CONTINUOUS_INTEGRATION) {
             defaulthost = "http://127.0.0.1:8545";
             ipcpath = path.join(process.env.HOME, ".ethereum-of-the-moment", "geth.ipc");
         }
         if (process.env.CONTINUOUS_INTEGRATION) {
             augur.constants.TIMEOUT = 131072;
-        }
-        if (NODE_JS && args &&
-            (args.indexOf("--gospel") > -1 || args.indexOf("--reset") > -1))
-        {
-            gospel = path.join(__dirname, "..", "data", "gospel.json");
-            contracts = fs.readFileSync(gospel);
-            augur.contracts = JSON.parse(contracts.toString());
         }
         if (augur.connect(rpcinfo || defaulthost, ipcpath)) {
             if (augur.options.debug.broadcast || augur.options.debug.fallback) {

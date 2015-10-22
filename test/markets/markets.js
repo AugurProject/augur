@@ -6,9 +6,10 @@
 "use strict";
 
 var assert = require("chai").assert;
-var utils = require("../../src/utilities");
-var augur = utils.setup(require("../../src"), process.argv.slice(2));
 var abi = require("augur-abi");
+var utils = require("../../src/utilities");
+var augurpath = "../../src/index";
+var augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
 var constants = augur.constants;
 var log = console.log;
 
@@ -21,8 +22,10 @@ var markets = augur.getMarkets(branch_id);
 var market_id = markets[markets.length - 1];
 var event_id = augur.getMarketEvents(market_id)[0];
 
-// markets.se
 describe("markets.se", function () {
+    before(function () {
+        augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
+    });
     if (augur.network_id === "10101") {
         describe("getFullMarketInfo", function () {
             var test = function (r, done) {
