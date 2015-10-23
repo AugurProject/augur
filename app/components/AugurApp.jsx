@@ -31,7 +31,7 @@ var EtherWarningModal = require('./EtherWarningModal');
 
 var AugurApp = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin('branch', 'asset', 'network', 'config', 'report', 'market')],
+  mixins: [FluxMixin, StoreWatchMixin('branch', 'asset', 'network', 'config', 'report', 'market', 'search')],
 
   getInitialState: function () {
     return {
@@ -55,6 +55,7 @@ var AugurApp = React.createClass({
       branch: flux.store('branch').getState(),
       asset: flux.store('asset').getState(),
       market: flux.store('market').getState(),
+      search: flux.store('search').getState(),
       config: flux.store('config').getState(),
       report: flux.store('report').getState()
     }
@@ -87,7 +88,7 @@ var AugurApp = React.createClass({
   toggleRegisterModal: function (event) {
     this.setState({ registerModalOpen: !this.state.registerModalOpen });
   },
-
+  
   render: function () {
     var accountStatus;
     if (this.state.config.currentAccount) {

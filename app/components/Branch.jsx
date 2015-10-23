@@ -18,7 +18,7 @@ var constants = require('../libs/constants');
 var Branch = React.createClass({
 
   // assuming only one branch and all markets in store are of that branch
-  mixins: [FluxMixin, StoreWatchMixin('market', 'branch', 'config'), Navigation],
+  mixins: [FluxMixin, StoreWatchMixin('market', 'search', 'branch', 'config'), Navigation],
 
   getInitialState: function() {
     return {
@@ -30,14 +30,15 @@ var Branch = React.createClass({
   },
 
   getStateFromFlux: function () {
-
     var flux = this.getFlux();
     var marketState = flux.store('market').getState();
+    var searchState = flux.store('search').getState();
     var currentBranch = flux.store('branch').getCurrentBranch();
     var account = flux.store('config').getAccount();
 
     return {
-      markets: marketState.markets,
+      searchKeywords: searchState.keywords,
+      markets: searchState.results,
       pendingMarkets: marketState.pendingMarkets,
       currentBranch: currentBranch,
       account: account
@@ -55,6 +56,16 @@ var Branch = React.createClass({
     this.setState({ pageNum: data.selected });
   },
 
+  onChangeSearchInput: function (event) {
+    this.setState({ searchKeywords: event.target.value });
+    this.debounceSearchInput(event.target.value);
+  },
+  
+  debounceSearchInput: _.debounce(function (val) {
+    this.handlePageChanged({ selected: 0 });
+    this.getFlux().actions.search.updateKeywords(val);    
+  }, 500),
+  
   render: function () {
 
     var start = 0 + (this.state.pageNum) * this.state.marketsPerPage;
@@ -89,6 +100,14 @@ var Branch = React.createClass({
       <div id="branch">
         { pendingMarketsSection }
         <h3 className="clearfix">Markets { submitMarketAction }</h3>
+            
+				<input type="search"
+					className="markets-search-input"
+					value={ this.state.searchKeywords }
+					placeholder="Search"
+					tabIndex="0"
+					onChange={ this.onChangeSearchInput } />
+    					
         <div className='subheading clearfix'>
           <span className='showing'>Showing { start+1 } - { end } of { total }</span>
           <Paginate 
@@ -98,7 +117,7 @@ var Branch = React.createClass({
             pageNum={ total / this.state.marketsPerPage }
             marginPagesDisplayed={ 2 }
             pageRangeDisplayed={ 5 }
-            initialSelected={ this.state.pageNum }
+            forceSelected={ this.state.pageNum }
             clickCallback={ this.handlePageChanged }
             containerClassName={ 'paginator' }
             subContainerClassName={ 'pages' }

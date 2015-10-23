@@ -62,6 +62,9 @@ module.exports = {
     DELETE_MARKET_SUCCESS: null,
     MARKETS_LOADING: null
   }),
+  search: keyMirror({
+    KEYWORDS_UPDATED: null
+  }),
   event: keyMirror({
     LOAD_EVENTS_SUCCESS: null,
     UPDATE_EVENTS_SUCCESS: null

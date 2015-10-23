@@ -27,6 +27,7 @@ var BranchActions = require('./actions/BranchActions');
 var ConfigActions = require('./actions/ConfigActions');
 var EventActions = require('./actions/EventActions');
 var MarketActions = require('./actions/MarketActions');
+var SearchActions = require('./actions/SearchActions');
 var NetworkActions = require('./actions/NetworkActions');
 var ReportActions = require('./actions/ReportActions');
 var TransactionActions = require('./actions/TransactionActions');
@@ -37,6 +38,7 @@ var actions = {
   config: ConfigActions,
   event: EventActions,
   market: MarketActions,
+  search: SearchActions,
   network: NetworkActions,
   report: ReportActions,
   transaction: TransactionActions
@@ -48,6 +50,7 @@ var ConfigStore = require('./stores/ConfigStore');
 var EventStore = require('./stores/EventStore');
 var LogStore = require('./stores/LogStore');
 var MarketStore = require('./stores/MarketStore');
+var SearchStore = require('./stores/SearchStore');
 var NetworkStore = require('./stores/NetworkStore');
 var ReportStore = require('./stores/ReportStore');
 var TransactionStore = require('./stores/TransactionStore');
@@ -58,6 +61,7 @@ var stores = {
   config: new ConfigStore(),
   event: new EventStore(),
   market: new MarketStore(),
+  search: new SearchStore(),
   network: new NetworkStore(),
   report: new ReportStore(),
   transaction: new TransactionStore
