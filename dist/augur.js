@@ -3785,6 +3785,7 @@ module.exports={
         "expiringEvents": "0x554c2e7b73e62604e9d9f2e439b5a611da88fc87",
         "fxpFunctions": "0x4abb75045783a639383aace45622ce97dec3b110",
         "info": "0xe6e87575230b8e9315027c30648868e9ea80161c",
+        "ipfs": "0xbcfe600f4420d3db214bb2e7861b9c1c59ae2573",
         "markets": "0x847adbfda58ca76ce0f5ff9952838a86192f510a",
         "reporting": "0x772c698ff3121fde846002bae4d6828a39911fdb",
         "adjust": "0x8fd78c97952f8bdd4351e8694e24c77f921446dd",
@@ -93389,20 +93390,19 @@ module.exports = function () {
                 var self = this;
                 if (label && label !== '' && data && utils.is_function(callback)) {
                     if (data.constructor === Object) data = JSON.stringify(data);
-                    ipfs.add(new Buffer(data, "utf8"), function (err, res) {
-                        if (err || !res) return callback(err);
-                        res.forEach(function (file) {
-                            self.setHash({
-                                name: abi.prefix_hex(utils.sha256(label)),
-                                hash: file.Hash,
-                                onSent: function (res) {
-                                    // console.log("setHash sent:", res);
-                                },
-                                onSuccess: function (res) {
-                                    callback(file.Hash);
-                                },
-                                onFailed: callback
-                            });
+                    ipfs.add(new Buffer(data, "utf8"), function (err, file) {
+                        if (err || !file) return callback(err);
+                        self.setHash({
+                            name: abi.prefix_hex(utils.sha256(label)),
+                            hash: file.Hash,
+                            onSent: function (res) {
+                                // console.log("ipfs.setHash sent:", res);
+                            },
+                            onSuccess: function (res) {
+                                // console.log("ipfs.setHash success:", res);
+                                callback(file.Hash);
+                            },
+                            onFailed: callback
                         });
                     });
                 } else {

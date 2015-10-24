@@ -39,7 +39,7 @@ describe("Register", function () {
         augur.db.ipfs.get(handle, function (record) {
             assert.isNull(record);
             augur.web.register(handle, password, function (result) {
-                if (result.error) {
+                if (!result || result.error) {
                     augur.web.logout();
                     return done(result);
                 }

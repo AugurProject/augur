@@ -54,20 +54,19 @@ module.exports = function () {
                 var self = this;
                 if (label && label !== '' && data && utils.is_function(callback)) {
                     if (data.constructor === Object) data = JSON.stringify(data);
-                    ipfs.add(new Buffer(data, "utf8"), function (err, res) {
-                        if (err || !res) return callback(err);
-                        res.forEach(function (file) {
-                            self.setHash({
-                                name: abi.prefix_hex(utils.sha256(label)),
-                                hash: file.Hash,
-                                onSent: function (res) {
-                                    // console.log("setHash sent:", res);
-                                },
-                                onSuccess: function (res) {
-                                    callback(file.Hash);
-                                },
-                                onFailed: callback
-                            });
+                    ipfs.add(new Buffer(data, "utf8"), function (err, file) {
+                        if (err || !file) return callback(err);
+                        self.setHash({
+                            name: abi.prefix_hex(utils.sha256(label)),
+                            hash: file.Hash,
+                            onSent: function (res) {
+                                // console.log("ipfs.setHash sent:", res);
+                            },
+                            onSuccess: function (res) {
+                                // console.log("ipfs.setHash success:", res);
+                                callback(file.Hash);
+                            },
+                            onFailed: callback
                         });
                     });
                 } else {
