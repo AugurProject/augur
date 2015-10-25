@@ -4,10 +4,10 @@
 
 "use strict";
 
+var multihash = require("multi-hash");
 var abi = require("augur-abi");
 var Firebase = require("firebase");
 var ipfs = require("ipfs-api")("localhost", "5001");
-var multihash = require("../multihash");
 var errors = require("../errors");
 var constants = require("../constants");
 var utils = require("../utilities");
@@ -29,7 +29,7 @@ module.exports = function () {
                     name = name.name;
                 }
                 var tx = utils.copy(augur.tx.ipfs.setHash);
-                tx.params = [name, multihash.decode(hash)];
+                tx.params = [name, abi.hex(multihash.decode(hash))];
                 return augur.transact(tx, onSent, onSuccess, onFailed);
             },
 
@@ -40,13 +40,13 @@ module.exports = function () {
                 if (!utils.is_function(callback)) {
                     var hash = augur.fire(tx);
                     if (!hash || hash.error || !parseInt(hash)) throw hash;
-                    return multihash.encode(hash);
+                    return multihash.encode(abi.unfork(hash));
                 }
                 augur.fire(tx, function (hash) {
                     if (!hash || hash.error || !parseInt(hash)) {
                         return callback(hash);
                     }
-                    callback(multihash.encode(hash));
+                    callback(multihash.encode(abi.unfork(hash)));
                 });
             },
 
@@ -56,18 +56,29 @@ module.exports = function () {
                     if (data.constructor === Object) data = JSON.stringify(data);
                     ipfs.add(new Buffer(data, "utf8"), function (err, file) {
                         if (err || !file) return callback(err);
-                        self.setHash({
-                            name: abi.prefix_hex(utils.sha256(label)),
-                            hash: file.Hash,
-                            onSent: function (res) {
-                                // console.log("ipfs.setHash sent:", res);
-                            },
-                            onSuccess: function (res) {
-                                // console.log("ipfs.setHash success:", res);
-                                callback(file.Hash);
-                            },
-                            onFailed: callback
-                        });
+                        if (file.constructor === Array) {
+                            file.forEach(function (f) {
+                                self.setHash({
+                                    name: abi.prefix_hex(utils.sha256(label)),
+                                    hash: f.Hash,
+                                    onSent: function () {},
+                                    onSuccess: function (res) {
+                                        callback(f.Hash);
+                                    },
+                                    onFailed: callback
+                                });
+                            });
+                        } else {
+                            self.setHash({
+                                name: abi.prefix_hex(utils.sha256(label)),
+                                hash: file.Hash,
+                                onSent: function () {},
+                                onSuccess: function (res) {
+                                    callback(file.Hash);
+                                },
+                                onFailed: callback
+                            });
+                        }
                     });
                 } else {
                     if (!utils.is_function(callback)) return errors.DB_WRITE_FAILED;

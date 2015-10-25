@@ -1,9 +1,9 @@
 language: node_js
 node_js:
+  - "4.0"
   - "0.12"
   - "0.11"
 before_script:
   - npm install
-  - npm install jshint mocha
 script:
   - istanbul cover ./node_modules/mocha/bin/_mocha test/connect test/core test/markets test/client --report lcovonly && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage

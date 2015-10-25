@@ -3851,7 +3851,7 @@ var augur = global.augur || require("./src/index");
 global.augur = augur;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./src/index":752}],7:[function(require,module,exports){
+},{"./src/index":753}],7:[function(require,module,exports){
 (function (process,global){
 /*!
  * async
@@ -42149,7 +42149,7 @@ Auth.prototype.onResponse = function (response) {
 
 exports.Auth = Auth
 
-},{"./helpers":327,"caseless":345,"node-uuid":743}],324:[function(require,module,exports){
+},{"./helpers":327,"caseless":345,"node-uuid":744}],324:[function(require,module,exports){
 'use strict'
 
 var tough = require('tough-cookie')
@@ -42671,7 +42671,7 @@ Multipart.prototype.onRequest = function (options) {
 exports.Multipart = Multipart
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":25,"combined-stream":346,"isstream":395,"node-uuid":743}],329:[function(require,module,exports){
+},{"buffer":25,"combined-stream":346,"isstream":395,"node-uuid":744}],329:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 
@@ -42822,7 +42822,7 @@ OAuth.prototype.onRequest = function (_oauth) {
 exports.OAuth = OAuth
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":25,"caseless":345,"crypto":74,"node-uuid":743,"oauth-sign":400,"qs":401,"url":59}],330:[function(require,module,exports){
+},{"buffer":25,"caseless":345,"crypto":74,"node-uuid":744,"oauth-sign":400,"qs":401,"url":59}],330:[function(require,module,exports){
 'use strict'
 
 var qs = require('qs')
@@ -76461,7 +76461,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./lib/keccak":714,"./lib/scrypt":715,"_process":41,"buffer":25,"crypto":74,"crypto-browserify":74,"elliptic":716,"ethereumjs-util":291,"fs":9,"node-uuid":743,"path":40,"validator":744}],714:[function(require,module,exports){
+},{"./lib/keccak":714,"./lib/scrypt":715,"_process":41,"buffer":25,"crypto":74,"crypto-browserify":74,"elliptic":716,"ethereumjs-util":291,"fs":9,"node-uuid":744,"path":40,"validator":745}],714:[function(require,module,exports){
 /* keccak.js
  * A Javascript implementation of the Keccak SHA-3 candidate from Bertoni,
  * Daemen, Peeters and van Assche. This version is not optimized with any of 
@@ -91625,6 +91625,63 @@ arguments[4][290][0].apply(exports,arguments)
 
 }));
 },{}],743:[function(require,module,exports){
+(function (Buffer){
+/**
+ * Multi-hash encoder/decoder.
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var bs58 = require("bs58");
+
+module.exports = {
+
+    /**
+     * Add sha256 multi-hash tag to hex-encoded hash and convert to base58.
+     * (Prefix 1 if leading byte > 60; prefix 2 otherwise.)
+     * @param {string|Buffer} hex 32-byte buffer or hex-encoded string.
+     * @return {string} Base58-encoded string with sha256 multi-hash tag.
+     */
+    encode: function (hex) {
+        if (Buffer.isBuffer(hex)) hex = hex.toString("hex");
+        if (hex && hex.constructor === String) {
+            hex = hex.replace("0x", "");
+            if (hex.length !== 64) {
+                throw new Error("length error: expected 32-byte input");
+            }
+            if (parseInt(hex.slice(0, 2), 16) > 60) {
+                hex = "01" + hex;
+            } else {
+                hex = "02" + hex;
+            }
+            return "Qm" + bs58.encode(new Buffer(hex, "hex"));
+        }
+        throw new Error("unsupported format: expected hex string");
+    },
+
+    /**
+     * Remove multi-hash tag (assuming sha256, the IPFS default):
+     * 1. Remove leading two characters (Qm)
+     * 2. Decode base58 string to 33 byte array
+     * 3. Remove the leading byte, which is part of the hash tag
+     * @param {string|Buffer} hash Base58-encoded sha256 hash digest.
+     * @return {Buffer} 32-byte array with multihash tag removed.
+     */
+    decode: function (hash) {
+        if (hash && hash.constructor === String && hash.slice(0, 2) === "Qm") {
+            if (hash.length !== 46) {
+                throw new Error("length error: expected hash+tag length of 46");
+            }
+            return new Buffer(bs58.decode(hash.slice(2)).splice(1));
+        }
+        throw new Error("unsupported format: expected base58 string");
+    }
+
+};
+
+}).call(this,require("buffer").Buffer)
+},{"bs58":64,"buffer":25}],744:[function(require,module,exports){
 //     uuid.js
 //
 //     Copyright (c) 2010-2012 Robert Kieffer
@@ -91873,7 +91930,7 @@ arguments[4][290][0].apply(exports,arguments)
   }
 }).call(this);
 
-},{}],744:[function(require,module,exports){
+},{}],745:[function(require,module,exports){
 /*!
  * Copyright (c) 2015 Chris O'Hara <cohara87@gmail.com>
  *
@@ -92692,7 +92749,7 @@ arguments[4][290][0].apply(exports,arguments)
 
 });
 
-},{}],745:[function(require,module,exports){
+},{}],746:[function(require,module,exports){
 /**
  * Bindings for the Namereg contract:
      https://github.com/ethereum/dapp-bin/blob/master/registrar/GlobalRegistrar.sol
@@ -92794,7 +92851,7 @@ module.exports = function () {
     };
 };
 
-},{"../utilities":755}],746:[function(require,module,exports){
+},{"../utilities":755}],747:[function(require,module,exports){
 (function (Buffer){
 /**
  * Client-side accounts
@@ -93102,7 +93159,7 @@ module.exports = function () {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"../constants":749,"../errors":750,"../utilities":755,"augur-abi":1,"bignumber.js":8,"buffer":25,"ethereumjs-tx":261,"ethrpc":321,"keythereum":713,"node-uuid":743}],747:[function(require,module,exports){
+},{"../constants":750,"../errors":751,"../utilities":755,"augur-abi":1,"bignumber.js":8,"buffer":25,"ethereumjs-tx":261,"ethrpc":321,"keythereum":713,"node-uuid":744}],748:[function(require,module,exports){
 /**
  * Whispernet comments
  * @author Jack Peterson (jack@tinybike.net)
@@ -93332,7 +93389,7 @@ module.exports = function () {
     };
 };
 
-},{"../constants":749,"../errors":750,"augur-abi":1}],748:[function(require,module,exports){
+},{"../constants":750,"../errors":751,"augur-abi":1}],749:[function(require,module,exports){
 (function (Buffer){
 /**
  * Database methods
@@ -93340,10 +93397,10 @@ module.exports = function () {
 
 "use strict";
 
+var multihash = require("multi-hash");
 var abi = require("augur-abi");
 var Firebase = require("firebase");
 var ipfs = require("ipfs-api")("localhost", "5001");
-var multihash = require("../multihash");
 var errors = require("../errors");
 var constants = require("../constants");
 var utils = require("../utilities");
@@ -93365,7 +93422,7 @@ module.exports = function () {
                     name = name.name;
                 }
                 var tx = utils.copy(augur.tx.ipfs.setHash);
-                tx.params = [name, multihash.decode(hash)];
+                tx.params = [name, abi.hex(multihash.decode(hash))];
                 return augur.transact(tx, onSent, onSuccess, onFailed);
             },
 
@@ -93376,13 +93433,13 @@ module.exports = function () {
                 if (!utils.is_function(callback)) {
                     var hash = augur.fire(tx);
                     if (!hash || hash.error || !parseInt(hash)) throw hash;
-                    return multihash.encode(hash);
+                    return multihash.encode(abi.unfork(hash));
                 }
                 augur.fire(tx, function (hash) {
                     if (!hash || hash.error || !parseInt(hash)) {
                         return callback(hash);
                     }
-                    callback(multihash.encode(hash));
+                    callback(multihash.encode(abi.unfork(hash)));
                 });
             },
 
@@ -93392,18 +93449,29 @@ module.exports = function () {
                     if (data.constructor === Object) data = JSON.stringify(data);
                     ipfs.add(new Buffer(data, "utf8"), function (err, file) {
                         if (err || !file) return callback(err);
-                        self.setHash({
-                            name: abi.prefix_hex(utils.sha256(label)),
-                            hash: file.Hash,
-                            onSent: function (res) {
-                                // console.log("ipfs.setHash sent:", res);
-                            },
-                            onSuccess: function (res) {
-                                // console.log("ipfs.setHash success:", res);
-                                callback(file.Hash);
-                            },
-                            onFailed: callback
-                        });
+                        if (file.constructor === Array) {
+                            file.forEach(function (f) {
+                                self.setHash({
+                                    name: abi.prefix_hex(utils.sha256(label)),
+                                    hash: f.Hash,
+                                    onSent: function () {},
+                                    onSuccess: function (res) {
+                                        callback(f.Hash);
+                                    },
+                                    onFailed: callback
+                                });
+                            });
+                        } else {
+                            self.setHash({
+                                name: abi.prefix_hex(utils.sha256(label)),
+                                hash: file.Hash,
+                                onSent: function () {},
+                                onSuccess: function (res) {
+                                    callback(file.Hash);
+                                },
+                                onFailed: callback
+                            });
+                        }
                     });
                 } else {
                     if (!utils.is_function(callback)) return errors.DB_WRITE_FAILED;
@@ -93547,7 +93615,7 @@ module.exports = function () {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"../constants":749,"../errors":750,"../multihash":753,"../utilities":755,"augur-abi":1,"buffer":25,"firebase":415,"ipfs-api":710}],749:[function(require,module,exports){
+},{"../constants":750,"../errors":751,"../utilities":755,"augur-abi":1,"buffer":25,"firebase":415,"ipfs-api":710,"multi-hash":743}],750:[function(require,module,exports){
 /** 
  * augur.js constants
  */
@@ -93587,7 +93655,7 @@ module.exports = {
     FIREBASE_URL: "https://resplendent-inferno-1997.firebaseio-demo.com/"
 };
 
-},{"bignumber.js":8}],750:[function(require,module,exports){
+},{"bignumber.js":8}],751:[function(require,module,exports){
 /************************
  * augur.js error codes *
  ************************/
@@ -93788,7 +93856,7 @@ errors.sellShares = errors.buyShares;
 
 module.exports = errors;
 
-},{}],751:[function(require,module,exports){
+},{}],752:[function(require,module,exports){
 /**
  * Filters / logging
  */
@@ -94432,7 +94500,7 @@ module.exports = function () {
     };
 };
 
-},{"./constants":749,"./errors":750,"./utilities":755,"async":7,"augur-abi":1,"chalk":66}],752:[function(require,module,exports){
+},{"./constants":750,"./errors":751,"./utilities":755,"async":7,"augur-abi":1,"chalk":66}],753:[function(require,module,exports){
 (function (process){
 /**
  * augur JavaScript API
@@ -96231,54 +96299,7 @@ Augur.prototype.createBatch = function createBatch () {
 module.exports = new Augur();
 
 }).call(this,require('_process'))
-},{"./aux/namereg":745,"./client/accounts":746,"./client/comments":747,"./client/db":748,"./constants":749,"./errors":750,"./filters":751,"./tx":754,"./utilities":755,"_process":41,"async":7,"augur-abi":1,"augur-contracts":5,"bignumber.js":8,"ethrpc":321}],753:[function(require,module,exports){
-(function (Buffer){
-/**
- * Multihash methods for augur.js.
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var bs58 = require("bs58");
-var abi = require("augur-abi");
-
-module.exports = {
-
-    /**
-     * Remove IPFS hash tag (assume sha256, which is the default):
-     * 1. Remove leading two characters (Qm)
-     * 2. Decode base58 string to 33 byte array
-     * 3. Remove the leading byte, which is part of the hash tag
-     * Untagged 32 byte hash can now be stored on-contract as a single int256!
-     */
-    decode: function (ipfsHash) {
-        if (ipfsHash && ipfsHash.constructor === String && ipfsHash.slice(0, 2) === "Qm") {
-            return abi.hex(new Buffer(bs58.decode(ipfsHash.slice(2)).splice(1)), true);
-        }
-    },
-
-    /**
-     * Add multihash prefix to hex-encoded IPFS hash and convert to base58:
-     *  - prefix 1 if leading byte > 60
-     *  - prefix 2 otherwise
-     */
-    encode: function (ipfsHash) {
-        if (ipfsHash && ipfsHash.constructor === String) {
-            ipfsHash = abi.unfork(ipfsHash);
-            if (parseInt(ipfsHash.slice(0, 2), 16) > 60) {
-                ipfsHash = "01" + ipfsHash;
-            } else {
-                ipfsHash = "02" + ipfsHash;
-            }
-            return "Qm" + bs58.encode(new Buffer(ipfsHash, "hex"));
-        }
-    }
-
-};
-
-}).call(this,require("buffer").Buffer)
-},{"augur-abi":1,"bs58":64,"buffer":25}],754:[function(require,module,exports){
+},{"./aux/namereg":746,"./client/accounts":747,"./client/comments":748,"./client/db":749,"./constants":750,"./errors":751,"./filters":752,"./tx":754,"./utilities":755,"_process":41,"async":7,"augur-abi":1,"augur-contracts":5,"bignumber.js":8,"ethrpc":321}],754:[function(require,module,exports){
 /**
  * Augur transaction objects
  */
@@ -97523,4 +97544,4 @@ module.exports = {
 };
 
 }).call(this,require('_process'),"/src")
-},{"./constants":749,"_process":41,"assert":10,"augur-abi":1,"bignumber.js":8,"chalk":66,"crypto":74,"crypto-browserify":74,"fs":9,"moment":742,"path":40,"validator":744}]},{},[6]);
+},{"./constants":750,"_process":41,"assert":10,"augur-abi":1,"bignumber.js":8,"chalk":66,"crypto":74,"crypto-browserify":74,"fs":9,"moment":742,"path":40,"validator":745}]},{},[6]);

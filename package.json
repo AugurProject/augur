@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "0.10.5",
+  "version": "0.10.6",
   "description": "Augur JavaScript API",
   "main": "src/index.js",
   "scripts": {
@@ -17,7 +17,6 @@
     "augur-abi": "^0.2.5",
     "augur-contracts": "^0.1.5",
     "bignumber.js": "^2.0.7",
-    "bs58": "^3.0.0",
     "chalk": "^1.0.0",
     "crypto-browserify": "^3.9.14",
     "ethereumjs-tx": "^0.6.7",
@@ -28,6 +27,7 @@
     "js-sha3": "^0.3.1",
     "keythereum": "^0.1.9",
     "moment": "^2.10.3",
+    "multi-hash": "^0.1.1",
     "node-uuid": "^1.4.3",
     "validator": "^4.0.2"
   },
@@ -53,6 +53,7 @@
     "gulp": "^3.9.0",
     "istanbul": "^0.3.17",
     "it-each": "^0.3.1",
+    "jshint": "^2.8.0",
     "lodash": "^3.8.0",
     "longjohn": "^0.2.7",
     "mocha": "^2.2.4",
