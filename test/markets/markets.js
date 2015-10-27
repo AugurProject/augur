@@ -27,59 +27,107 @@ describe("markets.se", function () {
         augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
     });
     if (augur.network_id === "10101") {
-        describe("getFullMarketInfo", function () {
-            var test = function (r, done) {
+        describe("getMarketsInfo", function () {
+            var testMarketInfo = function (r) {
                 assert.isObject(r);
+                assert.property(r, "_id");
+                assert.property(r, "network");
+                assert(r.network === "7" || r.network === "10101");
+                assert.property(r, "traderCount");
+                assert.isAbove(r.traderIndex, -1);
+                assert.property(r, "alpha");
+                assert.isNotNull(r.alpha);
+                assert.property(r, "traderIndex");
+                assert.isAbove(r.traderIndex, -1);
+                assert.property(r, "numOutcomes");
+                assert.isAbove(r.numOutcomes, 1);
+                assert.property(r, "tradingPeriod");
+                assert.isNumber(r.tradingPeriod);
+                assert.property(r, "tradingFee");
+                assert(abi.number(r.tradingFee) >= 0);
+                assert(abi.number(r.tradingFee) <= 1);
+                assert.property(r, "branchId");
+                assert.property(r, "numEvents");
+                assert.property(r, "cumulativeScale");
+                assert.property(r, "creationFee");
+                assert.property(r, "author");
+                assert.property(r, "endDate");
+                assert.property(r, "participants");
+                assert.isObject(r.participants);
+                assert.property(r, "outcomes");
+                assert.isArray(r.outcomes);
+                assert.isAbove(r.outcomes.length, 1);
+                assert.property(r.outcomes[0], "id");
+                assert.isNumber(r.outcomes[0].id);
+                assert.property(r.outcomes[0], "outstandingShares");
+                assert(abi.number(r.outcomes[0].outstandingShares) >= 0);
+                assert.property(r.outcomes[0], "price");
+                assert.property(r.outcomes[0], "shares");
+                assert.isObject(r.outcomes[0].shares);
+                assert.property(r, "events");
+                assert.isArray(r.events);
+                assert.isAbove(r.events.length, 0);
+                assert.isObject(r.events[0]);
+                assert.property(r.events[0], "id");
+                assert.property(r.events[0], "endDate");
+                assert.isAbove(r.events[0].endDate, 0);
+                assert.property(r.events[0], "outcome");
+                assert.isNotNull(r.events[0].outcome);
+                assert.property(r.events[0], "minValue");
+                assert.isNotNull(r.events[0].minValue);
+                assert.property(r.events[0], "maxValue");
+                assert.isNotNull(r.events[0].maxValue);
+                assert.property(r.events[0], "numOutcomes");
+                assert.isAbove(parseInt(r.events[0].numOutcomes), 1);
+            };
+            var test = function (marketInfo, done) {
+                assert.isObject(marketInfo);
+                assert.isAbove(Object.keys(marketInfo).length, 0);
+                for (var market in marketInfo) {
+                    if (!marketInfo.hasOwnProperty(market)) continue;
+                    testMarketInfo(marketInfo[market]);
+                }
                 if (done) done();
             };
-            it("sync", function () {
-                test(augur.getFullMarketInfo(market_id));
+            var params = {
+                branch: branch_id,
+                offset: 0,
+                numMarketsToLoad: 0
+            };
+            it("sync/positional", function () {
+                this.timeout(augur.constants.TIMEOUT);
+                test(augur.getMarketsInfo(
+                    params.branch,
+                    params.offset,
+                    params.numMarketsToLoad
+                ));
             });
-            it("async", function (done) {
-                augur.getFullMarketInfo(market_id, function (info) {
+            it("sync/object", function () {
+                this.timeout(augur.constants.TIMEOUT);
+                test(augur.getMarketsInfo(params));
+            });
+            it("async/positional", function (done) {
+                this.timeout(augur.constants.TIMEOUT);
+                augur.getMarketsInfo(
+                    params.branch,
+                    params.offset,
+                    params.numMarketsToLoad,
+                    function (info) {
+                        if (info.error) return done(info);
+                        test(info, done);
+                    }
+                );
+            });
+            it("async/object", function (done) {
+                this.timeout(augur.constants.TIMEOUT);
+                params.callback = function (info) {
                     if (info.error) return done(info);
                     test(info, done);
-                });
-            });
-            it("batched-async", function (done) {
-                var batch = augur.createBatch();
-                batch.add("getFullMarketInfo", [market_id], function (r) {
-                    test(r, done);
-                });
-                batch.add("getFullMarketInfo", [market_id], function (r) {
-                    test(r, done);
-                });
-                batch.execute();
+                };
+                augur.getMarketsInfo(params);
             });
         });
     }
-    describe("getMarketInfo(" + market_id + ")", function () {
-        var test = function (r) {
-            assert.isArray(r);
-            assert.isAbove(r.length, 5);
-            assert.isAbove(Number(r[1]), 0);
-            assert.strictEqual(Number(r[3]), 2);
-            assert.isAbove(Number(r[5]), 0);
-        };
-        it("sync", function () {
-            test(augur.getMarketInfo(market_id));
-        });
-        it("async", function (done) {
-            augur.getMarketInfo(market_id, function (r) {
-                test(r); done();
-            });
-        });
-        it("batched-async", function (done) {
-            var batch = augur.createBatch();
-            batch.add("getMarketInfo", [market_id], function (r) {
-                test(r);
-            });
-            batch.add("getMarketInfo", [market_id], function (r) {
-                test(r); done();
-            });
-            batch.execute();
-        });
-    });
     describe("getSimulatedBuy(" + market_id + ", " + outcome + ", " + amount + ")", function () {
         var test = function (r) {
             assert.strictEqual(r.length, 2);

@@ -1068,142 +1068,114 @@ Augur.prototype.getMarketOutcomeInfo = function (market, outcome, callback) {
         return parse_info(this.fire(tx));
     }
 };
-Augur.prototype.getFullMarketInfo = function (market, callback) {
-    var self = this;
-    var parse_info = function (rawInfo) {
-        var TRADER_FIELDS = 3;
-        var EVENTS_FIELDS = 6;
-        var OUTCOMES_FIELDS =12;
-        var WINNING_OUTCOMES_FIELDS = 8;
-        var info;
-        if (rawInfo && rawInfo.length) {
+Augur.prototype.parseMarketInfo = function (rawInfo) {
+    var TRADER_FIELDS = 3;
+    var EVENTS_FIELDS = 6;
+    var OUTCOMES_FIELDS = 12;
+    var WINNING_OUTCOMES_FIELDS = 8;
+    var info;
+    if (rawInfo && rawInfo.length) {
 
-            // all-inclusive except comments & price history
-            // info[0] = traderCount (self.Markets[market].currentParticipant)
-            // info[1] = self.Markets[market].alpha
-            // info[2] = self.Markets[market].addr2participant[tx.origin]
-            // info[3] = self.Markets[market].numOutcomes
-            // info[4] = self.Markets[market].tradingPeriod
-            // info[5] = self.Markets[market].tradingFee
-            // info[6] = self.Markets[market].branch
-            // info[7] = numEvents (self.Markets[market].lenEvents)
-            // info[8] = self.Markets[market].cumulativeScale
-            // info[9] = INFO.getCreationFee(market)
-            // info[10] = INFO.getCreator(market)
-            var index = 11;
-            info = {
-                _id: market,
-                network: self.network_id || rpc.version(),
-                traderCount: abi.number(rawInfo[0]),
-                alpha: abi.unfix(rawInfo[1], "string"),
-                traderIndex: abi.unfix(rawInfo[2], "number"),
-                numOutcomes: abi.number(rawInfo[3]),
-                tradingPeriod: abi.number(rawInfo[4]),
-                tradingFee: abi.unfix(rawInfo[5], "string"),
-                branchId: rawInfo[6],
-                numEvents: abi.number(rawInfo[7]),
-                cumulativeScale: abi.string(rawInfo[8]),
-                creationFee: abi.unfix(rawInfo[9], "string"),
-                author: abi.format_address(rawInfo[10]),
-                invalid: null,
-                endDate: null,
-                participants: {}
+        // all-inclusive except comments & price history
+        // info[0] = marketID
+        // info[1] = self.Markets[marketID].currentParticipant
+        // info[2] = self.Markets[marketID].alpha
+        // info[3] = participantNumber
+        // info[4] = self.Markets[marketID].numOutcomes
+        // info[5] = self.Markets[marketID].tradingPeriod
+        // info[6] = self.Markets[marketID].tradingFee
+        // info[7] = self.Markets[marketID].branch
+        // info[8] = self.Markets[marketID].lenEvents
+        // info[9] = self.Markets[marketID].cumulativeScale
+        // info[10] = INFO.getCreationFee(marketID)
+        // info[11] = INFO.getCreator(marketID)
+        var index = 12;
+        info = {
+            _id: rawInfo[0],
+            network: this.network_id || rpc.version(),
+            traderCount: abi.number(rawInfo[1]),
+            alpha: abi.unfix(rawInfo[2], "string"),
+            traderIndex: abi.unfix(rawInfo[3], "number"),
+            numOutcomes: abi.number(rawInfo[4]),
+            tradingPeriod: abi.number(rawInfo[5]),
+            tradingFee: abi.unfix(rawInfo[6], "string"),
+            branchId: rawInfo[7],
+            numEvents: abi.number(rawInfo[8]),
+            cumulativeScale: abi.string(rawInfo[9]),
+            creationFee: abi.unfix(rawInfo[10], "string"),
+            author: abi.format_address(rawInfo[11]),
+            endDate: null,
+            participants: {}
+        };
+        info.outcomes = new Array(info.numOutcomes);
+        info.events = new Array(info.numEvents);
+
+        // organize trader info
+        var addr;
+        for (var i = 0; i < info.traderCount; ++i) {
+            addr = abi.format_address(rawInfo[i + index]);
+            info.participants[addr] = i;
+        }
+
+        // organize event info
+        // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
+        index += info.traderCount*TRADER_FIELDS;
+        for (i = 0; i < info.numEvents; ++i) {
+            var endDate = abi.number(rawInfo[i + index + 1]);
+            info.events[i] = {
+                id: rawInfo[i + index],
+                endDate: endDate,
+                outcome: abi.string(rawInfo[i + index + 2]),
+                minValue: abi.string(rawInfo[i + index + 3]),
+                maxValue: abi.string(rawInfo[i + index + 4]),
+                numOutcomes: abi.number(rawInfo[i + index + 5])
             };
-            info.outcomes = new Array(info.numOutcomes);
-            info.events = new Array(info.numEvents);
-
-            // organize trader info
-            var addr;
-            for (var i = 0; i < info.traderCount; ++i) {
-                addr = abi.format_address(rawInfo[i + index]);
-                info.participants[addr] = i;
-            }
-
-            // organize event info
-            // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
-            index += info.traderCount*TRADER_FIELDS;
-            for (i = 0; i < info.numEvents; ++i) {
-                var endDate = abi.number(rawInfo[i + index + 1]);
-                info.events[i] = {
-                    id: rawInfo[i + index],
-                    endDate: endDate,
-                    outcome: abi.string(rawInfo[i + index + 2]),
-                    minValue: abi.string(rawInfo[i + index + 3]),
-                    maxValue: abi.string(rawInfo[i + index + 4]),
-                    numOutcomes: abi.number(rawInfo[i + index + 5])
-                };
-                if (info.endDate === null || endDate < info.endDate) {
-                    info.endDate = endDate;
-                }
-            }
-
-            // organize outcome info
-            index += info.numEvents*EVENTS_FIELDS;
-            for (i = 0; i < info.numOutcomes; ++i) {
-                info.outcomes[i] = {
-                    id: i + 1,
-                    outstandingShares: abi.unfix(rawInfo[i + index], "string"),
-                    price: abi.unfix(rawInfo[i + index + 1], "string"),
-                    shares: {}
-                };
-                for (var j = 0; j < info.traderCount; ++j) {
-                    addr = abi.format_address(rawInfo[j + 11]);
-                    info.outcomes[i].shares[addr] = abi.unfix(rawInfo[j + 12], "string");
-                }
+            if (info.endDate === null || endDate < info.endDate) {
+                info.endDate = endDate;
             }
         }
-        return info;
-    };
-    var tx = this.utils.copy(this.tx.getFullMarketInfo);
-    if (market && market.constructor === BigNumber) {
-        market = market.toString(16);
+
+        // organize outcome info
+        index += info.numEvents*EVENTS_FIELDS;
+        for (i = 0; i < info.numOutcomes; ++i) {
+            info.outcomes[i] = {
+                id: i + 1,
+                outstandingShares: abi.unfix(rawInfo[i + index], "string"),
+                price: abi.unfix(rawInfo[i + index + 1], "string"),
+                shares: {}
+            };
+            for (var j = 0; j < info.traderCount; ++j) {
+                addr = abi.format_address(rawInfo[j + 11]);
+                info.outcomes[i].shares[addr] = abi.unfix(rawInfo[j + 12], "string");
+            }
+        }
     }
-    tx.params = market;
-    if (this.utils.is_function(callback)) {
-        this.fire(tx, function (info) {
-            callback(parse_info(info));
-        });
-    } else {
-        return parse_info(this.fire(tx));
-    }
+    return info;
 };
-Augur.prototype.getMarketInfo = function (market, callback) {
+Augur.prototype.parseMarketsArray = function (marketsArray) {
+    var numMarkets = parseInt(marketsArray.shift());
+    var marketLength = {};
+    var len, marketID, lenSoFar = 0, marketsInfo = {}, rawInfo;
+    for (var i = 0; i < numMarkets; ++i) {
+        len = parseInt(marketsArray[i]);
+        marketID = abi.unfork(marketsArray[numMarkets + lenSoFar]);
+        rawInfo = marketsArray.slice(numMarkets + lenSoFar, numMarkets + lenSoFar + len);
+        marketsInfo[marketID] = this.parseMarketInfo(rawInfo);
+        lenSoFar += len;
+    }
+    return marketsInfo;
+};
+Augur.prototype.getMarketsInfo = function (branch, offset, numMarketsToLoad, callback) {
     var self = this;
-    var parse_info = function (info) {
-        // info[0] = self.Markets[market].currentParticipant
-        // info[1] = self.Markets[market].alpha
-        // info[2] = self.Markets[market].addr2participant[tx.origin]
-        // info[3] = self.Markets[market].numOutcomes
-        // info[4] = self.Markets[market].tradingPeriod
-        // info[5] = self.Markets[market].tradingFee
-        // info[6+] = winningOutcomes
-        var i, len;
-        if (info && info.length) {
-            len = info.length;
-            info[0] = abi.bignum(info[0]).toFixed();
-            info[1] = abi.unfix(info[1], "string");
-            info[2] = abi.bignum(info[2]).toFixed();
-            info[3] = abi.bignum(info[3]).toFixed();
-            info[4] = abi.bignum(info[4]).toFixed();
-            info[5] = abi.unfix(info[5], "string");
-            for (i = len - 8; i < len; ++i) {
-                info[i] = abi.bignum(info[i]).toFixed();
-            }
-        }
-        return info;
-    };
-    var tx = this.utils.copy(this.tx.getMarketInfo);
-    if (market && market.constructor === BigNumber) {
-        market = market.toString(16);
-    }
-    tx.params = market;
-    if (this.utils.is_function(callback)) {
-        this.fire(tx, function (info) {
-            callback(parse_info(info));
+    var tx = this.utils.copy(this.tx.getMarketsInfo);
+    var unpacked = this.utils.unpack(branch, this.utils.labels(this.getMarketsInfo), arguments);
+    tx.params = unpacked.params;
+    if (unpacked && this.utils.is_function(unpacked.cb[0])) {
+        return this.fire(tx, function (marketsArray) {
+            unpacked.cb[0](self.parseMarketsArray(marketsArray));
         });
-    } else {
-        return parse_info(this.fire(tx));
     }
+    return this.parseMarketsArray(this.fire(tx));
 };
 Augur.prototype.getMarketEvents = function (market, callback) {
     // market: sha256 hash id

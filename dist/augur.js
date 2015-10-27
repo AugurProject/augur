@@ -3803,40 +3803,40 @@ module.exports={
     },
     "10101": {
         "namereg": "0xc6d9d2cd449a754c494264e1809c50e34d64562b",
-        "buyAndSellShares": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68",
-        "checkQuorum": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df",
-        "closeMarket": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945",
-        "closeMarketEight": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645",
-        "closeMarketFour": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd",
-        "closeMarketOne": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3",
-        "closeMarketTwo": "0x81a7621e9a286d061b3dea040888a51c96693b1c",
-        "createBranch": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7",
-        "createEvent": "0x3f3276849a878a176b2f02dd48a483e8182a49e4",
-        "createMarket": "0xcece47d6c0a6a1c90521f38ec5bf7550df983804",
-        "dispatch": "0x031d9d02520cc708ea3c865278508c9cdb92bd51",
+        "buyAndSellShares": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f",
+        "checkQuorum": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d",
+        "closeMarket": "0xcece47d6c0a6a1c90521f38ec5bf7550df983804",
+        "closeMarketEight": "0x031d9d02520cc708ea3c865278508c9cdb92bd51",
+        "closeMarketFour": "0xcd6c7bc634257f82903b182142aae7156d72a200",
+        "closeMarketOne": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945",
+        "closeMarketTwo": "0x7d4b581a0868204b7481c316b430a97fd292a2fb",
+        "createBranch": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df",
+        "createEvent": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645",
+        "createMarket": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7",
+        "dispatch": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2",
         "faucets": "0x509592c96eee7e19f6a34772fd8783cb072ca3c6",
-        "makeReports": "0x7d4b581a0868204b7481c316b430a97fd292a2fb",
+        "makeReports": "0x3f3276849a878a176b2f02dd48a483e8182a49e4",
         "p2pWagers": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6",
-        "sendReputation": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893",
-        "transferShares": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7",
-        "branches": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7",
+        "sendReputation": "0x35152caa07026203a1add680771afb690d872d7d",
+        "transferShares": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3",
+        "branches": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd",
         "cash": "0xe4714fcbdcdba49629bc408183ef40d120700b8d",
         "events": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667",
-        "expiringEvents": "0x35152caa07026203a1add680771afb690d872d7d",
+        "expiringEvents": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7",
         "fxpFunctions": "0x482c57abdce592b39434e3f619ffc3db62ab6d01",
         "info": "0x5069d883e31429c6dd1325d961f443007747c7a2",
-        "ipfs": "0x606b26ba8b3c8e2550a709bbb152ca56d196cee7",
-        "markets": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e",
-        "reporting": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea",
+        "ipfs": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e",
+        "markets": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893",
+        "reporting": "0x81a7621e9a286d061b3dea040888a51c96693b1c",
         "adjust": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55",
         "center": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c",
         "payout": "0x8a4e2993a9972ee035453bb5674816fc3a698718",
-        "redeem_adjust": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3",
-        "redeem_center": "0xcd6c7bc634257f82903b182142aae7156d72a200",
-        "redeem_interpolate": "0x8c19616de17acdfbc933b99d9f529a689d22098f",
-        "redeem_payout": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79",
-        "redeem_resolve": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f",
-        "redeem_score": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2",
+        "redeem_adjust": "0x8c19616de17acdfbc933b99d9f529a689d22098f",
+        "redeem_center": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79",
+        "redeem_interpolate": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea",
+        "redeem_payout": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3",
+        "redeem_resolve": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68",
+        "redeem_score": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7",
         "resolve": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2",
         "score": "0x708fdfe18bf28afe861a69e95419d183ace003eb",
         "statistics": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7"
@@ -95572,142 +95572,114 @@ Augur.prototype.getMarketOutcomeInfo = function (market, outcome, callback) {
         return parse_info(this.fire(tx));
     }
 };
-Augur.prototype.getFullMarketInfo = function (market, callback) {
-    var self = this;
-    var parse_info = function (rawInfo) {
-        var TRADER_FIELDS = 3;
-        var EVENTS_FIELDS = 6;
-        var OUTCOMES_FIELDS =12;
-        var WINNING_OUTCOMES_FIELDS = 8;
-        var info;
-        if (rawInfo && rawInfo.length) {
+Augur.prototype.parseMarketInfo = function (rawInfo) {
+    var TRADER_FIELDS = 3;
+    var EVENTS_FIELDS = 6;
+    var OUTCOMES_FIELDS = 12;
+    var WINNING_OUTCOMES_FIELDS = 8;
+    var info;
+    if (rawInfo && rawInfo.length) {
 
-            // all-inclusive except comments & price history
-            // info[0] = traderCount (self.Markets[market].currentParticipant)
-            // info[1] = self.Markets[market].alpha
-            // info[2] = self.Markets[market].addr2participant[tx.origin]
-            // info[3] = self.Markets[market].numOutcomes
-            // info[4] = self.Markets[market].tradingPeriod
-            // info[5] = self.Markets[market].tradingFee
-            // info[6] = self.Markets[market].branch
-            // info[7] = numEvents (self.Markets[market].lenEvents)
-            // info[8] = self.Markets[market].cumulativeScale
-            // info[9] = INFO.getCreationFee(market)
-            // info[10] = INFO.getCreator(market)
-            var index = 11;
-            info = {
-                _id: market,
-                network: self.network_id || rpc.version(),
-                traderCount: abi.number(rawInfo[0]),
-                alpha: abi.unfix(rawInfo[1], "string"),
-                traderIndex: abi.unfix(rawInfo[2], "number"),
-                numOutcomes: abi.number(rawInfo[3]),
-                tradingPeriod: abi.number(rawInfo[4]),
-                tradingFee: abi.unfix(rawInfo[5], "string"),
-                branchId: rawInfo[6],
-                numEvents: abi.number(rawInfo[7]),
-                cumulativeScale: abi.string(rawInfo[8]),
-                creationFee: abi.unfix(rawInfo[9], "string"),
-                author: abi.format_address(rawInfo[10]),
-                invalid: null,
-                endDate: null,
-                participants: {}
+        // all-inclusive except comments & price history
+        // info[0] = marketID
+        // info[1] = self.Markets[marketID].currentParticipant
+        // info[2] = self.Markets[marketID].alpha
+        // info[3] = participantNumber
+        // info[4] = self.Markets[marketID].numOutcomes
+        // info[5] = self.Markets[marketID].tradingPeriod
+        // info[6] = self.Markets[marketID].tradingFee
+        // info[7] = self.Markets[marketID].branch
+        // info[8] = self.Markets[marketID].lenEvents
+        // info[9] = self.Markets[marketID].cumulativeScale
+        // info[10] = INFO.getCreationFee(marketID)
+        // info[11] = INFO.getCreator(marketID)
+        var index = 12;
+        info = {
+            _id: rawInfo[0],
+            network: this.network_id || rpc.version(),
+            traderCount: abi.number(rawInfo[1]),
+            alpha: abi.unfix(rawInfo[2], "string"),
+            traderIndex: abi.unfix(rawInfo[3], "number"),
+            numOutcomes: abi.number(rawInfo[4]),
+            tradingPeriod: abi.number(rawInfo[5]),
+            tradingFee: abi.unfix(rawInfo[6], "string"),
+            branchId: rawInfo[7],
+            numEvents: abi.number(rawInfo[8]),
+            cumulativeScale: abi.string(rawInfo[9]),
+            creationFee: abi.unfix(rawInfo[10], "string"),
+            author: abi.format_address(rawInfo[11]),
+            endDate: null,
+            participants: {}
+        };
+        info.outcomes = new Array(info.numOutcomes);
+        info.events = new Array(info.numEvents);
+
+        // organize trader info
+        var addr;
+        for (var i = 0; i < info.traderCount; ++i) {
+            addr = abi.format_address(rawInfo[i + index]);
+            info.participants[addr] = i;
+        }
+
+        // organize event info
+        // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
+        index += info.traderCount*TRADER_FIELDS;
+        for (i = 0; i < info.numEvents; ++i) {
+            var endDate = abi.number(rawInfo[i + index + 1]);
+            info.events[i] = {
+                id: rawInfo[i + index],
+                endDate: endDate,
+                outcome: abi.string(rawInfo[i + index + 2]),
+                minValue: abi.string(rawInfo[i + index + 3]),
+                maxValue: abi.string(rawInfo[i + index + 4]),
+                numOutcomes: abi.number(rawInfo[i + index + 5])
             };
-            info.outcomes = new Array(info.numOutcomes);
-            info.events = new Array(info.numEvents);
-
-            // organize trader info
-            var addr;
-            for (var i = 0; i < info.traderCount; ++i) {
-                addr = abi.format_address(rawInfo[i + index]);
-                info.participants[addr] = i;
-            }
-
-            // organize event info
-            // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
-            index += info.traderCount*TRADER_FIELDS;
-            for (i = 0; i < info.numEvents; ++i) {
-                var endDate = abi.number(rawInfo[i + index + 1]);
-                info.events[i] = {
-                    id: rawInfo[i + index],
-                    endDate: endDate,
-                    outcome: abi.string(rawInfo[i + index + 2]),
-                    minValue: abi.string(rawInfo[i + index + 3]),
-                    maxValue: abi.string(rawInfo[i + index + 4]),
-                    numOutcomes: abi.number(rawInfo[i + index + 5])
-                };
-                if (info.endDate === null || endDate < info.endDate) {
-                    info.endDate = endDate;
-                }
-            }
-
-            // organize outcome info
-            index += info.numEvents*EVENTS_FIELDS;
-            for (i = 0; i < info.numOutcomes; ++i) {
-                info.outcomes[i] = {
-                    id: i + 1,
-                    outstandingShares: abi.unfix(rawInfo[i + index], "string"),
-                    price: abi.unfix(rawInfo[i + index + 1], "string"),
-                    shares: {}
-                };
-                for (var j = 0; j < info.traderCount; ++j) {
-                    addr = abi.format_address(rawInfo[j + 11]);
-                    info.outcomes[i].shares[addr] = abi.unfix(rawInfo[j + 12], "string");
-                }
+            if (info.endDate === null || endDate < info.endDate) {
+                info.endDate = endDate;
             }
         }
-        return info;
-    };
-    var tx = this.utils.copy(this.tx.getFullMarketInfo);
-    if (market && market.constructor === BigNumber) {
-        market = market.toString(16);
+
+        // organize outcome info
+        index += info.numEvents*EVENTS_FIELDS;
+        for (i = 0; i < info.numOutcomes; ++i) {
+            info.outcomes[i] = {
+                id: i + 1,
+                outstandingShares: abi.unfix(rawInfo[i + index], "string"),
+                price: abi.unfix(rawInfo[i + index + 1], "string"),
+                shares: {}
+            };
+            for (var j = 0; j < info.traderCount; ++j) {
+                addr = abi.format_address(rawInfo[j + 11]);
+                info.outcomes[i].shares[addr] = abi.unfix(rawInfo[j + 12], "string");
+            }
+        }
     }
-    tx.params = market;
-    if (this.utils.is_function(callback)) {
-        this.fire(tx, function (info) {
-            callback(parse_info(info));
-        });
-    } else {
-        return parse_info(this.fire(tx));
-    }
+    return info;
 };
-Augur.prototype.getMarketInfo = function (market, callback) {
+Augur.prototype.parseMarketsArray = function (marketsArray) {
+    var numMarkets = parseInt(marketsArray.shift());
+    var marketLength = {};
+    var len, marketID, lenSoFar = 0, marketsInfo = {}, rawInfo;
+    for (var i = 0; i < numMarkets; ++i) {
+        len = parseInt(marketsArray[i]);
+        marketID = abi.unfork(marketsArray[numMarkets + lenSoFar]);
+        rawInfo = marketsArray.slice(numMarkets + lenSoFar, numMarkets + lenSoFar + len);
+        marketsInfo[marketID] = this.parseMarketInfo(rawInfo);
+        lenSoFar += len;
+    }
+    return marketsInfo;
+};
+Augur.prototype.getMarketsInfo = function (branch, offset, numMarketsToLoad, callback) {
     var self = this;
-    var parse_info = function (info) {
-        // info[0] = self.Markets[market].currentParticipant
-        // info[1] = self.Markets[market].alpha
-        // info[2] = self.Markets[market].addr2participant[tx.origin]
-        // info[3] = self.Markets[market].numOutcomes
-        // info[4] = self.Markets[market].tradingPeriod
-        // info[5] = self.Markets[market].tradingFee
-        // info[6+] = winningOutcomes
-        var i, len;
-        if (info && info.length) {
-            len = info.length;
-            info[0] = abi.bignum(info[0]).toFixed();
-            info[1] = abi.unfix(info[1], "string");
-            info[2] = abi.bignum(info[2]).toFixed();
-            info[3] = abi.bignum(info[3]).toFixed();
-            info[4] = abi.bignum(info[4]).toFixed();
-            info[5] = abi.unfix(info[5], "string");
-            for (i = len - 8; i < len; ++i) {
-                info[i] = abi.bignum(info[i]).toFixed();
-            }
-        }
-        return info;
-    };
-    var tx = this.utils.copy(this.tx.getMarketInfo);
-    if (market && market.constructor === BigNumber) {
-        market = market.toString(16);
-    }
-    tx.params = market;
-    if (this.utils.is_function(callback)) {
-        this.fire(tx, function (info) {
-            callback(parse_info(info));
+    var tx = this.utils.copy(this.tx.getMarketsInfo);
+    var unpacked = this.utils.unpack(branch, this.utils.labels(this.getMarketsInfo), arguments);
+    tx.params = unpacked.params;
+    if (unpacked && this.utils.is_function(unpacked.cb[0])) {
+        return this.fire(tx, function (marketsArray) {
+            unpacked.cb[0](self.parseMarketsArray(marketsArray));
         });
-    } else {
-        return parse_info(this.fire(tx));
     }
+    return this.parseMarketsArray(this.fire(tx));
 };
 Augur.prototype.getMarketEvents = function (market, callback) {
     // market: sha256 hash id
@@ -96314,6 +96286,13 @@ module.exports = function (network) {
 
         // IPFS/IPNS name => hash lookup
         ipfs: {
+
+            gasify: {
+                to: contracts.ipfs,
+                method: "gasify",
+                send: false,
+                returns: "number"
+            },
 
             setHash: {
                 to: contracts.ipfs,
@@ -97003,18 +96982,12 @@ module.exports = function (network) {
             signature: "ii",
             returns: "hash[]"
         },
-        getFullMarketInfo: {
+        getMarketsInfo: {
             to: contracts.markets,
-            method: "getFullMarketInfo",
-            signature: "i",
-            returns: "hash[]"
-            // returns: "string"
-        },
-        getMarketInfo: {
-            to: contracts.markets,
-            method: "getMarketInfo",
-            signature: "i",
-            returns: "hash[]"
+            method: "getMarketsInfo",
+            signature: "iii",
+            returns: "hash[]",
+            gas: 9999999999999
         },
         getMarketEvents: {
             to: contracts.markets,
@@ -97353,8 +97326,6 @@ module.exports = {
                     } else {
                         params.push(o[labels[i]]);
                     }
-                } else {
-                    return null;
                 }
             }
 

@@ -60,8 +60,6 @@ module.exports = {
                     } else {
                         params.push(o[labels[i]]);
                     }
-                } else {
-                    return null;
                 }
             }
 

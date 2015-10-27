@@ -23,7 +23,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
     var minValue = 0;
     var maxValue = 1;
     var numOutcomes = 2;
-    var num_events = 1;
+    var num_events = 1000;
     var branch = augur.branches.dev;
     var period = augur.getVotePeriod(branch);
     var exp_date = augur.rpc.blockNumber() + 2500;

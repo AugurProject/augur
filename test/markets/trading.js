@@ -33,17 +33,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                     var market_id = markets[markets.length - 1];
                     assert.isDefined(market_id);
                     assert.isNotNull(market_id);
-                    augur.getMarketInfo(market_id, function (info) {
-                        if (info.error) {
-                            done(info);
-                        } else {
-                            assert.instanceOf(info, Array);
-                            assert.isAbove(info.length, 5);
-                            assert.isAbove(Number(info[1]), 0); // alpha > 0
-                            assert.isAbove(Number(info[3]), 1); // numOutcomes > 1
-                            done();
-                        }
-                    });
+                    done();
                 }
             });
         });

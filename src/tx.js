@@ -701,18 +701,12 @@ module.exports = function (network) {
             signature: "ii",
             returns: "hash[]"
         },
-        getFullMarketInfo: {
+        getMarketsInfo: {
             to: contracts.markets,
-            method: "getFullMarketInfo",
-            signature: "i",
-            returns: "hash[]"
-            // returns: "string"
-        },
-        getMarketInfo: {
-            to: contracts.markets,
-            method: "getMarketInfo",
-            signature: "i",
-            returns: "hash[]"
+            method: "getMarketsInfo",
+            signature: "iii",
+            returns: "hash[]",
+            gas: 9999999999999
         },
         getMarketEvents: {
             to: contracts.markets,
