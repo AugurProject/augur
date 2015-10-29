@@ -1071,7 +1071,7 @@ Augur.prototype.getMarketOutcomeInfo = function (market, outcome, callback) {
 Augur.prototype.parseMarketInfo = function (rawInfo) {
     var TRADER_FIELDS = 3;
     var EVENTS_FIELDS = 6;
-    var OUTCOMES_FIELDS = 12;
+    var OUTCOMES_FIELDS = 2;
     var WINNING_OUTCOMES_FIELDS = 8;
     var info;
     if (rawInfo && rawInfo.length) {
@@ -1091,7 +1091,6 @@ Augur.prototype.parseMarketInfo = function (rawInfo) {
         // info[11] = INFO.getCreator(marketID)
         var index = 12;
         info = {
-            _id: rawInfo[0],
             network: this.network_id || rpc.version(),
             traderCount: abi.number(rawInfo[1]),
             alpha: abi.unfix(rawInfo[2], "string"),
@@ -1105,7 +1104,9 @@ Augur.prototype.parseMarketInfo = function (rawInfo) {
             creationFee: abi.unfix(rawInfo[10], "string"),
             author: abi.format_address(rawInfo[11]),
             endDate: null,
-            participants: {}
+            participants: {},
+            winningOutcomes: [],
+            description: null
         };
         info.outcomes = new Array(info.numOutcomes);
         info.events = new Array(info.numEvents);
@@ -1119,11 +1120,12 @@ Augur.prototype.parseMarketInfo = function (rawInfo) {
 
         // organize event info
         // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
+        var endDate;
         index += info.traderCount*TRADER_FIELDS;
         for (i = 0; i < info.numEvents; ++i) {
-            var endDate = abi.number(rawInfo[i + index + 1]);
+            endDate = abi.number(rawInfo[i + index + 1]);
             info.events[i] = {
-                id: rawInfo[i + index],
+                id: abi.unfork(rawInfo[i + index], true),
                 endDate: endDate,
                 outcome: abi.string(rawInfo[i + index + 2]),
                 minValue: abi.string(rawInfo[i + index + 3]),
@@ -1145,23 +1147,34 @@ Augur.prototype.parseMarketInfo = function (rawInfo) {
                 shares: {}
             };
             for (var j = 0; j < info.traderCount; ++j) {
-                addr = abi.format_address(rawInfo[j + 11]);
-                info.outcomes[i].shares[addr] = abi.unfix(rawInfo[j + 12], "string");
+                addr = abi.format_address(rawInfo[j + 12]);
+                info.outcomes[i].shares[addr] = abi.unfix(rawInfo[j + 13], "string");
             }
         }
+        index += info.numOutcomes*OUTCOMES_FIELDS;
+        info.winningOutcomes = abi.string(
+            rawInfo.slice(index, index + WINNING_OUTCOMES_FIELDS)
+        );
+
+        // convert description byte array to ASCII
+        info.description = String.fromCharCode.apply(null, rawInfo.slice(
+            rawInfo.length - parseInt(rawInfo[index + WINNING_OUTCOMES_FIELDS + 2])
+        ));
     }
     return info;
 };
 Augur.prototype.parseMarketsArray = function (marketsArray) {
+    var len, rawInfo, marketID;
     var numMarkets = parseInt(marketsArray.shift());
-    var marketLength = {};
-    var len, marketID, lenSoFar = 0, marketsInfo = {}, rawInfo;
+    var marketsInfo = {};
+    var totalLen = 0;
     for (var i = 0; i < numMarkets; ++i) {
         len = parseInt(marketsArray[i]);
-        marketID = abi.unfork(marketsArray[numMarkets + lenSoFar]);
-        rawInfo = marketsArray.slice(numMarkets + lenSoFar, numMarkets + lenSoFar + len);
+        rawInfo = marketsArray.slice(numMarkets + totalLen, numMarkets + totalLen + len);
+        marketID = abi.unfork(marketsArray[numMarkets + totalLen], true);
         marketsInfo[marketID] = this.parseMarketInfo(rawInfo);
-        lenSoFar += len;
+        marketsInfo[marketID]._id = marketID;
+        totalLen += len;
     }
     return marketsInfo;
 };
