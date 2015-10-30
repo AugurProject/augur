@@ -10,6 +10,7 @@
     "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha test/core test/markets test/client --report lcovonly && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "testnet": "scripts/runtests.sh --connect --core --markets --client",
     "markets": "scripts/setup.js --geth --contract branches && mocha test/create/createEvent.js && mocha test/markets/trading.js && mocha test/markets/markets.js",
+    "timing": "scripts/timing.js && scripts/timing.jl && gpicview data/timing-getMarketsInfo.png",
     "setup": "scripts/setup.js --reset --faucets"
   },
   "dependencies": {

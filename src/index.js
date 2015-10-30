@@ -1165,18 +1165,21 @@ Augur.prototype.parseMarketInfo = function (rawInfo) {
 };
 Augur.prototype.parseMarketsArray = function (marketsArray) {
     var len, rawInfo, marketID;
-    var numMarkets = parseInt(marketsArray.shift());
-    var marketsInfo = {};
-    var totalLen = 0;
-    for (var i = 0; i < numMarkets; ++i) {
-        len = parseInt(marketsArray[i]);
-        rawInfo = marketsArray.slice(numMarkets + totalLen, numMarkets + totalLen + len);
-        marketID = abi.unfork(marketsArray[numMarkets + totalLen], true);
-        marketsInfo[marketID] = this.parseMarketInfo(rawInfo);
-        marketsInfo[marketID]._id = marketID;
-        totalLen += len;
+    if (marketsArray && marketsArray.constructor === Array && marketsArray.length) {
+        var numMarkets = parseInt(marketsArray.shift());
+        var marketsInfo = {};
+        var totalLen = 0;
+        for (var i = 0; i < numMarkets; ++i) {
+            len = parseInt(marketsArray[i]);
+            rawInfo = marketsArray.slice(numMarkets + totalLen, numMarkets + totalLen + len);
+            marketID = abi.unfork(marketsArray[numMarkets + totalLen], true);
+            marketsInfo[marketID] = this.parseMarketInfo(rawInfo);
+            marketsInfo[marketID]._id = marketID;
+            totalLen += len;
+        }
+        return marketsInfo;
     }
-    return marketsInfo;
+    console.error(marketsArray);
 };
 Augur.prototype.getMarketsInfo = function (branch, offset, numMarketsToLoad, callback) {
     var self = this;

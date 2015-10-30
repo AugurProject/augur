@@ -29,6 +29,7 @@ describe("markets.se", function () {
     if (augur.network_id === "10101") {
         describe("getMarketsInfo", function () {
             var testMarketInfo = function (r) {
+                console.log(JSON.stringify(r, null, 2));
                 assert.isObject(r);
                 assert.property(r, "_id");
                 assert.property(r, "network");
