@@ -1146,6 +1146,9 @@ Augur.prototype.parseMarketInfo = function (rawInfo) {
                 price: abi.unfix(rawInfo[i + index + 1], "string"),
                 shares: {}
             };
+            if (info.outcomes[i].id === 2) {
+                info.price = info.outcomes[i].price;
+            }
             for (var j = 0; j < info.traderCount; ++j) {
                 addr = abi.format_address(rawInfo[j + 12]);
                 info.outcomes[i].shares[addr] = abi.unfix(rawInfo[j + 13], "string");
@@ -1163,6 +1166,22 @@ Augur.prototype.parseMarketInfo = function (rawInfo) {
     }
     return info;
 };
+Augur.prototype.getMarketInfo = function (market, callback) {
+    var self = this;
+    var tx = this.utils.copy(this.tx.getMarketInfo);
+    var unpacked = this.utils.unpack(market, this.utils.labels(this.getMarketInfo), arguments);
+    tx.params = unpacked.params;
+    if (unpacked && this.utils.is_function(unpacked.cb[0])) {
+        return this.fire(tx, function (marketInfo) {
+            marketInfo = self.parseMarketInfo(marketInfo);
+            marketInfo._id = abi.unfork(market, true);
+            unpacked.cb[0](marketInfo);
+        });
+    }
+    var marketInfo = this.parseMarketInfo(this.fire(tx));
+    marketInfo._id = abi.unfork(market, true);
+    return marketInfo;
+};
 Augur.prototype.parseMarketsArray = function (marketsArray) {
     var len, rawInfo, marketID;
     if (marketsArray && marketsArray.constructor === Array && marketsArray.length) {
@@ -1179,7 +1198,7 @@ Augur.prototype.parseMarketsArray = function (marketsArray) {
         }
         return marketsInfo;
     }
-    console.error(marketsArray);
+    console.log(marketsArray);
 };
 Augur.prototype.getMarketsInfo = function (branch, offset, numMarketsToLoad, callback) {
     var self = this;

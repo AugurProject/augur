@@ -27,60 +27,77 @@ describe("markets.se", function () {
         augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
     });
     if (augur.network_id === "10101") {
+        var testMarketInfo = function (r) {
+            // console.log(JSON.stringify(r, null, 2));
+            assert.isObject(r);
+            assert.property(r, "_id");
+            assert.property(r, "network");
+            assert(r.network === "7" || r.network === "10101");
+            assert.property(r, "traderCount");
+            assert.isAbove(r.traderIndex, -1);
+            assert.property(r, "alpha");
+            assert.isNotNull(r.alpha);
+            assert.property(r, "traderIndex");
+            assert.isAbove(r.traderIndex, -1);
+            assert.property(r, "numOutcomes");
+            assert.isAbove(r.numOutcomes, 1);
+            assert.property(r, "tradingPeriod");
+            assert.isNumber(r.tradingPeriod);
+            assert.property(r, "tradingFee");
+            assert(abi.number(r.tradingFee) >= 0);
+            assert(abi.number(r.tradingFee) <= 1);
+            assert.property(r, "branchId");
+            assert.property(r, "numEvents");
+            assert.property(r, "cumulativeScale");
+            assert.property(r, "creationFee");
+            assert.property(r, "author");
+            assert.property(r, "endDate");
+            assert.property(r, "participants");
+            assert.isObject(r.participants);
+            assert.property(r, "outcomes");
+            assert.isArray(r.outcomes);
+            assert.isAbove(r.outcomes.length, 1);
+            assert.property(r.outcomes[0], "id");
+            assert.isNumber(r.outcomes[0].id);
+            assert.property(r.outcomes[0], "outstandingShares");
+            assert(abi.number(r.outcomes[0].outstandingShares) >= 0);
+            assert.property(r.outcomes[0], "price");
+            assert.property(r.outcomes[0], "shares");
+            assert.isObject(r.outcomes[0].shares);
+            assert.property(r, "events");
+            assert.isArray(r.events);
+            assert.isAbove(r.events.length, 0);
+            assert.isObject(r.events[0]);
+            assert.property(r.events[0], "id");
+            assert.property(r.events[0], "endDate");
+            assert.isAbove(r.events[0].endDate, 0);
+            assert.property(r.events[0], "outcome");
+            assert.isNotNull(r.events[0].outcome);
+            assert.property(r.events[0], "minValue");
+            assert.isNotNull(r.events[0].minValue);
+            assert.property(r.events[0], "maxValue");
+            assert.isNotNull(r.events[0].maxValue);
+            assert.property(r.events[0], "numOutcomes");
+            assert.isAbove(parseInt(r.events[0].numOutcomes), 1);
+        };
+        describe("getMarketInfo", function () {
+            it("sync", function () {
+                this.timeout(augur.constants.TIMEOUT);
+                var info = augur.getMarketInfo(market_id);
+                console.log(info)
+                if (info.error) throw info;
+                testMarketInfo(info);
+            });
+            it("async", function (done) {
+                this.timeout(augur.constants.TIMEOUT);
+                augur.getMarketInfo(market_id, function (info) {
+                    if (info.error) return done(info);
+                    testMarketInfo(info);
+                    done();
+                });
+            });
+        });
         describe("getMarketsInfo", function () {
-            var testMarketInfo = function (r) {
-                console.log(JSON.stringify(r, null, 2));
-                assert.isObject(r);
-                assert.property(r, "_id");
-                assert.property(r, "network");
-                assert(r.network === "7" || r.network === "10101");
-                assert.property(r, "traderCount");
-                assert.isAbove(r.traderIndex, -1);
-                assert.property(r, "alpha");
-                assert.isNotNull(r.alpha);
-                assert.property(r, "traderIndex");
-                assert.isAbove(r.traderIndex, -1);
-                assert.property(r, "numOutcomes");
-                assert.isAbove(r.numOutcomes, 1);
-                assert.property(r, "tradingPeriod");
-                assert.isNumber(r.tradingPeriod);
-                assert.property(r, "tradingFee");
-                assert(abi.number(r.tradingFee) >= 0);
-                assert(abi.number(r.tradingFee) <= 1);
-                assert.property(r, "branchId");
-                assert.property(r, "numEvents");
-                assert.property(r, "cumulativeScale");
-                assert.property(r, "creationFee");
-                assert.property(r, "author");
-                assert.property(r, "endDate");
-                assert.property(r, "participants");
-                assert.isObject(r.participants);
-                assert.property(r, "outcomes");
-                assert.isArray(r.outcomes);
-                assert.isAbove(r.outcomes.length, 1);
-                assert.property(r.outcomes[0], "id");
-                assert.isNumber(r.outcomes[0].id);
-                assert.property(r.outcomes[0], "outstandingShares");
-                assert(abi.number(r.outcomes[0].outstandingShares) >= 0);
-                assert.property(r.outcomes[0], "price");
-                assert.property(r.outcomes[0], "shares");
-                assert.isObject(r.outcomes[0].shares);
-                assert.property(r, "events");
-                assert.isArray(r.events);
-                assert.isAbove(r.events.length, 0);
-                assert.isObject(r.events[0]);
-                assert.property(r.events[0], "id");
-                assert.property(r.events[0], "endDate");
-                assert.isAbove(r.events[0].endDate, 0);
-                assert.property(r.events[0], "outcome");
-                assert.isNotNull(r.events[0].outcome);
-                assert.property(r.events[0], "minValue");
-                assert.isNotNull(r.events[0].minValue);
-                assert.property(r.events[0], "maxValue");
-                assert.isNotNull(r.events[0].maxValue);
-                assert.property(r.events[0], "numOutcomes");
-                assert.isAbove(parseInt(r.events[0].numOutcomes), 1);
-            };
             var test = function (marketInfo, done) {
                 assert.isObject(marketInfo);
                 assert.isAbove(Object.keys(marketInfo).length, 0);
@@ -114,6 +131,7 @@ describe("markets.se", function () {
                     params.offset,
                     params.numMarketsToLoad,
                     function (info) {
+                        console.log(info)
                         if (info.error) return done(info);
                         test(info, done);
                     }

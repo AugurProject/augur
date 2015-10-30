@@ -701,6 +701,13 @@ module.exports = function (network) {
             signature: "ii",
             returns: "hash[]"
         },
+        getMarketInfo: {
+            to: contracts.markets,
+            method: "getMarketInfo",
+            signature: "i",
+            returns: "hash[]",
+            gas: 9999999999999
+        },
         getMarketsInfo: {
             to: contracts.markets,
             method: "getMarketsInfo",
