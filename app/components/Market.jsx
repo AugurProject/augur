@@ -71,11 +71,15 @@ var Market = React.createClass({
 
     var market = this.state.market;
 
-    // TODO move this data juggling stuff to marketeer
-    var numPoints = {
-      yes: market.priceHistory[2].length,
-      no: market.priceHistory[1].length
-    };
+    var numPoints = {yes: 0, no: 0};
+    if (market.priceHistory && market.priceHistory.length) {
+      if (market.priceHistory[2] && market.priceHistory[2].length) {
+        numPoints.yes = market.priceHistory[2].length;
+      }
+      if (market.priceHistory[1] && market.priceHistory[1].length) {
+        numPoints.no = market.priceHistory[1].length;
+      }
+    }
     var data = {
       yes: new Array(numPoints.yes),
       no: new Array(numPoints.no)
@@ -188,7 +192,7 @@ var Market = React.createClass({
           <p className='alt'>Outstanding shares: <b>{ outstandingShares }</b></p>
           <p>Fee: <b>{ tradingFee }</b></p>
           <p className='alt'>Traders: <b>{ traderCount }</b></p>
-          <p onMouseEnter={this.showFullAuthor} onMouseLeave={this.truncateAuthor}>Author: <b className={this.state.fullAuthor ? 'no-truncate author-full' : 'truncate author'}>{ author }</b></p>
+          <p onMouseEnter={this.showFullAuthor} onMouseLeave={this.truncateAuthor}>Author: <b className={this.state.fullAuthor ? 'no-truncate author-full' : 'truncate author'}>{ abi.format_address(author) }</b></p>
           <p className='alt'>Creation date: <b>{ formattedCreationDate }</b></p>
           <p>End date: <b>{ formattedDate }</b></p>
         </div>
@@ -245,9 +249,10 @@ var Comments = React.createClass({
   },
 
   render: function () {
+    var numComments = (this.props.comments) ? this.props.comments.length : 0;
     return (
       <div className="comments">
-        <h4>{ this.props.comments.length } Comments</h4>
+        <h4>{ numComments } Comments</h4>
         <div>
           <CommentForm account={ this.props.account } handle={ this.props.handle } marketId={ this.props.market.id } />
           <CommentList comments={ this.props.comments } />

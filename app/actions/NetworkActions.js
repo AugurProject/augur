@@ -87,16 +87,23 @@ var NetworkActions = {
         // use coinbase if unlocked
         if (unlocked && !unlocked.error) {
           console.log("using unlocked account:", augur.coinbase);
-          return self.dispatch(constants.config.UPDATE_ACCOUNT, {
+          self.dispatch(constants.config.UPDATE_ACCOUNT, {
             currentAccount: augur.coinbase
           });
-        }
+          self.flux.actions.asset.updateAssets();
+          self.flux.actions.report.loadEventsToReport();
+          self.flux.actions.report.loadPendingReports();
+          if (self.flux.store("config").getState().useMarketCache) {
+            self.flux.actions.market.loadMarketCache();
+          }
 
         // otherwise, no account available
-        console.log("account", augur.coinbase, "is locked");
-        self.dispatch(constants.network.UPDATE_ETHEREUM_STATUS, {
-          ethereumStatus: constants.network.ETHEREUM_STATUS_NO_ACCOUNT
-        });
+        } else {
+          console.log("account", augur.coinbase, "is locked");
+          self.dispatch(constants.network.UPDATE_ETHEREUM_STATUS, {
+            ethereumStatus: constants.network.ETHEREUM_STATUS_NO_ACCOUNT
+          });
+        }
       });
     }
 

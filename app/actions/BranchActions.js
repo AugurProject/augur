@@ -42,6 +42,14 @@ export default {
     augur.getVotePeriod(currentBranch.id, function (result) {
       if (result && !result.error) {
         var votePeriod = abi.number(result);
+
+        // if this is a new vote period, check quorum & submit reports
+        if (votePeriod > currentBranch.votePeriod) {
+          self.flux.actions.report.loadEventsToReport();
+          self.flux.actions.branch.checkQuorum();
+          self.flux.actions.report.submitQualifiedReports();
+        }
+
         var isCurrent = votePeriod < (currentPeriod - 1) ? false : true;
 
         if (!isCurrent) {
@@ -77,11 +85,9 @@ export default {
           self.dispatch(constants.branch.CHECK_QUORUM_SENT);
         },
         onSuccess: function (r) {
-          // console.log("augur.dispatch succeeded", r.callReturn);
           self.dispatch(constants.branch.CHECK_QUORUM_SUCCESS);
         },
         onFailed: function (r) {
-          // console.error("augur.dispatch failed:", r);
           self.dispatch(constants.branch.CHECK_QUORUM_SENT);
         }
       });

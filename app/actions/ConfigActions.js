@@ -50,7 +50,6 @@ var ConfigActions = {
     var self = this;
     this.flux.actions.branch.loadBranches();
     this.flux.actions.branch.setCurrentBranch();
-    this.flux.actions.asset.updateAssets();
     this.flux.actions.market.loadMarkets();
     this.flux.actions.report.loadEventsToReport();
     this.flux.actions.report.loadPendingReports();
@@ -61,37 +60,28 @@ var ConfigActions = {
 
       // listen for new blocks
       block: function (blockHash) {
-        var account = self.flux.store('config').getAccount();
-        if (account && blockHash) {
-          // console.log("new block:", blockHash);
+        if (blockHash && self.flux.store('config').getAccount()) {
           self.flux.actions.network.updateNetwork();
           self.flux.actions.asset.updateAssets();
-
-          // TODO: We can skip loading events to report
-          // if the voting period hasn't changed.
-          self.flux.actions.report.loadEventsToReport();
-          self.flux.actions.branch.checkQuorum();
-          self.flux.actions.report.submitQualifiedReports();
-
           self.flux.actions.branch.updateCurrentBranch();
         }
       },
 
       // listen for augur transactions
-      contracts: function (filtrate) {
-        if (filtrate) {
-          if (filtrate.error) {
-            return console.log("contracts filter error:", filtrate);
-          }
-          console.log("[filter] contracts:", filtrate.address);
-          self.flux.actions.asset.updateAssets();
-          if (self.flux.store("config").getState().useMarketCache) {
-            setTimeout(self.flux.actions.market.loadMarkets, 5000);
-          } else {
-            self.flux.actions.market.loadNewMarkets();
-          }
-        }
-      },
+      // contracts: function (filtrate) {
+      //   if (filtrate) {
+      //     if (filtrate.error) {
+      //       return console.log("contracts filter error:", filtrate);
+      //     }
+      //     console.log("[filter] contracts:", filtrate.address);
+      //     self.flux.actions.asset.updateAssets();
+      //     if (self.flux.store("config").getState().useMarketCache) {
+      //       setTimeout(self.flux.actions.market.loadMarkets, 5000);
+      //     } else {
+      //       self.flux.actions.market.loadMarkets();
+      //     }
+      //   }
+      // },
 
       // update market when a price change has been detected
       price: function (result) {
