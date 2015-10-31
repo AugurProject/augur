@@ -104,13 +104,15 @@ function spawn_geth(flags) {
         log(chalk.gray(" - RPC: "), chalk.cyan(options.RPC_PORT));
         geth.stdout.on("data", function (data) {
             if (options.DEBUG) {
-                process.stdout.write(chalk.cyan(data.toString()));
+                process.stdout.write(chalk.cyan(data));
             }
             geth_log.write(chalk.cyan(nodeUtil.format(data.toString())));
         });
         geth.stderr.on("data", function (data) {
-            if (options.DEBUG) {
-                process.stdout.write(chalk.yellow(data.toString()));
+            var index = data.toString().indexOf("Tx");
+            if (options.DEBUG || index > -1) {
+                if (index > -1) data = " -> " + data.toString().slice(index);
+                process.stdout.write(chalk.white.dim(data));
             }
             geth_log.write(chalk.green(nodeUtil.format(data.toString())));
         });

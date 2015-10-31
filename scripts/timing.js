@@ -15,11 +15,11 @@ var augurpath = "../src/index";
 var augur = utils.setup(require(augurpath));
 
 var DATAFILE = join(__dirname, "..", "data", "timing-getMarketsInfo.csv");
-var MAX_NUM_MARKETS;
+var MAX_NUM_MARKETS = 100;
 try {
     MAX_NUM_MARKETS = parseInt(process.argv[2]);
 } catch (ex) {
-    MAX_NUM_MARKETS = 50;
+    MAX_NUM_MARKETS = 100;
 }
 
 function createMarkets(numMarketsToCreate, callback) {
@@ -102,4 +102,4 @@ function timing(maxNumMarkets) {
     });
 }
 
-timing(MAX_NUM_MARKETS || 250);
+timing(MAX_NUM_MARKETS);

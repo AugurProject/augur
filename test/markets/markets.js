@@ -11,7 +11,6 @@ var utils = require("../../src/utilities");
 var augurpath = "../../src/index";
 var augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
 var constants = augur.constants;
-var log = console.log;
 
 var amount = "1";
 var branch_id = augur.branches.dev;
@@ -26,127 +25,154 @@ describe("markets.se", function () {
     before(function () {
         augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
     });
-    if (augur.network_id === "10101") {
-        var testMarketInfo = function (r) {
-            // console.log(JSON.stringify(r, null, 2));
-            assert.isObject(r);
-            assert.property(r, "_id");
-            assert.property(r, "network");
-            assert(r.network === "7" || r.network === "10101");
-            assert.property(r, "traderCount");
-            assert.isAbove(r.traderIndex, -1);
-            assert.property(r, "alpha");
-            assert.isNotNull(r.alpha);
-            assert.property(r, "traderIndex");
-            assert.isAbove(r.traderIndex, -1);
-            assert.property(r, "numOutcomes");
-            assert.isAbove(r.numOutcomes, 1);
-            assert.property(r, "tradingPeriod");
-            assert.isNumber(r.tradingPeriod);
-            assert.property(r, "tradingFee");
-            assert(abi.number(r.tradingFee) >= 0);
-            assert(abi.number(r.tradingFee) <= 1);
-            assert.property(r, "branchId");
-            assert.property(r, "numEvents");
-            assert.property(r, "cumulativeScale");
-            assert.property(r, "creationFee");
-            assert.property(r, "author");
-            assert.property(r, "endDate");
-            assert.property(r, "participants");
-            assert.isObject(r.participants);
-            assert.property(r, "outcomes");
-            assert.isArray(r.outcomes);
-            assert.isAbove(r.outcomes.length, 1);
-            assert.property(r.outcomes[0], "id");
-            assert.isNumber(r.outcomes[0].id);
-            assert.property(r.outcomes[0], "outstandingShares");
-            assert(abi.number(r.outcomes[0].outstandingShares) >= 0);
-            assert.property(r.outcomes[0], "price");
-            assert.property(r.outcomes[0], "shares");
-            assert.isObject(r.outcomes[0].shares);
-            assert.property(r, "events");
-            assert.isArray(r.events);
-            assert.isAbove(r.events.length, 0);
-            assert.isObject(r.events[0]);
-            assert.property(r.events[0], "id");
-            assert.property(r.events[0], "endDate");
-            assert.isAbove(r.events[0].endDate, 0);
-            assert.property(r.events[0], "outcome");
-            assert.isNotNull(r.events[0].outcome);
-            assert.property(r.events[0], "minValue");
-            assert.isNotNull(r.events[0].minValue);
-            assert.property(r.events[0], "maxValue");
-            assert.isNotNull(r.events[0].maxValue);
-            assert.property(r.events[0], "numOutcomes");
-            assert.isAbove(parseInt(r.events[0].numOutcomes), 1);
-        };
-        describe("getMarketInfo", function () {
-            it("sync", function () {
-                this.timeout(augur.constants.TIMEOUT);
-                var info = augur.getMarketInfo(market_id);
-                console.log(info)
-                if (info.error) throw info;
+    var testMarketInfo = function (r) {
+        var market = r._id;
+        assert.isObject(r);
+        assert.property(r, "_id");
+        assert.property(r, "network");
+        assert(r.network === "7" || r.network === "10101");
+        assert.property(r, "traderCount");
+        assert.isAbove(r.traderIndex, -1);
+        assert.strictEqual(parseInt(augur.getCurrentParticipantNumber(market)), r.traderCount);
+        assert.property(r, "alpha");
+        assert.isNotNull(r.alpha);
+        assert.property(r, "traderIndex");
+        assert.isAbove(r.traderIndex, -1);
+        assert.property(r, "numOutcomes");
+        assert.isAbove(r.numOutcomes, 1);
+        assert.strictEqual(parseInt(augur.getMarketNumOutcomes(market)), r.numOutcomes);
+        assert.property(r, "tradingPeriod");
+        assert.isNumber(r.tradingPeriod);
+        assert.strictEqual(parseInt(augur.getTradingPeriod(market)), r.tradingPeriod);
+        assert.property(r, "tradingFee");
+        assert(abi.number(r.tradingFee) >= 0);
+        assert(abi.number(r.tradingFee) <= 1);
+        assert.strictEqual(augur.getTradingFee(market), r.tradingFee);
+        assert.property(r, "branchId");
+        assert.strictEqual(augur.getBranchID(market), r.branchId);
+        assert.property(r, "numEvents");
+        assert.strictEqual(parseInt(augur.getNumEvents(market)), r.numEvents);
+        assert.property(r, "cumulativeScale");
+        assert.property(r, "creationFee");
+        assert.strictEqual(augur.getCreationFee(market), r.creationFee);
+        assert.property(r, "author");
+        assert.strictEqual(augur.getCreator(market), r.author);
+        assert.property(r, "endDate");
+        assert.property(r, "participants");
+        assert.isObject(r.participants);
+        assert.property(r, "outcomes");
+        assert.isArray(r.outcomes);
+        assert.isAbove(r.outcomes.length, 1);
+        for (var i = 0, len = r.outcomes.length; i < len; ++i) {
+            assert.property(r.outcomes[i], "id");
+            assert.isNumber(r.outcomes[i].id);
+            assert.property(r.outcomes[i], "outstandingShares");
+            assert(abi.number(r.outcomes[i].outstandingShares) >= 0);
+            assert.property(r.outcomes[i], "price");
+            assert.strictEqual(r.outcomes[i].price, augur.price(market, i + 1));
+            assert.property(r.outcomes[i], "shares");
+            assert.isObject(r.outcomes[i].shares);
+        }
+        assert.property(r, "events");
+        assert.isArray(r.events);
+        assert.isAbove(r.events.length, 0);
+        var marketEvents = augur.getMarketEvents(market);
+        assert.strictEqual(marketEvents.length, r.events.length);
+        for (var i = 0, len = r.events.length; i < len; ++i) {
+            assert.isObject(r.events[i]);
+            assert.property(r.events[i], "id");
+            assert.strictEqual(marketEvents[i], r.events[i].id);
+            assert.property(r.events[i], "endDate");
+            assert.isAbove(r.events[i].endDate, 0);
+            assert.property(r.events[i], "outcome");
+            assert.isNotNull(r.events[i].outcome);
+            assert.property(r.events[i], "minValue");
+            assert.isNotNull(r.events[i].minValue);
+            assert.property(r.events[i], "maxValue");
+            assert.isNotNull(r.events[i].maxValue);
+            assert.property(r.events[i], "numOutcomes");
+            assert.isAbove(parseInt(r.events[i].numOutcomes), 1);
+        }
+    };
+    describe("getMarketInfo", function () {
+        it("sync", function () {
+            this.timeout(augur.constants.TIMEOUT);
+            var info = augur.getMarketInfo(market_id);
+            if (info.error) throw info;
+            testMarketInfo(info);
+        });
+        it("async", function (done) {
+            this.timeout(augur.constants.TIMEOUT);
+            augur.getMarketInfo(market_id, function (info) {
+                if (info.error) return done(info);
                 testMarketInfo(info);
-            });
-            it("async", function (done) {
-                this.timeout(augur.constants.TIMEOUT);
-                augur.getMarketInfo(market_id, function (info) {
-                    if (info.error) return done(info);
-                    testMarketInfo(info);
-                    done();
-                });
+                done();
             });
         });
-        describe("getMarketsInfo", function () {
-            var test = function (marketInfo, done) {
-                assert.isObject(marketInfo);
-                assert.isAbove(Object.keys(marketInfo).length, 0);
-                for (var market in marketInfo) {
-                    if (!marketInfo.hasOwnProperty(market)) continue;
-                    testMarketInfo(marketInfo[market]);
-                }
-                if (done) done();
-            };
-            var params = {
-                branch: branch_id,
-                offset: 0,
-                numMarketsToLoad: 0
-            };
-            it("sync/positional", function () {
-                this.timeout(augur.constants.TIMEOUT);
-                test(augur.getMarketsInfo(
-                    params.branch,
-                    params.offset,
-                    params.numMarketsToLoad
-                ));
-            });
-            it("sync/object", function () {
-                this.timeout(augur.constants.TIMEOUT);
-                test(augur.getMarketsInfo(params));
-            });
-            it("async/positional", function (done) {
-                this.timeout(augur.constants.TIMEOUT);
-                augur.getMarketsInfo(
-                    params.branch,
-                    params.offset,
-                    params.numMarketsToLoad,
-                    function (info) {
-                        console.log(info)
-                        if (info.error) return done(info);
-                        test(info, done);
-                    }
-                );
-            });
-            it("async/object", function (done) {
-                this.timeout(augur.constants.TIMEOUT);
-                params.callback = function (info) {
+    });
+    describe("getMarketsInfo", function () {
+        var test = function (marketInfo, done) {
+            assert.isObject(marketInfo);
+            assert.isAbove(Object.keys(marketInfo).length, 0);
+            for (var market in marketInfo) {
+                if (!marketInfo.hasOwnProperty(market)) continue;
+                testMarketInfo(marketInfo[market]);
+            }
+            if (done) done();
+        };
+        var params = {
+            branch: branch_id,
+            offset: 0,
+            numMarketsToLoad: 0
+        };
+        it("sync/positional", function () {
+            this.timeout(augur.constants.TIMEOUT);
+            test(augur.getMarketsInfo(
+                params.branch,
+                params.offset,
+                params.numMarketsToLoad
+            ));
+        });
+        it("sync/object", function () {
+            this.timeout(augur.constants.TIMEOUT);
+            test(augur.getMarketsInfo(params));
+        });
+        it("async/positional", function (done) {
+            this.timeout(augur.constants.TIMEOUT);
+            augur.getMarketsInfo(
+                params.branch,
+                params.offset,
+                params.numMarketsToLoad,
+                function (info) {
                     if (info.error) return done(info);
                     test(info, done);
-                };
-                augur.getMarketsInfo(params);
+                }
+            );
+        });
+        it("async/object", function (done) {
+            this.timeout(augur.constants.TIMEOUT);
+            params.callback = function (info) {
+                if (info.error) return done(info);
+                test(info, done);
+            };
+            augur.getMarketsInfo(params);
+        });
+        it("async/object/offset", function (done) {
+            this.timeout(augur.constants.TIMEOUT);
+            var offset = 1;
+            var marketsToLoad = 2;
+            augur.getMarketsInfo({
+                branch: branch_id,
+                offset: offset,
+                numMarketsToLoad: marketsToLoad,
+                callback: function (info) {
+                    if (info.error) return done(info);
+                    assert.strictEqual(Object.keys(info).length, marketsToLoad);
+                    test(info, done);
+                }
             });
         });
-    }
+    });
     describe("getSimulatedBuy(" + market_id + ", " + outcome + ", " + amount + ")", function () {
         var test = function (r) {
             assert.strictEqual(r.length, 2);
