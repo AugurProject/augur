@@ -36,10 +36,10 @@ describe("Register", function () {
     it("register account 1: " + handle + " / " + password, function (done) {
         this.timeout(constants.TIMEOUT*4);
         var augur = utils.setup(require("../../src"), process.argv.slice(2));
-        augur.db.ipfs.get(handle, function (record) {
-            assert.isNull(record);
+        augur.db.contract.get(handle, function (record) {
+            assert.strictEqual(record.error, 99);
             augur.web.register(handle, password, function (result) {
-                if (!result || result.error) {
+                if (result && result.error) {
                     augur.web.logout();
                     return done(result);
                 }
@@ -51,8 +51,8 @@ describe("Register", function () {
                     constants.KEYSIZE*2
                 );
                 assert.strictEqual(result.address.length, 42);
-                augur.db.ipfs.get(handle, function (rec) {
-                    if (rec.error) {
+                augur.db.contract.get(handle, function (rec) {
+                    if (rec && rec.error) {
                         augur.web.logout();
                         return done(rec);
                     }
@@ -88,10 +88,10 @@ describe("Register", function () {
     it("register account 2: " + handle2 + " / " + password2, function (done) {
         this.timeout(constants.TIMEOUT*4);
         var augur = utils.setup(require("../../src"), process.argv.slice(2));
-        augur.db.ipfs.get(handle2, function (record) {
-            assert.isNull(record);
+        augur.db.contract.get(handle2, function (record) {
+            assert.strictEqual(record.error, 99);
             augur.web.register(handle2, password2, function (result) {
-                if (result.error) {
+                if (result && result.error) {
                     augur.web.logout();
                     return done(result);
                 }
@@ -103,12 +103,12 @@ describe("Register", function () {
                     constants.KEYSIZE*2
                 );
                 assert.strictEqual(result.address.length, 42);
-                augur.db.ipfs.get(handle2, function (rec) {
-                    assert.isNotNull(rec);
-                    if (rec.error) {
+                augur.db.contract.get(handle2, function (rec) {
+                    if (rec && rec.error) {
                         augur.web.logout();
                         return done(rec);
                     }
+                    assert(!rec.error);
                     assert(rec.privateKey);
                     assert(rec.iv);
                     assert(rec.salt);
@@ -144,7 +144,7 @@ describe("Register", function () {
             assert(!result.privateKey);
             assert(!result.address);
             assert(result.error);
-            augur.db.ipfs.get(handle, function (record) {
+            augur.db.contract.get(handle, function (record) {
                 assert.isNotNull(record);
                 done();
             });
@@ -158,7 +158,7 @@ describe("Register", function () {
             assert(!result.privateKey);
             assert(!result.address);
             assert(result.error);
-            augur.db.ipfs.get(handle, function (record) {
+            augur.db.contract.get(handle, function (record) {
                 assert.isNotNull(record);
                 done();
             });
@@ -356,19 +356,19 @@ describe("Transaction signing", function () {
             nonce: "00",
             gasPrice: "09184e72a000", 
             gasLimit: "2710",
-            to: "0000000000000000000000000000000000000000", 
+            to: abi.format_address("0000000000000000000000000000000000000000"),
             value: "00", 
             data: "7f7465737432000000000000000000000000000000000000000000000000000000600057"
         });
         tx.sign(privateKey);
-        var signed = "f889808609184e72a00082271094000000000000000000000000000000000000"+
-                     "000080a47f746573743200000000000000000000000000000000000000000000"+
-                     "0000000000600057";
+        var signed = "f8ba8230308c3039313834653732613030308432373130940000000000000000"+
+                     "000000000000000000000000823030b848376637343635373337343332303030"+
+                     "3030303030303030";
 
         // RLP serialization
         var serializedTx = tx.serialize().toString("hex");
         assert.strictEqual(serializedTx.slice(0, 144), signed);
-        assert.strictEqual(serializedTx.length, 278);
+        assert.strictEqual(serializedTx.length, 376);
     });
 
     // create a new contract
@@ -384,15 +384,15 @@ describe("Transaction signing", function () {
                   "600f5933ff33560f601e5960003356576000335700604158600035560f602b59"+
                   "0033560f60365960003356573360003557600035335700";
         tx.sign(privateKey);
-        var signed = "f8e380648203e88080b8977f4e616d6552656700000000000000000000000000"+
-                     "0000000000000000000000003057307f4e616d65526567000000000000000000"+
-                     "00000000000000000000000000000000573360455760415160566000396000f2"+
-                     "0036602259604556330e0f600f5933ff33560f601e5960003356576000335700"+
-                     "604158600035560f602b590033560f6036596000335657336000355760003533"+
-                     "5700";
+        var signed = "f9017b80648203e88080b9012e37663465363136643635353236353637303030"+
+                     "3030303030303030303030303030303030303030303030303030303030303030"+
+                     "3030303030303030303030303030303330353733303766346536313664363535"+
+                     "3236353637303030303030303030303030303030303030303030303030303030"+
+                     "3030303030303030303030303030303030303030303030353733333630343535"+
+                     "3736";
         var serializedTx = tx.serialize().toString("hex");
         assert.strictEqual(serializedTx.slice(0, 324), signed);
-        assert.strictEqual(serializedTx.length, 458)
+        assert.strictEqual(serializedTx.length, 764)
     });
 
     // up-front cost calculation:

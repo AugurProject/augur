@@ -55,7 +55,7 @@ module.exports = function () {
             var self = this;
             if (password && password.length > 5) {
                 augur.db.contract.get(handle, function (record) {
-                    if (!record) {
+                    if (record && record.error) {
 
                         // generate ECDSA private key and initialization vector
                         keythereum.create(null, function (plain) {
@@ -73,7 +73,7 @@ module.exports = function () {
 
                                     var mac = keythereum.getMAC(
                                         derivedKey,
-                                        new Buffer(encryptedPrivateKey, "base64")
+                                        encryptedPrivateKey
                                     );
 
                                     // encrypt private key using derived key and IV, then
@@ -131,47 +131,45 @@ module.exports = function () {
                 augur.db.contract.get(handle, function (storedInfo) {
                     if (storedInfo && !storedInfo.error) {
 
-                        var iv = new Buffer(storedInfo.iv, "base64");
-                        var salt = new Buffer(storedInfo.salt, "base64");
-
                         // derive secret key from password
-                        keythereum.deriveKey(password, salt, null, function (derivedKey) {
+                        keythereum.deriveKey(password, storedInfo.salt, null, function (derivedKey) {
                             if (derivedKey) {
 
                                 // verify that message authentication codes match
-                                var mac = new Buffer(keythereum.getMAC(
-                                    derivedKey,
-                                    new Buffer(storedInfo.privateKey, "base64")
-                                ), "hex").toString("base64");
+                                var mac = keythereum.getMAC(derivedKey, storedInfo.privateKey);
 
-                                if (mac === storedInfo.mac) {
+                                if (mac === storedInfo.mac.toString("hex")) {
                                     try {
 
                                         // decrypt stored private key using secret key
                                         var privateKey = new Buffer(keythereum.decrypt(
                                             storedInfo.privateKey,
                                             derivedKey.slice(0, 16),
-                                            iv
+                                            storedInfo.iv
                                         ), "hex");
 
                                         // while logged in, web.account object is set
+                                        var address = keythereum.privateKeyToAddress(privateKey);
                                         self.account = {
                                             handle: handle,
                                             privateKey: privateKey,
-                                            address: keythereum.privateKeyToAddress(privateKey),
-                                            nonce: storedInfo.nonce
+                                            address: abi.format_address(address)
                                         };
 
                                         if (utils.is_function(callback)) callback(self.account);
                                     
                                     // decryption failure: bad password
                                     } catch (e) {
-                                        if (utils.is_function(callback)) callback(errors.BAD_CREDENTIALS);
+                                        if (utils.is_function(callback)) {
+                                            callback(errors.BAD_CREDENTIALS);
+                                        }
                                     }
 
                                 // message authentication code mismatch
                                 } else {
-                                    if (utils.is_function(callback)) callback(errors.BAD_CREDENTIALS);
+                                    if (utils.is_function(callback)) {
+                                        callback(errors.BAD_CREDENTIALS);
+                                    }
                                 }
                             }
 
@@ -179,7 +177,9 @@ module.exports = function () {
 
                     // handle not found
                     } else {
-                        if (utils.is_function(callback)) callback(errors.BAD_CREDENTIALS);
+                        if (utils.is_function(callback)) {
+                            callback(errors.BAD_CREDENTIALS);
+                        }
                     }
 
                 }); // augur.db.contract.get

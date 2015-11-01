@@ -53,21 +53,21 @@ describe("Database", function () {
             var stored = augur.db.contract.get(handle);
             if (stored && stored.error) return done(stored);
             assert.strictEqual(handle, stored.handle);
-            assert.strictEqual(abi.hex(account.privateKey), stored.privateKey);
-            assert.strictEqual(abi.hex(account.iv), stored.iv);
-            assert.strictEqual(abi.hex(account.salt), stored.salt);
-            assert.strictEqual(abi.hex(account.mac), stored.mac);
-            assert.strictEqual(abi.hex(account.id), stored.id);
+            assert.strictEqual(abi.hex(account.privateKey), abi.hex(stored.privateKey));
+            assert.strictEqual(abi.hex(account.iv), abi.hex(stored.iv));
+            assert.strictEqual(abi.hex(account.salt), abi.hex(stored.salt));
+            assert.strictEqual(abi.hex(account.mac), abi.hex(stored.mac));
+            assert.strictEqual(abi.hex(account.id), abi.hex(stored.id));
 
             // asynchronous
             augur.db.contract.get(handle, function (storedAccount) {
                 if (storedAccount && storedAccount.error) return done(storedAccount);
                 assert.strictEqual(handle, storedAccount.handle);
-                assert.strictEqual(abi.hex(account.privateKey), storedAccount.privateKey);
-                assert.strictEqual(abi.hex(account.iv), storedAccount.iv);
-                assert.strictEqual(abi.hex(account.salt), storedAccount.salt);
-                assert.strictEqual(abi.hex(account.mac), storedAccount.mac);
-                assert.strictEqual(abi.hex(account.id), storedAccount.id);
+                assert.strictEqual(abi.hex(account.privateKey), abi.hex(storedAccount.privateKey));
+                assert.strictEqual(abi.hex(account.iv), abi.hex(storedAccount.iv));
+                assert.strictEqual(abi.hex(account.salt), abi.hex(storedAccount.salt));
+                assert.strictEqual(abi.hex(account.mac), abi.hex(storedAccount.mac));
+                assert.strictEqual(abi.hex(account.id), abi.hex(storedAccount.id));
                 done();
             });
         });

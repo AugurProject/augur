@@ -55,13 +55,26 @@ module.exports = function () {
                                         return callback(errors.DB_READ_FAILED);
                                     }
                                 }
+                                // console.log("privateKey:", new Buffer(abi.unfork(account[0]), "hex"));
+                                // console.log("iv:", new Buffer(abi.strip_0x(account[1]), "hex"));
+                                // console.log("salt:", new Buffer(abi.unfork(account[2]), "hex"));
+                                // console.log("mac:", new Buffer(abi.unfork(account[3]), "hex"));
+                                // console.log("id:", new Buffer(abi.strip_0x(account[4]), "hex"));
+                                // console.log({
+                                //     handle: label,
+                                //     privateKey: new Buffer(abi.unfork(account[0]), "hex"),
+                                //     iv: new Buffer(abi.strip_0x(account[1]), "hex"),
+                                //     salt: new Buffer(abi.unfork(account[2]), "hex"),
+                                //     mac: new Buffer(abi.unfork(account[3]), "hex"),
+                                //     id: new Buffer(abi.strip_0x(account[4]), "hex")
+                                // });
                                 return callback({
                                     handle: label,
-                                    privateKey: account[0],
-                                    iv: account[1],
-                                    salt: account[2],
-                                    mac: account[3],
-                                    id: account[4]
+                                    privateKey: new Buffer(abi.unfork(account[0]), "hex"),
+                                    iv: new Buffer(abi.strip_0x(account[1]), "hex"),
+                                    salt: new Buffer(abi.unfork(account[2]), "hex"),
+                                    mac: new Buffer(abi.unfork(account[3]), "hex"),
+                                    id: new Buffer(abi.strip_0x(account[4]), "hex")
                                 });
                             }
                             callback(errors.DB_READ_FAILED);
