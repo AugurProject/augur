@@ -21,7 +21,8 @@ var ConfigActions = {
     augur.rpc.reset();
     augur.connect();
     this.flux.actions.config.setIsHosted(true);
-    this.flux.actions.config.useMarketCache(true);
+    // this.flux.actions.config.useMarketCache(true);
+    this.flux.actions.config.useMarketCache(false);
     return augur.rpc.nodes.hosted[0];
   },
 

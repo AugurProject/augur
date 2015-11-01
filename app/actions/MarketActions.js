@@ -207,7 +207,7 @@ var MarketActions = {
         augur.getMarketsInfo({
           branch: branchId,
           offset: 0,
-          numMarketsToLoad: 0,
+          numMarketsToLoad: 25,
           callback: function (marketsInfo) {
             if (marketsInfo && !marketsInfo.error) {
               var blackmarkets = blacklist.markets[augur.network_id][branchId];
