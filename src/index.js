@@ -1182,7 +1182,6 @@ Augur.prototype.parseMarketInfo = function (rawInfo) {
             rawInfo.length - parseInt(rawInfo[index])
         ));
     }
-    console.log(info);
     return info;
 };
 Augur.prototype.getMarketInfo = function (market, callback) {
