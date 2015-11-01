@@ -379,8 +379,8 @@ function main(account, options) {
 }
 
 var option, optstring, parser, done;
-optstring = "d(debug)r(reset)g(geth)o(gospel)f(faucets)"+
-            "u:(augur)t:(contract)";
+optstring = "d(debug)r(reset)g(geth)o(gospel)f(faucets)u:(augur)t:(contract)";
+
 parser = new getopt.BasicParser(optstring, process.argv);
 
 while ( (option = parser.getopt()) !== undefined) {
