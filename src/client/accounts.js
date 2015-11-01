@@ -54,7 +54,7 @@ module.exports = function () {
         register: function (handle, password, callback, donotfund) {
             var self = this;
             if (password && password.length > 5) {
-                augur.db.ipfs.get(handle, function (record) {
+                augur.db.contract.get(handle, function (record) {
                     if (!record) {
 
                         // generate ECDSA private key and initialization vector
@@ -65,30 +65,27 @@ module.exports = function () {
                                 if (derivedKey.error) {
                                     if (utils.is_function(callback)) callback(derivedKey);
                                 } else {
-                                    var encryptedPrivateKey = keythereum.encrypt(
+                                    var encryptedPrivateKey = new Buffer(keythereum.encrypt(
                                         plain.privateKey,
                                         derivedKey.slice(0, 16),
                                         plain.iv
+                                    ), "base64").toString("hex");
+
+                                    var mac = keythereum.getMAC(
+                                        derivedKey,
+                                        new Buffer(encryptedPrivateKey, "base64")
                                     );
-                                    var mac = new Buffer(
-                                        keythereum.getMAC(
-                                            derivedKey,
-                                            new Buffer(encryptedPrivateKey, "base64")
-                                        ),
-                                        "hex"
-                                    ).toString("base64");
 
                                     // encrypt private key using derived key and IV, then
                                     // store encrypted key & IV, indexed by handle
-                                    augur.db.ipfs.put(handle, {
-                                        handle: handle,
-                                        privateKey: encryptedPrivateKey,
-                                        iv: plain.iv.toString("base64"),
-                                        salt: plain.salt.toString("base64"),
-                                        mac: mac,
-                                        id: uuid.v4()
-                                    }, function (ipfsHash) {
-                                        if (!ipfsHash || ipfsHash.error) return callback(ipfsHash);
+                                    augur.db.contract.put(handle, {
+                                        privateKey: abi.prefix_hex(encryptedPrivateKey), // 256-bit
+                                        iv: abi.prefix_hex(plain.iv.toString("hex")), // 128-bit
+                                        salt: abi.prefix_hex(plain.salt.toString("hex")), // 256-bit
+                                        mac: abi.prefix_hex(mac), // 256-bit
+                                        id: abi.prefix_hex(new Buffer(uuid.parse(uuid.v4())).toString("hex")) // 128-bit
+                                    }, function (result) {
+                                        if (!result || result.error) return callback(result);
 
                                         // set web.account object
                                         self.account = {
@@ -108,7 +105,7 @@ module.exports = function () {
                                         }
                                         self.fund(self.account, callback);
 
-                                    }); // augur.db.ipfs.put
+                                    }); // augur.db.contract.put
 
                                 }
 
@@ -119,7 +116,7 @@ module.exports = function () {
                     } else {
                         if (utils.is_function(callback)) callback(errors.HANDLE_TAKEN);
                     }
-                }); // augur.db.ipfs.get
+                }); // augur.db.contract.get
 
             } else {
                 if (utils.is_function(callback)) callback(errors.PASSWORD_TOO_SHORT);
@@ -131,7 +128,7 @@ module.exports = function () {
 
             // retrieve account info from database
             if (password && password !== "") {
-                augur.db.ipfs.get(handle, function (storedInfo) {
+                augur.db.contract.get(handle, function (storedInfo) {
                     if (storedInfo && !storedInfo.error) {
 
                         var iv = new Buffer(storedInfo.iv, "base64");
@@ -185,7 +182,7 @@ module.exports = function () {
                         if (utils.is_function(callback)) callback(errors.BAD_CREDENTIALS);
                     }
 
-                }); // augur.db.ipfs.get
+                }); // augur.db.contract.get
 
             // blank password
             } else {

@@ -18,6 +18,81 @@ module.exports = function () {
 
     return {
 
+        contract: {
+
+            put: function (label, data, callback) {
+                if (label !== null && label !== undefined && label !== '' && data) {
+                    var noop = function () {};
+                    var tx = abi.copy(augur.tx.accounts.register);
+                    tx.params = [
+                        abi.prefix_hex(utils.sha256(label)),
+                        data.privateKey,
+                        data.iv,
+                        data.salt,
+                        data.mac,
+                        data.id
+                    ];
+                    return augur.transact(tx, noop, function (res) {
+                        if (res && res.callReturn) {
+                            return callback(res.callReturn);
+                        }
+                        return callback(errors.DB_WRITE_FAILED);
+                    }, callback);
+                }
+                if (!utils.is_function(callback)) return errors.DB_WRITE_FAILED;
+                callback(errors.DB_WRITE_FAILED);
+            },
+
+            get: function (label, callback) {
+                if (label && label !== '') {
+                    var tx = abi.copy(augur.tx.accounts.getAccount);
+                    tx.params = abi.prefix_hex(utils.sha256(label));
+                    if (utils.is_function(callback)) {
+                        return augur.fire(tx, function (account) {
+                            if (account && account.length) {
+                                for (var i = 0, len = account.length; i < len; ++i) {
+                                    if (parseInt(account[i]) === 0) {
+                                        return callback(errors.DB_READ_FAILED);
+                                    }
+                                }
+                                return callback({
+                                    handle: label,
+                                    privateKey: account[0],
+                                    iv: account[1],
+                                    salt: account[2],
+                                    mac: account[3],
+                                    id: account[4]
+                                });
+                            }
+                            callback(errors.DB_READ_FAILED);
+                        });
+                    }
+                    var account = augur.fire(tx);
+                    var accountObj = {};
+                    if (account && account.length) {
+                        account.handle = label;
+                        for (var i = 0, len = account.length; i < len; ++i) {
+                            if (parseInt(account[i]) === 0) {
+                                return callback(errors.DB_READ_FAILED);
+                            }
+                        }
+                        return {
+                            handle: label,
+                            privateKey: account[0],
+                            iv: account[1],
+                            salt: account[2],
+                            mac: account[3],
+                            id: account[4]
+                        };
+                    }
+                    return errors.DB_READ_FAILED;
+                }
+                if (!utils.is_function(callback)) return errors.DB_READ_FAILED;
+                callback(errors.DB_READ_FAILED);
+            }
+
+        },
+
         ipfs: {
 
             setHash: function (name, hash, onSent, onSuccess, onFailed) {
@@ -156,7 +231,7 @@ module.exports = function () {
                     if (!callback) return errors.DB_READ_FAILED;
                     callback(errors.DB_READ_FAILED);
                 }
-            },
+            }
 
         },
 

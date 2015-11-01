@@ -26,6 +26,7 @@ describe("markets.se", function () {
         augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
     });
     var testMarketInfo = function (r) {
+        console.log(JSON.stringify(r, null, 2));
         var market = r._id;
         assert.isObject(r);
         assert.property(r, "_id");

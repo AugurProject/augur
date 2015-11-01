@@ -148,7 +148,7 @@ Augur.prototype.get_coinbase = function (callback) {
             }
         });
     } else {
-        var accounts, num_accounts, i, method;
+        var accounts, num_accounts, i, method, m;
         this.coinbase = rpc.coinbase();
         if (!this.coinbase && rpc.nodes.local) {
             accounts = rpc.accounts();
@@ -171,7 +171,14 @@ Augur.prototype.get_coinbase = function (callback) {
         if (this.coinbase && this.coinbase !== "0x") {
             for (method in this.tx) {
                 if (!this.tx.hasOwnProperty(method)) continue;
-                this.tx[method].from = this.coinbase;
+                if (!this.tx[method].method) {
+                    for (m in this.tx[method]) {
+                        if (!this.tx[method].hasOwnProperty(m)) continue;
+                        this.tx[method][m].from = this.coinbase;
+                    }
+                } else {
+                    this.tx[method].from = this.coinbase;
+                }
             }
         } else {
             return this.default_rpc();
@@ -180,13 +187,23 @@ Augur.prototype.get_coinbase = function (callback) {
 };
 
 Augur.prototype.update_contracts = function () {
-    var key, method;
+    var key, method, m;
     if (JSON.stringify(this.init_contracts) !== JSON.stringify(this.contracts)) {
         for (method in this.tx) {
             if (!this.tx.hasOwnProperty(method)) continue;
-            key = this.utils.has_value(this.init_contracts, this.tx[method].to);
-            if (key) {
-                this.tx[method].to = this.contracts[key];
+            if (!this.tx[method].method) {
+                for (m in this.tx[method]) {
+                    if (!this.tx[method].hasOwnProperty(m)) continue;
+                    key = this.utils.has_value(this.init_contracts, this.tx[method][m].to);
+                    if (key) {
+                        this.tx[method][m].to = this.contracts[key];
+                    }
+                }
+            } else {
+                key = this.utils.has_value(this.init_contracts, this.tx[method].to);
+                if (key) {
+                    this.tx[method].to = this.contracts[key];
+                }
             }
         }
     }
@@ -1165,6 +1182,7 @@ Augur.prototype.parseMarketInfo = function (rawInfo) {
             rawInfo.length - parseInt(rawInfo[index])
         ));
     }
+    console.log(info);
     return info;
 };
 Augur.prototype.getMarketInfo = function (market, callback) {

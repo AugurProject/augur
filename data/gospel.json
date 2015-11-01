@@ -16,6 +16,7 @@
     "p2pWagers": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6",
     "sendReputation": "0x35152caa07026203a1add680771afb690d872d7d",
     "transferShares": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3",
+    "accounts": "0x77ae4a8fa5c2775e618fcb40b0598f80a3b846f1",
     "branches": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd",
     "cash": "0xe4714fcbdcdba49629bc408183ef40d120700b8d",
     "events": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667",

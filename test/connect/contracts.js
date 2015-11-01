@@ -10,7 +10,6 @@ var assert = require("chai").assert;
 var rpc = require("ethrpc");
 rpc.reset();
 var contracts = require("augur-contracts")[rpc.version()];
-var log = console.log;
 
 require('it-each')({ testPerIteration: true });
 
@@ -26,9 +25,8 @@ describe("Read contracts", function () {
     var contract_list = [];
     for (var c in contracts) {
         if (!contracts.hasOwnProperty(c)) continue;
-        if (c !== "namereg") {
-            contract_list.push(c);
-        }
+        if (c === "namereg") continue;
+        contract_list.push(c);
     }
 
     it.each(
