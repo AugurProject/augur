@@ -30,27 +30,6 @@ module.exports = function (network) {
 
         },
 
-        // IPFS/IPNS name => hash lookup
-        ipfs: {
-
-            setHash: {
-                to: contracts.ipfs,
-                method: "setHash",
-                signature: "ii",
-                send: true,
-                returns: "number"
-            },
-
-            getHash: {
-                to: contracts.ipfs,
-                method: "getHash",
-                signature: "i",
-                send: false,
-                returns: "hash"
-            }
-
-        },
-
         // namereg
         namereg: {
 
@@ -714,12 +693,6 @@ module.exports = function (network) {
             method: "lsLmsr",
             signature: "i",
             returns: "unfix"
-        },
-        getMarketOutcomeInfo: {
-            to: contracts.markets,
-            method: "getMarketOutcomeInfo",
-            signature: "ii",
-            returns: "hash[]"
         },
         getMarketInfo: {
             to: contracts.markets,

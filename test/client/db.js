@@ -12,7 +12,6 @@ var constants = require("../../src/constants");
 var utils = require("../../src/utilities");
 var augurpath = "../../src/index";
 var augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
-var log = console.log;
 
 describe("Database", function () {
 
@@ -40,7 +39,7 @@ describe("Database", function () {
 
         it("save account", function (done) {
             this.timeout(augur.constants.TIMEOUT);
-            augur.db.contract.put(handle, account, function (res) {
+            augur.db.put(handle, account, function (res) {
                 if (res && res.error) return done(res);
                 assert.strictEqual(res, "1");
                 done();
@@ -50,177 +49,24 @@ describe("Database", function () {
         it("retrieve account", function (done) {
 
             // synchronous
-            var stored = augur.db.contract.get(handle);
+            var stored = augur.db.get(handle);
             if (stored && stored.error) return done(stored);
             assert.strictEqual(handle, stored.handle);
-            assert.strictEqual(abi.hex(account.privateKey), abi.hex(stored.privateKey));
-            assert.strictEqual(abi.hex(account.iv), abi.hex(stored.iv));
-            assert.strictEqual(abi.hex(account.salt), abi.hex(stored.salt));
-            assert.strictEqual(abi.hex(account.mac), abi.hex(stored.mac));
-            assert.strictEqual(abi.hex(account.id), abi.hex(stored.id));
+            assert.strictEqual(account.privateKey, abi.hex(stored.privateKey, true));
+            assert.strictEqual(account.iv, abi.hex(stored.iv, true));
+            assert.strictEqual(account.salt, abi.hex(stored.salt, true));
+            assert.strictEqual(account.mac, abi.hex(stored.mac, true));
+            assert.strictEqual(account.id, abi.hex(stored.id, true));
 
             // asynchronous
-            augur.db.contract.get(handle, function (storedAccount) {
+            augur.db.get(handle, function (storedAccount) {
                 if (storedAccount && storedAccount.error) return done(storedAccount);
                 assert.strictEqual(handle, storedAccount.handle);
-                assert.strictEqual(abi.hex(account.privateKey), abi.hex(storedAccount.privateKey));
-                assert.strictEqual(abi.hex(account.iv), abi.hex(storedAccount.iv));
-                assert.strictEqual(abi.hex(account.salt), abi.hex(storedAccount.salt));
-                assert.strictEqual(abi.hex(account.mac), abi.hex(storedAccount.mac));
-                assert.strictEqual(abi.hex(account.id), abi.hex(storedAccount.id));
-                done();
-            });
-        });
-
-    });
-
-    if (!process.env.CONTINUOUS_INTEGRATION) {
-
-        describe("IPFS", function () {
-
-            describe("set/getHash", function () {
-
-                var test = function (t) {
-                    it(t.name + ": " + t.hash, function (done) {
-                        this.timeout(augur.constants.TIMEOUT*2);
-                        augur.db.ipfs.setHash({
-                            name: t.name,
-                            hash: t.hash,
-                            onSent: function (r) {
-                                assert.property(r, "txHash");
-                                assert.property(r, "callReturn");
-                                assert.strictEqual(r.callReturn, "1");
-                            },
-                            onSuccess: function (r) {
-                                assert.property(r, "txHash");
-                                assert.property(r, "callReturn");
-                                assert.property(r, "blockHash");
-                                assert.property(r, "blockNumber");
-                                assert.isAbove(parseInt(r.blockNumber), 0);
-                                assert.strictEqual(r.from, augur.coinbase);
-                                assert.strictEqual(r.to, augur.contracts.ipfs);
-                                assert.strictEqual(parseInt(r.value), 0);
-                                assert.strictEqual(r.callReturn, "1");
-
-                                // asynchronous
-                                augur.db.ipfs.getHash(t.name, function (ipfsHash) {
-                                    if (!ipfsHash) return done("no response");
-                                    if (ipfsHash.error) return done(ipfsHash);
-                                    assert.strictEqual(ipfsHash, t.hash);
-
-                                    // synchronous
-                                    var syncIpfsHash = augur.db.ipfs.getHash(t.name);
-                                    if (!syncIpfsHash) return done("no response");
-                                    if (syncIpfsHash.error) return done(syncIpfsHash);
-                                    assert.strictEqual(syncIpfsHash, t.hash);
-
-                                    done();
-                                });
-                            },
-                            onFailed: done
-                        });
-                    });
-                };
-
-                test({
-                    name: "7",
-                    hash: "QmaUJ4XspR3XhQ4fsjmqHSkkTHYiTJigKZSPa8i4xgVuAt"
-                });
-                test({
-                    name: "10101",
-                    hash: "QmeWQshJxTpnvAq58A51KhBkEi6YGJDKRe7rssPFRnX2EX"
-                });
-                test({
-                    name: "7",
-                    hash: "Qmehkp3udWtoLzJvxNJMtCkPmSExSr7ibHy3fdwJg2Z1Ju"
-                });
-                test({
-                    name: "10101",
-                    hash: "QmQKmU43G12uAF8HfWL7e3gUgxFm1C8F7CzMVm8FiHdW2G"
-                });
-
-            });
-
-            var test_cases = [{
-                label: "oh-hi.py",
-                data: "hello world",
-                hash: "Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD"
-            }, {
-                label: "zero",
-                data: "0",
-                hash: "QmS6mcrMTFsZnT3wAptqEb8NpBPnv1H6WwZBMzEjT8SSDv"
-            }, {
-                label: "a to b",
-                data: { "a": "b" },
-                hash: "QmUi9xHYZA13QS7yHSFzaaeHzxF4MGEBSZfHfkz79rENAX"
-            }, {
-                label: "stringified a to b",
-                data: JSON.stringify({ "a": "b" }),
-                hash: "QmUi9xHYZA13QS7yHSFzaaeHzxF4MGEBSZfHfkz79rENAX"
-            }, {
-                label: account.handle,
-                data: account,
-                hash: "QmeaNZPGPupiHF8CrviZ2x2nvMBYGwDTmcGWGBh4K97Co1"
-            }];
-
-            describe("put", function () {
-                var test = function (t) {
-                    it(JSON.stringify(t.data) + " -> " + t.hash, function (done) {
-                        this.timeout(augur.constants.TIMEOUT);
-                        augur.db.ipfs.put(t.label, t.data, function (ipfsHash) {
-                            if (!ipfsHash) return done("no response");
-                            if (ipfsHash.error) return done(ipfsHash);
-                            assert.strictEqual(ipfsHash, t.hash);
-                            done();
-                        });
-                    });
-                };
-                for (var i = 0; i < test_cases.length; ++i) {
-                    test(test_cases[i]);
-                }
-            });
-
-            describe("get", function () {
-                var test = function (t) {
-                    it(t.label + " -> " + JSON.stringify(t.data), function (done) {
-                        this.timeout(augur.constants.TIMEOUT);
-                        augur.db.ipfs.get(t.label, function (data) {
-                            if (data === null || data === undefined) {
-                                return done("no response");
-                            }
-                            if (data.error) return done(data);
-                            if (data.constructor === Object) {
-                                assert.deepEqual(data, t.data);
-                            } else {
-                                assert.strictEqual(data, t.data);
-                            }
-                            done();
-                        });
-                    });
-                };
-                for (var i = 0; i < test_cases.length; ++i) {
-                    test(test_cases[i]);
-                }
-            });
-
-        });
-    }
-
-    // Firebase read and write methods
-    describe("Firebase", function () {
-
-        it("save account", function (done) {
-            augur.db.firebase.put(account.handle, account, function (url) {
-                assert.strictEqual(url, constants.FIREBASE_URL + augur.db.firebase.encode(account.handle));
-                done();
-            });
-        });
-
-        it("retrieve account", function (done) {
-            augur.db.firebase.get(account.handle, function (retrieved_account) {
-                assert.strictEqual(account.handle, retrieved_account.handle);
-                assert.strictEqual(account.privateKey, retrieved_account.privateKey);
-                assert.strictEqual(account.iv, retrieved_account.iv);
+                assert.strictEqual(account.privateKey, abi.hex(storedAccount.privateKey, true));
+                assert.strictEqual(account.iv, abi.hex(storedAccount.iv, true));
+                assert.strictEqual(account.salt, abi.hex(storedAccount.salt, true));
+                assert.strictEqual(account.mac, abi.hex(storedAccount.mac, true));
+                assert.strictEqual(account.id, abi.hex(storedAccount.id, true));
                 done();
             });
         });

@@ -36,7 +36,7 @@ describe("Register", function () {
     it("register account 1: " + handle + " / " + password, function (done) {
         this.timeout(constants.TIMEOUT*4);
         var augur = utils.setup(require("../../src"), process.argv.slice(2));
-        augur.db.contract.get(handle, function (record) {
+        augur.db.get(handle, function (record) {
             assert.strictEqual(record.error, 99);
             augur.web.register(handle, password, function (result) {
                 if (result && result.error) {
@@ -51,7 +51,7 @@ describe("Register", function () {
                     constants.KEYSIZE*2
                 );
                 assert.strictEqual(result.address.length, 42);
-                augur.db.contract.get(handle, function (rec) {
+                augur.db.get(handle, function (rec) {
                     if (rec && rec.error) {
                         augur.web.logout();
                         return done(rec);
@@ -88,7 +88,7 @@ describe("Register", function () {
     it("register account 2: " + handle2 + " / " + password2, function (done) {
         this.timeout(constants.TIMEOUT*4);
         var augur = utils.setup(require("../../src"), process.argv.slice(2));
-        augur.db.contract.get(handle2, function (record) {
+        augur.db.get(handle2, function (record) {
             assert.strictEqual(record.error, 99);
             augur.web.register(handle2, password2, function (result) {
                 if (result && result.error) {
@@ -103,7 +103,7 @@ describe("Register", function () {
                     constants.KEYSIZE*2
                 );
                 assert.strictEqual(result.address.length, 42);
-                augur.db.contract.get(handle2, function (rec) {
+                augur.db.get(handle2, function (rec) {
                     if (rec && rec.error) {
                         augur.web.logout();
                         return done(rec);
@@ -144,7 +144,7 @@ describe("Register", function () {
             assert(!result.privateKey);
             assert(!result.address);
             assert(result.error);
-            augur.db.contract.get(handle, function (record) {
+            augur.db.get(handle, function (record) {
                 assert.isNotNull(record);
                 done();
             });
@@ -158,7 +158,7 @@ describe("Register", function () {
             assert(!result.privateKey);
             assert(!result.address);
             assert(result.error);
-            augur.db.contract.get(handle, function (record) {
+            augur.db.get(handle, function (record) {
                 assert.isNotNull(record);
                 done();
             });
@@ -442,7 +442,7 @@ describe("Contract methods", function () {
 
         describe("Set transaction nonce", function () {
 
-            it("high nonce", function (done) {
+            it("duplicate transaction: invoke reputationFaucet twice", function (done) {
                 this.timeout(constants.TIMEOUT*2);
                 var augur = utils.setup(require("../../src"), process.argv.slice(2));
                 augur.web.login(handle, password, function (user) {
@@ -454,111 +454,6 @@ describe("Contract methods", function () {
                         user.address,
                         augur.web.account.address
                     );
-                    augur.rpc.txCount(user.address, function (txCount) {
-                        augur.web.account.nonce = "0x1010101";
-                        augur.reputationFaucet({
-                            branch: augur.branches.dev,
-                            onSent: function (res) {
-                                assert.property(res, "txHash");
-                                assert.property(res, "callReturn");
-                                assert.strictEqual(res.callReturn, "1");
-                            },
-                            onSuccess: function (res) {
-                                assert.property(res, "txHash");
-                                assert.property(res, "callReturn");
-                                assert.property(res, "blockHash");
-                                assert.property(res, "blockNumber");
-                                assert.isAbove(parseInt(res.blockNumber), 0);
-                                assert.strictEqual(res.from, user.address);
-                                assert.strictEqual(res.to, augur.contracts.faucets);
-                                assert.strictEqual(Number(res.value), 0);
-                                done();
-                            },
-                            onFailed: function (res) {
-                                assert.property(res, "error");
-                                assert.property(res, "message");
-                                assert.deepEqual(res, augur.errors.DUPLICATE_TRANSACTION);
-                                done(res);
-                            }
-                        });
-                    });
-                });
-            });
-
-            it("duplicate transaction / high nonce: invoke reputationFaucet twice", function (done) {
-                this.timeout(constants.TIMEOUT*2);
-                var augur = utils.setup(require("../../src"), process.argv.slice(2));
-                augur.web.login(handle, password, function (user) {
-                    if (user.error) {
-                        augur.web.logout();
-                        return done(user);
-                    }
-                    assert.strictEqual(
-                        user.address,
-                        augur.web.account.address
-                    );
-                    augur.web.account.nonce = "0x1010101";
-                    var count = 0;
-                    augur.reputationFaucet({
-                        branch: augur.branches.dev,
-                        onSent: function (r) {
-                            assert.property(r, "txHash");
-                            assert.property(r, "callReturn");
-                            assert.strictEqual(r.callReturn, "1");
-                        },
-                        onSuccess: function (r) {
-                            assert.property(r, "txHash");
-                            assert.property(r, "callReturn");
-                            assert.property(r, "blockHash");
-                            assert.property(r, "blockNumber");
-                            assert.isAbove(parseInt(r.blockNumber), 0);
-                            assert.strictEqual(r.from, user.address);
-                            assert.strictEqual(r.to, augur.contracts.faucets);
-                            assert.strictEqual(Number(r.value), 0);
-                            if (++count === 2) done();
-                        },
-                        onFailed: function (res) {
-                            done(res);
-                        }
-                    });
-                    augur.reputationFaucet({
-                        branch: augur.branches.dev,
-                        onSent: function (r) {
-                            assert.property(r, "txHash");
-                            assert.property(r, "callReturn");
-                            assert.strictEqual(r.callReturn, "1");
-                        },
-                        onSuccess: function (r) {
-                            assert.property(r, "txHash");
-                            assert.property(r, "callReturn");
-                            assert.property(r, "blockHash");
-                            assert.property(r, "blockNumber");
-                            assert.isAbove(parseInt(r.blockNumber), 0);
-                            assert.strictEqual(r.from, user.address);
-                            assert.strictEqual(r.to, augur.contracts.faucets);
-                            assert.strictEqual(Number(r.value), 0);
-                            if (++count === 2) done();
-                        },
-                        onFailed: function (res) {
-                            done(res);
-                        }
-                    });
-                });
-            });
-
-            it("duplicate transaction / low nonce: invoke reputationFaucet twice", function (done) {
-                this.timeout(constants.TIMEOUT*2);
-                var augur = utils.setup(require("../../src"), process.argv.slice(2));
-                augur.web.login(handle, password, function (user) {
-                    if (user.error) {
-                        augur.web.logout();
-                        return done(user);
-                    }
-                    assert.strictEqual(
-                        user.address,
-                        augur.web.account.address
-                    );
-                    augur.web.account.nonce = "0x1";
                     var count = 0;
                     augur.reputationFaucet({
                         branch: augur.branches.dev,

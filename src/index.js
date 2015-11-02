@@ -1058,33 +1058,6 @@ Augur.prototype.lsLmsr = function (market, callback) {
     tx.params = market;
     return this.fire(tx, callback);
 };
-Augur.prototype.getMarketOutcomeInfo = function (market, outcome, callback) {
-    var self = this;
-    var parse_info = function (info) {
-        var i, len;
-        if (info && info.length) {
-            len = info.length;
-            info[0] = abi.unfix(info[0], "string");
-            info[1] = abi.unfix(info[1], "string");
-            info[2] = abi.unfix(info[2], "string");
-            info[3] = abi.bignum(info[3]).toFixed();
-            info[4] = abi.bignum(info[4]).toFixed();
-            for (i = 5; i < len; ++i) {
-                info[i] = abi.bignum(info[i]).toFixed();
-            }
-        }
-        return info;
-    };
-    var tx = this.utils.copy(this.tx.getMarketOutcomeInfo);
-    tx.params = [market, outcome];
-    if (callback) {
-        this.fire(tx, function (info) {
-            callback(parse_info(info));
-        });
-    } else {
-        return parse_info(this.fire(tx));
-    }
-};
 Augur.prototype.parseMarketInfo = function (rawInfo) {
     var TRADER_FIELDS = 3;
     var EVENTS_FIELDS = 6;
@@ -1769,7 +1742,7 @@ Augur.prototype.getPriceHistory = function (branch, cb) {
     });
 };
 
-Augur.prototype.getMarketPriceHistory = function (market, outcome, cb) {
+Augur.prototype.getOutcomePriceHistory = function (market, outcome, cb) {
     if (!market || !outcome) return;
     var filter = {
         fromBlock: "0x1",
@@ -1793,6 +1766,52 @@ Augur.prototype.getMarketPriceHistory = function (market, outcome, cb) {
         }
         if (logs.error) throw logs;
         return this.filters.search_price_logs(logs, market, outcome);
+    }
+};
+
+Augur.prototype.getMarketPriceHistory = function (market, cb) {
+    if (market) {
+        var filter = {
+            fromBlock: "0x1",
+            toBlock: "latest",
+            address: this.contracts.buyAndSellShares,
+            topics: ["updatePrice"]
+        };
+        if (this.utils.is_function(cb)) {
+            var self = this;
+            this.filters.eth_getLogs(filter, function (logs) {
+                if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
+                    return cb(null);
+                }
+                if (logs.error) return cb(logs);
+                var priceHistory = {};
+                var outcomes = [1, 2]; // TODO don't hardcode
+                for (var j = 0, n = outcomes.length; j < n; ++j) {
+                    priceHistory[outcomes[j]] = self.filters.search_price_logs(
+                        logs,
+                        market,
+                        outcomes[j]
+                    );
+                }
+                cb(priceHistory);
+            });
+        } else {
+            var logs = this.filters.eth_getLogs(filter);
+            if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
+                return cb(null);
+            }
+            if (logs.error) throw logs;
+            var priceHistory = {};
+            var outcomes = [1, 2]; // TODO don't hardcode
+            for (var j = 0, n = outcomes.length; j < n; ++j) {
+                priceHistory[outcomes[j]] = this.filters.search_price_logs(
+                    logs,
+                    market,
+                    outcomes[j]
+                );
+            }
+            return priceHistory;
+        }
     }
 };
 

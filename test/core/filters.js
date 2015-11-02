@@ -105,6 +105,156 @@ function createMarket(done, augur) {
     }); // createEvent
 }
 
+describe("Creation blocks", function () {
+
+    it("getCreationBlocks(" + branch + ")", function (done) {
+        this.timeout(constants.TIMEOUT);
+        augur.getCreationBlocks(branch, function (blocks) {
+            assert.isObject(blocks);
+            assert.property(blocks, market_id);
+            assert.isNumber(blocks[market_id]);
+            assert.isAbove(blocks[market_id], 0);
+            done();
+        });
+    });
+
+    it("getMarketCreationBlock(" + market_id + ")", function (done) {
+        this.timeout(constants.TIMEOUT);
+        augur.getMarketCreationBlock(market_id, function (blockNumber) {
+            assert.isNumber(blockNumber);
+            assert.isAbove(blockNumber, 0);
+            done();
+        });
+    });
+
+});
+
+describe("Price history", function () {
+
+    before(function (done) {
+        this.timeout(constants.TIMEOUT);
+        var augur = utils.setup(require("../../src"), process.argv.slice(2));
+        augur.buyShares({
+            branchId: branch,
+            marketId: market_id,
+            outcome: outcome,
+            amount: amount,
+            onSent: function (r) {
+                assert.property(r, "txHash");
+                assert.property(r, "callReturn");
+            },
+            onSuccess: function (r) {
+                assert.property(r, "txHash");
+                assert.property(r, "callReturn");
+                assert.property(r, "blockHash");
+                assert.property(r, "blockNumber");
+                assert.isAbove(parseInt(r.blockNumber), 0);
+                assert.strictEqual(r.from, augur.coinbase);
+                assert.strictEqual(r.to, augur.contracts.buyAndSellShares);
+                assert.strictEqual(parseInt(r.value), 0);
+                done();
+            },
+            onFailed: done
+        });
+    });
+
+    it("getPriceHistory(" + branch + ")", function (done) {
+        this.timeout(constants.TIMEOUT);
+        augur.getPriceHistory(branch, function (priceHistory) {
+            if (priceHistory.error) done(priceHistory);
+            assert.isObject(priceHistory);
+            if (!process.env.CONTINUOUS_INTEGRATION) {
+                assert.property(priceHistory, market_id);
+                assert.property(priceHistory[market_id], outcome);
+                assert.isArray(priceHistory[market_id][outcome]);
+                assert.isAbove(priceHistory[market_id][outcome].length, 0);
+                assert.property(priceHistory[market_id][outcome][0], "price");
+                assert.property(priceHistory[market_id][outcome][0], "cost");
+                assert.property(priceHistory[market_id][outcome][0], "blockNumber");
+                assert.property(priceHistory[market_id][outcome][0], "market");
+                assert.property(priceHistory[market_id][outcome][0], "user");
+                assert.isAbove(priceHistory[market_id][outcome][0].market.length, 65);
+                assert.strictEqual(priceHistory[market_id][outcome][0].user.length, 42);
+            }
+            done();
+        });
+    });
+
+    it("[async] getMarketPriceHistory(" + market_id + ")", function (done) {
+        this.timeout(constants.TIMEOUT);
+        augur.getMarketPriceHistory(market_id, function (priceHistory) {
+            assert.isObject(priceHistory);
+            for (var k in priceHistory) {
+                if (!priceHistory.hasOwnProperty(k)) continue;
+                var logs = priceHistory[k];
+                assert.isArray(logs);
+                if (k === outcome) {
+                    assert.property(logs, "length");
+                    assert.isAbove(logs.length, 0);
+                    assert.property(logs[0], "price");
+                    assert.property(logs[0], "blockNumber");
+                    assert.property(logs[0], "market");
+                    assert.property(logs[0], "user");
+                    assert.isAbove(logs[0].market.length, 65);
+                    assert.strictEqual(logs[0].user.length, 42);
+                }
+            }
+            done();
+        });
+    });
+
+    it("[sync] getMarketPriceHistory(" + market_id + ")", function () {
+        var priceHistory = augur.getMarketPriceHistory(market_id);
+        assert.isObject(priceHistory);
+        for (var k in priceHistory) {
+            if (!priceHistory.hasOwnProperty(k)) continue;
+            var logs = priceHistory[k];
+            assert.isArray(logs);
+            if (k === outcome) {
+                assert.property(logs, "length");
+                assert.isAbove(logs.length, 0);
+                assert.property(logs[0], "price");
+                assert.property(logs[0], "blockNumber");
+                assert.property(logs[0], "market");
+                assert.property(logs[0], "user");
+                assert.isAbove(logs[0].market.length, 65);
+                assert.strictEqual(logs[0].user.length, 42);
+            }
+        }
+    });
+
+    it("[async] getOutcomePriceHistory(" + market_id + "," + outcome + ")", function (done) {
+        this.timeout(constants.TIMEOUT);
+        augur.getOutcomePriceHistory(market_id, outcome, function (logs) {
+            assert.isArray(logs);
+            assert.property(logs, "length");
+            assert.isAbove(logs.length, 0);
+            assert.property(logs[0], "price");
+            assert.property(logs[0], "blockNumber");
+            assert.property(logs[0], "market");
+            assert.property(logs[0], "user");
+            assert.isAbove(logs[0].market.length, 65);
+            assert.strictEqual(logs[0].user.length, 42);
+            done();
+        });
+    });
+
+    it("[sync] getOutcomePriceHistory(" + market_id + "," + outcome + ")", function () {
+        this.timeout(constants.TIMEOUT);
+        var logs = augur.getOutcomePriceHistory(market_id, outcome);
+        assert.isArray(logs);
+        assert.property(logs, "length");
+        assert.isAbove(logs.length, 0);
+        assert.property(logs[0], "price");
+        assert.property(logs[0], "blockNumber");
+        assert.property(logs[0], "market");
+        assert.property(logs[0], "user");
+        assert.isAbove(logs[0].market.length, 65);
+        assert.strictEqual(logs[0].user.length, 42);
+    });
+
+});
+
 if (!process.env.CONTINUOUS_INTEGRATION) {
 
     describe("Price listener", function () {
@@ -239,116 +389,6 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
         });
 
     });
-}
-
-describe("Creation blocks", function () {
-
-    it("getCreationBlocks(" + branch + ")", function (done) {
-        this.timeout(constants.TIMEOUT);
-        augur.getCreationBlocks(branch, function (blocks) {
-            assert.isObject(blocks);
-            assert.property(blocks, market_id);
-            assert.isNumber(blocks[market_id]);
-            assert.isAbove(blocks[market_id], 0);
-            done();
-        });
-    });
-
-    it("getMarketCreationBlock(" + market_id + ")", function (done) {
-        this.timeout(constants.TIMEOUT);
-        augur.getMarketCreationBlock(market_id, function (blockNumber) {
-            assert.isNumber(blockNumber);
-            assert.isAbove(blockNumber, 0);
-            done();
-        });
-    });
-
-});
-
-describe("Price history", function () {
-
-    it("getPriceHistory(" + branch + ")", function (done) {
-        this.timeout(constants.TIMEOUT);
-        augur.getPriceHistory(branch, function (priceHistory) {
-            if (priceHistory.error) done(priceHistory);
-            assert.isObject(priceHistory);
-            if (!process.env.CONTINUOUS_INTEGRATION) {
-                assert.property(priceHistory, market_id);
-                assert.property(priceHistory[market_id], outcome);
-                assert.isArray(priceHistory[market_id][outcome]);
-                assert.isAbove(priceHistory[market_id][outcome].length, 0);
-                assert.property(priceHistory[market_id][outcome][0], "price");
-                assert.property(priceHistory[market_id][outcome][0], "cost");
-                assert.property(priceHistory[market_id][outcome][0], "blockNumber");
-                assert.property(priceHistory[market_id][outcome][0], "market");
-                assert.property(priceHistory[market_id][outcome][0], "user");
-                assert.isAbove(priceHistory[market_id][outcome][0].market.length, 65);
-                assert.strictEqual(priceHistory[market_id][outcome][0].user.length, 42);
-            }
-            done();
-        });
-    });
-
-    if (!process.env.CONTINUOUS_INTEGRATION) {
-
-        it("[async] getMarketPriceHistory(" + market_id + ")", function (done) {
-            this.timeout(constants.TIMEOUT*4);
-            augur.buyShares({
-                branchId: branch,
-                marketId: market_id,
-                outcome: outcome,
-                amount: amount,
-                onSent: function (r) {
-                    assert.property(r, "txHash");
-                    assert.property(r, "callReturn");
-                },
-                onSuccess: function (r) {
-                    assert.property(r, "txHash");
-                    assert.property(r, "callReturn");
-                    assert.property(r, "blockHash");
-                    assert.property(r, "blockNumber");
-                    assert.isAbove(parseInt(r.blockNumber), 0);
-                    assert.strictEqual(r.from, augur.coinbase);
-                    assert.strictEqual(r.to, augur.contracts.buyAndSellShares);
-                    assert.strictEqual(parseInt(r.value), 0);
-                    augur.getMarketPriceHistory(market_id, outcome, function (logs) {
-                        assert.isArray(logs);
-                        assert.property(logs, "length");
-                        assert.isAbove(logs.length, 0);
-                        assert.property(logs[0], "price");
-                        assert.property(logs[0], "blockNumber");
-                        assert.property(logs[0], "market");
-                        assert.property(logs[0], "user");
-                        assert.isAbove(logs[0].market.length, 65);
-                        assert.strictEqual(logs[0].user.length, 42);
-                        done();
-                    });
-                },
-                onFailed: function (r) {
-                    done(r);
-                }
-            });
-        });
-
-        it("[sync] getMarketPriceHistory(" + market_id + ")", function () {
-            this.timeout(constants.TIMEOUT);
-            var logs = augur.getMarketPriceHistory(market_id, outcome);
-            assert.isArray(logs);
-            assert.property(logs, "length");
-            assert.isAbove(logs.length, 0);
-            assert.property(logs[0], "price");
-            assert.property(logs[0], "blockNumber");
-            assert.property(logs[0], "market");
-            assert.property(logs[0], "user");
-            assert.isAbove(logs[0].market.length, 65);
-            assert.strictEqual(logs[0].user.length, 42);
-        });
-
-    }
-
-});
-
-if (!process.env.CONTINUOUS_INTEGRATION) {
 
     describe("listen/ignore", function () {
 

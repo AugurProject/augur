@@ -12,7 +12,6 @@ var abi = require("augur-abi");
 var errors = require("../errors");
 var constants = require("../constants");
 var utils = require("../utilities");
-var ethrpc = require("ethrpc");
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
@@ -54,7 +53,7 @@ module.exports = function () {
         register: function (handle, password, callback, donotfund) {
             var self = this;
             if (password && password.length > 5) {
-                augur.db.contract.get(handle, function (record) {
+                augur.db.get(handle, function (record) {
                     if (record && record.error) {
 
                         // generate ECDSA private key and initialization vector
@@ -78,7 +77,7 @@ module.exports = function () {
 
                                     // encrypt private key using derived key and IV, then
                                     // store encrypted key & IV, indexed by handle
-                                    augur.db.contract.put(handle, {
+                                    augur.db.put(handle, {
                                         privateKey: abi.prefix_hex(encryptedPrivateKey), // 256-bit
                                         iv: abi.prefix_hex(plain.iv.toString("hex")), // 128-bit
                                         salt: abi.prefix_hex(plain.salt.toString("hex")), // 256-bit
@@ -105,7 +104,7 @@ module.exports = function () {
                                         }
                                         self.fund(self.account, callback);
 
-                                    }); // augur.db.contract.put
+                                    }); // augur.db.put
 
                                 }
 
@@ -116,7 +115,7 @@ module.exports = function () {
                     } else {
                         if (utils.is_function(callback)) callback(errors.HANDLE_TAKEN);
                     }
-                }); // augur.db.contract.get
+                }); // augur.db.get
 
             } else {
                 if (utils.is_function(callback)) callback(errors.PASSWORD_TOO_SHORT);
@@ -128,7 +127,7 @@ module.exports = function () {
 
             // retrieve account info from database
             if (password && password !== "") {
-                augur.db.contract.get(handle, function (storedInfo) {
+                augur.db.get(handle, function (storedInfo) {
                     if (storedInfo && !storedInfo.error) {
 
                         // derive secret key from password
@@ -182,7 +181,7 @@ module.exports = function () {
                         }
                     }
 
-                }); // augur.db.contract.get
+                }); // augur.db.get
 
             // blank password
             } else {

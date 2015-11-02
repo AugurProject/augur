@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "0.10.6",
+  "version": "0.10.7",
   "description": "Augur JavaScript API",
   "main": "src/index.js",
   "scripts": {
@@ -23,12 +23,9 @@
     "ethereumjs-tx": "^0.6.7",
     "ethereumjs-util": "^1.5.1",
     "ethrpc": "^0.3.7",
-    "firebase": "^2.2.7",
-    "ipfs-api": "^2.4.1",
     "js-sha3": "^0.3.1",
     "keythereum": "^0.1.9",
     "moment": "^2.10.3",
-    "multi-hash": "^0.1.1",
     "node-uuid": "^1.4.3",
     "validator": "^4.0.2"
   },
@@ -46,7 +43,6 @@
   },
   "homepage": "https://github.com/AugurProject/augur.js",
   "devDependencies": {
-    "async-require": "^1.1.0",
     "browserify": "^10.2.6",
     "chai": "^3.0.0",
     "coveralls": "^2.11.3",
@@ -56,7 +52,6 @@
     "it-each": "^0.3.1",
     "jshint": "^2.8.0",
     "lodash": "^3.8.0",
-    "longjohn": "^0.2.7",
     "mocha": "^2.2.4",
     "mocha-lcov-reporter": "0.0.2",
     "posix-getopt": "^1.1.0",
