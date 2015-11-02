@@ -6,6 +6,7 @@ env:
   - CXX=g++-4.8
 
 node_js:
+  - "4.1"
   - "4.0"
   - "0.12"
   - "0.11"
@@ -22,4 +23,4 @@ before_script:
   - npm install
 
 script:
-  - travis_wait travis_retry istanbul cover ./node_modules/mocha/bin/_mocha test/connect test/core test/markets test/client --report lcovonly && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
+  - istanbul cover ./node_modules/mocha/bin/_mocha test/connect test/core test/markets test/client --report lcovonly && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
