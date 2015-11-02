@@ -67,7 +67,7 @@ module.exports = function () {
                     account.handle = label;
                     for (var i = 0, len = account.length; i < len; ++i) {
                         if (parseInt(account[i]) === 0) {
-                            return callback(errors.DB_READ_FAILED);
+                            return errors.DB_READ_FAILED;
                         }
                     }
                     return {
