@@ -3,7 +3,6 @@ var constants = require('../libs/constants');
 
 var state = {
   host: "http://127.0.0.1:8545",
-  // host: "http://eth1.augur.net",
   currentAccount: null,
   privateKey: null,
   handle: null,

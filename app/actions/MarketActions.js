@@ -10,9 +10,7 @@ var MarketActions = {
   loadComments: function (market) {
     var self = this;
     if (market && market.id) {
-      console.log("checking for new comments...");
       augur.comments.getMarketComments(abi.hex(market.id), function (comments) {
-        console.log("got comments:", comments);
         if (comments && comments.constructor === Array && comments.length) {
           market.comments = comments;
           self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, { market: market });
@@ -204,10 +202,11 @@ var MarketActions = {
     // if we're on a local node, get data directly from geth via RPC
     augur.getCreationBlocks(branchId, function (creationBlock) {
       augur.getPriceHistory(branchId, function (priceHistory) {
+        // TODO: use offset/numMarketsToLoad to load 1 page at a time
         augur.getMarketsInfo({
           branch: branchId,
           offset: 0,
-          numMarketsToLoad: 25,
+          numMarketsToLoad: 0,
           callback: function (marketsInfo) {
             if (marketsInfo && !marketsInfo.error) {
               var blackmarkets = blacklist.markets[augur.network_id][branchId];
