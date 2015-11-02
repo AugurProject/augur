@@ -1141,7 +1141,7 @@ Augur.prototype.parseMarketInfo = function (rawInfo) {
             }
             for (var j = 0; j < info.traderCount; ++j) {
                 addr = abi.format_address(rawInfo[j + 12]);
-                info.outcomes[i].shares[addr] = abi.unfix(rawInfo[j + 13], "string");
+                info.outcomes[i].shares[addr] = abi.unfix(rawInfo[i + j + 13], "string");
             }
         }
         index += info.numOutcomes*OUTCOMES_FIELDS;
