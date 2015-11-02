@@ -246,12 +246,12 @@ var MarketActions = {
     var branchId = this.flux.store('branch').getCurrentBranch().id;
     marketId = abi.hex(marketId);
     augur.getMarketCreationBlock(marketId, function (creationBlock) {
-      // augur.getMarketPriceHistory(marketId, function (priceHistory) {
+      augur.getMarketPriceHistory(marketId, function (priceHistory) {
         augur.getMarketInfo(marketId, function (marketInfo) {
           if (marketInfo && !marketInfo.error) {
             var markets = self.flux.store('market').getState().markets;
             if (creationBlock) marketInfo.creationBlock = creationBlock;
-            // if (priceHistory) marketInfo.priceHistory = priceHistory;
+            if (priceHistory) marketInfo.priceHistory = priceHistory;
             self.flux.actions.market.parseMarketInfo(marketInfo, function (parsedInfo) {
               markets[parsedInfo.id] = parsedInfo;
 
@@ -266,7 +266,7 @@ var MarketActions = {
             console.error(marketInfo);
           }
         });
-      // });
+      });
     });
   },
 
