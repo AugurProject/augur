@@ -16,27 +16,25 @@ GLOBAL.EthUtil = require("ethereumjs-util");
 GLOBAL.web3 = require("web3");
 GLOBAL.contracts = require("augur-contracts");
 GLOBAL.abi = require("augur-abi");
-GLOBAL.augur = require("./src");
 GLOBAL.constants = require("./src/constants");
 GLOBAL.utils = require("./src/utilities");
 GLOBAL.Tx = require("./src/tx");
-GLOBAL.log = console.log;
+GLOBAL.augur = (GLOBAL.reload = function () {
+    return utils.setup(utils.reset("./src/index"), process.argv.slice(2));
+})();
 GLOBAL.b = augur.branches.dev;
 GLOBAL.ballot = [ 2, 1.5, 1.5, 1, 1.5, 1.5, 1 ];
+GLOBAL.log = console.log;
 
 longjohn.async_trace_limit = 25;
 longjohn.empty_frame = "";
-
-augur.bignumbers = false;
-augur.connect("http://127.0.0.1:8545");
 
 web3.setProvider(new web3.providers.HttpProvider("http://127.0.0.1:8545"));
 
 GLOBAL.accounts = utils.get_test_accounts(augur, constants.MAX_TEST_ACCOUNTS);
 GLOBAL.c = augur.coinbase;
-GLOBAL.web = augur.web;
 
-GLOBAL.balance = function (account, branch) {
+GLOBAL.balances = (GLOBAL.balance = function (account, branch) {
     account = account || augur.coinbase;
     var balances = {
         cash: augur.getCashBalance(account),
@@ -45,7 +43,7 @@ GLOBAL.balance = function (account, branch) {
     };
     log(balances);
     return balances;
-}
+})();
 
 GLOBAL.gospel = function () {
     var gospel_file = path.join(__dirname, "data", "gospel.json");
@@ -54,8 +52,6 @@ GLOBAL.gospel = function () {
     augur.connect();
     return balance();
 };
-
-GLOBAL.balances = balance();
 if (balances.cash === undefined && balances.reputation === undefined) {
     GLOBAL.balances = gospel();
 }
@@ -65,7 +61,7 @@ log("Cash:       " + chalk.green(balances.cash));
 log("Reputation: " + chalk.green(balances.reputation));
 log("Ether:      " + chalk.green(balances.ether));
 
-GLOBAL.reporting = function (branch) {
+var reportingInfo = (GLOBAL.reporting = function (branch) {
     var info = {
         vote_period: augur.getVotePeriod(b),
         current_period: augur.getCurrentPeriod(b),
@@ -73,9 +69,7 @@ GLOBAL.reporting = function (branch) {
     };
     info.num_events = augur.getNumberEvents(b, info.vote_period);
     return info;
-};
-
-var reportingInfo = reporting(b);
+})(b);
 
 log(chalk.cyan("Vote period"), chalk.green(reportingInfo.vote_period) + chalk.cyan(":"));
 log("Current period:     ", chalk.green(reportingInfo.current_period));

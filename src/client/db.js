@@ -22,13 +22,16 @@ module.exports = function () {
                 tx.params = [
                     abi.prefix_hex(utils.sha256(label)),
                     data.privateKey,
-                    data.iv,
+                    abi.pad_left(data.iv, 64, true),
                     data.salt,
                     data.mac,
-                    data.id
+                    abi.pad_left(data.id, 64, true)
                 ];
                 return augur.transact(tx, noop, function (res) {
                     if (res && res.callReturn) {
+                        if (res.callReturn === "0") {
+                            return callback(errors.DB_WRITE_FAILED);
+                        }
                         return callback(res.callReturn);
                     }
                     return callback(errors.DB_WRITE_FAILED);
@@ -53,18 +56,21 @@ module.exports = function () {
                             return callback({
                                 handle: label,
                                 privateKey: new Buffer(abi.unfork(account[0]), "hex"),
-                                iv: new Buffer(abi.strip_0x(account[1]), "hex"),
+                                iv: new Buffer(abi.pad_left(account[1], 32), "hex"),
                                 salt: new Buffer(abi.unfork(account[2]), "hex"),
                                 mac: new Buffer(abi.unfork(account[3]), "hex"),
-                                id: new Buffer(abi.strip_0x(account[4]), "hex")
+                                id: new Buffer(abi.pad_left(account[4], 32), "hex")
                             });
                         }
-                        callback(errors.DB_READ_FAILED);
+                        var err = abi.copy(errors.DB_READ_FAILED);
+                        if (account && account.error && account.message) {
+                            err.message += " [" + account.error + ": " + account.message + "]";
+                        }
+                        callback(err);
                     });
                 }
                 var account = augur.fire(tx);
                 if (account && account.length) {
-                    account.handle = label;
                     for (var i = 0, len = account.length; i < len; ++i) {
                         if (parseInt(account[i]) === 0) {
                             return errors.DB_READ_FAILED;
@@ -73,10 +79,10 @@ module.exports = function () {
                     return {
                         handle: label,
                         privateKey: new Buffer(abi.unfork(account[0]), "hex"),
-                        iv: new Buffer(abi.strip_0x(account[1]), "hex"),
+                        iv: new Buffer(abi.pad_left(account[1], 32), "hex"),
                         salt: new Buffer(abi.unfork(account[2]), "hex"),
                         mac: new Buffer(abi.unfork(account[3]), "hex"),
-                        id: new Buffer(abi.strip_0x(account[4]), "hex")
+                        id: new Buffer(abi.pad_left(account[4], 32), "hex")
                     };
                 }
                 return errors.DB_READ_FAILED;

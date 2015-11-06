@@ -34,7 +34,7 @@ describe("Database", function () {
             iv: "0x262ce8235b1a4155d87c9bb99d680ad3",
             salt: "0xb3bd4935d13290fa7674ff8e757e5c3d76bc5cc6a118b7ef34cb93df50471125",
             mac: "0xfa9c2a61b7b2ffcb6d29de02051916b04d2a76222b954dea960cde20c54c99be",
-            id: "0x360f5d691b1245c2a8a582db1e7c5213"
+            id: "0x060f5d691b1245c2a8a582db1e7c5213"
         };
 
         it("save account", function (done) {
