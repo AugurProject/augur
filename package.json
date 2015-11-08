@@ -20,7 +20,7 @@
     "bignumber.js": "^2.0.7",
     "chalk": "^1.0.0",
     "crypto-browserify": "^3.9.14",
-    "ethereumjs-tx": "^0.6.7",
+    "ethereumjs-tx": "^0.6.9",
     "ethereumjs-util": "^1.5.1",
     "ethrpc": "^0.3.7",
     "js-sha3": "^0.3.1",

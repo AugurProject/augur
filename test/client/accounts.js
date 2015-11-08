@@ -9,6 +9,7 @@
 var crypto = require("crypto");
 var assert = require("chai").assert;
 var chalk = require("chalk");
+var keythereum = require("keythereum");
 var EthTx = require("ethereumjs-tx");
 var EthUtil = require("ethereumjs-util");
 var abi = require("augur-abi");
@@ -19,6 +20,7 @@ var log = console.log;
 
 // generate random private key
 var privateKey = crypto.randomBytes(32);
+var address = keythereum.privateKeyToAddress(privateKey);
 
 // generate random handles and passwords
 var handle = utils.sha256(new Date().toString());
@@ -356,13 +358,13 @@ describe("Transaction signing", function () {
             nonce: "00",
             gasPrice: "09184e72a000", 
             gasLimit: "2710",
-            to: abi.format_address("0000000000000000000000000000000000000000"),
+            to: abi.format_address("0000000000000000000000000000000000000001"),
             value: "00", 
             data: "7f7465737432000000000000000000000000000000000000000000000000000000600057"
         });
         tx.sign(privateKey);
         var signed = "f8ba8230308c3039313834653732613030308432373130940000000000000000"+
-                     "000000000000000000000000823030b848376637343635373337343332303030"+
+                     "000000000000000000000001823030b848376637343635373337343332303030"+
                      "3030303030303030";
 
         // RLP serialization
@@ -417,21 +419,18 @@ describe("Transaction signing", function () {
     // decode incoming tx using rlp: rlp.decode(itx)
     // (also need to check sender's account to see if they have at least amount of the fee)
     it("should verify sender's signature", function () {
-        var rawTx = [
-            "00",
-            "09184e72a000",
-            "2710",
-            "0000000000000000000000000000000000000000",
-            "00",
-            "7f7465737432000000000000000000000000000000000000000000000000000000600057",
-            "1c",
-            "5e1d3a76fbf824220eafc8c79ad578ad2b67d01b0c2425eb1f1347e8f50882ab",
-            "5bd428537f05f9830e93792f90ea6a3e2d1ee84952dd96edbae9f658f831ab13"
-        ];
+        var rawTx = {
+            nonce: "0x00",
+            gasPrice: "0x09184e72a000", 
+            gasLimit: "0x2710",
+            to: "0x0000000000000000000000000000000000000000", 
+            value: "0x00", 
+            data: "0x7f7465737432000000000000000000000000000000000000000000000000000000600057"
+        };
         var tx2 = new EthTx(rawTx);
-        var sender = "1f36f546477cda21bf2296c50976f2740247906f";
-        assert.strictEqual(tx2.getSenderAddress().toString("hex"), sender);
-        assert(tx2.verifySignature());
+        tx2.sign(privateKey);
+        assert.strictEqual(abi.hex(tx2.getSenderAddress()), address);
+        assert.isTrue(tx2.verifySignature());
     });
 
 });
