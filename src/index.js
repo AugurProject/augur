@@ -1242,10 +1242,10 @@ Augur.prototype.getMarketNumOutcomes = function (market, callback) {
     tx.params = market;
     return this.fire(tx, callback);
 };
-Augur.prototype.getParticipantSharesPurchased = function (market, participationNumber, outcome, callback) {
+Augur.prototype.getParticipantSharesPurchased = function (market, participantNumber, outcome, callback) {
     // market: sha256 hash id
     var tx = this.utils.copy(this.tx.getParticipantSharesPurchased);
-    tx.params = [market, participationNumber, outcome];
+    tx.params = [market, participantNumber, outcome];
     return this.fire(tx, callback);
 };
 Augur.prototype.getSharesPurchased = function (market, outcome, callback) {

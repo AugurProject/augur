@@ -93,11 +93,24 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                         assert.isNotNull(r.blockNumber);
                         assert.isAbove(parseInt(r.blockNumber), 0);
                         assert.isAbove(Number(r.callReturn), 0);
-                        next();
+                        augur.getParticipantNumber(element, augur.coinbase, function (participantNumber) {
+                            // console.log("participant number:", participantNumber);
+                            if (participantNumber && !participantNumber.error) {
+                                augur.getParticipantSharesPurchased(element, participantNumber, outcome, function (sharesPurchased) {
+                                    // console.log("shares purchased:", sharesPurchased);
+                                    if (sharesPurchased && !sharesPurchased.error) {
+                                        assert.strictEqual(sharesPurchased, amount);
+                                        next();
+                                    } else {
+                                        next(sharesPurchased);
+                                    }
+                                });
+                            } else {
+                                next(participantNumber);
+                            }
+                        });
                     },
-                    onFailed: function (r) {
-                        next(r);
-                    }
+                    onFailed: next
                 });
             }
         );
@@ -137,11 +150,24 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                         assert.isNotNull(r.blockNumber);
                         assert.isAbove(parseInt(r.blockNumber), 0);
                         assert.isAbove(Number(r.callReturn), 0);
-                        next();
+                        augur.getParticipantNumber(element, augur.coinbase, function (participantNumber) {
+                            // console.log("participant number:", participantNumber);
+                            if (participantNumber && !participantNumber.error) {
+                                augur.getParticipantSharesPurchased(element, participantNumber, outcome, function (sharesPurchased) {
+                                    // console.log("shares purchased:", sharesPurchased);
+                                    if (sharesPurchased && !sharesPurchased.error) {
+                                        assert.strictEqual(sharesPurchased, "0");
+                                        next();
+                                    } else {
+                                        next(sharesPurchased);
+                                    }
+                                });
+                            } else {
+                                next(participantNumber);
+                            }
+                        });
                     },
-                    onFailed: function (r) {
-                        next(r);
-                    }
+                    onFailed: next
                 });
             }
         );
