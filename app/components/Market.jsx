@@ -72,7 +72,7 @@ var Market = React.createClass({
     var market = this.state.market;
 
     var numPoints = {yes: 0, no: 0};
-    if (market.priceHistory && market.priceHistory.length) {
+    if (market.priceHistory) {
       if (market.priceHistory[2] && market.priceHistory[2].length) {
         numPoints.yes = market.priceHistory[2].length;
       }
