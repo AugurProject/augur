@@ -83210,7 +83210,7 @@ Augur.prototype.parseMarketInfo = function (rawInfo) {
     var EVENTS_FIELDS = 6;
     var OUTCOMES_FIELDS = 2;
     var WINNING_OUTCOMES_FIELDS = 8;
-    var info;
+    var info = {};
     if (rawInfo && rawInfo.length) {
 
         // all-inclusive except comments & price history
@@ -83249,10 +83249,15 @@ Augur.prototype.parseMarketInfo = function (rawInfo) {
         info.events = new Array(info.numEvents);
 
         // organize trader info
+        for (var i = 0; i < info.numOutcomes; ++i) {
+            info.outcomes[i] = {shares: {}};
+        }
         var addr;
-        for (var i = 0; i < info.traderCount; ++i) {
-            addr = abi.format_address(rawInfo[i + index]);
+        for (i = 0; i < info.traderCount; ++i) {
+            addr = abi.format_address(rawInfo[i*TRADER_FIELDS + index]);
             info.participants[addr] = i;
+            info.outcomes[0].shares[addr] = abi.unfix(rawInfo[i*TRADER_FIELDS + index + 1], "string");
+            info.outcomes[1].shares[addr] = abi.unfix(rawInfo[i*TRADER_FIELDS + index + 2], "string");
         }
 
         // organize event info
@@ -83277,18 +83282,11 @@ Augur.prototype.parseMarketInfo = function (rawInfo) {
         // organize outcome info
         index += info.numEvents*EVENTS_FIELDS;
         for (i = 0; i < info.numOutcomes; ++i) {
-            info.outcomes[i] = {
-                id: i + 1,
-                outstandingShares: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index], "string"),
-                price: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index + 1], "string"),
-                shares: {}
-            };
+            info.outcomes[i].id = i + 1;
+            info.outcomes[i].outstandingShares = abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index], "string");
+            info.outcomes[i].price = abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index + 1], "string");
             if (info.outcomes[i].id === 2) {
                 info.price = info.outcomes[i].price;
-            }
-            for (var j = 0; j < info.traderCount; ++j) {
-                addr = abi.format_address(rawInfo[j + 12]);
-                info.outcomes[i].shares[addr] = abi.unfix(rawInfo[i + j + 13], "string");
             }
         }
         index += info.numOutcomes*OUTCOMES_FIELDS;

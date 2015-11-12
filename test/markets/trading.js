@@ -17,7 +17,7 @@ require('it-each')({ testPerIteration: true });
 if (!process.env.CONTINUOUS_INTEGRATION) {
 
     var branch = augur.branches.dev;
-    var outcome = "1";
+    var outcome = "2";
     var amount = "1";
 
     describe("Buy and sell shares", function () {
@@ -94,13 +94,20 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                         assert.isAbove(parseInt(r.blockNumber), 0);
                         assert.isAbove(Number(r.callReturn), 0);
                         augur.getParticipantNumber(element, augur.coinbase, function (participantNumber) {
-                            // console.log("participant number:", participantNumber);
                             if (participantNumber && !participantNumber.error) {
                                 augur.getParticipantSharesPurchased(element, participantNumber, outcome, function (sharesPurchased) {
-                                    // console.log("shares purchased:", sharesPurchased);
                                     if (sharesPurchased && !sharesPurchased.error) {
-                                        assert.strictEqual(sharesPurchased, amount);
-                                        next();
+                                        assert.strictEqual(
+                                            Number(sharesPurchased).toFixed(6),
+                                            Number(amount).toFixed(6)
+                                        );
+                                        augur.getMarketInfo(element, function (info) {
+                                            if (info.error) return done(info);
+                                            var infoShares = info.outcomes[parseInt(outcome) - 1].shares[augur.coinbase];
+                                            assert.strictEqual(Number(amount).toFixed(6), Number(infoShares).toFixed(6));
+                                            assert.strictEqual(infoShares, sharesPurchased);
+                                            next();
+                                        });
                                     } else {
                                         next(sharesPurchased);
                                     }
@@ -151,13 +158,17 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                         assert.isAbove(parseInt(r.blockNumber), 0);
                         assert.isAbove(Number(r.callReturn), 0);
                         augur.getParticipantNumber(element, augur.coinbase, function (participantNumber) {
-                            // console.log("participant number:", participantNumber);
                             if (participantNumber && !participantNumber.error) {
                                 augur.getParticipantSharesPurchased(element, participantNumber, outcome, function (sharesPurchased) {
-                                    // console.log("shares purchased:", sharesPurchased);
                                     if (sharesPurchased && !sharesPurchased.error) {
                                         assert.strictEqual(sharesPurchased, "0");
-                                        next();
+                                        augur.getMarketInfo(element, function (info) {
+                                            if (info.error) return done(info);
+                                            var infoShares = info.outcomes[parseInt(outcome) - 1].shares[augur.coinbase];
+                                            assert.strictEqual(infoShares, "0");
+                                            assert.strictEqual(infoShares, sharesPurchased);
+                                            next();
+                                        });
                                     } else {
                                         next(sharesPurchased);
                                     }
