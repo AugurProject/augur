@@ -62,7 +62,7 @@ EOL
 sudo chmod 644 $IPFS_UPSTART
 
 # update firewall: open ports 4001 and 5001
-declare -a ports=("4001" "5001" "8800")
+declare -a ports=("4001" "5001" "8800" "9876")
 for port in "${ports[@]}"; do
     UDP="INPUT -p udp --dport ${port} -j ACCEPT"
     TCP="INPUT -p tcp --dport ${port} -j ACCEPT"
