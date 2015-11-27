@@ -36,110 +36,6 @@ var MarketActions = {
     }
   },
 
-  clear: function (pulse, xhr) {
-    if (pulse) clearTimeout(pulse);
-    if (xhr) xhr.abort();
-  },
-
-  nextNode: function (got, pulse, xhr, startNode) {
-    this.flux.actions.market.clear(pulse, xhr);
-    utils.rotate(constants.MARKET_CACHE);
-    if (!got && constants.MARKET_CACHE[0] !== startNode) {
-      this.flux.actions.market.loadMarketCache(got, pulse, xhr, startNode);
-    }
-  },
-
-  parseCache: function (cached) {
-    var self = this;
-    var block = self.flux.store('network').getState().blockNumber;
-    var account = self.flux.store('config').getAccount();
-    var branchId = self.flux.store('branch').getCurrentBranch().id;
-    var blackmarkets = blacklist.markets[augur.network_id][branchId];
-    var markets = {};
-    async.eachSeries(cached, function (thisMarket, nextMarket) {
-      var marketId = abi.bignum(thisMarket._id);
-      if (abi.bignum(thisMarket.branchId).eq(abi.bignum(branchId)) &&
-          !_.contains(blackmarkets, marketId.toString(16)) &&
-          !thisMarket.invalid && thisMarket.price && thisMarket.description) {
-        thisMarket.id = marketId;
-        thisMarket.endDate = utils.blockToDate(thisMarket.endDate, block);
-        if (thisMarket.creationBlock) {
-          thisMarket.creationDate = utils.blockToDate(thisMarket.creationBlock, block);
-        }
-        thisMarket.price = abi.bignum(thisMarket.price);
-        thisMarket.tradingFee = abi.bignum(thisMarket.tradingFee);
-        thisMarket.creationFee = abi.bignum(thisMarket.creationFee);
-        thisMarket.traderCount = abi.bignum(thisMarket.traderCount);
-        thisMarket.alpha = abi.bignum(thisMarket.alpha);
-        thisMarket.numOutcomes = parseInt(thisMarket.numOutcomes);
-        thisMarket.tradingPeriod = abi.bignum(thisMarket.tradingPeriod);
-        thisMarket.traderId = abi.bignum(thisMarket.participants[account]);
-        if (thisMarket.outcomes && thisMarket.outcomes.length) {
-          async.each(thisMarket.outcomes, function (thisOutcome, nextOutcome) {
-            if (thisOutcome.outstandingShares) {
-              thisOutcome.outstandingShares = abi.bignum(thisOutcome.outstandingShares);
-            } else {
-              thisOutcome.outstandingShares = abi.bignum(0);
-            }
-            if (thisOutcome.shares[account]) {
-              thisOutcome.sharesHeld = abi.bignum(thisOutcome.shares[account]);
-            } else {
-              thisOutcome.sharesHeld = abi.bignum(0);
-            }
-            thisOutcome.pendingShares = abi.bignum(0);
-            thisOutcome.price = abi.bignum(thisOutcome.price);
-            nextOutcome();
-          }, function (err) {
-            if (err) console.error(err);
-            thisMarket.loaded = true;
-            markets[marketId] = thisMarket;
-            nextMarket();
-          });
-        } else {
-          nextMarket();
-        }
-      } else {
-        nextMarket();
-      }
-    }, function (err) {
-      if (err) console.error(err);
-
-      // save markets to MarketStore
-      self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, { markets: markets });
-
-      // loading complete!
-      self.dispatch(constants.market.MARKETS_LOADING, { loadingPage: null });
-      self.flux.actions.config.updatePercentLoaded(100);
-    });
-  },
-
-  loadMarketCache: function (got, pulse, xhr, startNode) {
-    var self = this;
-    startNode = startNode || constants.MARKET_CACHE[0];
-    if (got) return self.flux.actions.market.clear(pulse, xhr);
-
-    // fetch markets from mongodb via HTTP GET request
-    xhr = $.get(constants.MARKET_CACHE[0], function (cached) {
-      console.log("downloaded cached markets from:", constants.MARKET_CACHE[0]);
-      if (!cached) return self.flux.actions.market.nextNode(got, pulse, xhr, startNode);
-      cached = JSON.parse(cached).rows;
-      if (!cached || cached.constructor !== Array || !cached.length) {
-        return self.flux.actions.market.nextNode(got, pulse, xhr, startNode);
-      }
-      if (pulse) clearTimeout(pulse);
-      got = true;
-      self.dispatch(constants.market.GOT_CACHED_MARKETS, { cachedMarkets: cached });
-      self.flux.actions.config.updatePercentLoaded(20);
-      setTimeout(function () { self.flux.actions.market.parseCache(cached); }, 0);
-    });
-
-    // after a delay, rotate cache nodes and try again
-    if (pulse) clearTimeout(pulse);
-    pulse = setTimeout(function () {
-      self.flux.actions.market.nextNode(got, pulse, xhr, startNode);
-    }, constants.CACHE_PULSE);
-  },
-
   parseMarketInfo: function (marketInfo, callback) {
     var marketId = abi.bignum(marketInfo._id);
     var block = self.flux.store('network').getState().blockNumber;
@@ -194,12 +90,7 @@ var MarketActions = {
     var self = this;
     var branchId = this.flux.store('branch').getCurrentBranch().id;
 
-    // if we're on a hosted node, load preprocessed market data
-    if (this.flux.store('config').getState().useMarketCache) {
-      return this.flux.actions.market.loadMarketCache();
-    }
-
-    // if we're on a local node, get data directly from geth via RPC
+    // get data from geth via RPC
     augur.getCreationBlocks(branchId, function (creationBlock) {
       augur.getPriceHistory(branchId, function (priceHistory) {
         // TODO: use offset/numMarketsToLoad to load 1 page at a time
@@ -540,21 +431,7 @@ var MarketActions = {
     var self = this;
     var outcomeIdx = abi.number(tx.outcome) - 1;
     this.flux.actions.asset.updateAssets();
-    if (this.flux.store("config").getState().useMarketCache) {
-      var getMarket = this.flux.store("market").getMarket;
-      var checks = 0;
-      (function checkMarketCache() {
-        self.flux.actions.market.loadMarketCache();
-        if (getMarket(tx.marketId).outcomes[outcomeIdx].price.eq(tx.oldPrice)) {
-          if (++checks < 10) return setTimeout(checkMarketCache, 2500);
-          self.flux.actions.market.loadMarket(tx.marketId);
-        } else {
-          console.log("market", abi.hex(tx.marketId), "cache updated");
-        }
-      })();
-    } else {
-      this.flux.actions.market.loadMarket(marketId);
-    }
+    this.flux.actions.market.loadMarket(marketId);
   },
 
   updatePendingShares: function(market, outcomeId, relativeShares) {

@@ -21,7 +21,6 @@ var ConfigActions = {
     augur.rpc.reset();
     augur.connect();
     this.flux.actions.config.setIsHosted(true);
-    // this.flux.actions.config.useMarketCache(true);
     return augur.rpc.nodes.hosted[0];
   },
 
@@ -31,10 +30,6 @@ var ConfigActions = {
 
   setHost: function (host) {
     this.dispatch(constants.config.SET_HOST, { host: host });
-  },
-
-  useMarketCache: function (use) {
-    this.dispatch(constants.config.USE_MARKET_CACHE, { useMarketCache: use });
   },
 
   updatePercentLoaded: function (percent) {
@@ -75,11 +70,7 @@ var ConfigActions = {
       //     }
       //     console.log("[filter] contracts:", filtrate.address);
       //     self.flux.actions.asset.updateAssets();
-      //     if (self.flux.store("config").getState().useMarketCache) {
-      //       setTimeout(self.flux.actions.market.loadMarkets, 5000);
-      //     } else {
-      //       self.flux.actions.market.loadMarkets();
-      //     }
+      //     self.flux.actions.market.loadMarkets();
       //   }
       // },
 
@@ -93,17 +84,7 @@ var ConfigActions = {
           var outcomeIdx = result.outcome - 1;
           var oldPrice = getMarket(marketId).outcomes[outcomeIdx].price;
           self.flux.actions.asset.updateAssets();
-          if (self.flux.store("config").getState().useMarketCache) {
-            (function checkMarketCache() {
-              self.flux.actions.market.loadMarketCache();
-              if (getMarket(marketId).outcomes[outcomeIdx].price.eq(oldPrice)) {
-                if (++checks < 10) return setTimeout(checkMarketCache, 2500);
-              }
-            })();
-          } else {
-            self.flux.actions.market.loadMarket(marketId);
-          }
-        }
+          self.flux.actions.market.loadMarket(marketId);        }
       },
 
       // listen for new markets
@@ -112,16 +93,7 @@ var ConfigActions = {
           console.log("[filter] creationBlock:", result.blockNumber);
           var checks = 0;
           var marketId = abi.bignum(result.marketId);
-          if (self.flux.store("config").getState().useMarketCache) {
-            (function checkMarketCache() {
-              self.flux.actions.market.loadMarketCache();
-              if (!self.flux.store("market").getMarket(marketId)) {
-                if (++checks < 10) return setTimeout(checkMarketCache, 2500);
-              }
-            })();
-          } else {
-            self.flux.actions.market.loadMarket(marketId);
-          }
+          self.flux.actions.market.loadMarket(marketId);
         }
       }
     });

@@ -67,9 +67,6 @@ var NetworkActions = {
       this.flux.actions.asset.updateAssets();
       this.flux.actions.report.loadEventsToReport();
       this.flux.actions.report.loadPendingReports();
-      if (this.flux.store("config").getState().useMarketCache) {
-        this.flux.actions.market.loadMarketCache();
-      }
 
     // hosted node: no unlocked account available
     } else if (this.flux.store('config').getState().isHosted) {
@@ -93,9 +90,6 @@ var NetworkActions = {
           self.flux.actions.asset.updateAssets();
           self.flux.actions.report.loadEventsToReport();
           self.flux.actions.report.loadPendingReports();
-          if (self.flux.store("config").getState().useMarketCache) {
-            self.flux.actions.market.loadMarketCache();
-          }
 
         // otherwise, no account available
         } else {

@@ -58,9 +58,6 @@ var SignInModal = React.createClass({
           flux.actions.asset.updateAssets();
           flux.actions.report.loadEventsToReport();
           flux.actions.report.loadPendingReports();
-          if (flux.store("config").getState().useMarketCache) {
-            flux.actions.market.loadMarketCache();
-          }
           self.props.onHide();
         } else {
           console.error(account);

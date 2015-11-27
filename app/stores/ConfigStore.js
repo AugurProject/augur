@@ -2,15 +2,13 @@ var Fluxxor = require('fluxxor');
 var constants = require('../libs/constants');
 
 var state = {
-  // host: "http://127.0.0.1:8545",
-  host: "https://eth1.augur.net",
+  host: "http://127.0.0.1:8545",
   currentAccount: null,
   privateKey: null,
   handle: null,
   debug: false,
   loaded: false,
   isHosted: false,
-  useMarketCache: false,
   percentLoaded: null
 }
 
@@ -20,7 +18,6 @@ var ConfigStore = Fluxxor.createStore({
     this.bindActions(
       constants.config.SET_HOST, this.handleSetHost,
       constants.config.SET_IS_HOSTED, this.handleSetIsHosted,
-      constants.config.USE_MARKET_CACHE, this.handleUseMarketCache,
       constants.config.UPDATE_ACCOUNT, this.handleUpdateAccount,
       constants.config.UPDATE_PERCENT_LOADED_SUCCESS, this.handleUpdatePercentLoadedSuccess,
       constants.config.LOAD_APPLICATION_DATA_SUCCESS, this.handleLoadApplicationDataSuccess
@@ -49,11 +46,6 @@ var ConfigStore = Fluxxor.createStore({
   getHandle: function () {
     if (_.isUndefined(state.handle)) return null;
     return state.handle;
-  },
-
-  handleUseMarketCache: function (payload) {
-    state.useMarketCache = payload.useMarketCache;
-    this.emit(constants.CHANGE_EVENT);
   },
 
   handleUpdatePercentLoadedSuccess: function (payload) {

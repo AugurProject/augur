@@ -13,7 +13,6 @@ var MarketStore = Fluxxor.createStore({
 
   initialize: function () {
     this.bindActions(
-      constants.market.GOT_CACHED_MARKETS, this.handleGotCachedMarkets,
       constants.market.LOAD_MARKETS_SUCCESS, this.handleLoadMarketsSuccess,
       constants.market.UPDATE_MARKETS_SUCCESS, this.handleUpdateMarketsSuccess,
       constants.market.UPDATE_MARKET_SUCCESS, this.handleUpdateMarketSuccess,
@@ -22,10 +21,6 @@ var MarketStore = Fluxxor.createStore({
       constants.market.DELETE_MARKET_SUCCESS, this.handleDeleteMarketSuccess,
       constants.market.MARKETS_LOADING, this.handleMarketsLoading
     );
-  },
-
-  handleGotCachedMarkets: function (payload) {
-    this.emit(constants.CHANGE_EVENT);
   },
 
   marketIsLoaded: function(marketId) {

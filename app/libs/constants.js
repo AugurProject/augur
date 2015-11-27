@@ -6,13 +6,6 @@ var BigNumber = require('bignumber.js');
 var ONE_FXP = new BigNumber(2).toPower(64);
 
 module.exports = {
-  MARKET_CACHE: [
-    'http://db1.augur.net/marketeer/markets/?',
-    'http://db3.augur.net/marketeer/markets/?',
-    'http://db4.augur.net/marketeer/markets/?',
-    'http://db5.augur.net/marketeer/markets/?'
-  ],
-  CACHE_PULSE: 5000,
   ONE_FXP: ONE_FXP,
   NO: ONE_FXP,
   YES: ONE_FXP.mul(2),
@@ -24,7 +17,6 @@ module.exports = {
   config: keyMirror({
     SET_HOST: null,
     SET_IS_HOSTED: null,
-    USE_MARKET_CACHE: null,
     UPDATE_ACCOUNT: null,
     UPDATE_PERCENT_LOADED_SUCCESS: null,
     LOAD_APPLICATION_DATA_SUCCESS: null
@@ -53,7 +45,6 @@ module.exports = {
     CHECK_QUORUM_SUCCESS: null
   }),
   market: keyMirror({
-    GOT_CACHED_MARKETS: null,
     LOAD_MARKETS_SUCCESS: null,
     UPDATE_MARKETS_SUCCESS: null,
     UPDATE_MARKET_SUCCESS: null,
