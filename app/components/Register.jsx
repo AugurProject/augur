@@ -50,6 +50,7 @@ var RegisterModal = React.createClass({
               privateKey: account.privateKey,
               handle: account.handle
             });
+            flux.actions.asset.updateAssets();
             self.props.onHide();
           } else {
             console.error(account);

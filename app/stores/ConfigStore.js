@@ -2,7 +2,8 @@ var Fluxxor = require('fluxxor');
 var constants = require('../libs/constants');
 
 var state = {
-  host: "http://127.0.0.1:8545",
+  // host: "http://127.0.0.1:8545",
+  host: "https://eth1.augur.net",
   currentAccount: null,
   privateKey: null,
   handle: null,
