@@ -26,4 +26,4 @@ if [ -L $symlink ]; then
 fi
 ln -s "$HOME/.ethereum-${network}" $symlink
 
-geth $optargs --networkid $network --datadir $symlink --rpc --shh --rpcapi "shh,db,eth,net,web3" --ipcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" --rpccorsdomain "http://eth1.augur.net http://eth2.augur.net http://eth3.augur.net http://eth4.augur.net http://eth5.augur.net http://augur.divshot.io http://augur-stage.herokuapp.com http://client.augur.net http://localhost:8080" --bootnodes "${bootnodes}" --maxpeers $maxpeers --etherbase $address --unlock $address --password $passfile console
+geth $optargs --networkid $network --datadir $symlink --rpc --shh --rpcapi "shh,db,eth,net,web3" --ipcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" --rpccorsdomain "https://eth1.augur.net https://eth2.augur.net https://eth3.augur.net https://eth4.augur.net https://eth5.augur.net https://augur.divshot.io https://augur-stage.herokuapp.com https://client.augur.net http://localhost:8080" --bootnodes "${bootnodes}" --maxpeers $maxpeers --etherbase $address --unlock $address --password $passfile console

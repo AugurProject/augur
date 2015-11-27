@@ -18,12 +18,8 @@ require('it-each')({ testPerIteration: true });
 
 describe("augur.connect", function () {
 
-    before(function () {
-        augur = utils.setup(augur, process.argv.slice(2));
-    });
-
     beforeEach(function () {
-        augur = utils.reset(augurpath);
+        augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
     });
 
     var connectString = [

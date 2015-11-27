@@ -231,7 +231,7 @@ Augur.prototype.parse_rpcinfo = function (rpcinfo) {
             rpc_obj.host = rpcinfo;
         } else if (rpcinfo.indexOf("://") > -1) {
             rpcstr = rpcinfo.split("://");
-            rpc_obj.protocol = rpc[0];
+            rpc_obj.protocol = rpcstr[0];
             rpcstr = rpcstr[1].split(':');
             if (rpcstr.length === 2) {
                 rpc_obj.host = rpcstr[0];
