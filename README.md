@@ -18,7 +18,7 @@ Ethereum Dapps store their data on the Ethereum blockchain, and their frontends 
 Getting Started
 ---------------
 
-The client is built and hosted at [http://client.augur.net](http://client.augur.net)
+The client is built and hosted at [https://client.augur.net](https://client.augur.net)
 
 You still need to run ethereum locally; the client will walk you through platform-specific installation instructions. 
 

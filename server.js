@@ -6,15 +6,21 @@
 "use strict";
 
 var nodeStatic = require('node-static'),
-    http = require('http'),
+    fs = require('fs'),
+    https = require('https'),
     util = require('util');
+
+var options = {
+    key: fs.readFileSync('key.pem'),
+    cert: fs.readFileSync('cert.pem')
+};
 
 var webroot = './app',
     port = process.env.PORT || 8080;
 
 var file = new(nodeStatic.Server)(webroot, { cache: 600 });
 
-http.createServer(function (req, res) {
+https.createServer(options, function (req, res) {
 
     // static URIs
     var re = /\/(css|images|fonts|app\.js)/;
@@ -34,4 +40,4 @@ http.createServer(function (req, res) {
 
 }).listen(port);
 
-console.log('node-static running at http://localhost:%d', port);
+console.log('node-static running at https://localhost:%d', port);
