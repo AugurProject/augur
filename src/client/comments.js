@@ -7,7 +7,7 @@
 
 var async = require("async");
 var multihash = require("multi-hash");
-var ipfs = require("ipfs-api")("localhost", "5001");
+var ipfsAPI = require("ipfs-api");
 var abi = require("augur-abi");
 var errors = require("../errors");
 var constants = require("../constants");
@@ -18,8 +18,11 @@ module.exports = function () {
 
     return {
 
+        ipfs: ipfsAPI("localhost", "5001", {protocol: "http"}),
+
         getMarketComments: function (market, cb) {
             if (!market || !augur.utils.is_function(cb)) return;
+            var self = this;
             augur.filters.eth_getLogs({
                 fromBlock: "0x1",
                 toBlock: "latest",
@@ -39,17 +42,32 @@ module.exports = function () {
                         return nextLog();
                     }
                     var ipfsHash = multihash.encode(abi.unfork(thisLog.data));
-                    ipfs.object.get(ipfsHash, function (err, obj) {
-                        if (err) return nextLog(err);
-                        var data = obj.Data;
-                        data = JSON.parse(data.slice(data.indexOf("{"), data.lastIndexOf("}") + 1));
-                        comments.push({
-                            ipfsHash: ipfsHash,
-                            author: data.author,
-                            message: data.message || "",
-                            blockNumber: abi.hex(thisLog.blockNumber)
-                        });
-                        nextLog();
+                    self.ipfs.object.get(ipfsHash, function (err, obj) {
+                        if (err) {
+                            self.ipfs = ipfsAPI("db1.augur.net", "443", {protocol: "https"});
+                            self.ipfs.object.get(ipfsHash, function (e, obj) {
+                                if (e) return nextLog(e);
+                                var data = obj.Data;
+                                data = JSON.parse(data.slice(data.indexOf("{"), data.lastIndexOf("}") + 1));
+                                comments.push({
+                                    ipfsHash: ipfsHash,
+                                    author: data.author,
+                                    message: data.message || "",
+                                    blockNumber: abi.hex(thisLog.blockNumber)
+                                });
+                                nextLog();
+                            });
+                        } else {
+                            var data = obj.Data;
+                            data = JSON.parse(data.slice(data.indexOf("{"), data.lastIndexOf("}") + 1));
+                            comments.push({
+                                ipfsHash: ipfsHash,
+                                author: data.author,
+                                message: data.message || "",
+                                blockNumber: abi.hex(thisLog.blockNumber)
+                            });
+                            nextLog();
+                        }
                     });
                 }, function (err) {
                     if (err) return cb(err);
@@ -61,15 +79,51 @@ module.exports = function () {
 
         // comment: {marketId, message, author}
         addMarketComment: function (comment, onSent, onSuccess, onFailed) {
+            var self = this;
             var tx = augur.utils.copy(augur.tx.comments.addComment);
-            ipfs.add(new Buffer(JSON.stringify(comment)), function (err, files) {
-                if (err) return onFailed(err);
-                if (files && files.constructor === Array && files.length) {
-                    tx.params = [
-                        abi.unfork(comment.marketId, true),
-                        abi.hex(multihash.decode(files[0].Hash), true)
-                    ];
-                    augur.transact(tx, onSent, onSuccess, onFailed);
+            if (!this.ipfs) {
+                this.ipfs = ipfsAPI("localhost", "5001", {protocol: "http"});
+                this.ipfs.version(function (err) {
+                    if (err) {
+                        self.ipfs = ipfsAPI("db1.augur.net", "443", {protocol: "https"});
+                        self.ipfs.version(function (e, v) {
+                            if (e) {
+                                if (onFailed) return onFailed(e);
+                                console.error(e);
+                            } else {
+                                console.log(v)
+                            }
+                        });
+                    }
+                });
+            }
+            this.ipfs.add(new Buffer(JSON.stringify(comment)), function (err, files) {
+                if (err) {
+                    self.ipfs = ipfsAPI("db1.augur.net", "443", {protocol: "https"});
+                    self.ipfs.add(new Buffer(JSON.stringify(comment)), function (err, files) {
+                        if (err) return onFailed(err);
+                        self.ipfs.pin.add(files[0].Hash, function (err, pinned) {
+                            if (err) return onFailed(err);
+                            if (files && files.constructor === Array && files.length) {
+                                tx.params = [
+                                    abi.unfork(comment.marketId, true),
+                                    abi.hex(multihash.decode(files[0].Hash), true)
+                                ];
+                                augur.transact(tx, onSent, onSuccess, onFailed);
+                            }
+                        });
+                    });
+                } else {
+                    self.ipfs.pin.add(files[0].Hash, function (err, pinned) {
+                        if (err) return onFailed(err);
+                        if (files && files.constructor === Array && files.length) {
+                            tx.params = [
+                                abi.unfork(comment.marketId, true),
+                                abi.hex(multihash.decode(files[0].Hash), true)
+                            ];
+                            augur.transact(tx, onSent, onSuccess, onFailed);
+                        }
+                    });
                 }
             });
         }

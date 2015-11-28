@@ -16,9 +16,6 @@ module.exports = {
     // default gas: 3.135M
     DEFAULT_GAS: "0x2fd618",
 
-    // comment polling interval (in milliseconds)
-    COMMENT_POLL_INTERVAL: 12000,
-
     // expected block interval
     SECONDS_PER_BLOCK: 12,
 

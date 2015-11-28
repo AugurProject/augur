@@ -29,18 +29,12 @@ gulp.task("lint", function (callback) {
 gulp.task("build", function (callback) {
     del([path.join("dist", "*.js")], function (ex) {
         if (ex) throw ex;
-        cp.exec("./node_modules/browserify/bin/cmd.js ./exports.js | "+
-                "./node_modules/uglify-js/bin/uglifyjs > ./dist/augur.min.js",
+        cp.exec("./node_modules/browserify/bin/cmd.js ./exports.js "+
+                "> ./dist/augur.js",
                 function (err, stdout) {
             if (err) throw err;
             if (stdout) process.stdout.write(stdout);
-            cp.exec("./node_modules/browserify/bin/cmd.js ./exports.js "+
-                    "> ./dist/augur.js",
-                    function (err, stdout) {
-                if (err) throw err;
-                if (stdout) process.stdout.write(stdout);
-                callback();
-            });
+            callback();
         });
     });
 });
