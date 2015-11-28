@@ -124,7 +124,7 @@ describe("markets.se", function () {
         var params = {
             branch: branch_id,
             offset: 0,
-            numMarketsToLoad: 0
+            numMarketsToLoad: 10
         };
         it("sync/positional", function () {
             this.timeout(augur.constants.TIMEOUT);
