@@ -265,29 +265,23 @@ var Comments = React.createClass({
 var CommentList = React.createClass({
   /**
    * comment format:
-   * [ { whisperId: '0x04aec3e929a511be478cab0de7...',
-   *     from: '0x639b41c4d3d399894f2a57894278e1653e7cd24c',
-   *     comment: 'o3g50msfpnl8fr',
-   *     time: 1442272587 },
-   *   { whisperId: '0x04d2f7b8e6fa3a4ba00f988091...',
-   *     from: '0x639b41c4d3d399894f2a57894278e1653e7cd24c',
-   *     comment: 'lgn7ch1sdzpvi',
-   *     time: 1442272586 }, ... ]
+   * [{ ipfsHash: 'QmZGraGmtwejgHAWcLVfre86Q4Z3MfVBVFEw6Qm7L1PaKC',
+   *    author: '0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b',
+   *    message: 'why hello!',
+   *    blockNumber: '0x95c6' }, ... ]
    */
   render: function () {
     var commentList = _.map(this.props.comments, function (c) {
 
       var identicon = 'data:image/png;base64,' + new Identicon(c.from, 50).toString();
-      var commentId = c.whisperId + c.time.toString();
-      var author = (c.handle) ? c.handle + " | " + c.from : c.from;
 
       return (
-        <div className="comment" key={ commentId }>
+        <div className="comment" key={ c.ipfsHash }>
           <div className="user avatar" style={{ backgroundImage: 'url(' + identicon + ')' }}></div>
           <div className="box">
-            <p>{ c.comment }</p>
+            <p>{ c.message }</p>
             <div className="date">{ moment(c.time * 1000).fromNow() }</div>
-            <div className="address">{ author }</div>
+            <div className="address">{ c.author }</div>
           </div>
         </div>
       );
