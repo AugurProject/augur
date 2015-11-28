@@ -88,45 +88,55 @@ var MarketActions = {
 
   loadMarkets: function () {
     var self = this;
+    var chunk = 25;
     var branchId = this.flux.store('branch').getCurrentBranch().id;
 
     // get data from geth via RPC
     augur.getCreationBlocks(branchId, function (creationBlock) {
       augur.getPriceHistory(branchId, function (priceHistory) {
-        // TODO: use offset/numMarketsToLoad to load 1 page at a time
-        augur.getMarketsInfo({
-          branch: branchId,
-          offset: 0,
-          numMarketsToLoad: 0,
-          callback: function (marketsInfo) {
-            if (marketsInfo && !marketsInfo.error) {
-              var blackmarkets = blacklist.markets[augur.network_id][branchId];
-              var markets = {};
-              async.eachSeries(marketsInfo, function (thisMarket, nextMarket) {
-                if (creationBlock && creationBlock[thisMarket._id]) {
-                  thisMarket.creationBlock = creationBlock[thisMarket._id];
-                }
-                if (priceHistory && priceHistory[thisMarket._id]) {
-                  thisMarket.priceHistory = priceHistory[thisMarket._id];
-                }
-                self.flux.actions.market.parseMarketInfo(thisMarket, function (marketInfo) {
-                  markets[marketInfo.id] = marketInfo;
-                  nextMarket();
-                });
-              }, function (err) {
-                if (err) console.error(err);
-
-                // save markets to MarketStore
-                self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, { markets: markets });
-
-                // loading complete!
-                self.dispatch(constants.market.MARKETS_LOADING, { loadingPage: null });
-                self.flux.actions.config.updatePercentLoaded(100);
-              });
-            } else {
-              console.error("couldn't retrieve markets info", marketsInfo);
-            }
+        augur.getNumMarkets(branchId, function (numMarkets) {
+          var chunks = Math.ceil(numMarkets / parseFloat(chunk));
+          var range = new Array(chunks);
+          for (var i = 0; i < chunks; ++i) {
+            range[i] = i*chunk;
           }
+          async.forEachOfSeries(range, function (offset, index, next) {
+            var numMarketsToLoad = (index + 1 === chunks) ? 0 : range[index + 1];
+            augur.getMarketsInfo({
+              branch: branchId,
+              offset: offset,
+              numMarketsToLoad: numMarketsToLoad,
+              callback: function (marketsInfo) {
+                if (marketsInfo && !marketsInfo.error) {
+                  var blackmarkets = blacklist.markets[augur.network_id][branchId];
+                  var markets = {};
+                  async.eachSeries(marketsInfo, function (thisMarket, nextMarket) {
+                    if (creationBlock && creationBlock[thisMarket._id]) {
+                      thisMarket.creationBlock = creationBlock[thisMarket._id];
+                    }
+                    if (priceHistory && priceHistory[thisMarket._id]) {
+                      thisMarket.priceHistory = priceHistory[thisMarket._id];
+                    }
+                    self.flux.actions.market.parseMarketInfo(thisMarket, function (marketInfo) {
+                      markets[marketInfo.id] = marketInfo;
+                      nextMarket();
+                    });
+                  }, function (err) {
+                    if (err) console.error(err);
+
+                    // save markets to MarketStore
+                    self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, { markets: markets });
+
+                    // loading complete!
+                    self.dispatch(constants.market.MARKETS_LOADING, { loadingPage: null });
+                    self.flux.actions.config.updatePercentLoaded(100 * (index + 1) / chunks);
+                  });
+                } else {
+                  console.error("couldn't retrieve markets info", marketsInfo);
+                }
+              }
+            });
+          });
         });
       });
     });
