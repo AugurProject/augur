@@ -10,6 +10,18 @@ module.exports = function (network) {
 
     return {
 
+        comments: {
+
+            addComment: {
+                to: contracts.comments,
+                method: "addComment",
+                signature: "ii",
+                send: true,
+                returns: "number"
+            }
+
+        },
+
         // accounts: sha256(handle) => account info
         accounts: {
 

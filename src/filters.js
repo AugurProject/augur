@@ -94,7 +94,7 @@ module.exports = function () {
             // topics: [?, user, unadjusted marketid, outcome]
             // array data: [price, cost]
             if (!logs || !market_id) return;
-            var creation_logs, market, marketplus;
+            var creation_logs, market;
             creation_logs = [];
             market_id = abi.bignum(market_id);
             for (var i = 0, len = logs.length; i < len; ++i) {
