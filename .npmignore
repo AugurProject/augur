@@ -10,3 +10,5 @@ scripts
 env.js
 coverage
 overflow
+aux
+test-aux

@@ -27,14 +27,20 @@ gulp.task("lint", function (callback) {
 });
 
 gulp.task("build", function (callback) {
-    del([path.join("dist", "*.js")], function (ex) {
-        if (ex) throw ex;
-        cp.exec("./node_modules/browserify/bin/cmd.js ./exports.js "+
-                "> ./dist/augur.js",
-                function (err, stdout) {
+    var browserify = "./node_modules/browserify/bin/cmd.js ./exports.js > ./dist/augur-es6.js";
+    var babelify = "./node_modules/babel-cli/bin/babel.js ./dist/augur.js --presets es2015 --compact=false -o ./dist/augur-es5.js";
+    var minify = "./node_modules/uglify-js/bin/uglifyjs ./dist/augur.js -o ./dist/augur.min.js";
+    cp.exec(browserify, function (err, stdout) {
+        if (err) throw err;
+        if (stdout) process.stdout.write(stdout);
+        cp.exec(babelify, function (err, stdout) {
             if (err) throw err;
             if (stdout) process.stdout.write(stdout);
-            callback();
+            cp.exec(minify, function (err, stdout) {
+                if (err) throw err;
+                if (stdout) process.stdout.write(stdout);
+                callback();
+            });
         });
     });
 });

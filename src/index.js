@@ -50,7 +50,6 @@ function Augur() {
     this.web = this.Accounts();
     this.comments = this.Comments();
     this.filters = this.Filters();
-    this.namereg = this.Namereg();
     this.db = this.Database();
 }
 
@@ -62,7 +61,6 @@ Augur.prototype.Accounts = require("./client/accounts");
 Augur.prototype.Comments = require("./client/comments");
 Augur.prototype.Database = require("./client/db");
 Augur.prototype.Filters = require("./filters");
-Augur.prototype.Namereg = require("./aux/namereg");
 
 /*******************************
  * Ethereum network connection *

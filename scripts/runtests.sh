@@ -28,7 +28,6 @@ create=0
 markets=0
 consensus=0
 client=0
-aux=0
 
 for arg in "$@"; do
     shift
@@ -41,7 +40,6 @@ for arg in "$@"; do
         "--markets") set -- "$@" "-m" ;;
         "--consensus") set -- "$@" "-s" ;;
         "--client") set -- "$@" "-l" ;;
-        "--aux") set -- "$@" "-x" ;;
         "--spec") set -- "$@" "-k" ;;
         *) set -- "$@" "$arg"
     esac
@@ -57,7 +55,6 @@ while getopts "gvoncrmslxk" opt; do
         m) markets=1 ;;
         s) consensus=1 ;;
         l) client=1 ;;
-        x) aux=1 ;;
         k) reporter="spec" ;;
     esac
 done
@@ -73,11 +70,10 @@ echo -e "+${GRAY}================${NC}+\n"
 [ "${core}" == "1" ] && runtest "core"
 [ "${client}" == "1" ] && runtest "client"
 [ "${consensus}" == "1" ] && runtest "consensus"
-[ "${aux}" == "1" ] && runtest "aux"
 
 echo -e " ${TEAL}jshint${NC}\n"
 
-declare -a targets=("gulpfile.js" "src/*.js" "src/client" "src/aux" "scripts/setup.js")
+declare -a targets=("gulpfile.js" "src/*.js" "src/client" "scripts/setup.js")
 for target in "${targets[@]}"
 do
     jshint ${target}

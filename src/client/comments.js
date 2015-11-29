@@ -81,22 +81,6 @@ module.exports = function () {
         addMarketComment: function (comment, onSent, onSuccess, onFailed) {
             var self = this;
             var tx = augur.utils.copy(augur.tx.comments.addComment);
-            if (!this.ipfs) {
-                this.ipfs = ipfsAPI("localhost", "5001", {protocol: "http"});
-                this.ipfs.version(function (err) {
-                    if (err) {
-                        self.ipfs = ipfsAPI("db1.augur.net", "443", {protocol: "https"});
-                        self.ipfs.version(function (e, v) {
-                            if (e) {
-                                if (onFailed) return onFailed(e);
-                                console.error(e);
-                            } else {
-                                console.log(v)
-                            }
-                        });
-                    }
-                });
-            }
             this.ipfs.add(new Buffer(JSON.stringify(comment)), function (err, files) {
                 if (err) {
                     self.ipfs = ipfsAPI("db1.augur.net", "443", {protocol: "https"});
