@@ -81,10 +81,10 @@ module.exports = function () {
         addMarketComment: function (comment, onSent, onSuccess, onFailed) {
             var self = this;
             var tx = augur.utils.copy(augur.tx.comments.addComment);
-            this.ipfs.add(new Buffer(JSON.stringify(comment)), function (err, files) {
+            this.ipfs.add(this.ipfs.Buffer(JSON.stringify(comment)), function (err, files) {
                 if (err) {
                     self.ipfs = ipfsAPI("db1.augur.net", "443", {protocol: "https"});
-                    self.ipfs.add(new Buffer(JSON.stringify(comment)), function (err, files) {
+                    self.ipfs.add(self.ipfs.Buffer(JSON.stringify(comment)), function (err, files) {
                         if (err) return onFailed(err);
                         self.ipfs.pin.add(files[0].Hash, function (err, pinned) {
                             if (err) return onFailed(err);

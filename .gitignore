@@ -3,3 +3,5 @@ node_modules
 coverage
 overflow
 npm-debug*
+aux
+test-aux
