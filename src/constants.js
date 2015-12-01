@@ -31,5 +31,6 @@ module.exports = {
     KEYSIZE: 32,
     IVSIZE: 16,
 
-    FIREBASE_URL: "https://resplendent-inferno-1997.firebaseio-demo.com/"
+    IPFS_LOCAL: {host: "localhost", port: "5001", protocol: "http"},
+    IPFS_REMOTE: {host: "ipfs.augur.net", port: "443", protocol: "https"}
 };

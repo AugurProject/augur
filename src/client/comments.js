@@ -1,5 +1,5 @@
 /**
- * Whispernet comments
+ * augur comments
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -7,9 +7,8 @@
 
 var async = require("async");
 var multihash = require("multi-hash");
-var ipfsAPI = require("ipfs-api");
+var ipfsAPI = GLOBAL.ipfsAPI || require("ipfs-api");
 var abi = require("augur-abi");
-var errors = require("../errors");
 var constants = require("../constants");
 
 module.exports = function () {
@@ -18,7 +17,7 @@ module.exports = function () {
 
     return {
 
-        ipfs: ipfsAPI("localhost", "5001", {protocol: "http"}),
+        ipfs: ipfsAPI(constants.IPFS_LOCAL),
 
         getMarketComments: function (market, cb) {
             if (!market || !augur.utils.is_function(cb)) return;
@@ -44,7 +43,7 @@ module.exports = function () {
                     var ipfsHash = multihash.encode(abi.unfork(thisLog.data));
                     self.ipfs.object.get(ipfsHash, function (err, obj) {
                         if (err) {
-                            self.ipfs = ipfsAPI("db1.augur.net", "443", {protocol: "https"});
+                            self.ipfs = ipfsAPI(constants.IPFS_HOST);
                             self.ipfs.object.get(ipfsHash, function (e, obj) {
                                 if (e) return nextLog(e);
                                 var data = obj.Data;
@@ -83,7 +82,7 @@ module.exports = function () {
             var tx = augur.utils.copy(augur.tx.comments.addComment);
             this.ipfs.add(this.ipfs.Buffer(JSON.stringify(comment)), function (err, files) {
                 if (err) {
-                    self.ipfs = ipfsAPI("db1.augur.net", "443", {protocol: "https"});
+                    self.ipfs = ipfsAPI(constants.IPFS_HOST);
                     self.ipfs.add(self.ipfs.Buffer(JSON.stringify(comment)), function (err, files) {
                         if (err) return onFailed(err);
                         self.ipfs.pin.add(files[0].Hash, function (err, pinned) {

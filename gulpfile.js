@@ -15,10 +15,16 @@ function bundle(cb) {
         fullPaths: true,
         debug: true
     }).transform(babelify, {
-        presets: ["es2015"],
+        presets: ["es2015", "react"],
         compact: false,
-        global: true
-    }).bundle().on("finish", cb || function () {});
+        global: true,
+        ignore: /\/node_modules\/buffer\//
+    }).bundle()
+        .on("error", function (err) {
+            console.error(err);
+            this.emit("end");
+        })
+        .on("finish", cb || function () {});
 }
 
 gulp.task("clean", function (cb) {
@@ -26,11 +32,14 @@ gulp.task("clean", function (cb) {
 });
 
 gulp.task("build", function (cb) {
-    bundle(cb).pipe(source("augur.js")).pipe(gulp.dest("dist"));
+    bundle(cb)
+        .pipe(source("augur.js"))
+        .pipe(gulp.dest("dist"));
 });
 
 gulp.task("minify", function (cb) {
-    bundle(cb).pipe(source("augur.min.js"))
+    bundle(cb)
+        .pipe(source("augur.min.js"))
         .pipe(buffer())
         .pipe(uglify())
         .pipe(gulp.dest("dist"));
