@@ -9,10 +9,12 @@ var ConfigActions = {
       host = this.flux.actions.config.connectHosted();
     } else {
       host = this.flux.store('config').getState().host;
-      if (!augur.connect(host)) {
+      if (!host || !augur.connect(host)) {
         host = this.flux.actions.config.connectHosted();
       }
     }
+    augur.rpc.nodes.hosted = ["https://eth1.augur.net"];
+    augur.rpc.excision = false;
     console.log("connected to host:", augur.rpc.nodes.local || augur.rpc.nodes.hosted[0]);
     this.flux.actions.network.checkNetwork();
   },

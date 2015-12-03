@@ -2,7 +2,7 @@ var Fluxxor = require('fluxxor');
 var constants = require('../libs/constants');
 
 var state = {
-  host: "http://127.0.0.1:8545",
+  host: (location.protocol === "https:") ? null : "http://127.0.0.1:8545",
   currentAccount: null,
   privateKey: null,
   handle: null,

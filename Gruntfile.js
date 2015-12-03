@@ -18,7 +18,7 @@ config.browserify.build = {
     browserifyOptions: {
       extensions: ['.jsx', '.js'],
       transform: [
-        ['babelify', {}],
+        ['babelify'],
         ['envify', config.envify.build]
       ]
     }
@@ -32,7 +32,7 @@ config.browserify.watch = _.merge({
 }, config.browserify.build);
 
 config.browserify.watch.options.browserifyOptions.transform = [
-  ['babelify', {}],
+  ['babelify'],
   ['envify', config.envify.debug]
 ];
 
