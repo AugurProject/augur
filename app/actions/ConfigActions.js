@@ -13,8 +13,6 @@ var ConfigActions = {
         host = this.flux.actions.config.connectHosted();
       }
     }
-    augur.rpc.nodes.hosted = ["https://eth1.augur.net"];
-    augur.rpc.excision = false;
     console.log("connected to host:", augur.rpc.nodes.local || augur.rpc.nodes.hosted[0]);
     this.flux.actions.network.checkNetwork();
   },
