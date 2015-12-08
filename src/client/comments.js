@@ -7,7 +7,14 @@
 
 var async = require("async");
 var multihash = require("multi-hash");
-var ipfsAPI = GLOBAL.ipfsAPI || require("ipfs-api");
+var ipfsAPI;
+if (global) {
+    ipfsAPI = global.ipfsAPI || require("ipfs-api");
+} else if (window) {
+    ipfsAPI = window.ipfsAPI || require("ipfs-api");
+} else {
+    ipfsAPI = require("ipfs-api");
+}
 var abi = require("augur-abi");
 var constants = require("../constants");
 

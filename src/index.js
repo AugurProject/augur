@@ -300,6 +300,7 @@ Augur.prototype.connect = function (rpcinfo, ipcpath, callback) {
         } catch (exc) {
             if (this.options.debug.broadcast) console.error(exc);
             this.default_rpc();
+            this.connect();
             return false;
         }
     }

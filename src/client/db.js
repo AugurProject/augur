@@ -89,65 +89,6 @@ module.exports = function () {
             }
             if (!utils.is_function(callback)) return errors.DB_READ_FAILED;
             callback(errors.DB_READ_FAILED);
-        },
-
-        // Read and write methods for Ethereum's LevelDB (deprecated)
-        leveldb: {
-
-            put: function (rpc, handle, data, label, f) {
-                try {
-                    return rpc.broadcast(rpc.marshal(
-                        "putString",
-                        [label, handle, JSON.stringify(data)],
-                        "db_"
-                    ), f);
-                } catch (e) {
-                    if (!f) return errors.DB_WRITE_FAILED;
-                    f(errors.DB_WRITE_FAILED);
-                }
-            }, // put
-
-            get: function (rpc, handle, label, f) {
-                try {
-                    if (f) {
-                        rpc.broadcast(rpc.marshal(
-                            "getString",
-                            [label, handle],
-                            "db_"
-                        ), function (record) {
-                            if (record) {
-                                if (!record.error) {
-                                    return f(JSON.parse(record));
-                                } else if (record.error === -32603) {
-                                    return f('');
-                                } else {
-                                    f(record);
-                                }
-                            }
-                        });
-                    } else {
-                        var record = rpc.broadcast(rpc.marshal(
-                            "getString",
-                            [label, handle],
-                            "db_"
-                        ));
-                        if (record) {
-                            if (!record.error) {
-                                return JSON.parse(record);
-                            } else if (record.error === -32603) {
-                                return '';
-                            } else {
-                                return record;
-                            }
-                        }
-                    }
-                } catch (e) {
-                    console.log(e);
-                    if (!f) return errors.DB_READ_FAILED;
-                    f(errors.DB_READ_FAILED);
-                }
-            } // get
-        
-        } // leveldb
+        }
     };
 };
