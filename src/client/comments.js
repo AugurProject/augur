@@ -49,10 +49,29 @@ module.exports = function () {
                     }
                     var ipfsHash = multihash.encode(abi.unfork(thisLog.data));
                     self.ipfs.object.get(ipfsHash, function (err, obj) {
-                        if (err) {
-                            self.ipfs = ipfsAPI(constants.IPFS_HOST);
-                            self.ipfs.object.get(ipfsHash, function (e, obj) {
-                                if (e) return nextLog(e);
+                        self.ipfs.pin.add(ipfsHash, function (e, pinned) {
+                            if (err) {
+                                self.ipfs = ipfsAPI(constants.IPFS_HOST);
+                                self.ipfs.object.get(ipfsHash, function (e, obj) {
+                                    if (e) return nextLog(e);
+                                    self.ipfs.pin.add(ipfsHash, function (e, pinned) {
+                                        var data = obj.Data;
+                                        data = JSON.parse(data.slice(data.indexOf("{"), data.lastIndexOf("}") + 1));
+                                        var blockNumber = abi.hex(thisLog.blockNumber);
+                                        augur.rpc.getBlock(blockNumber, true, function (block) {
+                                            if (!block || block.error) return nextLog(block);
+                                            comments.push({
+                                                ipfsHash: ipfsHash,
+                                                author: data.author,
+                                                message: data.message || "",
+                                                blockNumber: blockNumber,
+                                                time: block.timestamp
+                                            });
+                                            nextLog();
+                                        });
+                                    });
+                                });
+                            } else {
                                 var data = obj.Data;
                                 data = JSON.parse(data.slice(data.indexOf("{"), data.lastIndexOf("}") + 1));
                                 var blockNumber = abi.hex(thisLog.blockNumber);
@@ -62,31 +81,17 @@ module.exports = function () {
                                         ipfsHash: ipfsHash,
                                         author: data.author,
                                         message: data.message || "",
-                                        blockNumber: blockNumber,
-                                        time: block.timestamp
+                                        blockNumber: parseInt(blockNumber),
+                                        time: parseInt(block.timestamp)
                                     });
                                     nextLog();
                                 });
-                            });
-                        } else {
-                            var data = obj.Data;
-                            data = JSON.parse(data.slice(data.indexOf("{"), data.lastIndexOf("}") + 1));
-                            var blockNumber = abi.hex(thisLog.blockNumber);
-                            augur.rpc.getBlock(blockNumber, true, function (block) {
-                                if (!block || block.error) return nextLog(block);
-                                comments.push({
-                                    ipfsHash: ipfsHash,
-                                    author: data.author,
-                                    message: data.message || "",
-                                    blockNumber: parseInt(blockNumber),
-                                    time: parseInt(block.timestamp)
-                                });
-                                nextLog();
-                            });
-                        }
+                            }
+                        });
                     });
                 }, function (err) {
                     if (err) return cb(err);
+                    comments.reverse();
                     cb(comments);
                 });
             });
