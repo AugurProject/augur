@@ -53,11 +53,12 @@ sudo chmod 666 $IPFS_UPSTART
 cat >$IPFS_UPSTART <<EOL
 #!upstart
 description "ipfs"
-env USER=${USER}
+env USER=augur
+env API_ORIGIN="*"
 start on runlevel [2345]
 stop on runlevel [016]
 respawn
-exec start-stop-daemon --start --chuid $USER --exec ${IPFS_BIN} -- daemon >> ${IPFS_LOG} 2>&1
+exec start-stop-daemon --start --chuid $USER --exec /usr/local/bin/ipfs -- daemon >> /var/log/ipfs.log 2>&1
 EOL
 sudo chmod 644 $IPFS_UPSTART
 

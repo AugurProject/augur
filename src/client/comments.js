@@ -7,6 +7,8 @@
 
 var async = require("async");
 var multihash = require("multi-hash");
+var constants = require("../constants");
+var IPFS_LOCAL = constants.IPFS_LOCAL;
 var ipfsAPI;
 if (global) {
     ipfsAPI = global.ipfsAPI || require("ipfs-api");
@@ -16,7 +18,6 @@ if (global) {
     ipfsAPI = require("ipfs-api");
 }
 var abi = require("augur-abi");
-var constants = require("../constants");
 
 module.exports = function () {
 
@@ -53,7 +54,7 @@ module.exports = function () {
                     self.ipfs.object.get(ipfsHash, function (err, obj) {
                         self.ipfs.pin.add(ipfsHash, function (e, pinned) {
                             if (err) {
-                                self.ipfs = ipfsAPI(constants.IPFS_HOST);
+                                self.ipfs = ipfsAPI(constants.IPFS_REMOTE);
                                 self.ipfs.object.get(ipfsHash, function (e, obj) {
                                     if (e) return nextLog(e);
                                     self.ipfs.pin.add(ipfsHash, function (e, pinned) {
@@ -106,7 +107,7 @@ module.exports = function () {
             this.ipfs.add(this.ipfs.Buffer(JSON.stringify(comment)), function (err, files) {
                 // console.log("ipfs.add:", files);
                 if (err) {
-                    self.ipfs = ipfsAPI(constants.IPFS_HOST);
+                    self.ipfs = ipfsAPI(constants.IPFS_REMOTE);
                     self.ipfs.add(self.ipfs.Buffer(JSON.stringify(comment)), function (err, files) {
                         if (err) return onFailed(err);
                         self.ipfs.pin.add(files[0].Hash, function (err, pinned) {
@@ -125,7 +126,7 @@ module.exports = function () {
                     var hash = (files.constructor === Array) ? files[0].Hash : files.Hash;
                     // if we're on a local IPFS node, pin to hosted node
                     if (self.remote === null) {
-                        ipfsAPI(constants.IPFS_HOST).pin.add(hash, function (err, pinned) {
+                        ipfsAPI(constants.IPFS_REMOTE).pin.add(hash, function (err, pinned) {
                             if (err) console.error("hosted ipfs.pin.add:", err);
                             // console.log("remote ipfs.pin.add:", pinned);
                         });
