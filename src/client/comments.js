@@ -26,6 +26,8 @@ module.exports = function () {
 
         ipfs: ipfsAPI(constants.IPFS_LOCAL),
 
+        remote: null,
+
         getMarketComments: function (market, cb) {
             if (!market || !augur.utils.is_function(cb)) return;
             var self = this;
@@ -121,6 +123,13 @@ module.exports = function () {
                 } else {
                     if (!files) return onFailed("no files added");
                     var hash = (files.constructor === Array) ? files[0].Hash : files.Hash;
+                    // if we're on a local IPFS node, pin to hosted node
+                    if (self.remote === null) {
+                        ipfsAPI(constants.IPFS_HOST).pin.add(hash, function (err, pinned) {
+                            if (err) console.error("hosted ipfs.pin.add:", err);
+                            // console.log("remote ipfs.pin.add:", pinned);
+                        });
+                    }
                     self.ipfs.pin.add(hash, function (err, pinned) {
                         // console.log("ipfs.pin.add:", pinned);
                         if (err) return onFailed(err);
