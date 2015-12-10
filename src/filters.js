@@ -86,7 +86,6 @@ module.exports = function () {
                     }
                 }
             }
-            price_logs.reverse();
             return price_logs;
         },
 
@@ -107,7 +106,6 @@ module.exports = function () {
                     }
                 }
             }
-            creation_logs.reverse();
             return creation_logs;
         },
 
