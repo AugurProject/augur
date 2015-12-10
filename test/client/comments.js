@@ -56,6 +56,9 @@ describe("Comments", function () {
                 assert.property(comments[i], "author");
                 assert.property(comments[i], "message");
                 assert.property(comments[i], "blockNumber");
+                assert.isAbove(comments[i].blockNumber, 0);
+                assert.property(comments[i], "time");
+                assert.isAbove(comments[i].time, 0);
             }
             done();
         });

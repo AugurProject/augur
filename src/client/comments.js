@@ -55,29 +55,38 @@ module.exports = function () {
                                 if (e) return nextLog(e);
                                 var data = obj.Data;
                                 data = JSON.parse(data.slice(data.indexOf("{"), data.lastIndexOf("}") + 1));
-                                comments.push({
-                                    ipfsHash: ipfsHash,
-                                    author: data.author,
-                                    message: data.message || "",
-                                    blockNumber: abi.hex(thisLog.blockNumber)
+                                var blockNumber = abi.hex(thisLog.blockNumber);
+                                augur.rpc.getBlock(blockNumber, true, function (block) {
+                                    if (!block || block.error) return nextLog(block);
+                                    comments.push({
+                                        ipfsHash: ipfsHash,
+                                        author: data.author,
+                                        message: data.message || "",
+                                        blockNumber: blockNumber,
+                                        time: block.timestamp
+                                    });
+                                    nextLog();
                                 });
-                                nextLog();
                             });
                         } else {
                             var data = obj.Data;
                             data = JSON.parse(data.slice(data.indexOf("{"), data.lastIndexOf("}") + 1));
-                            comments.push({
-                                ipfsHash: ipfsHash,
-                                author: data.author,
-                                message: data.message || "",
-                                blockNumber: abi.hex(thisLog.blockNumber)
+                            var blockNumber = abi.hex(thisLog.blockNumber);
+                            augur.rpc.getBlock(blockNumber, true, function (block) {
+                                if (!block || block.error) return nextLog(block);
+                                comments.push({
+                                    ipfsHash: ipfsHash,
+                                    author: data.author,
+                                    message: data.message || "",
+                                    blockNumber: parseInt(blockNumber),
+                                    time: parseInt(block.timestamp)
+                                });
+                                nextLog();
                             });
-                            nextLog();
                         }
                     });
                 }, function (err) {
                     if (err) return cb(err);
-                    comments.reverse();
                     cb(comments);
                 });
             });
@@ -88,6 +97,7 @@ module.exports = function () {
             var self = this;
             var tx = augur.utils.copy(augur.tx.comments.addComment);
             this.ipfs.add(this.ipfs.Buffer(JSON.stringify(comment)), function (err, files) {
+                // console.log("ipfs.add:", files);
                 if (err) {
                     self.ipfs = ipfsAPI(constants.IPFS_HOST);
                     self.ipfs.add(self.ipfs.Buffer(JSON.stringify(comment)), function (err, files) {
@@ -104,15 +114,16 @@ module.exports = function () {
                         });
                     });
                 } else {
-                    self.ipfs.pin.add(files[0].Hash, function (err, pinned) {
+                    if (!files) return onFailed("no files added");
+                    var hash = (files.constructor === Array) ? files[0].Hash : files.Hash;
+                    self.ipfs.pin.add(hash, function (err, pinned) {
+                        // console.log("ipfs.pin.add:", pinned);
                         if (err) return onFailed(err);
-                        if (files && files.constructor === Array && files.length) {
-                            tx.params = [
-                                abi.unfork(comment.marketId, true),
-                                abi.hex(multihash.decode(files[0].Hash), true)
-                            ];
-                            augur.transact(tx, onSent, onSuccess, onFailed);
-                        }
+                        tx.params = [
+                            abi.unfork(comment.marketId, true),
+                            abi.hex(multihash.decode(hash), true)
+                        ];
+                        augur.transact(tx, onSent, onSuccess, onFailed);
                     });
                 }
             });
