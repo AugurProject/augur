@@ -51,8 +51,7 @@ var Market = React.createClass({
       cashBalance: assetState.cashBalance,
       account: account,
       handle: handle,
-      blockNumber: flux.store('network').getState().blockNumber,
-      commentFilter: (market && market.id) ? augur.comments.initComments(abi.hex(market.id)) : null
+      blockNumber: flux.store('network').getState().blockNumber
     };
   },
 

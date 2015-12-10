@@ -88,7 +88,7 @@ var MarketActions = {
 
   loadMarkets: function () {
     var self = this;
-    var chunk = 25;
+    var chunk = 500;
     var branchId = this.flux.store('branch').getCurrentBranch().id;
 
     // get data from geth via RPC
