@@ -4,7 +4,8 @@
   "description": "Web client for Augur, a prediction markets platform",
   "main": "app/main.jsx",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "ssl": "node server.js -s"
   },
   "engines": {
     "node": "^0.12.x"
@@ -33,7 +34,7 @@
     "async": "^1.4.2",
     "augur-abi": "^0.2.6",
     "augur-contracts": "^0.1.7",
-    "augur.js": "^0.11.5",
+    "augur.js": "^0.11.8",
     "babelify": "^6.3.0",
     "bignumber.js": "^2.0.7",
     "bootstrap": "^3.3.4",

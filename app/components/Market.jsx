@@ -272,10 +272,10 @@ var CommentList = React.createClass({
   render: function () {
     var commentList = _.map(this.props.comments, function (c) {
 
-      var identicon = 'data:image/png;base64,' + new Identicon(c.from, 50).toString();
+      var identicon = 'data:image/png;base64,' + new Identicon(c.author, 50).toString();
 
       return (
-        <div className="comment" key={ c.ipfsHash }>
+        <div className="comment" key={ c.ipfsHash || c.time.toString() + c.author }>
           <div className="user avatar" style={{ backgroundImage: 'url(' + identicon + ')' }}></div>
           <div className="box">
             <p>{ c.message }</p>

@@ -19,24 +19,43 @@ var MarketActions = {
     }
   },
 
-  updateComments: function (comments, marketId) {
+  updateComments: function (message, marketId, author) {
     var market = this.flux.store("market").getMarket(marketId);
-    market.comments = comments;
+    var comment = {
+      author: author,
+      blockNumber: self.flux.store('network').getState().blockNumber,
+      time: Math.floor((new Date()).getTime() / 1000),
+      message: message,
+      ipfsHash: null
+    };
+    if (market.comments) {
+      market.comments = [comment].concat(market.comments);
+    } else {
+      market.comments = [comment];
+    }
     this.dispatch(constants.market.UPDATE_MARKET_SUCCESS, { market: market });
   },
 
   addComment: function (commentText, marketId, account) {
+    var self = this;
     if (commentText && marketId) {
-      var updatedComments = augur.comments.addMarketComment({
+      var author = account.address || this.flux.store("config").getAccount();
+      augur.comments.addMarketComment({
         marketId: abi.hex(marketId),
-        author: account.address || this.flux.store("config").getAccount(),
+        author: author,
         message: commentText
+      }, function (res) {
+        self.flux.actions.market.updateComments(commentText, marketId, author);
+      }, function (res) {
+        // console.log("comment saved:", res);
+      }, function (err) {
+        console.error("addComment error:", err);
       });
-      this.flux.actions.market.updateComments(updatedComments, marketId);
     }
   },
 
   parseMarketInfo: function (marketInfo, callback) {
+    var self = this;
     var marketId = abi.bignum(marketInfo._id);
     var block = self.flux.store('network').getState().blockNumber;
     var account = self.flux.store('config').getAccount();
