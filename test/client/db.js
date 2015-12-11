@@ -10,6 +10,7 @@ var assert = require("chai").assert;
 var abi = require("augur-abi");
 var constants = require("../../src/constants");
 var utils = require("../../src/utilities");
+var errors = require("../../src/errors");
 var augurpath = "../../src/index";
 var augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
 
@@ -40,29 +41,39 @@ describe("Database", function () {
 
     it("retrieve account", function (done) {
 
-        // synchronous
-        var stored = augur.db.get(handle);
-        if (stored && stored.error) return done(stored);
-        assert.strictEqual(handle, stored.handle);
-        assert.strictEqual(account.privateKey, abi.hex(stored.privateKey, true));
-        assert.strictEqual(account.iv, abi.hex(stored.iv, true));
-        assert.strictEqual(account.salt, abi.hex(stored.salt, true));
-        assert.strictEqual(account.mac, abi.hex(stored.mac, true));
-        assert.strictEqual(account.id, abi.hex(stored.id, true));
+        // should return DB_READ_FAILED error
+        var badhandle = new Date().toString();
+        var response = augur.db.get(badhandle);
+        if (!response.error) return done(response);
+        assert.deepEqual(response, errors.DB_READ_FAILED);
+        augur.db.get(badhandle, function (response) {
+            if (!response.error) return done(response);
+            assert.deepEqual(response, errors.DB_READ_FAILED);
 
-        // asynchronous
-        augur.db.get(handle, function (storedAccount) {
-            if (storedAccount && storedAccount.error) return done(storedAccount);
-            assert.strictEqual(handle, storedAccount.handle);
-            assert.strictEqual(account.privateKey, abi.hex(storedAccount.privateKey, true));
-            assert.strictEqual(account.iv, abi.hex(storedAccount.iv, true));
-            assert.strictEqual(account.salt, abi.hex(storedAccount.salt, true));
-            assert.strictEqual(account.mac, abi.hex(storedAccount.mac, true));
-            assert.strictEqual(account.id, abi.hex(storedAccount.id, true));
-            done();
+            // synchronous
+            var stored = augur.db.get(handle);
+            if (stored && stored.error) return done(stored);
+            assert.strictEqual(handle, stored.handle);
+            assert.strictEqual(account.privateKey, abi.hex(stored.privateKey, true));
+            assert.strictEqual(account.iv, abi.hex(stored.iv, true));
+            assert.strictEqual(account.salt, abi.hex(stored.salt, true));
+            assert.strictEqual(account.mac, abi.hex(stored.mac, true));
+            assert.strictEqual(account.id, abi.hex(stored.id, true));
+
+            // asynchronous
+            augur.db.get(handle, function (storedAccount) {
+                if (storedAccount && storedAccount.error) return done(storedAccount);
+                assert.strictEqual(handle, storedAccount.handle);
+                assert.strictEqual(account.privateKey, abi.hex(storedAccount.privateKey, true));
+                assert.strictEqual(account.iv, abi.hex(storedAccount.iv, true));
+                assert.strictEqual(account.salt, abi.hex(storedAccount.salt, true));
+                assert.strictEqual(account.mac, abi.hex(storedAccount.mac, true));
+                assert.strictEqual(account.id, abi.hex(storedAccount.id, true));
+                done();
+            });
+
         });
     });
-
 });
 
 })();
