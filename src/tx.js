@@ -22,26 +22,6 @@ module.exports = function (network) {
 
         },
 
-        // accounts: sha256(handle) => account info
-        accounts: {
-
-            register: {
-                to: contracts.accounts,
-                method: "register",
-                signature: "iiiiii",
-                send: true,
-                returns: "number"
-            },
-
-            getAccount: {
-                to: contracts.accounts,
-                method: "getAccount",
-                signature: "i",
-                returns: "hash[]"
-            }
-
-        },
-
         // faucets.se
         cashFaucet: {
             to: contracts.faucets,
