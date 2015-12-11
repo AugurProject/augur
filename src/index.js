@@ -25,6 +25,7 @@ function Augur() {
     this.utils = require("./utilities");
     this.constants = require("./constants");
     this.errors = require("./errors");
+    this.db = require("./client/db");
     this.numeric = abi;
 
     rpc.debug = this.options.debug;
@@ -50,7 +51,6 @@ function Augur() {
     this.web = this.Accounts();
     this.comments = this.Comments();
     this.filters = this.Filters();
-    this.db = this.Database();
 }
 
 /************************
@@ -59,7 +59,6 @@ function Augur() {
 
 Augur.prototype.Accounts = require("./client/accounts");
 Augur.prototype.Comments = require("./client/comments");
-Augur.prototype.Database = require("./client/db");
 Augur.prototype.Filters = require("./filters");
 
 /*******************************

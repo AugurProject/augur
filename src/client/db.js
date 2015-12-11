@@ -2,93 +2,62 @@
  * Database methods
  */
 
-"use strict";
-
 var abi = require("augur-abi");
+if (typeof localStorage === "undefined" || localStorage === null) {
+    var LocalStorage = require("node-localstorage").LocalStorage;
+    localStorage = new LocalStorage("../../data/scratch");
+}
 var errors = require("../errors");
 var constants = require("../constants");
 var utils = require("../utilities");
 
-module.exports = function () {
+module.exports = {
 
-    var augur = this;
-
-    return {
-
-        put: function (label, data, callback) {
-            if (label !== null && label !== undefined && label !== '' && data) {
-                var noop = function () {};
-                var tx = abi.copy(augur.tx.accounts.register);
-                tx.params = [
-                    abi.prefix_hex(utils.sha256(label)),
-                    data.privateKey,
-                    abi.pad_left(data.iv, 64, true),
-                    data.salt,
-                    data.mac,
-                    abi.pad_left(data.id, 64, true)
-                ];
-                return augur.transact(tx, noop, function (res) {
-                    if (res && res.callReturn) {
-                        if (res.callReturn === "0") {
-                            return callback(errors.DB_WRITE_FAILED);
-                        }
-                        return callback(res.callReturn);
-                    }
-                    return callback(errors.DB_WRITE_FAILED);
-                }, callback);
-            }
-            if (!utils.is_function(callback)) return errors.DB_WRITE_FAILED;
-            callback(errors.DB_WRITE_FAILED);
-        },
-
-        get: function (label, callback) {
-            if (label && label !== '') {
-                var tx = abi.copy(augur.tx.accounts.getAccount);
-                tx.params = abi.prefix_hex(utils.sha256(label));
-                if (utils.is_function(callback)) {
-                    return augur.fire(tx, function (account) {
-                        if (account && account.length) {
-                            for (var i = 0, len = account.length; i < len; ++i) {
-                                if (parseInt(account[i]) === 0) {
-                                    return callback(errors.DB_READ_FAILED);
-                                }
-                            }
-                            return callback({
-                                handle: label,
-                                privateKey: new Buffer(abi.unfork(account[0]), "hex"),
-                                iv: new Buffer(abi.pad_left(account[1], 32), "hex"),
-                                salt: new Buffer(abi.unfork(account[2]), "hex"),
-                                mac: new Buffer(abi.unfork(account[3]), "hex"),
-                                id: new Buffer(abi.pad_left(account[4], 32), "hex")
-                            });
-                        }
-                        var err = abi.copy(errors.DB_READ_FAILED);
-                        if (account && account.error && account.message) {
-                            err.message += " [" + account.error + ": " + account.message + "]";
-                        }
-                        callback(err);
-                    });
-                }
-                var account = augur.fire(tx);
-                if (account && account.length) {
-                    for (var i = 0, len = account.length; i < len; ++i) {
-                        if (parseInt(account[i]) === 0) {
-                            return errors.DB_READ_FAILED;
-                        }
-                    }
-                    return {
-                        handle: label,
-                        privateKey: new Buffer(abi.unfork(account[0]), "hex"),
-                        iv: new Buffer(abi.pad_left(account[1], 32), "hex"),
-                        salt: new Buffer(abi.unfork(account[2]), "hex"),
-                        mac: new Buffer(abi.unfork(account[3]), "hex"),
-                        id: new Buffer(abi.pad_left(account[4], 32), "hex")
-                    };
-                }
-                return errors.DB_READ_FAILED;
-            }
-            if (!utils.is_function(callback)) return errors.DB_READ_FAILED;
-            callback(errors.DB_READ_FAILED);
+    put: function (label, data, cb) {
+        if (label !== null && label !== undefined && label !== '' && data) {
+            var account = {
+                label: abi.prefix_hex(utils.sha256(label)),
+                privateKey: data.privateKey,
+                iv: abi.pad_left(data.iv, 32, true),
+                salt: data.salt,
+                mac: data.mac,
+                id: abi.pad_left(data.id, 32, true)
+            };
+            localStorage.setItem(account.label, JSON.stringify(account));
+            if (!utils.is_function(cb)) return true;
+            return cb(true);
         }
-    };
+        if (!utils.is_function(cb)) return errors.DB_WRITE_FAILED;
+        cb(errors.DB_WRITE_FAILED);
+    },
+
+    get: function (label, cb) {
+        if (label && label !== '') {
+            var key = abi.prefix_hex(utils.sha256(label));
+            try {
+                var item = JSON.parse(localStorage.getItem(key));
+                if (item && item.constructor === Object && item.privateKey) {
+                    var account = {
+                        handle: label,
+                        privateKey: new Buffer(abi.unfork(item.privateKey), "hex"),
+                        iv: new Buffer(abi.pad_left(item.iv, 32), "hex"),
+                        salt: new Buffer(abi.unfork(item.salt), "hex"),
+                        mac: new Buffer(abi.unfork(item.mac), "hex"),
+                        id: new Buffer(abi.pad_left(item.id, 32), "hex")
+                    };
+                    if (!utils.is_function(cb)) return account;
+                    return cb(account);
+                }
+                if (!utils.is_function(cb)) return errors.DB_READ_FAILED;
+                return cb(errors.DB_READ_FAILED);
+            } catch (exc) {
+                console.error(exc);
+                if (!utils.is_function(cb)) return errors.DB_READ_FAILED;
+                return cb(errors.DB_READ_FAILED);
+            }
+        }
+        if (!utils.is_function(cb)) return errors.DB_READ_FAILED;
+        cb(errors.DB_READ_FAILED);
+    }
+
 };

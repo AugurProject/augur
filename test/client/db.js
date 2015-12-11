@@ -15,16 +15,6 @@ var augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
 
 describe("Database", function () {
 
-    var account = {
-        handle: "jack@tinybike.net",
-        privateKey: "deadbeef",
-        iv: "zombeef"
-    };
-
-    beforeEach(function () {
-        augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
-    });
-
     var handle = new Date().toString();
     var account = {
         handle: abi.prefix_hex(utils.sha256(handle)),
@@ -35,11 +25,15 @@ describe("Database", function () {
         id: "0x060f5d691b1245c2a8a582db1e7c5213"
     };
 
+    beforeEach(function () {
+        augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
+    });
+
     it("save account", function (done) {
         this.timeout(augur.constants.TIMEOUT);
         augur.db.put(handle, account, function (res) {
             if (res && res.error) return done(res);
-            assert.strictEqual(res, "1");
+            assert.isTrue(res);
             done();
         });
     });
@@ -68,6 +62,7 @@ describe("Database", function () {
             done();
         });
     });
+
 });
 
 })();
