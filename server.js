@@ -29,7 +29,7 @@ function serveHTTP(req, res) {
     var re = /\/(css|images|fonts|app\.js|libs\/ipfsapi\.min\.js)/;
 
     // route to app if not static URI
-    if (!req.url.match(re)) req.url = "/augur.html";
+    if (!req.url.match(re)) req.url = "/index.html";
 
     file.serve(req, res, function (err, result) {
         if (err) {

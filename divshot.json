@@ -3,7 +3,7 @@
   "root": "./app",
   "cache_control": {},
   "routes": {
-    "**": "augur.html",
+    "**": "index.html",
     "/fonts/**": "fonts/**",
     "/css/**": "css/**",
     "/images/**": "images/**",
