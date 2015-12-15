@@ -255,4 +255,82 @@ describe("initial data load", function () {
         });
     });
 
+    describe("get price logs", function () {
+
+        var test = function (record, priceType) {
+            assert.isObject(record);
+            assert.property(record, "year");
+            assert.isNumber(record.year);
+            assert.isAbove(record.year, 2014);
+            assert.property(record, "month");
+            assert.isNumber(record.month);
+            assert(record.month > 0 && record.month < 13);
+            assert.property(record, "day");
+            assert.isNumber(record.day);
+            assert(record.day > 0 && record.day < 32);
+            assert.property(record, "timestamp");
+            assert.isNumber(record.timestamp);
+            assert.isAbove(record.timestamp, 0);
+            assert.property(record, priceType);
+            assert.isNumber(record[priceType]);
+            assert.property(record, "volume");
+            assert.isNumber(record.volume);
+            assert.isAbove(record.volume, 0);
+        };
+
+        var callback = function (prices, priceType, done) {
+            for (var outcome in prices) {
+                if (!prices.hasOwnProperty(outcome)) continue;
+                assert.isArray(prices[outcome]);
+                if (!prices[outcome].length) continue;
+                for (var i = 0, len = prices[outcome].length; i < len; ++i) {
+                    test(prices[outcome][i], priceType);
+                }
+            }
+            done();
+        };
+
+        if (!process.env.CONTINUOUS_INTEGRATION) {
+            before(function (done) {
+                this.timeout(augur.constants.TIMEOUT);
+                augur.buyShares({
+                    branchId: branchId,
+                    marketId: marketId,
+                    outcome: "1",
+                    amount: "1.3",
+                    onSent: function (r) {
+                        assert.property(r, "txHash");
+                        assert.property(r, "callReturn");
+                    },
+                    onSuccess: function (r) {
+                        assert.property(r, "txHash");
+                        assert.property(r, "callReturn");
+                        assert.property(r, "blockHash");
+                        assert.property(r, "blockNumber");
+                        assert.isAbove(parseInt(r.blockNumber), 0);
+                        assert.strictEqual(r.from, augur.coinbase);
+                        assert.strictEqual(r.to, augur.contracts.buyAndSellShares);
+                        assert.strictEqual(parseInt(r.value), 0);
+                        done();
+                    },
+                    onFailed: done
+                });
+            });
+        }
+
+        it("getPrices(" + marketId + ")", function (done) {
+            this.timeout(augur.constants.TIMEOUT);
+            augur.getPrices(marketId, function (prices) {
+                callback(prices, "price", done);
+            });
+        });
+
+        it("getClosingPrices(" + marketId + ")", function (done) {
+            this.timeout(augur.constants.TIMEOUT);
+            augur.getClosingPrices(marketId, function (prices) {
+                callback(prices, "closingPrice", done);
+            });
+        });
+    });
+
 });

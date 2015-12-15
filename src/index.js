@@ -1674,11 +1674,12 @@ Augur.prototype.checkPeriod = function (branch) {
 
 // new UI
 
-Augur.prototype.getMostActive = function (branch, callback) {
-    if (this.utils.is_function(branch) && !callback) {
-        callback = branch;
+Augur.prototype.getMostActive = function (branch, cb) {
+    if (this.utils.is_function(branch) && !cb) {
+        cb = branch;
         branch = this.branches.dev;
     }
+    if (!branch || !this.utils.is_function(cb)) return;
     this.getMarketsInfo({
         branch: branch,
         offset: 0,
@@ -1724,7 +1725,7 @@ Augur.prototype.getMostActive = function (branch, callback) {
             childNodes.sort(function (a, b) {
                 return b.totalVolume - a.totalVolume;
             });
-            callback({
+            cb({
                 nodeId: "MOST_ACTIVE",
                 nodeType: "MOST_ACTIVE",
                 name: "Most Active",
@@ -1735,11 +1736,12 @@ Augur.prototype.getMostActive = function (branch, callback) {
     });
 };
 
-Augur.prototype.getNavigation = function (branch, callback) {
-    if (this.utils.is_function(branch) && !callback) {
-        callback = branch;
+Augur.prototype.getNavigation = function (branch, cb) {
+    if (this.utils.is_function(branch) && !cb) {
+        cb = branch;
         branch = this.branches.dev;
     }
+    if (!branch || !this.utils.is_function(cb)) return;
     this.getMarketsInfo({
         branch: branch,
         offset: 0,
@@ -1760,8 +1762,162 @@ Augur.prototype.getNavigation = function (branch, callback) {
                     lastTradeCostPerShareFormatted: price.toFixed(2) + " CASH"
                 });
             }
-            callback(navigation);
+            cb(navigation);
         }
+    });
+};
+
+Augur.prototype.getClosingPrices = function (market, cb) {
+    var self = this;
+    if (this.utils.is_function(market) && !cb) {
+        cb = market;
+        market = this.branches.dev;
+    }
+    if (!market || !this.utils.is_function(cb)) return;
+    this.filters.eth_getLogs({
+        fromBlock: "0x1",
+        toBlock: "latest",
+        address: this.contracts.buyAndSellShares,
+        topics: ["updatePrice"]
+    }, function (logs) {
+        if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
+            return cb(null);
+        }
+        if (logs.error) return cb(logs);
+        var outcomes = [1, 2]; // TODO don't hardcode
+        var prices = {};
+        async.eachSeries(outcomes, function (outcome, nextOutcome) {
+            var priceLog = self.filters.search_price_logs(logs, market, outcome);
+            prices[outcome] = [];
+            if (!priceLog) return nextOutcome(outcome);
+            if (priceLog.constructor !== Array || !priceLog.length) {
+                return nextOutcome();
+            }
+            var timestamp, curDate, prevDate = {};
+            var closing = {price: null, volume: 0};
+            async.eachSeries(priceLog, function (price, nextPrice) {
+                rpc.getBlock(price.blockNumber, true, function (block) {
+                    if (!block) return nextPrice(price);
+                    if (block.error) return nextPrice(block);
+                    timestamp = parseInt(block.timestamp);
+                    var dt = new Date(timestamp * 1000);
+                    // buy&sellShares.se 102: amount = -price / cost
+                    var amount = abi.bignum(-1)
+                                    .times(abi.bignum(price.price))
+                                    .dividedBy(abi.bignum(price.cost))
+                                    .toNumber();
+                    // daily binning
+                    curDate = {
+                        year: dt.getUTCFullYear(),
+                        day: dt.getUTCDate(),
+                        month: dt.getUTCMonth() + 1
+                    };
+                    if (prevDate.year !== undefined) {
+                        if (curDate.year === prevDate.year &&
+                            curDate.day === prevDate.day &&
+                            curDate.month === prevDate.month) {
+                            // same day
+                            closing.price = abi.number(price.price);
+                            closing.volume += amount;
+                        } else {
+                            // new day
+                            prices[outcome].push({
+                                year: curDate.year,
+                                day: curDate.day,
+                                month: curDate.month,
+                                closingPrice: closing.price,
+                                volume: closing.volume,
+                                timestamp: timestamp
+                            });
+                            closing = {price: null, volume: 0};
+                        }
+                    }
+                    prevDate.year = curDate.year;
+                    prevDate.day = curDate.day;
+                    prevDate.month = curDate.month;
+                    nextPrice();
+                });
+            }, function (err) {
+                if (err) return nextOutcome(err);
+                // record the last day
+                prices[outcome].push({
+                    year: curDate.year,
+                    day: curDate.day,
+                    month: curDate.month,
+                    closingPrice: closing.price,
+                    volume: closing.volume,
+                    timestamp: timestamp
+                });
+                prices[outcome].sort(function (a, b) {
+                    return a.timestamp - b.timestamp;
+                });
+                nextOutcome();
+            });
+        }, function (err) {
+            if (err) return cb(err);
+            cb(prices);
+        });
+    });
+};
+
+Augur.prototype.getPrices = function (market, cb) {
+    var self = this;
+    if (this.utils.is_function(market) && !cb) {
+        cb = market;
+        market = this.branches.dev;
+    }
+    if (!market || !this.utils.is_function(cb)) return;
+    this.filters.eth_getLogs({
+        fromBlock: "0x1",
+        toBlock: "latest",
+        address: this.contracts.buyAndSellShares,
+        topics: ["updatePrice"]
+    }, function (logs) {
+        if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
+            return cb(null);
+        }
+        if (logs.error) return cb(logs);
+        var outcomes = [1, 2]; // TODO don't hardcode
+        var prices = {};
+        async.eachSeries(outcomes, function (outcome, nextOutcome) {
+            var priceLog = self.filters.search_price_logs(logs, market, outcome);
+            prices[outcome] = [];
+            if (!priceLog) return nextOutcome(outcome);
+            if (priceLog.constructor !== Array || !priceLog.length) {
+                return nextOutcome();
+            }
+            async.eachSeries(priceLog, function (price, nextPrice) {
+                rpc.getBlock(price.blockNumber, true, function (block) {
+                    if (!block) return nextPrice(price);
+                    if (block.error) return nextPrice(block);
+                    var timestamp = parseInt(block.timestamp);
+                    var dt = new Date(timestamp * 1000);
+                    // buy&sellShares.se 102: amount = -price / cost
+                    var amount = abi.bignum(-1)
+                                    .times(abi.bignum(price.price))
+                                    .dividedBy(abi.bignum(price.cost))
+                                    .toNumber();
+                    prices[outcome].push({
+                        year: dt.getYear() + 1900,
+                        day: dt.getDay(),
+                        month: dt.getMonth(),
+                        price: abi.number(price.price),
+                        volume: amount,
+                        timestamp: timestamp
+                    });
+                    nextPrice();
+                });
+            }, function (err) {
+                if (err) return nextOutcome(err);
+                prices[outcome].sort(function (a, b) {
+                    return a.timestamp - b.timestamp;
+                });
+                nextOutcome();
+            });
+        }, function (err) {
+            if (err) return cb(err);
+            cb(prices);
+        });
     });
 };
 
