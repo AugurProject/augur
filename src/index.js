@@ -1224,7 +1224,6 @@ Augur.prototype.getMarketsInfo = function (branch, offset, numMarketsToLoad, cal
     var cb = function (marketsArray) {
         if (typeof marketsArray === "object" &&
             marketsArray.error === 500 && ++count < 4) {
-            console.log("fail", count);
             return self.fire(tx, cb);
         }
         callback(self.parseMarketsArray(marketsArray));
@@ -1671,6 +1670,99 @@ Augur.prototype.checkPeriod = function (branch) {
     var currentPeriod = Math.floor(rpc.blockNumber() / Number(this.getPeriodLength(branch)));
     var periodsBehind = (currentPeriod - 1) - period;
     return periodsBehind;
+};
+
+// new UI
+
+Augur.prototype.getMostActive = function (branch, callback) {
+    if (this.utils.is_function(branch) && !callback) {
+        callback = branch;
+        branch = this.branches.dev;
+    }
+    this.getMarketsInfo({
+        branch: branch,
+        offset: 0,
+        numMarketsToLoad: 0,
+        callback: function (marketsInfo) {
+            var price, info, formatted;
+            var childNodes = [];
+            var volume = 0;
+            for (var market in marketsInfo) {
+                if (!marketsInfo.hasOwnProperty(market)) continue;
+                info = marketsInfo[market];
+                price = abi.number(info.outcomes[1].price);
+                formatted = price.toFixed(2);
+                if (formatted === "-0.00") formatted = "0.00";
+                for (var i = 0, len = info.outcomes.length; i < len; ++i) {
+                    volume += abi.number(info.outcomes[i].outstandingShares);
+                }
+                childNodes.push({
+                    nodeId: "CONTRACT" + market,
+                    nodeType: "CONTRACT",
+                    name: info.description,
+                    childNodes: null,
+                    id: market,
+                    eventName: info.description,
+                    imagePath: null,
+                    displayOrder: 0,
+                    tickSize: 0.1,
+                    tickValue: 0.01,
+                    lastTradePrice: price,
+                    lastTradePriceFormatted: formatted,
+                    lastTradeCostPerShare: price,
+                    lastTradeCostPerShareFormatted: formatted + " CASH",
+                    sessionChangePrice: 0.0,
+                    sessionChangePriceFormatted: "+0.0",
+                    sessionChangeCostPerShare: 0.0,
+                    sessionChangeCostPerShareFormatted: "0.00 CASH",
+                    totalVolume: abi.number(volume.toFixed(2)),
+                    bestBidPrice: price,
+                    bestAskPrice: price,
+                    leaf: true
+                });
+            }
+            childNodes.sort(function (a, b) {
+                return b.totalVolume - a.totalVolume;
+            });
+            callback({
+                nodeId: "MOST_ACTIVE",
+                nodeType: "MOST_ACTIVE",
+                name: "Most Active",
+                childNodes: childNodes,
+                leaf: false
+            });
+        }
+    });
+};
+
+Augur.prototype.getNavigation = function (branch, callback) {
+    if (this.utils.is_function(branch) && !callback) {
+        callback = branch;
+        branch = this.branches.dev;
+    }
+    this.getMarketsInfo({
+        branch: branch,
+        offset: 0,
+        numMarketsToLoad: 0,
+        callback: function (marketsInfo) {
+            var info, price;
+            var navigation = [];
+            for (var market in marketsInfo) {
+                if (!marketsInfo.hasOwnProperty(market)) continue;
+                info = marketsInfo[market];
+                price = abi.number(info.outcomes[1].price);
+                navigation.push({
+                    id: info._id,
+                    name: info.description,
+                    lastTradePrice: price,
+                    lastTradePriceFormatted: price.toFixed(2),
+                    lastTradeCostPerShare: price,
+                    lastTradeCostPerShareFormatted: price.toFixed(2) + " CASH"
+                });
+            }
+            callback(navigation);
+        }
+    });
 };
 
 // filter API
