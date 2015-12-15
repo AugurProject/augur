@@ -99,13 +99,13 @@ describe("markets.se", function () {
     describe("getMarketInfo", function () {
         it("sync", function () {
             this.timeout(augur.constants.TIMEOUT);
-            var info = augur.getMarketInfo(marketId);
+            var info = augur.getMarketInfo(market_id);
             if (info.error) throw info;
             testMarketInfo(info);
         });
         it("async", function (done) {
             this.timeout(augur.constants.TIMEOUT);
-            augur.getMarketInfo(marketId, function (info) {
+            augur.getMarketInfo(market_id, function (info) {
                 if (info.error) return done(info);
                 testMarketInfo(info);
                 done();
