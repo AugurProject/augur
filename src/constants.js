@@ -32,5 +32,7 @@ module.exports = {
     IVSIZE: 16,
 
     IPFS_LOCAL: {host: "localhost", port: "5001", protocol: "http"},
-    IPFS_REMOTE: {host: "ipfs.augur.net", port: "443", protocol: "https"}
+    IPFS_REMOTE: {host: "ipfs.augur.net", port: "443", protocol: "https"},
+
+    CHROME_ID: "odlcbngbdolepbmofbcllpldjngefaeb"
 };

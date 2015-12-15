@@ -17,6 +17,8 @@ BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
 module.exports = {
 
+    pass: function (o) { return o; },
+
     is_function: function (f) {
         return Object.prototype.toString.call(f) === "[object Function]";
     },

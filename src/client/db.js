@@ -25,7 +25,18 @@ module.exports = {
             };
             localStorage.setItem(account.label, JSON.stringify(account));
             if (!utils.is_function(cb)) return true;
-            return cb(true);
+            if (typeof chrome === "undefined" || !chrome || !chrome.runtime) {
+                return cb(true);
+            }
+            var item = {};
+            item[account.label] = JSON.stringify(account);
+            console.log("[db] chrome id:", constants.CHROME_ID);
+            console.log("[db] item:", item);
+            chrome.runtime.sendMessage(constants.CHROME_ID, item, null, function (res) {
+                console.log("[db] response:", res);
+                console.log(chrome.runtime.lastError);
+                return cb(true);
+            });
         }
         if (!utils.is_function(cb)) return errors.DB_WRITE_FAILED;
         cb(errors.DB_WRITE_FAILED);

@@ -1173,9 +1173,8 @@ Augur.prototype.getMarketInfo = function (market, callback) {
     if (marketInfo) {
         marketInfo._id = market;
         return marketInfo;
-    } else {
-        console.error(marketInfo);
     }
+    console.error("augur.getMarketInfo:", JSON.stringify(marketInfo, null, 2));
 };
 Augur.prototype.parseMarketsArray = function (marketsArray) {
     var len, rawInfo, marketID;
@@ -1193,19 +1192,44 @@ Augur.prototype.parseMarketsArray = function (marketsArray) {
         }
         return marketsInfo;
     }
-    console.log(marketsArray);
+    return marketsArray;
 };
 Augur.prototype.getMarketsInfo = function (branch, offset, numMarketsToLoad, callback) {
     var self = this;
-    var tx = this.utils.copy(this.tx.getMarketsInfo);
-    var unpacked = this.utils.unpack(branch, this.utils.labels(this.getMarketsInfo), arguments);
-    tx.params = unpacked.params;
-    if (unpacked && this.utils.is_function(unpacked.cb[0])) {
-        return this.fire(tx, function (marketsArray) {
-            unpacked.cb[0](self.parseMarketsArray(marketsArray));
-        });
+    if (branch && branch.constructor === Object && branch.branch) {
+        offset = branch.offset;
+        numMarketsToLoad = branch.numMarketsToLoad;
+        if (this.utils.is_function(branch.callback)) {
+            callback = branch.callback;
+        }
+        branch = branch.branch;
     }
-    return this.parseMarketsArray(this.fire(tx));
+    if (callback === undefined) {
+        if (this.utils.is_function(offset) && numMarketsToLoad === undefined) {
+            callback = offset;
+            offset = undefined;
+        } else if (this.utils.is_function(numMarketsToLoad)) {
+            callback = numMarketsToLoad;
+            numMarketsToLoad = undefined;
+        }
+    }
+    offset = offset || 0;
+    numMarketsToLoad = numMarketsToLoad || 0;
+    var tx = this.utils.copy(this.tx.getMarketsInfo);
+    tx.params = [branch, offset, numMarketsToLoad];
+    if (!this.utils.is_function(callback)) {
+        return this.parseMarketsArray(this.fire(tx));
+    }
+    var count = 0;
+    var cb = function (marketsArray) {
+        if (typeof marketsArray === "object" &&
+            marketsArray.error === 500 && ++count < 4) {
+            console.log("fail", count);
+            return self.fire(tx, cb);
+        }
+        callback(self.parseMarketsArray(marketsArray));
+    };
+    this.fire(tx, cb);
 };
 Augur.prototype.getMarketEvents = function (market, callback) {
     // market: sha256 hash id

@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "0.11.12",
+  "version": "0.11.13",
   "description": "Augur JavaScript API",
   "main": "src/index.js",
   "scripts": {
@@ -26,7 +26,7 @@
     "ethrpc": "^0.4.1",
     "ipfs-api": "^2.9.11",
     "js-sha3": "^0.3.1",
-    "keythereum": "^0.1.9",
+    "keythereum": "^0.2.0",
     "moment": "^2.10.3",
     "multi-hash": "^0.1.1",
     "node-localstorage": "^0.6.0",

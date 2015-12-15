@@ -5,6 +5,7 @@
 
 "use strict";
 
+var async = require("async");
 var assert = require("chai").assert;
 var abi = require("augur-abi");
 var utils = require("../../src/utilities");
@@ -98,79 +99,16 @@ describe("markets.se", function () {
     describe("getMarketInfo", function () {
         it("sync", function () {
             this.timeout(augur.constants.TIMEOUT);
-            var info = augur.getMarketInfo(market_id);
+            var info = augur.getMarketInfo(marketId);
             if (info.error) throw info;
             testMarketInfo(info);
         });
         it("async", function (done) {
             this.timeout(augur.constants.TIMEOUT);
-            augur.getMarketInfo(market_id, function (info) {
+            augur.getMarketInfo(marketId, function (info) {
                 if (info.error) return done(info);
                 testMarketInfo(info);
                 done();
-            });
-        });
-    });
-    describe("getMarketsInfo", function () {
-        var test = function (marketInfo, done) {
-            assert.isObject(marketInfo);
-            assert.isAbove(Object.keys(marketInfo).length, 0);
-            for (var market in marketInfo) {
-                if (!marketInfo.hasOwnProperty(market)) continue;
-                testMarketInfo(marketInfo[market]);
-            }
-            if (done) done();
-        };
-        var params = {
-            branch: branch_id,
-            offset: 0,
-            numMarketsToLoad: 10
-        };
-        it("sync/positional", function () {
-            this.timeout(augur.constants.TIMEOUT);
-            test(augur.getMarketsInfo(
-                params.branch,
-                params.offset,
-                params.numMarketsToLoad
-            ));
-        });
-        it("sync/object", function () {
-            this.timeout(augur.constants.TIMEOUT);
-            test(augur.getMarketsInfo(params));
-        });
-        it("async/positional", function (done) {
-            this.timeout(augur.constants.TIMEOUT);
-            augur.getMarketsInfo(
-                params.branch,
-                params.offset,
-                params.numMarketsToLoad,
-                function (info) {
-                    if (info.error) return done(info);
-                    test(info, done);
-                }
-            );
-        });
-        it("async/object", function (done) {
-            this.timeout(augur.constants.TIMEOUT);
-            params.callback = function (info) {
-                if (info.error) return done(info);
-                test(info, done);
-            };
-            augur.getMarketsInfo(params);
-        });
-        it("async/object/offset", function (done) {
-            this.timeout(augur.constants.TIMEOUT);
-            var offset = 1;
-            var marketsToLoad = 2;
-            augur.getMarketsInfo({
-                branch: branch_id,
-                offset: offset,
-                numMarketsToLoad: marketsToLoad,
-                callback: function (info) {
-                    if (info.error) return done(info);
-                    assert.strictEqual(Object.keys(info).length, marketsToLoad);
-                    test(info, done);
-                }
             });
         });
     });
