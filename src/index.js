@@ -1736,7 +1736,7 @@ Augur.prototype.getMostActive = function (branch, cb) {
     });
 };
 
-Augur.prototype.getNavigation = function (branch, cb) {
+Augur.prototype.getMarketsSummary = function (branch, cb) {
     if (this.utils.is_function(branch) && !cb) {
         cb = branch;
         branch = this.branches.dev;
@@ -1748,12 +1748,12 @@ Augur.prototype.getNavigation = function (branch, cb) {
         numMarketsToLoad: 0,
         callback: function (marketsInfo) {
             var info, price;
-            var navigation = [];
+            var marketsSummary = [];
             for (var market in marketsInfo) {
                 if (!marketsInfo.hasOwnProperty(market)) continue;
                 info = marketsInfo[market];
                 price = abi.number(info.outcomes[1].price);
-                navigation.push({
+                marketsSummary.push({
                     id: info._id,
                     name: info.description,
                     lastTradePrice: price,
@@ -1762,7 +1762,7 @@ Augur.prototype.getNavigation = function (branch, cb) {
                     lastTradeCostPerShareFormatted: price.toFixed(2) + " CASH"
                 });
             }
-            cb(navigation);
+            cb(marketsSummary);
         }
     });
 };
@@ -1793,7 +1793,7 @@ Augur.prototype.getClosingPrices = function (market, cb) {
             if (priceLog.constructor !== Array || !priceLog.length) {
                 return nextOutcome();
             }
-            var timestamp, curDate, prevDate = {};
+            var amount, timestamp, curDate, prevDate = {};
             var closing = {price: null, volume: 0};
             async.eachSeries(priceLog, function (price, nextPrice) {
                 rpc.getBlock(price.blockNumber, true, function (block) {
@@ -1802,16 +1802,24 @@ Augur.prototype.getClosingPrices = function (market, cb) {
                     timestamp = parseInt(block.timestamp);
                     var dt = new Date(timestamp * 1000);
                     // buy&sellShares.se 102: amount = -price / cost
-                    var amount = abi.bignum(price.price)
-                                    .dividedBy(abi.bignum(price.cost).abs())
-                                    .toNumber();
+                    amount = abi.bignum(price.price)
+                                .dividedBy(abi.bignum(price.cost).abs())
+                                .toNumber();
                     // daily binning
                     curDate = {
                         year: dt.getUTCFullYear(),
                         day: dt.getUTCDate(),
                         month: dt.getUTCMonth() + 1
                     };
-                    if (prevDate.year !== undefined) {
+                    if (curDate.year === null ||
+                        curDate.day === null ||
+                        curDate.month === null) {
+                        return nextPrice();
+                    }
+                    if (prevDate.year === undefined) {
+                        closing.price = abi.number(price.price);
+                        closing.volume += amount;
+                    } else {
                         if (curDate.year === prevDate.year &&
                             curDate.day === prevDate.day &&
                             curDate.month === prevDate.month) {
@@ -1820,14 +1828,20 @@ Augur.prototype.getClosingPrices = function (market, cb) {
                             closing.volume += amount;
                         } else {
                             // new day
-                            prices[outcome].push({
-                                year: curDate.year,
-                                day: curDate.day,
-                                month: curDate.month,
-                                closingPrice: closing.price,
-                                volume: closing.volume,
+                            var lastPrice = {
+                                year: prevDate.year,
+                                day: prevDate.day,
+                                month: prevDate.month,
                                 timestamp: timestamp
-                            });
+                            };
+                            if (closing.price !== null) {
+                                lastPrice.closingPrice = closing.price;
+                                lastPrice.volume = closing.volume;
+                            } else {
+                                lastPrice.closingPrice = abi.number(price.price);
+                                lastPrice.volume = amount;
+                            }
+                            prices[outcome].push(lastPrice);
                             closing = {price: null, volume: 0};
                         }
                     }
@@ -1839,14 +1853,22 @@ Augur.prototype.getClosingPrices = function (market, cb) {
             }, function (err) {
                 if (err) return nextOutcome(err);
                 // record the last day
-                prices[outcome].push({
+                var lastPrice = {
                     year: curDate.year,
                     day: curDate.day,
                     month: curDate.month,
                     closingPrice: closing.price,
                     volume: closing.volume,
                     timestamp: timestamp
-                });
+                };
+                if (closing.price !== null) {
+                    lastPrice.closingPrice = closing.price;
+                    lastPrice.volume = closing.volume;
+                } else {
+                    lastPrice.closingPrice = abi.number(priceLog[priceLog.length - 1].price);
+                    lastPrice.volume = amount;
+                }
+                prices[outcome].push(lastPrice);
                 prices[outcome].sort(function (a, b) {
                     return a.timestamp - b.timestamp;
                 });
@@ -1896,9 +1918,9 @@ Augur.prototype.getPrices = function (market, cb) {
                                     .dividedBy(abi.bignum(price.cost).abs())
                                     .toNumber();
                     prices[outcome].push({
-                        year: dt.getYear() + 1900,
-                        day: dt.getDay(),
-                        month: dt.getMonth(),
+                        year: dt.getUTCFullYear(),
+                        day: dt.getUTCDate(),
+                        month: dt.getUTCMonth() + 1,
                         price: abi.number(price.price),
                         volume: amount,
                         timestamp: timestamp

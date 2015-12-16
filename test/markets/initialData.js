@@ -17,7 +17,7 @@ var marketId = markets[markets.length - 1];
 
 describe("initial data load", function () {
 
-    describe("get most active markets", function () {
+    describe("most active markets", function () {
         var test = function (node) {
             assert.isObject(node);
             assert.property(node, "nodeId");
@@ -92,7 +92,7 @@ describe("initial data load", function () {
         });
     });
 
-    describe("get navigation data", function () {
+    describe("markets summary", function () {
         var test = function (node) {
             assert.isObject(node);
             assert.property(node, "id");
@@ -114,15 +114,15 @@ describe("initial data load", function () {
             }
             done();
         };
-        it("getNavigation(" + branchId + ")", function (done) {
+        it("getMarketsSummary(" + branchId + ")", function (done) {
             this.timeout(augur.constants.TIMEOUT);
-            augur.getNavigation(branchId, function (navigation) {
+            augur.getMarketsSummary(branchId, function (navigation) {
                 callback(navigation, done);
             });
         });
-        it("getNavigation()", function (done) {
+        it("getMarketsSummary()", function (done) {
             this.timeout(augur.constants.TIMEOUT);
-            augur.getNavigation(function (navigation) {
+            augur.getMarketsSummary(function (navigation) {
                 callback(navigation, done);
             });
         });
@@ -258,7 +258,6 @@ describe("initial data load", function () {
     describe("price history", function () {
 
         var test = function (record, priceType) {
-            // console.log("record:", record);
             assert.isObject(record);
             assert.property(record, "year");
             assert.isNumber(record.year);
@@ -297,8 +296,8 @@ describe("initial data load", function () {
                 augur.buyShares({
                     branchId: branchId,
                     marketId: marketId,
-                    outcome: "1",
-                    amount: "1.3",
+                    outcome: "2",
+                    amount: "2.01",
                     onSent: function (r) {
                         assert.property(r, "txHash");
                         assert.property(r, "callReturn");
