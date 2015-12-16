@@ -17,7 +17,7 @@ var marketId = markets[markets.length - 1];
 
 describe("initial data load", function () {
 
-    describe("getMostActive", function () {
+    describe("get most active markets", function () {
         var test = function (node) {
             assert.isObject(node);
             assert.property(node, "nodeId");
@@ -92,7 +92,7 @@ describe("initial data load", function () {
         });
     });
 
-    describe("getNavigation", function () {
+    describe("get navigation data", function () {
         var test = function (node) {
             assert.isObject(node);
             assert.property(node, "id");
@@ -255,9 +255,10 @@ describe("initial data load", function () {
         });
     });
 
-    describe("get price logs", function () {
+    describe("price history", function () {
 
         var test = function (record, priceType) {
+            // console.log("record:", record);
             assert.isObject(record);
             assert.property(record, "year");
             assert.isNumber(record.year);

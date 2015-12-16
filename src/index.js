@@ -1802,9 +1802,8 @@ Augur.prototype.getClosingPrices = function (market, cb) {
                     timestamp = parseInt(block.timestamp);
                     var dt = new Date(timestamp * 1000);
                     // buy&sellShares.se 102: amount = -price / cost
-                    var amount = abi.bignum(-1)
-                                    .times(abi.bignum(price.price))
-                                    .dividedBy(abi.bignum(price.cost))
+                    var amount = abi.bignum(price.price)
+                                    .dividedBy(abi.bignum(price.cost).abs())
                                     .toNumber();
                     // daily binning
                     curDate = {
@@ -1893,9 +1892,8 @@ Augur.prototype.getPrices = function (market, cb) {
                     var timestamp = parseInt(block.timestamp);
                     var dt = new Date(timestamp * 1000);
                     // buy&sellShares.se 102: amount = -price / cost
-                    var amount = abi.bignum(-1)
-                                    .times(abi.bignum(price.price))
-                                    .dividedBy(abi.bignum(price.cost))
+                    var amount = abi.bignum(price.price)
+                                    .dividedBy(abi.bignum(price.cost).abs())
                                     .toNumber();
                     prices[outcome].push({
                         year: dt.getYear() + 1900,
