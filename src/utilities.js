@@ -83,6 +83,21 @@ module.exports = {
         return { params: params, cb: cb };
     },
 
+    linspace: function (a, b, n) {
+        if (typeof n === "undefined") n = Math.max(Math.round(b - a) + 1, 1);
+        if (n < 2) return (n === 1) ? [a] : [];
+        var i, ret = new Array(n);
+        n--;
+        for (i = n; i >= 0; i--) {
+            ret[i] = (i*b + (n - i)*a) / n;
+        }
+        return ret;
+    },
+
+    select_random: function (arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+    },
+
     // calculate date from block number
     block_to_date: function (augur, block) {
         var current_block = augur.rpc.blockNumber();

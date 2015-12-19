@@ -14,6 +14,33 @@ var log = console.log;
 
 require('it-each')({ testPerIteration: true });
 
+describe("utilities.linspace", function () {
+
+    var test = function (t) {
+        it(t.inputs.a + ", " + t.inputs.b + ", " + t.inputs.n, function () {
+            var actual = utils.linspace(t.inputs.a, t.inputs.b, t.inputs.n);
+            assert.deepEqual(actual, t.expected);
+        });
+    };
+
+    test({
+        inputs: {a: 0, b: 1, n: 2},
+        expected: [0, 1]
+    });
+    test({
+        inputs: {a: 0, b: 1, n: 3},
+        expected: [0, 0.5, 1]
+    });
+    test({
+        inputs: {a: 1, b: 5},
+        expected: [1, 2, 3, 4, 5]
+    });
+    test({
+        inputs: {a: 1, b: 5, n: 9},
+        expected: [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
+    });
+});
+
 describe("utilities.is_function", function () {
 
     var test = function (t) {
