@@ -205,6 +205,7 @@ describe("Price history", function () {
     });
 
     it("[sync] getMarketPriceHistory(" + market_id + ")", function () {
+        this.timeout(constants.TIMEOUT);
         var priceHistory = augur.getMarketPriceHistory(market_id);
         assert.isObject(priceHistory);
         for (var k in priceHistory) {

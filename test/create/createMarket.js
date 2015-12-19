@@ -23,6 +23,182 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
             augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
         });
 
+        describe("categorical", function () {
+
+            var test = function (t) {
+                it(t.numOutcomes + " outcomes on [" + t.minValue + ", " + t.maxValue + "]", function (done) {
+                    this.timeout(augur.constants.TIMEOUT*4);
+                    augur.createEvent({
+                        branchId: t.branch,
+                        description: t.description,
+                        expDate: t.expirationBlock,
+                        minValue: t.minValue,
+                        maxValue: t.maxValue,
+                        numOutcomes: t.numOutcomes,
+                        onSent: function (r) {
+                            assert(r.txHash);
+                            assert(r.callReturn);
+                        },
+                        onSuccess: function (r) {
+                            var eventID = r.callReturn;
+                            assert.strictEqual(augur.getCreator(eventID), augur.coinbase);
+                            assert.strictEqual(augur.getDescription(eventID), t.description);
+                            var initialLiquidity = t.initialLiquidityFloor + Math.round(Math.random() * 10);
+                            var events = [eventID];
+                            augur.createMarket({
+                                branchId: t.branch,
+                                description: t.description,
+                                alpha: t.alpha,
+                                initialLiquidity: initialLiquidity,
+                                tradingFee: t.tradingFee,
+                                events: events,
+                                onSent: function (res) {
+                                    assert(res.txHash);
+                                    assert(res.callReturn);
+                                },
+                                onSuccess: function (res) {
+                                    var marketID = res.callReturn;
+                                    assert.strictEqual(augur.getCreator(marketID), augur.coinbase);
+                                    assert.strictEqual(augur.getDescription(marketID), t.description);
+                                    augur.getMarketEvents(marketID, function (eventList) {
+                                        assert.isArray(eventList);
+                                        assert.strictEqual(eventList.length, 1);
+                                        assert.strictEqual(eventList[0], eventID);
+                                        done();
+                                    }); // markets.getMarketEvents
+                                },
+                                onFailed: done
+                            }); // createMarket.createMarket
+
+                        },
+                        onFailed: done
+                    }); // createEvent.createEvent
+                });
+            };
+
+            test({
+                branch: augur.branches.dev,
+                description: "Will the average temperature on Earth in 2016 be Higher, Lower, or Unchanged from the average temperature on Earth in 2015?",
+                expirationBlock: utils.date_to_block(augur, "1-1-2017"),
+                minValue: 0,
+                maxValue: 1,
+                numOutcomes: 3,
+                alpha: "0.0079",
+                tradingFee: "0.02",
+                initialLiquidityFloor: 10
+            });
+            test({
+                branch: augur.branches.dev,
+                description: "Will Microsoft's stock price at 12:00 UTC on July 1, 2016 be Higher, Lower, or Equal to $54.13?",
+                expirationBlock: utils.date_to_block(augur, "1-1-2017"),
+                minValue: 10,
+                maxValue: 20,
+                numOutcomes: 3,
+                alpha: "0.0079",
+                tradingFee: "0.02",
+                initialLiquidityFloor: 10
+            });
+            test({
+                branch: augur.branches.dev,
+                description: "Who will win the 2016 U.S. Presidential Election: Hillary Clinton, Donald Trump, Bernie Sanders, or someone else?",
+                expirationBlock: utils.date_to_block(augur, "1-3-2017"),
+                minValue: 0,
+                maxValue: 1,
+                numOutcomes: 4,
+                alpha: "0.0079",
+                tradingFee: "0.02",
+                initialLiquidityFloor: 10
+            });
+            test({
+                branch: augur.branches.dev,
+                description: "Which political party's candidate will win the 2016 U.S. Presidential Election: Democratic, Republican, Libertarian, or other?",
+                expirationBlock: utils.date_to_block(augur, "1-3-2017"),
+                minValue: 10,
+                maxValue: 20,
+                numOutcomes: 4,
+                alpha: "0.0079",
+                tradingFee: "0.02",
+                initialLiquidityFloor: 10
+            });
+            test({
+                branch: augur.branches.dev,
+                description: "Which city will have the highest median single-family home price for September 2016: London, New York, Los Angeles, San Francisco, Tokyo, Palo Alto, Hong Kong, Paris, or other?",
+                expirationBlock: utils.date_to_block(augur, "10-1-2016"),
+                minValue: 0,
+                maxValue: 1,
+                numOutcomes: 9,
+                alpha: "0.0079",
+                tradingFee: "0.01",
+                initialLiquidityFloor: 25
+            });
+        });
+
+        describe("scalar", function () {
+            var test = function (t) {
+                it("[" + t.minValue + ", " + t.maxValue + "]", function (done) {
+                    this.timeout(augur.constants.TIMEOUT*4);
+                    augur.createEvent({
+                        branchId: t.branch,
+                        description: t.description,
+                        expDate: t.expirationBlock,
+                        minValue: t.minValue,
+                        maxValue: t.maxValue,
+                        numOutcomes: t.numOutcomes,
+                        onSent: function (r) {
+                            assert(r.txHash);
+                            assert(r.callReturn);
+                        },
+                        onSuccess: function (r) {
+                            var eventID = r.callReturn;
+                            assert.strictEqual(augur.getCreator(eventID), augur.coinbase);
+                            assert.strictEqual(augur.getDescription(eventID), t.description);
+                            var initialLiquidity = t.initialLiquidityFloor + Math.round(Math.random() * 10);
+                            var events = [eventID];
+                            augur.createMarket({
+                                branchId: t.branch,
+                                description: t.description,
+                                alpha: t.alpha,
+                                initialLiquidity: initialLiquidity,
+                                tradingFee: t.tradingFee,
+                                events: events,
+                                onSent: function (res) {
+                                    assert(res.txHash);
+                                    assert(res.callReturn);
+                                },
+                                onSuccess: function (res) {
+                                    var marketID = res.callReturn;
+                                    assert.strictEqual(augur.getCreator(marketID), augur.coinbase);
+                                    assert.strictEqual(augur.getDescription(marketID), t.description);
+                                    augur.getMarketEvents(marketID, function (eventList) {
+                                        assert.isArray(eventList);
+                                        assert.strictEqual(eventList.length, 1);
+                                        assert.strictEqual(eventList[0], eventID);
+                                        done();
+                                    }); // markets.getMarketEvents
+                                },
+                                onFailed: done
+                            }); // createMarket.createMarket
+
+                        },
+                        onFailed: done
+                    }); // createEvent.createEvent
+                });
+            };
+
+            // scalar markets have numOutcomes==2 and maxValue!=1
+            test({
+                branch: augur.branches.dev,
+                description: "What will the high temperature (in degrees Fahrenheit) be in San Francisco, California, on July 1, 2016?",
+                expirationBlock: utils.date_to_block(augur, "7-2-2016"),
+                minValue: 0,
+                maxValue: 120,
+                numOutcomes: 2,
+                alpha: "0.0079",
+                tradingFee: "0.02",
+                initialLiquidityFloor: 10
+            });
+        });
+
         describe("binary", function () {
             var events = [[
                 "Will the Sun turn into a red giant and engulf the Earth by the end of 2016?",
@@ -123,182 +299,6 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                     }); // createEvent.createEvent
                 }
             );
-        });
-
-        describe("categorical", function () {
-
-            var test = function (t) {
-                it(t.numOutcomes + " outcomes on [" + t.minValue + ", " + t.maxValue + "]", function (done) {
-                    this.timeout(augur.constants.TIMEOUT*4);
-                    augur.createEvent({
-                        branchId: t.branch,
-                        description: t.description,
-                        expDate: t.expirationBlock,
-                        minValue: t.minValue,
-                        maxValue: t.maxValue,
-                        numOutcomes: t.numOutcomes,
-                        onSent: function (r) {
-                            assert(r.txHash);
-                            assert(r.callReturn);
-                        },
-                        onSuccess: function (r) {
-                            var eventID = r.callReturn;
-                            assert.strictEqual(augur.getCreator(eventID), augur.coinbase);
-                            assert.strictEqual(augur.getDescription(eventID), t.description);
-                            var initialLiquidity = t.initialLiquidityFloor + Math.round(Math.random() * 10);
-                            var events = [eventID];
-                            augur.createMarket({
-                                branchId: t.branch,
-                                description: t.description,
-                                alpha: t.alpha,
-                                initialLiquidity: initialLiquidity,
-                                tradingFee: t.tradingFee,
-                                events: events,
-                                onSent: function (res) {
-                                    assert(res.txHash);
-                                    assert(res.callReturn);
-                                },
-                                onSuccess: function (res) {
-                                    var marketID = res.callReturn;
-                                    assert.strictEqual(augur.getCreator(marketID), augur.coinbase);
-                                    assert.strictEqual(augur.getDescription(marketID), t.description);
-                                    augur.getMarketEvents(marketID, function (eventList) {
-                                        assert.isArray(eventList);
-                                        assert.strictEqual(eventList.length, 1);
-                                        assert.strictEqual(eventList[0], eventID);
-                                        done();
-                                    }); // markets.getMarketEvents
-                                },
-                                onFailed: done
-                            }); // createMarket.createMarket
-
-                        },
-                        onFailed: done
-                    }); // createEvent.createEvent
-                });
-            };
-
-            test({
-                branch: augur.branches.dev,
-                description: "Will the average temperature on Earth in 2016 be Higher, Lower, or Unchanged from the average temperature on Earth in 2015?",
-                expirationBlock: utils.date_to_block(augur, "1-1-2017"),
-                minValue: 0,
-                maxValue: 1,
-                numOutcomes: 3,
-                alpha: "0.079",
-                tradingFee: "0.02",
-                initialLiquidityFloor: 10
-            });
-            test({
-                branch: augur.branches.dev,
-                description: "Will Microsoft's stock price at 12:00 UTC on July 1, 2016 be Higher, Lower, or Equal to $54.13?",
-                expirationBlock: utils.date_to_block(augur, "1-1-2017"),
-                minValue: 10,
-                maxValue: 20,
-                numOutcomes: 3,
-                alpha: "0.079",
-                tradingFee: "0.02",
-                initialLiquidityFloor: 10
-            });
-            test({
-                branch: augur.branches.dev,
-                description: "Who will win the 2016 U.S. Presidential Election: Hillary Clinton, Donald Trump, Bernie Sanders, or someone else?",
-                expirationBlock: utils.date_to_block(augur, "1-3-2017"),
-                minValue: 0,
-                maxValue: 1,
-                numOutcomes: 4,
-                alpha: "0.079",
-                tradingFee: "0.02",
-                initialLiquidityFloor: 10
-            });
-            test({
-                branch: augur.branches.dev,
-                description: "Which political party's candidate will win the 2016 U.S. Presidential Election: Democratic, Republican, Libertarian, or other?",
-                expirationBlock: utils.date_to_block(augur, "1-3-2017"),
-                minValue: 10,
-                maxValue: 20,
-                numOutcomes: 4,
-                alpha: "0.079",
-                tradingFee: "0.02",
-                initialLiquidityFloor: 10
-            });
-            test({
-                branch: augur.branches.dev,
-                description: "Which city will have the highest median single-family home price for September 2016: London, New York, Los Angeles, San Francisco, Tokyo, Palo Alto, Hong Kong, Paris, or other?",
-                expirationBlock: utils.date_to_block(augur, "10-1-2016"),
-                minValue: 0,
-                maxValue: 1,
-                numOutcomes: 9,
-                alpha: "0.079",
-                tradingFee: "0.01",
-                initialLiquidityFloor: 25
-            });
-        });
-
-        describe("scalar", function () {
-            var test = function (t) {
-                it("[" + t.minValue + ", " + t.maxValue + "]", function (done) {
-                    this.timeout(augur.constants.TIMEOUT*4);
-                    augur.createEvent({
-                        branchId: t.branch,
-                        description: t.description,
-                        expDate: t.expirationBlock,
-                        minValue: t.minValue,
-                        maxValue: t.maxValue,
-                        numOutcomes: t.numOutcomes,
-                        onSent: function (r) {
-                            assert(r.txHash);
-                            assert(r.callReturn);
-                        },
-                        onSuccess: function (r) {
-                            var eventID = r.callReturn;
-                            assert.strictEqual(augur.getCreator(eventID), augur.coinbase);
-                            assert.strictEqual(augur.getDescription(eventID), t.description);
-                            var initialLiquidity = t.initialLiquidityFloor + Math.round(Math.random() * 10);
-                            var events = [eventID];
-                            augur.createMarket({
-                                branchId: t.branch,
-                                description: t.description,
-                                alpha: t.alpha,
-                                initialLiquidity: initialLiquidity,
-                                tradingFee: t.tradingFee,
-                                events: events,
-                                onSent: function (res) {
-                                    assert(res.txHash);
-                                    assert(res.callReturn);
-                                },
-                                onSuccess: function (res) {
-                                    var marketID = res.callReturn;
-                                    assert.strictEqual(augur.getCreator(marketID), augur.coinbase);
-                                    assert.strictEqual(augur.getDescription(marketID), t.description);
-                                    augur.getMarketEvents(marketID, function (eventList) {
-                                        assert.isArray(eventList);
-                                        assert.strictEqual(eventList.length, 1);
-                                        assert.strictEqual(eventList[0], eventID);
-                                        done();
-                                    }); // markets.getMarketEvents
-                                },
-                                onFailed: done
-                            }); // createMarket.createMarket
-
-                        },
-                        onFailed: done
-                    }); // createEvent.createEvent
-                });
-            };
-
-            // scalar markets have numOutcomes==2 and maxValue!=1
-            test({
-                branch: augur.branches.dev,
-                description: "What will the high temperature (in degrees Fahrenheit) be in San Francisco, California, on July 1, 2016?",
-                expirationBlock: utils.date_to_block(augur, "7-2-2016"),
-                minValue: 0,
-                maxValue: 120,
-                numOutcomes: 2,
-                alpha: "0.079",
-                tradingFee: "0.02",
-                initialLiquidityFloor: 10
-            });
         });
     });
 }
