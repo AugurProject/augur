@@ -451,7 +451,7 @@ describe("markets.se", function () {
     describe("getAlpha(" + market_id + ") ", function () {
         var test = function (r) {
             assert(parseFloat(r).toFixed(4) === "0.0079" ||
-                   parseFloat(r).toFixed(4) === "0.079");
+                   parseFloat(r).toFixed(4) === "0.0790");
         };
         it("sync", function () {
             test(augur.getAlpha(market_id));
