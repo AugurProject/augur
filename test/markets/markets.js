@@ -378,8 +378,7 @@ describe("markets.se", function () {
     });
     describe("price(" + market_id + ", " + outcome + ") ", function () {
         var test = function (r) {
-            assert(parseFloat(r) >= 0.0);
-            assert(parseFloat(r) <= 1.0);
+            assert.isNumber(abi.number(r));
         };
         it("sync", function () {
             test(augur.price(market_id, outcome));
@@ -451,7 +450,8 @@ describe("markets.se", function () {
     });
     describe("getAlpha(" + market_id + ") ", function () {
         var test = function (r) {
-            assert.strictEqual(parseFloat(r).toFixed(6), "0.007900");
+            assert(parseFloat(r).toFixed(4) === "0.0079" ||
+                   parseFloat(r).toFixed(4) === "0.079");
         };
         it("sync", function () {
             test(augur.getAlpha(market_id));
@@ -474,7 +474,7 @@ describe("markets.se", function () {
     });
     describe("getCumScale(" + market_id + ") ", function () {
         var test = function (r) {
-            assert.strictEqual(r, "0.00000000000000000005");
+            assert.isAbove(abi.number(r), 0);
         };
         it("sync", function () {
             test(augur.getCumScale(market_id));
