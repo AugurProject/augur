@@ -116,7 +116,7 @@ describe("events.se", function () {
     });
     describe("getMinValue(" + event_id + ")", function () {
         var test = function (r) {
-            assert(r === "0" || r === '1');
+            assert.isNumber(abi.number(r));
         };
         it("sync", function () {
             test(augur.getMinValue(event_id));
@@ -139,7 +139,7 @@ describe("events.se", function () {
     });
     describe("getMaxValue(" + event_id + ")", function () {
         var test = function (r) {
-            assert(r === '1' || r === '2');
+            assert.isAbove(abi.number(r), 0);
         };
         it("sync", function () {
             test(augur.getMaxValue(event_id));
@@ -160,9 +160,9 @@ describe("events.se", function () {
             batch.execute();
         });
     });
-    describe("getNumOutcomes(" + event_id + ") == '2'", function () {
+    describe("getNumOutcomes(" + event_id + ")", function () {
         var test = function (r) {
-            assert.strictEqual(r, "2");
+            assert.isAbove(abi.number(r), 1);
         };
         it("sync", function () {
             test(augur.getNumOutcomes(event_id));
