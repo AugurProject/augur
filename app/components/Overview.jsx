@@ -47,7 +47,7 @@ var Overview = React.createClass({
     _.each(this.state.holdings, function (market) {
       _.each(market.outcomes, function (outcome) {
         if (outcome && outcome.sharesHeld) {
-          if (outcome.sharesHeld.constructor === BigNumber && outcome.sharesHeld.toNumber()) {
+          if (outcome.sharesHeld.toNumber()) {
             var key = market.id + outcome.id;
             holdings.push( <Holding market={ market } outcome={ outcome } key={ key } /> );
           }
@@ -89,7 +89,6 @@ var Overview = React.createClass({
       <div id="overview">
         <div className='row'>
           <div className="col-xs-12">
-            <Welcome />
             { trendingMarketsSection }
             { holdingsSection }
           </div>
