@@ -29,7 +29,8 @@ var AddMarketModal = React.createClass({
       tradingFee: '2',
       tradingFeeError: null,
       valid: false,
-      minDate: moment().format('YYYY-MM-DD')
+      minDate: moment().format('YYYY-MM-DD'),
+      numAnswers: 2
     };
   },
 
@@ -139,6 +140,11 @@ var AddMarketModal = React.createClass({
   onBack: function(event) {
     var newPageNumber = this.state.pageNumber - 1;
     this.setState({pageNumber: newPageNumber});
+  },
+
+  addAnswer: function (event) {
+    var numAnswers = this.state.numAnswers + 1;
+    this.setState({numAnswers: numAnswers});
   },
 
   onSubmit: function(event) {
@@ -300,17 +306,21 @@ var AddMarketModal = React.createClass({
       var inputStyle = this.state.marketTextError ? 'error' : null;
       page = (
         <div>
-          <p>Enter a question for the market to trade on.  This question should have a yes or no answer, be easily verifiable and have an expiring date in the future.</p>
+          <p>Enter a question for the market to trade on.  This question should be easily verifiable and have an expiring date in the future.</p>
           <p>For example: "Will Hurricane Fatima remain a category four and make land-fall by August 8th, 2017?"</p>
           <Input
             type='textarea'
             help={ this.state.marketTextError }
             bsStyle={ inputStyle }
             value={ this.state.marketText }
-            placeholder="Ask your yes or no question"  
+            placeholder="Ask your question"
             onChange={ this.onChangeMarketText } 
           />
           <span className="text-count pull-right">{ this.state.marketTextCount }</span> 
+          <p>What are the possible answers to your question?</p>
+          <Input type='text' value='No' />
+          <Input type='text' value='Yes' />
+          <Button bsStyle='default' onClock={ this.addAnswer }>Add another answer</Button>
         </div>
       );
       footer = (

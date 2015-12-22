@@ -100,7 +100,7 @@ var Branch = React.createClass({
       <div id="branch">
         { pendingMarketsSection }
         <h3 className="clearfix">
-        <div className="col-xs-2">Markets</div>
+        <div className="col-xs-2" id="markets-label">Markets</div>
         <div className="col-xs-10">
           <div className="row">
             <div className="col-md-3 col-md-push-9">{ submitMarketAction }</div>
