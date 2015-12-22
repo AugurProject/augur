@@ -1666,9 +1666,9 @@ Augur.prototype.dispatch = function (branch, onSent, onSuccess, onFailed) {
 };
 
 Augur.prototype.checkPeriod = function (branch) {
-    var period = Number(this.getVotePeriod(branch));
-    var currentPeriod = Math.floor(rpc.blockNumber() / Number(this.getPeriodLength(branch)));
-    var periodsBehind = (currentPeriod - 1) - period;
+    var period = abi.number(this.getVotePeriod(branch));
+    var currentPeriod = Math.floor(abi.number(rpc.blockNumber()) / abi.number(this.getPeriodLength(branch)));
+    var periodsBehind = currentPeriod - period - 1;
     return periodsBehind;
 };
 

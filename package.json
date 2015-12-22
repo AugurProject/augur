@@ -1,9 +1,10 @@
 {
   "name": "augur.js",
-  "version": "0.12.3",
+  "version": "0.12.4",
   "description": "Augur JavaScript API",
   "main": "src/index.js",
   "scripts": {
+    "build": "babel --presets es2015-loose node_modules/ipfs-api --ignore node_modules/ipfs-api/node_modules -d lib/ipfs-api",
     "test": "scripts/runtests.sh --connect --core --create --markets --client",
     "lint": "scripts/runtests.sh",
     "consensus": "scripts/runtests.sh --consensus",
@@ -33,6 +34,9 @@
     "node-uuid": "^1.4.3",
     "validator": "^4.0.2"
   },
+  "browser": {
+    "ipfs-api": false
+  },
   "engines": {
     "node": ">= 4.0.x"
   },
@@ -47,7 +51,9 @@
   },
   "homepage": "https://github.com/AugurProject/augur.js",
   "devDependencies": {
+    "babel-cli": "^6.3.17",
     "babel-preset-es2015": "^6.1.18",
+    "babel-preset-es2015-loose": "^6.1.3",
     "babel-preset-react": "^6.1.18",
     "babelify": "^7.2.0",
     "browserify": "^12.0.1",

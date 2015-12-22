@@ -1,48 +1,48 @@
 "use strict";
 
+var path = require("path");
+var cp = require("child_process");
+var nodeUtil = require("util");
 var gulp = require("gulp");
 var del = require("del");
-var babelify = require("babelify");
-var browserify = require("browserify");
-var buffer = require("vinyl-buffer");
-var source = require("vinyl-source-stream");
-var uglify = require("gulp-uglify");
 
-function bundle(cb) {
-    return browserify({
-        entries: "src/index.js",
-        insertGlobals: true,
-        fullPaths: true,
-        debug: true
-    }).transform(babelify, {
-        presets: ["es2015", "react"],
-        compact: false,
-        global: true,
-        ignore: /\/node_modules\/buffer\//
-    }).bundle()
-        .on("error", function (err) {
-            console.error(err);
-            this.emit("end");
-        })
-        .on("finish", cb || function () {});
-}
+var gulp_log = require("fs").createWriteStream(
+    require("path").join(__dirname, "data", "gulp.log"),
+    {flags : 'w'}
+);
 
-gulp.task("clean", function (cb) {
-    del(["dist/*"], cb);
+gulp.task("clean", function (callback) {
+    del(["dist/*"], callback);
 });
 
-gulp.task("build", function (cb) {
-    bundle(cb)
-        .pipe(source("augur.js"))
-        .pipe(gulp.dest("dist"));
+gulp.task("lint", function (callback) {
+    var runtests = cp.spawn("npm", ["run", "lint"]);
+    runtests.stdout.on("data", function (data) {
+        gulp_log.write(nodeUtil.format(data.toString()));
+    });
+    runtests.stderr.on("data", function (data) {
+        process.stdout.write(data);
+    });
+    runtests.on("close", callback);
 });
 
-gulp.task("minify", function (cb) {
-    bundle(cb)
-        .pipe(source("augur.min.js"))
-        .pipe(buffer())
-        .pipe(uglify())
-        .pipe(gulp.dest("dist"));
+gulp.task("build", function (callback) {
+    del([path.join("dist", "*.js")], function (ex) {
+        if (ex) throw ex;
+        cp.exec("./node_modules/browserify/bin/cmd.js ./exports.js | "+
+                "./node_modules/uglify-js/bin/uglifyjs > ./dist/augur.min.js",
+                function (err, stdout) {
+            if (err) throw err;
+            if (stdout) process.stdout.write(stdout);
+            cp.exec("./node_modules/browserify/bin/cmd.js ./exports.js "+
+                    "> ./dist/augur.js",
+                    function (err, stdout) {
+                if (err) throw err;
+                if (stdout) process.stdout.write(stdout);
+                callback();
+            });
+        });
+    });
 });
 
-gulp.task("default", ["build", "minify"]);
+gulp.task("default", ["lint", "build"]);
