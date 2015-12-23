@@ -81,7 +81,7 @@ describe("initial data load", function () {
         it("getMostActive(" + branchId + ")", function (done) {
             this.timeout(augur.constants.TIMEOUT);
             augur.getMostActive(branchId, function (mostActive) {
-                console.log(JSON.stringify(mostActive,null, 2));
+                // console.log(JSON.stringify(mostActive, null, 2));
                 callback(mostActive, done);
             });
         });
@@ -118,7 +118,7 @@ describe("initial data load", function () {
         it("getMarketsSummary(" + branchId + ")", function (done) {
             this.timeout(augur.constants.TIMEOUT);
             augur.getMarketsSummary(branchId, function (marketsSummary) {
-                console.log(JSON.stringify(marketsSummary, null, 2));
+                // console.log(JSON.stringify(marketsSummary, null, 2));
                 callback(marketsSummary, done);
             });
         });
@@ -323,7 +323,7 @@ describe("initial data load", function () {
         it("getPrices(" + marketId + ")", function (done) {
             this.timeout(augur.constants.TIMEOUT);
             augur.getPrices(marketId, function (prices) {
-                console.log(JSON.stringify(prices, null, 2));
+                // console.log(JSON.stringify(prices, null, 2));
                 callback(prices, "price", done);
             });
         });
@@ -331,7 +331,7 @@ describe("initial data load", function () {
         it("getClosingPrices(" + marketId + ")", function (done) {
             this.timeout(augur.constants.TIMEOUT);
             augur.getClosingPrices(marketId, function (prices) {
-                console.log(JSON.stringify(prices, null, 2));
+                // console.log(JSON.stringify(prices, null, 2));
                 callback(prices, "closingPrice", done);
             });
         });
