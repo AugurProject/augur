@@ -11,7 +11,7 @@ var Modal = ReactBootstrap.Modal;
 var Router = require("react-router");
 var State = Router.State;
 var RouteHandler = Router.RouteHandler;
-var Highstock = require('react-highcharts/highstock');
+var Highstock = require('react-highcharts/bundle/highstock');
 
 var Identicon = require('../libs/identicon');
 var utilities = require('../libs/utilities');
