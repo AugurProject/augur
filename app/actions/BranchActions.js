@@ -78,21 +78,21 @@ export default {
     var hasCheckedQuorum = branchState.hasCheckedQuorum;
 
     // check quorum if branch isn't current and we havn't already
-    if (!currentBranch.isCurrent && !hasCheckedQuorum) {
-      augur.dispatch({
-        branchId: currentBranch.id,
-        onSent: function (r) {
-          self.dispatch(constants.branch.CHECK_QUORUM_SENT);
-        },
-        onSuccess: function (r) {
-          self.dispatch(constants.branch.CHECK_QUORUM_SUCCESS);
-        },
-        onFailed: function (r) {
-          self.dispatch(constants.branch.CHECK_QUORUM_SENT);
-        }
-      });
-    } else if (hasCheckedQuorum && currentBranch.isCurrent) {
+    // if (!currentBranch.isCurrent && !hasCheckedQuorum) {
+    //   augur.dispatch({
+    //     branchId: currentBranch.id,
+    //     onSent: function (r) {
+    //       self.dispatch(constants.branch.CHECK_QUORUM_SENT);
+    //     },
+    //     onSuccess: function (r) {
+    //       self.dispatch(constants.branch.CHECK_QUORUM_SUCCESS);
+    //     },
+    //     onFailed: function (r) {
+    //       self.dispatch(constants.branch.CHECK_QUORUM_SENT);
+    //     }
+    //   });
+    // } else if (hasCheckedQuorum && currentBranch.isCurrent) {
       this.dispatch(constants.branch.CHECK_QUORUM_SUCCESS);
-    }
+    // }
   }
 };

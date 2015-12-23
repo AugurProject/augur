@@ -3,14 +3,20 @@ var Fluxxor = require("fluxxor");
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 var ReactBootstrap = require('react-bootstrap');
+var ReactDOM = require('react-dom');
+var ReactTabs = require('react-tabs');
+var DatePicker = require('react-date-picker');
+var moment = require('moment');
 var Button = ReactBootstrap.Button;
 var Input = ReactBootstrap.Input;
 var Modal = ReactBootstrap.Modal;
+var Tab = ReactTabs.Tab;
+var Tabs = ReactTabs.Tabs;
+var TabList = ReactTabs.TabList;
+var TabPanel = ReactTabs.TabPanel;
 
 var constants = require('../libs/constants');
 var utilities = require('../libs/utilities');
-var DatePicker = require('react-date-picker');
-var moment = require('moment');
 
 var AddMarketModal = React.createClass({
 
@@ -30,7 +36,10 @@ var AddMarketModal = React.createClass({
       tradingFeeError: null,
       valid: false,
       minDate: moment().format('YYYY-MM-DD'),
-      numAnswers: 2
+      numAnswers: 2,
+      tab: 0,
+      minimum: 0,
+      maximum: 100
     };
   },
 
@@ -42,6 +51,10 @@ var AddMarketModal = React.createClass({
       currentBlock: flux.store('network').getState().blockNumber,
       currentBranch: flux.store('branch').getCurrentBranch()
     }
+  },
+
+  handleSelect: function (index, last) {
+    this.setState({tab: index});
   },
 
   onChangeMarketText: function (event) {
@@ -211,6 +224,16 @@ var AddMarketModal = React.createClass({
     this.setState({maturationDate: dateText});
   },
 
+  onChangeMinimum: function (event) {
+    var minimum = abi.number(event.target.value);
+    this.setState({minimum: minimum});
+  },
+
+  onChangeMaximum: function (event) {
+    var maximum = abi.number(event.target.value);
+    this.setState({maximum: maximum});
+  },
+
   render: function () {
 
     var page, subheading, footer;
@@ -302,38 +325,106 @@ var AddMarketModal = React.createClass({
 
     } else {
 
-      subheading = 'Market Query';
+      subheading = '';
       var inputStyle = this.state.marketTextError ? 'error' : null;
+      // page = (
+      //   <div>
+      //     <p>Enter a question for the market to trade on.  This question should be easily verifiable and have an expiring date in the future.</p>
+      //     <p>For example: "Will Hurricane Fatima remain a category four and make land-fall by August 8th, 2017?"</p>
+      //     <Input
+      //       type='textarea'
+      //       help={ this.state.marketTextError }
+      //       bsStyle={ inputStyle }
+      //       value={ this.state.marketText }
+      //       placeholder="Ask your question"
+      //       onChange={ this.onChangeMarketText } 
+      //     />
+      //     <span className="text-count pull-right">{ this.state.marketTextCount }</span> 
+      //     <p>What are the possible answers to your question?</p>
+      //     <Input type='text' value='No' />
+      //     <Input type='text' value='Yes' />
+      //     <Button bsStyle='default' onClock={ this.addAnswer }>Add another answer</Button>
+      //   </div>
+      // );
       page = (
-        <div>
-          <p>Enter a question for the market to trade on.  This question should be easily verifiable and have an expiring date in the future.</p>
-          <p>For example: "Will Hurricane Fatima remain a category four and make land-fall by August 8th, 2017?"</p>
-          <Input
-            type='textarea'
-            help={ this.state.marketTextError }
-            bsStyle={ inputStyle }
-            value={ this.state.marketText }
-            placeholder="Ask your question"
-            onChange={ this.onChangeMarketText } 
-          />
-          <span className="text-count pull-right">{ this.state.marketTextCount }</span> 
-          <p>What are the possible answers to your question?</p>
-          <Input type='text' value='No' />
-          <Input type='text' value='Yes' />
-          <Button bsStyle='default' onClock={ this.addAnswer }>Add another answer</Button>
-        </div>
+        <Tabs onSelect={ this.handleSelect } selectedIndex={ this.state.tab } >
+          <TabList>
+            <Tab>Yes or No</Tab>
+            <Tab>Multiple Choice</Tab>
+            <Tab>Numerical</Tab>
+          </TabList>
+
+          <TabPanel>
+            <div>
+              <p>Enter a <b>yes or no question</b> for the market to trade on.  This question should be easily verifiable and have an expiring date in the future.</p>
+              <p>For example: "Will it rain in New York City on November 12, 2016?"</p>
+              <Input
+                type='textarea'
+                help={ this.state.marketTextError }
+                bsStyle={ inputStyle }
+                value={ this.state.marketText }
+                placeholder="Ask your yes or no question"
+                onChange={ this.onChangeMarketText }
+              />
+              <span className="text-count pull-right">{ this.state.marketTextCount }</span>
+            </div>
+          </TabPanel>
+          <TabPanel>
+            <div>
+              <p>Enter a <b>multiple choice question</b> for the market to trade on.  This question should be easily verifiable and have an expiring date in the future.</p>
+              <p>For example: "Which political party's candidate will win the 2016 U.S. Presidential Election?  Choices: Democratic, Republican, Libertarian, or other"</p>
+              <Input
+                type='textarea'
+                help={ this.state.marketTextError }
+                bsStyle={ inputStyle }
+                value={ this.state.marketText }
+                placeholder="Ask your multiple choice question"
+                onChange={ this.onChangeMarketText }
+              />
+              <span className="text-count pull-right">{ this.state.marketTextCount }</span>
+              <p>Choices:</p>
+              <div className="col-sm-12">
+                <div className="col-sm-2">1.</div>
+                <div className="col-sm-10"><Input type='text' value='No' onChange={ this.onChangeAnswerText } /></div>
+              </div>
+              <div className="col-sm-12">
+                <div className="col-sm-2">2.</div>
+                <div className="col-sm-10"><Input type='text' value='Yes' onChange={ this.onChangeAnswerText } /></div>
+              </div>
+              <Button bsStyle='default' onClock={ this.addAnswer }>Add another answer</Button>
+            </div>
+          </TabPanel>
+          <TabPanel>
+            <div>
+              <p>Enter a <b>numerical question</b> for the market to trade on.  This question should be easily verifiable and have an expiring date in the future.</p>
+              <p>For example: "What will the high temperature (in degrees Fahrenheit) be in San Francisco, California, on July 1, 2016?"</p>
+              <Input
+                type='textarea'
+                help={ this.state.marketTextError }
+                bsStyle={ inputStyle }
+                value={ this.state.marketText }
+                placeholder="Ask your numerical question"
+                onChange={ this.onChangeMarketText }
+              />
+              <span className="text-count pull-right">{ this.state.marketTextCount }</span>
+              <p>What are the minimum and maximum possible answers to your question?</p>
+              Minimum: <Input type='text' value={ this.state.minimum } onChange={ this.onChangeMinimum } />
+              Maximum: <Input type='text' value={ this.state.maximum } onChange={ this.onChangeMaximum } />
+            </div>
+          </TabPanel>
+        </Tabs>
       );
       footer = (
         <div className='pull-right'>
           <Button bsStyle='primary' onClick={ this.onNext }>Next</Button>
         </div>
       );
-    }
+    };
 
     return (
       <Modal {...this.props} onHide={ this.onHide } id='add-market-modal'>
         <div className="modal-header clearfix">
-          <h4>New Market<span className='subheading pull-right'>{ subheading }</span></h4>
+          <h4>Create a new market<span className='subheading pull-right'>{ subheading }</span></h4>
         </div>
         <div className="modal-body clearfix">
           { page }

@@ -121,10 +121,10 @@ var AugurApp = React.createClass({
                 <span className="fa-stack fa-xs">
                   <i className="fa fa-circle fa-stack-2x icon-background2"></i>
                   <i className="fa fa-circle-thin fa-stack-2x icon-background3"></i>
-                  <i className="fa fa-btc fa-stack-1x"></i>
+                  <i className="fa fa-stack-1x fa-usd icon-green"></i>
                 </span>
               </div>
-              <div className="col-sm-3">
+              <div className="col-sm-3 balance-wrapper">
                 <span className='balance'>{ cashBalance }</span>
               </div>
             </div>
@@ -134,10 +134,10 @@ var AugurApp = React.createClass({
                 <span className="fa-stack fa-xs">
                   <i className="fa fa-circle fa-stack-2x icon-background1"></i>
                   <i className="fa fa-circle-thin fa-stack-2x icon-background6"></i>
-                  <i className="fa fa-heart fa-stack-1x"></i>
+                  <i className="fa fa-heart fa-stack-1x icon-red"></i>
                 </span>
               </div>
-              <div className="col-sm-3">
+              <div className="col-sm-3 balance-wrapper">
                 <span className='balance'>{ repBalance }</span>
               </div>
             </div>

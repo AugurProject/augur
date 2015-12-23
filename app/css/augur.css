@@ -178,16 +178,29 @@ nav.header h1 > i {
   left: 4px;
   opacity: 0.75;
 }
+
+.icon-red {
+    color: #C24040;
+}
+.icon-green {
+    color: green;
+}
+
 .icon-background1 {
-    color: #F8D9DA;
+    /*color: #F8D9DA;*/
+    /*color: #F78181;*/
+    color: #ffffff;
 }
 
 .icon-background2 {
-    color: #FECE8E;
+    /*color: #FECE8E;*/
+    color: #ffffff;
 }
 
 .icon-background3 {
-    color: #FFB450;
+    /*color: #FFB450;*/
+    /*color: #088A08;*/
+    color: green;
 }
 
 .icon-background4 {
@@ -195,7 +208,11 @@ nav.header h1 > i {
 }
 
 .icon-background6 {
-    color: #ffc0c0;
+    /*color: #ffc0c0;*/
+    /*color: #FE2E2E;*/
+    /*color: #610B4B;*/
+    /*color: #F7819F;*/
+    color: #C24040;
 }
 
 .icon-background5 {
@@ -1070,10 +1087,13 @@ a.market-pane:hover {
 .send-modal .balance {
     text-transform: uppercase;
 }
-.panel-body .balance {
+/*.panel-body .balance {
     color: #ffffff;
+}*/
+.panel-body .balance-wrapper {
+    color: #ffffff;
+    line-height: 21pt;
 }
-
 
 #confirm-modal button.confirm {
     margin-left: 10px;
@@ -1103,7 +1123,7 @@ a.market-pane:hover {
     width: 300px;
 }
 #add-market-modal .modal-body {
-    height: 225px;
+    min-height: 225px;
 }
 #add-market-modal .modal-footer {
     margin-top: 0px;
