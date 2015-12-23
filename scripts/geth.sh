@@ -4,7 +4,11 @@
 set -e
 trap "exit" INT
 
-address="0x639b41c4d3d399894f2a57894278e1653e7cd24c"
+if [ `hostname` = "heavy" ]; then
+    address="0xab50dcce6c36a033dc4a3b451d23868c909afbd6"
+else
+    address="0x639b41c4d3d399894f2a57894278e1653e7cd24c"
+fi
 maxpeers="64"
 network="${1}"
 symlink="$HOME/.ethereum"
@@ -25,5 +29,18 @@ if [ -L $symlink ]; then
     rm $symlink
 fi
 ln -s "$HOME/.ethereum-${network}" $symlink
+
+declare -a ports=("8545" "8547" "30303" "30304")
+for port in "${ports[@]}"; do
+    UDP="INPUT -p udp --dport ${port} -j ACCEPT"
+    TCP="INPUT -p tcp --dport ${port} -j ACCEPT"
+    set +e
+    sudo iptables -D $UDP >> /dev/null 2>&1
+    sudo iptables -D $TCP >> /dev/null 2>&1
+    set -e
+    sudo iptables -A $UDP
+    sudo iptables -A $TCP
+    echo -e "Opened port ${port}"
+done
 
 geth $optargs --networkid $network --datadir $symlink --rpc --rpcapi "eth,net,web3" --ipcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" --rpccorsdomain "https://eth1.augur.net https://eth2.augur.net https://eth3.augur.net https://eth4.augur.net https://eth5.augur.net https://augur.divshot.io https://augur-stage.herokuapp.com https://client.augur.net http://localhost:8080 https://localhost:8080" --bootnodes "${bootnodes}" --maxpeers $maxpeers --etherbase $address --unlock $address --password $passfile console
