@@ -26,6 +26,7 @@ var AddMarketModal = React.createClass({
     return {
       pageNumber: 1,
       marketText: '',
+      plainMarketText: '',
       marketTextMaxLength: 256,
       marketTextCount: '',
       marketTextError: null,
@@ -36,10 +37,12 @@ var AddMarketModal = React.createClass({
       tradingFeeError: null,
       valid: false,
       minDate: moment().format('YYYY-MM-DD'),
-      numAnswers: 2,
+      numOutcomes: 2,
       tab: 0,
-      minimum: 0,
-      maximum: 100
+      minValue: 0,
+      maxValue: 100,
+      choices: ["No", "Yes"],
+      choicesText: "No, Yes"
     };
   },
 
@@ -69,6 +72,7 @@ var AddMarketModal = React.createClass({
 
     this.setState({marketTextError: null});
     this.setState({marketText: marketText});
+    this.setState({plainMarketText: marketText});
   },
 
   onChangeTradingFee: function (event) {
@@ -155,11 +159,6 @@ var AddMarketModal = React.createClass({
     this.setState({pageNumber: newPageNumber});
   },
 
-  addAnswer: function (event) {
-    var numAnswers = this.state.numAnswers + 1;
-    this.setState({numAnswers: numAnswers});
-  },
-
   onSubmit: function(event) {
     if (!this.validatePage(this.state.pageNumber)) return;
     var self = this;
@@ -175,9 +174,9 @@ var AddMarketModal = React.createClass({
       branchId: branchId,
       description: this.state.marketText,
       expDate: utilities.dateToBlock(moment(this.state.maturationDate)),
-      minValue: 0,
-      maxValue: 1,
-      numOutcomes: 2,
+      minValue: this.state.minValue,
+      maxValue: this.state.maxValue,
+      numOutcomes: this.state.numOutcomes,
       onSent: function (res) {
         if (res && res.txHash) {
           console.log("new event submitted:", res.txHash);
@@ -220,18 +219,37 @@ var AddMarketModal = React.createClass({
   },
 
   handleDatePicked: function(dateText, moment, event) {
-
     this.setState({maturationDate: dateText});
   },
 
+  onAddAnswer: function (event) {
+    var numOutcomes = this.state.numOutcomes + 1;
+    var choices = this.state.choices;
+    choices.push('');
+    this.setState({numOutcomes: numOutcomes});
+    this.setState({choices: choices})
+  },
+
+  onChangeAnswerText: function (event) {
+    var choices = this.state.choices;
+    var id = event.target.id;
+    console.log("id:", id, id.split('-')[1]);
+    choices[id.split('-')[1]] = event.target.value;
+    this.setState({choices: choices});
+    if (choices.length > 2) {
+      var marketText = this.state.plainMarketText + " Choices: " + choices.join(", ") + ".";
+      this.setState({marketText: marketText});
+    }
+  },
+
   onChangeMinimum: function (event) {
-    var minimum = abi.number(event.target.value);
-    this.setState({minimum: minimum});
+    var minValue = abi.number(event.target.value);
+    this.setState({minValue: minValue});
   },
 
   onChangeMaximum: function (event) {
-    var maximum = abi.number(event.target.value);
-    this.setState({maximum: maximum});
+    var maxValue = abi.number(event.target.value);
+    this.setState({maxValue: maxValue});
   },
 
   render: function () {
@@ -325,27 +343,22 @@ var AddMarketModal = React.createClass({
 
     } else {
 
+      var numOutcomes = this.state.numOutcomes;
+      var choices = new Array(numOutcomes);
+      var placeholderText, choiceId;
+      for (var i = 0; i < numOutcomes; ++i) {
+        placeholderText = 'Enter answer ' + i;
+        choiceId = 'choice-' + i
+        choices[i] = <Input
+            key={ i }
+            id={ choiceId }
+            type='text'
+            value={ this.state.choices[i] }
+            placeholder={ placeholderText }
+            onChange={ this.onChangeAnswerText } />;
+      }
       subheading = '';
       var inputStyle = this.state.marketTextError ? 'error' : null;
-      // page = (
-      //   <div>
-      //     <p>Enter a question for the market to trade on.  This question should be easily verifiable and have an expiring date in the future.</p>
-      //     <p>For example: "Will Hurricane Fatima remain a category four and make land-fall by August 8th, 2017?"</p>
-      //     <Input
-      //       type='textarea'
-      //       help={ this.state.marketTextError }
-      //       bsStyle={ inputStyle }
-      //       value={ this.state.marketText }
-      //       placeholder="Ask your question"
-      //       onChange={ this.onChangeMarketText } 
-      //     />
-      //     <span className="text-count pull-right">{ this.state.marketTextCount }</span> 
-      //     <p>What are the possible answers to your question?</p>
-      //     <Input type='text' value='No' />
-      //     <Input type='text' value='Yes' />
-      //     <Button bsStyle='default' onClock={ this.addAnswer }>Add another answer</Button>
-      //   </div>
-      // );
       page = (
         <Tabs onSelect={ this.handleSelect } selectedIndex={ this.state.tab } >
           <TabList>
@@ -353,7 +366,6 @@ var AddMarketModal = React.createClass({
             <Tab>Multiple Choice</Tab>
             <Tab>Numerical</Tab>
           </TabList>
-
           <TabPanel>
             <div>
               <p>Enter a <b>yes or no question</b> for the market to trade on.  This question should be easily verifiable and have an expiring date in the future.</p>
@@ -363,53 +375,52 @@ var AddMarketModal = React.createClass({
                 help={ this.state.marketTextError }
                 bsStyle={ inputStyle }
                 value={ this.state.marketText }
-                placeholder="Ask your yes or no question"
-                onChange={ this.onChangeMarketText }
-              />
+                placeholder="Will it rain in New York City on November 12, 2016?"
+                onChange={ this.onChangeMarketText } />
               <span className="text-count pull-right">{ this.state.marketTextCount }</span>
             </div>
           </TabPanel>
           <TabPanel>
             <div>
               <p>Enter a <b>multiple choice question</b> for the market to trade on.  This question should be easily verifiable and have an expiring date in the future.</p>
-              <p>For example: "Which political party's candidate will win the 2016 U.S. Presidential Election?  Choices: Democratic, Republican, Libertarian, or other"</p>
               <Input
                 type='textarea'
                 help={ this.state.marketTextError }
                 bsStyle={ inputStyle }
                 value={ this.state.marketText }
-                placeholder="Ask your multiple choice question"
-                onChange={ this.onChangeMarketText }
-              />
+                placeholder="Which political party's candidate will win the 2016 U.S. Presidential Election?  Choices: Democratic, Republican, Libertarian, other."
+                onChange={ this.onChangeMarketText } />
               <span className="text-count pull-right">{ this.state.marketTextCount }</span>
               <p>Choices:</p>
-              <div className="col-sm-12">
-                <div className="col-sm-2">1.</div>
-                <div className="col-sm-10"><Input type='text' value='No' onChange={ this.onChangeAnswerText } /></div>
-              </div>
-              <div className="col-sm-12">
-                <div className="col-sm-2">2.</div>
-                <div className="col-sm-10"><Input type='text' value='Yes' onChange={ this.onChangeAnswerText } /></div>
-              </div>
-              <Button bsStyle='default' onClock={ this.addAnswer }>Add another answer</Button>
+              { choices }
+              <Button bsStyle='default' onClick={ this.onAddAnswer }>
+                Add another answer
+              </Button>
             </div>
           </TabPanel>
           <TabPanel>
             <div>
               <p>Enter a <b>numerical question</b> for the market to trade on.  This question should be easily verifiable and have an expiring date in the future.</p>
-              <p>For example: "What will the high temperature (in degrees Fahrenheit) be in San Francisco, California, on July 1, 2016?"</p>
+              <p>Answers to numerical questions can be anywhere within a range of numbers.  For example, "What will the high temperature be in San Francisco, California, on July 1, 2016?" is a numerical question.</p>
               <Input
                 type='textarea'
                 help={ this.state.marketTextError }
                 bsStyle={ inputStyle }
                 value={ this.state.marketText }
-                placeholder="Ask your numerical question"
-                onChange={ this.onChangeMarketText }
-              />
+                placeholder="What will the high temperature (in degrees Fahrenheit) be in San Francisco, California, on July 1, 2016?"
+                onChange={ this.onChangeMarketText } />
               <span className="text-count pull-right">{ this.state.marketTextCount }</span>
-              <p>What are the minimum and maximum possible answers to your question?</p>
-              Minimum: <Input type='text' value={ this.state.minimum } onChange={ this.onChangeMinimum } />
-              Maximum: <Input type='text' value={ this.state.maximum } onChange={ this.onChangeMaximum } />
+              <p>What are the minimum and maximum allowed answers to your question?</p>
+              Minimum:
+              <Input
+                type='text'
+                value={ this.state.minValue }
+                onChange={ this.onChangeMinimum } />
+              Maximum:
+              <Input
+                type='text'
+                value={ this.state.maxValue }
+                onChange={ this.onChangeMaximum } />
             </div>
           </TabPanel>
         </Tabs>
