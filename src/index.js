@@ -287,7 +287,7 @@ Augur.prototype.connect = function (rpcinfo, ipcpath, callback) {
             if (err) console.error("augur.connect error:", err);
             self.update_contracts();
             self.connection = true;
-            if (callback) callback();
+            callback(true);
         });
     } else {
         try {
