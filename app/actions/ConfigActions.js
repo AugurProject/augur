@@ -4,24 +4,36 @@ var utilities = require('../libs/utilities');
 var ConfigActions = {
 
   connect: function (hosted) {
-    var host;
+    var host, self = this;
+    var connectHostedCb = function (host) {
+      if (!host) return console.error("Couldn't connect to hosted node");
+      console.log("connected to host:", augur.rpc.nodes.hosted[0]);
+      self.flux.actions.network.checkNetwork();
+    };
     if (hosted) {
-      host = this.flux.actions.config.connectHosted();
+      this.flux.actions.config.connectHosted(connectHostedCb);
     } else {
-      host = this.flux.store('config').getState().host;
-      if (!host || !augur.connect(host)) {
-        host = this.flux.actions.config.connectHosted();
+      if (!this.flux.store('config').getState().host) {
+        return this.flux.actions.config.connectHosted(connectHostedCb);
       }
+      augur.connect(host, null, function (connected) {
+        if (connected) {
+          console.log("connected to host:", augur.rpc.nodes.local);
+          return self.flux.actions.network.checkNetwork();
+        }
+        self.flux.actions.config.connectHosted(connectHostedCb);
+      });
     }
-    console.log("connected to host:", augur.rpc.nodes.local || augur.rpc.nodes.hosted[0]);
-    this.flux.actions.network.checkNetwork();
   },
 
-  connectHosted: function () {
+  connectHosted: function (cb) {
+    var self = this;
     augur.rpc.reset();
-    augur.connect();
-    this.flux.actions.config.setIsHosted(true);
-    return augur.rpc.nodes.hosted[0];
+    augur.connect(null, null, function (connected) {
+      self.flux.actions.config.setIsHosted(connected);
+      if (!connected) return cb(false);
+      cb(augur.rpc.nodes.hosted[0]);
+    });
   },
 
   setIsHosted: function (isHosted) {

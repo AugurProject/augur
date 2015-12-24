@@ -124,7 +124,7 @@ var NetworkActions = {
       if (blockNumber && !blockNumber.error) {
 
         blockNumber = abi.number(blockNumber);
-        var blockMoment = utilities.blockToDate(blockNumber);
+        var blockMoment = utilities.blockToDate(blockNumber, blockNumber);
 
         self.dispatch(constants.network.UPDATE_NETWORK, {
           blockNumber: blockNumber,

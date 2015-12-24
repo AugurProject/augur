@@ -170,10 +170,11 @@ var AddMarketModal = React.createClass({
     };
     var pendingId = flux.actions.market.addPendingMarket(newMarketParams);
     var branchId = flux.store("branch").getCurrentBranch().id;
+    var block = flux.store("network").getState().blockNumber;
     augur.createEvent({
       branchId: branchId,
       description: this.state.marketText,
-      expDate: utilities.dateToBlock(moment(this.state.maturationDate)),
+      expDate: utilities.dateToBlock(moment(this.state.maturationDate), block),
       minValue: this.state.minValue,
       maxValue: this.state.maxValue,
       numOutcomes: this.state.numOutcomes,
