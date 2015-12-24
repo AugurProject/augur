@@ -55,7 +55,7 @@
     "react-date-picker": "^2.1.3",
     "react-highcharts": "^6.0.0",
     "react-intl": "^1.2.2",
-    "react-paginate": "^0.1.33",
+    "react-paginate": "^0.4.3",
     "react-router": "^0.13.3",
     "react-tabs": "^0.5.1",
     "secure-random": "^1.1.1"

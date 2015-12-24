@@ -10,6 +10,7 @@ global.jQuery = $;
 require('bootstrap');
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 var Fluxxor = require('fluxxor');
 
 var Router = require("react-router");
@@ -93,5 +94,5 @@ var routes = (
 );
 
 Router.run(routes, Router.HistoryLocation, function (Handler, state) {
-  React.render(<Handler flux={ flux } params={ state.params } />, document.body);
+  ReactDOM.render(<Handler flux={ flux } params={ state.params } />, document.getElementById("render-target"));
 });
