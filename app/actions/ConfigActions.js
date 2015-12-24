@@ -18,7 +18,7 @@ var ConfigActions = {
       }
       augur.connect(host, null, function (connected) {
         if (connected) {
-          console.log("connected to host:", augur.rpc.nodes.local);
+          console.log("connected to host:", augur.rpc.nodes.local || augur.rpc.nodes.hosted[0]);
           return self.flux.actions.network.checkNetwork();
         }
         self.flux.actions.config.connectHosted(connectHostedCb);
