@@ -11,7 +11,6 @@ module.exports = function (network) {
     return {
 
         comments: {
-
             addComment: {
                 to: contracts.comments,
                 method: "addComment",
@@ -19,7 +18,6 @@ module.exports = function (network) {
                 send: true,
                 returns: "number"
             }
-
         },
 
         // faucets.se
@@ -63,6 +61,19 @@ module.exports = function (network) {
             send: true,
             signature: "iii",
             returns: "unfix"
+        },
+        depositEther: {
+            to: contracts.cash,
+            method: "depositEther",
+            send: true,
+            returns: "number"
+        },
+        withdrawEther: {
+            to: contracts.cash,
+            method: "withdrawEther",
+            signature: "ii",
+            send: true,
+            returns: "number"
         },
 
         // info.se

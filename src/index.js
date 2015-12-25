@@ -401,6 +401,25 @@ Augur.prototype.sendCashFrom = function (to, value, from, onSent, onSuccess, onF
     tx.params = [to, abi.fix(value, "hex"), from];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
+Augur.prototype.depositEther = function (value, onSent, onSuccess, onFailed) {
+    // value: amount of ether to exchange for cash (in ETHER, not wei!)
+    if (value && value.value) {
+        if (value.onSent) onSent = value.onSent;
+        if (value.onSuccess) onSuccess = value.onSuccess;
+        if (value.onFailed) onFailed = value.onFailed;
+        value = value.value;
+    }
+    var tx = this.utils.copy(this.tx.depositEther);
+    tx.value = abi.bignum(value).mul(rpc.ETHER).toFixed();
+    return this.transact(tx, onSent, onSuccess, onFailed);
+};
+Augur.prototype.withdrawEther = function (to, value, onSent, onSuccess, onFailed) {
+    var tx = this.utils.copy(this.tx.withdrawEther);
+    var unpacked = this.utils.unpack(to, this.utils.labels(this.withdrawEther), arguments);
+    tx.params = unpacked.params;
+    tx.params[1] = abi.bignum(tx.params[1]).mul(rpc.ETHER).toFixed();
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
 
 // info.se
 Augur.prototype.getCreator = function (id, onSent) {
