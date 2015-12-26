@@ -1102,6 +1102,7 @@ Augur.prototype.parseMarketInfo = function (rawInfo) {
             cumulativeScale: abi.string(rawInfo[9]),
             creationFee: abi.unfix(rawInfo[10], "string"),
             author: abi.format_address(rawInfo[11]),
+            type: null,
             endDate: null,
             participants: {},
             winningOutcomes: [],
@@ -1136,6 +1137,14 @@ Augur.prototype.parseMarketInfo = function (rawInfo) {
                 maxValue: abi.string(rawInfo[i + index + 4]),
                 numOutcomes: abi.number(rawInfo[i + index + 5])
             };
+            // market type: binary, categorical, or scalar
+            if (info.events[i].numOutcomes !== 2) {
+                info.events[i].type = "categorical";
+            } else if (info.events[i].minValue === '0' && info.events[i].maxValue === '1') {
+                info.events[i].type = "binary";
+            } else {
+                info.events[i].type = "scalar";
+            }
             if (info.endDate === null || endDate < info.endDate) {
                 info.endDate = endDate;
             }
@@ -1161,6 +1170,13 @@ Augur.prototype.parseMarketInfo = function (rawInfo) {
         info.description = String.fromCharCode.apply(null, rawInfo.slice(
             rawInfo.length - parseInt(rawInfo[index])
         ));
+
+        // market types: binary, categorical, scalar, combinatorial
+        if (info.numEvents === 1) {
+            info.type = info.events[0].type;
+        } else {
+            info.type = "combinatorial"; // TODO subtypes
+        }
     }
     return info;
 };
@@ -1171,18 +1187,43 @@ Augur.prototype.getMarketInfo = function (market, callback) {
     tx.params = unpacked.params;
     if (unpacked && this.utils.is_function(unpacked.cb[0])) {
         return this.fire(tx, function (marketInfo) {
-            if (marketInfo) {
-                marketInfo = self.parseMarketInfo(marketInfo);
-                marketInfo._id = market;
-                unpacked.cb[0](marketInfo);
-            } else {
-                console.error(marketInfo);
+            if (!marketInfo) return console.error(marketInfo);
+            marketInfo = self.parseMarketInfo(marketInfo);
+            marketInfo._id = market;
+            if (marketInfo.numEvents === 1) {
+                return unpacked.cb[0](marketInfo);
             }
+
+            // combinatorial markets only: batch event descriptions
+            var txList = new Array(marketInfo.numEvents);
+            for (var i = 0; i < marketInfo.numEvents; ++i) {
+                txList[i] = utils.copy(self.tx.getDescription);
+                txList[i].params = marketInfo.events[i].id;
+            }
+            console.log(txList);
+            rpc.batch(txList, function (response) {
+                for (var i = 0, len = response.length; i < len; ++i) {
+                    marketInfo.events[i].description = abi.decode_hex(response[i], true);
+                }
+                unpacked.cb[0](marketInfo);
+            });
         });
     }
     var marketInfo = this.parseMarketInfo(this.fire(tx));
     if (marketInfo) {
         marketInfo._id = market;
+        if (marketInfo.numEvents === 1) return marketInfo;
+
+        // combinatorial markets only: batch event descriptions
+        var txList = new Array(marketInfo.numEvents);
+        for (var i = 0; i < marketInfo.numEvents; ++i) {
+            txList[i] = utils.copy(self.tx.getDescription);
+            txList[i].params = marketInfo.events[i].id;
+        }
+        var response = rpc.batch(txList);
+        for (var i = 0, len = response.length; i < len; ++i) {
+            marketInfo.events[i].description = response[i];
+        }
         return marketInfo;
     }
     console.error("augur.getMarketInfo:", JSON.stringify(marketInfo, null, 2));
