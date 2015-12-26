@@ -1,3747 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-(function (Buffer){
-/**
- * Ethereum contract ABI data serialization.
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var BigNumber = require("bignumber.js");
-var keccak_256 = require("js-sha3").keccak_256;
-var ethabi = new (require("ethereumjs-abi"))();
-
-BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
-
-module.exports = {
-
-    constants: {
-        ONE: (new BigNumber(2)).toPower(64),
-        MOD: new BigNumber(2).toPower(256),
-        BYTES_32: new BigNumber(2).toPower(252)
-    },
-
-    copy: function (obj) {
-        if (null === obj || "object" !== typeof obj) return obj;
-        var copy = obj.constructor();
-        for (var attr in obj) {
-            if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
-        }
-        return copy;
-    },
-
-    is_numeric: function (n) {
-        return Number(parseFloat(n)) == n;
-    },
-
-    remove_leading_zeros: function (h) {
-        var hex = h.toString();
-        if (hex.slice(0, 2) === "0x") {
-            hex = hex.slice(2);
-        }
-        if (!/^0+$/.test(hex)) {
-            while (hex.slice(0, 2) === "00") {
-                hex = hex.slice(2);
-            }
-        }
-        return hex;
-    },
-
-    remove_trailing_zeros: function (h) {
-        var hex = h.toString();
-        while (hex.slice(-2) === "00") {
-            hex = hex.slice(0,-2);
-        }
-        return hex;
-    },
-
-    decode_hex: function (h, strip) {
-        var hex = h.toString();
-        var str = '';
-        if (hex.slice(0,2) === "0x") hex = hex.slice(2);
-        // first 32 bytes = offset
-        // second 32 bytes = string length
-        if (strip) {
-            hex = hex.slice(128);
-            hex = this.remove_trailing_zeros(hex);
-        }
-        for (var i = 0, l = hex.length; i < l; i += 2) {
-            str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-        }
-        return str;
-    },
-
-    // convert bytes to hex
-    encode_hex: function (str) {
-        var hexbyte, hex = '';
-        if (str && str.constructor === Object || str.constructor === Array) {
-            str = JSON.stringify(str);
-        }
-        for (var i = 0, len = str.length; i < len; ++i) {
-            hexbyte = str.charCodeAt(i).toString(16);
-            if (hexbyte.length === 1) hexbyte = "0" + hexbyte;
-            hex += hexbyte;
-        }
-        return hex;
-    },
-
-    unfork: function (forked, prefix) {
-        if (forked !== null && forked !== undefined) {
-            var unforked = this.bignum(forked);
-            var superforked = unforked.plus(this.constants.MOD);
-            if (superforked.gte(this.constants.BYTES_32) && superforked.lt(this.constants.MOD)) {
-                unforked = superforked;
-            }
-            if (forked.constructor === BigNumber) return unforked;
-            unforked = this.pad_left(unforked.toString(16));
-            if (prefix) unforked = this.prefix_hex(unforked);
-            return unforked;
-        }
-    },
-
-    hex: function (n, nowrap) {
-        var h;
-        if (n !== undefined && n !== null && n.constructor) {
-            switch (n.constructor) {
-                case Buffer:
-                    h = n.toString("hex");
-                    break;
-                case Object:
-                    h = this.encode_hex(JSON.stringify(n));
-                    break;
-                case Array:
-                    h = this.bignum(n, "hex", nowrap);
-                    break;
-                case BigNumber:
-                    h = n.toString(16);
-                    break;
-                case String:
-                    if (n === "-0x0") {
-                        h = "0x0";
-                    } else if (n === "-0") {
-                        h = "0";
-                    } else if (n.slice(0, 3) === "-0x" || n.slice(0, 2) === "-0x") {
-                        h = n;
-                    } else {
-                        if (isFinite(n)) {
-                            h = this.bignum(n, "hex", nowrap);
-                        } else {
-                            h = this.encode_hex(n);
-                        }
-                    }
-                    break;
-                case Boolean:
-                    h = (n) ? "0x1" : "0x0";
-                    break;
-                default:
-                    h = this.bignum(n, "hex", nowrap);
-            }
-        }
-        return this.prefix_hex(h);
-    },
-
-    is_hex: function (str) {
-        if (str && str.constructor === String) {
-            if (str.slice(0, 1) === '-' && str.length > 1) {
-                return /^[0-9A-F]+$/i.test(str.slice(1));
-            }
-            return /^[0-9A-F]+$/i.test(str);
-        }
-        return false;
-    },
-
-    format_address: function (addr) {
-        if (addr && addr.constructor === String) {
-            addr = this.strip_0x(addr);
-            while (addr.length > 40 && addr.slice(0, 1) === "0") {
-                addr = addr.slice(1);
-            }
-            while (addr.length < 40) {
-                addr = "0" + addr;
-            }
-            return this.prefix_hex(addr);
-        }
-    },
-
-    strip_0x: function (str) {
-        if (str && str.constructor === String && str.length >= 2) {
-            var h = str;
-            if (h === "-0x0" || h === "0x0") {
-                return "0";
-            }
-            if (h.slice(0, 2) === "0x" && h.length > 2) {
-                h = h.slice(2);
-            } else if (h.slice(0, 3) === "-0x" && h.length > 3) {
-                h = '-' + h.slice(3);
-            }
-            if (this.is_hex(h)) return h;
-        }
-        return str;
-    },
-
-    zero_prefix: function (h) {
-        if (h !== undefined && h !== null && h.constructor === String) {
-            h = this.strip_0x(h);
-            if (h.length % 2) h = "0" + h;
-            if (h.slice(0,2) !== "0x" && h.slice(0,3) !== "-0x") {
-                if (h.slice(0,1) === '-') {
-                    h = "-0x" + h.slice(1);
-                } else {
-                    h = "0x" + h;
-                }
-            }
-        }
-        return h;
-    },
-
-    prefix_hex: function (n) {
-        if (n !== undefined && n !== null) {
-            if (n.constructor === Number || n.constructor === BigNumber) {
-                n = n.toString(16);
-            }
-            if (n.constructor === String &&
-                n.slice(0,2) !== "0x" && n.slice(0,3) !== "-0x")
-            {
-                if (n.slice(0,1) === '-') {
-                    n = "-0x" + n.slice(1);
-                } else {
-                    n = "0x" + n;
-                }
-            }
-        }
-        return n;
-    },
-
-    bignum: function (n, encoding, nowrap) {
-        var bn, len;
-        if (n !== null && n !== undefined && n !== "0x" && !n.error && !n.message) {
-            switch (n.constructor) {
-                case BigNumber:
-                    bn = n;
-                    break;
-                case Number:
-                    if (Math.floor(Math.log(n) / Math.log(10) + 1) <= 15) {
-                        bn = new BigNumber(n);
-                    } else {
-                        n = n.toString();
-                        try {
-                            bn = new BigNumber(n);
-                        } catch (exc) {
-                            if (this.is_hex(n)) {
-                                bn = new BigNumber(n, 16);
-                            } else {
-                                return n;
-                            }
-                        }
-                    }
-                    break;
-                case String:
-                    try {
-                        bn = new BigNumber(n);
-                    } catch (exc) {
-                        if (this.is_hex(n)) {
-                            bn = new BigNumber(n, 16);
-                        } else {
-                            return n;
-                        }
-                    }
-                    break;
-                case Array:
-                    len = n.length;
-                    bn = new Array(len);
-                    for (var i = 0; i < len; ++i) {
-                        bn[i] = this.bignum(n[i], encoding, nowrap);
-                    }
-                    break;
-                default:
-                    try {
-                        bn = new BigNumber(n);
-                    } catch (ex) {
-                        try {
-                            bn = new BigNumber(n, 16);
-                        } catch (exc) {
-                            return n;
-                        }
-                    }
-            }
-            if (bn !== undefined && bn !== null && bn.constructor === BigNumber) {
-                if (!nowrap && bn.gte(this.constants.BYTES_32)) {
-                    bn = bn.sub(this.constants.MOD);
-                }
-                if (encoding) {
-                    if (encoding === "number") {
-                        bn = bn.toNumber();
-                    } else if (encoding === "string") {
-                        bn = bn.toFixed();
-                    } else if (encoding === "hex") {
-                        bn = this.prefix_hex(bn.toString(16));
-                    }
-                }
-            }
-            return bn;
-        } else {
-            return n;
-        }
-    },
-
-    fix: function (n, encode) {
-        var fixed;
-        if (n && n !== "0x" && !n.error && !n.message) {
-            if (encode && n.constructor === String) {
-                encode = encode.toLowerCase();
-            }
-            if (n.constructor === Array) {
-                var len = n.length;
-                fixed = new Array(len);
-                for (var i = 0; i < len; ++i) {
-                    fixed[i] = this.fix(n[i], encode);
-                }
-            } else {
-                if (n.constructor === BigNumber) {
-                    fixed = n.mul(this.constants.ONE).round();
-                } else {
-                    fixed = this.bignum(n).mul(this.constants.ONE).round();
-                }
-                if (fixed && fixed.gte(this.constants.BYTES_32)) {
-                    fixed = fixed.sub(this.constants.MOD);
-                }
-                if (encode) {
-                    if (encode === "string") {
-                        fixed = fixed.toFixed();
-                    } else if (encode === "hex") {
-                        if (fixed.constructor === BigNumber) {
-                            fixed = fixed.toString(16);
-                        }
-                        fixed = this.prefix_hex(fixed);
-                    }
-                }
-            }
-            return fixed;
-        } else {
-            return n;
-        }
-    },
-
-    unfix: function (n, encode) {
-        var unfixed;
-        if (n && n !== "0x" && !n.error && !n.message) {
-            if (encode) encode = encode.toLowerCase();
-            if (n.constructor === Array) {
-                var len = n.length;
-                unfixed = new Array(len);
-                for (var i = 0; i < len; ++i) {
-                    unfixed[i] = this.unfix(n[i], encode);
-                }
-            } else {
-                if (n.constructor === BigNumber) {
-                    unfixed = n.dividedBy(this.constants.ONE);
-                } else {
-                    unfixed = this.bignum(n).dividedBy(this.constants.ONE);
-                }
-                if (unfixed && encode) {
-                    if (encode === "hex") {
-                        unfixed = this.prefix_hex(unfixed);
-                    } else if (encode === "string") {
-                        unfixed = unfixed.toFixed();
-                    } else if (encode === "number") {
-                        unfixed = unfixed.toNumber();
-                    }
-                }
-            }
-            return unfixed;
-        } else {
-            return n;
-        }
-    },
-
-    string: function (n) {
-        return this.bignum(n, "string");
-    },
-
-    number: function (s) {
-        return this.bignum(s, "number");
-    },
-
-    chunk: function (total_len, chunk_len) {
-        chunk_len = chunk_len || 64;
-        return Math.ceil(total_len / chunk_len);
-    },
-
-    pad_right: function (s, chunk_len, prefix) {
-        chunk_len = chunk_len || 64;
-        s = this.strip_0x(s);
-        var multiple = chunk_len * this.chunk(s.length, chunk_len);
-        while (s.length < multiple) {
-            s += '0';
-        }
-        if (prefix) s = this.prefix_hex(s);
-        return s;
-    },
-
-    pad_left: function (s, chunk_len, prefix) {
-        chunk_len = chunk_len || 64;
-        s = this.strip_0x(s);
-        var multiple = chunk_len * this.chunk(s.length, chunk_len);
-        while (s.length < multiple) {
-            s = '0' + s;
-        }
-        if (prefix) s = this.prefix_hex(s);
-        return s;
-    },
-
-    encode_prefix: function (funcname, signature) {
-        signature = signature || "";
-        var summary = funcname + "(";
-        for (var i = 0, len = signature.length; i < len; ++i) {
-            switch (signature[i]) {
-                case 's':
-                    summary += "bytes";
-                    break;
-                case 'b':
-                    summary += "bytes";
-                    var j = 1;
-                    while (this.is_numeric(signature[i+j])) {
-                        summary += signature[i+j].toString();
-                        j++;
-                    }
-                    i += j;
-                    break;
-                case 'i':
-                    summary += "int256";
-                    break;
-                case 'a':
-                    summary += "int256[]";
-                    break;
-                default:
-                    summary += "weird";
-            }
-            if (i !== len - 1) summary += ",";
-        }
-        var prefix = keccak_256(summary + ")").slice(0, 8);
-        while (prefix.slice(0, 1) === '0') {
-            prefix = prefix.slice(1);
-        }
-        // console.log(prefix, signature, funcname);
-        return this.pad_left(prefix, 8, true);
-    },
-
-    parse_signature: function (signature) {
-        var types = [];
-        for (var i = 0, len = signature.length; i < len; ++i) {
-            if (this.is_numeric(signature[i])) {
-                types[types.length - 1] += signature[i].toString();
-            } else {
-                if (signature[i] === 's') {
-                    types.push("bytes");
-                } else if (signature[i] === 'b') {
-                    types.push("bytes");
-                } else if (signature[i] === 'a') {
-                    types.push("int256[]");
-                } else {
-                    types.push("int256");
-                }
-            }
-        }
-        return types;
-    },
-
-    parse_params: function (params) {
-        if (params !== undefined && params !== null &&
-            params !== [] && params !== "")
-        {
-            if (params.constructor === String) {
-                if (params.slice(0,1) === "[" &&
-                    params.slice(-1) === "]")
-                {
-                    params = JSON.parse(params);
-                }
-                if (params.constructor === String) {
-                    params = [params];
-                }
-            } else if (params.constructor === Number) {
-                params = [params];
-            }
-        } else {
-            params = [];
-        }
-        return params;
-    },
-
-    encode_int: function (value) {
-        var cs, x, output;
-        cs = [];
-        x = new BigNumber(value);
-        while (x.gt(new BigNumber(0))) {
-            cs.push(String.fromCharCode(x.mod(new BigNumber(256))));
-            x = x.dividedBy(new BigNumber(256)).floor();
-        }
-        output = this.encode_hex((cs.reverse()).join(''));
-        while (output.length < 64) {
-            output = '0' + output;
-        }
-        return output;
-    },
-
-    // static parameter encoding
-
-    encode_int256: function (encoding, param) {
-        if (param !== undefined && param !== null && param !== [] && param !== "") {
-
-            // input is a javascript number
-            if (param.constructor === Number) {
-                param = this.bignum(param);
-                if (param.lt(new BigNumber(0))) {
-                    param = param.add(this.constants.MOD);
-                }
-                encoding.statics += this.encode_int(param);
-
-            // input is a string
-            } else if (param.constructor === String) {
-
-                // negative hex
-                if (param.slice(0,1) === '-') {
-                    param = this.bignum(param).add(this.constants.MOD).toFixed();
-                    encoding.statics += this.encode_int(param);
-
-                // positive hex
-                } else if (param.slice(0,2) === "0x") {
-                    encoding.statics += this.pad_left(param.slice(2));
-
-                // decimal (base-10 integer)
-                } else {
-                    encoding.statics += this.encode_int(param);
-                }
-            }
-
-            // size in multiples of 32
-            encoding.chunks += this.chunk(encoding.statics.length);
-        }
-        return encoding;
-    },
-
-    encode_bytesN: function (encoding, param) {
-        if (param !== undefined && param !== null && param !== [] && param !== "") {
-            while (param.length) {
-                encoding.statics += this.pad_right(this.encode_hex(param.slice(0, 64)));
-                param = param.slice(64);
-            }
-            encoding.chunks += this.chunk(encoding.statics.length);
-        }
-        return encoding;
-    },
-
-    // dynamic parameter encoding
-
-    // offset (in multiples of 32)
-    offset: function (len, num_params) {
-        return this.encode_int(32 * (num_params + this.chunk(len)));
-    },
-
-    encode_bytes: function (encoding, param, num_params) {
-        encoding.statics += this.offset(encoding.dynamics.length, num_params);
-        encoding.dynamics += this.encode_int(param.length);
-        encoding.dynamics += this.pad_right(this.encode_hex(param));
-        return encoding;
-    },
-
-    encode_int256a: function (encoding, param, num_params) {
-        encoding.statics += this.offset(encoding.dynamics.length, num_params);
-        var arraylen = param.length;
-        encoding.dynamics += this.encode_int(arraylen);
-        for (var j = 0; j < arraylen; ++j) {
-            if (param[j] !== undefined) {
-                if (param[j].constructor === Number) {
-                    encoding.dynamics += this.encode_int(this.bignum(param[j]).mod(this.constants.MOD).toFixed());
-                } else if (param[j].constructor === String) {
-                    if (param[j].slice(0,1) === '-') {
-                        encoding.dynamics += this.encode_int(this.bignum(param[j]).mod(this.constants.MOD).toFixed());
-                    } else if (param[j].slice(0,2) === "0x") {
-                        encoding.dynamics += this.pad_left(param[j].slice(2));
-                    } else {
-                        encoding.dynamics += this.encode_int(this.bignum(param[j]).mod(this.constants.MOD).toFixed());
-                    }
-                }
-                encoding.dynamics = this.pad_right(encoding.dynamics);
-            }
-        }
-        return encoding;
-    },
-
-    encode_data: function (itx) {
-        var tx, num_params, types, encoding;
-        tx = this.copy(itx);
-        
-        // parse signature and parameter array
-        types = this.parse_signature(tx.signature);
-        num_params = tx.signature.replace(/\d+/g, '').length;
-        tx.params = this.parse_params(tx.params);
-
-        // chunks: size of the static encoding (in multiples of 32)
-        encoding = { chunks: 0, statics: '', dynamics: '' };
-
-        // encode parameters
-        if (num_params === tx.params.length) {
-            for (var i = 0; i < num_params; ++i) {
-                if (types[i] === "int256") {
-                    encoding = this.encode_int256(encoding, tx.params[i]);
-                } else if (types[i] === "bytes" || types[i] === "string") {
-                    encoding = this.encode_bytes(encoding, tx.params[i], num_params);
-                } else if (types[i] === "int256[]") {
-                    encoding = this.encode_int256a(encoding, tx.params[i], num_params);
-                } else {
-                    // var num_bytes = parseInt(types[i].replace("bytes", ''));
-                    encoding = this.encode_bytesN(encoding, tx.params[i]);
-                }
-            }
-            return encoding.statics + encoding.dynamics;
-
-        // number of parameters provided didn't match the signature
-        } else {
-            return new Error("wrong number of parameters");
-        }
-    },
-
-    // hex-encode a function's ABI data and return it
-    encode: function (tx) {
-        tx.signature = tx.signature || "";
-        return this.encode_prefix(tx.method, tx.signature) + this.encode_data(tx);
-        // return "0x" + ethabi.rawEncode(tx.method, ethabi.fromSerpent(tx.signature), tx.params).toString("hex");
-    }
-};
-
-}).call(this,require("buffer").Buffer)
-},{"bignumber.js":2,"buffer":64,"ethereumjs-abi":361,"js-sha3":3}],2:[function(require,module,exports){
-/*! bignumber.js v2.0.8 https://github.com/MikeMcl/bignumber.js/LICENCE */
-
-;(function (global) {
-    'use strict';
-
-    /*
-      bignumber.js v2.0.8
-      A JavaScript library for arbitrary-precision arithmetic.
-      https://github.com/MikeMcl/bignumber.js
-      Copyright (c) 2015 Michael Mclaughlin <M8ch88l@gmail.com>
-      MIT Expat Licence
-    */
-
-
-    var BigNumber, crypto, parseNumeric,
-        isNumeric = /^-?(\d+(\.\d*)?|\.\d+)(e[+-]?\d+)?$/i,
-        mathceil = Math.ceil,
-        mathfloor = Math.floor,
-        notBool = ' not a boolean or binary digit',
-        roundingMode = 'rounding mode',
-        tooManyDigits = 'number type has more than 15 significant digits',
-        ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_',
-        BASE = 1e14,
-        LOG_BASE = 14,
-        MAX_SAFE_INTEGER = 0x1fffffffffffff,         // 2^53 - 1
-        // MAX_INT32 = 0x7fffffff,                   // 2^31 - 1
-        POWS_TEN = [1, 10, 100, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9, 1e10, 1e11, 1e12, 1e13],
-        SQRT_BASE = 1e7,
-
-        /*
-         * The limit on the value of DECIMAL_PLACES, TO_EXP_NEG, TO_EXP_POS, MIN_EXP, MAX_EXP, and
-         * the arguments to toExponential, toFixed, toFormat, and toPrecision, beyond which an
-         * exception is thrown (if ERRORS is true).
-         */
-        MAX = 1E9;                                   // 0 to MAX_INT32
-
-
-    /*
-     * Create and return a BigNumber constructor.
-     */
-    function another(configObj) {
-        var div,
-
-            // id tracks the caller function, so its name can be included in error messages.
-            id = 0,
-            P = BigNumber.prototype,
-            ONE = new BigNumber(1),
-
-
-            /********************************* EDITABLE DEFAULTS **********************************/
-
-
-            /*
-             * The default values below must be integers within the inclusive ranges stated.
-             * The values can also be changed at run-time using BigNumber.config.
-             */
-
-            // The maximum number of decimal places for operations involving division.
-            DECIMAL_PLACES = 20,                     // 0 to MAX
-
-            /*
-             * The rounding mode used when rounding to the above decimal places, and when using
-             * toExponential, toFixed, toFormat and toPrecision, and round (default value).
-             * UP         0 Away from zero.
-             * DOWN       1 Towards zero.
-             * CEIL       2 Towards +Infinity.
-             * FLOOR      3 Towards -Infinity.
-             * HALF_UP    4 Towards nearest neighbour. If equidistant, up.
-             * HALF_DOWN  5 Towards nearest neighbour. If equidistant, down.
-             * HALF_EVEN  6 Towards nearest neighbour. If equidistant, towards even neighbour.
-             * HALF_CEIL  7 Towards nearest neighbour. If equidistant, towards +Infinity.
-             * HALF_FLOOR 8 Towards nearest neighbour. If equidistant, towards -Infinity.
-             */
-            ROUNDING_MODE = 4,                       // 0 to 8
-
-            // EXPONENTIAL_AT : [TO_EXP_NEG , TO_EXP_POS]
-
-            // The exponent value at and beneath which toString returns exponential notation.
-            // Number type: -7
-            TO_EXP_NEG = -7,                         // 0 to -MAX
-
-            // The exponent value at and above which toString returns exponential notation.
-            // Number type: 21
-            TO_EXP_POS = 21,                         // 0 to MAX
-
-            // RANGE : [MIN_EXP, MAX_EXP]
-
-            // The minimum exponent value, beneath which underflow to zero occurs.
-            // Number type: -324  (5e-324)
-            MIN_EXP = -1e7,                          // -1 to -MAX
-
-            // The maximum exponent value, above which overflow to Infinity occurs.
-            // Number type:  308  (1.7976931348623157e+308)
-            // For MAX_EXP > 1e7, e.g. new BigNumber('1e100000000').plus(1) may be slow.
-            MAX_EXP = 1e7,                           // 1 to MAX
-
-            // Whether BigNumber Errors are ever thrown.
-            ERRORS = true,                           // true or false
-
-            // Change to intValidatorNoErrors if ERRORS is false.
-            isValidInt = intValidatorWithErrors,     // intValidatorWithErrors/intValidatorNoErrors
-
-            // Whether to use cryptographically-secure random number generation, if available.
-            CRYPTO = false,                          // true or false
-
-            /*
-             * The modulo mode used when calculating the modulus: a mod n.
-             * The quotient (q = a / n) is calculated according to the corresponding rounding mode.
-             * The remainder (r) is calculated as: r = a - n * q.
-             *
-             * UP        0 The remainder is positive if the dividend is negative, else is negative.
-             * DOWN      1 The remainder has the same sign as the dividend.
-             *             This modulo mode is commonly known as 'truncated division' and is
-             *             equivalent to (a % n) in JavaScript.
-             * FLOOR     3 The remainder has the same sign as the divisor (Python %).
-             * HALF_EVEN 6 This modulo mode implements the IEEE 754 remainder function.
-             * EUCLID    9 Euclidian division. q = sign(n) * floor(a / abs(n)).
-             *             The remainder is always positive.
-             *
-             * The truncated division, floored division, Euclidian division and IEEE 754 remainder
-             * modes are commonly used for the modulus operation.
-             * Although the other rounding modes can also be used, they may not give useful results.
-             */
-            MODULO_MODE = 1,                         // 0 to 9
-
-            // The maximum number of significant digits of the result of the toPower operation.
-            // If POW_PRECISION is 0, there will be unlimited significant digits.
-            POW_PRECISION = 100,                     // 0 to MAX
-
-            // The format specification used by the BigNumber.prototype.toFormat method.
-            FORMAT = {
-                decimalSeparator: '.',
-                groupSeparator: ',',
-                groupSize: 3,
-                secondaryGroupSize: 0,
-                fractionGroupSeparator: '\xA0',      // non-breaking space
-                fractionGroupSize: 0
-            };
-
-
-        /******************************************************************************************/
-
-
-        // CONSTRUCTOR
-
-
-        /*
-         * The BigNumber constructor and exported function.
-         * Create and return a new instance of a BigNumber object.
-         *
-         * n {number|string|BigNumber} A numeric value.
-         * [b] {number} The base of n. Integer, 2 to 64 inclusive.
-         */
-        function BigNumber( n, b ) {
-            var c, e, i, num, len, str,
-                x = this;
-
-            // Enable constructor usage without new.
-            if ( !( x instanceof BigNumber ) ) {
-
-                // 'BigNumber() constructor call without new: {n}'
-                if (ERRORS) raise( 26, 'constructor call without new', n );
-                return new BigNumber( n, b );
-            }
-
-            // 'new BigNumber() base not an integer: {b}'
-            // 'new BigNumber() base out of range: {b}'
-            if ( b == null || !isValidInt( b, 2, 64, id, 'base' ) ) {
-
-                // Duplicate.
-                if ( n instanceof BigNumber ) {
-                    x.s = n.s;
-                    x.e = n.e;
-                    x.c = ( n = n.c ) ? n.slice() : n;
-                    id = 0;
-                    return;
-                }
-
-                if ( ( num = typeof n == 'number' ) && n * 0 == 0 ) {
-                    x.s = 1 / n < 0 ? ( n = -n, -1 ) : 1;
-
-                    // Fast path for integers.
-                    if ( n === ~~n ) {
-                        for ( e = 0, i = n; i >= 10; i /= 10, e++ );
-                        x.e = e;
-                        x.c = [n];
-                        id = 0;
-                        return;
-                    }
-
-                    str = n + '';
-                } else {
-                    if ( !isNumeric.test( str = n + '' ) ) return parseNumeric( x, str, num );
-                    x.s = str.charCodeAt(0) === 45 ? ( str = str.slice(1), -1 ) : 1;
-                }
-            } else {
-                b = b | 0;
-                str = n + '';
-
-                // Ensure return value is rounded to DECIMAL_PLACES as with other bases.
-                // Allow exponential notation to be used with base 10 argument.
-                if ( b == 10 ) {
-                    x = new BigNumber( n instanceof BigNumber ? n : str );
-                    return round( x, DECIMAL_PLACES + x.e + 1, ROUNDING_MODE );
-                }
-
-                // Avoid potential interpretation of Infinity and NaN as base 44+ values.
-                // Any number in exponential form will fail due to the [Ee][+-].
-                if ( ( num = typeof n == 'number' ) && n * 0 != 0 ||
-                  !( new RegExp( '^-?' + ( c = '[' + ALPHABET.slice( 0, b ) + ']+' ) +
-                    '(?:\\.' + c + ')?$',b < 37 ? 'i' : '' ) ).test(str) ) {
-                    return parseNumeric( x, str, num, b );
-                }
-
-                if (num) {
-                    x.s = 1 / n < 0 ? ( str = str.slice(1), -1 ) : 1;
-
-                    if ( ERRORS && str.replace( /^0\.0*|\./, '' ).length > 15 ) {
-
-                        // 'new BigNumber() number type has more than 15 significant digits: {n}'
-                        raise( id, tooManyDigits, n );
-                    }
-
-                    // Prevent later check for length on converted number.
-                    num = false;
-                } else {
-                    x.s = str.charCodeAt(0) === 45 ? ( str = str.slice(1), -1 ) : 1;
-                }
-
-                str = convertBase( str, 10, b, x.s );
-            }
-
-            // Decimal point?
-            if ( ( e = str.indexOf('.') ) > -1 ) str = str.replace( '.', '' );
-
-            // Exponential form?
-            if ( ( i = str.search( /e/i ) ) > 0 ) {
-
-                // Determine exponent.
-                if ( e < 0 ) e = i;
-                e += +str.slice( i + 1 );
-                str = str.substring( 0, i );
-            } else if ( e < 0 ) {
-
-                // Integer.
-                e = str.length;
-            }
-
-            // Determine leading zeros.
-            for ( i = 0; str.charCodeAt(i) === 48; i++ );
-
-            // Determine trailing zeros.
-            for ( len = str.length; str.charCodeAt(--len) === 48; );
-            str = str.slice( i, len + 1 );
-
-            if (str) {
-                len = str.length;
-
-                // Disallow numbers with over 15 significant digits if number type.
-                // 'new BigNumber() number type has more than 15 significant digits: {n}'
-                if ( num && ERRORS && len > 15 ) raise( id, tooManyDigits, x.s * n );
-
-                e = e - i - 1;
-
-                 // Overflow?
-                if ( e > MAX_EXP ) {
-
-                    // Infinity.
-                    x.c = x.e = null;
-
-                // Underflow?
-                } else if ( e < MIN_EXP ) {
-
-                    // Zero.
-                    x.c = [ x.e = 0 ];
-                } else {
-                    x.e = e;
-                    x.c = [];
-
-                    // Transform base
-
-                    // e is the base 10 exponent.
-                    // i is where to slice str to get the first element of the coefficient array.
-                    i = ( e + 1 ) % LOG_BASE;
-                    if ( e < 0 ) i += LOG_BASE;
-
-                    if ( i < len ) {
-                        if (i) x.c.push( +str.slice( 0, i ) );
-
-                        for ( len -= LOG_BASE; i < len; ) {
-                            x.c.push( +str.slice( i, i += LOG_BASE ) );
-                        }
-
-                        str = str.slice(i);
-                        i = LOG_BASE - str.length;
-                    } else {
-                        i -= len;
-                    }
-
-                    for ( ; i--; str += '0' );
-                    x.c.push( +str );
-                }
-            } else {
-
-                // Zero.
-                x.c = [ x.e = 0 ];
-            }
-
-            id = 0;
-        }
-
-
-        // CONSTRUCTOR PROPERTIES
-
-
-        BigNumber.another = another;
-
-        BigNumber.ROUND_UP = 0;
-        BigNumber.ROUND_DOWN = 1;
-        BigNumber.ROUND_CEIL = 2;
-        BigNumber.ROUND_FLOOR = 3;
-        BigNumber.ROUND_HALF_UP = 4;
-        BigNumber.ROUND_HALF_DOWN = 5;
-        BigNumber.ROUND_HALF_EVEN = 6;
-        BigNumber.ROUND_HALF_CEIL = 7;
-        BigNumber.ROUND_HALF_FLOOR = 8;
-        BigNumber.EUCLID = 9;
-
-
-        /*
-         * Configure infrequently-changing library-wide settings.
-         *
-         * Accept an object or an argument list, with one or many of the following properties or
-         * parameters respectively:
-         *
-         *   DECIMAL_PLACES  {number}  Integer, 0 to MAX inclusive
-         *   ROUNDING_MODE   {number}  Integer, 0 to 8 inclusive
-         *   EXPONENTIAL_AT  {number|number[]}  Integer, -MAX to MAX inclusive or
-         *                                      [integer -MAX to 0 incl., 0 to MAX incl.]
-         *   RANGE           {number|number[]}  Non-zero integer, -MAX to MAX inclusive or
-         *                                      [integer -MAX to -1 incl., integer 1 to MAX incl.]
-         *   ERRORS          {boolean|number}   true, false, 1 or 0
-         *   CRYPTO          {boolean|number}   true, false, 1 or 0
-         *   MODULO_MODE     {number}           0 to 9 inclusive
-         *   POW_PRECISION   {number}           0 to MAX inclusive
-         *   FORMAT          {object}           See BigNumber.prototype.toFormat
-         *      decimalSeparator       {string}
-         *      groupSeparator         {string}
-         *      groupSize              {number}
-         *      secondaryGroupSize     {number}
-         *      fractionGroupSeparator {string}
-         *      fractionGroupSize      {number}
-         *
-         * (The values assigned to the above FORMAT object properties are not checked for validity.)
-         *
-         * E.g.
-         * BigNumber.config(20, 4) is equivalent to
-         * BigNumber.config({ DECIMAL_PLACES : 20, ROUNDING_MODE : 4 })
-         *
-         * Ignore properties/parameters set to null or undefined.
-         * Return an object with the properties current values.
-         */
-        BigNumber.config = function () {
-            var v, p,
-                i = 0,
-                r = {},
-                a = arguments,
-                o = a[0],
-                has = o && typeof o == 'object'
-                  ? function () { if ( o.hasOwnProperty(p) ) return ( v = o[p] ) != null; }
-                  : function () { if ( a.length > i ) return ( v = a[i++] ) != null; };
-
-            // DECIMAL_PLACES {number} Integer, 0 to MAX inclusive.
-            // 'config() DECIMAL_PLACES not an integer: {v}'
-            // 'config() DECIMAL_PLACES out of range: {v}'
-            if ( has( p = 'DECIMAL_PLACES' ) && isValidInt( v, 0, MAX, 2, p ) ) {
-                DECIMAL_PLACES = v | 0;
-            }
-            r[p] = DECIMAL_PLACES;
-
-            // ROUNDING_MODE {number} Integer, 0 to 8 inclusive.
-            // 'config() ROUNDING_MODE not an integer: {v}'
-            // 'config() ROUNDING_MODE out of range: {v}'
-            if ( has( p = 'ROUNDING_MODE' ) && isValidInt( v, 0, 8, 2, p ) ) {
-                ROUNDING_MODE = v | 0;
-            }
-            r[p] = ROUNDING_MODE;
-
-            // EXPONENTIAL_AT {number|number[]}
-            // Integer, -MAX to MAX inclusive or [integer -MAX to 0 inclusive, 0 to MAX inclusive].
-            // 'config() EXPONENTIAL_AT not an integer: {v}'
-            // 'config() EXPONENTIAL_AT out of range: {v}'
-            if ( has( p = 'EXPONENTIAL_AT' ) ) {
-
-                if ( isArray(v) ) {
-                    if ( isValidInt( v[0], -MAX, 0, 2, p ) && isValidInt( v[1], 0, MAX, 2, p ) ) {
-                        TO_EXP_NEG = v[0] | 0;
-                        TO_EXP_POS = v[1] | 0;
-                    }
-                } else if ( isValidInt( v, -MAX, MAX, 2, p ) ) {
-                    TO_EXP_NEG = -( TO_EXP_POS = ( v < 0 ? -v : v ) | 0 );
-                }
-            }
-            r[p] = [ TO_EXP_NEG, TO_EXP_POS ];
-
-            // RANGE {number|number[]} Non-zero integer, -MAX to MAX inclusive or
-            // [integer -MAX to -1 inclusive, integer 1 to MAX inclusive].
-            // 'config() RANGE not an integer: {v}'
-            // 'config() RANGE cannot be zero: {v}'
-            // 'config() RANGE out of range: {v}'
-            if ( has( p = 'RANGE' ) ) {
-
-                if ( isArray(v) ) {
-                    if ( isValidInt( v[0], -MAX, -1, 2, p ) && isValidInt( v[1], 1, MAX, 2, p ) ) {
-                        MIN_EXP = v[0] | 0;
-                        MAX_EXP = v[1] | 0;
-                    }
-                } else if ( isValidInt( v, -MAX, MAX, 2, p ) ) {
-                    if ( v | 0 ) MIN_EXP = -( MAX_EXP = ( v < 0 ? -v : v ) | 0 );
-                    else if (ERRORS) raise( 2, p + ' cannot be zero', v );
-                }
-            }
-            r[p] = [ MIN_EXP, MAX_EXP ];
-
-            // ERRORS {boolean|number} true, false, 1 or 0.
-            // 'config() ERRORS not a boolean or binary digit: {v}'
-            if ( has( p = 'ERRORS' ) ) {
-
-                if ( v === !!v || v === 1 || v === 0 ) {
-                    id = 0;
-                    isValidInt = ( ERRORS = !!v ) ? intValidatorWithErrors : intValidatorNoErrors;
-                } else if (ERRORS) {
-                    raise( 2, p + notBool, v );
-                }
-            }
-            r[p] = ERRORS;
-
-            // CRYPTO {boolean|number} true, false, 1 or 0.
-            // 'config() CRYPTO not a boolean or binary digit: {v}'
-            // 'config() crypto unavailable: {crypto}'
-            if ( has( p = 'CRYPTO' ) ) {
-
-                if ( v === !!v || v === 1 || v === 0 ) {
-                    CRYPTO = !!( v && crypto && typeof crypto == 'object' );
-                    if ( v && !CRYPTO && ERRORS ) raise( 2, 'crypto unavailable', crypto );
-                } else if (ERRORS) {
-                    raise( 2, p + notBool, v );
-                }
-            }
-            r[p] = CRYPTO;
-
-            // MODULO_MODE {number} Integer, 0 to 9 inclusive.
-            // 'config() MODULO_MODE not an integer: {v}'
-            // 'config() MODULO_MODE out of range: {v}'
-            if ( has( p = 'MODULO_MODE' ) && isValidInt( v, 0, 9, 2, p ) ) {
-                MODULO_MODE = v | 0;
-            }
-            r[p] = MODULO_MODE;
-
-            // POW_PRECISION {number} Integer, 0 to MAX inclusive.
-            // 'config() POW_PRECISION not an integer: {v}'
-            // 'config() POW_PRECISION out of range: {v}'
-            if ( has( p = 'POW_PRECISION' ) && isValidInt( v, 0, MAX, 2, p ) ) {
-                POW_PRECISION = v | 0;
-            }
-            r[p] = POW_PRECISION;
-
-            // FORMAT {object}
-            // 'config() FORMAT not an object: {v}'
-            if ( has( p = 'FORMAT' ) ) {
-
-                if ( typeof v == 'object' ) {
-                    FORMAT = v;
-                } else if (ERRORS) {
-                    raise( 2, p + ' not an object', v );
-                }
-            }
-            r[p] = FORMAT;
-
-            return r;
-        };
-
-
-        /*
-         * Return a new BigNumber whose value is the maximum of the arguments.
-         *
-         * arguments {number|string|BigNumber}
-         */
-        BigNumber.max = function () { return maxOrMin( arguments, P.lt ); };
-
-
-        /*
-         * Return a new BigNumber whose value is the minimum of the arguments.
-         *
-         * arguments {number|string|BigNumber}
-         */
-        BigNumber.min = function () { return maxOrMin( arguments, P.gt ); };
-
-
-        /*
-         * Return a new BigNumber with a random value equal to or greater than 0 and less than 1,
-         * and with dp, or DECIMAL_PLACES if dp is omitted, decimal places (or less if trailing
-         * zeros are produced).
-         *
-         * [dp] {number} Decimal places. Integer, 0 to MAX inclusive.
-         *
-         * 'random() decimal places not an integer: {dp}'
-         * 'random() decimal places out of range: {dp}'
-         * 'random() crypto unavailable: {crypto}'
-         */
-        BigNumber.random = (function () {
-            var pow2_53 = 0x20000000000000;
-
-            // Return a 53 bit integer n, where 0 <= n < 9007199254740992.
-            // Check if Math.random() produces more than 32 bits of randomness.
-            // If it does, assume at least 53 bits are produced, otherwise assume at least 30 bits.
-            // 0x40000000 is 2^30, 0x800000 is 2^23, 0x1fffff is 2^21 - 1.
-            var random53bitInt = (Math.random() * pow2_53) & 0x1fffff
-              ? function () { return mathfloor( Math.random() * pow2_53 ); }
-              : function () { return ((Math.random() * 0x40000000 | 0) * 0x800000) +
-                  (Math.random() * 0x800000 | 0); };
-
-            return function (dp) {
-                var a, b, e, k, v,
-                    i = 0,
-                    c = [],
-                    rand = new BigNumber(ONE);
-
-                dp = dp == null || !isValidInt( dp, 0, MAX, 14 ) ? DECIMAL_PLACES : dp | 0;
-                k = mathceil( dp / LOG_BASE );
-
-                if (CRYPTO) {
-
-                    // Browsers supporting crypto.getRandomValues.
-                    if ( crypto && crypto.getRandomValues ) {
-
-                        a = crypto.getRandomValues( new Uint32Array( k *= 2 ) );
-
-                        for ( ; i < k; ) {
-
-                            // 53 bits:
-                            // ((Math.pow(2, 32) - 1) * Math.pow(2, 21)).toString(2)
-                            // 11111 11111111 11111111 11111111 11100000 00000000 00000000
-                            // ((Math.pow(2, 32) - 1) >>> 11).toString(2)
-                            //                                     11111 11111111 11111111
-                            // 0x20000 is 2^21.
-                            v = a[i] * 0x20000 + (a[i + 1] >>> 11);
-
-                            // Rejection sampling:
-                            // 0 <= v < 9007199254740992
-                            // Probability that v >= 9e15, is
-                            // 7199254740992 / 9007199254740992 ~= 0.0008, i.e. 1 in 1251
-                            if ( v >= 9e15 ) {
-                                b = crypto.getRandomValues( new Uint32Array(2) );
-                                a[i] = b[0];
-                                a[i + 1] = b[1];
-                            } else {
-
-                                // 0 <= v <= 8999999999999999
-                                // 0 <= (v % 1e14) <= 99999999999999
-                                c.push( v % 1e14 );
-                                i += 2;
-                            }
-                        }
-                        i = k / 2;
-
-                    // Node.js supporting crypto.randomBytes.
-                    } else if ( crypto && crypto.randomBytes ) {
-
-                        // buffer
-                        a = crypto.randomBytes( k *= 7 );
-
-                        for ( ; i < k; ) {
-
-                            // 0x1000000000000 is 2^48, 0x10000000000 is 2^40
-                            // 0x100000000 is 2^32, 0x1000000 is 2^24
-                            // 11111 11111111 11111111 11111111 11111111 11111111 11111111
-                            // 0 <= v < 9007199254740992
-                            v = ( ( a[i] & 31 ) * 0x1000000000000 ) + ( a[i + 1] * 0x10000000000 ) +
-                                  ( a[i + 2] * 0x100000000 ) + ( a[i + 3] * 0x1000000 ) +
-                                  ( a[i + 4] << 16 ) + ( a[i + 5] << 8 ) + a[i + 6];
-
-                            if ( v >= 9e15 ) {
-                                crypto.randomBytes(7).copy( a, i );
-                            } else {
-
-                                // 0 <= (v % 1e14) <= 99999999999999
-                                c.push( v % 1e14 );
-                                i += 7;
-                            }
-                        }
-                        i = k / 7;
-                    } else if (ERRORS) {
-                        raise( 14, 'crypto unavailable', crypto );
-                    }
-                }
-
-                // Use Math.random: CRYPTO is false or crypto is unavailable and ERRORS is false.
-                if (!i) {
-
-                    for ( ; i < k; ) {
-                        v = random53bitInt();
-                        if ( v < 9e15 ) c[i++] = v % 1e14;
-                    }
-                }
-
-                k = c[--i];
-                dp %= LOG_BASE;
-
-                // Convert trailing digits to zeros according to dp.
-                if ( k && dp ) {
-                    v = POWS_TEN[LOG_BASE - dp];
-                    c[i] = mathfloor( k / v ) * v;
-                }
-
-                // Remove trailing elements which are zero.
-                for ( ; c[i] === 0; c.pop(), i-- );
-
-                // Zero?
-                if ( i < 0 ) {
-                    c = [ e = 0 ];
-                } else {
-
-                    // Remove leading elements which are zero and adjust exponent accordingly.
-                    for ( e = -1 ; c[0] === 0; c.shift(), e -= LOG_BASE);
-
-                    // Count the digits of the first element of c to determine leading zeros, and...
-                    for ( i = 1, v = c[0]; v >= 10; v /= 10, i++);
-
-                    // adjust the exponent accordingly.
-                    if ( i < LOG_BASE ) e -= LOG_BASE - i;
-                }
-
-                rand.e = e;
-                rand.c = c;
-                return rand;
-            };
-        })();
-
-
-        // PRIVATE FUNCTIONS
-
-
-        // Convert a numeric string of baseIn to a numeric string of baseOut.
-        function convertBase( str, baseOut, baseIn, sign ) {
-            var d, e, k, r, x, xc, y,
-                i = str.indexOf( '.' ),
-                dp = DECIMAL_PLACES,
-                rm = ROUNDING_MODE;
-
-            if ( baseIn < 37 ) str = str.toLowerCase();
-
-            // Non-integer.
-            if ( i >= 0 ) {
-                k = POW_PRECISION;
-
-                // Unlimited precision.
-                POW_PRECISION = 0;
-                str = str.replace( '.', '' );
-                y = new BigNumber(baseIn);
-                x = y.pow( str.length - i );
-                POW_PRECISION = k;
-
-                // Convert str as if an integer, then restore the fraction part by dividing the
-                // result by its base raised to a power.
-                y.c = toBaseOut( toFixedPoint( coeffToString( x.c ), x.e ), 10, baseOut );
-                y.e = y.c.length;
-            }
-
-            // Convert the number as integer.
-            xc = toBaseOut( str, baseIn, baseOut );
-            e = k = xc.length;
-
-            // Remove trailing zeros.
-            for ( ; xc[--k] == 0; xc.pop() );
-            if ( !xc[0] ) return '0';
-
-            if ( i < 0 ) {
-                --e;
-            } else {
-                x.c = xc;
-                x.e = e;
-
-                // sign is needed for correct rounding.
-                x.s = sign;
-                x = div( x, y, dp, rm, baseOut );
-                xc = x.c;
-                r = x.r;
-                e = x.e;
-            }
-
-            d = e + dp + 1;
-
-            // The rounding digit, i.e. the digit to the right of the digit that may be rounded up.
-            i = xc[d];
-            k = baseOut / 2;
-            r = r || d < 0 || xc[d + 1] != null;
-
-            r = rm < 4 ? ( i != null || r ) && ( rm == 0 || rm == ( x.s < 0 ? 3 : 2 ) )
-                       : i > k || i == k &&( rm == 4 || r || rm == 6 && xc[d - 1] & 1 ||
-                         rm == ( x.s < 0 ? 8 : 7 ) );
-
-            if ( d < 1 || !xc[0] ) {
-
-                // 1^-dp or 0.
-                str = r ? toFixedPoint( '1', -dp ) : '0';
-            } else {
-                xc.length = d;
-
-                if (r) {
-
-                    // Rounding up may mean the previous digit has to be rounded up and so on.
-                    for ( --baseOut; ++xc[--d] > baseOut; ) {
-                        xc[d] = 0;
-
-                        if ( !d ) {
-                            ++e;
-                            xc.unshift(1);
-                        }
-                    }
-                }
-
-                // Determine trailing zeros.
-                for ( k = xc.length; !xc[--k]; );
-
-                // E.g. [4, 11, 15] becomes 4bf.
-                for ( i = 0, str = ''; i <= k; str += ALPHABET.charAt( xc[i++] ) );
-                str = toFixedPoint( str, e );
-            }
-
-            // The caller will add the sign.
-            return str;
-        }
-
-
-        // Perform division in the specified base. Called by div and convertBase.
-        div = (function () {
-
-            // Assume non-zero x and k.
-            function multiply( x, k, base ) {
-                var m, temp, xlo, xhi,
-                    carry = 0,
-                    i = x.length,
-                    klo = k % SQRT_BASE,
-                    khi = k / SQRT_BASE | 0;
-
-                for ( x = x.slice(); i--; ) {
-                    xlo = x[i] % SQRT_BASE;
-                    xhi = x[i] / SQRT_BASE | 0;
-                    m = khi * xlo + xhi * klo;
-                    temp = klo * xlo + ( ( m % SQRT_BASE ) * SQRT_BASE ) + carry;
-                    carry = ( temp / base | 0 ) + ( m / SQRT_BASE | 0 ) + khi * xhi;
-                    x[i] = temp % base;
-                }
-
-                if (carry) x.unshift(carry);
-
-                return x;
-            }
-
-            function compare( a, b, aL, bL ) {
-                var i, cmp;
-
-                if ( aL != bL ) {
-                    cmp = aL > bL ? 1 : -1;
-                } else {
-
-                    for ( i = cmp = 0; i < aL; i++ ) {
-
-                        if ( a[i] != b[i] ) {
-                            cmp = a[i] > b[i] ? 1 : -1;
-                            break;
-                        }
-                    }
-                }
-                return cmp;
-            }
-
-            function subtract( a, b, aL, base ) {
-                var i = 0;
-
-                // Subtract b from a.
-                for ( ; aL--; ) {
-                    a[aL] -= i;
-                    i = a[aL] < b[aL] ? 1 : 0;
-                    a[aL] = i * base + a[aL] - b[aL];
-                }
-
-                // Remove leading zeros.
-                for ( ; !a[0] && a.length > 1; a.shift() );
-            }
-
-            // x: dividend, y: divisor.
-            return function ( x, y, dp, rm, base ) {
-                var cmp, e, i, more, n, prod, prodL, q, qc, rem, remL, rem0, xi, xL, yc0,
-                    yL, yz,
-                    s = x.s == y.s ? 1 : -1,
-                    xc = x.c,
-                    yc = y.c;
-
-                // Either NaN, Infinity or 0?
-                if ( !xc || !xc[0] || !yc || !yc[0] ) {
-
-                    return new BigNumber(
-
-                      // Return NaN if either NaN, or both Infinity or 0.
-                      !x.s || !y.s || ( xc ? yc && xc[0] == yc[0] : !yc ) ? NaN :
-
-                        // Return ±0 if x is ±0 or y is ±Infinity, or return ±Infinity as y is ±0.
-                        xc && xc[0] == 0 || !yc ? s * 0 : s / 0
-                    );
-                }
-
-                q = new BigNumber(s);
-                qc = q.c = [];
-                e = x.e - y.e;
-                s = dp + e + 1;
-
-                if ( !base ) {
-                    base = BASE;
-                    e = bitFloor( x.e / LOG_BASE ) - bitFloor( y.e / LOG_BASE );
-                    s = s / LOG_BASE | 0;
-                }
-
-                // Result exponent may be one less then the current value of e.
-                // The coefficients of the BigNumbers from convertBase may have trailing zeros.
-                for ( i = 0; yc[i] == ( xc[i] || 0 ); i++ );
-                if ( yc[i] > ( xc[i] || 0 ) ) e--;
-
-                if ( s < 0 ) {
-                    qc.push(1);
-                    more = true;
-                } else {
-                    xL = xc.length;
-                    yL = yc.length;
-                    i = 0;
-                    s += 2;
-
-                    // Normalise xc and yc so highest order digit of yc is >= base / 2.
-
-                    n = mathfloor( base / ( yc[0] + 1 ) );
-
-                    // Not necessary, but to handle odd bases where yc[0] == ( base / 2 ) - 1.
-                    // if ( n > 1 || n++ == 1 && yc[0] < base / 2 ) {
-                    if ( n > 1 ) {
-                        yc = multiply( yc, n, base );
-                        xc = multiply( xc, n, base );
-                        yL = yc.length;
-                        xL = xc.length;
-                    }
-
-                    xi = yL;
-                    rem = xc.slice( 0, yL );
-                    remL = rem.length;
-
-                    // Add zeros to make remainder as long as divisor.
-                    for ( ; remL < yL; rem[remL++] = 0 );
-                    yz = yc.slice();
-                    yz.unshift(0);
-                    yc0 = yc[0];
-                    if ( yc[1] >= base / 2 ) yc0++;
-                    // Not necessary, but to prevent trial digit n > base, when using base 3.
-                    // else if ( base == 3 && yc0 == 1 ) yc0 = 1 + 1e-15;
-
-                    do {
-                        n = 0;
-
-                        // Compare divisor and remainder.
-                        cmp = compare( yc, rem, yL, remL );
-
-                        // If divisor < remainder.
-                        if ( cmp < 0 ) {
-
-                            // Calculate trial digit, n.
-
-                            rem0 = rem[0];
-                            if ( yL != remL ) rem0 = rem0 * base + ( rem[1] || 0 );
-
-                            // n is how many times the divisor goes into the current remainder.
-                            n = mathfloor( rem0 / yc0 );
-
-                            //  Algorithm:
-                            //  1. product = divisor * trial digit (n)
-                            //  2. if product > remainder: product -= divisor, n--
-                            //  3. remainder -= product
-                            //  4. if product was < remainder at 2:
-                            //    5. compare new remainder and divisor
-                            //    6. If remainder > divisor: remainder -= divisor, n++
-
-                            if ( n > 1 ) {
-
-                                // n may be > base only when base is 3.
-                                if (n >= base) n = base - 1;
-
-                                // product = divisor * trial digit.
-                                prod = multiply( yc, n, base );
-                                prodL = prod.length;
-                                remL = rem.length;
-
-                                // Compare product and remainder.
-                                // If product > remainder.
-                                // Trial digit n too high.
-                                // n is 1 too high about 5% of the time, and is not known to have
-                                // ever been more than 1 too high.
-                                while ( compare( prod, rem, prodL, remL ) == 1 ) {
-                                    n--;
-
-                                    // Subtract divisor from product.
-                                    subtract( prod, yL < prodL ? yz : yc, prodL, base );
-                                    prodL = prod.length;
-                                    cmp = 1;
-                                }
-                            } else {
-
-                                // n is 0 or 1, cmp is -1.
-                                // If n is 0, there is no need to compare yc and rem again below,
-                                // so change cmp to 1 to avoid it.
-                                // If n is 1, leave cmp as -1, so yc and rem are compared again.
-                                if ( n == 0 ) {
-
-                                    // divisor < remainder, so n must be at least 1.
-                                    cmp = n = 1;
-                                }
-
-                                // product = divisor
-                                prod = yc.slice();
-                                prodL = prod.length;
-                            }
-
-                            if ( prodL < remL ) prod.unshift(0);
-
-                            // Subtract product from remainder.
-                            subtract( rem, prod, remL, base );
-                            remL = rem.length;
-
-                             // If product was < remainder.
-                            if ( cmp == -1 ) {
-
-                                // Compare divisor and new remainder.
-                                // If divisor < new remainder, subtract divisor from remainder.
-                                // Trial digit n too low.
-                                // n is 1 too low about 5% of the time, and very rarely 2 too low.
-                                while ( compare( yc, rem, yL, remL ) < 1 ) {
-                                    n++;
-
-                                    // Subtract divisor from remainder.
-                                    subtract( rem, yL < remL ? yz : yc, remL, base );
-                                    remL = rem.length;
-                                }
-                            }
-                        } else if ( cmp === 0 ) {
-                            n++;
-                            rem = [0];
-                        } // else cmp === 1 and n will be 0
-
-                        // Add the next digit, n, to the result array.
-                        qc[i++] = n;
-
-                        // Update the remainder.
-                        if ( rem[0] ) {
-                            rem[remL++] = xc[xi] || 0;
-                        } else {
-                            rem = [ xc[xi] ];
-                            remL = 1;
-                        }
-                    } while ( ( xi++ < xL || rem[0] != null ) && s-- );
-
-                    more = rem[0] != null;
-
-                    // Leading zero?
-                    if ( !qc[0] ) qc.shift();
-                }
-
-                if ( base == BASE ) {
-
-                    // To calculate q.e, first get the number of digits of qc[0].
-                    for ( i = 1, s = qc[0]; s >= 10; s /= 10, i++ );
-                    round( q, dp + ( q.e = i + e * LOG_BASE - 1 ) + 1, rm, more );
-
-                // Caller is convertBase.
-                } else {
-                    q.e = e;
-                    q.r = +more;
-                }
-
-                return q;
-            };
-        })();
-
-
-        /*
-         * Return a string representing the value of BigNumber n in fixed-point or exponential
-         * notation rounded to the specified decimal places or significant digits.
-         *
-         * n is a BigNumber.
-         * i is the index of the last digit required (i.e. the digit that may be rounded up).
-         * rm is the rounding mode.
-         * caller is caller id: toExponential 19, toFixed 20, toFormat 21, toPrecision 24.
-         */
-        function format( n, i, rm, caller ) {
-            var c0, e, ne, len, str;
-
-            rm = rm != null && isValidInt( rm, 0, 8, caller, roundingMode )
-              ? rm | 0 : ROUNDING_MODE;
-
-            if ( !n.c ) return n.toString();
-            c0 = n.c[0];
-            ne = n.e;
-
-            if ( i == null ) {
-                str = coeffToString( n.c );
-                str = caller == 19 || caller == 24 && ne <= TO_EXP_NEG
-                  ? toExponential( str, ne )
-                  : toFixedPoint( str, ne );
-            } else {
-                n = round( new BigNumber(n), i, rm );
-
-                // n.e may have changed if the value was rounded up.
-                e = n.e;
-
-                str = coeffToString( n.c );
-                len = str.length;
-
-                // toPrecision returns exponential notation if the number of significant digits
-                // specified is less than the number of digits necessary to represent the integer
-                // part of the value in fixed-point notation.
-
-                // Exponential notation.
-                if ( caller == 19 || caller == 24 && ( i <= e || e <= TO_EXP_NEG ) ) {
-
-                    // Append zeros?
-                    for ( ; len < i; str += '0', len++ );
-                    str = toExponential( str, e );
-
-                // Fixed-point notation.
-                } else {
-                    i -= ne;
-                    str = toFixedPoint( str, e );
-
-                    // Append zeros?
-                    if ( e + 1 > len ) {
-                        if ( --i > 0 ) for ( str += '.'; i--; str += '0' );
-                    } else {
-                        i += e - len;
-                        if ( i > 0 ) {
-                            if ( e + 1 == len ) str += '.';
-                            for ( ; i--; str += '0' );
-                        }
-                    }
-                }
-            }
-
-            return n.s < 0 && c0 ? '-' + str : str;
-        }
-
-
-        // Handle BigNumber.max and BigNumber.min.
-        function maxOrMin( args, method ) {
-            var m, n,
-                i = 0;
-
-            if ( isArray( args[0] ) ) args = args[0];
-            m = new BigNumber( args[0] );
-
-            for ( ; ++i < args.length; ) {
-                n = new BigNumber( args[i] );
-
-                // If any number is NaN, return NaN.
-                if ( !n.s ) {
-                    m = n;
-                    break;
-                } else if ( method.call( m, n ) ) {
-                    m = n;
-                }
-            }
-
-            return m;
-        }
-
-
-        /*
-         * Return true if n is an integer in range, otherwise throw.
-         * Use for argument validation when ERRORS is true.
-         */
-        function intValidatorWithErrors( n, min, max, caller, name ) {
-            if ( n < min || n > max || n != truncate(n) ) {
-                raise( caller, ( name || 'decimal places' ) +
-                  ( n < min || n > max ? ' out of range' : ' not an integer' ), n );
-            }
-
-            return true;
-        }
-
-
-        /*
-         * Strip trailing zeros, calculate base 10 exponent and check against MIN_EXP and MAX_EXP.
-         * Called by minus, plus and times.
-         */
-        function normalise( n, c, e ) {
-            var i = 1,
-                j = c.length;
-
-             // Remove trailing zeros.
-            for ( ; !c[--j]; c.pop() );
-
-            // Calculate the base 10 exponent. First get the number of digits of c[0].
-            for ( j = c[0]; j >= 10; j /= 10, i++ );
-
-            // Overflow?
-            if ( ( e = i + e * LOG_BASE - 1 ) > MAX_EXP ) {
-
-                // Infinity.
-                n.c = n.e = null;
-
-            // Underflow?
-            } else if ( e < MIN_EXP ) {
-
-                // Zero.
-                n.c = [ n.e = 0 ];
-            } else {
-                n.e = e;
-                n.c = c;
-            }
-
-            return n;
-        }
-
-
-        // Handle values that fail the validity test in BigNumber.
-        parseNumeric = (function () {
-            var basePrefix = /^(-?)0([xbo])(?=\w[\w.]*$)/i,
-                dotAfter = /^([^.]+)\.$/,
-                dotBefore = /^\.([^.]+)$/,
-                isInfinityOrNaN = /^-?(Infinity|NaN)$/,
-                whitespaceOrPlus = /^\s*\+(?=[\w.])|^\s+|\s+$/g;
-
-            return function ( x, str, num, b ) {
-                var base,
-                    s = num ? str : str.replace( whitespaceOrPlus, '' );
-
-                // No exception on ±Infinity or NaN.
-                if ( isInfinityOrNaN.test(s) ) {
-                    x.s = isNaN(s) ? null : s < 0 ? -1 : 1;
-                } else {
-                    if ( !num ) {
-
-                        // basePrefix = /^(-?)0([xbo])(?=\w[\w.]*$)/i
-                        s = s.replace( basePrefix, function ( m, p1, p2 ) {
-                            base = ( p2 = p2.toLowerCase() ) == 'x' ? 16 : p2 == 'b' ? 2 : 8;
-                            return !b || b == base ? p1 : m;
-                        });
-
-                        if (b) {
-                            base = b;
-
-                            // E.g. '1.' to '1', '.1' to '0.1'
-                            s = s.replace( dotAfter, '$1' ).replace( dotBefore, '0.$1' );
-                        }
-
-                        if ( str != s ) return new BigNumber( s, base );
-                    }
-
-                    // 'new BigNumber() not a number: {n}'
-                    // 'new BigNumber() not a base {b} number: {n}'
-                    if (ERRORS) raise( id, 'not a' + ( b ? ' base ' + b : '' ) + ' number', str );
-                    x.s = null;
-                }
-
-                x.c = x.e = null;
-                id = 0;
-            }
-        })();
-
-
-        // Throw a BigNumber Error.
-        function raise( caller, msg, val ) {
-            var error = new Error( [
-                'new BigNumber',     // 0
-                'cmp',               // 1
-                'config',            // 2
-                'div',               // 3
-                'divToInt',          // 4
-                'eq',                // 5
-                'gt',                // 6
-                'gte',               // 7
-                'lt',                // 8
-                'lte',               // 9
-                'minus',             // 10
-                'mod',               // 11
-                'plus',              // 12
-                'precision',         // 13
-                'random',            // 14
-                'round',             // 15
-                'shift',             // 16
-                'times',             // 17
-                'toDigits',          // 18
-                'toExponential',     // 19
-                'toFixed',           // 20
-                'toFormat',          // 21
-                'toFraction',        // 22
-                'pow',               // 23
-                'toPrecision',       // 24
-                'toString',          // 25
-                'BigNumber'          // 26
-            ][caller] + '() ' + msg + ': ' + val );
-
-            error.name = 'BigNumber Error';
-            id = 0;
-            throw error;
-        }
-
-
-        /*
-         * Round x to sd significant digits using rounding mode rm. Check for over/under-flow.
-         * If r is truthy, it is known that there are more digits after the rounding digit.
-         */
-        function round( x, sd, rm, r ) {
-            var d, i, j, k, n, ni, rd,
-                xc = x.c,
-                pows10 = POWS_TEN;
-
-            // if x is not Infinity or NaN...
-            if (xc) {
-
-                // rd is the rounding digit, i.e. the digit after the digit that may be rounded up.
-                // n is a base 1e14 number, the value of the element of array x.c containing rd.
-                // ni is the index of n within x.c.
-                // d is the number of digits of n.
-                // i is the index of rd within n including leading zeros.
-                // j is the actual index of rd within n (if < 0, rd is a leading zero).
-                out: {
-
-                    // Get the number of digits of the first element of xc.
-                    for ( d = 1, k = xc[0]; k >= 10; k /= 10, d++ );
-                    i = sd - d;
-
-                    // If the rounding digit is in the first element of xc...
-                    if ( i < 0 ) {
-                        i += LOG_BASE;
-                        j = sd;
-                        n = xc[ ni = 0 ];
-
-                        // Get the rounding digit at index j of n.
-                        rd = n / pows10[ d - j - 1 ] % 10 | 0;
-                    } else {
-                        ni = mathceil( ( i + 1 ) / LOG_BASE );
-
-                        if ( ni >= xc.length ) {
-
-                            if (r) {
-
-                                // Needed by sqrt.
-                                for ( ; xc.length <= ni; xc.push(0) );
-                                n = rd = 0;
-                                d = 1;
-                                i %= LOG_BASE;
-                                j = i - LOG_BASE + 1;
-                            } else {
-                                break out;
-                            }
-                        } else {
-                            n = k = xc[ni];
-
-                            // Get the number of digits of n.
-                            for ( d = 1; k >= 10; k /= 10, d++ );
-
-                            // Get the index of rd within n.
-                            i %= LOG_BASE;
-
-                            // Get the index of rd within n, adjusted for leading zeros.
-                            // The number of leading zeros of n is given by LOG_BASE - d.
-                            j = i - LOG_BASE + d;
-
-                            // Get the rounding digit at index j of n.
-                            rd = j < 0 ? 0 : n / pows10[ d - j - 1 ] % 10 | 0;
-                        }
-                    }
-
-                    r = r || sd < 0 ||
-
-                    // Are there any non-zero digits after the rounding digit?
-                    // The expression  n % pows10[ d - j - 1 ]  returns all digits of n to the right
-                    // of the digit at j, e.g. if n is 908714 and j is 2, the expression gives 714.
-                      xc[ni + 1] != null || ( j < 0 ? n : n % pows10[ d - j - 1 ] );
-
-                    r = rm < 4
-                      ? ( rd || r ) && ( rm == 0 || rm == ( x.s < 0 ? 3 : 2 ) )
-                      : rd > 5 || rd == 5 && ( rm == 4 || r || rm == 6 &&
-
-                        // Check whether the digit to the left of the rounding digit is odd.
-                        ( ( i > 0 ? j > 0 ? n / pows10[ d - j ] : 0 : xc[ni - 1] ) % 10 ) & 1 ||
-                          rm == ( x.s < 0 ? 8 : 7 ) );
-
-                    if ( sd < 1 || !xc[0] ) {
-                        xc.length = 0;
-
-                        if (r) {
-
-                            // Convert sd to decimal places.
-                            sd -= x.e + 1;
-
-                            // 1, 0.1, 0.01, 0.001, 0.0001 etc.
-                            xc[0] = pows10[ ( LOG_BASE - sd % LOG_BASE ) % LOG_BASE ];
-                            x.e = -sd || 0;
-                        } else {
-
-                            // Zero.
-                            xc[0] = x.e = 0;
-                        }
-
-                        return x;
-                    }
-
-                    // Remove excess digits.
-                    if ( i == 0 ) {
-                        xc.length = ni;
-                        k = 1;
-                        ni--;
-                    } else {
-                        xc.length = ni + 1;
-                        k = pows10[ LOG_BASE - i ];
-
-                        // E.g. 56700 becomes 56000 if 7 is the rounding digit.
-                        // j > 0 means i > number of leading zeros of n.
-                        xc[ni] = j > 0 ? mathfloor( n / pows10[ d - j ] % pows10[j] ) * k : 0;
-                    }
-
-                    // Round up?
-                    if (r) {
-
-                        for ( ; ; ) {
-
-                            // If the digit to be rounded up is in the first element of xc...
-                            if ( ni == 0 ) {
-
-                                // i will be the length of xc[0] before k is added.
-                                for ( i = 1, j = xc[0]; j >= 10; j /= 10, i++ );
-                                j = xc[0] += k;
-                                for ( k = 1; j >= 10; j /= 10, k++ );
-
-                                // if i != k the length has increased.
-                                if ( i != k ) {
-                                    x.e++;
-                                    if ( xc[0] == BASE ) xc[0] = 1;
-                                }
-
-                                break;
-                            } else {
-                                xc[ni] += k;
-                                if ( xc[ni] != BASE ) break;
-                                xc[ni--] = 0;
-                                k = 1;
-                            }
-                        }
-                    }
-
-                    // Remove trailing zeros.
-                    for ( i = xc.length; xc[--i] === 0; xc.pop() );
-                }
-
-                // Overflow? Infinity.
-                if ( x.e > MAX_EXP ) {
-                    x.c = x.e = null;
-
-                // Underflow? Zero.
-                } else if ( x.e < MIN_EXP ) {
-                    x.c = [ x.e = 0 ];
-                }
-            }
-
-            return x;
-        }
-
-
-        // PROTOTYPE/INSTANCE METHODS
-
-
-        /*
-         * Return a new BigNumber whose value is the absolute value of this BigNumber.
-         */
-        P.absoluteValue = P.abs = function () {
-            var x = new BigNumber(this);
-            if ( x.s < 0 ) x.s = 1;
-            return x;
-        };
-
-
-        /*
-         * Return a new BigNumber whose value is the value of this BigNumber rounded to a whole
-         * number in the direction of Infinity.
-         */
-        P.ceil = function () {
-            return round( new BigNumber(this), this.e + 1, 2 );
-        };
-
-
-        /*
-         * Return
-         * 1 if the value of this BigNumber is greater than the value of BigNumber(y, b),
-         * -1 if the value of this BigNumber is less than the value of BigNumber(y, b),
-         * 0 if they have the same value,
-         * or null if the value of either is NaN.
-         */
-        P.comparedTo = P.cmp = function ( y, b ) {
-            id = 1;
-            return compare( this, new BigNumber( y, b ) );
-        };
-
-
-        /*
-         * Return the number of decimal places of the value of this BigNumber, or null if the value
-         * of this BigNumber is ±Infinity or NaN.
-         */
-        P.decimalPlaces = P.dp = function () {
-            var n, v,
-                c = this.c;
-
-            if ( !c ) return null;
-            n = ( ( v = c.length - 1 ) - bitFloor( this.e / LOG_BASE ) ) * LOG_BASE;
-
-            // Subtract the number of trailing zeros of the last number.
-            if ( v = c[v] ) for ( ; v % 10 == 0; v /= 10, n-- );
-            if ( n < 0 ) n = 0;
-
-            return n;
-        };
-
-
-        /*
-         *  n / 0 = I
-         *  n / N = N
-         *  n / I = 0
-         *  0 / n = 0
-         *  0 / 0 = N
-         *  0 / N = N
-         *  0 / I = 0
-         *  N / n = N
-         *  N / 0 = N
-         *  N / N = N
-         *  N / I = N
-         *  I / n = I
-         *  I / 0 = I
-         *  I / N = N
-         *  I / I = N
-         *
-         * Return a new BigNumber whose value is the value of this BigNumber divided by the value of
-         * BigNumber(y, b), rounded according to DECIMAL_PLACES and ROUNDING_MODE.
-         */
-        P.dividedBy = P.div = function ( y, b ) {
-            id = 3;
-            return div( this, new BigNumber( y, b ), DECIMAL_PLACES, ROUNDING_MODE );
-        };
-
-
-        /*
-         * Return a new BigNumber whose value is the integer part of dividing the value of this
-         * BigNumber by the value of BigNumber(y, b).
-         */
-        P.dividedToIntegerBy = P.divToInt = function ( y, b ) {
-            id = 4;
-            return div( this, new BigNumber( y, b ), 0, 1 );
-        };
-
-
-        /*
-         * Return true if the value of this BigNumber is equal to the value of BigNumber(y, b),
-         * otherwise returns false.
-         */
-        P.equals = P.eq = function ( y, b ) {
-            id = 5;
-            return compare( this, new BigNumber( y, b ) ) === 0;
-        };
-
-
-        /*
-         * Return a new BigNumber whose value is the value of this BigNumber rounded to a whole
-         * number in the direction of -Infinity.
-         */
-        P.floor = function () {
-            return round( new BigNumber(this), this.e + 1, 3 );
-        };
-
-
-        /*
-         * Return true if the value of this BigNumber is greater than the value of BigNumber(y, b),
-         * otherwise returns false.
-         */
-        P.greaterThan = P.gt = function ( y, b ) {
-            id = 6;
-            return compare( this, new BigNumber( y, b ) ) > 0;
-        };
-
-
-        /*
-         * Return true if the value of this BigNumber is greater than or equal to the value of
-         * BigNumber(y, b), otherwise returns false.
-         */
-        P.greaterThanOrEqualTo = P.gte = function ( y, b ) {
-            id = 7;
-            return ( b = compare( this, new BigNumber( y, b ) ) ) === 1 || b === 0;
-
-        };
-
-
-        /*
-         * Return true if the value of this BigNumber is a finite number, otherwise returns false.
-         */
-        P.isFinite = function () {
-            return !!this.c;
-        };
-
-
-        /*
-         * Return true if the value of this BigNumber is an integer, otherwise return false.
-         */
-        P.isInteger = P.isInt = function () {
-            return !!this.c && bitFloor( this.e / LOG_BASE ) > this.c.length - 2;
-        };
-
-
-        /*
-         * Return true if the value of this BigNumber is NaN, otherwise returns false.
-         */
-        P.isNaN = function () {
-            return !this.s;
-        };
-
-
-        /*
-         * Return true if the value of this BigNumber is negative, otherwise returns false.
-         */
-        P.isNegative = P.isNeg = function () {
-            return this.s < 0;
-        };
-
-
-        /*
-         * Return true if the value of this BigNumber is 0 or -0, otherwise returns false.
-         */
-        P.isZero = function () {
-            return !!this.c && this.c[0] == 0;
-        };
-
-
-        /*
-         * Return true if the value of this BigNumber is less than the value of BigNumber(y, b),
-         * otherwise returns false.
-         */
-        P.lessThan = P.lt = function ( y, b ) {
-            id = 8;
-            return compare( this, new BigNumber( y, b ) ) < 0;
-        };
-
-
-        /*
-         * Return true if the value of this BigNumber is less than or equal to the value of
-         * BigNumber(y, b), otherwise returns false.
-         */
-        P.lessThanOrEqualTo = P.lte = function ( y, b ) {
-            id = 9;
-            return ( b = compare( this, new BigNumber( y, b ) ) ) === -1 || b === 0;
-        };
-
-
-        /*
-         *  n - 0 = n
-         *  n - N = N
-         *  n - I = -I
-         *  0 - n = -n
-         *  0 - 0 = 0
-         *  0 - N = N
-         *  0 - I = -I
-         *  N - n = N
-         *  N - 0 = N
-         *  N - N = N
-         *  N - I = N
-         *  I - n = I
-         *  I - 0 = I
-         *  I - N = N
-         *  I - I = N
-         *
-         * Return a new BigNumber whose value is the value of this BigNumber minus the value of
-         * BigNumber(y, b).
-         */
-        P.minus = P.sub = function ( y, b ) {
-            var i, j, t, xLTy,
-                x = this,
-                a = x.s;
-
-            id = 10;
-            y = new BigNumber( y, b );
-            b = y.s;
-
-            // Either NaN?
-            if ( !a || !b ) return new BigNumber(NaN);
-
-            // Signs differ?
-            if ( a != b ) {
-                y.s = -b;
-                return x.plus(y);
-            }
-
-            var xe = x.e / LOG_BASE,
-                ye = y.e / LOG_BASE,
-                xc = x.c,
-                yc = y.c;
-
-            if ( !xe || !ye ) {
-
-                // Either Infinity?
-                if ( !xc || !yc ) return xc ? ( y.s = -b, y ) : new BigNumber( yc ? x : NaN );
-
-                // Either zero?
-                if ( !xc[0] || !yc[0] ) {
-
-                    // Return y if y is non-zero, x if x is non-zero, or zero if both are zero.
-                    return yc[0] ? ( y.s = -b, y ) : new BigNumber( xc[0] ? x :
-
-                      // IEEE 754 (2008) 6.3: n - n = -0 when rounding to -Infinity
-                      ROUNDING_MODE == 3 ? -0 : 0 );
-                }
-            }
-
-            xe = bitFloor(xe);
-            ye = bitFloor(ye);
-            xc = xc.slice();
-
-            // Determine which is the bigger number.
-            if ( a = xe - ye ) {
-
-                if ( xLTy = a < 0 ) {
-                    a = -a;
-                    t = xc;
-                } else {
-                    ye = xe;
-                    t = yc;
-                }
-
-                t.reverse();
-
-                // Prepend zeros to equalise exponents.
-                for ( b = a; b--; t.push(0) );
-                t.reverse();
-            } else {
-
-                // Exponents equal. Check digit by digit.
-                j = ( xLTy = ( a = xc.length ) < ( b = yc.length ) ) ? a : b;
-
-                for ( a = b = 0; b < j; b++ ) {
-
-                    if ( xc[b] != yc[b] ) {
-                        xLTy = xc[b] < yc[b];
-                        break;
-                    }
-                }
-            }
-
-            // x < y? Point xc to the array of the bigger number.
-            if (xLTy) t = xc, xc = yc, yc = t, y.s = -y.s;
-
-            b = ( j = yc.length ) - ( i = xc.length );
-
-            // Append zeros to xc if shorter.
-            // No need to add zeros to yc if shorter as subtract only needs to start at yc.length.
-            if ( b > 0 ) for ( ; b--; xc[i++] = 0 );
-            b = BASE - 1;
-
-            // Subtract yc from xc.
-            for ( ; j > a; ) {
-
-                if ( xc[--j] < yc[j] ) {
-                    for ( i = j; i && !xc[--i]; xc[i] = b );
-                    --xc[i];
-                    xc[j] += BASE;
-                }
-
-                xc[j] -= yc[j];
-            }
-
-            // Remove leading zeros and adjust exponent accordingly.
-            for ( ; xc[0] == 0; xc.shift(), --ye );
-
-            // Zero?
-            if ( !xc[0] ) {
-
-                // Following IEEE 754 (2008) 6.3,
-                // n - n = +0  but  n - n = -0  when rounding towards -Infinity.
-                y.s = ROUNDING_MODE == 3 ? -1 : 1;
-                y.c = [ y.e = 0 ];
-                return y;
-            }
-
-            // No need to check for Infinity as +x - +y != Infinity && -x - -y != Infinity
-            // for finite x and y.
-            return normalise( y, xc, ye );
-        };
-
-
-        /*
-         *   n % 0 =  N
-         *   n % N =  N
-         *   n % I =  n
-         *   0 % n =  0
-         *  -0 % n = -0
-         *   0 % 0 =  N
-         *   0 % N =  N
-         *   0 % I =  0
-         *   N % n =  N
-         *   N % 0 =  N
-         *   N % N =  N
-         *   N % I =  N
-         *   I % n =  N
-         *   I % 0 =  N
-         *   I % N =  N
-         *   I % I =  N
-         *
-         * Return a new BigNumber whose value is the value of this BigNumber modulo the value of
-         * BigNumber(y, b). The result depends on the value of MODULO_MODE.
-         */
-        P.modulo = P.mod = function ( y, b ) {
-            var q, s,
-                x = this;
-
-            id = 11;
-            y = new BigNumber( y, b );
-
-            // Return NaN if x is Infinity or NaN, or y is NaN or zero.
-            if ( !x.c || !y.s || y.c && !y.c[0] ) {
-                return new BigNumber(NaN);
-
-            // Return x if y is Infinity or x is zero.
-            } else if ( !y.c || x.c && !x.c[0] ) {
-                return new BigNumber(x);
-            }
-
-            if ( MODULO_MODE == 9 ) {
-
-                // Euclidian division: q = sign(y) * floor(x / abs(y))
-                // r = x - qy    where  0 <= r < abs(y)
-                s = y.s;
-                y.s = 1;
-                q = div( x, y, 0, 3 );
-                y.s = s;
-                q.s *= s;
-            } else {
-                q = div( x, y, 0, MODULO_MODE );
-            }
-
-            return x.minus( q.times(y) );
-        };
-
-
-        /*
-         * Return a new BigNumber whose value is the value of this BigNumber negated,
-         * i.e. multiplied by -1.
-         */
-        P.negated = P.neg = function () {
-            var x = new BigNumber(this);
-            x.s = -x.s || null;
-            return x;
-        };
-
-
-        /*
-         *  n + 0 = n
-         *  n + N = N
-         *  n + I = I
-         *  0 + n = n
-         *  0 + 0 = 0
-         *  0 + N = N
-         *  0 + I = I
-         *  N + n = N
-         *  N + 0 = N
-         *  N + N = N
-         *  N + I = N
-         *  I + n = I
-         *  I + 0 = I
-         *  I + N = N
-         *  I + I = I
-         *
-         * Return a new BigNumber whose value is the value of this BigNumber plus the value of
-         * BigNumber(y, b).
-         */
-        P.plus = P.add = function ( y, b ) {
-            var t,
-                x = this,
-                a = x.s;
-
-            id = 12;
-            y = new BigNumber( y, b );
-            b = y.s;
-
-            // Either NaN?
-            if ( !a || !b ) return new BigNumber(NaN);
-
-            // Signs differ?
-             if ( a != b ) {
-                y.s = -b;
-                return x.minus(y);
-            }
-
-            var xe = x.e / LOG_BASE,
-                ye = y.e / LOG_BASE,
-                xc = x.c,
-                yc = y.c;
-
-            if ( !xe || !ye ) {
-
-                // Return ±Infinity if either ±Infinity.
-                if ( !xc || !yc ) return new BigNumber( a / 0 );
-
-                // Either zero?
-                // Return y if y is non-zero, x if x is non-zero, or zero if both are zero.
-                if ( !xc[0] || !yc[0] ) return yc[0] ? y : new BigNumber( xc[0] ? x : a * 0 );
-            }
-
-            xe = bitFloor(xe);
-            ye = bitFloor(ye);
-            xc = xc.slice();
-
-            // Prepend zeros to equalise exponents. Faster to use reverse then do unshifts.
-            if ( a = xe - ye ) {
-                if ( a > 0 ) {
-                    ye = xe;
-                    t = yc;
-                } else {
-                    a = -a;
-                    t = xc;
-                }
-
-                t.reverse();
-                for ( ; a--; t.push(0) );
-                t.reverse();
-            }
-
-            a = xc.length;
-            b = yc.length;
-
-            // Point xc to the longer array, and b to the shorter length.
-            if ( a - b < 0 ) t = yc, yc = xc, xc = t, b = a;
-
-            // Only start adding at yc.length - 1 as the further digits of xc can be ignored.
-            for ( a = 0; b; ) {
-                a = ( xc[--b] = xc[b] + yc[b] + a ) / BASE | 0;
-                xc[b] %= BASE;
-            }
-
-            if (a) {
-                xc.unshift(a);
-                ++ye;
-            }
-
-            // No need to check for zero, as +x + +y != 0 && -x + -y != 0
-            // ye = MAX_EXP + 1 possible
-            return normalise( y, xc, ye );
-        };
-
-
-        /*
-         * Return the number of significant digits of the value of this BigNumber.
-         *
-         * [z] {boolean|number} Whether to count integer-part trailing zeros: true, false, 1 or 0.
-         */
-        P.precision = P.sd = function (z) {
-            var n, v,
-                x = this,
-                c = x.c;
-
-            // 'precision() argument not a boolean or binary digit: {z}'
-            if ( z != null && z !== !!z && z !== 1 && z !== 0 ) {
-                if (ERRORS) raise( 13, 'argument' + notBool, z );
-                if ( z != !!z ) z = null;
-            }
-
-            if ( !c ) return null;
-            v = c.length - 1;
-            n = v * LOG_BASE + 1;
-
-            if ( v = c[v] ) {
-
-                // Subtract the number of trailing zeros of the last element.
-                for ( ; v % 10 == 0; v /= 10, n-- );
-
-                // Add the number of digits of the first element.
-                for ( v = c[0]; v >= 10; v /= 10, n++ );
-            }
-
-            if ( z && x.e + 1 > n ) n = x.e + 1;
-
-            return n;
-        };
-
-
-        /*
-         * Return a new BigNumber whose value is the value of this BigNumber rounded to a maximum of
-         * dp decimal places using rounding mode rm, or to 0 and ROUNDING_MODE respectively if
-         * omitted.
-         *
-         * [dp] {number} Decimal places. Integer, 0 to MAX inclusive.
-         * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-         *
-         * 'round() decimal places out of range: {dp}'
-         * 'round() decimal places not an integer: {dp}'
-         * 'round() rounding mode not an integer: {rm}'
-         * 'round() rounding mode out of range: {rm}'
-         */
-        P.round = function ( dp, rm ) {
-            var n = new BigNumber(this);
-
-            if ( dp == null || isValidInt( dp, 0, MAX, 15 ) ) {
-                round( n, ~~dp + this.e + 1, rm == null ||
-                  !isValidInt( rm, 0, 8, 15, roundingMode ) ? ROUNDING_MODE : rm | 0 );
-            }
-
-            return n;
-        };
-
-
-        /*
-         * Return a new BigNumber whose value is the value of this BigNumber shifted by k places
-         * (powers of 10). Shift to the right if n > 0, and to the left if n < 0.
-         *
-         * k {number} Integer, -MAX_SAFE_INTEGER to MAX_SAFE_INTEGER inclusive.
-         *
-         * If k is out of range and ERRORS is false, the result will be ±0 if k < 0, or ±Infinity
-         * otherwise.
-         *
-         * 'shift() argument not an integer: {k}'
-         * 'shift() argument out of range: {k}'
-         */
-        P.shift = function (k) {
-            var n = this;
-            return isValidInt( k, -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER, 16, 'argument' )
-
-              // k < 1e+21, or truncate(k) will produce exponential notation.
-              ? n.times( '1e' + truncate(k) )
-              : new BigNumber( n.c && n.c[0] && ( k < -MAX_SAFE_INTEGER || k > MAX_SAFE_INTEGER )
-                ? n.s * ( k < 0 ? 0 : 1 / 0 )
-                : n );
-        };
-
-
-        /*
-         *  sqrt(-n) =  N
-         *  sqrt( N) =  N
-         *  sqrt(-I) =  N
-         *  sqrt( I) =  I
-         *  sqrt( 0) =  0
-         *  sqrt(-0) = -0
-         *
-         * Return a new BigNumber whose value is the square root of the value of this BigNumber,
-         * rounded according to DECIMAL_PLACES and ROUNDING_MODE.
-         */
-        P.squareRoot = P.sqrt = function () {
-            var m, n, r, rep, t,
-                x = this,
-                c = x.c,
-                s = x.s,
-                e = x.e,
-                dp = DECIMAL_PLACES + 4,
-                half = new BigNumber('0.5');
-
-            // Negative/NaN/Infinity/zero?
-            if ( s !== 1 || !c || !c[0] ) {
-                return new BigNumber( !s || s < 0 && ( !c || c[0] ) ? NaN : c ? x : 1 / 0 );
-            }
-
-            // Initial estimate.
-            s = Math.sqrt( +x );
-
-            // Math.sqrt underflow/overflow?
-            // Pass x to Math.sqrt as integer, then adjust the exponent of the result.
-            if ( s == 0 || s == 1 / 0 ) {
-                n = coeffToString(c);
-                if ( ( n.length + e ) % 2 == 0 ) n += '0';
-                s = Math.sqrt(n);
-                e = bitFloor( ( e + 1 ) / 2 ) - ( e < 0 || e % 2 );
-
-                if ( s == 1 / 0 ) {
-                    n = '1e' + e;
-                } else {
-                    n = s.toExponential();
-                    n = n.slice( 0, n.indexOf('e') + 1 ) + e;
-                }
-
-                r = new BigNumber(n);
-            } else {
-                r = new BigNumber( s + '' );
-            }
-
-            // Check for zero.
-            // r could be zero if MIN_EXP is changed after the this value was created.
-            // This would cause a division by zero (x/t) and hence Infinity below, which would cause
-            // coeffToString to throw.
-            if ( r.c[0] ) {
-                e = r.e;
-                s = e + dp;
-                if ( s < 3 ) s = 0;
-
-                // Newton-Raphson iteration.
-                for ( ; ; ) {
-                    t = r;
-                    r = half.times( t.plus( div( x, t, dp, 1 ) ) );
-
-                    if ( coeffToString( t.c   ).slice( 0, s ) === ( n =
-                         coeffToString( r.c ) ).slice( 0, s ) ) {
-
-                        // The exponent of r may here be one less than the final result exponent,
-                        // e.g 0.0009999 (e-4) --> 0.001 (e-3), so adjust s so the rounding digits
-                        // are indexed correctly.
-                        if ( r.e < e ) --s;
-                        n = n.slice( s - 3, s + 1 );
-
-                        // The 4th rounding digit may be in error by -1 so if the 4 rounding digits
-                        // are 9999 or 4999 (i.e. approaching a rounding boundary) continue the
-                        // iteration.
-                        if ( n == '9999' || !rep && n == '4999' ) {
-
-                            // On the first iteration only, check to see if rounding up gives the
-                            // exact result as the nines may infinitely repeat.
-                            if ( !rep ) {
-                                round( t, t.e + DECIMAL_PLACES + 2, 0 );
-
-                                if ( t.times(t).eq(x) ) {
-                                    r = t;
-                                    break;
-                                }
-                            }
-
-                            dp += 4;
-                            s += 4;
-                            rep = 1;
-                        } else {
-
-                            // If rounding digits are null, 0{0,4} or 50{0,3}, check for exact
-                            // result. If not, then there are further digits and m will be truthy.
-                            if ( !+n || !+n.slice(1) && n.charAt(0) == '5' ) {
-
-                                // Truncate to the first rounding digit.
-                                round( r, r.e + DECIMAL_PLACES + 2, 1 );
-                                m = !r.times(r).eq(x);
-                            }
-
-                            break;
-                        }
-                    }
-                }
-            }
-
-            return round( r, r.e + DECIMAL_PLACES + 1, ROUNDING_MODE, m );
-        };
-
-
-        /*
-         *  n * 0 = 0
-         *  n * N = N
-         *  n * I = I
-         *  0 * n = 0
-         *  0 * 0 = 0
-         *  0 * N = N
-         *  0 * I = N
-         *  N * n = N
-         *  N * 0 = N
-         *  N * N = N
-         *  N * I = N
-         *  I * n = I
-         *  I * 0 = N
-         *  I * N = N
-         *  I * I = I
-         *
-         * Return a new BigNumber whose value is the value of this BigNumber times the value of
-         * BigNumber(y, b).
-         */
-        P.times = P.mul = function ( y, b ) {
-            var c, e, i, j, k, m, xcL, xlo, xhi, ycL, ylo, yhi, zc,
-                base, sqrtBase,
-                x = this,
-                xc = x.c,
-                yc = ( id = 17, y = new BigNumber( y, b ) ).c;
-
-            // Either NaN, ±Infinity or ±0?
-            if ( !xc || !yc || !xc[0] || !yc[0] ) {
-
-                // Return NaN if either is NaN, or one is 0 and the other is Infinity.
-                if ( !x.s || !y.s || xc && !xc[0] && !yc || yc && !yc[0] && !xc ) {
-                    y.c = y.e = y.s = null;
-                } else {
-                    y.s *= x.s;
-
-                    // Return ±Infinity if either is ±Infinity.
-                    if ( !xc || !yc ) {
-                        y.c = y.e = null;
-
-                    // Return ±0 if either is ±0.
-                    } else {
-                        y.c = [0];
-                        y.e = 0;
-                    }
-                }
-
-                return y;
-            }
-
-            e = bitFloor( x.e / LOG_BASE ) + bitFloor( y.e / LOG_BASE );
-            y.s *= x.s;
-            xcL = xc.length;
-            ycL = yc.length;
-
-            // Ensure xc points to longer array and xcL to its length.
-            if ( xcL < ycL ) zc = xc, xc = yc, yc = zc, i = xcL, xcL = ycL, ycL = i;
-
-            // Initialise the result array with zeros.
-            for ( i = xcL + ycL, zc = []; i--; zc.push(0) );
-
-            base = BASE;
-            sqrtBase = SQRT_BASE;
-
-            for ( i = ycL; --i >= 0; ) {
-                c = 0;
-                ylo = yc[i] % sqrtBase;
-                yhi = yc[i] / sqrtBase | 0;
-
-                for ( k = xcL, j = i + k; j > i; ) {
-                    xlo = xc[--k] % sqrtBase;
-                    xhi = xc[k] / sqrtBase | 0;
-                    m = yhi * xlo + xhi * ylo;
-                    xlo = ylo * xlo + ( ( m % sqrtBase ) * sqrtBase ) + zc[j] + c;
-                    c = ( xlo / base | 0 ) + ( m / sqrtBase | 0 ) + yhi * xhi;
-                    zc[j--] = xlo % base;
-                }
-
-                zc[j] = c;
-            }
-
-            if (c) {
-                ++e;
-            } else {
-                zc.shift();
-            }
-
-            return normalise( y, zc, e );
-        };
-
-
-        /*
-         * Return a new BigNumber whose value is the value of this BigNumber rounded to a maximum of
-         * sd significant digits using rounding mode rm, or ROUNDING_MODE if rm is omitted.
-         *
-         * [sd] {number} Significant digits. Integer, 1 to MAX inclusive.
-         * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-         *
-         * 'toDigits() precision out of range: {sd}'
-         * 'toDigits() precision not an integer: {sd}'
-         * 'toDigits() rounding mode not an integer: {rm}'
-         * 'toDigits() rounding mode out of range: {rm}'
-         */
-        P.toDigits = function ( sd, rm ) {
-            var n = new BigNumber(this);
-            sd = sd == null || !isValidInt( sd, 1, MAX, 18, 'precision' ) ? null : sd | 0;
-            rm = rm == null || !isValidInt( rm, 0, 8, 18, roundingMode ) ? ROUNDING_MODE : rm | 0;
-            return sd ? round( n, sd, rm ) : n;
-        };
-
-
-        /*
-         * Return a string representing the value of this BigNumber in exponential notation and
-         * rounded using ROUNDING_MODE to dp fixed decimal places.
-         *
-         * [dp] {number} Decimal places. Integer, 0 to MAX inclusive.
-         * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-         *
-         * 'toExponential() decimal places not an integer: {dp}'
-         * 'toExponential() decimal places out of range: {dp}'
-         * 'toExponential() rounding mode not an integer: {rm}'
-         * 'toExponential() rounding mode out of range: {rm}'
-         */
-        P.toExponential = function ( dp, rm ) {
-            return format( this,
-              dp != null && isValidInt( dp, 0, MAX, 19 ) ? ~~dp + 1 : null, rm, 19 );
-        };
-
-
-        /*
-         * Return a string representing the value of this BigNumber in fixed-point notation rounding
-         * to dp fixed decimal places using rounding mode rm, or ROUNDING_MODE if rm is omitted.
-         *
-         * Note: as with JavaScript's number type, (-0).toFixed(0) is '0',
-         * but e.g. (-0.00001).toFixed(0) is '-0'.
-         *
-         * [dp] {number} Decimal places. Integer, 0 to MAX inclusive.
-         * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-         *
-         * 'toFixed() decimal places not an integer: {dp}'
-         * 'toFixed() decimal places out of range: {dp}'
-         * 'toFixed() rounding mode not an integer: {rm}'
-         * 'toFixed() rounding mode out of range: {rm}'
-         */
-        P.toFixed = function ( dp, rm ) {
-            return format( this, dp != null && isValidInt( dp, 0, MAX, 20 )
-              ? ~~dp + this.e + 1 : null, rm, 20 );
-        };
-
-
-        /*
-         * Return a string representing the value of this BigNumber in fixed-point notation rounded
-         * using rm or ROUNDING_MODE to dp decimal places, and formatted according to the properties
-         * of the FORMAT object (see BigNumber.config).
-         *
-         * FORMAT = {
-         *      decimalSeparator : '.',
-         *      groupSeparator : ',',
-         *      groupSize : 3,
-         *      secondaryGroupSize : 0,
-         *      fractionGroupSeparator : '\xA0',    // non-breaking space
-         *      fractionGroupSize : 0
-         * };
-         *
-         * [dp] {number} Decimal places. Integer, 0 to MAX inclusive.
-         * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-         *
-         * 'toFormat() decimal places not an integer: {dp}'
-         * 'toFormat() decimal places out of range: {dp}'
-         * 'toFormat() rounding mode not an integer: {rm}'
-         * 'toFormat() rounding mode out of range: {rm}'
-         */
-        P.toFormat = function ( dp, rm ) {
-            var str = format( this, dp != null && isValidInt( dp, 0, MAX, 21 )
-              ? ~~dp + this.e + 1 : null, rm, 21 );
-
-            if ( this.c ) {
-                var i,
-                    arr = str.split('.'),
-                    g1 = +FORMAT.groupSize,
-                    g2 = +FORMAT.secondaryGroupSize,
-                    groupSeparator = FORMAT.groupSeparator,
-                    intPart = arr[0],
-                    fractionPart = arr[1],
-                    isNeg = this.s < 0,
-                    intDigits = isNeg ? intPart.slice(1) : intPart,
-                    len = intDigits.length;
-
-                if (g2) i = g1, g1 = g2, g2 = i, len -= i;
-
-                if ( g1 > 0 && len > 0 ) {
-                    i = len % g1 || g1;
-                    intPart = intDigits.substr( 0, i );
-
-                    for ( ; i < len; i += g1 ) {
-                        intPart += groupSeparator + intDigits.substr( i, g1 );
-                    }
-
-                    if ( g2 > 0 ) intPart += groupSeparator + intDigits.slice(i);
-                    if (isNeg) intPart = '-' + intPart;
-                }
-
-                str = fractionPart
-                  ? intPart + FORMAT.decimalSeparator + ( ( g2 = +FORMAT.fractionGroupSize )
-                    ? fractionPart.replace( new RegExp( '\\d{' + g2 + '}\\B', 'g' ),
-                      '$&' + FORMAT.fractionGroupSeparator )
-                    : fractionPart )
-                  : intPart;
-            }
-
-            return str;
-        };
-
-
-        /*
-         * Return a string array representing the value of this BigNumber as a simple fraction with
-         * an integer numerator and an integer denominator. The denominator will be a positive
-         * non-zero value less than or equal to the specified maximum denominator. If a maximum
-         * denominator is not specified, the denominator will be the lowest value necessary to
-         * represent the number exactly.
-         *
-         * [md] {number|string|BigNumber} Integer >= 1 and < Infinity. The maximum denominator.
-         *
-         * 'toFraction() max denominator not an integer: {md}'
-         * 'toFraction() max denominator out of range: {md}'
-         */
-        P.toFraction = function (md) {
-            var arr, d0, d2, e, exp, n, n0, q, s,
-                k = ERRORS,
-                x = this,
-                xc = x.c,
-                d = new BigNumber(ONE),
-                n1 = d0 = new BigNumber(ONE),
-                d1 = n0 = new BigNumber(ONE);
-
-            if ( md != null ) {
-                ERRORS = false;
-                n = new BigNumber(md);
-                ERRORS = k;
-
-                if ( !( k = n.isInt() ) || n.lt(ONE) ) {
-
-                    if (ERRORS) {
-                        raise( 22,
-                          'max denominator ' + ( k ? 'out of range' : 'not an integer' ), md );
-                    }
-
-                    // ERRORS is false:
-                    // If md is a finite non-integer >= 1, round it to an integer and use it.
-                    md = !k && n.c && round( n, n.e + 1, 1 ).gte(ONE) ? n : null;
-                }
-            }
-
-            if ( !xc ) return x.toString();
-            s = coeffToString(xc);
-
-            // Determine initial denominator.
-            // d is a power of 10 and the minimum max denominator that specifies the value exactly.
-            e = d.e = s.length - x.e - 1;
-            d.c[0] = POWS_TEN[ ( exp = e % LOG_BASE ) < 0 ? LOG_BASE + exp : exp ];
-            md = !md || n.cmp(d) > 0 ? ( e > 0 ? d : n1 ) : n;
-
-            exp = MAX_EXP;
-            MAX_EXP = 1 / 0;
-            n = new BigNumber(s);
-
-            // n0 = d1 = 0
-            n0.c[0] = 0;
-
-            for ( ; ; )  {
-                q = div( n, d, 0, 1 );
-                d2 = d0.plus( q.times(d1) );
-                if ( d2.cmp(md) == 1 ) break;
-                d0 = d1;
-                d1 = d2;
-                n1 = n0.plus( q.times( d2 = n1 ) );
-                n0 = d2;
-                d = n.minus( q.times( d2 = d ) );
-                n = d2;
-            }
-
-            d2 = div( md.minus(d0), d1, 0, 1 );
-            n0 = n0.plus( d2.times(n1) );
-            d0 = d0.plus( d2.times(d1) );
-            n0.s = n1.s = x.s;
-            e *= 2;
-
-            // Determine which fraction is closer to x, n0/d0 or n1/d1
-            arr = div( n1, d1, e, ROUNDING_MODE ).minus(x).abs().cmp(
-                  div( n0, d0, e, ROUNDING_MODE ).minus(x).abs() ) < 1
-                    ? [ n1.toString(), d1.toString() ]
-                    : [ n0.toString(), d0.toString() ];
-
-            MAX_EXP = exp;
-            return arr;
-        };
-
-
-        /*
-         * Return the value of this BigNumber converted to a number primitive.
-         */
-        P.toNumber = function () {
-            return +this;
-        };
-
-
-        /*
-         * Return a BigNumber whose value is the value of this BigNumber raised to the power n.
-         * If n is negative round according to DECIMAL_PLACES and ROUNDING_MODE.
-         * If POW_PRECISION is not 0, round to POW_PRECISION using ROUNDING_MODE.
-         *
-         * n {number} Integer, -9007199254740992 to 9007199254740992 inclusive.
-         * (Performs 54 loop iterations for n of 9007199254740992.)
-         *
-         * 'pow() exponent not an integer: {n}'
-         * 'pow() exponent out of range: {n}'
-         */
-        P.toPower = P.pow = function (n) {
-            var k, y,
-                i = mathfloor( n < 0 ? -n : +n ),
-                x = this;
-
-            // Pass ±Infinity to Math.pow if exponent is out of range.
-            if ( !isValidInt( n, -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER, 23, 'exponent' ) &&
-              ( !isFinite(n) || i > MAX_SAFE_INTEGER && ( n /= 0 ) ||
-                parseFloat(n) != n && !( n = NaN ) ) ) {
-                return new BigNumber( Math.pow( +x, n ) );
-            }
-
-            // Truncating each coefficient array to a length of k after each multiplication equates
-            // to truncating significant digits to POW_PRECISION + [28, 41], i.e. there will be a
-            // minimum of 28 guard digits retained. (Using + 1.5 would give [9, 21] guard digits.)
-            k = POW_PRECISION ? mathceil( POW_PRECISION / LOG_BASE + 2 ) : 0;
-            y = new BigNumber(ONE);
-
-            for ( ; ; ) {
-
-                if ( i % 2 ) {
-                    y = y.times(x);
-                    if ( !y.c ) break;
-                    if ( k && y.c.length > k ) y.c.length = k;
-                }
-
-                i = mathfloor( i / 2 );
-                if ( !i ) break;
-
-                x = x.times(x);
-                if ( k && x.c && x.c.length > k ) x.c.length = k;
-            }
-
-            if ( n < 0 ) y = ONE.div(y);
-            return k ? round( y, POW_PRECISION, ROUNDING_MODE ) : y;
-        };
-
-
-        /*
-         * Return a string representing the value of this BigNumber rounded to sd significant digits
-         * using rounding mode rm or ROUNDING_MODE. If sd is less than the number of digits
-         * necessary to represent the integer part of the value in fixed-point notation, then use
-         * exponential notation.
-         *
-         * [sd] {number} Significant digits. Integer, 1 to MAX inclusive.
-         * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-         *
-         * 'toPrecision() precision not an integer: {sd}'
-         * 'toPrecision() precision out of range: {sd}'
-         * 'toPrecision() rounding mode not an integer: {rm}'
-         * 'toPrecision() rounding mode out of range: {rm}'
-         */
-        P.toPrecision = function ( sd, rm ) {
-            return format( this, sd != null && isValidInt( sd, 1, MAX, 24, 'precision' )
-              ? sd | 0 : null, rm, 24 );
-        };
-
-
-        /*
-         * Return a string representing the value of this BigNumber in base b, or base 10 if b is
-         * omitted. If a base is specified, including base 10, round according to DECIMAL_PLACES and
-         * ROUNDING_MODE. If a base is not specified, and this BigNumber has a positive exponent
-         * that is equal to or greater than TO_EXP_POS, or a negative exponent equal to or less than
-         * TO_EXP_NEG, return exponential notation.
-         *
-         * [b] {number} Integer, 2 to 64 inclusive.
-         *
-         * 'toString() base not an integer: {b}'
-         * 'toString() base out of range: {b}'
-         */
-        P.toString = function (b) {
-            var str,
-                n = this,
-                s = n.s,
-                e = n.e;
-
-            // Infinity or NaN?
-            if ( e === null ) {
-
-                if (s) {
-                    str = 'Infinity';
-                    if ( s < 0 ) str = '-' + str;
-                } else {
-                    str = 'NaN';
-                }
-            } else {
-                str = coeffToString( n.c );
-
-                if ( b == null || !isValidInt( b, 2, 64, 25, 'base' ) ) {
-                    str = e <= TO_EXP_NEG || e >= TO_EXP_POS
-                      ? toExponential( str, e )
-                      : toFixedPoint( str, e );
-                } else {
-                    str = convertBase( toFixedPoint( str, e ), b | 0, 10, s );
-                }
-
-                if ( s < 0 && n.c[0] ) str = '-' + str;
-            }
-
-            return str;
-        };
-
-
-        /*
-         * Return a new BigNumber whose value is the value of this BigNumber truncated to a whole
-         * number.
-         */
-        P.truncated = P.trunc = function () {
-            return round( new BigNumber(this), this.e + 1, 1 );
-        };
-
-
-
-        /*
-         * Return as toString, but do not accept a base argument, and include the minus sign for
-         * negative zero.
-         */
-        P.valueOf = P.toJSON = function () {
-            var str,
-                n = this,
-                e = n.e;
-
-            if ( e === null ) return n.toString();
-
-            str = coeffToString( n.c );
-
-            str = e <= TO_EXP_NEG || e >= TO_EXP_POS
-                ? toExponential( str, e )
-                : toFixedPoint( str, e );
-
-            return n.s < 0 ? '-' + str : str;
-        };
-
-
-        // Aliases for BigDecimal methods.
-        //P.add = P.plus;         // P.add included above
-        //P.subtract = P.minus;   // P.sub included above
-        //P.multiply = P.times;   // P.mul included above
-        //P.divide = P.div;
-        //P.remainder = P.mod;
-        //P.compareTo = P.cmp;
-        //P.negate = P.neg;
-
-
-        if ( configObj != null ) BigNumber.config(configObj);
-
-        return BigNumber;
-    }
-
-
-    // PRIVATE HELPER FUNCTIONS
-
-
-    function bitFloor(n) {
-        var i = n | 0;
-        return n > 0 || n === i ? i : i - 1;
-    }
-
-
-    // Return a coefficient array as a string of base 10 digits.
-    function coeffToString(a) {
-        var s, z,
-            i = 1,
-            j = a.length,
-            r = a[0] + '';
-
-        for ( ; i < j; ) {
-            s = a[i++] + '';
-            z = LOG_BASE - s.length;
-            for ( ; z--; s = '0' + s );
-            r += s;
-        }
-
-        // Determine trailing zeros.
-        for ( j = r.length; r.charCodeAt(--j) === 48; );
-        return r.slice( 0, j + 1 || 1 );
-    }
-
-
-    // Compare the value of BigNumbers x and y.
-    function compare( x, y ) {
-        var a, b,
-            xc = x.c,
-            yc = y.c,
-            i = x.s,
-            j = y.s,
-            k = x.e,
-            l = y.e;
-
-        // Either NaN?
-        if ( !i || !j ) return null;
-
-        a = xc && !xc[0];
-        b = yc && !yc[0];
-
-        // Either zero?
-        if ( a || b ) return a ? b ? 0 : -j : i;
-
-        // Signs differ?
-        if ( i != j ) return i;
-
-        a = i < 0;
-        b = k == l;
-
-        // Either Infinity?
-        if ( !xc || !yc ) return b ? 0 : !xc ^ a ? 1 : -1;
-
-        // Compare exponents.
-        if ( !b ) return k > l ^ a ? 1 : -1;
-
-        j = ( k = xc.length ) < ( l = yc.length ) ? k : l;
-
-        // Compare digit by digit.
-        for ( i = 0; i < j; i++ ) if ( xc[i] != yc[i] ) return xc[i] > yc[i] ^ a ? 1 : -1;
-
-        // Compare lengths.
-        return k == l ? 0 : k > l ^ a ? 1 : -1;
-    }
-
-
-    /*
-     * Return true if n is a valid number in range, otherwise false.
-     * Use for argument validation when ERRORS is false.
-     * Note: parseInt('1e+1') == 1 but parseFloat('1e+1') == 10.
-     */
-    function intValidatorNoErrors( n, min, max ) {
-        return ( n = truncate(n) ) >= min && n <= max;
-    }
-
-
-    function isArray(obj) {
-        return Object.prototype.toString.call(obj) == '[object Array]';
-    }
-
-
-    /*
-     * Convert string of baseIn to an array of numbers of baseOut.
-     * Eg. convertBase('255', 10, 16) returns [15, 15].
-     * Eg. convertBase('ff', 16, 10) returns [2, 5, 5].
-     */
-    function toBaseOut( str, baseIn, baseOut ) {
-        var j,
-            arr = [0],
-            arrL,
-            i = 0,
-            len = str.length;
-
-        for ( ; i < len; ) {
-            for ( arrL = arr.length; arrL--; arr[arrL] *= baseIn );
-            arr[ j = 0 ] += ALPHABET.indexOf( str.charAt( i++ ) );
-
-            for ( ; j < arr.length; j++ ) {
-
-                if ( arr[j] > baseOut - 1 ) {
-                    if ( arr[j + 1] == null ) arr[j + 1] = 0;
-                    arr[j + 1] += arr[j] / baseOut | 0;
-                    arr[j] %= baseOut;
-                }
-            }
-        }
-
-        return arr.reverse();
-    }
-
-
-    function toExponential( str, e ) {
-        return ( str.length > 1 ? str.charAt(0) + '.' + str.slice(1) : str ) +
-          ( e < 0 ? 'e' : 'e+' ) + e;
-    }
-
-
-    function toFixedPoint( str, e ) {
-        var len, z;
-
-        // Negative exponent?
-        if ( e < 0 ) {
-
-            // Prepend zeros.
-            for ( z = '0.'; ++e; z += '0' );
-            str = z + str;
-
-        // Positive exponent
-        } else {
-            len = str.length;
-
-            // Append zeros.
-            if ( ++e > len ) {
-                for ( z = '0', e -= len; --e; z += '0' );
-                str += z;
-            } else if ( e < len ) {
-                str = str.slice( 0, e ) + '.' + str.slice(e);
-            }
-        }
-
-        return str;
-    }
-
-
-    function truncate(n) {
-        n = parseFloat(n);
-        return n < 0 ? mathceil(n) : mathfloor(n);
-    }
-
-
-    // EXPORT
-
-
-    BigNumber = another();
-
-    // AMD.
-    if ( typeof define == 'function' && define.amd ) {
-        define( function () { return BigNumber; } );
-
-    // Node and other environments that support module.exports.
-    } else if ( typeof module != 'undefined' && module.exports ) {
-        module.exports = BigNumber;
-        if ( !crypto ) try { crypto = require('crypto'); } catch (e) {}
-
-    // Browser.
-    } else {
-        global.BigNumber = BigNumber;
-    }
-})(this);
-
-},{"crypto":76}],3:[function(require,module,exports){
-(function (global){
-/*
- * js-sha3 v0.3.1
- * https://github.com/emn178/js-sha3
- *
- * Copyright 2015, emn178@gmail.com
- *
- * Licensed under the MIT license:
- * http://www.opensource.org/licenses/MIT
- */
-;(function(root, undefined) {
-  'use strict';
-
-  var NODE_JS = typeof(module) != 'undefined';
-  if(NODE_JS) {
-    root = global;
-    if(root.JS_SHA3_TEST) {
-      root.navigator = { userAgent: 'Chrome'};
-    }
-  }
-  var CHROME = (root.JS_SHA3_TEST || !NODE_JS) && navigator.userAgent.indexOf('Chrome') != -1;
-  var HEX_CHARS = '0123456789abcdef'.split('');
-  var KECCAK_PADDING = [1, 256, 65536, 16777216];
-  var PADDING = [6, 1536, 393216, 100663296];
-  var SHIFT = [0, 8, 16, 24];
-  var RC = [1, 0, 32898, 0, 32906, 2147483648, 2147516416, 2147483648, 32907, 0, 2147483649,
-            0, 2147516545, 2147483648, 32777, 2147483648, 138, 0, 136, 0, 2147516425, 0, 
-            2147483658, 0, 2147516555, 0, 139, 2147483648, 32905, 2147483648, 32771, 
-            2147483648, 32770, 2147483648, 128, 2147483648, 32778, 0, 2147483658, 2147483648,
-            2147516545, 2147483648, 32896, 2147483648, 2147483649, 0, 2147516424, 2147483648];
-
-  var blocks = [], s = [];
-
-  var keccak_224 = function(message) {
-    return keccak(message, 224, KECCAK_PADDING);
-  };
-
-  var keccak_256 = function(message) {
-    return keccak(message, 256, KECCAK_PADDING);
-  };
-
-  var keccak_384 = function(message) {
-    return keccak(message, 384, KECCAK_PADDING);
-  };
-
-  var sha3_224 = function(message) {
-    return keccak(message, 224, PADDING);
-  };
-
-  var sha3_256 = function(message) {
-    return keccak(message, 256, PADDING);
-  };
-
-  var sha3_384 = function(message) {
-    return keccak(message, 384, PADDING);
-  };
-
-  var sha3_512 = function(message) {
-    return keccak(message, 512, PADDING);
-  };
-
-  var keccak = function(message, bits, padding) {
-    var notString = typeof(message) != 'string';
-    if(notString && message.constructor == root.ArrayBuffer) {
-      message = new Uint8Array(message);
-    }
-
-    if(bits === undefined) {
-      bits = 512;
-      padding = KECCAK_PADDING;
-    }
-
-    var block, code, end = false, index = 0, start = 0, length = message.length,
-        n, i, h, l, c0, c1, c2, c3, c4, c5, c6, c7, c8, c9, 
-        b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, 
-        b18, b19, b20, b21, b22, b23, b24, b25, b26, b27, b28, b29, b30, b31, b32, b33, 
-        b34, b35, b36, b37, b38, b39, b40, b41, b42, b43, b44, b45, b46, b47, b48, b49;
-    var blockCount = (1600 - bits * 2) / 32;
-    var byteCount = blockCount * 4;
-
-    for(i = 0;i < 50;++i) {
-      s[i] = 0;
-    }
-
-    block = 0;
-    do {
-      blocks[0] = block;
-      for(i = 1;i < blockCount + 1;++i) {
-        blocks[i] = 0;
-      }
-      if(notString) {
-        for (i = start;index < length && i < byteCount; ++index) {
-          blocks[i >> 2] |= message[index] << SHIFT[i++ & 3];
-        }
-      } else {
-        for (i = start;index < length && i < byteCount; ++index) {
-          code = message.charCodeAt(index);
-          if (code < 0x80) {
-            blocks[i >> 2] |= code << SHIFT[i++ & 3];
-          } else if (code < 0x800) {
-            blocks[i >> 2] |= (0xc0 | (code >> 6)) << SHIFT[i++ & 3];
-            blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
-          } else if (code < 0xd800 || code >= 0xe000) {
-            blocks[i >> 2] |= (0xe0 | (code >> 12)) << SHIFT[i++ & 3];
-            blocks[i >> 2] |= (0x80 | ((code >> 6) & 0x3f)) << SHIFT[i++ & 3];
-            blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
-          } else {
-            code = 0x10000 + (((code & 0x3ff) << 10) | (message.charCodeAt(++index) & 0x3ff));
-            blocks[i >> 2] |= (0xf0 | (code >> 18)) << SHIFT[i++ & 3];
-            blocks[i >> 2] |= (0x80 | ((code >> 12) & 0x3f)) << SHIFT[i++ & 3];
-            blocks[i >> 2] |= (0x80 | ((code >> 6) & 0x3f)) << SHIFT[i++ & 3];
-            blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
-          }
-        }
-      }
-      start = i - byteCount;
-      if(index == length) {
-        blocks[i >> 2] |= padding[i & 3];
-        ++index;
-      }
-      block = blocks[blockCount];
-      if(index > length && i < byteCount) {
-        blocks[blockCount - 1] |= 0x80000000;
-        end = true;
-      }
-
-      for(i = 0;i < blockCount;++i) {
-        s[i] ^= blocks[i];
-      }
-
-      for(n = 0; n < 48; n += 2) {
-        c0 = s[0] ^ s[10] ^ s[20] ^ s[30] ^ s[40];
-        c1 = s[1] ^ s[11] ^ s[21] ^ s[31] ^ s[41];
-        c2 = s[2] ^ s[12] ^ s[22] ^ s[32] ^ s[42];
-        c3 = s[3] ^ s[13] ^ s[23] ^ s[33] ^ s[43];
-        c4 = s[4] ^ s[14] ^ s[24] ^ s[34] ^ s[44];
-        c5 = s[5] ^ s[15] ^ s[25] ^ s[35] ^ s[45];
-        c6 = s[6] ^ s[16] ^ s[26] ^ s[36] ^ s[46];
-        c7 = s[7] ^ s[17] ^ s[27] ^ s[37] ^ s[47];
-        c8 = s[8] ^ s[18] ^ s[28] ^ s[38] ^ s[48];
-        c9 = s[9] ^ s[19] ^ s[29] ^ s[39] ^ s[49];
-
-        h = c8 ^ ((c2 << 1) | (c3 >>> 31));
-        l = c9 ^ ((c3 << 1) | (c2 >>> 31));
-        s[0] ^= h;
-        s[1] ^= l;
-        s[10] ^= h;
-        s[11] ^= l;
-        s[20] ^= h;
-        s[21] ^= l;
-        s[30] ^= h;
-        s[31] ^= l;
-        s[40] ^= h;
-        s[41] ^= l;
-        h = c0 ^ ((c4 << 1) | (c5 >>> 31));
-        l = c1 ^ ((c5 << 1) | (c4 >>> 31));
-        s[2] ^= h;
-        s[3] ^= l;
-        s[12] ^= h;
-        s[13] ^= l;
-        s[22] ^= h;
-        s[23] ^= l;
-        s[32] ^= h;
-        s[33] ^= l;
-        s[42] ^= h;
-        s[43] ^= l;
-        h = c2 ^ ((c6 << 1) | (c7 >>> 31));
-        l = c3 ^ ((c7 << 1) | (c6 >>> 31));
-        s[4] ^= h;
-        s[5] ^= l;
-        s[14] ^= h;
-        s[15] ^= l;
-        s[24] ^= h;
-        s[25] ^= l;
-        s[34] ^= h;
-        s[35] ^= l;
-        s[44] ^= h;
-        s[45] ^= l;
-        h = c4 ^ ((c8 << 1) | (c9 >>> 31));
-        l = c5 ^ ((c9 << 1) | (c8 >>> 31));
-        s[6] ^= h;
-        s[7] ^= l;
-        s[16] ^= h;
-        s[17] ^= l;
-        s[26] ^= h;
-        s[27] ^= l;
-        s[36] ^= h;
-        s[37] ^= l;
-        s[46] ^= h;
-        s[47] ^= l;
-        h = c6 ^ ((c0 << 1) | (c1 >>> 31));
-        l = c7 ^ ((c1 << 1) | (c0 >>> 31));
-        s[8] ^= h;
-        s[9] ^= l;
-        s[18] ^= h;
-        s[19] ^= l;
-        s[28] ^= h;
-        s[29] ^= l;
-        s[38] ^= h;
-        s[39] ^= l;
-        s[48] ^= h;
-        s[49] ^= l;
-
-        b0 = s[0];
-        b1 = s[1];
-        b32 = (s[11] << 4) | (s[10] >>> 28);
-        b33 = (s[10] << 4) | (s[11] >>> 28);
-        b14 = (s[20] << 3) | (s[21] >>> 29);
-        b15 = (s[21] << 3) | (s[20] >>> 29);
-        b46 = (s[31] << 9) | (s[30] >>> 23);
-        b47 = (s[30] << 9) | (s[31] >>> 23);
-        b28 = (s[40] << 18) | (s[41] >>> 14);
-        b29 = (s[41] << 18) | (s[40] >>> 14);
-        b20 = (s[2] << 1) | (s[3] >>> 31);
-        b21 = (s[3] << 1) | (s[2] >>> 31);
-        b2 = (s[13] << 12) | (s[12] >>> 20);
-        b3 = (s[12] << 12) | (s[13] >>> 20);
-        b34 = (s[22] << 10) | (s[23] >>> 22);
-        b35 = (s[23] << 10) | (s[22] >>> 22);
-        b16 = (s[33] << 13) | (s[32] >>> 19);
-        b17 = (s[32] << 13) | (s[33] >>> 19);
-        b48 = (s[42] << 2) | (s[43] >>> 30);
-        b49 = (s[43] << 2) | (s[42] >>> 30);
-        b40 = (s[5] << 30) | (s[4] >>> 2);
-        b41 = (s[4] << 30) | (s[5] >>> 2);
-        b22 = (s[14] << 6) | (s[15] >>> 26);
-        b23 = (s[15] << 6) | (s[14] >>> 26);
-        b4 = (s[25] << 11) | (s[24] >>> 21);
-        b5 = (s[24] << 11) | (s[25] >>> 21);
-        b36 = (s[34] << 15) | (s[35] >>> 17);
-        b37 = (s[35] << 15) | (s[34] >>> 17);
-        b18 = (s[45] << 29) | (s[44] >>> 3);
-        b19 = (s[44] << 29) | (s[45] >>> 3);
-        b10 = (s[6] << 28) | (s[7] >>> 4);
-        b11 = (s[7] << 28) | (s[6] >>> 4);
-        b42 = (s[17] << 23) | (s[16] >>> 9);
-        b43 = (s[16] << 23) | (s[17] >>> 9);
-        b24 = (s[26] << 25) | (s[27] >>> 7);
-        b25 = (s[27] << 25) | (s[26] >>> 7);
-        b6 = (s[36] << 21) | (s[37] >>> 11);
-        b7 = (s[37] << 21) | (s[36] >>> 11);
-        b38 = (s[47] << 24) | (s[46] >>> 8);
-        b39 = (s[46] << 24) | (s[47] >>> 8);
-        b30 = (s[8] << 27) | (s[9] >>> 5);
-        b31 = (s[9] << 27) | (s[8] >>> 5);
-        b12 = (s[18] << 20) | (s[19] >>> 12);
-        b13 = (s[19] << 20) | (s[18] >>> 12);
-        b44 = (s[29] << 7) | (s[28] >>> 25);
-        b45 = (s[28] << 7) | (s[29] >>> 25);
-        b26 = (s[38] << 8) | (s[39] >>> 24);
-        b27 = (s[39] << 8) | (s[38] >>> 24);
-        b8 = (s[48] << 14) | (s[49] >>> 18);
-        b9 = (s[49] << 14) | (s[48] >>> 18);
-
-        s[0] = b0 ^ (~b2 & b4);
-        s[1] = b1 ^ (~b3 & b5);
-        s[10] = b10 ^ (~b12 & b14);
-        s[11] = b11 ^ (~b13 & b15);
-        s[20] = b20 ^ (~b22 & b24);
-        s[21] = b21 ^ (~b23 & b25);
-        s[30] = b30 ^ (~b32 & b34);
-        s[31] = b31 ^ (~b33 & b35);
-        s[40] = b40 ^ (~b42 & b44);
-        s[41] = b41 ^ (~b43 & b45);
-        s[2] = b2 ^ (~b4 & b6);
-        s[3] = b3 ^ (~b5 & b7);
-        s[12] = b12 ^ (~b14 & b16);
-        s[13] = b13 ^ (~b15 & b17);
-        s[22] = b22 ^ (~b24 & b26);
-        s[23] = b23 ^ (~b25 & b27);
-        s[32] = b32 ^ (~b34 & b36);
-        s[33] = b33 ^ (~b35 & b37);
-        s[42] = b42 ^ (~b44 & b46);
-        s[43] = b43 ^ (~b45 & b47);
-        s[4] = b4 ^ (~b6 & b8);
-        s[5] = b5 ^ (~b7 & b9);
-        s[14] = b14 ^ (~b16 & b18);
-        s[15] = b15 ^ (~b17 & b19);
-        s[24] = b24 ^ (~b26 & b28);
-        s[25] = b25 ^ (~b27 & b29);
-        s[34] = b34 ^ (~b36 & b38);
-        s[35] = b35 ^ (~b37 & b39);
-        s[44] = b44 ^ (~b46 & b48);
-        s[45] = b45 ^ (~b47 & b49);
-        s[6] = b6 ^ (~b8 & b0);
-        s[7] = b7 ^ (~b9 & b1);
-        s[16] = b16 ^ (~b18 & b10);
-        s[17] = b17 ^ (~b19 & b11);
-        s[26] = b26 ^ (~b28 & b20);
-        s[27] = b27 ^ (~b29 & b21);
-        s[36] = b36 ^ (~b38 & b30);
-        s[37] = b37 ^ (~b39 & b31);
-        s[46] = b46 ^ (~b48 & b40);
-        s[47] = b47 ^ (~b49 & b41);
-        s[8] = b8 ^ (~b0 & b2);
-        s[9] = b9 ^ (~b1 & b3);
-        s[18] = b18 ^ (~b10 & b12);
-        s[19] = b19 ^ (~b11 & b13);
-        s[28] = b28 ^ (~b20 & b22);
-        s[29] = b29 ^ (~b21 & b23);
-        s[38] = b38 ^ (~b30 & b32);
-        s[39] = b39 ^ (~b31 & b33);
-        s[48] = b48 ^ (~b40 & b42);
-        s[49] = b49 ^ (~b41 & b43);
-
-        s[0] ^= RC[n];
-        s[1] ^= RC[n + 1];
-      }
-    } while(!end);
-
-    var hex = '';
-    if(CHROME) {
-      b0 = s[0];
-      b1 = s[1];
-      b2 = s[2];
-      b3 = s[3];
-      b4 = s[4];
-      b5 = s[5];
-      b6 = s[6];
-      b7 = s[7];
-      b8 = s[8];
-      b9 = s[9];
-      b10 = s[10];
-      b11 = s[11];
-      b12 = s[12];
-      b13 = s[13];
-      b14 = s[14];
-      b15 = s[15];
-      hex += HEX_CHARS[(b0 >> 4) & 0x0F] + HEX_CHARS[b0 & 0x0F] +
-             HEX_CHARS[(b0 >> 12) & 0x0F] + HEX_CHARS[(b0 >> 8) & 0x0F] +
-             HEX_CHARS[(b0 >> 20) & 0x0F] + HEX_CHARS[(b0 >> 16) & 0x0F] +
-             HEX_CHARS[(b0 >> 28) & 0x0F] + HEX_CHARS[(b0 >> 24) & 0x0F] +
-             HEX_CHARS[(b1 >> 4) & 0x0F] + HEX_CHARS[b1 & 0x0F] +
-             HEX_CHARS[(b1 >> 12) & 0x0F] + HEX_CHARS[(b1 >> 8) & 0x0F] +
-             HEX_CHARS[(b1 >> 20) & 0x0F] + HEX_CHARS[(b1 >> 16) & 0x0F] +
-             HEX_CHARS[(b1 >> 28) & 0x0F] + HEX_CHARS[(b1 >> 24) & 0x0F] +
-             HEX_CHARS[(b2 >> 4) & 0x0F] + HEX_CHARS[b2 & 0x0F] +
-             HEX_CHARS[(b2 >> 12) & 0x0F] + HEX_CHARS[(b2 >> 8) & 0x0F] +
-             HEX_CHARS[(b2 >> 20) & 0x0F] + HEX_CHARS[(b2 >> 16) & 0x0F] +
-             HEX_CHARS[(b2 >> 28) & 0x0F] + HEX_CHARS[(b2 >> 24) & 0x0F] +
-             HEX_CHARS[(b3 >> 4) & 0x0F] + HEX_CHARS[b3 & 0x0F] +
-             HEX_CHARS[(b3 >> 12) & 0x0F] + HEX_CHARS[(b3 >> 8) & 0x0F] +
-             HEX_CHARS[(b3 >> 20) & 0x0F] + HEX_CHARS[(b3 >> 16) & 0x0F] +
-             HEX_CHARS[(b3 >> 28) & 0x0F] + HEX_CHARS[(b3 >> 24) & 0x0F] +
-             HEX_CHARS[(b4 >> 4) & 0x0F] + HEX_CHARS[b4 & 0x0F] +
-             HEX_CHARS[(b4 >> 12) & 0x0F] + HEX_CHARS[(b4 >> 8) & 0x0F] +
-             HEX_CHARS[(b4 >> 20) & 0x0F] + HEX_CHARS[(b4 >> 16) & 0x0F] +
-             HEX_CHARS[(b4 >> 28) & 0x0F] + HEX_CHARS[(b4 >> 24) & 0x0F] +
-             HEX_CHARS[(b5 >> 4) & 0x0F] + HEX_CHARS[b5 & 0x0F] +
-             HEX_CHARS[(b5 >> 12) & 0x0F] + HEX_CHARS[(b5 >> 8) & 0x0F] +
-             HEX_CHARS[(b5 >> 20) & 0x0F] + HEX_CHARS[(b5 >> 16) & 0x0F] +
-             HEX_CHARS[(b5 >> 28) & 0x0F] + HEX_CHARS[(b5 >> 24) & 0x0F] +
-             HEX_CHARS[(b6 >> 4) & 0x0F] + HEX_CHARS[b6 & 0x0F] +
-             HEX_CHARS[(b6 >> 12) & 0x0F] + HEX_CHARS[(b6 >> 8) & 0x0F] +
-             HEX_CHARS[(b6 >> 20) & 0x0F] + HEX_CHARS[(b6 >> 16) & 0x0F] +
-             HEX_CHARS[(b6 >> 28) & 0x0F] + HEX_CHARS[(b6 >> 24) & 0x0F];
-
-      if(bits >= 256) {
-        hex += HEX_CHARS[(b7 >> 4) & 0x0F] + HEX_CHARS[b7 & 0x0F] +
-               HEX_CHARS[(b7 >> 12) & 0x0F] + HEX_CHARS[(b7 >> 8) & 0x0F] +
-               HEX_CHARS[(b7 >> 20) & 0x0F] + HEX_CHARS[(b7 >> 16) & 0x0F] +
-               HEX_CHARS[(b7 >> 28) & 0x0F] + HEX_CHARS[(b7 >> 24) & 0x0F];
-      }
-      if(bits >= 384) {
-        hex += HEX_CHARS[(b8 >> 4) & 0x0F] + HEX_CHARS[b8 & 0x0F] +
-               HEX_CHARS[(b8 >> 12) & 0x0F] + HEX_CHARS[(b8 >> 8) & 0x0F] +
-               HEX_CHARS[(b8 >> 20) & 0x0F] + HEX_CHARS[(b8 >> 16) & 0x0F] +
-               HEX_CHARS[(b8 >> 28) & 0x0F] + HEX_CHARS[(b8 >> 24) & 0x0F] +
-               HEX_CHARS[(b9 >> 4) & 0x0F] + HEX_CHARS[b9 & 0x0F] +
-               HEX_CHARS[(b9 >> 12) & 0x0F] + HEX_CHARS[(b9 >> 8) & 0x0F] +
-               HEX_CHARS[(b9 >> 20) & 0x0F] + HEX_CHARS[(b9 >> 16) & 0x0F] +
-               HEX_CHARS[(b9 >> 28) & 0x0F] + HEX_CHARS[(b9 >> 24) & 0x0F] +
-               HEX_CHARS[(b10 >> 4) & 0x0F] + HEX_CHARS[b10 & 0x0F] +
-               HEX_CHARS[(b10 >> 12) & 0x0F] + HEX_CHARS[(b10 >> 8) & 0x0F] +
-               HEX_CHARS[(b10 >> 20) & 0x0F] + HEX_CHARS[(b10 >> 16) & 0x0F] +
-               HEX_CHARS[(b10 >> 28) & 0x0F] + HEX_CHARS[(b10 >> 24) & 0x0F] +
-               HEX_CHARS[(b11 >> 4) & 0x0F] + HEX_CHARS[b11 & 0x0F] +
-               HEX_CHARS[(b11 >> 12) & 0x0F] + HEX_CHARS[(b11 >> 8) & 0x0F] +
-               HEX_CHARS[(b11 >> 20) & 0x0F] + HEX_CHARS[(b11 >> 16) & 0x0F] +
-               HEX_CHARS[(b11 >> 28) & 0x0F] + HEX_CHARS[(b11 >> 24) & 0x0F];
-      }
-      if(bits == 512) {
-        hex += HEX_CHARS[(b12 >> 4) & 0x0F] + HEX_CHARS[b12 & 0x0F] +
-               HEX_CHARS[(b12 >> 12) & 0x0F] + HEX_CHARS[(b12 >> 8) & 0x0F] +
-               HEX_CHARS[(b12 >> 20) & 0x0F] + HEX_CHARS[(b12 >> 16) & 0x0F] +
-               HEX_CHARS[(b12 >> 28) & 0x0F] + HEX_CHARS[(b12 >> 24) & 0x0F] +
-               HEX_CHARS[(b13 >> 4) & 0x0F] + HEX_CHARS[b13 & 0x0F] +
-               HEX_CHARS[(b13 >> 12) & 0x0F] + HEX_CHARS[(b13 >> 8) & 0x0F] +
-               HEX_CHARS[(b13 >> 20) & 0x0F] + HEX_CHARS[(b13 >> 16) & 0x0F] +
-               HEX_CHARS[(b13 >> 28) & 0x0F] + HEX_CHARS[(b13 >> 24) & 0x0F] +
-               HEX_CHARS[(b14 >> 4) & 0x0F] + HEX_CHARS[b14 & 0x0F] +
-               HEX_CHARS[(b14 >> 12) & 0x0F] + HEX_CHARS[(b14 >> 8) & 0x0F] +
-               HEX_CHARS[(b14 >> 20) & 0x0F] + HEX_CHARS[(b14 >> 16) & 0x0F] +
-               HEX_CHARS[(b14 >> 28) & 0x0F] + HEX_CHARS[(b14 >> 24) & 0x0F] +
-               HEX_CHARS[(b15 >> 4) & 0x0F] + HEX_CHARS[b15 & 0x0F] +
-               HEX_CHARS[(b15 >> 12) & 0x0F] + HEX_CHARS[(b15 >> 8) & 0x0F] +
-               HEX_CHARS[(b15 >> 20) & 0x0F] + HEX_CHARS[(b15 >> 16) & 0x0F] +
-               HEX_CHARS[(b15 >> 28) & 0x0F] + HEX_CHARS[(b15 >> 24) & 0x0F];
-      }
-    } else {
-      for(i = 0, n = bits / 32;i < n;++i) {
-        h = s[i];
-        hex += HEX_CHARS[(h >> 4) & 0x0F] + HEX_CHARS[h & 0x0F] +
-               HEX_CHARS[(h >> 12) & 0x0F] + HEX_CHARS[(h >> 8) & 0x0F] +
-               HEX_CHARS[(h >> 20) & 0x0F] + HEX_CHARS[(h >> 16) & 0x0F] +
-               HEX_CHARS[(h >> 28) & 0x0F] + HEX_CHARS[(h >> 24) & 0x0F];
-      }
-    }
-    return hex;
-  };
-  
-  if(!root.JS_SHA3_TEST && NODE_JS) {
-    module.exports = {
-      sha3_512: sha3_512,
-      sha3_384: sha3_384,
-      sha3_256: sha3_256,
-      sha3_224: sha3_224,
-      keccak_512: keccak,
-      keccak_384: keccak_384,
-      keccak_256: keccak_256,
-      keccak_224: keccak_224
-    };
-  } else if(root) {
-    root.sha3_512 = sha3_512;
-    root.sha3_384 = sha3_384;
-    root.sha3_256 = sha3_256;
-    root.sha3_224 = sha3_224;
-    root.keccak_512 = keccak;
-    root.keccak_384 = keccak_384;
-    root.keccak_256 = keccak_256;
-    root.keccak_224 = keccak_224;
-  }
-}(this));
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],4:[function(require,module,exports){
 module.exports={
     "0": {
         "namereg": "0xc6d9d2cd449a754c494264e1809c50e34d64562b",
@@ -3870,16 +127,16 @@ module.exports={
         "statistics": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7"
     }
 }
-},{}],5:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 module.exports = require("./contracts");
 
-},{"./contracts":4}],6:[function(require,module,exports){
+},{"./contracts":1}],3:[function(require,module,exports){
 (function (global){
 var augur = global.augur || require("./src/index");
 global.augur = augur;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./src/index":358}],7:[function(require,module,exports){
+},{"./src/index":356}],4:[function(require,module,exports){
 (function (process,global){
 /*!
  * async
@@ -5143,7 +1400,616 @@ global.augur = augur;
 }());
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":31}],8:[function(require,module,exports){
+},{"_process":29}],5:[function(require,module,exports){
+(function (Buffer){
+/**
+ * Ethereum contract ABI data serialization.
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var keccak_256 = require("js-sha3").keccak_256;
+
+BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
+
+module.exports = {
+
+    constants: {
+        ONE: (new BigNumber(2)).toPower(64),
+        MOD: new BigNumber(2).toPower(256),
+        BYTES_32: new BigNumber(2).toPower(252)
+    },
+
+    copy: function (obj) {
+        if (null === obj || "object" !== typeof obj) return obj;
+        var copy = obj.constructor();
+        for (var attr in obj) {
+            if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+        }
+        return copy;
+    },
+
+    is_numeric: function (n) {
+        return Number(parseFloat(n)) == n;
+    },
+
+    remove_leading_zeros: function (h) {
+        var hex = h.toString();
+        if (hex.slice(0, 2) === "0x") {
+            hex = hex.slice(2);
+        }
+        if (!/^0+$/.test(hex)) {
+            while (hex.slice(0, 2) === "00") {
+                hex = hex.slice(2);
+            }
+        }
+        return hex;
+    },
+
+    remove_trailing_zeros: function (h) {
+        var hex = h.toString();
+        while (hex.slice(-2) === "00") {
+            hex = hex.slice(0,-2);
+        }
+        return hex;
+    },
+
+    decode_hex: function (h, strip) {
+        var hex = h.toString();
+        var str = '';
+        if (hex.slice(0,2) === "0x") hex = hex.slice(2);
+        // first 32 bytes = offset
+        // second 32 bytes = string length
+        if (strip) {
+            hex = hex.slice(128);
+            hex = this.remove_trailing_zeros(hex);
+        }
+        for (var i = 0, l = hex.length; i < l; i += 2) {
+            str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+        }
+        return str;
+    },
+
+    // convert bytes to hex
+    encode_hex: function (str) {
+        var hexbyte, hex = '';
+        if (str && str.constructor === Object || str.constructor === Array) {
+            str = JSON.stringify(str);
+        }
+        for (var i = 0, len = str.length; i < len; ++i) {
+            hexbyte = str.charCodeAt(i).toString(16);
+            if (hexbyte.length === 1) hexbyte = "0" + hexbyte;
+            hex += hexbyte;
+        }
+        return hex;
+    },
+
+    unfork: function (forked, prefix) {
+        if (forked !== null && forked !== undefined) {
+            var unforked = this.bignum(forked);
+            var superforked = unforked.plus(this.constants.MOD);
+            if (superforked.gte(this.constants.BYTES_32) && superforked.lt(this.constants.MOD)) {
+                unforked = superforked;
+            }
+            if (forked.constructor === BigNumber) return unforked;
+            unforked = this.pad_left(unforked.toString(16));
+            if (prefix) unforked = this.prefix_hex(unforked);
+            return unforked;
+        }
+    },
+
+    hex: function (n, nowrap) {
+        var h;
+        if (n !== undefined && n !== null && n.constructor) {
+            switch (n.constructor) {
+                case Buffer:
+                    h = n.toString("hex");
+                    break;
+                case Object:
+                    h = this.encode_hex(JSON.stringify(n));
+                    break;
+                case Array:
+                    h = this.bignum(n, "hex", nowrap);
+                    break;
+                case BigNumber:
+                    h = n.toString(16);
+                    break;
+                case String:
+                    if (n === "-0x0") {
+                        h = "0x0";
+                    } else if (n === "-0") {
+                        h = "0";
+                    } else if (n.slice(0, 3) === "-0x" || n.slice(0, 2) === "-0x") {
+                        h = n;
+                    } else {
+                        if (isFinite(n)) {
+                            h = this.bignum(n, "hex", nowrap);
+                        } else {
+                            h = this.encode_hex(n);
+                        }
+                    }
+                    break;
+                case Boolean:
+                    h = (n) ? "0x1" : "0x0";
+                    break;
+                default:
+                    h = this.bignum(n, "hex", nowrap);
+            }
+        }
+        return this.prefix_hex(h);
+    },
+
+    is_hex: function (str) {
+        if (str && str.constructor === String) {
+            if (str.slice(0, 1) === '-' && str.length > 1) {
+                return /^[0-9A-F]+$/i.test(str.slice(1));
+            }
+            return /^[0-9A-F]+$/i.test(str);
+        }
+        return false;
+    },
+
+    format_address: function (addr) {
+        if (addr && addr.constructor === String) {
+            addr = this.strip_0x(addr);
+            while (addr.length > 40 && addr.slice(0, 1) === "0") {
+                addr = addr.slice(1);
+            }
+            while (addr.length < 40) {
+                addr = "0" + addr;
+            }
+            return this.prefix_hex(addr);
+        }
+    },
+
+    strip_0x: function (str) {
+        if (str && str.constructor === String && str.length >= 2) {
+            var h = str;
+            if (h === "-0x0" || h === "0x0") {
+                return "0";
+            }
+            if (h.slice(0, 2) === "0x" && h.length > 2) {
+                h = h.slice(2);
+            } else if (h.slice(0, 3) === "-0x" && h.length > 3) {
+                h = '-' + h.slice(3);
+            }
+            if (this.is_hex(h)) return h;
+        }
+        return str;
+    },
+
+    zero_prefix: function (h) {
+        if (h !== undefined && h !== null && h.constructor === String) {
+            h = this.strip_0x(h);
+            if (h.length % 2) h = "0" + h;
+            if (h.slice(0,2) !== "0x" && h.slice(0,3) !== "-0x") {
+                if (h.slice(0,1) === '-') {
+                    h = "-0x" + h.slice(1);
+                } else {
+                    h = "0x" + h;
+                }
+            }
+        }
+        return h;
+    },
+
+    prefix_hex: function (n) {
+        if (n !== undefined && n !== null) {
+            if (n.constructor === Number || n.constructor === BigNumber) {
+                n = n.toString(16);
+            }
+            if (n.constructor === String &&
+                n.slice(0,2) !== "0x" && n.slice(0,3) !== "-0x")
+            {
+                if (n.slice(0,1) === '-') {
+                    n = "-0x" + n.slice(1);
+                } else {
+                    n = "0x" + n;
+                }
+            }
+        }
+        return n;
+    },
+
+    bignum: function (n, encoding, nowrap) {
+        var bn, len;
+        if (n !== null && n !== undefined && n !== "0x" && !n.error && !n.message) {
+            switch (n.constructor) {
+                case BigNumber:
+                    bn = n;
+                    break;
+                case Number:
+                    if (Math.floor(Math.log(n) / Math.log(10) + 1) <= 15) {
+                        bn = new BigNumber(n);
+                    } else {
+                        n = n.toString();
+                        try {
+                            bn = new BigNumber(n);
+                        } catch (exc) {
+                            if (this.is_hex(n)) {
+                                bn = new BigNumber(n, 16);
+                            } else {
+                                return n;
+                            }
+                        }
+                    }
+                    break;
+                case String:
+                    try {
+                        bn = new BigNumber(n);
+                    } catch (exc) {
+                        if (this.is_hex(n)) {
+                            bn = new BigNumber(n, 16);
+                        } else {
+                            return n;
+                        }
+                    }
+                    break;
+                case Array:
+                    len = n.length;
+                    bn = new Array(len);
+                    for (var i = 0; i < len; ++i) {
+                        bn[i] = this.bignum(n[i], encoding, nowrap);
+                    }
+                    break;
+                default:
+                    try {
+                        bn = new BigNumber(n);
+                    } catch (ex) {
+                        try {
+                            bn = new BigNumber(n, 16);
+                        } catch (exc) {
+                            return n;
+                        }
+                    }
+            }
+            if (bn !== undefined && bn !== null && bn.constructor === BigNumber) {
+                if (!nowrap && bn.gte(this.constants.BYTES_32)) {
+                    bn = bn.sub(this.constants.MOD);
+                }
+                if (encoding) {
+                    if (encoding === "number") {
+                        bn = bn.toNumber();
+                    } else if (encoding === "string") {
+                        bn = bn.toFixed();
+                    } else if (encoding === "hex") {
+                        bn = this.prefix_hex(bn.toString(16));
+                    }
+                }
+            }
+            return bn;
+        } else {
+            return n;
+        }
+    },
+
+    fix: function (n, encode) {
+        var fixed;
+        if (n && n !== "0x" && !n.error && !n.message) {
+            if (encode && n.constructor === String) {
+                encode = encode.toLowerCase();
+            }
+            if (n.constructor === Array) {
+                var len = n.length;
+                fixed = new Array(len);
+                for (var i = 0; i < len; ++i) {
+                    fixed[i] = this.fix(n[i], encode);
+                }
+            } else {
+                if (n.constructor === BigNumber) {
+                    fixed = n.mul(this.constants.ONE).round();
+                } else {
+                    fixed = this.bignum(n).mul(this.constants.ONE).round();
+                }
+                if (fixed && fixed.gte(this.constants.BYTES_32)) {
+                    fixed = fixed.sub(this.constants.MOD);
+                }
+                if (encode) {
+                    if (encode === "string") {
+                        fixed = fixed.toFixed();
+                    } else if (encode === "hex") {
+                        if (fixed.constructor === BigNumber) {
+                            fixed = fixed.toString(16);
+                        }
+                        fixed = this.prefix_hex(fixed);
+                    }
+                }
+            }
+            return fixed;
+        } else {
+            return n;
+        }
+    },
+
+    unfix: function (n, encode) {
+        var unfixed;
+        if (n && n !== "0x" && !n.error && !n.message) {
+            if (encode) encode = encode.toLowerCase();
+            if (n.constructor === Array) {
+                var len = n.length;
+                unfixed = new Array(len);
+                for (var i = 0; i < len; ++i) {
+                    unfixed[i] = this.unfix(n[i], encode);
+                }
+            } else {
+                if (n.constructor === BigNumber) {
+                    unfixed = n.dividedBy(this.constants.ONE);
+                } else {
+                    unfixed = this.bignum(n).dividedBy(this.constants.ONE);
+                }
+                if (unfixed && encode) {
+                    if (encode === "hex") {
+                        unfixed = this.prefix_hex(unfixed);
+                    } else if (encode === "string") {
+                        unfixed = unfixed.toFixed();
+                    } else if (encode === "number") {
+                        unfixed = unfixed.toNumber();
+                    }
+                }
+            }
+            return unfixed;
+        } else {
+            return n;
+        }
+    },
+
+    string: function (n) {
+        return this.bignum(n, "string");
+    },
+
+    number: function (s) {
+        return this.bignum(s, "number");
+    },
+
+    chunk: function (total_len, chunk_len) {
+        chunk_len = chunk_len || 64;
+        return Math.ceil(total_len / chunk_len);
+    },
+
+    pad_right: function (s, chunk_len, prefix) {
+        chunk_len = chunk_len || 64;
+        s = this.strip_0x(s);
+        var multiple = chunk_len * this.chunk(s.length, chunk_len);
+        while (s.length < multiple) {
+            s += '0';
+        }
+        if (prefix) s = this.prefix_hex(s);
+        return s;
+    },
+
+    pad_left: function (s, chunk_len, prefix) {
+        chunk_len = chunk_len || 64;
+        s = this.strip_0x(s);
+        var multiple = chunk_len * this.chunk(s.length, chunk_len);
+        while (s.length < multiple) {
+            s = '0' + s;
+        }
+        if (prefix) s = this.prefix_hex(s);
+        return s;
+    },
+
+    encode_prefix: function (funcname, signature) {
+        signature = signature || "";
+        var summary = funcname + "(";
+        for (var i = 0, len = signature.length; i < len; ++i) {
+            switch (signature[i]) {
+                case 's':
+                    summary += "bytes";
+                    break;
+                case 'b':
+                    summary += "bytes";
+                    var j = 1;
+                    while (this.is_numeric(signature[i+j])) {
+                        summary += signature[i+j].toString();
+                        j++;
+                    }
+                    i += j;
+                    break;
+                case 'i':
+                    summary += "int256";
+                    break;
+                case 'a':
+                    summary += "int256[]";
+                    break;
+                default:
+                    summary += "weird";
+            }
+            if (i !== len - 1) summary += ",";
+        }
+        var prefix = keccak_256(summary + ")").slice(0, 8);
+        while (prefix.slice(0, 1) === '0') {
+            prefix = prefix.slice(1);
+        }
+        return "0x" + prefix;
+    },
+
+    parse_signature: function (signature) {
+        var types = [];
+        for (var i = 0, len = signature.length; i < len; ++i) {
+            if (this.is_numeric(signature[i])) {
+                types[types.length - 1] += signature[i].toString();
+            } else {
+                if (signature[i] === 's') {
+                    types.push("bytes");
+                } else if (signature[i] === 'b') {
+                    types.push("bytes");
+                } else if (signature[i] === 'a') {
+                    types.push("int256[]");
+                } else {
+                    types.push("int256");
+                }
+            }
+        }
+        return types;
+    },
+
+    parse_params: function (params) {
+        if (params !== undefined && params !== null &&
+            params !== [] && params !== "")
+        {
+            if (params.constructor === String) {
+                if (params.slice(0,1) === "[" &&
+                    params.slice(-1) === "]")
+                {
+                    params = JSON.parse(params);
+                }
+                if (params.constructor === String) {
+                    params = [params];
+                }
+            } else if (params.constructor === Number) {
+                params = [params];
+            }
+        } else {
+            params = [];
+        }
+        return params;
+    },
+
+    encode_int: function (value) {
+        var cs, x, output;
+        cs = [];
+        x = new BigNumber(value);
+        while (x.gt(new BigNumber(0))) {
+            cs.push(String.fromCharCode(x.mod(new BigNumber(256))));
+            x = x.dividedBy(new BigNumber(256)).floor();
+        }
+        output = this.encode_hex((cs.reverse()).join(''));
+        while (output.length < 64) {
+            output = '0' + output;
+        }
+        return output;
+    },
+
+    // static parameter encoding
+
+    encode_int256: function (encoding, param) {
+        if (param !== undefined && param !== null && param !== [] && param !== "") {
+
+            // input is a javascript number
+            if (param.constructor === Number) {
+                param = this.bignum(param);
+                if (param.lt(new BigNumber(0))) {
+                    param = param.add(this.constants.MOD);
+                }
+                encoding.statics += this.encode_int(param);
+
+            // input is a string
+            } else if (param.constructor === String) {
+
+                // negative hex
+                if (param.slice(0,1) === '-') {
+                    param = this.bignum(param).add(this.constants.MOD).toFixed();
+                    encoding.statics += this.encode_int(param);
+
+                // positive hex
+                } else if (param.slice(0,2) === "0x") {
+                    encoding.statics += this.pad_left(param.slice(2));
+
+                // decimal (base-10 integer)
+                } else {
+                    encoding.statics += this.encode_int(param);
+                }
+            }
+
+            // size in multiples of 32
+            encoding.chunks += this.chunk(encoding.statics.length);
+        }
+        return encoding;
+    },
+
+    encode_bytesN: function (encoding, param) {
+        if (param !== undefined && param !== null && param !== [] && param !== "") {
+            while (param.length) {
+                encoding.statics += this.pad_right(this.encode_hex(param.slice(0, 64)));
+                param = param.slice(64);
+            }
+            encoding.chunks += this.chunk(encoding.statics.length);
+        }
+        return encoding;
+    },
+
+    // dynamic parameter encoding
+
+    // offset (in multiples of 32)
+    offset: function (len, num_params) {
+        return this.encode_int(32 * (num_params + this.chunk(len)));
+    },
+
+    encode_bytes: function (encoding, param, num_params) {
+        encoding.statics += this.offset(encoding.dynamics.length, num_params);
+        encoding.dynamics += this.encode_int(param.length);
+        encoding.dynamics += this.pad_right(this.encode_hex(param));
+        return encoding;
+    },
+
+    encode_int256a: function (encoding, param, num_params) {
+        encoding.statics += this.offset(encoding.dynamics.length, num_params);
+        var arraylen = param.length;
+        encoding.dynamics += this.encode_int(arraylen);
+        for (var j = 0; j < arraylen; ++j) {
+            if (param[j] !== undefined) {
+                if (param[j].constructor === Number) {
+                    encoding.dynamics += this.encode_int(this.bignum(param[j]).mod(this.constants.MOD).toFixed());
+                } else if (param[j].constructor === String) {
+                    if (param[j].slice(0,1) === '-') {
+                        encoding.dynamics += this.encode_int(this.bignum(param[j]).mod(this.constants.MOD).toFixed());
+                    } else if (param[j].slice(0,2) === "0x") {
+                        encoding.dynamics += this.pad_left(param[j].slice(2));
+                    } else {
+                        encoding.dynamics += this.encode_int(this.bignum(param[j]).mod(this.constants.MOD).toFixed());
+                    }
+                }
+                encoding.dynamics = this.pad_right(encoding.dynamics);
+            }
+        }
+        return encoding;
+    },
+
+    encode_data: function (itx) {
+        var tx, num_params, types, encoding;
+        tx = this.copy(itx);
+        
+        // parse signature and parameter array
+        types = this.parse_signature(tx.signature);
+        num_params = tx.signature.replace(/\d+/g, '').length;
+        tx.params = this.parse_params(tx.params);
+
+        // chunks: size of the static encoding (in multiples of 32)
+        encoding = { chunks: 0, statics: '', dynamics: '' };
+
+        // encode parameters
+        if (num_params === tx.params.length) {
+            for (var i = 0; i < num_params; ++i) {
+                if (types[i] === "int256") {
+                    encoding = this.encode_int256(encoding, tx.params[i]);
+                } else if (types[i] === "bytes" || types[i] === "string") {
+                    encoding = this.encode_bytes(encoding, tx.params[i], num_params);
+                } else if (types[i] === "int256[]") {
+                    encoding = this.encode_int256a(encoding, tx.params[i], num_params);
+                } else {
+                    // var num_bytes = parseInt(types[i].replace("bytes", ''));
+                    encoding = this.encode_bytesN(encoding, tx.params[i]);
+                }
+            }
+            return encoding.statics + encoding.dynamics;
+
+        // number of parameters provided didn't match the signature
+        } else {
+            return new Error("wrong number of parameters");
+        }
+    },
+
+    // hex-encode a function's ABI data and return it
+    encode: function (tx) {
+        tx.signature = tx.signature || "";
+        return this.encode_prefix(tx.method, tx.signature) + this.encode_data(tx);
+    }
+};
+
+}).call(this,require("buffer").Buffer)
+},{"bignumber.js":6,"buffer":62,"js-sha3":342}],6:[function(require,module,exports){
 /*! bignumber.js v2.1.3 https://github.com/MikeMcl/bignumber.js/LICENCE */
 
 ;(function (globalObj) {
@@ -7841,9 +4707,9 @@ global.augur = augur;
     }
 })(this);
 
-},{}],9:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 
-},{}],10:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 // http://wiki.commonjs.org/wiki/Unit_Testing/1.0
 //
 // THIS IS NOT TESTED NOR LIKELY TO WORK OUTSIDE V8!
@@ -8204,9 +5070,9 @@ var objectKeys = Object.keys || function (obj) {
   return keys;
 };
 
-},{"util/":60}],11:[function(require,module,exports){
-arguments[4][9][0].apply(exports,arguments)
-},{"dup":9}],12:[function(require,module,exports){
+},{"util/":58}],9:[function(require,module,exports){
+arguments[4][7][0].apply(exports,arguments)
+},{"dup":7}],10:[function(require,module,exports){
 'use strict';
 
 
@@ -8310,7 +5176,7 @@ exports.setTyped = function (on) {
 
 exports.setTyped(TYPED_OK);
 
-},{}],13:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 'use strict';
 
 // Note: adler32 takes 12% for level 0 and 2% for level 6.
@@ -8344,7 +5210,7 @@ function adler32(adler, buf, len, pos) {
 
 module.exports = adler32;
 
-},{}],14:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 module.exports = {
 
   /* Allowed flush values; see deflate() and inflate() below for details */
@@ -8393,7 +5259,7 @@ module.exports = {
   //Z_NULL:                 null // Use -1 or null inline, depending on var type
 };
 
-},{}],15:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 // Note: we can't get significant speed boost here.
@@ -8436,7 +5302,7 @@ function crc32(crc, buf, len, pos) {
 
 module.exports = crc32;
 
-},{}],16:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 'use strict';
 
 var utils   = require('../utils/common');
@@ -10203,7 +7069,7 @@ exports.deflatePrime = deflatePrime;
 exports.deflateTune = deflateTune;
 */
 
-},{"../utils/common":12,"./adler32":13,"./crc32":15,"./messages":20,"./trees":21}],17:[function(require,module,exports){
+},{"../utils/common":10,"./adler32":11,"./crc32":13,"./messages":18,"./trees":19}],15:[function(require,module,exports){
 'use strict';
 
 // See state defs from inflate.js
@@ -10531,7 +7397,7 @@ module.exports = function inflate_fast(strm, start) {
   return;
 };
 
-},{}],18:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 'use strict';
 
 
@@ -12036,7 +8902,7 @@ exports.inflateSyncPoint = inflateSyncPoint;
 exports.inflateUndermine = inflateUndermine;
 */
 
-},{"../utils/common":12,"./adler32":13,"./crc32":15,"./inffast":17,"./inftrees":19}],19:[function(require,module,exports){
+},{"../utils/common":10,"./adler32":11,"./crc32":13,"./inffast":15,"./inftrees":17}],17:[function(require,module,exports){
 'use strict';
 
 
@@ -12365,7 +9231,7 @@ module.exports = function inflate_table(type, lens, lens_index, codes, table, ta
   return 0;
 };
 
-},{"../utils/common":12}],20:[function(require,module,exports){
+},{"../utils/common":10}],18:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -12380,7 +9246,7 @@ module.exports = {
   '-6':   'incompatible version' /* Z_VERSION_ERROR (-6) */
 };
 
-},{}],21:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 'use strict';
 
 
@@ -13581,7 +10447,7 @@ exports._tr_flush_block  = _tr_flush_block;
 exports._tr_tally = _tr_tally;
 exports._tr_align = _tr_align;
 
-},{"../utils/common":12}],22:[function(require,module,exports){
+},{"../utils/common":10}],20:[function(require,module,exports){
 'use strict';
 
 
@@ -13612,7 +10478,7 @@ function ZStream() {
 
 module.exports = ZStream;
 
-},{}],23:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 (function (process,Buffer){
 var msg = require('pako/lib/zlib/messages');
 var zstream = require('pako/lib/zlib/zstream');
@@ -13852,7 +10718,7 @@ Zlib.prototype._error = function(status) {
 exports.Zlib = Zlib;
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"_process":31,"buffer":64,"pako/lib/zlib/constants":14,"pako/lib/zlib/deflate.js":16,"pako/lib/zlib/inflate.js":18,"pako/lib/zlib/messages":20,"pako/lib/zlib/zstream":22}],24:[function(require,module,exports){
+},{"_process":29,"buffer":62,"pako/lib/zlib/constants":12,"pako/lib/zlib/deflate.js":14,"pako/lib/zlib/inflate.js":16,"pako/lib/zlib/messages":18,"pako/lib/zlib/zstream":20}],22:[function(require,module,exports){
 (function (process,Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -14466,7 +11332,7 @@ util.inherits(InflateRaw, Zlib);
 util.inherits(Unzip, Zlib);
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./binding":23,"_process":31,"_stream_transform":47,"assert":10,"buffer":64,"util":60}],25:[function(require,module,exports){
+},{"./binding":21,"_process":29,"_stream_transform":45,"assert":8,"buffer":62,"util":58}],23:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -14766,7 +11632,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],26:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 var http = require('http');
 
 var https = module.exports;
@@ -14782,7 +11648,7 @@ https.request = function (params, cb) {
     return http.request.call(this, params, cb);
 }
 
-},{"http":50}],27:[function(require,module,exports){
+},{"http":48}],25:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -14807,7 +11673,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],28:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 /**
  * Determine if an object is Buffer
  *
@@ -14826,12 +11692,12 @@ module.exports = function (obj) {
     ))
 }
 
-},{}],29:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 module.exports = Array.isArray || function (arr) {
   return Object.prototype.toString.call(arr) == '[object Array]';
 };
 
-},{}],30:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -15059,7 +11925,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":31}],31:[function(require,module,exports){
+},{"_process":29}],29:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -15152,7 +12018,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],32:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 (function (global){
 /*! https://mths.be/punycode v1.4.0 by @mathias */
 ;(function(root) {
@@ -15689,7 +12555,7 @@ process.umask = function() { return 0; };
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],33:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -15775,7 +12641,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],34:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -15862,16 +12728,16 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],35:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":33,"./encode":34}],36:[function(require,module,exports){
+},{"./decode":31,"./encode":32}],34:[function(require,module,exports){
 module.exports = require("./lib/_stream_duplex.js")
 
-},{"./lib/_stream_duplex.js":37}],37:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":35}],35:[function(require,module,exports){
 // a duplex stream is just a stream that is both readable and writable.
 // Since JS doesn't have multiple prototypal inheritance, this class
 // prototypally inherits from Readable, and then parasitically from
@@ -15955,7 +12821,7 @@ function forEach (xs, f) {
   }
 }
 
-},{"./_stream_readable":39,"./_stream_writable":41,"core-util-is":42,"inherits":27,"process-nextick-args":43}],38:[function(require,module,exports){
+},{"./_stream_readable":37,"./_stream_writable":39,"core-util-is":40,"inherits":25,"process-nextick-args":41}],36:[function(require,module,exports){
 // a passthrough stream.
 // basically just the most minimal sort of Transform stream.
 // Every written chunk gets output as-is.
@@ -15984,7 +12850,7 @@ PassThrough.prototype._transform = function(chunk, encoding, cb) {
   cb(null, chunk);
 };
 
-},{"./_stream_transform":40,"core-util-is":42,"inherits":27}],39:[function(require,module,exports){
+},{"./_stream_transform":38,"core-util-is":40,"inherits":25}],37:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -16963,7 +13829,7 @@ function indexOf (xs, x) {
 }
 
 }).call(this,require('_process'))
-},{"./_stream_duplex":37,"_process":31,"buffer":64,"core-util-is":42,"events":25,"inherits":27,"isarray":29,"process-nextick-args":43,"string_decoder/":55,"util":11}],40:[function(require,module,exports){
+},{"./_stream_duplex":35,"_process":29,"buffer":62,"core-util-is":40,"events":23,"inherits":25,"isarray":27,"process-nextick-args":41,"string_decoder/":53,"util":9}],38:[function(require,module,exports){
 // a transform stream is a readable/writable stream where you do
 // something with the data.  Sometimes it's called a "filter",
 // but that's not a great name for it, since that implies a thing where
@@ -17162,7 +14028,7 @@ function done(stream, er) {
   return stream.push(null);
 }
 
-},{"./_stream_duplex":37,"core-util-is":42,"inherits":27}],41:[function(require,module,exports){
+},{"./_stream_duplex":35,"core-util-is":40,"inherits":25}],39:[function(require,module,exports){
 // A bit simpler than readable streams.
 // Implement an async ._write(chunk, encoding, cb), and it'll handle all
 // the drain event emission and buffering.
@@ -17693,7 +14559,7 @@ function endWritable(stream, state, cb) {
   state.ended = true;
 }
 
-},{"./_stream_duplex":37,"buffer":64,"core-util-is":42,"events":25,"inherits":27,"process-nextick-args":43,"util-deprecate":44}],42:[function(require,module,exports){
+},{"./_stream_duplex":35,"buffer":62,"core-util-is":40,"events":23,"inherits":25,"process-nextick-args":41,"util-deprecate":42}],40:[function(require,module,exports){
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -17804,7 +14670,7 @@ function objectToString(o) {
 }
 
 }).call(this,{"isBuffer":require("../../../../insert-module-globals/node_modules/is-buffer/index.js")})
-},{"../../../../insert-module-globals/node_modules/is-buffer/index.js":28}],43:[function(require,module,exports){
+},{"../../../../insert-module-globals/node_modules/is-buffer/index.js":26}],41:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -17828,7 +14694,7 @@ function nextTick(fn) {
 }
 
 }).call(this,require('_process'))
-},{"_process":31}],44:[function(require,module,exports){
+},{"_process":29}],42:[function(require,module,exports){
 (function (global){
 
 /**
@@ -17899,10 +14765,10 @@ function config (name) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],45:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 module.exports = require("./lib/_stream_passthrough.js")
 
-},{"./lib/_stream_passthrough.js":38}],46:[function(require,module,exports){
+},{"./lib/_stream_passthrough.js":36}],44:[function(require,module,exports){
 var Stream = (function (){
   try {
     return require('st' + 'ream'); // hack to fix a circular dependency issue when used with browserify
@@ -17916,13 +14782,13 @@ exports.Duplex = require('./lib/_stream_duplex.js');
 exports.Transform = require('./lib/_stream_transform.js');
 exports.PassThrough = require('./lib/_stream_passthrough.js');
 
-},{"./lib/_stream_duplex.js":37,"./lib/_stream_passthrough.js":38,"./lib/_stream_readable.js":39,"./lib/_stream_transform.js":40,"./lib/_stream_writable.js":41}],47:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":35,"./lib/_stream_passthrough.js":36,"./lib/_stream_readable.js":37,"./lib/_stream_transform.js":38,"./lib/_stream_writable.js":39}],45:[function(require,module,exports){
 module.exports = require("./lib/_stream_transform.js")
 
-},{"./lib/_stream_transform.js":40}],48:[function(require,module,exports){
+},{"./lib/_stream_transform.js":38}],46:[function(require,module,exports){
 module.exports = require("./lib/_stream_writable.js")
 
-},{"./lib/_stream_writable.js":41}],49:[function(require,module,exports){
+},{"./lib/_stream_writable.js":39}],47:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -18051,7 +14917,7 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"events":25,"inherits":27,"readable-stream/duplex.js":36,"readable-stream/passthrough.js":45,"readable-stream/readable.js":46,"readable-stream/transform.js":47,"readable-stream/writable.js":48}],50:[function(require,module,exports){
+},{"events":23,"inherits":25,"readable-stream/duplex.js":34,"readable-stream/passthrough.js":43,"readable-stream/readable.js":44,"readable-stream/transform.js":45,"readable-stream/writable.js":46}],48:[function(require,module,exports){
 var ClientRequest = require('./lib/request')
 var extend = require('xtend')
 var statusCodes = require('builtin-status-codes')
@@ -18126,7 +14992,7 @@ http.METHODS = [
 	'UNLOCK',
 	'UNSUBSCRIBE'
 ]
-},{"./lib/request":52,"builtin-status-codes":54,"url":57,"xtend":63}],51:[function(require,module,exports){
+},{"./lib/request":50,"builtin-status-codes":52,"url":55,"xtend":61}],49:[function(require,module,exports){
 (function (global){
 exports.fetch = isFunction(global.fetch) && isFunction(global.ReadableByteStream)
 
@@ -18170,7 +15036,7 @@ function isFunction (value) {
 xhr = null // Help gc
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],52:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 (function (process,global,Buffer){
 // var Base64 = require('Base64')
 var capability = require('./capability')
@@ -18449,7 +15315,7 @@ var unsafeHeaders = [
 ]
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"./capability":51,"./response":53,"_process":31,"buffer":64,"inherits":27,"stream":49}],53:[function(require,module,exports){
+},{"./capability":49,"./response":51,"_process":29,"buffer":62,"inherits":25,"stream":47}],51:[function(require,module,exports){
 (function (process,global,Buffer){
 var capability = require('./capability')
 var inherits = require('inherits')
@@ -18625,7 +15491,7 @@ IncomingMessage.prototype._onXHRProgress = function () {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"./capability":51,"_process":31,"buffer":64,"inherits":27,"stream":49}],54:[function(require,module,exports){
+},{"./capability":49,"_process":29,"buffer":62,"inherits":25,"stream":47}],52:[function(require,module,exports){
 module.exports = {
   "100": "Continue",
   "101": "Switching Protocols",
@@ -18686,7 +15552,7 @@ module.exports = {
   "511": "Network Authentication Required"
 }
 
-},{}],55:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -18909,7 +15775,7 @@ function base64DetectIncompleteChar(buffer) {
   this.charLength = this.charReceived ? 3 : 0;
 }
 
-},{"buffer":64}],56:[function(require,module,exports){
+},{"buffer":62}],54:[function(require,module,exports){
 var nextTick = require('process/browser.js').nextTick;
 var apply = Function.prototype.apply;
 var slice = Array.prototype.slice;
@@ -18986,7 +15852,7 @@ exports.setImmediate = typeof setImmediate === "function" ? setImmediate : funct
 exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
   delete immediateIds[id];
 };
-},{"process/browser.js":31}],57:[function(require,module,exports){
+},{"process/browser.js":29}],55:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -19720,7 +16586,7 @@ Url.prototype.parseHost = function() {
   if (host) this.hostname = host;
 };
 
-},{"./util":58,"punycode":32,"querystring":35}],58:[function(require,module,exports){
+},{"./util":56,"punycode":30,"querystring":33}],56:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -19738,14 +16604,14 @@ module.exports = {
   }
 };
 
-},{}],59:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],60:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -20335,7 +17201,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":59,"_process":31,"inherits":27}],61:[function(require,module,exports){
+},{"./support/isBuffer":57,"_process":29,"inherits":25}],59:[function(require,module,exports){
 var indexOf = require('indexof');
 
 var Object_keys = function (obj) {
@@ -20475,7 +17341,7 @@ exports.createContext = Script.createContext = function (context) {
     return copy;
 };
 
-},{"indexof":62}],62:[function(require,module,exports){
+},{"indexof":60}],60:[function(require,module,exports){
 
 var indexOf = [].indexOf;
 
@@ -20486,7 +17352,7 @@ module.exports = function(arr, obj){
   }
   return -1;
 };
-},{}],63:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 module.exports = extend
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -20507,7 +17373,7 @@ function extend() {
     return target
 }
 
-},{}],64:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 (function (global){
 /*!
  * The buffer module from node.js, for the browser.
@@ -20516,6 +17382,8 @@ function extend() {
  * @license  MIT
  */
 /* eslint-disable no-proto */
+
+'use strict'
 
 var base64 = require('base64-js')
 var ieee754 = require('ieee754')
@@ -20599,8 +17467,10 @@ function Buffer (arg) {
     return new Buffer(arg)
   }
 
-  this.length = 0
-  this.parent = undefined
+  if (!Buffer.TYPED_ARRAY_SUPPORT) {
+    this.length = 0
+    this.parent = undefined
+  }
 
   // Common case.
   if (typeof arg === 'number') {
@@ -20731,6 +17601,10 @@ function fromJsonObject (that, object) {
 if (Buffer.TYPED_ARRAY_SUPPORT) {
   Buffer.prototype.__proto__ = Uint8Array.prototype
   Buffer.__proto__ = Uint8Array
+} else {
+  // pre-set for values that may exist in the future
+  Buffer.prototype.length = undefined
+  Buffer.prototype.parent = undefined
 }
 
 function allocate (that, length) {
@@ -20880,10 +17754,6 @@ function byteLength (string, encoding) {
   }
 }
 Buffer.byteLength = byteLength
-
-// pre-set for values that may exist in the future
-Buffer.prototype.length = undefined
-Buffer.prototype.parent = undefined
 
 function slowToString (encoding, start, end) {
   var loweredCase = false
@@ -22055,7 +18925,7 @@ function blitBuffer (src, dst, offset, length) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"base64-js":65,"ieee754":66,"isarray":67}],65:[function(require,module,exports){
+},{"base64-js":63,"ieee754":64,"isarray":65}],63:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -22181,7 +19051,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
-},{}],66:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -22267,14 +19137,14 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],67:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],68:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 (function (process){
 'use strict';
 var escapeStringRegexp = require('escape-string-regexp');
@@ -22394,7 +19264,7 @@ module.exports.stripColor = stripAnsi;
 module.exports.supportsColor = supportsColor;
 
 }).call(this,require('_process'))
-},{"_process":31,"ansi-styles":69,"escape-string-regexp":70,"has-ansi":71,"strip-ansi":73,"supports-color":75}],69:[function(require,module,exports){
+},{"_process":29,"ansi-styles":67,"escape-string-regexp":68,"has-ansi":69,"strip-ansi":71,"supports-color":73}],67:[function(require,module,exports){
 'use strict';
 
 function assembleStyles () {
@@ -22461,7 +19331,7 @@ Object.defineProperty(module, 'exports', {
 	get: assembleStyles
 });
 
-},{}],70:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 'use strict';
 
 var matchOperatorsRe = /[|\\{}()[\]^$+*?.]/g;
@@ -22474,19 +19344,19 @@ module.exports = function (str) {
 	return str.replace(matchOperatorsRe, '\\$&');
 };
 
-},{}],71:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 'use strict';
 var ansiRegex = require('ansi-regex');
 var re = new RegExp(ansiRegex().source); // remove the `g` flag
 module.exports = re.test.bind(re);
 
-},{"ansi-regex":72}],72:[function(require,module,exports){
+},{"ansi-regex":70}],70:[function(require,module,exports){
 'use strict';
 module.exports = function () {
 	return /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g;
 };
 
-},{}],73:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 'use strict';
 var ansiRegex = require('ansi-regex')();
 
@@ -22494,9 +19364,9 @@ module.exports = function (str) {
 	return typeof str === 'string' ? str.replace(ansiRegex, '') : str;
 };
 
-},{"ansi-regex":74}],74:[function(require,module,exports){
-arguments[4][72][0].apply(exports,arguments)
-},{"dup":72}],75:[function(require,module,exports){
+},{"ansi-regex":72}],72:[function(require,module,exports){
+arguments[4][70][0].apply(exports,arguments)
+},{"dup":70}],73:[function(require,module,exports){
 (function (process){
 'use strict';
 var argv = process.argv;
@@ -22550,7 +19420,7 @@ module.exports = (function () {
 })();
 
 }).call(this,require('_process'))
-},{"_process":31}],76:[function(require,module,exports){
+},{"_process":29}],74:[function(require,module,exports){
 'use strict'
 
 exports.randomBytes = exports.rng = exports.pseudoRandomBytes = exports.prng = require('randombytes')
@@ -22629,7 +19499,7 @@ var publicEncrypt = require('public-encrypt')
   }
 })
 
-},{"browserify-cipher":77,"browserify-sign":107,"browserify-sign/algos":106,"create-ecdh":174,"create-hash":200,"create-hmac":213,"diffie-hellman":214,"pbkdf2":222,"public-encrypt":223,"randombytes":268}],77:[function(require,module,exports){
+},{"browserify-cipher":75,"browserify-sign":105,"browserify-sign/algos":104,"create-ecdh":172,"create-hash":198,"create-hmac":211,"diffie-hellman":212,"pbkdf2":220,"public-encrypt":221,"randombytes":266}],75:[function(require,module,exports){
 var ebtk = require('evp_bytestokey')
 var aes = require('browserify-aes/browser')
 var DES = require('browserify-des')
@@ -22704,7 +19574,7 @@ function getCiphers () {
 }
 exports.listCiphers = exports.getCiphers = getCiphers
 
-},{"browserify-aes/browser":80,"browserify-aes/modes":84,"browserify-des":95,"browserify-des/modes":96,"evp_bytestokey":105}],78:[function(require,module,exports){
+},{"browserify-aes/browser":78,"browserify-aes/modes":82,"browserify-des":93,"browserify-des/modes":94,"evp_bytestokey":103}],76:[function(require,module,exports){
 (function (Buffer){
 // based on the aes implimentation in triple sec
 // https://github.com/keybase/triplesec
@@ -22885,7 +19755,7 @@ AES.prototype._doCryptBlock = function (M, keySchedule, SUB_MIX, SBOX) {
 exports.AES = AES
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":64}],79:[function(require,module,exports){
+},{"buffer":62}],77:[function(require,module,exports){
 (function (Buffer){
 var aes = require('./aes')
 var Transform = require('cipher-base')
@@ -22986,7 +19856,7 @@ function xorTest (a, b) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./aes":78,"./ghash":83,"buffer":64,"buffer-xor":92,"cipher-base":93,"inherits":221}],80:[function(require,module,exports){
+},{"./aes":76,"./ghash":81,"buffer":62,"buffer-xor":90,"cipher-base":91,"inherits":219}],78:[function(require,module,exports){
 var ciphers = require('./encrypter')
 exports.createCipher = exports.Cipher = ciphers.createCipher
 exports.createCipheriv = exports.Cipheriv = ciphers.createCipheriv
@@ -22999,7 +19869,7 @@ function getCiphers () {
 }
 exports.listCiphers = exports.getCiphers = getCiphers
 
-},{"./decrypter":81,"./encrypter":82,"./modes":84}],81:[function(require,module,exports){
+},{"./decrypter":79,"./encrypter":80,"./modes":82}],79:[function(require,module,exports){
 (function (Buffer){
 var aes = require('./aes')
 var Transform = require('cipher-base')
@@ -23139,7 +20009,7 @@ exports.createDecipher = createDecipher
 exports.createDecipheriv = createDecipheriv
 
 }).call(this,require("buffer").Buffer)
-},{"./aes":78,"./authCipher":79,"./modes":84,"./modes/cbc":85,"./modes/cfb":86,"./modes/cfb1":87,"./modes/cfb8":88,"./modes/ctr":89,"./modes/ecb":90,"./modes/ofb":91,"./streamCipher":94,"buffer":64,"cipher-base":93,"evp_bytestokey":105,"inherits":221}],82:[function(require,module,exports){
+},{"./aes":76,"./authCipher":77,"./modes":82,"./modes/cbc":83,"./modes/cfb":84,"./modes/cfb1":85,"./modes/cfb8":86,"./modes/ctr":87,"./modes/ecb":88,"./modes/ofb":89,"./streamCipher":92,"buffer":62,"cipher-base":91,"evp_bytestokey":103,"inherits":219}],80:[function(require,module,exports){
 (function (Buffer){
 var aes = require('./aes')
 var Transform = require('cipher-base')
@@ -23264,7 +20134,7 @@ exports.createCipheriv = createCipheriv
 exports.createCipher = createCipher
 
 }).call(this,require("buffer").Buffer)
-},{"./aes":78,"./authCipher":79,"./modes":84,"./modes/cbc":85,"./modes/cfb":86,"./modes/cfb1":87,"./modes/cfb8":88,"./modes/ctr":89,"./modes/ecb":90,"./modes/ofb":91,"./streamCipher":94,"buffer":64,"cipher-base":93,"evp_bytestokey":105,"inherits":221}],83:[function(require,module,exports){
+},{"./aes":76,"./authCipher":77,"./modes":82,"./modes/cbc":83,"./modes/cfb":84,"./modes/cfb1":85,"./modes/cfb8":86,"./modes/ctr":87,"./modes/ecb":88,"./modes/ofb":89,"./streamCipher":92,"buffer":62,"cipher-base":91,"evp_bytestokey":103,"inherits":219}],81:[function(require,module,exports){
 (function (Buffer){
 var zeros = new Buffer(16)
 zeros.fill(0)
@@ -23366,7 +20236,7 @@ function xor (a, b) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":64}],84:[function(require,module,exports){
+},{"buffer":62}],82:[function(require,module,exports){
 exports['aes-128-ecb'] = {
   cipher: 'AES',
   key: 128,
@@ -23539,7 +20409,7 @@ exports['aes-256-gcm'] = {
   type: 'auth'
 }
 
-},{}],85:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 var xor = require('buffer-xor')
 
 exports.encrypt = function (self, block) {
@@ -23558,7 +20428,7 @@ exports.decrypt = function (self, block) {
   return xor(out, pad)
 }
 
-},{"buffer-xor":92}],86:[function(require,module,exports){
+},{"buffer-xor":90}],84:[function(require,module,exports){
 (function (Buffer){
 var xor = require('buffer-xor')
 
@@ -23593,7 +20463,7 @@ function encryptStart (self, data, decrypt) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":64,"buffer-xor":92}],87:[function(require,module,exports){
+},{"buffer":62,"buffer-xor":90}],85:[function(require,module,exports){
 (function (Buffer){
 function encryptByte (self, byteParam, decrypt) {
   var pad
@@ -23631,7 +20501,7 @@ function shiftIn (buffer, value) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":64}],88:[function(require,module,exports){
+},{"buffer":62}],86:[function(require,module,exports){
 (function (Buffer){
 function encryptByte (self, byteParam, decrypt) {
   var pad = self._cipher.encryptBlock(self._prev)
@@ -23650,7 +20520,7 @@ exports.encrypt = function (self, chunk, decrypt) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":64}],89:[function(require,module,exports){
+},{"buffer":62}],87:[function(require,module,exports){
 (function (Buffer){
 var xor = require('buffer-xor')
 
@@ -23685,7 +20555,7 @@ exports.encrypt = function (self, chunk) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":64,"buffer-xor":92}],90:[function(require,module,exports){
+},{"buffer":62,"buffer-xor":90}],88:[function(require,module,exports){
 exports.encrypt = function (self, block) {
   return self._cipher.encryptBlock(block)
 }
@@ -23693,7 +20563,7 @@ exports.decrypt = function (self, block) {
   return self._cipher.decryptBlock(block)
 }
 
-},{}],91:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 (function (Buffer){
 var xor = require('buffer-xor')
 
@@ -23713,7 +20583,7 @@ exports.encrypt = function (self, chunk) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":64,"buffer-xor":92}],92:[function(require,module,exports){
+},{"buffer":62,"buffer-xor":90}],90:[function(require,module,exports){
 (function (Buffer){
 module.exports = function xor (a, b) {
   var length = Math.min(a.length, b.length)
@@ -23727,7 +20597,7 @@ module.exports = function xor (a, b) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":64}],93:[function(require,module,exports){
+},{"buffer":62}],91:[function(require,module,exports){
 (function (Buffer){
 var Transform = require('stream').Transform
 var inherits = require('inherits')
@@ -23821,7 +20691,7 @@ CipherBase.prototype._toString = function (value, enc, final) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":64,"inherits":221,"stream":49,"string_decoder":55}],94:[function(require,module,exports){
+},{"buffer":62,"inherits":219,"stream":47,"string_decoder":53}],92:[function(require,module,exports){
 (function (Buffer){
 var aes = require('./aes')
 var Transform = require('cipher-base')
@@ -23850,7 +20720,7 @@ StreamCipher.prototype._final = function () {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./aes":78,"buffer":64,"cipher-base":93,"inherits":221}],95:[function(require,module,exports){
+},{"./aes":76,"buffer":62,"cipher-base":91,"inherits":219}],93:[function(require,module,exports){
 (function (Buffer){
 var CipherBase = require('cipher-base')
 var des = require('des.js')
@@ -23897,7 +20767,7 @@ DES.prototype._final = function () {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":64,"cipher-base":97,"des.js":98,"inherits":221}],96:[function(require,module,exports){
+},{"buffer":62,"cipher-base":95,"des.js":96,"inherits":219}],94:[function(require,module,exports){
 exports['des-ecb'] = {
   key: 8,
   iv: 0
@@ -23923,9 +20793,9 @@ exports['des-ede'] = {
   iv: 0
 }
 
-},{}],97:[function(require,module,exports){
-arguments[4][93][0].apply(exports,arguments)
-},{"buffer":64,"dup":93,"inherits":221,"stream":49,"string_decoder":55}],98:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
+arguments[4][91][0].apply(exports,arguments)
+},{"buffer":62,"dup":91,"inherits":219,"stream":47,"string_decoder":53}],96:[function(require,module,exports){
 'use strict';
 
 exports.utils = require('./des/utils');
@@ -23934,7 +20804,7 @@ exports.DES = require('./des/des');
 exports.CBC = require('./des/cbc');
 exports.EDE = require('./des/ede');
 
-},{"./des/cbc":99,"./des/cipher":100,"./des/des":101,"./des/ede":102,"./des/utils":103}],99:[function(require,module,exports){
+},{"./des/cbc":97,"./des/cipher":98,"./des/des":99,"./des/ede":100,"./des/utils":101}],97:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -24001,7 +20871,7 @@ proto._update = function _update(inp, inOff, out, outOff) {
   }
 };
 
-},{"inherits":221,"minimalistic-assert":104}],100:[function(require,module,exports){
+},{"inherits":219,"minimalistic-assert":102}],98:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -24144,7 +21014,7 @@ Cipher.prototype._finalDecrypt = function _finalDecrypt() {
   return this._unpad(out);
 };
 
-},{"minimalistic-assert":104}],101:[function(require,module,exports){
+},{"minimalistic-assert":102}],99:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -24289,7 +21159,7 @@ DES.prototype._decrypt = function _decrypt(state, lStart, rStart, out, off) {
   utils.rip(l, r, out, off);
 };
 
-},{"../des":98,"inherits":221,"minimalistic-assert":104}],102:[function(require,module,exports){
+},{"../des":96,"inherits":219,"minimalistic-assert":102}],100:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -24346,7 +21216,7 @@ EDE.prototype._update = function _update(inp, inOff, out, outOff) {
 EDE.prototype._pad = DES.prototype._pad;
 EDE.prototype._unpad = DES.prototype._unpad;
 
-},{"../des":98,"inherits":221,"minimalistic-assert":104}],103:[function(require,module,exports){
+},{"../des":96,"inherits":219,"minimalistic-assert":102}],101:[function(require,module,exports){
 'use strict';
 
 exports.readUInt32BE = function readUInt32BE(bytes, off) {
@@ -24604,7 +21474,7 @@ exports.padSplit = function padSplit(num, size, group) {
   return out.join(' ');
 };
 
-},{}],104:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 module.exports = assert;
 
 function assert(val, msg) {
@@ -24617,7 +21487,7 @@ assert.equal = function assertEqual(l, r, msg) {
     throw new Error(msg || ('Assertion failed: ' + l + ' != ' + r));
 };
 
-},{}],105:[function(require,module,exports){
+},{}],103:[function(require,module,exports){
 (function (Buffer){
 var md5 = require('create-hash/md5')
 module.exports = EVP_BytesToKey
@@ -24689,7 +21559,7 @@ function EVP_BytesToKey (password, salt, keyLen, ivLen) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":64,"create-hash/md5":202}],106:[function(require,module,exports){
+},{"buffer":62,"create-hash/md5":200}],104:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 exports['RSA-SHA224'] = exports.sha224WithRSAEncryption = {
@@ -24765,7 +21635,7 @@ exports['RSA-MD5'] = exports.md5WithRSAEncryption = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":64}],107:[function(require,module,exports){
+},{"buffer":62}],105:[function(require,module,exports){
 (function (Buffer){
 var _algos = require('./algos')
 var createHash = require('create-hash')
@@ -24872,7 +21742,7 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./algos":106,"./sign":172,"./verify":173,"buffer":64,"create-hash":200,"inherits":221,"stream":49}],108:[function(require,module,exports){
+},{"./algos":104,"./sign":170,"./verify":171,"buffer":62,"create-hash":198,"inherits":219,"stream":47}],106:[function(require,module,exports){
 'use strict'
 exports['1.3.132.0.10'] = 'secp256k1'
 
@@ -24886,7 +21756,7 @@ exports['1.3.132.0.34'] = 'p384'
 
 exports['1.3.132.0.35'] = 'p521'
 
-},{}],109:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 (function (module, exports) {
 
 'use strict';
@@ -28779,7 +25649,7 @@ Mont.prototype.invm = function invm(a) {
 
 })(typeof module === 'undefined' || module, this);
 
-},{}],110:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 (function (Buffer){
 var bn = require('bn.js');
 var randomBytes = require('randombytes');
@@ -28823,7 +25693,7 @@ function getr(priv) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"bn.js":109,"buffer":64,"randombytes":268}],111:[function(require,module,exports){
+},{"bn.js":107,"buffer":62,"randombytes":266}],109:[function(require,module,exports){
 'use strict';
 
 var elliptic = exports;
@@ -28839,7 +25709,7 @@ elliptic.curves = require('./elliptic/curves');
 elliptic.ec = require('./elliptic/ec');
 elliptic.eddsa = require('./elliptic/eddsa');
 
-},{"../package.json":134,"./elliptic/curve":114,"./elliptic/curves":117,"./elliptic/ec":118,"./elliptic/eddsa":121,"./elliptic/hmac-drbg":124,"./elliptic/utils":126,"brorand":127}],112:[function(require,module,exports){
+},{"../package.json":132,"./elliptic/curve":112,"./elliptic/curves":115,"./elliptic/ec":116,"./elliptic/eddsa":119,"./elliptic/hmac-drbg":122,"./elliptic/utils":124,"brorand":125}],110:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -29192,7 +26062,7 @@ BasePoint.prototype.dblp = function dblp(k) {
   return r;
 };
 
-},{"../../elliptic":111,"bn.js":109}],113:[function(require,module,exports){
+},{"../../elliptic":109,"bn.js":107}],111:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -29600,7 +26470,7 @@ Point.prototype.eq = function eq(other) {
 Point.prototype.toP = Point.prototype.normalize;
 Point.prototype.mixedAdd = Point.prototype.add;
 
-},{"../../elliptic":111,"../curve":114,"bn.js":109,"inherits":221}],114:[function(require,module,exports){
+},{"../../elliptic":109,"../curve":112,"bn.js":107,"inherits":219}],112:[function(require,module,exports){
 'use strict';
 
 var curve = exports;
@@ -29610,7 +26480,7 @@ curve.short = require('./short');
 curve.mont = require('./mont');
 curve.edwards = require('./edwards');
 
-},{"./base":112,"./edwards":113,"./mont":115,"./short":116}],115:[function(require,module,exports){
+},{"./base":110,"./edwards":111,"./mont":113,"./short":114}],113:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -29788,7 +26658,7 @@ Point.prototype.getX = function getX() {
   return this.x.fromRed();
 };
 
-},{"../../elliptic":111,"../curve":114,"bn.js":109,"inherits":221}],116:[function(require,module,exports){
+},{"../../elliptic":109,"../curve":112,"bn.js":107,"inherits":219}],114:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -30697,7 +27567,7 @@ JPoint.prototype.isInfinity = function isInfinity() {
   return this.z.cmpn(0) === 0;
 };
 
-},{"../../elliptic":111,"../curve":114,"bn.js":109,"inherits":221}],117:[function(require,module,exports){
+},{"../../elliptic":109,"../curve":112,"bn.js":107,"inherits":219}],115:[function(require,module,exports){
 'use strict';
 
 var curves = exports;
@@ -30904,7 +27774,7 @@ defineCurve('secp256k1', {
   ]
 });
 
-},{"../elliptic":111,"./precomputed/secp256k1":125,"hash.js":128}],118:[function(require,module,exports){
+},{"../elliptic":109,"./precomputed/secp256k1":123,"hash.js":126}],116:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -31122,7 +27992,7 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
   throw new Error('Unable to find valid recovery factor');
 };
 
-},{"../../elliptic":111,"./key":119,"./signature":120,"bn.js":109}],119:[function(require,module,exports){
+},{"../../elliptic":109,"./key":117,"./signature":118,"bn.js":107}],117:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -31231,7 +28101,7 @@ KeyPair.prototype.inspect = function inspect() {
          ' pub: ' + (this.pub && this.pub.inspect()) + ' >';
 };
 
-},{"bn.js":109}],120:[function(require,module,exports){
+},{"bn.js":107}],118:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -31368,7 +28238,7 @@ Signature.prototype.toDER = function toDER(enc) {
   return utils.encode(res, enc);
 };
 
-},{"../../elliptic":111,"bn.js":109}],121:[function(require,module,exports){
+},{"../../elliptic":109,"bn.js":107}],119:[function(require,module,exports){
 'use strict';
 
 var hash = require('hash.js');
@@ -31488,7 +28358,7 @@ EDDSA.prototype.isPoint = function isPoint(val) {
   return val instanceof this.pointClass;
 };
 
-},{"../../elliptic":111,"./key":122,"./signature":123,"hash.js":128}],122:[function(require,module,exports){
+},{"../../elliptic":109,"./key":120,"./signature":121,"hash.js":126}],120:[function(require,module,exports){
 'use strict';
 
 var elliptic = require('../../elliptic');
@@ -31586,7 +28456,7 @@ KeyPair.prototype.getPublic = function getPublic(enc) {
 
 module.exports = KeyPair;
 
-},{"../../elliptic":111}],123:[function(require,module,exports){
+},{"../../elliptic":109}],121:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -31654,7 +28524,7 @@ Signature.prototype.toHex = function toHex() {
 
 module.exports = Signature;
 
-},{"../../elliptic":111,"bn.js":109}],124:[function(require,module,exports){
+},{"../../elliptic":109,"bn.js":107}],122:[function(require,module,exports){
 'use strict';
 
 var hash = require('hash.js');
@@ -31770,7 +28640,7 @@ HmacDRBG.prototype.generate = function generate(len, enc, add, addEnc) {
   return utils.encode(res, enc);
 };
 
-},{"../elliptic":111,"hash.js":128}],125:[function(require,module,exports){
+},{"../elliptic":109,"hash.js":126}],123:[function(require,module,exports){
 module.exports = {
   doubles: {
     step: 4,
@@ -32552,7 +29422,7 @@ module.exports = {
   }
 };
 
-},{}],126:[function(require,module,exports){
+},{}],124:[function(require,module,exports){
 'use strict';
 
 var utils = exports;
@@ -32727,7 +29597,7 @@ function intFromLE(bytes) {
 utils.intFromLE = intFromLE;
 
 
-},{"bn.js":109}],127:[function(require,module,exports){
+},{"bn.js":107}],125:[function(require,module,exports){
 var r;
 
 module.exports = function rand(len) {
@@ -32786,7 +29656,7 @@ if (typeof window === 'object') {
   }
 }
 
-},{}],128:[function(require,module,exports){
+},{}],126:[function(require,module,exports){
 var hash = exports;
 
 hash.utils = require('./hash/utils');
@@ -32803,7 +29673,7 @@ hash.sha384 = hash.sha.sha384;
 hash.sha512 = hash.sha.sha512;
 hash.ripemd160 = hash.ripemd.ripemd160;
 
-},{"./hash/common":129,"./hash/hmac":130,"./hash/ripemd":131,"./hash/sha":132,"./hash/utils":133}],129:[function(require,module,exports){
+},{"./hash/common":127,"./hash/hmac":128,"./hash/ripemd":129,"./hash/sha":130,"./hash/utils":131}],127:[function(require,module,exports){
 var hash = require('../hash');
 var utils = hash.utils;
 var assert = utils.assert;
@@ -32896,7 +29766,7 @@ BlockHash.prototype._pad = function pad() {
   return res;
 };
 
-},{"../hash":128}],130:[function(require,module,exports){
+},{"../hash":126}],128:[function(require,module,exports){
 var hmac = exports;
 
 var hash = require('../hash');
@@ -32946,7 +29816,7 @@ Hmac.prototype.digest = function digest(enc) {
   return this.outer.digest(enc);
 };
 
-},{"../hash":128}],131:[function(require,module,exports){
+},{"../hash":126}],129:[function(require,module,exports){
 var hash = require('../hash');
 var utils = hash.utils;
 
@@ -33092,7 +29962,7 @@ var sh = [
   8, 5, 12, 9, 12, 5, 14, 6, 8, 13, 6, 5, 15, 13, 11, 11
 ];
 
-},{"../hash":128}],132:[function(require,module,exports){
+},{"../hash":126}],130:[function(require,module,exports){
 var hash = require('../hash');
 var utils = hash.utils;
 var assert = utils.assert;
@@ -33658,7 +30528,7 @@ function g1_512_lo(xh, xl) {
   return r;
 }
 
-},{"../hash":128}],133:[function(require,module,exports){
+},{"../hash":126}],131:[function(require,module,exports){
 var utils = exports;
 var inherits = require('inherits');
 
@@ -33917,7 +30787,7 @@ function shr64_lo(ah, al, num) {
 };
 exports.shr64_lo = shr64_lo;
 
-},{"inherits":221}],134:[function(require,module,exports){
+},{"inherits":219}],132:[function(require,module,exports){
 module.exports={
   "name": "elliptic",
   "version": "6.0.2",
@@ -33989,7 +30859,7 @@ module.exports={
   "readme": "ERROR: No README data found!"
 }
 
-},{}],135:[function(require,module,exports){
+},{}],133:[function(require,module,exports){
 module.exports={"2.16.840.1.101.3.4.1.1": "aes-128-ecb",
 "2.16.840.1.101.3.4.1.2": "aes-128-cbc",
 "2.16.840.1.101.3.4.1.3": "aes-128-ofb",
@@ -34003,7 +30873,7 @@ module.exports={"2.16.840.1.101.3.4.1.1": "aes-128-ecb",
 "2.16.840.1.101.3.4.1.43": "aes-256-ofb",
 "2.16.840.1.101.3.4.1.44": "aes-256-cfb"
 }
-},{}],136:[function(require,module,exports){
+},{}],134:[function(require,module,exports){
 // from https://github.com/indutny/self-signed/blob/gh-pages/lib/asn1.js
 // Fedor, you are amazing.
 
@@ -34122,7 +30992,7 @@ exports.signature = asn1.define('signature', function () {
   )
 })
 
-},{"asn1.js":139}],137:[function(require,module,exports){
+},{"asn1.js":137}],135:[function(require,module,exports){
 (function (Buffer){
 // adapted from https://github.com/apatil/pemstrip
 var findProc = /Proc-Type: 4,ENCRYPTED\r?\nDEK-Info: AES-((?:128)|(?:192)|(?:256))-CBC,([0-9A-H]+)\r?\n\r?\n([0-9A-z\n\r\+\/\=]+)\r?\n/m
@@ -34156,7 +31026,7 @@ module.exports = function (okey, password) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"browserify-aes":156,"buffer":64,"evp_bytestokey":171}],138:[function(require,module,exports){
+},{"browserify-aes":154,"buffer":62,"evp_bytestokey":169}],136:[function(require,module,exports){
 (function (Buffer){
 var asn1 = require('./asn1')
 var aesid = require('./aesid.json')
@@ -34261,7 +31131,7 @@ function decrypt (data, password) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./aesid.json":135,"./asn1":136,"./fixProc":137,"browserify-aes":156,"buffer":64,"pbkdf2":222}],139:[function(require,module,exports){
+},{"./aesid.json":133,"./asn1":134,"./fixProc":135,"browserify-aes":154,"buffer":62,"pbkdf2":220}],137:[function(require,module,exports){
 var asn1 = exports;
 
 asn1.bignum = require('bn.js');
@@ -34272,7 +31142,7 @@ asn1.constants = require('./asn1/constants');
 asn1.decoders = require('./asn1/decoders');
 asn1.encoders = require('./asn1/encoders');
 
-},{"./asn1/api":140,"./asn1/base":142,"./asn1/constants":146,"./asn1/decoders":148,"./asn1/encoders":151,"bn.js":109}],140:[function(require,module,exports){
+},{"./asn1/api":138,"./asn1/base":140,"./asn1/constants":144,"./asn1/decoders":146,"./asn1/encoders":149,"bn.js":107}],138:[function(require,module,exports){
 var asn1 = require('../asn1');
 var inherits = require('inherits');
 
@@ -34333,7 +31203,7 @@ Entity.prototype.encode = function encode(data, enc, /* internal */ reporter) {
   return this._getEncoder(enc).encode(data, reporter);
 };
 
-},{"../asn1":139,"inherits":221,"vm":61}],141:[function(require,module,exports){
+},{"../asn1":137,"inherits":219,"vm":59}],139:[function(require,module,exports){
 var inherits = require('inherits');
 var Reporter = require('../base').Reporter;
 var Buffer = require('buffer').Buffer;
@@ -34451,7 +31321,7 @@ EncoderBuffer.prototype.join = function join(out, offset) {
   return out;
 };
 
-},{"../base":142,"buffer":64,"inherits":221}],142:[function(require,module,exports){
+},{"../base":140,"buffer":62,"inherits":219}],140:[function(require,module,exports){
 var base = exports;
 
 base.Reporter = require('./reporter').Reporter;
@@ -34459,7 +31329,7 @@ base.DecoderBuffer = require('./buffer').DecoderBuffer;
 base.EncoderBuffer = require('./buffer').EncoderBuffer;
 base.Node = require('./node');
 
-},{"./buffer":141,"./node":143,"./reporter":144}],143:[function(require,module,exports){
+},{"./buffer":139,"./node":141,"./reporter":142}],141:[function(require,module,exports){
 var Reporter = require('../base').Reporter;
 var EncoderBuffer = require('../base').EncoderBuffer;
 var assert = require('minimalistic-assert');
@@ -35071,7 +31941,7 @@ Node.prototype._isNumstr = function isNumstr(str) {
 Node.prototype._isPrintstr = function isPrintstr(str) {
   return /^[A-Za-z0-9 '\(\)\+,\-\.\/:=\?]*$/.test(str);
 };
-},{"../base":142,"minimalistic-assert":153}],144:[function(require,module,exports){
+},{"../base":140,"minimalistic-assert":151}],142:[function(require,module,exports){
 var inherits = require('inherits');
 
 function Reporter(options) {
@@ -35175,7 +32045,7 @@ ReporterError.prototype.rethrow = function rethrow(msg) {
   return this;
 };
 
-},{"inherits":221}],145:[function(require,module,exports){
+},{"inherits":219}],143:[function(require,module,exports){
 var constants = require('../constants');
 
 exports.tagClass = {
@@ -35219,7 +32089,7 @@ exports.tag = {
 };
 exports.tagByName = constants._reverse(exports.tag);
 
-},{"../constants":146}],146:[function(require,module,exports){
+},{"../constants":144}],144:[function(require,module,exports){
 var constants = exports;
 
 // Helper
@@ -35240,7 +32110,7 @@ constants._reverse = function reverse(map) {
 
 constants.der = require('./der');
 
-},{"./der":145}],147:[function(require,module,exports){
+},{"./der":143}],145:[function(require,module,exports){
 var inherits = require('inherits');
 
 var asn1 = require('../../asn1');
@@ -35559,13 +32429,13 @@ function derDecodeLen(buf, primitive, fail) {
   return len;
 }
 
-},{"../../asn1":139,"inherits":221}],148:[function(require,module,exports){
+},{"../../asn1":137,"inherits":219}],146:[function(require,module,exports){
 var decoders = exports;
 
 decoders.der = require('./der');
 decoders.pem = require('./pem');
 
-},{"./der":147,"./pem":149}],149:[function(require,module,exports){
+},{"./der":145,"./pem":147}],147:[function(require,module,exports){
 var inherits = require('inherits');
 var Buffer = require('buffer').Buffer;
 
@@ -35617,7 +32487,7 @@ PEMDecoder.prototype.decode = function decode(data, options) {
   return DERDecoder.prototype.decode.call(this, input, options);
 };
 
-},{"../../asn1":139,"./der":147,"buffer":64,"inherits":221}],150:[function(require,module,exports){
+},{"../../asn1":137,"./der":145,"buffer":62,"inherits":219}],148:[function(require,module,exports){
 var inherits = require('inherits');
 var Buffer = require('buffer').Buffer;
 
@@ -35917,13 +32787,13 @@ function encodeTag(tag, primitive, cls, reporter) {
   return res;
 }
 
-},{"../../asn1":139,"buffer":64,"inherits":221}],151:[function(require,module,exports){
+},{"../../asn1":137,"buffer":62,"inherits":219}],149:[function(require,module,exports){
 var encoders = exports;
 
 encoders.der = require('./der');
 encoders.pem = require('./pem');
 
-},{"./der":150,"./pem":152}],152:[function(require,module,exports){
+},{"./der":148,"./pem":150}],150:[function(require,module,exports){
 var inherits = require('inherits');
 var Buffer = require('buffer').Buffer;
 
@@ -35948,45 +32818,45 @@ PEMEncoder.prototype.encode = function encode(data, options) {
   return out.join('\n');
 };
 
-},{"../../asn1":139,"./der":150,"buffer":64,"inherits":221}],153:[function(require,module,exports){
-arguments[4][104][0].apply(exports,arguments)
-},{"dup":104}],154:[function(require,module,exports){
+},{"../../asn1":137,"./der":148,"buffer":62,"inherits":219}],151:[function(require,module,exports){
+arguments[4][102][0].apply(exports,arguments)
+},{"dup":102}],152:[function(require,module,exports){
+arguments[4][76][0].apply(exports,arguments)
+},{"buffer":62,"dup":76}],153:[function(require,module,exports){
+arguments[4][77][0].apply(exports,arguments)
+},{"./aes":152,"./ghash":157,"buffer":62,"buffer-xor":166,"cipher-base":167,"dup":77,"inherits":219}],154:[function(require,module,exports){
 arguments[4][78][0].apply(exports,arguments)
-},{"buffer":64,"dup":78}],155:[function(require,module,exports){
+},{"./decrypter":155,"./encrypter":156,"./modes":158,"dup":78}],155:[function(require,module,exports){
 arguments[4][79][0].apply(exports,arguments)
-},{"./aes":154,"./ghash":159,"buffer":64,"buffer-xor":168,"cipher-base":169,"dup":79,"inherits":221}],156:[function(require,module,exports){
+},{"./aes":152,"./authCipher":153,"./modes":158,"./modes/cbc":159,"./modes/cfb":160,"./modes/cfb1":161,"./modes/cfb8":162,"./modes/ctr":163,"./modes/ecb":164,"./modes/ofb":165,"./streamCipher":168,"buffer":62,"cipher-base":167,"dup":79,"evp_bytestokey":169,"inherits":219}],156:[function(require,module,exports){
 arguments[4][80][0].apply(exports,arguments)
-},{"./decrypter":157,"./encrypter":158,"./modes":160,"dup":80}],157:[function(require,module,exports){
+},{"./aes":152,"./authCipher":153,"./modes":158,"./modes/cbc":159,"./modes/cfb":160,"./modes/cfb1":161,"./modes/cfb8":162,"./modes/ctr":163,"./modes/ecb":164,"./modes/ofb":165,"./streamCipher":168,"buffer":62,"cipher-base":167,"dup":80,"evp_bytestokey":169,"inherits":219}],157:[function(require,module,exports){
 arguments[4][81][0].apply(exports,arguments)
-},{"./aes":154,"./authCipher":155,"./modes":160,"./modes/cbc":161,"./modes/cfb":162,"./modes/cfb1":163,"./modes/cfb8":164,"./modes/ctr":165,"./modes/ecb":166,"./modes/ofb":167,"./streamCipher":170,"buffer":64,"cipher-base":169,"dup":81,"evp_bytestokey":171,"inherits":221}],158:[function(require,module,exports){
+},{"buffer":62,"dup":81}],158:[function(require,module,exports){
 arguments[4][82][0].apply(exports,arguments)
-},{"./aes":154,"./authCipher":155,"./modes":160,"./modes/cbc":161,"./modes/cfb":162,"./modes/cfb1":163,"./modes/cfb8":164,"./modes/ctr":165,"./modes/ecb":166,"./modes/ofb":167,"./streamCipher":170,"buffer":64,"cipher-base":169,"dup":82,"evp_bytestokey":171,"inherits":221}],159:[function(require,module,exports){
+},{"dup":82}],159:[function(require,module,exports){
 arguments[4][83][0].apply(exports,arguments)
-},{"buffer":64,"dup":83}],160:[function(require,module,exports){
+},{"buffer-xor":166,"dup":83}],160:[function(require,module,exports){
 arguments[4][84][0].apply(exports,arguments)
-},{"dup":84}],161:[function(require,module,exports){
+},{"buffer":62,"buffer-xor":166,"dup":84}],161:[function(require,module,exports){
 arguments[4][85][0].apply(exports,arguments)
-},{"buffer-xor":168,"dup":85}],162:[function(require,module,exports){
+},{"buffer":62,"dup":85}],162:[function(require,module,exports){
 arguments[4][86][0].apply(exports,arguments)
-},{"buffer":64,"buffer-xor":168,"dup":86}],163:[function(require,module,exports){
+},{"buffer":62,"dup":86}],163:[function(require,module,exports){
 arguments[4][87][0].apply(exports,arguments)
-},{"buffer":64,"dup":87}],164:[function(require,module,exports){
+},{"buffer":62,"buffer-xor":166,"dup":87}],164:[function(require,module,exports){
 arguments[4][88][0].apply(exports,arguments)
-},{"buffer":64,"dup":88}],165:[function(require,module,exports){
+},{"dup":88}],165:[function(require,module,exports){
 arguments[4][89][0].apply(exports,arguments)
-},{"buffer":64,"buffer-xor":168,"dup":89}],166:[function(require,module,exports){
+},{"buffer":62,"buffer-xor":166,"dup":89}],166:[function(require,module,exports){
 arguments[4][90][0].apply(exports,arguments)
-},{"dup":90}],167:[function(require,module,exports){
+},{"buffer":62,"dup":90}],167:[function(require,module,exports){
 arguments[4][91][0].apply(exports,arguments)
-},{"buffer":64,"buffer-xor":168,"dup":91}],168:[function(require,module,exports){
+},{"buffer":62,"dup":91,"inherits":219,"stream":47,"string_decoder":53}],168:[function(require,module,exports){
 arguments[4][92][0].apply(exports,arguments)
-},{"buffer":64,"dup":92}],169:[function(require,module,exports){
-arguments[4][93][0].apply(exports,arguments)
-},{"buffer":64,"dup":93,"inherits":221,"stream":49,"string_decoder":55}],170:[function(require,module,exports){
-arguments[4][94][0].apply(exports,arguments)
-},{"./aes":154,"buffer":64,"cipher-base":169,"dup":94,"inherits":221}],171:[function(require,module,exports){
-arguments[4][105][0].apply(exports,arguments)
-},{"buffer":64,"create-hash/md5":202,"dup":105}],172:[function(require,module,exports){
+},{"./aes":152,"buffer":62,"cipher-base":167,"dup":92,"inherits":219}],169:[function(require,module,exports){
+arguments[4][103][0].apply(exports,arguments)
+},{"buffer":62,"create-hash/md5":200,"dup":103}],170:[function(require,module,exports){
 (function (Buffer){
 // much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
 var createHmac = require('create-hmac')
@@ -36175,7 +33045,7 @@ module.exports.getKey = getKey
 module.exports.makeKey = makeKey
 
 }).call(this,require("buffer").Buffer)
-},{"./curves":108,"bn.js":109,"browserify-rsa":110,"buffer":64,"create-hmac":213,"elliptic":111,"parse-asn1":138}],173:[function(require,module,exports){
+},{"./curves":106,"bn.js":107,"browserify-rsa":108,"buffer":62,"create-hmac":211,"elliptic":109,"parse-asn1":136}],171:[function(require,module,exports){
 (function (Buffer){
 // much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
 var curves = require('./curves')
@@ -36282,7 +33152,7 @@ function checkValue (b, q) {
 module.exports = verify
 
 }).call(this,require("buffer").Buffer)
-},{"./curves":108,"bn.js":109,"buffer":64,"elliptic":111,"parse-asn1":138}],174:[function(require,module,exports){
+},{"./curves":106,"bn.js":107,"buffer":62,"elliptic":109,"parse-asn1":136}],172:[function(require,module,exports){
 (function (Buffer){
 var elliptic = require('elliptic');
 var BN = require('bn.js');
@@ -36408,57 +33278,57 @@ function formatReturnValue(bn, enc, len) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"bn.js":175,"buffer":64,"elliptic":176}],175:[function(require,module,exports){
+},{"bn.js":173,"buffer":62,"elliptic":174}],173:[function(require,module,exports){
+arguments[4][107][0].apply(exports,arguments)
+},{"dup":107}],174:[function(require,module,exports){
 arguments[4][109][0].apply(exports,arguments)
-},{"dup":109}],176:[function(require,module,exports){
+},{"../package.json":197,"./elliptic/curve":177,"./elliptic/curves":180,"./elliptic/ec":181,"./elliptic/eddsa":184,"./elliptic/hmac-drbg":187,"./elliptic/utils":189,"brorand":190,"dup":109}],175:[function(require,module,exports){
+arguments[4][110][0].apply(exports,arguments)
+},{"../../elliptic":174,"bn.js":173,"dup":110}],176:[function(require,module,exports){
 arguments[4][111][0].apply(exports,arguments)
-},{"../package.json":199,"./elliptic/curve":179,"./elliptic/curves":182,"./elliptic/ec":183,"./elliptic/eddsa":186,"./elliptic/hmac-drbg":189,"./elliptic/utils":191,"brorand":192,"dup":111}],177:[function(require,module,exports){
+},{"../../elliptic":174,"../curve":177,"bn.js":173,"dup":111,"inherits":219}],177:[function(require,module,exports){
 arguments[4][112][0].apply(exports,arguments)
-},{"../../elliptic":176,"bn.js":175,"dup":112}],178:[function(require,module,exports){
+},{"./base":175,"./edwards":176,"./mont":178,"./short":179,"dup":112}],178:[function(require,module,exports){
 arguments[4][113][0].apply(exports,arguments)
-},{"../../elliptic":176,"../curve":179,"bn.js":175,"dup":113,"inherits":221}],179:[function(require,module,exports){
+},{"../../elliptic":174,"../curve":177,"bn.js":173,"dup":113,"inherits":219}],179:[function(require,module,exports){
 arguments[4][114][0].apply(exports,arguments)
-},{"./base":177,"./edwards":178,"./mont":180,"./short":181,"dup":114}],180:[function(require,module,exports){
+},{"../../elliptic":174,"../curve":177,"bn.js":173,"dup":114,"inherits":219}],180:[function(require,module,exports){
 arguments[4][115][0].apply(exports,arguments)
-},{"../../elliptic":176,"../curve":179,"bn.js":175,"dup":115,"inherits":221}],181:[function(require,module,exports){
+},{"../elliptic":174,"./precomputed/secp256k1":188,"dup":115,"hash.js":191}],181:[function(require,module,exports){
 arguments[4][116][0].apply(exports,arguments)
-},{"../../elliptic":176,"../curve":179,"bn.js":175,"dup":116,"inherits":221}],182:[function(require,module,exports){
+},{"../../elliptic":174,"./key":182,"./signature":183,"bn.js":173,"dup":116}],182:[function(require,module,exports){
 arguments[4][117][0].apply(exports,arguments)
-},{"../elliptic":176,"./precomputed/secp256k1":190,"dup":117,"hash.js":193}],183:[function(require,module,exports){
+},{"bn.js":173,"dup":117}],183:[function(require,module,exports){
 arguments[4][118][0].apply(exports,arguments)
-},{"../../elliptic":176,"./key":184,"./signature":185,"bn.js":175,"dup":118}],184:[function(require,module,exports){
+},{"../../elliptic":174,"bn.js":173,"dup":118}],184:[function(require,module,exports){
 arguments[4][119][0].apply(exports,arguments)
-},{"bn.js":175,"dup":119}],185:[function(require,module,exports){
+},{"../../elliptic":174,"./key":185,"./signature":186,"dup":119,"hash.js":191}],185:[function(require,module,exports){
 arguments[4][120][0].apply(exports,arguments)
-},{"../../elliptic":176,"bn.js":175,"dup":120}],186:[function(require,module,exports){
+},{"../../elliptic":174,"dup":120}],186:[function(require,module,exports){
 arguments[4][121][0].apply(exports,arguments)
-},{"../../elliptic":176,"./key":187,"./signature":188,"dup":121,"hash.js":193}],187:[function(require,module,exports){
+},{"../../elliptic":174,"bn.js":173,"dup":121}],187:[function(require,module,exports){
 arguments[4][122][0].apply(exports,arguments)
-},{"../../elliptic":176,"dup":122}],188:[function(require,module,exports){
+},{"../elliptic":174,"dup":122,"hash.js":191}],188:[function(require,module,exports){
 arguments[4][123][0].apply(exports,arguments)
-},{"../../elliptic":176,"bn.js":175,"dup":123}],189:[function(require,module,exports){
+},{"dup":123}],189:[function(require,module,exports){
 arguments[4][124][0].apply(exports,arguments)
-},{"../elliptic":176,"dup":124,"hash.js":193}],190:[function(require,module,exports){
+},{"bn.js":173,"dup":124}],190:[function(require,module,exports){
 arguments[4][125][0].apply(exports,arguments)
 },{"dup":125}],191:[function(require,module,exports){
 arguments[4][126][0].apply(exports,arguments)
-},{"bn.js":175,"dup":126}],192:[function(require,module,exports){
+},{"./hash/common":192,"./hash/hmac":193,"./hash/ripemd":194,"./hash/sha":195,"./hash/utils":196,"dup":126}],192:[function(require,module,exports){
 arguments[4][127][0].apply(exports,arguments)
-},{"dup":127}],193:[function(require,module,exports){
+},{"../hash":191,"dup":127}],193:[function(require,module,exports){
 arguments[4][128][0].apply(exports,arguments)
-},{"./hash/common":194,"./hash/hmac":195,"./hash/ripemd":196,"./hash/sha":197,"./hash/utils":198,"dup":128}],194:[function(require,module,exports){
+},{"../hash":191,"dup":128}],194:[function(require,module,exports){
 arguments[4][129][0].apply(exports,arguments)
-},{"../hash":193,"dup":129}],195:[function(require,module,exports){
+},{"../hash":191,"dup":129}],195:[function(require,module,exports){
 arguments[4][130][0].apply(exports,arguments)
-},{"../hash":193,"dup":130}],196:[function(require,module,exports){
+},{"../hash":191,"dup":130}],196:[function(require,module,exports){
 arguments[4][131][0].apply(exports,arguments)
-},{"../hash":193,"dup":131}],197:[function(require,module,exports){
+},{"dup":131,"inherits":219}],197:[function(require,module,exports){
 arguments[4][132][0].apply(exports,arguments)
-},{"../hash":193,"dup":132}],198:[function(require,module,exports){
-arguments[4][133][0].apply(exports,arguments)
-},{"dup":133,"inherits":221}],199:[function(require,module,exports){
-arguments[4][134][0].apply(exports,arguments)
-},{"dup":134}],200:[function(require,module,exports){
+},{"dup":132}],198:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 var inherits = require('inherits')
@@ -36514,7 +33384,7 @@ module.exports = function createHash (alg) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./md5":202,"buffer":64,"cipher-base":203,"inherits":221,"ripemd160":204,"sha.js":206}],201:[function(require,module,exports){
+},{"./md5":200,"buffer":62,"cipher-base":201,"inherits":219,"ripemd160":202,"sha.js":204}],199:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 var intSize = 4;
@@ -36551,7 +33421,7 @@ function hash(buf, fn, hashSize, bigEndian) {
 }
 exports.hash = hash;
 }).call(this,require("buffer").Buffer)
-},{"buffer":64}],202:[function(require,module,exports){
+},{"buffer":62}],200:[function(require,module,exports){
 'use strict';
 /*
  * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
@@ -36708,9 +33578,9 @@ function bit_rol(num, cnt)
 module.exports = function md5(buf) {
   return helpers.hash(buf, core_md5, 16);
 };
-},{"./helpers":201}],203:[function(require,module,exports){
-arguments[4][93][0].apply(exports,arguments)
-},{"buffer":64,"dup":93,"inherits":221,"stream":49,"string_decoder":55}],204:[function(require,module,exports){
+},{"./helpers":199}],201:[function(require,module,exports){
+arguments[4][91][0].apply(exports,arguments)
+},{"buffer":62,"dup":91,"inherits":219,"stream":47,"string_decoder":53}],202:[function(require,module,exports){
 (function (Buffer){
 /*
 CryptoJS v3.1.2
@@ -36924,7 +33794,7 @@ function ripemd160 (message) {
 module.exports = ripemd160
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":64}],205:[function(require,module,exports){
+},{"buffer":62}],203:[function(require,module,exports){
 (function (Buffer){
 // prototype class for hash functions
 function Hash (blockSize, finalSize) {
@@ -36997,7 +33867,7 @@ Hash.prototype._update = function () {
 module.exports = Hash
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":64}],206:[function(require,module,exports){
+},{"buffer":62}],204:[function(require,module,exports){
 var exports = module.exports = function SHA (algorithm) {
   algorithm = algorithm.toLowerCase()
 
@@ -37014,7 +33884,7 @@ exports.sha256 = require('./sha256')
 exports.sha384 = require('./sha384')
 exports.sha512 = require('./sha512')
 
-},{"./sha":207,"./sha1":208,"./sha224":209,"./sha256":210,"./sha384":211,"./sha512":212}],207:[function(require,module,exports){
+},{"./sha":205,"./sha1":206,"./sha224":207,"./sha256":208,"./sha384":209,"./sha512":210}],205:[function(require,module,exports){
 (function (Buffer){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-0, as defined
@@ -37118,7 +33988,7 @@ module.exports = Sha
 
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":205,"buffer":64,"inherits":221}],208:[function(require,module,exports){
+},{"./hash":203,"buffer":62,"inherits":219}],206:[function(require,module,exports){
 (function (Buffer){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined
@@ -37218,7 +34088,7 @@ Sha1.prototype._hash = function () {
 module.exports = Sha1
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":205,"buffer":64,"inherits":221}],209:[function(require,module,exports){
+},{"./hash":203,"buffer":62,"inherits":219}],207:[function(require,module,exports){
 (function (Buffer){
 /**
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
@@ -37274,7 +34144,7 @@ Sha224.prototype._hash = function () {
 module.exports = Sha224
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":205,"./sha256":210,"buffer":64,"inherits":221}],210:[function(require,module,exports){
+},{"./hash":203,"./sha256":208,"buffer":62,"inherits":219}],208:[function(require,module,exports){
 (function (Buffer){
 /**
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
@@ -37419,7 +34289,7 @@ Sha256.prototype._hash = function () {
 module.exports = Sha256
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":205,"buffer":64,"inherits":221}],211:[function(require,module,exports){
+},{"./hash":203,"buffer":62,"inherits":219}],209:[function(require,module,exports){
 (function (Buffer){
 var inherits = require('inherits')
 var SHA512 = require('./sha512')
@@ -37479,7 +34349,7 @@ Sha384.prototype._hash = function () {
 module.exports = Sha384
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":205,"./sha512":212,"buffer":64,"inherits":221}],212:[function(require,module,exports){
+},{"./hash":203,"./sha512":210,"buffer":62,"inherits":219}],210:[function(require,module,exports){
 (function (Buffer){
 var inherits = require('inherits')
 var Hash = require('./hash')
@@ -37749,7 +34619,7 @@ Sha512.prototype._hash = function () {
 module.exports = Sha512
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":205,"buffer":64,"inherits":221}],213:[function(require,module,exports){
+},{"./hash":203,"buffer":62,"inherits":219}],211:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 var createHash = require('create-hash/browser');
@@ -37821,7 +34691,7 @@ module.exports = function createHmac(alg, key) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":64,"create-hash/browser":200,"inherits":221,"stream":49}],214:[function(require,module,exports){
+},{"buffer":62,"create-hash/browser":198,"inherits":219,"stream":47}],212:[function(require,module,exports){
 (function (Buffer){
 var generatePrime = require('./lib/generatePrime');
 var primes = require('./lib/primes');
@@ -37865,7 +34735,7 @@ exports.DiffieHellmanGroup = exports.createDiffieHellmanGroup = exports.getDiffi
 exports.createDiffieHellman = exports.DiffieHellman = createDiffieHellman;
 
 }).call(this,require("buffer").Buffer)
-},{"./lib/dh":215,"./lib/generatePrime":216,"./lib/primes":217,"buffer":64}],215:[function(require,module,exports){
+},{"./lib/dh":213,"./lib/generatePrime":214,"./lib/primes":215,"buffer":62}],213:[function(require,module,exports){
 (function (Buffer){
 var BN = require('bn.js');
 var MillerRabin = require('miller-rabin');
@@ -38033,7 +34903,7 @@ function formatReturnValue(bn, enc) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./generatePrime":216,"bn.js":218,"buffer":64,"miller-rabin":219,"randombytes":268}],216:[function(require,module,exports){
+},{"./generatePrime":214,"bn.js":216,"buffer":62,"miller-rabin":217,"randombytes":266}],214:[function(require,module,exports){
 var randomBytes = require('randombytes');
 module.exports = findPrime;
 findPrime.simpleSieve = simpleSieve;
@@ -38140,7 +35010,7 @@ function findPrime(bits, gen) {
 
 }
 
-},{"bn.js":218,"miller-rabin":219,"randombytes":268}],217:[function(require,module,exports){
+},{"bn.js":216,"miller-rabin":217,"randombytes":266}],215:[function(require,module,exports){
 module.exports={
     "modp1": {
         "gen": "02",
@@ -38175,9 +35045,9 @@ module.exports={
         "prime": "ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024e088a67cc74020bbea63b139b22514a08798e3404ddef9519b3cd3a431b302b0a6df25f14374fe1356d6d51c245e485b576625e7ec6f44c42e9a637ed6b0bff5cb6f406b7edee386bfb5a899fa5ae9f24117c4b1fe649286651ece45b3dc2007cb8a163bf0598da48361c55d39a69163fa8fd24cf5f83655d23dca3ad961c62f356208552bb9ed529077096966d670c354e4abc9804f1746c08ca18217c32905e462e36ce3be39e772c180e86039b2783a2ec07a28fb5c55df06f4c52c9de2bcbf6955817183995497cea956ae515d2261898fa051015728e5a8aaac42dad33170d04507a33a85521abdf1cba64ecfb850458dbef0a8aea71575d060c7db3970f85a6e1e4c7abf5ae8cdb0933d71e8c94e04a25619dcee3d2261ad2ee6bf12ffa06d98a0864d87602733ec86a64521f2b18177b200cbbe117577a615d6c770988c0bad946e208e24fa074e5ab3143db5bfce0fd108e4b82d120a92108011a723c12a787e6d788719a10bdba5b2699c327186af4e23c1a946834b6150bda2583e9ca2ad44ce8dbbbc2db04de8ef92e8efc141fbecaa6287c59474e6bc05d99b2964fa090c3a2233ba186515be7ed1f612970cee2d7afb81bdd762170481cd0069127d5b05aa993b4ea988d8fddc186ffb7dc90a6c08f4df435c93402849236c3fab4d27c7026c1d4dcb2602646dec9751e763dba37bdf8ff9406ad9e530ee5db382f413001aeb06a53ed9027d831179727b0865a8918da3edbebcf9b14ed44ce6cbaced4bb1bdb7f1447e6cc254b332051512bd7af426fb8f401378cd2bf5983ca01c64b92ecf032ea15d1721d03f482d7ce6e74fef6d55e702f46980c82b5a84031900b1c9e59e7c97fbec7e8f323a97a7e36cc88be0f1d45b7ff585ac54bd407b22b4154aacc8f6d7ebf48e1d814cc5ed20f8037e0a79715eef29be32806a1d58bb7c5da76f550aa3d8a1fbff0eb19ccb1a313d55cda56c9ec2ef29632387fe8d76e3c0468043e8f663f4860ee12bf2d5b0b7474d6e694f91e6dbe115974a3926f12fee5e438777cb6a932df8cd8bec4d073b931ba3bc832b68d9dd300741fa7bf8afc47ed2576f6936ba424663aab639c5ae4f5683423b4742bf1c978238f16cbe39d652de3fdb8befc848ad922222e04a4037c0713eb57a81a23f0c73473fc646cea306b4bcbc8862f8385ddfa9d4b7fa2c087e879683303ed5bdd3a062b3cf5b3a278a66d2a13f83f44f82ddf310ee074ab6a364597e899a0255dc164f31cc50846851df9ab48195ded7ea1b1d510bd7ee74d73faf36bc31ecfa268359046f4eb879f924009438b481c6cd7889a002ed5ee382bc9190da6fc026e479558e4475677e9aa9e3050e2765694dfc81f56e880b96e7160c980dd98edd3dfffffffffffffffff"
     }
 }
-},{}],218:[function(require,module,exports){
-arguments[4][109][0].apply(exports,arguments)
-},{"dup":109}],219:[function(require,module,exports){
+},{}],216:[function(require,module,exports){
+arguments[4][107][0].apply(exports,arguments)
+},{"dup":107}],217:[function(require,module,exports){
 var bn = require('bn.js');
 var brorand = require('brorand');
 
@@ -38292,11 +35162,11 @@ MillerRabin.prototype.getDivisor = function getDivisor(n, k) {
   return false;
 };
 
-},{"bn.js":218,"brorand":220}],220:[function(require,module,exports){
-arguments[4][127][0].apply(exports,arguments)
-},{"dup":127}],221:[function(require,module,exports){
-arguments[4][27][0].apply(exports,arguments)
-},{"dup":27}],222:[function(require,module,exports){
+},{"bn.js":216,"brorand":218}],218:[function(require,module,exports){
+arguments[4][125][0].apply(exports,arguments)
+},{"dup":125}],219:[function(require,module,exports){
+arguments[4][25][0].apply(exports,arguments)
+},{"dup":25}],220:[function(require,module,exports){
 (function (Buffer){
 var createHmac = require('create-hmac')
 var MAX_ALLOC = Math.pow(2, 30) - 1 // default in iojs
@@ -38380,7 +35250,7 @@ function pbkdf2Sync (password, salt, iterations, keylen, digest) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":64,"create-hmac":213}],223:[function(require,module,exports){
+},{"buffer":62,"create-hmac":211}],221:[function(require,module,exports){
 exports.publicEncrypt = require('./publicEncrypt');
 exports.privateDecrypt = require('./privateDecrypt');
 
@@ -38391,7 +35261,7 @@ exports.privateEncrypt = function privateEncrypt(key, buf) {
 exports.publicDecrypt = function publicDecrypt(key, buf) {
   return exports.privateDecrypt(key, buf, true);
 };
-},{"./privateDecrypt":264,"./publicEncrypt":265}],224:[function(require,module,exports){
+},{"./privateDecrypt":262,"./publicEncrypt":263}],222:[function(require,module,exports){
 (function (Buffer){
 var createHash = require('create-hash');
 module.exports = function (seed, len) {
@@ -38410,85 +35280,85 @@ function i2ops(c) {
   return out;
 }
 }).call(this,require("buffer").Buffer)
-},{"buffer":64,"create-hash":200}],225:[function(require,module,exports){
-arguments[4][109][0].apply(exports,arguments)
-},{"dup":109}],226:[function(require,module,exports){
-arguments[4][110][0].apply(exports,arguments)
-},{"bn.js":225,"buffer":64,"dup":110,"randombytes":268}],227:[function(require,module,exports){
+},{"buffer":62,"create-hash":198}],223:[function(require,module,exports){
+arguments[4][107][0].apply(exports,arguments)
+},{"dup":107}],224:[function(require,module,exports){
+arguments[4][108][0].apply(exports,arguments)
+},{"bn.js":223,"buffer":62,"dup":108,"randombytes":266}],225:[function(require,module,exports){
+arguments[4][133][0].apply(exports,arguments)
+},{"dup":133}],226:[function(require,module,exports){
+arguments[4][134][0].apply(exports,arguments)
+},{"asn1.js":229,"dup":134}],227:[function(require,module,exports){
 arguments[4][135][0].apply(exports,arguments)
-},{"dup":135}],228:[function(require,module,exports){
+},{"browserify-aes":246,"buffer":62,"dup":135,"evp_bytestokey":261}],228:[function(require,module,exports){
 arguments[4][136][0].apply(exports,arguments)
-},{"asn1.js":231,"dup":136}],229:[function(require,module,exports){
+},{"./aesid.json":225,"./asn1":226,"./fixProc":227,"browserify-aes":246,"buffer":62,"dup":136,"pbkdf2":220}],229:[function(require,module,exports){
 arguments[4][137][0].apply(exports,arguments)
-},{"browserify-aes":248,"buffer":64,"dup":137,"evp_bytestokey":263}],230:[function(require,module,exports){
+},{"./asn1/api":230,"./asn1/base":232,"./asn1/constants":236,"./asn1/decoders":238,"./asn1/encoders":241,"bn.js":223,"dup":137}],230:[function(require,module,exports){
 arguments[4][138][0].apply(exports,arguments)
-},{"./aesid.json":227,"./asn1":228,"./fixProc":229,"browserify-aes":248,"buffer":64,"dup":138,"pbkdf2":222}],231:[function(require,module,exports){
+},{"../asn1":229,"dup":138,"inherits":219,"vm":59}],231:[function(require,module,exports){
 arguments[4][139][0].apply(exports,arguments)
-},{"./asn1/api":232,"./asn1/base":234,"./asn1/constants":238,"./asn1/decoders":240,"./asn1/encoders":243,"bn.js":225,"dup":139}],232:[function(require,module,exports){
+},{"../base":232,"buffer":62,"dup":139,"inherits":219}],232:[function(require,module,exports){
 arguments[4][140][0].apply(exports,arguments)
-},{"../asn1":231,"dup":140,"inherits":221,"vm":61}],233:[function(require,module,exports){
+},{"./buffer":231,"./node":233,"./reporter":234,"dup":140}],233:[function(require,module,exports){
 arguments[4][141][0].apply(exports,arguments)
-},{"../base":234,"buffer":64,"dup":141,"inherits":221}],234:[function(require,module,exports){
+},{"../base":232,"dup":141,"minimalistic-assert":243}],234:[function(require,module,exports){
 arguments[4][142][0].apply(exports,arguments)
-},{"./buffer":233,"./node":235,"./reporter":236,"dup":142}],235:[function(require,module,exports){
+},{"dup":142,"inherits":219}],235:[function(require,module,exports){
 arguments[4][143][0].apply(exports,arguments)
-},{"../base":234,"dup":143,"minimalistic-assert":245}],236:[function(require,module,exports){
+},{"../constants":236,"dup":143}],236:[function(require,module,exports){
 arguments[4][144][0].apply(exports,arguments)
-},{"dup":144,"inherits":221}],237:[function(require,module,exports){
+},{"./der":235,"dup":144}],237:[function(require,module,exports){
 arguments[4][145][0].apply(exports,arguments)
-},{"../constants":238,"dup":145}],238:[function(require,module,exports){
+},{"../../asn1":229,"dup":145,"inherits":219}],238:[function(require,module,exports){
 arguments[4][146][0].apply(exports,arguments)
-},{"./der":237,"dup":146}],239:[function(require,module,exports){
+},{"./der":237,"./pem":239,"dup":146}],239:[function(require,module,exports){
 arguments[4][147][0].apply(exports,arguments)
-},{"../../asn1":231,"dup":147,"inherits":221}],240:[function(require,module,exports){
+},{"../../asn1":229,"./der":237,"buffer":62,"dup":147,"inherits":219}],240:[function(require,module,exports){
 arguments[4][148][0].apply(exports,arguments)
-},{"./der":239,"./pem":241,"dup":148}],241:[function(require,module,exports){
+},{"../../asn1":229,"buffer":62,"dup":148,"inherits":219}],241:[function(require,module,exports){
 arguments[4][149][0].apply(exports,arguments)
-},{"../../asn1":231,"./der":239,"buffer":64,"dup":149,"inherits":221}],242:[function(require,module,exports){
+},{"./der":240,"./pem":242,"dup":149}],242:[function(require,module,exports){
 arguments[4][150][0].apply(exports,arguments)
-},{"../../asn1":231,"buffer":64,"dup":150,"inherits":221}],243:[function(require,module,exports){
-arguments[4][151][0].apply(exports,arguments)
-},{"./der":242,"./pem":244,"dup":151}],244:[function(require,module,exports){
-arguments[4][152][0].apply(exports,arguments)
-},{"../../asn1":231,"./der":242,"buffer":64,"dup":152,"inherits":221}],245:[function(require,module,exports){
-arguments[4][104][0].apply(exports,arguments)
-},{"dup":104}],246:[function(require,module,exports){
+},{"../../asn1":229,"./der":240,"buffer":62,"dup":150,"inherits":219}],243:[function(require,module,exports){
+arguments[4][102][0].apply(exports,arguments)
+},{"dup":102}],244:[function(require,module,exports){
+arguments[4][76][0].apply(exports,arguments)
+},{"buffer":62,"dup":76}],245:[function(require,module,exports){
+arguments[4][77][0].apply(exports,arguments)
+},{"./aes":244,"./ghash":249,"buffer":62,"buffer-xor":258,"cipher-base":259,"dup":77,"inherits":219}],246:[function(require,module,exports){
 arguments[4][78][0].apply(exports,arguments)
-},{"buffer":64,"dup":78}],247:[function(require,module,exports){
+},{"./decrypter":247,"./encrypter":248,"./modes":250,"dup":78}],247:[function(require,module,exports){
 arguments[4][79][0].apply(exports,arguments)
-},{"./aes":246,"./ghash":251,"buffer":64,"buffer-xor":260,"cipher-base":261,"dup":79,"inherits":221}],248:[function(require,module,exports){
+},{"./aes":244,"./authCipher":245,"./modes":250,"./modes/cbc":251,"./modes/cfb":252,"./modes/cfb1":253,"./modes/cfb8":254,"./modes/ctr":255,"./modes/ecb":256,"./modes/ofb":257,"./streamCipher":260,"buffer":62,"cipher-base":259,"dup":79,"evp_bytestokey":261,"inherits":219}],248:[function(require,module,exports){
 arguments[4][80][0].apply(exports,arguments)
-},{"./decrypter":249,"./encrypter":250,"./modes":252,"dup":80}],249:[function(require,module,exports){
+},{"./aes":244,"./authCipher":245,"./modes":250,"./modes/cbc":251,"./modes/cfb":252,"./modes/cfb1":253,"./modes/cfb8":254,"./modes/ctr":255,"./modes/ecb":256,"./modes/ofb":257,"./streamCipher":260,"buffer":62,"cipher-base":259,"dup":80,"evp_bytestokey":261,"inherits":219}],249:[function(require,module,exports){
 arguments[4][81][0].apply(exports,arguments)
-},{"./aes":246,"./authCipher":247,"./modes":252,"./modes/cbc":253,"./modes/cfb":254,"./modes/cfb1":255,"./modes/cfb8":256,"./modes/ctr":257,"./modes/ecb":258,"./modes/ofb":259,"./streamCipher":262,"buffer":64,"cipher-base":261,"dup":81,"evp_bytestokey":263,"inherits":221}],250:[function(require,module,exports){
+},{"buffer":62,"dup":81}],250:[function(require,module,exports){
 arguments[4][82][0].apply(exports,arguments)
-},{"./aes":246,"./authCipher":247,"./modes":252,"./modes/cbc":253,"./modes/cfb":254,"./modes/cfb1":255,"./modes/cfb8":256,"./modes/ctr":257,"./modes/ecb":258,"./modes/ofb":259,"./streamCipher":262,"buffer":64,"cipher-base":261,"dup":82,"evp_bytestokey":263,"inherits":221}],251:[function(require,module,exports){
+},{"dup":82}],251:[function(require,module,exports){
 arguments[4][83][0].apply(exports,arguments)
-},{"buffer":64,"dup":83}],252:[function(require,module,exports){
+},{"buffer-xor":258,"dup":83}],252:[function(require,module,exports){
 arguments[4][84][0].apply(exports,arguments)
-},{"dup":84}],253:[function(require,module,exports){
+},{"buffer":62,"buffer-xor":258,"dup":84}],253:[function(require,module,exports){
 arguments[4][85][0].apply(exports,arguments)
-},{"buffer-xor":260,"dup":85}],254:[function(require,module,exports){
+},{"buffer":62,"dup":85}],254:[function(require,module,exports){
 arguments[4][86][0].apply(exports,arguments)
-},{"buffer":64,"buffer-xor":260,"dup":86}],255:[function(require,module,exports){
+},{"buffer":62,"dup":86}],255:[function(require,module,exports){
 arguments[4][87][0].apply(exports,arguments)
-},{"buffer":64,"dup":87}],256:[function(require,module,exports){
+},{"buffer":62,"buffer-xor":258,"dup":87}],256:[function(require,module,exports){
 arguments[4][88][0].apply(exports,arguments)
-},{"buffer":64,"dup":88}],257:[function(require,module,exports){
+},{"dup":88}],257:[function(require,module,exports){
 arguments[4][89][0].apply(exports,arguments)
-},{"buffer":64,"buffer-xor":260,"dup":89}],258:[function(require,module,exports){
+},{"buffer":62,"buffer-xor":258,"dup":89}],258:[function(require,module,exports){
 arguments[4][90][0].apply(exports,arguments)
-},{"dup":90}],259:[function(require,module,exports){
+},{"buffer":62,"dup":90}],259:[function(require,module,exports){
 arguments[4][91][0].apply(exports,arguments)
-},{"buffer":64,"buffer-xor":260,"dup":91}],260:[function(require,module,exports){
+},{"buffer":62,"dup":91,"inherits":219,"stream":47,"string_decoder":53}],260:[function(require,module,exports){
 arguments[4][92][0].apply(exports,arguments)
-},{"buffer":64,"dup":92}],261:[function(require,module,exports){
-arguments[4][93][0].apply(exports,arguments)
-},{"buffer":64,"dup":93,"inherits":221,"stream":49,"string_decoder":55}],262:[function(require,module,exports){
-arguments[4][94][0].apply(exports,arguments)
-},{"./aes":246,"buffer":64,"cipher-base":261,"dup":94,"inherits":221}],263:[function(require,module,exports){
-arguments[4][105][0].apply(exports,arguments)
-},{"buffer":64,"create-hash/md5":202,"dup":105}],264:[function(require,module,exports){
+},{"./aes":244,"buffer":62,"cipher-base":259,"dup":92,"inherits":219}],261:[function(require,module,exports){
+arguments[4][103][0].apply(exports,arguments)
+},{"buffer":62,"create-hash/md5":200,"dup":103}],262:[function(require,module,exports){
 (function (Buffer){
 var parseKeys = require('parse-asn1');
 var mgf = require('./mgf');
@@ -38599,7 +35469,7 @@ function compare(a, b){
   return dif;
 }
 }).call(this,require("buffer").Buffer)
-},{"./mgf":224,"./withPublic":266,"./xor":267,"bn.js":225,"browserify-rsa":226,"buffer":64,"create-hash":200,"parse-asn1":230}],265:[function(require,module,exports){
+},{"./mgf":222,"./withPublic":264,"./xor":265,"bn.js":223,"browserify-rsa":224,"buffer":62,"create-hash":198,"parse-asn1":228}],263:[function(require,module,exports){
 (function (Buffer){
 var parseKeys = require('parse-asn1');
 var randomBytes = require('randombytes');
@@ -38697,7 +35567,7 @@ function nonZero(len, crypto) {
   return out;
 }
 }).call(this,require("buffer").Buffer)
-},{"./mgf":224,"./withPublic":266,"./xor":267,"bn.js":225,"browserify-rsa":226,"buffer":64,"create-hash":200,"parse-asn1":230,"randombytes":268}],266:[function(require,module,exports){
+},{"./mgf":222,"./withPublic":264,"./xor":265,"bn.js":223,"browserify-rsa":224,"buffer":62,"create-hash":198,"parse-asn1":228,"randombytes":266}],264:[function(require,module,exports){
 (function (Buffer){
 var bn = require('bn.js');
 function withPublic(paddedMsg, key) {
@@ -38710,7 +35580,7 @@ function withPublic(paddedMsg, key) {
 
 module.exports = withPublic;
 }).call(this,require("buffer").Buffer)
-},{"bn.js":225,"buffer":64}],267:[function(require,module,exports){
+},{"bn.js":223,"buffer":62}],265:[function(require,module,exports){
 module.exports = function xor(a, b) {
   var len = a.length;
   var i = -1;
@@ -38719,7 +35589,7 @@ module.exports = function xor(a, b) {
   }
   return a
 };
-},{}],268:[function(require,module,exports){
+},{}],266:[function(require,module,exports){
 (function (process,global,Buffer){
 'use strict';
 
@@ -38751,7 +35621,7 @@ function oldBrowser() {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"_process":31,"buffer":64}],269:[function(require,module,exports){
+},{"_process":29,"buffer":62}],267:[function(require,module,exports){
 (function (process,global,Buffer){
 const ethUtil = require('ethereumjs-util')
 const fees = require('ethereum-common')
@@ -38983,7 +35853,7 @@ Transaction.prototype.validate = function () {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"_process":31,"buffer":64,"ethereum-common":270,"ethereumjs-util":272,"secp256k1":302}],270:[function(require,module,exports){
+},{"_process":29,"buffer":62,"ethereum-common":268,"ethereumjs-util":270,"secp256k1":300}],268:[function(require,module,exports){
 var params = module.exports = require('./params.json')
 
 //load it dynamical because it's slow
@@ -38993,7 +35863,7 @@ Object.defineProperties(params, {
   }
 })
 
-},{"./params.json":271}],271:[function(require,module,exports){
+},{"./params.json":269}],269:[function(require,module,exports){
 module.exports={
   "genesisGasLimit": {
     "v": 5000,
@@ -39211,7 +36081,7 @@ module.exports={
   }
 }
 
-},{}],272:[function(require,module,exports){
+},{}],270:[function(require,module,exports){
 (function (Buffer){
 const SHA3 = require('sha3')
 const ec = require('elliptic').ec('secp256k1')
@@ -39659,9 +36529,9 @@ exports.padToEven = function (a) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":10,"bn.js":273,"buffer":64,"crypto":76,"elliptic":275,"rlp":300,"sha3":274}],273:[function(require,module,exports){
-arguments[4][109][0].apply(exports,arguments)
-},{"dup":109}],274:[function(require,module,exports){
+},{"assert":8,"bn.js":271,"buffer":62,"crypto":74,"elliptic":273,"rlp":298,"sha3":272}],271:[function(require,module,exports){
+arguments[4][107][0].apply(exports,arguments)
+},{"dup":107}],272:[function(require,module,exports){
 (function (Buffer){
 const Sha3 = require('js-sha3')
 
@@ -39699,55 +36569,55 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":64,"js-sha3":344}],275:[function(require,module,exports){
+},{"buffer":62,"js-sha3":342}],273:[function(require,module,exports){
+arguments[4][109][0].apply(exports,arguments)
+},{"../package.json":297,"./elliptic/curve":276,"./elliptic/curves":279,"./elliptic/ec":280,"./elliptic/eddsa":283,"./elliptic/hmac-drbg":286,"./elliptic/utils":288,"brorand":289,"dup":109}],274:[function(require,module,exports){
+arguments[4][110][0].apply(exports,arguments)
+},{"../../elliptic":273,"bn.js":271,"dup":110}],275:[function(require,module,exports){
 arguments[4][111][0].apply(exports,arguments)
-},{"../package.json":299,"./elliptic/curve":278,"./elliptic/curves":281,"./elliptic/ec":282,"./elliptic/eddsa":285,"./elliptic/hmac-drbg":288,"./elliptic/utils":290,"brorand":291,"dup":111}],276:[function(require,module,exports){
+},{"../../elliptic":273,"../curve":276,"bn.js":271,"dup":111,"inherits":296}],276:[function(require,module,exports){
 arguments[4][112][0].apply(exports,arguments)
-},{"../../elliptic":275,"bn.js":273,"dup":112}],277:[function(require,module,exports){
+},{"./base":274,"./edwards":275,"./mont":277,"./short":278,"dup":112}],277:[function(require,module,exports){
 arguments[4][113][0].apply(exports,arguments)
-},{"../../elliptic":275,"../curve":278,"bn.js":273,"dup":113,"inherits":298}],278:[function(require,module,exports){
+},{"../../elliptic":273,"../curve":276,"bn.js":271,"dup":113,"inherits":296}],278:[function(require,module,exports){
 arguments[4][114][0].apply(exports,arguments)
-},{"./base":276,"./edwards":277,"./mont":279,"./short":280,"dup":114}],279:[function(require,module,exports){
+},{"../../elliptic":273,"../curve":276,"bn.js":271,"dup":114,"inherits":296}],279:[function(require,module,exports){
 arguments[4][115][0].apply(exports,arguments)
-},{"../../elliptic":275,"../curve":278,"bn.js":273,"dup":115,"inherits":298}],280:[function(require,module,exports){
+},{"../elliptic":273,"./precomputed/secp256k1":287,"dup":115,"hash.js":290}],280:[function(require,module,exports){
 arguments[4][116][0].apply(exports,arguments)
-},{"../../elliptic":275,"../curve":278,"bn.js":273,"dup":116,"inherits":298}],281:[function(require,module,exports){
+},{"../../elliptic":273,"./key":281,"./signature":282,"bn.js":271,"dup":116}],281:[function(require,module,exports){
 arguments[4][117][0].apply(exports,arguments)
-},{"../elliptic":275,"./precomputed/secp256k1":289,"dup":117,"hash.js":292}],282:[function(require,module,exports){
+},{"bn.js":271,"dup":117}],282:[function(require,module,exports){
 arguments[4][118][0].apply(exports,arguments)
-},{"../../elliptic":275,"./key":283,"./signature":284,"bn.js":273,"dup":118}],283:[function(require,module,exports){
+},{"../../elliptic":273,"bn.js":271,"dup":118}],283:[function(require,module,exports){
 arguments[4][119][0].apply(exports,arguments)
-},{"bn.js":273,"dup":119}],284:[function(require,module,exports){
+},{"../../elliptic":273,"./key":284,"./signature":285,"dup":119,"hash.js":290}],284:[function(require,module,exports){
 arguments[4][120][0].apply(exports,arguments)
-},{"../../elliptic":275,"bn.js":273,"dup":120}],285:[function(require,module,exports){
+},{"../../elliptic":273,"dup":120}],285:[function(require,module,exports){
 arguments[4][121][0].apply(exports,arguments)
-},{"../../elliptic":275,"./key":286,"./signature":287,"dup":121,"hash.js":292}],286:[function(require,module,exports){
+},{"../../elliptic":273,"bn.js":271,"dup":121}],286:[function(require,module,exports){
 arguments[4][122][0].apply(exports,arguments)
-},{"../../elliptic":275,"dup":122}],287:[function(require,module,exports){
+},{"../elliptic":273,"dup":122,"hash.js":290}],287:[function(require,module,exports){
 arguments[4][123][0].apply(exports,arguments)
-},{"../../elliptic":275,"bn.js":273,"dup":123}],288:[function(require,module,exports){
+},{"dup":123}],288:[function(require,module,exports){
 arguments[4][124][0].apply(exports,arguments)
-},{"../elliptic":275,"dup":124,"hash.js":292}],289:[function(require,module,exports){
+},{"bn.js":271,"dup":124}],289:[function(require,module,exports){
 arguments[4][125][0].apply(exports,arguments)
 },{"dup":125}],290:[function(require,module,exports){
 arguments[4][126][0].apply(exports,arguments)
-},{"bn.js":273,"dup":126}],291:[function(require,module,exports){
+},{"./hash/common":291,"./hash/hmac":292,"./hash/ripemd":293,"./hash/sha":294,"./hash/utils":295,"dup":126}],291:[function(require,module,exports){
 arguments[4][127][0].apply(exports,arguments)
-},{"dup":127}],292:[function(require,module,exports){
+},{"../hash":290,"dup":127}],292:[function(require,module,exports){
 arguments[4][128][0].apply(exports,arguments)
-},{"./hash/common":293,"./hash/hmac":294,"./hash/ripemd":295,"./hash/sha":296,"./hash/utils":297,"dup":128}],293:[function(require,module,exports){
+},{"../hash":290,"dup":128}],293:[function(require,module,exports){
 arguments[4][129][0].apply(exports,arguments)
-},{"../hash":292,"dup":129}],294:[function(require,module,exports){
+},{"../hash":290,"dup":129}],294:[function(require,module,exports){
 arguments[4][130][0].apply(exports,arguments)
-},{"../hash":292,"dup":130}],295:[function(require,module,exports){
+},{"../hash":290,"dup":130}],295:[function(require,module,exports){
 arguments[4][131][0].apply(exports,arguments)
-},{"../hash":292,"dup":131}],296:[function(require,module,exports){
-arguments[4][132][0].apply(exports,arguments)
-},{"../hash":292,"dup":132}],297:[function(require,module,exports){
-arguments[4][133][0].apply(exports,arguments)
-},{"dup":133,"inherits":298}],298:[function(require,module,exports){
-arguments[4][27][0].apply(exports,arguments)
-},{"dup":27}],299:[function(require,module,exports){
+},{"dup":131,"inherits":296}],296:[function(require,module,exports){
+arguments[4][25][0].apply(exports,arguments)
+},{"dup":25}],297:[function(require,module,exports){
 module.exports={
   "name": "elliptic",
   "version": "6.0.2",
@@ -39819,7 +36689,7 @@ module.exports={
   "readme": "ERROR: No README data found!"
 }
 
-},{}],300:[function(require,module,exports){
+},{}],298:[function(require,module,exports){
 (function (Buffer){
 const assert = require('assert')
 /**
@@ -40052,13 +36922,13 @@ function toBuffer (v) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":10,"buffer":64}],301:[function(require,module,exports){
+},{"assert":8,"buffer":62}],299:[function(require,module,exports){
 module.exports = require('./lib/elliptic')
 
-},{"./lib/elliptic":306}],302:[function(require,module,exports){
+},{"./lib/elliptic":304}],300:[function(require,module,exports){
 module.exports = require('./elliptic')
 
-},{"./elliptic":301}],303:[function(require,module,exports){
+},{"./elliptic":299}],301:[function(require,module,exports){
 (function (Buffer){
 var objToString = Object.prototype.toString
 
@@ -40117,11 +36987,11 @@ exports.checkNumberInInterval = function (number, x, y, msg) {
 }
 
 }).call(this,{"isBuffer":require("../../../../browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")})
-},{"../../../../browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":28}],304:[function(require,module,exports){
+},{"../../../../browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":26}],302:[function(require,module,exports){
 var EC = require('elliptic').ec
 module.exports = new EC('secp256k1')
 
-},{"elliptic":318}],305:[function(require,module,exports){
+},{"elliptic":316}],303:[function(require,module,exports){
 (function (Buffer){
 var createHash = require('crypto').createHash
 
@@ -40158,7 +37028,7 @@ exports.ecdhSync = function (publicKey, secretKey) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"../asserts":303,"../messages":314,"./ec":304,"./util":312,"buffer":64,"crypto":76}],306:[function(require,module,exports){
+},{"../asserts":301,"../messages":312,"./ec":302,"./util":310,"buffer":62,"crypto":74}],304:[function(require,module,exports){
 var setImmediate = require('timers').setImmediate
 var objectAssign = require('object-assign')
 
@@ -40222,7 +37092,7 @@ asyncFunctions.forEach(function (obj) {
   }
 })
 
-},{"../asserts":303,"../messages":314,"../promise":315,"./ecdh":305,"./publickey":307,"./recover":308,"./secretkey":309,"./sign":310,"./signature":311,"./verify":313,"object-assign":343,"timers":56}],307:[function(require,module,exports){
+},{"../asserts":301,"../messages":312,"../promise":313,"./ecdh":303,"./publickey":305,"./recover":306,"./secretkey":307,"./sign":308,"./signature":309,"./verify":311,"object-assign":341,"timers":54}],305:[function(require,module,exports){
 (function (Buffer){
 var BN = require('bn.js')
 
@@ -40369,7 +37239,7 @@ exports.publicKeyCombine = function (publicKeys) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"../asserts":303,"../messages":314,"./ec":304,"./util":312,"bn.js":317,"buffer":64}],308:[function(require,module,exports){
+},{"../asserts":301,"../messages":312,"./ec":302,"./util":310,"bn.js":315,"buffer":62}],306:[function(require,module,exports){
 (function (Buffer){
 var asserts = require('../asserts')
 var messages = require('../messages')
@@ -40408,7 +37278,7 @@ exports.recoverSync = function (msg, signature, recovery) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"../asserts":303,"../messages":314,"./ec":304,"./util":312,"buffer":64}],309:[function(require,module,exports){
+},{"../asserts":301,"../messages":312,"./ec":302,"./util":310,"buffer":62}],307:[function(require,module,exports){
 (function (Buffer){
 var BN = require('bn.js')
 
@@ -40608,7 +37478,7 @@ exports.secretKeyTweakMul = function (secretKey, tweak) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"../asserts":303,"../messages":314,"./ec":304,"./util":312,"bn.js":317,"buffer":64}],310:[function(require,module,exports){
+},{"../asserts":301,"../messages":312,"./ec":302,"./util":310,"bn.js":315,"buffer":62}],308:[function(require,module,exports){
 (function (Buffer){
 var asserts = require('../asserts')
 var messages = require('../messages')
@@ -40641,7 +37511,7 @@ exports.signSync = function (msg, secretKey) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"../asserts":303,"../messages":314,"./ec":304,"./util":312,"buffer":64}],311:[function(require,module,exports){
+},{"../asserts":301,"../messages":312,"./ec":302,"./util":310,"buffer":62}],309:[function(require,module,exports){
 (function (Buffer){
 var BN = require('bn.js')
 
@@ -40785,7 +37655,7 @@ exports.signatureImport = function (signature) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"../asserts":303,"../messages":314,"./ec":304,"./util":312,"bn.js":317,"buffer":64}],312:[function(require,module,exports){
+},{"../asserts":301,"../messages":312,"./ec":302,"./util":310,"bn.js":315,"buffer":62}],310:[function(require,module,exports){
 var BN = require('bn.js')
 
 var ec = require('./ec')
@@ -40873,7 +37743,7 @@ exports.bnReduce = function (bn) {
   return bn.mod(ec.curve.n)
 }
 
-},{"./ec":304,"bn.js":317}],313:[function(require,module,exports){
+},{"./ec":302,"bn.js":315}],311:[function(require,module,exports){
 var asserts = require('../asserts')
 var messages = require('../messages')
 var ec = require('./ec')
@@ -40909,7 +37779,7 @@ exports.verifySync = function (msg, signature, publicKey) {
   return ec.verify(msg, sigObj, publicKey)
 }
 
-},{"../asserts":303,"../messages":314,"./ec":304,"./util":312}],314:[function(require,module,exports){
+},{"../asserts":301,"../messages":312,"./ec":302,"./util":310}],312:[function(require,module,exports){
 exports.CALLBACK_TYPE_INVALID = 'callback should be a function'
 exports.COMPRESSED_TYPE_INVALID = 'compressed should be a boolean'
 
@@ -40951,10 +37821,10 @@ exports.ECDSA_RECOVER_FAIL = 'couldn\'t recover public key from signature'
 
 exports.ECDH_FAIL = 'scalar was invalid (zero or overflow)'
 
-},{}],315:[function(require,module,exports){
+},{}],313:[function(require,module,exports){
 module.exports = typeof Promise === 'function' ? Promise : require('bluebird')
 
-},{"bluebird":316}],316:[function(require,module,exports){
+},{"bluebird":314}],314:[function(require,module,exports){
 (function (process,global){
 /* @preserve
  * The MIT License (MIT)
@@ -46271,59 +43141,59 @@ module.exports = ret;
 },{"./es5":13}]},{},[4])(4)
 });                    ;if (typeof window !== 'undefined' && window !== null) {                               window.P = window.Promise;                                                     } else if (typeof self !== 'undefined' && self !== null) {                             self.P = self.Promise;                                                         }
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":31}],317:[function(require,module,exports){
+},{"_process":29}],315:[function(require,module,exports){
+arguments[4][107][0].apply(exports,arguments)
+},{"dup":107}],316:[function(require,module,exports){
 arguments[4][109][0].apply(exports,arguments)
-},{"dup":109}],318:[function(require,module,exports){
+},{"../package.json":340,"./elliptic/curve":319,"./elliptic/curves":322,"./elliptic/ec":323,"./elliptic/eddsa":326,"./elliptic/hmac-drbg":329,"./elliptic/utils":331,"brorand":332,"dup":109}],317:[function(require,module,exports){
+arguments[4][110][0].apply(exports,arguments)
+},{"../../elliptic":316,"bn.js":315,"dup":110}],318:[function(require,module,exports){
 arguments[4][111][0].apply(exports,arguments)
-},{"../package.json":342,"./elliptic/curve":321,"./elliptic/curves":324,"./elliptic/ec":325,"./elliptic/eddsa":328,"./elliptic/hmac-drbg":331,"./elliptic/utils":333,"brorand":334,"dup":111}],319:[function(require,module,exports){
+},{"../../elliptic":316,"../curve":319,"bn.js":315,"dup":111,"inherits":339}],319:[function(require,module,exports){
 arguments[4][112][0].apply(exports,arguments)
-},{"../../elliptic":318,"bn.js":317,"dup":112}],320:[function(require,module,exports){
+},{"./base":317,"./edwards":318,"./mont":320,"./short":321,"dup":112}],320:[function(require,module,exports){
 arguments[4][113][0].apply(exports,arguments)
-},{"../../elliptic":318,"../curve":321,"bn.js":317,"dup":113,"inherits":341}],321:[function(require,module,exports){
+},{"../../elliptic":316,"../curve":319,"bn.js":315,"dup":113,"inherits":339}],321:[function(require,module,exports){
 arguments[4][114][0].apply(exports,arguments)
-},{"./base":319,"./edwards":320,"./mont":322,"./short":323,"dup":114}],322:[function(require,module,exports){
+},{"../../elliptic":316,"../curve":319,"bn.js":315,"dup":114,"inherits":339}],322:[function(require,module,exports){
 arguments[4][115][0].apply(exports,arguments)
-},{"../../elliptic":318,"../curve":321,"bn.js":317,"dup":115,"inherits":341}],323:[function(require,module,exports){
+},{"../elliptic":316,"./precomputed/secp256k1":330,"dup":115,"hash.js":333}],323:[function(require,module,exports){
 arguments[4][116][0].apply(exports,arguments)
-},{"../../elliptic":318,"../curve":321,"bn.js":317,"dup":116,"inherits":341}],324:[function(require,module,exports){
+},{"../../elliptic":316,"./key":324,"./signature":325,"bn.js":315,"dup":116}],324:[function(require,module,exports){
 arguments[4][117][0].apply(exports,arguments)
-},{"../elliptic":318,"./precomputed/secp256k1":332,"dup":117,"hash.js":335}],325:[function(require,module,exports){
+},{"bn.js":315,"dup":117}],325:[function(require,module,exports){
 arguments[4][118][0].apply(exports,arguments)
-},{"../../elliptic":318,"./key":326,"./signature":327,"bn.js":317,"dup":118}],326:[function(require,module,exports){
+},{"../../elliptic":316,"bn.js":315,"dup":118}],326:[function(require,module,exports){
 arguments[4][119][0].apply(exports,arguments)
-},{"bn.js":317,"dup":119}],327:[function(require,module,exports){
+},{"../../elliptic":316,"./key":327,"./signature":328,"dup":119,"hash.js":333}],327:[function(require,module,exports){
 arguments[4][120][0].apply(exports,arguments)
-},{"../../elliptic":318,"bn.js":317,"dup":120}],328:[function(require,module,exports){
+},{"../../elliptic":316,"dup":120}],328:[function(require,module,exports){
 arguments[4][121][0].apply(exports,arguments)
-},{"../../elliptic":318,"./key":329,"./signature":330,"dup":121,"hash.js":335}],329:[function(require,module,exports){
+},{"../../elliptic":316,"bn.js":315,"dup":121}],329:[function(require,module,exports){
 arguments[4][122][0].apply(exports,arguments)
-},{"../../elliptic":318,"dup":122}],330:[function(require,module,exports){
+},{"../elliptic":316,"dup":122,"hash.js":333}],330:[function(require,module,exports){
 arguments[4][123][0].apply(exports,arguments)
-},{"../../elliptic":318,"bn.js":317,"dup":123}],331:[function(require,module,exports){
+},{"dup":123}],331:[function(require,module,exports){
 arguments[4][124][0].apply(exports,arguments)
-},{"../elliptic":318,"dup":124,"hash.js":335}],332:[function(require,module,exports){
+},{"bn.js":315,"dup":124}],332:[function(require,module,exports){
 arguments[4][125][0].apply(exports,arguments)
 },{"dup":125}],333:[function(require,module,exports){
 arguments[4][126][0].apply(exports,arguments)
-},{"bn.js":317,"dup":126}],334:[function(require,module,exports){
+},{"./hash/common":334,"./hash/hmac":335,"./hash/ripemd":336,"./hash/sha":337,"./hash/utils":338,"dup":126}],334:[function(require,module,exports){
 arguments[4][127][0].apply(exports,arguments)
-},{"dup":127}],335:[function(require,module,exports){
+},{"../hash":333,"dup":127}],335:[function(require,module,exports){
 arguments[4][128][0].apply(exports,arguments)
-},{"./hash/common":336,"./hash/hmac":337,"./hash/ripemd":338,"./hash/sha":339,"./hash/utils":340,"dup":128}],336:[function(require,module,exports){
+},{"../hash":333,"dup":128}],336:[function(require,module,exports){
 arguments[4][129][0].apply(exports,arguments)
-},{"../hash":335,"dup":129}],337:[function(require,module,exports){
+},{"../hash":333,"dup":129}],337:[function(require,module,exports){
 arguments[4][130][0].apply(exports,arguments)
-},{"../hash":335,"dup":130}],338:[function(require,module,exports){
+},{"../hash":333,"dup":130}],338:[function(require,module,exports){
 arguments[4][131][0].apply(exports,arguments)
-},{"../hash":335,"dup":131}],339:[function(require,module,exports){
-arguments[4][132][0].apply(exports,arguments)
-},{"../hash":335,"dup":132}],340:[function(require,module,exports){
-arguments[4][133][0].apply(exports,arguments)
-},{"dup":133,"inherits":341}],341:[function(require,module,exports){
-arguments[4][27][0].apply(exports,arguments)
-},{"dup":27}],342:[function(require,module,exports){
-arguments[4][299][0].apply(exports,arguments)
-},{"dup":299}],343:[function(require,module,exports){
+},{"dup":131,"inherits":339}],339:[function(require,module,exports){
+arguments[4][25][0].apply(exports,arguments)
+},{"dup":25}],340:[function(require,module,exports){
+arguments[4][297][0].apply(exports,arguments)
+},{"dup":297}],341:[function(require,module,exports){
 /* eslint-disable no-unused-vars */
 'use strict';
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -46364,9 +43234,443 @@ module.exports = Object.assign || function (target, source) {
 	return to;
 };
 
-},{}],344:[function(require,module,exports){
-arguments[4][3][0].apply(exports,arguments)
-},{"dup":3}],345:[function(require,module,exports){
+},{}],342:[function(require,module,exports){
+(function (global){
+/*
+ * js-sha3 v0.3.1
+ * https://github.com/emn178/js-sha3
+ *
+ * Copyright 2015, emn178@gmail.com
+ *
+ * Licensed under the MIT license:
+ * http://www.opensource.org/licenses/MIT
+ */
+;(function(root, undefined) {
+  'use strict';
+
+  var NODE_JS = typeof(module) != 'undefined';
+  if(NODE_JS) {
+    root = global;
+    if(root.JS_SHA3_TEST) {
+      root.navigator = { userAgent: 'Chrome'};
+    }
+  }
+  var CHROME = (root.JS_SHA3_TEST || !NODE_JS) && navigator.userAgent.indexOf('Chrome') != -1;
+  var HEX_CHARS = '0123456789abcdef'.split('');
+  var KECCAK_PADDING = [1, 256, 65536, 16777216];
+  var PADDING = [6, 1536, 393216, 100663296];
+  var SHIFT = [0, 8, 16, 24];
+  var RC = [1, 0, 32898, 0, 32906, 2147483648, 2147516416, 2147483648, 32907, 0, 2147483649,
+            0, 2147516545, 2147483648, 32777, 2147483648, 138, 0, 136, 0, 2147516425, 0, 
+            2147483658, 0, 2147516555, 0, 139, 2147483648, 32905, 2147483648, 32771, 
+            2147483648, 32770, 2147483648, 128, 2147483648, 32778, 0, 2147483658, 2147483648,
+            2147516545, 2147483648, 32896, 2147483648, 2147483649, 0, 2147516424, 2147483648];
+
+  var blocks = [], s = [];
+
+  var keccak_224 = function(message) {
+    return keccak(message, 224, KECCAK_PADDING);
+  };
+
+  var keccak_256 = function(message) {
+    return keccak(message, 256, KECCAK_PADDING);
+  };
+
+  var keccak_384 = function(message) {
+    return keccak(message, 384, KECCAK_PADDING);
+  };
+
+  var sha3_224 = function(message) {
+    return keccak(message, 224, PADDING);
+  };
+
+  var sha3_256 = function(message) {
+    return keccak(message, 256, PADDING);
+  };
+
+  var sha3_384 = function(message) {
+    return keccak(message, 384, PADDING);
+  };
+
+  var sha3_512 = function(message) {
+    return keccak(message, 512, PADDING);
+  };
+
+  var keccak = function(message, bits, padding) {
+    var notString = typeof(message) != 'string';
+    if(notString && message.constructor == root.ArrayBuffer) {
+      message = new Uint8Array(message);
+    }
+
+    if(bits === undefined) {
+      bits = 512;
+      padding = KECCAK_PADDING;
+    }
+
+    var block, code, end = false, index = 0, start = 0, length = message.length,
+        n, i, h, l, c0, c1, c2, c3, c4, c5, c6, c7, c8, c9, 
+        b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, 
+        b18, b19, b20, b21, b22, b23, b24, b25, b26, b27, b28, b29, b30, b31, b32, b33, 
+        b34, b35, b36, b37, b38, b39, b40, b41, b42, b43, b44, b45, b46, b47, b48, b49;
+    var blockCount = (1600 - bits * 2) / 32;
+    var byteCount = blockCount * 4;
+
+    for(i = 0;i < 50;++i) {
+      s[i] = 0;
+    }
+
+    block = 0;
+    do {
+      blocks[0] = block;
+      for(i = 1;i < blockCount + 1;++i) {
+        blocks[i] = 0;
+      }
+      if(notString) {
+        for (i = start;index < length && i < byteCount; ++index) {
+          blocks[i >> 2] |= message[index] << SHIFT[i++ & 3];
+        }
+      } else {
+        for (i = start;index < length && i < byteCount; ++index) {
+          code = message.charCodeAt(index);
+          if (code < 0x80) {
+            blocks[i >> 2] |= code << SHIFT[i++ & 3];
+          } else if (code < 0x800) {
+            blocks[i >> 2] |= (0xc0 | (code >> 6)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
+          } else if (code < 0xd800 || code >= 0xe000) {
+            blocks[i >> 2] |= (0xe0 | (code >> 12)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | ((code >> 6) & 0x3f)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
+          } else {
+            code = 0x10000 + (((code & 0x3ff) << 10) | (message.charCodeAt(++index) & 0x3ff));
+            blocks[i >> 2] |= (0xf0 | (code >> 18)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | ((code >> 12) & 0x3f)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | ((code >> 6) & 0x3f)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
+          }
+        }
+      }
+      start = i - byteCount;
+      if(index == length) {
+        blocks[i >> 2] |= padding[i & 3];
+        ++index;
+      }
+      block = blocks[blockCount];
+      if(index > length && i < byteCount) {
+        blocks[blockCount - 1] |= 0x80000000;
+        end = true;
+      }
+
+      for(i = 0;i < blockCount;++i) {
+        s[i] ^= blocks[i];
+      }
+
+      for(n = 0; n < 48; n += 2) {
+        c0 = s[0] ^ s[10] ^ s[20] ^ s[30] ^ s[40];
+        c1 = s[1] ^ s[11] ^ s[21] ^ s[31] ^ s[41];
+        c2 = s[2] ^ s[12] ^ s[22] ^ s[32] ^ s[42];
+        c3 = s[3] ^ s[13] ^ s[23] ^ s[33] ^ s[43];
+        c4 = s[4] ^ s[14] ^ s[24] ^ s[34] ^ s[44];
+        c5 = s[5] ^ s[15] ^ s[25] ^ s[35] ^ s[45];
+        c6 = s[6] ^ s[16] ^ s[26] ^ s[36] ^ s[46];
+        c7 = s[7] ^ s[17] ^ s[27] ^ s[37] ^ s[47];
+        c8 = s[8] ^ s[18] ^ s[28] ^ s[38] ^ s[48];
+        c9 = s[9] ^ s[19] ^ s[29] ^ s[39] ^ s[49];
+
+        h = c8 ^ ((c2 << 1) | (c3 >>> 31));
+        l = c9 ^ ((c3 << 1) | (c2 >>> 31));
+        s[0] ^= h;
+        s[1] ^= l;
+        s[10] ^= h;
+        s[11] ^= l;
+        s[20] ^= h;
+        s[21] ^= l;
+        s[30] ^= h;
+        s[31] ^= l;
+        s[40] ^= h;
+        s[41] ^= l;
+        h = c0 ^ ((c4 << 1) | (c5 >>> 31));
+        l = c1 ^ ((c5 << 1) | (c4 >>> 31));
+        s[2] ^= h;
+        s[3] ^= l;
+        s[12] ^= h;
+        s[13] ^= l;
+        s[22] ^= h;
+        s[23] ^= l;
+        s[32] ^= h;
+        s[33] ^= l;
+        s[42] ^= h;
+        s[43] ^= l;
+        h = c2 ^ ((c6 << 1) | (c7 >>> 31));
+        l = c3 ^ ((c7 << 1) | (c6 >>> 31));
+        s[4] ^= h;
+        s[5] ^= l;
+        s[14] ^= h;
+        s[15] ^= l;
+        s[24] ^= h;
+        s[25] ^= l;
+        s[34] ^= h;
+        s[35] ^= l;
+        s[44] ^= h;
+        s[45] ^= l;
+        h = c4 ^ ((c8 << 1) | (c9 >>> 31));
+        l = c5 ^ ((c9 << 1) | (c8 >>> 31));
+        s[6] ^= h;
+        s[7] ^= l;
+        s[16] ^= h;
+        s[17] ^= l;
+        s[26] ^= h;
+        s[27] ^= l;
+        s[36] ^= h;
+        s[37] ^= l;
+        s[46] ^= h;
+        s[47] ^= l;
+        h = c6 ^ ((c0 << 1) | (c1 >>> 31));
+        l = c7 ^ ((c1 << 1) | (c0 >>> 31));
+        s[8] ^= h;
+        s[9] ^= l;
+        s[18] ^= h;
+        s[19] ^= l;
+        s[28] ^= h;
+        s[29] ^= l;
+        s[38] ^= h;
+        s[39] ^= l;
+        s[48] ^= h;
+        s[49] ^= l;
+
+        b0 = s[0];
+        b1 = s[1];
+        b32 = (s[11] << 4) | (s[10] >>> 28);
+        b33 = (s[10] << 4) | (s[11] >>> 28);
+        b14 = (s[20] << 3) | (s[21] >>> 29);
+        b15 = (s[21] << 3) | (s[20] >>> 29);
+        b46 = (s[31] << 9) | (s[30] >>> 23);
+        b47 = (s[30] << 9) | (s[31] >>> 23);
+        b28 = (s[40] << 18) | (s[41] >>> 14);
+        b29 = (s[41] << 18) | (s[40] >>> 14);
+        b20 = (s[2] << 1) | (s[3] >>> 31);
+        b21 = (s[3] << 1) | (s[2] >>> 31);
+        b2 = (s[13] << 12) | (s[12] >>> 20);
+        b3 = (s[12] << 12) | (s[13] >>> 20);
+        b34 = (s[22] << 10) | (s[23] >>> 22);
+        b35 = (s[23] << 10) | (s[22] >>> 22);
+        b16 = (s[33] << 13) | (s[32] >>> 19);
+        b17 = (s[32] << 13) | (s[33] >>> 19);
+        b48 = (s[42] << 2) | (s[43] >>> 30);
+        b49 = (s[43] << 2) | (s[42] >>> 30);
+        b40 = (s[5] << 30) | (s[4] >>> 2);
+        b41 = (s[4] << 30) | (s[5] >>> 2);
+        b22 = (s[14] << 6) | (s[15] >>> 26);
+        b23 = (s[15] << 6) | (s[14] >>> 26);
+        b4 = (s[25] << 11) | (s[24] >>> 21);
+        b5 = (s[24] << 11) | (s[25] >>> 21);
+        b36 = (s[34] << 15) | (s[35] >>> 17);
+        b37 = (s[35] << 15) | (s[34] >>> 17);
+        b18 = (s[45] << 29) | (s[44] >>> 3);
+        b19 = (s[44] << 29) | (s[45] >>> 3);
+        b10 = (s[6] << 28) | (s[7] >>> 4);
+        b11 = (s[7] << 28) | (s[6] >>> 4);
+        b42 = (s[17] << 23) | (s[16] >>> 9);
+        b43 = (s[16] << 23) | (s[17] >>> 9);
+        b24 = (s[26] << 25) | (s[27] >>> 7);
+        b25 = (s[27] << 25) | (s[26] >>> 7);
+        b6 = (s[36] << 21) | (s[37] >>> 11);
+        b7 = (s[37] << 21) | (s[36] >>> 11);
+        b38 = (s[47] << 24) | (s[46] >>> 8);
+        b39 = (s[46] << 24) | (s[47] >>> 8);
+        b30 = (s[8] << 27) | (s[9] >>> 5);
+        b31 = (s[9] << 27) | (s[8] >>> 5);
+        b12 = (s[18] << 20) | (s[19] >>> 12);
+        b13 = (s[19] << 20) | (s[18] >>> 12);
+        b44 = (s[29] << 7) | (s[28] >>> 25);
+        b45 = (s[28] << 7) | (s[29] >>> 25);
+        b26 = (s[38] << 8) | (s[39] >>> 24);
+        b27 = (s[39] << 8) | (s[38] >>> 24);
+        b8 = (s[48] << 14) | (s[49] >>> 18);
+        b9 = (s[49] << 14) | (s[48] >>> 18);
+
+        s[0] = b0 ^ (~b2 & b4);
+        s[1] = b1 ^ (~b3 & b5);
+        s[10] = b10 ^ (~b12 & b14);
+        s[11] = b11 ^ (~b13 & b15);
+        s[20] = b20 ^ (~b22 & b24);
+        s[21] = b21 ^ (~b23 & b25);
+        s[30] = b30 ^ (~b32 & b34);
+        s[31] = b31 ^ (~b33 & b35);
+        s[40] = b40 ^ (~b42 & b44);
+        s[41] = b41 ^ (~b43 & b45);
+        s[2] = b2 ^ (~b4 & b6);
+        s[3] = b3 ^ (~b5 & b7);
+        s[12] = b12 ^ (~b14 & b16);
+        s[13] = b13 ^ (~b15 & b17);
+        s[22] = b22 ^ (~b24 & b26);
+        s[23] = b23 ^ (~b25 & b27);
+        s[32] = b32 ^ (~b34 & b36);
+        s[33] = b33 ^ (~b35 & b37);
+        s[42] = b42 ^ (~b44 & b46);
+        s[43] = b43 ^ (~b45 & b47);
+        s[4] = b4 ^ (~b6 & b8);
+        s[5] = b5 ^ (~b7 & b9);
+        s[14] = b14 ^ (~b16 & b18);
+        s[15] = b15 ^ (~b17 & b19);
+        s[24] = b24 ^ (~b26 & b28);
+        s[25] = b25 ^ (~b27 & b29);
+        s[34] = b34 ^ (~b36 & b38);
+        s[35] = b35 ^ (~b37 & b39);
+        s[44] = b44 ^ (~b46 & b48);
+        s[45] = b45 ^ (~b47 & b49);
+        s[6] = b6 ^ (~b8 & b0);
+        s[7] = b7 ^ (~b9 & b1);
+        s[16] = b16 ^ (~b18 & b10);
+        s[17] = b17 ^ (~b19 & b11);
+        s[26] = b26 ^ (~b28 & b20);
+        s[27] = b27 ^ (~b29 & b21);
+        s[36] = b36 ^ (~b38 & b30);
+        s[37] = b37 ^ (~b39 & b31);
+        s[46] = b46 ^ (~b48 & b40);
+        s[47] = b47 ^ (~b49 & b41);
+        s[8] = b8 ^ (~b0 & b2);
+        s[9] = b9 ^ (~b1 & b3);
+        s[18] = b18 ^ (~b10 & b12);
+        s[19] = b19 ^ (~b11 & b13);
+        s[28] = b28 ^ (~b20 & b22);
+        s[29] = b29 ^ (~b21 & b23);
+        s[38] = b38 ^ (~b30 & b32);
+        s[39] = b39 ^ (~b31 & b33);
+        s[48] = b48 ^ (~b40 & b42);
+        s[49] = b49 ^ (~b41 & b43);
+
+        s[0] ^= RC[n];
+        s[1] ^= RC[n + 1];
+      }
+    } while(!end);
+
+    var hex = '';
+    if(CHROME) {
+      b0 = s[0];
+      b1 = s[1];
+      b2 = s[2];
+      b3 = s[3];
+      b4 = s[4];
+      b5 = s[5];
+      b6 = s[6];
+      b7 = s[7];
+      b8 = s[8];
+      b9 = s[9];
+      b10 = s[10];
+      b11 = s[11];
+      b12 = s[12];
+      b13 = s[13];
+      b14 = s[14];
+      b15 = s[15];
+      hex += HEX_CHARS[(b0 >> 4) & 0x0F] + HEX_CHARS[b0 & 0x0F] +
+             HEX_CHARS[(b0 >> 12) & 0x0F] + HEX_CHARS[(b0 >> 8) & 0x0F] +
+             HEX_CHARS[(b0 >> 20) & 0x0F] + HEX_CHARS[(b0 >> 16) & 0x0F] +
+             HEX_CHARS[(b0 >> 28) & 0x0F] + HEX_CHARS[(b0 >> 24) & 0x0F] +
+             HEX_CHARS[(b1 >> 4) & 0x0F] + HEX_CHARS[b1 & 0x0F] +
+             HEX_CHARS[(b1 >> 12) & 0x0F] + HEX_CHARS[(b1 >> 8) & 0x0F] +
+             HEX_CHARS[(b1 >> 20) & 0x0F] + HEX_CHARS[(b1 >> 16) & 0x0F] +
+             HEX_CHARS[(b1 >> 28) & 0x0F] + HEX_CHARS[(b1 >> 24) & 0x0F] +
+             HEX_CHARS[(b2 >> 4) & 0x0F] + HEX_CHARS[b2 & 0x0F] +
+             HEX_CHARS[(b2 >> 12) & 0x0F] + HEX_CHARS[(b2 >> 8) & 0x0F] +
+             HEX_CHARS[(b2 >> 20) & 0x0F] + HEX_CHARS[(b2 >> 16) & 0x0F] +
+             HEX_CHARS[(b2 >> 28) & 0x0F] + HEX_CHARS[(b2 >> 24) & 0x0F] +
+             HEX_CHARS[(b3 >> 4) & 0x0F] + HEX_CHARS[b3 & 0x0F] +
+             HEX_CHARS[(b3 >> 12) & 0x0F] + HEX_CHARS[(b3 >> 8) & 0x0F] +
+             HEX_CHARS[(b3 >> 20) & 0x0F] + HEX_CHARS[(b3 >> 16) & 0x0F] +
+             HEX_CHARS[(b3 >> 28) & 0x0F] + HEX_CHARS[(b3 >> 24) & 0x0F] +
+             HEX_CHARS[(b4 >> 4) & 0x0F] + HEX_CHARS[b4 & 0x0F] +
+             HEX_CHARS[(b4 >> 12) & 0x0F] + HEX_CHARS[(b4 >> 8) & 0x0F] +
+             HEX_CHARS[(b4 >> 20) & 0x0F] + HEX_CHARS[(b4 >> 16) & 0x0F] +
+             HEX_CHARS[(b4 >> 28) & 0x0F] + HEX_CHARS[(b4 >> 24) & 0x0F] +
+             HEX_CHARS[(b5 >> 4) & 0x0F] + HEX_CHARS[b5 & 0x0F] +
+             HEX_CHARS[(b5 >> 12) & 0x0F] + HEX_CHARS[(b5 >> 8) & 0x0F] +
+             HEX_CHARS[(b5 >> 20) & 0x0F] + HEX_CHARS[(b5 >> 16) & 0x0F] +
+             HEX_CHARS[(b5 >> 28) & 0x0F] + HEX_CHARS[(b5 >> 24) & 0x0F] +
+             HEX_CHARS[(b6 >> 4) & 0x0F] + HEX_CHARS[b6 & 0x0F] +
+             HEX_CHARS[(b6 >> 12) & 0x0F] + HEX_CHARS[(b6 >> 8) & 0x0F] +
+             HEX_CHARS[(b6 >> 20) & 0x0F] + HEX_CHARS[(b6 >> 16) & 0x0F] +
+             HEX_CHARS[(b6 >> 28) & 0x0F] + HEX_CHARS[(b6 >> 24) & 0x0F];
+
+      if(bits >= 256) {
+        hex += HEX_CHARS[(b7 >> 4) & 0x0F] + HEX_CHARS[b7 & 0x0F] +
+               HEX_CHARS[(b7 >> 12) & 0x0F] + HEX_CHARS[(b7 >> 8) & 0x0F] +
+               HEX_CHARS[(b7 >> 20) & 0x0F] + HEX_CHARS[(b7 >> 16) & 0x0F] +
+               HEX_CHARS[(b7 >> 28) & 0x0F] + HEX_CHARS[(b7 >> 24) & 0x0F];
+      }
+      if(bits >= 384) {
+        hex += HEX_CHARS[(b8 >> 4) & 0x0F] + HEX_CHARS[b8 & 0x0F] +
+               HEX_CHARS[(b8 >> 12) & 0x0F] + HEX_CHARS[(b8 >> 8) & 0x0F] +
+               HEX_CHARS[(b8 >> 20) & 0x0F] + HEX_CHARS[(b8 >> 16) & 0x0F] +
+               HEX_CHARS[(b8 >> 28) & 0x0F] + HEX_CHARS[(b8 >> 24) & 0x0F] +
+               HEX_CHARS[(b9 >> 4) & 0x0F] + HEX_CHARS[b9 & 0x0F] +
+               HEX_CHARS[(b9 >> 12) & 0x0F] + HEX_CHARS[(b9 >> 8) & 0x0F] +
+               HEX_CHARS[(b9 >> 20) & 0x0F] + HEX_CHARS[(b9 >> 16) & 0x0F] +
+               HEX_CHARS[(b9 >> 28) & 0x0F] + HEX_CHARS[(b9 >> 24) & 0x0F] +
+               HEX_CHARS[(b10 >> 4) & 0x0F] + HEX_CHARS[b10 & 0x0F] +
+               HEX_CHARS[(b10 >> 12) & 0x0F] + HEX_CHARS[(b10 >> 8) & 0x0F] +
+               HEX_CHARS[(b10 >> 20) & 0x0F] + HEX_CHARS[(b10 >> 16) & 0x0F] +
+               HEX_CHARS[(b10 >> 28) & 0x0F] + HEX_CHARS[(b10 >> 24) & 0x0F] +
+               HEX_CHARS[(b11 >> 4) & 0x0F] + HEX_CHARS[b11 & 0x0F] +
+               HEX_CHARS[(b11 >> 12) & 0x0F] + HEX_CHARS[(b11 >> 8) & 0x0F] +
+               HEX_CHARS[(b11 >> 20) & 0x0F] + HEX_CHARS[(b11 >> 16) & 0x0F] +
+               HEX_CHARS[(b11 >> 28) & 0x0F] + HEX_CHARS[(b11 >> 24) & 0x0F];
+      }
+      if(bits == 512) {
+        hex += HEX_CHARS[(b12 >> 4) & 0x0F] + HEX_CHARS[b12 & 0x0F] +
+               HEX_CHARS[(b12 >> 12) & 0x0F] + HEX_CHARS[(b12 >> 8) & 0x0F] +
+               HEX_CHARS[(b12 >> 20) & 0x0F] + HEX_CHARS[(b12 >> 16) & 0x0F] +
+               HEX_CHARS[(b12 >> 28) & 0x0F] + HEX_CHARS[(b12 >> 24) & 0x0F] +
+               HEX_CHARS[(b13 >> 4) & 0x0F] + HEX_CHARS[b13 & 0x0F] +
+               HEX_CHARS[(b13 >> 12) & 0x0F] + HEX_CHARS[(b13 >> 8) & 0x0F] +
+               HEX_CHARS[(b13 >> 20) & 0x0F] + HEX_CHARS[(b13 >> 16) & 0x0F] +
+               HEX_CHARS[(b13 >> 28) & 0x0F] + HEX_CHARS[(b13 >> 24) & 0x0F] +
+               HEX_CHARS[(b14 >> 4) & 0x0F] + HEX_CHARS[b14 & 0x0F] +
+               HEX_CHARS[(b14 >> 12) & 0x0F] + HEX_CHARS[(b14 >> 8) & 0x0F] +
+               HEX_CHARS[(b14 >> 20) & 0x0F] + HEX_CHARS[(b14 >> 16) & 0x0F] +
+               HEX_CHARS[(b14 >> 28) & 0x0F] + HEX_CHARS[(b14 >> 24) & 0x0F] +
+               HEX_CHARS[(b15 >> 4) & 0x0F] + HEX_CHARS[b15 & 0x0F] +
+               HEX_CHARS[(b15 >> 12) & 0x0F] + HEX_CHARS[(b15 >> 8) & 0x0F] +
+               HEX_CHARS[(b15 >> 20) & 0x0F] + HEX_CHARS[(b15 >> 16) & 0x0F] +
+               HEX_CHARS[(b15 >> 28) & 0x0F] + HEX_CHARS[(b15 >> 24) & 0x0F];
+      }
+    } else {
+      for(i = 0, n = bits / 32;i < n;++i) {
+        h = s[i];
+        hex += HEX_CHARS[(h >> 4) & 0x0F] + HEX_CHARS[h & 0x0F] +
+               HEX_CHARS[(h >> 12) & 0x0F] + HEX_CHARS[(h >> 8) & 0x0F] +
+               HEX_CHARS[(h >> 20) & 0x0F] + HEX_CHARS[(h >> 16) & 0x0F] +
+               HEX_CHARS[(h >> 28) & 0x0F] + HEX_CHARS[(h >> 24) & 0x0F];
+      }
+    }
+    return hex;
+  };
+  
+  if(!root.JS_SHA3_TEST && NODE_JS) {
+    module.exports = {
+      sha3_512: sha3_512,
+      sha3_384: sha3_384,
+      sha3_256: sha3_256,
+      sha3_224: sha3_224,
+      keccak_512: keccak,
+      keccak_384: keccak_384,
+      keccak_256: keccak_256,
+      keccak_224: keccak_224
+    };
+  } else if(root) {
+    root.sha3_512 = sha3_512;
+    root.sha3_384 = sha3_384;
+    root.sha3_256 = sha3_256;
+    root.sha3_224 = sha3_224;
+    root.keccak_512 = keccak;
+    root.keccak_384 = keccak_384;
+    root.keccak_256 = keccak_256;
+    root.keccak_224 = keccak_224;
+  }
+}(this));
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],343:[function(require,module,exports){
 //! moment.js
 //! version : 2.10.6
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -49562,7 +46866,7 @@ arguments[4][3][0].apply(exports,arguments)
     return _moment;
 
 }));
-},{}],346:[function(require,module,exports){
+},{}],344:[function(require,module,exports){
 (function (Buffer){
 /**
  * Multi-hash encoder/decoder.
@@ -49619,7 +46923,7 @@ module.exports = {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"bs58":347,"buffer":64}],347:[function(require,module,exports){
+},{"bs58":345,"buffer":62}],345:[function(require,module,exports){
 var basex = require('base-x')
 var ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
 var base58 = basex(ALPHABET)
@@ -49629,7 +46933,7 @@ module.exports = {
   decode: base58.decode
 }
 
-},{"base-x":348}],348:[function(require,module,exports){
+},{"base-x":346}],346:[function(require,module,exports){
 // base* encoding
 // Credits to https://github.com/cryptocoinjs/bs58
 
@@ -49721,7 +47025,7 @@ module.exports = function base (ALPHABET) {
   }
 }
 
-},{}],349:[function(require,module,exports){
+},{}],347:[function(require,module,exports){
 (function (process){
 // Generated by CoffeeScript 1.9.0
 (function() {
@@ -50008,7 +47312,7 @@ module.exports = function base (ALPHABET) {
 }).call(this);
 
 }).call(this,require('_process'))
-},{"_process":31,"events":25,"fs":9,"path":30}],350:[function(require,module,exports){
+},{"_process":29,"events":23,"fs":7,"path":28}],348:[function(require,module,exports){
 (function (Buffer){
 //     uuid.js
 //
@@ -50284,7 +47588,7 @@ module.exports = function base (ALPHABET) {
 })('undefined' !== typeof window ? window : null);
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":64,"crypto":76}],351:[function(require,module,exports){
+},{"buffer":62,"crypto":74}],349:[function(require,module,exports){
 /*!
  * Copyright (c) 2015 Chris O'Hara <cohara87@gmail.com>
  *
@@ -51176,7 +48480,7 @@ module.exports = function base (ALPHABET) {
 
 });
 
-},{}],352:[function(require,module,exports){
+},{}],350:[function(require,module,exports){
 (function (Buffer){
 /**
  * Client-side accounts
@@ -51208,19 +48512,42 @@ module.exports = function () {
         account: {},
 
         // free (testnet) ether for new accounts on registration
-        fund: function (account, onSent, onConfirm) {
+        fund: function (account, onSent, onConfirm, onFinal) {
             var self = this;
-            onSent = onSent || utils.pass;
-            onConfirm = onConfirm || utils.pass;
+            onSent = onSent || utils.noop;
+            onConfirm = onConfirm || utils.noop;
+            onFinal = onFinal || utils.noop;
             augur.rpc.coinbase(function (funder) {
                 if (!funder || funder.error) return onConfirm();
                 augur.rpc.sendEther({
                     to: account.address,
                     value: constants.FREEBIE,
                     from: funder,
-                    onSent: function (r) { onSent(account); },
-                    onSuccess: function (r) { onConfirm(account); },
-                    onFailed: function (r) { onConfirm(r); }
+                    onSent: function (r) {
+                        onSent(account);
+                    },
+                    onSuccess: function (r) {
+                        var count = 0;
+                        var check = function (response) {
+                            if (++count === 2) onFinal(response);
+                        };
+                        onConfirm(account);
+
+                        // exchange half of the free ether for cash
+                        augur.depositEther({
+                            value: constants.FREEBIE*0.5,
+                            onSent: utils.noop,
+                            onSuccess: check,
+                            onFailed: onFinal
+                        });
+                        augur.reputationFaucet({
+                            branch: augur.branches.dev,
+                            onSent: utils.noop,
+                            onSuccess: check,
+                            onFailed: onFinal
+                        });
+                    },
+                    onFailed: onConfirm
                 });
             });
         },
@@ -51434,7 +48761,7 @@ module.exports = function () {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"../constants":355,"../errors":356,"../utilities":360,"augur-abi":1,"bignumber.js":8,"buffer":64,"ethereumjs-tx":269,"keythereum":495,"node-uuid":350}],353:[function(require,module,exports){
+},{"../constants":353,"../errors":354,"../utilities":358,"augur-abi":5,"bignumber.js":6,"buffer":62,"ethereumjs-tx":267,"keythereum":460,"node-uuid":348}],351:[function(require,module,exports){
 (function (global){
 /**
  * augur comments
@@ -51585,7 +48912,7 @@ module.exports = function () {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../constants":355,"async":7,"augur-abi":1,"ipfs-api":11,"multi-hash":346}],354:[function(require,module,exports){
+},{"../constants":353,"async":4,"augur-abi":5,"ipfs-api":9,"multi-hash":344}],352:[function(require,module,exports){
 (function (Buffer){
 /**
  * Database methods
@@ -51668,7 +48995,7 @@ module.exports = {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"../constants":355,"../errors":356,"../utilities":360,"augur-abi":1,"buffer":64,"node-localstorage":349}],355:[function(require,module,exports){
+},{"../constants":353,"../errors":354,"../utilities":358,"augur-abi":5,"buffer":62,"node-localstorage":347}],353:[function(require,module,exports){
 /** 
  * augur.js constants
  */
@@ -51693,7 +49020,7 @@ module.exports = {
     // maximum number of accounts to use for unit tests
     MAX_TEST_ACCOUNTS: 4,
 
-    // 100 free ether for new accounts on registration
+    // free ether for new accounts on registration
     FREEBIE: 100,
 
     // unit test timeout
@@ -51708,7 +49035,7 @@ module.exports = {
     CHROME_ID: "odlcbngbdolepbmofbcllpldjngefaeb"
 };
 
-},{"bignumber.js":8}],356:[function(require,module,exports){
+},{"bignumber.js":6}],354:[function(require,module,exports){
 /************************
  * augur.js error codes *
  ************************/
@@ -51718,10 +49045,6 @@ module.exports = {
 var errors = {
 
     "0x": "no response or bad input",
-
-    cashFaucet: {
-        "-1": "Hey, you're not broke!"
-    },
 
     getSimulatedBuy: {
         "-2": "cost updating error (did you enter a valid quantity?)"
@@ -51909,7 +49232,7 @@ errors.sellShares = errors.buyShares;
 
 module.exports = errors;
 
-},{}],357:[function(require,module,exports){
+},{}],355:[function(require,module,exports){
 /**
  * Filters / logging
  */
@@ -52551,7 +49874,7 @@ module.exports = function () {
     };
 };
 
-},{"./constants":355,"./errors":356,"./utilities":360,"async":7,"augur-abi":1,"chalk":68}],358:[function(require,module,exports){
+},{"./constants":353,"./errors":354,"./utilities":358,"async":4,"augur-abi":5,"chalk":66}],356:[function(require,module,exports){
 (function (process){
 /**
  * augur JavaScript API
@@ -52898,14 +50221,6 @@ Augur.prototype.transact = function (tx, onSent, onSuccess, onFailed) {
  *************/
 
 // faucets.se
-Augur.prototype.cashFaucet = function (onSent, onSuccess, onFailed) {
-    if (onSent && onSent.constructor === Object) {
-        if (onSent.onSuccess) onSuccess = onSent.onSuccess;
-        if (onSent.onFailed) onFailed = onSent.onFailed;
-        if (onSent.onSent) onSent = onSent.onSent;
-    }
-    return this.transact(this.tx.cashFaucet, onSent, onSuccess, onFailed);
-};
 Augur.prototype.reputationFaucet = function (branch, onSent, onSuccess, onFailed) {
     // branch: sha256
     if (branch && branch.constructor === Object && branch.branch) {
@@ -52965,7 +50280,7 @@ Augur.prototype.depositEther = function (value, onSent, onSuccess, onFailed) {
         value = value.value;
     }
     var tx = this.utils.copy(this.tx.depositEther);
-    tx.value = abi.bignum(value).mul(rpc.ETHER).toFixed();
+    tx.value = "0x" + abi.bignum(value).mul(rpc.ETHER).toString(16);
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 Augur.prototype.withdrawEther = function (to, value, onSent, onSuccess, onFailed) {
@@ -54709,7 +52024,7 @@ Augur.prototype.createBatch = function createBatch () {
 module.exports = new Augur();
 
 }).call(this,require('_process'))
-},{"./client/accounts":352,"./client/comments":353,"./client/db":354,"./constants":355,"./errors":356,"./filters":357,"./tx":359,"./utilities":360,"_process":31,"async":7,"augur-abi":1,"augur-contracts":5,"bignumber.js":8,"ethrpc":397}],359:[function(require,module,exports){
+},{"./client/accounts":350,"./client/comments":351,"./client/db":352,"./constants":353,"./errors":354,"./filters":355,"./tx":357,"./utilities":358,"_process":29,"async":4,"augur-abi":5,"augur-contracts":2,"bignumber.js":6,"ethrpc":360}],357:[function(require,module,exports){
 /**
  * Augur transaction objects
  */
@@ -54733,12 +52048,6 @@ module.exports = function (network) {
         },
 
         // faucets.se
-        cashFaucet: {
-            to: contracts.faucets,
-            method: "cashFaucet",
-            returns: "number",
-            send: true
-        },
         reputationFaucet: {
             to: contracts.faucets,
             method: "reputationFaucet",
@@ -55628,7 +52937,7 @@ module.exports = function (network) {
 
 };
 
-},{"augur-contracts":5}],360:[function(require,module,exports){
+},{"augur-contracts":2}],358:[function(require,module,exports){
 (function (process,__dirname){
 "use strict";
 
@@ -55648,6 +52957,8 @@ var constants = require("./constants");
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
 module.exports = {
+
+    noop: function () {},
 
     pass: function (o) { return o; },
 
@@ -55897,8396 +53208,9 @@ module.exports = {
 };
 
 }).call(this,require('_process'),"/src")
-},{"./constants":355,"_process":31,"assert":10,"augur-abi":1,"bignumber.js":8,"chalk":68,"crypto":76,"crypto-browserify":76,"fs":9,"moment":345,"path":30,"validator":351}],361:[function(require,module,exports){
-module.exports = require('./lib/index.js');
-
-},{"./lib/index.js":363}],362:[function(require,module,exports){
-(function (Buffer){
-require('es6-shim');
-const utils = require('ethereumjs-util');
-
-function Common() {
-}
-
-// Convert from short to canonical names
-// FIXME: optimise or make this nicer?
-Common.prototype.elementaryName = function(name) {
-  if (name.startsWith('int['))
-    return 'int256' + name.slice(4);
-  else if (name === 'int')
-    return 'int256';
-  if (name.startsWith('uint['))
-    return 'uint256' + name.slice(4);
-  else if (name === 'uint')
-    return 'uint256';
-  else if (name.startsWith('real['))
-    return 'real128x128' + name.slice(4);
-  else if (name === 'real')
-    return 'real128x128';
-  else if (name.startsWith('ureal['))
-    return 'ureal128x128' + name.slice(4);
-  else if (name === 'ureal')
-    return 'ureal128x128';
-  return name;
-};
-
-Common.prototype.methodID = function(name, types) {
-  return this.eventID(name, types).slice(0, 4);
-};
-
-Common.prototype.eventID = function(name, types) {
-  // FIXME: use node.js util.format?
-  var sig = name + '(' + types.map(this.elementaryName).join(',') + ')';
-  return utils.sha3(new Buffer(sig));
-};
-
-module.exports = Common;
-
-}).call(this,require("buffer").Buffer)
-},{"buffer":64,"es6-shim":365,"ethereumjs-util":366}],363:[function(require,module,exports){
-(function (Buffer){
-require('es6-shim');
-const utils = require('ethereumjs-util');
-const BN = require('bn.js');
-const Common = require('./common.js');
-const utf8 = require('utf8');
-
-var ABI = function() {
-  this.common = new Common();
-};
-
-// Encode as 256bit two's complement
-function toTwos(num) {
-  if (num.isNeg())
-    num = new BN('10000000000000000000000000000000000000000000000000000000000000000', 16).isub(num.iabs());
-    // FIXME: the proper way would be if we have bitwise negation: num.iinv().iaddn(1)
-  return num;
-}
-
-// Decode from 256bit two's complement
-function fromTwos(num) {
-  if (num.testn(255)) // top bit set => negative number
-    num = new BN('10000000000000000000000000000000000000000000000000000000000000000', 16).isub(num).ineg();
-    // FIXME: the proper way would be if we have bitwise negation: num.iinv().iaddn(1)
-  return num;
-}
-
-// Parse N from type<N>
-function parseTypeN(type) {
-  return parseInt(/^\D+(\d+)$/.exec(type)[1]);
-}
-
-// Parse N,M from type<N>x<M>
-function parseTypeNxM(type) {
-  var tmp = /^\D+(\d+)x(\d+)$/.exec(type);
-  return [ parseInt(tmp[1]), parseInt(tmp[2]) ];
-}
-
-// Parse N from type[<N>]
-function parseTypeArray(type) {
-  var tmp = /^\w+\[(\d*)\]$/.exec(type)[1];
-  if (tmp.length === 0)
-    return 0;
-  else
-    return parseInt(tmp);
-}
-
-function isHexString(str) {
-  return str.constructor === String &&
-    (str.slice(0,2) === "0x" || str.slice(0,3) === "-0x");
-}
-
-function parseUglyHex(param) {
-  param = new BN(param.replace("0x", ""), 16);
-  if (param.isNeg()) param = param.add((new BN(2)).pow(new BN(256)));
-  param = param.toString(16);
-  if (param.length % 2) param = "0" + param;
-  return new Buffer(param, "hex");
-}
-
-// Encodes a single item (can be dynamic array)
-// @returns: Buffer
-function encodeSingle(type, arg) {
-  if (type === 'address') {
-    return encodeSingle('uint160', arg);
-  } else if (type === 'bool') {
-    return encodeSingle('uint8', arg ? 1 : 0);
-  } else if (type === 'string') {
-    return encodeSingle('bytes', utf8.encode(arg));
-  } else if (type.match(/\w+\[\d*\]/)) {
-    // this part handles variable length ([]) and fixed-length arrays ([2])
-    // NOTE: we catch here all calls to arrays, that simplifies the rest
-    if (typeof(arg.length) === 'undefined')
-      throw new Error('Not an array?');
-    var size = parseTypeArray(type);
-    if ((size !== 0) && (arg.length > size))
-      throw new Error('Elements exceed array size: ' + size);
-    var type = type.slice(0, type.indexOf('['));
-    var ret = [ encodeSingle('uint256', arg.length) ];
-    for (var i in arg)
-      ret.push(encodeSingle(type, arg[i]));
-    return Buffer.concat(ret);
-  } else if (type === 'bytes') {
-    arg = new Buffer(arg);
-    return Buffer.concat([ encodeSingle('uint256', arg.length), arg, utils.zeros(32 - (arg.length % 32)) ]);
-  } else if (type.startsWith('bytes')) {
-    var size = parseTypeN(type);
-    if (size < 1 || size > 32)
-      throw new Error('Invalid bytes<N> width: ' + size);
-    return utils.rpad(arg, 32);
-  } else if (type.startsWith('uint')) {
-    var size = parseTypeN(type);
-    if ((size % 8) || (size < 8) || (size > 256))
-      throw new Error('Invalid uint<N> width: ' + size);
-    var num = new BN(arg);
-    if (num.bitLength() > size)
-      throw new Error('Supplied uint exceeds width: ' + size + ' vs ' + num.bitLength());
-    return new Buffer(num.toArray('be', 32));
-  } else if (type.startsWith('int')) {
-    var size = parseTypeN(type);
-    if ((size % 8) || (size < 8) || (size > 256))
-      throw new Error('Invalid int<N> width: ' + size);
-    if (isHexString(arg)) arg = parseUglyHex(arg)
-    var num = new BN(arg);
-    if (num.bitLength() > size)
-      throw new Error('Supplied int exceeds width: ' + size + ' vs ' + num.bitLength());
-    return new Buffer(toTwos(num).toArray('be', 32));
-  }
-  // FIXME: support ureal<N>x<M> and real<N>x<M>
-
-  throw new Error('Unsupported or invalid type: ' + type);
-}
-
-// Decodes a single item (can be dynamic array)
-// @returns: array
-// FIXME: this method will need a lot of attention at checking limits and validation
-function decodeSingle(type, arg) {
-  if (type === 'address') {
-    return decodeSingle('uint160', arg);
-  } else if (type === 'bool') {
-    return decodeSingle('uint8', arg).toString() === new BN(1).toString();
-  } else if (type === 'string') {
-    return utf8.decode(decodeSingle('bytes', arg).toString());
-  } else if (type.match(/\w+\[\d*\]/)) {
-    // this part handles variable length ([]) and fixed-length arrays ([2])
-    // NOTE: we catch here all calls to arrays, that simplifies the rest
-    var size = parseTypeArray(type);
-    var type = type.slice(0, type.indexOf('['));
-    var count = decodeSingle('uint256', arg.slice(0, 32)).toNumber();
-    if ((size !== 0) && (count > size))
-      throw new Error('Elements exceed array size: ' + size);
-    var ret = [];
-    for (var i = 1; i < count+1; i++)
-      ret.push(decodeSingle(type, arg.slice(i*32)));
-    return ret;
-  } else if (type === 'bytes') {
-    var size = decodeSingle('uint256', arg.slice(0, 32)).toNumber();
-    return arg.slice(32, 32 + size);
-  } else if (type.startsWith('bytes')) {
-    var size = parseTypeN(type);
-    if (size < 1 || size > 32)
-      throw new Error('Invalid bytes<N> width: ' + size);
-    return arg.slice(0, size);
-  } else if (type.startsWith('uint')) {
-    var size = parseTypeN(type);
-    if ((size % 8) || (size < 8) || (size > 256))
-      throw new Error('Invalid uint<N> width: ' + size);
-    var num = new BN(arg.slice(0, 32), 16, 'be');
-    if (num.bitLength() > size)
-      throw new Error('Decoded int exceeds width: ' + size + ' vs ' + num.bitLength());
-    return num;
-  } else if (type.startsWith('int')) {
-    var size = parseTypeN(type);
-    if ((size % 8) || (size < 8) || (size > 256))
-      throw new Error('Invalid uint<N> width: ' + size);
-    var num = fromTwos(new BN(arg.slice(0, 32), 16, 'be'));
-    if (num.bitLength() > size)
-      throw new Error('Decoded uint exceeds width: ' + size + ' vs ' + num.bitLength());
-    return num;
-  }
-  // FIXME: support ureal<N>x<M> and real<N>x<M>
-
-  throw new Error('Unsupported or invalid type: ' + type);
-}
-
-// Is a type dynamic?
-function isDynamic(type) {
-  // FIXME: handle all types? I don't think anything is missing now
-  return (type === 'string') || (type === 'bytes') || type.match(/\w+\[\d*\]/);
-}
-
-// Encode a method/event with arguments
-// @types an array of string type names
-// @args  an array of the appropriate values
-ABI.prototype.rawEncode = function(name, types, args) {
-  var output = new Buffer(0);
-  var data = new Buffer(0);
-
-  function pushOutput(tmp) {
-    output = Buffer.concat([ output, tmp ]);
-  }
-
-  function pushData(tmp) {
-    data = Buffer.concat([ data, tmp ]);
-  }
-
-  if (name !== null)
-    pushOutput(this.common.methodID(name, types));
-
-  const headLength = 32 * types.length;
-
-  for (var i in types) {
-    var type = this.common.elementaryName(types[i]);
-    var arg = args[i];
-    var cur = encodeSingle(type, arg);
-
-    // Use the head/tail method for storing dynamic data
-    if (isDynamic(type)) {
-      pushOutput(encodeSingle('uint256', headLength + data.length));
-      pushData(cur);
-    } else {
-      pushOutput(cur);
-    }
-  }
-
-  pushOutput(data);
-  return output;
-};
-
-ABI.prototype.rawEncodeResponse = function(types, args) {
-  return this.rawEncode(null, types, args);
-};
-
-ABI.prototype.encode = function(abiDefinition, request, args) {
-  throw new Error('Not implemented');
-};
-
-ABI.prototype.rawDecode = function(name, intypes, outtypes, data) {
-  var ret = [];
-
-  var data = new Buffer(data);
-
-  // Validate if signature matches
-  if (name !== null) {
-    if (this.common.methodID(name, intypes).toString('hex') !== data.slice(0, 4).toString('hex'))
-      throw new Error('Invalid method signature');
-    data = data.slice(4);
-  }
-
-  var offset = 0;
-  for (var i in outtypes) {
-    var type = this.common.elementaryName(outtypes[i]);
-    var cur = data.slice(offset, offset + 32);
-
-    if (isDynamic(type)) {
-      var dataOffset = decodeSingle('uint256', cur).toNumber();
-      // We will read at least 32 bytes
-      if (dataOffset > (data.length - 32))
-        throw new Error('Invalid offset: ' + dataOffset);
-      var tmp = decodeSingle(type, data.slice(dataOffset));
-      if (typeof(tmp) === Array)
-        ret = ret.concat(tmp);
-      else
-        ret.push(tmp);
-    } else {
-      ret.push(decodeSingle(type, cur));
-    }
-    offset += 32;
-  }
-
-  return ret;
-};
-
-ABI.prototype.decode = function(abiDefinition, request, data) {
-  throw new Error('Not implemented');
-};
-
-ABI.prototype.solidityPack = function(types, values) {
-  if (types.length !== values.length) {
-    throw new Error('Number of types are not matching the values');
-  }
-  var ret = [];
-  for (var i = 0; i < types.length; i++) {
-    var type = this.common.elementaryName(types[i]);
-    var value = values[i];
-    if (type === 'bytes') {
-      ret.push(value);
-    } else if (type === 'string') {
-      ret.push(new Buffer(utf8.encode(value)));
-    } else if (type === 'bool') {
-      ret.push(new Buffer(value ? '01' : '00', 'hex'));
-    } else if (type === 'address') {
-      ret.push(utils.pad(value, 20));
-    } else if (type.startsWith('bytes')) {
-      var size = parseTypeN(type);
-      if (size < 1 || size > 32)
-        throw new Error('Invalid bytes<N> width: ' + size);
-      return utils.rpad(value, size);
-    } else if (type.startsWith('uint')) {
-      var size = parseTypeN(type);
-      if ((size % 8) || (size < 8) || (size > 256))
-        throw new Error('Invalid uint<N> width: ' + size);
-      var num = new BN(value);
-      if (num.bitLength() > size)
-        throw new Error('Supplied uint exceeds width: ' + size + ' vs ' + num.bitLength());
-      ret.push(utils.pad(num, size / 8));
-    } else if (type.startsWith('int')) {
-      var size = parseTypeN(type);
-      if ((size % 8) || (size < 8) || (size > 256))
-        throw new Error('Invalid int<N> width: ' + size);
-      var num = new BN(value);
-      if (num.bitLength() > size)
-        throw new Error('Supplied int exceeds width: ' + size + ' vs ' + num.bitLength());
-      ret.push(utils.pad(toTwos(num), size / 8));
-    } else {
-      // FIXME: support all other types
-      throw new Error('Unsupported or invalid type: ' + type);
-    }
-  }
-  return Buffer.concat(ret);
-};
-
-ABI.prototype.soliditySHA3 = function(types, values) {
-  return utils.sha3(this.solidityPack(types, values));
-};
-
-ABI.prototype.soliditySHA256 = function(types, values) {
-  return utils.sha256(this.solidityPack(types, values));
-};
-
-ABI.prototype.solidityRIPEMD160 = function(types, values) {
-  return utils.ripemd160(this.solidityPack(types, values), true);
-};
-
-// Serpent's users are familiar with this encoding
-// - s: string
-// - b: bytes
-// - b<N>: bytes<N>
-// - i: int256
-// - a: int256[]
-
-function isNumeric(c) {
-  // FIXME: is this correct? Seems to work
-  return (c >= '0') && (c <= '9');
-}
-
-ABI.prototype.fromSerpent = function(sig) {
-  var ret = [];
-  for (var i = 0; i < sig.length; i++) {
-    var type = sig[i];
-    if (type === 's' || type === 'b') {
-      var tmp = 'bytes';
-      var j = i + 1;
-      while ((j < sig.length) && isNumeric(sig[j])) {
-        tmp += sig[j] - '0';
-        j++;
-      }
-      i = j - 1;
-      ret.push(tmp);
-    } else if (type === 'i') {
-      ret.push('int256');
-    } else if (type === 'a') {
-      ret.push('int256[]');
-    } else {
-      throw new Error('Unsupported or invalid type: ' + type);
-    }
-  }
-  return ret;
-};
-
-ABI.prototype.toSerpent = function(types) {
-  var ret = [];
-  for (var i = 0; i < types.length; i++) {
-    var type = types[i];
-    if (type === 'bytes' || type === 'string') {
-      ret.push('s');
-    } else if (type.startsWith('bytes')) {
-      ret.push('b' + parseTypeN(type));
-    } else if (type === 'int256') {
-      ret.push('i');
-    } else if (type === 'int256[]') {
-      ret.push('a');
-    } else {
-      throw new Error('Unsupported or invalid type: ' + type);
-    }
-  }
-  return ret.join('');
-};
-
-module.exports = ABI;
-
-}).call(this,require("buffer").Buffer)
-},{"./common.js":362,"bn.js":364,"buffer":64,"es6-shim":365,"ethereumjs-util":366,"utf8":395}],364:[function(require,module,exports){
-(function (module, exports) {
-
-'use strict';
-
-// Utils
-
-function assert(val, msg) {
-  if (!val)
-    throw new Error(msg || 'Assertion failed');
-}
-
-// Could use `inherits` module, but don't want to move from single file
-// architecture yet.
-function inherits(ctor, superCtor) {
-  ctor.super_ = superCtor;
-  var TempCtor = function () {};
-  TempCtor.prototype = superCtor.prototype;
-  ctor.prototype = new TempCtor();
-  ctor.prototype.constructor = ctor;
-}
-
-// BN
-
-function BN(number, base, endian) {
-  // May be `new BN(bn)` ?
-  if (number !== null &&
-      typeof number === 'object' &&
-      Array.isArray(number.words)) {
-    return number;
-  }
-
-  this.negative = 0;
-  this.words = null;
-  this.length = 0;
-
-  // Reduction context
-  this.red = null;
-
-  if (number !== null) {
-    if (base === 'le' || base === 'be') {
-      endian = base;
-      base = 10;
-    }
-
-    this._init(number || 0, base || 10, endian || 'be');
-  }
-}
-if (typeof module === 'object')
-  module.exports = BN;
-else
-  exports.BN = BN;
-
-BN.BN = BN;
-BN.wordSize = 26;
-
-BN.max = function max(left, right) {
-  if (left.cmp(right) > 0)
-    return left;
-  else
-    return right;
-};
-
-BN.min = function min(left, right) {
-  if (left.cmp(right) < 0)
-    return left;
-  else
-    return right;
-};
-
-BN.prototype._init = function init(number, base, endian) {
-  if (typeof number === 'number') {
-    return this._initNumber(number, base, endian);
-  } else if (typeof number === 'object') {
-    return this._initArray(number, base, endian);
-  }
-  if (base === 'hex')
-    base = 16;
-  assert(base === (base | 0) && base >= 2 && base <= 36);
-
-  number = number.toString().replace(/\s+/g, '');
-  var start = 0;
-  if (number[0] === '-')
-    start++;
-
-  if (base === 16)
-    this._parseHex(number, start);
-  else
-    this._parseBase(number, base, start);
-
-  if (number[0] === '-')
-    this.negative = 1;
-
-  this.strip();
-
-  if (endian !== 'le')
-    return;
-
-  this._initArray(this.toArray(), base, endian);
-};
-
-BN.prototype._initNumber = function _initNumber(number, base, endian) {
-  if (number < 0) {
-    this.negative = 1;
-    number = -number;
-  }
-  if (number < 0x4000000) {
-    this.words = [ number & 0x3ffffff ];
-    this.length = 1;
-  } else if (number < 0x10000000000000) {
-    this.words = [
-      number & 0x3ffffff,
-      (number / 0x4000000) & 0x3ffffff
-    ];
-    this.length = 2;
-  } else {
-    assert(number < 0x20000000000000); // 2 ^ 53 (unsafe)
-    this.words = [
-      number & 0x3ffffff,
-      (number / 0x4000000) & 0x3ffffff,
-      1
-    ];
-    this.length = 3;
-  }
-
-  if (endian !== 'le')
-    return;
-
-  // Reverse the bytes
-  this._initArray(this.toArray(), base, endian);
-};
-
-BN.prototype._initArray = function _initArray(number, base, endian) {
-  // Perhaps a Uint8Array
-  assert(typeof number.length === 'number');
-  if (number.length <= 0) {
-    this.words = [ 0 ];
-    this.length = 1;
-    return this;
-  }
-
-  this.length = Math.ceil(number.length / 3);
-  this.words = new Array(this.length);
-  for (var i = 0; i < this.length; i++)
-    this.words[i] = 0;
-
-  var off = 0;
-  if (endian === 'be') {
-    for (var i = number.length - 1, j = 0; i >= 0; i -= 3) {
-      var w = number[i] | (number[i - 1] << 8) | (number[i - 2] << 16);
-      this.words[j] |= (w << off) & 0x3ffffff;
-      this.words[j + 1] = (w >>> (26 - off)) & 0x3ffffff;
-      off += 24;
-      if (off >= 26) {
-        off -= 26;
-        j++;
-      }
-    }
-  } else if (endian === 'le') {
-    for (var i = 0, j = 0; i < number.length; i += 3) {
-      var w = number[i] | (number[i + 1] << 8) | (number[i + 2] << 16);
-      this.words[j] |= (w << off) & 0x3ffffff;
-      this.words[j + 1] = (w >>> (26 - off)) & 0x3ffffff;
-      off += 24;
-      if (off >= 26) {
-        off -= 26;
-        j++;
-      }
-    }
-  }
-  return this.strip();
-};
-
-function parseHex(str, start, end) {
-  var r = 0;
-  var len = Math.min(str.length, end);
-  for (var i = start; i < len; i++) {
-    var c = str.charCodeAt(i) - 48;
-
-    r <<= 4;
-
-    // 'a' - 'f'
-    if (c >= 49 && c <= 54)
-      r |= c - 49 + 0xa;
-
-    // 'A' - 'F'
-    else if (c >= 17 && c <= 22)
-      r |= c - 17 + 0xa;
-
-    // '0' - '9'
-    else
-      r |= c & 0xf;
-  }
-  return r;
-}
-
-BN.prototype._parseHex = function _parseHex(number, start) {
-  // Create possibly bigger array to ensure that it fits the number
-  this.length = Math.ceil((number.length - start) / 6);
-  this.words = new Array(this.length);
-  for (var i = 0; i < this.length; i++)
-    this.words[i] = 0;
-
-  // Scan 24-bit chunks and add them to the number
-  var off = 0;
-  for (var i = number.length - 6, j = 0; i >= start; i -= 6) {
-    var w = parseHex(number, i, i + 6);
-    this.words[j] |= (w << off) & 0x3ffffff;
-    this.words[j + 1] |= w >>> (26 - off) & 0x3fffff;
-    off += 24;
-    if (off >= 26) {
-      off -= 26;
-      j++;
-    }
-  }
-  if (i + 6 !== start) {
-    var w = parseHex(number, start, i + 6);
-    this.words[j] |= (w << off) & 0x3ffffff;
-    this.words[j + 1] |= w >>> (26 - off) & 0x3fffff;
-  }
-  this.strip();
-};
-
-function parseBase(str, start, end, mul) {
-  var r = 0;
-  var len = Math.min(str.length, end);
-  for (var i = start; i < len; i++) {
-    var c = str.charCodeAt(i) - 48;
-
-    r *= mul;
-
-    // 'a'
-    if (c >= 49)
-      r += c - 49 + 0xa;
-
-    // 'A'
-    else if (c >= 17)
-      r += c - 17 + 0xa;
-
-    // '0' - '9'
-    else
-      r += c;
-  }
-  return r;
-}
-
-BN.prototype._parseBase = function _parseBase(number, base, start) {
-  // Initialize as zero
-  this.words = [ 0 ];
-  this.length = 1;
-
-  // Find length of limb in base
-  for (var limbLen = 0, limbPow = 1; limbPow <= 0x3ffffff; limbPow *= base)
-    limbLen++;
-  limbLen--;
-  limbPow = (limbPow / base) | 0;
-
-  var total = number.length - start;
-  var mod = total % limbLen;
-  var end = Math.min(total, total - mod) + start;
-
-  var word = 0;
-  for (var i = start; i < end; i += limbLen) {
-    word = parseBase(number, i, i + limbLen, base);
-
-    this.imuln(limbPow);
-    if (this.words[0] + word < 0x4000000)
-      this.words[0] += word;
-    else
-      this._iaddn(word);
-  }
-
-  if (mod !== 0) {
-    var pow = 1;
-    var word = parseBase(number, i, number.length, base);
-
-    for (var i = 0; i < mod; i++)
-      pow *= base;
-    this.imuln(pow);
-    if (this.words[0] + word < 0x4000000)
-      this.words[0] += word;
-    else
-      this._iaddn(word);
-  }
-};
-
-BN.prototype.copy = function copy(dest) {
-  dest.words = new Array(this.length);
-  for (var i = 0; i < this.length; i++)
-    dest.words[i] = this.words[i];
-  dest.length = this.length;
-  dest.negative = this.negative;
-  dest.red = this.red;
-};
-
-BN.prototype.clone = function clone() {
-  var r = new BN(null);
-  this.copy(r);
-  return r;
-};
-
-// Remove leading `0` from `this`
-BN.prototype.strip = function strip() {
-  while (this.length > 1 && this.words[this.length - 1] === 0)
-    this.length--;
-  return this._normSign();
-};
-
-BN.prototype._normSign = function _normSign() {
-  // -0 = 0
-  if (this.length === 1 && this.words[0] === 0)
-    this.negative = 0;
-  return this;
-};
-
-BN.prototype.inspect = function inspect() {
-  return (this.red ? '<BN-R: ' : '<BN: ') + this.toString(16) + '>';
-};
-
-/*
-
-var zeros = [];
-var groupSizes = [];
-var groupBases = [];
-
-var s = '';
-var i = -1;
-while (++i < BN.wordSize) {
-  zeros[i] = s;
-  s += '0';
-}
-groupSizes[0] = 0;
-groupSizes[1] = 0;
-groupBases[0] = 0;
-groupBases[1] = 0;
-var base = 2 - 1;
-while (++base < 36 + 1) {
-  var groupSize = 0;
-  var groupBase = 1;
-  while (groupBase < (1 << BN.wordSize) / base) {
-    groupBase *= base;
-    groupSize += 1;
-  }
-  groupSizes[base] = groupSize;
-  groupBases[base] = groupBase;
-}
-
-*/
-
-var zeros = [
-  '',
-  '0',
-  '00',
-  '000',
-  '0000',
-  '00000',
-  '000000',
-  '0000000',
-  '00000000',
-  '000000000',
-  '0000000000',
-  '00000000000',
-  '000000000000',
-  '0000000000000',
-  '00000000000000',
-  '000000000000000',
-  '0000000000000000',
-  '00000000000000000',
-  '000000000000000000',
-  '0000000000000000000',
-  '00000000000000000000',
-  '000000000000000000000',
-  '0000000000000000000000',
-  '00000000000000000000000',
-  '000000000000000000000000',
-  '0000000000000000000000000'
-];
-
-var groupSizes = [
-  0, 0,
-  25, 16, 12, 11, 10, 9, 8,
-  8, 7, 7, 7, 7, 6, 6,
-  6, 6, 6, 6, 6, 5, 5,
-  5, 5, 5, 5, 5, 5, 5,
-  5, 5, 5, 5, 5, 5, 5
-];
-
-var groupBases = [
-  0, 0,
-  33554432, 43046721, 16777216, 48828125, 60466176, 40353607, 16777216,
-  43046721, 10000000, 19487171, 35831808, 62748517, 7529536, 11390625,
-  16777216, 24137569, 34012224, 47045881, 64000000, 4084101, 5153632,
-  6436343, 7962624, 9765625, 11881376, 14348907, 17210368, 20511149,
-  24300000, 28629151, 33554432, 39135393, 45435424, 52521875, 60466176
-];
-
-BN.prototype.toString = function toString(base, padding) {
-  base = base || 10;
-  var padding = padding | 0 || 1;
-  if (base === 16 || base === 'hex') {
-    var out = '';
-    var off = 0;
-    var carry = 0;
-    for (var i = 0; i < this.length; i++) {
-      var w = this.words[i];
-      var word = (((w << off) | carry) & 0xffffff).toString(16);
-      carry = (w >>> (24 - off)) & 0xffffff;
-      if (carry !== 0 || i !== this.length - 1)
-        out = zeros[6 - word.length] + word + out;
-      else
-        out = word + out;
-      off += 2;
-      if (off >= 26) {
-        off -= 26;
-        i--;
-      }
-    }
-    if (carry !== 0)
-      out = carry.toString(16) + out;
-    while (out.length % padding !== 0)
-      out = '0' + out;
-    if (this.negative !== 0)
-      out = '-' + out;
-    return out;
-  } else if (base === (base | 0) && base >= 2 && base <= 36) {
-    // var groupSize = Math.floor(BN.wordSize * Math.LN2 / Math.log(base));
-    var groupSize = groupSizes[base];
-    // var groupBase = Math.pow(base, groupSize);
-    var groupBase = groupBases[base];
-    var out = '';
-    var c = this.clone();
-    c.negative = 0;
-    while (c.cmpn(0) !== 0) {
-      var r = c.modn(groupBase).toString(base);
-      c = c.idivn(groupBase);
-
-      if (c.cmpn(0) !== 0)
-        out = zeros[groupSize - r.length] + r + out;
-      else
-        out = r + out;
-    }
-    if (this.cmpn(0) === 0)
-      out = '0' + out;
-    while (out.length % padding !== 0)
-      out = '0' + out;
-    if (this.negative !== 0)
-      out = '-' + out;
-    return out;
-  } else {
-    assert(false, 'Base should be between 2 and 36');
-  }
-};
-
-BN.prototype.toNumber = function toNumber() {
-  assert(this.bitLength() <= 53, 'Number can only safely store up to 53 bits');
-  return parseInt(this.toString(), 10);
-};
-
-BN.prototype.toJSON = function toJSON() {
-  return this.toString(16);
-};
-
-BN.prototype.toArray = function toArray(endian, length) {
-  var byteLength = this.byteLength();
-  var reqLength = length || byteLength;
-  assert(byteLength <= reqLength, 'byte array longer than desired length');
-
-  this.strip();
-  var littleEndian = endian === 'le';
-  var res = new Array(reqLength);
-
-  var q = this.clone();
-  if (!littleEndian) {
-    // Assume big-endian
-    for (var i = 0; i < reqLength - byteLength; i++)
-      res[i] = 0;
-    for (i = 0; q.cmpn(0) !== 0; i++) {
-      var b = q.andln(0xff);
-      q.iushrn(8);
-
-      res[reqLength - i - 1] = b;
-    }
-  } else {
-    for (var i = 0; q.cmpn(0) !== 0; i++) {
-      var b = q.andln(0xff);
-      q.iushrn(8);
-
-      res[i] = b;
-    }
-    for (; i < reqLength; i++)
-      res[i] = 0;
-  }
-
-  return res;
-};
-
-if (Math.clz32) {
-  BN.prototype._countBits = function _countBits(w) {
-    return 32 - Math.clz32(w);
-  };
-} else {
-  BN.prototype._countBits = function _countBits(w) {
-    var t = w;
-    var r = 0;
-    if (t >= 0x1000) {
-      r += 13;
-      t >>>= 13;
-    }
-    if (t >= 0x40) {
-      r += 7;
-      t >>>= 7;
-    }
-    if (t >= 0x8) {
-      r += 4;
-      t >>>= 4;
-    }
-    if (t >= 0x02) {
-      r += 2;
-      t >>>= 2;
-    }
-    return r + t;
-  };
-}
-
-BN.prototype._zeroBits = function _zeroBits(w) {
-  // Short-cut
-  if (w === 0)
-    return 26;
-
-  var t = w;
-  var r = 0;
-  if ((t & 0x1fff) === 0) {
-    r += 13;
-    t >>>= 13;
-  }
-  if ((t & 0x7f) === 0) {
-    r += 7;
-    t >>>= 7;
-  }
-  if ((t & 0xf) === 0) {
-    r += 4;
-    t >>>= 4;
-  }
-  if ((t & 0x3) === 0) {
-    r += 2;
-    t >>>= 2;
-  }
-  if ((t & 0x1) === 0)
-    r++;
-  return r;
-};
-
-// Return number of used bits in a BN
-BN.prototype.bitLength = function bitLength() {
-  var hi = 0;
-  var w = this.words[this.length - 1];
-  var hi = this._countBits(w);
-  return (this.length - 1) * 26 + hi;
-};
-
-function toBitArray(num) {
-  var w = new Array(num.bitLength());
-
-  for (var bit = 0; bit < w.length; bit++) {
-    var off = (bit / 26) | 0;
-    var wbit = bit % 26;
-
-    w[bit] = (num.words[off] & (1 << wbit)) >>> wbit;
-  }
-
-  return w;
-}
-
-// Number of trailing zero bits
-BN.prototype.zeroBits = function zeroBits() {
-  if (this.cmpn(0) === 0)
-    return 0;
-
-  var r = 0;
-  for (var i = 0; i < this.length; i++) {
-    var b = this._zeroBits(this.words[i]);
-    r += b;
-    if (b !== 26)
-      break;
-  }
-  return r;
-};
-
-BN.prototype.byteLength = function byteLength() {
-  return Math.ceil(this.bitLength() / 8);
-};
-
-BN.prototype.isNeg = function isNeg() {
-  return this.negative !== 0;
-};
-
-// Return negative clone of `this`
-BN.prototype.neg = function neg() {
-  if (this.cmpn(0) === 0)
-    return this.clone();
-
-  var r = this.clone();
-  r.negative = this.negative ^ 1;
-  return r;
-};
-
-BN.prototype.ineg = function ineg() {
-  this.negative ^= 1;
-  return this;
-};
-
-// Or `num` with `this` in-place
-BN.prototype.iuor = function iuor(num) {
-  while (this.length < num.length)
-    this.words[this.length++] = 0;
-
-  for (var i = 0; i < num.length; i++)
-    this.words[i] = this.words[i] | num.words[i];
-
-  return this.strip();
-};
-
-BN.prototype.ior = function ior(num) {
-  assert((this.negative | num.negative) === 0);
-  return this.iuor(num);
-};
-
-
-// Or `num` with `this`
-BN.prototype.or = function or(num) {
-  if (this.length > num.length)
-    return this.clone().ior(num);
-  else
-    return num.clone().ior(this);
-};
-
-BN.prototype.uor = function uor(num) {
-  if (this.length > num.length)
-    return this.clone().iuor(num);
-  else
-    return num.clone().iuor(this);
-};
-
-
-// And `num` with `this` in-place
-BN.prototype.iuand = function iuand(num) {
-  // b = min-length(num, this)
-  var b;
-  if (this.length > num.length)
-    b = num;
-  else
-    b = this;
-
-  for (var i = 0; i < b.length; i++)
-    this.words[i] = this.words[i] & num.words[i];
-
-  this.length = b.length;
-
-  return this.strip();
-};
-
-BN.prototype.iand = function iand(num) {
-  assert((this.negative | num.negative) === 0);
-  return this.iuand(num);
-};
-
-
-// And `num` with `this`
-BN.prototype.and = function and(num) {
-  if (this.length > num.length)
-    return this.clone().iand(num);
-  else
-    return num.clone().iand(this);
-};
-
-BN.prototype.uand = function uand(num) {
-  if (this.length > num.length)
-    return this.clone().iuand(num);
-  else
-    return num.clone().iuand(this);
-};
-
-
-// Xor `num` with `this` in-place
-BN.prototype.iuxor = function iuxor(num) {
-  // a.length > b.length
-  var a;
-  var b;
-  if (this.length > num.length) {
-    a = this;
-    b = num;
-  } else {
-    a = num;
-    b = this;
-  }
-
-  for (var i = 0; i < b.length; i++)
-    this.words[i] = a.words[i] ^ b.words[i];
-
-  if (this !== a)
-    for (; i < a.length; i++)
-      this.words[i] = a.words[i];
-
-  this.length = a.length;
-
-  return this.strip();
-};
-
-BN.prototype.ixor = function ixor(num) {
-  assert((this.negative | num.negative) === 0);
-  return this.iuxor(num);
-};
-
-
-// Xor `num` with `this`
-BN.prototype.xor = function xor(num) {
-  if (this.length > num.length)
-    return this.clone().ixor(num);
-  else
-    return num.clone().ixor(this);
-};
-
-BN.prototype.uxor = function uxor(num) {
-  if (this.length > num.length)
-    return this.clone().iuxor(num);
-  else
-    return num.clone().iuxor(this);
-};
-
-
-// Set `bit` of `this`
-BN.prototype.setn = function setn(bit, val) {
-  assert(typeof bit === 'number' && bit >= 0);
-
-  var off = (bit / 26) | 0;
-  var wbit = bit % 26;
-
-  while (this.length <= off)
-    this.words[this.length++] = 0;
-
-  if (val)
-    this.words[off] = this.words[off] | (1 << wbit);
-  else
-    this.words[off] = this.words[off] & ~(1 << wbit);
-
-  return this.strip();
-};
-
-
-// Add `num` to `this` in-place
-BN.prototype.iadd = function iadd(num) {
-  // negative + positive
-  if (this.negative !== 0 && num.negative === 0) {
-    this.negative = 0;
-    var r = this.isub(num);
-    this.negative ^= 1;
-    return this._normSign();
-
-  // positive + negative
-  } else if (this.negative === 0 && num.negative !== 0) {
-    num.negative = 0;
-    var r = this.isub(num);
-    num.negative = 1;
-    return r._normSign();
-  }
-
-  // a.length > b.length
-  var a;
-  var b;
-  if (this.length > num.length) {
-    a = this;
-    b = num;
-  } else {
-    a = num;
-    b = this;
-  }
-
-  var carry = 0;
-  for (var i = 0; i < b.length; i++) {
-    var r = (a.words[i] | 0) + (b.words[i] | 0) + carry;
-    this.words[i] = r & 0x3ffffff;
-    carry = r >>> 26;
-  }
-  for (; carry !== 0 && i < a.length; i++) {
-    var r = (a.words[i] | 0) + carry;
-    this.words[i] = r & 0x3ffffff;
-    carry = r >>> 26;
-  }
-
-  this.length = a.length;
-  if (carry !== 0) {
-    this.words[this.length] = carry;
-    this.length++;
-  // Copy the rest of the words
-  } else if (a !== this) {
-    for (; i < a.length; i++)
-      this.words[i] = a.words[i];
-  }
-
-  return this;
-};
-
-// Add `num` to `this`
-BN.prototype.add = function add(num) {
-  if (num.negative !== 0 && this.negative === 0) {
-    num.negative = 0;
-    var res = this.sub(num);
-    num.negative ^= 1;
-    return res;
-  } else if (num.negative === 0 && this.negative !== 0) {
-    this.negative = 0;
-    var res = num.sub(this);
-    this.negative = 1;
-    return res;
-  }
-
-  if (this.length > num.length)
-    return this.clone().iadd(num);
-  else
-    return num.clone().iadd(this);
-};
-
-// Subtract `num` from `this` in-place
-BN.prototype.isub = function isub(num) {
-  // this - (-num) = this + num
-  if (num.negative !== 0) {
-    num.negative = 0;
-    var r = this.iadd(num);
-    num.negative = 1;
-    return r._normSign();
-
-  // -this - num = -(this + num)
-  } else if (this.negative !== 0) {
-    this.negative = 0;
-    this.iadd(num);
-    this.negative = 1;
-    return this._normSign();
-  }
-
-  // At this point both numbers are positive
-  var cmp = this.cmp(num);
-
-  // Optimization - zeroify
-  if (cmp === 0) {
-    this.negative = 0;
-    this.length = 1;
-    this.words[0] = 0;
-    return this;
-  }
-
-  // a > b
-  var a;
-  var b;
-  if (cmp > 0) {
-    a = this;
-    b = num;
-  } else {
-    a = num;
-    b = this;
-  }
-
-  var carry = 0;
-  for (var i = 0; i < b.length; i++) {
-    var r = (a.words[i] | 0) - (b.words[i] | 0) + carry;
-    carry = r >> 26;
-    this.words[i] = r & 0x3ffffff;
-  }
-  for (; carry !== 0 && i < a.length; i++) {
-    var r = (a.words[i] | 0) + carry;
-    carry = r >> 26;
-    this.words[i] = r & 0x3ffffff;
-  }
-
-  // Copy rest of the words
-  if (carry === 0 && i < a.length && a !== this)
-    for (; i < a.length; i++)
-      this.words[i] = a.words[i];
-  this.length = Math.max(this.length, i);
-
-  if (a !== this)
-    this.negative = 1;
-
-  return this.strip();
-};
-
-// Subtract `num` from `this`
-BN.prototype.sub = function sub(num) {
-  return this.clone().isub(num);
-};
-
-/*
-// NOTE: This could be potentionally used to generate loop-less multiplications
-function _genCombMulTo(alen, blen) {
-  var len = alen + blen - 1;
-  var src = [
-    'var a = self.words;',
-    'var b = num.words;',
-    'var o = out.words;',
-    'var c = 0;',
-    'var lo;',
-    'var mid;',
-    'var hi;'
-  ];
-  for (var i = 0; i < alen; i++) {
-    src.push('var a' + i + ' = a[' + i + '] | 0;');
-    src.push('var al' + i + ' = a' + i + ' & 0x1fff;');
-    src.push('var ah' + i + ' = a' + i + ' >>> 13;');
-  }
-  for (var i = 0; i < blen; i++) {
-    src.push('var b' + i + ' = b[' + i + '] | 0;');
-    src.push('var bl' + i + ' = b' + i + ' & 0x1fff;');
-    src.push('var bh' + i + ' = b' + i + ' >>> 13;');
-  }
-  src.push('');
-  src.push('out.length = ' + len + ';');
-
-  for (var k = 0; k < len; k++) {
-    var minJ = Math.max(0, k - alen + 1);
-    var maxJ = Math.min(k, blen - 1);
-
-    src.push('\/* k = ' + k + ' *\/');
-    src.push('var w' + k + ' = c;');
-    src.push('c = 0;');
-    for (var j = minJ; j <= maxJ; j++) {
-      var i = k - j;
-
-      src.push('lo = Math.imul(al' + i + ', bl' + j + ');');
-      src.push('mid = Math.imul(al' + i + ', bh' + j + ');');
-      src.push('mid = (mid + Math.imul(ah' + i + ', bl' + j + ')) | 0;');
-      src.push('hi = Math.imul(ah' + i + ', bh' + j + ');');
-
-      src.push('w' + k + ' = (w' + k + ' + lo) | 0;');
-      src.push('w' + k + ' = (w' + k + ' + ((mid & 0x1fff) << 13)) | 0;');
-      src.push('c = (c + hi) | 0;');
-      src.push('c = (c + (mid >>> 13)) | 0;');
-      src.push('c = (c + (w' + k + ' >>> 26)) | 0;');
-      src.push('w' + k + ' &= 0x3ffffff;');
-    }
-  }
-  // Store in separate step for better memory access
-  for (var k = 0; k < len; k++)
-    src.push('o[' + k + '] = w' + k + ';');
-  src.push('if (c !== 0) {',
-           '  o[' + k + '] = c;',
-           '  out.length++;',
-           '}',
-           'return out;');
-
-  return src.join('\n');
-}
-console.log(_genCombMulTo(10, 10));
-*/
-
-function smallMulTo(self, num, out) {
-  out.negative = num.negative ^ self.negative;
-  var len = (self.length + num.length) | 0;
-  out.length = len;
-  len = (len - 1) | 0;
-
-  // Peel one iteration (compiler can't do it, because of code complexity)
-  var a = self.words[0] | 0;
-  var b = num.words[0] | 0;
-  var r = a * b;
-
-  var lo = r & 0x3ffffff;
-  var carry = (r / 0x4000000) | 0;
-  out.words[0] = lo;
-
-  for (var k = 1; k < len; k++) {
-    // Sum all words with the same `i + j = k` and accumulate `ncarry`,
-    // note that ncarry could be >= 0x3ffffff
-    var ncarry = carry >>> 26;
-    var rword = carry & 0x3ffffff;
-    var maxJ = Math.min(k, num.length - 1);
-    for (var j = Math.max(0, k - self.length + 1); j <= maxJ; j++) {
-      var i = (k - j) | 0;
-      var a = self.words[i] | 0;
-      var b = num.words[j] | 0;
-      var r = a * b;
-
-      var lo = r & 0x3ffffff;
-      ncarry = (ncarry + ((r / 0x4000000) | 0)) | 0;
-      lo = (lo + rword) | 0;
-      rword = lo & 0x3ffffff;
-      ncarry = (ncarry + (lo >>> 26)) | 0;
-    }
-    out.words[k] = rword | 0;
-    carry = ncarry | 0;
-  }
-  if (carry !== 0) {
-    out.words[k] = carry | 0;
-  } else {
-    out.length--;
-  }
-
-  return out.strip();
-}
-
-// TODO(indutny): it may be reasonable to omit it for users who don't need
-// to work with 256-bit numbers, otherwise it gives 20% improvement for 256-bit
-// multiplication (like elliptic secp256k1).
-var comb10MulTo = function comb10MulTo(self, num, out) {
-  var a = self.words;
-  var b = num.words;
-  var o = out.words;
-  var c = 0;
-  var lo;
-  var mid;
-  var hi;
-  var a0 = a[0] | 0;
-  var al0 = a0 & 0x1fff;
-  var ah0 = a0 >>> 13;
-  var a1 = a[1] | 0;
-  var al1 = a1 & 0x1fff;
-  var ah1 = a1 >>> 13;
-  var a2 = a[2] | 0;
-  var al2 = a2 & 0x1fff;
-  var ah2 = a2 >>> 13;
-  var a3 = a[3] | 0;
-  var al3 = a3 & 0x1fff;
-  var ah3 = a3 >>> 13;
-  var a4 = a[4] | 0;
-  var al4 = a4 & 0x1fff;
-  var ah4 = a4 >>> 13;
-  var a5 = a[5] | 0;
-  var al5 = a5 & 0x1fff;
-  var ah5 = a5 >>> 13;
-  var a6 = a[6] | 0;
-  var al6 = a6 & 0x1fff;
-  var ah6 = a6 >>> 13;
-  var a7 = a[7] | 0;
-  var al7 = a7 & 0x1fff;
-  var ah7 = a7 >>> 13;
-  var a8 = a[8] | 0;
-  var al8 = a8 & 0x1fff;
-  var ah8 = a8 >>> 13;
-  var a9 = a[9] | 0;
-  var al9 = a9 & 0x1fff;
-  var ah9 = a9 >>> 13;
-  var b0 = b[0] | 0;
-  var bl0 = b0 & 0x1fff;
-  var bh0 = b0 >>> 13;
-  var b1 = b[1] | 0;
-  var bl1 = b1 & 0x1fff;
-  var bh1 = b1 >>> 13;
-  var b2 = b[2] | 0;
-  var bl2 = b2 & 0x1fff;
-  var bh2 = b2 >>> 13;
-  var b3 = b[3] | 0;
-  var bl3 = b3 & 0x1fff;
-  var bh3 = b3 >>> 13;
-  var b4 = b[4] | 0;
-  var bl4 = b4 & 0x1fff;
-  var bh4 = b4 >>> 13;
-  var b5 = b[5] | 0;
-  var bl5 = b5 & 0x1fff;
-  var bh5 = b5 >>> 13;
-  var b6 = b[6] | 0;
-  var bl6 = b6 & 0x1fff;
-  var bh6 = b6 >>> 13;
-  var b7 = b[7] | 0;
-  var bl7 = b7 & 0x1fff;
-  var bh7 = b7 >>> 13;
-  var b8 = b[8] | 0;
-  var bl8 = b8 & 0x1fff;
-  var bh8 = b8 >>> 13;
-  var b9 = b[9] | 0;
-  var bl9 = b9 & 0x1fff;
-  var bh9 = b9 >>> 13;
-
-  out.length = 19;
-  /* k = 0 */
-  var w0 = c;
-  c = 0;
-  lo = Math.imul(al0, bl0);
-  mid = Math.imul(al0, bh0);
-  mid = (mid + Math.imul(ah0, bl0)) | 0;
-  hi = Math.imul(ah0, bh0);
-  w0 = (w0 + lo) | 0;
-  w0 = (w0 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w0 >>> 26)) | 0;
-  w0 &= 0x3ffffff;
-  /* k = 1 */
-  var w1 = c;
-  c = 0;
-  lo = Math.imul(al1, bl0);
-  mid = Math.imul(al1, bh0);
-  mid = (mid + Math.imul(ah1, bl0)) | 0;
-  hi = Math.imul(ah1, bh0);
-  w1 = (w1 + lo) | 0;
-  w1 = (w1 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w1 >>> 26)) | 0;
-  w1 &= 0x3ffffff;
-  lo = Math.imul(al0, bl1);
-  mid = Math.imul(al0, bh1);
-  mid = (mid + Math.imul(ah0, bl1)) | 0;
-  hi = Math.imul(ah0, bh1);
-  w1 = (w1 + lo) | 0;
-  w1 = (w1 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w1 >>> 26)) | 0;
-  w1 &= 0x3ffffff;
-  /* k = 2 */
-  var w2 = c;
-  c = 0;
-  lo = Math.imul(al2, bl0);
-  mid = Math.imul(al2, bh0);
-  mid = (mid + Math.imul(ah2, bl0)) | 0;
-  hi = Math.imul(ah2, bh0);
-  w2 = (w2 + lo) | 0;
-  w2 = (w2 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w2 >>> 26)) | 0;
-  w2 &= 0x3ffffff;
-  lo = Math.imul(al1, bl1);
-  mid = Math.imul(al1, bh1);
-  mid = (mid + Math.imul(ah1, bl1)) | 0;
-  hi = Math.imul(ah1, bh1);
-  w2 = (w2 + lo) | 0;
-  w2 = (w2 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w2 >>> 26)) | 0;
-  w2 &= 0x3ffffff;
-  lo = Math.imul(al0, bl2);
-  mid = Math.imul(al0, bh2);
-  mid = (mid + Math.imul(ah0, bl2)) | 0;
-  hi = Math.imul(ah0, bh2);
-  w2 = (w2 + lo) | 0;
-  w2 = (w2 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w2 >>> 26)) | 0;
-  w2 &= 0x3ffffff;
-  /* k = 3 */
-  var w3 = c;
-  c = 0;
-  lo = Math.imul(al3, bl0);
-  mid = Math.imul(al3, bh0);
-  mid = (mid + Math.imul(ah3, bl0)) | 0;
-  hi = Math.imul(ah3, bh0);
-  w3 = (w3 + lo) | 0;
-  w3 = (w3 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w3 >>> 26)) | 0;
-  w3 &= 0x3ffffff;
-  lo = Math.imul(al2, bl1);
-  mid = Math.imul(al2, bh1);
-  mid = (mid + Math.imul(ah2, bl1)) | 0;
-  hi = Math.imul(ah2, bh1);
-  w3 = (w3 + lo) | 0;
-  w3 = (w3 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w3 >>> 26)) | 0;
-  w3 &= 0x3ffffff;
-  lo = Math.imul(al1, bl2);
-  mid = Math.imul(al1, bh2);
-  mid = (mid + Math.imul(ah1, bl2)) | 0;
-  hi = Math.imul(ah1, bh2);
-  w3 = (w3 + lo) | 0;
-  w3 = (w3 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w3 >>> 26)) | 0;
-  w3 &= 0x3ffffff;
-  lo = Math.imul(al0, bl3);
-  mid = Math.imul(al0, bh3);
-  mid = (mid + Math.imul(ah0, bl3)) | 0;
-  hi = Math.imul(ah0, bh3);
-  w3 = (w3 + lo) | 0;
-  w3 = (w3 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w3 >>> 26)) | 0;
-  w3 &= 0x3ffffff;
-  /* k = 4 */
-  var w4 = c;
-  c = 0;
-  lo = Math.imul(al4, bl0);
-  mid = Math.imul(al4, bh0);
-  mid = (mid + Math.imul(ah4, bl0)) | 0;
-  hi = Math.imul(ah4, bh0);
-  w4 = (w4 + lo) | 0;
-  w4 = (w4 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w4 >>> 26)) | 0;
-  w4 &= 0x3ffffff;
-  lo = Math.imul(al3, bl1);
-  mid = Math.imul(al3, bh1);
-  mid = (mid + Math.imul(ah3, bl1)) | 0;
-  hi = Math.imul(ah3, bh1);
-  w4 = (w4 + lo) | 0;
-  w4 = (w4 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w4 >>> 26)) | 0;
-  w4 &= 0x3ffffff;
-  lo = Math.imul(al2, bl2);
-  mid = Math.imul(al2, bh2);
-  mid = (mid + Math.imul(ah2, bl2)) | 0;
-  hi = Math.imul(ah2, bh2);
-  w4 = (w4 + lo) | 0;
-  w4 = (w4 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w4 >>> 26)) | 0;
-  w4 &= 0x3ffffff;
-  lo = Math.imul(al1, bl3);
-  mid = Math.imul(al1, bh3);
-  mid = (mid + Math.imul(ah1, bl3)) | 0;
-  hi = Math.imul(ah1, bh3);
-  w4 = (w4 + lo) | 0;
-  w4 = (w4 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w4 >>> 26)) | 0;
-  w4 &= 0x3ffffff;
-  lo = Math.imul(al0, bl4);
-  mid = Math.imul(al0, bh4);
-  mid = (mid + Math.imul(ah0, bl4)) | 0;
-  hi = Math.imul(ah0, bh4);
-  w4 = (w4 + lo) | 0;
-  w4 = (w4 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w4 >>> 26)) | 0;
-  w4 &= 0x3ffffff;
-  /* k = 5 */
-  var w5 = c;
-  c = 0;
-  lo = Math.imul(al5, bl0);
-  mid = Math.imul(al5, bh0);
-  mid = (mid + Math.imul(ah5, bl0)) | 0;
-  hi = Math.imul(ah5, bh0);
-  w5 = (w5 + lo) | 0;
-  w5 = (w5 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w5 >>> 26)) | 0;
-  w5 &= 0x3ffffff;
-  lo = Math.imul(al4, bl1);
-  mid = Math.imul(al4, bh1);
-  mid = (mid + Math.imul(ah4, bl1)) | 0;
-  hi = Math.imul(ah4, bh1);
-  w5 = (w5 + lo) | 0;
-  w5 = (w5 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w5 >>> 26)) | 0;
-  w5 &= 0x3ffffff;
-  lo = Math.imul(al3, bl2);
-  mid = Math.imul(al3, bh2);
-  mid = (mid + Math.imul(ah3, bl2)) | 0;
-  hi = Math.imul(ah3, bh2);
-  w5 = (w5 + lo) | 0;
-  w5 = (w5 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w5 >>> 26)) | 0;
-  w5 &= 0x3ffffff;
-  lo = Math.imul(al2, bl3);
-  mid = Math.imul(al2, bh3);
-  mid = (mid + Math.imul(ah2, bl3)) | 0;
-  hi = Math.imul(ah2, bh3);
-  w5 = (w5 + lo) | 0;
-  w5 = (w5 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w5 >>> 26)) | 0;
-  w5 &= 0x3ffffff;
-  lo = Math.imul(al1, bl4);
-  mid = Math.imul(al1, bh4);
-  mid = (mid + Math.imul(ah1, bl4)) | 0;
-  hi = Math.imul(ah1, bh4);
-  w5 = (w5 + lo) | 0;
-  w5 = (w5 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w5 >>> 26)) | 0;
-  w5 &= 0x3ffffff;
-  lo = Math.imul(al0, bl5);
-  mid = Math.imul(al0, bh5);
-  mid = (mid + Math.imul(ah0, bl5)) | 0;
-  hi = Math.imul(ah0, bh5);
-  w5 = (w5 + lo) | 0;
-  w5 = (w5 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w5 >>> 26)) | 0;
-  w5 &= 0x3ffffff;
-  /* k = 6 */
-  var w6 = c;
-  c = 0;
-  lo = Math.imul(al6, bl0);
-  mid = Math.imul(al6, bh0);
-  mid = (mid + Math.imul(ah6, bl0)) | 0;
-  hi = Math.imul(ah6, bh0);
-  w6 = (w6 + lo) | 0;
-  w6 = (w6 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w6 >>> 26)) | 0;
-  w6 &= 0x3ffffff;
-  lo = Math.imul(al5, bl1);
-  mid = Math.imul(al5, bh1);
-  mid = (mid + Math.imul(ah5, bl1)) | 0;
-  hi = Math.imul(ah5, bh1);
-  w6 = (w6 + lo) | 0;
-  w6 = (w6 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w6 >>> 26)) | 0;
-  w6 &= 0x3ffffff;
-  lo = Math.imul(al4, bl2);
-  mid = Math.imul(al4, bh2);
-  mid = (mid + Math.imul(ah4, bl2)) | 0;
-  hi = Math.imul(ah4, bh2);
-  w6 = (w6 + lo) | 0;
-  w6 = (w6 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w6 >>> 26)) | 0;
-  w6 &= 0x3ffffff;
-  lo = Math.imul(al3, bl3);
-  mid = Math.imul(al3, bh3);
-  mid = (mid + Math.imul(ah3, bl3)) | 0;
-  hi = Math.imul(ah3, bh3);
-  w6 = (w6 + lo) | 0;
-  w6 = (w6 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w6 >>> 26)) | 0;
-  w6 &= 0x3ffffff;
-  lo = Math.imul(al2, bl4);
-  mid = Math.imul(al2, bh4);
-  mid = (mid + Math.imul(ah2, bl4)) | 0;
-  hi = Math.imul(ah2, bh4);
-  w6 = (w6 + lo) | 0;
-  w6 = (w6 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w6 >>> 26)) | 0;
-  w6 &= 0x3ffffff;
-  lo = Math.imul(al1, bl5);
-  mid = Math.imul(al1, bh5);
-  mid = (mid + Math.imul(ah1, bl5)) | 0;
-  hi = Math.imul(ah1, bh5);
-  w6 = (w6 + lo) | 0;
-  w6 = (w6 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w6 >>> 26)) | 0;
-  w6 &= 0x3ffffff;
-  lo = Math.imul(al0, bl6);
-  mid = Math.imul(al0, bh6);
-  mid = (mid + Math.imul(ah0, bl6)) | 0;
-  hi = Math.imul(ah0, bh6);
-  w6 = (w6 + lo) | 0;
-  w6 = (w6 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w6 >>> 26)) | 0;
-  w6 &= 0x3ffffff;
-  /* k = 7 */
-  var w7 = c;
-  c = 0;
-  lo = Math.imul(al7, bl0);
-  mid = Math.imul(al7, bh0);
-  mid = (mid + Math.imul(ah7, bl0)) | 0;
-  hi = Math.imul(ah7, bh0);
-  w7 = (w7 + lo) | 0;
-  w7 = (w7 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w7 >>> 26)) | 0;
-  w7 &= 0x3ffffff;
-  lo = Math.imul(al6, bl1);
-  mid = Math.imul(al6, bh1);
-  mid = (mid + Math.imul(ah6, bl1)) | 0;
-  hi = Math.imul(ah6, bh1);
-  w7 = (w7 + lo) | 0;
-  w7 = (w7 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w7 >>> 26)) | 0;
-  w7 &= 0x3ffffff;
-  lo = Math.imul(al5, bl2);
-  mid = Math.imul(al5, bh2);
-  mid = (mid + Math.imul(ah5, bl2)) | 0;
-  hi = Math.imul(ah5, bh2);
-  w7 = (w7 + lo) | 0;
-  w7 = (w7 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w7 >>> 26)) | 0;
-  w7 &= 0x3ffffff;
-  lo = Math.imul(al4, bl3);
-  mid = Math.imul(al4, bh3);
-  mid = (mid + Math.imul(ah4, bl3)) | 0;
-  hi = Math.imul(ah4, bh3);
-  w7 = (w7 + lo) | 0;
-  w7 = (w7 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w7 >>> 26)) | 0;
-  w7 &= 0x3ffffff;
-  lo = Math.imul(al3, bl4);
-  mid = Math.imul(al3, bh4);
-  mid = (mid + Math.imul(ah3, bl4)) | 0;
-  hi = Math.imul(ah3, bh4);
-  w7 = (w7 + lo) | 0;
-  w7 = (w7 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w7 >>> 26)) | 0;
-  w7 &= 0x3ffffff;
-  lo = Math.imul(al2, bl5);
-  mid = Math.imul(al2, bh5);
-  mid = (mid + Math.imul(ah2, bl5)) | 0;
-  hi = Math.imul(ah2, bh5);
-  w7 = (w7 + lo) | 0;
-  w7 = (w7 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w7 >>> 26)) | 0;
-  w7 &= 0x3ffffff;
-  lo = Math.imul(al1, bl6);
-  mid = Math.imul(al1, bh6);
-  mid = (mid + Math.imul(ah1, bl6)) | 0;
-  hi = Math.imul(ah1, bh6);
-  w7 = (w7 + lo) | 0;
-  w7 = (w7 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w7 >>> 26)) | 0;
-  w7 &= 0x3ffffff;
-  lo = Math.imul(al0, bl7);
-  mid = Math.imul(al0, bh7);
-  mid = (mid + Math.imul(ah0, bl7)) | 0;
-  hi = Math.imul(ah0, bh7);
-  w7 = (w7 + lo) | 0;
-  w7 = (w7 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w7 >>> 26)) | 0;
-  w7 &= 0x3ffffff;
-  /* k = 8 */
-  var w8 = c;
-  c = 0;
-  lo = Math.imul(al8, bl0);
-  mid = Math.imul(al8, bh0);
-  mid = (mid + Math.imul(ah8, bl0)) | 0;
-  hi = Math.imul(ah8, bh0);
-  w8 = (w8 + lo) | 0;
-  w8 = (w8 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w8 >>> 26)) | 0;
-  w8 &= 0x3ffffff;
-  lo = Math.imul(al7, bl1);
-  mid = Math.imul(al7, bh1);
-  mid = (mid + Math.imul(ah7, bl1)) | 0;
-  hi = Math.imul(ah7, bh1);
-  w8 = (w8 + lo) | 0;
-  w8 = (w8 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w8 >>> 26)) | 0;
-  w8 &= 0x3ffffff;
-  lo = Math.imul(al6, bl2);
-  mid = Math.imul(al6, bh2);
-  mid = (mid + Math.imul(ah6, bl2)) | 0;
-  hi = Math.imul(ah6, bh2);
-  w8 = (w8 + lo) | 0;
-  w8 = (w8 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w8 >>> 26)) | 0;
-  w8 &= 0x3ffffff;
-  lo = Math.imul(al5, bl3);
-  mid = Math.imul(al5, bh3);
-  mid = (mid + Math.imul(ah5, bl3)) | 0;
-  hi = Math.imul(ah5, bh3);
-  w8 = (w8 + lo) | 0;
-  w8 = (w8 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w8 >>> 26)) | 0;
-  w8 &= 0x3ffffff;
-  lo = Math.imul(al4, bl4);
-  mid = Math.imul(al4, bh4);
-  mid = (mid + Math.imul(ah4, bl4)) | 0;
-  hi = Math.imul(ah4, bh4);
-  w8 = (w8 + lo) | 0;
-  w8 = (w8 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w8 >>> 26)) | 0;
-  w8 &= 0x3ffffff;
-  lo = Math.imul(al3, bl5);
-  mid = Math.imul(al3, bh5);
-  mid = (mid + Math.imul(ah3, bl5)) | 0;
-  hi = Math.imul(ah3, bh5);
-  w8 = (w8 + lo) | 0;
-  w8 = (w8 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w8 >>> 26)) | 0;
-  w8 &= 0x3ffffff;
-  lo = Math.imul(al2, bl6);
-  mid = Math.imul(al2, bh6);
-  mid = (mid + Math.imul(ah2, bl6)) | 0;
-  hi = Math.imul(ah2, bh6);
-  w8 = (w8 + lo) | 0;
-  w8 = (w8 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w8 >>> 26)) | 0;
-  w8 &= 0x3ffffff;
-  lo = Math.imul(al1, bl7);
-  mid = Math.imul(al1, bh7);
-  mid = (mid + Math.imul(ah1, bl7)) | 0;
-  hi = Math.imul(ah1, bh7);
-  w8 = (w8 + lo) | 0;
-  w8 = (w8 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w8 >>> 26)) | 0;
-  w8 &= 0x3ffffff;
-  lo = Math.imul(al0, bl8);
-  mid = Math.imul(al0, bh8);
-  mid = (mid + Math.imul(ah0, bl8)) | 0;
-  hi = Math.imul(ah0, bh8);
-  w8 = (w8 + lo) | 0;
-  w8 = (w8 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w8 >>> 26)) | 0;
-  w8 &= 0x3ffffff;
-  /* k = 9 */
-  var w9 = c;
-  c = 0;
-  lo = Math.imul(al9, bl0);
-  mid = Math.imul(al9, bh0);
-  mid = (mid + Math.imul(ah9, bl0)) | 0;
-  hi = Math.imul(ah9, bh0);
-  w9 = (w9 + lo) | 0;
-  w9 = (w9 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w9 >>> 26)) | 0;
-  w9 &= 0x3ffffff;
-  lo = Math.imul(al8, bl1);
-  mid = Math.imul(al8, bh1);
-  mid = (mid + Math.imul(ah8, bl1)) | 0;
-  hi = Math.imul(ah8, bh1);
-  w9 = (w9 + lo) | 0;
-  w9 = (w9 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w9 >>> 26)) | 0;
-  w9 &= 0x3ffffff;
-  lo = Math.imul(al7, bl2);
-  mid = Math.imul(al7, bh2);
-  mid = (mid + Math.imul(ah7, bl2)) | 0;
-  hi = Math.imul(ah7, bh2);
-  w9 = (w9 + lo) | 0;
-  w9 = (w9 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w9 >>> 26)) | 0;
-  w9 &= 0x3ffffff;
-  lo = Math.imul(al6, bl3);
-  mid = Math.imul(al6, bh3);
-  mid = (mid + Math.imul(ah6, bl3)) | 0;
-  hi = Math.imul(ah6, bh3);
-  w9 = (w9 + lo) | 0;
-  w9 = (w9 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w9 >>> 26)) | 0;
-  w9 &= 0x3ffffff;
-  lo = Math.imul(al5, bl4);
-  mid = Math.imul(al5, bh4);
-  mid = (mid + Math.imul(ah5, bl4)) | 0;
-  hi = Math.imul(ah5, bh4);
-  w9 = (w9 + lo) | 0;
-  w9 = (w9 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w9 >>> 26)) | 0;
-  w9 &= 0x3ffffff;
-  lo = Math.imul(al4, bl5);
-  mid = Math.imul(al4, bh5);
-  mid = (mid + Math.imul(ah4, bl5)) | 0;
-  hi = Math.imul(ah4, bh5);
-  w9 = (w9 + lo) | 0;
-  w9 = (w9 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w9 >>> 26)) | 0;
-  w9 &= 0x3ffffff;
-  lo = Math.imul(al3, bl6);
-  mid = Math.imul(al3, bh6);
-  mid = (mid + Math.imul(ah3, bl6)) | 0;
-  hi = Math.imul(ah3, bh6);
-  w9 = (w9 + lo) | 0;
-  w9 = (w9 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w9 >>> 26)) | 0;
-  w9 &= 0x3ffffff;
-  lo = Math.imul(al2, bl7);
-  mid = Math.imul(al2, bh7);
-  mid = (mid + Math.imul(ah2, bl7)) | 0;
-  hi = Math.imul(ah2, bh7);
-  w9 = (w9 + lo) | 0;
-  w9 = (w9 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w9 >>> 26)) | 0;
-  w9 &= 0x3ffffff;
-  lo = Math.imul(al1, bl8);
-  mid = Math.imul(al1, bh8);
-  mid = (mid + Math.imul(ah1, bl8)) | 0;
-  hi = Math.imul(ah1, bh8);
-  w9 = (w9 + lo) | 0;
-  w9 = (w9 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w9 >>> 26)) | 0;
-  w9 &= 0x3ffffff;
-  lo = Math.imul(al0, bl9);
-  mid = Math.imul(al0, bh9);
-  mid = (mid + Math.imul(ah0, bl9)) | 0;
-  hi = Math.imul(ah0, bh9);
-  w9 = (w9 + lo) | 0;
-  w9 = (w9 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w9 >>> 26)) | 0;
-  w9 &= 0x3ffffff;
-  /* k = 10 */
-  var w10 = c;
-  c = 0;
-  lo = Math.imul(al9, bl1);
-  mid = Math.imul(al9, bh1);
-  mid = (mid + Math.imul(ah9, bl1)) | 0;
-  hi = Math.imul(ah9, bh1);
-  w10 = (w10 + lo) | 0;
-  w10 = (w10 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w10 >>> 26)) | 0;
-  w10 &= 0x3ffffff;
-  lo = Math.imul(al8, bl2);
-  mid = Math.imul(al8, bh2);
-  mid = (mid + Math.imul(ah8, bl2)) | 0;
-  hi = Math.imul(ah8, bh2);
-  w10 = (w10 + lo) | 0;
-  w10 = (w10 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w10 >>> 26)) | 0;
-  w10 &= 0x3ffffff;
-  lo = Math.imul(al7, bl3);
-  mid = Math.imul(al7, bh3);
-  mid = (mid + Math.imul(ah7, bl3)) | 0;
-  hi = Math.imul(ah7, bh3);
-  w10 = (w10 + lo) | 0;
-  w10 = (w10 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w10 >>> 26)) | 0;
-  w10 &= 0x3ffffff;
-  lo = Math.imul(al6, bl4);
-  mid = Math.imul(al6, bh4);
-  mid = (mid + Math.imul(ah6, bl4)) | 0;
-  hi = Math.imul(ah6, bh4);
-  w10 = (w10 + lo) | 0;
-  w10 = (w10 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w10 >>> 26)) | 0;
-  w10 &= 0x3ffffff;
-  lo = Math.imul(al5, bl5);
-  mid = Math.imul(al5, bh5);
-  mid = (mid + Math.imul(ah5, bl5)) | 0;
-  hi = Math.imul(ah5, bh5);
-  w10 = (w10 + lo) | 0;
-  w10 = (w10 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w10 >>> 26)) | 0;
-  w10 &= 0x3ffffff;
-  lo = Math.imul(al4, bl6);
-  mid = Math.imul(al4, bh6);
-  mid = (mid + Math.imul(ah4, bl6)) | 0;
-  hi = Math.imul(ah4, bh6);
-  w10 = (w10 + lo) | 0;
-  w10 = (w10 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w10 >>> 26)) | 0;
-  w10 &= 0x3ffffff;
-  lo = Math.imul(al3, bl7);
-  mid = Math.imul(al3, bh7);
-  mid = (mid + Math.imul(ah3, bl7)) | 0;
-  hi = Math.imul(ah3, bh7);
-  w10 = (w10 + lo) | 0;
-  w10 = (w10 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w10 >>> 26)) | 0;
-  w10 &= 0x3ffffff;
-  lo = Math.imul(al2, bl8);
-  mid = Math.imul(al2, bh8);
-  mid = (mid + Math.imul(ah2, bl8)) | 0;
-  hi = Math.imul(ah2, bh8);
-  w10 = (w10 + lo) | 0;
-  w10 = (w10 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w10 >>> 26)) | 0;
-  w10 &= 0x3ffffff;
-  lo = Math.imul(al1, bl9);
-  mid = Math.imul(al1, bh9);
-  mid = (mid + Math.imul(ah1, bl9)) | 0;
-  hi = Math.imul(ah1, bh9);
-  w10 = (w10 + lo) | 0;
-  w10 = (w10 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w10 >>> 26)) | 0;
-  w10 &= 0x3ffffff;
-  /* k = 11 */
-  var w11 = c;
-  c = 0;
-  lo = Math.imul(al9, bl2);
-  mid = Math.imul(al9, bh2);
-  mid = (mid + Math.imul(ah9, bl2)) | 0;
-  hi = Math.imul(ah9, bh2);
-  w11 = (w11 + lo) | 0;
-  w11 = (w11 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w11 >>> 26)) | 0;
-  w11 &= 0x3ffffff;
-  lo = Math.imul(al8, bl3);
-  mid = Math.imul(al8, bh3);
-  mid = (mid + Math.imul(ah8, bl3)) | 0;
-  hi = Math.imul(ah8, bh3);
-  w11 = (w11 + lo) | 0;
-  w11 = (w11 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w11 >>> 26)) | 0;
-  w11 &= 0x3ffffff;
-  lo = Math.imul(al7, bl4);
-  mid = Math.imul(al7, bh4);
-  mid = (mid + Math.imul(ah7, bl4)) | 0;
-  hi = Math.imul(ah7, bh4);
-  w11 = (w11 + lo) | 0;
-  w11 = (w11 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w11 >>> 26)) | 0;
-  w11 &= 0x3ffffff;
-  lo = Math.imul(al6, bl5);
-  mid = Math.imul(al6, bh5);
-  mid = (mid + Math.imul(ah6, bl5)) | 0;
-  hi = Math.imul(ah6, bh5);
-  w11 = (w11 + lo) | 0;
-  w11 = (w11 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w11 >>> 26)) | 0;
-  w11 &= 0x3ffffff;
-  lo = Math.imul(al5, bl6);
-  mid = Math.imul(al5, bh6);
-  mid = (mid + Math.imul(ah5, bl6)) | 0;
-  hi = Math.imul(ah5, bh6);
-  w11 = (w11 + lo) | 0;
-  w11 = (w11 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w11 >>> 26)) | 0;
-  w11 &= 0x3ffffff;
-  lo = Math.imul(al4, bl7);
-  mid = Math.imul(al4, bh7);
-  mid = (mid + Math.imul(ah4, bl7)) | 0;
-  hi = Math.imul(ah4, bh7);
-  w11 = (w11 + lo) | 0;
-  w11 = (w11 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w11 >>> 26)) | 0;
-  w11 &= 0x3ffffff;
-  lo = Math.imul(al3, bl8);
-  mid = Math.imul(al3, bh8);
-  mid = (mid + Math.imul(ah3, bl8)) | 0;
-  hi = Math.imul(ah3, bh8);
-  w11 = (w11 + lo) | 0;
-  w11 = (w11 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w11 >>> 26)) | 0;
-  w11 &= 0x3ffffff;
-  lo = Math.imul(al2, bl9);
-  mid = Math.imul(al2, bh9);
-  mid = (mid + Math.imul(ah2, bl9)) | 0;
-  hi = Math.imul(ah2, bh9);
-  w11 = (w11 + lo) | 0;
-  w11 = (w11 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w11 >>> 26)) | 0;
-  w11 &= 0x3ffffff;
-  /* k = 12 */
-  var w12 = c;
-  c = 0;
-  lo = Math.imul(al9, bl3);
-  mid = Math.imul(al9, bh3);
-  mid = (mid + Math.imul(ah9, bl3)) | 0;
-  hi = Math.imul(ah9, bh3);
-  w12 = (w12 + lo) | 0;
-  w12 = (w12 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w12 >>> 26)) | 0;
-  w12 &= 0x3ffffff;
-  lo = Math.imul(al8, bl4);
-  mid = Math.imul(al8, bh4);
-  mid = (mid + Math.imul(ah8, bl4)) | 0;
-  hi = Math.imul(ah8, bh4);
-  w12 = (w12 + lo) | 0;
-  w12 = (w12 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w12 >>> 26)) | 0;
-  w12 &= 0x3ffffff;
-  lo = Math.imul(al7, bl5);
-  mid = Math.imul(al7, bh5);
-  mid = (mid + Math.imul(ah7, bl5)) | 0;
-  hi = Math.imul(ah7, bh5);
-  w12 = (w12 + lo) | 0;
-  w12 = (w12 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w12 >>> 26)) | 0;
-  w12 &= 0x3ffffff;
-  lo = Math.imul(al6, bl6);
-  mid = Math.imul(al6, bh6);
-  mid = (mid + Math.imul(ah6, bl6)) | 0;
-  hi = Math.imul(ah6, bh6);
-  w12 = (w12 + lo) | 0;
-  w12 = (w12 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w12 >>> 26)) | 0;
-  w12 &= 0x3ffffff;
-  lo = Math.imul(al5, bl7);
-  mid = Math.imul(al5, bh7);
-  mid = (mid + Math.imul(ah5, bl7)) | 0;
-  hi = Math.imul(ah5, bh7);
-  w12 = (w12 + lo) | 0;
-  w12 = (w12 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w12 >>> 26)) | 0;
-  w12 &= 0x3ffffff;
-  lo = Math.imul(al4, bl8);
-  mid = Math.imul(al4, bh8);
-  mid = (mid + Math.imul(ah4, bl8)) | 0;
-  hi = Math.imul(ah4, bh8);
-  w12 = (w12 + lo) | 0;
-  w12 = (w12 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w12 >>> 26)) | 0;
-  w12 &= 0x3ffffff;
-  lo = Math.imul(al3, bl9);
-  mid = Math.imul(al3, bh9);
-  mid = (mid + Math.imul(ah3, bl9)) | 0;
-  hi = Math.imul(ah3, bh9);
-  w12 = (w12 + lo) | 0;
-  w12 = (w12 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w12 >>> 26)) | 0;
-  w12 &= 0x3ffffff;
-  /* k = 13 */
-  var w13 = c;
-  c = 0;
-  lo = Math.imul(al9, bl4);
-  mid = Math.imul(al9, bh4);
-  mid = (mid + Math.imul(ah9, bl4)) | 0;
-  hi = Math.imul(ah9, bh4);
-  w13 = (w13 + lo) | 0;
-  w13 = (w13 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w13 >>> 26)) | 0;
-  w13 &= 0x3ffffff;
-  lo = Math.imul(al8, bl5);
-  mid = Math.imul(al8, bh5);
-  mid = (mid + Math.imul(ah8, bl5)) | 0;
-  hi = Math.imul(ah8, bh5);
-  w13 = (w13 + lo) | 0;
-  w13 = (w13 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w13 >>> 26)) | 0;
-  w13 &= 0x3ffffff;
-  lo = Math.imul(al7, bl6);
-  mid = Math.imul(al7, bh6);
-  mid = (mid + Math.imul(ah7, bl6)) | 0;
-  hi = Math.imul(ah7, bh6);
-  w13 = (w13 + lo) | 0;
-  w13 = (w13 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w13 >>> 26)) | 0;
-  w13 &= 0x3ffffff;
-  lo = Math.imul(al6, bl7);
-  mid = Math.imul(al6, bh7);
-  mid = (mid + Math.imul(ah6, bl7)) | 0;
-  hi = Math.imul(ah6, bh7);
-  w13 = (w13 + lo) | 0;
-  w13 = (w13 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w13 >>> 26)) | 0;
-  w13 &= 0x3ffffff;
-  lo = Math.imul(al5, bl8);
-  mid = Math.imul(al5, bh8);
-  mid = (mid + Math.imul(ah5, bl8)) | 0;
-  hi = Math.imul(ah5, bh8);
-  w13 = (w13 + lo) | 0;
-  w13 = (w13 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w13 >>> 26)) | 0;
-  w13 &= 0x3ffffff;
-  lo = Math.imul(al4, bl9);
-  mid = Math.imul(al4, bh9);
-  mid = (mid + Math.imul(ah4, bl9)) | 0;
-  hi = Math.imul(ah4, bh9);
-  w13 = (w13 + lo) | 0;
-  w13 = (w13 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w13 >>> 26)) | 0;
-  w13 &= 0x3ffffff;
-  /* k = 14 */
-  var w14 = c;
-  c = 0;
-  lo = Math.imul(al9, bl5);
-  mid = Math.imul(al9, bh5);
-  mid = (mid + Math.imul(ah9, bl5)) | 0;
-  hi = Math.imul(ah9, bh5);
-  w14 = (w14 + lo) | 0;
-  w14 = (w14 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w14 >>> 26)) | 0;
-  w14 &= 0x3ffffff;
-  lo = Math.imul(al8, bl6);
-  mid = Math.imul(al8, bh6);
-  mid = (mid + Math.imul(ah8, bl6)) | 0;
-  hi = Math.imul(ah8, bh6);
-  w14 = (w14 + lo) | 0;
-  w14 = (w14 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w14 >>> 26)) | 0;
-  w14 &= 0x3ffffff;
-  lo = Math.imul(al7, bl7);
-  mid = Math.imul(al7, bh7);
-  mid = (mid + Math.imul(ah7, bl7)) | 0;
-  hi = Math.imul(ah7, bh7);
-  w14 = (w14 + lo) | 0;
-  w14 = (w14 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w14 >>> 26)) | 0;
-  w14 &= 0x3ffffff;
-  lo = Math.imul(al6, bl8);
-  mid = Math.imul(al6, bh8);
-  mid = (mid + Math.imul(ah6, bl8)) | 0;
-  hi = Math.imul(ah6, bh8);
-  w14 = (w14 + lo) | 0;
-  w14 = (w14 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w14 >>> 26)) | 0;
-  w14 &= 0x3ffffff;
-  lo = Math.imul(al5, bl9);
-  mid = Math.imul(al5, bh9);
-  mid = (mid + Math.imul(ah5, bl9)) | 0;
-  hi = Math.imul(ah5, bh9);
-  w14 = (w14 + lo) | 0;
-  w14 = (w14 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w14 >>> 26)) | 0;
-  w14 &= 0x3ffffff;
-  /* k = 15 */
-  var w15 = c;
-  c = 0;
-  lo = Math.imul(al9, bl6);
-  mid = Math.imul(al9, bh6);
-  mid = (mid + Math.imul(ah9, bl6)) | 0;
-  hi = Math.imul(ah9, bh6);
-  w15 = (w15 + lo) | 0;
-  w15 = (w15 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w15 >>> 26)) | 0;
-  w15 &= 0x3ffffff;
-  lo = Math.imul(al8, bl7);
-  mid = Math.imul(al8, bh7);
-  mid = (mid + Math.imul(ah8, bl7)) | 0;
-  hi = Math.imul(ah8, bh7);
-  w15 = (w15 + lo) | 0;
-  w15 = (w15 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w15 >>> 26)) | 0;
-  w15 &= 0x3ffffff;
-  lo = Math.imul(al7, bl8);
-  mid = Math.imul(al7, bh8);
-  mid = (mid + Math.imul(ah7, bl8)) | 0;
-  hi = Math.imul(ah7, bh8);
-  w15 = (w15 + lo) | 0;
-  w15 = (w15 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w15 >>> 26)) | 0;
-  w15 &= 0x3ffffff;
-  lo = Math.imul(al6, bl9);
-  mid = Math.imul(al6, bh9);
-  mid = (mid + Math.imul(ah6, bl9)) | 0;
-  hi = Math.imul(ah6, bh9);
-  w15 = (w15 + lo) | 0;
-  w15 = (w15 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w15 >>> 26)) | 0;
-  w15 &= 0x3ffffff;
-  /* k = 16 */
-  var w16 = c;
-  c = 0;
-  lo = Math.imul(al9, bl7);
-  mid = Math.imul(al9, bh7);
-  mid = (mid + Math.imul(ah9, bl7)) | 0;
-  hi = Math.imul(ah9, bh7);
-  w16 = (w16 + lo) | 0;
-  w16 = (w16 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w16 >>> 26)) | 0;
-  w16 &= 0x3ffffff;
-  lo = Math.imul(al8, bl8);
-  mid = Math.imul(al8, bh8);
-  mid = (mid + Math.imul(ah8, bl8)) | 0;
-  hi = Math.imul(ah8, bh8);
-  w16 = (w16 + lo) | 0;
-  w16 = (w16 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w16 >>> 26)) | 0;
-  w16 &= 0x3ffffff;
-  lo = Math.imul(al7, bl9);
-  mid = Math.imul(al7, bh9);
-  mid = (mid + Math.imul(ah7, bl9)) | 0;
-  hi = Math.imul(ah7, bh9);
-  w16 = (w16 + lo) | 0;
-  w16 = (w16 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w16 >>> 26)) | 0;
-  w16 &= 0x3ffffff;
-  /* k = 17 */
-  var w17 = c;
-  c = 0;
-  lo = Math.imul(al9, bl8);
-  mid = Math.imul(al9, bh8);
-  mid = (mid + Math.imul(ah9, bl8)) | 0;
-  hi = Math.imul(ah9, bh8);
-  w17 = (w17 + lo) | 0;
-  w17 = (w17 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w17 >>> 26)) | 0;
-  w17 &= 0x3ffffff;
-  lo = Math.imul(al8, bl9);
-  mid = Math.imul(al8, bh9);
-  mid = (mid + Math.imul(ah8, bl9)) | 0;
-  hi = Math.imul(ah8, bh9);
-  w17 = (w17 + lo) | 0;
-  w17 = (w17 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w17 >>> 26)) | 0;
-  w17 &= 0x3ffffff;
-  /* k = 18 */
-  var w18 = c;
-  c = 0;
-  lo = Math.imul(al9, bl9);
-  mid = Math.imul(al9, bh9);
-  mid = (mid + Math.imul(ah9, bl9)) | 0;
-  hi = Math.imul(ah9, bh9);
-  w18 = (w18 + lo) | 0;
-  w18 = (w18 + ((mid & 0x1fff) << 13)) | 0;
-  c = (c + hi) | 0;
-  c = (c + (mid >>> 13)) | 0;
-  c = (c + (w18 >>> 26)) | 0;
-  w18 &= 0x3ffffff;
-  o[0] = w0;
-  o[1] = w1;
-  o[2] = w2;
-  o[3] = w3;
-  o[4] = w4;
-  o[5] = w5;
-  o[6] = w6;
-  o[7] = w7;
-  o[8] = w8;
-  o[9] = w9;
-  o[10] = w10;
-  o[11] = w11;
-  o[12] = w12;
-  o[13] = w13;
-  o[14] = w14;
-  o[15] = w15;
-  o[16] = w16;
-  o[17] = w17;
-  o[18] = w18;
-  if (c !== 0) {
-    o[19] = c;
-    out.length++;
-  }
-  return out;
-};
-
-// Polyfill comb
-if (!Math.imul)
-  comb10MulTo = smallMulTo;
-
-function bigMulTo(self, num, out) {
-  out.negative = num.negative ^ self.negative;
-  out.length = self.length + num.length;
-
-  var carry = 0;
-  var hncarry = 0;
-  for (var k = 0; k < out.length - 1; k++) {
-    // Sum all words with the same `i + j = k` and accumulate `ncarry`,
-    // note that ncarry could be >= 0x3ffffff
-    var ncarry = hncarry;
-    hncarry = 0;
-    var rword = carry & 0x3ffffff;
-    var maxJ = Math.min(k, num.length - 1);
-    for (var j = Math.max(0, k - self.length + 1); j <= maxJ; j++) {
-      var i = k - j;
-      var a = self.words[i] | 0;
-      var b = num.words[j] | 0;
-      var r = a * b;
-
-      var lo = r & 0x3ffffff;
-      ncarry = (ncarry + ((r / 0x4000000) | 0)) | 0;
-      lo = (lo + rword) | 0;
-      rword = lo & 0x3ffffff;
-      ncarry = (ncarry + (lo >>> 26)) | 0;
-
-      hncarry += ncarry >>> 26;
-      ncarry &= 0x3ffffff;
-    }
-    out.words[k] = rword;
-    carry = ncarry;
-    ncarry = hncarry;
-  }
-  if (carry !== 0) {
-    out.words[k] = carry;
-  } else {
-    out.length--;
-  }
-
-  return out.strip();
-}
-
-function jumboMulTo(self, num, out) {
-  var fftm = new FFTM();
-  return fftm.mulp(self, num, out);
-}
-
-BN.prototype.mulTo = function mulTo(num, out) {
-  var res;
-  var len = this.length + num.length;
-  if (this.length === 10 && num.length === 10)
-    res = comb10MulTo(this, num, out);
-  else if (len < 63)
-    res = smallMulTo(this, num, out);
-  else if (len < 1024)
-    res = bigMulTo(this, num, out);
-  else
-    res = jumboMulTo(this, num, out);
-  return res;
-};
-
-// Cooley-Tukey algorithm for FFT
-// slightly revisited to rely on looping instead of recursion
-
-function FFTM(x, y) {
-  this.x = x;
-  this.y = y;
-}
-
-FFTM.prototype.makeRBT = function makeRBT(N) {
-  var t = new Array(N);
-  var l = BN.prototype._countBits(N) - 1;
-  for (var i = 0; i < N; i++) {
-    t[i] = this.revBin(i, l, N);
-  }
-
-  return t;
-};
-
-// Returns binary-reversed representation of `x`
-FFTM.prototype.revBin = function revBin(x, l, N) {
-  if (x === 0 || x === N - 1)
-    return x;
-
-  var rb = 0;
-  for (var i = 0; i < l; i++) {
-    rb |= (x & 1) << (l - i - 1);
-    x >>= 1;
-  }
-
-  return rb;
-};
-
-// Performs "tweedling" phase, therefore 'emulating'
-// behaviour of the recursive algorithm
-FFTM.prototype.permute = function permute(rbt, rws, iws, rtws, itws, N) {
-  for (var i = 0; i < N; i++) {
-    rtws[i] = rws[rbt[i]];
-    itws[i] = iws[rbt[i]];
-  }
-};
-
-FFTM.prototype.transform = function transform(rws, iws, rtws, itws, N, rbt) {
-  this.permute(rbt, rws, iws, rtws, itws, N);
-
-  for (var s = 1; s < N; s <<= 1) {
-    var l = s << 1;
-
-    var rtwdf = Math.cos(2 * Math.PI / l);
-    var itwdf = Math.sin(2 * Math.PI / l);
-
-    for (var p = 0; p < N; p += l) {
-      var rtwdf_ = rtwdf;
-      var itwdf_ = itwdf;
-
-      for (var j = 0; j < s; j++) {
-        var re = rtws[p + j];
-        var ie = itws[p + j];
-
-        var ro = rtws[p + j + s];
-        var io = itws[p + j + s];
-
-        var rx = rtwdf_ * ro - itwdf_ * io;
-
-        io = rtwdf_ * io + itwdf_ * ro;
-        ro = rx;
-
-        rtws[p + j] = re + ro;
-        itws[p + j] = ie + io;
-
-        rtws[p + j + s] = re - ro;
-        itws[p + j + s] = ie - io;
-
-        /* jshint maxdepth : false */
-        if (j !== l) {
-          rx = rtwdf * rtwdf_ - itwdf * itwdf_;
-
-          itwdf_ = rtwdf * itwdf_ + itwdf * rtwdf_;
-          rtwdf_ = rx;
-        }
-      }
-    }
-  }
-};
-
-FFTM.prototype.guessLen13b = function guessLen13b(n, m) {
-  var N = Math.max(m, n) | 1;
-  var odd = N & 1;
-  var i = 0;
-  for (N = N / 2 | 0; N; N = N >>> 1) {
-    i++;
-  }
-
-  return 1 << i + 1 + odd;
-};
-
-FFTM.prototype.conjugate = function conjugate(rws, iws, N) {
-  if (N <= 1)
-    return;
-
-  for (var i = 0; i < N / 2; i++) {
-    var t = rws[i];
-
-    rws[i] = rws[N - i - 1];
-    rws[N - i - 1] = t;
-
-    t = iws[i];
-
-    iws[i] = -iws[N - i - 1];
-    iws[N - i - 1] = -t;
-  }
-};
-
-FFTM.prototype.normalize13b = function normalize13b(ws, N) {
-  var carry = 0;
-  for (var i = 0; i < N / 2; i++) {
-    var w = Math.round(ws[2 * i + 1] / N) * 0x2000 +
-            Math.round(ws[2 * i] / N) +
-            carry;
-
-    ws[i] = w & 0x3ffffff;
-
-    if (w < 0x4000000) {
-      carry = 0;
-    } else {
-      carry = w / 0x4000000 | 0;
-    }
-  }
-
-  return ws;
-};
-
-FFTM.prototype.convert13b = function convert13b(ws, len, rws, N) {
-  var carry = 0;
-  for (var i = 0; i < len; i++) {
-    var carry = carry + (ws[i] | 0);
-
-    rws[2 * i]     = carry & 0x1fff; carry = carry >>> 13;
-    rws[2 * i + 1] = carry & 0x1fff; carry = carry >>> 13;
-  }
-
-  // Pad with zeroes
-  for (var i = 2 * len; i < N; ++i)
-    rws[i] = 0;
-
-  assert(carry === 0);
-  assert((carry & ~0x1fff) === 0);
-};
-
-FFTM.prototype.stub = function stub(N) {
-  var ph = new Array(N);
-  for (var i = 0; i < N; i++)
-    ph[i] = 0;
-
-  return ph;
-};
-
-FFTM.prototype.mulp = function mulp(x, y, out) {
-  var N = 2 * this.guessLen13b(x.length, y.length);
-
-  var rbt = this.makeRBT(N);
-
-  var _ = this.stub(N);
-
-  var rws   = new Array(N);
-  var rwst  = new Array(N);
-  var iwst  = new Array(N);
-
-  var nrws  = new Array(N);
-  var nrwst = new Array(N);
-  var niwst = new Array(N);
-
-  var rmws = out.words;
-  rmws.length = N;
-
-  this.convert13b(x.words, x.length, rws, N);
-  this.convert13b(y.words, y.length, nrws, N);
-
-  this.transform(rws, _, rwst, iwst, N, rbt);
-  this.transform(nrws, _, nrwst, niwst, N, rbt);
-
-  for (var i = 0; i < N; i++) {
-    var rx = rwst[i] * nrwst[i] - iwst[i] * niwst[i];
-    iwst[i] = rwst[i] * niwst[i] + iwst[i] * nrwst[i];
-    rwst[i] = rx;
-  }
-
-  this.conjugate(rwst, iwst, N);
-
-  this.transform(rwst, iwst, rmws, _, N, rbt);
-
-  this.conjugate(rmws, _, N);
-
-  this.normalize13b(rmws, N);
-
-  out.negative = x.negative ^ y.negative;
-  out.length = x.length + y.length;
-  return out.strip();
-};
-
-// Multiply `this` by `num`
-BN.prototype.mul = function mul(num) {
-  var out = new BN(null);
-  out.words = new Array(this.length + num.length);
-  return this.mulTo(num, out);
-};
-
-// Multiply employing FFT
-BN.prototype.mulf = function mulf(num) {
-  var out = new BN(null);
-  out.words = new Array(this.length + num.length);
-  return jumboMulTo(this, num, out);
-};
-
-// In-place Multiplication
-BN.prototype.imul = function imul(num) {
-  return this.clone().mulTo(num, this);
-};
-
-BN.prototype.imuln = function imuln(num) {
-  assert(typeof num === 'number');
-
-  // Carry
-  var carry = 0;
-  for (var i = 0; i < this.length; i++) {
-    var w = (this.words[i] | 0) * num;
-    var lo = (w & 0x3ffffff) + (carry & 0x3ffffff);
-    carry >>= 26;
-    carry += (w / 0x4000000) | 0;
-    // NOTE: lo is 27bit maximum
-    carry += lo >>> 26;
-    this.words[i] = lo & 0x3ffffff;
-  }
-
-  if (carry !== 0) {
-    this.words[i] = carry;
-    this.length++;
-  }
-
-  return this;
-};
-
-BN.prototype.muln = function muln(num) {
-  return this.clone().imuln(num);
-};
-
-// `this` * `this`
-BN.prototype.sqr = function sqr() {
-  return this.mul(this);
-};
-
-// `this` * `this` in-place
-BN.prototype.isqr = function isqr() {
-  return this.imul(this.clone());
-};
-
-// Math.pow(`this`, `num`)
-BN.prototype.pow = function pow(num) {
-  var w = toBitArray(num);
-  if (w.length === 0)
-    return new BN(1);
-
-  // Skip leading zeroes
-  var res = this;
-  for (var i = 0; i < w.length; i++, res = res.sqr())
-    if (w[i] !== 0)
-      break;
-
-  if (++i < w.length) {
-    for (var q = res.sqr(); i < w.length; i++, q = q.sqr()) {
-      if (w[i] === 0)
-        continue;
-      res = res.mul(q);
-    }
-  }
-
-  return res;
-};
-
-// Shift-left in-place
-BN.prototype.iushln = function iushln(bits) {
-  assert(typeof bits === 'number' && bits >= 0);
-  var r = bits % 26;
-  var s = (bits - r) / 26;
-  var carryMask = (0x3ffffff >>> (26 - r)) << (26 - r);
-
-  if (r !== 0) {
-    var carry = 0;
-    for (var i = 0; i < this.length; i++) {
-      var newCarry = this.words[i] & carryMask;
-      var c = ((this.words[i] | 0) - newCarry) << r;
-      this.words[i] = c | carry;
-      carry = newCarry >>> (26 - r);
-    }
-    if (carry) {
-      this.words[i] = carry;
-      this.length++;
-    }
-  }
-
-  if (s !== 0) {
-    for (var i = this.length - 1; i >= 0; i--)
-      this.words[i + s] = this.words[i];
-    for (var i = 0; i < s; i++)
-      this.words[i] = 0;
-    this.length += s;
-  }
-
-  return this.strip();
-};
-
-BN.prototype.ishln = function ishln(bits) {
-  // TODO(indutny): implement me
-  assert(this.negative === 0);
-  return this.iushln(bits);
-};
-
-// Shift-right in-place
-// NOTE: `hint` is a lowest bit before trailing zeroes
-// NOTE: if `extended` is present - it will be filled with destroyed bits
-BN.prototype.iushrn = function iushrn(bits, hint, extended) {
-  assert(typeof bits === 'number' && bits >= 0);
-  var h;
-  if (hint)
-    h = (hint - (hint % 26)) / 26;
-  else
-    h = 0;
-
-  var r = bits % 26;
-  var s = Math.min((bits - r) / 26, this.length);
-  var mask = 0x3ffffff ^ ((0x3ffffff >>> r) << r);
-  var maskedWords = extended;
-
-  h -= s;
-  h = Math.max(0, h);
-
-  // Extended mode, copy masked part
-  if (maskedWords) {
-    for (var i = 0; i < s; i++)
-      maskedWords.words[i] = this.words[i];
-    maskedWords.length = s;
-  }
-
-  if (s === 0) {
-    // No-op, we should not move anything at all
-  } else if (this.length > s) {
-    this.length -= s;
-    for (var i = 0; i < this.length; i++)
-      this.words[i] = this.words[i + s];
-  } else {
-    this.words[0] = 0;
-    this.length = 1;
-  }
-
-  var carry = 0;
-  for (var i = this.length - 1; i >= 0 && (carry !== 0 || i >= h); i--) {
-    var word = this.words[i] | 0;
-    this.words[i] = (carry << (26 - r)) | (word >>> r);
-    carry = word & mask;
-  }
-
-  // Push carried bits as a mask
-  if (maskedWords && carry !== 0)
-    maskedWords.words[maskedWords.length++] = carry;
-
-  if (this.length === 0) {
-    this.words[0] = 0;
-    this.length = 1;
-  }
-
-  return this.strip();
-};
-
-BN.prototype.ishrn = function ishrn(bits, hint, extended) {
-  // TODO(indutny): implement me
-  assert(this.negative === 0);
-  return this.iushrn(bits, hint, extended);
-};
-
-// Shift-left
-BN.prototype.shln = function shln(bits) {
-  return this.clone().ishln(bits);
-};
-
-BN.prototype.ushln = function ushln(bits) {
-  return this.clone().iushln(bits);
-};
-
-// Shift-right
-BN.prototype.shrn = function shrn(bits) {
-  return this.clone().ishrn(bits);
-};
-
-BN.prototype.ushrn = function ushrn(bits) {
-  return this.clone().iushrn(bits);
-};
-
-// Test if n bit is set
-BN.prototype.testn = function testn(bit) {
-  assert(typeof bit === 'number' && bit >= 0);
-  var r = bit % 26;
-  var s = (bit - r) / 26;
-  var q = 1 << r;
-
-  // Fast case: bit is much higher than all existing words
-  if (this.length <= s) {
-    return false;
-  }
-
-  // Check bit and return
-  var w = this.words[s];
-
-  return !!(w & q);
-};
-
-// Return only lowers bits of number (in-place)
-BN.prototype.imaskn = function imaskn(bits) {
-  assert(typeof bits === 'number' && bits >= 0);
-  var r = bits % 26;
-  var s = (bits - r) / 26;
-
-  assert(this.negative === 0, 'imaskn works only with positive numbers');
-
-  if (r !== 0)
-    s++;
-  this.length = Math.min(s, this.length);
-
-  if (r !== 0) {
-    var mask = 0x3ffffff ^ ((0x3ffffff >>> r) << r);
-    this.words[this.length - 1] &= mask;
-  }
-
-  return this.strip();
-};
-
-// Return only lowers bits of number
-BN.prototype.maskn = function maskn(bits) {
-  return this.clone().imaskn(bits);
-};
-
-// Add plain number `num` to `this`
-BN.prototype.iaddn = function iaddn(num) {
-  assert(typeof num === 'number');
-  if (num < 0)
-    return this.isubn(-num);
-
-  // Possible sign change
-  if (this.negative !== 0) {
-    if (this.length === 1 && (this.words[0] | 0) < num) {
-      this.words[0] = num - (this.words[0] | 0);
-      this.negative = 0;
-      return this;
-    }
-
-    this.negative = 0;
-    this.isubn(num);
-    this.negative = 1;
-    return this;
-  }
-
-  // Add without checks
-  return this._iaddn(num);
-};
-
-BN.prototype._iaddn = function _iaddn(num) {
-  this.words[0] += num;
-
-  // Carry
-  for (var i = 0; i < this.length && this.words[i] >= 0x4000000; i++) {
-    this.words[i] -= 0x4000000;
-    if (i === this.length - 1)
-      this.words[i + 1] = 1;
-    else
-      this.words[i + 1]++;
-  }
-  this.length = Math.max(this.length, i + 1);
-
-  return this;
-};
-
-// Subtract plain number `num` from `this`
-BN.prototype.isubn = function isubn(num) {
-  assert(typeof num === 'number');
-  if (num < 0)
-    return this.iaddn(-num);
-
-  if (this.negative !== 0) {
-    this.negative = 0;
-    this.iaddn(num);
-    this.negative = 1;
-    return this;
-  }
-
-  this.words[0] -= num;
-
-  if (this.length === 1 && this.words[0] < 0) {
-    this.words[0] = -this.words[0];
-    this.negative = 1;
-  } else {
-    // Carry
-    for (var i = 0; i < this.length && this.words[i] < 0; i++) {
-      this.words[i] += 0x4000000;
-      this.words[i + 1] -= 1;
-    }
-  }
-
-  return this.strip();
-};
-
-BN.prototype.addn = function addn(num) {
-  return this.clone().iaddn(num);
-};
-
-BN.prototype.subn = function subn(num) {
-  return this.clone().isubn(num);
-};
-
-BN.prototype.iabs = function iabs() {
-  this.negative = 0;
-
-  return this;
-};
-
-BN.prototype.abs = function abs() {
-  return this.clone().iabs();
-};
-
-BN.prototype._ishlnsubmul = function _ishlnsubmul(num, mul, shift) {
-  // Bigger storage is needed
-  var len = num.length + shift;
-  var i;
-  if (this.words.length < len) {
-    var t = new Array(len);
-    for (var i = 0; i < this.length; i++)
-      t[i] = this.words[i];
-    this.words = t;
-  } else {
-    i = this.length;
-  }
-
-  // Zeroify rest
-  this.length = Math.max(this.length, len);
-  for (; i < this.length; i++)
-    this.words[i] = 0;
-
-  var carry = 0;
-  for (var i = 0; i < num.length; i++) {
-    var w = (this.words[i + shift] | 0) + carry;
-    var right = (num.words[i] | 0) * mul;
-    w -= right & 0x3ffffff;
-    carry = (w >> 26) - ((right / 0x4000000) | 0);
-    this.words[i + shift] = w & 0x3ffffff;
-  }
-  for (; i < this.length - shift; i++) {
-    var w = (this.words[i + shift] | 0) + carry;
-    carry = w >> 26;
-    this.words[i + shift] = w & 0x3ffffff;
-  }
-
-  if (carry === 0)
-    return this.strip();
-
-  // Subtraction overflow
-  assert(carry === -1);
-  carry = 0;
-  for (var i = 0; i < this.length; i++) {
-    var w = -(this.words[i] | 0) + carry;
-    carry = w >> 26;
-    this.words[i] = w & 0x3ffffff;
-  }
-  this.negative = 1;
-
-  return this.strip();
-};
-
-BN.prototype._wordDiv = function _wordDiv(num, mode) {
-  var shift = this.length - num.length;
-
-  var a = this.clone();
-  var b = num;
-
-  // Normalize
-  var bhi = b.words[b.length - 1] | 0;
-  var bhiBits = this._countBits(bhi);
-  shift = 26 - bhiBits;
-  if (shift !== 0) {
-    b = b.ushln(shift);
-    a.iushln(shift);
-    bhi = b.words[b.length - 1] | 0;
-  }
-
-  // Initialize quotient
-  var m = a.length - b.length;
-  var q;
-
-  if (mode !== 'mod') {
-    q = new BN(null);
-    q.length = m + 1;
-    q.words = new Array(q.length);
-    for (var i = 0; i < q.length; i++)
-      q.words[i] = 0;
-  }
-
-  var diff = a.clone()._ishlnsubmul(b, 1, m);
-  if (diff.negative === 0) {
-    a = diff;
-    if (q)
-      q.words[m] = 1;
-  }
-
-  for (var j = m - 1; j >= 0; j--) {
-    var qj = (a.words[b.length + j] | 0) * 0x4000000 +
-             (a.words[b.length + j - 1] | 0);
-
-    // NOTE: (qj / bhi) is (0x3ffffff * 0x4000000 + 0x3ffffff) / 0x2000000 max
-    // (0x7ffffff)
-    qj = Math.min((qj / bhi) | 0, 0x3ffffff);
-
-    a._ishlnsubmul(b, qj, j);
-    while (a.negative !== 0) {
-      qj--;
-      a.negative = 0;
-      a._ishlnsubmul(b, 1, j);
-      if (a.cmpn(0) !== 0)
-        a.negative ^= 1;
-    }
-    if (q)
-      q.words[j] = qj;
-  }
-  if (q)
-    q.strip();
-  a.strip();
-
-  // Denormalize
-  if (mode !== 'div' && shift !== 0)
-    a.iushrn(shift);
-  return { div: q ? q : null, mod: a };
-};
-
-BN.prototype.divmod = function divmod(num, mode, positive) {
-  assert(num.cmpn(0) !== 0);
-
-  if (this.negative !== 0 && num.negative === 0) {
-    var res = this.neg().divmod(num, mode);
-    var div;
-    var mod;
-    if (mode !== 'mod')
-      div = res.div.neg();
-    if (mode !== 'div') {
-      mod = res.mod.neg();
-      if (positive && mod.neg)
-        mod = mod.add(num);
-    }
-    return {
-      div: div,
-      mod: mod
-    };
-  } else if (this.negative === 0 && num.negative !== 0) {
-    var res = this.divmod(num.neg(), mode);
-    var div;
-    if (mode !== 'mod')
-      div = res.div.neg();
-    return { div: div, mod: res.mod };
-  } else if ((this.negative & num.negative) !== 0) {
-    var res = this.neg().divmod(num.neg(), mode);
-    var mod;
-    if (mode !== 'div') {
-      mod = res.mod.neg();
-      if (positive && mod.neg)
-        mod = mod.isub(num);
-    }
-    return {
-      div: res.div,
-      mod: mod
-    };
-  }
-
-  // Both numbers are positive at this point
-
-  // Strip both numbers to approximate shift value
-  if (num.length > this.length || this.cmp(num) < 0)
-    return { div: new BN(0), mod: this };
-
-  // Very short reduction
-  if (num.length === 1) {
-    if (mode === 'div')
-      return { div: this.divn(num.words[0]), mod: null };
-    else if (mode === 'mod')
-      return { div: null, mod: new BN(this.modn(num.words[0])) };
-    return {
-      div: this.divn(num.words[0]),
-      mod: new BN(this.modn(num.words[0]))
-    };
-  }
-
-  return this._wordDiv(num, mode);
-};
-
-// Find `this` / `num`
-BN.prototype.div = function div(num) {
-  return this.divmod(num, 'div', false).div;
-};
-
-// Find `this` % `num`
-BN.prototype.mod = function mod(num) {
-  return this.divmod(num, 'mod', false).mod;
-};
-
-BN.prototype.umod = function umod(num) {
-  return this.divmod(num, 'mod', true).mod;
-};
-
-// Find Round(`this` / `num`)
-BN.prototype.divRound = function divRound(num) {
-  var dm = this.divmod(num);
-
-  // Fast case - exact division
-  if (dm.mod.cmpn(0) === 0)
-    return dm.div;
-
-  var mod = dm.div.negative !== 0 ? dm.mod.isub(num) : dm.mod;
-
-  var half = num.ushrn(1);
-  var r2 = num.andln(1);
-  var cmp = mod.cmp(half);
-
-  // Round down
-  if (cmp < 0 || r2 === 1 && cmp === 0)
-    return dm.div;
-
-  // Round up
-  return dm.div.negative !== 0 ? dm.div.isubn(1) : dm.div.iaddn(1);
-};
-
-BN.prototype.modn = function modn(num) {
-  assert(num <= 0x3ffffff);
-  var p = (1 << 26) % num;
-
-  var acc = 0;
-  for (var i = this.length - 1; i >= 0; i--)
-    acc = (p * acc + (this.words[i] | 0)) % num;
-
-  return acc;
-};
-
-// In-place division by number
-BN.prototype.idivn = function idivn(num) {
-  assert(num <= 0x3ffffff);
-
-  var carry = 0;
-  for (var i = this.length - 1; i >= 0; i--) {
-    var w = (this.words[i] | 0) + carry * 0x4000000;
-    this.words[i] = (w / num) | 0;
-    carry = w % num;
-  }
-
-  return this.strip();
-};
-
-BN.prototype.divn = function divn(num) {
-  return this.clone().idivn(num);
-};
-
-BN.prototype.egcd = function egcd(p) {
-  assert(p.negative === 0);
-  assert(p.cmpn(0) !== 0);
-
-  var x = this;
-  var y = p.clone();
-
-  if (x.negative !== 0)
-    x = x.umod(p);
-  else
-    x = x.clone();
-
-  // A * x + B * y = x
-  var A = new BN(1);
-  var B = new BN(0);
-
-  // C * x + D * y = y
-  var C = new BN(0);
-  var D = new BN(1);
-
-  var g = 0;
-
-  while (x.isEven() && y.isEven()) {
-    x.iushrn(1);
-    y.iushrn(1);
-    ++g;
-  }
-
-  var yp = y.clone();
-  var xp = x.clone();
-
-  while (x.cmpn(0) !== 0) {
-    while (x.isEven()) {
-      x.iushrn(1);
-      if (A.isEven() && B.isEven()) {
-        A.iushrn(1);
-        B.iushrn(1);
-      } else {
-        A.iadd(yp).iushrn(1);
-        B.isub(xp).iushrn(1);
-      }
-    }
-
-    while (y.isEven()) {
-      y.iushrn(1);
-      if (C.isEven() && D.isEven()) {
-        C.iushrn(1);
-        D.iushrn(1);
-      } else {
-        C.iadd(yp).iushrn(1);
-        D.isub(xp).iushrn(1);
-      }
-    }
-
-    if (x.cmp(y) >= 0) {
-      x.isub(y);
-      A.isub(C);
-      B.isub(D);
-    } else {
-      y.isub(x);
-      C.isub(A);
-      D.isub(B);
-    }
-  }
-
-  return {
-    a: C,
-    b: D,
-    gcd: y.iushln(g)
-  };
-};
-
-// This is reduced incarnation of the binary EEA
-// above, designated to invert members of the
-// _prime_ fields F(p) at a maximal speed
-BN.prototype._invmp = function _invmp(p) {
-  assert(p.negative === 0);
-  assert(p.cmpn(0) !== 0);
-
-  var a = this;
-  var b = p.clone();
-
-  if (a.negative !== 0)
-    a = a.umod(p);
-  else
-    a = a.clone();
-
-  var x1 = new BN(1);
-  var x2 = new BN(0);
-
-  var delta = b.clone();
-
-  while (a.cmpn(1) > 0 && b.cmpn(1) > 0) {
-    while (a.isEven()) {
-      a.iushrn(1);
-      if (x1.isEven())
-        x1.iushrn(1);
-      else
-        x1.iadd(delta).iushrn(1);
-    }
-    while (b.isEven()) {
-      b.iushrn(1);
-      if (x2.isEven())
-        x2.iushrn(1);
-      else
-        x2.iadd(delta).iushrn(1);
-    }
-    if (a.cmp(b) >= 0) {
-      a.isub(b);
-      x1.isub(x2);
-    } else {
-      b.isub(a);
-      x2.isub(x1);
-    }
-  }
-
-  var res;
-  if (a.cmpn(1) === 0)
-    res = x1;
-  else
-    res = x2;
-
-  if (res.cmpn(0) < 0)
-    res.iadd(p);
-
-  return res;
-};
-
-BN.prototype.gcd = function gcd(num) {
-  if (this.cmpn(0) === 0)
-    return num.clone();
-  if (num.cmpn(0) === 0)
-    return this.clone();
-
-  var a = this.clone();
-  var b = num.clone();
-  a.negative = 0;
-  b.negative = 0;
-
-  // Remove common factor of two
-  for (var shift = 0; a.isEven() && b.isEven(); shift++) {
-    a.iushrn(1);
-    b.iushrn(1);
-  }
-
-  do {
-    while (a.isEven())
-      a.iushrn(1);
-    while (b.isEven())
-      b.iushrn(1);
-
-    var r = a.cmp(b);
-    if (r < 0) {
-      // Swap `a` and `b` to make `a` always bigger than `b`
-      var t = a;
-      a = b;
-      b = t;
-    } else if (r === 0 || b.cmpn(1) === 0) {
-      break;
-    }
-
-    a.isub(b);
-  } while (true);
-
-  return b.iushln(shift);
-};
-
-// Invert number in the field F(num)
-BN.prototype.invm = function invm(num) {
-  return this.egcd(num).a.umod(num);
-};
-
-BN.prototype.isEven = function isEven() {
-  return (this.words[0] & 1) === 0;
-};
-
-BN.prototype.isOdd = function isOdd() {
-  return (this.words[0] & 1) === 1;
-};
-
-// And first word and num
-BN.prototype.andln = function andln(num) {
-  return this.words[0] & num;
-};
-
-// Increment at the bit position in-line
-BN.prototype.bincn = function bincn(bit) {
-  assert(typeof bit === 'number');
-  var r = bit % 26;
-  var s = (bit - r) / 26;
-  var q = 1 << r;
-
-  // Fast case: bit is much higher than all existing words
-  if (this.length <= s) {
-    for (var i = this.length; i < s + 1; i++)
-      this.words[i] = 0;
-    this.words[s] |= q;
-    this.length = s + 1;
-    return this;
-  }
-
-  // Add bit and propagate, if needed
-  var carry = q;
-  for (var i = s; carry !== 0 && i < this.length; i++) {
-    var w = this.words[i] | 0;
-    w += carry;
-    carry = w >>> 26;
-    w &= 0x3ffffff;
-    this.words[i] = w;
-  }
-  if (carry !== 0) {
-    this.words[i] = carry;
-    this.length++;
-  }
-  return this;
-};
-
-BN.prototype.isZero = function isZero() {
-  return this.length === 1 && this.words[0] === 0;
-};
-
-BN.prototype.cmpn = function cmpn(num) {
-  var negative = num < 0;
-
-  if (this.negative !== 0 && !negative)
-    return -1;
-  else if (this.negative === 0 && negative)
-    return 1;
-
-  this.strip();
-
-  var res;
-  if (this.length > 1) {
-    res = 1;
-  } else {
-    if (negative)
-      num = -num;
-    assert(num <= 0x3ffffff, 'Number is too big');
-
-    var w = this.words[0] | 0;
-    res = w === num ? 0 : w < num ? -1 : 1;
-  }
-  if (this.negative !== 0)
-    res = -res;
-  return res;
-};
-
-// Compare two numbers and return:
-// 1 - if `this` > `num`
-// 0 - if `this` == `num`
-// -1 - if `this` < `num`
-BN.prototype.cmp = function cmp(num) {
-  if (this.negative !== 0 && num.negative === 0)
-    return -1;
-  else if (this.negative === 0 && num.negative !== 0)
-    return 1;
-
-  var res = this.ucmp(num);
-  if (this.negative !== 0)
-    return -res;
-  else
-    return res;
-};
-
-// Unsigned comparison
-BN.prototype.ucmp = function ucmp(num) {
-  // At this point both numbers have the same sign
-  if (this.length > num.length)
-    return 1;
-  else if (this.length < num.length)
-    return -1;
-
-  var res = 0;
-  for (var i = this.length - 1; i >= 0; i--) {
-    var a = this.words[i] | 0;
-    var b = num.words[i] | 0;
-
-    if (a === b)
-      continue;
-    if (a < b)
-      res = -1;
-    else if (a > b)
-      res = 1;
-    break;
-  }
-  return res;
-};
-
-//
-// A reduce context, could be using montgomery or something better, depending
-// on the `m` itself.
-//
-BN.red = function red(num) {
-  return new Red(num);
-};
-
-BN.prototype.toRed = function toRed(ctx) {
-  assert(!this.red, 'Already a number in reduction context');
-  assert(this.negative === 0, 'red works only with positives');
-  return ctx.convertTo(this)._forceRed(ctx);
-};
-
-BN.prototype.fromRed = function fromRed() {
-  assert(this.red, 'fromRed works only with numbers in reduction context');
-  return this.red.convertFrom(this);
-};
-
-BN.prototype._forceRed = function _forceRed(ctx) {
-  this.red = ctx;
-  return this;
-};
-
-BN.prototype.forceRed = function forceRed(ctx) {
-  assert(!this.red, 'Already a number in reduction context');
-  return this._forceRed(ctx);
-};
-
-BN.prototype.redAdd = function redAdd(num) {
-  assert(this.red, 'redAdd works only with red numbers');
-  return this.red.add(this, num);
-};
-
-BN.prototype.redIAdd = function redIAdd(num) {
-  assert(this.red, 'redIAdd works only with red numbers');
-  return this.red.iadd(this, num);
-};
-
-BN.prototype.redSub = function redSub(num) {
-  assert(this.red, 'redSub works only with red numbers');
-  return this.red.sub(this, num);
-};
-
-BN.prototype.redISub = function redISub(num) {
-  assert(this.red, 'redISub works only with red numbers');
-  return this.red.isub(this, num);
-};
-
-BN.prototype.redShl = function redShl(num) {
-  assert(this.red, 'redShl works only with red numbers');
-  return this.red.ushl(this, num);
-};
-
-BN.prototype.redMul = function redMul(num) {
-  assert(this.red, 'redMul works only with red numbers');
-  this.red._verify2(this, num);
-  return this.red.mul(this, num);
-};
-
-BN.prototype.redIMul = function redIMul(num) {
-  assert(this.red, 'redMul works only with red numbers');
-  this.red._verify2(this, num);
-  return this.red.imul(this, num);
-};
-
-BN.prototype.redSqr = function redSqr() {
-  assert(this.red, 'redSqr works only with red numbers');
-  this.red._verify1(this);
-  return this.red.sqr(this);
-};
-
-BN.prototype.redISqr = function redISqr() {
-  assert(this.red, 'redISqr works only with red numbers');
-  this.red._verify1(this);
-  return this.red.isqr(this);
-};
-
-// Square root over p
-BN.prototype.redSqrt = function redSqrt() {
-  assert(this.red, 'redSqrt works only with red numbers');
-  this.red._verify1(this);
-  return this.red.sqrt(this);
-};
-
-BN.prototype.redInvm = function redInvm() {
-  assert(this.red, 'redInvm works only with red numbers');
-  this.red._verify1(this);
-  return this.red.invm(this);
-};
-
-// Return negative clone of `this` % `red modulo`
-BN.prototype.redNeg = function redNeg() {
-  assert(this.red, 'redNeg works only with red numbers');
-  this.red._verify1(this);
-  return this.red.neg(this);
-};
-
-BN.prototype.redPow = function redPow(num) {
-  assert(this.red && !num.red, 'redPow(normalNum)');
-  this.red._verify1(this);
-  return this.red.pow(this, num);
-};
-
-// Prime numbers with efficient reduction
-var primes = {
-  k256: null,
-  p224: null,
-  p192: null,
-  p25519: null
-};
-
-// Pseudo-Mersenne prime
-function MPrime(name, p) {
-  // P = 2 ^ N - K
-  this.name = name;
-  this.p = new BN(p, 16);
-  this.n = this.p.bitLength();
-  this.k = new BN(1).iushln(this.n).isub(this.p);
-
-  this.tmp = this._tmp();
-}
-
-MPrime.prototype._tmp = function _tmp() {
-  var tmp = new BN(null);
-  tmp.words = new Array(Math.ceil(this.n / 13));
-  return tmp;
-};
-
-MPrime.prototype.ireduce = function ireduce(num) {
-  // Assumes that `num` is less than `P^2`
-  // num = HI * (2 ^ N - K) + HI * K + LO = HI * K + LO (mod P)
-  var r = num;
-  var rlen;
-
-  do {
-    this.split(r, this.tmp);
-    r = this.imulK(r);
-    r = r.iadd(this.tmp);
-    rlen = r.bitLength();
-  } while (rlen > this.n);
-
-  var cmp = rlen < this.n ? -1 : r.ucmp(this.p);
-  if (cmp === 0) {
-    r.words[0] = 0;
-    r.length = 1;
-  } else if (cmp > 0) {
-    r.isub(this.p);
-  } else {
-    r.strip();
-  }
-
-  return r;
-};
-
-MPrime.prototype.split = function split(input, out) {
-  input.iushrn(this.n, 0, out);
-};
-
-MPrime.prototype.imulK = function imulK(num) {
-  return num.imul(this.k);
-};
-
-function K256() {
-  MPrime.call(
-    this,
-    'k256',
-    'ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff fffffffe fffffc2f');
-}
-inherits(K256, MPrime);
-
-K256.prototype.split = function split(input, output) {
-  // 256 = 9 * 26 + 22
-  var mask = 0x3fffff;
-
-  var outLen = Math.min(input.length, 9);
-  for (var i = 0; i < outLen; i++)
-    output.words[i] = input.words[i];
-  output.length = outLen;
-
-  if (input.length <= 9) {
-    input.words[0] = 0;
-    input.length = 1;
-    return;
-  }
-
-  // Shift by 9 limbs
-  var prev = input.words[9];
-  output.words[output.length++] = prev & mask;
-
-  for (var i = 10; i < input.length; i++) {
-    var next = input.words[i] | 0;
-    input.words[i - 10] = ((next & mask) << 4) | (prev >>> 22);
-    prev = next;
-  }
-  input.words[i - 10] = prev >>> 22;
-  input.length -= 9;
-};
-
-K256.prototype.imulK = function imulK(num) {
-  // K = 0x1000003d1 = [ 0x40, 0x3d1 ]
-  num.words[num.length] = 0;
-  num.words[num.length + 1] = 0;
-  num.length += 2;
-
-  // bounded at: 0x40 * 0x3ffffff + 0x3d0 = 0x100000390
-  var hi;
-  var lo = 0;
-  for (var i = 0; i < num.length; i++) {
-    var w = num.words[i] | 0;
-    hi = w * 0x40;
-    lo += w * 0x3d1;
-    hi += (lo / 0x4000000) | 0;
-    lo &= 0x3ffffff;
-
-    num.words[i] = lo;
-
-    lo = hi;
-  }
-
-  // Fast length reduction
-  if (num.words[num.length - 1] === 0) {
-    num.length--;
-    if (num.words[num.length - 1] === 0)
-      num.length--;
-  }
-  return num;
-};
-
-function P224() {
-  MPrime.call(
-    this,
-    'p224',
-    'ffffffff ffffffff ffffffff ffffffff 00000000 00000000 00000001');
-}
-inherits(P224, MPrime);
-
-function P192() {
-  MPrime.call(
-    this,
-    'p192',
-    'ffffffff ffffffff ffffffff fffffffe ffffffff ffffffff');
-}
-inherits(P192, MPrime);
-
-function P25519() {
-  // 2 ^ 255 - 19
-  MPrime.call(
-    this,
-    '25519',
-    '7fffffffffffffff ffffffffffffffff ffffffffffffffff ffffffffffffffed');
-}
-inherits(P25519, MPrime);
-
-P25519.prototype.imulK = function imulK(num) {
-  // K = 0x13
-  var carry = 0;
-  for (var i = 0; i < num.length; i++) {
-    var hi = (num.words[i] | 0) * 0x13 + carry;
-    var lo = hi & 0x3ffffff;
-    hi >>>= 26;
-
-    num.words[i] = lo;
-    carry = hi;
-  }
-  if (carry !== 0)
-    num.words[num.length++] = carry;
-  return num;
-};
-
-// Exported mostly for testing purposes, use plain name instead
-BN._prime = function prime(name) {
-  // Cached version of prime
-  if (primes[name])
-    return primes[name];
-
-  var prime;
-  if (name === 'k256')
-    prime = new K256();
-  else if (name === 'p224')
-    prime = new P224();
-  else if (name === 'p192')
-    prime = new P192();
-  else if (name === 'p25519')
-    prime = new P25519();
-  else
-    throw new Error('Unknown prime ' + name);
-  primes[name] = prime;
-
-  return prime;
-};
-
-//
-// Base reduction engine
-//
-function Red(m) {
-  if (typeof m === 'string') {
-    var prime = BN._prime(m);
-    this.m = prime.p;
-    this.prime = prime;
-  } else {
-    this.m = m;
-    this.prime = null;
-  }
-}
-
-Red.prototype._verify1 = function _verify1(a) {
-  assert(a.negative === 0, 'red works only with positives');
-  assert(a.red, 'red works only with red numbers');
-};
-
-Red.prototype._verify2 = function _verify2(a, b) {
-  assert((a.negative | b.negative) === 0, 'red works only with positives');
-  assert(a.red && a.red === b.red,
-         'red works only with red numbers');
-};
-
-Red.prototype.imod = function imod(a) {
-  if (this.prime)
-    return this.prime.ireduce(a)._forceRed(this);
-  return a.umod(this.m)._forceRed(this);
-};
-
-Red.prototype.neg = function neg(a) {
-  var r = a.clone();
-  r.negative ^= 1;
-  return r.iadd(this.m)._forceRed(this);
-};
-
-Red.prototype.add = function add(a, b) {
-  this._verify2(a, b);
-
-  var res = a.add(b);
-  if (res.cmp(this.m) >= 0)
-    res.isub(this.m);
-  return res._forceRed(this);
-};
-
-Red.prototype.iadd = function iadd(a, b) {
-  this._verify2(a, b);
-
-  var res = a.iadd(b);
-  if (res.cmp(this.m) >= 0)
-    res.isub(this.m);
-  return res;
-};
-
-Red.prototype.sub = function sub(a, b) {
-  this._verify2(a, b);
-
-  var res = a.sub(b);
-  if (res.cmpn(0) < 0)
-    res.iadd(this.m);
-  return res._forceRed(this);
-};
-
-Red.prototype.isub = function isub(a, b) {
-  this._verify2(a, b);
-
-  var res = a.isub(b);
-  if (res.cmpn(0) < 0)
-    res.iadd(this.m);
-  return res;
-};
-
-Red.prototype.shl = function shl(a, num) {
-  this._verify1(a);
-  return this.imod(a.ushln(num));
-};
-
-Red.prototype.imul = function imul(a, b) {
-  this._verify2(a, b);
-  return this.imod(a.imul(b));
-};
-
-Red.prototype.mul = function mul(a, b) {
-  this._verify2(a, b);
-  return this.imod(a.mul(b));
-};
-
-Red.prototype.isqr = function isqr(a) {
-  return this.imul(a, a);
-};
-
-Red.prototype.sqr = function sqr(a) {
-  return this.mul(a, a);
-};
-
-Red.prototype.sqrt = function sqrt(a) {
-  if (a.cmpn(0) === 0)
-    return a.clone();
-
-  var mod3 = this.m.andln(3);
-  assert(mod3 % 2 === 1);
-
-  // Fast case
-  if (mod3 === 3) {
-    var pow = this.m.add(new BN(1)).iushrn(2);
-    var r = this.pow(a, pow);
-    return r;
-  }
-
-  // Tonelli-Shanks algorithm (Totally unoptimized and slow)
-  //
-  // Find Q and S, that Q * 2 ^ S = (P - 1)
-  var q = this.m.subn(1);
-  var s = 0;
-  while (q.cmpn(0) !== 0 && q.andln(1) === 0) {
-    s++;
-    q.iushrn(1);
-  }
-  assert(q.cmpn(0) !== 0);
-
-  var one = new BN(1).toRed(this);
-  var nOne = one.redNeg();
-
-  // Find quadratic non-residue
-  // NOTE: Max is such because of generalized Riemann hypothesis.
-  var lpow = this.m.subn(1).iushrn(1);
-  var z = this.m.bitLength();
-  z = new BN(2 * z * z).toRed(this);
-  while (this.pow(z, lpow).cmp(nOne) !== 0)
-    z.redIAdd(nOne);
-
-  var c = this.pow(z, q);
-  var r = this.pow(a, q.addn(1).iushrn(1));
-  var t = this.pow(a, q);
-  var m = s;
-  while (t.cmp(one) !== 0) {
-    var tmp = t;
-    for (var i = 0; tmp.cmp(one) !== 0; i++)
-      tmp = tmp.redSqr();
-    assert(i < m);
-    var b = this.pow(c, new BN(1).iushln(m - i - 1));
-
-    r = r.redMul(b);
-    c = b.redSqr();
-    t = t.redMul(c);
-    m = i;
-  }
-
-  return r;
-};
-
-Red.prototype.invm = function invm(a) {
-  var inv = a._invmp(this.m);
-  if (inv.negative !== 0) {
-    inv.negative = 0;
-    return this.imod(inv).redNeg();
-  } else {
-    return this.imod(inv);
-  }
-};
-
-Red.prototype.pow = function pow(a, num) {
-  if (num.cmpn(0) === 0)
-    return new BN(1);
-  if (num.cmpn(1) === 0)
-    return a.clone();
-
-  var windowSize = 4;
-  var wnd = new Array(1 << windowSize);
-  wnd[0] = new BN(1).toRed(this);
-  wnd[1] = a;
-  for (var i = 2; i < wnd.length; i++)
-    wnd[i] = this.mul(wnd[i - 1], a);
-
-  var res = wnd[0];
-  var current = 0;
-  var currentLen = 0;
-  var start = num.bitLength() % 26;
-  if (start === 0)
-    start = 26;
-  for (var i = num.length - 1; i >= 0; i--) {
-    var word = num.words[i];
-    for (var j = start - 1; j >= 0; j--) {
-      var bit = (word >> j) & 1;
-      if (res !== wnd[0])
-        res = this.sqr(res);
-      if (bit === 0 && current === 0) {
-        currentLen = 0;
-        continue;
-      }
-
-      current <<= 1;
-      current |= bit;
-      currentLen++;
-      if (currentLen !== windowSize && (i !== 0 || j !== 0))
-        continue;
-
-      res = this.mul(res, wnd[current]);
-      currentLen = 0;
-      current = 0;
-    }
-    start = 26;
-  }
-
-  return res;
-};
-
-Red.prototype.convertTo = function convertTo(num) {
-  var r = num.umod(this.m);
-  if (r === num)
-    return r.clone();
-  else
-    return r;
-};
-
-Red.prototype.convertFrom = function convertFrom(num) {
-  var res = num.clone();
-  res.red = null;
-  return res;
-};
-
-//
-// Montgomery method engine
-//
-
-BN.mont = function mont(num) {
-  return new Mont(num);
-};
-
-function Mont(m) {
-  Red.call(this, m);
-
-  this.shift = this.m.bitLength();
-  if (this.shift % 26 !== 0)
-    this.shift += 26 - (this.shift % 26);
-  this.r = new BN(1).iushln(this.shift);
-  this.r2 = this.imod(this.r.sqr());
-  this.rinv = this.r._invmp(this.m);
-
-  this.minv = this.rinv.mul(this.r).isubn(1).div(this.m);
-  this.minv = this.minv.umod(this.r);
-  this.minv = this.r.sub(this.minv);
-}
-inherits(Mont, Red);
-
-Mont.prototype.convertTo = function convertTo(num) {
-  return this.imod(num.ushln(this.shift));
-};
-
-Mont.prototype.convertFrom = function convertFrom(num) {
-  var r = this.imod(num.mul(this.rinv));
-  r.red = null;
-  return r;
-};
-
-Mont.prototype.imul = function imul(a, b) {
-  if (a.cmpn(0) === 0 || b.cmpn(0) === 0) {
-    a.words[0] = 0;
-    a.length = 1;
-    return a;
-  }
-
-  var t = a.imul(b);
-  var c = t.maskn(this.shift).mul(this.minv).imaskn(this.shift).mul(this.m);
-  var u = t.isub(c).iushrn(this.shift);
-  var res = u;
-  if (u.cmp(this.m) >= 0)
-    res = u.isub(this.m);
-  else if (u.cmpn(0) < 0)
-    res = u.iadd(this.m);
-
-  return res._forceRed(this);
-};
-
-Mont.prototype.mul = function mul(a, b) {
-  if (a.cmpn(0) === 0 || b.cmpn(0) === 0)
-    return new BN(0)._forceRed(this);
-
-  var t = a.mul(b);
-  var c = t.maskn(this.shift).mul(this.minv).imaskn(this.shift).mul(this.m);
-  var u = t.isub(c).iushrn(this.shift);
-  var res = u;
-  if (u.cmp(this.m) >= 0)
-    res = u.isub(this.m);
-  else if (u.cmpn(0) < 0)
-    res = u.iadd(this.m);
-
-  return res._forceRed(this);
-};
-
-Mont.prototype.invm = function invm(a) {
-  // (AR)^-1 * R^2 = (A^-1 * R^-1) * R^2 = A^-1 * R
-  var res = this.imod(a._invmp(this.m).mul(this.r2));
-  return res._forceRed(this);
-};
-
-})(typeof module === 'undefined' || module, this);
-
-},{}],365:[function(require,module,exports){
-(function (process,global){
- /*!
-  * https://github.com/paulmillr/es6-shim
-  * @license es6-shim Copyright 2013-2015 by Paul Miller (http://paulmillr.com)
-  *   and contributors,  MIT License
-  * es6-shim: v0.33.13
-  * see https://github.com/paulmillr/es6-shim/blob/0.33.13/LICENSE
-  * Details and documentation:
-  * https://github.com/paulmillr/es6-shim/
-  */
-
-// UMD (Universal Module Definition)
-// see https://github.com/umdjs/umd/blob/master/returnExports.js
-(function (root, factory) {
-  /*global define, module, exports */
-  if (typeof define === 'function' && define.amd) {
-    // AMD. Register as an anonymous module.
-    define(factory);
-  } else if (typeof exports === 'object') {
-    // Node. Does not work with strict CommonJS, but
-    // only CommonJS-like enviroments that support module.exports,
-    // like Node.
-    module.exports = factory();
-  } else {
-    // Browser globals (root is window)
-    root.returnExports = factory();
-  }
-}(this, function () {
-  'use strict';
-
-  var _apply = Function.call.bind(Function.apply);
-  var _call = Function.call.bind(Function.call);
-  var isArray = Array.isArray;
-
-  var not = function notThunker(func) {
-    return function notThunk() { return !_apply(func, this, arguments); };
-  };
-  var throwsError = function (func) {
-    try {
-      func();
-      return false;
-    } catch (e) {
-      return true;
-    }
-  };
-  var valueOrFalseIfThrows = function valueOrFalseIfThrows(func) {
-    try {
-      return func();
-    } catch (e) {
-      return false;
-    }
-  };
-
-  var isCallableWithoutNew = not(throwsError);
-  var arePropertyDescriptorsSupported = function () {
-    // if Object.defineProperty exists but throws, it's IE 8
-    return !throwsError(function () { Object.defineProperty({}, 'x', { get: function () {} }); });
-  };
-  var supportsDescriptors = !!Object.defineProperty && arePropertyDescriptorsSupported();
-  var functionsHaveNames = (function foo() {}).name === 'foo';
-
-  var _forEach = Function.call.bind(Array.prototype.forEach);
-  var _reduce = Function.call.bind(Array.prototype.reduce);
-  var _filter = Function.call.bind(Array.prototype.filter);
-  var _some = Function.call.bind(Array.prototype.some);
-
-  var defineProperty = function (object, name, value, force) {
-    if (!force && name in object) { return; }
-    if (supportsDescriptors) {
-      Object.defineProperty(object, name, {
-        configurable: true,
-        enumerable: false,
-        writable: true,
-        value: value
-      });
-    } else {
-      object[name] = value;
-    }
-  };
-
-  // Define configurable, writable and non-enumerable props
-  // if they don’t exist.
-  var defineProperties = function (object, map) {
-    _forEach(Object.keys(map), function (name) {
-      var method = map[name];
-      defineProperty(object, name, method, false);
-    });
-  };
-
-  // Simple shim for Object.create on ES3 browsers
-  // (unlike real shim, no attempt to support `prototype === null`)
-  var create = Object.create || function (prototype, properties) {
-    var Prototype = function Prototype() {};
-    Prototype.prototype = prototype;
-    var object = new Prototype();
-    if (typeof properties !== 'undefined') {
-      Object.keys(properties).forEach(function (key) {
-        Value.defineByDescriptor(object, key, properties[key]);
-      });
-    }
-    return object;
-  };
-
-  var supportsSubclassing = function (C, f) {
-    if (!Object.setPrototypeOf) { return false; /* skip test on IE < 11 */ }
-    return valueOrFalseIfThrows(function () {
-      var Sub = function Subclass(arg) {
-        var o = new C(arg);
-        Object.setPrototypeOf(o, Subclass.prototype);
-        return o;
-      };
-      Object.setPrototypeOf(Sub, C);
-      Sub.prototype = create(C.prototype, {
-        constructor: { value: Sub }
-      });
-      return f(Sub);
-    });
-  };
-
-  var getGlobal = function () {
-    /* global self, window, global */
-    // the only reliable means to get the global object is
-    // `Function('return this')()`
-    // However, this causes CSP violations in Chrome apps.
-    if (typeof self !== 'undefined') { return self; }
-    if (typeof window !== 'undefined') { return window; }
-    if (typeof global !== 'undefined') { return global; }
-    throw new Error('unable to locate global object');
-  };
-
-  var globals = getGlobal();
-  var globalIsFinite = globals.isFinite;
-  var _indexOf = Function.call.bind(String.prototype.indexOf);
-  var _toString = Function.call.bind(Object.prototype.toString);
-  var _concat = Function.call.bind(Array.prototype.concat);
-  var _strSlice = Function.call.bind(String.prototype.slice);
-  var _push = Function.call.bind(Array.prototype.push);
-  var _pushApply = Function.apply.bind(Array.prototype.push);
-  var _shift = Function.call.bind(Array.prototype.shift);
-  var _max = Math.max;
-  var _min = Math.min;
-  var _floor = Math.floor;
-  var _abs = Math.abs;
-  var _log = Math.log;
-  var _sqrt = Math.sqrt;
-  var _hasOwnProperty = Function.call.bind(Object.prototype.hasOwnProperty);
-  var ArrayIterator; // make our implementation private
-  var noop = function () {};
-
-  var Symbol = globals.Symbol || {};
-  var symbolSpecies = Symbol.species || '@@species';
-
-  var numberIsNaN = Number.isNaN || function isNaN(value) {
-    // NaN !== NaN, but they are identical.
-    // NaNs are the only non-reflexive value, i.e., if x !== x,
-    // then x is NaN.
-    // isNaN is broken: it converts its argument to number, so
-    // isNaN('foo') => true
-    return value !== value;
-  };
-  var numberIsFinite = Number.isFinite || function isFinite(value) {
-    return typeof value === 'number' && globalIsFinite(value);
-  };
-
-  // taken directly from https://github.com/ljharb/is-arguments/blob/master/index.js
-  // can be replaced with require('is-arguments') if we ever use a build process instead
-  var isStandardArguments = function isArguments(value) {
-    return _toString(value) === '[object Arguments]';
-  };
-  var isLegacyArguments = function isArguments(value) {
-    return value !== null &&
-      typeof value === 'object' &&
-      typeof value.length === 'number' &&
-      value.length >= 0 &&
-      _toString(value) !== '[object Array]' &&
-      _toString(value.callee) === '[object Function]';
-  };
-  var isArguments = isStandardArguments(arguments) ? isStandardArguments : isLegacyArguments;
-
-  var Type = {
-    primitive: function (x) { return x === null || (typeof x !== 'function' && typeof x !== 'object'); },
-    object: function (x) { return x !== null && typeof x === 'object'; },
-    string: function (x) { return _toString(x) === '[object String]'; },
-    regex: function (x) { return _toString(x) === '[object RegExp]'; },
-    symbol: function (x) {
-      return typeof globals.Symbol === 'function' && typeof x === 'symbol';
-    }
-  };
-
-  // This is a private name in the es6 spec, equal to '[Symbol.iterator]'
-  // we're going to use an arbitrary _-prefixed name to make our shims
-  // work properly with each other, even though we don't have full Iterator
-  // support.  That is, `Array.from(map.keys())` will work, but we don't
-  // pretend to export a "real" Iterator interface.
-  var $iterator$ = Type.symbol(Symbol.iterator) ? Symbol.iterator : '_es6-shim iterator_';
-  // Firefox ships a partial implementation using the name @@iterator.
-  // https://bugzilla.mozilla.org/show_bug.cgi?id=907077#c14
-  // So use that name if we detect it.
-  if (globals.Set && typeof new globals.Set()['@@iterator'] === 'function') {
-    $iterator$ = '@@iterator';
-  }
-
-  // Reflect
-  if (!globals.Reflect) {
-    defineProperty(globals, 'Reflect', {});
-  }
-  var Reflect = globals.Reflect;
-
-  var ES = {
-    // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-call-f-v-args
-    Call: function Call(F, V) {
-      var args = arguments.length > 2 ? arguments[2] : [];
-      if (!ES.IsCallable(F)) {
-        throw new TypeError(F + ' is not a function');
-      }
-      return _apply(F, V, args);
-    },
-
-    RequireObjectCoercible: function (x, optMessage) {
-      /* jshint eqnull:true */
-      if (x == null) {
-        throw new TypeError(optMessage || 'Cannot call method on ' + x);
-      }
-    },
-
-    TypeIsObject: function (x) {
-      /* jshint eqnull:true */
-      // this is expensive when it returns false; use this function
-      // when you expect it to return true in the common case.
-      return x != null && Object(x) === x;
-    },
-
-    ToObject: function (o, optMessage) {
-      ES.RequireObjectCoercible(o, optMessage);
-      return Object(o);
-    },
-
-    IsCallable: function (x) {
-      // some versions of IE say that typeof /abc/ === 'function'
-      return typeof x === 'function' && _toString(x) === '[object Function]';
-    },
-
-    IsConstructor: function (x) {
-      // We can't tell callables from constructors in ES5
-      return ES.IsCallable(x);
-    },
-
-    ToInt32: function (x) {
-      return ES.ToNumber(x) >> 0;
-    },
-
-    ToUint32: function (x) {
-      return ES.ToNumber(x) >>> 0;
-    },
-
-    ToNumber: function (value) {
-      if (_toString(value) === '[object Symbol]') {
-        throw new TypeError('Cannot convert a Symbol value to a number');
-      }
-      return +value;
-    },
-
-    ToInteger: function (value) {
-      var number = ES.ToNumber(value);
-      if (numberIsNaN(number)) { return 0; }
-      if (number === 0 || !numberIsFinite(number)) { return number; }
-      return (number > 0 ? 1 : -1) * _floor(_abs(number));
-    },
-
-    ToLength: function (value) {
-      var len = ES.ToInteger(value);
-      if (len <= 0) { return 0; } // includes converting -0 to +0
-      if (len > Number.MAX_SAFE_INTEGER) { return Number.MAX_SAFE_INTEGER; }
-      return len;
-    },
-
-    SameValue: function (a, b) {
-      if (a === b) {
-        // 0 === -0, but they are not identical.
-        if (a === 0) { return 1 / a === 1 / b; }
-        return true;
-      }
-      return numberIsNaN(a) && numberIsNaN(b);
-    },
-
-    SameValueZero: function (a, b) {
-      // same as SameValue except for SameValueZero(+0, -0) == true
-      return (a === b) || (numberIsNaN(a) && numberIsNaN(b));
-    },
-
-    IsIterable: function (o) {
-      return ES.TypeIsObject(o) && (typeof o[$iterator$] !== 'undefined' || isArguments(o));
-    },
-
-    GetIterator: function (o) {
-      if (isArguments(o)) {
-        // special case support for `arguments`
-        return new ArrayIterator(o, 'value');
-      }
-      var itFn = ES.GetMethod(o, $iterator$);
-      if (!ES.IsCallable(itFn)) {
-        // Better diagnostics if itFn is null or undefined
-        throw new TypeError('value is not an iterable');
-      }
-      var it = _call(itFn, o);
-      if (!ES.TypeIsObject(it)) {
-        throw new TypeError('bad iterator');
-      }
-      return it;
-    },
-
-    GetMethod: function (o, p) {
-      var func = ES.ToObject(o)[p];
-      if (func === void 0 || func === null) {
-        return void 0;
-      }
-      if (!ES.IsCallable(func)) {
-        throw new TypeError('Method not callable: ' + p);
-      }
-      return func;
-    },
-
-    IteratorComplete: function (iterResult) {
-      return !!(iterResult.done);
-    },
-
-    IteratorClose: function (iterator, completionIsThrow) {
-      var returnMethod = ES.GetMethod(iterator, 'return');
-      if (returnMethod === void 0) {
-        return;
-      }
-      var innerResult, innerException;
-      try {
-        innerResult = _call(returnMethod, iterator);
-      } catch (e) {
-        innerException = e;
-      }
-      if (completionIsThrow) {
-        return;
-      }
-      if (innerException) {
-        throw innerException;
-      }
-      if (!ES.TypeIsObject(innerResult)) {
-        throw new TypeError("Iterator's return method returned a non-object.");
-      }
-    },
-
-    IteratorNext: function (it) {
-      var result = arguments.length > 1 ? it.next(arguments[1]) : it.next();
-      if (!ES.TypeIsObject(result)) {
-        throw new TypeError('bad iterator');
-      }
-      return result;
-    },
-
-    IteratorStep: function (it) {
-      var result = ES.IteratorNext(it);
-      var done = ES.IteratorComplete(result);
-      return done ? false : result;
-    },
-
-    Construct: function (C, args, newTarget, isES6internal) {
-      var target = typeof newTarget === 'undefined' ? C : newTarget;
-
-      if (!isES6internal) {
-        // Try to use Reflect.construct if available
-        return Reflect.construct(C, args, target);
-      }
-      // OK, we have to fake it.  This will only work if the
-      // C.[[ConstructorKind]] == "base" -- but that's the only
-      // kind we can make in ES5 code anyway.
-
-      // OrdinaryCreateFromConstructor(target, "%ObjectPrototype%")
-      var proto = target.prototype;
-      if (!ES.TypeIsObject(proto)) {
-        proto = Object.prototype;
-      }
-      var obj = create(proto);
-      // Call the constructor.
-      var result = ES.Call(C, obj, args);
-      return ES.TypeIsObject(result) ? result : obj;
-    },
-
-    SpeciesConstructor: function (O, defaultConstructor) {
-      var C = O.constructor;
-      if (C === void 0) {
-        return defaultConstructor;
-      }
-      if (!ES.TypeIsObject(C)) {
-        throw new TypeError('Bad constructor');
-      }
-      var S = C[symbolSpecies];
-      if (S === void 0 || S === null) {
-        return defaultConstructor;
-      }
-      if (!ES.IsConstructor(S)) {
-        throw new TypeError('Bad @@species');
-      }
-      return S;
-    },
-
-    CreateHTML: function (string, tag, attribute, value) {
-      var S = String(string);
-      var p1 = '<' + tag;
-      if (attribute !== '') {
-        var V = String(value);
-        var escapedV = V.replace(/"/g, '&quot;');
-        p1 += ' ' + attribute + '="' + escapedV + '"';
-      }
-      var p2 = p1 + '>';
-      var p3 = p2 + S;
-      return p3 + '</' + tag + '>';
-    }
-  };
-
-  var Value = {
-    getter: function (object, name, getter) {
-      if (!supportsDescriptors) {
-        throw new TypeError('getters require true ES5 support');
-      }
-      Object.defineProperty(object, name, {
-        configurable: true,
-        enumerable: false,
-        get: getter
-      });
-    },
-    proxy: function (originalObject, key, targetObject) {
-      if (!supportsDescriptors) {
-        throw new TypeError('getters require true ES5 support');
-      }
-      var originalDescriptor = Object.getOwnPropertyDescriptor(originalObject, key);
-      Object.defineProperty(targetObject, key, {
-        configurable: originalDescriptor.configurable,
-        enumerable: originalDescriptor.enumerable,
-        get: function getKey() { return originalObject[key]; },
-        set: function setKey(value) { originalObject[key] = value; }
-      });
-    },
-    redefine: function (object, property, newValue) {
-      if (supportsDescriptors) {
-        var descriptor = Object.getOwnPropertyDescriptor(object, property);
-        descriptor.value = newValue;
-        Object.defineProperty(object, property, descriptor);
-      } else {
-        object[property] = newValue;
-      }
-    },
-    defineByDescriptor: function (object, property, descriptor) {
-      if (supportsDescriptors) {
-        Object.defineProperty(object, property, descriptor);
-      } else if ('value' in descriptor) {
-        object[property] = descriptor.value;
-      }
-    },
-    preserveToString: function (target, source) {
-      if (source && ES.IsCallable(source.toString)) {
-        defineProperty(target, 'toString', source.toString.bind(source), true);
-      }
-    }
-  };
-
-  var wrapConstructor = function wrapConstructor(original, replacement, keysToSkip) {
-    Value.preserveToString(replacement, original);
-    if (Object.setPrototypeOf) {
-      // sets up proper prototype chain where possible
-      Object.setPrototypeOf(original, replacement);
-    }
-    if (supportsDescriptors) {
-      _forEach(Object.getOwnPropertyNames(original), function (key) {
-        if (key in noop || keysToSkip[key]) { return; }
-        Value.proxy(original, key, replacement);
-      });
-    } else {
-      _forEach(Object.keys(original), function (key) {
-        if (key in noop || keysToSkip[key]) { return; }
-        replacement[key] = original[key];
-      });
-    }
-    replacement.prototype = original.prototype;
-    Value.redefine(original.prototype, 'constructor', replacement);
-  };
-
-  var defaultSpeciesGetter = function () { return this; };
-  var addDefaultSpecies = function (C) {
-    if (supportsDescriptors && !_hasOwnProperty(C, symbolSpecies)) {
-      Value.getter(C, symbolSpecies, defaultSpeciesGetter);
-    }
-  };
-
-  var overrideNative = function overrideNative(object, property, replacement) {
-    var original = object[property];
-    defineProperty(object, property, replacement, true);
-    Value.preserveToString(object[property], original);
-  };
-
-  var addIterator = function (prototype, impl) {
-    var implementation = impl || function iterator() { return this; };
-    defineProperty(prototype, $iterator$, implementation);
-    if (!prototype[$iterator$] && Type.symbol($iterator$)) {
-      // implementations are buggy when $iterator$ is a Symbol
-      prototype[$iterator$] = implementation;
-    }
-  };
-
-  var createDataProperty = function createDataProperty(object, name, value) {
-    if (supportsDescriptors) {
-      Object.defineProperty(object, name, {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        value: value
-      });
-    } else {
-      object[name] = value;
-    }
-  };
-  var createDataPropertyOrThrow = function createDataPropertyOrThrow(object, name, value) {
-    createDataProperty(object, name, value);
-    if (!ES.SameValue(object[name], value)) {
-      throw new TypeError('property is nonconfigurable');
-    }
-  };
-
-  var emulateES6construct = function (o, defaultNewTarget, defaultProto, slots) {
-    // This is an es5 approximation to es6 construct semantics.  in es6,
-    // 'new Foo' invokes Foo.[[Construct]] which (for almost all objects)
-    // just sets the internal variable NewTarget (in es6 syntax `new.target`)
-    // to Foo and then returns Foo().
-
-    // Many ES6 object then have constructors of the form:
-    // 1. If NewTarget is undefined, throw a TypeError exception
-    // 2. Let xxx by OrdinaryCreateFromConstructor(NewTarget, yyy, zzz)
-
-    // So we're going to emulate those first two steps.
-    if (!ES.TypeIsObject(o)) {
-      throw new TypeError('Constructor requires `new`: ' + defaultNewTarget.name);
-    }
-    var proto = defaultNewTarget.prototype;
-    if (!ES.TypeIsObject(proto)) {
-      proto = defaultProto;
-    }
-    var obj = create(proto);
-    for (var name in slots) {
-      if (_hasOwnProperty(slots, name)) {
-        var value = slots[name];
-        defineProperty(obj, name, value, true);
-      }
-    }
-    return obj;
-  };
-
-  // Firefox 31 reports this function's length as 0
-  // https://bugzilla.mozilla.org/show_bug.cgi?id=1062484
-  if (String.fromCodePoint && String.fromCodePoint.length !== 1) {
-    var originalFromCodePoint = String.fromCodePoint;
-    overrideNative(String, 'fromCodePoint', function fromCodePoint(codePoints) { return _apply(originalFromCodePoint, this, arguments); });
-  }
-
-  var StringShims = {
-    fromCodePoint: function fromCodePoint(codePoints) {
-      var result = [];
-      var next;
-      for (var i = 0, length = arguments.length; i < length; i++) {
-        next = Number(arguments[i]);
-        if (!ES.SameValue(next, ES.ToInteger(next)) || next < 0 || next > 0x10FFFF) {
-          throw new RangeError('Invalid code point ' + next);
-        }
-
-        if (next < 0x10000) {
-          _push(result, String.fromCharCode(next));
-        } else {
-          next -= 0x10000;
-          _push(result, String.fromCharCode((next >> 10) + 0xD800));
-          _push(result, String.fromCharCode((next % 0x400) + 0xDC00));
-        }
-      }
-      return result.join('');
-    },
-
-    raw: function raw(callSite) {
-      var cooked = ES.ToObject(callSite, 'bad callSite');
-      var rawString = ES.ToObject(cooked.raw, 'bad raw value');
-      var len = rawString.length;
-      var literalsegments = ES.ToLength(len);
-      if (literalsegments <= 0) {
-        return '';
-      }
-
-      var stringElements = [];
-      var nextIndex = 0;
-      var nextKey, next, nextSeg, nextSub;
-      while (nextIndex < literalsegments) {
-        nextKey = String(nextIndex);
-        nextSeg = String(rawString[nextKey]);
-        _push(stringElements, nextSeg);
-        if (nextIndex + 1 >= literalsegments) {
-          break;
-        }
-        next = nextIndex + 1 < arguments.length ? arguments[nextIndex + 1] : '';
-        nextSub = String(next);
-        _push(stringElements, nextSub);
-        nextIndex += 1;
-      }
-      return stringElements.join('');
-    }
-  };
-  if (String.raw && String.raw({ raw: { 0: 'x', 1: 'y', length: 2 } }) !== 'xy') {
-    // IE 11 TP has a broken String.raw implementation
-    overrideNative(String, 'raw', StringShims.raw);
-  }
-  defineProperties(String, StringShims);
-
-  // Fast repeat, uses the `Exponentiation by squaring` algorithm.
-  // Perf: http://jsperf.com/string-repeat2/2
-  var stringRepeat = function repeat(s, times) {
-    if (times < 1) { return ''; }
-    if (times % 2) { return repeat(s, times - 1) + s; }
-    var half = repeat(s, times / 2);
-    return half + half;
-  };
-  var stringMaxLength = Infinity;
-
-  var StringPrototypeShims = {
-    repeat: function repeat(times) {
-      ES.RequireObjectCoercible(this);
-      var thisStr = String(this);
-      var numTimes = ES.ToInteger(times);
-      if (numTimes < 0 || numTimes >= stringMaxLength) {
-        throw new RangeError('repeat count must be less than infinity and not overflow maximum string size');
-      }
-      return stringRepeat(thisStr, numTimes);
-    },
-
-    startsWith: function startsWith(searchString) {
-      ES.RequireObjectCoercible(this);
-      var thisStr = String(this);
-      if (Type.regex(searchString)) {
-        throw new TypeError('Cannot call method "startsWith" with a regex');
-      }
-      var searchStr = String(searchString);
-      var startArg = arguments.length > 1 ? arguments[1] : void 0;
-      var start = _max(ES.ToInteger(startArg), 0);
-      return _strSlice(thisStr, start, start + searchStr.length) === searchStr;
-    },
-
-    endsWith: function endsWith(searchString) {
-      ES.RequireObjectCoercible(this);
-      var thisStr = String(this);
-      if (Type.regex(searchString)) {
-        throw new TypeError('Cannot call method "endsWith" with a regex');
-      }
-      var searchStr = String(searchString);
-      var thisLen = thisStr.length;
-      var posArg = arguments.length > 1 ? arguments[1] : void 0;
-      var pos = typeof posArg === 'undefined' ? thisLen : ES.ToInteger(posArg);
-      var end = _min(_max(pos, 0), thisLen);
-      return _strSlice(thisStr, end - searchStr.length, end) === searchStr;
-    },
-
-    includes: function includes(searchString) {
-      if (Type.regex(searchString)) {
-        throw new TypeError('"includes" does not accept a RegExp');
-      }
-      var position;
-      if (arguments.length > 1) {
-        position = arguments[1];
-      }
-      // Somehow this trick makes method 100% compat with the spec.
-      return _indexOf(this, searchString, position) !== -1;
-    },
-
-    codePointAt: function codePointAt(pos) {
-      ES.RequireObjectCoercible(this);
-      var thisStr = String(this);
-      var position = ES.ToInteger(pos);
-      var length = thisStr.length;
-      if (position >= 0 && position < length) {
-        var first = thisStr.charCodeAt(position);
-        var isEnd = (position + 1 === length);
-        if (first < 0xD800 || first > 0xDBFF || isEnd) { return first; }
-        var second = thisStr.charCodeAt(position + 1);
-        if (second < 0xDC00 || second > 0xDFFF) { return first; }
-        return ((first - 0xD800) * 1024) + (second - 0xDC00) + 0x10000;
-      }
-    }
-  };
-  if (String.prototype.includes && 'a'.includes('a', Infinity) !== false) {
-    overrideNative(String.prototype, 'includes', StringPrototypeShims.includes);
-  }
-
-  if (String.prototype.startsWith && String.prototype.endsWith) {
-    var startsWithRejectsRegex = throwsError(function () {
-      /* throws if spec-compliant */
-      '/a/'.startsWith(/a/);
-    });
-    var startsWithHandlesInfinity = 'abc'.startsWith('a', Infinity) === false;
-    if (!startsWithRejectsRegex || !startsWithHandlesInfinity) {
-      // Firefox (< 37?) and IE 11 TP have a noncompliant startsWith implementation
-      overrideNative(String.prototype, 'startsWith', StringPrototypeShims.startsWith);
-      overrideNative(String.prototype, 'endsWith', StringPrototypeShims.endsWith);
-    }
-  }
-
-  defineProperties(String.prototype, StringPrototypeShims);
-
-  // whitespace from: http://es5.github.io/#x15.5.4.20
-  // implementation from https://github.com/es-shims/es5-shim/blob/v3.4.0/es5-shim.js#L1304-L1324
-  var ws = [
-    '\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u180E\u2000\u2001\u2002\u2003',
-    '\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028',
-    '\u2029\uFEFF'
-  ].join('');
-  var trimRegexp = new RegExp('(^[' + ws + ']+)|([' + ws + ']+$)', 'g');
-  var trimShim = function trim() {
-    if (typeof this === 'undefined' || this === null) {
-      throw new TypeError("can't convert " + this + ' to object');
-    }
-    return String(this).replace(trimRegexp, '');
-  };
-  var nonWS = ['\u0085', '\u200b', '\ufffe'].join('');
-  var nonWSregex = new RegExp('[' + nonWS + ']', 'g');
-  var isBadHexRegex = /^[\-+]0x[0-9a-f]+$/i;
-  var hasStringTrimBug = nonWS.trim().length !== nonWS.length;
-  defineProperty(String.prototype, 'trim', trimShim, hasStringTrimBug);
-
-  // see https://people.mozilla.org/~jorendorff/es6-draft.html#sec-string.prototype-@@iterator
-  var StringIterator = function (s) {
-    ES.RequireObjectCoercible(s);
-    this._s = String(s);
-    this._i = 0;
-  };
-  StringIterator.prototype.next = function () {
-    var s = this._s, i = this._i;
-    if (typeof s === 'undefined' || i >= s.length) {
-      this._s = void 0;
-      return { value: void 0, done: true };
-    }
-    var first = s.charCodeAt(i), second, len;
-    if (first < 0xD800 || first > 0xDBFF || (i + 1) === s.length) {
-      len = 1;
-    } else {
-      second = s.charCodeAt(i + 1);
-      len = (second < 0xDC00 || second > 0xDFFF) ? 1 : 2;
-    }
-    this._i = i + len;
-    return { value: s.substr(i, len), done: false };
-  };
-  addIterator(StringIterator.prototype);
-  addIterator(String.prototype, function () {
-    return new StringIterator(this);
-  });
-
-  var ArrayShims = {
-    from: function from(items) {
-      var C = this;
-      var mapFn = arguments.length > 1 ? arguments[1] : void 0;
-      var mapping, T;
-      if (mapFn === void 0) {
-        mapping = false;
-      } else {
-        if (!ES.IsCallable(mapFn)) {
-          throw new TypeError('Array.from: when provided, the second argument must be a function');
-        }
-        T = arguments.length > 2 ? arguments[2] : void 0;
-        mapping = true;
-      }
-
-      // Note that that Arrays will use ArrayIterator:
-      // https://bugs.ecmascript.org/show_bug.cgi?id=2416
-      var usingIterator = typeof (isArguments(items) || ES.GetMethod(items, $iterator$)) !== 'undefined';
-
-      var length, result, i;
-      if (usingIterator) {
-        result = ES.IsConstructor(C) ? Object(new C()) : [];
-        var iterator = ES.GetIterator(items);
-        var next, nextValue;
-
-        i = 0;
-        while (true) {
-          next = ES.IteratorStep(iterator);
-          if (next === false) {
-            break;
-          }
-          nextValue = next.value;
-          try {
-            if (mapping) {
-              nextValue = T === undefined ? mapFn(nextValue, i) : _call(mapFn, T, nextValue, i);
-            }
-            result[i] = nextValue;
-          } catch (e) {
-            ES.IteratorClose(iterator, true);
-            throw e;
-          }
-          i += 1;
-        }
-        length = i;
-      } else {
-        var arrayLike = ES.ToObject(items);
-        length = ES.ToLength(arrayLike.length);
-        result = ES.IsConstructor(C) ? Object(new C(length)) : new Array(length);
-        var value;
-        for (i = 0; i < length; ++i) {
-          value = arrayLike[i];
-          if (mapping) {
-            value = T !== undefined ? _call(mapFn, T, value, i) : mapFn(value, i);
-          }
-          result[i] = value;
-        }
-      }
-
-      result.length = length;
-      return result;
-    },
-
-    of: function of() {
-      var len = arguments.length;
-      var C = this;
-      var A = isArray(C) || !ES.IsCallable(C) ? new Array(len) : ES.Construct(C, [len]);
-      for (var k = 0; k < len; ++k) {
-        createDataPropertyOrThrow(A, k, arguments[k]);
-      }
-      A.length = len;
-      return A;
-    }
-  };
-  defineProperties(Array, ArrayShims);
-  addDefaultSpecies(Array);
-
-  // Given an argument x, it will return an IteratorResult object,
-  // with value set to x and done to false.
-  // Given no arguments, it will return an iterator completion object.
-  var iteratorResult = function (x) {
-    return { value: x, done: arguments.length === 0 };
-  };
-
-  // Our ArrayIterator is private; see
-  // https://github.com/paulmillr/es6-shim/issues/252
-  ArrayIterator = function (array, kind) {
-      this.i = 0;
-      this.array = array;
-      this.kind = kind;
-  };
-
-  defineProperties(ArrayIterator.prototype, {
-    next: function () {
-      var i = this.i, array = this.array;
-      if (!(this instanceof ArrayIterator)) {
-        throw new TypeError('Not an ArrayIterator');
-      }
-      if (typeof array !== 'undefined') {
-        var len = ES.ToLength(array.length);
-        for (; i < len; i++) {
-          var kind = this.kind;
-          var retval;
-          if (kind === 'key') {
-            retval = i;
-          } else if (kind === 'value') {
-            retval = array[i];
-          } else if (kind === 'entry') {
-            retval = [i, array[i]];
-          }
-          this.i = i + 1;
-          return { value: retval, done: false };
-        }
-      }
-      this.array = void 0;
-      return { value: void 0, done: true };
-    }
-  });
-  addIterator(ArrayIterator.prototype);
-
-  var getAllKeys = function getAllKeys(object) {
-    var keys = [];
-
-    for (var key in object) {
-      _push(keys, key);
-    }
-
-    return keys;
-  };
-
-  var ObjectIterator = function (object, kind) {
-    defineProperties(this, {
-      object: object,
-      array: getAllKeys(object),
-      kind: kind
-    });
-  };
-
-  defineProperties(ObjectIterator.prototype, {
-    next: function next() {
-      var key;
-      var array = this.array;
-
-      if (!(this instanceof ObjectIterator)) {
-        throw new TypeError('Not an ObjectIterator');
-      }
-
-      // Find next key in the object
-      while (array.length > 0) {
-        key = _shift(array);
-
-        // The candidate key isn't defined on object.
-        // Must have been deleted, or object[[Prototype]]
-        // has been modified.
-        if (!(key in this.object)) {
-          continue;
-        }
-
-        if (this.kind === 'key') {
-          return iteratorResult(key);
-        } else if (this.kind === 'value') {
-          return iteratorResult(this.object[key]);
-        } else {
-          return iteratorResult([key, this.object[key]]);
-        }
-      }
-
-      return iteratorResult();
-    }
-  });
-  addIterator(ObjectIterator.prototype);
-
-  // note: this is positioned here because it depends on ArrayIterator
-  var arrayOfSupportsSubclassing = Array.of === ArrayShims.of || (function () {
-    // Detects a bug in Webkit nightly r181886
-    var Foo = function Foo(len) { this.length = len; };
-    Foo.prototype = [];
-    var fooArr = Array.of.apply(Foo, [1, 2]);
-    return fooArr instanceof Foo && fooArr.length === 2;
-  }());
-  if (!arrayOfSupportsSubclassing) {
-    overrideNative(Array, 'of', ArrayShims.of);
-  }
-
-  var ArrayPrototypeShims = {
-    copyWithin: function copyWithin(target, start) {
-      var end = arguments[2]; // copyWithin.length must be 2
-      var o = ES.ToObject(this);
-      var len = ES.ToLength(o.length);
-      var relativeTarget = ES.ToInteger(target);
-      var relativeStart = ES.ToInteger(start);
-      var to = relativeTarget < 0 ? _max(len + relativeTarget, 0) : _min(relativeTarget, len);
-      var from = relativeStart < 0 ? _max(len + relativeStart, 0) : _min(relativeStart, len);
-      end = typeof end === 'undefined' ? len : ES.ToInteger(end);
-      var fin = end < 0 ? _max(len + end, 0) : _min(end, len);
-      var count = _min(fin - from, len - to);
-      var direction = 1;
-      if (from < to && to < (from + count)) {
-        direction = -1;
-        from += count - 1;
-        to += count - 1;
-      }
-      while (count > 0) {
-        if (_hasOwnProperty(o, from)) {
-          o[to] = o[from];
-        } else {
-          delete o[from];
-        }
-        from += direction;
-        to += direction;
-        count -= 1;
-      }
-      return o;
-    },
-
-    fill: function fill(value) {
-      var start = arguments.length > 1 ? arguments[1] : void 0;
-      var end = arguments.length > 2 ? arguments[2] : void 0;
-      var O = ES.ToObject(this);
-      var len = ES.ToLength(O.length);
-      start = ES.ToInteger(typeof start === 'undefined' ? 0 : start);
-      end = ES.ToInteger(typeof end === 'undefined' ? len : end);
-
-      var relativeStart = start < 0 ? _max(len + start, 0) : _min(start, len);
-      var relativeEnd = end < 0 ? len + end : end;
-
-      for (var i = relativeStart; i < len && i < relativeEnd; ++i) {
-        O[i] = value;
-      }
-      return O;
-    },
-
-    find: function find(predicate) {
-      var list = ES.ToObject(this);
-      var length = ES.ToLength(list.length);
-      if (!ES.IsCallable(predicate)) {
-        throw new TypeError('Array#find: predicate must be a function');
-      }
-      var thisArg = arguments.length > 1 ? arguments[1] : null;
-      for (var i = 0, value; i < length; i++) {
-        value = list[i];
-        if (thisArg) {
-          if (_call(predicate, thisArg, value, i, list)) { return value; }
-        } else if (predicate(value, i, list)) {
-          return value;
-        }
-      }
-    },
-
-    findIndex: function findIndex(predicate) {
-      var list = ES.ToObject(this);
-      var length = ES.ToLength(list.length);
-      if (!ES.IsCallable(predicate)) {
-        throw new TypeError('Array#findIndex: predicate must be a function');
-      }
-      var thisArg = arguments.length > 1 ? arguments[1] : null;
-      for (var i = 0; i < length; i++) {
-        if (thisArg) {
-          if (_call(predicate, thisArg, list[i], i, list)) { return i; }
-        } else if (predicate(list[i], i, list)) {
-          return i;
-        }
-      }
-      return -1;
-    },
-
-    keys: function keys() {
-      return new ArrayIterator(this, 'key');
-    },
-
-    values: function values() {
-      return new ArrayIterator(this, 'value');
-    },
-
-    entries: function entries() {
-      return new ArrayIterator(this, 'entry');
-    }
-  };
-  // Safari 7.1 defines Array#keys and Array#entries natively,
-  // but the resulting ArrayIterator objects don't have a "next" method.
-  if (Array.prototype.keys && !ES.IsCallable([1].keys().next)) {
-    delete Array.prototype.keys;
-  }
-  if (Array.prototype.entries && !ES.IsCallable([1].entries().next)) {
-    delete Array.prototype.entries;
-  }
-
-  // Chrome 38 defines Array#keys and Array#entries, and Array#@@iterator, but not Array#values
-  if (Array.prototype.keys && Array.prototype.entries && !Array.prototype.values && Array.prototype[$iterator$]) {
-    defineProperties(Array.prototype, {
-      values: Array.prototype[$iterator$]
-    });
-    if (Type.symbol(Symbol.unscopables)) {
-      Array.prototype[Symbol.unscopables].values = true;
-    }
-  }
-  // Chrome 40 defines Array#values with the incorrect name, although Array#{keys,entries} have the correct name
-  if (functionsHaveNames && Array.prototype.values && Array.prototype.values.name !== 'values') {
-    var originalArrayPrototypeValues = Array.prototype.values;
-    overrideNative(Array.prototype, 'values', function values() { return _call(originalArrayPrototypeValues, this); });
-    defineProperty(Array.prototype, $iterator$, Array.prototype.values, true);
-  }
-  defineProperties(Array.prototype, ArrayPrototypeShims);
-
-  addIterator(Array.prototype, function () { return this.values(); });
-  // Chrome defines keys/values/entries on Array, but doesn't give us
-  // any way to identify its iterator.  So add our own shimmed field.
-  if (Object.getPrototypeOf) {
-    addIterator(Object.getPrototypeOf([].values()));
-  }
-
-  // note: this is positioned here because it relies on Array#entries
-  var arrayFromSwallowsNegativeLengths = (function () {
-    // Detects a Firefox bug in v32
-    // https://bugzilla.mozilla.org/show_bug.cgi?id=1063993
-    return valueOrFalseIfThrows(function () { return Array.from({ length: -1 }).length === 0; });
-  }());
-  var arrayFromHandlesIterables = (function () {
-    // Detects a bug in Webkit nightly r181886
-    var arr = Array.from([0].entries());
-    return arr.length === 1 && isArray(arr[0]) && arr[0][0] === 0 && arr[0][1] === 0;
-  }());
-  if (!arrayFromSwallowsNegativeLengths || !arrayFromHandlesIterables) {
-    overrideNative(Array, 'from', ArrayShims.from);
-  }
-  var arrayFromHandlesUndefinedMapFunction = (function () {
-    // Microsoft Edge v0.11 throws if the mapFn argument is *provided* but undefined,
-    // but the spec doesn't care if it's provided or not - undefined doesn't throw.
-    return valueOrFalseIfThrows(function () { return Array.from([0], undefined); });
-  }());
-  if (!arrayFromHandlesUndefinedMapFunction) {
-    var origArrayFrom = Array.from;
-    overrideNative(Array, 'from', function from(items) {
-      if (arguments.length > 0 && typeof arguments[1] !== 'undefined') {
-        return _apply(origArrayFrom, this, arguments);
-      } else {
-        return _call(origArrayFrom, this, items);
-      }
-    });
-  }
-
-  var toLengthsCorrectly = function (method, reversed) {
-    var obj = { length: -1 };
-    obj[reversed ? ((-1 >>> 0) - 1) : 0] = true;
-    return valueOrFalseIfThrows(function () {
-      _call(method, obj, function () {
-        // note: in nonconforming browsers, this will be called
-        // -1 >>> 0 times, which is 4294967295, so the throw matters.
-        throw new RangeError('should not reach here');
-      }, []);
-    });
-  };
-  if (!toLengthsCorrectly(Array.prototype.forEach)) {
-    var originalForEach = Array.prototype.forEach;
-    overrideNative(Array.prototype, 'forEach', function forEach(callbackFn) {
-      return _apply(originalForEach, this.length >= 0 ? this : [], arguments);
-    }, true);
-  }
-  if (!toLengthsCorrectly(Array.prototype.map)) {
-    var originalMap = Array.prototype.map;
-    overrideNative(Array.prototype, 'map', function map(callbackFn) {
-      return _apply(originalMap, this.length >= 0 ? this : [], arguments);
-    }, true);
-  }
-  if (!toLengthsCorrectly(Array.prototype.filter)) {
-    var originalFilter = Array.prototype.filter;
-    overrideNative(Array.prototype, 'filter', function filter(callbackFn) {
-      return _apply(originalFilter, this.length >= 0 ? this : [], arguments);
-    }, true);
-  }
-  if (!toLengthsCorrectly(Array.prototype.some)) {
-    var originalSome = Array.prototype.some;
-    overrideNative(Array.prototype, 'some', function some(callbackFn) {
-      return _apply(originalSome, this.length >= 0 ? this : [], arguments);
-    }, true);
-  }
-  if (!toLengthsCorrectly(Array.prototype.every)) {
-    var originalEvery = Array.prototype.every;
-    overrideNative(Array.prototype, 'every', function every(callbackFn) {
-      return _apply(originalEvery, this.length >= 0 ? this : [], arguments);
-    }, true);
-  }
-  if (!toLengthsCorrectly(Array.prototype.reduce)) {
-    var originalReduce = Array.prototype.reduce;
-    overrideNative(Array.prototype, 'reduce', function reduce(callbackFn) {
-      return _apply(originalReduce, this.length >= 0 ? this : [], arguments);
-    }, true);
-  }
-  if (!toLengthsCorrectly(Array.prototype.reduceRight, true)) {
-    var originalReduceRight = Array.prototype.reduceRight;
-    overrideNative(Array.prototype, 'reduceRight', function reduceRight(callbackFn) {
-      return _apply(originalReduceRight, this.length >= 0 ? this : [], arguments);
-    }, true);
-  }
-
-  var lacksOctalSupport = Number('0o10') !== 8;
-  var lacksBinarySupport = Number('0b10') !== 2;
-  var trimsNonWhitespace = _some(nonWS, function (c) {
-    return Number(c + 0 + c) === 0;
-  });
-  if (lacksOctalSupport || lacksBinarySupport || trimsNonWhitespace) {
-    var OrigNumber = Number;
-    var binaryRegex = /^0b[01]+$/i;
-    var octalRegex = /^0o[0-7]+$/i;
-    // Note that in IE 8, RegExp.prototype.test doesn't seem to exist: ie, "test" is an own property of regexes. wtf.
-    var isBinary = binaryRegex.test.bind(binaryRegex);
-    var isOctal = octalRegex.test.bind(octalRegex);
-    var toPrimitive = function (O) { // need to replace this with `es-to-primitive/es6`
-      var result;
-      if (typeof O.valueOf === 'function') {
-        result = O.valueOf();
-        if (Type.primitive(result)) {
-          return result;
-        }
-      }
-      if (typeof O.toString === 'function') {
-        result = O.toString();
-        if (Type.primitive(result)) {
-          return result;
-        }
-      }
-      throw new TypeError('No default value');
-    };
-    var hasNonWS = nonWSregex.test.bind(nonWSregex);
-    var isBadHex = isBadHexRegex.test.bind(isBadHexRegex);
-    var NumberShim = (function () {
-      // this is wrapped in an IIFE because of IE 6-8's wacky scoping issues with named function expressions.
-      var NumberShim = function Number(value) {
-        var primValue;
-        if (arguments.length > 0) {
-          primValue = Type.primitive(value) ? value : toPrimitive(value, 'number');
-        } else {
-          primValue = 0;
-        }
-        if (typeof primValue === 'string') {
-          primValue = _call(trimShim, primValue);
-          if (isBinary(primValue)) {
-            primValue = parseInt(_strSlice(primValue, 2), 2);
-          } else if (isOctal(primValue)) {
-            primValue = parseInt(_strSlice(primValue, 2), 8);
-          } else if (hasNonWS(primValue) || isBadHex(primValue)) {
-            primValue = NaN;
-          }
-        }
-        var receiver = this;
-        var valueOfSucceeds = valueOrFalseIfThrows(function () {
-          OrigNumber.prototype.valueOf.call(receiver);
-          return true;
-        });
-        if (receiver instanceof NumberShim && !valueOfSucceeds) {
-          return new OrigNumber(primValue);
-        }
-        /* jshint newcap: false */
-        return OrigNumber(primValue);
-        /* jshint newcap: true */
-      };
-      return NumberShim;
-    }());
-    wrapConstructor(OrigNumber, NumberShim, {});
-    /*globals Number: true */
-    /* eslint-disable no-undef */
-    Number = NumberShim;
-    Value.redefine(globals, 'Number', NumberShim);
-    /* eslint-enable no-undef */
-    /*globals Number: false */
-  }
-
-  var maxSafeInteger = Math.pow(2, 53) - 1;
-  defineProperties(Number, {
-    MAX_SAFE_INTEGER: maxSafeInteger,
-    MIN_SAFE_INTEGER: -maxSafeInteger,
-    EPSILON: 2.220446049250313e-16,
-
-    parseInt: globals.parseInt,
-    parseFloat: globals.parseFloat,
-
-    isFinite: numberIsFinite,
-
-    isInteger: function isInteger(value) {
-      return numberIsFinite(value) && ES.ToInteger(value) === value;
-    },
-
-    isSafeInteger: function isSafeInteger(value) {
-      return Number.isInteger(value) && _abs(value) <= Number.MAX_SAFE_INTEGER;
-    },
-
-    isNaN: numberIsNaN
-  });
-  // Firefox 37 has a conforming Number.parseInt, but it's not === to the global parseInt (fixed in v40)
-  defineProperty(Number, 'parseInt', globals.parseInt, Number.parseInt !== globals.parseInt);
-
-  // Work around bugs in Array#find and Array#findIndex -- early
-  // implementations skipped holes in sparse arrays. (Note that the
-  // implementations of find/findIndex indirectly use shimmed
-  // methods of Number, so this test has to happen down here.)
-  /*jshint elision: true */
-  /* eslint-disable no-sparse-arrays */
-  if (![, 1].find(function (item, idx) { return idx === 0; })) {
-    overrideNative(Array.prototype, 'find', ArrayPrototypeShims.find);
-  }
-  if ([, 1].findIndex(function (item, idx) { return idx === 0; }) !== 0) {
-    overrideNative(Array.prototype, 'findIndex', ArrayPrototypeShims.findIndex);
-  }
-  /* eslint-enable no-sparse-arrays */
-  /*jshint elision: false */
-
-  var isEnumerableOn = Function.bind.call(Function.bind, Object.prototype.propertyIsEnumerable);
-  var sliceArgs = function sliceArgs() {
-    // per https://github.com/petkaantonov/bluebird/wiki/Optimization-killers#32-leaking-arguments
-    // and https://gist.github.com/WebReflection/4327762cb87a8c634a29
-    var initial = Number(this);
-    var len = arguments.length;
-    var desiredArgCount = len - initial;
-    var args = new Array(desiredArgCount < 0 ? 0 : desiredArgCount);
-    for (var i = initial; i < len; ++i) {
-      args[i - initial] = arguments[i];
-    }
-    return args;
-  };
-  var assignTo = function assignTo(source) {
-    return function assignToSource(target, key) {
-      target[key] = source[key];
-      return target;
-    };
-  };
-  var assignReducer = function (target, source) {
-    var keys = Object.keys(Object(source));
-    var symbols;
-    if (ES.IsCallable(Object.getOwnPropertySymbols)) {
-      symbols = _filter(Object.getOwnPropertySymbols(Object(source)), isEnumerableOn(source));
-    }
-    return _reduce(_concat(keys, symbols || []), assignTo(source), target);
-  };
-
-  var ObjectShims = {
-    // 19.1.3.1
-    assign: function (target, source) {
-      var to = ES.ToObject(target, 'Cannot convert undefined or null to object');
-      return _reduce(_apply(sliceArgs, 1, arguments), assignReducer, to);
-    },
-
-    // Added in WebKit in https://bugs.webkit.org/show_bug.cgi?id=143865
-    is: function is(a, b) {
-      return ES.SameValue(a, b);
-    }
-  };
-  var assignHasPendingExceptions = Object.assign && Object.preventExtensions && (function () {
-    // Firefox 37 still has "pending exception" logic in its Object.assign implementation,
-    // which is 72% slower than our shim, and Firefox 40's native implementation.
-    var thrower = Object.preventExtensions({ 1: 2 });
-    try {
-      Object.assign(thrower, 'xy');
-    } catch (e) {
-      return thrower[1] === 'y';
-    }
-  }());
-  if (assignHasPendingExceptions) {
-    overrideNative(Object, 'assign', ObjectShims.assign);
-  }
-  defineProperties(Object, ObjectShims);
-
-  if (supportsDescriptors) {
-    var ES5ObjectShims = {
-      // 19.1.3.9
-      // shim from https://gist.github.com/WebReflection/5593554
-      setPrototypeOf: (function (Object, magic) {
-        var set;
-
-        var checkArgs = function (O, proto) {
-          if (!ES.TypeIsObject(O)) {
-            throw new TypeError('cannot set prototype on a non-object');
-          }
-          if (!(proto === null || ES.TypeIsObject(proto))) {
-            throw new TypeError('can only set prototype to an object or null' + proto);
-          }
-        };
-
-        var setPrototypeOf = function (O, proto) {
-          checkArgs(O, proto);
-          _call(set, O, proto);
-          return O;
-        };
-
-        try {
-          // this works already in Firefox and Safari
-          set = Object.getOwnPropertyDescriptor(Object.prototype, magic).set;
-          _call(set, {}, null);
-        } catch (e) {
-          if (Object.prototype !== {}[magic]) {
-            // IE < 11 cannot be shimmed
-            return;
-          }
-          // probably Chrome or some old Mobile stock browser
-          set = function (proto) {
-            this[magic] = proto;
-          };
-          // please note that this will **not** work
-          // in those browsers that do not inherit
-          // __proto__ by mistake from Object.prototype
-          // in these cases we should probably throw an error
-          // or at least be informed about the issue
-          setPrototypeOf.polyfill = setPrototypeOf(
-            setPrototypeOf({}, null),
-            Object.prototype
-          ) instanceof Object;
-          // setPrototypeOf.polyfill === true means it works as meant
-          // setPrototypeOf.polyfill === false means it's not 100% reliable
-          // setPrototypeOf.polyfill === undefined
-          // or
-          // setPrototypeOf.polyfill ==  null means it's not a polyfill
-          // which means it works as expected
-          // we can even delete Object.prototype.__proto__;
-        }
-        return setPrototypeOf;
-      }(Object, '__proto__'))
-    };
-
-    defineProperties(Object, ES5ObjectShims);
-  }
-
-  // Workaround bug in Opera 12 where setPrototypeOf(x, null) doesn't work,
-  // but Object.create(null) does.
-  if (Object.setPrototypeOf && Object.getPrototypeOf &&
-      Object.getPrototypeOf(Object.setPrototypeOf({}, null)) !== null &&
-      Object.getPrototypeOf(Object.create(null)) === null) {
-    (function () {
-      var FAKENULL = Object.create(null);
-      var gpo = Object.getPrototypeOf, spo = Object.setPrototypeOf;
-      Object.getPrototypeOf = function (o) {
-        var result = gpo(o);
-        return result === FAKENULL ? null : result;
-      };
-      Object.setPrototypeOf = function (o, p) {
-        var proto = p === null ? FAKENULL : p;
-        return spo(o, proto);
-      };
-      Object.setPrototypeOf.polyfill = false;
-    }());
-  }
-
-  var objectKeysAcceptsPrimitives = !throwsError(function () { Object.keys('foo'); });
-  if (!objectKeysAcceptsPrimitives) {
-    var originalObjectKeys = Object.keys;
-    overrideNative(Object, 'keys', function keys(value) {
-      return originalObjectKeys(ES.ToObject(value));
-    });
-  }
-
-  if (Object.getOwnPropertyNames) {
-    var objectGOPNAcceptsPrimitives = !throwsError(function () { Object.getOwnPropertyNames('foo'); });
-    if (!objectGOPNAcceptsPrimitives) {
-      var cachedWindowNames = typeof window === 'object' ? Object.getOwnPropertyNames(window) : [];
-      var originalObjectGetOwnPropertyNames = Object.getOwnPropertyNames;
-      overrideNative(Object, 'getOwnPropertyNames', function getOwnPropertyNames(value) {
-        var val = ES.ToObject(value);
-        if (_toString(val) === '[object Window]') {
-          try {
-            return originalObjectGetOwnPropertyNames(val);
-          } catch (e) {
-            // IE bug where layout engine calls userland gOPN for cross-domain `window` objects
-            return _concat([], cachedWindowNames);
-          }
-        }
-        return originalObjectGetOwnPropertyNames(val);
-      });
-    }
-  }
-  if (Object.getOwnPropertyDescriptor) {
-    var objectGOPDAcceptsPrimitives = !throwsError(function () { Object.getOwnPropertyDescriptor('foo', 'bar'); });
-    if (!objectGOPDAcceptsPrimitives) {
-      var originalObjectGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
-      overrideNative(Object, 'getOwnPropertyDescriptor', function getOwnPropertyDescriptor(value, property) {
-        return originalObjectGetOwnPropertyDescriptor(ES.ToObject(value), property);
-      });
-    }
-  }
-  if (Object.seal) {
-    var objectSealAcceptsPrimitives = !throwsError(function () { Object.seal('foo'); });
-    if (!objectSealAcceptsPrimitives) {
-      var originalObjectSeal = Object.seal;
-      overrideNative(Object, 'seal', function seal(value) {
-        if (!Type.object(value)) { return value; }
-        return originalObjectSeal(value);
-      });
-    }
-  }
-  if (Object.isSealed) {
-    var objectIsSealedAcceptsPrimitives = !throwsError(function () { Object.isSealed('foo'); });
-    if (!objectIsSealedAcceptsPrimitives) {
-      var originalObjectIsSealed = Object.isSealed;
-      overrideNative(Object, 'isSealed', function isSealed(value) {
-        if (!Type.object(value)) { return true; }
-        return originalObjectIsSealed(value);
-      });
-    }
-  }
-  if (Object.freeze) {
-    var objectFreezeAcceptsPrimitives = !throwsError(function () { Object.freeze('foo'); });
-    if (!objectFreezeAcceptsPrimitives) {
-      var originalObjectFreeze = Object.freeze;
-      overrideNative(Object, 'freeze', function freeze(value) {
-        if (!Type.object(value)) { return value; }
-        return originalObjectFreeze(value);
-      });
-    }
-  }
-  if (Object.isFrozen) {
-    var objectIsFrozenAcceptsPrimitives = !throwsError(function () { Object.isFrozen('foo'); });
-    if (!objectIsFrozenAcceptsPrimitives) {
-      var originalObjectIsFrozen = Object.isFrozen;
-      overrideNative(Object, 'isFrozen', function isFrozen(value) {
-        if (!Type.object(value)) { return true; }
-        return originalObjectIsFrozen(value);
-      });
-    }
-  }
-  if (Object.preventExtensions) {
-    var objectPreventExtensionsAcceptsPrimitives = !throwsError(function () { Object.preventExtensions('foo'); });
-    if (!objectPreventExtensionsAcceptsPrimitives) {
-      var originalObjectPreventExtensions = Object.preventExtensions;
-      overrideNative(Object, 'preventExtensions', function preventExtensions(value) {
-        if (!Type.object(value)) { return value; }
-        return originalObjectPreventExtensions(value);
-      });
-    }
-  }
-  if (Object.isExtensible) {
-    var objectIsExtensibleAcceptsPrimitives = !throwsError(function () { Object.isExtensible('foo'); });
-    if (!objectIsExtensibleAcceptsPrimitives) {
-      var originalObjectIsExtensible = Object.isExtensible;
-      overrideNative(Object, 'isExtensible', function isExtensible(value) {
-        if (!Type.object(value)) { return false; }
-        return originalObjectIsExtensible(value);
-      });
-    }
-  }
-  if (Object.getPrototypeOf) {
-    var objectGetProtoAcceptsPrimitives = !throwsError(function () { Object.getPrototypeOf('foo'); });
-    if (!objectGetProtoAcceptsPrimitives) {
-      var originalGetProto = Object.getPrototypeOf;
-      overrideNative(Object, 'getPrototypeOf', function getPrototypeOf(value) {
-        return originalGetProto(ES.ToObject(value));
-      });
-    }
-  }
-
-  var hasFlags = supportsDescriptors && (function () {
-    var desc = Object.getOwnPropertyDescriptor(RegExp.prototype, 'flags');
-    return desc && ES.IsCallable(desc.get);
-  }());
-  if (supportsDescriptors && !hasFlags) {
-    var regExpFlagsGetter = function flags() {
-      if (!ES.TypeIsObject(this)) {
-        throw new TypeError('Method called on incompatible type: must be an object.');
-      }
-      var result = '';
-      if (this.global) {
-        result += 'g';
-      }
-      if (this.ignoreCase) {
-        result += 'i';
-      }
-      if (this.multiline) {
-        result += 'm';
-      }
-      if (this.unicode) {
-        result += 'u';
-      }
-      if (this.sticky) {
-        result += 'y';
-      }
-      return result;
-    };
-
-    Value.getter(RegExp.prototype, 'flags', regExpFlagsGetter);
-  }
-
-  var regExpSupportsFlagsWithRegex = valueOrFalseIfThrows(function () {
-    return String(new RegExp(/a/g, 'i')) === '/a/i';
-  });
-
-  if (!regExpSupportsFlagsWithRegex && supportsDescriptors) {
-    var OrigRegExp = RegExp;
-    var RegExpShim = (function () {
-      return function RegExp(pattern, flags) {
-        var calledWithNew = this instanceof RegExp;
-        if (!calledWithNew && (Type.regex(pattern) || (pattern && pattern.constructor === RegExp))) {
-          return pattern;
-        }
-        if (Type.regex(pattern) && Type.string(flags)) {
-          return new RegExp(pattern.source, flags);
-        }
-        return new OrigRegExp(pattern, flags);
-      };
-    }());
-    wrapConstructor(OrigRegExp, RegExpShim, {
-      $input: true // Chrome < v39 & Opera < 26 have a nonstandard "$input" property
-    });
-    /*globals RegExp: true */
-    /* eslint-disable no-undef */
-    RegExp = RegExpShim;
-    Value.redefine(globals, 'RegExp', RegExpShim);
-    /* eslint-enable no-undef */
-    /*globals RegExp: false */
-  }
-
-  if (supportsDescriptors) {
-    var regexGlobals = {
-      input: '$_',
-      lastMatch: '$&',
-      lastParen: '$+',
-      leftContext: '$`',
-      rightContext: '$\''
-    };
-    _forEach(Object.keys(regexGlobals), function (prop) {
-      if (prop in RegExp && !(regexGlobals[prop] in RegExp)) {
-        Value.getter(RegExp, regexGlobals[prop], function get() {
-          return RegExp[prop];
-        });
-      }
-    });
-  }
-  addDefaultSpecies(RegExp);
-
-  var inverseEpsilon = 1 / Number.EPSILON;
-  var roundTiesToEven = function roundTiesToEven(n) {
-    // Even though this reduces down to `return n`, it takes advantage of built-in rounding.
-    return (n + inverseEpsilon) - inverseEpsilon;
-  };
-  var BINARY_32_EPSILON = Math.pow(2, -23);
-  var BINARY_32_MAX_VALUE = Math.pow(2, 127) * (2 - BINARY_32_EPSILON);
-  var BINARY_32_MIN_VALUE = Math.pow(2, -126);
-  var numberCLZ = Number.prototype.clz;
-  delete Number.prototype.clz; // Safari 8 has Number#clz
-
-  var MathShims = {
-    acosh: function acosh(value) {
-      var x = Number(value);
-      if (Number.isNaN(x) || value < 1) { return NaN; }
-      if (x === 1) { return 0; }
-      if (x === Infinity) { return x; }
-      return _log(x / Math.E + _sqrt(x + 1) * _sqrt(x - 1) / Math.E) + 1;
-    },
-
-    asinh: function asinh(value) {
-      var x = Number(value);
-      if (x === 0 || !globalIsFinite(x)) {
-        return x;
-      }
-      return x < 0 ? -Math.asinh(-x) : _log(x + _sqrt(x * x + 1));
-    },
-
-    atanh: function atanh(value) {
-      var x = Number(value);
-      if (Number.isNaN(x) || x < -1 || x > 1) {
-        return NaN;
-      }
-      if (x === -1) { return -Infinity; }
-      if (x === 1) { return Infinity; }
-      if (x === 0) { return x; }
-      return 0.5 * _log((1 + x) / (1 - x));
-    },
-
-    cbrt: function cbrt(value) {
-      var x = Number(value);
-      if (x === 0) { return x; }
-      var negate = x < 0, result;
-      if (negate) { x = -x; }
-      if (x === Infinity) {
-        result = Infinity;
-      } else {
-        result = Math.exp(_log(x) / 3);
-        // from http://en.wikipedia.org/wiki/Cube_root#Numerical_methods
-        result = (x / (result * result) + (2 * result)) / 3;
-      }
-      return negate ? -result : result;
-    },
-
-    clz32: function clz32(value) {
-      // See https://bugs.ecmascript.org/show_bug.cgi?id=2465
-      var x = Number(value);
-      var number = ES.ToUint32(x);
-      if (number === 0) {
-        return 32;
-      }
-      return numberCLZ ? _call(numberCLZ, number) : 31 - _floor(_log(number + 0.5) * Math.LOG2E);
-    },
-
-    cosh: function cosh(value) {
-      var x = Number(value);
-      if (x === 0) { return 1; } // +0 or -0
-      if (Number.isNaN(x)) { return NaN; }
-      if (!globalIsFinite(x)) { return Infinity; }
-      if (x < 0) { x = -x; }
-      if (x > 21) { return Math.exp(x) / 2; }
-      return (Math.exp(x) + Math.exp(-x)) / 2;
-    },
-
-    expm1: function expm1(value) {
-      var x = Number(value);
-      if (x === -Infinity) { return -1; }
-      if (!globalIsFinite(x) || x === 0) { return x; }
-      if (_abs(x) > 0.5) {
-        return Math.exp(x) - 1;
-      }
-      // A more precise approximation using Taylor series expansion
-      // from https://github.com/paulmillr/es6-shim/issues/314#issuecomment-70293986
-      var t = x;
-      var sum = 0;
-      var n = 1;
-      while (sum + t !== sum) {
-        sum += t;
-        n += 1;
-        t *= x / n;
-      }
-      return sum;
-    },
-
-    hypot: function hypot(x, y) {
-      var result = 0;
-      var largest = 0;
-      for (var i = 0; i < arguments.length; ++i) {
-        var value = _abs(Number(arguments[i]));
-        if (largest < value) {
-          result *= (largest / value) * (largest / value);
-          result += 1;
-          largest = value;
-        } else {
-          result += (value > 0 ? (value / largest) * (value / largest) : value);
-        }
-      }
-      return largest === Infinity ? Infinity : largest * _sqrt(result);
-    },
-
-    log2: function log2(value) {
-      return _log(value) * Math.LOG2E;
-    },
-
-    log10: function log10(value) {
-      return _log(value) * Math.LOG10E;
-    },
-
-    log1p: function log1p(value) {
-      var x = Number(value);
-      if (x < -1 || Number.isNaN(x)) { return NaN; }
-      if (x === 0 || x === Infinity) { return x; }
-      if (x === -1) { return -Infinity; }
-
-      return (1 + x) - 1 === 0 ? x : x * (_log(1 + x) / ((1 + x) - 1));
-    },
-
-    sign: function sign(value) {
-      var number = Number(value);
-      if (number === 0) { return number; }
-      if (Number.isNaN(number)) { return number; }
-      return number < 0 ? -1 : 1;
-    },
-
-    sinh: function sinh(value) {
-      var x = Number(value);
-      if (!globalIsFinite(x) || x === 0) { return x; }
-
-      if (_abs(x) < 1) {
-        return (Math.expm1(x) - Math.expm1(-x)) / 2;
-      }
-      return (Math.exp(x - 1) - Math.exp(-x - 1)) * Math.E / 2;
-    },
-
-    tanh: function tanh(value) {
-      var x = Number(value);
-      if (Number.isNaN(x) || x === 0) { return x; }
-      if (x === Infinity) { return 1; }
-      if (x === -Infinity) { return -1; }
-      var a = Math.expm1(x);
-      var b = Math.expm1(-x);
-      if (a === Infinity) { return 1; }
-      if (b === Infinity) { return -1; }
-      return (a - b) / (Math.exp(x) + Math.exp(-x));
-    },
-
-    trunc: function trunc(value) {
-      var x = Number(value);
-      return x < 0 ? -_floor(-x) : _floor(x);
-    },
-
-    imul: function imul(x, y) {
-      // taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/imul
-      var a = ES.ToUint32(x);
-      var b = ES.ToUint32(y);
-      var ah = (a >>> 16) & 0xffff;
-      var al = a & 0xffff;
-      var bh = (b >>> 16) & 0xffff;
-      var bl = b & 0xffff;
-      // the shift by 0 fixes the sign on the high part
-      // the final |0 converts the unsigned value into a signed value
-      return ((al * bl) + (((ah * bl + al * bh) << 16) >>> 0) | 0);
-    },
-
-    fround: function fround(x) {
-      var v = Number(x);
-      if (v === 0 || v === Infinity || v === -Infinity || numberIsNaN(v)) {
-        return v;
-      }
-      var sign = Math.sign(v);
-      var abs = _abs(v);
-      if (abs < BINARY_32_MIN_VALUE) {
-        return sign * roundTiesToEven(abs / BINARY_32_MIN_VALUE / BINARY_32_EPSILON) * BINARY_32_MIN_VALUE * BINARY_32_EPSILON;
-      }
-      // Veltkamp's splitting (?)
-      var a = (1 + BINARY_32_EPSILON / Number.EPSILON) * abs;
-      var result = a - (a - abs);
-      if (result > BINARY_32_MAX_VALUE || numberIsNaN(result)) {
-        return sign * Infinity;
-      }
-      return sign * result;
-    }
-  };
-  defineProperties(Math, MathShims);
-  // IE 11 TP has an imprecise log1p: reports Math.log1p(-1e-17) as 0
-  defineProperty(Math, 'log1p', MathShims.log1p, Math.log1p(-1e-17) !== -1e-17);
-  // IE 11 TP has an imprecise asinh: reports Math.asinh(-1e7) as not exactly equal to -Math.asinh(1e7)
-  defineProperty(Math, 'asinh', MathShims.asinh, Math.asinh(-1e7) !== -Math.asinh(1e7));
-  // Chrome 40 has an imprecise Math.tanh with very small numbers
-  defineProperty(Math, 'tanh', MathShims.tanh, Math.tanh(-2e-17) !== -2e-17);
-  // Chrome 40 loses Math.acosh precision with high numbers
-  defineProperty(Math, 'acosh', MathShims.acosh, Math.acosh(Number.MAX_VALUE) === Infinity);
-  // Firefox 38 on Windows
-  defineProperty(Math, 'cbrt', MathShims.cbrt, Math.abs(1 - Math.cbrt(1e-300) / 1e-100) / Number.EPSILON > 8);
-  // node 0.11 has an imprecise Math.sinh with very small numbers
-  defineProperty(Math, 'sinh', MathShims.sinh, Math.sinh(-2e-17) !== -2e-17);
-  // FF 35 on Linux reports 22025.465794806725 for Math.expm1(10)
-  var expm1OfTen = Math.expm1(10);
-  defineProperty(Math, 'expm1', MathShims.expm1, expm1OfTen > 22025.465794806719 || expm1OfTen < 22025.4657948067165168);
-
-  var origMathRound = Math.round;
-  // breaks in e.g. Safari 8, Internet Explorer 11, Opera 12
-  var roundHandlesBoundaryConditions = Math.round(0.5 - Number.EPSILON / 4) === 0 && Math.round(-0.5 + Number.EPSILON / 3.99) === 1;
-
-  // When engines use Math.floor(x + 0.5) internally, Math.round can be buggy for large integers.
-  // This behavior should be governed by "round to nearest, ties to even mode"
-  // see https://people.mozilla.org/~jorendorff/es6-draft.html#sec-ecmascript-language-types-number-type
-  // These are the boundary cases where it breaks.
-  var smallestPositiveNumberWhereRoundBreaks = inverseEpsilon + 1;
-  var largestPositiveNumberWhereRoundBreaks = 2 * inverseEpsilon - 1;
-  var roundDoesNotIncreaseIntegers = [smallestPositiveNumberWhereRoundBreaks, largestPositiveNumberWhereRoundBreaks].every(function (num) {
-    return Math.round(num) === num;
-  });
-  defineProperty(Math, 'round', function round(x) {
-    var floor = _floor(x);
-    var ceil = floor === -1 ? -0 : floor + 1;
-    return x - floor < 0.5 ? floor : ceil;
-  }, !roundHandlesBoundaryConditions || !roundDoesNotIncreaseIntegers);
-  Value.preserveToString(Math.round, origMathRound);
-
-  var origImul = Math.imul;
-  if (Math.imul(0xffffffff, 5) !== -5) {
-    // Safari 6.1, at least, reports "0" for this value
-    Math.imul = MathShims.imul;
-    Value.preserveToString(Math.imul, origImul);
-  }
-  if (Math.imul.length !== 2) {
-    // Safari 8.0.4 has a length of 1
-    // fixed in https://bugs.webkit.org/show_bug.cgi?id=143658
-    overrideNative(Math, 'imul', function imul(x, y) {
-      return _apply(origImul, Math, arguments);
-    });
-  }
-
-  // Promises
-  // Simplest possible implementation; use a 3rd-party library if you
-  // want the best possible speed and/or long stack traces.
-  var PromiseShim = (function () {
-    var setTimeout = globals.setTimeout;
-    // some environments don't have setTimeout - no way to shim here.
-    if (typeof setTimeout !== 'function' && typeof setTimeout !== 'object') { return; }
-
-    ES.IsPromise = function (promise) {
-      if (!ES.TypeIsObject(promise)) {
-        return false;
-      }
-      if (typeof promise._promise === 'undefined') {
-        return false; // uninitialized, or missing our hidden field.
-      }
-      return true;
-    };
-
-    // "PromiseCapability" in the spec is what most promise implementations
-    // call a "deferred".
-    var PromiseCapability = function (C) {
-      if (!ES.IsConstructor(C)) {
-        throw new TypeError('Bad promise constructor');
-      }
-      var capability = this;
-      var resolver = function (resolve, reject) {
-        if (capability.resolve !== void 0 || capability.reject !== void 0) {
-          throw new TypeError('Bad Promise implementation!');
-        }
-        capability.resolve = resolve;
-        capability.reject = reject;
-      };
-      capability.promise = new C(resolver);
-      if (!(ES.IsCallable(capability.resolve) && ES.IsCallable(capability.reject))) {
-        throw new TypeError('Bad promise constructor');
-      }
-    };
-
-    // find an appropriate setImmediate-alike
-    var makeZeroTimeout;
-    /*global window */
-    if (typeof window !== 'undefined' && ES.IsCallable(window.postMessage)) {
-      makeZeroTimeout = function () {
-        // from http://dbaron.org/log/20100309-faster-timeouts
-        var timeouts = [];
-        var messageName = 'zero-timeout-message';
-        var setZeroTimeout = function (fn) {
-          _push(timeouts, fn);
-          window.postMessage(messageName, '*');
-        };
-        var handleMessage = function (event) {
-          if (event.source === window && event.data === messageName) {
-            event.stopPropagation();
-            if (timeouts.length === 0) { return; }
-            var fn = _shift(timeouts);
-            fn();
-          }
-        };
-        window.addEventListener('message', handleMessage, true);
-        return setZeroTimeout;
-      };
-    }
-    var makePromiseAsap = function () {
-      // An efficient task-scheduler based on a pre-existing Promise
-      // implementation, which we can use even if we override the
-      // global Promise below (in order to workaround bugs)
-      // https://github.com/Raynos/observ-hash/issues/2#issuecomment-35857671
-      var P = globals.Promise;
-      return P && P.resolve && function (task) {
-        return P.resolve().then(task);
-      };
-    };
-    /*global process */
-    /* jscs:disable disallowMultiLineTernary */
-    var enqueue = ES.IsCallable(globals.setImmediate) ?
-      globals.setImmediate.bind(globals) :
-      typeof process === 'object' && process.nextTick ? process.nextTick :
-      makePromiseAsap() ||
-      (ES.IsCallable(makeZeroTimeout) ? makeZeroTimeout() :
-      function (task) { setTimeout(task, 0); }); // fallback
-    /* jscs:enable disallowMultiLineTernary */
-
-    // Constants for Promise implementation
-    var PROMISE_IDENTITY = 1;
-    var PROMISE_THROWER = 2;
-    var PROMISE_PENDING = 3;
-    var PROMISE_FULFILLED = 4;
-    var PROMISE_REJECTED = 5;
-
-    var promiseReactionJob = function (reaction, argument) {
-      var promiseCapability = reaction.capabilities;
-      var handler = reaction.handler;
-      var handlerResult, handlerException = false, f;
-      if (handler === PROMISE_IDENTITY) {
-        handlerResult = argument;
-      } else if (handler === PROMISE_THROWER) {
-        handlerResult = argument;
-        handlerException = true;
-      } else {
-        try {
-          handlerResult = handler(argument);
-        } catch (e) {
-          handlerResult = e;
-          handlerException = true;
-        }
-      }
-      f = handlerException ? promiseCapability.reject : promiseCapability.resolve;
-      f(handlerResult);
-    };
-
-    var triggerPromiseReactions = function (reactions, argument) {
-      _forEach(reactions, function (reaction) {
-        enqueue(function () {
-          promiseReactionJob(reaction, argument);
-        });
-      });
-    };
-
-    var fulfillPromise = function (promise, value) {
-      var _promise = promise._promise;
-      var reactions = _promise.fulfillReactions;
-      _promise.result = value;
-      _promise.fulfillReactions = void 0;
-      _promise.rejectReactions = void 0;
-      _promise.state = PROMISE_FULFILLED;
-      triggerPromiseReactions(reactions, value);
-    };
-
-    var rejectPromise = function (promise, reason) {
-      var _promise = promise._promise;
-      var reactions = _promise.rejectReactions;
-      _promise.result = reason;
-      _promise.fulfillReactions = void 0;
-      _promise.rejectReactions = void 0;
-      _promise.state = PROMISE_REJECTED;
-      triggerPromiseReactions(reactions, reason);
-    };
-
-    var createResolvingFunctions = function (promise) {
-      var alreadyResolved = false;
-      var resolve = function (resolution) {
-        var then;
-        if (alreadyResolved) { return; }
-        alreadyResolved = true;
-        if (resolution === promise) {
-          return rejectPromise(promise, new TypeError('Self resolution'));
-        }
-        if (!ES.TypeIsObject(resolution)) {
-          return fulfillPromise(promise, resolution);
-        }
-        try {
-          then = resolution.then;
-        } catch (e) {
-          return rejectPromise(promise, e);
-        }
-        if (!ES.IsCallable(then)) {
-          return fulfillPromise(promise, resolution);
-        }
-        enqueue(function () {
-          promiseResolveThenableJob(promise, resolution, then);
-        });
-      };
-      var reject = function (reason) {
-        if (alreadyResolved) { return; }
-        alreadyResolved = true;
-        return rejectPromise(promise, reason);
-      };
-      return { resolve: resolve, reject: reject };
-    };
-
-    var promiseResolveThenableJob = function (promise, thenable, then) {
-      var resolvingFunctions = createResolvingFunctions(promise);
-      var resolve = resolvingFunctions.resolve;
-      var reject = resolvingFunctions.reject;
-      try {
-        _call(then, thenable, resolve, reject);
-      } catch (e) {
-        reject(e);
-      }
-    };
-
-    // This is a common step in many Promise methods
-    var getPromiseSpecies = function (C) {
-      if (!ES.TypeIsObject(C)) {
-        throw new TypeError('Promise is not object');
-      }
-      var S = C[symbolSpecies];
-      if (S !== void 0 && S !== null) {
-        return S;
-      }
-      return C;
-    };
-
-    var Promise$prototype;
-    var Promise = (function () {
-      var PromiseShim = function Promise(resolver) {
-        if (!(this instanceof PromiseShim)) {
-          throw new TypeError('Constructor Promise requires "new"');
-        }
-        if (this && this._promise) {
-          throw new TypeError('Bad construction');
-        }
-        // see https://bugs.ecmascript.org/show_bug.cgi?id=2482
-        if (!ES.IsCallable(resolver)) {
-          throw new TypeError('not a valid resolver');
-        }
-        var promise = emulateES6construct(this, PromiseShim, Promise$prototype, {
-          _promise: {
-            result: void 0,
-            state: PROMISE_PENDING,
-            fulfillReactions: [],
-            rejectReactions: []
-          }
-        });
-        var resolvingFunctions = createResolvingFunctions(promise);
-        var reject = resolvingFunctions.reject;
-        try {
-          resolver(resolvingFunctions.resolve, reject);
-        } catch (e) {
-          reject(e);
-        }
-        return promise;
-      };
-      return PromiseShim;
-    }());
-    Promise$prototype = Promise.prototype;
-
-    var _promiseAllResolver = function (index, values, capability, remaining) {
-      var alreadyCalled = false;
-      return function (x) {
-        if (alreadyCalled) { return; }
-        alreadyCalled = true;
-        values[index] = x;
-        if ((--remaining.count) === 0) {
-          var resolve = capability.resolve;
-          resolve(values); // call w/ this===undefined
-        }
-      };
-    };
-
-    var performPromiseAll = function (iteratorRecord, C, resultCapability) {
-      var it = iteratorRecord.iterator;
-      var values = [], remaining = { count: 1 }, next, nextValue;
-      var index = 0;
-      while (true) {
-        try {
-          next = ES.IteratorStep(it);
-          if (next === false) {
-            iteratorRecord.done = true;
-            break;
-          }
-          nextValue = next.value;
-        } catch (e) {
-          iteratorRecord.done = true;
-          throw e;
-        }
-        values[index] = void 0;
-        var nextPromise = C.resolve(nextValue);
-        var resolveElement = _promiseAllResolver(
-          index, values, resultCapability, remaining
-        );
-        remaining.count += 1;
-        nextPromise.then(resolveElement, resultCapability.reject);
-        index += 1;
-      }
-      if ((--remaining.count) === 0) {
-        var resolve = resultCapability.resolve;
-        resolve(values); // call w/ this===undefined
-      }
-      return resultCapability.promise;
-    };
-
-    var performPromiseRace = function (iteratorRecord, C, resultCapability) {
-      var it = iteratorRecord.iterator, next, nextValue, nextPromise;
-      while (true) {
-        try {
-          next = ES.IteratorStep(it);
-          if (next === false) {
-            // NOTE: If iterable has no items, resulting promise will never
-            // resolve; see:
-            // https://github.com/domenic/promises-unwrapping/issues/75
-            // https://bugs.ecmascript.org/show_bug.cgi?id=2515
-            iteratorRecord.done = true;
-            break;
-          }
-          nextValue = next.value;
-        } catch (e) {
-          iteratorRecord.done = true;
-          throw e;
-        }
-        nextPromise = C.resolve(nextValue);
-        nextPromise.then(resultCapability.resolve, resultCapability.reject);
-      }
-      return resultCapability.promise;
-    };
-
-    defineProperties(Promise, {
-      all: function all(iterable) {
-        var C = getPromiseSpecies(this);
-        var capability = new PromiseCapability(C);
-        var iterator, iteratorRecord;
-        try {
-          iterator = ES.GetIterator(iterable);
-          iteratorRecord = { iterator: iterator, done: false };
-          return performPromiseAll(iteratorRecord, C, capability);
-        } catch (e) {
-          var exception = e;
-          if (iteratorRecord && !iteratorRecord.done) {
-            try {
-              ES.IteratorClose(iterator, true);
-            } catch (ee) {
-              exception = ee;
-            }
-          }
-          var reject = capability.reject;
-          reject(exception);
-          return capability.promise;
-        }
-      },
-
-      race: function race(iterable) {
-        var C = getPromiseSpecies(this);
-        var capability = new PromiseCapability(C);
-        var iterator, iteratorRecord;
-        try {
-          iterator = ES.GetIterator(iterable);
-          iteratorRecord = { iterator: iterator, done: false };
-          return performPromiseRace(iteratorRecord, C, capability);
-        } catch (e) {
-          var exception = e;
-          if (iteratorRecord && !iteratorRecord.done) {
-            try {
-              ES.IteratorClose(iterator, true);
-            } catch (ee) {
-              exception = ee;
-            }
-          }
-          var reject = capability.reject;
-          reject(exception);
-          return capability.promise;
-        }
-      },
-
-      reject: function reject(reason) {
-        var C = this;
-        var capability = new PromiseCapability(C);
-        var rejectFunc = capability.reject;
-        rejectFunc(reason); // call with this===undefined
-        return capability.promise;
-      },
-
-      resolve: function resolve(v) {
-        // See https://esdiscuss.org/topic/fixing-promise-resolve for spec
-        var C = this;
-        if (ES.IsPromise(v)) {
-          var constructor = v.constructor;
-          if (constructor === C) { return v; }
-        }
-        var capability = new PromiseCapability(C);
-        var resolveFunc = capability.resolve;
-        resolveFunc(v); // call with this===undefined
-        return capability.promise;
-      }
-    });
-
-    defineProperties(Promise$prototype, {
-      'catch': function (onRejected) {
-        return this.then(void 0, onRejected);
-      },
-
-      then: function then(onFulfilled, onRejected) {
-        var promise = this;
-        if (!ES.IsPromise(promise)) { throw new TypeError('not a promise'); }
-        var C = ES.SpeciesConstructor(promise, Promise);
-        var resultCapability = new PromiseCapability(C);
-        // PerformPromiseThen(promise, onFulfilled, onRejected, resultCapability)
-        var fulfillReaction = {
-          capabilities: resultCapability,
-          handler: ES.IsCallable(onFulfilled) ? onFulfilled : PROMISE_IDENTITY
-        };
-        var rejectReaction = {
-          capabilities: resultCapability,
-          handler: ES.IsCallable(onRejected) ? onRejected : PROMISE_THROWER
-        };
-        var _promise = promise._promise;
-        var value;
-        if (_promise.state === PROMISE_PENDING) {
-          _push(_promise.fulfillReactions, fulfillReaction);
-          _push(_promise.rejectReactions, rejectReaction);
-        } else if (_promise.state === PROMISE_FULFILLED) {
-          value = _promise.result;
-          enqueue(function () {
-            promiseReactionJob(fulfillReaction, value);
-          });
-        } else if (_promise.state === PROMISE_REJECTED) {
-          value = _promise.result;
-          enqueue(function () {
-            promiseReactionJob(rejectReaction, value);
-          });
-        } else {
-          throw new TypeError('unexpected Promise state');
-        }
-        return resultCapability.promise;
-      }
-    });
-
-    return Promise;
-  }());
-
-  // Chrome's native Promise has extra methods that it shouldn't have. Let's remove them.
-  if (globals.Promise) {
-    delete globals.Promise.accept;
-    delete globals.Promise.defer;
-    delete globals.Promise.prototype.chain;
-  }
-
-  if (typeof PromiseShim === 'function') {
-    // export the Promise constructor.
-    defineProperties(globals, { Promise: PromiseShim });
-    // In Chrome 33 (and thereabouts) Promise is defined, but the
-    // implementation is buggy in a number of ways.  Let's check subclassing
-    // support to see if we have a buggy implementation.
-    var promiseSupportsSubclassing = supportsSubclassing(globals.Promise, function (S) {
-      return S.resolve(42).then(function () {}) instanceof S;
-    });
-    var promiseIgnoresNonFunctionThenCallbacks = !throwsError(function () { globals.Promise.reject(42).then(null, 5).then(null, noop); });
-    var promiseRequiresObjectContext = throwsError(function () { globals.Promise.call(3, noop); });
-    // Promise.resolve() was errata'ed late in the ES6 process.
-    // See: https://bugzilla.mozilla.org/show_bug.cgi?id=1170742
-    //      https://code.google.com/p/v8/issues/detail?id=4161
-    // It serves as a proxy for a number of other bugs in early Promise
-    // implementations.
-    var promiseResolveBroken = (function (Promise) {
-      var p = Promise.resolve(5);
-      p.constructor = {};
-      var p2 = Promise.resolve(p);
-      return (p === p2); // This *should* be false!
-    }(globals.Promise));
-    if (!promiseSupportsSubclassing || !promiseIgnoresNonFunctionThenCallbacks ||
-        !promiseRequiresObjectContext || promiseResolveBroken) {
-      /*globals Promise: true */
-      /* eslint-disable no-undef */
-      Promise = PromiseShim;
-      /* eslint-enable no-undef */
-      /*globals Promise: false */
-      overrideNative(globals, 'Promise', PromiseShim);
-    }
-    addDefaultSpecies(Promise);
-  }
-
-  // Map and Set require a true ES5 environment
-  // Their fast path also requires that the environment preserve
-  // property insertion order, which is not guaranteed by the spec.
-  var testOrder = function (a) {
-    var b = Object.keys(_reduce(a, function (o, k) {
-      o[k] = true;
-      return o;
-    }, {}));
-    return a.join(':') === b.join(':');
-  };
-  var preservesInsertionOrder = testOrder(['z', 'a', 'bb']);
-  // some engines (eg, Chrome) only preserve insertion order for string keys
-  var preservesNumericInsertionOrder = testOrder(['z', 1, 'a', '3', 2]);
-
-  if (supportsDescriptors) {
-
-    var fastkey = function fastkey(key) {
-      if (!preservesInsertionOrder) {
-        return null;
-      }
-      var type = typeof key;
-      if (type === 'undefined' || key === null) {
-        return '^' + String(key);
-      } else if (type === 'string') {
-        return '$' + key;
-      } else if (type === 'number') {
-        // note that -0 will get coerced to "0" when used as a property key
-        if (!preservesNumericInsertionOrder) {
-          return 'n' + key;
-        }
-        return key;
-      } else if (type === 'boolean') {
-        return 'b' + key;
-      }
-      return null;
-    };
-
-    var emptyObject = function emptyObject() {
-      // accomodate some older not-quite-ES5 browsers
-      return Object.create ? Object.create(null) : {};
-    };
-
-    var addIterableToMap = function addIterableToMap(MapConstructor, map, iterable) {
-      if (isArray(iterable) || Type.string(iterable)) {
-        _forEach(iterable, function (entry) {
-          map.set(entry[0], entry[1]);
-        });
-      } else if (iterable instanceof MapConstructor) {
-        _call(MapConstructor.prototype.forEach, iterable, function (value, key) {
-          map.set(key, value);
-        });
-      } else {
-        var iter, adder;
-        if (iterable !== null && typeof iterable !== 'undefined') {
-          adder = map.set;
-          if (!ES.IsCallable(adder)) { throw new TypeError('bad map'); }
-          iter = ES.GetIterator(iterable);
-        }
-        if (typeof iter !== 'undefined') {
-          while (true) {
-            var next = ES.IteratorStep(iter);
-            if (next === false) { break; }
-            var nextItem = next.value;
-            try {
-              if (!ES.TypeIsObject(nextItem)) {
-                throw new TypeError('expected iterable of pairs');
-              }
-              _call(adder, map, nextItem[0], nextItem[1]);
-            } catch (e) {
-              ES.IteratorClose(iter, true);
-              throw e;
-            }
-          }
-        }
-      }
-    };
-    var addIterableToSet = function addIterableToSet(SetConstructor, set, iterable) {
-      if (isArray(iterable) || Type.string(iterable)) {
-        _forEach(iterable, function (value) {
-          set.add(value);
-        });
-      } else if (iterable instanceof SetConstructor) {
-        _call(SetConstructor.prototype.forEach, iterable, function (value) {
-          set.add(value);
-        });
-      } else {
-        var iter, adder;
-        if (iterable !== null && typeof iterable !== 'undefined') {
-          adder = set.add;
-          if (!ES.IsCallable(adder)) { throw new TypeError('bad set'); }
-          iter = ES.GetIterator(iterable);
-        }
-        if (typeof iter !== 'undefined') {
-          while (true) {
-            var next = ES.IteratorStep(iter);
-            if (next === false) { break; }
-            var nextValue = next.value;
-            try {
-              _call(adder, set, nextValue);
-            } catch (e) {
-              ES.IteratorClose(iter, true);
-              throw e;
-            }
-          }
-        }
-      }
-    };
-
-    var collectionShims = {
-      Map: (function () {
-
-        var empty = {};
-
-        var MapEntry = function MapEntry(key, value) {
-          this.key = key;
-          this.value = value;
-          this.next = null;
-          this.prev = null;
-        };
-
-        MapEntry.prototype.isRemoved = function isRemoved() {
-          return this.key === empty;
-        };
-
-        var isMap = function isMap(map) {
-          return !!map._es6map;
-        };
-
-        var requireMapSlot = function requireMapSlot(map, method) {
-          if (!ES.TypeIsObject(map) || !isMap(map)) {
-            throw new TypeError('Method Map.prototype.' + method + ' called on incompatible receiver ' + String(map));
-          }
-        };
-
-        var MapIterator = function MapIterator(map, kind) {
-          requireMapSlot(map, '[[MapIterator]]');
-          this.head = map._head;
-          this.i = this.head;
-          this.kind = kind;
-        };
-
-        MapIterator.prototype = {
-          next: function next() {
-            var i = this.i, kind = this.kind, head = this.head, result;
-            if (typeof this.i === 'undefined') {
-              return { value: void 0, done: true };
-            }
-            while (i.isRemoved() && i !== head) {
-              // back up off of removed entries
-              i = i.prev;
-            }
-            // advance to next unreturned element.
-            while (i.next !== head) {
-              i = i.next;
-              if (!i.isRemoved()) {
-                if (kind === 'key') {
-                  result = i.key;
-                } else if (kind === 'value') {
-                  result = i.value;
-                } else {
-                  result = [i.key, i.value];
-                }
-                this.i = i;
-                return { value: result, done: false };
-              }
-            }
-            // once the iterator is done, it is done forever.
-            this.i = void 0;
-            return { value: void 0, done: true };
-          }
-        };
-        addIterator(MapIterator.prototype);
-
-        var Map$prototype;
-        var MapShim = function Map() {
-          if (!(this instanceof Map)) {
-            throw new TypeError('Constructor Map requires "new"');
-          }
-          if (this && this._es6map) {
-            throw new TypeError('Bad construction');
-          }
-          var map = emulateES6construct(this, Map, Map$prototype, {
-            _es6map: true,
-            _head: null,
-            _storage: emptyObject(),
-            _size: 0
-          });
-
-          var head = new MapEntry(null, null);
-          // circular doubly-linked list.
-          head.next = head.prev = head;
-          map._head = head;
-
-          // Optionally initialize map from iterable
-          if (arguments.length > 0) {
-            addIterableToMap(Map, map, arguments[0]);
-          }
-          return map;
-        };
-        Map$prototype = MapShim.prototype;
-
-        Value.getter(Map$prototype, 'size', function () {
-          if (typeof this._size === 'undefined') {
-            throw new TypeError('size method called on incompatible Map');
-          }
-          return this._size;
-        });
-
-        defineProperties(Map$prototype, {
-          get: function get(key) {
-            requireMapSlot(this, 'get');
-            var fkey = fastkey(key);
-            if (fkey !== null) {
-              // fast O(1) path
-              var entry = this._storage[fkey];
-              if (entry) {
-                return entry.value;
-              } else {
-                return;
-              }
-            }
-            var head = this._head, i = head;
-            while ((i = i.next) !== head) {
-              if (ES.SameValueZero(i.key, key)) {
-                return i.value;
-              }
-            }
-          },
-
-          has: function has(key) {
-            requireMapSlot(this, 'has');
-            var fkey = fastkey(key);
-            if (fkey !== null) {
-              // fast O(1) path
-              return typeof this._storage[fkey] !== 'undefined';
-            }
-            var head = this._head, i = head;
-            while ((i = i.next) !== head) {
-              if (ES.SameValueZero(i.key, key)) {
-                return true;
-              }
-            }
-            return false;
-          },
-
-          set: function set(key, value) {
-            requireMapSlot(this, 'set');
-            var head = this._head, i = head, entry;
-            var fkey = fastkey(key);
-            if (fkey !== null) {
-              // fast O(1) path
-              if (typeof this._storage[fkey] !== 'undefined') {
-                this._storage[fkey].value = value;
-                return this;
-              } else {
-                entry = this._storage[fkey] = new MapEntry(key, value);
-                i = head.prev;
-                // fall through
-              }
-            }
-            while ((i = i.next) !== head) {
-              if (ES.SameValueZero(i.key, key)) {
-                i.value = value;
-                return this;
-              }
-            }
-            entry = entry || new MapEntry(key, value);
-            if (ES.SameValue(-0, key)) {
-              entry.key = +0; // coerce -0 to +0 in entry
-            }
-            entry.next = this._head;
-            entry.prev = this._head.prev;
-            entry.prev.next = entry;
-            entry.next.prev = entry;
-            this._size += 1;
-            return this;
-          },
-
-          'delete': function (key) {
-            requireMapSlot(this, 'delete');
-            var head = this._head, i = head;
-            var fkey = fastkey(key);
-            if (fkey !== null) {
-              // fast O(1) path
-              if (typeof this._storage[fkey] === 'undefined') {
-                return false;
-              }
-              i = this._storage[fkey].prev;
-              delete this._storage[fkey];
-              // fall through
-            }
-            while ((i = i.next) !== head) {
-              if (ES.SameValueZero(i.key, key)) {
-                i.key = i.value = empty;
-                i.prev.next = i.next;
-                i.next.prev = i.prev;
-                this._size -= 1;
-                return true;
-              }
-            }
-            return false;
-          },
-
-          clear: function clear() {
-            requireMapSlot(this, 'clear');
-            this._size = 0;
-            this._storage = emptyObject();
-            var head = this._head, i = head, p = i.next;
-            while ((i = p) !== head) {
-              i.key = i.value = empty;
-              p = i.next;
-              i.next = i.prev = head;
-            }
-            head.next = head.prev = head;
-          },
-
-          keys: function keys() {
-            requireMapSlot(this, 'keys');
-            return new MapIterator(this, 'key');
-          },
-
-          values: function values() {
-            requireMapSlot(this, 'values');
-            return new MapIterator(this, 'value');
-          },
-
-          entries: function entries() {
-            requireMapSlot(this, 'entries');
-            return new MapIterator(this, 'key+value');
-          },
-
-          forEach: function forEach(callback) {
-            requireMapSlot(this, 'forEach');
-            var context = arguments.length > 1 ? arguments[1] : null;
-            var it = this.entries();
-            for (var entry = it.next(); !entry.done; entry = it.next()) {
-              if (context) {
-                _call(callback, context, entry.value[1], entry.value[0], this);
-              } else {
-                callback(entry.value[1], entry.value[0], this);
-              }
-            }
-          }
-        });
-        addIterator(Map$prototype, Map$prototype.entries);
-
-        return MapShim;
-      }()),
-
-      Set: (function () {
-        var isSet = function isSet(set) {
-          return set._es6set && typeof set._storage !== 'undefined';
-        };
-        var requireSetSlot = function requireSetSlot(set, method) {
-          if (!ES.TypeIsObject(set) || !isSet(set)) {
-            // https://github.com/paulmillr/es6-shim/issues/176
-            throw new TypeError('Set.prototype.' + method + ' called on incompatible receiver ' + String(set));
-          }
-        };
-
-        // Creating a Map is expensive.  To speed up the common case of
-        // Sets containing only string or numeric keys, we use an object
-        // as backing storage and lazily create a full Map only when
-        // required.
-        var Set$prototype;
-        var SetShim = function Set() {
-          if (!(this instanceof Set)) {
-            throw new TypeError('Constructor Set requires "new"');
-          }
-          if (this && this._es6set) {
-            throw new TypeError('Bad construction');
-          }
-          var set = emulateES6construct(this, Set, Set$prototype, {
-            _es6set: true,
-            '[[SetData]]': null,
-            _storage: emptyObject()
-          });
-          if (!set._es6set) {
-            throw new TypeError('bad set');
-          }
-
-          // Optionally initialize Set from iterable
-          if (arguments.length > 0) {
-            addIterableToSet(Set, set, arguments[0]);
-          }
-          return set;
-        };
-        Set$prototype = SetShim.prototype;
-
-        // Switch from the object backing storage to a full Map.
-        var ensureMap = function ensureMap(set) {
-          if (!set['[[SetData]]']) {
-            var m = set['[[SetData]]'] = new collectionShims.Map();
-            _forEach(Object.keys(set._storage), function (key) {
-              var k = key;
-              if (k === '^null') {
-                k = null;
-              } else if (k === '^undefined') {
-                k = void 0;
-              } else {
-                var first = k.charAt(0);
-                if (first === '$') {
-                  k = _strSlice(k, 1);
-                } else if (first === 'n') {
-                  k = +_strSlice(k, 1);
-                } else if (first === 'b') {
-                  k = k === 'btrue';
-                } else {
-                  k = +k;
-                }
-              }
-              m.set(k, k);
-            });
-            set._storage = null; // free old backing storage
-          }
-        };
-
-        Value.getter(SetShim.prototype, 'size', function () {
-          requireSetSlot(this, 'size');
-          ensureMap(this);
-          return this['[[SetData]]'].size;
-        });
-
-        defineProperties(SetShim.prototype, {
-          has: function has(key) {
-            requireSetSlot(this, 'has');
-            var fkey;
-            if (this._storage && (fkey = fastkey(key)) !== null) {
-              return !!this._storage[fkey];
-            }
-            ensureMap(this);
-            return this['[[SetData]]'].has(key);
-          },
-
-          add: function add(key) {
-            requireSetSlot(this, 'add');
-            var fkey;
-            if (this._storage && (fkey = fastkey(key)) !== null) {
-              this._storage[fkey] = true;
-              return this;
-            }
-            ensureMap(this);
-            this['[[SetData]]'].set(key, key);
-            return this;
-          },
-
-          'delete': function (key) {
-            requireSetSlot(this, 'delete');
-            var fkey;
-            if (this._storage && (fkey = fastkey(key)) !== null) {
-              var hasFKey = _hasOwnProperty(this._storage, fkey);
-              return (delete this._storage[fkey]) && hasFKey;
-            }
-            ensureMap(this);
-            return this['[[SetData]]']['delete'](key);
-          },
-
-          clear: function clear() {
-            requireSetSlot(this, 'clear');
-            if (this._storage) {
-              this._storage = emptyObject();
-            } else {
-              this['[[SetData]]'].clear();
-            }
-          },
-
-          values: function values() {
-            requireSetSlot(this, 'values');
-            ensureMap(this);
-            return this['[[SetData]]'].values();
-          },
-
-          entries: function entries() {
-            requireSetSlot(this, 'entries');
-            ensureMap(this);
-            return this['[[SetData]]'].entries();
-          },
-
-          forEach: function forEach(callback) {
-            requireSetSlot(this, 'forEach');
-            var context = arguments.length > 1 ? arguments[1] : null;
-            var entireSet = this;
-            ensureMap(entireSet);
-            this['[[SetData]]'].forEach(function (value, key) {
-              if (context) {
-                _call(callback, context, key, key, entireSet);
-              } else {
-                callback(key, key, entireSet);
-              }
-            });
-          }
-        });
-        defineProperty(SetShim.prototype, 'keys', SetShim.prototype.values, true);
-        addIterator(SetShim.prototype, SetShim.prototype.values);
-
-        return SetShim;
-      }())
-    };
-
-    if (globals.Map || globals.Set) {
-      // Safari 8, for example, doesn't accept an iterable.
-      var mapAcceptsArguments = valueOrFalseIfThrows(function () { return new Map([[1, 2]]).get(1) === 2; });
-      if (!mapAcceptsArguments) {
-        var OrigMapNoArgs = globals.Map;
-        globals.Map = function Map() {
-          if (!(this instanceof Map)) {
-            throw new TypeError('Constructor Map requires "new"');
-          }
-          var m = new OrigMapNoArgs();
-          if (arguments.length > 0) {
-            addIterableToMap(Map, m, arguments[0]);
-          }
-          Object.setPrototypeOf(m, globals.Map.prototype);
-          defineProperty(m, 'constructor', Map, true);
-          return m;
-        };
-        globals.Map.prototype = create(OrigMapNoArgs.prototype);
-        Value.preserveToString(globals.Map, OrigMapNoArgs);
-      }
-      var testMap = new Map();
-      var mapUsesSameValueZero = (function (m) {
-        m['delete'](0);
-        m['delete'](-0);
-        m.set(0, 3);
-        m.get(-0, 4);
-        return m.get(0) === 3 && m.get(-0) === 4;
-      }(testMap));
-      var mapSupportsChaining = testMap.set(1, 2) === testMap;
-      if (!mapUsesSameValueZero || !mapSupportsChaining) {
-        var origMapSet = Map.prototype.set;
-        overrideNative(Map.prototype, 'set', function set(k, v) {
-          _call(origMapSet, this, k === 0 ? 0 : k, v);
-          return this;
-        });
-      }
-      if (!mapUsesSameValueZero) {
-        var origMapGet = Map.prototype.get;
-        var origMapHas = Map.prototype.has;
-        defineProperties(Map.prototype, {
-          get: function get(k) {
-            return _call(origMapGet, this, k === 0 ? 0 : k);
-          },
-          has: function has(k) {
-            return _call(origMapHas, this, k === 0 ? 0 : k);
-          }
-        }, true);
-        Value.preserveToString(Map.prototype.get, origMapGet);
-        Value.preserveToString(Map.prototype.has, origMapHas);
-      }
-      var testSet = new Set();
-      var setUsesSameValueZero = (function (s) {
-        s['delete'](0);
-        s.add(-0);
-        return !s.has(0);
-      }(testSet));
-      var setSupportsChaining = testSet.add(1) === testSet;
-      if (!setUsesSameValueZero || !setSupportsChaining) {
-        var origSetAdd = Set.prototype.add;
-        Set.prototype.add = function add(v) {
-          _call(origSetAdd, this, v === 0 ? 0 : v);
-          return this;
-        };
-        Value.preserveToString(Set.prototype.add, origSetAdd);
-      }
-      if (!setUsesSameValueZero) {
-        var origSetHas = Set.prototype.has;
-        Set.prototype.has = function has(v) {
-          return _call(origSetHas, this, v === 0 ? 0 : v);
-        };
-        Value.preserveToString(Set.prototype.has, origSetHas);
-        var origSetDel = Set.prototype['delete'];
-        Set.prototype['delete'] = function SetDelete(v) {
-          return _call(origSetDel, this, v === 0 ? 0 : v);
-        };
-        Value.preserveToString(Set.prototype['delete'], origSetDel);
-      }
-      var mapSupportsSubclassing = supportsSubclassing(globals.Map, function (M) {
-        var m = new M([]);
-        // Firefox 32 is ok with the instantiating the subclass but will
-        // throw when the map is used.
-        m.set(42, 42);
-        return m instanceof M;
-      });
-      var mapFailsToSupportSubclassing = Object.setPrototypeOf && !mapSupportsSubclassing; // without Object.setPrototypeOf, subclassing is not possible
-      var mapRequiresNew = (function () {
-        try {
-          return !(globals.Map() instanceof globals.Map);
-        } catch (e) {
-          return e instanceof TypeError;
-        }
-      }());
-      if (globals.Map.length !== 0 || mapFailsToSupportSubclassing || !mapRequiresNew) {
-        var OrigMap = globals.Map;
-        globals.Map = function Map() {
-          if (!(this instanceof Map)) {
-            throw new TypeError('Constructor Map requires "new"');
-          }
-          var m = new OrigMap();
-          if (arguments.length > 0) {
-            addIterableToMap(Map, m, arguments[0]);
-          }
-          Object.setPrototypeOf(m, Map.prototype);
-          defineProperty(m, 'constructor', Map, true);
-          return m;
-        };
-        globals.Map.prototype = OrigMap.prototype;
-        Value.preserveToString(globals.Map, OrigMap);
-      }
-      var setSupportsSubclassing = supportsSubclassing(globals.Set, function (S) {
-        var s = new S([]);
-        s.add(42, 42);
-        return s instanceof S;
-      });
-      var setFailsToSupportSubclassing = Object.setPrototypeOf && !setSupportsSubclassing; // without Object.setPrototypeOf, subclassing is not possible
-      var setRequiresNew = (function () {
-        try {
-          return !(globals.Set() instanceof globals.Set);
-        } catch (e) {
-          return e instanceof TypeError;
-        }
-      }());
-      if (globals.Set.length !== 0 || setFailsToSupportSubclassing || !setRequiresNew) {
-        var OrigSet = globals.Set;
-        globals.Set = function Set() {
-          if (!(this instanceof Set)) {
-            throw new TypeError('Constructor Set requires "new"');
-          }
-          var s = new OrigSet();
-          if (arguments.length > 0) {
-            addIterableToSet(Set, s, arguments[0]);
-          }
-          Object.setPrototypeOf(s, Set.prototype);
-          defineProperty(s, 'constructor', Set, true);
-          return s;
-        };
-        globals.Set.prototype = OrigSet.prototype;
-        Value.preserveToString(globals.Set, OrigSet);
-      }
-      var mapIterationThrowsStopIterator = !valueOrFalseIfThrows(function () {
-        return (new Map()).keys().next().done;
-      });
-      /*
-        - In Firefox < 23, Map#size is a function.
-        - In all current Firefox, Set#entries/keys/values & Map#clear do not exist
-        - https://bugzilla.mozilla.org/show_bug.cgi?id=869996
-        - In Firefox 24, Map and Set do not implement forEach
-        - In Firefox 25 at least, Map and Set are callable without "new"
-      */
-      if (
-        typeof globals.Map.prototype.clear !== 'function' ||
-        new globals.Set().size !== 0 ||
-        new globals.Map().size !== 0 ||
-        typeof globals.Map.prototype.keys !== 'function' ||
-        typeof globals.Set.prototype.keys !== 'function' ||
-        typeof globals.Map.prototype.forEach !== 'function' ||
-        typeof globals.Set.prototype.forEach !== 'function' ||
-        isCallableWithoutNew(globals.Map) ||
-        isCallableWithoutNew(globals.Set) ||
-        typeof (new globals.Map().keys().next) !== 'function' || // Safari 8
-        mapIterationThrowsStopIterator || // Firefox 25
-        !mapSupportsSubclassing
-      ) {
-        delete globals.Map; // necessary to overwrite in Safari 8
-        delete globals.Set; // necessary to overwrite in Safari 8
-        defineProperties(globals, {
-          Map: collectionShims.Map,
-          Set: collectionShims.Set
-        }, true);
-      }
-
-      if (globals.Set.prototype.keys !== globals.Set.prototype.values) {
-        // Fixed in WebKit with https://bugs.webkit.org/show_bug.cgi?id=144190
-        defineProperty(globals.Set.prototype, 'keys', globals.Set.prototype.values, true);
-      }
-
-      // Shim incomplete iterator implementations.
-      addIterator(Object.getPrototypeOf((new globals.Map()).keys()));
-      addIterator(Object.getPrototypeOf((new globals.Set()).keys()));
-
-      if (functionsHaveNames && globals.Set.prototype.has.name !== 'has') {
-        // Microsoft Edge v0.11.10074.0 is missing a name on Set#has
-        var anonymousSetHas = globals.Set.prototype.has;
-        overrideNative(globals.Set.prototype, 'has', function has(key) {
-          return _call(anonymousSetHas, this, key);
-        });
-      }
-    }
-    defineProperties(globals, collectionShims);
-    addDefaultSpecies(globals.Map);
-    addDefaultSpecies(globals.Set);
-  }
-
-  var throwUnlessTargetIsObject = function throwUnlessTargetIsObject(target) {
-    if (!ES.TypeIsObject(target)) {
-      throw new TypeError('target must be an object');
-    }
-  };
-
-  // Some Reflect methods are basically the same as
-  // those on the Object global, except that a TypeError is thrown if
-  // target isn't an object. As well as returning a boolean indicating
-  // the success of the operation.
-  var ReflectShims = {
-    // Apply method in a functional form.
-    apply: function apply() {
-      return _apply(ES.Call, null, arguments);
-    },
-
-    // New operator in a functional form.
-    construct: function construct(constructor, args) {
-      if (!ES.IsConstructor(constructor)) {
-        throw new TypeError('First argument must be a constructor.');
-      }
-      var newTarget = arguments.length < 3 ? constructor : arguments[2];
-      if (!ES.IsConstructor(newTarget)) {
-        throw new TypeError('new.target must be a constructor.');
-      }
-      return ES.Construct(constructor, args, newTarget, 'internal');
-    },
-
-    // When deleting a non-existent or configurable property,
-    // true is returned.
-    // When attempting to delete a non-configurable property,
-    // it will return false.
-    deleteProperty: function deleteProperty(target, key) {
-      throwUnlessTargetIsObject(target);
-      if (supportsDescriptors) {
-        var desc = Object.getOwnPropertyDescriptor(target, key);
-
-        if (desc && !desc.configurable) {
-          return false;
-        }
-      }
-
-      // Will return true.
-      return delete target[key];
-    },
-
-    enumerate: function enumerate(target) {
-      throwUnlessTargetIsObject(target);
-      return new ObjectIterator(target, 'key');
-    },
-
-    has: function has(target, key) {
-      throwUnlessTargetIsObject(target);
-      return key in target;
-    }
-  };
-
-  if (Object.getOwnPropertyNames) {
-    Object.assign(ReflectShims, {
-      // Basically the result of calling the internal [[OwnPropertyKeys]].
-      // Concatenating propertyNames and propertySymbols should do the trick.
-      // This should continue to work together with a Symbol shim
-      // which overrides Object.getOwnPropertyNames and implements
-      // Object.getOwnPropertySymbols.
-      ownKeys: function ownKeys(target) {
-        throwUnlessTargetIsObject(target);
-        var keys = Object.getOwnPropertyNames(target);
-
-        if (ES.IsCallable(Object.getOwnPropertySymbols)) {
-          _pushApply(keys, Object.getOwnPropertySymbols(target));
-        }
-
-        return keys;
-      }
-    });
-  }
-
-  var callAndCatchException = function ConvertExceptionToBoolean(func) {
-    return !throwsError(func);
-  };
-
-  if (Object.preventExtensions) {
-    Object.assign(ReflectShims, {
-      isExtensible: function isExtensible(target) {
-        throwUnlessTargetIsObject(target);
-        return Object.isExtensible(target);
-      },
-      preventExtensions: function preventExtensions(target) {
-        throwUnlessTargetIsObject(target);
-        return callAndCatchException(function () {
-          Object.preventExtensions(target);
-        });
-      }
-    });
-  }
-
-  if (supportsDescriptors) {
-    var internalGet = function get(target, key, receiver) {
-      var desc = Object.getOwnPropertyDescriptor(target, key);
-
-      if (!desc) {
-        var parent = Object.getPrototypeOf(target);
-
-        if (parent === null) {
-          return undefined;
-        }
-
-        return internalGet(parent, key, receiver);
-      }
-
-      if ('value' in desc) {
-        return desc.value;
-      }
-
-      if (desc.get) {
-        return _call(desc.get, receiver);
-      }
-
-      return undefined;
-    };
-
-    var internalSet = function set(target, key, value, receiver) {
-      var desc = Object.getOwnPropertyDescriptor(target, key);
-
-      if (!desc) {
-        var parent = Object.getPrototypeOf(target);
-
-        if (parent !== null) {
-          return internalSet(parent, key, value, receiver);
-        }
-
-        desc = {
-          value: void 0,
-          writable: true,
-          enumerable: true,
-          configurable: true
-        };
-      }
-
-      if ('value' in desc) {
-        if (!desc.writable) {
-          return false;
-        }
-
-        if (!ES.TypeIsObject(receiver)) {
-          return false;
-        }
-
-        var existingDesc = Object.getOwnPropertyDescriptor(receiver, key);
-
-        if (existingDesc) {
-          return Reflect.defineProperty(receiver, key, {
-            value: value
-          });
-        } else {
-          return Reflect.defineProperty(receiver, key, {
-            value: value,
-            writable: true,
-            enumerable: true,
-            configurable: true
-          });
-        }
-      }
-
-      if (desc.set) {
-        _call(desc.set, receiver, value);
-        return true;
-      }
-
-      return false;
-    };
-
-    Object.assign(ReflectShims, {
-      defineProperty: function defineProperty(target, propertyKey, attributes) {
-        throwUnlessTargetIsObject(target);
-        return callAndCatchException(function () {
-          Object.defineProperty(target, propertyKey, attributes);
-        });
-      },
-
-      getOwnPropertyDescriptor: function getOwnPropertyDescriptor(target, propertyKey) {
-        throwUnlessTargetIsObject(target);
-        return Object.getOwnPropertyDescriptor(target, propertyKey);
-      },
-
-      // Syntax in a functional form.
-      get: function get(target, key) {
-        throwUnlessTargetIsObject(target);
-        var receiver = arguments.length > 2 ? arguments[2] : target;
-
-        return internalGet(target, key, receiver);
-      },
-
-      set: function set(target, key, value) {
-        throwUnlessTargetIsObject(target);
-        var receiver = arguments.length > 3 ? arguments[3] : target;
-
-        return internalSet(target, key, value, receiver);
-      }
-    });
-  }
-
-  if (Object.getPrototypeOf) {
-    var objectDotGetPrototypeOf = Object.getPrototypeOf;
-    ReflectShims.getPrototypeOf = function getPrototypeOf(target) {
-      throwUnlessTargetIsObject(target);
-      return objectDotGetPrototypeOf(target);
-    };
-  }
-
-  if (Object.setPrototypeOf && ReflectShims.getPrototypeOf) {
-    var willCreateCircularPrototype = function (object, lastProto) {
-      var proto = lastProto;
-      while (proto) {
-        if (object === proto) {
-          return true;
-        }
-        proto = ReflectShims.getPrototypeOf(proto);
-      }
-      return false;
-    };
-
-    Object.assign(ReflectShims, {
-      // Sets the prototype of the given object.
-      // Returns true on success, otherwise false.
-      setPrototypeOf: function setPrototypeOf(object, proto) {
-        throwUnlessTargetIsObject(object);
-        if (proto !== null && !ES.TypeIsObject(proto)) {
-          throw new TypeError('proto must be an object or null');
-        }
-
-        // If they already are the same, we're done.
-        if (proto === Reflect.getPrototypeOf(object)) {
-          return true;
-        }
-
-        // Cannot alter prototype if object not extensible.
-        if (Reflect.isExtensible && !Reflect.isExtensible(object)) {
-          return false;
-        }
-
-        // Ensure that we do not create a circular prototype chain.
-        if (willCreateCircularPrototype(object, proto)) {
-          return false;
-        }
-
-        Object.setPrototypeOf(object, proto);
-
-        return true;
-      }
-    });
-  }
-  var defineOrOverrideReflectProperty = function (key, shim) {
-    if (!ES.IsCallable(globals.Reflect[key])) {
-      defineProperty(globals.Reflect, key, shim);
-    } else {
-      var acceptsPrimitives = valueOrFalseIfThrows(function () {
-        globals.Reflect[key](1);
-        globals.Reflect[key](NaN);
-        globals.Reflect[key](true);
-        return true;
-      });
-      if (acceptsPrimitives) {
-        overrideNative(globals.Reflect, key, shim);
-      }
-    }
-  };
-  Object.keys(ReflectShims).forEach(function (key) {
-    defineOrOverrideReflectProperty(key, ReflectShims[key]);
-  });
-  if (functionsHaveNames && globals.Reflect.getPrototypeOf.name !== 'getPrototypeOf') {
-    var originalReflectGetProto = globals.Reflect.getPrototypeOf;
-    overrideNative(globals.Reflect, 'getPrototypeOf', function getPrototypeOf(target) {
-      return _call(originalReflectGetProto, globals.Reflect, target);
-    });
-  }
-  if (globals.Reflect.setPrototypeOf) {
-    if (valueOrFalseIfThrows(function () {
-      globals.Reflect.setPrototypeOf(1, {});
-      return true;
-    })) {
-      overrideNative(globals.Reflect, 'setPrototypeOf', ReflectShims.setPrototypeOf);
-    }
-  }
-  if (globals.Reflect.defineProperty) {
-    if (!valueOrFalseIfThrows(function () {
-      var basic = !globals.Reflect.defineProperty(1, 'test', { value: 1 });
-      // "extensible" fails on Edge 0.12
-      var extensible = typeof Object.preventExtensions !== 'function' || !globals.Reflect.defineProperty(Object.preventExtensions({}), 'test', {});
-      return basic && extensible;
-    })) {
-      overrideNative(globals.Reflect, 'defineProperty', ReflectShims.defineProperty);
-    }
-  }
-  if (globals.Reflect.construct) {
-    if (!valueOrFalseIfThrows(function () {
-      var F = function F() {};
-      return globals.Reflect.construct(function () {}, [], F) instanceof F;
-    })) {
-      overrideNative(globals.Reflect, 'construct', ReflectShims.construct);
-    }
-  }
-
-  if (String(new Date(NaN)) !== 'Invalid Date') {
-    var dateToString = Date.prototype.toString;
-    var shimmedDateToString = function toString() {
-      var valueOf = +this;
-      if (valueOf !== valueOf) {
-        return 'Invalid Date';
-      }
-      return _call(dateToString, this);
-    };
-    overrideNative(Date.prototype, 'toString', shimmedDateToString);
-  }
-
-  // Annex B HTML methods
-  // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-additional-properties-of-the-string.prototype-object
-  var stringHTMLshims = {
-    anchor: function anchor(name) { return ES.CreateHTML(this, 'a', 'name', name); },
-    big: function big() { return ES.CreateHTML(this, 'big', '', ''); },
-    blink: function blink() { return ES.CreateHTML(this, 'blink', '', ''); },
-    bold: function bold() { return ES.CreateHTML(this, 'b', '', ''); },
-    fixed: function fixed() { return ES.CreateHTML(this, 'tt', '', ''); },
-    fontcolor: function fontcolor(color) { return ES.CreateHTML(this, 'font', 'color', color); },
-    fontsize: function fontsize(size) { return ES.CreateHTML(this, 'font', 'size', size); },
-    italics: function italics() { return ES.CreateHTML(this, 'i', '', ''); },
-    link: function link(url) { return ES.CreateHTML(this, 'a', 'href', url); },
-    small: function small() { return ES.CreateHTML(this, 'small', '', ''); },
-    strike: function strike() { return ES.CreateHTML(this, 'strike', '', ''); },
-    sub: function sub() { return ES.CreateHTML(this, 'sub', '', ''); },
-    sup: function sub() { return ES.CreateHTML(this, 'sup', '', ''); }
-  };
-  _forEach(Object.keys(stringHTMLshims), function (key) {
-    var method = String.prototype[key];
-    var shouldOverwrite = false;
-    if (ES.IsCallable(method)) {
-      var output = _call(method, '', ' " ');
-      var quotesCount = _concat([], output.match(/"/g)).length;
-      shouldOverwrite = output !== output.toLowerCase() || quotesCount > 2;
-    } else {
-      shouldOverwrite = true;
-    }
-    if (shouldOverwrite) {
-      overrideNative(String.prototype, key, stringHTMLshims[key]);
-    }
-  });
-
-  var JSONstringifiesSymbols = (function () {
-    // Microsoft Edge v0.12 stringifies Symbols incorrectly
-    if (!Type.symbol(Symbol.iterator)) { return false; } // Symbols are not supported
-    var stringify = typeof JSON === 'object' && typeof JSON.stringify === 'function' ? JSON.stringify : null;
-    if (!stringify) { return false; } // JSON.stringify is not supported
-    if (typeof stringify(Symbol()) !== 'undefined') { return true; } // Symbols should become `undefined`
-    if (stringify([Symbol()]) !== '[null]') { return true; } // Symbols in arrays should become `null`
-    var obj = { a: Symbol() };
-    obj[Symbol()] = true;
-    if (stringify(obj) !== '{}') { return true; } // Symbol-valued keys *and* Symbol-valued properties should be omitted
-    return false;
-  }());
-  var JSONstringifyAcceptsObjectSymbol = valueOrFalseIfThrows(function () {
-    // Chrome 45 throws on stringifying object symbols
-    if (!Type.symbol(Symbol.iterator)) { return true; } // Symbols are not supported
-    return JSON.stringify(Object(Symbol())) === '{}' && JSON.stringify([Object(Symbol())]) === '[{}]';
-  });
-  if (JSONstringifiesSymbols || !JSONstringifyAcceptsObjectSymbol) {
-    var origStringify = JSON.stringify;
-    overrideNative(JSON, 'stringify', function stringify(value) {
-      if (typeof value === 'symbol') { return; }
-      var replacer;
-      if (arguments.length > 1) {
-        replacer = arguments[1];
-      }
-      var args = [value];
-      if (!isArray(replacer)) {
-        var replaceFn = ES.IsCallable(replacer) ? replacer : null;
-        var wrappedReplacer = function (key, val) {
-          var parsedValue = replacer ? _call(replacer, this, key, val) : val;
-          if (typeof parsedValue !== 'symbol') {
-            if (Type.symbol(parsedValue)) {
-              return assignTo({})(parsedValue);
-            } else {
-              return parsedValue;
-            }
-          }
-        };
-        args.push(wrappedReplacer);
-      } else {
-        // create wrapped replacer that handles an array replacer?
-        args.push(replacer);
-      }
-      if (arguments.length > 2) {
-        args.push(arguments[2]);
-      }
-      return origStringify.apply(this, args);
-    });
-  }
-
-  return globals;
-}));
-
-}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":31}],366:[function(require,module,exports){
-(function (Buffer){
-const SHA3 = require('sha3')
-const ec = require('elliptic').ec('secp256k1')
-const assert = require('assert')
-const rlp = require('rlp')
-const BN = require('bn.js')
-const crypto = require('crypto')
-
-// the max interger that this VM can handle
-exports.MAX_INTEGER = new BN('ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', 16)
-exports.TWO_POW256 = new BN('115792089237316195423570985008687907853269984665640564039457584007913129639936')
-
-// hex string of SHA3-256 hash of `null`
-exports.SHA3_NULL = new Buffer('c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470', 'hex')
-
-// SHA3-256 hash of the rlp of []
-exports.SHA3_RLP_ARRAY = new Buffer('1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347', 'hex')
-
-// SHA3-256 hash of the rlp of `null`
-exports.SHA3_RLP = new Buffer('56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421', 'hex')
-
-exports.BN = BN
-exports.rlp = rlp
-
-/**
- * Returns a buffer filled with 0s
- * @method zeros
- * @param {Integer} bytes  the number of bytes the buffer should be
- * @return {Buffer}
- */
-exports.zeros = function (bytes) {
-  var buf = new Buffer(bytes)
-  buf.fill(0)
-  return buf
-}
-
-/**
- * pads an array of buffer with leading zeros till it has `length` bytes
- * @method pad
- * @param {Buffer|Array} array
- * @param {Integer}  length the number of bytes the output should be
- * @return {Buffer|Array}
- */
-exports.pad = function (msg, length) {
-  msg = exports.toBuffer(msg)
-  if (msg.length < length) {
-    var buf = exports.zeros(length)
-    msg.copy(buf, length - msg.length)
-    return buf
-  }
-  return msg.slice(-length)
-}
-
-/**
- * pads an array of buffer with trailing zeros till it has `length` bytes
- * @method rpad
- * @param {Buffer|Array} array
- * @param {Integer}  length the number of bytes the output should be
- * @return {Buffer|Array}
- */
-exports.rpad = function (msg, length) {
-  msg = exports.toBuffer(msg)
-  if (msg.length < length) {
-    var buf = exports.zeros(length)
-    msg.copy(buf)
-    return buf
-  }
-  return msg.slice(-length)
-}
-
-/**
- * Trims leading zeros from a buffer or an array
- *
- * @method unpad
- * @param {Buffer|Array|String}
- * @return {Buffer|Array|String}
- */
-exports.unpad = exports.stripZeros = function (a) {
-  a = exports.stripHexPrefix(a)
-  var first = a[0]
-  while (a.length > 0 && first.toString() === '0') {
-    a = a.slice(1)
-    first = a[0]
-  }
-  return a
-}
-
-exports.toBuffer = function (v) {
-  if (!Buffer.isBuffer(v)) {
-    if (Array.isArray(v)) {
-      v = new Buffer(v)
-    } else if (typeof v === 'string') {
-      if (exports.isHexPrefixed(v)) {
-        v = new Buffer(exports.padToEven(exports.stripHexPrefix(v)), 'hex')
-      } else {
-        v = new Buffer(v)
-      }
-    } else if (typeof v === 'number') {
-      v = exports.intToBuffer(v)
-    } else if (v === null || v === undefined) {
-      v = new Buffer([])
-    } else if (v.toArray) {
-      // converts a BN to a Buffer
-      v = new Buffer(v.toArray())
-    } else {
-      throw new Error('invalid type')
-    }
-  }
-  return v
-}
-
-/**
- * Converts an integer into a hex string
- * @method intToHex
- * @param {Number}
- * @return {String}
- */
-exports.intToHex = function (i) {
-  assert(i % 1 === 0, 'number is not a interger')
-  assert(i >= 0, 'number must be positive')
-  var hex = i.toString(16)
-  if (hex.length % 2) {
-    hex = '0' + hex
-  }
-
-  return hex
-}
-
-/**
- * Converts an integer to a buffer
- * @method intToBuffer
- * @param {Number}
- * @return {Buffer}
- */
-exports.intToBuffer = function (i) {
-  var hex = exports.intToHex(i)
-  return new Buffer(hex, 'hex')
-}
-
-/**
- * Converts a buffer to an Interger
- * @method bufferToInt
- * @par[MaÅam {B[M`Êuffer}
- * @return {Number}
- */
-exports.bufferToInt = function (buf) {
-  buf = exports.toBuffer(buf)
-  if (buf.length === 0) {
-    return 0
-  }
-
-  return parseInt(buf.toString('hex'), 16)
-}
-
-/**
- * interpets a buffer as a signed integer and returns a bignum
- * @method fromSigned
- * @param {Buffer} num
- * @return {BN}
- */
-exports.fromSigned = function (num) {
-  if (num.length === 32 && num[0] >= 128) {
-    return new BN(num).sub(exports.TWO_POW256)
-  }
-
-  return new BN(num)
-}
-
-/**
- * Converts a bignum to an unsigned interger and returns it as a buffer
- * @method toUnsigned
- * @param {Bignum} num
- * @return {Buffer}
- */
-exports.toUnsigned = function (num) {
-  if (num.cmpn(0) === -1) {
-    return new Buffer(num.add(exports.TWO_POW256).toArray())
-  }
-
-  return new Buffer(num.toArray())
-}
-
-/**
- * Creates SHA-3 hash of the input
- * @method sha3
- * @param {Buffer|Array|String|Number} a the input data
- * @param {Number} bytes the SHA width
- * @return {Buffer}
- */
-exports.sha3 = function (a, bytes) {
-  a = exports.toBuffer(a)
-  if (!bytes) bytes = 256
-
-  var h = new SHA3.SHA3Hash(bytes)
-  if (a) {
-    h.update(a)
-  }
-  return new Buffer(h.digest('hex'), 'hex')
-}
-
-/**
- * Creates SHA256 hash of the input
- * @method sha256
- * @param {Buffer|Array|String|Number} a the input data
- * @return {Buffer}
- */
-exports.sha256 = function (a) {
-  a = exports.toBuffer(a)
-  return crypto.createHash('SHA256').update(a).digest()
-}
-
-/**
- * Creates RIPEMD160 hash of the input
- * @method ripemd160
- * @param {Buffer|Array|String|Number} a the input data
- * @param {Boolean} padded whether it should be padded to 256 bits or not
- * @return {Buffer}
- */
-exports.ripemd160 = function (a, padded) {
-  a = exports.toBuffer(a)
-  var hash = crypto.createHash('rmd160').update(a).digest()
-  if (padded === true) {
-    return exports.pad(hash, 32)
-  } else {
-    return hash
-  }
-}
-
-/**
- * Returns the ethereum address of a given public key
- * @method pubToAddress
- * @param {Buffer}
- * @return {Buffer}
- */
-exports.pubToAddress = exports.publicToAddress = function (pubKey) {
-  pubKey = exports.toBuffer(pubKey)
-  var hash = new SHA3.SHA3Hash(256)
-  hash.update(pubKey.slice(-64))
-  return new Buffer(hash.digest('hex').slice(-40), 'hex')
-}
-
-/**
- * Returns the ethereum public key of a given private key
- * @method privateToPublic
- * @param {Buffer} privateKey
- * @return {Buffer}
- */
-var privateToPublic = exports.privateToPublic = function (privateKey) {
-  privateKey = exports.toBuffer(privateKey)
-  privateKey = new BN(privateKey)
-  var key = ec.keyFromPrivate(privateKey).getPublic().toJSON()
-  return Buffer.concat([exports.pad(key[0], 32), exports.pad(key[1], 32)])
-}
-
-/**
- * Returns the ethereum address of a given private key
- * @method privateToAddress
- * @param {Buffer} privateKey
- * @return {Buffer}
- */
-exports.privateToAddress = function (privateKey) {
-  return exports.publicToAddress(privateToPublic(privateKey))
-}
-
-/**
- * Generates a new address
- * @method generateAddress
- * @param {Buffer} from the address which is creating this new address
- * @param {Buffer} nonce the nonce of the from account
- */
-exports.generateAddress = function (from, nonce) {
-  from = exports.toBuffer(from)
-  nonce = new Buffer(new BN(nonce).toArray())
-
-  if (nonce.toString('hex') === '00') {
-    nonce = 0
-  }
-
-  var hash = exports.sha3(rlp.encode([new Buffer(from, 'hex'), nonce]))
-  return hash.slice(12)
-}
-
-// Returns a Boolean on whether or not the a sting starts with 0x
-exports.isHexPrefixed = function (str) {
-  return str.slice(0, 2) === '0x'
-}
-
-// Removes 0x from a given String
-exports.stripHexPrefix = function (str) {
-  if (typeof str !== 'string') {
-    return str
-  }
-  return exports.isHexPrefixed(str) ? str.slice(2) : str
-}
-
-// Adds 0x to a given string if it does not already start with 0x
-exports.addHexPrefix = function (str) {
-  if (typeof str !== 'string') {
-    return str
-  }
-
-  return exports.isHexPrefixed(str) ? str : '0x' + str
-}
-
-/**
- * defines properties on a `Object`
- * @method defineProperties
- * @para[M`Êm {Object} self the `Object` to define properties on
- * @param {Array} fields an array fields to define
- */
-exports.defineProperties = function (self, fields, data) {
-  self.raw = []
-  self._fields = []
-
-  self.toJSON = function (label) {
-    if (label) {
-      var obj = {}
-
-      for (var prop in this) {
-        if (typeof this[prop] !== 'function' && prop !== 'raw' && prop !== '_fields') {
-          obj[prop] = '0x' + this[prop].toString('hex')
-        }
-      }
-      return obj
-    }
-
-    return exports.baToJSON(this.raw)
-  }
-
-  fields.forEach(function (field, i) {
-    self._fields.push(field.name)
-    Object.defineProperty(self, field.name, {
-      enumerable: true,
-      configurable: true,
-      get: function () {
-        return this.raw[i]
-      },
-      set: function (v) {
-        v = exports.toBuffer(v)
-
-        if (v.toString('hex') === '00' && !field.allowZero) {
-          v = new Buffer([])
-        }
-
-        if (field.allowLess && field.length) {
-          v = exports.stripZeros(v)
-          assert(field.length >= v.length)
-        } else if (!(field.allowZero && v.length === 0) && field.length) {
-          assert(field.length === v.length, 'The field ' + field.name + 'must have byte length of ' + field.length)
-        }
-
-        this.raw[i] = v
-      }
-    })
-
-    if (field.default) {
-      self[field.name] = field.default
-    }
-  })
-
-  if (data) {
-    if (typeof data === 'string') {
-      data = new Buffer(exports.stripHexPrefix(data), 'hex')
-    }
-
-    if (Buffer.isBuffer(data)) {
-      data = rlp.decode(data)
-    }
-
-    if (Array.isArray(data)) {
-      if (data.length > self._fields.length) {
-        throw (new Error('wrong number of fields in data'))
-      }
-
-      // make sure all the items are buffers
-      data.forEach(function (d, i) {
-        self[self._fields[i]] = exports.toBuffer(d)
-      })
-    } else if (typeof data === 'object') {
-      for (var prop in data) {
-        if (self._fields.indexOf(prop) !== -1) {
-          self[prop] = data[prop]
-        }
-      }
-    } else {
-      throw new Error('invalid data')
-    }
-  }
-}
-
-/**
- * Print a Buffer Array
- * @method printBA
- * @param {Buffer|Array}
- */
-exports.printBA = function (ba) {
-  if (Buffer.isBuffer(ba)) {
-    if (ba.length === 0) {
-      console.log('new Buffer(0)')
-    } else {
-      console.log("new Buffer('" + ba.toString('hex') + "', 'hex')")
-    }
-  } else if (ba instanceof Array) {
-    console.log('[')
-    for (var i = 0; i < ba.length; i++) {
-      exports.printBA(ba[i])
-      console.log(',')
-    }
-    console.log(']')
-  } else {
-    console.log(ba)
-  }
-}
-
-/**
- * converts a buffer array to JSON
- * @method BAToJSON
- * @param {Buffer|Array}
- */
-exports.baToJSON = function (ba) {
-  if (Buffer.isBuffer(ba)) {
-    return ba.toString('hex')
-  } else if (ba instanceof Array) {
-    var array = []
-    for (var i = 0; i < ba.length; i++) {
-      array.push(exports.baToJSON(ba[i]))
-    }
-    return array
-  }
-}
-
-exports.padToEven = function (a) {
-  if (a.length % 2) a = '0' + a
-  return a
-}
-
-}).call(this,require("buffer").Buffer)
-},{"assert":10,"bn.js":364,"buffer":64,"crypto":76,"elliptic":369,"rlp":394,"sha3":367}],367:[function(require,module,exports){
-arguments[4][274][0].apply(exports,arguments)
-},{"buffer":64,"dup":274,"js-sha3":368}],368:[function(require,module,exports){
-arguments[4][3][0].apply(exports,arguments)
-},{"dup":3}],369:[function(require,module,exports){
-arguments[4][111][0].apply(exports,arguments)
-},{"../package.json":393,"./elliptic/curve":372,"./elliptic/curves":375,"./elliptic/ec":376,"./elliptic/eddsa":379,"./elliptic/hmac-drbg":382,"./elliptic/utils":384,"brorand":385,"dup":111}],370:[function(require,module,exports){
-arguments[4][112][0].apply(exports,arguments)
-},{"../../elliptic":369,"bn.js":364,"dup":112}],371:[function(require,module,exports){
-arguments[4][113][0].apply(exports,arguments)
-},{"../../elliptic":369,"../curve":372,"bn.js":364,"dup":113,"inherits":392}],372:[function(require,module,exports){
-arguments[4][114][0].apply(exports,arguments)
-},{"./base":370,"./edwards":371,"./mont":373,"./short":374,"dup":114}],373:[function(require,module,exports){
-arguments[4][115][0].apply(exports,arguments)
-},{"../../elliptic":369,"../curve":372,"bn.js":364,"dup":115,"inherits":392}],374:[function(require,module,exports){
-arguments[4][116][0].apply(exports,arguments)
-},{"../../elliptic":369,"../curve":372,"bn.js":364,"dup":116,"inherits":392}],375:[function(require,module,exports){
-arguments[4][117][0].apply(exports,arguments)
-},{"../elliptic":369,"./precomputed/secp256k1":383,"dup":117,"hash.js":386}],376:[function(require,module,exports){
-arguments[4][118][0].apply(exports,arguments)
-},{"../../elliptic":369,"./key":377,"./signature":378,"bn.js":364,"dup":118}],377:[function(require,module,exports){
-arguments[4][119][0].apply(exports,arguments)
-},{"bn.js":364,"dup":119}],378:[function(require,module,exports){
-arguments[4][120][0].apply(exports,arguments)
-},{"../../elliptic":369,"bn.js":364,"dup":120}],379:[function(require,module,exports){
-arguments[4][121][0].apply(exports,arguments)
-},{"../../elliptic":369,"./key":380,"./signature":381,"dup":121,"hash.js":386}],380:[function(require,module,exports){
-arguments[4][122][0].apply(exports,arguments)
-},{"../../elliptic":369,"dup":122}],381:[function(require,module,exports){
-arguments[4][123][0].apply(exports,arguments)
-},{"../../elliptic":369,"bn.js":364,"dup":123}],382:[function(require,module,exports){
-arguments[4][124][0].apply(exports,arguments)
-},{"../elliptic":369,"dup":124,"hash.js":386}],383:[function(require,module,exports){
-arguments[4][125][0].apply(exports,arguments)
-},{"dup":125}],384:[function(require,module,exports){
-arguments[4][126][0].apply(exports,arguments)
-},{"bn.js":364,"dup":126}],385:[function(require,module,exports){
-arguments[4][127][0].apply(exports,arguments)
-},{"dup":127}],386:[function(require,module,exports){
-arguments[4][128][0].apply(exports,arguments)
-},{"./hash/common":387,"./hash/hmac":388,"./hash/ripemd":389,"./hash/sha":390,"./hash/utils":391,"dup":128}],387:[function(require,module,exports){
-arguments[4][129][0].apply(exports,arguments)
-},{"../hash":386,"dup":129}],388:[function(require,module,exports){
-arguments[4][130][0].apply(exports,arguments)
-},{"../hash":386,"dup":130}],389:[function(require,module,exports){
-arguments[4][131][0].apply(exports,arguments)
-},{"../hash":386,"dup":131}],390:[function(require,module,exports){
-arguments[4][132][0].apply(exports,arguments)
-},{"../hash":386,"dup":132}],391:[function(require,module,exports){
-arguments[4][133][0].apply(exports,arguments)
-},{"dup":133,"inherits":392}],392:[function(require,module,exports){
-arguments[4][27][0].apply(exports,arguments)
-},{"dup":27}],393:[function(require,module,exports){
-arguments[4][299][0].apply(exports,arguments)
-},{"dup":299}],394:[function(require,module,exports){
-arguments[4][300][0].apply(exports,arguments)
-},{"assert":10,"buffer":64,"dup":300}],395:[function(require,module,exports){
-(function (global){
-/*! https://mths.be/utf8js v2.0.0 by @mathias */
-;(function(root) {
-
-	// Detect free variables `exports`
-	var freeExports = typeof exports == 'object' && exports;
-
-	// Detect free variable `module`
-	var freeModule = typeof module == 'object' && module &&
-		module.exports == freeExports && module;
-
-	// Detect free variable `global`, from Node.js or Browserified code,
-	// and use it as `root`
-	var freeGlobal = typeof global == 'object' && global;
-	if (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal) {
-		root = freeGlobal;
-	}
-
-	/*--------------------------------------------------------------------------*/
-
-	var stringFromCharCode = String.fromCharCode;
-
-	// Taken from https://mths.be/punycode
-	function ucs2decode(string) {
-		var output = [];
-		var counter = 0;
-		var length = string.length;
-		var value;
-		var extra;
-		while (counter < length) {
-			value = string.charCodeAt(counter++);
-			if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
-				// high surrogate, and there is a next character
-				extra = string.charCodeAt(counter++);
-				if ((extra & 0xFC00) == 0xDC00) { // low surrogate
-					output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
-				} else {
-					// unmatched surrogate; only append this code unit, in case the next
-					// code unit is the high surrogate of a surrogate pair
-					output.push(value);
-					counter--;
-				}
-			} else {
-				output.push(value);
-			}
-		}
-		return output;
-	}
-
-	// Taken from https://mths.be/punycode
-	function ucs2encode(array) {
-		var length = array.length;
-		var index = -1;
-		var value;
-		var output = '';
-		while (++index < length) {
-			value = array[index];
-			if (value > 0xFFFF) {
-				value -= 0x10000;
-				output += stringFromCharCode(value >>> 10 & 0x3FF | 0xD800);
-				value = 0xDC00 | value & 0x3FF;
-			}
-			output += stringFromCharCode(value);
-		}
-		return output;
-	}
-
-	function checkScalarValue(codePoint) {
-		if (codePoint >= 0xD800 && codePoint <= 0xDFFF) {
-			throw Error(
-				'Lone surrogate U+' + codePoint.toString(16).toUpperCase() +
-				' is not a scalar value'
-			);
-		}
-	}
-	/*--------------------------------------------------------------------------*/
-
-	function createByte(codePoint, shift) {
-		return stringFromCharCode(((codePoint >> shift) & 0x3F) | 0x80);
-	}
-
-	function encodeCodePoint(codePoint) {
-		if ((codePoint & 0xFFFFFF80) == 0) { // 1-byte sequence
-			return stringFromCharCode(codePoint);
-		}
-		var symbol = '';
-		if ((codePoint & 0xFFFFF800) == 0) { // 2-byte sequence
-			symbol = stringFromCharCode(((codePoint >> 6) & 0x1F) | 0xC0);
-		}
-		else if ((codePoint & 0xFFFF0000) == 0) { // 3-byte sequence
-			checkScalarValue(codePoint);
-			symbol = stringFromCharCode(((codePoint >> 12) & 0x0F) | 0xE0);
-			symbol += createByte(codePoint, 6);
-		}
-		else if ((codePoint & 0xFFE00000) == 0) { // 4-byte sequence
-			symbol = stringFromCharCode(((codePoint >> 18) & 0x07) | 0xF0);
-			symbol += createByte(codePoint, 12);
-			symbol += createByte(codePoint, 6);
-		}
-		symbol += stringFromCharCode((codePoint & 0x3F) | 0x80);
-		return symbol;
-	}
-
-	function utf8encode(string) {
-		var codePoints = ucs2decode(string);
-		var length = codePoints.length;
-		var index = -1;
-		var codePoint;
-		var byteString = '';
-		while (++index < length) {
-			codePoint = codePoints[index];
-			byteString += encodeCodePoint(codePoint);
-		}
-		return byteString;
-	}
-
-	/*--------------------------------------------------------------------------*/
-
-	function readContinuationByte() {
-		if (byteIndex >= byteCount) {
-			throw Error('Invalid byte index');
-		}
-
-		var continuationByte = byteArray[byteIndex] & 0xFF;
-		byteIndex++;
-
-		if ((continuationByte & 0xC0) == 0x80) {
-			return continuationByte & 0x3F;
-		}
-
-		// If we end up here, it’s not a continuation byte
-		throw Error('Invalid continuation byte');
-	}
-
-	function decodeSymbol() {
-		var byte1;
-		var byte2;
-		var byte3;
-		var byte4;
-		var codePoint;
-
-		if (byteIndex > byteCount) {
-			throw Error('Invalid byte index');
-		}
-
-		if (byteIndex == byteCount) {
-			return false;
-		}
-
-		// Read first byte
-		byte1 = byteArray[byteIndex] & 0xFF;
-		byteIndex++;
-
-		// 1-byte sequence (no continuation bytes)
-		if ((byte1 & 0x80) == 0) {
-			return byte1;
-		}
-
-		// 2-byte sequence
-		if ((byte1 & 0xE0) == 0xC0) {
-			var byte2 = readContinuationByte();
-			codePoint = ((byte1 & 0x1F) << 6) | byte2;
-			if (codePoint >= 0x80) {
-				return codePoint;
-			} else {
-				throw Error('Invalid continuation byte');
-			}
-		}
-
-		// 3-byte sequence (may include unpaired surrogates)
-		if ((byte1 & 0xF0) == 0xE0) {
-			byte2 = readContinuationByte();
-			byte3 = readContinuationByte();
-			codePoint = ((byte1 & 0x0F) << 12) | (byte2 << 6) | byte3;
-			if (codePoint >= 0x0800) {
-				checkScalarValue(codePoint);
-				return codePoint;
-			} else {
-				throw Error('Invalid continuation byte');
-			}
-		}
-
-		// 4-byte sequence
-		if ((byte1 & 0xF8) == 0xF0) {
-			byte2 = readContinuationByte();
-			byte3 = readContinuationByte();
-			byte4 = readContinuationByte();
-			codePoint = ((byte1 & 0x0F) << 0x12) | (byte2 << 0x0C) |
-				(byte3 << 0x06) | byte4;
-			if (codePoint >= 0x010000 && codePoint <= 0x10FFFF) {
-				return codePoint;
-			}
-		}
-
-		throw Error('Invalid UTF-8 detected');
-	}
-
-	var byteArray;
-	var byteCount;
-	var byteIndex;
-	function utf8decode(byteString) {
-		byteArray = ucs2decode(byteString);
-		byteCount = byteArray.length;
-		byteIndex = 0;
-		var codePoints = [];
-		var tmp;
-		while ((tmp = decodeSymbol()) !== false) {
-			codePoints.push(tmp);
-		}
-		return ucs2encode(codePoints);
-	}
-
-	/*--------------------------------------------------------------------------*/
-
-	var utf8 = {
-		'version': '2.0.0',
-		'encode': utf8encode,
-		'decode': utf8decode
-	};
-
-	// Some AMD build optimizers, like r.js, check for specific condition patterns
-	// like the following:
-	if (
-		typeof define == 'function' &&
-		typeof define.amd == 'object' &&
-		define.amd
-	) {
-		define(function() {
-			return utf8;
-		});
-	}	else if (freeExports && !freeExports.nodeType) {
-		if (freeModule) { // in Node.js or RingoJS v0.8.0+
-			freeModule.exports = utf8;
-		} else { // in Narwhal or RingoJS v0.7.0-
-			var object = {};
-			var hasOwnProperty = object.hasOwnProperty;
-			for (var key in utf8) {
-				hasOwnProperty.call(utf8, key) && (freeExports[key] = utf8[key]);
-			}
-		}
-	} else { // in Rhino or a web browser
-		root.utf8 = utf8;
-	}
-
-}(this));
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],396:[function(require,module,exports){
+},{"./constants":353,"_process":29,"assert":8,"augur-abi":5,"bignumber.js":6,"chalk":66,"crypto":74,"crypto-browserify":74,"fs":7,"moment":343,"path":28,"validator":349}],359:[function(require,module,exports){
 module.exports={
     "0x": "no response or bad input",
-    "cashFaucet": {
-        "-1": "Hey, you're not broke!"
-    },
     "getSimulatedBuy": {
         "-2": "cost updating error (did you enter a valid quantity?)"
     },
@@ -64394,7 +53318,7 @@ module.exports={
     }
 }
 
-},{}],397:[function(require,module,exports){
+},{}],360:[function(require,module,exports){
 (function (process){
 /**
  * JSON RPC methods for Ethereum
@@ -64416,7 +53340,6 @@ var async = require("async");
 var BigNumber = require("bignumber.js");
 var contracts = require("augur-contracts");
 var abi = require("augur-abi");
-var eAbi = new (require("ethereumjs-abi"))();
 var errors = require("./errors");
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
@@ -65322,7 +54245,6 @@ module.exports = {
                     if (tx.to) tx.to = abi.prefix_hex(tx.to);
                     if (tx.from) tx.from = abi.prefix_hex(tx.from);
                     dataAbi = abi.encode(tx);
-                    // dataAbi = "0x" + eAbi.rawEncode(tx.method, eAbi.fromSerpent(tx.signature), tx.params).toString("hex");
                     if (dataAbi) {
                         packaged = {
                             from: tx.from,
@@ -65344,12 +54266,10 @@ module.exports = {
                 }
             }
         } catch (exc) {
-            console.error("ethrpc.invoke:", exc);
             if (f) return f(errors.TRANSACTION_FAILED);
             return errors.TRANSACTION_FAILED;
         }
         if (!invoked) {
-            console.error("ethrpc.invoke:", tx);
             if (f) return f(errors.TRANSACTION_FAILED);
             return errors.TRANSACTION_FAILED;
         }
@@ -65719,11 +54639,2708 @@ module.exports = {
 };
 
 }).call(this,require('_process'))
-},{"./errors":396,"_process":31,"async":398,"augur-abi":1,"augur-contracts":5,"bignumber.js":399,"browser-request":400,"ethereumjs-abi":361,"net":9,"request":401,"sync-request":11}],398:[function(require,module,exports){
-arguments[4][7][0].apply(exports,arguments)
-},{"_process":31,"dup":7}],399:[function(require,module,exports){
-arguments[4][2][0].apply(exports,arguments)
-},{"crypto":76,"dup":2}],400:[function(require,module,exports){
+},{"./errors":359,"_process":29,"async":361,"augur-abi":362,"augur-contracts":2,"bignumber.js":364,"browser-request":365,"net":7,"request":366,"sync-request":9}],361:[function(require,module,exports){
+arguments[4][4][0].apply(exports,arguments)
+},{"_process":29,"dup":4}],362:[function(require,module,exports){
+arguments[4][5][0].apply(exports,arguments)
+},{"bignumber.js":364,"buffer":62,"dup":5,"js-sha3":363}],363:[function(require,module,exports){
+arguments[4][342][0].apply(exports,arguments)
+},{"dup":342}],364:[function(require,module,exports){
+/*! bignumber.js v2.0.8 https://github.com/MikeMcl/bignumber.js/LICENCE */
+
+;(function (global) {
+    'use strict';
+
+    /*
+      bignumber.js v2.0.8
+      A JavaScript library for arbitrary-precision arithmetic.
+      https://github.com/MikeMcl/bignumber.js
+      Copyright (c) 2015 Michael Mclaughlin <M8ch88l@gmail.com>
+      MIT Expat Licence
+    */
+
+
+    var BigNumber, crypto, parseNumeric,
+        isNumeric = /^-?(\d+(\.\d*)?|\.\d+)(e[+-]?\d+)?$/i,
+        mathceil = Math.ceil,
+        mathfloor = Math.floor,
+        notBool = ' not a boolean or binary digit',
+        roundingMode = 'rounding mode',
+        tooManyDigits = 'number type has more than 15 significant digits',
+        ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_',
+        BASE = 1e14,
+        LOG_BASE = 14,
+        MAX_SAFE_INTEGER = 0x1fffffffffffff,         // 2^53 - 1
+        // MAX_INT32 = 0x7fffffff,                   // 2^31 - 1
+        POWS_TEN = [1, 10, 100, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9, 1e10, 1e11, 1e12, 1e13],
+        SQRT_BASE = 1e7,
+
+        /*
+         * The limit on the value of DECIMAL_PLACES, TO_EXP_NEG, TO_EXP_POS, MIN_EXP, MAX_EXP, and
+         * the arguments to toExponential, toFixed, toFormat, and toPrecision, beyond which an
+         * exception is thrown (if ERRORS is true).
+         */
+        MAX = 1E9;                                   // 0 to MAX_INT32
+
+
+    /*
+     * Create and return a BigNumber constructor.
+     */
+    function another(configObj) {
+        var div,
+
+            // id tracks the caller function, so its name can be included in error messages.
+            id = 0,
+            P = BigNumber.prototype,
+            ONE = new BigNumber(1),
+
+
+            /********************************* EDITABLE DEFAULTS **********************************/
+
+
+            /*
+             * The default values below must be integers within the inclusive ranges stated.
+             * The values can also be changed at run-time using BigNumber.config.
+             */
+
+            // The maximum number of decimal places for operations involving division.
+            DECIMAL_PLACES = 20,                     // 0 to MAX
+
+            /*
+             * The rounding mode used when rounding to the above decimal places, and when using
+             * toExponential, toFixed, toFormat and toPrecision, and round (default value).
+             * UP         0 Away from zero.
+             * DOWN       1 Towards zero.
+             * CEIL       2 Towards +Infinity.
+             * FLOOR      3 Towards -Infinity.
+             * HALF_UP    4 Towards nearest neighbour. If equidistant, up.
+             * HALF_DOWN  5 Towards nearest neighbour. If equidistant, down.
+             * HALF_EVEN  6 Towards nearest neighbour. If equidistant, towards even neighbour.
+             * HALF_CEIL  7 Towards nearest neighbour. If equidistant, towards +Infinity.
+             * HALF_FLOOR 8 Towards nearest neighbour. If equidistant, towards -Infinity.
+             */
+            ROUNDING_MODE = 4,                       // 0 to 8
+
+            // EXPONENTIAL_AT : [TO_EXP_NEG , TO_EXP_POS]
+
+            // The exponent value at and beneath which toString returns exponential notation.
+            // Number type: -7
+            TO_EXP_NEG = -7,                         // 0 to -MAX
+
+            // The exponent value at and above which toString returns exponential notation.
+            // Number type: 21
+            TO_EXP_POS = 21,                         // 0 to MAX
+
+            // RANGE : [MIN_EXP, MAX_EXP]
+
+            // The minimum exponent value, beneath which underflow to zero occurs.
+            // Number type: -324  (5e-324)
+            MIN_EXP = -1e7,                          // -1 to -MAX
+
+            // The maximum exponent value, above which overflow to Infinity occurs.
+            // Number type:  308  (1.7976931348623157e+308)
+            // For MAX_EXP > 1e7, e.g. new BigNumber('1e100000000').plus(1) may be slow.
+            MAX_EXP = 1e7,                           // 1 to MAX
+
+            // Whether BigNumber Errors are ever thrown.
+            ERRORS = true,                           // true or false
+
+            // Change to intValidatorNoErrors if ERRORS is false.
+            isValidInt = intValidatorWithErrors,     // intValidatorWithErrors/intValidatorNoErrors
+
+            // Whether to use cryptographically-secure random number generation, if available.
+            CRYPTO = false,                          // true or false
+
+            /*
+             * The modulo mode used when calculating the modulus: a mod n.
+             * The quotient (q = a / n) is calculated according to the corresponding rounding mode.
+             * The remainder (r) is calculated as: r = a - n * q.
+             *
+             * UP        0 The remainder is positive if the dividend is negative, else is negative.
+             * DOWN      1 The remainder has the same sign as the dividend.
+             *             This modulo mode is commonly known as 'truncated division' and is
+             *             equivalent to (a % n) in JavaScript.
+             * FLOOR     3 The remainder has the same sign as the divisor (Python %).
+             * HALF_EVEN 6 This modulo mode implements the IEEE 754 remainder function.
+             * EUCLID    9 Euclidian division. q = sign(n) * floor(a / abs(n)).
+             *             The remainder is always positive.
+             *
+             * The truncated division, floored division, Euclidian division and IEEE 754 remainder
+             * modes are commonly used for the modulus operation.
+             * Although the other rounding modes can also be used, they may not give useful results.
+             */
+            MODULO_MODE = 1,                         // 0 to 9
+
+            // The maximum number of significant digits of the result of the toPower operation.
+            // If POW_PRECISION is 0, there will be unlimited significant digits.
+            POW_PRECISION = 100,                     // 0 to MAX
+
+            // The format specification used by the BigNumber.prototype.toFormat method.
+            FORMAT = {
+                decimalSeparator: '.',
+                groupSeparator: ',',
+                groupSize: 3,
+                secondaryGroupSize: 0,
+                fractionGroupSeparator: '\xA0',      // non-breaking space
+                fractionGroupSize: 0
+            };
+
+
+        /******************************************************************************************/
+
+
+        // CONSTRUCTOR
+
+
+        /*
+         * The BigNumber constructor and exported function.
+         * Create and return a new instance of a BigNumber object.
+         *
+         * n {number|string|BigNumber} A numeric value.
+         * [b] {number} The base of n. Integer, 2 to 64 inclusive.
+         */
+        function BigNumber( n, b ) {
+            var c, e, i, num, len, str,
+                x = this;
+
+            // Enable constructor usage without new.
+            if ( !( x instanceof BigNumber ) ) {
+
+                // 'BigNumber() constructor call without new: {n}'
+                if (ERRORS) raise( 26, 'constructor call without new', n );
+                return new BigNumber( n, b );
+            }
+
+            // 'new BigNumber() base not an integer: {b}'
+            // 'new BigNumber() base out of range: {b}'
+            if ( b == null || !isValidInt( b, 2, 64, id, 'base' ) ) {
+
+                // Duplicate.
+                if ( n instanceof BigNumber ) {
+                    x.s = n.s;
+                    x.e = n.e;
+                    x.c = ( n = n.c ) ? n.slice() : n;
+                    id = 0;
+                    return;
+                }
+
+                if ( ( num = typeof n == 'number' ) && n * 0 == 0 ) {
+                    x.s = 1 / n < 0 ? ( n = -n, -1 ) : 1;
+
+                    // Fast path for integers.
+                    if ( n === ~~n ) {
+                        for ( e = 0, i = n; i >= 10; i /= 10, e++ );
+                        x.e = e;
+                        x.c = [n];
+                        id = 0;
+                        return;
+                    }
+
+                    str = n + '';
+                } else {
+                    if ( !isNumeric.test( str = n + '' ) ) return parseNumeric( x, str, num );
+                    x.s = str.charCodeAt(0) === 45 ? ( str = str.slice(1), -1 ) : 1;
+                }
+            } else {
+                b = b | 0;
+                str = n + '';
+
+                // Ensure return value is rounded to DECIMAL_PLACES as with other bases.
+                // Allow exponential notation to be used with base 10 argument.
+                if ( b == 10 ) {
+                    x = new BigNumber( n instanceof BigNumber ? n : str );
+                    return round( x, DECIMAL_PLACES + x.e + 1, ROUNDING_MODE );
+                }
+
+                // Avoid potential interpretation of Infinity and NaN as base 44+ values.
+                // Any number in exponential form will fail due to the [Ee][+-].
+                if ( ( num = typeof n == 'number' ) && n * 0 != 0 ||
+                  !( new RegExp( '^-?' + ( c = '[' + ALPHABET.slice( 0, b ) + ']+' ) +
+                    '(?:\\.' + c + ')?$',b < 37 ? 'i' : '' ) ).test(str) ) {
+                    return parseNumeric( x, str, num, b );
+                }
+
+                if (num) {
+                    x.s = 1 / n < 0 ? ( str = str.slice(1), -1 ) : 1;
+
+                    if ( ERRORS && str.replace( /^0\.0*|\./, '' ).length > 15 ) {
+
+                        // 'new BigNumber() number type has more than 15 significant digits: {n}'
+                        raise( id, tooManyDigits, n );
+                    }
+
+                    // Prevent later check for length on converted number.
+                    num = false;
+                } else {
+                    x.s = str.charCodeAt(0) === 45 ? ( str = str.slice(1), -1 ) : 1;
+                }
+
+                str = convertBase( str, 10, b, x.s );
+            }
+
+            // Decimal point?
+            if ( ( e = str.indexOf('.') ) > -1 ) str = str.replace( '.', '' );
+
+            // Exponential form?
+            if ( ( i = str.search( /e/i ) ) > 0 ) {
+
+                // Determine exponent.
+                if ( e < 0 ) e = i;
+                e += +str.slice( i + 1 );
+                str = str.substring( 0, i );
+            } else if ( e < 0 ) {
+
+                // Integer.
+                e = str.length;
+            }
+
+            // Determine leading zeros.
+            for ( i = 0; str.charCodeAt(i) === 48; i++ );
+
+            // Determine trailing zeros.
+            for ( len = str.length; str.charCodeAt(--len) === 48; );
+            str = str.slice( i, len + 1 );
+
+            if (str) {
+                len = str.length;
+
+                // Disallow numbers with over 15 significant digits if number type.
+                // 'new BigNumber() number type has more than 15 significant digits: {n}'
+                if ( num && ERRORS && len > 15 ) raise( id, tooManyDigits, x.s * n );
+
+                e = e - i - 1;
+
+                 // Overflow?
+                if ( e > MAX_EXP ) {
+
+                    // Infinity.
+                    x.c = x.e = null;
+
+                // Underflow?
+                } else if ( e < MIN_EXP ) {
+
+                    // Zero.
+                    x.c = [ x.e = 0 ];
+                } else {
+                    x.e = e;
+                    x.c = [];
+
+                    // Transform base
+
+                    // e is the base 10 exponent.
+                    // i is where to slice str to get the first element of the coefficient array.
+                    i = ( e + 1 ) % LOG_BASE;
+                    if ( e < 0 ) i += LOG_BASE;
+
+                    if ( i < len ) {
+                        if (i) x.c.push( +str.slice( 0, i ) );
+
+                        for ( len -= LOG_BASE; i < len; ) {
+                            x.c.push( +str.slice( i, i += LOG_BASE ) );
+                        }
+
+                        str = str.slice(i);
+                        i = LOG_BASE - str.length;
+                    } else {
+                        i -= len;
+                    }
+
+                    for ( ; i--; str += '0' );
+                    x.c.push( +str );
+                }
+            } else {
+
+                // Zero.
+                x.c = [ x.e = 0 ];
+            }
+
+            id = 0;
+        }
+
+
+        // CONSTRUCTOR PROPERTIES
+
+
+        BigNumber.another = another;
+
+        BigNumber.ROUND_UP = 0;
+        BigNumber.ROUND_DOWN = 1;
+        BigNumber.ROUND_CEIL = 2;
+        BigNumber.ROUND_FLOOR = 3;
+        BigNumber.ROUND_HALF_UP = 4;
+        BigNumber.ROUND_HALF_DOWN = 5;
+        BigNumber.ROUND_HALF_EVEN = 6;
+        BigNumber.ROUND_HALF_CEIL = 7;
+        BigNumber.ROUND_HALF_FLOOR = 8;
+        BigNumber.EUCLID = 9;
+
+
+        /*
+         * Configure infrequently-changing library-wide settings.
+         *
+         * Accept an object or an argument list, with one or many of the following properties or
+         * parameters respectively:
+         *
+         *   DECIMAL_PLACES  {number}  Integer, 0 to MAX inclusive
+         *   ROUNDING_MODE   {number}  Integer, 0 to 8 inclusive
+         *   EXPONENTIAL_AT  {number|number[]}  Integer, -MAX to MAX inclusive or
+         *                                      [integer -MAX to 0 incl., 0 to MAX incl.]
+         *   RANGE           {number|number[]}  Non-zero integer, -MAX to MAX inclusive or
+         *                                      [integer -MAX to -1 incl., integer 1 to MAX incl.]
+         *   ERRORS          {boolean|number}   true, false, 1 or 0
+         *   CRYPTO          {boolean|number}   true, false, 1 or 0
+         *   MODULO_MODE     {number}           0 to 9 inclusive
+         *   POW_PRECISION   {number}           0 to MAX inclusive
+         *   FORMAT          {object}           See BigNumber.prototype.toFormat
+         *      decimalSeparator       {string}
+         *      groupSeparator         {string}
+         *      groupSize              {number}
+         *      secondaryGroupSize     {number}
+         *      fractionGroupSeparator {string}
+         *      fractionGroupSize      {number}
+         *
+         * (The values assigned to the above FORMAT object properties are not checked for validity.)
+         *
+         * E.g.
+         * BigNumber.config(20, 4) is equivalent to
+         * BigNumber.config({ DECIMAL_PLACES : 20, ROUNDING_MODE : 4 })
+         *
+         * Ignore properties/parameters set to null or undefined.
+         * Return an object with the properties current values.
+         */
+        BigNumber.config = function () {
+            var v, p,
+                i = 0,
+                r = {},
+                a = arguments,
+                o = a[0],
+                has = o && typeof o == 'object'
+                  ? function () { if ( o.hasOwnProperty(p) ) return ( v = o[p] ) != null; }
+                  : function () { if ( a.length > i ) return ( v = a[i++] ) != null; };
+
+            // DECIMAL_PLACES {number} Integer, 0 to MAX inclusive.
+            // 'config() DECIMAL_PLACES not an integer: {v}'
+            // 'config() DECIMAL_PLACES out of range: {v}'
+            if ( has( p = 'DECIMAL_PLACES' ) && isValidInt( v, 0, MAX, 2, p ) ) {
+                DECIMAL_PLACES = v | 0;
+            }
+            r[p] = DECIMAL_PLACES;
+
+            // ROUNDING_MODE {number} Integer, 0 to 8 inclusive.
+            // 'config() ROUNDING_MODE not an integer: {v}'
+            // 'config() ROUNDING_MODE out of range: {v}'
+            if ( has( p = 'ROUNDING_MODE' ) && isValidInt( v, 0, 8, 2, p ) ) {
+                ROUNDING_MODE = v | 0;
+            }
+            r[p] = ROUNDING_MODE;
+
+            // EXPONENTIAL_AT {number|number[]}
+            // Integer, -MAX to MAX inclusive or [integer -MAX to 0 inclusive, 0 to MAX inclusive].
+            // 'config() EXPONENTIAL_AT not an integer: {v}'
+            // 'config() EXPONENTIAL_AT out of range: {v}'
+            if ( has( p = 'EXPONENTIAL_AT' ) ) {
+
+                if ( isArray(v) ) {
+                    if ( isValidInt( v[0], -MAX, 0, 2, p ) && isValidInt( v[1], 0, MAX, 2, p ) ) {
+                        TO_EXP_NEG = v[0] | 0;
+                        TO_EXP_POS = v[1] | 0;
+                    }
+                } else if ( isValidInt( v, -MAX, MAX, 2, p ) ) {
+                    TO_EXP_NEG = -( TO_EXP_POS = ( v < 0 ? -v : v ) | 0 );
+                }
+            }
+            r[p] = [ TO_EXP_NEG, TO_EXP_POS ];
+
+            // RANGE {number|number[]} Non-zero integer, -MAX to MAX inclusive or
+            // [integer -MAX to -1 inclusive, integer 1 to MAX inclusive].
+            // 'config() RANGE not an integer: {v}'
+            // 'config() RANGE cannot be zero: {v}'
+            // 'config() RANGE out of range: {v}'
+            if ( has( p = 'RANGE' ) ) {
+
+                if ( isArray(v) ) {
+                    if ( isValidInt( v[0], -MAX, -1, 2, p ) && isValidInt( v[1], 1, MAX, 2, p ) ) {
+                        MIN_EXP = v[0] | 0;
+                        MAX_EXP = v[1] | 0;
+                    }
+                } else if ( isValidInt( v, -MAX, MAX, 2, p ) ) {
+                    if ( v | 0 ) MIN_EXP = -( MAX_EXP = ( v < 0 ? -v : v ) | 0 );
+                    else if (ERRORS) raise( 2, p + ' cannot be zero', v );
+                }
+            }
+            r[p] = [ MIN_EXP, MAX_EXP ];
+
+            // ERRORS {boolean|number} true, false, 1 or 0.
+            // 'config() ERRORS not a boolean or binary digit: {v}'
+            if ( has( p = 'ERRORS' ) ) {
+
+                if ( v === !!v || v === 1 || v === 0 ) {
+                    id = 0;
+                    isValidInt = ( ERRORS = !!v ) ? intValidatorWithErrors : intValidatorNoErrors;
+                } else if (ERRORS) {
+                    raise( 2, p + notBool, v );
+                }
+            }
+            r[p] = ERRORS;
+
+            // CRYPTO {boolean|number} true, false, 1 or 0.
+            // 'config() CRYPTO not a boolean or binary digit: {v}'
+            // 'config() crypto unavailable: {crypto}'
+            if ( has( p = 'CRYPTO' ) ) {
+
+                if ( v === !!v || v === 1 || v === 0 ) {
+                    CRYPTO = !!( v && crypto && typeof crypto == 'object' );
+                    if ( v && !CRYPTO && ERRORS ) raise( 2, 'crypto unavailable', crypto );
+                } else if (ERRORS) {
+                    raise( 2, p + notBool, v );
+                }
+            }
+            r[p] = CRYPTO;
+
+            // MODULO_MODE {number} Integer, 0 to 9 inclusive.
+            // 'config() MODULO_MODE not an integer: {v}'
+            // 'config() MODULO_MODE out of range: {v}'
+            if ( has( p = 'MODULO_MODE' ) && isValidInt( v, 0, 9, 2, p ) ) {
+                MODULO_MODE = v | 0;
+            }
+            r[p] = MODULO_MODE;
+
+            // POW_PRECISION {number} Integer, 0 to MAX inclusive.
+            // 'config() POW_PRECISION not an integer: {v}'
+            // 'config() POW_PRECISION out of range: {v}'
+            if ( has( p = 'POW_PRECISION' ) && isValidInt( v, 0, MAX, 2, p ) ) {
+                POW_PRECISION = v | 0;
+            }
+            r[p] = POW_PRECISION;
+
+            // FORMAT {object}
+            // 'config() FORMAT not an object: {v}'
+            if ( has( p = 'FORMAT' ) ) {
+
+                if ( typeof v == 'object' ) {
+                    FORMAT = v;
+                } else if (ERRORS) {
+                    raise( 2, p + ' not an object', v );
+                }
+            }
+            r[p] = FORMAT;
+
+            return r;
+        };
+
+
+        /*
+         * Return a new BigNumber whose value is the maximum of the arguments.
+         *
+         * arguments {number|string|BigNumber}
+         */
+        BigNumber.max = function () { return maxOrMin( arguments, P.lt ); };
+
+
+        /*
+         * Return a new BigNumber whose value is the minimum of the arguments.
+         *
+         * arguments {number|string|BigNumber}
+         */
+        BigNumber.min = function () { return maxOrMin( arguments, P.gt ); };
+
+
+        /*
+         * Return a new BigNumber with a random value equal to or greater than 0 and less than 1,
+         * and with dp, or DECIMAL_PLACES if dp is omitted, decimal places (or less if trailing
+         * zeros are produced).
+         *
+         * [dp] {number} Decimal places. Integer, 0 to MAX inclusive.
+         *
+         * 'random() decimal places not an integer: {dp}'
+         * 'random() decimal places out of range: {dp}'
+         * 'random() crypto unavailable: {crypto}'
+         */
+        BigNumber.random = (function () {
+            var pow2_53 = 0x20000000000000;
+
+            // Return a 53 bit integer n, where 0 <= n < 9007199254740992.
+            // Check if Math.random() produces more than 32 bits of randomness.
+            // If it does, assume at least 53 bits are produced, otherwise assume at least 30 bits.
+            // 0x40000000 is 2^30, 0x800000 is 2^23, 0x1fffff is 2^21 - 1.
+            var random53bitInt = (Math.random() * pow2_53) & 0x1fffff
+              ? function () { return mathfloor( Math.random() * pow2_53 ); }
+              : function () { return ((Math.random() * 0x40000000 | 0) * 0x800000) +
+                  (Math.random() * 0x800000 | 0); };
+
+            return function (dp) {
+                var a, b, e, k, v,
+                    i = 0,
+                    c = [],
+                    rand = new BigNumber(ONE);
+
+                dp = dp == null || !isValidInt( dp, 0, MAX, 14 ) ? DECIMAL_PLACES : dp | 0;
+                k = mathceil( dp / LOG_BASE );
+
+                if (CRYPTO) {
+
+                    // Browsers supporting crypto.getRandomValues.
+                    if ( crypto && crypto.getRandomValues ) {
+
+                        a = crypto.getRandomValues( new Uint32Array( k *= 2 ) );
+
+                        for ( ; i < k; ) {
+
+                            // 53 bits:
+                            // ((Math.pow(2, 32) - 1) * Math.pow(2, 21)).toString(2)
+                            // 11111 11111111 11111111 11111111 11100000 00000000 00000000
+                            // ((Math.pow(2, 32) - 1) >>> 11).toString(2)
+                            //                                     11111 11111111 11111111
+                            // 0x20000 is 2^21.
+                            v = a[i] * 0x20000 + (a[i + 1] >>> 11);
+
+                            // Rejection sampling:
+                            // 0 <= v < 9007199254740992
+                            // Probability that v >= 9e15, is
+                            // 7199254740992 / 9007199254740992 ~= 0.0008, i.e. 1 in 1251
+                            if ( v >= 9e15 ) {
+                                b = crypto.getRandomValues( new Uint32Array(2) );
+                                a[i] = b[0];
+                                a[i + 1] = b[1];
+                            } else {
+
+                                // 0 <= v <= 8999999999999999
+                                // 0 <= (v % 1e14) <= 99999999999999
+                                c.push( v % 1e14 );
+                                i += 2;
+                            }
+                        }
+                        i = k / 2;
+
+                    // Node.js supporting crypto.randomBytes.
+                    } else if ( crypto && crypto.randomBytes ) {
+
+                        // buffer
+                        a = crypto.randomBytes( k *= 7 );
+
+                        for ( ; i < k; ) {
+
+                            // 0x1000000000000 is 2^48, 0x10000000000 is 2^40
+                            // 0x100000000 is 2^32, 0x1000000 is 2^24
+                            // 11111 11111111 11111111 11111111 11111111 11111111 11111111
+                            // 0 <= v < 9007199254740992
+                            v = ( ( a[i] & 31 ) * 0x1000000000000 ) + ( a[i + 1] * 0x10000000000 ) +
+                                  ( a[i + 2] * 0x100000000 ) + ( a[i + 3] * 0x1000000 ) +
+                                  ( a[i + 4] << 16 ) + ( a[i + 5] << 8 ) + a[i + 6];
+
+                            if ( v >= 9e15 ) {
+                                crypto.randomBytes(7).copy( a, i );
+                            } else {
+
+                                // 0 <= (v % 1e14) <= 99999999999999
+                                c.push( v % 1e14 );
+                                i += 7;
+                            }
+                        }
+                        i = k / 7;
+                    } else if (ERRORS) {
+                        raise( 14, 'crypto unavailable', crypto );
+                    }
+                }
+
+                // Use Math.random: CRYPTO is false or crypto is unavailable and ERRORS is false.
+                if (!i) {
+
+                    for ( ; i < k; ) {
+                        v = random53bitInt();
+                        if ( v < 9e15 ) c[i++] = v % 1e14;
+                    }
+                }
+
+                k = c[--i];
+                dp %= LOG_BASE;
+
+                // Convert trailing digits to zeros according to dp.
+                if ( k && dp ) {
+                    v = POWS_TEN[LOG_BASE - dp];
+                    c[i] = mathfloor( k / v ) * v;
+                }
+
+                // Remove trailing elements which are zero.
+                for ( ; c[i] === 0; c.pop(), i-- );
+
+                // Zero?
+                if ( i < 0 ) {
+                    c = [ e = 0 ];
+                } else {
+
+                    // Remove leading elements which are zero and adjust exponent accordingly.
+                    for ( e = -1 ; c[0] === 0; c.shift(), e -= LOG_BASE);
+
+                    // Count the digits of the first element of c to determine leading zeros, and...
+                    for ( i = 1, v = c[0]; v >= 10; v /= 10, i++);
+
+                    // adjust the exponent accordingly.
+                    if ( i < LOG_BASE ) e -= LOG_BASE - i;
+                }
+
+                rand.e = e;
+                rand.c = c;
+                return rand;
+            };
+        })();
+
+
+        // PRIVATE FUNCTIONS
+
+
+        // Convert a numeric string of baseIn to a numeric string of baseOut.
+        function convertBase( str, baseOut, baseIn, sign ) {
+            var d, e, k, r, x, xc, y,
+                i = str.indexOf( '.' ),
+                dp = DECIMAL_PLACES,
+                rm = ROUNDING_MODE;
+
+            if ( baseIn < 37 ) str = str.toLowerCase();
+
+            // Non-integer.
+            if ( i >= 0 ) {
+                k = POW_PRECISION;
+
+                // Unlimited precision.
+                POW_PRECISION = 0;
+                str = str.replace( '.', '' );
+                y = new BigNumber(baseIn);
+                x = y.pow( str.length - i );
+                POW_PRECISION = k;
+
+                // Convert str as if an integer, then restore the fraction part by dividing the
+                // result by its base raised to a power.
+                y.c = toBaseOut( toFixedPoint( coeffToString( x.c ), x.e ), 10, baseOut );
+                y.e = y.c.length;
+            }
+
+            // Convert the number as integer.
+            xc = toBaseOut( str, baseIn, baseOut );
+            e = k = xc.length;
+
+            // Remove trailing zeros.
+            for ( ; xc[--k] == 0; xc.pop() );
+            if ( !xc[0] ) return '0';
+
+            if ( i < 0 ) {
+                --e;
+            } else {
+                x.c = xc;
+                x.e = e;
+
+                // sign is needed for correct rounding.
+                x.s = sign;
+                x = div( x, y, dp, rm, baseOut );
+                xc = x.c;
+                r = x.r;
+                e = x.e;
+            }
+
+            d = e + dp + 1;
+
+            // The rounding digit, i.e. the digit to the right of the digit that may be rounded up.
+            i = xc[d];
+            k = baseOut / 2;
+            r = r || d < 0 || xc[d + 1] != null;
+
+            r = rm < 4 ? ( i != null || r ) && ( rm == 0 || rm == ( x.s < 0 ? 3 : 2 ) )
+                       : i > k || i == k &&( rm == 4 || r || rm == 6 && xc[d - 1] & 1 ||
+                         rm == ( x.s < 0 ? 8 : 7 ) );
+
+            if ( d < 1 || !xc[0] ) {
+
+                // 1^-dp or 0.
+                str = r ? toFixedPoint( '1', -dp ) : '0';
+            } else {
+                xc.length = d;
+
+                if (r) {
+
+                    // Rounding up may mean the previous digit has to be rounded up and so on.
+                    for ( --baseOut; ++xc[--d] > baseOut; ) {
+                        xc[d] = 0;
+
+                        if ( !d ) {
+                            ++e;
+                            xc.unshift(1);
+                        }
+                    }
+                }
+
+                // Determine trailing zeros.
+                for ( k = xc.length; !xc[--k]; );
+
+                // E.g. [4, 11, 15] becomes 4bf.
+                for ( i = 0, str = ''; i <= k; str += ALPHABET.charAt( xc[i++] ) );
+                str = toFixedPoint( str, e );
+            }
+
+            // The caller will add the sign.
+            return str;
+        }
+
+
+        // Perform division in the specified base. Called by div and convertBase.
+        div = (function () {
+
+            // Assume non-zero x and k.
+            function multiply( x, k, base ) {
+                var m, temp, xlo, xhi,
+                    carry = 0,
+                    i = x.length,
+                    klo = k % SQRT_BASE,
+                    khi = k / SQRT_BASE | 0;
+
+                for ( x = x.slice(); i--; ) {
+                    xlo = x[i] % SQRT_BASE;
+                    xhi = x[i] / SQRT_BASE | 0;
+                    m = khi * xlo + xhi * klo;
+                    temp = klo * xlo + ( ( m % SQRT_BASE ) * SQRT_BASE ) + carry;
+                    carry = ( temp / base | 0 ) + ( m / SQRT_BASE | 0 ) + khi * xhi;
+                    x[i] = temp % base;
+                }
+
+                if (carry) x.unshift(carry);
+
+                return x;
+            }
+
+            function compare( a, b, aL, bL ) {
+                var i, cmp;
+
+                if ( aL != bL ) {
+                    cmp = aL > bL ? 1 : -1;
+                } else {
+
+                    for ( i = cmp = 0; i < aL; i++ ) {
+
+                        if ( a[i] != b[i] ) {
+                            cmp = a[i] > b[i] ? 1 : -1;
+                            break;
+                        }
+                    }
+                }
+                return cmp;
+            }
+
+            function subtract( a, b, aL, base ) {
+                var i = 0;
+
+                // Subtract b from a.
+                for ( ; aL--; ) {
+                    a[aL] -= i;
+                    i = a[aL] < b[aL] ? 1 : 0;
+                    a[aL] = i * base + a[aL] - b[aL];
+                }
+
+                // Remove leading zeros.
+                for ( ; !a[0] && a.length > 1; a.shift() );
+            }
+
+            // x: dividend, y: divisor.
+            return function ( x, y, dp, rm, base ) {
+                var cmp, e, i, more, n, prod, prodL, q, qc, rem, remL, rem0, xi, xL, yc0,
+                    yL, yz,
+                    s = x.s == y.s ? 1 : -1,
+                    xc = x.c,
+                    yc = y.c;
+
+                // Either NaN, Infinity or 0?
+                if ( !xc || !xc[0] || !yc || !yc[0] ) {
+
+                    return new BigNumber(
+
+                      // Return NaN if either NaN, or both Infinity or 0.
+                      !x.s || !y.s || ( xc ? yc && xc[0] == yc[0] : !yc ) ? NaN :
+
+                        // Return ±0 if x is ±0 or y is ±Infinity, or return ±Infinity as y is ±0.
+                        xc && xc[0] == 0 || !yc ? s * 0 : s / 0
+                    );
+                }
+
+                q = new BigNumber(s);
+                qc = q.c = [];
+                e = x.e - y.e;
+                s = dp + e + 1;
+
+                if ( !base ) {
+                    base = BASE;
+                    e = bitFloor( x.e / LOG_BASE ) - bitFloor( y.e / LOG_BASE );
+                    s = s / LOG_BASE | 0;
+                }
+
+                // Result exponent may be one less then the current value of e.
+                // The coefficients of the BigNumbers from convertBase may have trailing zeros.
+                for ( i = 0; yc[i] == ( xc[i] || 0 ); i++ );
+                if ( yc[i] > ( xc[i] || 0 ) ) e--;
+
+                if ( s < 0 ) {
+                    qc.push(1);
+                    more = true;
+                } else {
+                    xL = xc.length;
+                    yL = yc.length;
+                    i = 0;
+                    s += 2;
+
+                    // Normalise xc and yc so highest order digit of yc is >= base / 2.
+
+                    n = mathfloor( base / ( yc[0] + 1 ) );
+
+                    // Not necessary, but to handle odd bases where yc[0] == ( base / 2 ) - 1.
+                    // if ( n > 1 || n++ == 1 && yc[0] < base / 2 ) {
+                    if ( n > 1 ) {
+                        yc = multiply( yc, n, base );
+                        xc = multiply( xc, n, base );
+                        yL = yc.length;
+                        xL = xc.length;
+                    }
+
+                    xi = yL;
+                    rem = xc.slice( 0, yL );
+                    remL = rem.length;
+
+                    // Add zeros to make remainder as long as divisor.
+                    for ( ; remL < yL; rem[remL++] = 0 );
+                    yz = yc.slice();
+                    yz.unshift(0);
+                    yc0 = yc[0];
+                    if ( yc[1] >= base / 2 ) yc0++;
+                    // Not necessary, but to prevent trial digit n > base, when using base 3.
+                    // else if ( base == 3 && yc0 == 1 ) yc0 = 1 + 1e-15;
+
+                    do {
+                        n = 0;
+
+                        // Compare divisor and remainder.
+                        cmp = compare( yc, rem, yL, remL );
+
+                        // If divisor < remainder.
+                        if ( cmp < 0 ) {
+
+                            // Calculate trial digit, n.
+
+                            rem0 = rem[0];
+                            if ( yL != remL ) rem0 = rem0 * base + ( rem[1] || 0 );
+
+                            // n is how many times the divisor goes into the current remainder.
+                            n = mathfloor( rem0 / yc0 );
+
+                            //  Algorithm:
+                            //  1. product = divisor * trial digit (n)
+                            //  2. if product > remainder: product -= divisor, n--
+                            //  3. remainder -= product
+                            //  4. if product was < remainder at 2:
+                            //    5. compare new remainder and divisor
+                            //    6. If remainder > divisor: remainder -= divisor, n++
+
+                            if ( n > 1 ) {
+
+                                // n may be > base only when base is 3.
+                                if (n >= base) n = base - 1;
+
+                                // product = divisor * trial digit.
+                                prod = multiply( yc, n, base );
+                                prodL = prod.length;
+                                remL = rem.length;
+
+                                // Compare product and remainder.
+                                // If product > remainder.
+                                // Trial digit n too high.
+                                // n is 1 too high about 5% of the time, and is not known to have
+                                // ever been more than 1 too high.
+                                while ( compare( prod, rem, prodL, remL ) == 1 ) {
+                                    n--;
+
+                                    // Subtract divisor from product.
+                                    subtract( prod, yL < prodL ? yz : yc, prodL, base );
+                                    prodL = prod.length;
+                                    cmp = 1;
+                                }
+                            } else {
+
+                                // n is 0 or 1, cmp is -1.
+                                // If n is 0, there is no need to compare yc and rem again below,
+                                // so change cmp to 1 to avoid it.
+                                // If n is 1, leave cmp as -1, so yc and rem are compared again.
+                                if ( n == 0 ) {
+
+                                    // divisor < remainder, so n must be at least 1.
+                                    cmp = n = 1;
+                                }
+
+                                // product = divisor
+                                prod = yc.slice();
+                                prodL = prod.length;
+                            }
+
+                            if ( prodL < remL ) prod.unshift(0);
+
+                            // Subtract product from remainder.
+                            subtract( rem, prod, remL, base );
+                            remL = rem.length;
+
+                             // If product was < remainder.
+                            if ( cmp == -1 ) {
+
+                                // Compare divisor and new remainder.
+                                // If divisor < new remainder, subtract divisor from remainder.
+                                // Trial digit n too low.
+                                // n is 1 too low about 5% of the time, and very rarely 2 too low.
+                                while ( compare( yc, rem, yL, remL ) < 1 ) {
+                                    n++;
+
+                                    // Subtract divisor from remainder.
+                                    subtract( rem, yL < remL ? yz : yc, remL, base );
+                                    remL = rem.length;
+                                }
+                            }
+                        } else if ( cmp === 0 ) {
+                            n++;
+                            rem = [0];
+                        } // else cmp === 1 and n will be 0
+
+                        // Add the next digit, n, to the result array.
+                        qc[i++] = n;
+
+                        // Update the remainder.
+                        if ( rem[0] ) {
+                            rem[remL++] = xc[xi] || 0;
+                        } else {
+                            rem = [ xc[xi] ];
+                            remL = 1;
+                        }
+                    } while ( ( xi++ < xL || rem[0] != null ) && s-- );
+
+                    more = rem[0] != null;
+
+                    // Leading zero?
+                    if ( !qc[0] ) qc.shift();
+                }
+
+                if ( base == BASE ) {
+
+                    // To calculate q.e, first get the number of digits of qc[0].
+                    for ( i = 1, s = qc[0]; s >= 10; s /= 10, i++ );
+                    round( q, dp + ( q.e = i + e * LOG_BASE - 1 ) + 1, rm, more );
+
+                // Caller is convertBase.
+                } else {
+                    q.e = e;
+                    q.r = +more;
+                }
+
+                return q;
+            };
+        })();
+
+
+        /*
+         * Return a string representing the value of BigNumber n in fixed-point or exponential
+         * notation rounded to the specified decimal places or significant digits.
+         *
+         * n is a BigNumber.
+         * i is the index of the last digit required (i.e. the digit that may be rounded up).
+         * rm is the rounding mode.
+         * caller is caller id: toExponential 19, toFixed 20, toFormat 21, toPrecision 24.
+         */
+        function format( n, i, rm, caller ) {
+            var c0, e, ne, len, str;
+
+            rm = rm != null && isValidInt( rm, 0, 8, caller, roundingMode )
+              ? rm | 0 : ROUNDING_MODE;
+
+            if ( !n.c ) return n.toString();
+            c0 = n.c[0];
+            ne = n.e;
+
+            if ( i == null ) {
+                str = coeffToString( n.c );
+                str = caller == 19 || caller == 24 && ne <= TO_EXP_NEG
+                  ? toExponential( str, ne )
+                  : toFixedPoint( str, ne );
+            } else {
+                n = round( new BigNumber(n), i, rm );
+
+                // n.e may have changed if the value was rounded up.
+                e = n.e;
+
+                str = coeffToString( n.c );
+                len = str.length;
+
+                // toPrecision returns exponential notation if the number of significant digits
+                // specified is less than the number of digits necessary to represent the integer
+                // part of the value in fixed-point notation.
+
+                // Exponential notation.
+                if ( caller == 19 || caller == 24 && ( i <= e || e <= TO_EXP_NEG ) ) {
+
+                    // Append zeros?
+                    for ( ; len < i; str += '0', len++ );
+                    str = toExponential( str, e );
+
+                // Fixed-point notation.
+                } else {
+                    i -= ne;
+                    str = toFixedPoint( str, e );
+
+                    // Append zeros?
+                    if ( e + 1 > len ) {
+                        if ( --i > 0 ) for ( str += '.'; i--; str += '0' );
+                    } else {
+                        i += e - len;
+                        if ( i > 0 ) {
+                            if ( e + 1 == len ) str += '.';
+                            for ( ; i--; str += '0' );
+                        }
+                    }
+                }
+            }
+
+            return n.s < 0 && c0 ? '-' + str : str;
+        }
+
+
+        // Handle BigNumber.max and BigNumber.min.
+        function maxOrMin( args, method ) {
+            var m, n,
+                i = 0;
+
+            if ( isArray( args[0] ) ) args = args[0];
+            m = new BigNumber( args[0] );
+
+            for ( ; ++i < args.length; ) {
+                n = new BigNumber( args[i] );
+
+                // If any number is NaN, return NaN.
+                if ( !n.s ) {
+                    m = n;
+                    break;
+                } else if ( method.call( m, n ) ) {
+                    m = n;
+                }
+            }
+
+            return m;
+        }
+
+
+        /*
+         * Return true if n is an integer in range, otherwise throw.
+         * Use for argument validation when ERRORS is true.
+         */
+        function intValidatorWithErrors( n, min, max, caller, name ) {
+            if ( n < min || n > max || n != truncate(n) ) {
+                raise( caller, ( name || 'decimal places' ) +
+                  ( n < min || n > max ? ' out of range' : ' not an integer' ), n );
+            }
+
+            return true;
+        }
+
+
+        /*
+         * Strip trailing zeros, calculate base 10 exponent and check against MIN_EXP and MAX_EXP.
+         * Called by minus, plus and times.
+         */
+        function normalise( n, c, e ) {
+            var i = 1,
+                j = c.length;
+
+             // Remove trailing zeros.
+            for ( ; !c[--j]; c.pop() );
+
+            // Calculate the base 10 exponent. First get the number of digits of c[0].
+            for ( j = c[0]; j >= 10; j /= 10, i++ );
+
+            // Overflow?
+            if ( ( e = i + e * LOG_BASE - 1 ) > MAX_EXP ) {
+
+                // Infinity.
+                n.c = n.e = null;
+
+            // Underflow?
+            } else if ( e < MIN_EXP ) {
+
+                // Zero.
+                n.c = [ n.e = 0 ];
+            } else {
+                n.e = e;
+                n.c = c;
+            }
+
+            return n;
+        }
+
+
+        // Handle values that fail the validity test in BigNumber.
+        parseNumeric = (function () {
+            var basePrefix = /^(-?)0([xbo])(?=\w[\w.]*$)/i,
+                dotAfter = /^([^.]+)\.$/,
+                dotBefore = /^\.([^.]+)$/,
+                isInfinityOrNaN = /^-?(Infinity|NaN)$/,
+                whitespaceOrPlus = /^\s*\+(?=[\w.])|^\s+|\s+$/g;
+
+            return function ( x, str, num, b ) {
+                var base,
+                    s = num ? str : str.replace( whitespaceOrPlus, '' );
+
+                // No exception on ±Infinity or NaN.
+                if ( isInfinityOrNaN.test(s) ) {
+                    x.s = isNaN(s) ? null : s < 0 ? -1 : 1;
+                } else {
+                    if ( !num ) {
+
+                        // basePrefix = /^(-?)0([xbo])(?=\w[\w.]*$)/i
+                        s = s.replace( basePrefix, function ( m, p1, p2 ) {
+                            base = ( p2 = p2.toLowerCase() ) == 'x' ? 16 : p2 == 'b' ? 2 : 8;
+                            return !b || b == base ? p1 : m;
+                        });
+
+                        if (b) {
+                            base = b;
+
+                            // E.g. '1.' to '1', '.1' to '0.1'
+                            s = s.replace( dotAfter, '$1' ).replace( dotBefore, '0.$1' );
+                        }
+
+                        if ( str != s ) return new BigNumber( s, base );
+                    }
+
+                    // 'new BigNumber() not a number: {n}'
+                    // 'new BigNumber() not a base {b} number: {n}'
+                    if (ERRORS) raise( id, 'not a' + ( b ? ' base ' + b : '' ) + ' number', str );
+                    x.s = null;
+                }
+
+                x.c = x.e = null;
+                id = 0;
+            }
+        })();
+
+
+        // Throw a BigNumber Error.
+        function raise( caller, msg, val ) {
+            var error = new Error( [
+                'new BigNumber',     // 0
+                'cmp',               // 1
+                'config',            // 2
+                'div',               // 3
+                'divToInt',          // 4
+                'eq',                // 5
+                'gt',                // 6
+                'gte',               // 7
+                'lt',                // 8
+                'lte',               // 9
+                'minus',             // 10
+                'mod',               // 11
+                'plus',              // 12
+                'precision',         // 13
+                'random',            // 14
+                'round',             // 15
+                'shift',             // 16
+                'times',             // 17
+                'toDigits',          // 18
+                'toExponential',     // 19
+                'toFixed',           // 20
+                'toFormat',          // 21
+                'toFraction',        // 22
+                'pow',               // 23
+                'toPrecision',       // 24
+                'toString',          // 25
+                'BigNumber'          // 26
+            ][caller] + '() ' + msg + ': ' + val );
+
+            error.name = 'BigNumber Error';
+            id = 0;
+            throw error;
+        }
+
+
+        /*
+         * Round x to sd significant digits using rounding mode rm. Check for over/under-flow.
+         * If r is truthy, it is known that there are more digits after the rounding digit.
+         */
+        function round( x, sd, rm, r ) {
+            var d, i, j, k, n, ni, rd,
+                xc = x.c,
+                pows10 = POWS_TEN;
+
+            // if x is not Infinity or NaN...
+            if (xc) {
+
+                // rd is the rounding digit, i.e. the digit after the digit that may be rounded up.
+                // n is a base 1e14 number, the value of the element of array x.c containing rd.
+                // ni is the index of n within x.c.
+                // d is the number of digits of n.
+                // i is the index of rd within n including leading zeros.
+                // j is the actual index of rd within n (if < 0, rd is a leading zero).
+                out: {
+
+                    // Get the number of digits of the first element of xc.
+                    for ( d = 1, k = xc[0]; k >= 10; k /= 10, d++ );
+                    i = sd - d;
+
+                    // If the rounding digit is in the first element of xc...
+                    if ( i < 0 ) {
+                        i += LOG_BASE;
+                        j = sd;
+                        n = xc[ ni = 0 ];
+
+                        // Get the rounding digit at index j of n.
+                        rd = n / pows10[ d - j - 1 ] % 10 | 0;
+                    } else {
+                        ni = mathceil( ( i + 1 ) / LOG_BASE );
+
+                        if ( ni >= xc.length ) {
+
+                            if (r) {
+
+                                // Needed by sqrt.
+                                for ( ; xc.length <= ni; xc.push(0) );
+                                n = rd = 0;
+                                d = 1;
+                                i %= LOG_BASE;
+                                j = i - LOG_BASE + 1;
+                            } else {
+                                break out;
+                            }
+                        } else {
+                            n = k = xc[ni];
+
+                            // Get the number of digits of n.
+                            for ( d = 1; k >= 10; k /= 10, d++ );
+
+                            // Get the index of rd within n.
+                            i %= LOG_BASE;
+
+                            // Get the index of rd within n, adjusted for leading zeros.
+                            // The number of leading zeros of n is given by LOG_BASE - d.
+                            j = i - LOG_BASE + d;
+
+                            // Get the rounding digit at index j of n.
+                            rd = j < 0 ? 0 : n / pows10[ d - j - 1 ] % 10 | 0;
+                        }
+                    }
+
+                    r = r || sd < 0 ||
+
+                    // Are there any non-zero digits after the rounding digit?
+                    // The expression  n % pows10[ d - j - 1 ]  returns all digits of n to the right
+                    // of the digit at j, e.g. if n is 908714 and j is 2, the expression gives 714.
+                      xc[ni + 1] != null || ( j < 0 ? n : n % pows10[ d - j - 1 ] );
+
+                    r = rm < 4
+                      ? ( rd || r ) && ( rm == 0 || rm == ( x.s < 0 ? 3 : 2 ) )
+                      : rd > 5 || rd == 5 && ( rm == 4 || r || rm == 6 &&
+
+                        // Check whether the digit to the left of the rounding digit is odd.
+                        ( ( i > 0 ? j > 0 ? n / pows10[ d - j ] : 0 : xc[ni - 1] ) % 10 ) & 1 ||
+                          rm == ( x.s < 0 ? 8 : 7 ) );
+
+                    if ( sd < 1 || !xc[0] ) {
+                        xc.length = 0;
+
+                        if (r) {
+
+                            // Convert sd to decimal places.
+                            sd -= x.e + 1;
+
+                            // 1, 0.1, 0.01, 0.001, 0.0001 etc.
+                            xc[0] = pows10[ ( LOG_BASE - sd % LOG_BASE ) % LOG_BASE ];
+                            x.e = -sd || 0;
+                        } else {
+
+                            // Zero.
+                            xc[0] = x.e = 0;
+                        }
+
+                        return x;
+                    }
+
+                    // Remove excess digits.
+                    if ( i == 0 ) {
+                        xc.length = ni;
+                        k = 1;
+                        ni--;
+                    } else {
+                        xc.length = ni + 1;
+                        k = pows10[ LOG_BASE - i ];
+
+                        // E.g. 56700 becomes 56000 if 7 is the rounding digit.
+                        // j > 0 means i > number of leading zeros of n.
+                        xc[ni] = j > 0 ? mathfloor( n / pows10[ d - j ] % pows10[j] ) * k : 0;
+                    }
+
+                    // Round up?
+                    if (r) {
+
+                        for ( ; ; ) {
+
+                            // If the digit to be rounded up is in the first element of xc...
+                            if ( ni == 0 ) {
+
+                                // i will be the length of xc[0] before k is added.
+                                for ( i = 1, j = xc[0]; j >= 10; j /= 10, i++ );
+                                j = xc[0] += k;
+                                for ( k = 1; j >= 10; j /= 10, k++ );
+
+                                // if i != k the length has increased.
+                                if ( i != k ) {
+                                    x.e++;
+                                    if ( xc[0] == BASE ) xc[0] = 1;
+                                }
+
+                                break;
+                            } else {
+                                xc[ni] += k;
+                                if ( xc[ni] != BASE ) break;
+                                xc[ni--] = 0;
+                                k = 1;
+                            }
+                        }
+                    }
+
+                    // Remove trailing zeros.
+                    for ( i = xc.length; xc[--i] === 0; xc.pop() );
+                }
+
+                // Overflow? Infinity.
+                if ( x.e > MAX_EXP ) {
+                    x.c = x.e = null;
+
+                // Underflow? Zero.
+                } else if ( x.e < MIN_EXP ) {
+                    x.c = [ x.e = 0 ];
+                }
+            }
+
+            return x;
+        }
+
+
+        // PROTOTYPE/INSTANCE METHODS
+
+
+        /*
+         * Return a new BigNumber whose value is the absolute value of this BigNumber.
+         */
+        P.absoluteValue = P.abs = function () {
+            var x = new BigNumber(this);
+            if ( x.s < 0 ) x.s = 1;
+            return x;
+        };
+
+
+        /*
+         * Return a new BigNumber whose value is the value of this BigNumber rounded to a whole
+         * number in the direction of Infinity.
+         */
+        P.ceil = function () {
+            return round( new BigNumber(this), this.e + 1, 2 );
+        };
+
+
+        /*
+         * Return
+         * 1 if the value of this BigNumber is greater than the value of BigNumber(y, b),
+         * -1 if the value of this BigNumber is less than the value of BigNumber(y, b),
+         * 0 if they have the same value,
+         * or null if the value of either is NaN.
+         */
+        P.comparedTo = P.cmp = function ( y, b ) {
+            id = 1;
+            return compare( this, new BigNumber( y, b ) );
+        };
+
+
+        /*
+         * Return the number of decimal places of the value of this BigNumber, or null if the value
+         * of this BigNumber is ±Infinity or NaN.
+         */
+        P.decimalPlaces = P.dp = function () {
+            var n, v,
+                c = this.c;
+
+            if ( !c ) return null;
+            n = ( ( v = c.length - 1 ) - bitFloor( this.e / LOG_BASE ) ) * LOG_BASE;
+
+            // Subtract the number of trailing zeros of the last number.
+            if ( v = c[v] ) for ( ; v % 10 == 0; v /= 10, n-- );
+            if ( n < 0 ) n = 0;
+
+            return n;
+        };
+
+
+        /*
+         *  n / 0 = I
+         *  n / N = N
+         *  n / I = 0
+         *  0 / n = 0
+         *  0 / 0 = N
+         *  0 / N = N
+         *  0 / I = 0
+         *  N / n = N
+         *  N / 0 = N
+         *  N / N = N
+         *  N / I = N
+         *  I / n = I
+         *  I / 0 = I
+         *  I / N = N
+         *  I / I = N
+         *
+         * Return a new BigNumber whose value is the value of this BigNumber divided by the value of
+         * BigNumber(y, b), rounded according to DECIMAL_PLACES and ROUNDING_MODE.
+         */
+        P.dividedBy = P.div = function ( y, b ) {
+            id = 3;
+            return div( this, new BigNumber( y, b ), DECIMAL_PLACES, ROUNDING_MODE );
+        };
+
+
+        /*
+         * Return a new BigNumber whose value is the integer part of dividing the value of this
+         * BigNumber by the value of BigNumber(y, b).
+         */
+        P.dividedToIntegerBy = P.divToInt = function ( y, b ) {
+            id = 4;
+            return div( this, new BigNumber( y, b ), 0, 1 );
+        };
+
+
+        /*
+         * Return true if the value of this BigNumber is equal to the value of BigNumber(y, b),
+         * otherwise returns false.
+         */
+        P.equals = P.eq = function ( y, b ) {
+            id = 5;
+            return compare( this, new BigNumber( y, b ) ) === 0;
+        };
+
+
+        /*
+         * Return a new BigNumber whose value is the value of this BigNumber rounded to a whole
+         * number in the direction of -Infinity.
+         */
+        P.floor = function () {
+            return round( new BigNumber(this), this.e + 1, 3 );
+        };
+
+
+        /*
+         * Return true if the value of this BigNumber is greater than the value of BigNumber(y, b),
+         * otherwise returns false.
+         */
+        P.greaterThan = P.gt = function ( y, b ) {
+            id = 6;
+            return compare( this, new BigNumber( y, b ) ) > 0;
+        };
+
+
+        /*
+         * Return true if the value of this BigNumber is greater than or equal to the value of
+         * BigNumber(y, b), otherwise returns false.
+         */
+        P.greaterThanOrEqualTo = P.gte = function ( y, b ) {
+            id = 7;
+            return ( b = compare( this, new BigNumber( y, b ) ) ) === 1 || b === 0;
+
+        };
+
+
+        /*
+         * Return true if the value of this BigNumber is a finite number, otherwise returns false.
+         */
+        P.isFinite = function () {
+            return !!this.c;
+        };
+
+
+        /*
+         * Return true if the value of this BigNumber is an integer, otherwise return false.
+         */
+        P.isInteger = P.isInt = function () {
+            return !!this.c && bitFloor( this.e / LOG_BASE ) > this.c.length - 2;
+        };
+
+
+        /*
+         * Return true if the value of this BigNumber is NaN, otherwise returns false.
+         */
+        P.isNaN = function () {
+            return !this.s;
+        };
+
+
+        /*
+         * Return true if the value of this BigNumber is negative, otherwise returns false.
+         */
+        P.isNegative = P.isNeg = function () {
+            return this.s < 0;
+        };
+
+
+        /*
+         * Return true if the value of this BigNumber is 0 or -0, otherwise returns false.
+         */
+        P.isZero = function () {
+            return !!this.c && this.c[0] == 0;
+        };
+
+
+        /*
+         * Return true if the value of this BigNumber is less than the value of BigNumber(y, b),
+         * otherwise returns false.
+         */
+        P.lessThan = P.lt = function ( y, b ) {
+            id = 8;
+            return compare( this, new BigNumber( y, b ) ) < 0;
+        };
+
+
+        /*
+         * Return true if the value of this BigNumber is less than or equal to the value of
+         * BigNumber(y, b), otherwise returns false.
+         */
+        P.lessThanOrEqualTo = P.lte = function ( y, b ) {
+            id = 9;
+            return ( b = compare( this, new BigNumber( y, b ) ) ) === -1 || b === 0;
+        };
+
+
+        /*
+         *  n - 0 = n
+         *  n - N = N
+         *  n - I = -I
+         *  0 - n = -n
+         *  0 - 0 = 0
+         *  0 - N = N
+         *  0 - I = -I
+         *  N - n = N
+         *  N - 0 = N
+         *  N - N = N
+         *  N - I = N
+         *  I - n = I
+         *  I - 0 = I
+         *  I - N = N
+         *  I - I = N
+         *
+         * Return a new BigNumber whose value is the value of this BigNumber minus the value of
+         * BigNumber(y, b).
+         */
+        P.minus = P.sub = function ( y, b ) {
+            var i, j, t, xLTy,
+                x = this,
+                a = x.s;
+
+            id = 10;
+            y = new BigNumber( y, b );
+            b = y.s;
+
+            // Either NaN?
+            if ( !a || !b ) return new BigNumber(NaN);
+
+            // Signs differ?
+            if ( a != b ) {
+                y.s = -b;
+                return x.plus(y);
+            }
+
+            var xe = x.e / LOG_BASE,
+                ye = y.e / LOG_BASE,
+                xc = x.c,
+                yc = y.c;
+
+            if ( !xe || !ye ) {
+
+                // Either Infinity?
+                if ( !xc || !yc ) return xc ? ( y.s = -b, y ) : new BigNumber( yc ? x : NaN );
+
+                // Either zero?
+                if ( !xc[0] || !yc[0] ) {
+
+                    // Return y if y is non-zero, x if x is non-zero, or zero if both are zero.
+                    return yc[0] ? ( y.s = -b, y ) : new BigNumber( xc[0] ? x :
+
+                      // IEEE 754 (2008) 6.3: n - n = -0 when rounding to -Infinity
+                      ROUNDING_MODE == 3 ? -0 : 0 );
+                }
+            }
+
+            xe = bitFloor(xe);
+            ye = bitFloor(ye);
+            xc = xc.slice();
+
+            // Determine which is the bigger number.
+            if ( a = xe - ye ) {
+
+                if ( xLTy = a < 0 ) {
+                    a = -a;
+                    t = xc;
+                } else {
+                    ye = xe;
+                    t = yc;
+                }
+
+                t.reverse();
+
+                // Prepend zeros to equalise exponents.
+                for ( b = a; b--; t.push(0) );
+                t.reverse();
+            } else {
+
+                // Exponents equal. Check digit by digit.
+                j = ( xLTy = ( a = xc.length ) < ( b = yc.length ) ) ? a : b;
+
+                for ( a = b = 0; b < j; b++ ) {
+
+                    if ( xc[b] != yc[b] ) {
+                        xLTy = xc[b] < yc[b];
+                        break;
+                    }
+                }
+            }
+
+            // x < y? Point xc to the array of the bigger number.
+            if (xLTy) t = xc, xc = yc, yc = t, y.s = -y.s;
+
+            b = ( j = yc.length ) - ( i = xc.length );
+
+            // Append zeros to xc if shorter.
+            // No need to add zeros to yc if shorter as subtract only needs to start at yc.length.
+            if ( b > 0 ) for ( ; b--; xc[i++] = 0 );
+            b = BASE - 1;
+
+            // Subtract yc from xc.
+            for ( ; j > a; ) {
+
+                if ( xc[--j] < yc[j] ) {
+                    for ( i = j; i && !xc[--i]; xc[i] = b );
+                    --xc[i];
+                    xc[j] += BASE;
+                }
+
+                xc[j] -= yc[j];
+            }
+
+            // Remove leading zeros and adjust exponent accordingly.
+            for ( ; xc[0] == 0; xc.shift(), --ye );
+
+            // Zero?
+            if ( !xc[0] ) {
+
+                // Following IEEE 754 (2008) 6.3,
+                // n - n = +0  but  n - n = -0  when rounding towards -Infinity.
+                y.s = ROUNDING_MODE == 3 ? -1 : 1;
+                y.c = [ y.e = 0 ];
+                return y;
+            }
+
+            // No need to check for Infinity as +x - +y != Infinity && -x - -y != Infinity
+            // for finite x and y.
+            return normalise( y, xc, ye );
+        };
+
+
+        /*
+         *   n % 0 =  N
+         *   n % N =  N
+         *   n % I =  n
+         *   0 % n =  0
+         *  -0 % n = -0
+         *   0 % 0 =  N
+         *   0 % N =  N
+         *   0 % I =  0
+         *   N % n =  N
+         *   N % 0 =  N
+         *   N % N =  N
+         *   N % I =  N
+         *   I % n =  N
+         *   I % 0 =  N
+         *   I % N =  N
+         *   I % I =  N
+         *
+         * Return a new BigNumber whose value is the value of this BigNumber modulo the value of
+         * BigNumber(y, b). The result depends on the value of MODULO_MODE.
+         */
+        P.modulo = P.mod = function ( y, b ) {
+            var q, s,
+                x = this;
+
+            id = 11;
+            y = new BigNumber( y, b );
+
+            // Return NaN if x is Infinity or NaN, or y is NaN or zero.
+            if ( !x.c || !y.s || y.c && !y.c[0] ) {
+                return new BigNumber(NaN);
+
+            // Return x if y is Infinity or x is zero.
+            } else if ( !y.c || x.c && !x.c[0] ) {
+                return new BigNumber(x);
+            }
+
+            if ( MODULO_MODE == 9 ) {
+
+                // Euclidian division: q = sign(y) * floor(x / abs(y))
+                // r = x - qy    where  0 <= r < abs(y)
+                s = y.s;
+                y.s = 1;
+                q = div( x, y, 0, 3 );
+                y.s = s;
+                q.s *= s;
+            } else {
+                q = div( x, y, 0, MODULO_MODE );
+            }
+
+            return x.minus( q.times(y) );
+        };
+
+
+        /*
+         * Return a new BigNumber whose value is the value of this BigNumber negated,
+         * i.e. multiplied by -1.
+         */
+        P.negated = P.neg = function () {
+            var x = new BigNumber(this);
+            x.s = -x.s || null;
+            return x;
+        };
+
+
+        /*
+         *  n + 0 = n
+         *  n + N = N
+         *  n + I = I
+         *  0 + n = n
+         *  0 + 0 = 0
+         *  0 + N = N
+         *  0 + I = I
+         *  N + n = N
+         *  N + 0 = N
+         *  N + N = N
+         *  N + I = N
+         *  I + n = I
+         *  I + 0 = I
+         *  I + N = N
+         *  I + I = I
+         *
+         * Return a new BigNumber whose value is the value of this BigNumber plus the value of
+         * BigNumber(y, b).
+         */
+        P.plus = P.add = function ( y, b ) {
+            var t,
+                x = this,
+                a = x.s;
+
+            id = 12;
+            y = new BigNumber( y, b );
+            b = y.s;
+
+            // Either NaN?
+            if ( !a || !b ) return new BigNumber(NaN);
+
+            // Signs differ?
+             if ( a != b ) {
+                y.s = -b;
+                return x.minus(y);
+            }
+
+            var xe = x.e / LOG_BASE,
+                ye = y.e / LOG_BASE,
+                xc = x.c,
+                yc = y.c;
+
+            if ( !xe || !ye ) {
+
+                // Return ±Infinity if either ±Infinity.
+                if ( !xc || !yc ) return new BigNumber( a / 0 );
+
+                // Either zero?
+                // Return y if y is non-zero, x if x is non-zero, or zero if both are zero.
+                if ( !xc[0] || !yc[0] ) return yc[0] ? y : new BigNumber( xc[0] ? x : a * 0 );
+            }
+
+            xe = bitFloor(xe);
+            ye = bitFloor(ye);
+            xc = xc.slice();
+
+            // Prepend zeros to equalise exponents. Faster to use reverse then do unshifts.
+            if ( a = xe - ye ) {
+                if ( a > 0 ) {
+                    ye = xe;
+                    t = yc;
+                } else {
+                    a = -a;
+                    t = xc;
+                }
+
+                t.reverse();
+                for ( ; a--; t.push(0) );
+                t.reverse();
+            }
+
+            a = xc.length;
+            b = yc.length;
+
+            // Point xc to the longer array, and b to the shorter length.
+            if ( a - b < 0 ) t = yc, yc = xc, xc = t, b = a;
+
+            // Only start adding at yc.length - 1 as the further digits of xc can be ignored.
+            for ( a = 0; b; ) {
+                a = ( xc[--b] = xc[b] + yc[b] + a ) / BASE | 0;
+                xc[b] %= BASE;
+            }
+
+            if (a) {
+                xc.unshift(a);
+                ++ye;
+            }
+
+            // No need to check for zero, as +x + +y != 0 && -x + -y != 0
+            // ye = MAX_EXP + 1 possible
+            return normalise( y, xc, ye );
+        };
+
+
+        /*
+         * Return the number of significant digits of the value of this BigNumber.
+         *
+         * [z] {boolean|number} Whether to count integer-part trailing zeros: true, false, 1 or 0.
+         */
+        P.precision = P.sd = function (z) {
+            var n, v,
+                x = this,
+                c = x.c;
+
+            // 'precision() argument not a boolean or binary digit: {z}'
+            if ( z != null && z !== !!z && z !== 1 && z !== 0 ) {
+                if (ERRORS) raise( 13, 'argument' + notBool, z );
+                if ( z != !!z ) z = null;
+            }
+
+            if ( !c ) return null;
+            v = c.length - 1;
+            n = v * LOG_BASE + 1;
+
+            if ( v = c[v] ) {
+
+                // Subtract the number of trailing zeros of the last element.
+                for ( ; v % 10 == 0; v /= 10, n-- );
+
+                // Add the number of digits of the first element.
+                for ( v = c[0]; v >= 10; v /= 10, n++ );
+            }
+
+            if ( z && x.e + 1 > n ) n = x.e + 1;
+
+            return n;
+        };
+
+
+        /*
+         * Return a new BigNumber whose value is the value of this BigNumber rounded to a maximum of
+         * dp decimal places using rounding mode rm, or to 0 and ROUNDING_MODE respectively if
+         * omitted.
+         *
+         * [dp] {number} Decimal places. Integer, 0 to MAX inclusive.
+         * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
+         *
+         * 'round() decimal places out of range: {dp}'
+         * 'round() decimal places not an integer: {dp}'
+         * 'round() rounding mode not an integer: {rm}'
+         * 'round() rounding mode out of range: {rm}'
+         */
+        P.round = function ( dp, rm ) {
+            var n = new BigNumber(this);
+
+            if ( dp == null || isValidInt( dp, 0, MAX, 15 ) ) {
+                round( n, ~~dp + this.e + 1, rm == null ||
+                  !isValidInt( rm, 0, 8, 15, roundingMode ) ? ROUNDING_MODE : rm | 0 );
+            }
+
+            return n;
+        };
+
+
+        /*
+         * Return a new BigNumber whose value is the value of this BigNumber shifted by k places
+         * (powers of 10). Shift to the right if n > 0, and to the left if n < 0.
+         *
+         * k {number} Integer, -MAX_SAFE_INTEGER to MAX_SAFE_INTEGER inclusive.
+         *
+         * If k is out of range and ERRORS is false, the result will be ±0 if k < 0, or ±Infinity
+         * otherwise.
+         *
+         * 'shift() argument not an integer: {k}'
+         * 'shift() argument out of range: {k}'
+         */
+        P.shift = function (k) {
+            var n = this;
+            return isValidInt( k, -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER, 16, 'argument' )
+
+              // k < 1e+21, or truncate(k) will produce exponential notation.
+              ? n.times( '1e' + truncate(k) )
+              : new BigNumber( n.c && n.c[0] && ( k < -MAX_SAFE_INTEGER || k > MAX_SAFE_INTEGER )
+                ? n.s * ( k < 0 ? 0 : 1 / 0 )
+                : n );
+        };
+
+
+        /*
+         *  sqrt(-n) =  N
+         *  sqrt( N) =  N
+         *  sqrt(-I) =  N
+         *  sqrt( I) =  I
+         *  sqrt( 0) =  0
+         *  sqrt(-0) = -0
+         *
+         * Return a new BigNumber whose value is the square root of the value of this BigNumber,
+         * rounded according to DECIMAL_PLACES and ROUNDING_MODE.
+         */
+        P.squareRoot = P.sqrt = function () {
+            var m, n, r, rep, t,
+                x = this,
+                c = x.c,
+                s = x.s,
+                e = x.e,
+                dp = DECIMAL_PLACES + 4,
+                half = new BigNumber('0.5');
+
+            // Negative/NaN/Infinity/zero?
+            if ( s !== 1 || !c || !c[0] ) {
+                return new BigNumber( !s || s < 0 && ( !c || c[0] ) ? NaN : c ? x : 1 / 0 );
+            }
+
+            // Initial estimate.
+            s = Math.sqrt( +x );
+
+            // Math.sqrt underflow/overflow?
+            // Pass x to Math.sqrt as integer, then adjust the exponent of the result.
+            if ( s == 0 || s == 1 / 0 ) {
+                n = coeffToString(c);
+                if ( ( n.length + e ) % 2 == 0 ) n += '0';
+                s = Math.sqrt(n);
+                e = bitFloor( ( e + 1 ) / 2 ) - ( e < 0 || e % 2 );
+
+                if ( s == 1 / 0 ) {
+                    n = '1e' + e;
+                } else {
+                    n = s.toExponential();
+                    n = n.slice( 0, n.indexOf('e') + 1 ) + e;
+                }
+
+                r = new BigNumber(n);
+            } else {
+                r = new BigNumber( s + '' );
+            }
+
+            // Check for zero.
+            // r could be zero if MIN_EXP is changed after the this value was created.
+            // This would cause a division by zero (x/t) and hence Infinity below, which would cause
+            // coeffToString to throw.
+            if ( r.c[0] ) {
+                e = r.e;
+                s = e + dp;
+                if ( s < 3 ) s = 0;
+
+                // Newton-Raphson iteration.
+                for ( ; ; ) {
+                    t = r;
+                    r = half.times( t.plus( div( x, t, dp, 1 ) ) );
+
+                    if ( coeffToString( t.c   ).slice( 0, s ) === ( n =
+                         coeffToString( r.c ) ).slice( 0, s ) ) {
+
+                        // The exponent of r may here be one less than the final result exponent,
+                        // e.g 0.0009999 (e-4) --> 0.001 (e-3), so adjust s so the rounding digits
+                        // are indexed correctly.
+                        if ( r.e < e ) --s;
+                        n = n.slice( s - 3, s + 1 );
+
+                        // The 4th rounding digit may be in error by -1 so if the 4 rounding digits
+                        // are 9999 or 4999 (i.e. approaching a rounding boundary) continue the
+                        // iteration.
+                        if ( n == '9999' || !rep && n == '4999' ) {
+
+                            // On the first iteration only, check to see if rounding up gives the
+                            // exact result as the nines may infinitely repeat.
+                            if ( !rep ) {
+                                round( t, t.e + DECIMAL_PLACES + 2, 0 );
+
+                                if ( t.times(t).eq(x) ) {
+                                    r = t;
+                                    break;
+                                }
+                            }
+
+                            dp += 4;
+                            s += 4;
+                            rep = 1;
+                        } else {
+
+                            // If rounding digits are null, 0{0,4} or 50{0,3}, check for exact
+                            // result. If not, then there are further digits and m will be truthy.
+                            if ( !+n || !+n.slice(1) && n.charAt(0) == '5' ) {
+
+                                // Truncate to the first rounding digit.
+                                round( r, r.e + DECIMAL_PLACES + 2, 1 );
+                                m = !r.times(r).eq(x);
+                            }
+
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return round( r, r.e + DECIMAL_PLACES + 1, ROUNDING_MODE, m );
+        };
+
+
+        /*
+         *  n * 0 = 0
+         *  n * N = N
+         *  n * I = I
+         *  0 * n = 0
+         *  0 * 0 = 0
+         *  0 * N = N
+         *  0 * I = N
+         *  N * n = N
+         *  N * 0 = N
+         *  N * N = N
+         *  N * I = N
+         *  I * n = I
+         *  I * 0 = N
+         *  I * N = N
+         *  I * I = I
+         *
+         * Return a new BigNumber whose value is the value of this BigNumber times the value of
+         * BigNumber(y, b).
+         */
+        P.times = P.mul = function ( y, b ) {
+            var c, e, i, j, k, m, xcL, xlo, xhi, ycL, ylo, yhi, zc,
+                base, sqrtBase,
+                x = this,
+                xc = x.c,
+                yc = ( id = 17, y = new BigNumber( y, b ) ).c;
+
+            // Either NaN, ±Infinity or ±0?
+            if ( !xc || !yc || !xc[0] || !yc[0] ) {
+
+                // Return NaN if either is NaN, or one is 0 and the other is Infinity.
+                if ( !x.s || !y.s || xc && !xc[0] && !yc || yc && !yc[0] && !xc ) {
+                    y.c = y.e = y.s = null;
+                } else {
+                    y.s *= x.s;
+
+                    // Return ±Infinity if either is ±Infinity.
+                    if ( !xc || !yc ) {
+                        y.c = y.e = null;
+
+                    // Return ±0 if either is ±0.
+                    } else {
+                        y.c = [0];
+                        y.e = 0;
+                    }
+                }
+
+                return y;
+            }
+
+            e = bitFloor( x.e / LOG_BASE ) + bitFloor( y.e / LOG_BASE );
+            y.s *= x.s;
+            xcL = xc.length;
+            ycL = yc.length;
+
+            // Ensure xc points to longer array and xcL to its length.
+            if ( xcL < ycL ) zc = xc, xc = yc, yc = zc, i = xcL, xcL = ycL, ycL = i;
+
+            // Initialise the result array with zeros.
+            for ( i = xcL + ycL, zc = []; i--; zc.push(0) );
+
+            base = BASE;
+            sqrtBase = SQRT_BASE;
+
+            for ( i = ycL; --i >= 0; ) {
+                c = 0;
+                ylo = yc[i] % sqrtBase;
+                yhi = yc[i] / sqrtBase | 0;
+
+                for ( k = xcL, j = i + k; j > i; ) {
+                    xlo = xc[--k] % sqrtBase;
+                    xhi = xc[k] / sqrtBase | 0;
+                    m = yhi * xlo + xhi * ylo;
+                    xlo = ylo * xlo + ( ( m % sqrtBase ) * sqrtBase ) + zc[j] + c;
+                    c = ( xlo / base | 0 ) + ( m / sqrtBase | 0 ) + yhi * xhi;
+                    zc[j--] = xlo % base;
+                }
+
+                zc[j] = c;
+            }
+
+            if (c) {
+                ++e;
+            } else {
+                zc.shift();
+            }
+
+            return normalise( y, zc, e );
+        };
+
+
+        /*
+         * Return a new BigNumber whose value is the value of this BigNumber rounded to a maximum of
+         * sd significant digits using rounding mode rm, or ROUNDING_MODE if rm is omitted.
+         *
+         * [sd] {number} Significant digits. Integer, 1 to MAX inclusive.
+         * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
+         *
+         * 'toDigits() precision out of range: {sd}'
+         * 'toDigits() precision not an integer: {sd}'
+         * 'toDigits() rounding mode not an integer: {rm}'
+         * 'toDigits() rounding mode out of range: {rm}'
+         */
+        P.toDigits = function ( sd, rm ) {
+            var n = new BigNumber(this);
+            sd = sd == null || !isValidInt( sd, 1, MAX, 18, 'precision' ) ? null : sd | 0;
+            rm = rm == null || !isValidInt( rm, 0, 8, 18, roundingMode ) ? ROUNDING_MODE : rm | 0;
+            return sd ? round( n, sd, rm ) : n;
+        };
+
+
+        /*
+         * Return a string representing the value of this BigNumber in exponential notation and
+         * rounded using ROUNDING_MODE to dp fixed decimal places.
+         *
+         * [dp] {number} Decimal places. Integer, 0 to MAX inclusive.
+         * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
+         *
+         * 'toExponential() decimal places not an integer: {dp}'
+         * 'toExponential() decimal places out of range: {dp}'
+         * 'toExponential() rounding mode not an integer: {rm}'
+         * 'toExponential() rounding mode out of range: {rm}'
+         */
+        P.toExponential = function ( dp, rm ) {
+            return format( this,
+              dp != null && isValidInt( dp, 0, MAX, 19 ) ? ~~dp + 1 : null, rm, 19 );
+        };
+
+
+        /*
+         * Return a string representing the value of this BigNumber in fixed-point notation rounding
+         * to dp fixed decimal places using rounding mode rm, or ROUNDING_MODE if rm is omitted.
+         *
+         * Note: as with JavaScript's number type, (-0).toFixed(0) is '0',
+         * but e.g. (-0.00001).toFixed(0) is '-0'.
+         *
+         * [dp] {number} Decimal places. Integer, 0 to MAX inclusive.
+         * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
+         *
+         * 'toFixed() decimal places not an integer: {dp}'
+         * 'toFixed() decimal places out of range: {dp}'
+         * 'toFixed() rounding mode not an integer: {rm}'
+         * 'toFixed() rounding mode out of range: {rm}'
+         */
+        P.toFixed = function ( dp, rm ) {
+            return format( this, dp != null && isValidInt( dp, 0, MAX, 20 )
+              ? ~~dp + this.e + 1 : null, rm, 20 );
+        };
+
+
+        /*
+         * Return a string representing the value of this BigNumber in fixed-point notation rounded
+         * using rm or ROUNDING_MODE to dp decimal places, and formatted according to the properties
+         * of the FORMAT object (see BigNumber.config).
+         *
+         * FORMAT = {
+         *      decimalSeparator : '.',
+         *      groupSeparator : ',',
+         *      groupSize : 3,
+         *      secondaryGroupSize : 0,
+         *      fractionGroupSeparator : '\xA0',    // non-breaking space
+         *      fractionGroupSize : 0
+         * };
+         *
+         * [dp] {number} Decimal places. Integer, 0 to MAX inclusive.
+         * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
+         *
+         * 'toFormat() decimal places not an integer: {dp}'
+         * 'toFormat() decimal places out of range: {dp}'
+         * 'toFormat() rounding mode not an integer: {rm}'
+         * 'toFormat() rounding mode out of range: {rm}'
+         */
+        P.toFormat = function ( dp, rm ) {
+            var str = format( this, dp != null && isValidInt( dp, 0, MAX, 21 )
+              ? ~~dp + this.e + 1 : null, rm, 21 );
+
+            if ( this.c ) {
+                var i,
+                    arr = str.split('.'),
+                    g1 = +FORMAT.groupSize,
+                    g2 = +FORMAT.secondaryGroupSize,
+                    groupSeparator = FORMAT.groupSeparator,
+                    intPart = arr[0],
+                    fractionPart = arr[1],
+                    isNeg = this.s < 0,
+                    intDigits = isNeg ? intPart.slice(1) : intPart,
+                    len = intDigits.length;
+
+                if (g2) i = g1, g1 = g2, g2 = i, len -= i;
+
+                if ( g1 > 0 && len > 0 ) {
+                    i = len % g1 || g1;
+                    intPart = intDigits.substr( 0, i );
+
+                    for ( ; i < len; i += g1 ) {
+                        intPart += groupSeparator + intDigits.substr( i, g1 );
+                    }
+
+                    if ( g2 > 0 ) intPart += groupSeparator + intDigits.slice(i);
+                    if (isNeg) intPart = '-' + intPart;
+                }
+
+                str = fractionPart
+                  ? intPart + FORMAT.decimalSeparator + ( ( g2 = +FORMAT.fractionGroupSize )
+                    ? fractionPart.replace( new RegExp( '\\d{' + g2 + '}\\B', 'g' ),
+                      '$&' + FORMAT.fractionGroupSeparator )
+                    : fractionPart )
+                  : intPart;
+            }
+
+            return str;
+        };
+
+
+        /*
+         * Return a string array representing the value of this BigNumber as a simple fraction with
+         * an integer numerator and an integer denominator. The denominator will be a positive
+         * non-zero value less than or equal to the specified maximum denominator. If a maximum
+         * denominator is not specified, the denominator will be the lowest value necessary to
+         * represent the number exactly.
+         *
+         * [md] {number|string|BigNumber} Integer >= 1 and < Infinity. The maximum denominator.
+         *
+         * 'toFraction() max denominator not an integer: {md}'
+         * 'toFraction() max denominator out of range: {md}'
+         */
+        P.toFraction = function (md) {
+            var arr, d0, d2, e, exp, n, n0, q, s,
+                k = ERRORS,
+                x = this,
+                xc = x.c,
+                d = new BigNumber(ONE),
+                n1 = d0 = new BigNumber(ONE),
+                d1 = n0 = new BigNumber(ONE);
+
+            if ( md != null ) {
+                ERRORS = false;
+                n = new BigNumber(md);
+                ERRORS = k;
+
+                if ( !( k = n.isInt() ) || n.lt(ONE) ) {
+
+                    if (ERRORS) {
+                        raise( 22,
+                          'max denominator ' + ( k ? 'out of range' : 'not an integer' ), md );
+                    }
+
+                    // ERRORS is false:
+                    // If md is a finite non-integer >= 1, round it to an integer and use it.
+                    md = !k && n.c && round( n, n.e + 1, 1 ).gte(ONE) ? n : null;
+                }
+            }
+
+            if ( !xc ) return x.toString();
+            s = coeffToString(xc);
+
+            // Determine initial denominator.
+            // d is a power of 10 and the minimum max denominator that specifies the value exactly.
+            e = d.e = s.length - x.e - 1;
+            d.c[0] = POWS_TEN[ ( exp = e % LOG_BASE ) < 0 ? LOG_BASE + exp : exp ];
+            md = !md || n.cmp(d) > 0 ? ( e > 0 ? d : n1 ) : n;
+
+            exp = MAX_EXP;
+            MAX_EXP = 1 / 0;
+            n = new BigNumber(s);
+
+            // n0 = d1 = 0
+            n0.c[0] = 0;
+
+            for ( ; ; )  {
+                q = div( n, d, 0, 1 );
+                d2 = d0.plus( q.times(d1) );
+                if ( d2.cmp(md) == 1 ) break;
+                d0 = d1;
+                d1 = d2;
+                n1 = n0.plus( q.times( d2 = n1 ) );
+                n0 = d2;
+                d = n.minus( q.times( d2 = d ) );
+                n = d2;
+            }
+
+            d2 = div( md.minus(d0), d1, 0, 1 );
+            n0 = n0.plus( d2.times(n1) );
+            d0 = d0.plus( d2.times(d1) );
+            n0.s = n1.s = x.s;
+            e *= 2;
+
+            // Determine which fraction is closer to x, n0/d0 or n1/d1
+            arr = div( n1, d1, e, ROUNDING_MODE ).minus(x).abs().cmp(
+                  div( n0, d0, e, ROUNDING_MODE ).minus(x).abs() ) < 1
+                    ? [ n1.toString(), d1.toString() ]
+                    : [ n0.toString(), d0.toString() ];
+
+            MAX_EXP = exp;
+            return arr;
+        };
+
+
+        /*
+         * Return the value of this BigNumber converted to a number primitive.
+         */
+        P.toNumber = function () {
+            return +this;
+        };
+
+
+        /*
+         * Return a BigNumber whose value is the value of this BigNumber raised to the power n.
+         * If n is negative round according to DECIMAL_PLACES and ROUNDING_MODE.
+         * If POW_PRECISION is not 0, round to POW_PRECISION using ROUNDING_MODE.
+         *
+         * n {number} Integer, -9007199254740992 to 9007199254740992 inclusive.
+         * (Performs 54 loop iterations for n of 9007199254740992.)
+         *
+         * 'pow() exponent not an integer: {n}'
+         * 'pow() exponent out of range: {n}'
+         */
+        P.toPower = P.pow = function (n) {
+            var k, y,
+                i = mathfloor( n < 0 ? -n : +n ),
+                x = this;
+
+            // Pass ±Infinity to Math.pow if exponent is out of range.
+            if ( !isValidInt( n, -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER, 23, 'exponent' ) &&
+              ( !isFinite(n) || i > MAX_SAFE_INTEGER && ( n /= 0 ) ||
+                parseFloat(n) != n && !( n = NaN ) ) ) {
+                return new BigNumber( Math.pow( +x, n ) );
+            }
+
+            // Truncating each coefficient array to a length of k after each multiplication equates
+            // to truncating significant digits to POW_PRECISION + [28, 41], i.e. there will be a
+            // minimum of 28 guard digits retained. (Using + 1.5 would give [9, 21] guard digits.)
+            k = POW_PRECISION ? mathceil( POW_PRECISION / LOG_BASE + 2 ) : 0;
+            y = new BigNumber(ONE);
+
+            for ( ; ; ) {
+
+                if ( i % 2 ) {
+                    y = y.times(x);
+                    if ( !y.c ) break;
+                    if ( k && y.c.length > k ) y.c.length = k;
+                }
+
+                i = mathfloor( i / 2 );
+                if ( !i ) break;
+
+                x = x.times(x);
+                if ( k && x.c && x.c.length > k ) x.c.length = k;
+            }
+
+            if ( n < 0 ) y = ONE.div(y);
+            return k ? round( y, POW_PRECISION, ROUNDING_MODE ) : y;
+        };
+
+
+        /*
+         * Return a string representing the value of this BigNumber rounded to sd significant digits
+         * using rounding mode rm or ROUNDING_MODE. If sd is less than the number of digits
+         * necessary to represent the integer part of the value in fixed-point notation, then use
+         * exponential notation.
+         *
+         * [sd] {number} Significant digits. Integer, 1 to MAX inclusive.
+         * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
+         *
+         * 'toPrecision() precision not an integer: {sd}'
+         * 'toPrecision() precision out of range: {sd}'
+         * 'toPrecision() rounding mode not an integer: {rm}'
+         * 'toPrecision() rounding mode out of range: {rm}'
+         */
+        P.toPrecision = function ( sd, rm ) {
+            return format( this, sd != null && isValidInt( sd, 1, MAX, 24, 'precision' )
+              ? sd | 0 : null, rm, 24 );
+        };
+
+
+        /*
+         * Return a string representing the value of this BigNumber in base b, or base 10 if b is
+         * omitted. If a base is specified, including base 10, round according to DECIMAL_PLACES and
+         * ROUNDING_MODE. If a base is not specified, and this BigNumber has a positive exponent
+         * that is equal to or greater than TO_EXP_POS, or a negative exponent equal to or less than
+         * TO_EXP_NEG, return exponential notation.
+         *
+         * [b] {number} Integer, 2 to 64 inclusive.
+         *
+         * 'toString() base not an integer: {b}'
+         * 'toString() base out of range: {b}'
+         */
+        P.toString = function (b) {
+            var str,
+                n = this,
+                s = n.s,
+                e = n.e;
+
+            // Infinity or NaN?
+            if ( e === null ) {
+
+                if (s) {
+                    str = 'Infinity';
+                    if ( s < 0 ) str = '-' + str;
+                } else {
+                    str = 'NaN';
+                }
+            } else {
+                str = coeffToString( n.c );
+
+                if ( b == null || !isValidInt( b, 2, 64, 25, 'base' ) ) {
+                    str = e <= TO_EXP_NEG || e >= TO_EXP_POS
+                      ? toExponential( str, e )
+                      : toFixedPoint( str, e );
+                } else {
+                    str = convertBase( toFixedPoint( str, e ), b | 0, 10, s );
+                }
+
+                if ( s < 0 && n.c[0] ) str = '-' + str;
+            }
+
+            return str;
+        };
+
+
+        /*
+         * Return a new BigNumber whose value is the value of this BigNumber truncated to a whole
+         * number.
+         */
+        P.truncated = P.trunc = function () {
+            return round( new BigNumber(this), this.e + 1, 1 );
+        };
+
+
+
+        /*
+         * Return as toString, but do not accept a base argument, and include the minus sign for
+         * negative zero.
+         */
+        P.valueOf = P.toJSON = function () {
+            var str,
+                n = this,
+                e = n.e;
+
+            if ( e === null ) return n.toString();
+
+            str = coeffToString( n.c );
+
+            str = e <= TO_EXP_NEG || e >= TO_EXP_POS
+                ? toExponential( str, e )
+                : toFixedPoint( str, e );
+
+            return n.s < 0 ? '-' + str : str;
+        };
+
+
+        // Aliases for BigDecimal methods.
+        //P.add = P.plus;         // P.add included above
+        //P.subtract = P.minus;   // P.sub included above
+        //P.multiply = P.times;   // P.mul included above
+        //P.divide = P.div;
+        //P.remainder = P.mod;
+        //P.compareTo = P.cmp;
+        //P.negate = P.neg;
+
+
+        if ( configObj != null ) BigNumber.config(configObj);
+
+        return BigNumber;
+    }
+
+
+    // PRIVATE HELPER FUNCTIONS
+
+
+    function bitFloor(n) {
+        var i = n | 0;
+        return n > 0 || n === i ? i : i - 1;
+    }
+
+
+    // Return a coefficient array as a string of base 10 digits.
+    function coeffToString(a) {
+        var s, z,
+            i = 1,
+            j = a.length,
+            r = a[0] + '';
+
+        for ( ; i < j; ) {
+            s = a[i++] + '';
+            z = LOG_BASE - s.length;
+            for ( ; z--; s = '0' + s );
+            r += s;
+        }
+
+        // Determine trailing zeros.
+        for ( j = r.length; r.charCodeAt(--j) === 48; );
+        return r.slice( 0, j + 1 || 1 );
+    }
+
+
+    // Compare the value of BigNumbers x and y.
+    function compare( x, y ) {
+        var a, b,
+            xc = x.c,
+            yc = y.c,
+            i = x.s,
+            j = y.s,
+            k = x.e,
+            l = y.e;
+
+        // Either NaN?
+        if ( !i || !j ) return null;
+
+        a = xc && !xc[0];
+        b = yc && !yc[0];
+
+        // Either zero?
+        if ( a || b ) return a ? b ? 0 : -j : i;
+
+        // Signs differ?
+        if ( i != j ) return i;
+
+        a = i < 0;
+        b = k == l;
+
+        // Either Infinity?
+        if ( !xc || !yc ) return b ? 0 : !xc ^ a ? 1 : -1;
+
+        // Compare exponents.
+        if ( !b ) return k > l ^ a ? 1 : -1;
+
+        j = ( k = xc.length ) < ( l = yc.length ) ? k : l;
+
+        // Compare digit by digit.
+        for ( i = 0; i < j; i++ ) if ( xc[i] != yc[i] ) return xc[i] > yc[i] ^ a ? 1 : -1;
+
+        // Compare lengths.
+        return k == l ? 0 : k > l ^ a ? 1 : -1;
+    }
+
+
+    /*
+     * Return true if n is a valid number in range, otherwise false.
+     * Use for argument validation when ERRORS is false.
+     * Note: parseInt('1e+1') == 1 but parseFloat('1e+1') == 10.
+     */
+    function intValidatorNoErrors( n, min, max ) {
+        return ( n = truncate(n) ) >= min && n <= max;
+    }
+
+
+    function isArray(obj) {
+        return Object.prototype.toString.call(obj) == '[object Array]';
+    }
+
+
+    /*
+     * Convert string of baseIn to an array of numbers of baseOut.
+     * Eg. convertBase('255', 10, 16) returns [15, 15].
+     * Eg. convertBase('ff', 16, 10) returns [2, 5, 5].
+     */
+    function toBaseOut( str, baseIn, baseOut ) {
+        var j,
+            arr = [0],
+            arrL,
+            i = 0,
+            len = str.length;
+
+        for ( ; i < len; ) {
+            for ( arrL = arr.length; arrL--; arr[arrL] *= baseIn );
+            arr[ j = 0 ] += ALPHABET.indexOf( str.charAt( i++ ) );
+
+            for ( ; j < arr.length; j++ ) {
+
+                if ( arr[j] > baseOut - 1 ) {
+                    if ( arr[j + 1] == null ) arr[j + 1] = 0;
+                    arr[j + 1] += arr[j] / baseOut | 0;
+                    arr[j] %= baseOut;
+                }
+            }
+        }
+
+        return arr.reverse();
+    }
+
+
+    function toExponential( str, e ) {
+        return ( str.length > 1 ? str.charAt(0) + '.' + str.slice(1) : str ) +
+          ( e < 0 ? 'e' : 'e+' ) + e;
+    }
+
+
+    function toFixedPoint( str, e ) {
+        var len, z;
+
+        // Negative exponent?
+        if ( e < 0 ) {
+
+            // Prepend zeros.
+            for ( z = '0.'; ++e; z += '0' );
+            str = z + str;
+
+        // Positive exponent
+        } else {
+            len = str.length;
+
+            // Append zeros.
+            if ( ++e > len ) {
+                for ( z = '0', e -= len; --e; z += '0' );
+                str += z;
+            } else if ( e < len ) {
+                str = str.slice( 0, e ) + '.' + str.slice(e);
+            }
+        }
+
+        return str;
+    }
+
+
+    function truncate(n) {
+        n = parseFloat(n);
+        return n < 0 ? mathceil(n) : mathfloor(n);
+    }
+
+
+    // EXPORT
+
+
+    BigNumber = another();
+
+    // AMD.
+    if ( typeof define == 'function' && define.amd ) {
+        define( function () { return BigNumber; } );
+
+    // Node and other environments that support module.exports.
+    } else if ( typeof module != 'undefined' && module.exports ) {
+        module.exports = BigNumber;
+        if ( !crypto ) try { crypto = require('crypto'); } catch (e) {}
+
+    // Browser.
+    } else {
+        global.BigNumber = BigNumber;
+    }
+})(this);
+
+},{"crypto":74}],365:[function(require,module,exports){
 // Browser Request
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -66219,7 +57836,7 @@ function b64_enc (data) {
 }));
 //UMD FOOTER END
 
-},{}],401:[function(require,module,exports){
+},{}],366:[function(require,module,exports){
 // Copyright 2010-2012 Mikeal Rogers
 //
 //    Licensed under the Apache License, Version 2.0 (the "License");
@@ -66377,7 +57994,7 @@ Object.defineProperty(request, 'debug', {
   }
 })
 
-},{"./lib/cookies":403,"./lib/helpers":406,"./request":494,"extend":427}],402:[function(require,module,exports){
+},{"./lib/cookies":368,"./lib/helpers":371,"./request":459,"extend":392}],367:[function(require,module,exports){
 'use strict'
 
 var caseless = require('caseless')
@@ -66547,7 +58164,7 @@ Auth.prototype.onResponse = function (response) {
 
 exports.Auth = Auth
 
-},{"./helpers":406,"caseless":424,"node-uuid":479}],403:[function(require,module,exports){
+},{"./helpers":371,"caseless":389,"node-uuid":444}],368:[function(require,module,exports){
 'use strict'
 
 var tough = require('tough-cookie')
@@ -66588,7 +58205,7 @@ exports.jar = function(store) {
   return new RequestJar(store)
 }
 
-},{"tough-cookie":486}],404:[function(require,module,exports){
+},{"tough-cookie":451}],369:[function(require,module,exports){
 (function (process){
 'use strict'
 
@@ -66671,7 +58288,7 @@ function getProxyFromURI(uri) {
 module.exports = getProxyFromURI
 
 }).call(this,require('_process'))
-},{"_process":31}],405:[function(require,module,exports){
+},{"_process":29}],370:[function(require,module,exports){
 'use strict'
 
 var fs = require('fs')
@@ -66878,7 +58495,7 @@ Har.prototype.options = function (options) {
 
 exports.Har = Har
 
-},{"fs":9,"har-validator":431,"querystring":35,"util":60}],406:[function(require,module,exports){
+},{"fs":7,"har-validator":396,"querystring":33,"util":58}],371:[function(require,module,exports){
 (function (process,Buffer){
 'use strict'
 
@@ -66956,7 +58573,7 @@ exports.version               = version
 exports.defer                 = deferMethod()
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"_process":31,"buffer":64,"crypto":76,"json-stringify-safe":475}],407:[function(require,module,exports){
+},{"_process":29,"buffer":62,"crypto":74,"json-stringify-safe":440}],372:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 
@@ -67069,7 +58686,7 @@ Multipart.prototype.onRequest = function (options) {
 exports.Multipart = Multipart
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":64,"combined-stream":425,"isstream":474,"node-uuid":479}],408:[function(require,module,exports){
+},{"buffer":62,"combined-stream":390,"isstream":439,"node-uuid":444}],373:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 
@@ -67220,7 +58837,7 @@ OAuth.prototype.onRequest = function (_oauth) {
 exports.OAuth = OAuth
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":64,"caseless":424,"crypto":76,"node-uuid":479,"oauth-sign":480,"qs":481,"url":57}],409:[function(require,module,exports){
+},{"buffer":62,"caseless":389,"crypto":74,"node-uuid":444,"oauth-sign":445,"qs":446,"url":55}],374:[function(require,module,exports){
 'use strict'
 
 var qs = require('qs')
@@ -67273,7 +58890,7 @@ Querystring.prototype.unescape = querystring.unescape
 
 exports.Querystring = Querystring
 
-},{"qs":481,"querystring":35}],410:[function(require,module,exports){
+},{"qs":446,"querystring":33}],375:[function(require,module,exports){
 'use strict'
 
 var url = require('url')
@@ -67429,7 +59046,7 @@ Redirect.prototype.onResponse = function (response) {
 
 exports.Redirect = Redirect
 
-},{"url":57}],411:[function(require,module,exports){
+},{"url":55}],376:[function(require,module,exports){
 'use strict'
 
 var url = require('url')
@@ -67614,7 +59231,7 @@ Tunnel.defaultProxyHeaderWhiteList = defaultProxyHeaderWhiteList
 Tunnel.defaultProxyHeaderExclusiveList = defaultProxyHeaderExclusiveList
 exports.Tunnel = Tunnel
 
-},{"tunnel-agent":493,"url":57}],412:[function(require,module,exports){
+},{"tunnel-agent":458,"url":55}],377:[function(require,module,exports){
 
 /*!
  *  Copyright 2010 LearnBoost <dev@learnboost.com>
@@ -67828,7 +59445,7 @@ function canonicalizeResource (resource) {
 }
 module.exports.canonicalizeResource = canonicalizeResource
 
-},{"crypto":76,"url":57}],413:[function(require,module,exports){
+},{"crypto":74,"url":55}],378:[function(require,module,exports){
 (function (Buffer){
 var DuplexStream = require('readable-stream/duplex')
   , util         = require('util')
@@ -68048,11 +59665,11 @@ BufferList.prototype.destroy = function () {
 module.exports = BufferList
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":64,"readable-stream/duplex":414,"util":60}],414:[function(require,module,exports){
-arguments[4][36][0].apply(exports,arguments)
-},{"./lib/_stream_duplex.js":415,"dup":36}],415:[function(require,module,exports){
-arguments[4][37][0].apply(exports,arguments)
-},{"./_stream_readable":416,"./_stream_writable":417,"core-util-is":418,"dup":37,"inherits":419,"process-nextick-args":421}],416:[function(require,module,exports){
+},{"buffer":62,"readable-stream/duplex":379,"util":58}],379:[function(require,module,exports){
+arguments[4][34][0].apply(exports,arguments)
+},{"./lib/_stream_duplex.js":380,"dup":34}],380:[function(require,module,exports){
+arguments[4][35][0].apply(exports,arguments)
+},{"./_stream_readable":381,"./_stream_writable":382,"core-util-is":383,"dup":35,"inherits":384,"process-nextick-args":386}],381:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -69029,7 +60646,7 @@ function indexOf (xs, x) {
 }
 
 }).call(this,require('_process'))
-},{"./_stream_duplex":415,"_process":31,"buffer":64,"core-util-is":418,"events":25,"inherits":419,"isarray":420,"process-nextick-args":421,"string_decoder/":422,"util":11}],417:[function(require,module,exports){
+},{"./_stream_duplex":380,"_process":29,"buffer":62,"core-util-is":383,"events":23,"inherits":384,"isarray":385,"process-nextick-args":386,"string_decoder/":387,"util":9}],382:[function(require,module,exports){
 // A bit simpler than readable streams.
 // Implement an async ._write(chunk, encoding, cb), and it'll handle all
 // the drain event emission and buffering.
@@ -69558,7 +61175,7 @@ function endWritable(stream, state, cb) {
   state.ended = true;
 }
 
-},{"./_stream_duplex":415,"buffer":64,"core-util-is":418,"events":25,"inherits":419,"process-nextick-args":421,"util-deprecate":423}],418:[function(require,module,exports){
+},{"./_stream_duplex":380,"buffer":62,"core-util-is":383,"events":23,"inherits":384,"process-nextick-args":386,"util-deprecate":388}],383:[function(require,module,exports){
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -69668,11 +61285,11 @@ function objectToString(o) {
   return Object.prototype.toString.call(o);
 }
 }).call(this,{"isBuffer":require("../../../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")})
-},{"../../../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":28}],419:[function(require,module,exports){
+},{"../../../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":26}],384:[function(require,module,exports){
+arguments[4][25][0].apply(exports,arguments)
+},{"dup":25}],385:[function(require,module,exports){
 arguments[4][27][0].apply(exports,arguments)
-},{"dup":27}],420:[function(require,module,exports){
-arguments[4][29][0].apply(exports,arguments)
-},{"dup":29}],421:[function(require,module,exports){
+},{"dup":27}],386:[function(require,module,exports){
 (function (process){
 'use strict';
 module.exports = nextTick;
@@ -69689,11 +61306,11 @@ function nextTick(fn) {
 }
 
 }).call(this,require('_process'))
-},{"_process":31}],422:[function(require,module,exports){
-arguments[4][55][0].apply(exports,arguments)
-},{"buffer":64,"dup":55}],423:[function(require,module,exports){
-arguments[4][44][0].apply(exports,arguments)
-},{"dup":44}],424:[function(require,module,exports){
+},{"_process":29}],387:[function(require,module,exports){
+arguments[4][53][0].apply(exports,arguments)
+},{"buffer":62,"dup":53}],388:[function(require,module,exports){
+arguments[4][42][0].apply(exports,arguments)
+},{"dup":42}],389:[function(require,module,exports){
 function Caseless (dict) {
   this.dict = dict || {}
 }
@@ -69761,7 +61378,7 @@ module.exports.httpify = function (resp, headers) {
   return c
 }
 
-},{}],425:[function(require,module,exports){
+},{}],390:[function(require,module,exports){
 (function (Buffer){
 var util = require('util');
 var Stream = require('stream').Stream;
@@ -69953,7 +61570,7 @@ CombinedStream.prototype._emitError = function(err) {
 };
 
 }).call(this,{"isBuffer":require("../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")})
-},{"../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":28,"delayed-stream":426,"stream":49,"util":60}],426:[function(require,module,exports){
+},{"../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":26,"delayed-stream":391,"stream":47,"util":58}],391:[function(require,module,exports){
 var Stream = require('stream').Stream;
 var util = require('util');
 
@@ -70062,7 +61679,7 @@ DelayedStream.prototype._checkIfMaxDataSizeExceeded = function() {
   this.emit('error', new Error(message));
 };
 
-},{"stream":49,"util":60}],427:[function(require,module,exports){
+},{"stream":47,"util":58}],392:[function(require,module,exports){
 'use strict';
 
 var hasOwn = Object.prototype.hasOwnProperty;
@@ -70150,7 +61767,7 @@ module.exports = function extend() {
 };
 
 
-},{}],428:[function(require,module,exports){
+},{}],393:[function(require,module,exports){
 module.exports = ForeverAgent
 ForeverAgent.SSL = ForeverAgentSSL
 
@@ -70290,9 +61907,9 @@ function createConnectionSSL (port, host, options) {
   return tls.connect(options);
 }
 
-},{"http":50,"https":26,"net":9,"tls":9,"util":60}],429:[function(require,module,exports){
+},{"http":48,"https":24,"net":7,"tls":7,"util":58}],394:[function(require,module,exports){
 module.exports = FormData;
-},{}],430:[function(require,module,exports){
+},{}],395:[function(require,module,exports){
 'use strict'
 
 function ValidationError (errors) {
@@ -70304,7 +61921,7 @@ ValidationError.prototype = Error.prototype
 
 module.exports = ValidationError
 
-},{}],431:[function(require,module,exports){
+},{}],396:[function(require,module,exports){
 'use strict'
 
 var Promise = require('pinkie-promise')
@@ -70328,7 +61945,7 @@ Object.keys(schemas).map(function (name) {
   module.exports[name] = promisify(schemas[name])
 })
 
-},{"./runner":432,"./schemas":440,"pinkie-promise":456}],432:[function(require,module,exports){
+},{"./runner":397,"./schemas":405,"pinkie-promise":421}],397:[function(require,module,exports){
 'use strict'
 
 var schemas = require('./schemas')
@@ -70359,7 +61976,7 @@ module.exports = function (schema, data, cb) {
   return valid
 }
 
-},{"./error":430,"./schemas":440,"is-my-json-valid":450}],433:[function(require,module,exports){
+},{"./error":395,"./schemas":405,"is-my-json-valid":415}],398:[function(require,module,exports){
 module.exports={
   "properties": {
     "beforeRequest": {
@@ -70374,7 +61991,7 @@ module.exports={
   }
 }
 
-},{}],434:[function(require,module,exports){
+},{}],399:[function(require,module,exports){
 module.exports={
   "oneOf": [{
     "type": "object",
@@ -70407,7 +62024,7 @@ module.exports={
   }]
 }
 
-},{}],435:[function(require,module,exports){
+},{}],400:[function(require,module,exports){
 module.exports={
   "type": "object",
   "required": [
@@ -70436,7 +62053,7 @@ module.exports={
   }
 }
 
-},{}],436:[function(require,module,exports){
+},{}],401:[function(require,module,exports){
 module.exports={
   "type": "object",
   "required": [
@@ -70472,7 +62089,7 @@ module.exports={
   }
 }
 
-},{}],437:[function(require,module,exports){
+},{}],402:[function(require,module,exports){
 module.exports={
   "type": "object",
   "required": [
@@ -70492,7 +62109,7 @@ module.exports={
   }
 }
 
-},{}],438:[function(require,module,exports){
+},{}],403:[function(require,module,exports){
 module.exports={
   "type": "object",
   "optional": true,
@@ -70545,7 +62162,7 @@ module.exports={
   }
 }
 
-},{}],439:[function(require,module,exports){
+},{}],404:[function(require,module,exports){
 module.exports={
   "type": "object",
   "required": [
@@ -70558,7 +62175,7 @@ module.exports={
   }
 }
 
-},{}],440:[function(require,module,exports){
+},{}],405:[function(require,module,exports){
 'use strict'
 
 var schemas = {
@@ -70609,7 +62226,7 @@ schemas.har.properties.log = schemas.log
 
 module.exports = schemas
 
-},{"./cache.json":433,"./cacheEntry.json":434,"./content.json":435,"./cookie.json":436,"./creator.json":437,"./entry.json":438,"./har.json":439,"./log.json":441,"./page.json":442,"./pageTimings.json":443,"./postData.json":444,"./record.json":445,"./request.json":446,"./response.json":447,"./timings.json":448}],441:[function(require,module,exports){
+},{"./cache.json":398,"./cacheEntry.json":399,"./content.json":400,"./cookie.json":401,"./creator.json":402,"./entry.json":403,"./har.json":404,"./log.json":406,"./page.json":407,"./pageTimings.json":408,"./postData.json":409,"./record.json":410,"./request.json":411,"./response.json":412,"./timings.json":413}],406:[function(require,module,exports){
 module.exports={
   "type": "object",
   "required": [
@@ -70645,7 +62262,7 @@ module.exports={
   }
 }
 
-},{}],442:[function(require,module,exports){
+},{}],407:[function(require,module,exports){
 module.exports={
   "type": "object",
   "optional": true,
@@ -70677,7 +62294,7 @@ module.exports={
   }
 }
 
-},{}],443:[function(require,module,exports){
+},{}],408:[function(require,module,exports){
 module.exports={
   "type": "object",
   "properties": {
@@ -70695,7 +62312,7 @@ module.exports={
   }
 }
 
-},{}],444:[function(require,module,exports){
+},{}],409:[function(require,module,exports){
 module.exports={
   "type": "object",
   "optional": true,
@@ -70738,7 +62355,7 @@ module.exports={
   }
 }
 
-},{}],445:[function(require,module,exports){
+},{}],410:[function(require,module,exports){
 module.exports={
   "type": "object",
   "required": [
@@ -70758,7 +62375,7 @@ module.exports={
   }
 }
 
-},{}],446:[function(require,module,exports){
+},{}],411:[function(require,module,exports){
 module.exports={
   "type": "object",
   "required": [
@@ -70815,7 +62432,7 @@ module.exports={
   }
 }
 
-},{}],447:[function(require,module,exports){
+},{}],412:[function(require,module,exports){
 module.exports={
   "type": "object",
   "required": [
@@ -70869,7 +62486,7 @@ module.exports={
   }
 }
 
-},{}],448:[function(require,module,exports){
+},{}],413:[function(require,module,exports){
 module.exports={
   "required": [
     "send",
@@ -70911,7 +62528,7 @@ module.exports={
   }
 }
 
-},{}],449:[function(require,module,exports){
+},{}],414:[function(require,module,exports){
 exports['date-time'] = /^\d{4}-(?:0[0-9]{1}|1[0-2]{1})-[0-9]{2}[tT ]\d{2}:\d{2}:\d{2}(\.\d+)?([zZ]|[+-]\d{2}:\d{2})$/
 exports['date'] = /^\d{4}-(?:0[0-9]{1}|1[0-2]{1})-[0-9]{2}$/
 exports['time'] = /^\d{2}:\d{2}:\d{2}$/
@@ -70927,7 +62544,7 @@ exports['style'] = /\s*(.+?):\s*([^;]+);?/g
 exports['phone'] = /^\+(?:[0-9] ?){6,14}[0-9]$/
 exports['utc-millisec'] = /^[0-9]+(\.?[0-9]+)?$/
 
-},{}],450:[function(require,module,exports){
+},{}],415:[function(require,module,exports){
 var genobj = require('generate-object-property')
 var genfun = require('generate-function')
 var jsonpointer = require('jsonpointer')
@@ -71504,7 +63121,7 @@ module.exports.filter = function(schema, opts) {
   }
 }
 
-},{"./formats":449,"generate-function":451,"generate-object-property":452,"jsonpointer":454,"xtend":455}],451:[function(require,module,exports){
+},{"./formats":414,"generate-function":416,"generate-object-property":417,"jsonpointer":419,"xtend":420}],416:[function(require,module,exports){
 var util = require('util')
 
 var INDENT_START = /[\{\[]/
@@ -71567,7 +63184,7 @@ module.exports = function() {
   return line
 }
 
-},{"util":60}],452:[function(require,module,exports){
+},{"util":58}],417:[function(require,module,exports){
 var isProperty = require('is-property')
 
 var gen = function(obj, prop) {
@@ -71581,13 +63198,13 @@ gen.property = function (prop) {
 
 module.exports = gen
 
-},{"is-property":453}],453:[function(require,module,exports){
+},{"is-property":418}],418:[function(require,module,exports){
 "use strict"
 function isProperty(str) {
   return /^[$A-Z\_a-z\xaa\xb5\xba\xc0-\xd6\xd8-\xf6\xf8-\u02c1\u02c6-\u02d1\u02e0-\u02e4\u02ec\u02ee\u0370-\u0374\u0376\u0377\u037a-\u037d\u0386\u0388-\u038a\u038c\u038e-\u03a1\u03a3-\u03f5\u03f7-\u0481\u048a-\u0527\u0531-\u0556\u0559\u0561-\u0587\u05d0-\u05ea\u05f0-\u05f2\u0620-\u064a\u066e\u066f\u0671-\u06d3\u06d5\u06e5\u06e6\u06ee\u06ef\u06fa-\u06fc\u06ff\u0710\u0712-\u072f\u074d-\u07a5\u07b1\u07ca-\u07ea\u07f4\u07f5\u07fa\u0800-\u0815\u081a\u0824\u0828\u0840-\u0858\u08a0\u08a2-\u08ac\u0904-\u0939\u093d\u0950\u0958-\u0961\u0971-\u0977\u0979-\u097f\u0985-\u098c\u098f\u0990\u0993-\u09a8\u09aa-\u09b0\u09b2\u09b6-\u09b9\u09bd\u09ce\u09dc\u09dd\u09df-\u09e1\u09f0\u09f1\u0a05-\u0a0a\u0a0f\u0a10\u0a13-\u0a28\u0a2a-\u0a30\u0a32\u0a33\u0a35\u0a36\u0a38\u0a39\u0a59-\u0a5c\u0a5e\u0a72-\u0a74\u0a85-\u0a8d\u0a8f-\u0a91\u0a93-\u0aa8\u0aaa-\u0ab0\u0ab2\u0ab3\u0ab5-\u0ab9\u0abd\u0ad0\u0ae0\u0ae1\u0b05-\u0b0c\u0b0f\u0b10\u0b13-\u0b28\u0b2a-\u0b30\u0b32\u0b33\u0b35-\u0b39\u0b3d\u0b5c\u0b5d\u0b5f-\u0b61\u0b71\u0b83\u0b85-\u0b8a\u0b8e-\u0b90\u0b92-\u0b95\u0b99\u0b9a\u0b9c\u0b9e\u0b9f\u0ba3\u0ba4\u0ba8-\u0baa\u0bae-\u0bb9\u0bd0\u0c05-\u0c0c\u0c0e-\u0c10\u0c12-\u0c28\u0c2a-\u0c33\u0c35-\u0c39\u0c3d\u0c58\u0c59\u0c60\u0c61\u0c85-\u0c8c\u0c8e-\u0c90\u0c92-\u0ca8\u0caa-\u0cb3\u0cb5-\u0cb9\u0cbd\u0cde\u0ce0\u0ce1\u0cf1\u0cf2\u0d05-\u0d0c\u0d0e-\u0d10\u0d12-\u0d3a\u0d3d\u0d4e\u0d60\u0d61\u0d7a-\u0d7f\u0d85-\u0d96\u0d9a-\u0db1\u0db3-\u0dbb\u0dbd\u0dc0-\u0dc6\u0e01-\u0e30\u0e32\u0e33\u0e40-\u0e46\u0e81\u0e82\u0e84\u0e87\u0e88\u0e8a\u0e8d\u0e94-\u0e97\u0e99-\u0e9f\u0ea1-\u0ea3\u0ea5\u0ea7\u0eaa\u0eab\u0ead-\u0eb0\u0eb2\u0eb3\u0ebd\u0ec0-\u0ec4\u0ec6\u0edc-\u0edf\u0f00\u0f40-\u0f47\u0f49-\u0f6c\u0f88-\u0f8c\u1000-\u102a\u103f\u1050-\u1055\u105a-\u105d\u1061\u1065\u1066\u106e-\u1070\u1075-\u1081\u108e\u10a0-\u10c5\u10c7\u10cd\u10d0-\u10fa\u10fc-\u1248\u124a-\u124d\u1250-\u1256\u1258\u125a-\u125d\u1260-\u1288\u128a-\u128d\u1290-\u12b0\u12b2-\u12b5\u12b8-\u12be\u12c0\u12c2-\u12c5\u12c8-\u12d6\u12d8-\u1310\u1312-\u1315\u1318-\u135a\u1380-\u138f\u13a0-\u13f4\u1401-\u166c\u166f-\u167f\u1681-\u169a\u16a0-\u16ea\u16ee-\u16f0\u1700-\u170c\u170e-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176c\u176e-\u1770\u1780-\u17b3\u17d7\u17dc\u1820-\u1877\u1880-\u18a8\u18aa\u18b0-\u18f5\u1900-\u191c\u1950-\u196d\u1970-\u1974\u1980-\u19ab\u19c1-\u19c7\u1a00-\u1a16\u1a20-\u1a54\u1aa7\u1b05-\u1b33\u1b45-\u1b4b\u1b83-\u1ba0\u1bae\u1baf\u1bba-\u1be5\u1c00-\u1c23\u1c4d-\u1c4f\u1c5a-\u1c7d\u1ce9-\u1cec\u1cee-\u1cf1\u1cf5\u1cf6\u1d00-\u1dbf\u1e00-\u1f15\u1f18-\u1f1d\u1f20-\u1f45\u1f48-\u1f4d\u1f50-\u1f57\u1f59\u1f5b\u1f5d\u1f5f-\u1f7d\u1f80-\u1fb4\u1fb6-\u1fbc\u1fbe\u1fc2-\u1fc4\u1fc6-\u1fcc\u1fd0-\u1fd3\u1fd6-\u1fdb\u1fe0-\u1fec\u1ff2-\u1ff4\u1ff6-\u1ffc\u2071\u207f\u2090-\u209c\u2102\u2107\u210a-\u2113\u2115\u2119-\u211d\u2124\u2126\u2128\u212a-\u212d\u212f-\u2139\u213c-\u213f\u2145-\u2149\u214e\u2160-\u2188\u2c00-\u2c2e\u2c30-\u2c5e\u2c60-\u2ce4\u2ceb-\u2cee\u2cf2\u2cf3\u2d00-\u2d25\u2d27\u2d2d\u2d30-\u2d67\u2d6f\u2d80-\u2d96\u2da0-\u2da6\u2da8-\u2dae\u2db0-\u2db6\u2db8-\u2dbe\u2dc0-\u2dc6\u2dc8-\u2dce\u2dd0-\u2dd6\u2dd8-\u2dde\u2e2f\u3005-\u3007\u3021-\u3029\u3031-\u3035\u3038-\u303c\u3041-\u3096\u309d-\u309f\u30a1-\u30fa\u30fc-\u30ff\u3105-\u312d\u3131-\u318e\u31a0-\u31ba\u31f0-\u31ff\u3400-\u4db5\u4e00-\u9fcc\ua000-\ua48c\ua4d0-\ua4fd\ua500-\ua60c\ua610-\ua61f\ua62a\ua62b\ua640-\ua66e\ua67f-\ua697\ua6a0-\ua6ef\ua717-\ua71f\ua722-\ua788\ua78b-\ua78e\ua790-\ua793\ua7a0-\ua7aa\ua7f8-\ua801\ua803-\ua805\ua807-\ua80a\ua80c-\ua822\ua840-\ua873\ua882-\ua8b3\ua8f2-\ua8f7\ua8fb\ua90a-\ua925\ua930-\ua946\ua960-\ua97c\ua984-\ua9b2\ua9cf\uaa00-\uaa28\uaa40-\uaa42\uaa44-\uaa4b\uaa60-\uaa76\uaa7a\uaa80-\uaaaf\uaab1\uaab5\uaab6\uaab9-\uaabd\uaac0\uaac2\uaadb-\uaadd\uaae0-\uaaea\uaaf2-\uaaf4\uab01-\uab06\uab09-\uab0e\uab11-\uab16\uab20-\uab26\uab28-\uab2e\uabc0-\uabe2\uac00-\ud7a3\ud7b0-\ud7c6\ud7cb-\ud7fb\uf900-\ufa6d\ufa70-\ufad9\ufb00-\ufb06\ufb13-\ufb17\ufb1d\ufb1f-\ufb28\ufb2a-\ufb36\ufb38-\ufb3c\ufb3e\ufb40\ufb41\ufb43\ufb44\ufb46-\ufbb1\ufbd3-\ufd3d\ufd50-\ufd8f\ufd92-\ufdc7\ufdf0-\ufdfb\ufe70-\ufe74\ufe76-\ufefc\uff21-\uff3a\uff41-\uff5a\uff66-\uffbe\uffc2-\uffc7\uffca-\uffcf\uffd2-\uffd7\uffda-\uffdc][$A-Z\_a-z\xaa\xb5\xba\xc0-\xd6\xd8-\xf6\xf8-\u02c1\u02c6-\u02d1\u02e0-\u02e4\u02ec\u02ee\u0370-\u0374\u0376\u0377\u037a-\u037d\u0386\u0388-\u038a\u038c\u038e-\u03a1\u03a3-\u03f5\u03f7-\u0481\u048a-\u0527\u0531-\u0556\u0559\u0561-\u0587\u05d0-\u05ea\u05f0-\u05f2\u0620-\u064a\u066e\u066f\u0671-\u06d3\u06d5\u06e5\u06e6\u06ee\u06ef\u06fa-\u06fc\u06ff\u0710\u0712-\u072f\u074d-\u07a5\u07b1\u07ca-\u07ea\u07f4\u07f5\u07fa\u0800-\u0815\u081a\u0824\u0828\u0840-\u0858\u08a0\u08a2-\u08ac\u0904-\u0939\u093d\u0950\u0958-\u0961\u0971-\u0977\u0979-\u097f\u0985-\u098c\u098f\u0990\u0993-\u09a8\u09aa-\u09b0\u09b2\u09b6-\u09b9\u09bd\u09ce\u09dc\u09dd\u09df-\u09e1\u09f0\u09f1\u0a05-\u0a0a\u0a0f\u0a10\u0a13-\u0a28\u0a2a-\u0a30\u0a32\u0a33\u0a35\u0a36\u0a38\u0a39\u0a59-\u0a5c\u0a5e\u0a72-\u0a74\u0a85-\u0a8d\u0a8f-\u0a91\u0a93-\u0aa8\u0aaa-\u0ab0\u0ab2\u0ab3\u0ab5-\u0ab9\u0abd\u0ad0\u0ae0\u0ae1\u0b05-\u0b0c\u0b0f\u0b10\u0b13-\u0b28\u0b2a-\u0b30\u0b32\u0b33\u0b35-\u0b39\u0b3d\u0b5c\u0b5d\u0b5f-\u0b61\u0b71\u0b83\u0b85-\u0b8a\u0b8e-\u0b90\u0b92-\u0b95\u0b99\u0b9a\u0b9c\u0b9e\u0b9f\u0ba3\u0ba4\u0ba8-\u0baa\u0bae-\u0bb9\u0bd0\u0c05-\u0c0c\u0c0e-\u0c10\u0c12-\u0c28\u0c2a-\u0c33\u0c35-\u0c39\u0c3d\u0c58\u0c59\u0c60\u0c61\u0c85-\u0c8c\u0c8e-\u0c90\u0c92-\u0ca8\u0caa-\u0cb3\u0cb5-\u0cb9\u0cbd\u0cde\u0ce0\u0ce1\u0cf1\u0cf2\u0d05-\u0d0c\u0d0e-\u0d10\u0d12-\u0d3a\u0d3d\u0d4e\u0d60\u0d61\u0d7a-\u0d7f\u0d85-\u0d96\u0d9a-\u0db1\u0db3-\u0dbb\u0dbd\u0dc0-\u0dc6\u0e01-\u0e30\u0e32\u0e33\u0e40-\u0e46\u0e81\u0e82\u0e84\u0e87\u0e88\u0e8a\u0e8d\u0e94-\u0e97\u0e99-\u0e9f\u0ea1-\u0ea3\u0ea5\u0ea7\u0eaa\u0eab\u0ead-\u0eb0\u0eb2\u0eb3\u0ebd\u0ec0-\u0ec4\u0ec6\u0edc-\u0edf\u0f00\u0f40-\u0f47\u0f49-\u0f6c\u0f88-\u0f8c\u1000-\u102a\u103f\u1050-\u1055\u105a-\u105d\u1061\u1065\u1066\u106e-\u1070\u1075-\u1081\u108e\u10a0-\u10c5\u10c7\u10cd\u10d0-\u10fa\u10fc-\u1248\u124a-\u124d\u1250-\u1256\u1258\u125a-\u125d\u1260-\u1288\u128a-\u128d\u1290-\u12b0\u12b2-\u12b5\u12b8-\u12be\u12c0\u12c2-\u12c5\u12c8-\u12d6\u12d8-\u1310\u1312-\u1315\u1318-\u135a\u1380-\u138f\u13a0-\u13f4\u1401-\u166c\u166f-\u167f\u1681-\u169a\u16a0-\u16ea\u16ee-\u16f0\u1700-\u170c\u170e-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176c\u176e-\u1770\u1780-\u17b3\u17d7\u17dc\u1820-\u1877\u1880-\u18a8\u18aa\u18b0-\u18f5\u1900-\u191c\u1950-\u196d\u1970-\u1974\u1980-\u19ab\u19c1-\u19c7\u1a00-\u1a16\u1a20-\u1a54\u1aa7\u1b05-\u1b33\u1b45-\u1b4b\u1b83-\u1ba0\u1bae\u1baf\u1bba-\u1be5\u1c00-\u1c23\u1c4d-\u1c4f\u1c5a-\u1c7d\u1ce9-\u1cec\u1cee-\u1cf1\u1cf5\u1cf6\u1d00-\u1dbf\u1e00-\u1f15\u1f18-\u1f1d\u1f20-\u1f45\u1f48-\u1f4d\u1f50-\u1f57\u1f59\u1f5b\u1f5d\u1f5f-\u1f7d\u1f80-\u1fb4\u1fb6-\u1fbc\u1fbe\u1fc2-\u1fc4\u1fc6-\u1fcc\u1fd0-\u1fd3\u1fd6-\u1fdb\u1fe0-\u1fec\u1ff2-\u1ff4\u1ff6-\u1ffc\u2071\u207f\u2090-\u209c\u2102\u2107\u210a-\u2113\u2115\u2119-\u211d\u2124\u2126\u2128\u212a-\u212d\u212f-\u2139\u213c-\u213f\u2145-\u2149\u214e\u2160-\u2188\u2c00-\u2c2e\u2c30-\u2c5e\u2c60-\u2ce4\u2ceb-\u2cee\u2cf2\u2cf3\u2d00-\u2d25\u2d27\u2d2d\u2d30-\u2d67\u2d6f\u2d80-\u2d96\u2da0-\u2da6\u2da8-\u2dae\u2db0-\u2db6\u2db8-\u2dbe\u2dc0-\u2dc6\u2dc8-\u2dce\u2dd0-\u2dd6\u2dd8-\u2dde\u2e2f\u3005-\u3007\u3021-\u3029\u3031-\u3035\u3038-\u303c\u3041-\u3096\u309d-\u309f\u30a1-\u30fa\u30fc-\u30ff\u3105-\u312d\u3131-\u318e\u31a0-\u31ba\u31f0-\u31ff\u3400-\u4db5\u4e00-\u9fcc\ua000-\ua48c\ua4d0-\ua4fd\ua500-\ua60c\ua610-\ua61f\ua62a\ua62b\ua640-\ua66e\ua67f-\ua697\ua6a0-\ua6ef\ua717-\ua71f\ua722-\ua788\ua78b-\ua78e\ua790-\ua793\ua7a0-\ua7aa\ua7f8-\ua801\ua803-\ua805\ua807-\ua80a\ua80c-\ua822\ua840-\ua873\ua882-\ua8b3\ua8f2-\ua8f7\ua8fb\ua90a-\ua925\ua930-\ua946\ua960-\ua97c\ua984-\ua9b2\ua9cf\uaa00-\uaa28\uaa40-\uaa42\uaa44-\uaa4b\uaa60-\uaa76\uaa7a\uaa80-\uaaaf\uaab1\uaab5\uaab6\uaab9-\uaabd\uaac0\uaac2\uaadb-\uaadd\uaae0-\uaaea\uaaf2-\uaaf4\uab01-\uab06\uab09-\uab0e\uab11-\uab16\uab20-\uab26\uab28-\uab2e\uabc0-\uabe2\uac00-\ud7a3\ud7b0-\ud7c6\ud7cb-\ud7fb\uf900-\ufa6d\ufa70-\ufad9\ufb00-\ufb06\ufb13-\ufb17\ufb1d\ufb1f-\ufb28\ufb2a-\ufb36\ufb38-\ufb3c\ufb3e\ufb40\ufb41\ufb43\ufb44\ufb46-\ufbb1\ufbd3-\ufd3d\ufd50-\ufd8f\ufd92-\ufdc7\ufdf0-\ufdfb\ufe70-\ufe74\ufe76-\ufefc\uff21-\uff3a\uff41-\uff5a\uff66-\uffbe\uffc2-\uffc7\uffca-\uffcf\uffd2-\uffd7\uffda-\uffdc0-9\u0300-\u036f\u0483-\u0487\u0591-\u05bd\u05bf\u05c1\u05c2\u05c4\u05c5\u05c7\u0610-\u061a\u064b-\u0669\u0670\u06d6-\u06dc\u06df-\u06e4\u06e7\u06e8\u06ea-\u06ed\u06f0-\u06f9\u0711\u0730-\u074a\u07a6-\u07b0\u07c0-\u07c9\u07eb-\u07f3\u0816-\u0819\u081b-\u0823\u0825-\u0827\u0829-\u082d\u0859-\u085b\u08e4-\u08fe\u0900-\u0903\u093a-\u093c\u093e-\u094f\u0951-\u0957\u0962\u0963\u0966-\u096f\u0981-\u0983\u09bc\u09be-\u09c4\u09c7\u09c8\u09cb-\u09cd\u09d7\u09e2\u09e3\u09e6-\u09ef\u0a01-\u0a03\u0a3c\u0a3e-\u0a42\u0a47\u0a48\u0a4b-\u0a4d\u0a51\u0a66-\u0a71\u0a75\u0a81-\u0a83\u0abc\u0abe-\u0ac5\u0ac7-\u0ac9\u0acb-\u0acd\u0ae2\u0ae3\u0ae6-\u0aef\u0b01-\u0b03\u0b3c\u0b3e-\u0b44\u0b47\u0b48\u0b4b-\u0b4d\u0b56\u0b57\u0b62\u0b63\u0b66-\u0b6f\u0b82\u0bbe-\u0bc2\u0bc6-\u0bc8\u0bca-\u0bcd\u0bd7\u0be6-\u0bef\u0c01-\u0c03\u0c3e-\u0c44\u0c46-\u0c48\u0c4a-\u0c4d\u0c55\u0c56\u0c62\u0c63\u0c66-\u0c6f\u0c82\u0c83\u0cbc\u0cbe-\u0cc4\u0cc6-\u0cc8\u0cca-\u0ccd\u0cd5\u0cd6\u0ce2\u0ce3\u0ce6-\u0cef\u0d02\u0d03\u0d3e-\u0d44\u0d46-\u0d48\u0d4a-\u0d4d\u0d57\u0d62\u0d63\u0d66-\u0d6f\u0d82\u0d83\u0dca\u0dcf-\u0dd4\u0dd6\u0dd8-\u0ddf\u0df2\u0df3\u0e31\u0e34-\u0e3a\u0e47-\u0e4e\u0e50-\u0e59\u0eb1\u0eb4-\u0eb9\u0ebb\u0ebc\u0ec8-\u0ecd\u0ed0-\u0ed9\u0f18\u0f19\u0f20-\u0f29\u0f35\u0f37\u0f39\u0f3e\u0f3f\u0f71-\u0f84\u0f86\u0f87\u0f8d-\u0f97\u0f99-\u0fbc\u0fc6\u102b-\u103e\u1040-\u1049\u1056-\u1059\u105e-\u1060\u1062-\u1064\u1067-\u106d\u1071-\u1074\u1082-\u108d\u108f-\u109d\u135d-\u135f\u1712-\u1714\u1732-\u1734\u1752\u1753\u1772\u1773\u17b4-\u17d3\u17dd\u17e0-\u17e9\u180b-\u180d\u1810-\u1819\u18a9\u1920-\u192b\u1930-\u193b\u1946-\u194f\u19b0-\u19c0\u19c8\u19c9\u19d0-\u19d9\u1a17-\u1a1b\u1a55-\u1a5e\u1a60-\u1a7c\u1a7f-\u1a89\u1a90-\u1a99\u1b00-\u1b04\u1b34-\u1b44\u1b50-\u1b59\u1b6b-\u1b73\u1b80-\u1b82\u1ba1-\u1bad\u1bb0-\u1bb9\u1be6-\u1bf3\u1c24-\u1c37\u1c40-\u1c49\u1c50-\u1c59\u1cd0-\u1cd2\u1cd4-\u1ce8\u1ced\u1cf2-\u1cf4\u1dc0-\u1de6\u1dfc-\u1dff\u200c\u200d\u203f\u2040\u2054\u20d0-\u20dc\u20e1\u20e5-\u20f0\u2cef-\u2cf1\u2d7f\u2de0-\u2dff\u302a-\u302f\u3099\u309a\ua620-\ua629\ua66f\ua674-\ua67d\ua69f\ua6f0\ua6f1\ua802\ua806\ua80b\ua823-\ua827\ua880\ua881\ua8b4-\ua8c4\ua8d0-\ua8d9\ua8e0-\ua8f1\ua900-\ua909\ua926-\ua92d\ua947-\ua953\ua980-\ua983\ua9b3-\ua9c0\ua9d0-\ua9d9\uaa29-\uaa36\uaa43\uaa4c\uaa4d\uaa50-\uaa59\uaa7b\uaab0\uaab2-\uaab4\uaab7\uaab8\uaabe\uaabf\uaac1\uaaeb-\uaaef\uaaf5\uaaf6\uabe3-\uabea\uabec\uabed\uabf0-\uabf9\ufb1e\ufe00-\ufe0f\ufe20-\ufe26\ufe33\ufe34\ufe4d-\ufe4f\uff10-\uff19\uff3f]*$/.test(str)
 }
 module.exports = isProperty
-},{}],454:[function(require,module,exports){
+},{}],419:[function(require,module,exports){
 var untilde = function(str) {
   return str.replace(/~./g, function(m) {
     switch (m) {
@@ -71665,16 +63282,16 @@ var set = function(obj, pointer, value) {
 exports.get = get
 exports.set = set
 
-},{}],455:[function(require,module,exports){
-arguments[4][63][0].apply(exports,arguments)
-},{"dup":63}],456:[function(require,module,exports){
+},{}],420:[function(require,module,exports){
+arguments[4][61][0].apply(exports,arguments)
+},{"dup":61}],421:[function(require,module,exports){
 (function (global){
 'use strict';
 
 module.exports = global.Promise || require('pinkie');
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"pinkie":457}],457:[function(require,module,exports){
+},{"pinkie":422}],422:[function(require,module,exports){
 'use strict';
 
 var PENDING = 'pending';
@@ -71952,7 +63569,7 @@ Promise.reject = function (reason) {
 
 module.exports = Promise;
 
-},{}],458:[function(require,module,exports){
+},{}],423:[function(require,module,exports){
 /*
     HTTP Hawk Authentication Scheme
     Copyright (c) 2012-2014, Eran Hammer <eran@hammer.io>
@@ -72591,7 +64208,7 @@ if (typeof module !== 'undefined' && module.exports) {
 /* eslint-enable */
 // $lab:coverage:on$
 
-},{}],459:[function(require,module,exports){
+},{}],424:[function(require,module,exports){
 // Copyright 2015 Joyent, Inc.
 
 var parser = require('./parser');
@@ -72620,7 +64237,7 @@ module.exports = {
   verifyHMAC: verify.verifyHMAC
 };
 
-},{"./parser":460,"./signer":461,"./util":462,"./verify":463}],460:[function(require,module,exports){
+},{"./parser":425,"./signer":426,"./util":427,"./verify":428}],425:[function(require,module,exports){
 // Copyright 2012 Joyent, Inc.  All rights reserved.
 
 var assert = require('assert-plus');
@@ -72926,7 +64543,7 @@ module.exports = {
 
 };
 
-},{"assert-plus":470,"util":60}],461:[function(require,module,exports){
+},{"assert-plus":435,"util":58}],426:[function(require,module,exports){
 // Copyright 2012 Joyent, Inc.  All rights reserved.
 
 var assert = require('assert-plus');
@@ -73106,7 +64723,7 @@ module.exports = {
 
 };
 
-},{"assert-plus":470,"crypto":76,"http":50,"util":60}],462:[function(require,module,exports){
+},{"assert-plus":435,"crypto":74,"http":48,"util":58}],427:[function(require,module,exports){
 (function (Buffer){
 // Copyright 2012 Joyent, Inc.  All rights reserved.
 
@@ -73416,7 +65033,7 @@ module.exports = {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"asn1":469,"assert-plus":470,"buffer":64,"crypto":76,"ctype":473}],463:[function(require,module,exports){
+},{"asn1":434,"assert-plus":435,"buffer":62,"crypto":74,"ctype":438}],428:[function(require,module,exports){
 // Copyright 2015 Joyent, Inc.
 
 var assert = require('assert-plus');
@@ -73474,7 +65091,7 @@ module.exports = {
   }
 };
 
-},{"assert-plus":470,"crypto":76}],464:[function(require,module,exports){
+},{"assert-plus":435,"crypto":74}],429:[function(require,module,exports){
 // Copyright 2011 Mark Cavage <mcavage@gmail.com> All rights reserved.
 
 
@@ -73489,7 +65106,7 @@ module.exports = {
 
 };
 
-},{}],465:[function(require,module,exports){
+},{}],430:[function(require,module,exports){
 // Copyright 2011 Mark Cavage <mcavage@gmail.com> All rights reserved.
 
 var errors = require('./errors');
@@ -73518,7 +65135,7 @@ for (var e in errors) {
     module.exports[e] = errors[e];
 }
 
-},{"./errors":464,"./reader":466,"./types":467,"./writer":468}],466:[function(require,module,exports){
+},{"./errors":429,"./reader":431,"./types":432,"./writer":433}],431:[function(require,module,exports){
 (function (Buffer){
 // Copyright 2011 Mark Cavage <mcavage@gmail.com> All rights reserved.
 
@@ -73789,7 +65406,7 @@ Reader.prototype._readTag = function(tag) {
 module.exports = Reader;
 
 }).call(this,{"isBuffer":require("../../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")})
-},{"../../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":28,"./errors":464,"./types":467,"assert":10}],467:[function(require,module,exports){
+},{"../../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":26,"./errors":429,"./types":432,"assert":8}],432:[function(require,module,exports){
 // Copyright 2011 Mark Cavage <mcavage@gmail.com> All rights reserved.
 
 
@@ -73827,7 +65444,7 @@ module.exports = {
   Context: 128
 };
 
-},{}],468:[function(require,module,exports){
+},{}],433:[function(require,module,exports){
 (function (Buffer){
 // Copyright 2011 Mark Cavage <mcavage@gmail.com> All rights reserved.
 
@@ -74148,7 +65765,7 @@ Writer.prototype._ensure = function(len) {
 module.exports = Writer;
 
 }).call(this,require("buffer").Buffer)
-},{"./errors":464,"./types":467,"assert":10,"buffer":64}],469:[function(require,module,exports){
+},{"./errors":429,"./types":432,"assert":8,"buffer":62}],434:[function(require,module,exports){
 // Copyright 2011 Mark Cavage <mcavage@gmail.com> All rights reserved.
 
 // If you have no idea what ASN.1 or BER is, see this:
@@ -74170,7 +65787,7 @@ module.exports = {
 
 };
 
-},{"./ber/index":465}],470:[function(require,module,exports){
+},{"./ber/index":430}],435:[function(require,module,exports){
 (function (Buffer,process){
 // Copyright (c) 2012, Mark Cavage. All rights reserved.
 
@@ -74419,7 +66036,7 @@ Object.keys(assert).forEach(function (k) {
 });
 
 }).call(this,{"isBuffer":require("../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")},require('_process'))
-},{"../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":28,"_process":31,"assert":10,"stream":49,"util":60}],471:[function(require,module,exports){
+},{"../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":26,"_process":29,"assert":8,"stream":47,"util":58}],436:[function(require,module,exports){
 /*
  * ctf.js
  *
@@ -74666,7 +66283,7 @@ function ctfParseJson(json, ctype)
 
 exports.ctfParseJson = ctfParseJson;
 
-},{"assert":10}],472:[function(require,module,exports){
+},{"assert":8}],437:[function(require,module,exports){
 /*
  * rm - Feb 2011
  * ctio.js:
@@ -76153,7 +67770,7 @@ exports.rdouble = rdouble;
 exports.wfloat = wfloat;
 exports.wdouble = wdouble;
 
-},{"assert":10}],473:[function(require,module,exports){
+},{"assert":8}],438:[function(require,module,exports){
 (function (Buffer){
 /*
  * rm - Feb 2011
@@ -77101,7 +68718,7 @@ exports.wfloat = mod_ctio.wfloat;
 exports.wdouble = mod_ctio.wdouble;
 
 }).call(this,require("buffer").Buffer)
-},{"./ctf.js":471,"./ctio.js":472,"assert":10,"buffer":64}],474:[function(require,module,exports){
+},{"./ctf.js":436,"./ctio.js":437,"assert":8,"buffer":62}],439:[function(require,module,exports){
 var stream = require('stream')
 
 
@@ -77130,7 +68747,7 @@ module.exports.isReadable = isReadable
 module.exports.isWritable = isWritable
 module.exports.isDuplex   = isDuplex
 
-},{"stream":49}],475:[function(require,module,exports){
+},{"stream":47}],440:[function(require,module,exports){
 exports = module.exports = stringify
 exports.getSerialize = serializer
 
@@ -77159,7 +68776,7 @@ function serializer(replacer, cycleReplacer) {
   }
 }
 
-},{}],476:[function(require,module,exports){
+},{}],441:[function(require,module,exports){
 /*!
  * mime-types
  * Copyright(c) 2014 Jonathan Ong
@@ -77349,7 +68966,7 @@ function populateMaps(extensions, types) {
   })
 }
 
-},{"mime-db":478,"path":30}],477:[function(require,module,exports){
+},{"mime-db":443,"path":28}],442:[function(require,module,exports){
 module.exports={
   "application/1d-interleaved-parityfec": {
     "source": "iana"
@@ -83825,7 +75442,7 @@ module.exports={
   }
 }
 
-},{}],478:[function(require,module,exports){
+},{}],443:[function(require,module,exports){
 /*!
  * mime-db
  * Copyright(c) 2014 Jonathan Ong
@@ -83838,7 +75455,7 @@ module.exports={
 
 module.exports = require('./db.json')
 
-},{"./db.json":477}],479:[function(require,module,exports){
+},{"./db.json":442}],444:[function(require,module,exports){
 //     uuid.js
 //
 //     Copyright (c) 2010-2012 Robert Kieffer
@@ -84087,7 +75704,7 @@ module.exports = require('./db.json')
   }
 }).call(this);
 
-},{}],480:[function(require,module,exports){
+},{}],445:[function(require,module,exports){
 var crypto = require('crypto')
   , qs = require('querystring')
   ;
@@ -84223,7 +75840,7 @@ exports.plaintext = plaintext
 exports.sign = sign
 exports.rfc3986 = rfc3986
 
-},{"crypto":76,"querystring":35}],481:[function(require,module,exports){
+},{"crypto":74,"querystring":33}],446:[function(require,module,exports){
 // Load modules
 
 var Stringify = require('./stringify');
@@ -84240,7 +75857,7 @@ module.exports = {
     parse: Parse
 };
 
-},{"./parse":482,"./stringify":483}],482:[function(require,module,exports){
+},{"./parse":447,"./stringify":448}],447:[function(require,module,exports){
 // Load modules
 
 var Utils = require('./utils');
@@ -84429,7 +76046,7 @@ module.exports = function (str, options) {
     return Utils.compact(obj);
 };
 
-},{"./utils":484}],483:[function(require,module,exports){
+},{"./utils":449}],448:[function(require,module,exports){
 // Load modules
 
 var Utils = require('./utils');
@@ -84585,7 +76202,7 @@ module.exports = function (obj, options) {
     return keys.join(delimiter);
 };
 
-},{"./utils":484}],484:[function(require,module,exports){
+},{"./utils":449}],449:[function(require,module,exports){
 // Load modules
 
 
@@ -84777,7 +76394,7 @@ exports.isBuffer = function (obj) {
               obj.constructor.isBuffer(obj));
 };
 
-},{}],485:[function(require,module,exports){
+},{}],450:[function(require,module,exports){
 (function (Buffer){
 var util = require('util')
 var Stream = require('stream')
@@ -84883,7 +76500,7 @@ function alignedWrite(buffer) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":64,"stream":49,"string_decoder":55,"util":60}],486:[function(require,module,exports){
+},{"buffer":62,"stream":47,"string_decoder":53,"util":58}],451:[function(require,module,exports){
 /*!
  * Copyright (c) 2015, Salesforce.com, Inc.
  * All rights reserved.
@@ -86227,7 +77844,7 @@ module.exports = {
   canonicalDomain: canonicalDomain
 };
 
-},{"../package.json":492,"./memstore":487,"./pathMatch":488,"./permuteDomain":489,"./pubsuffix":490,"./store":491,"net":9,"punycode":32,"url":57}],487:[function(require,module,exports){
+},{"../package.json":457,"./memstore":452,"./pathMatch":453,"./permuteDomain":454,"./pubsuffix":455,"./store":456,"net":7,"punycode":30,"url":55}],452:[function(require,module,exports){
 /*!
  * Copyright (c) 2015, Salesforce.com, Inc.
  * All rights reserved.
@@ -86399,7 +78016,7 @@ MemoryCookieStore.prototype.getAllCookies = function(cb) {
   cb(null, cookies);
 };
 
-},{"./pathMatch":488,"./permuteDomain":489,"./store":491,"util":60}],488:[function(require,module,exports){
+},{"./pathMatch":453,"./permuteDomain":454,"./store":456,"util":58}],453:[function(require,module,exports){
 /*!
  * Copyright (c) 2015, Salesforce.com, Inc.
  * All rights reserved.
@@ -86462,7 +78079,7 @@ function pathMatch (reqPath, cookiePath) {
 
 exports.pathMatch = pathMatch;
 
-},{}],489:[function(require,module,exports){
+},{}],454:[function(require,module,exports){
 /*!
  * Copyright (c) 2015, Salesforce.com, Inc.
  * All rights reserved.
@@ -86520,7 +78137,7 @@ function permuteDomain (domain) {
 
 exports.permuteDomain = permuteDomain;
 
-},{"./pubsuffix":490}],490:[function(require,module,exports){
+},{"./pubsuffix":455}],455:[function(require,module,exports){
 /****************************************************
  * AUTOMATICALLY GENERATED by generate-pubsuffix.js *
  *                  DO NOT EDIT!                    *
@@ -86620,7 +78237,7 @@ var index = module.exports.index = Object.freeze(
 
 // END of automatically generated file
 
-},{"punycode":32}],491:[function(require,module,exports){
+},{"punycode":30}],456:[function(require,module,exports){
 /*!
  * Copyright (c) 2015, Salesforce.com, Inc.
  * All rights reserved.
@@ -86693,7 +78310,7 @@ Store.prototype.getAllCookies = function(cb) {
   throw new Error('getAllCookies is not implemented (therefore jar cannot be serialized)');
 };
 
-},{}],492:[function(require,module,exports){
+},{}],457:[function(require,module,exports){
 module.exports={
   "author": {
     "name": "Jeremy Stashewsky",
@@ -86785,7 +78402,7 @@ module.exports={
   "readme": "ERROR: No README data found!"
 }
 
-},{}],493:[function(require,module,exports){
+},{}],458:[function(require,module,exports){
 (function (process,Buffer){
 'use strict'
 
@@ -87030,7 +78647,7 @@ if (process.env.NODE_DEBUG && /\btunnel\b/.test(process.env.NODE_DEBUG)) {
 exports.debug = debug // for test
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"_process":31,"assert":10,"buffer":64,"events":25,"http":50,"https":26,"net":9,"tls":9,"util":60}],494:[function(require,module,exports){
+},{"_process":29,"assert":8,"buffer":62,"events":23,"http":48,"https":24,"net":7,"tls":7,"util":58}],459:[function(require,module,exports){
 (function (process,Buffer){
 'use strict'
 
@@ -88472,7 +80089,7 @@ Request.prototype.toJSON = requestToJSON
 module.exports = Request
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./lib/auth":402,"./lib/cookies":403,"./lib/getProxyFromURI":404,"./lib/har":405,"./lib/helpers":406,"./lib/multipart":407,"./lib/oauth":408,"./lib/querystring":409,"./lib/redirect":410,"./lib/tunnel":411,"_process":31,"aws-sign2":412,"bl":413,"buffer":64,"caseless":424,"forever-agent":428,"form-data":429,"hawk":458,"http":50,"http-signature":459,"https":26,"mime-types":476,"stream":49,"stringstream":485,"url":57,"util":60,"zlib":24}],495:[function(require,module,exports){
+},{"./lib/auth":367,"./lib/cookies":368,"./lib/getProxyFromURI":369,"./lib/har":370,"./lib/helpers":371,"./lib/multipart":372,"./lib/oauth":373,"./lib/querystring":374,"./lib/redirect":375,"./lib/tunnel":376,"_process":29,"aws-sign2":377,"bl":378,"buffer":62,"caseless":389,"forever-agent":393,"form-data":394,"hawk":423,"http":48,"http-signature":424,"https":24,"mime-types":441,"stream":47,"stringstream":450,"url":55,"util":58,"zlib":22}],460:[function(require,module,exports){
 (function (process,Buffer){
 /**
  * keythereum: create/import/export ethereum keys
@@ -89077,7 +80694,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./lib/keccak":496,"./lib/scrypt":497,"_process":31,"buffer":64,"crypto":76,"crypto-browserify":498,"elliptic":691,"ethereumjs-util":717,"fs":9,"node-uuid":722,"path":30,"validator":723}],496:[function(require,module,exports){
+},{"./lib/keccak":461,"./lib/scrypt":462,"_process":29,"buffer":62,"crypto":74,"crypto-browserify":463,"elliptic":656,"ethereumjs-util":682,"fs":7,"node-uuid":687,"path":28,"validator":688}],461:[function(require,module,exports){
 /* keccak.js
  * A Javascript implementation of the Keccak SHA-3 candidate from Bertoni,
  * Daemen, Peeters and van Assche. This version is not optimized with any of 
@@ -89271,7 +80888,7 @@ module.exports = (function () {
     };
 }());
 
-},{}],497:[function(require,module,exports){
+},{}],462:[function(require,module,exports){
 (function (process,__dirname){
 // https://github.com/tonyg/js-scrypt
 module.exports = function (requested_total_memory) {
@@ -100992,73 +92609,73 @@ module.exports = function (requested_total_memory) {
 };
 
 }).call(this,require('_process'),"/../keythereum/lib")
-},{"_process":31,"fs":9,"path":30}],498:[function(require,module,exports){
+},{"_process":29,"fs":7,"path":28}],463:[function(require,module,exports){
+arguments[4][74][0].apply(exports,arguments)
+},{"browserify-cipher":464,"browserify-sign":494,"browserify-sign/algos":493,"create-ecdh":561,"create-hash":587,"create-hmac":600,"diffie-hellman":601,"dup":74,"pbkdf2":609,"public-encrypt":610,"randombytes":655}],464:[function(require,module,exports){
+arguments[4][75][0].apply(exports,arguments)
+},{"browserify-aes/browser":467,"browserify-aes/modes":471,"browserify-des":482,"browserify-des/modes":483,"dup":75,"evp_bytestokey":492}],465:[function(require,module,exports){
 arguments[4][76][0].apply(exports,arguments)
-},{"browserify-cipher":499,"browserify-sign":529,"browserify-sign/algos":528,"create-ecdh":596,"create-hash":622,"create-hmac":635,"diffie-hellman":636,"dup":76,"pbkdf2":644,"public-encrypt":645,"randombytes":690}],499:[function(require,module,exports){
+},{"buffer":62,"dup":76}],466:[function(require,module,exports){
 arguments[4][77][0].apply(exports,arguments)
-},{"browserify-aes/browser":502,"browserify-aes/modes":506,"browserify-des":517,"browserify-des/modes":518,"dup":77,"evp_bytestokey":527}],500:[function(require,module,exports){
+},{"./aes":465,"./ghash":470,"buffer":62,"buffer-xor":479,"cipher-base":480,"dup":77,"inherits":608}],467:[function(require,module,exports){
 arguments[4][78][0].apply(exports,arguments)
-},{"buffer":64,"dup":78}],501:[function(require,module,exports){
+},{"./decrypter":468,"./encrypter":469,"./modes":471,"dup":78}],468:[function(require,module,exports){
 arguments[4][79][0].apply(exports,arguments)
-},{"./aes":500,"./ghash":505,"buffer":64,"buffer-xor":514,"cipher-base":515,"dup":79,"inherits":643}],502:[function(require,module,exports){
+},{"./aes":465,"./authCipher":466,"./modes":471,"./modes/cbc":472,"./modes/cfb":473,"./modes/cfb1":474,"./modes/cfb8":475,"./modes/ctr":476,"./modes/ecb":477,"./modes/ofb":478,"./streamCipher":481,"buffer":62,"cipher-base":480,"dup":79,"evp_bytestokey":492,"inherits":608}],469:[function(require,module,exports){
 arguments[4][80][0].apply(exports,arguments)
-},{"./decrypter":503,"./encrypter":504,"./modes":506,"dup":80}],503:[function(require,module,exports){
+},{"./aes":465,"./authCipher":466,"./modes":471,"./modes/cbc":472,"./modes/cfb":473,"./modes/cfb1":474,"./modes/cfb8":475,"./modes/ctr":476,"./modes/ecb":477,"./modes/ofb":478,"./streamCipher":481,"buffer":62,"cipher-base":480,"dup":80,"evp_bytestokey":492,"inherits":608}],470:[function(require,module,exports){
 arguments[4][81][0].apply(exports,arguments)
-},{"./aes":500,"./authCipher":501,"./modes":506,"./modes/cbc":507,"./modes/cfb":508,"./modes/cfb1":509,"./modes/cfb8":510,"./modes/ctr":511,"./modes/ecb":512,"./modes/ofb":513,"./streamCipher":516,"buffer":64,"cipher-base":515,"dup":81,"evp_bytestokey":527,"inherits":643}],504:[function(require,module,exports){
+},{"buffer":62,"dup":81}],471:[function(require,module,exports){
 arguments[4][82][0].apply(exports,arguments)
-},{"./aes":500,"./authCipher":501,"./modes":506,"./modes/cbc":507,"./modes/cfb":508,"./modes/cfb1":509,"./modes/cfb8":510,"./modes/ctr":511,"./modes/ecb":512,"./modes/ofb":513,"./streamCipher":516,"buffer":64,"cipher-base":515,"dup":82,"evp_bytestokey":527,"inherits":643}],505:[function(require,module,exports){
+},{"dup":82}],472:[function(require,module,exports){
 arguments[4][83][0].apply(exports,arguments)
-},{"buffer":64,"dup":83}],506:[function(require,module,exports){
+},{"buffer-xor":479,"dup":83}],473:[function(require,module,exports){
 arguments[4][84][0].apply(exports,arguments)
-},{"dup":84}],507:[function(require,module,exports){
+},{"buffer":62,"buffer-xor":479,"dup":84}],474:[function(require,module,exports){
 arguments[4][85][0].apply(exports,arguments)
-},{"buffer-xor":514,"dup":85}],508:[function(require,module,exports){
+},{"buffer":62,"dup":85}],475:[function(require,module,exports){
 arguments[4][86][0].apply(exports,arguments)
-},{"buffer":64,"buffer-xor":514,"dup":86}],509:[function(require,module,exports){
+},{"buffer":62,"dup":86}],476:[function(require,module,exports){
 arguments[4][87][0].apply(exports,arguments)
-},{"buffer":64,"dup":87}],510:[function(require,module,exports){
+},{"buffer":62,"buffer-xor":479,"dup":87}],477:[function(require,module,exports){
 arguments[4][88][0].apply(exports,arguments)
-},{"buffer":64,"dup":88}],511:[function(require,module,exports){
+},{"dup":88}],478:[function(require,module,exports){
 arguments[4][89][0].apply(exports,arguments)
-},{"buffer":64,"buffer-xor":514,"dup":89}],512:[function(require,module,exports){
+},{"buffer":62,"buffer-xor":479,"dup":89}],479:[function(require,module,exports){
 arguments[4][90][0].apply(exports,arguments)
-},{"dup":90}],513:[function(require,module,exports){
+},{"buffer":62,"dup":90}],480:[function(require,module,exports){
 arguments[4][91][0].apply(exports,arguments)
-},{"buffer":64,"buffer-xor":514,"dup":91}],514:[function(require,module,exports){
+},{"buffer":62,"dup":91,"inherits":608,"stream":47,"string_decoder":53}],481:[function(require,module,exports){
 arguments[4][92][0].apply(exports,arguments)
-},{"buffer":64,"dup":92}],515:[function(require,module,exports){
+},{"./aes":465,"buffer":62,"cipher-base":480,"dup":92,"inherits":608}],482:[function(require,module,exports){
 arguments[4][93][0].apply(exports,arguments)
-},{"buffer":64,"dup":93,"inherits":643,"stream":49,"string_decoder":55}],516:[function(require,module,exports){
+},{"buffer":62,"cipher-base":484,"des.js":485,"dup":93,"inherits":608}],483:[function(require,module,exports){
 arguments[4][94][0].apply(exports,arguments)
-},{"./aes":500,"buffer":64,"cipher-base":515,"dup":94,"inherits":643}],517:[function(require,module,exports){
-arguments[4][95][0].apply(exports,arguments)
-},{"buffer":64,"cipher-base":519,"des.js":520,"dup":95,"inherits":643}],518:[function(require,module,exports){
+},{"dup":94}],484:[function(require,module,exports){
+arguments[4][91][0].apply(exports,arguments)
+},{"buffer":62,"dup":91,"inherits":608,"stream":47,"string_decoder":53}],485:[function(require,module,exports){
 arguments[4][96][0].apply(exports,arguments)
-},{"dup":96}],519:[function(require,module,exports){
-arguments[4][93][0].apply(exports,arguments)
-},{"buffer":64,"dup":93,"inherits":643,"stream":49,"string_decoder":55}],520:[function(require,module,exports){
+},{"./des/cbc":486,"./des/cipher":487,"./des/des":488,"./des/ede":489,"./des/utils":490,"dup":96}],486:[function(require,module,exports){
+arguments[4][97][0].apply(exports,arguments)
+},{"dup":97,"inherits":608,"minimalistic-assert":491}],487:[function(require,module,exports){
 arguments[4][98][0].apply(exports,arguments)
-},{"./des/cbc":521,"./des/cipher":522,"./des/des":523,"./des/ede":524,"./des/utils":525,"dup":98}],521:[function(require,module,exports){
+},{"dup":98,"minimalistic-assert":491}],488:[function(require,module,exports){
 arguments[4][99][0].apply(exports,arguments)
-},{"dup":99,"inherits":643,"minimalistic-assert":526}],522:[function(require,module,exports){
+},{"../des":485,"dup":99,"inherits":608,"minimalistic-assert":491}],489:[function(require,module,exports){
 arguments[4][100][0].apply(exports,arguments)
-},{"dup":100,"minimalistic-assert":526}],523:[function(require,module,exports){
+},{"../des":485,"dup":100,"inherits":608,"minimalistic-assert":491}],490:[function(require,module,exports){
 arguments[4][101][0].apply(exports,arguments)
-},{"../des":520,"dup":101,"inherits":643,"minimalistic-assert":526}],524:[function(require,module,exports){
+},{"dup":101}],491:[function(require,module,exports){
 arguments[4][102][0].apply(exports,arguments)
-},{"../des":520,"dup":102,"inherits":643,"minimalistic-assert":526}],525:[function(require,module,exports){
+},{"dup":102}],492:[function(require,module,exports){
 arguments[4][103][0].apply(exports,arguments)
-},{"dup":103}],526:[function(require,module,exports){
+},{"buffer":62,"create-hash/md5":589,"dup":103}],493:[function(require,module,exports){
 arguments[4][104][0].apply(exports,arguments)
-},{"dup":104}],527:[function(require,module,exports){
+},{"buffer":62,"dup":104}],494:[function(require,module,exports){
 arguments[4][105][0].apply(exports,arguments)
-},{"buffer":64,"create-hash/md5":624,"dup":105}],528:[function(require,module,exports){
+},{"./algos":493,"./sign":559,"./verify":560,"buffer":62,"create-hash":587,"dup":105,"inherits":608,"stream":47}],495:[function(require,module,exports){
 arguments[4][106][0].apply(exports,arguments)
-},{"buffer":64,"dup":106}],529:[function(require,module,exports){
-arguments[4][107][0].apply(exports,arguments)
-},{"./algos":528,"./sign":594,"./verify":595,"buffer":64,"create-hash":622,"dup":107,"inherits":643,"stream":49}],530:[function(require,module,exports){
-arguments[4][108][0].apply(exports,arguments)
-},{"dup":108}],531:[function(require,module,exports){
+},{"dup":106}],496:[function(require,module,exports){
 (function (module, exports) {
 
 'use strict';
@@ -104922,335 +96539,335 @@ Mont.prototype.invm = function invm(a) {
 
 })(typeof module === 'undefined' || module, this);
 
-},{}],532:[function(require,module,exports){
+},{}],497:[function(require,module,exports){
+arguments[4][108][0].apply(exports,arguments)
+},{"bn.js":496,"buffer":62,"dup":108,"randombytes":655}],498:[function(require,module,exports){
+arguments[4][109][0].apply(exports,arguments)
+},{"../package.json":521,"./elliptic/curve":501,"./elliptic/curves":504,"./elliptic/ec":505,"./elliptic/eddsa":508,"./elliptic/hmac-drbg":511,"./elliptic/utils":513,"brorand":514,"dup":109}],499:[function(require,module,exports){
 arguments[4][110][0].apply(exports,arguments)
-},{"bn.js":531,"buffer":64,"dup":110,"randombytes":690}],533:[function(require,module,exports){
+},{"../../elliptic":498,"bn.js":496,"dup":110}],500:[function(require,module,exports){
 arguments[4][111][0].apply(exports,arguments)
-},{"../package.json":556,"./elliptic/curve":536,"./elliptic/curves":539,"./elliptic/ec":540,"./elliptic/eddsa":543,"./elliptic/hmac-drbg":546,"./elliptic/utils":548,"brorand":549,"dup":111}],534:[function(require,module,exports){
+},{"../../elliptic":498,"../curve":501,"bn.js":496,"dup":111,"inherits":608}],501:[function(require,module,exports){
 arguments[4][112][0].apply(exports,arguments)
-},{"../../elliptic":533,"bn.js":531,"dup":112}],535:[function(require,module,exports){
+},{"./base":499,"./edwards":500,"./mont":502,"./short":503,"dup":112}],502:[function(require,module,exports){
 arguments[4][113][0].apply(exports,arguments)
-},{"../../elliptic":533,"../curve":536,"bn.js":531,"dup":113,"inherits":643}],536:[function(require,module,exports){
+},{"../../elliptic":498,"../curve":501,"bn.js":496,"dup":113,"inherits":608}],503:[function(require,module,exports){
 arguments[4][114][0].apply(exports,arguments)
-},{"./base":534,"./edwards":535,"./mont":537,"./short":538,"dup":114}],537:[function(require,module,exports){
+},{"../../elliptic":498,"../curve":501,"bn.js":496,"dup":114,"inherits":608}],504:[function(require,module,exports){
 arguments[4][115][0].apply(exports,arguments)
-},{"../../elliptic":533,"../curve":536,"bn.js":531,"dup":115,"inherits":643}],538:[function(require,module,exports){
+},{"../elliptic":498,"./precomputed/secp256k1":512,"dup":115,"hash.js":515}],505:[function(require,module,exports){
 arguments[4][116][0].apply(exports,arguments)
-},{"../../elliptic":533,"../curve":536,"bn.js":531,"dup":116,"inherits":643}],539:[function(require,module,exports){
+},{"../../elliptic":498,"./key":506,"./signature":507,"bn.js":496,"dup":116}],506:[function(require,module,exports){
 arguments[4][117][0].apply(exports,arguments)
-},{"../elliptic":533,"./precomputed/secp256k1":547,"dup":117,"hash.js":550}],540:[function(require,module,exports){
+},{"bn.js":496,"dup":117}],507:[function(require,module,exports){
 arguments[4][118][0].apply(exports,arguments)
-},{"../../elliptic":533,"./key":541,"./signature":542,"bn.js":531,"dup":118}],541:[function(require,module,exports){
+},{"../../elliptic":498,"bn.js":496,"dup":118}],508:[function(require,module,exports){
 arguments[4][119][0].apply(exports,arguments)
-},{"bn.js":531,"dup":119}],542:[function(require,module,exports){
+},{"../../elliptic":498,"./key":509,"./signature":510,"dup":119,"hash.js":515}],509:[function(require,module,exports){
 arguments[4][120][0].apply(exports,arguments)
-},{"../../elliptic":533,"bn.js":531,"dup":120}],543:[function(require,module,exports){
+},{"../../elliptic":498,"dup":120}],510:[function(require,module,exports){
 arguments[4][121][0].apply(exports,arguments)
-},{"../../elliptic":533,"./key":544,"./signature":545,"dup":121,"hash.js":550}],544:[function(require,module,exports){
+},{"../../elliptic":498,"bn.js":496,"dup":121}],511:[function(require,module,exports){
 arguments[4][122][0].apply(exports,arguments)
-},{"../../elliptic":533,"dup":122}],545:[function(require,module,exports){
+},{"../elliptic":498,"dup":122,"hash.js":515}],512:[function(require,module,exports){
 arguments[4][123][0].apply(exports,arguments)
-},{"../../elliptic":533,"bn.js":531,"dup":123}],546:[function(require,module,exports){
+},{"dup":123}],513:[function(require,module,exports){
 arguments[4][124][0].apply(exports,arguments)
-},{"../elliptic":533,"dup":124,"hash.js":550}],547:[function(require,module,exports){
+},{"bn.js":496,"dup":124}],514:[function(require,module,exports){
 arguments[4][125][0].apply(exports,arguments)
-},{"dup":125}],548:[function(require,module,exports){
+},{"dup":125}],515:[function(require,module,exports){
 arguments[4][126][0].apply(exports,arguments)
-},{"bn.js":531,"dup":126}],549:[function(require,module,exports){
+},{"./hash/common":516,"./hash/hmac":517,"./hash/ripemd":518,"./hash/sha":519,"./hash/utils":520,"dup":126}],516:[function(require,module,exports){
 arguments[4][127][0].apply(exports,arguments)
-},{"dup":127}],550:[function(require,module,exports){
+},{"../hash":515,"dup":127}],517:[function(require,module,exports){
 arguments[4][128][0].apply(exports,arguments)
-},{"./hash/common":551,"./hash/hmac":552,"./hash/ripemd":553,"./hash/sha":554,"./hash/utils":555,"dup":128}],551:[function(require,module,exports){
+},{"../hash":515,"dup":128}],518:[function(require,module,exports){
 arguments[4][129][0].apply(exports,arguments)
-},{"../hash":550,"dup":129}],552:[function(require,module,exports){
+},{"../hash":515,"dup":129}],519:[function(require,module,exports){
 arguments[4][130][0].apply(exports,arguments)
-},{"../hash":550,"dup":130}],553:[function(require,module,exports){
+},{"../hash":515,"dup":130}],520:[function(require,module,exports){
 arguments[4][131][0].apply(exports,arguments)
-},{"../hash":550,"dup":131}],554:[function(require,module,exports){
+},{"dup":131,"inherits":608}],521:[function(require,module,exports){
 arguments[4][132][0].apply(exports,arguments)
-},{"../hash":550,"dup":132}],555:[function(require,module,exports){
+},{"dup":132}],522:[function(require,module,exports){
 arguments[4][133][0].apply(exports,arguments)
-},{"dup":133,"inherits":643}],556:[function(require,module,exports){
+},{"dup":133}],523:[function(require,module,exports){
 arguments[4][134][0].apply(exports,arguments)
-},{"dup":134}],557:[function(require,module,exports){
+},{"asn1.js":526,"dup":134}],524:[function(require,module,exports){
 arguments[4][135][0].apply(exports,arguments)
-},{"dup":135}],558:[function(require,module,exports){
+},{"browserify-aes":543,"buffer":62,"dup":135,"evp_bytestokey":558}],525:[function(require,module,exports){
 arguments[4][136][0].apply(exports,arguments)
-},{"asn1.js":561,"dup":136}],559:[function(require,module,exports){
+},{"./aesid.json":522,"./asn1":523,"./fixProc":524,"browserify-aes":543,"buffer":62,"dup":136,"pbkdf2":609}],526:[function(require,module,exports){
 arguments[4][137][0].apply(exports,arguments)
-},{"browserify-aes":578,"buffer":64,"dup":137,"evp_bytestokey":593}],560:[function(require,module,exports){
+},{"./asn1/api":527,"./asn1/base":529,"./asn1/constants":533,"./asn1/decoders":535,"./asn1/encoders":538,"bn.js":496,"dup":137}],527:[function(require,module,exports){
 arguments[4][138][0].apply(exports,arguments)
-},{"./aesid.json":557,"./asn1":558,"./fixProc":559,"browserify-aes":578,"buffer":64,"dup":138,"pbkdf2":644}],561:[function(require,module,exports){
+},{"../asn1":526,"dup":138,"inherits":608,"vm":59}],528:[function(require,module,exports){
 arguments[4][139][0].apply(exports,arguments)
-},{"./asn1/api":562,"./asn1/base":564,"./asn1/constants":568,"./asn1/decoders":570,"./asn1/encoders":573,"bn.js":531,"dup":139}],562:[function(require,module,exports){
+},{"../base":529,"buffer":62,"dup":139,"inherits":608}],529:[function(require,module,exports){
 arguments[4][140][0].apply(exports,arguments)
-},{"../asn1":561,"dup":140,"inherits":643,"vm":61}],563:[function(require,module,exports){
+},{"./buffer":528,"./node":530,"./reporter":531,"dup":140}],530:[function(require,module,exports){
 arguments[4][141][0].apply(exports,arguments)
-},{"../base":564,"buffer":64,"dup":141,"inherits":643}],564:[function(require,module,exports){
+},{"../base":529,"dup":141,"minimalistic-assert":540}],531:[function(require,module,exports){
 arguments[4][142][0].apply(exports,arguments)
-},{"./buffer":563,"./node":565,"./reporter":566,"dup":142}],565:[function(require,module,exports){
+},{"dup":142,"inherits":608}],532:[function(require,module,exports){
 arguments[4][143][0].apply(exports,arguments)
-},{"../base":564,"dup":143,"minimalistic-assert":575}],566:[function(require,module,exports){
+},{"../constants":533,"dup":143}],533:[function(require,module,exports){
 arguments[4][144][0].apply(exports,arguments)
-},{"dup":144,"inherits":643}],567:[function(require,module,exports){
+},{"./der":532,"dup":144}],534:[function(require,module,exports){
 arguments[4][145][0].apply(exports,arguments)
-},{"../constants":568,"dup":145}],568:[function(require,module,exports){
+},{"../../asn1":526,"dup":145,"inherits":608}],535:[function(require,module,exports){
 arguments[4][146][0].apply(exports,arguments)
-},{"./der":567,"dup":146}],569:[function(require,module,exports){
+},{"./der":534,"./pem":536,"dup":146}],536:[function(require,module,exports){
 arguments[4][147][0].apply(exports,arguments)
-},{"../../asn1":561,"dup":147,"inherits":643}],570:[function(require,module,exports){
+},{"../../asn1":526,"./der":534,"buffer":62,"dup":147,"inherits":608}],537:[function(require,module,exports){
 arguments[4][148][0].apply(exports,arguments)
-},{"./der":569,"./pem":571,"dup":148}],571:[function(require,module,exports){
+},{"../../asn1":526,"buffer":62,"dup":148,"inherits":608}],538:[function(require,module,exports){
 arguments[4][149][0].apply(exports,arguments)
-},{"../../asn1":561,"./der":569,"buffer":64,"dup":149,"inherits":643}],572:[function(require,module,exports){
+},{"./der":537,"./pem":539,"dup":149}],539:[function(require,module,exports){
 arguments[4][150][0].apply(exports,arguments)
-},{"../../asn1":561,"buffer":64,"dup":150,"inherits":643}],573:[function(require,module,exports){
-arguments[4][151][0].apply(exports,arguments)
-},{"./der":572,"./pem":574,"dup":151}],574:[function(require,module,exports){
-arguments[4][152][0].apply(exports,arguments)
-},{"../../asn1":561,"./der":572,"buffer":64,"dup":152,"inherits":643}],575:[function(require,module,exports){
-arguments[4][104][0].apply(exports,arguments)
-},{"dup":104}],576:[function(require,module,exports){
+},{"../../asn1":526,"./der":537,"buffer":62,"dup":150,"inherits":608}],540:[function(require,module,exports){
+arguments[4][102][0].apply(exports,arguments)
+},{"dup":102}],541:[function(require,module,exports){
+arguments[4][76][0].apply(exports,arguments)
+},{"buffer":62,"dup":76}],542:[function(require,module,exports){
+arguments[4][77][0].apply(exports,arguments)
+},{"./aes":541,"./ghash":546,"buffer":62,"buffer-xor":555,"cipher-base":556,"dup":77,"inherits":608}],543:[function(require,module,exports){
 arguments[4][78][0].apply(exports,arguments)
-},{"buffer":64,"dup":78}],577:[function(require,module,exports){
+},{"./decrypter":544,"./encrypter":545,"./modes":547,"dup":78}],544:[function(require,module,exports){
 arguments[4][79][0].apply(exports,arguments)
-},{"./aes":576,"./ghash":581,"buffer":64,"buffer-xor":590,"cipher-base":591,"dup":79,"inherits":643}],578:[function(require,module,exports){
+},{"./aes":541,"./authCipher":542,"./modes":547,"./modes/cbc":548,"./modes/cfb":549,"./modes/cfb1":550,"./modes/cfb8":551,"./modes/ctr":552,"./modes/ecb":553,"./modes/ofb":554,"./streamCipher":557,"buffer":62,"cipher-base":556,"dup":79,"evp_bytestokey":558,"inherits":608}],545:[function(require,module,exports){
 arguments[4][80][0].apply(exports,arguments)
-},{"./decrypter":579,"./encrypter":580,"./modes":582,"dup":80}],579:[function(require,module,exports){
+},{"./aes":541,"./authCipher":542,"./modes":547,"./modes/cbc":548,"./modes/cfb":549,"./modes/cfb1":550,"./modes/cfb8":551,"./modes/ctr":552,"./modes/ecb":553,"./modes/ofb":554,"./streamCipher":557,"buffer":62,"cipher-base":556,"dup":80,"evp_bytestokey":558,"inherits":608}],546:[function(require,module,exports){
 arguments[4][81][0].apply(exports,arguments)
-},{"./aes":576,"./authCipher":577,"./modes":582,"./modes/cbc":583,"./modes/cfb":584,"./modes/cfb1":585,"./modes/cfb8":586,"./modes/ctr":587,"./modes/ecb":588,"./modes/ofb":589,"./streamCipher":592,"buffer":64,"cipher-base":591,"dup":81,"evp_bytestokey":593,"inherits":643}],580:[function(require,module,exports){
+},{"buffer":62,"dup":81}],547:[function(require,module,exports){
 arguments[4][82][0].apply(exports,arguments)
-},{"./aes":576,"./authCipher":577,"./modes":582,"./modes/cbc":583,"./modes/cfb":584,"./modes/cfb1":585,"./modes/cfb8":586,"./modes/ctr":587,"./modes/ecb":588,"./modes/ofb":589,"./streamCipher":592,"buffer":64,"cipher-base":591,"dup":82,"evp_bytestokey":593,"inherits":643}],581:[function(require,module,exports){
+},{"dup":82}],548:[function(require,module,exports){
 arguments[4][83][0].apply(exports,arguments)
-},{"buffer":64,"dup":83}],582:[function(require,module,exports){
+},{"buffer-xor":555,"dup":83}],549:[function(require,module,exports){
 arguments[4][84][0].apply(exports,arguments)
-},{"dup":84}],583:[function(require,module,exports){
+},{"buffer":62,"buffer-xor":555,"dup":84}],550:[function(require,module,exports){
 arguments[4][85][0].apply(exports,arguments)
-},{"buffer-xor":590,"dup":85}],584:[function(require,module,exports){
+},{"buffer":62,"dup":85}],551:[function(require,module,exports){
 arguments[4][86][0].apply(exports,arguments)
-},{"buffer":64,"buffer-xor":590,"dup":86}],585:[function(require,module,exports){
+},{"buffer":62,"dup":86}],552:[function(require,module,exports){
 arguments[4][87][0].apply(exports,arguments)
-},{"buffer":64,"dup":87}],586:[function(require,module,exports){
+},{"buffer":62,"buffer-xor":555,"dup":87}],553:[function(require,module,exports){
 arguments[4][88][0].apply(exports,arguments)
-},{"buffer":64,"dup":88}],587:[function(require,module,exports){
+},{"dup":88}],554:[function(require,module,exports){
 arguments[4][89][0].apply(exports,arguments)
-},{"buffer":64,"buffer-xor":590,"dup":89}],588:[function(require,module,exports){
+},{"buffer":62,"buffer-xor":555,"dup":89}],555:[function(require,module,exports){
 arguments[4][90][0].apply(exports,arguments)
-},{"dup":90}],589:[function(require,module,exports){
+},{"buffer":62,"dup":90}],556:[function(require,module,exports){
 arguments[4][91][0].apply(exports,arguments)
-},{"buffer":64,"buffer-xor":590,"dup":91}],590:[function(require,module,exports){
+},{"buffer":62,"dup":91,"inherits":608,"stream":47,"string_decoder":53}],557:[function(require,module,exports){
 arguments[4][92][0].apply(exports,arguments)
-},{"buffer":64,"dup":92}],591:[function(require,module,exports){
-arguments[4][93][0].apply(exports,arguments)
-},{"buffer":64,"dup":93,"inherits":643,"stream":49,"string_decoder":55}],592:[function(require,module,exports){
-arguments[4][94][0].apply(exports,arguments)
-},{"./aes":576,"buffer":64,"cipher-base":591,"dup":94,"inherits":643}],593:[function(require,module,exports){
-arguments[4][105][0].apply(exports,arguments)
-},{"buffer":64,"create-hash/md5":624,"dup":105}],594:[function(require,module,exports){
+},{"./aes":541,"buffer":62,"cipher-base":556,"dup":92,"inherits":608}],558:[function(require,module,exports){
+arguments[4][103][0].apply(exports,arguments)
+},{"buffer":62,"create-hash/md5":589,"dup":103}],559:[function(require,module,exports){
+arguments[4][170][0].apply(exports,arguments)
+},{"./curves":495,"bn.js":496,"browserify-rsa":497,"buffer":62,"create-hmac":600,"dup":170,"elliptic":498,"parse-asn1":525}],560:[function(require,module,exports){
+arguments[4][171][0].apply(exports,arguments)
+},{"./curves":495,"bn.js":496,"buffer":62,"dup":171,"elliptic":498,"parse-asn1":525}],561:[function(require,module,exports){
 arguments[4][172][0].apply(exports,arguments)
-},{"./curves":530,"bn.js":531,"browserify-rsa":532,"buffer":64,"create-hmac":635,"dup":172,"elliptic":533,"parse-asn1":560}],595:[function(require,module,exports){
-arguments[4][173][0].apply(exports,arguments)
-},{"./curves":530,"bn.js":531,"buffer":64,"dup":173,"elliptic":533,"parse-asn1":560}],596:[function(require,module,exports){
-arguments[4][174][0].apply(exports,arguments)
-},{"bn.js":597,"buffer":64,"dup":174,"elliptic":598}],597:[function(require,module,exports){
-arguments[4][531][0].apply(exports,arguments)
-},{"dup":531}],598:[function(require,module,exports){
-arguments[4][111][0].apply(exports,arguments)
-},{"../package.json":621,"./elliptic/curve":601,"./elliptic/curves":604,"./elliptic/ec":605,"./elliptic/eddsa":608,"./elliptic/hmac-drbg":611,"./elliptic/utils":613,"brorand":614,"dup":111}],599:[function(require,module,exports){
-arguments[4][112][0].apply(exports,arguments)
-},{"../../elliptic":598,"bn.js":597,"dup":112}],600:[function(require,module,exports){
-arguments[4][113][0].apply(exports,arguments)
-},{"../../elliptic":598,"../curve":601,"bn.js":597,"dup":113,"inherits":643}],601:[function(require,module,exports){
-arguments[4][114][0].apply(exports,arguments)
-},{"./base":599,"./edwards":600,"./mont":602,"./short":603,"dup":114}],602:[function(require,module,exports){
-arguments[4][115][0].apply(exports,arguments)
-},{"../../elliptic":598,"../curve":601,"bn.js":597,"dup":115,"inherits":643}],603:[function(require,module,exports){
-arguments[4][116][0].apply(exports,arguments)
-},{"../../elliptic":598,"../curve":601,"bn.js":597,"dup":116,"inherits":643}],604:[function(require,module,exports){
-arguments[4][117][0].apply(exports,arguments)
-},{"../elliptic":598,"./precomputed/secp256k1":612,"dup":117,"hash.js":615}],605:[function(require,module,exports){
-arguments[4][118][0].apply(exports,arguments)
-},{"../../elliptic":598,"./key":606,"./signature":607,"bn.js":597,"dup":118}],606:[function(require,module,exports){
-arguments[4][119][0].apply(exports,arguments)
-},{"bn.js":597,"dup":119}],607:[function(require,module,exports){
-arguments[4][120][0].apply(exports,arguments)
-},{"../../elliptic":598,"bn.js":597,"dup":120}],608:[function(require,module,exports){
-arguments[4][121][0].apply(exports,arguments)
-},{"../../elliptic":598,"./key":609,"./signature":610,"dup":121,"hash.js":615}],609:[function(require,module,exports){
-arguments[4][122][0].apply(exports,arguments)
-},{"../../elliptic":598,"dup":122}],610:[function(require,module,exports){
-arguments[4][123][0].apply(exports,arguments)
-},{"../../elliptic":598,"bn.js":597,"dup":123}],611:[function(require,module,exports){
-arguments[4][124][0].apply(exports,arguments)
-},{"../elliptic":598,"dup":124,"hash.js":615}],612:[function(require,module,exports){
-arguments[4][125][0].apply(exports,arguments)
-},{"dup":125}],613:[function(require,module,exports){
-arguments[4][126][0].apply(exports,arguments)
-},{"bn.js":597,"dup":126}],614:[function(require,module,exports){
-arguments[4][127][0].apply(exports,arguments)
-},{"dup":127}],615:[function(require,module,exports){
-arguments[4][128][0].apply(exports,arguments)
-},{"./hash/common":616,"./hash/hmac":617,"./hash/ripemd":618,"./hash/sha":619,"./hash/utils":620,"dup":128}],616:[function(require,module,exports){
-arguments[4][129][0].apply(exports,arguments)
-},{"../hash":615,"dup":129}],617:[function(require,module,exports){
-arguments[4][130][0].apply(exports,arguments)
-},{"../hash":615,"dup":130}],618:[function(require,module,exports){
-arguments[4][131][0].apply(exports,arguments)
-},{"../hash":615,"dup":131}],619:[function(require,module,exports){
-arguments[4][132][0].apply(exports,arguments)
-},{"../hash":615,"dup":132}],620:[function(require,module,exports){
-arguments[4][133][0].apply(exports,arguments)
-},{"dup":133,"inherits":643}],621:[function(require,module,exports){
-arguments[4][134][0].apply(exports,arguments)
-},{"dup":134}],622:[function(require,module,exports){
-arguments[4][200][0].apply(exports,arguments)
-},{"./md5":624,"buffer":64,"cipher-base":625,"dup":200,"inherits":643,"ripemd160":626,"sha.js":628}],623:[function(require,module,exports){
-arguments[4][201][0].apply(exports,arguments)
-},{"buffer":64,"dup":201}],624:[function(require,module,exports){
-arguments[4][202][0].apply(exports,arguments)
-},{"./helpers":623,"dup":202}],625:[function(require,module,exports){
-arguments[4][93][0].apply(exports,arguments)
-},{"buffer":64,"dup":93,"inherits":643,"stream":49,"string_decoder":55}],626:[function(require,module,exports){
-arguments[4][204][0].apply(exports,arguments)
-},{"buffer":64,"dup":204}],627:[function(require,module,exports){
-arguments[4][205][0].apply(exports,arguments)
-},{"buffer":64,"dup":205}],628:[function(require,module,exports){
-arguments[4][206][0].apply(exports,arguments)
-},{"./sha":629,"./sha1":630,"./sha224":631,"./sha256":632,"./sha384":633,"./sha512":634,"dup":206}],629:[function(require,module,exports){
-arguments[4][207][0].apply(exports,arguments)
-},{"./hash":627,"buffer":64,"dup":207,"inherits":643}],630:[function(require,module,exports){
-arguments[4][208][0].apply(exports,arguments)
-},{"./hash":627,"buffer":64,"dup":208,"inherits":643}],631:[function(require,module,exports){
-arguments[4][209][0].apply(exports,arguments)
-},{"./hash":627,"./sha256":632,"buffer":64,"dup":209,"inherits":643}],632:[function(require,module,exports){
-arguments[4][210][0].apply(exports,arguments)
-},{"./hash":627,"buffer":64,"dup":210,"inherits":643}],633:[function(require,module,exports){
-arguments[4][211][0].apply(exports,arguments)
-},{"./hash":627,"./sha512":634,"buffer":64,"dup":211,"inherits":643}],634:[function(require,module,exports){
-arguments[4][212][0].apply(exports,arguments)
-},{"./hash":627,"buffer":64,"dup":212,"inherits":643}],635:[function(require,module,exports){
-arguments[4][213][0].apply(exports,arguments)
-},{"buffer":64,"create-hash/browser":622,"dup":213,"inherits":643,"stream":49}],636:[function(require,module,exports){
-arguments[4][214][0].apply(exports,arguments)
-},{"./lib/dh":637,"./lib/generatePrime":638,"./lib/primes":639,"buffer":64,"dup":214}],637:[function(require,module,exports){
-arguments[4][215][0].apply(exports,arguments)
-},{"./generatePrime":638,"bn.js":640,"buffer":64,"dup":215,"miller-rabin":641,"randombytes":690}],638:[function(require,module,exports){
-arguments[4][216][0].apply(exports,arguments)
-},{"bn.js":640,"dup":216,"miller-rabin":641,"randombytes":690}],639:[function(require,module,exports){
-arguments[4][217][0].apply(exports,arguments)
-},{"dup":217}],640:[function(require,module,exports){
-arguments[4][531][0].apply(exports,arguments)
-},{"dup":531}],641:[function(require,module,exports){
-arguments[4][219][0].apply(exports,arguments)
-},{"bn.js":640,"brorand":642,"dup":219}],642:[function(require,module,exports){
-arguments[4][127][0].apply(exports,arguments)
-},{"dup":127}],643:[function(require,module,exports){
-arguments[4][27][0].apply(exports,arguments)
-},{"dup":27}],644:[function(require,module,exports){
-arguments[4][222][0].apply(exports,arguments)
-},{"buffer":64,"create-hmac":635,"dup":222}],645:[function(require,module,exports){
-arguments[4][223][0].apply(exports,arguments)
-},{"./privateDecrypt":686,"./publicEncrypt":687,"dup":223}],646:[function(require,module,exports){
-arguments[4][224][0].apply(exports,arguments)
-},{"buffer":64,"create-hash":622,"dup":224}],647:[function(require,module,exports){
-arguments[4][531][0].apply(exports,arguments)
-},{"dup":531}],648:[function(require,module,exports){
+},{"bn.js":562,"buffer":62,"dup":172,"elliptic":563}],562:[function(require,module,exports){
+arguments[4][496][0].apply(exports,arguments)
+},{"dup":496}],563:[function(require,module,exports){
+arguments[4][109][0].apply(exports,arguments)
+},{"../package.json":586,"./elliptic/curve":566,"./elliptic/curves":569,"./elliptic/ec":570,"./elliptic/eddsa":573,"./elliptic/hmac-drbg":576,"./elliptic/utils":578,"brorand":579,"dup":109}],564:[function(require,module,exports){
 arguments[4][110][0].apply(exports,arguments)
-},{"bn.js":647,"buffer":64,"dup":110,"randombytes":690}],649:[function(require,module,exports){
-arguments[4][135][0].apply(exports,arguments)
-},{"dup":135}],650:[function(require,module,exports){
-arguments[4][136][0].apply(exports,arguments)
-},{"asn1.js":653,"dup":136}],651:[function(require,module,exports){
-arguments[4][137][0].apply(exports,arguments)
-},{"browserify-aes":670,"buffer":64,"dup":137,"evp_bytestokey":685}],652:[function(require,module,exports){
-arguments[4][138][0].apply(exports,arguments)
-},{"./aesid.json":649,"./asn1":650,"./fixProc":651,"browserify-aes":670,"buffer":64,"dup":138,"pbkdf2":644}],653:[function(require,module,exports){
-arguments[4][139][0].apply(exports,arguments)
-},{"./asn1/api":654,"./asn1/base":656,"./asn1/constants":660,"./asn1/decoders":662,"./asn1/encoders":665,"bn.js":647,"dup":139}],654:[function(require,module,exports){
-arguments[4][140][0].apply(exports,arguments)
-},{"../asn1":653,"dup":140,"inherits":643,"vm":61}],655:[function(require,module,exports){
-arguments[4][141][0].apply(exports,arguments)
-},{"../base":656,"buffer":64,"dup":141,"inherits":643}],656:[function(require,module,exports){
-arguments[4][142][0].apply(exports,arguments)
-},{"./buffer":655,"./node":657,"./reporter":658,"dup":142}],657:[function(require,module,exports){
-arguments[4][143][0].apply(exports,arguments)
-},{"../base":656,"dup":143,"minimalistic-assert":667}],658:[function(require,module,exports){
-arguments[4][144][0].apply(exports,arguments)
-},{"dup":144,"inherits":643}],659:[function(require,module,exports){
-arguments[4][145][0].apply(exports,arguments)
-},{"../constants":660,"dup":145}],660:[function(require,module,exports){
-arguments[4][146][0].apply(exports,arguments)
-},{"./der":659,"dup":146}],661:[function(require,module,exports){
-arguments[4][147][0].apply(exports,arguments)
-},{"../../asn1":653,"dup":147,"inherits":643}],662:[function(require,module,exports){
-arguments[4][148][0].apply(exports,arguments)
-},{"./der":661,"./pem":663,"dup":148}],663:[function(require,module,exports){
-arguments[4][149][0].apply(exports,arguments)
-},{"../../asn1":653,"./der":661,"buffer":64,"dup":149,"inherits":643}],664:[function(require,module,exports){
-arguments[4][150][0].apply(exports,arguments)
-},{"../../asn1":653,"buffer":64,"dup":150,"inherits":643}],665:[function(require,module,exports){
-arguments[4][151][0].apply(exports,arguments)
-},{"./der":664,"./pem":666,"dup":151}],666:[function(require,module,exports){
-arguments[4][152][0].apply(exports,arguments)
-},{"../../asn1":653,"./der":664,"buffer":64,"dup":152,"inherits":643}],667:[function(require,module,exports){
-arguments[4][104][0].apply(exports,arguments)
-},{"dup":104}],668:[function(require,module,exports){
-arguments[4][78][0].apply(exports,arguments)
-},{"buffer":64,"dup":78}],669:[function(require,module,exports){
-arguments[4][79][0].apply(exports,arguments)
-},{"./aes":668,"./ghash":673,"buffer":64,"buffer-xor":682,"cipher-base":683,"dup":79,"inherits":643}],670:[function(require,module,exports){
-arguments[4][80][0].apply(exports,arguments)
-},{"./decrypter":671,"./encrypter":672,"./modes":674,"dup":80}],671:[function(require,module,exports){
-arguments[4][81][0].apply(exports,arguments)
-},{"./aes":668,"./authCipher":669,"./modes":674,"./modes/cbc":675,"./modes/cfb":676,"./modes/cfb1":677,"./modes/cfb8":678,"./modes/ctr":679,"./modes/ecb":680,"./modes/ofb":681,"./streamCipher":684,"buffer":64,"cipher-base":683,"dup":81,"evp_bytestokey":685,"inherits":643}],672:[function(require,module,exports){
-arguments[4][82][0].apply(exports,arguments)
-},{"./aes":668,"./authCipher":669,"./modes":674,"./modes/cbc":675,"./modes/cfb":676,"./modes/cfb1":677,"./modes/cfb8":678,"./modes/ctr":679,"./modes/ecb":680,"./modes/ofb":681,"./streamCipher":684,"buffer":64,"cipher-base":683,"dup":82,"evp_bytestokey":685,"inherits":643}],673:[function(require,module,exports){
-arguments[4][83][0].apply(exports,arguments)
-},{"buffer":64,"dup":83}],674:[function(require,module,exports){
-arguments[4][84][0].apply(exports,arguments)
-},{"dup":84}],675:[function(require,module,exports){
-arguments[4][85][0].apply(exports,arguments)
-},{"buffer-xor":682,"dup":85}],676:[function(require,module,exports){
-arguments[4][86][0].apply(exports,arguments)
-},{"buffer":64,"buffer-xor":682,"dup":86}],677:[function(require,module,exports){
-arguments[4][87][0].apply(exports,arguments)
-},{"buffer":64,"dup":87}],678:[function(require,module,exports){
-arguments[4][88][0].apply(exports,arguments)
-},{"buffer":64,"dup":88}],679:[function(require,module,exports){
-arguments[4][89][0].apply(exports,arguments)
-},{"buffer":64,"buffer-xor":682,"dup":89}],680:[function(require,module,exports){
-arguments[4][90][0].apply(exports,arguments)
-},{"dup":90}],681:[function(require,module,exports){
-arguments[4][91][0].apply(exports,arguments)
-},{"buffer":64,"buffer-xor":682,"dup":91}],682:[function(require,module,exports){
-arguments[4][92][0].apply(exports,arguments)
-},{"buffer":64,"dup":92}],683:[function(require,module,exports){
-arguments[4][93][0].apply(exports,arguments)
-},{"buffer":64,"dup":93,"inherits":643,"stream":49,"string_decoder":55}],684:[function(require,module,exports){
-arguments[4][94][0].apply(exports,arguments)
-},{"./aes":668,"buffer":64,"cipher-base":683,"dup":94,"inherits":643}],685:[function(require,module,exports){
-arguments[4][105][0].apply(exports,arguments)
-},{"buffer":64,"create-hash/md5":624,"dup":105}],686:[function(require,module,exports){
-arguments[4][264][0].apply(exports,arguments)
-},{"./mgf":646,"./withPublic":688,"./xor":689,"bn.js":647,"browserify-rsa":648,"buffer":64,"create-hash":622,"dup":264,"parse-asn1":652}],687:[function(require,module,exports){
-arguments[4][265][0].apply(exports,arguments)
-},{"./mgf":646,"./withPublic":688,"./xor":689,"bn.js":647,"browserify-rsa":648,"buffer":64,"create-hash":622,"dup":265,"parse-asn1":652,"randombytes":690}],688:[function(require,module,exports){
-arguments[4][266][0].apply(exports,arguments)
-},{"bn.js":647,"buffer":64,"dup":266}],689:[function(require,module,exports){
-arguments[4][267][0].apply(exports,arguments)
-},{"dup":267}],690:[function(require,module,exports){
-arguments[4][268][0].apply(exports,arguments)
-},{"_process":31,"buffer":64,"dup":268}],691:[function(require,module,exports){
+},{"../../elliptic":563,"bn.js":562,"dup":110}],565:[function(require,module,exports){
 arguments[4][111][0].apply(exports,arguments)
-},{"../package.json":716,"./elliptic/curve":694,"./elliptic/curves":697,"./elliptic/ec":698,"./elliptic/eddsa":701,"./elliptic/hmac-drbg":704,"./elliptic/utils":706,"brorand":708,"dup":111}],692:[function(require,module,exports){
+},{"../../elliptic":563,"../curve":566,"bn.js":562,"dup":111,"inherits":608}],566:[function(require,module,exports){
 arguments[4][112][0].apply(exports,arguments)
-},{"../../elliptic":691,"bn.js":707,"dup":112}],693:[function(require,module,exports){
+},{"./base":564,"./edwards":565,"./mont":567,"./short":568,"dup":112}],567:[function(require,module,exports){
 arguments[4][113][0].apply(exports,arguments)
-},{"../../elliptic":691,"../curve":694,"bn.js":707,"dup":113,"inherits":715}],694:[function(require,module,exports){
+},{"../../elliptic":563,"../curve":566,"bn.js":562,"dup":113,"inherits":608}],568:[function(require,module,exports){
 arguments[4][114][0].apply(exports,arguments)
-},{"./base":692,"./edwards":693,"./mont":695,"./short":696,"dup":114}],695:[function(require,module,exports){
+},{"../../elliptic":563,"../curve":566,"bn.js":562,"dup":114,"inherits":608}],569:[function(require,module,exports){
 arguments[4][115][0].apply(exports,arguments)
-},{"../../elliptic":691,"../curve":694,"bn.js":707,"dup":115,"inherits":715}],696:[function(require,module,exports){
+},{"../elliptic":563,"./precomputed/secp256k1":577,"dup":115,"hash.js":580}],570:[function(require,module,exports){
+arguments[4][116][0].apply(exports,arguments)
+},{"../../elliptic":563,"./key":571,"./signature":572,"bn.js":562,"dup":116}],571:[function(require,module,exports){
+arguments[4][117][0].apply(exports,arguments)
+},{"bn.js":562,"dup":117}],572:[function(require,module,exports){
+arguments[4][118][0].apply(exports,arguments)
+},{"../../elliptic":563,"bn.js":562,"dup":118}],573:[function(require,module,exports){
+arguments[4][119][0].apply(exports,arguments)
+},{"../../elliptic":563,"./key":574,"./signature":575,"dup":119,"hash.js":580}],574:[function(require,module,exports){
+arguments[4][120][0].apply(exports,arguments)
+},{"../../elliptic":563,"dup":120}],575:[function(require,module,exports){
+arguments[4][121][0].apply(exports,arguments)
+},{"../../elliptic":563,"bn.js":562,"dup":121}],576:[function(require,module,exports){
+arguments[4][122][0].apply(exports,arguments)
+},{"../elliptic":563,"dup":122,"hash.js":580}],577:[function(require,module,exports){
+arguments[4][123][0].apply(exports,arguments)
+},{"dup":123}],578:[function(require,module,exports){
+arguments[4][124][0].apply(exports,arguments)
+},{"bn.js":562,"dup":124}],579:[function(require,module,exports){
+arguments[4][125][0].apply(exports,arguments)
+},{"dup":125}],580:[function(require,module,exports){
+arguments[4][126][0].apply(exports,arguments)
+},{"./hash/common":581,"./hash/hmac":582,"./hash/ripemd":583,"./hash/sha":584,"./hash/utils":585,"dup":126}],581:[function(require,module,exports){
+arguments[4][127][0].apply(exports,arguments)
+},{"../hash":580,"dup":127}],582:[function(require,module,exports){
+arguments[4][128][0].apply(exports,arguments)
+},{"../hash":580,"dup":128}],583:[function(require,module,exports){
+arguments[4][129][0].apply(exports,arguments)
+},{"../hash":580,"dup":129}],584:[function(require,module,exports){
+arguments[4][130][0].apply(exports,arguments)
+},{"../hash":580,"dup":130}],585:[function(require,module,exports){
+arguments[4][131][0].apply(exports,arguments)
+},{"dup":131,"inherits":608}],586:[function(require,module,exports){
+arguments[4][132][0].apply(exports,arguments)
+},{"dup":132}],587:[function(require,module,exports){
+arguments[4][198][0].apply(exports,arguments)
+},{"./md5":589,"buffer":62,"cipher-base":590,"dup":198,"inherits":608,"ripemd160":591,"sha.js":593}],588:[function(require,module,exports){
+arguments[4][199][0].apply(exports,arguments)
+},{"buffer":62,"dup":199}],589:[function(require,module,exports){
+arguments[4][200][0].apply(exports,arguments)
+},{"./helpers":588,"dup":200}],590:[function(require,module,exports){
+arguments[4][91][0].apply(exports,arguments)
+},{"buffer":62,"dup":91,"inherits":608,"stream":47,"string_decoder":53}],591:[function(require,module,exports){
+arguments[4][202][0].apply(exports,arguments)
+},{"buffer":62,"dup":202}],592:[function(require,module,exports){
+arguments[4][203][0].apply(exports,arguments)
+},{"buffer":62,"dup":203}],593:[function(require,module,exports){
+arguments[4][204][0].apply(exports,arguments)
+},{"./sha":594,"./sha1":595,"./sha224":596,"./sha256":597,"./sha384":598,"./sha512":599,"dup":204}],594:[function(require,module,exports){
+arguments[4][205][0].apply(exports,arguments)
+},{"./hash":592,"buffer":62,"dup":205,"inherits":608}],595:[function(require,module,exports){
+arguments[4][206][0].apply(exports,arguments)
+},{"./hash":592,"buffer":62,"dup":206,"inherits":608}],596:[function(require,module,exports){
+arguments[4][207][0].apply(exports,arguments)
+},{"./hash":592,"./sha256":597,"buffer":62,"dup":207,"inherits":608}],597:[function(require,module,exports){
+arguments[4][208][0].apply(exports,arguments)
+},{"./hash":592,"buffer":62,"dup":208,"inherits":608}],598:[function(require,module,exports){
+arguments[4][209][0].apply(exports,arguments)
+},{"./hash":592,"./sha512":599,"buffer":62,"dup":209,"inherits":608}],599:[function(require,module,exports){
+arguments[4][210][0].apply(exports,arguments)
+},{"./hash":592,"buffer":62,"dup":210,"inherits":608}],600:[function(require,module,exports){
+arguments[4][211][0].apply(exports,arguments)
+},{"buffer":62,"create-hash/browser":587,"dup":211,"inherits":608,"stream":47}],601:[function(require,module,exports){
+arguments[4][212][0].apply(exports,arguments)
+},{"./lib/dh":602,"./lib/generatePrime":603,"./lib/primes":604,"buffer":62,"dup":212}],602:[function(require,module,exports){
+arguments[4][213][0].apply(exports,arguments)
+},{"./generatePrime":603,"bn.js":605,"buffer":62,"dup":213,"miller-rabin":606,"randombytes":655}],603:[function(require,module,exports){
+arguments[4][214][0].apply(exports,arguments)
+},{"bn.js":605,"dup":214,"miller-rabin":606,"randombytes":655}],604:[function(require,module,exports){
+arguments[4][215][0].apply(exports,arguments)
+},{"dup":215}],605:[function(require,module,exports){
+arguments[4][496][0].apply(exports,arguments)
+},{"dup":496}],606:[function(require,module,exports){
+arguments[4][217][0].apply(exports,arguments)
+},{"bn.js":605,"brorand":607,"dup":217}],607:[function(require,module,exports){
+arguments[4][125][0].apply(exports,arguments)
+},{"dup":125}],608:[function(require,module,exports){
+arguments[4][25][0].apply(exports,arguments)
+},{"dup":25}],609:[function(require,module,exports){
+arguments[4][220][0].apply(exports,arguments)
+},{"buffer":62,"create-hmac":600,"dup":220}],610:[function(require,module,exports){
+arguments[4][221][0].apply(exports,arguments)
+},{"./privateDecrypt":651,"./publicEncrypt":652,"dup":221}],611:[function(require,module,exports){
+arguments[4][222][0].apply(exports,arguments)
+},{"buffer":62,"create-hash":587,"dup":222}],612:[function(require,module,exports){
+arguments[4][496][0].apply(exports,arguments)
+},{"dup":496}],613:[function(require,module,exports){
+arguments[4][108][0].apply(exports,arguments)
+},{"bn.js":612,"buffer":62,"dup":108,"randombytes":655}],614:[function(require,module,exports){
+arguments[4][133][0].apply(exports,arguments)
+},{"dup":133}],615:[function(require,module,exports){
+arguments[4][134][0].apply(exports,arguments)
+},{"asn1.js":618,"dup":134}],616:[function(require,module,exports){
+arguments[4][135][0].apply(exports,arguments)
+},{"browserify-aes":635,"buffer":62,"dup":135,"evp_bytestokey":650}],617:[function(require,module,exports){
+arguments[4][136][0].apply(exports,arguments)
+},{"./aesid.json":614,"./asn1":615,"./fixProc":616,"browserify-aes":635,"buffer":62,"dup":136,"pbkdf2":609}],618:[function(require,module,exports){
+arguments[4][137][0].apply(exports,arguments)
+},{"./asn1/api":619,"./asn1/base":621,"./asn1/constants":625,"./asn1/decoders":627,"./asn1/encoders":630,"bn.js":612,"dup":137}],619:[function(require,module,exports){
+arguments[4][138][0].apply(exports,arguments)
+},{"../asn1":618,"dup":138,"inherits":608,"vm":59}],620:[function(require,module,exports){
+arguments[4][139][0].apply(exports,arguments)
+},{"../base":621,"buffer":62,"dup":139,"inherits":608}],621:[function(require,module,exports){
+arguments[4][140][0].apply(exports,arguments)
+},{"./buffer":620,"./node":622,"./reporter":623,"dup":140}],622:[function(require,module,exports){
+arguments[4][141][0].apply(exports,arguments)
+},{"../base":621,"dup":141,"minimalistic-assert":632}],623:[function(require,module,exports){
+arguments[4][142][0].apply(exports,arguments)
+},{"dup":142,"inherits":608}],624:[function(require,module,exports){
+arguments[4][143][0].apply(exports,arguments)
+},{"../constants":625,"dup":143}],625:[function(require,module,exports){
+arguments[4][144][0].apply(exports,arguments)
+},{"./der":624,"dup":144}],626:[function(require,module,exports){
+arguments[4][145][0].apply(exports,arguments)
+},{"../../asn1":618,"dup":145,"inherits":608}],627:[function(require,module,exports){
+arguments[4][146][0].apply(exports,arguments)
+},{"./der":626,"./pem":628,"dup":146}],628:[function(require,module,exports){
+arguments[4][147][0].apply(exports,arguments)
+},{"../../asn1":618,"./der":626,"buffer":62,"dup":147,"inherits":608}],629:[function(require,module,exports){
+arguments[4][148][0].apply(exports,arguments)
+},{"../../asn1":618,"buffer":62,"dup":148,"inherits":608}],630:[function(require,module,exports){
+arguments[4][149][0].apply(exports,arguments)
+},{"./der":629,"./pem":631,"dup":149}],631:[function(require,module,exports){
+arguments[4][150][0].apply(exports,arguments)
+},{"../../asn1":618,"./der":629,"buffer":62,"dup":150,"inherits":608}],632:[function(require,module,exports){
+arguments[4][102][0].apply(exports,arguments)
+},{"dup":102}],633:[function(require,module,exports){
+arguments[4][76][0].apply(exports,arguments)
+},{"buffer":62,"dup":76}],634:[function(require,module,exports){
+arguments[4][77][0].apply(exports,arguments)
+},{"./aes":633,"./ghash":638,"buffer":62,"buffer-xor":647,"cipher-base":648,"dup":77,"inherits":608}],635:[function(require,module,exports){
+arguments[4][78][0].apply(exports,arguments)
+},{"./decrypter":636,"./encrypter":637,"./modes":639,"dup":78}],636:[function(require,module,exports){
+arguments[4][79][0].apply(exports,arguments)
+},{"./aes":633,"./authCipher":634,"./modes":639,"./modes/cbc":640,"./modes/cfb":641,"./modes/cfb1":642,"./modes/cfb8":643,"./modes/ctr":644,"./modes/ecb":645,"./modes/ofb":646,"./streamCipher":649,"buffer":62,"cipher-base":648,"dup":79,"evp_bytestokey":650,"inherits":608}],637:[function(require,module,exports){
+arguments[4][80][0].apply(exports,arguments)
+},{"./aes":633,"./authCipher":634,"./modes":639,"./modes/cbc":640,"./modes/cfb":641,"./modes/cfb1":642,"./modes/cfb8":643,"./modes/ctr":644,"./modes/ecb":645,"./modes/ofb":646,"./streamCipher":649,"buffer":62,"cipher-base":648,"dup":80,"evp_bytestokey":650,"inherits":608}],638:[function(require,module,exports){
+arguments[4][81][0].apply(exports,arguments)
+},{"buffer":62,"dup":81}],639:[function(require,module,exports){
+arguments[4][82][0].apply(exports,arguments)
+},{"dup":82}],640:[function(require,module,exports){
+arguments[4][83][0].apply(exports,arguments)
+},{"buffer-xor":647,"dup":83}],641:[function(require,module,exports){
+arguments[4][84][0].apply(exports,arguments)
+},{"buffer":62,"buffer-xor":647,"dup":84}],642:[function(require,module,exports){
+arguments[4][85][0].apply(exports,arguments)
+},{"buffer":62,"dup":85}],643:[function(require,module,exports){
+arguments[4][86][0].apply(exports,arguments)
+},{"buffer":62,"dup":86}],644:[function(require,module,exports){
+arguments[4][87][0].apply(exports,arguments)
+},{"buffer":62,"buffer-xor":647,"dup":87}],645:[function(require,module,exports){
+arguments[4][88][0].apply(exports,arguments)
+},{"dup":88}],646:[function(require,module,exports){
+arguments[4][89][0].apply(exports,arguments)
+},{"buffer":62,"buffer-xor":647,"dup":89}],647:[function(require,module,exports){
+arguments[4][90][0].apply(exports,arguments)
+},{"buffer":62,"dup":90}],648:[function(require,module,exports){
+arguments[4][91][0].apply(exports,arguments)
+},{"buffer":62,"dup":91,"inherits":608,"stream":47,"string_decoder":53}],649:[function(require,module,exports){
+arguments[4][92][0].apply(exports,arguments)
+},{"./aes":633,"buffer":62,"cipher-base":648,"dup":92,"inherits":608}],650:[function(require,module,exports){
+arguments[4][103][0].apply(exports,arguments)
+},{"buffer":62,"create-hash/md5":589,"dup":103}],651:[function(require,module,exports){
+arguments[4][262][0].apply(exports,arguments)
+},{"./mgf":611,"./withPublic":653,"./xor":654,"bn.js":612,"browserify-rsa":613,"buffer":62,"create-hash":587,"dup":262,"parse-asn1":617}],652:[function(require,module,exports){
+arguments[4][263][0].apply(exports,arguments)
+},{"./mgf":611,"./withPublic":653,"./xor":654,"bn.js":612,"browserify-rsa":613,"buffer":62,"create-hash":587,"dup":263,"parse-asn1":617,"randombytes":655}],653:[function(require,module,exports){
+arguments[4][264][0].apply(exports,arguments)
+},{"bn.js":612,"buffer":62,"dup":264}],654:[function(require,module,exports){
+arguments[4][265][0].apply(exports,arguments)
+},{"dup":265}],655:[function(require,module,exports){
+arguments[4][266][0].apply(exports,arguments)
+},{"_process":29,"buffer":62,"dup":266}],656:[function(require,module,exports){
+arguments[4][109][0].apply(exports,arguments)
+},{"../package.json":681,"./elliptic/curve":659,"./elliptic/curves":662,"./elliptic/ec":663,"./elliptic/eddsa":666,"./elliptic/hmac-drbg":669,"./elliptic/utils":671,"brorand":673,"dup":109}],657:[function(require,module,exports){
+arguments[4][110][0].apply(exports,arguments)
+},{"../../elliptic":656,"bn.js":672,"dup":110}],658:[function(require,module,exports){
+arguments[4][111][0].apply(exports,arguments)
+},{"../../elliptic":656,"../curve":659,"bn.js":672,"dup":111,"inherits":680}],659:[function(require,module,exports){
+arguments[4][112][0].apply(exports,arguments)
+},{"./base":657,"./edwards":658,"./mont":660,"./short":661,"dup":112}],660:[function(require,module,exports){
+arguments[4][113][0].apply(exports,arguments)
+},{"../../elliptic":656,"../curve":659,"bn.js":672,"dup":113,"inherits":680}],661:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -106159,9 +97776,9 @@ JPoint.prototype.isInfinity = function isInfinity() {
   return this.z.cmpn(0) === 0;
 };
 
-},{"../../elliptic":691,"../curve":694,"bn.js":707,"inherits":715}],697:[function(require,module,exports){
-arguments[4][117][0].apply(exports,arguments)
-},{"../elliptic":691,"./precomputed/secp256k1":705,"dup":117,"hash.js":709}],698:[function(require,module,exports){
+},{"../../elliptic":656,"../curve":659,"bn.js":672,"inherits":680}],662:[function(require,module,exports){
+arguments[4][115][0].apply(exports,arguments)
+},{"../elliptic":656,"./precomputed/secp256k1":670,"dup":115,"hash.js":674}],663:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -106373,23 +97990,23 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
   throw new Error('Unable to find valid recovery factor');
 };
 
-},{"../../elliptic":691,"./key":699,"./signature":700,"bn.js":707}],699:[function(require,module,exports){
+},{"../../elliptic":656,"./key":664,"./signature":665,"bn.js":672}],664:[function(require,module,exports){
+arguments[4][117][0].apply(exports,arguments)
+},{"bn.js":672,"dup":117}],665:[function(require,module,exports){
+arguments[4][118][0].apply(exports,arguments)
+},{"../../elliptic":656,"bn.js":672,"dup":118}],666:[function(require,module,exports){
 arguments[4][119][0].apply(exports,arguments)
-},{"bn.js":707,"dup":119}],700:[function(require,module,exports){
+},{"../../elliptic":656,"./key":667,"./signature":668,"dup":119,"hash.js":674}],667:[function(require,module,exports){
 arguments[4][120][0].apply(exports,arguments)
-},{"../../elliptic":691,"bn.js":707,"dup":120}],701:[function(require,module,exports){
+},{"../../elliptic":656,"dup":120}],668:[function(require,module,exports){
 arguments[4][121][0].apply(exports,arguments)
-},{"../../elliptic":691,"./key":702,"./signature":703,"dup":121,"hash.js":709}],702:[function(require,module,exports){
+},{"../../elliptic":656,"bn.js":672,"dup":121}],669:[function(require,module,exports){
 arguments[4][122][0].apply(exports,arguments)
-},{"../../elliptic":691,"dup":122}],703:[function(require,module,exports){
+},{"../elliptic":656,"dup":122,"hash.js":674}],670:[function(require,module,exports){
 arguments[4][123][0].apply(exports,arguments)
-},{"../../elliptic":691,"bn.js":707,"dup":123}],704:[function(require,module,exports){
+},{"dup":123}],671:[function(require,module,exports){
 arguments[4][124][0].apply(exports,arguments)
-},{"../elliptic":691,"dup":124,"hash.js":709}],705:[function(require,module,exports){
-arguments[4][125][0].apply(exports,arguments)
-},{"dup":125}],706:[function(require,module,exports){
-arguments[4][126][0].apply(exports,arguments)
-},{"bn.js":707,"dup":126}],707:[function(require,module,exports){
+},{"bn.js":672,"dup":124}],672:[function(require,module,exports){
 (function (module, exports) {
 
 'use strict';
@@ -108838,23 +100455,23 @@ Mont.prototype.invm = function invm(a) {
 
 })(typeof module === 'undefined' || module, this);
 
-},{}],708:[function(require,module,exports){
+},{}],673:[function(require,module,exports){
+arguments[4][125][0].apply(exports,arguments)
+},{"dup":125}],674:[function(require,module,exports){
+arguments[4][126][0].apply(exports,arguments)
+},{"./hash/common":675,"./hash/hmac":676,"./hash/ripemd":677,"./hash/sha":678,"./hash/utils":679,"dup":126}],675:[function(require,module,exports){
 arguments[4][127][0].apply(exports,arguments)
-},{"dup":127}],709:[function(require,module,exports){
+},{"../hash":674,"dup":127}],676:[function(require,module,exports){
 arguments[4][128][0].apply(exports,arguments)
-},{"./hash/common":710,"./hash/hmac":711,"./hash/ripemd":712,"./hash/sha":713,"./hash/utils":714,"dup":128}],710:[function(require,module,exports){
+},{"../hash":674,"dup":128}],677:[function(require,module,exports){
 arguments[4][129][0].apply(exports,arguments)
-},{"../hash":709,"dup":129}],711:[function(require,module,exports){
+},{"../hash":674,"dup":129}],678:[function(require,module,exports){
 arguments[4][130][0].apply(exports,arguments)
-},{"../hash":709,"dup":130}],712:[function(require,module,exports){
+},{"../hash":674,"dup":130}],679:[function(require,module,exports){
 arguments[4][131][0].apply(exports,arguments)
-},{"../hash":709,"dup":131}],713:[function(require,module,exports){
-arguments[4][132][0].apply(exports,arguments)
-},{"../hash":709,"dup":132}],714:[function(require,module,exports){
-arguments[4][133][0].apply(exports,arguments)
-},{"dup":133,"inherits":715}],715:[function(require,module,exports){
-arguments[4][27][0].apply(exports,arguments)
-},{"dup":27}],716:[function(require,module,exports){
+},{"dup":131,"inherits":680}],680:[function(require,module,exports){
+arguments[4][25][0].apply(exports,arguments)
+},{"dup":25}],681:[function(require,module,exports){
 module.exports={
   "name": "elliptic",
   "version": "5.2.1",
@@ -108923,7 +100540,7 @@ module.exports={
   "readme": "ERROR: No README data found!"
 }
 
-},{}],717:[function(require,module,exports){
+},{}],682:[function(require,module,exports){
 (function (Buffer){
 const SHA3 = require('sha3')
 const ec = require('elliptic').ec('secp256k1')
@@ -109300,9 +100917,9 @@ function padToEven (a) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":10,"bn.js":718,"buffer":64,"elliptic":691,"rlp":721,"sha3":719}],718:[function(require,module,exports){
-arguments[4][707][0].apply(exports,arguments)
-},{"dup":707}],719:[function(require,module,exports){
+},{"assert":8,"bn.js":683,"buffer":62,"elliptic":656,"rlp":686,"sha3":684}],683:[function(require,module,exports){
+arguments[4][672][0].apply(exports,arguments)
+},{"dup":672}],684:[function(require,module,exports){
 (function (Buffer){
 const Sha3 = require('js-sha3')
 
@@ -109328,9 +100945,9 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":64,"js-sha3":720}],720:[function(require,module,exports){
-arguments[4][3][0].apply(exports,arguments)
-},{"dup":3}],721:[function(require,module,exports){
+},{"buffer":62,"js-sha3":685}],685:[function(require,module,exports){
+arguments[4][342][0].apply(exports,arguments)
+},{"dup":342}],686:[function(require,module,exports){
 (function (Buffer){
 const assert = require('assert')
 /**
@@ -109559,8 +101176,8 @@ function toBuffer (v) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":10,"buffer":64}],722:[function(require,module,exports){
-arguments[4][350][0].apply(exports,arguments)
-},{"buffer":64,"crypto":76,"dup":350}],723:[function(require,module,exports){
-arguments[4][351][0].apply(exports,arguments)
-},{"dup":351}]},{},[6]);
+},{"assert":8,"buffer":62}],687:[function(require,module,exports){
+arguments[4][348][0].apply(exports,arguments)
+},{"buffer":62,"crypto":74,"dup":348}],688:[function(require,module,exports){
+arguments[4][349][0].apply(exports,arguments)
+},{"dup":349}]},{},[3]);

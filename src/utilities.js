@@ -17,6 +17,8 @@ BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
 module.exports = {
 
+    noop: function () {},
+
     pass: function (o) { return o; },
 
     is_function: function (f) {

@@ -28,19 +28,42 @@ module.exports = function () {
         account: {},
 
         // free (testnet) ether for new accounts on registration
-        fund: function (account, onSent, onConfirm) {
+        fund: function (account, onSent, onConfirm, onFinal) {
             var self = this;
-            onSent = onSent || utils.pass;
-            onConfirm = onConfirm || utils.pass;
+            onSent = onSent || utils.noop;
+            onConfirm = onConfirm || utils.noop;
+            onFinal = onFinal || utils.noop;
             augur.rpc.coinbase(function (funder) {
                 if (!funder || funder.error) return onConfirm();
                 augur.rpc.sendEther({
                     to: account.address,
                     value: constants.FREEBIE,
                     from: funder,
-                    onSent: function (r) { onSent(account); },
-                    onSuccess: function (r) { onConfirm(account); },
-                    onFailed: function (r) { onConfirm(r); }
+                    onSent: function (r) {
+                        onSent(account);
+                    },
+                    onSuccess: function (r) {
+                        var count = 0;
+                        var check = function (response) {
+                            if (++count === 2) onFinal(response);
+                        };
+                        onConfirm(account);
+
+                        // exchange half of the free ether for cash
+                        augur.depositEther({
+                            value: constants.FREEBIE*0.5,
+                            onSent: utils.noop,
+                            onSuccess: check,
+                            onFailed: onFinal
+                        });
+                        augur.reputationFaucet({
+                            branch: augur.branches.dev,
+                            onSent: utils.noop,
+                            onSuccess: check,
+                            onFailed: onFinal
+                        });
+                    },
+                    onFailed: onConfirm
                 });
             });
         },

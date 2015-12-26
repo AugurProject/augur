@@ -1,4 +1,3 @@
-(function () {
 /**
  * augur.js unit tests
  * @author Jack Peterson (jack@tinybike.net)
@@ -28,10 +27,12 @@ var password = utils.sha256(Math.random().toString(36).substring(4));
 var handle2 = utils.sha256(new Date().toString()).slice(10) + "@" +
     utils.sha256(new Date().toString()).slice(10) + ".com";
 var password2 = utils.sha256(Math.random().toString(36).substring(4)).slice(10);
+var handle3 = utils.sha256(new Date().toString()).slice(10);
+var password3 = utils.sha256(Math.random().toString(36).substring(4)).slice(10);
 
 var markets = augur.getMarkets(augur.branches.dev);
 var market_id = markets[markets.length - 1];
-var donotfund = process.env.CONTINUOUS_INTEGRATION;
+var donotfund = true;
 
 describe("Register", function () {
 
@@ -310,17 +311,20 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
 
     describe("Fund", function () {
 
-        var recipient = "0x639b41c4d3d399894f2a57894278e1653e7cd24c";
-
-        it("send " + constants.FREEBIE + " ether to " + recipient, function (done) {
-            this.timeout(constants.TIMEOUT*4);
+        it("fund handle: " + handle, function (done) {
+            this.timeout(constants.TIMEOUT*3);
             var augur = utils.setup(require("../../src"), process.argv.slice(2));
-            var initial_balance = abi
-                .bignum(augur.rpc.balance(recipient))
-                .dividedBy(constants.ETHER);
-            augur.web.fund(
-                { address: recipient },
-                function (account) {
+            augur.web.login(handle, password, function (account) {
+                if (account.error) {
+                    augur.web.logout();
+                    return done(account);
+                }
+                var recipient = account.address;
+                var initial_balance = abi
+                    .bignum(augur.rpc.balance(recipient))
+                    .dividedBy(constants.ETHER);
+                augur.web.fund({address: recipient}, function (account) {
+                    // onSent
                     if (account.error) {
                         augur.web.logout();
                         return done(account);
@@ -328,25 +332,33 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                     assert.property(account, "address");
                     assert.strictEqual(account.address, recipient);
                 }, function (account) {
+                    // onConfirm
                     if (account.error) {
                         augur.web.logout();
                         return done(account);
                     }
                     assert.property(account, "address");
                     assert.strictEqual(account.address, recipient);
-
                     var final_balance = abi
                         .bignum(augur.rpc.balance(recipient))
                         .dividedBy(constants.ETHER);
-
                     var delta = final_balance.sub(initial_balance).toNumber();
                     assert.isAbove(Math.abs(delta), 49);
-
-                    done();
-                }
-            );
+                }, function (res) {
+                    // onFinal
+                    augur.getRepBalance(augur.branches.dev, recipient, function (repBalance) {
+                        if (repBalance.error) return done(repBalance);
+                        assert.strictEqual(abi.number(repBalance), 47);
+                        augur.getCashBalance(recipient, function (cashBalance) {
+                            if (cashBalance.error) return done(cashBalance);
+                            assert.strictEqual(abi.number(cashBalance), constants.FREEBIE*0.5);
+                            augur.web.logout();
+                            done();
+                        });
+                    });
+                });
+            });
         });
-
     });
 }
 
@@ -472,9 +484,7 @@ describe("Contract methods", function () {
                             assert.strictEqual(Number(r.value), 0);
                             if (++count === 2) done();
                         },
-                        onFailed: function (res) {
-                            done(res);
-                        }
+                        onFailed: done
                     });
                     augur.reputationFaucet({
                         branch: augur.branches.dev,
@@ -494,73 +504,10 @@ describe("Contract methods", function () {
                             assert.strictEqual(Number(r.value), 0);
                             if (++count === 2) done();
                         },
-                        onFailed: function (res) {
-                            done(res);
-                        }
+                        onFailed: done
                     });
                 });
             });
-
-            it("duplicate nonce: register -> reputationFaucet + cashFaucet", function (done) {
-                this.timeout(constants.TIMEOUT*4);
-                var newHandle = utils.sha256(new Date().toString());
-                var newPassword = utils.sha256(Math.random().toString(36).substring(4));
-                var augur = utils.setup(require("../../src"), process.argv.slice(2));
-                augur.web.register(newHandle, newPassword, [function (user) {
-                    if (user.error) {
-                        augur.web.logout();
-                        return done(user);
-                    }
-                    assert.strictEqual(
-                        user.address,
-                        augur.web.account.address
-                    );
-                }, function (response) {
-                    var count = 0;
-                    augur.reputationFaucet({
-                        branch: augur.branches.dev,
-                        onSent: function (r) {
-                            assert.property(r, "txHash");
-                            assert.property(r, "callReturn");
-                            assert.strictEqual(r.callReturn, "1");
-                        },
-                        onSuccess: function (r) {
-                            assert.property(r, "txHash");
-                            assert.property(r, "callReturn");
-                            assert.property(r, "blockHash");
-                            assert.property(r, "blockNumber");
-                            assert.isAbove(parseInt(r.blockNumber), 0);
-                            assert.strictEqual(r.to, augur.contracts.faucets);
-                            assert.strictEqual(Number(r.value), 0);
-                            if (++count === 2) done();
-                        },
-                        onFailed: function (res) {
-                            done(res);
-                        }
-                    });
-                    augur.cashFaucet({
-                        onSent: function (r) {
-                            assert.property(r, "txHash");
-                            assert.property(r, "callReturn");
-                            assert.strictEqual(r.callReturn, "1");
-                        },
-                        onSuccess: function (r) {
-                            assert.property(r, "txHash");
-                            assert.property(r, "callReturn");
-                            assert.property(r, "blockHash");
-                            assert.property(r, "blockNumber");
-                            assert.isAbove(parseInt(r.blockNumber), 0);
-                            assert.strictEqual(r.to, augur.contracts.faucets);
-                            assert.strictEqual(Number(r.value), 0);
-                            if (++count === 2) done();
-                        },
-                        onFailed: function (res) {
-                            done(res);
-                        }
-                    });
-                }]);
-            });
-
         });
     }
 
@@ -679,10 +626,7 @@ describe("Contract methods", function () {
                             assert.strictEqual(Number(r.value), 0);
                             done();
                         },
-                        onFailed: function (r) {
-                            // failed
-                            done(r);
-                        }
+                        onFailed: done
                     });
                 });
             });
@@ -690,5 +634,3 @@ describe("Contract methods", function () {
         });
     }
 });
-
-})();

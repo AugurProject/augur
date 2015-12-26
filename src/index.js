@@ -343,14 +343,6 @@ Augur.prototype.transact = function (tx, onSent, onSuccess, onFailed) {
  *************/
 
 // faucets.se
-Augur.prototype.cashFaucet = function (onSent, onSuccess, onFailed) {
-    if (onSent && onSent.constructor === Object) {
-        if (onSent.onSuccess) onSuccess = onSent.onSuccess;
-        if (onSent.onFailed) onFailed = onSent.onFailed;
-        if (onSent.onSent) onSent = onSent.onSent;
-    }
-    return this.transact(this.tx.cashFaucet, onSent, onSuccess, onFailed);
-};
 Augur.prototype.reputationFaucet = function (branch, onSent, onSuccess, onFailed) {
     // branch: sha256
     if (branch && branch.constructor === Object && branch.branch) {
@@ -410,7 +402,7 @@ Augur.prototype.depositEther = function (value, onSent, onSuccess, onFailed) {
         value = value.value;
     }
     var tx = this.utils.copy(this.tx.depositEther);
-    tx.value = abi.bignum(value).mul(rpc.ETHER).toFixed();
+    tx.value = "0x" + abi.bignum(value).mul(rpc.ETHER).toString(16);
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 Augur.prototype.withdrawEther = function (to, value, onSent, onSuccess, onFailed) {

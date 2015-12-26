@@ -21,12 +21,6 @@ module.exports = function (network) {
         },
 
         // faucets.se
-        cashFaucet: {
-            to: contracts.faucets,
-            method: "cashFaucet",
-            returns: "number",
-            send: true
-        },
         reputationFaucet: {
             to: contracts.faucets,
             method: "reputationFaucet",

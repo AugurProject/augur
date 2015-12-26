@@ -12,14 +12,15 @@ var log = console.log;
 
 describe("Batch", function () {
 
-    it("batch(cashFaucet, reputationFaucet)", function (done) {
+    it("batch(depositEther, reputationFaucet)", function (done) {
         var count = 0;
         var batch = augur.createBatch();
-        augur.tx.cashFaucet.send = false;
-        augur.tx.cashFaucet.returns = "number";
+        augur.tx.depositEther.send = false;
+        augur.tx.depositEther.returns = "number";
+        augur.tx.depositEther.value = 1;
         augur.tx.reputationFaucet.send = false;
         augur.tx.reputationFaucet.returns = "number";
-        batch.add("cashFaucet", [], function (r) {
+        batch.add("depositEther", [], function (r) {
             assert(r === "1" || r === "-1");
             if ((++count) === 2) done();
         });
@@ -30,18 +31,19 @@ describe("Batch", function () {
         batch.execute();
     });
 
-    it("batch(reputationFaucet, cashFaucet)", function (done) {
+    it("batch(reputationFaucet, depositEther)", function (done) {
         var count = 0;
         var batch = augur.createBatch();
-        augur.tx.cashFaucet.send = false;
-        augur.tx.cashFaucet.returns = "number";
+        augur.tx.depositEther.send = false;
+        augur.tx.depositEther.returns = "number";
+        augur.tx.depositEther.value = 1;
         augur.tx.reputationFaucet.send = false;
         augur.tx.reputationFaucet.returns = "number";
         batch.add("reputationFaucet", [augur.branches.dev], function (r) {
             assert.strictEqual(r, "1");
             if ((++count) === 2) done();
         });
-        batch.add("cashFaucet", [], function (r) {
+        batch.add("depositEther", [], function (r) {
             assert(r === "1" || r === "-1");
             if ((++count) === 2) done();
         });
