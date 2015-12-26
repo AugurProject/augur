@@ -1128,14 +1128,14 @@ Augur.prototype.parseMarketInfo = function (rawInfo) {
         var endDate;
         index += info.traderCount*TRADER_FIELDS;
         for (i = 0; i < info.numEvents; ++i) {
-            endDate = abi.number(rawInfo[i + index + 1]);
+            endDate = abi.number(rawInfo[i*EVENTS_FIELDS + index + 1]);
             info.events[i] = {
-                id: rawInfo[i + index],
+                id: rawInfo[i*EVENTS_FIELDS + index],
                 endDate: endDate,
-                outcome: abi.string(rawInfo[i + index + 2]),
-                minValue: abi.string(rawInfo[i + index + 3]),
-                maxValue: abi.string(rawInfo[i + index + 4]),
-                numOutcomes: abi.number(rawInfo[i + index + 5])
+                outcome: abi.string(rawInfo[i*EVENTS_FIELDS + index + 2]),
+                minValue: abi.string(rawInfo[i*EVENTS_FIELDS + index + 3]),
+                maxValue: abi.string(rawInfo[i*EVENTS_FIELDS + index + 4]),
+                numOutcomes: abi.number(rawInfo[i*EVENTS_FIELDS + index + 5])
             };
             // market type: binary, categorical, or scalar
             if (info.events[i].numOutcomes !== 2) {
@@ -1175,7 +1175,7 @@ Augur.prototype.parseMarketInfo = function (rawInfo) {
         if (info.numEvents === 1) {
             info.type = info.events[0].type;
         } else {
-            info.type = "combinatorial"; // TODO subtypes
+            info.type = "combinatorial";
         }
     }
     return info;
@@ -1197,13 +1197,12 @@ Augur.prototype.getMarketInfo = function (market, callback) {
             // combinatorial markets only: batch event descriptions
             var txList = new Array(marketInfo.numEvents);
             for (var i = 0; i < marketInfo.numEvents; ++i) {
-                txList[i] = utils.copy(self.tx.getDescription);
+                txList[i] = self.utils.copy(self.tx.getDescription);
                 txList[i].params = marketInfo.events[i].id;
             }
-            console.log(txList);
             rpc.batch(txList, function (response) {
                 for (var i = 0, len = response.length; i < len; ++i) {
-                    marketInfo.events[i].description = abi.decode_hex(response[i], true);
+                    marketInfo.events[i].description = response[i];
                 }
                 unpacked.cb[0](marketInfo);
             });
@@ -1217,11 +1216,11 @@ Augur.prototype.getMarketInfo = function (market, callback) {
         // combinatorial markets only: batch event descriptions
         var txList = new Array(marketInfo.numEvents);
         for (var i = 0; i < marketInfo.numEvents; ++i) {
-            txList[i] = utils.copy(self.tx.getDescription);
+            txList[i] = this.utils.copy(self.tx.getDescription);
             txList[i].params = marketInfo.events[i].id;
         }
         var response = rpc.batch(txList);
-        for (var i = 0, len = response.length; i < len; ++i) {
+        for (i = 0; i < response.length; ++i) {
             marketInfo.events[i].description = response[i];
         }
         return marketInfo;

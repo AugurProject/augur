@@ -86,23 +86,23 @@ module.exports={
     },
     "10101": {
         "namereg": "0xc6d9d2cd449a754c494264e1809c50e34d64562b",
-        "buyAndSellShares": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f",
+        "buyAndSellShares": "0x0ebc0f4193d04d7f9711a6e6b00590d51944aa75",
         "checkQuorum": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d",
-        "closeMarket": "0xcece47d6c0a6a1c90521f38ec5bf7550df983804",
-        "closeMarketEight": "0x031d9d02520cc708ea3c865278508c9cdb92bd51",
-        "closeMarketFour": "0xcd6c7bc634257f82903b182142aae7156d72a200",
-        "closeMarketOne": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945",
-        "closeMarketTwo": "0x7d4b581a0868204b7481c316b430a97fd292a2fb",
+        "closeMarket": "0xd9cbf7eac82423b4cc4722f9d90cb293da757eb3",
+        "closeMarketEight": "0x00148bf7514d240be4319b3c9b1b68024ff17eb6",
+        "closeMarketFour": "0xac4d7a1c9525345ef9aca017f6737ec087bcd8c7",
+        "closeMarketOne": "0x509eb67acb27a35987ade6d8ea95e2b70b8ecb8b",
+        "closeMarketTwo": "0x55ced6f7475f3bab39ac35f68b2008bc35461f2e",
         "comments": "0x014b14d07e5afb2f30eb6ebf81d927563f0f1238",
         "createBranch": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df",
         "createEvent": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645",
-        "createMarket": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7",
+        "createMarket": "0xdfea50bda81fc05e860c4783791a9281ec49beb3",
         "dispatch": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2",
         "faucets": "0x509592c96eee7e19f6a34772fd8783cb072ca3c6",
         "makeReports": "0x3f3276849a878a176b2f02dd48a483e8182a49e4",
         "p2pWagers": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6",
         "sendReputation": "0x35152caa07026203a1add680771afb690d872d7d",
-        "transferShares": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3",
+        "transferShares": "0xe96fd0ebd2a6f3f96277df217f0b77c653bbe674",
         "accounts": "0x77ae4a8fa5c2775e618fcb40b0598f80a3b846f1",
         "branches": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd",
         "cash": "0xe4714fcbdcdba49629bc408183ef40d120700b8d",
@@ -111,7 +111,7 @@ module.exports={
         "fxpFunctions": "0x482c57abdce592b39434e3f619ffc3db62ab6d01",
         "info": "0x5069d883e31429c6dd1325d961f443007747c7a2",
         "ipfs": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e",
-        "markets": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893",
+        "markets": "0x7811bbaeb91d3f0de807de75383ad2ec7183a07c",
         "reporting": "0x81a7621e9a286d061b3dea040888a51c96693b1c",
         "adjust": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55",
         "center": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c",
@@ -51006,14 +51006,14 @@ Augur.prototype.parseMarketInfo = function (rawInfo) {
         var endDate;
         index += info.traderCount*TRADER_FIELDS;
         for (i = 0; i < info.numEvents; ++i) {
-            endDate = abi.number(rawInfo[i + index + 1]);
+            endDate = abi.number(rawInfo[i*EVENTS_FIELDS + index + 1]);
             info.events[i] = {
-                id: rawInfo[i + index],
+                id: rawInfo[i*EVENTS_FIELDS + index],
                 endDate: endDate,
-                outcome: abi.string(rawInfo[i + index + 2]),
-                minValue: abi.string(rawInfo[i + index + 3]),
-                maxValue: abi.string(rawInfo[i + index + 4]),
-                numOutcomes: abi.number(rawInfo[i + index + 5])
+                outcome: abi.string(rawInfo[i*EVENTS_FIELDS + index + 2]),
+                minValue: abi.string(rawInfo[i*EVENTS_FIELDS + index + 3]),
+                maxValue: abi.string(rawInfo[i*EVENTS_FIELDS + index + 4]),
+                numOutcomes: abi.number(rawInfo[i*EVENTS_FIELDS + index + 5])
             };
             // market type: binary, categorical, or scalar
             if (info.events[i].numOutcomes !== 2) {
@@ -51053,7 +51053,7 @@ Augur.prototype.parseMarketInfo = function (rawInfo) {
         if (info.numEvents === 1) {
             info.type = info.events[0].type;
         } else {
-            info.type = "combinatorial"; // TODO subtypes
+            info.type = "combinatorial";
         }
     }
     return info;
@@ -51075,13 +51075,12 @@ Augur.prototype.getMarketInfo = function (market, callback) {
             // combinatorial markets only: batch event descriptions
             var txList = new Array(marketInfo.numEvents);
             for (var i = 0; i < marketInfo.numEvents; ++i) {
-                txList[i] = utils.copy(self.tx.getDescription);
+                txList[i] = self.utils.copy(self.tx.getDescription);
                 txList[i].params = marketInfo.events[i].id;
             }
-            console.log(txList);
             rpc.batch(txList, function (response) {
                 for (var i = 0, len = response.length; i < len; ++i) {
-                    marketInfo.events[i].description = abi.decode_hex(response[i], true);
+                    marketInfo.events[i].description = response[i];
                 }
                 unpacked.cb[0](marketInfo);
             });
@@ -51095,11 +51094,11 @@ Augur.prototype.getMarketInfo = function (market, callback) {
         // combinatorial markets only: batch event descriptions
         var txList = new Array(marketInfo.numEvents);
         for (var i = 0; i < marketInfo.numEvents; ++i) {
-            txList[i] = utils.copy(self.tx.getDescription);
+            txList[i] = this.utils.copy(self.tx.getDescription);
             txList[i].params = marketInfo.events[i].id;
         }
         var response = rpc.batch(txList);
-        for (var i = 0, len = response.length; i < len; ++i) {
+        for (i = 0; i < response.length; ++i) {
             marketInfo.events[i].description = response[i];
         }
         return marketInfo;

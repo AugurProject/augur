@@ -239,99 +239,94 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 "Will the Larsen B ice shelf collapse by November 1, 2016?",
                 utils.date_to_block(augur, "11-2-2016")
             ]];
-            it.each(
-                events,
-                "create single-event market using createMarket: %s",
-                ['element'],
-                function (element, next) {
-                    this.timeout(augur.constants.TIMEOUT*4);
+            it.each(events, "%s", ["element"], function (element, next) {
+                this.timeout(augur.constants.TIMEOUT*4);
 
-                    // create an event
-                    var branch = augur.branches.dev;
-                    var description = element[0];
-                    var expDate = (EXPIRING) ?
-                        5*blockNumber + Math.round(Math.random() * 1000) : element[1];
-                    var minValue = 0;
-                    var maxValue = 1;
-                    var numOutcomes = 2;
-                    augur.createEvent({
-                        branchId: branch,
-                        description: description,
-                        expDate: expDate,
-                        minValue: minValue,
-                        maxValue: maxValue,
-                        numOutcomes: numOutcomes,
-                        onSent: function (r) {
-                            assert(r.txHash);
-                            assert(r.callReturn);
-                        },
-                        onSuccess: function (r) {
-                            var eventID = r.callReturn;
-                            var creator = augur.getCreator(eventID);
-                            if (creator !== augur.coinbase) {
-                                console.log("\n  createEvent.createEvent:", utils.pp(r));
-                            }
-                            assert.strictEqual(creator, augur.coinbase);
-                            assert.strictEqual(augur.getDescription(eventID), description);
+                // create an event
+                var branch = augur.branches.dev;
+                var description = element[0];
+                var expDate = (EXPIRING) ?
+                    5*blockNumber + Math.round(Math.random() * 1000) : element[1];
+                var minValue = 0;
+                var maxValue = 1;
+                var numOutcomes = 2;
+                augur.createEvent({
+                    branchId: branch,
+                    description: description,
+                    expDate: expDate,
+                    minValue: minValue,
+                    maxValue: maxValue,
+                    numOutcomes: numOutcomes,
+                    onSent: function (r) {
+                        assert(r.txHash);
+                        assert(r.callReturn);
+                    },
+                    onSuccess: function (r) {
+                        var eventID = r.callReturn;
+                        var creator = augur.getCreator(eventID);
+                        if (creator !== augur.coinbase) {
+                            console.log("\n  createEvent.createEvent:", utils.pp(r));
+                        }
+                        assert.strictEqual(creator, augur.coinbase);
+                        assert.strictEqual(augur.getDescription(eventID), description);
 
-                            // incorporate the new event into a market
-                            var alpha = "0.0079";
-                            var initialLiquidity = 10 + Math.round(Math.random() * 10);
-                            var tradingFee = "0.02";
-                            var events = [eventID];
+                        // incorporate the new event into a market
+                        var alpha = "0.0079";
+                        var initialLiquidity = 10 + Math.round(Math.random() * 10);
+                        var tradingFee = "0.02";
+                        var events = [eventID];
 
-                            augur.createMarket({
-                                branchId: branch,
-                                description: description,
-                                alpha: alpha,
-                                initialLiquidity: initialLiquidity,
-                                tradingFee: tradingFee,
-                                events: events,
-                                onSent: function (res) {
-                                    assert(res.txHash);
-                                    assert(res.callReturn);
-                                },
-                                onSuccess: function (res) {
-                                    var marketID = res.callReturn;
-                                    var creator = augur.getCreator(marketID);
-                                    if (creator !== augur.coinbase) {
-                                        console.log("\n  createMarket.createMarket:", utils.pp(res));
+                        augur.createMarket({
+                            branchId: branch,
+                            description: description,
+                            alpha: alpha,
+                            initialLiquidity: initialLiquidity,
+                            tradingFee: tradingFee,
+                            events: events,
+                            onSent: function (res) {
+                                assert(res.txHash);
+                                assert(res.callReturn);
+                            },
+                            onSuccess: function (res) {
+                                var marketID = res.callReturn;
+                                var creator = augur.getCreator(marketID);
+                                if (creator !== augur.coinbase) {
+                                    console.log("\n  createMarket.createMarket:", utils.pp(res));
+                                    console.log("  getMarketInfo:", utils.pp(augur.getMarketInfo(marketID)));
+                                    console.log("  description:", utils.pp(augur.getDescription(marketID)));
+                                }
+                                assert.strictEqual(creator, augur.coinbase);
+                                assert.strictEqual(augur.getDescription(marketID), description);
+
+                                augur.getMarketEvents(marketID, function (eventList) {
+                                    if (!eventList || !eventList.length) {
+                                        console.log("\n  markets.getMarketEvents:", utils.pp(eventList));
                                         console.log("  getMarketInfo:", utils.pp(augur.getMarketInfo(marketID)));
                                         console.log("  description:", utils.pp(augur.getDescription(marketID)));
+                                        next(new Error("event list"));
                                     }
-                                    assert.strictEqual(creator, augur.coinbase);
-                                    assert.strictEqual(augur.getDescription(marketID), description);
+                                    assert(eventList);
+                                    assert.isArray(eventList);
+                                    assert.strictEqual(eventList.length, 1);
+                                    assert.strictEqual(eventList[0], eventID);
+                                    augur.getMarketInfo(marketID, function (info) {
+                                        if (info.error) return next(info);
+                                        assert.isArray(info.events);
+                                        assert.strictEqual(info.events.length, 1);
+                                        assert.strictEqual(info.events[0].type, "binary");
+                                        assert.strictEqual(info.type, "binary");
+                                        next();
+                                    });
+                                }); // markets.getMarketEvents
 
-                                    augur.getMarketEvents(marketID, function (eventList) {
-                                        if (!eventList || !eventList.length) {
-                                            console.log("\n  markets.getMarketEvents:", utils.pp(eventList));
-                                            console.log("  getMarketInfo:", utils.pp(augur.getMarketInfo(marketID)));
-                                            console.log("  description:", utils.pp(augur.getDescription(marketID)));
-                                            next(new Error("event list"));
-                                        }
-                                        assert(eventList);
-                                        assert.isArray(eventList);
-                                        assert.strictEqual(eventList.length, 1);
-                                        assert.strictEqual(eventList[0], eventID);
-                                        augur.getMarketInfo(marketID, function (info) {
-                                            if (info.error) return next(info);
-                                            assert.isArray(info.events);
-                                            assert.strictEqual(info.events.length, 1);
-                                            assert.strictEqual(info.events[0].type, "binary");
-                                            assert.strictEqual(info.type, "binary");
-                                            next();
-                                        });
-                                    }); // markets.getMarketEvents
+                            },
+                            onFailed: next
+                        }); // createMarket.createMarket
 
-                                },
-                                onFailed: next
-                            }); // createMarket.createMarket
-
-                        },
-                        onFailed: next
-                    }); // createEvent.createEvent
-                }
-            );
+                    },
+                    onFailed: next
+                }); // createEvent.createEvent
+            });
         });
 
         describe("combinatorial", function () {
@@ -341,14 +336,6 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                     this.timeout(augur.constants.TIMEOUT*8);
                     var events = [];
                     async.eachSeries(t.events, function (event, nextEvent) {
-                        console.log({
-                            branchId: t.branch,
-                            description: event.description,
-                            expDate: event.expirationBlock,
-                            minValue: event.minValue,
-                            maxValue: event.maxValue,
-                            numOutcomes: event.numOutcomes
-                        })
                         augur.createEvent({
                             branchId: t.branch,
                             description: event.description,
@@ -372,14 +359,6 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                     }, function (err) {
                         if (err) return done(err);
                         var initialLiquidity = t.initialLiquidityFloor + Math.round(Math.random() * 10);
-                        console.log("market:", {
-                            branchId: t.branch,
-                            description: t.description,
-                            alpha: t.alpha,
-                            initialLiquidity: initialLiquidity,
-                            tradingFee: t.tradingFee,
-                            events: events
-                        });
                         augur.createMarket({
                             branchId: t.branch,
                             description: t.description,
@@ -388,18 +367,15 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                             tradingFee: t.tradingFee,
                             events: events,
                             onSent: function (res) {
-                                console.log("createMarket sent:", res);
                                 assert(res.txHash);
                                 assert(res.callReturn);
                             },
                             onSuccess: function (res) {
-                                console.log("createMarket success:", res);
                                 var marketID = res.callReturn;
                                 assert.strictEqual(augur.getCreator(marketID), augur.coinbase);
                                 assert.strictEqual(augur.getDescription(marketID), t.description);
-                                assert.strictEqual(t.numEvents, augur.getNumEvents(marketID));
+                                assert.strictEqual(t.numEvents, parseInt(augur.getNumEvents(marketID)));
                                 augur.getMarketEvents(marketID, function (eventList) {
-                                    console.log("eventList:", eventList);
                                     assert.isArray(eventList);
                                     assert.strictEqual(eventList.length, t.numEvents);
                                     for (var i = 0, len = eventList.length; i < len; ++i) {
@@ -423,6 +399,29 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 });
             };
 
+            test({
+                branch: augur.branches.dev,
+                numEvents: 2,
+                events: [{
+                    type: "scalar",
+                    description: "How many marine species will go extinct between January 1, 2016 and January 1, 2018?",
+                    expirationBlock: utils.date_to_block(augur, "1-2-2018"),
+                    minValue: 0,
+                    maxValue: 1000000,
+                    numOutcomes: 2
+                }, {
+                    type: "scalar",
+                    description: "What will the average tropospheric methane concentration (in parts-per-billion) be between January 1, 2017 and January 1, 2018?",
+                    expirationBlock: utils.date_to_block(augur, "1-2-2018"),
+                    minValue: 700,
+                    maxValue: 5000,
+                    numOutcomes: 2
+                }],
+                description: "Are atmospheric methane concentration and extinction rates of marine species correlated?",
+                alpha: "0.0079",
+                tradingFee: "0.01",
+                initialLiquidityFloor: 12
+            });
             test({
                 branch: augur.branches.dev,
                 numEvents: 3,
@@ -452,29 +451,6 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 alpha: "0.0079",
                 tradingFee: "0.015",
                 initialLiquidityFloor: 21
-            });
-            test({
-                branch: augur.branches.dev,
-                numEvents: 2,
-                events: [{
-                    type: "scalar",
-                    description: "How many marine species will go extinct between January 1, 2016 and January 1, 2018?",
-                    expirationBlock: utils.date_to_block(augur, "1-2-2018"),
-                    minValue: 0,
-                    maxValue: 1000000,
-                    numOutcomes: 2
-                }, {
-                    type: "scalar",
-                    description: "What will the average tropospheric methane concentration (in parts-per-billion) be between January 1, 2017 and January 1, 2018?",
-                    expirationBlock: utils.date_to_block(augur, "1-2-2018"),
-                    minValue: 700,
-                    maxValue: 5000,
-                    numOutcomes: 2
-                }],
-                description: "Are atmospheric methane concentration and extinction rates of marine species correlated?",
-                alpha: "0.0079",
-                tradingFee: "0.01",
-                initialLiquidityFloor: 12
             });
         });
     });

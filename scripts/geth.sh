@@ -1,7 +1,7 @@
 #!/bin/bash
 # geth startup script
 
-set -ex
+set -e
 trap "exit" INT
 
 if [ `hostname` = "heavy" ]; then
@@ -39,17 +39,17 @@ if [ -L $symlink ]; then
 fi
 ln -s "$HOME/.ethereum-${network}" $symlink
 
-declare -a ports=("8545" "8547" "30303" "30304")
-for port in "${ports[@]}"; do
-    UDP="INPUT -p udp --dport ${port} -j ACCEPT"
-    TCP="INPUT -p tcp --dport ${port} -j ACCEPT"
-    set +e
-    sudo iptables -D $UDP >> /dev/null 2>&1
-    sudo iptables -D $TCP >> /dev/null 2>&1
-    set -e
-    sudo iptables -A $UDP
-    sudo iptables -A $TCP
-    echo -e "Opened port ${port}"
-done
+# declare -a ports=("8545" "8547" "30303" "30304")
+# for port in "${ports[@]}"; do
+#     UDP="INPUT -p udp --dport ${port} -j ACCEPT"
+#     TCP="INPUT -p tcp --dport ${port} -j ACCEPT"
+#     set +e
+#     sudo iptables -D $UDP >> /dev/null 2>&1
+#     sudo iptables -D $TCP >> /dev/null 2>&1
+#     set -e
+#     sudo iptables -A $UDP
+#     sudo iptables -A $TCP
+#     echo -e "Opened port ${port}"
+# done
 
 geth $optargs --networkid $network --datadir $symlink --rpc --rpcapi "eth,net,web3" --ipcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" --rpccorsdomain "https://eth1.augur.net https://eth2.augur.net https://eth3.augur.net https://eth4.augur.net https://eth5.augur.net https://augur.divshot.io https://augur-stage.herokuapp.com https://client.augur.net http://localhost:8080 https://localhost:8080" --genesis "${genesis}" --bootnodes "${bootnodes}" --maxpeers $maxpeers --etherbase $address --unlock $address --password $passfile console

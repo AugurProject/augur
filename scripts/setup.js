@@ -169,14 +169,6 @@ function faucets(geth) {
     connect_augur();
     var branch = augur.branches.dev;
     var coinbase = augur.coinbase;
-    var balance = {
-        reputation: abi.bignum(augur.getRepBalance(branch, coinbase)),
-        cash: abi.bignum(augur.getCashBalance(coinbase))
-    };
-    var needs = {
-        reputation: !balance.reputation || balance.reputation.lt(new BigNumber(47)),
-        cash: !balance.cash || balance.cash.lt(new BigNumber(5))
-    };
     reset_tests(mocha.suite);
     mocha.addFile(join(__dirname, "..", "test", "core", "faucets.js"));
     mocha.reporter(options.MOCHA_REPORTER).run(function (failures) {
