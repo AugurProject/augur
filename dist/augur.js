@@ -44,45 +44,45 @@ module.exports={
     },
     "7": {
         "namereg": "0xc6d9d2cd449a754c494264e1809c50e34d64562b",
-        "buyAndSellShares": "0x222be5d1b153b7f04189b2f591166665a885aaf5",
-        "checkQuorum": "0x7a38967fab965444182e48fca12d63c62ceb3d96",
-        "closeMarket": "0xdb45fd72e0f88393c872c0387ad7a4c9e9df4296",
-        "closeMarketEight": "0xe327c3128520eeacfb1da6091149344a34457f99",
-        "closeMarketFour": "0x1d6c3999f23692326cf590addb050b482cdf79ba",
-        "closeMarketOne": "0x9e049aef53bf7d56caa398b6437218ebc548b9c7",
-        "closeMarketTwo": "0xf9ed008f6b3b5ec95fce763f3c738c32db17c2e0",
-        "comments": "0x853cb123de348769d17108f505d6c3081fde2275",
-        "createBranch": "0x7bf8e4f9e3183867f2ad8c8e61d7b4df3a9204a8",
-        "createEvent": "0xf21d1dc93739dddb2ff15db191d7922fe8a4e196",
-        "createMarket": "0x344b7273d6ba3ae6464de981e3f8f21de20eb429",
-        "dispatch": "0x4b22c2f46045f8eb791e9c31b3d17dc41ea33cb4",
-        "faucets": "0x1f7a7eb8bdf2690bd815c24a16f3301706005f42",
-        "makeReports": "0x66be17e5b82a1080dae93bbd65935516182ca20c",
-        "p2pWagers": "0x5637e628e8557528fcaa732380d471fecde52168",
-        "sendReputation": "0x9dce0b045622fd1536f0f49e3d7c5b4ffaf01bf7",
-        "transferShares": "0x615b1bbfd690a24cbf5679e7b326aab0227c492e",
-        "accounts": "0x4fc79e76158c6f347195a4a5564893e0f55f0ebf",
-        "branches": "0x6304d620fbdaf2d473079e44fe13d376fefe6164",
-        "cash": "0xa36a4f0bd323f15d6ebe04810dcb770d33f3466e",
-        "events": "0x435cb3ba15fbda3c466dc527f1b9cc78f5114d4f",
-        "expiringEvents": "0x27f07adb9921e7f69462e3e285d43c6c25768058",
-        "fxpFunctions": "0x1fa4745bcd612d19c698aad79c9ceee079cf65b6",
-        "info": "0x3c5062d58be6ce59534e8a2d10f1d533c1a0206e",
-        "ipfs": "0x0dc961533e26dccb673ccbaa93d8e8fd96b41765",
-        "markets": "0x44a270caf86e229f188b340994fa8671ae94450a",
-        "reporting": "0x1c6e0e4cd3980a458a6d7af1e98ba85bb67e5875",
-        "adjust": "0x360f45231a8f6f192dece487e30b51e8f9fca081",
-        "center": "0x8a0cf0b390a9acbaed8abe1df64e4a1eb7fde454",
-        "payout": "0x9a051313590855995a93b41ef3fd5c29ec52a120",
-        "redeem_adjust": "0xb5c5b32e285ba059cd5c79560885ac6448ecfc36",
-        "redeem_center": "0x608fa0fbee213d5ca2032fc30b50c16bc852b7da",
-        "redeem_interpolate": "0x9194647074999cc5792164fdebd1f653aa99397c",
-        "redeem_payout": "0xa4f49043cabb4c514eb8d7425932b982dd65c74c",
-        "redeem_resolve": "0x7368ad231be18e0c6859e6ec776c3c8e2857b747",
-        "redeem_score": "0x652b9c2095f2e244b7ca144237ff6b2ff2f32d67",
-        "resolve": "0xca39ef3752a20837ece0911c1f758ba8b621a33b",
-        "score": "0xa8347d21ff9dc37c8c087a665cbcb69d8f9fee4c",
-        "statistics": "0x29c1d95256f9090130e99dd9cab154ac3d3e060f"
+        "buyAndSellShares": "0xc4f6793f600edcf7c8ae16b0709bdeab2c368fde",
+        "checkQuorum": "0xdccd54564e1c4a140e5e546e000b1b47c4c6d880",
+        "closeMarket": "0x78a01aeb9f0d074c1dd589bb251533e6998f0817",
+        "closeMarketEight": "0x28059ecbf6aee59f318e21e9db8678cfdcdfaa56",
+        "closeMarketFour": "0xc15b4cc5c2c1ba9e2acccbe70be99b543870db1f",
+        "closeMarketOne": "0xaedb8c8025d29ebb57bfbe0ae29cc92c16bb4b3e",
+        "closeMarketTwo": "0xf199fcfdf2bb5b580b7a790fd0733de14b8bdb31",
+        "comments": "0x02613aa7a2ac54a5ee4fca6e77c6d55625189a75",
+        "createBranch": "0x418b2c90b7f4641f573c56361dcd74cb4f0c1037",
+        "createEvent": "0x2f3ee74691a161ac3647be05f7ad4dd18e9bbcbf",
+        "createMarket": "0xf208b76857e1f988280c826dc83197124ead7f3f",
+        "dispatch": "0x0d411457890a43ba80c076ca5752321da5b8e6a8",
+        "faucets": "0xfce5df0aeb2efaa611a0210b3faab8116405d374",
+        "makeReports": "0x340510ba7b0d7f65efcd7384077115165d1c9eaf",
+        "p2pWagers": "0x98d81ce830bbee5a5280551564e5fb92857a2810",
+        "sendReputation": "0xbd6fb11a900f6ab2eae54a301f1a81da0cb083ef",
+        "transferShares": "0x87c4c3529304af41331470dcbd0a643e29e3c2ff",
+        "accounts": "0xcfe5b5e339cac57940c83d9c63a3c1703830ef21",
+        "branches": "0x03fccd1ed6561ae26dc4c8dab3d84cc1e82b8e18",
+        "cash": "0xe7d7352e5adfec7e31748fc96ca032e1e091b1fe",
+        "events": "0xb3b476db70034c7d6ac3168ef428aea3adfdff82",
+        "expiringEvents": "0x0959d450128d5d4240c8bfa5b0dff17ab742a8d7",
+        "fxpFunctions": "0x5bfe33b44617fbdd318f853433a33cd98dec0c3d",
+        "info": "0x682fe02ec352ee038c603aecc4d22dc500ef493d",
+        "ipfs": "0x46df2dc8e95d947845e768bc8cb2b2227ee762fa",
+        "markets": "0x76e02a9d75e82be68bb91c80d39215c47d84b37d",
+        "reporting": "0xf061169967b5b2aa750f68fc434c585f22e8327e",
+        "adjust": "0x930f890a1a7ba7a5fd96f8e09583d397bad51dbc",
+        "center": "0x2da746821eb27f4d21531cf63b4ed60ed537ec66",
+        "payout": "0xb32c8d049349233e34d2488533d5e0a48b804eac",
+        "redeem_adjust": "0x7152ecb3f254e125009b81e40a809ac3e4f7e14e",
+        "redeem_center": "0x6edd63da02674913650aa2a5d5eb51d615a7fa08",
+        "redeem_interpolate": "0x7ff944bbb5be0422a9d55bbbed52ba37c3b6404f",
+        "redeem_payout": "0x5d73df46d5aa5cdfb4813d714857c7bf81629a3a",
+        "redeem_resolve": "0x4786c39201f4ce0572181c0ab1a3627701a21b91",
+        "redeem_score": "0xd935f40ae3999a2b333a58a3c82aa1dbbb38b659",
+        "resolve": "0x4f8e3f3de8dbb4ac0a824087db2f38d33f6c15f4",
+        "score": "0x1359bf73a734c70c3636e6fa19d58ca093c7a8ee",
+        "statistics": "0xba5fda6dc4758f9fdfcf402133ec8d7a44286112"
     },
     "10101": {
         "namereg": "0xc6d9d2cd449a754c494264e1809c50e34d64562b",
@@ -48942,18 +48942,6 @@ module.exports = {
             localStorage.setItem(account.label, JSON.stringify(account));
             if (!utils.is_function(cb)) return true;
             return cb(true);
-            // if (typeof chrome === "undefined" || !chrome || !chrome.runtime) {
-            //     return cb(true);
-            // }
-            // var item = {};
-            // item[account.label] = JSON.stringify(account);
-            // console.log("[db] chrome id:", constants.CHROME_ID);
-            // console.log("[db] item:", item);
-            // chrome.runtime.sendMessage(constants.CHROME_ID, item, null, function (res) {
-            //     console.log("[db] response:", res);
-            //     console.log(chrome.runtime.lastError);
-            //     return cb(true);
-            // });
         }
         if (!utils.is_function(cb)) return errors.DB_WRITE_FAILED;
         cb(errors.DB_WRITE_FAILED);
@@ -49017,8 +49005,9 @@ module.exports = {
     // expected block interval
     SECONDS_PER_BLOCK: 12,
 
-    // maximum number of accounts to use for unit tests
-    MAX_TEST_ACCOUNTS: 4,
+    // maximum number of accounts/samples for testing
+    MAX_TEST_ACCOUNTS: 3,
+    MAX_TEST_SAMPLES: 25,
 
     // free ether for new accounts on registration
     FREEBIE: 100,
@@ -51065,14 +51054,14 @@ Augur.prototype.getMarketInfo = function (market, callback) {
     tx.params = unpacked.params;
     if (unpacked && this.utils.is_function(unpacked.cb[0])) {
         return this.fire(tx, function (marketInfo) {
-            if (!marketInfo) return console.error(marketInfo);
+            if (!marketInfo) return callback(new Error("getMarketInfo"));
             marketInfo = self.parseMarketInfo(marketInfo);
             marketInfo._id = market;
             if (marketInfo.numEvents === 1) {
                 return unpacked.cb[0](marketInfo);
             }
 
-            // combinatorial markets only: batch event descriptions
+            // batch event descriptions (combinatorial markets only)
             var txList = new Array(marketInfo.numEvents);
             for (var i = 0; i < marketInfo.numEvents; ++i) {
                 txList[i] = self.utils.copy(self.tx.getDescription);
@@ -51091,7 +51080,7 @@ Augur.prototype.getMarketInfo = function (market, callback) {
         marketInfo._id = market;
         if (marketInfo.numEvents === 1) return marketInfo;
 
-        // combinatorial markets only: batch event descriptions
+        // batch event descriptions (combinatorial markets only)
         var txList = new Array(marketInfo.numEvents);
         for (var i = 0; i < marketInfo.numEvents; ++i) {
             txList[i] = this.utils.copy(self.tx.getDescription);
@@ -51103,7 +51092,6 @@ Augur.prototype.getMarketInfo = function (market, callback) {
         }
         return marketInfo;
     }
-    console.error("augur.getMarketInfo:", JSON.stringify(marketInfo, null, 2));
 };
 Augur.prototype.parseMarketsArray = function (marketsArray) {
     var len, rawInfo, marketID;

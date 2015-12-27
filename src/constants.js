@@ -19,8 +19,9 @@ module.exports = {
     // expected block interval
     SECONDS_PER_BLOCK: 12,
 
-    // maximum number of accounts to use for unit tests
-    MAX_TEST_ACCOUNTS: 4,
+    // maximum number of accounts/samples for testing
+    MAX_TEST_ACCOUNTS: 3,
+    MAX_TEST_SAMPLES: 25,
 
     // free ether for new accounts on registration
     FREEBIE: 100,

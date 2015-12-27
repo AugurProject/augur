@@ -1187,14 +1187,14 @@ Augur.prototype.getMarketInfo = function (market, callback) {
     tx.params = unpacked.params;
     if (unpacked && this.utils.is_function(unpacked.cb[0])) {
         return this.fire(tx, function (marketInfo) {
-            if (!marketInfo) return console.error(marketInfo);
+            if (!marketInfo) return callback(new Error("getMarketInfo"));
             marketInfo = self.parseMarketInfo(marketInfo);
             marketInfo._id = market;
             if (marketInfo.numEvents === 1) {
                 return unpacked.cb[0](marketInfo);
             }
 
-            // combinatorial markets only: batch event descriptions
+            // batch event descriptions (combinatorial markets only)
             var txList = new Array(marketInfo.numEvents);
             for (var i = 0; i < marketInfo.numEvents; ++i) {
                 txList[i] = self.utils.copy(self.tx.getDescription);
@@ -1213,7 +1213,7 @@ Augur.prototype.getMarketInfo = function (market, callback) {
         marketInfo._id = market;
         if (marketInfo.numEvents === 1) return marketInfo;
 
-        // combinatorial markets only: batch event descriptions
+        // batch event descriptions (combinatorial markets only)
         var txList = new Array(marketInfo.numEvents);
         for (var i = 0; i < marketInfo.numEvents; ++i) {
             txList[i] = this.utils.copy(self.tx.getDescription);
@@ -1225,7 +1225,6 @@ Augur.prototype.getMarketInfo = function (market, callback) {
         }
         return marketInfo;
     }
-    console.error("augur.getMarketInfo:", JSON.stringify(marketInfo, null, 2));
 };
 Augur.prototype.parseMarketsArray = function (marketsArray) {
     var len, rawInfo, marketID;
