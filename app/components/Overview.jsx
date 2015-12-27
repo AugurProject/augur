@@ -15,7 +15,6 @@ var utilities = require('../libs/utilities');
 var constants = require('../libs/constants');
 
 var CloseMarketModal = require('./CloseMarket').CloseMarketModal;
-var Assets = require('./Assets');
 var Markets = require('./Markets');
 var Branch = require('./Branch');
 
@@ -85,7 +84,7 @@ var Overview = React.createClass({
         if (outcome && outcome.sharesHeld) {
           if (outcome.sharesHeld.toNumber()) {
             var key = market.id + outcome.id;
-            holdings.push( <Holding market={ market } outcome={ outcome } key={ key } /> );
+            holdings.push( <Holding market={market} outcome={outcome} key={key} /> );
           }
         }
       });
@@ -117,9 +116,9 @@ var Overview = React.createClass({
               </Button>
             </div>
           </div>
-          <Assets asset={this.state.asset} config={this.state.config} />
         </div>
       );
+      // <Assets asset={this.state.asset} config={this.state.config} />
     }
 
     var holdingsSection = <span />

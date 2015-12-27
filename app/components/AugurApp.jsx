@@ -1,6 +1,6 @@
 var React = require("react");
 var Fluxxor = require("fluxxor");
-
+var ReactBootstrap = require('react-bootstrap');
 var Router = require("react-router");
 var RouteHandler = Router.RouteHandler;
 var Link = Router.Link;
@@ -9,6 +9,9 @@ var cookie = require("react-cookie");
 
 var FluxMixin = Fluxxor.FluxMixin(React),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
+
+var OverlayTrigger = ReactBootstrap.OverlayTrigger;
+var Popover = ReactBootstrap.Popover;
 
 var ReactBootstrap = require('react-bootstrap');
 var ProgressBar = ReactBootstrap.ProgressBar;
@@ -25,6 +28,10 @@ var Confirm = require('./Confirm');
 
 var SignInModal = require('./SignIn');
 var RegisterModal = require('./Register');
+var SendCashModal = require('./SendModal').SendCashModal;
+var SendRepModal = require('./SendModal').SendRepModal;
+var SendEtherModal = require('./SendModal').SendEtherModal;
+
 
 var AugurApp = React.createClass({
 
@@ -34,6 +41,10 @@ var AugurApp = React.createClass({
     return {
       signInModalOpen: false,
       registerModalOpen: false,
+      repFaucetDisabled: false,
+      sendCashModalOpen: false,
+      sendRepModalOpen: false,
+      sendEtherModalOpen: false,
       status: 'stopped'
     };
   },
@@ -79,13 +90,25 @@ var AugurApp = React.createClass({
   },
 
   toggleSignInModal: function (event) {
-    this.setState({ signInModalOpen: !this.state.signInModalOpen });
+    this.setState({signInModalOpen: !this.state.signInModalOpen});
   },
 
   toggleRegisterModal: function (event) {
-    this.setState({ registerModalOpen: !this.state.registerModalOpen });
+    this.setState({registerModalOpen: !this.state.registerModalOpen});
   },
   
+  toggleSendCashModal: function(event) {
+    this.setState({sendCashModalOpen: !this.state.sendCashModalOpen});
+  },
+
+  toggleSendRepModal: function(event) {
+     this.setState({sendRepModalOpen: !this.state.sendRepModalOpen});
+  },
+
+  toggleSendEtherModal: function(event) {
+     this.setState({sendEtherModalOpen: !this.state.sendEtherModalOpen});
+  },
+
   render: function () {
     var accountStatus;
     if (this.state.config.currentAccount) {
@@ -111,34 +134,49 @@ var AugurApp = React.createClass({
       var etherBalance = this.state.asset.ether ? utilities.formatEther(this.state.asset.ether).value : '-';
 
       accountStatus = (
-        <div className="col-sm-12 pull-right">
-          <div className="panel-body">
-            <div className="col-sm-6">
-              <div className="col-sm-3">
-                <span className="fa-stack fa-xs">
-                  <i className="fa fa-circle fa-stack-2x icon-background2"></i>
-                  <i className="fa fa-circle-thin fa-stack-2x icon-background3"></i>
-                  <i className="fa fa-stack-1x fa-usd icon-green"></i>
-                </span>
-              </div>
-              <div className="col-sm-3 balance-wrapper">
-                <span className='balance'>{ cashBalance }</span>
-              </div>
-            </div>
+        <div className="asset-panel panel-body">
+          <ul className="menu">
+            <li className="pointer" onClick={this.toggleSendCashModal}>
+              <span className="fa-stack fa-xs">
+                <i className="fa fa-circle fa-stack-2x icon-background2"></i>
+                <i className="fa fa-circle-thin fa-stack-2x icon-background3"></i>
+                <i className="fa fa-stack-1x fa-usd icon-green"></i>
+              </span>
+              <span className='balance-wrapper balance'>{cashBalance}</span>
+            </li>
+          </ul>
 
-            <div className="col-sm-6">
-              <div className="col-sm-3">
-                <span className="fa-stack fa-xs">
-                  <i className="fa fa-circle fa-stack-2x icon-background1"></i>
-                  <i className="fa fa-circle-thin fa-stack-2x icon-background6"></i>
-                  <i className="fa fa-heart fa-stack-1x icon-red"></i>
-                </span>
-              </div>
-              <div className="col-sm-3 balance-wrapper">
-                <span className='balance'>{ repBalance }</span>
-              </div>
-            </div>
-          </div>
+          <ul className="menu">
+            <li className="pointer" onClick={this.toggleSendRepModal}>
+              <span className="fa-stack fa-xs">
+                <i className="fa fa-circle fa-stack-2x icon-background1"></i>
+                <i className="fa fa-circle-thin fa-stack-2x icon-background6"></i>
+                <i className="fa fa-heart fa-stack-1x icon-red"></i>
+              </span>
+              <span className='balance-wrapper balance'>{repBalance}</span>
+            </li>
+          </ul>
+
+          <ul className="menu">
+            <li className="pointer" onClick={this.toggleSendEtherModal}>
+              <span className="fa-stack fa-xs">
+                <i className="fa fa-circle fa-stack-2x icon-background2"></i>
+                <i className="fa fa-circle-thin fa-stack-2x icon-background4"></i>
+                <i className="fa fa-stack-1x icon-blue">Ξ</i>
+              </span>
+              <span className='balance-wrapper balance'>{etherBalance}</span>
+            </li>
+          </ul>
+
+          <SendEtherModal
+            show={this.state.sendEtherModalOpen}
+            onHide={this.toggleSendEtherModal} />
+          <SendRepModal
+            show={this.state.sendRepModalOpen}
+            onHide={this.toggleSendRepModal} />
+          <SendCashModal
+            show={this.state.sendCashModalOpen}
+            onHide={this.toggleSendCashModal} />
         </div>
       );
     } else {

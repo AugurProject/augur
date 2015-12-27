@@ -86,9 +86,15 @@ var Assets = React.createClass({
       <div>
         <div className="row">
           <div className='cash-balance col-sm-12'>
-            <span className="unit">cash</span>
-            <Button bsSize='xsmall' className='pull-right' bsStyle='default' onClick={ this.toggleSendCashModal }>Send</Button>
-            <span className='pull-right'>{ cashBalance }</span>
+            <div className="col-sm-4">
+              <span className="unit">cash</span>
+            </div>
+            <div className="col-sm-4">
+              <Button bsSize='xsmall' className='pull-right' bsStyle='default' onClick={ this.toggleSendCashModal }>Send</Button>
+            </div>
+            <div className="col-sm-4">
+              <span className='pull-right'>{ cashBalance }</span>
+            </div>
           </div>
         </div>
         <div className="row">

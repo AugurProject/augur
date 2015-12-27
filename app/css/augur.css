@@ -198,6 +198,9 @@ nav.header h1 > i {
 .icon-white {
     color: white;
 }
+.icon-blue {
+    color: #01A9DB;
+}
 
 .icon-background1 {
     color: #ffffff;
@@ -212,7 +215,7 @@ nav.header h1 > i {
 }
 
 .icon-background4 {
-    color: #c0ffc0;
+    color: #01A9DB;
 }
 
 .icon-background6 {
@@ -531,6 +534,13 @@ nav.header .menu a:hover {
     text-align: center;
 }
 
+.asset-panel {
+    padding: 0 !important;
+}
+.pointer {
+    cursor: pointer;
+}
+
 .assets {
     background-color: #212E3F;
     border-color: #999898;
@@ -548,7 +558,7 @@ nav.header .menu a:hover {
     border-color: #7C4065;
 }
 .assets .panel-body {
-    padding: 5px 10px 10px 10px;
+    padding: 0;
 }
 .assets .panel-body > div {
     margin: 5px 0px 0px 0px;
