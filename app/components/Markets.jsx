@@ -35,7 +35,7 @@ var MarketPane = React.createClass({
   lastMarket: {},
 
   shouldComponentUpdate: function(nextProps, nextState) {
-    
+
     _.each(this.relevantMarketAttrs, function(attr) {
       if (this.lastMarket[attr] != nextProps.market[attr])
         return true;
@@ -88,7 +88,7 @@ var MarketPane = React.createClass({
 
     var body = (
       <div>
-        <h5>{ market.description }<div className='overlay' /></h5>
+        <h5 className="metal">{ market.description }<div className='overlay' /></h5>
         <div className='summary clearfix'>
           <span>{ percent }</span>
           <i className='pull-right'>{ status }</i>

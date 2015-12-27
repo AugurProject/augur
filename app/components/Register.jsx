@@ -57,9 +57,10 @@ var RegisterModal = React.createClass({
           }
         },
         function (res) {
+          console.log("your free lunch has arrived!");
           augur.filters.ignore(true);
           flux.actions.config.initializeData();
-        },
+        }
       ]);
     }
   },

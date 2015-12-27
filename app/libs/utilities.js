@@ -17,10 +17,10 @@ module.exports = {
     return date;
   },
 
-  dateToBlock: function(date) {
+  dateToBlock: function(date, currentBlock) {
 
     // assuming date is moment for now
-    var currentBlock = augur.rpc.blockNumber();
+    var currentBlock = currentBlock || augur.rpc.blockNumber();
     var now = moment();
     var secondsDelta = date.diff(now, 'seconds');
     var blockDelta = parseInt(secondsDelta / constants.SECONDS_PER_BLOCK);

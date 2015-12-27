@@ -6,19 +6,25 @@ var ConfigActions = {
   connect: function (hosted) {
     var host, self = this;
     var connectHostedCb = function (host) {
-      if (!host) return console.error("Couldn't connect to hosted node");
+      if (!host) {
+        return console.error("Couldn't connect to hosted node:", host);
+      }
       console.log("connected to host:", augur.rpc.nodes.hosted[0]);
       self.flux.actions.network.checkNetwork();
     };
     if (hosted) {
       this.flux.actions.config.connectHosted(connectHostedCb);
     } else {
-      if (!this.flux.store('config').getState().host) {
+      host = this.flux.store('config').getState().host;
+      if (!host) {
         return this.flux.actions.config.connectHosted(connectHostedCb);
       }
       augur.connect(host, null, function (connected) {
         if (connected) {
           console.log("connected to host:", augur.rpc.nodes.local || augur.rpc.nodes.hosted[0]);
+          if (!augur.rpc.nodes.local) {
+            self.flux.actions.config.setIsHosted(connected);
+          }
           return self.flux.actions.network.checkNetwork();
         }
         self.flux.actions.config.connectHosted(connectHostedCb);
@@ -68,23 +74,22 @@ var ConfigActions = {
       // listen for new blocks
       block: function (blockHash) {
         if (blockHash && self.flux.store('config').getAccount()) {
+          self.flux.actions.asset.updateAssets();
+        }
+      },
+
+      // listen for augur transactions
+      contracts: function (filtrate) {
+        if (filtrate && filtrate.address) {
+          if (filtrate.error) {
+            return console.log("contracts filter error:", filtrate);
+          }
+          console.log("[filter] contracts:", filtrate.address);
           self.flux.actions.network.updateNetwork();
           self.flux.actions.asset.updateAssets();
           self.flux.actions.branch.updateCurrentBranch();
         }
       },
-
-      // listen for augur transactions
-      // contracts: function (filtrate) {
-      //   if (filtrate) {
-      //     if (filtrate.error) {
-      //       return console.log("contracts filter error:", filtrate);
-      //     }
-      //     console.log("[filter] contracts:", filtrate.address);
-      //     self.flux.actions.asset.updateAssets();
-      //     self.flux.actions.market.loadMarkets();
-      //   }
-      // },
 
       // update market when a price change has been detected
       price: function (result) {

@@ -23,40 +23,10 @@ var Assets = React.createClass({
   getInitialState: function () {
     return {
       repFaucetDisabled: false,
-      cashFaucetDisabled: false,
       sendCashModalOpen: false,
       sendRepModalOpen: false,
       sendEtherModalOpen: false
     };
-  },
-
-  onCashFaucet: function (event) {
-    if (!this.state.cashFaucetDisabled) {
-      var self = this;
-      if (this.props.asset.ether.toNumber() < constants.MIN_ETHER_WARNING) {
-        console.log('warning: not enough ether'); 
-      }
-      augur.cashFaucet({
-        onSent: function (result) {
-          if (result && !result.error) {
-            self.getFlux().actions.transaction.addTransaction({
-              hash: result.txHash, 
-              type: constants.transaction.CASH_FAUCET_TYPE, 
-              description: 'requesting cash'
-            });
-          } else {
-            console.error("cash faucet failed:", result);
-          }
-        },
-        onSuccess: function (result) {
-          console.log("cash faucet success:", result.txHash);
-          flux.actions.asset.updateAssets();
-        },
-        onFailed: function (err) {
-          console.error("cash faucet failed:", err);
-        }
-      });
-    }
   },
 
   onRepFaucet: function (event) {
@@ -112,52 +82,34 @@ var Assets = React.createClass({
     var repBalance = this.props.asset.reputation ? this.props.asset.reputation.toFixed() : '-';
     var etherBalance = this.props.asset.ether ? utilities.formatEther(this.props.asset.ether).value : '-';
 
-    // <span className="unit">cash</span>
-          //     <div className="col-sm-1">
-          //   <ButtonGroup className='pull-right send-button'>
-          //     <Button bsSize='xsmall' bsStyle='default' onClick={ this.toggleSendCashModal }>Send</Button>
-          //     <Button disabled={ this.state.cashFaucetDisabled } bsSize='xsmall' bsStyle='default' onClick={ this.onCashFaucet }><i className='fa fa-tint'></i></Button>
-          //   </ButtonGroup>
-          // </div>
-
-    // <span className="unit">reputation</span>
-          //     <div className="col-sm-4">
-          //   <ButtonGroup className='pull-right send-button'>
-          //     <Button bsSize='xsmall' bsStyle='default' onClick={ this.toggleSendRepModal }>Send</Button>
-          //     <Button disabled={ this.state.repFaucetDisabled } bsSize='xsmall' bsStyle='default' onClick={ this.onRepFaucet }><i className='fa fa-tint'></i></Button>
-          //   </ButtonGroup>
-          // </div>
-
-          // <div className="col-sm-4">
-          //   <Button className='pull-right send-button' bsSize='xsmall' bsStyle='default' onClick={ this.toggleSendEtherModal }>Send</Button>
-          // </div>
-
-        //   <div className="col-sm-3">
-        //   <span className="unit">{ utilities.formatEther(this.props.asset.ether).unit }</span><span className='pull-right'>{ etherBalance }</span>
-        // </div>
-
-      //           <SendEtherModal show={ this.state.sendEtherModalOpen } onHide={ this.toggleSendEtherModal } />
-      // <SendRepModal show={ this.state.sendRepModalOpen } onHide={ this.toggleSendRepModal } />
-      // <SendCashModal show={ this.state.sendCashModalOpen } onHide={ this.toggleSendCashModal } />
-
     return (
-      <div className="panel-body col-sm-8 pull-right">
-        <div className="col-sm-4">
-          <span className="fa-stack fa-md">
-            <i className="fa fa-circle fa-stack-2x icon-background2"></i>
-            <i className="fa fa-btc fa-stack-1x"></i>
-          </span>
-          <span className='pull-right balance'>{ cashBalance }</span>
+      <div>
+        <div className="row">
+          <div className='cash-balance col-sm-12'>
+            <span className="unit">cash</span>
+            <Button bsSize='xsmall' className='pull-right' bsStyle='default' onClick={ this.toggleSendCashModal }>Send</Button>
+            <span className='pull-right'>{ cashBalance }</span>
+          </div>
         </div>
-
-        <div className="col-sm-4">
-          <span className="fa-stack fa-md">
-            <i className="fa fa-circle fa-stack-2x icon-background4"></i>
-             <i className="fa fa-circle-thin fa-stack-2x icon-background6"></i>
-            <i className="fa fa-heart fa-stack-1x"></i>
-          </span>
-          <span className='pull-right balance'>{ repBalance }</span>
+        <div className="row">
+          <div className='ether-balance col-sm-12'>
+            <Button className='pull-right send-button' bsSize='xsmall' bsStyle='default' onClick={ this.toggleSendEtherModal }>Send</Button>
+            <span className="unit">{ utilities.formatEther(this.props.asset.ether).unit }</span><span className='pull-right'>{ etherBalance }</span>
+          </div>
         </div>
+        <div className="row">
+          <div className='rep-balance col-sm-12'>
+            <span className="unit">reputation</span>
+            <ButtonGroup className='pull-right send-button'>
+              <Button bsSize='xsmall' bsStyle='default' onClick={ this.toggleSendRepModal }>Send</Button>
+              <Button disabled={ this.state.repFaucetDisabled } bsSize='xsmall' bsStyle='default' onClick={ this.onRepFaucet }><i className='fa fa-tint'></i></Button>
+            </ButtonGroup>
+            <span className='pull-right'>{ repBalance }</span>
+          </div>
+        </div>
+        <SendEtherModal show={ this.state.sendEtherModalOpen } onHide={ this.toggleSendEtherModal } />
+        <SendRepModal show={ this.state.sendRepModalOpen } onHide={ this.toggleSendRepModal } />
+        <SendCashModal show={ this.state.sendCashModalOpen } onHide={ this.toggleSendCashModal } />
       </div>
     );
   }

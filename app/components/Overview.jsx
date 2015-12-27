@@ -1,5 +1,6 @@
 var React = require('react');
 var Fluxxor = require("fluxxor");
+var keys = require('keythereum');
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 var ReactBootstrap = require('react-bootstrap');
@@ -14,13 +15,13 @@ var utilities = require('../libs/utilities');
 var constants = require('../libs/constants');
 
 var CloseMarketModal = require('./CloseMarket').CloseMarketModal;
-var EtherWarningModal = require('./EtherWarningModal');
-var Welcome = require('./Welcome');
+var Assets = require('./Assets');
 var Markets = require('./Markets');
+var Branch = require('./Branch');
 
 var Overview = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin('market')],
+  mixins: [FluxMixin, StoreWatchMixin('market'), Router.Navigation],
 
   getStateFromFlux: function () {
     var flux = this.getFlux();
@@ -30,7 +31,8 @@ var Overview = React.createClass({
     return {
       account: account,
       asset: flux.store('asset').getState(),
-      trendingMarkets: flux.store('market').getTrendingMarkets(3, currentBranch),
+      config: flux.store('config').getState(),
+      trendingMarkets: flux.store('market').getTrendingMarkets(9, currentBranch),
       authoredMarkets: flux.store('market').getMarketsByAuthor(account),
       votePeriod: flux.store('branch').getState().currentVotePeriod,
       currentBranch: currentBranch,
@@ -38,7 +40,41 @@ var Overview = React.createClass({
     }
   },
 
+  exportAccount: function (event) {
+    // keys.exportToFile();
+  },
+
+  importAccount: function (event) {
+    // keys.importFromFile();
+  },
+
   render: function () {
+
+    if (!this.state.account) {
+      var trendingMarketsSection = <span />;
+      if (this.state.trendingMarkets) {
+        trendingMarketsSection = (
+          <div>
+            <h4 className="trending">Trending Markets</h4>
+            <div className='row'>
+              <Markets 
+                markets={ this.state.trendingMarkets }
+                currentBranch={ this.state.currentBranch }
+                classNameWrapper='col-sm-4' />
+              </div>
+          </div>
+        );
+      }
+      return (
+        <div id="overview">
+          <div className='row'>
+            <div className="col-xs-12">
+              { trendingMarketsSection }
+            </div>
+          </div>
+        </div>
+      );
+    }
 
     var cashBalance = this.state.asset.cash ? +this.state.asset.cash.toFixed(2) : '-';
     var repBalance = this.state.asset.reputation ? +this.state.asset.reputation.toFixed(2) : 0;
@@ -55,6 +91,37 @@ var Overview = React.createClass({
       });
     }, this);
 
+    var accountSection = <span />
+    if (this.state.account) {
+      accountSection = (
+        <div className="account-info">
+          <h4>My Account</h4>
+          <div className="row">
+            <div className="col-sm-6">
+              <span className="account">{this.state.account}</span>
+            </div>
+            <div className="col-sm-3">
+              <Button
+                bsStyle="default"
+                bsSize="small"
+                onClick={this.exportAccount}>
+                Export to File
+              </Button>
+            </div>
+            <div className="col-sm-3">
+              <Button
+                bsStyle="default"
+                bsSize="small"
+                onClick={this.importAccount}>
+                Import from File
+              </Button>
+            </div>
+          </div>
+          <Assets asset={this.state.asset} config={this.state.config} />
+        </div>
+      );
+    }
+
     var holdingsSection = <span />
     if (holdings.length) {
       holdingsSection = (
@@ -70,33 +137,79 @@ var Overview = React.createClass({
     var cashFaucetDisabled = this.state.cashFaucetDisabled ? true : false;
     var repFaucetDisabled = this.state.repFaucetDisabled ? true : false;
 
-    var trendingMarketsSection = <span />;
-    if (this.state.trendingMarkets) {
-      trendingMarketsSection = (
+    var authoredMarketsSection = <span />;
+    if (!_.isEmpty(this.state.authoredMarkets)) {
+      var authoredMarkets = [];
+      authoredMarkets.push(
+        <div key="authoredMarkets-header" className="row markets-list-header">
+          <div className="col-sm-5"><b>Market</b></div>
+          <div className="price col-sm-1"><b>Price</b></div>
+          <div className="col-sm-1"><b>Volume</b></div>
+          <div className="col-sm-1"><b>Fee</b></div>
+          <div className="col-sm-2"><b>Created</b></div>
+          <div className="col-sm-2"><b>Expires</b></div>
+        </div>
+      );
+      for (var marketId in this.state.authoredMarkets) {
+        if (!this.state.authoredMarkets.hasOwnProperty(marketId)) continue;
+        var market = this.state.authoredMarkets[marketId];
+        var className = "";
+        var linked;
+        if (market.pending) {
+          className = 'pending';
+          linked = false;
+        } else if (!market.loaded) {
+          className = 'loading';
+          linked = false;
+        } else if (market.invalid) {
+          className = 'invalid'; 
+          linked = true;
+        } else if (this.state.currentBranch &&
+                   this.state.currentBranch.currentPeriod >= market.tradingPeriod) {
+          className = 'matured';
+        }
+        var outstandingShares = _.reduce(market.outcomes, function (outstandingShares, outcome) {
+          if (outcome) return outstandingShares + abi.number(outcome.outstandingShares);
+        }, 0);
+        var id = marketId.toString(16);
+        authoredMarkets.push(
+          <div key={id} className="row markets-list-row">
+            <Link
+              key={id+"-link"}
+              to="market"
+              params={{marketId: market.id.toString(16)}}
+              className={className}>
+              <div key={id+"-description"} className="col-sm-5">{market.description}</div>
+              <div key={id+"-price"} className="price col-sm-1">{(abi.number(market.price)).toFixed(4)}</div>
+              <div key={id+"-shares"} className="col-sm-1">{+outstandingShares.toFixed(2)}</div>
+              <div key={id+"-tradingFee"} className="col-sm-1">{(market.tradingFee.times(100)).toFixed(2)}%</div>
+              <div key={id+"-created"} className="col-sm-2">{market.creationDate.fromNow()}</div>
+              <div key={id+"-expires"} className="col-sm-2">{market.endDate.fromNow()}</div>
+            </Link>
+          </div>
+        );
+      }
+      authoredMarketsSection = (
         <div>
-          <h4>Trending Markets</h4>
-          <div className='row'>
-            <Markets 
-              markets={ this.state.trendingMarkets }
-              currentBranch={ this.state.currentBranch }
-              classNameWrapper='col-sm-4' />
-            </div>
+          <h4>My Markets</h4>
+          <div className="markets-list">
+            {authoredMarkets}
+          </div>
         </div>
       );
     }
 
-    var rendered = (
+    return (
       <div id="overview">
         <div className='row'>
           <div className="col-xs-12">
-            { trendingMarketsSection }
+            { accountSection }
+            { authoredMarketsSection }
             { holdingsSection }
           </div>
         </div>
       </div>
     );
-
-    return rendered;
   }
 });
 

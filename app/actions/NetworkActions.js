@@ -48,13 +48,6 @@ var NetworkActions = {
     this.dispatch(constants.network.UPDATE_NETWORK, {
       networkId: augur.network_id
     });
-    augur.rpc.clientVersion(function (clientVersion) {
-      if (clientVersion && !clientVersion.error) {
-        self.dispatch(constants.network.UPDATE_NETWORK, {
-          clientVersion: clientVersion
-        });
-      }
-    });
 
     // if available, use the client-side account
     if (augur.web.account.address && augur.web.account.privateKey) {
@@ -70,7 +63,7 @@ var NetworkActions = {
 
     // hosted node: no unlocked account available
     } else if (this.flux.store('config').getState().isHosted) {
-      console.log("no unlocked account available");
+      console.log("connecting to hosted node");
       this.dispatch(constants.network.UPDATE_ETHEREUM_STATUS, {
         ethereumStatus: constants.network.ETHEREUM_STATUS_NO_ACCOUNT
       });
@@ -100,14 +93,6 @@ var NetworkActions = {
         }
       });
     }
-
-    augur.rpc.gasPrice(function (gasPrice) {
-      if (gasPrice && !gasPrice.error) {
-        self.dispatch(constants.network.UPDATE_NETWORK, {
-          gasPrice: utilities.formatEther(gasPrice)
-        });
-      }
-    });
 
     this.flux.actions.network.updateNetwork();
   },
@@ -145,30 +130,6 @@ var NetworkActions = {
         });
       }
     });
-
-    augur.rpc.peerCount(function (peerCount) {
-
-      if (peerCount && !peerCount.error) {
-        self.dispatch(constants.network.UPDATE_NETWORK, {
-          peerCount: abi.string(peerCount)
-        });
-      }
-    });
-
-    if (networkState.blockChainAge &&
-        networkState.blockChainAge < constants.MAX_BLOCKCHAIN_AGE)
-    {
-      augur.rpc.mining(function (mining) {
-        self.dispatch(constants.network.UPDATE_NETWORK, {
-          mining: mining
-        });
-      });
-      augur.rpc.hashrate(function (hashrate) {
-        self.dispatch(constants.network.UPDATE_NETWORK, {
-          hashrate: abi.number(hashrate)
-        });
-      });
-    }
   }
 
 };

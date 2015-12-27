@@ -20,15 +20,28 @@ var priceToPercentage = function (price) {
   }
 };
 
-var getOutcomeName = function (id, count) {
-  if (count != 2) {
-    return id;
-  }
-
-  if (id === NO) {
-    return 'No';
-  } else {
-    return 'Yes';
+var getOutcomeName = function (id, market) {
+  switch (market.type) {
+  case "categorical":
+    if (market && market.description && market.description.indexOf("Choices:") > -1) {
+      var desc = market.description.split("Choices:");
+      return {
+        type: "categorical",
+        outcome: desc[desc.length - 1].split(",")[id - 1].trim()
+      };
+    }
+    return {
+      type: "categorical",
+      outcome: id
+    };
+    break;
+  case "scalar":
+    if (id === NO) return {type: "scalar", outcome: "⇩"};
+    return {type: "scalar", outcome: "⇧"};
+    break;
+  default:
+    if (id === NO) return {type: "binary", outcome: "No"};
+    return {type: "binary", outcome: "Yes"};
   }
 };
 
@@ -63,35 +76,6 @@ var Overview = React.createClass({
       buyShares: false,
       sellShares: false
     });
-  },
-
-  // FIXME:  for some reason, the add transaction action doesn't work here.  WTFBBQTWILIGHTZONE?!
-  handleAddTransaction: function(txHash, relativeShares) {
-
-    var absShares = Math.abs(relativeShares);
-
-    var flux = this.getFlux();
-    var sharesString = absShares === 1 ? '1 share of ' : absShares + ' shares of ';
-    var description;
-
-    if (relativeShares > 0) {
-
-      description = 'buying ' + sharesString + getOutcomeName(this.props.outcome.id, 2) + ', '+this.props.market.id.toString(16);
-      flux.actions.transaction.addTransaction({
-        hash: txHash, 
-        type: constants.transaction.BUY_DECISION_TYPE, 
-        description: description
-      });
-
-    } else {
-
-      description = 'selling ' + sharesString + getOutcomeName(this.props.outcome.id, 2) + ', '+this.props.market.id.toString(16);
-      flux.actions.transaction.addTransaction({
-        hash: txHash, 
-        type: constants.transaction.SELL_DECISION_TYPE, 
-        description: description
-      });   
-    }
   },
 
   getTradeFunction: function (shares) {
@@ -133,7 +117,6 @@ var Overview = React.createClass({
         };
         self.setState(newState);
         console.log("trade sent:", res.txHash);
-        // self.handleAddTransaction(res.txHash, relativeShares);
       },
       onSuccess: function (res) {
         console.log("trade succeeded:", res.txHash);
@@ -229,13 +212,22 @@ var Overview = React.createClass({
       );
     }
 
+    var outcomeName = getOutcomeName(outcome.id, this.props.market);
+    var metalClass = (outcomeName.type === "categorical") ? "metal-categorical" : "";
+    var displayPrice;
+    if (this.props.market.type === "scalar") {
+      displayPrice = +outcome.price.toFixed(1);
+    } else {
+      displayPrice = priceToPercentage(outcome.price);
+    }
+
     return (
-      <div className={ className }>
-        <h4>
-          <div className="name">{ getOutcomeName(outcome.id, this.props.market.outcomes.length) }</div>
-          <div className="price">{ priceToPercentage(outcome.price) }%</div>
+      <div className={className}>
+        <h4 className={"metal " + metalClass}>
+          <div className={outcomeName.type + " name"}>{outcomeName.outcome}</div>
+          <div className="price">{displayPrice}%</div>
         </h4>
-        { summary }
+        {summary}
       </div>
     );
   }

@@ -13,7 +13,6 @@ var FluxMixin = Fluxxor.FluxMixin(React),
 var ReactBootstrap = require('react-bootstrap');
 var ProgressBar = ReactBootstrap.ProgressBar;
 var Modal = ReactBootstrap.Modal;
-var Button = ReactBootstrap.Button;
 var Input = ReactBootstrap.Input;
 
 var utilities = require('../libs/utilities');
@@ -22,12 +21,10 @@ var constants = require('../libs/constants');
 var Period = require('./Period');
 var Network = require('./Network');
 var Assets = require('./Assets');
-var Welcome = require('./Welcome');
 var Confirm = require('./Confirm');
 
 var SignInModal = require('./SignIn');
 var RegisterModal = require('./Register');
-var EtherWarningModal = require('./EtherWarningModal');
 
 var AugurApp = React.createClass({
 

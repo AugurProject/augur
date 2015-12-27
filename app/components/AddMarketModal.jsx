@@ -41,8 +41,7 @@ var AddMarketModal = React.createClass({
       tab: 0,
       minValue: 0,
       maxValue: 100,
-      choices: ["No", "Yes"],
-      choicesText: "No, Yes"
+      choices: ["", ""]
     };
   },
 
@@ -389,7 +388,7 @@ var AddMarketModal = React.createClass({
                 help={ this.state.marketTextError }
                 bsStyle={ inputStyle }
                 value={ this.state.marketText }
-                placeholder="Which political party's candidate will win the 2016 U.S. Presidential Election?  Choices: Democratic, Republican, Libertarian, other."
+                placeholder="Which political party's candidate will win the 2016 U.S. Presidential Election?  Choices: Democratic, Republican, Libertarian, other"
                 onChange={ this.onChangeMarketText } />
               <span className="text-count pull-right">{ this.state.marketTextCount }</span>
               <p>Choices:</p>

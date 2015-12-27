@@ -39,8 +39,8 @@ body {
     overflow-y: scroll;
 }
 h1 {
-    font-family: 'Michroma';
-    font-size: 23px;
+    font-family: 'Core Mellow';
+    font-size: 27px;
     font-weight: 400;
 }
 h2, h3, h4, h5 {
@@ -154,6 +154,11 @@ p.address {
     margin-top: 15px;
 }
 
+.metal {
+    background-color: #454545;
+    background-image: url("/images/metal.png");
+}
+
 nav.header {
     background-color: #454545;
     background-image: url("/images/metal.png");
@@ -189,6 +194,9 @@ nav.header h1 > i {
 }
 .icon-green {
     color: green;
+}
+.icon-white {
+    color: white;
 }
 
 .icon-background1 {
@@ -360,16 +368,62 @@ nav.header .menu a:hover {
     margin-left: 10px;
 }
 
+.markets-list {
+    color: #fff;
+    font-size: 11pt;
+    background-color: rgba(0, 0, 0, 0.33);
+}
+.markets-list a {
+    color: #fff;
+}
+.markets-list-header {
+    border-bottom: 1px solid #474545;
+    width: 100%;
+    margin-left: 0;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+.markets-list-row {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    width: 100%;
+    margin-left: 0;
+}
+.markets-list-row:hover {
+    background-color: #777;
+}
+
+.account-info {
+    color: #fff;
+}
+.account-info a {
+    color: #fff;
+}
+.account-info a:hover {
+    color: #fff;
+    text-decoration: none;
+}
+.account-info .price {
+
+}
+.account-info ul {
+    list-style-type: none;
+    line-height: 24pt;
+    font-family: 'Open Sans';
+    padding: 0px 12px;
+    font-size: 12pt;
+}
+.account-info ul li {
+    padding: 3px 12px;
+}
+
 .sidebar .nav {
     position: relative;
     z-index: 100;
     display: none;
-    /*background-color: #34495e;*/
     color: #5d6576;
     margin-top: -25px;
     padding: 20px 0px 5px 0px;
-    /*border-bottom-left-radius: 8px;*/
-    /*border-bottom-right-radius: 8px;*/
 }
 .sidebar .nav ul {
     list-style-type: none;
@@ -422,7 +476,6 @@ nav.header .menu a:hover {
     padding: 1px 6px 2px 6px;
     border-radius: 8px;
     margin: 0px 0px 0px 10px;
-    /*font-family: 'Source Sans Pro', sans-serif;*/
     font-family: 'Open Sans', sans-serif;
     font-weight: 600;
     font-size: 12px;
@@ -479,7 +532,6 @@ nav.header .menu a:hover {
 }
 
 .assets {
-    /*background-color: #fff;*/
     background-color: #212E3F;
     border-color: #999898;
     border-radius: 3px;
@@ -518,6 +570,10 @@ nav.header .menu a:hover {
     margin-right: 17px;
 }
 
+.subheading {
+    color: #ffffff;
+}
+
 #main {
     background-color: rgba(150, 150, 150, 0.25);
 }
@@ -542,7 +598,6 @@ nav.header .menu a:hover {
     text-shadow: 1px 1px #000000;
     text-transform: uppercase;
     font-family: "Lato";
-    /*font-family: "Montserrat";*/
     font-size: 16pt;
 }
 
@@ -578,8 +633,7 @@ a.market-pane:hover {
     text-align: justify;
     text-justify: inter-word;
     height: 84px;
-    /*background-color: #5d6576;*/
-    background-color: #121E39;
+    background-color: #2D2E31;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
     color: #fff;
@@ -594,7 +648,7 @@ a.market-pane:hover {
 }
 .market-pane .summary {
     padding: 3px 12px;
-    background-color: #a3b9e2;
+    background-color: #C3C7CF;
     font-size: 20px;
     height: 34px;
 }
@@ -679,15 +733,29 @@ a.market-pane:hover {
     display: none;
 }
 
-#market {
-
+.pad-top-7 {
+    padding-top: 7px;
 }
 
 #markets-label {
     margin-left: 0;
     padding-left: 0;
+    padding-top: 11px;
+    font-weight: 400;
+    color: #ffffff;
+    text-shadow: 1px 1px #000000;
+    text-transform: uppercase;
+    font-family: "Lato";
+    font-size: 16pt;
 }
-
+.ballot h4 {
+    font-weight: 400;
+    color: #ffffff;
+    text-shadow: 1px 1px #000000;
+    text-transform: uppercase;
+    font-family: "Lato";
+    font-size: 16pt;
+}
 
 .markets-search-input {
     top: 0px; bottom: 0px;
@@ -721,14 +789,24 @@ a.market-pane:hover {
     border-bottom-left-radius: 5px;
     height: 100%;
     float: left;
-    width: 75px;
+    min-width: 75px;
     position: relative;
     margin: 0px;
+}
+.categorical {
+    text-transform: none;
+    width: 90%;
+}
+.metal-categorical {
+    min-width: 125px !important;
 }
 .outcome h4 .name {
     position: absolute;
     top: 8px;
     left: 8px;
+}
+.outcome h4 .scalar {
+    font-size: 30pt !important;
 }
 .outcome h4 .price {
     font-size: 20px;
@@ -817,14 +895,21 @@ a.market-pane:hover {
 }
 
 .highcharts-container {
-  border: 1px solid #ddd;
+    border: 1px solid #ddd;
+}
+
+#market {
+    padding-top: 11px;
+}
+#market h3 {
+    color: #ffffff;
 }
 #market .price-history {
-  margin-top: 10px;
-  background-color: #373232;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-  padding: 0 !important;
+    margin-top: 10px;
+    background-color: #373232;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    padding: 0 !important;
 }
 #market .price-history .price-chart {
     width: 100%;
@@ -981,7 +1066,7 @@ a.market-pane:hover {
     padding: 10px 5px;
     color: #fff;
     /*background-color: #18376f;*/
-    background-color: #2A354A;
+    background-color: #313232;
 }
 .holdings .list-group-item:first-child .price {
     border-top-left-radius: 4px;
@@ -1084,7 +1169,7 @@ a.market-pane:hover {
 #no-eth-modal .form-group label {
     font-size: 14px;
 }
-.send-modal input.dest-address,
+.send-modal input.dest-address {
     margin-bottom: 10px;
 }
 .send-modal p {
@@ -1096,12 +1181,18 @@ a.market-pane:hover {
 .send-modal .balance {
     text-transform: uppercase;
 }
-/*.panel-body .balance {
-    color: #ffffff;
-}*/
+.panel-body .balance {
+    font-family: "Amaranth";
+    font-size: 14pt;
+}
 .panel-body .balance-wrapper {
     color: #ffffff;
     line-height: 21pt;
+}
+
+.trending {
+    padding-bottom: 5px;
+    border-bottom: 1px solid #474545;
 }
 
 #confirm-modal button.confirm {

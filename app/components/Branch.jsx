@@ -76,7 +76,9 @@ var Branch = React.createClass({
     var marketPage = _.map(this.state.markets).slice(start, end);
     var submitMarketAction = (
       <span className="subheading pull-right">
-        <a href="javascript:void(0);" onClick={ this.toggleAddMarketModal }>Submit a Market</a>
+        <a href="javascript:void(0);" onClick={ this.toggleAddMarketModal }>
+          <i className="fa fa-plus-circle fa-2x icon-white"></i>
+        </a>
       </span>
     );
     if (!this.state.account) { 
@@ -102,7 +104,7 @@ var Branch = React.createClass({
         <h3 className="clearfix">
         <div className="col-xs-2" id="markets-label">Markets</div>
         <div className="col-xs-10">
-          <div className="row">
+          <div className="row pad-top-7">
             <div className="col-md-3 col-md-push-9">{ submitMarketAction }</div>
             <div className="col-md-9 col-md-pull-3">
               <input type="search"
