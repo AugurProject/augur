@@ -1,4 +1,3 @@
-(function () {
 /**
  * augur.js unit tests
  * @author Jack Peterson (jack@tinybike.net)
@@ -29,16 +28,9 @@ describe("Read contracts", function () {
         contract_list.push(c);
     }
 
-    it.each(
-        contract_list,
-        "read contract: %s",
-        ['element'],
-        function (element, next) {
-            test(element);
-            next();
-        }
-    );
+    it.each(contract_list, "read %s", ['element'], function (element, next) {
+        test(element);
+        next();
+    });
 
 });
-
-})();

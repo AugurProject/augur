@@ -67,6 +67,7 @@ Augur.prototype.Filters = require("./filters");
 
 Augur.prototype.default_rpc = function () {
     rpc.reset();
+    rpc.useHostedNode();
     return false;
 };
 
@@ -253,18 +254,17 @@ Augur.prototype.parse_rpcinfo = function (rpcinfo) {
 
 Augur.prototype.connect = function (rpcinfo, ipcpath, callback) {
     var localnode, self = this;
-    rpc.reset();
     if (rpcinfo) {
         localnode = this.parse_rpcinfo(rpcinfo);
         if (localnode) {
-            rpc.nodes.local = localnode;
+            rpc.setLocalNode(localnode);
             rpc.balancer = false;
         } else {
-            rpc.nodes.local = null;
+            rpc.useHostedNode();
             rpc.balancer = true;
         }
     } else {
-        rpc.nodes.local = null;
+        rpc.useHostedNode();
         rpc.balancer = true;
     }
     if (ipcpath) {

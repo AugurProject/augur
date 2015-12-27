@@ -7,19 +7,16 @@
 
 var assert = require("chai").assert;
 var contracts = require("augur-contracts");
+var utils = require("../../src/utilities");
+var constants = require("../../src/constants");
 var augurpath = "../../src/index";
 var augur = require(augurpath);
-var constants = augur.constants;
-var utils = augur.utils;
-var log = console.log;
 
 require('it-each')({ testPerIteration: true });
 
-describe("augur.connect", function () {
+beforeEach(function () { augur = utils.reset(augurpath); });
 
-    beforeEach(function () {
-        augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
-    });
+describe("augur.connect", function () {
 
     var connectString = [
         undefined,
@@ -41,32 +38,56 @@ describe("augur.connect", function () {
     ];
 
     if (!process.env.CONTINUOUS_INTEGRATION) {
-
         it.each(
             connectString,
-            "should connect to %s",
+            "[sync] connect to %s",
             ["element"],
             function (element, next) {
                 this.timeout(constants.TIMEOUT);
-                assert(augur.connect(element));
+                assert.isTrue(augur.connect(element));
                 assert.isTrue(augur.connected());
-                assert(augur.coinbase);
+                assert.isString(augur.coinbase);
+                next();
+            }
+        );
+        it.each(
+            connectString,
+            "[async] connect to %s",
+            ["element"],
+            function (element, next) {
+                this.timeout(constants.TIMEOUT);
+                augur.connect(element, null, function (connected) {
+                    assert.isTrue(connected);
+                    assert.isString(augur.coinbase);
+                    next();
+                });
+            }
+        );
+        it.each(
+            connectObj,
+            "[sync] connect to {protocol: '%s', host: '%s', port: '%s'}",
+            ["protocol", "host", "port"],
+            function (element, next) {
+                this.timeout(constants.TIMEOUT);
+                assert.isTrue(augur.connect(element));
+                assert.isTrue(augur.connected());
+                assert.isString(augur.coinbase);
                 next();
             }
         );
         it.each(
             connectObj,
-            "should connect to { protocol: '%s', host: '%s', port: '%s' }",
+            "[async] connect to {protocol: '%s', host: '%s', port: '%s'}",
             ["protocol", "host", "port"],
             function (element, next) {
                 this.timeout(constants.TIMEOUT);
-                assert(augur.connect(element));
-                assert.isTrue(augur.connected());
-                assert(augur.coinbase);
-                next();
+                augur.connect(element, null, function (connected) {
+                    assert.isTrue(connected);
+                    assert.isString(augur.coinbase);
+                    next();
+                });
             }
         );
-
     }
 
     if (!process.env.CONTINUOUS_INTEGRATION) {

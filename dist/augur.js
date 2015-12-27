@@ -49934,6 +49934,7 @@ Augur.prototype.Filters = require("./filters");
 
 Augur.prototype.default_rpc = function () {
     rpc.reset();
+    rpc.useHostedNode();
     return false;
 };
 
@@ -50120,18 +50121,17 @@ Augur.prototype.parse_rpcinfo = function (rpcinfo) {
 
 Augur.prototype.connect = function (rpcinfo, ipcpath, callback) {
     var localnode, self = this;
-    rpc.reset();
     if (rpcinfo) {
         localnode = this.parse_rpcinfo(rpcinfo);
         if (localnode) {
-            rpc.nodes.local = localnode;
+            rpc.setLocalNode(localnode);
             rpc.balancer = false;
         } else {
-            rpc.nodes.local = null;
+            rpc.useHostedNode();
             rpc.balancer = true;
         }
     } else {
-        rpc.nodes.local = null;
+        rpc.useHostedNode();
         rpc.balancer = true;
     }
     if (ipcpath) {
@@ -53380,10 +53380,10 @@ function RPCError(err) {
 RPCError.prototype = new Error();
 
 var HOSTED_NODES = [
-    "https://eth5.augur.net",
-    "https://eth4.augur.net",
+    "https://eth1.augur.net",
     "https://eth3.augur.net",
-    "https://eth1.augur.net"
+    "https://eth4.augur.net",
+    "https://eth5.augur.net"
 ];
 
 module.exports = {
@@ -53403,6 +53403,9 @@ module.exports = {
 
     // use IPC (only available on Node + Linux/OSX)
     ipcpath: null,
+
+    // local ethereum node address
+    localnode: "http://127.0.0.1:8545",
 
     // Maximum number of transaction verification attempts
     TX_POLL_MAX: 72,
@@ -53501,8 +53504,6 @@ module.exports = {
 
     parse: function (response, returns, callback) {
         var results, len;
-        // console.log("ethrpc.parse:", returns);
-        // console.log(response);
         try {
             if (response && typeof response === "string") {
                 response = JSON.parse(response);
@@ -53566,7 +53567,6 @@ module.exports = {
             var err = e;
             if (e && e.name === "SyntaxError") {
                 err = errors.INVALID_RESPONSE;
-                // err.bubble = response;
             }
             if (callback) return callback(err);
             throw new this.Error(err);
@@ -53635,6 +53635,9 @@ module.exports = {
         }, function (err, response, body) {
             if (err) {
                 if (self.nodes.local) {
+                    if (self.nodes.local === self.localnode) {
+                        self.nodes.local = null;
+                    }
                     var e = errors.LOCAL_NODE_FAILURE;
                     e.bubble = err;
                     return callback(e);
@@ -53927,7 +53930,7 @@ module.exports = {
     },
 
     setLocalNode: function (urlstr) {
-        this.nodes.local = urlstr;
+        this.nodes.local = urlstr || this.localnode;
     },
 
     useHostedNode: function () {
@@ -53950,10 +53953,7 @@ module.exports = {
 
     // reset to default Ethereum nodes
     reset: function (deleteData) {
-        this.nodes = {
-            hosted: HOSTED_NODES.slice(),
-            local: null
-        };
+        this.nodes.hosted = HOSTED_NODES.slice();
         if (deleteData) this.clear();
     },
 
