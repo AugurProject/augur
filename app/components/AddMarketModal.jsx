@@ -40,7 +40,7 @@ var AddMarketModal = React.createClass({
       numOutcomes: 2,
       tab: 0,
       minValue: 0,
-      maxValue: 100,
+      maxValue: 1,
       choices: ["", ""]
     };
   },
