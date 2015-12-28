@@ -48536,13 +48536,17 @@ module.exports = function () {
                         // exchange half of the free ether for cash
                         augur.depositEther({
                             value: constants.FREEBIE*0.5,
-                            onSent: utils.noop,
-                            onSuccess: check,
-                            onFailed: onFinal
-                        });
-                        augur.reputationFaucet({
-                            branch: augur.branches.dev,
-                            onSent: utils.noop,
+                            onSent: function (res) {
+                                console.log("depositEther:", res.txHash);
+                                augur.reputationFaucet({
+                                    branch: augur.branches.dev,
+                                    onSent: function (res) {
+                                        console.log("reputationFaucet:", res.txHash);
+                                    },
+                                    onSuccess: check,
+                                    onFailed: onFinal
+                                });
+                            },
                             onSuccess: check,
                             onFailed: onFinal
                         });
@@ -49010,7 +49014,7 @@ module.exports = {
     MAX_TEST_SAMPLES: 25,
 
     // free ether for new accounts on registration
-    FREEBIE: 100,
+    FREEBIE: 1337,
 
     // unit test timeout
     TIMEOUT: 600000,

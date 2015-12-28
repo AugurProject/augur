@@ -23,30 +23,36 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
         var value = 1;
         var weiValue = abi.bignum(value).mul(constants.ETHER).toFixed();
         var initialCash = abi.bignum(augur.getCashBalance(augur.coinbase));
+        // console.log("initial:", initialCash.toFixed());
 
         it("deposit/withdrawEther", function (done) {
             this.timeout(constants.TIMEOUT*2);
             augur.depositEther({
                 value: value,
                 onSent: function (res) {
+                    // console.log("sent:", res);
                     assert.strictEqual(res.txHash.length, 66);
                     assert.strictEqual(weiValue, res.callReturn);
                 },
                 onSuccess: function (res) {
+                    // console.log("success:", res);
                     assert.strictEqual(res.txHash.length, 66);
                     assert.strictEqual(weiValue, res.callReturn);
                     assert.strictEqual(res.from, augur.coinbase);
                     assert.strictEqual(res.to, augur.contracts.cash);
                     var afterCash = abi.bignum(augur.getCashBalance(augur.coinbase));
+                    // console.log("after:", afterCash.toFixed());
                     assert.strictEqual(afterCash.sub(initialCash).toNumber(), value);
                     augur.withdrawEther({
                         to: augur.coinbase,
                         value: value,
                         onSent: function (res) {
+                            // console.log("withdraw sent:", res);
                             assert.strictEqual(res.txHash.length, 66);
                             assert.strictEqual(res.callReturn, "1");
                         },
                         onSuccess: function (res) {
+                            // console.log("withdraw success:", res);
                             assert.strictEqual(res.txHash.length, 66);
                             assert.strictEqual(res.callReturn, "1");
                             assert.strictEqual(res.from, augur.coinbase);
