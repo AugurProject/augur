@@ -1,6 +1,8 @@
 #!/bin/bash
-# Compile and publish augur to IPFS
+# Build and publish to IPFS and heroku
 
 rm app/app.js
 grunt browserify:build
+
+git push heroku-cedar-14 +HEAD:master
 ipfs name publish `ipfs add -rq app | tail -1`
