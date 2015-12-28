@@ -142,7 +142,7 @@ var AugurApp = React.createClass({
                 <i className="fa fa-circle-thin fa-stack-2x icon-background3"></i>
                 <i className="fa fa-stack-1x fa-usd icon-green"></i>
               </span>
-              <span className='balance-wrapper balance'>{cashBalance}</span>
+              <span className='balance-wrapper balance'> {cashBalance}</span>
             </li>
           </ul>
 
@@ -153,7 +153,7 @@ var AugurApp = React.createClass({
                 <i className="fa fa-circle-thin fa-stack-2x icon-background6"></i>
                 <i className="fa fa-heart fa-stack-1x icon-red"></i>
               </span>
-              <span className='balance-wrapper balance'>{repBalance}</span>
+              <span className='balance-wrapper balance'> {repBalance}</span>
             </li>
           </ul>
 
@@ -164,7 +164,7 @@ var AugurApp = React.createClass({
                 <i className="fa fa-circle-thin fa-stack-2x icon-background4"></i>
                 <i className="fa fa-stack-1x icon-blue">Ξ</i>
               </span>
-              <span className='balance-wrapper balance'>{etherBalance}</span>
+              <span className='balance-wrapper balance'> {etherBalance}</span>
             </li>
           </ul>
 

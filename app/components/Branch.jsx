@@ -102,20 +102,18 @@ var Branch = React.createClass({
       <div id="branch">
         { pendingMarketsSection }
         <h3 className="clearfix">
-        <div className="col-xs-2" id="markets-label">Markets</div>
-        <div className="col-xs-10">
-          <div className="row pad-top-7">
-            <div className="col-md-3 col-md-push-9">{ submitMarketAction }</div>
-            <div className="col-md-9 col-md-pull-3">
+          <div className="col-xs-2" id="markets-label">Markets</div>
+          <div className="col-xs-10 pad-top-7">
+            <div className="col-xs-10 pad-top-5">
               <input type="search"
                 className="markets-search-input"
                 value={ this.state.searchKeywords }
                 placeholder="Search"
                 tabIndex="0"
                 onChange={ this.onChangeSearchInput } />
-              </div>
+            </div>
+            <div className="col-xs-2">{ submitMarketAction }</div>
           </div>
-        </div>
         </h3>
         <div className='subheading clearfix'>
           <span className='showing'>Showing { start+1 } - { end } of { total }</span>

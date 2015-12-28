@@ -94,23 +94,25 @@ var Overview = React.createClass({
     if (this.state.account) {
       accountSection = (
         <div className="account-info">
-          <h4>My Account</h4>
+          <h4>Account</h4>
           <div className="row">
             <div className="col-sm-6">
               <span className="account">{this.state.account}</span>
             </div>
-            <div className="col-sm-3">
+            <div className="col-sm-2">
               <Button
                 bsStyle="default"
                 bsSize="small"
+                className="hidden"
                 onClick={this.exportAccount}>
                 Export to File
               </Button>
             </div>
-            <div className="col-sm-3">
+            <div className="col-sm-2">
               <Button
                 bsStyle="default"
                 bsSize="small"
+                className="hidden"
                 onClick={this.importAccount}>
                 Import from File
               </Button>

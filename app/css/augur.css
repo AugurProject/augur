@@ -141,6 +141,10 @@ h2, h3, h4, h5 {
     text-overflow: ellipsis;
 }
 
+.hidden {
+    display: none;
+}
+
 .no-truncate {
     word-wrap: break-word;
 }
@@ -385,6 +389,7 @@ nav.header .menu a:hover {
     margin-left: 0;
     padding-top: 3px;
     padding-bottom: 3px;
+    font-size: 12pt;
 }
 .markets-list-row {
     padding-top: 2px;
@@ -398,6 +403,7 @@ nav.header .menu a:hover {
 
 .account-info {
     color: #fff;
+    padding-bottom: 10px;
 }
 .account-info a {
     color: #fff;
@@ -406,8 +412,9 @@ nav.header .menu a:hover {
     color: #fff;
     text-decoration: none;
 }
-.account-info .price {
-
+.account-info .account {
+    font-family: "Amaranth";
+    font-size: 15pt;
 }
 .account-info ul {
     list-style-type: none;
@@ -746,6 +753,9 @@ a.market-pane:hover {
 .pad-top-7 {
     padding-top: 7px;
 }
+.pad-top-5 {
+    padding-top: 5px;
+}
 
 #markets-label {
     margin-left: 0;
@@ -774,6 +784,7 @@ a.market-pane:hover {
     border: 1px solid #CDCAC5;
     opacity: 0.9;
     font-size: 12pt;
+    padding: 7px;
 }
 
 .outcome {
@@ -1193,7 +1204,7 @@ a.market-pane:hover {
 }
 .panel-body .balance {
     font-family: "Amaranth";
-    font-size: 14pt;
+    font-size: 12pt;
 }
 .panel-body .balance-wrapper {
     color: #ffffff;
