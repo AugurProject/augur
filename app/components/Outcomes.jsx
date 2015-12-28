@@ -216,16 +216,16 @@ var Overview = React.createClass({
     var metalClass = (outcomeName.type === "categorical") ? "metal-categorical" : "";
     var displayPrice;
     if (this.props.market.type === "scalar") {
-      displayPrice = +outcome.price.toFixed(1);
+      displayPrice = +outcome.price.toFixed(2);
     } else {
-      displayPrice = priceToPercentage(outcome.price);
+      displayPrice = priceToPercentage(outcome.price) + "%";
     }
 
     return (
       <div className={className}>
         <h4 className={"metal " + metalClass}>
           <div className={outcomeName.type + " name"}>{outcomeName.outcome}</div>
-          <div className="price">{displayPrice}%</div>
+          <div className="price">{displayPrice}</div>
         </h4>
         {summary}
       </div>

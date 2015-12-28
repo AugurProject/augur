@@ -57,7 +57,13 @@ var MarketPane = React.createClass({
     var formattedDate = market.endDate ? moment(market.endDate).format('MMM Do, YYYY') : '-';
     var formattedCreationDate = market.creationDate ? moment(market.creationDate).format('MMM Do, YYYY') : '-';
     var price = market.price ? Math.abs(market.price).toFixed(3) : '-';
-    var percent = market.price ? +market.price.times(100).toFixed(1) + '%' : ''
+    
+    var percent;
+    if (market.type === "scalar") {
+      percent = +market.price.toFixed(2);
+    } else {
+      percent = market.price ? +market.price.times(100).toFixed(1) + '%' : '';
+    }
     var outstandingShares = outstandingShares ? +outstandingShares.toFixed(2) : '-';
     var tradingFee = market.tradingFee ? +market.tradingFee.times(100).toFixed(2)+'%' : '-';
 
