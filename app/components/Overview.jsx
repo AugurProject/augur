@@ -139,7 +139,21 @@ var Overview = React.createClass({
     var repFaucetDisabled = this.state.repFaucetDisabled ? true : false;
 
     var authoredMarketsSection = <span />;
-    if (!_.isEmpty(this.state.authoredMarkets)) {
+    if (_.isEmpty(this.state.authoredMarkets)) {
+      if (this.state.trendingMarkets) {
+        authoredMarketsSection = (
+          <div>
+            <h4 className="trending">Trending Markets</h4>
+            <div className='row'>
+              <Markets 
+                markets={ this.state.trendingMarkets }
+                currentBranch={ this.state.currentBranch }
+                classNameWrapper='col-sm-4' />
+              </div>
+          </div>
+        );
+      }
+    } else {
       var authoredMarkets = [];
       authoredMarkets.push(
         <div key="authoredMarkets-header" className="row markets-list-header">

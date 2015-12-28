@@ -137,7 +137,9 @@ var MarketActions = {
                       thisMarket.priceHistory = priceHistory[thisMarket._id];
                     }
                     self.flux.actions.market.parseMarketInfo(thisMarket, function (marketInfo) {
-                      markets[marketInfo.id] = marketInfo;
+                      if (marketInfo && marketInfo.id) {
+                        markets[marketInfo.id] = marketInfo;
+                      }
                       nextMarket();
                     });
                   }, function (err) {
