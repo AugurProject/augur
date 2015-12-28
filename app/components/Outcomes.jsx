@@ -355,10 +355,16 @@ var Buy = React.createClass(_.merge({
     if (!this.state.simulation) {
       return '';
     }
+    var newPrice;
+    if (this.props.market.type === "scalar") {
+      newPrice = +this.state.simulation.newPrice.toFixed(2);
+    } else {
+      newPrice = priceToPercentage(this.state.simulation.newPrice) + "%";
+    }
     return (
       <span>
         <i className='fa fa-chevron-up' style={{color: 'green'}}></i>
-        <span className='new-price'>{ priceToPercentage(this.state.simulation.newPrice) }%</span>
+        <span className='new-price'>{newPrice}</span>
       </span>
     );
   },
@@ -391,10 +397,16 @@ var Sell = React.createClass(_.merge({
     if (!this.state.simulation) {
       return '';
     }
+    var newPrice;
+    if (this.props.market.type === "scalar") {
+      newPrice = +this.state.simulation.newPrice.toFixed(2);
+    } else {
+      newPrice = priceToPercentage(this.state.simulation.newPrice) + "%";
+    }
     return (
       <span>
         <i className='fa fa-chevron-down' style={{color: 'red'}}></i>
-        <span className='new-price'>{ priceToPercentage(this.state.simulation.newPrice) }%</span>
+        <span className='new-price'>{newPrice}</span>
       </span>
     );
   },
