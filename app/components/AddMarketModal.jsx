@@ -39,8 +39,8 @@ var AddMarketModal = React.createClass({
       minDate: moment().format('YYYY-MM-DD'),
       numOutcomes: 2,
       tab: 0,
-      minValue: 0,
-      maxValue: 1,
+      minValue: 1,
+      maxValue: 2,
       choices: ["", ""]
     };
   },
