@@ -15,7 +15,6 @@ var abi = require("augur-abi");
 var utils = require("../../src/utilities");
 var augur = utils.setup(require("../../src"), process.argv.slice(2));
 var constants = augur.constants;
-var log = console.log;
 
 // generate random private key
 var privateKey = crypto.randomBytes(32);

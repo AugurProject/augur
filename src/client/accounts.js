@@ -53,11 +53,11 @@ module.exports = function () {
                         augur.depositEther({
                             value: constants.FREEBIE*0.5,
                             onSent: function (res) {
-                                console.log("depositEther:", res.txHash);
+                                // console.log("depositEther:", res.txHash);
                                 augur.reputationFaucet({
                                     branch: augur.branches.dev,
                                     onSent: function (res) {
-                                        console.log("reputationFaucet:", res.txHash);
+                                        // console.log("reputationFaucet:", res.txHash);
                                     },
                                     onSuccess: check,
                                     onFailed: onFinal

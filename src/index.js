@@ -1140,7 +1140,7 @@ Augur.prototype.parseMarketInfo = function (rawInfo) {
             // market type: binary, categorical, or scalar
             if (info.events[i].numOutcomes !== 2) {
                 info.events[i].type = "categorical";
-            } else if (info.events[i].minValue === '0' && info.events[i].maxValue === '1') {
+            } else if (info.events[i].minValue === '1' && info.events[i].maxValue === '2') {
                 info.events[i].type = "binary";
             } else {
                 info.events[i].type = "scalar";

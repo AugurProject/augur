@@ -48537,11 +48537,11 @@ module.exports = function () {
                         augur.depositEther({
                             value: constants.FREEBIE*0.5,
                             onSent: function (res) {
-                                console.log("depositEther:", res.txHash);
+                                // console.log("depositEther:", res.txHash);
                                 augur.reputationFaucet({
                                     branch: augur.branches.dev,
                                     onSent: function (res) {
-                                        console.log("reputationFaucet:", res.txHash);
+                                        // console.log("reputationFaucet:", res.txHash);
                                     },
                                     onSuccess: check,
                                     onFailed: onFinal
@@ -51011,7 +51011,7 @@ Augur.prototype.parseMarketInfo = function (rawInfo) {
             // market type: binary, categorical, or scalar
             if (info.events[i].numOutcomes !== 2) {
                 info.events[i].type = "categorical";
-            } else if (info.events[i].minValue === '0' && info.events[i].maxValue === '1') {
+            } else if (info.events[i].minValue === '1' && info.events[i].maxValue === '2') {
                 info.events[i].type = "binary";
             } else {
                 info.events[i].type = "scalar";

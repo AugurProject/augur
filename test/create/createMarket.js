@@ -88,8 +88,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 branch: augur.branches.dev,
                 description: "Will the average temperature on Earth in 2016 be Higher, Lower, or Unchanged from the average temperature on Earth in 2015? Choices: Higher, Lower, Unchanged",
                 expirationBlock: utils.date_to_block(augur, "1-1-2017"),
-                minValue: 0,
-                maxValue: 1,
+                minValue: 1,
+                maxValue: 2,
                 numOutcomes: 3,
                 alpha: "0.0079",
                 tradingFee: "0.02",
@@ -247,8 +247,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 var description = element[0];
                 var expDate = (EXPIRING) ?
                     5*blockNumber + Math.round(Math.random() * 1000) : element[1];
-                var minValue = 0;
-                var maxValue = 1;
+                var minValue = 1;
+                var maxValue = 2;
                 var numOutcomes = 2;
                 augur.createEvent({
                     branchId: branch,
@@ -436,8 +436,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                     type: "binary",
                     description: "Will antibiotics be outlawed for agricultural use in China by the end of 2020?",
                     expirationBlock: utils.date_to_block(augur, "1-1-2021"),
-                    minValue: 0,
-                    maxValue: 1,
+                    minValue: 1,
+                    maxValue: 2,
                     numOutcomes: 2
                 }, {
                     type: "categorical",
