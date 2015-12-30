@@ -24,7 +24,6 @@ function log(str) {
 }
 
 function serveHTTP(req, res) {
-
     // static URIs
     var re = /\/(css|images|fonts|app\.js|libs\/ipfsapi\.min\.js)/;
 
