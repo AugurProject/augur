@@ -1,4 +1,3 @@
-(function () {
 /**
  * augur.js unit tests
  * @author Jack Peterson (jack@tinybike.net)
@@ -14,7 +13,6 @@ var chalk = require("chalk");
 var utils = require("../../src/utilities");
 var augur = utils.setup(require("../../src"), process.argv.slice(2));
 var constants = augur.constants;
-var log = console.log;
 
 require('it-each')({ testPerIteration: true });
 
@@ -46,8 +44,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 maxValue: maxValue,
                 numOutcomes: numOutcomes,
                 onSent: function (r) {
-                    // log(chalk.green("    ✓ ") + chalk.gray("event hash:  " + r.txHash));
-                    // log(chalk.green("    ✓ ") + chalk.gray("event ID:    " + r.callReturn));
+                    // console.log(chalk.green("    ✓ ") + chalk.gray("event hash:  " + r.txHash));
+                    // console.log(chalk.green("    ✓ ") + chalk.gray("event ID:    " + r.callReturn));
                 },
                 onSuccess: function (r) {
                     var alpha = "0.0079";
@@ -64,8 +62,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                         tradingFee: tradingFee,
                         events: events,
                         onSent: function (res) {
-                            // log(chalk.green("    ✓ ") + chalk.gray("market hash: " + res.txHash));
-                            // log(chalk.green("    ✓ ") + chalk.gray("market ID:   " + res.callReturn));
+                            // console.log(chalk.green("    ✓ ") + chalk.gray("market hash: " + res.txHash));
+                            // console.log(chalk.green("    ✓ ") + chalk.gray("market ID:   " + res.callReturn));
                         },
                         onSuccess: function (res) {
                             if (element < num_events - 1) {
@@ -90,5 +88,3 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
     });
 
 }
-
-})();

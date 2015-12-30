@@ -1,15 +1,12 @@
 "use strict";
 
-var path = require("path");
 var cp = require("child_process");
-var nodeUtil = require("util");
+var join = require("path").join;
+var writeStream = require("fs").createWriteStream;
 var gulp = require("gulp");
 var del = require("del");
 
-var gulp_log = require("fs").createWriteStream(
-    require("path").join(__dirname, "data", "gulp.log"),
-    {flags : 'w'}
-);
+var gulp_log = writeStream(join(__dirname, "data", "gulp.log"), {flags : 'w'});
 
 gulp.task("clean", function (callback) {
     del(["dist/*"], callback);
@@ -18,29 +15,24 @@ gulp.task("clean", function (callback) {
 gulp.task("lint", function (callback) {
     var runtests = cp.spawn("npm", ["run", "lint"]);
     runtests.stdout.on("data", function (data) {
-        gulp_log.write(nodeUtil.format(data.toString()));
+        gulp_log.write(data.toString());
     });
-    runtests.stderr.on("data", function (data) {
-        process.stdout.write(data);
-    });
+    runtests.stderr.on("data", process.stdout.write);
     runtests.on("close", callback);
 });
 
 gulp.task("build", function (callback) {
-    del([path.join("dist", "*.js")], function (ex) {
-        if (ex) throw ex;
-        cp.exec("./node_modules/browserify/bin/cmd.js ./exports.js | "+
-                "./node_modules/uglify-js/bin/uglifyjs > ./dist/augur.min.js",
+    cp.exec("./node_modules/browserify/bin/cmd.js ./exports.js | "+
+            "./node_modules/uglify-js/bin/uglifyjs > ./dist/augur.min.js",
+            function (err, stdout) {
+        if (err) return callback(err);
+        if (stdout) process.stdout.write(stdout);
+        cp.exec("./node_modules/browserify/bin/cmd.js ./exports.js "+
+                "> ./dist/augur.js",
                 function (err, stdout) {
-            if (err) throw err;
+            if (err) return callback(err);
             if (stdout) process.stdout.write(stdout);
-            cp.exec("./node_modules/browserify/bin/cmd.js ./exports.js "+
-                    "> ./dist/augur.js",
-                    function (err, stdout) {
-                if (err) throw err;
-                if (stdout) process.stdout.write(stdout);
-                callback();
-            });
+            callback();
         });
     });
 });

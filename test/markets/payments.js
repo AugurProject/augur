@@ -5,11 +5,13 @@
 
 "use strict";
 
+var join = require("path").join;
 var assert = require("chai").assert;
+var abi = require("augur-abi");
 var utils = require("../../src/utilities");
 var constants = require("../../src/constants");
-var augur = utils.setup(require("../../src"), process.argv.slice(2));
-var abi = require("augur-abi");
+var augurpath = join(__dirname, "..", "..", "src", "index");
+var augur = utils.setup(require(augurpath), process.argv.slice(2));
 
 if (!process.env.CONTINUOUS_INTEGRATION) {
 
@@ -23,36 +25,30 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
         var value = 1;
         var weiValue = abi.bignum(value).mul(constants.ETHER).toFixed();
         var initialCash = abi.bignum(augur.getCashBalance(augur.coinbase));
-        // console.log("initial:", initialCash.toFixed());
 
         it("deposit/withdrawEther", function (done) {
             this.timeout(constants.TIMEOUT*2);
             augur.depositEther({
                 value: value,
                 onSent: function (res) {
-                    // console.log("sent:", res);
                     assert.strictEqual(res.txHash.length, 66);
                     assert.strictEqual(weiValue, res.callReturn);
                 },
                 onSuccess: function (res) {
-                    // console.log("success:", res);
                     assert.strictEqual(res.txHash.length, 66);
                     assert.strictEqual(weiValue, res.callReturn);
                     assert.strictEqual(res.from, augur.coinbase);
                     assert.strictEqual(res.to, augur.contracts.cash);
                     var afterCash = abi.bignum(augur.getCashBalance(augur.coinbase));
-                    // console.log("after:", afterCash.toFixed());
                     assert.strictEqual(afterCash.sub(initialCash).toNumber(), value);
                     augur.withdrawEther({
                         to: augur.coinbase,
                         value: value,
                         onSent: function (res) {
-                            // console.log("withdraw sent:", res);
                             assert.strictEqual(res.txHash.length, 66);
                             assert.strictEqual(res.callReturn, "1");
                         },
                         onSuccess: function (res) {
-                            // console.log("withdraw success:", res);
                             assert.strictEqual(res.txHash.length, 66);
                             assert.strictEqual(res.callReturn, "1");
                             assert.strictEqual(res.from, augur.coinbase);
@@ -73,7 +69,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
 
         it("sendEther", function (done) {
             this.timeout(constants.TIMEOUT);
-            var augur = utils.setup(require("../../src"), process.argv.slice(2));
+            var augur = utils.setup(require(augurpath), process.argv.slice(2));
             var start_balance = abi.bignum(augur.rpc.balance(receiver));
             start_balance = start_balance.dividedBy(constants.ETHER);
             augur.rpc.sendEther({
@@ -95,7 +91,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
 
         it("sendCash", function (done) {
             this.timeout(constants.TIMEOUT);
-            var augur = utils.setup(require("../../src"), process.argv.slice(2));
+            var augur = utils.setup(require(augurpath), process.argv.slice(2));
             var start_balance = abi.bignum(augur.getCashBalance(coinbase));
             augur.sendCash({
                 to: receiver,
@@ -114,7 +110,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
 
         it("sendCashFrom", function (done) {
             this.timeout(constants.TIMEOUT);
-            var augur = utils.setup(require("../../src"), process.argv.slice(2));
+            var augur = utils.setup(require(augurpath), process.argv.slice(2));
             var start_balance = abi.bignum(augur.getCashBalance(coinbase));
             augur.sendCashFrom({
                 to: receiver,
@@ -134,7 +130,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
 
         it("sendReputation", function (done) {
             this.timeout(constants.TIMEOUT);
-            var augur = utils.setup(require("../../src"), process.argv.slice(2));
+            var augur = utils.setup(require(augurpath), process.argv.slice(2));
             var start_balance = augur.getRepBalance(branch, coinbase);
             start_balance = abi.bignum(start_balance);
             augur.tx.sendReputation.returns = "number";
