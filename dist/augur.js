@@ -54414,32 +54414,33 @@ module.exports = {
     },
 
     errorCodes: function (tx, response) {
-        if (!response) return new this.Error(errors.INVALID_RESPONSE);
-        if (response.constructor === Array) {
-            for (var i = 0, len = response.length; i < len; ++i) {
-                response[i] = this.errorCodes(tx.method, response[i]);
-            }
-        } else if (response.name && response.message && response.stack) {
-            response.error = response.name;
-        } else if (!response.error) {
-            if (errors[response]) {
-                response = {
-                    error: response,
-                    message: errors[response]
-                };
-            } else {
-                if (tx.returns && tx.returns !== "string" ||
-                    (response && response.constructor === String &&
-                    response.slice(0,2) === "0x"))
-                {
-                    var responseNumber = abi.bignum(response);
-                    if (responseNumber) {
-                        responseNumber = abi.string(responseNumber);
-                        if (errors[tx.method] && errors[tx.method][responseNumber]) {
-                            response = {
-                                error: responseNumber,
-                                message: errors[tx.method][responseNumber]
-                            };
+        if (response) {
+            if (response.constructor === Array) {
+                for (var i = 0, len = response.length; i < len; ++i) {
+                    response[i] = this.errorCodes(tx.method, response[i]);
+                }
+            } else if (response.name && response.message && response.stack) {
+                response.error = response.name;
+            } else if (!response.error) {
+                if (errors[response]) {
+                    response = {
+                        error: response,
+                        message: errors[response]
+                    };
+                } else {
+                    if (tx.returns && tx.returns !== "string" ||
+                        (response && response.constructor === String &&
+                        response.slice(0,2) === "0x"))
+                    {
+                        var responseNumber = abi.bignum(response);
+                        if (responseNumber) {
+                            responseNumber = abi.string(responseNumber);
+                            if (errors[tx.method] && errors[tx.method][responseNumber]) {
+                                response = {
+                                    error: responseNumber,
+                                    message: errors[tx.method][responseNumber]
+                                };
+                            }
                         }
                     }
                 }
