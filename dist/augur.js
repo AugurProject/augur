@@ -48707,60 +48707,85 @@ module.exports = function () {
             packaged = {
                 to: tx.to,
                 from: this.account.address,
-                gasPrice: (tx.gasPrice) ? tx.gasPrice : augur.rpc.gasPrice(),
                 gasLimit: (tx.gas) ? tx.gas : constants.DEFAULT_GAS,
                 nonce: 0,
                 value: tx.value || "0x0",
                 data: abi.encode(tx)
             };
+            if (tx.gasPrice && abi.number(tx.gasPrice) > 0) {
+                packaged.gasPrice = tx.gasPrice;
+                return this.getTxNonce(packaged, cb);
+            }
+            augur.rpc.gasPrice(function (gasPrice) {
+                if (!gasPrice || gasPrice.error) {
+                    return cb(errors.TRANSACTION_FAILED);
+                }
+                packaged.gasPrice = gasPrice;
+                self.getTxNonce(packaged, cb);
+            });
+        },
 
-            // get nonce: number of transactions
-            return augur.rpc.txCount(this.account.address, function (txCount) {
+        submitTx: function (packaged, cb) {
+            var self = this;
+            var etx = new ethTx(packaged);
+
+            // sign, validate, and send the transaction
+            etx.sign(self.account.privateKey);
+
+            // transaction validation
+            if (!etx.validate()) return cb(errors.TRANSACTION_INVALID);
+
+            // send the raw signed transaction to geth
+            augur.rpc.sendRawTx(etx.serialize().toString("hex"), function (res) {
+                var err;
+                if (res) {
+
+                    // geth error -32603: nonce too low / known tx
+                    if (res.error === -32603) {
+
+                        // rlp encoding error also has -32603 error code
+                        if (res.message.indexOf("rlp") > -1) {
+                            console.error("RLP encoding error:", res);
+                            err = abi.copy(errors.RLP_ENCODING_ERROR);
+                            err.bubble = res;
+                            err.packaged = packaged;
+                            return cb(err);
+                        }
+
+                        ++packaged.nonce;
+                        return self.submitTx(packaged, cb);
+
+                    // other errors
+                    } else if (res.error) {
+                        console.error("submitTx error:", res);
+                        err = abi.copy(errors.RAW_TRANSACTION_ERROR);
+                        err.bubble = res;
+                        err.packaged = packaged;
+                        return cb(err);
+                    }
+
+                    // res is the txhash if nothing failed immediately
+                    // (even if the tx is nulled, still index the hash)
+                    augur.rpc.rawTxs[res] = {tx: packaged};
+
+                    // nonce ok, execute callback
+                    return cb(res);
+                }
+                cb(errors.TRANSACTION_FAILED);
+            });
+        },
+
+        // get nonce: number of transactions
+        getTxNonce: function (packaged, cb) {
+            var self = this;
+            augur.rpc.txCount(self.account.address, function (txCount) {
                 if (txCount && !txCount.error) {
                     packaged.nonce = parseInt(txCount);
                 }
-                (function repack(packaged) {
-                    var etx = new ethTx(packaged);
-
-                    // sign, validate, and send the transaction
-                    etx.sign(self.account.privateKey);
-
-                    // transaction validation
-                    if (!etx.validate()) return cb(errors.TRANSACTION_INVALID);
-
-                    // send the raw signed transaction to geth
-                    augur.rpc.sendRawTx(etx.serialize().toString("hex"), function (res) {
-                        if (res) {
-
-                            // geth error -32603: nonce too low / known tx
-                            if (res.error === -32603) {
-
-                                // rlp encoding error also has -32603 error code
-                                if (res.message.indexOf("rlp") > -1) {
-                                    console.error("mysterious RLP encoding error:", res);
-                                    return console.log(JSON.stringify(packaged, null, 2));
-                                }
-
-                                ++packaged.nonce;
-                                return repack(packaged);
-
-                            // other errors
-                            } else if (res.error) {
-                                console.error("repack error:", res);
-                                return console.log(JSON.stringify(packaged, null, 2));
-                            }
-
-                            // res is the txhash if nothing failed immediately
-                            // (even if the tx is nulled, still index the hash)
-                            augur.rpc.rawTxs[res] = {tx: packaged};
-
-                            // nonce ok, execute callback
-                            cb(res);
-                        }
-                    });
-                })(packaged);
+                self.submitTx(packaged, cb);
             });
         }
+
     };
 };
 
@@ -48777,7 +48802,6 @@ module.exports = function () {
 var async = require("async");
 var multihash = require("multi-hash");
 var constants = require("../constants");
-var IPFS_LOCAL = constants.IPFS_LOCAL;
 var ipfsAPI;
 if (global) {
     ipfsAPI = global.ipfsAPI || require("ipfs-api");
@@ -48788,13 +48812,21 @@ if (global) {
 }
 var abi = require("augur-abi");
 
+var IPFS_DEFAULT = constants.IPFS_LOCAL;
+
 module.exports = function () {
 
     var augur = this;
+    if (augur.protocol === "https:") {
+        IPFS_DEFAULT = constants.IPFS_REMOTE;
+    }
+    console.log("IPFS default:", IPFS_DEFAULT);
 
     return {
 
-        ipfs: ipfsAPI(constants.IPFS_LOCAL),
+        debug: false,
+
+        ipfs: ipfsAPI(IPFS_DEFAULT),
 
         remote: null,
 
@@ -48874,7 +48906,7 @@ module.exports = function () {
             var self = this;
             var tx = augur.utils.copy(augur.tx.comments.addComment);
             this.ipfs.add(this.ipfs.Buffer(JSON.stringify(comment)), function (err, files) {
-                // console.log("ipfs.add:", files);
+                if (self.debug) console.log("ipfs.add:", files);
                 if (err) {
                     self.ipfs = ipfsAPI(constants.IPFS_REMOTE);
                     self.ipfs.add(self.ipfs.Buffer(JSON.stringify(comment)), function (err, files) {
@@ -48897,11 +48929,11 @@ module.exports = function () {
                     if (self.remote === null) {
                         ipfsAPI(constants.IPFS_REMOTE).pin.add(hash, function (err, pinned) {
                             if (err) console.error("hosted ipfs.pin.add:", err);
-                            // console.log("remote ipfs.pin.add:", pinned);
+                            if (self.debug) console.log("remote ipfs.pin.add:", pinned);
                         });
                     }
                     self.ipfs.pin.add(hash, function (err, pinned) {
-                        // console.log("ipfs.pin.add:", pinned);
+                        if (self.debug) console.log("ipfs.pin.add:", pinned);
                         if (err) return onFailed(err);
                         tx.params = [
                             abi.unfork(comment.marketId, true),
@@ -49206,6 +49238,16 @@ var errors = {
     DUPLICATE_TRANSACTION: {
         error: 502,
         message: "duplicate transaction"
+    },
+
+    RAW_TRANSACTION_ERROR: {
+        error: 503,
+        message: "error sending client-side transaction"
+    },
+
+    RLP_ENCODING_ERROR: {
+        error: 504,
+        message: "RLP encoding error"
     },
 
     LOOPBACK_NOT_FOUND: {
@@ -49892,6 +49934,7 @@ var options = { debug: { broadcast: false, fallback: false } };
 function Augur() {
     this.options = options;
     this.connection = null;
+    this.protocol = NODE_JS || document.location.protocol;
 
     this.utils = require("./utilities");
     this.constants = require("./constants");
@@ -53340,6 +53383,14 @@ module.exports={
         "error": 502,
         "message": "duplicate transaction"
     },
+    "RAW_TRANSACTION_ERROR": {
+        "error": 503,
+        "message": "error sending client-side transaction"
+    },
+    "RLP_ENCODING_ERROR": {
+        "error": 504,
+        "message": "RLP encoding error"
+    },
     "LOOPBACK_NOT_FOUND": {
         "error": 650,
         "message": "loopback interface required for synchronous local commands"
@@ -53397,6 +53448,8 @@ var HOSTED_NODES = [
 module.exports = {
 
     debug: {
+        sync: true,
+        tx: false,
         broadcast: false,
         fallback: false,
         latency: true,
@@ -53620,17 +53673,19 @@ module.exports = {
             req = syncRequest('POST', rpcUrl, { json: command });
             var response = req.getBody().toString();
             return this.parse(response, returns);
-        } else {
-            if (window.XMLHttpRequest) {
-                req = new window.XMLHttpRequest();
-            } else {
-                req = new window.ActiveXObject("Microsoft.XMLHTTP");
-            }
-            req.open("POST", rpcUrl, false);
-            req.setRequestHeader("Content-type", "application/json");
-            req.send(JSON.stringify(command));
-            return this.parse(req.responseText, returns);
         }
+        if (this.debug.sync) {
+            console.warn("synchronous RPC request to", rpcUrl, ":", command);
+        }
+        if (window.XMLHttpRequest) {
+            req = new window.XMLHttpRequest();
+        } else {
+            req = new window.ActiveXObject("Microsoft.XMLHTTP");
+        }
+        req.open("POST", rpcUrl, false);
+        req.setRequestHeader("Content-type", "application/json");
+        req.send(JSON.stringify(command));
+        return this.parse(req.responseText, returns);
     },
 
     post: function (rpcUrl, command, returns, callback) {
@@ -54478,13 +54533,15 @@ module.exports = {
         if (!this.txs[txhash]) this.txs[txhash] = {};
         if (this.txs[txhash].count === undefined) this.txs[txhash].count = 0;
         ++this.txs[txhash].count;
+        if (this.debug.tx) console.log("checkBlockHash:", tx, callreturn, itx);
         if (tx && tx.blockHash && abi.number(tx.blockHash) !== 0) {
             tx.callReturn = this.encodeResult(callreturn, returns);
             tx.txHash = tx.hash;
             delete tx.hash;
             this.txs[txhash].status = "confirmed";
             clearTimeout(this.notifications[txhash]);
-            if (onSuccess && onSuccess.constructor === Function) onSuccess(tx);
+            delete this.notifications[txhash];
+            if (isFunction(onSuccess)) onSuccess(tx);
         } else {
             var self = this;
             if (this.txs[txhash].count < this.TX_POLL_MAX) {
@@ -54495,9 +54552,7 @@ module.exports = {
                 }, this.TX_POLL_INTERVAL);
             } else {
                 self.txs[txhash].status = "unconfirmed";
-                if (onFailed && onFailed.constructor === Function) {
-                    onFailed(errors.TRANSACTION_NOT_CONFIRMED);
-                }
+                if (isFunction(onFailed)) onFailed(errors.TRANSACTION_NOT_CONFIRMED);
             }
         }
     },
@@ -54505,6 +54560,7 @@ module.exports = {
     txNotify: function (callreturn, itx, txhash, returns, onSent, onSuccess, onFailed) {
         var self = this;
         this.getTx(txhash, function (tx) {
+            if (self.debug.tx) console.log("txNofity.getTx:", tx);
             if (tx) {
                 return self.checkBlockHash(tx, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed);
             }
@@ -54525,10 +54581,10 @@ module.exports = {
                     self.txs[txhash].status = "resubmitted";
                     return self.transact(itx, onSent, onSuccess, onFailed);
                 } else {
-                    if (onFailed) onFailed(errors.TRANSACTION_NOT_FOUND);
+                    if (isFunction(onFailed)) onFailed(errors.TRANSACTION_NOT_FOUND);
                 }
             } else {
-                if (onFailed) onFailed(errors.TRANSACTION_NOT_FOUND);
+                if (isFunction(onFailed)) onFailed(errors.TRANSACTION_NOT_FOUND);
             }
         });
     },
@@ -54537,18 +54593,19 @@ module.exports = {
         var self = this;
         if (tx && txhash) {
             if (errors[txhash]) {
-                if (onFailed) onFailed({
+                if (isFunction(onFailed)) onFailed({
                     error: txhash,
                     message: errors[txhash],
                     tx: tx
                 });
             } else {
                 if (this.txs[txhash]) {
-                    if (onFailed) onFailed(errors.DUPLICATE_TRANSACTION);
+                    if (isFunction(onFailed)) onFailed(errors.DUPLICATE_TRANSACTION);
                 } else {
                     this.txs[txhash] = { hash: txhash, tx: tx, count: 0, status: "pending" };
                     this.txs[txhash].tx.returns = returns;
                     return this.getTx(txhash, function (sent) {
+                        if (self.debug.tx) console.log("sent:", sent);
                         if (returns !== "null") {
                             return self.call({
                                 from: sent.from,
@@ -54559,7 +54616,7 @@ module.exports = {
                                 if (callReturn) {
                                     if (errors[callReturn]) {
                                         self.txs[txhash].status = "failed";
-                                        if (onFailed) onFailed({
+                                        if (isFunction(onFailed)) onFailed({
                                             error: callReturn,
                                             message: errors[callReturn],
                                             tx: tx
@@ -54573,10 +54630,10 @@ module.exports = {
                                         // check if numReturn is an error object
                                         if (numReturn.constructor === Object && numReturn.error) {
                                             self.txs[txhash].status = "failed";
-                                            if (onFailed) onFailed(numReturn);
+                                            if (isFunction(onFailed)) onFailed(numReturn);
                                         } else if (errors[numReturn]) {
                                             self.txs[txhash].status = "failed";
-                                            if (onFailed) onFailed({
+                                            if (isFunction(onFailed)) onFailed({
                                                 error: numReturn,
                                                 message: errors[numReturn],
                                                 tx: tx
@@ -54590,7 +54647,7 @@ module.exports = {
                                                 }
                                                 if (numReturn && errors[tx.method] && errors[tx.method][numReturn]) {
                                                     self.txs[txhash].status = "failed";
-                                                    if (onFailed) onFailed({
+                                                    if (isFunction(onFailed)) onFailed({
                                                         error: numReturn,
                                                         message: errors[tx.method][numReturn],
                                                         tx: tx
@@ -54613,7 +54670,7 @@ module.exports = {
                                                     // poll the network until the transaction is
                                                     // included in a block (i.e., has a non-null
                                                     // blockHash field)
-                                                    if (onSuccess && onSuccess.constructor === Function) {
+                                                    if (isFunction(onSuccess)) {
                                                         self.txNotify(
                                                             callReturn,
                                                             tx,
@@ -54629,7 +54686,7 @@ module.exports = {
                                             // something went wrong :(
                                             } catch (e) {
                                                 self.txs[txhash].status = "failed";
-                                                if (onFailed) onFailed(e);
+                                                if (isFunction(onFailed)) onFailed(e);
                                             }
                                         }
                                     }
@@ -54637,14 +54694,14 @@ module.exports = {
                                 // no return value for call
                                 } else {
                                     self.txs[txhash].status = "failed";
-                                    if (onFailed) onFailed(errors.NULL_CALL_RETURN);
+                                    if (isFunction(onFailed)) onFailed(errors.NULL_CALL_RETURN);
                                 }
                             });
                         }
 
                         // if returns type is null, skip the intermediate call
                         onSent({ txHash: txhash, callReturn: null });
-                        if (onSuccess && onSuccess.constructor === Function) {
+                        if (isFunction(onSuccess)) {
                             self.txNotify(null, tx, txhash, returns, onSent, onSuccess, onFailed);
                         }
                     });
@@ -54658,23 +54715,21 @@ module.exports = {
         var returns = tx.returns;
         tx.send = true;
         delete tx.returns;
-        if (onSent && onSent.constructor === Function) {
-            return this.invoke(tx, function (txhash) {
-                if (txhash) {
-                    if (txhash.error) {
-                        if (onFailed) onFailed(txhash);
-                    } else {
-                        txhash = abi.prefix_hex(abi.pad_left(abi.strip_0x(txhash)));
-                        self.confirmTx(tx, txhash, returns, onSent, onSuccess, onFailed);
-                    }
+        if (!isFunction(onSent)) return this.invoke(tx);
+        this.invoke(tx, function (txhash) {
+            if (self.debug.tx) console.log("txhash:", txhash);
+            if (txhash) {
+                if (txhash.error) {
+                    if (isFunction(onFailed)) onFailed(txhash);
                 } else {
-                    if (onFailed) onFailed(errors.NULL_RESPONSE);
+                    txhash = abi.prefix_hex(abi.pad_left(abi.strip_0x(txhash)));
+                    self.confirmTx(tx, txhash, returns, onSent, onSuccess, onFailed);
                 }
-            });
-        }
-        return this.invoke(tx);
+            } else {
+                if (isFunction(onFailed)) onFailed(errors.NULL_RESPONSE);
+            }
+        });
     }
-
 };
 
 }).call(this,require('_process'))

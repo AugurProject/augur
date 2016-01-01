@@ -223,59 +223,84 @@ module.exports = function () {
             packaged = {
                 to: tx.to,
                 from: this.account.address,
-                gasPrice: (tx.gasPrice) ? tx.gasPrice : augur.rpc.gasPrice(),
                 gasLimit: (tx.gas) ? tx.gas : constants.DEFAULT_GAS,
                 nonce: 0,
                 value: tx.value || "0x0",
                 data: abi.encode(tx)
             };
+            if (tx.gasPrice && abi.number(tx.gasPrice) > 0) {
+                packaged.gasPrice = tx.gasPrice;
+                return this.getTxNonce(packaged, cb);
+            }
+            augur.rpc.gasPrice(function (gasPrice) {
+                if (!gasPrice || gasPrice.error) {
+                    return cb(errors.TRANSACTION_FAILED);
+                }
+                packaged.gasPrice = gasPrice;
+                self.getTxNonce(packaged, cb);
+            });
+        },
 
-            // get nonce: number of transactions
-            return augur.rpc.txCount(this.account.address, function (txCount) {
+        submitTx: function (packaged, cb) {
+            var self = this;
+            var etx = new ethTx(packaged);
+
+            // sign, validate, and send the transaction
+            etx.sign(self.account.privateKey);
+
+            // transaction validation
+            if (!etx.validate()) return cb(errors.TRANSACTION_INVALID);
+
+            // send the raw signed transaction to geth
+            augur.rpc.sendRawTx(etx.serialize().toString("hex"), function (res) {
+                var err;
+                if (res) {
+
+                    // geth error -32603: nonce too low / known tx
+                    if (res.error === -32603) {
+
+                        // rlp encoding error also has -32603 error code
+                        if (res.message.indexOf("rlp") > -1) {
+                            console.error("RLP encoding error:", res);
+                            err = abi.copy(errors.RLP_ENCODING_ERROR);
+                            err.bubble = res;
+                            err.packaged = packaged;
+                            return cb(err);
+                        }
+
+                        ++packaged.nonce;
+                        return self.submitTx(packaged, cb);
+
+                    // other errors
+                    } else if (res.error) {
+                        console.error("submitTx error:", res);
+                        err = abi.copy(errors.RAW_TRANSACTION_ERROR);
+                        err.bubble = res;
+                        err.packaged = packaged;
+                        return cb(err);
+                    }
+
+                    // res is the txhash if nothing failed immediately
+                    // (even if the tx is nulled, still index the hash)
+                    augur.rpc.rawTxs[res] = {tx: packaged};
+
+                    // nonce ok, execute callback
+                    return cb(res);
+                }
+                cb(errors.TRANSACTION_FAILED);
+            });
+        },
+
+        // get nonce: number of transactions
+        getTxNonce: function (packaged, cb) {
+            var self = this;
+            augur.rpc.txCount(self.account.address, function (txCount) {
                 if (txCount && !txCount.error) {
                     packaged.nonce = parseInt(txCount);
                 }
-                (function repack(packaged) {
-                    var etx = new ethTx(packaged);
-
-                    // sign, validate, and send the transaction
-                    etx.sign(self.account.privateKey);
-
-                    // transaction validation
-                    if (!etx.validate()) return cb(errors.TRANSACTION_INVALID);
-
-                    // send the raw signed transaction to geth
-                    augur.rpc.sendRawTx(etx.serialize().toString("hex"), function (res) {
-                        if (res) {
-
-                            // geth error -32603: nonce too low / known tx
-                            if (res.error === -32603) {
-
-                                // rlp encoding error also has -32603 error code
-                                if (res.message.indexOf("rlp") > -1) {
-                                    console.error("mysterious RLP encoding error:", res);
-                                    return console.log(JSON.stringify(packaged, null, 2));
-                                }
-
-                                ++packaged.nonce;
-                                return repack(packaged);
-
-                            // other errors
-                            } else if (res.error) {
-                                console.error("repack error:", res);
-                                return console.log(JSON.stringify(packaged, null, 2));
-                            }
-
-                            // res is the txhash if nothing failed immediately
-                            // (even if the tx is nulled, still index the hash)
-                            augur.rpc.rawTxs[res] = {tx: packaged};
-
-                            // nonce ok, execute callback
-                            cb(res);
-                        }
-                    });
-                })(packaged);
+                self.submitTx(packaged, cb);
             });
         }
+
     };
 };

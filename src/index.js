@@ -21,6 +21,7 @@ var options = { debug: { broadcast: false, fallback: false } };
 function Augur() {
     this.options = options;
     this.connection = null;
+    this.protocol = NODE_JS || document.location.protocol;
 
     this.utils = require("./utilities");
     this.constants = require("./constants");

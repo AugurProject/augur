@@ -8,7 +8,6 @@
 var async = require("async");
 var multihash = require("multi-hash");
 var constants = require("../constants");
-var IPFS_LOCAL = constants.IPFS_LOCAL;
 var ipfsAPI;
 if (global) {
     ipfsAPI = global.ipfsAPI || require("ipfs-api");
@@ -19,13 +18,21 @@ if (global) {
 }
 var abi = require("augur-abi");
 
+var IPFS_DEFAULT = constants.IPFS_LOCAL;
+
 module.exports = function () {
 
     var augur = this;
+    if (augur.protocol === "https:") {
+        IPFS_DEFAULT = constants.IPFS_REMOTE;
+    }
+    console.log("IPFS default:", IPFS_DEFAULT);
 
     return {
 
-        ipfs: ipfsAPI(constants.IPFS_LOCAL),
+        debug: false,
+
+        ipfs: ipfsAPI(IPFS_DEFAULT),
 
         remote: null,
 
@@ -105,7 +112,7 @@ module.exports = function () {
             var self = this;
             var tx = augur.utils.copy(augur.tx.comments.addComment);
             this.ipfs.add(this.ipfs.Buffer(JSON.stringify(comment)), function (err, files) {
-                // console.log("ipfs.add:", files);
+                if (self.debug) console.log("ipfs.add:", files);
                 if (err) {
                     self.ipfs = ipfsAPI(constants.IPFS_REMOTE);
                     self.ipfs.add(self.ipfs.Buffer(JSON.stringify(comment)), function (err, files) {
@@ -128,11 +135,11 @@ module.exports = function () {
                     if (self.remote === null) {
                         ipfsAPI(constants.IPFS_REMOTE).pin.add(hash, function (err, pinned) {
                             if (err) console.error("hosted ipfs.pin.add:", err);
-                            // console.log("remote ipfs.pin.add:", pinned);
+                            if (self.debug) console.log("remote ipfs.pin.add:", pinned);
                         });
                     }
                     self.ipfs.pin.add(hash, function (err, pinned) {
-                        // console.log("ipfs.pin.add:", pinned);
+                        if (self.debug) console.log("ipfs.pin.add:", pinned);
                         if (err) return onFailed(err);
                         tx.params = [
                             abi.unfork(comment.marketId, true),

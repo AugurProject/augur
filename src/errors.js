@@ -177,6 +177,16 @@ var errors = {
         message: "duplicate transaction"
     },
 
+    RAW_TRANSACTION_ERROR: {
+        error: 503,
+        message: "error sending client-side transaction"
+    },
+
+    RLP_ENCODING_ERROR: {
+        error: 504,
+        message: "RLP encoding error"
+    },
+
     LOOPBACK_NOT_FOUND: {
         error: 650,
         message: "loopback interface required for synchronous local commands"
