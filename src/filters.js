@@ -574,7 +574,30 @@ module.exports = function () {
             }
         },
 
-        ignore: function (uninstall, cb) {
+        all_filters_removed: function () {
+            return this.price_filter.heartbeat === null &&
+                this.contracts_filter.heartbeat === null &&
+                this.block_filter.heartbeat === null &&
+                this.creation_filter.heartbeat === null &&
+                this.price_filter.id === null &&
+                this.contracts_filter.id === null &&
+                this.block_filter.id === null &&
+                this.creation_filter.id === null;
+        },
+
+        ignore: function (uninstall, cb, complete) {
+            var self = this;
+
+            function cleared(ok, callback, complete) {
+                callback(ok);
+                if (ok !== true) return complete(ok);
+                if (self.all_filters_removed()) complete();
+            }
+
+            if (!complete && utils.is_function(cb)) {
+                complete = cb;
+                cb = null;
+            }
             if (uninstall && uninstall.constructor === Object) {
                 cb = {};
                 if (utils.is_function(uninstall.price)) {
@@ -591,12 +614,18 @@ module.exports = function () {
                 }
                 uninstall = false;
             }
-            cb = cb || {};
+            cb = cb || {}; // individual filter removal callbacks
+            cb.price = utils.is_function(cb.price) ? cb.price : utils.noop;
+            cb.contracts = utils.is_function(cb.contracts) ? cb.contracts : utils.noop;
+            cb.block = utils.is_function(cb.block) ? cb.block : utils.noop;
+            cb.creation = utils.is_function(cb.creation) ? cb.creation : utils.noop;
+            complete = utils.is_function(complete) ? complete : utils.noop; // after all filters removed
             if (this.price_filter.heartbeat !== null) {
                 clearInterval(this.price_filter.heartbeat);
                 this.price_filter.heartbeat = null;
                 if (!uninstall && utils.is_function(cb.price)) {
                     cb.price();
+                    if (this.all_filters_removed()) complete();
                 }
             }
             if (this.contracts_filter.heartbeat !== null) {
@@ -604,6 +633,7 @@ module.exports = function () {
                 this.contracts_filter.heartbeat = null;
                 if (!uninstall && utils.is_function(cb.contracts)) {
                     cb.contracts();
+                    if (this.all_filters_removed()) complete();
                 }
             }
             if (this.block_filter.heartbeat !== null) {
@@ -611,6 +641,7 @@ module.exports = function () {
                 this.block_filter.heartbeat = null;
                 if (!uninstall && utils.is_function(cb.block)) {
                     cb.block();
+                    if (this.all_filters_removed()) complete();
                 }
             }
             if (this.creation_filter.heartbeat !== null) {
@@ -618,20 +649,29 @@ module.exports = function () {
                 this.creation_filter.heartbeat = null;
                 if (!uninstall && utils.is_function(cb.creation)) {
                     cb.creation();
+                    if (this.all_filters_removed()) complete();
                 }
             }
             if (uninstall) {
                 if (this.price_filter.id !== null) {
-                    this.clear_price_filter(cb.price);
+                    this.clear_price_filter(function (ok) {
+                        cleared(ok, cb.price, complete);
+                    });
                 }
                 if (this.contracts_filter.id !== null) {
-                    this.clear_contracts_filter(cb.contracts);
+                    this.clear_contracts_filter(function (ok) {
+                        cleared(ok, cb.contracts, complete);
+                    });
                 }
                 if (this.block_filter.id !== null) {
-                    this.clear_block_filter(cb.block);
+                    this.clear_block_filter(function (ok) {
+                        cleared(ok, cb.block, complete);
+                    });
                 }
                 if (this.creation_filter.id !== null) {
-                    this.clear_creation_filter(cb.creation);
+                    this.clear_creation_filter(function (ok) {
+                        cleared(ok, cb.creation, complete);
+                    });
                 }
             }
         }

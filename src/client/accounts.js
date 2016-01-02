@@ -45,6 +45,7 @@ module.exports = function () {
                     onSuccess: function (r) {
                         var count = 0;
                         var check = function (response) {
+                            console.log("check:", count, response);
                             if (++count === 2) onFinal(response);
                         };
                         onConfirm(account);
@@ -65,6 +66,7 @@ module.exports = function () {
                             },
                             onSuccess: function (res) {
                                 console.log("depositEther success:", res);
+                                check(res);
                             },
                             onFailed: onFinal
                         });
@@ -83,6 +85,7 @@ module.exports = function () {
 
                 // generate ECDSA private key and initialization vector
                 keys.create(null, function (plain) {
+                    if (plain.error) return cb(plain);
 
                     // derive secret key from password
                     keys.deriveKey(password, plain.salt, null, function (derivedKey) {
@@ -95,6 +98,7 @@ module.exports = function () {
                         ), "base64").toString("hex");
 
                         var mac = keys.getMAC(derivedKey, encryptedPrivateKey);
+                        var id = new Buffer(uuid.parse(uuid.v4()));
 
                         // encrypt private key using derived key and IV, then
                         // store encrypted key & IV, indexed by handle
@@ -103,7 +107,7 @@ module.exports = function () {
                             iv: abi.prefix_hex(plain.iv.toString("hex")), // 128-bit
                             salt: abi.prefix_hex(plain.salt.toString("hex")), // 256-bit
                             mac: abi.prefix_hex(mac), // 256-bit
-                            id: abi.prefix_hex(new Buffer(uuid.parse(uuid.v4())).toString("hex")) // 128-bit
+                            id: abi.prefix_hex(id.toString("hex")) // 128-bit
                         }, function (result) {
                             if (!result || result.error) {
                                 if (cb.constructor === Array) {

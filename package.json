@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "0.12.17",
+  "version": "0.12.18",
   "description": "Augur JavaScript API",
   "main": "src/index.js",
   "scripts": {
@@ -63,6 +63,7 @@
     "gulp-uglify": "^1.5.1",
     "istanbul": "^0.3.17",
     "it-each": "^0.3.1",
+    "locks": "^0.2.2",
     "lodash": "^3.8.0",
     "longjohn": "^0.2.9",
     "mocha": "^2.2.4",

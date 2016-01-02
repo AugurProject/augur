@@ -6,15 +6,16 @@
 "use strict";
 
 var BigNumber = require("bignumber.js");
+var locks = require("locks");
 var chalk = require("chalk");
 var assert = require("chai").assert;
 var abi = require("augur-abi");
 var utils = require("../../src/utilities");
-var augur = utils.setup(require("../../src"), process.argv.slice(2));
-var constants = augur.constants;
-var log = console.log;
+var constants = require("../../src/constants");
+var augurpath = "../../src/index";
+var augur = utils.setup(require(augurpath), process.argv.slice(2));
 
-var DELAY = 5000;
+var DELAY = 2500;
 var branch = augur.branches.dev;
 var markets = augur.getMarkets(branch);
 var market_id = markets[markets.length - 1];
@@ -133,7 +134,7 @@ describe("Price history", function () {
     if (!process.env.CONTINUOUS_INTEGRATION) {
         before(function (done) {
             this.timeout(constants.TIMEOUT);
-            var augur = utils.setup(require("../../src"), process.argv.slice(2));
+            var augur = utils.setup(require(augurpath), process.argv.slice(2));
             augur.buyShares({
                 branchId: branch,
                 marketId: market_id,
@@ -269,7 +270,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
 
         it("should find message after buyShares", function (done) {
             this.timeout(constants.TIMEOUT*4);
-            var augur = utils.setup(require("../../src"), process.argv.slice(2));
+            var augur = utils.setup(require(augurpath), process.argv.slice(2));
 
             augur.filters.start_price_listener("updatePrice", function (filter_id) {
 
@@ -311,7 +312,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
 
         it("should find message after sellShares", function (done) {
             this.timeout(constants.TIMEOUT*4);
-            var augur = utils.setup(require("../../src"), process.argv.slice(2));
+            var augur = utils.setup(require(augurpath), process.argv.slice(2));
             augur.filters.start_price_listener("updatePrice", function (filter_id) {
 
                 listeners.push(setInterval(function () {
@@ -355,7 +356,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
 
         it("should find message after buyShares", function (done) {
             this.timeout(constants.TIMEOUT*4);
-            var augur = utils.setup(require("../../src"), process.argv.slice(2));
+            var augur = utils.setup(require(augurpath), process.argv.slice(2));
             augur.filters.start_contracts_listener(function (contracts_filter) {
                 assert.deepEqual(augur.filters.contracts_filter, contracts_filter);
 
@@ -400,7 +401,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
 
         it("block filter", function (done) {
             this.timeout(constants.TIMEOUT);
-            var augur = utils.setup(require("../../src"), process.argv.slice(2));
+            var augur = utils.setup(require(augurpath), process.argv.slice(2));
             augur.filters.listen({
                 block: function (blockHash) {
                     // example:
@@ -433,7 +434,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
 
         it("contracts filter", function (done) {
             this.timeout(constants.TIMEOUT);
-            var augur = utils.setup(require("../../src"), process.argv.slice(2));
+            var augur = utils.setup(require(augurpath), process.argv.slice(2));
             augur.filters.listen({
                 contracts: function (tx) {
                     // { address: '0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79',
@@ -500,7 +501,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
 
         it("price filter", function (done) {
             this.timeout(constants.TIMEOUT);
-            var augur = utils.setup(require("../../src"), process.argv.slice(2));
+            var augur = utils.setup(require(augurpath), process.argv.slice(2));
             augur.filters.listen({
                 price: function (update) {
                     // { user: '0x00000000000000000000000005ae1d0ca6206c6168b42efcd1fbe0ed144e821b',
@@ -545,7 +546,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
 
         it("creation filter", function (done) {
             this.timeout(constants.TIMEOUT*12);
-            var augur = utils.setup(utils.reset("../../src/index"), process.argv.slice(2));
+            var augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
             augur.filters.listen({
                 creation: function (update) {
                     // log: [{
@@ -600,57 +601,60 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
         });
 
         it("combined", function (done) {
-            this.timeout(constants.TIMEOUT*12);
-            var augur = utils.setup(utils.reset("../../src/index"), process.argv.slice(2));
-
-            // stop heartbeat and tear down filters
-            function teardown(done) {
-                var down = {
-                    block: null,
-                    contracts: null,
-                    price: null,
-                    creation: null
-                };
-                augur.filters.ignore(true, {
-                    block: function () {
-                        assert.isNull(augur.filters.block_filter.heartbeat);
-                        assert.isNull(augur.filters.block_filter.id);
-                        down.block = true;
-                        if (down.contracts && down.price && down.creation) done();
-                    },
-                    contracts: function () {
-                        assert.isNull(augur.filters.contracts_filter.heartbeat);
-                        assert.isNull(augur.filters.contracts_filter.id);
-                        down.contracts = true;
-                    },
-                    price: function () {
-                        assert.isNull(augur.filters.price_filter.heartbeat);
-                        assert.isNull(augur.filters.price_filter.id);
-                        down.price = true;
-                    },
-                    creation: function () {
-                        assert.isNull(augur.filters.creation_filter.heartbeat);
-                        assert.isNull(augur.filters.creation_filter.id);
-                        down.creation = true;
-                    }
-                });
-            }
-
-            var checkbox = {
+            this.timeout(constants.TIMEOUT*6);
+            var augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
+            var setup = {
                 block: null,
                 contracts: null,
                 price: null,
                 creation: null
             };
+            var called_teardown = {
+                block: false,
+                contracts: false,
+                price: false,
+                creation: false
+            };
+
+            // stop heartbeat and tear down filters
+            function teardown(setup, done) {
+                if (setup.price && setup.contracts && setup.block && setup.creation) {
+                    var mutex = locks.createMutex();
+                    mutex.lock(function () {
+                        augur.filters.ignore(true, {
+                            block: function () {
+                                assert.isNull(augur.filters.block_filter.heartbeat);
+                                assert.isNull(augur.filters.block_filter.id);
+                            },
+                            contracts: function () {
+                                assert.isNull(augur.filters.contracts_filter.heartbeat);
+                                assert.isNull(augur.filters.contracts_filter.id);
+                            },
+                            price: function () {
+                                assert.isNull(augur.filters.price_filter.heartbeat);
+                                assert.isNull(augur.filters.price_filter.id);
+                            },
+                            creation: function () {
+                                assert.isNull(augur.filters.creation_filter.heartbeat);
+                                assert.isNull(augur.filters.creation_filter.id);
+                            }
+                        }, function (err) {
+                            mutex.unlock();
+                            if (err) return done(err);
+                            done();
+                        });
+                    });
+                }
+            }
             augur.filters.listen({
                 block: function (blockHash) {
                     assert.strictEqual(blockHash.slice(0, 2), "0x");
                     assert.strictEqual(blockHash.length, 66);
                     assert.isNotNull(augur.filters.block_filter.heartbeat);
                     assert.isNotNull(augur.filters.block_filter.id);
-                    checkbox.block = true;
-                    if (checkbox.contracts && checkbox.price && checkbox.creation) {
-                        teardown(done);
+                    if (!setup.block) {
+                        setup.block = true;
+                        teardown(setup, done);
                     }
                 },
                 contracts: function (tx) {
@@ -664,9 +668,9 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                     assert.property(tx, "transactionIndex");
                     assert.isAbove(parseInt(tx.blockNumber), 0);
                     assert.isAbove(parseInt(augur.filters.contracts_filter.id), 0);
-                    checkbox.contracts = true;
-                    if (checkbox.block && checkbox.price && checkbox.creation) {
-                        teardown(done);
+                    if (!setup.contracts) {
+                        setup.contracts = true;
+                        teardown(setup, done);
                     }
                 },
                 price: function (update) {
@@ -682,9 +686,9 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                     assert.isAbove(parseInt(augur.filters.price_filter.id), 0);
                     assert.isNotNull(augur.filters.price_filter.heartbeat);
                     assert.isNotNull(augur.filters.price_filter.id);
-                    checkbox.price = true;
-                    if (checkbox.contracts && checkbox.block && checkbox.creation) {
-                        teardown(done);
+                    if (!setup.price) {
+                        setup.price = true;
+                        teardown(setup, done);
                     }
                 },
                 creation: function (update) {
@@ -695,9 +699,9 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                     assert.isAbove(parseInt(augur.filters.creation_filter.id), 0);
                     assert.isNotNull(augur.filters.creation_filter.heartbeat);
                     assert.isNotNull(augur.filters.creation_filter.id);
-                    checkbox.creation = true;
-                    if (checkbox.contracts && checkbox.price && checkbox.block) {
-                        teardown(done);
+                    if (!setup.creation) {
+                        setup.creation = true;
+                        teardown(setup, done);
                     }
                 }
             });

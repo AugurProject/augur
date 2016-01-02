@@ -1269,7 +1269,7 @@ Augur.prototype.getMarketsInfo = function (branch, offset, numMarketsToLoad, cal
     numMarketsToLoad = numMarketsToLoad || 0;
     var tx = this.utils.copy(this.tx.getMarketsInfo);
     tx.params = [branch, offset, numMarketsToLoad];
-    tx.timeout = 60000;
+    tx.timeout = 240000;
     if (!this.utils.is_function(callback)) {
         return this.parseMarketsArray(this.fire(tx));
     }
