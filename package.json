@@ -36,7 +36,7 @@
     "augur-contracts": "^0.2.5",
     "augur.js": "^0.12.20",
     "babelify": "^6.3.0",
-    "bignumber.js": "^2.0.7",
+    "bignumber.js": "^2.1.4",
     "bootstrap": "^3.3.4",
     "browserify": "^10.2.6",
     "envify": "^3.4.0",
