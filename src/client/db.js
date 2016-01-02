@@ -27,11 +27,14 @@ module.exports = {
             if (!utils.is_function(cb)) return true;
             return cb(true);
         }
-        if (!utils.is_function(cb)) return errors.DB_WRITE_FAILED;
-        cb(errors.DB_WRITE_FAILED);
+        var err = errors.DB_WRITE_FAILED;
+        err.bubble = {label: label, data: data};
+        if (!utils.is_function(cb)) return err;
+        cb(err);
     },
 
     get: function (label, cb) {
+        var err = errors.DB_READ_FAILED;
         if (label && label !== '') {
             var item = localStorage.getItem(abi.prefix_hex(utils.sha256(label)));
             if (item !== null) {
@@ -49,19 +52,22 @@ module.exports = {
                         if (!utils.is_function(cb)) return account;
                         return cb(account);
                     }
-                    if (!utils.is_function(cb)) return errors.DB_READ_FAILED;
-                    return cb(errors.DB_READ_FAILED);
+                    err.bubble = {item: item, label: label};
+                    if (!utils.is_function(cb)) return err;
+                    return cb(err);
                 } catch (exc) {
-                    console.error(exc);
-                    if (!utils.is_function(cb)) return errors.DB_READ_FAILED;
-                    return cb(errors.DB_READ_FAILED);
+                    err.bubble = {exception: exc, label: label};
+                    if (!utils.is_function(cb)) return err;
+                    return cb(err);
                 }
             }
-            if (!utils.is_function(cb)) return errors.DB_READ_FAILED;
-            return cb(errors.DB_READ_FAILED);
+            err.bubble = {label: label};
+            if (!utils.is_function(cb)) return err;
+            return cb(err);
         }
-        if (!utils.is_function(cb)) return errors.DB_READ_FAILED;
-        cb(errors.DB_READ_FAILED);
+        err.bubble = {label: label};
+        if (!utils.is_function(cb)) return err;
+        cb(err);
     }
 
 };
