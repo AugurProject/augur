@@ -54,11 +54,14 @@ var RegisterModal = React.createClass({
         },
         function (res) {
           augur.filters.ignore(true, function (err) {
-            console.log("filters.ignore:", err);
             if (err) return console.error(err);
+            console.log("reset filters");
             flux.actions.config.initializeData();
             flux.actions.asset.updateAssets();
           });
+        }, function (res) {
+          console.log("register.onFinal:", res);
+          flux.actions.asset.updateAssets();
         }
       ]);
     }
