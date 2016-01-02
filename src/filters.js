@@ -258,12 +258,12 @@ module.exports = function () {
             if (utils.is_function(cb)) {
                 var self = this;
                 this.eth_uninstallFilter(this.price_filter.id, function (uninst) {
-                    if (uninst) self.price_filter.id = null;
+                    self.price_filter.id = null;
                     cb(uninst);
                 });
             } else {
                 var uninst = this.eth_uninstallFilter(this.price_filter.id);
-                if (uninst) this.price_filter.id = null;
+                this.price_filter.id = null;
                 return uninst;
             }
         },
@@ -272,12 +272,12 @@ module.exports = function () {
             if (utils.is_function(cb)) {
                 var self = this;
                 this.eth_uninstallFilter(this.contracts_filter.id, function (uninst) {
-                    if (uninst) self.contracts_filter.id = null;
+                    self.contracts_filter.id = null;
                     cb(uninst);
                 });
             } else {
                 var uninst = this.eth_uninstallFilter(this.contracts_filter.id);
-                if (uninst) this.contracts_filter.id = null;
+                this.contracts_filter.id = null;
                 return uninst;
             }
         },
@@ -286,12 +286,12 @@ module.exports = function () {
             if (utils.is_function(cb)) {
                 var self = this;
                 this.eth_uninstallFilter(this.block_filter.id, function (uninst) {
-                    if (uninst) self.block_filter.id = null;
+                    self.block_filter.id = null;
                     cb(uninst);
                 });
             } else {
                 var uninst = this.eth_uninstallFilter(this.block_filter.id);
-                if (uninst) this.block_filter.id = null;
+                this.block_filter.id = null;
                 return uninst;
             }
         },
@@ -300,12 +300,12 @@ module.exports = function () {
             if (utils.is_function(cb)) {
                 var self = this;
                 this.eth_uninstallFilter(this.creation_filter.id, function (uninst) {
-                    if (uninst) self.creation_filter.id = null;
+                    self.creation_filter.id = null;
                     cb(uninst);
                 });
             } else {
                 var uninst = this.eth_uninstallFilter(this.creation_filter.id);
-                if (uninst) this.creation_filter.id = null;
+                this.creation_filter.id = null;
                 return uninst;
             }
         },
@@ -502,7 +502,6 @@ module.exports = function () {
                         if (this.contracts_filter.id === null && cb.contracts) {
                             this.start_contracts_listener(function () {
                                 self.pacemaker({ contracts: cb.contracts });
-                                // console.log("contracts filter:", self.contracts_filter);
                                 callback(null, { contracts: self.contracts_filter.id });
                             });
                         } else {
@@ -514,7 +513,6 @@ module.exports = function () {
                         if (this.price_filter.id === null && cb.price) {
                             this.start_price_listener("updatePrice", function () {
                                 self.pacemaker({ price: cb.price });
-                                // console.log("price filter:", self.price_filter);
                                 callback(null, { price: self.price_filter.id });
                             });
                         } else {
@@ -525,7 +523,6 @@ module.exports = function () {
                         if (this.block_filter.id === null && cb.block) {
                             this.start_block_listener(function () {
                                 self.pacemaker({ block: cb.block });
-                                // console.log("block filter:", self.block_filter);
                                 callback(null, { block: self.block_filter.id });
                             });
                         } else {
@@ -537,7 +534,6 @@ module.exports = function () {
                         if (this.creation_filter.id === null && cb.creation) {
                             this.start_creation_listener(function () {
                                 self.pacemaker({ creation: cb.creation });
-                                // console.log("creation filter:", self.creation_filter);
                                 callback(null, { creation: self.creation_filter.id });
                             });
                         } else {
@@ -588,9 +584,11 @@ module.exports = function () {
         ignore: function (uninstall, cb, complete) {
             var self = this;
 
-            function cleared(ok, callback, complete) {
-                callback(ok);
-                if (ok !== true) return complete(ok);
+            function cleared(uninst, callback, complete) {
+                callback(uninst);
+                if (uninst && uninst.constructor === Object) {
+                    return complete(uninst);
+                }
                 if (self.all_filters_removed()) complete();
             }
 
@@ -654,23 +652,23 @@ module.exports = function () {
             }
             if (uninstall) {
                 if (this.price_filter.id !== null) {
-                    this.clear_price_filter(function (ok) {
-                        cleared(ok, cb.price, complete);
+                    this.clear_price_filter(function (uninst) {
+                        cleared(uninst, cb.price, complete);
                     });
                 }
                 if (this.contracts_filter.id !== null) {
-                    this.clear_contracts_filter(function (ok) {
-                        cleared(ok, cb.contracts, complete);
+                    this.clear_contracts_filter(function (uninst) {
+                        cleared(uninst, cb.contracts, complete);
                     });
                 }
                 if (this.block_filter.id !== null) {
-                    this.clear_block_filter(function (ok) {
-                        cleared(ok, cb.block, complete);
+                    this.clear_block_filter(function (uninst) {
+                        cleared(uninst, cb.block, complete);
                     });
                 }
                 if (this.creation_filter.id !== null) {
-                    this.clear_creation_filter(function (ok) {
-                        cleared(ok, cb.creation, complete);
+                    this.clear_creation_filter(function (uninst) {
+                        cleared(uninst, cb.creation, complete);
                     });
                 }
             }
