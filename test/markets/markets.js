@@ -79,7 +79,7 @@ var testMarketInfo = function (info) {
     var r;
     assert(info.constructor === Array || info.constructor === Object);
     if (info.constructor === Array) {
-        assert.isAbove(info.length, 44);
+        assert.isAbove(info.length, 43);
         info = augur.rpc.encodeResult(info);
         assert.strictEqual(info[7], branchId);
         r = augur.parseMarketInfo(info);

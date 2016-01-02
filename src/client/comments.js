@@ -26,7 +26,6 @@ module.exports = function () {
     if (augur.protocol === "https:") {
         IPFS_DEFAULT = constants.IPFS_REMOTE;
     }
-    console.log("IPFS default:", IPFS_DEFAULT);
 
     return {
 

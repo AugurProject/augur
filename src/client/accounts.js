@@ -53,17 +53,19 @@ module.exports = function () {
                         augur.depositEther({
                             value: constants.FREEBIE*0.5,
                             onSent: function (res) {
-                                // console.log("depositEther:", res.txHash);
+                                console.log("depositEther sent:", res.txHash);
                                 augur.reputationFaucet({
                                     branch: augur.branches.dev,
                                     onSent: function (res) {
-                                        // console.log("reputationFaucet:", res.txHash);
+                                        console.log("reputationFaucet sent:", res.txHash);
                                     },
                                     onSuccess: check,
                                     onFailed: onFinal
                                 });
                             },
-                            onSuccess: check,
+                            onSuccess: function (res) {
+                                console.log("depositEther success:", res);
+                            },
                             onFailed: onFinal
                         });
                     },
@@ -228,6 +230,7 @@ module.exports = function () {
                 value: tx.value || "0x0",
                 data: abi.encode(tx)
             };
+            if (tx.timeout) packaged.timeout = tx.timeout;
             if (tx.gasPrice && abi.number(tx.gasPrice) > 0) {
                 packaged.gasPrice = tx.gasPrice;
                 return this.getTxNonce(packaged, cb);

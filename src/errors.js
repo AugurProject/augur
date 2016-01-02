@@ -187,6 +187,11 @@ var errors = {
         message: "RLP encoding error"
     },
 
+    RPC_TIMEOUT: {
+        error: 599,
+        message: "timed out while waiting for Ethereum network response"
+    },
+
     LOOPBACK_NOT_FOUND: {
         error: 650,
         message: "loopback interface required for synchronous local commands"

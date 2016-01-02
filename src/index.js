@@ -1186,6 +1186,7 @@ Augur.prototype.getMarketInfo = function (market, callback) {
     var tx = this.utils.copy(this.tx.getMarketInfo);
     var unpacked = this.utils.unpack(market, this.utils.labels(this.getMarketInfo), arguments);
     tx.params = unpacked.params;
+    tx.timeout = 45000;
     if (unpacked && this.utils.is_function(unpacked.cb[0])) {
         return this.fire(tx, function (marketInfo) {
             if (!marketInfo) return callback(new Error("getMarketInfo"));
@@ -1268,6 +1269,7 @@ Augur.prototype.getMarketsInfo = function (branch, offset, numMarketsToLoad, cal
     numMarketsToLoad = numMarketsToLoad || 0;
     var tx = this.utils.copy(this.tx.getMarketsInfo);
     tx.params = [branch, offset, numMarketsToLoad];
+    tx.timeout = 60000;
     if (!this.utils.is_function(callback)) {
         return this.parseMarketsArray(this.fire(tx));
     }

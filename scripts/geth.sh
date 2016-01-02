@@ -8,6 +8,7 @@ if [ `hostname` = "heavy" ]; then
     address="0xab50dcce6c36a033dc4a3b451d23868c909afbd6"
 else
     address="0x639b41c4d3d399894f2a57894278e1653e7cd24c"
+    # address="0x0da70d5a92d6cfcd4c12e2a83950676fdf4c95f9"
 fi
 maxpeers="64"
 network="${1}"
@@ -18,8 +19,8 @@ genesis=""
 optargs=""
 
 if [ "${network}" = "10101" ]; then
-    address="0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b"
-    # address="0x0da70d5a92d6cfcd4c12e2a83950676fdf4c95f9"
+    # address="0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b"
+    address="0x0da70d5a92d6cfcd4c12e2a83950676fdf4c95f9"
     # address="0x2a7e417ff20606e384526ed42d306943caec2d24"
     optargs="--mine --nodiscover"
     genesis="$HOME/src/augur.js/data/genesis-10101.json"
