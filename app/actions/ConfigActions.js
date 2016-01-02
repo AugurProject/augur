@@ -36,6 +36,7 @@ var ConfigActions = {
     var self = this;
     augur.rpc.reset();
     augur.connect(null, null, function (connected) {
+      augur.rpc.balancer = true;
       self.flux.actions.config.setIsHosted(connected);
       if (!connected) return cb(false);
       cb(augur.rpc.nodes.hosted[0]);

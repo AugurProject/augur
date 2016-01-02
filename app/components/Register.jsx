@@ -32,34 +32,33 @@ var RegisterModal = React.createClass({
 
       augur.web.register(this.state.handle, this.state.password, [
         function (account) {
-          if (account) {
-            if (account.error) {
-              console.error(account);
-              flux.actions.market.updateSharesHeld(null);
-              flux.actions.config.updateAccount({
-                currentAccount: null,
-                privateKey: null,
-                handle: null
-              });
-              self.setState({ handleHelp: account.message });
-              return;
-            }
-            console.log("registered account:", account.handle, account.address);
-            flux.actions.config.updateAccount({
-              currentAccount: account.address,
-              privateKey: account.privateKey,
-              handle: account.handle
-            });
-            flux.actions.asset.updateAssets();
-            self.props.onHide();
-          } else {
+          if (!account) return console.error("registration error:", account);
+          if (account.error) {
             console.error(account);
+            flux.actions.market.updateSharesHeld(null);
+            flux.actions.config.updateAccount({
+              currentAccount: null,
+              privateKey: null,
+              handle: null
+            });
+            self.setState({ handleHelp: account.message });
+            return;
           }
+          console.log("registered account:", account.handle, account.address);
+          flux.actions.config.updateAccount({
+            currentAccount: account.address,
+            privateKey: account.privateKey,
+            handle: account.handle
+          });
+          self.props.onHide();
         },
         function (res) {
-          console.log("your free lunch has arrived!");
-          augur.filters.ignore(true);
-          flux.actions.config.initializeData();
+          augur.filters.ignore(true, function (err) {
+            console.log("filters.ignore:", err);
+            if (err) return console.error(err);
+            flux.actions.config.initializeData();
+            flux.actions.asset.updateAssets();
+          });
         }
       ]);
     }
