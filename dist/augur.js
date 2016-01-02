@@ -48611,7 +48611,13 @@ module.exports = function () {
                             };
 
                             if (cb.constructor === Array) {
-                                return self.fund(self.account, cb[0], cb[1]);
+                                if (cb.length === 1) {
+                                    return self.fund(self.account, cb[0]);
+                                } else if (cb.length === 2) {
+                                    return self.fund(self.account, cb[0], cb[1]);
+                                } else if (cb.length > 2) {
+                                    return self.fund(self.account, cb[0], cb[1], cb[2]);
+                                }
                             }
                             if (donotfund) return cb(self.account);
                             self.fund(self.account, cb);
