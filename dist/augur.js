@@ -48529,7 +48529,7 @@ module.exports = function () {
                     onSuccess: function (r) {
                         var count = 0;
                         var check = function (response) {
-                            console.log("check:", count, response);
+                            console.log("initial funding:", count, response);
                             if (++count === 2) onFinal(response);
                         };
                         onConfirm(account);
@@ -48539,18 +48539,21 @@ module.exports = function () {
                             value: constants.FREEBIE*0.5,
                             onSent: function (res) {
                                 console.log("depositEther sent:", res.txHash);
+                            },
+                            onSuccess: function (res) {
+                                console.log("depositEther success");
+                                check(res);
                                 augur.reputationFaucet({
                                     branch: augur.branches.dev,
                                     onSent: function (res) {
                                         console.log("reputationFaucet sent:", res.txHash);
                                     },
-                                    onSuccess: check,
+                                    onSuccess: function (res) {
+                                        console.log("reputationFaucet success");
+                                        check(res);
+                                    },
                                     onFailed: onFinal
                                 });
-                            },
-                            onSuccess: function (res) {
-                                console.log("depositEther success:", res);
-                                check(res);
                             },
                             onFailed: onFinal
                         });
@@ -53553,6 +53556,8 @@ module.exports = {
         local: null
     },
 
+    primaryNode: null,
+
     // Mean network latency for each node
     latency: {},
 
@@ -53732,6 +53737,7 @@ module.exports = {
     },
 
     postSync: function (rpcUrl, command, returns) {
+        var self = this;
         var timeout, req = null;
         if (command.timeout) {
             timeout = command.timeout;
@@ -53753,6 +53759,7 @@ module.exports = {
         req.open("POST", rpcUrl, false);
         req.setRequestHeader("Content-type", "application/json");
         req.timeout = timeout;
+        req.ontimeout = function () { self.primaryNode = null; };
         req.send(JSON.stringify(command));
         return this.parse(req.responseText, returns);
     },
@@ -53773,6 +53780,7 @@ module.exports = {
         }, function (err, response, body) {
             var e;
             if (err) {
+                self.primaryNode = null;
                 if (self.nodes.local) {
                     if (self.nodes.local === self.localnode) {
                         self.nodes.local = null;
@@ -53831,6 +53839,7 @@ module.exports = {
         } else {
             select = (cdf[low] >= rand) ? low : low + 1;
         }
+        console.log("[ethrpc] primary node:", nodes[select]);
         return [nodes[select]].concat(nodes);
     },
 
@@ -53847,7 +53856,10 @@ module.exports = {
 
         // if we have sufficient data, select a primary node
         } else {
-            return this.selectPrimaryNode(this.nodes.hosted);
+            if (this.primaryNode === null) {
+                this.primaryNode = this.selectPrimaryNode(this.nodes.hosted);
+            }
+            return this.primaryNode;
         }
     },
 

@@ -45,7 +45,7 @@ module.exports = function () {
                     onSuccess: function (r) {
                         var count = 0;
                         var check = function (response) {
-                            console.log("check:", count, response);
+                            console.log("initial funding:", count, response);
                             if (++count === 2) onFinal(response);
                         };
                         onConfirm(account);
@@ -55,18 +55,21 @@ module.exports = function () {
                             value: constants.FREEBIE*0.5,
                             onSent: function (res) {
                                 console.log("depositEther sent:", res.txHash);
+                            },
+                            onSuccess: function (res) {
+                                console.log("depositEther success");
+                                check(res);
                                 augur.reputationFaucet({
                                     branch: augur.branches.dev,
                                     onSent: function (res) {
                                         console.log("reputationFaucet sent:", res.txHash);
                                     },
-                                    onSuccess: check,
+                                    onSuccess: function (res) {
+                                        console.log("reputationFaucet success");
+                                        check(res);
+                                    },
                                     onFailed: onFinal
                                 });
-                            },
-                            onSuccess: function (res) {
-                                console.log("depositEther success:", res);
-                                check(res);
                             },
                             onFailed: onFinal
                         });

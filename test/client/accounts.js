@@ -311,7 +311,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
     describe("Fund", function () {
 
         it("fund handle: " + handle, function (done) {
-            this.timeout(constants.TIMEOUT*3);
+            this.timeout(constants.TIMEOUT*6);
             var augur = utils.setup(require("../../src"), process.argv.slice(2));
             augur.web.login(handle, password, function (account) {
                 if (account.error) {
