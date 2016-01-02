@@ -89,9 +89,7 @@ describe("augur.connect", function () {
             }
         );
     }
-
     if (!process.env.CONTINUOUS_INTEGRATION) {
-
         it("should update the transaction object addresses when contracts are changed", function () {
             this.timeout(constants.TIMEOUT);
             var new_address = "0x01";
@@ -103,7 +101,6 @@ describe("augur.connect", function () {
             augur.connect();
             assert.strictEqual(augur.contracts.branches, newer_address);
         });
-
         it("should switch to Ethereum testnet contract addresses", function (done) {
             this.timeout(constants.TIMEOUT);
             assert(augur.connect());
@@ -120,9 +117,7 @@ describe("augur.connect", function () {
             assert(augur.contracts.createMarket, contracts["0"].createMarket);
             done();
         });
-
     }
-
     it("should connect successfully to 'http://www.poc9.com:8545'", function () {
         this.timeout(constants.TIMEOUT);
         assert(augur.connect("http://www.poc9.com:8545"));
@@ -179,15 +174,12 @@ describe("augur.connect", function () {
                augur.network_id === "10101" ||
                augur.network_id === "7");
     });
-
     if (!process.env.CONTINUOUS_INTEGRATION) {
-
         it("should be unlocked", function () {
             augur.connect("http://127.0.0.1:8545");
             if (augur.rpc.nodes.local) {
                 assert.isTrue(augur.rpc.unlocked(augur.coinbase));
             }
         });
-
     }
 });
