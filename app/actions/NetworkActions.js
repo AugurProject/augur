@@ -74,6 +74,9 @@ var NetworkActions = {
           privateKey: augur.web.account.privateKey,
           handle: augur.web.account.handle
         });
+        this.flux.actions.asset.updateAssets();
+        this.flux.actions.report.loadEventsToReport();
+        this.flux.actions.report.loadPendingReports();
       } else {
         this.dispatch(constants.network.UPDATE_ETHEREUM_STATUS, {
           ethereumStatus: constants.network.ETHEREUM_STATUS_NO_ACCOUNT
