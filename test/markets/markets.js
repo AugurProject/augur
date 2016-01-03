@@ -318,7 +318,6 @@ describe("data and api/markets", function () {
     describe("getParticipantID", function () {
         var test = function (t) {
             utils.gteq0(t.output);
-            assert.strictEqual(parseInt(t.output), 0);
             t.done();
         };
         for (var i = 0; i < numMarkets; ++i) {

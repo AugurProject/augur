@@ -1,4 +1,3 @@
-(function () {
 /**
  * Comments tests
  * @author Jack Peterson (jack@tinybike.net)
@@ -15,11 +14,6 @@ var log = console.log;
 
 describe("Comments", function () {
     var markets, market, comment;
-
-    beforeEach(function (done) {
-        augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
-        done();
-    });
 
     markets = augur.getMarkets(augur.branches.dev);
     market = markets[markets.length - 1];
@@ -65,5 +59,3 @@ describe("Comments", function () {
     });
 
 });
-
-})();

@@ -22,7 +22,7 @@
     "crypto-browserify": "^3.9.14",
     "ethereumjs-tx": "^0.6.9",
     "ethereumjs-util": "^1.5.1",
-    "ethrpc": "^0.4.7",
+    "ethrpc": "^0.4.8",
     "ipfs-api": "^2.9.11",
     "js-sha3": "^0.3.1",
     "keythereum": "^0.2.0",
