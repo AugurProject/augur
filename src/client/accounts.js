@@ -214,6 +214,14 @@ module.exports = function () {
             }); // augur.db.get
         },
 
+        persist: function () {
+            var account = augur.db.getPersistent();
+            if (account && account.privateKey) {
+                this.account = account;
+            }
+            return account;
+        },
+
         importKey: function (password, json, cb) {
             if (!utils.is_function(cb)) {
                 return keys.recover(password, JSON.parse(json));
@@ -225,8 +233,8 @@ module.exports = function () {
 
         logout: function () {
             this.account = {};
-            augur.rpc.clear();
             augur.db.removePersistent();
+            augur.rpc.clear();
         },
 
         invoke: function (itx, cb) {

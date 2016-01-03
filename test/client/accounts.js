@@ -368,6 +368,38 @@ describe("Login", function () {
 
 });
 
+describe("Persist", function () {
+
+    it("use a stored (persistent) account", function () {
+        this.timeout(constants.TIMEOUT);
+        augur.web.logout();
+        assert.isTrue(augur.db.removePersistent());
+        assert.notProperty(augur.web.account, "handle");
+        assert.notProperty(augur.web.account, "address");
+        assert.notProperty(augur.web.account, "privateKey");
+        assert.isNull(augur.db.getPersistent());
+        var account = {
+            handle: "tinybike",
+            privateKey: "0x3e339cbafa93d48c0b6a27678ad994ebf7caebb067f4da7e9ac88fe552003ddb",
+            address: "0x26bdb0438855e017fcfeac334496569567ea57b6"
+        };
+        assert.isTrue(augur.db.putPersistent(account));
+        var persist = augur.web.persist();
+        assert.strictEqual(persist.handle, account.handle);
+        assert.strictEqual(abi.hex(persist.privateKey, true), account.privateKey);
+        assert.strictEqual(persist.address, account.address);
+        assert.strictEqual(augur.web.account.handle, account.handle);
+        assert.strictEqual(abi.hex(augur.web.account.privateKey, true), account.privateKey);
+        assert.strictEqual(augur.web.account.address, account.address);
+        augur.web.logout();
+        assert.notProperty(augur.web.account, "handle");
+        assert.notProperty(augur.web.account, "address");
+        assert.notProperty(augur.web.account, "privateKey");
+        assert.isNull(augur.db.getPersistent());
+    });
+
+});
+
 describe("Logout", function () {
 
     it("logout and unset the account object", function (done) {
