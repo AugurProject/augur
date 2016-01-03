@@ -74,9 +74,23 @@ module.exports = function () {
             });
         },
 
-        register: function (handle, password, cb, donotfund) {
+        // options: {doNotFund, persist}
+        register: function (handle, password, options, cb) {
             var self = this;
+            if (!cb && options) {
+                if (utils.is_function(options)) {
+                    cb = options;
+                    options = {};
+                } else if (options.constructor === Array && options.length &&
+                    utils.is_function(options[0])) {
+                    cb = new Array(options.length);
+                    for (var i = 0; i < options.length; ++i) {
+                        cb[i] = options[i];
+                    }
+                }
+            }
             cb = cb || utils.pass;
+            options = options || {};
             if (!password || password.length < 6) return cb(errors.PASSWORD_TOO_SHORT);
             augur.db.get(handle, function (record) {
                 if (!record || !record.error) return cb(errors.HANDLE_TAKEN);
@@ -97,16 +111,23 @@ module.exports = function () {
 
                         var mac = keys.getMAC(derivedKey, encryptedPrivateKey);
                         var id = new Buffer(uuid.parse(uuid.v4()));
+                        var address = abi.format_address(keys.privateKeyToAddress(plain.privateKey));
 
                         // encrypt private key using derived key and IV, then
                         // store encrypted key & IV, indexed by handle
-                        augur.db.put(handle, {
-                            privateKey: abi.prefix_hex(encryptedPrivateKey), // 256-bit
+                        var accountData = {
+                            encryptedPrivateKey: abi.prefix_hex(encryptedPrivateKey), // 256-bit
                             iv: abi.prefix_hex(plain.iv.toString("hex")), // 128-bit
                             salt: abi.prefix_hex(plain.salt.toString("hex")), // 256-bit
                             mac: abi.prefix_hex(mac), // 256-bit
-                            id: abi.prefix_hex(id.toString("hex")) // 128-bit
-                        }, function (result) {
+                            id: abi.prefix_hex(id.toString("hex")), // 128-bit
+                            persist: options.persist // bool
+                        };
+                        if (options.persist) {
+                            accountData.privateKey = abi.hex(plain.privateKey, true);
+                            accountData.address = address;
+                        }
+                        augur.db.put(handle, accountData, function (result) {
                             if (!result || result.error) {
                                 if (cb.constructor === Array) {
                                     return cb[0](result);
@@ -118,7 +139,7 @@ module.exports = function () {
                             self.account = {
                                 handle: handle,
                                 privateKey: plain.privateKey,
-                                address: keys.privateKeyToAddress(plain.privateKey)
+                                address: address
                             };
 
                             if (cb.constructor === Array) {
@@ -130,7 +151,7 @@ module.exports = function () {
                                     return self.fund(self.account, cb[0], cb[1], cb[2]);
                                 }
                             }
-                            if (donotfund) return cb(self.account);
+                            if (options.doNotFund) return cb(self.account);
                             self.fund(self.account, cb);
 
                         }); // augur.db.put
@@ -139,8 +160,13 @@ module.exports = function () {
             }); // augur.db.get
         },
 
-        login: function (handle, password, cb) {
+        login: function (handle, password, options, cb) {
             var self = this;
+            if (!cb && utils.is_function(options)) {
+                cb = options;
+                options = {};
+            }
+            options = options || {};
 
             // blank password
             if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
@@ -173,9 +199,11 @@ module.exports = function () {
                             privateKey: dk,
                             address: abi.format_address(keys.privateKeyToAddress(dk))
                         };
-
+                        if (options.persist) {
+                            augur.db.putPersistent(self.account);
+                        }
                         cb(self.account);
-                    
+
                     // decryption failure: bad password
                     } catch (e) {
                         if (utils.is_function(cb)) {
@@ -198,6 +226,7 @@ module.exports = function () {
         logout: function () {
             this.account = {};
             augur.rpc.clear();
+            augur.db.removePersistent();
         },
 
         invoke: function (itx, cb) {

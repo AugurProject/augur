@@ -13,8 +13,8 @@ var EthTx = require("ethereumjs-tx");
 var EthUtil = require("ethereumjs-util");
 var abi = require("augur-abi");
 var utils = require("../../src/utilities");
+var constants = require("../../src/constants");
 var augur = utils.setup(require("../../src"), process.argv.slice(2));
-var constants = augur.constants;
 
 // generate random private key
 var privateKey = crypto.randomBytes(32);
@@ -26,21 +26,22 @@ var password = utils.sha256(Math.random().toString(36).substring(4));
 var handle2 = utils.sha256(new Date().toString()).slice(10) + "@" +
     utils.sha256(new Date().toString()).slice(10) + ".com";
 var password2 = utils.sha256(Math.random().toString(36).substring(4)).slice(10);
-var handle3 = utils.sha256(new Date().toString()).slice(10);
-var password3 = utils.sha256(Math.random().toString(36).substring(4)).slice(10);
+var handle3 = utils.sha256(Math.random().toString(36).substring(4)).slice(0, 7);
+var password3 = utils.sha256(Math.random().toString(36).substring(4)).slice(0, 7);
 
 var markets = augur.getMarkets(augur.branches.dev);
 var market_id = markets[markets.length - 1];
-var donotfund = true;
+
+var PERSISTENT_LOGIN = " ";
 
 describe("Register", function () {
 
     it("register account 1: " + handle + " / " + password, function (done) {
-        this.timeout(constants.TIMEOUT*4);
+        this.timeout(constants.TIMEOUT);
         var augur = utils.setup(require("../../src"), process.argv.slice(2));
         augur.db.get(handle, function (record) {
             assert.strictEqual(record.error, 99);
-            augur.web.register(handle, password, function (result) {
+            augur.web.register(handle, password, {doNotFund: true}, function (result) {
                 if (result && result.error) {
                     augur.web.logout();
                     return done(result);
@@ -83,16 +84,16 @@ describe("Register", function () {
                     augur.web.logout();
                     done();
                 });
-            }, donotfund);
+            });
         });
     });
 
     it("register account 2: " + handle2 + " / " + password2, function (done) {
-        this.timeout(constants.TIMEOUT*4);
+        this.timeout(constants.TIMEOUT);
         var augur = utils.setup(require("../../src"), process.argv.slice(2));
         augur.db.get(handle2, function (record) {
             assert.strictEqual(record.error, 99);
-            augur.web.register(handle2, password2, function (result) {
+            augur.web.register(handle2, password2, {doNotFund: true}, function (result) {
                 if (result && result.error) {
                     augur.web.logout();
                     return done(result);
@@ -135,14 +136,73 @@ describe("Register", function () {
                     augur.web.logout();
                     done();
                 });
-            }, donotfund);
+            });
+        });
+    });
+
+    it("persistent register: " + handle3 + " / " + password3, function (done) {
+        this.timeout(constants.TIMEOUT);
+        var augur = utils.setup(require("../../src"), process.argv.slice(2));
+        augur.db.get(handle3, function (record) {
+            assert.strictEqual(record.error, 99);
+            augur.web.register(handle3, password3, {
+                doNotFund: true,
+                persist: true
+            }, function (result) {
+                if (result && result.error) {
+                    augur.web.logout();
+                    return done(result);
+                }
+                assert(!result.error);
+                assert(result.privateKey);
+                assert(result.address);
+                assert.strictEqual(
+                    result.privateKey.toString("hex").length,
+                    constants.KEYSIZE*2
+                );
+                assert.strictEqual(result.address.length, 42);
+                augur.db.get(handle3, function (rec) {
+                    if (rec && rec.error) {
+                        augur.web.logout();
+                        return done(rec);
+                    }
+                    assert(!rec.error);
+                    assert(rec.privateKey);
+                    assert(rec.iv);
+                    assert(rec.salt);
+                    assert.strictEqual(
+                        new Buffer(rec.iv, "base64")
+                            .toString("hex")
+                            .length,
+                        constants.IVSIZE*2
+                    );
+                    assert.strictEqual(
+                        new Buffer(rec.salt, "base64")
+                            .toString("hex")
+                            .length,
+                        constants.KEYSIZE*2
+                    );
+                    assert.strictEqual(
+                        new Buffer(rec.privateKey, "base64")
+                            .toString("hex")
+                            .length,
+                        constants.KEYSIZE*2
+                    );
+                    var stored = augur.db.get(PERSISTENT_LOGIN);
+                    assert.strictEqual(stored.handle, handle3);
+                    assert.strictEqual(abi.hex(stored.privateKey), abi.hex(augur.web.account.privateKey));
+                    assert.strictEqual(stored.address, augur.web.account.address);
+                    augur.web.logout();
+                    done();
+                });
+            });
         });
     });
 
     it("fail to register account 1's handle again", function (done) {
         this.timeout(constants.TIMEOUT);
         var augur = utils.setup(require("../../src"), process.argv.slice(2));
-        augur.web.register(handle, password, function (result) {
+        augur.web.register(handle, password, {doNotFund: true}, function (result) {
             assert(!result.privateKey);
             assert(!result.address);
             assert(result.error);
@@ -150,13 +210,13 @@ describe("Register", function () {
                 assert.isNotNull(record);
                 done();
             });
-        }, donotfund);
+        });
     });
 
     it("fail to register account 2's handle again", function (done) {
         this.timeout(constants.TIMEOUT);
         var augur = utils.setup(require("../../src"), process.argv.slice(2));
-        augur.web.register(handle, password, function (result) {
+        augur.web.register(handle, password, {doNotFund: true}, function (result) {
             assert(!result.privateKey);
             assert(!result.address);
             assert(result.error);
@@ -164,7 +224,7 @@ describe("Register", function () {
                 assert.isNotNull(record);
                 done();
             });
-        }, donotfund);
+        });
     });
 
 });
@@ -187,6 +247,31 @@ describe("Login", function () {
                 constants.KEYSIZE*2
             );
             assert.strictEqual(user.address.length, 42);
+            augur.web.logout();
+            done();
+        });
+    });
+
+    it("persistent login", function (done) {
+        this.timeout(constants.TIMEOUT);
+        var augur = utils.setup(require("../../src"), process.argv.slice(2));
+        augur.web.login(handle, password, {persist: true}, function (user) {
+            if (user.error) {
+                augur.web.logout();
+                return done(user);
+            }
+            assert(!user.error);
+            assert(user.privateKey);
+            assert(user.address);
+            assert.strictEqual(
+                abi.strip_0x(user.privateKey.toString("hex")).length,
+                constants.KEYSIZE*2
+            );
+            assert.strictEqual(user.address.length, 42);
+            var stored = augur.db.getPersistent();
+            assert.strictEqual(stored.handle, handle);
+            assert.strictEqual(abi.hex(stored.privateKey, true), abi.hex(augur.web.account.privateKey, true));
+            assert.strictEqual(stored.address, augur.web.account.address);
             augur.web.logout();
             done();
         });
@@ -300,6 +385,7 @@ describe("Logout", function () {
                 assert.notProperty(augur.web.account, "address");
                 assert.notProperty(augur.web.account, "privateKey");
             }
+            assert.isNull(augur.db.getPersistent());
             done();
         });
     });

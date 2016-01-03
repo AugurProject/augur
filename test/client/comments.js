@@ -10,7 +10,6 @@ var constants = require("../../src/constants");
 var utils = require("../../src/utilities");
 var augurpath = "../../src/index";
 var augur = utils.setup(require(augurpath), process.argv.slice(2));
-var log = console.log;
 
 describe("Comments", function () {
     var markets, market, comment;

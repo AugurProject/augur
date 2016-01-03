@@ -48558,9 +48558,23 @@ module.exports = function () {
             });
         },
 
-        register: function (handle, password, cb, donotfund) {
+        // options: {doNotFund, persist}
+        register: function (handle, password, options, cb) {
             var self = this;
+            if (!cb && options) {
+                if (utils.is_function(options)) {
+                    cb = options;
+                    options = {};
+                } else if (options.constructor === Array && options.length &&
+                    utils.is_function(options[0])) {
+                    cb = new Array(options.length);
+                    for (var i = 0; i < options.length; ++i) {
+                        cb[i] = options[i];
+                    }
+                }
+            }
             cb = cb || utils.pass;
+            options = options || {};
             if (!password || password.length < 6) return cb(errors.PASSWORD_TOO_SHORT);
             augur.db.get(handle, function (record) {
                 if (!record || !record.error) return cb(errors.HANDLE_TAKEN);
@@ -48581,16 +48595,23 @@ module.exports = function () {
 
                         var mac = keys.getMAC(derivedKey, encryptedPrivateKey);
                         var id = new Buffer(uuid.parse(uuid.v4()));
+                        var address = abi.format_address(keys.privateKeyToAddress(plain.privateKey));
 
                         // encrypt private key using derived key and IV, then
                         // store encrypted key & IV, indexed by handle
-                        augur.db.put(handle, {
-                            privateKey: abi.prefix_hex(encryptedPrivateKey), // 256-bit
+                        var accountData = {
+                            encryptedPrivateKey: abi.prefix_hex(encryptedPrivateKey), // 256-bit
                             iv: abi.prefix_hex(plain.iv.toString("hex")), // 128-bit
                             salt: abi.prefix_hex(plain.salt.toString("hex")), // 256-bit
                             mac: abi.prefix_hex(mac), // 256-bit
-                            id: abi.prefix_hex(id.toString("hex")) // 128-bit
-                        }, function (result) {
+                            id: abi.prefix_hex(id.toString("hex")), // 128-bit
+                            persist: options.persist // bool
+                        };
+                        if (options.persist) {
+                            accountData.privateKey = abi.hex(plain.privateKey, true);
+                            accountData.address = address;
+                        }
+                        augur.db.put(handle, accountData, function (result) {
                             if (!result || result.error) {
                                 if (cb.constructor === Array) {
                                     return cb[0](result);
@@ -48602,7 +48623,7 @@ module.exports = function () {
                             self.account = {
                                 handle: handle,
                                 privateKey: plain.privateKey,
-                                address: keys.privateKeyToAddress(plain.privateKey)
+                                address: address
                             };
 
                             if (cb.constructor === Array) {
@@ -48614,7 +48635,7 @@ module.exports = function () {
                                     return self.fund(self.account, cb[0], cb[1], cb[2]);
                                 }
                             }
-                            if (donotfund) return cb(self.account);
+                            if (options.doNotFund) return cb(self.account);
                             self.fund(self.account, cb);
 
                         }); // augur.db.put
@@ -48623,8 +48644,13 @@ module.exports = function () {
             }); // augur.db.get
         },
 
-        login: function (handle, password, cb) {
+        login: function (handle, password, options, cb) {
             var self = this;
+            if (!cb && utils.is_function(options)) {
+                cb = options;
+                options = {};
+            }
+            options = options || {};
 
             // blank password
             if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
@@ -48657,9 +48683,11 @@ module.exports = function () {
                             privateKey: dk,
                             address: abi.format_address(keys.privateKeyToAddress(dk))
                         };
-
+                        if (options.persist) {
+                            augur.db.putPersistent(self.account);
+                        }
                         cb(self.account);
-                    
+
                     // decryption failure: bad password
                     } catch (e) {
                         if (utils.is_function(cb)) {
@@ -48682,6 +48710,7 @@ module.exports = function () {
         logout: function () {
             this.account = {};
             augur.rpc.clear();
+            augur.db.removePersistent();
         },
 
         invoke: function (itx, cb) {
@@ -48959,12 +48988,15 @@ module.exports = function () {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"../constants":353,"async":4,"augur-abi":5,"ipfs-api":9,"multi-hash":344}],352:[function(require,module,exports){
-(function (Buffer){
+(function (process,Buffer){
 /**
  * Database methods
  */
 
+var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
+
 var abi = require("augur-abi");
+var keys = require("keythereum");
 if (typeof localStorage === "undefined" || localStorage === null) {
     var LocalStorage = require("node-localstorage").LocalStorage;
     localStorage = new LocalStorage("./scratch");
@@ -48973,19 +49005,28 @@ var errors = require("../errors");
 var constants = require("../constants");
 var utils = require("../utilities");
 
+var PERSISTENT_LOGIN = (NODE_JS) ? " " : "";
+
 module.exports = {
 
     put: function (label, data, cb) {
         if (label !== null && label !== undefined && label !== '' && data) {
             var account = {
                 label: abi.prefix_hex(utils.sha256(label)),
-                privateKey: data.privateKey,
+                privateKey: data.encryptedPrivateKey,
                 iv: abi.pad_left(data.iv, 32, true),
                 salt: data.salt,
                 mac: data.mac,
                 id: abi.pad_left(data.id, 32, true)
             };
             localStorage.setItem(account.label, JSON.stringify(account));
+            if (data.persist) {
+                this.putPersistent({
+                    handle: label,
+                    privateKey: data.privateKey,
+                    address: data.address
+                });
+            }
             if (!utils.is_function(cb)) return true;
             return cb(true);
         }
@@ -48996,14 +49037,31 @@ module.exports = {
     },
 
     get: function (label, cb) {
-        var err = errors.DB_READ_FAILED;
-        if (label && label !== '') {
-            var item = localStorage.getItem(abi.prefix_hex(utils.sha256(label)));
+        var account, item, err = errors.DB_READ_FAILED;
+        if (label !== null && label !== undefined) {
+            if (label === PERSISTENT_LOGIN) {
+                account = localStorage.getItem(PERSISTENT_LOGIN);
+                if (account === null) {
+                    if (!utils.is_function(cb)) return err;
+                    return cb(err);
+                }
+                try {
+                    account = JSON.parse(account);
+                    account.privateKey = new Buffer(abi.unfork(account.privateKey), "hex");
+                    if (!utils.is_function(cb)) return account;
+                    return cb(account);
+                } catch (exc) {
+                    err.bubble = {exception: exc, label: label};
+                    if (!utils.is_function(cb)) return err;
+                    return cb(err);
+                }
+            }
+            item = localStorage.getItem(abi.prefix_hex(utils.sha256(label)));
             if (item !== null) {
                 try {
                     item = JSON.parse(item);
                     if (item && item.constructor === Object && item.privateKey) {
-                        var account = {
+                        account = {
                             handle: label,
                             privateKey: new Buffer(abi.unfork(item.privateKey), "hex"),
                             iv: new Buffer(abi.pad_left(item.iv, 32), "hex"),
@@ -49030,12 +49088,42 @@ module.exports = {
         err.bubble = {label: label};
         if (!utils.is_function(cb)) return err;
         cb(err);
+    },
+
+    putPersistent: function (data) {
+        if (!data || !data.privateKey) return error.DB_WRITE_FAILED;
+        if (Buffer.isBuffer(data.privateKey)) {
+            data.privateKey = abi.hex(data.privateKey, true);
+        }
+        localStorage.setItem(PERSISTENT_LOGIN, JSON.stringify(data));
+        return true;
+    },
+
+    getPersistent: function () {
+        var account = localStorage.getItem(PERSISTENT_LOGIN);
+        if (account === null) return null;
+        account = JSON.parse(account);
+        account.privateKey = new Buffer(abi.unfork(account.privateKey), "hex");
+        return account;
+    },
+
+    removePersistent: function () {
+        return this.remove(PERSISTENT_LOGIN);
+    },
+
+    remove: function (label) {
+        if (label === PERSISTENT_LOGIN) {
+            localStorage.removeItem(PERSISTENT_LOGIN);
+        } else {
+            localStorage.removeItem(abi.prefix_hex(utils.sha256(label)));
+        }
+        return true;
     }
 
 };
 
-}).call(this,require("buffer").Buffer)
-},{"../constants":353,"../errors":354,"../utilities":358,"augur-abi":5,"buffer":62,"node-localstorage":347}],353:[function(require,module,exports){
+}).call(this,require('_process'),require("buffer").Buffer)
+},{"../constants":353,"../errors":354,"../utilities":358,"_process":29,"augur-abi":5,"buffer":62,"keythereum":492,"node-localstorage":347}],353:[function(require,module,exports){
 /** 
  * augur.js constants
  */
@@ -53543,6 +53631,8 @@ module.exports = {
     // Default timeout for asynchronous POST
     POST_TIMEOUT: 20000,
 
+    BALANCER_SAMPLES: 20,
+
     DEFAULT_GAS: "0x2fd618",
 
     ETHER: new BigNumber(10).toPower(18),
@@ -53853,7 +53943,8 @@ module.exports = {
         }
 
         // rotate nodes until we have enough samples to weight them
-        if (!this.samples[HOSTED_NODES[0]] || this.samples[HOSTED_NODES[0]] < 5) {
+        if (!this.samples[HOSTED_NODES[0]] ||
+            this.samples[HOSTED_NODES[0]] < this.BALANCER_SAMPLES) {
             this.nodes.hosted.unshift(this.nodes.hosted.pop());
             return this.nodes.hosted.slice();
 
