@@ -66,8 +66,9 @@ var NetworkActions = {
       console.log("connecting to hosted node");
 
       // if the user has a persistent login, use it
-      var account = augur.db.getPersistent();
+      var account = augur.web.persist();
       if (account && account.privateKey) {
+        console.log("using persistent login:", account);
         this.dispatch(constants.config.UPDATE_ACCOUNT, {
           currentAccount: augur.web.account.address,
           privateKey: augur.web.account.privateKey,
