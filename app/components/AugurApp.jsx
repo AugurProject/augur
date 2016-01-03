@@ -110,24 +110,12 @@ var AugurApp = React.createClass({
   },
 
   render: function () {
-    var accountStatus;
-    if (this.state.config.currentAccount) {
-      // accountStatus = (
-      //   <p className='navbar-text'>
-      //     <span className="account">{ this.state.config.currentAccount }</span> | 
-      //     <a className="signout" onClick={ this.handleSignOut }>sign out</a>
-      //   </p>
-      // );
-        // <div className="panel panel-info assets">
-        //   <div className="account">{ this.state.config.currentAccount }</div>
-        // </div>
-        // <li><p>{ this.state.config.currentAccount }</p></li>
-        // <Assets asset={ this.state.asset } config={ this.state.config } />
+    var accountStatus, ballots, signoutButton;
 
-        // <div className="col-sm-4">
-        //     <a className="signout pull-right" onClick={ this.handleSignOut }><p>sign out</p></a>
-        //     </ul>
-        //   </div>
+    ballots = <span />;
+    signoutButton = <span />;
+
+    if (this.state.config.currentAccount) {
 
       var cashBalance = this.state.asset.cash ? this.state.asset.cash.toFixed(2) : '-';
       var repBalance = this.state.asset.reputation ? this.state.asset.reputation.toFixed(2) : '-';
@@ -179,11 +167,21 @@ var AugurApp = React.createClass({
             onHide={this.toggleSendCashModal} />
         </div>
       );
+      ballots = (
+        <Link to="ballots"><li>
+          <p>Ballot<span className="population">{_.keys(this.state.report.eventsToReport).length}</span></p>
+        </li></Link>
+      );
+      signoutButton = (
+        <a className="signout" onClick={this.handleSignOut}><li>
+          <p>sign out</p>
+        </li></a>
+      );
     } else {
        accountStatus = (
         <ul className="menu">
-          <li><p><a className="signin" onClick={ this.toggleSignInModal }>sign in</a></p></li>
-          <li><p><a className="register" onClick={ this.toggleRegisterModal }>register</a></p></li>
+          <li><p><a className="signin" onClick={this.toggleSignInModal}>sign in</a></p></li>
+          <li><p><a className="register" onClick={this.toggleRegisterModal}>register</a></p></li>
         </ul>
       );     
     }
@@ -195,56 +193,47 @@ var AugurApp = React.createClass({
             <div className="pull-left">
               <h1 className="title">augur</h1>
               <ul className="menu">
-                <Link to="overview"><li><p>Overview</p></li></Link>
-                <Link to="markets"><li><p>Markets<span className="population">{ _.keys(this.state.market.markets).length }</span></p></li></Link>
-                <Link to="ballots"><li><p>Ballot<span className="population">{ _.keys(this.state.report.eventsToReport).length }</span></p></li></Link>
+                <Link to="overview"><li>
+                  <p>Overview</p>
+                </li></Link>
+                <Link to="markets"><li>
+                  <p>Markets<span className="population">{_.keys(this.state.market.markets).length}</span></p>
+                </li></Link>
+                {ballots}
+                {signoutButton}
               </ul>
             </div>
-
             <div className="pull-right">
-              { accountStatus }
+              {accountStatus}
             </div>
-
           </div>
         </nav>
-
+        
         <section id="main" className="container">
           <div className="dash page row">
-            <div className="col-md-3 hidden-xs hidden-sm sidebar">
-              <div className="nav">
-                <ul>
-                  <Link to="overview"><li className="nav-item">Overview</li></Link>
-                  <Link to="markets"><li className="nav-item">Markets<span className="population">{ _.keys(this.state.market.markets).length }</span></li></Link>
-                  <Link to="ballots"><li className="nav-item">Ballot<span className="population">{ _.keys(this.state.report.eventsToReport).length }</span></li></Link>
-                </ul>
-              </div>
-              <Network />
-            </div>
-
             <div className="col-sm-12">
-
               <div id="period"></div>
-
-              <RouteHandler {...this.props} branch={ this.state.branch } market={ this.state.market } />
-
+              <RouteHandler {...this.props}
+                branch={this.state.branch}
+                market={this.state.market} />
             </div>
           </div>
-
         </section>
-
-        <RegisterModal show={ this.state.registerModalOpen } onHide={ this.toggleRegisterModal } />
-        <SignInModal show={ this.state.signInModalOpen } onHide={ this.toggleSignInModal } />
-
-        <footer>
-          <div className="row container clearfix"></div>
-        </footer>
-
+        
+        <RegisterModal
+          show={this.state.registerModalOpen}
+          onHide={this.toggleRegisterModal} />
+        <SignInModal
+          show={this.state.signInModalOpen}
+          onHide={this.toggleSignInModal} />
+        
+        <footer><div className="row container clearfix"></div></footer>
+        
         <section id="loading" className="container">
           <div className="logo">
-            { this.getLoadingProgress() }
+            {this.getLoadingProgress()}
           </div>
         </section>
-
       </div>
     );
   }

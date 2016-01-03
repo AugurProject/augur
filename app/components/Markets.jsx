@@ -21,7 +21,7 @@ var Markets = React.createClass({
       );
     }, this);
 
-    return ( 
+    return (
       <div>
         { marketList }
       </div>

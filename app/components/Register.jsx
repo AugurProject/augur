@@ -16,6 +16,7 @@ var RegisterModal = React.createClass({
     return {
       handle: '',
       password: '',
+      persist: false,
       verifyPassword: '',
       handleHelp: null,
       passwordHelp: null,
@@ -30,7 +31,9 @@ var RegisterModal = React.createClass({
       var flux = this.getFlux();
       var self = this;
 
-      augur.web.register(this.state.handle, this.state.password, [
+      augur.web.register(this.state.handle, this.state.password, {
+        persist: this.state.persist
+      }, [
         function (account) {
           if (!account) return console.error("registration error:", account);
           if (account.error) {
@@ -101,6 +104,10 @@ var RegisterModal = React.createClass({
     this.setState(help);
   },
 
+  handlePersistChange: function (event) {
+    this.setState({persist: event.target.checked});
+  },
+
   render: function () {
 
     var handleStyle = this.state.handleHelp ? 'error' : null;
@@ -122,8 +129,7 @@ var RegisterModal = React.createClass({
                 bsStyle={ handleStyle }
                 help={ this.state.handleHelp }
                 placeholder='email address / username'
-                onChange={ this.handleChange }
-              />
+                onChange={ this.handleChange } />
             </div>
             <div className="col-sm-12">
               <Input
@@ -133,8 +139,7 @@ var RegisterModal = React.createClass({
                 bsStyle={ passwordStyle }
                 help={ this.state.passwordHelp }
                 placeholder='password'
-                onChange={ this.handleChange }
-              />
+                onChange={ this.handleChange } />
             </div>
             <div className="col-sm-12">
               <Input
@@ -145,8 +150,15 @@ var RegisterModal = React.createClass({
                 ref="input"
                 placeholder='verify password'
                 onChange={ this.handleChange }
-                buttonAfter={ submit }
-              />
+                buttonAfter={ submit } />
+            </div>
+            <div className="col-sm-12">
+              Remember Me 
+              <Input
+                type="checkbox"
+                name="persist"
+                id="persist-checkbox"
+                onChange={ this.handlePersistChange } />
             </div>
           </div>
         </div>

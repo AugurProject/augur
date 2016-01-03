@@ -64,9 +64,20 @@ var NetworkActions = {
     // hosted node: no unlocked account available
     } else if (this.flux.store('config').getState().isHosted) {
       console.log("connecting to hosted node");
-      this.dispatch(constants.network.UPDATE_ETHEREUM_STATUS, {
-        ethereumStatus: constants.network.ETHEREUM_STATUS_NO_ACCOUNT
-      });
+
+      // if the user has a persistent login, use it
+      var account = augur.db.getPersistent();
+      if (account && account.privateKey) {
+        this.dispatch(constants.config.UPDATE_ACCOUNT, {
+          currentAccount: augur.web.account.address,
+          privateKey: augur.web.account.privateKey,
+          handle: augur.web.account.handle
+        });
+      } else {
+        this.dispatch(constants.network.UPDATE_ETHEREUM_STATUS, {
+          ethereumStatus: constants.network.ETHEREUM_STATUS_NO_ACCOUNT
+        });
+      }
 
     // local node: if it's unlocked, use the coinbase account
     } else {

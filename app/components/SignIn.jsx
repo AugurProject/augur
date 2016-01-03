@@ -16,6 +16,7 @@ var SignInModal = React.createClass({
     return {
       handle: '',
       password: '',
+      persist: false,
       handleHelp: null,
       passwordHelp: null
     };
@@ -36,7 +37,9 @@ var SignInModal = React.createClass({
       // NOTE: this is here because the signin flux action in config does not
       // return a value and it's important to communicate any server-side error
       // to the user here
-      augur.web.login(this.state.handle, this.state.password, function (account) { 
+      augur.web.login(this.state.handle, this.state.password, {
+        persist: this.state.persist
+      }, function (account) { 
         if (account) {
           if (account.error) {
             self.setState({handleHelp: account.message});
@@ -93,6 +96,10 @@ var SignInModal = React.createClass({
     this.setState(help);
   },
 
+  handlePersistChange: function (event) {
+    this.setState({persist: event.target.checked});
+  },
+
   render: function () {
 
     var handleStyle = this.state.handleHelp ? 'error' : null;
@@ -114,8 +121,7 @@ var SignInModal = React.createClass({
                 bsStyle={ handleStyle }
                 help={ this.state.handleHelp }
                 placeholder='email address / username'
-                onChange={ this.handleChange }
-              />
+                onChange={ this.handleChange } />
             </div>
             <div className="col-sm-12">
               <Input
@@ -126,8 +132,15 @@ var SignInModal = React.createClass({
                 help={ this.state.passwordHelp }
                 placeholder='password'
                 onChange={this.handleChange}
-                buttonAfter={ submit }
-              />
+                buttonAfter={ submit } />
+            </div>
+            <div className="col-sm-12">
+              Remember Me 
+              <Input
+                type="checkbox"
+                name="persist"
+                id="persist-checkbox"
+                onChange={ this.handlePersistChange } />
             </div>
           </div>
         </div>
