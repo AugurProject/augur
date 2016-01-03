@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -e
+trap "exit" INT
+
+# nuke
+rm -Rf node_modules
+if [ -f "app/app.js" ]; then
+    rm app/app.js
+fi
+
+# link, install, build
+npm link augur.js
+npm link augur-contracts
+npm link keythereum
+npm install
+grunt browserify:build
+
+# monitor for changes
+grunt watchify

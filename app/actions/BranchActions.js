@@ -17,10 +17,7 @@ export default {
 
   setCurrentBranch: function (branchId) {
     var self = this;
-
     branchId = branchId || process.env.AUGUR_BRANCH_ID;
-    console.log('using branch ' + branchId);
-
     augur.getPeriodLength(branchId, function (periodLength) {
       if (periodLength && !periodLength.error) {
         var currentBranch = new Branch(branchId, abi.number(periodLength));

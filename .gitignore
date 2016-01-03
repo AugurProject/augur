@@ -1,12 +1,9 @@
-*.pyc
-*.pyo
-*.db
-.DS_Store
-config_local.py
-.idea/
-/venv/
+*.xcf
+*.log
+*cache
+npm-debug*
 core
 *#
 *~
 node_modules/
-app/augur.js
+overflow/

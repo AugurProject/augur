@@ -1,7 +1,4 @@
 #!/bin/bash
-# Build and publish to IPFS 
-
-rm app/app.js
-grunt browserify:build
 
 ipfs name publish `ipfs add -rq app | tail -1`
+git push augur-exp +HEAD:master

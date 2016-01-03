@@ -44,12 +44,13 @@ var RegisterModal = React.createClass({
             self.setState({ handleHelp: account.message });
             return;
           }
-          console.log("registered account:", account.handle, account.address);
+          console.log("account created:", account.handle, account.address);
           flux.actions.config.updateAccount({
             currentAccount: account.address,
             privateKey: account.privateKey,
             handle: account.handle
           });
+          flux.actions.asset.updateAssets();
           self.props.onHide();
         },
         function (res) {
@@ -60,7 +61,7 @@ var RegisterModal = React.createClass({
             flux.actions.asset.updateAssets();
           });
         }, function (res) {
-          console.log("register.onFinal:", res);
+          console.log("register sequence complete");
           flux.actions.asset.updateAssets();
         }
       ]);
