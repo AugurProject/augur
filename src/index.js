@@ -1224,20 +1224,21 @@ Augur.prototype.getMarketInfo = function (market, callback) {
     return marketInfo;
 };
 Augur.prototype.parseMarketsArray = function (marketsArray, options, callback) {
+    var numMarkets, marketsInfo, totalLen, lengths, totalLengths, i, j, self,
+        len, shift, rawInfo, marketID;
     if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
         return marketsArray;
     }
     if (this.utils.is_function(options) && !callback) {
-        callback = offset;
+        callback = options;
         options = {};
     }
     options = options || {};
-    var numMarkets = parseInt(marketsArray.shift());
-    var marketsInfo = {};
-    var totalLen = 0;
+    numMarkets = parseInt(marketsArray.shift());
+    marketsInfo = {};
+    totalLen = 0;
     if (!this.utils.is_function(callback)) {
-        var len, shift, rawInfo, marketID;
-        for (var i = 0; i < numMarkets; ++i) {
+        for (i = 0; i < numMarkets; ++i) {
             len = parseInt(marketsArray[i]);
             shift = numMarkets + totalLen;
             rawInfo = marketsArray.slice(shift, shift + len);
@@ -1248,21 +1249,22 @@ Augur.prototype.parseMarketsArray = function (marketsArray, options, callback) {
         }
         return marketsInfo;
     }
-    var self = this;
-    var lengths = new Array(numMarkets);
-    var totalLengths = Array.apply(null, {
+    self = this;
+    lengths = new Array(numMarkets);
+    totalLengths = Array.apply(null, {
         length: numMarkets
     }).map(Number.prototype.valueOf, 0);
-    for (var i = 0; i < numMarkets; ++i) {
+    for (i = 0; i < numMarkets; ++i) {
         lengths[i] = parseInt(marketsArray[i]);
-        for (var j = 0; j < i; ++j) {
+        for (j = 0; j < i; ++j) {
             totalLengths[i] += lengths[j];
         }
     }
     async.forEachOf(lengths, function (len, idx, next) {
-        var shift = numMarkets + totalLengths[idx];
-        var rawInfo = marketsArray.slice(shift, shift + len);
-        var marketID = marketsArray[shift];
+        var shift, rawInfo, marketID;
+        shift = numMarkets + totalLengths[idx];
+        rawInfo = marketsArray.slice(shift, shift + len);
+        marketID = marketsArray[shift];
         self.parseMarketInfo(rawInfo, options, function (info) {
             if (!info) return next(self.errors.NO_MARKET_INFO);
             if (info.constructor !== Object || info.error) {
@@ -1281,7 +1283,7 @@ Augur.prototype.getMarketsInfo = function (options, callback) {
     // options: {branch, offset, numMarketsToLoad, combinatorial, callback}
     var self = this;
     if (this.utils.is_function(options) && !callback) {
-        callback = offset;
+        callback = options;
         options = {};
     }
     options = options || {};
