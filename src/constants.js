@@ -33,7 +33,13 @@ module.exports = {
     IVSIZE: 16,
 
     IPFS_LOCAL: {host: "localhost", port: "5001", protocol: "http"},
-    IPFS_REMOTE: {host: "ipfs.augur.net", port: "443", protocol: "https"},
+    IPFS_REMOTE: [
+        {host: "ipfs1.augur.net", port: "443", protocol: "https"},
+        {host: "ipfs2.augur.net", port: "443", protocol: "https"},
+        // {host: "ipfs3.augur.net", port: "443", protocol: "https"},
+        {host: "ipfs4.augur.net", port: "443", protocol: "https"},
+        {host: "ipfs5.augur.net", port: "443", protocol: "https"}
+    ],
 
     CHROME_ID: "odlcbngbdolepbmofbcllpldjngefaeb"
 };

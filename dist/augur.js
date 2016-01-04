@@ -279,6 +279,14 @@ module.exports={
         "error": 505,
         "message": "could not retrieve market data"
     },
+    "IPFS_ADD_FAILURE": {
+        "error": 506,
+        "message": "files could not be added to IPFS"
+    },
+    "IPFS_GET_FAILURE": {
+        "error": 507,
+        "message": "could not retrieve file from IPFS"
+    },
     "RPC_TIMEOUT": {
         "error": 599,
         "message": "timed out while waiting for Ethereum network response"
@@ -49018,6 +49026,8 @@ module.exports = function () {
 
 var async = require("async");
 var multihash = require("multi-hash");
+var abi = require("augur-abi");
+var errors = require("augur-contracts").errors;
 var constants = require("../constants");
 var ipfsAPI;
 if (global) {
@@ -49027,15 +49037,17 @@ if (global) {
 } else {
     ipfsAPI = require("ipfs-api");
 }
-var abi = require("augur-abi");
 
 var IPFS_DEFAULT = constants.IPFS_LOCAL;
+var NUM_NODES = constants.IPFS_REMOTE.length;
+var REMOTE = null;
 
 module.exports = function () {
 
     var augur = this;
     if (augur.protocol === "https:") {
-        IPFS_DEFAULT = constants.IPFS_REMOTE;
+        IPFS_DEFAULT = constants.IPFS_REMOTE[0];
+        REMOTE = IPFS_DEFAULT;
     }
 
     return {
@@ -49044,7 +49056,72 @@ module.exports = function () {
 
         ipfs: ipfsAPI(IPFS_DEFAULT),
 
-        remote: null,
+        remote: REMOTE,
+
+        remoteNodeIndex: 0,
+
+        remoteNodes: constants.IPFS_REMOTE,
+
+        localNode: (REMOTE) ? null : constants.IPFS_LOCAL,
+
+        useLocalNode: function (url) {
+            if (url) this.localNode = url;
+            this.ipfs = ipfsAPI(this.localNode);
+            this.remote = null;
+            return this.localNode;
+        },
+
+        useRemoteNode: function (url) {
+            if (url) {
+                this.remote = url;
+                this.remoteNodes.push(url);
+                this.remoteNodeIndex = this.remoteNodes.length - 1;
+                ++NUM_NODES;
+            }
+            this.remote = this.remoteNodes[this.remoteNodeIndex % NUM_NODES];
+            this.ipfs = ipfsAPI(this.remote);
+            this.localNode = null;
+            return this.remote;
+        },
+
+        getComment: function (ipfsHash, blockNumber, cb, tries) {
+            var self = this;
+            tries = tries || 0;
+            if (tries > NUM_NODES) return cb(errors.IPFS_GET_FAILURE);
+            this.ipfs.object.get(ipfsHash, function (err, obj) {
+                if (err) {
+                    self.remote = self.remoteNodes[++self.remoteNodeIndex % NUM_NODES];
+                    self.ipfs = ipfsAPI(self.remote);
+                    return self.getComment(ipfsHash, blockNumber, cb, ++tries);
+                }
+                self.ipfs.pin.add(ipfsHash, function (e, pinned) {
+                    if (e) {
+                        self.remote = self.remoteNodes[++self.remoteNodeIndex % NUM_NODES];
+                        self.ipfs = ipfsAPI(self.remote);
+                        return self.getComment(ipfsHash, blockNumber, cb, ++tries);
+                    }
+                    var data = obj.Data;
+                    data = JSON.parse(data.slice(data.indexOf("{"), data.lastIndexOf("}") + 1));
+                    if (blockNumber === null || blockNumber === undefined) {
+                        return cb(null, {
+                            ipfsHash: ipfsHash,
+                            author: data.author,
+                            message: data.message || ""
+                        });
+                    }
+                    augur.rpc.getBlock(blockNumber, true, function (block) {
+                        if (!block || block.error) return cb(block);
+                        cb(null, {
+                            ipfsHash: ipfsHash,
+                            author: data.author,
+                            message: data.message || "",
+                            blockNumber: parseInt(blockNumber),
+                            time: parseInt(block.timestamp)
+                        });
+                    });
+                });
+            });
+        },
 
         getMarketComments: function (market, cb) {
             if (!market || !augur.utils.is_function(cb)) return;
@@ -49056,10 +49133,10 @@ module.exports = function () {
                 topics: ["comment"]
             }, function (logs) {
                 if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
-                    return cb(null);
+                    return cb(errors.IPFS_GET_FAILURE);
                 }
                 if (logs.error) return cb(logs);
-                if (!logs || !market) return cb(null);
+                if (!logs || !market) return cb(errors.IPFS_GET_FAILURE);
                 var comments = [];
                 market = abi.bignum(abi.unfork(market));
                 async.eachSeries(logs, function (thisLog, nextLog) {
@@ -49068,103 +49145,85 @@ module.exports = function () {
                         return nextLog();
                     }
                     var ipfsHash = multihash.encode(abi.unfork(thisLog.data));
-                    self.ipfs.object.get(ipfsHash, function (err, obj) {
-                        self.ipfs.pin.add(ipfsHash, function (e, pinned) {
-                            if (err) {
-                                self.ipfs = ipfsAPI(constants.IPFS_REMOTE);
-                                self.ipfs.object.get(ipfsHash, function (e, obj) {
-                                    if (e) return nextLog(e);
-                                    self.ipfs.pin.add(ipfsHash, function (e, pinned) {
-                                        var data = obj.Data;
-                                        data = JSON.parse(data.slice(data.indexOf("{"), data.lastIndexOf("}") + 1));
-                                        var blockNumber = abi.hex(thisLog.blockNumber);
-                                        augur.rpc.getBlock(blockNumber, true, function (block) {
-                                            if (!block || block.error) return nextLog(block);
-                                            comments.push({
-                                                ipfsHash: ipfsHash,
-                                                author: data.author,
-                                                message: data.message || "",
-                                                blockNumber: blockNumber,
-                                                time: block.timestamp
-                                            });
-                                            nextLog();
-                                        });
-                                    });
-                                });
-                            } else {
-                                var data = obj.Data;
-                                data = JSON.parse(data.slice(data.indexOf("{"), data.lastIndexOf("}") + 1));
-                                var blockNumber = abi.hex(thisLog.blockNumber);
-                                augur.rpc.getBlock(blockNumber, true, function (block) {
-                                    if (!block || block.error) return nextLog(block);
-                                    comments.push({
-                                        ipfsHash: ipfsHash,
-                                        author: data.author,
-                                        message: data.message || "",
-                                        blockNumber: parseInt(blockNumber),
-                                        time: parseInt(block.timestamp)
-                                    });
-                                    nextLog();
-                                });
-                            }
-                        });
+                    var blockNumber = abi.hex(thisLog.blockNumber);
+                    self.getComment(ipfsHash, blockNumber, function (err, comment) {
+                        if (err) return nextLog(err);
+                        comments.push(comment);
+                        nextLog();
                     });
                 }, function (err) {
                     if (err) return cb(err);
                     comments.reverse();
-                    cb(comments);
+                    cb(null, comments);
                 });
+            });
+        },
+
+        // pin data to all remote nodes
+        // TODO: attach ipfsAPI instances to object for re-use
+        broadcastPin: function (ipfsHash, cb) {
+            var self = this;
+            var pinningNodes = [];
+            cb = cb || function () {};
+            async.each(this.remoteNodes, function (node, nextNode) {
+                if (self.remote && node.host === self.remote.host) {
+                    console.log("1", node);
+                    return nextNode();
+                }
+                ipfsAPI(node).pin.add(ipfsHash, function (err, pinned) {
+                    if (err) {
+                        console.log("2", node, err);
+                        return nextNode(err);
+                    } else {
+                        if (pinned) {
+                            if (pinned.error) { console.log("3", node); return nextNode(pinned); }
+                            pinningNodes.push(node);
+                        }
+                        console.log("4", node);
+                        nextNode();
+                    }
+                });
+            }, function (err) {
+                if (err) cb(err);
+                cb(null, pinningNodes);
             });
         },
 
         // comment: {marketId, message, author}
         addMarketComment: function (comment, onSent, onSuccess, onFailed) {
             var self = this;
-            var tx = augur.utils.copy(augur.tx.comments.addComment);
+            var tx = abi.copy(augur.tx.comments.addComment);
             this.ipfs.add(this.ipfs.Buffer(JSON.stringify(comment)), function (err, files) {
                 if (self.debug) console.log("ipfs.add:", files);
                 if (err) {
-                    self.ipfs = ipfsAPI(constants.IPFS_REMOTE);
-                    self.ipfs.add(self.ipfs.Buffer(JSON.stringify(comment)), function (err, files) {
-                        if (err) return onFailed(err);
-                        self.ipfs.pin.add(files[0].Hash, function (err, pinned) {
-                            if (err) return onFailed(err);
-                            if (files && files.constructor === Array && files.length) {
-                                tx.params = [
-                                    abi.unfork(comment.marketId, true),
-                                    abi.hex(multihash.decode(files[0].Hash), true)
-                                ];
-                                augur.transact(tx, onSent, onSuccess, onFailed);
-                            }
-                        });
-                    });
-                } else {
-                    if (!files) return onFailed("no files added");
-                    var hash = (files.constructor === Array) ? files[0].Hash : files.Hash;
-                    // if we're on a local IPFS node, pin to hosted node
-                    if (self.remote === null) {
-                        ipfsAPI(constants.IPFS_REMOTE).pin.add(hash, function (err, pinned) {
-                            if (err) console.error("hosted ipfs.pin.add:", err);
-                            if (self.debug) console.log("remote ipfs.pin.add:", pinned);
-                        });
-                    }
-                    self.ipfs.pin.add(hash, function (err, pinned) {
-                        if (self.debug) console.log("ipfs.pin.add:", pinned);
-                        if (err) return onFailed(err);
-                        tx.params = [
-                            abi.unfork(comment.marketId, true),
-                            abi.hex(multihash.decode(hash), true)
-                        ];
-                        augur.transact(tx, onSent, onSuccess, onFailed);
-                    });
+                    console.log("remoteNodeIndex:", self.remoteNodeIndex);
+                    self.remote = self.remoteNodes[++self.remoteNodeIndex % NUM_NODES];
+                    self.ipfs = ipfsAPI(self.remote);
+                    return self.addMarketComment(comment, onSent, onSuccess, onFailed);
                 }
+                if (!files) return onFailed(errors.IPFS_ADD_FAILURE);
+                var ipfsHash = (files.constructor === Array) ? files[0].Hash : files.Hash;
+
+                // pin data to the active node
+                self.ipfs.pin.add(ipfsHash, function (err, pinned) {
+                    if (self.debug) console.log("ipfs.pin.add:", pinned);
+                    if (err) return onFailed(err);
+                    tx.params = [
+                        abi.unfork(comment.marketId, true),
+                        abi.hex(multihash.decode(ipfsHash), true)
+                    ];
+                    augur.transact(tx, function (res) {
+                        self.broadcastPin(ipfsHash);
+                        onSent(res);
+                    }, onSuccess, onFailed);
+                });
             });
         }
     };
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../constants":354,"async":5,"augur-abi":6,"ipfs-api":10,"multi-hash":345}],353:[function(require,module,exports){
+},{"../constants":354,"async":5,"augur-abi":6,"augur-contracts":3,"ipfs-api":10,"multi-hash":345}],353:[function(require,module,exports){
 (function (process,Buffer){
 /**
  * Database methods
@@ -49336,7 +49395,13 @@ module.exports = {
     IVSIZE: 16,
 
     IPFS_LOCAL: {host: "localhost", port: "5001", protocol: "http"},
-    IPFS_REMOTE: {host: "ipfs.augur.net", port: "443", protocol: "https"},
+    IPFS_REMOTE: [
+        {host: "ipfs1.augur.net", port: "443", protocol: "https"},
+        {host: "ipfs2.augur.net", port: "443", protocol: "https"},
+        // {host: "ipfs3.augur.net", port: "443", protocol: "https"},
+        {host: "ipfs4.augur.net", port: "443", protocol: "https"},
+        {host: "ipfs5.augur.net", port: "443", protocol: "https"}
+    ],
 
     CHROME_ID: "odlcbngbdolepbmofbcllpldjngefaeb"
 };
@@ -56077,8 +56142,172 @@ arguments[4][343][0].apply(exports,arguments)
 },{"dup":343}],363:[function(require,module,exports){
 arguments[4][1][0].apply(exports,arguments)
 },{"dup":1}],364:[function(require,module,exports){
-arguments[4][2][0].apply(exports,arguments)
-},{"dup":2}],365:[function(require,module,exports){
+module.exports={
+    "0x": "no response or bad input",
+    "getSimulatedBuy": {
+        "-2": "cost updating error (did you enter a valid quantity?)"
+    },
+    "getSimulatedSell": {
+        "-2": "cost updating error (did you enter a valid quantity?)"
+    },
+    "closeMarket": {
+        "-1": "market has no cash",
+        "-2": "0 outcome",
+        "-3": "outcome indeterminable"
+    },
+    "report": {
+        "0": "could not set reporter ballot",
+        "-1": "report length does not match number of expiring events",
+        "-2": "voting period expired",
+        "-3": "incorrect hash"
+    },
+    "submitReportHash": {
+        "0": "could not set report hash",
+        "-1": "reporter doesn't exist, voting period is over, or voting period hasn't started yet",
+        "-2": "not in hash submitting timeframe"
+    },
+    "checkReportValidity": {
+        "-1": "report isn't long enough",
+        "-2": "reporter doesn't exist, voting period is over, or voting period hasn't started yet"
+    },
+    "slashRep": {
+        "0": "incorrect hash",
+        "-2": "incorrect reporter ID"
+    },
+    "createEvent": {
+        "0": "not enough money to pay fees or event already exists",
+        "-1": "we're either already past that date, branch doesn't exist, or description is bad"
+    },
+    "createMarket": {
+        "-1": "bad input or parent doesn't exist",
+        "-2": "too many events",
+        "-3": "too many outcomes",
+        "-4": "not enough money or market already exists"
+    },
+    "sendReputation": {
+        "0": "not enough reputation",
+        "-1": "Your reputation account was just created! Earn some reputation before you can send to others",
+        "-2": "Receiving address doesn't exist"
+    },
+    "buyShares": {
+        "-1": "invalid outcome or trading closed",
+        "-2": "entered a negative number of shares",
+        "-3": "not enough money",
+        "-4": "bad nonce/hash"
+    },
+    "sellShares": {
+        "-1": "invalid outcome or trading closed",
+        "-2": "entered a negative number of shares",
+        "-3": "not enough money",
+        "-4": "bad nonce/hash"
+    },
+    "WHISPER_POST_FAILED": {
+        "error": 65,
+        "message": "could not post message to whisper"
+    },
+    "DB_WRITE_FAILED": {
+        "error": 98,
+        "message": "database write failed"
+    },
+    "DB_READ_FAILED": {
+        "error": 99,
+        "message": "database read failed"
+    },
+    "INVALID_CONTRACT_PARAMETER": {
+        "error": 400,
+        "message": "cannot send object parameter to contract"
+    },
+    "NOT_LOGGED_IN": {
+        "error": 401,
+        "message": "not logged in"
+    },
+    "PARAMETER_NUMBER_ERROR": {
+        "error": 402,
+        "message": "wrong number of parameters"
+    },
+    "BAD_CREDENTIALS": {
+        "error": 403,
+        "message": "incorrect handle or password"
+    },
+    "TRANSACTION_NOT_FOUND": {
+        "error": 404,
+        "message": "transaction not found"
+    },
+    "PASSWORD_TOO_SHORT": {
+        "error": 405,
+        "message": "password must be at least 6 characters long"
+    },
+    "NULL_CALL_RETURN": {
+        "error": 406,
+        "message": "expected contract call to return value, received null"
+    },
+    "NULL_RESPONSE": {
+        "error": 407,
+        "message": "expected transaction hash from Ethereum node, received null"
+    },
+    "NO_RESPONSE": {
+        "error": 408,
+        "message": "no response"
+    },
+    "INVALID_RESPONSE": {
+        "error": 409,
+        "message": "could not parse response from Ethereum node"
+    },
+    "LOCAL_NODE_FAILURE": {
+        "error": 410,
+        "message": "RPC request to local Ethereum node failed"
+    },
+    "HOSTED_NODE_FAILURE": {
+        "error": 411,
+        "message": "RPC request to hosted nodes failed"
+    },
+    "HANDLE_TAKEN": {
+        "error": 422,
+        "message": "handle already taken"
+    },
+    "FILTER_NOT_CREATED": {
+        "error": 450,
+        "message": "filter could not be created"
+    },
+    "TRANSACTION_FAILED": {
+        "error": 500,
+        "message": "transaction failed"
+    },
+    "TRANSACTION_NOT_CONFIRMED": {
+        "error": 501,
+        "message": "polled network but could not confirm transaction"
+    },
+    "DUPLICATE_TRANSACTION": {
+        "error": 502,
+        "message": "duplicate transaction"
+    },
+    "RAW_TRANSACTION_ERROR": {
+        "error": 503,
+        "message": "error sending client-side transaction"
+    },
+    "RLP_ENCODING_ERROR": {
+        "error": 504,
+        "message": "RLP encoding error"
+    },
+    "NO_MARKET_INFO": {
+        "error": 505,
+        "message": "could not retrieve market data"
+    },
+    "RPC_TIMEOUT": {
+        "error": 599,
+        "message": "timed out while waiting for Ethereum network response"
+    },
+    "LOOPBACK_NOT_FOUND": {
+        "error": 650,
+        "message": "loopback interface required for synchronous local commands"
+    },
+    "ETHEREUM_NOT_FOUND": {
+        "error": 651,
+        "message": "no active ethereum node(s) found"
+    }
+}
+
+},{}],365:[function(require,module,exports){
 arguments[4][3][0].apply(exports,arguments)
 },{"./contracts":363,"./errors":364,"dup":3}],366:[function(require,module,exports){
 arguments[4][7][0].apply(exports,arguments)
