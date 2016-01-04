@@ -417,7 +417,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                     maxValue: 5000,
                     numOutcomes: 2
                 }],
-                description: "Are atmospheric methane concentration and extinction rates of marine species correlated?",
+                description: "Is atmospheric methane concentration correlated to the extinction rates of marine species?",
                 alpha: "0.0079",
                 tradingFee: "0.01",
                 initialLiquidityFloor: 12

@@ -9,7 +9,7 @@ var ethTx = require("ethereumjs-tx");
 var keys = require("keythereum");
 var uuid = require("node-uuid");
 var abi = require("augur-abi");
-var errors = require("../errors");
+var errors = require("augur-contracts").errors;
 var constants = require("../constants");
 var utils = require("../utilities");
 

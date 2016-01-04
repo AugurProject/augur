@@ -8,9 +8,9 @@
 var assert = require("chai").assert;
 var abi = require("augur-abi");
 var keys = require("keythereum");
+var errors = require("augur-contracts").errors;
 var constants = require("../../src/constants");
 var utils = require("../../src/utilities");
-var errors = require("../../src/errors");
 var augurpath = "../../src/index";
 var augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
 

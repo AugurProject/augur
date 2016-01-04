@@ -81,7 +81,6 @@ describe("initial data load", function () {
         it("getMostActive(" + branchId + ")", function (done) {
             this.timeout(augur.constants.TIMEOUT);
             augur.getMostActive(branchId, function (mostActive) {
-                // console.log(JSON.stringify(mostActive, null, 2));
                 callback(mostActive, done);
             });
         });
@@ -118,7 +117,6 @@ describe("initial data load", function () {
         it("getMarketsSummary(" + branchId + ")", function (done) {
             this.timeout(augur.constants.TIMEOUT);
             augur.getMarketsSummary(branchId, function (marketsSummary) {
-                // console.log(JSON.stringify(marketsSummary, null, 2));
                 callback(marketsSummary, done);
             });
         });
@@ -131,14 +129,36 @@ describe("initial data load", function () {
     });
 
     describe("getMarketsInfo", function () {
-        var test = function (info, numMarkets, done) {
-            if (utils.is_function(numMarkets) && !done) {
-                done = numMarkets;
-                numMarkets = undefined;
+        var test = function (info, options, done) {
+            if (utils.is_function(options) && !done) {
+                done = options;
+                options = undefined;
             }
+            options = options || {};
             assert.isObject(info);
-            numMarkets = numMarkets || parseInt(augur.getNumMarkets(branchId));
+            var numMarkets = options.numMarkets || parseInt(augur.getNumMarkets(branchId));
+            var market;
             assert.strictEqual(Object.keys(info).length, numMarkets);
+            for (var marketId in info) {
+                if (!info.hasOwnProperty(marketId)) continue;
+                market = info[marketId];
+                assert.isArray(market.events);
+                assert.isAbove(market.events.length, 0);
+                assert.isString(market.type);
+                assert(market.type === "binary" ||
+                       market.type === "categorical" ||
+                       market.type === "scalar" ||
+                       market.type === "combinatorial");
+                if (market.type === "combinatorial") {
+                    for (var i = 0; i < market.numEvents; ++i) {
+                        assert.isNumber(market.events[i].endDate);
+                        assert.isString(market.events[i].id);
+                        if (options.combinatorial) {
+                            assert.isString(market.events[i].description);
+                        }
+                    }
+                }
+            }
             if (done) done();
         };
         var params = {
@@ -146,81 +166,41 @@ describe("initial data load", function () {
             offset: 0,
             numMarketsToLoad: 3
         };
-        it("sync/positional", function () {
+        it("sync", function () {
             this.timeout(augur.constants.TIMEOUT);
-            test(augur.getMarketsInfo(
-                params.branch,
-                params.offset,
-                params.numMarketsToLoad
-            ), params.numMarketsToLoad);
+            test(augur.getMarketsInfo(params), {numMarkets: params.numMarketsToLoad});
         });
-        it("sync/positional/missing numMarketsToLoad", function () {
-            this.timeout(augur.constants.TIMEOUT);
-            test(augur.getMarketsInfo(params.branch, params.offset));
-        });
-        it("sync/positional/missing numMarketsToLoad/missing offset", function () {
-            this.timeout(augur.constants.TIMEOUT);
-            test(augur.getMarketsInfo(params.branch));
-        });
-        it("sync/object", function () {
-            this.timeout(augur.constants.TIMEOUT);
-            test(augur.getMarketsInfo(params), params.numMarketsToLoad);
-        });
-        it("sync/object/missing numMarketsToLoad", function () {
+        it("sync/missing numMarketsToLoad", function () {
             this.timeout(augur.constants.TIMEOUT);
             var p = augur.utils.copy(params);
             delete p.numMarketsToLoad;
             test(augur.getMarketsInfo(p));
         });
-        it("sync/object/missing numMarketsToLoad/missing offset", function () {
+        it("sync/missing numMarketsToLoad/missing offset", function () {
             this.timeout(augur.constants.TIMEOUT);
             var p = augur.utils.copy(params);
             delete p.numMarketsToLoad;
             delete p.offset;
             test(augur.getMarketsInfo(p));
         });
-        it("async/positional", function (done) {
+        it("sync/combinatorial", function () {
             this.timeout(augur.constants.TIMEOUT);
-            augur.getMarketsInfo(
-                params.branch,
-                params.offset,
-                params.numMarketsToLoad,
-                function (info) {
-                    if (info.error) return done(info);
-                    test(info, params.numMarketsToLoad, done);
-                }
-            );
+            var p = augur.utils.copy(params);
+            p.combinatorial = true;
+            test(augur.getMarketsInfo(p), {
+                numMarkets: params.numMarketsToLoad,
+                combinatorial: true
+            });
         });
-        it("async/positional/missing numMarketsToLoad", function (done) {
-            this.timeout(augur.constants.TIMEOUT);
-            augur.getMarketsInfo(
-                params.branch,
-                params.offset,
-                function (info) {
-                    if (info.error) return done(info);
-                    test(info, done);
-                }
-            );
-        });
-        it("async/positional/missing numMarketsToLoad/missing offset", function (done) {
-            this.timeout(augur.constants.TIMEOUT);
-            augur.getMarketsInfo(
-                params.branch,
-                function (info) {
-                    if (info.error) return done(info);
-                    test(info, done);
-                }
-            );
-        });
-        it("async/object", function (done) {
+        it("async", function (done) {
             this.timeout(augur.constants.TIMEOUT);
             params.callback = function (info) {
                 if (info.error) return done(info);
-                test(info, params.numMarketsToLoad, done);
+                test(info, {numMarkets: params.numMarketsToLoad}, done);
             };
             augur.getMarketsInfo(params);
         });
-        it("async/object/missing numMarketsToLoad", function (done) {
+        it("async/missing numMarketsToLoad", function (done) {
             this.timeout(augur.constants.TIMEOUT);
             var p = augur.utils.copy(params);
             delete p.numMarketsToLoad;
@@ -230,7 +210,7 @@ describe("initial data load", function () {
             };
             augur.getMarketsInfo(p);
         });
-        it("async/object/missing numMarketsToLoad/missing offset", function (done) {
+        it("async/missing numMarketsToLoad/missing offset", function (done) {
             this.timeout(augur.constants.TIMEOUT);
             var p = augur.utils.copy(params);
             delete p.numMarketsToLoad;
@@ -241,7 +221,7 @@ describe("initial data load", function () {
             };
             augur.getMarketsInfo(p);
         });
-        it("async/object/offset=1/numMarketsToLoad=2", function (done) {
+        it("async/offset=1/numMarketsToLoad=2", function (done) {
             this.timeout(augur.constants.TIMEOUT);
             var numMarketsToLoad = 3;
             augur.getMarketsInfo({
@@ -251,9 +231,22 @@ describe("initial data load", function () {
                 callback: function (info) {
                     if (info.error) return done(info);
                     assert.strictEqual(Object.keys(info).length, numMarketsToLoad);
-                    test(info, numMarketsToLoad, done);
+                    test(info, {numMarkets: numMarketsToLoad}, done);
                 }
             });
+        });
+        it("async/combinatorial", function (done) {
+            this.timeout(augur.constants.TIMEOUT);
+            var p = augur.utils.copy(params);
+            p.combinatorial = true;
+            p.callback = function (info) {
+                if (info.error) return done(info);
+                test(info, {
+                    numMarkets: params.numMarketsToLoad,
+                    combinatorial: true
+                }, done);
+            };
+            augur.getMarketsInfo(p);
         });
     });
 
@@ -323,7 +316,6 @@ describe("initial data load", function () {
         it("getPrices(" + marketId + ")", function (done) {
             this.timeout(augur.constants.TIMEOUT);
             augur.getPrices(marketId, function (prices) {
-                // console.log(JSON.stringify(prices, null, 2));
                 callback(prices, "price", done);
             });
         });
@@ -331,7 +323,6 @@ describe("initial data load", function () {
         it("getClosingPrices(" + marketId + ")", function (done) {
             this.timeout(augur.constants.TIMEOUT);
             augur.getClosingPrices(marketId, function (prices) {
-                // console.log(JSON.stringify(prices, null, 2));
                 callback(prices, "closingPrice", done);
             });
         });

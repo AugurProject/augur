@@ -7,8 +7,8 @@
 var async = require("async");
 var chalk = require("chalk");
 var abi = require("augur-abi");
+var errors = require("augur-contracts").errors;
 var utils = require("./utilities");
-var errors = require("./errors");
 var constants = require("./constants");
 
 module.exports = function () {

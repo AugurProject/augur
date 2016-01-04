@@ -25,8 +25,8 @@ function Augur() {
 
     this.utils = require("./utilities");
     this.constants = require("./constants");
-    this.errors = require("./errors");
     this.db = require("./client/db");
+    this.errors = contracts.errors;
     this.numeric = abi;
 
     rpc.debug = this.options.debug;
@@ -1068,7 +1068,7 @@ Augur.prototype.lsLmsr = function (market, callback) {
     tx.params = market;
     return this.fire(tx, callback);
 };
-Augur.prototype.parseMarketInfo = function (rawInfo) {
+Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
     var TRADER_FIELDS = 3;
     var EVENTS_FIELDS = 6;
     var OUTCOMES_FIELDS = 2;
@@ -1175,11 +1175,34 @@ Augur.prototype.parseMarketInfo = function (rawInfo) {
         // market types: binary, categorical, scalar, combinatorial
         if (info.numEvents === 1) {
             info.type = info.events[0].type;
-        } else {
-            info.type = "combinatorial";
+            if (!this.utils.is_function(callback)) return info;
+            return callback(info);
+        }
+
+        // multi-event (combinatorial) markets: batch event descriptions
+        info.type = "combinatorial";
+        if (options && options.combinatorial) {
+            var txList = new Array(info.numEvents);
+            for (i = 0; i < info.numEvents; ++i) {
+                txList[i] = this.utils.copy(this.tx.getDescription);
+                txList[i].params = info.events[i].id;
+            }
+            if (this.utils.is_function(callback)) {
+                return rpc.batch(txList, function (response) {
+                    for (var i = 0, len = response.length; i < len; ++i) {
+                        info.events[i].description = response[i];
+                    }
+                    callback(info);
+                });
+            }
+            var response = rpc.batch(txList);
+            for (i = 0; i < response.length; ++i) {
+                info.events[i].description = response[i];
+            }
         }
     }
-    return info;
+    if (!this.utils.is_function(callback)) return info;
+    callback(info);
 };
 Augur.prototype.getMarketInfo = function (market, callback) {
     var self = this;
@@ -1189,89 +1212,91 @@ Augur.prototype.getMarketInfo = function (market, callback) {
     tx.timeout = 45000;
     if (unpacked && this.utils.is_function(unpacked.cb[0])) {
         return this.fire(tx, function (marketInfo) {
-            if (!marketInfo) return callback(new Error("getMarketInfo"));
-            marketInfo = self.parseMarketInfo(marketInfo);
-            marketInfo._id = market;
-            if (marketInfo.numEvents === 1) {
-                return unpacked.cb[0](marketInfo);
-            }
-
-            // batch event descriptions (combinatorial markets only)
-            var txList = new Array(marketInfo.numEvents);
-            for (var i = 0; i < marketInfo.numEvents; ++i) {
-                txList[i] = self.utils.copy(self.tx.getDescription);
-                txList[i].params = marketInfo.events[i].id;
-            }
-            rpc.batch(txList, function (response) {
-                for (var i = 0, len = response.length; i < len; ++i) {
-                    marketInfo.events[i].description = response[i];
-                }
-                unpacked.cb[0](marketInfo);
+            if (!marketInfo) return callback(self.errors.NO_MARKET_INFO);
+            self.parseMarketInfo(marketInfo, {combinatorial: true}, function (info) {
+                info._id = market;
+                unpacked.cb[0](info);
             });
         });
     }
     var marketInfo = this.parseMarketInfo(this.fire(tx));
-    if (marketInfo) {
-        marketInfo._id = market;
-        if (marketInfo.numEvents === 1) return marketInfo;
-
-        // batch event descriptions (combinatorial markets only)
-        var txList = new Array(marketInfo.numEvents);
-        for (var i = 0; i < marketInfo.numEvents; ++i) {
-            txList[i] = this.utils.copy(self.tx.getDescription);
-            txList[i].params = marketInfo.events[i].id;
-        }
-        var response = rpc.batch(txList);
-        for (i = 0; i < response.length; ++i) {
-            marketInfo.events[i].description = response[i];
-        }
-        return marketInfo;
-    }
+    if (marketInfo) marketInfo._id = market;
+    return marketInfo;
 };
-Augur.prototype.parseMarketsArray = function (marketsArray) {
-    var len, rawInfo, marketID;
-    if (marketsArray && marketsArray.constructor === Array && marketsArray.length) {
-        var numMarkets = parseInt(marketsArray.shift());
-        var marketsInfo = {};
-        var totalLen = 0;
+Augur.prototype.parseMarketsArray = function (marketsArray, options, callback) {
+    if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
+        return marketsArray;
+    }
+    if (this.utils.is_function(options) && !callback) {
+        callback = offset;
+        options = {};
+    }
+    options = options || {};
+    var numMarkets = parseInt(marketsArray.shift());
+    var marketsInfo = {};
+    var totalLen = 0;
+    if (!this.utils.is_function(callback)) {
+        var len, shift, rawInfo, marketID;
         for (var i = 0; i < numMarkets; ++i) {
             len = parseInt(marketsArray[i]);
-            rawInfo = marketsArray.slice(numMarkets + totalLen, numMarkets + totalLen + len);
-            marketID = marketsArray[numMarkets + totalLen];
-            marketsInfo[marketID] = this.parseMarketInfo(rawInfo);
+            shift = numMarkets + totalLen;
+            rawInfo = marketsArray.slice(shift, shift + len);
+            marketID = marketsArray[shift];
+            marketsInfo[marketID] = this.parseMarketInfo(rawInfo, options);
             marketsInfo[marketID]._id = marketID;
             totalLen += len;
         }
         return marketsInfo;
     }
-    return marketsArray;
-};
-Augur.prototype.getMarketsInfo = function (branch, offset, numMarketsToLoad, callback) {
     var self = this;
-    if (branch && branch.constructor === Object && branch.branch) {
-        offset = branch.offset;
-        numMarketsToLoad = branch.numMarketsToLoad;
-        if (this.utils.is_function(branch.callback)) {
-            callback = branch.callback;
-        }
-        branch = branch.branch;
-    }
-    if (callback === undefined) {
-        if (this.utils.is_function(offset) && numMarketsToLoad === undefined) {
-            callback = offset;
-            offset = undefined;
-        } else if (this.utils.is_function(numMarketsToLoad)) {
-            callback = numMarketsToLoad;
-            numMarketsToLoad = undefined;
+    var lengths = new Array(numMarkets);
+    var totalLengths = Array.apply(null, {
+        length: numMarkets
+    }).map(Number.prototype.valueOf, 0);
+    for (var i = 0; i < numMarkets; ++i) {
+        lengths[i] = parseInt(marketsArray[i]);
+        for (var j = 0; j < i; ++j) {
+            totalLengths[i] += lengths[j];
         }
     }
-    offset = offset || 0;
-    numMarketsToLoad = numMarketsToLoad || 0;
+    async.forEachOf(lengths, function (len, idx, next) {
+        var shift = numMarkets + totalLengths[idx];
+        var rawInfo = marketsArray.slice(shift, shift + len);
+        var marketID = marketsArray[shift];
+        self.parseMarketInfo(rawInfo, options, function (info) {
+            if (!info) return next(self.errors.NO_MARKET_INFO);
+            if (info.constructor !== Object || info.error) {
+                return next(info);
+            }
+            marketsInfo[marketID] = info;
+            marketsInfo[marketID]._id = marketID;
+            next();
+        });
+    }, function (err) {
+        if (err) return callback(err);
+        callback(marketsInfo);
+    });
+};
+Augur.prototype.getMarketsInfo = function (options, callback) {
+    // options: {branch, offset, numMarketsToLoad, combinatorial, callback}
+    var self = this;
+    if (this.utils.is_function(options) && !callback) {
+        callback = offset;
+        options = {};
+    }
+    options = options || {};
+    var branch = options.branch || this.branches.dev;
+    var offset = options.offset || 0;
+    var numMarketsToLoad = options.numMarketsToLoad || 0;
+    if (!callback && this.utils.is_function(options.callback)) {
+        callback = options.callback;
+    }
+    var parseMarketsOptions = {combinatorial: options.combinatorial};
     var tx = this.utils.copy(this.tx.getMarketsInfo);
     tx.params = [branch, offset, numMarketsToLoad];
     tx.timeout = 240000;
     if (!this.utils.is_function(callback)) {
-        return this.parseMarketsArray(this.fire(tx));
+        return this.parseMarketsArray(this.fire(tx), parseMarketsOptions);
     }
     var count = 0;
     var cb = function (marketsArray) {
@@ -1279,7 +1304,7 @@ Augur.prototype.getMarketsInfo = function (branch, offset, numMarketsToLoad, cal
             marketsArray.error === 500 && ++count < 4) {
             return self.fire(tx, cb);
         }
-        callback(self.parseMarketsArray(marketsArray));
+        self.parseMarketsArray(marketsArray, parseMarketsOptions, callback);
     };
     this.fire(tx, cb);
 };
