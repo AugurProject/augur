@@ -28,7 +28,7 @@ describe("Comments", function () {
             assert.isNull(err);
             assert.isObject(c);
             assert.property(c, "author");
-            assert.strictEqual(c.author, augur.coinbase);
+            assert.strictEqual(c.author, "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b");
             assert.property(c, "message");
             assert.strictEqual(c.message, comment.message);
             assert.notProperty(c, "blockNumber");
@@ -37,7 +37,7 @@ describe("Comments", function () {
                 assert.isNull(err);
                 assert.isObject(c);
                 assert.property(c, "author");
-                assert.strictEqual(c.author, augur.coinbase);
+                assert.strictEqual(c.author, "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b");
                 assert.property(c, "message");
                 assert.strictEqual(c.message, comment.message);
                 assert.property(c, "blockNumber");
@@ -104,7 +104,7 @@ describe("Comments", function () {
     });
 
     it("graceful IPFS node failure", function (done) {
-        this.timeout(constants.TIMEOUT);
+        this.timeout(constants.TIMEOUT*4);
         var augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
         var comments = augur.comments;
         var badHost = "sfpi.rugua.net";
