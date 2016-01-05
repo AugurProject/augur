@@ -148,25 +148,20 @@ module.exports = function () {
             var self = this;
             var pinningNodes = [];
             cb = cb || function () {};
-            async.eachSeries(this.remoteNodes, function (node, nextNode) {
+            async.each(this.remoteNodes, function (node, nextNode) {
                 if (self.remote && node.host === self.remote.host) {
-                    console.log("1", node);
                     return nextNode();
                 }
                 ipfsAPI(node).pin.add(ipfsHash, function (err, pinned) {
-                    if (err) {
-                        console.log("2", node, err);
-                        return nextNode(err);
-                    }
+                    if (err) return nextNode(err);
                     if (pinned) {
-                        if (pinned.error) { console.log("3", node); return nextNode(pinned); }
+                        if (pinned.error) return nextNode(pinned);
                         pinningNodes.push(node);
                     }
-                    console.log("4", node);
                     nextNode();
                 });
             }, function (err) {
-                if (err) cb(err);
+                if (err) return cb(err);
                 cb(null, pinningNodes);
             });
         },
@@ -177,13 +172,11 @@ module.exports = function () {
             var tx = abi.copy(augur.tx.comments.addComment);
             this.ipfs.add(this.ipfs.Buffer(JSON.stringify(comment)), function (err, files) {
                 if (self.debug) console.log("ipfs.add:", files);
-                if (err) {
-                    console.log("remoteNodeIndex:", self.remoteNodeIndex);
+                if (err || !files || files.error) {
                     self.remote = self.remoteNodes[++self.remoteNodeIndex % NUM_NODES];
                     self.ipfs = ipfsAPI(self.remote);
                     return self.addMarketComment(comment, onSent, onSuccess, onFailed);
                 }
-                if (!files) return onFailed(errors.IPFS_ADD_FAILURE);
                 var ipfsHash = (files.constructor === Array) ? files[0].Hash : files.Hash;
 
                 // pin data to the active node

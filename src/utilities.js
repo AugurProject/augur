@@ -5,7 +5,7 @@ var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 var fs = (NODE_JS) ? require("fs") : null;
 var path = (NODE_JS) ? require("path") : null;
 var assert = (NODE_JS) ? require("assert") : console.assert;
-var crypto = (NODE_JS) ? require("crypto") : require("crypto-browserify");
+var crypto = require("crypto");
 var BigNumber = require("bignumber.js");
 var validator = require("validator");
 var moment = require("moment");
