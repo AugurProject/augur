@@ -10,7 +10,8 @@ var MarketActions = {
   loadComments: function (market) {
     var self = this;
     if (market && market.id) {
-      augur.comments.getMarketComments(abi.hex(market.id), function (comments) {
+      augur.comments.getMarketComments(abi.hex(market.id), function (err, comments) {
+        if (err) return console.error(err);
         if (comments && comments.constructor === Array && comments.length) {
           market.comments = comments;
           self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, { market: market });
