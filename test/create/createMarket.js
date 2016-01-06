@@ -75,11 +75,15 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                                         });
                                     }); // markets.getMarketEvents
                                 },
-                                onFailed: done
+                                onFailed: function (err) {
+                                    done(new Error(utils.pp(err)));
+                                }
                             }); // createMarket.createMarket
 
                         },
-                        onFailed: done
+                        onFailed: function (err) {
+                            done(new Error(utils.pp(err)));
+                        }
                     }); // createEvent.createEvent
                 });
             };
@@ -191,11 +195,15 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                                         });
                                     }); // markets.getMarketEvents
                                 },
-                                onFailed: done
+                                onFailed: function (err) {
+                                    done(new Error(utils.pp(err)));
+                                }
                             }); // createMarket.createMarket
 
                         },
-                        onFailed: done
+                        onFailed: function (err) {
+                            done(new Error(utils.pp(err)));
+                        }
                     }); // createEvent.createEvent
                 });
             };
@@ -393,7 +401,9 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                                     });
                                 });
                             },
-                            onFailed: done
+                            onFailed: function (err) {
+                                done(new Error(utils.pp(err)));
+                            }
                         });
                     });
                 });

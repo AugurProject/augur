@@ -11,18 +11,25 @@ var constants = require("../../src/constants");
 var utils = require("../../src/utilities");
 var augurpath = "../../src/index";
 var augur = utils.setup(require(augurpath), process.argv.slice(2));
-var comments = augur.comments;
+var comments = require("../../src/client/comments");
+
+var TIMEOUT = 48000;
 
 describe("Comments", function () {
-    var markets, market, comment, ipfsHash;
+    var markets, numMarkets, market, comment, ipfsHash;
 
     markets = augur.getMarkets(augur.branches.dev);
-    market = markets[markets.length - 1];
-    comment = {marketId: market, author: augur.coinbase, message: "haters gonna hate"};
+    numMarkets = markets.length;
+    market = markets[numMarkets - 1];
+    if (numMarkets > 10) {
+        markets = markets.slice(numMarkets - 10, numMarkets - 1);
+    }
+
+    comment = {marketId: market, author: comments.connector.from, message: "haters gonna hate"};
     ipfsHash = "QmUTAHurKVErazXoNNLDZi7v4MYduLNSckLvY7zhT1gJaD";
 
     it("retrieve a comment from its hash", function (done) {
-        this.timeout(constants.TIMEOUT);
+        this.timeout(TIMEOUT);
         var blockNumber = 2;
         comments.getComment(ipfsHash, null, function (err, c) {
             assert.isNull(err);
@@ -50,7 +57,7 @@ describe("Comments", function () {
     });
 
     it("add a comment to market " + market, function (done) {
-        this.timeout(constants.TIMEOUT);
+        this.timeout(TIMEOUT);
         comments.addMarketComment(comment,
             function (res) {
                 assert.property(res, "txHash");
@@ -59,7 +66,7 @@ describe("Comments", function () {
             function (res) {
                 assert.property(res, "txHash");
                 assert.strictEqual(res.callReturn, "1");
-                assert.strictEqual(res.from, augur.coinbase);
+                assert.strictEqual(res.from, comments.connector.from);
                 assert.strictEqual(res.to, augur.contracts.comments);
                 assert.isAbove(Number(res.blockHash), 0);
                 assert.isAbove(Number(res.blockNumber), 0);
@@ -71,7 +78,7 @@ describe("Comments", function () {
     });
 
     it("get comments for market " + market, function (done) {
-        this.timeout(constants.TIMEOUT);
+        this.timeout(TIMEOUT);
         comments.getMarketComments(market, function (err, comments) {
             assert.isNull(err);
             assert.isAbove(comments.length, 0);
@@ -90,23 +97,23 @@ describe("Comments", function () {
     });
 
     it("pin comment to all remote nodes", function (done) {
-        this.timeout(constants.TIMEOUT);
-        var augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
-        var comments = augur.comments;
+        this.timeout(TIMEOUT);
+        delete require.cache[require.resolve("../../src/client/comments")];
+        var comments = require("../../src/client/comments");
         comments.broadcastPin(ipfsHash, function (err, pinningNodes) {
             assert.isNull(err);
             assert.isArray(pinningNodes);
             assert.strictEqual(pinningNodes.length, comments.remoteNodes.length);
             assert.sameDeepMembers(pinningNodes, comments.remoteNodes);
-            assert.sameDeepMembers(pinningNodes, constants.IPFS_REMOTE);
+            assert.sameDeepMembers(pinningNodes, comments.constants.IPFS_REMOTE);
             done();
         });
     });
 
     it("graceful IPFS node failure", function (done) {
-        this.timeout(constants.TIMEOUT*4);
-        var augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
-        var comments = augur.comments;
+        this.timeout(TIMEOUT*4);
+        delete require.cache[require.resolve("../../src/client/comments")];
+        comments = require("../../src/client/comments");
         var badHost = "sfpi.rugua.net";
 
         // insert bad node manually into remoteNodes array
@@ -115,7 +122,7 @@ describe("Comments", function () {
         assert.strictEqual(comments.remoteNodeIndex, 0);
         assert.isArray(comments.remoteNodes);
         assert.strictEqual(comments.remoteNodes.length, 4);
-        assert.deepEqual(comments.remoteNodes, constants.IPFS_REMOTE);
+        assert.deepEqual(comments.remoteNodes, comments.constants.IPFS_REMOTE);
         comments.remoteNodes[0].host = badHost;
         comments.remote = comments.remoteNodes[0].host;
         assert.strictEqual(comments.remoteNodeIndex, 0);
@@ -135,16 +142,16 @@ describe("Comments", function () {
             function (res) {
                 assert.property(res, "txHash");
                 assert.strictEqual(res.callReturn, "1");
-                assert.strictEqual(res.from, augur.coinbase);
-                assert.strictEqual(res.to, augur.contracts.comments);
+                assert.strictEqual(res.from, comments.connector.from);
+                assert.strictEqual(res.to, comments.connector.contracts.comments);
                 assert.isAbove(Number(res.blockHash), 0);
                 assert.isAbove(Number(res.blockNumber), 0);
                 assert.strictEqual(Number(res.value), 0);
-                
+
                 // specify bad node as argument to useRemoteNode
                 comments.remoteNodeIndex = 0;
-                comments.remoteNodes = abi.copy(constants.IPFS_REMOTE);
-                assert.deepEqual(comments.remoteNodes, constants.IPFS_REMOTE);
+                comments.remoteNodes = abi.copy(comments.constants.IPFS_REMOTE);
+                assert.deepEqual(comments.remoteNodes, comments.constants.IPFS_REMOTE);
                 assert.strictEqual(comments.useRemoteNode({
                     host: badHost,
                     port: "443",
@@ -167,8 +174,8 @@ describe("Comments", function () {
                     function (res) {
                         assert.property(res, "txHash");
                         assert.strictEqual(res.callReturn, "1");
-                        assert.strictEqual(res.from, augur.coinbase);
-                        assert.strictEqual(res.to, augur.contracts.comments);
+                        assert.strictEqual(res.from, comments.connector.from);
+                        assert.strictEqual(res.to, comments.connector.contracts.comments);
                         assert.isAbove(Number(res.blockHash), 0);
                         assert.isAbove(Number(res.blockNumber), 0);
                         assert.strictEqual(Number(res.value), 0);

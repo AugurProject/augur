@@ -152,6 +152,9 @@ module.exports = function () {
                                 }
                             }
                             if (options.doNotFund) return cb(self.account);
+                            augur.comments.invoke = self.invoke;
+                            augur.comments.context = self;
+                            augur.comments.from = self.account.address;
                             self.fund(self.account, cb);
 
                         }); // augur.db.put
@@ -202,6 +205,9 @@ module.exports = function () {
                         if (options.persist) {
                             augur.db.putPersistent(self.account);
                         }
+                        augur.comments.invoke = self.invoke;
+                        augur.comments.context = self;
+                        augur.comments.from = self.account.address;
                         cb(self.account);
 
                     // decryption failure: bad password
@@ -233,6 +239,9 @@ module.exports = function () {
 
         logout: function () {
             this.account = {};
+            augur.comments.invoke = null;
+            augur.comments.context = augur.rpc;
+            augur.comments.from = null;
             augur.db.removePersistent();
             augur.rpc.clear();
         },

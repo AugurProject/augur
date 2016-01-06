@@ -1,5 +1,5 @@
 /**
- * Augur transaction objects
+ * Augur transactions
  */
 
 "use strict";

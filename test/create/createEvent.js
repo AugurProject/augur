@@ -51,7 +51,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                     var alpha = "0.0079";
                     var initialLiquidity = 10;
                     var tradingFee = "0.02";
-                    var events = [ r.callReturn ];
+                    var events = [r.callReturn];
                     var market_description = event_description;
 
                     augur.createMarket({
@@ -74,13 +74,13 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                             next();
                         },
                         onFailed: function (res) {
-                            next(res);
+                            next(new Error(utils.pp(res)));
                         }
                     }); // createMarket
                 
                 },
                 onFailed: function (r) {
-                    next(r);
+                    next(new Error(utils.pp(r)));
                 }
             }); // createEvent
 

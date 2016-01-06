@@ -5,181 +5,275 @@
 
 "use strict";
 
+var path = require("path");
 var assert = require("chai").assert;
 var contracts = require("augur-contracts");
-var utils = require("../../src/utilities");
-var constants = require("../../src/constants");
-var augurpath = "../../src/index";
-var augur = require(augurpath);
+var connector = require("../../src/connect");
+connector.debug = true;
+
+var TIMEOUT = 12000;
+var HOSTED_NODE = "0xaff9cb4dcb19d13b84761c040c91d21dc6c991ec";
 
 require('it-each')({ testPerIteration: true });
 
-beforeEach(function () { augur = utils.reset(augurpath); });
+describe("urlstring", function () {
 
-describe("augur.connect", function () {
-
-    var connectString = [
-        undefined,
-        "http://localhost:8545",
-        "http://localhost",
-        "localhost:8545",
-        "localhost",
-        "127.0.0.1:8545",
-        "127.0.0.1",
-        "http://127.0.0.1:8545",
-        "http://127.0.0.1"
-    ];
-    var connectObj = [
-        { host: "localhost", port: 8545, protocol: "http" },
-        { host: "localhost", port: 8545 },
-        { host: "localhost" },
-        { port: 8545 },
-        { host: "127.0.0.1" }
-    ];
-
-    if (!process.env.CONTINUOUS_INTEGRATION) {
-        it.each(
-            connectString,
-            "[sync] connect to %s",
-            ["element"],
-            function (element, next) {
-                this.timeout(constants.TIMEOUT);
-                assert.isTrue(augur.connect(element));
-                assert.isTrue(augur.connected());
-                assert.isString(augur.coinbase);
-                next();
-            }
-        );
-        it.each(
-            connectString,
-            "[async] connect to %s",
-            ["element"],
-            function (element, next) {
-                this.timeout(constants.TIMEOUT);
-                augur.connect(element, null, function (connected) {
-                    assert.isTrue(connected);
-                    assert.isString(augur.coinbase);
-                    next();
-                });
-            }
-        );
-        it.each(
-            connectObj,
-            "[sync] connect to {protocol: '%s', host: '%s', port: '%s'}",
-            ["protocol", "host", "port"],
-            function (element, next) {
-                this.timeout(constants.TIMEOUT);
-                assert.isTrue(augur.connect(element));
-                assert.isTrue(augur.connected());
-                assert.isString(augur.coinbase);
-                next();
-            }
-        );
-        it.each(
-            connectObj,
-            "[async] connect to {protocol: '%s', host: '%s', port: '%s'}",
-            ["protocol", "host", "port"],
-            function (element, next) {
-                this.timeout(constants.TIMEOUT);
-                augur.connect(element, null, function (connected) {
-                    assert.isTrue(connected);
-                    assert.isString(augur.coinbase);
-                    next();
-                });
-            }
-        );
-    }
-    if (!process.env.CONTINUOUS_INTEGRATION) {
-        it("should update the transaction object addresses when contracts are changed", function () {
-            this.timeout(constants.TIMEOUT);
-            var new_address = "0x01";
-            augur.contracts.branches = new_address;
-            augur.connect();
-            assert.strictEqual(augur.contracts.branches, new_address);
-            var newer_address = "0x02";
-            augur.contracts.branches = newer_address;
-            augur.connect();
-            assert.strictEqual(augur.contracts.branches, newer_address);
+    var test = function (t) {
+        it(JSON.stringify(t.object) + " -> " + t.string, function () {
+            assert.strictEqual(connector.urlstring(t.object), t.string);
         });
-        it("should switch to Ethereum testnet contract addresses", function (done) {
-            this.timeout(constants.TIMEOUT);
-            assert(augur.connect());
-            assert(augur.contracts.branches, contracts["0"].branches);
-            assert(augur.contracts.createMarket, contracts["0"].createMarket);
-            assert(augur.connect("http://localhost:8545"));
-            assert(augur.contracts.branches, contracts["0"].branches);
-            assert(augur.contracts.createMarket, contracts["0"].createMarket);
-            assert(augur.connect({ host: "localhost", port: 8545, chain: null }));
-            assert(augur.contracts.branches, contracts["0"].branches);
-            assert(augur.contracts.createMarket, contracts["0"].createMarket);
-            assert(augur.connect({ host: "127.0.0.1" }));
-            assert(augur.contracts.branches, contracts["0"].branches);
-            assert(augur.contracts.createMarket, contracts["0"].createMarket);
+    };
+
+    test({
+        object: {host: "localhost", port: 8545, protocol: "http"},
+        string: "http://localhost:8545"
+    });
+    test({
+        object: {host: "localhost", port: 8545},
+        string: "http://localhost:8545"
+    });
+    test({
+        object: {host: "localhost"},
+        string: "http://localhost"
+    });
+    test({
+        object: {port: 8545},
+        string: "http://127.0.0.1:8545"
+    });
+    test({
+        object: {host: "127.0.0.1"},
+        string: "http://127.0.0.1"
+    });
+    test({
+        object: {host: "eth1.augur.net"},
+        string: "http://eth1.augur.net"
+    });
+    test({
+        object: {host: "eth1.augur.net", protocol: "https"},
+        string: "https://eth1.augur.net"
+    });
+    test({
+        object: {host: "127.0.0.1", port: 8547, protocol: "https"},
+        string: "https://127.0.0.1:8547"
+    });
+});
+
+describe("has_value", function () {
+
+    var test = function (t) {
+        it(JSON.stringify(t.object) + " has value " + t.value + " -> " + t.expected, function () {
+            assert.strictEqual(connector.has_value(t.object, t.value), t.expected);
+        });
+    };
+
+    test({
+        object: {"augur": 42},
+        value: 42,
+        expected: "augur"
+    });
+    test({
+        object: {"augur": 42},
+        value: "augur",
+        expected: undefined
+    });
+    test({
+        object: {"augur": 42},
+        value: 41,
+        expected: undefined
+    });
+    test({
+        object: {"augur": 42, "whee": "thereum"},
+        value: "thereum",
+        expected: "whee"
+    });
+    test({
+        object: {"augur": 42, "whee": "thereum"},
+        value: 42,
+        expected: "augur"
+    });
+    test({
+        object: {"augur": 42, "whee": "thereum"},
+        value: "42",
+        expected: undefined
+    });
+    test({
+        object: {"augur": 42, "whee": "thereum"},
+        value: "whee",
+        expected: undefined
+    });
+    test({
+        object: {"augur": 42, "whee": "thereum"},
+        value: -42,
+        expected: undefined
+    });
+    test({
+        object: {"augur": 42, "whee": "thereum"},
+        value: undefined,
+        expected: undefined
+    });
+    test({
+        object: {"augur": 42, "whee": "thereum"},
+        value: null,
+        expected: undefined
+    });
+    test({
+        object: {"augur": null, "whee": "thereum"},
+        value: null,
+        expected: "augur"
+    });
+    test({
+        object: {"augur": 42, "whee": "thereum"},
+        value: "0x42",
+        expected: undefined
+    });
+    test({
+        object: {},
+        value: null,
+        expected: undefined
+    });
+    test({
+        object: {},
+        value: undefined,
+        expected: undefined
+    });
+    test({
+        object: {},
+        value: 0,
+        expected: undefined
+    });
+});
+
+describe("connect", function () {
+
+    beforeEach(function () {
+        delete require.cache[require.resolve("../../src/connect")];
+        connector = require("../../src/connect");
+    });
+
+    describe("hosted nodes", function () {
+
+        var test = function (url) {
+            it(url, function () {
+                assert.isTrue(connector.connect(this.test.title));
+                assert.strictEqual(connector.coinbase, HOSTED_NODE);
+            });
+        };
+
+        test("https://eth1.augur.net");
+        test("https://eth3.augur.net");
+        test("https://eth4.augur.net");
+        test("https://eth5.augur.net");
+    });
+
+    if (!process.env.CONTINUOUS_INTEGRATION) {
+        describe("local node", function () {
+            var connectString = [
+                undefined,
+                "http://localhost:8545",
+                "localhost:8545",
+                "127.0.0.1:8545",
+                "http://127.0.0.1:8545"
+            ];
+            var connectObj = [
+                {host: "localhost", port: 8545, protocol: "http"},
+                {host: "localhost", port: 8545},
+                {port: 8545},
+            ];
+            it.each(
+                connectString,
+                "[sync] connect to %s",
+                ["element"],
+                function (element, next) {
+                    this.timeout(TIMEOUT);
+                    assert.isTrue(connector.connect(element));
+                    assert.isTrue(connector.connected());
+                    assert.isString(connector.coinbase);
+                    next();
+                }
+            );
+            it.each(
+                connectString,
+                "[async] connect to %s",
+                ["element"],
+                function (element, next) {
+                    this.timeout(TIMEOUT);
+                    connector.connect(element, null, function (connected) {
+                        assert.isTrue(connected);
+                        assert.isString(connector.coinbase);
+                        next();
+                    });
+                }
+            );
+            it.each(
+                connectObj,
+                "[sync] connect to {protocol: '%s', host: '%s', port: '%s'}",
+                ["protocol", "host", "port"],
+                function (element, next) {
+                    this.timeout(TIMEOUT);
+                    assert.isTrue(connector.connect(element));
+                    assert.isTrue(connector.connected());
+                    assert.isString(connector.coinbase);
+                    next();
+                }
+            );
+            it.each(
+                connectObj,
+                "[async] connect to {protocol: '%s', host: '%s', port: '%s'}",
+                ["protocol", "host", "port"],
+                function (element, next) {
+                    this.timeout(TIMEOUT);
+                    connector.connect(element, null, function (connected) {
+                        assert.isTrue(connected);
+                        assert.isString(connector.coinbase);
+                        next();
+                    });
+                }
+            );
+        });
+        it("update the transaction object addresses when contracts are changed", function () {
+            this.timeout(TIMEOUT);
+            var new_address = "0x01";
+            connector.contracts.branches = new_address;
+            connector.connect();
+            assert.strictEqual(connector.contracts.branches, new_address);
+            var newer_address = "0x02";
+            connector.contracts.branches = newer_address;
+            connector.connect();
+            assert.strictEqual(connector.contracts.branches, newer_address);
+        });
+        it("switch to Ethereum testnet contract addresses", function (done) {
+            this.timeout(TIMEOUT);
+            assert(connector.connect());
+            assert(connector.contracts.branches, contracts["0"].branches);
+            assert(connector.contracts.createMarket, contracts["0"].createMarket);
+            assert(connector.connect("http://localhost:8545"));
+            assert(connector.contracts.branches, contracts["0"].branches);
+            assert(connector.contracts.createMarket, contracts["0"].createMarket);
+            assert(connector.connect({ host: "localhost", port: 8545, chain: null }));
+            assert(connector.contracts.branches, contracts["0"].branches);
+            assert(connector.contracts.createMarket, contracts["0"].createMarket);
+            assert(connector.connect({ host: "127.0.0.1" }));
+            assert(connector.contracts.branches, contracts["0"].branches);
+            assert(connector.contracts.createMarket, contracts["0"].createMarket);
             done();
         });
-    }
-    it("should connect successfully to 'http://www.poc9.com:8545'", function () {
-        this.timeout(constants.TIMEOUT);
-        assert(augur.connect("http://www.poc9.com:8545"));
-        assert.strictEqual(augur.coinbase, augur.demo);
-    });
-    it("should connect successfully to 'http://69.164.196.239:8545'", function () {
-        this.timeout(constants.TIMEOUT);
-        assert(augur.connect("http://69.164.196.239:8545"));
-        assert.strictEqual(augur.coinbase, augur.demo);
-    });
-    it("should connect successfully to '69.164.196.239:8545'", function () {
-        this.timeout(constants.TIMEOUT);
-        assert(augur.connect("69.164.196.239:8545"));
-        assert.strictEqual(augur.coinbase, augur.demo);
-    });
-    it("should connect successfully to '69.164.196.239'", function () {
-        this.timeout(constants.TIMEOUT);
-        assert(augur.connect("69.164.196.239"));
-        assert.strictEqual(augur.coinbase, augur.demo);
-    });
-    it("should connect successfully to 'http://poc9.com'", function () {
-        this.timeout(constants.TIMEOUT);
-        assert(augur.connect("http://poc9.com"));
-        assert.strictEqual(augur.coinbase, augur.demo);
-    });
-    it("should connect successfully to 'poc9.com:8545'", function () {
-        this.timeout(constants.TIMEOUT);
-        assert(augur.connect("poc9.com:8545"));
-        assert.strictEqual(augur.coinbase, augur.demo);
-    });
-    it("should connect successfully to 'www.poc9.com:8545'", function () {
-        this.timeout(constants.TIMEOUT);
-        assert(augur.connect("www.poc9.com:8545"));
-        assert.strictEqual(augur.coinbase, augur.demo);
-    });
-    it("should connect successfully to 'www.poc9.com'", function () {
-        this.timeout(constants.TIMEOUT);
-        assert(augur.connect("www.poc9.com"));
-        assert.strictEqual(augur.coinbase, augur.demo);
-    });
-    it("should connect successfully to 'poc9.com'", function () {
-        this.timeout(constants.TIMEOUT);
-        assert(augur.connect("poc9.com"));
-        assert.strictEqual(augur.coinbase, augur.demo);
-    });
-    it("should connect successfully with no parameters and reset the RPC settings", function () {
-        this.timeout(constants.TIMEOUT);
-        assert(augur.connect());
-        assert(augur.coinbase);
-    });
-    it("should be on network 0, 10101, or 7", function () {
-        assert(augur.network_id === "0" ||
-               augur.network_id === "1" ||
-               augur.network_id === "10101" ||
-               augur.network_id === "7");
-    });
-    if (!process.env.CONTINUOUS_INTEGRATION) {
-        it("should be unlocked", function () {
-            augur.connect("http://127.0.0.1:8545");
-            if (augur.rpc.nodes.local) {
-                assert.isTrue(augur.rpc.unlocked(augur.coinbase));
+        it("unlocked", function () {
+            connector.connect("http://127.0.0.1:8545");
+            if (connector.rpc.nodes.local) {
+                assert.isTrue(connector.rpc.unlocked(connector.coinbase));
             }
         });
     }
+
+    it("should connect successfully with no parameters and reset the RPC settings", function () {
+        this.timeout(TIMEOUT);
+        assert(connector.connect());
+        assert(connector.coinbase);
+    });
+    it("should be on network 0, 10101, or 7", function () {
+        assert(connector.network_id === "0" ||
+               connector.network_id === "1" ||
+               connector.network_id === "10101" ||
+               connector.network_id === "7");
+    });
 });

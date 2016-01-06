@@ -168,10 +168,6 @@ module.exports = {
         return require(mod);
     },
 
-    urlstring: function (obj) {
-        return (obj.protocol || "http") + "://" + (obj.host || "127.0.0.1") + ":" + (obj.port || 8545);
-    },
-
     gteq0: function (n) { return (new BigNumber(n)).toNumber() >= 0; },
 
     print_matrix: function (m) {
