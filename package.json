@@ -39,6 +39,7 @@
     "bignumber.js": "^2.1.4",
     "bootstrap": "^3.3.4",
     "browserify": "^10.2.6",
+    "chalk": "^1.1.1",
     "envify": "^3.4.0",
     "fbjs": "^0.5.1",
     "fluxxor": "^1.6.0",

@@ -415,6 +415,7 @@ nav.header .menu a:hover {
 .account-info .account {
     font-family: "Amaranth";
     font-size: 15pt;
+    word-wrap: break-word;
 }
 .account-info ul {
     list-style-type: none;
