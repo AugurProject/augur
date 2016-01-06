@@ -96,7 +96,7 @@ var Overview = React.createClass({
         <div className="account-info">
           <h4>Account</h4>
           <div className="row">
-            <div className="col-sm-6">
+            <div className="col-sm-12">
               <span className="account">{this.state.account}</span>
             </div>
             <div className="col-sm-2">
