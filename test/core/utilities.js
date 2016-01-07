@@ -1,4 +1,3 @@
-(function () {
 /**
  * augur.js unit tests
  * @author Jack Peterson (jack@tinybike.net)
@@ -10,7 +9,6 @@ var assert = require("chai").assert;
 var chalk = require("chalk");
 var constants = require("../../src/constants");
 var utils = require("../../src/utilities");
-var log = console.log;
 
 require('it-each')({ testPerIteration: true });
 
@@ -50,7 +48,7 @@ describe("utilities.is_function", function () {
     };
 
     function ima_function() {
-        log("I'm a function!");
+        console.log("I'm a function!");
     }
 
     test({
@@ -75,7 +73,7 @@ describe("utilities.is_function", function () {
     });
     test({
         label: "anonymous function",
-        input: function () { log("hello world!"); },
+        input: function () { console.log("hello world!"); },
         expected: true
     });
     test({
@@ -266,5 +264,3 @@ describe("utilities.unpack", function () {
     });
 
 });
-
-})();

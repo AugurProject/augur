@@ -12,8 +12,7 @@ var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
 var rpc = require("ethrpc");
 var contracts = require("augur-contracts");
-var connector = require("./connect");
-var Tx = require("./tx");
+var connector = require("ethereumjs-connect");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 

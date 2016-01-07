@@ -22,7 +22,6 @@ runtest()
 reporter="progress"
 gospel=''
 coverage=0
-connect=0
 core=0
 create=0
 markets=0
@@ -35,7 +34,6 @@ for arg in "$@"; do
     case "$arg" in
         "--gospel") set -- "$@" "-g" ;;
         "--coverage") set -- "$@" "-v" ;;
-        "--connect") set -- "$@" "-n" ;;
         "--core") set -- "$@" "-c" ;;
         "--create") set -- "$@" "-r" ;;
         "--markets") set -- "$@" "-m" ;;
@@ -47,11 +45,10 @@ for arg in "$@"; do
     esac
 done
 OPTIND=1
-while getopts "gvoncrmsalk" opt; do
+while getopts "gvocrmsalk" opt; do
     case "$opt" in
         g) gospel="--gospel" ;;
         v) coverage=1 ;;
-        n) connect=1 ;;
         c) core=1 ;;
         r) create=1 ;;
         m) markets=1 ;;
@@ -67,7 +64,6 @@ echo -e "+${GRAY}================${NC}+"
 echo -e "${GRAY}| \033[1;35maugur.js${NC} tests ${GRAY}|${NC}"
 echo -e "+${GRAY}================${NC}+\n"
 
-[ "${connect}" == "1" ] && runtest "connect"
 [ "${create}" == "1" ] && runtest "create"
 [ "${markets}" == "1" ] && runtest "markets"
 [ "${core}" == "1" ] && runtest "core"

@@ -11,9 +11,9 @@ var async = require("async");
 var multihash = require("multi-hash");
 var abi = require("augur-abi");
 var rpc = require("ethrpc");
+var connector = require("ethereumjs-connect");
 var errors = require("augur-contracts").errors;
 var constants = require("../constants");
-var connector = require("../connect");
 var ipfsAPI;
 if (global) {
     ipfsAPI = global.ipfsAPI || require("ipfs-api");
