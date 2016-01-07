@@ -11,6 +11,7 @@ var async = require("async");
 var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
 var rpc = require("ethrpc");
+var ramble = require("ramble");
 var contracts = require("augur-contracts");
 var connector = require("ethereumjs-connect");
 
@@ -30,7 +31,7 @@ function Augur() {
     this.utils = require("./utilities");
     this.constants = require("./constants");
     this.db = require("./client/db");
-    this.comments = require("./client/comments");
+    this.comments = ramble;
     this.comments.connector = connector;
     this.errors = contracts.errors;
 
