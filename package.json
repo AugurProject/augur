@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "0.13.3",
+  "version": "0.13.4",
   "description": "Augur JavaScript API",
   "main": "src/index.js",
   "scripts": {
@@ -29,9 +29,6 @@
     "node-uuid": "^1.4.3",
     "ramble": "^0.1.0",
     "validator": "^4.0.2"
-  },
-  "browser": {
-    "ipfs-api": false
   },
   "engines": {
     "node": ">= 4.2.x"
