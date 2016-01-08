@@ -1,6 +1,7 @@
 var React = require('react');
 var Fluxxor = require("fluxxor");
 var keys = require("keythereum");
+var uuid = require("node-uuid");
 var FluxMixin = Fluxxor.FluxMixin(React);
 var ReactBootstrap = require('react-bootstrap');
 var Button = ReactBootstrap.Button;
