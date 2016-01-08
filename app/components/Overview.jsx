@@ -102,7 +102,7 @@ var Overview = React.createClass({
       }
       return (
         <div id="overview">
-          <div className="account-success">
+          <div className="account-info">
             <h4>Account</h4>
             <div className="row">
               {importAccountButton}
@@ -136,39 +136,39 @@ var Overview = React.createClass({
       });
     }, this);
 
-    var exportAccountButton;
+    var exportAccountButton = (
+      <div className="col-sm-3">
+        <Button
+          disabled
+          className="send-button btn-success">
+          Export Account
+        </Button>
+      </div>
+    );
     if (this.state.privateKey) {
       var keystore = augur.web.exportKey();
-      var accountFilename = "UTC--" + new Date().toISOString() + "--" + keystore.address;
-      var accountUrl = URL.createObjectURL(new Blob([
-        JSON.stringify(keystore)
-      ], {type: "application/json"}));
-      exportAccountButton = (
-        <div className="col-sm-3">
-          <a
-            download={accountFilename}
-            href={accountUrl}
-            className="send-button btn-success btn btn-default">
-            Export to File
-          </a>
-        </div>
-      );
-    } else {
-      exportAccountButton = (
-        <div className="col-sm-3">
-          <Button
-            disabled
-            className="send-button btn-success">
-            Export to File
-          </Button>
-        </div>
-      );
+      if (keystore) {
+        var accountFilename = "UTC--" + new Date().toISOString() + "--" + keystore.address;
+        var accountUrl = URL.createObjectURL(new Blob([
+          JSON.stringify(keystore)
+        ], {type: "application/json"}));
+        exportAccountButton = (
+          <div className="col-sm-3">
+            <a
+              download={accountFilename}
+              href={accountUrl}
+              className="send-button btn-success btn btn-default">
+              Export Account
+            </a>
+          </div>
+        );
+      }
     }
 
     var accountSection = <span />
     if (this.state.account) {
       accountSection = (
-        <div className="account-success">
+        <div className="account-info">
           <h4>Account</h4>
           <div className="row">
             <div className="col-sm-6">
