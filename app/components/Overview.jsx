@@ -113,6 +113,10 @@ var Overview = React.createClass({
               {trendingMarketsSection}
             </div>
           </div>
+          <ImportAccountModal
+            params={{keystore: this.state.importKeystore}}
+            show={this.state.importAccountModalOpen}
+            onHide={this.toggleImportAccountModal} />
         </div>
       );
     }

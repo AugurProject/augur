@@ -31,15 +31,14 @@ var SignInModal = React.createClass({
       var handle = this.state.handle;
       var password = this.state.password;
       var options = {persist: this.state.persist};
-      var address = abi.prefix_hex(keystore.address);
       var keystore = this.props.params.keystore;
+      var address = abi.prefix_hex(keystore.address);
       var flux = this.getFlux();
       var self = this;
       keys.recover(password, keystore, function (privateKey) {
         if (!privateKey || privateKey.error) {
           return console.error("onImportAccount keys.recover:", privateKey);
         }
-        console.log("recovered private key:", privateKey.toString("hex"));
         var account = {
             ciphertext: abi.prefix_hex(keystore.Crypto.ciphertext),
             iv: abi.prefix_hex(keystore.Crypto.cipherparams.iv),
@@ -114,15 +113,11 @@ var SignInModal = React.createClass({
   },
 
   render: function () {
-    console.log("params:", this.props.params);
-
     var handleStyle = this.state.handleHelp ? 'error' : null;
     var passwordStyle = this.state.passwordHelp ? 'error' : null;
-
     var submit = (
       <Button bsStyle='primary' onClick={this.onImportAccount}>Import</Button>
     );
-
     return (
       <Modal {...this.props} className='send-modal' bsSize='small'>
         <div className='modal-body clearfix'>
