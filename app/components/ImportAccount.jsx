@@ -9,7 +9,7 @@ var Input = ReactBootstrap.Input;
 var Modal = ReactBootstrap.Modal;
 var utilities = require('../libs/utilities');
 
-var SignInModal = React.createClass({
+var ImportAccountModal = React.createClass({
 
   mixins: [FluxMixin],
 
@@ -159,4 +159,4 @@ var SignInModal = React.createClass({
   }
 });
 
-module.exports = SignInModal;
+module.exports = ImportAccountModal;
