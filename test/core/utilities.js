@@ -223,7 +223,7 @@ describe("utilities.labels", function () {
             var expected = ['a', 'b', 'c', "onSent", "onSuccess", "onFailed"];
             assert.deepEqual(params, expected);
         };
-        fn('x', 'y', 'z', log, log, log);
+        fn('x', 'y', 'z', console.log, console.log, console.log);
     });
 
 });
@@ -238,7 +238,7 @@ describe("utilities.unpack", function () {
         assert.strictEqual(unpacked.params.length, 4);
         assert.strictEqual(unpacked.cb.length, 3);
         assert.deepEqual(unpacked.params, ['w', 'x', 'y', 'z']);
-        assert.deepEqual(unpacked.cb, [log, log, log]);
+        assert.deepEqual(unpacked.cb, [console.log, console.log, console.log]);
     };
 
     it("should unpack object argument", function () {
@@ -250,9 +250,9 @@ describe("utilities.unpack", function () {
             b: 'x',
             c: 'y',
             d: 'z',
-            onSent: log,
-            onSuccess: log,
-            onFailed: log
+            onSent: console.log,
+            onSuccess: console.log,
+            onFailed: console.log
         });
     });
 
@@ -260,7 +260,7 @@ describe("utilities.unpack", function () {
         var fn = function (a, b, c, d, onSent, onSuccess, onFailed) {
             test(utils.unpack(a, utils.labels(fn), arguments));
         };
-        fn('w', 'x', 'y', 'z', log, log, log);
+        fn('w', 'x', 'y', 'z', console.log, console.log, console.log);
     });
 
 });
