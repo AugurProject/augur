@@ -21,7 +21,11 @@ var Branch = require('./Branch');
 
 var Overview = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin('market'), Router.Navigation],
+  mixins: [
+    FluxMixin,
+    StoreWatchMixin('market', 'config', 'branch'),
+    Router.Navigation
+  ],
 
   getInitialState: function () {
     return {
