@@ -107221,8 +107221,8 @@ var utils = require("../utilities");
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
-keys.constants.pbkdf2.c = 65536;
-keys.constants.scrypt.n = 65536;
+keys.constants.pbkdf2.c = constants.ROUNDS;
+keys.constants.scrypt.n = constants.ROUNDS;
 
 module.exports = function () {
 
@@ -107322,10 +107322,17 @@ module.exports = function () {
                         // encrypt private key using derived key and IV, then
                         // store encrypted key & IV, indexed by handle
                         var accountData = {
-                            encryptedPrivateKey: abi.prefix_hex(encryptedPrivateKey), // 256-bit
+                            ciphertext: abi.prefix_hex(encryptedPrivateKey), // 256-bit
                             iv: abi.prefix_hex(plain.iv.toString("hex")), // 128-bit
-                            salt: abi.prefix_hex(plain.salt.toString("hex")), // 256-bit
                             mac: abi.prefix_hex(mac), // 256-bit
+                            cipher: keys.constants.cipher,
+                            kdf: constants.KDF,
+                            kdfparams: {
+                                c: keys.constants[constants.KDF].c,
+                                dklen: keys.constants[constants.KDF].dklen,
+                                prf: keys.constants[constants.KDF].prf,
+                                salt: abi.prefix_hex(plain.salt.toString("hex")) // 256-bit
+                            },
                             id: abi.prefix_hex(id.toString("hex")), // 128-bit
                             persist: options.persist // bool
                         };
@@ -107342,10 +107349,14 @@ module.exports = function () {
                             }
 
                             // set web.account object
+                            delete accountData.privateKey;
+                            delete accountData.address;
+                            delete accountData.persist;
                             self.account = {
                                 handle: handle,
                                 privateKey: plain.privateKey,
-                                address: address
+                                address: address,
+                                keystore: accountData
                             };
 
                             if (cb.constructor === Array) {
@@ -107385,11 +107396,11 @@ module.exports = function () {
                 if (!stored || stored.error) return cb(errors.BAD_CREDENTIALS);
 
                 // derive secret key from password
-                keys.deriveKey(password, stored.salt, null, function (derived) {
+                keys.deriveKey(password, stored.kdfparams.salt, null, function (derived) {
                     if (!derived || derived.error) return cb(errors.BAD_CREDENTIALS);
 
                     // verify that message authentication codes match
-                    var storedKey = stored.privateKey;
+                    var storedKey = stored.ciphertext;
                     if (keys.getMAC(derived, storedKey) !== stored.mac.toString("hex")) {
                         return cb(errors.BAD_CREDENTIALS);
                     }
@@ -107403,10 +107414,19 @@ module.exports = function () {
                         ), "hex");
 
                         // while logged in, web.account object is set
+                        var address = abi.format_address(keys.privateKeyToAddress(dk));
+                        delete stored.handle;
+                        stored.ciphertext = stored.ciphertext.toString("hex");
+                        stored.address = abi.strip_0x(address);
+                        stored.iv = stored.iv.toString("hex");
+                        stored.kdfparams.salt = stored.kdfparams.salt.toString("hex");
+                        stored.mac = stored.mac.toString("hex");
+                        stored.id = uuid.unparse(stored.id);
                         self.account = {
                             handle: handle,
                             privateKey: dk,
-                            address: abi.format_address(keys.privateKeyToAddress(dk))
+                            address: address,
+                            keystore: stored
                         };
                         if (options.persist) {
                             augur.db.putPersistent(self.account);
@@ -107432,6 +107452,30 @@ module.exports = function () {
                 this.account = account;
             }
             return account;
+        },
+
+        exportKey: function () {
+            if (!this.account || !this.account.address || !this.account.privateKey) {
+                return errors.NOT_LOGGED_IN;
+            }
+            return {
+                address: abi.strip_0x(this.account.keystore.address),
+                Crypto: {
+                    cipher: this.account.keystore.cipher,
+                    ciphertext: this.account.keystore.ciphertext.toString("hex"),
+                    cipherparams: {iv: this.account.keystore.iv.toString("hex")},
+                    mac: this.account.keystore.mac.toString("hex"),
+                    kdf: this.account.keystore.kdf,
+                    kdfparams: {
+                        c: parseInt(this.account.keystore.kdfparams.c),
+                        dklen: parseInt(this.account.keystore.kdfparams.dklen),
+                        prf: this.account.keystore.kdfparams.prf,
+                        salt: this.account.keystore.kdfparams.salt.toString("hex")
+                    }
+              },
+              id: this.account.keystore.id,
+              version: 3
+            };
         },
 
         importKey: function (password, json, cb) {
@@ -107595,10 +107639,12 @@ module.exports = {
         if (label !== null && label !== undefined && label !== '' && data) {
             var account = {
                 label: abi.prefix_hex(utils.sha256(label)),
-                privateKey: data.encryptedPrivateKey,
+                ciphertext: data.ciphertext,
                 iv: abi.pad_left(data.iv, 32, true),
-                salt: data.salt,
                 mac: data.mac,
+                cipher: data.cipher,
+                kdf: data.kdf,
+                kdfparams: data.kdfparams,
                 id: abi.pad_left(data.id, 32, true)
             };
             localStorage.setItem(account.label, JSON.stringify(account));
@@ -107642,12 +107688,19 @@ module.exports = {
             if (item !== null) {
                 try {
                     item = JSON.parse(item);
-                    if (item && item.constructor === Object && item.privateKey) {
+                    if (item && item.constructor === Object && item.ciphertext) {
                         account = {
                             handle: label,
-                            privateKey: new Buffer(abi.unfork(item.privateKey), "hex"),
+                            cipher: item.cipher,
+                            ciphertext: new Buffer(abi.unfork(item.ciphertext), "hex"),
                             iv: new Buffer(abi.pad_left(item.iv, 32), "hex"),
-                            salt: new Buffer(abi.unfork(item.salt), "hex"),
+                            kdf: item.kdf,
+                            kdfparams: {
+                                c: parseInt(item.kdfparams.c),
+                                dklen: parseInt(item.kdfparams.dklen),
+                                salt: new Buffer(abi.unfork(item.kdfparams.salt), "hex"),
+                                prf: item.kdfparams.prf
+                            },
                             mac: new Buffer(abi.unfork(item.mac), "hex"),
                             id: new Buffer(abi.pad_left(item.id, 32), "hex")
                         };
@@ -107737,14 +107790,14 @@ module.exports = {
     // unit test timeout
     TIMEOUT: 600000,
 
+    KDF: "pbkdf2",
+    ROUNDS: 262144,
     KEYSIZE: 32,
     IVSIZE: 16,
-
     IPFS_LOCAL: {host: "localhost", port: "5001", protocol: "http"},
     IPFS_REMOTE: [
         {host: "ipfs1.augur.net", port: "443", protocol: "https"},
         {host: "ipfs2.augur.net", port: "443", protocol: "https"},
-        // {host: "ipfs3.augur.net", port: "443", protocol: "https"},
         {host: "ipfs4.augur.net", port: "443", protocol: "https"},
         {host: "ipfs5.augur.net", port: "443", protocol: "https"}
     ],

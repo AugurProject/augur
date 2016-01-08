@@ -8,7 +8,7 @@
 var crypto = require("crypto");
 var assert = require("chai").assert;
 var chalk = require("chalk");
-var keythereum = require("keythereum");
+var keys = require("keythereum");
 var EthTx = require("ethereumjs-tx");
 var EthUtil = require("ethereumjs-util");
 var abi = require("augur-abi");
@@ -18,7 +18,7 @@ var augur = utils.setup(require("../../src"), process.argv.slice(2));
 
 // generate random private key
 var privateKey = crypto.randomBytes(32);
-var address = keythereum.privateKeyToAddress(privateKey);
+var address = keys.privateKeyToAddress(privateKey);
 
 // generate random handles and passwords
 var handle = utils.sha256(new Date().toString());
@@ -60,9 +60,9 @@ describe("Register", function () {
                         return done(rec);
                     }
                     assert(!rec.error);
-                    assert(rec.privateKey);
+                    assert(rec.ciphertext);
                     assert(rec.iv);
-                    assert(rec.salt);
+                    assert(rec.kdfparams.salt);
                     assert.strictEqual(
                         new Buffer(rec.iv, "base64")
                             .toString("hex")
@@ -70,13 +70,13 @@ describe("Register", function () {
                         constants.IVSIZE*2
                     );
                     assert.strictEqual(
-                        new Buffer(rec.salt, "base64")
+                        new Buffer(rec.kdfparams.salt, "base64")
                             .toString("hex")
                             .length,
                         constants.KEYSIZE*2
                     );
                     assert.strictEqual(
-                        new Buffer(rec.privateKey, "base64")
+                        new Buffer(rec.ciphertext, "base64")
                             .toString("hex")
                             .length,
                         constants.KEYSIZE*2
@@ -112,9 +112,9 @@ describe("Register", function () {
                         return done(rec);
                     }
                     assert(!rec.error);
-                    assert(rec.privateKey);
+                    assert(rec.ciphertext);
                     assert(rec.iv);
-                    assert(rec.salt);
+                    assert(rec.kdfparams.salt);
                     assert.strictEqual(
                         new Buffer(rec.iv, "base64")
                             .toString("hex")
@@ -122,13 +122,13 @@ describe("Register", function () {
                         constants.IVSIZE*2
                     );
                     assert.strictEqual(
-                        new Buffer(rec.salt, "base64")
+                        new Buffer(rec.kdfparams.salt, "base64")
                             .toString("hex")
                             .length,
                         constants.KEYSIZE*2
                     );
                     assert.strictEqual(
-                        new Buffer(rec.privateKey, "base64")
+                        new Buffer(rec.ciphertext, "base64")
                             .toString("hex")
                             .length,
                         constants.KEYSIZE*2
@@ -167,9 +167,9 @@ describe("Register", function () {
                         return done(rec);
                     }
                     assert(!rec.error);
-                    assert(rec.privateKey);
+                    assert(rec.ciphertext);
                     assert(rec.iv);
-                    assert(rec.salt);
+                    assert(rec.kdfparams.salt);
                     assert.strictEqual(
                         new Buffer(rec.iv, "base64")
                             .toString("hex")
@@ -177,13 +177,13 @@ describe("Register", function () {
                         constants.IVSIZE*2
                     );
                     assert.strictEqual(
-                        new Buffer(rec.salt, "base64")
+                        new Buffer(rec.kdfparams.salt, "base64")
                             .toString("hex")
                             .length,
                         constants.KEYSIZE*2
                     );
                     assert.strictEqual(
-                        new Buffer(rec.privateKey, "base64")
+                        new Buffer(rec.ciphertext, "base64")
                             .toString("hex")
                             .length,
                         constants.KEYSIZE*2
@@ -237,7 +237,7 @@ describe("Login", function () {
         augur.web.login(handle, password, function (user) {
             if (user.error) {
                 augur.web.logout();
-                return done(user);
+                return done(new Error(utils.pp(user)));
             }
             assert(!user.error);
             assert(user.privateKey);
@@ -258,7 +258,7 @@ describe("Login", function () {
         augur.web.login(handle, password, {persist: true}, function (user) {
             if (user.error) {
                 augur.web.logout();
-                return done(user);
+                return done(new Error(utils.pp(user)));
             }
             assert(!user.error);
             assert(user.privateKey);
@@ -283,7 +283,7 @@ describe("Login", function () {
         augur.web.login(handle, password, function (user) {
             if (user.error) {
                 augur.web.logout();
-                return done(user);
+                return done(new Error(utils.pp(user)));
             }
             assert(user.privateKey);
             assert(user.address);
@@ -368,6 +368,49 @@ describe("Login", function () {
 
 });
 
+describe("Export key", function () {
+
+    it("export keystore object", function (done) {
+        this.timeout(constants.TIMEOUT);
+        augur.web.login(handle, password, function (user) {
+            if (user.error) {
+                augur.web.logout();
+                return done(new Error(utils.pp(user)));
+            }
+            assert(user.privateKey);
+            assert(user.address);
+            assert.strictEqual(
+                user.privateKey.toString("hex").length,
+                constants.KEYSIZE*2
+            );
+            assert.strictEqual(user.address.length, 42);
+            var keystore = augur.web.exportKey();
+            assert.strictEqual(keystore.address, abi.strip_0x(user.address));
+            assert.strictEqual(keystore.Crypto.cipher, keys.constants.cipher);
+            assert.strictEqual(keystore.Crypto.kdf, constants.KDF);
+            assert.strictEqual(keystore.Crypto.kdfparams.dklen, constants.KEYSIZE);
+            if (keystore.Crypto.kdf === "pbkdf2") {
+                assert.strictEqual(keystore.Crypto.kdfparams.c, constants.ROUNDS);
+                assert.strictEqual(keystore.Crypto.kdfparams.prf, keys.constants.pbkdf2.prf);
+            } else if (keystore.Crypto.kdf === "scrypt") {
+                assert.strictEqual(keystore.Crypto.kdfparams.n, constants.ROUNDS);
+                assert.strictEqual(keystore.Crypto.kdfparams.r, keys.constants.scrypt.r);
+                assert.strictEqual(keystore.Crypto.kdfparams.p, keys.constants.scrypt.p);
+            }
+            augur.db.get(handle, function (account) {
+                assert.isObject(account);
+                assert.strictEqual(account.handle, handle);
+                assert.strictEqual(account.ciphertext.toString("hex"), keystore.Crypto.ciphertext);
+                assert.strictEqual(account.iv.toString("hex"), keystore.Crypto.cipherparams.iv);
+                assert.strictEqual(account.kdf, keystore.Crypto.kdf);
+                assert.strictEqual(account.kdfparams.salt.toString("hex"), keystore.Crypto.kdfparams.salt);
+                done();
+            });
+        });
+    });
+
+});
+
 describe("Persist", function () {
 
     it("use a stored (persistent) account", function () {
@@ -408,7 +451,7 @@ describe("Logout", function () {
         augur.web.login(handle, password, function (user) {
             if (user.error) {
                 augur.web.logout();
-                return done(user);
+                return done(new Error(utils.pp(user)));
             }
             assert.strictEqual(user.handle, handle);
             for (var i = 0; i < 2; ++i) {
@@ -576,7 +619,7 @@ describe("Contract methods", function () {
                 augur.web.login(handle, password, function (user) {
                     if (user.error) {
                         augur.web.logout();
-                        return done(user);
+                        return done(new Error(utils.pp(user)));
                     }
                     assert.strictEqual(
                         user.address,
@@ -636,7 +679,7 @@ describe("Contract methods", function () {
             augur.web.login(handle, password, function (user) {
                 if (user.error) {
                     augur.web.logout();
-                    return done(user);
+                    return done(new Error(utils.pp(user)));
                 }
                 assert.strictEqual(
                     user.address,
@@ -684,7 +727,7 @@ describe("Contract methods", function () {
                 augur.web.login(handle, password, function (user) {
                     if (user.error) {
                         augur.web.logout();
-                        return done(user);
+                        return done(new Error(utils.pp(user)));
                     }
                     var tx = utils.copy(augur.tx.reputationFaucet);
                     tx.params = augur.branches.dev;
@@ -718,7 +761,7 @@ describe("Contract methods", function () {
                 augur.web.login(handle, password, function (user) {
                     if (user.error) {
                         augur.web.logout();
-                        return done(user);
+                        return done(new Error(utils.pp(user)));
                     }
                     assert.strictEqual(
                         user.address,

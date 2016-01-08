@@ -29,14 +29,14 @@ module.exports = {
     // unit test timeout
     TIMEOUT: 600000,
 
+    KDF: "pbkdf2",
+    ROUNDS: 262144,
     KEYSIZE: 32,
     IVSIZE: 16,
-
     IPFS_LOCAL: {host: "localhost", port: "5001", protocol: "http"},
     IPFS_REMOTE: [
         {host: "ipfs1.augur.net", port: "443", protocol: "https"},
         {host: "ipfs2.augur.net", port: "443", protocol: "https"},
-        // {host: "ipfs3.augur.net", port: "443", protocol: "https"},
         {host: "ipfs4.augur.net", port: "443", protocol: "https"},
         {host: "ipfs5.augur.net", port: "443", protocol: "https"}
     ],

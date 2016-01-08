@@ -18,16 +18,24 @@ var PERSISTENT_LOGIN = " ";
 
 describe("Database", function () {
 
+    var kdf = "pbkdf2";
     var handle = utils.sha256(new Date().toString()).slice(0, 10);
     var handle2 = utils.sha256(Math.random().toString(36).substring(4)).slice(0, 7);
     var account = {
         handle: abi.prefix_hex(utils.sha256(handle)),
-        encryptedPrivateKey: "0x76ea41f201cb8f28560adcf00d78fe3119efee03709b6c0102fb08e48ee101cf",
+        ciphertext: "0x76ea41f201cb8f28560adcf00d78fe3119efee03709b6c0102fb08e48ee101cf",
         iv: "0x5b2e1ea324f8b450b9b95db1af11c0e9",
-        salt: "0x12eed439bc9a90531b71819e4540c71c36ff99f6f04c572e2dad0581a79aba62",
         mac: "0x9438f894573a68739bf92d28a868fb18a2caea4c89bbeecf4c9c6c18291796ba",
         id: "0x22790b9113f94c7783c15701e4b73633",
         privateKey: "0x3e339cbafa93d48c0b6a27678ad994ebf7caebb067f4da7e9ac88fe552003ddb",
+        cipher: keys.constants.cipher,
+        kdf: kdf,
+        kdfparams: {
+            c: keys.constants[kdf].c,
+            dklen: keys.constants[kdf].dklen,
+            prf: keys.constants[kdf].prf,
+            salt: "0x12eed439bc9a90531b71819e4540c71c36ff99f6f04c572e2dad0581a79aba62",
+        },
         address: "0x26bdb0438855e017fcfeac334496569567ea57b6"
     };
     var persistent = abi.copy(account);

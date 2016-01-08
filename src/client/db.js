@@ -22,10 +22,12 @@ module.exports = {
         if (label !== null && label !== undefined && label !== '' && data) {
             var account = {
                 label: abi.prefix_hex(utils.sha256(label)),
-                privateKey: data.encryptedPrivateKey,
+                ciphertext: data.ciphertext,
                 iv: abi.pad_left(data.iv, 32, true),
-                salt: data.salt,
                 mac: data.mac,
+                cipher: data.cipher,
+                kdf: data.kdf,
+                kdfparams: data.kdfparams,
                 id: abi.pad_left(data.id, 32, true)
             };
             localStorage.setItem(account.label, JSON.stringify(account));
@@ -69,12 +71,19 @@ module.exports = {
             if (item !== null) {
                 try {
                     item = JSON.parse(item);
-                    if (item && item.constructor === Object && item.privateKey) {
+                    if (item && item.constructor === Object && item.ciphertext) {
                         account = {
                             handle: label,
-                            privateKey: new Buffer(abi.unfork(item.privateKey), "hex"),
+                            cipher: item.cipher,
+                            ciphertext: new Buffer(abi.unfork(item.ciphertext), "hex"),
                             iv: new Buffer(abi.pad_left(item.iv, 32), "hex"),
-                            salt: new Buffer(abi.unfork(item.salt), "hex"),
+                            kdf: item.kdf,
+                            kdfparams: {
+                                c: parseInt(item.kdfparams.c),
+                                dklen: parseInt(item.kdfparams.dklen),
+                                salt: new Buffer(abi.unfork(item.kdfparams.salt), "hex"),
+                                prf: item.kdfparams.prf
+                            },
                             mac: new Buffer(abi.unfork(item.mac), "hex"),
                             id: new Buffer(abi.pad_left(item.id, 32), "hex")
                         };
