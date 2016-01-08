@@ -142,21 +142,5 @@ describe("Database", function () {
             assert.strictEqual(augur.db.get(PERSISTENT_LOGIN).error, 99);
             assert.isNull(augur.db.getPersistent());
         });
-
-        it("persistent save", function (done) {
-            this.timeout(augur.constants.TIMEOUT);
-            augur.db.put(handle2, persistent, function (res) {
-                if (res && res.error) return done(res);
-                assert.isTrue(res);
-                var stored = augur.db.get(PERSISTENT_LOGIN);
-                assert.strictEqual(stored.handle, handle2);
-                assert.strictEqual(abi.hex(stored.privateKey), persistent.privateKey);
-                assert.strictEqual(stored.address, persistent.address);
-                augur.db.remove(PERSISTENT_LOGIN);
-                assert.strictEqual(augur.db.get(PERSISTENT_LOGIN).error, 99);
-                assert.isNull(augur.db.getPersistent());
-                done();
-            });
-        });
     });
 });
