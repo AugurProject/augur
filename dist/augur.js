@@ -107352,6 +107352,12 @@ module.exports = function () {
                             delete accountData.privateKey;
                             delete accountData.address;
                             delete accountData.persist;
+                            accountData.ciphertext = accountData.ciphertext.toString("hex");
+                            accountData.address = abi.strip_0x(address);
+                            accountData.iv = accountData.iv.toString("hex");
+                            accountData.kdfparams.salt = accountData.kdfparams.salt.toString("hex");
+                            accountData.mac = accountData.mac.toString("hex");
+                            accountData.id = uuid.unparse(new Buffer(abi.strip_0x(accountData.id), "hex"));
                             self.account = {
                                 handle: handle,
                                 privateKey: plain.privateKey,
@@ -107465,15 +107471,17 @@ module.exports = function () {
                 return errors.NOT_LOGGED_IN;
             }
             if (this.account.keystore && this.account.keystore.ciphertext) {
+                var kdfparams = abi.copy(this.account.keystore.kdfparams);
+                kdfparams.salt = abi.strip_0x(kdfparams.salt);
                 return {
                     address: abi.strip_0x(this.account.address),
                     Crypto: {
-                        cipher: this.account.keystore.cipher,
-                        ciphertext: this.account.keystore.ciphertext,
-                        cipherparams: {iv: this.account.keystore.iv},
-                        mac: this.account.keystore.mac,
+                        cipher: abi.strip_0x(this.account.keystore.cipher),
+                        ciphertext: abi.strip_0x(this.account.keystore.ciphertext),
+                        cipherparams: {iv: abi.strip_0x(this.account.keystore.iv)},
+                        mac: abi.strip_0x(this.account.keystore.mac),
                         kdf: this.account.keystore.kdf,
-                        kdfparams: abi.copy(this.account.keystore.kdfparams)
+                        kdfparams: kdfparams
                     },
                     id: this.account.keystore.id,
                     version: 3
@@ -107788,7 +107796,7 @@ module.exports = {
     TIMEOUT: 600000,
 
     KDF: "pbkdf2",
-    ROUNDS: 262144,
+    ROUNDS: 65536,
     KEYSIZE: 32,
     IVSIZE: 16,
     IPFS_LOCAL: {host: "localhost", port: "5001", protocol: "http"},

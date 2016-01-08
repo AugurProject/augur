@@ -30,7 +30,7 @@ module.exports = {
     TIMEOUT: 600000,
 
     KDF: "pbkdf2",
-    ROUNDS: 262144,
+    ROUNDS: 65536,
     KEYSIZE: 32,
     IVSIZE: 16,
     IPFS_LOCAL: {host: "localhost", port: "5001", protocol: "http"},
