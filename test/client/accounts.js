@@ -170,6 +170,7 @@ describe("Register", function () {
                     assert(rec.ciphertext);
                     assert(rec.iv);
                     assert(rec.kdfparams.salt);
+                    assert.isObject(augur.web.account.keystore);
                     assert.strictEqual(
                         new Buffer(rec.iv, "base64")
                             .toString("hex")
@@ -192,6 +193,9 @@ describe("Register", function () {
                     assert.strictEqual(stored.handle, handle3);
                     assert.strictEqual(abi.hex(stored.privateKey), abi.hex(augur.web.account.privateKey));
                     assert.strictEqual(stored.address, augur.web.account.address);
+                    assert.isObject(stored.keystore);
+                    assert.isObject(augur.web.account.keystore);
+                    assert.deepEqual(stored.keystore, augur.web.account.keystore);
                     augur.web.logout();
                     done();
                 });
@@ -235,13 +239,10 @@ describe("Login", function () {
         this.timeout(constants.TIMEOUT);
         var augur = utils.setup(require("../../src"), process.argv.slice(2));
         augur.web.login(handle, password, function (user) {
-            if (user.error) {
-                augur.web.logout();
-                return done(new Error(utils.pp(user)));
-            }
-            assert(!user.error);
-            assert(user.privateKey);
-            assert(user.address);
+            assert.notProperty(user, "error");
+            assert.isTrue(Buffer.isBuffer(user.privateKey));
+            assert.isString(user.address);
+            assert.isObject(user.keystore);
             assert.strictEqual(
                 user.privateKey.toString("hex").length,
                 constants.KEYSIZE*2
@@ -256,15 +257,12 @@ describe("Login", function () {
         this.timeout(constants.TIMEOUT);
         var augur = utils.setup(require("../../src"), process.argv.slice(2));
         augur.web.login(handle, password, {persist: true}, function (user) {
-            if (user.error) {
-                augur.web.logout();
-                return done(new Error(utils.pp(user)));
-            }
-            assert(!user.error);
-            assert(user.privateKey);
-            assert(user.address);
+            assert.notProperty(user, "error");
+            assert.isTrue(Buffer.isBuffer(user.privateKey));
+            assert.isString(user.address);
+            assert.isObject(user.keystore);
             assert.strictEqual(
-                abi.strip_0x(user.privateKey.toString("hex")).length,
+                user.privateKey.toString("hex").length,
                 constants.KEYSIZE*2
             );
             assert.strictEqual(user.address.length, 42);
@@ -281,22 +279,16 @@ describe("Login", function () {
         this.timeout(constants.TIMEOUT);
         var augur = utils.setup(require("../../src"), process.argv.slice(2));
         augur.web.login(handle, password, function (user) {
-            if (user.error) {
-                augur.web.logout();
-                return done(new Error(utils.pp(user)));
-            }
-            assert(user.privateKey);
-            assert(user.address);
+            assert.notProperty(user, "error");
+            assert.isTrue(Buffer.isBuffer(user.privateKey));
+            assert.isString(user.address);
+            assert.isObject(user.keystore);
             assert.strictEqual(
                 user.privateKey.toString("hex").length,
                 constants.KEYSIZE*2
             );
             assert.strictEqual(user.address.length, 42);
             augur.web.login(handle, password, function (same_user) {
-                if (same_user.error) {
-                    augur.web.logout();
-                    return done(same_user);
-                }
                 assert(!same_user.error);
                 assert.strictEqual(
                     user.privateKey.toString("hex"),
@@ -373,12 +365,9 @@ describe("Export key", function () {
     it("export keystore object", function (done) {
         this.timeout(constants.TIMEOUT);
         augur.web.login(handle, password, function (user) {
-            if (user.error) {
-                augur.web.logout();
-                return done(new Error(utils.pp(user)));
-            }
-            assert(user.privateKey);
-            assert(user.address);
+            assert.notProperty(user, "error");
+            assert.isTrue(Buffer.isBuffer(user.privateKey));
+            assert.isString(user.address);
             assert.strictEqual(
                 user.privateKey.toString("hex").length,
                 constants.KEYSIZE*2
@@ -413,32 +402,36 @@ describe("Export key", function () {
 
 describe("Persist", function () {
 
-    it("use a stored (persistent) account", function () {
+    it("use a stored (persistent) account", function (done) {
         this.timeout(constants.TIMEOUT);
         augur.web.logout();
         assert.isTrue(augur.db.removePersistent());
         assert.notProperty(augur.web.account, "handle");
         assert.notProperty(augur.web.account, "address");
         assert.notProperty(augur.web.account, "privateKey");
+        assert.notProperty(augur.web.account, "keystore");
         assert.isNull(augur.db.getPersistent());
-        var account = {
-            handle: "tinybike",
-            privateKey: "0x3e339cbafa93d48c0b6a27678ad994ebf7caebb067f4da7e9ac88fe552003ddb",
-            address: "0x26bdb0438855e017fcfeac334496569567ea57b6"
-        };
-        assert.isTrue(augur.db.putPersistent(account));
-        var persist = augur.web.persist();
-        assert.strictEqual(persist.handle, account.handle);
-        assert.strictEqual(abi.hex(persist.privateKey, true), account.privateKey);
-        assert.strictEqual(persist.address, account.address);
-        assert.strictEqual(augur.web.account.handle, account.handle);
-        assert.strictEqual(abi.hex(augur.web.account.privateKey, true), account.privateKey);
-        assert.strictEqual(augur.web.account.address, account.address);
-        augur.web.logout();
-        assert.notProperty(augur.web.account, "handle");
-        assert.notProperty(augur.web.account, "address");
-        assert.notProperty(augur.web.account, "privateKey");
-        assert.isNull(augur.db.getPersistent());
+        var handle = utils.sha256(new Date().toString()).slice(0, 10);
+        var password = "tinypassword";
+        augur.web.register(handle, password, {doNotFund: true}, function (account) {
+            assert.notProperty(account, "error");
+            assert.isTrue(augur.db.putPersistent(account));
+            var persist = augur.web.persist();
+            assert.strictEqual(persist.handle, account.handle);
+            assert.strictEqual(persist.privateKey.toString("hex"), account.privateKey.toString("hex"));
+            assert.strictEqual(persist.address, account.address);
+            assert.strictEqual(augur.web.account.handle, account.handle);
+            assert.strictEqual(augur.web.account.privateKey.toString("hex"), account.privateKey.toString("hex"));
+            assert.strictEqual(augur.web.account.address, account.address);
+            assert.isObject(augur.web.account.keystore);
+            augur.web.logout();
+            assert.notProperty(augur.web.account, "handle");
+            assert.notProperty(augur.web.account, "address");
+            assert.notProperty(augur.web.account, "privateKey");
+            assert.notProperty(augur.web.account, "keystore");
+            assert.isNull(augur.db.getPersistent());
+            done();
+        });
     });
 
 });

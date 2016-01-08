@@ -31,13 +31,6 @@ module.exports = {
                 id: abi.pad_left(data.id, 32, true)
             };
             localStorage.setItem(account.label, JSON.stringify(account));
-            if (data.persist) {
-                this.putPersistent({
-                    handle: label,
-                    privateKey: data.privateKey,
-                    address: data.address
-                });
-            }
             if (!utils.is_function(cb)) return true;
             return cb(true);
         }
@@ -110,10 +103,11 @@ module.exports = {
 
     putPersistent: function (data) {
         if (!data || !data.privateKey) return error.DB_WRITE_FAILED;
+        var persist = abi.copy(data);
         if (Buffer.isBuffer(data.privateKey)) {
-            data.privateKey = abi.hex(data.privateKey, true);
+            persist.privateKey = abi.hex(data.privateKey, true);
         }
-        localStorage.setItem(PERSISTENT_LOGIN, JSON.stringify(data));
+        localStorage.setItem(PERSISTENT_LOGIN, JSON.stringify(persist));
         return true;
     },
 

@@ -107358,6 +107358,9 @@ module.exports = function () {
                                 address: address,
                                 keystore: accountData
                             };
+                            if (options.persist) {
+                                augur.db.putPersistent(self.account);
+                            }
 
                             if (cb.constructor === Array) {
                                 if (cb.length === 1) {
@@ -107450,6 +107453,9 @@ module.exports = function () {
             var account = augur.db.getPersistent();
             if (account && account.privateKey) {
                 this.account = account;
+                augur.comments.invoke = this.invoke;
+                augur.comments.context = this;
+                augur.comments.from = account.address;
             }
             return account;
         },
@@ -107458,24 +107464,21 @@ module.exports = function () {
             if (!this.account || !this.account.address || !this.account.privateKey) {
                 return errors.NOT_LOGGED_IN;
             }
-            return {
-                address: abi.strip_0x(this.account.keystore.address),
-                Crypto: {
-                    cipher: this.account.keystore.cipher,
-                    ciphertext: this.account.keystore.ciphertext.toString("hex"),
-                    cipherparams: {iv: this.account.keystore.iv.toString("hex")},
-                    mac: this.account.keystore.mac.toString("hex"),
-                    kdf: this.account.keystore.kdf,
-                    kdfparams: {
-                        c: parseInt(this.account.keystore.kdfparams.c),
-                        dklen: parseInt(this.account.keystore.kdfparams.dklen),
-                        prf: this.account.keystore.kdfparams.prf,
-                        salt: this.account.keystore.kdfparams.salt.toString("hex")
-                    }
-              },
-              id: this.account.keystore.id,
-              version: 3
-            };
+            if (this.account.keystore && this.account.keystore.ciphertext) {
+                return {
+                    address: abi.strip_0x(this.account.address),
+                    Crypto: {
+                        cipher: this.account.keystore.cipher,
+                        ciphertext: this.account.keystore.ciphertext,
+                        cipherparams: {iv: this.account.keystore.iv},
+                        mac: this.account.keystore.mac,
+                        kdf: this.account.keystore.kdf,
+                        kdfparams: abi.copy(this.account.keystore.kdfparams)
+                    },
+                    id: this.account.keystore.id,
+                    version: 3
+                };
+            }
         },
 
         importKey: function (password, json, cb) {
@@ -107648,13 +107651,6 @@ module.exports = {
                 id: abi.pad_left(data.id, 32, true)
             };
             localStorage.setItem(account.label, JSON.stringify(account));
-            if (data.persist) {
-                this.putPersistent({
-                    handle: label,
-                    privateKey: data.privateKey,
-                    address: data.address
-                });
-            }
             if (!utils.is_function(cb)) return true;
             return cb(true);
         }
@@ -107727,10 +107723,11 @@ module.exports = {
 
     putPersistent: function (data) {
         if (!data || !data.privateKey) return error.DB_WRITE_FAILED;
+        var persist = abi.copy(data);
         if (Buffer.isBuffer(data.privateKey)) {
-            data.privateKey = abi.hex(data.privateKey, true);
+            persist.privateKey = abi.hex(data.privateKey, true);
         }
-        localStorage.setItem(PERSISTENT_LOGIN, JSON.stringify(data));
+        localStorage.setItem(PERSISTENT_LOGIN, JSON.stringify(persist));
         return true;
     },
 
