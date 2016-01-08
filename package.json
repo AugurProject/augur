@@ -8,7 +8,7 @@
     "ssl": "node server.js -s"
   },
   "engines": {
-    "node": ">= 4.0.x"
+    "node": ">= 4.2.x"
   },
   "repository": {
     "type": "git",
@@ -32,9 +32,9 @@
   },
   "dependencies": {
     "async": "^1.4.2",
-    "augur-abi": "^0.2.6",
-    "augur-contracts": "^0.3.2",
-    "augur.js": "^0.13.2",
+    "augur-abi": "^0.2.7",
+    "augur-contracts": "^0.3.3",
+    "augur.js": "^0.13.4",
     "babelify": "^6.3.0",
     "bignumber.js": "^2.1.4",
     "bootstrap": "^3.3.4",
