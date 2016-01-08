@@ -55,7 +55,8 @@ var NetworkActions = {
       this.dispatch(constants.config.UPDATE_ACCOUNT, {
         currentAccount: augur.web.account.address,
         privateKey: augur.web.account.privateKey,
-        handle: augur.web.account.handle
+        handle: augur.web.account.handle,
+        keystore: augur.web.account.keystore
       });
       this.flux.actions.asset.updateAssets();
       this.flux.actions.report.loadEventsToReport();
@@ -72,7 +73,8 @@ var NetworkActions = {
         this.dispatch(constants.config.UPDATE_ACCOUNT, {
           currentAccount: augur.web.account.address,
           privateKey: augur.web.account.privateKey,
-          handle: augur.web.account.handle
+          handle: augur.web.account.handle,
+          keystore: augur.web.account.keystore
         });
         this.flux.actions.asset.updateAssets();
         this.flux.actions.report.loadEventsToReport();

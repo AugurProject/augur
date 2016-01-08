@@ -47,16 +47,18 @@ var SignInModal = React.createClass({
             flux.actions.config.updateAccount({
               currentAccount: null,
               privateKey: null,
-              handle: null
+              handle: null,
+              keystore: null
             });
             flux.actions.asset.updateAssets();
             return;
           }
-          console.log("signed in to account:", account.handle, account.address);
+          console.log("signed in to account:", account);
           flux.actions.config.updateAccount({
             currentAccount: account.address,
             privateKey: account.privateKey,
-            handle: account.handle
+            handle: account.handle,
+            keystore: account.keystore
           });
           flux.actions.asset.updateAssets();
           flux.actions.report.loadEventsToReport();

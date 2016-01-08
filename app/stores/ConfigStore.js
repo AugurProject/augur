@@ -6,6 +6,7 @@ var state = {
   currentAccount: null,
   privateKey: null,
   handle: null,
+  keystore: null,
   debug: false,
   loaded: false,
   isHosted: false,
@@ -43,9 +44,19 @@ var ConfigStore = Fluxxor.createStore({
     return state.currentAccount;
   },
 
+  getPrivateKey: function () {
+    if (_.isUndefined(state.privateKey)) return null;
+    return state.privateKey;
+  },
+
   getHandle: function () {
     if (_.isUndefined(state.handle)) return null;
     return state.handle;
+  },
+
+  getKeystore: function () {
+    if (_.isUndefined(state.keystore)) return null;
+    return state.keystore;
   },
 
   handleUpdatePercentLoadedSuccess: function (payload) {
@@ -57,6 +68,7 @@ var ConfigStore = Fluxxor.createStore({
     state.currentAccount = payload.currentAccount;
     state.privateKey = payload.privateKey;
     state.handle = payload.handle;
+    state.keystore = payload.keystore;
     this.emit(constants.CHANGE_EVENT);
   },
 

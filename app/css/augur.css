@@ -587,9 +587,36 @@ nav.header .menu a:hover {
 .assets .panel-body .send-button:last-child {
     margin-right: 17px;
 }
+.account-info button {
+    font-size: 11px;
+    position: relative;
+    top: -2px;
+}
+.account-info a {
+    font-size: 11px;
+    position: relative;
+    top: -2px;
+}
+.account-info label {
+    font-size: 11px;
+    position: relative;
+    top: -2px;
+}
+.account-info .send-button {
+    margin-left: 5px;
+    width: 100%;
+}
+.account-info .send-button:last-child {
+    margin-right: 17px;
+}
 
 .subheading {
     color: #ffffff;
+}
+
+#importAccountId {
+    position: fixed;
+    top: -100em;
 }
 
 #main {
@@ -1087,7 +1114,6 @@ a.market-pane:hover {
     text-align: right;
     padding: 10px 5px;
     color: #fff;
-    /*background-color: #18376f;*/
     background-color: #313232;
 }
 .holdings .list-group-item:first-child .price {

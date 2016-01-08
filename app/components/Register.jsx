@@ -42,16 +42,18 @@ var RegisterModal = React.createClass({
             flux.actions.config.updateAccount({
               currentAccount: null,
               privateKey: null,
-              handle: null
+              handle: null,
+              keystore: null
             });
             self.setState({ handleHelp: account.message });
             return;
           }
-          console.log("account created:", account.handle, account.address);
+          console.log("account created:", account);
           flux.actions.config.updateAccount({
             currentAccount: account.address,
             privateKey: account.privateKey,
-            handle: account.handle
+            handle: account.handle,
+            keystore: account.keystore
           });
           flux.actions.asset.updateAssets();
           self.props.onHide();

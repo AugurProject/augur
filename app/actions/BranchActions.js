@@ -43,7 +43,7 @@ export default {
         // if this is a new vote period, check quorum & submit reports
         if (votePeriod > currentBranch.votePeriod) {
           self.flux.actions.report.loadEventsToReport();
-          self.flux.actions.branch.checkQuorum();
+          // self.flux.actions.branch.checkQuorum();
           self.flux.actions.report.submitQualifiedReports();
         }
 
