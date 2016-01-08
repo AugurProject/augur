@@ -1,0 +1,157 @@
+// forms
+form {
+    h3 {
+        margin-bottom: 30px;
+    }
+    label {
+        font-size: @form-label-font-size;
+        font-weight: @font-weight-bolder;
+        .font-render-smooth();
+    }
+    input {
+        &:not([type=checkbox]):not([type=radio]) {
+            -webkit-appearance: none;
+        }
+    }
+
+    .form-control {
+        border: 2px solid @table-border-color;
+        padding-left: 8px;
+        .has-error {
+            border-color: @danger-color;
+        }
+        &:focus {
+            border: 2px solid @table-border-color-active;
+        }
+        &.input-sm {
+            padding: 4px; // IE hack
+        }
+    }
+    .input-group-addon {
+        border: 2px solid @table-border-color;
+    }
+    .has-error {
+        .form-control {
+            border-color: @danger-color;
+        }
+        .control-label,
+        .help-block,
+        * {
+            color: @color-red;
+        }
+        &.has-feedback.text-danger.errorMessage {
+            margin-top: 15px;
+        }
+        .input-group-addon {
+            border-top-color: @danger-color;
+            border-right-color: @danger-color;
+            border-bottom-color: @danger-color;
+            // this needs to be here even though it should be inherited from above
+            border-width: 2px;
+        }
+    }
+
+    .error-message {
+        color: @danger-color;
+        margin-top: 15px;
+        margin-bottom: 20px;
+        font-size: @font-size-base;
+        font-weight: @font-weight-bolder;
+        .font-render-smooth()
+    }
+
+    .error-message a {
+        color: currentcolor;
+        border-bottom: 1px solid currentcolor;
+    }
+}
+
+.form-group {
+    margin-bottom: 30px;
+}
+
+.form-horizontal {
+    & .form-group {
+        margin-bottom: 0;
+    }
+    & .control-label,
+    & .form-control-static {
+        text-align: left;
+    }
+}
+
+.form-gap {
+    margin-top: 30px;
+
+    & > *:not(:first-child) {
+        margin-left: 20px;
+    }
+}
+
+.passwordStrengthInfo {
+    font-size: @font-size-small;
+    display: inline-block;
+
+    .invalidIcon {
+        color: @form-color-invalid;
+    }
+
+    .validIcon {
+        color: @form-color-valid;
+    }
+
+    .invalid .invalidIcon,
+    .valid .validIcon {
+        display: inline-block;
+    }
+
+    .invalid .validIcon,
+    .valid .invalidIcon {
+        display: none;
+    }
+}
+
+.form-control[disabled],
+.form-control[readonly],
+fieldset[disabled] .form-control {
+    color: @font-color-default
+}
+
+label {
+    font-size: @form-label-font-size;
+    font-weight: @font-weight-bolder;
+    margin-bottom: 10px;
+}
+
+// form validations
+.formValidation {
+    & .invalidIcon {
+        color: @form-color-invalid;
+    }
+    & .validIcon {
+        color: @form-color-valid;
+    }
+    &.passwordStrengthInfo {
+        font-size: @font-size-small;
+        & .invalid .invalidIcon,
+        & .valid .validIcon {
+            display: inline-block;
+        }
+        & .invalid .validIcon,
+        & .valid .invalidIcon {
+            display: none;
+        }
+    }
+}
+
+@media (max-width: @screen-sm-min) {
+    form {
+        .btn {
+            padding: 9px 12px;
+        }
+    }
+}
+
+select.select--big {
+    font-size: @font-size-base;
+}

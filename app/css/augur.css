@@ -328,11 +328,6 @@ nav.header .menu a:hover {
     /*height: 25px;*/
 }
 
-.container {
-    width: 100% !important;
-    color: #0D0F11;
-}
-
 .modal h3 {
     margin-top: 0px;
 }
@@ -593,7 +588,7 @@ nav.header .menu a:hover {
 }
 
 #main {
-    background-color: rgba(150, 150, 150, 0.25);
+    background-color: #fff;
 }
 #main h3 {
     margin-top: 0px;

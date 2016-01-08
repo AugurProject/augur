@@ -65,9 +65,14 @@
     "react-dom": "^0.14.0"
   },
   "devDependencies": {
+    "flex.less": "https://github.com/codio/Flex.less/archive/1.0.0.tar.gz",
+    "font-awesome": "4.5.0",
     "grunt": "^0.4.5",
     "grunt-browserify": "^4.0.0",
     "grunt-contrib-copy": "0.8.2",
-    "grunt-contrib-jshint": "^0.11.2"
+    "grunt-contrib-jshint": "^0.11.2",
+    "grunt-contrib-less": "1.1.0",
+    "grunt-contrib-watch": "0.6.1",
+    "react-stylesheet": "0.6.1"
   }
 }

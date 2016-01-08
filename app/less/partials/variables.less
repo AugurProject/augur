@@ -1,0 +1,62 @@
+@font-family: 'Open Sans', sans-serif;
+
+// define colors
+@color-white: #fff;
+@color-green: #16a085;
+@color-red: #e74c3c;
+@color-blue-light: #2ca8ff;
+@color-grey-light: #E3E3E3;
+@color-grey-lighter: #F5F5F5;
+@color-grey-dark: #444444;
+@color-grey: #9A9A9A;
+
+@color-dark-bg: #34495E;
+@color-dark-bg-active: #2C3E50;
+
+@color-menu-border: #475A6D;
+
+// override GSDK and bootstrap
+@danger-color: @color-red;
+@danger-bg: @color-red;
+@state-danger-text: @color-red;
+// used the same (approximate) desaturation they used in GSDK variables.less
+@danger-states-color: desaturate(@color-red, 15%);
+
+// fonts
+@font-color-default: #555555;
+@font-color-header: #333333;
+@font-color-light: #7f8c8d;
+@font-color-link: @color-blue-light;
+
+@font-size-base: 14px;
+@font-size-medium: 14px;
+@font-size-small: 13px;
+
+@font-size-h1: 40px;
+@font-size-h2: 30px;
+@font-size-h3: 21px;
+@font-size-h4: 18px;
+@font-size-h5: 14px;
+
+@font-weight-bolder: 600;
+@font-weight-normal: 400;
+
+@line-height: 1.7;
+
+// forms
+@form-label-font-size: @font-size-base;
+@form-color-valid: @color-blue-light;
+@form-color-invalid: @color-grey-light;
+
+// footer
+@color-footer-text: @color-grey-light;
+@font-size-footer-title: 18px;
+
+// tables
+@font-size-table-row: @font-size-medium;
+@table-border-color: @color-grey-light;
+@table-border-color-active: @color-grey;
+@table-row-height: 45px;
+@table-row-height-small: 30px;
+@table-row-height-large: 95px;
+@table-bg-active: @color-grey-lighter;

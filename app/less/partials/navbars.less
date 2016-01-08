@@ -1,0 +1,307 @@
+// main navigation bar
+.navbar {
+    border-radius: 0;
+    margin-bottom: 0;
+    background-color: @color-dark-bg;
+    color: @color-white;
+    font-size: @font-size-base;
+    .display(flex);
+    .align-items(center);
+    a {
+        color: @color-white;
+        font-size: @font-size-base;
+    }
+    .navbar-header {
+        .navbar-toggle {
+            padding: 20px 15px;
+            line-height: 30px;
+            margin: 0;
+            height: auto;
+        }
+        .navbar-brand {
+            margin-top: 0;
+            margin-bottom: 0;
+            font-size: @font-size-base;
+            line-height: 30px;
+            height: auto;
+            padding: 20px 15px;
+            text-transform: uppercase;
+            svg {
+                width: 25px;
+                height: 25px;
+                position: relative;
+                top: -2px;
+            }
+        }
+    }
+    .navbar-collapse {
+        &.collapsing {
+            background-color: @color-dark-bg;
+        }
+        &.collapse {
+            &.in {
+                background-color: @color-dark-bg;
+                .dropdown-menu > li > a {
+                    color: @color-white;
+                    &.active,
+                    &:hover,
+                    &:focus {
+                        color: @font-color-link;
+                    }
+                }
+            }
+        }
+
+        .nav.navbar-nav {
+            .display(flex);
+            .align-items(center);
+            > li {
+                > a {
+                    padding: 25px;
+                    line-height: 20px;
+                    margin: 0;
+                    font-weight: @font-weight-bolder;
+                    &.active,
+                    &:hover,
+                    &:focus {
+                        background-color: @color-dark-bg-active;
+                        color: @color-white;
+                    }
+                    &.btn {
+                        padding: 6px 12px;
+                        margin-left: 15px;
+                        border: 2px solid @color-white;
+                        .font-render-smooth();
+                    }
+                }
+                &.dropdown {
+                    > .dropdown-menu {
+                        margin-top: 0;
+                        .transition(none);
+                        &.dropdown-with-icons {
+                            padding-top: 8px;
+                            padding-bottom: 8px;
+                            > li > a {
+                                .display(flex);
+                                .justify-content(space-between);
+                                &:hover,
+                                &:focus,
+                                &.active {
+                                    & svg path {
+                                        fill: @color-blue-light
+                                    }
+                                }
+                                &.menu_logout:hover {
+                                    color: @color-red;
+                                    background-color: inherit;
+                                    & svg path {
+                                        fill: @color-red
+                                    }
+                                }
+                                > svg {
+                                    width: 26px;
+                                    height: 26px;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    &.navbar-transparent {
+        padding-top: 0;
+        background-color: transparent;
+        border-bottom: none;
+        .navbar-collapse .nav.navbar-nav > li > a {
+            &.active,
+            &:hover,
+            &:focus {
+                background-color: transparent;
+                color: @color-white;
+            }
+            & .btn {
+                background-color: transparent;
+            }
+        }
+    }
+}
+
+@media (min-width: 768px) {
+    // overwrite triangle params in dropdown menu
+    .navbar-nav.navbar-right > li > .dropdown-menu:after {
+        right: 18px;
+    }
+}
+
+@media (max-width: 767px) {
+    // overwrite nav menus which are displayed beneath each other now
+    body > .navbar-collapse ul.nav {
+        height: auto;
+    }
+}
+
+// local navigation
+.nav-tabs {
+    border-bottom: 1px solid @table-border-color;
+    > li {
+        > a {
+            border: none;
+            margin-right: 5px;
+            border-radius: 0;
+            padding-bottom: 15px;
+            color: @font-color-header;
+            font-size: @font-size-base;
+            font-weight: @font-weight-bolder;
+            &:hover {
+                color: @font-color-link;
+            }
+        }
+        &.active > a {
+            &,
+            &:hover,
+            &:focus {
+                color: @font-color-link;
+                background-color: transparent;
+                border: none;
+                border-bottom-color: transparent;
+                cursor: default;
+            }
+        }
+        &:last-child a {
+            margin-right: 0;
+        }
+    }
+}
+
+// dropdown menus
+.navbar-nav > li > .dropdown-menu,
+.dropdown-menu {
+    font-size: @font-size-base;
+    border-radius: 0;
+    border-top: none;
+    border-color: @table-border-color;
+    > li > a {
+        padding: 8px 16px;
+        line-height: inherit;
+        color: @font-color-default;
+        &:hover,
+        &:focus,
+        &.active {
+            background-color: inherit;
+            color: @color-blue-light;
+        }
+    }
+}
+
+// reset colors
+.nav .open > a,
+.nav .open > a:hover,
+.nav .open > a:focus {
+    background-color: inherit;
+    border-color: inherit;
+}
+
+body > .navbar-collapse::after {
+    background-color: @color-dark-bg;
+}
+
+@media (min-width: @screen-sm-min) {
+    .collapse.collapsedOnMobile {
+        display: block;
+        visibility: visible;
+    }
+}
+
+@media (max-width: @screen-sm-min) {
+
+    // Main navigation bar
+    .navbar {
+        > .container {
+            padding-right: 15px;
+            padding-left: 15px;
+            margin: 0;
+            width: 100%;
+            .navbar-collapse .nav.navbar-nav {
+                margin-top: 0;
+                margin-bottom: 0;
+                .align-items(stretch);
+                .flex-direction(column);
+                > li {
+                    border-top: 1px solid @color-menu-border;
+                    &.dropdown {
+                        .dropdown-toggle {
+                            .caret {
+                                display: none; // hide default caret
+                            }
+                            &:after {
+                                font-family: 'Glyphicons Halflings';
+                                font-size: @font-size-base;
+                                margin-left: 6px;
+                                float: right;
+                                .chevron-left();
+                            }
+                        }
+                        &.open {
+                            .dropdown-toggle:after {
+                                .chevron-down();
+                            }
+                        }
+                        > .dropdown-menu.dropdown-with-icons {
+                            padding-top: 0;
+                            padding-bottom: 0;
+                            > li {
+                                border-top: 1px solid @color-menu-border;
+                                background-color: @color-dark-bg-active;
+                                > a {
+                                    padding: 15px 15px 15px 30px;
+                                    > svg {
+                                        width: 20px;
+                                        height: 20px;
+                                    }
+                                }
+                            }
+                        }
+                        > a {
+                            padding: 20px;
+                            &.btn {
+                                padding: 10px 12px;
+                                margin: 10px 20px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .collapsibleTitle {
+        &,
+        &:focus,
+        &:hover {
+            color: @font-color-default;
+        }
+        &:after {
+            font-family: 'Glyphicons Halflings';
+            font-size: @font-size-base;
+            margin-left: 6px;
+            content: "\e114";
+            color: grey;
+        }
+        &.collapsed:after {
+            content: "\e080";
+        }
+    }
+
+    .collapsibleAccordion {
+        h4:not(.modal-title) {
+            border: 1px solid @color-grey-light;
+            margin: 5px 0 0;
+            padding: 8px;
+            .helpPopover {
+                float: right;
+                margin-right: 5px;
+            }
+        }
+    }
+}

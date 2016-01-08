@@ -13,13 +13,6 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Fluxxor = require('fluxxor');
 
-var Router = require("react-router");
-var Route = Router.Route;
-var NotFoundRoute = Router.NotFoundRoute;
-var DefaultRoute = Router.DefaultRoute;
-var RouteHandler = Router.RouteHandler;
-var Redirect = Router.Redirect;
-
 var constants = require('./libs/constants');
 var utilities = require('./libs/utilities');
 
@@ -43,7 +36,7 @@ var actions = {
   network: NetworkActions,
   report: ReportActions,
   transaction: TransactionActions
-}
+};
 
 var AssetStore = require('./stores/AssetStore');
 var BranchStore = require('./stores/BranchStore').default;
@@ -66,14 +59,7 @@ var stores = {
   network: new NetworkStore(),
   report: new ReportStore(),
   transaction: new TransactionStore
-}
-
-var AugurApp = require("./components/AugurApp");
-var Overview = require('./components/Overview');
-var Branch = require('./components/Branch');
-var Market = require('./components/Market');
-var Ballots = require('./components/Ballots');
-var Outcomes = require('./components/Outcomes');
+};
 
 window.flux = new Fluxxor.Flux(stores, actions);
 
@@ -82,13 +68,24 @@ flux.on("dispatch", function(type, payload) {
   if (debug) console.log("Dispatched", type, payload);
 });
 
+var AugurApp = require("./components/AugurApp");
+var Overview = require('./components/Overview');
+var Branch = require('./components/Branch');
+var MarketPage = require('./components/market-page/MarketPage.jsx');
+var Ballots = require('./components/Ballots');
+var Outcomes = require('./components/Outcomes');
+
+var Router = require("react-router");
+var Route = Router.Route;
+var DefaultRoute = Router.DefaultRoute;
+
 var routes = (
   <Route name="app" handler={ AugurApp } flux={ flux }>
     <DefaultRoute handler={ Overview } flux={ flux } />
     <Route name="overview" path="/" handler={ Overview } flux={ flux } title="Overview" />
     <Route name="markets" path="/markets" handler={ Branch } flux={ flux } title="Markets" />
     <Route name="marketsPage" path="/markets/:page" handler={ Branch } flux={ flux } title="Markets" />
-    <Route name="market" path="/market/:marketId" handler={ Market } flux={ flux } />
+    <Route name="market" path="/market/:marketId" handler={ MarketPage } flux={ flux } />
     <Route name="ballots" path="/ballots" handler={ Ballots } flux={ flux } title="Ballots" />
   </Route>
 );

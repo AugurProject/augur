@@ -1,0 +1,42 @@
+// author: smidhonza
+
+.alert {
+    .font-render-smooth();
+    font-size: @font-size-base;
+    font-weight: @font-weight-bolder;
+    &.alert-success {
+        background-color: @color-green;
+    }
+    &.alert-danger {
+        background-color: @color-red;
+    }
+    &.alert-dismissible .close {
+        top: 0;
+        right: 0;
+        opacity: 1;
+        &:hover {
+            color: inherit;
+        }
+    }
+}
+
+.header-message {
+    margin: 25px auto;
+    font-weight: @font-weight-bolder;
+    &.alert {
+        padding: 15px;
+        line-height: 20px;
+    }
+    &.container + .container > h1 {
+        margin-top: 0;
+    }
+}
+
+// default alert is grey
+.alert-default {
+    .alert-variant(@color-grey-light; @color-grey-light; @font-color-default);
+}
+
+form .alert {
+    margin: 15px 0;
+}

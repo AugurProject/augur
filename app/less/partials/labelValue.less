@@ -1,0 +1,27 @@
+@import "variables";
+
+// to override Bootstrap and GSDK
+.labelValue {
+    white-space: nowrap;
+    .label, .value {
+        vertical-align: inherit;
+    }
+    .label {
+        padding: 0;
+        border: 0 none;
+        border-radius: 0;
+        color: inherit;
+        background-color: transparent;
+        font-weight: normal;
+        font-size: inherit;
+        text-transform: none;
+        display: inline;
+        margin-bottom: 0;
+        line-height: inherit;
+        text-align: inherit;
+        white-space: inherit;
+    }
+    .value {
+        font-weight: @font-weight-bolder;
+    }
+}

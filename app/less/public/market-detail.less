@@ -1,0 +1,394 @@
+@import (reference) "../../../node_modules/bootstrap/less/variables";
+@import (reference) "../../../node_modules/bootstrap/less/mixins/vendor-prefixes";
+@import (reference) "../partials/variables";
+@import (reference) "../partials/utils";
+@import "../partials/labelValue";
+@import "../partials/contractImage";
+@import "../partials/confirm";
+
+// Hide raw angular template at the beginning
+// https://docs.angularjs.org/api/ng/directive/ngCloak
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
+}
+
+// override the BootStrap values because of GSD, otherwise the second radio button will be moved
+.radio-inline + .radio-inline {
+    margin-top: 10px;
+}
+
+.page-content {
+    padding-top: 15px;
+}
+
+@media (max-width: @screen-sm-min) {
+    .breadcrumb > li {
+        display: block;
+        &:first-child {
+            padding-left: 20px;
+        }
+    }
+}
+
+.topSection {
+    margin-bottom: 35px;
+    h1,
+    .h1 {
+        margin: 0;
+    }
+    .topSection-eventName,
+    .topSection-labels {
+        font-size: @font-size-medium;
+        > span:last-child {
+            float: right;
+        }
+    }
+}
+
+@media (max-width: @screen-sm-min) {
+    .topSection {
+        .topSection-data {
+            .h2 {
+                margin: 4px 0;
+            }
+        }
+        .topSection-labels {
+            > span {
+                display: block;
+                line-height: 17px;
+                &:last-child {
+                    float: none;
+                }
+            }
+        }
+    }
+}
+
+.topSection-image {
+    float: left;
+    margin-right: 15px;
+}
+
+.topSection .topSection-data {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: @contractImage-heightPx;
+    line-height: 1;
+}
+
+.position th {
+    width: 25%;
+}
+
+h3 {
+    margin: 30px 0;
+}
+
+.openOrder .openOrder-cancelOrderAction {
+    visibility: hidden;
+    padding-top: 0;
+    padding-left: 0;
+    padding-right: 0;
+    line-height: 1;
+}
+
+.openOrders {
+    table {
+        margin-bottom: 5px;
+    }
+    .openOrder:hover .openOrder-cancelOrderAction {
+        visibility: visible;
+    }
+}
+
+@media (min-width: @screen-sm-min) {
+    .openOrders {
+        margin-top: 44px;
+    }
+}
+
+@media (max-width: @screen-sm-min) {
+    .openOrder .openOrder-cancelOrderAction {
+        visibility: visible;
+    }
+}
+
+.openOrders-seeAllAction {
+    font-size: @font-size-small;
+}
+
+.orderBook-lastUpdatedTime {
+    .font-render-smooth();
+    font-weight: @font-weight-normal;
+    font-size: 12px;
+}
+
+.orderBook-bids,
+.orderBook-offers {
+    width: 50%;
+    float: left;
+    table {
+        margin-bottom: 0;
+    }
+    td {
+        position: relative;
+    }
+}
+
+@media (min-width: @screen-md-min) {
+    .orderBook-offers,
+    .orderBook-bids {
+        td, th {
+            &:first-child {
+                padding-left: 25px;
+            }
+        }
+    }
+
+    .orderBook-offers,
+    .orderBook-bids {
+        td, th {
+            &:last-child {
+                padding-right: 25px;
+            }
+        }
+    }
+}
+
+.orderBook .orderBook-noOrders {
+    padding: 0 !important;
+}
+
+.orderBook .orderBook-offers .orderBook-item.u-isOfCurrentUser td:last-child:after,
+.orderBook .orderBook-bids .orderBook-item.u-isOfCurrentUser td:first-child:before {
+    position: absolute;
+    content: "";
+    height: 100%;
+    width: 5px;
+    top: 0;
+}
+
+.orderBook .orderBook-bids .orderBook-item.u-isOfCurrentUser td:first-child:before {
+    background-color: @color-green;
+    left: 0;
+}
+
+.orderBook .orderBook-offers .orderBook-item.u-isOfCurrentUser td:last-child:after {
+    background-color: @color-red;
+    right: 0;
+}
+
+.orderBook-offers tbody {
+    border-left: 1px solid @table-border-color;
+}
+
+@import "../partials/openOrder";
+
+.orderTicket .form-group {
+    margin-bottom: 13px;
+}
+
+.orderTicket .orderTicket-result,
+.orderTicket .orderTicket-reviewSection {
+    display: block;
+    .flex(1, 0, auto);
+    .flex-direction(column);
+}
+
+.orderTicket .orderTicket-result {
+    .display(flex);
+    .align-items(center);
+    .justify-content(center);
+}
+
+.orderTicket .orderTicket-step {
+    min-height: 529px;
+}
+
+@media (max-width: @screen-sm-min) {
+    .orderTicket .orderTicket-step {
+        margin-top: 15px;
+    }
+}
+
+.orderTicket .orderTicket-step-content {
+    // first step height
+    min-height: 497px;
+    .display(flex);
+    .flex-direction(column);
+}
+
+.orderTicket .radio.orderTicket-buyRadio,
+.orderTicket .radio.orderTicket-sellRadio {
+    width: 47%;
+    height: @table-row-height;
+    line-height: @table-row-height;
+    padding: 0;
+    margin: 0;
+    border-radius: 3px;
+    text-align: center;
+
+    .icons {
+        color: currentcolor;
+        position: relative;
+        top: 3px;
+        display: inline;
+        padding-right: 25px;
+    }
+
+    &,
+    & * {
+        .transition(color 0.25s linear);
+        .transition(background-color 0.25s linear);
+    }
+
+    &.checked,
+    &:hover {
+        font-weight: bold;
+        &,
+        * {
+            color: @color-white;
+        }
+    }
+}
+
+.orderTicket {
+    .orderTicket-abortAction,
+    .orderTicket-editAction,
+    .orderTicket-clearForm {
+        padding: 0;
+        // the same as .checkbox
+    }
+    .disclaimer {
+        font-weight: @font-weight-bolder;
+        font-size: @font-size-small;
+        float: right;
+        line-height: 30px;
+    }
+}
+
+.orderTicket .orderTicket-secondaryAction {
+    // the same as .checkbox
+    line-height: 22px;
+    margin-top: 10px;
+    .u-itemsJustified();
+}
+
+.orderTicket .orderTicket-confirmOrder {
+    cursor: pointer;
+    margin: 0;
+    padding-left: 22px;
+}
+
+.radio.orderTicket-buyRadio {
+    float: left;
+}
+
+.radio.orderTicket-sellRadio {
+    float: right;
+}
+
+.radio.orderTicket-buyRadio:hover,
+.radio.orderTicket-buyRadio.checked {
+    background-color: @color-green;
+}
+
+.radio.orderTicket-sellRadio:hover,
+.radio.orderTicket-sellRadio.checked {
+    background-color: @color-red;
+}
+
+.orderTicket input[name="quantity"],
+.orderTicket input[name="price"] {
+    text-align: right;
+}
+
+.orderTicket .orderTicket-submitAction {
+    text-transform: uppercase;
+}
+
+.orderTicket-confirmOrder,
+.orderTicket .orderTicket-editAction {
+    float: left;
+}
+
+.orderTicket-clearForm,
+.orderTicket .orderTicket-abortAction {
+    float: right;
+}
+
+.orderTicket-result {
+    text-align: center;
+}
+
+.orderTicket-result svg {
+    width: 90px;
+}
+
+.orderTicket-result .info {
+    color: @color-blue-light
+}
+
+.contractInfo {
+    margin-top: 50px;
+}
+
+.downloadCsvData {
+    font-weight: @font-weight-bolder;
+}
+
+.chart--header {
+    .chart-lastUpdatedTime {
+        .font-render-smooth();
+        font-weight: @font-weight-normal;
+        font-size: 12px;
+    }
+}
+
+.chart--footer {
+    margin-top: 20px;
+}
+
+.chartSwitch {
+    font-weight: @font-weight-bolder;
+    font-style: normal;
+    .radio {
+        margin: 0;
+        &:first-child {
+            margin-right: 30px;
+        }
+    }
+}
+
+.chart {
+    .axis path, .axis line {
+        fill: none;
+        stroke: #777;
+        shape-rendering: crispEdges;
+    }
+
+    .axis text {
+        font-size: 12px;
+        .font-render-smooth();
+    }
+
+    .x.axis g:first-of-type line,
+    .y-coordinate {
+        stroke: @color-grey;
+        stroke-dasharray: none;
+        stroke-width: 1;
+    }
+
+    .x.axis line,
+    .y.axis line {
+        stroke: lightgrey;
+        opacity: 0.7;
+        stroke-dasharray: 2, 2;
+    }
+
+    .area {
+        fill: hsl(201, 35%, 93%);
+        stroke-width: 0;
+    }
+}

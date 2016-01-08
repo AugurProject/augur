@@ -61,6 +61,20 @@ module.exports = function (grunt) {
         }
       }, config.browserify.watch)
     },
+    less: {
+      build: {
+        files: {
+          'app/css/market-detail.css': 'app/less/public/market-detail.less',
+          'app/css/main.css': 'app/less/public/main.less'
+        }
+      }
+    },
+    watch: {
+      less: {
+        files: ['app/less/**/*.less'],
+        tasks: ['less:build']
+      }
+    },
     copy: {
       assets: {
         files: {
@@ -73,8 +87,10 @@ module.exports = function (grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-browserify');
+  grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-copy');
 
-  grunt.registerTask('default', ['jshint', 'browserify:build', 'copy']);
-  grunt.registerTask('watchify', ['browserify:watch']);
+  grunt.registerTask('default', ['jshint', 'browserify:build', 'less:build', 'copy']);
+  grunt.registerTask('watchify', ['browserify:debug', 'watch:less']);
 };
