@@ -60,12 +60,21 @@ module.exports = function (grunt) {
           }
         }
       }, config.browserify.watch)
+    },
+    copy: {
+      assets: {
+        files: {
+          'app/css/bootstrap.css': 'node_modules/bootstrap/dist/css/bootstrap.css',
+          'app/css/bootstrap.map.css': 'node_modules/bootstrap/dist/css/bootstrap.map.css'
+        }
+      }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-browserify');
+  grunt.loadNpmTasks('grunt-contrib-copy');
 
-  grunt.registerTask('default', ['jshint', 'browserify:build']);
+  grunt.registerTask('default', ['jshint', 'browserify:build', 'copy']);
   grunt.registerTask('watchify', ['browserify:watch']);
 };
