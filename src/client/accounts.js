@@ -28,55 +28,59 @@ module.exports = function () {
         account: {},
 
         // free (testnet) ether for new accounts on registration
-        fund: function (account, onSent, onConfirm, onFinal) {
+        fund: function (account, onRegistered, onSendEther, onFunded) {
             var self = this;
-            onSent = onSent || utils.noop;
-            onConfirm = onConfirm || utils.noop;
-            onFinal = onFinal || utils.noop;
+            if (onRegistered && onRegistered.constructor === Object) {
+                if (onRegistered.onSendEther) onSendEther = onRegistered.onSendEther;
+                if (onRegistered.onFunded) onFunded = onRegistered.onFunded;
+                if (onRegistered.onRegistered) onRegistered = onRegistered.onRegistered;
+            }
+            onRegistered = onRegistered || utils.noop;
+            onSendEther = onSendEther || utils.noop;
+            onFunded = onFunded || utils.noop;
             augur.rpc.coinbase(function (funder) {
-                if (!funder || funder.error) return onConfirm();
+                if (!funder || funder.error) return onSendEther();
                 augur.rpc.sendEther({
                     to: account.address,
                     value: constants.FREEBIE,
                     from: funder,
                     onSent: function (r) {
-                        onSent(account);
+                        onRegistered(account);
                     },
                     onSuccess: function (r) {
                         var count = 0;
                         var check = function (response) {
-                            if (++count === 2) onFinal(response);
+                            if (++count === 2) onFunded(response);
                         };
-                        onConfirm(account);
+                        onSendEther(account);
 
                         // exchange half of the free ether for cash
                         augur.depositEther({
                             value: constants.FREEBIE*0.5,
                             onSent: function (res) {
                                 console.log("[augur.js] depositEther:", res.txHash);
-                            },
-                            onSuccess: function (res) {
-                                check(res);
                                 augur.reputationFaucet({
                                     branch: augur.branches.dev,
                                     onSent: function (res) {
                                         console.log("[augur.js] reputationFaucet:", res.txHash);
                                     },
                                     onSuccess: check,
-                                    onFailed: onFinal
+                                    onFailed: onFunded
                                 });
                             },
-                            onFailed: onFinal
+                            onSuccess: check,
+                            onFailed: onFunded
                         });
                     },
-                    onFailed: onConfirm
+                    onFailed: onSendEther
                 });
             });
         },
 
         // options: {doNotFund, persist}
+        // cb: {onSent, onSendEther, onFunded}
         register: function (handle, password, options, cb) {
-            var self = this;
+            var i, self = this;
             if (!cb && options) {
                 if (utils.is_function(options)) {
                     cb = options;
@@ -84,24 +88,43 @@ module.exports = function () {
                 } else if (options.constructor === Array && options.length &&
                     utils.is_function(options[0])) {
                     cb = new Array(options.length);
-                    for (var i = 0; i < options.length; ++i) {
+                    for (i = 0; i < options.length; ++i) {
                         cb[i] = options[i];
                     }
+                } else if (options.constructor === Object) {
+                    cb = {};
+                    if (options.onRegistered) cb.onRegistered = options.onRegistered;
+                    if (options.onSendEther) cb.onSendEther = options.onSendEther;
+                    if (options.onFunded) cb.onFunded = options.onFunded;
                 }
             }
-            cb = cb || utils.pass;
+            if (cb && cb.constructor === Array) {
+                var temp = {};
+                var labels = ["onRegistered", "onSendEther", "onFunded"];
+                for (i = 0; i < Math.min(cb.length, 3); ++i) {
+                    if (utils.is_function(cb[i])) temp[labels[i]] = cb[i];
+                }
+                console.log("cb:", cb);
+                console.log("temp:", temp);
+                cb = temp;
+            }
+            if (utils.is_function(cb)) cb = {onRegistered: cb};
+            cb = cb || {};
+            cb.onRegistered = cb.onRegistered || utils.pass;
+            cb.onSendEther = cb.onSendEther || utils.pass;
+            cb.onFunded = cb.onFunded || utils.pass;
             options = options || {};
-            if (!password || password.length < 6) return cb(errors.PASSWORD_TOO_SHORT);
+            if (!password || password.length < 6) return cb.onRegistered(errors.PASSWORD_TOO_SHORT);
             augur.db.get(handle, function (record) {
-                if (!record || !record.error) return cb(errors.HANDLE_TAKEN);
+                if (!record || !record.error) return cb.onRegistered(errors.HANDLE_TAKEN);
 
                 // generate ECDSA private key and initialization vector
                 keys.create(null, function (plain) {
-                    if (plain.error) return cb(plain);
+                    if (plain.error) return cb.onRegistered(plain);
 
                     // derive secret key from password
                     keys.deriveKey(password, plain.salt, null, function (derivedKey) {
-                        if (derivedKey.error) return cb(derivedKey);
+                        if (derivedKey.error) return cb.onRegistered(derivedKey);
 
                         var encryptedPrivateKey = new Buffer(keys.encrypt(
                             plain.privateKey,
@@ -135,12 +158,8 @@ module.exports = function () {
                             accountData.address = address;
                         }
                         augur.db.put(handle, accountData, function (result) {
-                            if (!result || result.error) {
-                                if (cb.constructor === Array) {
-                                    return cb[0](result);
-                                }
-                                return cb(result);
-                            }
+                            if (!result) return cb.onRegistered(errors.DB_WRITE_FAILED);
+                            if (result.error) return cb.onRegistered(result);
 
                             // set web.account object
                             delete accountData.privateKey;
@@ -162,19 +181,10 @@ module.exports = function () {
                                 augur.db.putPersistent(self.account);
                             }
 
-                            if (cb.constructor === Array) {
-                                if (cb.length === 1) {
-                                    return self.fund(self.account, cb[0]);
-                                } else if (cb.length === 2) {
-                                    return self.fund(self.account, cb[0], cb[1]);
-                                } else if (cb.length > 2) {
-                                    return self.fund(self.account, cb[0], cb[1], cb[2]);
-                                }
-                            }
-                            if (options.doNotFund) return cb(self.account);
                             augur.comments.invoke = self.invoke;
                             augur.comments.context = self;
                             augur.comments.from = self.account.address;
+                            if (options.doNotFund) return cb.onRegistered(self.account);
                             self.fund(self.account, cb);
 
                         }); // augur.db.put

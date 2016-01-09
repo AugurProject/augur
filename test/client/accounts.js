@@ -32,6 +32,36 @@ var password3 = utils.sha256(Math.random().toString(36).substring(4)).slice(0, 7
 var markets = augur.getMarkets(augur.branches.dev);
 var market_id = markets[markets.length - 1];
 
+function checkAccount(account) {
+    assert.notProperty(account, "error");
+    assert.isTrue(Buffer.isBuffer(account.privateKey));
+    assert.isString(account.address);
+    assert.isObject(account.keystore);
+    assert.strictEqual(
+        account.privateKey.toString("hex").length,
+        constants.KEYSIZE*2
+    );
+    assert.strictEqual(account.address.length, 42);
+    assert.isTrue(Buffer.isBuffer(augur.web.account.privateKey));
+    assert.isString(augur.web.account.address);
+    assert.isObject(augur.web.account.keystore);
+    assert.strictEqual(
+        augur.web.account.privateKey.toString("hex").length,
+        constants.KEYSIZE*2
+    );
+    assert.strictEqual(augur.web.account.address.length, 42);
+    assert.strictEqual(
+        account.privateKey.toString("hex"),
+        augur.web.account.privateKey.toString("hex")
+    );
+    assert.strictEqual(account.address, augur.web.account.address);
+    assert.strictEqual(
+        JSON.stringify(account.keystore),
+        JSON.stringify(augur.web.account.keystore)
+    );
+    assert.strictEqual(account.address.length, 42);
+}
+
 describe("Register", function () {
 
     it("register account 1: " + handle + " / " + password, function (done) {
@@ -40,24 +70,9 @@ describe("Register", function () {
         augur.db.get(handle, function (record) {
             assert.strictEqual(record.error, 99);
             augur.web.register(handle, password, {doNotFund: true}, function (result) {
-                if (result && result.error) {
-                    augur.web.logout();
-                    return done(result);
-                }
-                assert(!result.error);
-                assert(result.privateKey);
-                assert(result.address);
-                assert.strictEqual(
-                    result.privateKey.toString("hex").length,
-                    constants.KEYSIZE*2
-                );
-                assert.strictEqual(result.address.length, 42);
+                checkAccount(result);
                 augur.db.get(handle, function (rec) {
-                    if (rec && rec.error) {
-                        augur.web.logout();
-                        return done(rec);
-                    }
-                    assert(!rec.error);
+                    assert.notProperty(rec, "error");
                     assert(rec.ciphertext);
                     assert(rec.iv);
                     assert(rec.kdfparams.salt);
@@ -92,24 +107,9 @@ describe("Register", function () {
         augur.db.get(handle2, function (record) {
             assert.strictEqual(record.error, 99);
             augur.web.register(handle2, password2, {doNotFund: true}, function (result) {
-                if (result && result.error) {
-                    augur.web.logout();
-                    return done(result);
-                }
-                assert(!result.error);
-                assert(result.privateKey);
-                assert(result.address);
-                assert.strictEqual(
-                    result.privateKey.toString("hex").length,
-                    constants.KEYSIZE*2
-                );
-                assert.strictEqual(result.address.length, 42);
+                checkAccount(result);
                 augur.db.get(handle2, function (rec) {
-                    if (rec && rec.error) {
-                        augur.web.logout();
-                        return done(rec);
-                    }
-                    assert(!rec.error);
+                    assert.notProperty(rec, "error");
                     assert(rec.ciphertext);
                     assert(rec.iv);
                     assert(rec.kdfparams.salt);
@@ -200,103 +200,6 @@ describe("Register", function () {
             });
         });
     });
-
-    it("fail to register account 1's handle again with the same password", function (done) {
-        this.timeout(constants.TIMEOUT);
-        var augur = utils.setup(require("../../src"), process.argv.slice(2));
-        augur.web.register(handle, password, {doNotFund: true}, function (result) {
-            assert.strictEqual(result.error, 422);
-            assert.notProperty(result, "address");
-            assert.notProperty(result, "privateKey");
-            assert.notProperty(result, "keystore");
-            assert.notProperty(result, "handle");
-            assert.notProperty(augur.web.account, "address");
-            assert.notProperty(augur.web.account, "privateKey");
-            assert.notProperty(augur.web.account, "keystore");
-            assert.notProperty(augur.web.account, "handle");
-            augur.db.get(handle, function (record) {
-                assert.isObject(record);
-                assert.notProperty(record, "error");
-
-                // verify login with correct password still works
-                augur.web.login(handle, password, function (user) {
-                    assert.notProperty(user, "error");
-                    assert.isTrue(Buffer.isBuffer(user.privateKey));
-                    assert.isString(user.address);
-                    assert.isObject(user.keystore);
-                    assert.strictEqual(
-                        user.privateKey.toString("hex").length,
-                        constants.KEYSIZE*2
-                    );
-                    assert.strictEqual(user.address.length, 42);
-                    augur.web.logout();
-
-                    // verify login with bad password does not work
-                    augur.web.login(handle, password + "1", function (user) {
-                        assert.strictEqual(user.error, 403);
-                        assert.notProperty(user, "address");
-                        assert.notProperty(user, "privateKey");
-                        assert.notProperty(user, "keystore");
-                        assert.notProperty(user, "handle");
-                        assert.notProperty(augur.web.account, "address");
-                        assert.notProperty(augur.web.account, "privateKey");
-                        assert.notProperty(augur.web.account, "keystore");
-                        assert.notProperty(augur.web.account, "handle");
-                        done();
-                    });
-                });
-            });
-        });
-    });
-
-    it("fail to register account 2's handle again with a different password", function (done) {
-        this.timeout(constants.TIMEOUT);
-        var augur = utils.setup(require("../../src"), process.argv.slice(2));
-        augur.web.register(handle2, password2 + "1", {doNotFund: true}, function (result) {
-            assert.strictEqual(result.error, 422);
-            assert.notProperty(result, "address");
-            assert.notProperty(result, "privateKey");
-            assert.notProperty(result, "keystore");
-            assert.notProperty(result, "handle");
-            assert.notProperty(augur.web.account, "address");
-            assert.notProperty(augur.web.account, "privateKey");
-            assert.notProperty(augur.web.account, "keystore");
-            assert.notProperty(augur.web.account, "handle");
-            augur.db.get(handle2, function (record) {
-                assert.isObject(record);
-                assert.notProperty(record, "error");
-
-                // verify login with correct password still works
-                augur.web.login(handle2, password2, function (user) {
-                    assert.notProperty(user, "error");
-                    assert.isTrue(Buffer.isBuffer(user.privateKey));
-                    assert.isString(user.address);
-                    assert.isObject(user.keystore);
-                    assert.strictEqual(
-                        user.privateKey.toString("hex").length,
-                        constants.KEYSIZE*2
-                    );
-                    assert.strictEqual(user.address.length, 42);
-                    augur.web.logout();
-
-                    // verify login with bad password does not work
-                    augur.web.login(handle2, password2 + "1", function (user) {
-                        assert.strictEqual(user.error, 403);
-                        assert.notProperty(user, "address");
-                        assert.notProperty(user, "privateKey");
-                        assert.notProperty(user, "keystore");
-                        assert.notProperty(user, "handle");
-                        assert.notProperty(augur.web.account, "address");
-                        assert.notProperty(augur.web.account, "privateKey");
-                        assert.notProperty(augur.web.account, "keystore");
-                        assert.notProperty(augur.web.account, "handle");
-                        done();
-                    });
-                });
-            });
-        });
-    });
-
 });
 
 describe("Login", function () {
@@ -528,53 +431,267 @@ describe("Logout", function () {
 
 if (!process.env.CONTINUOUS_INTEGRATION) {
 
+    describe("Duplicate accounts", function () {
+
+        it("account 1 + same password", function (done) {
+            this.timeout(constants.TIMEOUT);
+            var augur = utils.setup(require("../../src"), process.argv.slice(2));
+            augur.web.register(handle, password, {doNotFund: true}, function (result) {
+                assert.strictEqual(result.error, 422);
+                assert.notProperty(result, "address");
+                assert.notProperty(result, "privateKey");
+                assert.notProperty(result, "keystore");
+                assert.notProperty(result, "handle");
+                assert.notProperty(augur.web.account, "address");
+                assert.notProperty(augur.web.account, "privateKey");
+                assert.notProperty(augur.web.account, "keystore");
+                assert.notProperty(augur.web.account, "handle");
+                augur.db.get(handle, function (record) {
+                    assert.isObject(record);
+                    assert.notProperty(record, "error");
+                    augur.web.register(handle, password, {
+                        doNotFund: true,
+                        persist: true
+                    }, function (result) {
+                        assert.strictEqual(result.error, 422);
+                        assert.notProperty(result, "address");
+                        assert.notProperty(result, "privateKey");
+                        assert.notProperty(result, "keystore");
+                        assert.notProperty(result, "handle");
+                        assert.notProperty(augur.web.account, "address");
+                        assert.notProperty(augur.web.account, "privateKey");
+                        assert.notProperty(augur.web.account, "keystore");
+                        assert.notProperty(augur.web.account, "handle");
+                        augur.db.get(handle, function (record) {
+                            assert.isObject(record);
+                            assert.notProperty(record, "error");
+
+                            // verify login with correct password still works
+                            augur.web.login(handle, password, function (user) {
+                                assert.notProperty(user, "error");
+                                assert.isTrue(Buffer.isBuffer(user.privateKey));
+                                assert.isString(user.address);
+                                assert.isObject(user.keystore);
+                                assert.strictEqual(
+                                    user.privateKey.toString("hex").length,
+                                    constants.KEYSIZE*2
+                                );
+                                assert.strictEqual(user.address.length, 42);
+                                augur.web.logout();
+
+                                // verify login with bad password does not work
+                                augur.web.login(handle, password + "1", function (user) {
+                                    assert.strictEqual(user.error, 403);
+                                    assert.notProperty(user, "address");
+                                    assert.notProperty(user, "privateKey");
+                                    assert.notProperty(user, "keystore");
+                                    assert.notProperty(user, "handle");
+                                    assert.notProperty(augur.web.account, "address");
+                                    assert.notProperty(augur.web.account, "privateKey");
+                                    assert.notProperty(augur.web.account, "keystore");
+                                    assert.notProperty(augur.web.account, "handle");
+                                    done();
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+
+        it("account 2 + different password", function (done) {
+            this.timeout(constants.TIMEOUT);
+            var augur = utils.setup(require("../../src"), process.argv.slice(2));
+            var badPassword = password2 + "1";
+            augur.web.register(handle2, badPassword, {doNotFund: true}, function (result) {
+                assert.strictEqual(result.error, 422);
+                assert.notProperty(result, "address");
+                assert.notProperty(result, "privateKey");
+                assert.notProperty(result, "keystore");
+                assert.notProperty(result, "handle");
+                assert.notProperty(augur.web.account, "address");
+                assert.notProperty(augur.web.account, "privateKey");
+                assert.notProperty(augur.web.account, "keystore");
+                assert.notProperty(augur.web.account, "handle");
+                augur.db.get(handle2, function (record) {
+                    assert.isObject(record);
+                    assert.notProperty(record, "error");
+                    augur.web.register(handle2, badPassword, {
+                        doNotFund: true,
+                        persist: true
+                    }, function (result) {
+                        assert.strictEqual(result.error, 422);
+                        assert.notProperty(result, "address");
+                        assert.notProperty(result, "privateKey");
+                        assert.notProperty(result, "keystore");
+                        assert.notProperty(result, "handle");
+                        assert.notProperty(augur.web.account, "address");
+                        assert.notProperty(augur.web.account, "privateKey");
+                        assert.notProperty(augur.web.account, "keystore");
+                        assert.notProperty(augur.web.account, "handle");
+                        augur.db.get(handle2, function (record) {
+                            assert.isObject(record);
+                            assert.notProperty(record, "error");
+
+                            // verify login with correct password still works
+                            augur.web.login(handle2, password2, function (user) {
+                                assert.notProperty(user, "error");
+                                assert.isTrue(Buffer.isBuffer(user.privateKey));
+                                assert.isString(user.address);
+                                assert.isObject(user.keystore);
+                                assert.strictEqual(
+                                    user.privateKey.toString("hex").length,
+                                    constants.KEYSIZE*2
+                                );
+                                assert.strictEqual(user.address.length, 42);
+                                augur.web.logout();
+
+                                // verify login with bad password does not work
+                                augur.web.login(handle2, badPassword, function (user) {
+                                    assert.strictEqual(user.error, 403);
+                                    assert.notProperty(user, "address");
+                                    assert.notProperty(user, "privateKey");
+                                    assert.notProperty(user, "keystore");
+                                    assert.notProperty(user, "handle");
+                                    assert.notProperty(augur.web.account, "address");
+                                    assert.notProperty(augur.web.account, "privateKey");
+                                    assert.notProperty(augur.web.account, "keystore");
+                                    assert.notProperty(augur.web.account, "handle");
+                                    done();
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+
+        it("account 1 + same password + full-sequence fund", function (done) {
+            this.timeout(constants.TIMEOUT);
+            var augur = utils.setup(require("../../src"), process.argv.slice(2));
+            augur.web.register(handle, password, {
+                onRegistered: function (account) {
+                    assert.strictEqual(account.error, 422);
+                    assert.notProperty(account, "address");
+                    assert.notProperty(account, "privateKey");
+                    assert.notProperty(account, "keystore");
+                    assert.notProperty(account, "handle");
+                    assert.notProperty(augur.web.account, "address");
+                    assert.notProperty(augur.web.account, "privateKey");
+                    assert.notProperty(augur.web.account, "keystore");
+                    assert.notProperty(augur.web.account, "handle");
+                    augur.db.get(handle, function (record) {
+                        assert.isObject(record);
+                        assert.notProperty(record, "error");
+
+                        // verify login with correct password still works
+                        augur.web.login(handle, password, function (user) {
+                            checkAccount(user);
+                            augur.web.logout();
+
+                            // verify login with bad password does not work
+                            augur.web.login(handle, password + "1", function (user) {
+                                assert.strictEqual(user.error, 403);
+                                assert.notProperty(user, "address");
+                                assert.notProperty(user, "privateKey");
+                                assert.notProperty(user, "keystore");
+                                assert.notProperty(user, "handle");
+                                assert.notProperty(augur.web.account, "address");
+                                assert.notProperty(augur.web.account, "privateKey");
+                                assert.notProperty(augur.web.account, "keystore");
+                                assert.notProperty(augur.web.account, "handle");
+                                done();
+                            });
+                        });
+                    });
+                },
+                onSendEther: done,
+                onFunded: done
+            });
+        });
+
+        it("account 1 + same password + persistence + full-sequence fund", function (done) {
+            this.timeout(constants.TIMEOUT);
+            var augur = utils.setup(require("../../src"), process.argv.slice(2));
+            augur.web.register(handle, password, {persist: true}, {
+                onRegistered: function (account) {
+                    assert.strictEqual(account.error, 422);
+                    assert.notProperty(account, "address");
+                    assert.notProperty(account, "privateKey");
+                    assert.notProperty(account, "keystore");
+                    assert.notProperty(account, "handle");
+                    assert.notProperty(augur.web.account, "address");
+                    assert.notProperty(augur.web.account, "privateKey");
+                    assert.notProperty(augur.web.account, "keystore");
+                    assert.notProperty(augur.web.account, "handle");
+                    augur.db.get(handle, function (record) {
+                        assert.isObject(record);
+                        assert.notProperty(record, "error");
+
+                        // verify login with correct password still works
+                        augur.web.login(handle, password, function (user) {
+                            checkAccount(user);
+                            augur.web.logout();
+
+                            // verify login with bad password does not work
+                            augur.web.login(handle, password + "1", function (user) {
+                                assert.strictEqual(user.error, 403);
+                                assert.notProperty(user, "address");
+                                assert.notProperty(user, "privateKey");
+                                assert.notProperty(user, "keystore");
+                                assert.notProperty(user, "handle");
+                                assert.notProperty(augur.web.account, "address");
+                                assert.notProperty(augur.web.account, "privateKey");
+                                assert.notProperty(augur.web.account, "keystore");
+                                assert.notProperty(augur.web.account, "handle");
+                                done();
+                            });
+                        });
+                    });
+                },
+                onSendEther: done,
+                onFunded: done
+            });
+        });
+    });
+
     describe("Fund", function () {
 
-        it("fund handle: " + handle, function (done) {
+        it("funding sequence: " + handle, function (done) {
             this.timeout(constants.TIMEOUT*6);
             var augur = utils.setup(require("../../src"), process.argv.slice(2));
             augur.web.login(handle, password, function (account) {
-                if (account.error) {
-                    augur.web.logout();
-                    return done(account);
-                }
+                checkAccount(account);
                 var recipient = account.address;
                 var initial_balance = abi
                     .bignum(augur.rpc.balance(recipient))
                     .dividedBy(constants.ETHER);
-                augur.web.fund({address: recipient}, function (account) {
-                    // onSent
-                    if (account.error) {
-                        augur.web.logout();
-                        return done(account);
-                    }
-                    assert.property(account, "address");
-                    assert.strictEqual(account.address, recipient);
-                }, function (account) {
-                    // onConfirm
-                    if (account.error) {
-                        augur.web.logout();
-                        return done(account);
-                    }
-                    assert.property(account, "address");
-                    assert.strictEqual(account.address, recipient);
-                    var final_balance = abi
-                        .bignum(augur.rpc.balance(recipient))
-                        .dividedBy(constants.ETHER);
-                    var delta = final_balance.sub(initial_balance).toNumber();
-                    assert.isAbove(Math.abs(delta), 49);
-                }, function (res) {
-                    // onFinal
-                    augur.getRepBalance(augur.branches.dev, recipient, function (repBalance) {
-                        if (repBalance.error) return done(repBalance);
-                        assert.strictEqual(abi.number(repBalance), 47);
-                        augur.getCashBalance(recipient, function (cashBalance) {
-                            if (cashBalance.error) return done(cashBalance);
-                            assert.strictEqual(abi.number(cashBalance), constants.FREEBIE*0.5);
-                            augur.web.logout();
-                            done();
+                augur.web.fund({address: recipient}, {
+                    onRegistered: function (account) {
+                        assert.strictEqual(account.address, recipient);
+                    },
+                    onSendEther: function (account) {
+                        assert.strictEqual(account.address, recipient);
+                        var final_balance = abi
+                            .bignum(augur.rpc.balance(recipient))
+                            .dividedBy(constants.ETHER);
+                        var delta = final_balance.sub(initial_balance).toNumber();
+                        assert.isAbove(Math.abs(delta), 49);
+                    },
+                    onFunded: function (response) {
+                        assert.notProperty(response, "error");
+                        assert.strictEqual(response.callReturn, "1");
+                        augur.getRepBalance(augur.branches.dev, recipient, function (repBalance) {
+                            assert.notProperty(repBalance, "error");
+                            assert.strictEqual(abi.number(repBalance), 47);
+                            augur.getCashBalance(recipient, function (cashBalance) {
+                                assert.notProperty(cashBalance, "error");
+                                assert.strictEqual(abi.number(cashBalance), constants.FREEBIE*0.5);
+                                augur.web.logout();
+                                done();
+                            });
                         });
-                    });
+                    }
                 });
             });
         });
