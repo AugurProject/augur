@@ -5,7 +5,7 @@
   "main": "app/main.jsx",
   "scripts": {
     "start": "node server.js",
-    "ssl": "node server.js -s"
+    "secure": "node server.js -s"
   },
   "engines": {
     "node": ">= 4.2.x"
@@ -34,7 +34,7 @@
     "async": "^1.4.2",
     "augur-abi": "^0.2.7",
     "augur-contracts": "^0.3.3",
-    "augur.js": "^0.13.5",
+    "augur.js": "^0.13.6",
     "babelify": "^6.3.0",
     "bignumber.js": "^2.1.4",
     "bootstrap": "^3.3.4",

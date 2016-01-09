@@ -12,7 +12,6 @@ var RegisterModal = React.createClass({
   mixins: [FluxMixin],
 
   getInitialState: function () {
-
     return {
       handle: '',
       password: '',
@@ -25,19 +24,16 @@ var RegisterModal = React.createClass({
   },
 
   onRegister: function (event) {
-
     if (this.isValid()) {
-
       var flux = this.getFlux();
       var self = this;
-
       augur.web.register(this.state.handle, this.state.password, {
         persist: this.state.persist
-      }, [
-        function (account) {
-          if (!account) return console.error("registration error:", account);
+      }, {
+        onRegistered: function (account) {
+          if (!account) return console.error("registration error");
           if (account.error) {
-            console.error(account);
+            console.error("registration error:", account);
             flux.actions.market.updateSharesHeld(null);
             flux.actions.config.updateAccount({
               currentAccount: null,
@@ -45,7 +41,7 @@ var RegisterModal = React.createClass({
               handle: null,
               keystore: null
             });
-            self.setState({ handleHelp: account.message });
+            self.setState({handleHelp: account.message});
             return;
           }
           console.log("account created:", account);
@@ -58,27 +54,23 @@ var RegisterModal = React.createClass({
           flux.actions.asset.updateAssets();
           self.props.onHide();
         },
-        function (res) {
+        onSendEther: function (account) {
           augur.filters.ignore(true, function (err) {
             if (err) return console.error(err);
             console.log("reset filters");
             flux.actions.config.initializeData();
             flux.actions.asset.updateAssets();
           });
-        }, function (res) {
+        },
+        onFunded: function (response) {
           console.log("register sequence complete");
           flux.actions.asset.updateAssets();
         }
-      ]);
+      });
     }
   },
 
-  componentDidMount: function (event) {
-
-  },
-
   isValid: function () {
-
     if (this.state.handle === '') {
       this.setState({handleHelp: 'enter a valid handle'});
       return false;
@@ -92,12 +84,10 @@ var RegisterModal = React.createClass({
       this.setState({verifyPasswordHelp: "passwords don't match"});
       return false;
     }
-
     return true;
   },
 
   handleChange: function (event) {
-
     var form = {};
     var help = {};
     form[event.target.name] = event.target.value;
@@ -111,7 +101,6 @@ var RegisterModal = React.createClass({
   },
 
   render: function () {
-
     var handleStyle = this.state.handleHelp ? 'error' : null;
     var passwordStyle = this.state.passwordHelp ? 'error' : null;
     var verifyPasswordStyle = this.state.verifyPasswordHelp ? 'error' : null;
