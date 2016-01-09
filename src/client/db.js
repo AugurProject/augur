@@ -14,8 +14,6 @@ var errors = require("augur-contracts").errors;
 var constants = require("../constants");
 var utils = require("../utilities");
 
-var PERSISTENT_LOGIN = (NODE_JS) ? " " : "";
-
 module.exports = {
 
     put: function (label, data, cb) {
@@ -43,8 +41,8 @@ module.exports = {
     get: function (label, cb) {
         var account, item, err = errors.DB_READ_FAILED;
         if (label !== null && label !== undefined) {
-            if (label === PERSISTENT_LOGIN) {
-                account = localStorage.getItem(PERSISTENT_LOGIN);
+            if (label === '') {
+                account = localStorage.getItem('');
                 if (account === null) {
                     if (!utils.is_function(cb)) return err;
                     return cb(err);
@@ -107,12 +105,12 @@ module.exports = {
         if (Buffer.isBuffer(data.privateKey)) {
             persist.privateKey = abi.hex(data.privateKey, true);
         }
-        localStorage.setItem(PERSISTENT_LOGIN, JSON.stringify(persist));
+        localStorage.setItem('', JSON.stringify(persist));
         return true;
     },
 
     getPersistent: function () {
-        var account = localStorage.getItem(PERSISTENT_LOGIN);
+        var account = localStorage.getItem('');
         if (account === null) return null;
         account = JSON.parse(account);
         account.privateKey = new Buffer(abi.unfork(account.privateKey), "hex");
@@ -120,12 +118,12 @@ module.exports = {
     },
 
     removePersistent: function () {
-        return this.remove(PERSISTENT_LOGIN);
+        return this.remove('');
     },
 
     remove: function (label) {
-        if (label === PERSISTENT_LOGIN) {
-            localStorage.removeItem(PERSISTENT_LOGIN);
+        if (label === '') {
+            localStorage.removeItem('');
         } else {
             localStorage.removeItem(abi.prefix_hex(utils.sha256(label)));
         }

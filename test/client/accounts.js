@@ -32,8 +32,6 @@ var password3 = utils.sha256(Math.random().toString(36).substring(4)).slice(0, 7
 var markets = augur.getMarkets(augur.branches.dev);
 var market_id = markets[markets.length - 1];
 
-var PERSISTENT_LOGIN = " ";
-
 describe("Register", function () {
 
     it("register account 1: " + handle + " / " + password, function (done) {
@@ -189,7 +187,7 @@ describe("Register", function () {
                             .length,
                         constants.KEYSIZE*2
                     );
-                    var stored = augur.db.get(PERSISTENT_LOGIN);
+                    var stored = augur.db.get('');
                     assert.strictEqual(stored.handle, handle3);
                     assert.strictEqual(abi.hex(stored.privateKey), abi.hex(augur.web.account.privateKey));
                     assert.strictEqual(stored.address, augur.web.account.address);

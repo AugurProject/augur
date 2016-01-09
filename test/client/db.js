@@ -14,8 +14,6 @@ var utils = require("../../src/utilities");
 var augurpath = "../../src/index";
 var augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
 
-var PERSISTENT_LOGIN = " ";
-
 describe("Database", function () {
 
     var kdf = "pbkdf2";
@@ -131,15 +129,15 @@ describe("Database", function () {
             var storedPersistentAccount = augur.db.getPersistent();
             storedPersistentAccount.privateKey = abi.hex(storedPersistentAccount.privateKey, true);
             assert.deepEqual(storedPersistentAccount, persistentAccount);
-            assert.isTrue(augur.db.remove(PERSISTENT_LOGIN));
-            assert.strictEqual(augur.db.get(PERSISTENT_LOGIN).error, 99);
+            assert.isTrue(augur.db.remove(''));
+            assert.strictEqual(augur.db.get('').error, 99);
             assert.isNull(augur.db.getPersistent());
             assert.isTrue(augur.db.putPersistent(persistentAccount));
             var storedPersistentAccount = augur.db.getPersistent();
             storedPersistentAccount.privateKey = abi.hex(storedPersistentAccount.privateKey, true);
             assert.deepEqual(storedPersistentAccount, persistentAccount);
             assert.isTrue(augur.db.removePersistent());
-            assert.strictEqual(augur.db.get(PERSISTENT_LOGIN).error, 99);
+            assert.strictEqual(augur.db.get('').error, 99);
             assert.isNull(augur.db.getPersistent());
         });
     });

@@ -25,7 +25,7 @@
     "keythereum": "^0.2.1",
     "moment": "^2.10.3",
     "multi-hash": "^0.1.1",
-    "node-localstorage": "^0.6.0",
+    "node-localstorage": "^1.1.2",
     "node-uuid": "^1.4.3",
     "ramble": "^0.1.0",
     "validator": "^4.0.2"
