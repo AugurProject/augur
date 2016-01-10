@@ -14,7 +14,7 @@ var MarketActions = {
         if (err) return console.error(err);
         if (comments && comments.constructor === Array && comments.length) {
           market.comments = comments;
-          self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, { market: market });
+          self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
         }
       });
     }
@@ -24,7 +24,7 @@ var MarketActions = {
     var market = this.flux.store("market").getMarket(marketId);
     var comment = {
       author: author,
-      blockNumber: self.flux.store('network').getState().blockNumber,
+      blockNumber: this.flux.store('network').getState().blockNumber,
       time: Math.floor((new Date()).getTime() / 1000),
       message: message,
       ipfsHash: null
@@ -78,6 +78,9 @@ var MarketActions = {
       marketInfo.numOutcomes = parseInt(marketInfo.numOutcomes);
       marketInfo.tradingPeriod = abi.bignum(marketInfo.tradingPeriod);
       marketInfo.traderId = abi.bignum(marketInfo.participants[account]);
+      for (var i = 0, len = marketInfo.events.length; i < len; ++i) {
+        marketInfo.events[i].endDate = utils.blockToDate(marketInfo.events[i].endDate, block);
+      }
       if (marketInfo.outcomes && marketInfo.outcomes.length) {
         async.each(marketInfo.outcomes, function (thisOutcome, nextOutcome) {
           if (thisOutcome.outstandingShares) {
@@ -126,6 +129,7 @@ var MarketActions = {
               branch: branchId,
               offset: offset,
               numMarketsToLoad: numMarketsToLoad,
+              combinatorial: true,
               callback: function (marketsInfo) {
                 if (marketsInfo && !marketsInfo.error) {
                   var blackmarkets = blacklist.markets[augur.network_id][branchId];
@@ -147,14 +151,14 @@ var MarketActions = {
                     if (err) console.error(err);
 
                     // save markets to MarketStore
-                    self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, { markets: markets });
+                    self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {markets: markets});
 
                     // loading complete!
-                    self.dispatch(constants.market.MARKETS_LOADING, { loadingPage: null });
+                    self.dispatch(constants.market.MARKETS_LOADING, {loadingPage: null});
                     self.flux.actions.config.updatePercentLoaded(100 * (index + 1) / chunks);
                   });
                 } else {
-                  console.error("couldn't retrieve markets info", marketsInfo);
+                  console.error("couldn't retrieve markets info:", marketsInfo);
                 }
               }
             });

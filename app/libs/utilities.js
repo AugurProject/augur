@@ -1,7 +1,7 @@
 var BigNumber = require('bignumber.js');
 var abi = require('augur-abi');
-var constants = require('./constants.js')
-var moment = window.moment = require('moment');
+var moment = require('moment');
+var constants = require('./constants.js');
 
 module.exports = {
 

@@ -4,6 +4,7 @@ window.$ = require('jquery');
 window._ = require('lodash');
 window.augur = require('augur.js');
 window.abi = require('augur-abi');
+window.moment = require('moment');
 
 // add jQuery to Browserify's global object so plugins attach correctly.
 global.jQuery = $;
@@ -49,7 +50,6 @@ var AssetStore = require('./stores/AssetStore');
 var BranchStore = require('./stores/BranchStore').default;
 var ConfigStore = require('./stores/ConfigStore');
 var EventStore = require('./stores/EventStore');
-var LogStore = require('./stores/LogStore');
 var MarketStore = require('./stores/MarketStore');
 var SearchStore = require('./stores/SearchStore');
 var NetworkStore = require('./stores/NetworkStore');

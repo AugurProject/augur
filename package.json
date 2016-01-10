@@ -5,7 +5,8 @@
   "main": "app/main.jsx",
   "scripts": {
     "start": "node server.js",
-    "secure": "node server.js -s"
+    "secure": "node server.js -s",
+    "test": "node test/*.js | tap-spec"
   },
   "engines": {
     "node": ">= 4.2.x"
@@ -68,6 +69,7 @@
   "devDependencies": {
     "grunt": "^0.4.5",
     "grunt-browserify": "^4.0.0",
-    "grunt-contrib-jshint": "^0.11.2"
+    "grunt-contrib-jshint": "^0.11.2",
+    "tape": "^4.4.0"
   }
 }
