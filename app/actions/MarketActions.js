@@ -75,9 +75,10 @@ var MarketActions = {
       marketInfo.creationFee = abi.bignum(marketInfo.creationFee);
       marketInfo.traderCount = abi.bignum(marketInfo.traderCount);
       marketInfo.alpha = abi.bignum(marketInfo.alpha);
-      marketInfo.numOutcomes = parseInt(marketInfo.numOutcomes);
       marketInfo.tradingPeriod = abi.bignum(marketInfo.tradingPeriod);
-      marketInfo.traderId = abi.bignum(marketInfo.participants[account]);
+      if (marketInfo.participants[account]) {
+        marketInfo.traderId = abi.bignum(marketInfo.participants[account]);
+      }
       for (var i = 0, len = marketInfo.events.length; i < len; ++i) {
         marketInfo.events[i].endDate = utils.blockToDate(marketInfo.events[i].endDate, block);
       }
@@ -179,6 +180,7 @@ var MarketActions = {
             var markets = self.flux.store('market').getState().markets;
             if (creationBlock) marketInfo.creationBlock = creationBlock;
             if (priceHistory) marketInfo.priceHistory = priceHistory;
+            marketInfo.branchId = branchId;
             self.flux.actions.market.parseMarketInfo(marketInfo, function (parsedInfo) {
               markets[parsedInfo.id] = parsedInfo;
 
@@ -190,7 +192,7 @@ var MarketActions = {
               self.flux.actions.config.updatePercentLoaded(100);
             });
           } else {
-            console.error(marketInfo);
+            console.error("loadMarket error:", marketInfo);
           }
         });
       });
