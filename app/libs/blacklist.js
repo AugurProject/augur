@@ -1,3 +1,5 @@
+"use strict";
+
 // blacklist markets & events by network id then branch id
 
 // initialize blacklists with network ids
