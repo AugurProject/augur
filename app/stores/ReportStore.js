@@ -1,8 +1,8 @@
 "use strict";
 
-var _ = require('lodash');
-var Fluxxor = require('fluxxor');
-var constants = require('../libs/constants');
+var _ = require("lodash");
+var Fluxxor = require("fluxxor");
+var constants = require("../libs/constants");
 
 var state = {
   eventsToReport: {},

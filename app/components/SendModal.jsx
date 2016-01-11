@@ -1,14 +1,16 @@
-var _ = require('lodash');
-var React = require('react');
+var _ = require("lodash");
+var augur = require("augur.js");
+var abi = require("augur-abi");
+var React = require("react");
 var Fluxxor = require("fluxxor");
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
-var ReactBootstrap = require('react-bootstrap');
+var ReactBootstrap = require("react-bootstrap");
 var Button = ReactBootstrap.Button;
 var Input = ReactBootstrap.Input;
 var Modal = ReactBootstrap.Modal;
 
-var utilities = require('../libs/utilities');
+var utilities = require("../libs/utilities");
 
 var SendCashModal = React.createClass({
 

@@ -1,13 +1,15 @@
-var React = require('react');
+var React = require("react");
+var augur = require("augur.js");
+var abi = require("augur-abi");
 var Fluxxor = require("fluxxor");
+var ReactBootstrap = require("react-bootstrap");
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
-var ReactBootstrap = require('react-bootstrap');
 var Button = ReactBootstrap.Button;
 var Input = ReactBootstrap.Input;
 var Modal = ReactBootstrap.Modal;
 var ModalTrigger = ReactBootstrap.ModalTrigger;
-var utilities = require('../libs/utilities');
+var utilities = require("../libs/utilities");
 
 var CloseMarketModal = React.createClass({
 

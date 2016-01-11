@@ -1,13 +1,13 @@
-var _ = require('lodash');
-var React = require('react');
+var _ = require("lodash");
+var React = require("react");
 var Fluxxor = require("fluxxor");
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
-var moment = require('moment');
-var Router = require('react-router');
+var moment = require("moment");
+var Router = require("react-router");
 var Link = Router.Link;
 
-var CloseMarketTrigger = require('./CloseMarket').CloseMarketTrigger;
+var CloseMarketTrigger = require("./CloseMarket").CloseMarketTrigger;
 
 var Markets = React.createClass({
 

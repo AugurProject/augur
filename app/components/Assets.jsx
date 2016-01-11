@@ -1,12 +1,12 @@
 "use strict";
 
-var _ = require('lodash');
-var abi = require('augur-abi');
-var React = require('react');
+var _ = require("lodash");
+var abi = require("augur-abi");
+var React = require("react");
 var Fluxxor = require("fluxxor");
-var ReactBootstrap = require('react-bootstrap');
-var utilities = require('../libs/utilities');
-var constants = require('../libs/constants');
+var ReactBootstrap = require("react-bootstrap");
+var utilities = require("../libs/utilities");
+var constants = require("../libs/constants");
 var SendCashModal = require('./SendModal').SendCashModal;
 var SendRepModal = require('./SendModal').SendRepModal;
 var SendEtherModal = require('./SendModal').SendEtherModal;

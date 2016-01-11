@@ -1,10 +1,10 @@
 "use strict";
 
-var augur = require('augur.js');
-var abi = require('augur-abi');
-var moment = require('moment');
-var constants = require('../libs/constants');
-var utilities = require('../libs/utilities');
+var augur = require("augur.js");
+var abi = require("augur-abi");
+var moment = require("moment");
+var constants = require("../libs/constants");
+var utilities = require("../libs/utilities");
 
 var NetworkActions = {
 

@@ -1,7 +1,7 @@
 "use strict";
 
-var keyMirror = require('fbjs/lib/keyMirror');
-var BigNumber = require('bignumber.js');
+var keyMirror = require("fbjs/lib/keyMirror");
+var BigNumber = require("bignumber.js");
 
 // Many Augur values are stored shifted 64 bits to use the lower bits
 // as fixed-point fractional values.

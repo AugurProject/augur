@@ -1,6 +1,6 @@
 {
   "name": "augur-client",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Web client for Augur, a prediction markets platform",
   "main": "app/main.jsx",
   "scripts": {

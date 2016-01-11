@@ -1,22 +1,57 @@
-var _ = require('lodash');
-var abi = require('augur-abi');
-var React = require('react');
-var Fluxxor = require('fluxxor');
+var _ = require("lodash");
+var augur = require("augur.js");
+var abi = require("augur-abi");
+var React = require("react");
+var Fluxxor = require("fluxxor");
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
-var ReactBootstrap = require('react-bootstrap');
+var ReactBootstrap = require("react-bootstrap");
 var Button = ReactBootstrap.Button;
 var ButtonGroup = ReactBootstrap.ButtonGroup;
 var Modal = ReactBootstrap.Modal;
 var Router = require("react-router");
 var State = Router.State;
 var RouteHandler = Router.RouteHandler;
-var Highstock = require('react-highcharts/bundle/highstock');
+var Highstock = require("react-highcharts/bundle/highstock");
 
-var Identicon = require('../libs/identicon');
-var utilities = require('../libs/utilities');
-var moment = require('moment');
-var Outcomes = require('./Outcomes');
+var Identicon = require("../libs/identicon");
+var utilities = require("../libs/utilities");
+var moment = require("moment");
+var Outcomes = require("./Outcomes");
+
+var NO = 1;
+var YES = 2;
+
+var getOutcomeName = function (id, market) {
+  switch (market.type) {
+  case "categorical":
+    if (market && market.description && market.description.indexOf("Choices:") > -1) {
+      var desc = market.description.split("Choices:");
+      try {
+        return {
+          type: "categorical",
+          outcome: desc[desc.length - 1].split(",")[id - 1].trim()
+        };
+      } catch (exc) {
+        console.error("categorical parse error:", market.description, exc);
+      }
+    }
+    return {
+      type: "categorical",
+      outcome: id
+    };
+    break;
+  case "scalar":
+    if (id === NO) return {type: "scalar", outcome: "⇩"};
+    return {type: "scalar", outcome: "⇧"};
+    break;
+  case "binary":
+    if (id === NO) return {type: "binary", outcome: "No"};
+    return {type: "binary", outcome: "Yes"};
+  default:
+    console.error("unknown type:", market);
+  }
+};
 
 var Market = React.createClass({
 
@@ -168,20 +203,77 @@ var Market = React.createClass({
     var traderCount = market.traderCount ? +market.traderCount.toNumber() : '-';
     var author = market.author ? abi.hex(market.author) : '-';
 
-    var outcomes = _.map(this.state.market.outcomes, function (outcome) {
-      return (
-        <div className="col-sm-6" key={ outcome.id }>
-          <Outcomes.Overview market={ this.state.market } outcome={ _.clone(outcome) } account={ this.state.account } />
-        </div>
-      );
-    }, this);
+    if (this.state.market.type === "combinatorial") {
+      window.p = augur.utils.pp.bind(augur.utils);
+      window.mkt = this.state.market;
+      var events = this.state.market.events;
+      var outcomes = [];
+      for (var i = 0, n = this.state.market.numEvents; i < n; ++i) {
+        var eventSubheading = "";
+        if (events[i].endDate) {
+          eventSubheading = "Resolves after " + events[i].endDate.format("MMMM Do, YYYY");
+        } else {
+          eventSubheading = "Loading...";
+        }
+        var outcome = [];
+        for (var j = 0, m = this.state.market.numOutcomes; j < m; ++j) {
+          // Event A
+          // [ ] Yes       [ ] No
+          // Event B
+          // [ ] Yes       [ ] No
+          var outcomeName = getOutcomeName(this.state.market.outcomes[j].id, events[i]);
+          var metalClass = (outcomeName.type === "categorical") ? "metal-categorical" : "";
+          var displayPrice;
+          if (events[i].type === "scalar") {
+            displayPrice = +this.state.market.outcomes[j].price.toFixed(2);
+          } else {
+            displayPrice = priceToPercentage(this.state.market.outcomes[j].price) + "%";
+          }
+          outcome.push(
+            <div className="col-sm-4" key={this.state.market._id+this.state.market.outcomes[j].id}>
+              <h4 className={"metal " + metalClass}>
+                <div className={outcomeName.type + " name"}>{outcomeName.outcome}</div>
+                <div className="price">{displayPrice}</div>
+              </h4>
+              <div className="summary">
+                <div className='buy trade-button'>
+                  <Button bsStyle='success'>Yes Plz</Button>
+                </div>
+                <p>{ Math.abs(this.state.market.outcomes[j].price).toFixed(4) } cash/share</p>
+                <p>{ +this.state.market.outcomes[j].outstandingShares.toFixed(2) } shares outstanding</p>
+              </div>
+            </div>
+          );
+        }
+        outcomes.push(
+          <div className="col-sm-12" key={events[i].id}>
+            <h3 className="event-description">{events[i].description}</h3>
+            <div className="subheading clearfix">
+              <span className="pull-left event-subheading">{eventSubheading}</span>
+            </div>
+            <div className="row event-outcomes">{outcome}</div>
+          </div>
+        );
+      }
+    } else {
+      var outcomes = _.map(this.state.market.outcomes, function (outcome) {
+        return (
+          <div className="col-sm-6" key={outcome.id}>
+            <Outcomes.Overview
+              market={this.state.market}
+              outcome={_.clone(outcome)}
+              account={this.state.account} />
+          </div>
+        );
+      }, this);
+    }
 
     return (
       <div id='market'>
         <h3>{ market.description }</h3>
         <div className="subheading clearfix">
-          <span className="pull-left">{ subheading }</span> 
-          <Twitter marketName={ market.description } pathname={ this.getPathname } />
+          <span className="pull-left">{subheading}</span> 
+          <Twitter marketName={market.description} pathname={this.getPathname} />
         </div>
         <div className='row'>
           { outcomes } 
@@ -196,11 +288,19 @@ var Market = React.createClass({
           <p>End date: <b>{ formattedDate }</b></p>
         </div>
         <div className='price-history col-sm-8'>
-          <Highstock id="highchart" className='price-chart' config={ config }></Highstock>
+          <Highstock
+            id="highchart"
+            className='price-chart'
+            config={config}>
+          </Highstock>
         </div>
         <div className='row'>
           <div className='col-xs-12'>
-            <Comments comments={ this.state.comments } account={ this.state.account } handle={ this.state.handle } market={ this.state.market } />
+            <Comments
+              comments={this.state.comments}
+              account={this.state.account}
+              handle={this.state.handle}
+              market={this.state.market} />
           </div>
         </div>
       </div>

@@ -3,9 +3,7 @@
  * @author Jack Peterson (jack@tinybike.net)
  */
 
-GLOBAL.augur = require("augur.js");
-augur.connect("https://eth3.augur.net");
-
+var augur = require("augur.js");
 var test = require("tape");
 var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
@@ -15,6 +13,8 @@ var moment = require("moment");
 var utils = require("../app/libs/utilities");
 var constants = require("../app/libs/constants");
 var MarketActions = require("../app/actions/MarketActions");
+
+augur.connect("https://eth3.augur.net");
 
 var account = {address: augur.from};
 var blockNumber = augur.rpc.blockNumber();
@@ -38,6 +38,9 @@ for (var i = 0; i < marketInfo.numEvents; ++i) {
 // mock flux
 MarketActions.flux = {
     actions: {
+        asset: {
+            updateAssets: function () {}
+        },
         market: MarketActions,
         config: {
             updatePercentLoaded: function (percentLoaded) {
@@ -241,3 +244,96 @@ test("loadMarket", function (t) {
     };
     MarketActions.loadMarket(marketInfo.id);
 });
+
+test("initMarket", function (t) {
+    t.plan(4);
+    var skeleton = MarketActions.initMarket(marketInfo.id);
+    t.equal(skeleton.constructor, Object, "skeleton is an object");
+    t.equal(skeleton.id.constructor, BigNumber, "skeleton market ID is a BigNumber");
+    t.equal(skeleton.branchId, marketInfo.branchId, "skeleton.branchId == marketInfo.branchId");
+    t.false(skeleton.loaded, "skeleton is not loaded");
+    t.end();
+});
+
+test("addPendingMarket", function (t) {
+    t.plan(13);
+    var complete = {returned: false, dispatch: false};
+    var newMarket = {
+        description: "a shiny new market",
+        initialLiquidity: 100,
+        tradingFee: new BigNumber("0.02")
+    };
+    MarketActions.dispatch = function (label, payload) {
+        t.equal(label, "ADD_PENDING_MARKET_SUCCESS", "dispatch: " + label);
+        t.equal(payload.constructor, Object, "payload is an object");
+        t.equal(payload.market.constructor, Object, "payload.market is an object");
+        t.true(payload.market.pending, "payload.market.pending is true");
+        t.equal(payload.market.description, newMarket.description, "payload.market.description == input description");
+        t.equal(payload.market.initialLiquidity, newMarket.initialLiquidity, "payload.market.initialLiquidity == input initialLiquidity");
+        t.equal(payload.market.tradingFee.constructor, BigNumber, "payload.market.tradingFee is a BigNumber");
+        t.true(payload.market.tradingFee.eq(newMarket.tradingFee), "payload.market.tradingFee == input tradingFee");
+        t.equal(payload.market.id.constructor, String, "payload.market.id is a string");
+        t.equal(payload.market.id.slice(0, 8), "pending.", "payload.market.id starts with 'pending.'");
+        t.false(newMarket.pending, "input does not have pending field");
+        t.false(newMarket.id, "input does not have id field");
+        complete.dispatch = true;
+        if (complete.dispatch && complete.returned) t.end();
+    };
+    var marketId = MarketActions.addPendingMarket(_.clone(newMarket));
+    t.equal(marketId.constructor, String, "new market ID is a string");
+    complete.returned = true;
+    if (complete.dispatch && complete.returned) t.end();
+});
+
+test("deleteMarket", function (t) {
+    t.plan(2);
+    var marketId = "pending." + augur.utils.sha256(JSON.stringify({
+        description: "a shiny new market",
+        initialLiquidity: 100,
+        tradingFee: new BigNumber(0.02)
+    }));
+    MarketActions.dispatch = function (label, payload) {
+        t.equal(label, "DELETE_MARKET_SUCCESS", "dispatch: " + label);
+        t.equal(payload.marketId.constructor, String, "payload.marketId is a string");
+        t.end();
+    };
+    MarketActions.deleteMarket(marketId);
+});
+
+// tradeSucceeded triggers loadMarket(marketId) => repeat loadMarket test
+test("tradeSucceeded", function (t) {
+    t.plan(3);
+    var marketId = marketInfo.id;
+    var trade = {
+        branchId: augur.branches.dev,
+        marketId: marketId,
+        outcome: "1",
+        oldPrice: new BigNumber("0.5")
+    };
+    var dispatchCount = 0;
+    MarketActions.dispatch = function (label, payload) {
+        t.true(validator.isIn(label, ["LOAD_MARKETS_SUCCESS", "MARKETS_LOADING"]), "label is LOAD_MARKETS_SUCCESS or MARKETS_LOADING");
+        if (label === "LOAD_MARKETS_SUCCESS") {
+            t.equal(payload.markets[marketId].constructor, Object, "payload.markets has marketInfo.id field");
+        } else if (label === "MARKETS_LOADING") {
+            t.equal(payload.loadingPage, null, "payload.loadingPage is null");
+        }
+        if (++dispatchCount > 1) t.end();
+    };
+    MarketActions.tradeSucceeded(trade, marketId);
+});
+
+// test("updatePendingShares", function (t) {
+//     var outcomeId = "2";
+//     var relativeShares = 2;
+//     MarketActions.dispatch = function (label, payload) {
+//         t.equal(label, "UPDATE_MARKET_SUCCESS", "dispatch: " + label);
+//         t.equal(payload.constructor, Object, "payload is an object");
+//         t.equal(payload.market.constructor, Object, "payload.market is an object");
+//         t.equal(payload.market.id.constructor, BigNumber, "payload.market.id is a BigNumber");
+//         t.true(payload.market.id.eq(marketInfo.id), "payload.market.id == input id");
+//         t.end();
+//     };
+//     console.log(marketInfo.outcomes);
+//     MarketActions.updatePendingShares(marketInfo, outcomeId, relativeShares);
+// });

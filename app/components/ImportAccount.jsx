@@ -1,13 +1,15 @@
-var React = require('react');
+var React = require("react");
+var augur = require("augur.js");
+var abi = require("augur-abi");
 var Fluxxor = require("fluxxor");
 var keys = require("keythereum");
 var uuid = require("node-uuid");
 var FluxMixin = Fluxxor.FluxMixin(React);
-var ReactBootstrap = require('react-bootstrap');
+var ReactBootstrap = require("react-bootstrap");
 var Button = ReactBootstrap.Button;
 var Input = ReactBootstrap.Input;
 var Modal = ReactBootstrap.Modal;
-var utilities = require('../libs/utilities');
+var utilities = require("../libs/utilities");
 
 var ImportAccountModal = React.createClass({
 

@@ -1,11 +1,12 @@
 "use strict";
 
-var _ = require('lodash');
-var Fluxxor = require('fluxxor');
-var constants = require('../libs/constants');
+var _ = require("lodash");
+var Fluxxor = require("fluxxor");
+var constants = require("../libs/constants");
 
 var state = {
   host: (location.protocol === "https:") ? null : "http://127.0.0.1:8545",
+  // host: "https://eth3.augur.net",
   currentAccount: null,
   privateKey: null,
   handle: null,

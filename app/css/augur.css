@@ -401,6 +401,17 @@ nav.header .menu a:hover {
     background-color: #777;
 }
 
+.event-outcomes {
+    padding-bottom: 15px;
+}
+.event-description {
+    font-size: 14pt !important;
+    border-bottom: 1px solid #474545 !important;
+}
+.event-subheading {
+    font-size: 10pt !important;
+}
+
 .account-info {
     color: #fff;
     padding-bottom: 10px;

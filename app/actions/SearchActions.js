@@ -1,6 +1,6 @@
 "use strict";
 
-var constants = require('../libs/constants');
+var constants = require("../libs/constants");
 
 module.exports = {
   

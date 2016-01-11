@@ -1,13 +1,13 @@
 "use strict";
 
-var _ = require('lodash');
-var async = require('async');
-var BigNumber = require('bignumber.js');
-var abi = require('augur-abi');
-var augur = require('augur.js');
-var constants = require('../libs/constants');
-var utils = require('../libs/utilities');
-var blacklist = require('../libs/blacklist');
+var _ = require("lodash");
+var async = require("async");
+var BigNumber = require("bignumber.js");
+var abi = require("augur-abi");
+var augur = require("augur.js");
+var constants = require("../libs/constants");
+var utils = require("../libs/utilities");
+var blacklist = require("../libs/blacklist");
 
 var MarketActions = {
 
@@ -213,27 +213,19 @@ var MarketActions = {
   initMarket: function (marketId) {
     return {
       id: marketId,
-      branchId: this.flux.store('branch').getCurrentBranch().id,
+      branchId: this.flux.store("branch").getCurrentBranch().id,
       loaded: false
     };
   },
 
-  addPendingMarket: function (market, pendingId) {
+  addPendingMarket: function (market) {
 
-  	// generate temp pending id
-  	var s = JSON.stringify(market);
-	  var hash = 0, i, chr, len;
-	  for (i = 0, len = s.length; i < len; i++) {
-		  chr = s.charCodeAt(i);
-		  hash = ((hash << 5) - hash) + chr;
-		  hash |= 0;   // convert to 32bit integer
-	  }
-  	market.id = 'pending.'+new BigNumber(hash);
-  	market.pending = true;
+    // generate a (temporary) pending market ID
+    market.id = "pending." + augur.utils.sha256(JSON.stringify(market));
+    market.pending = true;
 
-		this.dispatch(constants.market.ADD_PENDING_MARKET_SUCCESS, {market: market});
-
-		return market.id;
+    this.dispatch(constants.market.ADD_PENDING_MARKET_SUCCESS, {market: market});
+    return market.id;
   },
 
   deleteMarket: function (marketId) {
@@ -247,7 +239,7 @@ var MarketActions = {
     this.flux.actions.market.loadMarket(marketId);
   },
 
-  updatePendingShares: function(market, outcomeId, relativeShares) {
+  updatePendingShares: function (market, outcomeId, relativeShares) {
 
     // relativeShares is a signed integer representing a trade (buy/sell)
     if (market && outcomeId && relativeShares) {

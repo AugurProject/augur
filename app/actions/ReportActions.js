@@ -1,10 +1,10 @@
 "use strict";
 
-var _ = require('lodash');
-var abi = require('augur-abi');
-var augur = require('augur.js');
-var secureRandom = require('secure-random');
-var constants = require('../libs/constants');
+var _ = require("lodash");
+var abi = require("augur-abi");
+var augur = require("augur.js");
+var secureRandom = require("secure-random");
+var constants = require("../libs/constants");
 
 var bytesToHex = function (bytes) {
   return '0x' + _.reduce(bytes, function (hexString, byte) {

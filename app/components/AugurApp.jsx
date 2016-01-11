@@ -1,41 +1,38 @@
 var React = require("react");
+var _ = require("lodash");
 var Fluxxor = require("fluxxor");
-var ReactBootstrap = require('react-bootstrap');
+var ReactBootstrap = require("react-bootstrap");
 var Router = require("react-router");
 var RouteHandler = Router.RouteHandler;
 var Link = Router.Link;
 var Route = Router.Route;
 var cookie = require("react-cookie");
 
-var FluxMixin = Fluxxor.FluxMixin(React),
-    StoreWatchMixin = Fluxxor.StoreWatchMixin;
+var FluxMixin = Fluxxor.FluxMixin(React);
+var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
 var OverlayTrigger = ReactBootstrap.OverlayTrigger;
 var Popover = ReactBootstrap.Popover;
-
-var ReactBootstrap = require('react-bootstrap');
 var ProgressBar = ReactBootstrap.ProgressBar;
 var Modal = ReactBootstrap.Modal;
 var Input = ReactBootstrap.Input;
 
-var utilities = require('../libs/utilities');
-var constants = require('../libs/constants');
-
-var Period = require('./Period');
-var Network = require('./Network');
-var Assets = require('./Assets');
-var Confirm = require('./Confirm');
-
-var SignInModal = require('./SignIn');
-var RegisterModal = require('./Register');
-var SendCashModal = require('./SendModal').SendCashModal;
-var SendRepModal = require('./SendModal').SendRepModal;
-var SendEtherModal = require('./SendModal').SendEtherModal;
+var utilities = require("../libs/utilities");
+var constants = require("../libs/constants");
+var Assets = require("./Assets");
+var SignInModal = require("./SignIn");
+var RegisterModal = require("./Register");
+var SendCashModal = require("./SendModal").SendCashModal;
+var SendRepModal = require("./SendModal").SendRepModal;
+var SendEtherModal = require("./SendModal").SendEtherModal;
 
 
 var AugurApp = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin('branch', 'asset', 'network', 'config', 'report', 'market', 'search')],
+  mixins: [
+    FluxMixin,
+    StoreWatchMixin('branch', 'asset', 'network', 'config', 'report', 'market', 'search')
+  ],
 
   getInitialState: function () {
     return {
@@ -70,7 +67,7 @@ var AugurApp = React.createClass({
   },
 
   componentDidMount: function () {
-    this.getFlux().actions.config.connect();
+    this.getFlux().actions.config.connect(process.env.AUGUR_HOST);
   },
 
   getLoadingProgress: function () {

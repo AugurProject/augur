@@ -1,23 +1,27 @@
-var React = require('react');
+var React = require("react");
+var _ = require("lodash");
+var augur = require("augur.js");
+var abi = require("augur-abi");
 var Fluxxor = require("fluxxor");
-var keys = require('keythereum');
+var keys = require("keythereum");
+var ReactBootstrap = require("react-bootstrap");
+var Router = require("react-router");
+
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
-var ReactBootstrap = require('react-bootstrap');
 var Button = ReactBootstrap.Button;
 var Table = ReactBootstrap.Table;
-var Router = require('react-router');
 var Link = Router.Link;
 var ListGroup = ReactBootstrap.ListGroup;
 var ListGroupItem = ReactBootstrap.ListGroupItem;
 
-var utilities = require('../libs/utilities');
-var constants = require('../libs/constants');
+var utilities = require("../libs/utilities");
+var constants = require("../libs/constants");
 
-var ImportAccountModal = require('./ImportAccount');
-var CloseMarketModal = require('./CloseMarket').CloseMarketModal;
-var Markets = require('./Markets');
-var Branch = require('./Branch');
+var ImportAccountModal = require("./ImportAccount");
+var CloseMarketModal = require("./CloseMarket").CloseMarketModal;
+var Markets = require("./Markets");
+var Branch = require("./Branch");
 
 var Overview = React.createClass({
 

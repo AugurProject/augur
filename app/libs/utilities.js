@@ -1,10 +1,10 @@
 "use strict";
 
-var BigNumber = require('bignumber.js');
-var abi = require('augur-abi');
-var augur = require('augur.js');
-var moment = require('moment');
-var constants = require('./constants');
+var BigNumber = require("bignumber.js");
+var abi = require("augur-abi");
+var augur = require("augur.js");
+var moment = require("moment");
+var constants = require("./constants");
 
 module.exports = {
 
