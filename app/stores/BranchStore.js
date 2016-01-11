@@ -1,7 +1,9 @@
-import Fluxxor from 'fluxxor'
-import moment from 'moment'
+"use strict";
 
-import constants from '../libs/constants'
+import Fluxxor from 'fluxxor';
+import moment from 'moment';
+
+import constants from '../libs/constants';
 
 export class Branch {
   constructor(id, periodLength) {

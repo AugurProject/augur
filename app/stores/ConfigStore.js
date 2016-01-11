@@ -1,3 +1,6 @@
+"use strict";
+
+var _ = require('lodash');
 var Fluxxor = require('fluxxor');
 var constants = require('../libs/constants');
 
@@ -11,7 +14,7 @@ var state = {
   loaded: false,
   isHosted: false,
   percentLoaded: null
-}
+};
 
 var ConfigStore = Fluxxor.createStore({
 

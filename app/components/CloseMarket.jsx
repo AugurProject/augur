@@ -13,19 +13,10 @@ var CloseMarketModal = React.createClass({
 
   mixins: [FluxMixin, StoreWatchMixin('market')],
 
-  getInitialState: function () {
-    return {
-    };
-  },
-
   getStateFromFlux: function () {
     return {
       currentBlock: this.getFlux().store('network').getState().blockNumber
     };
-  },
-
-  componentDidMount: function(event) {
-
   },
 
   onConfirm: function (event) {
@@ -43,12 +34,10 @@ var CloseMarketModal = React.createClass({
   },
 
   onCancel: function(event) {
-
     this.props.onRequestHide();
   },
 
   render: function () {
-
     return (
       <Modal {...this.props} id='close-market-modal'>
         <div className="modal-header clearfix">

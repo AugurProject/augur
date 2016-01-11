@@ -47,7 +47,6 @@ var AddMarketModal = React.createClass({
 
   getStateFromFlux: function () {
     var flux = this.getFlux();
-
     return {
       cash: flux.store('asset').getState().cash,
       currentBlock: flux.store('network').getState().blockNumber,

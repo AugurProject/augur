@@ -23,10 +23,6 @@ var ImportAccountModal = React.createClass({
     };
   },
 
-  getStateFromFlux: function () {
-    return {};
-  },
-
   onImportAccount: function (event) {
     if (this.isValid()) {
       var handle = this.state.handle;

@@ -34,7 +34,6 @@ var RegisterModal = React.createClass({
           if (!account) return console.error("registration error");
           if (account.error) {
             console.error("registration error:", account);
-            flux.actions.market.updateSharesHeld(null);
             flux.actions.config.updateAccount({
               currentAccount: null,
               privateKey: null,

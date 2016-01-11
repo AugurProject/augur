@@ -1,8 +1,12 @@
-import _ from 'lodash'
+"use strict";
 
-import { Branch } from '../stores/BranchStore'
-import constants from '../libs/constants'
-import utilities from '../libs/utilities'
+import _ from 'lodash';
+import abi from 'augur-abi';
+import augur from 'augur.js';
+
+import { Branch } from '../stores/BranchStore';
+import constants from '../libs/constants';
+import utilities from '../libs/utilities';
 
 export default {
   

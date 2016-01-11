@@ -12,21 +12,22 @@
 
 // made browserify-friendly, scott@augur.net
 
+"use strict";
+
 var PNGlib = require('pnglib');
 
-var Identicon = function(hash, size, margin) {
-
+var Identicon = function (hash, size, margin) {
     this.hash   = hash;
     this.size   = size   || 64;
-    this.margin = margin || .08;
-}
+    this.margin = margin || 0.08;
+};
 
 Identicon.prototype = {
     hash:   null,
     size:   null,
     margin: null,
 
-    render: function() {
+    render: function () {
         var hash    = this.hash,
             size    = this.size,
             margin  = Math.floor(size * this.margin),
@@ -37,7 +38,7 @@ Identicon.prototype = {
         var bg      = image.color(255, 255, 255);
 
         // foreground is last 7 chars as hue at 50% saturation, 70% brightness
-        var rgb     = this.hsl2rgb(parseInt(hash.substr(-7), 16) / 0xfffffff, .5, .7),
+        var rgb     = this.hsl2rgb(parseInt(hash.substr(-7), 16) / 0xfffffff, 0.5, 0.7),
             fg      = image.color(rgb[0] * 255, rgb[1] * 255, rgb[2] * 255);
 
         // the first 15 characters of the hash control the pixels (even/odd)
@@ -59,7 +60,7 @@ Identicon.prototype = {
         return image;
     },
 
-    rectangle: function(x, y, w, h, color, image) {
+    rectangle: function (x, y, w, h, color, image) {
         var i, j;
         for (i = x; i < x + w; i++) {
             for (j = y; j < y + h; j++) {
@@ -69,10 +70,10 @@ Identicon.prototype = {
     },
 
     // adapted from: https://gist.github.com/aemkei/1325937
-    hsl2rgb: function(h, s, b){
+    hsl2rgb: function (h, s, b){
         h *= 6;
         s = [
-            b += s *= b < .5 ? b : 1 - b,
+            b += s *= b < 0.5 ? b : 1 - b,
             b - h % 1 * s * 2,
             b -= s *= 2,
             b,
@@ -87,9 +88,9 @@ Identicon.prototype = {
         ];
     },
 
-    toString: function(){
+    toString: function () {
         return this.render().getBase64();
     }
-}
+};
 
 module.exports = Identicon;

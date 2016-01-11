@@ -1,4 +1,7 @@
+"use strict";
+
 var abi = require('augur-abi');
+var augur = require('augur.js');
 var constants = require('../libs/constants');
 
 var AssetActions = {

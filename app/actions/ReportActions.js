@@ -1,8 +1,10 @@
+"use strict";
+
 var _ = require('lodash');
+var abi = require('augur-abi');
+var augur = require('augur.js');
 var secureRandom = require('secure-random');
-
 var constants = require('../libs/constants');
-
 
 var bytesToHex = function (bytes) {
   return '0x' + _.reduce(bytes, function (hexString, byte) {
@@ -110,8 +112,16 @@ var ReportActions = {
    * @param report {Object} branchId, votePeriod, decisions and salt.
    */
   submitReport: function (report) {
-    var log = x => console.log('Augur.report callback:', x);
-    var returned = Augur.report(report.branchId, report.decisions, report.votePeriod, report.salt, log, log, log);
+    var log = x => console.log('augur.report callback:', x);
+    var returned = augur.report(
+      report.branchId,
+      report.decisions,
+      report.votePeriod,
+      report.salt,
+      log,
+      log,
+      log
+    );
     console.log('Augur.report returned:', returned);
   },
 

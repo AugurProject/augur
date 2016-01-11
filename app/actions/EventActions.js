@@ -1,5 +1,7 @@
-var _ = require('lodash');
+"use strict";
 
+var _ = require('lodash');
+var augur = require('augur.js');
 var constants = require('../libs/constants');
 var utilities = require('../libs/utilities');
 

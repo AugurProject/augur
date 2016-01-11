@@ -1,3 +1,6 @@
+"use strict";
+
+var _ = require('lodash');
 var Fluxxor = require('fluxxor');
 var constants = require('../libs/constants');
 
@@ -6,7 +9,7 @@ var state = {
   reputation: null,
   ether: null,
   marketsHeld: {}
-}
+};
 
 var AssetStore = Fluxxor.createStore({
   

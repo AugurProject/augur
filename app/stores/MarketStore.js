@@ -1,6 +1,8 @@
+"use strict";
+
+var _ = require('lodash');
 var Fluxxor = require('fluxxor');
 var constants = require('../libs/constants');
-var _ = require('lodash');
 
 var state = {
   markets: {},
@@ -30,8 +32,11 @@ var MarketStore = Fluxxor.createStore({
 
     if (loaded.length == requiredProperties.length) {
       return true;
-    } else if (state.markets[marketId].invalid) {   // also flag loaded if it's just invalid (ie. no outcomes or price)
+
+    // also flag loaded if it's just invalid (ie. no outcomes or price)
+    } else if (state.markets[marketId].invalid) {
       return true;
+
     } else {
       return false;
     }
@@ -99,7 +104,7 @@ var MarketStore = Fluxxor.createStore({
   },
 
   handleAddPendingMarketSuccess: function (payload) {
-    state.pendingMarkets[payload.market.id] = payload.market
+    state.pendingMarkets[payload.market.id] = payload.market;
     this.emit(constants.CHANGE_EVENT);
   },
 

@@ -21,10 +21,6 @@ var SignInModal = React.createClass({
     };
   },
 
-  getStateFromFlux: function () {
-    return {};
-  },
-
   onSignIn: function (event) {
     if (this.isValid()) {
       var flux = this.getFlux();
@@ -39,7 +35,6 @@ var SignInModal = React.createClass({
         if (account) {
           if (account.error) {
             self.setState({handleHelp: account.message});
-            flux.actions.market.updateSharesHeld(null);
             flux.actions.config.updateAccount({
               currentAccount: null,
               privateKey: null,

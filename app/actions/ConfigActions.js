@@ -1,3 +1,7 @@
+"use strict";
+
+var abi = require('augur-abi');
+var augur = require('augur.js');
 var constants = require('../libs/constants');
 var utilities = require('../libs/utilities');
 
@@ -128,7 +132,6 @@ var ConfigActions = {
 
   signOut: function() {
     augur.web.logout();
-    this.flux.actions.market.updateSharesHeld(null);
     this.dispatch(constants.config.UPDATE_ACCOUNT, {
       currentAccount: null,
       privateKey: null,

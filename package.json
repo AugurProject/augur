@@ -7,7 +7,8 @@
     "start": "node server.js",
     "secure": "node server.js -s",
     "test": "node ./test/*.js | ./node_modules/tap-spec/bin/cmd.js",
-    "coverage": "istanbul cover ./node_modules/tape/bin/tape --report lcovonly -- ./test/*.js && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
+    "lint": "jshint ./app/stores/*.js && jshint ./app/actions/*.js && jshint ./app/libs/blacklist.js && jshint ./app/libs/constants.js && jshint ./app/libs/utilities.js && jshint ./app/libs/identicon.js",
+    "coverage": "istanbul cover ./node_modules/tape/bin/tape --include-all-sources --report lcovonly -- ./test/*.js && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
   "engines": {
     "node": ">= 4.2.x"
@@ -37,6 +38,7 @@
     "augur-abi": "^0.2.7",
     "augur-contracts": "^0.3.3",
     "augur.js": "^0.13.6",
+    "babel-runtime": "^6.3.19",
     "babelify": "^6.3.0",
     "bignumber.js": "^2.1.4",
     "bootstrap": "^3.3.4",
@@ -68,13 +70,14 @@
     "react-dom": "^0.14.0"
   },
   "devDependencies": {
+    "babel-istanbul": "^0.6.0",
     "coveralls": "^2.11.6",
     "grunt": "^0.4.5",
     "grunt-browserify": "^4.0.0",
     "grunt-contrib-jshint": "^0.11.2",
-    "istanbul": "^0.4.1",
     "tap-spec": "^4.1.1",
     "tape": "^4.4.0",
-    "validator": "^4.5.0"
+    "validator": "^4.5.0",
+    "webpack": "^1.12.10"
   }
 }
