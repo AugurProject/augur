@@ -18,7 +18,7 @@ GLOBAL.contracts = require("augur-contracts");
 GLOBAL.abi = require("augur-abi");
 GLOBAL.constants = require("./src/constants");
 GLOBAL.utils = require("./src/utilities");
-GLOBAL.Tx = require("./src/tx");
+GLOBAL.Tx = contracts.Tx;
 GLOBAL.augur = (GLOBAL.reload = function () {
     return utils.setup(utils.reset("./src/index"), process.argv.slice(2));
 })();
