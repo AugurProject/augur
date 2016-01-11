@@ -58,10 +58,6 @@ module.exports = {
   search: keyMirror({
     KEYWORDS_UPDATED: null
   }),
-  event: keyMirror({
-    LOAD_EVENTS_SUCCESS: null,
-    UPDATE_EVENTS_SUCCESS: null
-  }),
   report: keyMirror({
     REPORTS_STORAGE: null,
     LOAD_EVENTS_TO_REPORT_SUCCESS: null,

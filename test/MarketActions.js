@@ -13,14 +13,14 @@ var moment = require("moment");
 var utils = require("../app/libs/utilities");
 var constants = require("../app/libs/constants");
 var MarketActions = require("../app/actions/MarketActions");
+var marketInfo = require("./marketInfo");
 
 augur.connect("https://eth3.augur.net");
 
-var address = augur.from;
-var account = {address: address};
-var blockNumber = augur.rpc.blockNumber();
-var marketInfo = require("./marketInfo");
 var rawInfo = clone(marketInfo);
+var account = {address: augur.from};
+var blockNumber = augur.rpc.blockNumber();
+
 marketInfo.id = new BigNumber(marketInfo._id);
 marketInfo.endDate = utils.blockToDate(marketInfo.endDate, blockNumber);
 marketInfo.creationBlock = utils.blockToDate(marketInfo.creationBlock, blockNumber)
@@ -41,8 +41,8 @@ for (i = 0; i < marketInfo.numOutcomes; ++i) {
     } else {
         marketInfo.outcomes[i].outstandingShares = new BigNumber(0);
     }
-    if (marketInfo.outcomes[i].shares[address]) {
-        marketInfo.outcomes[i].sharesHeld = new BigNumber(marketInfo.outcomes[i].shares[address]);
+    if (marketInfo.outcomes[i].shares[account.address]) {
+        marketInfo.outcomes[i].sharesHeld = new BigNumber(marketInfo.outcomes[i].shares[account.address]);
     } else {
         marketInfo.outcomes[i].sharesHeld = new BigNumber(0);
     }
