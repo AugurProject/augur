@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "secure": "node server.js -s",
-    "test": "node test/*.js | tap-spec"
+    "test": "node ./test/*.js | ./node_modules/tap-spec/bin/cmd.js",
+    "coverage": "istanbul cover ./node_modules/tape/bin/tape --report lcovonly -- ./test/*.js && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
   "engines": {
     "node": ">= 4.2.x"
@@ -67,9 +68,12 @@
     "react-dom": "^0.14.0"
   },
   "devDependencies": {
+    "coveralls": "^2.11.6",
     "grunt": "^0.4.5",
     "grunt-browserify": "^4.0.0",
     "grunt-contrib-jshint": "^0.11.2",
+    "istanbul": "^0.4.1",
+    "tap-spec": "^4.1.1",
     "tape": "^4.4.0",
     "validator": "^4.5.0"
   }

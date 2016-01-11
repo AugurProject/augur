@@ -199,25 +199,6 @@ var MarketActions = {
     });
   },
 
-  loadSomeMarkets: function (marketIds) {
-    var self = this;
-    var markets =  this.flux.store('market').getState().markets;
-
-    _.each(marketIds, function (marketId) {
-
-      // initialize market if it doesn't exist
-      if (!markets[marketId]) {
-        var market = self.flux.actions.market.initMarket(marketId);
-        self.dispatch(constants.market.ADD_MARKET_SUCCESS, { market: market });
-      }
-
-      var commands = self.flux.actions.market.batchMarket(marketId);
-      _.each(_.chunk(commands, 5), function (chunk) {
-          self.flux.actions.market.batch(chunk);
-      });
-    });
-  },
-
   // first batch of data fetch from market
   batchMarket: function (marketId) {
     var self = this;
@@ -369,70 +350,6 @@ var MarketActions = {
     batch.execute();
   },
 
-  updateMarket: function (market, supplement) {
-    var self = this;
-    if (market && market.id && market.id !== "0x") {
-
-      var marketId = abi.hex(market.id);
-
-      // Calculate market properties before dispatch (seems to belong in a Market class)
-      if (!market.outstandingShares && market.outstandingShares !== 0) {
-        market.outstandingShares = _.reduce(market.outcomes, function(outstandingShares, outcome) {
-          if (outcome) return outstandingShares + abi.number(outcome.outstandingShares);
-        }, 0);
-      }
-
-      this.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
-
-      // supplement ch call if all required properties are present
-      var requiredProperties = ["id", "traderId", "numOutcomes", "events"];
-      var currentMarket = this.flux.store('market').getMarket(market.id);
-      var ready = _.intersection(_.keys(currentMarket), requiredProperties);
-      if (ready.length == requiredProperties.length && !supplement) {
-        var commands = this.flux.actions.market.batchSupplementMarket(currentMarket);
-        _.each(_.chunk(commands, 5), function (chunk) {
-          self.flux.actions.market.batch(chunk);
-        });
-      }
-
-      var marketState = this.flux.store('market').getState();
-
-      // initial markets loading
-      if (marketState.loadingPage) {
-
-        // use this progressbar for all markets
-        // var totalLoaded = _.map(marketState.markets, 'loaded');
-        // var percentLoaded = (_.filter(totalLoaded).length / totalLoaded.length) * 100;
-        // this.flux.actions.config.updatePercentLoaded(percentLoaded);
-
-        var marketsPage = _.filter(marketState.markets, function(market) {
-          return _.contains(marketState.marketLoadingIds[marketState.loadingPage-1], market.id);
-        });
-        var pageLoaded = _.map(marketsPage, 'loaded');
-
-        // use this progress bar for initial page only
-        var percentLoaded = (_.filter(pageLoaded).length / pageLoaded.length) * 100;
-        this.flux.actions.config.updatePercentLoaded(percentLoaded);
-
-        if (pageLoaded.length && !_.includes(pageLoaded, false)) {
-
-          // check if next page exists
-          var nextPage = marketState.loadingPage + 1;
-          if (marketState.marketLoadingIds[nextPage-1]) {
-
-            this.dispatch(constants.market.MARKETS_LOADING, {loadingPage: nextPage});
-            this.flux.actions.market.loadSomeMarkets(marketState.marketLoadingIds[nextPage-1]);
-
-          } else {
-
-            this.dispatch(constants.market.MARKETS_LOADING, {loadingPage: null});
-            this.flux.actions.config.updatePercentLoaded(100);
-          }
-        }
-      }
-    }
-  },
-
   // return a skeleton market
   initMarket: function (marketId) {
     return {
@@ -460,8 +377,7 @@ var MarketActions = {
 		return market.id;
   },
 
-  deleteMarket: function(marketId) {
-
+  deleteMarket: function (marketId) {
     this.dispatch(constants.market.DELETE_MARKET_SUCCESS, {marketId: marketId});
   },
 

@@ -19,7 +19,6 @@ addons:
 
 before_script:
   - npm install
-  - npm install -g tap-spec
 
 script:
-  - npm test
+  - npm run coverage
