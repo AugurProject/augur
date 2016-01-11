@@ -7,7 +7,7 @@ var augur = require("augur.js");
 var test = require("tape");
 var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
-var _ = require("lodash");
+var clone = require("clone");
 var validator = require("validator");
 var moment = require("moment");
 var utils = require("../app/libs/utilities");
@@ -16,10 +16,11 @@ var MarketActions = require("../app/actions/MarketActions");
 
 augur.connect("https://eth3.augur.net");
 
-var account = {address: augur.from};
+var address = augur.from;
+var account = {address: address};
 var blockNumber = augur.rpc.blockNumber();
 var marketInfo = require("./marketInfo");
-var rawInfo = _.cloneDeep(marketInfo);
+var rawInfo = clone(marketInfo);
 marketInfo.id = new BigNumber(marketInfo._id);
 marketInfo.endDate = utils.blockToDate(marketInfo.endDate, blockNumber);
 marketInfo.creationBlock = utils.blockToDate(marketInfo.creationBlock, blockNumber)
@@ -34,6 +35,21 @@ if (traderId) marketInfo.traderId = new BigNumber(traderId);
 for (var i = 0; i < marketInfo.numEvents; ++i) {
     marketInfo.events[i].endDate = utils.blockToDate(marketInfo.events[i].endDate);
 }
+for (i = 0; i < marketInfo.numOutcomes; ++i) {
+    if (marketInfo.outcomes[i].outstandingShares) {
+        marketInfo.outcomes[i].outstandingShares = new BigNumber(marketInfo.outcomes[i].outstandingShares);
+    } else {
+        marketInfo.outcomes[i].outstandingShares = new BigNumber(0);
+    }
+    if (marketInfo.outcomes[i].shares[address]) {
+        marketInfo.outcomes[i].sharesHeld = new BigNumber(marketInfo.outcomes[i].shares[address]);
+    } else {
+        marketInfo.outcomes[i].sharesHeld = new BigNumber(0);
+    }
+    marketInfo.outcomes[i].pendingShares = new BigNumber(0);
+    marketInfo.outcomes[i].price = new BigNumber(marketInfo.outcomes[i].price);
+}
+marketInfo.loaded = true;
 
 // mock flux
 MarketActions.flux = {
@@ -60,7 +76,7 @@ MarketActions.flux = {
             },
             getState: function () {
                 var markets = {};
-                markets[marketInfo.id] = _.cloneDeep(marketInfo);
+                markets[marketInfo.id] = clone(marketInfo);
                 return {markets: markets};
             }
         },
@@ -176,7 +192,7 @@ test("addComment", function (t) {
 
 test("parseMarketInfo", function (t) {
     t.plan(21);
-    var info = _.cloneDeep(rawInfo);
+    var info = clone(rawInfo);
     MarketActions.dispatch = function (label, payload) { throw new Error(); };
     augur.getMarketCreationBlock(rawInfo._id, function (creationBlock) {
         t.true(validator.isInt(creationBlock), "creation block number is an integer");
@@ -184,7 +200,7 @@ test("parseMarketInfo", function (t) {
         augur.getMarketPriceHistory(rawInfo._id, function (priceHistory) {
             t.equal(priceHistory.constructor, Object, "priceHistory is an object");
             info.priceHistory = priceHistory;
-            MarketActions.parseMarketInfo(_.cloneDeep(info), function (parsedInfo) {
+            MarketActions.parseMarketInfo(clone(info), function (parsedInfo) {
                 t.false(rawInfo.id, "raw marketInfo's id field is unassigned after parseMarketInfo");
                 t.equal(parsedInfo.id.constructor, BigNumber, "parsed marketInfo.id is a BigNumber");
                 t.true(parsedInfo.id.eq(new BigNumber(rawInfo._id)), "check parsed marketInfo.id value");
@@ -279,7 +295,7 @@ test("addPendingMarket", function (t) {
         complete.dispatch = true;
         if (complete.dispatch && complete.returned) t.end();
     };
-    var marketId = MarketActions.addPendingMarket(_.clone(newMarket));
+    var marketId = MarketActions.addPendingMarket(clone(newMarket));
     t.equal(marketId.constructor, String, "new market ID is a string");
     complete.returned = true;
     if (complete.dispatch && complete.returned) t.end();
@@ -323,17 +339,18 @@ test("tradeSucceeded", function (t) {
     MarketActions.tradeSucceeded(trade, marketId);
 });
 
-// test("updatePendingShares", function (t) {
-//     var outcomeId = "2";
-//     var relativeShares = 2;
-//     MarketActions.dispatch = function (label, payload) {
-//         t.equal(label, "UPDATE_MARKET_SUCCESS", "dispatch: " + label);
-//         t.equal(payload.constructor, Object, "payload is an object");
-//         t.equal(payload.market.constructor, Object, "payload.market is an object");
-//         t.equal(payload.market.id.constructor, BigNumber, "payload.market.id is a BigNumber");
-//         t.true(payload.market.id.eq(marketInfo.id), "payload.market.id == input id");
-//         t.end();
-//     };
-//     console.log(marketInfo.outcomes);
-//     MarketActions.updatePendingShares(marketInfo, outcomeId, relativeShares);
-// });
+test("updatePendingShares", function (t) {
+    t.plan(6);
+    var outcomeId = 2;
+    var relativeShares = 2;
+    MarketActions.dispatch = function (label, payload) {
+        t.equal(label, "UPDATE_MARKET_SUCCESS", "dispatch: " + label);
+        t.equal(payload.constructor, Object, "payload is an object");
+        t.equal(payload.market.constructor, Object, "payload.market is an object");
+        t.equal(payload.market.id.constructor, BigNumber, "payload.market.id is a BigNumber");
+        t.true(payload.market.id.eq(marketInfo.id), "payload.market.id == input id");
+        t.true(marketInfo.outcomes[outcomeId - 1].pendingShares.plus(new BigNumber(relativeShares)).eq(payload.market.outcomes[outcomeId - 1].pendingShares), "after outcome pendingShares == before outcome pendingShares + signed trade");
+        t.end();
+    };
+    MarketActions.updatePendingShares(clone(marketInfo), outcomeId, relativeShares);
+});

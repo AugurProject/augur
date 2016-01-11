@@ -239,14 +239,10 @@ var MarketActions = {
     this.flux.actions.market.loadMarket(marketId);
   },
 
+  // relativeShares is a signed integer representing a trade (buy/sell)
   updatePendingShares: function (market, outcomeId, relativeShares) {
-
-    // relativeShares is a signed integer representing a trade (buy/sell)
     if (market && outcomeId && relativeShares) {
-
-      var pendingShares = market.outcomes[outcomeId-1].pendingShares.toNumber() + parseFloat(relativeShares);
-      market.outcomes[outcomeId-1].pendingShares = abi.bignum(pendingShares);
-
+      market.outcomes[outcomeId-1].pendingShares = market.outcomes[outcomeId - 1].pendingShares.plus(abi.bignum(relativeShares));
       this.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
     }
   }
