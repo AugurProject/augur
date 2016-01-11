@@ -302,7 +302,7 @@ test("deleteMarket", function (t) {
 
 // tradeSucceeded triggers loadMarket(marketId) => repeat loadMarket test
 test("tradeSucceeded", function (t) {
-    t.plan(3);
+    t.plan(4);
     var marketId = marketInfo.id;
     var trade = {
         branchId: augur.branches.dev,
