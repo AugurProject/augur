@@ -42,7 +42,7 @@ let OrderTicketStep3 = React.createClass({
                     <div>
                         <button
                             className="btn btn-block btn-md btn-fill btn-info orderTicket-submitAction"
-                            ng-click="orderTicket.onContinueActionClicked()"
+                            onClick={this.props.onContinue}
                             ng-show="!orderTicket.process.isEnteringOrder">
                             Continue
                         </button>

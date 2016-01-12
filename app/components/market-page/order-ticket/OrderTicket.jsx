@@ -1,7 +1,7 @@
 let React = require('react');
-let OrderTicketStep1 = require('./order-ticket/OrderTicketStep1.jsx');
-let OrderTicketStep2 = require('./order-ticket/OrderTicketStep2.jsx');
-let OrderTicketStep3 = require('./order-ticket/OrderTicketStep3.jsx');
+let OrderTicketStep1 = require('./OrderTicketStep1.jsx');
+let OrderTicketStep2 = require('./OrderTicketStep2.jsx');
+let OrderTicketStep3 = require('./OrderTicketStep3.jsx');
 
 let OrderTicket = React.createClass({
     getInitialState() {
@@ -9,13 +9,45 @@ let OrderTicket = React.createClass({
             order: {
                 price: null,
                 quantity: null,
-                isBuy: null
+                side: null
             },
             ticketProcess: {
                 step: 1
             }
         };
     },
+
+    handleStep1FormSubmit(data) {
+        this.setState({
+            ticketProcess: {
+                step: 2
+            }
+        });
+    },
+    handleStep1FormClear() {
+        this.setState(this.getInitialState());
+    },
+    handleStep2OrderEdit() {
+        this.setState({
+            ticketProcess: {
+                step: 1
+            }
+        });
+    },
+    handleStep2OrderAbort() {
+        this.setState(this.getInitialState());
+    },
+    handleStep2OrderSubmit() {
+        this.setState({
+            ticketProcess: {
+                step: 3
+            }
+        });
+    },
+    handleStep3Continue() {
+        this.setState(this.getInitialState());
+    },
+
     render() {
         return (
             <div className="orderTicket" ng-controller="OrderTicketController as orderTicket">
@@ -49,9 +81,25 @@ let OrderTicket = React.createClass({
                     <jspparam name="labelDefaultValue" value="Order Book Disclaimer"/>
                 </jspinclude>
 
-                <OrderTicketStep1 isVisible={this.state.ticketProcess.step == 1}/>
-                <OrderTicketStep2 isVisible={this.state.ticketProcess.step == 2}/>
-                <OrderTicketStep3 isVisible={this.state.ticketProcess.step == 3}/>
+
+                <OrderTicketStep1
+                    isVisible={this.state.ticketProcess.step == 1}
+                    order={this.state.order}
+                    onFormSubmit={this.handleStep1FormSubmit}
+                    onFormClear={this.handleStep1FormClear}
+                    />
+
+                <OrderTicketStep2
+                    isVisible={this.state.ticketProcess.step == 2}
+                    onEditOrder={this.handleStep2OrderEdit}
+                    onAbortOrder={this.handleStep2OrderAbort}
+                    onOrderSubmit={this.handleStep2OrderSubmit}
+                    />
+
+                <OrderTicketStep3
+                    isVisible={this.state.ticketProcess.step == 3}
+                    onContinue={this.handleStep3Continue}
+                    />
             </div>
         );
     }

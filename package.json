@@ -43,6 +43,7 @@
     "envify": "^3.4.0",
     "fbjs": "^0.5.1",
     "fluxxor": "^1.6.0",
+    "formsy-react": "0.17.0",
     "jquery": "^2.1.4",
     "keythereum": "^0.2.1",
     "lodash": "^3.10.1",

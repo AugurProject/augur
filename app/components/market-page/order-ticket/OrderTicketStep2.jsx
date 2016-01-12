@@ -42,33 +42,23 @@ let OrderTicketStep2 = React.createClass({
                                 </tr>
                             </tbody>
                         </table>
-                        <strong className="u-text--sameSizeAsTableData">What's the reason for this
-                            trade?</strong>
-                        <label className="radio" ng-repeat="reason in orderTicket.orderReason.values()"
-                               ng-className="{disabled: orderTicket.order.reason != reason.id,
-                                                                    checked: orderTicket.order.reason == reason.id}"
-                               title="{/*!orderTicketForm.isBuyRadios.$dirty ? 'Select side (buy or sell) first' : ''*/}">
-                            <input className="form-control input-sm" type="radio"
-                                   ng-disabled="orderTicket.order.reason != reason.id"/>
-                            <span ng-bind="reason.label"></span>
-                        </label>
                     </div>
                     <div>
                         <button className="btn btn-block btn-md btn-fill btn-info orderTicket-submitAction"
                                 type="submit"
-                                ng-click="orderTicket.onConfirmationActionClicked()">Submit order
+                                onClick={this.props.onOrderSubmit}>Submit order
                         </button>
                     </div>
                 </div>
                 <div className="orderTicket-secondaryAction">
                     <button
                         className="btn btn-simple btn-info orderTicket-editAction u-text--sameSizeAsTableData"
-                        ng-click="orderTicket.editOrder()">
+                        onClick={this.props.onEditOrder}>
                         Edit Order
                     </button>
                     <button
                         className="btn btn-simple btn-danger orderTicket-abortAction u-text--sameSizeAsTableData"
-                        ng-click="orderTicket.abortOrder()">
+                        onClick={this.props.onAbortOrder}>
                         Abort Order
                     </button>
                 </div>
