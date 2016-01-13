@@ -2,6 +2,7 @@
 
 var _ = require("lodash");
 var async = require("async");
+var clone = require("clone");
 var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
 var augur = require("augur.js");
@@ -11,10 +12,11 @@ var blacklist = require("../libs/blacklist");
 
 var MarketActions = {
 
-  loadComments: function (market) {
+  loadComments: function (market, options) {
     var self = this;
+    options = options || {};
     if (market && market.id) {
-      augur.comments.getMarketComments(abi.hex(market.id), function (err, comments) {
+      augur.comments.getMarketComments(abi.hex(market.id), options, function (err, comments) {
         if (err) return console.error(err);
         if (comments && comments.constructor === Array && comments.length) {
           market.comments = comments;
@@ -25,7 +27,7 @@ var MarketActions = {
   },
 
   updateComments: function (message, marketId, author) {
-    var market = this.flux.store("market").getMarket(marketId);
+    var market = clone(this.flux.store("market").getMarket(marketId));
     if (!market || market.constructor !== Object) {
       return console.error("MarketActions.updateComments: market not found");
     }
