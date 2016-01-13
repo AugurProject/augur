@@ -10,7 +10,7 @@ var constants = require("../libs/constants");
 var utils = require("../libs/utilities");
 var blacklist = require("../libs/blacklist");
 
-var MarketActions = {
+module.exports = {
 
   loadComments: function (market, options) {
     var self = this;
@@ -253,5 +253,3 @@ var MarketActions = {
   }
 
 };
-
-module.exports = MarketActions;

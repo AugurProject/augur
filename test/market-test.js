@@ -130,7 +130,7 @@ test("MarketActions.loadComments", function (t) {
         t.equal(payload.constructor, Object, "payload is an object");
         t.equal(payload.market.constructor, Object, "payload.market is an object");
         t.equal(payload.market.comments.constructor, Array, "payload.market.comments is an array");
-        t.equal(payload.market.comments.length, numComments, "payload.market.comments contains " + numComments + " comment(s)");
+        t.true(payload.market.comments.length <= numComments, "payload.market.comments contains at most " + numComments + " comment(s)");
         t.equal(storedMarketInfo.constructor, Object, "storedMarketInfo is an object");
         t.equal(storedMarketInfo.comments, undefined, "storedMarketInfo.comments is undefined");
         storedMarketInfo.comments = clone(payload.market.comments);

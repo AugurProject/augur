@@ -6,7 +6,7 @@ var moment = require("moment");
 var constants = require("../libs/constants");
 var utilities = require("../libs/utilities");
 
-var NetworkActions = {
+module.exports = {
 
   /**
    * Update the UI and stores depending on the state of the network.
@@ -151,5 +151,3 @@ var NetworkActions = {
   }
 
 };
-
-module.exports = NetworkActions;

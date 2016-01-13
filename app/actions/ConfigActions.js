@@ -5,7 +5,7 @@ var augur = require("augur.js");
 var constants = require("../libs/constants");
 var utilities = require("../libs/utilities");
 
-var ConfigActions = {
+module.exports = {
 
   connect: function (hosted) {
     var host, self = this;
@@ -130,7 +130,7 @@ var ConfigActions = {
     });
   },
 
-  signOut: function() {
+  signOut: function () {
     augur.web.logout();
     this.dispatch(constants.config.UPDATE_ACCOUNT, {
       currentAccount: null,
@@ -140,5 +140,3 @@ var ConfigActions = {
     this.flux.actions.asset.updateAssets();
   }
 };
-
-module.exports = ConfigActions;

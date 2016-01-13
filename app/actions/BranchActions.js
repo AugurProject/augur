@@ -11,9 +11,11 @@ module.exports = {
   loadBranches: function () {
     var self = this;
     augur.getBranches(function (branches) {
-      self.dispatch(constants.branch.LOAD_BRANCHES_SUCCESS, {
-        branches: branches
-      });
+      if (branches && !branches.error) {
+        self.dispatch(constants.branch.LOAD_BRANCHES_SUCCESS, {
+          branches: branches
+        });
+      }
     });
   },
 

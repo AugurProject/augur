@@ -400,9 +400,10 @@ var CommentForm = React.createClass({
   mixins: [FluxMixin],
 
   submitComment: function (event) {
+    event.preventDefault();
     var element = document.getElementById("comment-text");
     var commentText = element.value;
-    element.value = '';
+    element.value = "";
     this.getFlux().actions.market.addComment(commentText, this.props.marketId, {
       address: this.props.account,
       handle: this.props.handle
@@ -410,19 +411,29 @@ var CommentForm = React.createClass({
   },
 
   render: function () {
-
     if (!this.props.account) return ( <span /> );
-    
-    var userIdenticon = 'data:image/png;base64,' + new Identicon(this.props.account, 50).toString();
-
+    var icon = 'data:image/png;base64,' + new Identicon(this.props.account, 50).toString();
     return (
-      <form className="comment">
-        <div className="user avatar" style={{ backgroundImage: 'url(' + userIdenticon + ')' }}></div>
+      <form className="comment" onSubmit={this.submitComment}>
+        <div
+          className="user avatar"
+          style={{backgroundImage: 'url(' + icon + ')'}}>
+        </div>
         <div className="box">
-          <input type="textarea" className="form-control" id="comment-text" placeholder="Enter comments here" />
+          <input
+            type="textarea"
+            className="form-control"
+            id="comment-text"
+            placeholder="Enter comments here" />
           <div className="user address"></div>
-          <ButtonGroup className='pull-right send-button'>
-            <Button bsStyle='default' bsSize='xsmall' onClick={ this.submitComment }>Babble</Button>
+          <ButtonGroup className="pull-right send-button">
+            <Button
+              type="submit"
+              bsStyle="default"
+              bsSize="xsmall"
+              onClick={this.submitComment}>
+              Babble
+            </Button>
           </ButtonGroup>
         </div>
       </form>
