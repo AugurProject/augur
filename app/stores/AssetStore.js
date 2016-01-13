@@ -1,30 +1,20 @@
 "use strict";
 
 var _ = require("lodash");
-var Fluxxor = require("fluxxor");
 var constants = require("../libs/constants");
 
-var state = {
-  cash: null,
-  reputation: null,
-  ether: null,
-  marketsHeld: {}
-};
-
-var AssetStore = Fluxxor.createStore({
-  
-  initialize: function () {
-    this.bindActions(constants.asset.UPDATE_ASSETS, this.handleUpdateAssets);
+module.exports = {
+  state: {
+    cash: null,
+    reputation: null,
+    ether: null,
+    marketsHeld: {}
   },
-
   getState: function () {
-    return state;
+    return this.state;
   },
-
   handleUpdateAssets: function (payload) {
-    state = _.merge(state, payload);
+    this.state = _.merge(this.state, payload);
     this.emit(constants.CHANGE_EVENT);
   }
-});
-
-module.exports = AssetStore;
+};

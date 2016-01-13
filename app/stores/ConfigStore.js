@@ -1,85 +1,63 @@
 "use strict";
 
+var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
+
 var _ = require("lodash");
-var Fluxxor = require("fluxxor");
 var constants = require("../libs/constants");
+var isHosted = NODE_JS || document.location.protocol === "https:";
 
-var state = {
-  host: (location.protocol === "https:") ? null : "http://127.0.0.1:8545",
-  // host: "https://eth3.augur.net",
-  currentAccount: null,
-  privateKey: null,
-  handle: null,
-  keystore: null,
-  debug: false,
-  loaded: false,
-  isHosted: false,
-  percentLoaded: null
-};
-
-var ConfigStore = Fluxxor.createStore({
-
-  initialize: function () {
-    this.bindActions(
-      constants.config.SET_HOST, this.handleSetHost,
-      constants.config.SET_IS_HOSTED, this.handleSetIsHosted,
-      constants.config.UPDATE_ACCOUNT, this.handleUpdateAccount,
-      constants.config.UPDATE_PERCENT_LOADED_SUCCESS, this.handleUpdatePercentLoadedSuccess,
-      constants.config.LOAD_APPLICATION_DATA_SUCCESS, this.handleLoadApplicationDataSuccess
-    );
+module.exports = {
+  state: {
+    host: (isHosted) ? null : (process.env.RPC_HOST || "http://127.0.0.1:8545"),
+    currentAccount: null,
+    privateKey: null,
+    handle: null,
+    keystore: null,
+    debug: false,
+    loaded: false,
+    isHosted: isHosted,
+    percentLoaded: null
   },
-
-  handleSetIsHosted: function (payload) {
-    state.isHosted = payload.isHosted;
-    this.emit(constants.CHANGE_EVENT);
-  },
-
-  handleSetHost: function (payload) {
-    state.host = payload.host;
-    this.emit(constants.CHANGE_EVENT);
-  },
-
   getState: function () {
-    return state;
+    return this.state;
   },
-
+  handleSetIsHosted: function (payload) {
+    this.state.isHosted = payload.isHosted;
+    this.emit(constants.CHANGE_EVENT);
+  },
+  handleSetHost: function (payload) {
+    this.state.host = payload.host;
+    this.emit(constants.CHANGE_EVENT);
+  },
   getAccount: function () {
-    if (_.isUndefined(state.currentAccount)) return null;
-    return state.currentAccount;
+    if (_.isUndefined(this.state.currentAccount)) return null;
+    return this.state.currentAccount;
   },
-
   getPrivateKey: function () {
-    if (_.isUndefined(state.privateKey)) return null;
-    return state.privateKey;
+    if (_.isUndefined(this.state.privateKey)) return null;
+    return this.state.privateKey;
   },
-
   getHandle: function () {
-    if (_.isUndefined(state.handle)) return null;
-    return state.handle;
+    if (_.isUndefined(this.state.handle)) return null;
+    return this.state.handle;
   },
-
   getKeystore: function () {
-    if (_.isUndefined(state.keystore)) return null;
-    return state.keystore;
+    if (_.isUndefined(this.state.keystore)) return null;
+    return this.state.keystore;
   },
-
   handleUpdatePercentLoadedSuccess: function (payload) {
-    state.percentLoaded = payload.percentLoaded;
+    this.state.percentLoaded = payload.percentLoaded;
     this.emit(constants.CHANGE_EVENT);
   },
-
   handleUpdateAccount: function (payload) {
-    state.currentAccount = payload.currentAccount;
-    state.privateKey = payload.privateKey;
-    state.handle = payload.handle;
-    state.keystore = payload.keystore;
+    this.state.currentAccount = payload.currentAccount;
+    this.state.privateKey = payload.privateKey;
+    this.state.handle = payload.handle;
+    this.state.keystore = payload.keystore;
     this.emit(constants.CHANGE_EVENT);
   },
-
   handleLoadApplicationDataSuccess: function (payload) {
-    state.loaded = true;
+    this.state.loaded = true;
     this.emit(constants.CHANGE_EVENT);
   }
-});
-
-module.exports = ConfigStore;
+};

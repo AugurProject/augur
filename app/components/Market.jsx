@@ -1,3 +1,4 @@
+var BigNumber = require("bignumber.js");
 var _ = require("lodash");
 var augur = require("augur.js");
 var abi = require("augur-abi");
@@ -399,8 +400,9 @@ var CommentForm = React.createClass({
   mixins: [FluxMixin],
 
   submitComment: function (event) {
-    var commentText = document.getElementById("comment-text").value;
-    $("#comment-text").val('');
+    var element = document.getElementById("comment-text");
+    var commentText = element.value;
+    element.value = '';
     this.getFlux().actions.market.addComment(commentText, this.props.marketId, {
       address: this.props.account,
       handle: this.props.handle

@@ -26,6 +26,9 @@ var MarketActions = {
 
   updateComments: function (message, marketId, author) {
     var market = this.flux.store("market").getMarket(marketId);
+    if (!market || market.constructor !== Object) {
+      return console.error("MarketActions.updateComments: market not found");
+    }
     var comment = {
       author: author,
       blockNumber: this.flux.store('network').getState().blockNumber,
@@ -38,7 +41,7 @@ var MarketActions = {
     } else {
       market.comments = [comment];
     }
-    this.dispatch(constants.market.UPDATE_MARKET_SUCCESS, { market: market });
+    this.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
   },
 
   addComment: function (commentText, marketId, account) {

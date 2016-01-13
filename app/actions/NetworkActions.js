@@ -69,7 +69,6 @@ var NetworkActions = {
 
     // hosted node: no unlocked account available
     } else if (this.flux.store('config').getState().isHosted) {
-      console.log("connecting to hosted node");
 
       // if the user has a persistent login, use it
       var account = augur.web.persist();
@@ -121,9 +120,6 @@ var NetworkActions = {
 
   updateNetwork: function () {
     var self = this;
-    var configState = this.flux.store('config').getState();
-    var networkState = this.flux.store('network').getState();
-    var branchState = this.flux.store('branch').getState();
 
     // just block age and peer count until we're current
     augur.rpc.blockNumber(function (blockNumber) {
@@ -141,12 +137,12 @@ var NetworkActions = {
         augur.rpc.getBlock(blockNumber, true, function (block) {
           if (block && block.constructor === Object && !block.error) {
 
-            var blockTimeStamp = block.timestamp;
-            var currentTimeStamp = moment().unix();
-            var age = currentTimeStamp - blockTimeStamp;
+            var blockTimestamp = block.timestamp;
+            var currentTimestamp = moment().unix();
+            var age = currentTimestamp - blockTimestamp;
 
-            self.dispatch(constants.network.UPDATE_BLOCK_CHAIN_AGE, {
-              blockChainAge: age
+            self.dispatch(constants.network.UPDATE_BLOCKCHAIN_AGE, {
+              blockchainAge: age
             });
           }
         });

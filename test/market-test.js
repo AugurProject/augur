@@ -3,98 +3,58 @@
  * @author Jack Peterson (jack@tinybike.net)
  */
 
-var augur = require("augur.js");
+"use strict";
+
 var test = require("tape");
-var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
+var augur = require("augur.js");
+var BigNumber = require("bignumber.js");
 var clone = require("clone");
 var validator = require("validator");
 var moment = require("moment");
 var utils = require("../app/libs/utilities");
 var constants = require("../app/libs/constants");
-var MarketActions = require("../app/actions/MarketActions");
+var flux = require("./mock");
 var marketInfo = require("./marketInfo");
 
-augur.connect("https://eth3.augur.net");
+function parseMarketInfoSync(info) {
+    info.id = new BigNumber(info._id);
+    info.endDate = utils.blockToDate(info.endDate, blockNumber);
+    info.creationBlock = utils.blockToDate(info.creationBlock, blockNumber)
+    info.price = new BigNumber(info.price);
+    info.tradingFee = new BigNumber(info.tradingFee);
+    info.creationFee = new BigNumber(info.creationFee);
+    info.traderCount = new BigNumber(info.traderCount);
+    info.alpha = new BigNumber(info.alpha);
+    info.tradingPeriod = new BigNumber(info.tradingPeriod);
+    var traderId = info.participants[account.address];
+    if (traderId) info.traderId = new BigNumber(traderId);
+    for (var i = 0; i < info.numEvents; ++i) {
+        info.events[i].endDate = utils.blockToDate(info.events[i].endDate);
+    }
+    for (i = 0; i < info.numOutcomes; ++i) {
+        if (info.outcomes[i].outstandingShares) {
+            info.outcomes[i].outstandingShares = new BigNumber(info.outcomes[i].outstandingShares);
+        } else {
+            info.outcomes[i].outstandingShares = new BigNumber(0);
+        }
+        if (info.outcomes[i].shares[account.address]) {
+            info.outcomes[i].sharesHeld = new BigNumber(info.outcomes[i].shares[account.address]);
+        } else {
+            info.outcomes[i].sharesHeld = new BigNumber(0);
+        }
+        info.outcomes[i].pendingShares = new BigNumber(0);
+        info.outcomes[i].price = new BigNumber(info.outcomes[i].price);
+    }
+    info.loaded = true;
+    return info;
+}
 
-var rawInfo = clone(marketInfo);
+augur.connect(process.env.AUGUR_HOST);
 var account = {address: augur.from};
 var blockNumber = augur.rpc.blockNumber();
-
-marketInfo.id = new BigNumber(marketInfo._id);
-marketInfo.endDate = utils.blockToDate(marketInfo.endDate, blockNumber);
-marketInfo.creationBlock = utils.blockToDate(marketInfo.creationBlock, blockNumber)
-marketInfo.price = new BigNumber(marketInfo.price);
-marketInfo.tradingFee = new BigNumber(marketInfo.tradingFee);
-marketInfo.creationFee = new BigNumber(marketInfo.creationFee);
-marketInfo.traderCount = new BigNumber(marketInfo.traderCount);
-marketInfo.alpha = new BigNumber(marketInfo.alpha);
-marketInfo.tradingPeriod = new BigNumber(marketInfo.tradingPeriod);
-var traderId = marketInfo.participants[account.address];
-if (traderId) marketInfo.traderId = new BigNumber(traderId);
-for (var i = 0; i < marketInfo.numEvents; ++i) {
-    marketInfo.events[i].endDate = utils.blockToDate(marketInfo.events[i].endDate);
-}
-for (i = 0; i < marketInfo.numOutcomes; ++i) {
-    if (marketInfo.outcomes[i].outstandingShares) {
-        marketInfo.outcomes[i].outstandingShares = new BigNumber(marketInfo.outcomes[i].outstandingShares);
-    } else {
-        marketInfo.outcomes[i].outstandingShares = new BigNumber(0);
-    }
-    if (marketInfo.outcomes[i].shares[account.address]) {
-        marketInfo.outcomes[i].sharesHeld = new BigNumber(marketInfo.outcomes[i].shares[account.address]);
-    } else {
-        marketInfo.outcomes[i].sharesHeld = new BigNumber(0);
-    }
-    marketInfo.outcomes[i].pendingShares = new BigNumber(0);
-    marketInfo.outcomes[i].price = new BigNumber(marketInfo.outcomes[i].price);
-}
-marketInfo.loaded = true;
-
-// mock flux
-MarketActions.flux = {
-    actions: {
-        asset: {
-            updateAssets: function () {}
-        },
-        market: MarketActions,
-        config: {
-            updatePercentLoaded: function (percentLoaded) {
-                return percentLoaded;
-            }
-        }
-    },
-    stores: {
-        branch: {
-            getCurrentBranch: function () {
-                return {id: augur.branches.dev};
-            }
-        },
-        market: {
-            getMarket: function (marketId) {
-                return marketInfo;
-            },
-            getState: function () {
-                var markets = {};
-                markets[marketInfo.id] = clone(marketInfo);
-                return {markets: markets};
-            }
-        },
-        network: {
-            getState: function () {
-                return {blockNumber: blockNumber};
-            }
-        },
-        config: {
-            getAccount: function () {
-                return augur.from;
-            }
-        }
-    },
-    store: function (store) {
-        return this.stores[store];
-    }
-};
+var rawInfo = clone(marketInfo);
+marketInfo = parseMarketInfoSync(marketInfo);
 
 test("marketInfo", function (t) {
     var market = rawInfo._id;
@@ -160,47 +120,71 @@ test("marketInfo", function (t) {
 
 test("loadComments", function (t) {
     t.plan(2);
-    MarketActions.dispatch = function (label, payload) {
+    var dispatch = flux.actions.market.dispatch;
+    flux.actions.market.dispatch = function (label, payload) {
         t.equal(label, "UPDATE_MARKET_SUCCESS", "dispatch: " + label);
-        t.deepEqual(payload.market, marketInfo, "verify payload");
+        var storedMarketInfo = flux.store("market").getMarket(marketInfo.id);
+        t.equal(JSON.stringify(payload.market), JSON.stringify(storedMarketInfo), "verify payload");
+        flux.actions.market.dispatch = dispatch;
         t.end();
     };
-    MarketActions.loadComments(marketInfo);
+    flux.actions.market.loadComments(clone(marketInfo));
 });
 
 test("updateComments", function (t) {
-    t.plan(2);
+    t.plan(5);
     var message = "hello from augur's unit tests!";
-    MarketActions.dispatch = function (label, payload) {
-        t.equal(label, "UPDATE_MARKET_SUCCESS", "dispatch: " + label);
-        t.deepEqual(payload.market, marketInfo, "verify payload");
+    var markets = {};
+    markets[marketInfo.id] = clone(marketInfo);
+    flux.stores.market.state.markets = markets;
+    var UPDATE_MARKET_SUCCESS = flux.register.UPDATE_MARKET_SUCCESS;
+    flux.register.UPDATE_MARKET_SUCCESS = function (payload) {
+        t.equal(payload.market.constructor, Object, "payload.market is an object");
+        t.equal(payload.market.comments.constructor, Array, "payload.market.comments is an array");
+        t.true(payload.market.comments.length, "payload.market.comments contains at least one comment");
+        var storedMarketInfo = flux.store("market").getMarket(marketInfo.id);
+        t.equal(payload.market.comments.length, storedMarketInfo.comments.length + 1, "payload.market.comments contains one more comment than MarketStore");
+        var comment = payload.market.comments[0];
+        var marketInfoWithComment = clone(storedMarketInfo);
+        marketInfoWithComment.comments.push(comment);
+        t.equal(JSON.stringify(payload.market), JSON.stringify(marketInfoWithComment), "verify payload");
+        flux.register.UPDATE_MARKET_SUCCESS = UPDATE_MARKET_SUCCESS;
         t.end();
     };
-    MarketActions.updateComments(message, marketInfo.id, augur.from);
+    flux.actions.market.updateComments(message, marketInfo.id, augur.from);
 });
 
 test("addComment", function (t) {
-    t.plan(2);
+    t.plan(5);
     var commentText = "hello from augur's unit tests!";
-    MarketActions.dispatch = function (label, payload) {
-        t.equal(label, "UPDATE_MARKET_SUCCESS", "dispatch: " + label);
-        t.deepEqual(payload.market, marketInfo, "verify payload");
+    var UPDATE_MARKET_SUCCESS = flux.register.UPDATE_MARKET_SUCCESS;
+    flux.register.UPDATE_MARKET_SUCCESS = function (payload) {
+        t.equal(payload.market.constructor, Object, "payload.market is an object");
+        t.equal(payload.market.comments.constructor, Array, "payload.market.comments is an array");
+        t.true(payload.market.comments.length, "payload.market.comments contains at least one comment");
+        var storedMarketInfo = flux.store("market").getMarket(marketInfo.id);
+        t.equal(payload.market.comments.length, storedMarketInfo.comments.length + 1, "payload.market.comments contains one more comment than MarketStore");
+        var comment = payload.market.comments[0];
+        var marketInfoWithComment = clone(storedMarketInfo);
+        marketInfoWithComment.comments.push(comment);
+        t.equal(JSON.stringify(payload.market), JSON.stringify(marketInfoWithComment), "verify payload");
+        flux.register.UPDATE_MARKET_SUCCESS = UPDATE_MARKET_SUCCESS;
         t.end();
     };
-    MarketActions.addComment(commentText, marketInfo.id, account);
+    flux.actions.market.addComment(commentText, marketInfo.id, account);
 });
 
 test("parseMarketInfo", function (t) {
     t.plan(21);
     var info = clone(rawInfo);
-    MarketActions.dispatch = function (label, payload) { throw new Error(); };
+    flux.actions.market.dispatch = function (label, payload) { throw new Error(); };
     augur.getMarketCreationBlock(rawInfo._id, function (creationBlock) {
         t.true(validator.isInt(creationBlock), "creation block number is an integer");
         info.creationBlock = creationBlock;
         augur.getMarketPriceHistory(rawInfo._id, function (priceHistory) {
             t.equal(priceHistory.constructor, Object, "priceHistory is an object");
             info.priceHistory = priceHistory;
-            MarketActions.parseMarketInfo(clone(info), function (parsedInfo) {
+            flux.actions.market.parseMarketInfo(clone(info), function (parsedInfo) {
                 t.false(rawInfo.id, "raw marketInfo's id field is unassigned after parseMarketInfo");
                 t.equal(parsedInfo.id.constructor, BigNumber, "parsed marketInfo.id is a BigNumber");
                 t.true(parsedInfo.id.eq(new BigNumber(rawInfo._id)), "check parsed marketInfo.id value");
@@ -233,7 +217,7 @@ test("parseMarketInfo", function (t) {
 
 test("loadMarkets", function (t) {
     var dispatchCount = 0;
-    MarketActions.dispatch = function (label, payload) {
+    flux.actions.market.dispatch = function (label, payload) {
         t.true(validator.isIn(label, ["LOAD_MARKETS_SUCCESS", "MARKETS_LOADING"]), "label is LOAD_MARKETS_SUCCESS or MARKETS_LOADING");
         if (label === "LOAD_MARKETS_SUCCESS") {
             t.equal(payload.markets[marketInfo.id].constructor, Object, "payload.markets has marketInfo.id field");
@@ -243,13 +227,13 @@ test("loadMarkets", function (t) {
         }
         if (++dispatchCount > 1) t.end();
     };
-    MarketActions.loadMarkets();
+    flux.actions.market.loadMarkets();
 });
 
 test("loadMarket", function (t) {
     t.plan(4);
     var dispatchCount = 0;
-    MarketActions.dispatch = function (label, payload) {
+    flux.actions.market.dispatch = function (label, payload) {
         t.true(validator.isIn(label, ["LOAD_MARKETS_SUCCESS", "MARKETS_LOADING"]), "label is LOAD_MARKETS_SUCCESS or MARKETS_LOADING");
         if (label === "LOAD_MARKETS_SUCCESS") {
             t.equal(payload.markets[marketInfo.id].constructor, Object, "payload.markets has marketInfo.id field");
@@ -258,15 +242,15 @@ test("loadMarket", function (t) {
         }
         if (++dispatchCount > 1) t.end();
     };
-    MarketActions.loadMarket(marketInfo.id);
+    flux.actions.market.loadMarket(marketInfo.id);
 });
 
 test("initMarket", function (t) {
     t.plan(4);
-    var skeleton = MarketActions.initMarket(marketInfo.id);
+    var skeleton = flux.actions.market.initMarket(marketInfo.id);
     t.equal(skeleton.constructor, Object, "skeleton is an object");
     t.equal(skeleton.id.constructor, BigNumber, "skeleton market ID is a BigNumber");
-    t.equal(skeleton.branchId, marketInfo.branchId, "skeleton.branchId == marketInfo.branchId");
+    t.equal(abi.number(skeleton.branchId), abi.number(marketInfo.branchId), "number(skeleton.branchId) == number(marketInfo.branchId)");
     t.false(skeleton.loaded, "skeleton is not loaded");
     t.end();
 });
@@ -279,7 +263,7 @@ test("addPendingMarket", function (t) {
         initialLiquidity: 100,
         tradingFee: new BigNumber("0.02")
     };
-    MarketActions.dispatch = function (label, payload) {
+    flux.actions.market.dispatch = function (label, payload) {
         t.equal(label, "ADD_PENDING_MARKET_SUCCESS", "dispatch: " + label);
         t.equal(payload.constructor, Object, "payload is an object");
         t.equal(payload.market.constructor, Object, "payload.market is an object");
@@ -295,7 +279,7 @@ test("addPendingMarket", function (t) {
         complete.dispatch = true;
         if (complete.dispatch && complete.returned) t.end();
     };
-    var marketId = MarketActions.addPendingMarket(clone(newMarket));
+    var marketId = flux.actions.market.addPendingMarket(clone(newMarket));
     t.equal(marketId.constructor, String, "new market ID is a string");
     complete.returned = true;
     if (complete.dispatch && complete.returned) t.end();
@@ -308,12 +292,12 @@ test("deleteMarket", function (t) {
         initialLiquidity: 100,
         tradingFee: new BigNumber(0.02)
     }));
-    MarketActions.dispatch = function (label, payload) {
+    flux.actions.market.dispatch = function (label, payload) {
         t.equal(label, "DELETE_MARKET_SUCCESS", "dispatch: " + label);
         t.equal(payload.marketId.constructor, String, "payload.marketId is a string");
         t.end();
     };
-    MarketActions.deleteMarket(marketId);
+    flux.actions.market.deleteMarket(marketId);
 });
 
 // tradeSucceeded triggers loadMarket(marketId) => repeat loadMarket test
@@ -321,13 +305,13 @@ test("tradeSucceeded", function (t) {
     t.plan(4);
     var marketId = marketInfo.id;
     var trade = {
-        branchId: augur.branches.dev,
+        branchId: process.env.AUGUR_BRANCH_ID || "1010101",
         marketId: marketId,
         outcome: "1",
         oldPrice: new BigNumber("0.5")
     };
     var dispatchCount = 0;
-    MarketActions.dispatch = function (label, payload) {
+    flux.actions.market.dispatch = function (label, payload) {
         t.true(validator.isIn(label, ["LOAD_MARKETS_SUCCESS", "MARKETS_LOADING"]), "label is LOAD_MARKETS_SUCCESS or MARKETS_LOADING");
         if (label === "LOAD_MARKETS_SUCCESS") {
             t.equal(payload.markets[marketId].constructor, Object, "payload.markets has marketInfo.id field");
@@ -336,21 +320,21 @@ test("tradeSucceeded", function (t) {
         }
         if (++dispatchCount > 1) t.end();
     };
-    MarketActions.tradeSucceeded(trade, marketId);
+    flux.actions.market.tradeSucceeded(trade, marketId);
 });
 
 test("updatePendingShares", function (t) {
     t.plan(6);
     var outcomeId = 2;
     var relativeShares = 2;
-    MarketActions.dispatch = function (label, payload) {
+    flux.actions.market.dispatch = function (label, payload) {
         t.equal(label, "UPDATE_MARKET_SUCCESS", "dispatch: " + label);
         t.equal(payload.constructor, Object, "payload is an object");
         t.equal(payload.market.constructor, Object, "payload.market is an object");
         t.equal(payload.market.id.constructor, BigNumber, "payload.market.id is a BigNumber");
         t.true(payload.market.id.eq(marketInfo.id), "payload.market.id == input id");
         t.true(marketInfo.outcomes[outcomeId - 1].pendingShares.plus(new BigNumber(relativeShares)).eq(payload.market.outcomes[outcomeId - 1].pendingShares), "after outcome pendingShares == before outcome pendingShares + signed trade");
-        t.end();
+        augur.filters.ignore(true, t.end);
     };
-    MarketActions.updatePendingShares(clone(marketInfo), outcomeId, relativeShares);
+    flux.actions.market.updatePendingShares(clone(marketInfo), outcomeId, relativeShares);
 });

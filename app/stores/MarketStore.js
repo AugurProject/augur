@@ -1,126 +1,86 @@
 "use strict";
 
 var _ = require("lodash");
-var Fluxxor = require("fluxxor");
 var constants = require("../libs/constants");
 
-var state = {
-  markets: {},
-  pendingMarkets: {},
-  marketLoadingIds: null,
-  loadingPage: null
-};
-
-var MarketStore = Fluxxor.createStore({
-
-  initialize: function () {
-    this.bindActions(
-      constants.market.LOAD_MARKETS_SUCCESS, this.handleLoadMarketsSuccess,
-      constants.market.UPDATE_MARKETS_SUCCESS, this.handleUpdateMarketsSuccess,
-      constants.market.UPDATE_MARKET_SUCCESS, this.handleUpdateMarketSuccess,
-      constants.market.ADD_PENDING_MARKET_SUCCESS, this.handleAddPendingMarketSuccess,
-      constants.market.ADD_MARKET_SUCCESS, this.handleAddMarketSuccess,
-      constants.market.DELETE_MARKET_SUCCESS, this.handleDeleteMarketSuccess,
-      constants.market.MARKETS_LOADING, this.handleMarketsLoading
-    );
+module.exports = {
+  state: {
+    markets: {},
+    pendingMarkets: {},
+    marketLoadingIds: null,
+    loadingPage: null
   },
-
-  marketIsLoaded: function(marketId) {
-
-    var requiredProperties = ["id", "description", "price", "endDate"];
-    var loaded = _.intersection(_.keys(state.markets[marketId]), requiredProperties);
-
-    if (loaded.length == requiredProperties.length) {
-      return true;
-
-    // also flag loaded if it's just invalid (ie. no outcomes or price)
-    } else if (state.markets[marketId].invalid) {
-      return true;
-
-    } else {
-      return false;
-    }
-  },
-
-  handleMarketsLoading: function(payload) {
-
-    if (payload.marketLoadingIds) state.marketLoadingIds = payload.marketLoadingIds;
-    state.loadingPage = payload.loadingPage;
-  },
-
   getState: function () {
-    return state;
+    return this.state;
   },
-
-  getTrendingMarkets: function(number, currentBranch) {
-
-    var nonMatureMarkets = _.reject(state.markets, function(market) {
+  getTrendingMarkets: function (number, currentBranch) {
+    var nonMatureMarkets = _.reject(this.state.markets, function (market) {
       return currentBranch && currentBranch.currentPeriod >= market.tradingPeriod;
     });
-
-    var trendingMarkets = _.sortBy(nonMatureMarkets, function(market) {
+    var trendingMarkets = _.sortBy(nonMatureMarkets, function (market) {
         return market.traderCount;
     });
-
     return _.indexBy(_.slice(trendingMarkets.reverse(), 0, number), 'id');
   },
-
-  getMarketsHeld: function() {
-
-    var marketsHeld = _.filter(state.markets, function(market) {
+  getMarketsHeld: function () {
+    var marketsHeld = _.filter(this.state.markets, function (market) {
       if (market.traderId != -1 || market.traderId) return true;
     });
     return _.indexBy(marketsHeld, 'id');
   },
-
-  getMarketsByAuthor: function(author) {
-    var marketsByAuthor = _.filter(state.markets, {'author': author});
+  getMarketsByAuthor: function (author) {
+    var marketsByAuthor = _.filter(this.state.markets, {'author': author});
     return _.indexBy(marketsByAuthor, 'id');
   },
-
-  getMarket: function(marketId) {
-    return state.markets[marketId];
+  getMarket: function (marketId) {
+    return this.state.markets[marketId];
   },
-
+  handleMarketsLoading: function (payload) {
+    if (payload.marketLoadingIds) this.state.marketLoadingIds = payload.marketLoadingIds;
+    this.state.loadingPage = payload.loadingPage;
+  },
   handleUpdateMarketsSuccess: function (payload) {
-    state.markets = _.merge(state.markets, payload.markets);
+    this.state.markets = _.merge(this.state.markets, payload.markets);
     this.emit(constants.CHANGE_EVENT);
   },
-
   handleLoadMarketsSuccess: function (payload) {
-    state.markets = payload.markets;
+    this.state.markets = payload.markets;
     this.emit(constants.CHANGE_EVENT);
   },
-
   handleUpdateMarketSuccess: function (payload) {
-    if (state.markets[payload.market.id]) {
-      var updatedMarket = _.merge(state.markets[payload.market.id], payload.market);
+    if (this.state.markets[payload.market.id]) {
+      var updatedMarket = _.merge(this.state.markets[payload.market.id], payload.market);
       updatedMarket.loaded = this.marketIsLoaded(payload.market.id);
-      state.markets[payload.market.id] = updatedMarket;
+      this.state.markets[payload.market.id] = updatedMarket;
     } else {
-      state.markets[payload.market.id] = payload.market;
+      this.state.markets[payload.market.id] = payload.market;
     }
     this.emit(constants.CHANGE_EVENT);
   },
-
   handleAddPendingMarketSuccess: function (payload) {
-    state.pendingMarkets[payload.market.id] = payload.market;
+    this.state.pendingMarkets[payload.market.id] = payload.market;
     this.emit(constants.CHANGE_EVENT);
   },
-
   handleAddMarketSuccess: function (payload) {
-    state.markets[payload.market.id] = payload.market;
+    this.state.markets[payload.market.id] = payload.market;
     this.emit(constants.CHANGE_EVENT);
   },
-
   handleDeleteMarketSuccess: function (payload) {
-
     // delete (pending) market if it exists
-    if (payload.marketId && state.pendingMarkets[payload.marketId]) {
-      delete state.pendingMarkets[payload.marketId];
+    if (payload.marketId && this.state.pendingMarkets[payload.marketId]) {
+      delete this.state.pendingMarkets[payload.marketId];
+    }
+  },
+  marketIsLoaded: function (marketId) {
+    var requiredProperties = ["id", "description", "price", "endDate"];
+    var loaded = _.intersection(_.keys(this.state.markets[marketId]), requiredProperties);
+    if (loaded.length == requiredProperties.length) {
+      return true;
+    // also flag loaded if it's just invalid (ie. no outcomes or price)
+    } else if (this.state.markets[marketId].invalid) {
+      return true;
+    } else {
+      return false;
     }
   }
-
-});
-
-module.exports = MarketStore;
+};

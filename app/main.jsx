@@ -8,48 +8,29 @@ var Fluxxor = require("fluxxor");
 
 var Router = require("react-router");
 var Route = Router.Route;
-var NotFoundRoute = Router.NotFoundRoute;
 var DefaultRoute = Router.DefaultRoute;
-var RouteHandler = Router.RouteHandler;
-var Redirect = Router.Redirect;
 
 var constants = require("./libs/constants");
 var utilities = require("./libs/utilities");
-
-var AssetActions = require("./actions/AssetActions");
-var BranchActions = require("./actions/BranchActions");
-var ConfigActions = require("./actions/ConfigActions");
-var MarketActions = require("./actions/MarketActions");
-var SearchActions = require("./actions/SearchActions");
-var NetworkActions = require("./actions/NetworkActions");
-var ReportActions = require("./actions/ReportActions");
+var dispatcher = require("./stores/dispatcher.js");
 
 var actions = {
-  asset: AssetActions,
-  branch: BranchActions,
-  config: ConfigActions,
-  market: MarketActions,
-  search: SearchActions,
-  network: NetworkActions,
-  report: ReportActions
+  asset: require("./actions/AssetActions"),
+  branch: require("./actions/BranchActions"),
+  config: require("./actions/ConfigActions"),
+  market: require("./actions/MarketActions"),
+  network: require("./actions/NetworkActions"),
+  report: require("./actions/ReportActions"),
+  search: require("./actions/SearchActions")
 };
-
-var AssetStore = require("./stores/AssetStore");
-var BranchStore = require("./stores/BranchStore").default;
-var ConfigStore = require("./stores/ConfigStore");
-var MarketStore = require("./stores/MarketStore");
-var SearchStore = require("./stores/SearchStore");
-var NetworkStore = require("./stores/NetworkStore");
-var ReportStore = require("./stores/ReportStore");
-
 var stores = {
-  asset: new AssetStore(),
-  branch: new BranchStore(),
-  config: new ConfigStore(),
-  market: new MarketStore(),
-  search: new SearchStore(),
-  network: new NetworkStore(),
-  report: new ReportStore()
+  asset: new dispatcher.asset(),
+  branch: new dispatcher.branch(),
+  config: new dispatcher.config(),
+  market: new dispatcher.market(),
+  network: new dispatcher.network(),
+  report: new dispatcher.report(),
+  search: new dispatcher.search()
 };
 
 var AugurApp = require("./components/AugurApp");
@@ -61,7 +42,7 @@ var Outcomes = require("./components/Outcomes");
 
 window.flux = new Fluxxor.Flux(stores, actions);
 
-flux.on("dispatch", function(type, payload) {
+flux.on("dispatch", function (type, payload) {
   var debug = flux.store("config").getState().debug;
   if (debug) console.log("Dispatched", type, payload);
 });

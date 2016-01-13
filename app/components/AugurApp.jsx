@@ -76,7 +76,7 @@ var AugurApp = React.createClass({
       loadingProgress = (
         <ProgressBar now={ parseFloat(this.state.config.percentLoaded) } className='loading-progress' />
       );
-    } else if (this.state.network.blockChainAge && this.state.network.blockChainAge < constants.MAX_BLOCKCHAIN_AGE) {
+    } else if (this.state.network.blockchainAge && this.state.network.blockchainAge < constants.MAX_BLOCKCHAIN_AGE) {
       loadingProgress = (<span className="loading-text">loading...</span>);
     }
     return loadingProgress;

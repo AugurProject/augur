@@ -91,7 +91,7 @@ var RegisterModal = React.createClass({
     var form = {};
     var help = {};
     form[event.target.name] = event.target.value;
-    help[event.target.name+'Help'] = null;
+    help[event.target.name + 'Help'] = null;
     this.setState(form);
     this.setState(help);
   },
