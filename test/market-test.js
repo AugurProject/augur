@@ -118,9 +118,9 @@ test("marketInfo", function (t) {
     t.end();
 });
 
-test("loadComments", function (t) {
+test("MarketActions.loadComments", function (t) {
     t.plan(7);
-    var numComments = 5;
+    var numComments = 3;
     var markets = {};
     markets[marketInfo.id] = clone(marketInfo);
     flux.stores.market.state.markets = markets;
@@ -141,7 +141,7 @@ test("loadComments", function (t) {
     flux.actions.market.loadComments(clone(marketInfo), {numComments: numComments});
 });
 
-test("updateComments", function (t) {
+test("MarketActions.updateComments", function (t) {
     t.plan(5);
     var message = "augur's unit tests have something random to say: '" + Math.random().toString(36).substring(4) + "'";
     var markets = {};
@@ -165,7 +165,7 @@ test("updateComments", function (t) {
     flux.actions.market.updateComments(message, marketInfo.id, augur.from);
 });
 
-test("addComment", function (t) {
+test("MarketActions.addComment", function (t) {
     t.plan(5);
     var commentText = "augur's unit tests have something random to say: '" + Math.random().toString(36).substring(4) + "'";
     var markets = {};
@@ -189,10 +189,9 @@ test("addComment", function (t) {
     flux.actions.market.addComment(commentText, marketInfo.id, account);
 });
 
-test("parseMarketInfo", function (t) {
+test("MarketActions.parseMarketInfo", function (t) {
     t.plan(21);
     var info = clone(rawInfo);
-    flux.actions.market.dispatch = function (label, payload) { throw new Error(); };
     augur.getMarketCreationBlock(rawInfo._id, function (creationBlock) {
         t.true(validator.isInt(creationBlock), "creation block number is an integer");
         info.creationBlock = creationBlock;
@@ -230,8 +229,9 @@ test("parseMarketInfo", function (t) {
     });
 });
 
-test("loadMarkets", function (t) {
+test("MarketActions.loadMarkets", function (t) {
     var dispatchCount = 0;
+    var dispatch = flux.actions.market.dispatch;
     flux.actions.market.dispatch = function (label, payload) {
         t.true(validator.isIn(label, ["LOAD_MARKETS_SUCCESS", "MARKETS_LOADING"]), "label is LOAD_MARKETS_SUCCESS or MARKETS_LOADING");
         if (label === "LOAD_MARKETS_SUCCESS") {
@@ -240,14 +240,18 @@ test("loadMarkets", function (t) {
         } else if (label === "MARKETS_LOADING") {
             t.equal(payload.loadingPage, null, "payload.loadingPage is null");
         }
-        if (++dispatchCount > 1) t.end();
+        if (++dispatchCount > 1) {
+            flux.actions.market.dispatch = dispatch;
+            t.end();
+        }
     };
     flux.actions.market.loadMarkets();
 });
 
-test("loadMarket", function (t) {
+test("MarketActions.loadMarket", function (t) {
     t.plan(4);
     var dispatchCount = 0;
+    var dispatch = flux.actions.market.dispatch;
     flux.actions.market.dispatch = function (label, payload) {
         t.true(validator.isIn(label, ["LOAD_MARKETS_SUCCESS", "MARKETS_LOADING"]), "label is LOAD_MARKETS_SUCCESS or MARKETS_LOADING");
         if (label === "LOAD_MARKETS_SUCCESS") {
@@ -255,12 +259,15 @@ test("loadMarket", function (t) {
         } else if (label === "MARKETS_LOADING") {
             t.equal(payload.loadingPage, null, "payload.loadingPage is null");
         }
-        if (++dispatchCount > 1) t.end();
+        if (++dispatchCount > 1) {
+            flux.actions.market.dispatch = dispatch;
+            t.end();
+        }
     };
     flux.actions.market.loadMarket(marketInfo.id);
 });
 
-test("initMarket", function (t) {
+test("MarketActions.initMarket", function (t) {
     t.plan(4);
     var skeleton = flux.actions.market.initMarket(marketInfo.id);
     t.equal(skeleton.constructor, Object, "skeleton is an object");
@@ -270,16 +277,16 @@ test("initMarket", function (t) {
     t.end();
 });
 
-test("addPendingMarket", function (t) {
-    t.plan(13);
+test("MarketActions.addPendingMarket", function (t) {
+    t.plan(12);
     var complete = {returned: false, dispatch: false};
     var newMarket = {
         description: "a shiny new market",
         initialLiquidity: 100,
         tradingFee: new BigNumber("0.02")
     };
-    flux.actions.market.dispatch = function (label, payload) {
-        t.equal(label, "ADD_PENDING_MARKET_SUCCESS", "dispatch: " + label);
+    var ADD_PENDING_MARKET_SUCCESS = flux.register.ADD_PENDING_MARKET_SUCCESS;
+    flux.register.ADD_PENDING_MARKET_SUCCESS = function (payload) {
         t.equal(payload.constructor, Object, "payload is an object");
         t.equal(payload.market.constructor, Object, "payload.market is an object");
         t.true(payload.market.pending, "payload.market.pending is true");
@@ -292,7 +299,10 @@ test("addPendingMarket", function (t) {
         t.false(newMarket.pending, "input does not have pending field");
         t.false(newMarket.id, "input does not have id field");
         complete.dispatch = true;
-        if (complete.dispatch && complete.returned) t.end();
+        if (complete.dispatch && complete.returned) {
+            flux.register.ADD_PENDING_MARKET_SUCCESS = ADD_PENDING_MARKET_SUCCESS;
+            t.end();
+        }
     };
     var marketId = flux.actions.market.addPendingMarket(clone(newMarket));
     t.equal(marketId.constructor, String, "new market ID is a string");
@@ -300,24 +310,25 @@ test("addPendingMarket", function (t) {
     if (complete.dispatch && complete.returned) t.end();
 });
 
-test("deleteMarket", function (t) {
+test("MarketActions.deleteMarket", function (t) {
     t.plan(2);
     var marketId = "pending." + augur.utils.sha256(JSON.stringify({
         description: "a shiny new market",
         initialLiquidity: 100,
         tradingFee: new BigNumber(0.02)
     }));
-    flux.actions.market.dispatch = function (label, payload) {
-        t.equal(label, "DELETE_MARKET_SUCCESS", "dispatch: " + label);
+    var DELETE_MARKET_SUCCESS = flux.register.DELETE_MARKET_SUCCESS;
+    flux.register.DELETE_MARKET_SUCCESS = function (payload) {
         t.equal(payload.marketId.constructor, String, "payload.marketId is a string");
+        t.equal(payload.marketId, marketId, "payload.marketId == input marketId");
         t.end();
     };
     flux.actions.market.deleteMarket(marketId);
 });
 
 // tradeSucceeded triggers loadMarket(marketId) => repeat loadMarket test
-test("tradeSucceeded", function (t) {
-    t.plan(4);
+test("MarketActions.tradeSucceeded", function (t) {
+    t.plan(3);
     var marketId = marketInfo.id;
     var trade = {
         branchId: process.env.AUGUR_BRANCH_ID || "1010101",
@@ -326,29 +337,39 @@ test("tradeSucceeded", function (t) {
         oldPrice: new BigNumber("0.5")
     };
     var dispatchCount = 0;
-    flux.actions.market.dispatch = function (label, payload) {
-        t.true(validator.isIn(label, ["LOAD_MARKETS_SUCCESS", "MARKETS_LOADING"]), "label is LOAD_MARKETS_SUCCESS or MARKETS_LOADING");
-        if (label === "LOAD_MARKETS_SUCCESS") {
-            t.equal(payload.markets[marketId].constructor, Object, "payload.markets has marketInfo.id field");
-        } else if (label === "MARKETS_LOADING") {
-            t.equal(payload.loadingPage, null, "payload.loadingPage is null");
+    var MARKETS_LOADING = flux.register.MARKETS_LOADING;
+    var LOAD_MARKETS_SUCCESS = flux.register.LOAD_MARKETS_SUCCESS;
+    flux.register.MARKETS_LOADING = function (payload) {
+        t.equal(payload.loadingPage, null, "payload.loadingPage is null");
+        if (++dispatchCount > 1) {
+            flux.register.MARKETS_LOADING = MARKETS_LOADING;
+            flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
+            t.end();
         }
-        if (++dispatchCount > 1) t.end();
+    };
+    flux.register.LOAD_MARKETS_SUCCESS = function (payload) {
+        t.equal(payload.markets[marketId].constructor, Object, "payload.markets has marketInfo.id field");
+        if (++dispatchCount > 1) {
+            flux.register.MARKETS_LOADING = MARKETS_LOADING;
+            flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
+            t.end();
+        }
     };
     flux.actions.market.tradeSucceeded(trade, marketId);
 });
 
-test("updatePendingShares", function (t) {
-    t.plan(6);
+test("MarketActions.updatePendingShares", function (t) {
+    t.plan(5);
     var outcomeId = 2;
     var relativeShares = 2;
-    flux.actions.market.dispatch = function (label, payload) {
-        t.equal(label, "UPDATE_MARKET_SUCCESS", "dispatch: " + label);
+    var UPDATE_MARKET_SUCCESS = flux.register.UPDATE_MARKET_SUCCESS;
+    flux.register.UPDATE_MARKET_SUCCESS = function (payload) {
         t.equal(payload.constructor, Object, "payload is an object");
         t.equal(payload.market.constructor, Object, "payload.market is an object");
         t.equal(payload.market.id.constructor, BigNumber, "payload.market.id is a BigNumber");
         t.true(payload.market.id.eq(marketInfo.id), "payload.market.id == input id");
         t.true(marketInfo.outcomes[outcomeId - 1].pendingShares.plus(new BigNumber(relativeShares)).eq(payload.market.outcomes[outcomeId - 1].pendingShares), "after outcome pendingShares == before outcome pendingShares + signed trade");
+        flux.register.UPDATE_MARKET_SUCCESS = UPDATE_MARKET_SUCCESS;
         augur.filters.ignore(true, t.end);
     };
     flux.actions.market.updatePendingShares(clone(marketInfo), outcomeId, relativeShares);

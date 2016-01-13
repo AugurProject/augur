@@ -18,7 +18,7 @@ var flux = require("./mock");
 
 augur.connect(process.env.AUGUR_HOST);
 
-test("checkNetwork", function (t) {
+test("NetworkActions.checkNetwork", function (t) {
     t.plan(4);
     var expectedStatusSequence = ["ETHEREUM_STATUS_CONNECTED", "ETHEREUM_STATUS_NO_ACCOUNT"];
     expectedStatusSequence.reverse();
@@ -39,7 +39,7 @@ test("checkNetwork", function (t) {
     flux.actions.network.checkNetwork();
 });
 
-test("initializeNetwork", function (t) {
+test("NetworkActions.initializeNetwork", function (t) {
     t.plan(3);
     var UPDATE_ETHEREUM_STATUS = flux.register.UPDATE_ETHEREUM_STATUS;
     flux.register.UPDATE_ETHEREUM_STATUS = function (payload) {
@@ -59,7 +59,7 @@ test("initializeNetwork", function (t) {
     flux.actions.network.initializeNetwork();
 });
 
-test("updateNetwork", function (t) {
+test("NetworkActions.updateNetwork", function (t) {
     t.plan(2);
     var UPDATE_BLOCKCHAIN_AGE = flux.register.UPDATE_BLOCKCHAIN_AGE;
     flux.register.UPDATE_BLOCKCHAIN_AGE = function (payload) {
