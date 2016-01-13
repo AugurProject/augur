@@ -307,7 +307,10 @@ test("MarketActions.addPendingMarket", function (t) {
     var marketId = flux.actions.market.addPendingMarket(clone(newMarket));
     t.equal(marketId.constructor, String, "new market ID is a string");
     complete.returned = true;
-    if (complete.dispatch && complete.returned) t.end();
+    if (complete.dispatch && complete.returned) {
+        flux.register.ADD_PENDING_MARKET_SUCCESS = ADD_PENDING_MARKET_SUCCESS;
+        t.end();
+    }
 });
 
 test("MarketActions.deleteMarket", function (t) {
