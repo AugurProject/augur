@@ -328,7 +328,7 @@ test("MarketActions.deleteMarket", function (t) {
 
 // tradeSucceeded triggers loadMarket(marketId) => repeat loadMarket test
 test("MarketActions.tradeSucceeded", function (t) {
-    t.plan(3);
+    t.plan(2);
     var marketId = marketInfo.id;
     var trade = {
         branchId: process.env.AUGUR_BRANCH_ID || "1010101",
