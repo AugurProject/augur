@@ -643,14 +643,6 @@ nav.header .menu a:hover {
     font-size: 16px;
     margin: 10px 0px 20px 0px;
 }
-#main h4 {
-    font-weight: 400;
-    color: #ffffff;
-    text-shadow: 1px 1px #000000;
-    text-transform: uppercase;
-    font-family: "Lato";
-    font-size: 16pt;
-}
 
 .market-pane {
     color: #000;

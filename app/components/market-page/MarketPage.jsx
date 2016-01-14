@@ -48,67 +48,48 @@ let MarketPage = React.createClass({
                             <h2>Navigation</h2>
                         </a>
 
-                        <div id="collapseSubmenu" className="collapse" aria-expanded="false">
+                        <div id="collapseSubmenu" className="col-xs-12 collapse" aria-expanded="false">
                             <ul className="list-group" role="tablist" id="tabpanel">
-                                <cif test="${!contract.isExpired()}">
-                                    <li role="presentation" className="list-group-item">
-                                        <a role="tab" ui-sref="contract.trade({contractId: app.contract.contractId})"
-                                           ui-sref-active="active">Trade</a>
-                                    </li>
-                                </cif>
-                                <cif test="${contract.isExpired()}">
-                                    <li role="presentation" className="list-group-item" ng-if="app.isUserLoggedIn">
-                                        <a role="tab"
-                                           ui-sref="contract.userTrades({contractId: app.contract.contractId})"
-                                           ui-sref-active="active">My
-                                            Trades</a>
-                                    </li>
-                                </cif>
-                                <li role="presentation" className="list-group-item">
-                                    <a role="tab" ui-sref="contract.stats({contractId: app.contract.contractId})"
-                                       ui-sref-active="active">Stats & Charts</a>
+                                <li role="presentation" className="list-group-item active">
+                                    <a role="tab" href="#tradeTab" data-toggle="tab">Trade</a>
                                 </li>
                                 <li role="presentation" className="list-group-item">
-                                    <a role="tab" ui-sref="contract.rules({contractId: app.contract.contractId})"
-                                       ui-sref-active="active">Rules</a>
+                                    <a role="tab" href="#statsTab" data-toggle="tab">Stats & Charts</a>
                                 </li>
-                                <cif test="${!contract.isExpired()}">
-                                    <li role="presentation" className="list-group-item" ng-if="app.isUserLoggedIn">
-                                        <a role="tab"
-                                           ui-sref="contract.userTrades({contractId: app.contract.contractId})"
-                                           ui-sref-active="active">
-                                            My Trades
-                                        </a>
-                                    </li>
-                                    <li role="presentation" className="list-group-item" ng-if="app.isUserLoggedIn">
-                                        <a role="tab"
-                                           ui-sref="contract.userFrozenFunds({contractId: app.contract.contractId})"
-                                           ui-sref-active="active">
-                                            Frozen Funds
-                                        <span ng-show="app.balance.eventMargin != null">
-                                            (<span ng-bind="app.balance.eventMarginFormatted"></span>)
-                                        </span>
-                                        </a>
-                                    </li>
-                                </cif>
+                                <li role="presentation" className="list-group-item">
+                                    <a role="tab" href="#rulesTab" data-toggle="tab">Rules</a>
+                                </li>
+                                <li role="presentation" className="list-group-item">
+                                    <a role="tab" href="#userTradesTab" data-toggle="tab">
+                                        My Trades
+                                    </a>
+                                </li>
+                                <li role="presentation" className="list-group-item">
+                                    <a role="tab" href="#userFrozenFundsTab" data-toggle="tab">
+                                        Frozen Funds
+                                        {/*<span ng-show="app.balance.eventMargin != null">
+                                        (<span ng-bind="app.balance.eventMarginFormatted"></span>)
+                                    </span>*/}
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </div>
 
                     <div className="tab-content">
-                        <div id="trade" role="tabpanel" className="tab-pane active">
+                        <div id="tradeTab" className="tab-pane active" role="tabpanel">
                             <TradeTab/>
                         </div>
-                        <div id="stats" role="tabpanel" className="tab-pane">
+                        <div id="statsTab" className="tab-pane" role="tabpanel">
                             <StatsTab/>
                         </div>
-                        <div id="rules" role="tabpanel" className="tab-pane">
+                        <div id="rulesTab" className="tab-pane" role="tabpanel">
                             <RulesTab/>
                         </div>
-                        <div id="userTrades" role="tabpanel" className="tab-pane" ng-if="app.isUserLoggedIn">
+                        <div id="userTradesTab" className="tab-pane" role="tabpanel">
                             <UserTradesTab/>
                         </div>
-                        <div id="frozenFunds" className="tab-pane" role="tabpanel" ng-if="app.isUserLoggedIn">
+                        <div id="userFrozenFundsTab" className="tab-pane" role="tabpanel">
                             <UserFrozenFundsTab/>
                         </div>
                     </div>
