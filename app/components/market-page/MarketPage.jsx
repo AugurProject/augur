@@ -36,9 +36,9 @@ let MarketPage = React.createClass({
             );
         }
         return (
-            <div className="container">
-                <Breadcrumb market={this.state.market}/>
-                <MarketInfo/>
+            <div className="">
+                <Breadcrumb market={market}/>
+                <MarketInfo market={market}/>
 
                 <div role="tabpanel" style={{marginTop: '15px'}}>
                     <div className="row submenu">
