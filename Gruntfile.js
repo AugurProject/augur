@@ -81,6 +81,16 @@ module.exports = function (grunt) {
           'app/css/bootstrap.css': 'node_modules/bootstrap/dist/css/bootstrap.css',
           'app/css/bootstrap.css.map': 'node_modules/bootstrap/dist/css/bootstrap.css.map'
         }
+      },
+      fonts: {
+        files: [
+          {
+            expand: true, // expand to use flatten (Remove all path parts from generated dest paths)
+            flatten: true,
+            src: 'node_modules/font-awesome/fonts/*.*',
+            dest: 'app/fonts/'
+          }
+        ]
       }
     }
   });
