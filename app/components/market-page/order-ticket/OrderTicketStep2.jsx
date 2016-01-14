@@ -18,8 +18,9 @@ let OrderTicketStep2 = React.createClass({
                                     <td>Order type:</td>
                                     <td className="text-right">
                                         <strong className="text-uppercase"
-                                                in-buy-sell="{/*orderTicket.order.isBuy*/}">{/*orderTicket.order.isBuy
-                                         ? "Buy" : "Sell"*/}</strong>
+                                                in-buy-sell="{/*orderTicket.order.isBuy*/}">
+                                            {this.props.order.side}
+                                        </strong>
                                     </td>
                                 </tr>
                                 <tr>
@@ -30,7 +31,7 @@ let OrderTicketStep2 = React.createClass({
                                 </tr>
                                 <tr>
                                     <td>Quantity:</td>
-                                    <td className="text-right">{/*orderTicket.order.quantityFormatted*/}</td>
+                                    <td className="text-right">{this.props.order.quantity}</td>
                                 </tr>
                                 <tr>
                                     <td>Funds available:</td>

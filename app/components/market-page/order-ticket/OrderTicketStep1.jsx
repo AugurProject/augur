@@ -3,24 +3,51 @@ let Formsy = require('formsy-react');
 
 let SideInput = require('./SideInput.jsx');
 let QuantityInput = require('./QuantityInput.jsx');
+let ConfirmOrderInput = require('./ConfirmOrderInput.jsx');
 
 let OrderTicketStep1 = React.createClass({
+    onSubmit(...rest) {
+        this.refs.orderForm.validateForm();
+        this.props.onFormSubmit(...rest);
+    },
     render() {
         let style = {
             display: this.props.isVisible ? "" : "none"
         };
         return (
             <div id="orderTicketCollapse" className="orderTicket-step collapse collapsedOnMobile" style={style}>
-                <Formsy.Form name="orderTicketForm" noValidate method="post" onSubmit={this.props.onFormSubmit}
-                             ref="orderTicketForm">
+                <Formsy.Form name="orderTicketForm"
+                             noValidate
+                             method="post"
+                             onValid={this.props.onFormValid}
+                             onInvalid={this.props.onFormInvalid}
+                             onSubmit={this.onSubmit}
+                             ref="orderForm"
+                    >
                     <div className="orderTicket-step-content">
-                        <SideInput order={this.props.order} name="order.quantity"/>
+                        <SideInput
+                            value={this.props.order.side}
+                            name="order.side"
+                            onChange={this.props.onSideInputChange}
+                            required/>
 
-                        <QuantityInput order={this.props.order} name="order.side"/>
+                        <QuantityInput
+                            name="order.quantity"
+                            validations="isInt,isExisty"
+                            onInputChange={this.props.onQuantityInputChange}
+                            required
+                            validationError="Default error message"
+                            validationErrors={{
+                                isDefaultRequiredValue: 'Field is required',
+                                isInt: "this field is number",
+                                isExisty: "this is required"
+                            }}
+                            value={this.props.order.quantity}
+                            />
 
                         <div className="form-group"
                              ng-className='{"has-error": orderTicket.process.hasEnoughMoney === false}'
-                            style={{display: 'none'}}>
+                             style={{display: 'none'}}>
                             <table className="table table-condensed table-no-border table--fullWidthRows"
                                    style={{marginBottom: 0}}>
                                 <tbody>
@@ -59,8 +86,7 @@ let OrderTicketStep1 = React.createClass({
                             <button
                                 className="btn btn-block btn-md btn-fill btn-info orderTicket-submitAction"
                                 type="submit">
-                                {/*orderTicket.orderConfirmation ? "Review order" : "Submit order"*/}
-                                Review order
+                                {this.props.isOrderConfirmationRequired ? "Review order" : "Submit order"}
                             </button>
                         </div>
                     </div>
@@ -73,17 +99,19 @@ let OrderTicketStep1 = React.createClass({
                                 <span
                                     className="second-icon fa fa-check-square-o"></span>
                             </span>
-                            {/*<input type="checkbox" name="orderConfirmation"
-                             ng-model="orderTicket.orderConfirmation"
-                             ng-change="orderTicket.onOrderConfirmationChanged()"/>*/}
+                            <ConfirmOrderInput
+                                name="ticket.isOrderConfirmationRequired"
+                                value={this.props.isOrderConfirmationRequired}
+                                onChange={this.props.onOrderConfirmationChange}
+                                />
                             Confirm order
                         </label>
                         <button
                             className="orderTicket-clearForm btn btn-simple btn-danger text-capitalize u-text--sameSizeAsTableData"
                             ng-click="orderTicket.clearForm()"
                             type="button">
-                            <span className="fa fa-times"></span>
-                            Clear ticket
+                                <span className="fa fa-times"></span>
+                                Clear ticket
                         </button>
                     </div>
                 </Formsy.Form>

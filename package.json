@@ -58,7 +58,8 @@
     "node-uuid": "^1.4.7",
     "pnglib": "0.0.1",
     "posix-getopt": "^1.2.0",
-    "react": "^0.14.0",
+    "react": "^0.14.6",
+    "react-addons-update": "0.14.6",
     "react-bootstrap": "^0.28.1",
     "react-cookie": "^0.2.3",
     "react-date-picker": "^2.1.3",
@@ -69,9 +70,7 @@
     "react-tabs": "^0.5.1",
     "secure-random": "^1.1.1"
   },
-  "peerDependencies": {
-    "react-dom": "^0.14.0"
-  },
+  "peerDependencies": {},
   "devDependencies": {
     "coveralls": "^2.11.6",
     "flex.less": "https://github.com/codio/Flex.less/archive/1.0.0.tar.gz",
