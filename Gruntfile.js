@@ -79,7 +79,7 @@ module.exports = function (grunt) {
       assets: {
         files: {
           'app/css/bootstrap.css': 'node_modules/bootstrap/dist/css/bootstrap.css',
-          'app/css/bootstrap.map.css': 'node_modules/bootstrap/dist/css/bootstrap.map.css'
+          'app/css/bootstrap.css.map': 'node_modules/bootstrap/dist/css/bootstrap.css.map'
         }
       }
     }
