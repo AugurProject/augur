@@ -12,7 +12,7 @@ let TradeTab = React.createClass({
                 <div className="col-sm-9">
                     <div className="row">
                         <div className="col-sm-7 col-md-6">
-                            <UserPosition/>
+                            <UserPosition market={this.props.market}/>
                             <UserOrders/>
                         </div>
                         <div className="col-sm-5 col-md-6">

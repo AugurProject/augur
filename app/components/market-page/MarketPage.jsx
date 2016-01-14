@@ -78,7 +78,7 @@ let MarketPage = React.createClass({
 
                     <div className="tab-content">
                         <div id="tradeTab" className="tab-pane active" role="tabpanel">
-                            <TradeTab/>
+                            <TradeTab market={market}/>
                         </div>
                         <div id="statsTab" className="tab-pane" role="tabpanel">
                             <StatsTab/>

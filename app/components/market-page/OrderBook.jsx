@@ -39,6 +39,10 @@ let OrderBook = React.createClass({
                                 </tr>
                             </thead>
                             <tbody>
+                                <tr>
+                                    <td colSpan="2">to be done</td>
+                                </tr>
+                                {/*
                                 <tr className="js-emptyRow" ng-if="orderBook.bids.length == 0">
                                     <td colSpan="2" className="orderBook-noOrders text-center">
                                         There are no <span className="text-uppercase">bid</span> orders
@@ -54,6 +58,7 @@ let OrderBook = React.createClass({
                                         ng-click="orderBook.onPriceClicked(bid.price)"
                                         title="Fill in this price to order ticket"></td>
                                 </tr>
+                                */}
                             </tbody>
                         </table>
                     </div>
@@ -67,6 +72,10 @@ let OrderBook = React.createClass({
                                 </tr>
                             </thead>
                             <tbody>
+                                <tr>
+                                    <td colSpan="2">to be done</td>
+                                </tr>
+                                {/*
                                 <tr className="js-emptyRow" ng-if="orderBook.offers.length == 0">
                                     <td colSpan="2" className="orderBook-noOrders text-center">
                                         There are no <span className="text-uppercase">ask</span> orders
@@ -83,6 +92,7 @@ let OrderBook = React.createClass({
                                         ng-click="orderBook.onQuantityClicked(offer.quantity)"
                                         title="Fill in this quantity to order ticket"></td>
                                 </tr>
+                                */}
                             </tbody>
                         </table>
                     </div>

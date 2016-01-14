@@ -39,6 +39,10 @@ let UserOrders = React.createClass({
                                 </tr>
                             </thead>
                             <tbody>
+                                <tr>
+                                    <td colSpan="5">to be done</td>
+                                </tr>
+                                {/*
                                 <tr className="js-emptyRow"
                                     ng-if="openOrders.orders.length == 0">
                                     <td colSpan="5" className="text-center">You have no <span
@@ -78,10 +82,11 @@ let UserOrders = React.createClass({
                                         </button>
                                     </td>
                                 </tr>
+                                */}
                             </tbody>
                         </table>
                     </div>
-                    <div>
+                    <div style={{display: 'none'}}>
                         <span>
                             <a href="/my-trading/open-orders#market-"
                                _____ng-style="{visibility: openOrders.count.offers > 0 || openOrders.count.bids > 0 ? 'visible' : 'hidden'}"
