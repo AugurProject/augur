@@ -29,6 +29,12 @@ let MarketPage = React.createClass({
     },
 
     render() {
+        let market = this.state.market;
+        if (market == null) {
+            return (
+                <div>No market info</div>
+            );
+        }
         return (
             <div className="container">
                 <Breadcrumb market={this.state.market}/>
