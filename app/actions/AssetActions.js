@@ -7,7 +7,7 @@ var constants = require("../libs/constants");
 module.exports = {
 
   updateAssets: function () {
-    
+
     var currentAccount = this.flux.store('config').getAccount();
 
     if (currentAccount) {
@@ -34,7 +34,7 @@ module.exports = {
 
     } else {
 
-      this.dispatch(constants.asset.UPDATE_ASSETS, { cash: null, rep: null, ether: null });
+      this.dispatch(constants.asset.UPDATE_ASSETS, { cash: null, reputation: null, ether: null });
     }
   }
 };
