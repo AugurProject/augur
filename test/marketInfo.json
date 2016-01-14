@@ -1,0 +1,47 @@
+{
+  "network": "7",
+  "traderCount": 1,
+  "alpha": "0.00790000000000000001",
+  "traderIndex": 0,
+  "numOutcomes": 2,
+  "tradingPeriod": 1627,
+  "tradingFee": "0.01999999999999999998",
+  "branchId": "0xf69b5",
+  "numEvents": 1,
+  "cumulativeScale": "1",
+  "creationFee": "14",
+  "author": "0x639b41c4d3d399894f2a57894278e1653e7cd24c",
+  "type": "binary",
+  "endDate": 2929186,
+  "participants": {
+    "0xd67849fdff91d0426e53c8b4350acdef5b810fee": 0
+  },
+  "winningOutcomes": ["0", "0", "0", "0", "0", "0", "0", "0"],
+  "description": "Will it rain in New York City on November 12, 2016?",
+  "outcomes": [{
+      "shares": {
+        "0xd67849fdff91d0426e53c8b4350acdef5b810fee": "15"
+      },
+      "id": 1,
+      "outstandingShares": "28.71408125149891155868",
+      "price": "0.99999999999999859661"
+    }, {
+      "shares": {
+          "0xd67849fdff91d0426e53c8b4350acdef5b810fee": "0"
+      },
+      "id": 2,
+      "outstandingShares": "13.71408125149891155868",
+      "price": "-0.0000000000000009992"
+  }],
+  "events": [{
+    "id": "-0xec0a225f901acc00bb954a79e894bca34faf2e23824d300aa57bc501636c3814",
+    "endDate": 2929186,
+    "outcome": "0",
+    "minValue": "1",
+    "maxValue": "2",
+    "numOutcomes": 2,
+    "type": "binary"
+  }],
+  "price": "-0.0000000000000009992",
+  "_id": "-0x88c563956af68f31bc2bf3169caa6cf0d4ab1226e7f5afc4f09fc119bc2d1bfe"
+}

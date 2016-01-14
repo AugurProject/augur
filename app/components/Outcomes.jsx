@@ -1,11 +1,13 @@
-var _ = require('lodash');
-var React = require('react');
-var Fluxxor = require('fluxxor');
+var _ = require("lodash");
+var augur = require("augur.js");
+var abi = require("augur-abi");
+var React = require("react");
+var Fluxxor = require("fluxxor");
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
-var ReactBootstrap = require('react-bootstrap');
-var utilities = require('../libs/utilities');
-var constants = require('../libs/constants');
+var ReactBootstrap = require("react-bootstrap");
+var utilities = require("../libs/utilities");
+var constants = require("../libs/constants");
 var Input = ReactBootstrap.Input;
 var Button = ReactBootstrap.Button;
 
@@ -25,10 +27,16 @@ var getOutcomeName = function (id, market) {
   case "categorical":
     if (market && market.description && market.description.indexOf("Choices:") > -1) {
       var desc = market.description.split("Choices:");
-      return {
-        type: "categorical",
-        outcome: desc[desc.length - 1].split(",")[id - 1].trim()
-      };
+      // console.log("id:", id);
+      // console.log("description:", market.description, desc, desc[desc.length - 1], desc[desc.length - 1].split(","));
+      try {
+        return {
+          type: "categorical",
+          outcome: desc[desc.length - 1].split(",")[id - 1].trim()
+        };
+      } catch (exc) {
+        // console.error("categorical parse error:", market.description, exc);
+      }
     }
     return {
       type: "categorical",
@@ -39,9 +47,11 @@ var getOutcomeName = function (id, market) {
     if (id === NO) return {type: "scalar", outcome: "⇩"};
     return {type: "scalar", outcome: "⇧"};
     break;
-  default:
+  case "binary":
     if (id === NO) return {type: "binary", outcome: "No"};
     return {type: "binary", outcome: "Yes"};
+  default:
+    console.error("unknown type:", market);
   }
 };
 
@@ -120,11 +130,10 @@ var Overview = React.createClass({
       },
       onSuccess: function (res) {
         console.log("trade succeeded:", res.txHash);
-        self.getFlux().actions.market.tradeSucceeded(self.state.pending[res.txHash]);
+        self.getFlux().actions.market.tradeSucceeded(self.state.pending[res.txHash], marketId);
         var pending = self.state.pending;
         delete pending[res.txHash];
         self.setState({ pending: pending })
-        // console.log(JSON.stringify(self.state.pending, null, 2));
       },
       onFailed: function (err) {
         console.error("trade failed:", err);
@@ -212,24 +221,46 @@ var Overview = React.createClass({
       );
     }
 
-    var outcomeName = getOutcomeName(outcome.id, this.props.market);
-    var metalClass = (outcomeName.type === "categorical") ? "metal-categorical" : "";
-    var displayPrice;
-    if (this.props.market.type === "scalar") {
-      displayPrice = +outcome.price.toFixed(2);
+    if (this.props.market.type === "combinatorial") {
+      for (var i = 0; i < this.props.market.numEvents; ++i) {
+        var outcomeName = getOutcomeName(outcome.id, this.props.market.events[i]);
+        var metalClass = (outcomeName.type === "categorical") ? "metal-categorical" : "";
+        var displayPrice;
+        if (this.props.market.events[i].type === "scalar") {
+          displayPrice = +outcome.price.toFixed(2);
+        } else {
+          displayPrice = priceToPercentage(outcome.price) + "%";
+        }
+      }
+      return (
+        <div className={className}>
+          <h4 className={"metal " + metalClass}>
+            <div className={outcomeName.type + " name"}>{outcomeName.outcome}</div>
+            <div className="price">{displayPrice}</div>
+          </h4>
+          {summary}
+        </div>
+      );
     } else {
-      displayPrice = priceToPercentage(outcome.price) + "%";
-    }
+      var outcomeName = getOutcomeName(outcome.id, this.props.market);
+      var metalClass = (outcomeName.type === "categorical") ? "metal-categorical" : "";
+      var displayPrice;
+      if (this.props.market.type === "scalar") {
+        displayPrice = +outcome.price.toFixed(2);
+      } else {
+        displayPrice = priceToPercentage(outcome.price) + "%";
+      }
 
-    return (
-      <div className={className}>
-        <h4 className={"metal " + metalClass}>
-          <div className={outcomeName.type + " name"}>{outcomeName.outcome}</div>
-          <div className="price">{displayPrice}</div>
-        </h4>
-        {summary}
-      </div>
-    );
+      return (
+        <div className={className}>
+          <h4 className={"metal " + metalClass}>
+            <div className={outcomeName.type + " name"}>{outcomeName.outcome}</div>
+            <div className="price">{displayPrice}</div>
+          </h4>
+          {summary}
+        </div>
+      );
+    }
   }
 });
 

@@ -1,18 +1,18 @@
-var React = require('react');
+var React = require("react");
+var augur = require("augur.js");
 var Fluxxor = require("fluxxor");
 var FluxMixin = Fluxxor.FluxMixin(React);
-var ReactBootstrap = require('react-bootstrap');
+var ReactBootstrap = require("react-bootstrap");
 var Button = ReactBootstrap.Button;
 var Input = ReactBootstrap.Input;
 var Modal = ReactBootstrap.Modal;
-var utilities = require('../libs/utilities');
+var utilities = require("../libs/utilities");
 
 var SignInModal = React.createClass({
 
   mixins: [FluxMixin],
 
   getInitialState: function () {
-
     return {
       handle: '',
       password: '',
@@ -22,15 +22,8 @@ var SignInModal = React.createClass({
     };
   },
 
-  getStateFromFlux: function() {
-
-    return {};
-  },
-
   onSignIn: function (event) {
-
     if (this.isValid()) {
-
       var flux = this.getFlux();
       var self = this;
 
@@ -43,20 +36,21 @@ var SignInModal = React.createClass({
         if (account) {
           if (account.error) {
             self.setState({handleHelp: account.message});
-            flux.actions.market.updateSharesHeld(null);
             flux.actions.config.updateAccount({
               currentAccount: null,
               privateKey: null,
-              handle: null
+              handle: null,
+              keystore: null
             });
             flux.actions.asset.updateAssets();
             return;
           }
-          console.log("signed in to account:", account.handle, account.address);
+          console.log("signed in to account:", account);
           flux.actions.config.updateAccount({
             currentAccount: account.address,
             privateKey: account.privateKey,
-            handle: account.handle
+            handle: account.handle,
+            keystore: account.keystore
           });
           flux.actions.asset.updateAssets();
           flux.actions.report.loadEventsToReport();
@@ -70,7 +64,6 @@ var SignInModal = React.createClass({
   },
 
   isValid: function () {
-
     if (this.state.handle === '') {
       this.setState({handleHelp: 'enter a valid handle'});
       return false;
@@ -78,7 +71,6 @@ var SignInModal = React.createClass({
       this.setState({passwordHelp: 'enter a valid password'});
       return false;
     }
-
     return true;
   },
 

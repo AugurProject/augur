@@ -1,7 +1,12 @@
-var constants = require('../libs/constants');
-var utilities = require('../libs/utilities');
+"use strict";
 
-var NetworkActions = {
+var augur = require("augur.js");
+var abi = require("augur-abi");
+var moment = require("moment");
+var constants = require("../libs/constants");
+var utilities = require("../libs/utilities");
+
+module.exports = {
 
   /**
    * Update the UI and stores depending on the state of the network.
@@ -55,7 +60,8 @@ var NetworkActions = {
       this.dispatch(constants.config.UPDATE_ACCOUNT, {
         currentAccount: augur.web.account.address,
         privateKey: augur.web.account.privateKey,
-        handle: augur.web.account.handle
+        handle: augur.web.account.handle,
+        keystore: augur.web.account.keystore
       });
       this.flux.actions.asset.updateAssets();
       this.flux.actions.report.loadEventsToReport();
@@ -63,7 +69,6 @@ var NetworkActions = {
 
     // hosted node: no unlocked account available
     } else if (this.flux.store('config').getState().isHosted) {
-      console.log("connecting to hosted node");
 
       // if the user has a persistent login, use it
       var account = augur.web.persist();
@@ -72,7 +77,8 @@ var NetworkActions = {
         this.dispatch(constants.config.UPDATE_ACCOUNT, {
           currentAccount: augur.web.account.address,
           privateKey: augur.web.account.privateKey,
-          handle: augur.web.account.handle
+          handle: augur.web.account.handle,
+          keystore: augur.web.account.keystore
         });
         this.flux.actions.asset.updateAssets();
         this.flux.actions.report.loadEventsToReport();
@@ -114,9 +120,6 @@ var NetworkActions = {
 
   updateNetwork: function () {
     var self = this;
-    var configState = this.flux.store('config').getState();
-    var networkState = this.flux.store('network').getState();
-    var branchState = this.flux.store('branch').getState();
 
     // just block age and peer count until we're current
     augur.rpc.blockNumber(function (blockNumber) {
@@ -134,12 +137,12 @@ var NetworkActions = {
         augur.rpc.getBlock(blockNumber, true, function (block) {
           if (block && block.constructor === Object && !block.error) {
 
-            var blockTimeStamp = block.timestamp;
-            var currentTimeStamp = moment().unix();
-            var age = currentTimeStamp - blockTimeStamp;
+            var blockTimestamp = block.timestamp;
+            var currentTimestamp = moment().unix();
+            var age = currentTimestamp - blockTimestamp;
 
-            self.dispatch(constants.network.UPDATE_BLOCK_CHAIN_AGE, {
-              blockChainAge: age
+            self.dispatch(constants.network.UPDATE_BLOCKCHAIN_AGE, {
+              blockchainAge: age
             });
           }
         });
@@ -148,5 +151,3 @@ var NetworkActions = {
   }
 
 };
-
-module.exports = NetworkActions;

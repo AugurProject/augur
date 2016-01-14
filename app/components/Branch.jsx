@@ -1,19 +1,18 @@
-var _ = require('lodash');
-var React = require('react');
+var _ = require("lodash");
+var React = require("react");
 var Fluxxor = require("fluxxor");
+var Paginate = require("react-paginate");
+var Router = require("react-router");
+
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
-var moment = require('moment');
-var Paginate = require('react-paginate');
-var Router = require('react-router');
 var RouteHandler = Router.RouteHandler;
 var Navigation = Router.Navigation;
 var Link = Router.Link;
 
-var AddMarketModal =  require('./AddMarketModal')
-var Markets = require('./Markets');
-
-var constants = require('../libs/constants');
+var AddMarketModal =  require("./AddMarketModal")
+var Markets = require("./Markets");
+var constants = require("../libs/constants");
 
 var Branch = React.createClass({
 

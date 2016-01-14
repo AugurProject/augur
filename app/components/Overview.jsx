@@ -1,34 +1,50 @@
-var React = require('react');
+var React = require("react");
+var _ = require("lodash");
+var augur = require("augur.js");
+var abi = require("augur-abi");
 var Fluxxor = require("fluxxor");
-var keys = require('keythereum');
+var keys = require("keythereum");
+var ReactBootstrap = require("react-bootstrap");
+var Router = require("react-router");
+
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
-var ReactBootstrap = require('react-bootstrap');
 var Button = ReactBootstrap.Button;
 var Table = ReactBootstrap.Table;
-var Router = require('react-router');
 var Link = Router.Link;
 var ListGroup = ReactBootstrap.ListGroup;
 var ListGroupItem = ReactBootstrap.ListGroupItem;
 
-var utilities = require('../libs/utilities');
-var constants = require('../libs/constants');
+var utilities = require("../libs/utilities");
+var constants = require("../libs/constants");
 
-var CloseMarketModal = require('./CloseMarket').CloseMarketModal;
-var Markets = require('./Markets');
-var Branch = require('./Branch');
+var ImportAccountModal = require("./ImportAccount");
+var CloseMarketModal = require("./CloseMarket").CloseMarketModal;
+var Markets = require("./Markets");
+var Branch = require("./Branch");
 
 var Overview = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin('market'), Router.Navigation],
+  mixins: [
+    FluxMixin,
+    StoreWatchMixin('market', 'config', 'branch'),
+    Router.Navigation
+  ],
+
+  getInitialState: function () {
+    return {
+      importAccountModalOpen: false,
+      importKeystore: null
+    };
+  },
 
   getStateFromFlux: function () {
     var flux = this.getFlux();
     var account = flux.store('config').getAccount();
     var currentBranch = flux.store('branch').getCurrentBranch();
-
     return {
       account: account,
+      privateKey: flux.store('config').getPrivateKey(),
       asset: flux.store('asset').getState(),
       config: flux.store('config').getState(),
       trendingMarkets: flux.store('market').getTrendingMarkets(9, currentBranch),
@@ -39,16 +55,44 @@ var Overview = React.createClass({
     }
   },
 
-  exportAccount: function (event) {
-    // keys.exportToFile();
+  toggleImportAccountModal: function (event) {
+    this.setState({importAccountModalOpen: !this.state.importAccountModalOpen});
   },
 
   importAccount: function (event) {
-    // keys.importFromFile();
+    var self = this;
+    if (event.target && event.target.files && event.target.files.length) {
+      var keystoreFile = event.target.files[0];
+      var reader = new FileReader();
+      reader.onload = (function (f) {
+        return function (e) {
+          try {
+            var keystore = JSON.parse(e.target.result);
+            self.setState({importKeystore: keystore});
+            self.toggleImportAccountModal();
+          } catch (exc) {
+            console.error("Overview.importAccount: couldn't parse account file:", exc);
+          }
+        };
+      })(keystoreFile);
+      reader.readAsText(keystoreFile);
+    }
   },
 
   render: function () {
-
+    var importAccountButton = (
+      <div className="col-sm-3">
+        <label
+          htmlFor="importAccountId"
+          className="send-button btn-info btn btn-default">
+          Import Account
+        </label>
+        <input
+          id="importAccountId"
+          type="file"
+          onChange={this.importAccount} />
+      </div>
+    );
     if (!this.state.account) {
       var trendingMarketsSection = <span />;
       if (this.state.trendingMarkets) {
@@ -66,11 +110,21 @@ var Overview = React.createClass({
       }
       return (
         <div id="overview">
-          <div className='row'>
-            <div className="col-xs-12">
-              { trendingMarketsSection }
+          <div className="account-info">
+            <h4>Account</h4>
+            <div className="row">
+              {importAccountButton}
             </div>
           </div>
+          <div className='row'>
+            <div className="col-xs-12">
+              {trendingMarketsSection}
+            </div>
+          </div>
+          <ImportAccountModal
+            params={{keystore: this.state.importKeystore}}
+            show={this.state.importAccountModalOpen}
+            onHide={this.toggleImportAccountModal} />
         </div>
       );
     }
@@ -90,37 +144,49 @@ var Overview = React.createClass({
       });
     }, this);
 
+    var exportAccountButton = (
+      <div className="col-sm-3">
+        <Button
+          disabled
+          className="send-button btn-success">
+          Export Account
+        </Button>
+      </div>
+    );
+    if (this.state.privateKey) {
+      var keystore = augur.web.exportKey();
+      if (keystore) {
+        var accountFilename = "UTC--" + new Date().toISOString() + "--" + keystore.address;
+        var accountUrl = URL.createObjectURL(new Blob([
+          JSON.stringify(keystore)
+        ], {type: "application/json"}));
+        exportAccountButton = (
+          <div className="col-sm-3">
+            <a
+              download={accountFilename}
+              href={accountUrl}
+              className="send-button btn-success btn btn-default">
+              Export Account
+            </a>
+          </div>
+        );
+      }
+    }
+
     var accountSection = <span />
     if (this.state.account) {
       accountSection = (
         <div className="account-info">
           <h4>Account</h4>
           <div className="row">
-            <div className="col-sm-12">
+            <div className="col-sm-6">
               <span className="account">{this.state.account}</span>
             </div>
-            <div className="col-sm-2">
-              <Button
-                bsStyle="default"
-                bsSize="small"
-                className="hidden"
-                onClick={this.exportAccount}>
-                Export to File
-              </Button>
-            </div>
-            <div className="col-sm-2">
-              <Button
-                bsStyle="default"
-                bsSize="small"
-                className="hidden"
-                onClick={this.importAccount}>
-                Import from File
-              </Button>
-            </div>
+            {exportAccountButton}
+            {importAccountButton}
           </div>
         </div>
       );
-      // <Assets asset={this.state.asset} config={this.state.config} />
     }
 
     var holdingsSection = <span />
@@ -218,11 +284,15 @@ var Overview = React.createClass({
       <div id="overview">
         <div className='row'>
           <div className="col-xs-12">
-            { accountSection }
-            { authoredMarketsSection }
-            { holdingsSection }
+            {accountSection}
+            {authoredMarketsSection}
+            {holdingsSection}
           </div>
         </div>
+        <ImportAccountModal
+          params={{keystore: this.state.importKeystore}}
+          show={this.state.importAccountModalOpen}
+          onHide={this.toggleImportAccountModal} />
       </div>
     );
   }

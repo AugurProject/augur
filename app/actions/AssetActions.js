@@ -1,10 +1,13 @@
-var abi = require('augur-abi');
-var constants = require('../libs/constants');
+"use strict";
 
-var AssetActions = {
+var abi = require("augur-abi");
+var augur = require("augur.js");
+var constants = require("../libs/constants");
+
+module.exports = {
 
   updateAssets: function () {
-    
+
     var currentAccount = this.flux.store('config').getAccount();
 
     if (currentAccount) {
@@ -31,9 +34,7 @@ var AssetActions = {
 
     } else {
 
-      this.dispatch(constants.asset.UPDATE_ASSETS, { cash: null, rep: null, ether: null });
+      this.dispatch(constants.asset.UPDATE_ASSETS, { cash: null, reputation: null, ether: null });
     }
   }
 };
-
-module.exports = AssetActions;

@@ -1,31 +1,24 @@
-var React = require('react');
+var React = require("react");
+var augur = require("augur.js");
+var abi = require("augur-abi");
 var Fluxxor = require("fluxxor");
+var ReactBootstrap = require("react-bootstrap");
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
-var ReactBootstrap = require('react-bootstrap');
 var Button = ReactBootstrap.Button;
 var Input = ReactBootstrap.Input;
 var Modal = ReactBootstrap.Modal;
 var ModalTrigger = ReactBootstrap.ModalTrigger;
-var utilities = require('../libs/utilities');
+var utilities = require("../libs/utilities");
 
 var CloseMarketModal = React.createClass({
 
   mixins: [FluxMixin, StoreWatchMixin('market')],
 
-  getInitialState: function () {
-    return {
-    };
-  },
-
   getStateFromFlux: function () {
     return {
       currentBlock: this.getFlux().store('network').getState().blockNumber
     };
-  },
-
-  componentDidMount: function(event) {
-
   },
 
   onConfirm: function (event) {
@@ -43,12 +36,10 @@ var CloseMarketModal = React.createClass({
   },
 
   onCancel: function(event) {
-
     this.props.onRequestHide();
   },
 
   render: function () {
-
     return (
       <Modal {...this.props} id='close-market-modal'>
         <div className="modal-header clearfix">

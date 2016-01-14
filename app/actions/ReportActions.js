@@ -1,8 +1,10 @@
-var _ = require('lodash');
-var secureRandom = require('secure-random');
+"use strict";
 
-var constants = require('../libs/constants');
-
+var _ = require("lodash");
+var abi = require("augur-abi");
+var augur = require("augur.js");
+var secureRandom = require("secure-random");
+var constants = require("../libs/constants");
 
 var bytesToHex = function (bytes) {
   return '0x' + _.reduce(bytes, function (hexString, byte) {
@@ -10,13 +12,14 @@ var bytesToHex = function (bytes) {
   }, '');
 };
 
-var ReportActions = {
+module.exports = {
+
   /**
    * Load the events in the current branch that need reports.
    *
    * TODO: Load events across all branches that need reports.
    */
-  loadEventsToReport: function() {
+  loadEventsToReport: function () {
     var self = this;
     var branch = this.flux.store('branch').getState().currentBranch;
 
@@ -96,10 +99,23 @@ var ReportActions = {
     this.flux.actions.report.storeReports(pendingReports);
 
     // Hash the report and submit it to the network.
-    var hash = augur.hashReport(decisions, salt);
-    console.log('Submitting hash for period', votePeriod, 'reports:', hash);
-    var log = x => console.log('augur.submitReportHash callback:', x);
-    augur.submitReportHash(branchId, hash, votePeriod, log, log, log);
+    var reportHash = augur.hashReport(decisions, salt);
+    console.log("Submitting hash for period", votePeriod);
+    console.log("Report hash:", reportHash);
+    augur.submitReportHash({
+      branchId: branchId,
+      reportHash: reportHash,
+      votePeriod: votePeriod,
+      onSent: function (res) {
+        console.log("submitReportHash sent:", res);
+      },
+      onSuccess: function (res) {
+        console.log("submitReportHash success:", res);
+      },
+      onFailed: function (err) {
+        console.error("submitReportHash failed:", err);
+      }
+    });
 
     this.dispatch(constants.report.UPDATE_PENDING_REPORTS, {pendingReports});
   },
@@ -110,9 +126,25 @@ var ReportActions = {
    * @param report {Object} branchId, votePeriod, decisions and salt.
    */
   submitReport: function (report) {
-    var log = x => console.log('Augur.report callback:', x);
-    var returned = Augur.report(report.branchId, report.decisions, report.votePeriod, report.salt, log, log, log);
-    console.log('Augur.report returned:', returned);
+    console.log("submit report:", report);
+    augur.report({
+      branchId: report.branchId,
+      decisions: report.decisions,
+      votePeriod: report.votePeriod,
+      salt: report.salt,
+      onSent: function (res) {
+        // sent
+        console.log("submitReport sent:", res);
+      },
+      onSuccess: function (res) {
+        // success
+        console.log("submitReport success:", res);
+      },
+      onFailed: function (err) {
+        // failed
+        console.error("submitReport failed:", err);
+      }
+    });
   },
 
   /**
@@ -120,19 +152,19 @@ var ReportActions = {
    * their reporting period.
    */
   submitQualifiedReports: function () {
-    let currentBlock = this.flux.store('network').getState().blockNumber;
-    let reports = this.flux.store('report').getState().pendingReports;
-    let unsentReports = _.filter(reports, r => !r.reported);
-    let didSendReports = false;
+    var currentBlock = this.flux.store('network').getState().blockNumber;
+    var reports = this.flux.store('report').getState().pendingReports;
+    var unsentReports = _.filter(reports, function (r) { return !r.reported; });
+    var didSendReports = false;
 
-    _.forEach(unsentReports, (report) => {
+    _.forEach(unsentReports, function (report) {
       if (report && report.branchId && report.votePeriod) {
         augur.getPeriodLength(report.branchId, function (periodLength) {
           periodLength = abi.number(periodLength);
 
-          let reportingStartBlock = (report.votePeriod + 1) * periodLength;
-          let reportingCurrentBlock = currentBlock - reportingStartBlock;
-          let shouldSend = reportingCurrentBlock > (periodLength / 2);
+          var reportingStartBlock = (report.votePeriod + 1) * periodLength;
+          var reportingCurrentBlock = currentBlock - reportingStartBlock;
+          var shouldSend = reportingCurrentBlock > (periodLength / 2);
 
           if (shouldSend) {
             console.log('Sending report for period', report.votePeriod);
@@ -155,7 +187,5 @@ var ReportActions = {
     var reportsString = localStorage.getItem(constants.report.REPORTS_STORAGE);
     var pendingReports = reportsString ? JSON.parse(reportsString) : [];
     this.dispatch(constants.report.LOAD_PENDING_REPORTS_SUCCESS, {pendingReports});
-  },
+  }
 };
-
-module.exports = ReportActions;

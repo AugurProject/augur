@@ -1,12 +1,15 @@
-var React = require('react');
+var React = require("react");
 var Fluxxor = require("fluxxor");
+var BigNumber = require("bignumber.js");
+var augur = require("augur.js");
+var abi = require("augur-abi");
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
-var ReactBootstrap = require('react-bootstrap');
+var ReactBootstrap = require("react-bootstrap");
 var ReactDOM = require('react-dom');
 var ReactTabs = require('react-tabs');
 var DatePicker = require('react-date-picker');
-var moment = require('moment');
+var moment = require("moment");
 var Button = ReactBootstrap.Button;
 var Input = ReactBootstrap.Input;
 var Modal = ReactBootstrap.Modal;
@@ -15,8 +18,8 @@ var Tabs = ReactTabs.Tabs;
 var TabList = ReactTabs.TabList;
 var TabPanel = ReactTabs.TabPanel;
 
-var constants = require('../libs/constants');
-var utilities = require('../libs/utilities');
+var constants = require("../libs/constants");
+var utilities = require("../libs/utilities");
 
 var AddMarketModal = React.createClass({
 
@@ -47,7 +50,6 @@ var AddMarketModal = React.createClass({
 
   getStateFromFlux: function () {
     var flux = this.getFlux();
-
     return {
       cash: flux.store('asset').getState().cash,
       currentBlock: flux.store('network').getState().blockNumber,

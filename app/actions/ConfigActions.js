@@ -1,7 +1,11 @@
-var constants = require('../libs/constants');
-var utilities = require('../libs/utilities');
+"use strict";
 
-var ConfigActions = {
+var abi = require("augur-abi");
+var augur = require("augur.js");
+var constants = require("../libs/constants");
+var utilities = require("../libs/utilities");
+
+module.exports = {
 
   connect: function (hosted) {
     var host, self = this;
@@ -126,9 +130,8 @@ var ConfigActions = {
     });
   },
 
-  signOut: function() {
+  signOut: function () {
     augur.web.logout();
-    this.flux.actions.market.updateSharesHeld(null);
     this.dispatch(constants.config.UPDATE_ACCOUNT, {
       currentAccount: null,
       privateKey: null,
@@ -137,5 +140,3 @@ var ConfigActions = {
     this.flux.actions.asset.updateAssets();
   }
 };
-
-module.exports = ConfigActions;

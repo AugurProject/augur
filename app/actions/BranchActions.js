@@ -1,17 +1,21 @@
-import _ from 'lodash'
+"use strict";
 
-import { Branch } from '../stores/BranchStore'
-import constants from '../libs/constants'
-import utilities from '../libs/utilities'
+var _ = require("lodash");
+var abi = require("augur-abi");
+var augur = require("augur.js");
+var constants = require("../libs/constants");
+var utilities = require("../libs/utilities");
 
-export default {
+module.exports = {
   
   loadBranches: function () {
     var self = this;
     augur.getBranches(function (branches) {
-      self.dispatch(constants.branch.LOAD_BRANCHES_SUCCESS, {
-        branches: branches
-      });
+      if (branches && !branches.error) {
+        self.dispatch(constants.branch.LOAD_BRANCHES_SUCCESS, {
+          branches: branches
+        });
+      }
     });
   },
 
@@ -20,8 +24,10 @@ export default {
     branchId = branchId || process.env.AUGUR_BRANCH_ID;
     augur.getPeriodLength(branchId, function (periodLength) {
       if (periodLength && !periodLength.error) {
-        var currentBranch = new Branch(branchId, abi.number(periodLength));
-        self.dispatch(constants.branch.SET_CURRENT_BRANCH_SUCCESS, currentBranch);
+        self.dispatch(constants.branch.SET_CURRENT_BRANCH_SUCCESS, {
+          id: branchId,
+          periodLength: abi.number(periodLength)
+        });
         self.flux.actions.branch.updateCurrentBranch();
       } else {
         console.error("augur.periodLength error:", periodLength);

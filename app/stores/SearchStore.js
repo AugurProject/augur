@@ -1,63 +1,44 @@
-var Fluxxor = require('fluxxor');
-var constants = require('../libs/constants');
-var _ = require('lodash');
+"use strict";
 
-var state = {
-  keywords: '',
-  cleanKeywords: [],
-  markets: {},
-  results: {}
-};
+var _ = require("lodash");
+var constants = require("../libs/constants");
 
-module.exports = Fluxxor.createStore({
-
-  initialize: function () {
-    this.bindActions(
-      constants.market.LOAD_MARKETS_SUCCESS, this.handleMarketsUpdated,
-      constants.market.UPDATE_MARKETS_SUCCESS, this.handleMarketsUpdated,
-      constants.search.KEYWORDS_UPDATED, this.handleKeywordsUpdated
-    );
+module.exports = {
+  state: {
+    keywords: '',
+    cleanKeywords: [],
+    markets: {},
+    results: {}
   },
-
   getState: function () {
-    return state;
+    return this.state;
   },
-  
   handleMarketsUpdated: function (payload) {
-    state.markets = payload.markets;
+    this.state.markets = payload.markets;
     this.search();
     this.emit(constants.CHANGE_EVENT);
   },
-  
   handleKeywordsUpdated: function (payload) {
     var cleanKeywords = [];
-
     if (payload.keywords) {
-  		cleanKeywords = payload.keywords.replace(/\s+/g, ' ');
-  		cleanKeywords = cleanKeywords.trim().toLocaleLowerCase();
-  		cleanKeywords = cleanKeywords.split(' ');    
+      cleanKeywords = payload.keywords.replace(/\s+/g, ' ');
+      cleanKeywords = cleanKeywords.trim().toLocaleLowerCase();
+      cleanKeywords = cleanKeywords.split(' ');    
     }
-
-    state.keywords = payload.keywords;
-    state.cleanKeywords = cleanKeywords;
-    
+    this.state.keywords = payload.keywords;
+    this.state.cleanKeywords = cleanKeywords;
     this.search();
     this.emit(constants.CHANGE_EVENT);
   },
-
   search: function () {
+    var self = this;
     var results = {};
-    		
-    _.each(state.markets, function (market, key) {  
-      var isMarketMatched = !state.cleanKeywords.length || state.cleanKeywords.every(function (keyword) {
+    _.each(this.state.markets, function (market, key) {
+      var isMarketMatched = !self.state.cleanKeywords.length || self.state.cleanKeywords.every(function (keyword) {
         return market.description.toLowerCase().indexOf(keyword) >= 0;
       });
-      
-      if (isMarketMatched) {
-        results[key] = market;
-      }
-    });		
-
-    state.results = results;
+      if (isMarketMatched) results[key] = market;
+    });
+    this.state.results = results;
   }  
-});
+};

@@ -1,44 +1,29 @@
-var Fluxxor = require('fluxxor');
-var constants = require('../libs/constants');
+"use strict";
 
-var state = {
-  eventsToReport: {},
-  pendingReports: []
-};
+var _ = require("lodash");
+var constants = require("../libs/constants");
 
-var ReportStore = Fluxxor.createStore({
-
-  initialize: function () {
-    this.bindActions(
-      constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, this.handleLoadEventsToReportSuccess,
-      constants.report.LOAD_PENDING_REPORTS_SUCCESS, this.handleLoadPendingReportsSuccess,
-      constants.report.UPDATE_PENDING_REPORTS, this.handleLoadPendingReportsSuccess,
-      constants.report.UPDATE_EVENT_TO_REPORT, this.handleUpdateEventToReport
-    );
+module.exports = {
+  state: {
+    eventsToReport: {},
+    pendingReports: []
   },
-
   getState: function () {
-    return state;
+    return this.state;
   },
-
   getReport: function (branchId, votePeriod) {
     return _.findWhere(this.getState().pendingReports, {branchId, votePeriod});
   },
-
   handleLoadEventsToReportSuccess: function (payload) {
-    state.eventsToReport = payload.eventsToReport;
+    this.state.eventsToReport = payload.eventsToReport;
     this.emit(constants.CHANGE_EVENT);
   },
-
   handleLoadPendingReportsSuccess: function (payload) {
-    state.pendingReports = payload.pendingReports;
+    this.state.pendingReports = payload.pendingReports;
     this.emit(constants.CHANGE_EVENT);
   },
-
   handleUpdateEventToReport: function (payload) {
-    state.eventsToReport[payload.id] = _.merge(state.eventsToReport[payload.id], payload);
+    this.state.eventsToReport[payload.id] = _.merge(this.state.eventsToReport[payload.id], payload);
     this.emit(constants.CHANGE_EVENT);
   }
-});
-
-module.exports = ReportStore;
+};
