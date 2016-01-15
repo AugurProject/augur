@@ -494,15 +494,15 @@ module.exports = function () {
             }
         },
 
-        listen: function (cb, setupComplete) {
+        listen: function (cb, setup_complete) {
             var self = this;
-            if (utils.is_function(setupComplete)) {
-                async.series([
+            if (utils.is_function(setup_complete)) {
+                async.parallel([
                     function (callback) {
                         if (this.contracts_filter.id === null && cb.contracts) {
                             this.start_contracts_listener(function () {
-                                self.pacemaker({ contracts: cb.contracts });
-                                callback(null, { contracts: self.contracts_filter.id });
+                                self.pacemaker({contracts: cb.contracts});
+                                callback(null, ["contracts", self.contracts_filter.id]);
                             });
                         } else {
                             callback();
@@ -512,8 +512,8 @@ module.exports = function () {
                         var self = this;
                         if (this.price_filter.id === null && cb.price) {
                             this.start_price_listener("updatePrice", function () {
-                                self.pacemaker({ price: cb.price });
-                                callback(null, { price: self.price_filter.id });
+                                self.pacemaker({price: cb.price});
+                                callback(null, ["price", self.price_filter.id]);
                             });
                         } else {
                             callback();
@@ -522,8 +522,8 @@ module.exports = function () {
                     function (callback) {
                         if (this.block_filter.id === null && cb.block) {
                             this.start_block_listener(function () {
-                                self.pacemaker({ block: cb.block });
-                                callback(null, { block: self.block_filter.id });
+                                self.pacemaker({block: cb.block});
+                                callback(null, ["block", self.block_filter.id]);
                             });
                         } else {
                             callback();
@@ -533,17 +533,23 @@ module.exports = function () {
                         var self = this;
                         if (this.creation_filter.id === null && cb.creation) {
                             this.start_creation_listener(function () {
-                                self.pacemaker({ creation: cb.creation });
-                                callback(null, { creation: self.creation_filter.id });
+                                self.pacemaker({creation: cb.creation});
+                                callback(null, ["creation", self.creation_filter.id]);
                             });
                         } else {
                             callback();
                         }
                     }.bind(this)
                 ], function (err, filter_ids) {
-                    if (err) console.error("listen error:", err);
-                    console.log(filter_ids);
-                    if (setupComplete) setupComplete(filter_ids);
+                    if (err) {
+                        console.error("filters.listen:", err);
+                        return setup_complete(err);
+                    }
+                    var filters = {};
+                    for (var i = 0; i < filter_ids.length; ++i) {
+                        filters[filter_ids[i][0]] = filter_ids[i][1];
+                    }
+                    setup_complete(filters);
                 });
             }
             else {
