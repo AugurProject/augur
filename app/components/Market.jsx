@@ -341,7 +341,7 @@ var Comments = React.createClass({
 
   componentDidMount: function () {
     if (this.props.market && this.props.market.id) {
-      this.getFlux().actions.market.loadComments(this.props.market);
+      this.getFlux().augur.actions.market.loadComments(this.props.market);
     }
   },
 
