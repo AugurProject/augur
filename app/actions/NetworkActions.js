@@ -95,11 +95,11 @@ module.exports = {
       // check to make sure the account is unlocked
       augur.rpc.unlocked(augur.coinbase, function (unlocked) {
 
-        // use coinbase if unlocked
+        // use from/coinbase if unlocked
         if (unlocked && !unlocked.error) {
-          console.log("using unlocked account:", augur.coinbase);
+          console.log("using unlocked account:", augur.from);
           self.dispatch(constants.config.UPDATE_ACCOUNT, {
-            currentAccount: augur.coinbase
+            currentAccount: augur.from
           });
           self.flux.actions.asset.updateAssets();
           self.flux.actions.report.loadEventsToReport();

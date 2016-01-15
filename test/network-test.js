@@ -16,7 +16,7 @@ var utils = require("../app/libs/utilities");
 var constants = require("../app/libs/constants");
 var flux = require("./mock");
 
-augur.connect(process.env.AUGUR_HOST);
+augur.connect();
 
 test("NetworkActions.checkNetwork", function (t) {
     t.plan(4);

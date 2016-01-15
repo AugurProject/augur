@@ -10,7 +10,7 @@ var augur = require("augur.js");
 var constants = require("../app/libs/constants");
 var flux = require("./mock");
 
-augur.connect(process.env.AUGUR_HOST);
+augur.connect();
 
 // test("ConfigActions.connect", function (t) {
 //     flux.actions.config.connect();

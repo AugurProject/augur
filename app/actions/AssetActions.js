@@ -10,6 +10,8 @@ module.exports = {
 
     var currentAccount = this.flux.store('config').getAccount();
 
+    console.log("updateAssets currentAccount:", currentAccount);
+
     if (currentAccount) {
       var self = this;
       var currentBranch = this.flux.store('branch').getCurrentBranch();

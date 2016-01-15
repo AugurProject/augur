@@ -50,7 +50,7 @@ function parseMarketInfoSync(info) {
     return info;
 }
 
-augur.connect(process.env.AUGUR_HOST);
+augur.connect();
 var account = {address: augur.from};
 var blockNumber = augur.rpc.blockNumber();
 var rawInfo = clone(marketInfo);
