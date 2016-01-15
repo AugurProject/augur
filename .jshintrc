@@ -1,6 +1,6 @@
 {
     "browserify": true,
-    "bitwise": true,
+    "bitwise": false,
     "funcscope": false,
     "freeze": true,
     "maxerr": 1000,

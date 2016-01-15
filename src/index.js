@@ -32,6 +32,7 @@ function Augur() {
     this.constants = require("./constants");
     this.db = require("./client/db");
     this.comments = ramble;
+    this.connector = connector;
     this.comments.connector = connector;
     this.errors = contracts.errors;
 
@@ -128,7 +129,7 @@ Augur.prototype.reputationFaucet = function (branch, onSent, onSuccess, onFailed
 Augur.prototype.getCashBalance = function (account, onSent) {
     // account: ethereum account
     var tx = this.utils.copy(this.tx.getCashBalance);
-    tx.params = account || this.web.account.address || this.coinbase;
+    tx.params = account || this.from;
     return this.fire(tx, onSent);
 };
 Augur.prototype.sendCash = function (to, value, onSent, onSuccess, onFailed) {
@@ -1198,7 +1199,7 @@ Augur.prototype.getRepBalance = function (branch, account, onSent) {
     // branch: sha256 hash id
     // account: ethereum address (hexstring)
     var tx = this.utils.copy(this.tx.getRepBalance);
-    tx.params = [branch, account || this.web.account.address || this.coinbase];
+    tx.params = [branch, account || this.from];
     return this.fire(tx, onSent);
 };
 Augur.prototype.getRepByIndex = function (branch, repIndex, onSent) {

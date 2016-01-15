@@ -23,13 +23,13 @@ GLOBAL.augur = (GLOBAL.reload = function () {
     return utils.setup(utils.reset("./src/index"), process.argv.slice(2));
 })();
 GLOBAL.b = augur.branches.dev;
-GLOBAL.ballot = [ 2, 1.5, 1.5, 1, 1.5, 1.5, 1 ];
+GLOBAL.ballot = [2, 1.5, 1.5, 1, 1.5, 1.5, 1];
 GLOBAL.log = console.log;
 
 longjohn.async_trace_limit = 25;
 longjohn.empty_frame = "";
 
-web3.setProvider(new web3.providers.HttpProvider("http://127.0.0.1:8545"));
+web3.setProvider(new web3.providers.HttpProvider(process.env.AUGUR_HOST));
 
 GLOBAL.accounts = utils.get_test_accounts(augur, constants.MAX_TEST_ACCOUNTS);
 GLOBAL.c = augur.coinbase;
@@ -49,7 +49,7 @@ GLOBAL.gospel = function () {
     var gospel_file = path.join(__dirname, "data", "gospel.json");
     log("Load contracts from file: " + chalk.green(gospel_file));
     augur.contracts = JSON.parse(fs.readFileSync(gospel_file));
-    augur.connect();
+    augur.connect(process.env.AUGUR_HOST, process.env.GETH_IPC);
     return balance();
 };
 if (balances.cash === undefined && balances.reputation === undefined) {
