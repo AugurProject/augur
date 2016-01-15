@@ -1,6 +1,5 @@
 "use strict";
 
-var augur = require("augur.js");
 var abi = require("augur-abi");
 var moment = require("moment");
 var constants = require("../libs/constants");
@@ -18,6 +17,7 @@ module.exports = {
    */
   checkNetwork: function () {
     var self = this;
+    var augur = this.flux.augur;
     var network = this.flux.store('network').getState();
     augur.rpc.listening(function (nowUp) {
       var wasUp = (
@@ -48,6 +48,7 @@ module.exports = {
 
   initializeNetwork: function () {
     var self = this;
+    var augur = this.flux.augur;
 
     // get network and client versions
     this.dispatch(constants.network.UPDATE_NETWORK, {
@@ -93,7 +94,7 @@ module.exports = {
     } else {
 
       // check to make sure the account is unlocked
-      augur.rpc.unlocked(augur.coinbase, function (unlocked) {
+      augur.rpc.unlocked(augur.from, function (unlocked) {
 
         // use from/coinbase if unlocked
         if (unlocked && !unlocked.error) {
@@ -107,7 +108,7 @@ module.exports = {
 
         // otherwise, no account available
         } else {
-          console.log("account", augur.coinbase, "is locked");
+          console.log("account", augur.from, "is locked");
           self.dispatch(constants.network.UPDATE_ETHEREUM_STATUS, {
             ethereumStatus: constants.network.ETHEREUM_STATUS_NO_ACCOUNT
           });
@@ -120,6 +121,7 @@ module.exports = {
 
   updateNetwork: function () {
     var self = this;
+    var augur = this.flux.augur;
 
     // just block age and peer count until we're current
     augur.rpc.blockNumber(function (blockNumber) {

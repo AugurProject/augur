@@ -1,6 +1,5 @@
 var React = require("react");
 var _ = require("lodash");
-var augur = require("augur.js");
 var abi = require("augur-abi");
 var Fluxxor = require("fluxxor");
 var keys = require("keythereum");
@@ -154,7 +153,7 @@ var Overview = React.createClass({
       </div>
     );
     if (this.state.privateKey) {
-      var keystore = augur.web.exportKey();
+      var keystore = this.getFlux().augur.web.exportKey();
       if (keystore) {
         var accountFilename = "UTC--" + new Date().toISOString() + "--" + keystore.address;
         var accountUrl = URL.createObjectURL(new Blob([

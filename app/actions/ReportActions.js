@@ -2,7 +2,6 @@
 
 var _ = require("lodash");
 var abi = require("augur-abi");
-var augur = require("augur.js");
 var secureRandom = require("secure-random");
 var constants = require("../libs/constants");
 
@@ -21,6 +20,7 @@ module.exports = {
    */
   loadEventsToReport: function () {
     var self = this;
+    var augur = this.flux.augur;
     var branch = this.flux.store('branch').getState().currentBranch;
 
     // Only load events if the vote period indicated by the chain is the
@@ -99,10 +99,10 @@ module.exports = {
     this.flux.actions.report.storeReports(pendingReports);
 
     // Hash the report and submit it to the network.
-    var reportHash = augur.hashReport(decisions, salt);
+    var reportHash = this.flux.augur.hashReport(decisions, salt);
     console.log("Submitting hash for period", votePeriod);
     console.log("Report hash:", reportHash);
-    augur.submitReportHash({
+    this.flux.augur.submitReportHash({
       branchId: branchId,
       reportHash: reportHash,
       votePeriod: votePeriod,
@@ -127,7 +127,7 @@ module.exports = {
    */
   submitReport: function (report) {
     console.log("submit report:", report);
-    augur.report({
+    this.flux.augur.report({
       branchId: report.branchId,
       decisions: report.decisions,
       votePeriod: report.votePeriod,
@@ -152,6 +152,7 @@ module.exports = {
    * their reporting period.
    */
   submitQualifiedReports: function () {
+    var self = this;
     var currentBlock = this.flux.store('network').getState().blockNumber;
     var reports = this.flux.store('report').getState().pendingReports;
     var unsentReports = _.filter(reports, function (r) { return !r.reported; });
@@ -159,7 +160,7 @@ module.exports = {
 
     _.forEach(unsentReports, function (report) {
       if (report && report.branchId && report.votePeriod) {
-        augur.getPeriodLength(report.branchId, function (periodLength) {
+        self.flux.augur.getPeriodLength(report.branchId, function (periodLength) {
           periodLength = abi.number(periodLength);
 
           var reportingStartBlock = (report.votePeriod + 1) * periodLength;
@@ -168,7 +169,7 @@ module.exports = {
 
           if (shouldSend) {
             console.log('Sending report for period', report.votePeriod);
-            this.flux.actions.report.submitReport(report);
+            self.flux.actions.report.submitReport(report);
             report.reported = true;
             didSendReports = true;
           }

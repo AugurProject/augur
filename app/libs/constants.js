@@ -8,6 +8,7 @@ var BigNumber = require("bignumber.js");
 var ONE_FXP = new BigNumber(2).toPower(64);
 
 module.exports = {
+  ETHER: new BigNumber(10).toPower(18),
   ONE_FXP: ONE_FXP,
   NO: ONE_FXP,
   YES: ONE_FXP.mul(2),

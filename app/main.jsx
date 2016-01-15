@@ -5,11 +5,9 @@ require("bootstrap");
 var React = require("react");
 var ReactDOM = require("react-dom");
 var Fluxxor = require("fluxxor");
-
 var Router = require("react-router");
 var Route = Router.Route;
 var DefaultRoute = Router.DefaultRoute;
-
 var constants = require("./libs/constants");
 var utilities = require("./libs/utilities");
 var dispatcher = require("./stores/dispatcher.js");
@@ -33,14 +31,15 @@ var stores = {
   search: new dispatcher.search()
 };
 
+window.flux = new Fluxxor.Flux(stores, actions);
+flux.augur = require("augur.js");
+
 var AugurApp = require("./components/AugurApp");
 var Overview = require("./components/Overview");
 var Branch = require("./components/Branch");
 var Market = require("./components/Market");
 var Ballots = require("./components/Ballots");
 var Outcomes = require("./components/Outcomes");
-
-window.flux = new Fluxxor.Flux(stores, actions);
 
 flux.on("dispatch", function (type, payload) {
   var debug = flux.store("config").getState().debug;

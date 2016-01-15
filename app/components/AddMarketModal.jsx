@@ -1,7 +1,6 @@
 var React = require("react");
 var Fluxxor = require("fluxxor");
 var BigNumber = require("bignumber.js");
-var augur = require("augur.js");
 var abi = require("augur-abi");
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
@@ -172,7 +171,7 @@ var AddMarketModal = React.createClass({
     var pendingId = flux.actions.market.addPendingMarket(newMarketParams);
     var branchId = flux.store("branch").getCurrentBranch().id;
     var block = flux.store("network").getState().blockNumber;
-    augur.createEvent({
+    flux.augur.createEvent({
       branchId: branchId,
       description: this.state.marketText,
       expDate: utilities.dateToBlock(moment(this.state.maturationDate), block),
@@ -189,7 +188,7 @@ var AddMarketModal = React.createClass({
           console.log("new event ID:", res.callReturn);
           var events = res.callReturn;
           if (events.constructor !== Array) events = [events];
-          augur.createMarket({
+          flux.augur.createMarket({
             branchId: branchId,
             description: newMarketParams.description,
             alpha: "0.0079",

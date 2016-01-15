@@ -1,5 +1,4 @@
 var React = require("react");
-var augur = require("augur.js");
 var abi = require("augur-abi");
 var Fluxxor = require("fluxxor");
 var keys = require("keythereum");
@@ -52,7 +51,7 @@ var ImportAccountModal = React.createClass({
             },
             id: abi.prefix_hex(new Buffer(uuid.parse(keystore.id)).toString("hex"))
         };
-        augur.db.put(handle, account, function (result) {
+        flux.augur.db.put(handle, account, function (result) {
           if (!result || result.error) {
             return console.error("onImportAccount augur.db.put:", result);
           }
@@ -62,16 +61,16 @@ var ImportAccountModal = React.createClass({
           account.kdfparams.salt = account.kdfparams.salt.toString("hex");
           account.mac = account.mac.toString("hex");
           account.id = uuid.unparse(new Buffer(abi.strip_0x(account.id), "hex"));
-          augur.web.account = {
+          flux.augur.web.account = {
               handle: handle,
               privateKey: privateKey,
               address: address,
               keystore: account
           };
           if (options.persist) {
-              augur.db.putPersistent(augur.web.account);
+              flux.augur.db.putPersistent(flux.augur.web.account);
           }
-          console.log("account import successful:", augur.web.account);
+          console.log("account import successful:", flux.augur.web.account);
           flux.actions.config.updateAccount({
             currentAccount: address,
             privateKey: privateKey,

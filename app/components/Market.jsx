@@ -1,6 +1,5 @@
 var BigNumber = require("bignumber.js");
 var _ = require("lodash");
-var augur = require("augur.js");
 var abi = require("augur-abi");
 var React = require("react");
 var Fluxxor = require("fluxxor");
@@ -205,8 +204,6 @@ var Market = React.createClass({
     var author = market.author ? abi.hex(market.author) : '-';
 
     if (this.state.market.type === "combinatorial") {
-      window.p = augur.utils.pp.bind(augur.utils);
-      window.mkt = this.state.market;
       var events = this.state.market.events;
       var outcomes = [];
       for (var i = 0, n = this.state.market.numEvents; i < n; ++i) {
@@ -328,7 +325,7 @@ class Twitter extends React.Component {
   render() {
 
     let tweetText = this.props.marketName;
-    let tweetUrl = 'http://client.augur.net' + this.props.pathname;
+    let tweetUrl = 'http://app.augur.net' + this.props.pathname;
 
     return (
       <div className="twitter-share-block pull-right">

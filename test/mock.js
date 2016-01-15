@@ -8,6 +8,7 @@
 var DEBUG = false;
 
 var flux = {
+    augur: require("augur.js"),
     actions: {
         asset: require("../app/actions/AssetActions"),
         branch: require("../app/actions/BranchActions"),

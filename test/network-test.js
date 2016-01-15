@@ -7,7 +7,6 @@
 
 var test = require("tape");
 var abi = require("augur-abi");
-var augur = require("augur.js");
 var BigNumber = require("bignumber.js");
 var clone = require("clone");
 var validator = require("validator");
@@ -16,7 +15,7 @@ var utils = require("../app/libs/utilities");
 var constants = require("../app/libs/constants");
 var flux = require("./mock");
 
-augur.connect();
+flux.augur.connect();
 
 test("NetworkActions.checkNetwork", function (t) {
     t.plan(4);
@@ -33,7 +32,7 @@ test("NetworkActions.checkNetwork", function (t) {
         t.equal(payload.percentLoaded, 100, "payload.percentLoaded == 100");
         flux.register.UPDATE_ETHEREUM_STATUS = UPDATE_ETHEREUM_STATUS;
         flux.register.UPDATE_PERCENT_LOADED_SUCCESS = UPDATE_PERCENT_LOADED_SUCCESS;
-        augur.filters.ignore(true, t.end);
+        flux.augur.filters.ignore(true, t.end);
     };
     t.equal(flux.store("network").getState().ethereumStatus, null, "network state.ethereumStatus is null");
     flux.actions.network.checkNetwork();

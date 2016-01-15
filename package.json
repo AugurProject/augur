@@ -73,6 +73,7 @@
   },
   "devDependencies": {
     "coveralls": "^2.11.6",
+    "geth": "^0.2.2",
     "grunt": "^0.4.5",
     "grunt-browserify": "^4.0.0",
     "grunt-contrib-jshint": "^0.11.2",

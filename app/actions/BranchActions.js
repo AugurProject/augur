@@ -2,7 +2,6 @@
 
 var _ = require("lodash");
 var abi = require("augur-abi");
-var augur = require("augur.js");
 var constants = require("../libs/constants");
 var utilities = require("../libs/utilities");
 
@@ -10,7 +9,7 @@ module.exports = {
   
   loadBranches: function () {
     var self = this;
-    augur.getBranches(function (branches) {
+    this.flux.augur.getBranches(function (branches) {
       if (branches && !branches.error) {
         self.dispatch(constants.branch.LOAD_BRANCHES_SUCCESS, {
           branches: branches
@@ -22,7 +21,7 @@ module.exports = {
   setCurrentBranch: function (branchId) {
     var self = this;
     branchId = branchId || process.env.AUGUR_BRANCH_ID;
-    augur.getPeriodLength(branchId, function (periodLength) {
+    this.flux.augur.getPeriodLength(branchId, function (periodLength) {
       if (periodLength && !periodLength.error) {
         self.dispatch(constants.branch.SET_CURRENT_BRANCH_SUCCESS, {
           id: branchId,
@@ -42,7 +41,7 @@ module.exports = {
     var currentPeriod = Math.floor(currentBlock / currentBranch.periodLength);
     var percentComplete = (currentBlock % currentBranch.periodLength) / currentBranch.periodLength * 100;
 
-    augur.getVotePeriod(currentBranch.id, function (result) {
+    this.flux.augur.getVotePeriod(currentBranch.id, function (result) {
       if (result && !result.error) {
         var votePeriod = abi.number(result);
 
@@ -82,7 +81,7 @@ module.exports = {
 
     // check quorum if branch isn't current and we havn't already
     if (!currentBranch.isCurrent && !hasCheckedQuorum) {
-      augur.dispatch({
+      this.flux.augur.dispatch({
         branchId: currentBranch.id,
         onSent: function (r) {
           self.dispatch(constants.branch.CHECK_QUORUM_SENT);

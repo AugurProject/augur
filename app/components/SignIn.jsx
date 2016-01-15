@@ -1,5 +1,4 @@
 var React = require("react");
-var augur = require("augur.js");
 var Fluxxor = require("fluxxor");
 var FluxMixin = Fluxxor.FluxMixin(React);
 var ReactBootstrap = require("react-bootstrap");
@@ -30,7 +29,7 @@ var SignInModal = React.createClass({
       // NOTE: this is here because the signin flux action in config does not
       // return a value and it's important to communicate any server-side error
       // to the user here
-      augur.web.login(this.state.handle, this.state.password, {
+      flux.augur.web.login(this.state.handle, this.state.password, {
         persist: this.state.persist
       }, function (account) { 
         if (account) {

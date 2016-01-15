@@ -6,13 +6,12 @@
 "use strict";
 
 var test = require("tape");
-var augur = require("augur.js");
 var valid = require("validator");
 var constants = require("../app/libs/constants");
 var flux = require("./mock");
 
-augur.connect();
-augur.rpc.balancer = false;
+flux.augur.connect();
+flux.augur.rpc.balancer = false;
 var branchId = 1010101;
 
 test("BranchActions.loadBranches", function (t) {
@@ -22,7 +21,7 @@ test("BranchActions.loadBranches", function (t) {
         t.equal(payload.constructor, Object, "payload is an object");
         t.equal(payload.branches.constructor, Array, "payload.branches is an array");
         t.true(payload.branches.length, "payload.branches.length >= 1");
-        t.true(payload.branches.indexOf(augur.branches.dev) > -1, "payload.branches includes " + augur.branches.dev);
+        t.true(payload.branches.indexOf(flux.augur.branches.dev) > -1, "payload.branches includes " + flux.augur.branches.dev);
         LOAD_BRANCHES_SUCCESS(payload);
         t.pass("dispatch LOAD_BRANCHES_SUCCESS");
         t.deepEqual(payload.branches, flux.store("branch").getState().branches, "payload.branches == stored branches");

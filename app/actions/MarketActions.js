@@ -5,7 +5,6 @@ var async = require("async");
 var clone = require("clone");
 var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
-var augur = require("augur.js");
 var constants = require("../libs/constants");
 var utils = require("../libs/utilities");
 var blacklist = require("../libs/blacklist");
@@ -16,7 +15,7 @@ module.exports = {
     var self = this;
     options = options || {};
     if (market && market.id) {
-      augur.comments.getMarketComments(abi.hex(market.id), options, function (err, comments) {
+      this.flux.augur.comments.getMarketComments(abi.hex(market.id), options, function (err, comments) {
         if (err) return console.error(err);
         if (comments && comments.constructor === Array && comments.length) {
           market.comments = comments;
@@ -50,7 +49,7 @@ module.exports = {
     var self = this;
     if (commentText && marketId) {
       var author = account.address || this.flux.store("config").getAccount();
-      augur.comments.addMarketComment({
+      this.flux.augur.comments.addMarketComment({
         marketId: abi.hex(marketId),
         author: author,
         message: commentText
@@ -70,7 +69,7 @@ module.exports = {
     var block = self.flux.store('network').getState().blockNumber;
     var account = self.flux.store('config').getAccount();
     var branchId = self.flux.store('branch').getCurrentBranch().id;
-    var blackmarkets = blacklist.markets[augur.network_id][branchId];
+    var blackmarkets = blacklist.markets[this.flux.augur.network_id][branchId];
     if (marketInfo && abi.bignum(marketInfo.branchId).eq(abi.bignum(branchId)) &&
         !_.contains(blackmarkets, marketId.toString(16)) &&
         !marketInfo.invalid && marketInfo.price && marketInfo.description) {
@@ -121,6 +120,7 @@ module.exports = {
 
   loadMarkets: function () {
     var self = this;
+    var augur = this.flux.augur;
     var chunk = 500;
     var branchId = this.flux.store('branch').getCurrentBranch().id;
 
@@ -180,6 +180,7 @@ module.exports = {
 
   loadMarket: function (marketId) {  
     var self = this;
+    var augur = this.flux.augur;
     var branchId = this.flux.store('branch').getCurrentBranch().id;
     marketId = abi.hex(marketId);
     augur.getMarketCreationBlock(marketId, function (creationBlock) {
@@ -209,7 +210,7 @@ module.exports = {
   },
 
   batch: function (commands) {
-    var batch = augur.createBatch();
+    var batch = this.flux.augur.createBatch();
     _.each(commands, function (cmd) { batch.add(cmd[0], cmd[1], cmd[2]); });
     batch.execute();
   },
@@ -226,7 +227,7 @@ module.exports = {
   addPendingMarket: function (market) {
 
     // generate a (temporary) pending market ID
-    market.id = "pending." + augur.utils.sha256(JSON.stringify(market));
+    market.id = "pending." + this.flux.augur.utils.sha256(JSON.stringify(market));
     market.pending = true;
 
     this.dispatch(constants.market.ADD_PENDING_MARKET_SUCCESS, {market: market});

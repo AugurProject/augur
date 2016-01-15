@@ -1,7 +1,6 @@
 "use strict";
 
 var abi = require("augur-abi");
-var augur = require("augur.js");
 var clone = require("clone");
 var constants = require("../libs/constants");
 var utilities = require("../libs/utilities");
@@ -10,6 +9,7 @@ module.exports = {
 
   connect: function (hosted) {
     var host, self = this;
+    var augur = this.flux.augur;
     var connectHostedCb = function (host) {
       if (!host) {
         return console.error("Couldn't connect to hosted node:", host);
@@ -20,11 +20,12 @@ module.exports = {
     if (hosted) {
       this.flux.actions.config.connectHosted(connectHostedCb);
     } else {
-      host = this.flux.store('config').getState().host;
+      host = this.flux.store("config").getState().host;
       if (!host) {
         return this.flux.actions.config.connectHosted(connectHostedCb);
       }
-      augur.connect(host, null, function (connected) {
+      augur.rpc.setLocalNode(host);
+      augur.connect(host, process.env.GETH_IPC, function (connected) {
         if (connected) {
           console.log("connected to host:", augur.rpc.nodes.local || augur.rpc.nodes.hosted[0]);
           if (!augur.rpc.nodes.local) {
@@ -39,6 +40,7 @@ module.exports = {
 
   connectHosted: function (cb) {
     var self = this;
+    var augur = this.flux.augur;
     augur.rpc.reset();
     augur.connect(null, null, function (connected) {
       augur.rpc.balancer = true;
@@ -65,6 +67,7 @@ module.exports = {
   // set up filters: monitor the blockchain for changes
   setupFilters: function () {
     var self = this;
+    var augur = this.flux.augur;
     augur.filters.listen({
 
       // listen for new blocks
@@ -118,6 +121,7 @@ module.exports = {
 
   teardownFilters: function () {
     var self = this;
+    var augur = this.flux.augur;
     var filters = this.flux.store("config").getState().filters;
     if (!filters.price && !filters.creation && !filters.contracts && !filters.block) {
       return this.dispatch(constants.config.FILTER_TEARDOWN_COMPLETE);
@@ -152,7 +156,7 @@ module.exports = {
   },
 
   signOut: function () {
-    augur.web.logout();
+    this.flux.augur.web.logout();
     this.dispatch(constants.config.UPDATE_ACCOUNT, {
       currentAccount: null,
       privateKey: null,

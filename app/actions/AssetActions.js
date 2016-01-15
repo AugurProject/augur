@@ -1,7 +1,6 @@
 "use strict";
 
 var abi = require("augur-abi");
-var augur = require("augur.js");
 var constants = require("../libs/constants");
 
 module.exports = {
@@ -14,19 +13,19 @@ module.exports = {
       var self = this;
       var currentBranch = this.flux.store('branch').getCurrentBranch();
 
-      augur.getCashBalance(currentAccount, function (result) {
+      this.flux.augur.getCashBalance(currentAccount, function (result) {
         if (result && !result.error) {
           self.dispatch(constants.asset.UPDATE_ASSETS, { cash: abi.bignum(result) });
         }
       });
 
-      augur.rpc.balance(currentAccount, null, function (result) {
+      this.flux.augur.rpc.balance(currentAccount, null, function (result) {
         if (result && !result.error) {
           self.dispatch(constants.asset.UPDATE_ASSETS, { ether: abi.bignum(result) });
         }
       });
 
-      augur.getRepBalance(currentBranch.id, currentAccount, function (result) {
+      this.flux.augur.getRepBalance(currentBranch.id, currentAccount, function (result) {
         if (result && !result.error) {
           self.dispatch(constants.asset.UPDATE_ASSETS, { reputation: abi.bignum(result) });
         }

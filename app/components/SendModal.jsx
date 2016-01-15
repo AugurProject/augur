@@ -1,5 +1,4 @@
 var _ = require("lodash");
-var augur = require("augur.js");
 var abi = require("augur-abi");
 var React = require("react");
 var Fluxxor = require("fluxxor");
@@ -35,7 +34,7 @@ var SendCashModal = React.createClass({
   onSend: function (event) {
     var self = this;
     if (this.isValid(event)) {
-      augur.sendCash({
+      this.getFlux().augur.sendCash({
         to: this.state.destination,
         value: this.state.amount,
         onSent: function (result) {
@@ -170,7 +169,7 @@ var SendRepModal = React.createClass({
   onSend: function (event) {
     var self = this;
     if (this.isValid(event)) {
-      augur.sendReputation({
+      this.getFlux().augur.sendReputation({
         branchId: this.state.branchId,
         to: this.state.destination,
         value: this.state.amount,
@@ -302,7 +301,7 @@ var SendEtherModal = React.createClass({
 
   onSend: function(event) {
     if (this.isValid(event)) {
-      augur.rpc.sendEther({
+      this.getFlux().augur.rpc.sendEther({
         to: this.state.destination,
         value: this.state.amount,
         from: this.getAccount(),
