@@ -29,6 +29,7 @@ augur.connect();
 augur.rpc.balancer = false;
 
 test("AssetActions.updateAssets", function (t) {
+    t.plan(40);
     var UPDATE_PERCENT_LOADED_SUCCESS = flux.register.UPDATE_PERCENT_LOADED_SUCCESS;
     flux.register.UPDATE_PERCENT_LOADED_SUCCESS = function (payload) {
         var account = flux.store("config").getAccount();

@@ -77,8 +77,11 @@ module.exports = {
   checkQuorum: function () {
     var self = this;
     var branchState = this.flux.store('branch').getState();
+    console.log("state:",branchState)
     var currentBranch = branchState.currentBranch;
+    console.log("cur:", currentBranch)
     var hasCheckedQuorum = branchState.hasCheckedQuorum;
+    console.log("has:", hasCheckedQuorum)
 
     // check quorum if branch isn't current and we havn't already
     if (!currentBranch.isCurrent && !hasCheckedQuorum) {

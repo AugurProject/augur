@@ -5,12 +5,6 @@ var constants = require("../libs/constants");
 
 module.exports = {
   state: {
-    id: null,
-    periodLength: null,
-    currentPeriod: 0,
-    votePeriod: 0,
-    isCurrent: false,
-    percentComplete: 0,
     branches: [],
     currentBranch: null
   },
@@ -24,7 +18,7 @@ module.exports = {
    * @return {Array[Moment]} A two-element array of Moments.
    */
   getReportPublishDates: function (currentBlock) {
-    var periodStartBlock = (this.state.votePeriod + 1) * this.state.periodLength;
+    var periodStartBlock = (this.state.votePeriod + 1) * this.state.currentBranch.periodLength;
     var publishStartBlock = periodStartBlock + (this.state.periodLength / 2);
     var publishStart = moment().subtract((currentBlock - publishStartBlock) * constants.SECONDS_PER_BLOCK, "seconds");
     var publishEnd = publishStart.clone().add(this.state.periodLength / 2 * constants.SECONDS_PER_BLOCK, "seconds");
@@ -45,6 +39,10 @@ module.exports = {
     this.emit(constants.CHANGE_EVENT);
   },
   handleUpdateCurrentBranchSuccess: function (branch) {
+    branch.currentPeriod = branch.currentPeriod || 0;
+    branch.votePeriod = branch.votePeriod || 0;
+    branch.isCurrent = branch.isCurrent || false;
+    branch.percentComplete = branch.percentComplete || 0;
     this.state.currentBranch = branch;
     this.emit(constants.CHANGE_EVENT);
   },
