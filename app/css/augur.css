@@ -72,7 +72,7 @@ h2, h3, h4, h5 {
     background-color: #ffffff;
     background-image: url('/images/starfield.jpg');
     background-repeat: no-repeat;
-    background-size: cover; 
+    background-size: cover;
     position: absolute;
     height: 100%;
     width: 100%;
@@ -272,40 +272,6 @@ nav.header .register {
 }
 .plain li:hover {
     background-color: #454545;
-}
-nav.header .menu {
-    float: left;
-    padding: 0px;
-    margin-left: 20px;
-}
-nav.header .menu li {
-    font-family: 'Open Sans';
-    float: left;
-    list-style: none;
-    padding-top: 16px;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-bottom: 10px;
-    margin-bottom: -10px;
-    margin-right: 20px !important;
-}
-nav.header .menu a li {
-    color: #fff;
-}
-nav.header .menu li p {
-    margin-top: 3px !important;
-    text-transform: uppercase;
-}
-nav.header .menu li:hover {
-    background-color: #2c3e50;
-    -webkit-transition: all 0.5s ease;
-    -moz-transition: all 0.5s ease;
-    -ms-transition: all 0.5s ease;
-    -o-transition: all 0.5s ease;
-    transition: all 0.5s ease;
-}
-nav.header .menu a:hover {
-    text-decoration: none;
 }
 @media (max-width: 990px) {
     nav.header h1 {
