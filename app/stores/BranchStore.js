@@ -31,7 +31,7 @@ module.exports = {
     if (this.state.currentBranch && this.state.currentBranch.id) {
       return this.state.currentBranch;
     } else {
-      return { id: process.env.AUGUR_BRANCH_ID || 1010101 };
+      return {id: process.env.AUGUR_BRANCH_ID || 1010101};
     }
   },
   handleLoadBranchesSuccess: function (payload) {

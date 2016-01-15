@@ -33,7 +33,7 @@ test("BranchActions.loadBranches", function (t) {
 });
 
 test("BranchActions.setCurrentBranch", function (t) {
-    t.plan(5);
+    t.plan(6);
     var SET_CURRENT_BRANCH_SUCCESS = flux.register.SET_CURRENT_BRANCH_SUCCESS;
     flux.register.SET_CURRENT_BRANCH_SUCCESS = function (payload) {
         t.equal(payload.constructor, Object, "payload is an object");
@@ -41,6 +41,7 @@ test("BranchActions.setCurrentBranch", function (t) {
         t.true(valid.isInt(payload.periodLength), "payload.periodLength is an integer");
         t.true(payload.periodLength > 0, "payload.periodLength > 0");
         SET_CURRENT_BRANCH_SUCCESS(payload);
+        t.pass("dispatch SET_CURRENT_BRANCH_SUCCESS");
         t.deepEqual(payload, flux.store("branch").getCurrentBranch(), "payload == BranchStore.currentBranch");
         flux.register.SET_CURRENT_BRANCH_SUCCESS = SET_CURRENT_BRANCH_SUCCESS;
         t.end();

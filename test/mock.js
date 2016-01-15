@@ -66,6 +66,12 @@ var flux = {
         LOAD_APPLICATION_DATA_SUCCESS: function (payload) {
             flux.stores.config.handleLoadApplicationDataSuccess(payload);
         },
+        FILTER_SETUP_COMPLETE: function (payload) {
+            flux.stores.config.handleFilterSetupComplete(payload);
+        },
+        FILTER_TEARDOWN_COMPLETE: function (payload) {
+            flux.stores.config.handleFilterTeardownComplete(payload);
+        },
 
         // market
         LOAD_MARKETS_SUCCESS: function (payload) {
@@ -139,7 +145,7 @@ for (var a in flux.actions) {
     if (!flux.actions.hasOwnProperty(a)) continue;
     flux.actions[a].flux = flux;
     flux.actions[a].dispatch = function (label, payload) {
-        if (DEBUG) console.log("[" + a + "] dispatch: " + label);
+        if (DEBUG) console.log("dispatch: " + label);
         return flux.register[label](payload);
     };
 }
