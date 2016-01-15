@@ -22,7 +22,6 @@ let OrderTicket = React.createClass({
     },
 
     handleStep1FormOnValidState() {
-        console.log("OrderTicket.jsx: handleStep1FormOnValidState");
         this.setState(update(this.state, {
             ticket: {
                 isValid: {
@@ -32,7 +31,6 @@ let OrderTicket = React.createClass({
         }));
     },
     handleStep1FormOnInvalidState() {
-        console.log("OrderTicket.jsx: handleStep1FormOnInvalidState");
         this.setState(update(this.state, {
             ticket: {
                 isValid: {
@@ -60,9 +58,6 @@ let OrderTicket = React.createClass({
         }));
     },
     handleStep1FormSubmit(data) {
-        console.log("OrderTicket.jsx: data: %o", data);
-        console.log("OrderTicket.jsx: state: %o", this.state);
-
         if (this.state.ticket.isValid) {
             let step = this.state.ticket.isOrderConfirmationRequired ? 2 : 3;
             this.setState(update(this.state, {
@@ -78,12 +73,9 @@ let OrderTicket = React.createClass({
     },
     handleStep1FormClear() {
         let newState = Object.assign({}, this.getInitialState());
-        console.log("OrderTicket.jsx: handleStep1FormClear newState: %o", newState);
         this.setState(newState);
     },
     handleStep1OrderConfirmationChange(event) {
-        console.log("OrderTicket.jsx: %o", event);
-        console.log("OrderTicket.jsx: state: %o", this.state);
         var newState = update(this.state, {
             ticket: {
                 isOrderConfirmationRequired: {
@@ -91,7 +83,6 @@ let OrderTicket = React.createClass({
                 }
             }
         });
-        console.log("OrderTicket.jsx: new state: %o", newState);
         this.setState(newState);
     },
     handleStep2OrderEdit() {
