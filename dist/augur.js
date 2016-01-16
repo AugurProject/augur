@@ -60467,59 +60467,59 @@ Augur.prototype.redeem_resolve = function (branch, period, num_events, num_repor
 };
 
 // branches.se
-Augur.prototype.getBranches = function (onSent) {
-    return this.fire(this.tx.getBranches, onSent);
+Augur.prototype.getBranches = function (callback) {
+    return this.fire(this.tx.getBranches, callback);
 };
-Augur.prototype.getMarkets = function (branch, onSent) {
+Augur.prototype.getMarkets = function (branch, callback) {
     // branch: sha256 hash id
     var tx = this.utils.copy(this.tx.getMarkets);
     tx.params = branch;
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-Augur.prototype.getPeriodLength = function (branch, onSent) {
+Augur.prototype.getPeriodLength = function (branch, callback) {
     // branch: sha256 hash id
     var tx = this.utils.copy(this.tx.getPeriodLength);
     tx.params = branch;
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-Augur.prototype.getVotePeriod = function (branch, onSent) {
+Augur.prototype.getVotePeriod = function (branch, callback) {
     // branch: sha256 hash id
     var tx = this.utils.copy(this.tx.getVotePeriod);
     tx.params = branch;
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-Augur.prototype.getStep = function (branch, onSent) {
+Augur.prototype.getStep = function (branch, callback) {
     // branch: sha256
     var tx = this.utils.copy(this.tx.getStep);
     tx.params = branch;
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-Augur.prototype.setStep = function (branch, step, onSent) {
+Augur.prototype.setStep = function (branch, step, callback) {
     var tx = this.utils.copy(this.tx.setStep);
     tx.params = [branch, step];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-Augur.prototype.getSubstep = function (branch, onSent) {
+Augur.prototype.getSubstep = function (branch, callback) {
     // branch: sha256
     var tx = this.utils.copy(this.tx.getSubstep);
     tx.params = branch;
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-Augur.prototype.setSubstep = function (branch, substep, onSent) {
+Augur.prototype.setSubstep = function (branch, substep, callback) {
     var tx = this.utils.copy(this.tx.setSubstep);
     tx.params = [branch, substep];
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-Augur.prototype.incrementSubstep = function (branch, onSent) {
+Augur.prototype.incrementSubstep = function (branch, callback) {
     var tx = this.utils.copy(this.tx.incrementSubstep);
     tx.params = branch;
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
-Augur.prototype.getNumMarkets = function (branch, onSent) {
+Augur.prototype.getNumMarkets = function (branch, callback) {
     // branch: sha256
     var tx = this.utils.copy(this.tx.getNumMarkets);
     tx.params = branch;
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
 Augur.prototype.getMinTradingFee = function (branch, onSent) {
     // branch: sha256
@@ -60661,10 +60661,12 @@ Augur.prototype.setOutcomesFinal = function (branch, expDateIndex, outcomesFinal
     tx.params = [branch, expDateIndex, outcomesFinal];
     return this.fire(tx, onSent);
 };
-Augur.prototype.setReportHash = function (branch, expDateIndex, reportHash, onSent) {
+Augur.prototype.setReportHash = function (branch, votePeriod, reporter, reportHash, onSent, onSuccess, onFailed) {
     var tx = this.utils.copy(this.tx.setReportHash);
-    tx.params = [branch, expDateIndex, reportHash];
-    return this.fire(tx, onSent);
+    var unpacked = this.utils.unpack(branch, this.utils.labels(this.setReportHash), arguments);
+    tx.params = unpacked.params;
+    console.log(tx);
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
 
 // events.se

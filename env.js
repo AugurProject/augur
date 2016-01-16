@@ -22,6 +22,7 @@ GLOBAL.Tx = contracts.Tx;
 GLOBAL.augur = (GLOBAL.reload = function () {
     return utils.setup(utils.reset("./src/index"), process.argv.slice(2));
 })();
+augur.rpc.setLocalNode("http://127.0.0.1:8545");
 GLOBAL.b = augur.branches.dev;
 GLOBAL.ballot = [2, 1.5, 1.5, 1, 1.5, 1.5, 1];
 GLOBAL.log = console.log;
@@ -35,7 +36,7 @@ GLOBAL.accounts = utils.get_test_accounts(augur, constants.MAX_TEST_ACCOUNTS);
 GLOBAL.c = augur.coinbase;
 
 GLOBAL.balances = (GLOBAL.balance = function (account, branch) {
-    account = account || augur.coinbase;
+    account = account || augur.from;
     var balances = {
         cash: augur.getCashBalance(account),
         reputation: augur.getRepBalance(branch || augur.branches.dev, account),
@@ -44,17 +45,6 @@ GLOBAL.balances = (GLOBAL.balance = function (account, branch) {
     log(balances);
     return balances;
 })();
-
-GLOBAL.gospel = function () {
-    var gospel_file = path.join(__dirname, "data", "gospel.json");
-    log("Load contracts from file: " + chalk.green(gospel_file));
-    augur.contracts = JSON.parse(fs.readFileSync(gospel_file));
-    augur.connect(process.env.AUGUR_HOST, process.env.GETH_IPC);
-    return balance();
-};
-if (balances.cash === undefined && balances.reputation === undefined) {
-    GLOBAL.balances = gospel();
-}
 
 log(chalk.cyan("Balances:"));
 log("Cash:       " + chalk.green(balances.cash));
@@ -80,5 +70,3 @@ GLOBAL.vote_period = reportingInfo.vote_period;
 GLOBAL.current_period = reportingInfo.current_period;
 GLOBAL.num_events = reportingInfo.num_events;
 GLOBAL.num_reports = reportingInfo.num_reports;
-
-GLOBAL.namereg = augur.namereg;
