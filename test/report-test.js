@@ -14,9 +14,10 @@ var constants = require("../app/libs/constants");
 var flux = require("./mock");
 
 var DEBUG = false;
-var host = "http://127.0.0.1:8545";
-flux.augur.rpc.setLocalNode(host);
-flux.augur.connect(host);
+// var host = "http://127.0.0.1:8545";
+// flux.augur.rpc.setLocalNode(host);
+// flux.augur.connect(host);
+flux.augur.connect();
 flux.augur.connector.from = flux.augur.coinbase;
 flux.augur.sync(flux.augur.connector);
 var branch = flux.augur.branches.dev;
