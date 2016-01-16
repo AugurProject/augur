@@ -53,6 +53,7 @@
     "keythereum": "^0.2.1",
     "lodash": "^3.10.1",
     "moment": "^2.11.0",
+    "node-localstorage": "^1.1.2",
     "node-static": "^0.7.7",
     "node-uuid": "^1.4.7",
     "pnglib": "0.0.1",

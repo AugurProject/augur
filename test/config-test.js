@@ -464,7 +464,6 @@ test("ConfigActions.connect", function (t) {
                     tt.equal(flux.store("config").getState().percentLoaded, payload.percentLoaded, "config.state.percentLoaded == payload.percentLoaded");
                 };
                 flux.register.FILTER_SETUP_COMPLETE = function (payload) {
-                    console.log("woot:", flux.augur.filters.price_filter);
                     tt.true(flux.augur.filters.price_filter.id !== null, "price_filter.id is not null");
                     tt.true(flux.augur.filters.contracts_filter.id !== null, "contracts_filter.id is not null");
                     tt.true(flux.augur.filters.block_filter.id !== null, "block_filter.id is not null");

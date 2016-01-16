@@ -21,15 +21,20 @@ module.exports = {
   setCurrentBranch: function (branchId) {
     var self = this;
     branchId = branchId || process.env.AUGUR_BRANCH_ID;
+    var updateCurrentBranch = this.flux.actions.branch.updateCurrentBranch;
+    // console.log("updateCurrentBranch:", updateCurrentBranch.toString());
+    console.log("flux:", this.flux);
     this.flux.augur.getPeriodLength(branchId, function (periodLength) {
       if (periodLength && !periodLength.error) {
         self.dispatch(constants.branch.SET_CURRENT_BRANCH_SUCCESS, {
           id: branchId,
           periodLength: abi.number(periodLength)
         });
-        self.flux.actions.branch.updateCurrentBranch();
+        // self.flux.actions.branch.updateCurrentBranch();
+        updateCurrentBranch();
       } else {
         console.error("augur.periodLength error:", periodLength);
+        console.trace();
       }
     });
   },
@@ -47,8 +52,11 @@ module.exports = {
 
         // if this is a new vote period, check quorum & submit reports
         if (votePeriod > currentBranch.votePeriod) {
+          console.log(self.flux.actions.report.loadEventsToReport.toString());
           self.flux.actions.report.loadEventsToReport();
+          // console.log(self.flux.actions.branch.checkQuorum.toString());
           self.flux.actions.branch.checkQuorum();
+          // console.log(self.flux.actions.report.submitQualifiedReports.toString());
           self.flux.actions.report.submitQualifiedReports();
         }
 

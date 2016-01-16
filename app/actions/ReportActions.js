@@ -1,8 +1,13 @@
 "use strict";
 
 var _ = require("lodash");
+var async = require("async");
 var abi = require("augur-abi");
 var secureRandom = require("secure-random");
+if (typeof localStorage === "undefined" || localStorage === null) {
+    var LocalStorage = require("node-localstorage").LocalStorage;
+    localStorage = new LocalStorage("./scratch");
+}
 var constants = require("../libs/constants");
 
 var bytesToHex = function (bytes) {
@@ -75,6 +80,7 @@ module.exports = {
     }
   },
 
+  // why use localStorage instead of Flux?
   storeReports: function (reports) {
     // TODO: Encrypt the reports so malware can't access them and steal
     // reputation.
@@ -84,10 +90,10 @@ module.exports = {
   /**
    * Broadcast the hash of the report and store the report and salt.
    */
-  hashReport: function (branchId, votePeriod, decisions) {
+  hashReport: function (branchId, votePeriod, decisions, cb) {
+    cb = cb || function (e, r) { console.log(e, r); };
     var saltBytes = secureRandom(32);
     var salt = bytesToHex(saltBytes);
-
     var pendingReports = this.flux.store('report').getState().pendingReports;
     pendingReports.push({
       branchId,
@@ -110,13 +116,11 @@ module.exports = {
         console.log("submitReportHash sent:", res);
       },
       onSuccess: function (res) {
-        console.log("submitReportHash success:", res);
+        // console.log("submitReportHash success:", res);
+        cb(null, res);
       },
-      onFailed: function (err) {
-        console.error("submitReportHash failed:", err);
-      }
+      onFailed: cb
     });
-
     this.dispatch(constants.report.UPDATE_PENDING_REPORTS, {pendingReports});
   },
 
@@ -125,25 +129,20 @@ module.exports = {
    *
    * @param report {Object} branchId, votePeriod, decisions and salt.
    */
-  submitReport: function (report) {
-    console.log("submit report:", report);
+  submitReport: function (report, cb) {
+    cb = cb || function (e, r) { console.log(e, r); };
     this.flux.augur.report({
       branchId: report.branchId,
-      decisions: report.decisions,
+      report: report.decisions,
       votePeriod: report.votePeriod,
       salt: report.salt,
       onSent: function (res) {
-        // sent
-        console.log("submitReport sent:", res);
+        // console.log("submitReport sent:", res);
       },
       onSuccess: function (res) {
-        // success
-        console.log("submitReport success:", res);
+        cb(null, res);
       },
-      onFailed: function (err) {
-        // failed
-        console.error("submitReport failed:", err);
-      }
+      onFailed: cb
     });
   },
 
@@ -151,37 +150,48 @@ module.exports = {
    * Submit any reports that haven't been submitted and are in the last half of
    * their reporting period.
    */
-  submitQualifiedReports: function () {
+  submitQualifiedReports: function (cb) {
     var self = this;
+    cb = cb || function (e, r) { console.log(e, r); };
     var currentBlock = this.flux.store('network').getState().blockNumber;
     var reports = this.flux.store('report').getState().pendingReports;
     var unsentReports = _.filter(reports, function (r) { return !r.reported; });
     var didSendReports = false;
-
-    _.forEach(unsentReports, function (report) {
-      if (report && report.branchId && report.votePeriod) {
-        self.flux.augur.getPeriodLength(report.branchId, function (periodLength) {
-          periodLength = abi.number(periodLength);
-
-          var reportingStartBlock = (report.votePeriod + 1) * periodLength;
-          var reportingCurrentBlock = currentBlock - reportingStartBlock;
-          var shouldSend = reportingCurrentBlock > (periodLength / 2);
-
-          if (shouldSend) {
-            console.log('Sending report for period', report.votePeriod);
-            self.flux.actions.report.submitReport(report);
+    var sentReports = [];
+    async.each(unsentReports, function (report, nextReport) {
+      if (!report) return nextReport(new Error("no report found"));
+      if (!report.branchId || report.votePeriod === null ||
+          report.votePeriod === undefined) {
+        return nextReport(report);
+      }
+      self.flux.augur.getPeriodLength(report.branchId, function (periodLength) {
+        periodLength = abi.number(periodLength);
+        var reportingStartBlock = (report.votePeriod + 1) * periodLength;
+        var reportingCurrentBlock = currentBlock - reportingStartBlock;
+        if (reportingCurrentBlock > (periodLength / 2)) {
+          console.debug("submitting report for period", report.votePeriod);
+          self.flux.actions.report.submitReport(report, function (err, res) {
+            if (err) return nextReport(err);
             report.reported = true;
             didSendReports = true;
-          }
+            sentReports.push(report);
+            nextReport();
+          });
+        } else {
+          nextReport();
+        }
+      });
+    }, function (err) {
+      if (err) return cb(err);
+      if (didSendReports) {
+        // Update localStorage and the stores with the mutated reports array.
+        self.flux.actions.report.storeReports(reports);
+        self.dispatch(constants.report.LOAD_PENDING_REPORTS_SUCCESS, {
+          pendingReports: reports
         });
       }
+      cb(null, {sentReports, pendingReports: reports});
     });
-
-    if (didSendReports) {
-      // Update localStorage and the stores with the mutated reports array.
-      this.flux.actions.report.storeReports(reports);
-      this.dispatch(constants.report.LOAD_PENDING_REPORTS_SUCCESS, {pendingReports: reports});
-    }
   },
 
   loadPendingReports: function () {
