@@ -30,14 +30,6 @@
     src: url("/fonts/S-Core-CoreMellow65Bold.otf") format("opentype");
 }
 
-body {
-    /*background-color: #ffffff;*/
-    background-color: #000000;
-    font-family: 'Open Sans', sans-serif;
-    font-weight: 400;
-    color: #5d6576;
-    overflow-y: scroll;
-}
 h1 {
     font-family: 'Core Mellow';
     font-size: 27px;
@@ -48,12 +40,6 @@ h2, h3, h4, h5 {
     font-weight: 500;
 }
 
-#render-target {
-    height: 100%;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-}
 
 #app.stopped {
     height: 100%;
@@ -67,15 +53,6 @@ h2, h3, h4, h5 {
 }
 #app.stopped #loading {
     display: block;
-}
-#app.running {
-    background-color: #ffffff;
-    background-image: url('/images/starfield.jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    position: absolute;
-    height: 100%;
-    width: 100%;
 }
 #app.running #main {
     display: block;
@@ -614,7 +591,6 @@ nav.header .register {
     color: #000;
     background-color: #fff;
     border-radius: 3px;
-    opacity: 0.9;
     display: block;
     margin-bottom: 25px;
 }
@@ -629,7 +605,6 @@ a.market-pane:hover {
     color: #000;
     text-decoration: none;
     cursor: pointer;
-    opacity: 1;
 }
 .market-pane h5 {
     position: relative;
@@ -642,11 +617,14 @@ a.market-pane:hover {
     text-align: justify;
     text-justify: inter-word;
     height: 84px;
-    background-color: #2D2E31;
+    background-color: #34495e; /* @color-dark-bg - to be consistent with top menu */
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
     color: #fff;
     overflow: hidden;
+}
+.market-pane:hover h5 {
+    background-color: #2C3E50; /* @color-dark-bg-active - to be consistent with top menu */
 }
 .market-pane .overlay {
     position: absolute;
@@ -749,17 +727,6 @@ a.market-pane:hover {
     padding-top: 5px;
 }
 
-#markets-label {
-    margin-left: 0;
-    padding-left: 0;
-    padding-top: 11px;
-    font-weight: 400;
-    color: #ffffff;
-    text-shadow: 1px 1px #000000;
-    text-transform: uppercase;
-    font-family: "Lato";
-    font-size: 16pt;
-}
 .ballot h4 {
     font-weight: 400;
     color: #ffffff;
@@ -770,13 +737,7 @@ a.market-pane:hover {
 }
 
 .markets-search-input {
-    top: 0px; bottom: 0px;
-    width: 100%; height: 2.5rem;
-    border-radius: 3px;
-    border: 1px solid #CDCAC5;
-    opacity: 0.9;
-    font-size: 12pt;
-    padding: 7px;
+    height: 2.5rem;
 }
 
 .outcome {
