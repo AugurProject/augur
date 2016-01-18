@@ -22,6 +22,16 @@ var Outcomes = require("./Outcomes");
 var NO = 1;
 var YES = 2;
 
+// this method was missing for some time and nobody noticed, so maybe it's not that important
+var priceToPercentage = function (price) {
+  if (price) {
+    return +price.times(100).toFixed(1);
+  } else {
+    return 0;
+  }
+};
+
+
 var getOutcomeName = function (id, market) {
   switch (market.type) {
   case "categorical":
