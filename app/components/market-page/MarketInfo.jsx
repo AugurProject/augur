@@ -58,14 +58,9 @@ let MarketInfo = React.createClass({
                                 <td className="labelValue-label">End date:</td>
                                 <td className="labelValue-value">{ endDateFormatted }</td>
                             </tr>
-                            <tr className="labelValue">
-                                <td className="labelValue-label">Traders:</td>
-                                <td className="labelValue-value"></td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
-
             </div>
         );
     }
