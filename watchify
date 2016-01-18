@@ -10,6 +10,7 @@ if [ -f "app/app.js" ]; then
 fi
 
 # link, install, build
+npm link geth
 npm link augur.js
 npm link augur-contracts
 npm link keythereum

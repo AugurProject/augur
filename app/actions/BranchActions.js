@@ -2,7 +2,6 @@
 
 var _ = require("lodash");
 var abi = require("augur-abi");
-var augur = require("augur.js");
 var constants = require("../libs/constants");
 var utilities = require("../libs/utilities");
 
@@ -10,7 +9,7 @@ module.exports = {
   
   loadBranches: function () {
     var self = this;
-    augur.getBranches(function (branches) {
+    this.flux.augur.getBranches(function (branches) {
       if (branches && !branches.error) {
         self.dispatch(constants.branch.LOAD_BRANCHES_SUCCESS, {
           branches: branches
@@ -22,15 +21,20 @@ module.exports = {
   setCurrentBranch: function (branchId) {
     var self = this;
     branchId = branchId || process.env.AUGUR_BRANCH_ID;
-    augur.getPeriodLength(branchId, function (periodLength) {
+    var updateCurrentBranch = this.flux.actions.branch.updateCurrentBranch;
+    // console.log("updateCurrentBranch:", updateCurrentBranch.toString());
+    console.log("flux:", this.flux);
+    this.flux.augur.getPeriodLength(branchId, function (periodLength) {
       if (periodLength && !periodLength.error) {
         self.dispatch(constants.branch.SET_CURRENT_BRANCH_SUCCESS, {
           id: branchId,
           periodLength: abi.number(periodLength)
         });
-        self.flux.actions.branch.updateCurrentBranch();
+        // self.flux.actions.branch.updateCurrentBranch();
+        updateCurrentBranch();
       } else {
         console.error("augur.periodLength error:", periodLength);
+        console.trace();
       }
     });
   },
@@ -42,14 +46,17 @@ module.exports = {
     var currentPeriod = Math.floor(currentBlock / currentBranch.periodLength);
     var percentComplete = (currentBlock % currentBranch.periodLength) / currentBranch.periodLength * 100;
 
-    augur.getVotePeriod(currentBranch.id, function (result) {
+    this.flux.augur.getVotePeriod(currentBranch.id, function (result) {
       if (result && !result.error) {
         var votePeriod = abi.number(result);
 
         // if this is a new vote period, check quorum & submit reports
         if (votePeriod > currentBranch.votePeriod) {
+          console.log(self.flux.actions.report.loadEventsToReport.toString());
           self.flux.actions.report.loadEventsToReport();
+          // console.log(self.flux.actions.branch.checkQuorum.toString());
           self.flux.actions.branch.checkQuorum();
+          // console.log(self.flux.actions.report.submitQualifiedReports.toString());
           self.flux.actions.report.submitQualifiedReports();
         }
 
@@ -82,7 +89,7 @@ module.exports = {
 
     // check quorum if branch isn't current and we havn't already
     if (!currentBranch.isCurrent && !hasCheckedQuorum) {
-      augur.dispatch({
+      this.flux.augur.dispatch({
         branchId: currentBranch.id,
         onSent: function (r) {
           self.dispatch(constants.branch.CHECK_QUORUM_SENT);

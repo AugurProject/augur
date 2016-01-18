@@ -1,5 +1,4 @@
 var React = require("react");
-var augur = require("augur.js");
 var abi = require("augur-abi");
 var Fluxxor = require("fluxxor");
 var ReactBootstrap = require("react-bootstrap");
@@ -25,7 +24,7 @@ var CloseMarketModal = React.createClass({
     var marketId = abi.hex(this.props.params.marketId);
     var branchId = abi.hex(this.props.params.branchId);
     console.log("Closing market", marketId, "on branch", branchId);
-    augur.closeMarket({
+    this.getFlux().augur.closeMarket({
       branchId: branchId,
       marketId: marketId,
       onSent: function (txHash) { console.log("Close market sent:", txHash); },

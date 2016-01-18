@@ -2,7 +2,6 @@
 
 var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
-var augur = require("augur.js");
 var moment = require("moment");
 var constants = require("./constants");
 
@@ -12,19 +11,17 @@ module.exports = {
 
   // calculate date from block number
   blockToDate: function (block, currentBlock) {
-    var blockNumber = currentBlock || augur.rpc.blockNumber();
-    var seconds = (block - blockNumber) * constants.SECONDS_PER_BLOCK;
+    var seconds = (block - currentBlock) * constants.SECONDS_PER_BLOCK;
     var date = moment().add(seconds, 'seconds');
     return date;
   },
 
   // assuming date is moment for now
   dateToBlock: function (date, currentBlock) {
-    var blockNumber = currentBlock || augur.rpc.blockNumber();
     var now = moment();
     var secondsDelta = date.diff(now, 'seconds');
     var blockDelta = parseInt(secondsDelta / constants.SECONDS_PER_BLOCK);
-    return blockNumber + blockDelta;
+    return currentBlock + blockDelta;
   },
 
   // assumes price is a BigNumber object
@@ -42,7 +39,7 @@ module.exports = {
 
   formatEther: function (wei) {
     if (!wei) return { value: '', unit: 'ether', withUnit: '-' };
-    var value = abi.bignum(wei).dividedBy(augur.constants.ETHER);
+    var value = abi.bignum(wei).dividedBy(constants.ETHER);
     var unit = 'ether';
     return {
       value: +value.toFixed(2),

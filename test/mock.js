@@ -8,6 +8,7 @@
 var DEBUG = false;
 
 var flux = {
+    augur: require("augur.js"),
     actions: {
         asset: require("../app/actions/AssetActions"),
         branch: require("../app/actions/BranchActions"),
@@ -65,6 +66,12 @@ var flux = {
         },
         LOAD_APPLICATION_DATA_SUCCESS: function (payload) {
             flux.stores.config.handleLoadApplicationDataSuccess(payload);
+        },
+        FILTER_SETUP_COMPLETE: function (payload) {
+            flux.stores.config.handleFilterSetupComplete(payload);
+        },
+        FILTER_TEARDOWN_COMPLETE: function (payload) {
+            flux.stores.config.handleFilterTeardownComplete(payload);
         },
 
         // market
@@ -139,7 +146,7 @@ for (var a in flux.actions) {
     if (!flux.actions.hasOwnProperty(a)) continue;
     flux.actions[a].flux = flux;
     flux.actions[a].dispatch = function (label, payload) {
-        if (DEBUG) console.log("[" + a + "] dispatch: " + label);
+        if (DEBUG) console.log("dispatch: " + label);
         return flux.register[label](payload);
     };
 }

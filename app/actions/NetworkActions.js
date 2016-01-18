@@ -1,6 +1,5 @@
 "use strict";
 
-var augur = require("augur.js");
 var abi = require("augur-abi");
 var moment = require("moment");
 var constants = require("../libs/constants");
@@ -18,6 +17,7 @@ module.exports = {
    */
   checkNetwork: function () {
     var self = this;
+    var augur = this.flux.augur;
     var network = this.flux.store('network').getState();
     augur.rpc.listening(function (nowUp) {
       var wasUp = (
@@ -28,11 +28,11 @@ module.exports = {
         network.ethereumStatus === constants.network.ETHEREUM_STATUS_FAILED
       );
       if (!nowUp) {
-        console.log('warning: failed to connect to ethereum');
+        console.warn("Unable to connect to Ethereum, retrying in 5 seconds");
         self.dispatch(constants.network.UPDATE_ETHEREUM_STATUS, {
           ethereumStatus: constants.network.ETHEREUM_STATUS_FAILED
         });
-        setTimeout(self.flux.actions.network.checkNetwork, 3000);
+        setTimeout(self.flux.actions.network.checkNetwork, 5000);
       } else if (wasDown && nowUp) {
         self.dispatch(constants.network.UPDATE_ETHEREUM_STATUS, {
           ethereumStatus: constants.network.ETHEREUM_STATUS_CONNECTED
@@ -41,13 +41,13 @@ module.exports = {
           augur.rpc.nodes.local || augur.rpc.nodes.hosted[0]
         );
         self.flux.actions.network.initializeNetwork();
-        self.flux.actions.config.initializeData();
       }
     });
   },
 
   initializeNetwork: function () {
     var self = this;
+    var augur = this.flux.augur;
 
     // get network and client versions
     this.dispatch(constants.network.UPDATE_NETWORK, {
@@ -64,8 +64,7 @@ module.exports = {
         keystore: augur.web.account.keystore
       });
       this.flux.actions.asset.updateAssets();
-      this.flux.actions.report.loadEventsToReport();
-      this.flux.actions.report.loadPendingReports();
+      this.flux.actions.network.updateNetwork();
 
     // hosted node: no unlocked account available
     } else if (this.flux.store('config').getState().isHosted) {
@@ -80,72 +79,67 @@ module.exports = {
           handle: augur.web.account.handle,
           keystore: augur.web.account.keystore
         });
-        this.flux.actions.asset.updateAssets();
-        this.flux.actions.report.loadEventsToReport();
-        this.flux.actions.report.loadPendingReports();
       } else {
         this.dispatch(constants.network.UPDATE_ETHEREUM_STATUS, {
           ethereumStatus: constants.network.ETHEREUM_STATUS_NO_ACCOUNT
         });
       }
+      this.flux.actions.asset.updateAssets();
+      this.flux.actions.network.updateNetwork();
 
     // local node: if it's unlocked, use the coinbase account
     } else {
 
       // check to make sure the account is unlocked
-      augur.rpc.unlocked(augur.coinbase, function (unlocked) {
+      augur.rpc.unlocked(augur.from, function (unlocked) {
 
-        // use coinbase if unlocked
+        // use from/coinbase if unlocked
         if (unlocked && !unlocked.error) {
-          console.log("using unlocked account:", augur.coinbase);
+          console.log("using unlocked account:", augur.from);
           self.dispatch(constants.config.UPDATE_ACCOUNT, {
-            currentAccount: augur.coinbase
+            currentAccount: augur.from
           });
-          self.flux.actions.asset.updateAssets();
-          self.flux.actions.report.loadEventsToReport();
-          self.flux.actions.report.loadPendingReports();
 
         // otherwise, no account available
         } else {
-          console.log("account", augur.coinbase, "is locked");
+          console.log("account", augur.from, "is locked");
           self.dispatch(constants.network.UPDATE_ETHEREUM_STATUS, {
             ethereumStatus: constants.network.ETHEREUM_STATUS_NO_ACCOUNT
           });
         }
+
+        self.flux.actions.asset.updateAssets();
+        self.flux.actions.network.updateNetwork();
       });
     }
-
-    this.flux.actions.network.updateNetwork();
   },
 
   updateNetwork: function () {
     var self = this;
+    var augur = this.flux.augur;
 
-    // just block age and peer count until we're current
+    // get block age and peer count until we're current
     augur.rpc.blockNumber(function (blockNumber) {
-
       if (blockNumber && !blockNumber.error) {
-
         blockNumber = abi.number(blockNumber);
         var blockMoment = utilities.blockToDate(blockNumber, blockNumber);
-
         self.dispatch(constants.network.UPDATE_NETWORK, {
           blockNumber: blockNumber,
           blocktime: blockMoment
         });
-
         augur.rpc.getBlock(blockNumber, true, function (block) {
           if (block && block.constructor === Object && !block.error) {
-
             var blockTimestamp = block.timestamp;
             var currentTimestamp = moment().unix();
             var age = currentTimestamp - blockTimestamp;
-
             self.dispatch(constants.network.UPDATE_BLOCKCHAIN_AGE, {
               blockchainAge: age
             });
           }
+          self.flux.actions.config.initializeData();
         });
+      } else {
+        self.flux.actions.config.initializeData();
       }
     });
   }

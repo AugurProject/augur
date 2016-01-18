@@ -8,6 +8,7 @@ var BigNumber = require("bignumber.js");
 var ONE_FXP = new BigNumber(2).toPower(64);
 
 module.exports = {
+  ETHER: new BigNumber(10).toPower(18),
   ONE_FXP: ONE_FXP,
   NO: ONE_FXP,
   YES: ONE_FXP.mul(2),
@@ -21,7 +22,9 @@ module.exports = {
     SET_IS_HOSTED: null,
     UPDATE_ACCOUNT: null,
     UPDATE_PERCENT_LOADED_SUCCESS: null,
-    LOAD_APPLICATION_DATA_SUCCESS: null
+    LOAD_APPLICATION_DATA_SUCCESS: null,
+    FILTER_SETUP_COMPLETE: null,
+    FILTER_TEARDOWN_COMPLETE: null
   }),
   network: keyMirror({
     UPDATE_ETHEREUM_STATUS: null,

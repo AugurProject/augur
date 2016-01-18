@@ -33,9 +33,5 @@
     "newcap": true,
     "onevar": true,
     "asi": false,
-    "eqnull": false,
-    "predef": [
-        "describe",
-        "it"
-    ]
+    "eqnull": false
 }

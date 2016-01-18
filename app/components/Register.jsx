@@ -1,5 +1,4 @@
 var React = require("react");
-var augur = require("augur.js");
 var Fluxxor = require("fluxxor");
 var ReactBootstrap = require("react-bootstrap");
 var FluxMixin = Fluxxor.FluxMixin(React);
@@ -28,7 +27,7 @@ var RegisterModal = React.createClass({
     if (this.isValid()) {
       var flux = this.getFlux();
       var self = this;
-      augur.web.register(this.state.handle, this.state.password, {
+      flux.augur.web.register(this.state.handle, this.state.password, {
         persist: this.state.persist
       }, {
         onRegistered: function (account) {
@@ -55,7 +54,7 @@ var RegisterModal = React.createClass({
           self.props.onHide();
         },
         onSendEther: function (account) {
-          augur.filters.ignore(true, function (err) {
+          flux.augur.filters.ignore(true, function (err) {
             if (err) return console.error(err);
             console.log("reset filters");
             flux.actions.config.initializeData();

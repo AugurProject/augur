@@ -7,7 +7,6 @@
 
 var test = require("tape");
 var abi = require("augur-abi");
-var augur = require("augur.js");
 var BigNumber = require("bignumber.js");
 var clone = require("clone");
 var validator = require("validator");
@@ -50,9 +49,9 @@ function parseMarketInfoSync(info) {
     return info;
 }
 
-augur.connect(process.env.AUGUR_HOST);
-var account = {address: augur.from};
-var blockNumber = augur.rpc.blockNumber();
+flux.augur.connect();
+var account = {address: flux.augur.from};
+var blockNumber = flux.augur.rpc.blockNumber();
 var rawInfo = clone(marketInfo);
 marketInfo = parseMarketInfoSync(marketInfo);
 
@@ -162,7 +161,7 @@ test("MarketActions.updateComments", function (t) {
         flux.register.UPDATE_MARKET_SUCCESS = UPDATE_MARKET_SUCCESS;
         t.end();
     };
-    flux.actions.market.updateComments(message, marketInfo.id, augur.from);
+    flux.actions.market.updateComments(message, marketInfo.id, flux.augur.from);
 });
 
 test("MarketActions.addComment", function (t) {
@@ -192,10 +191,10 @@ test("MarketActions.addComment", function (t) {
 test("MarketActions.parseMarketInfo", function (t) {
     t.plan(21);
     var info = clone(rawInfo);
-    augur.getMarketCreationBlock(rawInfo._id, function (creationBlock) {
+    flux.augur.getMarketCreationBlock(rawInfo._id, function (creationBlock) {
         t.true(validator.isInt(creationBlock), "creation block number is an integer");
         info.creationBlock = creationBlock;
-        augur.getMarketPriceHistory(rawInfo._id, function (priceHistory) {
+        flux.augur.getMarketPriceHistory(rawInfo._id, function (priceHistory) {
             t.equal(priceHistory.constructor, Object, "priceHistory is an object");
             info.priceHistory = priceHistory;
             flux.actions.market.parseMarketInfo(clone(info), function (parsedInfo) {
@@ -315,7 +314,7 @@ test("MarketActions.addPendingMarket", function (t) {
 
 test("MarketActions.deleteMarket", function (t) {
     t.plan(2);
-    var marketId = "pending." + augur.utils.sha256(JSON.stringify({
+    var marketId = "pending." + flux.augur.utils.sha256(JSON.stringify({
         description: "a shiny new market",
         initialLiquidity: 100,
         tradingFee: new BigNumber(0.02)
@@ -373,7 +372,7 @@ test("MarketActions.updatePendingShares", function (t) {
         t.true(payload.market.id.eq(marketInfo.id), "payload.market.id == input id");
         t.true(marketInfo.outcomes[outcomeId - 1].pendingShares.plus(new BigNumber(relativeShares)).eq(payload.market.outcomes[outcomeId - 1].pendingShares), "after outcome pendingShares == before outcome pendingShares + signed trade");
         flux.register.UPDATE_MARKET_SUCCESS = UPDATE_MARKET_SUCCESS;
-        augur.filters.ignore(true, t.end);
+        flux.augur.filters.ignore(true, t.end);
     };
     flux.actions.market.updatePendingShares(clone(marketInfo), outcomeId, relativeShares);
 });

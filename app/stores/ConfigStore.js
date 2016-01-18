@@ -8,7 +8,7 @@ var isHosted = NODE_JS || document.location.protocol === "https:";
 
 module.exports = {
   state: {
-    host: (isHosted) ? null : (process.env.RPC_HOST || "http://127.0.0.1:8545"),
+    host: (isHosted) ? null : (process.env.AUGUR_HOST || "http://127.0.0.1:8545"),
     currentAccount: null,
     privateKey: null,
     handle: null,
@@ -16,7 +16,8 @@ module.exports = {
     debug: false,
     loaded: false,
     isHosted: isHosted,
-    percentLoaded: null
+    percentLoaded: null,
+    filters: {}
   },
   getState: function () {
     return this.state;
@@ -58,6 +59,14 @@ module.exports = {
   },
   handleLoadApplicationDataSuccess: function (payload) {
     this.state.loaded = true;
+    this.emit(constants.CHANGE_EVENT);
+  },
+  handleFilterSetupComplete: function (payload) {
+    this.state.filters = payload;
+    this.emit(constants.CHANGE_EVENT);
+  },
+  handleFilterTeardownComplete: function () {
+    this.state.filters = {};
     this.emit(constants.CHANGE_EVENT);
   }
 };

@@ -1,5 +1,4 @@
 var _ = require("lodash");
-var augur = require("augur.js");
 var abi = require("augur-abi");
 var React = require("react");
 var Fluxxor = require("fluxxor");
@@ -27,8 +26,6 @@ var getOutcomeName = function (id, market) {
   case "categorical":
     if (market && market.description && market.description.indexOf("Choices:") > -1) {
       var desc = market.description.split("Choices:");
-      // console.log("id:", id);
-      // console.log("description:", market.description, desc, desc[desc.length - 1], desc[desc.length - 1].split(","));
       try {
         return {
           type: "categorical",
@@ -89,7 +86,8 @@ var Overview = React.createClass({
   },
 
   getTradeFunction: function (shares) {
-    return (shares < 0) ? augur.sellShares : augur.buyShares;
+    var flux = this.getFlux();
+    return (shares < 0) ? flux.augur.sellShares : flux.augur.buyShares;
   },
 
   handleTrade: function (relativeShares) {
@@ -99,7 +97,7 @@ var Overview = React.createClass({
     var marketId = this.props.market.id;
     var branchId = this.props.market.branchId;
     var outcomeId = this.props.outcome.id;
-    this.getTradeFunction(relativeShares).call(augur, {
+    this.getTradeFunction(relativeShares).call(flux.augur, {
       branchId: branchId,
       marketId: abi.hex(marketId),
       outcome: outcomeId,
@@ -286,6 +284,7 @@ var TradeBase = {
 
   handleChange: function () {
     var self = this;
+    var flux = this.getFlux();
     var rawValue = this.refs.input.getValue();
     var numShares = abi.number(rawValue);
 
@@ -295,7 +294,7 @@ var TradeBase = {
     if (!numShares || numShares === '') {
       return this.setState({ simulation: null });
     }
-    self.getSimulationFunction().call(augur,
+    self.getSimulationFunction().call(flux.augur,
       abi.hex(self.props.market.id),
       self.props.outcome.id,
       numShares,
@@ -405,7 +404,7 @@ var Buy = React.createClass(_.merge({
   },
 
   getSimulationFunction: function () {
-    return augur.getSimulatedBuy;
+    return this.getFlux().augur.getSimulatedBuy;
   }
 
 }, TradeBase));
@@ -447,7 +446,7 @@ var Sell = React.createClass(_.merge({
   },
 
   getSimulationFunction: function () {
-    return augur.getSimulatedSell;
+    return this.getFlux().augur.getSimulatedSell;
   }
 
 }, TradeBase));
