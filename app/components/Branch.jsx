@@ -50,8 +50,7 @@ var Branch = React.createClass({
   },
 
   handlePageChanged: function (data) {
-
-    this.transitionTo('/markets/' + (parseInt(data.selected) + 1));
+    this.transitionTo('marketsPage', {page: (parseInt(data.selected) + 1)});
     this.setState({ pageNum: data.selected });
   },
 
