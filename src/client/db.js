@@ -4,6 +4,7 @@
 
 var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 
+var clone = require("clone");
 var abi = require("augur-abi");
 var keys = require("keythereum");
 if (typeof localStorage === "undefined" || localStorage === null) {

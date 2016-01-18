@@ -8,6 +8,7 @@ var BigNumber = require("bignumber.js");
 var ethTx = require("ethereumjs-tx");
 var keys = require("keythereum");
 var uuid = require("node-uuid");
+var clone = require("clone");
 var abi = require("augur-abi");
 var errors = require("augur-contracts").errors;
 var constants = require("../constants");
@@ -275,7 +276,7 @@ module.exports = function () {
                 return errors.NOT_LOGGED_IN;
             }
             if (this.account.keystore && this.account.keystore.ciphertext) {
-                var kdfparams = abi.copy(this.account.keystore.kdfparams);
+                var kdfparams = clone(this.account.keystore.kdfparams);
                 kdfparams.salt = abi.strip_0x(kdfparams.salt);
                 return {
                     address: abi.strip_0x(this.account.address),
@@ -325,7 +326,7 @@ module.exports = function () {
             }
 
             // parse and serialize transaction parameters
-            tx = abi.copy(itx);
+            tx = clone(itx);
             if (tx.params !== undefined) {
                 if (tx.params.constructor === Array) {
                     for (var i = 0, len = tx.params.length; i < len; ++i) {
@@ -384,7 +385,7 @@ module.exports = function () {
                         // rlp encoding error also has -32603 error code
                         if (res.message.indexOf("rlp") > -1) {
                             console.error("RLP encoding error:", res);
-                            err = abi.copy(errors.RLP_ENCODING_ERROR);
+                            err = clone(errors.RLP_ENCODING_ERROR);
                             err.bubble = res;
                             err.packaged = packaged;
                             return cb(err);
@@ -396,7 +397,7 @@ module.exports = function () {
                     // other errors
                     } else if (res.error) {
                         console.error("submitTx error:", res);
-                        err = abi.copy(errors.RAW_TRANSACTION_ERROR);
+                        err = clone(errors.RAW_TRANSACTION_ERROR);
                         err.bubble = res;
                         err.packaged = packaged;
                         return cb(err);
