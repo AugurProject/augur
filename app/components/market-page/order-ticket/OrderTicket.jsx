@@ -118,6 +118,7 @@ let OrderTicket = React.createClass({
                        href="#orderTicketCollapse" aria-expanded="true" aria-controls="orderTicketCollapse">
                         Order Ticket
                     </a>
+                    {/*
                     <a className="helpPopover" data-toggle="modal" data-target="#help-markets-create-an-order"
                        ng-include="'question-icon'">
                     </a>
@@ -128,6 +129,7 @@ let OrderTicket = React.createClass({
                             Disclaimer
                         </a>
                     </small>
+                    */}
                 </h4>
 
                 <jspinclude page="../../include/help-popover.jsp">
@@ -143,6 +145,8 @@ let OrderTicket = React.createClass({
                 </jspinclude>
 
                 <OrderTicketStep1
+                    market={this.props.market}
+                    account={this.props.account}
                     ref="step1"
                     isVisible={this.state.ticket.step == 1}
                     order={this.state.order}

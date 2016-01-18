@@ -141,31 +141,74 @@ var Overview = React.createClass({
             }
         });
     },
+    getDescription(market, outcome) {
+        let description;
+
+        if (market.type === "combinatorial") {
+            // todo: this loop is strange but it was in code so maybe it's legit
+            for (var i = 0; i < market.numEvents; ++i) {
+                description = getOutcomeName(outcome.id, market.events[i]);
+            }
+        } else {
+            description = getOutcomeName(outcome.id, this.props.market);
+        }
+        return description;
+    },
+    getPercentageFormatted(market, outcome) {
+        let percentageFormatted;
+        if (market.type === "combinatorial") {
+            // todo: this loop is strange but it was in code so maybe it's legit
+            for (var i = 0; i < market.numEvents; ++i) {
+                if (market.events[i].type === "scalar") {
+                    percentageFormatted = +outcome.price.toFixed(2);
+                } else {
+                    percentageFormatted = priceToPercentage(outcome.price) + "%";
+                }
+            }
+        } else {
+            if (market.type === "scalar") {
+                percentageFormatted = +outcome.price.toFixed(2);
+            } else {
+                percentageFormatted = priceToPercentage(outcome.price) + "%";
+            }
+        }
+        return percentageFormatted;
+    },
 
     render: function () {
+        let description, percentageFormatted, costPerShareFormatted, sharesOutstandingFormatted;
 
-        var summary;
+
+        var buySellActions;
         var outcome = this.props.outcome;
-        var className = 'outcome outcome-' + outcome.id + ' shadow';
+        var className = 'outcome outcome-' + outcome.id;
 
-        if (this.props.market.matured || !this.props.account) className += ' read-only';
+        var market = this.props.market;
+        if (market.matured || !this.props.account) {
+            className += ' read-only';
+        }
+
+        description = this.getDescription(market, outcome);
+        percentageFormatted = this.getPercentageFormatted(market, outcome);
 
         if (this.state.buyShares) {
-
             className += ' buy';
-            summary = (
+            buySellActions = (
                 <Buy {...this.props} handleTrade={ this.handleTrade } handleCancel={ this.handleCancel }/>
             );
 
         } else if (this.state.sellShares) {
-
             className += ' sell';
-            summary = (
+            buySellActions = (
                 <Sell {...this.props} handleTrade={ this.handleTrade } handleCancel={ this.handleCancel }/>
             );
 
         } else {
+            let buyAction, sellAction;
 
+            buyAction = (
+                <Button bsStyle='success' onClick={ this.handleBuyClick }>Buy</Button>
+            );
             var pendingShares = ( <span /> );
 
             if (!this.props.outcome.pendingShares.equals(0)) {
@@ -178,13 +221,11 @@ var Overview = React.createClass({
                 )
             }
 
-            var holdings;
             var sharesHeld = this.props.outcome.sharesHeld.toNumber();
 
             if (sharesHeld) {
-
-                holdings = (
-                    <div className='sell trade-button'>
+                sellAction = (
+                    <div>
                         <Button bsStyle='danger' onClick={ this.handleSellClick }>Sell</Button>
                         <span
                             className="shares-held btn">{ sharesHeld }{ pendingShares } { sharesHeld === 1 ? 'share' : 'shares' }
@@ -193,75 +234,43 @@ var Overview = React.createClass({
                 );
 
             } else if (!this.props.outcome.pendingShares.equals(0)) {
-
-                holdings = (
-                    <div className='sell trade-button'>
-                        <span className="shares-held none">{ this.props.outcome.pendingShares.toNumber() } shares pending</span>
-                    </div>
+                sellAction = (
+                    <span className="shares-held none">{ this.props.outcome.pendingShares.toNumber() } shares pending</span>
                 );
 
             } else {
-
-                holdings = (
-                    <div className='sell trade-button'>
-                        <span className="shares-held none">no shares held</span>
-                    </div>
+                sellAction = (
+                    <span className="shares-held none">no shares held</span>
                 );
             }
 
-            summary = (
+            buySellActions = (
                 <div className="summary">
-                    <div className='buy trade-button'>
-                        <Button bsStyle='success' onClick={ this.handleBuyClick }>Buy</Button>
+                    <div className="">
+                        <div className='buy trade-button' style={{float: 'left'}}>
+                            { buyAction }
+                        </div>
+                        <div className='sell trade-button' style={{float: 'right'}}>
+                            { sellAction }
+                        </div>
                     </div>
-                    { holdings }
-                    <p>{ Math.abs(outcome.price).toFixed(4) } cash/share</p>
+                    <p style={{clear: 'both'}}>
+                        { Math.abs(outcome.price).toFixed(4) } cash/share
+                    </p>
 
                     <p>{ +outcome.outstandingShares.toFixed(2) } shares outstanding</p>
                 </div>
             );
         }
 
-        if (this.props.market.type === "combinatorial") {
-            for (var i = 0; i < this.props.market.numEvents; ++i) {
-                var outcomeName = getOutcomeName(outcome.id, this.props.market.events[i]);
-                var metalClass = (outcomeName.type === "categorical") ? "metal-categorical" : "";
-                var displayPrice;
-                if (this.props.market.events[i].type === "scalar") {
-                    displayPrice = +outcome.price.toFixed(2);
-                } else {
-                    displayPrice = priceToPercentage(outcome.price) + "%";
-                }
-            }
-            return (
-                <div className={className}>
-                    <h4 className={"metal " + metalClass}>
-                        <div className={outcomeName.type + " name"}>{outcomeName.outcome}</div>
-                        <div className="price">{displayPrice}</div>
-                    </h4>
-                    {summary}
-                </div>
-            );
-        } else {
-            var outcomeName = getOutcomeName(outcome.id, this.props.market);
-            var metalClass = (outcomeName.type === "categorical") ? "metal-categorical" : "";
-            var displayPrice;
-            if (this.props.market.type === "scalar") {
-                displayPrice = +outcome.price.toFixed(2);
-            } else {
-                displayPrice = priceToPercentage(outcome.price) + "%";
-            }
-
-            return (
-                <div className={className}>
-                    <h4 className={"metal " + metalClass}>
-                        <div className={outcomeName.type + " name"}>{outcomeName.outcome}</div>
-                        <div className="price">{displayPrice}</div>
-                    </h4>
-                    {summary}
-                </div>
-            );
-        }
+        return (
+            <div className={className}>
+                <h4>
+                    {description.outcome} ({percentageFormatted})
+                </h4>
+                {buySellActions}
+            </div>
+        );
     }
 });
 

@@ -21,7 +21,7 @@ let TradeTab = React.createClass({
                     </div>
                 </div>
                 <div className="col-sm-3">
-                    <OrderTicket/>
+                    <OrderTicket market={this.props.market} account={this.props.account}/>
                 </div>
             </div>
         );

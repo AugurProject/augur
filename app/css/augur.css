@@ -737,16 +737,6 @@ a.market-pane:hover {
     height: 2.5rem;
 }
 
-.outcome {
-    margin: 0px 0px 20px 0px;
-    border-radius: 5px;
-    padding: 0px 0px 0px 0px;
-    background-color: #F2F2F2;
-    overflow: hidden;
-    clear: both;
-    position: relative;
-    height: 90px;
-}
 .outcome.buy {
 
 }
@@ -754,15 +744,17 @@ a.market-pane:hover {
 
 }
 .outcome h4 {
+    height: 45px; /* @row_height */
+    line-height: 45px; /* @row_height */
     color: #fff;
-    background-color: #18376f;
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-    height: 100%;
-    float: left;
-    min-width: 75px;
-    position: relative;
-    margin: 0px;
+    background-color: #34495E; /* @color-dark-bg - to be consistent with top menu */
+    margin: 0;
+    padding-left: 4px;
+    padding-right: 4px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 100%;
 }
 .categorical {
     text-transform: none;
@@ -771,67 +763,28 @@ a.market-pane:hover {
 .metal-categorical {
     min-width: 125px !important;
 }
-.outcome h4 .name {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-}
 .outcome h4 .scalar {
     font-size: 30pt !important;
 }
 .outcome h4 .price {
     font-size: 20px;
-    font-family: 'Source Sans Pro';
-    font-weight: 300;
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
 }
 .outcome .summary {
-    float: left;
-    padding: 4px 8px;
+    padding: 4px;
     color: #555;
 }
 .outcome .summary p {
     margin: 0px;
     font-size: 15px;
 }
-.outcome .trade-button {
-    position: absolute;
-    right: -1px;
-}
-.outcome .trade-button button {
-    float: right;
-    width: 63px;
-}
 .outcome.read-only .trade-button {
     display: none;
 }
-.outcome .shares-held.none {
-    padding: 10px 10px;
-    display: inline-block;
-}   
 .outcome .shares-held.btn {
     background-color: #FCFFFD;
     float: right;
     border-radius: 0px;
     border-top-left-radius: 3px;
-}
-.outcome .buy {
-    top: -1px;
-}
-.outcome .buy .btn {
-    border-bottom-right-radius: 0px;
-    border-top-left-radius: 0px;
-}
-.outcome .sell,
-.outcome .cancel {
-    bottom: -1px;
-}
-.outcome .sell .btn,
-.outcome .cancel .btn {
-    border-radius: 0px;
-    border-bottom-right-radius: 4px;
 }
 .outcome .cancel .btn {
     border-top-left-radius: 4px;

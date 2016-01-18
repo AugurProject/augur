@@ -1,6 +1,10 @@
 let React = require('react');
 let Formsy = require('formsy-react');
 
+var _ = require("lodash");
+var Outcomes = require("../../Outcomes");
+
+
 let SideInput = require('./SideInput.jsx');
 let QuantityInput = require('./QuantityInput.jsx');
 let ConfirmOrderInput = require('./ConfirmOrderInput.jsx');
@@ -10,111 +14,124 @@ let OrderTicketStep1 = React.createClass({
         this.refs.orderForm.validateForm();
         this.props.onFormSubmit(...rest);
     },
+    getOutcomeName(id, market) {
+        switch (market.type) {
+            case "categorical":
+                if (market && market.description && market.description.indexOf("Choices:") > -1) {
+                    var desc = market.description.split("Choices:");
+                    try {
+                        return {
+                            type: "categorical",
+                            outcome: desc[desc.length - 1].split(",")[id - 1].trim()
+                        };
+                    } catch (exc) {
+                        console.error("categorical parse error:", market.description, exc);
+                    }
+                }
+                return {
+                    type: "categorical",
+                    outcome: id
+                };
+                break;
+            case "scalar":
+                if (id === NO) return {type: "scalar", outcome: "⇩"};
+                return {type: "scalar", outcome: "⇧"};
+                break;
+            case "binary":
+                if (id === NO) return {type: "binary", outcome: "No"};
+                return {type: "binary", outcome: "Yes"};
+            default:
+                console.error("unknown type:", market);
+        }
+    },
+    priceToPercentage(price) {
+        if (price) {
+            return +price.times(100).toFixed(1);
+        } else {
+            return 0;
+        }
+    },
+
+    /**
+     * Copied from Market#render
+     */
     render() {
         let style = {
             display: this.props.isVisible ? "" : "none"
         };
-        return (
-            <div id="orderTicketCollapse" className="orderTicket-step collapse collapsedOnMobile" style={style}>
-                <Formsy.Form name="orderTicketForm"
-                             noValidate
-                             method="post"
-                             onValid={this.props.onFormValid}
-                             onInvalid={this.props.onFormInvalid}
-                             onSubmit={this.onSubmit}
-                             ref="orderForm"
-                    >
-                    <div className="orderTicket-step-content">
-                        <SideInput
-                            value={this.props.order.side}
-                            name="order.side"
-                            onChange={this.props.onSideInputChange}
-                            required/>
 
-                        <QuantityInput
-                            name="order.quantity"
-                            validations="isInt,isExisty"
-                            onInputChange={this.props.onQuantityInputChange}
-                            required
-                            validationError="Default error message"
-                            validationErrors={{
-                                isDefaultRequiredValue: 'Field is required',
-                                isInt: "this field is number",
-                                isExisty: "this is required"
-                            }}
-                            value={this.props.order.quantity}
-                            />
+        let outcomes = [];
+        var market = this.props.market;
+        if (market.type === "combinatorial") {
+            // is this branch ever visited? Why have Outcomes.Overview and this?
+            var events = market.events;
+            outcomes = [];
+            for (var i = 0, n = market.numEvents; i < n; ++i) {
+                var eventSubheading = "";
+                if (events[i].endDate) {
+                    eventSubheading = "Resolves after " + events[i].endDate.format("MMMM Do, YYYY");
+                } else {
+                    eventSubheading = "Loading...";
+                }
+                var outcome = [];
+                for (var j = 0, m = market.numOutcomes; j < m; ++j) {
+                    // Event A
+                    // [ ] Yes       [ ] No
+                    // Event B
+                    // [ ] Yes       [ ] No
+                    var outcomeName = this.getOutcomeName(market.outcomes[j].id, events[i]);
+                    var metalClass = (outcomeName.type === "categorical") ? "metal-categorical" : "";
+                    var displayPrice;
+                    if (events[i].type === "scalar") {
+                        displayPrice = +market.outcomes[j].price.toFixed(2);
+                    } else {
+                        displayPrice = this.priceToPercentage(market.outcomes[j].price) + "%";
+                    }
+                    outcome.push(
+                        <div className="col-sm-4" key={market._id+market.outcomes[j].id}>
+                            <h4 className={"metal " + metalClass}>
+                                <div className={outcomeName.type + " name"}>{outcomeName.outcome}</div>
+                                <div className="price">{displayPrice}</div>
+                            </h4>
+                            <div className="summary">
+                                <div className='buy trade-button'>
+                                    <Button bsStyle='success'>Yes Plz</Button>
+                                </div>
+                                <p>{ Math.abs(market.outcomes[j].price).toFixed(4) } cash/share</p>
 
-                        <div className="form-group"
-                             ng-className='{"has-error": orderTicket.process.hasEnoughMoney === false}'
-                             style={{display: 'none'}}>
-                            <table className="table table-condensed table-no-border table--fullWidthRows"
-                                   style={{marginBottom: 0}}>
-                                <tbody>
-                                    <tr>
-                                        <td>Funds Available:</td>
-                                        <td className="text-right">
-                                            <strong ng-bind="app.balance.fundsAvailableFormatted"
-                                                    ng-if="app.isUserLoggedIn"
-                                                    in-highlight="app.balance.fundsAvailable"></strong>
-                                            <strong ng-if="!app.isUserLoggedIn">$0.00</strong>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Funds Required:</td>
-                                        <td className="text-right">
-                                            <strong
-                                                ng-if="!orderTicket.process.hypotheticalOrder.isTyping && !orderTicket.process.hypotheticalOrder.isInProgress"
-                                                ng-bind="orderTicket.process.fundsRequiredFormatted"></strong>
-                                                <span
-                                                    ng-if="orderTicket.process.hypotheticalOrder.isInProgress"
-                                                    className="fa fa-spinner fa-spin"></span>
-                                                <span
-                                                    ng-if="orderTicket.process.hypotheticalOrder.isTyping"
-                                                    className="fa fa-pencil"></span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div className="help-block error-message"
-                                 ng-show="orderTicket.process.hasEnoughMoney === false">
-                                You don't have enough funds
+                                <p>{ +market.outcomes[j].outstandingShares.toFixed(2) } shares
+                                    outstanding</p>
                             </div>
                         </div>
+                    );
+                }
+                outcomes.push(
+                    <div className="col-sm-12" key={events[i].id}>
+                        <h3 className="event-description">{events[i].description}</h3>
 
-                        <div className="">
-                            <button
-                                className="btn btn-block btn-md btn-fill btn-info orderTicket-submitAction"
-                                type="submit">
-                                {this.props.isOrderConfirmationRequired ? "Review order" : "Submit order"}
-                            </button>
+                        <div className="subheading clearfix">
+                            <span className="pull-left event-subheading">{eventSubheading}</span>
                         </div>
+                        <div className="row event-outcomes">{outcome}</div>
                     </div>
-                    <div className="orderTicket-secondaryAction">
-                        <label
-                            className="orderTicket-confirmOrder checkbox text-capitalize u-text--sameSizeAsTableData"
-                            ng-className="{checked: orderTicket.orderConfirmation}">
-                            <span className="icons">
-                                <span className="first-icon fa fa-square-o"></span>
-                                <span
-                                    className="second-icon fa fa-check-square-o"></span>
-                            </span>
-                            <ConfirmOrderInput
-                                name="ticket.isOrderConfirmationRequired"
-                                value={this.props.isOrderConfirmationRequired}
-                                onChange={this.props.onOrderConfirmationChange}
-                                />
-                            Confirm order
-                        </label>
-                        <button
-                            className="orderTicket-clearForm btn btn-simple btn-danger text-capitalize u-text--sameSizeAsTableData"
-                            ng-click="orderTicket.clearForm()"
-                            type="button">
-                                <span className="fa fa-times"></span>
-                                Clear ticket
-                        </button>
+                );
+            }
+        } else {
+            outcomes = _.map(market.outcomes, function (outcome) {
+                return (
+                    <div className="" key={outcome.id}>
+                        <Outcomes.Overview
+                            market={this.props.market}
+                            outcome={_.clone(outcome)}
+                            account={this.props.account}/>
                     </div>
-                </Formsy.Form>
+                );
+            }, this);
+        }
+
+        return (
+            <div id="orderTicketCollapse" className="orderTicket-step collapse collapsedOnMobile" style={style}>
+                { outcomes }
             </div>
 
         );

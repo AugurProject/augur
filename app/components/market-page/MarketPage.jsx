@@ -1,6 +1,6 @@
 let React = require('react');
 
-var BigNumber = require("bignumber.js");
+let BigNumber = require("bignumber.js");
 let Fluxxor = require("fluxxor");
 let FluxMixin = Fluxxor.FluxMixin(React);
 let StoreWatchMixin = Fluxxor.StoreWatchMixin;
@@ -15,16 +15,18 @@ let UserFrozenFundsTab = require('./UserFrozenFundsTab');
 
 
 let MarketPage = React.createClass({
-    mixins: [FluxMixin, StoreWatchMixin('market')],
+    mixins: [FluxMixin, StoreWatchMixin('market', 'config')],
 
     getStateFromFlux: function () {
-        var flux = this.getFlux();
+        let flux = this.getFlux();
 
-        var marketId = new BigNumber(this.props.params.marketId, 16);
-        var market = flux.store('market').getMarket(marketId);
+        let marketId = new BigNumber(this.props.params.marketId, 16);
+        let market = flux.store('market').getMarket(marketId);
+        let account = flux.store('config').getAccount();
 
         return {
-            market: market
+            market: market,
+            account: account
         };
     },
 
@@ -78,7 +80,7 @@ let MarketPage = React.createClass({
 
                     <div className="tab-content">
                         <div id="tradeTab" className="tab-pane active" role="tabpanel">
-                            <TradeTab market={market}/>
+                            <TradeTab market={market} account={this.state.account}/>
                         </div>
                         <div id="statsTab" className="tab-pane" role="tabpanel">
                             <StatsTab/>
