@@ -15,14 +15,19 @@ let UserFrozenFundsTab = require('./UserFrozenFundsTab');
 
 
 let MarketPage = React.createClass({
-    mixins: [FluxMixin, StoreWatchMixin('market', 'config')],
+    mixins: [FluxMixin, StoreWatchMixin('branch', 'market', 'config')],
 
     getStateFromFlux: function () {
         let flux = this.getFlux();
 
         let marketId = new BigNumber(this.props.params.marketId, 16);
         let market = flux.store('market').getMarket(marketId);
+        let currentBranch = flux.store('branch').getCurrentBranch();
         let account = flux.store('config').getAccount();
+
+        if (currentBranch && market && market.tradingPeriod && currentBranch.currentPeriod >= market.tradingPeriod.toNumber()) {
+            market.matured = true;
+        }
 
         return {
             market: market,
