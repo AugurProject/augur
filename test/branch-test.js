@@ -57,7 +57,7 @@ test("BranchActions.updateCurrentBranch", function (t) {
         t.true(valid.isInt(payload.periodLength), "payload.periodLength is an integer");
         t.true(payload.periodLength > 0, "payload.periodLength > 0");
         t.true(payload.currentPeriod >= 0, "payload.currentPeriod >= 0");
-        t.true(payload.votePeriod >= 0, "payload.votePeriod >= 0");
+        t.true(payload.reportPeriod >= 0, "payload.reportPeriod >= 0");
         t.true(payload.percentComplete >= 0, "payload.percentComplete >= 0");
         t.true(payload.percentComplete <= 100, "payload.percentComplete <= 100");
         flux.register.UPDATE_CURRENT_BRANCH_SUCCESS = UPDATE_CURRENT_BRANCH_SUCCESS;
@@ -67,7 +67,6 @@ test("BranchActions.updateCurrentBranch", function (t) {
 });
 
 test("BranchActions.checkQuorum", function (t) {
-    t.plan(6);
     var CHECK_QUORUM_SENT = flux.register.CHECK_QUORUM_SENT;
     var CHECK_QUORUM_SUCCESS = flux.register.CHECK_QUORUM_SUCCESS;
     flux.register.CHECK_QUORUM_SENT = function () {
@@ -75,6 +74,7 @@ test("BranchActions.checkQuorum", function (t) {
         CHECK_QUORUM_SENT();
         t.pass("dispatch CHECK_QUORUM_SENT");
         t.true(flux.store("branch").getState().hasCheckedQuorum, "BranchStore.hasCheckedQuorum is true");
+        t.end();
     };
     flux.register.CHECK_QUORUM_SUCCESS = function () {
         t.true(flux.store("branch").getState().hasCheckedQuorum, "BranchStore.hasCheckedQuorum is true");

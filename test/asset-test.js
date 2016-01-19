@@ -13,7 +13,7 @@ var constants = require("../app/libs/constants");
 var flux = require("./mock");
 var keystore = require("./account");
 
-var DEBUG = true;
+var DEBUG = false;
 var sink = "0x639b41c4d3d399894f2a57894278e1653e7cd24c";
 var amount = "1";
 var handle = "tinybike";

@@ -219,7 +219,7 @@ var Overview = React.createClass({
       );
     }
 
-    if (this.props.market.type === "combinatorial") {
+    if (this.props.market.type !== "combinatorial") {
       for (var i = 0; i < this.props.market.numEvents; ++i) {
         var outcomeName = getOutcomeName(outcome.id, this.props.market.events[i]);
         var metalClass = (outcomeName.type === "categorical") ? "metal-categorical" : "";

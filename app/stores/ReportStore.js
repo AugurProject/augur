@@ -11,8 +11,8 @@ module.exports = {
   getState: function () {
     return this.state;
   },
-  getReport: function (branchId, votePeriod) {
-    return _.findWhere(this.getState().pendingReports, {branchId, votePeriod});
+  getReport: function (branchId, reportPeriod) {
+    return _.findWhere(this.getState().pendingReports, {branchId, reportPeriod});
   },
   handleLoadEventsToReportSuccess: function (payload) {
     this.state.eventsToReport = payload.eventsToReport;
