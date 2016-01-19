@@ -24,7 +24,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
     var num_events = 2;
     var branch = augur.branches.dev;
     var period = augur.getVotePeriod(branch);
-    var exp_date = augur.rpc.blockNumber() + 2500;
+    var expiration_block = augur.rpc.blockNumber() + 2500;
 
     var datafile = path.join(__dirname, "..", "..", "data", "events.dat");
     fs.writeFileSync(datafile, "");
@@ -39,7 +39,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
             augur.createEvent({
                 branchId: branch,
                 description: event_description,
-                expDate: exp_date,
+                expirationBlock: expiration_block,
                 minValue: minValue,
                 maxValue: maxValue,
                 numOutcomes: numOutcomes,

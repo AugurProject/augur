@@ -32,7 +32,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                     augur.createEvent({
                         branchId: t.branch,
                         description: t.description,
-                        expDate: t.expirationBlock,
+                        expirationBlock: t.expirationBlock,
                         minValue: t.minValue,
                         maxValue: t.maxValue,
                         numOutcomes: t.numOutcomes,

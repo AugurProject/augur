@@ -152,6 +152,7 @@ module.exports = {
         if (process.env.CONTINUOUS_INTEGRATION) {
             augur.constants.TIMEOUT = 131072;
         }
+        if (defaulthost) augur.rpc.setLocalNode(defaulthost);
         if (augur.connect(rpcinfo || defaulthost, ipcpath)) {
             if (augur.options.debug.broadcast || augur.options.debug.fallback) {
                 console.log(chalk.blue.bold("local:"), chalk.cyan(augur.rpc.nodes.local));
