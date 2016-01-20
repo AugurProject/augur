@@ -24,26 +24,30 @@ let MarketPage = React.createClass({
         let market = flux.store('market').getMarket(marketId);
         let currentBranch = flux.store('branch').getCurrentBranch();
         let account = flux.store('config').getAccount();
+        let handle = flux.store('config').getHandle();
 
         if (currentBranch && market && market.tradingPeriod && currentBranch.currentPeriod >= market.tradingPeriod.toNumber()) {
             market.matured = true;
         }
 
         return {
-            market: market,
-            account: account
+            market,
+            account,
+            handle
         };
     },
 
     render() {
         let market = this.state.market;
+
         if (market == null) {
             return (
                 <div>No market info</div>
             );
         }
+
         return (
-            <div className="">
+            <div className="marketPage">
                 <Breadcrumb market={market}/>
                 <MarketInfo market={market}/>
 
@@ -85,7 +89,12 @@ let MarketPage = React.createClass({
 
                     <div className="tab-content">
                         <div id="tradeTab" className="tab-pane active" role="tabpanel">
-                            <TradeTab market={market} account={this.state.account}/>
+                            <TradeTab
+                                market={this.state.market}
+                                account={this.state.account}
+                                handle={this.state.handle}
+                                toggleSignInModal={this.props.toggleSignInModal}
+                                />
                         </div>
                         <div id="statsTab" className="tab-pane" role="tabpanel">
                             <StatsTab/>

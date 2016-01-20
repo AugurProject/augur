@@ -132,7 +132,9 @@ var AugurApp = React.createClass({
           <div className="dash page row">
             <div className="col-sm-12">
               <div id="period"></div>
-              <RouteHandler {...this.props}
+              <RouteHandler
+                toggleSignInModal={this.toggleSignInModal}
+                {...this.props}
                 branch={this.state.branch}
                 market={this.state.market} />
             </div>

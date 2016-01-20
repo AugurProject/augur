@@ -5,6 +5,7 @@
 @import "../partials/labelValue";
 @import "../partials/contractImage";
 @import "../partials/confirm";
+@import "../partials/avatar";
 
 // Hide raw angular template at the beginning
 // https://docs.angularjs.org/api/ng/directive/ngCloak
@@ -202,10 +203,6 @@ h3 {
     .justify-content(center);
 }
 
-.orderTicket .orderTicket-step {
-    min-height: 529px;
-}
-
 @media (max-width: @screen-sm-min) {
     .orderTicket .orderTicket-step {
         margin-top: 15px;
@@ -391,4 +388,29 @@ h3 {
         fill: hsl(201, 35%, 93%);
         stroke-width: 0;
     }
+}
+
+.comments {
+    margin-top: 15px;
+}
+
+.comments .commentForm,
+.comments .comment {
+    padding: 6px;
+}
+
+.comments .commentForm {
+    margin-bottom: 10px;
+}
+
+.comments .comment {
+    border-top: 1px solid @color-grey-light;
+}
+
+.comments .comment p {
+    margin: 0;
+}
+.comments .comment .comment-metaInfo {
+    font-size: 12px;
+    color: #999;
 }

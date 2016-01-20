@@ -4,6 +4,7 @@ let OrderTicket = require('./order-ticket/OrderTicket.jsx');
 let UserPosition = require('./UserPosition.jsx');
 let UserOrders = require('./UserOrders.jsx');
 let OrderBook = require('./OrderBook.jsx');
+let Comments = require('./comments/Comments.jsx');
 
 let TradeTab = React.createClass({
     render() {
@@ -23,6 +24,16 @@ let TradeTab = React.createClass({
                 <div className="col-sm-3">
                     <OrderTicket market={this.props.market} account={this.props.account}/>
                 </div>
+                <div className='col-xs-12'>
+                    <Comments
+                        toggleSignInModal={this.props.toggleSignInModal}
+                        market={this.props.market}
+                        //comments={this.props.market.comments} // comments are already in market, should I pass them?
+                        account={this.props.account}
+                        handle={this.props.handle}
+                        />
+                </div>
+
             </div>
         );
     }
