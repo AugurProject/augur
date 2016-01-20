@@ -1,13 +1,10 @@
 var React = require("react");
 var abi = require("augur-abi");
-var Fluxxor = require("fluxxor");
-var ReactBootstrap = require("react-bootstrap");
-var FluxMixin = Fluxxor.FluxMixin(React);
-var StoreWatchMixin = Fluxxor.StoreWatchMixin;
-var Button = ReactBootstrap.Button;
-var Input = ReactBootstrap.Input;
-var Modal = ReactBootstrap.Modal;
-var ModalTrigger = ReactBootstrap.ModalTrigger;
+let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
+let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
+let Button = require('react-bootstrap/lib/Button');
+let Input = require('react-bootstrap/lib/Input');
+let Modal = require('react-bootstrap/lib/Modal');
 var utilities = require("../libs/utilities");
 
 var CloseMarketModal = React.createClass({
@@ -57,6 +54,9 @@ var CloseMarketTrigger = React.createClass({
   mixins: [FluxMixin],
 
   render: function () {
+    // ModalTrigger was deprecated in v0.23.6
+    // (https://github.com/react-bootstrap/react-bootstrap/blob/1633450421ab6dbd5b8634825dd65b8948e9f0a9/CHANGELOG.md#v0236---wed-01-jul-2015-004802-gmt)
+    // version was updated 959aa51c463e3683d36a1514c0359b97ec98fdb3 7/3/15 9:44 AM by Jack Peterson - this is probably never used and can be deleted
     return (
       <ModalTrigger modal={<CloseMarketModal {...this.props} />}>
         <Button bsSize='xsmall' bsStyle='primary'>Close Market</Button>

@@ -1,21 +1,19 @@
 var React = require("react");
 var _ = require("lodash");
-var Fluxxor = require("fluxxor");
-var ReactBootstrap = require("react-bootstrap");
 var Router = require("react-router");
 var RouteHandler = Router.RouteHandler;
 var Link = Router.Link;
 var Route = Router.Route;
 var cookie = require("react-cookie");
 
-var FluxMixin = Fluxxor.FluxMixin(React);
-var StoreWatchMixin = Fluxxor.StoreWatchMixin;
+let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
+let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
 
-var OverlayTrigger = ReactBootstrap.OverlayTrigger;
-var Popover = ReactBootstrap.Popover;
-var ProgressBar = ReactBootstrap.ProgressBar;
-var Modal = ReactBootstrap.Modal;
-var Input = ReactBootstrap.Input;
+let OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
+let Popover = require('react-bootstrap/lib/Popover');
+let ProgressBar = require('react-bootstrap/lib/ProgressBar');
+let Modal = require('react-bootstrap/lib/Modal');
+let Input = require('react-bootstrap/lib/Input');
 
 var utilities = require("../libs/utilities");
 var constants = require("../libs/constants");

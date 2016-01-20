@@ -1,10 +1,8 @@
 var React = require("react");
-var Fluxxor = require("fluxxor");
-var ReactBootstrap = require("react-bootstrap");
-var FluxMixin = Fluxxor.FluxMixin(React);
-var Button = ReactBootstrap.Button;
-var Input = ReactBootstrap.Input;
-var Modal = ReactBootstrap.Modal;
+let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
+let Button = require('react-bootstrap/lib/Button');
+let Input = require('react-bootstrap/lib/Input');
+let Modal = require('react-bootstrap/lib/Modal');
 var utilities = require("../libs/utilities");
 
 var RegisterModal = React.createClass({
