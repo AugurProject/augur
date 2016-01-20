@@ -114,7 +114,7 @@ module.exports = {
     }
   },
 
-  updateNetwork: function () {
+  updateNetwork: function (isolate) {
     var self = this;
     var augur = this.flux.augur;
 
@@ -136,10 +136,10 @@ module.exports = {
               blockchainAge: age
             });
           }
-          self.flux.actions.config.initializeData();
+          if (!isolate) self.flux.actions.config.initializeData();
         });
       } else {
-        self.flux.actions.config.initializeData();
+        if (!isolate) self.flux.actions.config.initializeData();
       }
     });
   }

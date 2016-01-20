@@ -188,7 +188,9 @@ var AugurApp = React.createClass({
         <nav className="header" role="navigation">
           <div className="container">
             <div className="pull-left">
-              <h1 className="title">augur</h1>
+              <Link to="overview">
+                <h1 className="title">augur</h1>
+              </Link>
               <ul className="menu">
                 <Link to="overview"><li>
                   <p>Overview</p>

@@ -15,7 +15,11 @@ var utils = require("../app/libs/utilities");
 var constants = require("../app/libs/constants");
 var flux = require("./mock");
 
-// flux.augur.connect();
+// var host = "http://127.0.0.1:8545";
+// flux.augur.rpc.setLocalNode(host);
+// flux.augur.connect(host);
+flux.augur.connect();
+flux.augur.rpc.balancer = false;
 
 test("NetworkActions.checkNetwork", function (t) {
     t.plan(4);
@@ -69,5 +73,5 @@ test("NetworkActions.updateNetwork", function (t) {
         flux.register.UPDATE_BLOCKCHAIN_AGE = UPDATE_BLOCKCHAIN_AGE;
         t.end();
     };
-    flux.actions.network.updateNetwork();
+    flux.actions.network.updateNetwork(true);
 });
