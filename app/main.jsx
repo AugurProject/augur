@@ -4,7 +4,7 @@ require("bootstrap");
 
 var React = require("react");
 var ReactDOM = require("react-dom");
-var Fluxxor = require("fluxxor");
+var Flux = require("fluxxor/lib/flux");
 var Router = require("react-router");
 var Route = Router.Route;
 var DefaultRoute = Router.DefaultRoute;
@@ -31,7 +31,7 @@ var stores = {
   search: new dispatcher.search()
 };
 
-window.flux = new Fluxxor.Flux(stores, actions);
+window.flux = new Flux(stores, actions);
 flux.augur = require("augur.js");
 
 var AugurApp = require("./components/AugurApp");

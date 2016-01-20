@@ -1,12 +1,10 @@
 var _ = require("lodash");
 var React = require("react");
-var Fluxxor = require("fluxxor");
-var FluxMixin = Fluxxor.FluxMixin(React);
-var StoreWatchMixin = Fluxxor.StoreWatchMixin;
-var ReactBootstrap = require("react-bootstrap");
-var Button = ReactBootstrap.Button;
-var Input = ReactBootstrap.Input;
-var ProgressBar = ReactBootstrap.ProgressBar;
+let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
+let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
+let Button = require('react-bootstrap/lib/Button');
+let Input = require('react-bootstrap/lib/Input');
+let ProgressBar = require('react-bootstrap/lib/ProgressBar');
 var utilities = require("../libs/utilities");
 
 var Ballots = React.createClass({

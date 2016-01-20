@@ -1,11 +1,10 @@
 var _ = require("lodash");
 var React = require("react");
-var Fluxxor = require("fluxxor");
 var Paginate = require("react-paginate");
 var Router = require("react-router");
 
-var FluxMixin = Fluxxor.FluxMixin(React);
-var StoreWatchMixin = Fluxxor.StoreWatchMixin;
+let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
+let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
 var RouteHandler = Router.RouteHandler;
 var Navigation = Router.Navigation;
 var Link = Router.Link;

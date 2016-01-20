@@ -1,18 +1,16 @@
 var React = require("react");
 var _ = require("lodash");
 var abi = require("augur-abi");
-var Fluxxor = require("fluxxor");
 var keys = require("keythereum");
-var ReactBootstrap = require("react-bootstrap");
 var Router = require("react-router");
-
-var FluxMixin = Fluxxor.FluxMixin(React);
-var StoreWatchMixin = Fluxxor.StoreWatchMixin;
-var Button = ReactBootstrap.Button;
-var Table = ReactBootstrap.Table;
 var Link = Router.Link;
-var ListGroup = ReactBootstrap.ListGroup;
-var ListGroupItem = ReactBootstrap.ListGroupItem;
+
+let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
+let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
+let Button = require('react-bootstrap/lib/Button');
+let Table = require('react-bootstrap/lib/Table');
+let ListGroup = require('react-bootstrap/lib/ListGroup');
+let ListGroupItem = require('react-bootstrap/lib/ListGroupItem');
 
 var utilities = require("../libs/utilities");
 var constants = require("../libs/constants");

@@ -3,20 +3,18 @@
 var _ = require("lodash");
 var abi = require("augur-abi");
 var React = require("react");
-var Fluxxor = require("fluxxor");
-var ReactBootstrap = require("react-bootstrap");
 var utilities = require("../libs/utilities");
 var constants = require("../libs/constants");
 var SendCashModal = require('./SendModal').SendCashModal;
 var SendRepModal = require('./SendModal').SendRepModal;
 var SendEtherModal = require('./SendModal').SendEtherModal;
 
-var FluxMixin = Fluxxor.FluxMixin(React);
-var StoreWatchMixin = Fluxxor.StoreWatchMixin;
-var Button = ReactBootstrap.Button;
-var ButtonGroup = ReactBootstrap.ButtonGroup;
-var OverlayTrigger = ReactBootstrap.OverlayTrigger;
-var Popover = ReactBootstrap.Popover;
+let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
+let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
+let Button = require('react-bootstrap/lib/Button');
+let ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
+let OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
+let Popover = require('react-bootstrap/lib/Popover');
 
 var Assets = React.createClass({
 
