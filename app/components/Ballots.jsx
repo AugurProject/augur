@@ -33,7 +33,7 @@ var Ballots = React.createClass({
     if (state.branchState.currentBranch) {
       state.report = flux.store('report').getReport(
         state.branchState.currentBranch.id,
-        state.branchState.currentBranch.votePeriod
+        state.branchState.currentBranch.reportPeriod
       );
     }
 
@@ -44,7 +44,7 @@ var Ballots = React.createClass({
     var orderedDecisions = _.map(this.state.events, e => this.state.decisions[e.id]);
     this.getFlux().actions.report.hashReport(
       this.state.branchState.currentBranch.id,
-      this.state.branchState.currentBranch.votePeriod,
+      this.state.branchState.currentBranch.reportPeriod,
       orderedDecisions
     );
 
@@ -95,13 +95,13 @@ var Ballots = React.createClass({
       if (this.state.report.reported) {
         var ballot = (
           <div className='ballot shadow clearfix'>
-            <h4>Ballot { currentBranch.votePeriod }<span className="pull-right">submitted</span></h4>
+            <h4>Ballot { currentBranch.reportPeriod }<span className="pull-right">submitted</span></h4>
           </div>
         );
       } else {
         var ballot = (
           <div className='ballot shadow clearfix'>
-            <h4>Ballot { currentBranch.votePeriod }<span className="pull-right">saved</span></h4>
+            <h4>Ballot { currentBranch.reportPeriod }<span className="pull-right">saved</span></h4>
             <p>This ballot has been saved and will be submitted <b>{ publishStart.format('MMM Do HH:mm') } - { publishEnd.format('MMM Do HH:mm') }</b></p>
           </div>
         );
@@ -149,7 +149,7 @@ var Ballots = React.createClass({
     var markerPosition = percentComplete+'%';
     return (
       <div id="ballots">
-        <h3>Ballot<span className='subheading pull-right'>Period { currentBranch.votePeriod}</span></h3>
+        <h3>Ballot<span className='subheading pull-right'>Period { currentBranch.reportPeriod}</span></h3>
         <div className='now-marker' style={{marginLeft: markerPosition}}>&#9662;</div>
         <ProgressBar className='period-progress'>
           <ProgressBar bsStyle='primary' now={ votePercentComplete } key={1} />

@@ -48,7 +48,7 @@ var Overview = React.createClass({
       config: flux.store('config').getState(),
       trendingMarkets: flux.store('market').getTrendingMarkets(9, currentBranch),
       authoredMarkets: flux.store('market').getMarketsByAuthor(account),
-      votePeriod: flux.store('branch').getState().currentVotePeriod,
+      reportPeriod: flux.store('branch').getState().currentVotePeriod,
       currentBranch: currentBranch,
       holdings: flux.store('market').getMarketsHeld()
     }

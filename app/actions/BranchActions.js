@@ -21,17 +21,13 @@ module.exports = {
   setCurrentBranch: function (branchId) {
     var self = this;
     branchId = branchId || process.env.AUGUR_BRANCH_ID;
-    var updateCurrentBranch = this.flux.actions.branch.updateCurrentBranch;
-    // console.log("updateCurrentBranch:", updateCurrentBranch.toString());
-    console.log("flux:", this.flux);
     this.flux.augur.getPeriodLength(branchId, function (periodLength) {
       if (periodLength && !periodLength.error) {
         self.dispatch(constants.branch.SET_CURRENT_BRANCH_SUCCESS, {
           id: branchId,
           periodLength: abi.number(periodLength)
         });
-        // self.flux.actions.branch.updateCurrentBranch();
-        updateCurrentBranch();
+        self.flux.actions.branch.updateCurrentBranch();
       } else {
         console.error("augur.periodLength error:", periodLength);
         console.trace();
@@ -47,37 +43,35 @@ module.exports = {
     var percentComplete = (currentBlock % currentBranch.periodLength) / currentBranch.periodLength * 100;
 
     this.flux.augur.getVotePeriod(currentBranch.id, function (result) {
-      if (result && !result.error) {
-        var votePeriod = abi.number(result);
-
-        // if this is a new vote period, check quorum & submit reports
-        if (votePeriod > currentBranch.votePeriod) {
-          console.log(self.flux.actions.report.loadEventsToReport.toString());
-          self.flux.actions.report.loadEventsToReport();
-          // console.log(self.flux.actions.branch.checkQuorum.toString());
-          self.flux.actions.branch.checkQuorum();
-          // console.log(self.flux.actions.report.submitQualifiedReports.toString());
-          self.flux.actions.report.submitQualifiedReports();
-        }
-
-        var isCurrent = votePeriod < (currentPeriod - 1) ? false : true;
-
-        if (!isCurrent) {
-          var periodsBehind = (currentPeriod - 1) - votePeriod;
-          console.log('warning: branch '+ currentBranch.id + ' behind ' + periodsBehind + ' periods');
-        }
-
-        var updatedBranch = _.merge(currentBranch, {
-          currentPeriod: currentPeriod,
-          votePeriod: votePeriod,
-          isCurrent: isCurrent,
-          percentComplete: percentComplete
-        });
-
-        self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, updatedBranch);
-      } else {
-        console.error("augur.getVotePeriod error:", result);
+      if (!result || result.error) {
+        return console.error("augur.getVotePeriod error:", result);
       }
+      var reportPeriod = abi.number(result);
+
+      // if this is a new vote period, check quorum & submit reports
+      if (reportPeriod > currentBranch.reportPeriod) {
+        self.flux.actions.report.loadEventsToReport();
+        self.flux.actions.branch.checkQuorum();
+        self.flux.actions.report.submitQualifiedReports(function (err, res) {
+          if (err) console.error("submitQualifiedReports:", err);
+        });
+      }
+
+      var isCurrent = reportPeriod < (currentPeriod - 1) ? false : true;
+
+      if (!isCurrent) {
+        var periodsBehind = (currentPeriod - 1) - reportPeriod;
+        console.warn("branch", currentBranch.id, "behind", periodsBehind, "periods");
+      }
+
+      var updatedBranch = _.merge(currentBranch, {
+        currentPeriod: currentPeriod,
+        reportPeriod: reportPeriod,
+        isCurrent: isCurrent,
+        percentComplete: percentComplete
+      });
+
+      self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, updatedBranch);
     });
   },
 

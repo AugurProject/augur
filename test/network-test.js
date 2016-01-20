@@ -15,7 +15,11 @@ var utils = require("../app/libs/utilities");
 var constants = require("../app/libs/constants");
 var flux = require("./mock");
 
-// flux.augur.connect();
+// var host = "http://127.0.0.1:8545";
+// flux.augur.rpc.setLocalNode(host);
+// flux.augur.connect(host);
+flux.augur.connect();
+flux.augur.rpc.balancer = false;
 
 test("NetworkActions.checkNetwork", function (t) {
     t.plan(4);
@@ -65,9 +69,8 @@ test("NetworkActions.updateNetwork", function (t) {
         t.true(validator.isInt(payload.blockchainAge), "payload.blockchainAge is a (string) integer");
         UPDATE_BLOCKCHAIN_AGE(payload);
         t.equal(payload.blockchainAge, flux.store("network").getState().blockchainAge, "payload.blockchainAge == state.blockchainAge");
-        flux.register.UPDATE_ETHEREUM_STATUS = UPDATE_ETHEREUM_STATUS;
         flux.register.UPDATE_BLOCKCHAIN_AGE = UPDATE_BLOCKCHAIN_AGE;
-        t.end();
+        flux.augur.filters.ignore(true, t.end);
     };
-    flux.actions.network.updateNetwork();
+    flux.actions.network.updateNetwork(true);
 });

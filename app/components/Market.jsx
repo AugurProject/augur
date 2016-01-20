@@ -214,69 +214,16 @@ var Market = React.createClass({
     var tradingFee = market.tradingFee ? +market.tradingFee.times(100).toFixed(2)+'%' : '-';
     var traderCount = market.traderCount ? +market.traderCount.toNumber() : '-';
     var author = market.author ? abi.hex(market.author) : '-';
-
-    if (this.state.market.type === "combinatorial") {
-      var events = this.state.market.events;
-      var outcomes = [];
-      for (var i = 0, n = this.state.market.numEvents; i < n; ++i) {
-        var eventSubheading = "";
-        if (events[i].endDate) {
-          eventSubheading = "Resolves after " + events[i].endDate.format("MMMM Do, YYYY");
-        } else {
-          eventSubheading = "Loading...";
-        }
-        var outcome = [];
-        for (var j = 0, m = this.state.market.numOutcomes; j < m; ++j) {
-          // Event A
-          // [ ] Yes       [ ] No
-          // Event B
-          // [ ] Yes       [ ] No
-          var outcomeName = getOutcomeName(this.state.market.outcomes[j].id, events[i]);
-          var metalClass = (outcomeName.type === "categorical") ? "metal-categorical" : "";
-          var displayPrice;
-          if (events[i].type === "scalar") {
-            displayPrice = +this.state.market.outcomes[j].price.toFixed(2);
-          } else {
-            displayPrice = priceToPercentage(this.state.market.outcomes[j].price) + "%";
-          }
-          outcome.push(
-            <div className="col-sm-4" key={this.state.market._id+this.state.market.outcomes[j].id}>
-              <h4 className={"metal " + metalClass}>
-                <div className={outcomeName.type + " name"}>{outcomeName.outcome}</div>
-                <div className="price">{displayPrice}</div>
-              </h4>
-              <div className="summary">
-                <div className='buy trade-button'>
-                  <Button bsStyle='success'>Yes Plz</Button>
-                </div>
-                <p>{ Math.abs(this.state.market.outcomes[j].price).toFixed(4) } cash/share</p>
-                <p>{ +this.state.market.outcomes[j].outstandingShares.toFixed(2) } shares outstanding</p>
-              </div>
-            </div>
-          );
-        }
-        outcomes.push(
-          <div className="col-sm-12" key={events[i].id}>
-            <h3 className="event-description">{events[i].description}</h3>
-            <div className="subheading clearfix">
-              <span className="pull-left event-subheading">{eventSubheading}</span>
-            </div>
-            <div className="row event-outcomes">{outcome}</div>
-          </div>
-        );
-      }
-    } else {
-      var outcomes = _.map(this.state.market.outcomes, function (outcome) {
-        return (
-          <div className="col-sm-6" key={outcome.id}>
-            <Outcomes.Overview
-              market={this.state.market}
-              outcome={_.clone(outcome)}
-              account={this.state.account} />
-          </div>
-        );
-      }, this);
-    }
+    var outcomes = _.map(this.state.market.outcomes, function (outcome) {
+      return (
+        <div className="col-sm-6" key={outcome.id}>
+          <Outcomes.Overview
+            market={this.state.market}
+            outcome={_.clone(outcome)}
+            account={this.state.account} />
+        </div>
+      );
+    }, this);
 
     return (
       <div id='market'>
@@ -353,7 +300,7 @@ var Comments = React.createClass({
 
   componentDidMount: function () {
     if (this.props.market && this.props.market.id) {
-      this.getFlux().augur.actions.market.loadComments(this.props.market);
+      this.getFlux().actions.market.loadComments(this.props.market);
     }
   },
 

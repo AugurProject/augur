@@ -21,11 +21,11 @@ flux.augur.connect();
 flux.augur.connector.from = flux.augur.coinbase;
 flux.augur.sync(flux.augur.connector);
 var branch = flux.augur.branches.dev;
-var votePeriod = flux.augur.getVotePeriod(branch);
-var numEvents = flux.augur.getNumberEvents(branch, votePeriod);
+var reportPeriod = flux.augur.getVotePeriod(branch);
+var numEvents = flux.augur.getNumberEvents(branch, reportPeriod);
 var salt = "0xe8f36277bf8464cd778abf17421e5e49e64852cc353f398d3d6013802ac18e";
 if (DEBUG) {
-    console.log("vote period", votePeriod + ":", numEvents, "expiring events");
+    console.log("vote period", reportPeriod + ":", numEvents, "expiring events");
 }
 var reports = new Array(numEvents);
 for (var i = 0; i < numEvents; ++i) {
@@ -33,7 +33,7 @@ for (var i = 0; i < numEvents; ++i) {
 }
 flux.stores.report.state.pendingReports = [{
     branchId: branch,
-    votePeriod: votePeriod,
+    reportPeriod: reportPeriod,
     decisions: reports,
     salt: salt,
     reported: false
@@ -79,7 +79,7 @@ test("ReportActions.hashReport", function (t) {
         t.pass("dispatch UPDATE_PENDING_REPORTS");
         flux.register.UPDATE_PENDING_REPORTS = UPDATE_PENDING_REPORTS;
     };
-    flux.actions.report.hashReport(branch, votePeriod, reports, function (err, res) {
+    flux.actions.report.hashReport(branch, reportPeriod, reports, function (err, res) {
         flux.augur.rpc.blockNumber(function (blockNumber) {
             t.true(valid.isHexadecimal(blockNumber.replace("0x", "")), "blockNumber is valid hex");
             t.false(blockNumber.error, "blockNumber is not an error object");
@@ -106,14 +106,14 @@ test("ReportActions.submitReport", function (t) {
     var bundledReport = {
         branchId: branch,
         decisions: reports,
-        votePeriod: votePeriod,
+        reportPeriod: reportPeriod,
         salt: salt
     };
     flux.stores.report.state.pendingReports = [bundledReport];
     var reportHash = abi.unfork(flux.augur.hashReport(reports, salt), true);
     flux.augur.setReportHash({
         branch,
-        votePeriod,
+        reportPeriod,
         reportHash,
         reporter: flux.augur.from,
         onSent: function (r) {
@@ -121,7 +121,7 @@ test("ReportActions.submitReport", function (t) {
         },
         onSuccess: function (r) {
             // console.log("setReportHash success:", r);
-            flux.augur.getReportHash(branch, votePeriod, flux.augur.from, function (hash) {
+            flux.augur.getReportHash(branch, reportPeriod, flux.augur.from, function (hash) {
                 t.false(hash.error, "getReportHash() is not an error object");
                 t.equal(abi.unfork(hash), reportHash, "hash == hashReport(reports, salt)");
                 flux.actions.report.submitReport(bundledReport, function (err, res) {
@@ -151,7 +151,7 @@ test("ReportActions.submitQualifiedReports", function (t) {
     };
     flux.stores.report.state.pendingReports = [{
         branchId: branch,
-        votePeriod: votePeriod,
+        reportPeriod: reportPeriod,
         decisions: reports,
         salt: salt,
         reported: false
@@ -181,7 +181,7 @@ test("ReportActions.loadPendingReports", function (t) {
     };
     flux.stores.report.state.pendingReports = [{
         branchId: branch,
-        votePeriod: votePeriod,
+        reportPeriod: reportPeriod,
         decisions: reports,
         salt: salt,
         reported: false

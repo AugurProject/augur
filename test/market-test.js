@@ -117,77 +117,6 @@ test("marketInfo", function (t) {
     t.end();
 });
 
-test("MarketActions.loadComments", function (t) {
-    t.plan(7);
-    var numComments = 3;
-    var markets = {};
-    markets[marketInfo.id] = clone(marketInfo);
-    flux.stores.market.state.markets = markets;
-    var UPDATE_MARKET_SUCCESS = flux.register.UPDATE_MARKET_SUCCESS;
-    flux.register.UPDATE_MARKET_SUCCESS = function (payload) {
-        var storedMarketInfo = clone(flux.store("market").getMarket(marketInfo.id));
-        t.equal(payload.constructor, Object, "payload is an object");
-        t.equal(payload.market.constructor, Object, "payload.market is an object");
-        t.equal(payload.market.comments.constructor, Array, "payload.market.comments is an array");
-        t.true(payload.market.comments.length <= numComments, "payload.market.comments contains at most " + numComments + " comment(s)");
-        t.equal(storedMarketInfo.constructor, Object, "storedMarketInfo is an object");
-        t.equal(storedMarketInfo.comments, undefined, "storedMarketInfo.comments is undefined");
-        storedMarketInfo.comments = clone(payload.market.comments);
-        t.equal(JSON.stringify(payload.market), JSON.stringify(storedMarketInfo), "verify payload");
-        flux.register.UPDATE_MARKET_SUCCESS = UPDATE_MARKET_SUCCESS;
-        t.end();
-    };
-    flux.actions.market.loadComments(clone(marketInfo), {numComments: numComments});
-});
-
-test("MarketActions.updateComments", function (t) {
-    t.plan(5);
-    var message = "augur's unit tests have something random to say: '" + Math.random().toString(36).substring(4) + "'";
-    var markets = {};
-    markets[marketInfo.id] = clone(marketInfo);
-    flux.stores.market.state.markets = markets;
-    var UPDATE_MARKET_SUCCESS = flux.register.UPDATE_MARKET_SUCCESS;
-    flux.register.UPDATE_MARKET_SUCCESS = function (payload) {
-        var storedMarketInfo = flux.store("market").getMarket(marketInfo.id);
-        t.equal(payload.market.constructor, Object, "payload.market is an object");
-        t.equal(payload.market.comments.constructor, Array, "payload.market.comments is an array");
-        t.true(payload.market.comments.length, "payload.market.comments contains at least one comment");
-        if (!storedMarketInfo.comments) storedMarketInfo.comments = [];
-        t.equal(payload.market.comments.length, storedMarketInfo.comments.length + 1, "payload.market.comments contains one more comment than MarketStore");
-        var comment = payload.market.comments[0];
-        var marketInfoWithComment = clone(storedMarketInfo);
-        marketInfoWithComment.comments.push(comment);
-        t.equal(JSON.stringify(payload.market), JSON.stringify(marketInfoWithComment), "verify payload");
-        flux.register.UPDATE_MARKET_SUCCESS = UPDATE_MARKET_SUCCESS;
-        t.end();
-    };
-    flux.actions.market.updateComments(message, marketInfo.id, flux.augur.from);
-});
-
-test("MarketActions.addComment", function (t) {
-    t.plan(5);
-    var commentText = "augur's unit tests have something random to say: '" + Math.random().toString(36).substring(4) + "'";
-    var markets = {};
-    markets[marketInfo.id] = clone(marketInfo);
-    flux.stores.market.state.markets = markets;
-    var UPDATE_MARKET_SUCCESS = flux.register.UPDATE_MARKET_SUCCESS;
-    flux.register.UPDATE_MARKET_SUCCESS = function (payload) {
-        var storedMarketInfo = flux.store("market").getMarket(marketInfo.id);
-        t.equal(payload.market.constructor, Object, "payload.market is an object");
-        t.equal(payload.market.comments.constructor, Array, "payload.market.comments is an array");
-        t.true(payload.market.comments.length, "payload.market.comments contains at least one comment");
-        if (!storedMarketInfo.comments) storedMarketInfo.comments = [];
-        t.equal(payload.market.comments.length, storedMarketInfo.comments.length + 1, "payload.market.comments contains one more comment than MarketStore");
-        var comment = payload.market.comments[0];
-        var marketInfoWithComment = clone(storedMarketInfo);
-        marketInfoWithComment.comments.push(comment);
-        t.equal(JSON.stringify(payload.market), JSON.stringify(marketInfoWithComment), "verify payload");
-        flux.register.UPDATE_MARKET_SUCCESS = UPDATE_MARKET_SUCCESS;
-        t.end();
-    };
-    flux.actions.market.addComment(commentText, marketInfo.id, account);
-});
-
 test("MarketActions.parseMarketInfo", function (t) {
     t.plan(21);
     var info = clone(rawInfo);
@@ -375,4 +304,75 @@ test("MarketActions.updatePendingShares", function (t) {
         flux.augur.filters.ignore(true, t.end);
     };
     flux.actions.market.updatePendingShares(clone(marketInfo), outcomeId, relativeShares);
+});
+
+test("MarketActions.loadComments", function (t) {
+    t.plan(7);
+    var numComments = 3;
+    var markets = {};
+    markets[marketInfo.id] = clone(marketInfo);
+    flux.stores.market.state.markets = markets;
+    var UPDATE_MARKET_SUCCESS = flux.register.UPDATE_MARKET_SUCCESS;
+    flux.register.UPDATE_MARKET_SUCCESS = function (payload) {
+        var storedMarketInfo = clone(flux.store("market").getMarket(marketInfo.id));
+        t.equal(payload.constructor, Object, "payload is an object");
+        t.equal(payload.market.constructor, Object, "payload.market is an object");
+        t.equal(payload.market.comments.constructor, Array, "payload.market.comments is an array");
+        t.true(payload.market.comments.length <= numComments, "payload.market.comments contains at most " + numComments + " comment(s)");
+        t.equal(storedMarketInfo.constructor, Object, "storedMarketInfo is an object");
+        t.equal(storedMarketInfo.comments, undefined, "storedMarketInfo.comments is undefined");
+        storedMarketInfo.comments = clone(payload.market.comments);
+        t.equal(JSON.stringify(payload.market), JSON.stringify(storedMarketInfo), "verify payload");
+        flux.register.UPDATE_MARKET_SUCCESS = UPDATE_MARKET_SUCCESS;
+        t.end();
+    };
+    flux.actions.market.loadComments(clone(marketInfo), {numComments: numComments});
+});
+
+test("MarketActions.updateComments", function (t) {
+    t.plan(5);
+    var message = "augur's unit tests have something random to say: '" + Math.random().toString(36).substring(4) + "'";
+    var markets = {};
+    markets[marketInfo.id] = clone(marketInfo);
+    flux.stores.market.state.markets = markets;
+    var UPDATE_MARKET_SUCCESS = flux.register.UPDATE_MARKET_SUCCESS;
+    flux.register.UPDATE_MARKET_SUCCESS = function (payload) {
+        var storedMarketInfo = flux.store("market").getMarket(marketInfo.id);
+        t.equal(payload.market.constructor, Object, "payload.market is an object");
+        t.equal(payload.market.comments.constructor, Array, "payload.market.comments is an array");
+        t.true(payload.market.comments.length, "payload.market.comments contains at least one comment");
+        if (!storedMarketInfo.comments) storedMarketInfo.comments = [];
+        t.equal(payload.market.comments.length, storedMarketInfo.comments.length + 1, "payload.market.comments contains one more comment than MarketStore");
+        var comment = payload.market.comments[0];
+        var marketInfoWithComment = clone(storedMarketInfo);
+        marketInfoWithComment.comments.push(comment);
+        t.equal(JSON.stringify(payload.market), JSON.stringify(marketInfoWithComment), "verify payload");
+        flux.register.UPDATE_MARKET_SUCCESS = UPDATE_MARKET_SUCCESS;
+        t.end();
+    };
+    flux.actions.market.updateComments(message, marketInfo.id, flux.augur.from);
+});
+
+test("MarketActions.addComment", function (t) {
+    t.plan(5);
+    var commentText = "augur's unit tests have something random to say: '" + Math.random().toString(36).substring(4) + "'";
+    var markets = {};
+    markets[marketInfo.id] = clone(marketInfo);
+    flux.stores.market.state.markets = markets;
+    var UPDATE_MARKET_SUCCESS = flux.register.UPDATE_MARKET_SUCCESS;
+    flux.register.UPDATE_MARKET_SUCCESS = function (payload) {
+        var storedMarketInfo = flux.store("market").getMarket(marketInfo.id);
+        t.equal(payload.market.constructor, Object, "payload.market is an object");
+        t.equal(payload.market.comments.constructor, Array, "payload.market.comments is an array");
+        t.true(payload.market.comments.length, "payload.market.comments contains at least one comment");
+        if (!storedMarketInfo.comments) storedMarketInfo.comments = [];
+        t.equal(payload.market.comments.length, storedMarketInfo.comments.length + 1, "payload.market.comments contains one more comment than MarketStore");
+        var comment = payload.market.comments[0];
+        var marketInfoWithComment = clone(storedMarketInfo);
+        marketInfoWithComment.comments.push(comment);
+        t.equal(JSON.stringify(payload.market), JSON.stringify(marketInfoWithComment), "verify payload");
+        flux.register.UPDATE_MARKET_SUCCESS = UPDATE_MARKET_SUCCESS;
+        t.end();
+    };
+    flux.actions.market.addComment(commentText, marketInfo.id, account);
 });
