@@ -144,7 +144,7 @@ var Overview = React.createClass({
     getDescription(market, outcome) {
         let description;
 
-        if (market.type === "combinatorial") {
+        if (market.type !== "combinatorial") {
             // todo: this loop is strange but it was in code so maybe it's legit
             for (var i = 0; i < market.numEvents; ++i) {
                 description = getOutcomeName(outcome.id, market.events[i]);
@@ -156,7 +156,7 @@ var Overview = React.createClass({
     },
     getPercentageFormatted(market, outcome) {
         let percentageFormatted;
-        if (market.type === "combinatorial") {
+        if (market.type !== "combinatorial") {
             // todo: this loop is strange but it was in code so maybe it's legit
             for (var i = 0; i < market.numEvents; ++i) {
                 if (market.events[i].type === "scalar") {
