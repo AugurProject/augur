@@ -1,3 +1,5 @@
+throw new Error("Market.jsx: [deprecated] this component was replaced by MarketPage, delete after 20th Feb 2016");
+
 var BigNumber = require("bignumber.js");
 var _ = require("lodash");
 var abi = require("augur-abi");

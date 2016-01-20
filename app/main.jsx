@@ -37,7 +37,6 @@ flux.augur = require("augur.js");
 var AugurApp = require("./components/AugurApp");
 var Overview = require("./components/Overview");
 var Branch = require("./components/Branch");
-var Market = require("./components/Market");
 var MarketPage = require('./components/market-page/MarketPage.jsx');
 var Ballots = require("./components/Ballots");
 var Outcomes = require("./components/Outcomes");
