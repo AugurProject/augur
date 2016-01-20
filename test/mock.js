@@ -98,6 +98,9 @@ var flux = {
         MARKETS_LOADING: function (payload) {
             flux.stores.market.handleMarketsLoading(payload);
         },
+        UPDATE_SORT_BY: function (payload) {
+            flux.stores.market.handleUpdateSortBy(payload);
+        },
 
         // network
         UPDATE_NETWORK: function (payload) {

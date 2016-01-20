@@ -43,7 +43,8 @@ stores.market.initialize = function () {
     constants.market.ADD_PENDING_MARKET_SUCCESS, this.handleAddPendingMarketSuccess,
     constants.market.ADD_MARKET_SUCCESS, this.handleAddMarketSuccess,
     constants.market.DELETE_MARKET_SUCCESS, this.handleDeleteMarketSuccess,
-    constants.market.MARKETS_LOADING, this.handleMarketsLoading
+    constants.market.MARKETS_LOADING, this.handleMarketsLoading,
+    constants.market.UPDATE_SORT_BY, this.handleSortByUpdated
   );
 };
 stores.network.initialize = function () {

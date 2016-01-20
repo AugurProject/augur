@@ -11,6 +11,10 @@ var blacklist = require("../libs/blacklist");
 
 module.exports = {
 
+  sortMarkets: function (sortBy) {
+    this.dispatch(constants.market.UPDATE_SORT_BY, {sortBy});
+  },
+
   loadComments: function (market, options) {
     var self = this;
     options = options || {};
@@ -19,7 +23,7 @@ module.exports = {
         if (err) return console.error(err);
         if (comments && comments.constructor === Array && comments.length) {
           market.comments = comments;
-          self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
+          self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market});
         }
       });
     }
@@ -42,7 +46,7 @@ module.exports = {
     } else {
       market.comments = [comment];
     }
-    this.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
+    this.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market});
   },
 
   addComment: function (commentText, marketId, account) {

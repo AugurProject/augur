@@ -5,6 +5,7 @@ var constants = require("../libs/constants");
 
 module.exports = {
   state: {
+    sortBy: "pending",
     markets: {},
     pendingMarkets: {},
     marketLoadingIds: null,
@@ -41,10 +42,12 @@ module.exports = {
   },
   handleUpdateMarketsSuccess: function (payload) {
     this.state.markets = _.merge(this.state.markets, payload.markets);
+    this.sortMarkets();
     this.emit(constants.CHANGE_EVENT);
   },
   handleLoadMarketsSuccess: function (payload) {
     this.state.markets = payload.markets;
+    this.sortMarkets();
     this.emit(constants.CHANGE_EVENT);
   },
   handleUpdateMarketSuccess: function (payload) {
@@ -55,20 +58,24 @@ module.exports = {
     } else {
       this.state.markets[payload.market.id] = payload.market;
     }
+    this.sortMarkets();
     this.emit(constants.CHANGE_EVENT);
   },
   handleAddPendingMarketSuccess: function (payload) {
     this.state.pendingMarkets[payload.market.id] = payload.market;
+    this.sortMarkets();
     this.emit(constants.CHANGE_EVENT);
   },
   handleAddMarketSuccess: function (payload) {
     this.state.markets[payload.market.id] = payload.market;
+    this.sortMarkets();
     this.emit(constants.CHANGE_EVENT);
   },
   handleDeleteMarketSuccess: function (payload) {
     // delete (pending) market if it exists
     if (payload.marketId && this.state.pendingMarkets[payload.marketId]) {
       delete this.state.pendingMarkets[payload.marketId];
+      this.sortMarkets();
     }
   },
   marketIsLoaded: function (marketId) {
@@ -82,5 +89,13 @@ module.exports = {
     } else {
       return false;
     }
+  },
+  handleUpdateSortBy: function (payload) {
+    this.state.sortBy = payload.sortBy;
+    this.sortMarkets();
+    this.emit(constants.CHANGE_EVENT);
+  },
+  sortMarkets: function () {
+    this.state.markets = _.sortBy(this.state.markets, this.state.sortBy);
   }
 };

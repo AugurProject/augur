@@ -36,8 +36,8 @@
   "dependencies": {
     "async": "^1.4.2",
     "augur-abi": "^0.2.7",
-    "augur-contracts": "^0.3.3",
-    "augur.js": "^0.13.8",
+    "augur-contracts": "^0.3.4",
+    "augur.js": "^0.13.12",
     "babel-runtime": "^6.3.19",
     "babelify": "^6.3.0",
     "bignumber.js": "^2.1.4",
@@ -48,7 +48,6 @@
     "envify": "^3.4.0",
     "fbjs": "^0.5.1",
     "fluxxor": "^1.6.0",
-    "immutable": "^3.7.6",
     "jquery": "^2.1.4",
     "keythereum": "^0.2.1",
     "lodash": "^3.10.1",

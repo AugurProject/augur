@@ -65,7 +65,7 @@ var AugurApp = React.createClass({
   },
 
   componentDidMount: function () {
-    this.getFlux().actions.config.connect(process.env.AUGUR_HOST);
+    this.getFlux().actions.config.connect();
   },
 
   getLoadingProgress: function () {

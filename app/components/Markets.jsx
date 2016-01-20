@@ -10,9 +10,8 @@ var CloseMarketTrigger = require("./CloseMarket").CloseMarketTrigger;
 
 var Markets = React.createClass({
 
-  render: function() {
-
-    var marketList = _.map(_.sortBy(this.props.markets, 'pending'), function (market) {
+  render: function () {
+    var marketList = _.map(_.sortBy(this.props.markets, "pending"), function (market) {
       return (
         <div key={ market.id } className={ this.props.classNameWrapper }>
           <MarketPane market={ market } {...this.props} />
