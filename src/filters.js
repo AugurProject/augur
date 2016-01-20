@@ -431,35 +431,24 @@ module.exports = function () {
         },
 
         start_creation_listener: function (cb) {
+            var self = this;
+            cb = cb || utils.pass;
             if (this.creation_filter && this.creation_filter.id) {
                 if (utils.is_function(cb)) return cb(this.creation_filter.id);
                 return this.creation_filter.id;
             }
-            if (utils.is_function(cb)) {
-                var self = this;
-                this.setup_creation_filter(function (filter_id) {
-                    if (filter_id && filter_id !== "0x") {
-                        self.creation_filter = {
-                            id: filter_id,
-                            heartbeat: null
-                        };
-                        cb(filter_id);
-                    } else {
-                        cb(errors.FILTER_NOT_CREATED);
-                    }
-                });
-            } else {
-                var filter_id = this.setup_creation_filter();
-                if (filter_id && filter_id !== "0x") {
-                    this.creation_filter = {
-                        id: filter_id,
-                        heartbeat: null
-                    };
-                    return filter_id;
-                } else {
-                    return errors.FILTER_NOT_CREATED;
+            this.setup_creation_filter(function (filter_id) {
+                if (!filter_id || filter_id === "0x") {
+                    return cb(errors.FILTER_NOT_CREATED);
+                } else if (filter_id && filter_id.error) {
+                    return cb(filter_id);
                 }
-            }
+                self.creation_filter = {
+                    id: filter_id,
+                    heartbeat: null
+                };
+                cb(filter_id);
+            });
         },
 
         // start/stop polling
@@ -546,8 +535,12 @@ module.exports = function () {
                         return setup_complete(err);
                     }
                     var filters = {};
-                    for (var i = 0; i < filter_ids.length; ++i) {
-                        filters[filter_ids[i][0]] = filter_ids[i][1];
+                    if (filter_ids && filter_ids.length) {
+                        for (var i = 0; i < filter_ids.length; ++i) {
+                            if (filter_ids[i] && filter_ids[i].length) {
+                                filters[filter_ids[i][0]] = filter_ids[i][1];
+                            }
+                        }
                     }
                     setup_complete(filters);
                 });
