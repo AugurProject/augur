@@ -28,7 +28,7 @@ let CommentForm = React.createClass({
             return (
                 <div>
                     <button className="btn btn-link" onClick={this.props.toggleSignInModal}>
-                        Sign-in to comment
+                        Sign in to comment
                     </button>
                 </div>
             );
