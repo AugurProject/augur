@@ -17,7 +17,8 @@ let MarketInfo = React.createClass({
         let tradersCountFormatted = market.traderCount ? +market.traderCount.toNumber() : '-';
         let authorFormatted = market.author ? abi.format_address(abi.hex(market.author)) : '-';
         let creationDateFormatted = market.creationDate ? moment(market.creationDate).format('MMM Do, YYYY') : '-';
-        let endDateFormatted = market.endDate ? moment(market.endDate).format('MMM Do, YYYY') : '-';
+        let endDateLabel = (market.endDate != null && market.matured) ? 'Matured:' : 'End date:';
+        let endDateFormatted = market.endDate != null ? moment(market.endDate).format('MMM Do, YYYY') : '-';
 
         return (
             <div className='row'>
@@ -55,7 +56,7 @@ let MarketInfo = React.createClass({
                                 <td className="labelValue-value">{ creationDateFormatted }</td>
                             </tr>
                             <tr className="labelValue">
-                                <td className="labelValue-label">End date:</td>
+                                <td className="labelValue-label">{ endDateLabel }</td>
                                 <td className="labelValue-value">{ endDateFormatted }</td>
                             </tr>
                         </tbody>
