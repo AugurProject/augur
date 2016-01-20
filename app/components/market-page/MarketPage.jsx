@@ -25,6 +25,7 @@ let MarketPage = React.createClass({
         let currentBranch = flux.store('branch').getCurrentBranch();
         let account = flux.store('config').getAccount();
         let handle = flux.store('config').getHandle();
+        let blockNumber = flux.store('network').getState().blockNumber;
 
         if (currentBranch && market && market.tradingPeriod && currentBranch.currentPeriod >= market.tradingPeriod.toNumber()) {
             market.matured = true;
@@ -33,7 +34,8 @@ let MarketPage = React.createClass({
         return {
             market,
             account,
-            handle
+            handle,
+            blockNumber
         };
     },
 
@@ -97,7 +99,10 @@ let MarketPage = React.createClass({
                                 />
                         </div>
                         <div id="statsTab" className="tab-pane" role="tabpanel">
-                            <StatsTab/>
+                            <StatsTab
+                                market={this.state.market}
+                                blockNumber={this.state.blockNumber}
+                                />
                         </div>
                         <div id="rulesTab" className="tab-pane" role="tabpanel">
                             <RulesTab/>
