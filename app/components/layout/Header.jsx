@@ -50,11 +50,6 @@ let Header = React.createClass({
             menuItemsOnLeft = (
                 <ul className="nav navbar-nav">
                     <li>
-                        <Link to="overview">
-                            Overview
-                        </Link>
-                    </li>
-                    <li>
                         <Link to="markets">
                             Markets ({ this.props.marketsCount })
                         </Link>
