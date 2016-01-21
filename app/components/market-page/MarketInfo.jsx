@@ -21,9 +21,9 @@ let MarketInfo = React.createClass({
         let endDateFormatted = market.endDate != null ? moment(market.endDate).format('MMM Do, YYYY') : '-';
 
         return (
-            <div className='row'>
-                <div className="col-xs-6">
-                    <table className="table table-condensed">
+            <div className='row marketInfo'>
+                <div className="col-sm-6">
+                    <table className="table table-condensed table--leftRightAlignment">
                         <tbody>
                             <tr className="labelValue">
                                 <td className="labelValue-label">Price:</td>
@@ -44,12 +44,16 @@ let MarketInfo = React.createClass({
                         </tbody>
                     </table>
                 </div>
-                <div className="col-xs-6">
-                    <table className="table table-condensed">
+                <div className="col-sm-6">
+                    <table className="table table-condensed table--leftRightAlignment">
                         <tbody>
                             <tr className="labelValue">
                                 <td className="labelValue-label">Author:</td>
-                                <td className="labelValue-value">{ authorFormatted }</td>
+                                <td className="labelValue-value">
+                                    <div className="marketInfo-author-value">
+                                        { authorFormatted }
+                                    </div>
+                                </td>
                             </tr>
                             <tr className="labelValue">
                                 <td className="labelValue-label">Creation date:</td>

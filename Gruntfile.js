@@ -82,12 +82,18 @@ module.exports = function (grunt) {
           'app/css/bootstrap.css.map': 'node_modules/bootstrap/dist/css/bootstrap.css.map'
         }
       },
-      fonts: {
+      fonts: { // so much fonts
         files: [
           {
             expand: true, // expand to use flatten (Remove all path parts from generated dest paths)
             flatten: true,
             src: 'node_modules/font-awesome/fonts/*.*',
+            dest: 'app/fonts/'
+          },
+          {
+            expand: true, // expand to use flatten (Remove all path parts from generated dest paths)
+            flatten: true,
+            src: 'node_modules/bootstrap/fonts/*.*',
             dest: 'app/fonts/'
           }
         ]

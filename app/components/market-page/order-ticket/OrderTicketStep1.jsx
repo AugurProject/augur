@@ -130,7 +130,7 @@ let OrderTicketStep1 = React.createClass({
         }
 
         return (
-            <div id="orderTicketCollapse" className="orderTicket-step collapse collapsedOnMobile" style={style}>
+            <div id="orderTicketCollapse" className="orderTicket-step collapse in collapsedOnMobile" style={style}>
                 { outcomes }
             </div>
 

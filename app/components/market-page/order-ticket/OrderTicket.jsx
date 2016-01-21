@@ -114,7 +114,7 @@ let OrderTicket = React.createClass({
             <div className="orderTicket" ng-controller="OrderTicketController as orderTicket">
                 <h4>
                     <span className="hidden-xs">Order Ticket</span>
-                    <a className="visible-xs-inline-block collapsibleTitle collapsed" data-toggle="collapse"
+                    <a className="visible-xs-inline-block collapsibleTitle" data-toggle="collapse"
                        href="#orderTicketCollapse" aria-expanded="true" aria-controls="orderTicketCollapse">
                         Order Ticket
                     </a>

@@ -8,7 +8,7 @@ let OrderBook = React.createClass({
                     <span className="hidden-xs">
                         Order Book
                     </span>
-                    <a className="visible-xs-inline-block collapsibleTitle" data-toggle="collapse"
+                    <a className="visible-xs-inline-block collapsibleTitle collapsed" data-toggle="collapse"
                        href="#orderBookCollapse" aria-expanded="true" aria-controls="orderBookCollapse">
                         Order Book
                     </a>
@@ -28,7 +28,7 @@ let OrderBook = React.createClass({
                     <jspparam name="labelDefaultValue" value="Order Book"/>
                 </jspinclude>
 
-                <div id="orderBookCollapse" className="collapse in collapsedOnMobile">
+                <div id="orderBookCollapse" className="collapse collapsedOnMobile">
                     <div className="orderBook-bids">
                         <table className="table table-striped table-hover"
                                in-top-up-rows="orderBook.bids" in-top-up-rows-max="${orderBookDepth}">
