@@ -46,17 +46,6 @@ let StatsTab = React.createClass({
                 marginBottom: 10,
                 reflow: true
             },
-            legend: {
-                enabled: true,
-                align: 'right',
-                backgroundColor: '#FCFFC5',
-                borderColor: 'black',
-                borderWidth: 2,
-                layout: 'horizontal',
-                verticalAlign: 'top',
-                y: 100,
-                shadow: true
-            },
             rangeSelector: {selected: 1},
             yAxis: {
                 title: {
