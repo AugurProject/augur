@@ -31,11 +31,12 @@
     }
 }
 
-@media (max-width: @screen-sm-min) {
+@media (max-width: @screen-xs-min) {
     .marketInfo .marketInfo-author-value {
         max-width: 165px; // looks good on iP5 emulator
         overflow: hidden;
         text-overflow: ellipsis;
+        float: right; // so it's aligned to right
     }
 }
 
