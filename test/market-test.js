@@ -50,10 +50,10 @@ function parseMarketInfoSync(info) {
     return info;
 }
 
-var host = "http://127.0.0.1:8545";
-flux.augur.rpc.setLocalNode(host);
-flux.augur.connect(host, process.env.GETH_IPC);
-// flux.augur.connect();
+// var host = "http://127.0.0.1:8545";
+// flux.augur.rpc.setLocalNode(host);
+// flux.augur.connect(host, process.env.GETH_IPC);
+flux.augur.connect();
 var account = {address: flux.augur.from};
 var blockNumber = flux.augur.rpc.blockNumber();
 var rawInfo = clone(marketInfo);
