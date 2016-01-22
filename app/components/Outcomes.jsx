@@ -207,34 +207,37 @@ var Overview = React.createClass({
             buyAction = (
                 <Button bsStyle='success' onClick={ this.handleBuyClick }>Buy</Button>
             );
-            var pendingShares = ( <span /> );
 
-            if (!this.props.outcome.pendingShares.equals(0)) {
-
-                var shares = this.props.outcome.pendingShares.toNumber();
-                var sharesString = shares < 0 ? shares.toString() : '+' + shares;
-                var color = shares < 0 ? 'red' : 'green';
-                pendingShares = (
-                    <b style={ {color: color} }>{ sharesString }</b>
+            let pendingShares = this.props.outcome.pendingShares.toNumber();
+            let pendingSharesNode;
+            if (pendingShares != 0) {
+                let sharesWithSignFormatted = pendingShares < 0 ? pendingShares.toString() : '+' + pendingShares;
+                pendingSharesNode = (
+                    <p>
+                        { sharesWithSignFormatted } { pendingShares === 1 ? 'share' : 'shares' } pending
+                    </p>
                 )
             }
 
-            var sharesHeld = this.props.outcome.sharesHeld.toNumber();
+            let sharesHeld = this.props.outcome.sharesHeld.toNumber();
+            let sharesHeldNode;
 
-            if (sharesHeld) {
+            if (sharesHeld > 0) {
+                sharesHeldNode = (
+                    <p className="shares-held">
+                        { sharesHeld } { sharesHeld === 1 ? 'share' : 'shares' } held
+                    </p>
+                );
                 sellAction = (
                     <div>
                         <Button bsStyle='danger' onClick={ this.handleSellClick }>Sell</Button>
-                        <span
-                            className="shares-held btn">{ sharesHeld }{ pendingShares } { sharesHeld === 1 ? 'share' : 'shares' }
-                            held</span>
+                        { sharesHeldNode }
+                        { pendingSharesNode }
                     </div>
                 );
 
-            } else if (!this.props.outcome.pendingShares.equals(0)) {
-                sellAction = (
-                    <span className="shares-held none">{ this.props.outcome.pendingShares.toNumber() } shares pending</span>
-                );
+            } else if (!pendingShares.equals(0)) {
+                sellAction = pendingSharesNode;
 
             } else {
                 sellAction = (
@@ -245,10 +248,10 @@ var Overview = React.createClass({
             buySellActions = (
                 <div className="summary">
                     <div className="">
-                        <div className='buy trade-button' style={{float: 'left'}}>
+                        <div className='tradeAction tradeAction-buy'>
                             { buyAction }
                         </div>
-                        <div className='sell trade-button' style={{float: 'right'}}>
+                        <div className='tradeAction tradeAction-sell'>
                             { sellAction }
                         </div>
                     </div>
