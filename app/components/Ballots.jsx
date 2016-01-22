@@ -9,7 +9,7 @@ var utilities = require("../libs/utilities");
 
 var Ballots = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin('asset', 'branch', 'config', 'event', 'network', 'report')],
+  mixins: [FluxMixin, StoreWatchMixin('asset', 'branch', 'config', 'network', 'report')],
 
   getInitialState: function () {
     return {
@@ -72,7 +72,7 @@ var Ballots = React.createClass({
 
     if (currentBranch && currentBranch.currentPeriod) {
 
-      var [publishStart, publishEnd] = currentBranch.getReportPublishDates(this.state.blockNumber);
+      var [publishStart, publishEnd] = this.getFlux().store('branch').getReportPublishDates(this.state.blockNumber);
 
       if (currentBranch.isCurrent) {
         percentComplete = currentBranch.percentComplete;
@@ -144,13 +144,23 @@ var Ballots = React.createClass({
       );
     }
 
+    let periodDurationNode;
+
+    if (currentBranch.periodDuration != null) {
+      periodDurationNode = (
+          <span>
+            Check for a new ballot every { currentBranch.periodDuration.humanize().replace(/^an? /, '') }.
+          </span>
+      );
+    }
+
     var markerPosition = percentComplete+'%';
     return (
       <div id="ballots">
         <h3>Ballot<span className='subheading pull-right'>Period { currentBranch.reportPeriod}</span></h3>
         <div className='now-marker' style={{marginLeft: markerPosition}}>&#9662;</div>
         <ProgressBar className='period-progress'>
-          <ProgressBar bsStyle='primary' now={ votePercentComplete } key={1} />
+          <ProgressBar now={ votePercentComplete } key={1} />
           <ProgressBar bsStyle='warning' now={ revealPercentComplete } key={2} />
         </ProgressBar>
         <div className='subheading clearfix'>
@@ -161,7 +171,7 @@ var Ballots = React.createClass({
              wrong for us.
              http://momentjs.com/docs/#/displaying/fromnow/
            */}
-          Check for a new ballot every { currentBranch.periodDuration.humanize().replace(/^an? /, '') }.
+          { periodDurationNode }
           { votingDeadlineSpan }
         </div>
         { ballot }
