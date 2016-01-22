@@ -182,20 +182,21 @@ var Overview = React.createClass({
         var className = 'outcome outcome-' + outcome.id;
 
         var market = this.props.market;
-        if (market.matured || !this.props.account) {
+        let isReadOnly = market.matured || !this.props.account;
+        if (isReadOnly) {
             className += ' read-only';
         }
 
         description = this.getDescription(market, outcome);
         percentageFormatted = this.getPercentageFormatted(market, outcome);
 
-        if (this.state.buyShares) {
+        if (this.state.buyShares && !isReadOnly) {
             className += ' buy';
             buySellActions = (
                 <Buy {...this.props} handleTrade={ this.handleTrade } handleCancel={ this.handleCancel }/>
             );
 
-        } else if (this.state.sellShares) {
+        } else if (this.state.sellShares && !isReadOnly) {
             className += ' sell';
             buySellActions = (
                 <Sell {...this.props} handleTrade={ this.handleTrade } handleCancel={ this.handleCancel }/>
@@ -204,45 +205,47 @@ var Overview = React.createClass({
         } else {
             let buyAction, sellAction;
 
-            buyAction = (
-                <Button bsStyle='success' onClick={ this.handleBuyClick }>Buy</Button>
-            );
-
-            let pendingShares = this.props.outcome.pendingShares.toNumber();
-            let pendingSharesNode;
-            if (pendingShares != 0) {
-                let sharesWithSignFormatted = pendingShares < 0 ? pendingShares.toString() : '+' + pendingShares;
-                pendingSharesNode = (
-                    <p>
-                        { sharesWithSignFormatted } { pendingShares === 1 ? 'share' : 'shares' } pending
-                    </p>
-                )
-            }
-
-            let sharesHeld = this.props.outcome.sharesHeld.toNumber();
-            let sharesHeldNode;
-
-            if (sharesHeld > 0) {
-                sharesHeldNode = (
-                    <p className="shares-held">
-                        { sharesHeld } { sharesHeld === 1 ? 'share' : 'shares' } held
-                    </p>
-                );
-                sellAction = (
-                    <div>
-                        <Button bsStyle='danger' onClick={ this.handleSellClick }>Sell</Button>
-                        { sharesHeldNode }
-                        { pendingSharesNode }
-                    </div>
+            if (!isReadOnly) {
+                buyAction = (
+                    <Button bsStyle='success' onClick={ this.handleBuyClick }>Buy</Button>
                 );
 
-            } else if (pendingShares != 0) {
-                sellAction = pendingSharesNode;
+                let pendingShares = this.props.outcome.pendingShares.toNumber();
+                let pendingSharesNode;
+                if (pendingShares != 0) {
+                    let sharesWithSignFormatted = pendingShares < 0 ? pendingShares.toString() : '+' + pendingShares;
+                    pendingSharesNode = (
+                        <p>
+                            { sharesWithSignFormatted } { pendingShares === 1 ? 'share' : 'shares' } pending
+                        </p>
+                    )
+                }
 
-            } else {
-                sellAction = (
-                    <span className="shares-held none">no shares held</span>
-                );
+                let sharesHeld = this.props.outcome.sharesHeld.toNumber();
+                let sharesHeldNode;
+
+                if (sharesHeld > 0) {
+                    sharesHeldNode = (
+                        <p className="shares-held">
+                            { sharesHeld } { sharesHeld === 1 ? 'share' : 'shares' } held
+                        </p>
+                    );
+                    sellAction = (
+                        <div>
+                            <Button bsStyle='danger' onClick={ this.handleSellClick }>Sell</Button>
+                            { sharesHeldNode }
+                            { pendingSharesNode }
+                        </div>
+                    );
+
+                } else if (pendingShares != 0) {
+                    sellAction = pendingSharesNode;
+
+                } else {
+                    sellAction = (
+                        <span className="shares-held none">no shares held</span>
+                    );
+                }
             }
 
             buySellActions = (
@@ -368,8 +371,9 @@ var TradeBase = {
                 </div>
                 <p>{ Math.abs(outcome.price).toFixed(4) } cash/share</p>
 
-                <p>{ outcome.sharesHeld.toNumber() } { outcome.sharesHeld.toNumber() === 1 ? 'share' : 'shares' }
-                    held</p>
+                <p>
+                    { outcome.sharesHeld.toNumber() } { outcome.sharesHeld.toNumber() === 1 ? 'share' : 'shares' } held
+                </p>
 
                 <p className='new-price'>{ this.getPriceDelta() }</p>
             </div>
