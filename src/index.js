@@ -38,6 +38,7 @@ function Augur() {
     this.errors = contracts.errors;
 
     rpc.debug = this.options.debug;
+    this.comments.rpc = rpc;
     this.rpc = rpc;
 
     // Branch IDs

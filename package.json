@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "0.13.12",
+  "version": "0.13.14",
   "description": "Augur JavaScript API",
   "main": "src/index.js",
   "scripts": {
@@ -28,7 +28,7 @@
     "multi-hash": "^0.1.1",
     "node-localstorage": "^1.1.2",
     "node-uuid": "^1.4.3",
-    "ramble": "^0.1.1",
+    "ramble": "^0.1.3",
     "validator": "^4.0.2"
   },
   "engines": {

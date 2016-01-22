@@ -22,6 +22,7 @@ GLOBAL.Tx = contracts.Tx;
 GLOBAL.augur = (GLOBAL.reload = function () {
     return utils.setup(utils.reset("./src/index"), process.argv.slice(2));
 })();
+GLOBAL.comments = augur.comments;
 augur.rpc.setLocalNode("http://127.0.0.1:8545");
 GLOBAL.b = augur.branches.dev;
 GLOBAL.ballot = [2, 1.5, 1.5, 1, 1.5, 1.5, 1];
