@@ -236,7 +236,7 @@ var Overview = React.createClass({
                     </div>
                 );
 
-            } else if (!pendingShares.equals(0)) {
+            } else if (pendingShares != 0) {
                 sellAction = pendingSharesNode;
 
             } else {
