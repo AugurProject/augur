@@ -7,12 +7,9 @@
 
 var assert = require("chai").assert;
 var abi = require("augur-abi");
-var augur = require("../../src");
 var constants = require("../../src/constants");
 var utils = require("../../src/utilities");
-var log = console.log;
-
-augur = utils.setup(augur, process.argv.slice(2));
+var augur = utils.setup(require("../../src"), process.argv.slice(2));
 
 var branch_id = augur.branches.dev;
 var branch_number = "0";
@@ -22,7 +19,7 @@ describe("branches.se", function () {
     describe("getBranches", function () {
         var test = function (r) {
             assert.isArray(r);
-            assert.strictEqual(r.length, 1);
+            assert.isAbove(r.length, 0);
             assert(abi.bignum(r[0]).eq(abi.bignum(branch_id)));
         };
         it("sync", function () {
@@ -186,7 +183,7 @@ describe("branches.se", function () {
     });
     describe("getNumBranches()", function () {
         var test = function (r) {
-            assert.strictEqual(parseInt(r), 1);
+            assert.isAbove(parseInt(r), 0);
         };
         it("sync", function () {
             test(augur.getNumBranches());

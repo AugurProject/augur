@@ -32,6 +32,7 @@ if (numMarkets > constants.MAX_TEST_SAMPLES) {
     } while (randomMarkets.length < constants.MAX_TEST_SAMPLES);
     markets = randomMarkets;
 }
+constants.TIMEOUT *= 2;
 
 var errorCheck = function (output, done) {
     done = done || utils.pass;
