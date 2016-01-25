@@ -317,37 +317,6 @@ test("MarketActions.updatePendingShares", function (t) {
     flux.actions.market.updatePendingShares(clone(marketInfo), outcomeId, relativeShares);
 });
 
-test("MarketActions.sortMarkets", function (t) {
-    var sortBy = "creationBlock";
-    var LOAD_MARKETS_SUCCESS = flux.register.LOAD_MARKETS_SUCCESS;
-    flux.register.LOAD_MARKETS_SUCCESS = function (payload) {
-        LOAD_MARKETS_SUCCESS(payload);
-        t.pass("dispatch LOAD_MARKETS_SUCCESS");
-        flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
-        flux.actions.market.sortMarkets(sortBy);
-    };
-    var UPDATE_SORT_BY = flux.register.UPDATE_SORT_BY;
-    flux.register.UPDATE_SORT_BY = function (payload) {
-        t.equal(payload.constructor, Object, "payload is an object");
-        t.equal(payload.sortBy, sortBy, "payload.sortBy == " + sortBy);
-        UPDATE_SORT_BY(payload);
-        t.pass("dispatch UPDATE_SORT_BY");
-        t.equal(flux.store("market").getState().sortBy, sortBy, "market.state.sortBy == " + sortBy);
-        var markets = flux.store("market").getState().markets;
-        var prevMarket, count = 0;
-        for (var m in markets) {
-            if (!markets.hasOwnProperty(m)) continue;
-            if (count++) {
-                t.true(markets[m][sortBy] >= prevMarket[sortBy], "markets sorted by " + sortBy + ": " + markets[m][sortBy] + " >= " + prevMarket[sortBy]);
-            }
-            prevMarket = clone(markets[m]);
-        }
-        flux.register.UPDATE_SORT_BY = UPDATE_SORT_BY;
-        t.end();
-    };
-    flux.actions.market.loadMarkets();
-});
-
 test("MarketActions.loadComments", function (t) {
     t.plan(7);
     var numComments = 3;

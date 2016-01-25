@@ -98,9 +98,6 @@ var flux = {
         MARKETS_LOADING: function (payload) {
             flux.stores.market.handleMarketsLoading(payload);
         },
-        UPDATE_SORT_BY: function (payload) {
-            flux.stores.market.handleUpdateSortBy(payload);
-        },
 
         // network
         UPDATE_NETWORK: function (payload) {
@@ -133,6 +130,9 @@ var flux = {
         // search
         KEYWORDS_UPDATED: function (payload) {
             flux.stores.search.handleKeywordsUpdated(payload);
+        },
+        UPDATE_SORT_BY: function (payload) {
+            flux.stores.search.handleUpdateSortBy(payload);
         }
     },
     store: function (store) {

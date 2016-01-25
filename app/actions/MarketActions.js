@@ -11,10 +11,6 @@ var blacklist = require("../libs/blacklist");
 
 module.exports = {
 
-  sortMarkets: function (sortBy) {
-    this.dispatch(constants.market.UPDATE_SORT_BY, {sortBy});
-  },
-
   loadComments: function (market, options) {
     var self = this;
     options = options || {};
@@ -78,6 +74,7 @@ module.exports = {
         !_.contains(blackmarkets, marketId.toString(16)) &&
         !marketInfo.invalid && marketInfo.price && marketInfo.description) {
       marketInfo.id = marketId;
+      marketInfo.endBlock = marketInfo.endDate;
       marketInfo.endDate = utils.blockToDate(marketInfo.endDate, block);
       if (marketInfo.creationBlock) {
         marketInfo.creationDate = utils.blockToDate(marketInfo.creationBlock, block);

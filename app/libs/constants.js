@@ -56,11 +56,11 @@ module.exports = {
     ADD_PENDING_MARKET_SUCCESS: null,
     ADD_MARKET_SUCCESS: null,
     DELETE_MARKET_SUCCESS: null,
-    MARKETS_LOADING: null,
-    UPDATE_SORT_BY: null
+    MARKETS_LOADING: null
   }),
   search: keyMirror({
-    KEYWORDS_UPDATED: null
+    KEYWORDS_UPDATED: null,
+    UPDATE_SORT_BY: null
   }),
   report: keyMirror({
     REPORTS_STORAGE: null,
