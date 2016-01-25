@@ -3,9 +3,8 @@ var React = require("react");
 var Paginate = require("react-paginate");
 var Router = require("react-router");
 var Select = require("react-select");
-
-let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
-let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
+var FluxMixin = require("fluxxor/lib/flux_mixin")(React);
+var StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
 var RouteHandler = Router.RouteHandler;
 var Navigation = Router.Navigation;
 var Link = Router.Link;
