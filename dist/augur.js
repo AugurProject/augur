@@ -93689,10 +93689,7 @@ function isFunction(f) {
 }
 
 var HOSTED_NODES = [
-    "https://eth1.augur.net",
-    "https://eth3.augur.net",
-    "https://eth4.augur.net",
-    "https://eth5.augur.net"
+    "https://eth1.augur.net"
 ];
 
 module.exports = {
@@ -93706,7 +93703,7 @@ module.exports = {
     },
 
     // network load balancer
-    balancer: true,
+    balancer: false,
 
     // remove unresponsive nodes
     excision: false,
@@ -93724,7 +93721,7 @@ module.exports = {
     TX_POLL_INTERVAL: 3000,
 
     // Default timeout for asynchronous POST
-    POST_TIMEOUT: 20000,
+    POST_TIMEOUT: 30000,
 
     BALANCER_SAMPLES: 20,
 
