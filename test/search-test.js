@@ -57,19 +57,18 @@ test("SearchActions.updateKeywords", function (t) {
 
 test("SearchActions.sortMarkets", function (t) {
     var sortBy = "creationBlock";
-    var reverseSort = 0;
     var LOAD_MARKETS_SUCCESS = flux.register.LOAD_MARKETS_SUCCESS;
     flux.register.LOAD_MARKETS_SUCCESS = function (payload) {
         LOAD_MARKETS_SUCCESS(payload);
         t.pass("dispatch LOAD_MARKETS_SUCCESS");
         flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
-        flux.actions.search.sortMarkets(sortBy, reverseSort);
+        flux.actions.search.sortMarkets(sortBy, 0);
     };
     var UPDATE_SORT_BY = flux.register.UPDATE_SORT_BY;
     flux.register.UPDATE_SORT_BY = function (payload) {
         t.equal(payload.constructor, Object, "payload is an object");
         t.equal(payload.sortBy, sortBy, "payload.sortBy == " + sortBy);
-        t.equal(payload.reverse, reverseSort, "payload.reverse == " + reverseSort);
+        t.equal(payload.reverse, 0, "payload.reverse == 0");
         UPDATE_SORT_BY(payload);
         t.pass("dispatch UPDATE_SORT_BY");
         t.equal(flux.store("search").getState().sortBy, sortBy, "search.state.sortBy == " + sortBy);
@@ -82,8 +81,26 @@ test("SearchActions.sortMarkets", function (t) {
             }
             prevMarket = clone(markets[m]);
         }
-        flux.register.UPDATE_SORT_BY = UPDATE_SORT_BY;
-        t.end();
+        flux.register.UPDATE_SORT_BY = function (payload) {
+            t.equal(payload.constructor, Object, "payload is an object");
+            t.equal(payload.sortBy, sortBy, "payload.sortBy == " + sortBy);
+            t.equal(payload.reverse, 1, "payload.reverse == 1");
+            UPDATE_SORT_BY(payload);
+            t.pass("dispatch UPDATE_SORT_BY");
+            t.equal(flux.store("search").getState().sortBy, sortBy, "search.state.sortBy == " + sortBy);
+            var markets = flux.store("search").getState().results;
+            var prevMarket, count = 0;
+            for (var m in markets) {
+                if (!markets.hasOwnProperty(m)) continue;
+                if (count++) {
+                    t.true(markets[m][sortBy] <= prevMarket[sortBy], "markets sorted by " + sortBy + ": " + markets[m][sortBy] + " <= " + prevMarket[sortBy]);
+                }
+                prevMarket = clone(markets[m]);
+            }
+            flux.register.UPDATE_SORT_BY = UPDATE_SORT_BY;
+            t.end();
+        };
+        flux.actions.search.sortMarkets(sortBy, 1);
     };
     flux.actions.market.loadMarkets();
 });

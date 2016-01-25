@@ -50,7 +50,7 @@ module.exports = {
     this.emit(constants.CHANGE_EVENT);
   },
   sortMarkets: function () {
-    this.state.results = _.sortBy(this.state.results, this.state.sortBy);
+    this.state.results = _.sortBy(this.state.markets, this.state.sortBy);
     if (this.state.reverseSort) this.state.results.reverse();
   }
 };
