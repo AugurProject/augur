@@ -93,11 +93,6 @@ let Header = React.createClass({
             menuItemsOnLeft = (
                 <ul className="nav navbar-nav">
                     <li>
-                        <Link to="overview">
-                            Overview
-                        </Link>
-                    </li>
-                    <li>
                         <Link to="markets">
                             Markets ({ this.props.marketsCount })
                         </Link>
@@ -125,9 +120,9 @@ let Header = React.createClass({
                                 data-target="#navbar-main-collapse">
                             <strong>Menu</strong>
                         </a>
-                        <a className="navbar-brand" href="/">
+                        <Link className="navbar-brand" to="overview">
                             Augur
-                        </a>
+                        </Link>
                     </div>
 
                     <div className="collapse navbar-collapse" id="navbar-main-collapse">
