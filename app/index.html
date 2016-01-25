@@ -7,7 +7,7 @@
   <title>augur</title>
 
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="apple-touch-icon" sizes="57x57" href="/images/icons/apple-touch-icon-57x57.png">
   <link rel="apple-touch-icon" sizes="60x60" href="/images/icons/apple-touch-icon-60x60.png">
@@ -28,8 +28,11 @@
   <meta name="theme-color" content="#ffffff">
 
   <link rel="stylesheet" href="/css/bootstrap.css">
-  <link rel="stylesheet" href="/css/augur.css" />
   <link rel="stylesheet" href="/css/date-picker.css" />
+  <!-- consolidate CSS - one main file + file per page? -->
+  <link rel="stylesheet" href="/css/augur.css" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/market-detail.css" />
 
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700|Open+Sans|Lato|Amaranth|Michroma" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
@@ -91,6 +94,10 @@
   </script>
 
   <script src="/app.js"></script>
+  <!-- todo: use value from package.json to be in sync -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"
+          integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+          crossorigin="anonymous"></script>
 
 </body>
 

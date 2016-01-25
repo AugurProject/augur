@@ -1,0 +1,39 @@
+// todo: some black magic here: in LESS variables are lazy loaded, so we can use them before defining them, but I'm
+// not quite sure why does it work
+
+@contractImage-widthToHeightRatio: 4/5;
+@contractImage-heightToWidthRatio: 1 / @contractImage-widthToHeightRatio;
+
+@contractImage-widthPx: 80px;
+@contractImage-heightPx: @calculatedHeight;
+._calculateHeight(@contractImage-widthPx, px);
+
+@contractImage-widthPx--small: 28px;
+@contractImage-heightPx-small: @calculatedHeight;
+._calculateHeight(@contractImage-widthPx--small, px);
+
+.contractImage {
+    display: inline-block;
+    vertical-align: middle;
+    background: transparent no-repeat center center;
+    background-size: cover;
+    .contractImage-calculateDimensions(@contractImage-widthPx);
+}
+
+.contractImage.contractImage--small {
+    .contractImage-calculateDimensions(@contractImage-widthPx--small);
+}
+
+/**
+* Returns width and height based on width. Works in pixels
+*/
+.contractImage-calculateDimensions(@width) {
+    width: @width;
+    height: @calculatedHeight;
+    ._calculateHeight(@width, px);
+}
+
+// mixin can expose variable - http://lesscss.org/features/#mixins-as-functions-feature
+._calculateHeight(@width, @unit) {
+    @calculatedHeight: unit(round(@width * @contractImage-heightToWidthRatio), @unit);
+}

@@ -23,6 +23,7 @@ var RegisterModal = require("./Register");
 var SendCashModal = require("./SendModal").SendCashModal;
 var SendRepModal = require("./SendModal").SendRepModal;
 var SendEtherModal = require("./SendModal").SendEtherModal;
+let Header = require("./layout/Header.jsx");
 
 
 var AugurApp = React.createClass({
@@ -80,137 +81,58 @@ var AugurApp = React.createClass({
     return loadingProgress;
   },
 
-  handleSignOut: function (event) {
-    this.getFlux().actions.config.signOut();
-  },
-
-  toggleSignInModal: function (event) {
+  toggleSignInModal: function () {
     this.setState({signInModalOpen: !this.state.signInModalOpen});
   },
 
-  toggleRegisterModal: function (event) {
+  toggleRegisterModal: function () {
     this.setState({registerModalOpen: !this.state.registerModalOpen});
   },
-  
-  toggleSendCashModal: function(event) {
+
+  toggleSendCashModal: function() {
     this.setState({sendCashModalOpen: !this.state.sendCashModalOpen});
   },
 
-  toggleSendRepModal: function(event) {
+  toggleSendRepModal: function() {
      this.setState({sendRepModalOpen: !this.state.sendRepModalOpen});
   },
 
-  toggleSendEtherModal: function(event) {
+  toggleSendEtherModal: function() {
      this.setState({sendEtherModalOpen: !this.state.sendEtherModalOpen});
   },
 
   render: function () {
-    var accountStatus, ballots, signoutButton;
-
-    ballots = <span />;
-    signoutButton = <span />;
-
-    if (this.state.config.currentAccount) {
-
-      var cashBalance = this.state.asset.cash ? this.state.asset.cash.toFixed(2) : '-';
-      var repBalance = this.state.asset.reputation ? this.state.asset.reputation.toFixed(2) : '-';
-      var etherBalance = this.state.asset.ether ? utilities.formatEther(this.state.asset.ether).value : '-';
-
-      accountStatus = (
-        <div className="asset-panel panel-body">
-          <ul className="menu">
-            <li className="pointer" onClick={this.toggleSendCashModal}>
-              <span className="fa-stack fa-xs">
-                <i className="fa fa-circle fa-stack-2x icon-background2"></i>
-                <i className="fa fa-circle-thin fa-stack-2x icon-background3"></i>
-                <i className="fa fa-stack-1x fa-usd icon-green"></i>
-              </span>
-              <span className='balance-wrapper balance'> {cashBalance}</span>
-            </li>
-          </ul>
-
-          <ul className="menu">
-            <li className="pointer" onClick={this.toggleSendRepModal}>
-              <span className="fa-stack fa-xs">
-                <i className="fa fa-circle fa-stack-2x icon-background1"></i>
-                <i className="fa fa-circle-thin fa-stack-2x icon-background6"></i>
-                <i className="fa fa-heart fa-stack-1x icon-red"></i>
-              </span>
-              <span className='balance-wrapper balance'> {repBalance}</span>
-            </li>
-          </ul>
-
-          <ul className="menu">
-            <li className="pointer" onClick={this.toggleSendEtherModal}>
-              <span className="fa-stack fa-xs">
-                <i className="fa fa-circle fa-stack-2x icon-background2"></i>
-                <i className="fa fa-circle-thin fa-stack-2x icon-background4"></i>
-                <i className="fa fa-stack-1x icon-blue">Ξ</i>
-              </span>
-              <span className='balance-wrapper balance'> {etherBalance}</span>
-            </li>
-          </ul>
-
-          <SendEtherModal
-            show={this.state.sendEtherModalOpen}
-            onHide={this.toggleSendEtherModal} />
-          <SendRepModal
-            show={this.state.sendRepModalOpen}
-            onHide={this.toggleSendRepModal} />
-          <SendCashModal
-            show={this.state.sendCashModalOpen}
-            onHide={this.toggleSendCashModal} />
-        </div>
-      );
-      ballots = (
-        <Link to="ballots"><li>
-          <p>Ballot<span className="population">{_.keys(this.state.report.eventsToReport).length}</span></p>
-        </li></Link>
-      );
-      signoutButton = (
-        <a className="signout" onClick={this.handleSignOut}><li>
-          <p>sign out</p>
-        </li></a>
-      );
-    } else {
-       accountStatus = (
-        <ul className="menu">
-          <li><p><a className="signin" onClick={this.toggleSignInModal}>sign in</a></p></li>
-          <li><p><a className="register" onClick={this.toggleRegisterModal}>register</a></p></li>
-        </ul>
-      );     
-    }
     return (
       <div id="app" className={ this.state.status }>
+        <SendEtherModal
+            show={this.state.sendEtherModalOpen}
+            onHide={this.toggleSendEtherModal} />
+        <SendRepModal
+            show={this.state.sendRepModalOpen}
+            onHide={this.toggleSendRepModal} />
+        <SendCashModal
+            show={this.state.sendCashModalOpen}
+            onHide={this.toggleSendCashModal} />
 
-        <nav className="header" role="navigation">
-          <div className="container">
-            <div className="pull-left">
-              <Link to="overview">
-                <h1 className="title">augur</h1>
-              </Link>
-              <ul className="menu">
-                <Link to="overview"><li>
-                  <p>Overview</p>
-                </li></Link>
-                <Link to="markets"><li>
-                  <p>Markets<span className="population">{_.keys(this.state.market.markets).length}</span></p>
-                </li></Link>
-                {ballots}
-                {signoutButton}
-              </ul>
-            </div>
-            <div className="pull-right">
-              {accountStatus}
-            </div>
-          </div>
-        </nav>
-        
+        <Header
+            userAccount={this.state.config.currentAccount}
+            marketsCount={_.keys(this.state.market.markets).length}
+            ballotsCount={_.keys(this.state.report.eventsToReport).length}
+            toggleRegisterModal={this.toggleRegisterModal}
+            toggleSignInModal={this.toggleSignInModal}
+            toggleSendCashModal={this.toggleSendCashModal}
+            toggleSendRepModal={this.toggleSendRepModal}
+            toggleSendEtherModal={this.toggleSendEtherModal}
+            asset={this.state.asset}
+            />
+
         <section id="main" className="container">
           <div className="dash page row">
             <div className="col-sm-12">
               <div id="period"></div>
-              <RouteHandler {...this.props}
+              <RouteHandler
+                toggleSignInModal={this.toggleSignInModal}
+                {...this.props}
                 branch={this.state.branch}
                 market={this.state.market} />
             </div>

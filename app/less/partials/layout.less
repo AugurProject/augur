@@ -1,0 +1,34 @@
+body {
+    .display(flex);
+    min-height: 100vh;
+    .flex-direction(column);
+    > .page-content {
+        .flex(1, 0, auto);
+    }
+    > .page-footer {
+        margin-top: 55px; // H1's margin-top
+    }
+}
+
+#app.running #main {
+    margin-bottom: 40px; // feedback button is in the way at the end of the page
+}
+
+// EU Cookie Law message box
+.cookieLawContent {
+    z-index: 1040;
+    padding: 10px;
+    background-color: @color-white;
+    text-align: center;
+    display: block;
+    .transition(300ms, linear);
+    &.notToShow {
+        display: none;
+        max-height: 0;
+        z-index: 0;
+        padding: 0;
+    }
+    button {
+        margin-left: 10px;
+    }
+}

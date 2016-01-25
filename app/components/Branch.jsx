@@ -49,8 +49,8 @@ var Branch = React.createClass({
   },
 
   handlePageChanged: function (data) {
-    this.transitionTo('/markets/' + (parseInt(data.selected) + 1));
-    this.setState({pageNum: data.selected});
+    this.transitionTo('marketsPage', {page: (parseInt(data.selected) + 1)});
+    this.setState({ pageNum: data.selected });
   },
 
   onChangeSearchInput: function (event) {
@@ -78,9 +78,9 @@ var Branch = React.createClass({
     //var marketPage = _.sortBy(this.state.markets, 'volume').reverse().slice(start, end);
     var marketPage = _.map(this.state.markets).slice(start, end);
     var submitMarketAction = (
-      <span className="subheading pull-right">
-        <a href="javascript:void(0);" onClick={this.toggleAddMarketModal}>
-          <i className="fa fa-plus-circle fa-2x icon-white"></i>
+      <span className="pull-right">
+        <a href="javascript:void(0);" onClick={ this.toggleAddMarketModal }>
+          <i className="fa fa-plus-circle fa-2x"></i>
         </a>
       </span>
     );
@@ -103,14 +103,18 @@ var Branch = React.createClass({
 
     return (
       <div id="branch">
-        {pendingMarketsSection}
-        <h3 className="clearfix">
-          <div className="col-xs-2" id="markets-label">Markets</div>
+        { pendingMarketsSection }
+        <div className="row">
+          <div className="col-xs-2 pad-top-7">
+            <span className="h3">
+              Markets
+            </span>
+          </div>
           <div className="col-xs-10 pad-top-7">
             <div className="col-xs-6 pad-top-5">
               <input type="search"
-                className="markets-search-input"
-                value={this.state.searchKeywords}
+                className="form-control markets-search-input"
+                value={ this.state.searchKeywords }
                 placeholder="Search"
                 tabIndex="0"
                 onChange={this.onChangeSearchInput} />
@@ -127,9 +131,9 @@ var Branch = React.createClass({
             </div>
             <div className="col-xs-1">{submitMarketAction}</div>
           </div>
-        </h3>
-        <div className='subheading clearfix'>
-          <span className='showing'>Showing {start+1} - {end} of {total}</span>
+        </div>
+        <div className='clearfix' style={{ marginTop: '10px', marginBottom: '15px'}}>{/*arbitrary margins*/}
+          <span className='showing'>Showing { start+1 } - { end } of { total }</span>
           <Paginate 
             previousLabel={<i className='fa fa-chevron-left'></i>}
             nextLabel={<i className='fa fa-chevron-right'></i>}
