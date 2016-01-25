@@ -17,4 +17,5 @@ npm link keythereum
 npm install
 
 # monitor for changes
+grunt less
 grunt watchify
