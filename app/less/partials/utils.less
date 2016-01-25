@@ -1,0 +1,135 @@
+@import (reference) "../../../node_modules/bootstrap/less/bootstrap";
+@import (reference) "../../../node_modules/flex.less/flex";
+@import (reference) "variables";
+
+.buy,
+.profit,
+.success,
+.positive {
+    color: @color-green;
+}
+
+.sell,
+.loss,
+.failure,
+.negative {
+    color: @color-red;
+}
+
+.u-changeUp {
+    background-color: @state-success-bg !important;
+}
+
+.u-changeDown {
+    background-color: @state-danger-bg !important;
+}
+
+.td-shrink {
+    width: 1%;
+}
+
+// table-condensed doesn't work because it's overridden by GSDK, so I just paste it here once again so it's later in code
+.table-condensed {
+    .table-condensed();
+}
+
+.pointer,
+[ui-sref],
+[ng-click] {
+    cursor: pointer;
+}
+
+.or-cancel-span {
+    margin-left: @padding-base-horizontal;
+    button {
+        font-size: @font-size-base;
+        font-weight: @font-weight-bolder;
+    }
+}
+
+.noPaddingLeftRight {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.u-placeholder {
+    .u-verticalAlign();
+    position: absolute;
+    font-size: @font-size-table-row;
+    font-weight: @font-weight-normal;
+    color: @color-grey;
+    padding-left: 10px;
+    -webkit-user-select: none;
+}
+
+.u-itemsJustified {
+    .display(flex);
+    .justify-content(space-between);
+}
+
+.width-limited {
+    max-width: 700px;
+}
+
+.u-verticalAlign {
+    position: relative;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.u-text--sameSizeAsTableData {
+    font-size: @font-size-table-row;
+}
+
+.chevron-left() {
+    content: "\e080";
+}
+
+.chevron-down() {
+    content: "\e114";
+}
+
+// smooth rendering
+.font-render-smooth() {
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+}
+
+.font-render-auto() {
+    -moz-osx-font-smoothing: auto;
+    -webkit-font-smoothing: auto;
+}
+
+// hr break line
+.hr-break {
+    padding: 1px 0;
+    & hr {
+        height: 1px;
+        border: 0;
+        background-color: #dddddd;
+        width: 33%;
+        min-width: 200px;
+        margin: 27px auto;
+    }
+    & p {
+        margin: 0 auto;
+        width: 40px;
+        height: 57px;
+        line-height: 57px;
+        text-align: center;
+        color: #cacaca;
+        font-style: italic;
+        background-color: #FFFFFF;
+        margin-top: -57px;
+    }
+}
+
+.transition(@time, @type){
+    -webkit-transition: all @time @type;
+    -moz-transition: all @time @type;
+    -o-transition: all @time @type;
+    -ms-transition: all @time @type;
+    transition: all @time @type;
+}

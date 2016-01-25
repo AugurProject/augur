@@ -7,6 +7,7 @@
 
 var test = require("tape");
 var abi = require("augur-abi");
+var _ = require("lodash");
 var BigNumber = require("bignumber.js");
 var clone = require("clone");
 var validator = require("validator");
@@ -49,6 +50,9 @@ function parseMarketInfoSync(info) {
     return info;
 }
 
+// var host = "http://127.0.0.1:8545";
+// flux.augur.rpc.setLocalNode(host);
+// flux.augur.connect(host, process.env.GETH_IPC);
 flux.augur.connect();
 var account = {address: flux.augur.from};
 var blockNumber = flux.augur.rpc.blockNumber();
@@ -118,58 +122,58 @@ test("marketInfo", function (t) {
 });
 
 test("MarketActions.parseMarketInfo", function (t) {
-    t.plan(21);
+    t.plan(19);
     var info = clone(rawInfo);
-    flux.augur.getMarketCreationBlock(rawInfo._id, function (creationBlock) {
-        t.true(validator.isInt(creationBlock), "creation block number is an integer");
-        info.creationBlock = creationBlock;
-        flux.augur.getMarketPriceHistory(rawInfo._id, function (priceHistory) {
-            t.equal(priceHistory.constructor, Object, "priceHistory is an object");
-            info.priceHistory = priceHistory;
-            flux.actions.market.parseMarketInfo(clone(info), function (parsedInfo) {
-                t.false(rawInfo.id, "raw marketInfo's id field is unassigned after parseMarketInfo");
-                t.equal(parsedInfo.id.constructor, BigNumber, "parsed marketInfo.id is a BigNumber");
-                t.true(parsedInfo.id.eq(new BigNumber(rawInfo._id)), "check parsed marketInfo.id value");
-                t.equal(parsedInfo.price.constructor, BigNumber, "parsed marketInfo.price is a BigNumber");
-                t.true(parsedInfo.price.eq(marketInfo.price), "check parsed marketInfo.price value");
-                t.equal(parsedInfo.tradingFee.constructor, BigNumber, "parsed marketInfo.tradingFee is a BigNumber");
-                t.true(parsedInfo.tradingFee.eq(marketInfo.tradingFee), "check parsed marketInfo.tradingFee value");
-                t.equal(parsedInfo.creationFee.constructor, BigNumber, "parsed marketInfo.creationFee is a BigNumber");
-                t.true(parsedInfo.creationFee.eq(marketInfo.creationFee), "check parsed marketInfo.creationFee value");
-                t.equal(parsedInfo.traderCount.constructor, BigNumber, "parsed marketInfo.traderCount is a BigNumber");
-                t.true(parsedInfo.traderCount.eq(marketInfo.traderCount), "check parsed marketInfo.traderCount value");
-                t.equal(parsedInfo.alpha.constructor, BigNumber, "parsed marketInfo.alpha is a BigNumber");
-                t.true(parsedInfo.alpha.eq(marketInfo.alpha), "check parsed marketInfo.alpha value");
-                t.equal(parsedInfo.tradingPeriod.constructor, BigNumber, "parsed marketInfo.tradingPeriod is a BigNumber");
-                t.true(parsedInfo.tradingPeriod.eq(marketInfo.tradingPeriod), "check parsed marketInfo.tradingPeriod value");
-                if (marketInfo.traderId) {
-                    t.equal(parsedInfo.traderId.constructor, BigNumber, "parsed marketInfo.traderId is a BigNumber");
-                    t.true(parsedInfo.traderId.eq(marketInfo.traderId), "check parsed marketInfo.traderId value");
-                } else {
-                    t.false(parsedInfo.traderId, "parsed marketInfo.traderId is unassigned");
-                    t.equal(parsedInfo.traderId, marketInfo.traderId, "check parsed marketInfo.traderId value");
-                }
-                t.true(moment.isMoment(parsedInfo.creationDate), "parsed marketInfo.creationDate is a Moment");
-                t.true(moment.isMoment(parsedInfo.endDate), "parsed marketInfo.endDate is a Moment");
-                t.end();
-            });
-        });
+    flux.actions.market.parseMarketInfo(clone(info), function (parsedInfo) {
+        t.false(rawInfo.id, "raw marketInfo's id field is unassigned after parseMarketInfo");
+        t.equal(parsedInfo.id.constructor, BigNumber, "parsed marketInfo.id is a BigNumber");
+        t.true(parsedInfo.id.eq(new BigNumber(rawInfo._id)), "check parsed marketInfo.id value");
+        t.equal(parsedInfo.price.constructor, BigNumber, "parsed marketInfo.price is a BigNumber");
+        t.true(parsedInfo.price.eq(marketInfo.price), "check parsed marketInfo.price value");
+        t.equal(parsedInfo.tradingFee.constructor, BigNumber, "parsed marketInfo.tradingFee is a BigNumber");
+        t.true(parsedInfo.tradingFee.eq(marketInfo.tradingFee), "check parsed marketInfo.tradingFee value");
+        t.equal(parsedInfo.creationFee.constructor, BigNumber, "parsed marketInfo.creationFee is a BigNumber");
+        t.true(parsedInfo.creationFee.eq(marketInfo.creationFee), "check parsed marketInfo.creationFee value");
+        t.equal(parsedInfo.traderCount.constructor, BigNumber, "parsed marketInfo.traderCount is a BigNumber");
+        t.true(parsedInfo.traderCount.eq(marketInfo.traderCount), "check parsed marketInfo.traderCount value");
+        t.equal(parsedInfo.alpha.constructor, BigNumber, "parsed marketInfo.alpha is a BigNumber");
+        t.true(parsedInfo.alpha.eq(marketInfo.alpha), "check parsed marketInfo.alpha value");
+        t.equal(parsedInfo.tradingPeriod.constructor, BigNumber, "parsed marketInfo.tradingPeriod is a BigNumber");
+        t.true(parsedInfo.tradingPeriod.eq(marketInfo.tradingPeriod), "check parsed marketInfo.tradingPeriod value");
+        if (marketInfo.traderId) {
+            t.equal(parsedInfo.traderId.constructor, BigNumber, "parsed marketInfo.traderId is a BigNumber");
+            t.true(parsedInfo.traderId.eq(marketInfo.traderId), "check parsed marketInfo.traderId value");
+        } else {
+            t.false(parsedInfo.traderId, "parsed marketInfo.traderId is unassigned");
+            t.equal(parsedInfo.traderId, marketInfo.traderId, "check parsed marketInfo.traderId value");
+        }
+        t.true(moment.isMoment(parsedInfo.creationDate), "parsed marketInfo.creationDate is a Moment");
+        t.true(moment.isMoment(parsedInfo.endDate), "parsed marketInfo.endDate is a Moment");
+        t.end();
     });
 });
 
 test("MarketActions.loadMarkets", function (t) {
     var dispatchCount = 0;
-    var dispatch = flux.actions.market.dispatch;
-    flux.actions.market.dispatch = function (label, payload) {
-        t.true(validator.isIn(label, ["LOAD_MARKETS_SUCCESS", "MARKETS_LOADING"]), "label is LOAD_MARKETS_SUCCESS or MARKETS_LOADING");
-        if (label === "LOAD_MARKETS_SUCCESS") {
-            t.equal(payload.markets[marketInfo.id].constructor, Object, "payload.markets has marketInfo.id field");
-            t.true(Object.keys(payload.markets).length > 0, "payload.markets has at least 1 key");
-        } else if (label === "MARKETS_LOADING") {
-            t.equal(payload.loadingPage, null, "payload.loadingPage is null");
-        }
+    var LOAD_MARKETS_SUCCESS = flux.register.LOAD_MARKETS_SUCCESS;
+    var MARKETS_LOADING = flux.register.MARKETS_LOADING;
+    flux.register.LOAD_MARKETS_SUCCESS = function (payload) {
+        t.equal(payload.constructor, Object, "payload is an object");
+        t.equal(payload.markets.constructor, Object, "payload.markets is an object");
+        t.equal(payload.markets[marketInfo.id].constructor, Object, "payload.markets has marketInfo.id field");
+        t.true(Object.keys(payload.markets).length > 0, "payload.markets has at least 1 key");
         if (++dispatchCount > 1) {
-            flux.actions.market.dispatch = dispatch;
+            flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
+            flux.register.MARKETS_LOADING = MARKETS_LOADING;
+            t.end();
+        }
+    };
+    flux.register.MARKETS_LOADING = function (payload) {
+        t.equal(payload.constructor, Object, "payload is an object");
+        t.equal(payload.loadingPage, null, "payload.loadingPage is null");
+        if (++dispatchCount > 1) {
+            flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
+            flux.register.MARKETS_LOADING = MARKETS_LOADING;
             t.end();
         }
     };
@@ -177,18 +181,25 @@ test("MarketActions.loadMarkets", function (t) {
 });
 
 test("MarketActions.loadMarket", function (t) {
-    t.plan(4);
     var dispatchCount = 0;
-    var dispatch = flux.actions.market.dispatch;
-    flux.actions.market.dispatch = function (label, payload) {
-        t.true(validator.isIn(label, ["LOAD_MARKETS_SUCCESS", "MARKETS_LOADING"]), "label is LOAD_MARKETS_SUCCESS or MARKETS_LOADING");
-        if (label === "LOAD_MARKETS_SUCCESS") {
-            t.equal(payload.markets[marketInfo.id].constructor, Object, "payload.markets has marketInfo.id field");
-        } else if (label === "MARKETS_LOADING") {
-            t.equal(payload.loadingPage, null, "payload.loadingPage is null");
-        }
+    var LOAD_MARKETS_SUCCESS = flux.register.LOAD_MARKETS_SUCCESS;
+    var MARKETS_LOADING = flux.register.MARKETS_LOADING;
+    flux.register.LOAD_MARKETS_SUCCESS = function (payload) {
+        t.equal(payload.constructor, Object, "payload is an object");
+        t.equal(payload.markets.constructor, Object, "payload.markets is an object");
+        t.equal(payload.markets[marketInfo.id].constructor, Object, "payload.markets has marketInfo.id field");
         if (++dispatchCount > 1) {
-            flux.actions.market.dispatch = dispatch;
+            flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
+            flux.register.MARKETS_LOADING = MARKETS_LOADING;
+            t.end();
+        }
+    };
+    flux.register.MARKETS_LOADING = function (payload) {
+        t.equal(payload.constructor, Object, "payload is an object");
+        t.equal(payload.loadingPage, null, "payload.loadingPage is null");
+        if (++dispatchCount > 1) {
+            flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
+            flux.register.MARKETS_LOADING = MARKETS_LOADING;
             t.end();
         }
     };

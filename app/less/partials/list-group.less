@@ -1,0 +1,24 @@
+// author: priecint
+@import "variables";
+
+.list-group.list-group--greyScale {
+    .list-group-item.active {
+        background-color: @color-grey-light;
+        border-color: @color-grey-light;
+        color: currentcolor;
+    }
+}
+
+@media (min-width: @screen-sm-min) {
+    .list-group.list-group--dotted {
+        .list-group-item {
+            border-style: dotted;
+        }
+    }
+
+    .list-group.list-group--noBorder {
+        .list-group-item {
+            border: 0;
+        }
+    }
+}

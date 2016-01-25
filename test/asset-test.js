@@ -13,7 +13,7 @@ var constants = require("../app/libs/constants");
 var flux = require("./mock");
 var keystore = require("./account");
 
-var DEBUG = false;
+var DEBUG = true;
 var sink = "0x639b41c4d3d399894f2a57894278e1653e7cd24c";
 var amount = "1";
 var handle = "tinybike";
@@ -24,6 +24,10 @@ var privateKey = keys.recover(password, keystore);
 var address = keys.privateKeyToAddress(privateKey);
 flux.augur.web.account = {handle: handle, privateKey: privateKey, address: address};
 flux.augur.connector.from = address;
+// var host = "http://127.0.0.1:8545";
+// flux.augur.rpc.setLocalNode(host);
+// flux.augur.rpc.nodes.hosted = [];
+// flux.augur.connect(host, process.env.GETH_IPC);
 flux.augur.connect();
 flux.augur.rpc.balancer = false;
 

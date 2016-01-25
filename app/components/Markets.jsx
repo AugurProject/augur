@@ -1,7 +1,7 @@
 var _ = require("lodash");
 var React = require("react");
-let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
-let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
+var FluxMixin = require("fluxxor/lib/flux_mixin")(React);
+var StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
 var moment = require("moment");
 var Router = require("react-router");
 var Link = Router.Link;
@@ -10,9 +10,8 @@ var CloseMarketTrigger = require("./CloseMarket").CloseMarketTrigger;
 
 var Markets = React.createClass({
 
-  render: function() {
-
-    var marketList = _.map(_.sortBy(this.props.markets, 'pending'), function (market) {
+  render: function () {
+    var marketList = _.map(this.props.markets, function (market) {
       return (
         <div key={ market.id } className={ this.props.classNameWrapper }>
           <MarketPane market={ market } {...this.props} />
@@ -93,7 +92,7 @@ var MarketPane = React.createClass({
 
     var body = (
       <div>
-        <h5 className="metal">{ market.description }<div className='overlay' /></h5>
+        <h5 className="">{ market.description }<div className='overlay' /></h5>
         <div className='summary clearfix'>
           <span>{ percent }</span>
           <i className='pull-right'>{ status }</i>

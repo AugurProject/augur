@@ -30,14 +30,6 @@
     src: url("/fonts/S-Core-CoreMellow65Bold.otf") format("opentype");
 }
 
-body {
-    /*background-color: #ffffff;*/
-    background-color: #000000;
-    font-family: 'Open Sans', sans-serif;
-    font-weight: 400;
-    color: #5d6576;
-    overflow-y: scroll;
-}
 h1 {
     font-family: 'Core Mellow';
     font-size: 27px;
@@ -48,12 +40,6 @@ h2, h3, h4, h5 {
     font-weight: 500;
 }
 
-#render-target {
-    height: 100%;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-}
 
 #app.stopped {
     height: 100%;
@@ -68,15 +54,6 @@ h2, h3, h4, h5 {
 #app.stopped #loading {
     display: block;
 }
-#app.running {
-    background-color: #ffffff;
-    background-image: url('/images/starfield.jpg');
-    background-repeat: no-repeat;
-    background-size: cover; 
-    position: absolute;
-    height: 100%;
-    width: 100%;
-}
 #app.running #main {
     display: block;
 }
@@ -86,9 +63,6 @@ h2, h3, h4, h5 {
 
 #loading {
     background-color: #34495e;
-    background-image: url('/images/starfield.jpg');
-    background-repeat: no-repeat;
-    background-size: cover; 
     position: absolute;
     height: 100%;
     width: 100%;
@@ -273,40 +247,6 @@ nav.header .register {
 .plain li:hover {
     background-color: #454545;
 }
-nav.header .menu {
-    float: left;
-    padding: 0px;
-    margin-left: 20px;
-}
-nav.header .menu li {
-    font-family: 'Open Sans';
-    float: left;
-    list-style: none;
-    padding-top: 16px;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-bottom: 10px;
-    margin-bottom: -10px;
-    margin-right: 20px !important;
-}
-nav.header .menu a li {
-    color: #fff;
-}
-nav.header .menu li p {
-    margin-top: 3px !important;
-    text-transform: uppercase;
-}
-nav.header .menu li:hover {
-    background-color: #2c3e50;
-    -webkit-transition: all 0.5s ease;
-    -moz-transition: all 0.5s ease;
-    -ms-transition: all 0.5s ease;
-    -o-transition: all 0.5s ease;
-    transition: all 0.5s ease;
-}
-nav.header .menu a:hover {
-    text-decoration: none;
-}
 @media (max-width: 990px) {
     nav.header h1 {
         margin-left: -8px;
@@ -326,11 +266,6 @@ nav.header .menu a:hover {
     -webkit-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.4);
     -moz-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.4);
     /*height: 25px;*/
-}
-
-.container {
-    width: 100% !important;
-    color: #0D0F11;
 }
 
 .modal h3 {
@@ -631,7 +566,7 @@ nav.header .menu a:hover {
 }
 
 #main {
-    background-color: rgba(150, 150, 150, 0.25);
+    background-color: #fff;
 }
 #main h3 {
     margin-top: 0px;
@@ -648,20 +583,11 @@ nav.header .menu a:hover {
     font-size: 16px;
     margin: 10px 0px 20px 0px;
 }
-#main h4 {
-    font-weight: 400;
-    color: #ffffff;
-    text-shadow: 1px 1px #000000;
-    text-transform: uppercase;
-    font-family: "Lato";
-    font-size: 16pt;
-}
 
 .market-pane {
     color: #000;
     background-color: #fff;
     border-radius: 3px;
-    opacity: 0.9;
     display: block;
     margin-bottom: 25px;
 }
@@ -676,7 +602,6 @@ a.market-pane:hover {
     color: #000;
     text-decoration: none;
     cursor: pointer;
-    opacity: 1;
 }
 .market-pane h5 {
     position: relative;
@@ -689,11 +614,14 @@ a.market-pane:hover {
     text-align: justify;
     text-justify: inter-word;
     height: 84px;
-    background-color: #2D2E31;
+    background-color: #34495e; /* @color-dark-bg - to be consistent with top menu */
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
     color: #fff;
     overflow: hidden;
+}
+.market-pane:hover h5 {
+    background-color: #2C3E50; /* @color-dark-bg-active - to be consistent with top menu */
 }
 .market-pane .overlay {
     position: absolute;
@@ -796,17 +724,6 @@ a.market-pane:hover {
     padding-top: 5px;
 }
 
-#markets-label {
-    margin-left: 0;
-    padding-left: 0;
-    padding-top: 11px;
-    font-weight: 400;
-    color: #ffffff;
-    text-shadow: 1px 1px #000000;
-    text-transform: uppercase;
-    font-family: "Lato";
-    font-size: 16pt;
-}
 .ballot h4 {
     font-weight: 400;
     color: #ffffff;
@@ -817,25 +734,9 @@ a.market-pane:hover {
 }
 
 .markets-search-input {
-    top: 0px; bottom: 0px;
-    width: 100%; height: 2.5rem;
-    border-radius: 3px;
-    border: 1px solid #CDCAC5;
-    opacity: 0.9;
-    font-size: 12pt;
-    padding: 7px;
+    height: 2.5rem;
 }
 
-.outcome {
-    margin: 0px 0px 20px 0px;
-    border-radius: 5px;
-    padding: 0px 0px 0px 0px;
-    background-color: #F2F2F2;
-    overflow: hidden;
-    clear: both;
-    position: relative;
-    height: 90px;
-}
 .outcome.buy {
 
 }
@@ -843,15 +744,17 @@ a.market-pane:hover {
 
 }
 .outcome h4 {
+    height: 45px; /* @row_height */
+    line-height: 45px; /* @row_height */
     color: #fff;
-    background-color: #18376f;
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-    height: 100%;
-    float: left;
-    min-width: 75px;
-    position: relative;
-    margin: 0px;
+    background-color: #34495E; /* @color-dark-bg - to be consistent with top menu */
+    margin: 0;
+    padding-left: 4px;
+    padding-right: 4px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 100%;
 }
 .categorical {
     text-transform: none;
@@ -860,67 +763,28 @@ a.market-pane:hover {
 .metal-categorical {
     min-width: 125px !important;
 }
-.outcome h4 .name {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-}
 .outcome h4 .scalar {
     font-size: 30pt !important;
 }
 .outcome h4 .price {
     font-size: 20px;
-    font-family: 'Source Sans Pro';
-    font-weight: 300;
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
 }
 .outcome .summary {
-    float: left;
-    padding: 4px 8px;
+    padding: 4px;
     color: #555;
 }
 .outcome .summary p {
     margin: 0px;
     font-size: 15px;
 }
-.outcome .trade-button {
-    position: absolute;
-    right: -1px;
-}
-.outcome .trade-button button {
-    float: right;
-    width: 63px;
-}
 .outcome.read-only .trade-button {
     display: none;
 }
-.outcome .shares-held.none {
-    padding: 10px 10px;
-    display: inline-block;
-}   
 .outcome .shares-held.btn {
     background-color: #FCFFFD;
     float: right;
     border-radius: 0px;
     border-top-left-radius: 3px;
-}
-.outcome .buy {
-    top: -1px;
-}
-.outcome .buy .btn {
-    border-bottom-right-radius: 0px;
-    border-top-left-radius: 0px;
-}
-.outcome .sell,
-.outcome .cancel {
-    bottom: -1px;
-}
-.outcome .sell .btn,
-.outcome .cancel .btn {
-    border-radius: 0px;
-    border-bottom-right-radius: 4px;
 }
 .outcome .cancel .btn {
     border-top-left-radius: 4px;

@@ -1,0 +1,157 @@
+// submenu
+.submenu {
+    .list-group-item {
+        white-space: nowrap;
+        padding: 0;
+        a {
+            padding: 10px 20px;
+            display: block;
+        }
+        &:first-child a {
+            padding-left: 15px;
+        }
+        &:last-child a {
+            padding-right: 15px;
+        }
+        &.active,
+        &:focus {
+            z-index: 1;
+            background: none;
+            border: none;
+            a {
+                color: @font-color-link;
+            }
+        }
+    }
+    a {
+        color: @font-color-header;
+        &:hover,
+        &:focus,
+        &:active,
+        &.active {
+            color: @font-color-link;
+        }
+    }
+}
+
+@media (min-width: @screen-sm-min) {
+    .submenu {
+        > .collapsed {
+            display: none;
+        }
+        > .collapse {
+            display: block;
+            visibility: visible;
+            > .list-group {
+                border-bottom: 1px solid @table-border-color;
+                margin-bottom: 0;
+                .display(flex);
+                .align-items(flex-start);
+            }
+        }
+        .list-group-item {
+            border: none;
+            font-weight: @font-weight-bolder;
+            .list-group {
+                list-style: none;
+                .list-group-item {
+                    font-weight: @font-weight-normal;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: @screen-sm-min) {
+    // submenu
+    .submenu {
+        margin: 10px 0;
+        .list-group {
+            margin-top: -1px;
+        }
+        a {
+            h2 {
+                font-size: 18px;
+                margin: 0;
+                padding: 16px 8px;
+                border: 1px solid @color-menu-border;
+                background-color: @color-dark-bg;
+                color: white;
+                &:after {
+                    font-family: 'Glyphicons Halflings';
+                    font-size: @font-size-base;
+                    margin-left: 6px;
+                    float: right;
+                    padding: 4px;
+                    .chevron-down();
+                }
+            }
+            &.collapsed h2:after {
+                .chevron-left();
+            }
+        }
+        .list-group-item {
+            border: 1px solid @color-menu-border;
+            background-color: @color-dark-bg;
+            &.active {
+                background-color: @color-dark-bg-active;
+            }
+            .active {
+                color: @font-color-link;
+            }
+            &:first-child {
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
+                a {
+                    padding: 14px 8px;
+                }
+            }
+            &:last-child {
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+            }
+            a {
+                color: @color-white;
+                padding: 14px 8px;
+                display: block;
+            }
+            &.open .dropdown-menu {
+                position: inherit;
+                float: inherit;
+                box-shadow: none;
+                border: none;
+                li {
+                    border: 1px solid @color-menu-border;
+                    background-color: @color-dark-bg-active;
+                    margin: -1px;
+                    a {
+                        padding: 14px 15px;
+                        color: @color-white;
+                    }
+                }
+            }
+            > .dropdown-toggle {
+                .caret {
+                    display: none; // hide default caret
+                }
+                &:after {
+                    font-family: 'Glyphicons Halflings';
+                    font-size: @font-size-base;
+                    margin-left: 6px;
+                    float: right;
+                    .chevron-left();
+                }
+                &.active {
+                    color: @font-color-link;
+                }
+            }
+            &.open > .dropdown-toggle {
+                color: @font-color-link;
+                &:after {
+                    .chevron-down();
+                }
+            }
+        }
+    }
+
+}

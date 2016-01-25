@@ -1,0 +1,22 @@
+.btn {
+    // turn off the smoothing for buttons, so they look same
+    .font-render-auto();
+    font-size: @font-size-base;
+}
+
+.btn-success {
+    .button-variant(@color-white, @color-green, darken(@color-green, 2%));
+}
+
+// not sure why .btn-simple.btn-info does not work, so this is a hack to make it work
+.btn-simple.btn-info {
+    background-color: transparent;
+    color: @font-color-link;
+    border: 0;
+    &:hover {
+        color: #1084FF;
+    }
+    &:active {
+        box-shadow: none;
+    }
+}
