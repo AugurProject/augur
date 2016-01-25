@@ -66,7 +66,8 @@ stores.search.initialize = function () {
   this.bindActions(
     constants.market.LOAD_MARKETS_SUCCESS, this.handleMarketsUpdated,
     constants.market.UPDATE_MARKETS_SUCCESS, this.handleMarketsUpdated,
-    constants.search.KEYWORDS_UPDATED, this.handleKeywordsUpdated
+    constants.search.KEYWORDS_UPDATED, this.handleKeywordsUpdated,
+    constants.search.UPDATE_SORT_BY, this.handleUpdateSortBy
   );
 };
 

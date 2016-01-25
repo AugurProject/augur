@@ -1,7 +1,7 @@
 var _ = require("lodash");
 var React = require("react");
-let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
-let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
+var FluxMixin = require("fluxxor/lib/flux_mixin")(React);
+var StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
 var moment = require("moment");
 let Link = require("react-router/lib/components/Link");
 
@@ -9,9 +9,8 @@ var CloseMarketTrigger = require("./CloseMarket").CloseMarketTrigger;
 
 var Markets = React.createClass({
 
-  render: function() {
-
-    var marketList = _.map(_.sortBy(this.props.markets, 'pending'), function (market) {
+  render: function () {
+    var marketList = _.map(this.props.markets, function (market) {
       return (
         <div key={ market.id } className={ this.props.classNameWrapper }>
           <MarketPane market={ market } {...this.props} />
