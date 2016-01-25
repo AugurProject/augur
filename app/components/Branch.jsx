@@ -1,15 +1,13 @@
 var _ = require("lodash");
 var React = require("react");
 var Paginate = require("react-paginate");
-var Router = require("react-router");
 
 let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
-var RouteHandler = Router.RouteHandler;
-var Navigation = Router.Navigation;
-var Link = Router.Link;
+let RouteHandler = require("react-router/lib/components/RouteHandler");
+let Navigation = require("react-router/lib/Navigation");
 
-var AddMarketModal =  require("./AddMarketModal")
+var AddMarketModal =  require("./AddMarketModal");
 var Markets = require("./Markets");
 var constants = require("../libs/constants");
 
