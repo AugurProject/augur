@@ -2,8 +2,8 @@ var React = require("react");
 var _ = require("lodash");
 var abi = require("augur-abi");
 var keys = require("keythereum");
-var Router = require("react-router");
-var Link = Router.Link;
+let Navigation = require("react-router/lib/Navigation");
+let Link = require("react-router/lib/components/Link");
 
 let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
@@ -25,7 +25,7 @@ var Overview = React.createClass({
   mixins: [
     FluxMixin,
     StoreWatchMixin('market', 'config', 'branch'),
-    Router.Navigation
+    Navigation
   ],
 
   getInitialState: function () {

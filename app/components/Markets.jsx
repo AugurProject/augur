@@ -3,8 +3,7 @@ var React = require("react");
 let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
 var moment = require("moment");
-var Router = require("react-router");
-var Link = Router.Link;
+let Link = require("react-router/lib/components/Link");
 
 var CloseMarketTrigger = require("./CloseMarket").CloseMarketTrigger;
 
