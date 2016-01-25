@@ -124,8 +124,8 @@ var SignInModal = React.createClass({
                 buttonAfter={ submit } />
             </div>
             <div className="col-sm-12">
-              Remember Me 
               <Input
+                label="Remember Me"
                 type="checkbox"
                 name="persist"
                 id="persist-checkbox"
