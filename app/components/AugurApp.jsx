@@ -1,9 +1,6 @@
 var React = require("react");
 var _ = require("lodash");
-var Router = require("react-router");
-var RouteHandler = Router.RouteHandler;
-var Link = Router.Link;
-var Route = Router.Route;
+var RouteHandler = require("react-router/lib/components/RouteHandler");
 var cookie = require("react-cookie");
 
 let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
