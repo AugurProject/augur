@@ -75,19 +75,19 @@ var MarketPane = React.createClass({
     var className = 'market-pane shadow';
 
     if (market.pending) {
-      status = 'Pending'
+      status = 'Pending';
       className += ' pending';
       linked = false;
     } else if (!market.loaded) {
-      status = 'Loading'
+      status = 'Loading';
       className += ' loading';
       linked = false;
     } else if (market.invalid) {
-      status = 'Invalid'
+      status = 'Invalid';
       className += ' invalid'; 
       linked = true;
     } else if (matured) {
-      status = 'Matured'
+      status = 'Matured';
       className += ' matured';
     }
 
