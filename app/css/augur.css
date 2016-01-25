@@ -445,6 +445,9 @@ nav.header .register {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.account {
+    color: #333333;
+}
 
 .network {
     display: none;
