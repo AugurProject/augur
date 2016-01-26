@@ -17,10 +17,10 @@ var augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
 describe("Database", function () {
 
     var kdf = "pbkdf2";
-    var handle = utils.sha256(new Date().toString()).slice(0, 10);
-    var handle2 = utils.sha256(Math.random().toString(36).substring(4)).slice(0, 7);
+    var userHandle = utils.sha256(new Date().toString()).slice(0, 10);
+    var userHandle2 = utils.sha256(Math.random().toString(36).substring(4)).slice(0, 7);
     var account = {
-        handle: abi.prefix_hex(utils.sha256(handle)),
+        handle: abi.prefix_hex(utils.sha256(userHandle)),
         ciphertext: "0x76ea41f201cb8f28560adcf00d78fe3119efee03709b6c0102fb08e48ee101cf",
         iv: "0x5b2e1ea324f8b450b9b95db1af11c0e9",
         mac: "0x9438f894573a68739bf92d28a868fb18a2caea4c89bbeecf4c9c6c18291796ba",
@@ -37,7 +37,7 @@ describe("Database", function () {
         address: "0x26bdb0438855e017fcfeac334496569567ea57b6"
     };
     var persistent = abi.copy(account);
-    persistent.handle = abi.prefix_hex(utils.sha256(handle2));
+    persistent.handle = abi.prefix_hex(utils.sha256(userHandle2));
     persistent.persist = true;
     var persistentAccount = {
         handle: "d9a23ab",
@@ -51,7 +51,7 @@ describe("Database", function () {
 
     it("save account", function (done) {
         this.timeout(augur.constants.TIMEOUT);
-        augur.db.put(handle, account, function (res) {
+        augur.db.put(userHandle, account, function (res) {
             if (res && res.error) return done(res);
             assert.isTrue(res);
             done();
@@ -70,9 +70,9 @@ describe("Database", function () {
             assert.strictEqual(response.error, errors.DB_READ_FAILED.error);
 
             // synchronous
-            var stored = augur.db.get(handle);
+            var stored = augur.db.get(userHandle);
             if (stored && stored.error) return done(stored);
-            assert.strictEqual(handle, stored.handle);
+            assert.strictEqual(userHandle, stored.handle);
             assert.strictEqual(account.encryptedPrivateKey, abi.hex(stored.privateKey, true));
             assert.strictEqual(account.iv, abi.hex(stored.iv, true));
             assert.strictEqual(account.salt, abi.hex(stored.salt, true));
@@ -80,9 +80,9 @@ describe("Database", function () {
             assert.strictEqual(account.id, abi.hex(stored.id, true));
 
             // asynchronous
-            augur.db.get(handle, function (storedAccount) {
+            augur.db.get(userHandle, function (storedAccount) {
                 if (storedAccount && storedAccount.error) return done(storedAccount);
-                assert.strictEqual(handle, storedAccount.handle);
+                assert.strictEqual(userHandle, storedAccount.handle);
                 assert.strictEqual(account.encryptedPrivateKey, abi.hex(storedAccount.privateKey, true));
                 assert.strictEqual(account.iv, abi.hex(storedAccount.iv, true));
                 assert.strictEqual(account.salt, abi.hex(storedAccount.salt, true));
@@ -95,16 +95,16 @@ describe("Database", function () {
 
     it("remove account", function (done) {
         this.timeout(augur.constants.TIMEOUT);
-        var stored = augur.db.get(handle);
+        var stored = augur.db.get(userHandle);
         if (stored && stored.error) return done(stored);
-        assert.strictEqual(handle, stored.handle);
+        assert.strictEqual(userHandle, stored.handle);
         assert.strictEqual(account.encryptedPrivateKey, abi.hex(stored.privateKey, true));
         assert.strictEqual(account.iv, abi.hex(stored.iv, true));
         assert.strictEqual(account.salt, abi.hex(stored.salt, true));
         assert.strictEqual(account.mac, abi.hex(stored.mac, true));
         assert.strictEqual(account.id, abi.hex(stored.id, true));
-        augur.db.remove(handle);
-        assert.strictEqual(augur.db.get(handle).error, 99);
+        augur.db.remove(userHandle);
+        assert.strictEqual(augur.db.get(userHandle).error, 99);
         done();
     });
 

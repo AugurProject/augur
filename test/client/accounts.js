@@ -32,7 +32,7 @@ var password3 = utils.sha256(Math.random().toString(36).substring(4)).slice(0, 7
 var markets = augur.getMarkets(augur.branches.dev);
 var market_id = markets[markets.length - 1];
 
-function checkAccount(account) {
+function checkAccount(augur, account) {
     assert.notProperty(account, "error");
     assert.isTrue(Buffer.isBuffer(account.privateKey));
     assert.isString(account.address);
@@ -70,7 +70,7 @@ describe("Register", function () {
         augur.db.get(handle, function (record) {
             assert.strictEqual(record.error, 99);
             augur.web.register(handle, password, {doNotFund: true}, function (result) {
-                checkAccount(result);
+                checkAccount(augur, result);
                 augur.db.get(handle, function (rec) {
                     assert.notProperty(rec, "error");
                     assert(rec.ciphertext);
@@ -107,7 +107,7 @@ describe("Register", function () {
         augur.db.get(handle2, function (record) {
             assert.strictEqual(record.error, 99);
             augur.web.register(handle2, password2, {doNotFund: true}, function (result) {
-                checkAccount(result);
+                checkAccount(augur, result);
                 augur.db.get(handle2, function (rec) {
                     assert.notProperty(rec, "error");
                     assert(rec.ciphertext);
@@ -586,7 +586,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
 
                         // verify login with correct password still works
                         augur.web.login(handle, password, function (user) {
-                            checkAccount(user);
+                            checkAccount(augur, user);
                             augur.web.logout();
 
                             // verify login with bad password does not work
@@ -630,7 +630,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
 
                         // verify login with correct password still works
                         augur.web.login(handle, password, function (user) {
-                            checkAccount(user);
+                            checkAccount(augur, user);
                             augur.web.logout();
 
                             // verify login with bad password does not work
@@ -661,7 +661,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
             this.timeout(constants.TIMEOUT*6);
             var augur = utils.setup(require("../../src"), process.argv.slice(2));
             augur.web.login(handle, password, function (account) {
-                checkAccount(account);
+                checkAccount(augur, account);
                 var recipient = account.address;
                 var initial_balance = abi
                     .bignum(augur.rpc.balance(recipient))
