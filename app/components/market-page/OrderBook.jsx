@@ -15,11 +15,6 @@ let OrderBook = React.createClass({
                     <a className="helpPopover" data-toggle="modal" data-target="#help-markets-order-book"
                        ng-include="'question-icon'">
                     </a>
-                    <span in-date-with-timezone data-in-timeToFormat="app.currentTime"
-                          data-in-datePattern="'h:mm:ss a zz, ddd MMM D'"
-                          className="orderBook-lastUpdatedTime pull-right">
-                        {/*{{app.currentTime}}*/}
-                    </span>
                 </h4>
 
                 <jspinclude page="../../include/help-popover.jsp">
