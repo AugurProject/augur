@@ -265,9 +265,6 @@ describe("utilities.unpack", function () {
 
 });
 
-var desc = abi.prefix_hex(abi.pad_right(abi.encode_hex("What will the high temperature (in degrees Fahrenheit) be in San Francisco, California, on July 1, 2016?")));
-console.log("desc:", desc)
-
 describe("utilities.sha256", function () {
     var test = function (t) {
         it(JSON.stringify(t.hashable) + " -> " + t.digest, function () {
