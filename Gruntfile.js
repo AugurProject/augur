@@ -72,6 +72,10 @@ module.exports = function (grunt) {
       less: {
         files: ['app/less/**/*.less'],
         tasks: ['less:build']
+      },
+      copy: {
+        files: ['app/index.html', 'app/iamges/*', 'app/css/*'],
+        tasks: ['newer:copy:main']
       }
     },
     copy: {
@@ -125,7 +129,8 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-newer');
 
   grunt.registerTask('default', ['jshint', 'browserify:build', 'less:build', 'copy']);
-  grunt.registerTask('watchify', ['browserify:debug', 'watch:less']);
+  grunt.registerTask('watch', ['browserify:debug', 'watch']);
 };

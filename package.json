@@ -85,6 +85,7 @@
     "grunt-contrib-jshint": "^0.11.2",
     "grunt-contrib-less": "1.1.0",
     "grunt-contrib-watch": "0.6.1",
+    "grunt-newer": "^1.1.1",
     "istanbul": "^0.4.1",
     "react-stylesheet": "0.6.1",
     "tap-spec": "^4.1.1",
