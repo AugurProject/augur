@@ -13,6 +13,7 @@ fi
 # rebuild
 npm install
 grunt browserify:build
+grunt less
 
 # run server
 npm start

@@ -22,7 +22,6 @@
     "noarg": true,
     "regexp": true,
     "regexdash": false,
-    "undef": true,
     "trailing": true,
     "white": true,
     "nonew": true,

@@ -13,7 +13,7 @@ config.envify.build = {
 config.browserify = {};
 config.browserify.build = {
   src: ['app/main.jsx'],
-  dest: 'app/app.js',
+  dest: 'target/app.js',
   options: {
     browserifyOptions: {
       extensions: ['.jsx', '.js'],
@@ -41,12 +41,11 @@ module.exports = function (grunt) {
     pkg: grunt.file.readJSON('package.json'),
     jshint: {
       files: [
-        '**/*.js',
-        '!**/*.min.js',
-        '!node_modules/**/*',
-        '!app/app.js',
+        'app/**/*.{js,jsx}',
+        '!app/libs/**/*.*'
       ],
       options: {
+        force: true, // don't stop the build because JSHint doesn't know about JSX => ESLint
         jshintrc: '.jshintrc'
       }
     },
@@ -64,8 +63,8 @@ module.exports = function (grunt) {
     less: {
       build: {
         files: {
-          'app/css/market-detail.css': 'app/less/public/market-detail.less',
-          'app/css/main.css': 'app/less/public/main.less'
+          'target/css/market-detail.css': 'app/less/public/market-detail.less',
+          'target/css/main.css': 'app/less/public/main.less'
         }
       }
     },
@@ -76,29 +75,49 @@ module.exports = function (grunt) {
       }
     },
     copy: {
-      assets: {
-        files: {
-          'app/css/bootstrap.css': 'node_modules/bootstrap/dist/css/bootstrap.css',
-          'app/css/bootstrap.css.map': 'node_modules/bootstrap/dist/css/bootstrap.css.map'
-        }
-      },
-      fonts: { // so much fonts
+      main: {
         files: [
           {
-            expand: true, // expand to use flatten (Remove all path parts from generated dest paths)
-            flatten: true,
-            src: 'node_modules/font-awesome/fonts/*.*',
-            dest: 'app/fonts/'
+            'target/index.html': 'app/index.html'
           },
           {
+            expand: true, // to use cwd
+            cwd: 'app/images',
+            src: '**',
+            dest: 'target/images/'
+          },
+          { // this should be later replaced by less
+            expand: true, // to use cwd
+            cwd: 'app/css',
+            src: '**',
+            dest: 'target/css/'
+          },
+          {
+            expand: true, // to use cwd
+            cwd: 'app/libs',
+            src: '**',
+            dest: 'target/libs/'},
+          {
+            'target/css/bootstrap.css': 'node_modules/bootstrap/dist/css/bootstrap.css'
+          },
+          {
+            'target/css/bootstrap.css.map': 'node_modules/bootstrap/dist/css/bootstrap.css.map'
+          },
+          {
+            src: 'node_modules/font-awesome/fonts/*.*',
+            dest: 'target/fonts/',
             expand: true, // expand to use flatten (Remove all path parts from generated dest paths)
-            flatten: true,
+            flatten: true
+          },
+          {
             src: 'node_modules/bootstrap/fonts/*.*',
-            dest: 'app/fonts/'
+            dest: 'target/fonts/',
+            expand: true, // expand to use flatten (Remove all path parts from generated dest paths)
+            flatten: true
           }
         ]
       }
-    }
+      }
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');

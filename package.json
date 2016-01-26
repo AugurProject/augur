@@ -37,7 +37,7 @@
     "async": "^1.4.2",
     "augur-abi": "^0.2.7",
     "augur-contracts": "^0.3.4",
-    "augur.js": "^0.13.12",
+    "augur.js": "^0.13.15",
     "babel-runtime": "^6.3.19",
     "babelify": "^6.3.0",
     "bignumber.js": "^2.1.4",
@@ -75,6 +75,7 @@
   "peerDependencies": {},
   "devDependencies": {
     "coveralls": "^2.11.6",
+    "firebase-tools": "^2.2.0",
     "flex.less": "https://github.com/codio/Flex.less/archive/1.0.0.tar.gz",
     "font-awesome": "4.5.0",
     "geth": "^0.2.2",

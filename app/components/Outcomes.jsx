@@ -140,35 +140,14 @@ var Overview = React.createClass({
         });
     },
     getDescription(market, outcome) {
-        let description;
-
-        if (market.type !== "combinatorial") {
-            // todo: this loop is strange but it was in code so maybe it's legit
-            for (var i = 0; i < market.numEvents; ++i) {
-                description = getOutcomeName(outcome.id, market.events[i]);
-            }
-        } else {
-            description = getOutcomeName(outcome.id, this.props.market);
-        }
-        return description;
+        return getOutcomeName(outcome.id, this.props.market);
     },
     getPercentageFormatted(market, outcome) {
         let percentageFormatted;
-        if (market.type !== "combinatorial") {
-            // todo: this loop is strange but it was in code so maybe it's legit
-            for (var i = 0; i < market.numEvents; ++i) {
-                if (market.events[i].type === "scalar") {
-                    percentageFormatted = +outcome.price.toFixed(2);
-                } else {
-                    percentageFormatted = priceToPercentage(outcome.price) + "%";
-                }
-            }
+        if (market.type === "scalar") {
+            percentageFormatted = +outcome.price.toFixed(2);
         } else {
-            if (market.type === "scalar") {
-                percentageFormatted = +outcome.price.toFixed(2);
-            } else {
-                percentageFormatted = priceToPercentage(outcome.price) + "%";
-            }
+            percentageFormatted = priceToPercentage(outcome.price) + "%";
         }
         return percentageFormatted;
     },

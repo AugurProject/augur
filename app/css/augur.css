@@ -1,37 +1,4 @@
-@font-face {
-    font-family: 'Core Mellow';
-    font-weight: 200;
-    src: url("/fonts/S-Core-CoreMellow15Thin.otf") format("opentype");
-}
-@font-face {
-    font-family: 'Core Mellow';
-    font-weight: 300;
-    src: url("/fonts/S-Core-CoreMellow25ExtraLight.otf") format("opentype");
-}
-}
-@font-face {
-    font-family: 'Core Mellow';
-    font-weight: 400;
-    src: url("/fonts/S-Core-CoreMellow35Light.otf") format("opentype");
-}
-@font-face {
-    font-family: 'Core Mellow';
-    font-weight: 500;
-    src: url("/fonts/S-Core-CoreMellow45Regular.otf") format("opentype");
-}
-@font-face {
-    font-family: 'Core Mellow';
-    font-weight: 600;
-    src: url("/fonts/S-Core-CoreMellow55Medium.otf") format("opentype");
-}
-@font-face {
-    font-family: 'Core Mellow';
-    font-weight: 700;
-    src: url("/fonts/S-Core-CoreMellow65Bold.otf") format("opentype");
-}
-
 h1 {
-    font-family: 'Core Mellow';
     font-size: 27px;
     font-weight: 400;
 }
@@ -385,7 +352,6 @@ nav.header .register {
 .sidebar .nav ul {
     list-style-type: none;
     line-height: 24pt;
-    /*font-family: 'Core Mellow';*/
     font-family: 'Open Sans';
     padding: 0px 12px;
     font-size: 12pt;
@@ -444,6 +410,9 @@ nav.header .register {
 .account .address {
     overflow: hidden;
     text-overflow: ellipsis;
+}
+.account {
+    color: #333333;
 }
 
 .network {
