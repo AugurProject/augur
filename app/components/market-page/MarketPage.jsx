@@ -38,6 +38,16 @@ let MarketPage = React.createClass({
             blockNumber
         };
     },
+    componentDidMount() {
+        this.stylesheetEl = document.createElement("link");
+        this.stylesheetEl.setAttribute("rel", "stylesheet");
+        this.stylesheetEl.setAttribute("type", "text/css");
+        this.stylesheetEl.setAttribute("href", "/css/market-detail.css");
+        document.getElementsByTagName("head")[0].appendChild(this.stylesheetEl);
+    },
+    componentWillUnmount() {
+        this.stylesheetEl.remove();
+    },
 
     render() {
         let market = this.state.market;
