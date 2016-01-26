@@ -11,3 +11,21 @@ Documentation
 -------------
 
 [http://docs.augur.net](http://docs.augur.net)
+
+How to run
+----------
+
+Install [Node.js](https://nodejs.org/).
+
+```
+git clone https://github.com/AugurProject/augur.git
+cd augur
+git checkout develop
+npm install
+grunt
+```
+
+Start the local web server
+```
+npm start
+```

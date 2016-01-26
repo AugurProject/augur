@@ -17,7 +17,7 @@ var ssl = {
     key: fs.readFileSync("key.pem"),
     cert: fs.readFileSync("cert.pem")
 };
-var file = new(nodeStatic.Server)("./app", {cache: 600});
+var file = new(nodeStatic.Server)("./target", {cache: 600});
 
 function log(str) {
     console.log(chalk.cyan.dim("[augur]"), str);
