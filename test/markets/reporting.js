@@ -181,9 +181,9 @@ describe("data and api/reporting", function () {
             //     data = ''.join(encode(x, 256, 32) for x in xs)
             //     hashed = int(sha256(data).hexdigest(), 16)
             //     if hashed > 2**255:
-            //         return hashed - 2**256
+            //         return hex(hashed - 2**256)
             //     else:
-            //         return hashed
+            //         return hex(hashed)
             var test = function (r) {
                 // var b = abi.fix(ballot);
                 // for (var i = 0, len = b.length; i < len; ++i) {

@@ -62331,7 +62331,7 @@ module.exports = new Augur();
 
 }).call(this,require('_process'))
 },{"./client/accounts":326,"./client/db":327,"./constants":328,"./filters":329,"./utilities":331,"_process":223,"async":6,"augur-abi":7,"augur-contracts":3,"bignumber.js":8,"clone":268,"ethereumjs-connect":332,"ethrpc":465,"ramble":636}],331:[function(require,module,exports){
-(function (process,__dirname){
+(function (process,Buffer,__dirname){
 "use strict";
 
 var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
@@ -62567,6 +62567,45 @@ module.exports = {
     },
 
     sha256: function (x) {
+        if (x && x.constructor === Array) {
+            var digest, cat = "";
+            for (var i = 0, n = x.length; i < n; ++i) {
+                if (x[i] !== null && x[i] !== undefined) {
+
+                    // array element is a javascript number
+                    // (base-10 numbers)
+                    if (x[i].constructor === Number) {
+                        x[i] = abi.bignum(x[i]);
+                        if (x[i].lt(new BigNumber(0))) {
+                            x[i] = x[i].add(abi.constants.MOD);
+                        }
+                        cat += abi.encode_int(x[i]);
+
+                    // array element is a string: text or hex
+                    } else if (x[i].constructor === String) {
+
+                        // negative hex
+                        if (x[i].slice(0,1) === '-') {
+                            x[i] = abi.bignum(x[i]).add(abi.constants.MOD).toFixed();
+                            cat += abi.encode_int(x[i]);
+
+                        // positive hex
+                        } else if (x[i].slice(0,2) === "0x") {
+                            cat += abi.pad_left(x[i].slice(2));
+
+                        // text string
+                        } else {
+                            cat += abi.encode_hex(x[i]);
+                        }
+                    }
+                }
+            }
+            digest = new BigNumber(this.sha256(new Buffer(cat, "hex")), 16);
+            if (digest.gt(new BigNumber(2).toPower(255))) {
+                return abi.hex(digest.sub(abi.constants.MOD), true);
+            }
+            return abi.hex(digest, true);
+        }
         return crypto.createHash("sha256").update(x).digest("hex");
     },
 
@@ -62597,8 +62636,8 @@ module.exports = {
 
 };
 
-}).call(this,require('_process'),"/src")
-},{"./constants":328,"_process":223,"assert":10,"augur-abi":7,"bignumber.js":8,"chalk":260,"crypto":25,"fs":9,"moment":322,"path":222,"validator":325}],332:[function(require,module,exports){
+}).call(this,require('_process'),require("buffer").Buffer,"/src")
+},{"./constants":328,"_process":223,"assert":10,"augur-abi":7,"bignumber.js":8,"buffer":256,"chalk":260,"crypto":25,"fs":9,"moment":322,"path":222,"validator":325}],332:[function(require,module,exports){
 (function (process){
 /**
  * Basic Ethereum connection tasks.
@@ -121767,6 +121806,43 @@ module.exports = {
             to: this.connector.contracts.comments,
             from: this.connector.from,
             method: "addComment",
+            signature: "ii",
+            send: true,
+            returns: "number",
+            invocation: {invoke: this.invoke, context: this.context}
+        };
+        var data = this.ipfs.Buffer(JSON.stringify(comment));
+        this.ipfs.add(data, function (err, files) {
+            if (self.debug) console.log("ipfs.add:", files);
+            if (err || !files || files.error) {
+                self.remote = self.remoteNodes[++self.remoteNodeIndex % NUM_NODES];
+                self.ipfs = ipfsAPI(self.remote);
+                return self.addMarketComment(comment, onSent, onSuccess, onFailed);
+            }
+            var ipfsHash = (files.constructor === Array) ? files[0].Hash : files.Hash;
+
+            // pin data to the active node
+            self.ipfs.pin.add(ipfsHash, function (err, pinned) {
+                if (self.debug) console.log("ipfs.pin.add:", pinned);
+                if (err) return onFailed(err);
+                tx.params = [
+                    abi.unfork(comment.marketId, true),
+                    abi.hex(multihash.decode(ipfsHash), true)
+                ];
+                self.rpc.transact(tx, function (res) {
+                    self.broadcastPin(data, ipfsHash);
+                    onSent(res);
+                }, onSuccess, onFailed);
+            });
+        });
+    },
+
+    addMetadata: function (metadata) {
+        var self = this;
+        var tx = {
+            to: this.connector.contracts.comments,
+            from: this.connector.from,
+            method: "addMetadata",
             signature: "ii",
             send: true,
             returns: "number",

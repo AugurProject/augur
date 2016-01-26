@@ -233,6 +233,45 @@ module.exports = {
     },
 
     sha256: function (x) {
+        if (x && x.constructor === Array) {
+            var digest, cat = "";
+            for (var i = 0, n = x.length; i < n; ++i) {
+                if (x[i] !== null && x[i] !== undefined) {
+
+                    // array element is a javascript number
+                    // (base-10 numbers)
+                    if (x[i].constructor === Number) {
+                        x[i] = abi.bignum(x[i]);
+                        if (x[i].lt(new BigNumber(0))) {
+                            x[i] = x[i].add(abi.constants.MOD);
+                        }
+                        cat += abi.encode_int(x[i]);
+
+                    // array element is a string: text or hex
+                    } else if (x[i].constructor === String) {
+
+                        // negative hex
+                        if (x[i].slice(0,1) === '-') {
+                            x[i] = abi.bignum(x[i]).add(abi.constants.MOD).toFixed();
+                            cat += abi.encode_int(x[i]);
+
+                        // positive hex
+                        } else if (x[i].slice(0,2) === "0x") {
+                            cat += abi.pad_left(x[i].slice(2));
+
+                        // text string
+                        } else {
+                            cat += abi.encode_hex(x[i]);
+                        }
+                    }
+                }
+            }
+            digest = new BigNumber(this.sha256(new Buffer(cat, "hex")), 16);
+            if (digest.gt(new BigNumber(2).toPower(255))) {
+                return abi.hex(digest.sub(abi.constants.MOD), true);
+            }
+            return abi.hex(digest, true);
+        }
         return crypto.createHash("sha256").update(x).digest("hex");
     },
 
