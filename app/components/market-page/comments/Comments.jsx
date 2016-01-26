@@ -47,7 +47,7 @@ let Comments = React.createClass({
 
                         {_.map(this.props.market.comments, function (comment) {
                             return <Comment
-                                key={ comment.ipfsHash || comment.time.toString() + comment.author }
+                                key={ comment.ipfsHash + comment.time.toString() + comment.author }
                                 comment={comment}/>;
                         })}
                     </div>
