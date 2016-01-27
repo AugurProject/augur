@@ -133,5 +133,5 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-newer');
 
   grunt.registerTask('default', ['jshint', 'browserify:build', 'less:build', 'copy']);
-  grunt.registerTask('watch', ['browserify:debug', 'watch']);
+  grunt.registerTask('develop', ['browserify:debug', 'watch']);
 };
