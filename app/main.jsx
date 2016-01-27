@@ -37,6 +37,7 @@ flux.augur = require("augur.js");
 var AugurApp = require("./components/AugurApp");
 var Overview = require("./components/Overview");
 var Branch = require("./components/Branch");
+var MarketsPage = require('./components/markets-page/MarketsPage.jsx');
 var MarketPage = require('./components/market-page/MarketPage.jsx');
 var Ballots = require("./components/Ballots");
 var Outcomes = require("./components/Outcomes");
@@ -50,8 +51,14 @@ var routes = (
   <Route name="app" handler={ AugurApp } flux={ flux }>
     <DefaultRoute handler={ Overview } flux={ flux } />
     <Route name="overview" path="/" handler={ Overview } flux={ flux } title="Overview" />
-    <Route name="markets" path="/markets" handler={ Branch } flux={ flux } title="Markets" />
-    <Route name="marketsPage" path="/markets/:page" handler={ Branch } flux={ flux } title="Markets" />
+    {/* could be probably easier but I don't know how now */}
+    <Route name="markets_expired" path="/markets/expired" handler={ MarketsPage } flux={ flux } title="Expired Markets">
+      <Route name="marketsPage_expired" path=":page" handler={ MarketsPage } flux={ flux } title="Expired Markets"/>
+    </Route>
+    <Route name="markets" path="/markets" handler={ MarketsPage } flux={ flux } title="Markets">
+      <Route name="marketsPage" path=":page" handler={ MarketsPage } flux={ flux } title="Markets" />
+    </Route>
+
     <Route name="market" path="/market/:marketId" handler={ MarketPage } flux={ flux } />
     <Route name="ballots" path="/ballots" handler={ Ballots } flux={ flux } title="Ballots" />
   </Route>

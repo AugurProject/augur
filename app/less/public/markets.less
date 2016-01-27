@@ -1,160 +1,45 @@
 @import (reference) "../../../node_modules/bootstrap/less/variables";
 @import (reference) "../../../node_modules/flex.less/flex";
-@import "../partials/utils";
-@import "../partials/labelValue";
-@import "../partials/contractImage";
-@import "../partials/list-group";
+//@import "../partials/utils";
+//@import "../partials/labelValue";
+//@import "../partials/contractImage";
+//@import "../partials/list-group";
 
-@height-marketsSearch: 25px;
-@contractImage-width: 34px;
+.marketsPage .market {
+    border-top: 1px solid #ddd;
+    padding: 15px 0;
+}
 
-@media (min-width: @screen-sm-min) {
-    .markets-recentEvents .markets-upAction {
-        display: none;
+.marketsPage .market .market-title {
+    .display(flex);
+    .align-items(flex-start);
+
+    h4 {
+        .flex(1);
+        padding-right: 6px;
     }
 
-    .list-group.list-group--noBorder {
-        .list-group-item {
-            border: 0;
+    .glyphicon {
+        color: #34495E;
+        padding-right: 8px;
+    }
+
+    @media (min-width: @screen-sm-min) {
+        .btn {
+            padding-left: 40px;
+            padding-right: 40px;
+            font-weight: bold;
         }
     }
-
-    .tab-content {
-        padding-top: 20px;
-    }
-
-    .markets-content .list-group-item {
-        border-radius: 0;
-        border-left: 0 none;
-        border-right: 0 none;
-        padding-right: 10px;
-    }
-
-    .markets-content .fa-chevron-right {
-        display: none;
-    }
 }
 
-[ui-view="contentView"] .title {
-    margin-bottom: 25px;
-}
-
-h2 {
-    // top is same as list-group-item
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-h4 {
+.marketsPage .market h4,
+.marketsPage .market .table,
+.marketsPage .market p {
     margin: 0;
 }
 
-h4 small {
-    font-weight: @font-weight-bolder;
-}
-
-.markets-upAction {
-    display: inline-block;
-    margin-bottom: 10px;
-}
-
-.markets-content .contractImage {
-    .contractImage-calculateDimensions(@contractImage-width);
-}
-
-.table.table-widen {
-    & tr {
-        & td {
-            height: 75px;
-            &:not(.text-right) .labelValue {
-                & .value {
-                    width: 70px;
-                    display: inline-block;
-                }
-            }
-        }
-    }
-}
-
-.markets-content .media {
-    border-bottom: 0 none;
-    padding-bottom: 0;
-}
-
-.markets-content .media-body,
-.markets-content .media-body table {
-    width: 100%;
-}
-
-.markets-search {
-    text-align: right;
-    margin-top: 25px;
-    margin-bottom: 25px;
-
-    input {
-        font-weight: @font-weight-normal;
-    }
-
-    .searchQueryWrapper--mobile {
-        display: none;
-    }
-
-    .form-group {
-        width: 100%;
-    }
-
-    .fa.fa-search {
-        color: @color-grey-light;
-    }
-
-    // sibling
-    #searchQueryInput:focus + label .fa.fa-search {
-        color: @color-grey-dark;
-    }
-
-}
-
-@media screen and (max-width: @screen-xs-max) {
-    h4, h4 small {
-        line-height: 1.1;
-    }
-
-    .markets-content .tab-title {
-        .display(flex);
-        .justify-content(space-between);
-    }
-
-    .markets-content .tab-title .fa-search {
-        // same as h2, but there is not variable
-        margin-top: 20px;
-    }
-
-    .markets-search {
-        text-align: left;
-
-        #searchForm,
-        .searchQueryWrapper--mobile {
-            display: none;
-        }
-
-        .fa.fa-search {
-            color: @color-grey-dark;
-        }
-
-        .searchQueryWrapper--mobile:focus {
-            border-color: @color-grey-dark;
-        }
-
-        .searchQueryWrapper--mobile.displayOnMobile {
-            display: block;
-            float: none;
-            padding: 15px;
-        }
-    }
-}
-
-.markets-content .fa-chevron-right {
-    .u-verticalAlign();
-    position: absolute;
-    right: 8px;
+.marketsPage .market .market-subtitle,
+.marketsPage .market .market-outcomes {
+    margin-top: 2px;
 }
