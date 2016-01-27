@@ -14,7 +14,6 @@ let Input = require('react-bootstrap/lib/Input');
 
 var utilities = require("../libs/utilities");
 var constants = require("../libs/constants");
-var Assets = require("./Assets");
 var SignInModal = require("./SignIn");
 var RegisterModal = require("./Register");
 var SendCashModal = require("./SendModal").SendCashModal;

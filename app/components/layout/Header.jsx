@@ -82,11 +82,6 @@ let Header = React.createClass({
                             rep {repBalance}
                         </a>
                     </li>
-                    <li>
-                        <a href="#" className="" onClick={this.handleSendEtherClick}>
-                            ether {etherBalance}
-                        </a>
-                    </li>
                 </ul>
             );
         } else {
