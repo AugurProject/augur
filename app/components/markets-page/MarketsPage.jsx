@@ -12,6 +12,7 @@ let Link = require("react-router/lib/components/Link");
 let constants = require("../../libs/constants");
 
 let MarketRow = require("./MarketRow");
+let AddMarketModal = require("../AddMarketModal");
 
 let MarketsPage = React.createClass({
 
@@ -20,6 +21,7 @@ let MarketsPage = React.createClass({
 
     getInitialState() {
         return {
+            addMarketModalOpen: false,
             marketsPerPage: constants.MARKETS_PER_PAGE,
             visiblePages: 3,
             pageNum: this.props.params.page ? this.props.params.page - 1 : 0
@@ -63,6 +65,10 @@ let MarketsPage = React.createClass({
         this.getFlux().actions.search.updateKeywords(val);
     }, 500),
 
+    toggleAddMarketModal: function (event) {
+        this.setState({addMarketModalOpen: !this.state.addMarketModalOpen});
+    },
+
     componentDidMount() {
         this.stylesheetEl = document.createElement("link");
         this.stylesheetEl.setAttribute("rel", "stylesheet");
@@ -82,6 +88,19 @@ let MarketsPage = React.createClass({
         let end = start + this.state.marketsPerPage;
         end = end > total ? total : end;
         let markets = _.map(this.state.markets).slice(start, end);
+
+        var submitMarketAction;
+        if (this.state.account) {
+            submitMarketAction = (
+                <span className="pull-right">
+                    <a href="javascript:void(0);" onClick={this.toggleAddMarketModal}>
+                        <i className="fa fa-plus-circle fa-2x"></i>
+                    </a>
+                </span>
+            );
+        } else {
+            submitMarketAction = <span />;
+        }
 
         return (
             <div className="marketsPage">
@@ -122,13 +141,16 @@ let MarketsPage = React.createClass({
                             <option value="description|0">Description</option>
                         </select>
                     </div>
-                    <div className="pull-right col-sm-4">
+                    <div className="col-sm-4">
                         <input type="search"
                                className="form-control markets-search-input"
-                               value={ this.state.searchKeywords }
+                               value={this.state.searchKeywords}
                                placeholder="Search"
                                tabIndex="0"
-                               onChange={ this.onChangeSearchInput }/>
+                               onChange={this.onChangeSearchInput} />
+                    </div>
+                    <div className="pull-right col-sm-2">
+                        {submitMarketAction}
                     </div>
                 </div>
                 <div className="row">
@@ -156,6 +178,9 @@ let MarketsPage = React.createClass({
                             />
                     </div>
                 </div>
+                <AddMarketModal
+                    show={this.state.addMarketModalOpen}
+                    onHide={this.toggleAddMarketModal} />
             </div>
         );
     }

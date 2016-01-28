@@ -1,7 +1,6 @@
 var _ = require("lodash");
 var React = require("react");
 var Paginate = require("react-paginate");
-var Select = require("react-select");
 
 let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");

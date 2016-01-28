@@ -359,7 +359,8 @@ test("ConfigActions.connect", function (t) {
         t.equal(flux.store("network").getState().ethereumStatus, expectedStatus, "network.state.ethereumStatus == " + expectedStatus);
     };
     flux.register.UPDATE_PERCENT_LOADED_SUCCESS = function (payload) {
-        t.equal(payload.percentLoaded, 100, "payload.percentLoaded == 100");
+        t.true(payload.percentLoaded > 0, "payload.percentLoaded > 0");
+        t.true(payload.percentLoaded <= 100, "payload.percentLoaded <= 100");
         flux.register.UPDATE_ETHEREUM_STATUS = UPDATE_ETHEREUM_STATUS;
         flux.register.UPDATE_PERCENT_LOADED_SUCCESS = UPDATE_PERCENT_LOADED_SUCCESS;
         UPDATE_PERCENT_LOADED_SUCCESS(payload);

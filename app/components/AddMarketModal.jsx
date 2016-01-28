@@ -26,6 +26,7 @@ var AddMarketModal = React.createClass({
     return {
       pageNumber: 1,
       marketText: '',
+      detailsText: '',
       plainMarketText: '',
       marketTextMaxLength: 256,
       marketTextCount: '',
@@ -41,7 +42,9 @@ var AddMarketModal = React.createClass({
       tab: 0,
       minValue: 1,
       maxValue: 2,
-      choices: ["", ""]
+      choices: ["", ""],
+      numResources: 0,
+      resources: []
     };
   },
 
@@ -59,22 +62,43 @@ var AddMarketModal = React.createClass({
   },
 
   onChangeMarketText: function (event) {
-
     var marketText = event.target.value;
-
     if (marketText.length) {
       this.state.marketTextCount = marketText.length.toString()+'/'+this.state.marketTextMaxLength.toString();
     } else {
       this.state.marketTextCount = '';
     }
-
     this.setState({marketTextError: null});
     this.setState({marketText: marketText});
     this.setState({plainMarketText: marketText});
   },
 
-  onChangeTradingFee: function (event) {
+  onChangeDetailsText: function (event) {
+    this.setState({detailsText: event.target.value});
+  },
 
+  onUploadImageFile: function (event) {
+    var self = this;
+    if (event.target && event.target.files && event.target.files.length) {
+      var imageFile = event.target.files[0];
+      var reader = new FileReader();
+      reader.onload = (function (f) {
+        return function (e) {
+          self.setState({imageDataURL: e.target.result});
+        };
+      })(imageFile);
+      reader.readAsDataURL(imageFile);
+    }
+  },
+
+  onChangeResourceText: function (event) {
+    var resources = this.state.resources;
+    var id = event.target.id;
+    resources[id.split('-')[1]] = event.target.value;
+    this.setState({resources: resources});
+  },
+
+  onChangeTradingFee: function (event) {
     var amount = event.target.value;
     if (!amount.match(/^[0-9]*\.?[0-9]*$/) ) {
       this.setState({tradingFeeError: 'invalid fee'});
@@ -108,7 +132,6 @@ var AddMarketModal = React.createClass({
   },
 
   onNext: function(event) {
-
     if (this.validatePage(this.state.pageNumber)) {
       var newPageNumber = this.state.pageNumber + 1;
       this.setState({pageNumber: newPageNumber});
@@ -116,9 +139,7 @@ var AddMarketModal = React.createClass({
   },
 
   validatePage: function(pageNumber) {
-
     if (pageNumber === 1) {
-
       if (this.state.marketText.length > this.state.marketTextMaxLength) {
         this.setState({marketTextError: 'Text exceeds the maximum length of ' + this.state.marketTextMaxLength});
         return false;
@@ -126,9 +147,7 @@ var AddMarketModal = React.createClass({
          this.setState({marketTextError: 'Please enter your question'});
         return false;       
       }
-
     } else if (pageNumber === 2) {
-
       if (this.state.tradingFee === '') {
         this.setState({ tradingFeeError: 'invalid fee' });
         return false;
@@ -136,18 +155,14 @@ var AddMarketModal = React.createClass({
         this.setState({ marketInvestmentError: 'invalid amount' });
         return false;
       }
-
       if (this.state.marketInvestmentError || this.state.tradingFeeError) return false;
-
     } else if (pageNumber === 3) {
-
       if (this.state.maturationDate === '') return false;
     }
     return true;
   },
 
   onHide: function() {
-
     this.setState(this.getInitialState());
     this.props.onHide();
   },
@@ -172,7 +187,7 @@ var AddMarketModal = React.createClass({
     flux.augur.createEvent({
       branchId: branchId,
       description: this.state.marketText,
-      expDate: utilities.dateToBlock(moment(this.state.maturationDate), block),
+      expirationBlock: utilities.dateToBlock(moment(this.state.maturationDate), block),
       minValue: this.state.minValue,
       maxValue: this.state.maxValue,
       numOutcomes: this.state.numOutcomes,
@@ -195,6 +210,18 @@ var AddMarketModal = React.createClass({
             events: events,
             onSent: function (r) {
               console.log("new market submitted:", r.txHash);
+              flux.augur.ramble.addMetadata({
+                marketId: r.callReturn,
+                image: self.state.imageDataURL,
+                details: self.state.detailsText,
+                links: self.state.resources
+              }, function (res) {
+                console.log("ramble.addMetadata sent:", res);
+              }, function (res) {
+                console.log("ramble.addMetadata success:", res);
+              }, function (err) {
+                console.error("ramble.addMetadata:", err);
+              });
             },
             onSuccess: function (r) {
               console.log("new market ID:", r.callReturn);
@@ -221,6 +248,14 @@ var AddMarketModal = React.createClass({
     this.setState({maturationDate: dateText});
   },
 
+  onAddResource: function (event) {
+    var numResources = this.state.numResources + 1;
+    var resources = this.state.resources;
+    resources.push('');
+    this.setState({numResources: numResources});
+    this.setState({resources: resources});
+  },
+
   onAddAnswer: function (event) {
     var numOutcomes = this.state.numOutcomes + 1;
     var choices = this.state.choices;
@@ -232,7 +267,6 @@ var AddMarketModal = React.createClass({
   onChangeAnswerText: function (event) {
     var choices = this.state.choices;
     var id = event.target.id;
-    console.log("id:", id, id.split('-')[1]);
     choices[id.split('-')[1]] = event.target.value;
     this.setState({choices: choices});
     if (choices.length > 2) {
@@ -336,6 +370,53 @@ var AddMarketModal = React.createClass({
       footer = (
         <div className='pull-right'>
           <Button bsStyle='default' onClick={ this.onBack }>Back</Button>
+          <Button bsStyle='primary' onClick={ this.onNext }>Next</Button>
+        </div>
+      );
+
+    } else if (this.state.pageNumber === 4) {
+
+      subheading = "Bells & whistles (optional)";
+
+      var numResources = this.state.numResources;
+      var resources = new Array(numResources);
+      var placeholderText, resourceId;
+      for (var i = 0; i < numResources; ++i) {
+        placeholderText = "External resource " + i;
+        resourceId = "resource-" + i
+        resources[i] = <Input
+            key={i}
+            id={resourceId}
+            type="text"
+            value={this.state.resources[i]}
+            placeholder={placeholderText}
+            onChange={this.onChangeResourceText} />;
+      }
+      page = (
+        <div>
+          <h5>{subheading}</h5>
+          <p>Enter a more detailed description of your market below.  If your question is simple or self-explanatory, feel free to leave this blank!</p>
+          <Input
+            type="textarea"
+            bsStyle={inputStyle}
+            value={this.state.detailsText}
+            placeholder="Optional: enter a more detailed description of your market."
+            onChange={this.onChangeDetailsText} />
+          <p>Upload an image to be displayed with your market.</p>
+          <Input
+            type="file"
+            id="imageFile"
+            onChange={this.onUploadImageFile} />
+          <p>Are there other resources people might find helpful in using and/or understanding your market?  For example, if your market is on who will win an election, you could include a link to the homepage of each candidate, or links to details of their positions.</p>
+          {resources}
+          <Button bsStyle="default" onClick={this.onAddResource}>
+            Add resource
+          </Button>
+        </div>
+      );
+      footer = (
+        <div className='pull-right'>
+          <Button bsStyle='default' onClick={ this.onBack }>Back</Button>
           <Button bsStyle='primary' onClick={ this.onSubmit }>Submit Market</Button>
         </div>
       );
@@ -370,13 +451,13 @@ var AddMarketModal = React.createClass({
               <p>Enter a <b>yes or no question</b> for the market to trade on.  This question should be easily verifiable and have an expiring date in the future.</p>
               <p>For example: "Will it rain in New York City on November 12, 2016?"</p>
               <Input
-                type='textarea'
-                help={ this.state.marketTextError }
-                bsStyle={ inputStyle }
-                value={ this.state.marketText }
+                type="textarea"
+                help={this.state.marketTextError}
+                bsStyle={inputStyle}
+                value={this.state.marketText}
                 placeholder="Will it rain in New York City on November 12, 2016?"
-                onChange={ this.onChangeMarketText } />
-              <span className="text-count pull-right">{ this.state.marketTextCount }</span>
+                onChange={this.onChangeMarketText} />
+              <span className="text-count pull-right">{this.state.marketTextCount}</span>
             </div>
           </TabPanel>
           <TabPanel>
