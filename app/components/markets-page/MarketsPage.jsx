@@ -52,6 +52,12 @@ let MarketsPage = React.createClass({
         this.debounceSearchInput(event.target.value);
     },
 
+    onChangeSortBy: function (event) {
+        this.handlePageChanged({selected: 0});
+        var sortInput = event.target.value.split('|');
+        this.getFlux().actions.search.sortMarkets(sortInput[0], parseInt(sortInput[1]));
+    },
+
     debounceSearchInput: _.debounce(function (val) {
         this.handlePageChanged({selected: 0});
         this.getFlux().actions.search.updateKeywords(val);
@@ -106,6 +112,16 @@ let MarketsPage = React.createClass({
                 </div>
 
                 <div className="row" style={{paddingTop: "8px", paddingBottom: "8px"}}>
+                    <div className="pull-left col-sm-4">
+                        <select onChange={this.onChangeSortBy}>
+                            <option selected disabled>Sort markets</option>
+                            <option value="creationBlock|1">Creation date (newest first)</option>
+                            <option value="creationBlock|0">Creation date (oldest first)</option>
+                            <option value="endBlock|0">End date (soonest first)</option>
+                            <option value="endBlock|1">End date (farthest first)</option>
+                            <option value="description|0">Description</option>
+                        </select>
+                    </div>
                     <div className="pull-right col-sm-4">
                         <input type="search"
                                className="form-control markets-search-input"
