@@ -43,7 +43,9 @@ stores.market.initialize = function () {
     constants.market.ADD_PENDING_MARKET_SUCCESS, this.handleAddPendingMarketSuccess,
     constants.market.ADD_MARKET_SUCCESS, this.handleAddMarketSuccess,
     constants.market.DELETE_MARKET_SUCCESS, this.handleDeleteMarketSuccess,
-    constants.market.MARKETS_LOADING, this.handleMarketsLoading
+    constants.market.MARKETS_LOADING, this.handleMarketsLoading,
+    constants.market.PRICE_HISTORY_LOADING, this.handlePriceHistoryLoading,
+    constants.market.LOAD_PRICE_HISTORY_SUCCESS, this.handleLoadPriceHistorySuccess
   );
 };
 stores.network.initialize = function () {

@@ -8,10 +8,19 @@ module.exports = {
     markets: {},
     pendingMarkets: {},
     marketLoadingIds: null,
-    loadingPage: null
+    loadingPage: null,
+    marketsPerPage: constants.MARKETS_PER_PAGE
   },
   getState: function () {
     return this.state;
+  },
+  getMarketsPerPage: function () {
+    return this.state.marketsPerPage;
+  },
+  getPriceHistoryStatus: function (marketId) {
+    var market = this.state.markets[marketId];
+    if (!market) return null;
+    return market.priceHistoryStatus;
   },
   getTrendingMarkets: function (number, currentBranch) {
     var nonMatureMarkets = _.reject(this.state.markets, function (market) {
@@ -70,6 +79,14 @@ module.exports = {
     if (payload.marketId && this.state.pendingMarkets[payload.marketId]) {
       delete this.state.pendingMarkets[payload.marketId];
     }
+  },
+  handlePriceHistoryLoading: function (payload) {
+    this.state.markets[payload.marketId].priceHistoryStatus = "loading";
+  },
+  handleLoadPriceHistorySuccess: function (payload) {
+    this.state.markets[payload.market.id].priceHistory = payload.priceHistory;
+    this.state.markets[payload.market.id].priceHistoryStatus = "complete";
+    this.emit(constants.CHANGE_EVENT);
   },
   marketIsLoaded: function (marketId) {
     var requiredProperties = ["id", "description", "price", "endDate"];

@@ -188,6 +188,9 @@ nav.header h1 > i {
     padding: 30px;
 }
 
+.navbar-right {
+    cursor: pointer;
+}
 nav.header .account {
     font-family: "Open Sans";
     font-size: 13px;

@@ -122,58 +122,74 @@ module.exports = {
   loadMarkets: function () {
     var self = this;
     var augur = this.flux.augur;
-    var chunk = 500;
+    var marketsPerPage = this.flux.store('market').getMarketsPerPage();
     var branchId = this.flux.store('branch').getCurrentBranch().id;
 
-    // get data from geth via RPC
+    // request data from geth via JSON RPC
+    var start = (new Date()).getTime();
+    var prevTime = start;
     augur.getCreationBlocks(branchId, function (creationBlock) {
-      augur.getPriceHistory(branchId, function (priceHistory) {
-        augur.getNumMarkets(branchId, function (numMarkets) {
-          var chunks = Math.ceil(numMarkets / parseFloat(chunk));
-          var range = new Array(chunks);
-          for (var i = 0; i < chunks; ++i) {
-            range[i] = i*chunk;
-          }
-          async.forEachOfSeries(range, function (offset, index, next) {
-            var numMarketsToLoad = (index + 1 === chunks) ? 0 : range[index + 1];
-            augur.getMarketsInfo({
-              branch: branchId,
-              offset: offset,
-              numMarketsToLoad: numMarketsToLoad,
-              combinatorial: true,
-              callback: function (marketsInfo) {
-                if (marketsInfo && !marketsInfo.error) {
-                  var blackmarkets = blacklist.markets[augur.network_id][branchId];
-                  var markets = {};
-                  async.eachSeries(marketsInfo, function (thisMarket, nextMarket) {
-                    if (creationBlock && creationBlock[thisMarket._id]) {
-                      thisMarket.creationBlock = creationBlock[thisMarket._id];
+      augur.getNumMarkets(branchId, function (numMarkets) {
+        numMarkets = parseInt(numMarkets);
+        var numPages = Math.ceil(numMarkets / parseFloat(marketsPerPage));
+        var range = new Array(numPages);
+        for (var i = 0; i < numPages; ++i) {
+          range[i] = i*marketsPerPage;
+        }
+        // console.log("marketsPerPage:", marketsPerPage);
+        // console.log("numMarkets:", numMarkets);
+        // console.log("numPages:", numPages);
+        // console.log("range:", range);
+        var markets = {};
+        async.forEachOfSeries(range, function (offset, index, next) {
+          var numMarketsToLoad = (index+1 === numPages) ? numMarkets - range[index] : marketsPerPage;
+          // console.log("index:", index);
+          // console.log("offset:", offset);
+          // console.log("numMarketsToLoad:", numMarketsToLoad);
+          augur.getMarketsInfo({
+            branch: branchId,
+            offset: offset,
+            numMarketsToLoad: numMarketsToLoad,
+            callback: function (marketsInfo) {
+              if (marketsInfo && !marketsInfo.error) {
+                var blackmarkets = blacklist.markets[augur.network_id][branchId];
+                async.eachSeries(marketsInfo, function (thisMarket, nextMarket) {
+                  // console.log("marketId:", thisMarket._id);
+                  if (creationBlock && creationBlock[thisMarket._id]) {
+                    thisMarket.creationBlock = creationBlock[thisMarket._id];
+                  }
+                  self.flux.actions.market.parseMarketInfo(thisMarket, function (marketInfo) {
+                    if (marketInfo && marketInfo.id) {
+                      markets[marketInfo.id] = marketInfo;
                     }
-                    if (priceHistory && priceHistory[thisMarket._id]) {
-                      thisMarket.priceHistory = priceHistory[thisMarket._id];
-                    }
-                    self.flux.actions.market.parseMarketInfo(thisMarket, function (marketInfo) {
-                      if (marketInfo && marketInfo.id) {
-                        markets[marketInfo.id] = marketInfo;
-                      }
-                      nextMarket();
-                    });
-                  }, function (err) {
-                    if (err) console.error(err);
-
-                    // save markets to MarketStore
-                    self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {markets: markets});
-
-                    // loading complete!
-                    self.dispatch(constants.market.MARKETS_LOADING, {loadingPage: null});
-                    self.flux.actions.config.updatePercentLoaded(100 * (index + 1) / chunks);
+                    nextMarket();
                   });
-                } else {
-                  console.error("couldn't retrieve markets info:", marketsInfo);
-                }
+                }, function (err) {
+                  if (err) return next(err);
+                  console.debug("page", index, "loaded in", ((new Date()).getTime() - prevTime) / 1000, "seconds");
+                  prevTime = (new Date()).getTime();
+
+                  // save markets to MarketStore
+                  self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {markets: markets});
+                  self.flux.actions.config.updatePercentLoaded(100 * (index + 1) / numPages);
+
+                  self.dispatch(constants.market.MARKETS_LOADING, {loadingPage: null});
+
+                  // fetch next page of markets
+                  next();
+                });
+              } else {
+                console.error("couldn't retrieve markets info:", marketsInfo);
               }
-            });
+            }
           });
+        }, function (err) {
+          if (err) return console.error("loadMarkets:", err);
+
+          // loading complete!
+          console.debug("all markets loaded in", ((new Date()).getTime() - start) / 1000, "seconds");
+          // self.dispatch(constants.market.MARKETS_LOADING, {loadingPage: null});
+          // self.flux.actions.config.updatePercentLoaded(100);
         });
       });
     });
@@ -187,27 +203,41 @@ module.exports = {
     augur.getMarketCreationBlock(marketId, function (creationBlock) {
       augur.getMarketPriceHistory(marketId, function (priceHistory) {
         augur.getMarketInfo(marketId, function (marketInfo) {
-          if (marketInfo && !marketInfo.error) {
-            var markets = self.flux.store('market').getState().markets;
-            if (creationBlock) marketInfo.creationBlock = creationBlock;
-            if (priceHistory) marketInfo.priceHistory = priceHistory;
-            marketInfo.branchId = branchId;
-            self.flux.actions.market.parseMarketInfo(marketInfo, function (parsedInfo) {
-              markets[parsedInfo.id] = parsedInfo;
-
-              // save markets to MarketStore
-              self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, { markets: markets });
-
-              // loading complete!
-              self.dispatch(constants.market.MARKETS_LOADING, { loadingPage: null });
-              self.flux.actions.config.updatePercentLoaded(100);
-            });
-          } else {
-            console.error("loadMarket error:", marketInfo);
+          if (!marketInfo || marketInfo.error) {
+            return console.error("loadMarket:", marketInfo);
           }
+          var markets = self.flux.store('market').getState().markets;
+          if (creationBlock) marketInfo.creationBlock = creationBlock;
+          if (priceHistory) marketInfo.priceHistory = priceHistory;
+          marketInfo.branchId = branchId;
+          self.flux.actions.market.parseMarketInfo(marketInfo, function (parsedInfo) {
+            markets[parsedInfo.id] = parsedInfo;
+
+            // save markets to MarketStore
+            self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, { markets: markets });
+
+            // loading complete!
+            self.dispatch(constants.market.MARKETS_LOADING, { loadingPage: null });
+            self.flux.actions.config.updatePercentLoaded(100);
+          });
         });
       });
     });
+  },
+
+  loadPriceHistory: function (market) {
+    var self = this;
+    if (!this.flux.store("market").getPriceHistoryStatus(market.id)) {
+      this.dispatch(constants.market.PRICE_HISTORY_LOADING, {marketId: market.id});
+      this.flux.augur.getMarketPriceHistory(market._id, function (priceHistory) {
+        if (priceHistory) {
+          if (priceHistory.error) {
+            return console.error("loadPriceHistory:", priceHistory);
+          }
+          self.dispatch(constants.market.LOAD_PRICE_HISTORY_SUCCESS, {market, priceHistory});
+        }
+      });
+    }
   },
 
   batch: function (commands) {

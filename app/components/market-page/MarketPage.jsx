@@ -17,6 +17,10 @@ let UserFrozenFundsTab = require('./UserFrozenFundsTab');
 let MarketPage = React.createClass({
     mixins: [FluxMixin, StoreWatchMixin('branch', 'market', 'config')],
 
+    getInitialState: function () {
+        return {priceHistoryTimeout: null};
+    },
+
     getStateFromFlux: function () {
         let flux = this.getFlux();
 
@@ -27,7 +31,8 @@ let MarketPage = React.createClass({
         let handle = flux.store('config').getHandle();
         let blockNumber = flux.store('network').getState().blockNumber;
 
-        if (currentBranch && market && market.tradingPeriod && currentBranch.currentPeriod >= market.tradingPeriod.toNumber()) {
+        if (currentBranch && market && market.tradingPeriod &&
+            currentBranch.currentPeriod >= market.tradingPeriod.toNumber()) {
             market.matured = true;
         }
 
@@ -39,6 +44,7 @@ let MarketPage = React.createClass({
         };
     },
     componentDidMount() {
+        this.getPriceHistory();
         this.stylesheetEl = document.createElement("link");
         this.stylesheetEl.setAttribute("rel", "stylesheet");
         this.stylesheetEl.setAttribute("type", "text/css");
@@ -47,6 +53,18 @@ let MarketPage = React.createClass({
     },
     componentWillUnmount() {
         this.stylesheetEl.remove();
+    },
+
+    getPriceHistory() {
+        var market = this.state.market;
+        if (this.state.priceHistoryTimeout) {
+            clearTimeout(this.state.priceHistoryTimeout);
+        }
+        if (market && market.constructor === Object && market._id &&
+            !market.priceHistory && !market.priceHistoryStatus) {
+            return this.getFlux().actions.market.loadPriceHistory(market);
+        }
+        this.setState({priceHistoryTimeout: setTimeout(this.getPriceHistory, 2500)});
     },
 
     render() {

@@ -39,9 +39,6 @@ module.exports = {
   asset: keyMirror({
     UPDATE_ASSETS: null
   }),
-  log: keyMirror({
-    UPDATE_LOG: null
-  }),
   branch: keyMirror({
     LOAD_BRANCHES_SUCCESS: null,
     SET_CURRENT_BRANCH_SUCCESS: null,
@@ -56,7 +53,9 @@ module.exports = {
     ADD_PENDING_MARKET_SUCCESS: null,
     ADD_MARKET_SUCCESS: null,
     DELETE_MARKET_SUCCESS: null,
-    MARKETS_LOADING: null
+    MARKETS_LOADING: null,
+    PRICE_HISTORY_LOADING: null,
+    LOAD_PRICE_HISTORY_SUCCESS: null
   }),
   search: keyMirror({
     KEYWORDS_UPDATED: null,
