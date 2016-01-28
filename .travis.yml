@@ -19,8 +19,6 @@ addons:
 
 before_script:
   - npm install
-  - npm install jshint
 
 script:
-  - npm run lint
   - npm run coverage
