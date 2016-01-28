@@ -81,8 +81,6 @@ let MarketsPage = React.createClass({
     },
 
     render() {
-        let market = this.props.market;
-
         let start = this.state.pageNum * this.state.marketsPerPage;
         let total = _.size(this.state.markets);
         let end = start + this.state.marketsPerPage;
@@ -104,7 +102,6 @@ let MarketsPage = React.createClass({
 
         return (
             <div className="marketsPage">
-                <link rel="stylesheet" href="/css/markets.css" />
                 <h1>Markets</h1>
 
                 <div className="row submenu">
