@@ -109,7 +109,9 @@ describe("Creation blocks", function () {
 
     it("getCreationBlocks(" + branch + ")", function (done) {
         this.timeout(constants.TIMEOUT);
+        var start = (new Date()).getTime();
         augur.getCreationBlocks(branch, function (blocks) {
+            console.log("getCreationBlocks:", ((new Date()).getTime() - start) / 1000, "seconds");
             assert.isObject(blocks);
             assert.property(blocks, market_id);
             assert.isNumber(blocks[market_id]);
@@ -120,7 +122,9 @@ describe("Creation blocks", function () {
 
     it("getMarketCreationBlock(" + market_id + ")", function (done) {
         this.timeout(constants.TIMEOUT);
+        var start = (new Date()).getTime();
         augur.getMarketCreationBlock(market_id, function (blockNumber) {
+            console.log("getMarketCreationBlock:", ((new Date()).getTime() - start) / 1000, "seconds");
             assert.isNumber(blockNumber);
             assert.isAbove(blockNumber, 0);
             done();
@@ -162,8 +166,10 @@ describe("Price history", function () {
 
     it("getPriceHistory(" + branch + ")", function (done) {
         this.timeout(constants.TIMEOUT);
+        var start = (new Date()).getTime();
         augur.getPriceHistory(branch, function (priceHistory) {
-            if (priceHistory.error) done(priceHistory);
+            console.log("getPriceHistory:", ((new Date()).getTime() - start) / 1000, "seconds");
+            assert.notProperty(priceHistory, "error");
             assert.isObject(priceHistory);
             if (!process.env.CONTINUOUS_INTEGRATION) {
                 assert.property(priceHistory, market_id);
@@ -184,7 +190,9 @@ describe("Price history", function () {
 
     it("[async] getMarketPriceHistory(" + market_id + ")", function (done) {
         this.timeout(constants.TIMEOUT);
+        var start = (new Date()).getTime();
         augur.getMarketPriceHistory(market_id, function (priceHistory) {
+            console.log("[async] getMarketPriceHistory:", ((new Date()).getTime() - start) / 1000, "seconds");
             assert.isObject(priceHistory);
             for (var k in priceHistory) {
                 if (!priceHistory.hasOwnProperty(k)) continue;
@@ -207,7 +215,9 @@ describe("Price history", function () {
 
     it("[sync] getMarketPriceHistory(" + market_id + ")", function () {
         this.timeout(constants.TIMEOUT);
+        var start = (new Date()).getTime();
         var priceHistory = augur.getMarketPriceHistory(market_id);
+        console.log("[sync] getMarketPriceHistory:", ((new Date()).getTime() - start) / 1000, "seconds");
         assert.isObject(priceHistory);
         for (var k in priceHistory) {
             if (!priceHistory.hasOwnProperty(k)) continue;
@@ -228,7 +238,9 @@ describe("Price history", function () {
 
     it("[async] getOutcomePriceHistory(" + market_id + "," + outcome + ")", function (done) {
         this.timeout(constants.TIMEOUT);
+        var start = (new Date()).getTime();
         augur.getOutcomePriceHistory(market_id, outcome, function (logs) {
+            console.log("[sync] getOutcomePriceHistory:", ((new Date()).getTime() - start) / 1000, "seconds");
             assert.isArray(logs);
             if (!process.env.CONTINUOUS_INTEGRATION) {
                 assert.property(logs, "length");

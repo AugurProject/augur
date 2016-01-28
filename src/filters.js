@@ -56,7 +56,7 @@ module.exports = function () {
         },
 
         search_price_logs: function (logs, market_id, outcome_id) {
-            // topics: [?, user, unadjusted marketid, outcome]
+            // topics: [label, user, unadjusted marketid, outcome]
             // array data: [price, cost]
             if (!logs || !market_id || !outcome_id) return;
             var parsed, price_logs, market, marketplus;
