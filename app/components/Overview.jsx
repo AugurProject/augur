@@ -17,7 +17,7 @@ var constants = require("../libs/constants");
 
 var ImportAccountModal = require("./ImportAccount");
 var CloseMarketModal = require("./CloseMarket").CloseMarketModal;
-var Markets = require("./Markets");
+let MarketRow = require("./markets-page/MarketRow");
 var Branch = require("./Branch");
 
 var Overview = React.createClass({
@@ -97,11 +97,12 @@ var Overview = React.createClass({
           <div>
             <h4 className="trending">Trending Markets</h4>
             <div className='row'>
-              <Markets 
-                markets={ this.state.trendingMarkets }
-                currentBranch={ this.state.currentBranch }
-                classNameWrapper='col-sm-4' />
+              <div className="col-xs-12">
+                  {_.map(this.state.trendingMarkets, market => {
+                    return <MarketRow key={market.id} market={market} />;
+                  })}
               </div>
+            </div>
           </div>
         );
       }
@@ -208,11 +209,12 @@ var Overview = React.createClass({
           <div>
             <h4 className="trending">Trending Markets</h4>
             <div className='row'>
-              <Markets 
-                markets={ this.state.trendingMarkets }
-                currentBranch={ this.state.currentBranch }
-                classNameWrapper='col-sm-4' />
+              <div className="col-xs-12">
+                {_.map(this.state.trendingMarkets, market => {
+                  return <MarketRow key={market.id} market={market} />;
+                })}
               </div>
+            </div>
           </div>
         );
       }
