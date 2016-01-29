@@ -2046,6 +2046,22 @@ Augur.prototype.getAccountTrades = function (account, cb) {
     });
 };
 
+Augur.prototype.getAccountMeanTradePrices = function (account, cb) {
+    var self = this;
+    if (!this.utils.is_function(cb)) return;
+    this.getAccountTrades(account, function (trades) {
+        if (!trades) return cb(null);
+        if (trades.error) return (trades);
+        var meanPrices = {buy: {}, sell: {}};
+        for (var marketId in trades) {
+            if (!trades.hasOwnProperty(marketId)) continue;
+            meanPrices.buy[marketId] = self.meanTradePrice(trades[marketId]);
+            meanPrices.sell[marketId] = self.meanTradePrice(trades[marketId], true);
+        }
+        cb(meanPrices);
+    });
+};
+
 /**
  * Batch interface:
  * var b = augur.createBatch();

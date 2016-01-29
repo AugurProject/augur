@@ -606,6 +606,23 @@ describe("Account trade list", function () {
         }
     });
 
+    it("getAccountMeanTradePrices(" + account + ")", function (done) {
+        this.timeout(constants.TIMEOUT);
+        augur.getAccountMeanTradePrices(account, function (meanPrices) {
+            for (var bs in meanPrices) {
+                if (!meanPrices.hasOwnProperty(bs)) continue;
+                for (var marketId in meanPrices[bs]) {
+                    if (!meanPrices[bs].hasOwnProperty(marketId)) continue;
+                    for (var outcomeId in meanPrices[bs][marketId]) {
+                        if (!meanPrices[bs][marketId].hasOwnProperty(outcomeId)) continue;
+                        assert.isAbove(abi.number(meanPrices[bs][marketId][outcomeId]), 0);
+                    }
+                }
+            }
+            done();
+        });
+    });
+
 });
 
 if (!process.env.CONTINUOUS_INTEGRATION) {
