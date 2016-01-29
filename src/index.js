@@ -1982,6 +1982,46 @@ Augur.prototype.getMarketCreationBlock = function (market, cb) {
     });
 };
 
+Augur.prototype.getAccountTrades = function (account, cb) {
+    var self = this;
+    if (!account || !this.utils.is_function(cb)) return;
+    this.filters.eth_getLogs({
+        fromBlock: "0x1",
+        toBlock: "latest",
+        address: this.contracts.buyAndSellShares,
+        topics: ["updatePrice", abi.format_address(account), null, null]
+    }, function (logs) {
+        if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
+            return cb(null);
+        }
+        if (logs.error) return cb(logs);
+        var market, outcome, parsed, price, cost, trades = {};
+        for (var i = 0, n = logs.length; i < n; ++i) {
+            if (logs[i] && logs[i].data !== undefined &&
+                logs[i].data !== null && logs[i].data !== "0x") {
+                market = logs[i].topics[2];
+                outcome = abi.number(logs[i].topics[3]);
+                if (!trades[market]) trades[market] = {};
+                if (!trades[market][outcome]) trades[market][outcome] = [];
+                parsed = rpc.unmarshal(logs[i].data);
+                price = abi.unfix(parsed[0]);
+                cost = abi.unfix(parsed[1]);
+                if (price && cost) {
+                    trades[market][outcome].push({
+                        market: abi.hex(market), // re-fork
+                        price: price.toFixed(),
+                        cost: cost.toFixed(),
+                        // number of shares = -price / cost
+                        shares: price.dividedBy(cost).mul(new BigNumber(-1)).toFixed(),
+                        blockNumber: parseInt(logs[i].blockNumber)
+                    });
+                }
+            }
+        }
+        cb(trades);
+    });
+};
+
 /**
  * Batch interface:
  * var b = augur.createBatch();

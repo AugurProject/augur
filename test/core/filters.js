@@ -274,6 +274,35 @@ describe("Price history", function () {
 
 });
 
+describe("Account trade list", function () {
+
+    var account = augur.coinbase;
+
+    it("getAccountTrades(" + account + ")", function (done) {
+        this.timeout(constants.TIMEOUT);
+        augur.getAccountTrades(account, function (trades) {
+            for (var marketId in trades) {
+                if (!trades.hasOwnProperty(marketId)) continue;
+                for (var outcomeId in trades[marketId]) {
+                    if (!trades[marketId].hasOwnProperty(outcomeId)) continue;
+                    assert.isArray(trades[marketId][outcomeId]);
+                    for (var i = 0; i < trades[marketId][outcomeId].length; ++i) {
+                        assert.property(trades[marketId][outcomeId][i], "price");
+                        assert.property(trades[marketId][outcomeId][i], "cost");
+                        assert.property(trades[marketId][outcomeId][i], "blockNumber");
+                        assert.property(trades[marketId][outcomeId][i], "market");
+                        assert.property(trades[marketId][outcomeId][i], "shares");
+                        assert.isAbove(trades[marketId][outcomeId][i].market.length, 64);
+                        assert.isAbove(trades[marketId][outcomeId][i].blockNumber, 0);
+                    }
+                }
+            }
+            done();
+        });
+    });
+
+});
+
 if (!process.env.CONTINUOUS_INTEGRATION) {
 
     describe("Price listener", function () {
