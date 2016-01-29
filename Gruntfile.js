@@ -74,7 +74,7 @@ module.exports = function (grunt) {
         tasks: ['less:build']
       },
       copy: {
-        files: ['app/index.html', 'app/iamges/*', 'app/css/*'],
+        files: ['app/index.html', 'app/iamges/*', 'app/css/*', 'app/libs/*'],
         tasks: ['newer:copy:main']
       }
     },
