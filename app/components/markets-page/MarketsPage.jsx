@@ -1,5 +1,6 @@
 let React = require('react');
 let _ = require("lodash");
+let moment = require("moment");
 
 let Paginate = require("react-paginate");
 
@@ -45,7 +46,7 @@ let MarketsPage = React.createClass({
     },
 
     handlePageChanged: function (data) {
-        this.transitionTo('marketsPage', {page: (parseInt(data.selected) + 1)});
+        this.transitionTo('markets', null, {page: (parseInt(data.selected) + 1), expired: this.props.query.expired});
         this.setState({pageNum: data.selected});
     },
 
@@ -79,13 +80,51 @@ let MarketsPage = React.createClass({
     componentWillUnmount() {
         this.stylesheetEl.remove();
     },
+    componentWillReceiveProps(nextProps) {
+        if (this.props.query.expired !== nextProps.query.expired) {
+            // when switching from one tab to another restart pagination
+            this.setState(_.merge({}, this.state, {
+                pageNum: 0
+            }));
+        }
+    },
+
+    /**
+     * Returns filtered markets (expired or not) and data for pagination
+     * todo: filtering logic should probably be part of SearchStore ?
+     */
+    _getMarketsData() {
+        let filteredMarkets = _(this.state.markets)
+            .filter((market => {
+                // todo: how do I know it's expired?
+                if (market.endDate == null) {
+                    return true;
+                }
+
+                if (this.props.query.expired === "true") {
+                    return market.endDate.isSameOrBefore(moment());
+                } else {
+                    return market.endDate.isAfter(moment());
+                }
+            }));
+
+        let firstItemIndex = this.state.pageNum * this.state.marketsPerPage;
+        let marketsCount = filteredMarkets.size();
+        let lastItemIndex = firstItemIndex + this.state.marketsPerPage;
+        lastItemIndex = (lastItemIndex > marketsCount ? marketsCount : lastItemIndex);
+
+        let markets = filteredMarkets
+            .map()
+            .slice(firstItemIndex, lastItemIndex)
+            .value();
+
+        return {
+            markets, marketsCount, firstItemIndex, lastItemIndex
+        };
+    },
 
     render() {
-        let start = this.state.pageNum * this.state.marketsPerPage;
-        let total = _.size(this.state.markets);
-        let end = start + this.state.marketsPerPage;
-        end = end > total ? total : end;
-        let markets = _.map(this.state.markets).slice(start, end);
+        let {markets, marketsCount, firstItemIndex, lastItemIndex} = this._getMarketsData();
 
         var submitMarketAction;
         if (this.state.account) {
@@ -100,6 +139,27 @@ let MarketsPage = React.createClass({
             submitMarketAction = <span />;
         }
 
+        let pagination = (
+            <div className="row">
+                <div className="col-xs-12">
+                    <span className='showing'>Showing { firstItemIndex + 1 } - { lastItemIndex } of { marketsCount }</span>
+                    <Paginate
+                        previousLabel={ <i className='fa fa-chevron-left'></i> }
+                        nextLabel={ <i className='fa fa-chevron-right'></i> }
+                        breakLabel={ <li className="break"><a href="">...</a></li> }
+                        pageNum={ marketsCount / this.state.marketsPerPage }
+                        marginPagesDisplayed={ 2 }
+                        pageRangeDisplayed={ 5 }
+                        forceSelected={ this.state.pageNum }
+                        clickCallback={ this.handlePageChanged }
+                        containerClassName={ 'paginator' }
+                        subContainerClassName={ 'pages' }
+                        activeClass={ 'active' }
+                        />
+                </div>
+            </div>
+        );
+
         return (
             <div className="marketsPage">
                 <h1>Markets</h1>
@@ -113,13 +173,13 @@ let MarketsPage = React.createClass({
 
                     <div id="collapseSubmenu" className="col-xs-12 collapse" aria-expanded="false">
                         <ul className="list-group" role="tablist" id="tabpanel">
-                            <li role="presentation" className="list-group-item">
-                                <Link to='markets' role="tab">
+                            <li role="presentation" className={`list-group-item ${this.props.query.expired !== 'true' ? 'active' : ''}`}>
+                                <Link to='markets' role="tab" activeClassName="">
                                     Open Markets
                                 </Link>
                             </li>
-                            <li role="presentation" className="list-group-item">
-                                <Link to="markets_expired" role="tab">
+                            <li role="presentation" className={`list-group-item ${this.props.query.expired === 'true' ? 'active' : ''}`}>
+                                <Link to="markets" activeClassName="" query={{expired: true}} role="tab">
                                     Expired Markets
                                 </Link>
                             </li>
@@ -144,12 +204,13 @@ let MarketsPage = React.createClass({
                                value={this.state.searchKeywords}
                                placeholder="Search"
                                tabIndex="0"
-                               onChange={this.onChangeSearchInput} />
+                               onChange={this.onChangeSearchInput}/>
                     </div>
                     <div className="pull-right col-sm-2">
                         {submitMarketAction}
                     </div>
                 </div>
+                { pagination }
                 <div className="row">
                     <div className="col-xs-12">
                         {markets.map(market => {
@@ -157,27 +218,9 @@ let MarketsPage = React.createClass({
                         })}
                     </div>
                 </div>
-                <div className="row">
-                    <div className="col-xs-12">
-                        <span className='showing'>Showing { start + 1 } - { end } of { total }</span>
-                        <Paginate
-                            previousLabel={ <i className='fa fa-chevron-left'></i> }
-                            nextLabel={ <i className='fa fa-chevron-right'></i> }
-                            breakLabel={ <li className="break"><a href="">...</a></li> }
-                            pageNum={ total / this.state.marketsPerPage }
-                            marginPagesDisplayed={ 2 }
-                            pageRangeDisplayed={ 5 }
-                            forceSelected={ this.state.pageNum }
-                            clickCallback={ this.handlePageChanged }
-                            containerClassName={ 'paginator' }
-                            subContainerClassName={ 'pages' }
-                            activeClass={ 'active' }
-                            />
-                    </div>
-                </div>
-                <AddMarketModal
+                { pagination }                <AddMarketModal
                     show={this.state.addMarketModalOpen}
-                    onHide={this.toggleAddMarketModal} />
+                    onHide={this.toggleAddMarketModal}/>
             </div>
         );
     }

@@ -52,12 +52,7 @@ var routes = (
     <DefaultRoute handler={ Overview } flux={ flux } />
     <Route name="overview" path="/" handler={ Overview } flux={ flux } title="Overview" />
     {/* could be probably easier but I don't know how now */}
-    <Route name="markets_expired" path="/markets/expired" handler={ MarketsPage } flux={ flux } title="Expired Markets">
-      <Route name="marketsPage_expired" path=":page" handler={ MarketsPage } flux={ flux } title="Expired Markets"/>
-    </Route>
-    <Route name="markets" path="/markets" handler={ MarketsPage } flux={ flux } title="Markets">
-      <Route name="marketsPage" path=":page" handler={ MarketsPage } flux={ flux } title="Markets" />
-    </Route>
+    <Route name="markets" path="/markets" handler={ MarketsPage } flux={ flux } title="Markets" />
 
     <Route name="market" path="/market/:marketId" handler={ MarketPage } flux={ flux } />
     <Route name="ballots" path="/ballots" handler={ Ballots } flux={ flux } title="Ballots" />
@@ -65,5 +60,5 @@ var routes = (
 );
 
 Router.run(routes, Router.HistoryLocation, function (Handler, state) {
-  ReactDOM.render(<Handler flux={ flux } params={ state.params } />, document.getElementById("render-target"));
+  ReactDOM.render(<Handler flux={ flux } params={ state.params } query={state.query} />, document.getElementById("render-target"));
 });
