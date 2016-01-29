@@ -142,7 +142,6 @@ var RegisterModal = React.createClass({
             </div>
             <div className="col-sm-12">
               <Input
-                label="Remember Me"
                 type="checkbox"
                 name="persist"
                 id="persist-checkbox"
