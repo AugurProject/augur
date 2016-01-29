@@ -281,12 +281,11 @@ nav.header .register {
 }
 
 .markets-list {
-    color: #fff;
+    color: #333333;
     font-size: 11pt;
-    background-color: rgba(0, 0, 0, 0.33);
 }
 .markets-list a {
-    color: #fff;
+    color: #333333;
 }
 .markets-list-header {
     border-bottom: 1px solid #474545;
@@ -303,7 +302,7 @@ nav.header .register {
     margin-left: 0;
 }
 .markets-list-row:hover {
-    background-color: #777;
+    background-color: #EFFBF8;
 }
 
 .event-outcomes {

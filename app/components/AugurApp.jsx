@@ -18,7 +18,6 @@ var SignInModal = require("./SignIn");
 var RegisterModal = require("./Register");
 var SendCashModal = require("./SendModal").SendCashModal;
 var SendRepModal = require("./SendModal").SendRepModal;
-var SendEtherModal = require("./SendModal").SendEtherModal;
 let Header = require("./layout/Header.jsx");
 
 
@@ -36,7 +35,6 @@ var AugurApp = React.createClass({
       repFaucetDisabled: false,
       sendCashModalOpen: false,
       sendRepModalOpen: false,
-      sendEtherModalOpen: false,
       status: 'stopped'
     };
   },
@@ -93,16 +91,9 @@ var AugurApp = React.createClass({
      this.setState({sendRepModalOpen: !this.state.sendRepModalOpen});
   },
 
-  toggleSendEtherModal: function() {
-     this.setState({sendEtherModalOpen: !this.state.sendEtherModalOpen});
-  },
-
   render: function () {
     return (
       <div id="app" className={ this.state.status }>
-        <SendEtherModal
-            show={this.state.sendEtherModalOpen}
-            onHide={this.toggleSendEtherModal} />
         <SendRepModal
             show={this.state.sendRepModalOpen}
             onHide={this.toggleSendRepModal} />
@@ -118,7 +109,6 @@ var AugurApp = React.createClass({
             toggleSignInModal={this.toggleSignInModal}
             toggleSendCashModal={this.toggleSendCashModal}
             toggleSendRepModal={this.toggleSendRepModal}
-            toggleSendEtherModal={this.toggleSendEtherModal}
             asset={this.state.asset}
             />
 
