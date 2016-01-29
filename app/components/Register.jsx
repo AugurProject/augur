@@ -141,11 +141,11 @@ var RegisterModal = React.createClass({
                 buttonAfter={ submit } />
             </div>
             <div className="col-sm-12">
-              Remember Me 
               <Input
                 type="checkbox"
                 name="persist"
                 id="persist-checkbox"
+                label="Remember Me"
                 onChange={ this.handlePersistChange } />
             </div>
           </div>
