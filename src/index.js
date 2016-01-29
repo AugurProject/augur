@@ -1982,6 +1982,30 @@ Augur.prototype.getMarketCreationBlock = function (market, cb) {
     });
 };
 
+Augur.prototype.meanTradePrice = function (trades, sell) {
+    var price, shares, totalShares, outcomeMeanPrice, meanPrice = {};
+    function include(shares) {
+        return (sell) ? shares.lt(new BigNumber(0)) : shares.gt(new BigNumber(0));
+    }
+    for (var outcome in trades) {
+        if (!trades.hasOwnProperty(outcome)) continue;
+        outcomeMeanPrice = new BigNumber(0);
+        totalShares = new BigNumber(0);
+        for (var i = 0, n = trades[outcome].length; i < n; ++i) {
+            price = new BigNumber(trades[outcome][i].price);
+            shares = new BigNumber(trades[outcome][i].shares);
+            if (include(shares)) {
+                outcomeMeanPrice = outcomeMeanPrice.plus(price.mul(shares));
+                totalShares = totalShares.plus(shares);
+            }
+        }
+        if (include(totalShares)) {
+            meanPrice[outcome] = outcomeMeanPrice.dividedBy(totalShares).toFixed();
+        }
+    }
+    return meanPrice;
+};
+
 Augur.prototype.getAccountTrades = function (account, cb) {
     var self = this;
     if (!account || !this.utils.is_function(cb)) return;
