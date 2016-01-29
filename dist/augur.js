@@ -60363,6 +60363,7 @@ function Augur() {
     this.constants = require("./constants");
     this.db = require("./client/db");
     this.comments = ramble;
+    this.ramble = ramble;
     this.connector = connector;
     this.comments.connector = connector;
     this.errors = contracts.errors;
@@ -93741,7 +93742,10 @@ function isFunction(f) {
 }
 
 var HOSTED_NODES = [
-    "https://eth1.augur.net"
+    "https://eth1.augur.net",
+    "https://eth3.augur.net",
+    "https://eth4.augur.net",
+    "https://eth5.augur.net"
 ];
 
 module.exports = {
@@ -93755,7 +93759,7 @@ module.exports = {
     },
 
     // network load balancer
-    balancer: false,
+    balancer: true,
 
     // remove unresponsive nodes
     excision: false,
@@ -94905,7 +94909,8 @@ module.exports = {
                 return self.checkBlockHash(tx, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed);
             }
             self.txs[txhash].status = "failed";
-            if (self.debug.tx) console.log("raw transactions:", self.rawTxs);
+            if (self.debug.tx)
+                console.log("raw transactions:", self.rawTxs);
 
             // resubmit if this is a raw transaction and has a duplicate nonce
             if (self.rawTxs[txhash] && self.rawTxs[txhash].tx) {
@@ -121966,7 +121971,9 @@ module.exports = {
                     if (err) return nextLog(err);
                     if (!comment) return nextLog(errors.IPFS_GET_FAILURE);
                     if (comment.error) return nextLog(errors.IPFS_GET_FAILURE);
-                    comments.push(comment);
+                    if (comment.author && comment.message && comment.time) {
+                        comments.push(comment);
+                    }
                     nextLog();
                 });
             }, function (err) {

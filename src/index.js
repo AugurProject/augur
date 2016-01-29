@@ -33,6 +33,7 @@ function Augur() {
     this.constants = require("./constants");
     this.db = require("./client/db");
     this.comments = ramble;
+    this.ramble = ramble;
     this.connector = connector;
     this.comments.connector = connector;
     this.errors = contracts.errors;
