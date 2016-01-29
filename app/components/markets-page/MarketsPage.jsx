@@ -70,16 +70,6 @@ let MarketsPage = React.createClass({
         this.setState({addMarketModalOpen: !this.state.addMarketModalOpen});
     },
 
-    componentDidMount() {
-        this.stylesheetEl = document.createElement("link");
-        this.stylesheetEl.setAttribute("rel", "stylesheet");
-        this.stylesheetEl.setAttribute("type", "text/css");
-        this.stylesheetEl.setAttribute("href", "/css/markets.css");
-        document.getElementsByTagName("head")[0].appendChild(this.stylesheetEl);
-    },
-    componentWillUnmount() {
-        this.stylesheetEl.remove();
-    },
     componentWillReceiveProps(nextProps) {
         if (this.props.query.expired !== nextProps.query.expired) {
             // when switching from one tab to another restart pagination

@@ -1,0 +1,41 @@
+@import (reference) "../../../node_modules/bootstrap/less/variables";
+@import (reference) "../../../node_modules/flex.less/flex";
+
+.marketRow {
+     border-top: 1px solid #ddd;
+     padding: 15px 0;
+}
+
+.marketRow .marketRow-title {
+     .display(flex);
+     .align-items(flex-start);
+
+     h4 {
+          .flex(1);
+          padding-right: 6px;
+     }
+
+     .glyphicon {
+          color: #34495E;
+          padding-right: 8px;
+     }
+
+     @media (min-width: @screen-sm-min) {
+          .btn {
+               padding-left: 40px;
+               padding-right: 40px;
+               font-weight: bold;
+          }
+     }
+}
+
+.marketRow h4,
+.marketRow .table,
+.marketRow p {
+     margin: 0;
+}
+
+.marketRow .marketRow-subtitle,
+.marketRow .marketRow-outcomes {
+     margin-top: 2px;
+}

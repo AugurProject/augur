@@ -37,10 +37,10 @@ let Market = React.createClass({
         }
 
         return (
-            <div className="market">
+            <div className="marketRow">
                 <div className="row">
                     <div className="col-xs-12">
-                        <div className="market-title">
+                        <div className="marketRow-title">
                             <h4 onClick={this.handleTitleClick} className="pointer">
                                 <Glyphicon glyph={this.state.isOutcomeTableOpen ? "chevron-down" : "chevron-right"}/>
                                 {market.description}
@@ -50,7 +50,7 @@ let Market = React.createClass({
                             </Link>
                             <div className="clearfix"></div>
                         </div>
-                        <p className="market-subtitle clearfix">
+                        <p className="marketRow-subtitle clearfix">
                             {market.tradingFee ? +market.tradingFee.times(100).toFixed(2) + '%' : '-'} fee, {endDateLabel} {endDateFormatted}
                         </p>
                     </div>
@@ -58,7 +58,7 @@ let Market = React.createClass({
                 <Collapse in={this.state.isOutcomeTableOpen}>
                     <div className="row">
                         <div className="col-sm-7">
-                            <table className="market-outcomes table">
+                            <table className="marketRow-outcomes table">
                                 <tbody>
                                     <tr>
                                         <th>Outcome</th>
