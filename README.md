@@ -29,3 +29,9 @@ Start the local web server
 ```
 npm start
 ```
+Development
+-----------
+Don't forget to build the app first (with `grunt`). To watch for changes run
+```
+grunt develop
+```

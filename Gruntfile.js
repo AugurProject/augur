@@ -27,7 +27,7 @@ config.browserify.build = {
 config.browserify.watch = _.merge({
   options: {
     watch: true,
-    keepAlive: true
+    keepAlive: false // develop task keeps this alive
   }
 }, config.browserify.build);
 
@@ -122,7 +122,7 @@ module.exports = function (grunt) {
           }
         ]
       }
-      }
+    }
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
@@ -132,6 +132,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-newer');
 
-  grunt.registerTask('default', ['jshint', 'browserify:build', 'less:build', 'copy']);
-  grunt.registerTask('develop', ['browserify:debug', 'watch']);
+  grunt.registerTask('build', ['jshint', 'browserify:build', 'less:build', 'copy']);
+  grunt.registerTask('develop', ['browserify:watch', 'watch']);
+  grunt.registerTask('default', ['build']);
 };
