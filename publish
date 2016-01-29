@@ -1,4 +1,0 @@
-#!/bin/bash
-
-ipfs name publish `ipfs add -rq app | tail -1`
-git push augur-exp +HEAD:master

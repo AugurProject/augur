@@ -146,6 +146,7 @@ var RegisterModal = React.createClass({
                 type="checkbox"
                 name="persist"
                 id="persist-checkbox"
+                label="Remember Me"
                 onChange={ this.handlePersistChange } />
             </div>
           </div>

@@ -37,17 +37,6 @@ module.exports = {
     return +percent + '%';
   },
 
-  formatEther: function (wei) {
-    if (!wei) return { value: '', unit: 'ether', withUnit: '-' };
-    var value = abi.bignum(wei).dividedBy(constants.ETHER);
-    var unit = 'ether';
-    return {
-      value: +value.toFixed(2),
-      unit: unit,
-      withUnit: value.toFixed(2) + ' ' + unit
-    };
-  },
-
   // check if account address is correctly formatted
   isValidAccount: function (address) {
     address = address.replace(/^0x/, '');  // strip leading '0x' is it exists

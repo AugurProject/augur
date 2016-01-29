@@ -195,7 +195,7 @@ var Overview = React.createClass({
                     let sharesWithSignFormatted = pendingShares < 0 ? pendingShares.toString() : '+' + pendingShares;
                     pendingSharesNode = (
                         <p>
-                            { sharesWithSignFormatted } { pendingShares === 1 ? 'share' : 'shares' } pending
+                            { sharesWithSignFormatted } { pendingShares === 1 ? 'share ' : 'shares ' } pending
                         </p>
                     )
                 }
@@ -206,7 +206,7 @@ var Overview = React.createClass({
                 if (sharesHeld > 0) {
                     sharesHeldNode = (
                         <p className="shares-held">
-                            { sharesHeld } { sharesHeld === 1 ? 'share' : 'shares' } held
+                            { sharesHeld } { sharesHeld === 1 ? 'share ' : 'shares ' } held
                         </p>
                     );
                     sellAction = (
@@ -351,7 +351,7 @@ var TradeBase = {
                 <p>{ Math.abs(outcome.price).toFixed(4) } cash/share</p>
 
                 <p>
-                    { outcome.sharesHeld.toNumber() } { outcome.sharesHeld.toNumber() === 1 ? 'share' : 'shares' } held
+                    { outcome.sharesHeld.toNumber() } { outcome.sharesHeld.toNumber() === 1 ? 'share ' : 'shares ' } held
                 </p>
 
                 <p className='new-price'>{ this.getPriceDelta() }</p>

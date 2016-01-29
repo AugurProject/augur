@@ -44,7 +44,9 @@ var AddMarketModal = React.createClass({
       maxValue: 2,
       choices: ["", ""],
       numResources: 0,
-      resources: []
+      resources: [],
+      numTags: 0,
+      tags: []
     };
   },
 
@@ -89,6 +91,13 @@ var AddMarketModal = React.createClass({
       })(imageFile);
       reader.readAsDataURL(imageFile);
     }
+  },
+
+  onChangeTagText: function (event) {
+    var tags = this.state.tags;
+    var id = event.target.id;
+    tags[id.split('-')[1]] = event.target.value;
+    this.setState({tags: tags});
   },
 
   onChangeResourceText: function (event) {
@@ -214,6 +223,7 @@ var AddMarketModal = React.createClass({
                 marketId: r.callReturn,
                 image: self.state.imageDataURL,
                 details: self.state.detailsText,
+                tags: self.state.tags,
                 links: self.state.resources
               }, function (res) {
                 console.log("ramble.addMetadata sent:", res);
@@ -246,6 +256,16 @@ var AddMarketModal = React.createClass({
 
   handleDatePicked: function(dateText, moment, event) {
     this.setState({maturationDate: dateText});
+  },
+
+  onAddTag: function (event) {
+    var numTags = this.state.numTags + 1;
+    if (numTags < 3) {
+      var tags = this.state.tags;
+      tags.push('');
+      this.setState({numTags: numTags});
+      this.setState({tags: tags});
+    }
   },
 
   onAddResource: function (event) {
@@ -378,10 +398,25 @@ var AddMarketModal = React.createClass({
 
       subheading = "Bells & whistles (optional)";
 
+      var numTags = this.state.numTags;
+      var tags = new Array(numTags);
+      var placeholderTag, tagId;
+      for (var i = 0; i < numTags; ++i) {
+        placeholderTag = "Tag " + i;
+        tagId = "tag-" + i
+        tags[i] = <Input
+            key={i}
+            id={tagId}
+            type="text"
+            value={this.state.tags[i]}
+            placeholder={placeholderTag}
+            onChange={this.onChangeTagText} />;
+      }
+
       var numResources = this.state.numResources;
       var resources = new Array(numResources);
       var placeholderText, resourceId;
-      for (var i = 0; i < numResources; ++i) {
+      for (i = 0; i < numResources; ++i) {
         placeholderText = "External resource " + i;
         resourceId = "resource-" + i
         resources[i] = <Input
@@ -392,6 +427,7 @@ var AddMarketModal = React.createClass({
             placeholder={placeholderText}
             onChange={this.onChangeResourceText} />;
       }
+
       page = (
         <div>
           <h5>{subheading}</h5>
@@ -407,6 +443,11 @@ var AddMarketModal = React.createClass({
             type="file"
             id="imageFile"
             onChange={this.onUploadImageFile} />
+          <p>Enter up to three tags (categories) for your market.  Examples: politics, science, sports, weather, etc.</p>
+          {tags}
+          <Button bsStyle="default" onClick={this.onAddTag}>
+            Add tag
+          </Button>
           <p>Are there other resources people might find helpful in using and/or understanding your market?  For example, if your market is on who will win an election, you could include a link to the homepage of each candidate, or links to details of their positions.</p>
           {resources}
           <Button bsStyle="default" onClick={this.onAddResource}>

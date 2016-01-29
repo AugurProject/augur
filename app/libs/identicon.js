@@ -37,26 +37,28 @@ Identicon.prototype = {
         // white background
         var bg      = image.color(255, 255, 255);
 
-        // foreground is last 7 chars as hue at 50% saturation, 70% brightness
-        var rgb     = this.hsl2rgb(parseInt(hash.substr(-7), 16) / 0xfffffff, 0.5, 0.7),
-            fg      = image.color(rgb[0] * 255, rgb[1] * 255, rgb[2] * 255);
+        if (hash) {
 
-        // the first 15 characters of the hash control the pixels (even/odd)
-        // they are drawn down the middle first, then mirrored outwards
-        var i, color;
-        for (i = 0; i < 15; i++) {
-            color = parseInt(hash.charAt(i), 16) % 2 ? bg : fg;
-            if (i < 5) {
-                this.rectangle(2 * cell + margin, i * cell + margin, cell, cell, color, image);
-            } else if (i < 10) {
-                this.rectangle(1 * cell + margin, (i - 5) * cell + margin, cell, cell, color, image);
-                this.rectangle(3 * cell + margin, (i - 5) * cell + margin, cell, cell, color, image);
-            } else if (i < 15) {
-                this.rectangle(0 * cell + margin, (i - 10) * cell + margin, cell, cell, color, image);
-                this.rectangle(4 * cell + margin, (i - 10) * cell + margin, cell, cell, color, image);
+            // foreground is last 7 chars as hue at 50% saturation, 70% brightness
+            var rgb     = this.hsl2rgb(parseInt(hash.substr(-7), 16) / 0xfffffff, 0.5, 0.7),
+                fg      = image.color(rgb[0] * 255, rgb[1] * 255, rgb[2] * 255);
+
+            // the first 15 characters of the hash control the pixels (even/odd)
+            // they are drawn down the middle first, then mirrored outwards
+            var i, color;
+            for (i = 0; i < 15; i++) {
+                color = parseInt(hash.charAt(i), 16) % 2 ? bg : fg;
+                if (i < 5) {
+                    this.rectangle(2 * cell + margin, i * cell + margin, cell, cell, color, image);
+                } else if (i < 10) {
+                    this.rectangle(1 * cell + margin, (i - 5) * cell + margin, cell, cell, color, image);
+                    this.rectangle(3 * cell + margin, (i - 5) * cell + margin, cell, cell, color, image);
+                } else if (i < 15) {
+                    this.rectangle(0 * cell + margin, (i - 10) * cell + margin, cell, cell, color, image);
+                    this.rectangle(4 * cell + margin, (i - 10) * cell + margin, cell, cell, color, image);
+                }
             }
         }
-
         return image;
     },
 
