@@ -94,17 +94,19 @@ let MarketsPage = React.createClass({
      * todo: filtering logic should probably be part of SearchStore ?
      */
     _getMarketsData() {
+        let currentBranch = this.props.branch.currentBranch;
+        let currentPeriod = currentBranch != null ? currentBranch.currentPeriod : null;
         let filteredMarkets = _(this.state.markets)
             .filter((market => {
-                // todo: how do I know it's expired?
-                if (market.endDate == null) {
+                if (currentBranch == null) {
+                    // at least display something
                     return true;
                 }
 
                 if (this.props.query.expired === "true") {
-                    return market.endDate.isSameOrBefore(moment());
+                    return currentPeriod >= market.tradingPeriod;
                 } else {
-                    return market.endDate.isAfter(moment());
+                    return currentPeriod < market.tradingPeriod;
                 }
             }));
 
