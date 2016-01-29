@@ -79,6 +79,7 @@ module.exports = {
           handle: augur.web.account.handle,
           keystore: augur.web.account.keystore
         });
+        this.flux.actions.asset.loadMeanTradePrices();
       } else {
         this.dispatch(constants.network.UPDATE_ETHEREUM_STATUS, {
           ethereumStatus: constants.network.ETHEREUM_STATUS_NO_ACCOUNT
@@ -99,6 +100,7 @@ module.exports = {
           self.dispatch(constants.config.UPDATE_ACCOUNT, {
             currentAccount: augur.from
           });
+          self.flux.actions.asset.loadMeanTradePrices();
 
         // otherwise, no account available
         } else {

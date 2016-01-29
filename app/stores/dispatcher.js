@@ -13,7 +13,10 @@ var stores = {
 };
 
 stores.asset.initialize = function () {
-  this.bindActions(constants.asset.UPDATE_ASSETS, this.handleUpdateAssets);
+  this.bindActions(
+    constants.asset.UPDATE_ASSETS, this.handleUpdateAssets,
+    constants.asset.LOAD_MEAN_TRADE_PRICES_SUCCESS, this.handleLoadMeanTradePricesSuccess
+  );
 };
 stores.branch.initialize = function () {
   this.bindActions(

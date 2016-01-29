@@ -37,7 +37,8 @@ module.exports = {
     ETHEREUM_STATUS_LOADING: null
   }),
   asset: keyMirror({
-    UPDATE_ASSETS: null
+    UPDATE_ASSETS: null,
+    LOAD_MEAN_TRADE_PRICES_SUCCESS: null
   }),
   branch: keyMirror({
     LOAD_BRANCHES_SUCCESS: null,

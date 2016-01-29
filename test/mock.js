@@ -33,6 +33,9 @@ var flux = {
         UPDATE_ASSETS: function (payload) {
             flux.stores.asset.handleUpdateAssets(payload);
         },
+        LOAD_MEAN_TRADE_PRICES_SUCCESS: function (payload) {
+            flux.stores.asset.handleLoadMeanTradePricesSuccess(payload);
+        },
 
         // branch
         LOAD_BRANCHES_SUCCESS: function (payload) {

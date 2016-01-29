@@ -37,7 +37,7 @@
     "async": "^1.4.2",
     "augur-abi": "^0.2.7",
     "augur-contracts": "^0.3.5",
-    "augur.js": "^0.13.18",
+    "augur.js": "^0.13.21",
     "babel-runtime": "^6.3.19",
     "babelify": "^6.3.0",
     "bignumber.js": "^2.1.4",

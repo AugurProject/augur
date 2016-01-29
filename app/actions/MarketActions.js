@@ -136,16 +136,9 @@ module.exports = {
         for (var i = 0; i < numPages; ++i) {
           range[i] = i*marketsPerPage;
         }
-        // console.log("marketsPerPage:", marketsPerPage);
-        // console.log("numMarkets:", numMarkets);
-        // console.log("numPages:", numPages);
-        // console.log("range:", range);
         var markets = {};
         async.forEachOfSeries(range, function (offset, index, next) {
           var numMarketsToLoad = (index+1 === numPages) ? numMarkets - range[index] : marketsPerPage;
-          // console.log("index:", index);
-          // console.log("offset:", offset);
-          // console.log("numMarketsToLoad:", numMarketsToLoad);
           augur.getMarketsInfo({
             branch: branchId,
             offset: offset,
@@ -154,7 +147,6 @@ module.exports = {
               if (marketsInfo && !marketsInfo.error) {
                 var blackmarkets = blacklist.markets[augur.network_id][branchId];
                 async.eachSeries(marketsInfo, function (thisMarket, nextMarket) {
-                  // console.log("marketId:", thisMarket._id);
                   if (creationBlock && creationBlock[thisMarket._id]) {
                     thisMarket.creationBlock = creationBlock[thisMarket._id];
                   }
@@ -188,8 +180,6 @@ module.exports = {
 
           // loading complete!
           console.debug("all markets loaded in", ((new Date()).getTime() - start) / 1000, "seconds");
-          // self.dispatch(constants.market.MARKETS_LOADING, {loadingPage: null});
-          // self.flux.actions.config.updatePercentLoaded(100);
         });
       });
     });
