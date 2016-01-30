@@ -52,7 +52,7 @@ var options = {
     DEBUG: false,
     MOCHA_REPORTER: "spec",
     MINIMUM_ETHER: 32,
-    AUGUR_CORE: join(process.env.HOME, "src", "augur-core"),
+    AUGUR_CORE: join(process.env.HOME, "src", "augur-core-1-29-2016"),
     GOSPEL: join(__dirname, "..", "data", "gospel.json"),
     CUSTOM_GOSPEL: false,
     GETH: process.env.GETH || "geth",
@@ -115,7 +115,7 @@ function init(geth, account, callback, next, count) {
     }
     connect_augur();
     count = count || 0;
-    if (augur.connected()) {
+    if (augur.connector.connected()) {
         accounts = utils.get_test_accounts(augur, constants.MAX_TEST_ACCOUNTS);
         verified_accounts = true;
         if (!verified_accounts && account !== accounts[0]) {

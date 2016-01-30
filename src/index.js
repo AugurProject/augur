@@ -386,28 +386,119 @@ Augur.prototype.getTotalReputation = function (branch, votePeriod, callback) {
 };
 
 // markets.se
+Augur.prototype.lsLmsr = function (market, callback) {
+    if (!market) return new Error("need a market");
+    callback = callback || this.utils.pass;
+    function lsLmsr(info) {
+        var cumScale = info.cumulativeScale;
+        var alpha = new BigNumber(info.alpha);
+        var numOutcomes = info.numOutcomes;
+        var sumShares = new BigNumber(0);
+        for (var i = 0; i < numOutcomes; ++i) {
+            sumShares = sumShares.plus(new BigNumber(info.outcomes[i].outstandingShares));
+        }
+        var bq = alpha.mul(sumShares);
+        var sumExp = new BigNumber(0);
+        for (i = 0; i < numOutcomes; ++i) {
+            sumExp = sumExp.plus(new BigNumber(Math.exp(info.outcomes[i].outstandingShares).toString())).dividedBy(bq);
+        }
+        return bq.mul(cumScale).mul(new BigNumber(Math.log(sumExp).toString())).toString();
+    }
+    if (market.constructor === Object && market.network && market.events) {
+        return callback(lsLmsr(market));
+    }
+    this.getMarketInfo(market, function (info) {
+        callback(lsLmsr(info));
+    });
+};
+Augur.prototype.price = function (market, outcome, callback) {
+    var self = this;
+    function price(info, outcome) {
+        var epsilon = new BigNumber("0.0000001");
+        var a = new BigNumber(self.lsLmsr(info));
+        info.outcomes[outcome-1].outstandingShares = new BigNumber(info.outcomes[outcome-1].outstandingShares).plus(epsilon).toFixed();
+        var b = new BigNumber(self.lsLmsr(info));
+        return b.minus(a).dividedBy(epsilon).toFixed();
+    }
+    callback = callback || this.utils.pass;
+    if (market.constructor === Object && market.network && market.events) {
+        return callback(price(clone(market), outcome));
+    }
+    self.getMarketInfo(market, function (info) {
+        callback(price(info, outcome));
+    });
+};
 Augur.prototype.getSimulatedBuy = function (market, outcome, amount, callback) {
     // market: sha256 hash id
     // outcome: integer (1 or 2 for binary events)
-    // amount: number -> fixed-point
-    var tx = clone(this.tx.getSimulatedBuy);
-    if (market && market.constructor === BigNumber) {
-        market = abi.prefix_hex(market.toString(16));
+    // amount: number
+    var self = this;
+    function getSimulatedBuy(info, outcome, amount) {
+        var oldCost = new BigNumber(self.lsLmsr(info));
+        var cumScale = info.cumulativeScale;
+        var alpha = new BigNumber(info.alpha);
+        var numOutcomes = info.numOutcomes;
+        var sumShares = new BigNumber(0);
+        for (var i = 0; i < numOutcomes; ++i) {
+            sumShares = sumShares.plus(new BigNumber(info.outcomes[i].outstandingShares));
+        }
+        var bq = alpha.mul(sumShares);
+        var sumExp = new BigNumber(0);
+        for (i = 0; i < numOutcomes; ++i) {
+            sumExp = sumExp.plus(new BigNumber(Math.exp(info.outcomes[i].outstandingShares).toString())).dividedBy(bq);
+        }
+        sumExp = sumExp.plus(new BigNumber(amount)).toNumber();
+        var newCost = bq.mul(cumScale).mul(new BigNumber(Math.log(sumExp).toString()));
+        if (newCost.lte(oldCost)) return callback(new Error(-2));
+        return [newCost.minus(oldCost).toFixed(), self.price(info, outcome)];
     }
-    tx.params = [market, outcome, abi.fix(amount, "hex")];
-    return this.fire(tx, callback);
+    callback = callback || this.utils.pass;
+    if (market.constructor === Object && market.network && market.events) {
+        return callback(getSimulatedBuy(market, outcome, amount));
+    }
+    self.getMarketInfo(market, function (info) {
+        callback(getSimulatedBuy(info, outcome, amount));
+    });
 };
 Augur.prototype.getSimulatedSell = function (market, outcome, amount, callback) {
     // market: sha256 hash id
     // outcome: integer (1 or 2 for binary events)
-    // amount: number -> fixed-point
-    var tx = clone(this.tx.getSimulatedSell);
-    tx.params = [market, outcome, abi.fix(amount, "hex")];
+    // amount: number
+    var self = this;
+    function getSimulatedSell(info, outcome, amount) {
+        var oldCost = new BigNumber(self.lsLmsr(info));
+        var cumScale = info.cumulativeScale;
+        var alpha = new BigNumber(info.alpha);
+        var numOutcomes = info.numOutcomes;
+        var sumShares = new BigNumber(0);
+        for (var i = 0; i < numOutcomes; ++i) {
+            sumShares = sumShares.plus(new BigNumber(info.outcomes[i].outstandingShares));
+        }
+        var bq = alpha.mul(sumShares);
+        var sumExp = new BigNumber(0);
+        for (i = 0; i < numOutcomes; ++i) {
+            sumExp = sumExp.plus(new BigNumber(Math.exp(info.outcomes[i].outstandingShares).toString())).dividedBy(bq);
+        }
+        sumExp = sumExp.minus(new BigNumber(amount)).toNumber();
+        var newCost = bq.mul(cumScale).mul(new BigNumber(Math.log(sumExp).toString()));
+        if (oldCost.lte(newCost)) return callback(new Error(-2));
+        return [newCost.minus(oldCost).toFixed(), self.price(info, outcome)];
+    }
+    callback = callback || this.utils.pass;
+    if (market.constructor === Object && market.network && market.events) {
+        return callback(getSimulatedSell(market, outcome, amount));
+    }
+    self.getMarketInfo(market, function (info) {
+        callback(getSimulatedSell(info, outcome, amount));
+    });
+};
+Augur.prototype.getVolume = function (market, callback) {
+    var tx = clone(this.tx.getVolume);
+    tx.params = market;
     return this.fire(tx, callback);
 };
-Augur.prototype.lsLmsr = function (market, callback) {
-    // market: sha256
-    var tx = clone(this.tx.lsLmsr);
+Augur.prototype.getForkSelection = function (market, callback) {
+    var tx = clone(this.tx.getForkSelection);
     tx.params = market;
     return this.fire(tx, callback);
 };
@@ -525,12 +616,6 @@ Augur.prototype.getWinningOutcomes = function (market, callback) {
             callback(winningOutcomes.slice(0, numOutcomes));
         });
     });
-};
-Augur.prototype.price = function (market, outcome, callback) {
-    // market: sha256 hash id
-    var tx = clone(this.tx.price);
-    tx.params = [market, outcome];
-    return this.fire(tx, callback);
 };
 // Get the participant number (the array index) for specified address
 Augur.prototype.getParticipantNumber = function (market, address, callback) {
