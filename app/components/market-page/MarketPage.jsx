@@ -45,6 +45,7 @@ let MarketPage = React.createClass({
     },
     componentDidMount() {
         this.getPriceHistory();
+
         this.stylesheetEl = document.createElement("link");
         this.stylesheetEl.setAttribute("rel", "stylesheet");
         this.stylesheetEl.setAttribute("type", "text/css");
@@ -53,6 +54,8 @@ let MarketPage = React.createClass({
     },
     componentWillUnmount() {
         this.stylesheetEl.remove();
+
+        clearTimeout(this.state.priceHistoryTimeout);
     },
 
     getPriceHistory() {
