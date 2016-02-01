@@ -18,8 +18,8 @@ require('it-each')({ testPerIteration: true });
 
 if (!process.env.CONTINUOUS_INTEGRATION) {
 
-    var minValue = 0;
-    var maxValue = 1;
+    var minValue = 1;
+    var maxValue = 2;
     var numOutcomes = 2;
     var num_events = 2;
     var branch = augur.branches.dev;

@@ -55,7 +55,7 @@ var marketInfo = {
 if (!process.env.CONTINUOUS_INTEGRATION) {
 
     beforeEach(function () {
-        // augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
+        augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
     });
 
     var amount = 1;

@@ -5,6 +5,10 @@ var abi = require("augur-abi");
 var utils = require("../../src/utilities");
 var augur = utils.setup(require("../../src"), process.argv.slice(2));
 
+var payment_value = 1;
+var branch = augur.branches.dev;
+var coinbase = augur.coinbase;
+
 describe("Faucets", function () {
 
     it("reputationFaucet", function (done) {
@@ -29,5 +33,35 @@ describe("Faucets", function () {
             // failed
             done
         );
+    });
+});
+
+describe("Cash deposit", function () {
+
+    var value = augur.constants.FREEBIE * 0.25;
+    var weiValue = abi.bignum(value).mul(augur.constants.ETHER).toFixed();
+    var initialCash = abi.bignum(augur.getCashBalance(augur.coinbase));
+
+    it("deposit", function (done) {
+        this.timeout(augur.constants.TIMEOUT);
+        augur.depositEther({
+            value: value,
+            onSent: function (res) {
+                console.log(res)
+                assert.strictEqual(res.txHash.length, 66);
+                assert.strictEqual(weiValue, res.callReturn);
+            },
+            onSuccess: function (res) {
+                console.log(res)
+                assert.strictEqual(res.txHash.length, 66);
+                assert.strictEqual(weiValue, res.callReturn);
+                assert.strictEqual(res.from, augur.coinbase);
+                assert.strictEqual(res.to, augur.contracts.cash);
+                var afterCash = abi.bignum(augur.getCashBalance(augur.coinbase));
+                assert.strictEqual(afterCash.sub(initialCash).toNumber(), value);
+                done();
+            },
+            onFailed: done
+        });
     });
 });

@@ -16,17 +16,20 @@ symlink="$HOME/.ethereum"
 passfile="${symlink}/.password"
 bootnodes=""
 genesis=""
-optargs="--nodiscover"
+optargs=""
 
+if [ "${network}" = "2" ]; then
+    optargs="--testnet"
+fi
 if [ "${network}" = "10101" ]; then
     # address="0x01114f4bda09ed6c6715cf0baf606b5bce1dc96a"
-    address="0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b"
+    # address="0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b"
     # address="0x0da70d5a92d6cfcd4c12e2a83950676fdf4c95f9"
     # address="0x2a7e417ff20606e384526ed42d306943caec2d24"
     optargs="--mine --nodiscover"
     genesis="$HOME/src/augur.js/data/genesis-10101.json"
 else
-    genesis="$HOME/src/augur.js/data/genesis7.json"
+    genesis="$HOME/src/augur.js/data/genesis-7.json"
     # vent: 70eb80f63946c2b3f65e68311b4419a80c78271c099a7d1f3d8df8cdd8e374934c795d8bc9f204dda21eb9a318d30197ba7593494eb27ceb52663c8339e9cb70
     # heavy: 9c3de1a912e7db6b46b10597cc0f1270e8b15d43c8f4ae003452c987133aea5845bf307fdfe1ec99a77af74027522e4a107196af1af51fab7840b1b708ca260e
     # eth1: enode://d4f4e7fd3954718562544dbf322c0c84d2c87f154dd66a39ea0787a6f74930c42f5d13ba2cfef481b66a6f002bc3915f94964f67251524696a448ba40d1e2b12@45.33.59.27:30303

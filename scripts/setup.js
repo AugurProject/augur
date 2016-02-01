@@ -10,12 +10,12 @@ var fs = require("fs");
 var join = require("path").join;
 var cp = require("child_process");
 var nodeUtil = require("util");
+var assert = require("chai").assert;
 var async = require("async");
 var BigNumber = require("bignumber.js");
 var rm = require("rimraf");
 var abi = require("augur-abi");
 var chalk = require("chalk");
-var mocha = new (require("mocha"))();
 var getopt = require("posix-getopt");
 var gethjs = require("geth");
 var augur = require(join(__dirname, "..", "src"));
@@ -25,10 +25,6 @@ var augur_contracts_path = join(process.env.HOME, "src", "augur-contracts", "con
 var augur_contracts = require(augur_contracts_path);
 
 var SYMLINK = join(process.env.HOME, "ethlink");
-var COINBASE = {
-    "10101": "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b",
-    "7": "0x639b41c4d3d399894f2a57894278e1653e7cd24c"
-};
 var BOOTNODES = [
     "enode://"+
         "d4f4e7fd3954718562544dbf322c0c84d2c87f154dd66a39ea0787a6f74930c4"+
@@ -50,9 +46,8 @@ var BOOTNODES = [
 
 var options = {
     DEBUG: false,
-    MOCHA_REPORTER: "spec",
-    MINIMUM_ETHER: 32,
-    AUGUR_CORE: join(process.env.HOME, "src", "augur-core-1-29-2016"),
+    MINIMUM_ETHER: 50,
+    AUGUR_CORE: join(process.env.HOME, "src", "augur-core"),
     GOSPEL: join(__dirname, "..", "data", "gospel.json"),
     CUSTOM_GOSPEL: false,
     GETH: process.env.GETH || "geth",
@@ -62,8 +57,6 @@ var options = {
         flags: {
             networkid: "10101",
             port: 30303,
-            // bootnodes: BOOTNODES,
-            nodiscover: null,
             rpc: null,
             rpcport: 8545,
             rpcapi: "eth,net,web3",
@@ -157,44 +150,52 @@ function init(geth, account, callback, next, count) {
     }
 }
 
-function reset_tests(suite) {
-    suite.tests.forEach(function (t) {
-        delete t.state;
-        t.timedOut = false;
-    });
-    suite.suites.forEach(reset_tests);
-}
-
 function faucets(geth) {
+    augur.connector.from = augur.coinbase;
     connect_augur();
     var branch = augur.branches.dev;
     var coinbase = augur.coinbase;
-    reset_tests(mocha.suite);
-    mocha.addFile(join(__dirname, "..", "test", "core", "faucets.js"));
-    mocha.reporter(options.MOCHA_REPORTER).run(function (failures) {
-        var cash_balance = augur.getCashBalance(coinbase);
-        var rep_balance = augur.getRepBalance(branch, coinbase);
-        var ether_balance = abi.bignum(augur.rpc.balance(coinbase)).dividedBy(constants.ETHER).toFixed();
-        console.log(chalk.cyan("\nBalances:"));
-        console.log("Cash:       " + chalk.green(cash_balance));
-        console.log("Reputation: " + chalk.green(rep_balance));
-        console.log("Ether:      " + chalk.green(ether_balance));
-        gethjs.stop(function (err, code) {
-            for (var i = 0, len = accounts.length; i < len; ++i) {
-                if (options.GETH_OPTIONS.account === accounts[i]) break;
-            }
-            if (i < accounts.length - 1) {
-                console.log(chalk.blue.bold("\nAccount " + (i+1) + ": ") + chalk.cyan(accounts[i+1]));
-                options.GETH_OPTIONS.account = accounts[i+1];
-                setTimeout(function () {
-                    gethjs.start(options.GETH_OPTIONS, function (err, geth) {
-                        init(geth, accounts[i+1], mine_minimum_ether, faucets);
+    var value = constants.FREEBIE * 0.25;
+    var weiValue = abi.bignum(value).mul(constants.ETHER).toFixed();
+    var initialCash = abi.bignum(augur.getCashBalance(coinbase));
+    augur.reputationFaucet({
+        branch: branch,
+        onSent: augur.utils.noop,
+        onSuccess: function (r) {
+            var rep_balance = augur.getRepBalance(branch, coinbase);
+            var cash_balance = augur.getCashBalance(coinbase);
+            assert.strictEqual(rep_balance, "47");
+            augur.depositEther({
+                value: 5000,
+                onSent: augur.utils.noop,
+                onSuccess: function (res) {
+                    var cash_balance = augur.getCashBalance(coinbase);
+                    var rep_balance = augur.getRepBalance(branch, coinbase);
+                    var ether_balance = abi.bignum(augur.rpc.balance(coinbase)).dividedBy(constants.ETHER).toFixed();
+                    console.log(chalk.cyan("\nBalances:"));
+                    console.log("Cash:       " + chalk.green(cash_balance));
+                    console.log("Reputation: " + chalk.green(rep_balance));
+                    console.log("Ether:      " + chalk.green(ether_balance));
+                    gethjs.stop(function (err, code) {
+                        for (var i = 0, len = accounts.length; i < len; ++i) {
+                            if (options.GETH_OPTIONS.account === accounts[i]) break;
+                        }
+                        if (i >= accounts.length - 1) return process.exit();
+                        console.log(chalk.blue.bold("\nAccount " + (i+1) + ": ") + chalk.cyan(accounts[i+1]));
+                        options.GETH_OPTIONS.account = accounts[i+1];
+                        setTimeout(function () {
+                            gethjs.start(options.GETH_OPTIONS, function (err, geth) {
+                                if (err) return console.error("geth.start:", err);
+                                init(geth, accounts[i+1], mine_minimum_ether, faucets);
+                            });
+                        }, 5000);
                     });
-                }, 5000);
-            } else {
-                process.exit(failures);
-            }
-        });
+                },
+                onFailed: console.error
+            });
+
+        },
+        onFailed: console.error
     });
 }
 
@@ -239,29 +240,32 @@ function upload_contracts(geth) {
                 fs.writeFileSync(jsonpath, JSON.stringify(augur_contracts, null, 4));
                 console.log("Saved contracts:", chalk.green(options.GOSPEL), chalk.magenta(jsonpath));
                 options.CUSTOM_GOSPEL = true;
-                if (options.FAUCETS) {
-                    console.log("Send", options.MINIMUM_ETHER, "ETH to:");
-                    for (var i = 1, len = accounts.length; i < len; ++i) {
-                        console.log(chalk.green("  ✓ ") + chalk.gray(accounts[i]));
-                        augur.rpc.sendEther(accounts[i], options.MINIMUM_ETHER);
+                augur.transact({
+                    to: augur_contracts[options.GETH_OPTIONS.flags.networkid].branches,
+                    method: "initDefaultBranch",
+                    returns: "number",
+                    send: true
+                }, function (res) {
+                    assert.property(res, "txHash");
+                    assert.strictEqual(res.callReturn, "1");
+                }, function (res) {
+                    if (options.FAUCETS) {
+                        if (geth) gethjs.stop();
+                        gethjs.stop(function (err, code) {
+                            if (options.FAUCETS) {
+                                console.log(chalk.blue.bold("\nAccount 1:"), chalk.cyan(accounts[1]));
+                                options.GETH_OPTIONS.account = accounts[1];
+                                setTimeout(function () {
+                                    gethjs.start(options.GETH_OPTIONS, function (err, geth) {
+                                        init(geth, accounts[1], mine_minimum_ether, faucets);
+                                    });
+                                }, 10000);
+                            }
+                        });
+                    } else {
+                        process.exit(0);
                     }
-                }
-                if (options.FAUCETS) {
-                    if (geth) gethjs.stop();
-                    gethjs.stop(function (err, code) {
-                        if (options.FAUCETS) {
-                            console.log(chalk.blue.bold("\nAccount 1:"), chalk.cyan(accounts[1]));
-                            options.GETH_OPTIONS.account = accounts[1];
-                            setTimeout(function () {
-                                gethjs.start(options.GETH_OPTIONS, function (err, geth) {
-                                    init(geth, accounts[1], mine_minimum_ether, faucets);
-                                });
-                            }, 10000);
-                        }
-                    });
-                } else {
-                    process.exit(0);
-                }
+                }, console.error);
             });
         }
     });
@@ -288,7 +292,7 @@ function main(account, options) {
         options.GETH_OPTIONS.account = account;
         return gethjs.start(options.GETH_OPTIONS, function (err, geth) {
             setTimeout(function () {
-                if (options.FAUCETS) {
+                if (!options.RESET && options.FAUCETS) {
                     return init(
                         geth,
                         account,
@@ -304,8 +308,7 @@ function main(account, options) {
                 );
             }, 5000);
         });
-    }
-    if (options.FAUCETS) {
+    } else if (options.FAUCETS) {
         return init(
             null,
             account,
@@ -322,7 +325,7 @@ function main(account, options) {
 }
 
 var option, optstring, parser, done;
-optstring = "d(debug)r(reset)g(geth)o(gospel)f(faucets)u:(augur)t:(contract)";
+optstring = "d(debug)r(reset)g(geth)o(gospel)f(faucets)s(nodiscover)b(bootnodes)u:(augur)t:(contract)n:(networkid)";
 
 parser = new getopt.BasicParser(optstring, process.argv);
 
@@ -343,6 +346,12 @@ while ( (option = parser.getopt()) !== undefined) {
         options.FAUCETS = true;
         options.SPAWN_GETH = true;
         break;
+    case 's':
+        options.GETH_OPTIONS.flags.nodiscover = null;
+        break;
+    case 'b':
+        options.GETH_OPTIONS.flags.bootnodes = BOOTNODES;
+        break;
     case 'o':
         console.log("Load contracts from file:", chalk.green(options.GOSPEL));
         augur.contracts = JSON.parse(fs.readFileSync(options.GOSPEL));
@@ -355,8 +364,12 @@ while ( (option = parser.getopt()) !== undefined) {
         options.UPLOAD_CONTRACT = option.optarg;
         options.RESET = false;
         break;
+    case 'n':
+        options.GETH_OPTIONS.flags.networkid = option.optarg;
+        options.GETH_OPTIONS.flags.genesis = join(__dirname, "..", "data", "genesis-" + option.optarg + ".json");
+        break;
     default:
-        console.assert('?' === option.option);
+        assert.strictEqual('?', option.option);
         done = true;
         break;
     }

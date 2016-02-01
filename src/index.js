@@ -66,12 +66,16 @@ Augur.prototype.Filters = require("./filters");
  ******************************/
 
 Augur.prototype.sync = function (connector) {
-    this.network_id = connector.network_id;
-    this.from = connector.from;
-    this.coinbase = connector.coinbase;
-    this.tx = connector.tx;
-    this.contracts = connector.contracts;
-    this.init_contracts = connector.init_contracts;
+    if (connector && connector.constructor === Object) {
+        this.network_id = connector.network_id;
+        this.from = connector.from;
+        this.coinbase = connector.coinbase;
+        this.tx = connector.tx;
+        this.contracts = connector.contracts;
+        this.init_contracts = connector.init_contracts;
+        return true;
+    }
+    return false;
 };
 
 Augur.prototype.connect = function (rpcinfo, ipcpath, cb) {
@@ -206,6 +210,10 @@ Augur.prototype.getDescription = function (item, callback) {
 };
 
 // branches.se
+Augur.prototype.initDefaultBranch = function (onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.initDefaultBranch);
+    return this.transact(tx, onSent, onSuccess, onFailed);
+};
 Augur.prototype.getNumBranches = function (callback) {
     return this.fire(this.tx.getNumBranches, callback);
 };
@@ -1331,7 +1339,6 @@ Augur.prototype.setReportHash = function (branch, reportPeriod, reporter, report
     var tx = clone(this.tx.setReportHash);
     var unpacked = this.utils.unpack(branch, this.utils.labels(this.setReportHash), arguments);
     tx.params = unpacked.params;
-    console.log(tx);
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
 Augur.prototype.getVSize = function (branch, reportPeriod, callback) {

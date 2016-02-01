@@ -157,6 +157,8 @@ module.exports = {
             if (augur.options.debug.broadcast || augur.options.debug.fallback) {
                 console.log(chalk.blue.bold("local:"), chalk.cyan(augur.rpc.nodes.local));
                 this.print_nodes(augur.rpc.nodes.hosted);
+                console.log("coinbase:", chalk.green(augur.coinbase));
+                console.log("from:    ", chalk.green(augur.from));
             }
             augur.nodes = augur.rpc.nodes.hosted;
         }
