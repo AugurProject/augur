@@ -28,7 +28,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
 
             var test = function (t) {
                 it(t.numOutcomes + " outcomes on [" + t.minValue + ", " + t.maxValue + "]", function (done) {
-                    this.timeout(augur.constants.TIMEOUT*4);
+                    this.timeout(augur.constants.TIMEOUT*2);
                     augur.createEvent({
                         branchId: t.branch,
                         description: t.description,
@@ -97,7 +97,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 numOutcomes: 3,
                 alpha: "0.0079",
                 tradingFee: "0.02",
-                initialLiquidityFloor: 10
+                initialLiquidityFloor: 50
             });
             test({
                 branch: augur.branches.dev,
@@ -108,7 +108,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 numOutcomes: 3,
                 alpha: "0.0079",
                 tradingFee: "0.02",
-                initialLiquidityFloor: 10
+                initialLiquidityFloor: 50
             });
             test({
                 branch: augur.branches.dev,
@@ -119,7 +119,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 numOutcomes: 4,
                 alpha: "0.0079",
                 tradingFee: "0.02",
-                initialLiquidityFloor: 10
+                initialLiquidityFloor: 50
             });
             test({
                 branch: augur.branches.dev,
@@ -130,7 +130,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 numOutcomes: 4,
                 alpha: "0.0079",
                 tradingFee: "0.02",
-                initialLiquidityFloor: 10
+                initialLiquidityFloor: 50
             });
             test({
                 branch: augur.branches.dev,
@@ -140,15 +140,15 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 maxValue: 1,
                 numOutcomes: 9,
                 alpha: "0.0079",
-                tradingFee: "0.01",
-                initialLiquidityFloor: 25
+                tradingFee: "0.03",
+                initialLiquidityFloor: 75
             });
         });
 
         describe("scalar", function () {
             var test = function (t) {
                 it("[" + t.minValue + ", " + t.maxValue + "]", function (done) {
-                    this.timeout(augur.constants.TIMEOUT*4);
+                    this.timeout(augur.constants.TIMEOUT*2);
                     augur.createEvent({
                         branchId: t.branch,
                         description: t.description,
@@ -219,7 +219,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 numOutcomes: 2,
                 alpha: "0.0079",
                 tradingFee: "0.02",
-                initialLiquidityFloor: 10
+                initialLiquidityFloor: 75
             });
             test({
                 branch: augur.branches.dev,
@@ -230,7 +230,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 numOutcomes: 2,
                 alpha: "0.0079",
                 tradingFee: "0.035",
-                initialLiquidityFloor: 25
+                initialLiquidityFloor: 50
             });
         });
 
@@ -249,7 +249,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 utils.date_to_block(augur, "11-2-2016")
             ]];
             it.each(events, "%s", ["element"], function (element, next) {
-                this.timeout(augur.constants.TIMEOUT*4);
+                this.timeout(augur.constants.TIMEOUT*2);
 
                 // create an event
                 var branch = augur.branches.dev;
@@ -281,7 +281,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
 
                         // incorporate the new event into a market
                         var alpha = "0.0079";
-                        var initialLiquidity = 10 + Math.round(Math.random() * 10);
+                        var initialLiquidity = 50 + Math.round(Math.random() * 10);
                         var tradingFee = "0.02";
                         var events = [eventID];
 
@@ -391,7 +391,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                                         assert.strictEqual(eventList[i], events[i]);
                                     }
                                     augur.getMarketInfo(marketID, function (info) {
-                                        if (info.error) return done(info);
+                                        assert.notProperty(info, "error");
                                         assert.isArray(info.events);
                                         assert.strictEqual(info.events.length, t.numEvents);
                                         for (var i = 0, len = info.events.length; i < len; ++i) {
@@ -430,8 +430,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 }],
                 description: "Is atmospheric methane concentration correlated to the extinction rates of marine species?",
                 alpha: "0.0079",
-                tradingFee: "0.01",
-                initialLiquidityFloor: 12
+                tradingFee: "0.03",
+                initialLiquidityFloor: 53
             });
             test({
                 branch: augur.branches.dev,
@@ -460,8 +460,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 }],
                 description: "Will antibiotic pan-resistance lead to a massive resurgence of infectious diseases?",
                 alpha: "0.0079",
-                tradingFee: "0.015",
-                initialLiquidityFloor: 21
+                tradingFee: "0.025",
+                initialLiquidityFloor: 61
             });
         });
     });

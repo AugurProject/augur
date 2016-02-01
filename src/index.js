@@ -258,6 +258,11 @@ Augur.prototype.getBranch = function (branchNumber, callback) {
 };
 
 // events.se
+Augur.prototype.getReportingThreshold = function (event, callback) {
+    var tx = clone(this.tx.getReportingThreshold);
+    tx.params = event;
+    return this.fire(tx, callback);
+};
 Augur.prototype.getEventInfo = function (eventId, callback) {
     // eventId: sha256 hash id
     var self = this;
@@ -325,6 +330,11 @@ Augur.prototype.getNumOutcomes = function (eventId, callback) {
 };
 
 // expiringEvents.se
+Augur.prototype.getEventIndex = function (period, eventID, callback) {
+    var tx = clone(this.tx.getEventIndex);
+    tx.params = [period, eventID];
+    return this.fire(tx, callback);
+};
 Augur.prototype.getEvents = function (branch, votePeriod, callback) {
     // branch: sha256 hash id
     // votePeriod: integer
@@ -840,32 +850,58 @@ Augur.prototype.sendReputation = function (branch, to, value, onSent, onSuccess,
 // transferShares.se
 
 // makeReports.se
-Augur.prototype.report = function (branch, report, votePeriod, salt, onSent, onSuccess, onFailed) {
-    if (branch.constructor === Object && branch.branchId) {
-        report = branch.report;
-        votePeriod = branch.votePeriod || branch.reportPeriod;
-        salt = branch.salt;
-        if (branch.onSent) onSent = branch.onSent;
-        if (branch.onSuccess) onSuccess = branch.onSuccess;
-        if (branch.onFailed) onFailed = branch.onFailed;
-        branch = branch.branchId;
-    }
-    var tx = clone(this.tx.report);
-    tx.params = [branch, abi.fix(report, "hex"), votePeriod, salt];
-    return this.transact(tx, onSent, onSuccess, onFailed);
+Augur.prototype.makeHash = function (salt, report, event, from) {
+    return this.utils.sha256([
+        from || this.from,
+        abi.hex(salt),
+        abi.fix(report, "hex"),
+        event
+    ]);
 };
-Augur.prototype.submitReportHash = function (branch, reportHash, votePeriod, onSent, onSuccess, onFailed) {
-    if (branch.constructor === Object && branch.branchId) {
+Augur.prototype.makeHash_contract = function (salt, report, event, callback) {
+    if (salt.constructor === Object && salt.salt) {
+        report = salt.report;
+        event = salt.event;
+        if (salt.onSent) onSent = salt.onSent;
+        if (salt.onSuccess) onSuccess = salt.onSuccess;
+        if (salt.onFailed) onFailed = salt.onFailed;
+        salt = salt.salt;
+    }
+    var tx = clone(this.tx.makeHash);
+    tx.params = [abi.hex(salt), abi.fix(report, "hex"), event];
+    return this.fire(tx, callback);
+};
+Augur.prototype.calculateReportingThreshold = function (branch, eventID, votePeriod, callback) {
+    var tx = clone(this.tx.calculateReportingThreshold);
+    tx.params = [branch, eventID, votePeriod];
+    return this.fire(tx, callback);
+};
+Augur.prototype.submitReportHash = function (branch, reportHash, votePeriod, eventID, eventIndex, onSent, onSuccess, onFailed) {
+    var self = this;
+    if (branch.constructor === Object && branch.branch) {
         reportHash = branch.reportHash;
         votePeriod = branch.votePeriod || branch.reportPeriod;
+        eventID = branch.eventID;
+        eventIndex = branch.eventIndex;
         if (branch.onSent) onSent = branch.onSent;
         if (branch.onSuccess) onSuccess = branch.onSuccess;
         if (branch.onFailed) onFailed = branch.onFailed;
-        branch = branch.branchId;
+        branch = branch.branch;
     }
+    onSent = onSent || this.utils.pass;
+    onSuccess = onSuccess || this.utils.pass;
+    onFailed = onFailed || this.utils.pass;
     var tx = clone(this.tx.submitReportHash);
-    tx.params = [branch, reportHash, votePeriod];
-    return this.transact(tx, onSent, onSuccess, onFailed);
+    if (eventIndex) {
+        tx.params = [branch, reportHash, votePeriod, eventID, eventIndex];
+        return this.transact(tx, onSent, onSuccess, onFailed);
+    }
+    this.getEventIndex(votePeriod, eventID, function (eventIndex) {
+        if (!eventIndex) return onFailed("couldn't get event index for " + eventID);
+        if (eventIndex.error) return onFailed(eventIndex);
+        tx.params = [branch, reportHash, votePeriod, eventID, eventIndex];
+        self.transact(tx, onSent, onSuccess, onFailed);
+    });
 };
 Augur.prototype.checkReportValidity = function (branch, report, votePeriod, callback) {
     var tx = clone(this.tx.checkReportValidity);
@@ -915,18 +951,20 @@ Augur.prototype.createEvent = function (branch, description, expDate, minValue, 
 };
 
 // createMarket.se
-Augur.prototype.createMarket = function (branch, description, alpha, liquidity, tradingFee, events, onSent, onSuccess, onFailed) {
+Augur.prototype.createMarket = function (branch, description, alpha, liquidity, tradingFee, events, forkSelection, onSent, onSuccess, onFailed) {
     if (branch.constructor === Object && branch.branchId) {
-        alpha = branch.alpha;                // number -> fixed-point
-        description = branch.description;    // string
-        liquidity = branch.initialLiquidity; // number -> fixed-point
-        tradingFee = branch.tradingFee;      // number -> fixed-point
-        events = branch.events;              // array [sha256, ...]
-        onSent = branch.onSent;              // function({id, txhash})
-        onSuccess = branch.onSuccess;        // function({id, txhash})
-        onFailed = branch.onFailed;          // function({id, txhash})
-        branch = branch.branchId;            // sha256 hash
+        alpha = branch.alpha;                 // number -> fixed-point
+        description = branch.description;     // string
+        liquidity = branch.initialLiquidity;  // number -> fixed-point
+        tradingFee = branch.tradingFee;       // number -> fixed-point
+        events = branch.events;               // array [sha256, ...]
+        forkSelection = branch.forkSelection; // integer
+        onSent = branch.onSent;               // function({id, txhash})
+        onSuccess = branch.onSuccess;         // function({id, txhash})
+        onFailed = branch.onFailed;           // function({id, txhash})
+        branch = branch.branchId;             // sha256 hash
     }
+    forkSelection = forkSelection || 1;
     var tx = this.tx.createMarket;
     if (events && events.length) {
         for (var i = 0, len = events.length; i < len; ++i) {
@@ -941,7 +979,8 @@ Augur.prototype.createMarket = function (branch, description, alpha, liquidity, 
         abi.fix(alpha, "hex"),
         abi.fix(liquidity, "hex"),
         abi.fix(tradingFee, "hex"),
-        events
+        events,
+        1
     ];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
@@ -1175,7 +1214,7 @@ Augur.prototype.getCurrentVotePeriod = function (branch, callback) {
                 periodLength = abi.bignum(periodLength);
                 rpc.blockNumber(function (blockNum) {
                     blockNum = abi.bignum(blockNum);
-                    callback(blockNum.dividedBy(periodLength).floor().sub(1));
+                    callback(blockNum.dividedBy(periodLength).floor().minus(1).toFixed());
                 });
             }
         });
@@ -1183,7 +1222,7 @@ Augur.prototype.getCurrentVotePeriod = function (branch, callback) {
         periodLength = this.fire(this.tx.getPeriodLength);
         if (periodLength) {
             blockNum = abi.bignum(rpc.blockNumber());
-            return blockNum.dividedBy(abi.bignum(periodLength)).floor().sub(1);
+            return blockNum.dividedBy(abi.bignum(periodLength)).floor().minus(1).toFixed();
         }
     }
 };

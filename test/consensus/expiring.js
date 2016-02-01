@@ -21,7 +21,7 @@ var flatsize = num_events * num_reports;
 var accounts = utils.get_test_accounts(augur, constants.MAX_TEST_ACCOUNTS);
 var receiving_account = accounts[1];
 
-describe("data and api/expiringEvents", function () {
+describe("data_api/expiringEvents", function () {
     describe("getEvents(" + branch + ", " + period + ")", function () {
         var test = function (r) {
             log(r);

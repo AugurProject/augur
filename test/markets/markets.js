@@ -171,7 +171,7 @@ var testMarketInfo = function (info) {
     }
 };
 
-describe("data and api/markets", function () {
+describe("data_api/markets", function () {
     before(function () {
         augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
     });
