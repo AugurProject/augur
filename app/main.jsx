@@ -51,10 +51,8 @@ var routes = (
   <Route name="app" handler={ AugurApp } flux={ flux }>
     <DefaultRoute handler={ Overview } flux={ flux } />
     <Route name="overview" path="/" handler={ Overview } flux={ flux } title="Overview" />
-    {/* could be probably easier but I don't know how now */}
     <Route name="markets" path="/markets" handler={ MarketsPage } flux={ flux } title="Markets" />
-
-    <Route name="market" path="/market/:marketId" handler={ MarketPage } flux={ flux } />
+    <Route name="market" path="/markets/:marketId" handler={ MarketPage } flux={ flux } />
     <Route name="ballots" path="/ballots" handler={ Ballots } flux={ flux } title="Ballots" />
   </Route>
 );
