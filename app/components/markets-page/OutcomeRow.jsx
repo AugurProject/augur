@@ -59,8 +59,6 @@ let OutcomeRow = React.createClass({
                 <td>{ this.getOutcomeName(outcome.id, market).outcome }</td>
                 <td>{ this.getPercentageFormatted(market, outcome) }</td>
                 <td>{ outcome.price != null ? outcome.price.toFixed(2) : "-" }</td>
-                <td>n/a</td>
-                <td>n/a</td>
             </tr>
         );
     }

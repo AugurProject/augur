@@ -64,8 +64,6 @@ let Market = React.createClass({
                                         <th>Outcome</th>
                                         <th>Probability</th>
                                         <th>Last Trade</th>
-                                        <th>Today</th>
-                                        <th>Shares Traded</th>
                                     </tr>
                                     { outcomes }
                                 </tbody>
