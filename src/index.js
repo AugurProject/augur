@@ -812,18 +812,20 @@ Augur.prototype.sellShares = function (branch, market, outcome, amount, nonce, l
 };
 
 // createBranch.se
-Augur.prototype.createSubbranch = function (description, periodLength, parent, tradingFee, onSent, onSuccess, onFailed) {
+Augur.prototype.createSubbranch = function (description, periodLength, parent, tradingFee, oracleOnly, onSent, onSuccess, onFailed) {
     if (description && description.periodLength) {
         periodLength = description.periodLength;
         parent = description.parent;
         tradingFee = description.tradingFee;
+        oracleOnly = description.oracleOnly;
         if (description.onSent) onSent = description.onSent;
         if (description.onSuccess) onSuccess = description.onSuccess;
         if (description.onFailed) onFailed = description.onFailed;
         description = description.description;
     }
+    oracleOnly = oracleOnly || 0;
     var tx = clone(this.tx.createSubbranch);
-    tx.params = [description, periodLength, parent, abi.fix(tradingFee, "hex")];
+    tx.params = [description, periodLength, parent, abi.fix(tradingFee, "hex"), oracleOnly];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 

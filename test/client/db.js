@@ -14,7 +14,77 @@ var utils = require("../../src/utilities");
 var augurpath = "../../src/index";
 var augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
 
-describe("Database", function () {
+describe("Orders", function () {
+    var order = {
+        account: augur.from,
+        market: "0xdeadbeef",
+        outcome: 1,
+        price: "0.25",
+        amount: "1.2",
+        expiration: 0,
+        cap: 0
+    };
+
+    beforeEach(function () {
+        augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
+    });
+
+    it("orders.create", function () {
+        var orders = augur.db.orders.create(order);
+        assert.isObject(orders);
+        assert.property(orders, order.market);
+        assert.property(orders[order.market], order.outcome.toString());
+        assert.isArray(orders[order.market][order.outcome]);
+        assert.isAbove(orders[order.market][order.outcome].length, 0);
+        var numOrders = orders[order.market][order.outcome].length;
+        for (var i = 0; i < numOrders; ++i) {
+            assert.property(orders[order.market][order.outcome][i], "price");
+            assert.property(orders[order.market][order.outcome][i], "amount");
+            assert.property(orders[order.market][order.outcome][i], "expiration");
+            assert.property(orders[order.market][order.outcome][i], "cap");
+        }
+        assert.strictEqual(orders[order.market][order.outcome][numOrders-1].price, order.price);
+        assert.strictEqual(orders[order.market][order.outcome][numOrders-1].amount, order.amount);
+        assert.strictEqual(orders[order.market][order.outcome][numOrders-1].expiration, order.expiration);
+        assert.strictEqual(orders[order.market][order.outcome][numOrders-1].cap, order.cap);
+    });
+
+    it("orders.get", function () {
+        var orders = augur.db.orders.get(augur.from);
+        assert.isObject(orders);
+        assert.property(orders, order.market);
+        assert.property(orders[order.market], order.outcome.toString());
+        assert.isArray(orders[order.market][order.outcome]);
+        assert.isAbove(orders[order.market][order.outcome].length, 0);
+        var numOrders = orders[order.market][order.outcome].length;
+        for (var i = 0; i < numOrders; ++i) {
+            assert.property(orders[order.market][order.outcome][i], "price");
+            assert.property(orders[order.market][order.outcome][i], "amount");
+            assert.property(orders[order.market][order.outcome][i], "expiration");
+            assert.property(orders[order.market][order.outcome][i], "cap");
+        }
+    });
+
+    it("orders.cancel", function () {
+        var orders = augur.db.orders.create(order);
+        var numOrders = orders[order.market][order.outcome].length;
+        var orderId = orders[order.market][order.outcome][numOrders-1].id;
+        var updatedOrders = augur.db.orders.cancel(
+            order.account,
+            order.market,
+            order.outcome,
+            orderId
+        );
+        assert.strictEqual(updatedOrders[order.market][order.outcome].length, numOrders-1);
+    });
+
+    it("orders.reset", function () {
+        assert.isTrue(augur.db.orders.reset(augur.from));
+        assert.isNull(augur.db.orders.get(augur.from));
+    });
+});
+
+describe("Accounts", function () {
 
     var kdf = "pbkdf2";
     var userHandle = utils.sha256(new Date().toString()).slice(0, 10);
