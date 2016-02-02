@@ -12,7 +12,7 @@ var augurpath = "../../src/index";
 var augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
 
 var branchId = augur.branches.dev;
-var markets = augur.getMarkets(branchId);
+var markets = augur.getMarketsInBranch(branchId);
 var marketId = markets[markets.length - 1];
 
 if (!process.env.CONTINUOUS_INTEGRATION) {

@@ -10,11 +10,10 @@ var abi = require("augur-abi");
 var utils = require("../../src/utilities");
 var augur = utils.setup(require("../../src"), process.argv.slice(2));
 var constants = augur.constants;
-var log = console.log;
 
 var amount = "1";
 var branch_id = augur.branches.dev;
-var markets = augur.getMarkets(branch_id);
+var markets = augur.getMarketsInBranch(branch_id);
 var market_id = markets[markets.length - 1];
 var event_id = augur.getMarketEvents(market_id)[0];
 

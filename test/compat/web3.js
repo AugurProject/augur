@@ -50,7 +50,7 @@ var branchesAbi = [{
         "type": "int256[]"
     }]
 }, {
-    "name": "getMarkets(int256)",
+    "name": "getMarketsInBranch(int256)",
     "type": "function",
     "inputs": [{
         "name": "branch",
@@ -80,7 +80,7 @@ var branchesAbi = [{
         "type": "int256"
     }]
 }, {
-    "name": "getNumMarkets(int256)",
+    "name": "getNumMarketsBranch(int256)",
     "type": "function",
     "inputs": [{
         "name": "branch",
@@ -187,34 +187,6 @@ var branchesAbi = [{
         "name": "out",
         "type": "int256"
     }]
-}, {
-    "name": "setStep(int256,int256)",
-    "type": "function",
-    "inputs": [{
-        "name": "branch",
-        "type": "int256"
-    }, {
-        "name": "step",
-        "type": "int256"
-    }],
-    "outputs": [{
-        "name": "out",
-        "type": "int256"
-    }]
-}, {
-    "name": "setSubstep(int256,int256)",
-    "type": "function",
-    "inputs": [{
-        "name": "branch",
-        "type": "int256"
-    }, {
-        "name": "substep",
-        "type": "int256"
-    }],
-    "outputs": [{
-        "name": "out",
-        "type": "int256"
-    }]
 }];
 
 describe("augur.js / web3 interoperability", function () {
@@ -222,11 +194,11 @@ describe("augur.js / web3 interoperability", function () {
         this.timeout(constants.TIMEOUT);
         var web3markets = web3.eth.contract(branchesAbi)
                                   .at(augur.contracts.branches)
-                                  .getMarkets
+                                  .getMarketsInBranch
                                   .call(new BigNumber(branchId));
         augur = utils.setup(augur, process.argv.slice(2));
         var markets = {
-            augurjs: abi.hex(augur.getMarkets(branchId)),
+            augurjs: abi.hex(augur.getMarketsInBranch(branchId)),
             web3: abi.hex(web3markets)
         };
         var unforked;

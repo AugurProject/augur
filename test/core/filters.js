@@ -17,7 +17,7 @@ var augur = utils.setup(require(augurpath), process.argv.slice(2));
 
 var DELAY = 2500;
 var branch = augur.branches.dev;
-var markets = augur.getMarkets(branch);
+var markets = augur.getMarketsInBranch(branch);
 var market_id = markets[markets.length - 1];
 var outcome = "1";
 var amount = "10";

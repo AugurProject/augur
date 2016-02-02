@@ -88,7 +88,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
     });
 
     it("Look up / sanity check most recent market ID", function (done) {
-        augur.getMarkets(augur.branches.dev, function (markets) {
+        augur.getMarketsInBranch(augur.branches.dev, function (markets) {
             if (markets.error) return done(markets);
             assert.instanceOf(markets, Array);
             assert.isAbove(markets.length, 0);
@@ -107,7 +107,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
             it(label, function (done) {
                 this.timeout(augur.constants.TIMEOUT*2);
                 var branch = augur.branches.dev;
-                augur.getMarkets(branch, function (markets) {
+                augur.getMarketsInBranch(branch, function (markets) {
                     markets.reverse();
                     async.eachSeries(markets, function (market, nextMarket) {
                         augur.getMarketEvents(market, function (events) {

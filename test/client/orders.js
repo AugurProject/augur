@@ -18,7 +18,7 @@ var accounts = [
     "0xef2b2ba637921b8cf51b8a89576666a5d4322c69",
     "0xf0c4ee355432a7c7da12bdef04543723d110d591"
 ];
-var markets = augur.getMarkets(augur.branches.dev);
+var markets = augur.getMarketsInBranch(augur.branches.dev);
 var marketId = markets[markets.length - 1];
 
 describe("db.orders.create", function () {

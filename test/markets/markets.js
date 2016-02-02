@@ -18,7 +18,7 @@ var branchId = augur.branches.dev;
 var accounts = utils.get_test_accounts(augur, constants.MAX_TEST_ACCOUNTS);
 var traderIndex = "1";
 var outcome = 1;
-var markets = augur.getMarkets(branchId);
+var markets = augur.getMarketsInBranch(branchId);
 var numMarkets = markets.length;
 var marketId = utils.select_random(markets);
 if (numMarkets > constants.MAX_TEST_SAMPLES) {
@@ -62,17 +62,19 @@ var runtests = function (method, test) {
             var output = augur[method].apply(augur, params);
             test(errorCheck(output, done));
         });
-        it("batch", function (done) {
-            this.timeout(constants.TIMEOUT);
-            var batch = augur.createBatch();
-            batch.add(method, params, function (output) {
-                test(errorCheck(output));
+        if (augur.tx[method]) {
+            it("batch", function (done) {
+                this.timeout(constants.TIMEOUT);
+                var batch = augur.createBatch();
+                batch.add(method, params, function (output) {
+                    test(errorCheck(output));
+                });
+                batch.add(method, params, function (output) {
+                    test(errorCheck(output, done));
+                });
+                batch.execute();
             });
-            batch.add(method, params, function (output) {
-                test(errorCheck(output, done));
-            });
-            batch.execute();
-        });
+        }
     });
 };
 
@@ -182,26 +184,6 @@ describe("data_api/markets", function () {
         };
         for (var i = 0; i < numMarkets; ++i) {
             runtests(this.title, test, markets[i]);
-        }
-    });
-    describe("getSimulatedBuy", function () {
-        var test = function (t) {
-            assert.isArray(t.output);
-            assert.isAbove(t.output.length, 0);
-            t.done();
-        };
-        for (var i = 0; i < numMarkets; ++i) {
-            runtests(this.title, test, markets[i], outcome, amount);
-        }
-    });
-    describe("getSimulatedSell", function () {
-        var test = function (t) {
-            assert.isArray(t.output);
-            assert.isAbove(t.output.length, 0);
-            t.done();
-        };
-        for (var i = 0; i < numMarkets; ++i) {
-            runtests(this.title, test, markets[i], outcome, amount);
         }
     });
     describe("lsLmsr", function () {

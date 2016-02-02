@@ -29,7 +29,7 @@ var password2 = utils.sha256(Math.random().toString(36).substring(4)).slice(10);
 var handle3 = utils.sha256(Math.random().toString(36).substring(4)).slice(0, 7);
 var password3 = utils.sha256(Math.random().toString(36).substring(4)).slice(0, 7);
 
-var markets = augur.getMarkets(augur.branches.dev);
+var markets = augur.getMarketsInBranch(augur.branches.dev);
 var market_id = markets[markets.length - 1];
 
 function checkAccount(augur, account) {

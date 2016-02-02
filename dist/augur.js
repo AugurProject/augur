@@ -2,57 +2,59 @@
 module.exports={
     "7": {
         "namereg": "0xc6d9d2cd449a754c494264e1809c50e34d64562b",
-        "buy&sellShares": "0xb5829458bc2f3cacc32011f81529351d6a48adb2",
-        "closeMarket": "0xd573353f2a147b78a5453872037db104dc521ccb",
-        "closeMarketEight": "0x3c2f01892bd6eee02efdd6fbd3bbed4ce207e328",
-        "closeMarketFour": "0xcd14dda97ae7d4b460862ddf8f6744d3a9d3bcc1",
-        "closeMarketOne": "0xe4c222d5b76caca992ff1d4f6aa10d327ec02f8d",
-        "closeMarketTwo": "0x695e4496f6f4dd71b91b05982ce069b721c97c89",
-        "comments": "0x32361a3f92c7e50d5038da142d050f946b12fab8",
-        "createBranch": "0x777072b39eae5329d4d0ee0a0db0848cda724bd6",
-        "createEvent": "0x657cdab13e8cc4313378026a099df6c0a8e2721c",
-        "createMarket": "0xeb2ef218b49578277013a1d1cfa3df0b67f92670",
-        "eventResolution": "0xe2d6660f1810d5c137fc511eefc0768559f8810d",
-        "faucets": "0xc2018c0a19ecea3b12b6fe18b54d7fb265480170",
-        "insertionsort": "0xc4378033b5c1d88b233d48854ade63ba7d00ed25",
-        "makeReports": "0x0da6ea37fcd66ab0d3865efde01ab4ec7cd235de",
-        "quicksort": "0xd385403eecaac565a9d184da3731c437c41e3bb1",
-        "transferShares": "0xe9c32b6ca918e72a5a0d265188d658ac9e36494e",
-        "branches": "0x88efaf82cdc09fc6e122e679444776f8cee53fc5",
-        "cash": "0x614ee1763c4593cb20ac089e70fcaa00454339d6",
-        "events": "0xb0cb71d7f57a12e403dd7b6429f35935f4c9d32c",
-        "expiringEvents": "0x7941067c43e8a9338926e8996a48da24f1656533",
-        "fxpFunctions": "0xb0341996eccb15f55a4a3a2e72136f25a1e4cc19",
-        "info": "0x48c9517198842d366b921e523847a5022c92af4f",
-        "markets": "0x98c09deaa9197ca893508a70564db16a4e0a3856",
-        "reporting": "0x89aacd78caab454af0546ce94f77302b29b92cc0"
+        "buy&sellShares": "0xb07c85f4bc330af9d05a13bfcfc8e4ee97aaf8a7",
+        "closeMarket": "0xc50d5c87fd47fcd0809189537167875f6bd2d2ec",
+        "closeMarketEight": "0x1638264f1cf621577e0c9ebdbb32c64363ad5091",
+        "closeMarketFour": "0xc0e57d94439e2ee128c2027165418990f7761b5a",
+        "closeMarketOne": "0xf66694ae3d829aa429d45c3ca25c1b72ea939664",
+        "closeMarketTwo": "0x7463f09d6325539b67fb1029c967e8dece922de3",
+        "comments": "0xe3afb897ca3433beb4dd26e56b7a7e1e5a3cb95f",
+        "createBranch": "0xfc5641a3e886de604de807ddaf5177b3ff54c49d",
+        "createEvent": "0x0bb851b745b9b3645393e6aa73ed3c578bee2c44",
+        "createMarket": "0xb932ada718d652733f3e0d3b56680c8db8d2c185",
+        "eventResolution": "0x9841da6e15861bfdb3ed00b824367a7d303c61c1",
+        "faucets": "0xc609601d1e106b82685f1d4ccc4a4414756edcec",
+        "insertionsort": "0xb7633eb6855a73fa7a30d77283d96bef0a5aadbd",
+        "makeReports": "0x4b08fc091b82aa66bb89717a024134980734f0c4",
+        "orderBook": "0xc2b23407ee8b39afae85e10e97bb09ade18895aa",
+        "quicksort": "0x48e24883526844e5569581451dc265b1606f1ad7",
+        "transferShares": "0x778644baaed232b93edc81b5bca3489bda81bf54",
+        "branches": "0x3f317c2945f54b4c105b8624c1ba4ccab4da16ba",
+        "cash": "0xd774e260a27f84b645a9aac3d01a58a5c6fbe4a4",
+        "events": "0x0375c66ee1c2056e7bd07c5a36e04c955b48d312",
+        "expiringEvents": "0x239beef0da25a0d3fbcfbebceaa2e2b95e279a1c",
+        "fxpFunctions": "0x49e9c495ecb6e30a8a0bbe5c94f1f93876396849",
+        "info": "0xe5051d599fb951ded03c906fecff09d4b37b0173",
+        "markets": "0x8032786d68e26dc2792bed6a0b605f892b8c6217",
+        "reporting": "0x2480ce8744fbd678f3280c952c38d95d5cf15101"
     },
     "10101": {
         "namereg": "0xc6d9d2cd449a754c494264e1809c50e34d64562b",
-        "buy&sellShares": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645",
-        "closeMarket": "0x3f3276849a878a176b2f02dd48a483e8182a49e4",
-        "closeMarketEight": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3",
-        "closeMarketFour": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7",
-        "closeMarketOne": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea",
-        "closeMarketTwo": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd",
-        "comments": "0x708fdfe18bf28afe861a69e95419d183ace003eb",
-        "createBranch": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68",
-        "createEvent": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e",
-        "createMarket": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79",
-        "eventResolution": "0x35152caa07026203a1add680771afb690d872d7d",
-        "faucets": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6",
-        "insertionsort": "0x8a4e2993a9972ee035453bb5674816fc3a698718",
-        "makeReports": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7",
+        "buy&sellShares": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3",
+        "closeMarket": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79",
+        "closeMarketEight": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d",
+        "closeMarketFour": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645",
+        "closeMarketOne": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7",
+        "closeMarketTwo": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7",
+        "comments": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7",
+        "createBranch": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df",
+        "createEvent": "0x81a7621e9a286d061b3dea040888a51c96693b1c",
+        "createMarket": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68",
+        "eventResolution": "0x3f3276849a878a176b2f02dd48a483e8182a49e4",
+        "faucets": "0x5069d883e31429c6dd1325d961f443007747c7a2",
+        "insertionsort": "0x708fdfe18bf28afe861a69e95419d183ace003eb",
+        "makeReports": "0x35152caa07026203a1add680771afb690d872d7d",
+        "orderBook": "0x8a4e2993a9972ee035453bb5674816fc3a698718",
         "quicksort": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c",
-        "transferShares": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d",
-        "branches": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55",
-        "cash": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2",
-        "events": "0x482c57abdce592b39434e3f619ffc3db62ab6d01",
-        "expiringEvents": "0xe4714fcbdcdba49629bc408183ef40d120700b8d",
-        "fxpFunctions": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7",
-        "info": "0x5069d883e31429c6dd1325d961f443007747c7a2",
-        "markets": "0x81a7621e9a286d061b3dea040888a51c96693b1c",
-        "reporting": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667"
+        "transferShares": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea",
+        "branches": "0x482c57abdce592b39434e3f619ffc3db62ab6d01",
+        "cash": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55",
+        "events": "0xe4714fcbdcdba49629bc408183ef40d120700b8d",
+        "expiringEvents": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667",
+        "fxpFunctions": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2",
+        "info": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e",
+        "markets": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd",
+        "reporting": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6"
     },
     "errors": {
         "0x": "no response or bad input",
@@ -75,8 +77,11 @@ module.exports={
         },
         "submitReportHash": {
             "0": "could not set report hash",
-            "-1": "reporter doesn't exist, voting period is over, or voting period hasn't started yet",
-            "-2": "not in hash submitting timeframe"
+            "-1": "reporter (you) doesn't (don't) exist, or voting period over or hasn't started yet",
+            "-2": "not in hash submitting timeframe or event doesn't exist / not a valid event expiring then",
+            "-4": "already resolved",
+            "-5": ".99 market",
+            "-6": "no markets"
         },
         "checkReportValidity": {
             "-1": "report isn't long enough",
@@ -120,6 +125,10 @@ module.exports={
         "WHISPER_POST_FAILED": {
             "error": 65,
             "message": "could not post message to whisper"
+        },
+        "DB_DELETE_FAILED": {
+            "error": 97,
+            "message": "database delete failed"
         },
         "DB_WRITE_FAILED": {
             "error": 98,
@@ -1380,7 +1389,7 @@ var augur = global.augur || require("./src/index");
 global.augur = augur;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./src/index":330}],6:[function(require,module,exports){
+},{"./src/index":331}],6:[function(require,module,exports){
 (function (process,global){
 /*!
  * async
@@ -3257,7 +3266,7 @@ module.exports = {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"bignumber.js":8,"buffer":256,"js-sha3":321}],8:[function(require,module,exports){
+},{"bignumber.js":8,"buffer":256,"js-sha3":322}],8:[function(require,module,exports){
 /*! bignumber.js v2.1.3 https://github.com/MikeMcl/bignumber.js/LICENCE */
 
 ;(function (globalObj) {
@@ -37100,6 +37109,5052 @@ if (typeof module === 'object' && module.exports) {
 
 }).call(this,require("buffer").Buffer)
 },{"buffer":256}],269:[function(require,module,exports){
+/*! decimal.js v5.0.1 https://github.com/MikeMcl/decimal.js/LICENCE */
+;(function (globalScope) {
+  'use strict';
+
+
+  /*
+   *  decimal.js v5.0.1
+   *  An arbitrary-precision Decimal type for JavaScript.
+   *  https://github.com/MikeMcl/decimal.js
+   *  Copyright (c) 2016 Michael Mclaughlin <M8ch88l@gmail.com>
+   *  MIT Expat Licence
+   */
+
+
+  // -----------------------------------  EDITABLE DEFAULTS  ------------------------------------ //
+
+
+    // The maximum exponent magnitude.
+    // The limit on the value of `toExpNeg`, `toExpPos`, `minE` and `maxE`.
+  var EXP_LIMIT = 9e15,                      // 0 to 9e15
+
+    // The limit on the value of `precision`, and on the value of the first argument to
+    // `toDecimalPlaces`, `toExponential`, `toFixed`, `toPrecision` and `toSignificantDigits`.
+    MAX_DIGITS = 1e9,                        // 0 to 1e9
+
+    // The base 88 alphabet used by `toJSON` and `fromJSON`.
+    // 7 printable ASCII characters omitted (space) \ " & ' < >
+    NUMERALS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%()*+,-./:;=?@[]^_`{|}~',
+
+    // The natural logarithm of 10 (1025 digits).
+    LN10 = '2.3025850929940456840179914546843642076011014886287729760333279009675726096773524802359972050895982983419677840422862486334095254650828067566662873690987816894829072083255546808437998948262331985283935053089653777326288461633662222876982198867465436674744042432743651550489343149393914796194044002221051017141748003688084012647080685567743216228355220114804663715659121373450747856947683463616792101806445070648000277502684916746550586856935673420670581136429224554405758925724208241314695689016758940256776311356919292033376587141660230105703089634572075440370847469940168269282808481184289314848524948644871927809676271275775397027668605952496716674183485704422507197965004714951050492214776567636938662976979522110718264549734772662425709429322582798502585509785265383207606726317164309505995087807523710333101197857547331541421808427543863591778117054309827482385045648019095610299291824318237525357709750539565187697510374970888692180205189339507238539205144634197265287286965110862571492198849978748873771345686209167058',
+
+    // Pi (1025 digits).
+    PI = '3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679821480865132823066470938446095505822317253594081284811174502841027019385211055596446229489549303819644288109756659334461284756482337867831652712019091456485669234603486104543266482133936072602491412737245870066063155881748815209209628292540917153643678925903600113305305488204665213841469519415116094330572703657595919530921861173819326117931051185480744623799627495673518857527248912279381830119491298336733624406566430860213949463952247371907021798609437027705392171762931767523846748184676694051320005681271452635608277857713427577896091736371787214684409012249534301465495853710507922796892589235420199561121290219608640344181598136297747713099605187072113499999983729780499510597317328160963185950244594553469083026425223082533446850352619311881710100031378387528865875332083814206171776691473035982534904287554687311595628638823537875937519577818577805321712268066130019278766111959092164201989380952572010654858632789',
+
+
+    // The initial configuration properties of the Decimal constructor.
+    Decimal = {
+
+      // These values must be integers within the stated ranges (inclusive).
+      // Most of these values can be changed during run-time using `Decimal.config`.
+
+      // The maximum number of significant digits of the result of a calculation or base conversion.
+      // E.g. `Decimal.config({ precision: 20 });`
+      precision: 20,                         // 1 to MAX_DIGITS
+
+      // The rounding mode used when rounding to `precision`.
+      //
+      // ROUND_UP         0 Away from zero.
+      // ROUND_DOWN       1 Towards zero.
+      // ROUND_CEIL       2 Towards +Infinity.
+      // ROUND_FLOOR      3 Towards -Infinity.
+      // ROUND_HALF_UP    4 Towards nearest neighbour. If equidistant, up.
+      // ROUND_HALF_DOWN  5 Towards nearest neighbour. If equidistant, down.
+      // ROUND_HALF_EVEN  6 Towards nearest neighbour. If equidistant, towards even neighbour.
+      // ROUND_HALF_CEIL  7 Towards nearest neighbour. If equidistant, towards +Infinity.
+      // ROUND_HALF_FLOOR 8 Towards nearest neighbour. If equidistant, towards -Infinity.
+      //
+      // E.g.
+      // `Decimal.rounding = 4;`
+      // `Decimal.rounding = Decimal.ROUND_HALF_UP;`
+      rounding: 4,                           // 0 to 8
+
+      // The modulo mode used when calculating the modulus: a mod n.
+      // The quotient (q = a / n) is calculated according to the corresponding rounding mode.
+      // The remainder (r) is calculated as: r = a - n * q.
+      //
+      // UP         0 The remainder is positive if the dividend is negative, else is negative.
+      // DOWN       1 The remainder has the same sign as the dividend (JavaScript %).
+      // FLOOR      3 The remainder has the same sign as the divisor (Python %).
+      // HALF_EVEN  6 The IEEE 754 remainder function.
+      // EUCLID     9 Euclidian division. q = sign(n) * floor(a / abs(n)). Always positive.
+      //
+      // Truncated division (1), floored division (3), the IEEE 754 remainder (6), and Euclidian
+      // division (9) are commonly used for the modulus operation. The other rounding modes can also
+      // be used, but they may not give useful results.
+      modulo: 1,                             // 0 to 9
+
+      // The exponent value at and beneath which `toString` returns exponential notation.
+      // JavaScript numbers: -7
+      toExpNeg: -7,                          // 0 to -EXP_LIMIT
+
+      // The exponent value at and above which `toString` returns exponential notation.
+      // JavaScript numbers: 21
+      toExpPos:  21,                         // 0 to EXP_LIMIT
+
+      // The minimum exponent value, beneath which underflow to zero occurs.
+      // JavaScript numbers: -324  (5e-324)
+      minE: -EXP_LIMIT,                      // -1 to -EXP_LIMIT
+
+      // The maximum exponent value, above which overflow to Infinity occurs.
+      // JavaScript numbers: 308  (1.7976931348623157e+308)
+      maxE: EXP_LIMIT,                       // 1 to EXP_LIMIT
+
+      // Whether to use cryptographically-secure random number generation, if available.
+      crypto: void 0                         // true/false/undefined
+    },
+
+
+  // ----------------------------------- END OF EDITABLE DEFAULTS ------------------------------- //
+
+
+    inexact, noConflict, quadrant, HALF, ONE,
+    cryptoObject = typeof crypto != 'undefined' ? crypto : null,
+    external = true,
+
+    decimalError = '[DecimalError] ',
+    invalidArgument = decimalError + 'Invalid argument: ',
+    precisionLimitExceeded = decimalError + 'Precision limit exceeded',
+
+    mathfloor = Math.floor,
+    mathpow = Math.pow,
+
+    isBinary = /^0b([01]+(\.[01]*)?|\.[01]+)(p[+-]?\d+)?$/i,
+    isHex = /^0x([0-9a-f]+(\.[0-9a-f]*)?|\.[0-9a-f]+)(p[+-]?\d+)?$/i,
+    isOctal = /^0o([0-7]+(\.[0-7]*)?|\.[0-7]+)(p[+-]?\d+)?$/i,
+    isDecimal = /^(\d+(\.\d*)?|\.\d+)(e[+-]?\d+)?$/i,
+
+    BASE = 1e7,
+    LOG_BASE = 7,
+    MAX_SAFE_INTEGER = 9007199254740991,
+
+    LN10_PRECISION = LN10.length - 1,
+    PI_PRECISION = PI.length - 1,
+
+    // Decimal.prototype object
+    P = {};
+
+
+  // Decimal prototype methods
+
+
+  /*
+   *  absoluteValue             abs
+   *  ceil
+   *  comparedTo                cmp
+   *  cosine                    cos
+   *  cubeRoot                  cbrt
+   *  decimalPlaces             dp
+   *  dividedBy                 div
+   *  dividedToIntegerBy        divToInt
+   *  equals                    eq
+   *  floor
+   *  greaterThan               gt
+   *  greaterThanOrEqualTo      gte
+   *  hyperbolicCosine          cosh
+   *  hyperbolicSine            sinh
+   *  hyperbolicTangent         tanh
+   *  inverseCosine             acos
+   *  inverseHyperbolicCosine   acosh
+   *  inverseHyperbolicSine     asinh
+   *  inverseHyperbolicTangent  atanh
+   *  inverseSine               asin
+   *  inverseTangent            atan
+   *  isFinite
+   *  isInteger                 isInt
+   *  isNaN
+   *  isNegative                isNeg
+   *  isPositive                isPos
+   *  isZero
+   *  lessThan                  lt
+   *  lessThanOrEqualTo         lte
+   *  logarithm                 log
+   *  [maximum]                 [max]
+   *  [minimum]                 [min]
+   *  minus                     sub
+   *  modulo                    mod
+   *  naturalExponential        exp
+   *  naturalLogarithm          ln
+   *  negated                   neg
+   *  plus                      add
+   *  precision                 sd
+   *  round
+   *  sine                      sin
+   *  squareRoot                sqrt
+   *  tangent                   tan
+   *  times                     mul
+   *  toBinary
+   *  toDecimalPlaces           toDP
+   *  toExponential
+   *  toFixed
+   *  toFraction
+   *  toHexadecimal             toHex
+   *  toJSON
+   *  toNearest
+   *  toNumber
+   *  toOctal
+   *  toPower                   pow
+   *  toPrecision
+   *  toSignificantDigits       toSD
+   *  toString
+   *  truncated                 trunc
+   *  valueOf
+   */
+
+
+  /*
+   * Return a new Decimal whose value is the absolute value of this Decimal.
+   *
+   */
+  P.absoluteValue = P.abs = function () {
+    var x = new this.constructor(this);
+    if (x.s < 0) x.s = 1;
+    return finalise(x);
+  };
+
+
+  /*
+   * Return a new Decimal whose value is the value of this Decimal rounded to a whole number in the
+   * direction of positive Infinity.
+   *
+   */
+  P.ceil = function () {
+    return finalise(new this.constructor(this), this.e + 1, 2);
+  };
+
+
+  /*
+   * Return
+   *   1    if the value of this Decimal is greater than the value of `y`,
+   *  -1    if the value of this Decimal is less than the value of `y`,
+   *   0    if they have the same value,
+   *   NaN  if the value of either Decimal is NaN.
+   *
+   */
+  P.comparedTo = P.cmp = function (y) {
+    var i, j, xdL, ydL,
+      x = this,
+      xd = x.d,
+      yd = (y = new x.constructor(y)).d,
+      xs = x.s,
+      ys = y.s;
+
+    // Either NaN or ±Infinity?
+    if (!xd || !yd) {
+      return !xs || !ys ? NaN : xs !== ys ? xs : xd === yd ? 0 : !xd ^ xs < 0 ? 1 : -1;
+    }
+
+    // Either zero?
+    if (!xd[0] || !yd[0]) return xd[0] ? xs : yd[0] ? -ys : 0;
+
+    // Signs differ?
+    if (xs !== ys) return xs;
+
+    // Either zero?
+    if (!xd[0] || !yd[0]) return xd[0] ? xs : yd[0] ? -ys : 0;
+
+    // Signs differ?
+    if (xs !== ys) return xs;
+
+    // Compare exponents.
+    if (x.e !== y.e) return x.e > y.e ^ xs < 0 ? 1 : -1;
+
+    xdL = xd.length;
+    ydL = yd.length;
+
+    // Compare digit by digit.
+    for (i = 0, j = xdL < ydL ? xdL : ydL; i < j; ++i) {
+      if (xd[i] !== yd[i]) return xd[i] > yd[i] ^ xs < 0 ? 1 : -1;
+    }
+
+    // Compare lengths.
+    return xdL === ydL ? 0 : xdL > ydL ^ xs < 0 ? 1 : -1;
+  };
+
+
+  /*
+   * Return a new Decimal whose value is the cosine of the value in radians of this Decimal.
+   *
+   * Domain: [-Infinity, Infinity]
+   * Range: [-1, 1]
+   *
+   * cos(0)         = 1
+   * cos(-0)        = 1
+   * cos(Infinity)  = NaN
+   * cos(-Infinity) = NaN
+   * cos(NaN)       = NaN
+   *
+   */
+  P.cosine = P.cos = function () {
+    var pr, rm,
+      x = this,
+      Ctor = x.constructor;
+
+    if (!x.d) return new Ctor(NaN);
+
+    // cos(0) = cos(-0) = 1
+    if (!x.d[0]) return new Ctor(ONE);
+
+    pr = Ctor.precision;
+    rm = Ctor.rounding;
+    Ctor.precision = pr + Math.max(x.e, x.sd()) + LOG_BASE;
+    Ctor.rounding = 1;
+
+    x = cosine(Ctor, toLessThanHalfPi(Ctor, x));
+
+    Ctor.precision = pr;
+    Ctor.rounding = rm;
+
+    return finalise(quadrant == 2 || quadrant == 3 ? x.neg() : x, pr, rm, true);
+  };
+
+
+  /*
+   *
+   * Return a new Decimal whose value is the cube root of the value of this Decimal, rounded to
+   * `precision` significant digits using rounding mode `rounding`.
+   *
+   *  cbrt(0)  =  0
+   *  cbrt(-0) = -0
+   *  cbrt(1)  =  1
+   *  cbrt(-1) = -1
+   *  cbrt(N)  =  N
+   *  cbrt(-I) = -I
+   *  cbrt(I)  =  I
+   *
+   * Math.cbrt(x) = (x < 0 ? -Math.pow(-x, 1/3) : Math.pow(x, 1/3))
+   *
+   */
+  P.cubeRoot = P.cbrt = function () {
+    var e, m, n, r, rep, s, sd, t, t3, t3plusx,
+      x = this,
+      Ctor = x.constructor;
+
+    if (!x.isFinite() || x.isZero()) return new Ctor(x);
+    external = false;
+
+    // Initial estimate.
+    s = x.s * Math.pow(x.s * x, 1 / 3);
+
+     // Math.cbrt underflow/overflow?
+     // Pass x to Math.pow as integer, then adjust the exponent of the result.
+    if (!s || Math.abs(s) == 1 / 0) {
+      n = digitsToString(x.d);
+      e = x.e;
+
+      // Adjust n exponent so it is a multiple of 3 away from x exponent.
+      if (s = (e - n.length + 1) % 3) n += (s == 1 || s == -2 ? '0' : '00');
+      s = Math.pow(n, 1 / 3);
+
+      // Rarely, e may be one less than the result exponent value.
+      e = mathfloor((e + 1) / 3) - (e % 3 == (e < 0 ? -1 : 2));
+
+      if (s == 1 / 0) {
+        n = '5e' + e;
+      } else {
+        n = s.toExponential();
+        n = n.slice(0, n.indexOf('e') + 1) + e;
+      }
+
+      r = new Ctor(n);
+      r.s = x.s;
+    } else {
+      r = new Ctor(s.toString());
+    }
+
+    sd = (e = Ctor.precision) + 3;
+
+    // Halley's method.
+    // TODO? Compare Newton's method.
+    for (;;) {
+      t = r;
+      t3 = t.times(t).times(t);
+      t3plusx = t3.plus(x);
+      r = divide(t3plusx.plus(x).times(t), t3plusx.plus(t3), sd + 2, 1);
+
+      // TODO? Replace with for-loop and checkRoundingDigits.
+      if (digitsToString(t.d).slice(0, sd) ===
+        (n = digitsToString(r.d)).slice(0, sd)) {
+        n = n.slice(sd - 3, sd + 1);
+
+        // The 4th rounding digit may be in error by -1 so if the 4 rounding digits are 9999 or 4999
+        // , i.e. approaching a rounding boundary, continue the iteration.
+        if (n == '9999' || !rep && n == '4999') {
+
+          // On the first iteration only, check to see if rounding up gives the exact result as the
+          // nines may infinitely repeat.
+          if (!rep) {
+            finalise(t, e + 1, 0);
+
+            if (t.times(t).times(t).eq(x)) {
+              r = t;
+              break;
+            }
+          }
+
+          sd += 4;
+          rep = 1;
+        } else {
+
+          // If the rounding digits are null, 0{0,4} or 50{0,3}, check for an exact result.
+          // If not, then there are further digits and m will be truthy.
+          if (!+n || !+n.slice(1) && n.charAt(0) == '5') {
+
+            // Truncate to the first rounding digit.
+            finalise(r, e + 1, 1);
+            m = !r.times(r).times(r).eq(x);
+          }
+
+          break;
+        }
+      }
+    }
+
+    external = true;
+
+    return finalise(r, e, Ctor.rounding, m);
+  };
+
+
+  /*
+   * Return the number of decimal places of the value of this Decimal.
+   *
+   */
+  P.decimalPlaces = P.dp = function () {
+    var w,
+      d = this.d,
+      n = NaN;
+
+    if (d) {
+      w = d.length - 1;
+      n = (w - mathfloor(this.e / LOG_BASE)) * LOG_BASE;
+
+      // Subtract the number of trailing zeros of the last word.
+      w = d[w];
+      if (w) for (; w % 10 == 0; w /= 10) n--;
+      if (n < 0) n = 0;
+    }
+
+    return n;
+  };
+
+
+  /*
+   *  n / 0 = I
+   *  n / N = N
+   *  n / I = 0
+   *  0 / n = 0
+   *  0 / 0 = N
+   *  0 / N = N
+   *  0 / I = 0
+   *  N / n = N
+   *  N / 0 = N
+   *  N / N = N
+   *  N / I = N
+   *  I / n = I
+   *  I / 0 = I
+   *  I / N = N
+   *  I / I = N
+   *
+   * Return a new Decimal whose value is the value of this Decimal divided by `y`, rounded to
+   * `precision` significant digits using rounding mode `rounding`.
+   *
+   */
+  P.dividedBy = P.div = function (y) {
+    return divide(this, new this.constructor(y));
+  };
+
+
+  /*
+   * Return a new Decimal whose value is the integer part of dividing the value of this Decimal
+   * by the value of `y`, rounded to `precision` significant digits using rounding mode `rounding`.
+   *
+   */
+  P.dividedToIntegerBy = P.divToInt = function (y) {
+    var x = this,
+      Ctor = x.constructor;
+    return finalise(divide(x, new Ctor(y), 0, 1, 1), Ctor.precision, Ctor.rounding);
+  };
+
+
+  /*
+   * Return true if the value of this Decimal is equal to the value of `y`, otherwise return false.
+   *
+   */
+  P.equals = P.eq = function (y) {
+    return this.cmp(y) === 0;
+  };
+
+
+  /*
+   * Return a new Decimal whose value is the value of this Decimal rounded to a whole number in the
+   * direction of negative Infinity.
+   *
+   */
+  P.floor = function () {
+    return finalise(new this.constructor(this), this.e + 1, 3);
+  };
+
+
+  /*
+   * Return true if the value of this Decimal is greater than the value of `y`, otherwise return
+   * false.
+   *
+   */
+  P.greaterThan = P.gt = function (y) {
+    return this.cmp(y) > 0;
+  };
+
+
+  /*
+   * Return true if the value of this Decimal is greater than or equal to the value of `y`,
+   * otherwise return false.
+   *
+   */
+  P.greaterThanOrEqualTo = P.gte = function (y) {
+    var k = this.cmp(y);
+    return k == 1 || k === 0;
+  };
+
+
+  /*
+   * Return a new Decimal whose value is the hyperbolic cosine of the value in radians of this
+   * Decimal.
+   *
+   * Domain: [-Infinity, Infinity]
+   * Range: [1, Infinity]
+   *
+   * cosh(x) = 1 + x^2/2! + x^4/4! + x^6/6! + ...
+   *
+   * cosh(0)         = 1
+   * cosh(-0)        = 1
+   * cosh(Infinity)  = Infinity
+   * cosh(-Infinity) = Infinity
+   * cosh(NaN)       = NaN
+   *
+   *  x        time taken (ms)   result
+   * 1000      9                 9.8503555700852349694e+433
+   * 10000     25                4.4034091128314607936e+4342
+   * 100000    171               1.4033316802130615897e+43429
+   * 1000000   3817              1.5166076984010437725e+434294
+   * 10000000  abandoned after 2 minute wait
+   *
+   * TODO? Compare performance of cosh(x) = 0.5 * (exp(x) + exp(-x))
+   *
+   */
+  P.hyperbolicCosine = P.cosh = function () {
+    var k, n, pr, rm, len,
+      x = this,
+      Ctor = x.constructor,
+      one = new Ctor(ONE);
+
+    if (!x.isFinite()) return new Ctor(x.s ? 1 / 0 : NaN);
+    if (x.isZero()) return one;
+
+    pr = Ctor.precision;
+    rm = Ctor.rounding;
+    Ctor.precision = pr + Math.max(x.e, x.sd()) + 4;
+    Ctor.rounding = 1;
+    len = x.d.length;
+
+    // Argument reduction: cos(4x) = 1 - 8cos^2(x) + 8cos^4(x) + 1
+    // i.e. cos(x) = 1 - cos^2(x/4)(8 - 8cos^2(x/4))
+
+    // Estimate the optimum number of times to use the argument reduction.
+    // TODO? Estimation reused from cosine() and may not be optimal here.
+    if (len < 32) {
+      k = Math.ceil(len / 3);
+      n = Math.pow(4, -k).toString();
+    } else {
+      k = 16;
+      n = '2.3283064365386962890625e-10';
+    }
+
+    x = taylorSeries(Ctor, 1, x.times(n), new Ctor(ONE), true);
+
+    // Reverse argument reduction
+    var cosh2_x,
+      i = k,
+      d8 = new Ctor(8);
+    for (; i--;) {
+      cosh2_x = x.times(x);
+      x = one.minus(cosh2_x.times(d8.minus(cosh2_x.times(d8))));
+    }
+
+    return finalise(x, Ctor.precision = pr, Ctor.rounding = rm, true);
+  };
+
+
+  /*
+   * Return a new Decimal whose value is the hyperbolic sine of the value in radians of this
+   * Decimal.
+   *
+   * Domain: [-Infinity, Infinity]
+   * Range: [-Infinity, Infinity]
+   *
+   * sinh(x) = x + x^3/3! + x^5/5! + x^7/7! + ...
+   *
+   * sinh(0)         = 0
+   * sinh(-0)        = -0
+   * sinh(Infinity)  = Infinity
+   * sinh(-Infinity) = -Infinity
+   * sinh(NaN)       = NaN
+   *
+   * x        time taken (ms)
+   * 10       2 ms
+   * 100      5 ms
+   * 1000     14 ms
+   * 10000    82 ms
+   * 100000   886 ms            1.4033316802130615897e+43429
+   * 200000   2613 ms
+   * 300000   5407 ms
+   * 400000   8824 ms
+   * 500000   13026 ms          8.7080643612718084129e+217146
+   * 1000000  48543 ms
+   *
+   * TODO? Compare performance of sinh(x) = 0.5 * (exp(x) - exp(-x))
+   *
+   */
+  P.hyperbolicSine = P.sinh = function () {
+    var k, pr, rm, len,
+      x = this,
+      Ctor = x.constructor;
+
+    if (!x.isFinite() || x.isZero()) return new Ctor(x);
+
+    pr = Ctor.precision;
+    rm = Ctor.rounding;
+    Ctor.precision = pr + Math.max(x.e, x.sd()) + 4;
+    Ctor.rounding = 1;
+    len = x.d.length;
+
+    if (len < 3) {
+      x = taylorSeries(Ctor, 2, x, x, true);
+    } else {
+
+      // Alternative argument reduction: sinh(3x) = sinh(x)(3 + 4sinh^2(x))
+      // i.e. sinh(x) = sinh(x/3)(3 + 4sinh^2(x/3))
+      // 3 multiplications and 1 addition
+
+      // Argument reduction: sinh(5x) = sinh(x)(5 + sinh^2(x)(20 + 16sinh^2(x)))
+      // i.e. sinh(x) = sinh(x/5)(5 + sinh^2(x/5)(20 + 16sinh^2(x/5)))
+      // 4 multiplications and 2 additions
+
+      // Estimate the optimum number of times to use the argument reduction.
+      k = 1.4 * Math.sqrt(len);
+      k = k > 16 ? 16 : k | 0;
+
+      x = x.times(Math.pow(5, -k));
+
+      x = taylorSeries(Ctor, 2, x, x, true);
+
+      // Reverse argument reduction
+      var sinh2_x,
+        d5 = new Ctor(5),
+        d16 = new Ctor(16),
+        d20 = new Ctor(20);
+      for (; k--;) {
+        sinh2_x = x.times(x);
+        x = x.times(d5.plus(sinh2_x.times(d16.times(sinh2_x).plus(d20))));
+      }
+    }
+
+    Ctor.precision = pr;
+    Ctor.rounding = rm;
+
+    return finalise(x, pr, rm, true);
+  };
+
+
+  /*
+   * Return a new Decimal whose value is the hyperbolic tangent of the value in radians of this
+   * Decimal.
+   *
+   * Domain: [-Infinity, Infinity]
+   * Range: [-1, 1]
+   *
+   * tanh(x) = sinh(x) / cosh(x)
+   *
+   * tanh(0)         = 0
+   * tanh(-0)        = -0
+   * tanh(Infinity)  = 1
+   * tanh(-Infinity) = -1
+   * tanh(NaN)       = NaN
+   *
+   */
+  P.hyperbolicTangent = P.tanh = function () {
+    var pr, rm,
+      x = this,
+      Ctor = x.constructor;
+
+    if (!x.isFinite()) return new Ctor(x.s);
+    if (x.isZero()) return new Ctor(x);
+
+    pr = Ctor.precision;
+    rm = Ctor.rounding;
+    Ctor.precision = pr + 7;
+    Ctor.rounding = 1;
+
+    return divide(x.sinh(), x.cosh(), Ctor.precision = pr, Ctor.rounding = rm);
+  };
+
+
+  /*
+   * Return a new Decimal whose value is the arccosine (inverse cosine) in radians of the value of
+   * this Decimal.
+   *
+   * Domain: [-1, 1]
+   * Range: [0, pi]
+   *
+   * acos(x) = pi/2 - asin(x)
+   *
+   * acos(0)       = pi/2
+   * acos(-0)      = pi/2
+   * acos(1)       = 0
+   * acos(-1)      = pi
+   * acos(1/2)     = pi/3
+   * acos(-1/2)    = 2*pi/3
+   * acos(|x| > 1) = NaN
+   * acos(NaN)     = NaN
+   *
+   */
+  P.inverseCosine = P.acos = function () {
+    var halfPi,
+      x = this,
+      Ctor = x.constructor,
+      k = x.abs().cmp(ONE),
+      pr = Ctor.precision,
+      rm = Ctor.rounding;
+
+    if (k !== -1) {
+      return k === 0
+        // |x| is 1
+        ? x.isNeg() ? getPi(Ctor, pr, rm) : new Ctor(0)
+        // |x| > 1 or x is NaN
+        : new Ctor(NaN);
+    }
+
+    if (x.isZero()) return getPi(Ctor, pr + 4, rm).times(HALF);
+
+    // TODO? Special case acos(0.5) = pi/3 and acos(-0.5) = 2*pi/3
+
+    Ctor.precision = pr + 6;
+    Ctor.rounding = 1;
+
+    x = x.asin();
+    halfPi = getPi(Ctor, pr + 4, rm).times(HALF);
+
+    Ctor.precision = pr;
+    Ctor.rounding = rm;
+
+    return halfPi.minus(x);
+  };
+
+
+  /*
+   * Return a new Decimal whose value is the inverse of the hyperbolic cosine in radians of the
+   * value of this Decimal.
+   *
+   * Domain: [1, Infinity]
+   * Range: [0, Infinity]
+   *
+   * acosh(x) = ln(x + sqrt(x^2 - 1))
+   *
+   * acosh(x < 1)     = NaN
+   * acosh(NaN)       = NaN
+   * acosh(Infinity)  = Infinity
+   * acosh(-Infinity) = NaN
+   * acosh(0)         = NaN
+   * acosh(-0)        = NaN
+   * acosh(1)         = 0
+   * acosh(-1)        = NaN
+   *
+   */
+  P.inverseHyperbolicCosine = P.acosh = function () {
+    var pr, rm,
+      x = this,
+      Ctor = x.constructor;
+
+    if (x.lte(ONE)) return new Ctor(x.eq(ONE) ? 0 : NaN);
+    if (!x.isFinite()) return new Ctor(x);
+
+    pr = Ctor.precision;
+    rm = Ctor.rounding;
+    Ctor.precision = pr + Math.max(Math.abs(x.e), x.sd()) + 4;
+    Ctor.rounding = 1;
+    external = false;
+
+    x = x.times(x).minus(ONE).sqrt().plus(x);
+
+    external = true;
+    Ctor.precision = pr;
+    Ctor.rounding = rm;
+
+    return x.ln();
+  };
+
+
+  /*
+   * Return a new Decimal whose value is the inverse of the hyperbolic sine in radians of the value
+   * of this Decimal.
+   *
+   * Domain: [-Infinity, Infinity]
+   * Range: [-Infinity, Infinity]
+   *
+   * asinh(x) = ln(x + sqrt(x^2 + 1))
+   *
+   * asinh(NaN)       = NaN
+   * asinh(Infinity)  = Infinity
+   * asinh(-Infinity) = -Infinity
+   * asinh(0)         = 0
+   * asinh(-0)        = -0
+   *
+   */
+  P.inverseHyperbolicSine = P.asinh = function () {
+    var pr, rm,
+      x = this,
+      Ctor = x.constructor;
+
+    if (!x.isFinite() || x.isZero()) return new Ctor(x);
+
+    pr = Ctor.precision;
+    rm = Ctor.rounding;
+    Ctor.precision = pr + 2 * Math.max(Math.abs(x.e), x.sd()) + 6;
+    Ctor.rounding = 1;
+    external = false;
+
+    x = x.times(x).plus(ONE).sqrt().plus(x);
+
+    external = true;
+    Ctor.precision = pr;
+    Ctor.rounding = rm;
+
+    return x.ln();
+  };
+
+
+  /*
+   * Return a new Decimal whose value is the inverse of the hyperbolic tangent in radians of the
+   * value of this Decimal.
+   *
+   * Domain: [-1, 1]
+   * Range: [-Infinity, Infinity]
+   *
+   * atanh(x) = 0.5 * ln((1 + x) / (1 - x))
+   *
+   * atanh(|x| > 1)   = NaN
+   * atanh(NaN)       = NaN
+   * atanh(Infinity)  = NaN
+   * atanh(-Infinity) = NaN
+   * atanh(0)         = 0
+   * atanh(-0)        = -0
+   * atanh(1)         = Infinity
+   * atanh(-1)        = -Infinity
+   *
+   */
+  P.inverseHyperbolicTangent = P.atanh = function () {
+    var pr, rm, wpr, xsd,
+      x = this,
+      Ctor = x.constructor;
+
+    if (!x.isFinite()) return new Ctor(NaN);
+    if (x.e >= 0) return new Ctor(x.abs().eq(ONE) ? x.s / 0 : x.isZero() ? x : NaN);
+
+    pr = Ctor.precision;
+    rm = Ctor.rounding;
+    xsd = x.sd();
+
+    if (Math.max(xsd, pr) < 2 * -x.e - 1) return finalise(new Ctor(x), pr, rm, true);
+
+    Ctor.precision = wpr = xsd - x.e;
+
+    x = divide(x.plus(ONE), ONE.minus(x), wpr + pr, 1);
+
+    Ctor.precision = pr + 4;
+    Ctor.rounding = 1;
+
+    x = x.ln();
+
+    Ctor.precision = pr;
+    Ctor.rounding = rm;
+
+    return x.times(HALF);
+  };
+
+
+  /*
+   * Return a new Decimal whose value is the arcsine (inverse sine) in radians of the value of this
+   * Decimal.
+   *
+   * Domain: [-Infinity, Infinity]
+   * Range: [-pi/2, pi/2]
+   *
+   * asin(x) = 2*atan(x/(1 + sqrt(1 - x^2)))
+   *
+   * asin(0)       = 0
+   * asin(-0)      = -0
+   * asin(1/2)     = pi/6
+   * asin(-1/2)    = -pi/6
+   * asin(1)       = pi/2
+   * asin(-1)      = -pi/2
+   * asin(|x| > 1) = NaN
+   * asin(NaN)     = NaN
+   *
+   * TODO? Compare performance of Taylor series.
+   *
+   */
+  P.inverseSine = P.asin = function () {
+    var halfPi, k,
+      pr, rm,
+      x = this,
+      Ctor = x.constructor;
+
+    if (x.isZero()) return new Ctor(x);
+
+    k = x.abs().cmp(ONE);
+    pr = Ctor.precision;
+    rm = Ctor.rounding;
+
+    if (k !== -1) {
+
+      // |x| is 1
+      if (k === 0) {
+        halfPi = getPi(Ctor, pr + 4, rm).times(HALF);
+        halfPi.s = x.s;
+        return halfPi;
+      }
+
+      // |x| > 1 or x is NaN
+      return new Ctor(NaN);
+    }
+
+    // TODO? Special case asin(1/2) = pi/6 and asin(-1/2) = -pi/6
+
+    Ctor.precision = pr + 6;
+    Ctor.rounding = 1;
+
+    x = x.div(ONE.plus(Ctor.sqrt(ONE.minus(x.times(x))))).atan();
+
+    Ctor.precision = pr;
+    Ctor.rounding = rm;
+
+    return x.times(2);
+  };
+
+
+  /*
+   * Return a new Decimal whose value is the arctangent (inverse tangent) in radians of the value
+   * of this Decimal.
+   *
+   * Domain: [-Infinity, Infinity]
+   * Range: [-pi/2, pi/2]
+   *
+   * atan(x) = x - x^3/3 + x^5/5 - x^7/7 + ...
+   *
+   * atan(0)         = 0
+   * atan(-0)        = -0
+   * atan(1)         = pi/4
+   * atan(-1)        = -pi/4
+   * atan(Infinity)  = pi/2
+   * atan(-Infinity) = -pi/2
+   * atan(NaN)       = NaN
+   *
+   */
+  P.inverseTangent = P.atan = function () {
+    var i, j, k, n, px, t, r, wpr, x2,
+      x = this,
+      Ctor = x.constructor,
+      pr = Ctor.precision,
+      rm = Ctor.rounding;
+
+    if (!x.isFinite()) {
+      if (!x.s) return new Ctor(NaN);
+      if (pr + 4 <= PI_PRECISION) {
+        r = getPi(Ctor, pr + 4, rm).times(HALF);
+        r.s = x.s;
+        return r;
+      }
+    } else if (x.isZero()) {
+      return new Ctor(x);
+    } else if (x.abs().eq(ONE) && pr + 4 <= PI_PRECISION) {
+      r = getPi(Ctor, pr + 4, rm).times(0.25);
+      r.s = x.s;
+      return r;
+    }
+
+    Ctor.precision = wpr = pr + 10;
+    Ctor.rounding = 1;
+
+    // TODO? if (x >= 1 && pr <= PI_PRECISION) atan(x) = halfPi * x.s - atan(1 / x);
+
+    // Argument reduction
+    // Ensure |x| < 0.42
+    // atan(x) = 2 * atan(x / (1 + sqrt(1 + x^2)))
+
+    k = Math.min(28, wpr / LOG_BASE + 2 | 0);
+
+    for (i = k; i; --i) x = x.div(x.times(x).plus(ONE).sqrt().plus(ONE));
+
+    external = false;
+
+    j = Math.ceil(wpr / LOG_BASE);
+    n = 1;
+    x2 = x.times(x);
+    r = new Ctor(x);
+    px = x;
+
+    // atan(x) = x - x^3/3 + x^5/5 - x^7/7 + ...
+    for (; i !== -1;) {
+      px = px.times(x2);
+      t = r.minus(px.div(n += 2));
+
+      px = px.times(x2);
+      r = t.plus(px.div(n += 2));
+
+      if (r.d[j] !== void 0) for (i = j; r.d[i] === t.d[i] && i--;);
+    }
+
+    if (k) r = r.times(2 << (k - 1));
+
+    external = true;
+
+    return finalise(r, Ctor.precision = pr, Ctor.rounding = rm, true);
+  };
+
+
+  /*
+   * Return true if the value of this Decimal is a finite number, otherwise return false.
+   *
+   */
+  P.isFinite = function () {
+    return !!this.d;
+  };
+
+
+  /*
+   * Return true if the value of this Decimal is an integer, otherwise return false.
+   *
+   */
+  P.isInteger = P.isInt = function () {
+    return !!this.d && mathfloor(this.e / LOG_BASE) > this.d.length - 2;
+  };
+
+
+  /*
+   * Return true if the value of this Decimal is NaN, otherwise return false.
+   *
+   */
+  P.isNaN = function () {
+    return !this.s;
+  };
+
+
+  /*
+   * Return true if the value of this Decimal is negative, otherwise return false.
+   *
+   */
+  P.isNegative = P.isNeg = function () {
+    return this.s < 0;
+  };
+
+
+  /*
+   * Return true if the value of this Decimal is positive, otherwise return false.
+   *
+   */
+  P.isPositive = P.isPos = function () {
+    return this.s > 0;
+  };
+
+
+  /*
+   * Return true if the value of this Decimal is 0 or -0, otherwise return false.
+   *
+   */
+  P.isZero = function () {
+    return !!this.d && this.d[0] === 0;
+  };
+
+
+  /*
+   * Return true if the value of this Decimal is less than `y`, otherwise return false.
+   *
+   */
+  P.lessThan = P.lt = function (y) {
+    return this.cmp(y) < 0;
+  };
+
+
+  /*
+   * Return true if the value of this Decimal is less than or equal to `y`, otherwise return false.
+   *
+   */
+  P.lessThanOrEqualTo = P.lte = function (y) {
+    return this.cmp(y) < 1;
+  };
+
+
+  /*
+   * Return the logarithm of the value of this Decimal to the specified base, rounded to `precision`
+   * significant digits using rounding mode `rounding`.
+   *
+   * If no base is specified, return log[10](arg).
+   *
+   * log[base](arg) = ln(arg) / ln(base)
+   *
+   * The result will always be correctly rounded if the base of the log is 10, and 'almost always'
+   * otherwise:
+   *
+   * Depending on the rounding mode, the result may be incorrectly rounded if the first fifteen
+   * rounding digits are [49]99999999999999 or [50]00000000000000. In that case, the maximum error
+   * between the result and the correctly rounded result will be one ulp (unit in the last place).
+   *
+   * log[-b](a)       = NaN
+   * log[0](a)        = NaN
+   * log[1](a)        = NaN
+   * log[NaN](a)      = NaN
+   * log[Infinity](a) = NaN
+   * log[b](0)        = -Infinity
+   * log[b](-0)       = -Infinity
+   * log[b](-a)       = NaN
+   * log[b](1)        = 0
+   * log[b](Infinity) = Infinity
+   * log[b](NaN)      = NaN
+   *
+   * [base] {number|string|Decimal} The base of the logarithm.
+   *
+   */
+  P.logarithm = P.log = function (base) {
+    var isBase10, d, denominator, k, inf, num, sd, r,
+      arg = this,
+      Ctor = arg.constructor,
+      pr = Ctor.precision,
+      rm = Ctor.rounding,
+      guard = 5;
+
+    // Default base is 10.
+    if (base == null) {
+      base = new Ctor(10);
+      isBase10 = true;
+    } else {
+      base = new Ctor(base);
+      d = base.d;
+
+      // Return NaN if base is negative, or non-finite, or is 0 or 1.
+      if (base.s < 0 || !d || !d[0] || base.eq(ONE)) return new Ctor(NaN);
+
+      isBase10 = base.eq(10);
+    }
+
+    d = arg.d;
+
+    // Is arg negative, non-finite, 0 or 1?
+    if (arg.s < 0 || !d || !d[0] || arg.eq(ONE)) {
+      return new Ctor(d && !d[0] ? -1 / 0 : arg.s != 1 ? NaN : d ? 0 : 1 / 0);
+    }
+
+    // The result will have a non-terminating decimal expansion if base is 10 and arg is not an
+    // integer power of 10.
+    if (isBase10) {
+      if (d.length > 1) {
+        inf = true;
+      } else {
+        for (k = d[0]; k % 10 === 0;) k /= 10;
+        inf = k !== 1;
+      }
+    }
+
+    external = false;
+    sd = pr + guard;
+    num = naturalLogarithm(arg, sd);
+    denominator = isBase10 ? getLn10(Ctor, sd + 10) : naturalLogarithm(base, sd);
+
+    // The result will have 5 rounding digits.
+    r = divide(num, denominator, sd, 1);
+
+    // If at a rounding boundary, i.e. the result's rounding digits are [49]9999 or [50]0000,
+    // calculate 10 further digits.
+    //
+    // If the result is known to have an infinite decimal expansion, repeat this until it is clear
+    // that the result is above or below the boundary. Otherwise, if after calculating the 10
+    // further digits, the last 14 are nines, round up and assume the result is exact.
+    // Also assume the result is exact if the last 14 are zero.
+    //
+    // Example of a result that will be incorrectly rounded:
+    // log[1048576](4503599627370502) = 2.60000000000000009610279511444746...
+    // The above result correctly rounded using ROUND_CEIL to 1 decimal place should be 2.7, but it
+    // will be given as 2.6 as there are 15 zeros immediately after the requested decimal place, so
+    // the exact result would be assumed to be 2.6, which rounded using ROUND_CEIL to 1 decimal
+    // place is still 2.6.
+    if (checkRoundingDigits(r.d, k = pr, rm)) {
+
+      do {
+        sd += 10;
+        num = naturalLogarithm(arg, sd);
+        denominator = isBase10 ? getLn10(Ctor, sd + 10) : naturalLogarithm(base, sd);
+        r = divide(num, denominator, sd, 1);
+
+        if (!inf) {
+
+          // Check for 14 nines from the 2nd rounding digit, as the first may be 4.
+          if (+digitsToString(r.d).slice(k + 1, k + 15) + 1 == 1e14) {
+            r = finalise(r, pr + 1, 0);
+          }
+
+          break;
+        }
+      } while (checkRoundingDigits(r.d, k += 10, rm));
+    }
+
+    external = true;
+
+    return finalise(r, pr, rm);
+  };
+
+
+  /*
+   * Return a new Decimal whose value is the maximum of the arguments and the value of this Decimal.
+   *
+   * arguments {number|string|Decimal}
+   *
+  P.max = function () {
+    Array.prototype.push.call(arguments, this);
+    return maxOrMin(this.constructor, arguments, 'lt');
+  };
+   */
+
+
+  /*
+   * Return a new Decimal whose value is the minimum of the arguments and the value of this Decimal.
+   *
+   * arguments {number|string|Decimal}
+   *
+  P.min = function () {
+    Array.prototype.push.call(arguments, this);
+    return maxOrMin(this.constructor, arguments, 'gt');
+  };
+   */
+
+
+  /*
+   *  n - 0 = n
+   *  n - N = N
+   *  n - I = -I
+   *  0 - n = -n
+   *  0 - 0 = 0
+   *  0 - N = N
+   *  0 - I = -I
+   *  N - n = N
+   *  N - 0 = N
+   *  N - N = N
+   *  N - I = N
+   *  I - n = I
+   *  I - 0 = I
+   *  I - N = N
+   *  I - I = N
+   *
+   * Return a new Decimal whose value is the value of this Decimal minus `y`, rounded to `precision`
+   * significant digits using rounding mode `rounding`.
+   *
+   */
+  P.minus = P.sub = function (y) {
+    var d, e, i, j, k, len, pr, rm, xd, xe, xLTy, yd,
+      x = this,
+      Ctor = x.constructor;
+
+    y = new Ctor(y);
+
+    // If either is not finite...
+    if (!x.d || !y.d) {
+
+      // Return NaN if either is NaN.
+      if (!x.s || !y.s) y = new Ctor(NaN);
+
+      // Return y negated if x is finite and y is ±Infinity.
+      else if (x.d) y.s = -y.s;
+
+      // Return x if y is finite and x is ±Infinity.
+      // Return x if both are ±Infinity with different signs.
+      // Return NaN if both are ±Infinity with the same sign.
+      else y = new Ctor(y.d || x.s !== y.s ? x : NaN);
+
+      return y;
+    }
+
+    // If signs differ...
+    if (x.s != y.s) {
+      y.s = -y.s;
+      return x.plus(y);
+    }
+
+    xd = x.d;
+    yd = y.d;
+    pr = Ctor.precision;
+    rm = Ctor.rounding;
+
+    // If either is zero...
+    if (!xd[0] || !yd[0]) {
+
+      // Return y negated if x is zero and y is non-zero.
+      if (yd[0]) y.s = -y.s;
+
+      // Return x if y is zero and x is non-zero.
+      else if (xd[0]) y = new Ctor(x);
+
+      // Return zero if both are zero.
+      // From IEEE 754 (2008) 6.3: 0 - 0 = -0 - -0 = -0 when rounding to -Infinity.
+      else return new Ctor(rm === 3 ? -0 : 0);
+
+      return external ? finalise(y, pr, rm) : y;
+    }
+
+    // x and y are finite, non-zero numbers with the same sign.
+
+    // Calculate base 1e7 exponents.
+    e = mathfloor(y.e / LOG_BASE);
+    xe = mathfloor(x.e / LOG_BASE);
+
+    xd = xd.slice();
+    k = xe - e;
+
+    // If base 1e7 exponents differ...
+    if (k) {
+      xLTy = k < 0;
+
+      if (xLTy) {
+        d = xd;
+        k = -k;
+        len = yd.length;
+      } else {
+        d = yd;
+        e = xe;
+        len = xd.length;
+      }
+
+      // Numbers with massively different exponents would result in a very high number of
+      // zeros needing to be prepended, but this can be avoided while still ensuring correct
+      // rounding by limiting the number of zeros to `Math.ceil(pr / LOG_BASE) + 2`.
+      i = Math.max(Math.ceil(pr / LOG_BASE), len) + 2;
+
+      if (k > i) {
+        k = i;
+        d.length = 1;
+      }
+
+      // Prepend zeros to equalise exponents.
+      d.reverse();
+      for (i = k; i--;) d.push(0);
+      d.reverse();
+
+    // Base 1e7 exponents equal.
+    } else {
+
+      // Check digits to determine which is the bigger number.
+
+      i = xd.length;
+      len = yd.length;
+      xLTy = i < len;
+      if (xLTy) len = i;
+
+      for (i = 0; i < len; i++) {
+        if (xd[i] != yd[i]) {
+          xLTy = xd[i] < yd[i];
+          break;
+        }
+      }
+
+      k = 0;
+    }
+
+    if (xLTy) {
+      d = xd;
+      xd = yd;
+      yd = d;
+      y.s = -y.s;
+    }
+
+    len = xd.length;
+
+    // Append zeros to `xd` if shorter.
+    // Don't add zeros to `yd` if shorter as subtraction only needs to start at `yd` length.
+    for (i = yd.length - len; i > 0; --i) xd[len++] = 0;
+
+    // Subtract yd from xd.
+    for (i = yd.length; i > k;) {
+
+      if (xd[--i] < yd[i]) {
+        for (j = i; j && xd[--j] === 0;) xd[j] = BASE - 1;
+        --xd[j];
+        xd[i] += BASE;
+      }
+
+      xd[i] -= yd[i];
+    }
+
+    // Remove trailing zeros.
+    for (; xd[--len] === 0;) xd.pop();
+
+    // Remove leading zeros and adjust exponent accordingly.
+    for (; xd[0] === 0; xd.shift()) --e;
+
+    // Zero?
+    if (!xd[0]) return new Ctor(rm === 3 ? -0 : 0);
+
+    y.d = xd;
+    y.e = getBase10Exponent(xd, e);
+
+    return external ? finalise(y, pr, rm) : y;
+  };
+
+
+  /*
+   *   n % 0 =  N
+   *   n % N =  N
+   *   n % I =  n
+   *   0 % n =  0
+   *  -0 % n = -0
+   *   0 % 0 =  N
+   *   0 % N =  N
+   *   0 % I =  0
+   *   N % n =  N
+   *   N % 0 =  N
+   *   N % N =  N
+   *   N % I =  N
+   *   I % n =  N
+   *   I % 0 =  N
+   *   I % N =  N
+   *   I % I =  N
+   *
+   * Return a new Decimal whose value is the value of this Decimal modulo `y`, rounded to
+   * `precision` significant digits using rounding mode `rounding`.
+   *
+   * The result depends on the modulo mode.
+   *
+   */
+  P.modulo = P.mod = function (y) {
+    var q,
+      x = this,
+      Ctor = x.constructor;
+
+    y = new Ctor(y);
+
+    // Return NaN if x is ±Infinity or NaN, or y is NaN or ±0.
+    if (!x.d || !y.s || y.d && !y.d[0]) return new Ctor(NaN);
+
+    // Return x if y is ±Infinity or x is ±0.
+    if (!y.d || x.d && !x.d[0]) {
+      return finalise(new Ctor(x), Ctor.precision, Ctor.rounding);
+    }
+
+    // Prevent rounding of intermediate calculations.
+    external = false;
+
+    if (Ctor.modulo == 9) {
+
+      // Euclidian division: q = sign(y) * floor(x / abs(y))
+      // result = x - q * y    where  0 <= result < abs(y)
+      q = divide(x, y.abs(), 0, 3, 1);
+      q.s *= y.s;
+    } else {
+      q = divide(x, y, 0, Ctor.modulo, 1);
+    }
+
+    q = q.times(y);
+
+    external = true;
+
+    return x.minus(q);
+  };
+
+
+  /*
+   * Return a new Decimal whose value is the natural exponential of the value of this Decimal,
+   * i.e. the base e raised to the power the value of this Decimal, rounded to `precision`
+   * significant digits using rounding mode `rounding`.
+   *
+   */
+  P.naturalExponential = P.exp = function () {
+    return naturalExponential(this);
+  };
+
+
+  /*
+   * Return a new Decimal whose value is the natural logarithm of the value of this Decimal,
+   * rounded to `precision` significant digits using rounding mode `rounding`.
+   *
+   */
+  P.naturalLogarithm = P.ln = function () {
+    return naturalLogarithm(this);
+  };
+
+
+  /*
+   * Return a new Decimal whose value is the value of this Decimal negated, i.e. as if multiplied by
+   * -1.
+   *
+   */
+  P.negated = P.neg = function () {
+    var x = new this.constructor(this);
+    x.s = -x.s;
+    return finalise(x);
+  };
+
+
+  /*
+   *  n + 0 = n
+   *  n + N = N
+   *  n + I = I
+   *  0 + n = n
+   *  0 + 0 = 0
+   *  0 + N = N
+   *  0 + I = I
+   *  N + n = N
+   *  N + 0 = N
+   *  N + N = N
+   *  N + I = N
+   *  I + n = I
+   *  I + 0 = I
+   *  I + N = N
+   *  I + I = I
+   *
+   * Return a new Decimal whose value is the value of this Decimal plus `y`, rounded to `precision`
+   * significant digits using rounding mode `rounding`.
+   *
+   */
+  P.plus = P.add = function (y) {
+    var carry, d, e, i, k, len, pr, rm, xd, yd,
+      x = this,
+      Ctor = x.constructor;
+
+    y = new Ctor(y);
+
+    // If either is not finite...
+    if (!x.d || !y.d) {
+
+      // Return NaN if either is NaN.
+      if (!x.s || !y.s) y = new Ctor(NaN);
+
+      // Return x if y is finite and x is ±Infinity.
+      // Return x if both are ±Infinity with the same sign.
+      // Return NaN if both are ±Infinity with different signs.
+      // Return y if x is finite and y is ±Infinity.
+      else if (!x.d) y = new Ctor(y.d || x.s === y.s ? x : NaN);
+
+      return y;
+    }
+
+     // If signs differ...
+    if (x.s != y.s) {
+      y.s = -y.s;
+      return x.minus(y);
+    }
+
+    xd = x.d;
+    yd = y.d;
+    pr = Ctor.precision;
+    rm = Ctor.rounding;
+
+    // If either is zero...
+    if (!xd[0] || !yd[0]) {
+
+      // Return x if y is zero.
+      // Return y if y is non-zero.
+      if (!yd[0]) y = new Ctor(x);
+
+      return external ? finalise(y, pr, rm) : y;
+    }
+
+    // x and y are finite, non-zero numbers with the same sign.
+
+    // Calculate base 1e7 exponents.
+    k = mathfloor(x.e / LOG_BASE);
+    e = mathfloor(y.e / LOG_BASE);
+
+    xd = xd.slice();
+    i = k - e;
+
+    // If base 1e7 exponents differ...
+    if (i) {
+
+      if (i < 0) {
+        d = xd;
+        i = -i;
+        len = yd.length;
+      } else {
+        d = yd;
+        e = k;
+        len = xd.length;
+      }
+
+      // Limit number of zeros prepended to max(ceil(pr / LOG_BASE), len) + 1.
+      k = Math.ceil(pr / LOG_BASE);
+      len = k > len ? k + 1 : len + 1;
+
+      if (i > len) {
+        i = len;
+        d.length = 1;
+      }
+
+      // Prepend zeros to equalise exponents. Note: Faster to use reverse then do unshifts.
+      d.reverse();
+      for (; i--;) d.push(0);
+      d.reverse();
+    }
+
+    len = xd.length;
+    i = yd.length;
+
+    // If yd is longer than xd, swap xd and yd so xd points to the longer array.
+    if (len - i < 0) {
+      i = len;
+      d = yd;
+      yd = xd;
+      xd = d;
+    }
+
+    // Only start adding at yd.length - 1 as the further digits of xd can be left as they are.
+    for (carry = 0; i;) {
+      carry = (xd[--i] = xd[i] + yd[i] + carry) / BASE | 0;
+      xd[i] %= BASE;
+    }
+
+    if (carry) {
+      xd.unshift(carry);
+      ++e;
+    }
+
+    // Remove trailing zeros.
+    // No need to check for zero, as +x + +y != 0 && -x + -y != 0
+    for (len = xd.length; xd[--len] == 0;) xd.pop();
+
+    y.d = xd;
+    y.e = getBase10Exponent(xd, e);
+
+    return external ? finalise(y, pr, rm) : y;
+  };
+
+
+  /*
+   * Return the number of significant digits of the value of this Decimal.
+   *
+   * [z] {boolean|number} Whether to count integer-part trailing zeros: true, false, 1 or 0.
+   *
+   */
+  P.precision = P.sd = function (z) {
+    var k,
+      x = this;
+
+    if (z !== void 0 && z !== !!z && z !== 1 && z !== 0) throw Error(invalidArgument + z);
+
+    if (x.d) {
+      k = getPrecision(x.d);
+      if (z && x.e + 1 > k) k = x.e + 1;
+    } else {
+      k = NaN;
+    }
+
+    return k;
+  };
+
+
+  /*
+   * Return a new Decimal whose value is the value of this Decimal rounded to a whole number using
+   * rounding mode `rounding`.
+   *
+   */
+  P.round = function () {
+    var x = this,
+      Ctor = x.constructor;
+
+    return finalise(new Ctor(x), x.e + 1, Ctor.rounding);
+  };
+
+
+  /*
+   * Return a new Decimal whose value is the sine of the value in radians of this Decimal.
+   *
+   * Domain: [-Infinity, Infinity]
+   * Range: [-1, 1]
+   *
+   * sin(x) = x - x^3/3! + x^5/5! - ...
+   *
+   * sin(0)         = 0
+   * sin(-0)        = -0
+   * sin(Infinity)  = NaN
+   * sin(-Infinity) = NaN
+   * sin(NaN)       = NaN
+   *
+   */
+  P.sine = P.sin = function () {
+    var pr, rm,
+      x = this,
+      Ctor = x.constructor;
+
+    if (!x.isFinite()) return new Ctor(NaN);
+    if (x.isZero()) return new Ctor(x);
+
+    pr = Ctor.precision;
+    rm = Ctor.rounding;
+    Ctor.precision = pr + Math.max(x.e, x.sd()) + LOG_BASE;
+    Ctor.rounding = 1;
+
+    x = sine(Ctor, toLessThanHalfPi(Ctor, x));
+
+    Ctor.precision = pr;
+    Ctor.rounding = rm;
+
+    return finalise(quadrant > 2 ? x.neg() : x, pr, rm, true);
+  };
+
+
+  /*
+   * Return a new Decimal whose value is the square root of this Decimal, rounded to `precision`
+   * significant digits using rounding mode `rounding`.
+   *
+   *  sqrt(-n) =  N
+   *  sqrt(N)  =  N
+   *  sqrt(-I) =  N
+   *  sqrt(I)  =  I
+   *  sqrt(0)  =  0
+   *  sqrt(-0) = -0
+   *
+   */
+  P.squareRoot = P.sqrt = function () {
+    var m, n, sd, r, rep, t,
+      x = this,
+      d = x.d,
+      e = x.e,
+      s = x.s,
+      Ctor = x.constructor;
+
+    // Negative/NaN/Infinity/zero?
+    if (s !== 1 || !d || !d[0]) {
+      return new Ctor(!s || s < 0 && (!d || d[0]) ? NaN : d ? x : 1 / 0);
+    }
+
+    external = false;
+
+    // Initial estimate.
+    s = Math.sqrt(+x);
+
+    // Math.sqrt underflow/overflow?
+    // Pass x to Math.sqrt as integer, then adjust the exponent of the result.
+    if (s == 0 || s == 1 / 0) {
+      n = digitsToString(d);
+
+      if ((n.length + e) % 2 == 0) n += '0';
+      s = Math.sqrt(n);
+      e = mathfloor((e + 1) / 2) - (e < 0 || e % 2);
+
+      if (s == 1 / 0) {
+        n = '1e' + e;
+      } else {
+        n = s.toExponential();
+        n = n.slice(0, n.indexOf('e') + 1) + e;
+      }
+
+      r = new Ctor(n);
+    } else {
+      r = new Ctor(s.toString());
+    }
+
+    sd = (e = Ctor.precision) + 3;
+
+    // Newton-Raphson iteration.
+    for (;;) {
+      t = r;
+      r = t.plus(divide(x, t, sd + 2, 1)).times(HALF);
+
+      // TODO? Replace with for-loop and checkRoundingDigits.
+      if (digitsToString(t.d).slice(0, sd) === (n = digitsToString(r.d)).slice(0, sd)) {
+        n = n.slice(sd - 3, sd + 1);
+
+        // The 4th rounding digit may be in error by -1 so if the 4 rounding digits are 9999 or
+        // 4999, i.e. approaching a rounding boundary, continue the iteration.
+        if (n == '9999' || !rep && n == '4999') {
+
+          // On the first iteration only, check to see if rounding up gives the exact result as the
+          // nines may infinitely repeat.
+          if (!rep) {
+            finalise(t, e + 1, 0);
+
+            if (t.times(t).eq(x)) {
+              r = t;
+              break;
+            }
+          }
+
+          sd += 4;
+          rep = 1;
+        } else {
+
+          // If the rounding digits are null, 0{0,4} or 50{0,3}, check for an exact result.
+          // If not, then there are further digits and m will be truthy.
+          if (!+n || !+n.slice(1) && n.charAt(0) == '5') {
+
+            // Truncate to the first rounding digit.
+            finalise(r, e + 1, 1);
+            m = !r.times(r).eq(x);
+          }
+
+          break;
+        }
+      }
+    }
+
+    external = true;
+
+    return finalise(r, e, Ctor.rounding, m);
+  };
+
+
+  /*
+   * Return a new Decimal whose value is the tangent of the value in radians of this Decimal.
+   *
+   * Domain: [-Infinity, Infinity]
+   * Range: [-Infinity, Infinity]
+   *
+   * tan(0)         = 0
+   * tan(-0)        = -0
+   * tan(Infinity)  = NaN
+   * tan(-Infinity) = NaN
+   * tan(NaN)       = NaN
+   *
+   */
+  P.tangent = P.tan = function () {
+    var pr, rm,
+      x = this,
+      Ctor = x.constructor;
+
+    if (!x.isFinite()) return new Ctor(NaN);
+    if (x.isZero()) return new Ctor(x);
+
+    pr = Ctor.precision;
+    rm = Ctor.rounding;
+    Ctor.precision = pr + 10;
+    Ctor.rounding = 1;
+
+    x = x.sin();
+    x.s = 1;
+    x = divide(x, ONE.minus(x.times(x)).sqrt(), pr + 10, 0);
+
+    Ctor.precision = pr;
+    Ctor.rounding = rm;
+
+    return finalise(quadrant == 2 || quadrant == 4 ? x.neg() : x, pr, rm, true);
+  };
+
+
+  /*
+   *  n * 0 = 0
+   *  n * N = N
+   *  n * I = I
+   *  0 * n = 0
+   *  0 * 0 = 0
+   *  0 * N = N
+   *  0 * I = N
+   *  N * n = N
+   *  N * 0 = N
+   *  N * N = N
+   *  N * I = N
+   *  I * n = I
+   *  I * 0 = N
+   *  I * N = N
+   *  I * I = I
+   *
+   * Return a new Decimal whose value is this Decimal times `y`, rounded to `precision` significant
+   * digits using rounding mode `rounding`.
+   *
+   */
+  P.times = P.mul = function (y) {
+    var carry, e, i, k, r, rL, t, xdL, ydL,
+      x = this,
+      Ctor = x.constructor,
+      xd = x.d,
+      yd = (y = new Ctor(y)).d;
+
+    y.s *= x.s;
+
+     // If either is NaN, ±Infinity or ±0...
+    if (!xd || !xd[0] || !yd || !yd[0]) {
+
+      return new Ctor(!y.s || xd && !xd[0] && !yd || yd && !yd[0] && !xd
+
+        // Return NaN if either is NaN.
+        // Return NaN if x is ±0 and y is ±Infinity, or y is ±0 and x is ±Infinity.
+        ? NaN
+
+        // Return ±Infinity if either is ±Infinity.
+        // Return ±0 if either is ±0.
+        : !xd || !yd ? y.s / 0 : y.s * 0);
+    }
+
+    e = mathfloor(x.e / LOG_BASE) + mathfloor(y.e / LOG_BASE);
+    xdL = xd.length;
+    ydL = yd.length;
+
+    // Ensure xd points to the longer array.
+    if (xdL < ydL) {
+      r = xd;
+      xd = yd;
+      yd = r;
+      rL = xdL;
+      xdL = ydL;
+      ydL = rL;
+    }
+
+    // Initialise the result array with zeros.
+    r = [];
+    rL = xdL + ydL;
+    for (i = rL; i--;) r.push(0);
+
+    // Multiply!
+    for (i = ydL; --i >= 0;) {
+      carry = 0;
+      for (k = xdL + i; k > i;) {
+        t = r[k] + yd[i] * xd[k - i - 1] + carry;
+        r[k--] = t % BASE | 0;
+        carry = t / BASE | 0;
+      }
+
+      r[k] = (r[k] + carry) % BASE | 0;
+    }
+
+    // Remove trailing zeros.
+    for (; !r[--rL];) r.pop();
+
+    if (carry) ++e;
+    else r.shift();
+
+    // Remove trailing zeros.
+    for (i = r.length; !r[--i];) r.pop();
+
+    y.d = r;
+    y.e = getBase10Exponent(r, e);
+
+    return external ? finalise(y, Ctor.precision, Ctor.rounding) : y;
+  };
+
+
+  /*
+   * Return a string representing the value of this Decimal in base 2, round to `sd` significant
+   * digits using rounding mode `rm`.
+   *
+   * If the optional `sd` argument is present then return binary exponential notation.
+   *
+   * [sd] {number} Significant digits. Integer, 1 to MAX_DIGITS inclusive.
+   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
+   *
+   */
+  P.toBinary = function (sd, rm) {
+    return toStringBinary(this, 2, sd, rm);
+  };
+
+
+  /*
+   * Return a new Decimal whose value is the value of this Decimal rounded to a maximum of `dp`
+   * decimal places using rounding mode `rm` or `rounding` if `rm` is omitted.
+   *
+   * If `dp` is omitted, return a new Decimal whose value is the value of this Decimal.
+   *
+   * [dp] {number} Decimal places. Integer, 0 to MAX_DIGITS inclusive.
+   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
+   *
+   */
+  P.toDecimalPlaces = P.toDP = function (dp, rm) {
+    var x = this,
+      Ctor = x.constructor;
+
+    x = new Ctor(x);
+    if (dp === void 0) return x;
+
+    checkInt32(dp, 0, MAX_DIGITS);
+
+    if (rm === void 0) rm = Ctor.rounding;
+    else checkInt32(rm, 0, 8);
+
+    return finalise(x, dp + x.e + 1, rm);
+  };
+
+
+  /*
+   * Return a string representing the value of this Decimal in exponential notation rounded to
+   * `dp` fixed decimal places using rounding mode `rounding`.
+   *
+   * [dp] {number} Decimal places. Integer, 0 to MAX_DIGITS inclusive.
+   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
+   *
+   */
+  P.toExponential = function (dp, rm) {
+    var str,
+      x = this,
+      Ctor = x.constructor;
+
+    if (dp === void 0) {
+      str = finiteToString(x, true);
+    } else {
+      checkInt32(dp, 0, MAX_DIGITS);
+
+      if (rm === void 0) rm = Ctor.rounding;
+      else checkInt32(rm, 0, 8);
+
+      x = finalise(new Ctor(x), dp + 1, rm);
+      str = finiteToString(x, true, dp + 1);
+    }
+
+    return x.isNeg() && !x.isZero() ? '-' + str : str;
+  };
+
+
+  /*
+   * Return a string representing the value of this Decimal in normal (fixed-point) notation to
+   * `dp` fixed decimal places and rounded using rounding mode `rm` or `rounding` if `rm` is
+   * omitted.
+   *
+   * As with JavaScript numbers, (-0).toFixed(0) is '0', but e.g. (-0.00001).toFixed(0) is '-0'.
+   *
+   * [dp] {number} Decimal places. Integer, 0 to MAX_DIGITS inclusive.
+   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
+   *
+   * (-0).toFixed(0) is '0', but (-0.1).toFixed(0) is '-0'.
+   * (-0).toFixed(1) is '0.0', but (-0.01).toFixed(1) is '-0.0'.
+   * (-0).toFixed(3) is '0.000'.
+   * (-0.5).toFixed(0) is '-0'.
+   *
+   */
+  P.toFixed = function (dp, rm) {
+    var str, y,
+      x = this,
+      Ctor = x.constructor;
+
+    if (dp === void 0) {
+      str = finiteToString(x);
+    } else {
+      checkInt32(dp, 0, MAX_DIGITS);
+
+      if (rm === void 0) rm = Ctor.rounding;
+      else checkInt32(rm, 0, 8);
+
+      y = finalise(new Ctor(x), dp + x.e + 1, rm);
+      str = finiteToString(y, false, dp + y.e + 1);
+    }
+
+    // To determine whether to add the minus sign look at the value before it was rounded,
+    // i.e. look at `x` rather than `y`.
+    return x.isNeg() && !x.isZero() ? '-' + str : str;
+  };
+
+
+  /*
+   * Return an array representing the value of this Decimal as a simple fraction with an integer
+   * numerator and an integer denominator.
+   *
+   * The denominator will be a positive non-zero value less than or equal to the specified maximum
+   * denominator. If a maximum denominator is not specified, the denominator will be the lowest
+   * value necessary to represent the number exactly.
+   *
+   * [maxD] {number|string|Decimal} Maximum denominator. Integer >= 1 and < Infinity.
+   *
+   */
+  P.toFraction = function (maxD) {
+    var d, d0, d1, d2, e, k, n, n0, n1, pr, q, r,
+      x = this,
+      xd = x.d,
+      Ctor = x.constructor;
+
+    if (!xd) return new Ctor(x);
+
+    n1 = d0 = new Ctor(ONE);
+    d1 = n0 = new Ctor(0);
+
+    d = new Ctor(d1);
+    e = d.e = getPrecision(xd) - x.e - 1;
+    k = e % LOG_BASE;
+    d.d[0] = mathpow(10, k < 0 ? LOG_BASE + k : k);
+
+    if (maxD == null) {
+
+      // d is 10**e, the minimum max-denominator needed.
+      maxD = e > 0 ? d : n1;
+    } else {
+      n = new Ctor(maxD);
+      if (!n.isInt() || n.lt(n1)) throw Error(invalidArgument + n);
+      maxD = n.gt(d) ? (e > 0 ? d : n1) : n;
+    }
+
+    external = false;
+    n = new Ctor(digitsToString(xd));
+    pr = Ctor.precision;
+    Ctor.precision = e = xd.length * LOG_BASE * 2;
+
+    for (;;)  {
+      q = divide(n, d, 0, 1, 1);
+      d2 = d0.plus(q.times(d1));
+      if (d2.cmp(maxD) == 1) break;
+      d0 = d1;
+      d1 = d2;
+      d2 = n1;
+      n1 = n0.plus(q.times(d2));
+      n0 = d2;
+      d2 = d;
+      d = n.minus(q.times(d2));
+      n = d2;
+    }
+
+    d2 = divide(maxD.minus(d0), d1, 0, 1, 1);
+    n0 = n0.plus(d2.times(n1));
+    d0 = d0.plus(d2.times(d1));
+    n0.s = n1.s = x.s;
+
+    // Determine which fraction is closer to x, n0/d0 or n1/d1?
+    r = divide(n1, d1, e, 1).minus(x).abs().cmp(divide(n0, d0, e, 1).minus(x).abs()) < 1
+        ? [n1, d1] : [n0, d0];
+
+    Ctor.precision = pr;
+    external = true;
+
+    return r;
+  };
+
+
+  /*
+   * Return a string representing the value of this Decimal in base 16, round to `sd` significant
+   * digits using rounding mode `rm`.
+   *
+   * If the optional `sd` argument is present then return binary exponential notation.
+   *
+   * [sd] {number} Significant digits. Integer, 1 to MAX_DIGITS inclusive.
+   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
+   *
+   */
+  P.toHexadecimal = P.toHex = function (sd, rm) {
+    return toStringBinary(this, 16, sd, rm);
+  };
+
+
+  /*
+   * Return a string representing the exact value of this Decimal in a compact base-88 based format.
+   *
+   * The number of characters of the string will always be equal to or less than the number of
+   * characters returned by `toString` or `toExponential` - usually just over half as many.
+   *
+   * The original Decimal value can be recreated by passing the string to `Decimal.fromJSON`.
+   *
+   * Base 88 alphabet:
+   * 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%()*+,-./:;=?@[]^_`{|}~
+   *
+   * The following 7 printable ASCII characters are not used
+   * (space) \ " & ' < >
+   * so the return value is safe for strings, HTML, JSON, and XML.
+   *
+   *     0   0     g  16    w  32    M  48    $  64    ]  80
+   *     1   1     h  17    x  33    N  49    %  65    ^  81
+   *     2   2     i  18    y  34    O  50    (  66    _  82
+   *     3   3     j  19    z  35    P  51    )  67    `  83
+   *     4   4     k  20    A  36    Q  52    *  68    {  84
+   *     5   5     l  21    B  37    R  53    +  69    |  85
+   *     6   6     m  22    C  38    S  54    ,  70    }  86
+   *     7   7     n  23    D  39    T  55    -  71    ~  87
+   *     8   8     o  24    E  40    U  56    .  72
+   *     9   9     p  25    F  41    V  57    /  73
+   *     a  10     q  26    G  42    W  58    :  74
+   *     b  11     r  27    H  43    X  59    ;  75
+   *     c  12     s  28    I  44    Y  60    =  76
+   *     d  13     t  29    J  45    Z  61    ?  77
+   *     e  14     u  30    K  46    !  62    @  78
+   *     f  15     v  31    L  47    #  63    [  79
+   *
+   * If the return value is just one character, it represents:
+   * 0-81  [[0, 40][-0, -40]]
+   * 82    -Infinity
+   * 83    +Infinity
+   * 84    NaN
+   * 85-87 free
+   *
+   *   64 32 16  8  4  2  1
+   *    1  0  1  0  1  1  1 = 87
+   *
+   */
+   P.toJSON = function () {
+    var arr, e, i, k, len, n, r, str,
+      x = this,
+      isNeg = x.s < 0;
+
+    // -Infinity/Infinity/NaN.
+    if (!x.d) return NUMERALS.charAt(x.s ? isNeg ? 82 : 83 : 84);
+    e = x.e;
+
+    // Small integer.
+    if (x.d.length === 1 && e < 4 && e >= 0) {
+      n = x.d[0];
+
+      if (n < 2857) {
+
+        // One character.
+        // [[0, 40][-0, -40]]
+        if (n < 41) return NUMERALS.charAt(isNeg ? n + 41 : n);
+
+        // Two characters. High bit of first character unset.
+        // 0XXXXXX
+        // 63*88 + 87 = 5631 = 5632 values, 5632/2 = 2816
+        // [[0, 2815][2816, 5631]]  (2816 * 2 = 5632 values)
+        // [[0, 2815][-0, -2815]]
+        // [[41, 2856][-41, -2856]]
+        n -= 41;
+        if (isNeg) n += 2816;
+        k = n / 88 | 0;
+
+        return NUMERALS.charAt(k) + NUMERALS.charAt(n - k * 88);
+      }
+    }
+
+    str = digitsToString(x.d);
+    r = '';
+
+    // Values with a small exponent. Set high bit.
+    // Positive value: 100XXXX
+    // 1 0 0 {exponent [0, 15] -> [-7, 8]}
+    if (!isNeg && e <= 8 && e >= -7) {
+      k = 64 + e + 7;
+
+    // Negative value: 1010XXX
+    // 1 0 1 0 {exponent [0, 7] -> [-3, 4]}
+    } else if (isNeg && e <= 4 && e >= -3) {
+      k = 64 + 16 + e + 3;
+
+    // Integer without trailing zeros: 0X00000
+    // 0 {is negative} 0 0 0 0 0
+    } else if (str.length === e + 1) {
+      k = 32 * isNeg;
+
+    // All remaining values: 0XXXXXX
+    // Result will have at least 3 characters.
+    // 0 {is negative} {is exponent negative} {exponent character count [1, 15]}
+    } else {
+      k = 32 * isNeg + 16 * (e < 0);
+      e = Math.abs(e);
+
+      // One character to represent the exponent.
+      if (e < 88)  {
+        k += 1;
+        r = NUMERALS.charAt(e);
+
+      // Two characters to represent the exponent.
+      // 87*88 + 87 = 7743
+      } else if (e < 7744) {
+        k += 2;
+        n = e / 88 | 0;
+        r = NUMERALS.charAt(n) + NUMERALS.charAt(e - n * 88);
+
+      // More than two characters to represent the exponent.
+      } else {
+        arr = convertBase(String(e), 10, 88);
+        len = arr.length;
+        k += len;
+        for (i = 0; i < len; i++) r += NUMERALS.charAt(arr[i]);
+      }
+    }
+
+    // At this point r contains the characters in base 88 representing the exponent value.
+    // Prepend the first character, which describes the sign, the exponent sign, and the number of
+    // characters that follow which represent the exponent value.
+    r = NUMERALS.charAt(k) + r;
+    arr = convertBase(str, 10, 88);
+    len = arr.length;
+
+    // Add the base 88 characters that represent the significand.
+    for (i = 0; i < len; i++) r += NUMERALS.charAt(arr[i]);
+
+    return r;
+  };
+
+
+  /*
+   * Returns a new Decimal whose value is the nearest multiple of the magnitude of `y` to the value
+   * of this Decimal.
+   *
+   * If the value of this Decimal is equidistant from two multiples of `y`, the rounding mode `rm`,
+   * or `Decimal.rounding` if `rm` is omitted, determines the direction of the nearest multiple.
+   *
+   * In the context of this method, rounding mode 4 (ROUND_HALF_UP) is the same as rounding mode 0
+   * (ROUND_UP), and so on.
+   *
+   * The return value will always have the same sign as this Decimal, unless either this Decimal
+   * or `y` is NaN, in which case the return value will be also be NaN.
+   *
+   * The return value is not affected by the value of `precision`.
+   *
+   * y {number|string|Decimal} The magnitude to round to a multiple of.
+   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
+   *
+   * 'toNearest() rounding mode not an integer: {rm}'
+   * 'toNearest() rounding mode out of range: {rm}'
+   *
+   */
+  P.toNearest = function (y, rm) {
+    var x = this,
+      Ctor = x.constructor;
+
+    x = new Ctor(x);
+
+    if (y == null) {
+
+      // If x is not finite, return x.
+      if (!x.d) return x;
+
+      y = new Ctor(ONE);
+      rm = Ctor.rounding;
+    } else {
+      y = new Ctor(y);
+      if (rm !== void 0) checkInt32(rm, 0, 8);
+
+      // If x is not finite, return x if y is not NaN, else NaN.
+      if (!x.d) return y.s ? x : y;
+
+      // If y is not finite, return Infinity with the sign of x if y is Infinity, else NaN.
+      if (!y.d) {
+        if (y.s) y.s = x.s;
+        return y;
+      }
+    }
+
+    // If y is not zero, calculate the nearest multiple of y to x.
+    if (y.d[0]) {
+      external = false;
+      if (rm < 4) rm = [4, 5, 7, 8][rm];
+      x = divide(x, y, 0, rm, 1).times(y);
+      external = true;
+      finalise(x);
+
+    // If y is zero, return zero with the sign of x.
+    } else {
+      y.s = x.s;
+      x = y;
+    }
+
+    return x;
+  };
+
+
+  /*
+   * Return the value of this Decimal converted to a number primitive.
+   * Zero keeps its sign.
+   *
+   */
+  P.toNumber = function () {
+    return +this;
+  };
+
+
+  /*
+   * Return a string representing the value of this Decimal in base 8, round to `sd` significant
+   * digits using rounding mode `rm`.
+   *
+   * If the optional `sd` argument is present then return binary exponential notation.
+   *
+   * [sd] {number} Significant digits. Integer, 1 to MAX_DIGITS inclusive.
+   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
+   *
+   */
+  P.toOctal = function (sd, rm) {
+    return toStringBinary(this, 8, sd, rm);
+  };
+
+
+  /*
+   * Return a new Decimal whose value is the value of this Decimal raised to the power `y`, rounded
+   * to `precision` significant digits using rounding mode `rounding`.
+   *
+   * ECMAScript compliant.
+   *
+   *   pow(x, NaN)                           = NaN
+   *   pow(x, ±0)                            = 1
+
+   *   pow(NaN, non-zero)                    = NaN
+   *   pow(abs(x) > 1, +Infinity)            = +Infinity
+   *   pow(abs(x) > 1, -Infinity)            = +0
+   *   pow(abs(x) == 1, ±Infinity)           = NaN
+   *   pow(abs(x) < 1, +Infinity)            = +0
+   *   pow(abs(x) < 1, -Infinity)            = +Infinity
+   *   pow(+Infinity, y > 0)                 = +Infinity
+   *   pow(+Infinity, y < 0)                 = +0
+   *   pow(-Infinity, odd integer > 0)       = -Infinity
+   *   pow(-Infinity, even integer > 0)      = +Infinity
+   *   pow(-Infinity, odd integer < 0)       = -0
+   *   pow(-Infinity, even integer < 0)      = +0
+   *   pow(+0, y > 0)                        = +0
+   *   pow(+0, y < 0)                        = +Infinity
+   *   pow(-0, odd integer > 0)              = -0
+   *   pow(-0, even integer > 0)             = +0
+   *   pow(-0, odd integer < 0)              = -Infinity
+   *   pow(-0, even integer < 0)             = +Infinity
+   *   pow(finite x < 0, finite non-integer) = NaN
+   *
+   * For non-integer or very large exponents pow(x, y) is calculated using
+   *
+   *   x^y = exp(y*ln(x))
+   *
+   * Assuming the first 15 rounding digits are each equally likely to be any digit 0-9, the
+   * probability of an incorrectly rounded result
+   * P([49]9{14} | [50]0{14}) = 2 * 0.2 * 10^-14 = 4e-15 = 1/2.5e+14
+   * i.e. 1 in 250,000,000,000,000
+   *
+   * If a result is incorrectly rounded the maximum error will be 1 ulp (unit in last place).
+   *
+   * y {number|string|Decimal} The power to which to raise this Decimal.
+   *
+   */
+  P.toPower = P.pow = function (y) {
+    var e, k, pr, r, rm, sign, yIsInt,
+      x = this,
+      Ctor = x.constructor,
+      yn = +(y = new Ctor(y));
+
+    // Either ±Infinity, NaN or ±0?
+    if (!x.d || !y.d || !x.d[0] || !y.d[0]) return  new Ctor(mathpow(+x, yn));
+
+    x = new Ctor(x);
+
+    if (x.eq(ONE)) return x;
+
+    pr = Ctor.precision;
+    rm = Ctor.rounding;
+
+    if (y.eq(ONE)) return finalise(x, pr, rm);
+
+    e = mathfloor(y.e / LOG_BASE);
+    k = y.d.length - 1;
+    yIsInt = e >= k;
+    sign = x.s;
+
+    if (!yIsInt) {
+      if (sign < 0) return new Ctor(NaN);
+
+    // If y is a small integer use the 'exponentiation by squaring' algorithm.
+    } else if ((k = yn < 0 ? -yn : yn) <= MAX_SAFE_INTEGER) {
+      r = intPow(Ctor, x, k, pr);
+      return y.s < 0 ? new Ctor(ONE).div(r) : finalise(r, pr, rm);
+    }
+
+    // Result is negative if x is negative and the last digit of integer y is odd.
+    sign = sign < 0 && y.d[Math.max(e, k)] & 1 ? -1 : 1;
+
+    // Estimate result exponent.
+    // x^y = 10^e,  where e = y * log10(x)
+    // log10(x) = log10(x_significand) + x_exponent
+    // log10(x_significand) = ln(x_significand) / ln(10)
+    k = mathpow(+x, yn);
+    e = k == 0 || !isFinite(k)
+      ? mathfloor(yn * (Math.log('0.' + digitsToString(x.d)) / Math.LN10 + x.e + 1))
+      : new Ctor(k + '').e;
+
+    // Estimate may be incorrect e.g. x: 0.999999999999999999, y: 2.29, e: 0, r.e: -1.
+
+    // Overflow/underflow?
+    if (e > Ctor.maxE + 1 || e < Ctor.minE - 1) return new Ctor(e > 0 ? sign / 0 : 0);
+
+    external = false;
+    Ctor.rounding = x.s = 1;
+
+    // Estimate the extra guard digits needed to ensure five correct rounding digits from
+    // naturalLogarithm(x). Example of failure without these extra digits (precision: 10):
+    // new Decimal(2.32456).pow('2087987436534566.46411')
+    // should be 1.162377823e+764914905173815, but is 1.162355823e+764914905173815
+    k = Math.min(12, (e + '').length);
+
+    // r = x^y = exp(y*ln(x))
+    r = naturalExponential(y.times(naturalLogarithm(x, pr + k)), pr);
+
+    // Truncate to the required precision plus five rounding digits.
+    r = finalise(r, pr + 5, 1);
+
+    // If the rounding digits are [49]9999 or [50]0000 increase the precision by 10 and recalculate
+    // the result.
+    if (checkRoundingDigits(r.d, pr, rm)) {
+      e = pr + 10;
+
+      // Truncate to the increased precision plus five rounding digits.
+      r = finalise(naturalExponential(y.times(naturalLogarithm(x, e + k)), e), e + 5, 1);
+
+      // Check for 14 nines from the 2nd rounding digit (the first rounding digit may be 4 or 9).
+      if (+digitsToString(r.d).slice(pr + 1, pr + 15) + 1 == 1e14) {
+        r = finalise(r, pr + 1, 0);
+      }
+    }
+
+    r.s = sign;
+    external = true;
+    Ctor.rounding = rm;
+
+    return finalise(r, pr, rm);
+  };
+
+
+  /*
+   * Return a string representing the value of this Decimal rounded to `sd` significant digits
+   * using rounding mode `rounding`.
+   *
+   * Return exponential notation if `sd` is less than the number of digits necessary to represent
+   * the integer part of the value in normal notation.
+   *
+   * [sd] {number} Significant digits. Integer, 1 to MAX_DIGITS inclusive.
+   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
+   *
+   */
+  P.toPrecision = function (sd, rm) {
+    var str,
+      x = this,
+      Ctor = x.constructor;
+
+    if (sd === void 0) {
+      str = finiteToString(x, x.e <= Ctor.toExpNeg || x.e >= Ctor.toExpPos);
+    } else {
+      checkInt32(sd, 1, MAX_DIGITS);
+
+      if (rm === void 0) rm = Ctor.rounding;
+      else checkInt32(rm, 0, 8);
+
+      x = finalise(new Ctor(x), sd, rm);
+      str = finiteToString(x, sd <= x.e || x.e <= Ctor.toExpNeg, sd);
+    }
+
+    return x.isNeg() && !x.isZero() ? '-' + str : str;
+  };
+
+
+  /*
+   * Return a new Decimal whose value is the value of this Decimal rounded to a maximum of `sd`
+   * significant digits using rounding mode `rm`, or to `precision` and `rounding` respectively if
+   * omitted.
+   *
+   * [sd] {number} Significant digits. Integer, 1 to MAX_DIGITS inclusive.
+   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
+   *
+   * 'toSD() digits out of range: {sd}'
+   * 'toSD() digits not an integer: {sd}'
+   * 'toSD() rounding mode not an integer: {rm}'
+   * 'toSD() rounding mode out of range: {rm}'
+   *
+   */
+  P.toSignificantDigits = P.toSD = function (sd, rm) {
+    var x = this,
+      Ctor = x.constructor;
+
+    if (sd === void 0) {
+      sd = Ctor.precision;
+      rm = Ctor.rounding;
+    } else {
+      checkInt32(sd, 1, MAX_DIGITS);
+
+      if (rm === void 0) rm = Ctor.rounding;
+      else checkInt32(rm, 0, 8);
+    }
+
+    return finalise(new Ctor(x), sd, rm);
+  };
+
+
+  /*
+   * Return a string representing the value of this Decimal.
+   *
+   * Return exponential notation if this Decimal has a positive exponent equal to or greater than
+   * `toExpPos`, or a negative exponent equal to or less than `toExpNeg`.
+   *
+   */
+  P.toString = function () {
+    var x = this,
+      Ctor = x.constructor,
+      str = finiteToString(x, x.e <= Ctor.toExpNeg || x.e >= Ctor.toExpPos);
+
+    return x.isNeg() && !x.isZero() ? '-' + str : str;
+  };
+
+
+  /*
+   * Return a new Decimal whose value is the value of this Decimal truncated to a whole number.
+   *
+   */
+  P.truncated = P.trunc = function () {
+    return finalise(new this.constructor(this), this.e + 1, 1);
+  };
+
+
+  /*
+   * Return a string representing the value of this Decimal.
+   * Unlike `toString`, negative zero will include the minus sign.
+   *
+   */
+  P.valueOf = function () {
+    var x = this,
+      Ctor = x.constructor,
+      str = finiteToString(x, x.e <= Ctor.toExpNeg || x.e >= Ctor.toExpPos);
+
+    return x.isNeg() ? '-' + str : str;
+  };
+
+
+  /*
+  // Add aliases to match BigDecimal method names.
+  // P.add = P.plus;
+  P.subtract = P.minus;
+  P.multiply = P.times;
+  P.divide = P.div;
+  P.remainder = P.mod;
+  P.compareTo = P.cmp;
+  P.negate = P.neg;
+   */
+
+
+  // Helper functions for Decimal.prototype (P) and/or Decimal methods, and their callers.
+
+
+  /*
+   *  digitsToString           P.cubeRoot, P.logarithm, P.squareRoot, P.toFraction, P.toJSON,
+   *                           P.toPower, finiteToString, naturalExponential, naturalLogarithm
+   *  checkInt32               P.toDecimalPlaces, P.toExponential, P.toFixed, P.toNearest,
+   *                           P.toPrecision, P.toSignificantDigits, toStringBinary, random
+   *  checkRoundingDigits      P.logarithm, P.toPower, naturalExponential, naturalLogarithm
+   *  convertBase              P.toJSON, toStringBinary, fromJSON, parseOther
+   *  cos                      P.cos
+   *  divide                   P.atanh, P.cubeRoot, P.dividedBy, P.dividedToIntegerBy,
+   *                           P.logarithm, P.modulo, P.squareRoot, P.tan, P.tanh, P.toFraction,
+   *                           P.toNearest, toStringBinary, naturalExponential, naturalLogarithm,
+   *                           taylorSeries, atan2, parseOther
+   *  finalise                 P.absoluteValue, P.atan, P.atanh, P.ceil, P.cos, P.cosh,
+   *                           P.cubeRoot, P.dividedToIntegerBy, P.floor, P.logarithm, P.minus,
+   *                           P.modulo, P.negated, P.plus, P.round, P.sin, P.sinh, P.squareRoot,
+   *                           P.tan, P.times, P.toDecimalPlaces, P.toExponential, P.toFixed,
+   *                           P.toNearest, P.toPower, P.toPrecision, P.toSignificantDigits,
+   *                           P.truncated, divide, getLn10, getPi, naturalExponential,
+   *                           naturalLogarithm, ceil, floor, round, trunc
+   *  finiteToString           P.toExponential, P.toFixed, P.toPrecision, P.toString, P.valueOf,
+   *                           toStringBinary
+   *  getBase10Exponent        P.minus, P.plus, P.times, parseOther
+   *  getLn10                  P.logarithm, naturalLogarithm
+   *  getPi                    P.acos, P.asin, P.atan, toLessThanHalfPi, atan2
+   *  getPrecision             P.precision, P.toFraction
+   *  getZeroString            digitsToString, finiteToString
+   *  intPow                   P.toPower, parseOther
+   *  isOdd                    toLessThanHalfPi
+   *  maxOrMin                 max, min
+   *  naturalExponential       P.naturalExponential, P.toPower
+   *  naturalLogarithm         P.acosh, P.asinh, P.atanh, P.logarithm, P.naturalLogarithm,
+   *                           P.toPower, naturalExponential
+   *  nonFiniteToString        finiteToString, toStringBinary
+   *  parseDecimal             Decimal
+   *  parseOther               Decimal
+   *  sin                      P.sin
+   *  taylorSeries             P.cosh, P.sinh, cos, sin
+   *  toLessThanHalfPi         P.cos, P.sin
+   *  toStringBinary           P.toBinary, P.toHexadecimal, P.toOctal
+   *  truncate                 intPow
+   *
+   *  Throws:                  P.logarithm, P.precision, P.toFraction, checkInt32, getLn10, getPi,
+   *                           naturalLogarithm, config, fromJSON, parseOther, random, Decimal           *
+   */
+
+
+  function digitsToString(d) {
+    var i, k, ws,
+      indexOfLastWord = d.length - 1,
+      str = '',
+      w = d[0];
+
+    if (indexOfLastWord > 0) {
+      str += w;
+      for (i = 1; i < indexOfLastWord; i++) {
+        ws = d[i] + '';
+        k = LOG_BASE - ws.length;
+        if (k) str += getZeroString(k);
+        str += ws;
+      }
+
+      w = d[i];
+      ws = w + '';
+      k = LOG_BASE - ws.length;
+      if (k) str += getZeroString(k);
+    } else if (w === 0) {
+      return '0';
+    }
+
+    // Remove trailing zeros of last w.
+    for (; w % 10 === 0;) w /= 10;
+
+    return str + w;
+  }
+
+
+  function checkInt32(i, min, max) {
+    if (i !== ~~i || i < min || i > max) {
+      throw Error(invalidArgument + i);
+    }
+  }
+
+
+  /*
+   * Check 5 rounding digits if `repeating` is null, 4 otherwise.
+   * `repeating == null` if caller is `log` or `pow`,
+   * `repeating != null` if caller is `naturalLogarithm` or `naturalExponential`.
+   */
+  function checkRoundingDigits(d, i, rm, repeating) {
+    var di, k, r, rd;
+
+    // Get the length of the first word of the array d.
+    for (k = d[0]; k >= 10; k /= 10) --i;
+
+    // Is the rounding digit in the first word of d?
+    if (--i < 0) {
+      i += LOG_BASE;
+      di = 0;
+    } else {
+      di = Math.ceil((i + 1) / LOG_BASE);
+      i %= LOG_BASE;
+    }
+
+    // i is the index (0 - 6) of the rounding digit.
+    // E.g. if within the word 3487563 the first rounding digit is 5,
+    // then i = 4, k = 1000, rd = 3487563 % 1000 = 563
+    k = mathpow(10, LOG_BASE - i);
+    rd = d[di] % k | 0;
+
+    if (repeating == null) {
+      if (i < 3) {
+        if (i == 0) rd = rd / 100 | 0;
+        else if (i == 1) rd = rd / 10 | 0;
+        r = rm < 4 && rd == 99999 || rm > 3 && rd == 49999 || rd == 50000 || rd == 0;
+      } else {
+        r = (rm < 4 && rd + 1 == k || rm > 3 && rd + 1 == k / 2) &&
+          (d[di + 1] / k / 100 | 0) == mathpow(10, i - 2) - 1 ||
+            (rd == k / 2 || rd == 0) && (d[di + 1] / k / 100 | 0) == 0;
+      }
+    } else {
+      if (i < 4) {
+        if (i == 0) rd = rd / 1000 | 0;
+        else if (i == 1) rd = rd / 100 | 0;
+        else if (i == 2) rd = rd / 10 | 0;
+        r = (repeating || rm < 4) && rd == 9999 || !repeating && rm > 3 && rd == 4999;
+      } else {
+        r = ((repeating || rm < 4) && rd + 1 == k ||
+        (!repeating && rm > 3) && rd + 1 == k / 2) &&
+          (d[di + 1] / k / 1000 | 0) == mathpow(10, i - 3) - 1;
+      }
+    }
+
+    return r;
+  }
+
+
+  // Convert string of `baseIn` to an array of numbers of `baseOut`.
+  // Eg. convertBase('255', 10, 16) returns [15, 15].
+  // Eg. convertBase('ff', 16, 10) returns [2, 5, 5].
+  function convertBase(str, baseIn, baseOut) {
+    var j,
+      arr = [0],
+      arrL,
+      i = 0,
+      strL = str.length;
+
+    for (; i < strL;) {
+      for (arrL = arr.length; arrL--;) arr[arrL] *= baseIn;
+      arr[0] += NUMERALS.indexOf(str.charAt(i++));
+      for (j = 0; j < arr.length; j++) {
+        if (arr[j] > baseOut - 1) {
+          if (arr[j + 1] === void 0) arr[j + 1] = 0;
+          arr[j + 1] += arr[j] / baseOut | 0;
+          arr[j] %= baseOut;
+        }
+      }
+    }
+
+    return arr.reverse();
+  }
+
+
+  /*
+   * cos(x) = 1 - x^2/2! + x^4/4! - ...
+   * |x| < pi/2
+   *
+   */
+  function cosine(Ctor, x) {
+    var k, y,
+      len = x.d.length;
+
+    // Argument reduction: cos(4x) = 8*(cos^4(x) - cos^2(x)) + 1
+    // i.e. cos(x) = 8*(cos^4(x/4) - cos^2(x/4)) + 1
+
+    // Estimate the optimum number of times to use the argument reduction.
+    if (len < 32) {
+      k = Math.ceil(len / 3);
+      y = Math.pow(4, -k).toString();
+    } else {
+      k = 16;
+      y = '2.3283064365386962890625e-10';
+    }
+
+    Ctor.precision += k;
+
+    x = taylorSeries(Ctor, 1, x.times(y), new Ctor(ONE));
+
+    // Reverse argument reduction
+    for (var i = k; i--;) {
+      var cos2x = x.times(x);
+      x = cos2x.times(cos2x).minus(cos2x).times(8).plus(ONE);
+    }
+
+    Ctor.precision -= k;
+
+    return x;
+  }
+
+
+  /*
+   * Perform division in the specified base.
+   */
+  var divide = (function () {
+
+    // Assumes non-zero x and k, and hence non-zero result.
+    function multiplyInteger(x, k, base) {
+      var temp,
+        carry = 0,
+        i = x.length;
+
+      for (x = x.slice(); i--;) {
+        temp = x[i] * k + carry;
+        x[i] = temp % base | 0;
+        carry = temp / base | 0;
+      }
+
+      if (carry) x.unshift(carry);
+
+      return x;
+    }
+
+    function compare(a, b, aL, bL) {
+      var i, r;
+
+      if (aL != bL) {
+        r = aL > bL ? 1 : -1;
+      } else {
+        for (i = r = 0; i < aL; i++) {
+          if (a[i] != b[i]) {
+            r = a[i] > b[i] ? 1 : -1;
+            break;
+          }
+        }
+      }
+
+      return r;
+    }
+
+    function subtract(a, b, aL, base) {
+      var i = 0;
+
+      // Subtract b from a.
+      for (; aL--;) {
+        a[aL] -= i;
+        i = a[aL] < b[aL] ? 1 : 0;
+        a[aL] = i * base + a[aL] - b[aL];
+      }
+
+      // Remove leading zeros.
+      for (; !a[0] && a.length > 1;) a.shift();
+    }
+
+    return function (x, y, pr, rm, dp, base) {
+      var cmp, e, i, k, logBase, more, prod, prodL, q, qd, rem, remL, rem0, sd, t, xi, xL, yd0,
+        yL, yz,
+        Ctor = x.constructor,
+        sign = x.s == y.s ? 1 : -1,
+        xd = x.d,
+        yd = y.d;
+
+      // Either NaN, Infinity or 0?
+      if (!xd || !xd[0] || !yd || !yd[0]) {
+
+        return new Ctor(// Return NaN if either NaN, or both Infinity or 0.
+          !x.s || !y.s || (xd ? yd && xd[0] == yd[0] : !yd) ? NaN :
+
+          // Return ±0 if x is 0 or y is ±Infinity, or return ±Infinity as y is 0.
+          xd && xd[0] == 0 || !yd ? sign * 0 : sign / 0);
+      }
+
+      if (base) {
+        logBase = 1;
+        e = x.e - y.e;
+      } else {
+        base = BASE;
+        logBase = LOG_BASE;
+        e = mathfloor(x.e / logBase) - mathfloor(y.e / logBase);
+      }
+
+      yL = yd.length;
+      xL = xd.length;
+      q = new Ctor(sign);
+      qd = q.d = [];
+
+      // Result exponent may be one less than e.
+      // The digit array of a Decimal from toStringBinary may have trailing zeros.
+      for (i = 0; yd[i] == (xd[i] || 0); i++);
+
+      if (yd[i] > (xd[i] || 0)) e--;
+
+      if (pr == null) {
+        sd = pr = Ctor.precision;
+        rm = Ctor.rounding;
+      } else if (dp) {
+        sd = pr + (x.e - y.e) + 1;
+      } else {
+        sd = pr;
+      }
+
+      if (sd < 0) {
+        qd.push(1);
+        more = true;
+      } else {
+
+        // Convert precision in number of base 10 digits to base 1e7 digits.
+        sd = sd / logBase + 2 | 0;
+        i = 0;
+
+        // divisor < 1e7
+        if (yL == 1) {
+          k = 0;
+          yd = yd[0];
+          sd++;
+
+          // k is the carry.
+          for (; (i < xL || k) && sd--; i++) {
+            t = k * base + (xd[i] || 0);
+            qd[i] = t / yd | 0;
+            k = t % yd | 0;
+          }
+
+          more = k || i < xL;
+
+        // divisor >= 1e7
+        } else {
+
+          // Normalise xd and yd so highest order digit of yd is >= base/2
+          k = base / (yd[0] + 1) | 0;
+
+          if (k > 1) {
+            yd = multiplyInteger(yd, k, base);
+            xd = multiplyInteger(xd, k, base);
+            yL = yd.length;
+            xL = xd.length;
+          }
+
+          xi = yL;
+          rem = xd.slice(0, yL);
+          remL = rem.length;
+
+          // Add zeros to make remainder as long as divisor.
+          for (; remL < yL;) rem[remL++] = 0;
+
+          yz = yd.slice();
+          yz.unshift(0);
+          yd0 = yd[0];
+
+          if (yd[1] >= base / 2) ++yd0;
+
+          do {
+            k = 0;
+
+            // Compare divisor and remainder.
+            cmp = compare(yd, rem, yL, remL);
+
+            // If divisor < remainder.
+            if (cmp < 0) {
+
+              // Calculate trial digit, k.
+              rem0 = rem[0];
+              if (yL != remL) rem0 = rem0 * base + (rem[1] || 0);
+
+              // k will be how many times the divisor goes into the current remainder.
+              k = rem0 / yd0 | 0;
+
+              //  Algorithm:
+              //  1. product = divisor * trial digit (k)
+              //  2. if product > remainder: product -= divisor, k--
+              //  3. remainder -= product
+              //  4. if product was < remainder at 2:
+              //    5. compare new remainder and divisor
+              //    6. If remainder > divisor: remainder -= divisor, k++
+
+              if (k > 1) {
+                if (k >= base) k = base - 1;
+
+                // product = divisor * trial digit.
+                prod = multiplyInteger(yd, k, base);
+                prodL = prod.length;
+                remL = rem.length;
+
+                // Compare product and remainder.
+                cmp = compare(prod, rem, prodL, remL);
+
+                // product > remainder.
+                if (cmp == 1) {
+                  k--;
+
+                  // Subtract divisor from product.
+                  subtract(prod, yL < prodL ? yz : yd, prodL, base);
+                }
+              } else {
+
+                // cmp is -1.
+                // If k is 0, there is no need to compare yd and rem again below, so change cmp to 1
+                // to avoid it. If k is 1 there is a need to compare yd and rem again below.
+                if (k == 0) cmp = k = 1;
+                prod = yd.slice();
+              }
+
+              prodL = prod.length;
+              if (prodL < remL) prod.unshift(0);
+
+              // Subtract product from remainder.
+              subtract(rem, prod, remL, base);
+
+              // If product was < previous remainder.
+              if (cmp == -1) {
+                remL = rem.length;
+
+                // Compare divisor and new remainder.
+                cmp = compare(yd, rem, yL, remL);
+
+                // If divisor < new remainder, subtract divisor from remainder.
+                if (cmp < 1) {
+                  k++;
+
+                  // Subtract divisor from remainder.
+                  subtract(rem, yL < remL ? yz : yd, remL, base);
+                }
+              }
+
+              remL = rem.length;
+            } else if (cmp === 0) {
+              k++;
+              rem = [0];
+            }    // if cmp === 1, k will be 0
+
+            // Add the next digit, k, to the result array.
+            qd[i++] = k;
+
+            // Update the remainder.
+            if (cmp && rem[0]) {
+              rem[remL++] = xd[xi] || 0;
+            } else {
+              rem = [xd[xi]];
+              remL = 1;
+            }
+
+          } while ((xi++ < xL || rem[0] !== void 0) && sd--);
+
+          more = rem[0] !== void 0;
+        }
+
+        // Leading zero?
+        if (!qd[0]) qd.shift();
+      }
+
+      // logBase is 1 when divide is being used for base conversion.
+      if (logBase == 1) {
+        q.e = e;
+        inexact = more;
+      } else {
+
+        // To calculate q.e, first get the number of digits of qd[0].
+        for (i = 1, k = qd[0]; k >= 10; k /= 10) i++;
+        q.e = i + e * logBase - 1;
+
+        finalise(q, dp ? pr + q.e + 1 : pr, rm, more);
+      }
+
+      return q;
+    };
+  })();
+
+
+  /*
+   * Round `x` to `sd` significant digits using rounding mode `rm`.
+   * Check for over/under-flow.
+   */
+   function finalise(x, sd, rm, isTruncated) {
+    var digits, i, j, k, rd, roundUp, w, xd, xdi,
+      Ctor = x.constructor;
+
+    // Don't round if sd is null or undefined.
+    out: if (sd != null) {
+      xd = x.d;
+
+      // Infinity/NaN.
+      if (!xd) return x;
+
+      // rd: the rounding digit, i.e. the digit after the digit that may be rounded up.
+      // w: the word of xd containing rd, a base 1e7 number.
+      // xdi: the index of w within xd.
+      // digits: the number of digits of w.
+      // i: what would be the index of rd within w if all the numbers were 7 digits long (i.e. if
+      // they had leading zeros)
+      // j: if > 0, the actual index of rd within w (if < 0, rd is a leading zero).
+
+      // Get the length of the first word of the digits array xd.
+      for (digits = 1, k = xd[0]; k >= 10; k /= 10) digits++;
+      i = sd - digits;
+
+      // Is the rounding digit in the first word of xd?
+      if (i < 0) {
+        i += LOG_BASE;
+        j = sd;
+        w = xd[xdi = 0];
+
+        // Get the rounding digit at index j of w.
+        rd = w / mathpow(10, digits - j - 1) % 10 | 0;
+      } else {
+        xdi = Math.ceil((i + 1) / LOG_BASE);
+        k = xd.length;
+        if (xdi >= k) {
+          if (isTruncated) {
+
+            // Needed by `naturalExponential`, `naturalLogarithm` and `squareRoot`.
+            for (; k++ <= xdi;) xd.push(0);
+            w = rd = 0;
+            digits = 1;
+            i %= LOG_BASE;
+            j = i - LOG_BASE + 1;
+          } else {
+            break out;
+          }
+        } else {
+          w = k = xd[xdi];
+
+          // Get the number of digits of w.
+          for (digits = 1; k >= 10; k /= 10) digits++;
+
+          // Get the index of rd within w.
+          i %= LOG_BASE;
+
+          // Get the index of rd within w, adjusted for leading zeros.
+          // The number of leading zeros of w is given by LOG_BASE - digits.
+          j = i - LOG_BASE + digits;
+
+          // Get the rounding digit at index j of w.
+          // Floor using Math.floor instead of | 0 as rd may be outside int range.
+          rd = j < 0 ? 0 : mathfloor(w / mathpow(10, digits - j - 1) % 10);
+        }
+      }
+
+      // Are there any non-zero digits after the rounding digit?
+      isTruncated = isTruncated || sd < 0 ||
+        xd[xdi + 1] !== void 0 || (j < 0 ? w : w % mathpow(10, digits - j - 1));
+
+      // The expression `w % mathpow(10, digits - j - 1)` returns all the digits of w to the right
+      // of the digit at (left-to-right) index j, e.g. if w is 908714 and j is 2, the expression
+      // will give 714.
+
+      roundUp = rm < 4
+        ? (rd || isTruncated) && (rm == 0 || rm == (x.s < 0 ? 3 : 2))
+        : rd > 5 || rd == 5 && (rm == 4 || isTruncated || rm == 6 &&
+
+          // Check whether the digit to the left of the rounding digit is odd.
+          ((i > 0 ? j > 0 ? w / mathpow(10, digits - j) : 0 : xd[xdi - 1]) % 10) & 1 ||
+            rm == (x.s < 0 ? 8 : 7));
+
+      if (sd < 1 || !xd[0]) {
+        xd.length = 0;
+        if (roundUp) {
+
+          // Convert sd to decimal places.
+          sd -= x.e + 1;
+
+          // 1, 0.1, 0.01, 0.001, 0.0001 etc.
+          xd[0] = mathpow(10, (LOG_BASE - sd % LOG_BASE) % LOG_BASE);
+          x.e = -sd || 0;
+        } else {
+
+          // Zero.
+          xd[0] = x.e = 0;
+        }
+
+        return x;
+      }
+
+      // Remove excess digits.
+      if (i == 0) {
+        xd.length = xdi;
+        k = 1;
+        xdi--;
+      } else {
+        xd.length = xdi + 1;
+        k = mathpow(10, LOG_BASE - i);
+
+        // E.g. 56700 becomes 56000 if 7 is the rounding digit.
+        // j > 0 means i > number of leading zeros of w.
+        xd[xdi] = j > 0 ? (w / mathpow(10, digits - j) % mathpow(10, j) | 0) * k : 0;
+      }
+
+      if (roundUp) {
+        for (;;) {
+
+          // Is the digit to be rounded up in the first word of xd?
+          if (xdi == 0) {
+
+            // i will be the length of xd[0] before k is added.
+            for (i = 1, j = xd[0]; j >= 10; j /= 10) i++;
+            j = xd[0] += k;
+            for (k = 1; j >= 10; j /= 10) k++;
+
+            // if i != k the length has increased.
+            if (i != k) {
+              x.e++;
+              if (xd[0] == BASE) xd[0] = 1;
+            }
+
+            break;
+          } else {
+            xd[xdi] += k;
+            if (xd[xdi] != BASE) break;
+            xd[xdi--] = 0;
+            k = 1;
+          }
+        }
+      }
+
+      // Remove trailing zeros.
+      for (i = xd.length; xd[--i] === 0;) xd.pop();
+    }
+
+    if (external) {
+
+      // Overflow?
+      if (x.e > Ctor.maxE) {
+
+        // Infinity.
+        x.d = null;
+        x.e = NaN;
+
+      // Underflow?
+      } else if (x.e < Ctor.minE) {
+
+        // Zero.
+        x.e = 0;
+        x.d = [0];
+        // Ctor.underflow = true;
+      } // else Ctor.underflow = false;
+    }
+
+    return x;
+  }
+
+
+  function finiteToString(x, isExp, sd) {
+    if (!x.isFinite()) return nonFiniteToString(x);
+    var k,
+      e = x.e,
+      str = digitsToString(x.d),
+      len = str.length;
+
+    if (isExp) {
+      if (sd && (k = sd - len) > 0) {
+        str = str.charAt(0) + '.' + str.slice(1) + getZeroString(k);
+      } else if (len > 1) {
+        str = str.charAt(0) + '.' + str.slice(1);
+      }
+
+      str = str + (x.e < 0 ? 'e' : 'e+') + x.e;
+    } else if (e < 0) {
+      str = '0.' + getZeroString(-e - 1) + str;
+      if (sd && (k = sd - len) > 0) str += getZeroString(k);
+    } else if (e >= len) {
+      str += getZeroString(e + 1 - len);
+      if (sd && (k = sd - e - 1) > 0) str = str + '.' + getZeroString(k);
+    } else {
+      if ((k = e + 1) < len) str = str.slice(0, k) + '.' + str.slice(k);
+      if (sd && (k = sd - len) > 0) {
+        if (e + 1 === len) str += '.';
+        str += getZeroString(k);
+      }
+    }
+
+    return str;
+  }
+
+
+  // Calculate the base 10 exponent from the base 1e7 exponent.
+  function getBase10Exponent(digits, e) {
+
+    // First get the number of digits of the first word of the digits array.
+    for (var i = 1, w = digits[0]; w >= 10; w /= 10) i++;
+    return i + e * LOG_BASE - 1;
+  }
+
+
+   function getLn10(Ctor, sd, pr) {
+    if (sd > LN10_PRECISION) {
+
+      // Reset global state in case the exception is caught.
+      external = true;
+      if (pr) Ctor.precision = pr;
+      throw Error(precisionLimitExceeded);
+    }
+    return finalise(new Ctor(LN10), sd, 1, true);
+  }
+
+
+  function getPi(Ctor, sd, rm) {
+    if (sd > PI_PRECISION) throw Error(precisionLimitExceeded);
+    return finalise(new Ctor(PI), sd, rm, true);
+  }
+
+
+  function getPrecision(digits) {
+    var w = digits.length - 1,
+      len = w * LOG_BASE + 1;
+
+    w = digits[w];
+
+    // If non-zero...
+    if (w) {
+
+      // Subtract the number of trailing zeros of the last number.
+      for (; w % 10 == 0; w /= 10) len--;
+
+      // Add the number of digits of the first number.
+      for (w = digits[0]; w >= 10; w /= 10) len++;
+    }
+
+    return len;
+  }
+
+
+  function getZeroString(k) {
+    var zs = '';
+    for (; k--;) zs += '0';
+    return zs;
+  }
+
+
+  /*
+   * Return a new Decimal whose value is the value of Decimal `x` to the power `n`, where `n` is an
+   * integer of type number.
+   *
+   * Implements 'exponentiation by squaring'. Called by `pow` and `parseOther`.
+   *
+   */
+  function intPow(Ctor, x, n, pr) {
+    var isTruncated,
+      r = new Ctor(ONE),
+
+      // Max n of 9007199254740991 takes 53 loop iterations.
+      // Maximum digits array length; leaves [28, 34] guard digits.
+      k = Math.ceil(pr / LOG_BASE + 4);
+
+    external = false;
+
+    for (;;) {
+      if (n % 2) {
+        r = r.times(x);
+        if (truncate(r.d, k)) isTruncated = true;
+      }
+
+      n = mathfloor(n / 2);
+      if (n === 0) {
+
+        // To ensure correct rounding when r.d is truncated, increment the last word if it is zero.
+        n = r.d.length - 1;
+        if (isTruncated && r.d[n] === 0) ++r.d[n];
+        break;
+      }
+
+      x = x.times(x);
+      truncate(x.d, k);
+    }
+
+    external = true;
+
+    return r;
+  }
+
+
+  function isOdd(n) {
+    return n.d[n.d.length - 1] & 1;
+  }
+
+
+  /*
+   * Handle `max` and `min`. `ltgt` is 'lt' or 'gt'.
+   */
+  function maxOrMin(Ctor, args, ltgt) {
+    var y,
+      x = new Ctor(args[0]),
+      i = 0;
+
+    for (; ++i < args.length;) {
+      y = new Ctor(args[i]);
+      if (!y.s) {
+        x = y;
+        break;
+      } else if (x[ltgt](y)) {
+        x = y;
+      }
+    }
+
+    return x;
+  }
+
+
+  /*
+   * Return a new Decimal whose value is the natural exponential of `x` rounded to `sd` significant
+   * digits.
+   *
+   * Taylor/Maclaurin series.
+   *
+   * exp(x) = x^0/0! + x^1/1! + x^2/2! + x^3/3! + ...
+   *
+   * Argument reduction:
+   *   Repeat x = x / 32, k += 5, until |x| < 0.1
+   *   exp(x) = exp(x / 2^k)^(2^k)
+   *
+   * Previously, the argument was initially reduced by
+   * exp(x) = exp(r) * 10^k  where r = x - k * ln10, k = floor(x / ln10)
+   * to first put r in the range [0, ln10], before dividing by 32 until |x| < 0.1, but this was
+   * found to be slower than just dividing repeatedly by 32 as above.
+   *
+   * Max integer argument: exp('20723265836946413') = 6.3e+9000000000000000
+   * Min integer argument: exp('-20723265836946411') = 1.2e-9000000000000000
+   * (Math object integer min/max: Math.exp(709) = 8.2e+307, Math.exp(-745) = 5e-324)
+   *
+   *  exp(Infinity)  = Infinity
+   *  exp(-Infinity) = 0
+   *  exp(NaN)       = NaN
+   *  exp(±0)        = 1
+   *
+   *  exp(x) is non-terminating for any finite, non-zero x.
+   *
+   *  The result will always be correctly rounded.
+   *
+   */
+  function naturalExponential(x, sd) {
+    var denominator, guard, j, pow, sum, t, wpr,
+      rep = 0,
+      i = 0,
+      k = 0,
+      Ctor = x.constructor,
+      rm = Ctor.rounding,
+      pr = Ctor.precision;
+
+    // 0/NaN/Infinity?
+    if (!x.d || !x.d[0] || x.e > 17) {
+
+      return new Ctor(x.d
+        ? !x.d[0] ? ONE : x.s < 0 ? 0 : 1 / 0
+        : x.s ? x.s < 0 ? 0 : x : 0 / 0);
+    }
+
+    if (sd == null) {
+      external = false;
+      wpr = pr;
+    } else {
+      wpr = sd;
+    }
+
+    t = new Ctor(0.03125);
+
+    // while abs(x) >= 0.1
+    while (x.e > -2) {
+
+      // x = x / 2^5
+      x = x.times(t);
+      k += 5;
+    }
+
+    // Use 2 * log10(2^k) + 5 (empirically derived) to estimate the increase in precision
+    // necessary to ensure the first 4 rounding digits are correct.
+    guard = Math.log(mathpow(2, k)) / Math.LN10 * 2 + 5 | 0;
+    wpr += guard;
+    denominator = pow = sum = new Ctor(ONE);
+    Ctor.precision = wpr;
+
+    for (;;) {
+      pow = finalise(pow.times(x), wpr, 1);
+      denominator = denominator.times(++i);
+      t = sum.plus(divide(pow, denominator, wpr, 1));
+
+      if (digitsToString(t.d).slice(0, wpr) === digitsToString(sum.d).slice(0, wpr)) {
+        j = k;
+        while (j--) sum = finalise(sum.times(sum), wpr, 1);
+
+        // Check to see if the first 4 rounding digits are [49]999.
+        // If so, repeat the summation with a higher precision, otherwise
+        // e.g. with precision: 18, rounding: 1
+        // exp(18.404272462595034083567793919843761) = 98372560.1229999999 (should be 98372560.123)
+        // `wpr - guard` is the index of first rounding digit.
+        if (sd == null) {
+
+          if (rep < 3 && checkRoundingDigits(sum.d, wpr - guard, rm, rep)) {
+            Ctor.precision = wpr += 10;
+            denominator = pow = t = new Ctor(ONE);
+            i = 0;
+            rep++;
+          } else {
+            return finalise(sum, Ctor.precision = pr, rm, external = true);
+          }
+        } else {
+          Ctor.precision = pr;
+          return sum;
+        }
+      }
+
+      sum = t;
+    }
+  }
+
+
+  /*
+   * Return a new Decimal whose value is the natural logarithm of `x` rounded to `sd` significant
+   * digits.
+   *
+   *  ln(-n)        = NaN
+   *  ln(0)         = -Infinity
+   *  ln(-0)        = -Infinity
+   *  ln(1)         = 0
+   *  ln(Infinity)  = Infinity
+   *  ln(-Infinity) = NaN
+   *  ln(NaN)       = NaN
+   *
+   *  ln(n) (n != 1) is non-terminating.
+   *
+   */
+  function naturalLogarithm(y, sd) {
+    var c, c0, denominator, e, numerator, rep, sum, t, wpr, x1, x2,
+      n = 1,
+      guard = 10,
+      x = y,
+      xd = x.d,
+      Ctor = x.constructor,
+      rm = Ctor.rounding,
+      pr = Ctor.precision;
+
+    // Is x negative or Infinity, NaN, 0 or 1?
+    if (x.s < 0 || !xd || !xd[0] || !x.e && xd[0] == 1 && xd.length == 1) {
+      return new Ctor(xd && !xd[0] ? -1 / 0 : x.s != 1 ? NaN : xd ? 0 : x);
+    }
+
+    if (sd == null) {
+      external = false;
+      wpr = pr;
+    } else {
+      wpr = sd;
+    }
+
+    Ctor.precision = wpr += guard;
+    c = digitsToString(xd);
+    c0 = c.charAt(0);
+
+    if (Math.abs(e = x.e) < 1.5e15) {
+
+      // Argument reduction.
+      // The series converges faster the closer the argument is to 1, so using
+      // ln(a^b) = b * ln(a),   ln(a) = ln(a^b) / b
+      // multiply the argument by itself until the leading digits of the significand are 7, 8, 9,
+      // 10, 11, 12 or 13, recording the number of multiplications so the sum of the series can
+      // later be divided by this number, then separate out the power of 10 using
+      // ln(a*10^b) = ln(a) + b*ln(10).
+
+      // max n is 21 (gives 0.9, 1.0 or 1.1) (9e15 / 21 = 4.2e14).
+      //while (c0 < 9 && c0 != 1 || c0 == 1 && c.charAt(1) > 1) {
+      // max n is 6 (gives 0.7 - 1.3)
+      while (c0 < 7 && c0 != 1 || c0 == 1 && c.charAt(1) > 3) {
+        x = x.times(y);
+        c = digitsToString(x.d);
+        c0 = c.charAt(0);
+        n++;
+      }
+
+      e = x.e;
+
+      if (c0 > 1) {
+        x = new Ctor('0.' + c);
+        e++;
+      } else {
+        x = new Ctor(c0 + '.' + c.slice(1));
+      }
+    } else {
+
+      // The argument reduction method above may result in overflow if the argument y is a massive
+      // number with exponent >= 1500000000000000 (9e15 / 6 = 1.5e15), so instead recall this
+      // function using ln(x*10^e) = ln(x) + e*ln(10).
+      t = getLn10(Ctor, wpr + 2, pr).times(e + '');
+      x = naturalLogarithm(new Ctor(c0 + '.' + c.slice(1)), wpr - guard).plus(t);
+      Ctor.precision = pr;
+
+      return sd == null ? finalise(x, pr, rm, external = true) : x;
+    }
+
+    // x1 is x reduced to a value near 1.
+    x1 = x;
+
+    // Taylor series.
+    // ln(y) = ln((1 + x)/(1 - x)) = 2(x + x^3/3 + x^5/5 + x^7/7 + ...)
+    // where x = (y - 1)/(y + 1)    (|x| < 1)
+    sum = numerator = x = divide(x.minus(ONE), x.plus(ONE), wpr, 1);
+    x2 = finalise(x.times(x), wpr, 1);
+    denominator = 3;
+
+    for (;;) {
+      numerator = finalise(numerator.times(x2), wpr, 1);
+      t = sum.plus(divide(numerator, new Ctor(denominator), wpr, 1));
+
+      if (digitsToString(t.d).slice(0, wpr) === digitsToString(sum.d).slice(0, wpr)) {
+        sum = sum.times(2);
+
+        // Reverse the argument reduction. Check that e is not 0 because, besides preventing an
+        // unnecessary calculation, -0 + 0 = +0 and to ensure correct rounding -0 needs to stay -0.
+        if (e !== 0) sum = sum.plus(getLn10(Ctor, wpr + 2, pr).times(e + ''));
+        sum = divide(sum, new Ctor(n), wpr, 1);
+
+        // Is rm > 3 and the first 4 rounding digits 4999, or rm < 4 (or the summation has
+        // been repeated previously) and the first 4 rounding digits 9999?
+        // If so, restart the summation with a higher precision, otherwise
+        // e.g. with precision: 12, rounding: 1
+        // ln(135520028.6126091714265381533) = 18.7246299999 when it should be 18.72463.
+        // `wpr - guard` is the index of first rounding digit.
+        if (sd == null) {
+          if (checkRoundingDigits(sum.d, wpr - guard, rm, rep)) {
+            Ctor.precision = wpr += guard;
+            t = numerator = x = divide(x1.minus(ONE), x1.plus(ONE), wpr, 1);
+            x2 = finalise(x.times(x), wpr, 1);
+            denominator = rep = 1;
+          } else {
+            return finalise(sum, Ctor.precision = pr, rm, external = true);
+          }
+        } else {
+          Ctor.precision = pr;
+          return sum;
+        }
+      }
+
+      sum = t;
+      denominator += 2;
+    }
+  }
+
+
+  // ±Infinity, NaN.
+  function nonFiniteToString(x) {
+    // Unsigned.
+    return String(x.s * x.s / 0);
+  }
+
+
+  /*
+   * Parse the value of a new Decimal `x` from string `str`.
+   */
+  function parseDecimal(x, str) {
+    var e, i, len;
+
+    // Decimal point?
+    if ((e = str.indexOf('.')) > -1) str = str.replace('.', '');
+
+    // Exponential form?
+    if ((i = str.search(/e/i)) > 0) {
+
+      // Determine exponent.
+      if (e < 0) e = i;
+      e += +str.slice(i + 1);
+      str = str.substring(0, i);
+    } else if (e < 0) {
+
+      // Integer.
+      e = str.length;
+    }
+
+    // Determine leading zeros.
+    for (i = 0; str.charCodeAt(i) === 48; i++);
+
+    // Determine trailing zeros.
+    for (len = str.length; str.charCodeAt(len - 1) === 48; --len);
+    str = str.slice(i, len);
+
+    if (str) {
+      len -= i;
+      x.e = e = e - i - 1;
+      x.d = [];
+
+      // Transform base
+
+      // e is the base 10 exponent.
+      // i is where to slice str to get the first word of the digits array.
+      i = (e + 1) % LOG_BASE;
+      if (e < 0) i += LOG_BASE;
+
+      if (i < len) {
+        if (i) x.d.push(+str.slice(0, i));
+        for (len -= LOG_BASE; i < len;) x.d.push(+str.slice(i, i += LOG_BASE));
+        str = str.slice(i);
+        i = LOG_BASE - str.length;
+      } else {
+        i -= len;
+      }
+
+      for (; i--;) str += '0';
+      x.d.push(+str);
+
+      if (external) {
+
+        // Overflow?
+        if (x.e > x.constructor.maxE) {
+
+          // Infinity.
+          x.d = null;
+          x.e = NaN;
+
+        // Underflow?
+        } else if (x.e < x.constructor.minE) {
+
+          // Zero.
+          x.e = 0;
+          x.d = [0];
+          // x.constructor.underflow = true;
+        } // else x.constructor.underflow = false;
+      }
+    } else {
+
+      // Zero.
+      x.e = 0;
+      x.d = [0];
+    }
+
+    return x;
+  }
+
+
+  /*
+   * Parse the value of a new Decimal `x` from a string `str`, which is not a decimal value.
+   */
+  function parseOther(x, str) {
+    var base, Ctor, divisor, i, isFloat, len, p, xd, xe;
+
+    if (str === 'Infinity' || str === 'NaN') {
+      if (!+str) x.s = NaN;
+      x.e = NaN;
+      x.d = null;
+      return x;
+    }
+
+    if (isHex.test(str))  {
+      base = 16;
+      str = str.toLowerCase();
+    } else if (isBinary.test(str))  {
+      base = 2;
+    } else if (isOctal.test(str))  {
+      base = 8;
+    } else {
+      throw Error(invalidArgument + str);
+    }
+
+    // Is there a binary exponent part?
+    i = str.search(/p/i);
+
+    if (i > 0) {
+      p = +str.slice(i + 1);
+      str = str.substring(2, i);
+    } else {
+      str = str.slice(2);
+    }
+
+    // Convert `str` as an integer then divide the result by `base` raised to a power such that the
+    // fraction part will be restored.
+    i = str.indexOf('.');
+    isFloat = i >= 0;
+    Ctor = x.constructor;
+
+    if (isFloat) {
+      str = str.replace('.', '');
+      len = str.length;
+      i = len - i;
+
+      // log[10](16) = 1.2041... , log[10](88) = 1.9444....
+      divisor = intPow(Ctor, new Ctor(base), i, i * 2);
+    }
+
+    xd = convertBase(str, base, BASE);
+    xe = xd.length - 1;
+
+    // Remove trailing zeros.
+    for (i = xe; xd[i] === 0; --i) xd.pop();
+    if (i < 0) return new Ctor(x.s * 0);
+    x.e = getBase10Exponent(xd, xe);
+    x.d = xd;
+    external = false;
+
+    // At what precision to perform the division to ensure exact conversion?
+    // maxDecimalIntegerPartDigitCount = ceil(log[10](b) * otherBaseIntegerPartDigitCount)
+    // log[10](2) = 0.30103, log[10](8) = 0.90309, log[10](16) = 1.20412
+    // E.g. ceil(1.2 * 3) = 4, so up to 4 decimal digits are needed to represent 3 hex int digits.
+    // maxDecimalFractionPartDigitCount = {Hex:4|Oct:3|Bin:1} * otherBaseFractionPartDigitCount
+    // Therefore using 4 * the number of digits of str will always be enough.
+    if (isFloat) x = divide(x, divisor, len * 4);
+
+    // Multiply by the binary exponent part if present.
+    if (p) x = x.times(Math.abs(p) < 54 ? Math.pow(2, p) : Decimal.pow(2, p));
+    external = true;
+
+    return x;
+  }
+
+
+  /*
+   * sin(x) = x - x^3/3! + x^5/5! - ...
+   * |x| < pi/2
+   *
+   */
+  function sine(Ctor, x) {
+    var k,
+      len = x.d.length;
+
+    if (len < 3) return taylorSeries(Ctor, 2, x, x);
+
+    // Argument reduction: sin(5x) = 16*sin^5(x) - 20*sin^3(x) + 5*sin(x)
+    // i.e. sin(x) = 16*sin^5(x/5) - 20*sin^3(x/5) + 5*sin(x/5)
+    // and  sin(x) = sin(x/5)(5 + sin^2(x/5)(16sin^2(x/5) - 20))
+
+    // Estimate the optimum number of times to use the argument reduction.
+    k = 1.4 * Math.sqrt(len);
+    k = k > 16 ? 16 : k | 0;
+
+    // Max k before Math.pow precision loss is 22
+    x = x.times(Math.pow(5, -k));
+    x = taylorSeries(Ctor, 2, x, x);
+
+    // Reverse argument reduction
+    var sin2_x,
+      d5 = new Ctor(5),
+      d16 = new Ctor(16),
+      d20 = new Ctor(20);
+    for (; k--;) {
+      sin2_x = x.times(x);
+      x = x.times(d5.plus(sin2_x.times(d16.times(sin2_x).minus(d20))));
+    }
+
+    return x;
+  }
+
+
+  // Calculate Taylor series for `cos`, `cosh`, `sin` and `sinh`.
+  function taylorSeries(Ctor, n, x, y, isHyperbolic) {
+    var j, t, u, x2,
+      i = 1,
+      pr = Ctor.precision,
+      k = Math.ceil(pr / LOG_BASE);
+
+    external = false;
+    x2 = x.times(x);
+    u = new Ctor(y);
+
+    for (;;) {
+      t = divide(u.times(x2), new Ctor(n++ * n++), pr, 1);
+      u = isHyperbolic ? y.plus(t) : y.minus(t);
+      y = divide(t.times(x2), new Ctor(n++ * n++), pr, 1);
+      t = u.plus(y);
+
+      if (t.d[k] !== void 0) {
+        for (j = k; t.d[j] === u.d[j] && j--;);
+        if (j == -1) break;
+      }
+
+      j = u;
+      u = y;
+      y = t;
+      t = j;
+      i++;
+    }
+
+    external = true;
+    t.d.length = k + 1;
+
+    return t;
+  }
+
+
+  // Return the absolute value of `x` reduced to less than or equal to half pi.
+  function toLessThanHalfPi(Ctor, x) {
+    var t,
+      isNeg = x.s < 0,
+      pi = getPi(Ctor, Ctor.precision, 1),
+      halfPi = pi.times(HALF);
+
+    x = x.abs();
+
+    if (x.lte(halfPi)) {
+      quadrant = isNeg ? 4 : 1;
+      return x;
+    }
+
+    t = x.divToInt(pi);
+
+    if (t.isZero()) {
+      quadrant = isNeg ? 3 : 2;
+    } else {
+      x = x.minus(t.times(pi));
+
+      // 0 <= x < pi
+      if (x.lte(halfPi)) {
+        quadrant = isOdd(t) ? (isNeg ? 2 : 3) : (isNeg ? 4 : 1);
+        return x;
+      }
+
+      quadrant = isOdd(t) ? (isNeg ? 1 : 4) : (isNeg ? 3 : 2);
+    }
+
+    return x.minus(pi).abs();
+  }
+
+
+  /*
+   * Return the value of Decimal `x` as a string in base `baseOut`.
+   *
+   * If the optional `sd` argument is present include a binary exponent suffix.
+   */
+  function toStringBinary(x, baseOut, sd, rm) {
+    var base, e, i, k, len, roundUp, str, xd, y,
+      Ctor = x.constructor,
+      isExp = sd !== void 0;
+
+    if (isExp) {
+      checkInt32(sd, 1, MAX_DIGITS);
+      if (rm === void 0) rm = Ctor.rounding;
+      else checkInt32(rm, 0, 8);
+    } else {
+      sd = Ctor.precision;
+      rm = Ctor.rounding;
+    }
+
+    if (!x.isFinite()) {
+      str = nonFiniteToString(x);
+    } else {
+      str = finiteToString(x);
+      i = str.indexOf('.');
+
+      // Use exponential notation according to `toExpPos` and `toExpNeg`? No, but if required:
+      // maxBinaryExponent = floor((decimalExponent + 1) * log[2](10))
+      // minBinaryExponent = floor(decimalExponent * log[2](10))
+      // log[2](10) = 3.321928094887362347870319429489390175864
+
+      if (isExp) {
+        base = 2;
+        if (baseOut == 16) {
+          sd = sd * 4 - 3;
+        } else if (baseOut == 8) {
+          sd = sd * 3 - 2;
+        }
+      } else {
+        base = baseOut;
+      }
+
+      // Convert the number as an integer then divide the result by its base raised to a power such
+      // that the fraction part will be restored.
+
+      // Non-integer.
+      if (i >= 0) {
+        str = str.replace('.', '');
+        y = new Ctor(ONE);
+        y.e = str.length - i;
+        y.d = convertBase(finiteToString(y), 10, base);
+        y.e = y.d.length;
+      }
+
+      xd = convertBase(str, 10, base);
+      e = len = xd.length;
+
+      // Remove trailing zeros.
+      for (; xd[--len] == 0;) xd.pop();
+
+      if (!xd[0]) {
+        str = isExp ? '0p+0' : '0';
+      } else {
+        if (i < 0) {
+          e--;
+        } else {
+          x = new Ctor(x);
+          x.d = xd;
+          x.e = e;
+          x = divide(x, y, sd, rm, 0, base);
+          xd = x.d;
+          e = x.e;
+          roundUp = inexact;
+        }
+
+        // The rounding digit, i.e. the digit after the digit that may be rounded up.
+        i = xd[sd];
+        k = base / 2;
+        roundUp = roundUp || xd[sd + 1] !== void 0;
+
+        roundUp = rm < 4
+          ? (i !== void 0 || roundUp) && (rm === 0 || rm === (x.s < 0 ? 3 : 2))
+          : i > k || i === k && (rm === 4 || roundUp || rm === 6 && xd[sd - 1] & 1 ||
+            rm === (x.s < 0 ? 8 : 7));
+
+        xd.length = sd;
+
+        if (roundUp) {
+
+          // Rounding up may mean the previous digit has to be rounded up and so on.
+          for (; ++xd[--sd] > base - 1;) {
+            xd[sd] = 0;
+            if (!sd) {
+              ++e;
+              xd.unshift(1);
+            }
+          }
+        }
+
+        // Determine trailing zeros.
+        for (len = xd.length; !xd[len - 1]; --len);
+
+        // E.g. [4, 11, 15] becomes 4bf.
+        for (i = 0, str = ''; i < len; i++) str += NUMERALS.charAt(xd[i]);
+
+        // Add binary exponent suffix?
+        if (isExp) {
+          if (len > 1) {
+            if (baseOut == 16 || baseOut == 8) {
+              i = baseOut == 16 ? 4 : 3;
+              for (--len; len % i; len++) str += '0';
+              xd = convertBase(str, base, baseOut);
+              for (len = xd.length; !xd[len - 1]; --len);
+
+              // xd[0] will always be be 1
+              for (i = 1, str = '1.'; i < len; i++) str += NUMERALS.charAt(xd[i]);
+            } else {
+              str = str.charAt(0) + '.' + str.slice(1);
+            }
+          }
+
+          str =  str + (e < 0 ? 'p' : 'p+') + e;
+        } else if (e < 0) {
+          for (; ++e;) str = '0' + str;
+          str = '0.' + str;
+        } else {
+          if (++e > len) for (e -= len; e-- ;) str += '0';
+          else if (e < len) str = str.slice(0, e) + '.' + str.slice(e);
+        }
+      }
+
+      str = (baseOut == 16 ? '0x' : baseOut == 2 ? '0b' : baseOut == 8 ? '0o' : '') + str;
+    }
+
+    return x.s < 0 ? '-' + str : str;
+  }
+
+
+  // Does not strip trailing zeros.
+  function truncate(arr, len) {
+    if (arr.length > len) {
+      arr.length = len;
+      return true;
+    }
+  }
+
+
+  // Decimal methods
+
+
+  /*
+   *  abs
+   *  acos
+   *  acosh
+   *  add
+   *  asin
+   *  asinh
+   *  atan
+   *  atanh
+   *  atan2
+   *  cbrt
+   *  ceil
+   *  clone
+   *  config
+   *  cos
+   *  cosh
+   *  div
+   *  exp
+   *  floor
+   *  fromJSON
+   *  hypot
+   *  ln
+   *  log
+   *  log2
+   *  log10
+   *  max
+   *  min
+   *  mod
+   *  mul
+   *  pow
+   *  random
+   *  round
+   *  sign
+   *  sin
+   *  sinh
+   *  sqrt
+   *  sub
+   *  tan
+   *  tanh
+   *  trunc
+   */
+
+
+  /*
+   * Return a new Decimal whose value is the absolute value of `x`.
+   *
+   * x {number|string|Decimal}
+   *
+   */
+  function abs(x) {
+    return new this(x).abs();
+  }
+
+
+  /*
+   * Return a new Decimal whose value is the arccosine in radians of `x`.
+   *
+   * x {number|string|Decimal}
+   *
+   */
+  function acos(x) {
+    return new this(x).acos();
+  }
+
+
+  /*
+   * Return a new Decimal whose value is the inverse of the hyperbolic cosine of `x`, rounded to
+   * `precision` significant digits using rounding mode `rounding`.
+   *
+   * x {number|string|Decimal} A value in radians.
+   *
+   */
+  function acosh(x) {
+    return new this(x).acosh();
+  }
+
+
+  /*
+   * Return a new Decimal whose value is the sum of `x` and `y`, rounded to `precision` significant
+   * digits using rounding mode `rounding`.
+   *
+   * x {number|string|Decimal}
+   * y {number|string|Decimal}
+   *
+   */
+  function add(x, y) {
+    return new this(x).plus(y);
+  }
+
+
+  /*
+   * Return a new Decimal whose value is the arcsine in radians of `x`, rounded to `precision`
+   * significant digits using rounding mode `rounding`.
+   *
+   * x {number|string|Decimal}
+   *
+   */
+  function asin(x) {
+    return new this(x).asin();
+  }
+
+
+  /*
+   * Return a new Decimal whose value is the inverse of the hyperbolic sine of `x`, rounded to
+   * `precision` significant digits using rounding mode `rounding`.
+   *
+   * x {number|string|Decimal} A value in radians.
+   *
+   */
+  function asinh(x) {
+    return new this(x).asinh();
+  }
+
+
+  /*
+   * Return a new Decimal whose value is the arctangent in radians of `x`, rounded to `precision`
+   * significant digits using rounding mode `rounding`.
+   *
+   * x {number|string|Decimal}
+   *
+   */
+  function atan(x) {
+    return new this(x).atan();
+  }
+
+
+  /*
+   * Return a new Decimal whose value is the inverse of the hyperbolic tangent of `x`, rounded to
+   * `precision` significant digits using rounding mode `rounding`.
+   *
+   * x {number|string|Decimal} A value in radians.
+   *
+   */
+  function atanh(x) {
+    return new this(x).atanh();
+  }
+
+
+  /*
+   * Return a new Decimal whose value is the arctangent in radians of `y/x` in the range -pi to pi
+   * (inclusive), rounded to `precision` significant digits using rounding mode `rounding`.
+   *
+   * Domain: [-Infinity, Infinity]
+   * Range: [-pi, pi]
+   *
+   * y {number|string|Decimal} The y-coordinate.
+   * x {number|string|Decimal} The x-coordinate.
+   *
+   * atan2(±0, -0)               = ±pi
+   * atan2(±0, +0)               = ±0
+   * atan2(±0, -x)               = ±pi for x > 0
+   * atan2(±0, x)                = ±0 for x > 0
+   * atan2(-y, ±0)               = -pi/2 for y > 0
+   * atan2(y, ±0)                = pi/2 for y > 0
+   * atan2(±y, -Infinity)        = ±pi for finite y > 0
+   * atan2(±y, +Infinity)        = ±0 for finite y > 0
+   * atan2(±Infinity, x)         = ±pi/2 for finite x
+   * atan2(±Infinity, -Infinity) = ±3*pi/4
+   * atan2(±Infinity, +Infinity) = ±pi/4
+   * atan2(NaN, x) = NaN
+   * atan2(y, NaN) = NaN
+   *
+   */
+  function atan2(y, x) {
+    y = new this(y);
+    x = new this(x);
+    var r,
+      pr = this.precision,
+      rm = this.rounding,
+      wpr = pr + 4;
+
+    // Either NaN
+    if (!y.s || !x.s) {
+      r = new this(NaN);
+
+    // Both ±Infinity
+    } else if (!y.d && !x.d) {
+      r = getPi(this, wpr, 1).times(x.s > 0 ? 0.25 : 0.75);
+      r.s = y.s;
+
+    // x is ±Infinity or y is ±0
+    } else if (!x.d || y.isZero()) {
+      r = x.s < 0 ? getPi(this, pr, rm) : new this(0);
+      r.s = y.s;
+
+    // y is ±Infinity or x is ±0
+    } else if (!y.d || x.isZero()) {
+      r = getPi(this, wpr, 1).times(HALF);
+      r.s = y.s;
+
+    // Both non-zero and finite
+    } else if (x.s < 0) {
+      this.precision = wpr;
+      this.rounding = 1;
+      r = this.atan(divide(y, x, wpr, 1));
+      x = getPi(this, wpr, 1);
+      this.precision = pr;
+      this.rounding = rm;
+      r = y.s < 0 ? r.minus(x) : r.plus(x);
+    } else {
+      r = this.atan(divide(y, x, wpr, 1));
+    }
+
+    return r;
+  }
+
+
+  /*
+   * Return a new Decimal whose value is the cube root of `x`, rounded to `precision` significant
+   * digits using rounding mode `rounding`.
+   *
+   * x {number|string|Decimal}
+   *
+   */
+  function cbrt(x) {
+    return new this(x).cbrt();
+  }
+
+
+  /*
+   * Return a new Decimal whose value is `x` rounded to an integer using `ROUND_CEIL`.
+   *
+   * x {number|string|Decimal}
+   *
+   */
+  function ceil(x) {
+    return finalise(x = new this(x), x.e + 1, 2);
+  }
+
+
+  /*
+   * Configure global settings for a Decimal constructor.
+   *
+   * `obj` is an object with one or more of the following properties,
+   *
+   *   precision  {number}
+   *   rounding   {number}
+   *   toExpNeg   {number}
+   *   toExpPos   {number}
+   *   maxE       {number}
+   *   minE       {number}
+   *   modulo     {number}
+   *   crypto     {boolean|number|undefined}
+   *
+   * E.g. Decimal.config({ precision: 20, rounding: 4 })
+   *
+   */
+  function config(obj) {
+    if (!obj || typeof obj !== 'object') throw Error(decimalError + 'Object expected');
+    var i, p, v,
+      ps = [
+        'precision', 1, MAX_DIGITS,
+        'rounding', 0, 8,
+        'toExpNeg', -EXP_LIMIT, 0,
+        'toExpPos', 0, EXP_LIMIT,
+        'maxE', 0, EXP_LIMIT,
+        'minE', -EXP_LIMIT, 0,
+        'modulo', 0, 9
+      ];
+
+    for (i = 0; i < ps.length; i += 3) {
+      if ((v = obj[p = ps[i]]) !== void 0) {
+        if (mathfloor(v) === v && v >= ps[i + 1] && v <= ps[i + 2]) this[p] = v;
+        else throw Error(invalidArgument + p + ': ' + v);
+      }
+    }
+
+    if (obj.hasOwnProperty(p = 'crypto')) {
+      if ((v = obj[p]) === void 0) {
+        this[p] = v;
+      } else if (v === true || v === false || v === 0 || v === 1) {
+        this[p] = !!(v && cryptoObject &&
+            (cryptoObject.getRandomValues || cryptoObject.randomBytes));
+      } else {
+        throw Error(invalidArgument + p + ': ' + v);
+      }
+    }
+
+    return this;
+  }
+
+
+  /*
+   * Return a new Decimal whose value is the cosine of `x`, rounded to `precision` significant
+   * digits using rounding mode `rounding`.
+   *
+   * x {number|string|Decimal} A value in radians.
+   *
+   */
+  function cos(x) {
+    return new this(x).cos();
+  }
+
+
+  /*
+   * Return a new Decimal whose value is the hyperbolic cosine of `x`, rounded to precision
+   * significant digits using rounding mode `rounding`.
+   *
+   * x {number|string|Decimal} A value in radians.
+   *
+   */
+  function cosh(x) {
+    return new this(x).cosh();
+  }
+
+
+  /*
+   * Create and return a Decimal constructor with the same configuration properties as this Decimal
+   * constructor.
+   *
+   */
+  function clone(obj) {
+
+    /*
+     * The Decimal constructor and exported function.
+     * Return a new Decimal instance.
+     *
+     * v {number|string|Decimal} A numeric value.
+     *
+     */
+    function Decimal(v) {
+      var e, i, t,
+        x = this;
+
+      // Decimal called without new.
+      if (!(x instanceof Decimal)) return new Decimal(v);
+
+      // Retain a reference to this Decimal constructor, and shadow Decimal.prototype.constructor
+      // which points to Object.
+      x.constructor = Decimal;
+
+      // Duplicate.
+      if (v instanceof Decimal) {
+        x.s = v.s;
+        x.e = v.e;
+        x.d = (v = v.d) ? v.slice() : v;
+        return;
+      }
+
+      t = typeof v;
+
+      if (t === 'number') {
+        if (v === 0) {
+          x.s = 1 / v < 0 ? -1 : 1;
+          x.e = 0;
+          x.d = [0];
+          return;
+        }
+
+        if (v < 0) {
+          v = -v;
+          x.s = -1;
+        } else {
+          x.s = 1;
+        }
+
+        // Fast path for small integers.
+        if (v === ~~v && v < 1e7) {
+          for (e = 0, i = v; i >= 10; i /= 10) e++;
+          x.e = e;
+          x.d = [v];
+          return;
+
+        // Infinity, NaN.
+        } else if (v * 0 !== 0) {
+          if (!v) x.s = NaN;
+          x.e = NaN;
+          x.d = null;
+          return;
+        }
+
+        return parseDecimal(x, v.toString());
+
+      } else if (t !== 'string') {
+        throw Error(invalidArgument + v);
+      }
+
+      // Minus sign?
+      if (v.charCodeAt(0) === 45) {
+        v = v.slice(1);
+        x.s = -1;
+      } else {
+        x.s = 1;
+      }
+
+      return isDecimal.test(v) ? parseDecimal(x, v) : parseOther(x, v);
+    }
+
+    Decimal.prototype = P;
+
+    Decimal.ROUND_UP = 0;
+    Decimal.ROUND_DOWN = 1;
+    Decimal.ROUND_CEIL = 2;
+    Decimal.ROUND_FLOOR = 3;
+    Decimal.ROUND_HALF_UP = 4;
+    Decimal.ROUND_HALF_DOWN = 5;
+    Decimal.ROUND_HALF_EVEN = 6;
+    Decimal.ROUND_HALF_CEIL = 7;
+    Decimal.ROUND_HALF_FLOOR = 8;
+    Decimal.EUCLID = 9;
+
+    Decimal.config = config;
+    Decimal.clone = clone;
+
+    Decimal.abs = abs;
+    Decimal.acos = acos;
+    Decimal.acosh = acosh;        // ES6
+    Decimal.add = add;
+    Decimal.asin = asin;
+    Decimal.asinh = asinh;        // ES6
+    Decimal.atan = atan;
+    Decimal.atanh = atanh;        // ES6
+    Decimal.atan2 = atan2;
+    Decimal.cbrt = cbrt;          // ES6
+    Decimal.ceil = ceil;
+    Decimal.cos = cos;
+    Decimal.cosh = cosh;          // ES6
+    Decimal.div = div;
+    Decimal.exp = exp;
+    Decimal.floor = floor;
+    Decimal.fromJSON = fromJSON;
+    Decimal.hypot = hypot;        // ES6
+    Decimal.ln = ln;
+    Decimal.log = log;
+    Decimal.log10 = log10;        // ES6
+    Decimal.log2 = log2;          // ES6
+    Decimal.max = max;
+    Decimal.min = min;
+    Decimal.mod = mod;
+    Decimal.mul = mul;
+    Decimal.pow = pow;
+    Decimal.random = random;
+    Decimal.round = round;
+    Decimal.sign = sign;          // ES6
+    Decimal.sin = sin;
+    Decimal.sinh = sinh;          // ES6
+    Decimal.sqrt = sqrt;
+    Decimal.sub = sub;
+    Decimal.tan = tan;
+    Decimal.tanh = tanh;          // ES6
+    Decimal.trunc = trunc;        // ES6
+
+    if (obj === void 0) {
+      obj = this;
+      obj = {
+        precision: obj.precision,
+        rounding: obj.rounding,
+        modulo: obj.modulo,
+        toExpNeg: obj.toExpNeg,
+        toExpPos: obj.toExpPos,
+        minE: obj.minE,
+        maxE: obj.maxE,
+        crypto: obj.crypto
+      };
+    }
+
+    Decimal.config(obj);
+
+    return Decimal;
+  }
+
+
+  /*
+   * Return a new Decimal whose value is `x` divided by `y`, rounded to `precision` significant
+   * digits using rounding mode `rounding`.
+   *
+   * x {number|string|Decimal}
+   * y {number|string|Decimal}
+   *
+   */
+  function div(x, y) {
+    return new this(x).div(y);
+  }
+
+
+  /*
+   * Return a new Decimal whose value is the natural exponential of `x`, rounded to `precision`
+   * significant digits using rounding mode `rounding`.
+   *
+   * x {number|string|Decimal} The power to which to raise the base of the natural log.
+   *
+   */
+  function exp(x) {
+    return new this(x).exp();
+  }
+
+
+  /*
+   * Return a new Decimal whose value is `x` round to an integer using `ROUND_FLOOR`.
+   *
+   * x {number|string|Decimal}
+   *
+   */
+  function floor(x) {
+    return finalise(x = new this(x), x.e + 1, 3);
+  }
+
+
+  /*
+   * Return a new Decimal from `str`, a string value created by `toJSON`.
+   *
+   * Base 88 alphabet:
+   * 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%()*+,-./:;=?@[]^_`{|}~
+   *
+   * If `str` is just one character:
+   * 0-81  [[0, 40][-0, -40]]
+   * 82    -Infinity
+   * 83    +Infinity
+   * 84    NaN
+   *
+   *   64 32 16  8  4  2  1
+   *    1  0  1  0  1  1  1 = 87
+   *
+   */
+  function fromJSON(str) {
+    var e, isNeg, k, n;
+
+    if (typeof str !== 'string' || !str) throw Error(invalidArgument + str);
+    k = str.length;
+    n = NUMERALS.indexOf(str.charAt(0));
+
+    //  [0, 81] -> [[0, 40][-0, -40]]
+    if (k === 1) {
+      return new this(n > 81 ? [-1 / 0, 1 / 0, 0 / 0][n - 82] : n > 40 ? -(n - 41) : n);
+    } else if (n & 64) {
+      isNeg = n & 16;
+
+      // e = isNeg ? [-3, 4] : [-7, 8]
+      e = isNeg ? (n & 7) - 3 : (n & 15) - 7;
+      k = 1;
+    } else if (k === 2) {
+      n = n * 88 + NUMERALS.indexOf(str.charAt(1));
+
+      // [0, 5631] -> [[0, 2815][-0, -2815]] -> [[41, 2856][-41, -2856]]
+      return new this(n >= 2816 ? -(n - 2816) - 41 : n + 41);
+    } else {
+
+      // 0XXXXXX
+      // 0 {is negative} {is exponent negative} {exponent digit count [0, 15]}
+      isNeg = n & 32;
+
+      // Has an exponent been specified?
+      if (n & 31) {
+        e = n & 15;    // Exponent character count [1, 15]
+        k = e + 1;     // Index of first character of the significand.
+
+        if (e === 1)  {
+          e = NUMERALS.indexOf(str.charAt(1));
+        } else if (e === 2) {
+          e = NUMERALS.indexOf(str.charAt(1)) * 88 +
+            NUMERALS.indexOf(str.charAt(2));
+        } else {
+          e = +convertBase(str.slice(1, k), 88, 10).join('');
+        }
+
+        // Negative exponent?
+        if (n & 16) e = -e;
+      } else {
+
+        // Integer without trailing zeros.
+        // 0X00000
+        // 0 {is negative} 0 0 0 0 0
+        str = convertBase(str.slice(1), 88, 10).join('');
+        return new this(isNeg ? '-' + str : str);
+      }
+    }
+
+    str = convertBase(str.slice(k), 88, 10).join('');
+    e = e - str.length + 1;
+    str = str + 'e' + e;
+
+    return new this(isNeg ? '-' + str : str);
+  }
+
+
+  /*
+   * Return a new Decimal whose value is the square root of the sum of the squares of the arguments,
+   * rounded to `precision` significant digits using rounding mode `rounding`.
+   *
+   * hypot(a, b, ...) = sqrt(a^2 + b^2 + ...)
+   *
+   */
+  function hypot() {
+    var i, n,
+      t = new this(0);
+
+    external = false;
+
+    for (i = 0; i < arguments.length;) {
+      n = new this(arguments[i++]);
+      if (!n.d) {
+        if (n.s) {
+          external = true;
+          return new this(1 / 0);
+        }
+        t = n;
+      } else if (t.d) {
+        t = t.plus(n.times(n));
+      }
+    }
+
+    external = true;
+
+    return t.sqrt();
+  }
+
+
+  /*
+   * Return a new Decimal whose value is the natural logarithm of `x`, rounded to `precision`
+   * significant digits using rounding mode `rounding`.
+   *
+   * x {number|string|Decimal}
+   *
+   */
+  function ln(x) {
+    return new this(x).ln();
+  }
+
+
+  /*
+   * Return a new Decimal whose value is the log of `x` to the base `y`, or to base 10 if no base
+   * is specified, rounded to `precision` significant digits using rounding mode `rounding`.
+   *
+   * log[y](x)
+   *
+   * x {number|string|Decimal} The argument of the logarithm.
+   * y {number|string|Decimal} The base of the logarithm.
+   *
+   */
+  function log(x, y) {
+    return new this(x).log(y);
+  }
+
+
+  /*
+   * Return a new Decimal whose value is the base 2 logarithm of `x`, rounded to `precision`
+   * significant digits using rounding mode `rounding`.
+   *
+   * x {number|string|Decimal}
+   *
+   */
+  function log2(x) {
+    return new this(x).log(2);
+  }
+
+
+  /*
+   * Return a new Decimal whose value is the base 10 logarithm of `x`, rounded to `precision`
+   * significant digits using rounding mode `rounding`.
+   *
+   * x {number|string|Decimal}
+   *
+   */
+  function log10(x) {
+    return new this(x).log(10);
+  }
+
+
+  /*
+   * Return a new Decimal whose value is the maximum of the arguments.
+   *
+   * arguments {number|string|Decimal}
+   *
+   */
+  function max() {
+    return maxOrMin(this, arguments, 'lt');
+  }
+
+
+  /*
+   * Return a new Decimal whose value is the minimum of the arguments.
+   *
+   * arguments {number|string|Decimal}
+   *
+   */
+  function min() {
+    return maxOrMin(this, arguments, 'gt');
+  }
+
+
+  /*
+   * Return a new Decimal whose value is `x` modulo `y`, rounded to `precision` significant digits
+   * using rounding mode `rounding`.
+   *
+   * x {number|string|Decimal}
+   * y {number|string|Decimal}
+   *
+   */
+  function mod(x, y) {
+    return new this(x).mod(y);
+  }
+
+
+  /*
+   * Return a new Decimal whose value is `x` multiplied by `y`, rounded to `precision` significant
+   * digits using rounding mode `rounding`.
+   *
+   * x {number|string|Decimal}
+   * y {number|string|Decimal}
+   *
+   */
+  function mul(x, y) {
+    return new this(x).mul(y);
+  }
+
+
+  /*
+   * Return a new Decimal whose value is `x` raised to the power `y`, rounded to precision
+   * significant digits using rounding mode `rounding`.
+   *
+   * x {number|string|Decimal} The base.
+   * y {number|string|Decimal} The exponent.
+   *
+   */
+  function pow(x, y) {
+    return new this(x).pow(y);
+  }
+
+
+  /*
+   * Returns a new Decimal with a random value equal to or greater than 0 and less than 1, and with
+   * `sd`, or `Decimal.precision` if `sd` is omitted, significant digits (or less if trailing zeros
+   * are produced).
+   *
+   * [sd] {number} Significant digits. Integer, 0 to MAX_DIGITS inclusive.
+   *
+   */
+  function random(sd) {
+    var a, k, v,
+      i = 0,
+      r = new this(ONE),
+      rd = [];
+
+    if (sd === void 0) sd = this.precision;
+    else checkInt32(sd, 1, MAX_DIGITS);
+
+    k = Math.ceil(sd / LOG_BASE);
+
+    if (this.crypto === false) {
+
+      // Use Math.random
+      for (; i < k;) rd[i++] = Math.random() * 1e7 | 0;
+
+    // Browsers supporting crypto.getRandomValues.
+    } else if (cryptoObject && cryptoObject.getRandomValues) {
+      a = cryptoObject.getRandomValues(new Uint32Array(k));
+
+      for (; i < k;) {
+        v = a[i];
+
+        // 0 <= v < 4294967296
+        // Probability v >= 4.29e9, is 4967296 / 4294967296 = 0.00116 (1 in 865).
+        if (v >= 4.29e9) {
+
+          a[i] = cryptoObject.getRandomValues(new Uint32Array(1))[0];
+        } else {
+
+          // 0 <= v <= 4289999999
+          // 0 <= (v % 1e7) <= 9999999
+          rd[i++] = v % 1e7;
+        }
+      }
+
+    // Node.js supporting crypto.randomBytes.
+    } else if (cryptoObject && cryptoObject.randomBytes) {
+
+      // buffer
+      a = cryptoObject.randomBytes(k *= 4);
+
+      for (; i < k;) {
+
+        // 0 <= v < 2147483648
+        v = a[i] + (a[i + 1] << 8) + (a[i + 2] << 16) +
+          ((a[i + 3] & 0x7f) << 24);
+
+        // Probability v >= 2.14e9, is 7483648 / 2147483648 = 0.0035 (1 in 286).
+        if (v >= 2.14e9) {
+          cryptoObject.randomBytes(4).copy(a, i);
+        } else {
+
+          // 0 <= v <= 2139999999
+          // 0 <= (v % 1e7) <= 9999999
+          rd.push(v % 1e7);
+          i += 4;
+        }
+      }
+
+      i = k / 4;
+    } else if (this.crypto) {
+      throw Error(decimalError + 'crypto unavailable');
+    } else {
+      for (; i < k;) rd[i++] = Math.random() * 1e7 | 0;
+    }
+
+    k = rd[--i];
+    sd %= LOG_BASE;
+
+    // Convert trailing digits to zeros according to sd.
+    if (k && sd) {
+      v = mathpow(10, LOG_BASE - sd);
+      rd[i] = (k / v | 0) * v;
+    }
+
+    // Remove trailing words which are zero.
+    for (; rd[i] === 0; i--) rd.pop();
+
+    // Zero?
+    if (i < 0) {
+      rd = [k = 0];
+    } else {
+      k = -1;
+
+      // Remove leading words which are zero and adjust exponent accordingly.
+      for (; rd[0] === 0;) {
+        rd.shift();
+        k -= LOG_BASE;
+      }
+
+      // Count the digits of the first word of rd to determine leading zeros.
+      for (i = 1, v = rd[0]; v >= 10; v /= 10) i++;
+
+      // Adjust the exponent for leading zeros of the first word of rd.
+      if (i < LOG_BASE) k -= LOG_BASE - i;
+    }
+
+    r.e = k;
+    r.d = rd;
+
+    return r;
+  }
+
+
+  /*
+   * Return a new Decimal whose value is `x` rounded to an integer using rounding mode `rounding`.
+   *
+   * To emulate `Math.round`, set rounding to 7 (ROUND_HALF_CEIL).
+   *
+   * x {number|string|Decimal}
+   *
+   */
+  function round(x) {
+    return finalise(x = new this(x), x.e + 1, this.rounding);
+  }
+
+
+  /*
+   * Return
+   *   1    if x > 0,
+   *  -1    if x < 0,
+   *   0    if x is 0,
+   *  -0    if x is -0,
+   *   NaN  otherwise
+   *
+   */
+  function sign(x) {
+    x = new this(x);
+    return x.d ? (x.d[0] ? x.s : 0 * x.s) : x.s || NaN;
+  }
+
+
+  /*
+   * Return a new Decimal whose value is the sine of `x`, rounded to `precision` significant digits
+   * using rounding mode `rounding`.
+   *
+   * x {number|string|Decimal} A value in radians.
+   *
+   */
+  function sin(x) {
+    return new this(x).sin();
+  }
+
+
+  /*
+   * Return a new Decimal whose value is the hyperbolic sine of `x`, rounded to `precision`
+   * significant digits using rounding mode `rounding`.
+   *
+   * x {number|string|Decimal} A value in radians.
+   *
+   */
+  function sinh(x) {
+    return new this(x).sinh();
+  }
+
+
+  /*
+   * Return a new Decimal whose value is the square root of `x`, rounded to `precision` significant
+   * digits using rounding mode `rounding`.
+   *
+   * x {number|string|Decimal}
+   *
+   */
+  function sqrt(x) {
+    return new this(x).sqrt();
+  }
+
+
+  /*
+   * Return a new Decimal whose value is `x` minus `y`, rounded to `precision` significant digits
+   * using rounding mode `rounding`.
+   *
+   * x {number|string|Decimal}
+   * y {number|string|Decimal}
+   *
+   */
+  function sub(x, y) {
+    return new this(x).sub(y);
+  }
+
+
+  /*
+   * Return a new Decimal whose value is the tangent of `x`, rounded to `precision` significant
+   * digits using rounding mode `rounding`.
+   *
+   * x {number|string|Decimal} A value in radians.
+   *
+   */
+  function tan(x) {
+    return new this(x).tan();
+  }
+
+
+  /*
+   * Return a new Decimal whose value is the hyperbolic tangent of `x`, rounded to `precision`
+   * significant digits using rounding mode `rounding`.
+   *
+   * x {number|string|Decimal} A value in radians.
+   *
+   */
+  function tanh(x) {
+    return new this(x).tanh();
+  }
+
+
+  /*
+   * Return a new Decimal whose value is `x` truncated to an integer.
+   *
+   * x {number|string|Decimal}
+   *
+   */
+  function trunc(x) {
+    return finalise(x = new this(x), x.e + 1, 1);
+  }
+
+
+  // Create and configure initial Decimal constructor.
+  Decimal = clone(Decimal);
+
+  // Internal constants.
+  HALF = new Decimal(0.5);
+  ONE = new Decimal(1);
+  LN10 = new Decimal(LN10);
+  PI = new Decimal(PI);
+
+
+  // Export.
+
+
+  // AMD.
+  if (typeof define == 'function' && define.amd) {
+    define(function () {
+      return Decimal;
+    });
+
+  // Node and other environments that support module.exports.
+  } else if (typeof module != 'undefined' && module.exports) {
+    module.exports = Decimal;
+
+    if (!cryptoObject) {
+      try {
+        cryptoObject = require('cry' + 'pto');
+      } catch (e) {
+        // Ignore.
+      }
+    }
+
+  // Browser.
+  } else {
+    if (!globalScope) {
+      globalScope = typeof self != 'undefined' && self && self.self == self
+        ? self : Function('return this')();
+    }
+
+    noConflict = globalScope.Decimal;
+    Decimal.noConflict = function () {
+      globalScope.Decimal = noConflict;
+      return Decimal;
+    };
+
+    globalScope.Decimal = Decimal;
+  }
+})(this);
+
+},{}],270:[function(require,module,exports){
 (function (process,global,Buffer){
 const ethUtil = require('ethereumjs-util')
 const fees = require('ethereum-common')
@@ -37361,7 +42416,7 @@ Transaction.prototype.validate = function () {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"_process":223,"buffer":256,"ethereum-common":272,"ethereumjs-util":274,"secp256k1":279}],270:[function(require,module,exports){
+},{"_process":223,"buffer":256,"ethereum-common":273,"ethereumjs-util":275,"secp256k1":280}],271:[function(require,module,exports){
 module.exports=[
   {
     "ip": "52.16.188.185",
@@ -37385,7 +42440,7 @@ module.exports=[
   }
 ]
 
-},{}],271:[function(require,module,exports){
+},{}],272:[function(require,module,exports){
 module.exports={
   "3282791d6fd713f1e94f4bfd565eaa78b3a0599d": "1337000000000000000000",
   "17961d633bcf20a7b029a7d94b7df4da2ec5427f": "229427000000000000000",
@@ -46282,13 +51337,13 @@ module.exports={
   "756f45e3fa69347a9a973a725e3c98bc4db0b5a0": "200000000000000000000"
 }
 
-},{}],272:[function(require,module,exports){
+},{}],273:[function(require,module,exports){
 var params = require('./params.json')
 params.genesisState = require('./genesisState.json')
 params.bootstrapNodes = require('./bootstrapNodes.json')
 module.exports = params
 
-},{"./bootstrapNodes.json":270,"./genesisState.json":271,"./params.json":273}],273:[function(require,module,exports){
+},{"./bootstrapNodes.json":271,"./genesisState.json":272,"./params.json":274}],274:[function(require,module,exports){
 module.exports={
   "genesisGasLimit": {
     "v": 5000,
@@ -46517,7 +51572,7 @@ module.exports={
   }
 }
 
-},{}],274:[function(require,module,exports){
+},{}],275:[function(require,module,exports){
 (function (Buffer){
 const SHA3 = require('sha3')
 const secp256k1 = require('secp256k1')
@@ -47055,9 +52110,9 @@ exports.padToEven = function (a) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":10,"bn.js":275,"buffer":256,"crypto":25,"rlp":277,"secp256k1":279,"sha3":276}],275:[function(require,module,exports){
+},{"assert":10,"bn.js":276,"buffer":256,"crypto":25,"rlp":278,"secp256k1":280,"sha3":277}],276:[function(require,module,exports){
 arguments[4][58][0].apply(exports,arguments)
-},{"dup":58}],276:[function(require,module,exports){
+},{"dup":58}],277:[function(require,module,exports){
 (function (Buffer){
 const Sha3 = require('js-sha3')
 
@@ -47095,7 +52150,7 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":256,"js-sha3":321}],277:[function(require,module,exports){
+},{"buffer":256,"js-sha3":322}],278:[function(require,module,exports){
 (function (Buffer){
 const assert = require('assert')
 /**
@@ -47328,13 +52383,13 @@ function toBuffer (v) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":10,"buffer":256}],278:[function(require,module,exports){
+},{"assert":10,"buffer":256}],279:[function(require,module,exports){
 module.exports = require('./lib/elliptic')
 
-},{"./lib/elliptic":283}],279:[function(require,module,exports){
+},{"./lib/elliptic":284}],280:[function(require,module,exports){
 module.exports = require('./elliptic')
 
-},{"./elliptic":278}],280:[function(require,module,exports){
+},{"./elliptic":279}],281:[function(require,module,exports){
 (function (Buffer){
 var objToString = Object.prototype.toString
 
@@ -47393,11 +52448,11 @@ exports.checkNumberInInterval = function (number, x, y, msg) {
 }
 
 }).call(this,{"isBuffer":require("../../../../browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")})
-},{"../../../../browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":220}],281:[function(require,module,exports){
+},{"../../../../browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":220}],282:[function(require,module,exports){
 var EC = require('elliptic').ec
 module.exports = new EC('secp256k1')
 
-},{"elliptic":295}],282:[function(require,module,exports){
+},{"elliptic":296}],283:[function(require,module,exports){
 (function (Buffer){
 var createHash = require('crypto').createHash
 
@@ -47434,7 +52489,7 @@ exports.ecdhSync = function (publicKey, secretKey) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"../asserts":280,"../messages":291,"./ec":281,"./util":289,"buffer":256,"crypto":25}],283:[function(require,module,exports){
+},{"../asserts":281,"../messages":292,"./ec":282,"./util":290,"buffer":256,"crypto":25}],284:[function(require,module,exports){
 var setImmediate = require('timers').setImmediate
 var objectAssign = require('object-assign')
 
@@ -47498,7 +52553,7 @@ asyncFunctions.forEach(function (obj) {
   }
 })
 
-},{"../asserts":280,"../messages":291,"../promise":292,"./ecdh":282,"./publickey":284,"./recover":285,"./secretkey":286,"./sign":287,"./signature":288,"./verify":290,"object-assign":320,"timers":248}],284:[function(require,module,exports){
+},{"../asserts":281,"../messages":292,"../promise":293,"./ecdh":283,"./publickey":285,"./recover":286,"./secretkey":287,"./sign":288,"./signature":289,"./verify":291,"object-assign":321,"timers":248}],285:[function(require,module,exports){
 (function (Buffer){
 var BN = require('bn.js')
 
@@ -47645,7 +52700,7 @@ exports.publicKeyCombine = function (publicKeys) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"../asserts":280,"../messages":291,"./ec":281,"./util":289,"bn.js":294,"buffer":256}],285:[function(require,module,exports){
+},{"../asserts":281,"../messages":292,"./ec":282,"./util":290,"bn.js":295,"buffer":256}],286:[function(require,module,exports){
 (function (Buffer){
 var asserts = require('../asserts')
 var messages = require('../messages')
@@ -47684,7 +52739,7 @@ exports.recoverSync = function (msg, signature, recovery) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"../asserts":280,"../messages":291,"./ec":281,"./util":289,"buffer":256}],286:[function(require,module,exports){
+},{"../asserts":281,"../messages":292,"./ec":282,"./util":290,"buffer":256}],287:[function(require,module,exports){
 (function (Buffer){
 var BN = require('bn.js')
 
@@ -47884,7 +52939,7 @@ exports.secretKeyTweakMul = function (secretKey, tweak) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"../asserts":280,"../messages":291,"./ec":281,"./util":289,"bn.js":294,"buffer":256}],287:[function(require,module,exports){
+},{"../asserts":281,"../messages":292,"./ec":282,"./util":290,"bn.js":295,"buffer":256}],288:[function(require,module,exports){
 (function (Buffer){
 var asserts = require('../asserts')
 var messages = require('../messages')
@@ -47917,7 +52972,7 @@ exports.signSync = function (msg, secretKey) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"../asserts":280,"../messages":291,"./ec":281,"./util":289,"buffer":256}],288:[function(require,module,exports){
+},{"../asserts":281,"../messages":292,"./ec":282,"./util":290,"buffer":256}],289:[function(require,module,exports){
 (function (Buffer){
 var BN = require('bn.js')
 
@@ -48061,7 +53116,7 @@ exports.signatureImport = function (signature) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"../asserts":280,"../messages":291,"./ec":281,"./util":289,"bn.js":294,"buffer":256}],289:[function(require,module,exports){
+},{"../asserts":281,"../messages":292,"./ec":282,"./util":290,"bn.js":295,"buffer":256}],290:[function(require,module,exports){
 var BN = require('bn.js')
 
 var ec = require('./ec')
@@ -48149,7 +53204,7 @@ exports.bnReduce = function (bn) {
   return bn.mod(ec.curve.n)
 }
 
-},{"./ec":281,"bn.js":294}],290:[function(require,module,exports){
+},{"./ec":282,"bn.js":295}],291:[function(require,module,exports){
 var asserts = require('../asserts')
 var messages = require('../messages')
 var ec = require('./ec')
@@ -48185,7 +53240,7 @@ exports.verifySync = function (msg, signature, publicKey) {
   return ec.verify(msg, sigObj, publicKey)
 }
 
-},{"../asserts":280,"../messages":291,"./ec":281,"./util":289}],291:[function(require,module,exports){
+},{"../asserts":281,"../messages":292,"./ec":282,"./util":290}],292:[function(require,module,exports){
 exports.CALLBACK_TYPE_INVALID = 'callback should be a function'
 exports.COMPRESSED_TYPE_INVALID = 'compressed should be a boolean'
 
@@ -48227,10 +53282,10 @@ exports.ECDSA_RECOVER_FAIL = 'couldn\'t recover public key from signature'
 
 exports.ECDH_FAIL = 'scalar was invalid (zero or overflow)'
 
-},{}],292:[function(require,module,exports){
+},{}],293:[function(require,module,exports){
 module.exports = typeof Promise === 'function' ? Promise : require('bluebird')
 
-},{"bluebird":293}],293:[function(require,module,exports){
+},{"bluebird":294}],294:[function(require,module,exports){
 (function (process,global){
 /* @preserve
  * The MIT License (MIT)
@@ -53547,57 +58602,57 @@ module.exports = ret;
 },{"./es5":13}]},{},[4])(4)
 });                    ;if (typeof window !== 'undefined' && window !== null) {                               window.P = window.Promise;                                                     } else if (typeof self !== 'undefined' && self !== null) {                             self.P = self.Promise;                                                         }
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":223}],294:[function(require,module,exports){
+},{"_process":223}],295:[function(require,module,exports){
 arguments[4][58][0].apply(exports,arguments)
-},{"dup":58}],295:[function(require,module,exports){
+},{"dup":58}],296:[function(require,module,exports){
 arguments[4][60][0].apply(exports,arguments)
-},{"../package.json":319,"./elliptic/curve":298,"./elliptic/curves":301,"./elliptic/ec":302,"./elliptic/eddsa":305,"./elliptic/hmac-drbg":308,"./elliptic/utils":310,"brorand":311,"dup":60}],296:[function(require,module,exports){
+},{"../package.json":320,"./elliptic/curve":299,"./elliptic/curves":302,"./elliptic/ec":303,"./elliptic/eddsa":306,"./elliptic/hmac-drbg":309,"./elliptic/utils":311,"brorand":312,"dup":60}],297:[function(require,module,exports){
 arguments[4][61][0].apply(exports,arguments)
-},{"../../elliptic":295,"bn.js":294,"dup":61}],297:[function(require,module,exports){
+},{"../../elliptic":296,"bn.js":295,"dup":61}],298:[function(require,module,exports){
 arguments[4][62][0].apply(exports,arguments)
-},{"../../elliptic":295,"../curve":298,"bn.js":294,"dup":62,"inherits":318}],298:[function(require,module,exports){
+},{"../../elliptic":296,"../curve":299,"bn.js":295,"dup":62,"inherits":319}],299:[function(require,module,exports){
 arguments[4][63][0].apply(exports,arguments)
-},{"./base":296,"./edwards":297,"./mont":299,"./short":300,"dup":63}],299:[function(require,module,exports){
+},{"./base":297,"./edwards":298,"./mont":300,"./short":301,"dup":63}],300:[function(require,module,exports){
 arguments[4][64][0].apply(exports,arguments)
-},{"../../elliptic":295,"../curve":298,"bn.js":294,"dup":64,"inherits":318}],300:[function(require,module,exports){
+},{"../../elliptic":296,"../curve":299,"bn.js":295,"dup":64,"inherits":319}],301:[function(require,module,exports){
 arguments[4][65][0].apply(exports,arguments)
-},{"../../elliptic":295,"../curve":298,"bn.js":294,"dup":65,"inherits":318}],301:[function(require,module,exports){
+},{"../../elliptic":296,"../curve":299,"bn.js":295,"dup":65,"inherits":319}],302:[function(require,module,exports){
 arguments[4][66][0].apply(exports,arguments)
-},{"../elliptic":295,"./precomputed/secp256k1":309,"dup":66,"hash.js":312}],302:[function(require,module,exports){
+},{"../elliptic":296,"./precomputed/secp256k1":310,"dup":66,"hash.js":313}],303:[function(require,module,exports){
 arguments[4][67][0].apply(exports,arguments)
-},{"../../elliptic":295,"./key":303,"./signature":304,"bn.js":294,"dup":67}],303:[function(require,module,exports){
+},{"../../elliptic":296,"./key":304,"./signature":305,"bn.js":295,"dup":67}],304:[function(require,module,exports){
 arguments[4][68][0].apply(exports,arguments)
-},{"bn.js":294,"dup":68}],304:[function(require,module,exports){
+},{"bn.js":295,"dup":68}],305:[function(require,module,exports){
 arguments[4][69][0].apply(exports,arguments)
-},{"../../elliptic":295,"bn.js":294,"dup":69}],305:[function(require,module,exports){
+},{"../../elliptic":296,"bn.js":295,"dup":69}],306:[function(require,module,exports){
 arguments[4][70][0].apply(exports,arguments)
-},{"../../elliptic":295,"./key":306,"./signature":307,"dup":70,"hash.js":312}],306:[function(require,module,exports){
+},{"../../elliptic":296,"./key":307,"./signature":308,"dup":70,"hash.js":313}],307:[function(require,module,exports){
 arguments[4][71][0].apply(exports,arguments)
-},{"../../elliptic":295,"dup":71}],307:[function(require,module,exports){
+},{"../../elliptic":296,"dup":71}],308:[function(require,module,exports){
 arguments[4][72][0].apply(exports,arguments)
-},{"../../elliptic":295,"bn.js":294,"dup":72}],308:[function(require,module,exports){
+},{"../../elliptic":296,"bn.js":295,"dup":72}],309:[function(require,module,exports){
 arguments[4][73][0].apply(exports,arguments)
-},{"../elliptic":295,"dup":73,"hash.js":312}],309:[function(require,module,exports){
+},{"../elliptic":296,"dup":73,"hash.js":313}],310:[function(require,module,exports){
 arguments[4][74][0].apply(exports,arguments)
-},{"dup":74}],310:[function(require,module,exports){
+},{"dup":74}],311:[function(require,module,exports){
 arguments[4][75][0].apply(exports,arguments)
-},{"bn.js":294,"dup":75}],311:[function(require,module,exports){
+},{"bn.js":295,"dup":75}],312:[function(require,module,exports){
 arguments[4][76][0].apply(exports,arguments)
-},{"dup":76}],312:[function(require,module,exports){
+},{"dup":76}],313:[function(require,module,exports){
 arguments[4][77][0].apply(exports,arguments)
-},{"./hash/common":313,"./hash/hmac":314,"./hash/ripemd":315,"./hash/sha":316,"./hash/utils":317,"dup":77}],313:[function(require,module,exports){
+},{"./hash/common":314,"./hash/hmac":315,"./hash/ripemd":316,"./hash/sha":317,"./hash/utils":318,"dup":77}],314:[function(require,module,exports){
 arguments[4][78][0].apply(exports,arguments)
-},{"../hash":312,"dup":78}],314:[function(require,module,exports){
+},{"../hash":313,"dup":78}],315:[function(require,module,exports){
 arguments[4][79][0].apply(exports,arguments)
-},{"../hash":312,"dup":79}],315:[function(require,module,exports){
+},{"../hash":313,"dup":79}],316:[function(require,module,exports){
 arguments[4][80][0].apply(exports,arguments)
-},{"../hash":312,"dup":80}],316:[function(require,module,exports){
+},{"../hash":313,"dup":80}],317:[function(require,module,exports){
 arguments[4][81][0].apply(exports,arguments)
-},{"../hash":312,"dup":81}],317:[function(require,module,exports){
+},{"../hash":313,"dup":81}],318:[function(require,module,exports){
 arguments[4][82][0].apply(exports,arguments)
-},{"dup":82,"inherits":318}],318:[function(require,module,exports){
+},{"dup":82,"inherits":319}],319:[function(require,module,exports){
 arguments[4][219][0].apply(exports,arguments)
-},{"dup":219}],319:[function(require,module,exports){
+},{"dup":219}],320:[function(require,module,exports){
 module.exports={
   "name": "elliptic",
   "version": "6.0.2",
@@ -53669,7 +58724,7 @@ module.exports={
   "readme": "ERROR: No README data found!"
 }
 
-},{}],320:[function(require,module,exports){
+},{}],321:[function(require,module,exports){
 /* eslint-disable no-unused-vars */
 'use strict';
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -53710,7 +58765,7 @@ module.exports = Object.assign || function (target, source) {
 	return to;
 };
 
-},{}],321:[function(require,module,exports){
+},{}],322:[function(require,module,exports){
 (function (global){
 /*
  * js-sha3 v0.3.1
@@ -54146,7 +59201,7 @@ module.exports = Object.assign || function (target, source) {
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],322:[function(require,module,exports){
+},{}],323:[function(require,module,exports){
 //! moment.js
 //! version : 2.11.0
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -57667,7 +62722,7 @@ module.exports = Object.assign || function (target, source) {
     return _moment;
 
 }));
-},{}],323:[function(require,module,exports){
+},{}],324:[function(require,module,exports){
 (function (process){
 // Generated by CoffeeScript 1.10.0
 (function() {
@@ -58000,7 +63055,7 @@ module.exports = Object.assign || function (target, source) {
 }).call(this);
 
 }).call(this,require('_process'))
-},{"_process":223,"events":217,"fs":9,"path":222}],324:[function(require,module,exports){
+},{"_process":223,"events":217,"fs":9,"path":222}],325:[function(require,module,exports){
 (function (Buffer){
 //     uuid.js
 //
@@ -58276,7 +63331,7 @@ module.exports = Object.assign || function (target, source) {
 })('undefined' !== typeof window ? window : null);
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":256,"crypto":25}],325:[function(require,module,exports){
+},{"buffer":256,"crypto":25}],326:[function(require,module,exports){
 /*!
  * Copyright (c) 2015 Chris O'Hara <cohara87@gmail.com>
  *
@@ -59177,7 +64232,7 @@ module.exports = Object.assign || function (target, source) {
 
 });
 
-},{}],326:[function(require,module,exports){
+},{}],327:[function(require,module,exports){
 (function (Buffer){
 /**
  * Client-side accounts
@@ -59610,7 +64665,7 @@ module.exports = function () {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"../constants":328,"../utilities":331,"augur-abi":7,"augur-contracts":3,"bignumber.js":8,"buffer":256,"clone":268,"ethereumjs-tx":269,"keythereum":600,"node-uuid":324}],327:[function(require,module,exports){
+},{"../constants":329,"../utilities":332,"augur-abi":7,"augur-contracts":3,"bignumber.js":8,"buffer":256,"clone":268,"ethereumjs-tx":270,"keythereum":470,"node-uuid":325}],328:[function(require,module,exports){
 (function (process,Buffer){
 /**
  * Database methods
@@ -59829,7 +64884,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"../constants":328,"../utilities":331,"_process":223,"augur-abi":7,"augur-contracts":3,"buffer":256,"clone":268,"keythereum":600,"node-localstorage":323}],328:[function(require,module,exports){
+},{"../constants":329,"../utilities":332,"_process":223,"augur-abi":7,"augur-contracts":3,"buffer":256,"clone":268,"keythereum":470,"node-localstorage":324}],329:[function(require,module,exports){
 /** 
  * augur.js constants
  */
@@ -59876,7 +64931,7 @@ module.exports = {
     CHROME_ID: "odlcbngbdolepbmofbcllpldjngefaeb"
 };
 
-},{"bignumber.js":8}],329:[function(require,module,exports){
+},{"bignumber.js":8}],330:[function(require,module,exports){
 /**
  * Filters / logging
  */
@@ -60068,7 +65123,7 @@ module.exports = function () {
             if (this.price_filter) {
                 this.eth_getFilterChanges(this.price_filter.id, function (filtrate) {
                     // console.log("price filtrate:", filtrate);
-                    var data_array, market, marketplus, outcome;;
+                    var data_array, market, marketplus, outcome;
                     if (filtrate && filtrate.length) {
                         for (var i = 0, len = filtrate.length; i < len; ++i) {
                             if (filtrate[i] && filtrate[i].topics && filtrate[i].topics.length > 3) {
@@ -60558,7 +65613,7 @@ module.exports = function () {
     };
 };
 
-},{"./constants":328,"./utilities":331,"async":6,"augur-abi":7,"augur-contracts":3,"chalk":260}],330:[function(require,module,exports){
+},{"./constants":329,"./utilities":332,"async":6,"augur-abi":7,"augur-contracts":3,"chalk":260}],331:[function(require,module,exports){
 (function (process){
 /**
  * Augur JavaScript API
@@ -60571,6 +65626,7 @@ var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 
 var async = require("async");
 var BigNumber = require("bignumber.js");
+var Decimal = require("decimal.js");
 var clone = require("clone");
 var abi = require("augur-abi");
 var rpc = require("ethrpc");
@@ -60980,7 +66036,6 @@ Augur.prototype.getTotalReputation = function (branch, votePeriod, callback) {
 // markets.se
 Augur.prototype.lsLmsr = function (market, callback) {
     if (!market) return new Error("need a market");
-    callback = callback || this.utils.pass;
     function lsLmsr(info) {
         var cumScale = info.cumulativeScale;
         var alpha = new BigNumber(info.alpha);
@@ -60997,6 +66052,7 @@ Augur.prototype.lsLmsr = function (market, callback) {
         return bq.mul(cumScale).mul(new BigNumber(Math.log(sumExp).toString())).toString();
     }
     if (market.constructor === Object && market.network && market.events) {
+        callback = callback || this.utils.pass;
         return callback(lsLmsr(market));
     }
     var tx = clone(this.tx.lsLmsr);
@@ -61005,8 +66061,8 @@ Augur.prototype.lsLmsr = function (market, callback) {
 };
 Augur.prototype.price = function (market, outcome, callback) {
     var self = this;
-    callback = callback || this.utils.pass;
     if (market.constructor === Object && market.network && market.events) {
+        callback = callback || this.utils.pass;
         var info = clone(market);
         var epsilon = new BigNumber("0.0000001");
         var a = new BigNumber(self.lsLmsr(info));
@@ -61024,30 +66080,36 @@ Augur.prototype.getSimulatedBuy = function (market, outcome, amount, callback) {
     // amount: number
     var self = this;
     function getSimulatedBuy(info, outcome, amount) {
-        var oldCost = new BigNumber(self.lsLmsr(info));
+        var oldCost = new Decimal(self.lsLmsr(info));
         var cumScale = info.cumulativeScale;
-        var alpha = new BigNumber(info.alpha);
+        var alpha = new Decimal(info.alpha);
         var numOutcomes = info.numOutcomes;
-        var sumShares = new BigNumber(0);
+        var sumShares = new Decimal(0);
         for (var i = 0; i < numOutcomes; ++i) {
-            sumShares = sumShares.plus(new BigNumber(info.outcomes[i].outstandingShares));
+            sumShares = sumShares.plus(new Decimal(info.outcomes[i].outstandingShares));
         }
-        var bq = alpha.mul(sumShares);
-        var sumExp = new BigNumber(0);
+        var bq = alpha.times(sumShares);
+        var sumExp = new Decimal(0);
         for (i = 0; i < numOutcomes; ++i) {
-            sumExp = sumExp.plus(new BigNumber(Math.exp(info.outcomes[i].outstandingShares).toString())).dividedBy(bq);
+            sumExp = sumExp.plus(new Decimal(info.outcomes[i].outstandingShares).exp()).dividedBy(bq);
         }
-        sumExp = sumExp.plus(new BigNumber(amount)).toNumber();
-        var newCost = bq.mul(cumScale).mul(new BigNumber(Math.log(sumExp).toString()));
-        if (newCost.lte(oldCost)) return callback(new Error(-2));
+        sumExp = sumExp.plus(new Decimal(amount));
+        var newCost = bq.times(cumScale).times(sumExp.ln());
+        if (newCost.lte(oldCost)) return self.errors.getSimulatedBuy["-2"];
         return [newCost.minus(oldCost).toFixed(), self.price(info, outcome)];
     }
-    callback = callback || this.utils.pass;
     if (market.constructor === Object && market.network && market.events) {
+        callback = callback || this.utils.pass;
         return callback(getSimulatedBuy(market, outcome, amount));
     }
-    self.getMarketInfo(market, function (info) {
-        callback(getSimulatedBuy(info, outcome, amount));
+    if (!this.utils.is_function(callback)) {
+        var info = this.getMarketInfo(market);
+        var simulatedBuy = getSimulatedBuy(info, outcome, amount);
+        return simulatedBuy;
+    }
+    this.getMarketInfo(market, function (info) {
+        var simulatedBuy = getSimulatedBuy(info, outcome, amount);
+        callback(simulatedBuy);
     });
 };
 Augur.prototype.getSimulatedSell = function (market, outcome, amount, callback) {
@@ -61056,22 +66118,22 @@ Augur.prototype.getSimulatedSell = function (market, outcome, amount, callback) 
     // amount: number
     var self = this;
     function getSimulatedSell(info, outcome, amount) {
-        var oldCost = new BigNumber(self.lsLmsr(info));
+        var oldCost = new Decimal(self.lsLmsr(info));
         var cumScale = info.cumulativeScale;
-        var alpha = new BigNumber(info.alpha);
+        var alpha = new Decimal(info.alpha);
         var numOutcomes = info.numOutcomes;
-        var sumShares = new BigNumber(0);
+        var sumShares = new Decimal(0);
         for (var i = 0; i < numOutcomes; ++i) {
-            sumShares = sumShares.plus(new BigNumber(info.outcomes[i].outstandingShares));
+            sumShares = sumShares.plus(new Decimal(info.outcomes[i].outstandingShares));
         }
-        var bq = alpha.mul(sumShares);
-        var sumExp = new BigNumber(0);
+        var bq = alpha.times(sumShares);
+        var sumExp = new Decimal(0);
         for (i = 0; i < numOutcomes; ++i) {
-            sumExp = sumExp.plus(new BigNumber(Math.exp(info.outcomes[i].outstandingShares).toString())).dividedBy(bq);
+            sumExp = sumExp.plus(new Decimal(info.outcomes[i].outstandingShares).exp()).dividedBy(bq);
         }
-        sumExp = sumExp.minus(new BigNumber(amount)).toNumber();
-        var newCost = bq.mul(cumScale).mul(new BigNumber(Math.log(sumExp).toString()));
-        if (oldCost.lte(newCost)) return callback(new Error(-2));
+        sumExp = sumExp.plus(new Decimal(amount));
+        var newCost = bq.times(cumScale).times(sumExp.ln());
+        if (oldCost.lte(newCost)) return self.errors.getSimulatedSell["-2"];
         return [newCost.minus(oldCost).toFixed(), self.price(info, outcome)];
     }
     callback = callback || this.utils.pass;
@@ -61436,9 +66498,7 @@ Augur.prototype.makeHash_contract = function (salt, report, event, callback) {
     if (salt.constructor === Object && salt.salt) {
         report = salt.report;
         event = salt.event;
-        if (salt.onSent) onSent = salt.onSent;
-        if (salt.onSuccess) onSuccess = salt.onSuccess;
-        if (salt.onFailed) onFailed = salt.onFailed;
+        if (salt.callback) callback = salt.callback;
         salt = salt.salt;
     }
     var tx = clone(this.tx.makeHash);
@@ -62648,7 +67708,7 @@ Augur.prototype.getCreationBlocks = function (branch, cb) {
             return cb(null);
         }
         if (logs.error) return cb(logs);
-        self.getMarkets(branch, function (markets) {
+        self.getMarketsInBranch(branch, function (markets) {
             if (!markets || (markets && (markets.constructor !== Array || !markets.length))) {
                 return cb(null);
             }
@@ -62928,7 +67988,7 @@ Augur.prototype.createBatch = function createBatch () {
 module.exports = new Augur();
 
 }).call(this,require('_process'))
-},{"./client/accounts":326,"./client/db":327,"./constants":328,"./filters":329,"./utilities":331,"_process":223,"async":6,"augur-abi":7,"augur-contracts":3,"bignumber.js":8,"clone":268,"ethereumjs-connect":332,"ethrpc":465,"ramble":636}],331:[function(require,module,exports){
+},{"./client/accounts":327,"./client/db":328,"./constants":329,"./filters":330,"./utilities":332,"_process":223,"async":6,"augur-abi":7,"augur-contracts":3,"bignumber.js":8,"clone":268,"decimal.js":269,"ethereumjs-connect":333,"ethrpc":335,"ramble":506}],332:[function(require,module,exports){
 (function (process,Buffer,__dirname){
 "use strict";
 
@@ -63237,7 +68297,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer,"/src")
-},{"./constants":328,"_process":223,"assert":10,"augur-abi":7,"bignumber.js":8,"buffer":256,"chalk":260,"crypto":25,"fs":9,"moment":322,"path":222,"validator":325}],332:[function(require,module,exports){
+},{"./constants":329,"_process":223,"assert":10,"augur-abi":7,"bignumber.js":8,"buffer":256,"chalk":260,"crypto":25,"fs":9,"moment":323,"path":222,"validator":326}],333:[function(require,module,exports){
 (function (process){
 /**
  * Basic Ethereum connection tasks.
@@ -63573,9 +68633,9 @@ module.exports = {
 };
 
 }).call(this,require('_process'))
-},{"_process":223,"async":333,"augur-contracts":3,"ethrpc":334}],333:[function(require,module,exports){
+},{"_process":223,"async":334,"augur-contracts":3,"ethrpc":335}],334:[function(require,module,exports){
 arguments[4][6][0].apply(exports,arguments)
-},{"_process":223,"dup":6}],334:[function(require,module,exports){
+},{"_process":223,"dup":6}],335:[function(require,module,exports){
 (function (process){
 /**
  * JSON RPC methods for Ethereum
@@ -63649,7 +68709,7 @@ module.exports = {
     TX_POLL_INTERVAL: 3000,
 
     // Default timeout for asynchronous POST
-    POST_TIMEOUT: 20000,
+    POST_TIMEOUT: 30000,
 
     BALANCER_SAMPLES: 20,
 
@@ -63870,7 +68930,7 @@ module.exports = {
         req.setRequestHeader("Content-type", "application/json");
         req.timeout = timeout;
         req.ontimeout = function () {
-            console.error("[ethrpc] synchronous RPC timed out", rpcUrl, command);
+            console.error("[ethrpc] synchronous RPC timed out", rpcUrl, command.method);
             self.primaryNode = null;
         };
         req.send(JSON.stringify(command));
@@ -64258,10 +69318,6 @@ module.exports = {
         return this.broadcast(this.marshal(command, params, "web3_"), f);
     },
 
-    leveldb: function (command, params, f) {
-        return this.broadcast(this.marshal(command, params, "db_"), f);
-    },
-
     shh: function (command, params, f) {
         return this.broadcast(this.marshal(command, params, "shh_"), f);
     },
@@ -64295,7 +69351,7 @@ module.exports = {
             block = null;
         }
         block = block || "latest";
-        return this.broadcast(this.marshal("getBalance", [ address, block ]), f);
+        return this.broadcast(this.marshal("getBalance", [address, block]), f);
     },
     getBalance: function (address, block, f) {
         if (block && block.constructor === Function) {
@@ -64303,7 +69359,7 @@ module.exports = {
             block = null;
         }
         block = block || "latest";
-        return this.broadcast(this.marshal("getBalance", [ address, block ]), f);
+        return this.broadcast(this.marshal("getBalance", [address, block]), f);
     },
 
     txCount: function (address, f) {
@@ -64314,7 +69370,7 @@ module.exports = {
     },
     pendingTxCount: function (address, f) {
         return this.broadcast(
-            this.marshal("getTransactionCount", [ address, "pending" ]), f
+            this.marshal("getTransactionCount", [address, "pending"]), f
         );
     },
 
@@ -64330,7 +69386,7 @@ module.exports = {
         return this.transact({
             from: from,
             to: to,
-            invocation: { invoke: this.sendTx, context: this },
+            invocation: {invoke: this.sendTx, context: this},
             value: abi.bignum(value).mul(this.ETHER).toFixed(),
             returns: "null"
         }, onSent, onSuccess, onFailed);
@@ -64785,6 +69841,8 @@ module.exports = {
                 return self.checkBlockHash(tx, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed);
             }
             self.txs[txhash].status = "failed";
+            if (self.debug.tx)
+                console.log("raw transactions:", self.rawTxs);
 
             // resubmit if this is a raw transaction and has a duplicate nonce
             if (self.rawTxs[txhash] && self.rawTxs[txhash].tx) {
@@ -64953,13 +70011,316 @@ module.exports = {
 };
 
 }).call(this,require('_process'))
-},{"_process":223,"async":333,"augur-abi":335,"augur-contracts":3,"bignumber.js":337,"browser-request":338,"net":9,"request":339,"sync-request":11}],335:[function(require,module,exports){
+},{"_process":223,"async":336,"augur-abi":337,"augur-contracts":341,"bignumber.js":342,"browser-request":343,"net":9,"request":344,"sync-request":11}],336:[function(require,module,exports){
+arguments[4][6][0].apply(exports,arguments)
+},{"_process":223,"dup":6}],337:[function(require,module,exports){
 arguments[4][7][0].apply(exports,arguments)
-},{"bignumber.js":337,"buffer":256,"dup":7,"js-sha3":336}],336:[function(require,module,exports){
-arguments[4][321][0].apply(exports,arguments)
-},{"dup":321}],337:[function(require,module,exports){
+},{"bignumber.js":342,"buffer":256,"dup":7,"js-sha3":338}],338:[function(require,module,exports){
+arguments[4][322][0].apply(exports,arguments)
+},{"dup":322}],339:[function(require,module,exports){
+module.exports={
+    "0": {
+        "namereg": "0xc6d9d2cd449a754c494264e1809c50e34d64562b",
+        "buyAndSellShares": "0xcb41186d3fa3eae83aa828eb776a913ffe94bcb7",
+        "checkQuorum": "0x7ad6e15cedf2a82651b5b407d1e98cbdf7c9e0e4",
+        "closeMarket": "0xfb8f4d790665457dcac8cbfa03965d1671d9e6a2",
+        "closeMarketEight": "0x3c348ffa3c66a7968110f64ae0a3d730cf20b670",
+        "closeMarketFour": "0x8cb16b2af081bf8a9cf06a5d8ae00a8f0d3a991f",
+        "closeMarketOne": "0x3aa010724da6a6d10d830905f6c83e31bfe47084",
+        "closeMarketTwo": "0xe4288ab0c0d886af4d5db6aa320c630c31a24b96",
+        "comments": "0x853cb123de348769d17108f505d6c3081fde2275",
+        "createBranch": "0x97aa6fe95e117a2c5c2e4f1419f5712d0ecfb66d",
+        "createEvent": "0xe3d1eef1fa0dba41796f08784033a32c3c2efd28",
+        "createMarket": "0x242219e309914836840a0ca0a55009478c5ba3d6",
+        "dispatch": "0x36004227035b544b981657d2736dd7de2ad1d30a",
+        "faucets": "0xd403f1657106c138843ea831bd99cbd2a4b8d648",
+        "makeReports": "0x9eed4f95d3bdc11775d7356709a8ae51f13f9bba",
+        "p2pWagers": "0x1c0e5ba6a9ba14420656be68657954917258eda6",
+        "sendReputation": "0xe5a16f3eef2158a63abd55c89474aef9ced7c82a",
+        "transferShares": "0x1743b8bd782221de0ad7c3ec010afc20da4c0d4f",
+        "accounts": "0x77ae4a8fa5c2775e618fcb40b0598f80a3b846f1",
+        "branches": "0x3a52e33bda40cb220cca98407bb332ec7579499b",
+        "cash": "0x25957529618e670165d49700c7d3f4ce4e2e00b9",
+        "events": "0x05b052da4cd80512f6a0837c72f7a4c3a591cbf6",
+        "expiringEvents": "0x554c2e7b73e62604e9d9f2e439b5a611da88fc87",
+        "fxpFunctions": "0x4abb75045783a639383aace45622ce97dec3b110",
+        "info": "0xe6e87575230b8e9315027c30648868e9ea80161c",
+        "ipfs": "0xbcfe600f4420d3db214bb2e7861b9c1c59ae2573",
+        "markets": "0x847adbfda58ca76ce0f5ff9952838a86192f510a",
+        "reporting": "0x772c698ff3121fde846002bae4d6828a39911fdb",
+        "adjust": "0x8fd78c97952f8bdd4351e8694e24c77f921446dd",
+        "center": "0x9c92cb96d4141204e2dc6e36b64192e4b6b1d29b",
+        "payout": "0x306973dc029f74fbfc83d9200e49b6c6978e77e9",
+        "redeem_adjust": "0xcfa0f80de838466d2605d7878f2ebb879e2aae60",
+        "redeem_center": "0x54d6594d3dc7d5af46f5bff12646d5f4ad152176",
+        "redeem_interpolate": "0xe8ff6008f6981d27f90cc6499d0f46546e6d8da7",
+        "redeem_payout": "0x701201acf46b40f449a815967fe0607a12645cd4",
+        "redeem_resolve": "0x46967961e529aaf9642742e08d27db1c8d33ba0d",
+        "redeem_score": "0x79988cdd607ef793f279d59d2686df2711c5b3a7",
+        "resolve": "0x145faea6f94952d73b54b2f85262ad8d8d474466",
+        "score": "0xe7fd9f29b2fbd3623574f303bee4355ca4645d62",
+        "statistics": "0xb44c5dffcb5092c06e8240b1d300b3287b0ca279"
+    },
+    "7": {
+        "namereg": "0xc6d9d2cd449a754c494264e1809c50e34d64562b",
+        "buyAndSellShares": "0xbe4ee6fec0988e5be8dafd38d9c0f8d6f9e5cbec",
+        "checkQuorum": "0x0602dfd8e341d2fbcf3625455fb756af998857a1",
+        "closeMarket": "0x288a972a5d2df198090c62aff28d752aa844462a",
+        "closeMarketEight": "0xdcf05b01d814507f93911aa1817a461e0b93cc15",
+        "closeMarketFour": "0xc048752bef846584750f426dfa853310e8b2692e",
+        "closeMarketOne": "0x8bc5fe35449908da4c436c135e7146d7516e9f19",
+        "closeMarketTwo": "0x647d9a245d1dfea6d6ad105b67189d1978428fe2",
+        "comments": "0xbd46ac9cbceebe6d8f33366df7e3bb1faa46c97f",
+        "createBranch": "0x79c536d060a2b420eef3f0b43f3b94453b674f2c",
+        "createEvent": "0x46b9460e82b44eb315b07ddd681563860837eb28",
+        "createMarket": "0x49c63c69bce199e2a53d265857849d0b8c3f7167",
+        "dispatch": "0x332df78758caafadbcecb8a33a86f0a3311b5617",
+        "faucets": "0xa105994eb344fcc492a90e43609e5078e958a777",
+        "makeReports": "0x705ade91ba95f82bfd0851d65e4e4f1b26d8a78f",
+        "p2pWagers": "0xa98080fda696c11af2cb9a90b1899d914436e4ba",
+        "sendReputation": "0xd3f5b1d3cbf338394fbbbab45174329ef62e59d8",
+        "transferShares": "0x05a0c629185abf6fbf189e985a7e739f54939237",
+        "accounts": "0x4b4248f78b2a4aaa51e242b6f35b8dd4276451da",
+        "branches": "0x7a07e396f3691831bf2caa85bdfaa611d77e8ef2",
+        "cash": "0xca401c5c89b7188629fcb8e006165a4bc1aaeaa6",
+        "events": "0x61097e73dd210af08d73bebdf1608d504c137566",
+        "expiringEvents": "0xc7717a4a53a6b3ed63d1b6da807f51fd8e916f64",
+        "fxpFunctions": "0xd8e126fab75ecfba100910d9e6bb39b4eadfaeee",
+        "info": "0x4cc834408dee680b256a307727b63b27bc5abfcb",
+        "ipfs": "0x03377d7fb9147e6123aea28973a195b1eee2a61c",
+        "markets": "0x04124f1643372564aded7c1f215709bf49929b2d",
+        "reporting": "0xcff90d34101456788b37199d1ee13b68ad47e8c7",
+        "adjust": "0x8ded14b321b658551970bb0a6b0401b4b008019a",
+        "center": "0x6796b0cae4636faf82501f441135ac0b96b84b91",
+        "payout": "0x249ef04ea9054d3002b95ce6189ff8358677eda4",
+        "redeem_adjust": "0x93ea5a64a68014f769ef7003c9bdf2a726626cc2",
+        "redeem_center": "0xc149bbab0707d6455d54ac2cf681b9bb64b5d639",
+        "redeem_interpolate": "0x29f97d471eedeeded58f34ce3863c7a92f3072e7",
+        "redeem_payout": "0xda15cf68e108c72eaea338890fc3edc39af5f25f",
+        "redeem_resolve": "0x5eb5686b101a8901a1e10e17a58b2fc0c95802c7",
+        "redeem_score": "0x50060e47a13b69e9c2d03b564e08e20cbfc14957",
+        "resolve": "0xf8bfa1b49b66ba3a6e52f5265e22375145306527",
+        "score": "0x4ee6fd8192a3ba884b89ac69e12a76c4bcd8f5ec",
+        "statistics": "0x4d5c089204374a962e17ce5e716d42e1e67db432"
+    },
+    "10101": {
+        "namereg": "0xc6d9d2cd449a754c494264e1809c50e34d64562b",
+        "buyAndSellShares": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f",
+        "checkQuorum": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d",
+        "closeMarket": "0xcece47d6c0a6a1c90521f38ec5bf7550df983804",
+        "closeMarketEight": "0x031d9d02520cc708ea3c865278508c9cdb92bd51",
+        "closeMarketFour": "0xcd6c7bc634257f82903b182142aae7156d72a200",
+        "closeMarketOne": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945",
+        "closeMarketTwo": "0x7d4b581a0868204b7481c316b430a97fd292a2fb",
+        "comments": "0x014b14d07e5afb2f30eb6ebf81d927563f0f1238",
+        "createBranch": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df",
+        "createEvent": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645",
+        "createMarket": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7",
+        "dispatch": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2",
+        "faucets": "0x509592c96eee7e19f6a34772fd8783cb072ca3c6",
+        "makeReports": "0x3f3276849a878a176b2f02dd48a483e8182a49e4",
+        "p2pWagers": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6",
+        "sendReputation": "0x35152caa07026203a1add680771afb690d872d7d",
+        "transferShares": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3",
+        "accounts": "0x77ae4a8fa5c2775e618fcb40b0598f80a3b846f1",
+        "branches": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd",
+        "cash": "0xe4714fcbdcdba49629bc408183ef40d120700b8d",
+        "events": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667",
+        "expiringEvents": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7",
+        "fxpFunctions": "0x482c57abdce592b39434e3f619ffc3db62ab6d01",
+        "info": "0x5069d883e31429c6dd1325d961f443007747c7a2",
+        "ipfs": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e",
+        "markets": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893",
+        "reporting": "0x81a7621e9a286d061b3dea040888a51c96693b1c",
+        "adjust": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55",
+        "center": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c",
+        "payout": "0x8a4e2993a9972ee035453bb5674816fc3a698718",
+        "redeem_adjust": "0x8c19616de17acdfbc933b99d9f529a689d22098f",
+        "redeem_center": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79",
+        "redeem_interpolate": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea",
+        "redeem_payout": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3",
+        "redeem_resolve": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68",
+        "redeem_score": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7",
+        "resolve": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2",
+        "score": "0x708fdfe18bf28afe861a69e95419d183ace003eb",
+        "statistics": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7"
+    }
+}
+},{}],340:[function(require,module,exports){
+module.exports={
+    "0x": "no response or bad input",
+    "getSimulatedBuy": {
+        "-2": "cost updating error (did you enter a valid quantity?)"
+    },
+    "getSimulatedSell": {
+        "-2": "cost updating error (did you enter a valid quantity?)"
+    },
+    "closeMarket": {
+        "-1": "market has no cash",
+        "-2": "0 outcome",
+        "-3": "outcome indeterminable"
+    },
+    "report": {
+        "0": "could not set reporter ballot",
+        "-1": "report length does not match number of expiring events",
+        "-2": "voting period expired",
+        "-3": "incorrect hash"
+    },
+    "submitReportHash": {
+        "0": "could not set report hash",
+        "-1": "reporter doesn't exist, voting period is over, or voting period hasn't started yet",
+        "-2": "not in hash submitting timeframe"
+    },
+    "checkReportValidity": {
+        "-1": "report isn't long enough",
+        "-2": "reporter doesn't exist, voting period is over, or voting period hasn't started yet"
+    },
+    "slashRep": {
+        "0": "incorrect hash",
+        "-2": "incorrect reporter ID"
+    },
+    "createEvent": {
+        "0": "not enough money to pay fees or event already exists",
+        "-1": "we're either already past that date, branch doesn't exist, or description is bad"
+    },
+    "createMarket": {
+        "-1": "bad input or parent doesn't exist",
+        "-2": "too many events",
+        "-3": "too many outcomes",
+        "-4": "not enough money or market already exists"
+    },
+    "sendReputation": {
+        "0": "not enough reputation",
+        "-1": "Your reputation account was just created! Earn some reputation before you can send to others",
+        "-2": "Receiving address doesn't exist"
+    },
+    "buyShares": {
+        "-1": "invalid outcome or trading closed",
+        "-2": "entered a negative number of shares",
+        "-3": "not enough money",
+        "-4": "bad nonce/hash"
+    },
+    "sellShares": {
+        "-1": "invalid outcome or trading closed",
+        "-2": "entered a negative number of shares",
+        "-3": "not enough money",
+        "-4": "bad nonce/hash"
+    },
+    "WHISPER_POST_FAILED": {
+        "error": 65,
+        "message": "could not post message to whisper"
+    },
+    "DB_WRITE_FAILED": {
+        "error": 98,
+        "message": "database write failed"
+    },
+    "DB_READ_FAILED": {
+        "error": 99,
+        "message": "database read failed"
+    },
+    "INVALID_CONTRACT_PARAMETER": {
+        "error": 400,
+        "message": "cannot send object parameter to contract"
+    },
+    "NOT_LOGGED_IN": {
+        "error": 401,
+        "message": "not logged in"
+    },
+    "PARAMETER_NUMBER_ERROR": {
+        "error": 402,
+        "message": "wrong number of parameters"
+    },
+    "BAD_CREDENTIALS": {
+        "error": 403,
+        "message": "incorrect handle or password"
+    },
+    "TRANSACTION_NOT_FOUND": {
+        "error": 404,
+        "message": "transaction not found"
+    },
+    "PASSWORD_TOO_SHORT": {
+        "error": 405,
+        "message": "password must be at least 6 characters long"
+    },
+    "NULL_CALL_RETURN": {
+        "error": 406,
+        "message": "expected contract call to return value, received null"
+    },
+    "NULL_RESPONSE": {
+        "error": 407,
+        "message": "expected transaction hash from Ethereum node, received null"
+    },
+    "NO_RESPONSE": {
+        "error": 408,
+        "message": "no response"
+    },
+    "INVALID_RESPONSE": {
+        "error": 409,
+        "message": "could not parse response from Ethereum node"
+    },
+    "LOCAL_NODE_FAILURE": {
+        "error": 410,
+        "message": "RPC request to local Ethereum node failed"
+    },
+    "HOSTED_NODE_FAILURE": {
+        "error": 411,
+        "message": "RPC request to hosted nodes failed"
+    },
+    "HANDLE_TAKEN": {
+        "error": 422,
+        "message": "handle already taken"
+    },
+    "FILTER_NOT_CREATED": {
+        "error": 450,
+        "message": "filter could not be created"
+    },
+    "TRANSACTION_FAILED": {
+        "error": 500,
+        "message": "transaction failed"
+    },
+    "TRANSACTION_NOT_CONFIRMED": {
+        "error": 501,
+        "message": "polled network but could not confirm transaction"
+    },
+    "DUPLICATE_TRANSACTION": {
+        "error": 502,
+        "message": "duplicate transaction"
+    },
+    "RAW_TRANSACTION_ERROR": {
+        "error": 503,
+        "message": "error sending client-side transaction"
+    },
+    "RLP_ENCODING_ERROR": {
+        "error": 504,
+        "message": "RLP encoding error"
+    },
+    "NO_MARKET_INFO": {
+        "error": 505,
+        "message": "could not retrieve market data"
+    },
+    "RPC_TIMEOUT": {
+        "error": 599,
+        "message": "timed out while waiting for Ethereum network response"
+    },
+    "LOOPBACK_NOT_FOUND": {
+        "error": 650,
+        "message": "loopback interface required for synchronous local commands"
+    },
+    "ETHEREUM_NOT_FOUND": {
+        "error": 651,
+        "message": "no active ethereum node(s) found"
+    }
+}
+
+},{}],341:[function(require,module,exports){
+var contracts = require("./contracts");
+contracts.errors = require("./errors");
+
+module.exports = contracts;
+
+},{"./contracts":339,"./errors":340}],342:[function(require,module,exports){
 arguments[4][8][0].apply(exports,arguments)
-},{"dup":8}],338:[function(require,module,exports){
+},{"dup":8}],343:[function(require,module,exports){
 // Browser Request
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -65455,7 +70816,7 @@ function b64_enc (data) {
 }));
 //UMD FOOTER END
 
-},{}],339:[function(require,module,exports){
+},{}],344:[function(require,module,exports){
 // Copyright 2010-2012 Mikeal Rogers
 //
 //    Licensed under the Apache License, Version 2.0 (the "License");
@@ -65613,7 +70974,7 @@ Object.defineProperty(request, 'debug', {
   }
 })
 
-},{"./lib/cookies":341,"./lib/helpers":344,"./request":464,"extend":365}],340:[function(require,module,exports){
+},{"./lib/cookies":346,"./lib/helpers":349,"./request":469,"extend":370}],345:[function(require,module,exports){
 'use strict'
 
 var caseless = require('caseless')
@@ -65783,7 +71144,7 @@ Auth.prototype.onResponse = function (response) {
 
 exports.Auth = Auth
 
-},{"./helpers":344,"caseless":362,"node-uuid":449}],341:[function(require,module,exports){
+},{"./helpers":349,"caseless":367,"node-uuid":454}],346:[function(require,module,exports){
 'use strict'
 
 var tough = require('tough-cookie')
@@ -65824,7 +71185,7 @@ exports.jar = function(store) {
   return new RequestJar(store)
 }
 
-},{"tough-cookie":456}],342:[function(require,module,exports){
+},{"tough-cookie":461}],347:[function(require,module,exports){
 (function (process){
 'use strict'
 
@@ -65907,7 +71268,7 @@ function getProxyFromURI(uri) {
 module.exports = getProxyFromURI
 
 }).call(this,require('_process'))
-},{"_process":223}],343:[function(require,module,exports){
+},{"_process":223}],348:[function(require,module,exports){
 'use strict'
 
 var fs = require('fs')
@@ -66123,7 +71484,7 @@ Har.prototype.options = function (options) {
 
 exports.Har = Har
 
-},{"fs":9,"har-validator":369,"querystring":227,"util":252}],344:[function(require,module,exports){
+},{"fs":9,"har-validator":374,"querystring":227,"util":252}],349:[function(require,module,exports){
 (function (process,Buffer){
 'use strict'
 
@@ -66201,7 +71562,7 @@ exports.version               = version
 exports.defer                 = deferMethod()
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"_process":223,"buffer":256,"crypto":25,"json-stringify-safe":445}],345:[function(require,module,exports){
+},{"_process":223,"buffer":256,"crypto":25,"json-stringify-safe":450}],350:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 
@@ -66314,7 +71675,7 @@ Multipart.prototype.onRequest = function (options) {
 exports.Multipart = Multipart
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":256,"combined-stream":363,"isstream":444,"node-uuid":449}],346:[function(require,module,exports){
+},{"buffer":256,"combined-stream":368,"isstream":449,"node-uuid":454}],351:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 
@@ -66465,7 +71826,7 @@ OAuth.prototype.onRequest = function (_oauth) {
 exports.OAuth = OAuth
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":256,"caseless":362,"crypto":25,"node-uuid":449,"oauth-sign":450,"qs":451,"url":249}],347:[function(require,module,exports){
+},{"buffer":256,"caseless":367,"crypto":25,"node-uuid":454,"oauth-sign":455,"qs":456,"url":249}],352:[function(require,module,exports){
 'use strict'
 
 var qs = require('qs')
@@ -66518,7 +71879,7 @@ Querystring.prototype.unescape = querystring.unescape
 
 exports.Querystring = Querystring
 
-},{"qs":451,"querystring":227}],348:[function(require,module,exports){
+},{"qs":456,"querystring":227}],353:[function(require,module,exports){
 'use strict'
 
 var url = require('url')
@@ -66673,7 +72034,7 @@ Redirect.prototype.onResponse = function (response) {
 
 exports.Redirect = Redirect
 
-},{"url":249}],349:[function(require,module,exports){
+},{"url":249}],354:[function(require,module,exports){
 'use strict'
 
 var url = require('url')
@@ -66853,7 +72214,7 @@ Tunnel.defaultProxyHeaderWhiteList = defaultProxyHeaderWhiteList
 Tunnel.defaultProxyHeaderExclusiveList = defaultProxyHeaderExclusiveList
 exports.Tunnel = Tunnel
 
-},{"tunnel-agent":463,"url":249}],350:[function(require,module,exports){
+},{"tunnel-agent":468,"url":249}],355:[function(require,module,exports){
 
 /*!
  *  Copyright 2010 LearnBoost <dev@learnboost.com>
@@ -67067,7 +72428,7 @@ function canonicalizeResource (resource) {
 }
 module.exports.canonicalizeResource = canonicalizeResource
 
-},{"crypto":25,"url":249}],351:[function(require,module,exports){
+},{"crypto":25,"url":249}],356:[function(require,module,exports){
 (function (Buffer){
 var DuplexStream = require('readable-stream/duplex')
   , util         = require('util')
@@ -67287,15 +72648,15 @@ BufferList.prototype.destroy = function () {
 module.exports = BufferList
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":256,"readable-stream/duplex":352,"util":252}],352:[function(require,module,exports){
+},{"buffer":256,"readable-stream/duplex":357,"util":252}],357:[function(require,module,exports){
 arguments[4][228][0].apply(exports,arguments)
-},{"./lib/_stream_duplex.js":353,"dup":228}],353:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":358,"dup":228}],358:[function(require,module,exports){
 arguments[4][229][0].apply(exports,arguments)
-},{"./_stream_readable":354,"./_stream_writable":355,"core-util-is":356,"dup":229,"inherits":357,"process-nextick-args":359}],354:[function(require,module,exports){
+},{"./_stream_readable":359,"./_stream_writable":360,"core-util-is":361,"dup":229,"inherits":362,"process-nextick-args":364}],359:[function(require,module,exports){
 arguments[4][231][0].apply(exports,arguments)
-},{"./_stream_duplex":353,"_process":223,"buffer":256,"core-util-is":356,"dup":231,"events":217,"inherits":357,"isarray":358,"process-nextick-args":359,"string_decoder/":360,"util":11}],355:[function(require,module,exports){
+},{"./_stream_duplex":358,"_process":223,"buffer":256,"core-util-is":361,"dup":231,"events":217,"inherits":362,"isarray":363,"process-nextick-args":364,"string_decoder/":365,"util":11}],360:[function(require,module,exports){
 arguments[4][233][0].apply(exports,arguments)
-},{"./_stream_duplex":353,"buffer":256,"core-util-is":356,"dup":233,"events":217,"inherits":357,"process-nextick-args":359,"util-deprecate":361}],356:[function(require,module,exports){
+},{"./_stream_duplex":358,"buffer":256,"core-util-is":361,"dup":233,"events":217,"inherits":362,"process-nextick-args":364,"util-deprecate":366}],361:[function(require,module,exports){
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -67405,18 +72766,18 @@ function objectToString(o) {
   return Object.prototype.toString.call(o);
 }
 
-}).call(this,{"isBuffer":require("../../../../../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")})
-},{"../../../../../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":220}],357:[function(require,module,exports){
+}).call(this,{"isBuffer":require("../../../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")})
+},{"../../../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":220}],362:[function(require,module,exports){
 arguments[4][219][0].apply(exports,arguments)
-},{"dup":219}],358:[function(require,module,exports){
+},{"dup":219}],363:[function(require,module,exports){
 arguments[4][221][0].apply(exports,arguments)
-},{"dup":221}],359:[function(require,module,exports){
+},{"dup":221}],364:[function(require,module,exports){
 arguments[4][235][0].apply(exports,arguments)
-},{"_process":223,"dup":235}],360:[function(require,module,exports){
+},{"_process":223,"dup":235}],365:[function(require,module,exports){
 arguments[4][247][0].apply(exports,arguments)
-},{"buffer":256,"dup":247}],361:[function(require,module,exports){
+},{"buffer":256,"dup":247}],366:[function(require,module,exports){
 arguments[4][236][0].apply(exports,arguments)
-},{"dup":236}],362:[function(require,module,exports){
+},{"dup":236}],367:[function(require,module,exports){
 function Caseless (dict) {
   this.dict = dict || {}
 }
@@ -67484,7 +72845,7 @@ module.exports.httpify = function (resp, headers) {
   return c
 }
 
-},{}],363:[function(require,module,exports){
+},{}],368:[function(require,module,exports){
 (function (Buffer){
 var util = require('util');
 var Stream = require('stream').Stream;
@@ -67675,8 +73036,8 @@ CombinedStream.prototype._emitError = function(err) {
   this.emit('error', err);
 };
 
-}).call(this,{"isBuffer":require("../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")})
-},{"../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":220,"delayed-stream":364,"stream":241,"util":252}],364:[function(require,module,exports){
+}).call(this,{"isBuffer":require("../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")})
+},{"../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":220,"delayed-stream":369,"stream":241,"util":252}],369:[function(require,module,exports){
 var Stream = require('stream').Stream;
 var util = require('util');
 
@@ -67785,7 +73146,7 @@ DelayedStream.prototype._checkIfMaxDataSizeExceeded = function() {
   this.emit('error', new Error(message));
 };
 
-},{"stream":241,"util":252}],365:[function(require,module,exports){
+},{"stream":241,"util":252}],370:[function(require,module,exports){
 'use strict';
 
 var hasOwn = Object.prototype.hasOwnProperty;
@@ -67873,7 +73234,7 @@ module.exports = function extend() {
 };
 
 
-},{}],366:[function(require,module,exports){
+},{}],371:[function(require,module,exports){
 module.exports = ForeverAgent
 ForeverAgent.SSL = ForeverAgentSSL
 
@@ -68013,9 +73374,9 @@ function createConnectionSSL (port, host, options) {
   return tls.connect(options);
 }
 
-},{"http":242,"https":218,"net":9,"tls":9,"util":252}],367:[function(require,module,exports){
+},{"http":242,"https":218,"net":9,"tls":9,"util":252}],372:[function(require,module,exports){
 module.exports = FormData;
-},{}],368:[function(require,module,exports){
+},{}],373:[function(require,module,exports){
 'use strict'
 
 function ValidationError (errors) {
@@ -68027,7 +73388,7 @@ ValidationError.prototype = Error.prototype
 
 module.exports = ValidationError
 
-},{}],369:[function(require,module,exports){
+},{}],374:[function(require,module,exports){
 'use strict'
 
 var Promise = require('pinkie-promise')
@@ -68051,7 +73412,7 @@ Object.keys(schemas).map(function (name) {
   module.exports[name] = promisify(schemas[name])
 })
 
-},{"./runner":370,"./schemas":378,"pinkie-promise":394}],370:[function(require,module,exports){
+},{"./runner":375,"./schemas":383,"pinkie-promise":399}],375:[function(require,module,exports){
 'use strict'
 
 var schemas = require('./schemas')
@@ -68082,7 +73443,7 @@ module.exports = function (schema, data, cb) {
   return valid
 }
 
-},{"./error":368,"./schemas":378,"is-my-json-valid":388}],371:[function(require,module,exports){
+},{"./error":373,"./schemas":383,"is-my-json-valid":393}],376:[function(require,module,exports){
 module.exports={
   "properties": {
     "beforeRequest": {
@@ -68097,7 +73458,7 @@ module.exports={
   }
 }
 
-},{}],372:[function(require,module,exports){
+},{}],377:[function(require,module,exports){
 module.exports={
   "oneOf": [{
     "type": "object",
@@ -68130,7 +73491,7 @@ module.exports={
   }]
 }
 
-},{}],373:[function(require,module,exports){
+},{}],378:[function(require,module,exports){
 module.exports={
   "type": "object",
   "required": [
@@ -68159,7 +73520,7 @@ module.exports={
   }
 }
 
-},{}],374:[function(require,module,exports){
+},{}],379:[function(require,module,exports){
 module.exports={
   "type": "object",
   "required": [
@@ -68195,7 +73556,7 @@ module.exports={
   }
 }
 
-},{}],375:[function(require,module,exports){
+},{}],380:[function(require,module,exports){
 module.exports={
   "type": "object",
   "required": [
@@ -68215,7 +73576,7 @@ module.exports={
   }
 }
 
-},{}],376:[function(require,module,exports){
+},{}],381:[function(require,module,exports){
 module.exports={
   "type": "object",
   "optional": true,
@@ -68268,7 +73629,7 @@ module.exports={
   }
 }
 
-},{}],377:[function(require,module,exports){
+},{}],382:[function(require,module,exports){
 module.exports={
   "type": "object",
   "required": [
@@ -68281,7 +73642,7 @@ module.exports={
   }
 }
 
-},{}],378:[function(require,module,exports){
+},{}],383:[function(require,module,exports){
 'use strict'
 
 var schemas = {
@@ -68332,7 +73693,7 @@ schemas.har.properties.log = schemas.log
 
 module.exports = schemas
 
-},{"./cache.json":371,"./cacheEntry.json":372,"./content.json":373,"./cookie.json":374,"./creator.json":375,"./entry.json":376,"./har.json":377,"./log.json":379,"./page.json":380,"./pageTimings.json":381,"./postData.json":382,"./record.json":383,"./request.json":384,"./response.json":385,"./timings.json":386}],379:[function(require,module,exports){
+},{"./cache.json":376,"./cacheEntry.json":377,"./content.json":378,"./cookie.json":379,"./creator.json":380,"./entry.json":381,"./har.json":382,"./log.json":384,"./page.json":385,"./pageTimings.json":386,"./postData.json":387,"./record.json":388,"./request.json":389,"./response.json":390,"./timings.json":391}],384:[function(require,module,exports){
 module.exports={
   "type": "object",
   "required": [
@@ -68368,7 +73729,7 @@ module.exports={
   }
 }
 
-},{}],380:[function(require,module,exports){
+},{}],385:[function(require,module,exports){
 module.exports={
   "type": "object",
   "optional": true,
@@ -68400,7 +73761,7 @@ module.exports={
   }
 }
 
-},{}],381:[function(require,module,exports){
+},{}],386:[function(require,module,exports){
 module.exports={
   "type": "object",
   "properties": {
@@ -68418,7 +73779,7 @@ module.exports={
   }
 }
 
-},{}],382:[function(require,module,exports){
+},{}],387:[function(require,module,exports){
 module.exports={
   "type": "object",
   "optional": true,
@@ -68461,7 +73822,7 @@ module.exports={
   }
 }
 
-},{}],383:[function(require,module,exports){
+},{}],388:[function(require,module,exports){
 module.exports={
   "type": "object",
   "required": [
@@ -68481,7 +73842,7 @@ module.exports={
   }
 }
 
-},{}],384:[function(require,module,exports){
+},{}],389:[function(require,module,exports){
 module.exports={
   "type": "object",
   "required": [
@@ -68538,7 +73899,7 @@ module.exports={
   }
 }
 
-},{}],385:[function(require,module,exports){
+},{}],390:[function(require,module,exports){
 module.exports={
   "type": "object",
   "required": [
@@ -68592,7 +73953,7 @@ module.exports={
   }
 }
 
-},{}],386:[function(require,module,exports){
+},{}],391:[function(require,module,exports){
 module.exports={
   "required": [
     "send",
@@ -68634,7 +73995,7 @@ module.exports={
   }
 }
 
-},{}],387:[function(require,module,exports){
+},{}],392:[function(require,module,exports){
 exports['date-time'] = /^\d{4}-(?:0[0-9]{1}|1[0-2]{1})-[0-9]{2}[tT ]\d{2}:\d{2}:\d{2}(\.\d+)?([zZ]|[+-]\d{2}:\d{2})$/
 exports['date'] = /^\d{4}-(?:0[0-9]{1}|1[0-2]{1})-[0-9]{2}$/
 exports['time'] = /^\d{2}:\d{2}:\d{2}$/
@@ -68650,7 +74011,7 @@ exports['style'] = /\s*(.+?):\s*([^;]+);?/g
 exports['phone'] = /^\+(?:[0-9] ?){6,14}[0-9]$/
 exports['utc-millisec'] = /^[0-9]+(\.?[0-9]+)?$/
 
-},{}],388:[function(require,module,exports){
+},{}],393:[function(require,module,exports){
 var genobj = require('generate-object-property')
 var genfun = require('generate-function')
 var jsonpointer = require('jsonpointer')
@@ -69227,7 +74588,7 @@ module.exports.filter = function(schema, opts) {
   }
 }
 
-},{"./formats":387,"generate-function":389,"generate-object-property":390,"jsonpointer":392,"xtend":393}],389:[function(require,module,exports){
+},{"./formats":392,"generate-function":394,"generate-object-property":395,"jsonpointer":397,"xtend":398}],394:[function(require,module,exports){
 var util = require('util')
 
 var INDENT_START = /[\{\[]/
@@ -69290,7 +74651,7 @@ module.exports = function() {
   return line
 }
 
-},{"util":252}],390:[function(require,module,exports){
+},{"util":252}],395:[function(require,module,exports){
 var isProperty = require('is-property')
 
 var gen = function(obj, prop) {
@@ -69304,13 +74665,13 @@ gen.property = function (prop) {
 
 module.exports = gen
 
-},{"is-property":391}],391:[function(require,module,exports){
+},{"is-property":396}],396:[function(require,module,exports){
 "use strict"
 function isProperty(str) {
   return /^[$A-Z\_a-z\xaa\xb5\xba\xc0-\xd6\xd8-\xf6\xf8-\u02c1\u02c6-\u02d1\u02e0-\u02e4\u02ec\u02ee\u0370-\u0374\u0376\u0377\u037a-\u037d\u0386\u0388-\u038a\u038c\u038e-\u03a1\u03a3-\u03f5\u03f7-\u0481\u048a-\u0527\u0531-\u0556\u0559\u0561-\u0587\u05d0-\u05ea\u05f0-\u05f2\u0620-\u064a\u066e\u066f\u0671-\u06d3\u06d5\u06e5\u06e6\u06ee\u06ef\u06fa-\u06fc\u06ff\u0710\u0712-\u072f\u074d-\u07a5\u07b1\u07ca-\u07ea\u07f4\u07f5\u07fa\u0800-\u0815\u081a\u0824\u0828\u0840-\u0858\u08a0\u08a2-\u08ac\u0904-\u0939\u093d\u0950\u0958-\u0961\u0971-\u0977\u0979-\u097f\u0985-\u098c\u098f\u0990\u0993-\u09a8\u09aa-\u09b0\u09b2\u09b6-\u09b9\u09bd\u09ce\u09dc\u09dd\u09df-\u09e1\u09f0\u09f1\u0a05-\u0a0a\u0a0f\u0a10\u0a13-\u0a28\u0a2a-\u0a30\u0a32\u0a33\u0a35\u0a36\u0a38\u0a39\u0a59-\u0a5c\u0a5e\u0a72-\u0a74\u0a85-\u0a8d\u0a8f-\u0a91\u0a93-\u0aa8\u0aaa-\u0ab0\u0ab2\u0ab3\u0ab5-\u0ab9\u0abd\u0ad0\u0ae0\u0ae1\u0b05-\u0b0c\u0b0f\u0b10\u0b13-\u0b28\u0b2a-\u0b30\u0b32\u0b33\u0b35-\u0b39\u0b3d\u0b5c\u0b5d\u0b5f-\u0b61\u0b71\u0b83\u0b85-\u0b8a\u0b8e-\u0b90\u0b92-\u0b95\u0b99\u0b9a\u0b9c\u0b9e\u0b9f\u0ba3\u0ba4\u0ba8-\u0baa\u0bae-\u0bb9\u0bd0\u0c05-\u0c0c\u0c0e-\u0c10\u0c12-\u0c28\u0c2a-\u0c33\u0c35-\u0c39\u0c3d\u0c58\u0c59\u0c60\u0c61\u0c85-\u0c8c\u0c8e-\u0c90\u0c92-\u0ca8\u0caa-\u0cb3\u0cb5-\u0cb9\u0cbd\u0cde\u0ce0\u0ce1\u0cf1\u0cf2\u0d05-\u0d0c\u0d0e-\u0d10\u0d12-\u0d3a\u0d3d\u0d4e\u0d60\u0d61\u0d7a-\u0d7f\u0d85-\u0d96\u0d9a-\u0db1\u0db3-\u0dbb\u0dbd\u0dc0-\u0dc6\u0e01-\u0e30\u0e32\u0e33\u0e40-\u0e46\u0e81\u0e82\u0e84\u0e87\u0e88\u0e8a\u0e8d\u0e94-\u0e97\u0e99-\u0e9f\u0ea1-\u0ea3\u0ea5\u0ea7\u0eaa\u0eab\u0ead-\u0eb0\u0eb2\u0eb3\u0ebd\u0ec0-\u0ec4\u0ec6\u0edc-\u0edf\u0f00\u0f40-\u0f47\u0f49-\u0f6c\u0f88-\u0f8c\u1000-\u102a\u103f\u1050-\u1055\u105a-\u105d\u1061\u1065\u1066\u106e-\u1070\u1075-\u1081\u108e\u10a0-\u10c5\u10c7\u10cd\u10d0-\u10fa\u10fc-\u1248\u124a-\u124d\u1250-\u1256\u1258\u125a-\u125d\u1260-\u1288\u128a-\u128d\u1290-\u12b0\u12b2-\u12b5\u12b8-\u12be\u12c0\u12c2-\u12c5\u12c8-\u12d6\u12d8-\u1310\u1312-\u1315\u1318-\u135a\u1380-\u138f\u13a0-\u13f4\u1401-\u166c\u166f-\u167f\u1681-\u169a\u16a0-\u16ea\u16ee-\u16f0\u1700-\u170c\u170e-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176c\u176e-\u1770\u1780-\u17b3\u17d7\u17dc\u1820-\u1877\u1880-\u18a8\u18aa\u18b0-\u18f5\u1900-\u191c\u1950-\u196d\u1970-\u1974\u1980-\u19ab\u19c1-\u19c7\u1a00-\u1a16\u1a20-\u1a54\u1aa7\u1b05-\u1b33\u1b45-\u1b4b\u1b83-\u1ba0\u1bae\u1baf\u1bba-\u1be5\u1c00-\u1c23\u1c4d-\u1c4f\u1c5a-\u1c7d\u1ce9-\u1cec\u1cee-\u1cf1\u1cf5\u1cf6\u1d00-\u1dbf\u1e00-\u1f15\u1f18-\u1f1d\u1f20-\u1f45\u1f48-\u1f4d\u1f50-\u1f57\u1f59\u1f5b\u1f5d\u1f5f-\u1f7d\u1f80-\u1fb4\u1fb6-\u1fbc\u1fbe\u1fc2-\u1fc4\u1fc6-\u1fcc\u1fd0-\u1fd3\u1fd6-\u1fdb\u1fe0-\u1fec\u1ff2-\u1ff4\u1ff6-\u1ffc\u2071\u207f\u2090-\u209c\u2102\u2107\u210a-\u2113\u2115\u2119-\u211d\u2124\u2126\u2128\u212a-\u212d\u212f-\u2139\u213c-\u213f\u2145-\u2149\u214e\u2160-\u2188\u2c00-\u2c2e\u2c30-\u2c5e\u2c60-\u2ce4\u2ceb-\u2cee\u2cf2\u2cf3\u2d00-\u2d25\u2d27\u2d2d\u2d30-\u2d67\u2d6f\u2d80-\u2d96\u2da0-\u2da6\u2da8-\u2dae\u2db0-\u2db6\u2db8-\u2dbe\u2dc0-\u2dc6\u2dc8-\u2dce\u2dd0-\u2dd6\u2dd8-\u2dde\u2e2f\u3005-\u3007\u3021-\u3029\u3031-\u3035\u3038-\u303c\u3041-\u3096\u309d-\u309f\u30a1-\u30fa\u30fc-\u30ff\u3105-\u312d\u3131-\u318e\u31a0-\u31ba\u31f0-\u31ff\u3400-\u4db5\u4e00-\u9fcc\ua000-\ua48c\ua4d0-\ua4fd\ua500-\ua60c\ua610-\ua61f\ua62a\ua62b\ua640-\ua66e\ua67f-\ua697\ua6a0-\ua6ef\ua717-\ua71f\ua722-\ua788\ua78b-\ua78e\ua790-\ua793\ua7a0-\ua7aa\ua7f8-\ua801\ua803-\ua805\ua807-\ua80a\ua80c-\ua822\ua840-\ua873\ua882-\ua8b3\ua8f2-\ua8f7\ua8fb\ua90a-\ua925\ua930-\ua946\ua960-\ua97c\ua984-\ua9b2\ua9cf\uaa00-\uaa28\uaa40-\uaa42\uaa44-\uaa4b\uaa60-\uaa76\uaa7a\uaa80-\uaaaf\uaab1\uaab5\uaab6\uaab9-\uaabd\uaac0\uaac2\uaadb-\uaadd\uaae0-\uaaea\uaaf2-\uaaf4\uab01-\uab06\uab09-\uab0e\uab11-\uab16\uab20-\uab26\uab28-\uab2e\uabc0-\uabe2\uac00-\ud7a3\ud7b0-\ud7c6\ud7cb-\ud7fb\uf900-\ufa6d\ufa70-\ufad9\ufb00-\ufb06\ufb13-\ufb17\ufb1d\ufb1f-\ufb28\ufb2a-\ufb36\ufb38-\ufb3c\ufb3e\ufb40\ufb41\ufb43\ufb44\ufb46-\ufbb1\ufbd3-\ufd3d\ufd50-\ufd8f\ufd92-\ufdc7\ufdf0-\ufdfb\ufe70-\ufe74\ufe76-\ufefc\uff21-\uff3a\uff41-\uff5a\uff66-\uffbe\uffc2-\uffc7\uffca-\uffcf\uffd2-\uffd7\uffda-\uffdc][$A-Z\_a-z\xaa\xb5\xba\xc0-\xd6\xd8-\xf6\xf8-\u02c1\u02c6-\u02d1\u02e0-\u02e4\u02ec\u02ee\u0370-\u0374\u0376\u0377\u037a-\u037d\u0386\u0388-\u038a\u038c\u038e-\u03a1\u03a3-\u03f5\u03f7-\u0481\u048a-\u0527\u0531-\u0556\u0559\u0561-\u0587\u05d0-\u05ea\u05f0-\u05f2\u0620-\u064a\u066e\u066f\u0671-\u06d3\u06d5\u06e5\u06e6\u06ee\u06ef\u06fa-\u06fc\u06ff\u0710\u0712-\u072f\u074d-\u07a5\u07b1\u07ca-\u07ea\u07f4\u07f5\u07fa\u0800-\u0815\u081a\u0824\u0828\u0840-\u0858\u08a0\u08a2-\u08ac\u0904-\u0939\u093d\u0950\u0958-\u0961\u0971-\u0977\u0979-\u097f\u0985-\u098c\u098f\u0990\u0993-\u09a8\u09aa-\u09b0\u09b2\u09b6-\u09b9\u09bd\u09ce\u09dc\u09dd\u09df-\u09e1\u09f0\u09f1\u0a05-\u0a0a\u0a0f\u0a10\u0a13-\u0a28\u0a2a-\u0a30\u0a32\u0a33\u0a35\u0a36\u0a38\u0a39\u0a59-\u0a5c\u0a5e\u0a72-\u0a74\u0a85-\u0a8d\u0a8f-\u0a91\u0a93-\u0aa8\u0aaa-\u0ab0\u0ab2\u0ab3\u0ab5-\u0ab9\u0abd\u0ad0\u0ae0\u0ae1\u0b05-\u0b0c\u0b0f\u0b10\u0b13-\u0b28\u0b2a-\u0b30\u0b32\u0b33\u0b35-\u0b39\u0b3d\u0b5c\u0b5d\u0b5f-\u0b61\u0b71\u0b83\u0b85-\u0b8a\u0b8e-\u0b90\u0b92-\u0b95\u0b99\u0b9a\u0b9c\u0b9e\u0b9f\u0ba3\u0ba4\u0ba8-\u0baa\u0bae-\u0bb9\u0bd0\u0c05-\u0c0c\u0c0e-\u0c10\u0c12-\u0c28\u0c2a-\u0c33\u0c35-\u0c39\u0c3d\u0c58\u0c59\u0c60\u0c61\u0c85-\u0c8c\u0c8e-\u0c90\u0c92-\u0ca8\u0caa-\u0cb3\u0cb5-\u0cb9\u0cbd\u0cde\u0ce0\u0ce1\u0cf1\u0cf2\u0d05-\u0d0c\u0d0e-\u0d10\u0d12-\u0d3a\u0d3d\u0d4e\u0d60\u0d61\u0d7a-\u0d7f\u0d85-\u0d96\u0d9a-\u0db1\u0db3-\u0dbb\u0dbd\u0dc0-\u0dc6\u0e01-\u0e30\u0e32\u0e33\u0e40-\u0e46\u0e81\u0e82\u0e84\u0e87\u0e88\u0e8a\u0e8d\u0e94-\u0e97\u0e99-\u0e9f\u0ea1-\u0ea3\u0ea5\u0ea7\u0eaa\u0eab\u0ead-\u0eb0\u0eb2\u0eb3\u0ebd\u0ec0-\u0ec4\u0ec6\u0edc-\u0edf\u0f00\u0f40-\u0f47\u0f49-\u0f6c\u0f88-\u0f8c\u1000-\u102a\u103f\u1050-\u1055\u105a-\u105d\u1061\u1065\u1066\u106e-\u1070\u1075-\u1081\u108e\u10a0-\u10c5\u10c7\u10cd\u10d0-\u10fa\u10fc-\u1248\u124a-\u124d\u1250-\u1256\u1258\u125a-\u125d\u1260-\u1288\u128a-\u128d\u1290-\u12b0\u12b2-\u12b5\u12b8-\u12be\u12c0\u12c2-\u12c5\u12c8-\u12d6\u12d8-\u1310\u1312-\u1315\u1318-\u135a\u1380-\u138f\u13a0-\u13f4\u1401-\u166c\u166f-\u167f\u1681-\u169a\u16a0-\u16ea\u16ee-\u16f0\u1700-\u170c\u170e-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176c\u176e-\u1770\u1780-\u17b3\u17d7\u17dc\u1820-\u1877\u1880-\u18a8\u18aa\u18b0-\u18f5\u1900-\u191c\u1950-\u196d\u1970-\u1974\u1980-\u19ab\u19c1-\u19c7\u1a00-\u1a16\u1a20-\u1a54\u1aa7\u1b05-\u1b33\u1b45-\u1b4b\u1b83-\u1ba0\u1bae\u1baf\u1bba-\u1be5\u1c00-\u1c23\u1c4d-\u1c4f\u1c5a-\u1c7d\u1ce9-\u1cec\u1cee-\u1cf1\u1cf5\u1cf6\u1d00-\u1dbf\u1e00-\u1f15\u1f18-\u1f1d\u1f20-\u1f45\u1f48-\u1f4d\u1f50-\u1f57\u1f59\u1f5b\u1f5d\u1f5f-\u1f7d\u1f80-\u1fb4\u1fb6-\u1fbc\u1fbe\u1fc2-\u1fc4\u1fc6-\u1fcc\u1fd0-\u1fd3\u1fd6-\u1fdb\u1fe0-\u1fec\u1ff2-\u1ff4\u1ff6-\u1ffc\u2071\u207f\u2090-\u209c\u2102\u2107\u210a-\u2113\u2115\u2119-\u211d\u2124\u2126\u2128\u212a-\u212d\u212f-\u2139\u213c-\u213f\u2145-\u2149\u214e\u2160-\u2188\u2c00-\u2c2e\u2c30-\u2c5e\u2c60-\u2ce4\u2ceb-\u2cee\u2cf2\u2cf3\u2d00-\u2d25\u2d27\u2d2d\u2d30-\u2d67\u2d6f\u2d80-\u2d96\u2da0-\u2da6\u2da8-\u2dae\u2db0-\u2db6\u2db8-\u2dbe\u2dc0-\u2dc6\u2dc8-\u2dce\u2dd0-\u2dd6\u2dd8-\u2dde\u2e2f\u3005-\u3007\u3021-\u3029\u3031-\u3035\u3038-\u303c\u3041-\u3096\u309d-\u309f\u30a1-\u30fa\u30fc-\u30ff\u3105-\u312d\u3131-\u318e\u31a0-\u31ba\u31f0-\u31ff\u3400-\u4db5\u4e00-\u9fcc\ua000-\ua48c\ua4d0-\ua4fd\ua500-\ua60c\ua610-\ua61f\ua62a\ua62b\ua640-\ua66e\ua67f-\ua697\ua6a0-\ua6ef\ua717-\ua71f\ua722-\ua788\ua78b-\ua78e\ua790-\ua793\ua7a0-\ua7aa\ua7f8-\ua801\ua803-\ua805\ua807-\ua80a\ua80c-\ua822\ua840-\ua873\ua882-\ua8b3\ua8f2-\ua8f7\ua8fb\ua90a-\ua925\ua930-\ua946\ua960-\ua97c\ua984-\ua9b2\ua9cf\uaa00-\uaa28\uaa40-\uaa42\uaa44-\uaa4b\uaa60-\uaa76\uaa7a\uaa80-\uaaaf\uaab1\uaab5\uaab6\uaab9-\uaabd\uaac0\uaac2\uaadb-\uaadd\uaae0-\uaaea\uaaf2-\uaaf4\uab01-\uab06\uab09-\uab0e\uab11-\uab16\uab20-\uab26\uab28-\uab2e\uabc0-\uabe2\uac00-\ud7a3\ud7b0-\ud7c6\ud7cb-\ud7fb\uf900-\ufa6d\ufa70-\ufad9\ufb00-\ufb06\ufb13-\ufb17\ufb1d\ufb1f-\ufb28\ufb2a-\ufb36\ufb38-\ufb3c\ufb3e\ufb40\ufb41\ufb43\ufb44\ufb46-\ufbb1\ufbd3-\ufd3d\ufd50-\ufd8f\ufd92-\ufdc7\ufdf0-\ufdfb\ufe70-\ufe74\ufe76-\ufefc\uff21-\uff3a\uff41-\uff5a\uff66-\uffbe\uffc2-\uffc7\uffca-\uffcf\uffd2-\uffd7\uffda-\uffdc0-9\u0300-\u036f\u0483-\u0487\u0591-\u05bd\u05bf\u05c1\u05c2\u05c4\u05c5\u05c7\u0610-\u061a\u064b-\u0669\u0670\u06d6-\u06dc\u06df-\u06e4\u06e7\u06e8\u06ea-\u06ed\u06f0-\u06f9\u0711\u0730-\u074a\u07a6-\u07b0\u07c0-\u07c9\u07eb-\u07f3\u0816-\u0819\u081b-\u0823\u0825-\u0827\u0829-\u082d\u0859-\u085b\u08e4-\u08fe\u0900-\u0903\u093a-\u093c\u093e-\u094f\u0951-\u0957\u0962\u0963\u0966-\u096f\u0981-\u0983\u09bc\u09be-\u09c4\u09c7\u09c8\u09cb-\u09cd\u09d7\u09e2\u09e3\u09e6-\u09ef\u0a01-\u0a03\u0a3c\u0a3e-\u0a42\u0a47\u0a48\u0a4b-\u0a4d\u0a51\u0a66-\u0a71\u0a75\u0a81-\u0a83\u0abc\u0abe-\u0ac5\u0ac7-\u0ac9\u0acb-\u0acd\u0ae2\u0ae3\u0ae6-\u0aef\u0b01-\u0b03\u0b3c\u0b3e-\u0b44\u0b47\u0b48\u0b4b-\u0b4d\u0b56\u0b57\u0b62\u0b63\u0b66-\u0b6f\u0b82\u0bbe-\u0bc2\u0bc6-\u0bc8\u0bca-\u0bcd\u0bd7\u0be6-\u0bef\u0c01-\u0c03\u0c3e-\u0c44\u0c46-\u0c48\u0c4a-\u0c4d\u0c55\u0c56\u0c62\u0c63\u0c66-\u0c6f\u0c82\u0c83\u0cbc\u0cbe-\u0cc4\u0cc6-\u0cc8\u0cca-\u0ccd\u0cd5\u0cd6\u0ce2\u0ce3\u0ce6-\u0cef\u0d02\u0d03\u0d3e-\u0d44\u0d46-\u0d48\u0d4a-\u0d4d\u0d57\u0d62\u0d63\u0d66-\u0d6f\u0d82\u0d83\u0dca\u0dcf-\u0dd4\u0dd6\u0dd8-\u0ddf\u0df2\u0df3\u0e31\u0e34-\u0e3a\u0e47-\u0e4e\u0e50-\u0e59\u0eb1\u0eb4-\u0eb9\u0ebb\u0ebc\u0ec8-\u0ecd\u0ed0-\u0ed9\u0f18\u0f19\u0f20-\u0f29\u0f35\u0f37\u0f39\u0f3e\u0f3f\u0f71-\u0f84\u0f86\u0f87\u0f8d-\u0f97\u0f99-\u0fbc\u0fc6\u102b-\u103e\u1040-\u1049\u1056-\u1059\u105e-\u1060\u1062-\u1064\u1067-\u106d\u1071-\u1074\u1082-\u108d\u108f-\u109d\u135d-\u135f\u1712-\u1714\u1732-\u1734\u1752\u1753\u1772\u1773\u17b4-\u17d3\u17dd\u17e0-\u17e9\u180b-\u180d\u1810-\u1819\u18a9\u1920-\u192b\u1930-\u193b\u1946-\u194f\u19b0-\u19c0\u19c8\u19c9\u19d0-\u19d9\u1a17-\u1a1b\u1a55-\u1a5e\u1a60-\u1a7c\u1a7f-\u1a89\u1a90-\u1a99\u1b00-\u1b04\u1b34-\u1b44\u1b50-\u1b59\u1b6b-\u1b73\u1b80-\u1b82\u1ba1-\u1bad\u1bb0-\u1bb9\u1be6-\u1bf3\u1c24-\u1c37\u1c40-\u1c49\u1c50-\u1c59\u1cd0-\u1cd2\u1cd4-\u1ce8\u1ced\u1cf2-\u1cf4\u1dc0-\u1de6\u1dfc-\u1dff\u200c\u200d\u203f\u2040\u2054\u20d0-\u20dc\u20e1\u20e5-\u20f0\u2cef-\u2cf1\u2d7f\u2de0-\u2dff\u302a-\u302f\u3099\u309a\ua620-\ua629\ua66f\ua674-\ua67d\ua69f\ua6f0\ua6f1\ua802\ua806\ua80b\ua823-\ua827\ua880\ua881\ua8b4-\ua8c4\ua8d0-\ua8d9\ua8e0-\ua8f1\ua900-\ua909\ua926-\ua92d\ua947-\ua953\ua980-\ua983\ua9b3-\ua9c0\ua9d0-\ua9d9\uaa29-\uaa36\uaa43\uaa4c\uaa4d\uaa50-\uaa59\uaa7b\uaab0\uaab2-\uaab4\uaab7\uaab8\uaabe\uaabf\uaac1\uaaeb-\uaaef\uaaf5\uaaf6\uabe3-\uabea\uabec\uabed\uabf0-\uabf9\ufb1e\ufe00-\ufe0f\ufe20-\ufe26\ufe33\ufe34\ufe4d-\ufe4f\uff10-\uff19\uff3f]*$/.test(str)
 }
 module.exports = isProperty
-},{}],392:[function(require,module,exports){
+},{}],397:[function(require,module,exports){
 var untilde = function(str) {
   return str.replace(/~./g, function(m) {
     switch (m) {
@@ -69388,16 +74749,16 @@ var set = function(obj, pointer, value) {
 exports.get = get
 exports.set = set
 
-},{}],393:[function(require,module,exports){
+},{}],398:[function(require,module,exports){
 arguments[4][255][0].apply(exports,arguments)
-},{"dup":255}],394:[function(require,module,exports){
+},{"dup":255}],399:[function(require,module,exports){
 (function (global){
 'use strict';
 
 module.exports = global.Promise || require('pinkie');
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"pinkie":395}],395:[function(require,module,exports){
+},{"pinkie":400}],400:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -69693,7 +75054,7 @@ Promise.reject = function (reason) {
 module.exports = Promise;
 
 }).call(this,require('_process'))
-},{"_process":223}],396:[function(require,module,exports){
+},{"_process":223}],401:[function(require,module,exports){
 /*
     HTTP Hawk Authentication Scheme
     Copyright (c) 2012-2014, Eran Hammer <eran@hammer.io>
@@ -70332,7 +75693,7 @@ if (typeof module !== 'undefined' && module.exports) {
 /* eslint-enable */
 // $lab:coverage:on$
 
-},{}],397:[function(require,module,exports){
+},{}],402:[function(require,module,exports){
 // Copyright 2015 Joyent, Inc.
 
 var parser = require('./parser');
@@ -70363,7 +75724,7 @@ module.exports = {
   verifyHMAC: verify.verifyHMAC
 };
 
-},{"./parser":398,"./signer":399,"./utils":400,"./verify":401}],398:[function(require,module,exports){
+},{"./parser":403,"./signer":404,"./utils":405,"./verify":406}],403:[function(require,module,exports){
 // Copyright 2012 Joyent, Inc.  All rights reserved.
 
 var assert = require('assert-plus');
@@ -70683,7 +76044,7 @@ module.exports = {
 
 };
 
-},{"./utils":400,"assert-plus":402,"util":252}],399:[function(require,module,exports){
+},{"./utils":405,"assert-plus":407,"util":252}],404:[function(require,module,exports){
 (function (Buffer){
 // Copyright 2012 Joyent, Inc.  All rights reserved.
 
@@ -71080,8 +76441,8 @@ module.exports = {
 
 };
 
-}).call(this,{"isBuffer":require("../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")})
-},{"../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":220,"./utils":400,"assert-plus":402,"crypto":25,"http":242,"jsprim":403,"sshpk":419,"util":252}],400:[function(require,module,exports){
+}).call(this,{"isBuffer":require("../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")})
+},{"../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":220,"./utils":405,"assert-plus":407,"crypto":25,"http":242,"jsprim":408,"sshpk":424,"util":252}],405:[function(require,module,exports){
 // Copyright 2012 Joyent, Inc.  All rights reserved.
 
 var assert = require('assert-plus');
@@ -71195,7 +76556,7 @@ module.exports = {
   }
 };
 
-},{"assert-plus":402,"sshpk":419,"util":252}],401:[function(require,module,exports){
+},{"assert-plus":407,"sshpk":424,"util":252}],406:[function(require,module,exports){
 (function (Buffer){
 // Copyright 2015 Joyent, Inc.
 
@@ -71287,7 +76648,7 @@ module.exports = {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"./utils":400,"assert-plus":402,"buffer":256,"crypto":25,"sshpk":419}],402:[function(require,module,exports){
+},{"./utils":405,"assert-plus":407,"buffer":256,"crypto":25,"sshpk":424}],407:[function(require,module,exports){
 (function (Buffer,process){
 // Copyright (c) 2012, Mark Cavage. All rights reserved.
 
@@ -71535,8 +76896,8 @@ Object.keys(assert).forEach(function (k) {
         };
 });
 
-}).call(this,{"isBuffer":require("../../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")},require('_process'))
-},{"../../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":220,"_process":223,"assert":10,"stream":241,"util":252}],403:[function(require,module,exports){
+}).call(this,{"isBuffer":require("../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")},require('_process'))
+},{"../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":220,"_process":223,"assert":10,"stream":241,"util":252}],408:[function(require,module,exports){
 /*
  * lib/jsprim.js: utilities for primitive JavaScript types
  */
@@ -72016,7 +77377,7 @@ function mergeObjects(provided, overrides, defaults)
 	return (rv);
 }
 
-},{"assert":10,"extsprintf":404,"json-schema":405,"util":252,"verror":406}],404:[function(require,module,exports){
+},{"assert":10,"extsprintf":409,"json-schema":410,"util":252,"verror":411}],409:[function(require,module,exports){
 /*
  * extsprintf.js: extended POSIX-style sprintf
  */
@@ -72184,7 +77545,7 @@ function dumpException(ex)
 	return (ret);
 }
 
-},{"assert":10,"util":252}],405:[function(require,module,exports){
+},{"assert":10,"util":252}],410:[function(require,module,exports){
 /**
  * JSONSchema Validator - Validates JavaScript objects using JSON Schemas
  *	(http://www.json.com/json-schema-proposal/)
@@ -72446,7 +77807,7 @@ exports.mustBeValid = function(result){
 return exports;
 });
 
-},{}],406:[function(require,module,exports){
+},{}],411:[function(require,module,exports){
 /*
  * verror.js: richer JavaScript errors
  */
@@ -72605,7 +77966,7 @@ WError.prototype.cause = function we_cause(c)
 	return (this.we_cause);
 };
 
-},{"assert":10,"extsprintf":404,"util":252}],407:[function(require,module,exports){
+},{"assert":10,"extsprintf":409,"util":252}],412:[function(require,module,exports){
 (function (Buffer){
 // Copyright 2015 Joyent, Inc.
 
@@ -72777,7 +78138,7 @@ module.exports = {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":256}],408:[function(require,module,exports){
+},{"buffer":256}],413:[function(require,module,exports){
 (function (Buffer){
 // Copyright 2015 Joyent, Inc.
 
@@ -73092,7 +78453,7 @@ ECPrivate.prototype.deriveSharedSecret = function (pubKey) {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"./algs":407,"./key":420,"./private-key":421,"./utils":424,"assert-plus":431,"buffer":256,"crypto":25,"ecc-jsbn":432,"ecc-jsbn/lib/ec":433,"jodid25519":435,"jsbn":441}],409:[function(require,module,exports){
+},{"./algs":412,"./key":425,"./private-key":426,"./utils":429,"assert-plus":436,"buffer":256,"crypto":25,"ecc-jsbn":437,"ecc-jsbn/lib/ec":438,"jodid25519":440,"jsbn":446}],414:[function(require,module,exports){
 (function (Buffer){
 // Copyright 2015 Joyent, Inc.
 
@@ -73190,7 +78551,7 @@ Signer.prototype.sign = function () {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"./signature":422,"assert-plus":431,"buffer":256,"stream":241,"tweetnacl":442,"util":252}],410:[function(require,module,exports){
+},{"./signature":427,"assert-plus":436,"buffer":256,"stream":241,"tweetnacl":447,"util":252}],415:[function(require,module,exports){
 // Copyright 2015 Joyent, Inc.
 
 var assert = require('assert-plus');
@@ -73250,7 +78611,7 @@ module.exports = {
 	SignatureParseError: SignatureParseError
 };
 
-},{"assert-plus":431,"util":252}],411:[function(require,module,exports){
+},{"assert-plus":436,"util":252}],416:[function(require,module,exports){
 (function (Buffer){
 // Copyright 2015 Joyent, Inc.
 
@@ -73394,7 +78755,7 @@ Fingerprint._oldVersionDetect = function (obj) {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"./algs":407,"./errors":410,"./key":420,"./utils":424,"assert-plus":431,"buffer":256,"crypto":25}],412:[function(require,module,exports){
+},{"./algs":412,"./errors":415,"./key":425,"./utils":429,"assert-plus":436,"buffer":256,"crypto":25}],417:[function(require,module,exports){
 (function (Buffer){
 // Copyright 2015 Joyent, Inc.
 
@@ -73471,7 +78832,7 @@ function write(key) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"../key":420,"../private-key":421,"../utils":424,"./pem":413,"./rfc4253":416,"./ssh":418,"assert-plus":431,"buffer":256}],413:[function(require,module,exports){
+},{"../key":425,"../private-key":426,"../utils":429,"./pem":418,"./rfc4253":421,"./ssh":423,"assert-plus":436,"buffer":256}],418:[function(require,module,exports){
 (function (Buffer){
 // Copyright 2015 Joyent, Inc.
 
@@ -73627,7 +78988,7 @@ function write(key, type) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"../algs":407,"../key":420,"../private-key":421,"../utils":424,"./pkcs1":414,"./pkcs8":415,"./rfc4253":416,"./ssh-private":417,"asn1":430,"assert-plus":431,"buffer":256}],414:[function(require,module,exports){
+},{"../algs":412,"../key":425,"../private-key":426,"../utils":429,"./pkcs1":419,"./pkcs8":420,"./rfc4253":421,"./ssh-private":422,"asn1":435,"assert-plus":436,"buffer":256}],419:[function(require,module,exports){
 (function (Buffer){
 // Copyright 2015 Joyent, Inc.
 
@@ -73951,7 +79312,7 @@ function writePkcs1ECDSAPrivate(der, key) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"../algs":407,"../key":420,"../private-key":421,"../utils":424,"./pem":413,"./pkcs8":415,"asn1":430,"assert-plus":431,"buffer":256}],415:[function(require,module,exports){
+},{"../algs":412,"../key":425,"../private-key":426,"../utils":429,"./pem":418,"./pkcs8":420,"asn1":435,"assert-plus":436,"buffer":256}],420:[function(require,module,exports){
 (function (Buffer){
 // Copyright 2015 Joyent, Inc.
 
@@ -74465,7 +79826,7 @@ function writePkcs8ECDSAPrivate(key, der) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"../algs":407,"../key":420,"../private-key":421,"../utils":424,"./pem":413,"asn1":430,"assert-plus":431,"buffer":256}],416:[function(require,module,exports){
+},{"../algs":412,"../key":425,"../private-key":426,"../utils":429,"./pem":418,"asn1":435,"assert-plus":436,"buffer":256}],421:[function(require,module,exports){
 (function (Buffer){
 // Copyright 2015 Joyent, Inc.
 
@@ -74614,7 +79975,7 @@ function write(key) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"../algs":407,"../key":420,"../private-key":421,"../ssh-buffer":423,"../utils":424,"assert-plus":431,"buffer":256}],417:[function(require,module,exports){
+},{"../algs":412,"../key":425,"../private-key":426,"../ssh-buffer":428,"../utils":429,"assert-plus":436,"buffer":256}],422:[function(require,module,exports){
 (function (Buffer){
 // Copyright 2015 Joyent, Inc.
 
@@ -74756,7 +80117,7 @@ function write(key) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"../algs":407,"../key":420,"../private-key":421,"../ssh-buffer":423,"../utils":424,"./pem":413,"./rfc4253":416,"asn1":430,"assert-plus":431,"buffer":256,"crypto":25}],418:[function(require,module,exports){
+},{"../algs":412,"../key":425,"../private-key":426,"../ssh-buffer":428,"../utils":429,"./pem":418,"./rfc4253":421,"asn1":435,"assert-plus":436,"buffer":256,"crypto":25}],423:[function(require,module,exports){
 (function (Buffer){
 // Copyright 2015 Joyent, Inc.
 
@@ -74874,7 +80235,7 @@ function write(key) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"../key":420,"../private-key":421,"../utils":424,"./rfc4253":416,"./ssh-private":417,"assert-plus":431,"buffer":256}],419:[function(require,module,exports){
+},{"../key":425,"../private-key":426,"../utils":429,"./rfc4253":421,"./ssh-private":422,"assert-plus":436,"buffer":256}],424:[function(require,module,exports){
 // Copyright 2015 Joyent, Inc.
 
 var Key = require('./key');
@@ -74901,7 +80262,7 @@ module.exports = {
 	SignatureParseError: errs.SignatureParseError
 };
 
-},{"./errors":410,"./fingerprint":411,"./key":420,"./private-key":421,"./signature":422}],420:[function(require,module,exports){
+},{"./errors":415,"./fingerprint":416,"./key":425,"./private-key":426,"./signature":427}],425:[function(require,module,exports){
 (function (Buffer){
 // Copyright 2015 Joyent, Inc.
 
@@ -75165,7 +80526,7 @@ Key._oldVersionDetect = function (obj) {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"./algs":407,"./dhe":408,"./ed-compat":409,"./errors":410,"./fingerprint":411,"./formats/auto":412,"./formats/pem":413,"./formats/pkcs1":414,"./formats/pkcs8":415,"./formats/rfc4253":416,"./formats/ssh":418,"./formats/ssh-private":417,"./private-key":421,"./signature":422,"./utils":424,"assert-plus":431,"buffer":256,"crypto":25}],421:[function(require,module,exports){
+},{"./algs":412,"./dhe":413,"./ed-compat":414,"./errors":415,"./fingerprint":416,"./formats/auto":417,"./formats/pem":418,"./formats/pkcs1":419,"./formats/pkcs8":420,"./formats/rfc4253":421,"./formats/ssh":423,"./formats/ssh-private":422,"./private-key":426,"./signature":427,"./utils":429,"assert-plus":436,"buffer":256,"crypto":25}],426:[function(require,module,exports){
 (function (Buffer){
 // Copyright 2015 Joyent, Inc.
 
@@ -75393,7 +80754,7 @@ PrivateKey._oldVersionDetect = function (obj) {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"./algs":407,"./ed-compat":409,"./errors":410,"./fingerprint":411,"./formats/auto":412,"./formats/pem":413,"./formats/pkcs1":414,"./formats/pkcs8":415,"./formats/rfc4253":416,"./formats/ssh-private":417,"./key":420,"./signature":422,"./utils":424,"assert-plus":431,"buffer":256,"crypto":25,"jodid25519":435,"util":252}],422:[function(require,module,exports){
+},{"./algs":412,"./ed-compat":414,"./errors":415,"./fingerprint":416,"./formats/auto":417,"./formats/pem":418,"./formats/pkcs1":419,"./formats/pkcs8":420,"./formats/rfc4253":421,"./formats/ssh-private":422,"./key":425,"./signature":427,"./utils":429,"assert-plus":436,"buffer":256,"crypto":25,"jodid25519":440,"util":252}],427:[function(require,module,exports){
 (function (Buffer){
 // Copyright 2015 Joyent, Inc.
 
@@ -75634,7 +80995,7 @@ Signature._oldVersionDetect = function (obj) {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"./algs":407,"./errors":410,"./ssh-buffer":423,"./utils":424,"asn1":430,"assert-plus":431,"buffer":256,"crypto":25}],423:[function(require,module,exports){
+},{"./algs":412,"./errors":415,"./ssh-buffer":428,"./utils":429,"asn1":435,"assert-plus":436,"buffer":256,"crypto":25}],428:[function(require,module,exports){
 (function (Buffer){
 // Copyright 2015 Joyent, Inc.
 
@@ -75683,8 +81044,7 @@ SSHBuffer.prototype.readBuffer = function () {
 	var len = this._buffer.readUInt32BE(this._offset);
 	this._offset += 4;
 	assert.ok(this._offset + len <= this._buffer.length,
-	    'length out of bounds at +0x' + this._offset.toString(16) +
-	    ' (data truncated?)');
+	    'length out of bounds at +0x' + this._offset.toString(16));
 	var buf = this._buffer.slice(this._offset, this._offset + len);
 	this._offset += len;
 	return (buf);
@@ -75762,7 +81122,7 @@ SSHBuffer.prototype.write = function (buf) {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"assert-plus":431,"buffer":256}],424:[function(require,module,exports){
+},{"assert-plus":436,"buffer":256}],429:[function(require,module,exports){
 (function (Buffer){
 // Copyright 2015 Joyent, Inc.
 
@@ -75973,7 +81333,7 @@ function addRSAMissing(key) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./private-key":421,"assert-plus":431,"buffer":256,"jsbn":441}],425:[function(require,module,exports){
+},{"./private-key":426,"assert-plus":436,"buffer":256,"jsbn":446}],430:[function(require,module,exports){
 // Copyright 2011 Mark Cavage <mcavage@gmail.com> All rights reserved.
 
 
@@ -75988,7 +81348,7 @@ module.exports = {
 
 };
 
-},{}],426:[function(require,module,exports){
+},{}],431:[function(require,module,exports){
 // Copyright 2011 Mark Cavage <mcavage@gmail.com> All rights reserved.
 
 var errors = require('./errors');
@@ -76017,7 +81377,7 @@ for (var e in errors) {
     module.exports[e] = errors[e];
 }
 
-},{"./errors":425,"./reader":427,"./types":428,"./writer":429}],427:[function(require,module,exports){
+},{"./errors":430,"./reader":432,"./types":433,"./writer":434}],432:[function(require,module,exports){
 (function (Buffer){
 // Copyright 2011 Mark Cavage <mcavage@gmail.com> All rights reserved.
 
@@ -76282,7 +81642,7 @@ Reader.prototype._readTag = function(tag) {
 module.exports = Reader;
 
 }).call(this,require("buffer").Buffer)
-},{"./errors":425,"./types":428,"assert":10,"buffer":256}],428:[function(require,module,exports){
+},{"./errors":430,"./types":433,"assert":10,"buffer":256}],433:[function(require,module,exports){
 // Copyright 2011 Mark Cavage <mcavage@gmail.com> All rights reserved.
 
 
@@ -76320,7 +81680,7 @@ module.exports = {
   Context: 128
 };
 
-},{}],429:[function(require,module,exports){
+},{}],434:[function(require,module,exports){
 (function (Buffer){
 // Copyright 2011 Mark Cavage <mcavage@gmail.com> All rights reserved.
 
@@ -76640,7 +82000,7 @@ Writer.prototype._ensure = function(len) {
 module.exports = Writer;
 
 }).call(this,require("buffer").Buffer)
-},{"./errors":425,"./types":428,"assert":10,"buffer":256}],430:[function(require,module,exports){
+},{"./errors":430,"./types":433,"assert":10,"buffer":256}],435:[function(require,module,exports){
 // Copyright 2011 Mark Cavage <mcavage@gmail.com> All rights reserved.
 
 // If you have no idea what ASN.1 or BER is, see this:
@@ -76662,7 +82022,7 @@ module.exports = {
 
 };
 
-},{"./ber/index":426}],431:[function(require,module,exports){
+},{"./ber/index":431}],436:[function(require,module,exports){
 (function (Buffer,process){
 // Copyright (c) 2012, Mark Cavage. All rights reserved.
 // Copyright 2015 Joyent, Inc.
@@ -76871,8 +82231,8 @@ function _setExports(ndebug) {
 
 module.exports = _setExports(process.env.NODE_NDEBUG);
 
-}).call(this,{"isBuffer":require("../../../../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")},require('_process'))
-},{"../../../../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":220,"_process":223,"assert":10,"stream":241,"util":252}],432:[function(require,module,exports){
+}).call(this,{"isBuffer":require("../../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")},require('_process'))
+},{"../../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":220,"_process":223,"assert":10,"stream":241,"util":252}],437:[function(require,module,exports){
 (function (Buffer){
 var crypto = require("crypto");
 var BigInteger = require("jsbn").BigInteger;
@@ -76933,7 +82293,7 @@ exports.ECKey = function(curve, key, isPublic)
 
 
 }).call(this,require("buffer").Buffer)
-},{"./lib/ec.js":433,"./lib/sec.js":434,"buffer":256,"crypto":25,"jsbn":441}],433:[function(require,module,exports){
+},{"./lib/ec.js":438,"./lib/sec.js":439,"buffer":256,"crypto":25,"jsbn":446}],438:[function(require,module,exports){
 // Basic Javascript Elliptic Curve implementation
 // Ported loosely from BouncyCastle's Java EC code
 // Only Fp curves implemented for now
@@ -77496,7 +82856,7 @@ var exports = {
 
 module.exports = exports
 
-},{"jsbn":441}],434:[function(require,module,exports){
+},{"jsbn":446}],439:[function(require,module,exports){
 // Named EC curves
 
 // Requires ec.js, jsbn.js, and jsbn2.js
@@ -77668,7 +83028,7 @@ module.exports = {
   "secp256r1":secp256r1
 }
 
-},{"./ec.js":433,"jsbn":441}],435:[function(require,module,exports){
+},{"./ec.js":438,"jsbn":446}],440:[function(require,module,exports){
 "use strict";
 
 /*
@@ -77705,7 +83065,7 @@ var utils = require('./lib/utils');
 
 module.exports = ns;
 
-},{"./lib/curve255":437,"./lib/dh":438,"./lib/eddsa":439,"./lib/utils":440}],436:[function(require,module,exports){
+},{"./lib/curve255":442,"./lib/dh":443,"./lib/eddsa":444,"./lib/utils":445}],441:[function(require,module,exports){
 "use strict";
 /**
  * @fileOverview
@@ -78188,7 +83548,7 @@ var crypto = require('crypto');
 
 module.exports = ns;
 
-},{"crypto":25}],437:[function(require,module,exports){
+},{"crypto":25}],442:[function(require,module,exports){
 "use strict";
 /**
  * @fileOverview
@@ -78411,7 +83771,7 @@ var utils = require('./utils');
 
 module.exports = ns;
 
-},{"./core":436,"./utils":440}],438:[function(require,module,exports){
+},{"./core":441,"./utils":445}],443:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 /**
@@ -78526,7 +83886,7 @@ var curve255 = require('./curve255');
 module.exports = ns;
 
 }).call(this,require("buffer").Buffer)
-},{"./core":436,"./curve255":437,"./utils":440,"buffer":256}],439:[function(require,module,exports){
+},{"./core":441,"./curve255":442,"./utils":445,"buffer":256}],444:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 /**
@@ -79102,8 +84462,8 @@ var crypto = require('crypto');
 
 module.exports = ns;
 
-}).call(this,{"isBuffer":require("../../../../../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")})
-},{"../../../../../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":220,"./core":436,"./curve255":437,"./utils":440,"crypto":25,"jsbn":441}],440:[function(require,module,exports){
+}).call(this,{"isBuffer":require("../../../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")})
+},{"../../../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":220,"./core":441,"./curve255":442,"./utils":445,"crypto":25,"jsbn":446}],445:[function(require,module,exports){
 "use strict";
 /**
  * @fileOverview
@@ -79303,7 +84663,7 @@ var core = require('./core');
 
 module.exports = ns;
 
-},{"./core":436}],441:[function(require,module,exports){
+},{"./core":441}],446:[function(require,module,exports){
 (function(){
 
     // Copyright (c) 2005  Tom Wu
@@ -80663,7 +86023,7 @@ module.exports = ns;
 
 }).call(this);
 
-},{}],442:[function(require,module,exports){
+},{}],447:[function(require,module,exports){
 (function (Buffer){
 (function(nacl) {
 'use strict';
@@ -83085,7 +88445,7 @@ nacl.setPRNG = function(fn) {
 })(typeof module !== 'undefined' && module.exports ? module.exports : (window.nacl = window.nacl || {}));
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":11,"crypto":11}],443:[function(require,module,exports){
+},{"buffer":11,"crypto":11}],448:[function(require,module,exports){
 module.exports      = isTypedArray
 isTypedArray.strict = isStrictTypedArray
 isTypedArray.loose  = isLooseTypedArray
@@ -83128,7 +88488,7 @@ function isLooseTypedArray(arr) {
   return names[toString.call(arr)]
 }
 
-},{}],444:[function(require,module,exports){
+},{}],449:[function(require,module,exports){
 var stream = require('stream')
 
 
@@ -83157,7 +88517,7 @@ module.exports.isReadable = isReadable
 module.exports.isWritable = isWritable
 module.exports.isDuplex   = isDuplex
 
-},{"stream":241}],445:[function(require,module,exports){
+},{"stream":241}],450:[function(require,module,exports){
 exports = module.exports = stringify
 exports.getSerialize = serializer
 
@@ -83186,7 +88546,7 @@ function serializer(replacer, cycleReplacer) {
   }
 }
 
-},{}],446:[function(require,module,exports){
+},{}],451:[function(require,module,exports){
 /*!
  * mime-types
  * Copyright(c) 2014 Jonathan Ong
@@ -83376,7 +88736,7 @@ function populateMaps(extensions, types) {
   })
 }
 
-},{"mime-db":448,"path":222}],447:[function(require,module,exports){
+},{"mime-db":453,"path":222}],452:[function(require,module,exports){
 module.exports={
   "application/1d-interleaved-parityfec": {
     "source": "iana"
@@ -83662,21 +89022,6 @@ module.exports={
   "application/edifact": {
     "source": "iana",
     "compressible": false
-  },
-  "application/emergencycalldata.comment+xml": {
-    "source": "iana"
-  },
-  "application/emergencycalldata.deviceinfo+xml": {
-    "source": "iana"
-  },
-  "application/emergencycalldata.providerinfo+xml": {
-    "source": "iana"
-  },
-  "application/emergencycalldata.serviceinfo+xml": {
-    "source": "iana"
-  },
-  "application/emergencycalldata.subscriberinfo+xml": {
-    "source": "iana"
   },
   "application/emma+xml": {
     "source": "iana",
@@ -85252,9 +90597,6 @@ module.exports={
   "application/vnd.ffsns": {
     "source": "iana"
   },
-  "application/vnd.filmit.zfc": {
-    "source": "iana"
-  },
   "application/vnd.fints": {
     "source": "iana"
   },
@@ -85386,18 +90728,6 @@ module.exports={
   "application/vnd.gmx": {
     "source": "iana",
     "extensions": ["gmx"]
-  },
-  "application/vnd.google-apps.document": {
-    "compressible": false,
-    "extensions": ["gdoc"]
-  },
-  "application/vnd.google-apps.presentation": {
-    "compressible": false,
-    "extensions": ["gslides"]
-  },
-  "application/vnd.google-apps.spreadsheet": {
-    "compressible": false,
-    "extensions": ["gsheet"]
   },
   "application/vnd.google-earth.kml+xml": {
     "source": "iana",
@@ -85816,9 +91146,6 @@ module.exports={
     "source": "iana",
     "extensions": ["portpkg"]
   },
-  "application/vnd.mapbox-vector-tile": {
-    "source": "iana"
-  },
   "application/vnd.marlin.drm.actiontoken+xml": {
     "source": "iana"
   },
@@ -86060,9 +91387,6 @@ module.exports={
     "source": "iana",
     "extensions": ["potm"]
   },
-  "application/vnd.ms-printdevicecapabilities+xml": {
-    "source": "iana"
-  },
   "application/vnd.ms-printing.printticket+xml": {
     "source": "apache"
   },
@@ -86071,12 +91395,6 @@ module.exports={
     "extensions": ["mpp","mpt"]
   },
   "application/vnd.ms-tnef": {
-    "source": "iana"
-  },
-  "application/vnd.ms-windows.devicepairing": {
-    "source": "iana"
-  },
-  "application/vnd.ms-windows.nwprinting.oob": {
     "source": "iana"
   },
   "application/vnd.ms-windows.printerpairing": {
@@ -87243,9 +92561,6 @@ module.exports={
   "application/vnd.tmd.mediaflex.api+xml": {
     "source": "iana"
   },
-  "application/vnd.tml": {
-    "source": "iana"
-  },
   "application/vnd.tmobile-livetv": {
     "source": "iana",
     "extensions": ["tmo"]
@@ -88308,9 +93623,6 @@ module.exports={
     "source": "iana"
   },
   "audio/evrcwb1": {
-    "source": "iana"
-  },
-  "audio/evs": {
     "source": "iana"
   },
   "audio/fwdred": {
@@ -89930,7 +95242,7 @@ module.exports={
   }
 }
 
-},{}],448:[function(require,module,exports){
+},{}],453:[function(require,module,exports){
 /*!
  * mime-db
  * Copyright(c) 2014 Jonathan Ong
@@ -89943,9 +95255,9 @@ module.exports={
 
 module.exports = require('./db.json')
 
-},{"./db.json":447}],449:[function(require,module,exports){
-arguments[4][324][0].apply(exports,arguments)
-},{"buffer":256,"crypto":25,"dup":324}],450:[function(require,module,exports){
+},{"./db.json":452}],454:[function(require,module,exports){
+arguments[4][325][0].apply(exports,arguments)
+},{"buffer":256,"crypto":25,"dup":325}],455:[function(require,module,exports){
 var crypto = require('crypto')
   , qs = require('querystring')
   ;
@@ -90081,7 +95393,7 @@ exports.plaintext = plaintext
 exports.sign = sign
 exports.rfc3986 = rfc3986
 
-},{"crypto":25,"querystring":227}],451:[function(require,module,exports){
+},{"crypto":25,"querystring":227}],456:[function(require,module,exports){
 // Load modules
 
 var Stringify = require('./stringify');
@@ -90098,7 +95410,7 @@ module.exports = {
     parse: Parse
 };
 
-},{"./parse":452,"./stringify":453}],452:[function(require,module,exports){
+},{"./parse":457,"./stringify":458}],457:[function(require,module,exports){
 // Load modules
 
 var Utils = require('./utils');
@@ -90287,7 +95599,7 @@ module.exports = function (str, options) {
     return Utils.compact(obj);
 };
 
-},{"./utils":454}],453:[function(require,module,exports){
+},{"./utils":459}],458:[function(require,module,exports){
 // Load modules
 
 var Utils = require('./utils');
@@ -90443,7 +95755,7 @@ module.exports = function (obj, options) {
     return keys.join(delimiter);
 };
 
-},{"./utils":454}],454:[function(require,module,exports){
+},{"./utils":459}],459:[function(require,module,exports){
 // Load modules
 
 
@@ -90635,7 +95947,7 @@ exports.isBuffer = function (obj) {
               obj.constructor.isBuffer(obj));
 };
 
-},{}],455:[function(require,module,exports){
+},{}],460:[function(require,module,exports){
 (function (Buffer){
 var util = require('util')
 var Stream = require('stream')
@@ -90741,7 +96053,7 @@ function alignedWrite(buffer) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":256,"stream":241,"string_decoder":247,"util":252}],456:[function(require,module,exports){
+},{"buffer":256,"stream":241,"string_decoder":247,"util":252}],461:[function(require,module,exports){
 /*!
  * Copyright (c) 2015, Salesforce.com, Inc.
  * All rights reserved.
@@ -92085,7 +97397,7 @@ module.exports = {
   canonicalDomain: canonicalDomain
 };
 
-},{"../package.json":462,"./memstore":457,"./pathMatch":458,"./permuteDomain":459,"./pubsuffix":460,"./store":461,"net":9,"punycode":224,"url":249}],457:[function(require,module,exports){
+},{"../package.json":467,"./memstore":462,"./pathMatch":463,"./permuteDomain":464,"./pubsuffix":465,"./store":466,"net":9,"punycode":224,"url":249}],462:[function(require,module,exports){
 /*!
  * Copyright (c) 2015, Salesforce.com, Inc.
  * All rights reserved.
@@ -92257,7 +97569,7 @@ MemoryCookieStore.prototype.getAllCookies = function(cb) {
   cb(null, cookies);
 };
 
-},{"./pathMatch":458,"./permuteDomain":459,"./store":461,"util":252}],458:[function(require,module,exports){
+},{"./pathMatch":463,"./permuteDomain":464,"./store":466,"util":252}],463:[function(require,module,exports){
 /*!
  * Copyright (c) 2015, Salesforce.com, Inc.
  * All rights reserved.
@@ -92320,7 +97632,7 @@ function pathMatch (reqPath, cookiePath) {
 
 exports.pathMatch = pathMatch;
 
-},{}],459:[function(require,module,exports){
+},{}],464:[function(require,module,exports){
 /*!
  * Copyright (c) 2015, Salesforce.com, Inc.
  * All rights reserved.
@@ -92378,7 +97690,7 @@ function permuteDomain (domain) {
 
 exports.permuteDomain = permuteDomain;
 
-},{"./pubsuffix":460}],460:[function(require,module,exports){
+},{"./pubsuffix":465}],465:[function(require,module,exports){
 /****************************************************
  * AUTOMATICALLY GENERATED by generate-pubsuffix.js *
  *                  DO NOT EDIT!                    *
@@ -92478,7 +97790,7 @@ var index = module.exports.index = Object.freeze(
 
 // END of automatically generated file
 
-},{"punycode":224}],461:[function(require,module,exports){
+},{"punycode":224}],466:[function(require,module,exports){
 /*!
  * Copyright (c) 2015, Salesforce.com, Inc.
  * All rights reserved.
@@ -92551,7 +97863,7 @@ Store.prototype.getAllCookies = function(cb) {
   throw new Error('getAllCookies is not implemented (therefore jar cannot be serialized)');
 };
 
-},{}],462:[function(require,module,exports){
+},{}],467:[function(require,module,exports){
 module.exports={
   "author": {
     "name": "Jeremy Stashewsky",
@@ -92643,7 +97955,7 @@ module.exports={
   "readme": "ERROR: No README data found!"
 }
 
-},{}],463:[function(require,module,exports){
+},{}],468:[function(require,module,exports){
 (function (process,Buffer){
 'use strict'
 
@@ -92890,7 +98202,7 @@ if (process.env.NODE_DEBUG && /\btunnel\b/.test(process.env.NODE_DEBUG)) {
 exports.debug = debug // for test
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"_process":223,"assert":10,"buffer":256,"events":217,"http":242,"https":218,"net":9,"tls":9,"util":252}],464:[function(require,module,exports){
+},{"_process":223,"assert":10,"buffer":256,"events":217,"http":242,"https":218,"net":9,"tls":9,"util":252}],469:[function(require,module,exports){
 (function (process,Buffer){
 'use strict'
 
@@ -94289,10300 +99601,7 @@ Request.prototype.toJSON = requestToJSON
 module.exports = Request
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./lib/auth":340,"./lib/cookies":341,"./lib/getProxyFromURI":342,"./lib/har":343,"./lib/helpers":344,"./lib/multipart":345,"./lib/oauth":346,"./lib/querystring":347,"./lib/redirect":348,"./lib/tunnel":349,"_process":223,"aws-sign2":350,"bl":351,"buffer":256,"caseless":362,"forever-agent":366,"form-data":367,"hawk":396,"http":242,"http-signature":397,"https":218,"is-typedarray":443,"mime-types":446,"stream":241,"stringstream":455,"url":249,"util":252,"zlib":24}],465:[function(require,module,exports){
-(function (process){
-/**
- * JSON RPC methods for Ethereum
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
-var net, request, syncRequest;
-if (NODE_JS) {
-    net = require("net");
-    request = require("request");
-    syncRequest = require("sync-request");
-    console.debug = console.log;
-} else {
-    request = require("browser-request");
-}
-var async = require("async");
-var BigNumber = require("bignumber.js");
-var contracts = require("augur-contracts");
-var abi = require("augur-abi");
-var errors = contracts.errors;
-
-BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
-
-function RPCError(err) {
-    this.name = err.error || err.name;
-    this.message = (err.error || err.name) + ": " + err.message;
-}
-
-RPCError.prototype = new Error();
-
-function isFunction(f) {
-    return Object.prototype.toString.call(f) === "[object Function]";
-}
-
-var HOSTED_NODES = [
-    "https://eth1.augur.net",
-    "https://eth3.augur.net",
-    "https://eth4.augur.net",
-    "https://eth5.augur.net"
-];
-
-module.exports = {
-
-    debug: {
-        tx: false,
-        broadcast: false,
-        fallback: false,
-        latency: true,
-        logs: false
-    },
-
-    // network load balancer
-    balancer: true,
-
-    // remove unresponsive nodes
-    excision: false,
-
-    // use IPC (only available on Node + Linux/OSX)
-    ipcpath: null,
-
-    // local ethereum node address
-    localnode: "http://127.0.0.1:8545",
-
-    // Maximum number of transaction verification attempts
-    TX_POLL_MAX: 72,
-
-    // Transaction polling interval
-    TX_POLL_INTERVAL: 3000,
-
-    // Default timeout for asynchronous POST
-    POST_TIMEOUT: 30000,
-
-    BALANCER_SAMPLES: 20,
-
-    DEFAULT_GAS: "0x2fd618",
-
-    ETHER: new BigNumber(10).toPower(18),
-
-    Error: RPCError,
-
-    errors: errors,
-
-    nodes: {
-        hosted: HOSTED_NODES.slice(),
-        local: null
-    },
-
-    primaryNode: null,
-
-    // Mean network latency for each node
-    latency: {},
-
-    // Number of latency samples taken for each node
-    samples: {},
-
-    // Unweighted mean network latency across all nodes
-    // (use debug.latency=true to see this)
-    netLatency: null,
-
-    // Total number of samples taken across all nodes
-    // (use debug.latency=true to see this)
-    netSamples: 0,
-
-    requests: 1,
-
-    txs: {},
-
-    rawTxs: {},
-
-    notifications: {},
-
-    unmarshal: function (string, returns, stride, init) {
-        var elements, array, position;
-        if (string && string.length >= 66) {
-            stride = stride || 64;
-            elements = Math.ceil((string.length - 2) / stride);
-            array = new Array(elements);
-            position = init || 2;
-            for (var i = 0; i < elements; ++i) {
-                array[i] = abi.prefix_hex(
-                    string.slice(position, position + stride)
-                );
-                position += stride;
-            }
-            if (array.length) {
-                if (parseInt(array[0]) === array.length - 1) {
-                    array.splice(0, 1);
-                } else if (parseInt(array[1]) === array.length - 2 ||
-                    parseInt(array[1]) / 32 === array.length - 2) {
-                    array.splice(0, 2);
-                }
-            }
-            for (i = 0; i < array.length; ++i) {
-                if (returns === "number[]") {
-                    array[i] = abi.string(array[i]);
-                } else if (returns === "unfix[]") {
-                    array[i] = abi.unfix(array[i], "string");
-                }
-            }
-            return array;
-        } else {
-            return string;
-        }
-    },
-
-    applyReturns: function (returns, result) {
-        returns = returns.toLowerCase();
-        if (result && result !== "0x") {
-            if (returns && returns.slice(-2) === "[]") {
-                result = this.unmarshal(result, returns);
-            } else if (returns === "string") {
-                result = abi.decode_hex(result, true);
-            } else if (returns === "number") {
-                result = abi.string(result);
-            } else if (returns === "bignumber") {
-                result = abi.bignum(result);
-            } else if (returns === "unfix") {
-                result = abi.unfix(result, "string");
-            }
-        }
-        return result;
-    },
-
-    parse: function (response, returns, callback) {
-        var results, len;
-        try {
-            if (response && typeof response === "string") {
-                response = JSON.parse(response);
-            }
-            if (response && typeof response === "object" && response !== null) {
-                if (response.error) {
-                    response = {
-                        error: response.error.code,
-                        message: response.error.message
-                    };
-                    if (!callback) return response;
-                    callback(response);
-                } else if (response.result !== undefined) {
-                    if (typeof response.result !== "boolean") {
-                        if (returns) {
-                            response.result = this.applyReturns(returns, response.result);
-                        } else {
-                            if (response.result && response.result.length > 2 &&
-                                response.result.slice(0,2) === "0x")
-                            {
-                                response.result = abi.remove_leading_zeros(response.result);
-                                response.result = abi.prefix_hex(response.result);
-                            }
-                        }
-                    }
-                    if (!callback) return response.result;
-                    callback(response.result);
-                } else if (response.constructor === Array && response.length) {
-                    len = response.length;
-                    results = new Array(len);
-                    for (var i = 0; i < len; ++i) {
-                        results[i] = response[i].result;
-                        if (response.error || (response[i] && response[i].error)) {
-                            if (this.debug.broadcast) {
-                                if (isFunction(callback)) return callback(response.error);
-                                throw new this.Error(response.error);
-                            }
-                        } else if (response[i].result !== undefined) {
-                            if (typeof response[i].result !== "boolean") {
-                                if (returns[i]) {
-                                    results[i] = this.applyReturns(returns[i], response[i].result);
-                                } else {
-                                    results[i] = abi.remove_leading_zeros(results[i]);
-                                    results[i] = abi.prefix_hex(results[i]);
-                                }
-                            }
-                        }
-                    }
-                    if (!isFunction(callback)) return results;
-                    callback(results);
-
-                // no result or error field
-                } else {
-                    var err = errors.NO_RESPONSE;
-                    err.bubble = response;
-                    if (isFunction(callback)) return callback(err);
-                    throw new this.Error(err);
-                }
-            }
-        } catch (e) {
-            var err = e;
-            if (e && e.name === "SyntaxError") {
-                err = errors.INVALID_RESPONSE;
-            }
-            if (isFunction(callback)) return callback(err);
-            throw new this.Error(err);
-        }
-    },
-
-    strip: function (tx) {
-        var returns;
-        if (tx.params !== undefined && tx.params.length && tx.params[0]) {
-            if (tx.params[0].returns) {
-                returns = tx.params[0].returns;
-                delete tx.params[0].returns;
-            }
-            if (tx.params[0].invocation) {
-                delete tx.params[0].invocation;
-            }
-        }
-        return returns;
-    },
-
-    exciseNode: function (err, deadNode, callback) {
-        if (deadNode && !this.nodes.local && !this.ipcpath) {
-            if (this.debug.logs) {
-                console.warn("[ethrpc] request to", deadNode, "failed:", err);
-            }
-            var deadIndex = this.nodes.hosted.indexOf(deadNode);
-            if (deadIndex > -1) {
-                this.nodes.hosted.splice(deadIndex, 1);
-                if (!this.nodes.hosted.length) {
-                    if (isFunction(callback)) {
-                        return callback(errors.HOSTED_NODE_FAILURE);
-                    }
-                    throw new this.Error(errors.HOSTED_NODE_FAILURE);
-                }
-            }
-            if (isFunction(callback)) callback();
-        }
-    },
-
-    postSync: function (rpcUrl, command, returns) {
-        var self = this;
-        var timeout, req = null;
-        if (command.timeout) {
-            timeout = command.timeout;
-            delete command.timeout;
-        } else {
-            timeout = this.POST_TIMEOUT;
-        }
-        if (NODE_JS) {
-            req = syncRequest('POST', rpcUrl, {json: command, timeout: timeout});
-            var response = req.getBody().toString();
-            return this.parse(response, returns);
-        }
-        console.warn("[ethrpc] synchronous RPC request to", rpcUrl, command);
-        if (window.XMLHttpRequest) {
-            req = new window.XMLHttpRequest();
-        } else {
-            req = new window.ActiveXObject("Microsoft.XMLHTTP");
-        }
-        req.open("POST", rpcUrl, false);
-        req.setRequestHeader("Content-type", "application/json");
-        req.timeout = timeout;
-        req.ontimeout = function () {
-            console.error("[ethrpc] synchronous RPC timed out", rpcUrl, command.method);
-            self.primaryNode = null;
-        };
-        req.send(JSON.stringify(command));
-        return this.parse(req.responseText, returns);
-    },
-
-    post: function (rpcUrl, command, returns, callback) {
-        var timeout, self = this;
-        if (command.timeout) {
-            timeout = command.timeout;
-            delete command.timeout;
-        } else {
-            timeout = this.POST_TIMEOUT;
-        }
-        request({
-            url: rpcUrl,
-            method: 'POST',
-            json: command,
-            timeout: timeout
-        }, function (err, response, body) {
-            var e;
-            if (err) {
-                self.primaryNode = null;
-                if (self.nodes.local) {
-                    if (self.nodes.local === self.localnode) {
-                        self.nodes.local = null;
-                    }
-                    e = errors.LOCAL_NODE_FAILURE;
-                    e.bubble = err;
-                    e.command = command;
-                    return callback(e);
-                } else if (self.excision) {
-                    return self.exciseNode(err.code, rpcUrl, callback);
-                }
-                console.warn("[ethrpc] asynchronous RPC timed out", rpcUrl, command);
-                e = errors.RPC_TIMEOUT;
-                e.bubble = err;
-                e.command = command;
-                callback(e);
-            } else if (response.statusCode === 200) {
-                self.parse(body, returns, callback);
-            }
-        });
-    },
-
-    // random primary node selection, weighted by (normalized)
-    // inverse mean network latency
-    selectPrimaryNode: function (nodes) {
-        var select, rand, numNodes, total, weights, cdf, high, low;
-        rand = Math.random();
-        numNodes = nodes.length;
-        weights = new Array(numNodes);
-        for (var k = 0; k < numNodes; ++k) {
-            weights[k] = 1 / this.latency[nodes[k]];
-        }
-        cdf = new Array(numNodes);
-        total = 0;
-        for (k = 0; k < numNodes; ++k) {
-            total += weights[k];
-            cdf[k] = total;
-        }
-        for (k = 0; k < numNodes; ++k) {
-            cdf[k] /= total;
-        }
-        high = numNodes - 1;
-        low = 0;
-        while (low < high) {
-            select = Math.ceil((high + low) / 2);
-            if (cdf[select] < rand) {
-                low = select + 1;
-            } else if (cdf[select] > rand) {
-                high = select - 1;
-            } else {
-                return nodes[select];
-            }
-        }
-        if (low != high) {
-            select = (cdf[low] >= rand) ? low : select;
-        } else {
-            select = (cdf[low] >= rand) ? low : low + 1;
-        }
-        console.debug("[ethrpc] primary node:", nodes[select]);
-        return [nodes[select]].concat(nodes);
-    },
-
-    selectNodes: function () {
-        if (this.nodes.local) return [this.nodes.local];
-        if (!this.balancer || this.nodes.hosted.length === 1) {
-            return this.nodes.hosted.slice();
-        }
-
-        // rotate nodes until we have enough samples to weight them
-        if (!this.samples[HOSTED_NODES[0]] ||
-            this.samples[HOSTED_NODES[0]] < this.BALANCER_SAMPLES) {
-            this.nodes.hosted.unshift(this.nodes.hosted.pop());
-            return this.nodes.hosted.slice();
-
-        // if we have sufficient data, select a primary node
-        } else {
-            if (this.primaryNode === null) {
-                this.primaryNode = this.selectPrimaryNode(this.nodes.hosted);
-            }
-            return this.primaryNode;
-        }
-    },
-
-    // update the active node's mean network latency
-    updateMeanLatency: function (node, latency) {
-        if (!this.samples[node]) {
-            this.samples[node] = 1;
-            this.latency[node] = latency;
-        } else {
-            ++this.samples[node];
-            this.latency[node] = (
-                (this.samples[node] - 1)*this.latency[node] + latency
-            ) / this.samples[node];
-        }
-        if (this.debug.latency) {
-            if (this.netLatency === null) {
-                this.netSamples = 1;
-                this.netLatency = latency;
-            } else {
-                ++this.netSamples;
-                this.netLatency = (
-                    (this.netSamples - 1)*this.netLatency + latency
-                ) / this.netSamples;
-                if (this.debug.logs) {
-                    console.log(
-                        "[" + this.netSamples.toString() + "] mean network latency:",
-                        this.netLatency
-                    );
-                }
-            }
-        }
-    },
-
-    contracts: function (network) {
-        return contracts[network || this.version()];
-    },
-
-    // Post JSON-RPC command to all Ethereum nodes
-    broadcast: function (command, callback) {
-        var start, nodes, numCommands, returns, result, completed, self = this;
-
-        if (!command || (command.constructor === Object && !command.method) ||
-            (command.constructor === Array && !command.length))
-        {
-            if (!callback) return null;
-            return callback(null);
-        }
-        if (this.debug.logs) {
-            if (command.method === "eth_call" || command.method === "eth_sendTransaction") {
-                if (command.params && (!command.params.length || !command.params[0].from)) {
-                    console.log(
-                        "**************************\n"+
-                        "* OH GOD WHAT DID YOU DO *\n"+
-                        "**************************"
-                    );
-                    var network = this.version();
-                    var contracts = this.contracts(network);
-                    var contract;
-                    for (var address in contracts) {
-                        if (!contracts.hasOwnProperty(address)) continue;
-                        if (contracts[address] === command.params[0].to) {
-                            contract = address;
-                            break;
-                        }
-                    }
-                    console.log(
-                        "network:", network, "\n"+
-                        "contract:", contract, "[" + command.params[0].to + "]\n"+
-                        "method:", command.method, "\n"+
-                        "params:", JSON.stringify(command.params, null, 2)
-                    );
-                    if (command.debug) {
-                        console.log("tx:", JSON.stringify(command.debug, null, 2));
-                        delete command.debug;
-                    }
-                }
-            }
-        }
-
-        // parse batched commands and strip "returns" and "invocation" fields
-        if (command.constructor === Array) {
-            numCommands = command.length;
-            returns = new Array(numCommands);
-            for (var i = 0; i < numCommands; ++i) {
-                returns[i] = this.strip(command[i]);
-            }
-
-        // parse commands and strip "returns" and "invocation" fields
-        } else {
-            returns = this.strip(command);
-        }
-
-        // if we're on Node, use IPC if available and ipcpath is specified
-        if (NODE_JS && this.ipcpath && command.method &&
-            command.method.indexOf("Filter") === -1)
-        {
-            var loopback = this.nodes.local && (
-                (this.nodes.local.indexOf("127.0.0.1") > -1 ||
-                this.nodes.local.indexOf("localhost") > -1)
-            );
-            if (!isFunction(callback) && !loopback) {
-                throw new this.Error(errors.LOOPBACK_NOT_FOUND);
-            }
-            if (isFunction(callback) && command.constructor !== Array) {
-                var received = '';
-                var socket = new net.Socket();
-                socket.setEncoding("utf8");
-                socket.connect({ path: this.ipcpath }, function () {
-                    socket.write(JSON.stringify(command));
-                });
-                socket.on("data", function (data) {
-                    received += data;
-                    self.parse(received, returns, function (parsed) {
-                        if (parsed && parsed.error === 409) return;
-                        socket.destroy();
-                        callback(parsed);
-                    });
-                });
-                socket.on("error", function (err) {
-                    socket.destroy();
-                    callback(err);
-                });
-                return;
-            }
-        }
-
-        // make sure the ethereum node list isn't empty
-        if (!this.nodes.local && !this.nodes.hosted.length && !this.ipcpath) {
-            if (isFunction(callback)) return callback(errors.ETHEREUM_NOT_FOUND);
-            throw new this.Error(errors.ETHEREUM_NOT_FOUND);
-        }
-
-        // select local / hosted node(s) to receive RPC
-        nodes = this.selectNodes();
-
-        // asynchronous request if callback exists
-        if (isFunction(callback)) {
-            async.eachSeries(nodes, function (node, nextNode) {
-                if (!completed) {
-                    if (self.debug.logs) {
-                        console.log("nodes:", JSON.stringify(nodes));
-                        console.log("post", command.method, "to:", node);
-                    }
-                    if (self.balancer) {
-                        start = new Date().getTime();
-                    }
-                    self.post(node, command, returns, function (res) {
-                        if (self.debug.logs) {
-                            if (res && res.constructor === BigNumber) {
-                                console.log(node, "response:", abi.string(res));
-                            } else {
-                                console.log(node, "response:", res);
-                            }
-                        }
-                        if (node === nodes[nodes.length - 1] ||
-                            (res !== undefined && res !== null &&
-                            !res.error && res !== "0x"))
-                        {
-                            completed = true;
-                            if (self.balancer) {
-                                self.updateMeanLatency(node, new Date().getTime() - start);
-                            }
-                            return nextNode({ output: res });
-                        }
-                        nextNode();
-                    });
-                }
-            }, function (res) {
-                if (!res && res.output === undefined) return callback();
-                callback(res.output);
-            });
-
-        // use synchronous http if no callback provided
-        } else {
-            for (var j = 0, len = nodes.length; j < len; ++j) {
-                try {
-                    if (this.debug.logs) {
-                        console.log("nodes:", JSON.stringify(nodes));
-                        console.log("synchronous post", command.method, "to:", nodes[j]);
-                    }
-                    if (this.balancer) {
-                        start = new Date().getTime();
-                    }
-                    result = this.postSync(nodes[j], command, returns);
-                    if (this.balancer) {
-                        this.updateMeanLatency(nodes[j], new Date().getTime() - start);
-                    }
-                } catch (e) {
-                    if (this.nodes.local) {
-                        throw new this.Error(errors.LOCAL_NODE_FAILURE);
-                    } else if (this.excision) {
-                        this.exciseNode(e, nodes[j]);
-                    }
-                }
-                if (result) return result;
-            }
-            throw new this.Error(errors.NO_RESPONSE);
-        }
-    },
-
-    marshal: function (command, params, prefix) {
-        var payload = {
-            id: this.requests++,
-            jsonrpc: "2.0"
-        };
-        if (prefix === "null") {
-            payload.method = command.toString();
-        } else {
-            payload.method = (prefix || "eth_") + command.toString();
-        }
-        if (params !== undefined && params !== null) {
-            if (params.constructor === Object) {
-                if (this.debug.broadcast && params.debug) {
-                    payload.debug = abi.copy(params.debug);
-                    delete params.debug;
-                }
-                if (params.timeout) {
-                    payload.timeout = params.timeout;
-                    delete params.timeout;
-                }
-                if (JSON.stringify(params) === "{}") {
-                    params = [];
-                }
-            }
-            if (params.constructor === Array) {
-                payload.params = params;
-            } else {
-                payload.params = [params];
-            }
-        } else {
-            payload.params = [];
-        }
-        return payload;
-    },
-
-    setLocalNode: function (urlstr) {
-        this.nodes.local = urlstr || this.localnode;
-    },
-
-    useHostedNode: function (urlstr) {
-        this.nodes.local = null;
-        if (urlstr) this.nodes.hosted = [urlstr];
-    },
-
-    // delete cached network, notification, and transaction data
-    clear: function () {
-        this.latency = {};
-        this.samples = {};
-        this.txs = {};
-        for (var n in this.notifications) {
-            if (!this.notifications.hasOwnProperty(n)) continue;
-            if (this.notifications[n]) {
-                clearTimeout(this.notifications[n]);
-            }
-        }
-        this.notifications = {};
-    },
-
-    // reset to default Ethereum nodes
-    reset: function (deleteData) {
-        this.nodes.hosted = HOSTED_NODES.slice();
-        if (deleteData) this.clear();
-    },
-
-    /******************************
-     * Ethereum JSON-RPC bindings *
-     ******************************/
-
-    raw: function (command, params, f) {
-        return this.broadcast(this.marshal(command, params, "null"), f);
-    },
-
-    eth: function (command, params, f) {
-        return this.broadcast(this.marshal(command, params), f);
-    },
-
-    net: function (command, params, f) {
-        return this.broadcast(this.marshal(command, params, "net_"), f);
-    },
-
-    web3: function (command, params, f) {
-        return this.broadcast(this.marshal(command, params, "web3_"), f);
-    },
-
-    shh: function (command, params, f) {
-        return this.broadcast(this.marshal(command, params, "shh_"), f);
-    },
-
-    sha3: function (data, f) {
-        return this.broadcast(this.marshal("sha3", data.toString(), "web3_"), f);
-    },
-    hash: function (data, f) {
-        return this.broadcast(this.marshal("sha3", data.toString(), "web3_"), f);
-    },
-
-    gasPrice: function (f) {
-        return this.broadcast(this.marshal("gasPrice"), f);
-    },
-
-    blockNumber: function (f) {
-        if (isFunction(f)) {
-            this.broadcast(this.marshal("blockNumber"), f);
-        } else {
-            return parseInt(this.broadcast(this.marshal("blockNumber")));
-        }
-    },
-
-    coinbase: function (f) {
-        return this.broadcast(this.marshal("coinbase"), f);
-    },
-
-    balance: function (address, block, f) {
-        if (block && block.constructor === Function) {
-            f = block;
-            block = null;
-        }
-        block = block || "latest";
-        return this.broadcast(this.marshal("getBalance", [address, block]), f);
-    },
-    getBalance: function (address, block, f) {
-        if (block && block.constructor === Function) {
-            f = block;
-            block = null;
-        }
-        block = block || "latest";
-        return this.broadcast(this.marshal("getBalance", [address, block]), f);
-    },
-
-    txCount: function (address, f) {
-        return this.broadcast(this.marshal("getTransactionCount", address), f);
-    },
-    getTransactionCount: function (address, f) {
-        return this.broadcast(this.marshal("getTransactionCount", address), f);
-    },
-    pendingTxCount: function (address, f) {
-        return this.broadcast(
-            this.marshal("getTransactionCount", [address, "pending"]), f
-        );
-    },
-
-    sendEther: function (to, value, from, onSent, onSuccess, onFailed) {
-        if (to && to.constructor === Object && to.value) {
-            value = to.value;
-            if (to.from) from = to.from;
-            if (to.onSent) onSent = to.onSent;
-            if (to.onSuccess) onSuccess = to.onSuccess;
-            if (to.onFailed) onFailed = to.onFailed;
-            to = to.to;
-        }
-        return this.transact({
-            from: from,
-            to: to,
-            invocation: {invoke: this.sendTx, context: this},
-            value: abi.bignum(value).mul(this.ETHER).toFixed(),
-            returns: "null"
-        }, onSent, onSuccess, onFailed);
-    },
-
-    sign: function (address, data, f) {
-        return this.broadcast(this.marshal("sign", [address, data]), f);
-    },
-
-    getTx: function (hash, f) {
-        return this.broadcast(this.marshal("getTransactionByHash", hash), f);
-    },
-    getTransaction: function (hash, f) {
-        return this.broadcast(this.marshal("getTransactionByHash", hash), f);
-    },
-
-    peerCount: function (f) {
-        if (isFunction(f)) {
-            this.broadcast(this.marshal("peerCount", [], "net_"), f);
-        } else {
-            return parseInt(this.broadcast(this.marshal("peerCount", [], "net_")));
-        }
-    },
-
-    accounts: function (f) {
-        return this.broadcast(this.marshal("accounts"), f);
-    },
-
-    mining: function (f) {
-        return this.broadcast(this.marshal("mining"), f);
-    },
-
-    hashrate: function (f) {
-        if (isFunction(f)) {
-            this.broadcast(this.marshal("hashrate"), f);
-        } else {
-            return parseInt(this.broadcast(this.marshal("hashrate")));
-        }
-    },
-
-    getBlockByHash: function (hash, full, f) {
-        return this.broadcast(this.marshal("getBlockByHash", [hash, full || true]), f);
-    },
-
-    getBlock: function (number, full, f) {
-        return this.broadcast(this.marshal("getBlockByNumber", [number, full || true]), f);
-    },
-    getBlockByNumber: function (number, full, f) {
-        return this.broadcast(this.marshal("getBlockByNumber", [number, full || true]), f);
-    },
-
-    version: function (f) {
-        return this.broadcast(this.marshal("version", [], "net_"), f);
-    },
-    netVersion: function (f) {
-        return this.broadcast(this.marshal("version", [], "net_"), f);
-    },
-
-    // estimate a transaction's gas cost
-    estimateGas: function (tx, f) {
-        tx.to = tx.to || "";
-        return this.broadcast(this.marshal("estimateGas", tx), f);
-    },
-
-    // execute functions on contracts on the blockchain
-    call: function (tx, f) {
-        tx.to = tx.to || "";
-        tx.gas = (tx.gas) ? tx.gas : this.DEFAULT_GAS;
-        return this.broadcast(this.marshal("call", tx), f);
-    },
-
-    sendTx: function (tx, f) {
-        tx.to = tx.to || "";
-        tx.gas = (tx.gas) ? tx.gas : this.DEFAULT_GAS;
-        return this.broadcast(this.marshal("sendTransaction", tx), f);
-    },
-    sendTransaction: function (tx, f) {
-        tx.to = tx.to || "";
-        tx.gas = (tx.gas) ? tx.gas : this.DEFAULT_GAS;
-        return this.broadcast(this.marshal("sendTransaction", tx), f);
-    },
-
-    // sendRawTx(RLP(tx.signed(privateKey))) -> txhash
-    sendRawTx: function (rawTx, f) {
-        return this.broadcast(this.marshal("sendRawTransaction", rawTx), f);
-    },
-    sendRawTransaction: function (rawTx, f) {
-        return this.broadcast(this.marshal("sendRawTransaction", rawTx), f);
-    },
-
-    receipt: function (txhash, f) {
-        return this.broadcast(this.marshal("getTransactionReceipt", txhash), f);
-    },
-    getTransactionReceipt: function (txhash, f) {
-        return this.broadcast(this.marshal("getTransactionReceipt", txhash), f);
-    },
-
-    clientVersion: function (f) {
-        return this.broadcast(this.marshal("clientVersion", [], "web3_"), f);
-    },
-
-    compileSerpent: function (code, f) {
-        return this.broadcast(this.marshal("compileSerpent", code), f);
-    },
-
-    compileSolidity: function (code, f) {
-        return this.broadcast(this.marshal("compileSolidity", code), f);
-    },
-
-    compileLLL: function (code, f) {
-        return this.broadcast(this.marshal("compileLLL", code), f);
-    },
-
-    // publish a new contract to the blockchain (from the coinbase account)
-    publish: function (compiled, f) {
-        return this.sendTx({ from: this.coinbase(), data: compiled }, f);
-    },
-
-    // Read the code in a contract on the blockchain
-    read: function (address, block, f) {
-        return this.broadcast(this.marshal("getCode", [address, block || "latest"]), f);
-    },
-    getCode: function (address, block, f) {
-        return this.broadcast(this.marshal("getCode", [address, block || "latest"]), f);
-    },
-
-    // Ethereum node status checks
-
-    listening: function (f) {
-        var response, self = this;
-        try {
-            if (!this.nodes.hosted.length && !this.nodes.local && !this.ipcpath) {
-                throw new this.Error(errors.ETHEREUM_NOT_FOUND);
-            }
-            if (isFunction(f)) {
-                var timeout = setTimeout(function () {
-                    if (!response) f(false);
-                }, 2500);
-                setTimeout(function () {
-                    self.net("listening", [], function (res) {
-                        clearTimeout(timeout);
-                        f(!!res);
-                    });
-                }, 0);
-            } else {
-                return !!this.net("listening");
-            }
-        } catch (e) {
-            if (isFunction(f)) return f(false);
-            return false;
-        }
-    },
-
-    unlocked: function (account, f) {
-        if (!this.nodes.hosted.length && !this.nodes.local && !this.ipcpath) {
-            throw new this.Error(errors.ETHEREUM_NOT_FOUND);
-        }
-        try {
-            if (isFunction(f)) {
-                this.sign(account, "1010101", function (res) {
-                    if (res) {
-                        if (res.error) return f(false);
-                        return f(true);
-                    }
-                    f(false);
-                });
-            } else {
-                var res = this.sign(account, "1010101");
-                if (res) {
-                    if (res.error) {
-                        return false;
-                    }
-                    return true;
-                }
-                return false;
-            }
-        } catch (e) {
-            if (isFunction(f)) return f(false);
-            return false;
-        }
-    },
-
-    /**
-     * Invoke a function from a contract on the blockchain.
-     *
-     * Input tx format:
-     * {
-     *    from: <sender's address> (hexstring; optional, coinbase default)
-     *    to: <contract address> (hexstring)
-     *    method: <function name> (string)
-     *    signature: <function signature, e.g. "iia"> (string)
-     *    params: <parameters passed to the function> (optional)
-     *    returns: <"number[]", "int", "BigNumber", or "string" (default)>
-     *    send: <true to sendTransaction, false to call (default)>
-     * }
-     */
-    invoke: function (itx, f) {
-        var tx, dataAbi, packaged, invocation, invoked;
-        try {
-            if (itx) {
-                if (itx.send && itx.invocation && itx.invocation.invoke &&
-                    itx.invocation.invoke.constructor === Function)
-                {
-                    return itx.invocation.invoke.call(itx.invocation.context, itx, f);
-                } else {
-                    tx = abi.copy(itx);
-                    if (tx.params !== undefined) {
-                        if (tx.params.constructor === Array) {
-                            for (var i = 0, len = tx.params.length; i < len; ++i) {
-                                if (tx.params[i] !== undefined &&
-                                    tx.params[i].constructor === BigNumber) {
-                                    tx.params[i] = abi.hex(tx.params[i]);
-                                }
-                            }
-                        } else if (tx.params.constructor === BigNumber) {
-                            tx.params = [abi.hex(tx.params)];
-                        } else {
-                            tx.params = [tx.params];
-                        }
-                    }
-                    if (tx.to) tx.to = abi.prefix_hex(tx.to);
-                    if (tx.from) tx.from = abi.prefix_hex(tx.from);
-                    dataAbi = abi.encode(tx);
-                    if (dataAbi) {
-                        packaged = {
-                            from: tx.from,
-                            to: tx.to,
-                            data: dataAbi,
-                            gas: tx.gas || this.DEFAULT_GAS,
-                            gasPrice: tx.gasPrice
-                        };
-                        if (tx.timeout) packaged.timeout = tx.timeout;
-                        if (tx.value) packaged.value = tx.value;
-                        if (tx.returns) packaged.returns = tx.returns;
-                        if (this.debug.broadcast) {
-                            packaged.debug = abi.copy(tx);
-                            packaged.debug.batch = false;
-                        }
-                        invocation = (tx.send) ? this.sendTx : this.call;
-                        invoked = true;
-                        return invocation.call(this, packaged, f);
-                    }
-                }
-            }
-        } catch (exc) {
-            var err = abi.copy(errors.TRANSACTION_FAILED);
-            err.bubble = exc;
-            err.tx = itx;
-            if (isFunction(f)) return f(err);
-            return err;
-        }
-        if (!invoked) {
-            var err = abi.copy(errors.TRANSACTION_FAILED);
-            err.bubble = "!invoked";
-            err.tx = itx;
-            if (isFunction(f)) return f(err);
-            return err;
-        }
-    },
-
-    /**
-     * Batched RPC commands
-     */
-    batch: function (txlist, f) {
-        var numCommands, rpclist, callbacks, tx, dataAbi, packaged, invocation;
-        if (txlist.constructor !== Array) {
-            if (this.debug.logs) {
-                console.warn("expected array for batch RPC, invoking instead");
-            }
-            return this.invoke(txlist, f);
-        }
-        numCommands = txlist.length;
-        rpclist = new Array(numCommands);
-        callbacks = new Array(numCommands);
-        for (var i = 0; i < numCommands; ++i) {
-            tx = abi.copy(txlist[i]);
-            if (tx.params !== undefined) {
-                if (tx.params.constructor === Array) {
-                    for (var j = 0, len = tx.params.length; j < len; ++j) {
-                        if (tx.params[j] !== undefined &&
-                            tx.params[j] !== null &&
-                            tx.params[j].constructor === BigNumber) {
-                            tx.params[j] = abi.hex(tx.params[j]);
-                        }
-                    }
-                } else if (tx.params.constructor === BigNumber) {
-                    tx.params = abi.hex(tx.params);
-                }
-            }
-            if (tx.from) tx.from = abi.prefix_hex(tx.from);
-            tx.to = abi.prefix_hex(tx.to);
-            dataAbi = abi.encode(tx);
-            if (dataAbi) {
-                if (tx.callback && tx.callback.constructor === Function) {
-                    callbacks[i] = tx.callback;
-                    delete tx.callback;
-                }
-                packaged = {
-                    from: tx.from,
-                    to: tx.to,
-                    data: dataAbi,
-                    gas: tx.gas || this.DEFAULT_GAS,
-                    gasPrice: tx.gasPrice
-                };
-                if (tx.timeout) packaged.timeout = tx.timeout;
-                if (tx.value) packaged.value = tx.value;
-                if (tx.returns) packaged.returns = tx.returns;
-                if (this.debug.broadcast) {
-                    packaged.debug = abi.copy(tx);
-                    packaged.debug.batch = true;
-                }
-                invocation = (tx.send) ? "sendTransaction" : "call";
-                rpclist[i] = this.marshal(invocation, packaged);
-            } else {
-                console.error("unable to package commands for batch RPC");
-                return rpclist;
-            }
-        }
-        if (!f) return this.broadcast(rpclist, f);
-
-        // callback on whole array
-        if (isFunction(f)) return this.broadcast(rpclist, f);
-
-        // callback on each element
-        this.broadcast(rpclist, function (res) {
-            if (!res) return console.error(errors.TRANSACTION_FAILED);
-            if (res.constructor === Array && res.length) {
-                for (j = 0; j < numCommands; ++j) {
-                    if (res[j] && callbacks[j]) {
-                        callbacks[j](res[j]);
-                    }
-                }
-            } else {
-                if (callbacks.length && isFunction(callbacks[0])) {
-                    callbacks[0](res);
-                }
-            }
-        });
-    },
-
-    encodeResult: function (result, returns) {
-        if (result) {
-            if (returns === "null") {
-                result = null;
-            } else if (returns === "address" || returns === "address[]") {
-                result = abi.format_address(result);
-            } else {
-                if (!returns || returns === "hash[]" || returns === "hash") {
-                    result = abi.hex(result);
-                } else if (returns === "number") {
-                    result = abi.string(result);
-                }
-            }
-        }
-        return result;
-    },
-
-    errorCodes: function (tx, response) {
-        if (response) {
-            if (response.constructor === Array) {
-                for (var i = 0, len = response.length; i < len; ++i) {
-                    response[i] = this.errorCodes(tx.method, response[i]);
-                }
-            } else if (response.name && response.message && response.stack) {
-                response.error = response.name;
-            } else if (!response.error) {
-                if (errors[response]) {
-                    response = {
-                        error: response,
-                        message: errors[response]
-                    };
-                } else {
-                    if (tx.returns && tx.returns !== "string" ||
-                        (response && response.constructor === String &&
-                        response.slice(0,2) === "0x"))
-                    {
-                        var responseNumber = abi.bignum(response);
-                        if (responseNumber) {
-                            responseNumber = abi.string(responseNumber);
-                            if (errors[tx.method] && errors[tx.method][responseNumber]) {
-                                response = {
-                                    error: responseNumber,
-                                    message: errors[tx.method][responseNumber]
-                                };
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return response;
-    },
-
-    fire: function (itx, callback) {
-        var self = this;
-        var tx = abi.copy(itx);
-        if (!isFunction(callback)) {
-            var res = this.errorCodes(tx, this.invoke(tx));
-            if (res) {
-                if (res.error) return res;
-                return this.encodeResult(res, itx.returns);
-            }
-            throw new this.Error(errors.NO_RESPONSE);
-        }
-        this.invoke(tx, function (res) {
-            res = self.errorCodes(tx, res);
-            if (res) {
-                if (res.error) return callback(res);
-                return callback(self.encodeResult(res, itx.returns));
-            }
-            callback(errors.NO_RESPONSE);
-        });
-    },
-
-    /***************************************
-     * Send-call-confirm callback sequence *
-     ***************************************/
-
-    checkBlockHash: function (tx, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed) {
-        if (!this.txs[txhash]) this.txs[txhash] = {};
-        if (this.txs[txhash].count === undefined) this.txs[txhash].count = 0;
-        ++this.txs[txhash].count;
-        if (this.debug.tx) console.debug("checkBlockHash:", tx, callreturn, itx);
-        if (tx && tx.blockHash && abi.number(tx.blockHash) !== 0) {
-            tx.callReturn = this.encodeResult(callreturn, returns);
-            tx.txHash = tx.hash;
-            delete tx.hash;
-            this.txs[txhash].status = "confirmed";
-            clearTimeout(this.notifications[txhash]);
-            delete this.notifications[txhash];
-            if (isFunction(onSuccess)) onSuccess(tx);
-        } else {
-            var self = this;
-            if (this.txs[txhash].count < this.TX_POLL_MAX) {
-                this.notifications[txhash] = setTimeout(function () {
-                    if (self.txs[txhash].status === "pending") {
-                        self.txNotify(callreturn, itx, txhash, returns, onSent, onSuccess, onFailed);
-                    }
-                }, this.TX_POLL_INTERVAL);
-            } else {
-                self.txs[txhash].status = "unconfirmed";
-                if (isFunction(onFailed)) onFailed(errors.TRANSACTION_NOT_CONFIRMED);
-            }
-        }
-    },
-
-    txNotify: function (callreturn, itx, txhash, returns, onSent, onSuccess, onFailed) {
-        var self = this;
-        this.getTx(txhash, function (tx) {
-            if (self.debug.tx) console.debug("txNofity.getTx:", tx);
-            if (tx) {
-                return self.checkBlockHash(tx, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed);
-            }
-            self.txs[txhash].status = "failed";
-            if (self.debug.tx)
-                console.log("raw transactions:", self.rawTxs);
-
-            // resubmit if this is a raw transaction and has a duplicate nonce
-            if (self.rawTxs[txhash] && self.rawTxs[txhash].tx) {
-                var duplicateNonce;
-                for (var hash in self.rawTxs) {
-                    if (!self.rawTxs.hasOwnProperty(hash)) continue;
-                    if (self.rawTxs[hash].tx.nonce === self.rawTxs[txhash].tx.nonce) {
-                        duplicateNonce = true;
-                        break;
-                    }
-                }
-                if (duplicateNonce) {
-                    if (returns) itx.returns = returns;
-                    self.txs[txhash].status = "resubmitted";
-                    return self.transact(itx, onSent, onSuccess, onFailed);
-                } else {
-                    if (isFunction(onFailed)) onFailed(errors.TRANSACTION_NOT_FOUND);
-                }
-            } else {
-                if (isFunction(onFailed)) onFailed(errors.TRANSACTION_NOT_FOUND);
-            }
-        });
-    },
-
-    confirmTx: function (tx, txhash, returns, onSent, onSuccess, onFailed) {
-        var self = this;
-        if (tx && txhash) {
-            if (errors[txhash]) {
-                if (isFunction(onFailed)) onFailed({
-                    error: txhash,
-                    message: errors[txhash],
-                    tx: tx
-                });
-            } else {
-                if (this.txs[txhash]) {
-                    if (isFunction(onFailed)) onFailed(errors.DUPLICATE_TRANSACTION);
-                } else {
-                    this.txs[txhash] = { hash: txhash, tx: tx, count: 0, status: "pending" };
-                    this.txs[txhash].tx.returns = returns;
-                    return this.getTx(txhash, function (sent) {
-                        if (self.debug.tx) console.debug("sent:", sent);
-                        if (returns !== "null") {
-                            return self.call({
-                                from: sent.from,
-                                to: sent.to || tx.to,
-                                value: sent.value || tx.value,
-                                data: sent.input
-                            }, function (callReturn) {
-                                if (callReturn) {
-                                    if (errors[callReturn]) {
-                                        self.txs[txhash].status = "failed";
-                                        if (isFunction(onFailed)) onFailed({
-                                            error: callReturn,
-                                            message: errors[callReturn],
-                                            tx: tx
-                                        });
-                                    } else {
-                                        callReturn = JSON.stringify({ result: callReturn });
-
-                                        // transform callReturn to a number
-                                        var numReturn = self.parse(callReturn, "number");
-
-                                        // check if numReturn is an error object
-                                        if (numReturn.constructor === Object && numReturn.error) {
-                                            self.txs[txhash].status = "failed";
-                                            if (isFunction(onFailed)) onFailed(numReturn);
-                                        } else if (errors[numReturn]) {
-                                            self.txs[txhash].status = "failed";
-                                            if (isFunction(onFailed)) onFailed({
-                                                error: numReturn,
-                                                message: errors[numReturn],
-                                                tx: tx
-                                            });
-                                        } else {
-                                            try {
-
-                                                // check if numReturn is an error code
-                                                if (numReturn && numReturn.constructor === BigNumber) {
-                                                    numReturn = numReturn.toFixed();
-                                                }
-                                                if (numReturn && errors[tx.method] && errors[tx.method][numReturn]) {
-                                                    self.txs[txhash].status = "failed";
-                                                    if (isFunction(onFailed)) onFailed({
-                                                        error: numReturn,
-                                                        message: errors[tx.method][numReturn],
-                                                        tx: tx
-                                                    });
-                                                } else {
-
-                                                    // no errors found, so transform to the requested
-                                                    // return type, specified by "returns" parameter
-                                                    callReturn = self.parse(callReturn, returns);
-                                                    self.txs[txhash].callReturn = self.encodeResult(callReturn, returns);
-
-                                                    // send the transaction hash and return value back
-                                                    // to the client, using the onSent callback
-                                                    onSent({
-                                                        txHash: txhash,
-                                                        callReturn: self.encodeResult(callReturn, returns)
-                                                    });
-
-                                                    // if an onSuccess callback was supplied, then
-                                                    // poll the network until the transaction is
-                                                    // included in a block (i.e., has a non-null
-                                                    // blockHash field)
-                                                    if (isFunction(onSuccess)) {
-                                                        self.txNotify(
-                                                            callReturn,
-                                                            tx,
-                                                            txhash,
-                                                            returns,
-                                                            onSent,
-                                                            onSuccess,
-                                                            onFailed
-                                                        );
-                                                    }
-                                                }
-
-                                            // something went wrong :(
-                                            } catch (e) {
-                                                self.txs[txhash].status = "failed";
-                                                if (isFunction(onFailed)) onFailed(e);
-                                            }
-                                        }
-                                    }
-
-                                // no return value for call
-                                } else {
-                                    self.txs[txhash].status = "failed";
-                                    if (isFunction(onFailed)) onFailed(errors.NULL_CALL_RETURN);
-                                }
-                            });
-                        }
-
-                        // if returns type is null, skip the intermediate call
-                        onSent({ txHash: txhash, callReturn: null });
-                        if (isFunction(onSuccess)) {
-                            self.txNotify(null, tx, txhash, returns, onSent, onSuccess, onFailed);
-                        }
-                    });
-                }
-            }
-        }
-    },
-
-    transact: function (tx, onSent, onSuccess, onFailed) {
-        var self = this;
-        var returns = tx.returns;
-        tx.send = true;
-        delete tx.returns;
-        if (!isFunction(onSent)) return this.invoke(tx);
-        this.invoke(tx, function (txhash) {
-            if (self.debug.tx) console.debug("txhash:", txhash);
-            if (txhash) {
-                if (txhash.error) {
-                    if (isFunction(onFailed)) onFailed(txhash);
-                } else {
-                    txhash = abi.prefix_hex(abi.pad_left(abi.strip_0x(txhash)));
-                    self.confirmTx(tx, txhash, returns, onSent, onSuccess, onFailed);
-                }
-            } else {
-                if (isFunction(onFailed)) onFailed(errors.NULL_RESPONSE);
-            }
-        });
-    }
-};
-
-}).call(this,require('_process'))
-},{"_process":223,"async":466,"augur-abi":467,"augur-contracts":471,"bignumber.js":472,"browser-request":473,"net":9,"request":474,"sync-request":11}],466:[function(require,module,exports){
-arguments[4][6][0].apply(exports,arguments)
-},{"_process":223,"dup":6}],467:[function(require,module,exports){
-arguments[4][7][0].apply(exports,arguments)
-},{"bignumber.js":472,"buffer":256,"dup":7,"js-sha3":468}],468:[function(require,module,exports){
-arguments[4][321][0].apply(exports,arguments)
-},{"dup":321}],469:[function(require,module,exports){
-module.exports={
-    "0": {
-        "namereg": "0xc6d9d2cd449a754c494264e1809c50e34d64562b",
-        "buyAndSellShares": "0xcb41186d3fa3eae83aa828eb776a913ffe94bcb7",
-        "checkQuorum": "0x7ad6e15cedf2a82651b5b407d1e98cbdf7c9e0e4",
-        "closeMarket": "0xfb8f4d790665457dcac8cbfa03965d1671d9e6a2",
-        "closeMarketEight": "0x3c348ffa3c66a7968110f64ae0a3d730cf20b670",
-        "closeMarketFour": "0x8cb16b2af081bf8a9cf06a5d8ae00a8f0d3a991f",
-        "closeMarketOne": "0x3aa010724da6a6d10d830905f6c83e31bfe47084",
-        "closeMarketTwo": "0xe4288ab0c0d886af4d5db6aa320c630c31a24b96",
-        "comments": "0x853cb123de348769d17108f505d6c3081fde2275",
-        "createBranch": "0x97aa6fe95e117a2c5c2e4f1419f5712d0ecfb66d",
-        "createEvent": "0xe3d1eef1fa0dba41796f08784033a32c3c2efd28",
-        "createMarket": "0x242219e309914836840a0ca0a55009478c5ba3d6",
-        "dispatch": "0x36004227035b544b981657d2736dd7de2ad1d30a",
-        "faucets": "0xd403f1657106c138843ea831bd99cbd2a4b8d648",
-        "makeReports": "0x9eed4f95d3bdc11775d7356709a8ae51f13f9bba",
-        "p2pWagers": "0x1c0e5ba6a9ba14420656be68657954917258eda6",
-        "sendReputation": "0xe5a16f3eef2158a63abd55c89474aef9ced7c82a",
-        "transferShares": "0x1743b8bd782221de0ad7c3ec010afc20da4c0d4f",
-        "accounts": "0x77ae4a8fa5c2775e618fcb40b0598f80a3b846f1",
-        "branches": "0x3a52e33bda40cb220cca98407bb332ec7579499b",
-        "cash": "0x25957529618e670165d49700c7d3f4ce4e2e00b9",
-        "events": "0x05b052da4cd80512f6a0837c72f7a4c3a591cbf6",
-        "expiringEvents": "0x554c2e7b73e62604e9d9f2e439b5a611da88fc87",
-        "fxpFunctions": "0x4abb75045783a639383aace45622ce97dec3b110",
-        "info": "0xe6e87575230b8e9315027c30648868e9ea80161c",
-        "ipfs": "0xbcfe600f4420d3db214bb2e7861b9c1c59ae2573",
-        "markets": "0x847adbfda58ca76ce0f5ff9952838a86192f510a",
-        "reporting": "0x772c698ff3121fde846002bae4d6828a39911fdb",
-        "adjust": "0x8fd78c97952f8bdd4351e8694e24c77f921446dd",
-        "center": "0x9c92cb96d4141204e2dc6e36b64192e4b6b1d29b",
-        "payout": "0x306973dc029f74fbfc83d9200e49b6c6978e77e9",
-        "redeem_adjust": "0xcfa0f80de838466d2605d7878f2ebb879e2aae60",
-        "redeem_center": "0x54d6594d3dc7d5af46f5bff12646d5f4ad152176",
-        "redeem_interpolate": "0xe8ff6008f6981d27f90cc6499d0f46546e6d8da7",
-        "redeem_payout": "0x701201acf46b40f449a815967fe0607a12645cd4",
-        "redeem_resolve": "0x46967961e529aaf9642742e08d27db1c8d33ba0d",
-        "redeem_score": "0x79988cdd607ef793f279d59d2686df2711c5b3a7",
-        "resolve": "0x145faea6f94952d73b54b2f85262ad8d8d474466",
-        "score": "0xe7fd9f29b2fbd3623574f303bee4355ca4645d62",
-        "statistics": "0xb44c5dffcb5092c06e8240b1d300b3287b0ca279"
-    },
-    "7": {
-        "namereg": "0xc6d9d2cd449a754c494264e1809c50e34d64562b",
-        "buyAndSellShares": "0xbe4ee6fec0988e5be8dafd38d9c0f8d6f9e5cbec",
-        "checkQuorum": "0x0602dfd8e341d2fbcf3625455fb756af998857a1",
-        "closeMarket": "0x288a972a5d2df198090c62aff28d752aa844462a",
-        "closeMarketEight": "0xdcf05b01d814507f93911aa1817a461e0b93cc15",
-        "closeMarketFour": "0xc048752bef846584750f426dfa853310e8b2692e",
-        "closeMarketOne": "0x8bc5fe35449908da4c436c135e7146d7516e9f19",
-        "closeMarketTwo": "0x647d9a245d1dfea6d6ad105b67189d1978428fe2",
-        "comments": "0xbd46ac9cbceebe6d8f33366df7e3bb1faa46c97f",
-        "createBranch": "0x79c536d060a2b420eef3f0b43f3b94453b674f2c",
-        "createEvent": "0x46b9460e82b44eb315b07ddd681563860837eb28",
-        "createMarket": "0x49c63c69bce199e2a53d265857849d0b8c3f7167",
-        "dispatch": "0x332df78758caafadbcecb8a33a86f0a3311b5617",
-        "faucets": "0xa105994eb344fcc492a90e43609e5078e958a777",
-        "makeReports": "0x705ade91ba95f82bfd0851d65e4e4f1b26d8a78f",
-        "p2pWagers": "0xa98080fda696c11af2cb9a90b1899d914436e4ba",
-        "sendReputation": "0xd3f5b1d3cbf338394fbbbab45174329ef62e59d8",
-        "transferShares": "0x05a0c629185abf6fbf189e985a7e739f54939237",
-        "accounts": "0x4b4248f78b2a4aaa51e242b6f35b8dd4276451da",
-        "branches": "0x7a07e396f3691831bf2caa85bdfaa611d77e8ef2",
-        "cash": "0xca401c5c89b7188629fcb8e006165a4bc1aaeaa6",
-        "events": "0x61097e73dd210af08d73bebdf1608d504c137566",
-        "expiringEvents": "0xc7717a4a53a6b3ed63d1b6da807f51fd8e916f64",
-        "fxpFunctions": "0xd8e126fab75ecfba100910d9e6bb39b4eadfaeee",
-        "info": "0x4cc834408dee680b256a307727b63b27bc5abfcb",
-        "ipfs": "0x03377d7fb9147e6123aea28973a195b1eee2a61c",
-        "markets": "0x04124f1643372564aded7c1f215709bf49929b2d",
-        "reporting": "0xcff90d34101456788b37199d1ee13b68ad47e8c7",
-        "adjust": "0x8ded14b321b658551970bb0a6b0401b4b008019a",
-        "center": "0x6796b0cae4636faf82501f441135ac0b96b84b91",
-        "payout": "0x249ef04ea9054d3002b95ce6189ff8358677eda4",
-        "redeem_adjust": "0x93ea5a64a68014f769ef7003c9bdf2a726626cc2",
-        "redeem_center": "0xc149bbab0707d6455d54ac2cf681b9bb64b5d639",
-        "redeem_interpolate": "0x29f97d471eedeeded58f34ce3863c7a92f3072e7",
-        "redeem_payout": "0xda15cf68e108c72eaea338890fc3edc39af5f25f",
-        "redeem_resolve": "0x5eb5686b101a8901a1e10e17a58b2fc0c95802c7",
-        "redeem_score": "0x50060e47a13b69e9c2d03b564e08e20cbfc14957",
-        "resolve": "0xf8bfa1b49b66ba3a6e52f5265e22375145306527",
-        "score": "0x4ee6fd8192a3ba884b89ac69e12a76c4bcd8f5ec",
-        "statistics": "0x4d5c089204374a962e17ce5e716d42e1e67db432"
-    },
-    "10101": {
-        "namereg": "0xc6d9d2cd449a754c494264e1809c50e34d64562b",
-        "buyAndSellShares": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f",
-        "checkQuorum": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d",
-        "closeMarket": "0xcece47d6c0a6a1c90521f38ec5bf7550df983804",
-        "closeMarketEight": "0x031d9d02520cc708ea3c865278508c9cdb92bd51",
-        "closeMarketFour": "0xcd6c7bc634257f82903b182142aae7156d72a200",
-        "closeMarketOne": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945",
-        "closeMarketTwo": "0x7d4b581a0868204b7481c316b430a97fd292a2fb",
-        "comments": "0x014b14d07e5afb2f30eb6ebf81d927563f0f1238",
-        "createBranch": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df",
-        "createEvent": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645",
-        "createMarket": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7",
-        "dispatch": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2",
-        "faucets": "0x509592c96eee7e19f6a34772fd8783cb072ca3c6",
-        "makeReports": "0x3f3276849a878a176b2f02dd48a483e8182a49e4",
-        "p2pWagers": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6",
-        "sendReputation": "0x35152caa07026203a1add680771afb690d872d7d",
-        "transferShares": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3",
-        "accounts": "0x77ae4a8fa5c2775e618fcb40b0598f80a3b846f1",
-        "branches": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd",
-        "cash": "0xe4714fcbdcdba49629bc408183ef40d120700b8d",
-        "events": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667",
-        "expiringEvents": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7",
-        "fxpFunctions": "0x482c57abdce592b39434e3f619ffc3db62ab6d01",
-        "info": "0x5069d883e31429c6dd1325d961f443007747c7a2",
-        "ipfs": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e",
-        "markets": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893",
-        "reporting": "0x81a7621e9a286d061b3dea040888a51c96693b1c",
-        "adjust": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55",
-        "center": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c",
-        "payout": "0x8a4e2993a9972ee035453bb5674816fc3a698718",
-        "redeem_adjust": "0x8c19616de17acdfbc933b99d9f529a689d22098f",
-        "redeem_center": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79",
-        "redeem_interpolate": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea",
-        "redeem_payout": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3",
-        "redeem_resolve": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68",
-        "redeem_score": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7",
-        "resolve": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2",
-        "score": "0x708fdfe18bf28afe861a69e95419d183ace003eb",
-        "statistics": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7"
-    }
-}
-},{}],470:[function(require,module,exports){
-module.exports={
-    "0x": "no response or bad input",
-    "getSimulatedBuy": {
-        "-2": "cost updating error (did you enter a valid quantity?)"
-    },
-    "getSimulatedSell": {
-        "-2": "cost updating error (did you enter a valid quantity?)"
-    },
-    "closeMarket": {
-        "-1": "market has no cash",
-        "-2": "0 outcome",
-        "-3": "outcome indeterminable"
-    },
-    "report": {
-        "0": "could not set reporter ballot",
-        "-1": "report length does not match number of expiring events",
-        "-2": "voting period expired",
-        "-3": "incorrect hash"
-    },
-    "submitReportHash": {
-        "0": "could not set report hash",
-        "-1": "reporter doesn't exist, voting period is over, or voting period hasn't started yet",
-        "-2": "not in hash submitting timeframe"
-    },
-    "checkReportValidity": {
-        "-1": "report isn't long enough",
-        "-2": "reporter doesn't exist, voting period is over, or voting period hasn't started yet"
-    },
-    "slashRep": {
-        "0": "incorrect hash",
-        "-2": "incorrect reporter ID"
-    },
-    "createEvent": {
-        "0": "not enough money to pay fees or event already exists",
-        "-1": "we're either already past that date, branch doesn't exist, or description is bad"
-    },
-    "createMarket": {
-        "-1": "bad input or parent doesn't exist",
-        "-2": "too many events",
-        "-3": "too many outcomes",
-        "-4": "not enough money or market already exists"
-    },
-    "sendReputation": {
-        "0": "not enough reputation",
-        "-1": "Your reputation account was just created! Earn some reputation before you can send to others",
-        "-2": "Receiving address doesn't exist"
-    },
-    "buyShares": {
-        "-1": "invalid outcome or trading closed",
-        "-2": "entered a negative number of shares",
-        "-3": "not enough money",
-        "-4": "bad nonce/hash"
-    },
-    "sellShares": {
-        "-1": "invalid outcome or trading closed",
-        "-2": "entered a negative number of shares",
-        "-3": "not enough money",
-        "-4": "bad nonce/hash"
-    },
-    "WHISPER_POST_FAILED": {
-        "error": 65,
-        "message": "could not post message to whisper"
-    },
-    "DB_WRITE_FAILED": {
-        "error": 98,
-        "message": "database write failed"
-    },
-    "DB_READ_FAILED": {
-        "error": 99,
-        "message": "database read failed"
-    },
-    "INVALID_CONTRACT_PARAMETER": {
-        "error": 400,
-        "message": "cannot send object parameter to contract"
-    },
-    "NOT_LOGGED_IN": {
-        "error": 401,
-        "message": "not logged in"
-    },
-    "PARAMETER_NUMBER_ERROR": {
-        "error": 402,
-        "message": "wrong number of parameters"
-    },
-    "BAD_CREDENTIALS": {
-        "error": 403,
-        "message": "incorrect handle or password"
-    },
-    "TRANSACTION_NOT_FOUND": {
-        "error": 404,
-        "message": "transaction not found"
-    },
-    "PASSWORD_TOO_SHORT": {
-        "error": 405,
-        "message": "password must be at least 6 characters long"
-    },
-    "NULL_CALL_RETURN": {
-        "error": 406,
-        "message": "expected contract call to return value, received null"
-    },
-    "NULL_RESPONSE": {
-        "error": 407,
-        "message": "expected transaction hash from Ethereum node, received null"
-    },
-    "NO_RESPONSE": {
-        "error": 408,
-        "message": "no response"
-    },
-    "INVALID_RESPONSE": {
-        "error": 409,
-        "message": "could not parse response from Ethereum node"
-    },
-    "LOCAL_NODE_FAILURE": {
-        "error": 410,
-        "message": "RPC request to local Ethereum node failed"
-    },
-    "HOSTED_NODE_FAILURE": {
-        "error": 411,
-        "message": "RPC request to hosted nodes failed"
-    },
-    "HANDLE_TAKEN": {
-        "error": 422,
-        "message": "handle already taken"
-    },
-    "FILTER_NOT_CREATED": {
-        "error": 450,
-        "message": "filter could not be created"
-    },
-    "TRANSACTION_FAILED": {
-        "error": 500,
-        "message": "transaction failed"
-    },
-    "TRANSACTION_NOT_CONFIRMED": {
-        "error": 501,
-        "message": "polled network but could not confirm transaction"
-    },
-    "DUPLICATE_TRANSACTION": {
-        "error": 502,
-        "message": "duplicate transaction"
-    },
-    "RAW_TRANSACTION_ERROR": {
-        "error": 503,
-        "message": "error sending client-side transaction"
-    },
-    "RLP_ENCODING_ERROR": {
-        "error": 504,
-        "message": "RLP encoding error"
-    },
-    "NO_MARKET_INFO": {
-        "error": 505,
-        "message": "could not retrieve market data"
-    },
-    "RPC_TIMEOUT": {
-        "error": 599,
-        "message": "timed out while waiting for Ethereum network response"
-    },
-    "LOOPBACK_NOT_FOUND": {
-        "error": 650,
-        "message": "loopback interface required for synchronous local commands"
-    },
-    "ETHEREUM_NOT_FOUND": {
-        "error": 651,
-        "message": "no active ethereum node(s) found"
-    }
-}
-
-},{}],471:[function(require,module,exports){
-var contracts = require("./contracts");
-contracts.errors = require("./errors");
-
-module.exports = contracts;
-
-},{"./contracts":469,"./errors":470}],472:[function(require,module,exports){
-arguments[4][8][0].apply(exports,arguments)
-},{"dup":8}],473:[function(require,module,exports){
-arguments[4][338][0].apply(exports,arguments)
-},{"dup":338}],474:[function(require,module,exports){
-arguments[4][339][0].apply(exports,arguments)
-},{"./lib/cookies":476,"./lib/helpers":479,"./request":599,"dup":339,"extend":500}],475:[function(require,module,exports){
-arguments[4][340][0].apply(exports,arguments)
-},{"./helpers":479,"caseless":497,"dup":340,"node-uuid":584}],476:[function(require,module,exports){
-arguments[4][341][0].apply(exports,arguments)
-},{"dup":341,"tough-cookie":591}],477:[function(require,module,exports){
-arguments[4][342][0].apply(exports,arguments)
-},{"_process":223,"dup":342}],478:[function(require,module,exports){
-arguments[4][343][0].apply(exports,arguments)
-},{"dup":343,"fs":9,"har-validator":504,"querystring":227,"util":252}],479:[function(require,module,exports){
-arguments[4][344][0].apply(exports,arguments)
-},{"_process":223,"buffer":256,"crypto":25,"dup":344,"json-stringify-safe":580}],480:[function(require,module,exports){
-arguments[4][345][0].apply(exports,arguments)
-},{"buffer":256,"combined-stream":498,"dup":345,"isstream":579,"node-uuid":584}],481:[function(require,module,exports){
-arguments[4][346][0].apply(exports,arguments)
-},{"buffer":256,"caseless":497,"crypto":25,"dup":346,"node-uuid":584,"oauth-sign":585,"qs":586,"url":249}],482:[function(require,module,exports){
-arguments[4][347][0].apply(exports,arguments)
-},{"dup":347,"qs":586,"querystring":227}],483:[function(require,module,exports){
-arguments[4][348][0].apply(exports,arguments)
-},{"dup":348,"url":249}],484:[function(require,module,exports){
-arguments[4][349][0].apply(exports,arguments)
-},{"dup":349,"tunnel-agent":598,"url":249}],485:[function(require,module,exports){
-arguments[4][350][0].apply(exports,arguments)
-},{"crypto":25,"dup":350,"url":249}],486:[function(require,module,exports){
-arguments[4][351][0].apply(exports,arguments)
-},{"buffer":256,"dup":351,"readable-stream/duplex":487,"util":252}],487:[function(require,module,exports){
-arguments[4][228][0].apply(exports,arguments)
-},{"./lib/_stream_duplex.js":488,"dup":228}],488:[function(require,module,exports){
-arguments[4][229][0].apply(exports,arguments)
-},{"./_stream_readable":489,"./_stream_writable":490,"core-util-is":491,"dup":229,"inherits":492,"process-nextick-args":494}],489:[function(require,module,exports){
-arguments[4][231][0].apply(exports,arguments)
-},{"./_stream_duplex":488,"_process":223,"buffer":256,"core-util-is":491,"dup":231,"events":217,"inherits":492,"isarray":493,"process-nextick-args":494,"string_decoder/":495,"util":11}],490:[function(require,module,exports){
-arguments[4][233][0].apply(exports,arguments)
-},{"./_stream_duplex":488,"buffer":256,"core-util-is":491,"dup":233,"events":217,"inherits":492,"process-nextick-args":494,"util-deprecate":496}],491:[function(require,module,exports){
-(function (Buffer){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-// NOTE: These type checking functions intentionally don't use `instanceof`
-// because it is fragile and can be easily faked with `Object.create()`.
-
-function isArray(arg) {
-  if (Array.isArray) {
-    return Array.isArray(arg);
-  }
-  return objectToString(arg) === '[object Array]';
-}
-exports.isArray = isArray;
-
-function isBoolean(arg) {
-  return typeof arg === 'boolean';
-}
-exports.isBoolean = isBoolean;
-
-function isNull(arg) {
-  return arg === null;
-}
-exports.isNull = isNull;
-
-function isNullOrUndefined(arg) {
-  return arg == null;
-}
-exports.isNullOrUndefined = isNullOrUndefined;
-
-function isNumber(arg) {
-  return typeof arg === 'number';
-}
-exports.isNumber = isNumber;
-
-function isString(arg) {
-  return typeof arg === 'string';
-}
-exports.isString = isString;
-
-function isSymbol(arg) {
-  return typeof arg === 'symbol';
-}
-exports.isSymbol = isSymbol;
-
-function isUndefined(arg) {
-  return arg === void 0;
-}
-exports.isUndefined = isUndefined;
-
-function isRegExp(re) {
-  return objectToString(re) === '[object RegExp]';
-}
-exports.isRegExp = isRegExp;
-
-function isObject(arg) {
-  return typeof arg === 'object' && arg !== null;
-}
-exports.isObject = isObject;
-
-function isDate(d) {
-  return objectToString(d) === '[object Date]';
-}
-exports.isDate = isDate;
-
-function isError(e) {
-  return (objectToString(e) === '[object Error]' || e instanceof Error);
-}
-exports.isError = isError;
-
-function isFunction(arg) {
-  return typeof arg === 'function';
-}
-exports.isFunction = isFunction;
-
-function isPrimitive(arg) {
-  return arg === null ||
-         typeof arg === 'boolean' ||
-         typeof arg === 'number' ||
-         typeof arg === 'string' ||
-         typeof arg === 'symbol' ||  // ES6 symbol
-         typeof arg === 'undefined';
-}
-exports.isPrimitive = isPrimitive;
-
-exports.isBuffer = Buffer.isBuffer;
-
-function objectToString(o) {
-  return Object.prototype.toString.call(o);
-}
-
-}).call(this,{"isBuffer":require("../../../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")})
-},{"../../../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":220}],492:[function(require,module,exports){
-arguments[4][219][0].apply(exports,arguments)
-},{"dup":219}],493:[function(require,module,exports){
-arguments[4][221][0].apply(exports,arguments)
-},{"dup":221}],494:[function(require,module,exports){
-arguments[4][235][0].apply(exports,arguments)
-},{"_process":223,"dup":235}],495:[function(require,module,exports){
-arguments[4][247][0].apply(exports,arguments)
-},{"buffer":256,"dup":247}],496:[function(require,module,exports){
-arguments[4][236][0].apply(exports,arguments)
-},{"dup":236}],497:[function(require,module,exports){
-arguments[4][362][0].apply(exports,arguments)
-},{"dup":362}],498:[function(require,module,exports){
-(function (Buffer){
-var util = require('util');
-var Stream = require('stream').Stream;
-var DelayedStream = require('delayed-stream');
-
-module.exports = CombinedStream;
-function CombinedStream() {
-  this.writable = false;
-  this.readable = true;
-  this.dataSize = 0;
-  this.maxDataSize = 2 * 1024 * 1024;
-  this.pauseStreams = true;
-
-  this._released = false;
-  this._streams = [];
-  this._currentStream = null;
-}
-util.inherits(CombinedStream, Stream);
-
-CombinedStream.create = function(options) {
-  var combinedStream = new this();
-
-  options = options || {};
-  for (var option in options) {
-    combinedStream[option] = options[option];
-  }
-
-  return combinedStream;
-};
-
-CombinedStream.isStreamLike = function(stream) {
-  return (typeof stream !== 'function')
-    && (typeof stream !== 'string')
-    && (typeof stream !== 'boolean')
-    && (typeof stream !== 'number')
-    && (!Buffer.isBuffer(stream));
-};
-
-CombinedStream.prototype.append = function(stream) {
-  var isStreamLike = CombinedStream.isStreamLike(stream);
-
-  if (isStreamLike) {
-    if (!(stream instanceof DelayedStream)) {
-      var newStream = DelayedStream.create(stream, {
-        maxDataSize: Infinity,
-        pauseStream: this.pauseStreams,
-      });
-      stream.on('data', this._checkDataSize.bind(this));
-      stream = newStream;
-    }
-
-    this._handleErrors(stream);
-
-    if (this.pauseStreams) {
-      stream.pause();
-    }
-  }
-
-  this._streams.push(stream);
-  return this;
-};
-
-CombinedStream.prototype.pipe = function(dest, options) {
-  Stream.prototype.pipe.call(this, dest, options);
-  this.resume();
-  return dest;
-};
-
-CombinedStream.prototype._getNext = function() {
-  this._currentStream = null;
-  var stream = this._streams.shift();
-
-
-  if (typeof stream == 'undefined') {
-    this.end();
-    return;
-  }
-
-  if (typeof stream !== 'function') {
-    this._pipeNext(stream);
-    return;
-  }
-
-  var getStream = stream;
-  getStream(function(stream) {
-    var isStreamLike = CombinedStream.isStreamLike(stream);
-    if (isStreamLike) {
-      stream.on('data', this._checkDataSize.bind(this));
-      this._handleErrors(stream);
-    }
-
-    this._pipeNext(stream);
-  }.bind(this));
-};
-
-CombinedStream.prototype._pipeNext = function(stream) {
-  this._currentStream = stream;
-
-  var isStreamLike = CombinedStream.isStreamLike(stream);
-  if (isStreamLike) {
-    stream.on('end', this._getNext.bind(this));
-    stream.pipe(this, {end: false});
-    return;
-  }
-
-  var value = stream;
-  this.write(value);
-  this._getNext();
-};
-
-CombinedStream.prototype._handleErrors = function(stream) {
-  var self = this;
-  stream.on('error', function(err) {
-    self._emitError(err);
-  });
-};
-
-CombinedStream.prototype.write = function(data) {
-  this.emit('data', data);
-};
-
-CombinedStream.prototype.pause = function() {
-  if (!this.pauseStreams) {
-    return;
-  }
-
-  if(this.pauseStreams && this._currentStream && typeof(this._currentStream.pause) == 'function') this._currentStream.pause();
-  this.emit('pause');
-};
-
-CombinedStream.prototype.resume = function() {
-  if (!this._released) {
-    this._released = true;
-    this.writable = true;
-    this._getNext();
-  }
-
-  if(this.pauseStreams && this._currentStream && typeof(this._currentStream.resume) == 'function') this._currentStream.resume();
-  this.emit('resume');
-};
-
-CombinedStream.prototype.end = function() {
-  this._reset();
-  this.emit('end');
-};
-
-CombinedStream.prototype.destroy = function() {
-  this._reset();
-  this.emit('close');
-};
-
-CombinedStream.prototype._reset = function() {
-  this.writable = false;
-  this._streams = [];
-  this._currentStream = null;
-};
-
-CombinedStream.prototype._checkDataSize = function() {
-  this._updateDataSize();
-  if (this.dataSize <= this.maxDataSize) {
-    return;
-  }
-
-  var message =
-    'DelayedStream#maxDataSize of ' + this.maxDataSize + ' bytes exceeded.';
-  this._emitError(new Error(message));
-};
-
-CombinedStream.prototype._updateDataSize = function() {
-  this.dataSize = 0;
-
-  var self = this;
-  this._streams.forEach(function(stream) {
-    if (!stream.dataSize) {
-      return;
-    }
-
-    self.dataSize += stream.dataSize;
-  });
-
-  if (this._currentStream && this._currentStream.dataSize) {
-    this.dataSize += this._currentStream.dataSize;
-  }
-};
-
-CombinedStream.prototype._emitError = function(err) {
-  this._reset();
-  this.emit('error', err);
-};
-
-}).call(this,{"isBuffer":require("../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")})
-},{"../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":220,"delayed-stream":499,"stream":241,"util":252}],499:[function(require,module,exports){
-arguments[4][364][0].apply(exports,arguments)
-},{"dup":364,"stream":241,"util":252}],500:[function(require,module,exports){
-arguments[4][365][0].apply(exports,arguments)
-},{"dup":365}],501:[function(require,module,exports){
-arguments[4][366][0].apply(exports,arguments)
-},{"dup":366,"http":242,"https":218,"net":9,"tls":9,"util":252}],502:[function(require,module,exports){
-arguments[4][367][0].apply(exports,arguments)
-},{"dup":367}],503:[function(require,module,exports){
-arguments[4][368][0].apply(exports,arguments)
-},{"dup":368}],504:[function(require,module,exports){
-arguments[4][369][0].apply(exports,arguments)
-},{"./runner":505,"./schemas":513,"dup":369,"pinkie-promise":529}],505:[function(require,module,exports){
-arguments[4][370][0].apply(exports,arguments)
-},{"./error":503,"./schemas":513,"dup":370,"is-my-json-valid":523}],506:[function(require,module,exports){
-arguments[4][371][0].apply(exports,arguments)
-},{"dup":371}],507:[function(require,module,exports){
-arguments[4][372][0].apply(exports,arguments)
-},{"dup":372}],508:[function(require,module,exports){
-arguments[4][373][0].apply(exports,arguments)
-},{"dup":373}],509:[function(require,module,exports){
-arguments[4][374][0].apply(exports,arguments)
-},{"dup":374}],510:[function(require,module,exports){
-arguments[4][375][0].apply(exports,arguments)
-},{"dup":375}],511:[function(require,module,exports){
-arguments[4][376][0].apply(exports,arguments)
-},{"dup":376}],512:[function(require,module,exports){
-arguments[4][377][0].apply(exports,arguments)
-},{"dup":377}],513:[function(require,module,exports){
-arguments[4][378][0].apply(exports,arguments)
-},{"./cache.json":506,"./cacheEntry.json":507,"./content.json":508,"./cookie.json":509,"./creator.json":510,"./entry.json":511,"./har.json":512,"./log.json":514,"./page.json":515,"./pageTimings.json":516,"./postData.json":517,"./record.json":518,"./request.json":519,"./response.json":520,"./timings.json":521,"dup":378}],514:[function(require,module,exports){
-arguments[4][379][0].apply(exports,arguments)
-},{"dup":379}],515:[function(require,module,exports){
-arguments[4][380][0].apply(exports,arguments)
-},{"dup":380}],516:[function(require,module,exports){
-arguments[4][381][0].apply(exports,arguments)
-},{"dup":381}],517:[function(require,module,exports){
-arguments[4][382][0].apply(exports,arguments)
-},{"dup":382}],518:[function(require,module,exports){
-arguments[4][383][0].apply(exports,arguments)
-},{"dup":383}],519:[function(require,module,exports){
-arguments[4][384][0].apply(exports,arguments)
-},{"dup":384}],520:[function(require,module,exports){
-arguments[4][385][0].apply(exports,arguments)
-},{"dup":385}],521:[function(require,module,exports){
-arguments[4][386][0].apply(exports,arguments)
-},{"dup":386}],522:[function(require,module,exports){
-arguments[4][387][0].apply(exports,arguments)
-},{"dup":387}],523:[function(require,module,exports){
-arguments[4][388][0].apply(exports,arguments)
-},{"./formats":522,"dup":388,"generate-function":524,"generate-object-property":525,"jsonpointer":527,"xtend":528}],524:[function(require,module,exports){
-arguments[4][389][0].apply(exports,arguments)
-},{"dup":389,"util":252}],525:[function(require,module,exports){
-arguments[4][390][0].apply(exports,arguments)
-},{"dup":390,"is-property":526}],526:[function(require,module,exports){
-arguments[4][391][0].apply(exports,arguments)
-},{"dup":391}],527:[function(require,module,exports){
-arguments[4][392][0].apply(exports,arguments)
-},{"dup":392}],528:[function(require,module,exports){
-arguments[4][255][0].apply(exports,arguments)
-},{"dup":255}],529:[function(require,module,exports){
-arguments[4][394][0].apply(exports,arguments)
-},{"dup":394,"pinkie":530}],530:[function(require,module,exports){
-arguments[4][395][0].apply(exports,arguments)
-},{"_process":223,"dup":395}],531:[function(require,module,exports){
-arguments[4][396][0].apply(exports,arguments)
-},{"dup":396}],532:[function(require,module,exports){
-arguments[4][397][0].apply(exports,arguments)
-},{"./parser":533,"./signer":534,"./utils":535,"./verify":536,"dup":397}],533:[function(require,module,exports){
-arguments[4][398][0].apply(exports,arguments)
-},{"./utils":535,"assert-plus":537,"dup":398,"util":252}],534:[function(require,module,exports){
-(function (Buffer){
-// Copyright 2012 Joyent, Inc.  All rights reserved.
-
-var assert = require('assert-plus');
-var crypto = require('crypto');
-var http = require('http');
-var util = require('util');
-var sshpk = require('sshpk');
-var jsprim = require('jsprim');
-var utils = require('./utils');
-
-var sprintf = require('util').format;
-
-var HASH_ALGOS = utils.HASH_ALGOS;
-var PK_ALGOS = utils.PK_ALGOS;
-var InvalidAlgorithmError = utils.InvalidAlgorithmError;
-var HttpSignatureError = utils.HttpSignatureError;
-var validateAlgorithm = utils.validateAlgorithm;
-
-///--- Globals
-
-var AUTHZ_FMT =
-  'Signature keyId="%s",algorithm="%s",headers="%s",signature="%s"';
-
-///--- Specific Errors
-
-function MissingHeaderError(message) {
-  HttpSignatureError.call(this, message, MissingHeaderError);
-}
-util.inherits(MissingHeaderError, HttpSignatureError);
-
-function StrictParsingError(message) {
-  HttpSignatureError.call(this, message, StrictParsingError);
-}
-util.inherits(StrictParsingError, HttpSignatureError);
-
-/* See createSigner() */
-function RequestSigner(options) {
-  assert.object(options, 'options');
-
-  var alg = [];
-  if (options.algorithm !== undefined) {
-    assert.string(options.algorithm, 'options.algorithm');
-    alg = validateAlgorithm(options.algorithm);
-  }
-  this.rs_alg = alg;
-
-  /*
-   * RequestSigners come in two varieties: ones with an rs_signFunc, and ones
-   * with an rs_signer.
-   *
-   * rs_signFunc-based RequestSigners have to build up their entire signing
-   * string within the rs_lines array and give it to rs_signFunc as a single
-   * concat'd blob. rs_signer-based RequestSigners can add a line at a time to
-   * their signing state by using rs_signer.update(), thus only needing to
-   * buffer the hash function state and one line at a time.
-   */
-  if (options.sign !== undefined) {
-    assert.func(options.sign, 'options.sign');
-    this.rs_signFunc = options.sign;
-
-  } else if (alg[0] === 'hmac' && options.key !== undefined) {
-    assert.string(options.keyId, 'options.keyId');
-    this.rs_keyId = options.keyId;
-
-    if (typeof (options.key) !== 'string' && !Buffer.isBuffer(options.key))
-      throw (new TypeError('options.key for HMAC must be a string or Buffer'));
-
-    /*
-     * Make an rs_signer for HMACs, not a rs_signFunc -- HMACs digest their
-     * data in chunks rather than requiring it all to be given in one go
-     * at the end, so they are more similar to signers than signFuncs.
-     */
-    this.rs_signer = crypto.createHmac(alg[1].toUpperCase(), options.key);
-    this.rs_signer.sign = function () {
-      var digest = this.digest('base64');
-      return ({
-        hashAlgorithm: alg[1],
-        toString: function () { return (digest); }
-      });
-    };
-
-  } else if (options.key !== undefined) {
-    var key = options.key;
-    if (typeof (key) === 'string' || Buffer.isBuffer(key))
-      key = sshpk.parsePrivateKey(key);
-
-    assert.ok(sshpk.PrivateKey.isPrivateKey(key, [1, 2]),
-      'options.key must be a sshpk.PrivateKey');
-    this.rs_key = key;
-
-    assert.string(options.keyId, 'options.keyId');
-    this.rs_keyId = options.keyId;
-
-    if (!PK_ALGOS[key.type]) {
-      throw (new InvalidAlgorithmError(key.type.toUpperCase() + ' type ' +
-        'keys are not supported'));
-    }
-
-    if (alg[0] !== undefined && key.type !== alg[0]) {
-      throw (new InvalidAlgorithmError('options.key must be a ' +
-        alg[0].toUpperCase() + ' key, was given a ' +
-        key.type.toUpperCase() + ' key instead'));
-    }
-
-    this.rs_signer = key.createSign(alg[1]);
-
-  } else {
-    throw (new TypeError('options.sign (func) or options.key is required'));
-  }
-
-  this.rs_headers = [];
-  this.rs_lines = [];
-}
-
-/**
- * Adds a header to be signed, with its value, into this signer.
- *
- * @param {String} header
- * @param {String} value
- * @return {String} value written
- */
-RequestSigner.prototype.writeHeader = function (header, value) {
-  assert.string(header, 'header');
-  header = header.toLowerCase();
-  assert.string(value, 'value');
-
-  this.rs_headers.push(header);
-
-  if (this.rs_signFunc) {
-    this.rs_lines.push(header + ': ' + value);
-
-  } else {
-    var line = header + ': ' + value;
-    if (this.rs_headers.length > 0)
-      line = '\n' + line;
-    this.rs_signer.update(line);
-  }
-
-  return (value);
-};
-
-/**
- * Adds a default Date header, returning its value.
- *
- * @return {String}
- */
-RequestSigner.prototype.writeDateHeader = function () {
-  return (this.writeHeader('date', jsprim.rfc1123(new Date())));
-};
-
-/**
- * Adds the request target line to be signed.
- *
- * @param {String} method, HTTP method (e.g. 'get', 'post', 'put')
- * @param {String} path
- */
-RequestSigner.prototype.writeTarget = function (method, path) {
-  assert.string(method, 'method');
-  assert.string(path, 'path');
-  method = method.toLowerCase();
-  this.writeHeader('(request-target)', method + ' ' + path);
-};
-
-/**
- * Calculate the value for the Authorization header on this request
- * asynchronously.
- *
- * @param {Func} callback (err, authz)
- */
-RequestSigner.prototype.sign = function (cb) {
-  assert.func(cb, 'callback');
-
-  if (this.rs_headers.length < 1)
-    throw (new Error('At least one header must be signed'));
-
-  var alg, authz;
-  if (this.rs_signFunc) {
-    var data = this.rs_lines.join('\n');
-    var self = this;
-    this.rs_signFunc(data, function (err, sig) {
-      if (err) {
-        cb(err);
-        return;
-      }
-      try {
-        assert.object(sig, 'signature');
-        assert.string(sig.keyId, 'signature.keyId');
-        assert.string(sig.algorithm, 'signature.algorithm');
-        assert.string(sig.signature, 'signature.signature');
-        alg = validateAlgorithm(sig.algorithm);
-
-        authz = sprintf(AUTHZ_FMT,
-          sig.keyId,
-          sig.algorithm,
-          self.rs_headers.join(' '),
-          sig.signature);
-      } catch (e) {
-        cb(e);
-        return;
-      }
-      cb(null, authz);
-    });
-
-  } else {
-    try {
-      var sigObj = this.rs_signer.sign();
-    } catch (e) {
-      cb(e);
-      return;
-    }
-    alg = (this.rs_alg[0] || this.rs_key.type) + '-' + sigObj.hashAlgorithm;
-    var signature = sigObj.toString();
-    authz = sprintf(AUTHZ_FMT,
-      this.rs_keyId,
-      alg,
-      this.rs_headers.join(' '),
-      signature);
-    cb(null, authz);
-  }
-};
-
-///--- Exported API
-
-module.exports = {
-  /**
-   * Identifies whether a given object is a request signer or not.
-   *
-   * @param {Object} object, the object to identify
-   * @returns {Boolean}
-   */
-  isSigner: function (obj) {
-    if (typeof (obj) === 'object' && obj instanceof RequestSigner)
-      return (true);
-    return (false);
-  },
-
-  /**
-   * Creates a request signer, used to asynchronously build a signature
-   * for a request (does not have to be an http.ClientRequest).
-   *
-   * @param {Object} options, either:
-   *                   - {String} keyId
-   *                   - {String|Buffer} key
-   *                   - {String} algorithm (optional, required for HMAC)
-   *                 or:
-   *                   - {Func} sign (data, cb)
-   * @return {RequestSigner}
-   */
-  createSigner: function createSigner(options) {
-    return (new RequestSigner(options));
-  },
-
-  /**
-   * Adds an 'Authorization' header to an http.ClientRequest object.
-   *
-   * Note that this API will add a Date header if it's not already set. Any
-   * other headers in the options.headers array MUST be present, or this
-   * will throw.
-   *
-   * You shouldn't need to check the return type; it's just there if you want
-   * to be pedantic.
-   *
-   * The optional flag indicates whether parsing should use strict enforcement
-   * of the version draft-cavage-http-signatures-04 of the spec or beyond.
-   * The default is to be loose and support
-   * older versions for compatibility.
-   *
-   * @param {Object} request an instance of http.ClientRequest.
-   * @param {Object} options signing parameters object:
-   *                   - {String} keyId required.
-   *                   - {String} key required (either a PEM or HMAC key).
-   *                   - {Array} headers optional; defaults to ['date'].
-   *                   - {String} algorithm optional (unless key is HMAC);
-   *                              default is the same as the sshpk default
-   *                              signing algorithm for the type of key given
-   *                   - {String} httpVersion optional; defaults to '1.1'.
-   *                   - {Boolean} strict optional; defaults to 'false'.
-   * @return {Boolean} true if Authorization (and optionally Date) were added.
-   * @throws {TypeError} on bad parameter types (input).
-   * @throws {InvalidAlgorithmError} if algorithm was bad or incompatible with
-   *                                 the given key.
-   * @throws {sshpk.KeyParseError} if key was bad.
-   * @throws {MissingHeaderError} if a header to be signed was specified but
-   *                              was not present.
-   */
-  signRequest: function signRequest(request, options) {
-    assert.object(request, 'request');
-    assert.object(options, 'options');
-    assert.optionalString(options.algorithm, 'options.algorithm');
-    assert.string(options.keyId, 'options.keyId');
-    assert.optionalArrayOfString(options.headers, 'options.headers');
-    assert.optionalString(options.httpVersion, 'options.httpVersion');
-
-    if (!request.getHeader('Date'))
-      request.setHeader('Date', jsprim.rfc1123(new Date()));
-    if (!options.headers)
-      options.headers = ['date'];
-    if (!options.httpVersion)
-      options.httpVersion = '1.1';
-
-    var alg = [];
-    if (options.algorithm) {
-      options.algorithm = options.algorithm.toLowerCase();
-      alg = validateAlgorithm(options.algorithm);
-    }
-
-    var i;
-    var stringToSign = '';
-    for (i = 0; i < options.headers.length; i++) {
-      if (typeof (options.headers[i]) !== 'string')
-        throw new TypeError('options.headers must be an array of Strings');
-
-      var h = options.headers[i].toLowerCase();
-
-      if (h === 'request-line') {
-        if (!options.strict) {
-          /**
-           * We allow headers from the older spec drafts if strict parsing isn't
-           * specified in options.
-           */
-          stringToSign +=
-            request.method + ' ' + request.path + ' HTTP/' +
-            options.httpVersion;
-        } else {
-          /* Strict parsing doesn't allow older draft headers. */
-          throw (new StrictParsingError('request-line is not a valid header ' +
-            'with strict parsing enabled.'));
-        }
-      } else if (h === '(request-target)') {
-        stringToSign +=
-          '(request-target): ' + request.method.toLowerCase() + ' ' +
-          request.path;
-      } else {
-        var value = request.getHeader(h);
-        if (value === undefined || value === '') {
-          throw new MissingHeaderError(h + ' was not in the request');
-        }
-        stringToSign += h + ': ' + value;
-      }
-
-      if ((i + 1) < options.headers.length)
-        stringToSign += '\n';
-    }
-
-    var signature;
-    if (alg[0] === 'hmac') {
-      if (typeof (options.key) !== 'string' && !Buffer.isBuffer(options.key))
-        throw (new TypeError('options.key must be a string or Buffer'));
-
-      var hmac = crypto.createHmac(alg[1].toUpperCase(), options.key);
-      hmac.update(stringToSign);
-      signature = hmac.digest('base64');
-
-    } else {
-      var key = options.key;
-      if (typeof (key) === 'string' || Buffer.isBuffer(key))
-        key = sshpk.parsePrivateKey(options.key);
-
-      assert.ok(sshpk.PrivateKey.isPrivateKey(key, [1, 2]),
-        'options.key must be a sshpk.PrivateKey');
-
-      if (!PK_ALGOS[key.type]) {
-        throw (new InvalidAlgorithmError(key.type.toUpperCase() + ' type ' +
-          'keys are not supported'));
-      }
-
-      if (alg[0] !== undefined && key.type !== alg[0]) {
-        throw (new InvalidAlgorithmError('options.key must be a ' +
-          alg[0].toUpperCase() + ' key, was given a ' +
-          key.type.toUpperCase() + ' key instead'));
-      }
-
-      var signer = key.createSign(alg[1]);
-      signer.update(stringToSign);
-      var sigObj = signer.sign();
-      if (!HASH_ALGOS[sigObj.hashAlgorithm]) {
-        throw (new InvalidAlgorithmError(sigObj.hashAlgorithm.toUpperCase() +
-          ' is not a supported hash algorithm'));
-      }
-      options.algorithm = key.type + '-' + sigObj.hashAlgorithm;
-      signature = sigObj.toString();
-      assert.notStrictEqual(signature, '', 'empty signature produced');
-    }
-
-    request.setHeader('Authorization', sprintf(AUTHZ_FMT,
-                                               options.keyId,
-                                               options.algorithm,
-                                               options.headers.join(' '),
-                                               signature));
-
-    return true;
-  }
-
-};
-
-}).call(this,{"isBuffer":require("../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")})
-},{"../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":220,"./utils":535,"assert-plus":537,"crypto":25,"http":242,"jsprim":538,"sshpk":554,"util":252}],535:[function(require,module,exports){
-arguments[4][400][0].apply(exports,arguments)
-},{"assert-plus":537,"dup":400,"sshpk":554,"util":252}],536:[function(require,module,exports){
-arguments[4][401][0].apply(exports,arguments)
-},{"./utils":535,"assert-plus":537,"buffer":256,"crypto":25,"dup":401,"sshpk":554}],537:[function(require,module,exports){
-(function (Buffer,process){
-// Copyright (c) 2012, Mark Cavage. All rights reserved.
-
-var assert = require('assert');
-var Stream = require('stream').Stream;
-var util = require('util');
-
-
-
-///--- Globals
-
-var NDEBUG = process.env.NODE_NDEBUG || false;
-var UUID_REGEXP = /^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$/;
-
-
-
-///--- Messages
-
-var ARRAY_TYPE_REQUIRED = '%s ([%s]) required';
-var TYPE_REQUIRED = '%s (%s) is required';
-
-
-
-///--- Internal
-
-function capitalize(str) {
-        return (str.charAt(0).toUpperCase() + str.slice(1));
-}
-
-function uncapitalize(str) {
-        return (str.charAt(0).toLowerCase() + str.slice(1));
-}
-
-function _() {
-        return (util.format.apply(util, arguments));
-}
-
-
-function _assert(arg, type, name, stackFunc) {
-        if (!NDEBUG) {
-                name = name || type;
-                stackFunc = stackFunc || _assert.caller;
-                var t = typeof (arg);
-
-                if (t !== type) {
-                        throw new assert.AssertionError({
-                                message: _(TYPE_REQUIRED, name, type),
-                                actual: t,
-                                expected: type,
-                                operator: '===',
-                                stackStartFunction: stackFunc
-                        });
-                }
-        }
-}
-
-
-function _instanceof(arg, type, name, stackFunc) {
-        if (!NDEBUG) {
-                name = name || type;
-                stackFunc = stackFunc || _instanceof.caller;
-
-                if (!(arg instanceof type)) {
-                        throw new assert.AssertionError({
-                                message: _(TYPE_REQUIRED, name, type.name),
-                                actual: _getClass(arg),
-                                expected: type.name,
-                                operator: 'instanceof',
-                                stackStartFunction: stackFunc
-                        });
-                }
-        }
-}
-
-function _getClass(object) {
-        return (Object.prototype.toString.call(object).slice(8, -1));
-};
-
-
-
-///--- API
-
-function array(arr, type, name) {
-        if (!NDEBUG) {
-                name = name || type;
-
-                if (!Array.isArray(arr)) {
-                        throw new assert.AssertionError({
-                                message: _(ARRAY_TYPE_REQUIRED, name, type),
-                                actual: typeof (arr),
-                                expected: 'array',
-                                operator: 'Array.isArray',
-                                stackStartFunction: array.caller
-                        });
-                }
-
-                for (var i = 0; i < arr.length; i++) {
-                        _assert(arr[i], type, name, array);
-                }
-        }
-}
-
-
-function bool(arg, name) {
-        _assert(arg, 'boolean', name, bool);
-}
-
-
-function buffer(arg, name) {
-        if (!Buffer.isBuffer(arg)) {
-                throw new assert.AssertionError({
-                        message: _(TYPE_REQUIRED, name || '', 'Buffer'),
-                        actual: typeof (arg),
-                        expected: 'buffer',
-                        operator: 'Buffer.isBuffer',
-                        stackStartFunction: buffer
-                });
-        }
-}
-
-
-function func(arg, name) {
-        _assert(arg, 'function', name);
-}
-
-
-function number(arg, name) {
-        _assert(arg, 'number', name);
-        if (!NDEBUG && (isNaN(arg) || !isFinite(arg))) {
-                throw new assert.AssertionError({
-                        message: _(TYPE_REQUIRED, name, 'number'),
-                        actual: arg,
-                        expected: 'number',
-                        operator: 'isNaN',
-                        stackStartFunction: number
-                });
-        }
-}
-
-
-function object(arg, name) {
-        _assert(arg, 'object', name);
-}
-
-
-function stream(arg, name) {
-        _instanceof(arg, Stream, name);
-}
-
-
-function date(arg, name) {
-        _instanceof(arg, Date, name);
-}
-
-function regexp(arg, name) {
-        _instanceof(arg, RegExp, name);
-}
-
-
-function string(arg, name) {
-        _assert(arg, 'string', name);
-}
-
-
-function uuid(arg, name) {
-        string(arg, name);
-        if (!NDEBUG && !UUID_REGEXP.test(arg)) {
-                throw new assert.AssertionError({
-                        message: _(TYPE_REQUIRED, name, 'uuid'),
-                        actual: 'string',
-                        expected: 'uuid',
-                        operator: 'test',
-                        stackStartFunction: uuid
-                });
-        }
-}
-
-
-///--- Exports
-
-module.exports = {
-        bool: bool,
-        buffer: buffer,
-        date: date,
-        func: func,
-        number: number,
-        object: object,
-        regexp: regexp,
-        stream: stream,
-        string: string,
-        uuid: uuid
-};
-
-
-Object.keys(module.exports).forEach(function (k) {
-        if (k === 'buffer')
-                return;
-
-        var name = 'arrayOf' + capitalize(k);
-
-        if (k === 'bool')
-                k = 'boolean';
-        if (k === 'func')
-                k = 'function';
-        module.exports[name] = function (arg, name) {
-                array(arg, k, name);
-        };
-});
-
-Object.keys(module.exports).forEach(function (k) {
-        var _name = 'optional' + capitalize(k);
-        var s = uncapitalize(k.replace('arrayOf', ''));
-        if (s === 'bool')
-                s = 'boolean';
-        if (s === 'func')
-                s = 'function';
-
-        if (k.indexOf('arrayOf') !== -1) {
-          module.exports[_name] = function (arg, name) {
-                  if (!NDEBUG && arg !== undefined) {
-                          array(arg, s, name);
-                  }
-          };
-        } else {
-          module.exports[_name] = function (arg, name) {
-                  if (!NDEBUG && arg !== undefined) {
-                          _assert(arg, s, name);
-                  }
-          };
-        }
-});
-
-
-// Reexport built-in assertions
-Object.keys(assert).forEach(function (k) {
-        if (k === 'AssertionError') {
-                module.exports[k] = assert[k];
-                return;
-        }
-
-        module.exports[k] = function () {
-                if (!NDEBUG) {
-                        assert[k].apply(assert[k], arguments);
-                }
-        };
-});
-
-}).call(this,{"isBuffer":require("../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")},require('_process'))
-},{"../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":220,"_process":223,"assert":10,"stream":241,"util":252}],538:[function(require,module,exports){
-arguments[4][403][0].apply(exports,arguments)
-},{"assert":10,"dup":403,"extsprintf":539,"json-schema":540,"util":252,"verror":541}],539:[function(require,module,exports){
-arguments[4][404][0].apply(exports,arguments)
-},{"assert":10,"dup":404,"util":252}],540:[function(require,module,exports){
-arguments[4][405][0].apply(exports,arguments)
-},{"dup":405}],541:[function(require,module,exports){
-arguments[4][406][0].apply(exports,arguments)
-},{"assert":10,"dup":406,"extsprintf":539,"util":252}],542:[function(require,module,exports){
-arguments[4][407][0].apply(exports,arguments)
-},{"buffer":256,"dup":407}],543:[function(require,module,exports){
-arguments[4][408][0].apply(exports,arguments)
-},{"./algs":542,"./key":555,"./private-key":556,"./utils":559,"assert-plus":566,"buffer":256,"crypto":25,"dup":408,"ecc-jsbn":567,"ecc-jsbn/lib/ec":568,"jodid25519":570,"jsbn":576}],544:[function(require,module,exports){
-arguments[4][409][0].apply(exports,arguments)
-},{"./signature":557,"assert-plus":566,"buffer":256,"dup":409,"stream":241,"tweetnacl":577,"util":252}],545:[function(require,module,exports){
-arguments[4][410][0].apply(exports,arguments)
-},{"assert-plus":566,"dup":410,"util":252}],546:[function(require,module,exports){
-arguments[4][411][0].apply(exports,arguments)
-},{"./algs":542,"./errors":545,"./key":555,"./utils":559,"assert-plus":566,"buffer":256,"crypto":25,"dup":411}],547:[function(require,module,exports){
-arguments[4][412][0].apply(exports,arguments)
-},{"../key":555,"../private-key":556,"../utils":559,"./pem":548,"./rfc4253":551,"./ssh":553,"assert-plus":566,"buffer":256,"dup":412}],548:[function(require,module,exports){
-arguments[4][413][0].apply(exports,arguments)
-},{"../algs":542,"../key":555,"../private-key":556,"../utils":559,"./pkcs1":549,"./pkcs8":550,"./rfc4253":551,"./ssh-private":552,"asn1":565,"assert-plus":566,"buffer":256,"dup":413}],549:[function(require,module,exports){
-arguments[4][414][0].apply(exports,arguments)
-},{"../algs":542,"../key":555,"../private-key":556,"../utils":559,"./pem":548,"./pkcs8":550,"asn1":565,"assert-plus":566,"buffer":256,"dup":414}],550:[function(require,module,exports){
-arguments[4][415][0].apply(exports,arguments)
-},{"../algs":542,"../key":555,"../private-key":556,"../utils":559,"./pem":548,"asn1":565,"assert-plus":566,"buffer":256,"dup":415}],551:[function(require,module,exports){
-arguments[4][416][0].apply(exports,arguments)
-},{"../algs":542,"../key":555,"../private-key":556,"../ssh-buffer":558,"../utils":559,"assert-plus":566,"buffer":256,"dup":416}],552:[function(require,module,exports){
-arguments[4][417][0].apply(exports,arguments)
-},{"../algs":542,"../key":555,"../private-key":556,"../ssh-buffer":558,"../utils":559,"./pem":548,"./rfc4253":551,"asn1":565,"assert-plus":566,"buffer":256,"crypto":25,"dup":417}],553:[function(require,module,exports){
-arguments[4][418][0].apply(exports,arguments)
-},{"../key":555,"../private-key":556,"../utils":559,"./rfc4253":551,"./ssh-private":552,"assert-plus":566,"buffer":256,"dup":418}],554:[function(require,module,exports){
-arguments[4][419][0].apply(exports,arguments)
-},{"./errors":545,"./fingerprint":546,"./key":555,"./private-key":556,"./signature":557,"dup":419}],555:[function(require,module,exports){
-arguments[4][420][0].apply(exports,arguments)
-},{"./algs":542,"./dhe":543,"./ed-compat":544,"./errors":545,"./fingerprint":546,"./formats/auto":547,"./formats/pem":548,"./formats/pkcs1":549,"./formats/pkcs8":550,"./formats/rfc4253":551,"./formats/ssh":553,"./formats/ssh-private":552,"./private-key":556,"./signature":557,"./utils":559,"assert-plus":566,"buffer":256,"crypto":25,"dup":420}],556:[function(require,module,exports){
-arguments[4][421][0].apply(exports,arguments)
-},{"./algs":542,"./ed-compat":544,"./errors":545,"./fingerprint":546,"./formats/auto":547,"./formats/pem":548,"./formats/pkcs1":549,"./formats/pkcs8":550,"./formats/rfc4253":551,"./formats/ssh-private":552,"./key":555,"./signature":557,"./utils":559,"assert-plus":566,"buffer":256,"crypto":25,"dup":421,"jodid25519":570,"util":252}],557:[function(require,module,exports){
-arguments[4][422][0].apply(exports,arguments)
-},{"./algs":542,"./errors":545,"./ssh-buffer":558,"./utils":559,"asn1":565,"assert-plus":566,"buffer":256,"crypto":25,"dup":422}],558:[function(require,module,exports){
-(function (Buffer){
-// Copyright 2015 Joyent, Inc.
-
-module.exports = SSHBuffer;
-
-var assert = require('assert-plus');
-
-function SSHBuffer(opts) {
-	assert.object(opts, 'options');
-	if (opts.buffer !== undefined)
-		assert.buffer(opts.buffer, 'options.buffer');
-
-	this._size = opts.buffer ? opts.buffer.length : 1024;
-	this._buffer = opts.buffer || (new Buffer(this._size));
-	this._offset = 0;
-}
-
-SSHBuffer.prototype.toBuffer = function () {
-	return (this._buffer.slice(0, this._offset));
-};
-
-SSHBuffer.prototype.atEnd = function () {
-	return (this._offset >= this._buffer.length);
-};
-
-SSHBuffer.prototype.remainder = function () {
-	return (this._buffer.slice(this._offset));
-};
-
-SSHBuffer.prototype.skip = function (n) {
-	this._offset += n;
-};
-
-SSHBuffer.prototype.expand = function () {
-	this._size *= 2;
-	var buf = new Buffer(this._size);
-	this._buffer.copy(buf, 0);
-	this._buffer = buf;
-};
-
-SSHBuffer.prototype.readPart = function () {
-	return ({data: this.readBuffer()});
-};
-
-SSHBuffer.prototype.readBuffer = function () {
-	var len = this._buffer.readUInt32BE(this._offset);
-	this._offset += 4;
-	assert.ok(this._offset + len <= this._buffer.length,
-	    'length out of bounds at +0x' + this._offset.toString(16));
-	var buf = this._buffer.slice(this._offset, this._offset + len);
-	this._offset += len;
-	return (buf);
-};
-
-SSHBuffer.prototype.readString = function () {
-	return (this.readBuffer().toString());
-};
-
-SSHBuffer.prototype.readCString = function () {
-	var offset = this._offset;
-	while (offset < this._buffer.length &&
-	    this._buffer[offset] !== 0x00)
-		offset++;
-	assert.ok(offset < this._buffer.length, 'c string does not terminate');
-	var str = this._buffer.slice(this._offset, offset).toString();
-	this._offset = offset + 1;
-	return (str);
-};
-
-SSHBuffer.prototype.readInt = function () {
-	var v = this._buffer.readUInt32BE(this._offset);
-	this._offset += 4;
-	return (v);
-};
-
-SSHBuffer.prototype.readChar = function () {
-	var v = this._buffer[this._offset++];
-	return (v);
-};
-
-SSHBuffer.prototype.writeBuffer = function (buf) {
-	while (this._offset + 4 + buf.length > this._size)
-		this.expand();
-	this._buffer.writeUInt32BE(buf.length, this._offset);
-	this._offset += 4;
-	buf.copy(this._buffer, this._offset);
-	this._offset += buf.length;
-};
-
-SSHBuffer.prototype.writeString = function (str) {
-	this.writeBuffer(new Buffer(str, 'utf8'));
-};
-
-SSHBuffer.prototype.writeCString = function (str) {
-	while (this._offset + 1 + str.length > this._size)
-		this.expand();
-	this._buffer.write(str, this._offset);
-	this._offset += str.length;
-	this._buffer[this._offset++] = 0;
-};
-
-SSHBuffer.prototype.writeInt = function (v) {
-	while (this._offset + 4 > this._size)
-		this.expand();
-	this._buffer.writeUInt32BE(v, this._offset);
-	this._offset += 4;
-};
-
-SSHBuffer.prototype.writeChar = function (v) {
-	while (this._offset + 1 > this._size)
-		this.expand();
-	this._buffer[this._offset++] = v;
-};
-
-SSHBuffer.prototype.writePart = function (p) {
-	this.writeBuffer(p.data);
-};
-
-SSHBuffer.prototype.write = function (buf) {
-	while (this._offset + buf.length > this._size)
-		this.expand();
-	buf.copy(this._buffer, this._offset);
-	this._offset += buf.length;
-};
-
-}).call(this,require("buffer").Buffer)
-},{"assert-plus":566,"buffer":256}],559:[function(require,module,exports){
-arguments[4][424][0].apply(exports,arguments)
-},{"./private-key":556,"assert-plus":566,"buffer":256,"dup":424,"jsbn":576}],560:[function(require,module,exports){
-arguments[4][425][0].apply(exports,arguments)
-},{"dup":425}],561:[function(require,module,exports){
-arguments[4][426][0].apply(exports,arguments)
-},{"./errors":560,"./reader":562,"./types":563,"./writer":564,"dup":426}],562:[function(require,module,exports){
-arguments[4][427][0].apply(exports,arguments)
-},{"./errors":560,"./types":563,"assert":10,"buffer":256,"dup":427}],563:[function(require,module,exports){
-arguments[4][428][0].apply(exports,arguments)
-},{"dup":428}],564:[function(require,module,exports){
-arguments[4][429][0].apply(exports,arguments)
-},{"./errors":560,"./types":563,"assert":10,"buffer":256,"dup":429}],565:[function(require,module,exports){
-arguments[4][430][0].apply(exports,arguments)
-},{"./ber/index":561,"dup":430}],566:[function(require,module,exports){
-(function (Buffer,process){
-// Copyright (c) 2012, Mark Cavage. All rights reserved.
-// Copyright 2015 Joyent, Inc.
-
-var assert = require('assert');
-var Stream = require('stream').Stream;
-var util = require('util');
-
-
-///--- Globals
-
-/* JSSTYLED */
-var UUID_REGEXP = /^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$/;
-
-
-///--- Internal
-
-function _capitalize(str) {
-    return (str.charAt(0).toUpperCase() + str.slice(1));
-}
-
-function _toss(name, expected, oper, arg, actual) {
-    throw new assert.AssertionError({
-        message: util.format('%s (%s) is required', name, expected),
-        actual: (actual === undefined) ? typeof (arg) : actual(arg),
-        expected: expected,
-        operator: oper || '===',
-        stackStartFunction: _toss.caller
-    });
-}
-
-function _getClass(arg) {
-    return (Object.prototype.toString.call(arg).slice(8, -1));
-}
-
-function noop() {
-    // Why even bother with asserts?
-}
-
-
-///--- Exports
-
-var types = {
-    bool: {
-        check: function (arg) { return typeof (arg) === 'boolean'; }
-    },
-    func: {
-        check: function (arg) { return typeof (arg) === 'function'; }
-    },
-    string: {
-        check: function (arg) { return typeof (arg) === 'string'; }
-    },
-    object: {
-        check: function (arg) {
-            return typeof (arg) === 'object' && arg !== null;
-        }
-    },
-    number: {
-        check: function (arg) {
-            return typeof (arg) === 'number' && !isNaN(arg) && isFinite(arg);
-        }
-    },
-    buffer: {
-        check: function (arg) { return Buffer.isBuffer(arg); },
-        operator: 'Buffer.isBuffer'
-    },
-    array: {
-        check: function (arg) { return Array.isArray(arg); },
-        operator: 'Array.isArray'
-    },
-    stream: {
-        check: function (arg) { return arg instanceof Stream; },
-        operator: 'instanceof',
-        actual: _getClass
-    },
-    date: {
-        check: function (arg) { return arg instanceof Date; },
-        operator: 'instanceof',
-        actual: _getClass
-    },
-    regexp: {
-        check: function (arg) { return arg instanceof RegExp; },
-        operator: 'instanceof',
-        actual: _getClass
-    },
-    uuid: {
-        check: function (arg) {
-            return typeof (arg) === 'string' && UUID_REGEXP.test(arg);
-        },
-        operator: 'isUUID'
-    }
-};
-
-function _setExports(ndebug) {
-    var keys = Object.keys(types);
-    var out;
-
-    /* re-export standard assert */
-    if (process.env.NODE_NDEBUG) {
-        out = noop;
-    } else {
-        out = function (arg, msg) {
-            if (!arg) {
-                _toss(msg, 'true', arg);
-            }
-        };
-    }
-
-    /* standard checks */
-    keys.forEach(function (k) {
-        if (ndebug) {
-            out[k] = noop;
-            return;
-        }
-        var type = types[k];
-        out[k] = function (arg, msg) {
-            if (!type.check(arg)) {
-                _toss(msg, k, type.operator, arg, type.actual);
-            }
-        };
-    });
-
-    /* optional checks */
-    keys.forEach(function (k) {
-        var name = 'optional' + _capitalize(k);
-        if (ndebug) {
-            out[name] = noop;
-            return;
-        }
-        var type = types[k];
-        out[name] = function (arg, msg) {
-            if (arg === undefined || arg === null) {
-                return;
-            }
-            if (!type.check(arg)) {
-                _toss(msg, k, type.operator, arg, type.actual);
-            }
-        };
-    });
-
-    /* arrayOf checks */
-    keys.forEach(function (k) {
-        var name = 'arrayOf' + _capitalize(k);
-        if (ndebug) {
-            out[name] = noop;
-            return;
-        }
-        var type = types[k];
-        var expected = '[' + k + ']';
-        out[name] = function (arg, msg) {
-            if (!Array.isArray(arg)) {
-                _toss(msg, expected, type.operator, arg, type.actual);
-            }
-            var i;
-            for (i = 0; i < arg.length; i++) {
-                if (!type.check(arg[i])) {
-                    _toss(msg, expected, type.operator, arg, type.actual);
-                }
-            }
-        };
-    });
-
-    /* optionalArrayOf checks */
-    keys.forEach(function (k) {
-        var name = 'optionalArrayOf' + _capitalize(k);
-        if (ndebug) {
-            out[name] = noop;
-            return;
-        }
-        var type = types[k];
-        var expected = '[' + k + ']';
-        out[name] = function (arg, msg) {
-            if (arg === undefined || arg === null) {
-                return;
-            }
-            if (!Array.isArray(arg)) {
-                _toss(msg, expected, type.operator, arg, type.actual);
-            }
-            var i;
-            for (i = 0; i < arg.length; i++) {
-                if (!type.check(arg[i])) {
-                    _toss(msg, expected, type.operator, arg, type.actual);
-                }
-            }
-        };
-    });
-
-    /* re-export built-in assertions */
-    Object.keys(assert).forEach(function (k) {
-        if (k === 'AssertionError') {
-            out[k] = assert[k];
-            return;
-        }
-        if (ndebug) {
-            out[k] = noop;
-            return;
-        }
-        out[k] = assert[k];
-    });
-
-    /* export ourselves (for unit tests _only_) */
-    out._setExports = _setExports;
-
-    return out;
-}
-
-module.exports = _setExports(process.env.NODE_NDEBUG);
-
-}).call(this,{"isBuffer":require("../../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")},require('_process'))
-},{"../../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":220,"_process":223,"assert":10,"stream":241,"util":252}],567:[function(require,module,exports){
-arguments[4][432][0].apply(exports,arguments)
-},{"./lib/ec.js":568,"./lib/sec.js":569,"buffer":256,"crypto":25,"dup":432,"jsbn":576}],568:[function(require,module,exports){
-arguments[4][433][0].apply(exports,arguments)
-},{"dup":433,"jsbn":576}],569:[function(require,module,exports){
-arguments[4][434][0].apply(exports,arguments)
-},{"./ec.js":568,"dup":434,"jsbn":576}],570:[function(require,module,exports){
-arguments[4][435][0].apply(exports,arguments)
-},{"./lib/curve255":572,"./lib/dh":573,"./lib/eddsa":574,"./lib/utils":575,"dup":435}],571:[function(require,module,exports){
-arguments[4][436][0].apply(exports,arguments)
-},{"crypto":25,"dup":436}],572:[function(require,module,exports){
-arguments[4][437][0].apply(exports,arguments)
-},{"./core":571,"./utils":575,"dup":437}],573:[function(require,module,exports){
-arguments[4][438][0].apply(exports,arguments)
-},{"./core":571,"./curve255":572,"./utils":575,"buffer":256,"dup":438}],574:[function(require,module,exports){
-(function (Buffer){
-"use strict";
-/**
- * @fileOverview
- * Digital signature scheme based on Curve25519 (Ed25519 or EdDSA).
- */
-
-/*
- * Copyright (c) 2011, 2012, 2014 Ron Garret
- * Copyright (c) 2014 Mega Limited
- * under the MIT License.
- *
- * Authors: Guy K. Kloss, Ron Garret
- *
- * You should have received a copy of the license along with this program.
- */
-
-var core = require('./core');
-var curve255 = require('./curve255');
-var utils = require('./utils');
-var BigInteger = require('jsbn').BigInteger;
-var crypto = require('crypto');
-
-    /**
-     * @exports jodid25519/eddsa
-     * Digital signature scheme based on Curve25519 (Ed25519 or EdDSA).
-     *
-     * @description
-     * Digital signature scheme based on Curve25519 (Ed25519 or EdDSA).
-     *
-     * <p>
-     * This code is adapted from fast-djbec.js, a faster but more complicated
-     * version of the Ed25519 encryption scheme (as compared to djbec.js).
-     * It uses two different representations for big integers: The jsbn
-     * BigInteger class, which can represent arbitrary-length numbers, and a
-     * special fixed-length representation optimised for 256-bit integers.
-     * The reason both are needed is that the Ed25519 algorithm requires some
-     * 512-bit numbers.</p>
-    */
-    var ns = {};
-
-    function _bi255(value) {
-        if (!(this instanceof _bi255)) {
-            return new _bi255(value);
-        }
-        if (typeof value === 'undefined') {
-            return _ZERO;
-        }
-        var c = value.constructor;
-        if ((c === Array || c === Uint16Array || c === Uint32Array) && (value.length === 16)) {
-            this.n = value;
-        } else if ((c === Array) && (value.length === 32)) {
-            this.n = _bytes2bi255(value).n;
-        } else if (c === String) {
-            this.n = utils.hexDecode(value);
-        } else if (c === Number) {
-            this.n = [value & 0xffff,
-                      value >> 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        } else if (value instanceof _bi255) {
-            this.n = value.n.slice(0); // Copy constructor
-        } else {
-            throw "Bad argument for bignum: " + value;
-        }
-    }
-
-   _bi255.prototype = {
-        'toString' : function() {
-            return utils.hexEncode(this.n);
-        },
-        'toSource' : function() {
-            return '_' + utils.hexEncode(this.n);
-        },
-        'plus' : function(n1) {
-            return _bi255(core.bigintadd(this.n, n1.n));
-        },
-        'minus' : function(n1) {
-            return _bi255(core.bigintsub(this.n, n1.n)).modq();
-        },
-        'times' : function(n1) {
-            return _bi255(core.mulmodp(this.n, n1.n));
-        },
-        'divide' : function(n1) {
-            return this.times(n1.inv());
-        },
-        'sqr' : function() {
-            return _bi255(core.sqrmodp(this.n));
-        },
-        'cmp' : function(n1) {
-            return core.bigintcmp(this.n, n1.n);
-        },
-        'equals' : function(n1) {
-            return this.cmp(n1) === 0;
-        },
-        'isOdd' : function() {
-            return (this.n[0] & 1) === 1;
-        },
-        'shiftLeft' : function(cnt) {
-            _shiftL(this.n, cnt);
-            return this;
-        },
-        'shiftRight' : function(cnt) {
-            _shiftR(this.n, cnt);
-            return this;
-        },
-        'inv' : function() {
-            return _bi255(core.invmodp(this.n));
-        },
-        'pow' : function(e) {
-            return _bi255(_pow(this.n, e.n));
-        },
-        'modq' : function() {
-            return _modq(this);
-        },
-        'bytes' : function() {
-            return _bi255_bytes(this);
-        }
-    };
-
-    function _shiftL(n, cnt) {
-        var lastcarry = 0;
-        for (var i = 0; i < 16; i++) {
-            var carry = n[i] >> (16 - cnt);
-            n[i] = (n[i] << cnt) & 0xffff | lastcarry;
-            lastcarry = carry;
-        }
-        return n;
-    }
-
-    function _shiftR(n, cnt) {
-        var lastcarry = 0;
-        for (var i = 15; i >= 0; i--) {
-            var carry = n[i] << (16 - cnt) & 0xffff;
-            n[i] = (n[i] >> cnt) | lastcarry;
-            lastcarry = carry;
-        }
-        return n;
-    }
-
-    function _bi255_bytes(n) {
-        n = _bi255(n); // Make a copy because shiftRight is destructive
-        var a = new Array(32);
-        for (var i = 31; i >= 0; i--) {
-            a[i] = n.n[0] & 0xff;
-            n.shiftRight(8);
-        }
-        return a;
-    }
-
-    function _bytes2bi255(a) {
-        var n = _ZERO;
-        for (var i = 0; i < 32; i++) {
-            n.shiftLeft(8);
-            n = n.plus(_bi255(a[i]));
-        }
-        return n;
-    }
-
-    function _pow(n, e) {
-        var result = core.ONE();
-        for (var i = 0; i < 256; i++) {
-            if (core.getbit(e, i) === 1) {
-                result = core.mulmodp(result, n);
-            }
-            n = core.sqrmodp(n);
-        }
-        return result;
-    }
-
-    var _ZERO = _bi255(0);
-    var _ONE = _bi255(1);
-    var _TWO = _bi255(2);
-    // This is the core prime.
-    var _Q = _bi255([0xffff - 18, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff,
-                     0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff,
-                     0xffff, 0xffff, 0x7fff]);
-
-    function _modq(n) {
-        core.reduce(n.n);
-        if (n.cmp(_Q) >= 0) {
-            return _modq(n.minus(_Q));
-        }
-        if (n.cmp(_ZERO) === -1) {
-            return _modq(n.plus(_Q));
-        } else {
-            return n;
-        }
-    }
-
-    // _RECOVERY_EXPONENT = _Q.plus(_bi255(3)).divide(_bi255(8));
-    var _RECOVERY_EXPONENT = _bi255('0ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe');
-    // _D = _Q.minus(_bi255(121665)).divide(_bi255(121666));
-    var _D = _bi255('52036cee2b6ffe738cc740797779e89800700a4d4141d8ab75eb4dca135978a3');
-    // _I = _TWO.pow(_Q.minus(_ONE).divide(_bi255(4)));
-    var _I = _bi255('2b8324804fc1df0b2b4d00993dfbd7a72f431806ad2fe478c4ee1b274a0ea0b0');
-    // _L = _TWO.pow(_bi255(252)).plus(_bi255('14def9dea2f79cd65812631a5cf5d3ed'));
-    var _L = _bi255('1000000000000000000000000000000014def9dea2f79cd65812631a5cf5d3ed');
-    var _L_BI = _bi('1000000000000000000000000000000014def9dea2f79cd65812631a5cf5d3ed', 16);
-
-
-    // ////////////////////////////////////////////////////////////
-
-    function _isoncurve(p) {
-        var x = p[0];
-        var y = p[1];
-        var xsqr = x.sqr();
-        var ysqr = y.sqr();
-        var v = _D.times(xsqr).times(ysqr);
-        return ysqr.minus(xsqr).minus(_ONE).minus(v).modq().equals(_ZERO);
-    }
-
-    function _xrecover(y) {
-        var ysquared = y.sqr();
-        var xx = ysquared.minus(_ONE).divide(_ONE.plus(_D.times(ysquared)));
-        var x = xx.pow(_RECOVERY_EXPONENT);
-        if (!(x.times(x).minus(xx).equals(_ZERO))) {
-            x = x.times(_I);
-        }
-        if (x.isOdd()) {
-            x = _Q.minus(x);
-        }
-        return x;
-    }
-
-    function _x_pt_add(pt1, pt2) {
-        var x1 = pt1[0];
-        var y1 = pt1[1];
-        var z1 = pt1[2];
-        var t1 = pt1[3];
-        var x2 = pt2[0];
-        var y2 = pt2[1];
-        var z2 = pt2[2];
-        var t2 = pt2[3];
-        var A = y1.minus(x1).times(y2.plus(x2));
-        var B = y1.plus(x1).times(y2.minus(x2));
-        var C = z1.times(_TWO).times(t2);
-        var D = t1.times(_TWO).times(z2);
-        var E = D.plus(C);
-        var F = B.minus(A);
-        var G = B.plus(A);
-        var H = D.minus(C);
-        return [E.times(F), G.times(H), F.times(G), E.times(H)];
-    }
-
-    function _xpt_double(pt1) {
-        var x1 = pt1[0];
-        var y1 = pt1[1];
-        var z1 = pt1[2];
-        var A = x1.times(x1);
-        var B = y1.times(y1);
-        var C = _TWO.times(z1).times(z1);
-        var D = _Q.minus(A);
-        var J = x1.plus(y1);
-        var E = J.times(J).minus(A).minus(B);
-        var G = D.plus(B);
-        var F = G.minus(C);
-        var H = D.minus(B);
-        return [E.times(F), G.times(H), F.times(G), E.times(H)];
-    }
-
-    function _xpt_mult(pt, n) {
-        if (n.equals(_ZERO)) {
-            return [_ZERO, _ONE, _ONE, _ZERO];
-        }
-        var odd = n.isOdd();
-        n.shiftRight(1);
-        var value = _xpt_double(_xpt_mult(pt, n));
-        return odd ? _x_pt_add(value, pt) : value;
-    }
-
-    function _pt_xform(pt) {
-        var x = pt[0];
-        var y = pt[1];
-        return [x, y, _ONE, x.times(y)];
-    }
-
-    function _pt_unxform(pt) {
-        var x = pt[0];
-        var y = pt[1];
-        var z = pt[2];
-        var invz = z.inv();
-        return [x.times(invz), y.times(invz)];
-    }
-
-    function _scalarmult(pt, n) {
-        return _pt_unxform(_xpt_mult(_pt_xform(pt), n));
-    }
-
-    function _bytesgetbit(bytes, n) {
-        return (bytes[bytes.length - (n >>> 3) - 1] >> (n & 7)) & 1;
-    }
-
-    function _xpt_mult_bytes(pt, bytes) {
-        var r = [_ZERO, _ONE, _ONE, _ZERO];
-        for (var i = (bytes.length << 3) - 1; i >= 0; i--) {
-            r = _xpt_double(r);
-            if (_bytesgetbit(bytes, i) === 1) {
-                r = _x_pt_add(r, pt);
-            }
-        }
-        return r;
-    }
-
-    function _scalarmultBytes(pt, bytes) {
-        return _pt_unxform(_xpt_mult_bytes(_pt_xform(pt), bytes));
-    }
-
-    var _by = _bi255(4).divide(_bi255(5));
-    var _bx = _xrecover(_by);
-    var _bp = [_bx, _by];
-
-    function _encodeint(n) {
-        return n.bytes(32).reverse();
-    }
-    function _decodeint(b) {
-        return _bi255(b.slice(0).reverse());
-    }
-
-    function _encodepoint(p) {
-        var v = _encodeint(p[1]);
-        if (p[0].isOdd()) {
-            v[31] |= 0x80;
-        }
-        return v;
-    }
-
-    function _decodepoint(v) {
-        v = v.slice(0);
-        var signbit = v[31] >> 7;
-        v[31] &= 127;
-        var y = _decodeint(v);
-        var x = _xrecover(y);
-        if ((x.n[0] & 1) !== signbit) {
-            x = _Q.minus(x);
-        }
-        var p = [x, y];
-        if (!_isoncurve(p)) {
-            throw ('Point is not on curve');
-        }
-        return p;
-    }
-
-    // //////////////////////////////////////////////////
-
-    /**
-     * Factory function to create a suitable BigInteger.
-     *
-     * @param value
-     *     The value for the big integer.
-     * @param base {integer}
-     *     Base of the conversion of elements in ``value``.
-     * @returns
-     *     A BigInteger object.
-     */
-    function _bi(value, base) {
-        if (base !== undefined) {
-            if (base === 256) {
-                return _bi(utils.string2bytes(value));
-            }
-            return new BigInteger(value, base);
-        } else if (typeof value === 'string') {
-            return new BigInteger(value, 10);
-        } else if ((value instanceof Array) || (value instanceof Uint8Array)
-          || Buffer.isBuffer(value)) {
-            return new BigInteger(value);
-        } else if (typeof value === 'number') {
-            return new BigInteger(value.toString(), 10);
-        } else {
-            throw "Can't convert " + value + " to BigInteger";
-        }
-    }
-
-    function _bi2bytes(n, cnt) {
-        if (cnt === undefined) {
-            cnt = (n.bitLength() + 7) >>> 3;
-        }
-        var bytes = new Array(cnt);
-        for (var i = cnt - 1; i >= 0; i--) {
-            bytes[i] = n[0] & 255; // n.and(0xff);
-            n = n.shiftRight(8);
-        }
-        return bytes;
-    }
-
-    BigInteger.prototype.bytes = function(n) {
-        return _bi2bytes(this, n);
-    };
-
-    // /////////////////////////////////////////////////////////
-
-    function _bytehash(s) {
-        var sha = crypto.createHash('sha512').update(s).digest();
-        return _bi2bytes(_bi(sha), 64).reverse();
-    }
-
-    function _stringhash(s) {
-        var sha = crypto.createHash('sha512').update(s).digest();
-        return _map(_chr, _bi2bytes(_bi(sha), 64)).join('');
-    }
-
-    function _inthash(s) {
-        // Need a leading 0 to prevent sign extension
-        return _bi([0].concat(_bytehash(s)));
-    }
-
-    function _inthash_lo(s) {
-        return _bi255(_bytehash(s).slice(32, 64));
-    }
-
-    function _inthash_mod_l(s) {
-        return _inthash(s).mod(_L_BI);
-    }
-
-    function _get_a(sk) {
-        var a = _inthash_lo(sk);
-        a.n[0] &= 0xfff8;
-        a.n[15] &= 0x3fff;
-        a.n[15] |= 0x4000;
-        return a;
-    }
-
-    function _publickey(sk) {
-        return _encodepoint(_scalarmult(_bp, _get_a(sk)));
-    }
-
-    function _map(f, l) {
-        var result = new Array(l.length);
-        for (var i = 0; i < l.length; i++) {
-            result[i] = f(l[i]);
-        }
-        return result;
-    }
-
-    function _chr(n) {
-        return String.fromCharCode(n);
-    }
-
-    function _ord(c) {
-        return c.charCodeAt(0);
-    }
-
-    function _pt_add(p1, p2) {
-        return _pt_unxform(_x_pt_add(_pt_xform(p1), _pt_xform(p2)));
-    }
-
-
-    // Exports for the API.
-
-    /**
-     * Checks whether a point is on the curve.
-     *
-     * @function
-     * @param point {string}
-     *     The point to check for in a byte string representation.
-     * @returns {boolean}
-     *     true if the point is on the curve, false otherwise.
-     */
-    ns.isOnCurve = function(point) {
-        try {
-            _isoncurve(_decodepoint(utils.string2bytes(point)));
-        } catch(e) {
-            if (e === 'Point is not on curve') {
-                return false;
-            } else {
-                throw e;
-            }
-        }
-        return true;
-    };
-
-
-    /**
-     * Computes the EdDSA public key.
-     *
-     * <p>Note: Seeds should be a byte string, not a unicode string containing
-     * multi-byte characters.</p>
-     *
-     * @function
-     * @param keySeed {string}
-     *     Private key seed in the form of a byte string.
-     * @returns {string}
-     *     Public key as byte string computed from the private key seed
-     *     (32 bytes).
-     */
-    ns.publicKey = function(keySeed) {
-        return utils.bytes2string(_publickey(keySeed));
-    };
-
-
-    /**
-     * Computes an EdDSA signature of a message.
-     *
-     * <p>Notes:</p>
-     *
-     * <ul>
-     *   <li>Unicode messages need to be converted to a byte representation
-     *   (e. g. UTF-8).</li>
-     *   <li>If `publicKey` is given, and it is *not* a point of the curve,
-     *   the signature will be faulty, but no error will be thrown.</li>
-     * </ul>
-     *
-     * @function
-     * @param message {string}
-     *     Message in the form of a byte string.
-     * @param keySeed {string}
-     *     Private key seed in the form of a byte string.
-     * @param publicKey {string}
-     *     Public key as byte string (if not present, it will be computed from
-     *     the private key seed).
-     * @returns {string}
-     *     Detached message signature in the form of a byte string (64 bytes).
-     */
-    ns.sign = function(message, keySeed, publicKey) {
-        if (publicKey === undefined) {
-            publicKey = _publickey(keySeed);
-        } else {
-            publicKey = utils.string2bytes(publicKey);
-        }
-        var a = _bi(_get_a(keySeed).toString(), 16);
-        var hs = _stringhash(keySeed);
-        var r = _bytehash(hs.slice(32, 64) + message);
-        var rp = _scalarmultBytes(_bp, r);
-        var erp = _encodepoint(rp);
-        r = _bi(r).mod(_bi(1, 10).shiftLeft(512));
-        var s = _map(_chr, erp).join('') + _map(_chr, publicKey).join('') + message;
-        s = _inthash_mod_l(s).multiply(a).add(r).mod(_L_BI);
-        return utils.bytes2string(erp.concat(_encodeint(s)));
-    };
-
-
-    /**
-     * Verifies an EdDSA signature of a message with the public key.
-     *
-     * <p>Note: Unicode messages need to be converted to a byte representation
-     * (e. g. UTF-8).</p>
-     *
-     * @function
-     * @param signature {string}
-     *     Message signature in the form of a byte string. Can be detached
-     *     (64 bytes), or attached to be sliced off.
-     * @param message {string}
-     *     Message in the form of a byte string.
-     * @param publicKey {string}
-     *     Public key as byte string (if not present, it will be computed from
-     *     the private key seed).
-     * @returns {boolean}
-     *     true, if the signature verifies.
-     */
-    ns.verify = function(signature, message, publicKey) {
-        signature = utils.string2bytes(signature.slice(0, 64));
-        publicKey = utils.string2bytes(publicKey);
-        var rpe = signature.slice(0, 32);
-        var rp = _decodepoint(rpe);
-        var a = _decodepoint(publicKey);
-        var s = _decodeint(signature.slice(32, 64));
-        var h = _inthash(utils.bytes2string(rpe.concat(publicKey)) + message);
-        var v1 = _scalarmult(_bp, s);
-        var value = _scalarmultBytes(a, _bi2bytes(h));
-        var v2 = _pt_add(rp, value);
-        return v1[0].equals(v2[0]) && v1[1].equals(v2[1]);
-    };
-
-
-    /**
-     * Generates a new random private key seed of 32 bytes length (256 bit).
-     *
-     * @function
-     * @returns {string}
-     *     Byte string containing a new random private key seed.
-     */
-    ns.generateKeySeed = function() {
-        return core.generateKey(false);
-    };
-
-module.exports = ns;
-
-}).call(this,{"isBuffer":require("../../../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")})
-},{"../../../../../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":220,"./core":571,"./curve255":572,"./utils":575,"crypto":25,"jsbn":576}],575:[function(require,module,exports){
-arguments[4][440][0].apply(exports,arguments)
-},{"./core":571,"dup":440}],576:[function(require,module,exports){
-arguments[4][441][0].apply(exports,arguments)
-},{"dup":441}],577:[function(require,module,exports){
-arguments[4][442][0].apply(exports,arguments)
-},{"buffer":11,"crypto":11,"dup":442}],578:[function(require,module,exports){
-arguments[4][443][0].apply(exports,arguments)
-},{"dup":443}],579:[function(require,module,exports){
-arguments[4][444][0].apply(exports,arguments)
-},{"dup":444,"stream":241}],580:[function(require,module,exports){
-arguments[4][445][0].apply(exports,arguments)
-},{"dup":445}],581:[function(require,module,exports){
-arguments[4][446][0].apply(exports,arguments)
-},{"dup":446,"mime-db":583,"path":222}],582:[function(require,module,exports){
-module.exports={
-  "application/1d-interleaved-parityfec": {
-    "source": "iana"
-  },
-  "application/3gpdash-qoe-report+xml": {
-    "source": "iana"
-  },
-  "application/3gpp-ims+xml": {
-    "source": "iana"
-  },
-  "application/a2l": {
-    "source": "iana"
-  },
-  "application/activemessage": {
-    "source": "iana"
-  },
-  "application/alto-costmap+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/alto-costmapfilter+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/alto-directory+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/alto-endpointcost+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/alto-endpointcostparams+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/alto-endpointprop+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/alto-endpointpropparams+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/alto-error+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/alto-networkmap+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/alto-networkmapfilter+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/aml": {
-    "source": "iana"
-  },
-  "application/andrew-inset": {
-    "source": "iana",
-    "extensions": ["ez"]
-  },
-  "application/applefile": {
-    "source": "iana"
-  },
-  "application/applixware": {
-    "source": "apache",
-    "extensions": ["aw"]
-  },
-  "application/atf": {
-    "source": "iana"
-  },
-  "application/atfx": {
-    "source": "iana"
-  },
-  "application/atom+xml": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["atom"]
-  },
-  "application/atomcat+xml": {
-    "source": "iana",
-    "extensions": ["atomcat"]
-  },
-  "application/atomdeleted+xml": {
-    "source": "iana"
-  },
-  "application/atomicmail": {
-    "source": "iana"
-  },
-  "application/atomsvc+xml": {
-    "source": "iana",
-    "extensions": ["atomsvc"]
-  },
-  "application/atxml": {
-    "source": "iana"
-  },
-  "application/auth-policy+xml": {
-    "source": "iana"
-  },
-  "application/bacnet-xdd+zip": {
-    "source": "iana"
-  },
-  "application/batch-smtp": {
-    "source": "iana"
-  },
-  "application/bdoc": {
-    "compressible": false,
-    "extensions": ["bdoc"]
-  },
-  "application/beep+xml": {
-    "source": "iana"
-  },
-  "application/calendar+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/calendar+xml": {
-    "source": "iana"
-  },
-  "application/call-completion": {
-    "source": "iana"
-  },
-  "application/cals-1840": {
-    "source": "iana"
-  },
-  "application/cbor": {
-    "source": "iana"
-  },
-  "application/ccmp+xml": {
-    "source": "iana"
-  },
-  "application/ccxml+xml": {
-    "source": "iana",
-    "extensions": ["ccxml"]
-  },
-  "application/cdfx+xml": {
-    "source": "iana"
-  },
-  "application/cdmi-capability": {
-    "source": "iana",
-    "extensions": ["cdmia"]
-  },
-  "application/cdmi-container": {
-    "source": "iana",
-    "extensions": ["cdmic"]
-  },
-  "application/cdmi-domain": {
-    "source": "iana",
-    "extensions": ["cdmid"]
-  },
-  "application/cdmi-object": {
-    "source": "iana",
-    "extensions": ["cdmio"]
-  },
-  "application/cdmi-queue": {
-    "source": "iana",
-    "extensions": ["cdmiq"]
-  },
-  "application/cdni": {
-    "source": "iana"
-  },
-  "application/cea": {
-    "source": "iana"
-  },
-  "application/cea-2018+xml": {
-    "source": "iana"
-  },
-  "application/cellml+xml": {
-    "source": "iana"
-  },
-  "application/cfw": {
-    "source": "iana"
-  },
-  "application/cms": {
-    "source": "iana"
-  },
-  "application/cnrp+xml": {
-    "source": "iana"
-  },
-  "application/coap-group+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/commonground": {
-    "source": "iana"
-  },
-  "application/conference-info+xml": {
-    "source": "iana"
-  },
-  "application/cpl+xml": {
-    "source": "iana"
-  },
-  "application/csrattrs": {
-    "source": "iana"
-  },
-  "application/csta+xml": {
-    "source": "iana"
-  },
-  "application/cstadata+xml": {
-    "source": "iana"
-  },
-  "application/csvm+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/cu-seeme": {
-    "source": "apache",
-    "extensions": ["cu"]
-  },
-  "application/cybercash": {
-    "source": "iana"
-  },
-  "application/dart": {
-    "compressible": true
-  },
-  "application/dash+xml": {
-    "source": "iana",
-    "extensions": ["mdp"]
-  },
-  "application/dashdelta": {
-    "source": "iana"
-  },
-  "application/davmount+xml": {
-    "source": "iana",
-    "extensions": ["davmount"]
-  },
-  "application/dca-rft": {
-    "source": "iana"
-  },
-  "application/dcd": {
-    "source": "iana"
-  },
-  "application/dec-dx": {
-    "source": "iana"
-  },
-  "application/dialog-info+xml": {
-    "source": "iana"
-  },
-  "application/dicom": {
-    "source": "iana"
-  },
-  "application/dii": {
-    "source": "iana"
-  },
-  "application/dit": {
-    "source": "iana"
-  },
-  "application/dns": {
-    "source": "iana"
-  },
-  "application/docbook+xml": {
-    "source": "apache",
-    "extensions": ["dbk"]
-  },
-  "application/dskpp+xml": {
-    "source": "iana"
-  },
-  "application/dssc+der": {
-    "source": "iana",
-    "extensions": ["dssc"]
-  },
-  "application/dssc+xml": {
-    "source": "iana",
-    "extensions": ["xdssc"]
-  },
-  "application/dvcs": {
-    "source": "iana"
-  },
-  "application/ecmascript": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["ecma"]
-  },
-  "application/edi-consent": {
-    "source": "iana"
-  },
-  "application/edi-x12": {
-    "source": "iana",
-    "compressible": false
-  },
-  "application/edifact": {
-    "source": "iana",
-    "compressible": false
-  },
-  "application/emma+xml": {
-    "source": "iana",
-    "extensions": ["emma"]
-  },
-  "application/emotionml+xml": {
-    "source": "iana"
-  },
-  "application/encaprtp": {
-    "source": "iana"
-  },
-  "application/epp+xml": {
-    "source": "iana"
-  },
-  "application/epub+zip": {
-    "source": "iana",
-    "extensions": ["epub"]
-  },
-  "application/eshop": {
-    "source": "iana"
-  },
-  "application/exi": {
-    "source": "iana",
-    "extensions": ["exi"]
-  },
-  "application/fastinfoset": {
-    "source": "iana"
-  },
-  "application/fastsoap": {
-    "source": "iana"
-  },
-  "application/fdt+xml": {
-    "source": "iana"
-  },
-  "application/fits": {
-    "source": "iana"
-  },
-  "application/font-sfnt": {
-    "source": "iana"
-  },
-  "application/font-tdpfr": {
-    "source": "iana",
-    "extensions": ["pfr"]
-  },
-  "application/font-woff": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["woff"]
-  },
-  "application/font-woff2": {
-    "compressible": false,
-    "extensions": ["woff2"]
-  },
-  "application/framework-attributes+xml": {
-    "source": "iana"
-  },
-  "application/gml+xml": {
-    "source": "apache",
-    "extensions": ["gml"]
-  },
-  "application/gpx+xml": {
-    "source": "apache",
-    "extensions": ["gpx"]
-  },
-  "application/gxf": {
-    "source": "apache",
-    "extensions": ["gxf"]
-  },
-  "application/gzip": {
-    "source": "iana",
-    "compressible": false
-  },
-  "application/h224": {
-    "source": "iana"
-  },
-  "application/held+xml": {
-    "source": "iana"
-  },
-  "application/http": {
-    "source": "iana"
-  },
-  "application/hyperstudio": {
-    "source": "iana",
-    "extensions": ["stk"]
-  },
-  "application/ibe-key-request+xml": {
-    "source": "iana"
-  },
-  "application/ibe-pkg-reply+xml": {
-    "source": "iana"
-  },
-  "application/ibe-pp-data": {
-    "source": "iana"
-  },
-  "application/iges": {
-    "source": "iana"
-  },
-  "application/im-iscomposing+xml": {
-    "source": "iana"
-  },
-  "application/index": {
-    "source": "iana"
-  },
-  "application/index.cmd": {
-    "source": "iana"
-  },
-  "application/index.obj": {
-    "source": "iana"
-  },
-  "application/index.response": {
-    "source": "iana"
-  },
-  "application/index.vnd": {
-    "source": "iana"
-  },
-  "application/inkml+xml": {
-    "source": "iana",
-    "extensions": ["ink","inkml"]
-  },
-  "application/iotp": {
-    "source": "iana"
-  },
-  "application/ipfix": {
-    "source": "iana",
-    "extensions": ["ipfix"]
-  },
-  "application/ipp": {
-    "source": "iana"
-  },
-  "application/isup": {
-    "source": "iana"
-  },
-  "application/its+xml": {
-    "source": "iana"
-  },
-  "application/java-archive": {
-    "source": "apache",
-    "compressible": false,
-    "extensions": ["jar","war","ear"]
-  },
-  "application/java-serialized-object": {
-    "source": "apache",
-    "compressible": false,
-    "extensions": ["ser"]
-  },
-  "application/java-vm": {
-    "source": "apache",
-    "compressible": false,
-    "extensions": ["class"]
-  },
-  "application/javascript": {
-    "source": "iana",
-    "charset": "UTF-8",
-    "compressible": true,
-    "extensions": ["js"]
-  },
-  "application/jose": {
-    "source": "iana"
-  },
-  "application/jose+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/jrd+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/json": {
-    "source": "iana",
-    "charset": "UTF-8",
-    "compressible": true,
-    "extensions": ["json","map"]
-  },
-  "application/json-patch+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/json-seq": {
-    "source": "iana"
-  },
-  "application/json5": {
-    "extensions": ["json5"]
-  },
-  "application/jsonml+json": {
-    "source": "apache",
-    "compressible": true,
-    "extensions": ["jsonml"]
-  },
-  "application/jwk+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/jwk-set+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/jwt": {
-    "source": "iana"
-  },
-  "application/kpml-request+xml": {
-    "source": "iana"
-  },
-  "application/kpml-response+xml": {
-    "source": "iana"
-  },
-  "application/ld+json": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["jsonld"]
-  },
-  "application/link-format": {
-    "source": "iana"
-  },
-  "application/load-control+xml": {
-    "source": "iana"
-  },
-  "application/lost+xml": {
-    "source": "iana",
-    "extensions": ["lostxml"]
-  },
-  "application/lostsync+xml": {
-    "source": "iana"
-  },
-  "application/lxf": {
-    "source": "iana"
-  },
-  "application/mac-binhex40": {
-    "source": "iana",
-    "extensions": ["hqx"]
-  },
-  "application/mac-compactpro": {
-    "source": "apache",
-    "extensions": ["cpt"]
-  },
-  "application/macwriteii": {
-    "source": "iana"
-  },
-  "application/mads+xml": {
-    "source": "iana",
-    "extensions": ["mads"]
-  },
-  "application/manifest+json": {
-    "charset": "UTF-8",
-    "compressible": true,
-    "extensions": ["webmanifest"]
-  },
-  "application/marc": {
-    "source": "iana",
-    "extensions": ["mrc"]
-  },
-  "application/marcxml+xml": {
-    "source": "iana",
-    "extensions": ["mrcx"]
-  },
-  "application/mathematica": {
-    "source": "iana",
-    "extensions": ["ma","nb","mb"]
-  },
-  "application/mathml+xml": {
-    "source": "iana",
-    "extensions": ["mathml"]
-  },
-  "application/mathml-content+xml": {
-    "source": "iana"
-  },
-  "application/mathml-presentation+xml": {
-    "source": "iana"
-  },
-  "application/mbms-associated-procedure-description+xml": {
-    "source": "iana"
-  },
-  "application/mbms-deregister+xml": {
-    "source": "iana"
-  },
-  "application/mbms-envelope+xml": {
-    "source": "iana"
-  },
-  "application/mbms-msk+xml": {
-    "source": "iana"
-  },
-  "application/mbms-msk-response+xml": {
-    "source": "iana"
-  },
-  "application/mbms-protection-description+xml": {
-    "source": "iana"
-  },
-  "application/mbms-reception-report+xml": {
-    "source": "iana"
-  },
-  "application/mbms-register+xml": {
-    "source": "iana"
-  },
-  "application/mbms-register-response+xml": {
-    "source": "iana"
-  },
-  "application/mbms-schedule+xml": {
-    "source": "iana"
-  },
-  "application/mbms-user-service-description+xml": {
-    "source": "iana"
-  },
-  "application/mbox": {
-    "source": "iana",
-    "extensions": ["mbox"]
-  },
-  "application/media-policy-dataset+xml": {
-    "source": "iana"
-  },
-  "application/media_control+xml": {
-    "source": "iana"
-  },
-  "application/mediaservercontrol+xml": {
-    "source": "iana",
-    "extensions": ["mscml"]
-  },
-  "application/merge-patch+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/metalink+xml": {
-    "source": "apache",
-    "extensions": ["metalink"]
-  },
-  "application/metalink4+xml": {
-    "source": "iana",
-    "extensions": ["meta4"]
-  },
-  "application/mets+xml": {
-    "source": "iana",
-    "extensions": ["mets"]
-  },
-  "application/mf4": {
-    "source": "iana"
-  },
-  "application/mikey": {
-    "source": "iana"
-  },
-  "application/mods+xml": {
-    "source": "iana",
-    "extensions": ["mods"]
-  },
-  "application/moss-keys": {
-    "source": "iana"
-  },
-  "application/moss-signature": {
-    "source": "iana"
-  },
-  "application/mosskey-data": {
-    "source": "iana"
-  },
-  "application/mosskey-request": {
-    "source": "iana"
-  },
-  "application/mp21": {
-    "source": "iana",
-    "extensions": ["m21","mp21"]
-  },
-  "application/mp4": {
-    "source": "iana",
-    "extensions": ["mp4s","m4p"]
-  },
-  "application/mpeg4-generic": {
-    "source": "iana"
-  },
-  "application/mpeg4-iod": {
-    "source": "iana"
-  },
-  "application/mpeg4-iod-xmt": {
-    "source": "iana"
-  },
-  "application/mrb-consumer+xml": {
-    "source": "iana"
-  },
-  "application/mrb-publish+xml": {
-    "source": "iana"
-  },
-  "application/msc-ivr+xml": {
-    "source": "iana"
-  },
-  "application/msc-mixer+xml": {
-    "source": "iana"
-  },
-  "application/msword": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["doc","dot"]
-  },
-  "application/mxf": {
-    "source": "iana",
-    "extensions": ["mxf"]
-  },
-  "application/nasdata": {
-    "source": "iana"
-  },
-  "application/news-checkgroups": {
-    "source": "iana"
-  },
-  "application/news-groupinfo": {
-    "source": "iana"
-  },
-  "application/news-transmission": {
-    "source": "iana"
-  },
-  "application/nlsml+xml": {
-    "source": "iana"
-  },
-  "application/nss": {
-    "source": "iana"
-  },
-  "application/ocsp-request": {
-    "source": "iana"
-  },
-  "application/ocsp-response": {
-    "source": "iana"
-  },
-  "application/octet-stream": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["bin","dms","lrf","mar","so","dist","distz","pkg","bpk","dump","elc","deploy","exe","dll","deb","dmg","iso","img","msi","msp","msm","buffer"]
-  },
-  "application/oda": {
-    "source": "iana",
-    "extensions": ["oda"]
-  },
-  "application/odx": {
-    "source": "iana"
-  },
-  "application/oebps-package+xml": {
-    "source": "iana",
-    "extensions": ["opf"]
-  },
-  "application/ogg": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["ogx"]
-  },
-  "application/omdoc+xml": {
-    "source": "apache",
-    "extensions": ["omdoc"]
-  },
-  "application/onenote": {
-    "source": "apache",
-    "extensions": ["onetoc","onetoc2","onetmp","onepkg"]
-  },
-  "application/oxps": {
-    "source": "iana",
-    "extensions": ["oxps"]
-  },
-  "application/p2p-overlay+xml": {
-    "source": "iana"
-  },
-  "application/parityfec": {
-    "source": "iana"
-  },
-  "application/patch-ops-error+xml": {
-    "source": "iana",
-    "extensions": ["xer"]
-  },
-  "application/pdf": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["pdf"]
-  },
-  "application/pdx": {
-    "source": "iana"
-  },
-  "application/pgp-encrypted": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["pgp"]
-  },
-  "application/pgp-keys": {
-    "source": "iana"
-  },
-  "application/pgp-signature": {
-    "source": "iana",
-    "extensions": ["asc","sig"]
-  },
-  "application/pics-rules": {
-    "source": "apache",
-    "extensions": ["prf"]
-  },
-  "application/pidf+xml": {
-    "source": "iana"
-  },
-  "application/pidf-diff+xml": {
-    "source": "iana"
-  },
-  "application/pkcs10": {
-    "source": "iana",
-    "extensions": ["p10"]
-  },
-  "application/pkcs12": {
-    "source": "iana"
-  },
-  "application/pkcs7-mime": {
-    "source": "iana",
-    "extensions": ["p7m","p7c"]
-  },
-  "application/pkcs7-signature": {
-    "source": "iana",
-    "extensions": ["p7s"]
-  },
-  "application/pkcs8": {
-    "source": "iana",
-    "extensions": ["p8"]
-  },
-  "application/pkix-attr-cert": {
-    "source": "iana",
-    "extensions": ["ac"]
-  },
-  "application/pkix-cert": {
-    "source": "iana",
-    "extensions": ["cer"]
-  },
-  "application/pkix-crl": {
-    "source": "iana",
-    "extensions": ["crl"]
-  },
-  "application/pkix-pkipath": {
-    "source": "iana",
-    "extensions": ["pkipath"]
-  },
-  "application/pkixcmp": {
-    "source": "iana",
-    "extensions": ["pki"]
-  },
-  "application/pls+xml": {
-    "source": "iana",
-    "extensions": ["pls"]
-  },
-  "application/poc-settings+xml": {
-    "source": "iana"
-  },
-  "application/postscript": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["ai","eps","ps"]
-  },
-  "application/provenance+xml": {
-    "source": "iana"
-  },
-  "application/prs.alvestrand.titrax-sheet": {
-    "source": "iana"
-  },
-  "application/prs.cww": {
-    "source": "iana",
-    "extensions": ["cww"]
-  },
-  "application/prs.hpub+zip": {
-    "source": "iana"
-  },
-  "application/prs.nprend": {
-    "source": "iana"
-  },
-  "application/prs.plucker": {
-    "source": "iana"
-  },
-  "application/prs.rdf-xml-crypt": {
-    "source": "iana"
-  },
-  "application/prs.xsf+xml": {
-    "source": "iana"
-  },
-  "application/pskc+xml": {
-    "source": "iana",
-    "extensions": ["pskcxml"]
-  },
-  "application/qsig": {
-    "source": "iana"
-  },
-  "application/raptorfec": {
-    "source": "iana"
-  },
-  "application/rdap+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/rdf+xml": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["rdf"]
-  },
-  "application/reginfo+xml": {
-    "source": "iana",
-    "extensions": ["rif"]
-  },
-  "application/relax-ng-compact-syntax": {
-    "source": "iana",
-    "extensions": ["rnc"]
-  },
-  "application/remote-printing": {
-    "source": "iana"
-  },
-  "application/reputon+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/resource-lists+xml": {
-    "source": "iana",
-    "extensions": ["rl"]
-  },
-  "application/resource-lists-diff+xml": {
-    "source": "iana",
-    "extensions": ["rld"]
-  },
-  "application/rfc+xml": {
-    "source": "iana"
-  },
-  "application/riscos": {
-    "source": "iana"
-  },
-  "application/rlmi+xml": {
-    "source": "iana"
-  },
-  "application/rls-services+xml": {
-    "source": "iana",
-    "extensions": ["rs"]
-  },
-  "application/rpki-ghostbusters": {
-    "source": "iana",
-    "extensions": ["gbr"]
-  },
-  "application/rpki-manifest": {
-    "source": "iana",
-    "extensions": ["mft"]
-  },
-  "application/rpki-roa": {
-    "source": "iana",
-    "extensions": ["roa"]
-  },
-  "application/rpki-updown": {
-    "source": "iana"
-  },
-  "application/rsd+xml": {
-    "source": "apache",
-    "extensions": ["rsd"]
-  },
-  "application/rss+xml": {
-    "source": "apache",
-    "compressible": true,
-    "extensions": ["rss"]
-  },
-  "application/rtf": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["rtf"]
-  },
-  "application/rtploopback": {
-    "source": "iana"
-  },
-  "application/rtx": {
-    "source": "iana"
-  },
-  "application/samlassertion+xml": {
-    "source": "iana"
-  },
-  "application/samlmetadata+xml": {
-    "source": "iana"
-  },
-  "application/sbml+xml": {
-    "source": "iana",
-    "extensions": ["sbml"]
-  },
-  "application/scaip+xml": {
-    "source": "iana"
-  },
-  "application/scim+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/scvp-cv-request": {
-    "source": "iana",
-    "extensions": ["scq"]
-  },
-  "application/scvp-cv-response": {
-    "source": "iana",
-    "extensions": ["scs"]
-  },
-  "application/scvp-vp-request": {
-    "source": "iana",
-    "extensions": ["spq"]
-  },
-  "application/scvp-vp-response": {
-    "source": "iana",
-    "extensions": ["spp"]
-  },
-  "application/sdp": {
-    "source": "iana",
-    "extensions": ["sdp"]
-  },
-  "application/sep+xml": {
-    "source": "iana"
-  },
-  "application/sep-exi": {
-    "source": "iana"
-  },
-  "application/session-info": {
-    "source": "iana"
-  },
-  "application/set-payment": {
-    "source": "iana"
-  },
-  "application/set-payment-initiation": {
-    "source": "iana",
-    "extensions": ["setpay"]
-  },
-  "application/set-registration": {
-    "source": "iana"
-  },
-  "application/set-registration-initiation": {
-    "source": "iana",
-    "extensions": ["setreg"]
-  },
-  "application/sgml": {
-    "source": "iana"
-  },
-  "application/sgml-open-catalog": {
-    "source": "iana"
-  },
-  "application/shf+xml": {
-    "source": "iana",
-    "extensions": ["shf"]
-  },
-  "application/sieve": {
-    "source": "iana"
-  },
-  "application/simple-filter+xml": {
-    "source": "iana"
-  },
-  "application/simple-message-summary": {
-    "source": "iana"
-  },
-  "application/simplesymbolcontainer": {
-    "source": "iana"
-  },
-  "application/slate": {
-    "source": "iana"
-  },
-  "application/smil": {
-    "source": "iana"
-  },
-  "application/smil+xml": {
-    "source": "iana",
-    "extensions": ["smi","smil"]
-  },
-  "application/smpte336m": {
-    "source": "iana"
-  },
-  "application/soap+fastinfoset": {
-    "source": "iana"
-  },
-  "application/soap+xml": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/sparql-query": {
-    "source": "iana",
-    "extensions": ["rq"]
-  },
-  "application/sparql-results+xml": {
-    "source": "iana",
-    "extensions": ["srx"]
-  },
-  "application/spirits-event+xml": {
-    "source": "iana"
-  },
-  "application/sql": {
-    "source": "iana"
-  },
-  "application/srgs": {
-    "source": "iana",
-    "extensions": ["gram"]
-  },
-  "application/srgs+xml": {
-    "source": "iana",
-    "extensions": ["grxml"]
-  },
-  "application/sru+xml": {
-    "source": "iana",
-    "extensions": ["sru"]
-  },
-  "application/ssdl+xml": {
-    "source": "apache",
-    "extensions": ["ssdl"]
-  },
-  "application/ssml+xml": {
-    "source": "iana",
-    "extensions": ["ssml"]
-  },
-  "application/tamp-apex-update": {
-    "source": "iana"
-  },
-  "application/tamp-apex-update-confirm": {
-    "source": "iana"
-  },
-  "application/tamp-community-update": {
-    "source": "iana"
-  },
-  "application/tamp-community-update-confirm": {
-    "source": "iana"
-  },
-  "application/tamp-error": {
-    "source": "iana"
-  },
-  "application/tamp-sequence-adjust": {
-    "source": "iana"
-  },
-  "application/tamp-sequence-adjust-confirm": {
-    "source": "iana"
-  },
-  "application/tamp-status-query": {
-    "source": "iana"
-  },
-  "application/tamp-status-response": {
-    "source": "iana"
-  },
-  "application/tamp-update": {
-    "source": "iana"
-  },
-  "application/tamp-update-confirm": {
-    "source": "iana"
-  },
-  "application/tar": {
-    "compressible": true
-  },
-  "application/tei+xml": {
-    "source": "iana",
-    "extensions": ["tei","teicorpus"]
-  },
-  "application/thraud+xml": {
-    "source": "iana",
-    "extensions": ["tfi"]
-  },
-  "application/timestamp-query": {
-    "source": "iana"
-  },
-  "application/timestamp-reply": {
-    "source": "iana"
-  },
-  "application/timestamped-data": {
-    "source": "iana",
-    "extensions": ["tsd"]
-  },
-  "application/ttml+xml": {
-    "source": "iana"
-  },
-  "application/tve-trigger": {
-    "source": "iana"
-  },
-  "application/ulpfec": {
-    "source": "iana"
-  },
-  "application/urc-grpsheet+xml": {
-    "source": "iana"
-  },
-  "application/urc-ressheet+xml": {
-    "source": "iana"
-  },
-  "application/urc-targetdesc+xml": {
-    "source": "iana"
-  },
-  "application/urc-uisocketdesc+xml": {
-    "source": "iana"
-  },
-  "application/vcard+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/vcard+xml": {
-    "source": "iana"
-  },
-  "application/vemmi": {
-    "source": "iana"
-  },
-  "application/vividence.scriptfile": {
-    "source": "apache"
-  },
-  "application/vnd.3gpp-prose+xml": {
-    "source": "iana"
-  },
-  "application/vnd.3gpp-prose-pc3ch+xml": {
-    "source": "iana"
-  },
-  "application/vnd.3gpp.access-transfer-events+xml": {
-    "source": "iana"
-  },
-  "application/vnd.3gpp.bsf+xml": {
-    "source": "iana"
-  },
-  "application/vnd.3gpp.mid-call+xml": {
-    "source": "iana"
-  },
-  "application/vnd.3gpp.pic-bw-large": {
-    "source": "iana",
-    "extensions": ["plb"]
-  },
-  "application/vnd.3gpp.pic-bw-small": {
-    "source": "iana",
-    "extensions": ["psb"]
-  },
-  "application/vnd.3gpp.pic-bw-var": {
-    "source": "iana",
-    "extensions": ["pvb"]
-  },
-  "application/vnd.3gpp.sms": {
-    "source": "iana"
-  },
-  "application/vnd.3gpp.srvcc-ext+xml": {
-    "source": "iana"
-  },
-  "application/vnd.3gpp.srvcc-info+xml": {
-    "source": "iana"
-  },
-  "application/vnd.3gpp.state-and-event-info+xml": {
-    "source": "iana"
-  },
-  "application/vnd.3gpp.ussd+xml": {
-    "source": "iana"
-  },
-  "application/vnd.3gpp2.bcmcsinfo+xml": {
-    "source": "iana"
-  },
-  "application/vnd.3gpp2.sms": {
-    "source": "iana"
-  },
-  "application/vnd.3gpp2.tcap": {
-    "source": "iana",
-    "extensions": ["tcap"]
-  },
-  "application/vnd.3m.post-it-notes": {
-    "source": "iana",
-    "extensions": ["pwn"]
-  },
-  "application/vnd.accpac.simply.aso": {
-    "source": "iana",
-    "extensions": ["aso"]
-  },
-  "application/vnd.accpac.simply.imp": {
-    "source": "iana",
-    "extensions": ["imp"]
-  },
-  "application/vnd.acucobol": {
-    "source": "iana",
-    "extensions": ["acu"]
-  },
-  "application/vnd.acucorp": {
-    "source": "iana",
-    "extensions": ["atc","acutc"]
-  },
-  "application/vnd.adobe.air-application-installer-package+zip": {
-    "source": "apache",
-    "extensions": ["air"]
-  },
-  "application/vnd.adobe.flash.movie": {
-    "source": "iana"
-  },
-  "application/vnd.adobe.formscentral.fcdt": {
-    "source": "iana",
-    "extensions": ["fcdt"]
-  },
-  "application/vnd.adobe.fxp": {
-    "source": "iana",
-    "extensions": ["fxp","fxpl"]
-  },
-  "application/vnd.adobe.partial-upload": {
-    "source": "iana"
-  },
-  "application/vnd.adobe.xdp+xml": {
-    "source": "iana",
-    "extensions": ["xdp"]
-  },
-  "application/vnd.adobe.xfdf": {
-    "source": "iana",
-    "extensions": ["xfdf"]
-  },
-  "application/vnd.aether.imp": {
-    "source": "iana"
-  },
-  "application/vnd.ah-barcode": {
-    "source": "iana"
-  },
-  "application/vnd.ahead.space": {
-    "source": "iana",
-    "extensions": ["ahead"]
-  },
-  "application/vnd.airzip.filesecure.azf": {
-    "source": "iana",
-    "extensions": ["azf"]
-  },
-  "application/vnd.airzip.filesecure.azs": {
-    "source": "iana",
-    "extensions": ["azs"]
-  },
-  "application/vnd.amazon.ebook": {
-    "source": "apache",
-    "extensions": ["azw"]
-  },
-  "application/vnd.americandynamics.acc": {
-    "source": "iana",
-    "extensions": ["acc"]
-  },
-  "application/vnd.amiga.ami": {
-    "source": "iana",
-    "extensions": ["ami"]
-  },
-  "application/vnd.amundsen.maze+xml": {
-    "source": "iana"
-  },
-  "application/vnd.android.package-archive": {
-    "source": "apache",
-    "compressible": false,
-    "extensions": ["apk"]
-  },
-  "application/vnd.anki": {
-    "source": "iana"
-  },
-  "application/vnd.anser-web-certificate-issue-initiation": {
-    "source": "iana",
-    "extensions": ["cii"]
-  },
-  "application/vnd.anser-web-funds-transfer-initiation": {
-    "source": "apache",
-    "extensions": ["fti"]
-  },
-  "application/vnd.antix.game-component": {
-    "source": "iana",
-    "extensions": ["atx"]
-  },
-  "application/vnd.apache.thrift.binary": {
-    "source": "iana"
-  },
-  "application/vnd.apache.thrift.compact": {
-    "source": "iana"
-  },
-  "application/vnd.apache.thrift.json": {
-    "source": "iana"
-  },
-  "application/vnd.api+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/vnd.apple.installer+xml": {
-    "source": "iana",
-    "extensions": ["mpkg"]
-  },
-  "application/vnd.apple.mpegurl": {
-    "source": "iana",
-    "extensions": ["m3u8"]
-  },
-  "application/vnd.apple.pkpass": {
-    "compressible": false,
-    "extensions": ["pkpass"]
-  },
-  "application/vnd.arastra.swi": {
-    "source": "iana"
-  },
-  "application/vnd.aristanetworks.swi": {
-    "source": "iana",
-    "extensions": ["swi"]
-  },
-  "application/vnd.artsquare": {
-    "source": "iana"
-  },
-  "application/vnd.astraea-software.iota": {
-    "source": "iana",
-    "extensions": ["iota"]
-  },
-  "application/vnd.audiograph": {
-    "source": "iana",
-    "extensions": ["aep"]
-  },
-  "application/vnd.autopackage": {
-    "source": "iana"
-  },
-  "application/vnd.avistar+xml": {
-    "source": "iana"
-  },
-  "application/vnd.balsamiq.bmml+xml": {
-    "source": "iana"
-  },
-  "application/vnd.balsamiq.bmpr": {
-    "source": "iana"
-  },
-  "application/vnd.bekitzur-stech+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/vnd.biopax.rdf+xml": {
-    "source": "iana"
-  },
-  "application/vnd.blueice.multipass": {
-    "source": "iana",
-    "extensions": ["mpm"]
-  },
-  "application/vnd.bluetooth.ep.oob": {
-    "source": "iana"
-  },
-  "application/vnd.bluetooth.le.oob": {
-    "source": "iana"
-  },
-  "application/vnd.bmi": {
-    "source": "iana",
-    "extensions": ["bmi"]
-  },
-  "application/vnd.businessobjects": {
-    "source": "iana",
-    "extensions": ["rep"]
-  },
-  "application/vnd.cab-jscript": {
-    "source": "iana"
-  },
-  "application/vnd.canon-cpdl": {
-    "source": "iana"
-  },
-  "application/vnd.canon-lips": {
-    "source": "iana"
-  },
-  "application/vnd.cendio.thinlinc.clientconf": {
-    "source": "iana"
-  },
-  "application/vnd.century-systems.tcp_stream": {
-    "source": "iana"
-  },
-  "application/vnd.chemdraw+xml": {
-    "source": "iana",
-    "extensions": ["cdxml"]
-  },
-  "application/vnd.chipnuts.karaoke-mmd": {
-    "source": "iana",
-    "extensions": ["mmd"]
-  },
-  "application/vnd.cinderella": {
-    "source": "iana",
-    "extensions": ["cdy"]
-  },
-  "application/vnd.cirpack.isdn-ext": {
-    "source": "iana"
-  },
-  "application/vnd.citationstyles.style+xml": {
-    "source": "iana"
-  },
-  "application/vnd.claymore": {
-    "source": "iana",
-    "extensions": ["cla"]
-  },
-  "application/vnd.cloanto.rp9": {
-    "source": "iana",
-    "extensions": ["rp9"]
-  },
-  "application/vnd.clonk.c4group": {
-    "source": "iana",
-    "extensions": ["c4g","c4d","c4f","c4p","c4u"]
-  },
-  "application/vnd.cluetrust.cartomobile-config": {
-    "source": "iana",
-    "extensions": ["c11amc"]
-  },
-  "application/vnd.cluetrust.cartomobile-config-pkg": {
-    "source": "iana",
-    "extensions": ["c11amz"]
-  },
-  "application/vnd.coffeescript": {
-    "source": "iana"
-  },
-  "application/vnd.collection+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/vnd.collection.doc+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/vnd.collection.next+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/vnd.commerce-battelle": {
-    "source": "iana"
-  },
-  "application/vnd.commonspace": {
-    "source": "iana",
-    "extensions": ["csp"]
-  },
-  "application/vnd.contact.cmsg": {
-    "source": "iana",
-    "extensions": ["cdbcmsg"]
-  },
-  "application/vnd.cosmocaller": {
-    "source": "iana",
-    "extensions": ["cmc"]
-  },
-  "application/vnd.crick.clicker": {
-    "source": "iana",
-    "extensions": ["clkx"]
-  },
-  "application/vnd.crick.clicker.keyboard": {
-    "source": "iana",
-    "extensions": ["clkk"]
-  },
-  "application/vnd.crick.clicker.palette": {
-    "source": "iana",
-    "extensions": ["clkp"]
-  },
-  "application/vnd.crick.clicker.template": {
-    "source": "iana",
-    "extensions": ["clkt"]
-  },
-  "application/vnd.crick.clicker.wordbank": {
-    "source": "iana",
-    "extensions": ["clkw"]
-  },
-  "application/vnd.criticaltools.wbs+xml": {
-    "source": "iana",
-    "extensions": ["wbs"]
-  },
-  "application/vnd.ctc-posml": {
-    "source": "iana",
-    "extensions": ["pml"]
-  },
-  "application/vnd.ctct.ws+xml": {
-    "source": "iana"
-  },
-  "application/vnd.cups-pdf": {
-    "source": "iana"
-  },
-  "application/vnd.cups-postscript": {
-    "source": "iana"
-  },
-  "application/vnd.cups-ppd": {
-    "source": "iana",
-    "extensions": ["ppd"]
-  },
-  "application/vnd.cups-raster": {
-    "source": "iana"
-  },
-  "application/vnd.cups-raw": {
-    "source": "iana"
-  },
-  "application/vnd.curl": {
-    "source": "iana"
-  },
-  "application/vnd.curl.car": {
-    "source": "apache",
-    "extensions": ["car"]
-  },
-  "application/vnd.curl.pcurl": {
-    "source": "apache",
-    "extensions": ["pcurl"]
-  },
-  "application/vnd.cyan.dean.root+xml": {
-    "source": "iana"
-  },
-  "application/vnd.cybank": {
-    "source": "iana"
-  },
-  "application/vnd.dart": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["dart"]
-  },
-  "application/vnd.data-vision.rdz": {
-    "source": "iana",
-    "extensions": ["rdz"]
-  },
-  "application/vnd.debian.binary-package": {
-    "source": "iana"
-  },
-  "application/vnd.dece.data": {
-    "source": "iana",
-    "extensions": ["uvf","uvvf","uvd","uvvd"]
-  },
-  "application/vnd.dece.ttml+xml": {
-    "source": "iana",
-    "extensions": ["uvt","uvvt"]
-  },
-  "application/vnd.dece.unspecified": {
-    "source": "iana",
-    "extensions": ["uvx","uvvx"]
-  },
-  "application/vnd.dece.zip": {
-    "source": "iana",
-    "extensions": ["uvz","uvvz"]
-  },
-  "application/vnd.denovo.fcselayout-link": {
-    "source": "iana",
-    "extensions": ["fe_launch"]
-  },
-  "application/vnd.desmume-movie": {
-    "source": "iana"
-  },
-  "application/vnd.dir-bi.plate-dl-nosuffix": {
-    "source": "iana"
-  },
-  "application/vnd.dm.delegation+xml": {
-    "source": "iana"
-  },
-  "application/vnd.dna": {
-    "source": "iana",
-    "extensions": ["dna"]
-  },
-  "application/vnd.document+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/vnd.dolby.mlp": {
-    "source": "apache",
-    "extensions": ["mlp"]
-  },
-  "application/vnd.dolby.mobile.1": {
-    "source": "iana"
-  },
-  "application/vnd.dolby.mobile.2": {
-    "source": "iana"
-  },
-  "application/vnd.doremir.scorecloud-binary-document": {
-    "source": "iana"
-  },
-  "application/vnd.dpgraph": {
-    "source": "iana",
-    "extensions": ["dpg"]
-  },
-  "application/vnd.dreamfactory": {
-    "source": "iana",
-    "extensions": ["dfac"]
-  },
-  "application/vnd.drive+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/vnd.ds-keypoint": {
-    "source": "apache",
-    "extensions": ["kpxx"]
-  },
-  "application/vnd.dtg.local": {
-    "source": "iana"
-  },
-  "application/vnd.dtg.local.flash": {
-    "source": "iana"
-  },
-  "application/vnd.dtg.local.html": {
-    "source": "iana"
-  },
-  "application/vnd.dvb.ait": {
-    "source": "iana",
-    "extensions": ["ait"]
-  },
-  "application/vnd.dvb.dvbj": {
-    "source": "iana"
-  },
-  "application/vnd.dvb.esgcontainer": {
-    "source": "iana"
-  },
-  "application/vnd.dvb.ipdcdftnotifaccess": {
-    "source": "iana"
-  },
-  "application/vnd.dvb.ipdcesgaccess": {
-    "source": "iana"
-  },
-  "application/vnd.dvb.ipdcesgaccess2": {
-    "source": "iana"
-  },
-  "application/vnd.dvb.ipdcesgpdd": {
-    "source": "iana"
-  },
-  "application/vnd.dvb.ipdcroaming": {
-    "source": "iana"
-  },
-  "application/vnd.dvb.iptv.alfec-base": {
-    "source": "iana"
-  },
-  "application/vnd.dvb.iptv.alfec-enhancement": {
-    "source": "iana"
-  },
-  "application/vnd.dvb.notif-aggregate-root+xml": {
-    "source": "iana"
-  },
-  "application/vnd.dvb.notif-container+xml": {
-    "source": "iana"
-  },
-  "application/vnd.dvb.notif-generic+xml": {
-    "source": "iana"
-  },
-  "application/vnd.dvb.notif-ia-msglist+xml": {
-    "source": "iana"
-  },
-  "application/vnd.dvb.notif-ia-registration-request+xml": {
-    "source": "iana"
-  },
-  "application/vnd.dvb.notif-ia-registration-response+xml": {
-    "source": "iana"
-  },
-  "application/vnd.dvb.notif-init+xml": {
-    "source": "iana"
-  },
-  "application/vnd.dvb.pfr": {
-    "source": "iana"
-  },
-  "application/vnd.dvb.service": {
-    "source": "iana",
-    "extensions": ["svc"]
-  },
-  "application/vnd.dxr": {
-    "source": "iana"
-  },
-  "application/vnd.dynageo": {
-    "source": "iana",
-    "extensions": ["geo"]
-  },
-  "application/vnd.dzr": {
-    "source": "iana"
-  },
-  "application/vnd.easykaraoke.cdgdownload": {
-    "source": "iana"
-  },
-  "application/vnd.ecdis-update": {
-    "source": "iana"
-  },
-  "application/vnd.ecowin.chart": {
-    "source": "iana",
-    "extensions": ["mag"]
-  },
-  "application/vnd.ecowin.filerequest": {
-    "source": "iana"
-  },
-  "application/vnd.ecowin.fileupdate": {
-    "source": "iana"
-  },
-  "application/vnd.ecowin.series": {
-    "source": "iana"
-  },
-  "application/vnd.ecowin.seriesrequest": {
-    "source": "iana"
-  },
-  "application/vnd.ecowin.seriesupdate": {
-    "source": "iana"
-  },
-  "application/vnd.emclient.accessrequest+xml": {
-    "source": "iana"
-  },
-  "application/vnd.enliven": {
-    "source": "iana",
-    "extensions": ["nml"]
-  },
-  "application/vnd.enphase.envoy": {
-    "source": "iana"
-  },
-  "application/vnd.eprints.data+xml": {
-    "source": "iana"
-  },
-  "application/vnd.epson.esf": {
-    "source": "iana",
-    "extensions": ["esf"]
-  },
-  "application/vnd.epson.msf": {
-    "source": "iana",
-    "extensions": ["msf"]
-  },
-  "application/vnd.epson.quickanime": {
-    "source": "iana",
-    "extensions": ["qam"]
-  },
-  "application/vnd.epson.salt": {
-    "source": "iana",
-    "extensions": ["slt"]
-  },
-  "application/vnd.epson.ssf": {
-    "source": "iana",
-    "extensions": ["ssf"]
-  },
-  "application/vnd.ericsson.quickcall": {
-    "source": "iana"
-  },
-  "application/vnd.eszigno3+xml": {
-    "source": "iana",
-    "extensions": ["es3","et3"]
-  },
-  "application/vnd.etsi.aoc+xml": {
-    "source": "iana"
-  },
-  "application/vnd.etsi.asic-e+zip": {
-    "source": "iana"
-  },
-  "application/vnd.etsi.asic-s+zip": {
-    "source": "iana"
-  },
-  "application/vnd.etsi.cug+xml": {
-    "source": "iana"
-  },
-  "application/vnd.etsi.iptvcommand+xml": {
-    "source": "iana"
-  },
-  "application/vnd.etsi.iptvdiscovery+xml": {
-    "source": "iana"
-  },
-  "application/vnd.etsi.iptvprofile+xml": {
-    "source": "iana"
-  },
-  "application/vnd.etsi.iptvsad-bc+xml": {
-    "source": "iana"
-  },
-  "application/vnd.etsi.iptvsad-cod+xml": {
-    "source": "iana"
-  },
-  "application/vnd.etsi.iptvsad-npvr+xml": {
-    "source": "iana"
-  },
-  "application/vnd.etsi.iptvservice+xml": {
-    "source": "iana"
-  },
-  "application/vnd.etsi.iptvsync+xml": {
-    "source": "iana"
-  },
-  "application/vnd.etsi.iptvueprofile+xml": {
-    "source": "iana"
-  },
-  "application/vnd.etsi.mcid+xml": {
-    "source": "iana"
-  },
-  "application/vnd.etsi.mheg5": {
-    "source": "iana"
-  },
-  "application/vnd.etsi.overload-control-policy-dataset+xml": {
-    "source": "iana"
-  },
-  "application/vnd.etsi.pstn+xml": {
-    "source": "iana"
-  },
-  "application/vnd.etsi.sci+xml": {
-    "source": "iana"
-  },
-  "application/vnd.etsi.simservs+xml": {
-    "source": "iana"
-  },
-  "application/vnd.etsi.timestamp-token": {
-    "source": "iana"
-  },
-  "application/vnd.etsi.tsl+xml": {
-    "source": "iana"
-  },
-  "application/vnd.etsi.tsl.der": {
-    "source": "iana"
-  },
-  "application/vnd.eudora.data": {
-    "source": "iana"
-  },
-  "application/vnd.ezpix-album": {
-    "source": "iana",
-    "extensions": ["ez2"]
-  },
-  "application/vnd.ezpix-package": {
-    "source": "iana",
-    "extensions": ["ez3"]
-  },
-  "application/vnd.f-secure.mobile": {
-    "source": "iana"
-  },
-  "application/vnd.fastcopy-disk-image": {
-    "source": "iana"
-  },
-  "application/vnd.fdf": {
-    "source": "iana",
-    "extensions": ["fdf"]
-  },
-  "application/vnd.fdsn.mseed": {
-    "source": "iana",
-    "extensions": ["mseed"]
-  },
-  "application/vnd.fdsn.seed": {
-    "source": "iana",
-    "extensions": ["seed","dataless"]
-  },
-  "application/vnd.ffsns": {
-    "source": "iana"
-  },
-  "application/vnd.fints": {
-    "source": "iana"
-  },
-  "application/vnd.firemonkeys.cloudcell": {
-    "source": "iana"
-  },
-  "application/vnd.flographit": {
-    "source": "iana",
-    "extensions": ["gph"]
-  },
-  "application/vnd.fluxtime.clip": {
-    "source": "iana",
-    "extensions": ["ftc"]
-  },
-  "application/vnd.font-fontforge-sfd": {
-    "source": "iana"
-  },
-  "application/vnd.framemaker": {
-    "source": "iana",
-    "extensions": ["fm","frame","maker","book"]
-  },
-  "application/vnd.frogans.fnc": {
-    "source": "iana",
-    "extensions": ["fnc"]
-  },
-  "application/vnd.frogans.ltf": {
-    "source": "iana",
-    "extensions": ["ltf"]
-  },
-  "application/vnd.fsc.weblaunch": {
-    "source": "iana",
-    "extensions": ["fsc"]
-  },
-  "application/vnd.fujitsu.oasys": {
-    "source": "iana",
-    "extensions": ["oas"]
-  },
-  "application/vnd.fujitsu.oasys2": {
-    "source": "iana",
-    "extensions": ["oa2"]
-  },
-  "application/vnd.fujitsu.oasys3": {
-    "source": "iana",
-    "extensions": ["oa3"]
-  },
-  "application/vnd.fujitsu.oasysgp": {
-    "source": "iana",
-    "extensions": ["fg5"]
-  },
-  "application/vnd.fujitsu.oasysprs": {
-    "source": "iana",
-    "extensions": ["bh2"]
-  },
-  "application/vnd.fujixerox.art-ex": {
-    "source": "iana"
-  },
-  "application/vnd.fujixerox.art4": {
-    "source": "iana"
-  },
-  "application/vnd.fujixerox.ddd": {
-    "source": "iana",
-    "extensions": ["ddd"]
-  },
-  "application/vnd.fujixerox.docuworks": {
-    "source": "iana",
-    "extensions": ["xdw"]
-  },
-  "application/vnd.fujixerox.docuworks.binder": {
-    "source": "iana",
-    "extensions": ["xbd"]
-  },
-  "application/vnd.fujixerox.docuworks.container": {
-    "source": "iana"
-  },
-  "application/vnd.fujixerox.hbpl": {
-    "source": "iana"
-  },
-  "application/vnd.fut-misnet": {
-    "source": "iana"
-  },
-  "application/vnd.fuzzysheet": {
-    "source": "iana",
-    "extensions": ["fzs"]
-  },
-  "application/vnd.genomatix.tuxedo": {
-    "source": "iana",
-    "extensions": ["txd"]
-  },
-  "application/vnd.geo+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/vnd.geocube+xml": {
-    "source": "iana"
-  },
-  "application/vnd.geogebra.file": {
-    "source": "iana",
-    "extensions": ["ggb"]
-  },
-  "application/vnd.geogebra.tool": {
-    "source": "iana",
-    "extensions": ["ggt"]
-  },
-  "application/vnd.geometry-explorer": {
-    "source": "iana",
-    "extensions": ["gex","gre"]
-  },
-  "application/vnd.geonext": {
-    "source": "iana",
-    "extensions": ["gxt"]
-  },
-  "application/vnd.geoplan": {
-    "source": "iana",
-    "extensions": ["g2w"]
-  },
-  "application/vnd.geospace": {
-    "source": "iana",
-    "extensions": ["g3w"]
-  },
-  "application/vnd.gerber": {
-    "source": "iana"
-  },
-  "application/vnd.globalplatform.card-content-mgt": {
-    "source": "iana"
-  },
-  "application/vnd.globalplatform.card-content-mgt-response": {
-    "source": "iana"
-  },
-  "application/vnd.gmx": {
-    "source": "iana",
-    "extensions": ["gmx"]
-  },
-  "application/vnd.google-earth.kml+xml": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["kml"]
-  },
-  "application/vnd.google-earth.kmz": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["kmz"]
-  },
-  "application/vnd.gov.sk.e-form+xml": {
-    "source": "iana"
-  },
-  "application/vnd.gov.sk.e-form+zip": {
-    "source": "iana"
-  },
-  "application/vnd.gov.sk.xmldatacontainer+xml": {
-    "source": "iana"
-  },
-  "application/vnd.grafeq": {
-    "source": "iana",
-    "extensions": ["gqf","gqs"]
-  },
-  "application/vnd.gridmp": {
-    "source": "iana"
-  },
-  "application/vnd.groove-account": {
-    "source": "iana",
-    "extensions": ["gac"]
-  },
-  "application/vnd.groove-help": {
-    "source": "iana",
-    "extensions": ["ghf"]
-  },
-  "application/vnd.groove-identity-message": {
-    "source": "iana",
-    "extensions": ["gim"]
-  },
-  "application/vnd.groove-injector": {
-    "source": "iana",
-    "extensions": ["grv"]
-  },
-  "application/vnd.groove-tool-message": {
-    "source": "iana",
-    "extensions": ["gtm"]
-  },
-  "application/vnd.groove-tool-template": {
-    "source": "iana",
-    "extensions": ["tpl"]
-  },
-  "application/vnd.groove-vcard": {
-    "source": "iana",
-    "extensions": ["vcg"]
-  },
-  "application/vnd.hal+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/vnd.hal+xml": {
-    "source": "iana",
-    "extensions": ["hal"]
-  },
-  "application/vnd.handheld-entertainment+xml": {
-    "source": "iana",
-    "extensions": ["zmm"]
-  },
-  "application/vnd.hbci": {
-    "source": "iana",
-    "extensions": ["hbci"]
-  },
-  "application/vnd.hcl-bireports": {
-    "source": "iana"
-  },
-  "application/vnd.heroku+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/vnd.hhe.lesson-player": {
-    "source": "iana",
-    "extensions": ["les"]
-  },
-  "application/vnd.hp-hpgl": {
-    "source": "iana",
-    "extensions": ["hpgl"]
-  },
-  "application/vnd.hp-hpid": {
-    "source": "iana",
-    "extensions": ["hpid"]
-  },
-  "application/vnd.hp-hps": {
-    "source": "iana",
-    "extensions": ["hps"]
-  },
-  "application/vnd.hp-jlyt": {
-    "source": "iana",
-    "extensions": ["jlt"]
-  },
-  "application/vnd.hp-pcl": {
-    "source": "iana",
-    "extensions": ["pcl"]
-  },
-  "application/vnd.hp-pclxl": {
-    "source": "iana",
-    "extensions": ["pclxl"]
-  },
-  "application/vnd.httphone": {
-    "source": "iana"
-  },
-  "application/vnd.hydrostatix.sof-data": {
-    "source": "iana",
-    "extensions": ["sfd-hdstx"]
-  },
-  "application/vnd.hyperdrive+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/vnd.hzn-3d-crossword": {
-    "source": "iana"
-  },
-  "application/vnd.ibm.afplinedata": {
-    "source": "iana"
-  },
-  "application/vnd.ibm.electronic-media": {
-    "source": "iana"
-  },
-  "application/vnd.ibm.minipay": {
-    "source": "iana",
-    "extensions": ["mpy"]
-  },
-  "application/vnd.ibm.modcap": {
-    "source": "iana",
-    "extensions": ["afp","listafp","list3820"]
-  },
-  "application/vnd.ibm.rights-management": {
-    "source": "iana",
-    "extensions": ["irm"]
-  },
-  "application/vnd.ibm.secure-container": {
-    "source": "iana",
-    "extensions": ["sc"]
-  },
-  "application/vnd.iccprofile": {
-    "source": "iana",
-    "extensions": ["icc","icm"]
-  },
-  "application/vnd.ieee.1905": {
-    "source": "iana"
-  },
-  "application/vnd.igloader": {
-    "source": "iana",
-    "extensions": ["igl"]
-  },
-  "application/vnd.immervision-ivp": {
-    "source": "iana",
-    "extensions": ["ivp"]
-  },
-  "application/vnd.immervision-ivu": {
-    "source": "iana",
-    "extensions": ["ivu"]
-  },
-  "application/vnd.ims.imsccv1p1": {
-    "source": "iana"
-  },
-  "application/vnd.ims.imsccv1p2": {
-    "source": "iana"
-  },
-  "application/vnd.ims.imsccv1p3": {
-    "source": "iana"
-  },
-  "application/vnd.ims.lis.v2.result+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/vnd.ims.lti.v2.toolconsumerprofile+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/vnd.ims.lti.v2.toolproxy+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/vnd.ims.lti.v2.toolproxy.id+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/vnd.ims.lti.v2.toolsettings+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/vnd.ims.lti.v2.toolsettings.simple+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/vnd.informedcontrol.rms+xml": {
-    "source": "iana"
-  },
-  "application/vnd.informix-visionary": {
-    "source": "iana"
-  },
-  "application/vnd.infotech.project": {
-    "source": "iana"
-  },
-  "application/vnd.infotech.project+xml": {
-    "source": "iana"
-  },
-  "application/vnd.innopath.wamp.notification": {
-    "source": "iana"
-  },
-  "application/vnd.insors.igm": {
-    "source": "iana",
-    "extensions": ["igm"]
-  },
-  "application/vnd.intercon.formnet": {
-    "source": "iana",
-    "extensions": ["xpw","xpx"]
-  },
-  "application/vnd.intergeo": {
-    "source": "iana",
-    "extensions": ["i2g"]
-  },
-  "application/vnd.intertrust.digibox": {
-    "source": "iana"
-  },
-  "application/vnd.intertrust.nncp": {
-    "source": "iana"
-  },
-  "application/vnd.intu.qbo": {
-    "source": "iana",
-    "extensions": ["qbo"]
-  },
-  "application/vnd.intu.qfx": {
-    "source": "iana",
-    "extensions": ["qfx"]
-  },
-  "application/vnd.iptc.g2.catalogitem+xml": {
-    "source": "iana"
-  },
-  "application/vnd.iptc.g2.conceptitem+xml": {
-    "source": "iana"
-  },
-  "application/vnd.iptc.g2.knowledgeitem+xml": {
-    "source": "iana"
-  },
-  "application/vnd.iptc.g2.newsitem+xml": {
-    "source": "iana"
-  },
-  "application/vnd.iptc.g2.newsmessage+xml": {
-    "source": "iana"
-  },
-  "application/vnd.iptc.g2.packageitem+xml": {
-    "source": "iana"
-  },
-  "application/vnd.iptc.g2.planningitem+xml": {
-    "source": "iana"
-  },
-  "application/vnd.ipunplugged.rcprofile": {
-    "source": "iana",
-    "extensions": ["rcprofile"]
-  },
-  "application/vnd.irepository.package+xml": {
-    "source": "iana",
-    "extensions": ["irp"]
-  },
-  "application/vnd.is-xpr": {
-    "source": "iana",
-    "extensions": ["xpr"]
-  },
-  "application/vnd.isac.fcs": {
-    "source": "iana",
-    "extensions": ["fcs"]
-  },
-  "application/vnd.jam": {
-    "source": "iana",
-    "extensions": ["jam"]
-  },
-  "application/vnd.japannet-directory-service": {
-    "source": "iana"
-  },
-  "application/vnd.japannet-jpnstore-wakeup": {
-    "source": "iana"
-  },
-  "application/vnd.japannet-payment-wakeup": {
-    "source": "iana"
-  },
-  "application/vnd.japannet-registration": {
-    "source": "iana"
-  },
-  "application/vnd.japannet-registration-wakeup": {
-    "source": "iana"
-  },
-  "application/vnd.japannet-setstore-wakeup": {
-    "source": "iana"
-  },
-  "application/vnd.japannet-verification": {
-    "source": "iana"
-  },
-  "application/vnd.japannet-verification-wakeup": {
-    "source": "iana"
-  },
-  "application/vnd.jcp.javame.midlet-rms": {
-    "source": "iana",
-    "extensions": ["rms"]
-  },
-  "application/vnd.jisp": {
-    "source": "iana",
-    "extensions": ["jisp"]
-  },
-  "application/vnd.joost.joda-archive": {
-    "source": "iana",
-    "extensions": ["joda"]
-  },
-  "application/vnd.jsk.isdn-ngn": {
-    "source": "iana"
-  },
-  "application/vnd.kahootz": {
-    "source": "iana",
-    "extensions": ["ktz","ktr"]
-  },
-  "application/vnd.kde.karbon": {
-    "source": "iana",
-    "extensions": ["karbon"]
-  },
-  "application/vnd.kde.kchart": {
-    "source": "iana",
-    "extensions": ["chrt"]
-  },
-  "application/vnd.kde.kformula": {
-    "source": "iana",
-    "extensions": ["kfo"]
-  },
-  "application/vnd.kde.kivio": {
-    "source": "iana",
-    "extensions": ["flw"]
-  },
-  "application/vnd.kde.kontour": {
-    "source": "iana",
-    "extensions": ["kon"]
-  },
-  "application/vnd.kde.kpresenter": {
-    "source": "iana",
-    "extensions": ["kpr","kpt"]
-  },
-  "application/vnd.kde.kspread": {
-    "source": "iana",
-    "extensions": ["ksp"]
-  },
-  "application/vnd.kde.kword": {
-    "source": "iana",
-    "extensions": ["kwd","kwt"]
-  },
-  "application/vnd.kenameaapp": {
-    "source": "iana",
-    "extensions": ["htke"]
-  },
-  "application/vnd.kidspiration": {
-    "source": "iana",
-    "extensions": ["kia"]
-  },
-  "application/vnd.kinar": {
-    "source": "iana",
-    "extensions": ["kne","knp"]
-  },
-  "application/vnd.koan": {
-    "source": "iana",
-    "extensions": ["skp","skd","skt","skm"]
-  },
-  "application/vnd.kodak-descriptor": {
-    "source": "iana",
-    "extensions": ["sse"]
-  },
-  "application/vnd.las.las+xml": {
-    "source": "iana",
-    "extensions": ["lasxml"]
-  },
-  "application/vnd.liberty-request+xml": {
-    "source": "iana"
-  },
-  "application/vnd.llamagraphics.life-balance.desktop": {
-    "source": "iana",
-    "extensions": ["lbd"]
-  },
-  "application/vnd.llamagraphics.life-balance.exchange+xml": {
-    "source": "iana",
-    "extensions": ["lbe"]
-  },
-  "application/vnd.lotus-1-2-3": {
-    "source": "iana",
-    "extensions": ["123"]
-  },
-  "application/vnd.lotus-approach": {
-    "source": "iana",
-    "extensions": ["apr"]
-  },
-  "application/vnd.lotus-freelance": {
-    "source": "iana",
-    "extensions": ["pre"]
-  },
-  "application/vnd.lotus-notes": {
-    "source": "iana",
-    "extensions": ["nsf"]
-  },
-  "application/vnd.lotus-organizer": {
-    "source": "iana",
-    "extensions": ["org"]
-  },
-  "application/vnd.lotus-screencam": {
-    "source": "iana",
-    "extensions": ["scm"]
-  },
-  "application/vnd.lotus-wordpro": {
-    "source": "iana",
-    "extensions": ["lwp"]
-  },
-  "application/vnd.macports.portpkg": {
-    "source": "iana",
-    "extensions": ["portpkg"]
-  },
-  "application/vnd.marlin.drm.actiontoken+xml": {
-    "source": "iana"
-  },
-  "application/vnd.marlin.drm.conftoken+xml": {
-    "source": "iana"
-  },
-  "application/vnd.marlin.drm.license+xml": {
-    "source": "iana"
-  },
-  "application/vnd.marlin.drm.mdcf": {
-    "source": "iana"
-  },
-  "application/vnd.mason+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/vnd.maxmind.maxmind-db": {
-    "source": "iana"
-  },
-  "application/vnd.mcd": {
-    "source": "iana",
-    "extensions": ["mcd"]
-  },
-  "application/vnd.medcalcdata": {
-    "source": "iana",
-    "extensions": ["mc1"]
-  },
-  "application/vnd.mediastation.cdkey": {
-    "source": "iana",
-    "extensions": ["cdkey"]
-  },
-  "application/vnd.meridian-slingshot": {
-    "source": "iana"
-  },
-  "application/vnd.mfer": {
-    "source": "iana",
-    "extensions": ["mwf"]
-  },
-  "application/vnd.mfmp": {
-    "source": "iana",
-    "extensions": ["mfm"]
-  },
-  "application/vnd.micro+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/vnd.micrografx.flo": {
-    "source": "iana",
-    "extensions": ["flo"]
-  },
-  "application/vnd.micrografx.igx": {
-    "source": "iana",
-    "extensions": ["igx"]
-  },
-  "application/vnd.microsoft.portable-executable": {
-    "source": "iana"
-  },
-  "application/vnd.miele+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/vnd.mif": {
-    "source": "iana",
-    "extensions": ["mif"]
-  },
-  "application/vnd.minisoft-hp3000-save": {
-    "source": "iana"
-  },
-  "application/vnd.mitsubishi.misty-guard.trustweb": {
-    "source": "iana"
-  },
-  "application/vnd.mobius.daf": {
-    "source": "iana",
-    "extensions": ["daf"]
-  },
-  "application/vnd.mobius.dis": {
-    "source": "iana",
-    "extensions": ["dis"]
-  },
-  "application/vnd.mobius.mbk": {
-    "source": "iana",
-    "extensions": ["mbk"]
-  },
-  "application/vnd.mobius.mqy": {
-    "source": "iana",
-    "extensions": ["mqy"]
-  },
-  "application/vnd.mobius.msl": {
-    "source": "iana",
-    "extensions": ["msl"]
-  },
-  "application/vnd.mobius.plc": {
-    "source": "iana",
-    "extensions": ["plc"]
-  },
-  "application/vnd.mobius.txf": {
-    "source": "iana",
-    "extensions": ["txf"]
-  },
-  "application/vnd.mophun.application": {
-    "source": "iana",
-    "extensions": ["mpn"]
-  },
-  "application/vnd.mophun.certificate": {
-    "source": "iana",
-    "extensions": ["mpc"]
-  },
-  "application/vnd.motorola.flexsuite": {
-    "source": "iana"
-  },
-  "application/vnd.motorola.flexsuite.adsi": {
-    "source": "iana"
-  },
-  "application/vnd.motorola.flexsuite.fis": {
-    "source": "iana"
-  },
-  "application/vnd.motorola.flexsuite.gotap": {
-    "source": "iana"
-  },
-  "application/vnd.motorola.flexsuite.kmr": {
-    "source": "iana"
-  },
-  "application/vnd.motorola.flexsuite.ttc": {
-    "source": "iana"
-  },
-  "application/vnd.motorola.flexsuite.wem": {
-    "source": "iana"
-  },
-  "application/vnd.motorola.iprm": {
-    "source": "iana"
-  },
-  "application/vnd.mozilla.xul+xml": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["xul"]
-  },
-  "application/vnd.ms-3mfdocument": {
-    "source": "iana"
-  },
-  "application/vnd.ms-artgalry": {
-    "source": "iana",
-    "extensions": ["cil"]
-  },
-  "application/vnd.ms-asf": {
-    "source": "iana"
-  },
-  "application/vnd.ms-cab-compressed": {
-    "source": "iana",
-    "extensions": ["cab"]
-  },
-  "application/vnd.ms-color.iccprofile": {
-    "source": "apache"
-  },
-  "application/vnd.ms-excel": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["xls","xlm","xla","xlc","xlt","xlw"]
-  },
-  "application/vnd.ms-excel.addin.macroenabled.12": {
-    "source": "iana",
-    "extensions": ["xlam"]
-  },
-  "application/vnd.ms-excel.sheet.binary.macroenabled.12": {
-    "source": "iana",
-    "extensions": ["xlsb"]
-  },
-  "application/vnd.ms-excel.sheet.macroenabled.12": {
-    "source": "iana",
-    "extensions": ["xlsm"]
-  },
-  "application/vnd.ms-excel.template.macroenabled.12": {
-    "source": "iana",
-    "extensions": ["xltm"]
-  },
-  "application/vnd.ms-fontobject": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["eot"]
-  },
-  "application/vnd.ms-htmlhelp": {
-    "source": "iana",
-    "extensions": ["chm"]
-  },
-  "application/vnd.ms-ims": {
-    "source": "iana",
-    "extensions": ["ims"]
-  },
-  "application/vnd.ms-lrm": {
-    "source": "iana",
-    "extensions": ["lrm"]
-  },
-  "application/vnd.ms-office.activex+xml": {
-    "source": "iana"
-  },
-  "application/vnd.ms-officetheme": {
-    "source": "iana",
-    "extensions": ["thmx"]
-  },
-  "application/vnd.ms-opentype": {
-    "source": "apache",
-    "compressible": true
-  },
-  "application/vnd.ms-package.obfuscated-opentype": {
-    "source": "apache"
-  },
-  "application/vnd.ms-pki.seccat": {
-    "source": "apache",
-    "extensions": ["cat"]
-  },
-  "application/vnd.ms-pki.stl": {
-    "source": "apache",
-    "extensions": ["stl"]
-  },
-  "application/vnd.ms-playready.initiator+xml": {
-    "source": "iana"
-  },
-  "application/vnd.ms-powerpoint": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["ppt","pps","pot"]
-  },
-  "application/vnd.ms-powerpoint.addin.macroenabled.12": {
-    "source": "iana",
-    "extensions": ["ppam"]
-  },
-  "application/vnd.ms-powerpoint.presentation.macroenabled.12": {
-    "source": "iana",
-    "extensions": ["pptm"]
-  },
-  "application/vnd.ms-powerpoint.slide.macroenabled.12": {
-    "source": "iana",
-    "extensions": ["sldm"]
-  },
-  "application/vnd.ms-powerpoint.slideshow.macroenabled.12": {
-    "source": "iana",
-    "extensions": ["ppsm"]
-  },
-  "application/vnd.ms-powerpoint.template.macroenabled.12": {
-    "source": "iana",
-    "extensions": ["potm"]
-  },
-  "application/vnd.ms-printing.printticket+xml": {
-    "source": "apache"
-  },
-  "application/vnd.ms-project": {
-    "source": "iana",
-    "extensions": ["mpp","mpt"]
-  },
-  "application/vnd.ms-tnef": {
-    "source": "iana"
-  },
-  "application/vnd.ms-windows.printerpairing": {
-    "source": "iana"
-  },
-  "application/vnd.ms-windows.wsd.oob": {
-    "source": "iana"
-  },
-  "application/vnd.ms-wmdrm.lic-chlg-req": {
-    "source": "iana"
-  },
-  "application/vnd.ms-wmdrm.lic-resp": {
-    "source": "iana"
-  },
-  "application/vnd.ms-wmdrm.meter-chlg-req": {
-    "source": "iana"
-  },
-  "application/vnd.ms-wmdrm.meter-resp": {
-    "source": "iana"
-  },
-  "application/vnd.ms-word.document.macroenabled.12": {
-    "source": "iana",
-    "extensions": ["docm"]
-  },
-  "application/vnd.ms-word.template.macroenabled.12": {
-    "source": "iana",
-    "extensions": ["dotm"]
-  },
-  "application/vnd.ms-works": {
-    "source": "iana",
-    "extensions": ["wps","wks","wcm","wdb"]
-  },
-  "application/vnd.ms-wpl": {
-    "source": "iana",
-    "extensions": ["wpl"]
-  },
-  "application/vnd.ms-xpsdocument": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["xps"]
-  },
-  "application/vnd.msa-disk-image": {
-    "source": "iana"
-  },
-  "application/vnd.mseq": {
-    "source": "iana",
-    "extensions": ["mseq"]
-  },
-  "application/vnd.msign": {
-    "source": "iana"
-  },
-  "application/vnd.multiad.creator": {
-    "source": "iana"
-  },
-  "application/vnd.multiad.creator.cif": {
-    "source": "iana"
-  },
-  "application/vnd.music-niff": {
-    "source": "iana"
-  },
-  "application/vnd.musician": {
-    "source": "iana",
-    "extensions": ["mus"]
-  },
-  "application/vnd.muvee.style": {
-    "source": "iana",
-    "extensions": ["msty"]
-  },
-  "application/vnd.mynfc": {
-    "source": "iana",
-    "extensions": ["taglet"]
-  },
-  "application/vnd.ncd.control": {
-    "source": "iana"
-  },
-  "application/vnd.ncd.reference": {
-    "source": "iana"
-  },
-  "application/vnd.nervana": {
-    "source": "iana"
-  },
-  "application/vnd.netfpx": {
-    "source": "iana"
-  },
-  "application/vnd.neurolanguage.nlu": {
-    "source": "iana",
-    "extensions": ["nlu"]
-  },
-  "application/vnd.nintendo.nitro.rom": {
-    "source": "iana"
-  },
-  "application/vnd.nintendo.snes.rom": {
-    "source": "iana"
-  },
-  "application/vnd.nitf": {
-    "source": "iana",
-    "extensions": ["ntf","nitf"]
-  },
-  "application/vnd.noblenet-directory": {
-    "source": "iana",
-    "extensions": ["nnd"]
-  },
-  "application/vnd.noblenet-sealer": {
-    "source": "iana",
-    "extensions": ["nns"]
-  },
-  "application/vnd.noblenet-web": {
-    "source": "iana",
-    "extensions": ["nnw"]
-  },
-  "application/vnd.nokia.catalogs": {
-    "source": "iana"
-  },
-  "application/vnd.nokia.conml+wbxml": {
-    "source": "iana"
-  },
-  "application/vnd.nokia.conml+xml": {
-    "source": "iana"
-  },
-  "application/vnd.nokia.iptv.config+xml": {
-    "source": "iana"
-  },
-  "application/vnd.nokia.isds-radio-presets": {
-    "source": "iana"
-  },
-  "application/vnd.nokia.landmark+wbxml": {
-    "source": "iana"
-  },
-  "application/vnd.nokia.landmark+xml": {
-    "source": "iana"
-  },
-  "application/vnd.nokia.landmarkcollection+xml": {
-    "source": "iana"
-  },
-  "application/vnd.nokia.n-gage.ac+xml": {
-    "source": "iana"
-  },
-  "application/vnd.nokia.n-gage.data": {
-    "source": "iana",
-    "extensions": ["ngdat"]
-  },
-  "application/vnd.nokia.n-gage.symbian.install": {
-    "source": "iana",
-    "extensions": ["n-gage"]
-  },
-  "application/vnd.nokia.ncd": {
-    "source": "iana"
-  },
-  "application/vnd.nokia.pcd+wbxml": {
-    "source": "iana"
-  },
-  "application/vnd.nokia.pcd+xml": {
-    "source": "iana"
-  },
-  "application/vnd.nokia.radio-preset": {
-    "source": "iana",
-    "extensions": ["rpst"]
-  },
-  "application/vnd.nokia.radio-presets": {
-    "source": "iana",
-    "extensions": ["rpss"]
-  },
-  "application/vnd.novadigm.edm": {
-    "source": "iana",
-    "extensions": ["edm"]
-  },
-  "application/vnd.novadigm.edx": {
-    "source": "iana",
-    "extensions": ["edx"]
-  },
-  "application/vnd.novadigm.ext": {
-    "source": "iana",
-    "extensions": ["ext"]
-  },
-  "application/vnd.ntt-local.content-share": {
-    "source": "iana"
-  },
-  "application/vnd.ntt-local.file-transfer": {
-    "source": "iana"
-  },
-  "application/vnd.ntt-local.ogw_remote-access": {
-    "source": "iana"
-  },
-  "application/vnd.ntt-local.sip-ta_remote": {
-    "source": "iana"
-  },
-  "application/vnd.ntt-local.sip-ta_tcp_stream": {
-    "source": "iana"
-  },
-  "application/vnd.oasis.opendocument.chart": {
-    "source": "iana",
-    "extensions": ["odc"]
-  },
-  "application/vnd.oasis.opendocument.chart-template": {
-    "source": "iana",
-    "extensions": ["otc"]
-  },
-  "application/vnd.oasis.opendocument.database": {
-    "source": "iana",
-    "extensions": ["odb"]
-  },
-  "application/vnd.oasis.opendocument.formula": {
-    "source": "iana",
-    "extensions": ["odf"]
-  },
-  "application/vnd.oasis.opendocument.formula-template": {
-    "source": "iana",
-    "extensions": ["odft"]
-  },
-  "application/vnd.oasis.opendocument.graphics": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["odg"]
-  },
-  "application/vnd.oasis.opendocument.graphics-template": {
-    "source": "iana",
-    "extensions": ["otg"]
-  },
-  "application/vnd.oasis.opendocument.image": {
-    "source": "iana",
-    "extensions": ["odi"]
-  },
-  "application/vnd.oasis.opendocument.image-template": {
-    "source": "iana",
-    "extensions": ["oti"]
-  },
-  "application/vnd.oasis.opendocument.presentation": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["odp"]
-  },
-  "application/vnd.oasis.opendocument.presentation-template": {
-    "source": "iana",
-    "extensions": ["otp"]
-  },
-  "application/vnd.oasis.opendocument.spreadsheet": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["ods"]
-  },
-  "application/vnd.oasis.opendocument.spreadsheet-template": {
-    "source": "iana",
-    "extensions": ["ots"]
-  },
-  "application/vnd.oasis.opendocument.text": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["odt"]
-  },
-  "application/vnd.oasis.opendocument.text-master": {
-    "source": "iana",
-    "extensions": ["odm"]
-  },
-  "application/vnd.oasis.opendocument.text-template": {
-    "source": "iana",
-    "extensions": ["ott"]
-  },
-  "application/vnd.oasis.opendocument.text-web": {
-    "source": "iana",
-    "extensions": ["oth"]
-  },
-  "application/vnd.obn": {
-    "source": "iana"
-  },
-  "application/vnd.oftn.l10n+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/vnd.oipf.contentaccessdownload+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oipf.contentaccessstreaming+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oipf.cspg-hexbinary": {
-    "source": "iana"
-  },
-  "application/vnd.oipf.dae.svg+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oipf.dae.xhtml+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oipf.mippvcontrolmessage+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oipf.pae.gem": {
-    "source": "iana"
-  },
-  "application/vnd.oipf.spdiscovery+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oipf.spdlist+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oipf.ueprofile+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oipf.userprofile+xml": {
-    "source": "iana"
-  },
-  "application/vnd.olpc-sugar": {
-    "source": "iana",
-    "extensions": ["xo"]
-  },
-  "application/vnd.oma-scws-config": {
-    "source": "iana"
-  },
-  "application/vnd.oma-scws-http-request": {
-    "source": "iana"
-  },
-  "application/vnd.oma-scws-http-response": {
-    "source": "iana"
-  },
-  "application/vnd.oma.bcast.associated-procedure-parameter+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oma.bcast.drm-trigger+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oma.bcast.imd+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oma.bcast.ltkm": {
-    "source": "iana"
-  },
-  "application/vnd.oma.bcast.notification+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oma.bcast.provisioningtrigger": {
-    "source": "iana"
-  },
-  "application/vnd.oma.bcast.sgboot": {
-    "source": "iana"
-  },
-  "application/vnd.oma.bcast.sgdd+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oma.bcast.sgdu": {
-    "source": "iana"
-  },
-  "application/vnd.oma.bcast.simple-symbol-container": {
-    "source": "iana"
-  },
-  "application/vnd.oma.bcast.smartcard-trigger+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oma.bcast.sprov+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oma.bcast.stkm": {
-    "source": "iana"
-  },
-  "application/vnd.oma.cab-address-book+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oma.cab-feature-handler+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oma.cab-pcc+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oma.cab-subs-invite+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oma.cab-user-prefs+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oma.dcd": {
-    "source": "iana"
-  },
-  "application/vnd.oma.dcdc": {
-    "source": "iana"
-  },
-  "application/vnd.oma.dd2+xml": {
-    "source": "iana",
-    "extensions": ["dd2"]
-  },
-  "application/vnd.oma.drm.risd+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oma.group-usage-list+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oma.pal+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oma.poc.detailed-progress-report+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oma.poc.final-report+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oma.poc.groups+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oma.poc.invocation-descriptor+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oma.poc.optimized-progress-report+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oma.push": {
-    "source": "iana"
-  },
-  "application/vnd.oma.scidm.messages+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oma.xcap-directory+xml": {
-    "source": "iana"
-  },
-  "application/vnd.omads-email+xml": {
-    "source": "iana"
-  },
-  "application/vnd.omads-file+xml": {
-    "source": "iana"
-  },
-  "application/vnd.omads-folder+xml": {
-    "source": "iana"
-  },
-  "application/vnd.omaloc-supl-init": {
-    "source": "iana"
-  },
-  "application/vnd.openblox.game+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openblox.game-binary": {
-    "source": "iana"
-  },
-  "application/vnd.openeye.oeb": {
-    "source": "iana"
-  },
-  "application/vnd.openofficeorg.extension": {
-    "source": "apache",
-    "extensions": ["oxt"]
-  },
-  "application/vnd.openxmlformats-officedocument.custom-properties+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.customxmlproperties+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.drawing+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.drawingml.chart+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.drawingml.chartshapes+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.drawingml.diagramcolors+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.drawingml.diagramdata+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.drawingml.diagramlayout+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.drawingml.diagramstyle+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.extended-properties+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.presentationml-template": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.presentationml.commentauthors+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.presentationml.comments+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.presentationml.handoutmaster+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.presentationml.notesmaster+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.presentationml.notesslide+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.presentationml.presentation": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["pptx"]
-  },
-  "application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.presentationml.presprops+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.presentationml.slide": {
-    "source": "iana",
-    "extensions": ["sldx"]
-  },
-  "application/vnd.openxmlformats-officedocument.presentationml.slide+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.presentationml.slidelayout+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.presentationml.slidemaster+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.presentationml.slideshow": {
-    "source": "iana",
-    "extensions": ["ppsx"]
-  },
-  "application/vnd.openxmlformats-officedocument.presentationml.slideshow.main+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.presentationml.slideupdateinfo+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.presentationml.tablestyles+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.presentationml.tags+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.presentationml.template": {
-    "source": "apache",
-    "extensions": ["potx"]
-  },
-  "application/vnd.openxmlformats-officedocument.presentationml.template.main+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.presentationml.viewprops+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.spreadsheetml-template": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.calcchain+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.chartsheet+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.connections+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.dialogsheet+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.externallink+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.pivotcachedefinition+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.pivotcacherecords+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.pivottable+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.querytable+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.revisionheaders+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.revisionlog+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sharedstrings+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["xlsx"]
-  },
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheetmetadata+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.tablesinglecells+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.template": {
-    "source": "apache",
-    "extensions": ["xltx"]
-  },
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.template.main+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.usernames+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.volatiledependencies+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.theme+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.themeoverride+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.vmldrawing": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.wordprocessingml-template": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.comments+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["docx"]
-  },
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document.glossary+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.endnotes+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.fonttable+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.footnotes+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.template": {
-    "source": "apache",
-    "extensions": ["dotx"]
-  },
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.template.main+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.websettings+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-package.core-properties+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-package.digital-signature-xmlsignature+xml": {
-    "source": "iana"
-  },
-  "application/vnd.openxmlformats-package.relationships+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oracle.resource+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/vnd.orange.indata": {
-    "source": "iana"
-  },
-  "application/vnd.osa.netdeploy": {
-    "source": "iana"
-  },
-  "application/vnd.osgeo.mapguide.package": {
-    "source": "iana",
-    "extensions": ["mgp"]
-  },
-  "application/vnd.osgi.bundle": {
-    "source": "iana"
-  },
-  "application/vnd.osgi.dp": {
-    "source": "iana",
-    "extensions": ["dp"]
-  },
-  "application/vnd.osgi.subsystem": {
-    "source": "iana",
-    "extensions": ["esa"]
-  },
-  "application/vnd.otps.ct-kip+xml": {
-    "source": "iana"
-  },
-  "application/vnd.oxli.countgraph": {
-    "source": "iana"
-  },
-  "application/vnd.pagerduty+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/vnd.palm": {
-    "source": "iana",
-    "extensions": ["pdb","pqa","oprc"]
-  },
-  "application/vnd.panoply": {
-    "source": "iana"
-  },
-  "application/vnd.paos+xml": {
-    "source": "iana"
-  },
-  "application/vnd.paos.xml": {
-    "source": "apache"
-  },
-  "application/vnd.pawaafile": {
-    "source": "iana",
-    "extensions": ["paw"]
-  },
-  "application/vnd.pcos": {
-    "source": "iana"
-  },
-  "application/vnd.pg.format": {
-    "source": "iana",
-    "extensions": ["str"]
-  },
-  "application/vnd.pg.osasli": {
-    "source": "iana",
-    "extensions": ["ei6"]
-  },
-  "application/vnd.piaccess.application-licence": {
-    "source": "iana"
-  },
-  "application/vnd.picsel": {
-    "source": "iana",
-    "extensions": ["efif"]
-  },
-  "application/vnd.pmi.widget": {
-    "source": "iana",
-    "extensions": ["wg"]
-  },
-  "application/vnd.poc.group-advertisement+xml": {
-    "source": "iana"
-  },
-  "application/vnd.pocketlearn": {
-    "source": "iana",
-    "extensions": ["plf"]
-  },
-  "application/vnd.powerbuilder6": {
-    "source": "iana",
-    "extensions": ["pbd"]
-  },
-  "application/vnd.powerbuilder6-s": {
-    "source": "iana"
-  },
-  "application/vnd.powerbuilder7": {
-    "source": "iana"
-  },
-  "application/vnd.powerbuilder7-s": {
-    "source": "iana"
-  },
-  "application/vnd.powerbuilder75": {
-    "source": "iana"
-  },
-  "application/vnd.powerbuilder75-s": {
-    "source": "iana"
-  },
-  "application/vnd.preminet": {
-    "source": "iana"
-  },
-  "application/vnd.previewsystems.box": {
-    "source": "iana",
-    "extensions": ["box"]
-  },
-  "application/vnd.proteus.magazine": {
-    "source": "iana",
-    "extensions": ["mgz"]
-  },
-  "application/vnd.publishare-delta-tree": {
-    "source": "iana",
-    "extensions": ["qps"]
-  },
-  "application/vnd.pvi.ptid1": {
-    "source": "iana",
-    "extensions": ["ptid"]
-  },
-  "application/vnd.pwg-multiplexed": {
-    "source": "iana"
-  },
-  "application/vnd.pwg-xhtml-print+xml": {
-    "source": "iana"
-  },
-  "application/vnd.qualcomm.brew-app-res": {
-    "source": "iana"
-  },
-  "application/vnd.quark.quarkxpress": {
-    "source": "iana",
-    "extensions": ["qxd","qxt","qwd","qwt","qxl","qxb"]
-  },
-  "application/vnd.quobject-quoxdocument": {
-    "source": "iana"
-  },
-  "application/vnd.radisys.moml+xml": {
-    "source": "iana"
-  },
-  "application/vnd.radisys.msml+xml": {
-    "source": "iana"
-  },
-  "application/vnd.radisys.msml-audit+xml": {
-    "source": "iana"
-  },
-  "application/vnd.radisys.msml-audit-conf+xml": {
-    "source": "iana"
-  },
-  "application/vnd.radisys.msml-audit-conn+xml": {
-    "source": "iana"
-  },
-  "application/vnd.radisys.msml-audit-dialog+xml": {
-    "source": "iana"
-  },
-  "application/vnd.radisys.msml-audit-stream+xml": {
-    "source": "iana"
-  },
-  "application/vnd.radisys.msml-conf+xml": {
-    "source": "iana"
-  },
-  "application/vnd.radisys.msml-dialog+xml": {
-    "source": "iana"
-  },
-  "application/vnd.radisys.msml-dialog-base+xml": {
-    "source": "iana"
-  },
-  "application/vnd.radisys.msml-dialog-fax-detect+xml": {
-    "source": "iana"
-  },
-  "application/vnd.radisys.msml-dialog-fax-sendrecv+xml": {
-    "source": "iana"
-  },
-  "application/vnd.radisys.msml-dialog-group+xml": {
-    "source": "iana"
-  },
-  "application/vnd.radisys.msml-dialog-speech+xml": {
-    "source": "iana"
-  },
-  "application/vnd.radisys.msml-dialog-transform+xml": {
-    "source": "iana"
-  },
-  "application/vnd.rainstor.data": {
-    "source": "iana"
-  },
-  "application/vnd.rapid": {
-    "source": "iana"
-  },
-  "application/vnd.realvnc.bed": {
-    "source": "iana",
-    "extensions": ["bed"]
-  },
-  "application/vnd.recordare.musicxml": {
-    "source": "iana",
-    "extensions": ["mxl"]
-  },
-  "application/vnd.recordare.musicxml+xml": {
-    "source": "iana",
-    "extensions": ["musicxml"]
-  },
-  "application/vnd.renlearn.rlprint": {
-    "source": "iana"
-  },
-  "application/vnd.rig.cryptonote": {
-    "source": "iana",
-    "extensions": ["cryptonote"]
-  },
-  "application/vnd.rim.cod": {
-    "source": "apache",
-    "extensions": ["cod"]
-  },
-  "application/vnd.rn-realmedia": {
-    "source": "apache",
-    "extensions": ["rm"]
-  },
-  "application/vnd.rn-realmedia-vbr": {
-    "source": "apache",
-    "extensions": ["rmvb"]
-  },
-  "application/vnd.route66.link66+xml": {
-    "source": "iana",
-    "extensions": ["link66"]
-  },
-  "application/vnd.rs-274x": {
-    "source": "iana"
-  },
-  "application/vnd.ruckus.download": {
-    "source": "iana"
-  },
-  "application/vnd.s3sms": {
-    "source": "iana"
-  },
-  "application/vnd.sailingtracker.track": {
-    "source": "iana",
-    "extensions": ["st"]
-  },
-  "application/vnd.sbm.cid": {
-    "source": "iana"
-  },
-  "application/vnd.sbm.mid2": {
-    "source": "iana"
-  },
-  "application/vnd.scribus": {
-    "source": "iana"
-  },
-  "application/vnd.sealed.3df": {
-    "source": "iana"
-  },
-  "application/vnd.sealed.csf": {
-    "source": "iana"
-  },
-  "application/vnd.sealed.doc": {
-    "source": "iana"
-  },
-  "application/vnd.sealed.eml": {
-    "source": "iana"
-  },
-  "application/vnd.sealed.mht": {
-    "source": "iana"
-  },
-  "application/vnd.sealed.net": {
-    "source": "iana"
-  },
-  "application/vnd.sealed.ppt": {
-    "source": "iana"
-  },
-  "application/vnd.sealed.tiff": {
-    "source": "iana"
-  },
-  "application/vnd.sealed.xls": {
-    "source": "iana"
-  },
-  "application/vnd.sealedmedia.softseal.html": {
-    "source": "iana"
-  },
-  "application/vnd.sealedmedia.softseal.pdf": {
-    "source": "iana"
-  },
-  "application/vnd.seemail": {
-    "source": "iana",
-    "extensions": ["see"]
-  },
-  "application/vnd.sema": {
-    "source": "iana",
-    "extensions": ["sema"]
-  },
-  "application/vnd.semd": {
-    "source": "iana",
-    "extensions": ["semd"]
-  },
-  "application/vnd.semf": {
-    "source": "iana",
-    "extensions": ["semf"]
-  },
-  "application/vnd.shana.informed.formdata": {
-    "source": "iana",
-    "extensions": ["ifm"]
-  },
-  "application/vnd.shana.informed.formtemplate": {
-    "source": "iana",
-    "extensions": ["itp"]
-  },
-  "application/vnd.shana.informed.interchange": {
-    "source": "iana",
-    "extensions": ["iif"]
-  },
-  "application/vnd.shana.informed.package": {
-    "source": "iana",
-    "extensions": ["ipk"]
-  },
-  "application/vnd.simtech-mindmapper": {
-    "source": "iana",
-    "extensions": ["twd","twds"]
-  },
-  "application/vnd.siren+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/vnd.smaf": {
-    "source": "iana",
-    "extensions": ["mmf"]
-  },
-  "application/vnd.smart.notebook": {
-    "source": "iana"
-  },
-  "application/vnd.smart.teacher": {
-    "source": "iana",
-    "extensions": ["teacher"]
-  },
-  "application/vnd.software602.filler.form+xml": {
-    "source": "iana"
-  },
-  "application/vnd.software602.filler.form-xml-zip": {
-    "source": "iana"
-  },
-  "application/vnd.solent.sdkm+xml": {
-    "source": "iana",
-    "extensions": ["sdkm","sdkd"]
-  },
-  "application/vnd.spotfire.dxp": {
-    "source": "iana",
-    "extensions": ["dxp"]
-  },
-  "application/vnd.spotfire.sfs": {
-    "source": "iana",
-    "extensions": ["sfs"]
-  },
-  "application/vnd.sss-cod": {
-    "source": "iana"
-  },
-  "application/vnd.sss-dtf": {
-    "source": "iana"
-  },
-  "application/vnd.sss-ntf": {
-    "source": "iana"
-  },
-  "application/vnd.stardivision.calc": {
-    "source": "apache",
-    "extensions": ["sdc"]
-  },
-  "application/vnd.stardivision.draw": {
-    "source": "apache",
-    "extensions": ["sda"]
-  },
-  "application/vnd.stardivision.impress": {
-    "source": "apache",
-    "extensions": ["sdd"]
-  },
-  "application/vnd.stardivision.math": {
-    "source": "apache",
-    "extensions": ["smf"]
-  },
-  "application/vnd.stardivision.writer": {
-    "source": "apache",
-    "extensions": ["sdw","vor"]
-  },
-  "application/vnd.stardivision.writer-global": {
-    "source": "apache",
-    "extensions": ["sgl"]
-  },
-  "application/vnd.stepmania.package": {
-    "source": "iana",
-    "extensions": ["smzip"]
-  },
-  "application/vnd.stepmania.stepchart": {
-    "source": "iana",
-    "extensions": ["sm"]
-  },
-  "application/vnd.street-stream": {
-    "source": "iana"
-  },
-  "application/vnd.sun.wadl+xml": {
-    "source": "iana"
-  },
-  "application/vnd.sun.xml.calc": {
-    "source": "apache",
-    "extensions": ["sxc"]
-  },
-  "application/vnd.sun.xml.calc.template": {
-    "source": "apache",
-    "extensions": ["stc"]
-  },
-  "application/vnd.sun.xml.draw": {
-    "source": "apache",
-    "extensions": ["sxd"]
-  },
-  "application/vnd.sun.xml.draw.template": {
-    "source": "apache",
-    "extensions": ["std"]
-  },
-  "application/vnd.sun.xml.impress": {
-    "source": "apache",
-    "extensions": ["sxi"]
-  },
-  "application/vnd.sun.xml.impress.template": {
-    "source": "apache",
-    "extensions": ["sti"]
-  },
-  "application/vnd.sun.xml.math": {
-    "source": "apache",
-    "extensions": ["sxm"]
-  },
-  "application/vnd.sun.xml.writer": {
-    "source": "apache",
-    "extensions": ["sxw"]
-  },
-  "application/vnd.sun.xml.writer.global": {
-    "source": "apache",
-    "extensions": ["sxg"]
-  },
-  "application/vnd.sun.xml.writer.template": {
-    "source": "apache",
-    "extensions": ["stw"]
-  },
-  "application/vnd.sus-calendar": {
-    "source": "iana",
-    "extensions": ["sus","susp"]
-  },
-  "application/vnd.svd": {
-    "source": "iana",
-    "extensions": ["svd"]
-  },
-  "application/vnd.swiftview-ics": {
-    "source": "iana"
-  },
-  "application/vnd.symbian.install": {
-    "source": "apache",
-    "extensions": ["sis","sisx"]
-  },
-  "application/vnd.syncml+xml": {
-    "source": "iana",
-    "extensions": ["xsm"]
-  },
-  "application/vnd.syncml.dm+wbxml": {
-    "source": "iana",
-    "extensions": ["bdm"]
-  },
-  "application/vnd.syncml.dm+xml": {
-    "source": "iana",
-    "extensions": ["xdm"]
-  },
-  "application/vnd.syncml.dm.notification": {
-    "source": "iana"
-  },
-  "application/vnd.syncml.dmddf+wbxml": {
-    "source": "iana"
-  },
-  "application/vnd.syncml.dmddf+xml": {
-    "source": "iana"
-  },
-  "application/vnd.syncml.dmtnds+wbxml": {
-    "source": "iana"
-  },
-  "application/vnd.syncml.dmtnds+xml": {
-    "source": "iana"
-  },
-  "application/vnd.syncml.ds.notification": {
-    "source": "iana"
-  },
-  "application/vnd.tao.intent-module-archive": {
-    "source": "iana",
-    "extensions": ["tao"]
-  },
-  "application/vnd.tcpdump.pcap": {
-    "source": "iana",
-    "extensions": ["pcap","cap","dmp"]
-  },
-  "application/vnd.tmd.mediaflex.api+xml": {
-    "source": "iana"
-  },
-  "application/vnd.tmobile-livetv": {
-    "source": "iana",
-    "extensions": ["tmo"]
-  },
-  "application/vnd.trid.tpt": {
-    "source": "iana",
-    "extensions": ["tpt"]
-  },
-  "application/vnd.triscape.mxs": {
-    "source": "iana",
-    "extensions": ["mxs"]
-  },
-  "application/vnd.trueapp": {
-    "source": "iana",
-    "extensions": ["tra"]
-  },
-  "application/vnd.truedoc": {
-    "source": "iana"
-  },
-  "application/vnd.ubisoft.webplayer": {
-    "source": "iana"
-  },
-  "application/vnd.ufdl": {
-    "source": "iana",
-    "extensions": ["ufd","ufdl"]
-  },
-  "application/vnd.uiq.theme": {
-    "source": "iana",
-    "extensions": ["utz"]
-  },
-  "application/vnd.umajin": {
-    "source": "iana",
-    "extensions": ["umj"]
-  },
-  "application/vnd.unity": {
-    "source": "iana",
-    "extensions": ["unityweb"]
-  },
-  "application/vnd.uoml+xml": {
-    "source": "iana",
-    "extensions": ["uoml"]
-  },
-  "application/vnd.uplanet.alert": {
-    "source": "iana"
-  },
-  "application/vnd.uplanet.alert-wbxml": {
-    "source": "iana"
-  },
-  "application/vnd.uplanet.bearer-choice": {
-    "source": "iana"
-  },
-  "application/vnd.uplanet.bearer-choice-wbxml": {
-    "source": "iana"
-  },
-  "application/vnd.uplanet.cacheop": {
-    "source": "iana"
-  },
-  "application/vnd.uplanet.cacheop-wbxml": {
-    "source": "iana"
-  },
-  "application/vnd.uplanet.channel": {
-    "source": "iana"
-  },
-  "application/vnd.uplanet.channel-wbxml": {
-    "source": "iana"
-  },
-  "application/vnd.uplanet.list": {
-    "source": "iana"
-  },
-  "application/vnd.uplanet.list-wbxml": {
-    "source": "iana"
-  },
-  "application/vnd.uplanet.listcmd": {
-    "source": "iana"
-  },
-  "application/vnd.uplanet.listcmd-wbxml": {
-    "source": "iana"
-  },
-  "application/vnd.uplanet.signal": {
-    "source": "iana"
-  },
-  "application/vnd.uri-map": {
-    "source": "iana"
-  },
-  "application/vnd.valve.source.material": {
-    "source": "iana"
-  },
-  "application/vnd.vcx": {
-    "source": "iana",
-    "extensions": ["vcx"]
-  },
-  "application/vnd.vd-study": {
-    "source": "iana"
-  },
-  "application/vnd.vectorworks": {
-    "source": "iana"
-  },
-  "application/vnd.verimatrix.vcas": {
-    "source": "iana"
-  },
-  "application/vnd.vidsoft.vidconference": {
-    "source": "iana"
-  },
-  "application/vnd.visio": {
-    "source": "iana",
-    "extensions": ["vsd","vst","vss","vsw"]
-  },
-  "application/vnd.visionary": {
-    "source": "iana",
-    "extensions": ["vis"]
-  },
-  "application/vnd.vividence.scriptfile": {
-    "source": "iana"
-  },
-  "application/vnd.vsf": {
-    "source": "iana",
-    "extensions": ["vsf"]
-  },
-  "application/vnd.wap.sic": {
-    "source": "iana"
-  },
-  "application/vnd.wap.slc": {
-    "source": "iana"
-  },
-  "application/vnd.wap.wbxml": {
-    "source": "iana",
-    "extensions": ["wbxml"]
-  },
-  "application/vnd.wap.wmlc": {
-    "source": "iana",
-    "extensions": ["wmlc"]
-  },
-  "application/vnd.wap.wmlscriptc": {
-    "source": "iana",
-    "extensions": ["wmlsc"]
-  },
-  "application/vnd.webturbo": {
-    "source": "iana",
-    "extensions": ["wtb"]
-  },
-  "application/vnd.wfa.p2p": {
-    "source": "iana"
-  },
-  "application/vnd.wfa.wsc": {
-    "source": "iana"
-  },
-  "application/vnd.windows.devicepairing": {
-    "source": "iana"
-  },
-  "application/vnd.wmc": {
-    "source": "iana"
-  },
-  "application/vnd.wmf.bootstrap": {
-    "source": "iana"
-  },
-  "application/vnd.wolfram.mathematica": {
-    "source": "iana"
-  },
-  "application/vnd.wolfram.mathematica.package": {
-    "source": "iana"
-  },
-  "application/vnd.wolfram.player": {
-    "source": "iana",
-    "extensions": ["nbp"]
-  },
-  "application/vnd.wordperfect": {
-    "source": "iana",
-    "extensions": ["wpd"]
-  },
-  "application/vnd.wqd": {
-    "source": "iana",
-    "extensions": ["wqd"]
-  },
-  "application/vnd.wrq-hp3000-labelled": {
-    "source": "iana"
-  },
-  "application/vnd.wt.stf": {
-    "source": "iana",
-    "extensions": ["stf"]
-  },
-  "application/vnd.wv.csp+wbxml": {
-    "source": "iana"
-  },
-  "application/vnd.wv.csp+xml": {
-    "source": "iana"
-  },
-  "application/vnd.wv.ssp+xml": {
-    "source": "iana"
-  },
-  "application/vnd.xacml+json": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/vnd.xara": {
-    "source": "iana",
-    "extensions": ["xar"]
-  },
-  "application/vnd.xfdl": {
-    "source": "iana",
-    "extensions": ["xfdl"]
-  },
-  "application/vnd.xfdl.webform": {
-    "source": "iana"
-  },
-  "application/vnd.xmi+xml": {
-    "source": "iana"
-  },
-  "application/vnd.xmpie.cpkg": {
-    "source": "iana"
-  },
-  "application/vnd.xmpie.dpkg": {
-    "source": "iana"
-  },
-  "application/vnd.xmpie.plan": {
-    "source": "iana"
-  },
-  "application/vnd.xmpie.ppkg": {
-    "source": "iana"
-  },
-  "application/vnd.xmpie.xlim": {
-    "source": "iana"
-  },
-  "application/vnd.yamaha.hv-dic": {
-    "source": "iana",
-    "extensions": ["hvd"]
-  },
-  "application/vnd.yamaha.hv-script": {
-    "source": "iana",
-    "extensions": ["hvs"]
-  },
-  "application/vnd.yamaha.hv-voice": {
-    "source": "iana",
-    "extensions": ["hvp"]
-  },
-  "application/vnd.yamaha.openscoreformat": {
-    "source": "iana",
-    "extensions": ["osf"]
-  },
-  "application/vnd.yamaha.openscoreformat.osfpvg+xml": {
-    "source": "iana",
-    "extensions": ["osfpvg"]
-  },
-  "application/vnd.yamaha.remote-setup": {
-    "source": "iana"
-  },
-  "application/vnd.yamaha.smaf-audio": {
-    "source": "iana",
-    "extensions": ["saf"]
-  },
-  "application/vnd.yamaha.smaf-phrase": {
-    "source": "iana",
-    "extensions": ["spf"]
-  },
-  "application/vnd.yamaha.through-ngn": {
-    "source": "iana"
-  },
-  "application/vnd.yamaha.tunnel-udpencap": {
-    "source": "iana"
-  },
-  "application/vnd.yaoweme": {
-    "source": "iana"
-  },
-  "application/vnd.yellowriver-custom-menu": {
-    "source": "iana",
-    "extensions": ["cmp"]
-  },
-  "application/vnd.zul": {
-    "source": "iana",
-    "extensions": ["zir","zirz"]
-  },
-  "application/vnd.zzazz.deck+xml": {
-    "source": "iana",
-    "extensions": ["zaz"]
-  },
-  "application/voicexml+xml": {
-    "source": "iana",
-    "extensions": ["vxml"]
-  },
-  "application/vq-rtcpxr": {
-    "source": "iana"
-  },
-  "application/watcherinfo+xml": {
-    "source": "iana"
-  },
-  "application/whoispp-query": {
-    "source": "iana"
-  },
-  "application/whoispp-response": {
-    "source": "iana"
-  },
-  "application/widget": {
-    "source": "iana",
-    "extensions": ["wgt"]
-  },
-  "application/winhlp": {
-    "source": "apache",
-    "extensions": ["hlp"]
-  },
-  "application/wita": {
-    "source": "iana"
-  },
-  "application/wordperfect5.1": {
-    "source": "iana"
-  },
-  "application/wsdl+xml": {
-    "source": "iana",
-    "extensions": ["wsdl"]
-  },
-  "application/wspolicy+xml": {
-    "source": "iana",
-    "extensions": ["wspolicy"]
-  },
-  "application/x-7z-compressed": {
-    "source": "apache",
-    "compressible": false,
-    "extensions": ["7z"]
-  },
-  "application/x-abiword": {
-    "source": "apache",
-    "extensions": ["abw"]
-  },
-  "application/x-ace-compressed": {
-    "source": "apache",
-    "extensions": ["ace"]
-  },
-  "application/x-amf": {
-    "source": "apache"
-  },
-  "application/x-apple-diskimage": {
-    "source": "apache",
-    "extensions": ["dmg"]
-  },
-  "application/x-authorware-bin": {
-    "source": "apache",
-    "extensions": ["aab","x32","u32","vox"]
-  },
-  "application/x-authorware-map": {
-    "source": "apache",
-    "extensions": ["aam"]
-  },
-  "application/x-authorware-seg": {
-    "source": "apache",
-    "extensions": ["aas"]
-  },
-  "application/x-bcpio": {
-    "source": "apache",
-    "extensions": ["bcpio"]
-  },
-  "application/x-bdoc": {
-    "compressible": false,
-    "extensions": ["bdoc"]
-  },
-  "application/x-bittorrent": {
-    "source": "apache",
-    "extensions": ["torrent"]
-  },
-  "application/x-blorb": {
-    "source": "apache",
-    "extensions": ["blb","blorb"]
-  },
-  "application/x-bzip": {
-    "source": "apache",
-    "compressible": false,
-    "extensions": ["bz"]
-  },
-  "application/x-bzip2": {
-    "source": "apache",
-    "compressible": false,
-    "extensions": ["bz2","boz"]
-  },
-  "application/x-cbr": {
-    "source": "apache",
-    "extensions": ["cbr","cba","cbt","cbz","cb7"]
-  },
-  "application/x-cdlink": {
-    "source": "apache",
-    "extensions": ["vcd"]
-  },
-  "application/x-cfs-compressed": {
-    "source": "apache",
-    "extensions": ["cfs"]
-  },
-  "application/x-chat": {
-    "source": "apache",
-    "extensions": ["chat"]
-  },
-  "application/x-chess-pgn": {
-    "source": "apache",
-    "extensions": ["pgn"]
-  },
-  "application/x-chrome-extension": {
-    "extensions": ["crx"]
-  },
-  "application/x-cocoa": {
-    "source": "nginx",
-    "extensions": ["cco"]
-  },
-  "application/x-compress": {
-    "source": "apache"
-  },
-  "application/x-conference": {
-    "source": "apache",
-    "extensions": ["nsc"]
-  },
-  "application/x-cpio": {
-    "source": "apache",
-    "extensions": ["cpio"]
-  },
-  "application/x-csh": {
-    "source": "apache",
-    "extensions": ["csh"]
-  },
-  "application/x-deb": {
-    "compressible": false
-  },
-  "application/x-debian-package": {
-    "source": "apache",
-    "extensions": ["deb","udeb"]
-  },
-  "application/x-dgc-compressed": {
-    "source": "apache",
-    "extensions": ["dgc"]
-  },
-  "application/x-director": {
-    "source": "apache",
-    "extensions": ["dir","dcr","dxr","cst","cct","cxt","w3d","fgd","swa"]
-  },
-  "application/x-doom": {
-    "source": "apache",
-    "extensions": ["wad"]
-  },
-  "application/x-dtbncx+xml": {
-    "source": "apache",
-    "extensions": ["ncx"]
-  },
-  "application/x-dtbook+xml": {
-    "source": "apache",
-    "extensions": ["dtb"]
-  },
-  "application/x-dtbresource+xml": {
-    "source": "apache",
-    "extensions": ["res"]
-  },
-  "application/x-dvi": {
-    "source": "apache",
-    "compressible": false,
-    "extensions": ["dvi"]
-  },
-  "application/x-envoy": {
-    "source": "apache",
-    "extensions": ["evy"]
-  },
-  "application/x-eva": {
-    "source": "apache",
-    "extensions": ["eva"]
-  },
-  "application/x-font-bdf": {
-    "source": "apache",
-    "extensions": ["bdf"]
-  },
-  "application/x-font-dos": {
-    "source": "apache"
-  },
-  "application/x-font-framemaker": {
-    "source": "apache"
-  },
-  "application/x-font-ghostscript": {
-    "source": "apache",
-    "extensions": ["gsf"]
-  },
-  "application/x-font-libgrx": {
-    "source": "apache"
-  },
-  "application/x-font-linux-psf": {
-    "source": "apache",
-    "extensions": ["psf"]
-  },
-  "application/x-font-otf": {
-    "source": "apache",
-    "compressible": true,
-    "extensions": ["otf"]
-  },
-  "application/x-font-pcf": {
-    "source": "apache",
-    "extensions": ["pcf"]
-  },
-  "application/x-font-snf": {
-    "source": "apache",
-    "extensions": ["snf"]
-  },
-  "application/x-font-speedo": {
-    "source": "apache"
-  },
-  "application/x-font-sunos-news": {
-    "source": "apache"
-  },
-  "application/x-font-ttf": {
-    "source": "apache",
-    "compressible": true,
-    "extensions": ["ttf","ttc"]
-  },
-  "application/x-font-type1": {
-    "source": "apache",
-    "extensions": ["pfa","pfb","pfm","afm"]
-  },
-  "application/x-font-vfont": {
-    "source": "apache"
-  },
-  "application/x-freearc": {
-    "source": "apache",
-    "extensions": ["arc"]
-  },
-  "application/x-futuresplash": {
-    "source": "apache",
-    "extensions": ["spl"]
-  },
-  "application/x-gca-compressed": {
-    "source": "apache",
-    "extensions": ["gca"]
-  },
-  "application/x-glulx": {
-    "source": "apache",
-    "extensions": ["ulx"]
-  },
-  "application/x-gnumeric": {
-    "source": "apache",
-    "extensions": ["gnumeric"]
-  },
-  "application/x-gramps-xml": {
-    "source": "apache",
-    "extensions": ["gramps"]
-  },
-  "application/x-gtar": {
-    "source": "apache",
-    "extensions": ["gtar"]
-  },
-  "application/x-gzip": {
-    "source": "apache"
-  },
-  "application/x-hdf": {
-    "source": "apache",
-    "extensions": ["hdf"]
-  },
-  "application/x-httpd-php": {
-    "compressible": true,
-    "extensions": ["php"]
-  },
-  "application/x-install-instructions": {
-    "source": "apache",
-    "extensions": ["install"]
-  },
-  "application/x-iso9660-image": {
-    "source": "apache",
-    "extensions": ["iso"]
-  },
-  "application/x-java-archive-diff": {
-    "source": "nginx",
-    "extensions": ["jardiff"]
-  },
-  "application/x-java-jnlp-file": {
-    "source": "apache",
-    "compressible": false,
-    "extensions": ["jnlp"]
-  },
-  "application/x-javascript": {
-    "compressible": true
-  },
-  "application/x-latex": {
-    "source": "apache",
-    "compressible": false,
-    "extensions": ["latex"]
-  },
-  "application/x-lua-bytecode": {
-    "extensions": ["luac"]
-  },
-  "application/x-lzh-compressed": {
-    "source": "apache",
-    "extensions": ["lzh","lha"]
-  },
-  "application/x-makeself": {
-    "source": "nginx",
-    "extensions": ["run"]
-  },
-  "application/x-mie": {
-    "source": "apache",
-    "extensions": ["mie"]
-  },
-  "application/x-mobipocket-ebook": {
-    "source": "apache",
-    "extensions": ["prc","mobi"]
-  },
-  "application/x-mpegurl": {
-    "compressible": false
-  },
-  "application/x-ms-application": {
-    "source": "apache",
-    "extensions": ["application"]
-  },
-  "application/x-ms-shortcut": {
-    "source": "apache",
-    "extensions": ["lnk"]
-  },
-  "application/x-ms-wmd": {
-    "source": "apache",
-    "extensions": ["wmd"]
-  },
-  "application/x-ms-wmz": {
-    "source": "apache",
-    "extensions": ["wmz"]
-  },
-  "application/x-ms-xbap": {
-    "source": "apache",
-    "extensions": ["xbap"]
-  },
-  "application/x-msaccess": {
-    "source": "apache",
-    "extensions": ["mdb"]
-  },
-  "application/x-msbinder": {
-    "source": "apache",
-    "extensions": ["obd"]
-  },
-  "application/x-mscardfile": {
-    "source": "apache",
-    "extensions": ["crd"]
-  },
-  "application/x-msclip": {
-    "source": "apache",
-    "extensions": ["clp"]
-  },
-  "application/x-msdos-program": {
-    "extensions": ["exe"]
-  },
-  "application/x-msdownload": {
-    "source": "apache",
-    "extensions": ["exe","dll","com","bat","msi"]
-  },
-  "application/x-msmediaview": {
-    "source": "apache",
-    "extensions": ["mvb","m13","m14"]
-  },
-  "application/x-msmetafile": {
-    "source": "apache",
-    "extensions": ["wmf","wmz","emf","emz"]
-  },
-  "application/x-msmoney": {
-    "source": "apache",
-    "extensions": ["mny"]
-  },
-  "application/x-mspublisher": {
-    "source": "apache",
-    "extensions": ["pub"]
-  },
-  "application/x-msschedule": {
-    "source": "apache",
-    "extensions": ["scd"]
-  },
-  "application/x-msterminal": {
-    "source": "apache",
-    "extensions": ["trm"]
-  },
-  "application/x-mswrite": {
-    "source": "apache",
-    "extensions": ["wri"]
-  },
-  "application/x-netcdf": {
-    "source": "apache",
-    "extensions": ["nc","cdf"]
-  },
-  "application/x-ns-proxy-autoconfig": {
-    "compressible": true,
-    "extensions": ["pac"]
-  },
-  "application/x-nzb": {
-    "source": "apache",
-    "extensions": ["nzb"]
-  },
-  "application/x-perl": {
-    "source": "nginx",
-    "extensions": ["pl","pm"]
-  },
-  "application/x-pilot": {
-    "source": "nginx",
-    "extensions": ["prc","pdb"]
-  },
-  "application/x-pkcs12": {
-    "source": "apache",
-    "compressible": false,
-    "extensions": ["p12","pfx"]
-  },
-  "application/x-pkcs7-certificates": {
-    "source": "apache",
-    "extensions": ["p7b","spc"]
-  },
-  "application/x-pkcs7-certreqresp": {
-    "source": "apache",
-    "extensions": ["p7r"]
-  },
-  "application/x-rar-compressed": {
-    "source": "apache",
-    "compressible": false,
-    "extensions": ["rar"]
-  },
-  "application/x-redhat-package-manager": {
-    "source": "nginx",
-    "extensions": ["rpm"]
-  },
-  "application/x-research-info-systems": {
-    "source": "apache",
-    "extensions": ["ris"]
-  },
-  "application/x-sea": {
-    "source": "nginx",
-    "extensions": ["sea"]
-  },
-  "application/x-sh": {
-    "source": "apache",
-    "compressible": true,
-    "extensions": ["sh"]
-  },
-  "application/x-shar": {
-    "source": "apache",
-    "extensions": ["shar"]
-  },
-  "application/x-shockwave-flash": {
-    "source": "apache",
-    "compressible": false,
-    "extensions": ["swf"]
-  },
-  "application/x-silverlight-app": {
-    "source": "apache",
-    "extensions": ["xap"]
-  },
-  "application/x-sql": {
-    "source": "apache",
-    "extensions": ["sql"]
-  },
-  "application/x-stuffit": {
-    "source": "apache",
-    "compressible": false,
-    "extensions": ["sit"]
-  },
-  "application/x-stuffitx": {
-    "source": "apache",
-    "extensions": ["sitx"]
-  },
-  "application/x-subrip": {
-    "source": "apache",
-    "extensions": ["srt"]
-  },
-  "application/x-sv4cpio": {
-    "source": "apache",
-    "extensions": ["sv4cpio"]
-  },
-  "application/x-sv4crc": {
-    "source": "apache",
-    "extensions": ["sv4crc"]
-  },
-  "application/x-t3vm-image": {
-    "source": "apache",
-    "extensions": ["t3"]
-  },
-  "application/x-tads": {
-    "source": "apache",
-    "extensions": ["gam"]
-  },
-  "application/x-tar": {
-    "source": "apache",
-    "compressible": true,
-    "extensions": ["tar"]
-  },
-  "application/x-tcl": {
-    "source": "apache",
-    "extensions": ["tcl","tk"]
-  },
-  "application/x-tex": {
-    "source": "apache",
-    "extensions": ["tex"]
-  },
-  "application/x-tex-tfm": {
-    "source": "apache",
-    "extensions": ["tfm"]
-  },
-  "application/x-texinfo": {
-    "source": "apache",
-    "extensions": ["texinfo","texi"]
-  },
-  "application/x-tgif": {
-    "source": "apache",
-    "extensions": ["obj"]
-  },
-  "application/x-ustar": {
-    "source": "apache",
-    "extensions": ["ustar"]
-  },
-  "application/x-wais-source": {
-    "source": "apache",
-    "extensions": ["src"]
-  },
-  "application/x-web-app-manifest+json": {
-    "compressible": true,
-    "extensions": ["webapp"]
-  },
-  "application/x-www-form-urlencoded": {
-    "source": "iana",
-    "compressible": true
-  },
-  "application/x-x509-ca-cert": {
-    "source": "apache",
-    "extensions": ["der","crt","pem"]
-  },
-  "application/x-xfig": {
-    "source": "apache",
-    "extensions": ["fig"]
-  },
-  "application/x-xliff+xml": {
-    "source": "apache",
-    "extensions": ["xlf"]
-  },
-  "application/x-xpinstall": {
-    "source": "apache",
-    "compressible": false,
-    "extensions": ["xpi"]
-  },
-  "application/x-xz": {
-    "source": "apache",
-    "extensions": ["xz"]
-  },
-  "application/x-zmachine": {
-    "source": "apache",
-    "extensions": ["z1","z2","z3","z4","z5","z6","z7","z8"]
-  },
-  "application/x400-bp": {
-    "source": "iana"
-  },
-  "application/xacml+xml": {
-    "source": "iana"
-  },
-  "application/xaml+xml": {
-    "source": "apache",
-    "extensions": ["xaml"]
-  },
-  "application/xcap-att+xml": {
-    "source": "iana"
-  },
-  "application/xcap-caps+xml": {
-    "source": "iana"
-  },
-  "application/xcap-diff+xml": {
-    "source": "iana",
-    "extensions": ["xdf"]
-  },
-  "application/xcap-el+xml": {
-    "source": "iana"
-  },
-  "application/xcap-error+xml": {
-    "source": "iana"
-  },
-  "application/xcap-ns+xml": {
-    "source": "iana"
-  },
-  "application/xcon-conference-info+xml": {
-    "source": "iana"
-  },
-  "application/xcon-conference-info-diff+xml": {
-    "source": "iana"
-  },
-  "application/xenc+xml": {
-    "source": "iana",
-    "extensions": ["xenc"]
-  },
-  "application/xhtml+xml": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["xhtml","xht"]
-  },
-  "application/xhtml-voice+xml": {
-    "source": "apache"
-  },
-  "application/xml": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["xml","xsl","xsd"]
-  },
-  "application/xml-dtd": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["dtd"]
-  },
-  "application/xml-external-parsed-entity": {
-    "source": "iana"
-  },
-  "application/xml-patch+xml": {
-    "source": "iana"
-  },
-  "application/xmpp+xml": {
-    "source": "iana"
-  },
-  "application/xop+xml": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["xop"]
-  },
-  "application/xproc+xml": {
-    "source": "apache",
-    "extensions": ["xpl"]
-  },
-  "application/xslt+xml": {
-    "source": "iana",
-    "extensions": ["xslt"]
-  },
-  "application/xspf+xml": {
-    "source": "apache",
-    "extensions": ["xspf"]
-  },
-  "application/xv+xml": {
-    "source": "iana",
-    "extensions": ["mxml","xhvml","xvml","xvm"]
-  },
-  "application/yang": {
-    "source": "iana",
-    "extensions": ["yang"]
-  },
-  "application/yin+xml": {
-    "source": "iana",
-    "extensions": ["yin"]
-  },
-  "application/zip": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["zip"]
-  },
-  "application/zlib": {
-    "source": "iana"
-  },
-  "audio/1d-interleaved-parityfec": {
-    "source": "iana"
-  },
-  "audio/32kadpcm": {
-    "source": "iana"
-  },
-  "audio/3gpp": {
-    "source": "iana"
-  },
-  "audio/3gpp2": {
-    "source": "iana"
-  },
-  "audio/ac3": {
-    "source": "iana"
-  },
-  "audio/adpcm": {
-    "source": "apache",
-    "extensions": ["adp"]
-  },
-  "audio/amr": {
-    "source": "iana"
-  },
-  "audio/amr-wb": {
-    "source": "iana"
-  },
-  "audio/amr-wb+": {
-    "source": "iana"
-  },
-  "audio/aptx": {
-    "source": "iana"
-  },
-  "audio/asc": {
-    "source": "iana"
-  },
-  "audio/atrac-advanced-lossless": {
-    "source": "iana"
-  },
-  "audio/atrac-x": {
-    "source": "iana"
-  },
-  "audio/atrac3": {
-    "source": "iana"
-  },
-  "audio/basic": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["au","snd"]
-  },
-  "audio/bv16": {
-    "source": "iana"
-  },
-  "audio/bv32": {
-    "source": "iana"
-  },
-  "audio/clearmode": {
-    "source": "iana"
-  },
-  "audio/cn": {
-    "source": "iana"
-  },
-  "audio/dat12": {
-    "source": "iana"
-  },
-  "audio/dls": {
-    "source": "iana"
-  },
-  "audio/dsr-es201108": {
-    "source": "iana"
-  },
-  "audio/dsr-es202050": {
-    "source": "iana"
-  },
-  "audio/dsr-es202211": {
-    "source": "iana"
-  },
-  "audio/dsr-es202212": {
-    "source": "iana"
-  },
-  "audio/dv": {
-    "source": "iana"
-  },
-  "audio/dvi4": {
-    "source": "iana"
-  },
-  "audio/eac3": {
-    "source": "iana"
-  },
-  "audio/encaprtp": {
-    "source": "iana"
-  },
-  "audio/evrc": {
-    "source": "iana"
-  },
-  "audio/evrc-qcp": {
-    "source": "iana"
-  },
-  "audio/evrc0": {
-    "source": "iana"
-  },
-  "audio/evrc1": {
-    "source": "iana"
-  },
-  "audio/evrcb": {
-    "source": "iana"
-  },
-  "audio/evrcb0": {
-    "source": "iana"
-  },
-  "audio/evrcb1": {
-    "source": "iana"
-  },
-  "audio/evrcnw": {
-    "source": "iana"
-  },
-  "audio/evrcnw0": {
-    "source": "iana"
-  },
-  "audio/evrcnw1": {
-    "source": "iana"
-  },
-  "audio/evrcwb": {
-    "source": "iana"
-  },
-  "audio/evrcwb0": {
-    "source": "iana"
-  },
-  "audio/evrcwb1": {
-    "source": "iana"
-  },
-  "audio/fwdred": {
-    "source": "iana"
-  },
-  "audio/g711-0": {
-    "source": "iana"
-  },
-  "audio/g719": {
-    "source": "iana"
-  },
-  "audio/g722": {
-    "source": "iana"
-  },
-  "audio/g7221": {
-    "source": "iana"
-  },
-  "audio/g723": {
-    "source": "iana"
-  },
-  "audio/g726-16": {
-    "source": "iana"
-  },
-  "audio/g726-24": {
-    "source": "iana"
-  },
-  "audio/g726-32": {
-    "source": "iana"
-  },
-  "audio/g726-40": {
-    "source": "iana"
-  },
-  "audio/g728": {
-    "source": "iana"
-  },
-  "audio/g729": {
-    "source": "iana"
-  },
-  "audio/g7291": {
-    "source": "iana"
-  },
-  "audio/g729d": {
-    "source": "iana"
-  },
-  "audio/g729e": {
-    "source": "iana"
-  },
-  "audio/gsm": {
-    "source": "iana"
-  },
-  "audio/gsm-efr": {
-    "source": "iana"
-  },
-  "audio/gsm-hr-08": {
-    "source": "iana"
-  },
-  "audio/ilbc": {
-    "source": "iana"
-  },
-  "audio/ip-mr_v2.5": {
-    "source": "iana"
-  },
-  "audio/isac": {
-    "source": "apache"
-  },
-  "audio/l16": {
-    "source": "iana"
-  },
-  "audio/l20": {
-    "source": "iana"
-  },
-  "audio/l24": {
-    "source": "iana",
-    "compressible": false
-  },
-  "audio/l8": {
-    "source": "iana"
-  },
-  "audio/lpc": {
-    "source": "iana"
-  },
-  "audio/midi": {
-    "source": "apache",
-    "extensions": ["mid","midi","kar","rmi"]
-  },
-  "audio/mobile-xmf": {
-    "source": "iana"
-  },
-  "audio/mp4": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["mp4a","m4a"]
-  },
-  "audio/mp4a-latm": {
-    "source": "iana"
-  },
-  "audio/mpa": {
-    "source": "iana"
-  },
-  "audio/mpa-robust": {
-    "source": "iana"
-  },
-  "audio/mpeg": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["mpga","mp2","mp2a","mp3","m2a","m3a"]
-  },
-  "audio/mpeg4-generic": {
-    "source": "iana"
-  },
-  "audio/musepack": {
-    "source": "apache"
-  },
-  "audio/ogg": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["oga","ogg","spx"]
-  },
-  "audio/opus": {
-    "source": "iana"
-  },
-  "audio/parityfec": {
-    "source": "iana"
-  },
-  "audio/pcma": {
-    "source": "iana"
-  },
-  "audio/pcma-wb": {
-    "source": "iana"
-  },
-  "audio/pcmu": {
-    "source": "iana"
-  },
-  "audio/pcmu-wb": {
-    "source": "iana"
-  },
-  "audio/prs.sid": {
-    "source": "iana"
-  },
-  "audio/qcelp": {
-    "source": "iana"
-  },
-  "audio/raptorfec": {
-    "source": "iana"
-  },
-  "audio/red": {
-    "source": "iana"
-  },
-  "audio/rtp-enc-aescm128": {
-    "source": "iana"
-  },
-  "audio/rtp-midi": {
-    "source": "iana"
-  },
-  "audio/rtploopback": {
-    "source": "iana"
-  },
-  "audio/rtx": {
-    "source": "iana"
-  },
-  "audio/s3m": {
-    "source": "apache",
-    "extensions": ["s3m"]
-  },
-  "audio/silk": {
-    "source": "apache",
-    "extensions": ["sil"]
-  },
-  "audio/smv": {
-    "source": "iana"
-  },
-  "audio/smv-qcp": {
-    "source": "iana"
-  },
-  "audio/smv0": {
-    "source": "iana"
-  },
-  "audio/sp-midi": {
-    "source": "iana"
-  },
-  "audio/speex": {
-    "source": "iana"
-  },
-  "audio/t140c": {
-    "source": "iana"
-  },
-  "audio/t38": {
-    "source": "iana"
-  },
-  "audio/telephone-event": {
-    "source": "iana"
-  },
-  "audio/tone": {
-    "source": "iana"
-  },
-  "audio/uemclip": {
-    "source": "iana"
-  },
-  "audio/ulpfec": {
-    "source": "iana"
-  },
-  "audio/vdvi": {
-    "source": "iana"
-  },
-  "audio/vmr-wb": {
-    "source": "iana"
-  },
-  "audio/vnd.3gpp.iufp": {
-    "source": "iana"
-  },
-  "audio/vnd.4sb": {
-    "source": "iana"
-  },
-  "audio/vnd.audiokoz": {
-    "source": "iana"
-  },
-  "audio/vnd.celp": {
-    "source": "iana"
-  },
-  "audio/vnd.cisco.nse": {
-    "source": "iana"
-  },
-  "audio/vnd.cmles.radio-events": {
-    "source": "iana"
-  },
-  "audio/vnd.cns.anp1": {
-    "source": "iana"
-  },
-  "audio/vnd.cns.inf1": {
-    "source": "iana"
-  },
-  "audio/vnd.dece.audio": {
-    "source": "iana",
-    "extensions": ["uva","uvva"]
-  },
-  "audio/vnd.digital-winds": {
-    "source": "iana",
-    "extensions": ["eol"]
-  },
-  "audio/vnd.dlna.adts": {
-    "source": "iana"
-  },
-  "audio/vnd.dolby.heaac.1": {
-    "source": "iana"
-  },
-  "audio/vnd.dolby.heaac.2": {
-    "source": "iana"
-  },
-  "audio/vnd.dolby.mlp": {
-    "source": "iana"
-  },
-  "audio/vnd.dolby.mps": {
-    "source": "iana"
-  },
-  "audio/vnd.dolby.pl2": {
-    "source": "iana"
-  },
-  "audio/vnd.dolby.pl2x": {
-    "source": "iana"
-  },
-  "audio/vnd.dolby.pl2z": {
-    "source": "iana"
-  },
-  "audio/vnd.dolby.pulse.1": {
-    "source": "iana"
-  },
-  "audio/vnd.dra": {
-    "source": "iana",
-    "extensions": ["dra"]
-  },
-  "audio/vnd.dts": {
-    "source": "iana",
-    "extensions": ["dts"]
-  },
-  "audio/vnd.dts.hd": {
-    "source": "iana",
-    "extensions": ["dtshd"]
-  },
-  "audio/vnd.dvb.file": {
-    "source": "iana"
-  },
-  "audio/vnd.everad.plj": {
-    "source": "iana"
-  },
-  "audio/vnd.hns.audio": {
-    "source": "iana"
-  },
-  "audio/vnd.lucent.voice": {
-    "source": "iana",
-    "extensions": ["lvp"]
-  },
-  "audio/vnd.ms-playready.media.pya": {
-    "source": "iana",
-    "extensions": ["pya"]
-  },
-  "audio/vnd.nokia.mobile-xmf": {
-    "source": "iana"
-  },
-  "audio/vnd.nortel.vbk": {
-    "source": "iana"
-  },
-  "audio/vnd.nuera.ecelp4800": {
-    "source": "iana",
-    "extensions": ["ecelp4800"]
-  },
-  "audio/vnd.nuera.ecelp7470": {
-    "source": "iana",
-    "extensions": ["ecelp7470"]
-  },
-  "audio/vnd.nuera.ecelp9600": {
-    "source": "iana",
-    "extensions": ["ecelp9600"]
-  },
-  "audio/vnd.octel.sbc": {
-    "source": "iana"
-  },
-  "audio/vnd.qcelp": {
-    "source": "iana"
-  },
-  "audio/vnd.rhetorex.32kadpcm": {
-    "source": "iana"
-  },
-  "audio/vnd.rip": {
-    "source": "iana",
-    "extensions": ["rip"]
-  },
-  "audio/vnd.rn-realaudio": {
-    "compressible": false
-  },
-  "audio/vnd.sealedmedia.softseal.mpeg": {
-    "source": "iana"
-  },
-  "audio/vnd.vmx.cvsd": {
-    "source": "iana"
-  },
-  "audio/vnd.wave": {
-    "compressible": false
-  },
-  "audio/vorbis": {
-    "source": "iana",
-    "compressible": false
-  },
-  "audio/vorbis-config": {
-    "source": "iana"
-  },
-  "audio/wav": {
-    "compressible": false,
-    "extensions": ["wav"]
-  },
-  "audio/wave": {
-    "compressible": false,
-    "extensions": ["wav"]
-  },
-  "audio/webm": {
-    "source": "apache",
-    "compressible": false,
-    "extensions": ["weba"]
-  },
-  "audio/x-aac": {
-    "source": "apache",
-    "compressible": false,
-    "extensions": ["aac"]
-  },
-  "audio/x-aiff": {
-    "source": "apache",
-    "extensions": ["aif","aiff","aifc"]
-  },
-  "audio/x-caf": {
-    "source": "apache",
-    "compressible": false,
-    "extensions": ["caf"]
-  },
-  "audio/x-flac": {
-    "source": "apache",
-    "extensions": ["flac"]
-  },
-  "audio/x-m4a": {
-    "source": "nginx",
-    "extensions": ["m4a"]
-  },
-  "audio/x-matroska": {
-    "source": "apache",
-    "extensions": ["mka"]
-  },
-  "audio/x-mpegurl": {
-    "source": "apache",
-    "extensions": ["m3u"]
-  },
-  "audio/x-ms-wax": {
-    "source": "apache",
-    "extensions": ["wax"]
-  },
-  "audio/x-ms-wma": {
-    "source": "apache",
-    "extensions": ["wma"]
-  },
-  "audio/x-pn-realaudio": {
-    "source": "apache",
-    "extensions": ["ram","ra"]
-  },
-  "audio/x-pn-realaudio-plugin": {
-    "source": "apache",
-    "extensions": ["rmp"]
-  },
-  "audio/x-realaudio": {
-    "source": "nginx",
-    "extensions": ["ra"]
-  },
-  "audio/x-tta": {
-    "source": "apache"
-  },
-  "audio/x-wav": {
-    "source": "apache",
-    "extensions": ["wav"]
-  },
-  "audio/xm": {
-    "source": "apache",
-    "extensions": ["xm"]
-  },
-  "chemical/x-cdx": {
-    "source": "apache",
-    "extensions": ["cdx"]
-  },
-  "chemical/x-cif": {
-    "source": "apache",
-    "extensions": ["cif"]
-  },
-  "chemical/x-cmdf": {
-    "source": "apache",
-    "extensions": ["cmdf"]
-  },
-  "chemical/x-cml": {
-    "source": "apache",
-    "extensions": ["cml"]
-  },
-  "chemical/x-csml": {
-    "source": "apache",
-    "extensions": ["csml"]
-  },
-  "chemical/x-pdb": {
-    "source": "apache"
-  },
-  "chemical/x-xyz": {
-    "source": "apache",
-    "extensions": ["xyz"]
-  },
-  "font/opentype": {
-    "compressible": true,
-    "extensions": ["otf"]
-  },
-  "image/bmp": {
-    "source": "apache",
-    "compressible": true,
-    "extensions": ["bmp"]
-  },
-  "image/cgm": {
-    "source": "iana",
-    "extensions": ["cgm"]
-  },
-  "image/fits": {
-    "source": "iana"
-  },
-  "image/g3fax": {
-    "source": "iana",
-    "extensions": ["g3"]
-  },
-  "image/gif": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["gif"]
-  },
-  "image/ief": {
-    "source": "iana",
-    "extensions": ["ief"]
-  },
-  "image/jp2": {
-    "source": "iana"
-  },
-  "image/jpeg": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["jpeg","jpg","jpe"]
-  },
-  "image/jpm": {
-    "source": "iana"
-  },
-  "image/jpx": {
-    "source": "iana"
-  },
-  "image/ktx": {
-    "source": "iana",
-    "extensions": ["ktx"]
-  },
-  "image/naplps": {
-    "source": "iana"
-  },
-  "image/pjpeg": {
-    "compressible": false
-  },
-  "image/png": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["png"]
-  },
-  "image/prs.btif": {
-    "source": "iana",
-    "extensions": ["btif"]
-  },
-  "image/prs.pti": {
-    "source": "iana"
-  },
-  "image/pwg-raster": {
-    "source": "iana"
-  },
-  "image/sgi": {
-    "source": "apache",
-    "extensions": ["sgi"]
-  },
-  "image/svg+xml": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["svg","svgz"]
-  },
-  "image/t38": {
-    "source": "iana"
-  },
-  "image/tiff": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["tiff","tif"]
-  },
-  "image/tiff-fx": {
-    "source": "iana"
-  },
-  "image/vnd.adobe.photoshop": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["psd"]
-  },
-  "image/vnd.airzip.accelerator.azv": {
-    "source": "iana"
-  },
-  "image/vnd.cns.inf2": {
-    "source": "iana"
-  },
-  "image/vnd.dece.graphic": {
-    "source": "iana",
-    "extensions": ["uvi","uvvi","uvg","uvvg"]
-  },
-  "image/vnd.djvu": {
-    "source": "iana",
-    "extensions": ["djvu","djv"]
-  },
-  "image/vnd.dvb.subtitle": {
-    "source": "iana",
-    "extensions": ["sub"]
-  },
-  "image/vnd.dwg": {
-    "source": "iana",
-    "extensions": ["dwg"]
-  },
-  "image/vnd.dxf": {
-    "source": "iana",
-    "extensions": ["dxf"]
-  },
-  "image/vnd.fastbidsheet": {
-    "source": "iana",
-    "extensions": ["fbs"]
-  },
-  "image/vnd.fpx": {
-    "source": "iana",
-    "extensions": ["fpx"]
-  },
-  "image/vnd.fst": {
-    "source": "iana",
-    "extensions": ["fst"]
-  },
-  "image/vnd.fujixerox.edmics-mmr": {
-    "source": "iana",
-    "extensions": ["mmr"]
-  },
-  "image/vnd.fujixerox.edmics-rlc": {
-    "source": "iana",
-    "extensions": ["rlc"]
-  },
-  "image/vnd.globalgraphics.pgb": {
-    "source": "iana"
-  },
-  "image/vnd.microsoft.icon": {
-    "source": "iana"
-  },
-  "image/vnd.mix": {
-    "source": "iana"
-  },
-  "image/vnd.mozilla.apng": {
-    "source": "iana"
-  },
-  "image/vnd.ms-modi": {
-    "source": "iana",
-    "extensions": ["mdi"]
-  },
-  "image/vnd.ms-photo": {
-    "source": "apache",
-    "extensions": ["wdp"]
-  },
-  "image/vnd.net-fpx": {
-    "source": "iana",
-    "extensions": ["npx"]
-  },
-  "image/vnd.radiance": {
-    "source": "iana"
-  },
-  "image/vnd.sealed.png": {
-    "source": "iana"
-  },
-  "image/vnd.sealedmedia.softseal.gif": {
-    "source": "iana"
-  },
-  "image/vnd.sealedmedia.softseal.jpg": {
-    "source": "iana"
-  },
-  "image/vnd.svf": {
-    "source": "iana"
-  },
-  "image/vnd.tencent.tap": {
-    "source": "iana"
-  },
-  "image/vnd.valve.source.texture": {
-    "source": "iana"
-  },
-  "image/vnd.wap.wbmp": {
-    "source": "iana",
-    "extensions": ["wbmp"]
-  },
-  "image/vnd.xiff": {
-    "source": "iana",
-    "extensions": ["xif"]
-  },
-  "image/vnd.zbrush.pcx": {
-    "source": "iana"
-  },
-  "image/webp": {
-    "source": "apache",
-    "extensions": ["webp"]
-  },
-  "image/x-3ds": {
-    "source": "apache",
-    "extensions": ["3ds"]
-  },
-  "image/x-cmu-raster": {
-    "source": "apache",
-    "extensions": ["ras"]
-  },
-  "image/x-cmx": {
-    "source": "apache",
-    "extensions": ["cmx"]
-  },
-  "image/x-freehand": {
-    "source": "apache",
-    "extensions": ["fh","fhc","fh4","fh5","fh7"]
-  },
-  "image/x-icon": {
-    "source": "apache",
-    "compressible": true,
-    "extensions": ["ico"]
-  },
-  "image/x-jng": {
-    "source": "nginx",
-    "extensions": ["jng"]
-  },
-  "image/x-mrsid-image": {
-    "source": "apache",
-    "extensions": ["sid"]
-  },
-  "image/x-ms-bmp": {
-    "source": "nginx",
-    "compressible": true,
-    "extensions": ["bmp"]
-  },
-  "image/x-pcx": {
-    "source": "apache",
-    "extensions": ["pcx"]
-  },
-  "image/x-pict": {
-    "source": "apache",
-    "extensions": ["pic","pct"]
-  },
-  "image/x-portable-anymap": {
-    "source": "apache",
-    "extensions": ["pnm"]
-  },
-  "image/x-portable-bitmap": {
-    "source": "apache",
-    "extensions": ["pbm"]
-  },
-  "image/x-portable-graymap": {
-    "source": "apache",
-    "extensions": ["pgm"]
-  },
-  "image/x-portable-pixmap": {
-    "source": "apache",
-    "extensions": ["ppm"]
-  },
-  "image/x-rgb": {
-    "source": "apache",
-    "extensions": ["rgb"]
-  },
-  "image/x-tga": {
-    "source": "apache",
-    "extensions": ["tga"]
-  },
-  "image/x-xbitmap": {
-    "source": "apache",
-    "extensions": ["xbm"]
-  },
-  "image/x-xcf": {
-    "compressible": false
-  },
-  "image/x-xpixmap": {
-    "source": "apache",
-    "extensions": ["xpm"]
-  },
-  "image/x-xwindowdump": {
-    "source": "apache",
-    "extensions": ["xwd"]
-  },
-  "message/cpim": {
-    "source": "iana"
-  },
-  "message/delivery-status": {
-    "source": "iana"
-  },
-  "message/disposition-notification": {
-    "source": "iana"
-  },
-  "message/external-body": {
-    "source": "iana"
-  },
-  "message/feedback-report": {
-    "source": "iana"
-  },
-  "message/global": {
-    "source": "iana"
-  },
-  "message/global-delivery-status": {
-    "source": "iana"
-  },
-  "message/global-disposition-notification": {
-    "source": "iana"
-  },
-  "message/global-headers": {
-    "source": "iana"
-  },
-  "message/http": {
-    "source": "iana",
-    "compressible": false
-  },
-  "message/imdn+xml": {
-    "source": "iana",
-    "compressible": true
-  },
-  "message/news": {
-    "source": "iana"
-  },
-  "message/partial": {
-    "source": "iana",
-    "compressible": false
-  },
-  "message/rfc822": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["eml","mime"]
-  },
-  "message/s-http": {
-    "source": "iana"
-  },
-  "message/sip": {
-    "source": "iana"
-  },
-  "message/sipfrag": {
-    "source": "iana"
-  },
-  "message/tracking-status": {
-    "source": "iana"
-  },
-  "message/vnd.si.simp": {
-    "source": "iana"
-  },
-  "message/vnd.wfa.wsc": {
-    "source": "iana"
-  },
-  "model/iges": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["igs","iges"]
-  },
-  "model/mesh": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["msh","mesh","silo"]
-  },
-  "model/vnd.collada+xml": {
-    "source": "iana",
-    "extensions": ["dae"]
-  },
-  "model/vnd.dwf": {
-    "source": "iana",
-    "extensions": ["dwf"]
-  },
-  "model/vnd.flatland.3dml": {
-    "source": "iana"
-  },
-  "model/vnd.gdl": {
-    "source": "iana",
-    "extensions": ["gdl"]
-  },
-  "model/vnd.gs-gdl": {
-    "source": "apache"
-  },
-  "model/vnd.gs.gdl": {
-    "source": "iana"
-  },
-  "model/vnd.gtw": {
-    "source": "iana",
-    "extensions": ["gtw"]
-  },
-  "model/vnd.moml+xml": {
-    "source": "iana"
-  },
-  "model/vnd.mts": {
-    "source": "iana",
-    "extensions": ["mts"]
-  },
-  "model/vnd.opengex": {
-    "source": "iana"
-  },
-  "model/vnd.parasolid.transmit.binary": {
-    "source": "iana"
-  },
-  "model/vnd.parasolid.transmit.text": {
-    "source": "iana"
-  },
-  "model/vnd.valve.source.compiled-map": {
-    "source": "iana"
-  },
-  "model/vnd.vtu": {
-    "source": "iana",
-    "extensions": ["vtu"]
-  },
-  "model/vrml": {
-    "source": "iana",
-    "compressible": false,
-    "extensions": ["wrl","vrml"]
-  },
-  "model/x3d+binary": {
-    "source": "apache",
-    "compressible": false,
-    "extensions": ["x3db","x3dbz"]
-  },
-  "model/x3d+fastinfoset": {
-    "source": "iana"
-  },
-  "model/x3d+vrml": {
-    "source": "apache",
-    "compressible": false,
-    "extensions": ["x3dv","x3dvz"]
-  },
-  "model/x3d+xml": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["x3d","x3dz"]
-  },
-  "model/x3d-vrml": {
-    "source": "iana"
-  },
-  "multipart/alternative": {
-    "source": "iana",
-    "compressible": false
-  },
-  "multipart/appledouble": {
-    "source": "iana"
-  },
-  "multipart/byteranges": {
-    "source": "iana"
-  },
-  "multipart/digest": {
-    "source": "iana"
-  },
-  "multipart/encrypted": {
-    "source": "iana",
-    "compressible": false
-  },
-  "multipart/form-data": {
-    "source": "iana",
-    "compressible": false
-  },
-  "multipart/header-set": {
-    "source": "iana"
-  },
-  "multipart/mixed": {
-    "source": "iana",
-    "compressible": false
-  },
-  "multipart/parallel": {
-    "source": "iana"
-  },
-  "multipart/related": {
-    "source": "iana",
-    "compressible": false
-  },
-  "multipart/report": {
-    "source": "iana"
-  },
-  "multipart/signed": {
-    "source": "iana",
-    "compressible": false
-  },
-  "multipart/voice-message": {
-    "source": "iana"
-  },
-  "multipart/x-mixed-replace": {
-    "source": "iana"
-  },
-  "text/1d-interleaved-parityfec": {
-    "source": "iana"
-  },
-  "text/cache-manifest": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["appcache","manifest"]
-  },
-  "text/calendar": {
-    "source": "iana",
-    "extensions": ["ics","ifb"]
-  },
-  "text/calender": {
-    "compressible": true
-  },
-  "text/cmd": {
-    "compressible": true
-  },
-  "text/coffeescript": {
-    "extensions": ["coffee","litcoffee"]
-  },
-  "text/css": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["css"]
-  },
-  "text/csv": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["csv"]
-  },
-  "text/csv-schema": {
-    "source": "iana"
-  },
-  "text/directory": {
-    "source": "iana"
-  },
-  "text/dns": {
-    "source": "iana"
-  },
-  "text/ecmascript": {
-    "source": "iana"
-  },
-  "text/encaprtp": {
-    "source": "iana"
-  },
-  "text/enriched": {
-    "source": "iana"
-  },
-  "text/fwdred": {
-    "source": "iana"
-  },
-  "text/grammar-ref-list": {
-    "source": "iana"
-  },
-  "text/hjson": {
-    "extensions": ["hjson"]
-  },
-  "text/html": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["html","htm","shtml"]
-  },
-  "text/jade": {
-    "extensions": ["jade"]
-  },
-  "text/javascript": {
-    "source": "iana",
-    "compressible": true
-  },
-  "text/jcr-cnd": {
-    "source": "iana"
-  },
-  "text/jsx": {
-    "compressible": true,
-    "extensions": ["jsx"]
-  },
-  "text/less": {
-    "extensions": ["less"]
-  },
-  "text/markdown": {
-    "source": "iana"
-  },
-  "text/mathml": {
-    "source": "nginx",
-    "extensions": ["mml"]
-  },
-  "text/mizar": {
-    "source": "iana"
-  },
-  "text/n3": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["n3"]
-  },
-  "text/parameters": {
-    "source": "iana"
-  },
-  "text/parityfec": {
-    "source": "iana"
-  },
-  "text/plain": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["txt","text","conf","def","list","log","in","ini"]
-  },
-  "text/provenance-notation": {
-    "source": "iana"
-  },
-  "text/prs.fallenstein.rst": {
-    "source": "iana"
-  },
-  "text/prs.lines.tag": {
-    "source": "iana",
-    "extensions": ["dsc"]
-  },
-  "text/raptorfec": {
-    "source": "iana"
-  },
-  "text/red": {
-    "source": "iana"
-  },
-  "text/rfc822-headers": {
-    "source": "iana"
-  },
-  "text/richtext": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["rtx"]
-  },
-  "text/rtf": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["rtf"]
-  },
-  "text/rtp-enc-aescm128": {
-    "source": "iana"
-  },
-  "text/rtploopback": {
-    "source": "iana"
-  },
-  "text/rtx": {
-    "source": "iana"
-  },
-  "text/sgml": {
-    "source": "iana",
-    "extensions": ["sgml","sgm"]
-  },
-  "text/stylus": {
-    "extensions": ["stylus","styl"]
-  },
-  "text/t140": {
-    "source": "iana"
-  },
-  "text/tab-separated-values": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["tsv"]
-  },
-  "text/troff": {
-    "source": "iana",
-    "extensions": ["t","tr","roff","man","me","ms"]
-  },
-  "text/turtle": {
-    "source": "iana",
-    "extensions": ["ttl"]
-  },
-  "text/ulpfec": {
-    "source": "iana"
-  },
-  "text/uri-list": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["uri","uris","urls"]
-  },
-  "text/vcard": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["vcard"]
-  },
-  "text/vnd.a": {
-    "source": "iana"
-  },
-  "text/vnd.abc": {
-    "source": "iana"
-  },
-  "text/vnd.curl": {
-    "source": "iana",
-    "extensions": ["curl"]
-  },
-  "text/vnd.curl.dcurl": {
-    "source": "apache",
-    "extensions": ["dcurl"]
-  },
-  "text/vnd.curl.mcurl": {
-    "source": "apache",
-    "extensions": ["mcurl"]
-  },
-  "text/vnd.curl.scurl": {
-    "source": "apache",
-    "extensions": ["scurl"]
-  },
-  "text/vnd.debian.copyright": {
-    "source": "iana"
-  },
-  "text/vnd.dmclientscript": {
-    "source": "iana"
-  },
-  "text/vnd.dvb.subtitle": {
-    "source": "iana",
-    "extensions": ["sub"]
-  },
-  "text/vnd.esmertec.theme-descriptor": {
-    "source": "iana"
-  },
-  "text/vnd.fly": {
-    "source": "iana",
-    "extensions": ["fly"]
-  },
-  "text/vnd.fmi.flexstor": {
-    "source": "iana",
-    "extensions": ["flx"]
-  },
-  "text/vnd.graphviz": {
-    "source": "iana",
-    "extensions": ["gv"]
-  },
-  "text/vnd.in3d.3dml": {
-    "source": "iana",
-    "extensions": ["3dml"]
-  },
-  "text/vnd.in3d.spot": {
-    "source": "iana",
-    "extensions": ["spot"]
-  },
-  "text/vnd.iptc.newsml": {
-    "source": "iana"
-  },
-  "text/vnd.iptc.nitf": {
-    "source": "iana"
-  },
-  "text/vnd.latex-z": {
-    "source": "iana"
-  },
-  "text/vnd.motorola.reflex": {
-    "source": "iana"
-  },
-  "text/vnd.ms-mediapackage": {
-    "source": "iana"
-  },
-  "text/vnd.net2phone.commcenter.command": {
-    "source": "iana"
-  },
-  "text/vnd.radisys.msml-basic-layout": {
-    "source": "iana"
-  },
-  "text/vnd.si.uricatalogue": {
-    "source": "iana"
-  },
-  "text/vnd.sun.j2me.app-descriptor": {
-    "source": "iana",
-    "extensions": ["jad"]
-  },
-  "text/vnd.trolltech.linguist": {
-    "source": "iana"
-  },
-  "text/vnd.wap.si": {
-    "source": "iana"
-  },
-  "text/vnd.wap.sl": {
-    "source": "iana"
-  },
-  "text/vnd.wap.wml": {
-    "source": "iana",
-    "extensions": ["wml"]
-  },
-  "text/vnd.wap.wmlscript": {
-    "source": "iana",
-    "extensions": ["wmls"]
-  },
-  "text/vtt": {
-    "charset": "UTF-8",
-    "compressible": true,
-    "extensions": ["vtt"]
-  },
-  "text/x-asm": {
-    "source": "apache",
-    "extensions": ["s","asm"]
-  },
-  "text/x-c": {
-    "source": "apache",
-    "extensions": ["c","cc","cxx","cpp","h","hh","dic"]
-  },
-  "text/x-component": {
-    "source": "nginx",
-    "extensions": ["htc"]
-  },
-  "text/x-fortran": {
-    "source": "apache",
-    "extensions": ["f","for","f77","f90"]
-  },
-  "text/x-gwt-rpc": {
-    "compressible": true
-  },
-  "text/x-handlebars-template": {
-    "extensions": ["hbs"]
-  },
-  "text/x-java-source": {
-    "source": "apache",
-    "extensions": ["java"]
-  },
-  "text/x-jquery-tmpl": {
-    "compressible": true
-  },
-  "text/x-lua": {
-    "extensions": ["lua"]
-  },
-  "text/x-markdown": {
-    "compressible": true,
-    "extensions": ["markdown","md","mkd"]
-  },
-  "text/x-nfo": {
-    "source": "apache",
-    "extensions": ["nfo"]
-  },
-  "text/x-opml": {
-    "source": "apache",
-    "extensions": ["opml"]
-  },
-  "text/x-pascal": {
-    "source": "apache",
-    "extensions": ["p","pas"]
-  },
-  "text/x-processing": {
-    "compressible": true,
-    "extensions": ["pde"]
-  },
-  "text/x-sass": {
-    "extensions": ["sass"]
-  },
-  "text/x-scss": {
-    "extensions": ["scss"]
-  },
-  "text/x-setext": {
-    "source": "apache",
-    "extensions": ["etx"]
-  },
-  "text/x-sfv": {
-    "source": "apache",
-    "extensions": ["sfv"]
-  },
-  "text/x-suse-ymp": {
-    "compressible": true,
-    "extensions": ["ymp"]
-  },
-  "text/x-uuencode": {
-    "source": "apache",
-    "extensions": ["uu"]
-  },
-  "text/x-vcalendar": {
-    "source": "apache",
-    "extensions": ["vcs"]
-  },
-  "text/x-vcard": {
-    "source": "apache",
-    "extensions": ["vcf"]
-  },
-  "text/xml": {
-    "source": "iana",
-    "compressible": true,
-    "extensions": ["xml"]
-  },
-  "text/xml-external-parsed-entity": {
-    "source": "iana"
-  },
-  "text/yaml": {
-    "extensions": ["yaml","yml"]
-  },
-  "video/1d-interleaved-parityfec": {
-    "source": "apache"
-  },
-  "video/3gpp": {
-    "source": "apache",
-    "extensions": ["3gp","3gpp"]
-  },
-  "video/3gpp-tt": {
-    "source": "apache"
-  },
-  "video/3gpp2": {
-    "source": "apache",
-    "extensions": ["3g2"]
-  },
-  "video/bmpeg": {
-    "source": "apache"
-  },
-  "video/bt656": {
-    "source": "apache"
-  },
-  "video/celb": {
-    "source": "apache"
-  },
-  "video/dv": {
-    "source": "apache"
-  },
-  "video/h261": {
-    "source": "apache",
-    "extensions": ["h261"]
-  },
-  "video/h263": {
-    "source": "apache",
-    "extensions": ["h263"]
-  },
-  "video/h263-1998": {
-    "source": "apache"
-  },
-  "video/h263-2000": {
-    "source": "apache"
-  },
-  "video/h264": {
-    "source": "apache",
-    "extensions": ["h264"]
-  },
-  "video/h264-rcdo": {
-    "source": "apache"
-  },
-  "video/h264-svc": {
-    "source": "apache"
-  },
-  "video/jpeg": {
-    "source": "apache",
-    "extensions": ["jpgv"]
-  },
-  "video/jpeg2000": {
-    "source": "apache"
-  },
-  "video/jpm": {
-    "source": "apache",
-    "extensions": ["jpm","jpgm"]
-  },
-  "video/mj2": {
-    "source": "apache",
-    "extensions": ["mj2","mjp2"]
-  },
-  "video/mp1s": {
-    "source": "apache"
-  },
-  "video/mp2p": {
-    "source": "apache"
-  },
-  "video/mp2t": {
-    "source": "apache",
-    "extensions": ["ts"]
-  },
-  "video/mp4": {
-    "source": "apache",
-    "compressible": false,
-    "extensions": ["mp4","mp4v","mpg4"]
-  },
-  "video/mp4v-es": {
-    "source": "apache"
-  },
-  "video/mpeg": {
-    "source": "apache",
-    "compressible": false,
-    "extensions": ["mpeg","mpg","mpe","m1v","m2v"]
-  },
-  "video/mpeg4-generic": {
-    "source": "apache"
-  },
-  "video/mpv": {
-    "source": "apache"
-  },
-  "video/nv": {
-    "source": "apache"
-  },
-  "video/ogg": {
-    "source": "apache",
-    "compressible": false,
-    "extensions": ["ogv"]
-  },
-  "video/parityfec": {
-    "source": "apache"
-  },
-  "video/pointer": {
-    "source": "apache"
-  },
-  "video/quicktime": {
-    "source": "apache",
-    "compressible": false,
-    "extensions": ["qt","mov"]
-  },
-  "video/raw": {
-    "source": "apache"
-  },
-  "video/rtp-enc-aescm128": {
-    "source": "apache"
-  },
-  "video/rtx": {
-    "source": "apache"
-  },
-  "video/smpte292m": {
-    "source": "apache"
-  },
-  "video/ulpfec": {
-    "source": "apache"
-  },
-  "video/vc1": {
-    "source": "apache"
-  },
-  "video/vnd.cctv": {
-    "source": "apache"
-  },
-  "video/vnd.dece.hd": {
-    "source": "apache",
-    "extensions": ["uvh","uvvh"]
-  },
-  "video/vnd.dece.mobile": {
-    "source": "apache",
-    "extensions": ["uvm","uvvm"]
-  },
-  "video/vnd.dece.mp4": {
-    "source": "apache"
-  },
-  "video/vnd.dece.pd": {
-    "source": "apache",
-    "extensions": ["uvp","uvvp"]
-  },
-  "video/vnd.dece.sd": {
-    "source": "apache",
-    "extensions": ["uvs","uvvs"]
-  },
-  "video/vnd.dece.video": {
-    "source": "apache",
-    "extensions": ["uvv","uvvv"]
-  },
-  "video/vnd.directv.mpeg": {
-    "source": "apache"
-  },
-  "video/vnd.directv.mpeg-tts": {
-    "source": "apache"
-  },
-  "video/vnd.dlna.mpeg-tts": {
-    "source": "apache"
-  },
-  "video/vnd.dvb.file": {
-    "source": "apache",
-    "extensions": ["dvb"]
-  },
-  "video/vnd.fvt": {
-    "source": "apache",
-    "extensions": ["fvt"]
-  },
-  "video/vnd.hns.video": {
-    "source": "apache"
-  },
-  "video/vnd.iptvforum.1dparityfec-1010": {
-    "source": "apache"
-  },
-  "video/vnd.iptvforum.1dparityfec-2005": {
-    "source": "apache"
-  },
-  "video/vnd.iptvforum.2dparityfec-1010": {
-    "source": "apache"
-  },
-  "video/vnd.iptvforum.2dparityfec-2005": {
-    "source": "apache"
-  },
-  "video/vnd.iptvforum.ttsavc": {
-    "source": "apache"
-  },
-  "video/vnd.iptvforum.ttsmpeg2": {
-    "source": "apache"
-  },
-  "video/vnd.motorola.video": {
-    "source": "apache"
-  },
-  "video/vnd.motorola.videop": {
-    "source": "apache"
-  },
-  "video/vnd.mpegurl": {
-    "source": "apache",
-    "extensions": ["mxu","m4u"]
-  },
-  "video/vnd.ms-playready.media.pyv": {
-    "source": "apache",
-    "extensions": ["pyv"]
-  },
-  "video/vnd.nokia.interleaved-multimedia": {
-    "source": "apache"
-  },
-  "video/vnd.nokia.videovoip": {
-    "source": "apache"
-  },
-  "video/vnd.objectvideo": {
-    "source": "apache"
-  },
-  "video/vnd.sealed.mpeg1": {
-    "source": "apache"
-  },
-  "video/vnd.sealed.mpeg4": {
-    "source": "apache"
-  },
-  "video/vnd.sealed.swf": {
-    "source": "apache"
-  },
-  "video/vnd.sealedmedia.softseal.mov": {
-    "source": "apache"
-  },
-  "video/vnd.uvvu.mp4": {
-    "source": "apache",
-    "extensions": ["uvu","uvvu"]
-  },
-  "video/vnd.vivo": {
-    "source": "apache",
-    "extensions": ["viv"]
-  },
-  "video/webm": {
-    "source": "apache",
-    "compressible": false,
-    "extensions": ["webm"]
-  },
-  "video/x-f4v": {
-    "source": "apache",
-    "extensions": ["f4v"]
-  },
-  "video/x-fli": {
-    "source": "apache",
-    "extensions": ["fli"]
-  },
-  "video/x-flv": {
-    "source": "apache",
-    "compressible": false,
-    "extensions": ["flv"]
-  },
-  "video/x-m4v": {
-    "source": "apache",
-    "extensions": ["m4v"]
-  },
-  "video/x-matroska": {
-    "source": "apache",
-    "compressible": false,
-    "extensions": ["mkv","mk3d","mks"]
-  },
-  "video/x-mng": {
-    "source": "apache",
-    "extensions": ["mng"]
-  },
-  "video/x-ms-asf": {
-    "source": "apache",
-    "extensions": ["asf","asx"]
-  },
-  "video/x-ms-vob": {
-    "source": "apache",
-    "extensions": ["vob"]
-  },
-  "video/x-ms-wm": {
-    "source": "apache",
-    "extensions": ["wm"]
-  },
-  "video/x-ms-wmv": {
-    "source": "apache",
-    "compressible": false,
-    "extensions": ["wmv"]
-  },
-  "video/x-ms-wmx": {
-    "source": "apache",
-    "extensions": ["wmx"]
-  },
-  "video/x-ms-wvx": {
-    "source": "apache",
-    "extensions": ["wvx"]
-  },
-  "video/x-msvideo": {
-    "source": "apache",
-    "extensions": ["avi"]
-  },
-  "video/x-sgi-movie": {
-    "source": "apache",
-    "extensions": ["movie"]
-  },
-  "video/x-smv": {
-    "source": "apache",
-    "extensions": ["smv"]
-  },
-  "x-conference/x-cooltalk": {
-    "source": "apache",
-    "extensions": ["ice"]
-  },
-  "x-shader/x-fragment": {
-    "compressible": true
-  },
-  "x-shader/x-vertex": {
-    "compressible": true
-  }
-}
-
-},{}],583:[function(require,module,exports){
-arguments[4][448][0].apply(exports,arguments)
-},{"./db.json":582,"dup":448}],584:[function(require,module,exports){
-arguments[4][324][0].apply(exports,arguments)
-},{"buffer":256,"crypto":25,"dup":324}],585:[function(require,module,exports){
-arguments[4][450][0].apply(exports,arguments)
-},{"crypto":25,"dup":450,"querystring":227}],586:[function(require,module,exports){
-arguments[4][451][0].apply(exports,arguments)
-},{"./parse":587,"./stringify":588,"dup":451}],587:[function(require,module,exports){
-arguments[4][452][0].apply(exports,arguments)
-},{"./utils":589,"dup":452}],588:[function(require,module,exports){
-arguments[4][453][0].apply(exports,arguments)
-},{"./utils":589,"dup":453}],589:[function(require,module,exports){
-arguments[4][454][0].apply(exports,arguments)
-},{"dup":454}],590:[function(require,module,exports){
-arguments[4][455][0].apply(exports,arguments)
-},{"buffer":256,"dup":455,"stream":241,"string_decoder":247,"util":252}],591:[function(require,module,exports){
-arguments[4][456][0].apply(exports,arguments)
-},{"../package.json":597,"./memstore":592,"./pathMatch":593,"./permuteDomain":594,"./pubsuffix":595,"./store":596,"dup":456,"net":9,"punycode":224,"url":249}],592:[function(require,module,exports){
-arguments[4][457][0].apply(exports,arguments)
-},{"./pathMatch":593,"./permuteDomain":594,"./store":596,"dup":457,"util":252}],593:[function(require,module,exports){
-arguments[4][458][0].apply(exports,arguments)
-},{"dup":458}],594:[function(require,module,exports){
-arguments[4][459][0].apply(exports,arguments)
-},{"./pubsuffix":595,"dup":459}],595:[function(require,module,exports){
-arguments[4][460][0].apply(exports,arguments)
-},{"dup":460,"punycode":224}],596:[function(require,module,exports){
-arguments[4][461][0].apply(exports,arguments)
-},{"dup":461}],597:[function(require,module,exports){
-arguments[4][462][0].apply(exports,arguments)
-},{"dup":462}],598:[function(require,module,exports){
-arguments[4][463][0].apply(exports,arguments)
-},{"_process":223,"assert":10,"buffer":256,"dup":463,"events":217,"http":242,"https":218,"net":9,"tls":9,"util":252}],599:[function(require,module,exports){
-arguments[4][464][0].apply(exports,arguments)
-},{"./lib/auth":475,"./lib/cookies":476,"./lib/getProxyFromURI":477,"./lib/har":478,"./lib/helpers":479,"./lib/multipart":480,"./lib/oauth":481,"./lib/querystring":482,"./lib/redirect":483,"./lib/tunnel":484,"_process":223,"aws-sign2":485,"bl":486,"buffer":256,"caseless":497,"dup":464,"forever-agent":501,"form-data":502,"hawk":531,"http":242,"http-signature":532,"https":218,"is-typedarray":578,"mime-types":581,"stream":241,"stringstream":590,"url":249,"util":252,"zlib":24}],600:[function(require,module,exports){
+},{"./lib/auth":345,"./lib/cookies":346,"./lib/getProxyFromURI":347,"./lib/har":348,"./lib/helpers":349,"./lib/multipart":350,"./lib/oauth":351,"./lib/querystring":352,"./lib/redirect":353,"./lib/tunnel":354,"_process":223,"aws-sign2":355,"bl":356,"buffer":256,"caseless":367,"forever-agent":371,"form-data":372,"hawk":401,"http":242,"http-signature":402,"https":218,"is-typedarray":448,"mime-types":451,"stream":241,"stringstream":460,"url":249,"util":252,"zlib":24}],470:[function(require,module,exports){
 (function (process,Buffer){
 /**
  * keythereum: create/import/export ethereum keys
@@ -105187,7 +100206,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./lib/keccak":601,"./lib/scrypt":602,"_process":223,"buffer":256,"crypto":25,"elliptic":603,"ethereumjs-util":629,"fs":9,"node-uuid":634,"path":222,"validator":635}],601:[function(require,module,exports){
+},{"./lib/keccak":471,"./lib/scrypt":472,"_process":223,"buffer":256,"crypto":25,"elliptic":473,"ethereumjs-util":499,"fs":9,"node-uuid":504,"path":222,"validator":505}],471:[function(require,module,exports){
 /* keccak.js
  * A Javascript implementation of the Keccak SHA-3 candidate from Bertoni,
  * Daemen, Peeters and van Assche. This version is not optimized with any of 
@@ -105381,7 +100400,7 @@ module.exports = (function () {
     };
 }());
 
-},{}],602:[function(require,module,exports){
+},{}],472:[function(require,module,exports){
 (function (process,__dirname){
 // https://github.com/tonyg/js-scrypt
 module.exports = function (requested_total_memory) {
@@ -117102,17 +112121,17 @@ module.exports = function (requested_total_memory) {
 };
 
 }).call(this,require('_process'),"/../keythereum/lib")
-},{"_process":223,"fs":9,"path":222}],603:[function(require,module,exports){
+},{"_process":223,"fs":9,"path":222}],473:[function(require,module,exports){
 arguments[4][60][0].apply(exports,arguments)
-},{"../package.json":628,"./elliptic/curve":606,"./elliptic/curves":609,"./elliptic/ec":610,"./elliptic/eddsa":613,"./elliptic/hmac-drbg":616,"./elliptic/utils":618,"brorand":620,"dup":60}],604:[function(require,module,exports){
+},{"../package.json":498,"./elliptic/curve":476,"./elliptic/curves":479,"./elliptic/ec":480,"./elliptic/eddsa":483,"./elliptic/hmac-drbg":486,"./elliptic/utils":488,"brorand":490,"dup":60}],474:[function(require,module,exports){
 arguments[4][61][0].apply(exports,arguments)
-},{"../../elliptic":603,"bn.js":619,"dup":61}],605:[function(require,module,exports){
+},{"../../elliptic":473,"bn.js":489,"dup":61}],475:[function(require,module,exports){
 arguments[4][62][0].apply(exports,arguments)
-},{"../../elliptic":603,"../curve":606,"bn.js":619,"dup":62,"inherits":627}],606:[function(require,module,exports){
+},{"../../elliptic":473,"../curve":476,"bn.js":489,"dup":62,"inherits":497}],476:[function(require,module,exports){
 arguments[4][63][0].apply(exports,arguments)
-},{"./base":604,"./edwards":605,"./mont":607,"./short":608,"dup":63}],607:[function(require,module,exports){
+},{"./base":474,"./edwards":475,"./mont":477,"./short":478,"dup":63}],477:[function(require,module,exports){
 arguments[4][64][0].apply(exports,arguments)
-},{"../../elliptic":603,"../curve":606,"bn.js":619,"dup":64,"inherits":627}],608:[function(require,module,exports){
+},{"../../elliptic":473,"../curve":476,"bn.js":489,"dup":64,"inherits":497}],478:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -118021,9 +113040,9 @@ JPoint.prototype.isInfinity = function isInfinity() {
   return this.z.cmpn(0) === 0;
 };
 
-},{"../../elliptic":603,"../curve":606,"bn.js":619,"inherits":627}],609:[function(require,module,exports){
+},{"../../elliptic":473,"../curve":476,"bn.js":489,"inherits":497}],479:[function(require,module,exports){
 arguments[4][66][0].apply(exports,arguments)
-},{"../elliptic":603,"./precomputed/secp256k1":617,"dup":66,"hash.js":621}],610:[function(require,module,exports){
+},{"../elliptic":473,"./precomputed/secp256k1":487,"dup":66,"hash.js":491}],480:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -118235,23 +113254,23 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
   throw new Error('Unable to find valid recovery factor');
 };
 
-},{"../../elliptic":603,"./key":611,"./signature":612,"bn.js":619}],611:[function(require,module,exports){
+},{"../../elliptic":473,"./key":481,"./signature":482,"bn.js":489}],481:[function(require,module,exports){
 arguments[4][68][0].apply(exports,arguments)
-},{"bn.js":619,"dup":68}],612:[function(require,module,exports){
+},{"bn.js":489,"dup":68}],482:[function(require,module,exports){
 arguments[4][69][0].apply(exports,arguments)
-},{"../../elliptic":603,"bn.js":619,"dup":69}],613:[function(require,module,exports){
+},{"../../elliptic":473,"bn.js":489,"dup":69}],483:[function(require,module,exports){
 arguments[4][70][0].apply(exports,arguments)
-},{"../../elliptic":603,"./key":614,"./signature":615,"dup":70,"hash.js":621}],614:[function(require,module,exports){
+},{"../../elliptic":473,"./key":484,"./signature":485,"dup":70,"hash.js":491}],484:[function(require,module,exports){
 arguments[4][71][0].apply(exports,arguments)
-},{"../../elliptic":603,"dup":71}],615:[function(require,module,exports){
+},{"../../elliptic":473,"dup":71}],485:[function(require,module,exports){
 arguments[4][72][0].apply(exports,arguments)
-},{"../../elliptic":603,"bn.js":619,"dup":72}],616:[function(require,module,exports){
+},{"../../elliptic":473,"bn.js":489,"dup":72}],486:[function(require,module,exports){
 arguments[4][73][0].apply(exports,arguments)
-},{"../elliptic":603,"dup":73,"hash.js":621}],617:[function(require,module,exports){
+},{"../elliptic":473,"dup":73,"hash.js":491}],487:[function(require,module,exports){
 arguments[4][74][0].apply(exports,arguments)
-},{"dup":74}],618:[function(require,module,exports){
+},{"dup":74}],488:[function(require,module,exports){
 arguments[4][75][0].apply(exports,arguments)
-},{"bn.js":619,"dup":75}],619:[function(require,module,exports){
+},{"bn.js":489,"dup":75}],489:[function(require,module,exports){
 (function (module, exports) {
 
 'use strict';
@@ -120700,23 +115719,23 @@ Mont.prototype.invm = function invm(a) {
 
 })(typeof module === 'undefined' || module, this);
 
-},{}],620:[function(require,module,exports){
+},{}],490:[function(require,module,exports){
 arguments[4][76][0].apply(exports,arguments)
-},{"dup":76}],621:[function(require,module,exports){
+},{"dup":76}],491:[function(require,module,exports){
 arguments[4][77][0].apply(exports,arguments)
-},{"./hash/common":622,"./hash/hmac":623,"./hash/ripemd":624,"./hash/sha":625,"./hash/utils":626,"dup":77}],622:[function(require,module,exports){
+},{"./hash/common":492,"./hash/hmac":493,"./hash/ripemd":494,"./hash/sha":495,"./hash/utils":496,"dup":77}],492:[function(require,module,exports){
 arguments[4][78][0].apply(exports,arguments)
-},{"../hash":621,"dup":78}],623:[function(require,module,exports){
+},{"../hash":491,"dup":78}],493:[function(require,module,exports){
 arguments[4][79][0].apply(exports,arguments)
-},{"../hash":621,"dup":79}],624:[function(require,module,exports){
+},{"../hash":491,"dup":79}],494:[function(require,module,exports){
 arguments[4][80][0].apply(exports,arguments)
-},{"../hash":621,"dup":80}],625:[function(require,module,exports){
+},{"../hash":491,"dup":80}],495:[function(require,module,exports){
 arguments[4][81][0].apply(exports,arguments)
-},{"../hash":621,"dup":81}],626:[function(require,module,exports){
+},{"../hash":491,"dup":81}],496:[function(require,module,exports){
 arguments[4][82][0].apply(exports,arguments)
-},{"dup":82,"inherits":627}],627:[function(require,module,exports){
+},{"dup":82,"inherits":497}],497:[function(require,module,exports){
 arguments[4][219][0].apply(exports,arguments)
-},{"dup":219}],628:[function(require,module,exports){
+},{"dup":219}],498:[function(require,module,exports){
 module.exports={
   "name": "elliptic",
   "version": "5.2.1",
@@ -120785,7 +115804,7 @@ module.exports={
   "readme": "ERROR: No README data found!"
 }
 
-},{}],629:[function(require,module,exports){
+},{}],499:[function(require,module,exports){
 (function (Buffer){
 const SHA3 = require('sha3')
 const ec = require('elliptic').ec('secp256k1')
@@ -121162,9 +116181,9 @@ function padToEven (a) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":10,"bn.js":630,"buffer":256,"elliptic":603,"rlp":633,"sha3":631}],630:[function(require,module,exports){
-arguments[4][619][0].apply(exports,arguments)
-},{"dup":619}],631:[function(require,module,exports){
+},{"assert":10,"bn.js":500,"buffer":256,"elliptic":473,"rlp":503,"sha3":501}],500:[function(require,module,exports){
+arguments[4][489][0].apply(exports,arguments)
+},{"dup":489}],501:[function(require,module,exports){
 (function (Buffer){
 const Sha3 = require('js-sha3')
 
@@ -121190,9 +116209,9 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":256,"js-sha3":632}],632:[function(require,module,exports){
-arguments[4][321][0].apply(exports,arguments)
-},{"dup":321}],633:[function(require,module,exports){
+},{"buffer":256,"js-sha3":502}],502:[function(require,module,exports){
+arguments[4][322][0].apply(exports,arguments)
+},{"dup":322}],503:[function(require,module,exports){
 (function (Buffer){
 const assert = require('assert')
 /**
@@ -121421,9 +116440,9 @@ function toBuffer (v) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":10,"buffer":256}],634:[function(require,module,exports){
-arguments[4][324][0].apply(exports,arguments)
-},{"buffer":256,"crypto":25,"dup":324}],635:[function(require,module,exports){
+},{"assert":10,"buffer":256}],504:[function(require,module,exports){
+arguments[4][325][0].apply(exports,arguments)
+},{"buffer":256,"crypto":25,"dup":325}],505:[function(require,module,exports){
 /*!
  * Copyright (c) 2015 Chris O'Hara <cohara87@gmail.com>
  *
@@ -122315,7 +117334,7 @@ arguments[4][324][0].apply(exports,arguments)
 
 });
 
-},{}],636:[function(require,module,exports){
+},{}],506:[function(require,module,exports){
 (function (process,global){
 /**
  * IPFS/Ethereum-powered decentralized comments.
@@ -122724,17 +117743,15 @@ module.exports = {
 };
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":223,"async":637,"augur-abi":638,"augur-contracts":3,"ethereumjs-connect":641,"ethrpc":465,"ipfs-api":11,"multi-hash":642}],637:[function(require,module,exports){
+},{"_process":223,"async":507,"augur-abi":508,"augur-contracts":3,"ethereumjs-connect":333,"ethrpc":335,"ipfs-api":11,"multi-hash":511}],507:[function(require,module,exports){
 arguments[4][6][0].apply(exports,arguments)
-},{"_process":223,"dup":6}],638:[function(require,module,exports){
+},{"_process":223,"dup":6}],508:[function(require,module,exports){
 arguments[4][7][0].apply(exports,arguments)
-},{"bignumber.js":639,"buffer":256,"dup":7,"js-sha3":640}],639:[function(require,module,exports){
+},{"bignumber.js":509,"buffer":256,"dup":7,"js-sha3":510}],509:[function(require,module,exports){
 arguments[4][8][0].apply(exports,arguments)
-},{"dup":8}],640:[function(require,module,exports){
-arguments[4][321][0].apply(exports,arguments)
-},{"dup":321}],641:[function(require,module,exports){
-arguments[4][332][0].apply(exports,arguments)
-},{"_process":223,"async":637,"augur-contracts":3,"dup":332,"ethrpc":465}],642:[function(require,module,exports){
+},{"dup":8}],510:[function(require,module,exports){
+arguments[4][322][0].apply(exports,arguments)
+},{"dup":322}],511:[function(require,module,exports){
 (function (Buffer){
 /**
  * Multi-hash encoder/decoder.
@@ -122791,7 +117808,7 @@ module.exports = {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"bs58":643,"buffer":256}],643:[function(require,module,exports){
+},{"bs58":512,"buffer":256}],512:[function(require,module,exports){
 var basex = require('base-x')
 var ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
 var base58 = basex(ALPHABET)
@@ -122801,7 +117818,7 @@ module.exports = {
   decode: base58.decode
 }
 
-},{"base-x":644}],644:[function(require,module,exports){
+},{"base-x":513}],513:[function(require,module,exports){
 // base* encoding
 // Credits to https://github.com/cryptocoinjs/bs58
 

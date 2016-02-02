@@ -189,7 +189,7 @@ module.exports = function () {
             if (this.price_filter) {
                 this.eth_getFilterChanges(this.price_filter.id, function (filtrate) {
                     // console.log("price filtrate:", filtrate);
-                    var data_array, market, marketplus, outcome;;
+                    var data_array, market, marketplus, outcome;
                     if (filtrate && filtrate.length) {
                         for (var i = 0, len = filtrate.length; i < len; ++i) {
                             if (filtrate[i] && filtrate[i].topics && filtrate[i].topics.length > 3) {

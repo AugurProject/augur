@@ -24,9 +24,9 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
     var period = augur.getVotePeriod(branch);
     var expirationBlock = augur.rpc.blockNumber() + 25000;
 
-    describe("Creating " + num_events + " events and markets", function () {
+    describe("Creating " + num_events + " events", function () {
         var events = [];
-        it.each(_.range(0, num_events), "create event/market %s", ['element'], function (element, next) {
+        it.each(_.range(0, num_events), "create event %s", ['element'], function (element, next) {
             this.timeout(constants.TIMEOUT);
             var description = Math.random().toString(36).substring(4);
             augur.createEvent({
@@ -37,8 +37,6 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 maxValue: maxValue,
                 numOutcomes: numOutcomes,
                 onSent: function (r) {
-                    // console.log(chalk.green("    ✓ ") + chalk.gray("event hash:  " + r.txHash));
-                    // console.log(chalk.green("    ✓ ") + chalk.gray("event ID:    " + r.callReturn));
                     assert(r.txHash);
                     assert(r.callReturn);
                 },
@@ -51,7 +49,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 onFailed: function (r) {
                     next(new Error(utils.pp(r)));
                 }
-            }); // createEvent
+            });
         });
     });
 }
