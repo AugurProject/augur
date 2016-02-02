@@ -69,6 +69,7 @@ let Header = React.createClass({
 
             let cashBalance = this.props.asset.cash ? this.props.asset.cash.toFixed(2) : '-';
             let repBalance = this.props.asset.reputation ? this.props.asset.reputation.toFixed(2) : '-';
+            let etherBalance = this.props.asset.ether ? utilities.formatEther(this.props.asset.ether).value : '-';
             menuItemsOnRight = (
                 <ul className="nav navbar-nav navbar-right">
                     <li>
@@ -79,6 +80,11 @@ let Header = React.createClass({
                     <li>
                         <a href="#" className="" onClick={this.handleSendRepClick}>
                             rep {repBalance}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" className="" onClick={this.handleSendEtherClick}>
+                            ether {etherBalance}
                         </a>
                     </li>
                 </ul>

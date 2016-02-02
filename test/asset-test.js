@@ -88,7 +88,7 @@ test("AssetActions.updateAssets", function (t) {
                         flux.register.UPDATE_ASSETS = function (payload) {
                             if (DEBUG) console.log("UPDATE_ASSETS payload:", payload);
                             t.equal(payload.constructor, Object, "payload is an object");
-                            t.true(payload.cash || payload.reputation, "payload fields are not all null/undefined");
+                            t.true(payload.cash || payload.reputation || payload.ether, "payload fields are not all null/undefined");
                             if (payload.reputation) {
                                 t.equal(payload.reputation.constructor, BigNumber, "payload.reputation is a BigNumber");
                                 t.true(payload.reputation.eq(abi.bignum(repBalance)), "payload.reputation == reputation balance");
@@ -111,15 +111,13 @@ test("AssetActions.updateAssets", function (t) {
                                             t.true(abi.bignum(repBalance).sub(finalRepBalance).eq(abi.bignum(amount)), "initial - final reputation balance == " + amount);
                                             flux.register.UPDATE_ASSETS = function (payload) {
                                                 t.equal(payload.constructor, Object, "payload is an object");
-                                                t.true(payload.cash || payload.reputation, "payload fields are not all null/undefined");
+                                                t.true(payload.cash || payload.reputation || payload.ether, "payload fields are not all null/undefined");
                                                 if (payload.reputation) {
                                                     t.equal(payload.reputation.constructor, BigNumber, "payload.reputation is a BigNumber");
                                                     t.true(payload.reputation.eq(abi.bignum(finalRepBalance)), "payload.reputation == final reputation balance");
                                                     flux.register.UPDATE_PERCENT_LOADED_SUCCESS = UPDATE_PERCENT_LOADED_SUCCESS;
                                                     flux.register.UPDATE_ASSETS = UPDATE_ASSETS;
-                                                    // flux.augur.filters.ignore(true, t.end);
-                                                    console.log("ending")
-                                                    t.end();
+                                                    flux.augur.filters.ignore(true, t.end);
                                                 }
                                             };
                                             flux.actions.asset.updateAssets();

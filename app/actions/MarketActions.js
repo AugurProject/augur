@@ -129,9 +129,9 @@ module.exports = {
     var start = (new Date()).getTime();
     var prevTime = start;
     augur.getCreationBlocks(branchId, function (creationBlock) {
-      augur.getNumMarkets(branchId, function (numMarkets) {
+      augur.getNumMarketsBranch(branchId, function (numMarkets) {
         numMarkets = parseInt(numMarkets);
-        var numPages = Math.ceil(numMarkets / parseFloat(marketsPerPage));
+        var numPages = Math.ceil(numMarkets / Number(marketsPerPage));
         var range = new Array(numPages);
         for (var i = 0; i < numPages; ++i) {
           range[i] = i*marketsPerPage;

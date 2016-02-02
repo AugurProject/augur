@@ -6,14 +6,10 @@ trap "exit" INT
 
 # nuke
 rm -Rf node_modules
-if [ -f "app/app.js" ]; then
-    rm app/app.js
-fi
 
 # rebuild
 npm install
-grunt browserify:build
-grunt less
+grunt
 
 # run server
 npm start

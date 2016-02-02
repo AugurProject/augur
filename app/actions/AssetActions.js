@@ -20,8 +20,13 @@ module.exports = {
           self.dispatch(constants.asset.UPDATE_ASSETS, {reputation: abi.bignum(result)});
         }
       });
+      this.flux.augur.rpc.balance(account, null, function (result) {
+        if (result && !result.error) {
+          self.dispatch(constants.asset.UPDATE_ASSETS, {ether: abi.bignum(result)});
+        }
+      });
     } else {
-      this.dispatch(constants.asset.UPDATE_ASSETS, {cash: null, reputation: null});
+      this.dispatch(constants.asset.UPDATE_ASSETS, {cash: null, reputation: null, ether: null});
     }
   },
 

@@ -24,6 +24,17 @@ module.exports = {
     return currentBlock + blockDelta;
   },
 
+  formatEther: function (wei) {
+    if (!wei) return { value: '', unit: 'ether', withUnit: '-' };
+    var value = abi.bignum(wei).dividedBy(constants.ETHER);
+    var unit = 'ether';
+    return {
+      value: +value.toFixed(2),
+      unit: unit,
+      withUnit: value.toFixed(2) + ' ' + unit
+    };
+  },
+
   // assumes price is a BigNumber object
   priceToPercent: function (price) {
     var percent = price.times(100).toFixed(2);
