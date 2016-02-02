@@ -62755,75 +62755,121 @@ Augur.prototype.getAccountMeanTradePrices = function (account, cb) {
     });
 };
 
-Augur.prototype.checkOrderBook = function (cb) {
+/**************
+ * Order book *
+ **************/
+
+Augur.prototype.checkBuyOrder = function (currentPrice, order, cb) {
+    var self = this;
+    if (currentPrice.constructor !== BigNumber) {
+        currentPrice = new BigNumber(currentPrice);
+    }
+    if (currentPrice.lte(order.price)) {
+        console.log("matched buy order:", JSON.stringify(order, null, 2));
+
+        // execute buy order
+        self.buyShares({
+            branchId: order.branch,
+            marketId: order.market,
+            outcome: order.outcome,
+            amount: order.amount.toFixed(),
+            onSent: function (res) {
+                console.log("poll_price_listener buyShares sent:", res);
+                self.db.orders.cancel(order.id);
+            },
+            onSuccess: function (res) {
+                console.log("poll_price_listener buyShares success:", res);
+                cb(order);
+            },
+            onFailed: cb
+        });
+    }
+};
+
+Augur.prototype.checkSellOrder = function (currentPrice, order, cb) {
+    var self = this;
+    if (currentPrice.constructor !== BigNumber) {
+        currentPrice = new BigNumber(currentPrice);
+    }
+    if (currentPrice.gte(order.price)) {
+        console.log("matched sell order:", JSON.stringify(order, null, 2));
+
+        // execute sell order
+        self.sellShares({
+            branchId: order.branch,
+            marketId: order.market,
+            outcome: order.outcome,
+            amount: order.amount.abs().toFixed(),
+            onSent: function (res) {
+                console.log("poll_price_listener sellShares sent:", res);
+                self.db.orders.cancel(order.id);
+            },
+            onSuccess: function (res) {
+                console.log("poll_price_listener sellShares success:", res);
+                cb(order);
+            },
+            onFailed: cb
+        });
+    }
+};
+
+Augur.prototype.checkOutcomeOrderList = function (marketInfo, outcome, orderList, cb) {
+    var self = this;
+    var currentPrice = self.price(marketInfo, outcome);
+    var matchedOrders = [];
+    async.each(orderList, function (order, nextOrder) {
+        order.amount = new BigNumber(order.amount);
+        order.price = new BigNumber(order.price);
+        order.branch = marketInfo.branchId;
+        order.market = marketInfo._id;
+        order.outcome = outcome;
+
+        // buy orders
+        if (amount.gt(new BigNumber(0))) {
+            self.checkBuyOrder(order, function (matched) {
+                if (matched) {
+                    if (matched.error) return nextOrder(matched);
+                    matchedOrders.push(matched);
+                }
+                nextOrder();
+            });
+
+        // sell orders
+        } else {
+            self.checkSellOrder(order, function (matched) {
+                if (matched) {
+                    if (matched.error) return nextOrder(matched);
+                    matchedOrders.push(matched);
+                }
+                nextOrder();
+            });
+        }
+    }, function (err) {
+        if (err) return cb(err);
+        cb(matchedOrders);
+    });
+};
+
+Augur.prototype.checkOrderBook = function (market, cb) {
     var self = this;
     cb = cb || this.utils.pass;
     var orders = this.db.orders.get(this.from);
-    if (orders && orders[market]) {
-        this.getMarketInfo(market, function (info) {
-            async.forEachOf(orders[market], function (orderList, outcome, nextOutcome) {
-                var currentPrice = self.price(info, outcome);
-                async.each(orderList, function (order, nextOrder) {
-                    var amount = new BigNumber(order.amount);
-                    var orderPrice = new BigNumber(order.price);
-
-                    // buy orders
-                    if (amount.gt(new BigNumber(0))) {
-                        if (currentPrice.lte(orderPrice)) {
-                            console.log("matched buy order:", JSON.stringify(order, null, 2));
-
-                            // execute buy order
-                            self.buyShares({
-                                branchId: info.branchId,
-                                marketId: market,
-                                outcome: outcome,
-                                amount: order.amount,
-                                onSent: function (res) {
-                                    console.log("poll_price_listener buyShares sent:", res);
-                                    self.db.orders.cancel(order.id);
-                                },
-                                onSuccess: function (res) {
-                                    console.log("poll_price_listener buyShares success:", res);
-                                    nextOrder();
-                                },
-                                onFailed: nextOrder
-                            });
-                        }
-
-                    // sell orders
-                    } else {
-                        if (currentPrice.gte(orderPrice)) {
-                            console.log("matched sell order:", JSON.stringify(order, null, 2));
-
-                            // execute sell order
-                            self.sellShares({
-                                branchId: info.branchId,
-                                marketId: market,
-                                outcome: outcome,
-                                amount: amount.abs().toFixed(),
-                                onSent: function (res) {
-                                    console.log("poll_price_listener sellShares sent:", res);
-                                    self.db.orders.cancel(order.id);
-                                },
-                                onSuccess: function (res) {
-                                    console.log("poll_price_listener sellShares success:", res);
-                                    nextOrder();
-                                },
-                                onFailed: nextOrder
-                            });
-                        }
-                    }
-                }, function (err) {
-                    if (err) return nextOutcome(err);
-                    nextOutcome();
-                });
-            }, function (err) {
-                if (err) return cb(err);
-                console.log("order book check complete");
-                cb(true);
+    if (!orders || !orders[market]) return cb(false);
+    var matchedOrders = [];
+    this.getMarketInfo(market, function (marketInfo) {
+        async.forEachOf(orders[market], function (orderList, outcome, nextOutcome) {
+            self.checkOutcomeOrderList(marketInfo, outcome, orderList, function (matched) {
+                if (matched && matched.constructor === Array) {
+                    matchedOrders = matchedOrders.concat(matched);
+                    return nextOutcome();
+                }
+                nextOutcome(matched || new Error("checkOrderBook error"));
             });
+        }, function (err) {
+            if (err) return cb(err);
+            cb(matchedOrders);
         });
-    }
+    });
 }
 
 /**
