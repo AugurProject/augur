@@ -617,9 +617,9 @@ module.exports = function (network) {
             method: "getBranches",
             returns: "hash[]"
         },
-        getMarkets: {
+        getMarketsInBranch: {
             to: contracts.branches,
-            method: "getMarkets",
+            method: "getMarketsInBranch",
             signature: "i",
             returns: "hash[]"
         },
@@ -60784,7 +60784,13 @@ Augur.prototype.getBranches = function (callback) {
 };
 Augur.prototype.getMarkets = function (branch, callback) {
     // branch: sha256 hash id
-    var tx = clone(this.tx.getMarkets);
+    var tx = clone(this.tx.getMarketsInBranch);
+    tx.params = branch;
+    return this.fire(tx, callback);
+};
+Augur.prototype.getMarketsInBranch = function (branch, callback) {
+    // branch: sha256 hash id
+    var tx = clone(this.tx.getMarketsInBranch);
     tx.params = branch;
     return this.fire(tx, callback);
 };
@@ -62764,21 +62770,25 @@ Augur.prototype.checkBuyOrder = function (currentPrice, order, cb) {
     if (currentPrice.constructor !== BigNumber) {
         currentPrice = new BigNumber(currentPrice);
     }
+    if (order.amount.constructor !== BigNumber) {
+        order.amount = new BigNumber(order.amount);
+    }
+    if (order.price.constructor !== BigNumber) {
+        order.price = new BigNumber(order.price);
+    }
     if (currentPrice.lte(order.price)) {
-        console.log("matched buy order:", JSON.stringify(order, null, 2));
 
         // execute buy order
-        self.buyShares({
+        this.buyShares({
             branchId: order.branch,
             marketId: order.market,
             outcome: order.outcome,
             amount: order.amount.toFixed(),
             onSent: function (res) {
-                console.log("poll_price_listener buyShares sent:", res);
                 self.db.orders.cancel(order.id);
             },
             onSuccess: function (res) {
-                console.log("poll_price_listener buyShares success:", res);
+                // console.log("checkBuyOrder:", res);
                 cb(order);
             },
             onFailed: cb
@@ -62791,21 +62801,25 @@ Augur.prototype.checkSellOrder = function (currentPrice, order, cb) {
     if (currentPrice.constructor !== BigNumber) {
         currentPrice = new BigNumber(currentPrice);
     }
+    if (order.amount.constructor !== BigNumber) {
+        order.amount = new BigNumber(order.amount);
+    }
+    if (order.price.constructor !== BigNumber) {
+        order.price = new BigNumber(order.price);
+    }
     if (currentPrice.gte(order.price)) {
-        console.log("matched sell order:", JSON.stringify(order, null, 2));
 
         // execute sell order
-        self.sellShares({
+        this.sellShares({
             branchId: order.branch,
             marketId: order.market,
             outcome: order.outcome,
             amount: order.amount.abs().toFixed(),
             onSent: function (res) {
-                console.log("poll_price_listener sellShares sent:", res);
                 self.db.orders.cancel(order.id);
             },
             onSuccess: function (res) {
-                console.log("poll_price_listener sellShares success:", res);
+                // console.log("checkSellOrder:", res);
                 cb(order);
             },
             onFailed: cb
@@ -62813,37 +62827,35 @@ Augur.prototype.checkSellOrder = function (currentPrice, order, cb) {
     }
 };
 
+Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
+    var currentPrice = new BigNumber(this.price(marketInfo, outcome));
+    order.amount = new BigNumber(order.amount);
+    order.price = new BigNumber(order.price);
+    order.branch = marketInfo.branchId;
+    order.market = marketInfo._id;
+    order.outcome = outcome;
+
+    // buy orders
+    if (order.amount.gt(new BigNumber(0))) {
+        this.checkBuyOrder(currentPrice, order, cb);
+
+    // sell orders
+    } else {
+        this.checkSellOrder(currentPrice, order, cb);
+    }
+};
+
 Augur.prototype.checkOutcomeOrderList = function (marketInfo, outcome, orderList, cb) {
     var self = this;
-    var currentPrice = self.price(marketInfo, outcome);
     var matchedOrders = [];
     async.each(orderList, function (order, nextOrder) {
-        order.amount = new BigNumber(order.amount);
-        order.price = new BigNumber(order.price);
-        order.branch = marketInfo.branchId;
-        order.market = marketInfo._id;
-        order.outcome = outcome;
-
-        // buy orders
-        if (amount.gt(new BigNumber(0))) {
-            self.checkBuyOrder(order, function (matched) {
-                if (matched) {
-                    if (matched.error) return nextOrder(matched);
-                    matchedOrders.push(matched);
-                }
-                nextOrder();
-            });
-
-        // sell orders
-        } else {
-            self.checkSellOrder(order, function (matched) {
-                if (matched) {
-                    if (matched.error) return nextOrder(matched);
-                    matchedOrders.push(matched);
-                }
-                nextOrder();
-            });
-        }
+        self.checkOrder(marketInfo, outcome, order, function (matched) {
+            if (matched && !matched.error) {
+                matchedOrders.push(matched);
+                return nextOrder();
+            }
+            nextOrder(matched || new Error("checkOutcomeOrderList error"));
+        });
     }, function (err) {
         if (err) return cb(err);
         cb(matchedOrders);
@@ -62854,11 +62866,12 @@ Augur.prototype.checkOrderBook = function (market, cb) {
     var self = this;
     cb = cb || this.utils.pass;
     var orders = this.db.orders.get(this.from);
-    if (!orders || !orders[market]) return cb(false);
+    if (!market || !orders) return cb(false);
     var matchedOrders = [];
-    this.getMarketInfo(market, function (marketInfo) {
-        async.forEachOf(orders[market], function (orderList, outcome, nextOutcome) {
-            self.checkOutcomeOrderList(marketInfo, outcome, orderList, function (matched) {
+    if (market.constructor === Object && market.network && market.events) {
+        if (!orders[market._id]) return cb(false);
+        async.forEachOf(orders[market._id], function (orderList, outcome, nextOutcome) {
+            self.checkOutcomeOrderList(market, outcome, orderList, function (matched) {
                 if (matched && matched.constructor === Array) {
                     matchedOrders = matchedOrders.concat(matched);
                     return nextOutcome();
@@ -62869,8 +62882,13 @@ Augur.prototype.checkOrderBook = function (market, cb) {
             if (err) return cb(err);
             cb(matchedOrders);
         });
+    }
+    if (!orders[market]) return cb(false);
+    this.getMarketInfo(market, function (info) {
+        if (!info || info.error) return cb(info);
+        self.checkOrderBook(info, cb);
     });
-}
+};
 
 /**
  * Batch interface:
