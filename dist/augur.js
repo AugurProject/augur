@@ -665,9 +665,9 @@ module.exports = function (network) {
             signature: "i",
             send: true
         },
-        getNumMarkets: {
+        getNumMarketsBranch: {
             to: contracts.branches,
-            method: "getNumMarkets",
+            method: "getNumMarketsBranch",
             signature: "i",
             returns: "number"
         },
@@ -60806,9 +60806,15 @@ Augur.prototype.getVotePeriod = function (branch, callback) {
     tx.params = branch;
     return this.fire(tx, callback);
 };
+Augur.prototype.getNumMarketsBranch = function (branch, callback) {
+    // branch: sha256
+    var tx = clone(this.tx.getNumMarketsBranch);
+    tx.params = branch;
+    return this.fire(tx, callback);
+};
 Augur.prototype.getNumMarkets = function (branch, callback) {
     // branch: sha256
-    var tx = clone(this.tx.getNumMarkets);
+    var tx = clone(this.tx.getNumMarketsBranch);
     tx.params = branch;
     return this.fire(tx, callback);
 };
