@@ -22,7 +22,6 @@
     "ethereumjs-tx": "^0.6.9",
     "ethereumjs-util": "^1.5.1",
     "ethrpc": "^0.4.12",
-    "js-sha3": "^0.3.1",
     "keythereum": "^0.2.1",
     "moment": "^2.10.3",
     "multi-hash": "^0.1.1",

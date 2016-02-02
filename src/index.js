@@ -425,26 +425,24 @@ Augur.prototype.lsLmsr = function (market, callback) {
     if (market.constructor === Object && market.network && market.events) {
         return callback(lsLmsr(market));
     }
-    this.getMarketInfo(market, function (info) {
-        callback(lsLmsr(info));
-    });
+    var tx = clone(this.tx.lsLmsr);
+    tx.params = market;
+    return this.fire(tx, callback);
 };
 Augur.prototype.price = function (market, outcome, callback) {
     var self = this;
-    function price(info, outcome) {
+    callback = callback || this.utils.pass;
+    if (market.constructor === Object && market.network && market.events) {
+        var info = clone(market);
         var epsilon = new BigNumber("0.0000001");
         var a = new BigNumber(self.lsLmsr(info));
         info.outcomes[outcome-1].outstandingShares = new BigNumber(info.outcomes[outcome-1].outstandingShares).plus(epsilon).toFixed();
         var b = new BigNumber(self.lsLmsr(info));
-        return b.minus(a).dividedBy(epsilon).toFixed();
+        return callback(b.minus(a).dividedBy(epsilon).toFixed());
     }
-    callback = callback || this.utils.pass;
-    if (market.constructor === Object && market.network && market.events) {
-        return callback(price(clone(market), outcome));
-    }
-    self.getMarketInfo(market, function (info) {
-        callback(price(info, outcome));
-    });
+    var tx = clone(this.tx.price);
+    tx.params = [market, outcome];
+    return this.fire(tx, callback);
 };
 Augur.prototype.getSimulatedBuy = function (market, outcome, amount, callback) {
     // market: sha256 hash id
@@ -2194,6 +2192,78 @@ Augur.prototype.getAccountMeanTradePrices = function (account, cb) {
         cb(meanPrices);
     });
 };
+
+Augur.prototype.checkOrderBook = function (cb) {
+    var self = this;
+    cb = cb || this.utils.pass;
+    var orders = this.db.orders.get(this.from);
+    if (!orders || !orders[market]) return cb(false);
+    var matchedOrders = [];
+    this.getMarketInfo(market, function (info) {
+        async.forEachOf(orders[market], function (orderList, outcome, nextOutcome) {
+            var currentPrice = self.price(info, outcome);
+            async.each(orderList, function (order, nextOrder) {
+                var amount = new BigNumber(order.amount);
+                var orderPrice = new BigNumber(order.price);
+
+                // buy orders
+                if (amount.gt(new BigNumber(0))) {
+                    if (currentPrice.lte(orderPrice)) {
+                        console.log("matched buy order:", JSON.stringify(order, null, 2));
+                        matchedOrders.push(order);
+
+                        // execute buy order
+                        self.buyShares({
+                            branchId: info.branchId,
+                            marketId: market,
+                            outcome: outcome,
+                            amount: order.amount,
+                            onSent: function (res) {
+                                console.log("poll_price_listener buyShares sent:", res);
+                                self.db.orders.cancel(order.id);
+                            },
+                            onSuccess: function (res) {
+                                console.log("poll_price_listener buyShares success:", res);
+                                nextOrder();
+                            },
+                            onFailed: nextOrder
+                        });
+                    }
+
+                // sell orders
+                } else {
+                    if (currentPrice.gte(orderPrice)) {
+                        console.log("matched sell order:", JSON.stringify(order, null, 2));
+                        matchedOrders.push(order);
+
+                        // execute sell order
+                        self.sellShares({
+                            branchId: info.branchId,
+                            marketId: market,
+                            outcome: outcome,
+                            amount: amount.abs().toFixed(),
+                            onSent: function (res) {
+                                console.log("poll_price_listener sellShares sent:", res);
+                                self.db.orders.cancel(order.id);
+                            },
+                            onSuccess: function (res) {
+                                console.log("poll_price_listener sellShares success:", res);
+                                nextOrder();
+                            },
+                            onFailed: nextOrder
+                        });
+                    }
+                }
+            }, function (err) {
+                if (err) return nextOutcome(err);
+                nextOutcome();
+            });
+        }, function (err) {
+            if (err) return cb(err);
+            cb(matchedOrders);
+        });
+    });
+}
 
 /**
  * Batch interface:

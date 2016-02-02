@@ -189,7 +189,7 @@ module.exports = function () {
             if (this.price_filter) {
                 this.eth_getFilterChanges(this.price_filter.id, function (filtrate) {
                     // console.log("price filtrate:", filtrate);
-                    var data_array, market, marketplus;
+                    var data_array, market, marketplus, outcome;;
                     if (filtrate && filtrate.length) {
                         for (var i = 0, len = filtrate.length; i < len; ++i) {
                             if (filtrate[i] && filtrate[i].topics && filtrate[i].topics.length > 3) {
@@ -203,14 +203,17 @@ module.exports = function () {
                                         if (marketplus.lt(abi.constants.BYTES_32)) {
                                             market = marketplus;
                                         }
+                                        market = abi.hex(market);
+                                        outcome = abi.string(filtrate[i].topics[3]);
                                         onMessage({
                                             user: abi.format_address(filtrate[i].topics[1]),
-                                            marketId: abi.hex(market),
-                                            outcome: abi.string(filtrate[i].topics[3]),
+                                            marketId: market,
+                                            outcome: outcome,
                                             price: abi.unfix(data_array[0], "string"),
                                             cost: abi.unfix(data_array[1], "string"),
                                             blockNumber: abi.string(filtrate[i].blockNumber)
                                         });
+                                        augur.checkOrderBook(market);
                                     }
                                 } catch (exc) {
                                     console.error("updatePrice filter:", exc);
