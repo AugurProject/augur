@@ -32,6 +32,7 @@ stores.config.initialize = function () {
     constants.config.SET_HOST, this.handleSetHost,
     constants.config.SET_IS_HOSTED, this.handleSetIsHosted,
     constants.config.UPDATE_ACCOUNT, this.handleUpdateAccount,
+    constants.config.USER_REGISTERED, this.handleUserRegistered,
     constants.config.UPDATE_PERCENT_LOADED_SUCCESS, this.handleUpdatePercentLoadedSuccess,
     constants.config.LOAD_APPLICATION_DATA_SUCCESS, this.handleLoadApplicationDataSuccess,
     constants.config.FILTER_SETUP_COMPLETE, this.handleFilterSetupComplete,

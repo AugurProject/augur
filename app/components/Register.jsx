@@ -42,6 +42,7 @@ var RegisterModal = React.createClass({
             return;
           }
           console.log("account created:", account);
+          flux.actions.config.userRegistered();
           flux.actions.config.updateAccount({
             currentAccount: account.address,
             privateKey: account.privateKey,
@@ -52,6 +53,7 @@ var RegisterModal = React.createClass({
           self.props.onHide();
         },
         onSendEther: function (account) {
+          console.log("Register.jsx: onSendEther %o", arguments);
           flux.augur.filters.ignore(true, function (err) {
             if (err) return console.error(err);
             console.log("reset filters");

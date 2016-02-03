@@ -111,6 +111,7 @@ var AugurApp = React.createClass({
 
         <Header
             userAccount={this.state.config.currentAccount}
+            isNewRegistration={this.state.config.isNewRegistration}
             marketsCount={_.keys(this.state.market.markets).length}
             ballotsCount={_.keys(this.state.report.eventsToReport).length}
             toggleRegisterModal={this.toggleRegisterModal}

@@ -156,6 +156,12 @@ module.exports = {
     });
   },
 
+  userRegistered() {
+    this.dispatch(constants.config.USER_REGISTERED, {
+      isNewRegistration: true
+    });
+  },
+
   signOut: function () {
     this.flux.augur.web.logout();
     this.dispatch(constants.config.UPDATE_ACCOUNT, {

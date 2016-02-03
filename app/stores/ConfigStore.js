@@ -17,7 +17,8 @@ module.exports = {
     loaded: false,
     isHosted: isHosted,
     percentLoaded: null,
-    filters: {}
+    filters: {},
+    isNewRegistration: false
   },
   getState: function () {
     return this.state;
@@ -48,6 +49,10 @@ module.exports = {
   },
   handleUpdatePercentLoadedSuccess: function (payload) {
     this.state.percentLoaded = payload.percentLoaded;
+    this.emit(constants.CHANGE_EVENT);
+  },
+  handleUserRegistered(payload) {
+    this.state.isNewRegistration = payload.isNewRegistration;
     this.emit(constants.CHANGE_EVENT);
   },
   handleUpdateAccount: function (payload) {

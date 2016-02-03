@@ -13,6 +13,7 @@ let Router = require("react-router");
 let Link = Router.Link;
 
 let utilities = require("../../libs/utilities");
+let BigNumber = require("bignumber.js");
 
 let Header = React.createClass({
     mixins: [FluxMixin], // only to dispatch action
@@ -42,6 +43,30 @@ let Header = React.createClass({
         event.preventDefault();
         this.getFlux().actions.config.signOut();
     },
+    getCashText() {
+        let hasCash = this.props.asset.cash && this.props.asset.cash.gt(new BigNumber(0));
+        if (!hasCash && this.props.isNewRegistration) {
+            return "waiting";
+        } else {
+            return this.props.asset.cash ? this.props.asset.cash.toFixed(2) : '-';
+        }
+    },
+    getRepText() {
+        return "todo";
+        if (this.props.isNewRegistration) {
+            return "waiting";
+        } else {
+            return this.props.asset.reputation ? this.props.asset.reputation.toFixed(2) : '-';
+        }
+    },
+    getEtherText() {
+        return "todo";
+        if (this.props.isNewRegistration) {
+            return "waiting";
+        } else {
+            return this.props.asset.ether ? utilities.formatEther(this.props.asset.ether).value : '-';
+        }
+    },
     render() {
         let isUserLoggedIn = this.props.userAccount;
         let menuItemsOnLeft, menuItemsOnRight;
@@ -67,9 +92,9 @@ let Header = React.createClass({
                 </ul>
             );
 
-            let cashBalance = this.props.asset.cash ? this.props.asset.cash.toFixed(2) : '-';
-            let repBalance = this.props.asset.reputation ? this.props.asset.reputation.toFixed(2) : '-';
-            let etherBalance = this.props.asset.ether ? utilities.formatEther(this.props.asset.ether).value : '-';
+            let cashBalance = this.getCashText();
+            let repBalance = this.getRepText();
+            let etherBalance = this.getEtherText();
             menuItemsOnRight = (
                 <ul className="nav navbar-nav navbar-right">
                     <li>
