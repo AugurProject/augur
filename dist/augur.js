@@ -2,7 +2,7 @@
 module.exports={
     "7": {
         "namereg": "0xc6d9d2cd449a754c494264e1809c50e34d64562b",
-        "buy&sellShares": "0xb07c85f4bc330af9d05a13bfcfc8e4ee97aaf8a7",
+        "buyAndSellShares": "0xb07c85f4bc330af9d05a13bfcfc8e4ee97aaf8a7",
         "closeMarket": "0xc50d5c87fd47fcd0809189537167875f6bd2d2ec",
         "closeMarketEight": "0x1638264f1cf621577e0c9ebdbb32c64363ad5091",
         "closeMarketFour": "0xc0e57d94439e2ee128c2027165418990f7761b5a",
@@ -30,7 +30,7 @@ module.exports={
     },
     "10101": {
         "namereg": "0xc6d9d2cd449a754c494264e1809c50e34d64562b",
-        "buy&sellShares": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3",
+        "buyAndSellShares": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3",
         "closeMarket": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79",
         "closeMarketEight": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d",
         "closeMarketFour": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645",
@@ -1264,32 +1264,25 @@ module.exports = function (network) {
             signature: "ai"
         },
 
-        // checkQuorum.se
-        checkQuorum: {
-            to: contracts.checkQuorum,
-            method: "checkQuorum",
-            signature: "i",
-            returns: "number"
-        },
-
         // buy&sellShares.se
-        getNonce: {
+        commitTrade: {
             to: contracts.buyAndSellShares,
-            method: "getNonce",
-            signature: "i",
-            returns: "number"
+            method: "commitTrade",
+            signature: "ii",
+            returns: "number",
+            send: true
         },
         buyShares: {
             to: contracts.buyAndSellShares,
             method: "buyShares",
-            signature: "iiiiii",
+            signature: "iiiii",
             returns: "unfix",
             send: true
         },
         sellShares: {
             to: contracts.buyAndSellShares,
             method: "sellShares",
-            signature: "iiiiii",
+            signature: "iiiii",
             returns: "unfix",
             send: true
         },
@@ -66380,36 +66373,33 @@ Augur.prototype.hashReport = function (ballot, salt, callback) {
     }
 };
 
-// checkQuorum.se
-Augur.prototype.checkQuorum = function (branchId, onSent, onSuccess, onFailed) {
-    // branchId: sha256
-    var tx = clone(this.tx.checkQuorum);
-    if (branchId && branchId.constructor === Object && branchId.branchId) {
-        if (branchId.onSent) onSent = branchId.onSent;
-        if (branchId.onSuccess) onSuccess = branchId.onSuccess;
-        if (branchId.onFailed) onFailed = branchId.onFailed;
-        branchId = branchId.branchId;
-    }
-    tx.params = branchId;
-    return this.transact(tx, onSent, onSuccess, onFailed);
-};
-
 // buy&sellShares.se
-Augur.prototype.getNonce = function (id, callback) {
-    // id: sha256 hash id
-    var tx = clone(this.tx.getNonce);
-    tx.params = id;
-    return this.fire(tx, callback);
+Augur.prototype.makeMarketHash = function (market, outcome, amount, limit) {
+    // market: sha256
+    // outcome: integer
+    // amount: number (convert to fixed-point)
+    // limit: max price per share (convert to fixed-point); 0=market order
+    if (market && market.constructor === Object && market.market) {
+        outcome = market.outcome;
+        amount = market.amount;
+        limit = market.limit;
+        market = market.market;
+    }
+    limit = (limit) ? abi.fix(limit, "hex") : 0;
+    return this.utils.sha256([market, outcome, abi.fix(amount, "hex"), limit]);
 };
-Augur.prototype.buyShares = function (branch, market, outcome, amount, nonce, limit, onSent, onSuccess, onFailed) {
+Augur.prototype.commitTrade = function (market, hash, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.commitTrade);
+    var unpacked = this.utils.unpack(market, this.utils.labels(this.commitTrade), arguments);
+    tx.params = unpacked.params;
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.buyShares = function (branch, market, outcome, amount, limit, onSent, onSuccess, onFailed) {
     if (branch && branch.constructor === Object && branch.branchId) {
         market = branch.marketId; // sha256
         outcome = branch.outcome; // integer (1 or 2 for binary)
         amount = branch.amount;   // number -> fixed-point
-        if (branch.nonce) {
-            nonce = branch.nonce; // integer (optional)
-        }
-        limit = branch.limit || 0;
+        limit = branch.limit;
         if (branch.onSent) onSent = branch.onSent;
         if (branch.onSuccess) onSuccess = branch.onSuccess;
         if (branch.onFailed) onFailed = branch.onFailed;
@@ -66422,26 +66412,20 @@ Augur.prototype.buyShares = function (branch, market, outcome, amount, nonce, li
     if (branch && branch.constructor === BigNumber) {
         branch = abi.prefix_hex(branch.toString(16));
     }
+    limit = (limit) ? abi.fix(limit, "hex") : 0;
     if (onSent) {
-        this.getNonce(market, function (nonce) {
-            tx.params = [branch, market, outcome, abi.fix(amount, "hex"), nonce, limit || 0];
-            this.transact(tx, onSent, onSuccess, onFailed);
-        }.bind(this));
-    } else {
-        nonce = this.getNonce(market);
-        tx.params = [branch, market, outcome, abi.fix(amount, "hex"), nonce, limit || 0];
-        return this.transact(tx);
+        tx.params = [branch, market, outcome, abi.fix(amount, "hex"), limit];
+        return this.transact(tx, onSent, onSuccess, onFailed);
     }
+    tx.params = [branch, market, outcome, abi.fix(amount, "hex"), limit];
+    return this.transact(tx);
 };
-Augur.prototype.sellShares = function (branch, market, outcome, amount, nonce, limit, onSent, onSuccess, onFailed) {
+Augur.prototype.sellShares = function (branch, market, outcome, amount, limit, onSent, onSuccess, onFailed) {
     if (branch && branch.constructor === Object && branch.branchId) {
         market = branch.marketId; // sha256
         outcome = branch.outcome; // integer (1 or 2 for binary)
         amount = branch.amount;   // number -> fixed-point
-        if (branch.nonce) {
-            nonce = branch.nonce; // integer (optional)
-        }
-        limit = branch.limit || 0;
+        limit = branch.limit;
         if (branch.onSent) onSent = branch.onSent;
         if (branch.onSuccess) onSuccess = branch.onSuccess;
         if (branch.onFailed) onFailed = branch.onFailed;
@@ -66454,14 +66438,12 @@ Augur.prototype.sellShares = function (branch, market, outcome, amount, nonce, l
     if (branch && branch.constructor === BigNumber) {
         branch = abi.prefix_hex(branch.toString(16));
     }
+    limit = (limit) ? abi.fix(limit, "hex") : 0;
     if (onSent) {
-        this.getNonce(market, function (nonce) {
-            tx.params = [branch, market, outcome, abi.fix(amount, "hex"), nonce, limit || 0];
-            this.transact(tx, onSent, onSuccess, onFailed);
-        }.bind(this));
+        tx.params = [branch, market, outcome, abi.fix(amount, "hex"), limit];
+        this.transact(tx, onSent, onSuccess, onFailed);
     } else {
-        nonce = this.getNonce(market);
-        tx.params = [branch, market, outcome, abi.fix(amount, "hex"), nonce, limit || 0];
+        tx.params = [branch, market, outcome, abi.fix(amount, "hex"), limit];
         return this.transact(tx);
     }
 };
@@ -68695,10 +68677,10 @@ function isFunction(f) {
 }
 
 var HOSTED_NODES = [
-    "https://eth1.augur.net",
-    "https://eth3.augur.net",
-    "https://eth4.augur.net",
-    "https://eth5.augur.net"
+    "https://eth1.augur.net"
+    // "https://eth3.augur.net",
+    // "https://eth4.augur.net",
+    // "https://eth5.augur.net"
 ];
 
 module.exports = {
@@ -68712,7 +68694,7 @@ module.exports = {
     },
 
     // network load balancer
-    balancer: true,
+    balancer: false,
 
     // remove unresponsive nodes
     excision: false,
