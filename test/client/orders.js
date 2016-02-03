@@ -318,6 +318,7 @@ describe("checkSellOrder", function () {
 describe("checkOrder", function () {
     var test = function (t) {
         it("market=" + t.market + ", outcome=" + t.outcome + ", order=" + JSON.stringify(t.order), function (done) {
+            this.timeout(augur.constants.TIMEOUT);
             var checkBuyOrder = augur.checkBuyOrder;
             var checkSellOrder = augur.checkSellOrder;
             augur.checkBuyOrder = function (currentPrice, order, cb) {
@@ -382,6 +383,7 @@ describe("checkOrder", function () {
 describe("checkOutcomeOrderList", function () {
     var test = function (t) {
         it("account=" + t.account + ", market=" + t.market + ", outcome=" + t.outcome, function (done) {
+            this.timeout(augur.constants.TIMEOUT);
             var checkOrder = augur.checkOrder;
             augur.checkOrder = function (marketInfo, outcome, order, cb) {
                 assert.isObject(marketInfo);
@@ -459,6 +461,7 @@ describe("checkOutcomeOrderList", function () {
 describe("checkOrderBook", function () {
     var test = function (t) {
         it("market=" + t.market + ", order=" + JSON.stringify(t), function (done) {
+            this.timeout(augur.constants.TIMEOUT);
             var checkOutcomeOrderList = augur.checkOutcomeOrderList;
             augur.checkOutcomeOrderList = function (marketInfo, outcome, orderList, cb) {
                 assert.isObject(marketInfo);

@@ -67960,6 +67960,78 @@ Augur.prototype.checkOrderBook = function (market, cb) {
 };
 
 /**
+ * Lockstep trade sequence:
+ *   1. commitTrade(market, makeMarketHash(market, outcome, amount, limit))
+ *   2. buyShares(branch, market, outcome, amount, limit)
+ * callbacks: {onMarketHash,
+ *             onCommitTradeSent, onCommitTradeSuccess, onCommitTradeFailed,
+ *             onNextBlock,
+ *             onTradeSent, onTradeSuccess, onTradeFailed}
+ * (All callbacks are optional.)
+ */
+Augur.prototype.trade = function (branch, market, outcome, amount, limit, callbacks) {
+    var self = this;
+    if (branch && branch.constructor === Object && branch.branch) {
+        market = branch.market;
+        outcome = branch.outcome;
+        amount = branch.amount;
+        limit = branch.limit;
+        if (branch.callbacks) callbacks = clone(branch.callbacks);
+        branch = branch.branch;
+    }
+    callbacks = callbacks || {};
+    callbacks.onMarketHash = callbacks.onMarketHash || this.utils.pass;
+    callbacks.onCommitTradeSent = callbacks.onCommitTradeSent || this.utils.pass;
+    callbacks.onCommitTradeSuccess = callbacks.onCommitTradeSuccess || this.utils.pass;
+    callbacks.onCommitTradeFailed = callbacks.onCommitTradeFailed || this.utils.pass;
+    callbacks.onNextBlock = callbacks.onNextBlock || this.utils.pass;
+    callbacks.onTradeSent = callbacks.onTradeSent || this.utils.pass;
+    callbacks.onTradeSuccess = callbacks.onTradeSuccess || this.utils.pass;
+    callbacks.onTradeFailed = callbacks.onTradeFailed || this.utils.pass;
+    amount = new Decimal(amount);
+    var trade = (amount.gt(new Decimal(0))) ? this.buyShares : this.sellShares;
+    amount = amount.abs().toFixed();
+    var marketHash = this.makeMarketHash({
+        market: market,
+        outcome: outcome,
+        amount: amount,
+        limit: 0
+    });
+    callbacks.onMarketHash(marketHash);
+    this.commitTrade({
+        market: market,
+        hash: marketHash,
+        onSent: callbacks.onCommitTradeSent,
+        onSuccess: function (res) {
+            callbacks.onCommitTradeSuccess(res);
+            self.rpc.blockNumber(function (thisBlock) {
+                thisBlock = parseInt(thisBlock);
+                (function waitForNextBlock() {
+                    self.rpc.blockNumber(function (nextBlock) {
+                        nextBlock = parseInt(nextBlock);
+                        if (thisBlock === nextBlock) {
+                            return setTimeout(waitForNextBlock, 3000);
+                        }
+                        callbacks.onNextBlock(nextBlock);
+                        trade.call(self, {
+                            branchId: branch,
+                            marketId: market,
+                            outcome: outcome,
+                            amount: amount,
+                            limit: limit,
+                            onSent: callbacks.onTradeSent,
+                            onSuccess: callbacks.onTradeSuccess,
+                            onFailed: callbacks.onTradeFailed
+                        });
+                    });
+                })();
+            });
+        },
+        onFailed: callbacks.onCommitTradeFailed
+    });
+};
+
+/**
  * Batch interface:
  * var b = augur.createBatch();
  * b.add("getCashBalance", [augur.coinbase], callback);
@@ -68142,7 +68214,7 @@ module.exports = {
         var defaulthost, ipcpath;
         if (NODE_JS && !process.env.CONTINUOUS_INTEGRATION) {
             defaulthost = "http://127.0.0.1:8545";
-            ipcpath = path.join(process.env.HOME, ".ethereum", "geth.ipc");
+            // ipcpath = path.join(process.env.HOME, ".ethereum", "geth.ipc");
         }
         if (process.env.CONTINUOUS_INTEGRATION) {
             augur.constants.TIMEOUT = 131072;
