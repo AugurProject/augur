@@ -377,12 +377,12 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
             });
         };
 
-        // test({numOutcomes: 2});
-        // test({numOutcomes: 3});
-        // test({numOutcomes: 4});
-        // test({numOutcomes: 9});
-        // test({scalar: true});
-        // test({numOutcomes: 2, numEvents: 3});
+        test({numOutcomes: 2});
+        test({numOutcomes: 3});
+        test({numOutcomes: 4});
+        test({numOutcomes: 9});
+        test({scalar: true});
+        test({numOutcomes: 2, numEvents: 3});
     });
 
     describe("trade", function () {
@@ -512,7 +512,6 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                                             onTradeFailed: done
                                         }
                                     });
-                                    done();
                                 },
                                 onTradeFailed: done
                             }
