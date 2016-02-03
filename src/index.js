@@ -33,6 +33,7 @@ function Augur() {
     this.utils = require("./utilities");
     this.constants = require("./constants");
     this.db = require("./client/db");
+    this.orders = require("./client/orders");
     this.comments = ramble;
     this.ramble = ramble;
     this.connector = connector;
@@ -486,13 +487,10 @@ Augur.prototype.getSimulatedBuy = function (market, outcome, amount, callback) {
         return callback(getSimulatedBuy(market, outcome, amount));
     }
     if (!this.utils.is_function(callback)) {
-        var info = this.getMarketInfo(market);
-        var simulatedBuy = getSimulatedBuy(info, outcome, amount);
-        return simulatedBuy;
+        return getSimulatedBuy(this.getMarketInfo(market), outcome, amount);
     }
     this.getMarketInfo(market, function (info) {
-        var simulatedBuy = getSimulatedBuy(info, outcome, amount);
-        callback(simulatedBuy);
+        callback(getSimulatedBuy(info, outcome, amount));
     });
 };
 Augur.prototype.getSimulatedSell = function (market, outcome, amount, callback) {
@@ -517,13 +515,16 @@ Augur.prototype.getSimulatedSell = function (market, outcome, amount, callback) 
         sumExp = sumExp.plus(new Decimal(amount));
         var newCost = bq.times(cumScale).times(sumExp.ln());
         if (oldCost.lte(newCost)) return self.errors.getSimulatedSell["-2"];
-        return [newCost.minus(oldCost).toFixed(), self.price(info, outcome)];
+        return [oldCost.minus(newCost).toFixed(), self.price(info, outcome)];
     }
-    callback = callback || this.utils.pass;
     if (market.constructor === Object && market.network && market.events) {
+        callback = callback || this.utils.pass;
         return callback(getSimulatedSell(market, outcome, amount));
     }
-    self.getMarketInfo(market, function (info) {
+    if (!this.utils.is_function(callback)) {
+        return getSimulatedSell(this.getMarketInfo(market), outcome, amount);
+    }
+    this.getMarketInfo(market, function (info) {
         callback(getSimulatedSell(info, outcome, amount));
     });
 };
@@ -603,6 +604,11 @@ Augur.prototype.getBranchID = function (market, callback) {
     // market: sha256 hash id
     var tx = clone(this.tx.getBranchID);
     tx.params = market;
+    return this.fire(tx, callback);
+};
+Augur.prototype.initialLiquidityAmount = function (market, outcome, callback) {
+    var tx = clone(this.tx.initialLiquidityAmount);
+    tx.params = [market, outcome];
     return this.fire(tx, callback);
 };
 // Get the current number of participants in this market
@@ -2234,7 +2240,7 @@ Augur.prototype.checkBuyOrder = function (currentPrice, order, cb) {
             outcome: order.outcome,
             amount: order.amount.toFixed(),
             onSent: function (res) {
-                self.db.orders.cancel(order.id);
+                self.orders.cancel(order.id);
             },
             onSuccess: function (res) {
                 // console.log("checkBuyOrder:", res);
@@ -2265,7 +2271,7 @@ Augur.prototype.checkSellOrder = function (currentPrice, order, cb) {
             outcome: order.outcome,
             amount: order.amount.abs().toFixed(),
             onSent: function (res) {
-                self.db.orders.cancel(order.id);
+                self.orders.cancel(order.id);
             },
             onSuccess: function (res) {
                 // console.log("checkSellOrder:", res);
@@ -2314,7 +2320,7 @@ Augur.prototype.checkOutcomeOrderList = function (marketInfo, outcome, orderList
 Augur.prototype.checkOrderBook = function (market, cb) {
     var self = this;
     cb = cb || this.utils.pass;
-    var orders = this.db.orders.get(this.from);
+    var orders = this.orders.get(this.from);
     if (!market || !orders) return cb(false);
     var matchedOrders = [];
     if (market.constructor === Object && market.network && market.events) {

@@ -21,10 +21,10 @@ var accounts = [
 var markets = augur.getMarketsInBranch(augur.branches.dev);
 var marketId = markets[markets.length - 1];
 
-describe("db.orders.create", function () {
+describe("orders.create", function () {
     var test = function (t) {
         it(JSON.stringify(t), function () {
-            var orders = augur.db.orders.create(t);
+            var orders = augur.orders.create(t);
             assert.isObject(orders);
             assert.property(orders, t.market);
             assert.property(orders[t.market], t.outcome.toString());
@@ -91,10 +91,10 @@ describe("db.orders.create", function () {
     });
 });
 
-describe("db.orders.get", function () {
+describe("orders.get", function () {
     var test = function (t) {
         it("account=" + t.account, function () {
-            var orders = augur.db.orders.get(t.account);
+            var orders = augur.orders.get(t.account);
             if (t.expected === "object") {
                 assert.isObject(orders);
                 assert.isAbove(Object.keys(orders).length, 0);
@@ -130,13 +130,13 @@ describe("db.orders.get", function () {
     test({account: accounts[4], expected: null});
 });
 
-describe("db.orders.cancel", function () {
+describe("orders.cancel", function () {
     var test = function (t) {
         it(JSON.stringify(t), function () {
-            var orders = augur.db.orders.create(t);
+            var orders = augur.orders.create(t);
             var numOrders = orders[t.market][t.outcome].length;
             var orderId = orders[t.market][t.outcome][numOrders-1].id;
-            var updated = augur.db.orders.cancel(t.account, t.market, t.outcome, orderId);
+            var updated = augur.orders.cancel(t.account, t.market, t.outcome, orderId);
             assert.strictEqual(updated[t.market][t.outcome].length, numOrders-1);
         });
     };
@@ -187,11 +187,11 @@ describe("db.orders.cancel", function () {
     });
 });
 
-describe("db.orders.reset", function () {
+describe("orders.reset", function () {
     var test = function (t) {
         it("account=" + t.account, function () {
-            assert.isTrue(augur.db.orders.reset(t.account));
-            assert.isNull(augur.db.orders.get(t.account));
+            assert.isTrue(augur.orders.reset(t.account));
+            assert.isNull(augur.orders.get(t.account));
         });
     };
     for (var i = 0; i < accounts.length; ++i) {
@@ -209,11 +209,11 @@ describe("checkBuyOrder", function () {
                 assert.strictEqual(trade.outcome, t.order.outcome);
                 assert.strictEqual(trade.amount, abi.string(t.order.amount));
                 trade.onSent();
-                var updated = augur.db.orders.cancel(t.order.account, t.order.market, t.order.outcome, orderId);
+                var updated = augur.orders.cancel(t.order.account, t.order.market, t.order.outcome, orderId);
                 assert.strictEqual(updated[t.order.market][t.order.outcome].length, numOrders-1);
                 trade.onSuccess();
             };
-            var orders = augur.db.orders.create(t.order);
+            var orders = augur.orders.create(t.order);
             var numOrders = orders[t.order.market][t.order.outcome].length;
             var orderId = orders[t.order.market][t.order.outcome][numOrders-1].id;
             augur.checkBuyOrder(t.currentPrice, t.order, function (order) {
@@ -223,7 +223,7 @@ describe("checkBuyOrder", function () {
                 assert.property(order, "amount");
                 assert.property(order, "expiration");
                 assert.property(order, "cap");
-                assert.isTrue(augur.db.orders.reset(t.order.account));
+                assert.isTrue(augur.orders.reset(t.order.account));
                 augur.buyShares = buyShares;
                 done();
             });
@@ -267,11 +267,11 @@ describe("checkSellOrder", function () {
                 assert.strictEqual(trade.outcome, t.order.outcome);
                 assert.strictEqual(trade.amount, abi.bignum(t.order.amount).abs().toFixed());
                 trade.onSent();
-                var updated = augur.db.orders.cancel(t.order.account, t.order.market, t.order.outcome, orderId);
+                var updated = augur.orders.cancel(t.order.account, t.order.market, t.order.outcome, orderId);
                 assert.strictEqual(updated[t.order.market][t.order.outcome].length, numOrders-1);
                 trade.onSuccess();
             };
-            var orders = augur.db.orders.create(t.order);
+            var orders = augur.orders.create(t.order);
             var numOrders = orders[t.order.market][t.order.outcome].length;
             var orderId = orders[t.order.market][t.order.outcome][numOrders-1].id;
             augur.checkSellOrder(t.currentPrice, t.order, function (order) {
@@ -281,7 +281,7 @@ describe("checkSellOrder", function () {
                 assert.property(order, "amount");
                 assert.property(order, "expiration");
                 assert.property(order, "cap");
-                assert.isTrue(augur.db.orders.reset(t.order.account));
+                assert.isTrue(augur.orders.reset(t.order.account));
                 augur.sellShares = sellShares;
                 done();
             });
@@ -395,14 +395,14 @@ describe("checkOutcomeOrderList", function () {
                 assert.property(order, "cap");
                 cb(order);
             };
-            var orders = augur.db.orders.create(t);
+            var orders = augur.orders.create(t);
             var orderList = orders[t.market][t.outcome];
             augur.getMarketInfo(t.market, function (info) {
                 augur.checkOutcomeOrderList(info, t.outcome, orderList, function (matchedOrders) {
                     assert.notProperty(matchedOrders, "error");
                     assert.isArray(matchedOrders);
                     assert.strictEqual(matchedOrders.length, 1);
-                    assert.isTrue(augur.db.orders.reset(t.account));
+                    assert.isTrue(augur.orders.reset(t.account));
                     augur.checkOrder = checkOrder;
                     done();
                 });
@@ -466,12 +466,12 @@ describe("checkOrderBook", function () {
                 assert.isArray(orderList);
                 cb(orderList);
             };
-            var orders = augur.db.orders.create(t);
+            var orders = augur.orders.create(t);
             augur.checkOrderBook(t.market, function (matchedOrders) {
                 assert.notProperty(matchedOrders, "error");
                 assert.isArray(matchedOrders);
                 assert.strictEqual(matchedOrders.length, 1);
-                assert.isTrue(augur.db.orders.reset(t.account));
+                assert.isTrue(augur.orders.reset(t.account));
                 augur.checkOutcomeOrderList = checkOutcomeOrderList;
                 done();
             });
