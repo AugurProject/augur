@@ -419,25 +419,22 @@ Augur.prototype.getTotalReputation = function (branch, votePeriod, callback) {
 
 // markets.se
 Augur.prototype.lsLmsr = function (market, callback) {
-    if (!market) return new Error("need a market");
-    function lsLmsr(info) {
-        var cumScale = info.cumulativeScale;
-        var alpha = new BigNumber(info.alpha);
-        var numOutcomes = info.numOutcomes;
-        var sumShares = new BigNumber(0);
-        for (var i = 0; i < numOutcomes; ++i) {
-            sumShares = sumShares.plus(new BigNumber(info.outcomes[i].outstandingShares));
-        }
-        var bq = alpha.mul(sumShares);
-        var sumExp = new BigNumber(0);
-        for (i = 0; i < numOutcomes; ++i) {
-            sumExp = sumExp.plus(new BigNumber(Math.exp(info.outcomes[i].outstandingShares).toString())).dividedBy(bq);
-        }
-        return bq.mul(cumScale).mul(new BigNumber(Math.log(sumExp).toString())).toString();
-    }
+    if (!market) return new Error("no market input");
     if (market.constructor === Object && market.network && market.events) {
         callback = callback || this.utils.pass;
-        return callback(lsLmsr(market));
+        var cumScale = market.cumulativeScale;
+        var alpha = new Decimal(market.alpha);
+        var numOutcomes = market.numOutcomes;
+        var sumShares = new Decimal(0);
+        for (var i = 0; i < numOutcomes; ++i) {
+            sumShares = sumShares.plus(new Decimal(market.outcomes[i].outstandingShares));
+        }
+        var bq = alpha.times(sumShares);
+        var sumExp = new Decimal(0);
+        for (i = 0; i < numOutcomes; ++i) {
+            sumExp = sumExp.plus(new Decimal(market.outcomes[i].outstandingShares).dividedBy(bq).exp());
+        }
+        return callback(bq.times(cumScale).times(sumExp.ln()).toFixed());
     }
     var tx = clone(this.tx.lsLmsr);
     tx.params = market;
@@ -447,11 +444,11 @@ Augur.prototype.price = function (market, outcome, callback) {
     var self = this;
     if (market.constructor === Object && market.network && market.events) {
         callback = callback || this.utils.pass;
-        var info = clone(market);
-        var epsilon = new BigNumber("0.0000001");
-        var a = new BigNumber(self.lsLmsr(info));
-        info.outcomes[outcome-1].outstandingShares = new BigNumber(info.outcomes[outcome-1].outstandingShares).plus(epsilon).toFixed();
-        var b = new BigNumber(self.lsLmsr(info));
+        var market = clone(market);
+        var epsilon = new Decimal("0.0000001");
+        var a = new Decimal(self.lsLmsr(market));
+        market.outcomes[outcome-1].outstandingShares = new Decimal(market.outcomes[outcome-1].outstandingShares).plus(epsilon).toFixed();
+        var b = new Decimal(self.lsLmsr(market));
         return callback(b.minus(a).dividedBy(epsilon).toFixed());
     }
     var tx = clone(this.tx.price);
@@ -464,6 +461,8 @@ Augur.prototype.getSimulatedBuy = function (market, outcome, amount, callback) {
     // amount: number
     var self = this;
     function getSimulatedBuy(info, outcome, amount) {
+        if (amount.constructor !== Decimal) amount = new Decimal(amount);
+        outcome = parseInt(outcome);
         var oldCost = new Decimal(self.lsLmsr(info));
         var cumScale = info.cumulativeScale;
         var alpha = new Decimal(info.alpha);
@@ -471,13 +470,13 @@ Augur.prototype.getSimulatedBuy = function (market, outcome, amount, callback) {
         var sumShares = new Decimal(0);
         for (var i = 0; i < numOutcomes; ++i) {
             sumShares = sumShares.plus(new Decimal(info.outcomes[i].outstandingShares));
+            if (i === outcome - 1) sumShares = sumShares.plus(amount);
         }
         var bq = alpha.times(sumShares);
         var sumExp = new Decimal(0);
         for (i = 0; i < numOutcomes; ++i) {
-            sumExp = sumExp.plus(new Decimal(info.outcomes[i].outstandingShares).exp()).dividedBy(bq);
+            sumExp = sumExp.plus(new Decimal(info.outcomes[i].outstandingShares).dividedBy(bq).exp());
         }
-        sumExp = sumExp.plus(new Decimal(amount));
         var newCost = bq.times(cumScale).times(sumExp.ln());
         if (newCost.lte(oldCost)) return self.errors.getSimulatedBuy["-2"];
         return [newCost.minus(oldCost).toFixed(), self.price(info, outcome)];
@@ -499,6 +498,8 @@ Augur.prototype.getSimulatedSell = function (market, outcome, amount, callback) 
     // amount: number
     var self = this;
     function getSimulatedSell(info, outcome, amount) {
+        if (amount.constructor !== Decimal) amount = new Decimal(amount);
+        outcome = parseInt(outcome);
         var oldCost = new Decimal(self.lsLmsr(info));
         var cumScale = info.cumulativeScale;
         var alpha = new Decimal(info.alpha);
@@ -506,13 +507,13 @@ Augur.prototype.getSimulatedSell = function (market, outcome, amount, callback) 
         var sumShares = new Decimal(0);
         for (var i = 0; i < numOutcomes; ++i) {
             sumShares = sumShares.plus(new Decimal(info.outcomes[i].outstandingShares));
+            if (i === outcome - 1) sumShares = sumShares.minus(amount);
         }
         var bq = alpha.times(sumShares);
         var sumExp = new Decimal(0);
         for (i = 0; i < numOutcomes; ++i) {
-            sumExp = sumExp.plus(new Decimal(info.outcomes[i].outstandingShares).exp()).dividedBy(bq);
+            sumExp = sumExp.plus(new Decimal(info.outcomes[i].outstandingShares).dividedBy(bq).exp());
         }
-        sumExp = sumExp.plus(new Decimal(amount));
         var newCost = bq.times(cumScale).times(sumExp.ln());
         if (oldCost.lte(newCost)) return self.errors.getSimulatedSell["-2"];
         return [oldCost.minus(newCost).toFixed(), self.price(info, outcome)];
