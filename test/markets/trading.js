@@ -140,58 +140,58 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
         });
     });
 
-    // describe("commitTrade", function () {
-    //     var test = function (t) {
-    //         it(JSON.stringify(t), function (done) {
-    //             this.timeout(augur.constants.TIMEOUT);
-    //             var hash = augur.makeMarketHash(t);
-    //             augur.commitTrade({
-    //                 market: t.market,
-    //                 hash: hash,
-    //                 onSent: function (res) {
-    //                     assert(res.txHash);
-    //                     assert.strictEqual(res.callReturn, "1");
-    //                 },
-    //                 onSuccess: function (res) {
-    //                     assert(res.txHash);
-    //                     assert.strictEqual(res.callReturn, "1");
-    //                     done();
-    //                 },
-    //                 onFailed: done
-    //             });
-    //         });
-    //     };
-    //     test({
-    //         market: marketInfo._id,
-    //         outcome: 1,
-    //         amount: 1,
-    //         limit: 0
-    //     });
-    //     test({
-    //         market: marketInfo._id,
-    //         outcome: 1,
-    //         amount: 1,
-    //         limit: "0.45"
-    //     });
-    //     test({
-    //         market: marketInfo._id,
-    //         outcome: 2,
-    //         amount: "2.6",
-    //         limit: 0
-    //     });
-    //     test({
-    //         market: "0xdeadbeef",
-    //         outcome: 2,
-    //         amount: 50,
-    //         limit: "0.45"
-    //     });
-    //     test({
-    //         market: "0xdeadbeef",
-    //         outcome: 150,
-    //         amount: 100000,
-    //         limit: "0.99995"
-    //     });
-    // });
+    describe("commitTrade", function () {
+        var test = function (t) {
+            it(JSON.stringify(t), function (done) {
+                this.timeout(augur.constants.TIMEOUT);
+                var hash = augur.makeMarketHash(t);
+                augur.commitTrade({
+                    market: t.market,
+                    hash: hash,
+                    onSent: function (res) {
+                        assert(res.txHash);
+                        assert.strictEqual(res.callReturn, "1");
+                    },
+                    onSuccess: function (res) {
+                        assert(res.txHash);
+                        assert.strictEqual(res.callReturn, "1");
+                        done();
+                    },
+                    onFailed: done
+                });
+            });
+        };
+        test({
+            market: marketInfo._id,
+            outcome: 1,
+            amount: 1,
+            limit: 0
+        });
+        test({
+            market: marketInfo._id,
+            outcome: 1,
+            amount: 1,
+            limit: "0.45"
+        });
+        test({
+            market: marketInfo._id,
+            outcome: 2,
+            amount: "2.6",
+            limit: 0
+        });
+        test({
+            market: "0xdeadbeef",
+            outcome: 2,
+            amount: 50,
+            limit: "0.45"
+        });
+        test({
+            market: "0xdeadbeef",
+            outcome: 150,
+            amount: 100000,
+            limit: "0.99995"
+        });
+    });
 
     it("Look up / sanity check most recent market ID", function (done) {
         augur.getMarketsInBranch(augur.branches.dev, function (markets) {
@@ -266,69 +266,93 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                                 onSuccess: function (res) {
                                     assert(res.txHash);
                                     assert.strictEqual(res.callReturn, "1");
-                                    augur.buyShares({
-                                        branchId: branch,
-                                        marketId: found.market,
-                                        outcome: outcome,
-                                        amount: amount,
-                                        onSent: function (r) {
-                                            // console.log("buyShares sent:", r);
-                                            assert.isObject(r);
-                                            assert.isNotNull(r.callReturn);
-                                            assert.isNotNull(r.txHash);
-                                        },
-                                        onSuccess: function (r) {
-                                            // console.log("buyShares success:", r);
-                                            assert.isObject(r);
-                                            assert.isNotNull(r.callReturn);
-                                            assert.isString(r.txHash);
-                                            assert.isString(r.blockHash);
-                                            assert.isNotNull(r.blockNumber);
-                                            assert.isAbove(abi.number(r.blockNumber), 0);
-                                            var marketHash = augur.makeMarketHash({
-                                                market: found.market,
-                                                outcome: outcome,
-                                                amount: amount,
-                                                limit: 0
+                                    augur.rpc.blockNumber(function (thisBlock) {
+                                        thisBlock = parseInt(thisBlock);
+                                        (function waitForNextBlock() {
+                                            augur.rpc.blockNumber(function (nextBlock) {
+                                                nextBlock = parseInt(nextBlock);
+                                                console.log("thisBlock:", thisBlock);
+                                                console.log("nextBlock:", nextBlock);
+                                                if (thisBlock === nextBlock) {
+                                                    return setTimeout(waitForNextBlock, 3000);
+                                                }
+                                                augur.buyShares({
+                                                    branchId: branch,
+                                                    marketId: found.market,
+                                                    outcome: outcome,
+                                                    amount: amount,
+                                                    limit: 0,
+                                                    onSent: function (r) {
+                                                        assert.isObject(r);
+                                                        assert.isNotNull(r.callReturn);
+                                                        assert.isNotNull(r.txHash);
+                                                        assert.strictEqual(r.callReturn, "1");
+                                                    },
+                                                    onSuccess: function (r) {
+                                                        assert.isObject(r);
+                                                        assert.isNotNull(r.callReturn);
+                                                        assert.strictEqual(r.callReturn, "1");
+                                                        assert.isString(r.txHash);
+                                                        assert.isString(r.blockHash);
+                                                        assert.isNotNull(r.blockNumber);
+                                                        assert.isAbove(abi.number(r.blockNumber), 0);
+                                                        var marketHash = augur.makeMarketHash({
+                                                            market: found.market,
+                                                            outcome: outcome,
+                                                            amount: amount,
+                                                            limit: 0
+                                                        });
+                                                        augur.commitTrade({
+                                                            market: found.market,
+                                                            hash: marketHash,
+                                                            onSent: function (res) {
+                                                                assert(res.txHash);
+                                                                assert.strictEqual(res.callReturn, "1");
+                                                            },
+                                                            onSuccess: function (res) {
+                                                                assert(res.txHash);
+                                                                assert.strictEqual(res.callReturn, "1");
+                                                                augur.rpc.blockNumber(function (thisBlock) {
+                                                                    thisBlock = parseInt(thisBlock);
+                                                                    (function waitABlock() {
+                                                                        augur.rpc.blockNumber(function (nextBlock) {
+                                                                            nextBlock = parseInt(nextBlock);
+                                                                            if (thisBlock === nextBlock) {
+                                                                                return setTimeout(waitABlock, 3000);
+                                                                            }
+                                                                            augur.sellShares({
+                                                                                branchId: branch,
+                                                                                marketId: found.market,
+                                                                                outcome: outcome,
+                                                                                amount: amount,
+                                                                                limit: 0,
+                                                                                onSent: function (r) {
+                                                                                    assert.isObject(r);
+                                                                                    assert.isNotNull(r.callReturn);
+                                                                                    assert.isNotNull(r.txHash);
+                                                                                },
+                                                                                onSuccess: function (r) {
+                                                                                    assert.isObject(r);
+                                                                                    assert.isNotNull(r.callReturn);
+                                                                                    assert.isString(r.txHash);
+                                                                                    assert.isString(r.blockHash);
+                                                                                    assert.isNotNull(r.blockNumber);
+                                                                                    assert.isAbove(abi.number(r.blockNumber), 0);
+                                                                                    done();
+                                                                                },
+                                                                                onFailed: done
+                                                                            });
+                                                                        });
+                                                                    })();
+                                                                });
+                                                            },
+                                                            onFailed: done
+                                                        });
+                                                    },
+                                                    onFailed: done
+                                                });
                                             });
-                                            augur.commitTrade({
-                                                market: found.market,
-                                                hash: marketHash,
-                                                onSent: function (res) {
-                                                    assert(res.txHash);
-                                                    assert.strictEqual(res.callReturn, "1");
-                                                },
-                                                onSuccess: function (res) {
-                                                    assert(res.txHash);
-                                                    assert.strictEqual(res.callReturn, "1");
-                                                    augur.sellShares({
-                                                        branchId: branch,
-                                                        marketId: found.market,
-                                                        outcome: outcome,
-                                                        amount: amount,
-                                                        onSent: function (r) {
-                                                            // console.log("sellShares sent:", r);
-                                                            assert.isObject(r);
-                                                            assert.isNotNull(r.callReturn);
-                                                            assert.isNotNull(r.txHash);
-                                                        },
-                                                        onSuccess: function (r) {
-                                                            // console.log("sellShares success:", r);
-                                                            assert.isObject(r);
-                                                            assert.isNotNull(r.callReturn);
-                                                            assert.isString(r.txHash);
-                                                            assert.isString(r.blockHash);
-                                                            assert.isNotNull(r.blockNumber);
-                                                            assert.isAbove(abi.number(r.blockNumber), 0);
-                                                            done();
-                                                        },
-                                                        onFailed: done
-                                                    });
-                                                },
-                                                onFailed: done
-                                            });
-                                        },
-                                        onFailed: done
+                                        })();
                                     });
                                 },
                                 onFailed: done

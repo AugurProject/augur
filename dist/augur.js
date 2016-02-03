@@ -1276,14 +1276,14 @@ module.exports = function (network) {
             to: contracts.buyAndSellShares,
             method: "buyShares",
             signature: "iiiii",
-            returns: "unfix",
+            returns: "number",
             send: true
         },
         sellShares: {
             to: contracts.buyAndSellShares,
             method: "sellShares",
             signature: "iiiii",
-            returns: "unfix",
+            returns: "number",
             send: true
         },
 
@@ -66068,11 +66068,11 @@ Augur.prototype.price = function (market, outcome, callback) {
     var self = this;
     if (market.constructor === Object && market.network && market.events) {
         callback = callback || this.utils.pass;
-        var market = clone(market);
+        var info = clone(market);
         var epsilon = new Decimal("0.0000001");
-        var a = new Decimal(self.lsLmsr(market));
-        market.outcomes[outcome-1].outstandingShares = new Decimal(market.outcomes[outcome-1].outstandingShares).plus(epsilon).toFixed();
-        var b = new Decimal(self.lsLmsr(market));
+        var a = new Decimal(self.lsLmsr(info));
+        info.outcomes[outcome-1].outstandingShares = new Decimal(info.outcomes[outcome-1].outstandingShares).plus(epsilon).toFixed();
+        var b = new Decimal(self.lsLmsr(info));
         return callback(b.minus(a).dividedBy(epsilon).toFixed());
     }
     var tx = clone(this.tx.price);
@@ -68677,10 +68677,10 @@ function isFunction(f) {
 }
 
 var HOSTED_NODES = [
-    "https://eth1.augur.net"
-    // "https://eth3.augur.net",
-    // "https://eth4.augur.net",
-    // "https://eth5.augur.net"
+    "https://eth1.augur.net",
+    "https://eth3.augur.net",
+    "https://eth4.augur.net",
+    "https://eth5.augur.net"
 ];
 
 module.exports = {
@@ -68694,7 +68694,7 @@ module.exports = {
     },
 
     // network load balancer
-    balancer: false,
+    balancer: true,
 
     // remove unresponsive nodes
     excision: false,
