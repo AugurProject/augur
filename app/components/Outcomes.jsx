@@ -83,11 +83,6 @@ var Overview = React.createClass({
         });
     },
 
-    getTradeFunction: function (shares) {
-        var flux = this.getFlux();
-        return (shares < 0) ? flux.augur.sellShares : flux.augur.buyShares;
-    },
-
     handleTrade: function (relativeShares) {
         var self = this;
         var flux = this.getFlux();
@@ -95,89 +90,67 @@ var Overview = React.createClass({
         var marketId = this.props.market.id;
         var branchId = this.props.market.branchId;
         var outcomeId = this.props.outcome.id;
-        var marketHash = flux.augur.makeMarketHash({
+        flux.augur.trade({
+            branch: branchId,
             market: abi.hex(marketId),
             outcome: outcomeId,
             amount: Math.abs(relativeShares),
-            limit: 0
-        });
-        console.log({
-            market: abi.hex(marketId),
-            outcome: outcomeId,
-            amount: Math.abs(relativeShares),
-            limit: 0
-        });
-        flux.augur.commitTrade({
-            market: marketId,
-            hash: marketHash,
-            onSent: function (res) {
-                console.log("commitTrade:", res);
-                flux.actions.market.updatePendingShares(
-                    self.props.market,
-                    self.props.outcome.id,
-                    relativeShares
-                );
-                var newState = {
-                    pending: self.state.pending,
-                    buyShares: false,
-                    sellShares: false
-                };
-                var oldPrice = flux.store("market").getMarket(
-                    marketId
-                ).outcomes[abi.number(outcomeId) - 1].price;
-                newState.pending[res.txHash] = {
-                    branchId: branchId,
-                    marketId: marketId,
-                    outcome: outcomeId,
-                    oldPrice: oldPrice
-                };
-                self.setState(newState);
-            },
-            onSuccess: function (res) {
-                console.info("trade committed:", marketHash);
-                flux.augur.rpc.blockNumber(function (thisBlock) {
-                    thisBlock = parseInt(thisBlock);
-                    (function waitForNextBlock() {
-                        flux.augur.rpc.blockNumber(function (nextBlock) {
-                            nextBlock = parseInt(nextBlock);
-                            // console.log("thisBlock:", thisBlock);
-                            // console.log("nextBlock:", nextBlock);
-                            if (thisBlock === nextBlock) {
-                                return setTimeout(waitForNextBlock, 3000);
-                            }
-                            self.getTradeFunction(relativeShares).call(flux.augur, {
-                                branchId: branchId,
-                                marketId: abi.hex(marketId),
-                                outcome: outcomeId,
-                                amount: Math.abs(relativeShares),
-                                limit: 0,
-                                onSent: function (res) {
-                                    txhash = res.txHash;
-                                    console.log("trade sent:", res);
-                                },
-                                onSuccess: function (res) {
-                                    console.log("trade succeeded:", res.txHash);
-                                    flux.actions.market.tradeSucceeded(
-                                        self.state.pending[res.txHash],
-                                        marketId
-                                    );
-                                    var pending = self.state.pending;
-                                    delete pending[res.txHash];
-                                    self.setState({pending: pending})
-                                },
-                                onFailed: function (err) {
-                                    console.error("trade failed:", err);
-                                    var pending = self.state.pending;
-                                    delete pending[txhash];
-                                    self.setState({pending: pending})
-                                }
-                            });
-                        });
-                    })();
-                });
-            },
-            onFailed: function (err) {
-                console.error("commitTrade:", err);
+            limit: 0,
+            callbacks: {
+                onMarketHash: function (marketHash) {
+                    console.debug("marketHash:", marketHash);
+                },
+                onCommitTradeSent: function (res) {
+                    console.debug("commit trade:", res);
+                    flux.actions.market.updatePendingShares(
+                        self.props.market,
+                        self.props.outcome.id,
+                        relativeShares
+                    );
+                    var newState = {
+                        pending: self.state.pending,
+                        buyShares: false,
+                        sellShares: false
+                    };
+                    var oldPrice = flux.store("market").getMarket(
+                        marketId
+                    ).outcomes[abi.number(outcomeId) - 1].price;
+                    newState.pending[res.txHash] = {
+                        branchId: branchId,
+                        marketId: marketId,
+                        outcome: outcomeId,
+                        oldPrice: oldPrice
+                    };
+                    self.setState(newState);
+                },
+                onCommitTradeSuccess: function (res) {
+                    console.info("trade committed:", res.txHash);
+                },
+                onCommitTradeFailed: function (err) {
+                    console.error("commit trade failed:", err);
+                    var pending = self.state.pending;
+                    delete pending[txhash];
+                    self.setState({pending: pending})
+                },
+                onNextBlock: function (blockNumber) {
+                    console.debug("got next block:", blockNumber);
+                },
+                onTradeSent: function (res) {
+                    console.debug("trade:", res);
+                },
+                onTradeSuccess: function (res) {
+                    console.info("trade succeeded:", res.txHash);
+                    flux.actions.market.tradeSucceeded(self.state.pending[res.txHash], marketId);
+                    var pending = self.state.pending;
+                    delete pending[res.txHash];
+                    self.setState({pending: pending})
+                },
+                onTradeFailed: function (err) {
+                    console.error("trade failed:", err);
+                    var pending = self.state.pending;
+                    delete pending[txhash];
+                    self.setState({pending: pending})
+                }
             }
         });
     },
