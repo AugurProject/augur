@@ -66044,21 +66044,26 @@ Augur.prototype.getTotalReputation = function (branch, votePeriod, callback) {
 // markets.se
 Augur.prototype.lsLmsr = function (market, callback) {
     if (!market) return new Error("no market input");
-    if (market.constructor === Object && market.network && market.events) {
-        callback = callback || this.utils.pass;
-        var cumScale = market.cumulativeScale;
-        var alpha = new Decimal(market.alpha);
-        var numOutcomes = market.numOutcomes;
-        var sumShares = new Decimal(0);
-        for (var i = 0; i < numOutcomes; ++i) {
-            sumShares = sumShares.plus(new Decimal(market.outcomes[i].outstandingShares));
+    if (market.constructor === Object) {
+        if (market.network && market.events) {
+            callback = callback || this.utils.pass;
+            var info = JSON.parse(JSON.stringify(market));
+            var cumScale = info.cumulativeScale;
+            var alpha = new Decimal(info.alpha);
+            var numOutcomes = info.numOutcomes;
+            var sumShares = new Decimal(0);
+            for (var i = 0; i < numOutcomes; ++i) {
+                sumShares = sumShares.plus(new Decimal(info.outcomes[i].outstandingShares));
+            }
+            var bq = alpha.times(sumShares);
+            var sumExp = new Decimal(0);
+            for (i = 0; i < numOutcomes; ++i) {
+                sumExp = sumExp.plus(new Decimal(info.outcomes[i].outstandingShares).dividedBy(bq).exp());
+            }
+            return callback(bq.times(cumScale).times(sumExp.ln()).toFixed());
+        } else if (market._id) {
+            market = market._id;
         }
-        var bq = alpha.times(sumShares);
-        var sumExp = new Decimal(0);
-        for (i = 0; i < numOutcomes; ++i) {
-            sumExp = sumExp.plus(new Decimal(market.outcomes[i].outstandingShares).dividedBy(bq).exp());
-        }
-        return callback(bq.times(cumScale).times(sumExp.ln()).toFixed());
     }
     var tx = clone(this.tx.lsLmsr);
     tx.params = market;
@@ -66066,14 +66071,18 @@ Augur.prototype.lsLmsr = function (market, callback) {
 };
 Augur.prototype.price = function (market, outcome, callback) {
     var self = this;
-    if (market.constructor === Object && market.network && market.events) {
-        callback = callback || this.utils.pass;
-        var info = clone(market);
-        var epsilon = new Decimal("0.0000001");
-        var a = new Decimal(self.lsLmsr(info));
-        info.outcomes[outcome-1].outstandingShares = new Decimal(info.outcomes[outcome-1].outstandingShares).plus(epsilon).toFixed();
-        var b = new Decimal(self.lsLmsr(info));
-        return callback(b.minus(a).dividedBy(epsilon).toFixed());
+    if (market.constructor === Object) {
+        if (market.network && market.events) {
+            callback = callback || this.utils.pass;
+            var info = JSON.parse(JSON.stringify(market));
+            var epsilon = new Decimal("0.0000001");
+            var a = new Decimal(self.lsLmsr(info));
+            info.outcomes[outcome-1].outstandingShares = new Decimal(info.outcomes[outcome-1].outstandingShares).plus(epsilon).toFixed();
+            var b = new Decimal(self.lsLmsr(info));
+            return callback(b.minus(a).dividedBy(epsilon).toFixed());
+        } else if (market._id) {
+            market = market._id;
+        }
     }
     var tx = clone(this.tx.price);
     tx.params = [market, outcome];
@@ -66085,14 +66094,15 @@ Augur.prototype.getSimulatedBuy = function (market, outcome, amount, callback) {
     // amount: number
     var self = this;
     function getSimulatedBuy(marketInfo, outcome, amount) {
+        if (amount.constructor === BigNumber) amount = abi.string(amount);
         if (amount.constructor !== Decimal) amount = new Decimal(amount);
         outcome = parseInt(outcome);
-        var info = clone(marketInfo);
+        var info = JSON.parse(JSON.stringify(marketInfo));
         var oldCost = new Decimal(self.lsLmsr(info));
         var cumScale = info.cumulativeScale;
         var alpha = new Decimal(info.alpha);
         var numOutcomes = info.numOutcomes;
-        info.outcomes[outcome-1].outstandingShares = new Decimal(info.outcomes[outcome-1].outstandingShares).plus(amount);
+        info.outcomes[outcome-1].outstandingShares = new Decimal(info.outcomes[outcome-1].outstandingShares).plus(amount).toFixed();
         var sumShares = new Decimal(0);
         for (var i = 0; i < numOutcomes; ++i) {
             sumShares = sumShares.plus(new Decimal(info.outcomes[i].outstandingShares));
@@ -66106,9 +66116,13 @@ Augur.prototype.getSimulatedBuy = function (market, outcome, amount, callback) {
         if (newCost.lte(oldCost)) return self.errors.getSimulatedBuy["-2"];
         return [newCost.minus(oldCost).toFixed(), self.price(info, outcome)];
     }
-    if (market.constructor === Object && market.network && market.events) {
-        callback = callback || this.utils.pass;
-        return callback(getSimulatedBuy(market, outcome, amount));
+    if (market.constructor === Object) {
+        if (market.network && market.events) {
+            callback = callback || this.utils.pass;
+            return callback(getSimulatedBuy(market, outcome, amount));
+        } else if (market._id) {
+            market = market._id;
+        }
     }
     if (!this.utils.is_function(callback)) {
         return getSimulatedBuy(this.getMarketInfo(market), outcome, amount);
@@ -66123,14 +66137,15 @@ Augur.prototype.getSimulatedSell = function (market, outcome, amount, callback) 
     // amount: number
     var self = this;
     function getSimulatedSell(marketInfo, outcome, amount) {
+        if (amount.constructor === BigNumber) amount = abi.string(amount);
         if (amount.constructor !== Decimal) amount = new Decimal(amount);
         outcome = parseInt(outcome);
-        var info = clone(marketInfo);
+        var info = JSON.parse(JSON.stringify(marketInfo));
         var oldCost = new Decimal(self.lsLmsr(info));
         var cumScale = info.cumulativeScale;
         var alpha = new Decimal(info.alpha);
         var numOutcomes = info.numOutcomes;
-        info.outcomes[outcome-1].outstandingShares = new Decimal(info.outcomes[outcome-1].outstandingShares).minus(amount);
+        info.outcomes[outcome-1].outstandingShares = new Decimal(info.outcomes[outcome-1].outstandingShares).minus(amount).toFixed();
         var sumShares = new Decimal(0);
         for (var i = 0; i < numOutcomes; ++i) {
             sumShares = sumShares.plus(new Decimal(info.outcomes[i].outstandingShares));
@@ -66145,9 +66160,13 @@ Augur.prototype.getSimulatedSell = function (market, outcome, amount, callback) 
         if (oldCost.lte(newCost)) return self.errors.getSimulatedSell["-2"];
         return [oldCost.minus(newCost).toFixed(), self.price(info, outcome)];
     }
-    if (market.constructor === Object && market.network && market.events) {
-        callback = callback || this.utils.pass;
-        return callback(getSimulatedSell(market, outcome, amount));
+    if (market.constructor === Object) {
+        if (market.network && market.events) {
+            callback = callback || this.utils.pass;
+            return callback(getSimulatedSell(market, outcome, amount));
+        } else if (market._id) {
+            market = market._id;
+        }
     }
     if (!this.utils.is_function(callback)) {
         return getSimulatedSell(this.getMarketInfo(market), outcome, amount);
@@ -68695,7 +68714,8 @@ module.exports = {
                 this.get_coinbase.bind(this)
             ], function (err) {
                 if (err) {
-                    if (self.debug) console.error("connect error:", err);
+                    // if (self.debug) console.error("connect error:", err);
+                    console.error("connect error:", err);
                     return self.connect(rpcinfo, ipcpath, callback, true);
                 }
                 self.update_contracts();
@@ -68710,7 +68730,8 @@ module.exports = {
                 this.connection = true;
                 return true;
             } catch (exc) {
-                if (self.debug) console.error("augur.connect:", exc);
+                // if (self.debug) console.error("augur.connect:", exc);
+                console.error("augur.connect:", exc);
                 return this.connect(rpcinfo, ipcpath, callback, true);
             }
         }

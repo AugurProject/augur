@@ -3,6 +3,7 @@
 GLOBAL.path = require("path");
 GLOBAL.fs = require("fs");
 GLOBAL.BigNumber = require("bignumber.js");
+GLOBAL.Decimal = require("decimal.js");
 GLOBAL.sha3 = require("js-sha3");
 GLOBAL.scrypt = require("./lib/scrypt");
 GLOBAL.keccak = require("./lib/keccak");
