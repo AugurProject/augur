@@ -136,10 +136,11 @@ var Overview = React.createClass({
         if (outcome && outcome.sharesHeld) {
           if (outcome.sharesHeld.toNumber()) {
             var key = market.id + outcome.id;
-            holdings.push( <Holding market={market} outcome={outcome} key={key} /> );
+            holdings.push( <Holding market={market} outcome={outcome} key={key}
+                                    flux={this.props.flux/*is it ok to pass flux further?*/} /> );
           }
         }
-      });
+      }, this);
     }, this);
 
     var exportAccountButton = (
@@ -242,7 +243,7 @@ var Overview = React.createClass({
           className = 'loading';
           linked = false;
         } else if (market.invalid) {
-          className = 'invalid'; 
+          className = 'invalid';
           linked = true;
         } else if (this.state.currentBranch &&
                    this.state.currentBranch.currentPeriod >= market.tradingPeriod) {
@@ -298,9 +299,49 @@ var Overview = React.createClass({
 });
 
 var Holding = React.createClass({
+  getInitialState() {
+    return {
+      potentialProfit: null
+    };
+  },
+  componentDidMount() {
+    /* copied from Outcomes:283 (TradeBase#handleChange) but at
+     var oldCost = new Decimal(self.lsLmsr(info));
+     in Augur.prototype.getSimulatedSell#getSimulatedSell (inner function)
+
+     throws
+
+     "{
+        "error":500,
+        "message":"transaction failed",
+        "bubble":{"name":408,"message":"408: no response"},
+        "tx":{
+          "to":"0x8032786d68e26dc2792bed6a0b605f892b8c6217",
+          "method":"lsLmsr",
+          "signature":"i",
+          "returns":"unfix",
+          "from":"0xaff9cb4dcb19d13b84761c040c91d21dc6c991ec",
+          "params":{
+            "_id":"-0x2b25f6a7436df707ed83b8f00a47ee66ab351620560c4935e05afcf6105625f3"
+          }
+        }
+      }"
+      */
+    let sharesHeld = this.props.outcome.sharesHeld.toNumber();
+    let simulationFunction = this.getSimulationFunction(sharesHeld);
+    simulationFunction.call(
+      this.props.flux.augur,
+      abi.hex(this.props.market.id),
+      this.props.outcome.id,
+      abi.number(sharesHeld),
+      function (simulation) {
+        this.setState({
+          potentialProfit: abi.bignum(simulation[0])
+        });
+      });
+  },
 
   shouldComponentUpdate: function(nextProps, nextState) {
-    
     if (!this.nextProps) return true;
 
     if (this.props.market.price != this.nextProps.market.price ||
@@ -309,12 +350,16 @@ var Holding = React.createClass({
 
   },
 
-  render: function() {
+  getSimulationFunction: function (shares) {
+    var flux = this.props.flux;
+    return ((shares > 0) ? flux.augur.getSimulatedSell : flux.augur.getSimulatedBuy);
+  },
 
-    var name = this.props.outcome.id == 1 ? 'no' : 'yes';
+  render: function() {
+    var name = utilities.getOutcomeName(this.props.outcome.id, this.props.market).outcome;
     var className = 'pull-right shares-held ' + name;
     var key = this.props.market.id+this.props.outcome.id;
-    var percent = this.props.market.price ? utilities.priceToPercent(this.props.market.price) : '-'; 
+    var percent = this.props.market.price ? utilities.priceToPercent(this.props.market.price) : '-';
     var closeMarket = <span />;
     if (this.props.market.expired && this.props.market.authored && !this.props.market.closed) {
      closeMarket = <CloseMarketTrigger text='close market' params={ { marketId: this.props.market.id.toString(16), branchId: this.props.market.branchId.toString(16) } } />;
@@ -323,14 +368,14 @@ var Holding = React.createClass({
     if (!this.props.outcome.pendingShares.equals(0)) {
       pendingShares = <span className="pull-right pending-shares">{ this.props.outcome.pendingShares.toNumber() } pending</span>;
     }
-    
+
     return (
       <Link key={ key } className="list-group-item clearfix" to='market' params={ {marketId: this.props.market.id.toString(16) } }>
         <span className="price">{ percent }</span>
         <p className="description">{ this.props.market.description }</p>
-        <span className={ className }>{ this.props.outcome.sharesHeld.toNumber() } { name }</span>
+        <span className={ className }>{ this.props.outcome.sharesHeld.toNumber() } { name } ({this.state.potentialProfit})</span>
         { pendingShares }
-        { closeMarket }            
+        { closeMarket }
       </Link>
     );
   }
