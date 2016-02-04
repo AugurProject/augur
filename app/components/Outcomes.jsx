@@ -77,25 +77,25 @@ var Overview = React.createClass({
     },
 
     handleCancel: function () {
-        this.setState({
-            buyShares: false,
-            sellShares: false
-        });
+        this.setState({buyShares: false, sellShares: false});
     },
 
-    handleTrade: function (relativeShares) {
+    handleTrade: function (relativeShares, limit) {
         var self = this;
         var flux = this.getFlux();
         var txhash;
         var marketId = this.props.market.id;
         var branchId = this.props.market.branchId;
         var outcomeId = this.props.outcome.id;
+        var limit = (limit === '') ? 0 : abi.string(limit);
         flux.augur.trade({
             branch: branchId,
             market: abi.hex(marketId),
             outcome: outcomeId,
             amount: relativeShares,
-            limit: 0,
+            limit: limit,
+            stop: !!limit,
+            expiration: 0,
             callbacks: {
                 onMarketHash: function (marketHash) {
                     console.debug("marketHash:", marketHash);
@@ -150,6 +150,10 @@ var Overview = React.createClass({
                     var pending = self.state.pending;
                     delete pending[txhash];
                     self.setState({pending: pending})
+                },
+                onOrderCreated: function (orders) {
+                    self.setState({buyShares: false, sellShares: false});
+                    flux.actions.market.updateOrders(orders);
                 }
             }
         });
@@ -288,14 +292,16 @@ var TradeBase = {
         return {
             simulation: null,
             inputError: null,
-            value: ''
+            limitInputError: null,
+            value: '',
+            limit: ''
         }
     },
 
     handleChange: function () {
         var self = this;
         var flux = this.getFlux();
-        var rawValue = this.refs.input.getValue();
+        var rawValue = this.refs.inputShares.getValue();
         var numShares = abi.number(rawValue);
 
         this.setState({value: rawValue});
@@ -319,17 +325,26 @@ var TradeBase = {
         );
     },
 
+    handleLimitChange: function () {
+        var limit = this.refs.inputLimit.getValue();
+        this.setState({limit: limit});
+        this.setState({limitInputError: null});
+    },
+
     onSubmit: function (event) {
         event.preventDefault();
         var numShares = abi.number(this.state.value);
-
+        var limitPrice = abi.number(this.state.limit);
         if (typeof(numShares) !== 'number' || !numShares) {
-            this.setState({inputError: 'Shares must be a numeric value'});
+            this.setState({inputError: 'Shares must be a number'});
         } else if (this.state.simulation.cost > this.props.cashBalance) {
-            this.setState({inputError: 'Cost of shares exceeds funds'});
+            this.setState({inputError: 'Cost of shares exceeds available funds'});
         } else {
-            var relativeShares = this.getRelativeShares();
-            this.props.handleTrade(relativeShares);
+            if (typeof(limitPrice) !== 'number' || !limitPrice) {
+                this.setState({inputError: 'Limit price must be a number'});
+            } else {
+                this.props.handleTrade(this.getRelativeShares(), limitPrice);
+            }
         }
     },
 
@@ -340,36 +355,41 @@ var TradeBase = {
 
         var buttonStyle = this.actionLabel === 'Sell' ? 'danger' : 'success';
         var submit = (
-            <Button bsStyle={ buttonStyle } type="submit">{ this.actionLabel }</Button>
+            <Button bsStyle={buttonStyle} type="submit">{this.actionLabel}</Button>
         );
         var inputStyle = this.state.inputError ? 'error' : null;
 
         return (
             <div className="summary trade">
                 <div className='buy trade-button'>
-                    <form onSubmit={ this.onSubmit }>
+                    <form onSubmit={this.onSubmit}>
                         <Input
                             type="text"
-                            bsStyle={ inputStyle }
-                            value={ this.state.value }
-                            help={ this.getHelpText() }
-                            ref="input"
-                            placeholder='Shares'
-                            onChange={ this.handleChange }
-                            buttonAfter={ submit }
-                            />
+                            bsStyle={inputStyle}
+                            value={this.state.value}
+                            help={this.getHelpText()}
+                            ref="inputShares"
+                            placeholder="Shares"
+                            onChange={this.handleChange}
+                            buttonAfter={submit} />
+                        <Input
+                            type="text"
+                            bsStyle={inputStyle}
+                            value={this.state.limit}
+                            // help="Specifying a price will create a Stop Order"
+                            ref="inputLimit"
+                            placeholder="Price (optional)"
+                            onChange={this.handleLimitChange} />
                     </form>
                 </div>
                 <div className='cancel trade-button'>
-                    <Button bsStyle='default' onClick={ this.props.handleCancel } bsSize='small'>CANCEL</Button>
+                    <Button bsStyle='default' onClick={this.props.handleCancel} bsSize='small'>CANCEL</Button>
                 </div>
-                <p>{ Math.abs(outcome.price).toFixed(4) } cash/share</p>
-
+                <p>{Math.abs(outcome.price).toFixed(4)} cash/share</p>
                 <p>
-                    { outcome.sharesHeld.toNumber() } { outcome.sharesHeld.toNumber() === 1 ? 'share ' : 'shares ' } held
+                    {outcome.sharesHeld.toNumber()} {outcome.sharesHeld.toNumber() === 1 ? 'share ' : 'shares '} held
                 </p>
-
-                <p className='new-price'>{ this.getPriceDelta() }</p>
+                <p className='new-price'>{this.getPriceDelta()}</p>
             </div>
         );
     }

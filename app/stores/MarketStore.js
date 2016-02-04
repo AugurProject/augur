@@ -7,6 +7,7 @@ module.exports = {
   state: {
     markets: {},
     pendingMarkets: {},
+    orders: {},
     marketLoadingIds: null,
     loadingPage: null,
     marketsPerPage: constants.MARKETS_PER_PAGE
@@ -43,6 +44,9 @@ module.exports = {
   },
   getMarket: function (marketId) {
     return this.state.markets[marketId];
+  },
+  getOrders: function () {
+    return this.state.orders;
   },
   handleMarketsLoading: function (payload) {
     if (payload.marketLoadingIds) this.state.marketLoadingIds = payload.marketLoadingIds;
@@ -86,6 +90,10 @@ module.exports = {
   handleLoadPriceHistorySuccess: function (payload) {
     this.state.markets[payload.market.id].priceHistory = payload.priceHistory;
     this.state.markets[payload.market.id].priceHistoryStatus = "complete";
+    this.emit(constants.CHANGE_EVENT);
+  },
+  handleUpdateOrdersSuccess: function (payload) {
+    this.state.orders = payload.orders;
     this.emit(constants.CHANGE_EVENT);
   },
   marketIsLoaded: function (marketId) {

@@ -56,7 +56,8 @@ module.exports = {
     DELETE_MARKET_SUCCESS: null,
     MARKETS_LOADING: null,
     PRICE_HISTORY_LOADING: null,
-    LOAD_PRICE_HISTORY_SUCCESS: null
+    LOAD_PRICE_HISTORY_SUCCESS: null,
+    UPDATE_ORDERS_SUCCESS: null
   }),
   search: keyMirror({
     KEYWORDS_UPDATED: null,

@@ -158,6 +158,7 @@ test("MarketActions.loadMarkets", function (t) {
     var LOAD_MARKETS_SUCCESS = flux.register.LOAD_MARKETS_SUCCESS;
     var MARKETS_LOADING = flux.register.MARKETS_LOADING;
     flux.register.LOAD_MARKETS_SUCCESS = function (payload) {
+        console.log(marketInfo);
         t.equal(payload.constructor, Object, "payload is an object");
         t.equal(payload.markets.constructor, Object, "payload.markets is an object");
         t.equal(payload.markets[marketInfo.id].constructor, Object, "payload.markets has marketInfo.id field");
@@ -315,6 +316,42 @@ test("MarketActions.updatePendingShares", function (t) {
         flux.augur.filters.ignore(true, t.end);
     };
     flux.actions.market.updatePendingShares(clone(marketInfo), outcomeId, relativeShares);
+});
+
+test("MarketActions.updateOrders", function (t) {
+    t.plan(5);
+    var orders = {
+      "-0xe2ec88f924edae71b14c95d751538387e3c43e400bde53ad7aa686baa3985fca": {
+        "1": [{
+            "price": "0.25",
+            "amount": "1.2",
+            "expiration": 100,
+            "cap": 10,
+            "timestamp": 1454576803024,
+            "id": "0x1ff4b363af792bf331f0f6eaac34a0793dc6654ae5a96bd0f0c21a15e5d1d690"
+        }],
+        "2": [{
+            "price": "0.75",
+            "amount": "0.2",
+            "expiration": 0,
+            "cap": 10,
+            "timestamp": 1454576803022,
+            "id": "-0x65e2a71065f6bcceb7d8041de8811ce16525fe4946c3374fc82efaaf1e62f8e2"
+        }]
+      }
+    };
+    var UPDATE_ORDERS_SUCCESS = flux.register.UPDATE_ORDERS_SUCCESS;
+    flux.register.UPDATE_ORDERS_SUCCESS = function (payload) {
+        t.equal(payload.constructor, Object, "payload is an object");
+        t.equal(payload.orders.constructor, Object, "payload.orders is an object");
+        t.deepEqual(payload.orders, orders, "payload.orders == input orders");
+        UPDATE_ORDERS_SUCCESS(payload);
+        t.pass("dispatch UPDATE_ORDERS_SUCCESS");
+        flux.register.UPDATE_ORDERS_SUCCESS = UPDATE_ORDERS_SUCCESS;
+        t.deepEqual(flux.store("market").getOrders(), orders, "stores.market.orders == input orders");
+        t.end();
+    };
+    flux.actions.market.updateOrders(orders);
 });
 
 test("MarketActions.loadComments", function (t) {

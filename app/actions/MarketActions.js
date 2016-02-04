@@ -272,6 +272,12 @@ module.exports = {
       market.outcomes[outcomeId-1].pendingShares = market.outcomes[outcomeId - 1].pendingShares.plus(abi.bignum(relativeShares));
       this.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
     }
+  },
+
+  updateOrders: function (orders) {
+    if (orders) {
+      this.dispatch(constants.market.UPDATE_ORDERS_SUCCESS, {orders});
+    }
   }
 
 };

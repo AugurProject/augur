@@ -1,48 +1,62 @@
 {
-  "network": "7",
-  "traderCount": 1,
-  "alpha": "0.00790000000000000001",
-  "traderIndex": 0,
-  "numOutcomes": 2,
-  "tradingPeriod": 1627,
-  "tradingFee": "0.01999999999999999998",
-  "branchId": "0xf69b5",
-  "numEvents": 1,
-  "cumulativeScale": "1",
-  "creationFee": "14",
-  "author": "0x639b41c4d3d399894f2a57894278e1653e7cd24c",
-  "type": "binary",
-  "endDate": 2929186,
-  "creationBlock": 644690,
-  "participants": {
-    "0xd67849fdff91d0426e53c8b4350acdef5b810fee": 0
-  },
-  "winningOutcomes": ["0", "0", "0", "0", "0", "0", "0", "0"],
-  "description": "Will it rain in New York City on November 12, 2016?",
-  "outcomes": [{
-      "shares": {
-        "0xd67849fdff91d0426e53c8b4350acdef5b810fee": "15"
-      },
-      "id": 1,
-      "outstandingShares": "28.71408125149891155868",
-      "price": "0.99999999999999859661"
-    }, {
-      "shares": {
-          "0xd67849fdff91d0426e53c8b4350acdef5b810fee": "0"
-      },
-      "id": 2,
-      "outstandingShares": "13.71408125149891155868",
-      "price": "-0.0000000000000009992"
-  }],
-  "events": [{
-    "id": "-0xec0a225f901acc00bb954a79e894bca34faf2e23824d300aa57bc501636c3814",
-    "endDate": 2929186,
-    "outcome": "0",
-    "minValue": "1",
-    "maxValue": "2",
+    "network": "7",
+    "traderCount": 1,
+    "alpha": "0.00790000000000000001",
+    "traderIndex": 0,
     "numOutcomes": 2,
-    "type": "binary"
-  }],
-  "price": "-0.0000000000000009992",
-  "_id": "-0x88c563956af68f31bc2bf3169caa6cf0d4ab1226e7f5afc4f09fc119bc2d1bfe"
+    "tradingPeriod": 31989,
+    "tradingFee": "0.01999999999999999998",
+    "branchId": "0xf69b5",
+    "numEvents": 1,
+    "cumulativeScale": "1",
+    "creationFee": "53",
+    "author": "0x639b41c4d3d399894f2a57894278e1653e7cd24c",
+    "type": "binary",
+    "endDate": 3198913,
+    "participants": {
+        "0x7b9ce579ffa611de0de41fc979ab54f1513f0cd6": 0
+    },
+    "creationBlock": 787925,
+    "winningOutcomes": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+    ],
+    "description": "Will Rand Paul win the 2016 U.S. Presidential Election?",
+    "outcomes": [
+        {
+            "shares": {
+                "0x7b9ce579ffa611de0de41fc979ab54f1513f0cd6": "10"
+            },
+            "id": 1,
+            "outstandingShares": "62.42584652225516031471",
+            "price": "0.99998520470530127824"
+        },
+        {
+            "shares": {
+                "0x7b9ce579ffa611de0de41fc979ab54f1513f0cd6": "0"
+            },
+            "id": 2,
+            "outstandingShares": "52.42584652225516031471",
+            "price": "0.00001790156883441085"
+        }
+    ],
+    "events": [
+        {
+            "id": "-0xdfb4f85801e6f3ec7582bf504f7747858e8347233be5239f4a7ad66794a291e6",
+            "endDate": 3198913,
+            "outcome": "0",
+            "minValue": "1",
+            "maxValue": "2",
+            "numOutcomes": 2,
+            "type": "binary"
+        }
+    ],
+    "price": "0.00001790156883441085",
+    "_id": "-0x4739c98e354e90b06e4893f1ff6e0abc4d23be5639ba939089603f4dd6ec1181"
 }

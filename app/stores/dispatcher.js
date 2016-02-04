@@ -48,7 +48,8 @@ stores.market.initialize = function () {
     constants.market.DELETE_MARKET_SUCCESS, this.handleDeleteMarketSuccess,
     constants.market.MARKETS_LOADING, this.handleMarketsLoading,
     constants.market.PRICE_HISTORY_LOADING, this.handlePriceHistoryLoading,
-    constants.market.LOAD_PRICE_HISTORY_SUCCESS, this.handleLoadPriceHistorySuccess
+    constants.market.LOAD_PRICE_HISTORY_SUCCESS, this.handleLoadPriceHistorySuccess,
+    constants.market.UPDATE_ORDERS_SUCCESS, this.handleUpdateOrdersSuccess
   );
 };
 stores.network.initialize = function () {
