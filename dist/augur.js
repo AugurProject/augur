@@ -66084,17 +66084,18 @@ Augur.prototype.getSimulatedBuy = function (market, outcome, amount, callback) {
     // outcome: integer (1 or 2 for binary events)
     // amount: number
     var self = this;
-    function getSimulatedBuy(info, outcome, amount) {
+    function getSimulatedBuy(marketInfo, outcome, amount) {
         if (amount.constructor !== Decimal) amount = new Decimal(amount);
         outcome = parseInt(outcome);
+        var info = clone(marketInfo);
         var oldCost = new Decimal(self.lsLmsr(info));
         var cumScale = info.cumulativeScale;
         var alpha = new Decimal(info.alpha);
         var numOutcomes = info.numOutcomes;
+        info.outcomes[outcome-1].outstandingShares = new Decimal(info.outcomes[outcome-1].outstandingShares).plus(amount);
         var sumShares = new Decimal(0);
         for (var i = 0; i < numOutcomes; ++i) {
             sumShares = sumShares.plus(new Decimal(info.outcomes[i].outstandingShares));
-            if (i === outcome - 1) sumShares = sumShares.plus(amount);
         }
         var bq = alpha.times(sumShares);
         var sumExp = new Decimal(0);
@@ -66121,13 +66122,15 @@ Augur.prototype.getSimulatedSell = function (market, outcome, amount, callback) 
     // outcome: integer (1 or 2 for binary events)
     // amount: number
     var self = this;
-    function getSimulatedSell(info, outcome, amount) {
+    function getSimulatedSell(marketInfo, outcome, amount) {
         if (amount.constructor !== Decimal) amount = new Decimal(amount);
         outcome = parseInt(outcome);
+        var info = clone(marketInfo);
         var oldCost = new Decimal(self.lsLmsr(info));
         var cumScale = info.cumulativeScale;
         var alpha = new Decimal(info.alpha);
         var numOutcomes = info.numOutcomes;
+        info.outcomes[outcome-1].outstandingShares = new Decimal(info.outcomes[outcome-1].outstandingShares).minus(amount);
         var sumShares = new Decimal(0);
         for (var i = 0; i < numOutcomes; ++i) {
             sumShares = sumShares.plus(new Decimal(info.outcomes[i].outstandingShares));

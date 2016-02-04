@@ -75,8 +75,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
         var simulatedBuy = augur.getSimulatedBuy(marketInfo, outcome, amount);
         assert.isArray(simulatedBuy);
         assert.strictEqual(simulatedBuy.length, 2);
-        assert.strictEqual(parseFloat(simulatedBuy[0]).toFixed(8), "0.00547586");
-        assert.strictEqual(parseFloat(simulatedBuy[1]).toFixed(8), "0.50547588");
+        assert.strictEqual(parseFloat(simulatedBuy[0]).toFixed(8), "0.65425639");
+        assert.strictEqual(parseFloat(simulatedBuy[1]).toFixed(8), "0.78436838");
     });
 
     it("getSimulatedSell", function () {
@@ -84,8 +84,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
         var simulatedSell = augur.getSimulatedSell(marketInfo, outcome, amount);
         assert.isArray(simulatedSell);
         assert.strictEqual(simulatedSell.length, 2);
-        assert.strictEqual(parseFloat(simulatedSell[0]).toFixed(8), "0.00547586");
-        assert.strictEqual(parseFloat(simulatedSell[1]).toFixed(8), "0.50547588");
+        assert.strictEqual(parseFloat(simulatedSell[0]).toFixed(8), "0.35812488");
+        assert.strictEqual(parseFloat(simulatedSell[1]).toFixed(8), "0.21950285");
     });
 
     describe("makeMarketHash", function () {
@@ -140,58 +140,58 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
         });
     });
 
-    // describe("commitTrade", function () {
-    //     var test = function (t) {
-    //         it(JSON.stringify(t), function (done) {
-    //             this.timeout(augur.constants.TIMEOUT);
-    //             var hash = augur.makeMarketHash(t);
-    //             augur.commitTrade({
-    //                 market: t.market,
-    //                 hash: hash,
-    //                 onSent: function (res) {
-    //                     assert(res.txHash);
-    //                     assert.strictEqual(res.callReturn, "1");
-    //                 },
-    //                 onSuccess: function (res) {
-    //                     assert(res.txHash);
-    //                     assert.strictEqual(res.callReturn, "1");
-    //                     done();
-    //                 },
-    //                 onFailed: done
-    //             });
-    //         });
-    //     };
-    //     test({
-    //         market: marketInfo._id,
-    //         outcome: 1,
-    //         amount: 1,
-    //         limit: 0
-    //     });
-    //     test({
-    //         market: marketInfo._id,
-    //         outcome: 1,
-    //         amount: 1,
-    //         limit: "0.45"
-    //     });
-    //     test({
-    //         market: marketInfo._id,
-    //         outcome: 2,
-    //         amount: "2.6",
-    //         limit: 0
-    //     });
-    //     test({
-    //         market: "0xdeadbeef",
-    //         outcome: 2,
-    //         amount: 50,
-    //         limit: "0.45"
-    //     });
-    //     test({
-    //         market: "0xdeadbeef",
-    //         outcome: 150,
-    //         amount: 100000,
-    //         limit: "0.99995"
-    //     });
-    // });
+    describe("commitTrade", function () {
+        var test = function (t) {
+            it(JSON.stringify(t), function (done) {
+                this.timeout(augur.constants.TIMEOUT);
+                var hash = augur.makeMarketHash(t);
+                augur.commitTrade({
+                    market: t.market,
+                    hash: hash,
+                    onSent: function (res) {
+                        assert(res.txHash);
+                        assert.strictEqual(res.callReturn, "1");
+                    },
+                    onSuccess: function (res) {
+                        assert(res.txHash);
+                        assert.strictEqual(res.callReturn, "1");
+                        done();
+                    },
+                    onFailed: done
+                });
+            });
+        };
+        test({
+            market: marketInfo._id,
+            outcome: 1,
+            amount: 1,
+            limit: 0
+        });
+        test({
+            market: marketInfo._id,
+            outcome: 1,
+            amount: 1,
+            limit: "0.45"
+        });
+        test({
+            market: marketInfo._id,
+            outcome: 2,
+            amount: "2.6",
+            limit: 0
+        });
+        test({
+            market: "0xdeadbeef",
+            outcome: 2,
+            amount: 50,
+            limit: "0.45"
+        });
+        test({
+            market: "0xdeadbeef",
+            outcome: 150,
+            amount: 100000,
+            limit: "0.99995"
+        });
+    });
 
     it("Look up / sanity check most recent market ID", function (done) {
         augur.getMarketsInBranch(augur.branches.dev, function (markets) {
