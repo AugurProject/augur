@@ -83,6 +83,8 @@ module.exports = {
     case "binary":
       if (id === NO) return {type: "binary", outcome: "No"};
       return {type: "binary", outcome: "Yes"};
+    case "combinatorial":
+      return {type: "combinatorial"};
     default:
       console.error("unknown type:", market);
     }

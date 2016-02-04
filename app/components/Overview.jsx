@@ -299,64 +299,43 @@ var Overview = React.createClass({
 });
 
 var Holding = React.createClass({
+
+  mixins: [FluxMixin, StoreWatchMixin('market')],
+
   getInitialState() {
-    return {
-      potentialProfit: null
-    };
+    return {potentialProfit: null};
   },
+
   componentDidMount() {
-    /* copied from Outcomes:283 (TradeBase#handleChange) but at
-     var oldCost = new Decimal(self.lsLmsr(info));
-     in Augur.prototype.getSimulatedSell#getSimulatedSell (inner function)
-
-     throws
-
-     "{
-        "error":500,
-        "message":"transaction failed",
-        "bubble":{"name":408,"message":"408: no response"},
-        "tx":{
-          "to":"0x8032786d68e26dc2792bed6a0b605f892b8c6217",
-          "method":"lsLmsr",
-          "signature":"i",
-          "returns":"unfix",
-          "from":"0xaff9cb4dcb19d13b84761c040c91d21dc6c991ec",
-          "params":{
-            "_id":"-0x2b25f6a7436df707ed83b8f00a47ee66ab351620560c4935e05afcf6105625f3"
-          }
-        }
-      }"
-      */
     let sharesHeld = this.props.outcome.sharesHeld.toNumber();
     let simulationFunction = this.getSimulationFunction(sharesHeld);
-    simulationFunction.call(
-      this.props.flux.augur,
-      abi.hex(this.props.market.id),
+    let simulation = simulationFunction.call(
+      this.getFlux().augur,
+      this.props.market,
       this.props.outcome.id,
-      abi.number(sharesHeld),
-      function (simulation) {
-        this.setState({
-          potentialProfit: abi.bignum(simulation[0])
-        });
-      });
+      sharesHeld
+    );
+    this.setState({potentialProfit: abi.number(simulation[0])});
   },
 
   shouldComponentUpdate: function(nextProps, nextState) {
     if (!this.nextProps) return true;
-
     if (this.props.market.price != this.nextProps.market.price ||
         this.props.outcome.sharesHeld != this.nextProps.outcome.sharesHeld ||
         this.props.outcome.pendingShares != this.nextProps.outcome.pendingShares) return true;
-
   },
 
   getSimulationFunction: function (shares) {
-    var flux = this.props.flux;
+    var flux = this.getFlux();
     return ((shares > 0) ? flux.augur.getSimulatedSell : flux.augur.getSimulatedBuy);
   },
 
-  render: function() {
-    var name = utilities.getOutcomeName(this.props.outcome.id, this.props.market).outcome;
+  render: function () {
+    var outcomeName = utilities.getOutcomeName(this.props.outcome.id, this.props.market);
+    var name = "";
+    if (outcomeName.type !== "combinatorial") {
+      name = outcomeName.outcome;
+    }
     var className = 'pull-right shares-held ' + name;
     var key = this.props.market.id+this.props.outcome.id;
     var percent = this.props.market.price ? utilities.priceToPercent(this.props.market.price) : '-';
