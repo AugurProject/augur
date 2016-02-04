@@ -52,7 +52,11 @@ module.exports = {
     this.emit(constants.CHANGE_EVENT);
   },
   handleUserRegistered(payload) {
-    this.state.isNewRegistration = payload.isNewRegistration;
+    this.state.isNewRegistration = true;
+    this.emit(constants.CHANGE_EVENT);
+  },
+  handleUserSignedOut(payload) {
+    this.state.isNewRegistration = false;
     this.emit(constants.CHANGE_EVENT);
   },
   handleUpdateAccount: function (payload) {

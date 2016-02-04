@@ -51,6 +51,7 @@ var RegisterModal = React.createClass({
           });
           flux.actions.asset.updateAssets();
           self.props.onHide();
+          self.props.toggleFundsModal();
         },
         onSendEther: function (account) {
           console.log("Register.jsx: onSendEther %o", arguments);
@@ -62,7 +63,7 @@ var RegisterModal = React.createClass({
           });
         },
         onFunded: function (response) {
-          console.log("register sequence complete");
+          console.log("register sequence complete %o", response);
           flux.actions.asset.updateAssets();
         }
       });
@@ -108,7 +109,7 @@ var RegisterModal = React.createClass({
     );
 
     return (
-      <Modal {...this.props} className='send-modal' bsSize='small'>
+      <Modal show={this.props.show} onHide={this.props.onHide} className='send-modal' bsSize='small'>
         <div className='modal-body clearfix'>
           <h4>Register</h4>
           <div className='row'>

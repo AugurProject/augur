@@ -16,6 +16,7 @@ var utilities = require("../libs/utilities");
 var constants = require("../libs/constants");
 var SignInModal = require("./SignIn");
 var RegisterModal = require("./Register");
+var FundsModal = require("./layout/modals/FundsModal");
 var SendCashModal = require("./SendModal").SendCashModal;
 var SendRepModal = require("./SendModal").SendRepModal;
 var SendEtherModal = require("./SendModal").SendEtherModal;
@@ -36,6 +37,7 @@ var AugurApp = React.createClass({
       repFaucetDisabled: false,
       sendCashModalOpen: false,
       sendRepModalOpen: false,
+      fundsModalOpen: false,
       status: 'stopped'
     };
   },
@@ -95,6 +97,10 @@ var AugurApp = React.createClass({
   toggleSendEtherModal: function() {
     this.setState({sendEtherModalOpen: !this.state.sendEtherModalOpen});
   },
+  toggleFundsModal() {
+    console.log("AugurApp.jsx: toggleFundsModal");
+    this.setState({fundsModalOpen: !this.state.fundsModalOpen});
+  },
 
   render: function () {
     return (
@@ -136,8 +142,12 @@ var AugurApp = React.createClass({
         </section>
         
         <RegisterModal
+          toggleFundsModal={this.toggleFundsModal}
           show={this.state.registerModalOpen}
           onHide={this.toggleRegisterModal} />
+        <FundsModal
+          show={this.state.fundsModalOpen}
+          onHide={this.toggleFundsModal} />
         <SignInModal
           show={this.state.signInModalOpen}
           onHide={this.toggleSignInModal} />

@@ -46,23 +46,23 @@ let Header = React.createClass({
     getCashText() {
         let hasCash = this.props.asset.cash && this.props.asset.cash.gt(new BigNumber(0));
         if (!hasCash && this.props.isNewRegistration) {
-            return "waiting";
+            return "coming";
         } else {
             return this.props.asset.cash ? this.props.asset.cash.toFixed(2) : '-';
         }
     },
     getRepText() {
-        return "todo";
-        if (this.props.isNewRegistration) {
-            return "waiting";
+        let hasRep = this.props.asset.reputation && this.props.asset.reputation.gt(new BigNumber(0));
+        if (!hasRep && this.props.isNewRegistration) {
+            return "coming";
         } else {
             return this.props.asset.reputation ? this.props.asset.reputation.toFixed(2) : '-';
         }
     },
     getEtherText() {
-        return "todo";
-        if (this.props.isNewRegistration) {
-            return "waiting";
+        let hasEther = this.props.asset.ether && this.props.asset.ether.gt(new BigNumber(0));
+        if (!hasEther && this.props.isNewRegistration) {
+            return "coming";
         } else {
             return this.props.asset.ether ? utilities.formatEther(this.props.asset.ether).value : '-';
         }
