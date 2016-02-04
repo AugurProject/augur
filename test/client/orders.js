@@ -202,10 +202,11 @@ describe("orders.reset", function () {
 describe("checkBuyOrder", function () {
     var test = function (t) {
         it("currentPrice=" + t.currentPrice + ", order=" + JSON.stringify(t.order), function (done) {
-            var buyShares = augur.buyShares;
-            augur.buyShares = function (trade) {
-                assert.strictEqual(trade.branchId, t.order.branch);
-                assert.strictEqual(trade.marketId, t.order.market);
+            this.timeout(augur.constants.TIMEOUT);
+            var trade = augur.trade;
+            augur.trade = function (trade) {
+                assert.strictEqual(trade.branch, t.order.branch);
+                assert.strictEqual(trade.market, t.order.market);
                 assert.strictEqual(trade.outcome, t.order.outcome);
                 assert.strictEqual(trade.amount, abi.string(t.order.amount));
                 trade.onSent();
@@ -224,7 +225,7 @@ describe("checkBuyOrder", function () {
                 assert.property(order, "expiration");
                 assert.property(order, "cap");
                 assert.isTrue(augur.orders.reset(t.order.account));
-                augur.buyShares = buyShares;
+                augur.trade = trade;
                 done();
             });
         });
@@ -260,12 +261,13 @@ describe("checkBuyOrder", function () {
 describe("checkSellOrder", function () {
     var test = function (t) {
         it("currentPrice=" + t.currentPrice + ", order=" + JSON.stringify(t.order), function (done) {
-            var sellShares = augur.sellShares;
-            augur.sellShares = function (trade) {
-                assert.strictEqual(trade.branchId, t.order.branch);
-                assert.strictEqual(trade.marketId, t.order.market);
+            this.timeout(augur.constants.TIMEOUT);
+            var trade = augur.trade;
+            augur.trade = function (trade) {
+                assert.strictEqual(trade.branch, t.order.branch);
+                assert.strictEqual(trade.market, t.order.market);
                 assert.strictEqual(trade.outcome, t.order.outcome);
-                assert.strictEqual(trade.amount, abi.bignum(t.order.amount).abs().toFixed());
+                assert.strictEqual(trade.amount, abi.bignum(t.order.amount).toFixed());
                 trade.onSent();
                 var updated = augur.orders.cancel(t.order.account, t.order.market, t.order.outcome, orderId);
                 assert.strictEqual(updated[t.order.market][t.order.outcome].length, numOrders-1);
@@ -282,7 +284,7 @@ describe("checkSellOrder", function () {
                 assert.property(order, "expiration");
                 assert.property(order, "cap");
                 assert.isTrue(augur.orders.reset(t.order.account));
-                augur.sellShares = sellShares;
+                augur.trade = trade;
                 done();
             });
         });

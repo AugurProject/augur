@@ -67850,12 +67850,13 @@ Augur.prototype.checkBuyOrder = function (currentPrice, order, cb) {
     }
     if (currentPrice.lte(order.price)) {
 
-        // execute buy order
-        this.buyShares({
-            branchId: order.branch,
-            marketId: order.market,
+        // execute order
+        this.trade({
+            branch: order.branch,
+            market: order.market,
             outcome: order.outcome,
             amount: order.amount.toFixed(),
+            limit: order.limit,
             onSent: function (res) {
                 self.orders.cancel(order.id);
             },
@@ -67882,11 +67883,12 @@ Augur.prototype.checkSellOrder = function (currentPrice, order, cb) {
     if (currentPrice.gte(order.price)) {
 
         // execute sell order
-        this.sellShares({
-            branchId: order.branch,
-            marketId: order.market,
+        this.trade({
+            branch: order.branch,
+            market: order.market,
             outcome: order.outcome,
-            amount: order.amount.abs().toFixed(),
+            amount: order.amount.toFixed(),
+            limit: order.limit,
             onSent: function (res) {
                 self.orders.cancel(order.id);
             },
@@ -67969,16 +67971,20 @@ Augur.prototype.checkOrderBook = function (market, cb) {
  * callbacks: {onMarketHash,
  *             onCommitTradeSent, onCommitTradeSuccess, onCommitTradeFailed,
  *             onNextBlock,
- *             onTradeSent, onTradeSuccess, onTradeFailed}
+ *             onTradeSent, onTradeSuccess, onTradeFailed,
+ *             onOrderCreated}
  * (All callbacks are optional.)
  */
-Augur.prototype.trade = function (branch, market, outcome, amount, limit, callbacks) {
+Augur.prototype.trade = function (branch, market, outcome, amount, limit, stop, expiration, cap, callbacks) {
     var self = this;
     if (branch && branch.constructor === Object && branch.branch) {
         market = branch.market;
         outcome = branch.outcome;
         amount = branch.amount;
         limit = branch.limit;
+        stop = branch.stop;
+        expiration = branch.expiration; // NYI
+        cap = branch.cap;               // NYI
         if (branch.callbacks) callbacks = clone(branch.callbacks);
         branch = branch.branch;
     }
@@ -67991,6 +67997,22 @@ Augur.prototype.trade = function (branch, market, outcome, amount, limit, callba
     callbacks.onTradeSent = callbacks.onTradeSent || this.utils.pass;
     callbacks.onTradeSuccess = callbacks.onTradeSuccess || this.utils.pass;
     callbacks.onTradeFailed = callbacks.onTradeFailed || this.utils.pass;
+    callbacks.onOrderCreated = callbacks.onOrderCreated || this.utils.pass;
+
+    // stop orders: send to localStorage
+    if (stop) {
+        return callbacks.onOrderCreated(this.orders.create({
+            account: this.from,
+            market: market,
+            outcome: outcome,
+            price: limit,
+            amount: amount,
+            expiration: expiration || 0,
+            cap: cap || 0
+        }));
+    }
+
+    // market orders: send to chain
     amount = new Decimal(amount);
     var trade = (amount.gt(new Decimal(0))) ? this.buyShares : this.sellShares;
     amount = amount.abs().toFixed();
@@ -67998,7 +68020,7 @@ Augur.prototype.trade = function (branch, market, outcome, amount, limit, callba
         market: market,
         outcome: outcome,
         amount: amount,
-        limit: 0
+        limit: 0 // nonzero for "true" limit orders, 0 for stop & market orders
     });
     callbacks.onMarketHash(marketHash);
     this.commitTrade({
