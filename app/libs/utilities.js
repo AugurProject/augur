@@ -5,6 +5,9 @@ var abi = require("augur-abi");
 var moment = require("moment");
 var constants = require("./constants");
 
+var NO = 1;
+var YES = 2;
+
 module.exports = {
 
   rotate: function (a) { a.unshift(a.pop()); },
@@ -52,6 +55,36 @@ module.exports = {
   isValidAccount: function (address) {
     address = address.replace(/^0x/, '');  // strip leading '0x' is it exists
     return address.match(/^[0-9a-fA-F]{40}$/) ? true : false;
-  }
+  },
 
+  getOutcomeName: function (id, market) {
+    switch (market.type) {
+    case "categorical":
+      if (market && market.description && market.description.indexOf("Choices:") > -1) {
+        var desc = market.description.split("Choices:");
+        try {
+          return {
+            type: "categorical",
+            outcome: desc[desc.length - 1].split(",")[id - 1].trim()
+          };
+        } catch (exc) {
+          console.error("categorical parse error:", market.description, exc);
+        }
+      }
+      return {
+        type: "categorical",
+        outcome: id
+      };
+      break;
+    case "scalar":
+      if (id === NO) return {type: "scalar", outcome: "⇩"};
+      return {type: "scalar", outcome: "⇧"};
+      break;
+    case "binary":
+      if (id === NO) return {type: "binary", outcome: "No"};
+      return {type: "binary", outcome: "Yes"};
+    default:
+      console.error("unknown type:", market);
+    }
+  }
 };

@@ -141,6 +141,7 @@ module.exports = {
     this.flux.actions.branch.loadBranches();
     this.flux.actions.branch.setCurrentBranch();
     this.flux.actions.market.loadMarkets();
+    this.flux.actions.market.loadOrders();
     this.flux.actions.report.loadEventsToReport();
     this.flux.actions.report.loadPendingReports();
     this.flux.actions.config.setupFilters();

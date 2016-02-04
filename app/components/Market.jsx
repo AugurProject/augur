@@ -19,47 +19,12 @@ var utilities = require("../libs/utilities");
 var moment = require("moment");
 var Outcomes = require("./Outcomes");
 
-var NO = 1;
-var YES = 2;
-
 // this method was missing for some time and nobody noticed, so maybe it's not that important
 var priceToPercentage = function (price) {
   if (price) {
     return +price.times(100).toFixed(1);
   } else {
     return 0;
-  }
-};
-
-
-var getOutcomeName = function (id, market) {
-  switch (market.type) {
-  case "categorical":
-    if (market && market.description && market.description.indexOf("Choices:") > -1) {
-      var desc = market.description.split("Choices:");
-      try {
-        return {
-          type: "categorical",
-          outcome: desc[desc.length - 1].split(",")[id - 1].trim()
-        };
-      } catch (exc) {
-        console.error("categorical parse error:", market.description, exc);
-      }
-    }
-    return {
-      type: "categorical",
-      outcome: id
-    };
-    break;
-  case "scalar":
-    if (id === NO) return {type: "scalar", outcome: "⇩"};
-    return {type: "scalar", outcome: "⇧"};
-    break;
-  case "binary":
-    if (id === NO) return {type: "binary", outcome: "No"};
-    return {type: "binary", outcome: "Yes"};
-  default:
-    console.error("unknown type:", market);
   }
 };
 

@@ -96,6 +96,10 @@ module.exports = {
     this.state.orders = payload.orders;
     this.emit(constants.CHANGE_EVENT);
   },
+  handleLoadOrdersSuccess: function (payload) {
+    this.state.orders = payload.orders;
+    this.emit(constants.CHANGE_EVENT);
+  },
   marketIsLoaded: function (marketId) {
     var requiredProperties = ["id", "description", "price", "endDate"];
     var loaded = _.intersection(_.keys(this.state.markets[marketId]), requiredProperties);

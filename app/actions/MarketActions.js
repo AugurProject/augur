@@ -274,6 +274,14 @@ module.exports = {
     }
   },
 
+  loadOrders: function () {
+    var account = this.flux.store('config').getAccount();
+    if (account) {
+      var orders = this.flux.augur.orders.get(account);
+      this.dispatch(constants.market.LOAD_ORDERS_SUCCESS, {orders});
+    }
+  },
+
   updateOrders: function (orders) {
     if (orders) {
       this.dispatch(constants.market.UPDATE_ORDERS_SUCCESS, {orders});

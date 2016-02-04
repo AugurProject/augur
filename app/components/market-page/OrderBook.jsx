@@ -3,7 +3,7 @@ let React = require('react');
 let OrderBook = React.createClass({
     render() {
         return (
-            <div className="orderBook clearfix" ng-controller="OrderBookController as orderBook">
+            <div className="orderBook clearfix">
                 <h4>
                     <span className="hidden-xs">
                         Order Book
@@ -12,21 +12,10 @@ let OrderBook = React.createClass({
                        href="#orderBookCollapse" aria-expanded="true" aria-controls="orderBookCollapse">
                         Order Book
                     </a>
-                    <a className="helpPopover" data-toggle="modal" data-target="#help-markets-order-book"
-                       ng-include="'question-icon'">
-                    </a>
                 </h4>
-
-                <jspinclude page="../../include/help-popover.jsp">
-                    <jspparam name="contentCmsName" value="help-markets-order-book"/>
-                    <jspparam name="labelCmsName" value="help-markets-order-book-label"/>
-                    <jspparam name="labelDefaultValue" value="Order Book"/>
-                </jspinclude>
-
                 <div id="orderBookCollapse" className="collapse collapsedOnMobile">
                     <div className="orderBook-bids">
-                        <table className="table table-striped table-hover"
-                               in-top-up-rows="orderBook.bids" in-top-up-rows-max="${orderBookDepth}">
+                        <table className="table table-striped table-hover">
                             <thead>
                                 <tr>
                                     <th>Qty.</th>
@@ -58,8 +47,7 @@ let OrderBook = React.createClass({
                         </table>
                     </div>
                     <div className="orderBook-offers">
-                        <table className="table table-striped table-hover"
-                               in-top-up-rows="orderBook.offers" in-top-up-rows-max="${orderBookDepth}">
+                        <table className="table table-striped table-hover">
                             <thead>
                                 <tr>
                                     <th>Ask Price</th>

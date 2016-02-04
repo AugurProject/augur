@@ -19,37 +19,6 @@ var priceToPercentage = function (price) {
     }
 };
 
-var getOutcomeName = function (id, market) {
-    switch (market.type) {
-        case "categorical":
-            if (market && market.description && market.description.indexOf("Choices:") > -1) {
-                var desc = market.description.split("Choices:");
-                try {
-                    return {
-                        type: "categorical",
-                        outcome: desc[desc.length - 1].split(",")[id - 1].trim()
-                    };
-                } catch (exc) {
-                    // console.error("categorical parse error:", market.description, exc);
-                }
-            }
-            return {
-                type: "categorical",
-                outcome: id
-            };
-            break;
-        case "scalar":
-            if (id === NO) return {type: "scalar", outcome: "⇩"};
-            return {type: "scalar", outcome: "⇧"};
-            break;
-        case "binary":
-            if (id === NO) return {type: "binary", outcome: "No"};
-            return {type: "binary", outcome: "Yes"};
-        default:
-            console.error("unknown type:", market);
-    }
-};
-
 var Overview = React.createClass({
 
     mixins: [FluxMixin],
@@ -87,7 +56,8 @@ var Overview = React.createClass({
         var marketId = this.props.market.id;
         var branchId = this.props.market.branchId;
         var outcomeId = this.props.outcome.id;
-        var limit = (limit === '') ? 0 : abi.string(limit);
+        var limit = (limit === '') ? 0 : abi.number(limit);
+        var stop = (limit) ? true : false;
         flux.augur.trade({
             branch: branchId,
             market: abi.hex(marketId),
@@ -159,7 +129,7 @@ var Overview = React.createClass({
         });
     },
     getDescription(market, outcome) {
-        return getOutcomeName(outcome.id, this.props.market);
+        return utilities.getOutcomeName(outcome.id, this.props.market);
     },
     getPercentageFormatted(market, outcome) {
         let percentageFormatted;
@@ -340,11 +310,8 @@ var TradeBase = {
         } else if (this.state.simulation.cost > this.props.cashBalance) {
             this.setState({inputError: 'Cost of shares exceeds available funds'});
         } else {
-            if (typeof(limitPrice) !== 'number' || !limitPrice) {
-                this.setState({inputError: 'Limit price must be a number'});
-            } else {
-                this.props.handleTrade(this.getRelativeShares(), limitPrice);
-            }
+            limitPrice = (limitPrice === "") ? 0 : limitPrice;
+            this.props.handleTrade(this.getRelativeShares(), limitPrice);
         }
     },
 
