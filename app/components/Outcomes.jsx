@@ -94,7 +94,7 @@ var Overview = React.createClass({
             branch: branchId,
             market: abi.hex(marketId),
             outcome: outcomeId,
-            amount: Math.abs(relativeShares),
+            amount: relativeShares,
             limit: 0,
             callbacks: {
                 onMarketHash: function (marketHash) {
