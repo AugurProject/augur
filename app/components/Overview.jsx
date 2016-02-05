@@ -130,18 +130,13 @@ var Overview = React.createClass({
     var cashBalance = this.state.asset.cash ? +this.state.asset.cash.toFixed(2) : '-';
     var repBalance = this.state.asset.reputation ? +this.state.asset.reputation.toFixed(2) : 0;
 
-    var holdings = [];
-    _.each(this.state.holdings, function (market) {
-      _.each(market.outcomes, function (outcome) {
-        if (outcome && outcome.sharesHeld) {
-          if (outcome.sharesHeld.toNumber()) {
-            var key = market.id + outcome.id;
-            holdings.push( <Holding market={market} outcome={outcome} key={key}
-                                    flux={this.props.flux/*is it ok to pass flux further?*/} /> );
-          }
-        }
-      }, this);
-    }, this);
+    var holdings = _
+      .filter(this.state.holdings, market => {
+        return market.outcomes.some((outcome) => outcome.sharesHeld && outcome.sharesHeld.toNumber() > 0);
+      })
+      .map(function (market) {
+        return <MarketRow key={market.id} market={market} contentType="holdings"/>;
+      });
 
     var exportAccountButton = (
       <div className="col-sm-3">
@@ -294,68 +289,6 @@ var Overview = React.createClass({
           show={this.state.importAccountModalOpen}
           onHide={this.toggleImportAccountModal} />
       </div>
-    );
-  }
-});
-
-var Holding = React.createClass({
-
-  mixins: [FluxMixin, StoreWatchMixin('market')],
-
-  getInitialState() {
-    return {potentialProfit: null};
-  },
-
-  componentDidMount() {
-    let sharesHeld = this.props.outcome.sharesHeld.toNumber();
-    let simulationFunction = this.getSimulationFunction(sharesHeld);
-    let simulation = simulationFunction.call(
-      this.getFlux().augur,
-      this.props.market,
-      this.props.outcome.id,
-      sharesHeld
-    );
-    this.setState({potentialProfit: abi.number(simulation[0])});
-  },
-
-  shouldComponentUpdate: function(nextProps, nextState) {
-    if (!this.nextProps) return true;
-    if (this.props.market.price != this.nextProps.market.price ||
-        this.props.outcome.sharesHeld != this.nextProps.outcome.sharesHeld ||
-        this.props.outcome.pendingShares != this.nextProps.outcome.pendingShares) return true;
-  },
-
-  getSimulationFunction: function (shares) {
-    var flux = this.getFlux();
-    return ((shares > 0) ? flux.augur.getSimulatedSell : flux.augur.getSimulatedBuy);
-  },
-
-  render: function () {
-    var outcomeName = utilities.getOutcomeName(this.props.outcome.id, this.props.market);
-    var name = "";
-    if (outcomeName.type !== "combinatorial") {
-      name = outcomeName.outcome;
-    }
-    var className = 'pull-right shares-held ' + name;
-    var key = this.props.market.id+this.props.outcome.id;
-    var percent = this.props.market.price ? utilities.priceToPercent(this.props.market.price) : '-';
-    var closeMarket = <span />;
-    if (this.props.market.expired && this.props.market.authored && !this.props.market.closed) {
-     closeMarket = <CloseMarketTrigger text='close market' params={ { marketId: this.props.market.id.toString(16), branchId: this.props.market.branchId.toString(16) } } />;
-    }
-    var pendingShares = <span />;
-    if (!this.props.outcome.pendingShares.equals(0)) {
-      pendingShares = <span className="pull-right pending-shares">{ this.props.outcome.pendingShares.toNumber() } pending</span>;
-    }
-
-    return (
-      <Link key={ key } className="list-group-item clearfix" to='market' params={ {marketId: this.props.market.id.toString(16) } }>
-        <span className="price">{ percent }</span>
-        <p className="description">{ this.props.market.description }</p>
-        <span className={ className }>{ this.props.outcome.sharesHeld.toNumber() } { name } ({this.state.potentialProfit})</span>
-        { pendingShares }
-        { closeMarket }
-      </Link>
     );
   }
 });

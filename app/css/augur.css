@@ -519,11 +519,7 @@ nav.header .register {
     top: -2px;
 }
 .account-info .send-button {
-    margin-left: 5px;
     width: 100%;
-}
-.account-info .send-button:last-child {
-    margin-right: 17px;
 }
 
 .subheading {
