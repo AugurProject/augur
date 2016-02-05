@@ -95,7 +95,7 @@ var Overview = React.createClass({
       if (this.state.trendingMarkets) {
         trendingMarketsSection = (
           <div>
-            <h4 className="trending">Trending Markets</h4>
+            <h3>Trending Markets</h3>
             <div className='row'>
               <div className="col-xs-12">
                   {_.map(this.state.trendingMarkets, market => {
@@ -109,7 +109,7 @@ var Overview = React.createClass({
       return (
         <div id="overview">
           <div className="account-info">
-            <h4>Account</h4>
+            <h3>Account</h3>
             <div className="row">
               {importAccountButton}
             </div>
@@ -171,7 +171,7 @@ var Overview = React.createClass({
     if (this.state.account) {
       accountSection = (
         <div className="account-info">
-          <h4>Account</h4>
+          <h3>Account</h3>
           <div className="row">
             <div className="col-sm-6">
               <span className="account">{this.state.account}</span>
@@ -187,7 +187,7 @@ var Overview = React.createClass({
     if (holdings.length) {
       holdingsSection = (
         <div>
-          <h4>Current Holdings</h4>
+          <h3>Current Holdings</h3>
           <ListGroup className='holdings'>
             { holdings }
           </ListGroup>
@@ -203,7 +203,7 @@ var Overview = React.createClass({
       if (this.state.trendingMarkets) {
         authoredMarketsSection = (
           <div>
-            <h4 className="trending">Trending Markets</h4>
+            <h3>Trending Markets</h3>
             <div className='row'>
               <div className="col-xs-12">
                 {_.map(this.state.trendingMarkets, market => {
@@ -267,7 +267,7 @@ var Overview = React.createClass({
       }
       authoredMarketsSection = (
         <div>
-          <h4>My Markets</h4>
+          <h3>My Markets</h3>
           <div className="markets-list">
             {authoredMarkets}
           </div>

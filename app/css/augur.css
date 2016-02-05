@@ -896,12 +896,6 @@ a.market-pane:hover {
 #overview .welcome.alert p {
     font-size: 15px;
 }
-#overview h3 {
-    margin-bottom: 0px;
-}
-#overview h4 {
-    margin-bottom: 10px;
-}
 #overview div.subheading {
     margin-left: -15px;
     margin-right: -15px;
