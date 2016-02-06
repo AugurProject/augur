@@ -121,6 +121,6 @@ module.exports = {
             return cb(true);
         }
         return cb(errors.DB_DELETE_FAILED);
-    },
+    }
 
 };

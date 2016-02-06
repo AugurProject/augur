@@ -199,98 +199,41 @@ describe("orders.reset", function () {
     }
 });
 
-describe("checkBuyOrder", function () {
+describe("checkOrder", function () {
     var test = function (t) {
-        it("currentPrice=" + t.currentPrice + ", order=" + JSON.stringify(t.order), function (done) {
+        it("market=" + t.market + ", outcome=" + t.outcome + ", order=" + JSON.stringify(t.order), function (done) {
             this.timeout(augur.constants.TIMEOUT);
-            var trade = augur.trade;
+            var Trade = augur.trade;
             augur.trade = function (trade) {
                 assert.strictEqual(trade.branch, t.order.branch);
                 assert.strictEqual(trade.market, t.order.market);
                 assert.strictEqual(trade.outcome, t.order.outcome);
                 assert.strictEqual(trade.amount, abi.string(t.order.amount));
                 trade.onSent();
-                var updated = augur.orders.cancel(t.order.account, t.order.market, t.order.outcome, orderId);
+                var updated = augur.orders.cancel(
+                    t.order.account,
+                    t.order.market,
+                    t.order.outcome,
+                    orderId
+                );
                 assert.strictEqual(updated[t.order.market][t.order.outcome].length, numOrders-1);
                 trade.onSuccess();
             };
             var orders = augur.orders.create(t.order);
             var numOrders = orders[t.order.market][t.order.outcome].length;
             var orderId = orders[t.order.market][t.order.outcome][numOrders-1].id;
-            augur.checkBuyOrder(t.currentPrice, t.order, function (order) {
-                assert.notProperty(order, "error");
-                assert.isObject(order);
-                assert.property(order, "price");
-                assert.property(order, "amount");
-                assert.property(order, "expiration");
-                assert.property(order, "cap");
-                assert.isTrue(augur.orders.reset(t.order.account));
-                augur.trade = trade;
-                done();
+            augur.getMarketInfo(t.market, function (info) {
+                augur.checkOrder(info, t.outcome, t.order, function () {
+                    augur.trade = Trade;
+                    done();
+                });
             });
         });
     };
     test({
         currentPrice: new BigNumber("0.49"),
-        order: {
-            account: augur.from,
-            market: marketId,
-            branch: augur.branches.dev,
-            outcome: 1,
-            price: new BigNumber("0.5"),
-            amount: new BigNumber("1.2"),
-            expiration: 0,
-            cap: 0
-        }
-    });
-    test({
-        currentPrice: "0.49",
-        order: {
-            account: augur.from,
-            market: marketId,
-            branch: augur.branches.dev,
-            outcome: 1,
-            price: "0.5",
-            amount: "1.2",
-            expiration: 0,
-            cap: 0
-        }
-    });
-});
-
-describe("checkSellOrder", function () {
-    var test = function (t) {
-        it("currentPrice=" + t.currentPrice + ", order=" + JSON.stringify(t.order), function (done) {
-            this.timeout(augur.constants.TIMEOUT);
-            var trade = augur.trade;
-            augur.trade = function (trade) {
-                assert.strictEqual(trade.branch, t.order.branch);
-                assert.strictEqual(trade.market, t.order.market);
-                assert.strictEqual(trade.outcome, t.order.outcome);
-                assert.strictEqual(trade.amount, abi.bignum(t.order.amount).toFixed());
-                trade.onSent();
-                var updated = augur.orders.cancel(t.order.account, t.order.market, t.order.outcome, orderId);
-                assert.strictEqual(updated[t.order.market][t.order.outcome].length, numOrders-1);
-                trade.onSuccess();
-            };
-            var orders = augur.orders.create(t.order);
-            var numOrders = orders[t.order.market][t.order.outcome].length;
-            var orderId = orders[t.order.market][t.order.outcome][numOrders-1].id;
-            augur.checkSellOrder(t.currentPrice, t.order, function (order) {
-                assert.notProperty(order, "error");
-                assert.isObject(order);
-                assert.property(order, "price");
-                assert.property(order, "amount");
-                assert.property(order, "expiration");
-                assert.property(order, "cap");
-                assert.isTrue(augur.orders.reset(t.order.account));
-                augur.trade = trade;
-                done();
-            });
-        });
-    };
-    test({
-        currentPrice: new BigNumber("0.51"),
+        market: marketId,
+        outcome: 1,
         order: {
             account: augur.from,
             market: marketId,
@@ -303,7 +246,9 @@ describe("checkSellOrder", function () {
         }
     });
     test({
-        currentPrice: "0.51",
+        currentPrice: new BigNumber("0.51"),
+        market: marketId,
+        outcome: 1,
         order: {
             account: augur.from,
             market: marketId,
@@ -314,71 +259,6 @@ describe("checkSellOrder", function () {
             expiration: 0,
             cap: 0
         }
-    });
-});
-
-describe("checkOrder", function () {
-    var test = function (t) {
-        it("market=" + t.market + ", outcome=" + t.outcome + ", order=" + JSON.stringify(t.order), function (done) {
-            this.timeout(augur.constants.TIMEOUT);
-            var checkBuyOrder = augur.checkBuyOrder;
-            var checkSellOrder = augur.checkSellOrder;
-            augur.checkBuyOrder = function (currentPrice, order, cb) {
-                assert.strictEqual(currentPrice.constructor, BigNumber);
-                assert.isObject(order);
-                assert.property(order, "price");
-                assert.property(order, "amount");
-                assert.property(order, "expiration");
-                assert.property(order, "cap");
-                assert.strictEqual(t.expected, "buy");
-                cb();
-            };
-            augur.checkSellOrder = function (currentPrice, order, cb) {
-                assert.strictEqual(currentPrice.constructor, BigNumber);
-                assert.isObject(order);
-                assert.property(order, "price");
-                assert.property(order, "amount");
-                assert.property(order, "expiration");
-                assert.property(order, "cap");
-                assert.strictEqual(t.expected, "sell");
-                cb();
-            };
-            augur.getMarketInfo(t.market, function (info) {
-                augur.checkOrder(info, t.outcome, t.order, function () {
-                    augur.checkBuyOrder = checkBuyOrder;
-                    augur.checkSellOrder = checkSellOrder;
-                    done();
-                });
-            });
-        });
-    };
-    test({
-        currentPrice: new BigNumber("0.49"),
-        market: marketId,
-        outcome: 1,
-        order: {
-            account: augur.from,
-            branch: augur.branches.dev,
-            price: "0.5",
-            amount: "1.2",
-            expiration: 0,
-            cap: 0
-        },
-        expected: "buy"
-    });
-    test({
-        currentPrice: new BigNumber("0.51"),
-        market: marketId,
-        outcome: 1,
-        order: {
-            account: augur.from,
-            branch: augur.branches.dev,
-            price: "0.5",
-            amount: "-1.2",
-            expiration: 0,
-            cap: 0
-        },
-        expected: "sell"
     });
 });
 
