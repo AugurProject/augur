@@ -28,6 +28,7 @@
     "multi-hash": "^0.1.1",
     "node-localstorage": "^1.1.2",
     "node-uuid": "^1.4.3",
+    "numeric": "^1.2.6",
     "ramble": "^0.1.6",
     "validator": "^4.0.2"
   },
