@@ -265,34 +265,28 @@ var TradeBase = {
             limitInputError: null,
             value: '',
             limit: ''
-        }
+        };
     },
 
     handleChange: function () {
-        var self = this;
-        var flux = this.getFlux();
         var rawValue = this.refs.inputShares.getValue();
         var numShares = abi.number(rawValue);
-
         this.setState({value: rawValue});
         this.setState({inputError: null});
-
         if (!numShares || numShares === '') {
             return this.setState({simulation: null});
         }
-        self.getSimulationFunction().call(flux.augur,
-            abi.hex(self.props.market.id),
-            self.props.outcome.id,
-            numShares,
-            function (sim) {
-                self.setState({
-                    simulation: {
-                        cost: abi.bignum(sim[0]),
-                        newPrice: abi.bignum(sim[1])
-                    }
-                });
-            }
+        var sim = this.getSimulationFunction().call(this.getFlux().augur,
+            this.props.market,
+            this.props.outcome.id,
+            numShares
         );
+        this.setState({
+            simulation: {
+                cost: abi.bignum(sim[0]),
+                newPrice: abi.bignum(sim[1])
+            }
+        });
     },
 
     handleLimitChange: function () {

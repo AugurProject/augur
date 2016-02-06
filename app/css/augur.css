@@ -519,11 +519,7 @@ nav.header .register {
     top: -2px;
 }
 .account-info .send-button {
-    margin-left: 5px;
     width: 100%;
-}
-.account-info .send-button:last-child {
-    margin-right: 17px;
 }
 
 .subheading {
@@ -899,12 +895,6 @@ a.market-pane:hover {
 }
 #overview .welcome.alert p {
     font-size: 15px;
-}
-#overview h3 {
-    margin-bottom: 0px;
-}
-#overview h4 {
-    margin-bottom: 10px;
 }
 #overview div.subheading {
     margin-left: -15px;

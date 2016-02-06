@@ -10,7 +10,7 @@ let Glyphicon = require('react-bootstrap/lib/Glyphicon');
 
 let OutcomeRow = require("./OutcomeRow");
 
-let Market = React.createClass({
+let MarketRow = React.createClass({
     getInitialState() {
         return {
             isOutcomeTableOpen: false
@@ -26,15 +26,46 @@ let Market = React.createClass({
         let endDateLabel = (market.endDate != null && market.matured) ? 'matured' : 'ends';
         let endDateFormatted = market.endDate != null ? moment(market.endDate).format('MMM Do, YYYY') : '-';
 
-        let outcomes;
+        let outcomeRows;
+
+        let tableRows = [];
+        let tHRow;
+        if (this.props.contentType === "holdings") {
+            tHRow = (
+                <tr key={`th-${market._id}`}>
+                    <th>Outcome</th>
+                    <th>Probability</th>
+                    <th>Last Trade</th>
+                    <th>Shares held</th>
+                    <th>Potential P/L</th>
+                </tr>
+            );
+        } else {
+            tHRow = (
+                <tr key={`th-${market._id}`}>
+                    <th>Outcome</th>
+                    <th>Probability</th>
+                    <th>Last Trade</th>
+                </tr>
+            );
+        }
 
         if (market.type == "combinatorial") {
-            outcomes = (<tr><td colSpan="5">todo</td></tr>);
+            outcomeRows = (<tr key={market._id}><td colSpan="5">todo</td></tr>);
         } else {
-            outcomes = _.map(market.outcomes, (outcome) => {
-                return <OutcomeRow key={`${market._id}-${outcome.id}`} outcome={outcome} market={market} />;
+            let outcomes;
+            if (this.props.contentType === "holdings") {
+                outcomes = _.filter(market.outcomes, outcome => outcome.sharesHeld && outcome.sharesHeld.toNumber() > 0);
+            } else {
+                outcomes = market.outcomes;
+            }
+            outcomeRows = outcomes.map((outcome) => {
+                return <OutcomeRow key={`${market._id}-${outcome.id}`} outcome={outcome} market={market} contentType={this.props.contentType} />;
             }, this);
         }
+
+        tableRows.push(tHRow);
+        tableRows = tableRows.concat(outcomeRows);
 
         return (
             <div className="marketRow">
@@ -60,12 +91,7 @@ let Market = React.createClass({
                         <div className="col-sm-7">
                             <table className="marketRow-outcomes table">
                                 <tbody>
-                                    <tr>
-                                        <th>Outcome</th>
-                                        <th>Probability</th>
-                                        <th>Last Trade</th>
-                                    </tr>
-                                    { outcomes }
+                                    { tableRows }
                                 </tbody>
                             </table>
                         </div>
@@ -77,4 +103,4 @@ let Market = React.createClass({
     }
 });
 
-module.exports = Market;
+module.exports = MarketRow;

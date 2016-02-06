@@ -95,7 +95,7 @@ var Overview = React.createClass({
       if (this.state.trendingMarkets) {
         trendingMarketsSection = (
           <div>
-            <h4 className="trending">Trending Markets</h4>
+            <h3>Trending Markets</h3>
             <div className='row'>
               <div className="col-xs-12">
                   {_.map(this.state.trendingMarkets, market => {
@@ -109,7 +109,7 @@ var Overview = React.createClass({
       return (
         <div id="overview">
           <div className="account-info">
-            <h4>Account</h4>
+            <h3>Account</h3>
             <div className="row">
               {importAccountButton}
             </div>
@@ -130,17 +130,13 @@ var Overview = React.createClass({
     var cashBalance = this.state.asset.cash ? +this.state.asset.cash.toFixed(2) : '-';
     var repBalance = this.state.asset.reputation ? +this.state.asset.reputation.toFixed(2) : 0;
 
-    var holdings = [];
-    _.each(this.state.holdings, function (market) {
-      _.each(market.outcomes, function (outcome) {
-        if (outcome && outcome.sharesHeld) {
-          if (outcome.sharesHeld.toNumber()) {
-            var key = market.id + outcome.id;
-            holdings.push( <Holding market={market} outcome={outcome} key={key} /> );
-          }
-        }
+    var holdings = _
+      .filter(this.state.holdings, market => {
+        return market.outcomes.some((outcome) => outcome.sharesHeld && outcome.sharesHeld.toNumber() > 0);
+      })
+      .map(function (market) {
+        return <MarketRow key={market.id} market={market} contentType="holdings"/>;
       });
-    }, this);
 
     var exportAccountButton = (
       <div className="col-sm-3">
@@ -175,7 +171,7 @@ var Overview = React.createClass({
     if (this.state.account) {
       accountSection = (
         <div className="account-info">
-          <h4>Account</h4>
+          <h3>Account</h3>
           <div className="row">
             <div className="col-sm-6">
               <span className="account">{this.state.account}</span>
@@ -191,7 +187,7 @@ var Overview = React.createClass({
     if (holdings.length) {
       holdingsSection = (
         <div>
-          <h4>Current Holdings</h4>
+          <h3>Current Holdings</h3>
           <ListGroup className='holdings'>
             { holdings }
           </ListGroup>
@@ -207,7 +203,7 @@ var Overview = React.createClass({
       if (this.state.trendingMarkets) {
         authoredMarketsSection = (
           <div>
-            <h4 className="trending">Trending Markets</h4>
+            <h3>Trending Markets</h3>
             <div className='row'>
               <div className="col-xs-12">
                 {_.map(this.state.trendingMarkets, market => {
@@ -242,7 +238,7 @@ var Overview = React.createClass({
           className = 'loading';
           linked = false;
         } else if (market.invalid) {
-          className = 'invalid'; 
+          className = 'invalid';
           linked = true;
         } else if (this.state.currentBranch &&
                    this.state.currentBranch.currentPeriod >= market.tradingPeriod) {
@@ -271,7 +267,7 @@ var Overview = React.createClass({
       }
       authoredMarketsSection = (
         <div>
-          <h4>My Markets</h4>
+          <h3>My Markets</h3>
           <div className="markets-list">
             {authoredMarkets}
           </div>
@@ -293,45 +289,6 @@ var Overview = React.createClass({
           show={this.state.importAccountModalOpen}
           onHide={this.toggleImportAccountModal} />
       </div>
-    );
-  }
-});
-
-var Holding = React.createClass({
-
-  shouldComponentUpdate: function(nextProps, nextState) {
-    
-    if (!this.nextProps) return true;
-
-    if (this.props.market.price != this.nextProps.market.price ||
-        this.props.outcome.sharesHeld != this.nextProps.outcome.sharesHeld ||
-        this.props.outcome.pendingShares != this.nextProps.outcome.pendingShares) return true;
-
-  },
-
-  render: function() {
-
-    var name = this.props.outcome.id == 1 ? 'no' : 'yes';
-    var className = 'pull-right shares-held ' + name;
-    var key = this.props.market.id+this.props.outcome.id;
-    var percent = this.props.market.price ? utilities.priceToPercent(this.props.market.price) : '-'; 
-    var closeMarket = <span />;
-    if (this.props.market.expired && this.props.market.authored && !this.props.market.closed) {
-     closeMarket = <CloseMarketTrigger text='close market' params={ { marketId: this.props.market.id.toString(16), branchId: this.props.market.branchId.toString(16) } } />;
-    }
-    var pendingShares = <span />;
-    if (!this.props.outcome.pendingShares.equals(0)) {
-      pendingShares = <span className="pull-right pending-shares">{ this.props.outcome.pendingShares.toNumber() } pending</span>;
-    }
-    
-    return (
-      <Link key={ key } className="list-group-item clearfix" to='market' params={ {marketId: this.props.market.id.toString(16) } }>
-        <span className="price">{ percent }</span>
-        <p className="description">{ this.props.market.description }</p>
-        <span className={ className }>{ this.props.outcome.sharesHeld.toNumber() } { name }</span>
-        { pendingShares }
-        { closeMarket }            
-      </Link>
     );
   }
 });
