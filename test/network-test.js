@@ -22,7 +22,6 @@ flux.augur.connect();
 flux.augur.rpc.balancer = false;
 
 test("NetworkActions.checkNetwork", function (t) {
-    t.plan(4);
     var expectedStatusSequence = ["ETHEREUM_STATUS_CONNECTED", "ETHEREUM_STATUS_NO_ACCOUNT"];
     expectedStatusSequence.reverse();
     var UPDATE_ETHEREUM_STATUS = flux.register.UPDATE_ETHEREUM_STATUS;
