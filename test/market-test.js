@@ -420,7 +420,7 @@ test("MarketActions.addComment", function (t) {
         marketInfoWithComment.comments.push(comment);
         t.equal(JSON.stringify(payload.market), JSON.stringify(marketInfoWithComment), "verify payload");
         flux.register.UPDATE_MARKET_SUCCESS = UPDATE_MARKET_SUCCESS;
-        t.end();
+        flux.augur.filters.ignore(true, t.end);
     };
     flux.actions.market.addComment(commentText, marketInfo.id, account);
 });
