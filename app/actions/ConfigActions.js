@@ -157,8 +157,15 @@ module.exports = {
     });
   },
 
+  userRegistered() {
+    this.dispatch(constants.config.USER_REGISTERED, {});
+  },
+
   signOut: function () {
     this.flux.augur.web.logout();
+
+    this.dispatch(constants.config.USER_SIGNED_OUT, {});
+
     this.dispatch(constants.config.UPDATE_ACCOUNT, {
       currentAccount: null,
       privateKey: null,

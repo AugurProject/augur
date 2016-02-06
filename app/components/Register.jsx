@@ -42,6 +42,7 @@ var RegisterModal = React.createClass({
             return;
           }
           console.log("account created:", account);
+          flux.actions.config.userRegistered();
           flux.actions.config.updateAccount({
             currentAccount: account.address,
             privateKey: account.privateKey,
@@ -50,8 +51,10 @@ var RegisterModal = React.createClass({
           });
           flux.actions.asset.updateAssets();
           self.props.onHide();
+          self.props.toggleFundsModal();
         },
         onSendEther: function (account) {
+          console.log("Register.jsx: onSendEther %o", arguments);
           flux.augur.filters.ignore(true, function (err) {
             if (err) return console.error(err);
             console.log("reset filters");
@@ -60,7 +63,7 @@ var RegisterModal = React.createClass({
           });
         },
         onFunded: function (response) {
-          console.log("register sequence complete");
+          console.log("register sequence complete %o", response);
           flux.actions.asset.updateAssets();
         }
       });
@@ -106,7 +109,7 @@ var RegisterModal = React.createClass({
     );
 
     return (
-      <Modal {...this.props} className='send-modal' bsSize='small'>
+      <Modal show={this.props.show} onHide={this.props.onHide} className='send-modal' bsSize='small'>
         <div className='modal-body clearfix'>
           <h4>Register</h4>
           <div className='row'>

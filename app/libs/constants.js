@@ -21,6 +21,8 @@ module.exports = {
     SET_HOST: null,
     SET_IS_HOSTED: null,
     UPDATE_ACCOUNT: null,
+    USER_REGISTERED: null,
+    USER_SIGNED_OUT: null,
     UPDATE_PERCENT_LOADED_SUCCESS: null,
     LOAD_APPLICATION_DATA_SUCCESS: null,
     FILTER_SETUP_COMPLETE: null,
