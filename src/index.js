@@ -2232,7 +2232,7 @@ Augur.prototype.getAccountMeanTradePrices = function (account, cb) {
  * Order book *
  **************/
 
-Augur.prototype.checkBuyOrder = function (currentPrice, order, cb) {
+Augur.prototype.checkBuyOrder = function (marketInfo, currentPrice, order, cb) {
     var self = this;
     if (currentPrice.constructor !== BigNumber) {
         currentPrice = new BigNumber(currentPrice);
@@ -2244,16 +2244,48 @@ Augur.prototype.checkBuyOrder = function (currentPrice, order, cb) {
         order.price = new BigNumber(order.price);
     }
     if (currentPrice.lte(order.price)) {
+        var amount, filled;
+        if (order.limit) {
+            var q = new Array(marketInfo.numOutcomes);
+            for (var i = 0; i < marketInfo.outcomes; ++i) {
+                q[i] = marketInfo.outcomes[i].outstandingShares;
+            }
+            var n = new BigNumber(this.orders.limit.sharesToTrade(
+                0.1,
+                q,
+                order.outcome-1,
+                abi.number(marketInfo.alpha),
+                order.limit
+            ));
+
+            // if n >= amount, this is a stop order
+            if (n.gte(amount)) {
+                amount = order.amount.toFixed();
+                filled = true;
+
+            // otherwise, buy n shares (amount - n shares remain open)
+            } else {
+                amount = n.toFixed();
+                order.amount = order.amount.minus(n).toFixed();
+                filled = false;
+            }
+        } else {
+            amount = order.amount.toFixed();
+            filled = true;
+        }
 
         // execute order
         this.trade({
             branch: order.branch,
             market: order.market,
             outcome: order.outcome,
-            amount: order.amount.toFixed(),
+            amount: amount,
             limit: order.limit,
             onSent: function (res) {
                 self.orders.cancel(order.id);
+                if (!filled) {
+                    self.orders.create(JSON.parse(JSON.stringify(order)));
+                }
             },
             onSuccess: function (res) {
                 // console.log("checkBuyOrder:", res);
@@ -2264,7 +2296,7 @@ Augur.prototype.checkBuyOrder = function (currentPrice, order, cb) {
     }
 };
 
-Augur.prototype.checkSellOrder = function (currentPrice, order, cb) {
+Augur.prototype.checkSellOrder = function (marketInfo, currentPrice, order, cb) {
     var self = this;
     if (currentPrice.constructor !== BigNumber) {
         currentPrice = new BigNumber(currentPrice);
@@ -2276,16 +2308,48 @@ Augur.prototype.checkSellOrder = function (currentPrice, order, cb) {
         order.price = new BigNumber(order.price);
     }
     if (currentPrice.gte(order.price)) {
+        var amount, filled;
+        if (order.limit) {
+            var q = new Array(marketInfo.numOutcomes);
+            for (var i = 0; i < marketInfo.outcomes; ++i) {
+                q[i] = marketInfo.outcomes[i].outstandingShares;
+            }
+            var n = new BigNumber(this.orders.limit.sharesToTrade(
+                0.1,
+                q,
+                order.outcome-1,
+                abi.number(marketInfo.alpha),
+                order.limit
+            ));
+
+            // if n >= amount, this is a stop order
+            if (n.gte(amount)) {
+                amount = order.amount.toFixed();
+                filled = true;
+
+            // otherwise, sell n shares (amount - n shares remain open)
+            } else {
+                amount = n.toFixed();
+                order.amount = order.amount.minus(n).toFixed();
+                filled = false;
+            }
+        } else {
+            amount = order.amount.toFixed();
+            filled = true;
+        }
 
         // execute sell order
         this.trade({
             branch: order.branch,
             market: order.market,
             outcome: order.outcome,
-            amount: order.amount.toFixed(),
+            amount: amount,
             limit: order.limit,
             onSent: function (res) {
                 self.orders.cancel(order.id);
+                if (!filled) {
+                    self.orders.create(JSON.parse(JSON.stringify(order)));
+                }
             },
             onSuccess: function (res) {
                 // console.log("checkSellOrder:", res);
@@ -2306,11 +2370,11 @@ Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
 
     // buy orders
     if (order.amount.gt(new BigNumber(0))) {
-        this.checkBuyOrder(currentPrice, order, cb);
+        this.checkBuyOrder(marketInfo, currentPrice, order, cb);
 
     // sell orders
     } else {
-        this.checkSellOrder(currentPrice, order, cb);
+        this.checkSellOrder(marketInfo, currentPrice, order, cb);
     }
 };
 

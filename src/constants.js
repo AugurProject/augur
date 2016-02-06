@@ -41,5 +41,8 @@ module.exports = {
         {host: "ipfs5.augur.net", port: "443", protocol: "https"}
     ],
 
-    CHROME_ID: "odlcbngbdolepbmofbcllpldjngefaeb"
+    // Newton's method parameters
+    TOLERANCE: 0.00000001,
+    EPISLON: 0.0000000000001,
+    MAX_ITER: 250
 };

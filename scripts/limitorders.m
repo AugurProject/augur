@@ -19,8 +19,7 @@ qj = [q(1:i-1) q(i+1:end)];
 F = @(n) a*log(exp((q(i) + n)/a/(n + sum(q))) + sum(exp(qj/a/(n + sum(q))))) + ...
     (exp((q(i) + n)/a/(n + sum(q)))*sum(qj) - sum(qj.*exp(qj/a/(n + sum(q))))) / ...
     ((n + sum(q))*(exp((q(i) + n)/a/(n + sum(q))) + sum(exp(qj/a/(n + sum(q)))))) - xi;
-options = optimset('Display', 'iter');
-n0 = fsolve(F, 0.05, options)
+n0 = fsolve(F, 0.05)
 q(i) = q(i) + n0;
 b = a*sum(q);
 p_lslmsr = a*log(sum(exp(q/b))) + ...
