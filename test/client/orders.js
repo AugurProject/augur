@@ -1,5 +1,5 @@
 /**
- * augur.js unit tests
+ * augur.js tests
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -197,6 +197,60 @@ describe("orders.reset", function () {
     for (var i = 0; i < accounts.length; ++i) {
         test({account: accounts[i]});
     }
+});
+
+describe("orders.limit.sharesToTrade", function () {
+    var test = function (t) {
+        it(JSON.stringify(t), function () {
+            var shares = augur.orders.limit.sharesToTrade(t.q, t.outcome, t.alpha, t.cap);
+            assert.notProperty(shares, "error");
+            var zero = augur.orders.limit.f(shares, augur.utils.toDecimal(t.q), t.outcome, augur.utils.toDecimal(t.alpha), augur.utils.toDecimal(t.cap));
+            assert.closeTo(zero.toNumber(), 0, 1e-12);
+            assert.strictEqual(abi.number(shares).toFixed(5), t.expected);
+        });
+    };
+    test({
+        q: [10, 10, 10, 10, 10],
+        outcome: 1,
+        alpha: "0.0079",
+        cap: "0.3",
+        expected: "0.18974"
+    });
+    test({
+        q: [10, 10, 10, 10, 10],
+        outcome: 1,
+        alpha: "0.0079",
+        cap: "0.6",
+        expected: "0.70132"
+    });
+    test({
+        q: [10, 10, 10, 10, 10],
+        outcome: 1,
+        alpha: "0.0079",
+        cap: "0.9",
+        expected: "1.43950"
+    });
+    test({
+        q: [5, 6, 10, 13, 10, 2, 1, 12, 1],
+        outcome: 1,
+        alpha: "0.0079",
+        cap: "0.3",
+        expected: "6.49217"
+    });
+    test({
+        q: [5, 6, 10, 13, 10, 2, 1, 12, 1],
+        outcome: 1,
+        alpha: "0.0079",
+        cap: "0.6",
+        expected: "7.22194"
+    });
+    test({
+        q: [5, 6, 10, 13, 10, 2, 1, 12, 1],
+        outcome: 1,
+        alpha: "0.0079",
+        cap: "0.9",
+        expected: "8.21047"
+    });
 });
 
 describe("checkOrder", function () {

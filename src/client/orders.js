@@ -4,7 +4,9 @@
 
 var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 
-var numeric = require("numeric");
+var fzero = require("fzero");
+var Decimal = require("decimal.js");
+var abi = require("augur-abi");
 if (typeof localStorage === "undefined" || localStorage === null) {
     var LocalStorage = require("node-localstorage").LocalStorage;
     localStorage = new LocalStorage("./scratch");
@@ -17,39 +19,75 @@ module.exports = {
 
     limit: {
 
-        // Find roots of f using Newton-Raphson.
-        // http://www.turb0js.com/a/Newton%E2%80%93Raphson_method
-        sharesToTrade: function (x0, q, i, a, cap) {
-            var next_x0;
-            for (var i = 0; i < constants.MAX_ITER; ++i) {
-                var denominator = this.fprime(x0, q, i, a, cap);
-                if (Math.abs(denominator) < constants.EPSILON) return null;
-                next_x0 = x0 - this.f(x0, q, i, a, cap) / denominator;
-                if (Math.abs(next_x0 - x0) < constants.TOLERANCE) {
-                    return next_x0;
-                }
-                x0 = next_x0;
+        fill: function (marketInfo, order) {
+            var amount, filled;
+            var q = new Array(marketInfo.numOutcomes);
+            for (var i = 0; i < marketInfo.outcomes; ++i) {
+                q[i] = marketInfo.outcomes[i].outstandingShares;
             }
+            var n = this.sharesToTrade(q, order.outcome-1, marketInfo.alpha, order.limit);
+
+            // if n >= amount, this is a stop order
+            if (n.gte(amount)) {
+                amount = order.amount.toFixed();
+                filled = true;
+
+            // otherwise, trade n shares (amount - n shares remain open)
+            } else {
+                amount = n.toFixed();
+                order.amount = order.amount.minus(n).toFixed();
+                filled = false;
+            }
+            return {amount: amount, order: order, filled: filled};
+        },
+
+        sharesToTrade: function (q, i, a, cap) {
+            var self = this;
+            q = utils.toDecimal(q);
+            a = utils.toDecimal(a);
+            cap = utils.toDecimal(cap);
+            return fzero(function (n) {
+                return self.f(n, q, i, a, cap);
+            }, 1e-12, 1000).solution;
         },
 
         // LS-LMSR objective function (optimize n)
         f: function (n, q, i, a, cap) {
-            var qj = numeric.clone(q);
+            n = utils.toDecimal(n);
+            var numOutcomes = q.length;
+            var qj = new Array(numOutcomes);
+            var sum_q = new Decimal(0);
+            for (var j = 0; j < numOutcomes; ++j) {
+                qj[j] = q[j];
+                sum_q = sum_q.plus(q[j]);
+            }
             qj.splice(i, 1);
-            var q_plus_n = n + numeric.sum(q);
-            var b = a * q_plus_n;
-            var exp_qi = Math.exp((q[i] + n) / b);
-            var exp_qj = numeric.exp(numeric.div(qj, b));
-            var sum_exp_qj = numeric.sum(exp_qj);
-            return a*Math.log(Math.exp((q[i] + n)/b) + sum_exp_qj) +
-                (exp_qi*numeric.sum(qj) - numeric.sum(numeric.mul(qj, exp_qj))) /
-                (q_plus_n*(exp_qi + sum_exp_qj)) - cap;
+            var q_plus_n = n.plus(sum_q);
+            var b = a.times(q_plus_n);
+            var exp_qi = q[i].plus(n).dividedBy(b).exp();
+            var exp_qj = new Array(numOutcomes);
+            var sum_qj = new Decimal(0);
+            var sum_exp_qj = new Decimal(0);
+            var sum_qj_x_expqj = new Decimal(0);
+            for (j = 0; j < numOutcomes - 1; ++j) {
+                sum_qj = sum_qj.plus(qj[j]);
+                exp_qj[j] = qj[j].dividedBy(b).exp();
+                sum_exp_qj = sum_exp_qj.plus(exp_qj[j]);
+                sum_qj_x_expqj = sum_qj_x_expqj.plus(q[j].times(exp_qj[j]));
+            }
+            return a.times(q[i].plus(n).dividedBy(b).exp().plus(sum_exp_qj).ln()).plus(
+                exp_qi.times(sum_qj).minus(sum_qj_x_expqj).dividedBy(
+                    q_plus_n.times(exp_qi.plus(sum_exp_qj))
+                ).minus(cap)
+            );
         },
 
         // First derivative of f
         fprime: function (n, q, i, a, cap) {
-            return (this.f(n + 0.000001, q, i, a, cap) -
-                this.f(n - 0.000001, q, i, a, cap)) / 0.000002;
+            var eps = new Decimal(n.dividedBy(new Decimal(10000)));
+            return this.f(n.plus(eps), q, i, a, cap)
+                .minus(this.f(n.minus(eps), q, i, a, cap))
+                .dividedBy(eps.times(new Decimal(2)));
         }
 
     },

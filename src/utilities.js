@@ -6,6 +6,7 @@ var fs = (NODE_JS) ? require("fs") : null;
 var path = (NODE_JS) ? require("path") : null;
 var assert = (NODE_JS) ? require("assert") : console.assert;
 var crypto = require("crypto");
+var Decimal = require("decimal.js");
 var BigNumber = require("bignumber.js");
 var validator = require("validator");
 var moment = require("moment");
@@ -94,6 +95,24 @@ module.exports = {
             ret[i] = (i*b + (n - i)*a) / n;
         }
         return ret;
+    },
+
+    toDecimal: function (x) {
+        if (!x) return null;
+        if (x.constructor === Array) {
+            for (var i = 0, n = x.length; i < n; ++i) {
+                x[i] = this.toDecimal(x[i]);
+            }
+        } else if (x.constructor !== Decimal) {
+            if (x.toFixed && x.toFixed.constructor === Function) {
+                x = x.toFixed();
+            }
+            if (x.toString && x.toString.constructor === Function) {
+                x = x.toString();
+            }
+            x = new Decimal(x);
+        }
+        return x;
     },
 
     select_random: function (arr) {

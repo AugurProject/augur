@@ -4,6 +4,7 @@
 
 "use strict";
 
+var Decimal = require("decimal.js");
 var BigNumber = require("bignumber.js");
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
@@ -42,7 +43,7 @@ module.exports = {
     ],
 
     // Newton's method parameters
-    TOLERANCE: 0.00000001,
-    EPISLON: 0.0000000000001,
+    TOLERANCE: new Decimal("0.00000001"),
+    EPSILON: new Decimal("0.0000000000001"),
     MAX_ITER: 250
 };

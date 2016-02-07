@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "0.13.33",
+  "version": "0.13.34",
   "description": "Augur JavaScript API",
   "main": "src/index.js",
   "scripts": {
@@ -23,12 +23,12 @@
     "ethereumjs-tx": "^0.6.9",
     "ethereumjs-util": "^1.5.1",
     "ethrpc": "^0.4.12",
+    "fzero": "^0.1.1",
     "keythereum": "^0.2.1",
     "moment": "^2.10.3",
     "multi-hash": "^0.1.1",
     "node-localstorage": "^1.1.2",
     "node-uuid": "^1.4.3",
-    "numeric": "^1.2.6",
     "ramble": "^0.1.6",
     "validator": "^4.0.2"
   },
@@ -66,6 +66,7 @@
     "madlibs": "0.0.0",
     "mocha": "^2.2.4",
     "mocha-lcov-reporter": "0.0.2",
+    "numeric": "^1.2.6",
     "posix-getopt": "^1.1.0",
     "rimraf": "^2.4.0",
     "uglify-js": "^2.6.1",

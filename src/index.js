@@ -2249,34 +2249,11 @@ Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
         priceMatched = currentPrice.gte(order.price);
     }
     if (priceMatched) {
-        var amount, filled;
+        var trade;
         if (order.limit) {
-            var q = new Array(marketInfo.numOutcomes);
-            for (var i = 0; i < marketInfo.outcomes; ++i) {
-                q[i] = marketInfo.outcomes[i].outstandingShares;
-            }
-            var n = new BigNumber(this.orders.limit.sharesToTrade(
-                0.1,
-                q,
-                order.outcome-1,
-                abi.number(marketInfo.alpha),
-                order.limit
-            ));
-
-            // if n >= amount, this is a stop order
-            if (n.gte(amount)) {
-                amount = order.amount.toFixed();
-                filled = true;
-
-            // otherwise, trade n shares (amount - n shares remain open)
-            } else {
-                amount = n.toFixed();
-                order.amount = order.amount.minus(n).toFixed();
-                filled = false;
-            }
+            trade = this.orders.limit.fill(marketInfo, order);
         } else {
-            amount = order.amount.toFixed();
-            filled = true;
+            trade = {order: order, amount: order.amount.toFixed(), filled: true};
         }
 
         // execute order
@@ -2284,15 +2261,15 @@ Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
             branch: order.branch,
             market: order.market,
             outcome: order.outcome,
-            amount: amount,
+            amount: trade.amount,
             limit: order.limit,
             onSent: function (res) {
                 self.orders.cancel(order.id);
-                if (!filled) {
-                    self.orders.create(JSON.parse(JSON.stringify(order)));
+                if (!trade.filled) {
+                    self.orders.create(JSON.parse(JSON.stringify(trade.order)));
                 }
             },
-            onSuccess: function (res) { cb(order); },
+            onSuccess: function (res) { cb(trade.order); },
             onFailed: cb
         });
     }
