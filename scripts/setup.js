@@ -165,35 +165,42 @@ function faucets(geth) {
             var rep_balance = augur.getRepBalance(branch, coinbase);
             var cash_balance = augur.getCashBalance(coinbase);
             assert.strictEqual(rep_balance, "47");
-            augur.depositEther({
-                value: 5000,
+            augur.sendCash({
+                value: 0,
+                to: augur.contracts.cash,
                 onSent: augur.utils.noop,
                 onSuccess: function (res) {
-                    var cash_balance = augur.getCashBalance(coinbase);
-                    var rep_balance = augur.getRepBalance(branch, coinbase);
-                    var ether_balance = abi.bignum(augur.rpc.balance(coinbase)).dividedBy(constants.ETHER).toFixed();
-                    console.log(chalk.cyan("\nBalances:"));
-                    console.log("Cash:       " + chalk.green(cash_balance));
-                    console.log("Reputation: " + chalk.green(rep_balance));
-                    console.log("Ether:      " + chalk.green(ether_balance));
-                    gethjs.stop(function (err, code) {
-                        for (var i = 0, len = accounts.length; i < len; ++i) {
-                            if (options.GETH_OPTIONS.account === accounts[i]) break;
-                        }
-                        if (i >= accounts.length - 1) return process.exit();
-                        console.log(chalk.blue.bold("\nAccount " + (i+1) + ": ") + chalk.cyan(accounts[i+1]));
-                        options.GETH_OPTIONS.account = accounts[i+1];
-                        setTimeout(function () {
-                            gethjs.start(options.GETH_OPTIONS, function (err, geth) {
-                                if (err) return console.error("geth.start:", err);
-                                init(geth, accounts[i+1], mine_minimum_ether, faucets);
+                    augur.depositEther({
+                        value: 5000,
+                        onSent: augur.utils.noop,
+                        onSuccess: function (res) {
+                            var cash_balance = augur.getCashBalance(coinbase);
+                            var rep_balance = augur.getRepBalance(branch, coinbase);
+                            var ether_balance = abi.bignum(augur.rpc.balance(coinbase)).dividedBy(constants.ETHER).toFixed();
+                            console.log(chalk.cyan("\nBalances:"));
+                            console.log("Cash:       " + chalk.green(cash_balance));
+                            console.log("Reputation: " + chalk.green(rep_balance));
+                            console.log("Ether:      " + chalk.green(ether_balance));
+                            gethjs.stop(function (err, code) {
+                                for (var i = 0, len = accounts.length; i < len; ++i) {
+                                    if (options.GETH_OPTIONS.account === accounts[i]) break;
+                                }
+                                if (i >= accounts.length - 1) return process.exit();
+                                console.log(chalk.blue.bold("\nAccount " + (i+1) + ": ") + chalk.cyan(accounts[i+1]));
+                                options.GETH_OPTIONS.account = accounts[i+1];
+                                setTimeout(function () {
+                                    gethjs.start(options.GETH_OPTIONS, function (err, geth) {
+                                        if (err) return console.error("geth.start:", err);
+                                        init(geth, accounts[i+1], mine_minimum_ether, faucets);
+                                    });
+                                }, 5000);
                             });
-                        }, 5000);
+                        },
+                        onFailed: console.error
                     });
                 },
                 onFailed: console.error
             });
-
         },
         onFailed: console.error
     });

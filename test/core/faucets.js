@@ -43,23 +43,36 @@ describe("Cash deposit", function () {
     var initialCash = abi.bignum(augur.getCashBalance(augur.coinbase));
 
     it("deposit", function (done) {
-        this.timeout(augur.constants.TIMEOUT);
-        augur.depositEther({
-            value: value,
+        this.timeout(augur.constants.TIMEOUT*2);
+        augur.sendCash({
+            to: augur.tx.sendCash,
+            value: 0,
             onSent: function (res) {
-                console.log(res)
-                assert.strictEqual(res.txHash.length, 66);
-                assert.strictEqual(weiValue, res.callReturn);
+                assert(res.txHash);
+                assert.strictEqual(res.callReturn, "0");
             },
             onSuccess: function (res) {
-                console.log(res)
-                assert.strictEqual(res.txHash.length, 66);
-                assert.strictEqual(weiValue, res.callReturn);
-                assert.strictEqual(res.from, augur.coinbase);
-                assert.strictEqual(res.to, augur.contracts.cash);
-                var afterCash = abi.bignum(augur.getCashBalance(augur.coinbase));
-                assert.strictEqual(afterCash.sub(initialCash).toNumber(), value);
-                done();
+                assert(res.txHash);
+                assert.strictEqual(res.callReturn, "0");
+                augur.depositEther({
+                    value: value,
+                    onSent: function (res) {
+                        console.log(res)
+                        assert.strictEqual(res.txHash.length, 66);
+                        assert.strictEqual(weiValue, res.callReturn);
+                    },
+                    onSuccess: function (res) {
+                        console.log(res)
+                        assert.strictEqual(res.txHash.length, 66);
+                        assert.strictEqual(weiValue, res.callReturn);
+                        assert.strictEqual(res.from, augur.coinbase);
+                        assert.strictEqual(res.to, augur.contracts.cash);
+                        var afterCash = abi.bignum(augur.getCashBalance(augur.coinbase));
+                        assert.strictEqual(afterCash.sub(initialCash).toNumber(), value);
+                        done();
+                    },
+                    onFailed: done
+                });
             },
             onFailed: done
         });

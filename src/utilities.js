@@ -166,7 +166,7 @@ module.exports = {
         var defaulthost, ipcpath;
         if (NODE_JS && !process.env.CONTINUOUS_INTEGRATION) {
             defaulthost = "http://127.0.0.1:8545";
-            // ipcpath = path.join(process.env.HOME, ".ethereum", "geth.ipc");
+            ipcpath = path.join(process.env.HOME, ".ethereum", "geth.ipc");
         }
         if (process.env.CONTINUOUS_INTEGRATION) {
             augur.constants.TIMEOUT = 131072;

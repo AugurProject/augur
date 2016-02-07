@@ -144,7 +144,7 @@ Augur.prototype.getCashBalance = function (account, onSent) {
 Augur.prototype.sendCash = function (to, value, onSent, onSuccess, onFailed) {
     // to: ethereum account
     // value: number -> fixed-point
-    if (to && to.value) {
+    if (to && to.value !== null && to.value !== undefined) {
         value = to.value;
         if (to.onSent) onSent = to.onSent;
         if (to.onSuccess) onSuccess = to.onSuccess;

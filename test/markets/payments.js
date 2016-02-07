@@ -15,10 +15,12 @@ var augur = utils.setup(require(augurpath), process.argv.slice(2));
 
 if (!process.env.CONTINUOUS_INTEGRATION) {
 
-    var payment_value = 1;
+    var paymentValue = 1;
     var branch = augur.branches.dev;
     var coinbase = augur.coinbase;
-    var receiver = utils.get_test_accounts(augur, constants.MAX_TEST_ACCOUNTS)[1];
+    var testAccounts = utils.get_test_accounts(augur, constants.MAX_TEST_ACCOUNTS);
+    var receiver = testAccounts[1];
+    if (receiver === coinbase) receiver = testAccounts[0];
 
     describe("Ether-for-cash", function () {
 
@@ -74,7 +76,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
             start_balance = start_balance.dividedBy(constants.ETHER);
             augur.rpc.sendEther({
                 to: receiver,
-                value: payment_value,
+                value: paymentValue,
                 from: augur.coinbase,
                 onSent: function (res) {
                     // console.log(res);
@@ -82,7 +84,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 onSuccess: function (res) {
                     var final_balance = augur.rpc.balance(receiver);
                     final_balance = abi.bignum(final_balance).dividedBy(constants.ETHER);
-                    assert.strictEqual(final_balance.sub(start_balance).toNumber(), payment_value);
+                    assert.strictEqual(final_balance.minus(start_balance).toNumber(), paymentValue);
                     done();
                 },
                 onFailed: done
@@ -95,13 +97,16 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
             var start_balance = abi.bignum(augur.getCashBalance(coinbase));
             augur.sendCash({
                 to: receiver,
-                value: payment_value,
+                value: paymentValue,
                 onSent: function (res) {
-                    // console.log(res);
+                    assert(res.txHash);
+                    assert.strictEqual(res.callReturn, paymentValue.toString());
                 },
                 onSuccess: function (res) {
+                    assert(res.txHash);
+                    assert.strictEqual(res.callReturn, paymentValue.toString());
                     var final_balance = abi.bignum(augur.getCashBalance(coinbase));
-                    assert.strictEqual(start_balance.sub(final_balance).toNumber(), payment_value);
+                    assert.strictEqual(start_balance.minus(final_balance).toNumber(), paymentValue);
                     done();
                 },
                 onFailed: done
@@ -114,14 +119,17 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
             var start_balance = abi.bignum(augur.getCashBalance(coinbase));
             augur.sendCashFrom({
                 to: receiver,
-                value: payment_value,
+                value: paymentValue,
                 from: coinbase,
                 onSent: function (res) {
-                    // console.log(res);
+                    assert(res.txHash);
+                    assert.strictEqual(res.callReturn, paymentValue.toString());
                 },
                 onSuccess: function (res) {
+                    assert(res.txHash);
+                    assert.strictEqual(res.callReturn, paymentValue.toString());
                     var final_balance = abi.bignum(augur.getCashBalance(coinbase));
-                    assert.strictEqual(start_balance.sub(final_balance).toNumber(), payment_value);
+                    assert.strictEqual(start_balance.sub(final_balance).toNumber(), paymentValue);
                     done();
                 },
                 onFailed: done
@@ -133,18 +141,20 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
             var augur = utils.setup(require(augurpath), process.argv.slice(2));
             var start_balance = augur.getRepBalance(branch, coinbase);
             start_balance = abi.bignum(start_balance);
-            augur.tx.sendReputation.returns = "number";
             augur.sendReputation({
                 branchId: branch,
                 to: receiver,
-                value: payment_value,
+                value: paymentValue,
                 onSent: function (res) {
-                    // console.log(res);
+                    assert(res.txHash);
+                    assert.strictEqual(res.callReturn, paymentValue.toString());
                 },
                 onSuccess: function (res) {
+                    assert(res.txHash);
+                    assert.strictEqual(res.callReturn, paymentValue.toString());
                     var final_balance = augur.getRepBalance(branch, coinbase);
                     final_balance = abi.bignum(final_balance);
-                    assert.strictEqual(start_balance.sub(final_balance).toNumber(), payment_value);
+                    assert.strictEqual(start_balance.sub(final_balance).toNumber(), paymentValue);
                     done();
                 },
                 onFailed: done

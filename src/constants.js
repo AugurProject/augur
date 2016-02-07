@@ -22,7 +22,7 @@ module.exports = {
 
     // maximum number of accounts/samples for testing
     MAX_TEST_ACCOUNTS: 3,
-    MAX_TEST_SAMPLES: 25,
+    MAX_TEST_SAMPLES: 10,
 
     // free ether for new accounts on registration
     FREEBIE: 1337,
