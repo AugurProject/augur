@@ -135,11 +135,23 @@ Augur.prototype.reputationFaucet = function (branch, onSent, onSuccess, onFailed
 };
 
 // cash.se
-Augur.prototype.getCashBalance = function (account, onSent) {
+Augur.prototype.initiateOwner = function (account, onSent, onSuccess, onFailed) {
+    // account: ethereum account
+    if (account && account.account) {
+        if (account.onSent) onSent = account.onSent;
+        if (account.onSuccess) onSuccess = account.onSuccess;
+        if (account.onFailed) onFailed = account.onFailed;
+        account = account.account;
+    }
+    var tx = clone(this.tx.initiateOwner);
+    tx.params = account;
+    return this.transact(tx, onSent, onSuccess, onFailed);
+};
+Augur.prototype.getCashBalance = function (account, callback) {
     // account: ethereum account
     var tx = clone(this.tx.getCashBalance);
     tx.params = account || this.from;
-    return this.fire(tx, onSent);
+    return this.fire(tx, callback);
 };
 Augur.prototype.sendCash = function (to, value, onSent, onSuccess, onFailed) {
     // to: ethereum account

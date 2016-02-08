@@ -17,7 +17,6 @@ var accounts = utils.get_test_accounts(augur, augur.constants.MAX_TEST_ACCOUNTS)
 var suffix = Math.random().toString(36).substring(4);
 var description = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
 console.log("event description:", description);
-var expirationBlock = augur.rpc.blockNumber() + 5;
 var periodLength = 10;
 var eventID, newBranchID;
 
@@ -38,49 +37,78 @@ before(function (done) {
             newBranchID = res.callReturn;
             console.log("new branch ID:", newBranchID);
 
-            // get reputation on the new branch
-            augur.reputationFaucet({
-                branch: newBranchID,
+            // set owner for new branch
+            augur.initiateOwner({
+                account: newBranchID,
                 onSent: function (res) {
-                    console.log("reputation faucet:", res.callReturn);   
+                    console.log("initiate owner:", res);
+                    assert(res.txHash);
+                    assert.strictEqual(res.callReturn, "1");
                 },
                 onSuccess: function (res) {
+                    console.log("initiate owner success:", res);
+                    assert(res.txHash);
+                    assert.strictEqual(res.callReturn, "1");
 
-                    // create an event on the new branch
-                    augur.createEvent({
-                        branchId: newBranchID,
-                        description: description,
-                        expirationBlock: expirationBlock,
-                        minValue: 1,
-                        maxValue: 2,
-                        numOutcomes: 2,
-                        onSent: augur.utils.noop,
+                    // get reputation on the new branch
+                    augur.reputationFaucet({
+                        branch: newBranchID,
+                        onSent: function (res) {
+                            console.log("reputation faucet:", res.callReturn);
+                            assert(res.txHash);
+                            assert.strictEqual(res.callReturn, "1");
+                        },
                         onSuccess: function (res) {
-                            eventID = res.callReturn;
+                            assert(res.txHash);
+                            assert.strictEqual(res.callReturn, "1");
 
-                            // incorporate the event into a market on the new branch
-                            augur.createMarket({
+                            // create an event on the new branch
+                            var expirationBlock = augur.rpc.blockNumber() + 25;
+                            console.log({
                                 branchId: newBranchID,
                                 description: description,
-                                alpha: "0.0079",
-                                initialLiquidity: 100,
-                                tradingFee: "0.02",
-                                events: [eventID],
-                                forkSelection: 1,
+                                expirationBlock: expirationBlock,
+                                minValue: 1,
+                                maxValue: 2,
+                                numOutcomes: 2
+                            })
+                            augur.createEvent({
+                                branchId: newBranchID,
+                                description: description,
+                                expirationBlock: expirationBlock,
+                                minValue: 1,
+                                maxValue: 2,
+                                numOutcomes: 2,
                                 onSent: augur.utils.noop,
                                 onSuccess: function (res) {
-                                    console.log("market:", res);
+                                    eventID = res.callReturn;
 
-                                    // fast-forward to the expiration block, if needed
-                                    (function getBlockNumber() {
-                                        augur.rpc.blockNumber(function (blockNumber) {
-                                            console.log("blocks to go:", expirationBlock + periodLength - parseInt(blockNumber));
-                                            if (parseInt(blockNumber) < expirationBlock + periodLength) {
-                                                return setTimeout(getBlockNumber, 3000);
-                                            }
-                                            done();
-                                        });
-                                    })();
+                                    // incorporate the event into a market on the new branch
+                                    augur.createMarket({
+                                        branchId: newBranchID,
+                                        description: description,
+                                        alpha: "0.0079",
+                                        initialLiquidity: 100,
+                                        tradingFee: "0.02",
+                                        events: [eventID],
+                                        forkSelection: 1,
+                                        onSent: augur.utils.noop,
+                                        onSuccess: function (res) {
+                                            console.log("market:", res);
+
+                                            // fast-forward to the expiration block, if needed
+                                            (function getBlockNumber() {
+                                                augur.rpc.blockNumber(function (blockNumber) {
+                                                    console.log("blocks to go:", expirationBlock + periodLength - parseInt(blockNumber));
+                                                    if (parseInt(blockNumber) < expirationBlock + periodLength) {
+                                                        return setTimeout(getBlockNumber, 3000);
+                                                    }
+                                                    done();
+                                                });
+                                            })();
+                                        },
+                                        onFailed: done
+                                    });
                                 },
                                 onFailed: done
                             });

@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "0.13.35",
+  "version": "0.13.37",
   "description": "Augur JavaScript API",
   "main": "src/index.js",
   "scripts": {
@@ -24,7 +24,7 @@
     "ethereumjs-util": "^1.5.1",
     "ethrpc": "^0.4.12",
     "fzero": "^0.1.1",
-    "keythereum": "^0.2.1",
+    "keythereum": "^0.2.2",
     "moment": "^2.10.3",
     "multi-hash": "^0.1.1",
     "node-localstorage": "^1.1.2",
