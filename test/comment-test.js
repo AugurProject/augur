@@ -1,13 +1,18 @@
+/**
+ * augur unit tests
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
 var test = require("tape");
-var abi = require("augur-abi");
-var _ = require("lodash");
+var keys = require("keythereum");
 var BigNumber = require("bignumber.js");
 var clone = require("clone");
-var validator = require("validator");
-var moment = require("moment");
+var valid = require("validator");
 var utils = require("../app/libs/utilities");
-var constants = require("../app/libs/constants");
 var flux = require("./mock");
+var keystore = require("./account");
 var marketInfo = require("./marketInfo");
 
 function parseMarketInfoSync(info) {
@@ -43,18 +48,76 @@ function parseMarketInfoSync(info) {
     return info;
 }
 
-flux.augur.connect();
+// flux.augur.connect();
+
+// var handle = "tinybike";
+// var password = "tinypassword";
+// var privateKey = keys.recover(password, keystore);
+// var address = keys.privateKeyToAddress(privateKey);
+// flux.augur.web.account = {handle: handle, privateKey: privateKey, address: address};
+// flux.augur.connector.from = address;
 var account = {address: flux.augur.from};
 var blockNumber = flux.augur.rpc.blockNumber();
 marketInfo = parseMarketInfoSync(marketInfo);
 
 test("MarketActions.addComment", function (t) {
-    t.plan(5);
     var commentText = "augur's unit tests have something random to say: '" + Math.random().toString(36).substring(4) + "'";
     var markets = {};
     markets[marketInfo.id] = clone(marketInfo);
     flux.stores.market.state.markets = markets;
+    var SET_IS_HOSTED = flux.register.SET_IS_HOSTED;
+    var UPDATE_ETHEREUM_STATUS = flux.register.UPDATE_ETHEREUM_STATUS;
+    var UPDATE_PERCENT_LOADED_SUCCESS = flux.register.UPDATE_PERCENT_LOADED_SUCCESS;
+    var FILTER_SETUP_COMPLETE = flux.register.FILTER_SETUP_COMPLETE;
     var UPDATE_MARKET_SUCCESS = flux.register.UPDATE_MARKET_SUCCESS;
+    var FILTER_TEARDOWN_COMPLETE = flux.register.FILTER_TEARDOWN_COMPLETE;
+    var isHosted = true;
+    var expectedStatusSequence = ["ETHEREUM_STATUS_CONNECTED", "ETHEREUM_STATUS_NO_ACCOUNT"];
+    expectedStatusSequence.reverse();
+    flux.register.SET_IS_HOSTED = function (payload) {
+        t.equal(payload.constructor, Object, "payload is an object");
+        t.equal(payload.isHosted, isHosted, "payload.isHosted == " + isHosted);
+        SET_IS_HOSTED(payload);
+        t.pass("dispatch SET_IS_HOSTED");
+        t.equal(flux.store("config").getState().isHosted, isHosted, "config.state.isHosted == " + isHosted);
+    };
+    flux.register.UPDATE_ETHEREUM_STATUS = function (payload) {
+        var expectedStatus = expectedStatusSequence.pop();
+        t.equal(payload.ethereumStatus, expectedStatus, "payload.ethereumStatus == " + expectedStatus);
+        UPDATE_ETHEREUM_STATUS(payload);
+        t.pass("dispatch UPDATE_ETHEREUM_STATUS");
+        t.equal(flux.store("network").getState().ethereumStatus, expectedStatus, "network.state.ethereumStatus == " + expectedStatus);
+    };
+    flux.register.UPDATE_PERCENT_LOADED_SUCCESS = function (payload) {
+        t.true(payload.percentLoaded > 0, "payload.percentLoaded > 0");
+        t.true(payload.percentLoaded <= 100, "payload.percentLoaded <= 100");
+        flux.register.UPDATE_ETHEREUM_STATUS = UPDATE_ETHEREUM_STATUS;
+        flux.register.UPDATE_PERCENT_LOADED_SUCCESS = UPDATE_PERCENT_LOADED_SUCCESS;
+        UPDATE_PERCENT_LOADED_SUCCESS(payload);
+        t.pass("dispatch UPDATE_PERCENT_LOADED_SUCCESS");
+        t.equal(flux.store("config").getState().percentLoaded, payload.percentLoaded, "config.state.percentLoaded == payload.percentLoaded");
+    };
+    flux.register.FILTER_SETUP_COMPLETE = function (payload) {
+        t.true(flux.augur.filters.price_filter.id !== null, "price_filter.id is not null");
+        t.true(flux.augur.filters.contracts_filter.id !== null, "contracts_filter.id is not null");
+        t.true(flux.augur.filters.block_filter.id !== null, "block_filter.id is not null");
+        t.true(flux.augur.filters.creation_filter.id !== null, "creation_filter.id is not null");
+        t.true(flux.augur.filters.price_filter.heartbeat !== null, "price_filter.heartbeat is not null");
+        t.true(flux.augur.filters.contracts_filter.heartbeat !== null, "contracts_filter.heartbeat is not null");
+        t.true(flux.augur.filters.block_filter.heartbeat !== null, "block_filter.heartbeat is not null");
+        t.true(flux.augur.filters.creation_filter.heartbeat !== null, "creation_filter.heartbeat is not null");
+        FILTER_SETUP_COMPLETE(payload);
+        t.pass("dispatch FILTER_SETUP_COMPLETE");
+        var storedFilters = flux.store("config").getState().filters;
+        t.equal(Object.keys(storedFilters).length, 4, "config.state has 4 filters");
+        var filterId;
+        for (var f in storedFilters) {
+            if (!storedFilters.hasOwnProperty(f)) continue;
+            filterId = storedFilters[f].replace("0x", "");
+            t.true(valid.isHexadecimal(filterId), "config.state." + f + " has a valid hex ID");
+        }
+        flux.actions.market.addComment(commentText, marketInfo.id, account);
+    };
     flux.register.UPDATE_MARKET_SUCCESS = function (payload) {
         var storedMarketInfo = flux.store("market").getMarket(marketInfo.id);
         t.equal(payload.market.constructor, Object, "payload.market is an object");
@@ -67,9 +130,28 @@ test("MarketActions.addComment", function (t) {
         marketInfoWithComment.comments.push(comment);
         t.equal(JSON.stringify(payload.market), JSON.stringify(marketInfoWithComment), "verify payload");
         flux.register.UPDATE_MARKET_SUCCESS = UPDATE_MARKET_SUCCESS;
-        flux.augur.filters.ignore(true, t.end);
+        flux.actions.config.teardownFilters();
     };
-    flux.actions.market.addComment(commentText, marketInfo.id, account);
+    flux.register.FILTER_TEARDOWN_COMPLETE = function () {
+        FILTER_TEARDOWN_COMPLETE();
+        t.pass("dispatch FILTER_TEARDOWN_COMPLETE");
+        t.equal(Object.keys(flux.store("config").getState().filters).length, 0, "config.state.filters == {}");
+        t.true(flux.augur.filters.price_filter.id === null, "price_filter.id is null");
+        t.true(flux.augur.filters.contracts_filter.id === null, "contracts_filter.id is null");
+        t.true(flux.augur.filters.block_filter.id === null, "block_filter.id is null");
+        t.true(flux.augur.filters.creation_filter.id === null, "creation_filter.id is null");
+        t.true(flux.augur.filters.price_filter.heartbeat === null, "price_filter.heartbeat is null");
+        t.true(flux.augur.filters.contracts_filter.heartbeat === null, "contracts_filter.heartbeat is null");
+        t.true(flux.augur.filters.block_filter.heartbeat === null, "block_filter.heartbeat is null");
+        t.true(flux.augur.filters.creation_filter.heartbeat === null, "creation_filter.heartbeat is null");
+        flux.register.SET_IS_HOSTED = SET_IS_HOSTED;
+        flux.register.UPDATE_ETHEREUM_STATUS = UPDATE_ETHEREUM_STATUS;
+        flux.register.UPDATE_PERCENT_LOADED_SUCCESS = UPDATE_PERCENT_LOADED_SUCCESS;
+        flux.register.FILTER_SETUP_COMPLETE = FILTER_SETUP_COMPLETE;
+        flux.register.FILTER_TEARDOWN_COMPLETE = FILTER_TEARDOWN_COMPLETE;
+        t.end();
+    };
+    flux.actions.config.connect(true);
 });
 
 test("MarketActions.loadComments", function (t) {
@@ -88,6 +170,10 @@ test("MarketActions.loadComments", function (t) {
         t.equal(storedMarketInfo.constructor, Object, "storedMarketInfo is an object");
         t.equal(storedMarketInfo.comments, undefined, "storedMarketInfo.comments is undefined");
         storedMarketInfo.comments = clone(payload.market.comments);
+        delete storedMarketInfo.creationBlock;
+        delete storedMarketInfo.creationDate;
+        delete storedMarketInfo.events;
+        delete payload.market.events;
         t.equal(JSON.stringify(payload.market), JSON.stringify(storedMarketInfo), "verify payload");
         flux.register.UPDATE_MARKET_SUCCESS = UPDATE_MARKET_SUCCESS;
         t.end();

@@ -36,7 +36,7 @@
   "dependencies": {
     "async": "^1.4.2",
     "augur-abi": "^0.2.7",
-    "augur-contracts": "^0.4.3",
+    "augur-contracts": "^0.4.5",
     "augur.js": "^0.13.35",
     "babel-runtime": "^6.3.19",
     "babelify": "^6.3.0",
@@ -51,7 +51,7 @@
     "formsy-react": "0.17.0",
     "immutable": "^3.7.6",
     "jquery": "^2.1.4",
-    "keythereum": "^0.2.1",
+    "keythereum": "^0.2.2",
     "lodash": "^3.10.1",
     "moment": "^2.11.0",
     "node-localstorage": "^1.1.2",
