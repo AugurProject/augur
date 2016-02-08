@@ -25,9 +25,9 @@ var sellAmount = (Number(amount) / 2).toString();
 var newMarketId;
 
 function buyShares(done, augur) {
-    augur.buyShares({
-        branchId: branch,
-        marketId: market_id,
+    augur.trade({
+        branch: branch,
+        market: market_id,
         outcome: outcome,
         amount: amount,
         onSent: function (r) {
@@ -49,10 +49,10 @@ function buyShares(done, augur) {
 }
 
 function sellShares(done, augur) {
-    augur.sellShares({
-        branchId: branch,
-        marketId: market_id,
-        outcome: outcome,
+    augur.trade({
+        branch: branch,
+        market: market_id,
+        outcome: -Number(outcome),
         amount: sellAmount,
         onSent: function (r) {
             assert.property(r, "txHash");
@@ -138,16 +138,16 @@ describe("Price history", function () {
     before(function (done) {
         this.timeout(constants.TIMEOUT);
         var augur = utils.setup(require(augurpath), process.argv.slice(2));
-        augur.buyShares({
-            branchId: branch,
-            marketId: market_id,
+        augur.trade({
+            branch: branch,
+            market: market_id,
             outcome: outcome,
             amount: amount,
-            onSent: function (r) {
+            onTradeSent: function (r) {
                 assert.property(r, "txHash");
                 assert.property(r, "callReturn");
             },
-            onSuccess: function (r) {
+            onTradeSuccess: function (r) {
                 assert.property(r, "txHash");
                 assert.property(r, "callReturn");
                 assert.property(r, "blockHash");

@@ -290,9 +290,9 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
             if (!process.env.CONTINUOUS_INTEGRATION) {
                 before(function (done) {
                     this.timeout(augur.constants.TIMEOUT);
-                    augur.buyShares({
-                        branchId: branchId,
-                        marketId: marketId,
+                    augur.trade({
+                        branch: branchId,
+                        market: marketId,
                         outcome: "2",
                         amount: "2.01",
                         onSent: function (r) {
