@@ -34,10 +34,10 @@ module.exports = {
     var self = this;
     var account = this.flux.store('config').getAccount();
     if (account) {
-      this.flux.augur.getAccountMeanTradePrices(account, function (meanPrices) {
-        if (meanPrices && !meanPrices.error) {
+      this.flux.augur.getAccountMeanTradePrices(account, function (meanTradePrices) {
+        if (meanTradePrices && !meanTradePrices.error) {
           console.debug("loaded mean trade prices");
-          self.dispatch(constants.asset.LOAD_MEAN_TRADE_PRICES_SUCCESS, {meanPrices});
+          self.dispatch(constants.asset.LOAD_MEAN_TRADE_PRICES_SUCCESS, {meanTradePrices});
         }
       });
     }
