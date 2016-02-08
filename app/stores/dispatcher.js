@@ -52,7 +52,8 @@ stores.market.initialize = function () {
     constants.market.PRICE_HISTORY_LOADING, this.handlePriceHistoryLoading,
     constants.market.LOAD_PRICE_HISTORY_SUCCESS, this.handleLoadPriceHistorySuccess,
     constants.market.UPDATE_ORDERS_SUCCESS, this.handleUpdateOrdersSuccess,
-    constants.market.LOAD_ORDERS_SUCCESS, this.handleLoadOrdersSuccess
+    constants.market.LOAD_ORDERS_SUCCESS, this.handleLoadOrdersSuccess,
+    constants.market.COMMENT_SAVED, this.handleCommentSaved
   );
 };
 stores.network.initialize = function () {

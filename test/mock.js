@@ -110,6 +110,9 @@ var flux = {
         LOAD_ORDERS_SUCCESS: function (payload) {
             flux.stores.market.handleLoadOrdersSuccess(payload);
         },
+        COMMENT_SAVED: function () {
+            flux.stores.market.handleCommentSaved();
+        },
 
         // network
         UPDATE_NETWORK: function (payload) {

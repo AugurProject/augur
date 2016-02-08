@@ -48,14 +48,6 @@ function parseMarketInfoSync(info) {
     return info;
 }
 
-// flux.augur.connect();
-
-// var handle = "tinybike";
-// var password = "tinypassword";
-// var privateKey = keys.recover(password, keystore);
-// var address = keys.privateKeyToAddress(privateKey);
-// flux.augur.web.account = {handle: handle, privateKey: privateKey, address: address};
-// flux.augur.connector.from = address;
 var account = {address: flux.augur.from};
 var blockNumber = flux.augur.rpc.blockNumber();
 marketInfo = parseMarketInfoSync(marketInfo);
@@ -70,6 +62,7 @@ test("MarketActions.addComment", function (t) {
     var UPDATE_PERCENT_LOADED_SUCCESS = flux.register.UPDATE_PERCENT_LOADED_SUCCESS;
     var FILTER_SETUP_COMPLETE = flux.register.FILTER_SETUP_COMPLETE;
     var UPDATE_MARKET_SUCCESS = flux.register.UPDATE_MARKET_SUCCESS;
+    var COMMENT_SAVED = flux.register.COMMENT_SAVED;
     var FILTER_TEARDOWN_COMPLETE = flux.register.FILTER_TEARDOWN_COMPLETE;
     var isHosted = true;
     var expectedStatusSequence = ["ETHEREUM_STATUS_CONNECTED", "ETHEREUM_STATUS_NO_ACCOUNT"];
@@ -129,7 +122,10 @@ test("MarketActions.addComment", function (t) {
         var marketInfoWithComment = clone(storedMarketInfo);
         marketInfoWithComment.comments.push(comment);
         t.equal(JSON.stringify(payload.market), JSON.stringify(marketInfoWithComment), "verify payload");
-        flux.register.UPDATE_MARKET_SUCCESS = UPDATE_MARKET_SUCCESS;
+    };
+    flux.register.COMMENT_SAVED = function () {
+        COMMENT_SAVED();
+        t.pass("dispatch COMMENT_SAVED");
         flux.actions.config.teardownFilters();
     };
     flux.register.FILTER_TEARDOWN_COMPLETE = function () {
@@ -148,6 +144,8 @@ test("MarketActions.addComment", function (t) {
         flux.register.UPDATE_ETHEREUM_STATUS = UPDATE_ETHEREUM_STATUS;
         flux.register.UPDATE_PERCENT_LOADED_SUCCESS = UPDATE_PERCENT_LOADED_SUCCESS;
         flux.register.FILTER_SETUP_COMPLETE = FILTER_SETUP_COMPLETE;
+        flux.register.UPDATE_MARKET_SUCCESS = UPDATE_MARKET_SUCCESS;
+        flux.register.COMMENT_SAVED = COMMENT_SAVED;
         flux.register.FILTER_TEARDOWN_COMPLETE = FILTER_TEARDOWN_COMPLETE;
         t.end();
     };
