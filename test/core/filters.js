@@ -135,34 +135,32 @@ describe("Creation blocks", function () {
 
 describe("Price history", function () {
 
-    if (!process.env.CONTINUOUS_INTEGRATION) {
-        before(function (done) {
-            this.timeout(constants.TIMEOUT);
-            var augur = utils.setup(require(augurpath), process.argv.slice(2));
-            augur.buyShares({
-                branchId: branch,
-                marketId: market_id,
-                outcome: outcome,
-                amount: amount,
-                onSent: function (r) {
-                    assert.property(r, "txHash");
-                    assert.property(r, "callReturn");
-                },
-                onSuccess: function (r) {
-                    assert.property(r, "txHash");
-                    assert.property(r, "callReturn");
-                    assert.property(r, "blockHash");
-                    assert.property(r, "blockNumber");
-                    assert.isAbove(parseInt(r.blockNumber), 0);
-                    assert.strictEqual(r.from, augur.coinbase);
-                    assert.strictEqual(r.to, augur.contracts.buyAndSellShares);
-                    assert.strictEqual(parseInt(r.value), 0);
-                    done();
-                },
-                onFailed: done
-            });
+    before(function (done) {
+        this.timeout(constants.TIMEOUT);
+        var augur = utils.setup(require(augurpath), process.argv.slice(2));
+        augur.buyShares({
+            branchId: branch,
+            marketId: market_id,
+            outcome: outcome,
+            amount: amount,
+            onSent: function (r) {
+                assert.property(r, "txHash");
+                assert.property(r, "callReturn");
+            },
+            onSuccess: function (r) {
+                assert.property(r, "txHash");
+                assert.property(r, "callReturn");
+                assert.property(r, "blockHash");
+                assert.property(r, "blockNumber");
+                assert.isAbove(parseInt(r.blockNumber), 0);
+                assert.strictEqual(r.from, augur.coinbase);
+                assert.strictEqual(r.to, augur.contracts.buyAndSellShares);
+                assert.strictEqual(parseInt(r.value), 0);
+                done();
+            },
+            onFailed: done
         });
-    }
+    });
 
     it("getPriceHistory(" + branch + ")", function (done) {
         this.timeout(constants.TIMEOUT);
