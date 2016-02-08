@@ -1,0 +1,61 @@
+{
+  "network": "7",
+  "traderCount": 0,
+  "alpha": "0.00790000000000000001",
+  "traderIndex": 0,
+  "numOutcomes": 3,
+  "tradingPeriod": 31701,
+  "tradingFee": "0.01999999999999999998",
+  "branchId": "0xf69b5",
+  "numEvents": 1,
+  "cumulativeScale": "1",
+  "creationFee": "59",
+  "author": "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b",
+  "type": "categorical",
+  "endDate": 3170155,
+  "participants": {},
+  "winningOutcomes": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+  ],
+  "description": "Will the average temperature on Earth in 2016 be Higher, Lower, or Unchanged from the average temperature on Earth in 2015? Choices: Higher, Lower, Unchanged",
+  "outcomes": [
+    {
+      "shares": {},
+      "id": 1,
+      "outstandingShares": "57.5027933722729246517",
+      "price": "0.34201734666487570991"
+    },
+    {
+      "shares": {},
+      "id": 2,
+      "outstandingShares": "57.5027933722729246517",
+      "price": "0.34201734666487570991"
+    },
+    {
+      "shares": {},
+      "id": 3,
+      "outstandingShares": "57.5027933722729246517",
+      "price": "0.34201734666487570991"
+    }
+  ],
+  "events": [
+    {
+      "id": "-0x969e86940869fd97de29a30597d5d5966cfe2f0b4f7f2e6892252110f43cc8d7",
+      "endDate": 3170155,
+      "outcome": "0",
+      "minValue": "1",
+      "maxValue": "2",
+      "numOutcomes": 3,
+      "type": "categorical"
+    }
+  ],
+  "price": "0.34201734666487570991",
+  "_id": "-0x625953f34c2ac66e3ac08123335def89fbe30ee022a46f599c9e6206fafc3b1b"
+}
