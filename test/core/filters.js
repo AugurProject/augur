@@ -18,23 +18,28 @@ var augur = utils.setup(require(augurpath), process.argv.slice(2));
 var DELAY = 2500;
 var branch = augur.branches.dev;
 var markets = augur.getMarketsInBranch(branch);
-var market_id = markets[markets.length - 1];
+var numMarkets = markets.length;
+var marketId, marketInfo;
+do {
+    marketId = markets[--numMarkets];
+    marketInfo = augur.getMarketInfo(marketId);
+} while (marketInfo.type === "combinatorial");
 var outcome = "1";
-var amount = "10";
+var amount = "1";
 var sellAmount = (Number(amount) / 2).toString();
 var newMarketId;
 
 function buyShares(done, augur) {
     augur.trade({
         branch: branch,
-        market: market_id,
+        market: marketId,
         outcome: outcome,
         amount: amount,
-        onSent: function (r) {
+        onTradeSent: function (r) {
             assert.property(r, "txHash");
             assert.property(r, "callReturn");
         },
-        onSuccess: function (r) {
+        onTradeSuccess: function (r) {
             assert.property(r, "txHash");
             assert.property(r, "callReturn");
             assert.property(r, "blockHash");
@@ -44,21 +49,21 @@ function buyShares(done, augur) {
             assert.strictEqual(r.to, augur.contracts.buyAndSellShares);
             assert.strictEqual(parseInt(r.value), 0);
         },
-        onFailed: done
+        onTradeFailed: done
     });
 }
 
 function sellShares(done, augur) {
     augur.trade({
         branch: branch,
-        market: market_id,
-        outcome: -Number(outcome),
-        amount: sellAmount,
-        onSent: function (r) {
+        market: marketId,
+        outcome: outcome,
+        amount: (-Number(sellAmount)).toString(),
+        onTradeSent: function (r) {
             assert.property(r, "txHash");
             assert.property(r, "callReturn");
         },
-        onSuccess: function (r) {
+        onTradeSuccess: function (r) {
             assert.property(r, "txHash");
             assert.property(r, "callReturn");
             assert.property(r, "blockHash");
@@ -68,7 +73,7 @@ function sellShares(done, augur) {
             assert.strictEqual(r.to, augur.contracts.buyAndSellShares);
             assert.strictEqual(parseInt(r.value), 0);
         },
-        onFailed: done
+        onTradeFailed: done
     });
 }
 
@@ -77,7 +82,7 @@ function createMarket(done, augur) {
     augur.createEvent({
         branchId: branch,
         description: description,
-        expDate: augur.rpc.blockNumber() + 2500,
+        expirationBlock: augur.rpc.blockNumber() + 2500,
         minValue: 1,
         maxValue: 2,
         numOutcomes: 2,
@@ -89,8 +94,8 @@ function createMarket(done, augur) {
                 branchId: augur.branches.dev,
                 description: description,
                 alpha: "0.0079",
-                initialLiquidity: 10,
-                tradingFee: "0.02",
+                initialLiquidity: 75,
+                tradingFee: "0.03",
                 events: [ r.callReturn ],
                 onSent: function (res) {
                     newMarketId = res.callReturn;
@@ -113,17 +118,17 @@ describe("Creation blocks", function () {
         augur.getCreationBlocks(branch, function (blocks) {
             console.log("getCreationBlocks:", ((new Date()).getTime() - start) / 1000, "seconds");
             assert.isObject(blocks);
-            assert.property(blocks, market_id);
-            assert.isNumber(blocks[market_id]);
-            assert.isAbove(blocks[market_id], 0);
+            assert.property(blocks, marketId);
+            assert.isNumber(blocks[marketId]);
+            assert.isAbove(blocks[marketId], 0);
             done();
         });
     });
 
-    it("getMarketCreationBlock(" + market_id + ")", function (done) {
+    it("getMarketCreationBlock(" + marketId + ")", function (done) {
         this.timeout(constants.TIMEOUT);
         var start = (new Date()).getTime();
-        augur.getMarketCreationBlock(market_id, function (blockNumber) {
+        augur.getMarketCreationBlock(marketId, function (blockNumber) {
             console.log("getMarketCreationBlock:", ((new Date()).getTime() - start) / 1000, "seconds");
             assert.isNumber(blockNumber);
             assert.isAbove(blockNumber, 0);
@@ -135,32 +140,55 @@ describe("Creation blocks", function () {
 
 describe("Price history", function () {
 
-    before(function (done) {
-        this.timeout(constants.TIMEOUT);
-        var augur = utils.setup(require(augurpath), process.argv.slice(2));
-        augur.trade({
-            branch: branch,
-            market: market_id,
-            outcome: outcome,
-            amount: amount,
-            onTradeSent: function (r) {
-                assert.property(r, "txHash");
-                assert.property(r, "callReturn");
-            },
-            onTradeSuccess: function (r) {
-                assert.property(r, "txHash");
-                assert.property(r, "callReturn");
-                assert.property(r, "blockHash");
-                assert.property(r, "blockNumber");
-                assert.isAbove(parseInt(r.blockNumber), 0);
-                assert.strictEqual(r.from, augur.coinbase);
-                assert.strictEqual(r.to, augur.contracts.buyAndSellShares);
-                assert.strictEqual(parseInt(r.value), 0);
-                done();
-            },
-            onFailed: done
+    if (!process.env.CONTINUOUS_INTEGRATION) {
+        before(function (done) {
+            this.timeout(constants.TIMEOUT);
+            var augur = utils.setup(require(augurpath), process.argv.slice(2));
+            augur.trade({
+                branch: branch,
+                market: marketId,
+                outcome: outcome,
+                amount: amount,
+                callbacks: {
+                    onMarketHash: function (marketHash) {
+                        assert(marketHash);
+                    },
+                    onCommitTradeSent: function (r) {
+                        assert.property(r, "txHash");
+                        assert.property(r, "callReturn");
+                        assert.strictEqual(r.callReturn, "1");
+                    },
+                    onCommitTradeSuccess: function (r) {
+                        assert.property(r, "txHash");
+                        assert.property(r, "callReturn");
+                        assert.strictEqual(r.callReturn, "1");
+                    },
+                    onCommitTradeFailed: done,
+                    onNextBlock: function (blockNumber) {
+                        assert(blockNumber);
+                    },
+                    onTradeSent: function (r) {
+                        assert.property(r, "txHash");
+                        assert.property(r, "callReturn");
+                        assert.strictEqual(r.callReturn, "1");
+                    },
+                    onTradeSuccess: function (r) {
+                        assert.property(r, "txHash");
+                        assert.property(r, "callReturn");
+                        assert.property(r, "blockHash");
+                        assert.property(r, "blockNumber");
+                        assert.strictEqual(r.callReturn, "1");
+                        assert.isAbove(parseInt(r.blockNumber), 0);
+                        assert.strictEqual(r.from, augur.coinbase);
+                        assert.strictEqual(r.to, augur.contracts.buyAndSellShares);
+                        assert.strictEqual(parseInt(r.value), 0);
+                        done();
+                    },
+                    onTradeFailed: done
+                }
+            });
         });
-    });
+    }
 
     it("getPriceHistory(" + branch + ")", function (done) {
         this.timeout(constants.TIMEOUT);
@@ -169,27 +197,28 @@ describe("Price history", function () {
             console.log("getPriceHistory:", ((new Date()).getTime() - start) / 1000, "seconds");
             assert.notProperty(priceHistory, "error");
             assert.isObject(priceHistory);
+            var marketIdUnforked = abi.unfork(marketId, true);
             if (!process.env.CONTINUOUS_INTEGRATION) {
-                assert.property(priceHistory, market_id);
-                assert.property(priceHistory[market_id], outcome);
-                assert.isArray(priceHistory[market_id][outcome]);
-                assert.isAbove(priceHistory[market_id][outcome].length, 0);
-                assert.property(priceHistory[market_id][outcome][0], "price");
-                assert.property(priceHistory[market_id][outcome][0], "cost");
-                assert.property(priceHistory[market_id][outcome][0], "blockNumber");
-                assert.property(priceHistory[market_id][outcome][0], "market");
-                assert.property(priceHistory[market_id][outcome][0], "user");
-                assert.isAbove(priceHistory[market_id][outcome][0].market.length, 64);
-                assert.strictEqual(priceHistory[market_id][outcome][0].user.length, 42);
+                assert.property(priceHistory, marketIdUnforked);
+                assert.property(priceHistory[marketIdUnforked], outcome);
+                assert.isArray(priceHistory[marketIdUnforked][outcome]);
+                assert.isAbove(priceHistory[marketIdUnforked][outcome].length, 0);
+                assert.property(priceHistory[marketIdUnforked][outcome][0], "price");
+                assert.property(priceHistory[marketIdUnforked][outcome][0], "cost");
+                assert.property(priceHistory[marketIdUnforked][outcome][0], "blockNumber");
+                assert.property(priceHistory[marketIdUnforked][outcome][0], "market");
+                assert.property(priceHistory[marketIdUnforked][outcome][0], "user");
+                assert.isAbove(priceHistory[marketIdUnforked][outcome][0].market.length, 64);
+                assert.strictEqual(priceHistory[marketIdUnforked][outcome][0].user.length, 42);
             }
             done();
         });
     });
 
-    it("[async] getMarketPriceHistory(" + market_id + ")", function (done) {
+    it("[async] getMarketPriceHistory(" + marketId + ")", function (done) {
         this.timeout(constants.TIMEOUT);
         var start = (new Date()).getTime();
-        augur.getMarketPriceHistory(market_id, function (priceHistory) {
+        augur.getMarketPriceHistory(marketId, function (priceHistory) {
             console.log("[async] getMarketPriceHistory:", ((new Date()).getTime() - start) / 1000, "seconds");
             assert.isObject(priceHistory);
             for (var k in priceHistory) {
@@ -211,10 +240,10 @@ describe("Price history", function () {
         });
     });
 
-    it("[sync] getMarketPriceHistory(" + market_id + ")", function () {
+    it("[sync] getMarketPriceHistory(" + marketId + ")", function () {
         this.timeout(constants.TIMEOUT);
         var start = (new Date()).getTime();
-        var priceHistory = augur.getMarketPriceHistory(market_id);
+        var priceHistory = augur.getMarketPriceHistory(marketId);
         console.log("[sync] getMarketPriceHistory:", ((new Date()).getTime() - start) / 1000, "seconds");
         assert.isObject(priceHistory);
         for (var k in priceHistory) {
@@ -234,10 +263,10 @@ describe("Price history", function () {
         }
     });
 
-    it("[async] getOutcomePriceHistory(" + market_id + "," + outcome + ")", function (done) {
+    it("[async] getOutcomePriceHistory(" + marketId + "," + outcome + ")", function (done) {
         this.timeout(constants.TIMEOUT);
         var start = (new Date()).getTime();
-        augur.getOutcomePriceHistory(market_id, outcome, function (logs) {
+        augur.getOutcomePriceHistory(marketId, outcome, function (logs) {
             console.log("[sync] getOutcomePriceHistory:", ((new Date()).getTime() - start) / 1000, "seconds");
             assert.isArray(logs);
             if (!process.env.CONTINUOUS_INTEGRATION) {
@@ -254,9 +283,9 @@ describe("Price history", function () {
         });
     });
 
-    it("[sync] getOutcomePriceHistory(" + market_id + "," + outcome + ")", function () {
+    it("[sync] getOutcomePriceHistory(" + marketId + "," + outcome + ")", function () {
         this.timeout(constants.TIMEOUT);
-        var logs = augur.getOutcomePriceHistory(market_id, outcome);
+        var logs = augur.getOutcomePriceHistory(marketId, outcome);
         assert.isArray(logs);
         if (!process.env.CONTINUOUS_INTEGRATION) {
             assert.property(logs, "length");

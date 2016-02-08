@@ -2374,7 +2374,7 @@ Augur.prototype.trade = function (branch, market, outcome, amount, limit, stop, 
     amount = amount.abs().toFixed();
     var marketHash = this.makeMarketHash({
         market: market,
-        outcome: outcome,
+        outcome: parseInt(outcome),
         amount: amount,
         limit: 0 // nonzero for "true" limit orders, 0 for stop & market orders
     });
@@ -2397,7 +2397,7 @@ Augur.prototype.trade = function (branch, market, outcome, amount, limit, stop, 
                         trade.call(self, {
                             branchId: branch,
                             marketId: market,
-                            outcome: outcome,
+                            outcome: parseInt(outcome),
                             amount: amount,
                             limit: limit,
                             onSent: callbacks.onTradeSent,
