@@ -57,12 +57,10 @@ describe("Cash deposit", function () {
                 augur.depositEther({
                     value: value,
                     onSent: function (res) {
-                        console.log(res)
                         assert.strictEqual(res.txHash.length, 66);
                         assert.strictEqual(weiValue, res.callReturn);
                     },
                     onSuccess: function (res) {
-                        console.log(res)
                         assert.strictEqual(res.txHash.length, 66);
                         assert.strictEqual(weiValue, res.callReturn);
                         assert.strictEqual(res.from, augur.coinbase);
