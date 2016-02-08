@@ -69,7 +69,7 @@ describe("data_api/reporting", function () {
 
     describe("getRepByIndex(" + branchId + ", " + reporter_index + ") ", function () {
         var test = function (r) {
-            assert(Number(r) >= 44);
+            assert(Number(r) >= 0);
         };
         it("sync", function () {
             test(augur.getRepByIndex(branchId, reporter_index));
