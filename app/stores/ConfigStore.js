@@ -51,11 +51,11 @@ module.exports = {
     this.state.percentLoaded = payload.percentLoaded;
     this.emit(constants.CHANGE_EVENT);
   },
-  handleUserRegistered(payload) {
+  handleUserRegistered: function (payload) {
     this.state.isNewRegistration = true;
     this.emit(constants.CHANGE_EVENT);
   },
-  handleUserSignedOut(payload) {
+  handleUserSignedOut: function (payload) {
     this.state.isNewRegistration = false;
     this.emit(constants.CHANGE_EVENT);
   },

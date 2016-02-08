@@ -76,6 +76,9 @@ var flux = {
         FILTER_TEARDOWN_COMPLETE: function (payload) {
             flux.stores.config.handleFilterTeardownComplete(payload);
         },
+        USER_SIGNED_OUT: function () {
+            flux.stores.config.handleUserSignedOut();
+        },
 
         // market
         LOAD_MARKETS_SUCCESS: function (payload) {
