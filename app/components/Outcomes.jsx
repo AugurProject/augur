@@ -49,7 +49,7 @@ var Overview = React.createClass({
         this.setState({buyShares: false, sellShares: false});
     },
 
-    handleTrade: function (relativeShares, limit) {
+    handleTrade: function (relativeShares, limit, cap) {
         var self = this;
         var flux = this.getFlux();
         var txhash;
@@ -65,6 +65,7 @@ var Overview = React.createClass({
             amount: relativeShares,
             limit: limit,
             stop: !!limit,
+            cap: abi.number(cap),
             expiration: 0,
             callbacks: {
                 onMarketHash: function (marketHash) {
@@ -263,8 +264,10 @@ var TradeBase = {
             simulation: null,
             inputError: null,
             limitInputError: null,
+            capInputError: null,
             value: '',
-            limit: ''
+            limit: '',
+            cap: ''
         };
     },
 
@@ -295,17 +298,25 @@ var TradeBase = {
         this.setState({limitInputError: null});
     },
 
+    handleCapChange: function () {
+        var cap = this.refs.inputCap.getValue();
+        this.setState({cap: cap});
+        this.setState({capInputError: null});
+    },
+
     onSubmit: function (event) {
         event.preventDefault();
         var numShares = abi.number(this.state.value);
         var limitPrice = abi.number(this.state.limit);
+        var cap = abi.number(this.state.cap);
         if (typeof(numShares) !== 'number' || !numShares) {
             this.setState({inputError: 'Shares must be a number'});
         } else if (this.state.simulation.cost > this.props.cashBalance) {
             this.setState({inputError: 'Cost of shares exceeds available funds'});
         } else {
             limitPrice = (limitPrice === "") ? 0 : limitPrice;
-            this.props.handleTrade(this.getRelativeShares(), limitPrice);
+            cap = (cap === "") ? 0 : cap;
+            this.props.handleTrade(this.getRelativeShares(), limitPrice, cap);
         }
     },
 
@@ -339,8 +350,17 @@ var TradeBase = {
                             value={this.state.limit}
                             // help="Specifying a price will create a Stop Order"
                             ref="inputLimit"
+                            // use max price / min price instead?
                             placeholder="Price (optional)"
                             onChange={this.handleLimitChange} />
+                        <Input
+                            type="text"
+                            bsStyle={inputStyle}
+                            value={this.state.cap}
+                            // help="Specifying a cap will create a Limit Order"
+                            ref="inputCap"
+                            placeholder="Cap (optional)"
+                            onChange={this.handleCapChange} />
                     </form>
                 </div>
                 <div className='cancel trade-button'>

@@ -16,7 +16,6 @@ module.exports = {
     options = options || {};
     if (market && market.id) {
       this.flux.augur.comments.getMarketComments(abi.hex(market.id), options, function (err, comments) {
-        console.log(err, comments);
         if (err) return console.error(err);
         if (comments && comments.constructor === Array && comments.length) {
           market.comments = comments;
