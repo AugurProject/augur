@@ -41,6 +41,8 @@ flux.stores.report.state.pendingReports = [{
 }];
 
 test("ReportActions.loadEventsToReport", function (t) {
+    flux = reset(flux);
+    var complete = false;
     var UPDATE_EVENT_TO_REPORT = flux.register.UPDATE_EVENT_TO_REPORT;
     var LOAD_EVENTS_TO_REPORT_SUCCESS = flux.register.LOAD_EVENTS_TO_REPORT_SUCCESS;
     flux.register.UPDATE_EVENT_TO_REPORT = function (payload) {
@@ -54,10 +56,13 @@ test("ReportActions.loadEventsToReport", function (t) {
         LOAD_EVENTS_TO_REPORT_SUCCESS(payload);
         t.pass("dispatch LOAD_EVENTS_TO_REPORT_SUCCESS");
         t.equal(payload.eventsToReport.constructor, Object, "payload.eventsToReport is an object");
-        flux.register.UPDATE_EVENT_TO_REPORT = UPDATE_EVENT_TO_REPORT;
-        flux.register.LOAD_EVENTS_TO_REPORT_SUCCESS = LOAD_EVENTS_TO_REPORT_SUCCESS;
-        if (!flux.augur.filters.price_filter.id) return t.end();
-        flux.augur.filters.ignore(true, t.end);
+        if (!complete) {
+            complete = true;
+            flux.register.UPDATE_EVENT_TO_REPORT = UPDATE_EVENT_TO_REPORT;
+            flux.register.LOAD_EVENTS_TO_REPORT_SUCCESS = LOAD_EVENTS_TO_REPORT_SUCCESS;
+            if (!flux.augur.filters.price_filter.id) return t.end();
+            flux.augur.filters.ignore(true, t.end);
+        }
     };
     flux.actions.report.loadEventsToReport();
 });
@@ -91,6 +96,7 @@ test("ReportActions.hashReport", function (t) {
 
 test("ReportActions.submitQualifiedReports", function (t) {
     flux = reset(flux);
+    var checkbox = {loadPendingReportsSuccess: false, submitQualifiedReports: false};
     var LOAD_PENDING_REPORTS_SUCCESS = flux.register.LOAD_PENDING_REPORTS_SUCCESS;
     flux.register.LOAD_PENDING_REPORTS_SUCCESS = function (payload) {
         if (DEBUG) {
@@ -99,6 +105,7 @@ test("ReportActions.submitQualifiedReports", function (t) {
         t.equal(payload.constructor, Object, "payload is an object");
         t.equal(payload.pendingReports.constructor, Array, "payload.pendingReports is an array");
         LOAD_PENDING_REPORTS_SUCCESS(payload);
+        t.pass("dispatch LOAD_PENDING_REPORTS_SUCCESS");
         flux.register.LOAD_PENDING_REPORTS_SUCCESS = LOAD_PENDING_REPORTS_SUCCESS;
     };
     flux.stores.report.state.pendingReports = [{
@@ -114,11 +121,14 @@ test("ReportActions.submitQualifiedReports", function (t) {
         t.equal(reports.constructor, Object, "reports is an object");
         t.equal(reports.sentReports.constructor, Array, "reports.sentReports is an array");
         t.equal(reports.pendingReports.constructor, Array, "reports.pendingReports is an array");
-        t.end();
+        if (!flux.augur.filters.price_filter.id) return t.end();
+        flux.augur.filters.ignore(true, t.end);
     });
 });
 
 test("ReportActions.loadPendingReports", function (t) {
+    flux = reset(flux);
+    var complete = false;
     var LOAD_PENDING_REPORTS_SUCCESS = flux.register.LOAD_PENDING_REPORTS_SUCCESS;
     flux.register.LOAD_PENDING_REPORTS_SUCCESS = function (payload) {
         if (DEBUG) {
@@ -128,8 +138,12 @@ test("ReportActions.loadPendingReports", function (t) {
         t.equal(payload.pendingReports.constructor, Array, "payload.pendingReports is an array");
         LOAD_PENDING_REPORTS_SUCCESS(payload);
         t.pass("dispatch LOAD_PENDING_REPORTS_SUCCESS");
-        flux.register.LOAD_PENDING_REPORTS_SUCCESS = LOAD_PENDING_REPORTS_SUCCESS;
-        t.end();
+        if (!complete) {
+            complete = true;
+            flux.register.LOAD_PENDING_REPORTS_SUCCESS = LOAD_PENDING_REPORTS_SUCCESS;
+            if (!flux.augur.filters.price_filter.id) return t.end();
+            flux.augur.filters.ignore(true, t.end);
+        }
     };
     flux.stores.report.state.pendingReports = [{
         branchId: branch,
