@@ -51,7 +51,6 @@ module.exports = {
       // if this is a new vote period, check quorum & submit reports
       if (reportPeriod > currentBranch.reportPeriod) {
         self.flux.actions.report.loadEventsToReport();
-        self.flux.actions.branch.checkQuorum();
         self.flux.actions.report.submitQualifiedReports(function (err, res) {
           if (err) console.error("submitQualifiedReports:", err);
         });
@@ -73,30 +72,6 @@ module.exports = {
 
       self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, updatedBranch);
     });
-  },
-
-  checkQuorum: function () {
-    var self = this;
-    var branchState = this.flux.store('branch').getState();
-    var currentBranch = branchState.currentBranch;
-    var hasCheckedQuorum = branchState.hasCheckedQuorum;
-
-    // check quorum if branch isn't current and we havn't already
-    if (!currentBranch.isCurrent && !hasCheckedQuorum) {
-      this.flux.augur.dispatch({
-        branchId: currentBranch.id,
-        onSent: function (r) {
-          self.dispatch(constants.branch.CHECK_QUORUM_SENT);
-        },
-        onSuccess: function (r) {
-          self.dispatch(constants.branch.CHECK_QUORUM_SUCCESS);
-        },
-        onFailed: function (r) {
-          self.dispatch(constants.branch.CHECK_QUORUM_SENT);
-        }
-      });
-    } else if (hasCheckedQuorum && currentBranch.isCurrent) {
-      this.dispatch(constants.branch.CHECK_QUORUM_SUCCESS);
-    }
   }
+
 };

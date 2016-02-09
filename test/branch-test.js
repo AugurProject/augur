@@ -11,7 +11,6 @@ var constants = require("../app/libs/constants");
 var flux = require("./mock");
 
 flux.augur.connect();
-flux.augur.rpc.balancer = false;
 var branchId = 1010101;
 
 test("BranchActions.loadBranches", function (t) {
@@ -64,27 +63,4 @@ test("BranchActions.updateCurrentBranch", function (t) {
         t.end();
     };
     flux.actions.branch.updateCurrentBranch();
-});
-
-test("BranchActions.checkQuorum", function (t) {
-    var CHECK_QUORUM_SENT = flux.register.CHECK_QUORUM_SENT;
-    var CHECK_QUORUM_SUCCESS = flux.register.CHECK_QUORUM_SUCCESS;
-    flux.register.CHECK_QUORUM_SENT = function () {
-        t.false(flux.store("branch").getState().hasCheckedQuorum, "BranchStore.hasCheckedQuorum is false");
-        CHECK_QUORUM_SENT();
-        t.pass("dispatch CHECK_QUORUM_SENT");
-        t.true(flux.store("branch").getState().hasCheckedQuorum, "BranchStore.hasCheckedQuorum is true");
-        t.end();
-    };
-    flux.register.CHECK_QUORUM_SUCCESS = function () {
-        t.true(flux.store("branch").getState().hasCheckedQuorum, "BranchStore.hasCheckedQuorum is true");
-        CHECK_QUORUM_SUCCESS();
-        t.pass("dispatch CHECK_QUORUM_SUCCESS");
-        t.false(flux.store("branch").getState().hasCheckedQuorum, "BranchStore.hasCheckedQuorum is false");
-        flux.register.CHECK_QUORUM_SENT = CHECK_QUORUM_SENT;
-        flux.register.CHECK_QUORUM_SUCCESS = CHECK_QUORUM_SUCCESS;
-        t.end();
-    };
-    flux.actions.branch.updateCurrentBranch();
-    flux.actions.branch.checkQuorum();
 });
