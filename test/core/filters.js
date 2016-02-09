@@ -179,7 +179,7 @@ describe("Price history", function () {
                         assert.property(r, "blockNumber");
                         assert.strictEqual(r.callReturn, "1");
                         assert.isAbove(parseInt(r.blockNumber), 0);
-                        assert.strictEqual(r.from, augur.coinbase);
+                        assert.strictEqual(r.from, augur.from);
                         assert.strictEqual(r.to, augur.contracts.buyAndSellShares);
                         assert.strictEqual(parseInt(r.value), 0);
                         done();
