@@ -171,10 +171,6 @@ test("MarketActions.loadComments", function (t) {
         t.equal(storedMarketInfo.constructor, Object, "storedMarketInfo is an object");
         t.equal(storedMarketInfo.comments, undefined, "storedMarketInfo.comments is undefined");
         storedMarketInfo.comments = clone(payload.market.comments);
-        // delete storedMarketInfo.creationBlock;
-        // delete storedMarketInfo.creationDate;
-        // delete storedMarketInfo.events;
-        // delete payload.market.events;
         t.equal(JSON.stringify(payload.market), JSON.stringify(storedMarketInfo), "verify payload");
         flux.register.UPDATE_MARKET_SUCCESS = UPDATE_MARKET_SUCCESS;
         t.end();
@@ -184,7 +180,7 @@ test("MarketActions.loadComments", function (t) {
 });
 
 test("MarketActions.updateComments", function (t) {
-    t.plan(5);
+    t.plan(10);
     var message = "augur's unit tests have something random to say: '" + Math.random().toString(36).substring(4) + "'";
     var markets = {};
     markets[marketInfo.id] = clone(marketInfo);
@@ -202,6 +198,17 @@ test("MarketActions.updateComments", function (t) {
         marketInfoWithComment.comments.push(comment);
         t.equal(JSON.stringify(payload.market), JSON.stringify(marketInfoWithComment), "verify payload");
         flux.register.UPDATE_MARKET_SUCCESS = UPDATE_MARKET_SUCCESS;
+        t.pass("reset flux.register");
+        flux.actions.config.signOut();
+        var configState = flux.store("config").getState();
+        t.equal(configState.currentAccount, null, "store.config.state.currentAccount == null");
+        t.equal(configState.privateKey, null, "store.config.state.privateKey == null");
+        t.equal(configState.handle, null, "store.config.state.handle == null");
+        t.equal(configState.keystore, null, "store.config.state.keystore == null");
+        flux.augur.connector.from = flux.augur.coinbase;
+        flux.augur.connect();
+        t.equal(flux.augur.coinbase, flux.augur.connector.from, "augur.coinbase == augur.connector.from");
+        t.equal(flux.augur.coinbase, flux.augur.from, "augur.coinbase == augur.from");
         t.end();
     };
     flux.actions.market.updateComments(message, marketInfo.id, account);
