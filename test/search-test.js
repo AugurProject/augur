@@ -19,7 +19,7 @@ flux.augur.connector.from = flux.augur.coinbase;
 flux.augur.sync(flux.augur.connector);
 
 test("SearchActions.updateKeywords", function (t) {
-    var keyword = "rain";
+    var keyword = "be";
     var LOAD_MARKETS_SUCCESS = flux.register.LOAD_MARKETS_SUCCESS;
     var KEYWORDS_UPDATED = flux.register.KEYWORDS_UPDATED;
     flux.register.LOAD_MARKETS_SUCCESS = function (payload) {
