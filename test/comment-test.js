@@ -180,7 +180,7 @@ test("MarketActions.loadComments", function (t) {
 });
 
 test("MarketActions.updateComments", function (t) {
-    t.plan(10);
+    t.plan(12);
     var message = "augur's unit tests have something random to say: '" + Math.random().toString(36).substring(4) + "'";
     var markets = {};
     markets[marketInfo.id] = clone(marketInfo);
