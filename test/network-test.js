@@ -35,7 +35,6 @@ test("NetworkActions.checkNetwork", function (t) {
 });
 
 test("NetworkActions.initializeNetwork", function (t) {
-    t.plan(3);
     flux = reset(flux);
     var UPDATE_ETHEREUM_STATUS = flux.register.UPDATE_ETHEREUM_STATUS;
     flux.register.UPDATE_ETHEREUM_STATUS = function (payload) {

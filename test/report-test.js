@@ -12,6 +12,7 @@ if (typeof localStorage === "undefined" || localStorage === null) {
 }
 var constants = require("../app/libs/constants");
 var flux = require("./mock");
+var reset = require("./reset");
 
 var DEBUG = false;
 // var host = "http://127.0.0.1:8545";
@@ -62,7 +63,7 @@ test("ReportActions.loadEventsToReport", function (t) {
 });
 
 test("ReportActions.storeReports", function (t) {
-    t.plan(2);    
+    t.plan(2);
     flux.actions.report.storeReports(reports);
     var storedReports = localStorage.getItem("REPORTS_STORAGE");
     t.pass("get REPORTS_STORAGE from localStorage");
@@ -89,6 +90,7 @@ test("ReportActions.hashReport", function (t) {
 });
 
 test("ReportActions.submitQualifiedReports", function (t) {
+    flux = reset(flux);
     var LOAD_PENDING_REPORTS_SUCCESS = flux.register.LOAD_PENDING_REPORTS_SUCCESS;
     flux.register.LOAD_PENDING_REPORTS_SUCCESS = function (payload) {
         if (DEBUG) {
@@ -112,8 +114,7 @@ test("ReportActions.submitQualifiedReports", function (t) {
         t.equal(reports.constructor, Object, "reports is an object");
         t.equal(reports.sentReports.constructor, Array, "reports.sentReports is an array");
         t.equal(reports.pendingReports.constructor, Array, "reports.pendingReports is an array");
-        if (!flux.augur.filters.price_filter.id) return t.end();
-        flux.augur.filters.ignore(true, t.end);
+        t.end();
     });
 });
 
@@ -128,8 +129,7 @@ test("ReportActions.loadPendingReports", function (t) {
         LOAD_PENDING_REPORTS_SUCCESS(payload);
         t.pass("dispatch LOAD_PENDING_REPORTS_SUCCESS");
         flux.register.LOAD_PENDING_REPORTS_SUCCESS = LOAD_PENDING_REPORTS_SUCCESS;
-        if (!flux.augur.filters.price_filter.id) return t.end();
-        flux.augur.filters.ignore(true, t.end);
+        t.end();
     };
     flux.stores.report.state.pendingReports = [{
         branchId: branch,
