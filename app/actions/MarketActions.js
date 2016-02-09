@@ -15,11 +15,11 @@ module.exports = {
     var self = this;
     options = options || {};
     if (market && market.id) {
-      this.flux.augur.comments.getMarketComments(abi.hex(market.id), options, function (err, comments) {
+      this.flux.augur.ramble.getMarketComments(abi.hex(market.id), options, function (err, comments) {
         if (err) return console.error(err);
         if (comments && comments.constructor === Array && comments.length) {
           market.comments = comments;
-          self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market});
+          self.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
         }
       });
     }
@@ -42,14 +42,14 @@ module.exports = {
     } else {
       market.comments = [comment];
     }
-    this.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market});
+    this.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
   },
 
   addComment: function (commentText, marketId, account) {
     var self = this;
     if (commentText && marketId) {
       var author = account.address || this.flux.store("config").getAccount();
-      this.flux.augur.comments.addMarketComment({
+      this.flux.augur.ramble.addMarketComment({
         marketId: abi.hex(marketId),
         author: author,
         message: commentText
@@ -193,7 +193,7 @@ module.exports = {
     augur.getMarketCreationBlock(marketId, function (creationBlock) {
       augur.getMarketPriceHistory(marketId, function (priceHistory) {
         augur.getMarketInfo(marketId, function (marketInfo) {
-          if (!marketInfo || marketInfo.error) {
+          if (!marketInfo || marketInfo.error || !marketInfo.network) {
             return console.error("loadMarket:", marketInfo);
           }
           var markets = self.flux.store('market').getState().markets;
