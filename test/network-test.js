@@ -22,6 +22,42 @@ flux.augur.connect();
 flux.augur.rpc.balancer = false;
 
 test("NetworkActions.checkNetwork", function (t) {
+    flux.stores.config.state = {
+        host: true,
+        currentAccount: null,
+        privateKey: null,
+        handle: null,
+        keystore: null,
+        debug: false,
+        loaded: false,
+        isHosted: isHosted,
+        percentLoaded: null,
+        filters: {},
+        isNewRegistration: false
+    };
+    flux.stores.network.state = {
+        peerCount: null,
+        blockNumber: null,
+        blocktime: null,
+        ether: null,
+        gasPrice: null,
+        ethereumStatus: null,
+        mining: null,
+        hashrate: null,
+        clientVersion: null,
+        networkId: null,
+        blockchainAge: null,
+        isMonitoringBlocks: false,
+        hasCheckedQuorum: false
+    };
+    flux.stores.market.state = {
+        markets: {},
+        pendingMarkets: {},
+        orders: {},
+        marketLoadingIds: null,
+        loadingPage: null,
+        marketsPerPage: constants.MARKETS_PER_PAGE
+    };
     var expectedStatusSequence = ["ETHEREUM_STATUS_CONNECTED", "ETHEREUM_STATUS_NO_ACCOUNT"];
     expectedStatusSequence.reverse();
     var UPDATE_ETHEREUM_STATUS = flux.register.UPDATE_ETHEREUM_STATUS;

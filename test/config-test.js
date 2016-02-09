@@ -342,8 +342,64 @@ test("ConfigActions.initializeData", function (t) {
 });
 
 test("ConfigActions.connect", function (t) {
-    delete require.cache[require.resolve("./mock")];
-    var flux = require("./mock");
+    flux.stores.config.state = {
+        host: true,
+        currentAccount: null,
+        privateKey: null,
+        handle: null,
+        keystore: null,
+        debug: false,
+        loaded: false,
+        isHosted: isHosted,
+        percentLoaded: null,
+        filters: {},
+        isNewRegistration: false
+    };
+    flux.stores.network.state = {
+        peerCount: null,
+        blockNumber: null,
+        blocktime: null,
+        ether: null,
+        gasPrice: null,
+        ethereumStatus: null,
+        mining: null,
+        hashrate: null,
+        clientVersion: null,
+        networkId: null,
+        blockchainAge: null,
+        isMonitoringBlocks: false,
+        hasCheckedQuorum: false
+    };
+    flux.stores.market.state = {
+        markets: {},
+        pendingMarkets: {},
+        orders: {},
+        marketLoadingIds: null,
+        loadingPage: null,
+        marketsPerPage: constants.MARKETS_PER_PAGE
+    };
+    flux.stores.search.state = {
+        keywords: '',
+        sortBy: '',
+        reverseSort: null,
+        cleanKeywords: [],
+        markets: {},
+        results: {}
+    };
+    flux.stores.report.state = {
+        eventsToReport: {},
+        pendingReports: []
+    };
+    flux.stores.asset.state = {
+        cash: null,
+        reputation: null,
+        ether: null,
+        meanTradePrices: {}
+    };
+    flux.stores.branch.state = {
+        branches: [],
+        currentBranch: null
+    };
     var SET_IS_HOSTED = flux.register.SET_IS_HOSTED;
     var UPDATE_ETHEREUM_STATUS = flux.register.UPDATE_ETHEREUM_STATUS;
     var UPDATE_PERCENT_LOADED_SUCCESS = flux.register.UPDATE_PERCENT_LOADED_SUCCESS;
@@ -360,6 +416,7 @@ test("ConfigActions.connect", function (t) {
         t.equal(flux.store("config").getState().isHosted, isHosted, "config.state.isHosted == " + isHosted);
     };
     flux.register.UPDATE_ETHEREUM_STATUS = function (payload) {
+        console.log("STATUS:", payload);
         var expectedStatus = expectedStatusSequence.pop();
         t.equal(payload.ethereumStatus, expectedStatus, "payload.ethereumStatus == " + expectedStatus);
         UPDATE_ETHEREUM_STATUS(payload);

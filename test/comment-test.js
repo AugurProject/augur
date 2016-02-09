@@ -102,7 +102,6 @@ test("MarketActions.addComment", function (t) {
         FILTER_SETUP_COMPLETE(payload);
         t.pass("dispatch FILTER_SETUP_COMPLETE");
         var storedFilters = flux.store("config").getState().filters;
-        console.log("storedFilters:", storedFilters);
         t.equal(Object.keys(storedFilters).length, 4, "config.state has 4 filters");
         var filterId;
         for (var f in storedFilters) {
@@ -162,7 +161,6 @@ test("MarketActions.loadComments", function (t) {
     flux.stores.market.state.markets = markets;
     var UPDATE_MARKET_SUCCESS = flux.register.UPDATE_MARKET_SUCCESS;
     flux.register.UPDATE_MARKET_SUCCESS = function (payload) {
-        console.log(payload);
         var storedMarketInfo = clone(flux.store("market").getMarket(marketInfo.id));
         t.equal(payload.constructor, Object, "payload is an object");
         t.equal(payload.market.constructor, Object, "payload.market is an object");

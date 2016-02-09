@@ -90,7 +90,7 @@ test("marketInfo", function (t) {
     t.true(validator.isInt(rawInfo.endDate.toString()), "endDate is an integer");
     t.equal(rawInfo.participants.constructor, Object, "participants is an object");
     t.true(Object.keys(rawInfo.participants).length >= 0, "number of participants >= 0");
-    t.true(validator.isInt(rawInfo.numOutcomes), "numOutcomes is an integer");
+    t.true(validator.isInt(rawInfo.numOutcomes.toString()), "numOutcomes is an integer");
     t.true(rawInfo.numOutcomes > 1, "numOutcomes > 1");
     t.equal(rawInfo.outcomes.constructor, Array, "outcomes is an array");
     t.equal(rawInfo.numOutcomes, rawInfo.outcomes.length, "numOutcomes == outcomes.length");
