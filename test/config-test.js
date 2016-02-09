@@ -12,6 +12,7 @@ var geth = require("geth");
 var join = require("path").join;
 var constants = require("../app/libs/constants");
 var flux = require("./mock");
+var reset = require("./reset");
 
 var handle = "tinybike";
 var keystore = require("./account");
@@ -21,6 +22,83 @@ var address = keys.privateKeyToAddress(privateKey);
 flux.actions.config.signOut();
 flux.augur.connector.from = flux.augur.coinbase;
 flux.augur.connect();
+
+test("ConfigActions.connect", function (t) {
+    flux = reset(flux);
+    var SET_IS_HOSTED = flux.register.SET_IS_HOSTED;
+    var UPDATE_ETHEREUM_STATUS = flux.register.UPDATE_ETHEREUM_STATUS;
+    var UPDATE_PERCENT_LOADED_SUCCESS = flux.register.UPDATE_PERCENT_LOADED_SUCCESS;
+    var FILTER_SETUP_COMPLETE = flux.register.FILTER_SETUP_COMPLETE;
+    var FILTER_TEARDOWN_COMPLETE = flux.register.FILTER_TEARDOWN_COMPLETE;
+    var isHosted = true;
+    var expectedStatusSequence = ["ETHEREUM_STATUS_CONNECTED", "ETHEREUM_STATUS_NO_ACCOUNT"];
+    expectedStatusSequence.reverse();
+    flux.register.SET_IS_HOSTED = function (payload) {
+        t.equal(payload.constructor, Object, "payload is an object");
+        t.equal(payload.isHosted, isHosted, "payload.isHosted == " + isHosted);
+        SET_IS_HOSTED(payload);
+        t.pass("dispatch SET_IS_HOSTED");
+        t.equal(flux.store("config").getState().isHosted, isHosted, "config.state.isHosted == " + isHosted);
+    };
+    flux.register.UPDATE_ETHEREUM_STATUS = function (payload) {
+        console.log("STATUS:", payload);
+        var expectedStatus = expectedStatusSequence.pop();
+        t.equal(payload.ethereumStatus, expectedStatus, "payload.ethereumStatus == " + expectedStatus);
+        UPDATE_ETHEREUM_STATUS(payload);
+        t.pass("dispatch UPDATE_ETHEREUM_STATUS");
+        t.equal(flux.store("network").getState().ethereumStatus, expectedStatus, "network.state.ethereumStatus == " + expectedStatus);
+    };
+    flux.register.UPDATE_PERCENT_LOADED_SUCCESS = function (payload) {
+        t.true(payload.percentLoaded > 0, "payload.percentLoaded > 0");
+        t.true(payload.percentLoaded <= 100, "payload.percentLoaded <= 100");
+        flux.register.UPDATE_ETHEREUM_STATUS = UPDATE_ETHEREUM_STATUS;
+        flux.register.UPDATE_PERCENT_LOADED_SUCCESS = UPDATE_PERCENT_LOADED_SUCCESS;
+        UPDATE_PERCENT_LOADED_SUCCESS(payload);
+        t.pass("dispatch UPDATE_PERCENT_LOADED_SUCCESS");
+        t.equal(flux.store("config").getState().percentLoaded, payload.percentLoaded, "config.state.percentLoaded == payload.percentLoaded");
+    };
+    flux.register.FILTER_SETUP_COMPLETE = function (payload) {
+        t.true(flux.augur.filters.price_filter.id !== null, "price_filter.id is not null");
+        t.true(flux.augur.filters.contracts_filter.id !== null, "contracts_filter.id is not null");
+        t.true(flux.augur.filters.block_filter.id !== null, "block_filter.id is not null");
+        t.true(flux.augur.filters.creation_filter.id !== null, "creation_filter.id is not null");
+        t.true(flux.augur.filters.price_filter.heartbeat !== null, "price_filter.heartbeat is not null");
+        t.true(flux.augur.filters.contracts_filter.heartbeat !== null, "contracts_filter.heartbeat is not null");
+        t.true(flux.augur.filters.block_filter.heartbeat !== null, "block_filter.heartbeat is not null");
+        t.true(flux.augur.filters.creation_filter.heartbeat !== null, "creation_filter.heartbeat is not null");
+        FILTER_SETUP_COMPLETE(payload);
+        t.pass("dispatch FILTER_SETUP_COMPLETE");
+        var storedFilters = flux.store("config").getState().filters;
+        t.equal(Object.keys(storedFilters).length, 4, "config.state has 4 filters");
+        var filterId;
+        for (var f in storedFilters) {
+            if (!storedFilters.hasOwnProperty(f)) continue;
+            filterId = storedFilters[f].replace("0x", "");
+            t.true(valid.isHexadecimal(filterId), "config.state." + f + " has a valid hex ID");
+        }
+        flux.actions.config.teardownFilters();
+    };
+    flux.register.FILTER_TEARDOWN_COMPLETE = function () {
+        FILTER_TEARDOWN_COMPLETE();
+        t.pass("dispatch FILTER_TEARDOWN_COMPLETE");
+        t.equal(Object.keys(flux.store("config").getState().filters).length, 0, "config.state.filters == {}");
+        t.true(flux.augur.filters.price_filter.id === null, "price_filter.id is null");
+        t.true(flux.augur.filters.contracts_filter.id === null, "contracts_filter.id is null");
+        t.true(flux.augur.filters.block_filter.id === null, "block_filter.id is null");
+        t.true(flux.augur.filters.creation_filter.id === null, "creation_filter.id is null");
+        t.true(flux.augur.filters.price_filter.heartbeat === null, "price_filter.heartbeat is null");
+        t.true(flux.augur.filters.contracts_filter.heartbeat === null, "contracts_filter.heartbeat is null");
+        t.true(flux.augur.filters.block_filter.heartbeat === null, "block_filter.heartbeat is null");
+        t.true(flux.augur.filters.creation_filter.heartbeat === null, "creation_filter.heartbeat is null");
+        flux.register.SET_IS_HOSTED = SET_IS_HOSTED;
+        flux.register.UPDATE_ETHEREUM_STATUS = UPDATE_ETHEREUM_STATUS;
+        flux.register.UPDATE_PERCENT_LOADED_SUCCESS = UPDATE_PERCENT_LOADED_SUCCESS;
+        flux.register.FILTER_SETUP_COMPLETE = FILTER_SETUP_COMPLETE;
+        flux.register.FILTER_TEARDOWN_COMPLETE = FILTER_TEARDOWN_COMPLETE;
+        t.end();
+    };
+    flux.actions.config.connect(true);
+});
 
 test("ConfigActions.updateAccount", function (t) {
     t.plan(14);
@@ -232,9 +310,8 @@ test("ConfigActions.teardownFilters", function (t) {
 });
 
 test("ConfigActions.initializeData", function (t) {
+    flux = reset(flux);
     t.plan(51);
-    delete require.cache[require.resolve("./mock")];
-    var flux = require("./mock");
     var LOAD_BRANCHES_SUCCESS = flux.register.LOAD_BRANCHES_SUCCESS;
     var SET_CURRENT_BRANCH_SUCCESS = flux.register.SET_CURRENT_BRANCH_SUCCESS;
     var UPDATE_MARKET_SUCCESS = flux.register.UPDATE_MARKET_SUCCESS;
@@ -339,138 +416,4 @@ test("ConfigActions.initializeData", function (t) {
         t.end();
     };
     flux.actions.config.initializeData();
-});
-
-test("ConfigActions.connect", function (t) {
-    flux.stores.config.state = {
-        host: true,
-        currentAccount: null,
-        privateKey: null,
-        handle: null,
-        keystore: null,
-        debug: false,
-        loaded: false,
-        isHosted: isHosted,
-        percentLoaded: null,
-        filters: {},
-        isNewRegistration: false
-    };
-    flux.stores.network.state = {
-        peerCount: null,
-        blockNumber: null,
-        blocktime: null,
-        ether: null,
-        gasPrice: null,
-        ethereumStatus: null,
-        mining: null,
-        hashrate: null,
-        clientVersion: null,
-        networkId: null,
-        blockchainAge: null,
-        isMonitoringBlocks: false,
-        hasCheckedQuorum: false
-    };
-    flux.stores.market.state = {
-        markets: {},
-        pendingMarkets: {},
-        orders: {},
-        marketLoadingIds: null,
-        loadingPage: null,
-        marketsPerPage: constants.MARKETS_PER_PAGE
-    };
-    flux.stores.search.state = {
-        keywords: '',
-        sortBy: '',
-        reverseSort: null,
-        cleanKeywords: [],
-        markets: {},
-        results: {}
-    };
-    flux.stores.report.state = {
-        eventsToReport: {},
-        pendingReports: []
-    };
-    flux.stores.asset.state = {
-        cash: null,
-        reputation: null,
-        ether: null,
-        meanTradePrices: {}
-    };
-    flux.stores.branch.state = {
-        branches: [],
-        currentBranch: null
-    };
-    var SET_IS_HOSTED = flux.register.SET_IS_HOSTED;
-    var UPDATE_ETHEREUM_STATUS = flux.register.UPDATE_ETHEREUM_STATUS;
-    var UPDATE_PERCENT_LOADED_SUCCESS = flux.register.UPDATE_PERCENT_LOADED_SUCCESS;
-    var FILTER_SETUP_COMPLETE = flux.register.FILTER_SETUP_COMPLETE;
-    var FILTER_TEARDOWN_COMPLETE = flux.register.FILTER_TEARDOWN_COMPLETE;
-    var isHosted = true;
-    var expectedStatusSequence = ["ETHEREUM_STATUS_CONNECTED", "ETHEREUM_STATUS_NO_ACCOUNT"];
-    expectedStatusSequence.reverse();
-    flux.register.SET_IS_HOSTED = function (payload) {
-        t.equal(payload.constructor, Object, "payload is an object");
-        t.equal(payload.isHosted, isHosted, "payload.isHosted == " + isHosted);
-        SET_IS_HOSTED(payload);
-        t.pass("dispatch SET_IS_HOSTED");
-        t.equal(flux.store("config").getState().isHosted, isHosted, "config.state.isHosted == " + isHosted);
-    };
-    flux.register.UPDATE_ETHEREUM_STATUS = function (payload) {
-        console.log("STATUS:", payload);
-        var expectedStatus = expectedStatusSequence.pop();
-        t.equal(payload.ethereumStatus, expectedStatus, "payload.ethereumStatus == " + expectedStatus);
-        UPDATE_ETHEREUM_STATUS(payload);
-        t.pass("dispatch UPDATE_ETHEREUM_STATUS");
-        t.equal(flux.store("network").getState().ethereumStatus, expectedStatus, "network.state.ethereumStatus == " + expectedStatus);
-    };
-    flux.register.UPDATE_PERCENT_LOADED_SUCCESS = function (payload) {
-        t.true(payload.percentLoaded > 0, "payload.percentLoaded > 0");
-        t.true(payload.percentLoaded <= 100, "payload.percentLoaded <= 100");
-        flux.register.UPDATE_ETHEREUM_STATUS = UPDATE_ETHEREUM_STATUS;
-        flux.register.UPDATE_PERCENT_LOADED_SUCCESS = UPDATE_PERCENT_LOADED_SUCCESS;
-        UPDATE_PERCENT_LOADED_SUCCESS(payload);
-        t.pass("dispatch UPDATE_PERCENT_LOADED_SUCCESS");
-        t.equal(flux.store("config").getState().percentLoaded, payload.percentLoaded, "config.state.percentLoaded == payload.percentLoaded");
-    };
-    flux.register.FILTER_SETUP_COMPLETE = function (payload) {
-        t.true(flux.augur.filters.price_filter.id !== null, "price_filter.id is not null");
-        t.true(flux.augur.filters.contracts_filter.id !== null, "contracts_filter.id is not null");
-        t.true(flux.augur.filters.block_filter.id !== null, "block_filter.id is not null");
-        t.true(flux.augur.filters.creation_filter.id !== null, "creation_filter.id is not null");
-        t.true(flux.augur.filters.price_filter.heartbeat !== null, "price_filter.heartbeat is not null");
-        t.true(flux.augur.filters.contracts_filter.heartbeat !== null, "contracts_filter.heartbeat is not null");
-        t.true(flux.augur.filters.block_filter.heartbeat !== null, "block_filter.heartbeat is not null");
-        t.true(flux.augur.filters.creation_filter.heartbeat !== null, "creation_filter.heartbeat is not null");
-        FILTER_SETUP_COMPLETE(payload);
-        t.pass("dispatch FILTER_SETUP_COMPLETE");
-        var storedFilters = flux.store("config").getState().filters;
-        t.equal(Object.keys(storedFilters).length, 4, "config.state has 4 filters");
-        var filterId;
-        for (var f in storedFilters) {
-            if (!storedFilters.hasOwnProperty(f)) continue;
-            filterId = storedFilters[f].replace("0x", "");
-            t.true(valid.isHexadecimal(filterId), "config.state." + f + " has a valid hex ID");
-        }
-        flux.actions.config.teardownFilters();
-    };
-    flux.register.FILTER_TEARDOWN_COMPLETE = function () {
-        FILTER_TEARDOWN_COMPLETE();
-        t.pass("dispatch FILTER_TEARDOWN_COMPLETE");
-        t.equal(Object.keys(flux.store("config").getState().filters).length, 0, "config.state.filters == {}");
-        t.true(flux.augur.filters.price_filter.id === null, "price_filter.id is null");
-        t.true(flux.augur.filters.contracts_filter.id === null, "contracts_filter.id is null");
-        t.true(flux.augur.filters.block_filter.id === null, "block_filter.id is null");
-        t.true(flux.augur.filters.creation_filter.id === null, "creation_filter.id is null");
-        t.true(flux.augur.filters.price_filter.heartbeat === null, "price_filter.heartbeat is null");
-        t.true(flux.augur.filters.contracts_filter.heartbeat === null, "contracts_filter.heartbeat is null");
-        t.true(flux.augur.filters.block_filter.heartbeat === null, "block_filter.heartbeat is null");
-        t.true(flux.augur.filters.creation_filter.heartbeat === null, "creation_filter.heartbeat is null");
-        flux.register.SET_IS_HOSTED = SET_IS_HOSTED;
-        flux.register.UPDATE_ETHEREUM_STATUS = UPDATE_ETHEREUM_STATUS;
-        flux.register.UPDATE_PERCENT_LOADED_SUCCESS = UPDATE_PERCENT_LOADED_SUCCESS;
-        flux.register.FILTER_SETUP_COMPLETE = FILTER_SETUP_COMPLETE;
-        flux.register.FILTER_TEARDOWN_COMPLETE = FILTER_TEARDOWN_COMPLETE;
-        t.end();
-    };
-    flux.actions.config.connect(true);
 });
