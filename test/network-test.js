@@ -52,7 +52,7 @@ test("NetworkActions.initializeNetwork", function (t) {
     };
     var UPDATE_BLOCKCHAIN_AGE = flux.register.UPDATE_BLOCKCHAIN_AGE;
     flux.register.UPDATE_BLOCKCHAIN_AGE = function (payload) {
-        t.true(validator.isInt(payload.blockchainAge), "payload.blockchainAge is a (string) integer");
+        t.true(validator.isInt(payload.blockchainAge.toString()), "payload.blockchainAge is a (string) integer");
         UPDATE_BLOCKCHAIN_AGE(payload);
         t.equal(payload.blockchainAge, flux.store("network").getState().blockchainAge, "payload.blockchainAge == state.blockchainAge");
         flux.register.UPDATE_ETHEREUM_STATUS = UPDATE_ETHEREUM_STATUS;
@@ -66,7 +66,7 @@ test("NetworkActions.updateNetwork", function (t) {
     t.plan(2);
     var UPDATE_BLOCKCHAIN_AGE = flux.register.UPDATE_BLOCKCHAIN_AGE;
     flux.register.UPDATE_BLOCKCHAIN_AGE = function (payload) {
-        t.true(validator.isInt(payload.blockchainAge), "payload.blockchainAge is a (string) integer");
+        t.true(validator.isInt(payload.blockchainAge.toString()), "payload.blockchainAge is a (string) integer");
         UPDATE_BLOCKCHAIN_AGE(payload);
         t.equal(payload.blockchainAge, flux.store("network").getState().blockchainAge, "payload.blockchainAge == state.blockchainAge");
         flux.register.UPDATE_BLOCKCHAIN_AGE = UPDATE_BLOCKCHAIN_AGE;

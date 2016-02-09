@@ -164,7 +164,6 @@ test("MarketActions.loadMarkets", function (t) {
     var LOAD_MARKETS_SUCCESS = flux.register.LOAD_MARKETS_SUCCESS;
     var MARKETS_LOADING = flux.register.MARKETS_LOADING;
     flux.register.LOAD_MARKETS_SUCCESS = function (payload) {
-        console.log(marketInfo);
         t.equal(payload.constructor, Object, "payload is an object");
         t.equal(payload.markets.constructor, Object, "payload.markets is an object");
         t.equal(payload.markets[marketInfo.id].constructor, Object, "payload.markets has marketInfo.id field");
