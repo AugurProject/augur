@@ -249,7 +249,7 @@ test("ConfigActions.initializeData", function (t) {
     };
     flux.register.SET_CURRENT_BRANCH_SUCCESS = function (payload) {
         t.equal(payload.constructor, Object, "payload is an object");
-        t.true(valid.isInt(payload.periodLength), "payload.periodLength is an integer");
+        t.true(valid.isInt(payload.periodLength.toString()), "payload.periodLength is an integer");
         t.true(payload.periodLength > 0, "payload.periodLength > 0");
         SET_CURRENT_BRANCH_SUCCESS(payload);
         t.pass("dispatch SET_CURRENT_BRANCH_SUCCESS");
