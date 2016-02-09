@@ -18,6 +18,10 @@ var keystore = require("./account");
 var privateKey = keys.recover("tinypassword", keystore);
 var address = keys.privateKeyToAddress(privateKey);
 
+flux.actions.config.signOut();
+flux.augur.connector.from = flux.augur.coinbase;
+flux.augur.connect();
+
 test("ConfigActions.updateAccount", function (t) {
     t.plan(14);
     var UPDATE_ACCOUNT = flux.register.UPDATE_ACCOUNT;
@@ -229,6 +233,8 @@ test("ConfigActions.teardownFilters", function (t) {
 
 test("ConfigActions.initializeData", function (t) {
     t.plan(51);
+    delete require.cache[require.resolve("./mock")];
+    var flux = require("./mock");
     var LOAD_BRANCHES_SUCCESS = flux.register.LOAD_BRANCHES_SUCCESS;
     var SET_CURRENT_BRANCH_SUCCESS = flux.register.SET_CURRENT_BRANCH_SUCCESS;
     var UPDATE_MARKET_SUCCESS = flux.register.UPDATE_MARKET_SUCCESS;
@@ -336,6 +342,8 @@ test("ConfigActions.initializeData", function (t) {
 });
 
 test("ConfigActions.connect", function (t) {
+    delete require.cache[require.resolve("./mock")];
+    var flux = require("./mock");
     var SET_IS_HOSTED = flux.register.SET_IS_HOSTED;
     var UPDATE_ETHEREUM_STATUS = flux.register.UPDATE_ETHEREUM_STATUS;
     var UPDATE_PERCENT_LOADED_SUCCESS = flux.register.UPDATE_PERCENT_LOADED_SUCCESS;
