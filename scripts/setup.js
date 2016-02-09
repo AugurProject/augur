@@ -158,6 +158,8 @@ function faucets(geth) {
     var value = constants.FREEBIE * 0.25;
     var weiValue = abi.bignum(value).mul(constants.ETHER).toFixed();
     var initialCash = abi.bignum(augur.getCashBalance(coinbase));
+    delete require.cache[require.resolve("augur-contracts")];
+    augur.contracts = require("augur-contracts")[options.GETH_OPTIONS.flags.networkid];
     augur.reputationFaucet({
         branch: branch,
         onSent: augur.utils.noop,

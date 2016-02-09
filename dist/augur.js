@@ -2,63 +2,65 @@
 module.exports={
     "7": {
         "namereg": "0xc6d9d2cd449a754c494264e1809c50e34d64562b",
-        "buyAndSellShares": "0xf2f03c6e253be11ab35c07601c693b0e78cc8bc4",
-        "closeMarket": "0xa8525b6e4b36f3400aadbd599d2881f495123269",
-        "closeMarketEight": "0x1868bcbdd69812349944de008e72c55a4fb50291",
-        "closeMarketFour": "0x0126deea7ed475b4261cce5dd3efa21e35cdf17a",
-        "closeMarketOne": "0xd48a4ef613a93ac6606640273f8e4b9752e876cc",
-        "closeMarketTwo": "0x43d2d2cf722b72c6611384574a5b985e09a6026c",
-        "comments": "0x93c1c8b63743f8ff467331a0da3498d0fba17ec6",
-        "consensus": "0x96384c5f4d11972d519e7e8fa8a7aa8008526775",
-        "createBranch": "0xd36bc932117fe4fc98be0e48734c0e6b5e94590b",
-        "createEvent": "0x83dfd526b463fd4595444ccc7328365bbc5b0cce",
-        "createMarket": "0xc4249c21017b0c6c9edc8ede2a4452aca723678d",
-        "eventResolution": "0x2be5c8c3fa57487e398b05b05819f6ff2c43664d",
-        "faucets": "0x4d8eb59ec97e68ad381f1562fa20213476b9d259",
-        "insertionsort": "0x370ff7203a1263b8011f037d283e4628d5ab24b5",
-        "makeReports": "0xd16dab8cae757a5383ef949518883c2c583a43d9",
-        "orderBook": "0x3388ee0696227d128c9cae07012ee1bbb63f994c",
-        "quicksort": "0xe40839bb175bcbe5d1131ade8263911e556ee315",
-        "sendReputation": "0x4c9c37e985734f9c86a2ca886a213473c0eab20e",
-        "transferShares": "0x6a9e110ef71085f7cc31caee71ae7fb4dad22fa1",
-        "branches": "0xb777b0eefbe986ca0c511903e76bf21b1120599e",
-        "cash": "0xfe9676f369b47a5cba4bea20bd2280d81585983a",
-        "events": "0xf8d38aaa5f7b08de1d7feee20d136fa7f7e0eb91",
-        "expiringEvents": "0xeee51df37e22f4458ff25fb3b230cc34f8ad38e3",
-        "fxpFunctions": "0xe35f2d19fbebc0dcd1d2ac7d94aa443ab16a197f",
-        "info": "0x414c81818db9d4c92e57c3f16000614c055c388c",
-        "markets": "0x767b08e20f0c32ea4d2b7d9e46b8ffc69ac32996",
-        "reporting": "0xd29caf0311436f56ee2d6ab36d806dfad2ef8807"
+        "buyAndSellShares": "0xea9cb33592fb7b5c2b730fb4696b108f0ab3b6de",
+        "closeMarket": "0x0d7e621a192a10c3333a54ce916bdc8e0244c29d",
+        "closeMarketEight": "0xa85e41e0d2efe7d9c3df9ff01ce42cd2182e9a21",
+        "closeMarketFour": "0x3522016cab0793ebfd005c1808b23fba7fc1a0ac",
+        "closeMarketOne": "0xb15baeac7c5c18a4ae1b8dcd24b349b18888d5ca",
+        "closeMarketTwo": "0x1ebe7f6f3bf5ed9276373ecbef5a09cb11af2f0f",
+        "comments": "0x412d2febf4b4db21382d2b26e074e7b0c5780d5a",
+        "consensus": "0xc59537470f1cf45ca1725fac10d389ea9a739885",
+        "createBranch": "0x3bf0139b2281c5f13b6a43b3a3c020934ceb0897",
+        "createEvent": "0x4ff5e87b13be9df2cf83a81aa971797f8f50f278",
+        "createMarket": "0xb8c2e4ba3971463a93b068e8b70285d3a5185796",
+        "eventResolution": "0xca1b25164975d13fc0acb721f0bd88f51675a0a4",
+        "faucets": "0x072fbf825698f67eff41d145fab695f88272ad8f",
+        "insertionsort": "0x79fdce9ece6665c3b65d981772a9406a385fe4cf",
+        "makeReports": "0x33ee3ef2acb6c0aee2b2377ff70afff871555b1a",
+        "orderBook": "0xbb2fcf76c09c07caa55eb9d4d96729e17b66395d",
+        "quicksort": "0x99952d75c52b3bfd5ff961ecebd34bd4477f7d6b",
+        "ramble": "0xcce881fc29629e655df467f2ab55b4daa7c0785c",
+        "sendReputation": "0x378524f700f69ddf709a5fdb32d62ae9bd8f3100",
+        "transferShares": "0x12bd588d040fbaaf40a8a4aec30f07a74a8aa55b",
+        "branches": "0x6e099c37d8d538243ad64c829f895483f378d740",
+        "cash": "0x7863b30f2eaa3bd304dd6d3be014c77d7f9cd8c9",
+        "events": "0x8e884f6dd75c696024dd9739b9b6c5b6e5d0f01c",
+        "expiringEvents": "0xfe81801638055a798a5951561f568f7b4821fc04",
+        "fxpFunctions": "0x07cc411f282b977f2109df7087f4efd5286c5153",
+        "info": "0x76d8477190c55b4a504531c0413a001e2356437c",
+        "markets": "0x9ea3e29dc2f202f59a8b4c2964e851358c0f1569",
+        "reporting": "0xb707b070a020fdc959496dd9e598d9f03cc2d02f"
     },
     "10101": {
         "namereg": "0xc6d9d2cd449a754c494264e1809c50e34d64562b",
-        "buyAndSellShares": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3",
-        "closeMarket": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79",
-        "closeMarketEight": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d",
-        "closeMarketFour": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645",
-        "closeMarketOne": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7",
-        "closeMarketTwo": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7",
-        "comments": "0x5aec516b710957731986e8951ce092c59791dbb7",
-        "consensus": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df",
-        "createBranch": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2",
-        "createEvent": "0x81a7621e9a286d061b3dea040888a51c96693b1c",
-        "createMarket": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68",
-        "eventResolution": "0x3f3276849a878a176b2f02dd48a483e8182a49e4",
-        "faucets": "0x5069d883e31429c6dd1325d961f443007747c7a2",
-        "insertionsort": "0x708fdfe18bf28afe861a69e95419d183ace003eb",
-        "makeReports": "0x35152caa07026203a1add680771afb690d872d7d",
-        "orderBook": "0x8a4e2993a9972ee035453bb5674816fc3a698718",
+        "buyAndSellShares": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d",
+        "closeMarket": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68",
+        "closeMarketEight": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea",
+        "closeMarketFour": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3",
+        "closeMarketOne": "0x35152caa07026203a1add680771afb690d872d7d",
+        "closeMarketTwo": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645",
+        "comments": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2",
+        "consensus": "0x8c19616de17acdfbc933b99d9f529a689d22098f",
+        "createBranch": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893",
+        "createEvent": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd",
+        "createMarket": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df",
+        "eventResolution": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79",
+        "faucets": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e",
+        "insertionsort": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7",
+        "makeReports": "0x3f3276849a878a176b2f02dd48a483e8182a49e4",
+        "orderBook": "0x708fdfe18bf28afe861a69e95419d183ace003eb",
         "quicksort": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c",
-        "sendReputation": "0x8c19616de17acdfbc933b99d9f529a689d22098f",
-        "transferShares": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea",
-        "branches": "0x482c57abdce592b39434e3f619ffc3db62ab6d01",
-        "cash": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55",
-        "events": "0xe4714fcbdcdba49629bc408183ef40d120700b8d",
-        "expiringEvents": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667",
-        "fxpFunctions": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2",
-        "info": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e",
-        "markets": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd",
-        "reporting": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6"
+        "ramble": "0x8a4e2993a9972ee035453bb5674816fc3a698718",
+        "sendReputation": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2",
+        "transferShares": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7",
+        "branches": "0xe4714fcbdcdba49629bc408183ef40d120700b8d",
+        "cash": "0x482c57abdce592b39434e3f619ffc3db62ab6d01",
+        "events": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667",
+        "expiringEvents": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6",
+        "fxpFunctions": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55",
+        "info": "0x81a7621e9a286d061b3dea040888a51c96693b1c",
+        "markets": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7",
+        "reporting": "0x5069d883e31429c6dd1325d961f443007747c7a2"
     },
     "errors": {
         "0x": "no response or bad input",
@@ -69,9 +71,16 @@ module.exports={
             "-2": "cost updating error (did you enter a valid quantity?)"
         },
         "closeMarket": {
-            "-1": "market has no cash",
+            "0": "fail/trading not over yet/event not expired or closed already",
+            "-1": "Market has no cash anyway / already closed",
             "-2": "0 outcome",
-            "-3": "outcome indeterminable"
+            "-4": "Outcome .5 once, pushback and retry",
+            "-6": "bonded pushed forward market not ready to be resolved",
+            "-7": "event not reportable >.99"
+        },
+        "claimProceeds": {
+            "0": "reporting not done",
+            "-1": "trader doesn't exist"
         },
         "report": {
             "0": "could not set reporter ballot",
@@ -87,6 +96,17 @@ module.exports={
             "-5": ".99 market",
             "-6": "no markets"
         },
+        "submitReport": {
+            "-1": "has already reported",
+            "-2": "reporter (you) doesn't (don't) exist, or voting period over or hasn't started yet",
+            "-3": "hash doesn't match",
+            "-4": "no rep",
+            "-5": "bad report",
+            "-6": "hash not low enough",
+            "-8": "invalid event",
+            "-9": "already resolved",
+            "-10": "<24 hr left in period, too late to report, able to put up readj. bonds though"
+        },
         "checkReportValidity": {
             "-1": "report isn't long enough",
             "-2": "reporter doesn't exist, voting period is over, or voting period hasn't started yet"
@@ -101,13 +121,17 @@ module.exports={
         },
         "createEvent": {
             "0": "not enough money to pay fees or event already exists",
-            "-1": "we're either already past that date, branch doesn't exist, or description is bad"
+            "-1": "we're either already past that date, branch doesn't exist, or description is bad",
+            "-2": "max value < min value"
         },
         "createMarket": {
             "-1": "bad input or parent doesn't exist",
             "-2": "too many events",
             "-3": "too many outcomes",
-            "-4": "not enough money or market already exists"
+            "-4": "not enough money or market already exists",
+            "-5": "fee too low",
+            "-6": "duplicate events",
+            "-7": "event already expired"
         },
         "sendReputation": {
             "0": "not enough reputation",
@@ -116,15 +140,18 @@ module.exports={
         },
         "buyShares": {
             "-1": "invalid outcome or trading closed",
-            "-2": "entered a negative number of shares",
-            "-3": "not enough money",
-            "-4": "bad nonce/hash"
+            "-2": "entered a -amt of shares",
+            "-3": "not enough money / limit order too low",
+            "-4": "invalid outcome",
+            "-5": "bad commitment or no commitment",
+            "-6": "oracle only branch, no trading"
         },
         "sellShares": {
-            "-1": "invalid outcome or trading closed",
-            "-2": "entered a negative number of shares",
-            "-3": "not enough money",
-            "-4": "bad nonce/hash"
+            "-1": "invalid outcome, trading closed, or you haven't traded in this market",
+            "-2": "entered a -amt of shares",
+            "-3": "you own no shares / limit price too high",
+            "-5": "bad commitment or no commitment",
+            "-6": "oracle only branch, no trading"
         },
         "WHISPER_POST_FAILED": {
             "error": 65,
@@ -66935,7 +66962,6 @@ Augur.prototype.closeMarket = function (branch, market, onSent, onSuccess, onFai
  *******************/
 
 Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
-    var TRADER_FIELDS = 3;
     var EVENTS_FIELDS = 6;
     var OUTCOMES_FIELDS = 2;
     var WINNING_OUTCOMES_FIELDS = 8;
@@ -66977,6 +67003,7 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
         };
         info.outcomes = new Array(info.numOutcomes);
         info.events = new Array(info.numEvents);
+        var traderFields = info.numOutcomes + 1;
 
         // organize trader info
         for (var i = 0; i < info.numOutcomes; ++i) {
@@ -66984,16 +67011,17 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
         }
         var addr;
         for (i = 0; i < info.traderCount; ++i) {
-            addr = abi.format_address(rawInfo[i*TRADER_FIELDS + index]);
+            addr = abi.format_address(rawInfo[i*traderFields + index]);
             info.participants[addr] = i;
-            info.outcomes[0].shares[addr] = abi.unfix(rawInfo[i*TRADER_FIELDS + index + 1], "string");
-            info.outcomes[1].shares[addr] = abi.unfix(rawInfo[i*TRADER_FIELDS + index + 2], "string");
+            for (var j = 0; j < info.numOutcomes; ++j) {
+                info.outcomes[j].shares[addr] = abi.unfix(rawInfo[i*traderFields + index + j + 1], "string");
+            }
         }
 
         // organize event info
         // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
         var endDate;
-        index += info.traderCount*TRADER_FIELDS;
+        index += info.traderCount*traderFields;
         for (i = 0; i < info.numEvents; ++i) {
             endDate = abi.number(rawInfo[i*EVENTS_FIELDS + index + 1]);
             info.events[i] = {
@@ -100009,11 +100037,6 @@ function unique(arr) {
     return a;
 }
 
-var mu = new Decimal("0.5");
-var eps = new Decimal("0.001");
-var tolx = new Decimal(0);
-var maxiter = 100;
-
 function toDecimal(x) {
     if (x && x.constructor !== Decimal) {
         if (x.toFixed && x.toFixed.constructor === Function) x = x.toFixed();
@@ -100022,10 +100045,16 @@ function toDecimal(x) {
     return x;
 }
 
-module.exports = function (f, lower, upper) {
+module.exports = function (f, lower, upper, options) {
+    options = options || {};
+    var mu = toDecimal(options.mu) || new Decimal("0.5");
+    var eps = toDecimal(options.eps) || new Decimal("0.001");
+    var tolx = toDecimal(options.tolx) || new Decimal(0);
+    var maxiter = options.maxiter || 100;
+    var maxfev = options.maxfev || maxiter;
 
     // The default exit flag if exceeded number of iterations.
-    var info = 0;
+    var code = 0;
     var niter = 0;
     var nfev = 0;
 
@@ -100080,14 +100109,14 @@ module.exports = function (f, lower, upper) {
     var fe = fu;
     var mba = mu.times(b.minus(a));
     var c, df;
-    while (niter < maxiter && nfev < maxiter) {
+    while (niter < maxiter && nfev < maxfev) {
         switch (itype) {
         case 1:
             // The initial test.
             if (b.minus(a).lte(u.abs().times(eps).times(new Decimal(2)).plus(tolx).times(new Decimal(2)))) {
                 x = u;
                 fval = fu;
-                info = 1;
+                code = 1;
             } else {
                 if (fa.abs().lte(fb.abs().times(new Decimal(1000))) && (fb.abs().lte(fa.abs().times(new Decimal(1000))))) {
                     // Secant step.
@@ -100205,7 +100234,7 @@ module.exports = function (f, lower, upper) {
             a = b;
             fb = fc;
             fa = fb;
-            info = 1;
+            code = 1;
         } else {
             // This should never happen.
             throw new Error("zero point is not bracketed");
@@ -100219,7 +100248,7 @@ module.exports = function (f, lower, upper) {
             fu = fb;
         }
         if (b.minus(a).lte(u.abs().times(eps).times(new Decimal(2)).plus(tolx))) {
-            info = 1;
+            code = 1;
         }
 
         // Skip bisection step if successful reduction.
@@ -100233,7 +100262,7 @@ module.exports = function (f, lower, upper) {
     } // while
 
     // Check solution for a singularity by examining slope.
-    if (info === 1) {
+    if (code === 1) {
         var m;
         if (new Decimal(1e6).gt(new Decimal("0.5").dividedBy(eps.plus(tolx)))) {
             m = new Decimal(1e6);
@@ -100241,17 +100270,17 @@ module.exports = function (f, lower, upper) {
             m = new Decimal("0.5").dividedBy(eps.plus(tolx));
         }
         if (!b.minus(a).eq(new Decimal(0)) && fb.minus(fa).dividedBy(b.minus(a)).dividedBy(slope0).gt(m)) {
-            info = -5;
+            code = -5;
         }
     }
 
     return {
         solution: x,
         fval: fval,
-        info: info,
-        output: {
+        code: code,
+        diagnostic: {
             iterations: niter,
-            funcCount: nfev,
+            functionEvals: nfev,
             bracketx: [a, b],
             brackety: [fa, fb]
         }

@@ -79,6 +79,7 @@ var runtests = function (method, test) {
 };
 
 var testMarketInfo = function (info) {
+    console.log(JSON.stringify(info, null, 2));
     var r;
     assert(info.constructor === Array || info.constructor === Object);
     if (info.constructor === Array) {

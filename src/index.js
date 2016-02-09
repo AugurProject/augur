@@ -1051,7 +1051,6 @@ Augur.prototype.closeMarket = function (branch, market, onSent, onSuccess, onFai
  *******************/
 
 Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
-    var TRADER_FIELDS = 3;
     var EVENTS_FIELDS = 6;
     var OUTCOMES_FIELDS = 2;
     var WINNING_OUTCOMES_FIELDS = 8;
@@ -1093,6 +1092,7 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
         };
         info.outcomes = new Array(info.numOutcomes);
         info.events = new Array(info.numEvents);
+        var traderFields = info.numOutcomes + 1;
 
         // organize trader info
         for (var i = 0; i < info.numOutcomes; ++i) {
@@ -1100,16 +1100,17 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
         }
         var addr;
         for (i = 0; i < info.traderCount; ++i) {
-            addr = abi.format_address(rawInfo[i*TRADER_FIELDS + index]);
+            addr = abi.format_address(rawInfo[i*traderFields + index]);
             info.participants[addr] = i;
-            info.outcomes[0].shares[addr] = abi.unfix(rawInfo[i*TRADER_FIELDS + index + 1], "string");
-            info.outcomes[1].shares[addr] = abi.unfix(rawInfo[i*TRADER_FIELDS + index + 2], "string");
+            for (var j = 0; j < info.numOutcomes; ++j) {
+                info.outcomes[j].shares[addr] = abi.unfix(rawInfo[i*traderFields + index + j + 1], "string");
+            }
         }
 
         // organize event info
         // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
         var endDate;
-        index += info.traderCount*TRADER_FIELDS;
+        index += info.traderCount*traderFields;
         for (i = 0; i < info.numEvents; ++i) {
             endDate = abi.number(rawInfo[i*EVENTS_FIELDS + index + 1]);
             info.events[i] = {

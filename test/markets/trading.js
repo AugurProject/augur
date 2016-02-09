@@ -12,6 +12,7 @@ var chalk = require("chalk");
 var utils = require("../../src/utilities");
 var augurpath = "../../src/index";
 var augur = require(augurpath);
+var DEBUG = false;
 
 var marketInfo = {
     network: '10101',
@@ -434,6 +435,11 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                         var outcome = utils.select_random(outcomeRange);
                         var initialSharesPurchased = abi.number(info.outcomes[outcome - 1].outstandingShares);
                         var myInitialShares = abi.number(info.outcomes[outcome - 1].shares[augur.from]);
+                        if (DEBUG) {
+                            console.log("initialSharesPurchased:", initialSharesPurchased);
+                            console.log("myInitialShares:", myInitialShares);
+                        }
+                        if (!myInitialShares) myInitialShares = 0;
                         var initialBlock = parseInt(augur.rpc.blockNumber());
 
                         // buy shares
@@ -446,29 +452,43 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                             callbacks: {
                                 onMarketHash: function (marketHash) {
                                     assert(marketHash);
+                                    if (DEBUG) console.log("marketHash:", marketHash);
                                 },
                                 onCommitTradeSent: function (res) {
+                                    if (DEBUG) console.log("commitTradeSent:", res);
                                     assert(res.txHash);
                                     assert.strictEqual(res.callReturn, "1");
                                 },
                                 onCommitTradeSuccess: function (res) {
+                                    if (DEBUG) console.log("commitTradeSuccess:", res);
                                     assert(res.txHash);
                                     assert.strictEqual(res.callReturn, "1");
                                 },
                                 onCommitTradeFailed: done,
                                 onNextBlock: function (blockNumber) {
+                                    if (DEBUG) console.log("blockNumber:", blockNumber);
                                     assert.isAbove(blockNumber, initialBlock);
                                 },
                                 onTradeSent: function (res) {
+                                    if (DEBUG) console.log("tradeSent:", res);
                                     assert(res.txHash);
                                     assert.strictEqual(res.callReturn, "1");
                                 },
                                 onTradeSuccess: function (res) {
+                                    if (DEBUG) console.log("tradeSuccess:", res);
                                     assert(res.txHash);
                                     assert.strictEqual(res.callReturn, "1");
+                                    if (DEBUG) console.log("outcome:", outcome);
+                                    if (DEBUG) console.log("amount:", amount);
                                     var marketInfo = augur.getMarketInfo(found.market);
+                                    if (DEBUG) console.log("marketInfo after:", JSON.stringify(marketInfo, null, 2));
+                                    if (DEBUG) console.log("afterBuySharesPurchased (unprocessed):", marketInfo.outcomes[outcome - 1].outstandingShares);
                                     var afterBuySharesPurchased = abi.number(marketInfo.outcomes[outcome - 1].outstandingShares);
+                                    if (DEBUG) console.log("afterBuySharesPurchased:", afterBuySharesPurchased);
                                     var myAfterBuyShares = abi.number(marketInfo.outcomes[outcome - 1].shares[augur.from]);
+                                    if (DEBUG) console.log("myAfterBuyShares:", myAfterBuyShares);
+                                    if (DEBUG) console.log(afterBuySharesPurchased - initialSharesPurchased, amount);
+                                    if (DEBUG) console.log(myAfterBuyShares - myInitialShares, amount);
                                     assert.strictEqual(afterBuySharesPurchased - initialSharesPurchased, amount);
                                     assert.strictEqual(myAfterBuyShares - myInitialShares, amount);
 
