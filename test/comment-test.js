@@ -48,7 +48,7 @@ function parseMarketInfoSync(info) {
     return info;
 }
 
-var account = {address: flux.augur.from};
+var account = {address: flux.augur.rpc.coinbase()};
 var blockNumber = flux.augur.rpc.blockNumber();
 marketInfo = parseMarketInfoSync(marketInfo);
 
@@ -102,6 +102,7 @@ test("MarketActions.addComment", function (t) {
         FILTER_SETUP_COMPLETE(payload);
         t.pass("dispatch FILTER_SETUP_COMPLETE");
         var storedFilters = flux.store("config").getState().filters;
+        console.log("storedFilters:", storedFilters);
         t.equal(Object.keys(storedFilters).length, 4, "config.state has 4 filters");
         var filterId;
         for (var f in storedFilters) {
@@ -111,6 +112,7 @@ test("MarketActions.addComment", function (t) {
         }
         flux.actions.market.addComment(commentText, marketInfo.id, account);
     };
+    var checkbox = {update: false, saved: false};
     flux.register.UPDATE_MARKET_SUCCESS = function (payload) {
         var storedMarketInfo = flux.store("market").getMarket(marketInfo.id);
         t.equal(payload.market.constructor, Object, "payload.market is an object");
@@ -122,10 +124,6 @@ test("MarketActions.addComment", function (t) {
         var marketInfoWithComment = clone(storedMarketInfo);
         marketInfoWithComment.comments.push(comment);
         t.equal(JSON.stringify(payload.market), JSON.stringify(marketInfoWithComment), "verify payload");
-    };
-    flux.register.COMMENT_SAVED = function () {
-        COMMENT_SAVED();
-        t.pass("dispatch COMMENT_SAVED");
         flux.actions.config.teardownFilters();
     };
     flux.register.FILTER_TEARDOWN_COMPLETE = function () {
@@ -140,6 +138,10 @@ test("MarketActions.addComment", function (t) {
         t.true(flux.augur.filters.contracts_filter.heartbeat === null, "contracts_filter.heartbeat is null");
         t.true(flux.augur.filters.block_filter.heartbeat === null, "block_filter.heartbeat is null");
         t.true(flux.augur.filters.creation_filter.heartbeat === null, "creation_filter.heartbeat is null");
+    };
+    flux.register.COMMENT_SAVED = function (payload) {
+        COMMENT_SAVED(payload);
+        t.pass("dispatch COMMENT_SAVED");
         flux.register.SET_IS_HOSTED = SET_IS_HOSTED;
         flux.register.UPDATE_ETHEREUM_STATUS = UPDATE_ETHEREUM_STATUS;
         flux.register.UPDATE_PERCENT_LOADED_SUCCESS = UPDATE_PERCENT_LOADED_SUCCESS;
@@ -160,6 +162,7 @@ test("MarketActions.loadComments", function (t) {
     flux.stores.market.state.markets = markets;
     var UPDATE_MARKET_SUCCESS = flux.register.UPDATE_MARKET_SUCCESS;
     flux.register.UPDATE_MARKET_SUCCESS = function (payload) {
+        console.log(payload);
         var storedMarketInfo = clone(flux.store("market").getMarket(marketInfo.id));
         t.equal(payload.constructor, Object, "payload is an object");
         t.equal(payload.market.constructor, Object, "payload.market is an object");
@@ -168,14 +171,15 @@ test("MarketActions.loadComments", function (t) {
         t.equal(storedMarketInfo.constructor, Object, "storedMarketInfo is an object");
         t.equal(storedMarketInfo.comments, undefined, "storedMarketInfo.comments is undefined");
         storedMarketInfo.comments = clone(payload.market.comments);
-        delete storedMarketInfo.creationBlock;
-        delete storedMarketInfo.creationDate;
-        delete storedMarketInfo.events;
-        delete payload.market.events;
+        // delete storedMarketInfo.creationBlock;
+        // delete storedMarketInfo.creationDate;
+        // delete storedMarketInfo.events;
+        // delete payload.market.events;
         t.equal(JSON.stringify(payload.market), JSON.stringify(storedMarketInfo), "verify payload");
         flux.register.UPDATE_MARKET_SUCCESS = UPDATE_MARKET_SUCCESS;
         t.end();
     };
+    flux.augur.rpc.useHostedNode();
     flux.actions.market.loadComments(clone(marketInfo), {numComments: numComments});
 });
 
@@ -200,5 +204,5 @@ test("MarketActions.updateComments", function (t) {
         flux.register.UPDATE_MARKET_SUCCESS = UPDATE_MARKET_SUCCESS;
         t.end();
     };
-    flux.actions.market.updateComments(message, marketInfo.id, flux.augur.from);
+    flux.actions.market.updateComments(message, marketInfo.id, account);
 });
