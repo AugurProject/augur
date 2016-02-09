@@ -48,6 +48,8 @@ GLOBAL.balances = (GLOBAL.balance = function (account, branch) {
     return balances;
 })();
 
+log(chalk.cyan("Network"), chalk.green(augur.network_id));
+
 log(chalk.cyan("Balances:"));
 log("Cash:       " + chalk.green(balances.cash));
 log("Reputation: " + chalk.green(balances.reputation));

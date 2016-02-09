@@ -34,14 +34,13 @@ function Augur() {
     this.constants = require("./constants");
     this.db = require("./client/db");
     this.orders = require("./client/orders");
-    this.comments = ramble;
     this.ramble = ramble;
     this.connector = connector;
-    this.comments.connector = connector;
+    this.ramble.connector = connector;
     this.errors = contracts.errors;
 
     rpc.debug = this.options.debug;
-    this.comments.rpc = rpc;
+    this.ramble.rpc = rpc;
     this.rpc = rpc;
 
     // Branch IDs

@@ -182,9 +182,9 @@ module.exports = function () {
                                 augur.db.putPersistent(self.account);
                             }
 
-                            augur.comments.invoke = self.invoke;
-                            augur.comments.context = self;
-                            augur.comments.from = self.account.address;
+                            augur.ramble.invoke = self.invoke;
+                            augur.ramble.context = self;
+                            augur.ramble.from = self.account.address;
                             if (options.doNotFund) return cb.onRegistered(self.account);
                             self.fund(self.account, cb);
 
@@ -245,9 +245,9 @@ module.exports = function () {
                         if (options.persist) {
                             augur.db.putPersistent(self.account);
                         }
-                        augur.comments.invoke = self.invoke;
-                        augur.comments.context = self;
-                        augur.comments.from = self.account.address;
+                        augur.ramble.invoke = self.invoke;
+                        augur.ramble.context = self;
+                        augur.ramble.from = self.account.address;
                         cb(self.account);
 
                     // decryption failure: bad password
@@ -264,9 +264,9 @@ module.exports = function () {
             var account = augur.db.getPersistent();
             if (account && account.privateKey) {
                 this.account = account;
-                augur.comments.invoke = this.invoke;
-                augur.comments.context = this;
-                augur.comments.from = account.address;
+                augur.ramble.invoke = this.invoke;
+                augur.ramble.context = this;
+                augur.ramble.from = account.address;
             }
             return account;
         },
@@ -305,9 +305,9 @@ module.exports = function () {
 
         logout: function () {
             this.account = {};
-            augur.comments.invoke = null;
-            augur.comments.context = augur.rpc;
-            augur.comments.from = null;
+            augur.ramble.invoke = null;
+            augur.ramble.context = augur.rpc;
+            augur.ramble.from = null;
             augur.db.removePersistent();
             augur.rpc.clear();
         },
