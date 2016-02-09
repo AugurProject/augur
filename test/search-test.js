@@ -41,7 +41,8 @@ test("SearchActions.updateKeywords", function (t) {
         t.true(Object.keys(state.results).length, "search.state.results is not empty");
         flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
         flux.register.KEYWORDS_UPDATED = KEYWORDS_UPDATED;
-        t.end();
+        if (!flux.augur.filters.price_filter.id) return t.end();
+        flux.augur.filters.ignore(true, t.end);
     };
     var initialState = flux.store("search").getState();
     t.equal(initialState.keywords, "", "initial search.state.keywords == ''");
@@ -96,7 +97,8 @@ test("SearchActions.sortMarkets", function (t) {
                 prevMarket = clone(markets[m]);
             }
             flux.register.UPDATE_SORT_BY = UPDATE_SORT_BY;
-            t.end();
+            if (!flux.augur.filters.price_filter.id) return t.end();
+            flux.augur.filters.ignore(true, t.end);
         };
         flux.actions.search.sortMarkets(sortBy, 1);
     };

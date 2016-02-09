@@ -55,7 +55,8 @@ test("ReportActions.loadEventsToReport", function (t) {
         t.equal(payload.eventsToReport.constructor, Object, "payload.eventsToReport is an object");
         flux.register.UPDATE_EVENT_TO_REPORT = UPDATE_EVENT_TO_REPORT;
         flux.register.LOAD_EVENTS_TO_REPORT_SUCCESS = LOAD_EVENTS_TO_REPORT_SUCCESS;
-        t.end();
+        if (!flux.augur.filters.price_filter.id) return t.end();
+        flux.augur.filters.ignore(true, t.end);
     };
     flux.actions.report.loadEventsToReport();
 });
@@ -66,7 +67,8 @@ test("ReportActions.storeReports", function (t) {
     var storedReports = localStorage.getItem("REPORTS_STORAGE");
     t.pass("get REPORTS_STORAGE from localStorage");
     t.equal(storedReports, JSON.stringify(reports), "localStorage stored reports == stringify(reports)");
-    t.end();
+    if (!flux.augur.filters.price_filter.id) return t.end();
+    flux.augur.filters.ignore(true, t.end);
 });
 
 test("ReportActions.hashReport", function (t) {
@@ -80,7 +82,8 @@ test("ReportActions.hashReport", function (t) {
         UPDATE_PENDING_REPORTS(payload);
         t.pass("dispatch UPDATE_PENDING_REPORTS");
         flux.register.UPDATE_PENDING_REPORTS = UPDATE_PENDING_REPORTS;
-        t.end();
+        if (!flux.augur.filters.price_filter.id) return t.end();
+        flux.augur.filters.ignore(true, t.end);
     };
     flux.actions.report.hashReport(branch, reportPeriod, reports);
 });
@@ -109,7 +112,8 @@ test("ReportActions.submitQualifiedReports", function (t) {
         t.equal(reports.constructor, Object, "reports is an object");
         t.equal(reports.sentReports.constructor, Array, "reports.sentReports is an array");
         t.equal(reports.pendingReports.constructor, Array, "reports.pendingReports is an array");
-        t.end();
+        if (!flux.augur.filters.price_filter.id) return t.end();
+        flux.augur.filters.ignore(true, t.end);
     });
 });
 
@@ -124,7 +128,8 @@ test("ReportActions.loadPendingReports", function (t) {
         LOAD_PENDING_REPORTS_SUCCESS(payload);
         t.pass("dispatch LOAD_PENDING_REPORTS_SUCCESS");
         flux.register.LOAD_PENDING_REPORTS_SUCCESS = LOAD_PENDING_REPORTS_SUCCESS;
-        t.end();
+        if (!flux.augur.filters.price_filter.id) return t.end();
+        flux.augur.filters.ignore(true, t.end);
     };
     flux.stores.report.state.pendingReports = [{
         branchId: branch,

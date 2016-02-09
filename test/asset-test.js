@@ -43,7 +43,8 @@ test("AssetActions.loadMeanTradePrices", function (t) {
         var meanTradePrices = flux.store("asset").getState().meanTradePrices;
         t.deepEqual(payload.meanTradePrices, meanTradePrices, "payload.meanTradePrices == asset.state.meanTradePrices");
         flux.register.LOAD_MEAN_TRADE_PRICES_SUCCESS = LOAD_MEAN_TRADE_PRICES_SUCCESS;
-        t.end();
+        if (!flux.augur.filters.price_filter.id) return t.end();
+        flux.augur.filters.ignore(true, t.end);
     };
     flux.stores.config.state.currentAccount = "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b";
     flux.actions.asset.loadMeanTradePrices();
@@ -65,7 +66,8 @@ test("AssetActions.updateAssets", function (t) {
         flux.augur.connect();
         t.equal(flux.augur.coinbase, flux.augur.connector.from, "augur.coinbase == augur.connector.from");
         t.equal(flux.augur.coinbase, flux.augur.from, "augur.coinbase == augur.from");
-        t.end();
+        if (!flux.augur.filters.price_filter.id) return t.end();
+        flux.augur.filters.ignore(true, t.end);
     }
     var UPDATE_ASSETS = flux.register.UPDATE_ASSETS;
     flux.register.UPDATE_ASSETS = function (payload) {

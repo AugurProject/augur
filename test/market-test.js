@@ -125,7 +125,8 @@ test("marketInfo", function (t) {
         t.true(validator.isInt(event.numOutcomes.toString()), "event.numOutcomes is an integer");
         t.true(event.numOutcomes > 1, "event.numOutcomes > 1");
     }
-    t.end();
+    if (!flux.augur.filters.price_filter.id) return t.end();
+    flux.augur.filters.ignore(true, t.end);
 });
 
 test("MarketActions.parseMarketInfo", function (t) {
@@ -155,7 +156,8 @@ test("MarketActions.parseMarketInfo", function (t) {
             t.equal(parsedInfo.traderId, marketInfo.traderId, "check parsed marketInfo.traderId value");
         }
         t.true(moment.isMoment(parsedInfo.endDate), "parsed marketInfo.endDate is a Moment");
-        t.end();
+        if (!flux.augur.filters.price_filter.id) return t.end();
+        flux.augur.filters.ignore(true, t.end);
     });
 });
 
@@ -171,7 +173,8 @@ test("MarketActions.loadMarkets", function (t) {
         if (++dispatchCount > 1) {
             flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
             flux.register.MARKETS_LOADING = MARKETS_LOADING;
-            t.end();
+            if (!flux.augur.filters.price_filter.id) return t.end();
+            flux.augur.filters.ignore(true, t.end);
         }
     };
     flux.register.MARKETS_LOADING = function (payload) {
@@ -180,7 +183,8 @@ test("MarketActions.loadMarkets", function (t) {
         if (++dispatchCount > 1) {
             flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
             flux.register.MARKETS_LOADING = MARKETS_LOADING;
-            t.end();
+            if (!flux.augur.filters.price_filter.id) return t.end();
+            flux.augur.filters.ignore(true, t.end);
         }
     };
     flux.actions.market.loadMarkets();
@@ -197,7 +201,8 @@ test("MarketActions.loadMarket", function (t) {
         if (++dispatchCount > 1) {
             flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
             flux.register.MARKETS_LOADING = MARKETS_LOADING;
-            t.end();
+            if (!flux.augur.filters.price_filter.id) return t.end();
+            flux.augur.filters.ignore(true, t.end);
         }
     };
     flux.register.MARKETS_LOADING = function (payload) {
@@ -206,7 +211,8 @@ test("MarketActions.loadMarket", function (t) {
         if (++dispatchCount > 1) {
             flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
             flux.register.MARKETS_LOADING = MARKETS_LOADING;
-            t.end();
+            if (!flux.augur.filters.price_filter.id) return t.end();
+            flux.augur.filters.ignore(true, t.end);
         }
     };
     flux.actions.market.loadMarket(marketInfo.id);
@@ -219,7 +225,8 @@ test("MarketActions.initMarket", function (t) {
     t.equal(skeleton.id.constructor, BigNumber, "skeleton market ID is a BigNumber");
     t.equal(abi.number(skeleton.branchId), abi.number(marketInfo.branchId), "number(skeleton.branchId) == number(marketInfo.branchId)");
     t.false(skeleton.loaded, "skeleton is not loaded");
-    t.end();
+    if (!flux.augur.filters.price_filter.id) return t.end();
+    flux.augur.filters.ignore(true, t.end);
 });
 
 test("MarketActions.addPendingMarket", function (t) {
@@ -246,7 +253,8 @@ test("MarketActions.addPendingMarket", function (t) {
         complete.dispatch = true;
         if (complete.dispatch && complete.returned) {
             flux.register.ADD_PENDING_MARKET_SUCCESS = ADD_PENDING_MARKET_SUCCESS;
-            t.end();
+            if (!flux.augur.filters.price_filter.id) return t.end();
+            flux.augur.filters.ignore(true, t.end);
         }
     };
     var marketId = flux.actions.market.addPendingMarket(clone(newMarket));
@@ -254,7 +262,8 @@ test("MarketActions.addPendingMarket", function (t) {
     complete.returned = true;
     if (complete.dispatch && complete.returned) {
         flux.register.ADD_PENDING_MARKET_SUCCESS = ADD_PENDING_MARKET_SUCCESS;
-        t.end();
+        if (!flux.augur.filters.price_filter.id) return t.end();
+        flux.augur.filters.ignore(true, t.end);
     }
 });
 
@@ -269,7 +278,8 @@ test("MarketActions.deleteMarket", function (t) {
     flux.register.DELETE_MARKET_SUCCESS = function (payload) {
         t.equal(payload.marketId.constructor, String, "payload.marketId is a string");
         t.equal(payload.marketId, marketId, "payload.marketId == input marketId");
-        t.end();
+        if (!flux.augur.filters.price_filter.id) return t.end();
+        flux.augur.filters.ignore(true, t.end);
     };
     flux.actions.market.deleteMarket(marketId);
 });
@@ -292,7 +302,8 @@ test("MarketActions.tradeSucceeded", function (t) {
         if (++dispatchCount > 1) {
             flux.register.MARKETS_LOADING = MARKETS_LOADING;
             flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
-            t.end();
+            if (!flux.augur.filters.price_filter.id) return t.end();
+            flux.augur.filters.ignore(true, t.end);
         }
     };
     flux.register.LOAD_MARKETS_SUCCESS = function (payload) {
@@ -300,7 +311,8 @@ test("MarketActions.tradeSucceeded", function (t) {
         if (++dispatchCount > 1) {
             flux.register.MARKETS_LOADING = MARKETS_LOADING;
             flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
-            t.end();
+            if (!flux.augur.filters.price_filter.id) return t.end();
+            flux.augur.filters.ignore(true, t.end);
         }
     };
     flux.actions.market.tradeSucceeded(trade, marketId);
@@ -318,6 +330,7 @@ test("MarketActions.updatePendingShares", function (t) {
         t.true(payload.market.id.eq(marketInfo.id), "payload.market.id == input id");
         t.true(marketInfo.outcomes[outcomeId - 1].pendingShares.plus(new BigNumber(relativeShares)).eq(payload.market.outcomes[outcomeId - 1].pendingShares), "after outcome pendingShares == before outcome pendingShares + signed trade");
         flux.register.UPDATE_MARKET_SUCCESS = UPDATE_MARKET_SUCCESS;
+        if (!flux.augur.filters.price_filter.id) return t.end();
         flux.augur.filters.ignore(true, t.end);
     };
     flux.actions.market.updatePendingShares(clone(marketInfo), outcomeId, relativeShares);
@@ -354,7 +367,8 @@ test("MarketActions.updateOrders", function (t) {
         t.pass("dispatch UPDATE_ORDERS_SUCCESS");
         flux.register.UPDATE_ORDERS_SUCCESS = UPDATE_ORDERS_SUCCESS;
         t.deepEqual(flux.store("market").getOrders(), orders, "stores.market.orders == input orders");
-        t.end();
+        if (!flux.augur.filters.price_filter.id) return t.end();
+        flux.augur.filters.ignore(true, t.end);
     };
     flux.actions.market.updateOrders(orders);
 });

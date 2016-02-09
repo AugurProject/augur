@@ -6,14 +6,14 @@
 
 module.exports = function (flux) {
     if (!flux || !flux.stores) return flux;
+    if (flux.actions && flux.actions.config) {
+        flux.actions.config.signOut();
+    }
     if (flux.augur) {
         delete require.cache[require.resolve("augur.js")];
         flux.augur = require("augur.js");
         flux.augur.connect();
         flux.augur.rpc.balancer = false;
-    }
-    if (flux.actions && flux.actions.config) {
-        flux.actions.config.signOut();
     }
     if (flux.stores.config) {
         flux.stores.config.state = {

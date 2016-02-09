@@ -25,7 +25,8 @@ test("BranchActions.loadBranches", function (t) {
         t.pass("dispatch LOAD_BRANCHES_SUCCESS");
         t.deepEqual(payload.branches, flux.store("branch").getState().branches, "payload.branches == stored branches");
         flux.register.LOAD_BRANCHES_SUCCESS = LOAD_BRANCHES_SUCCESS;
-        t.end();
+        if (!flux.augur.filters.price_filter.id) return t.end();
+        flux.augur.filters.ignore(true, t.end);
     };
     flux.actions.branch.loadBranches();
 });
@@ -42,7 +43,8 @@ test("BranchActions.setCurrentBranch", function (t) {
         t.pass("dispatch SET_CURRENT_BRANCH_SUCCESS");
         t.deepEqual(payload, flux.store("branch").getCurrentBranch(), "payload == BranchStore.currentBranch");
         flux.register.SET_CURRENT_BRANCH_SUCCESS = SET_CURRENT_BRANCH_SUCCESS;
-        t.end();
+        if (!flux.augur.filters.price_filter.id) return t.end();
+        flux.augur.filters.ignore(true, t.end);
     };
     flux.actions.branch.setCurrentBranch(branchId);
 });
@@ -60,7 +62,8 @@ test("BranchActions.updateCurrentBranch", function (t) {
         t.true(payload.percentComplete >= 0, "payload.percentComplete >= 0");
         t.true(payload.percentComplete <= 100, "payload.percentComplete <= 100");
         flux.register.UPDATE_CURRENT_BRANCH_SUCCESS = UPDATE_CURRENT_BRANCH_SUCCESS;
-        t.end();
+        if (!flux.augur.filters.price_filter.id) return t.end();
+        flux.augur.filters.ignore(true, t.end);
     };
     flux.actions.branch.updateCurrentBranch();
 });

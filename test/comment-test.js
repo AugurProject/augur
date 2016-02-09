@@ -148,7 +148,8 @@ test("MarketActions.addComment", function (t) {
         flux.register.UPDATE_MARKET_SUCCESS = UPDATE_MARKET_SUCCESS;
         flux.register.COMMENT_SAVED = COMMENT_SAVED;
         flux.register.FILTER_TEARDOWN_COMPLETE = FILTER_TEARDOWN_COMPLETE;
-        t.end();
+        if (!flux.augur.filters.price_filter.id) return t.end();
+        flux.augur.filters.ignore(true, t.end);
     };
     flux.actions.config.connect(true);
 });
@@ -171,7 +172,8 @@ test("MarketActions.loadComments", function (t) {
         storedMarketInfo.comments = clone(payload.market.comments);
         t.equal(JSON.stringify(payload.market), JSON.stringify(storedMarketInfo), "verify payload");
         flux.register.UPDATE_MARKET_SUCCESS = UPDATE_MARKET_SUCCESS;
-        t.end();
+        if (!flux.augur.filters.price_filter.id) return t.end();
+        flux.augur.filters.ignore(true, t.end);
     };
     flux.augur.rpc.useHostedNode();
     flux.actions.market.loadComments(clone(marketInfo), {numComments: numComments});
@@ -207,7 +209,8 @@ test("MarketActions.updateComments", function (t) {
         flux.augur.connect();
         t.equal(flux.augur.coinbase, flux.augur.connector.from, "augur.coinbase == augur.connector.from");
         t.equal(flux.augur.coinbase, flux.augur.from, "augur.coinbase == augur.from");
-        t.end();
+        if (!flux.augur.filters.price_filter.id) return t.end();
+        flux.augur.filters.ignore(true, t.end);
     };
     flux.actions.market.updateComments(message, marketInfo.id, account);
 });

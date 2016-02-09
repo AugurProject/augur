@@ -27,6 +27,7 @@ test("NetworkActions.checkNetwork", function (t) {
         t.true(payload.percentLoaded <= 100, "payload.percentLoaded <= 100");
         flux.register.UPDATE_ETHEREUM_STATUS = UPDATE_ETHEREUM_STATUS;
         flux.register.UPDATE_PERCENT_LOADED_SUCCESS = UPDATE_PERCENT_LOADED_SUCCESS;
+        if (!flux.augur.filters.price_filter.id) return t.end();
         flux.augur.filters.ignore(true, t.end);
     };
     t.equal(flux.store("network").getState().ethereumStatus, null, "network state.ethereumStatus is null");
@@ -49,7 +50,8 @@ test("NetworkActions.initializeNetwork", function (t) {
         t.equal(payload.blockchainAge, flux.store("network").getState().blockchainAge, "payload.blockchainAge == state.blockchainAge");
         flux.register.UPDATE_ETHEREUM_STATUS = UPDATE_ETHEREUM_STATUS;
         flux.register.UPDATE_BLOCKCHAIN_AGE = UPDATE_BLOCKCHAIN_AGE;
-        t.end();
+        if (!flux.augur.filters.price_filter.id) return t.end();
+        flux.augur.filters.ignore(true, t.end);
     };
     flux.actions.network.initializeNetwork();
 });
@@ -62,6 +64,7 @@ test("NetworkActions.updateNetwork", function (t) {
         UPDATE_BLOCKCHAIN_AGE(payload);
         t.equal(payload.blockchainAge, flux.store("network").getState().blockchainAge, "payload.blockchainAge == state.blockchainAge");
         flux.register.UPDATE_BLOCKCHAIN_AGE = UPDATE_BLOCKCHAIN_AGE;
+        if (!flux.augur.filters.price_filter.id) return t.end();
         flux.augur.filters.ignore(true, t.end);
     };
     flux.actions.network.updateNetwork(true);

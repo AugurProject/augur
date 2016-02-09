@@ -95,7 +95,8 @@ test("ConfigActions.connect", function (t) {
         flux.register.UPDATE_PERCENT_LOADED_SUCCESS = UPDATE_PERCENT_LOADED_SUCCESS;
         flux.register.FILTER_SETUP_COMPLETE = FILTER_SETUP_COMPLETE;
         flux.register.FILTER_TEARDOWN_COMPLETE = FILTER_TEARDOWN_COMPLETE;
-        t.end();
+        if (!flux.augur.filters.price_filter.id) return t.end();
+        flux.augur.filters.ignore(true, t.end);
     };
     flux.actions.config.connect(true);
 });
@@ -121,7 +122,8 @@ test("ConfigActions.updateAccount", function (t) {
         t.deepEqual(flux.store("config").getKeystore(), payload.keystore, "ConfigStore.getKeystore() == payload.keystore");
         t.deepEqual(keystore, payload.keystore, "input keystore == payload.keystore");
         flux.register.UPDATE_ACCOUNT = UPDATE_ACCOUNT;
-        t.end();
+        if (!flux.augur.filters.price_filter.id) return t.end();
+        flux.augur.filters.ignore(true, t.end);
     };
     flux.actions.config.updateAccount({
         handle: handle,
@@ -168,7 +170,8 @@ test("ConfigActions.signOut", function (t) {
             t.equal(flux.augur.web.account.handle, undefined, "augur.web.account.handle == undefined");
             t.equal(flux.augur.web.account.keystore, undefined, "augur.web.account.keystore == undefined");
             flux.register.UPDATE_ACCOUNT = UPDATE_ACCOUNT;
-            t.end();
+            if (!flux.augur.filters.price_filter.id) return t.end();
+            flux.augur.filters.ignore(true, t.end);
         };
         flux.actions.config.signOut();
     };
@@ -193,7 +196,8 @@ test("ConfigActions.connectHosted", function (t) {
     flux.actions.config.connectHosted(function (host) {
         t.equal(host, flux.augur.rpc.nodes.hosted[0], "host == augur.rpc.nodes.hosted[0]");
         t.true(flux.augur.rpc.listening(), "augur.rpc.listening() is true");
-        t.end();
+        if (!flux.augur.filters.price_filter.id) return t.end();
+        flux.augur.filters.ignore(true, t.end);
     });
 });
 
@@ -208,7 +212,8 @@ test("ConfigActions.setIsHosted", function (t) {
         t.pass("dispatch SET_IS_HOSTED");
         t.equal(flux.store("config").getState().isHosted, isHosted, "config.state.isHosted == " + isHosted);
         flux.register.SET_IS_HOSTED = SET_IS_HOSTED;
-        t.end();
+        if (!flux.augur.filters.price_filter.id) return t.end();
+        flux.augur.filters.ignore(true, t.end);
     };
     flux.actions.config.setIsHosted(isHosted);
 });
@@ -224,7 +229,8 @@ test("ConfigActions.setHost", function (t) {
         t.pass("dispatch SET_HOST");
         t.equal(flux.store("config").getState().host, host, "config.state.host == " + host);
         flux.register.SET_HOST = SET_HOST;
-        t.end();
+        if (!flux.augur.filters.price_filter.id) return t.end();
+        flux.augur.filters.ignore(true, t.end);
     };
     flux.actions.config.setHost(host);
 });
@@ -240,7 +246,8 @@ test("ConfigActions.updatePercentLoaded", function (t) {
         t.pass("dispatch UPDATE_PERCENT_LOADED_SUCCESS");
         t.equal(flux.store("config").getState().percentLoaded, percentLoaded, "config.state.percentLoaded == " + percentLoaded);
         flux.register.UPDATE_PERCENT_LOADED_SUCCESS = UPDATE_PERCENT_LOADED_SUCCESS;
-        t.end();
+        if (!flux.augur.filters.price_filter.id) return t.end();
+        flux.augur.filters.ignore(true, t.end);
     };
     flux.actions.config.updatePercentLoaded(percentLoaded);
 });
@@ -283,7 +290,8 @@ test("ConfigActions.setupFilters", function (t) {
         flux.register.FILTER_TEARDOWN_COMPLETE = FILTER_TEARDOWN_COMPLETE;
         flux.register.FILTER_SETUP_COMPLETE = FILTER_SETUP_COMPLETE;
         flux.register.FILTER_TEARDOWN_COMPLETE = FILTER_TEARDOWN_COMPLETE;
-        t.end();
+        if (!flux.augur.filters.price_filter.id) return t.end();
+        flux.augur.filters.ignore(true, t.end);
     };
     flux.actions.config.setupFilters();
 });
@@ -304,7 +312,8 @@ test("ConfigActions.teardownFilters", function (t) {
         t.true(flux.augur.filters.block_filter.heartbeat === null, "block_filter.heartbeat is null");
         t.true(flux.augur.filters.creation_filter.heartbeat === null, "creation_filter.heartbeat is null");
         flux.register.FILTER_TEARDOWN_COMPLETE = FILTER_TEARDOWN_COMPLETE;
-        t.end();
+        if (!flux.augur.filters.price_filter.id) return t.end();
+        flux.augur.filters.ignore(true, t.end);
     };
     flux.actions.config.teardownFilters();
 });
@@ -413,7 +422,8 @@ test("ConfigActions.initializeData", function (t) {
         flux.register.LOAD_APPLICATION_DATA_SUCCESS = LOAD_APPLICATION_DATA_SUCCESS;
         flux.register.FILTER_SETUP_COMPLETE = FILTER_SETUP_COMPLETE;
         flux.register.FILTER_TEARDOWN_COMPLETE = FILTER_TEARDOWN_COMPLETE;
-        t.end();
+        if (!flux.augur.filters.price_filter.id) return t.end();
+        flux.augur.filters.ignore(true, t.end);
     };
     flux.actions.config.initializeData();
 });
