@@ -13,7 +13,7 @@ var constants = require("../app/libs/constants");
 var flux = require("./mock");
 var keystore = require("./account");
 
-var DEBUG = true;
+var DEBUG = false;
 var sink = "0x639b41c4d3d399894f2a57894278e1653e7cd24c";
 var amount = "1";
 var handle = "tinybike";
@@ -50,11 +50,21 @@ test("AssetActions.loadMeanTradePrices", function (t) {
 });
 
 test("AssetActions.updateAssets", function (t) {
-    t.plan(10);
+    t.plan(16);
     var assets = {reputation: null, cash: null, ether: null};
     function done() {
         flux.register.UPDATE_ASSETS = UPDATE_ASSETS;
         t.pass("reset flux.register");
+        flux.actions.config.signOut();
+        var configState = flux.store("config").getState();
+        t.equal(configState.currentAccount, null, "store.config.state.currentAccount == null");
+        t.equal(configState.privateKey, null, "store.config.state.privateKey == null");
+        t.equal(configState.handle, null, "store.config.state.handle == null");
+        t.equal(configState.keystore, null, "store.config.state.keystore == null");
+        flux.augur.connector.from = flux.augur.coinbase;
+        flux.augur.connect();
+        t.equal(flux.augur.coinbase, flux.augur.connector.from, "augur.coinbase == augur.connector.from");
+        t.equal(flux.augur.coinbase, flux.augur.from, "augur.coinbase == augur.from");
         t.end();
     }
     var UPDATE_ASSETS = flux.register.UPDATE_ASSETS;
