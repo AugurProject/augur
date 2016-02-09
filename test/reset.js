@@ -10,6 +10,10 @@ module.exports = function (flux) {
         delete require.cache[require.resolve("augur.js")];
         flux.augur = require("augur.js");
         flux.augur.connect();
+        flux.augur.rpc.balancer = false;
+    }
+    if (flux.actions && flux.actions.config) {
+        flux.actions.config.signOut();
     }
     if (flux.stores.config) {
         flux.stores.config.state = {

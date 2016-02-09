@@ -6,21 +6,10 @@
 "use strict";
 
 var test = require("tape");
-var abi = require("augur-abi");
-var BigNumber = require("bignumber.js");
-var clone = require("clone");
 var validator = require("validator");
-var moment = require("moment");
 var utils = require("../app/libs/utilities");
-var constants = require("../app/libs/constants");
 var flux = require("./mock");
 var reset = require("./reset");
-
-// var host = "http://127.0.0.1:8545";
-// flux.augur.rpc.setLocalNode(host);
-// flux.augur.connect(host);
-flux.augur.connect();
-flux.augur.rpc.balancer = false;
 
 test("NetworkActions.checkNetwork", function (t) {
     flux = reset(flux);

@@ -7,18 +7,15 @@
 
 var test = require("tape");
 var clone = require("clone");
-var constants = require("../app/libs/constants");
 var flux = require("./mock");
+var reset = require("./reset");
 
 var DEBUG = false;
-// var host = "http://127.0.0.1:8545";
-// flux.augur.rpc.setLocalNode(host);
-// flux.augur.connect(host);
+
 flux.augur.connect();
-flux.augur.connector.from = flux.augur.coinbase;
-flux.augur.sync(flux.augur.connector);
 
 test("SearchActions.updateKeywords", function (t) {
+    flux = reset(flux);
     var keyword = "be";
     var LOAD_MARKETS_SUCCESS = flux.register.LOAD_MARKETS_SUCCESS;
     var KEYWORDS_UPDATED = flux.register.KEYWORDS_UPDATED;
@@ -56,6 +53,7 @@ test("SearchActions.updateKeywords", function (t) {
 });
 
 test("SearchActions.sortMarkets", function (t) {
+    flux = reset(flux);
     var sortBy = "creationBlock";
     var LOAD_MARKETS_SUCCESS = flux.register.LOAD_MARKETS_SUCCESS;
     flux.register.LOAD_MARKETS_SUCCESS = function (payload) {
