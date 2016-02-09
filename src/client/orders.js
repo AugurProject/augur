@@ -80,14 +80,6 @@ module.exports = {
                     q_plus_n.times(exp_qi.plus(sum_exp_qj))
                 ).minus(cap)
             );
-        },
-
-        // First derivative of f
-        fprime: function (n, q, i, a, cap) {
-            var eps = new Decimal(n.dividedBy(new Decimal(10000)));
-            return this.f(n.plus(eps), q, i, a, cap)
-                .minus(this.f(n.minus(eps), q, i, a, cap))
-                .dividedBy(eps.times(new Decimal(2)));
         }
 
     },

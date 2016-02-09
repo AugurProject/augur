@@ -65090,14 +65090,6 @@ module.exports = {
                     q_plus_n.times(exp_qi.plus(sum_exp_qj))
                 ).minus(cap)
             );
-        },
-
-        // First derivative of f
-        fprime: function (n, q, i, a, cap) {
-            var eps = new Decimal(n.dividedBy(new Decimal(10000)));
-            return this.f(n.plus(eps), q, i, a, cap)
-                .minus(this.f(n.minus(eps), q, i, a, cap))
-                .dividedBy(eps.times(new Decimal(2)));
         }
 
     },
@@ -100203,7 +100195,7 @@ module.exports = function (f, lower, upper, options) {
 
         // Calculate new point.
         x = c;
-        fval = toDecimal(f(c));
+        fval = toDecimal(f(c.toString()));
         var fc = fval;
         niter++;
         nfev++;
@@ -100275,14 +100267,14 @@ module.exports = function (f, lower, upper, options) {
     }
 
     return {
-        solution: x,
-        fval: fval,
+        solution: x.toFixed(),
+        fval: fval.toString(),
         code: code,
         diagnostic: {
             iterations: niter,
             functionEvals: nfev,
-            bracketx: [a, b],
-            brackety: [fa, fb]
+            bracketx: [a.toFixed(), b.toFixed()],
+            brackety: [fa.toString(), fb.toString()]
         }
     };
 };

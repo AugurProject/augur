@@ -257,7 +257,9 @@ describe("checkOrder", function () {
     var test = function (t) {
         it("market=" + t.market + ", outcome=" + t.outcome + ", order=" + JSON.stringify(t.order), function (done) {
             this.timeout(augur.constants.TIMEOUT);
+            var Price = augur.price;
             var Trade = augur.trade;
+            augur.price = function (price) { return t.currentPrice; };
             augur.trade = function (trade) {
                 assert.strictEqual(trade.branch, t.order.branch);
                 assert.strictEqual(trade.market, t.order.market);
@@ -278,6 +280,7 @@ describe("checkOrder", function () {
             var orderId = orders[t.order.market][t.order.outcome][numOrders-1].id;
             augur.getMarketInfo(t.market, function (info) {
                 augur.checkOrder(info, t.outcome, t.order, function () {
+                    augur.price = Price;
                     augur.trade = Trade;
                     done();
                 });
@@ -285,7 +288,7 @@ describe("checkOrder", function () {
         });
     };
     test({
-        currentPrice: new BigNumber("0.49"),
+        currentPrice: "0.49",
         market: marketId,
         outcome: 1,
         order: {
@@ -294,13 +297,13 @@ describe("checkOrder", function () {
             branch: augur.branches.dev,
             outcome: 1,
             price: new BigNumber("0.5"),
-            amount: new BigNumber("-1.2"),
+            amount: new BigNumber("1.2"),
             expiration: 0,
             cap: 0
         }
     });
     test({
-        currentPrice: new BigNumber("0.51"),
+        currentPrice: "0.51",
         market: marketId,
         outcome: 1,
         order: {
