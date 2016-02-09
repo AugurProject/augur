@@ -60,7 +60,8 @@ test("ReportActions.loadEventsToReport", function (t) {
     flux.actions.report.loadEventsToReport();
 });
 
-test("ReportActions.storeReports", function (t) {            
+test("ReportActions.storeReports", function (t) {
+    t.plan(2);    
     flux.actions.report.storeReports(reports);
     var storedReports = localStorage.getItem("REPORTS_STORAGE");
     t.pass("get REPORTS_STORAGE from localStorage");
@@ -68,74 +69,20 @@ test("ReportActions.storeReports", function (t) {
     t.end();
 });
 
-// test("ReportActions.hashReport", function (t) {
-//     var branch = 1010101;
-//     var UPDATE_PENDING_REPORTS = flux.register.UPDATE_PENDING_REPORTS;
-//     flux.register.UPDATE_PENDING_REPORTS = function (payload) {
-//         if (DEBUG) console.log("UPDATE_PENDING_REPORTS:", payload);
-//         t.equal(payload.constructor, Object, "payload is an object");
-//         t.equal(payload.pendingReports.constructor, Array, "payload.pendingReports is an array");
-//         UPDATE_PENDING_REPORTS(payload);
-//         t.pass("dispatch UPDATE_PENDING_REPORTS");
-//         flux.register.UPDATE_PENDING_REPORTS = UPDATE_PENDING_REPORTS;
-//     };
-//     flux.actions.report.hashReport(branch, reportPeriod, reports, function (err, res) {
-//         flux.augur.rpc.blockNumber(function (blockNumber) {
-//             t.true(valid.isHexadecimal(blockNumber.replace("0x", "")), "blockNumber is valid hex");
-//             t.false(blockNumber.error, "blockNumber is not an error object");
-//             flux.augur.getPeriodLength(branch, function (periodLength) {
-//                 t.true(valid.isInt(periodLength), "periodLength is a (string) integer");
-//                 t.false(periodLength.error, "periodLength is not an error object");
-//                 if (blockNumber % periodLength < periodLength / 2) {
-//                     t.pass("within hash submitting timeframe");
-//                     t.equal(err, null, "err == null");
-//                     t.true(res, "hashReport response is truthy");
-//                 } else {
-//                     t.pass("outside hash submitting timeframe");
-//                     t.equal(res, undefined, "hashReport response == undefined");
-//                     t.equal(err.error, "-2", "hashReport error code == '-2'");
-//                     t.equal(err.tx.constructor, Object, "err.tx is an object");
-//                 }
-//                 t.end();
-//             });
-//         });
-//     });
-// });
-
-test("ReportActions.submitReport", function (t) {
-    var bundledReport = {
-        branchId: branch,
-        decisions: reports,
-        reportPeriod: reportPeriod,
-        salt: salt
+test("ReportActions.hashReport", function (t) {
+    t.plan(3);
+    var branch = 1010101;
+    var UPDATE_PENDING_REPORTS = flux.register.UPDATE_PENDING_REPORTS;
+    flux.register.UPDATE_PENDING_REPORTS = function (payload) {
+        if (DEBUG) console.log("UPDATE_PENDING_REPORTS:", payload);
+        t.equal(payload.constructor, Object, "payload is an object");
+        t.equal(payload.pendingReports.constructor, Array, "payload.pendingReports is an array");
+        UPDATE_PENDING_REPORTS(payload);
+        t.pass("dispatch UPDATE_PENDING_REPORTS");
+        flux.register.UPDATE_PENDING_REPORTS = UPDATE_PENDING_REPORTS;
+        t.end();
     };
-    flux.stores.report.state.pendingReports = [bundledReport];
-    var reportHash = abi.unfork(flux.augur.hashReport(reports, salt), true);
-    flux.augur.setReportHash({
-        branch,
-        reportPeriod,
-        reportHash,
-        reporter: flux.augur.from,
-        onSent: function (r) {
-            // console.log("setReportHash sent:", r);
-        },
-        onSuccess: function (r) {
-            // console.log("setReportHash success:", r);
-            flux.augur.getReportHash(branch, reportPeriod, flux.augur.from, function (hash) {
-                t.false(hash.error, "getReportHash() is not an error object");
-                t.equal(abi.unfork(hash), reportHash, "hash == hashReport(reports, salt)");
-                flux.actions.report.submitReport(bundledReport, function (err, res) {
-                    t.pass("submitted report: " + JSON.stringify(bundledReport));
-                    t.equal(err, null, "err == null");
-                    t.true(res, "submitReport response is truthy");
-                    t.end();
-                });
-            });
-        },
-        onFailed: function (err) {
-            t.end(new Error(JSON.stringify(err, null, 2)));
-        }
-    });
+    flux.actions.report.hashReport(branch, reportPeriod, reports);
 });
 
 test("ReportActions.submitQualifiedReports", function (t) {
