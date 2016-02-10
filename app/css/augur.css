@@ -1020,6 +1020,10 @@ a.market-pane:hover {
     margin-bottom: 5px;
 }
 
+.indent {
+    padding-left: 20px;
+}
+
 /* modals */
 
 .modal-body h4 {

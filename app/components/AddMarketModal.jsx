@@ -46,7 +46,9 @@ var AddMarketModal = React.createClass({
       numResources: 0,
       resources: [],
       numTags: 0,
-      tags: []
+      tags: [],
+      expirySource: "generic",
+      expirySourceURL: ""
     };
   },
 
@@ -140,6 +142,14 @@ var AddMarketModal = React.createClass({
     this.setState({maturationDate: event.target.value});
   },
 
+  onChangeExpirySource: function (event) {
+    this.setState({expirySource: event.target.value});
+  },
+
+  onChangeExpirySourceURL: function (event) {
+    this.setState({expirySourceURL: event.target.value});
+  },
+
   onNext: function(event) {
     if (this.validatePage(this.state.pageNumber)) {
       var newPageNumber = this.state.pageNumber + 1;
@@ -190,6 +200,7 @@ var AddMarketModal = React.createClass({
       initialLiquidity: this.state.marketInvestment,
       tradingFee: new BigNumber(this.state.tradingFee / 100)
     };
+    var source = (this.state.expirySource === "specific") ? this.state.expirySourceURL : null;
     var pendingId = flux.actions.market.addPendingMarket(newMarketParams);
     var branchId = flux.store("branch").getCurrentBranch().id;
     var block = flux.store("network").getState().blockNumber;
@@ -224,7 +235,8 @@ var AddMarketModal = React.createClass({
                 image: self.state.imageDataURL,
                 details: self.state.detailsText,
                 tags: self.state.tags,
-                links: self.state.resources
+                links: self.state.resources,
+                source: source
               }, function (res) {
                 console.log("ramble.addMetadata sent:", res);
               }, function (res) {
@@ -312,7 +324,7 @@ var AddMarketModal = React.createClass({
     if (this.state.pageNumber === 2) {
 
       var cashLeft = this.state.cash - this.state.marketInvestment;
-      var tradinfFeeHelp = this.state.tradingFeeError ? this.state.tradingFeeError : null;
+      var tradingFeeHelp = this.state.tradingFeeError ? this.state.tradingFeeError : null;
       var tradingFeeHelpStyle = this.state.tradingFeeError ? 'error' : null;
       var marketInvestmentHelp = this.state.marketInvestmentError ? this.state.marketInvestmentError : 'CASH: '+ cashLeft.toFixed(5);
       var marketInvestmentHelpStyle = this.state.marketInvestmentError ? 'error' : null;
@@ -326,7 +338,7 @@ var AddMarketModal = React.createClass({
               type='text'
               label='Trading fee'
               labelClassName='col-xs-3'
-              help={ tradinfFeeHelp }
+              help={ tradingFeeHelp }
               bsStyle={ tradingFeeHelpStyle }
               wrapperClassName='col-xs-3'
               addonAfter='%'
@@ -396,7 +408,7 @@ var AddMarketModal = React.createClass({
 
     } else if (this.state.pageNumber === 4) {
 
-      subheading = "Bells & whistles (optional)";
+      subheading = "Additional market information";
 
       var numTags = this.state.numTags;
       var tags = new Array(numTags);
@@ -431,28 +443,70 @@ var AddMarketModal = React.createClass({
       page = (
         <div>
           <h5>{subheading}</h5>
-          <p>Enter a more detailed description of your market below.  If your question is simple or self-explanatory, feel free to leave this blank!</p>
-          <Input
-            type="textarea"
-            bsStyle={inputStyle}
-            value={this.state.detailsText}
-            placeholder="Optional: enter a more detailed description of your market."
-            onChange={this.onChangeDetailsText} />
-          <p>Upload an image to be displayed with your market.</p>
-          <Input
-            type="file"
-            id="imageFile"
-            onChange={this.onUploadImageFile} />
-          <p>Enter up to three tags (categories) for your market.  Examples: politics, science, sports, weather, etc.</p>
-          {tags}
-          <Button bsStyle="default" onClick={this.onAddTag}>
-            Add tag
-          </Button>
-          <p>Are there other resources people might find helpful in using and/or understanding your market?  For example, if your market is on who will win an election, you could include a link to the homepage of each candidate, or links to details of their positions.</p>
-          {resources}
-          <Button bsStyle="default" onClick={this.onAddResource}>
-            Add resource
-          </Button>
+          <div className="form-group row">
+            <div className="col-sm-12">
+              <p>What information source will be used to determine the outcome of this event? (required)</p>
+            </div>
+            <Input
+              value="generic"
+              type="radio"
+              checked={this.state.expirySource === "generic"}
+              label="Outcome will be covered by local, national or international news media."
+              labelClassName="col-sm-10"
+              wrapperClassName="col-sm-12"
+              onChange={this.onChangeExpirySource} />
+            <Input
+              value="specific"
+              type="radio"
+              checked={this.state.expirySource === "specific"}
+              label="Outcome will be detailed on a specific website."
+              labelClassName="col-sm-10"
+              wrapperClassName="col-sm-12"
+              onChange={this.onChangeExpirySource} />
+            <div className="col-sm-12 indent">
+              <p>Please enter the full URL of the website - which must be publicly available:</p>
+              <Input
+                disabled={this.state.expirySource === "generic"}
+                type="text"
+                value={this.state.expirySourceURL}
+                placeholder="http://www.boxofficemojo.com"
+                onChange={this.onChangeExpirySourceURL} />
+            </div>
+          </div>
+          <div className="form-group row">
+            <div className="col-sm-12">
+              <p>Does your question need further explanation? (optional)</p>
+              <Input
+                type="textarea"
+                bsStyle={inputStyle}
+                value={this.state.detailsText}
+                placeholder="Optional: enter a more detailed description of your market."
+                onChange={this.onChangeDetailsText} />
+            </div>
+          </div>
+          <div className="form-group row">
+            <div className="col-sm-12">
+              <p>Upload an image to be displayed with your market.</p>
+              <Input
+                type="file"
+                id="imageFile"
+                onChange={this.onUploadImageFile} />
+              <p>Enter up to three tags (categories) for your market.  Examples: politics, science, sports, weather, etc.</p>
+              {tags}
+              <Button bsStyle="default" onClick={this.onAddTag}>
+                Add tag
+              </Button>
+            </div>
+          </div>
+          <div className="form-group row">
+            <div className="col-sm-12">
+              <p>Are there any helpful links you want to add? (optional)  For example, if your question is about an election you could link to polling information or the webpages of candidates.</p>
+              {resources}
+              <Button bsStyle="default" onClick={this.onAddResource}>
+                Add resource
+              </Button>
+            </div>
+          </div>
         </div>
       );
       footer = (
