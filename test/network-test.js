@@ -26,12 +26,10 @@ test("NetworkActions.checkNetwork", function (t) {
     flux.register.UPDATE_PERCENT_LOADED_SUCCESS = function (payload) {
         t.true(payload.percentLoaded > 0, "payload.percentLoaded > 0");
         t.true(payload.percentLoaded <= 100, "payload.percentLoaded <= 100");
-        flux.register.UPDATE_ETHEREUM_STATUS = UPDATE_ETHEREUM_STATUS;
-        flux.register.UPDATE_PERCENT_LOADED_SUCCESS = UPDATE_PERCENT_LOADED_SUCCESS;
         if (!complete) {
             complete = true;
             flux.register.UPDATE_ETHEREUM_STATUS = UPDATE_ETHEREUM_STATUS;
-            flux.register.UPDATE_BLOCKCHAIN_AGE = UPDATE_BLOCKCHAIN_AGE;
+            flux.register.UPDATE_PERCENT_LOADED_SUCCESS = UPDATE_PERCENT_LOADED_SUCCESS;
             if (!flux.augur.filters.price_filter.id) return t.end();
             flux.augur.filters.ignore(true, t.end);
         }
