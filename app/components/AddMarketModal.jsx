@@ -556,7 +556,7 @@ var AddMarketModal = React.createClass({
             </div>
           </TabPanel>
           <TabPanel>
-            <div>
+            <div className="col-sm-12">
               <p>Enter a <b>multiple choice question</b> for the market to trade on.  This question should be easily verifiable and have an expiring date in the future.</p>
               <Input
                 type='textarea'
@@ -566,6 +566,8 @@ var AddMarketModal = React.createClass({
                 placeholder="Which political party's candidate will win the 2016 U.S. Presidential Election?  Choices: Democratic, Republican, Libertarian, other"
                 onChange={ this.onChangeMarketText } />
               <span className="text-count pull-right">{ this.state.marketTextCount }</span>
+            </div>
+            <div className="col-sm-12">
               <p>Choices:</p>
               { choices }
               <Button bsStyle='default' onClick={ this.onAddAnswer }>
@@ -574,7 +576,7 @@ var AddMarketModal = React.createClass({
             </div>
           </TabPanel>
           <TabPanel>
-            <div>
+            <div className="col-sm-12">
               <p>Enter a <b>numerical question</b> for the market to trade on.  This question should be easily verifiable and have an expiring date in the future.</p>
               <p>Answers to numerical questions can be anywhere within a range of numbers.  For example, "What will the high temperature be in San Francisco, California, on July 1, 2016?" is a numerical question.</p>
               <Input
@@ -585,6 +587,8 @@ var AddMarketModal = React.createClass({
                 placeholder="What will the high temperature (in degrees Fahrenheit) be in San Francisco, California, on July 1, 2016?"
                 onChange={ this.onChangeMarketText } />
               <span className="text-count pull-right">{ this.state.marketTextCount }</span>
+            </div>
+            <div className="col-sm-12">
               <p>What are the minimum and maximum allowed answers to your question?</p>
               Minimum:
               <Input
