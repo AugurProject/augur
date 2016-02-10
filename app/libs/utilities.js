@@ -7,6 +7,7 @@ var constants = require("./constants");
 
 var NO = 1;
 var YES = 2;
+var warned = {};
 
 module.exports = {
 
@@ -66,10 +67,16 @@ module.exports = {
         if (choices && choices.constructor === Array && choices.length > id - 1) {
             return {type: "categorical", outcome: choices[id - 1].trim()};
         }
-        console.warn("Market", market._id, "has", market.numOutcomes, "outcomes, but only", choices.length, "choices found.  Using outcome ID", id, "instead of outcome text.");
+        if (!warned[market._id]) {
+          warned[market._id] = true;
+          console.warn("Market", market._id, "has", market.numOutcomes, "outcomes, but only", choices.length, "choices found.  Using outcome ID", id, "instead of outcome text.");
+        }
         return {type: "categorical", outcome: id};
       }
-      console.warn("Choices not found for market", market._id, ".  Using outcome ID", id, "instead of outcome text.");
+      if (!warned[market._id]) {
+        warned[market._id] = true;
+        console.warn("Choices not found for market", market._id, ".  Using outcome ID", id, "instead of outcome text.");
+      }
       return {type: "categorical", outcome: id};
       break;
     case "scalar":
