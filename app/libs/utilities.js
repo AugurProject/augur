@@ -62,19 +62,15 @@ module.exports = {
     case "categorical":
       if (market && market.description && market.description.indexOf("Choices:") > -1) {
         var desc = market.description.split("Choices:");
-        try {
-          return {
-            type: "categorical",
-            outcome: desc[desc.length - 1].split(",")[id - 1].trim()
-          };
-        } catch (exc) {
-          console.error("categorical parse error:", market.description, exc);
+        var choices = desc[desc.length - 1].split(",");
+        if (choices && choices.constructor === Array && choices.length > id - 1) {
+            return {type: "categorical", outcome: choices[id - 1].trim()};
         }
+        console.warn("Market", market._id, "has", market.numOutcomes, "outcomes, but only", choices.length, "choices found.  Using outcome ID", id, "instead of outcome text.");
+        return {type: "categorical", outcome: id};
       }
-      return {
-        type: "categorical",
-        outcome: id
-      };
+      console.warn("Choices not found for market", market._id, ".  Using outcome ID", id, "instead of outcome text.");
+      return {type: "categorical", outcome: id};
       break;
     case "scalar":
       if (id === NO) return {type: "scalar", outcome: "⇩"};

@@ -4,8 +4,7 @@ var FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 var StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
 var moment = require("moment");
 let Link = require("react-router/lib/components/Link");
-
-var CloseMarketTrigger = require("./CloseMarket").CloseMarketTrigger;
+var CloseMarketModal = require("./CloseMarket");
 
 var Markets = React.createClass({
 
@@ -41,6 +40,10 @@ var MarketPane = React.createClass({
     return Boolean(this.props.currentBranch != nextProps.currentBranch ||
       (nextProps.currentBranch &&
        this.props.currentBranch.currentPeriod != nextProps.currentBranch.currentPeriod));
+  },
+
+  onCloseMarket: function (event) {
+    console.log("onCloseMarket:", event.target.value);
   },
 
   render: function() {
@@ -109,27 +112,40 @@ var MarketPane = React.createClass({
     if (linked) {
       if (market.expired && market.authored && !market.closed) {
         return (
-          <div className='close-market'>
-            <CloseMarketTrigger text='close market' params={ { marketId: market.id.toString(16), branchId: market.branchId.toString(16) } } />
-            <Link to='market' params={ {marketId: market.id.toString(16) } } className={ className }>
-              { body }
+          <div className="close-market">
+            <Button
+              bsSize="xsmall"
+              bsStyle="primary"
+              value={market}
+              onClick={this.onCloseMarket}>
+              Close Market
+            </Button>
+            <Link
+              to="market"
+              params={{marketId: market.id.toString(16)}}
+              className={className}>
+              {body}
             </Link>
+            <CloseMarketModal
+              text="close market"
+              params={{marketId: abi.hex(market.id), branchId: abi.hex(market.branchId)}} />
           </div>
         );
-      } else {
-        return (
-          <Link to='market' params={ {marketId: market.id.toString(16) } } className={ className }>
-            { body }
-          </Link>
-        );
       }
-    } else {
       return (
-        <div className={ className }>
-          { body }
-        </div>
+        <Link
+          to="market"
+          params={{marketId: market.id.toString(16)}}
+          className={className}>
+          {body}
+        </Link>
       );
     }
+    return (
+      <div className={className}>
+        {body}
+      </div>
+    );
   }
 });
 
