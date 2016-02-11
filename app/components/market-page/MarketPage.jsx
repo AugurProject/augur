@@ -1,9 +1,11 @@
 let React = require('react');
 
 let BigNumber = require("bignumber.js");
+let abi = require("augur-abi");
 let Fluxxor = require("fluxxor");
 let FluxMixin = Fluxxor.FluxMixin(React);
 let StoreWatchMixin = Fluxxor.StoreWatchMixin;
+let Button = require('react-bootstrap/lib/Button');
 
 let Breadcrumb = require('./Breadcrumb.jsx');
 let MarketInfo = require('./MarketInfo.jsx');
@@ -12,16 +14,20 @@ let StatsTab = require('./StatsTab');
 let RulesTab = require('./RulesTab');
 let UserTradesTab = require('./UserTradesTab');
 let UserFrozenFundsTab = require('./UserFrozenFundsTab');
+let CloseMarketModal = require("../CloseMarket");
 
 
 let MarketPage = React.createClass({
     mixins: [FluxMixin, StoreWatchMixin('branch', 'market', 'config')],
 
-    getInitialState: function () {
-        return {priceHistoryTimeout: null};
+    getInitialState() {
+        return {
+            priceHistoryTimeout: null,
+            addMarketModalOpen: false
+        };
     },
 
-    getStateFromFlux: function () {
+    getStateFromFlux() {
         let flux = this.getFlux();
 
         let marketId = new BigNumber(this.props.params.marketId, 16);
@@ -70,6 +76,10 @@ let MarketPage = React.createClass({
         this.setState({priceHistoryTimeout: setTimeout(this.getPriceHistory, 2500)});
     },
 
+    toggleCloseMarketModal(event) {
+        this.setState({closeMarketModalOpen: !this.state.closeMarketModalOpen});
+    },
+
     render() {
         let market = this.state.market;
 
@@ -79,10 +89,30 @@ let MarketPage = React.createClass({
             );
         }
 
+        var closeMarketButton = <span />;
+        if (market.expired && !market.closed) {
+             closeMarketButton = (
+                <div className="close-market">
+                    <Button
+                        bsSize="small"
+                        bsStyle="info"
+                        onClick={this.toggleCloseMarketModal}>
+                        Close Market
+                    </Button>
+                    <CloseMarketModal
+                        text="close market"
+                        params={{market: market}}
+                        show={this.state.closeMarketModalOpen}
+                        onHide={this.toggleCloseMarketModal} />
+                </div>
+            );
+        }
+
         return (
             <div className="marketPage">
                 <Breadcrumb market={market}/>
                 <MarketInfo market={market}/>
+                {closeMarketButton}
 
                 <div role="tabpanel" style={{marginTop: '15px'}}>
                     <div className="row submenu">

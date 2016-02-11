@@ -43,7 +43,7 @@ var MarketPane = React.createClass({
   },
 
   onCloseMarket: function (event) {
-    console.log("onCloseMarket:", event.target.value);
+
   },
 
   render: function() {

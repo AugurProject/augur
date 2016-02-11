@@ -210,7 +210,8 @@ let MarketsPage = React.createClass({
                         })}
                     </div>
                 </div>
-                { pagination }                <AddMarketModal
+                { pagination }
+                <AddMarketModal
                     show={this.state.addMarketModalOpen}
                     onHide={this.toggleAddMarketModal}/>
             </div>

@@ -18,32 +18,37 @@ module.exports = React.createClass({
   },
 
   onConfirm: function (event) {
-    var marketId = abi.hex(this.props.params.marketId);
-    var branchId = abi.hex(this.props.params.branchId);
+    var marketId = abi.hex(this.props.params.market.id);
+    var branchId = this.props.params.market.branchId;
     console.log("Closing market", marketId, "on branch", branchId);
     this.getFlux().augur.closeMarket({
       branchId: branchId,
       marketId: marketId,
       onSent: function (res) { console.log("Close market sent:", res); },
       onSuccess: function (res) { console.log("Close market succeeded:", res); },
-      onFailed: function (err) { console.log("Close market failed:", err); }
+      onFailed: function (err) { console.error("Close market failed:", err); }
     });
-    this.props.onRequestHide();
+    this.props.onHide();
   },
 
-  onCancel: function(event) {
-    this.props.onRequestHide();
+  onCancel: function (event) {
+    this.props.onHide();
   },
 
   render: function () {
+    var market = this.props.params.market;
     return (
       <Modal {...this.props} id="close-market-modal">
         <div className="modal-header clearfix">
           <h4>Close Market</h4>
         </div>
         <div className="modal-body clearfix">
-          <Button bsStyle='default' onClick={ this.onCancel }>Cancel</Button>
-          <Button bsStyle='danger' onClick={ this.onConfirm }>Close Market</Button>
+          <p>Closing {market.type} market: {market._id}</p>
+          <div className="col-sm-12">
+            <p><i>{market.description}</i></p>
+          </div>
+          <Button bsStyle="default" onClick={this.onCancel}>Cancel</Button>
+          <Button bsStyle="danger" onClick={this.onConfirm}>Close Market</Button>
         </div>
       </Modal>
     );
