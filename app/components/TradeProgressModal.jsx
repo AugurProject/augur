@@ -25,7 +25,7 @@ module.exports = React.createClass({
               <pre>{this.props.detail}</pre>
             </div>
           </div>
-          <Button bsStyle="default" onClick={this.onHide}>Close</Button>
+          <Button bsStyle="default" onClick={this.props.onHide}>Close</Button>
         </div>
       </Modal>
     );
