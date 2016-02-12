@@ -96,7 +96,7 @@ var Overview = React.createClass({
                         buyShares: false,
                         sellShares: false,
                         tradeProgressModalOpen: self.state.tradeProgressModalOpen,
-                        tradeStatus: "Sent trade commitment...",
+                        tradeStatus: "Sent trade commitment. Waiting for confirmation...",
                         tradeDetail: res
                     };
                     var oldPrice = flux.store("market").getMarket(
@@ -137,7 +137,7 @@ var Overview = React.createClass({
                 onTradeSent: function (res) {
                     console.debug("trade:", res);
                     self.setState({
-                        tradeStatus: "Trade submitted.",
+                        tradeStatus: "Trade submitted. Waiting for confirmation...",
                         tradeDetail: res
                     });
                 },
