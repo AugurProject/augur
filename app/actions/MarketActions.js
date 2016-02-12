@@ -218,7 +218,6 @@ module.exports = {
   checkOrderBook: function (market) {
     var self = this;
     this.flux.augur.checkOrderBook(market, function (matchedOrders) {
-      console.log("checked order book:", matchedOrders);
       self.dispatch(constants.market.CHECK_ORDER_BOOK_SUCCESS, {matchedOrders});
     });
   },

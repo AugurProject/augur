@@ -1,24 +1,24 @@
-var React = require("react");
-var BigNumber = require("bignumber.js");
-var abi = require("augur-abi");
+let React = require("react");
+let BigNumber = require("bignumber.js");
+let abi = require("augur-abi");
 let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
-var ReactDOM = require('react-dom');
-var DatePicker = require('react-date-picker');
-var moment = require("moment");
+let ReactDOM = require('react-dom');
+let DatePicker = require('react-date-picker');
+let moment = require("moment");
 let Button = require('react-bootstrap/lib/Button');
 let Input = require('react-bootstrap/lib/Input');
 let Modal = require('react-bootstrap/lib/Modal');
-var ReactTabs = require('react-tabs');
-var Tab = ReactTabs.Tab;
-var Tabs = ReactTabs.Tabs;
-var TabList = ReactTabs.TabList;
-var TabPanel = ReactTabs.TabPanel;
+let ReactTabs = require('react-tabs');
+let Tab = ReactTabs.Tab;
+let Tabs = ReactTabs.Tabs;
+let TabList = ReactTabs.TabList;
+let TabPanel = ReactTabs.TabPanel;
+let constants = require("../libs/constants");
+let utilities = require("../libs/utilities");
+let ProgressModal = require("./ProgressModal");
 
-var constants = require("../libs/constants");
-var utilities = require("../libs/utilities");
-
-var AddMarketModal = React.createClass({
+let AddMarketModal = React.createClass({
 
   mixins: [FluxMixin, StoreWatchMixin('market', 'network', 'asset')],
 
@@ -48,7 +48,14 @@ var AddMarketModal = React.createClass({
       numTags: 0,
       tags: [],
       expirySource: "generic",
-      expirySourceURL: ""
+      expirySourceURL: "",
+      progressModal: {
+        open: false,
+        status: "",
+        header: "",
+        detail: null,
+        complete: null
+      }
     };
   },
 
@@ -59,6 +66,12 @@ var AddMarketModal = React.createClass({
       currentBlock: flux.store('network').getState().blockNumber,
       currentBranch: flux.store('branch').getCurrentBranch()
     }
+  },
+
+  toggleProgressModal: function (event) {
+    var progressModal = this.state.progressModal;
+    progressModal.open = !progressModal.open;
+    this.setState({progressModal: progressModal});
   },
 
   handleSelect: function (index, last) {
@@ -212,54 +225,94 @@ var AddMarketModal = React.createClass({
       maxValue: this.state.maxValue,
       numOutcomes: this.state.numOutcomes,
       onSent: function (res) {
-        if (res && res.txHash) {
-          console.log("new event submitted:", res.txHash);
-        }
+        console.log("new event submitted:", res.txHash);
+        var progressModal = self.state.progressModal;
+        progressModal.header = "Creating Event";
+        progressModal.status = "New event submitted. Waiting for confirmation...";
+        progressModal.detail = res;
+        self.setState({progressModal: progressModal});
+        self.toggleProgressModal();
       },
       onSuccess: function (res) {
-        if (res && res.callReturn && res.txHash) {
-          console.log("new event ID:", res.callReturn);
-          var events = res.callReturn;
-          if (events.constructor !== Array) events = [events];
-          flux.augur.createMarket({
-            branchId: branchId,
-            description: newMarketParams.description,
-            alpha: "0.0079",
-            initialLiquidity: newMarketParams.initialLiquidity,
-            tradingFee: newMarketParams.tradingFee.toFixed(),
-            events: events,
-            onSent: function (r) {
-              console.log("new market submitted:", r.txHash);
-              flux.augur.ramble.addMetadata({
-                marketId: r.callReturn,
-                image: self.state.imageDataURL,
-                details: self.state.detailsText,
-                tags: self.state.tags,
-                links: self.state.resources,
-                source: source
-              }, function (res) {
-                console.log("ramble.addMetadata sent:", res);
-              }, function (res) {
-                console.log("ramble.addMetadata success:", res);
-              }, function (err) {
-                console.error("ramble.addMetadata:", err);
-              });
-            },
-            onSuccess: function (r) {
-              console.log("new market ID:", r.callReturn);
-              var marketId = abi.bignum(r.callReturn);
-              flux.actions.market.deleteMarket(pendingId);
-              flux.actions.market.loadMarket(marketId);
-            },
-            onFailed: function (r) {
-              console.error("market creation failed:", r);
-              flux.actions.market.deleteMarket(pendingId);
-            }
-          });
-        }
+        console.log("new event ID:", res.callReturn);
+        var events = res.callReturn;
+        var progressModal = self.state.progressModal;
+        progressModal.header = "Creating Event";
+        progressModal.status += "\nNew event confirmed.\nEvent ID: " + events;
+        progressModal.detail = res;
+        self.setState({progressModal: progressModal});
+        if (events.constructor !== Array) events = [events];
+        flux.augur.createMarket({
+          branchId: branchId,
+          description: newMarketParams.description,
+          alpha: "0.0079",
+          initialLiquidity: newMarketParams.initialLiquidity,
+          tradingFee: newMarketParams.tradingFee.toFixed(),
+          events: events,
+          onSent: function (r) {
+            console.log("new market submitted:", r.txHash);
+            var progressModal = self.state.progressModal;
+            progressModal.header = "Creating Market";
+            progressModal.status = "New market submitted. Waiting for confirmation...";
+            progressModal.detail = r;
+            self.setState({progressModal: progressModal});
+            flux.augur.ramble.addMetadata({
+              marketId: r.callReturn,
+              image: self.state.imageDataURL,
+              details: self.state.detailsText,
+              tags: self.state.tags,
+              links: self.state.resources,
+              source: source
+            }, function (res) {
+              console.log("ramble.addMetadata sent:", res);
+              var progressModal = self.state.progressModal;
+              progressModal.header = "Creating Market";
+              progressModal.status += "\nMarket metadata submitted. Waiting for confirmation...";
+              progressModal.detail = r;
+              self.setState({progressModal: progressModal});
+            }, function (res) {
+              console.log("ramble.addMetadata success:", res);
+              var progressModal = self.state.progressModal;
+              progressModal.header = "Creating Market";
+              progressModal.status += "\nMarket metadata confirmed.";
+              progressModal.detail = r;
+              self.setState({progressModal: progressModal});
+            }, function (err) {
+              console.error("ramble.addMetadata:", err);
+            });
+          },
+          onSuccess: function (r) {
+            console.log("new market ID:", r.callReturn);
+            var marketId = abi.bignum(r.callReturn);
+            var progressModal = self.state.progressModal;
+            progressModal.header = "Creating Market";
+            progressModal.status += "\nNew market confirmed. Your market has been successfully created! This dialogue can now be safely closed.\nMarket ID: " + r.callReturn;
+            progressModal.detail = r;
+            progressModal.complete = true;
+            self.setState({progressModal: progressModal});
+            flux.actions.market.deleteMarket(pendingId);
+            flux.actions.market.loadMarket(marketId);
+          },
+          onFailed: function (r) {
+            console.error("market creation failed:", r);
+            var progressModal = self.state.progressModal;
+            progressModal.header = "Market Creation Failed";
+            progressModal.status = "Your market could not be created.";
+            progressModal.detail = r;
+            progressModal.complete = true;
+            self.setState({progressModal: progressModal});
+            flux.actions.market.deleteMarket(pendingId);
+          }
+        });
       },
       onFailed: function (r) {
         console.error("event creation failed:", r);
+        var progressModal = self.state.progressModal;
+        progressModal.header = "Event Creation Failed";
+        progressModal.status = "Your event could not be created.";
+        progressModal.detail = r;
+        progressModal.complete = true;
+        self.setState({progressModal: progressModal});
         flux.actions.market.deleteMarket(pendingId);
       }
     });
@@ -622,6 +675,14 @@ var AddMarketModal = React.createClass({
         <div className="modal-footer clearfix">
           { footer }
         </div>
+        <ProgressModal
+          backdrop="static"
+          show={this.state.progressModal.open}
+          header={this.state.progressModal.header}
+          status={this.state.progressModal.status}
+          detail={JSON.stringify(this.state.progressModal.detail, null, 2)}
+          complete={this.state.progressModal.complete}
+          onHide={this.toggleProgressModal} />
       </Modal>
     );
   }

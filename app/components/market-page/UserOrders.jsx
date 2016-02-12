@@ -36,7 +36,7 @@ let UserOrders = React.createClass({
                     <tr className="openOrder" key={order.id}>
                         <td className="text-uppercase"><strong>{direction}</strong></td>
                         <td className="text-center">{utilities.getOutcomeName(parseInt(outcome), this.props.market).outcome}</td>
-                        <td className="text-right">{order.amount}</td>
+                        <td className="text-right">{abi.bignum(order.amount).toFixed(2)}</td>
                         <td className="text-right">{order.price}</td>
                         <td className="text-right">{order.cap || '-'}</td>
                         <td className="text-right">
