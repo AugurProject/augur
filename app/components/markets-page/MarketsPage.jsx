@@ -179,9 +179,9 @@ let MarketsPage = React.createClass({
                     </div>
                 </div>
 
-                <div className="row" style={{paddingTop: "8px", paddingBottom: "8px"}}>
-                    <div className="pull-left col-sm-4">
-                        <select onChange={this.onChangeSortBy}>
+                <div className="row search-sort-row">
+                    <div className="col-sm-4 sort-container">
+                        <select className="sort-control" onChange={this.onChangeSortBy}>
                             <option selected disabled>Sort markets</option>
                             <option value="creationBlock|1">Creation date (newest first)</option>
                             <option value="creationBlock|0">Creation date (oldest first)</option>
@@ -190,9 +190,9 @@ let MarketsPage = React.createClass({
                             <option value="description|0">Description</option>
                         </select>
                     </div>
-                    <div className="col-sm-4">
+                    <div className="col-sm-4 search-container">
                         <input type="search"
-                               className="form-control markets-search-input"
+                               className="form-control search-control"
                                value={this.state.searchKeywords}
                                placeholder="Search"
                                tabIndex="0"
