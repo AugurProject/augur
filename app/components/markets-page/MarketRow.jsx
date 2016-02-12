@@ -17,14 +17,14 @@ let MarketRow = React.createClass({
         let endDateFormatted = market.endDate != null ? moment(market.endDate).format('MMM Do, YYYY') : '-';
 
         let outcomeRows;
-
+        let priceLabel = (market.type === "scalar") ? "Value" : "Probability";
         let tableRows = [];
         let tHRow;
         if (this.props.contentType === "holdings") {
             tHRow = (
                 <tr key={`th-${market._id}`}>
                     <th>Outcome</th>
-                    <th>Probability</th>
+                    <th>{priceLabel}</th>
                     <th>Last Trade</th>
                     <th>Shares held</th>
                     <th>Potential P/L</th>
@@ -34,7 +34,7 @@ let MarketRow = React.createClass({
             tHRow = (
                 <tr key={`th-${market._id}`}>
                     <th>Outcome</th>
-                    <th>Probability</th>
+                    <th>{priceLabel}</th>
                     <th>Last Trade</th>
                 </tr>
             );
