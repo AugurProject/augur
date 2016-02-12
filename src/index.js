@@ -2219,7 +2219,6 @@ Augur.prototype.getAccountMeanTradePrices = function (account, cb) {
 
 Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
     var self = this;
-    console.log("checkOrder.order:", order);
     var currentPrice = new BigNumber(this.price(marketInfo, outcome));
     if (order.amount.constructor !== BigNumber) {
         order.amount = new BigNumber(order.amount);
@@ -2233,41 +2232,63 @@ Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
 
     // buy orders
     var priceMatched;
-    console.log("order.amount:", order.amount.toString());
-    console.log("currentPrice:", currentPrice.toString());
-    console.log("order.price:", order.price.toString());
     if (order.amount.gt(new BigNumber(0))) {
         priceMatched = currentPrice.lte(order.price);
     } else {
         priceMatched = currentPrice.gte(order.price);
     }
-    console.log("priceMatched:", priceMatched);
+    console.log("price matched:", priceMatched);
     if (priceMatched) {
         var trade;
         if (order.cap) {
-            console.log("cap:", order.cap);
             trade = this.orders.limit.fill(marketInfo, order);
-            console.log("limit.fill.trade:", trade);
         } else {
             trade = {order: order, amount: order.amount.toFixed(), filled: true};
         }
 
         // execute order
         if (trade !== undefined) {
+            console.log({
+                branch: order.branch,
+                market: order.market,
+                outcome: order.outcome,
+                amount: trade.amount
+            });
             this.trade({
                 branch: order.branch,
                 market: order.market,
                 outcome: order.outcome,
                 amount: trade.amount,
-                limit: order.limit,
-                onSent: function (res) {
-                    self.orders.cancel(self.from, order.market, order.outcome, order.id);
-                    if (!trade.filled) {
-                        self.orders.create(JSON.parse(JSON.stringify(trade.order)));
-                    }
-                },
-                onSuccess: function (res) { cb(trade.order); },
-                onFailed: cb
+                callbacks: {
+                    onMarketHash: function (marketHash) {
+                        console.log("marketHash:", marketHash);
+                    },
+                    onCommitTradeSent: function (res) {
+                        console.log("commitTradeSent:", res);
+                    },
+                    onCommitTradeSuccess: function (res) {
+                        console.log("commitTradeSuccess:", res);
+                    },
+                    onCommitTradeFailed: cb,
+                    onNextBlock: function (blockNumber) {
+                        console.log("blockNumber:", blockNumber);
+                    },
+                    onTradeSent: function (res) {
+                        console.log("trade sent:", res);
+                        console.log("cancel order:", self.from, order.market, order.outcome, order.id);
+                        var cancelled = self.orders.cancel(self.from, order.market, order.outcome, order.id);
+                        console.log("cancelled:", cancelled);
+                        if (!trade.filled) {
+                            console.log("create order:", JSON.parse(JSON.stringify(trade.order)));
+                            var created = self.orders.create(JSON.parse(JSON.stringify(trade.order)));
+                            console.log("created:", created);
+                        }
+                    },
+                    onTradeSuccess: function (res) {
+                        cb(trade.order);
+                    },
+                    onTradeFailed: cb
+                }
             });
         }
     }

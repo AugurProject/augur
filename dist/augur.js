@@ -65019,12 +65019,13 @@ module.exports = {
             var amount, filled;
             var q = new Array(marketInfo.numOutcomes);
             order.amount = utils.toDecimal(order.amount);
-            order.alpha = utils.toDecimal(order.alpha);
+            var alpha = marketInfo.alpha.toFixed();
             for (var i = 0; i < marketInfo.numOutcomes; ++i) {
                 q[i] = utils.toDecimal(marketInfo.outcomes[i].outstandingShares);
+                console.log("q[" + i + "]:", q[i].toString());
             }
             order.outcome = parseInt(order.outcome);
-            var n = this.sharesToTrade(q, order.outcome-1, marketInfo.alpha, order.cap);
+            var n = this.sharesToTrade(q, order.outcome-1, alpha, order.cap.toString());
             if (n !== undefined && n !== null) {
                 n = new Decimal(n);
 
@@ -65051,12 +65052,21 @@ module.exports = {
             try {
                 var soln = fzero(function (n) {
                     return self.f(n, q, i, a, cap);
-                }, 1.0, {verbose: true, maxiter: 50});
+                }, [1e-12, 1000], {verbose: true});
                 if (soln.code !== 1) console.warn("fzero:", soln);
                 return soln.solution;
             } catch (exc) {
                 console.error("limit.sharesToTrade:", exc);
-                return null;
+                try {
+                    var soln = fzero(function (n) {
+                        return self.f(n, q, i, a, cap);
+                    }, 0.5, {verbose: true, maxiter: 50, randomized: true});
+                    if (soln.code !== 1) console.warn("fzero:", soln);
+                    return soln.solution;
+                } catch (ex) {
+                    console.error("limit.sharesToTrade (randomized):", ex);
+                    return null;
+                }
             }
         },
 
@@ -68121,7 +68131,6 @@ Augur.prototype.getAccountMeanTradePrices = function (account, cb) {
 
 Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
     var self = this;
-    console.log("checkOrder.order:", order);
     var currentPrice = new BigNumber(this.price(marketInfo, outcome));
     if (order.amount.constructor !== BigNumber) {
         order.amount = new BigNumber(order.amount);
@@ -68135,41 +68144,63 @@ Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
 
     // buy orders
     var priceMatched;
-    console.log("order.amount:", order.amount.toString());
-    console.log("currentPrice:", currentPrice.toString());
-    console.log("order.price:", order.price.toString());
     if (order.amount.gt(new BigNumber(0))) {
         priceMatched = currentPrice.lte(order.price);
     } else {
         priceMatched = currentPrice.gte(order.price);
     }
-    console.log("priceMatched:", priceMatched);
+    console.log("price matched:", priceMatched);
     if (priceMatched) {
         var trade;
         if (order.cap) {
-            console.log("cap:", order.cap);
             trade = this.orders.limit.fill(marketInfo, order);
-            console.log("limit.fill.trade:", trade);
         } else {
             trade = {order: order, amount: order.amount.toFixed(), filled: true};
         }
 
         // execute order
         if (trade !== undefined) {
+            console.log({
+                branch: order.branch,
+                market: order.market,
+                outcome: order.outcome,
+                amount: trade.amount
+            });
             this.trade({
                 branch: order.branch,
                 market: order.market,
                 outcome: order.outcome,
                 amount: trade.amount,
-                limit: order.limit,
-                onSent: function (res) {
-                    self.orders.cancel(self.from, order.market, order.outcome, order.id);
-                    if (!trade.filled) {
-                        self.orders.create(JSON.parse(JSON.stringify(trade.order)));
-                    }
-                },
-                onSuccess: function (res) { cb(trade.order); },
-                onFailed: cb
+                callbacks: {
+                    onMarketHash: function (marketHash) {
+                        console.log("marketHash:", marketHash);
+                    },
+                    onCommitTradeSent: function (res) {
+                        console.log("commitTradeSent:", res);
+                    },
+                    onCommitTradeSuccess: function (res) {
+                        console.log("commitTradeSuccess:", res);
+                    },
+                    onCommitTradeFailed: cb,
+                    onNextBlock: function (blockNumber) {
+                        console.log("blockNumber:", blockNumber);
+                    },
+                    onTradeSent: function (res) {
+                        console.log("trade sent:", res);
+                        console.log("cancel order:", self.from, order.market, order.outcome, order.id);
+                        var cancelled = self.orders.cancel(self.from, order.market, order.outcome, order.id);
+                        console.log("cancelled:", cancelled);
+                        if (!trade.filled) {
+                            console.log("create order:", JSON.parse(JSON.stringify(trade.order)));
+                            var created = self.orders.create(JSON.parse(JSON.stringify(trade.order)));
+                            console.log("created:", created);
+                        }
+                    },
+                    onTradeSuccess: function (res) {
+                        cb(trade.order);
+                    },
+                    onTradeFailed: cb
+                }
             });
         }
     }
@@ -99795,6 +99826,7 @@ module.exports = function (f, bounds, options) {
                     break;
                 }
             }
+            if (!options.randomize) break;
             aa = aa.times(new Decimal(Math.random().toString())).plus(new Decimal((Math.random() - 0.5).toString()));
             fa = toDecimal(f(aa.toString()));
         } while (!bracketed && ++tries < maxiter);

@@ -23,12 +23,13 @@ module.exports = {
             var amount, filled;
             var q = new Array(marketInfo.numOutcomes);
             order.amount = utils.toDecimal(order.amount);
-            order.alpha = utils.toDecimal(order.alpha);
+            var alpha = marketInfo.alpha.toFixed();
             for (var i = 0; i < marketInfo.numOutcomes; ++i) {
                 q[i] = utils.toDecimal(marketInfo.outcomes[i].outstandingShares);
+                console.log("q[" + i + "]:", q[i].toString());
             }
             order.outcome = parseInt(order.outcome);
-            var n = this.sharesToTrade(q, order.outcome-1, marketInfo.alpha, order.cap);
+            var n = this.sharesToTrade(q, order.outcome-1, alpha, order.cap.toString());
             if (n !== undefined && n !== null) {
                 n = new Decimal(n);
 
@@ -55,12 +56,21 @@ module.exports = {
             try {
                 var soln = fzero(function (n) {
                     return self.f(n, q, i, a, cap);
-                }, 1.0, {verbose: true, maxiter: 50});
+                }, [1e-12, 1000], {verbose: true});
                 if (soln.code !== 1) console.warn("fzero:", soln);
                 return soln.solution;
             } catch (exc) {
                 console.error("limit.sharesToTrade:", exc);
-                return null;
+                try {
+                    var soln = fzero(function (n) {
+                        return self.f(n, q, i, a, cap);
+                    }, 0.5, {verbose: true, maxiter: 50, randomized: true});
+                    if (soln.code !== 1) console.warn("fzero:", soln);
+                    return soln.solution;
+                } catch (ex) {
+                    console.error("limit.sharesToTrade (randomized):", ex);
+                    return null;
+                }
             }
         },
 
