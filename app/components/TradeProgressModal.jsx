@@ -9,6 +9,18 @@ let utilities = require("../libs/utilities");
 
 module.exports = React.createClass({
   render() {
+    var closeButton = <span />;
+    if (this.props.status === "Trade successful!" ||
+        this.props.status === "Trade failed." ||
+        this.props.status === "Could not commit trade.") {
+      closeButton = (
+        <Button
+          bsStyle="default"
+          onClick={this.props.onHide}>
+          Close
+        </Button>
+      );
+    }
     return (
       <Modal {...this.props} id="close-market-modal">
         <div className="modal-header clearfix">
@@ -25,7 +37,7 @@ module.exports = React.createClass({
               <pre>{this.props.detail}</pre>
             </div>
           </div>
-          <Button bsStyle="default" onClick={this.props.onHide}>Close</Button>
+          {closeButton}
         </div>
       </Modal>
     );
