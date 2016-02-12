@@ -665,25 +665,27 @@ let AddMarketModal = React.createClass({
     };
 
     return (
-      <Modal {...this.props} onHide={ this.onHide } id='add-market-modal'>
-        <div className="modal-header clearfix">
-          <h4>Create a new market<span className='subheading pull-right'>{ subheading }</span></h4>
-        </div>
-        <div className="modal-body clearfix">
-          { page }
-        </div>
-        <div className="modal-footer clearfix">
-          { footer }
-        </div>
+      <div>
+        <Modal {...this.props} onHide={ this.onHide } id='add-market-modal'>
+          <div className="modal-header clearfix">
+            <h4>Create a new market<span className='subheading pull-right'>{ subheading }</span></h4>
+          </div>
+          <div className="modal-body clearfix">
+            { page }
+          </div>
+          <div className="modal-footer clearfix">
+            { footer }
+          </div>
+        </Modal>
         <ProgressModal
-          backdrop="static"
-          show={this.state.progressModal.open}
-          header={this.state.progressModal.header}
-          status={this.state.progressModal.status}
-          detail={JSON.stringify(this.state.progressModal.detail, null, 2)}
-          complete={this.state.progressModal.complete}
-          onHide={this.toggleProgressModal} />
-      </Modal>
+            backdrop="static"
+            show={this.state.progressModal.open}
+            header={this.state.progressModal.header}
+            status={this.state.progressModal.status}
+            detail={JSON.stringify(this.state.progressModal.detail, null, 2)}
+            complete={this.state.progressModal.complete}
+            onHide={this.toggleProgressModal} />
+      </div>
     );
   }
 });
