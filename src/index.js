@@ -1307,33 +1307,6 @@ Augur.prototype.dispatch = function (branch, onSent, onSuccess, onFailed) {
     tx.params = branch;
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
-Augur.prototype.getStep = function (branch, callback) {
-    // branch: sha256
-    var tx = clone(this.tx.getStep);
-    tx.params = branch;
-    return this.fire(tx, callback);
-};
-Augur.prototype.setStep = function (branch, step, callback) {
-    var tx = clone(this.tx.setStep);
-    tx.params = [branch, step];
-    return this.fire(tx, callback);
-};
-Augur.prototype.getSubstep = function (branch, callback) {
-    // branch: sha256
-    var tx = clone(this.tx.getSubstep);
-    tx.params = branch;
-    return this.fire(tx, callback);
-};
-Augur.prototype.setSubstep = function (branch, substep, callback) {
-    var tx = clone(this.tx.setSubstep);
-    tx.params = [branch, substep];
-    return this.fire(tx, callback);
-};
-Augur.prototype.incrementSubstep = function (branch, callback) {
-    var tx = clone(this.tx.incrementSubstep);
-    tx.params = branch;
-    return this.fire(tx, callback);
-};
 Augur.prototype.updatePeriod = function (branch) {
     var currentPeriod = this.getCurrentPeriod(branch);
     this.incrementPeriod(branch);
@@ -2260,11 +2233,15 @@ Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
 
     // buy orders
     var priceMatched;
+    console.log("order.amount:", order.amount.toString());
+    console.log("currentPrice:", currentPrice.toString());
+    console.log("order.price:", order.price.toString());
     if (order.amount.gt(new BigNumber(0))) {
         priceMatched = currentPrice.lte(order.price);
     } else {
         priceMatched = currentPrice.gte(order.price);
     }
+    console.log("priceMatched:", priceMatched);
     if (priceMatched) {
         var trade;
         if (order.cap) {
@@ -2276,21 +2253,23 @@ Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
         }
 
         // execute order
-        this.trade({
-            branch: order.branch,
-            market: order.market,
-            outcome: order.outcome,
-            amount: trade.amount,
-            limit: order.limit,
-            onSent: function (res) {
-                self.orders.cancel(self.from, order.market, order.outcome, order.id);
-                if (!trade.filled) {
-                    self.orders.create(JSON.parse(JSON.stringify(trade.order)));
-                }
-            },
-            onSuccess: function (res) { cb(trade.order); },
-            onFailed: cb
-        });
+        if (trade !== undefined) {
+            this.trade({
+                branch: order.branch,
+                market: order.market,
+                outcome: order.outcome,
+                amount: trade.amount,
+                limit: order.limit,
+                onSent: function (res) {
+                    self.orders.cancel(self.from, order.market, order.outcome, order.id);
+                    if (!trade.filled) {
+                        self.orders.create(JSON.parse(JSON.stringify(trade.order)));
+                    }
+                },
+                onSuccess: function (res) { cb(trade.order); },
+                onFailed: cb
+            });
+        }
     }
 };
 

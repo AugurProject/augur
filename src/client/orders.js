@@ -28,20 +28,23 @@ module.exports = {
                 q[i] = utils.toDecimal(marketInfo.outcomes[i].outstandingShares);
             }
             order.outcome = parseInt(order.outcome);
-            var n = new Decimal(this.sharesToTrade(q, order.outcome-1, marketInfo.alpha, order.cap));
+            var n = this.sharesToTrade(q, order.outcome-1, marketInfo.alpha, order.cap);
+            if (n !== undefined && n !== null) {
+                n = new Decimal(n);
 
-            // if n >= amount, this is a stop order
-            if (n.gte(order.amount)) {
-                amount = order.amount.toFixed();
-                filled = true;
+                // if n >= amount, this is a stop order
+                if (n.gte(order.amount)) {
+                    amount = order.amount.toFixed();
+                    filled = true;
 
-            // otherwise, trade n shares (amount - n shares remain open)
-            } else {
-                amount = n.toFixed();
-                order.amount = order.amount.minus(n).toFixed();
-                filled = false;
+                // otherwise, trade n shares (amount - n shares remain open)
+                } else {
+                    amount = n.toFixed();
+                    order.amount = order.amount.minus(n).toFixed();
+                    filled = false;
+                }
+                return {amount: amount, order: order, filled: filled};
             }
-            return {amount: amount, order: order, filled: filled};
         },
 
         sharesToTrade: function (q, i, a, cap) {
@@ -49,11 +52,16 @@ module.exports = {
             q = utils.toDecimal(q);
             a = utils.toDecimal(a);
             cap = utils.toDecimal(cap);
-            var soln = fzero(function (n) {
-                return self.f(n, q, i, a, cap);
-            }, 0.5, {verbose: true, maxiter: 100, maxfev: 500});
-            if (soln.code !== 1) console.warn("fzero:", soln);
-            return soln.solution;
+            try {
+                var soln = fzero(function (n) {
+                    return self.f(n, q, i, a, cap);
+                }, 1.0, {verbose: true, maxiter: 50});
+                if (soln.code !== 1) console.warn("fzero:", soln);
+                return soln.solution;
+            } catch (exc) {
+                console.error("limit.sharesToTrade:", exc);
+                return null;
+            }
         },
 
         // LS-LMSR objective function (optimize n)

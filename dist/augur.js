@@ -65024,20 +65024,23 @@ module.exports = {
                 q[i] = utils.toDecimal(marketInfo.outcomes[i].outstandingShares);
             }
             order.outcome = parseInt(order.outcome);
-            var n = new Decimal(this.sharesToTrade(q, order.outcome-1, marketInfo.alpha, order.cap));
+            var n = this.sharesToTrade(q, order.outcome-1, marketInfo.alpha, order.cap);
+            if (n !== undefined && n !== null) {
+                n = new Decimal(n);
 
-            // if n >= amount, this is a stop order
-            if (n.gte(order.amount)) {
-                amount = order.amount.toFixed();
-                filled = true;
+                // if n >= amount, this is a stop order
+                if (n.gte(order.amount)) {
+                    amount = order.amount.toFixed();
+                    filled = true;
 
-            // otherwise, trade n shares (amount - n shares remain open)
-            } else {
-                amount = n.toFixed();
-                order.amount = order.amount.minus(n).toFixed();
-                filled = false;
+                // otherwise, trade n shares (amount - n shares remain open)
+                } else {
+                    amount = n.toFixed();
+                    order.amount = order.amount.minus(n).toFixed();
+                    filled = false;
+                }
+                return {amount: amount, order: order, filled: filled};
             }
-            return {amount: amount, order: order, filled: filled};
         },
 
         sharesToTrade: function (q, i, a, cap) {
@@ -65045,11 +65048,16 @@ module.exports = {
             q = utils.toDecimal(q);
             a = utils.toDecimal(a);
             cap = utils.toDecimal(cap);
-            var soln = fzero(function (n) {
-                return self.f(n, q, i, a, cap);
-            }, 0.5, {verbose: true, maxiter: 100, maxfev: 500});
-            if (soln.code !== 1) console.warn("fzero:", soln);
-            return soln.solution;
+            try {
+                var soln = fzero(function (n) {
+                    return self.f(n, q, i, a, cap);
+                }, 1.0, {verbose: true, maxiter: 50});
+                if (soln.code !== 1) console.warn("fzero:", soln);
+                return soln.solution;
+            } catch (exc) {
+                console.error("limit.sharesToTrade:", exc);
+                return null;
+            }
         },
 
         // LS-LMSR objective function (optimize n)
@@ -65424,18 +65432,7 @@ module.exports = function () {
                                             cost: abi.unfix(data_array[1], "string"),
                                             blockNumber: abi.string(filtrate[i].blockNumber)
                                         });
-                                        console.log("message:", {
-                                            user: abi.format_address(filtrate[i].topics[1]),
-                                            marketId: market,
-                                            outcome: outcome,
-                                            price: abi.unfix(data_array[0], "string"),
-                                            cost: abi.unfix(data_array[1], "string"),
-                                            blockNumber: abi.string(filtrate[i].blockNumber)
-                                        });
-                                        augur.checkOrderBook(market, function (res) {
-                                            console.log("checkOrderBook:", res);
-                                        });
-                                        console.log("checked!");
+                                        augur.checkOrderBook(market, augur.utils.pass);
                                     }
                                 } catch (exc) {
                                     console.error("updatePrice filter:", exc);
@@ -67212,33 +67209,6 @@ Augur.prototype.dispatch = function (branch, onSent, onSuccess, onFailed) {
     tx.params = branch;
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
-Augur.prototype.getStep = function (branch, callback) {
-    // branch: sha256
-    var tx = clone(this.tx.getStep);
-    tx.params = branch;
-    return this.fire(tx, callback);
-};
-Augur.prototype.setStep = function (branch, step, callback) {
-    var tx = clone(this.tx.setStep);
-    tx.params = [branch, step];
-    return this.fire(tx, callback);
-};
-Augur.prototype.getSubstep = function (branch, callback) {
-    // branch: sha256
-    var tx = clone(this.tx.getSubstep);
-    tx.params = branch;
-    return this.fire(tx, callback);
-};
-Augur.prototype.setSubstep = function (branch, substep, callback) {
-    var tx = clone(this.tx.setSubstep);
-    tx.params = [branch, substep];
-    return this.fire(tx, callback);
-};
-Augur.prototype.incrementSubstep = function (branch, callback) {
-    var tx = clone(this.tx.incrementSubstep);
-    tx.params = branch;
-    return this.fire(tx, callback);
-};
 Augur.prototype.updatePeriod = function (branch) {
     var currentPeriod = this.getCurrentPeriod(branch);
     this.incrementPeriod(branch);
@@ -68165,11 +68135,15 @@ Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
 
     // buy orders
     var priceMatched;
+    console.log("order.amount:", order.amount.toString());
+    console.log("currentPrice:", currentPrice.toString());
+    console.log("order.price:", order.price.toString());
     if (order.amount.gt(new BigNumber(0))) {
         priceMatched = currentPrice.lte(order.price);
     } else {
         priceMatched = currentPrice.gte(order.price);
     }
+    console.log("priceMatched:", priceMatched);
     if (priceMatched) {
         var trade;
         if (order.cap) {
@@ -68181,21 +68155,23 @@ Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
         }
 
         // execute order
-        this.trade({
-            branch: order.branch,
-            market: order.market,
-            outcome: order.outcome,
-            amount: trade.amount,
-            limit: order.limit,
-            onSent: function (res) {
-                self.orders.cancel(self.from, order.market, order.outcome, order.id);
-                if (!trade.filled) {
-                    self.orders.create(JSON.parse(JSON.stringify(trade.order)));
-                }
-            },
-            onSuccess: function (res) { cb(trade.order); },
-            onFailed: cb
-        });
+        if (trade !== undefined) {
+            this.trade({
+                branch: order.branch,
+                market: order.market,
+                outcome: order.outcome,
+                amount: trade.amount,
+                limit: order.limit,
+                onSent: function (res) {
+                    self.orders.cancel(self.from, order.market, order.outcome, order.id);
+                    if (!trade.filled) {
+                        self.orders.create(JSON.parse(JSON.stringify(trade.order)));
+                    }
+                },
+                onSuccess: function (res) { cb(trade.order); },
+                onFailed: cb
+            });
+        }
     }
 };
 
@@ -99819,7 +99795,7 @@ module.exports = function (f, bounds, options) {
                     break;
                 }
             }
-            aa = aa.times(new Decimal(Math.random().toString())).plus(new Decimal(tries*(Math.random() - 0.5).toString()));
+            aa = aa.times(new Decimal(Math.random().toString())).plus(new Decimal((Math.random() - 0.5).toString()));
             fa = toDecimal(f(aa.toString()));
         } while (!bracketed && ++tries < maxiter);
     }
