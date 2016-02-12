@@ -121,11 +121,9 @@ let MarketsPage = React.createClass({
         var submitMarketAction;
         if (this.state.account) {
             submitMarketAction = (
-                <span className="pull-right">
-                    <a href="javascript:void(0);" onClick={this.toggleAddMarketModal}>
-                        <i className="fa fa-plus-circle fa-2x"></i>
-                    </a>
-                </span>
+                <a href="javascript:void(0);" onClick={this.toggleAddMarketModal}>
+                    <i className="fa fa-plus-circle fa-4x"></i>
+                </a>
             );
         } else {
             submitMarketAction = <span />;
@@ -198,7 +196,7 @@ let MarketsPage = React.createClass({
                                tabIndex="0"
                                onChange={this.onChangeSearchInput}/>
                     </div>
-                    <div className="pull-right col-sm-2">
+                    <div className="pull-right col-sm-1">
                         {submitMarketAction}
                     </div>
                 </div>
