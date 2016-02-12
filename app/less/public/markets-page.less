@@ -1,0 +1,42 @@
+@import "../partials/variables";
+
+.marketsPage {
+    .search-sort-row {
+        padding: 2rem 0 1.7rem 0;
+        white-space: nowrap;
+
+        .sort-container {
+            float: left;
+        }
+
+        .search-container {
+            float: right;
+            width: 35rem;
+
+            .search-control {
+                width: 100%;
+            }
+        }
+    }
+}
+
+@media (max-width: @screen-sm-min) {
+    .marketsPage {
+        .search-sort-row {
+            padding: 1rem 0 2rem 0;
+            white-space: wrap;
+
+            .sort-container {
+                display: block;
+                float: none;
+            }
+
+            .search-container {
+                display: block;
+                float: none;
+                margin-top: 0.5rem;
+                width: 26rem;
+            }
+        }
+    }
+}

@@ -1,30 +1,10 @@
 // submenu
 .submenu {
-    .list-group-item {
-        white-space: nowrap;
-        padding: 0;
-        a {
-            padding: 10px 20px;
-            display: block;
-        }
-        &:first-child a {
-            padding-left: 15px;
-        }
-        &:last-child a {
-            padding-right: 15px;
-        }
-        &.active,
-        &:focus {
-            z-index: 1;
-            background: none;
-            border: none;
-            a {
-                color: @font-color-link;
-            }
-        }
-    }
     a {
         color: @font-color-header;
+        text-decoration: none;
+        font-weight: 300;
+
         &:hover,
         &:focus,
         &:active,
@@ -43,19 +23,39 @@
             display: block;
             visibility: visible;
             > .list-group {
-                border-bottom: 1px solid @table-border-color;
                 margin-bottom: 0;
                 .display(flex);
                 .align-items(flex-start);
             }
         }
-        .list-group-item {
-            border: none;
-            font-weight: @font-weight-bolder;
-            .list-group {
-                list-style: none;
-                .list-group-item {
-                    font-weight: @font-weight-normal;
+
+        .list-group {
+            border-bottom: 1px solid #cad3df;
+
+            .list-group-item {
+                margin-right: 4rem;
+                padding: 0;
+                text-align: center;
+                border: 0;
+                white-space: nowrap;
+                border-radius: 0;
+
+                a {
+                    display: block;
+                    padding: 10px 0;
+                    color: @color-bluegrey;
+                }
+
+                &.active,
+                &:focus {
+                    z-index: 1;
+                    background: 0;
+                    border-bottom: 3px solid @color-slate;
+
+                    a {
+                        color: @font-color-link;
+                        font-weight: 500;
+                    }
                 }
             }
         }
@@ -95,6 +95,7 @@
             background-color: @color-dark-bg;
             &.active {
                 background-color: @color-dark-bg-active;
+                border-color: @color-menu-border-active;
             }
             .active {
                 color: @font-color-link;

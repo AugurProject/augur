@@ -1,9 +1,5 @@
-h1 {
-    font-size: 27px;
-    font-weight: 400;
-}
-h2, h3, h4, h5 {
-    font-family: 'Lato';
+h1, h2, h3, h4, h5 {
+    font-family: 'Roboto';
     font-weight: 500;
 }
 
@@ -703,10 +699,6 @@ a.market-pane:hover {
     font-size: 16pt;
 }
 
-.markets-search-input {
-    height: 2.5rem;
-}
-
 .outcome.buy {
 
 }
@@ -954,12 +946,6 @@ a.market-pane:hover {
     padding: 10px 5px;
     color: #fff;
     background-color: #313232;
-}
-.holdings .list-group-item:first-child .price {
-    border-top-left-radius: 4px;
-}
-.holdings .list-group-item:last-child .price {
-    border-bottom-left-radius: 4px;
 }
 #ballots h3 {
     border-bottom: none;
