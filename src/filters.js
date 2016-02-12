@@ -213,18 +213,7 @@ module.exports = function () {
                                             cost: abi.unfix(data_array[1], "string"),
                                             blockNumber: abi.string(filtrate[i].blockNumber)
                                         });
-                                        console.log("message:", {
-                                            user: abi.format_address(filtrate[i].topics[1]),
-                                            marketId: market,
-                                            outcome: outcome,
-                                            price: abi.unfix(data_array[0], "string"),
-                                            cost: abi.unfix(data_array[1], "string"),
-                                            blockNumber: abi.string(filtrate[i].blockNumber)
-                                        });
-                                        augur.checkOrderBook(market, function (res) {
-                                            console.log("checkOrderBook:", res);
-                                        });
-                                        console.log("checked!");
+                                        augur.checkOrderBook(market, augur.utils.pass);
                                     }
                                 } catch (exc) {
                                     console.error("updatePrice filter:", exc);
