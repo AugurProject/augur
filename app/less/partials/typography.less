@@ -1,11 +1,16 @@
 // from gsdk/typography.less
 h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6, p, .navbar, .brand, .btn-simple, a, .td-name, td, body {
+    color: @color-slate;
     font-family: @font-family;
+    font-weight: 500;
 }
 
+html,
 body,
 p {
+    color: @color-slate-dark;
     font-size: @font-size-base;
+    font-weight: 300;
     line-height: @line-height;
 }
 
@@ -34,8 +39,6 @@ h5, .h5 {
 }
 
 h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5 {
-    font-weight: @font-weight-bolder;
-    color: @font-color-header;
     > a {
         color: @font-color-default;
         &:hover,
