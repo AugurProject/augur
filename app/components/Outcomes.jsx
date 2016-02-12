@@ -81,8 +81,8 @@ var Overview = React.createClass({
                 onMarketHash: function (marketHash) {
                     console.debug("marketHash:", marketHash);
                     self.setState({
-                        tradeHeader: "Created trade hash",
-                        tradeStatus: marketHash,
+                        tradeHeader: "Committing to Trade",
+                        tradeStatus: "Created hash for trade commitment.",
                         tradeDetail: {marketHash},
                         tradeComplete: false
                     });
@@ -100,8 +100,8 @@ var Overview = React.createClass({
                         buyShares: false,
                         sellShares: false,
                         tradeProgressModalOpen: self.state.tradeProgressModalOpen,
-                        tradeHeader: "Sent trade commitment",
-                        tradeStatus: "Waiting for confirmation...",
+                        tradeHeader: "Committing to Trade",
+                        tradeStatus: "Trade commitment sent. Waiting for confirmation...",
                         tradeDetail: res,
                         tradeComplete: false
                     };
@@ -119,8 +119,8 @@ var Overview = React.createClass({
                 onCommitTradeSuccess: function (res) {
                     console.info("trade committed:", res.txHash);
                     self.setState({
-                        tradeHeader: "Trade committed",
-                        tradeStatus: "Waiting for next block...",
+                        tradeHeader: "Committing to Trade",
+                        tradeStatus: "Trade commitment confirmed. Waiting for next block...",
                         tradeDetail: res,
                         tradeComplete: false
                     });
@@ -140,7 +140,7 @@ var Overview = React.createClass({
                 onNextBlock: function (blockNumber) {
                     console.debug("got next block:", blockNumber);
                     self.setState({
-                        tradeHeader: "Trade committed",
+                        tradeHeader: "Committing to Trade",
                         tradeStatus: "Block " + blockNumber + " arrived.",
                         tradeDetail: {blockNumber}
                     });
@@ -148,8 +148,8 @@ var Overview = React.createClass({
                 onTradeSent: function (res) {
                     console.debug("trade:", res);
                     self.setState({
-                        tradeHeader: "Trade submitted",
-                        tradeStatus: "Waiting for confirmation...",
+                        tradeHeader: "Reveal Trade",
+                        tradeStatus: "Trade sent. Waiting for confirmation...",
                         tradeDetail: res,
                         tradeComplete: false
                     });
@@ -159,8 +159,8 @@ var Overview = React.createClass({
                     delete pending[res.txHash];
                     self.setState({
                         pending: pending,
-                        tradeHeader: "Trade complete",
-                        tradeStatus: "Your trade is complete!",
+                        tradeHeader: "Reveal Trade",
+                        tradeStatus: "Trade confirmed. Your trade is complete! You can safely close this dialogue.",
                         tradeDetail: res,
                         tradeComplete: true
                     });
@@ -175,7 +175,7 @@ var Overview = React.createClass({
                         tradeHeader: "Trade failed",
                         tradeStatus: "Your trade could not be completed.",
                         tradeDetail: err,
-                        tradeComplete: false
+                        tradeComplete: true
                     });
                 },
                 onOrderCreated: function (orders) {
@@ -299,7 +299,6 @@ var Overview = React.createClass({
                 </h4>
                 {buySellActions}
                 <ProgressModal
-                    // autoFocus={!this.state.tradeComplete}
                     backdrop="static"
                     show={this.state.tradeProgressModalOpen}
                     header={this.state.tradeHeader}

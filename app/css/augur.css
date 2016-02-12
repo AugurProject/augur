@@ -245,6 +245,9 @@ nav.header .register {
     font-size: 12pt;
     font-style: italic;
 }
+.progress-status-box {
+    padding-bottom: 10px;
+}
 
 .modal h3 {
     margin-top: 0px;

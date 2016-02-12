@@ -21,8 +21,10 @@ module.exports = React.createClass({
     if (this.props.complete) {
       closeButton = (
         <Button
-          bsStyle="default"
-          onClick={this.props.onHide}>
+          bsStyle="success"
+          bsSize="large"
+          onClick={this.props.onHide}
+          block>
           Close
         </Button>
       );
@@ -34,7 +36,7 @@ module.exports = React.createClass({
         </div>
         <div className="modal-body clearfix">
           <div className="row">
-            <div className="col-sm-12">
+            <div className="col-sm-12 progress-status-box">
               <span className="progress-status">{this.props.status}</span>
             </div>
           </div>
