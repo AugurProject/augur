@@ -37,7 +37,10 @@ module.exports = React.createClass({
         <div className="modal-body clearfix">
           <div className="row">
             <div className="col-sm-12 progress-status-box">
-              <span className="progress-status">{this.props.status}</span>
+              <span
+                className="progress-status"
+                dangerouslySetInnerHTML={{__html: this.props.status}}>
+              </span>
             </div>
           </div>
           <div className="row">

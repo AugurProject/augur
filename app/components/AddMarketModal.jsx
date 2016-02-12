@@ -228,7 +228,7 @@ let AddMarketModal = React.createClass({
         console.log("new event submitted:", res.txHash);
         var progressModal = self.state.progressModal;
         progressModal.header = "Creating Event";
-        progressModal.status = "New event submitted. Waiting for confirmation...";
+        progressModal.status = "New event submitted. Waiting for confirmation...<br />Event ID: <small>" + res.callReturn + "</small>";
         progressModal.detail = res;
         self.setState({progressModal: progressModal});
         self.toggleProgressModal();
@@ -238,10 +238,11 @@ let AddMarketModal = React.createClass({
         var events = res.callReturn;
         var progressModal = self.state.progressModal;
         progressModal.header = "Creating Event";
-        progressModal.status += "\nNew event confirmed.\nEvent ID: " + events;
+        progressModal.status += "<br />New event confirmed.";
         progressModal.detail = res;
         self.setState({progressModal: progressModal});
         if (events.constructor !== Array) events = [events];
+        var checkbox = {createMarket: false, addMetadata: false};
         flux.augur.createMarket({
           branchId: branchId,
           description: newMarketParams.description,
@@ -253,7 +254,7 @@ let AddMarketModal = React.createClass({
             console.log("new market submitted:", r.txHash);
             var progressModal = self.state.progressModal;
             progressModal.header = "Creating Market";
-            progressModal.status = "New market submitted. Waiting for confirmation...";
+            progressModal.status += "<br />New market submitted.<br />Market ID: <small>" + r.callReturn + "</small><br />Waiting for confirmation...";
             progressModal.detail = r;
             self.setState({progressModal: progressModal});
             flux.augur.ramble.addMetadata({
@@ -267,18 +268,27 @@ let AddMarketModal = React.createClass({
               console.log("ramble.addMetadata sent:", res);
               var progressModal = self.state.progressModal;
               progressModal.header = "Creating Market";
-              progressModal.status += "\nMarket metadata submitted. Waiting for confirmation...";
+              progressModal.status += "<br />Uploading market metadata...";
               progressModal.detail = r;
               self.setState({progressModal: progressModal});
             }, function (res) {
               console.log("ramble.addMetadata success:", res);
               var progressModal = self.state.progressModal;
               progressModal.header = "Creating Market";
-              progressModal.status += "\nMarket metadata confirmed.";
+              progressModal.status += "<br />Market metadata uploaded.";
               progressModal.detail = r;
+              checkbox.addMetadata = true;
+              if (checkbox.createMarket) {
+                progressModal.complete = true;
+                progressModal.status += "<br />Your market has been successfully created! This dialogue can now be safely closed.";
+              }
               self.setState({progressModal: progressModal});
             }, function (err) {
               console.error("ramble.addMetadata:", err);
+              var progressModal = self.state.progressModal;
+              progressModal.header = "Creating Market";
+              progressModal.status += "<br />Market metadata upload failed.";
+              progressModal.detail = r;
             });
           },
           onSuccess: function (r) {
@@ -286,9 +296,13 @@ let AddMarketModal = React.createClass({
             var marketId = abi.bignum(r.callReturn);
             var progressModal = self.state.progressModal;
             progressModal.header = "Creating Market";
-            progressModal.status += "\nNew market confirmed. Your market has been successfully created! This dialogue can now be safely closed.\nMarket ID: " + r.callReturn;
+            progressModal.status += "<br />New market confirmed.";
             progressModal.detail = r;
-            progressModal.complete = true;
+            checkbox.createMarket = true;
+            if (checkbox.addMetadata) {
+              progressModal.complete = true;
+              progressModal.status += "<br /><b>Your market has been successfully created!</b> This dialogue can now be safely closed.";
+            }
             self.setState({progressModal: progressModal});
             flux.actions.market.deleteMarket(pendingId);
             flux.actions.market.loadMarket(marketId);
