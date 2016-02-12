@@ -9,7 +9,7 @@ var q = [new Decimal(10),      // outcome 1 shares
          new Decimal(10),      // outcome 3 shares
          new Decimal(10),      // outcome 4 shares
          new Decimal(10)];     // outcome 5 shares
-var i = 1;                     // outcome to trade
+var i = 1;                     // index of outcome to trade
 var a = new Decimal("0.0079"); // LS-LMSR alpha
 var xi = new Decimal("0.3");   // price cap
 

@@ -22,13 +22,16 @@ module.exports = {
         fill: function (marketInfo, order) {
             var amount, filled;
             var q = new Array(marketInfo.numOutcomes);
-            for (var i = 0; i < marketInfo.outcomes; ++i) {
-                q[i] = marketInfo.outcomes[i].outstandingShares;
+            order.amount = utils.toDecimal(order.amount);
+            order.alpha = utils.toDecimal(order.alpha);
+            for (var i = 0; i < marketInfo.numOutcomes; ++i) {
+                q[i] = utils.toDecimal(marketInfo.outcomes[i].outstandingShares);
             }
-            var n = this.sharesToTrade(q, order.outcome-1, marketInfo.alpha, order.limit);
+            order.outcome = parseInt(order.outcome);
+            var n = new Decimal(this.sharesToTrade(q, order.outcome-1, marketInfo.alpha, order.cap));
 
             // if n >= amount, this is a stop order
-            if (n.gte(amount)) {
+            if (n.gte(order.amount)) {
                 amount = order.amount.toFixed();
                 filled = true;
 
@@ -46,9 +49,11 @@ module.exports = {
             q = utils.toDecimal(q);
             a = utils.toDecimal(a);
             cap = utils.toDecimal(cap);
-            return fzero(function (n) {
+            var soln = fzero(function (n) {
                 return self.f(n, q, i, a, cap);
-            }, 1e-12, 1000).solution;
+            }, 0.5, {verbose: true, maxiter: 100, maxfev: 500});
+            if (soln.code !== 1) console.warn("fzero:", soln);
+            return soln.solution;
         },
 
         // LS-LMSR objective function (optimize n)

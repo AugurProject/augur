@@ -2246,9 +2246,14 @@ Augur.prototype.getAccountMeanTradePrices = function (account, cb) {
 
 Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
     var self = this;
+    console.log("checkOrder.order:", order);
     var currentPrice = new BigNumber(this.price(marketInfo, outcome));
-    order.amount = new BigNumber(order.amount);
-    order.price = new BigNumber(order.price);
+    if (order.amount.constructor !== BigNumber) {
+        order.amount = new BigNumber(order.amount);
+    }
+    if (order.price.constructor !== BigNumber) {
+        order.price = new BigNumber(order.price);
+    }
     order.branch = marketInfo.branchId;
     order.market = marketInfo._id;
     order.outcome = outcome;
@@ -2262,8 +2267,10 @@ Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
     }
     if (priceMatched) {
         var trade;
-        if (order.limit) {
+        if (order.cap) {
+            console.log("cap:", order.cap);
             trade = this.orders.limit.fill(marketInfo, order);
+            console.log("limit.fill.trade:", trade);
         } else {
             trade = {order: order, amount: order.amount.toFixed(), filled: true};
         }
@@ -2276,7 +2283,7 @@ Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
             amount: trade.amount,
             limit: order.limit,
             onSent: function (res) {
-                self.orders.cancel(order.id);
+                self.orders.cancel(self.from, order.market, order.outcome, order.id);
                 if (!trade.filled) {
                     self.orders.create(JSON.parse(JSON.stringify(trade.order)));
                 }
@@ -2291,7 +2298,9 @@ Augur.prototype.checkOutcomeOrderList = function (marketInfo, outcome, orderList
     var self = this;
     var matchedOrders = [];
     async.each(orderList, function (order, nextOrder) {
+        console.log("order:", order);
         self.checkOrder(marketInfo, outcome, order, function (matched) {
+            console.log("matched:", matched);
             if (matched && !matched.error) {
                 matchedOrders.push(matched);
                 return nextOrder();
@@ -2313,7 +2322,9 @@ Augur.prototype.checkOrderBook = function (market, cb) {
     if (market.constructor === Object && market.network && market.events) {
         if (!orders[market._id]) return cb(false);
         async.forEachOf(orders[market._id], function (orderList, outcome, nextOutcome) {
+            console.log("orderList:", orderList);
             self.checkOutcomeOrderList(market, outcome, orderList, function (matched) {
+                console.log("matched:", matched);
                 if (matched && matched.constructor === Array) {
                     matchedOrders = matchedOrders.concat(matched);
                     return nextOutcome();
@@ -2352,7 +2363,7 @@ Augur.prototype.trade = function (branch, market, outcome, amount, limit, stop, 
         limit = branch.limit;
         stop = branch.stop;
         expiration = branch.expiration; // NYI
-        cap = branch.cap;               // NYI
+        cap = branch.cap;
         if (branch.callbacks) callbacks = clone(branch.callbacks);
         branch = branch.branch;
     }

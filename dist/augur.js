@@ -65018,13 +65018,16 @@ module.exports = {
         fill: function (marketInfo, order) {
             var amount, filled;
             var q = new Array(marketInfo.numOutcomes);
-            for (var i = 0; i < marketInfo.outcomes; ++i) {
-                q[i] = marketInfo.outcomes[i].outstandingShares;
+            order.amount = utils.toDecimal(order.amount);
+            order.alpha = utils.toDecimal(order.alpha);
+            for (var i = 0; i < marketInfo.numOutcomes; ++i) {
+                q[i] = utils.toDecimal(marketInfo.outcomes[i].outstandingShares);
             }
-            var n = this.sharesToTrade(q, order.outcome-1, marketInfo.alpha, order.limit);
+            order.outcome = parseInt(order.outcome);
+            var n = new Decimal(this.sharesToTrade(q, order.outcome-1, marketInfo.alpha, order.cap));
 
             // if n >= amount, this is a stop order
-            if (n.gte(amount)) {
+            if (n.gte(order.amount)) {
                 amount = order.amount.toFixed();
                 filled = true;
 
@@ -65042,9 +65045,11 @@ module.exports = {
             q = utils.toDecimal(q);
             a = utils.toDecimal(a);
             cap = utils.toDecimal(cap);
-            return fzero(function (n) {
+            var soln = fzero(function (n) {
                 return self.f(n, q, i, a, cap);
-            }, 1e-12, 1000).solution;
+            }, 0.5, {verbose: true, maxiter: 100, maxfev: 500});
+            if (soln.code !== 1) console.warn("fzero:", soln);
+            return soln.solution;
         },
 
         // LS-LMSR objective function (optimize n)
@@ -65419,7 +65424,18 @@ module.exports = function () {
                                             cost: abi.unfix(data_array[1], "string"),
                                             blockNumber: abi.string(filtrate[i].blockNumber)
                                         });
-                                        augur.checkOrderBook(market);
+                                        console.log("message:", {
+                                            user: abi.format_address(filtrate[i].topics[1]),
+                                            marketId: market,
+                                            outcome: outcome,
+                                            price: abi.unfix(data_array[0], "string"),
+                                            cost: abi.unfix(data_array[1], "string"),
+                                            blockNumber: abi.string(filtrate[i].blockNumber)
+                                        });
+                                        augur.checkOrderBook(market, function (res) {
+                                            console.log("checkOrderBook:", res);
+                                        });
+                                        console.log("checked!");
                                     }
                                 } catch (exc) {
                                     console.error("updatePrice filter:", exc);
@@ -68135,9 +68151,14 @@ Augur.prototype.getAccountMeanTradePrices = function (account, cb) {
 
 Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
     var self = this;
+    console.log("checkOrder.order:", order);
     var currentPrice = new BigNumber(this.price(marketInfo, outcome));
-    order.amount = new BigNumber(order.amount);
-    order.price = new BigNumber(order.price);
+    if (order.amount.constructor !== BigNumber) {
+        order.amount = new BigNumber(order.amount);
+    }
+    if (order.price.constructor !== BigNumber) {
+        order.price = new BigNumber(order.price);
+    }
     order.branch = marketInfo.branchId;
     order.market = marketInfo._id;
     order.outcome = outcome;
@@ -68151,8 +68172,10 @@ Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
     }
     if (priceMatched) {
         var trade;
-        if (order.limit) {
+        if (order.cap) {
+            console.log("cap:", order.cap);
             trade = this.orders.limit.fill(marketInfo, order);
+            console.log("limit.fill.trade:", trade);
         } else {
             trade = {order: order, amount: order.amount.toFixed(), filled: true};
         }
@@ -68165,7 +68188,7 @@ Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
             amount: trade.amount,
             limit: order.limit,
             onSent: function (res) {
-                self.orders.cancel(order.id);
+                self.orders.cancel(self.from, order.market, order.outcome, order.id);
                 if (!trade.filled) {
                     self.orders.create(JSON.parse(JSON.stringify(trade.order)));
                 }
@@ -68180,7 +68203,9 @@ Augur.prototype.checkOutcomeOrderList = function (marketInfo, outcome, orderList
     var self = this;
     var matchedOrders = [];
     async.each(orderList, function (order, nextOrder) {
+        console.log("order:", order);
         self.checkOrder(marketInfo, outcome, order, function (matched) {
+            console.log("matched:", matched);
             if (matched && !matched.error) {
                 matchedOrders.push(matched);
                 return nextOrder();
@@ -68202,7 +68227,9 @@ Augur.prototype.checkOrderBook = function (market, cb) {
     if (market.constructor === Object && market.network && market.events) {
         if (!orders[market._id]) return cb(false);
         async.forEachOf(orders[market._id], function (orderList, outcome, nextOutcome) {
+            console.log("orderList:", orderList);
             self.checkOutcomeOrderList(market, outcome, orderList, function (matched) {
+                console.log("matched:", matched);
                 if (matched && matched.constructor === Array) {
                     matchedOrders = matchedOrders.concat(matched);
                     return nextOutcome();
@@ -68241,7 +68268,7 @@ Augur.prototype.trade = function (branch, market, outcome, amount, limit, stop, 
         limit = branch.limit;
         stop = branch.stop;
         expiration = branch.expiration; // NYI
-        cap = branch.cap;               // NYI
+        cap = branch.cap;
         if (branch.callbacks) callbacks = clone(branch.callbacks);
         branch = branch.branch;
     }
@@ -99721,13 +99748,14 @@ function toDecimal(x) {
     return x;
 }
 
-module.exports = function (f, lower, upper, options) {
+module.exports = function (f, bounds, options) {
     options = options || {};
     var mu = toDecimal(options.mu) || new Decimal("0.5");
     var eps = toDecimal(options.eps) || new Decimal("0.001");
     var tolx = toDecimal(options.tolx) || new Decimal(0);
     var maxiter = options.maxiter || 100;
     var maxfev = options.maxfev || maxiter;
+    var verbose = options.verbose;
 
     // The default exit flag if exceeded number of iterations.
     var code = 0;
@@ -99742,12 +99770,59 @@ module.exports = function (f, lower, upper, options) {
     var fb = new Decimal(NaN);
 
     // Prepare...
-    a = new Decimal(lower);
+    if (bounds === null || bounds === undefined) {
+        throw new Error("Initial guess required");
+    }
+    if (bounds.constructor === Array && bounds.length) {
+        a = new Decimal(bounds[0].toString());
+    } else {
+        a = new Decimal(bounds.toString());
+    }
     fa = toDecimal(f(a.toString()));
     nfev = 1;
-    b = new Decimal(upper);
-    fb = toDecimal(f(b.toString()));
-    nfev += 1;
+    if (bounds.constructor === Array && bounds.length > 1) {
+        b = new Decimal(bounds[1].toString());
+        fb = toDecimal(f(b.toString()));
+        nfev += 1;
+    } else {
+        // Try to get b.
+        if (verbose) {
+            console.log("Search for an interval around", a.toString(), "containing a sign change:");
+            console.log("count\ta\t\tf(a)\t\t\t\tb\t\tf(b)");
+        }
+        var bracketed, blist;
+        var aa = (a.eq(new Decimal(0))) ? new Decimal(1) : a;
+        var tries = 0;
+        do {
+            blist = [
+                aa.times(new Decimal("0.9")),
+                aa.times(new Decimal("1.1")),
+                aa.minus(new Decimal(1)),
+                aa.plus(new Decimal(1)),
+                aa.times(new Decimal("0.5")),
+                aa.times(new Decimal("1.5")),
+                aa.neg(),
+                aa.times(new Decimal(2)),
+                aa.times(new Decimal(10)).neg(),
+                aa.times(new Decimal(10))
+            ];
+            for (var j = 0, len = blist.length; j < len; ++j) {
+                b = blist[j];
+                fb = toDecimal(f(b.toString()));
+                if (verbose) {
+                    console.log(nfev + "\t\t" + aa + "\t\t" + fa + "\t\t" + b + "\t\t" + fb);
+                }
+                nfev += 1;
+                if (fa.s * fb.s <= 0) {
+                    a = aa;
+                    bracketed = true;
+                    break;
+                }
+            }
+            aa = aa.times(new Decimal(Math.random().toString())).plus(new Decimal(tries*(Math.random() - 0.5).toString()));
+            fa = toDecimal(f(aa.toString()));
+        } while (!bracketed && ++tries < maxiter);
+    }
 
     var u, fu;
     if (b.lt(a)) {
@@ -99758,7 +99833,6 @@ module.exports = function (f, lower, upper, options) {
         fa = fb;
         fb = fu;
     }
-
     if (fa.s * fb.s > 0) {
         throw new Error("Invalid initial bracketing");
     }
@@ -99784,7 +99858,13 @@ module.exports = function (f, lower, upper, options) {
     var fd = fu;
     var fe = fu;
     var mba = mu.times(b.minus(a));
-    var c, df;
+    var c, fc, df, procedure;
+    if (verbose) {
+        console.log("Search for a zero in the interval [" + a.toString() + ", " + b.toString() + "]:");
+        console.log("count\tx\t\t\tf(x)\t\t\tprocedure");
+        console.log(nfev + "\t\t" + a.toFixed(18) + "\t" + fa.toFixed(18) + "\tinitial lower");
+        console.log(nfev + "\t\t" + b.toFixed(18) + "\t" + fb.toFixed(18) + "\tinitial upper");
+    }
     while (niter < maxiter && nfev < maxfev) {
         switch (itype) {
         case 1:
@@ -99797,9 +99877,11 @@ module.exports = function (f, lower, upper, options) {
                 if (fa.abs().lte(fb.abs().times(new Decimal(1000))) && (fb.abs().lte(fa.abs().times(new Decimal(1000))))) {
                     // Secant step.
                     c = u.minus(a.minus(b).dividedBy(fa.minus(fb)).times(fu));
+                    procedure = "secant";
                 } else {
                     // Bisection step.
                     c = a.plus(b).dividedBy(new Decimal(2));
+                    procedure = "bisection";
                 }
                 d = u;
                 df = fu;
@@ -99821,6 +99903,7 @@ module.exports = function (f, lower, upper, options) {
                 var d32 = d31.minus(q21).times(fd).dividedBy(fd.minus(fa));
                 var q33 = d32.minus(q22).times(fa).dividedBy(fe.minus(fa));
                 c = a.plus(q31).plus(q32).plus(q33);
+                procedure = "interpolation (cubic)";
             }
             if (l < 4 || c.minus(a).s * c.minus(b).s < 0) {
                 // Quadratic interpolation + Newton.
@@ -99832,7 +99915,7 @@ module.exports = function (f, lower, upper, options) {
                 if (!a2.eq(new Decimal(0))) {
                     c = a.minus(a0.dividedBy(a1));
                     var pc, pdc;
-                    for (var j = 0; j < itype; ++j) {
+                    for (var k = 0; k < itype; ++k) {
                         pc = a0.plus(a1.plus(a2.times(c.minus(b)).times(c.minus(a))));
                         pdc = a1.plus(a2.times(c.times(new Decimal(2)).minus(a).minus(b)));
                         if (pdc.eq(new Decimal(0))) {
@@ -99842,6 +99925,7 @@ module.exports = function (f, lower, upper, options) {
                         }
                     }
                 }
+                procedure = "interpolation (quadratic)";
             }
             itype++;
             break;
@@ -99856,6 +99940,7 @@ module.exports = function (f, lower, upper, options) {
         case 5:
             // Bisection step.
             c = b.plus(a).dividedBy(new Decimal(2));
+            procedure = "bisection";
             itype = 2;
         }
 
@@ -99880,9 +99965,12 @@ module.exports = function (f, lower, upper, options) {
         // Calculate new point.
         x = c;
         fval = toDecimal(f(c.toString()));
-        var fc = fval;
+        fc = fval;
         niter++;
         nfev++;
+        if (verbose) {
+            console.log(nfev + "\t\t" + x.toFixed(18) + "\t" + fval.toFixed(18) + "\t" + procedure);
+        }
 
         // Modification 2: skip inverse cubic interpolation if non-monotonicity
         // is detected.
@@ -122206,7 +122294,7 @@ module.exports = {
         });
     },
 
-    // metadata: {image: blob, details: text, links: url array}
+    // metadata: {image: blob, details: text, links: url array, source: text}
     addMetadata: function (metadata, onSent, onSuccess, onFailed) {
         var self = this;
         var tx = {
