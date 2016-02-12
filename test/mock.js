@@ -113,6 +113,9 @@ var flux = {
         COMMENT_SAVED: function (payload) {
             flux.stores.market.handleCommentSaved(payload);
         },
+        CHECK_ORDER_BOOK_SUCCESS: function (payload) {
+            flux.stores.market.handleCheckOrderBookSuccess(payload);
+        },
 
         // network
         UPDATE_NETWORK: function (payload) {

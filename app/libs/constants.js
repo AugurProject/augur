@@ -61,7 +61,8 @@ module.exports = {
     LOAD_PRICE_HISTORY_SUCCESS: null,
     UPDATE_ORDERS_SUCCESS: null,
     LOAD_ORDERS_SUCCESS: null,
-    COMMENT_SAVED: null
+    COMMENT_SAVED: null,
+    CHECK_ORDER_BOOK_SUCCESS: null
   }),
   search: keyMirror({
     KEYWORDS_UPDATED: null,

@@ -1,15 +1,16 @@
-var _ = require("lodash");
-var abi = require("augur-abi");
-var React = require("react");
+let _ = require("lodash");
+let abi = require("augur-abi");
+let React = require("react");
 let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
-var utilities = require("../libs/utilities");
-var constants = require("../libs/constants");
+let utilities = require("../libs/utilities");
+let constants = require("../libs/constants");
 let Input = require('react-bootstrap/lib/Input');
 let Button = require('react-bootstrap/lib/Button');
+let TradeProgressModal = require("./TradeProgressModal");
 
-var NO = 1;
-var YES = 2;
+let NO = 1;
+let YES = 2;
 
 var priceToPercentage = function (price) {
     if (price) {
@@ -27,8 +28,15 @@ var Overview = React.createClass({
         return {
             pending: {},
             buyShares: false,
-            sellShares: false
-        }
+            sellShares: false,
+            tradeProgressModalOpen: false,
+            tradeStatus: "",
+            tradeDetail: null
+        };
+    },
+
+    toggleTradeProgressModal: function (event) {
+        this.setState({tradeProgressModalOpen: !this.state.tradeProgressModalOpen});
     },
 
     componentWillReceiveProps: function (nextProps) {
@@ -70,6 +78,11 @@ var Overview = React.createClass({
             callbacks: {
                 onMarketHash: function (marketHash) {
                     console.debug("marketHash:", marketHash);
+                    self.setState({
+                        tradeStatus: "Created trade hash.",
+                        tradeDetail: {marketHash}
+                    });
+                    self.toggleTradeProgressModal();
                 },
                 onCommitTradeSent: function (res) {
                     console.debug("commit trade:", res);
@@ -81,7 +94,10 @@ var Overview = React.createClass({
                     var newState = {
                         pending: self.state.pending,
                         buyShares: false,
-                        sellShares: false
+                        sellShares: false,
+                        tradeProgressModalOpen: self.state.tradeProgressModalOpen,
+                        tradeStatus: "Sent trade commitment...",
+                        tradeDetail: res
                     };
                     var oldPrice = flux.store("market").getMarket(
                         marketId
@@ -96,31 +112,54 @@ var Overview = React.createClass({
                 },
                 onCommitTradeSuccess: function (res) {
                     console.info("trade committed:", res.txHash);
+                    self.setState({
+                        tradeStatus: "Trade committed. Waiting for next block...",
+                        tradeDetail: res
+                    });
                 },
                 onCommitTradeFailed: function (err) {
                     console.error("commit trade failed:", err);
                     var pending = self.state.pending;
                     delete pending[txhash];
-                    self.setState({pending: pending})
+                    self.setState({
+                        pending: pending,
+                        tradeStatus: "Could not commit trade.",
+                        tradeDetail: err
+                    });
                 },
                 onNextBlock: function (blockNumber) {
                     console.debug("got next block:", blockNumber);
+                    self.setState({
+                        tradeStatus: "Block " + blockNumber + " arrived!",
+                        tradeDetail: {blockNumber}
+                    });
                 },
                 onTradeSent: function (res) {
                     console.debug("trade:", res);
+                    self.setState({
+                        tradeStatus: "Trade submitted.",
+                        tradeDetail: res
+                    });
                 },
                 onTradeSuccess: function (res) {
-                    console.info("trade succeeded:", res.txHash);
-                    flux.actions.market.tradeSucceeded(self.state.pending[res.txHash], marketId);
                     var pending = self.state.pending;
                     delete pending[res.txHash];
-                    self.setState({pending: pending})
+                    self.setState({
+                        pending: pending,
+                        tradeStatus: "Trade successful!",
+                        tradeDetail: res
+                    });
+                    flux.actions.market.tradeSucceeded(self.state.pending[res.txHash], marketId);
                 },
                 onTradeFailed: function (err) {
                     console.error("trade failed:", err);
                     var pending = self.state.pending;
                     delete pending[txhash];
-                    self.setState({pending: pending})
+                    self.setState({
+                        pending: pending,
+                        tradeStatus: "Trade failed.",
+                        tradeDetail: err
+                    });
                 },
                 onOrderCreated: function (orders) {
                     self.setState({buyShares: false, sellShares: false});
@@ -242,6 +281,11 @@ var Overview = React.createClass({
                     {description.outcome} ({percentageFormatted})
                 </h4>
                 {buySellActions}
+                <TradeProgressModal
+                    show={this.state.tradeProgressModalOpen}
+                    status={this.state.tradeStatus}
+                    detail={JSON.stringify(this.state.tradeDetail, null, 2)}
+                    onHide={this.toggleTradeProgressModal} />
             </div>
         );
     }

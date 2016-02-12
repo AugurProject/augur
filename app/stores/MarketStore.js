@@ -10,7 +10,8 @@ module.exports = {
     orders: {},
     marketLoadingIds: null,
     loadingPage: null,
-    marketsPerPage: constants.MARKETS_PER_PAGE
+    marketsPerPage: constants.MARKETS_PER_PAGE,
+    orderBookChecked: null
   },
   getState: function () {
     return this.state;
@@ -101,6 +102,10 @@ module.exports = {
     this.emit(constants.CHANGE_EVENT);
   },
   handleCommentSaved: function () {
+    this.emit(constants.CHANGE_EVENT);
+  },
+  handleCheckOrderBookSuccess: function (payload) {
+    this.state.orderBookChecked = true;
     this.emit(constants.CHANGE_EVENT);
   },
   marketIsLoaded: function (marketId) {

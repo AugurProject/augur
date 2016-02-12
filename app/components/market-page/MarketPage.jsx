@@ -23,6 +23,7 @@ let MarketPage = React.createClass({
     getInitialState() {
         return {
             priceHistoryTimeout: null,
+            orderBookTimeout: null,
             addMarketModalOpen: false
         };
     },
@@ -50,6 +51,7 @@ let MarketPage = React.createClass({
         };
     },
     componentDidMount() {
+        this.checkOrderBook();
         this.getPriceHistory();
 
         this.stylesheetEl = document.createElement("link");
@@ -62,6 +64,20 @@ let MarketPage = React.createClass({
         this.stylesheetEl.remove();
 
         clearTimeout(this.state.priceHistoryTimeout);
+        clearTimeout(this.state.orderBookTimeout);
+    },
+
+    checkOrderBook() {
+        console.info("checking order book...");
+        var market = this.state.market;
+        if (this.state.orderBookTimeout) {
+            clearTimeout(this.state.orderBookTimeout);
+        }
+        if (market && market.constructor === Object && market._id &&
+            !market.orderBookChecked) {
+            return this.getFlux().actions.market.checkOrderBook(market);
+        }
+        this.setState({orderBookTimeout: setTimeout(this.checkOrderBook, 5000)});
     },
 
     getPriceHistory() {
@@ -71,9 +87,10 @@ let MarketPage = React.createClass({
         }
         if (market && market.constructor === Object && market._id &&
             !market.priceHistory && !market.priceHistoryStatus) {
+            console.info("loading price history...");
             return this.getFlux().actions.market.loadPriceHistory(market);
         }
-        this.setState({priceHistoryTimeout: setTimeout(this.getPriceHistory, 2500)});
+        this.setState({priceHistoryTimeout: setTimeout(this.getPriceHistory, 5000)});
     },
 
     toggleCloseMarketModal(event) {
