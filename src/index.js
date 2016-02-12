@@ -2242,18 +2242,13 @@ Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
         var trade;
         if (order.cap) {
             trade = this.orders.limit.fill(marketInfo, order);
+            console.log("trade:", trade);
         } else {
             trade = {order: order, amount: order.amount.toFixed(), filled: true};
         }
 
         // execute order
         if (trade !== undefined) {
-            console.log({
-                branch: order.branch,
-                market: order.market,
-                outcome: order.outcome,
-                amount: trade.amount
-            });
             this.trade({
                 branch: order.branch,
                 market: order.market,
@@ -2261,27 +2256,28 @@ Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
                 amount: trade.amount,
                 callbacks: {
                     onMarketHash: function (marketHash) {
-                        console.log("marketHash:", marketHash);
+                        console.log("checkOrder.marketHash:", marketHash);
                     },
                     onCommitTradeSent: function (res) {
-                        console.log("commitTradeSent:", res);
+                        console.log("checkOrder.commitTradeSent:", res);
                     },
                     onCommitTradeSuccess: function (res) {
-                        console.log("commitTradeSuccess:", res);
+                        console.log("checkOrder.commitTradeSuccess:", res);
                     },
                     onCommitTradeFailed: cb,
                     onNextBlock: function (blockNumber) {
-                        console.log("blockNumber:", blockNumber);
+                        console.log("checkOrder.blockNumber:", blockNumber);
                     },
                     onTradeSent: function (res) {
-                        console.log("trade sent:", res);
-                        console.log("cancel order:", self.from, order.market, order.outcome, order.id);
+                        console.log("checkOrder.trade sent:", res);
                         var cancelled = self.orders.cancel(self.from, order.market, order.outcome, order.id);
-                        console.log("cancelled:", cancelled);
+                        console.log("checkOrder.cancelled:", cancelled);
                         if (!trade.filled) {
-                            console.log("create order:", JSON.parse(JSON.stringify(trade.order)));
-                            var created = self.orders.create(JSON.parse(JSON.stringify(trade.order)));
-                            console.log("created:", created);
+                            var newOrder = JSON.parse(JSON.stringify(trade.order));
+                            newOrder.account = self.from;
+                            console.log("checkOrder.create order:", newOrder);
+                            var created = self.orders.create(newOrder);
+                            console.log("checkOrder.created:", created);
                         }
                     },
                     onTradeSuccess: function (res) {
@@ -2322,9 +2318,7 @@ Augur.prototype.checkOrderBook = function (market, cb) {
     if (market.constructor === Object && market.network && market.events) {
         if (!orders[market._id]) return cb(false);
         async.forEachOf(orders[market._id], function (orderList, outcome, nextOutcome) {
-            console.log("orderList:", orderList);
             self.checkOutcomeOrderList(market, outcome, orderList, function (matched) {
-                console.log("matched:", matched);
                 if (matched && matched.constructor === Array) {
                     matchedOrders = matchedOrders.concat(matched);
                     return nextOutcome();

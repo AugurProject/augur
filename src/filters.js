@@ -213,7 +213,7 @@ module.exports = function () {
                                             cost: abi.unfix(data_array[1], "string"),
                                             blockNumber: abi.string(filtrate[i].blockNumber)
                                         });
-                                        augur.checkOrderBook(market, augur.utils.pass);
+                                        augur.checkOrderBook.call(augur, market, augur.utils.pass);
                                     }
                                 } catch (exc) {
                                     console.error("updatePrice filter:", exc);
