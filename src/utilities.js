@@ -10,6 +10,7 @@ var Decimal = require("decimal.js");
 var BigNumber = require("bignumber.js");
 var validator = require("validator");
 var moment = require("moment");
+var clone = require("clone");
 var chalk = require("chalk");
 var abi = require("augur-abi");
 var constants = require("./constants");
@@ -253,7 +254,8 @@ module.exports = {
         }
     },
 
-    sha256: function (x) {
+    sha256: function (hashable) {
+        var x = clone(hashable);
         if (x && x.constructor === Array) {
             var digest, cat = "";
             for (var i = 0, n = x.length; i < n; ++i) {

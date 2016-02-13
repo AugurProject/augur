@@ -312,7 +312,6 @@ describe("utilities.sha256", function () {
         ],
         digest: "0x538aa2dd26a5d1db8c1f6bdfb315adc33fb5379a18825e6fe3ef14b8b59b797",
     });
-
     test({
         hashable: [
             0,
@@ -326,17 +325,14 @@ describe("utilities.sha256", function () {
         ],
         digest: "-0x2bae070a9240691ee2f3f411b1991c8a352b1f8fd62c36a87e39a29b76d7005d"
     });
-
     test({
         hashable: ["0x7400000000000000000000000000000000000000000000000000000000000000"],
         digest: "-0x2e8c29d90f159b09eef703e9a8cfed11abf3e215b8b8008d4073df0e6756592e"
     });
-
     test({
         hashable: ["test"],
         digest: "-0x60792f7e77b3829a65d0155f3aa52fea5c40b0e4d4f47dd32ea293ea4f0ff5f8"
     });
-
     test({
         hashable: [
             0,
@@ -351,7 +347,6 @@ describe("utilities.sha256", function () {
         ],
         digest: "0x4a9b8e665ea0913ce571407c493a5f45d8f0a7c45fbad55c6168e8f4408086f6"
     });
-
     test({
         hashable: [
             0,
@@ -366,7 +361,6 @@ describe("utilities.sha256", function () {
         ],
         digest: "-0x5fea28275da61ee79ac4410c00c593b09b3a35372b6d76498cb874714a04f5ee"
     });
-
     test({
         hashable: [
             0,
@@ -381,12 +375,10 @@ describe("utilities.sha256", function () {
         ],
         digest: "-0x5b9fcc7b08c38be45843adb61ef9ff62aa9ac003440d83112173367f88fcbe2e"
     });
-
     test({
         hashable: [0, "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1"],
         digest: "-0x165e7f97f6cd4b9701c861e9c84a8976b37c5b547ed08c0108bd08e746e5aed8"
     });
-
     test({
         hashable: [
             0,
@@ -395,7 +387,6 @@ describe("utilities.sha256", function () {
         ],
         digest: "0x4d8c092bf54a017de7e487f39c83cc0edbc7ae0bf847538b308d7bc67f9d2d1f"
     });
-
     test({
         hashable: [
             0,
@@ -406,7 +397,6 @@ describe("utilities.sha256", function () {
         ],
         digest: "0x38f40e59d912ba5ee78b9dad9698930c23091b9e8e5b42b92a474be13f84115f"
     });
-
     test({
         hashable: [
             0,
@@ -419,7 +409,6 @@ describe("utilities.sha256", function () {
         ],
         digest: "-0x62287c55ac6b484420007081f4cb94a015d23a3ea145a7bb77ce11a2da9e4bc5"
     });
-
     test({
         hashable: [
             0,
@@ -433,7 +422,6 @@ describe("utilities.sha256", function () {
         ],
         digest: "0x4b951f53971e00728d65b00a836060cc6f0346b2f7e3e49f2290510084a58b01"
     });
-
     test({
         hashable: [
             0,
@@ -449,7 +437,6 @@ describe("utilities.sha256", function () {
         ],
         digest: "0x300eeb23933248681b9932be6c5037bc3dd0f1aa96dd816e5f71b9c5c13ad4cb"
     });
-
     test({
         hashable: [
             0,
@@ -466,7 +453,6 @@ describe("utilities.sha256", function () {
         ],
         digest: "-0x2a2aa2062e4cd814588761e57c066081e77c4b872747a55b295b0070eb222821"
     });
-
     test({
         hashable: [
             0,
@@ -483,5 +469,109 @@ describe("utilities.sha256", function () {
             "What will the high temperature (in degrees Fahrenheit) be in San Francisco, California, on July 1, 2016?"
         ],
         digest: "0xf1b6b8c46c55bf949896568ad1a71ce64e10d5bcbb824ed9bd8cafb9660dc37"
+    });
+    test({
+        hashable: ["radical-accelerations-56zrpywcyuv7vi"],
+        digest: "-0x60a0a1a486f76acd6b9f6d28067a32dcf3c8bd2bf76cf30c59495068fed06ea1"
+    });
+    test({
+        hashable: [0, "radical-accelerations-56zrpywcyuv7vi"],
+        digest: "0x767efba5fddbb07d90e1f74764f4d0ff73c94a2da7b674e2c4fe6930a2d09ca4"
+    });
+    test({
+        hashable: [
+            0,
+            "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1",
+            "radical-accelerations-56zrpywcyuv7vi"
+        ],
+        digest: "-0x77012e8c44fe594ddf290b54d2aefb581f1585d618c4d79223835dcb777e1f11"
+    });
+    test({
+        hashable: [
+            0,
+            "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1",
+            abi.fix(47, "hex"),
+            "radical-accelerations-56zrpywcyuv7vi"
+        ],
+        digest: "-0x45cfde42e0d42c3e8f8b77fca226e5a65be055afd79123b327bfdfc8cc0a7c0e"
+    });
+    test({
+        hashable: [
+            0,
+            "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1",
+            abi.fix(47, "hex"),
+            100,
+            "radical-accelerations-56zrpywcyuv7vi"
+        ],
+        digest: "-0x35ffdee7abecb2a7255c5bb7fc6246026c470a3bb1f35499519ceb8817c2613e"
+    });
+    test({
+        hashable: [
+            0,
+            "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1",
+            abi.fix(47, "hex"),
+            100,
+            9309,
+            "0xf69b5",
+            "radical-accelerations-56zrpywcyuv7vi"
+        ],
+        digest: "-0x1ec61c05b221190459cb312e873c551fc236e036e9b65016b85ece9b52bfedb3"
+    });
+    test({
+        hashable: [1844674407370955162],
+        digest: "0x73bdea1ea123ffac86b53fa7bbe69d258087aabbca3d9207932977bd3e9f654c"
+    });
+    test({
+        hashable: [1844674407370955264],
+        digest: "0x73bdea1ea123ffac86b53fa7bbe69d258087aabbca3d9207932977bd3e9f654c"
+    });
+    test({
+        hashable: [1844674407370955300],
+        digest: "0x73bdea1ea123ffac86b53fa7bbe69d258087aabbca3d9207932977bd3e9f654c"
+    });
+    test({
+        hashable: [parseInt(abi.fix("0.1", "hex"))],
+        digest: "0x73bdea1ea123ffac86b53fa7bbe69d258087aabbca3d9207932977bd3e9f654c"
+    });
+    test({
+        hashable: [
+            0,
+            "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1",
+            abi.fix(47, "hex"),
+            100,
+            9309,
+            "0xf69b5",
+            parseInt(abi.fix("0.1", "hex")),
+            "radical-accelerations-56zrpywcyuv7vi"
+        ],
+        digest: "0x23ced47cb8e8b3d906a1c38a76bea3f70a81b139a8a02828d8ed4b5c4cb30f3e"
+    });
+    test({
+        hashable: [
+            0,
+            "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1",
+            abi.fix(47, "hex"), // creation fee
+            100, // period length
+            9309, // block number
+            "0xf69b5", // parent branch ID
+            parseInt(abi.fix("0.1", "hex")), // trading fee
+            0, // oracle only
+            "radical-accelerations-56zrpywcyuv7vi"
+        ],
+        digest: "0x47f06a5aa972f67b86e0906d683e77254a8c1a3511a3ff37dfbe509d38ce1d03"
+    });
+    test({
+        hashable: [
+            0,
+            "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b",
+            abi.fix(47, "hex"), // creation fee
+            100, // period length
+            9309, // block number
+            "0xf69b5", // parent branch ID
+            parseInt(abi.fix("0.1", "hex")), // trading fee
+            0, // oracle only
+            "radical-accelerations-56zrpywcyuv7vi"
+        ],
+        digest: "-0x5627db537a9449dfb609e836c32728d30bac7db248deb0d405c5585017db524c"
     });
 });
