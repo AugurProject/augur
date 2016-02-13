@@ -1382,6 +1382,13 @@ module.exports = function (network) {
             returns: "number",
             send: true
         },
+        submitReport: {
+            to: contracts.makeReports,
+            method: "submitReport",
+            signature: "iiiiii",
+            returns: "number",
+            send: true
+        },
         checkReportValidity: {
             to: contracts.makeReports,
             method: "checkReportValidity",
@@ -66904,6 +66911,35 @@ Augur.prototype.submitReportHash = function (branch, reportHash, votePeriod, eve
         self.transact(tx, onSent, onSuccess, onFailed);
     });
 };
+Augur.prototype.submitReport = function (branch, votePeriod, eventIndex, salt, report, eventID, ethics, onSent, onSuccess, onFailed) {
+    var self = this;
+    if (branch.constructor === Object && branch.branch) {
+        votePeriod = branch.votePeriod || branch.reportPeriod;
+        eventIndex = branch.eventIndex;
+        salt = branch.salt;
+        report = branch.report;
+        eventID = branch.eventID;
+        ethics = branch.ethics;
+        if (branch.onSent) onSent = branch.onSent;
+        if (branch.onSuccess) onSuccess = branch.onSuccess;
+        if (branch.onFailed) onFailed = branch.onFailed;
+        branch = branch.branch;
+    }
+    onSent = onSent || this.utils.pass;
+    onSuccess = onSuccess || this.utils.pass;
+    onFailed = onFailed || this.utils.pass;
+    var tx = clone(this.tx.submitReport);
+    if (eventIndex) {
+        tx.params = [branch, votePeriod, eventIndex, salt, report, eventID, ethics];
+        return this.transact(tx, onSent, onSuccess, onFailed);
+    }
+    this.getEventIndex(votePeriod, eventID, function (eventIndex) {
+        if (!eventIndex) return onFailed("couldn't get event index for " + eventID);
+        if (eventIndex.error) return onFailed(eventIndex);
+        tx.params = [branch, votePeriod, eventIndex, salt, report, eventID, ethics];
+        self.transact(tx, onSent, onSuccess, onFailed);
+    });
+};
 Augur.prototype.checkReportValidity = function (branch, report, votePeriod, callback) {
     var tx = clone(this.tx.checkReportValidity);
     tx.params = [branch, abi.fix(report, "hex"), votePeriod];
@@ -69679,6 +69715,27 @@ module.exports = {
     },
     getCode: function (address, block, f) {
         return this.broadcast(this.marshal("getCode", [address, block || "latest"]), f);
+    },
+
+    // Fast-forward a specified number of blocks
+    fastforward: function (blocks, callback) {
+        var startBlock, endBlock, self = this;
+        (function fastforward() {
+            self.blockNumber(function (blockNumber) {
+                blockNumber = parseInt(blockNumber);
+                if (startBlock === undefined) {
+                    startBlock = blockNumber;
+                    endBlock = blockNumber + parseInt(blocks);
+                }
+                if (self.debug.logs) {
+                    console.log("fastforward:",
+                        startBlock, "--", blockNumber, "-->", endBlock,
+                        "(" + (endBlock - blockNumber) + " blocks to go)");
+                }
+                if (blockNumber >= endBlock) return callback(endBlock);
+                setTimeout(fastforward, 2500);
+            });
+        })();
     },
 
     // Ethereum node status checks

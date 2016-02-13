@@ -135,7 +135,7 @@ describe("makeReports.makeHash", function () {
 
 describe("makeReports.submitReportHash", function () {
     var test = function (t) {
-        it("branch=" + newBranchID + ", report=" + report, function (done) {
+        it(JSON.stringify(t), function (done) {
             this.timeout(augur.constants.TIMEOUT*8);
             if (t.eventID === undefined) t.eventID = eventID;
             (function incrementPeriod() {
@@ -206,5 +206,73 @@ describe("makeReports.submitReportHash", function () {
     test({
         salt: salt,
         report: report
+    });
+});
+
+describe("makeReports.submitReport", function () {
+    var test = function (t) {
+        it(JSON.stringify(t), function (done) {
+            this.timeout(augur.constants.TIMEOUT*8);
+            if (t.eventID === undefined) t.eventID = eventID;
+
+            // fast-forward to the second half of the reporting period
+            var period = parseInt(augur.getVotePeriod(newBranchID));
+            augur.rpc.fastforward(periodLength / 2, function (endBlock) {
+                assert.strictEqual(parseInt(augur.getVotePeriod(newBranchID)), period);
+                var currentPeriod = augur.getCurrentPeriod(newBranchID);
+                console.log("Reporting period:", period);
+                console.log("Current period:", currentPeriod);
+                console.log("Events in period", period, augur.getEvents(newBranchID, period));
+                var eventIndex = augur.getEventIndex(period, t.eventID);
+                var reportHash = augur.makeHash(t.salt, t.report, t.eventID);
+                var diceroll = augur.rpc.sha3(abi.hex(abi.bignum(augur.from).plus(abi.bignum(eventID))));
+                var threshold = augur.calculateReportingThreshold(newBranchID, eventID, period);
+                var eventReportingThreshold = augur.getReportingThreshold(eventID);
+                var periodLength = parseInt(augur.getPeriodLength(newBranchID));
+                var blockNumber = augur.rpc.blockNumber();
+                var eventsID = augur.getEvent(newBranchID, period, eventIndex);
+                console.log("eventIndex:", eventIndex);
+                console.log("eventID:", eventID);
+                console.log("period:", period);
+                console.log("eventsID:", eventsID);
+                console.log("diceroll:", diceroll);
+                console.log("threshold:", threshold);
+                console.log("eventReportingThreshold:", eventReportingThreshold);
+                console.log("blockNumber:", blockNumber);
+                console.log("periodLength:", periodLength, periodLength/2);
+                console.log("residual:", blockNumber / periodLength);
+                console.log("blockNumber/periodLength < periodLength/2:", blockNumber / periodLength < periodLength / 2);
+                console.log("diceroll < threshold:", abi.bignum(diceroll).lt(abi.bignum(threshold)));
+                console.log("diceroll < eventReportingThreshold:", abi.bignum(diceroll).lt(abi.bignum(eventReportingThreshold)));
+                if (abi.bignum(diceroll).lt(abi.bignum(threshold))) {
+                    return augur.submitReport({
+                        branch: newBranchID,
+                        votePeriod: period,
+                        eventIndex: eventIndex,
+                        salt: t.salt,
+                        report: t.report,
+                        eventID: t.eventID,
+                        ethics: t.ethics,
+                        onSent: function (res) {
+                            console.log("submitReport sent:", res);
+                            assert(res.txHash);
+                            assert.strictEqual(res.callReturn, "1");
+                        },
+                        onSuccess: function (res) {
+                            console.log("submitReport success:", res);
+                            assert(res.txHash);
+                            assert.strictEqual(res.callReturn, "1");
+                            done();
+                        },
+                        onFailed: done
+                    });
+                }
+            });
+        });
+    };
+    test({
+        salt: salt,
+        report: report,
+        ethics: 1
     });
 });
