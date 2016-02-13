@@ -145,14 +145,14 @@ describe("makeReports.submitReportHash", function () {
                     var currentPeriod = augur.getCurrentPeriod(newBranchID);
                     console.log("Incremented reporting period to " + period + " (current period " + currentPeriod + ")");
                     console.log("Events in period", period, augur.getEvents(newBranchID, period));
-                    console.log("Events in period", currentPeriod, augur.getEvents(newBranchID, period));
-                    // if (currentPeriod - period > 1) {
-                    //     console.log("Difference", currentPeriod - period, "> 1, incrementing period...");
-                    //     return incrementPeriod();
-                    // }
-                    console.log("Difference", currentPeriod - period, "<= 1, submitting report hash...");
-                    // augur.moveEventsToCurrentPeriod(newBranchID, period, currentPeriod, utils.noop, function (res) {
-                    //     console.log("move success:", res);
+                    console.log("Events in period", currentPeriod, augur.getEvents(newBranchID, currentPeriod));
+                    augur.moveEventsToCurrentPeriod(newBranchID, period, currentPeriod, utils.noop, function (res) {
+                        console.log("Moved events from period", period, "to current period", currentPeriod);
+                        if (currentPeriod - period > 1) {
+                            console.log("Difference", currentPeriod - period, "> 1, incrementing period...");
+                            return incrementPeriod();
+                        }
+                        console.log("Difference", currentPeriod - period, ". Submitting report hash...");
                         console.log("events in", period, augur.getEvents(newBranchID, period));
                         var eventIndex = augur.getEventIndex(period, t.eventID);
                         var reportHash = augur.makeHash(t.salt, t.report, t.eventID);
@@ -198,7 +198,7 @@ describe("makeReports.submitReportHash", function () {
                         }
                         console.log(augur.from, "is ineligible to report on event", eventID);
                         done();
-                    // }, console.error);
+                    }, console.error);
                 }, console.error);
             })();
         });
