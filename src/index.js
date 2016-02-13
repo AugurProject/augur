@@ -1338,222 +1338,16 @@ Augur.prototype.getEventsRange = function (branch, vpStart, vpEnd, callback) {
  * Consensus *
  *************/
 
-Augur.prototype.dispatch = function (branch, onSent, onSuccess, onFailed) {
-    // branch: sha256 or transaction object
-    if (branch.constructor === Object && branch.branchId) {
-        if (branch.onSent) onSent = branch.onSent;
-        if (branch.onSuccess) onSuccess = branch.onSuccess;
-        if (branch.onFailed) onFailed = branch.onFailed;
-        branch = branch.branchId;
-    }
-    var tx = clone(this.tx.dispatch);
-    tx.params = branch;
-    return this.transact(tx, onSent, onSuccess, onFailed);
-};
 Augur.prototype.updatePeriod = function (branch) {
     var currentPeriod = this.getCurrentPeriod(branch);
     this.incrementPeriod(branch);
-    this.setStep(branch, 0);
-    this.setSubstep(branch, 0);
     this.moveEventsToCurrentPeriod(branch, this.getVotePeriod(branch), currentPeriod);
-};
-Augur.prototype.setVSize = function (branch, expDateIndex, vSize, onSent) {
-    var tx = clone(this.tx.setVSize);
-    tx.params = [branch, expDateIndex, vSize];
-    return this.fire(tx, onSent);
-};
-Augur.prototype.setReportsFilled = function (branch, expDateIndex, reportsFilled, onSent) {
-    var tx = clone(this.tx.setVSize);
-    tx.params = [branch, expDateIndex, reportsFilled];
-    return this.fire(tx, onSent);
-};
-Augur.prototype.setReportsMask = function (branch, expDateIndex, reportsMask, onSent) {
-    var tx = clone(this.tx.setReportsMask);
-    tx.params = [branch, expDateIndex, reportsMask];
-    return this.fire(tx, onSent);
-};
-Augur.prototype.setWeightedCenteredData = function (branch, expDateIndex, weightedCenteredData, onSent) {
-    var tx = clone(this.tx.setWeightedCenteredData);
-    tx.params = [branch, expDateIndex, weightedCenteredData];
-    return this.fire(tx, onSent);
-};
-Augur.prototype.setCovarianceMatrixRow = function (branch, expDateIndex, covarianceMatrixRow, onSent) {
-    var tx = clone(this.tx.setCovarianceMatrixRow);
-    tx.params = [branch, expDateIndex, covarianceMatrixRow];
-    return this.fire(tx, onSent);
-};
-Augur.prototype.setDeflated = function (branch, expDateIndex, deflated, onSent) {
-    var tx = clone(this.tx.setDeflated);
-    tx.params = [branch, expDateIndex, deflated];
-    return this.fire(tx, onSent);
-};
-Augur.prototype.setLoadingVector = function (branch, expDateIndex, loadingVector, onSent) {
-    var tx = clone(this.tx.setLoadingVector);
-    tx.params = [branch, expDateIndex, loadingVector];
-    return this.fire(tx, onSent);
-};
-Augur.prototype.setScores = function (branch, expDateIndex, scores, onSent) {
-    var tx = clone(this.tx.setScores);
-    tx.params = [branch, expDateIndex, scores];
-    return this.fire(tx, onSent);
-};
-Augur.prototype.setSetOne = function (branch, expDateIndex, setOne, onSent) {
-    var tx = clone(this.tx.setOne);
-    tx.params = [branch, expDateIndex, setOne];
-    return this.fire(tx, onSent);
-};
-Augur.prototype.setSetTwo = function (branch, expDateIndex, setTwo, onSent) {
-    var tx = clone(this.tx.setSetTwo);
-    tx.params = [branch, expDateIndex, setTwo];
-    return this.fire(tx, onSent);
-};
-Augur.prototype.setOld = function (branch, expDateIndex, setOld, onSent) {
-    var tx = clone(this.tx.setOld);
-    tx.params = [branch, expDateIndex, setOld];
-    return this.fire(tx, onSent);
-};
-Augur.prototype.setNewOne = function (branch, expDateIndex, newOne, onSent) {
-    var tx = clone(this.tx.setNewOne);
-    tx.params = [branch, expDateIndex, newOne];
-    return this.fire(tx, onSent);
-};
-Augur.prototype.setNewTwo = function (branch, expDateIndex, newTwo, onSent) {
-    var tx = clone(this.tx.setNewTwo);
-    tx.params = [branch, expDateIndex, newTwo];
-    return this.fire(tx, onSent);
-};
-Augur.prototype.setAdjPrinComp = function (branch, expDateIndex, adjPrinComp, onSent) {
-    var tx = clone(this.tx.setAdjPrinComp);
-    tx.params = [branch, expDateIndex, adjPrinComp];
-    return this.fire(tx, onSent);
-};
-Augur.prototype.setSmoothRep = function (branch, expDateIndex, smoothRep, onSent) {
-    var tx = clone(this.tx.setSmoothRep);
-    tx.params = [branch, expDateIndex, smoothRep];
-    return this.fire(tx, onSent);
-};
-Augur.prototype.setOutcomesFinal = function (branch, expDateIndex, outcomesFinal, onSent) {
-    var tx = clone(this.tx.setOutcomesFinal);
-    tx.params = [branch, expDateIndex, outcomesFinal];
-    return this.fire(tx, onSent);
 };
 Augur.prototype.setReportHash = function (branch, reportPeriod, reporter, reportHash, onSent, onSuccess, onFailed) {
     var tx = clone(this.tx.setReportHash);
     var unpacked = this.utils.unpack(branch, this.utils.labels(this.setReportHash), arguments);
     tx.params = unpacked.params;
     return this.transact.apply(this, [tx].concat(unpacked.cb));
-};
-Augur.prototype.getVSize = function (branch, reportPeriod, callback) {
-    // branch: sha256
-    // reportPeriod: integer
-    var tx = clone(this.tx.getVSize);
-    tx.params = [branch, reportPeriod];
-    return this.fire(tx, callback);
-};
-Augur.prototype.getReportsFilled = function (branch, reportPeriod, callback) {
-    // branch: sha256
-    // reportPeriod: integer
-    var tx = clone(this.tx.getReportsFilled);
-    tx.params = [branch, reportPeriod];
-    return this.fire(tx, callback);
-};
-Augur.prototype.getReportsMask = function (branch, reportPeriod, callback) {
-    // branch: sha256
-    // reportPeriod: integer
-    var tx = clone(this.tx.getReportsMask);
-    tx.params = [branch, reportPeriod];
-    return this.fire(tx, callback);
-};
-Augur.prototype.getWeightedCenteredData = function (branch, reportPeriod, callback) {
-    // branch: sha256
-    // reportPeriod: integer
-    var tx = clone(this.tx.getWeightedCenteredData);
-    tx.params = [branch, reportPeriod];
-    return this.fire(tx, callback);
-};
-Augur.prototype.getCovarianceMatrixRow = function (branch, reportPeriod, callback) {
-    // branch: sha256
-    // reportPeriod: integer
-    var tx = clone(this.tx.getCovarianceMatrixRow);
-    tx.params = [branch, reportPeriod];
-    return this.fire(tx, callback);
-};
-Augur.prototype.getDeflated = function (branch, reportPeriod, callback) {
-    // branch: sha256
-    // reportPeriod: integer
-    var tx = clone(this.tx.getDeflated);
-    tx.params = [branch, reportPeriod];
-    return this.fire(tx, callback);
-};
-Augur.prototype.getLoadingVector = function (branch, reportPeriod, callback) {
-    // branch: sha256
-    // reportPeriod: integer
-    var tx = clone(this.tx.getLoadingVector);
-    tx.params = [branch, reportPeriod];
-    return this.fire(tx, callback);
-};
-Augur.prototype.getLatent = function (branch, reportPeriod, callback) {
-    // branch: sha256
-    // reportPeriod: integer
-    var tx = clone(this.tx.getLatent);
-    tx.params = [branch, reportPeriod];
-    return this.fire(tx, callback);
-};
-Augur.prototype.getScores = function (branch, reportPeriod, callback) {
-    // branch: sha256
-    // reportPeriod: integer
-    var tx = clone(this.tx.getScores);
-    tx.params = [branch, reportPeriod];
-    return this.fire(tx, callback);
-};
-Augur.prototype.getSetOne = function (branch, reportPeriod, callback) {
-    // branch: sha256
-    // reportPeriod: integer
-    var tx = clone(this.tx.getSetOne);
-    tx.params = [branch, reportPeriod];
-    return this.fire(tx, callback);
-};
-Augur.prototype.getSetTwo = function (branch, reportPeriod, callback) {
-    // branch: sha256
-    // reportPeriod: integer
-    var tx = clone(this.tx.getSetTwo);
-    tx.params = [branch, reportPeriod];
-    return this.fire(tx, callback);
-};
-Augur.prototype.returnOld = function (branch, reportPeriod, callback) {
-    // branch: sha256
-    // reportPeriod: integer
-    var tx = clone(this.tx.returnOld);
-    tx.params = [branch, reportPeriod];
-    return this.fire(tx, callback);
-};
-Augur.prototype.getNewOne = function (branch, reportPeriod, callback) {
-    // branch: sha256
-    // reportPeriod: integer
-    var tx = clone(this.tx.getNewOne);
-    tx.params = [branch, reportPeriod];
-    return this.fire(tx, callback);
-};
-Augur.prototype.getNewTwo = function (branch, reportPeriod, callback) {
-    // branch: sha256
-    // reportPeriod: integer
-    var tx = clone(this.tx.getNewTwo);
-    tx.params = [branch, reportPeriod];
-    return this.fire(tx, callback);
-};
-Augur.prototype.getAdjPrinComp = function (branch, reportPeriod, callback) {
-    // branch: sha256
-    // reportPeriod: integer
-    var tx = clone(this.tx.getAdjPrinComp);
-    tx.params = [branch, reportPeriod];
-    return this.fire(tx, callback);
-};
-Augur.prototype.getSmoothRep = function (branch, reportPeriod, callback) {
-    // branch: sha256
-    // reportPeriod: integer
-    var tx = clone(this.tx.getSmoothRep);
-    tx.params = [branch, reportPeriod];
-    return this.fire(tx, callback);
 };
 Augur.prototype.getOutcomesFinal = function (branch, reportPeriod, callback) {
     // branch: sha256
@@ -1569,81 +1363,15 @@ Augur.prototype.getReporterPayouts = function (branch, reportPeriod, callback) {
     tx.params = [branch, reportPeriod];
     return this.fire(tx, callback);
 };
-Augur.prototype.redeem_interpolate = function (branch, period, num_events, num_reports, flatsize, onSent, onSuccess, onFailed) {
-    var tx = clone(this.tx.redeem_interpolate);
-    tx.params = [branch, period, num_events, num_reports, flatsize];
-    return this.transact(tx, onSent, onSuccess, onFailed);
+Augur.prototype.incrementPeriod = function (branchId, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.incrementPeriod);
+    var unpacked = this.utils.unpack(branchId, this.utils.labels(this.incrementPeriod), arguments);
+    tx.params = unpacked.params;
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
-Augur.prototype.read_ballots = function (branch, period, num_events, num_reports, flatsize, onSent, onSuccess, onFailed) {
-    var tx = clone(this.tx.read_ballots);
-    tx.params = [branch, period, num_events, num_reports, flatsize];
-    return this.transact(tx, onSent, onSuccess, onFailed);
-};
-Augur.prototype.center = function (reports, reputation, scaled, scaled_max, scaled_min, max_iterations, max_components, onSent, onSuccess, onFailed) {
-    var tx = clone(this.tx.center);
-    tx.params = [
-        abi.fix(reports, "hex"),
-        abi.fix(reputation, "hex"),
-        scaled,
-        scaled_max,
-        scaled_min,
-        max_iterations,
-        max_components
-    ];
-    return this.transact(tx, onSent, onSuccess, onFailed);
-};
-Augur.prototype.redeem_center = function (branch, period, num_events, num_reports, flatsize, onSent, onSuccess, onFailed) {
-    var tx = clone(this.tx.redeem_center);
-    tx.params = [branch, period, num_events, num_reports, flatsize];
-    return this.transact(tx, onSent, onSuccess, onFailed);
-};
-Augur.prototype.redeem_covariance = function (branch, period, num_events, num_reports, flatsize, onSent, onSuccess, onFailed) {
-    var tx = clone(this.tx.redeem_covariance);
-    tx.params = [branch, period, num_events, num_reports, flatsize];
-    return this.transact(tx, onSent, onSuccess, onFailed);
-};
-Augur.prototype.redeem_blank = function (branch, period, num_events, num_reports, flatsize, onSent, onSuccess, onFailed) {
-    var tx = clone(this.tx.redeem_blank);
-    tx.params = [branch, period, num_events, num_reports, flatsize];
-    return this.transact(tx, onSent, onSuccess, onFailed);
-};
-Augur.prototype.redeem_loadings = function (branch, period, num_events, num_reports, flatsize, onSent, onSuccess, onFailed) {
-    var tx = clone(this.tx.redeem_loadings);
-    tx.params = [branch, period, num_events, num_reports, flatsize];
-    return this.transact(tx, onSent, onSuccess, onFailed);
-};
-Augur.prototype.blank = function (components_remaining, max_iterations, num_events, onSent, onSuccess, onFailed) {
-    var tx = clone(this.tx.blank);
-    tx.params = [components_remaining, max_iterations, num_events];
-    return this.transact(tx, onSent, onSuccess, onFailed);
-};
-Augur.prototype.loadings = function (iv, wcd, reputation, num_reports, num_events, onSent, onSuccess, onFailed) {
-    var tx = clone(this.tx.loadings);
-    tx.params = [
-        abi.fix(iv, "hex"),
-        abi.fix(wcd, "hex"),
-        abi.fix(reputation, "hex"),
-        num_reports,
-        num_events
-    ];
-    return this.transact(tx, onSent, onSuccess, onFailed);
-};
-Augur.prototype.resolve = function (smooth_rep, reports, scaled, scaled_max, scaled_min, num_reports, num_events, onSent, onSuccess, onFailed) {
-    var tx = clone(this.tx.resolve);
-    tx.params = [
-        abi.fix(smooth_rep, "hex"),
-        abi.fix(reports, "hex"),
-        scaled,
-        scaled_max,
-        scaled_min,
-        num_reports,
-        num_events
-    ];
-    return this.transact(tx, onSent, onSuccess, onFailed);
-};
-Augur.prototype.redeem_resolve = function (branch, period, num_events, num_reports, flatsize, onSent, onSuccess, onFailed) {
-    var tx = clone(this.tx.redeem_resolve);
-    tx.params = [branch, period, num_events, num_reports, flatsize];
+Augur.prototype.moveEventsToCurrentPeriod = function (branch, currentVotePeriod, currentPeriod, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.moveEventsToCurrentPeriod);
+    tx.params = [branch, currentVotePeriod, currentPeriod];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
@@ -1687,12 +1415,6 @@ Augur.prototype.setTotalReputation = function (branch, reportPeriod, totalReputa
     tx.params = [branch, reportPeriod, abi.fix(totalReputation, "hex")];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
-Augur.prototype.incrementPeriod = function (branchId, onSent, onSuccess, onFailed) {
-    var tx = clone(this.tx.incrementPeriod);
-    var unpacked = this.utils.unpack(branchId, this.utils.labels(this.incrementPeriod), arguments);
-    tx.params = unpacked.params;
-    return this.transact.apply(this, [tx].concat(unpacked.cb));
-};
 Augur.prototype.addMarket = function (branchId, marketID, onSent, onSuccess, onFailed) {
     var tx = clone(this.tx.addMarket);
     var unpacked = this.utils.unpack(branchId, this.utils.labels(this.addMarket), arguments);
@@ -1722,11 +1444,6 @@ Augur.prototype.makeBallot = function (branchId, reportPeriod, callback) {
     var tx = clone(this.tx.makeBallot);
     tx.params = [branchId, reportPeriod];
     return this.fire(tx, callback);
-};
-Augur.prototype.moveEventsToCurrentPeriod = function (branch, currentVotePeriod, currentPeriod, onSent, onSuccess, onFailed) {
-    var tx = clone(this.tx.moveEventsToCurrentPeriod);
-    tx.params = [branch, currentVotePeriod, currentPeriod];
-    return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
 /******************

@@ -44,4 +44,4 @@ function f(n) {
     );
 }
 
-console.log(fzero(f, "0.001", "10").solution);
+console.log(fzero(f, [0.001, 10]).solution);
