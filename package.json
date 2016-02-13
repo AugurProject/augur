@@ -36,8 +36,8 @@
   "dependencies": {
     "async": "^1.4.2",
     "augur-abi": "^0.2.7",
-    "augur-contracts": "^0.4.7",
-    "augur.js": "^0.14.3",
+    "augur-contracts": "^0.4.8",
+    "augur.js": "^0.14.5",
     "bignumber.js": "^2.1.4",
     "bootstrap": "^3.3.4",
     "chalk": "^1.1.1",
