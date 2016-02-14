@@ -810,6 +810,13 @@ module.exports = function (network) {
             signature: "i",
             returns: "number"
         },
+        setOutcome: {
+            to: contracts.events,
+            method: "setOutcome",
+            signature: "ii",
+            returns: "number",
+            send: true
+        },
 
         // expiringEvents.se
         getEventIndex: {
@@ -66272,6 +66279,12 @@ Augur.prototype.getNumOutcomes = function (eventId, callback) {
     tx.params = eventId;
     return this.fire(tx, callback);
 };
+Augur.prototype.setOutcome = function (ID, outcome, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.setOutcome);
+    var unpacked = this.utils.unpack(to, this.utils.labels(this.setOutcome), arguments);
+    tx.params = unpacked.params;
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
 
 // expiringEvents.se
 Augur.prototype.getEventIndex = function (period, eventID, callback) {
@@ -67040,12 +67053,12 @@ Augur.prototype.createMarket = function (branch, description, alpha, liquidity, 
 
 // closeMarket.se
 Augur.prototype.closeMarket = function (branch, market, onSent, onSuccess, onFailed) {
-    if (branch.constructor === Object && branch.branchId) {
-        market = branch.marketId;
+    if (branch.constructor === Object && branch.branch) {
+        market = branch.market;
         if (branch.onSent) onSent = branch.onSent;
         if (branch.onSuccess) onSuccess = branch.onSuccess;
         if (branch.onFailed) onFailed = branch.onFailed;
-        branch = branch.branchId;
+        branch = branch.branch;
     }
     var tx = clone(this.tx.closeMarket);
     tx.params = [branch, market];

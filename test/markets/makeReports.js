@@ -18,10 +18,9 @@ var accounts = utils.get_test_accounts(augur, augur.constants.MAX_TEST_ACCOUNTS)
 var suffix = Math.random().toString(36).substring(4);
 var description = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
 var periodLength = 75;
-var eventID, newBranchID, marketID;
-
 var report = 1;
 var salt = "1337";
+var eventID, newBranchID, marketID;
 
 describe("makeReports.makeHash", function () {
     var test = function (t) {
@@ -112,7 +111,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                                                 marketID = res.callReturn;
                                                 if (DEBUG) console.log("Market ID:", marketID);
 
-                                                // fast-forward to the expiration block, if needed
+                                                // fast-forward to the period in which the new event expires
                                                 var period = parseInt(augur.getVotePeriod(newBranchID));
                                                 var currentPeriod = augur.getCurrentPeriod(newBranchID);
                                                 var blockNumber = augur.rpc.blockNumber();
