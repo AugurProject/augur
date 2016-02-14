@@ -6,6 +6,7 @@ var constants = require("../libs/constants");
 module.exports = {
   state: {
     markets: {},
+    authoredMarkets: {},
     pendingMarkets: {},
     orders: {},
     marketLoadingIds: null,
@@ -43,6 +44,9 @@ module.exports = {
     var marketsByAuthor = _.filter(this.state.markets, {'author': author});
     return _.indexBy(marketsByAuthor, 'id');
   },
+  getAuthoredMarkets: function () {
+    return this.state.authoredMarkets;
+  },
   getMarket: function (marketId) {
     return this.state.markets[marketId];
   },
@@ -59,6 +63,12 @@ module.exports = {
   },
   handleLoadMarketsSuccess: function (payload) {
     this.state.markets = payload.markets;
+    if (payload.percentLoaded === undefined || payload.percentLoaded === 100) {
+      var filtered = _.filter(this.state.markets, {"author": payload.account});
+      console.log("filtered:", filtered);
+      this.state.authoredMarkets = _.indexBy(filtered, "id");
+      console.log("indexed:", this.state.authoredMarkets);
+    }
     this.emit(constants.CHANGE_EVENT);
   },
   handleUpdateMarketSuccess: function (payload) {
