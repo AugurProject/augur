@@ -90,22 +90,22 @@ var Overview = React.createClass({
           onChange={this.importAccount} />
       </div>
     );
-    if (!this.state.account) {
-      var trendingMarketsSection = <span />;
-      if (this.state.trendingMarkets) {
-        trendingMarketsSection = (
-          <div>
-            <h3>Trending Markets</h3>
-            <div className='row'>
-              <div className="col-xs-12">
-                  {_.map(this.state.trendingMarkets, market => {
-                    return <MarketRow key={market.id} market={market} />;
-                  })}
-              </div>
+    var trendingMarketsSection = <span />;
+    if (this.state.trendingMarkets) {
+      trendingMarketsSection = (
+        <div>
+          <h3>Trending Markets</h3>
+          <div className='row'>
+            <div className="col-xs-12">
+                {_.map(this.state.trendingMarkets, market => {
+                  return <MarketRow key={market.id} market={market} />;
+                })}
             </div>
           </div>
-        );
-      }
+        </div>
+      );
+    }
+    if (!this.state.account) {
       return (
         <div id="overview">
           <div className="account-info">
@@ -281,6 +281,7 @@ var Overview = React.createClass({
           <div className="col-xs-12">
             {accountSection}
             {authoredMarketsSection}
+            {trendingMarketsSection}
             {holdingsSection}
           </div>
         </div>
