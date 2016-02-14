@@ -38,7 +38,7 @@ let RegisterModal = React.createClass({
       this.props.onHide();
       this.setState({
         registerHeader: "Creating New Account",
-        registerStatus: "Creating new account " + this.state.handle + "...",
+        registerStatus: "<b>Do not close this window or browse to another page until your account registration is complete!</b><br />Creating new account " + this.state.handle + "...",
         registerDetail: {handle: this.state.handle, persist: this.state.persist}
       });
       this.toggleProgressModal();
