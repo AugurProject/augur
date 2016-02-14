@@ -196,6 +196,7 @@ module.exports = {
     var self = this;
     var augur = this.flux.augur;
     var branchId = this.flux.store('branch').getCurrentBranch().id;
+    var account = this.flux.store('config').getAccount();
     marketId = abi.hex(marketId);
     augur.getMarketCreationBlock(marketId, function (creationBlock) {
       augur.getMarketPriceHistory(marketId, function (priceHistory) {
