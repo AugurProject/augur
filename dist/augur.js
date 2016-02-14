@@ -30,33 +30,33 @@ module.exports={
         "reporting": "0xb707b070a020fdc959496dd9e598d9f03cc2d02f"
     },
     "10101": {
-        "buyAndSellShares": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d",
-        "closeMarket": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68",
-        "closeMarketEight": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea",
-        "closeMarketFour": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3",
-        "closeMarketOne": "0x35152caa07026203a1add680771afb690d872d7d",
-        "closeMarketTwo": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645",
-        "consensus": "0x8c19616de17acdfbc933b99d9f529a689d22098f",
-        "createBranch": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893",
-        "createEvent": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd",
-        "createMarket": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df",
-        "eventResolution": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79",
-        "faucets": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e",
+        "buyAndSellShares": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3",
+        "closeMarket": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79",
+        "closeMarketEight": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d",
+        "closeMarketFour": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645",
+        "closeMarketOne": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7",
+        "closeMarketTwo": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7",
+        "consensus": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df",
+        "createBranch": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2",
+        "createEvent": "0x81a7621e9a286d061b3dea040888a51c96693b1c",
+        "createMarket": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68",
+        "eventResolution": "0x3f3276849a878a176b2f02dd48a483e8182a49e4",
+        "faucets": "0x5069d883e31429c6dd1325d961f443007747c7a2",
         "insertionsort": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7",
-        "makeReports": "0x3f3276849a878a176b2f02dd48a483e8182a49e4",
+        "makeReports": "0x35152caa07026203a1add680771afb690d872d7d",
         "orderBook": "0x708fdfe18bf28afe861a69e95419d183ace003eb",
         "quicksort": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c",
         "ramble": "0x8a4e2993a9972ee035453bb5674816fc3a698718",
-        "sendReputation": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2",
-        "transferShares": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7",
-        "branches": "0xe4714fcbdcdba49629bc408183ef40d120700b8d",
-        "cash": "0x482c57abdce592b39434e3f619ffc3db62ab6d01",
-        "events": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667",
-        "expiringEvents": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6",
-        "fxpFunctions": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55",
-        "info": "0x81a7621e9a286d061b3dea040888a51c96693b1c",
-        "markets": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7",
-        "reporting": "0x5069d883e31429c6dd1325d961f443007747c7a2"
+        "sendReputation": "0x8c19616de17acdfbc933b99d9f529a689d22098f",
+        "transferShares": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea",
+        "branches": "0x482c57abdce592b39434e3f619ffc3db62ab6d01",
+        "cash": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55",
+        "events": "0xe4714fcbdcdba49629bc408183ef40d120700b8d",
+        "expiringEvents": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667",
+        "fxpFunctions": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2",
+        "info": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e",
+        "markets": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd",
+        "reporting": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6"
     },
     "errors": {
         "0x": "no response or bad input",
@@ -1385,7 +1385,7 @@ module.exports = function (network) {
         submitReport: {
             to: contracts.makeReports,
             method: "submitReport",
-            signature: "iiiiii",
+            signature: "iiiiiii",
             returns: "number",
             send: true
         },
@@ -66861,12 +66861,12 @@ Augur.prototype.sendReputation = function (branch, to, value, onSent, onSuccess,
 
 // makeReports.se
 Augur.prototype.makeHash = function (salt, report, event, from) {
-    return this.utils.sha256([
+    return abi.hex(this.utils.sha256([
         from || this.from,
         abi.hex(salt),
         abi.fix(report, "hex"),
         event
-    ]);
+    ]));
 };
 Augur.prototype.makeHash_contract = function (salt, report, event, callback) {
     if (salt.constructor === Object && salt.salt) {
@@ -66930,13 +66930,29 @@ Augur.prototype.submitReport = function (branch, votePeriod, eventIndex, salt, r
     onFailed = onFailed || this.utils.pass;
     var tx = clone(this.tx.submitReport);
     if (eventIndex) {
-        tx.params = [branch, votePeriod, eventIndex, salt, report, eventID, ethics];
+        tx.params = [
+            branch,
+            votePeriod,
+            eventIndex,
+            abi.hex(salt),
+            abi.fix(report, "hex"),
+            eventID,
+            abi.fix(ethics, "hex")
+        ];
         return this.transact(tx, onSent, onSuccess, onFailed);
     }
     this.getEventIndex(votePeriod, eventID, function (eventIndex) {
         if (!eventIndex) return onFailed("couldn't get event index for " + eventID);
         if (eventIndex.error) return onFailed(eventIndex);
-        tx.params = [branch, votePeriod, eventIndex, salt, report, eventID, ethics];
+        tx.params = [
+            branch,
+            votePeriod,
+            eventIndex,
+            abi.hex(salt),
+            abi.fix(report, "hex"),
+            eventID,
+            abi.fix(ethics, "hex")
+        ];
         self.transact(tx, onSent, onSuccess, onFailed);
     });
 };
@@ -69727,13 +69743,8 @@ module.exports = {
                     startBlock = blockNumber;
                     endBlock = blockNumber + parseInt(blocks);
                 }
-                if (self.debug.logs) {
-                    console.log("fastforward:",
-                        startBlock, "--", blockNumber, "-->", endBlock,
-                        "(" + (endBlock - blockNumber) + " blocks to go)");
-                }
                 if (blockNumber >= endBlock) return callback(endBlock);
-                setTimeout(fastforward, 2500);
+                setTimeout(fastforward, 500);
             });
         })();
     },

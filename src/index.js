@@ -942,12 +942,12 @@ Augur.prototype.sendReputation = function (branch, to, value, onSent, onSuccess,
 
 // makeReports.se
 Augur.prototype.makeHash = function (salt, report, event, from) {
-    return this.utils.sha256([
+    return abi.hex(this.utils.sha256([
         from || this.from,
         abi.hex(salt),
         abi.fix(report, "hex"),
         event
-    ]);
+    ]));
 };
 Augur.prototype.makeHash_contract = function (salt, report, event, callback) {
     if (salt.constructor === Object && salt.salt) {
@@ -1011,13 +1011,29 @@ Augur.prototype.submitReport = function (branch, votePeriod, eventIndex, salt, r
     onFailed = onFailed || this.utils.pass;
     var tx = clone(this.tx.submitReport);
     if (eventIndex) {
-        tx.params = [branch, votePeriod, eventIndex, salt, report, eventID, ethics];
+        tx.params = [
+            branch,
+            votePeriod,
+            eventIndex,
+            abi.hex(salt),
+            abi.fix(report, "hex"),
+            eventID,
+            abi.fix(ethics, "hex")
+        ];
         return this.transact(tx, onSent, onSuccess, onFailed);
     }
     this.getEventIndex(votePeriod, eventID, function (eventIndex) {
         if (!eventIndex) return onFailed("couldn't get event index for " + eventID);
         if (eventIndex.error) return onFailed(eventIndex);
-        tx.params = [branch, votePeriod, eventIndex, salt, report, eventID, ethics];
+        tx.params = [
+            branch,
+            votePeriod,
+            eventIndex,
+            abi.hex(salt),
+            abi.fix(report, "hex"),
+            eventID,
+            abi.fix(ethics, "hex")
+        ];
         self.transact(tx, onSent, onSuccess, onFailed);
     });
 };

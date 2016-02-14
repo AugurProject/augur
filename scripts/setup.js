@@ -62,6 +62,7 @@ var options = {
             rpcapi: "eth,net,web3",
             ipcapi: "admin,db,eth,debug,miner,net,shh,txpool,personal,web3",
             mine: null,
+            minerthreads: 2,
             genesis: join(__dirname, "..", "data", "genesis-10101.json")
         }
     }
@@ -160,6 +161,8 @@ function faucets(geth) {
     var initialCash = abi.bignum(augur.getCashBalance(coinbase));
     delete require.cache[require.resolve("augur-contracts")];
     augur.contracts = require("augur-contracts")[options.GETH_OPTIONS.flags.networkid];
+    augur.connector.update_contracts();
+    augur.sync(augur.connector);
     augur.reputationFaucet({
         branch: branch,
         onSent: augur.utils.noop,

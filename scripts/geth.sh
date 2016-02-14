@@ -27,7 +27,7 @@ if [ "${network}" = "10101" ]; then
     # address="0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b"
     # address="0x0da70d5a92d6cfcd4c12e2a83950676fdf4c95f9"
     # address="0x2a7e417ff20606e384526ed42d306943caec2d24"
-    optargs="--mine --nodiscover"
+    optargs="--mine --minerthreads 1 --nodiscover"
     genesis="$HOME/src/augur.js/data/genesis-10101.json"
 else
     genesis="$HOME/src/augur.js/data/genesis-7.json"
