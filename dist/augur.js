@@ -66281,7 +66281,7 @@ Augur.prototype.getNumOutcomes = function (eventId, callback) {
 };
 Augur.prototype.setOutcome = function (ID, outcome, onSent, onSuccess, onFailed) {
     var tx = clone(this.tx.setOutcome);
-    var unpacked = this.utils.unpack(to, this.utils.labels(this.setOutcome), arguments);
+    var unpacked = this.utils.unpack(ID, this.utils.labels(this.setOutcome), arguments);
     tx.params = unpacked.params;
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };

@@ -261,9 +261,10 @@ before(function (done) {
 });
 
 describe("closeMarket", function () {
-
-    // fast-forward to the next reporting period
     it("closeMarket", function (done) {
+        this.timeout(augur.constants.TIMEOUT*100);
+
+        // fast-forward to the next reporting period
         var period = parseInt(augur.getVotePeriod(newBranchID));
         var currentPeriod = augur.getCurrentPeriod(newBranchID);
         var blockNumber = augur.rpc.blockNumber();
