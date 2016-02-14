@@ -56,7 +56,7 @@ module.exports = {
             try {
                 var soln = fzero(function (n) {
                     return self.f(n, q, i, a, cap);
-                }, [1e-12, 1000], {verbose: true});
+                }, [1e-12, 1000], {verbose: false});
                 if (soln.code !== 1) console.warn("fzero:", soln);
                 return soln.solution;
             } catch (exc) {
