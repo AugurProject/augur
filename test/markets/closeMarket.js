@@ -260,7 +260,7 @@ before(function (done) {
     });
 });
 
-describe("closeMarket", function () {
+describe("Close market", function () {
     it("closeMarket", function (done) {
         this.timeout(augur.constants.TIMEOUT*100);
 
@@ -297,9 +297,13 @@ describe("closeMarket", function () {
                     market: marketID,
                     onSent: function (res) {
                         if (DEBUG) console.log("closeMarket sent:", res);
+                        assert(res.txHash);
+                        assert.strictEqual(res.callReturn, "1");
                     },
                     onSuccess: function (res) {
                         if (DEBUG) console.log("closeMarket success:", res);
+                        assert(res.txHash);
+                        assert.strictEqual(res.callReturn, "1");
                         done();
                     },
                     onFailed: done
