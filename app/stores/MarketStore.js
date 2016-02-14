@@ -65,9 +65,7 @@ module.exports = {
     this.state.markets = payload.markets;
     if (payload.percentLoaded === undefined || payload.percentLoaded === 100) {
       var filtered = _.filter(this.state.markets, {"author": payload.account});
-      console.log("filtered:", filtered);
       this.state.authoredMarkets = _.indexBy(filtered, "id");
-      console.log("indexed:", this.state.authoredMarkets);
     }
     this.emit(constants.CHANGE_EVENT);
   },

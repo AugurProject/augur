@@ -335,7 +335,7 @@ nav.header .register {
     text-decoration: none;
 }
 .account-info .account {
-    font-size: 13pt;
+    font-size: 15pt;
     word-wrap: break-word;
 }
 .account-info ul {
@@ -420,7 +420,7 @@ nav.header .register {
     text-overflow: ellipsis;
 }
 .account {
-    color: #333333;
+    color: #54657e;
 }
 
 .network {
