@@ -22,8 +22,8 @@ module.exports = React.createClass({
     var branchId = this.props.params.market.branchId;
     console.log("Closing market", marketId, "on branch", branchId);
     this.getFlux().augur.closeMarket({
-      branchId: branchId,
-      marketId: marketId,
+      branch: branchId,
+      market: marketId,
       onSent: function (res) { console.log("Close market sent:", res); },
       onSuccess: function (res) { console.log("Close market succeeded:", res); },
       onFailed: function (err) { console.error("Close market failed:", err); }
