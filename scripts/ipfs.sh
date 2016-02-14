@@ -23,16 +23,23 @@ fi
 export GOPATH=$HOME/go
 export PATH=$PATH:$HOME/go/bin:/usr/local/go/bin
 
-# install and symlink to ipfs
-echo -e "Get go-ipfs: ${BLUE}git@github.com:ipfs/go-ipfs${NC}"
+# install and symlink to ipfs (broken...)
+# echo -e "Get go-ipfs: ${BLUE}git@github.com:ipfs/go-ipfs${NC}"
+# go get -d github.com/ipfs/go-ipfs/cmd/ipfs
+# startdir=$(pwd)
+# cd $GOPATH/src/github.com/ipfs/go-ipfs
+# echo -e "Installing go-ipfs..."
+# make install
+# cd startdir
+echo -e "Get ipfs-update: ${BLUE}github.com/ipfs/ipfs-update${NC}"
+go get -u github.com/ipfs/ipfs-update
+ipfs update --verbose fetch
+ipfs update install v0.4.0-dev
+echo -e "Installed:" $BLUE`which ipfs`$NC
 if [ -f "${IPFS_BIN}" ]; then
     sudo rm $IPFS_BIN
 fi
-go get -u github.com/ipfs/go-ipfs/cmd/ipfs
-echo -e "Installed:" $BLUE`which ipfs`$NC
-if [ ! -f "${IPFS_BIN}" ]; then
-    sudo ln -s `which ipfs` $IPFS_BIN
-fi
+sudo ln -s `which ipfs` $IPFS_BIN
 echo -e "Created symlink:" $BLUE`which ipfs`$NC
 
 # set up ipfs log file
