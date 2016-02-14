@@ -263,7 +263,8 @@ let AddMarketModal = React.createClass({
               details: self.state.detailsText,
               tags: self.state.tags,
               links: self.state.resources,
-              source: source
+              source: source,
+              broadcast: true
             }, function (res) {
               console.log("ramble.addMetadata sent:", res);
               var progressModal = self.state.progressModal;

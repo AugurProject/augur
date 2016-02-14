@@ -52,7 +52,8 @@ module.exports = {
       this.flux.augur.ramble.addMarketComment({
         marketId: abi.hex(marketId),
         author: author,
-        message: commentText
+        message: commentText,
+        broadcast: true
       }, function (res) {
         self.flux.actions.market.updateComments(commentText, marketId, author);
       }, function (res) {
