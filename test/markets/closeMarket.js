@@ -6,7 +6,6 @@
 "use strict";
 
 var assert = require("chai").assert;
-var keccak_256 = require("js-sha3").keccak_256;
 var abi = require("augur-abi");
 var madlibs = require("madlibs");
 var utils = require("../../src/utilities");
