@@ -39,7 +39,9 @@ var Overview = require("./components/Overview");
 var Branch = require("./components/Branch");
 var MarketsPage = require('./components/markets-page/MarketsPage.jsx');
 var MarketPage = require('./components/market-page/MarketPage.jsx');
-var Ballots = require("./components/Ballots");
+var ReportsPage = require('./components/reports-page/ReportsPage.jsx');
+var ReportPage = require('./components/report-page/ReportPage.jsx');
+//var Ballots = require("./components/Ballots");
 var Outcomes = require("./components/Outcomes");
 
 flux.on("dispatch", function (type, payload) {
@@ -53,7 +55,8 @@ var routes = (
     <Route name="overview" path="/" handler={ Overview } flux={ flux } title="Overview" />
     <Route name="markets" path="/markets" handler={ MarketsPage } flux={ flux } title="Markets" />
     <Route name="market" path="/markets/:marketId" handler={ MarketPage } flux={ flux } />
-    <Route name="ballots" path="/ballots" handler={ Ballots } flux={ flux } title="Ballots" />
+    <Route name="reports" path="/reports" handler={ ReportsPage } flux={ flux } title="Reporting" />
+    <Route name="report" path="/reports/:marketId" handler={ ReportPage } flux={ flux } />
   </Route>
 );
 

@@ -17,6 +17,12 @@ var bytesToHex = function (bytes) {
 };
 
 module.exports = {
+  /**
+   * Saves the hash to local storage for later use
+   */
+  saveReportHash(marketOrEventId, reportHash) {
+    localStorage.setItem(constants.report.REPORTS_STORAGE + marketOrEventId, reportHash);
+  },
 
   /**
    * Load the events in the current branch that need reports.

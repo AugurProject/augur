@@ -9,8 +9,7 @@ let SendEtherModal = SendModal.SendEtherModal;
 
 let Button = require('react-bootstrap/lib/Button');
 
-let Router = require("react-router");
-let Link = Router.Link;
+let Link = require("react-router/lib/components/Link");
 
 let utilities = require("../../libs/utilities");
 let BigNumber = require("bignumber.js");
@@ -80,8 +79,8 @@ let Header = React.createClass({
                         </Link>
                     </li>
                     <li>
-                        <Link to="ballots">
-                            Ballots ({ this.props.ballotsCount })
+                        <Link to="reports">
+                            Reporting ({ this.props.ballotsCount })
                         </Link>
                     </li>
                     <li>

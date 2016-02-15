@@ -522,10 +522,6 @@ nav.header .register {
     width: 100%;
 }
 
-.subheading {
-    color: #ffffff;
-}
-
 #importAccountId {
     position: fixed;
     top: -100em;
