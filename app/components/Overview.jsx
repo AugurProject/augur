@@ -12,7 +12,6 @@ let ListGroup = require('react-bootstrap/lib/ListGroup');
 let ListGroupItem = require('react-bootstrap/lib/ListGroupItem');
 let utilities = require("../libs/utilities");
 let constants = require("../libs/constants");
-let ImportAccountModal = require("./ImportAccount");
 let AddMarketModal = require("./AddMarketModal");
 let CloseMarketModal = require("./CloseMarket").CloseMarketModal;
 let MarketRow = require("./markets-page/MarketRow");
@@ -26,11 +25,7 @@ let Overview = React.createClass({
   ],
 
   getInitialState: function () {
-    return {
-      importAccountModalOpen: false,
-      addMarketModalOpen: false,
-      importKeystore: null
-    };
+    return {addMarketModalOpen: false};
   },
 
   getStateFromFlux: function () {
@@ -49,48 +44,11 @@ let Overview = React.createClass({
     }
   },
 
-  toggleImportAccountModal: function (event) {
-    this.setState({importAccountModalOpen: !this.state.importAccountModalOpen});
-  },
-
   toggleAddMarketModal: function (event) {
     this.setState({addMarketModalOpen: !this.state.addMarketModalOpen});
   },
 
-  importAccount: function (event) {
-    var self = this;
-    if (event.target && event.target.files && event.target.files.length) {
-      var keystoreFile = event.target.files[0];
-      var reader = new FileReader();
-      reader.onload = (function (f) {
-        return function (e) {
-          try {
-            var keystore = JSON.parse(e.target.result);
-            self.setState({importKeystore: keystore});
-            self.toggleImportAccountModal();
-          } catch (exc) {
-            console.error("Overview.importAccount: couldn't parse account file:", exc);
-          }
-        };
-      })(keystoreFile);
-      reader.readAsText(keystoreFile);
-    }
-  },
-
   render: function () {
-    var importAccountButton = (
-      <div className="col-sm-3">
-        <label
-          htmlFor="importAccountId"
-          className="send-button btn-info btn btn-default">
-          Import Account
-        </label>
-        <input
-          id="importAccountId"
-          type="file"
-          onChange={this.importAccount} />
-      </div>
-    );
 
     var cashBalance = this.state.asset.cash ? +this.state.asset.cash.toFixed(2) : '-';
     var repBalance = this.state.asset.reputation ? +this.state.asset.reputation.toFixed(2) : 0;
@@ -142,7 +100,6 @@ let Overview = React.createClass({
               <span className="account">{this.state.account}</span>
             </div>
             {exportAccountButton}
-            {importAccountButton}
           </div>
         </div>
       );
@@ -204,10 +161,6 @@ let Overview = React.createClass({
             {holdingsSection}
           </div>
         </div>
-        <ImportAccountModal
-          params={{keystore: this.state.importKeystore}}
-          show={this.state.importAccountModalOpen}
-          onHide={this.toggleImportAccountModal} />
         <AddMarketModal
           show={this.state.addMarketModalOpen}
           onHide={this.toggleAddMarketModal} />
