@@ -1,17 +1,13 @@
 let React = require('react');
 let _ = require("lodash");
 let moment = require("moment");
-
 let Paginate = require("react-paginate");
-
 let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
-
 let Navigation = require("react-router/lib/Navigation");
 let Link = require("react-router/lib/components/Link");
-
+let Button = require("react-bootstrap/lib/Button");
 let constants = require("../../libs/constants");
-
 let MarketRow = require("./MarketRow");
 let AddMarketModal = require("../AddMarketModal");
 
@@ -118,17 +114,6 @@ let MarketsPage = React.createClass({
     render() {
         let {markets, marketsCount, firstItemIndex, lastItemIndex} = this._getMarketsData();
 
-        var submitMarketAction;
-        if (this.state.account) {
-            submitMarketAction = (
-                <a href="javascript:void(0);" onClick={this.toggleAddMarketModal}>
-                    <i className="fa fa-plus-circle fa-4x"></i>
-                </a>
-            );
-        } else {
-            submitMarketAction = <span />;
-        }
-
         let pagination = (
             <div className="row">
                 <div className="col-xs-12">
@@ -195,9 +180,6 @@ let MarketsPage = React.createClass({
                                placeholder="Search"
                                tabIndex="0"
                                onChange={this.onChangeSearchInput}/>
-                    </div>
-                    <div className="pull-right col-sm-1">
-                        {submitMarketAction}
                     </div>
                 </div>
                 { pagination }

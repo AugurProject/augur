@@ -4,21 +4,17 @@ var abi = require("augur-abi");
 var keys = require("keythereum");
 let Navigation = require("react-router/lib/Navigation");
 let Link = require("react-router/lib/components/Link");
-
 let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
 let Button = require('react-bootstrap/lib/Button');
 let Table = require('react-bootstrap/lib/Table');
 let ListGroup = require('react-bootstrap/lib/ListGroup');
 let ListGroupItem = require('react-bootstrap/lib/ListGroupItem');
-
 var utilities = require("../libs/utilities");
 var constants = require("../libs/constants");
-
 var ImportAccountModal = require("./ImportAccount");
 var CloseMarketModal = require("./CloseMarket").CloseMarketModal;
 let MarketRow = require("./markets-page/MarketRow");
-var Branch = require("./Branch");
 
 var Overview = React.createClass({
 
@@ -91,7 +87,7 @@ var Overview = React.createClass({
       </div>
     );
     var trendingMarketsSection = <span />;
-    if (this.state.trendingMarkets) {
+    if (this.state.trendingMarkets && _.isEmpty(this.state.authoredMarkets)) {
       trendingMarketsSection = (
         <div>
           <h3>Trending Markets</h3>
@@ -198,11 +194,27 @@ var Overview = React.createClass({
     var cashFaucetDisabled = this.state.cashFaucetDisabled ? true : false;
     var repFaucetDisabled = this.state.repFaucetDisabled ? true : false;
 
+    var submitMarketAction;
+    if (this.state.account) {
+        submitMarketAction = (
+            <Button
+              className="send-button pull-right"
+              onClick={this.toggleAddMarketModal}>
+              New Market
+            </Button>
+        );
+    } else {
+        submitMarketAction = <span />;
+    }
+
     var authoredMarketsSection = <span />;
     if (!_.isEmpty(this.state.authoredMarkets)) {
       authoredMarketsSection = (
         <div>
-          <h3>My Markets</h3>
+          <h3>
+          My Markets
+          {submitMarketAction}
+          </h3>
           <div className='row'>
             <div className="col-xs-12">
                 {_.map(this.state.authoredMarkets, market => {

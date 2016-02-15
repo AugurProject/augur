@@ -357,19 +357,15 @@ let SendEtherModal = React.createClass({
         to: this.state.destination,
         value: this.state.amount,
         from: flux.augur.from,
-        onSent: function (result) {
-          if (result && result.error) console.error(result);
+        onSent: function (res) {
           self.setState({progressText: "Sending " + amount + " Ether to " + destination + "..."});
         },
-        onSuccess: function (result) {
-          if (result) {
-            console.log(self.currentAccount, 'sent', amount, 'ether to', destination);
-            self.setState({progressText: amount + " Ether sent to " + destination + "."});
-            console.log("txhash:", result.txHash);
-          }
+        onSuccess: function (res) {
+          console.log("sendEther success:", res);
+          self.setState({progressText: amount + " Ether sent to " + destination + "."});
         },
-        onFailed: function (result) {
-          console.error("sendEther failed:", result);
+        onFailed: function (err) {
+          console.error("sendEther failed:", err);
           self.setState({progressText: "Error: could not send " + amount + " Ether."});
         }
       });

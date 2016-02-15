@@ -3,13 +3,14 @@ let BigNumber = require("bignumber.js");
 let abi = require("augur-abi");
 let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
-let ReactDOM = require('react-dom');
-let DatePicker = require('react-date-picker');
+let ReactDOM = require("react-dom");
+let DatePicker = require("react-date-picker");
+let TimePicker = require("react-time-picker");
 let moment = require("moment");
-let Button = require('react-bootstrap/lib/Button');
-let Input = require('react-bootstrap/lib/Input');
-let Modal = require('react-bootstrap/lib/Modal');
-let ReactTabs = require('react-tabs');
+let Button = require("react-bootstrap/lib/Button");
+let Input = require("react-bootstrap/lib/Input");
+let Modal = require("react-bootstrap/lib/Modal");
+let ReactTabs = require("react-tabs");
 let Tab = ReactTabs.Tab;
 let Tabs = ReactTabs.Tabs;
 let TabList = ReactTabs.TabList;
@@ -20,7 +21,7 @@ let ProgressModal = require("./ProgressModal");
 
 let AddMarketModal = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin('market', 'network', 'asset')],
+  mixins: [FluxMixin, StoreWatchMixin("market", "network", "asset")],
 
   getInitialState: function () {
     return {
@@ -34,6 +35,7 @@ let AddMarketModal = React.createClass({
       marketInvestment: '501',
       marketInvestmentError: null,
       maturationDate: '',
+      timePicked: "12:00:00",
       tradingFee: '2',
       tradingFeeError: null,
       valid: false,
@@ -334,8 +336,12 @@ let AddMarketModal = React.createClass({
     this.onHide();
   },
 
-  handleDatePicked: function(dateText, moment, event) {
+  handleDatePicked: function (dateText, moment, event) {
     this.setState({maturationDate: dateText});
+  },
+
+  handleTimePicked: function (picked) {
+    this.setState({timePicked: picked});
   },
 
   onAddTag: function (event) {
@@ -435,42 +441,44 @@ let AddMarketModal = React.createClass({
         </div>
       );
       footer = (
-        <div className='pull-right'>
-          <Button bsStyle='default' onClick={ this.onBack }>Back</Button>
-          <Button bsStyle='primary' onClick={ this.onNext }>Next</Button>
+        <div className="pull-right">
+          <Button bsStyle="default" onClick={this.onBack}>Back</Button>
+          <Button bsStyle="primary" onClick={this.onNext}>Next</Button>
         </div>
       );
 
     } else if (this.state.pageNumber === 3) {
 
-      subheading = 'Maturation Date';
+      subheading = "Maturation Date";
 
       page = (
         <div className="form-group date">
-          <div className='col-sm-6'>
-            <p>Enter the date this event will mature, trading will end and the question decided.</p>
+          <div className="col-sm-6">
+            <p>Enter a date on or after which the outcome of this event will be known.</p>
             <Input
-              className='form-control'
-              bsSize='large'
-              type='text'
-              placeholder='YYYY-MM-DD'
-              value={ this.state.maturationDate }
-              onChange={ this.onChangeMaturationDate } 
-            />
+              className="form-control"
+              bsSize="large"
+              type="text"
+              placeholder="YYYY-MM-DD"
+              value={this.state.maturationDate}
+              onChange={this.onChangeMaturationDate} />
           </div>
-          <div className='col-sm-6'>
+          <div className="col-sm-6">
             <DatePicker
-              minDate={ this.state.minDate }
-              hideFooter={ true }
-              onChange={ this.handleDatePicked }
-            />
+              minDate={this.state.minDate}
+              hideFooter={true}
+              onChange={this.handleDatePicked} />
+            <TimePicker
+              style={{width: "100%", padding: 5, height: 50}}
+              value={this.state.timePicked}
+              onChange={this.handleTimePicked} />
           </div>
         </div>
       );
       footer = (
-        <div className='pull-right'>
-          <Button bsStyle='default' onClick={ this.onBack }>Back</Button>
-          <Button bsStyle='primary' onClick={ this.onNext }>Next</Button>
+        <div className="pull-right">
+          <Button bsStyle="default" onClick={this.onBack}>Back</Button>
+          <Button bsStyle="primary" onClick={this.onNext}>Next</Button>
         </div>
       );
 
@@ -681,25 +689,28 @@ let AddMarketModal = React.createClass({
 
     return (
       <div>
-        <Modal {...this.props} onHide={ this.onHide } id='add-market-modal'>
+        <Modal {...this.props} onHide={this.onHide} id='add-market-modal'>
           <div className="modal-header clearfix">
-            <h4>Create a new market<span className='subheading pull-right'>{ subheading }</span></h4>
+            <h4>
+              New Market Builder
+              <span className='subheading pull-right'>{subheading}</span>
+            </h4>
           </div>
           <div className="modal-body clearfix">
-            { page }
+            {page}
           </div>
           <div className="modal-footer clearfix">
-            { footer }
+            {footer}
           </div>
         </Modal>
         <ProgressModal
-            backdrop="static"
-            show={this.state.progressModal.open}
-            header={this.state.progressModal.header}
-            status={this.state.progressModal.status}
-            detail={JSON.stringify(this.state.progressModal.detail, null, 2)}
-            complete={this.state.progressModal.complete}
-            onHide={this.toggleProgressModal} />
+          backdrop="static"
+          show={this.state.progressModal.open}
+          header={this.state.progressModal.header}
+          status={this.state.progressModal.status}
+          detail={JSON.stringify(this.state.progressModal.detail, null, 2)}
+          complete={this.state.progressModal.complete}
+          onHide={this.toggleProgressModal} />
       </div>
     );
   }
