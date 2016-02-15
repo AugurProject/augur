@@ -154,7 +154,7 @@ let MarketsPage = React.createClass({
                 </div>
             </div>
         );
-console.log('>>>>>>>.', myOpenOrders);
+
         return (
             <div className="marketsPage">
                 <h1>Markets</h1>
