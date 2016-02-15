@@ -60,7 +60,6 @@ let RegisterModal = React.createClass({
           if (account.error) {
             console.error("registration error:", account);
             self.setState({
-              registerHeader: "Creating New Account",
               registerDetail: {account},
               registerComplete: true
             });
@@ -75,11 +74,7 @@ let RegisterModal = React.createClass({
             return;
           }
           console.log("account created:", account);
-          self.setState({
-            registerHeader: "Creating New Account",
-            registerDetail: {account},
-            registerComplete: false
-          });
+          self.setState({registerDetail: {account}});
           self.setState({registerStatus: self.state.registerStatus + "<br />Account created! Your new address is:<br /><i>" + account.address + "</i><br />Waiting for free Ether..."});
           flux.actions.config.userRegistered();
           flux.actions.config.updateAccount({
@@ -92,24 +87,18 @@ let RegisterModal = React.createClass({
         },
         onSendEther: function (account) {
           console.log("Register.jsx: onSendEther %o", arguments);
-          self.setState({
-            registerHeader: "Creating New Account",
-            registerDetail: {account},
-            registerComplete: false
-          });
+          self.setState({registerDetail: {account}});
           self.setState({registerStatus: self.state.registerStatus + "<br />Received " + flux.augur.constants.FREEBIE + " Ether.<br />Resetting blockchain listeners...<br />Exchanging " + (flux.augur.constants.FREEBIE / 2) + " Ether for CASH..."});
           flux.augur.filters.ignore(true, function (err) {
             if (err) return console.error(err);
             console.log("reset filters");
             self.setState({
-              registerHeader: "Creating New Account",
               registerDetail: {
                 block: flux.augur.filters.block_filter.id,
                 contracts: flux.augur.filters.contracts_filter.id,
                 creation: flux.augur.filters.creation_filter.id,
                 price: flux.augur.filters.price_filter.id
-              },
-              registerComplete: false
+              }
             });
             self.setState({registerStatus: self.state.registerStatus + "<br />Blockchain listeners reset."})
             flux.actions.config.initializeData();
@@ -119,7 +108,6 @@ let RegisterModal = React.createClass({
         onFunded: function (response) {
           console.log("register sequence complete %o", response);
           self.setState({
-              registerHeader: "Creating New Account",
               registerDetail: {response},
               registerComplete: true
             });
@@ -139,8 +127,20 @@ let RegisterModal = React.createClass({
       var address = abi.prefix_hex(keystore.address);
       var flux = this.getFlux();
       var self = this;
+      this.props.onHide();
+      this.setState({
+        registerHeader: "Importing Account",
+        registerStatus: "<b>Do not close this window or browse to another page until your account registration is complete!</b><br />Decrypting private key for " + address + "...",
+        registerDetail: keystore
+      });
+      this.toggleProgressModal();
       keys.recover(password, keystore, function (privateKey) {
         if (!privateKey || privateKey.error) {
+          self.setState({
+            registerStatus: self.state.registerStatus + "<br />Private key decryption failed. Please double-check that you entered the same password you used locally!",
+            registerDetail: privateKey,
+            registerComplete: true
+          });
           return console.error("onImportAccount keys.recover:", privateKey);
         }
         var account = {
@@ -157,8 +157,17 @@ let RegisterModal = React.createClass({
             },
             id: abi.prefix_hex(new Buffer(uuid.parse(keystore.id)).toString("hex"))
         };
+        self.setState({
+          registerStatus: self.state.registerStatus + "<br />Private key decrypted!<br />Saving account to your browser (localStorage)...",
+          registerDetail: account
+        });
         flux.augur.db.put(handle, account, function (result) {
           if (!result || result.error) {
+            self.setState({
+              registerStatus: self.state.registerStatus + "<br />Could not save account.",
+              registerDetail: result,
+              registerComplete: true
+            });
             return console.error("onImportAccount augur.db.put:", result);
           }
           account.ciphertext = account.ciphertext.toString("hex");
@@ -176,6 +185,11 @@ let RegisterModal = React.createClass({
           if (options.persist) {
               flux.augur.db.putPersistent(flux.augur.web.account);
           }
+          self.setState({
+            registerStatus: self.state.registerStatus + "<br />Account saved.<br />Your account has been successfully imported. This dialogue can now be safely closed.",
+            registerDetail: account,
+            registerComplete: true
+          });
           console.log("account import successful:", flux.augur.web.account);
           flux.actions.config.updateAccount({
             currentAccount: address,
@@ -186,7 +200,6 @@ let RegisterModal = React.createClass({
           flux.actions.asset.updateAssets();
           flux.actions.report.loadEventsToReport();
           flux.actions.report.loadPendingReports();
-          self.props.onHide();
         });
       });
     }
@@ -254,7 +267,7 @@ let RegisterModal = React.createClass({
     let passwordStyle = this.state.passwordHelp ? 'error' : null;
     let verifyPasswordStyle = this.state.verifyPasswordHelp ? 'error' : null;
     let submit = (
-      <Button bsStyle='primary' onClick={ this.onRegister }>Register</Button>
+      <Button bsStyle='primary' onClick={this.onRegister}>Register</Button>
     );
     let importSubmit = (
       <Button bsStyle='primary' onClick={this.onImportAccount}>Import</Button>
@@ -280,7 +293,7 @@ let RegisterModal = React.createClass({
           <label
             htmlFor="importAccountId"
             className="send-button btn btn-success load-account-file-button">
-            {this.state.keystore.address}
+            ✓ {abi.format_address(this.state.keystore.address)}
           </label>
           <input
             id="importAccountId"
