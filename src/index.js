@@ -13,9 +13,9 @@ var Decimal = require("decimal.js");
 var clone = require("clone");
 var abi = require("augur-abi");
 var rpc = require("ethrpc");
-var ramble = require("ramble");
 var contracts = require("augur-contracts");
 var connector = require("ethereumjs-connect");
+var ramble = require("ramble");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
