@@ -468,10 +468,10 @@ let AddMarketModal = React.createClass({
               minDate={this.state.minDate}
               hideFooter={true}
               onChange={this.handleDatePicked} />
-            <TimePicker
+            {/*<TimePicker
               style={{width: "100%", padding: 5, height: 50}}
               value={this.state.timePicked}
-              onChange={this.handleTimePicked} />
+              onChange={this.handleTimePicked} />*/}
           </div>
         </div>
       );
