@@ -26,29 +26,31 @@ let UserOrders = React.createClass({
         var myOpenOrders = this.state.myOpenOrders;
         var direction, order, openOrders = [];
         var numOrders = 0;
-        if (myOpenOrders) myOpenOrders = myOpenOrders[this.props.market._id];
-        for (var outcome in myOpenOrders) {
-            if (!myOpenOrders.hasOwnProperty(outcome)) continue;
-            for (var i = 0, n = myOpenOrders[outcome].length; i < n; ++i) {
-                order = myOpenOrders[outcome][i];
-                direction = (abi.bignum(order.amount).gt(new BigNumber(0))) ? "Buy" : "Sell";
-                openOrders.push(
-                    <tr className="openOrder" key={order.id}>
-                        <td className="text-uppercase"><strong>{direction}</strong></td>
-                        <td className="text-center">{utilities.getOutcomeName(parseInt(outcome), this.props.market).outcome}</td>
-                        <td className="text-right">{abi.bignum(order.amount).toFixed(2)}</td>
-                        <td className="text-right">{order.price}</td>
-                        <td className="text-right">{order.cap || '-'}</td>
-                        <td className="text-right">
-                            <Button
-                                className="btn btn-info"
-                                onClick={this.onOrderCancel.bind(this, outcome, order.id)}>
-                                Cancel
-                            </Button>
-                        </td>
-                    </tr>
-                );
-                numOrders++;
+        if (myOpenOrders) {
+            myOpenOrders = myOpenOrders[this.props.market._id];
+            for (var outcome in myOpenOrders) {
+                if (!myOpenOrders.hasOwnProperty(outcome)) continue;
+                for (var i = 0, n = myOpenOrders[outcome].length; i < n; ++i) {
+                    order = myOpenOrders[outcome][i];
+                    direction = (abi.bignum(order.amount).gt(new BigNumber(0))) ? "Buy" : "Sell";
+                    openOrders.push(
+                        <tr className="openOrder" key={order.id}>
+                            <td className="text-uppercase"><strong>{direction}</strong></td>
+                            <td className="text-center">{utilities.getOutcomeName(parseInt(outcome), this.props.market).outcome}</td>
+                            <td className="text-right">{abi.bignum(order.amount).toFixed(2)}</td>
+                            <td className="text-right">{order.price}</td>
+                            <td className="text-right">{order.cap || '-'}</td>
+                            <td className="text-right">
+                                <Button
+                                    className="btn btn-info"
+                                    onClick={this.onOrderCancel.bind(this, outcome, order.id)}>
+                                    Cancel
+                                </Button>
+                            </td>
+                        </tr>
+                    );
+                    numOrders++;
+                }
             }
         }
         if (!numOrders) {
