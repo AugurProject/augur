@@ -183,7 +183,7 @@ let MarketsPage = React.createClass({
                 <div className="row">
                     <div className="col-xs-12">
                         {markets.map(market => {
-                            return <MarketRow key={market.id} market={market} numOpenOrders={ (myOpenOrders[market._id] && myOpenOrders[market._id][1] && myOpenOrders[market._id][1].length) || 0 } />;
+                            return <MarketRow key={market.id} market={market} numOpenOrders={ (myOpenOrders && myOpenOrders[market._id] && myOpenOrders[market._id][1] && myOpenOrders[market._id][1].length) || 0 } />;
                         })}
                     </div>
                 </div>
