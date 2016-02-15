@@ -324,15 +324,7 @@ nav.header .register {
 }
 
 .account-info {
-    color: #fff;
     padding-bottom: 10px;
-}
-.account-info a {
-    color: #fff;
-}
-.account-info a:hover {
-    color: #fff;
-    text-decoration: none;
 }
 .account-info .account {
     font-size: 15pt;

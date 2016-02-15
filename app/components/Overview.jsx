@@ -65,7 +65,7 @@ let Overview = React.createClass({
       <div className="col-sm-3">
         <Button
           disabled
-          className="send-button btn-success">
+          className="send-button btn btn-default">
           Export Account
         </Button>
       </div>
@@ -82,7 +82,7 @@ let Overview = React.createClass({
             <a
               download={accountFilename}
               href={accountUrl}
-              className="send-button btn-success btn btn-default">
+              className="send-button btn-default btn">
               Export Account
             </a>
           </div>
@@ -96,7 +96,7 @@ let Overview = React.createClass({
         <div className="account-info">
           <h3>Account</h3>
           <div className="row">
-            <div className="col-sm-6">
+            <div className="col-sm-9">
               <span className="account">{this.state.account}</span>
             </div>
             {exportAccountButton}
@@ -138,8 +138,8 @@ let Overview = React.createClass({
       authoredMarketsSection = (
         <div>
           <h3>
-          My Markets
-          {submitMarketAction}
+            <i>My Markets</i>
+            {submitMarketAction}
           </h3>
           <div className='row'>
             <div className="col-xs-12">
