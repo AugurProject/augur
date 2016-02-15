@@ -1,7 +1,7 @@
-var React = require("react");
-var _ = require("lodash");
-var abi = require("augur-abi");
-var keys = require("keythereum");
+let React = require("react");
+let _ = require("lodash");
+let abi = require("augur-abi");
+let keys = require("keythereum");
 let Navigation = require("react-router/lib/Navigation");
 let Link = require("react-router/lib/components/Link");
 let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
@@ -10,13 +10,14 @@ let Button = require('react-bootstrap/lib/Button');
 let Table = require('react-bootstrap/lib/Table');
 let ListGroup = require('react-bootstrap/lib/ListGroup');
 let ListGroupItem = require('react-bootstrap/lib/ListGroupItem');
-var utilities = require("../libs/utilities");
-var constants = require("../libs/constants");
-var ImportAccountModal = require("./ImportAccount");
-var CloseMarketModal = require("./CloseMarket").CloseMarketModal;
+let utilities = require("../libs/utilities");
+let constants = require("../libs/constants");
+let ImportAccountModal = require("./ImportAccount");
+let AddMarketModal = require("./AddMarketModal");
+let CloseMarketModal = require("./CloseMarket").CloseMarketModal;
 let MarketRow = require("./markets-page/MarketRow");
 
-var Overview = React.createClass({
+let Overview = React.createClass({
 
   mixins: [
     FluxMixin,
@@ -27,20 +28,20 @@ var Overview = React.createClass({
   getInitialState: function () {
     return {
       importAccountModalOpen: false,
+      addMarketModalOpen: false,
       importKeystore: null
     };
   },
 
   getStateFromFlux: function () {
-    var flux = this.getFlux();
-    var account = flux.store('config').getAccount();
-    var currentBranch = flux.store('branch').getCurrentBranch();
+    let flux = this.getFlux();
+    let account = flux.store('config').getAccount();
+    let currentBranch = flux.store('branch').getCurrentBranch();
     return {
       account: account,
       privateKey: flux.store('config').getPrivateKey(),
       asset: flux.store('asset').getState(),
       config: flux.store('config').getState(),
-      trendingMarkets: flux.store('market').getTrendingMarkets(9, currentBranch),
       authoredMarkets: flux.store('market').getAuthoredMarkets(),
       reportPeriod: flux.store('branch').getState().currentVotePeriod,
       currentBranch: currentBranch,
@@ -50,6 +51,10 @@ var Overview = React.createClass({
 
   toggleImportAccountModal: function (event) {
     this.setState({importAccountModalOpen: !this.state.importAccountModalOpen});
+  },
+
+  toggleAddMarketModal: function (event) {
+    this.setState({addMarketModalOpen: !this.state.addMarketModalOpen});
   },
 
   importAccount: function (event) {
@@ -86,42 +91,6 @@ var Overview = React.createClass({
           onChange={this.importAccount} />
       </div>
     );
-    var trendingMarketsSection = <span />;
-    if (this.state.trendingMarkets && _.isEmpty(this.state.authoredMarkets)) {
-      trendingMarketsSection = (
-        <div>
-          <h3>Trending Markets</h3>
-          <div className='row'>
-            <div className="col-xs-12">
-                {_.map(this.state.trendingMarkets, market => {
-                  return <MarketRow key={market.id} market={market} />;
-                })}
-            </div>
-          </div>
-        </div>
-      );
-    }
-    if (!this.state.account) {
-      return (
-        <div id="overview">
-          <div className="account-info">
-            <h3>Account</h3>
-            <div className="row">
-              {importAccountButton}
-            </div>
-          </div>
-          <div className='row'>
-            <div className="col-xs-12">
-              {trendingMarketsSection}
-            </div>
-          </div>
-          <ImportAccountModal
-            params={{keystore: this.state.importKeystore}}
-            show={this.state.importAccountModalOpen}
-            onHide={this.toggleImportAccountModal} />
-        </div>
-      );
-    }
 
     var cashBalance = this.state.asset.cash ? +this.state.asset.cash.toFixed(2) : '-';
     var repBalance = this.state.asset.reputation ? +this.state.asset.reputation.toFixed(2) : 0;
@@ -180,7 +149,7 @@ var Overview = React.createClass({
     }
 
     var holdingsSection = <span />
-    if (holdings.length) {
+    if (this.state.account && holdings.length) {
       holdingsSection = (
         <div>
           <h3>Current Holdings</h3>
@@ -198,7 +167,7 @@ var Overview = React.createClass({
     if (this.state.account) {
         submitMarketAction = (
             <Button
-              className="send-button pull-right"
+              className="pull-right btn-primary"
               onClick={this.toggleAddMarketModal}>
               New Market
             </Button>
@@ -233,13 +202,15 @@ var Overview = React.createClass({
             {accountSection}
             {authoredMarketsSection}
             {holdingsSection}
-            {trendingMarketsSection}
           </div>
         </div>
         <ImportAccountModal
           params={{keystore: this.state.importKeystore}}
           show={this.state.importAccountModalOpen}
           onHide={this.toggleImportAccountModal} />
+        <AddMarketModal
+          show={this.state.addMarketModalOpen}
+          onHide={this.toggleAddMarketModal} />
       </div>
     );
   }

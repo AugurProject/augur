@@ -1071,6 +1071,11 @@ a.market-pane:hover {
     padding-bottom: 5px;
 }
 
+.load-account-file-button {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
 #confirm-modal button.confirm {
     margin-left: 10px;
 }
