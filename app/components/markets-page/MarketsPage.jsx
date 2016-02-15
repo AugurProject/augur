@@ -106,6 +106,9 @@ let MarketsPage = React.createClass({
     },
 
     render() {
+        let flux = this.getFlux();
+        let myOpenOrders = flux.augur.orders.get(flux.augur.from);
+
         let {markets, marketsCount, firstItemIndex, lastItemIndex} = this._getMarketsData();
 
         let pagination = (
@@ -180,7 +183,7 @@ let MarketsPage = React.createClass({
                 <div className="row">
                     <div className="col-xs-12">
                         {markets.map(market => {
-                            return <MarketRow key={market.id} market={market} />;
+                            return <MarketRow key={market.id} market={market} numOpenOrders={ (myOpenOrders[market._id] && myOpenOrders[market._id][1] && myOpenOrders[market._id][1].length) || 0 } />;
                         })}
                     </div>
                 </div>

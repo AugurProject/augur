@@ -1113,9 +1113,11 @@ a.market-pane:hover {
     text-align: left;
 }
 #add-market-modal input, label {
+    width: 100%;
     font-size: 16px;
 }
 #add-market-modal textarea {
+    width: 100%;
     font-size: 16px;
     margin-top: 15px;
 }
