@@ -1,11 +1,11 @@
-var React = require("react");
+let React = require("react");
 let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let Button = require('react-bootstrap/lib/Button');
 let Input = require('react-bootstrap/lib/Input');
 let Modal = require('react-bootstrap/lib/Modal');
-var utilities = require("../libs/utilities");
+let utilities = require("../libs/utilities");
 
-var SignInModal = React.createClass({
+let SignInModal = React.createClass({
 
   mixins: [FluxMixin],
 
@@ -21,8 +21,8 @@ var SignInModal = React.createClass({
 
   onSignIn: function (event) {
     if (this.isValid()) {
-      var flux = this.getFlux();
-      var self = this;
+      let flux = this.getFlux();
+      let self = this;
 
       // NOTE: this is here because the signin flux action in config does not
       // return a value and it's important to communicate any server-side error
@@ -77,9 +77,8 @@ var SignInModal = React.createClass({
   },
 
   handleChange: function (event) {
-
-    var form = {};
-    var help = {};
+    let form = {};
+    let help = {};
     form[event.target.name] = event.target.value;
     help[event.target.name+'Help'] = null;
     this.setState(form);
@@ -92,10 +91,10 @@ var SignInModal = React.createClass({
 
   render: function () {
 
-    var handleStyle = this.state.handleHelp ? 'error' : null;
-    var passwordStyle = this.state.passwordHelp ? 'error' : null;
+    let handleStyle = this.state.handleHelp ? 'error' : null;
+    let passwordStyle = this.state.passwordHelp ? 'error' : null;
 
-    var submit = (
+    let submit = (
       <Button bsStyle='primary' onClick={ this.onSignIn }>Sign In</Button>
     );
 

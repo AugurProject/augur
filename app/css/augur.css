@@ -234,6 +234,17 @@ nav.header .register {
     /*height: 25px;*/
 }
 
+.progress-modal .modal-body pre {
+    font-size: 10pt;
+}
+.progress-status {
+    font-size: 12pt;
+    /*font-style: italic;*/
+}
+.progress-status-box {
+    padding-bottom: 10px;
+}
+
 .modal h3 {
     margin-top: 0px;
 }
@@ -313,18 +324,10 @@ nav.header .register {
 }
 
 .account-info {
-    color: #fff;
     padding-bottom: 10px;
 }
-.account-info a {
-    color: #fff;
-}
-.account-info a:hover {
-    color: #fff;
-    text-decoration: none;
-}
 .account-info .account {
-    font-size: 13pt;
+    font-size: 15pt;
     word-wrap: break-word;
 }
 .account-info ul {
@@ -409,7 +412,7 @@ nav.header .register {
     text-overflow: ellipsis;
 }
 .account {
-    color: #333333;
+    color: #54657e;
 }
 
 .network {
@@ -1058,6 +1061,11 @@ a.market-pane:hover {
 
 .trending {
     padding-bottom: 5px;
+}
+
+.load-account-file-button {
+    margin-bottom: 20px;
+    width: 100%;
 }
 
 #confirm-modal button.confirm {

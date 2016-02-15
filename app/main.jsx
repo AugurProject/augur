@@ -36,9 +36,8 @@ flux.augur = require("augur.js");
 
 var AugurApp = require("./components/AugurApp");
 var Overview = require("./components/Overview");
-var Branch = require("./components/Branch");
-var MarketsPage = require('./components/markets-page/MarketsPage.jsx');
-var MarketPage = require('./components/market-page/MarketPage.jsx');
+var MarketsPage = require("./components/markets-page/MarketsPage");
+var MarketPage = require("./components/market-page/MarketPage");
 var Ballots = require("./components/Ballots");
 var Outcomes = require("./components/Outcomes");
 
@@ -48,15 +47,15 @@ flux.on("dispatch", function (type, payload) {
 });
 
 var routes = (
-  <Route name="app" handler={ AugurApp } flux={ flux }>
-    <DefaultRoute handler={ Overview } flux={ flux } />
-    <Route name="overview" path="/" handler={ Overview } flux={ flux } title="Overview" />
-    <Route name="markets" path="/markets" handler={ MarketsPage } flux={ flux } title="Markets" />
-    <Route name="market" path="/markets/:marketId" handler={ MarketPage } flux={ flux } />
-    <Route name="ballots" path="/ballots" handler={ Ballots } flux={ flux } title="Ballots" />
+  <Route name="app" handler={AugurApp} flux={flux}>
+    <DefaultRoute handler={MarketsPage} flux={flux} />
+    <Route name="markets" path="/" handler={MarketsPage} flux={flux} title="Markets" />
+    <Route name="overview" path="/overview" handler={Overview} flux={flux} title="Overview" />
+    <Route name="market" path="/markets/:marketId" handler={MarketPage} flux={flux} />
+    <Route name="ballots" path="/ballots" handler={Ballots} flux={flux} title="Ballots" />
   </Route>
 );
 
 Router.run(routes, Router.HistoryLocation, function (Handler, state) {
-  ReactDOM.render(<Handler flux={ flux } params={ state.params } query={state.query} />, document.getElementById("render-target"));
+  ReactDOM.render(<Handler flux={flux} params={state.params} query={state.query} />, document.getElementById("render-target"));
 });

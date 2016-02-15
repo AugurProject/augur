@@ -108,7 +108,7 @@ var Ballots = React.createClass({
 
       var ballot = (
         <div className='no-decisions'>
-          <h4>No decisions require your attention</h4>
+          <h4>No events require your attention</h4>
         </div>
       );
 

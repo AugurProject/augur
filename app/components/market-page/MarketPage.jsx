@@ -41,6 +41,9 @@ let MarketPage = React.createClass({
         if (currentBranch && market && market.tradingPeriod &&
             currentBranch.currentPeriod >= market.tradingPeriod.toNumber()) {
             market.matured = true;
+            if (currentBranch.reportPeriod > market.tradingPeriod.toNumber()) {
+                market.closable = true;
+            }
         }
 
         return {
@@ -107,7 +110,7 @@ let MarketPage = React.createClass({
         }
 
         var closeMarketButton = <span />;
-        if (market.expired && !market.closed) {
+        if (market.matured && market.closable && !market.closed) {
              closeMarketButton = (
                 <div className="close-market">
                     <Button

@@ -52,7 +52,8 @@ module.exports = {
       this.flux.augur.ramble.addMarketComment({
         marketId: abi.hex(marketId),
         author: author,
-        message: commentText
+        message: commentText,
+        broadcast: true
       }, function (res) {
         self.flux.actions.market.updateComments(commentText, marketId, author);
       }, function (res) {
@@ -124,6 +125,7 @@ module.exports = {
     var augur = this.flux.augur;
     var marketsPerPage = this.flux.store('market').getMarketsPerPage();
     var branchId = this.flux.store('branch').getCurrentBranch().id;
+    var account = this.flux.store('config').getAccount();
 
     // request data from geth via JSON RPC
     var start = (new Date()).getTime();
@@ -162,8 +164,13 @@ module.exports = {
                   prevTime = (new Date()).getTime();
 
                   // save markets to MarketStore
-                  self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {markets: markets});
-                  self.flux.actions.config.updatePercentLoaded(100 * (index + 1) / numPages);
+                  var percentLoaded = 100 * (index + 1) / numPages;
+                  self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {
+                    markets: markets,
+                    percentLoaded: percentLoaded,
+                    account: account
+                  });
+                  self.flux.actions.config.updatePercentLoaded(percentLoaded);
 
                   self.dispatch(constants.market.MARKETS_LOADING, {loadingPage: null});
 
@@ -189,6 +196,7 @@ module.exports = {
     var self = this;
     var augur = this.flux.augur;
     var branchId = this.flux.store('branch').getCurrentBranch().id;
+    var account = this.flux.store('config').getAccount();
     marketId = abi.hex(marketId);
     augur.getMarketCreationBlock(marketId, function (creationBlock) {
       augur.getMarketPriceHistory(marketId, function (priceHistory) {
@@ -204,10 +212,13 @@ module.exports = {
             markets[parsedInfo.id] = parsedInfo;
 
             // save markets to MarketStore
-            self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, { markets: markets });
+            self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {
+              markets: markets,
+              account: account
+            });
 
             // loading complete!
-            self.dispatch(constants.market.MARKETS_LOADING, { loadingPage: null });
+            self.dispatch(constants.market.MARKETS_LOADING, {loadingPage: null});
             self.flux.actions.config.updatePercentLoaded(100);
           });
         });
@@ -218,7 +229,6 @@ module.exports = {
   checkOrderBook: function (market) {
     var self = this;
     this.flux.augur.checkOrderBook(market, function (matchedOrders) {
-      console.log("checked order book:", matchedOrders);
       self.dispatch(constants.market.CHECK_ORDER_BOOK_SUCCESS, {matchedOrders});
     });
   },
