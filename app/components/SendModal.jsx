@@ -352,12 +352,13 @@ let SendEtherModal = React.createClass({
 
   onSend: function (event) {
     if (this.isValid(event)) {
-      this.getFlux().augur.rpc.sendEther({
+      let flux = this.getFlux();
+      flux.augur.rpc.sendEther({
         to: this.state.destination,
         value: this.state.amount,
-        from: this.getAccount(),
+        from: flux.augur.from,
         onSent: function (result) {
-          if (result && result.error) utilities.error(result);
+          if (result && result.error) console.error(result);
           self.setState({progressText: "Sending " + amount + " Ether to " + destination + "..."});
         },
         onSuccess: function (result) {
@@ -368,7 +369,7 @@ let SendEtherModal = React.createClass({
           }
         },
         onFailed: function (result) {
-          utilities.error("sendEther failed:", result);
+          console.error("sendEther failed:", result);
           self.setState({progressText: "Error: could not send " + amount + " Ether."});
         }
       });
