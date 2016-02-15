@@ -58,7 +58,7 @@ let MarketRow = React.createClass({
                             <table className="tabular tabular-condensed">
                                 <thead>
                                     <tr>
-                                        <th colSpan="3">Market Leaders</th>
+                                        <th colSpan="2">Market Leaders</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -70,7 +70,7 @@ let MarketRow = React.createClass({
                             <table className="tabular tabular-condensed">
                                 <thead>
                                     <tr>
-                                        <th colSpan="3">Your Trading</th>
+                                        <th colSpan="2">Your Trading</th>
                                     </tr>
                                 </thead>
                                 <tbody>

@@ -1,7 +1,7 @@
 @import (reference) "../../../node_modules/bootstrap/less/variables";
 @import (reference) "../../../node_modules/flex.less/flex";
 
-@market-row-margin : 0.6rem;
+@market-row-margin: 0.6rem;
 
 .market-row {
      border-top: 1px solid @color-grey-light;
@@ -31,7 +31,7 @@
                margin: @market-row-margin 0 0 0;
 
                .tag {
-                    margin-right: 0.8rem;
+                    margin-right: 0.6rem;
                     padding: 0.3rem;
                     border: solid 1px @color-grey-light2; border-radius: 3px;
                     font-size: 11px;
@@ -41,14 +41,17 @@
 
           .details {
                margin: 1rem 0 0 0;
+
                .table-container {
                     display: inline-block; position: relative;
+                    min-width: 40%;
                     margin-bottom: @market-row-margin;
                     vertical-align: top;
 
                     &.outcomes {
                          margin-right: 2%;
                          .tabular {
+                              width: 100%;
                               th {
                                    white-space: nowrap;
                               }
@@ -65,6 +68,7 @@
                     }
                     &.holdings {
                          .tabular {
+                              width: 100%;
                               th {
                                    background: @faded-blue;
                                    border-color: @faded-blue;
