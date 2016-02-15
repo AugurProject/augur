@@ -5,9 +5,6 @@ let moment = require("moment");
 
 let Link = require("react-router/lib/components/Link");
 
-let Collapse = require('react-bootstrap/lib/Collapse');
-let Glyphicon = require('react-bootstrap/lib/Glyphicon');
-
 let OutcomeRow = require("./OutcomeRow");
 
 let MarketRow = React.createClass({
@@ -15,25 +12,6 @@ let MarketRow = React.createClass({
         let market = this.props.market;
         let endDateLabel = (market.endDate != null && market.matured) ? 'Matured' : 'End Date';
         let endDateFormatted = market.endDate != null ? moment(market.endDate).format('MMM Do, YYYY') : '-';
-
-        let outcomeRows;
-        let tableRows = [];
-
-        if (market.type == "combinatorial") {
-            outcomeRows = (<tr key={market._id}><td colSpan="5">todo</td></tr>);
-        } else {
-            let outcomes;
-            if (this.props.contentType === "holdings") {
-                outcomes = _.filter(market.outcomes, outcome => outcome.sharesHeld && outcome.sharesHeld.toNumber() > 0);
-            } else {
-                outcomes = market.outcomes;
-            }
-            outcomeRows = outcomes.map((outcome) => {
-                return <OutcomeRow key={`${market._id}-${outcome.id}`} outcome={outcome} market={market} contentType={this.props.contentType} />;
-            }, this);
-        }
-
-        tableRows = tableRows.concat(outcomeRows);
 
         return (
             <div className="market-row">
@@ -58,11 +36,13 @@ let MarketRow = React.createClass({
                             <table className="tabular tabular-condensed">
                                 <thead>
                                     <tr>
-                                        <th colSpan="2">Market Leaders</th>
+                                        <th colSpan="3">Market Leaders</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    { tableRows }
+                                    { market.outcomes.map((outcome) => {
+                                        return <OutcomeRow key={`${market._id}-${outcome.id}`} outcome={outcome} market={market} contentType={this.props.contentType} />;
+                                    })}
                                 </tbody>
                             </table>
                         </div>
@@ -70,11 +50,19 @@ let MarketRow = React.createClass({
                             <table className="tabular tabular-condensed">
                                 <thead>
                                     <tr>
-                                        <th colSpan="2">Your Trading</th>
+                                        <th colSpan="4">Your Trading [DUMMY]</th>
                                     </tr>
                                 </thead>
+
                                 <tbody>
-                                    { tableRows }
+                                    <tr>
+                                        <td className="title">Positions</td><td className="value">2</td>
+                                        <td className="title">Trades</td><td className="value">8</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="title">Open Orders</td><td className="value">{ this.props.numOpenOrders }</td>
+                                        <td className="title">Profit / Loss</td><td className="value"><span className={ Math.random() > 0.5 ? 'green' : 'red' }>+5.06%</span></td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>

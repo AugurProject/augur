@@ -52,16 +52,27 @@
                          margin-right: 2%;
                          .tabular {
                               width: 100%;
-                              th {
-                                   white-space: nowrap;
-                              }
-                              td {
-                                   &:first-child {
-                                        white-space: wrap;
-                                   }
-                                   &:not(:first-child) {
-                                        text-align: right;
+                              tr {
+                                   th {
                                         white-space: nowrap;
+                                   }
+                                   td {
+                                        &:first-child {
+                                             white-space: wrap;
+                                        }
+                                        &:not(:first-child) {
+                                             text-align: right;
+                                             white-space: nowrap;
+                                        }
+
+                                        &.change-direction {
+                                             width: 0.5rem;
+                                             padding-left: 0;
+
+                                             .fa {
+                                                  font-weight: 700;
+                                             }
+                                        }
                                    }
                               }
                          }
@@ -69,9 +80,20 @@
                     &.holdings {
                          .tabular {
                               width: 100%;
-                              th {
-                                   background: @faded-blue;
-                                   border-color: @faded-blue;
+                              tr {
+                                   th {
+                                        background: @faded-blue;
+                                        border-color: @faded-blue;
+                                   }
+                                   td {
+                                        &.title {
+                                             text-align: left;
+                                        }
+                                        &.value {
+                                             text-align: right;
+                                             font-weight: 700;
+                                        }
+                                   }
                               }
                          }
                     }
