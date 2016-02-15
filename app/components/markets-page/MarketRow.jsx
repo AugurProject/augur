@@ -17,28 +17,7 @@ let MarketRow = React.createClass({
         let endDateFormatted = market.endDate != null ? moment(market.endDate).format('MMM Do, YYYY') : '-';
 
         let outcomeRows;
-
         let tableRows = [];
-        let tHRow;
-        if (this.props.contentType === "holdings") {
-            tHRow = (
-                <tr key={`th-${market._id}`}>
-                    <th>Outcome</th>
-                    <th>Probability</th>
-                    <th>Last Trade</th>
-                    <th>Shares held</th>
-                    <th>Potential P/L</th>
-                </tr>
-            );
-        } else {
-            tHRow = (
-                <tr key={`th-${market._id}`}>
-                    <th>Outcome</th>
-                    <th>Probability</th>
-                    <th>Last Trade</th>
-                </tr>
-            );
-        }
 
         if (market.type == "combinatorial") {
             outcomeRows = (<tr key={market._id}><td colSpan="5">todo</td></tr>);
@@ -54,41 +33,59 @@ let MarketRow = React.createClass({
             }, this);
         }
 
-        tableRows.push(tHRow);
         tableRows = tableRows.concat(outcomeRows);
 
         return (
-            <div className="marketRow">
-                <div className="row">
-                    <div className="col-xs-12">
-                        <div className="marketRow-title">
-                            <h4 className="pointer">
-                                {market.description}
-                            </h4>
-                            <Link className="btn btn-primary" to="market" params={{marketId: market.id.toString(16)}}>
-                                Trade
-                            </Link>
-                            <div className="clearfix"></div>
-                        </div>
-                        <p className="marketRow-subtitle clearfix">
-                            <span className="subtitle-label trading-fee-label">Trading Fee:</span>
-                            <span className="subtitle-value trading-fee">{ market.tradingFee ? +market.tradingFee.times(100).toFixed(2) + '%' : '-'}</span>
+            <div className="market-row">
+                <div className="info">
+                    <h4 className="description">
+                        {market.description}
+                    </h4>
+                    <div className="subtitle">
+                        <span className="subtitle-label trading-fee-label">Trading Fee:</span>
+                        <span className="subtitle-value trading-fee">{ market.tradingFee ? +market.tradingFee.times(100).toFixed(2) + '%' : '-'}</span>
 
-                            <span className="subtitle-label end-date-label">{ endDateLabel }:</span>
-                            <span className="subtitle-value end-date">{ endDateFormatted }</span>
-                        </p>
+                        <span className="subtitle-label end-date-label">{ endDateLabel }:</span>
+                        <span className="subtitle-value end-date">{ endDateFormatted }</span>
+                    </div>
+                    <div className="tags">
+                        <span className="tag">politics</span>
+                        <span className="tag">US Election</span>
+                        <span className="tag">WORLD</span>
+                    </div>
+                    <div className="details">
+                        <div className="table-container outcomes">
+                            <table className="tabular tabular-condensed">
+                                <thead>
+                                    <tr>
+                                        <th colSpan="3">Market Leaders</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    { tableRows }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div className="table-container holdings">
+                            <table className="tabular tabular-condensed">
+                                <thead>
+                                    <tr>
+                                        <th colSpan="3">Your Trading</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    { tableRows }
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-                <div className="row">
-                    <div className="col-sm-7">
-                        <table className="marketRow-outcomes table">
-                            <tbody>
-                                { tableRows }
-                            </tbody>
-                        </table>
-                    </div>
+
+                <div className="buttons">
+                    <Link className="btn btn-primary" to="market" params={{marketId: market.id.toString(16)}}>
+                        Trade
+                    </Link>
                 </div>
-                <div className="clearfix"></div>
             </div>
         );
     }
