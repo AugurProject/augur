@@ -33,7 +33,7 @@ let RegisterModal = React.createClass({
       registerDetail: null,
       registerComplete: null,
       tab: 0,
-      importKeystore: null
+      keystore: null
     };
   },
 
@@ -135,7 +135,7 @@ let RegisterModal = React.createClass({
       var handle = this.state.handle;
       var password = this.state.password;
       var options = {persist: this.state.persist};
-      var keystore = this.props.params.keystore;
+      var keystore = this.state.keystore;
       var address = abi.prefix_hex(keystore.address);
       var flux = this.getFlux();
       var self = this;
@@ -201,7 +201,7 @@ let RegisterModal = React.createClass({
         return function (e) {
           try {
             var keystore = JSON.parse(e.target.result);
-            self.setState({importKeystore: keystore});
+            self.setState({keystore: keystore});
           } catch (exc) {
             console.error("loadAccountFile: couldn't parse account file:", exc);
           }
@@ -260,27 +260,43 @@ let RegisterModal = React.createClass({
       <Button bsStyle='primary' onClick={this.onImportAccount}>Import</Button>
     );
     let loadAccountFile;
-    if (this.state.importKeystore === null) {
+    if (this.state.keystore === null) {
       loadAccountFile = (
-        <label
-          htmlFor="importAccountId"
-          className="send-button btn btn-default load-account-file-button">
-          Load Account File
-        </label>
-        <input
-          id="importAccountId"
-          type="file"
-          onChange={this.loadAccountFile} />
+        <div className="col-sm-12">
+          <label
+            htmlFor="importAccountId"
+            className="send-button btn btn-default load-account-file-button">
+            Load Account File
+          </label>
+          <input
+            id="importAccountId"
+            type="file"
+            onChange={this.loadAccountFile} />
+        </div>
       );
     } else {
       loadAccountFile = (
-        {this.state.importKeystore.address}
+        <div className="col-sm-12">
+          <label
+            htmlFor="importAccountId"
+            className="send-button btn btn-success load-account-file-button">
+            {this.state.keystore.address}
+          </label>
+          <input
+            id="importAccountId"
+            type="file"
+            onChange={this.loadAccountFile} />
+        </div>
       );
     }
 
     return (
       <div>
-        <Modal show={this.props.show} onHide={this.props.onHide} className='send-modal' bsSize='small'>
+        <Modal
+          show={this.props.show}
+          onHide={this.props.onHide}
+          className="send-modal"
+          bsSize="large">
           <div className='modal-body clearfix'>
             <h4>Register</h4>
             <Tabs onSelect={this.handleSelect} selectedIndex={this.state.tab}>
@@ -332,9 +348,7 @@ let RegisterModal = React.createClass({
               </TabPanel>
               <TabPanel>
                 <div className='row'>
-                  <div className="col-sm-12">
-                    {loadAccountFile}
-                  </div>
+                  {loadAccountFile}
                   <div className="col-sm-12">
                     <Input
                       type='text'

@@ -689,7 +689,7 @@ let AddMarketModal = React.createClass({
 
     return (
       <div>
-        <Modal {...this.props} onHide={this.onHide} id='add-market-modal'>
+        <Modal {...this.props} bsSize="large" onHide={this.onHide} id='add-market-modal'>
           <div className="modal-header clearfix">
             <h4>
               New Market Builder
