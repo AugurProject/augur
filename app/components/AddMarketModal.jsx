@@ -215,7 +215,8 @@ let AddMarketModal = React.createClass({
       initialLiquidity: this.state.marketInvestment,
       tradingFee: new BigNumber(this.state.tradingFee / 100)
     };
-    var source = (this.state.expirySource === "specific") ? this.state.expirySourceURL : null;
+    var source = (this.state.expirySource === "specific") ?
+      this.state.expirySourceURL : this.state.expirySource;
     var pendingId = flux.actions.market.addPendingMarket(newMarketParams);
     var branchId = flux.store("branch").getCurrentBranch().id;
     var block = flux.store("network").getState().blockNumber;
@@ -346,7 +347,7 @@ let AddMarketModal = React.createClass({
 
   onAddTag: function (event) {
     var numTags = this.state.numTags + 1;
-    if (numTags < 3) {
+    if (numTags <= 3) {
       var tags = this.state.tags;
       tags.push('');
       this.setState({numTags: numTags});

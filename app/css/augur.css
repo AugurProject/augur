@@ -829,6 +829,9 @@ a.market-pane:hover {
     text-align: left;
     width: 75%;
 }
+#comment-text {
+    width: 100%;
+}
 #market .comments {
     margin-top: 40px;
 }
@@ -1113,7 +1116,7 @@ a.market-pane:hover {
     text-align: left;
 }
 #add-market-modal input, label {
-    width: 100%;
+    /*width: 100%;*/
     font-size: 16px;
 }
 #add-market-modal textarea {
