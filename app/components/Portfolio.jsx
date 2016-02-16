@@ -45,7 +45,7 @@ let Overview = React.createClass({
     if (this.state.account && holdings.length) {
       holdingsSection = (
         <div>
-          <h3>Portfolio</h3>
+          <h1>Portfolio</h1>
           <ListGroup className='holdings'>
             { holdings }
           </ListGroup>
