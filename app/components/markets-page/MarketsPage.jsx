@@ -9,7 +9,7 @@ let Link = require("react-router/lib/components/Link");
 let Button = require("react-bootstrap/lib/Button");
 let constants = require("../../libs/constants");
 let MarketRow = require("./MarketRow");
-let AddMarketModal = require("../AddMarketModal");
+let Shepherd = require('tether-shepherd');
 
 let MarketsPage = React.createClass({
 
@@ -18,7 +18,6 @@ let MarketsPage = React.createClass({
 
     getInitialState() {
         return {
-            addMarketModalOpen: false,
             marketsPerPage: constants.MARKETS_PER_PAGE,
             visiblePages: 3,
             pageNum: this.props.params.page ? this.props.params.page - 1 : 0
@@ -61,10 +60,6 @@ let MarketsPage = React.createClass({
         this.handlePageChanged({selected: 0});
         this.getFlux().actions.search.updateKeywords(val);
     }, 500),
-
-    toggleAddMarketModal: function (event) {
-        this.setState({addMarketModalOpen: !this.state.addMarketModalOpen});
-    },
 
     componentWillReceiveProps(nextProps) {
         if (this.props.query.expired !== nextProps.query.expired) {
@@ -138,22 +133,9 @@ let MarketsPage = React.createClass({
             </div>
         );
 
-        let submitMarketAction;
-        if (this.state.account) {
-            submitMarketAction = (
-                <Button
-                  className="pull-right btn-primary"
-                  onClick={this.toggleAddMarketModal}>
-                  New Market
-                </Button>
-            );
-        } else {
-            submitMarketAction = <span />;
-        }
-
         return (
             <div className="marketsPage">
-                <h1>Markets {submitMarketAction}</h1>
+                <h1>Markets</h1>
 
                 <div className="row submenu">
                     <a className="collapsed" data-toggle="collapse" href="#collapseSubmenu"
@@ -207,11 +189,44 @@ let MarketsPage = React.createClass({
                     </div>
                 </div>
                 { pagination }
-                <AddMarketModal
-                    show={this.state.addMarketModalOpen}
-                    onHide={this.toggleAddMarketModal} />
             </div>
         );
+    },
+
+    componentDidMount: function() {
+        let tour = new Shepherd.Tour({
+            defaults: {
+                classes: 'shepherd-element shepherd-open shepherd-theme-arrows',
+                showCancelLink: true
+            }
+        });
+
+        tour.addStep('intro', {
+            title: 'Trade Anything',
+            text: 'Augur let\'s you predict anything'
+        });
+
+        tour.addStep('markets-list', {
+            title: 'Markets',
+            text: 'Find a topic you\'re interested in',
+            attachTo: '.market-row .info .description top'
+        });
+
+        tour.addStep('trade-button', {
+            title: 'Trade',
+            text: 'Trade shares on what you think will happen',
+            attachTo: '.buttons a left',
+            buttons: [{
+                text: 'Back',
+                classes: 'shepherd-button-secondary',
+                action: tour.back
+            }, {
+                text: 'Done',
+                action: tour.next
+            }]
+        });
+
+        setTimeout(() => tour.start(), 10000);
     }
 });
 
