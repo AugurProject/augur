@@ -121992,6 +121992,7 @@ module.exports = {
         options = options || {};
         if (!market || !isFunction(cb)) return errors.PARAMETER_NUMBER_ERROR;
         var self = this;
+        var loop = (this.debug) ? async.eachSeries : async.each;
         if (this.ipfs) {
             this.getLogs({
                 fromBlock: options.fromBlock || "0x1",
@@ -122010,7 +122011,7 @@ module.exports = {
                 }
                 var comments = [];
                 market = abi.bignum(abi.unfork(market));
-                async.eachSeries(logs, function (thisLog, nextLog) {
+                loop(logs, function (thisLog, nextLog) {
                     if (!thisLog || !thisLog.topics) return nextLog();
                     if (!abi.bignum(abi.unfork(thisLog.topics[1])).eq(market)) {
                         return nextLog();
@@ -122035,6 +122036,8 @@ module.exports = {
         }
     },
 
+    // Set options.sourceless=true to fetch metadata even if it doesn't
+    // have a source field.
     getMarketMetadata: function (market, options, cb) {
         if (!cb && isFunction(options)) {
             cb = options;
@@ -122043,6 +122046,7 @@ module.exports = {
         options = options || {};
         if (!market || !isFunction(cb)) return errors.PARAMETER_NUMBER_ERROR;
         var self = this;
+        var loop = (this.debug) ? async.eachSeries : async.each;
         if (this.ipfs) {
             this.getLogs({
                 fromBlock: options.fromBlock || "0x1",
@@ -122059,9 +122063,8 @@ module.exports = {
                 if (options.numComments && options.numComments < numLogs) {
                     logs = logs.slice(numLogs - options.numComments, numLogs);
                 }
-                var metadataList = [];
                 market = abi.bignum(abi.unfork(market));
-                async.eachSeries(logs, function (thisLog, nextLog) {
+                loop(logs, function (thisLog, nextLog) {
                     if (!thisLog || !thisLog.topics) return nextLog();
                     if (!abi.bignum(abi.unfork(thisLog.topics[1])).eq(market)) {
                         return nextLog();
@@ -122071,13 +122074,15 @@ module.exports = {
                         if (err) return nextLog(err);
                         if (!metadata) return nextLog(errors.IPFS_GET_FAILURE);
                         if (metadata.error) return nextLog(errors.IPFS_GET_FAILURE);
-                        metadataList.push(metadata);
+                        if (options.sourceless || metadata.source) {
+                            return nextLog({metadata: metadata});
+                        }
                         nextLog();
                     });
-                }, function (err) {
-                    if (err) return cb(err);
-                    metadataList.reverse();
-                    cb(null, metadataList);
+                }, function (res) {
+                    if (!res) return cb(errors.IPFS_GET_FAILURE);
+                    if (!res.metadata) return cb(res);
+                    cb(null, res.metadata);
                 });
             });
         }
