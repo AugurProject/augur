@@ -40,6 +40,7 @@ var MarketsPage = require("./components/markets-page/MarketsPage");
 var MarketPage = require("./components/market-page/MarketPage");
 var Ballots = require("./components/Ballots");
 var Outcomes = require("./components/Outcomes");
+var Portfolio = require("./components/Portfolio");
 
 flux.on("dispatch", function (type, payload) {
   var debug = flux.store("config").getState().debug;
@@ -50,7 +51,8 @@ var routes = (
   <Route name="app" handler={AugurApp} flux={flux}>
     <DefaultRoute handler={MarketsPage} flux={flux} />
     <Route name="markets" path="/" handler={MarketsPage} flux={flux} title="Markets" />
-    <Route name="overview" path="/overview" handler={Overview} flux={flux} title="Overview" />
+    <Route name="portfolio" path="/portfolio" handler={Portfolio} flux={flux} title="Portfolio" />
+    <Route name="overview" path="/overview" handler={Overview} flux={flux} title="My Markets" />
     <Route name="market" path="/markets/:marketId" handler={MarketPage} flux={flux} />
     <Route name="ballots" path="/ballots" handler={Ballots} flux={flux} title="Ballots" />
   </Route>

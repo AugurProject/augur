@@ -80,6 +80,11 @@ let Header = React.createClass({
                         </Link>
                     </li>
                     <li>
+                        <Link to="portfolio">
+                            Portfolio
+                        </Link>
+                    </li>
+                    <li>
                         <Link to="ballots">
                             Reporting ({ this.props.ballotsCount })
                         </Link>
