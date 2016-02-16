@@ -104,7 +104,7 @@ let Overview = React.createClass({
       authoredMarketsSection = (
         <div>
           <h3>
-            <i>My Markets</i>
+            My Markets
             {submitMarketAction}
           </h3>
           <div className='row'>
