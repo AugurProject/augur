@@ -81,7 +81,7 @@ let Header = React.createClass({
                     </li>
                     <li>
                         <Link to="ballots">
-                            Ballots ({ this.props.ballotsCount })
+                            Reporting ({ this.props.ballotsCount })
                         </Link>
                     </li>
                     <li>
