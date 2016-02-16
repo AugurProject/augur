@@ -1,6 +1,7 @@
 "use strict";
 
 var _ = require("lodash");
+var abi = require("augur-abi");
 var constants = require("../libs/constants");
 
 module.exports = {
@@ -53,6 +54,9 @@ module.exports = {
   getOrders: function () {
     return this.state.orders;
   },
+  getMetadata: function (marketId) {
+    return this.state.markets[marketId].metadata;
+  },
   handleMarketsLoading: function (payload) {
     if (payload.marketLoadingIds) this.state.marketLoadingIds = payload.marketLoadingIds;
     this.state.loadingPage = payload.loadingPage;
@@ -93,8 +97,13 @@ module.exports = {
       delete this.state.pendingMarkets[payload.marketId];
     }
   },
+  handleLoadMetadataSuccess: function (payload) {
+    this.state.markets[abi.bignum(payload.metadata.marketId)].metadata = payload.metadata;
+    this.emit(constants.CHANGE_EVENT);
+  },
   handlePriceHistoryLoading: function (payload) {
     this.state.markets[payload.marketId].priceHistoryStatus = "loading";
+    this.emit(constants.CHANGE_EVENT);
   },
   handleLoadPriceHistorySuccess: function (payload) {
     this.state.markets[payload.market.id].priceHistory = payload.priceHistory;

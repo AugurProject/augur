@@ -226,6 +226,14 @@ module.exports = {
     });
   },
 
+  loadMetadata: function (market) {
+    var self = this;
+    this.flux.augur.ramble.getMarketMetadata(market._id, null, function (err, metadata) {
+      if (err) return console.error("loadMetadata:", err);
+      self.dispatch(constants.market.LOAD_METADATA_SUCCESS, {metadata});
+    });
+  },
+
   checkOrderBook: function (market) {
     var self = this;
     this.flux.augur.checkOrderBook(market, function (matchedOrders) {

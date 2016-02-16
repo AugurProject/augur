@@ -116,6 +116,9 @@ var flux = {
         CHECK_ORDER_BOOK_SUCCESS: function (payload) {
             flux.stores.market.handleCheckOrderBookSuccess(payload);
         },
+        LOAD_METADATA_SUCCESS: function (payload) {
+            flux.stores.market.handleLoadMetadataSuccess(payload);
+        },
 
         // network
         UPDATE_NETWORK: function (payload) {
