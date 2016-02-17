@@ -1,19 +1,35 @@
-@font-family: 'Open Sans', sans-serif;
+@font-family: 'Roboto', 'Open Sans', sans-serif;
 
 // define colors
 @color-white: #fff;
 @color-green: #16a085;
-@color-red: #e74c3c;
+@color-red: #d57373;
 @color-blue-light: #2ca8ff;
-@color-grey-light: #E3E3E3;
-@color-grey-lighter: #F5F5F5;
+
 @color-grey-dark: #444444;
 @color-grey: #9A9A9A;
+@color-grey-light: #E3E3E3;
+@color-grey-lighter: #F5F5F5;
+
+// !! new colors (per zeplin design) should remove above dupes, but don't know enough about the app yet to do that
+@color-grey-dark: #8493a8;
+@color-grey: #adb9ca;
+@color-grey-light: #cad3df;
+@color-grey-light2: #d4dbe5;
+@color-grey-lighter: #eceff4;
+
+@color-dusk: #3d4d65;
+@color-slate-dark: #53647d;
+@color-slate: #54657e;
+@color-bluegrey: #8493a8;
+@faded-blue: #5c97bf;
+// !! end new colors
 
 @color-dark-bg: #34495E;
 @color-dark-bg-active: #2C3E50;
 
-@color-menu-border: #475A6D;
+@color-menu-border: @color-grey-dark;
+@color-menu-border-active: @color-grey;
 
 // override GSDK and bootstrap
 @danger-color: @color-red;
@@ -23,10 +39,10 @@
 @danger-states-color: desaturate(@color-red, 15%);
 
 // fonts
-@font-color-default: #555555;
-@font-color-header: #333333;
+@font-color-default: @color-slate-dark;
+@font-color-header: @color-slate;
 @font-color-light: #7f8c8d;
-@font-color-link: @color-blue-light;
+@font-color-link: @color-dusk;
 
 @font-size-base: 14px;
 @font-size-medium: 14px;

@@ -1,26 +1,15 @@
-var React = require("react");
-var _ = require("lodash");
-var abi = require("augur-abi");
-var keys = require("keythereum");
+let React = require("react");
+let _ = require("lodash");
 let Navigation = require("react-router/lib/Navigation");
-let Link = require("react-router/lib/components/Link");
-
 let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
 let Button = require('react-bootstrap/lib/Button');
-let Table = require('react-bootstrap/lib/Table');
-let ListGroup = require('react-bootstrap/lib/ListGroup');
-let ListGroupItem = require('react-bootstrap/lib/ListGroupItem');
-
-var utilities = require("../libs/utilities");
-var constants = require("../libs/constants");
-
-var ImportAccountModal = require("./ImportAccount");
-var CloseMarketModal = require("./CloseMarket").CloseMarketModal;
+let utilities = require("../libs/utilities");
+let constants = require("../libs/constants");
+let AddMarketModal = require("./AddMarketModal");
 let MarketRow = require("./markets-page/MarketRow");
-var Branch = require("./Branch");
 
-var Overview = React.createClass({
+let Overview = React.createClass({
 
   mixins: [
     FluxMixin,
@@ -29,120 +18,35 @@ var Overview = React.createClass({
   ],
 
   getInitialState: function () {
-    return {
-      importAccountModalOpen: false,
-      importKeystore: null
-    };
+    return {addMarketModalOpen: false};
   },
 
   getStateFromFlux: function () {
-    var flux = this.getFlux();
-    var account = flux.store('config').getAccount();
-    var currentBranch = flux.store('branch').getCurrentBranch();
+    let flux = this.getFlux();
+    let account = flux.store('config').getAccount();
+    let currentBranch = flux.store('branch').getCurrentBranch();
     return {
       account: account,
       privateKey: flux.store('config').getPrivateKey(),
       asset: flux.store('asset').getState(),
       config: flux.store('config').getState(),
-      trendingMarkets: flux.store('market').getTrendingMarkets(9, currentBranch),
-      authoredMarkets: flux.store('market').getMarketsByAuthor(account),
+      authoredMarkets: flux.store('market').getAuthoredMarkets(),
       reportPeriod: flux.store('branch').getState().currentVotePeriod,
-      currentBranch: currentBranch,
-      holdings: flux.store('market').getMarketsHeld()
+      currentBranch: currentBranch
     }
   },
 
-  toggleImportAccountModal: function (event) {
-    this.setState({importAccountModalOpen: !this.state.importAccountModalOpen});
-  },
-
-  importAccount: function (event) {
-    var self = this;
-    if (event.target && event.target.files && event.target.files.length) {
-      var keystoreFile = event.target.files[0];
-      var reader = new FileReader();
-      reader.onload = (function (f) {
-        return function (e) {
-          try {
-            var keystore = JSON.parse(e.target.result);
-            self.setState({importKeystore: keystore});
-            self.toggleImportAccountModal();
-          } catch (exc) {
-            console.error("Overview.importAccount: couldn't parse account file:", exc);
-          }
-        };
-      })(keystoreFile);
-      reader.readAsText(keystoreFile);
-    }
+  toggleAddMarketModal: function (event) {
+    this.setState({addMarketModalOpen: !this.state.addMarketModalOpen});
   },
 
   render: function () {
-    var importAccountButton = (
-      <div className="col-sm-3">
-        <label
-          htmlFor="importAccountId"
-          className="send-button btn-info btn btn-default">
-          Import Account
-        </label>
-        <input
-          id="importAccountId"
-          type="file"
-          onChange={this.importAccount} />
-      </div>
-    );
-    if (!this.state.account) {
-      var trendingMarketsSection = <span />;
-      if (this.state.trendingMarkets) {
-        trendingMarketsSection = (
-          <div>
-            <h3>Trending Markets</h3>
-            <div className='row'>
-              <div className="col-xs-12">
-                  {_.map(this.state.trendingMarkets, market => {
-                    return <MarketRow key={market.id} market={market} />;
-                  })}
-              </div>
-            </div>
-          </div>
-        );
-      }
-      return (
-        <div id="overview">
-          <div className="account-info">
-            <h3>Account</h3>
-            <div className="row">
-              {importAccountButton}
-            </div>
-          </div>
-          <div className='row'>
-            <div className="col-xs-12">
-              {trendingMarketsSection}
-            </div>
-          </div>
-          <ImportAccountModal
-            params={{keystore: this.state.importKeystore}}
-            show={this.state.importAccountModalOpen}
-            onHide={this.toggleImportAccountModal} />
-        </div>
-      );
-    }
-
-    var cashBalance = this.state.asset.cash ? +this.state.asset.cash.toFixed(2) : '-';
-    var repBalance = this.state.asset.reputation ? +this.state.asset.reputation.toFixed(2) : 0;
-
-    var holdings = _
-      .filter(this.state.holdings, market => {
-        return market.outcomes.some((outcome) => outcome.sharesHeld && outcome.sharesHeld.toNumber() > 0);
-      })
-      .map(function (market) {
-        return <MarketRow key={market.id} market={market} contentType="holdings"/>;
-      });
 
     var exportAccountButton = (
       <div className="col-sm-3">
         <Button
           disabled
-          className="send-button btn-success">
+          className="send-button btn btn-default">
           Export Account
         </Button>
       </div>
@@ -159,7 +63,7 @@ var Overview = React.createClass({
             <a
               download={accountFilename}
               href={accountUrl}
-              className="send-button btn-success btn btn-default">
+              className="send-button btn-default btn">
               Export Account
             </a>
           </div>
@@ -173,103 +77,42 @@ var Overview = React.createClass({
         <div className="account-info">
           <h3>Account</h3>
           <div className="row">
-            <div className="col-sm-6">
+            <div className="col-sm-9">
               <span className="account">{this.state.account}</span>
             </div>
             {exportAccountButton}
-            {importAccountButton}
           </div>
         </div>
       );
     }
 
-    var holdingsSection = <span />
-    if (holdings.length) {
-      holdingsSection = (
-        <div>
-          <h3>Current Holdings</h3>
-          <ListGroup className='holdings'>
-            { holdings }
-          </ListGroup>
-        </div>
-      );
+    var submitMarketAction;
+    if (this.state.account) {
+        submitMarketAction = (
+            <Button
+              className="pull-right btn-primary"
+              onClick={this.toggleAddMarketModal}>
+              New Market
+            </Button>
+        );
+    } else {
+        submitMarketAction = <span />;
     }
-
-    var cashFaucetDisabled = this.state.cashFaucetDisabled ? true : false;
-    var repFaucetDisabled = this.state.repFaucetDisabled ? true : false;
 
     var authoredMarketsSection = <span />;
-    if (_.isEmpty(this.state.authoredMarkets)) {
-      if (this.state.trendingMarkets) {
-        authoredMarketsSection = (
-          <div>
-            <h3>Trending Markets</h3>
-            <div className='row'>
-              <div className="col-xs-12">
-                {_.map(this.state.trendingMarkets, market => {
-                  return <MarketRow key={market.id} market={market} />;
-                })}
-              </div>
-            </div>
-          </div>
-        );
-      }
-    } else {
-      var authoredMarkets = [];
-      authoredMarkets.push(
-        <div key="authoredMarkets-header" className="row markets-list-header">
-          <div className="col-sm-5"><b>Market</b></div>
-          <div className="price col-sm-1"><b>Price</b></div>
-          <div className="col-sm-1"><b>Volume</b></div>
-          <div className="col-sm-1"><b>Fee</b></div>
-          <div className="col-sm-2"><b>Created</b></div>
-          <div className="col-sm-2"><b>Expires</b></div>
-        </div>
-      );
-      for (var marketId in this.state.authoredMarkets) {
-        if (!this.state.authoredMarkets.hasOwnProperty(marketId)) continue;
-        var market = this.state.authoredMarkets[marketId];
-        var className = "";
-        var linked;
-        if (market.pending) {
-          className = 'pending';
-          linked = false;
-        } else if (!market.loaded) {
-          className = 'loading';
-          linked = false;
-        } else if (market.invalid) {
-          className = 'invalid';
-          linked = true;
-        } else if (this.state.currentBranch &&
-                   this.state.currentBranch.currentPeriod >= market.tradingPeriod) {
-          className = 'matured';
-        }
-        var outstandingShares = _.reduce(market.outcomes, function (outstandingShares, outcome) {
-          if (outcome) return outstandingShares + abi.number(outcome.outstandingShares);
-        }, 0);
-        var id = marketId.toString(16);
-        authoredMarkets.push(
-          <div key={id} className="row markets-list-row">
-            <Link
-              key={id+"-link"}
-              to="market"
-              params={{marketId: market.id.toString(16)}}
-              className={className}>
-              <div key={id+"-description"} className="col-sm-5">{market.description}</div>
-              <div key={id+"-price"} className="price col-sm-1">{(abi.number(market.price)).toFixed(4)}</div>
-              <div key={id+"-shares"} className="col-sm-1">{+outstandingShares.toFixed(2)}</div>
-              <div key={id+"-tradingFee"} className="col-sm-1">{(market.tradingFee.times(100)).toFixed(2)}%</div>
-              <div key={id+"-created"} className="col-sm-2">{market.creationDate.fromNow()}</div>
-              <div key={id+"-expires"} className="col-sm-2">{market.endDate.fromNow()}</div>
-            </Link>
-          </div>
-        );
-      }
+    if (!_.isEmpty(this.state.authoredMarkets)) {
       authoredMarketsSection = (
         <div>
-          <h3>My Markets</h3>
-          <div className="markets-list">
-            {authoredMarkets}
+          <h3>
+            My Markets
+            {submitMarketAction}
+          </h3>
+          <div className='row'>
+            <div className="col-xs-12">
+                {_.map(this.state.authoredMarkets, market => {
+                  return <MarketRow key={market.id} market={market} />;
+                })}
+            </div>
           </div>
         </div>
       );
@@ -281,13 +124,11 @@ var Overview = React.createClass({
           <div className="col-xs-12">
             {accountSection}
             {authoredMarketsSection}
-            {holdingsSection}
           </div>
         </div>
-        <ImportAccountModal
-          params={{keystore: this.state.importKeystore}}
-          show={this.state.importAccountModalOpen}
-          onHide={this.toggleImportAccountModal} />
+        <AddMarketModal
+          show={this.state.addMarketModalOpen}
+          onHide={this.toggleAddMarketModal} />
       </div>
     );
   }

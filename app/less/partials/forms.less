@@ -1,4 +1,30 @@
 // forms
+
+.form-control, input, textarea, checkbox, select, option {
+    height: auto; width: auto;
+    padding: 0.5rem 0.7rem;
+    max-height: 12rem;
+    font-weight: 500;
+    background: @color-grey-lighter;
+    border: 1px solid @color-grey-light;
+    border-radius: 3px;
+
+    &:focus:not(select), &:active:not(select) {
+        border: 1px solid @color-grey-light;
+        background: white;
+        box-shadow: none;
+    }
+
+    .has-error {
+        border-color: @danger-color;
+    }
+}
+
+option {
+    padding: 0;
+    border: 0;
+}
+
 form {
     h3 {
         margin-bottom: 30px;
@@ -14,26 +40,10 @@ form {
         }
     }
 
-    .form-control {
-        border: 2px solid @table-border-color;
-        padding-left: 8px;
-        .has-error {
-            border-color: @danger-color;
-        }
-        &:focus {
-            border: 2px solid @table-border-color-active;
-        }
-        &.input-sm {
-            padding: 4px; // IE hack
-        }
-    }
     .input-group-addon {
         border: 2px solid @table-border-color;
     }
     .has-error {
-        .form-control {
-            border-color: @danger-color;
-        }
         .control-label,
         .help-block,
         * {

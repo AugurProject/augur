@@ -1,9 +1,5 @@
-h1 {
-    font-size: 27px;
-    font-weight: 400;
-}
-h2, h3, h4, h5 {
-    font-family: 'Lato';
+h1, h2, h3, h4, h5 {
+    font-family: 'Roboto';
     font-weight: 500;
 }
 
@@ -238,6 +234,17 @@ nav.header .register {
     /*height: 25px;*/
 }
 
+.progress-modal .modal-body pre {
+    font-size: 10pt;
+}
+.progress-status {
+    font-size: 12pt;
+    /*font-style: italic;*/
+}
+.progress-status-box {
+    padding-bottom: 10px;
+}
+
 .modal h3 {
     margin-top: 0px;
 }
@@ -317,18 +324,10 @@ nav.header .register {
 }
 
 .account-info {
-    color: #fff;
     padding-bottom: 10px;
 }
-.account-info a {
-    color: #fff;
-}
-.account-info a:hover {
-    color: #fff;
-    text-decoration: none;
-}
 .account-info .account {
-    font-size: 13pt;
+    font-size: 15pt;
     word-wrap: break-word;
 }
 .account-info ul {
@@ -413,7 +412,7 @@ nav.header .register {
     text-overflow: ellipsis;
 }
 .account {
-    color: #333333;
+    color: #54657e;
 }
 
 .network {
@@ -688,10 +687,6 @@ a.market-pane:hover {
     font-size: 16pt;
 }
 
-.markets-search-input {
-    height: 2.5rem;
-}
-
 .outcome.buy {
 
 }
@@ -830,6 +825,9 @@ a.market-pane:hover {
     text-align: left;
     width: 75%;
 }
+#comment-text {
+    width: 100%;
+}
 #market .comments {
     margin-top: 40px;
 }
@@ -939,12 +937,6 @@ a.market-pane:hover {
     padding: 10px 5px;
     color: #fff;
     background-color: #313232;
-}
-.holdings .list-group-item:first-child .price {
-    border-top-left-radius: 4px;
-}
-.holdings .list-group-item:last-child .price {
-    border-bottom-left-radius: 4px;
 }
 #ballots h3 {
     border-bottom: none;
@@ -1070,6 +1062,11 @@ a.market-pane:hover {
     padding-bottom: 5px;
 }
 
+.load-account-file-button {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
 #confirm-modal button.confirm {
     margin-left: 10px;
 }
@@ -1092,10 +1089,7 @@ a.market-pane:hover {
     float: left;
 }
 #add-market-modal .fees .help-block {
-    position: absolute;
-    top: 2px;
-    left: 150px;
-    width: 300px;
+    white-space:nowrap;
 }
 #add-market-modal .modal-body {
     min-height: 225px;
@@ -1115,9 +1109,11 @@ a.market-pane:hover {
     text-align: left;
 }
 #add-market-modal input, label {
+    /*width: 100%;*/
     font-size: 16px;
 }
 #add-market-modal textarea {
+    width: 100%;
     font-size: 16px;
     margin-top: 15px;
 }

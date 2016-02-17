@@ -43,6 +43,7 @@ var ReportsPage = require('./components/reports-page/ReportsPage.jsx');
 var ReportPage = require('./components/report-page/ReportPage.jsx');
 //var Ballots = require("./components/Ballots");
 var Outcomes = require("./components/Outcomes");
+var Portfolio = require("./components/Portfolio");
 
 flux.on("dispatch", function (type, payload) {
   var debug = flux.store("config").getState().debug;
@@ -57,9 +58,10 @@ var routes = (
     <Route name="market" path="/markets/:marketId" handler={ MarketPage } flux={ flux } />
     <Route name="reports" path="/reports" handler={ ReportsPage } flux={ flux } title="Reporting" />
     <Route name="report" path="/reports/:marketId" handler={ ReportPage } flux={ flux } />
+    <Route name="portfolio" path="/portfolio" handler={Portfolio} flux={flux} title="Portfolio" />
   </Route>
 );
 
 Router.run(routes, Router.HistoryLocation, function (Handler, state) {
-  ReactDOM.render(<Handler flux={ flux } params={ state.params } query={state.query} />, document.getElementById("render-target"));
+  ReactDOM.render(<Handler flux={flux} params={state.params} query={state.query} />, document.getElementById("render-target"));
 });

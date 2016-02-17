@@ -7,7 +7,7 @@ let utilities = require("../libs/utilities");
 let constants = require("../libs/constants");
 let Input = require('react-bootstrap/lib/Input');
 let Button = require('react-bootstrap/lib/Button');
-let TradeProgressModal = require("./TradeProgressModal");
+let ProgressModal = require("./ProgressModal");
 
 let NO = 1;
 let YES = 2;
@@ -31,7 +31,9 @@ var Overview = React.createClass({
             sellShares: false,
             tradeProgressModalOpen: false,
             tradeStatus: "",
-            tradeDetail: null
+            tradeHeader: "",
+            tradeDetail: null,
+            tradeComplete: null
         };
     },
 
@@ -79,8 +81,10 @@ var Overview = React.createClass({
                 onMarketHash: function (marketHash) {
                     console.debug("marketHash:", marketHash);
                     self.setState({
-                        tradeStatus: "Created trade hash.",
-                        tradeDetail: {marketHash}
+                        tradeHeader: "Committing to Trade",
+                        tradeStatus: "Created trade commitment hash:<br /><small>" + marketHash + "</small>",
+                        tradeDetail: {marketHash},
+                        tradeComplete: false
                     });
                     self.toggleTradeProgressModal();
                 },
@@ -96,9 +100,11 @@ var Overview = React.createClass({
                         buyShares: false,
                         sellShares: false,
                         tradeProgressModalOpen: self.state.tradeProgressModalOpen,
-                        tradeStatus: "Sent trade commitment. Waiting for confirmation...",
-                        tradeDetail: res
+                        tradeHeader: "Committing to Trade",
+                        tradeDetail: res,
+                        tradeComplete: false
                     };
+                    newState.tradeStatus = self.state.tradeStatus + "<br />Trade commitment sent. Waiting for confirmation...";
                     var oldPrice = flux.store("market").getMarket(
                         marketId
                     ).outcomes[abi.number(outcomeId) - 1].price;
@@ -112,42 +118,56 @@ var Overview = React.createClass({
                 },
                 onCommitTradeSuccess: function (res) {
                     console.info("trade committed:", res.txHash);
+                    var tradeStatus = self.state.tradeStatus + "<br />Trade commitment confirmed. Waiting for next block..."
                     self.setState({
-                        tradeStatus: "Trade committed. Waiting for next block...",
-                        tradeDetail: res
+                        tradeHeader: "Committing to Trade",
+                        tradeStatus: tradeStatus,
+                        tradeDetail: res,
+                        tradeComplete: false
                     });
                 },
                 onCommitTradeFailed: function (err) {
                     console.error("commit trade failed:", err);
                     var pending = self.state.pending;
                     delete pending[txhash];
+                    var tradeStatus = self.state.tradeStatus + "<br />Your trade commitment could not be completed.";
                     self.setState({
                         pending: pending,
-                        tradeStatus: "Could not commit trade.",
-                        tradeDetail: err
+                        tradeHeader: "Trade failed",
+                        tradeStatus: tradeStatus,
+                        tradeDetail: err,
+                        tradeComplete: true
                     });
                 },
                 onNextBlock: function (blockNumber) {
                     console.debug("got next block:", blockNumber);
+                    var tradeStatus = self.state.tradeStatus + "<br />Block " + blockNumber + " arrived.";
                     self.setState({
-                        tradeStatus: "Block " + blockNumber + " arrived!",
+                        tradeHeader: "Committing to Trade",
+                        tradeStatus: tradeStatus,
                         tradeDetail: {blockNumber}
                     });
                 },
                 onTradeSent: function (res) {
                     console.debug("trade:", res);
+                    var tradeStatus = self.state.tradeStatus + "<br />Trade sent. Waiting for confirmation...";
                     self.setState({
-                        tradeStatus: "Trade submitted. Waiting for confirmation...",
-                        tradeDetail: res
+                        tradeHeader: "Revealing Trade",
+                        tradeStatus: tradeStatus,
+                        tradeDetail: res,
+                        tradeComplete: false
                     });
                 },
                 onTradeSuccess: function (res) {
                     var pending = self.state.pending;
                     delete pending[res.txHash];
+                    var tradeStatus = self.state.tradeStatus + "<br />Trade confirmed.<br />Your trade is complete! You can safely close this dialogue.";
                     self.setState({
                         pending: pending,
-                        tradeStatus: "Trade successful!",
-                        tradeDetail: res
+                        tradeHeader: "Revealing Trade",
+                        tradeStatus: tradeStatus,
+                        tradeDetail: res,
+                        tradeComplete: true
                     });
                     flux.actions.market.tradeSucceeded(self.state.pending[res.txHash], marketId);
                 },
@@ -155,10 +175,13 @@ var Overview = React.createClass({
                     console.error("trade failed:", err);
                     var pending = self.state.pending;
                     delete pending[txhash];
+                    var tradeStatus = self.state.tradeStatus + "<br />Your trade could not be completed.";
                     self.setState({
                         pending: pending,
-                        tradeStatus: "Trade failed.",
-                        tradeDetail: err
+                        tradeHeader: "Trade failed",
+                        tradeStatus: tradeStatus,
+                        tradeDetail: err,
+                        tradeComplete: true
                     });
                 },
                 onOrderCreated: function (orders) {
@@ -281,10 +304,13 @@ var Overview = React.createClass({
                     {description.outcome} ({percentageFormatted})
                 </h4>
                 {buySellActions}
-                <TradeProgressModal
+                <ProgressModal
+                    backdrop="static"
                     show={this.state.tradeProgressModalOpen}
+                    header={this.state.tradeHeader}
                     status={this.state.tradeStatus}
                     detail={JSON.stringify(this.state.tradeDetail, null, 2)}
+                    complete={this.state.tradeComplete}
                     onHide={this.toggleTradeProgressModal} />
             </div>
         );

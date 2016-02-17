@@ -45,7 +45,7 @@ let Header = React.createClass({
     getCashText() {
         let hasCash = this.props.asset.cash && this.props.asset.cash.gt(new BigNumber(0));
         if (!hasCash && this.props.isNewRegistration) {
-            return "coming";
+            return "...";
         } else {
             return this.props.asset.cash ? this.props.asset.cash.toFixed(2) : '-';
         }
@@ -53,7 +53,7 @@ let Header = React.createClass({
     getRepText() {
         let hasRep = this.props.asset.reputation && this.props.asset.reputation.gt(new BigNumber(0));
         if (!hasRep && this.props.isNewRegistration) {
-            return "coming";
+            return "...";
         } else {
             return this.props.asset.reputation ? this.props.asset.reputation.toFixed(2) : '-';
         }
@@ -61,7 +61,7 @@ let Header = React.createClass({
     getEtherText() {
         let hasEther = this.props.asset.ether && this.props.asset.ether.gt(new BigNumber(0));
         if (!hasEther && this.props.isNewRegistration) {
-            return "coming";
+            return "...";
         } else {
             return this.props.asset.ether ? utilities.formatEther(this.props.asset.ether).value : '-';
         }
@@ -79,8 +79,18 @@ let Header = React.createClass({
                         </Link>
                     </li>
                     <li>
+                        <Link to="portfolio">
+                            Portfolio
+                        </Link>
+                    </li>
+                    <li>
                         <Link to="reports">
                             Reporting ({ this.props.ballotsCount })
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="overview">
+                            My Markets
                         </Link>
                     </li>
                     <li>
@@ -144,7 +154,7 @@ let Header = React.createClass({
                                 data-target="#navbar-main-collapse">
                             <strong>Menu</strong>
                         </a>
-                        <Link className="navbar-brand" to="overview">
+                        <Link className="navbar-brand" to="markets">
                             Augur
                         </Link>
                     </div>

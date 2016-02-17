@@ -1,11 +1,13 @@
 "use strict";
 
 var _ = require("lodash");
+var abi = require("augur-abi");
 var constants = require("../libs/constants");
 
 module.exports = {
   state: {
     markets: {},
+    authoredMarkets: {},
     pendingMarkets: {},
     orders: {},
     marketLoadingIds: null,
@@ -43,11 +45,17 @@ module.exports = {
     var marketsByAuthor = _.filter(this.state.markets, {'author': author});
     return _.indexBy(marketsByAuthor, 'id');
   },
+  getAuthoredMarkets: function () {
+    return this.state.authoredMarkets;
+  },
   getMarket: function (marketId) {
     return this.state.markets[marketId];
   },
   getOrders: function () {
     return this.state.orders;
+  },
+  getMetadata: function (marketId) {
+    return this.state.markets[marketId].metadata;
   },
   handleMarketsLoading: function (payload) {
     if (payload.marketLoadingIds) this.state.marketLoadingIds = payload.marketLoadingIds;
@@ -59,6 +67,10 @@ module.exports = {
   },
   handleLoadMarketsSuccess: function (payload) {
     this.state.markets = payload.markets;
+    if (payload.percentLoaded === undefined || payload.percentLoaded === 100) {
+      var filtered = _.filter(this.state.markets, {"author": payload.account});
+      this.state.authoredMarkets = _.indexBy(filtered, "id");
+    }
     this.emit(constants.CHANGE_EVENT);
   },
   handleUpdateMarketSuccess: function (payload) {
@@ -85,8 +97,13 @@ module.exports = {
       delete this.state.pendingMarkets[payload.marketId];
     }
   },
+  handleLoadMetadataSuccess: function (payload) {
+    this.state.markets[abi.bignum(payload.metadata.marketId)].metadata = payload.metadata;
+    this.emit(constants.CHANGE_EVENT);
+  },
   handlePriceHistoryLoading: function (payload) {
     this.state.markets[payload.marketId].priceHistoryStatus = "loading";
+    this.emit(constants.CHANGE_EVENT);
   },
   handleLoadPriceHistorySuccess: function (payload) {
     this.state.markets[payload.market.id].priceHistory = payload.priceHistory;

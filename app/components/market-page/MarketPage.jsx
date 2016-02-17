@@ -22,6 +22,7 @@ let MarketPage = React.createClass({
 
     getInitialState() {
         return {
+            metadataTimeout: null,
             priceHistoryTimeout: null,
             orderBookTimeout: null,
             addMarketModalOpen: false
@@ -41,6 +42,9 @@ let MarketPage = React.createClass({
         if (currentBranch && market && market.tradingPeriod &&
             currentBranch.currentPeriod >= market.tradingPeriod.toNumber()) {
             market.matured = true;
+            if (currentBranch.reportPeriod > market.tradingPeriod.toNumber()) {
+                market.closable = true;
+            }
         }
 
         return {
@@ -51,6 +55,7 @@ let MarketPage = React.createClass({
         };
     },
     componentDidMount() {
+        this.getMetadata();
         this.checkOrderBook();
         this.getPriceHistory();
 
@@ -67,9 +72,22 @@ let MarketPage = React.createClass({
         clearTimeout(this.state.orderBookTimeout);
     },
 
+    getMetadata() {
+        let market = this.state.market;
+        if (this.state.metadataTimeout) {
+            clearTimeout(this.state.metadataTimeout);
+        }
+        if (market && market.constructor === Object && market._id &&
+            !market.metadata) {
+            console.info("load metadata from IPFS...");
+            return this.getFlux().actions.market.loadMetadata(market);
+        }
+        this.setState({metadataTimeout: setTimeout(this.getMetadata, 5000)});
+    },
+
     checkOrderBook() {
         console.info("checking order book...");
-        var market = this.state.market;
+        let market = this.state.market;
         if (this.state.orderBookTimeout) {
             clearTimeout(this.state.orderBookTimeout);
         }
@@ -81,7 +99,7 @@ let MarketPage = React.createClass({
     },
 
     getPriceHistory() {
-        var market = this.state.market;
+        let market = this.state.market;
         if (this.state.priceHistoryTimeout) {
             clearTimeout(this.state.priceHistoryTimeout);
         }
@@ -107,7 +125,7 @@ let MarketPage = React.createClass({
         }
 
         var closeMarketButton = <span />;
-        if (market.expired && !market.closed) {
+        if (market.matured && market.closable && !market.closed) {
              closeMarketButton = (
                 <div className="close-market">
                     <Button

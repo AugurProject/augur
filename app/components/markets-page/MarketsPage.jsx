@@ -1,17 +1,13 @@
 let React = require('react');
 let _ = require("lodash");
 let moment = require("moment");
-
 let Paginate = require("react-paginate");
-
 let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
-
 let Navigation = require("react-router/lib/Navigation");
 let Link = require("react-router/lib/components/Link");
-
+let Button = require("react-bootstrap/lib/Button");
 let constants = require("../../libs/constants");
-
 let MarketRow = require("./MarketRow");
 let AddMarketModal = require("../AddMarketModal");
 
@@ -116,20 +112,10 @@ let MarketsPage = React.createClass({
     },
 
     render() {
-        let {markets, marketsCount, firstItemIndex, lastItemIndex} = this._getMarketsData();
+        let flux = this.getFlux();
+        let myOpenOrders = flux.augur.orders.get(flux.augur.from);
 
-        var submitMarketAction;
-        if (this.state.account) {
-            submitMarketAction = (
-                <span className="pull-right">
-                    <a href="javascript:void(0);" onClick={this.toggleAddMarketModal}>
-                        <i className="fa fa-plus-circle fa-2x"></i>
-                    </a>
-                </span>
-            );
-        } else {
-            submitMarketAction = <span />;
-        }
+        let {markets, marketsCount, firstItemIndex, lastItemIndex} = this._getMarketsData();
 
         let pagination = (
             <div className="row">
@@ -152,9 +138,22 @@ let MarketsPage = React.createClass({
             </div>
         );
 
+        let submitMarketAction;
+        if (this.state.account) {
+            submitMarketAction = (
+                <Button
+                  className="pull-right btn-primary"
+                  onClick={this.toggleAddMarketModal}>
+                  New Market
+                </Button>
+            );
+        } else {
+            submitMarketAction = <span />;
+        }
+
         return (
             <div className="marketsPage">
-                <h1>Markets</h1>
+                <h1>Markets {submitMarketAction}</h1>
 
                 <div className="row submenu">
                     <a className="collapsed" data-toggle="collapse" href="#collapseSubmenu"
@@ -179,9 +178,9 @@ let MarketsPage = React.createClass({
                     </div>
                 </div>
 
-                <div className="row" style={{paddingTop: "8px", paddingBottom: "8px"}}>
-                    <div className="pull-left col-sm-4">
-                        <select onChange={this.onChangeSortBy}>
+                <div className="row search-sort-row">
+                    <div className="col-sm-4 sort-container">
+                        <select className="sort-control" onChange={this.onChangeSortBy}>
                             <option selected disabled>Sort markets</option>
                             <option value="creationBlock|1">Creation date (newest first)</option>
                             <option value="creationBlock|0">Creation date (oldest first)</option>
@@ -190,30 +189,27 @@ let MarketsPage = React.createClass({
                             <option value="description|0">Description</option>
                         </select>
                     </div>
-                    <div className="col-sm-4">
+                    <div className="col-sm-4 search-container">
                         <input type="search"
-                               className="form-control markets-search-input"
+                               className="form-control search-control"
                                value={this.state.searchKeywords}
                                placeholder="Search"
                                tabIndex="0"
                                onChange={this.onChangeSearchInput}/>
-                    </div>
-                    <div className="pull-right col-sm-2">
-                        {submitMarketAction}
                     </div>
                 </div>
                 { pagination }
                 <div className="row">
                     <div className="col-xs-12">
                         {markets.map(market => {
-                            return <MarketRow key={market.id} market={market} />;
+                            return <MarketRow key={market.id} market={market} numOpenOrders={ (myOpenOrders && myOpenOrders[market._id] && myOpenOrders[market._id][1] && myOpenOrders[market._id][1].length) || 0 } />;
                         })}
                     </div>
                 </div>
                 { pagination }
                 <AddMarketModal
                     show={this.state.addMarketModalOpen}
-                    onHide={this.toggleAddMarketModal}/>
+                    onHide={this.toggleAddMarketModal} />
             </div>
         );
     }

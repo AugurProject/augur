@@ -1,26 +1,27 @@
-var React = require("react");
-var BigNumber = require("bignumber.js");
-var abi = require("augur-abi");
+let React = require("react");
+let BigNumber = require("bignumber.js");
+let abi = require("augur-abi");
 let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
-var ReactDOM = require('react-dom');
-var DatePicker = require('react-date-picker');
-var moment = require("moment");
-let Button = require('react-bootstrap/lib/Button');
-let Input = require('react-bootstrap/lib/Input');
-let Modal = require('react-bootstrap/lib/Modal');
-var ReactTabs = require('react-tabs');
-var Tab = ReactTabs.Tab;
-var Tabs = ReactTabs.Tabs;
-var TabList = ReactTabs.TabList;
-var TabPanel = ReactTabs.TabPanel;
+let ReactDOM = require("react-dom");
+let DatePicker = require("react-date-picker");
+let TimePicker = require("react-time-picker");
+let moment = require("moment");
+let Button = require("react-bootstrap/lib/Button");
+let Input = require("react-bootstrap/lib/Input");
+let Modal = require("react-bootstrap/lib/Modal");
+let ReactTabs = require("react-tabs");
+let Tab = ReactTabs.Tab;
+let Tabs = ReactTabs.Tabs;
+let TabList = ReactTabs.TabList;
+let TabPanel = ReactTabs.TabPanel;
+let constants = require("../libs/constants");
+let utilities = require("../libs/utilities");
+let ProgressModal = require("./ProgressModal");
 
-var constants = require("../libs/constants");
-var utilities = require("../libs/utilities");
+let AddMarketModal = React.createClass({
 
-var AddMarketModal = React.createClass({
-
-  mixins: [FluxMixin, StoreWatchMixin('market', 'network', 'asset')],
+  mixins: [FluxMixin, StoreWatchMixin("market", "network", "asset")],
 
   getInitialState: function () {
     return {
@@ -34,6 +35,7 @@ var AddMarketModal = React.createClass({
       marketInvestment: '501',
       marketInvestmentError: null,
       maturationDate: '',
+      timePicked: "12:00:00",
       tradingFee: '2',
       tradingFeeError: null,
       valid: false,
@@ -48,7 +50,14 @@ var AddMarketModal = React.createClass({
       numTags: 0,
       tags: [],
       expirySource: "generic",
-      expirySourceURL: ""
+      expirySourceURL: "",
+      progressModal: {
+        open: false,
+        status: "",
+        header: "",
+        detail: null,
+        complete: null
+      }
     };
   },
 
@@ -59,6 +68,12 @@ var AddMarketModal = React.createClass({
       currentBlock: flux.store('network').getState().blockNumber,
       currentBranch: flux.store('branch').getCurrentBranch()
     }
+  },
+
+  toggleProgressModal: function (event) {
+    var progressModal = this.state.progressModal;
+    progressModal.open = !progressModal.open;
+    this.setState({progressModal: progressModal});
   },
 
   handleSelect: function (index, last) {
@@ -200,7 +215,8 @@ var AddMarketModal = React.createClass({
       initialLiquidity: this.state.marketInvestment,
       tradingFee: new BigNumber(this.state.tradingFee / 100)
     };
-    var source = (this.state.expirySource === "specific") ? this.state.expirySourceURL : null;
+    var source = (this.state.expirySource === "specific") ?
+      this.state.expirySourceURL : this.state.expirySource;
     var pendingId = flux.actions.market.addPendingMarket(newMarketParams);
     var branchId = flux.store("branch").getCurrentBranch().id;
     var block = flux.store("network").getState().blockNumber;
@@ -212,67 +228,126 @@ var AddMarketModal = React.createClass({
       maxValue: this.state.maxValue,
       numOutcomes: this.state.numOutcomes,
       onSent: function (res) {
-        if (res && res.txHash) {
-          console.log("new event submitted:", res.txHash);
-        }
+        console.log("new event submitted:", res.txHash);
+        var progressModal = self.state.progressModal;
+        progressModal.header = "Creating Event";
+        progressModal.status = "New event submitted. Waiting for confirmation...<br />Event ID: <small>" + res.callReturn + "</small>";
+        progressModal.detail = res;
+        self.setState({progressModal: progressModal});
+        self.toggleProgressModal();
       },
       onSuccess: function (res) {
-        if (res && res.callReturn && res.txHash) {
-          console.log("new event ID:", res.callReturn);
-          var events = res.callReturn;
-          if (events.constructor !== Array) events = [events];
-          flux.augur.createMarket({
-            branchId: branchId,
-            description: newMarketParams.description,
-            alpha: "0.0079",
-            initialLiquidity: newMarketParams.initialLiquidity,
-            tradingFee: newMarketParams.tradingFee.toFixed(),
-            events: events,
-            onSent: function (r) {
-              console.log("new market submitted:", r.txHash);
-              flux.augur.ramble.addMetadata({
-                marketId: r.callReturn,
-                image: self.state.imageDataURL,
-                details: self.state.detailsText,
-                tags: self.state.tags,
-                links: self.state.resources,
-                source: source
-              }, function (res) {
-                console.log("ramble.addMetadata sent:", res);
-              }, function (res) {
-                console.log("ramble.addMetadata success:", res);
-              }, function (err) {
-                console.error("ramble.addMetadata:", err);
-              });
-            },
-            onSuccess: function (r) {
-              console.log("new market ID:", r.callReturn);
-              var marketId = abi.bignum(r.callReturn);
-              flux.actions.market.deleteMarket(pendingId);
-              flux.actions.market.loadMarket(marketId);
-            },
-            onFailed: function (r) {
-              console.error("market creation failed:", r);
-              flux.actions.market.deleteMarket(pendingId);
+        console.log("new event ID:", res.callReturn);
+        var events = res.callReturn;
+        var progressModal = self.state.progressModal;
+        progressModal.header = "Creating Event";
+        progressModal.status += "<br />New event confirmed.";
+        progressModal.detail = res;
+        self.setState({progressModal: progressModal});
+        if (events.constructor !== Array) events = [events];
+        var checkbox = {createMarket: false, addMetadata: false};
+        flux.augur.createMarket({
+          branchId: branchId,
+          description: newMarketParams.description,
+          alpha: "0.0079",
+          initialLiquidity: newMarketParams.initialLiquidity,
+          tradingFee: newMarketParams.tradingFee.toFixed(),
+          events: events,
+          onSent: function (r) {
+            console.log("new market submitted:", r.txHash);
+            var progressModal = self.state.progressModal;
+            progressModal.header = "Creating Market";
+            progressModal.status += "<br />New market submitted.<br />Market ID: <small>" + r.callReturn + "</small><br />Waiting for confirmation...";
+            progressModal.detail = r;
+            self.setState({progressModal: progressModal});
+            flux.augur.ramble.addMetadata({
+              marketId: r.callReturn,
+              image: self.state.imageDataURL,
+              details: self.state.detailsText,
+              tags: self.state.tags,
+              links: self.state.resources,
+              source: source,
+              broadcast: true
+            }, function (res) {
+              console.log("ramble.addMetadata sent:", res);
+              var progressModal = self.state.progressModal;
+              progressModal.header = "Creating Market";
+              progressModal.status += "<br />Uploading market metadata...";
+              progressModal.detail = r;
+              self.setState({progressModal: progressModal});
+            }, function (res) {
+              console.log("ramble.addMetadata success:", res);
+              var progressModal = self.state.progressModal;
+              progressModal.header = "Creating Market";
+              progressModal.status += "<br />Market metadata uploaded.";
+              progressModal.detail = r;
+              checkbox.addMetadata = true;
+              if (checkbox.createMarket) {
+                progressModal.complete = true;
+                progressModal.status += "<br />Your market has been successfully created! This dialogue can now be safely closed.";
+              }
+              self.setState({progressModal: progressModal});
+            }, function (err) {
+              console.error("ramble.addMetadata:", err);
+              var progressModal = self.state.progressModal;
+              progressModal.header = "Creating Market";
+              progressModal.status += "<br />Market metadata upload failed.";
+              progressModal.detail = r;
+            });
+          },
+          onSuccess: function (r) {
+            console.log("new market ID:", r.callReturn);
+            var marketId = abi.bignum(r.callReturn);
+            var progressModal = self.state.progressModal;
+            progressModal.header = "Creating Market";
+            progressModal.status += "<br />New market confirmed.";
+            progressModal.detail = r;
+            checkbox.createMarket = true;
+            if (checkbox.addMetadata) {
+              progressModal.complete = true;
+              progressModal.status += "<br /><b>Your market has been successfully created!</b> This dialogue can now be safely closed.";
             }
-          });
-        }
+            self.setState({progressModal: progressModal});
+            flux.actions.market.deleteMarket(pendingId);
+            flux.actions.market.loadMarket(marketId);
+          },
+          onFailed: function (r) {
+            console.error("market creation failed:", r);
+            var progressModal = self.state.progressModal;
+            progressModal.header = "Market Creation Failed";
+            progressModal.status = "Your market could not be created.";
+            progressModal.detail = r;
+            progressModal.complete = true;
+            self.setState({progressModal: progressModal});
+            flux.actions.market.deleteMarket(pendingId);
+          }
+        });
       },
       onFailed: function (r) {
         console.error("event creation failed:", r);
+        var progressModal = self.state.progressModal;
+        progressModal.header = "Event Creation Failed";
+        progressModal.status = "Your event could not be created.";
+        progressModal.detail = r;
+        progressModal.complete = true;
+        self.setState({progressModal: progressModal});
         flux.actions.market.deleteMarket(pendingId);
       }
     });
     this.onHide();
   },
 
-  handleDatePicked: function(dateText, moment, event) {
+  handleDatePicked: function (dateText, moment, event) {
     this.setState({maturationDate: dateText});
+  },
+
+  handleTimePicked: function (picked) {
+    this.setState({timePicked: picked});
   },
 
   onAddTag: function (event) {
     var numTags = this.state.numTags + 1;
-    if (numTags < 3) {
+    if (numTags <= 3) {
       var tags = this.state.tags;
       tags.push('');
       this.setState({numTags: numTags});
@@ -367,42 +442,44 @@ var AddMarketModal = React.createClass({
         </div>
       );
       footer = (
-        <div className='pull-right'>
-          <Button bsStyle='default' onClick={ this.onBack }>Back</Button>
-          <Button bsStyle='primary' onClick={ this.onNext }>Next</Button>
+        <div className="pull-right">
+          <Button bsStyle="default" onClick={this.onBack}>Back</Button>
+          <Button bsStyle="primary" onClick={this.onNext}>Next</Button>
         </div>
       );
 
     } else if (this.state.pageNumber === 3) {
 
-      subheading = 'Maturation Date';
+      subheading = "Maturation Date";
 
       page = (
         <div className="form-group date">
-          <div className='col-sm-6'>
-            <p>Enter the date this event will mature, trading will end and the question decided.</p>
+          <div className="col-sm-6">
+            <p>Enter a date on or after which the outcome of this event will be known.</p>
             <Input
-              className='form-control'
-              bsSize='large'
-              type='text'
-              placeholder='YYYY-MM-DD'
-              value={ this.state.maturationDate }
-              onChange={ this.onChangeMaturationDate } 
-            />
+              className="form-control"
+              bsSize="large"
+              type="text"
+              placeholder="YYYY-MM-DD"
+              value={this.state.maturationDate}
+              onChange={this.onChangeMaturationDate} />
           </div>
-          <div className='col-sm-6'>
+          <div className="col-sm-6">
             <DatePicker
-              minDate={ this.state.minDate }
-              hideFooter={ true }
-              onChange={ this.handleDatePicked }
-            />
+              minDate={this.state.minDate}
+              hideFooter={true}
+              onChange={this.handleDatePicked} />
+            {/*<TimePicker
+              style={{width: "100%", padding: 5, height: 50}}
+              value={this.state.timePicked}
+              onChange={this.handleTimePicked} />*/}
           </div>
         </div>
       );
       footer = (
-        <div className='pull-right'>
-          <Button bsStyle='default' onClick={ this.onBack }>Back</Button>
-          <Button bsStyle='primary' onClick={ this.onNext }>Next</Button>
+        <div className="pull-right">
+          <Button bsStyle="default" onClick={this.onBack}>Back</Button>
+          <Button bsStyle="primary" onClick={this.onNext}>Next</Button>
         </div>
       );
 
@@ -612,17 +689,30 @@ var AddMarketModal = React.createClass({
     };
 
     return (
-      <Modal {...this.props} onHide={ this.onHide } id='add-market-modal'>
-        <div className="modal-header clearfix">
-          <h4>Create a new market<span className='subheading pull-right'>{ subheading }</span></h4>
-        </div>
-        <div className="modal-body clearfix">
-          { page }
-        </div>
-        <div className="modal-footer clearfix">
-          { footer }
-        </div>
-      </Modal>
+      <div>
+        <Modal {...this.props} bsSize="large" onHide={this.onHide} id='add-market-modal'>
+          <div className="modal-header clearfix">
+            <h4>
+              New Market Builder
+              <span className='subheading pull-right'>{subheading}</span>
+            </h4>
+          </div>
+          <div className="modal-body clearfix">
+            {page}
+          </div>
+          <div className="modal-footer clearfix">
+            {footer}
+          </div>
+        </Modal>
+        <ProgressModal
+          backdrop="static"
+          show={this.state.progressModal.open}
+          header={this.state.progressModal.header}
+          status={this.state.progressModal.status}
+          detail={JSON.stringify(this.state.progressModal.detail, null, 2)}
+          complete={this.state.progressModal.complete}
+          onHide={this.toggleProgressModal} />
+      </div>
     );
   }
 });
