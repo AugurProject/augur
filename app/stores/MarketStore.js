@@ -98,7 +98,10 @@ module.exports = {
     }
   },
   handleLoadMetadataSuccess: function (payload) {
-    this.state.markets[abi.bignum(payload.metadata.marketId)].metadata = payload.metadata;
+    var marketId = abi.bignum(payload.metadata.marketId);
+    if (this.state.markets[marketId]) {
+      this.state.markets[marketId].metadata = payload.metadata;
+    }
     this.emit(constants.CHANGE_EVENT);
   },
   handlePriceHistoryLoading: function (payload) {

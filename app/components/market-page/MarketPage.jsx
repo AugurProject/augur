@@ -1,27 +1,29 @@
-let React = require('react');
+let React = require("react");
 
 let BigNumber = require("bignumber.js");
 let abi = require("augur-abi");
 let Fluxxor = require("fluxxor");
 let FluxMixin = Fluxxor.FluxMixin(React);
 let StoreWatchMixin = Fluxxor.StoreWatchMixin;
-let Button = require('react-bootstrap/lib/Button');
+let Button = require("react-bootstrap/lib/Button");
 
-let Breadcrumb = require('./Breadcrumb.jsx');
-let MarketInfo = require('./MarketInfo.jsx');
-let TradeTab = require('./TradeTab.jsx');
-let StatsTab = require('./StatsTab');
-let RulesTab = require('./RulesTab');
-let UserTradesTab = require('./UserTradesTab');
-let UserFrozenFundsTab = require('./UserFrozenFundsTab');
+let Breadcrumb = require("./Breadcrumb.jsx");
+let MarketInfo = require("./MarketInfo.jsx");
+let TradeTab = require("./TradeTab.jsx");
+let StatsTab = require("./StatsTab");
+let RulesTab = require("./RulesTab");
+let UserTradesTab = require("./UserTradesTab");
+let UserFrozenFundsTab = require("./UserFrozenFundsTab");
 let CloseMarketModal = require("../CloseMarket");
+let utils = require("../../libs/utilities");
 
 
 let MarketPage = React.createClass({
-    mixins: [FluxMixin, StoreWatchMixin('branch', 'market', 'config')],
+    mixins: [FluxMixin, StoreWatchMixin("branch", "market", "config")],
 
     getInitialState() {
         return {
+            image: "/images/augur_logo_bg.png",
             metadataTimeout: null,
             priceHistoryTimeout: null,
             orderBookTimeout: null,
@@ -30,14 +32,15 @@ let MarketPage = React.createClass({
     },
 
     getStateFromFlux() {
+        let self = this;
         let flux = this.getFlux();
 
         let marketId = new BigNumber(this.props.params.marketId, 16);
-        let market = flux.store('market').getMarket(marketId);
-        let currentBranch = flux.store('branch').getCurrentBranch();
-        let account = flux.store('config').getAccount();
-        let handle = flux.store('config').getHandle();
-        let blockNumber = flux.store('network').getState().blockNumber;
+        let market = flux.store("market").getMarket(marketId);
+        let currentBranch = flux.store("branch").getCurrentBranch();
+        let account = flux.store("config").getAccount();
+        let handle = flux.store("config").getHandle();
+        let blockNumber = flux.store("network").getState().blockNumber;
 
         if (currentBranch && market && market.tradingPeriod &&
             currentBranch.currentPeriod >= market.tradingPeriod.toNumber()) {
@@ -45,6 +48,15 @@ let MarketPage = React.createClass({
             if (currentBranch.reportPeriod > market.tradingPeriod.toNumber()) {
                 market.closable = true;
             }
+        }
+
+        if (market && market.metadata && market.metadata.image) {
+            let blob = new Blob([market.metadata.image], {type: "image/png"});
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                self.setState({image: e.target.result});
+            };
+            reader.readAsDataURL(blob);
         }
 
         return {
@@ -73,12 +85,12 @@ let MarketPage = React.createClass({
     },
 
     getMetadata() {
+        let self = this;
         let market = this.state.market;
         if (this.state.metadataTimeout) {
             clearTimeout(this.state.metadataTimeout);
         }
-        if (market && market.constructor === Object && market._id &&
-            !market.metadata) {
+        if (market && market.constructor === Object && market._id && !market.metadata) {
             console.info("load metadata from IPFS...");
             return this.getFlux().actions.market.loadMetadata(market);
         }
@@ -124,7 +136,7 @@ let MarketPage = React.createClass({
             );
         }
 
-        var closeMarketButton = <span />;
+        let closeMarketButton = <span />;
         if (market.matured && market.closable && !market.closed) {
              closeMarketButton = (
                 <div className="close-market">
@@ -134,11 +146,6 @@ let MarketPage = React.createClass({
                         onClick={this.toggleCloseMarketModal}>
                         Close Market
                     </Button>
-                    <CloseMarketModal
-                        text="close market"
-                        params={{market: market}}
-                        show={this.state.closeMarketModalOpen}
-                        onHide={this.toggleCloseMarketModal} />
                 </div>
             );
         }
@@ -146,6 +153,7 @@ let MarketPage = React.createClass({
         return (
             <div className="marketPage">
                 <Breadcrumb market={market}/>
+                {/*<img className="metadata-image" src={this.state.image} />*/}
                 <MarketInfo market={market}/>
                 {closeMarketButton}
 
@@ -211,6 +219,13 @@ let MarketPage = React.createClass({
                         </div>
                     </div>
                 </div>
+
+                <CloseMarketModal
+                    text="close market"
+                    params={{market: market}}
+                    show={this.state.closeMarketModalOpen}
+                    onHide={this.toggleCloseMarketModal} />
+
             </div>
         );
     }
