@@ -33,16 +33,21 @@ var ReportPage = React.createClass({
         let marketId = new BigNumber(this.props.params.marketId, 16);
         let market = flux.store('market').getMarket(marketId);
         let account = flux.store('config').getAccount();
+        let currentBranch = flux.store('branch').getCurrentBranch();
         var state = {
-            account: account,
-            market: market,
-            //asset: flux.store('asset').getState(),
-            //blockNumber: flux.store('network').getState().blockNumber,
-            branchState: flux.store('branch').getState()
+            account,
+            market,
+            currentBranch,
+            blockNumber: flux.store('network').getState().blockNumber
         };
 
         let reportStore = flux.store('report');
         if (market != null) {
+            if (currentBranch && market.tradingPeriod &&
+                currentBranch.currentPeriod >= market.tradingPeriod.toNumber()) {
+                market.matured = true;
+            }
+
             let eventId = market.events[0].id; // not sure whether correct
             let reportSummary = reportStore.getReportSummary(eventId);
             if (reportSummary === undefined) {
@@ -64,10 +69,10 @@ var ReportPage = React.createClass({
                 state.reportHash = reportSummary.reportHash;
             }
         }
-        if (state.branchState.currentBranch) {
+        if (state.currentBranch) {
             state.report = reportStore.getReport(
-                state.branchState.currentBranch.id,
-                state.branchState.currentBranch.reportPeriod
+                state.currentBranch.id,
+                state.currentBranch.reportPeriod
             );
         }
 
@@ -109,9 +114,9 @@ var ReportPage = React.createClass({
         event.preventDefault();
 
         let branchId, reportHash, reportPeriod, eventId, eventIndex;
-        branchId = this.state.branchState.currentBranch.id;
+        branchId = this.state.currentBranch.id;
         reportHash = this.state.reportHash;
-        reportPeriod = this.state.branchState.currentBranch.reportPeriod;
+        reportPeriod = this.state.currentBranch.reportPeriod;
         eventId = this.state.market.events[0].id;// is this right?
         eventIndex = this.getFlux().augur.getEventIndex(reportPeriod, eventId);
 
@@ -147,8 +152,10 @@ var ReportPage = React.createClass({
             );
         }
 
-        let isFillingPeriod = true,
-            isCommitPeriod = false;
+        let blockNumber = this.state.blockNumber;
+        let periodLength = this.state.currentBranch.periodLength;
+        let isFillingPeriod = !market.matured && ((blockNumber % periodLength) < (periodLength / 2)),
+            isCommitPeriod = !market.matured && ((blockNumber % periodLength) >= (periodLength / 2));
 
         if (isFillingPeriod) {
             return (
