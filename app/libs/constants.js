@@ -12,6 +12,7 @@ module.exports = {
   ONE_FXP: ONE_FXP,
   NO: ONE_FXP,
   YES: ONE_FXP.mul(2),
+  INDETERMINATE_OUTCOME: -90000001,// arbitrary value, must be number because outcome ID is always number
   SECONDS_PER_BLOCK: 12,
   MAX_BLOCKCHAIN_AGE: 300,  // in seconds
   MARKETS_PER_PAGE: 15,

@@ -2,6 +2,7 @@ let React = require('react');
 
 let BigNumber = require("bignumber.js");
 let utilities = require("../../libs/utilities");
+let constants = require("../../libs/constants");
 let moment = require("moment");
 let classnames = require("classnames");
 
@@ -28,8 +29,8 @@ var ReportFillForm = React.createClass({
                 <label>
                     <input type="radio"
                            name={nameAttr}
-                           value="indeterminate"
-                           checked={this.props.reportedOutcome == "indeterminate"}
+                           value={constants.INDETERMINATE_OUTCOME}
+                           checked={this.props.reportedOutcome == constants.INDETERMINATE_OUTCOME}
                            onChange={this.props.onReportedOutcomeChanged} />
                     Outcome is indeterminate
                 </label>

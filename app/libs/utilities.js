@@ -59,7 +59,15 @@ module.exports = {
   },
 
   getOutcomeName: function (id, market) {
-    switch (market.type) {
+    var marketType = market.type;
+    if (id == constants.INDETERMINATE_OUTCOME) {
+      return {
+        type: marketType,
+        outcome: "indeterminate"
+      };
+    }
+
+    switch (marketType) {
     case "categorical":
       if (market && market.description && market.description.indexOf("Choices:") > -1) {
         var desc = market.description.split("Choices:");
