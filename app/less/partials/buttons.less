@@ -2,11 +2,23 @@
     color: @color-slate;
     background: @color-grey-lighter;
     border: 1px solid @color-grey-light;
-    borer-radius: 3px;
+    border-radius: 3px;
 
     // turn off the smoothing for buttons, so they look same
     .font-render-auto();
     font-size: @font-size-base;
+
+    &:hover, &:active, &:focus {
+        color: white;
+        background: @color-slate;
+        border: 1px solid @color-slate;
+    }
+}
+
+.btn-highlighted {
+    color: white;
+    background: @faded-blue;
+    border: 1px solid @faded-blue;
 
     &:hover, &:active, &:focus {
         color: white;

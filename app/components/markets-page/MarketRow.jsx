@@ -1,4 +1,5 @@
 let React = require("react");
+let ReactDOM = require("react-dom");
 let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
 let _ = require("lodash");
@@ -96,7 +97,7 @@ let MarketRow = React.createClass({
                 </div>
 
                 <div className="buttons">
-                    <Link
+                    <Link ref="tradeButton"
                         className="btn btn-primary trade-button"
                         to="market"
                         params={{marketId: market.id.toString(16)}} >
@@ -108,112 +109,131 @@ let MarketRow = React.createClass({
     },
 
     componentDidMount() {
-        if (this.props.tour && !localStorage.getItem("tour")) {
-            localStorage.setItem("tour", true);
+        var self = this;
 
-            let outcomes = this.props.market.outcomes;
-            let numOutcomes = parseInt(this.props.market.numOutcomes);
-            let outcomeNames = new Array(numOutcomes);
-            let outcomeName;
-            for (var i = 0; i < numOutcomes; ++i) {
-                outcomeName = utils.getOutcomeName(outcomes[i].id, this.props.market);
-                outcomeNames[i] = outcomeName.outcome;
-            }
-            outcomes.reverse();
-            outcomeNames.reverse();
-
-            let tour = new Shepherd.Tour({
-                defaults: {
-                    classes: "shepherd-element shepherd-open shepherd-theme-arrows",
-                    showCancelLink: true
-                }
-            });
-
-            // TODO add glowing border to current top market
-            tour.addStep("markets-list", {
-                title: "Welcome to Augur!",
-                text: "<p>On Augur, you can bet on the outcomes of real-world events.</p>"+
-                    "<p>In this market, you are betting on:<br /><i>" + this.props.market.description + "</i></p>",
-                attachTo: ".market-row .info .tour top",
-                buttons: [{
-                    text: "Exit Tour",
-                    classes: "shepherd-button-secondary",
-                    action: tour.back
-                }, {
-                    text: "Next",
-                    action: tour.next
-                }]
-            });
-
-            // TODO highlight outcome labels
-            let outcomeList = "";
-            for (i = 0; i < numOutcomes; ++i) {
-                outcomeList += "<li>" + outcomeNames[i] + " has a probability of " + (parseFloat(outcomes[i].price) * 100).toFixed(2) + "%</li>";
-            }
-            tour.addStep("outcomes", {
-                text: "<p>This event has " + numOutcomes + " possible outcomes: " + outcomeNames.join(" or ") + "</p>" +
-                    "<p>According to the market:</p>"+ 
-                    "<ul class='tour-outcome-list'>" + outcomeList + "</ul>",
-                attachTo: ".outcomes right",
-                buttons: [{
-                    text: "Back",
-                    classes: "shepherd-button-secondary",
-                    action: tour.back
-                }, {
-                    text: "Next",
-                    action: tour.next
-                }]
-            });
-
-            // TODO highlight trade button
-            tour.addStep("trade-button", {
-                title: "What do you think?",
-                text: "<p>" + this.props.market.description + " " + outcomeNames.join(" or ") + "?</p>"+
-                    "<p>If you feel strongly enough to put your money where your mouth is, click the Trade button!</p>",
-                attachTo: ".buttons a left",
-                buttons: [{
-                    text: "Back",
-                    classes: "shepherd-button-secondary",
-                    action: tour.back
-                }],
-                advanceOn: '.trade-button click'
-            });
-
-            // highlight Yes price
-            let price = parseFloat(outcomes[0].price);
-            tour.addStep("outcome-price", {
-                title: "Market price",
-                text: "<p>The current price of " + outcomeNames[0] + " is " + price.toFixed(4) + ".</p>"+
-                    "<p>People are betting that there is a " + (price * 100).toFixed(2) + "% chance that the answer to</p>"+
-                    "<p><i>" + this.props.market.description + "</i></p>"+
-                    "<p>will be " + outcomeNames[0] + ".</p>"+
-                    "<p>If you think they're wrong, then place a bet!</p>"+
-                    "<p>If you're right, you'll make money, and this market's odds will be more accurate, too.</p>",
-                buttons: [{
-                    text: "Next",
-                    action: tour.next
-                }]
-            });
-
-            tour.addStep("buy-shares", {
-                title: "Are these odds wrong?",
-                text: "<p>Do you think the odds of " + outcomeNames[0] + " should be <i>higher</i> than " + (price * 100).toFixed(2) + "%?</p>"+
-                    "<ul class='tour-outcome-list'><li>If so, click <b>Buy</b> to place a bet on the " + outcomeNames[0] + " outcome.</li></ul>"+
-                    "<p>Do you think the odds of " + outcomeNames[1] + " should be <i>higher</i> than " + (price * 100).toFixed(2) + "%?</p>"+
-                    "<ul class='tour-outcome-list'><li>If so, click <b>Buy</b> to place a bet on the " + outcomeNames[1] + " outcome.</li></ul>"+
-                    "<p>(You will need to sign in or run a local Ethereum node to place a bet!)</p>",
-                buttons: [{
-                    text: "Back",
-                    classes: "shepherd-button-secondary",
-                    action: tour.back
-                }, {
-                    text: "Done",
-                    action: tour.next
-                }]
-            });
-
-            setTimeout(() => tour.start(), 3000);
+        if (!this.props.tour || localStorage.getItem("tour")) {
+            return;
         }
+
+        localStorage.setItem("tour", true);
+
+        let outcomes = this.props.market.outcomes;
+        let numOutcomes = parseInt(this.props.market.numOutcomes);
+        let outcomeNames = new Array(numOutcomes);
+        let outcomeName;
+        for (var i = 0; i < numOutcomes; ++i) {
+            outcomeName = utils.getOutcomeName(outcomes[i].id, this.props.market);
+            outcomeNames[i] = outcomeName.outcome;
+        }
+        outcomes.reverse();
+        outcomeNames.reverse();
+
+        let tour = new Shepherd.Tour({
+            defaults: {
+                classes: "shepherd-element shepherd-open shepherd-theme-arrows",
+                showCancelLink: true
+            }
+        });
+
+        // TODO add glowing border to current top market
+        tour.addStep("markets-list", {
+            title: "Welcome to Augur!",
+            text: "<p>On Augur, you can trade the probability of any real-world event happening.</p>"+
+                "<p>In this market, you are considering:<br /><br /><i>" + this.props.market.description + "</i></p>",
+            attachTo: ".market-row .info .tour top",
+            buttons: [{
+                text: "Exit Tour",
+                classes: "shepherd-button-secondary",
+                action: tour.back
+            }, {
+                text: "Next",
+                action: tour.next
+            }]
+        });
+
+        // TODO highlight outcome labels
+        let outcomeList = "";
+        for (i = 0; i < numOutcomes; ++i) {
+            outcomeList += "<li>" + outcomeNames[i] + " has a probability of " + (parseFloat(outcomes[i].price) * 100).toFixed(2) + "%</li>";
+        }
+        tour.addStep("outcomes", {
+            text: "<p>This event has " + numOutcomes + " possible outcomes: " + outcomeNames.join(" or ") + "</p>" +
+                "<p>According to the market:</p>"+
+                "<ul class='tour-outcome-list'>" + outcomeList + "</ul>",
+            attachTo: ".outcomes right",
+            buttons: [{
+                text: "Back",
+                classes: "shepherd-button-secondary",
+                action: tour.back
+            }, {
+                text: "Next",
+                action: tour.next
+            }]
+        });
+
+        // TODO highlight trade button
+        tour.addStep("trade-button", {
+            title: "What do you think?",
+            text: "<p>" + this.props.market.description + " " + outcomeNames.join(" or ") + "?</p>"+
+                "<p>If you feel strongly enough, put your money where your mouth is and click the Trade button!</p>",
+            attachTo: ".buttons a left",
+            buttons: [{
+                text: "Exit Tour",
+                classes: "shepherd-button-secondary",
+                action: tour.complete
+            }, {
+                text: "Back",
+                classes: "shepherd-button-secondary",
+                action: tour.back
+            }],
+            when: {
+                show: function() {
+                    let el = ReactDOM.findDOMNode(self.refs.tradeButton);
+                    el.className += ' btn-highlighted super-highlight';
+                },
+
+                hide: function() {
+                    let el = ReactDOM.findDOMNode(self.refs.tradeButton);
+                    el.className = el.className.replace(' btn-highlighted super-highlight', '');
+                }
+            },
+            advanceOn: '.trade-button click'
+        });
+
+        // highlight Yes price
+        let price = parseFloat(outcomes[0].price);
+        tour.addStep("outcome-price", {
+            title: "Market price",
+            text: "<p>The current price of " + outcomeNames[0] + " is " + price.toFixed(4) + ".</p>"+
+                "<p>People are betting that there is a " + (price * 100).toFixed(2) + "% chance that the answer to</p>"+
+                "<p><i>" + this.props.market.description + "</i></p>"+
+                "<p>will be " + outcomeNames[0] + ".</p>"+
+                "<p>If you think they're wrong, then place a bet!</p>"+
+                "<p>If you're right, you'll make money, and this market's odds will be more accurate, too.</p>",
+            buttons: [{
+                text: "Next",
+                action: tour.next
+            }]
+        });
+
+        tour.addStep("buy-shares", {
+            title: "Do you agree with these probabilities?",
+            text: "<p>Do you think the chances of " + outcomeNames[0] + " are <i>higher</i> than " + (price * 100).toFixed(2) + "%?</p>"+
+                "<ul class='tour-outcome-list'><li>If so, <b>Buy</b> the " + outcomeNames[0] + " to trade on the " + outcomeNames[0] + " outcome.</li></ul>"+
+                "<p>Do you think the chances of " + outcomeNames[1] + " are <i>higher</i> than " + (price * 100).toFixed(2) + "%?</p>"+
+                "<ul class='tour-outcome-list'><li>If so, <b>Buy</b> the " + outcomeNames[1] + " to trade on the " + outcomeNames[1] + " outcome.</li></ul>"+
+                "<p>(You will need to sign in or run a local Ethereum node to place a bet!)</p>",
+            buttons: [{
+                text: "Back",
+                classes: "shepherd-button-secondary",
+                action: tour.back
+            }, {
+                text: "Done",
+                action: tour.next
+            }]
+        });
+
+        setTimeout(() => tour.start(), 3000);
     }
 
 });
