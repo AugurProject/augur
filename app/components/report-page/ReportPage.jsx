@@ -1,18 +1,27 @@
 let React = require('react');
 
 let BigNumber = require("bignumber.js");
+let utilities = require("../../libs/utilities");
 
 let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
 
-let ReportForm = require("./ReportForm.jsx");
+let ReportFillForm = require("./ReportFillForm.jsx");
+let ReportConfirmForm = require("./ReportConfirmForm.jsx");
+let ReportSavedModal = require("./ReportSavedModal.jsx");
 
+var ReportPage = React.createClass({
+    mixins: [FluxMixin, StoreWatchMixin('branch', 'market', 'config', 'report')],
 
-module.exports = React.createClass({
-    mixins: [FluxMixin, StoreWatchMixin('branch', 'market', 'config')],
+    componentDidMount() {
+      // usually this is recommended place where to perform initial calls, but I don't have account and market loaded
+      // at this time and I don't know how to achieve this
+      //this.getFlux().actions.report.loadReport(this.state.account, this.props.market.events[0].id);
+    },
 
     getInitialState() {
         return {
+            isReportSummaryLoading: false,
             reportedOutcome: null,
             isUnethical: null
         };
@@ -22,17 +31,41 @@ module.exports = React.createClass({
         var flux = this.getFlux();
 
         let marketId = new BigNumber(this.props.params.marketId, 16);
+        let market = flux.store('market').getMarket(marketId);
+        let account = flux.store('config').getAccount();
         var state = {
-            //account: flux.store('config').getAccount(),
-            market: flux.store('market').getMarket(marketId),
+            account: account,
+            market: market,
             //asset: flux.store('asset').getState(),
             //blockNumber: flux.store('network').getState().blockNumber,
-            branchState: flux.store('branch').getState(),
-            //events: flux.store('report').getState().eventsToReport
+            branchState: flux.store('branch').getState()
         };
 
+        let reportStore = flux.store('report');
+        if (market != null) {
+            let eventId = market.events[0].id; // not sure whether correct
+            let reportSummary = reportStore.getReportSummary(eventId);
+            if (reportSummary === undefined) {
+                if (!this.state.isReportSummaryLoading) {
+                    this.setState({
+                        isReportSummaryLoading: true
+                    });
+                    setTimeout(() => {
+                        // this is hack because I don't know when else to call it. see also componentDidMount()
+                        // without timeout:
+                        // Uncaught Error: Cannot dispatch an action ('LOAD_REPORT_SUCCESS') while another
+                        // action ('LOAD_MARKETS_SUCCESS') is being dispatched
+                        this.getFlux().actions.report.loadReport(account, eventId);
+                    }, 1);
+                }
+            } else {
+                state.reportedOutcome = reportSummary.reportedOutcome;
+                state.isUnethical = reportSummary.isUnethical;
+                state.reportHash = reportSummary.reportHash;
+            }
+        }
         if (state.branchState.currentBranch) {
-            state.report = flux.store('report').getReport(
+            state.report = reportStore.getReport(
                 state.branchState.currentBranch.id,
                 state.branchState.currentBranch.reportPeriod
             );
@@ -41,24 +74,51 @@ module.exports = React.createClass({
         return state;
     },
 
-    _onReportFormSubmit(event) {
+    onReportFormSubmit(event) {
         event.preventDefault();
+        if (this.state.reportedOutcome == null) {
+            this.setState({
+                reportError: "you must choose something"
+            });
+            return;
+        }
+
+        this.setState({
+            reportError: null
+        });
+
         let augur = this.getFlux().augur;
 
-        var eventId = this.state.market.events[0].id;// is this right?
+        let eventId = this.state.market.events[0].id;// is this right?
         let reportHash = augur.makeHash("salt", this.state.reportedOutcome, eventId);
 
-        console.log("_onReportFormSubmit: reportHash: %o", reportHash);
+        console.log("onReportFormSubmit: reportHash: %o", reportHash);
         // todo: save to local storage
 
-        this.getFlux().actions.report.saveReportHash(
-            this.state.branchState.currentBranch.id,
-            this.state.branchState.currentBranch.reportPeriod,
-            orderedDecisions
+
+        this.getFlux().actions.report.saveReport(
+            this.state.account,
+            eventId,
+            reportHash,
+            this.state.reportedOutcome,
+            this.state.isUnethical
         );
+        this.props.toggleReportSavedModal();
+    },
+    onConfirmFormSubmit(event) {
+        event.preventDefault();
+
+        let branchId, reportHash, reportPeriod, eventId, eventIndex;
+        branchId = this.state.branchState.currentBranch.id;
+        reportHash = this.state.reportHash;
+        reportPeriod = this.state.branchState.currentBranch.reportPeriod;
+        eventId = this.state.market.events[0].id;// is this right?
+        eventIndex = this.getFlux().augur.getEventIndex(reportPeriod, eventId);
+
+        this.getFlux().actions.report.submitReport(branchId, reportHash, reportPeriod, eventId, eventIndex);
     },
 
-    _onReportedOutcomeChanged(event) {
+    onReportedOutcomeChanged(event) {
         this.setState({
             reportedOutcome: event.target.value
         });
@@ -70,31 +130,87 @@ module.exports = React.createClass({
     },
 
     render() {
-        let market = this.state.market;
-        if (market == null) {
+        if (this.state.account == null) {
             return (
                 <div>
-                    No market
+                    Only for logged-in users
                 </div>
             );
         }
 
-        // todo: change this view based on state of report and user
-        return (
-            <div>
-                <h1>
-                    Reporting the outcome of a market
-                </h1>
+        let market = this.state.market;
+        if (market == null) {
+            return (
+                <div>
+                    No report
+                </div>
+            );
+        }
 
-                <h2>
-                    Review the question and make your report
-                </h2>
+        let isFillingPeriod = true,
+            isCommitPeriod = false;
 
-                <ReportForm _onReportFormSubmit={this._onReportFormSubmit}
-                            _onUnethicalChange={this._onUnethicalChange}
-                            _onReportedOutcomeChanged={this._onReportedOutcomeChanged}
-                            market={market}/>
-            </div>
-        )
+        if (isFillingPeriod) {
+            return (
+                <div>
+                    <h1>
+                        Reporting the outcome of a market
+                    </h1>
+
+                    <h2>
+                        Review the question and make your report
+                    </h2>
+
+                    <ReportFillForm onReportFormSubmit={this.onReportFormSubmit}
+                                onUnethicalChange={this._onUnethicalChange}
+                                onReportedOutcomeChanged={this.onReportedOutcomeChanged}
+                                reportedOutcome={this.state.reportedOutcome}
+                                isUnethical={this.state.isUnethical}
+                                reportError={this.state.reportError}
+                                market={market}/>
+                    <ReportSavedModal
+                        reportedOutcomeName={this.state.reportedOutcome != null ? utilities.getOutcomeName(this.state.reportedOutcome, market).outcome : "none"}
+                        isUnethical={this.state.isUnethical}
+                        show={this.props.reportSavedModalOpen}
+                        onHide={this.props.toggleReportSavedModal} />
+                </div>
+            );
+        } else if (isCommitPeriod) {
+            if (this.state.reportedOutcome == null) {
+                // todo: what to do here?
+                return (
+                    <div>
+                        You didn't report any outcome
+                    </div>
+                );
+            } else {
+                return (
+                    <div>
+                        <h1>
+                            Reporting the outcome of a market
+                        </h1>
+
+                        <h2>
+                            Confirm your reported outcome
+                        </h2>
+
+                        <ReportConfirmForm
+                            onConfirmFormSubmit={this.onConfirmFormSubmit}
+                            market={market}
+                            reportedOutcome={this.state.reportedOutcome}
+                            isUnethical={this.state.isUnethical}
+                            />
+                    </div>
+                );
+            }
+        } else {
+            return (
+                <div>
+                    there will be summary of the report and market
+                </div>
+            )
+        }
     }
 });
+
+module.exports = ReportPage;

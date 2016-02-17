@@ -20,8 +20,32 @@ module.exports = {
   /**
    * Saves the hash to local storage for later use
    */
-  saveReportHash(marketOrEventId, reportHash) {
-    localStorage.setItem(constants.report.REPORTS_STORAGE + marketOrEventId, reportHash);
+  saveReport(userAccount, eventId, reportHash, reportedOutcome, isUnethical) {
+    let key = `${constants.report.REPORTS_STORAGE}-${userAccount}-${eventId}`;
+    let value = `${reportHash}|${reportedOutcome}|${isUnethical}`;
+    localStorage.setItem(key, value);
+
+
+    this.dispatch(constants.report.LOAD_REPORT_SUCCESS, {
+      userAccount, eventId, reportHash, reportedOutcome, isUnethical
+    });
+  },
+
+  /**
+   * Loads the report from local storage
+   */
+  loadReport(userAccount, eventId) {
+    console.log("loadReport: %o, %o", userAccount, eventId);
+    let key = `${constants.report.REPORTS_STORAGE}-${userAccount}-${eventId}`;
+    let value = localStorage.getItem(key);
+    if (value != null) {
+      let [reportHash, reportedOutcome, isUnethical] = value.split("|");
+      isUnethical = isUnethical === "true";
+
+      this.dispatch(constants.report.LOAD_REPORT_SUCCESS, {
+        userAccount, eventId, reportHash, reportedOutcome, isUnethical
+      });
+    }
   },
 
   /**
