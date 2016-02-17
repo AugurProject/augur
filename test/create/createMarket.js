@@ -236,17 +236,17 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
 
         describe("binary", function () {
             var events = [[
-                "Will the Sun turn into a red giant and engulf the Earth by the end of 2016?",
-                utils.date_to_block(augur, "1-1-2017")
+                "Will SpaceX successfully complete a manned flight to the International Space Station by the end of 2017?",
+                utils.date_to_block(augur, "1-1-2018")
             ], [
-                "Will Rand Paul win the 2016 U.S. Presidential Election?",
+                "Will the Larsen B ice shelf collapse by November 1, 2017?",
+                utils.date_to_block(augur, "11-2-2017")
+            ], [
+                "Will Hillary Clinton win the 2016 U.S. Presidential Election?",
                 utils.date_to_block(augur, "1-2-2017")
             ], [
-                "Will it rain in New York City on November 12, 2016?",
-                utils.date_to_block(augur, "11-13-2016")
-            ], [
-                "Will the Larsen B ice shelf collapse by November 1, 2016?",
-                utils.date_to_block(augur, "11-2-2016")
+                "Will Bernie Sanders win the 2016 Democratic nomination for U.S. President?",
+                utils.date_to_block(augur, "7-29-2016")
             ]];
             it.each(events, "%s", ["element"], function (element, next) {
                 this.timeout(augur.constants.TIMEOUT*2);
