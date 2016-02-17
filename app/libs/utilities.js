@@ -58,6 +58,19 @@ module.exports = {
     return address.match(/^[0-9a-fA-F]{40}$/) ? true : false;
   },
 
+  getPercentageFormatted: function (market, outcome) {
+    let price = outcome.price;
+    if (price == null) {
+      return "0 %";
+    }
+
+    if (market.type === "scalar") {
+      return +price.toFixed(2);
+    } else {
+      return +price.times(100).toFixed(1) + " %";
+    }
+  },
+
   getOutcomeName: function (id, market) {
     switch (market.type) {
     case "categorical":
