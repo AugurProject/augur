@@ -776,6 +776,10 @@ a.market-pane:hover {
     border: 1px solid #ddd;
 }
 
+.tour-outcome-list {
+    color: #54657e;
+}
+
 #market {
     padding-top: 11px;
 }

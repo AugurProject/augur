@@ -1,4 +1,5 @@
-let React = require('react');
+let React = require("react");
+let abi = require("augur-abi");
 let _ = require("lodash");
 let moment = require("moment");
 let Paginate = require("react-paginate");
@@ -9,12 +10,11 @@ let Link = require("react-router/lib/components/Link");
 let Button = require("react-bootstrap/lib/Button");
 let constants = require("../../libs/constants");
 let MarketRow = require("./MarketRow");
-let Shepherd = require('tether-shepherd');
 
 let MarketsPage = React.createClass({
 
     // assuming only one branch and all markets in store are of that branch
-    mixins: [FluxMixin, StoreWatchMixin('market', 'search', 'branch', 'config'), Navigation],
+    mixins: [FluxMixin, StoreWatchMixin("market", "search", "branch", "config"), Navigation],
 
     getInitialState() {
         return {
@@ -26,17 +26,25 @@ let MarketsPage = React.createClass({
 
     getStateFromFlux: function () {
         var flux = this.getFlux();
-        var marketState = flux.store('market').getState();
-        var searchState = flux.store('search').getState();
-        var currentBranch = flux.store('branch').getCurrentBranch();
-        var account = flux.store('config').getAccount();
+        var marketState = flux.store("market").getState();
+        var searchState = flux.store("search").getState();
+        var currentBranch = flux.store("branch").getCurrentBranch();
+        var account = flux.store("config").getAccount();
+
+        // pick a nice binary market for the new user tour...
+        for (var tourMarket in searchState.results) {
+            if (!searchState.results.hasOwnProperty(tourMarket)) continue;
+            if (!searchState.results[tourMarket].description.length) continue;
+            if (searchState.results[tourMarket].type === "binary") break;
+        }
 
         return {
             searchKeywords: searchState.keywords,
             markets: searchState.results,
             pendingMarkets: marketState.pendingMarkets,
             currentBranch: currentBranch,
-            account: account
+            account: account,
+            tourMarket: abi.bignum(tourMarket)
         }
     },
 
@@ -109,8 +117,20 @@ let MarketsPage = React.createClass({
     render() {
         let flux = this.getFlux();
         let myOpenOrders = flux.augur.orders.get(flux.augur.from);
+        let tourMarket = this.state.tourMarket;
+        let tourMarketId;
+        if (tourMarket) tourMarketId = this.state.markets[tourMarket]._id;
 
         let {markets, marketsCount, firstItemIndex, lastItemIndex} = this._getMarketsData();
+
+        let tourMarketRow = <span />;
+        if (tourMarketId) {
+            tourMarketRow = <MarketRow
+                                key={tourMarket}
+                                market={this.state.markets[tourMarket]}
+                                tour={true}
+                                numOpenOrders={(myOpenOrders && tourMarketId && myOpenOrders[tourMarketId] && myOpenOrders[tourMarketId][1] && myOpenOrders[tourMarketId][1].length) || 0} />
+        }
 
         let pagination = (
             <div className="row">
@@ -180,54 +200,27 @@ let MarketsPage = React.createClass({
                                onChange={this.onChangeSearchInput}/>
                     </div>
                 </div>
-                { pagination }
+                {pagination}
                 <div className="row">
                     <div className="col-xs-12">
+                        {tourMarketRow}
                         {markets.map(market => {
-                            return <MarketRow key={market.id} market={market} numOpenOrders={ (myOpenOrders && myOpenOrders[market._id] && myOpenOrders[market._id][1] && myOpenOrders[market._id][1].length) || 0 } />;
+                            if (!tourMarket.eq(market.id)) {
+                                return (
+                                    <MarketRow
+                                        key={market.id}
+                                        market={market}
+                                        numOpenOrders={(myOpenOrders && myOpenOrders[market._id] && myOpenOrders[market._id][1] && myOpenOrders[market._id][1].length) || 0} />
+                                );
+                            }
                         })}
                     </div>
                 </div>
-                { pagination }
+                 {pagination}
             </div>
         );
-    },
-
-    componentDidMount: function() {
-        let tour = new Shepherd.Tour({
-            defaults: {
-                classes: 'shepherd-element shepherd-open shepherd-theme-arrows',
-                showCancelLink: true
-            }
-        });
-
-        tour.addStep('intro', {
-            title: 'Trade Anything',
-            text: 'Augur let\'s you predict anything'
-        });
-
-        tour.addStep('markets-list', {
-            title: 'Markets',
-            text: 'Find a topic you\'re interested in',
-            attachTo: '.market-row .info .description top'
-        });
-
-        tour.addStep('trade-button', {
-            title: 'Trade',
-            text: 'Trade shares on what you think will happen',
-            attachTo: '.buttons a left',
-            buttons: [{
-                text: 'Back',
-                classes: 'shepherd-button-secondary',
-                action: tour.back
-            }, {
-                text: 'Done',
-                action: tour.next
-            }]
-        });
-
-        setTimeout(() => tour.start(), 10000);
     }
+
 });
 
 module.exports = MarketsPage;
