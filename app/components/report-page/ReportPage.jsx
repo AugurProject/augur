@@ -9,6 +9,7 @@ let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
 let ReportFillForm = require("./ReportFillForm.jsx");
 let ReportConfirmForm = require("./ReportConfirmForm.jsx");
 let ReportSavedModal = require("./ReportSavedModal.jsx");
+let ReportDetails = require("./ReportDetails.jsx");
 
 var ReportPage = React.createClass({
     mixins: [FluxMixin, StoreWatchMixin('branch', 'market', 'config', 'report')],
@@ -96,10 +97,6 @@ var ReportPage = React.createClass({
 
         let eventId = this.state.market.events[0].id;// is this right?
         let reportHash = augur.makeHash("salt", this.state.reportedOutcome, eventId);
-
-        console.log("onReportFormSubmit: reportHash: %o", reportHash);
-        // todo: save to local storage
-
 
         this.getFlux().actions.report.saveReport(
             this.state.account,
@@ -213,7 +210,13 @@ var ReportPage = React.createClass({
         } else {
             return (
                 <div>
-                    there will be summary of the report and market
+                        <h1>
+                            Reporting details
+                        </h1>
+
+                        <ReportDetails
+                            market={market}
+                            />
                 </div>
             )
         }
