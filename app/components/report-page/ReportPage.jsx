@@ -52,6 +52,7 @@ var ReportPage = React.createClass({
             let eventId = market.events[0].id; // not sure whether correct
             let reportSummary = reportStore.getReportSummary(eventId);
             if (reportSummary === undefined) {
+                // todo: when coming from reports page this.state is null, why?
                 if (!this.state.isReportSummaryLoading) {
                     this.setState({
                         isReportSummaryLoading: true

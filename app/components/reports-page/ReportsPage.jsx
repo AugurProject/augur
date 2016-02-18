@@ -3,7 +3,13 @@ let Link = require("react-router/lib/components/Link");
 let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
 
-module.exports = React.createClass({
+let BigNumber = require("bignumber.js");
+let _ = require("lodash");
+
+let ReportConfirmedModal = require("./ReportConfirmedModal");
+let MarketRow = require("../markets-page/MarketRow");
+
+var ReportsPage = React.createClass({
     mixins: [FluxMixin, StoreWatchMixin("asset", "branch", "config", "network", "report")],
 
     getStateFromFlux() {
@@ -25,6 +31,10 @@ module.exports = React.createClass({
         }
 
         return state;
+    },
+    confirmReport() {
+        console.log("ReportsPage: todo: confirm the report");
+        this.props.toggleConfirmReportModal();
     },
 
     render() {
@@ -63,9 +73,43 @@ module.exports = React.createClass({
                 </div>
 
                 <div className="row">
-                    {}
+                    <div className="col-xs-12">
+                        {
+                            // I'm not sure about the iteration
+                            this.state.events.map(event => {
+                                let market = event.markets[0];
+                                if (market == null) {
+                                    return null;
+                                }
+                                return <MarketRow
+                                    key={market.id}
+                                    market={market}
+                                    report={{ // dummy data to present interface
+                                        // general info about report
+                                        reportedOutcome: 1,
+                                        isUnethical: true,
+
+                                        // values needed for filling period
+                                        isFillingPeriod: true,
+                                        fillingPeriodEndMillis: 1000,
+
+                                        // values needed for commit period
+                                        confirmReport: this.confirmReport,
+                                        isCommitPeriod: false,
+                                        commitPeriodEndMillis: 1000 + 1000,
+                                        isConfirmed: false
+                                        // values needed for expired period
+                                    }}
+                                    />;
+                            }, this)
+                        }
+                    </div>
                 </div>
+                <ReportConfirmedModal
+                    show={this.props.reportConfirmedModalOpen}
+                    onHide={this.props.toggleConfirmReportModal}/>
             </div>
         )
     }
 });
+module.exports = ReportsPage;

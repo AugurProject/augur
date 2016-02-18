@@ -1,17 +1,182 @@
 let React = require('react');
 
 let _ = require("lodash");
+let utilities = require("../../libs/utilities");
 let moment = require("moment");
 
 let Link = require("react-router/lib/components/Link");
 
 let OutcomeRow = require("./OutcomeRow");
 
+/**
+ * Represents detail of market in market lists.
+ * This components behaves differently for different set of props passed to it (e.g. if you pass report, it displays
+ * info about report, if you pass info about position (holdings) it displays info about position)
+ */
 let MarketRow = React.createClass({
+    /**
+     * Based on info about report returns correct JSX
+     */
+    getReportSection(report, market) {
+        if (report == null) {
+            return null;
+        }
+
+        let tableHeader, tableHeaderColSpan, content;
+        if (report.isFillingPeriod) {
+            tableHeaderColSpan = 2;
+            let reportedOutcomeFmt;
+
+            if (report.reportedOutcome == null) {
+                tableHeader = "Please report outcome";
+                reportedOutcomeFmt = "-";
+            } else {
+                tableHeader = "Outcome reported";
+                reportedOutcomeFmt = `${utilities.getOutcomeName(report.reportedOutcome, market).outcome} ${report.isUnethical ? "/ Unethical" : ""}`;
+            }
+
+            content = (
+                <tbody>
+                    <tr>
+                        <td>Reported outcome</td>
+                        <td>{ reportedOutcomeFmt }</td>
+                    </tr>
+                    <tr>
+                        <td>Reporting period closes</td>
+                        <td>{ moment(report.fillingPeriodEndMillis).to(moment()) }</td>
+                    </tr>
+                </tbody>
+            );
+        } else if (report.isCommitPeriod) {
+            tableHeaderColSpan = 2;
+            tableHeader = report.isConfirmed ? "Report confirmed" : "Please confirm report";
+            content = (
+                <tbody>
+                    <tr>
+                        <td>Reported outcome</td>
+                        <td>{utilities.getOutcomeName(report.reportedOutcome, market).outcome} { report.isUnethical ? "/ Unethical" : "" }</td>
+                    </tr>
+                    <tr>
+                        <td>Confirmation period closes</td>
+                        <td>{ moment(report.commitPeriodEndMillis).to(moment()) }</td>
+                    </tr>
+                </tbody>
+            );
+        } else {
+            tableHeaderColSpan = 4;
+            tableHeader = "Report summary";
+            content = (
+                <tbody>
+                    <tr>
+                        <td>Reported outcome</td>
+                        <td>{utilities.getOutcomeName(report.reportedOutcome, market).outcome} { report.isUnethical ? "/ Unethical" : "" }</td>
+                        <td>Fees</td>
+                        <td>fees</td>
+                    </tr>
+                    <tr>
+                        <td>Consensus</td>
+                        <td>consensus</td>
+                        <td>Reputation</td>
+                        <td>reputation</td>
+                    </tr>
+                </tbody>
+            );
+        }
+
+        return (
+            <div className="table-container">
+                <table className="tabular tabular-condensed">
+                    <thead>
+                        <tr>
+                            <th colSpan={tableHeaderColSpan}>
+                                { tableHeader }
+                            </th>
+                        </tr>
+                    </thead>
+                    { content }
+                </table>
+
+            </div>
+        );
+    },
+    getHoldingsSection(openOrdersCount) {
+        if (openOrdersCount != null) {
+            return <div className="table-container holdings">
+                <table className="tabular tabular-condensed">
+                    <thead>
+                    <tr>
+                        <th colSpan="4">Your Trading [DUMMY]</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr>
+                        <td className="title">Positions</td>
+                        <td className="value">2</td>
+                        <td className="title">Trades</td>
+                        <td className="value">8</td>
+                    </tr>
+                    <tr>
+                        <td className="title">Open Orders</td>
+                        <td className="value">{ openOrdersCount }</td>
+                        <td className="title">Profit / Loss</td>
+                        <td className="value"><span className={ Math.random() > 0.5 ? 'green' : 'red' }>+5.06%</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>;
+        } else {
+            return null;
+        }
+    },
+
+    /**
+     *
+     */
+    getRowAction(market, report) {
+        if (report != null) {
+            if (report.isFillingPeriod) {
+                return (
+                    <Link className="btn btn-primary" to="report" params={{marketId: market.id.toString(16)}}>
+                        Report
+                    </Link>
+                );
+            } else if (report.isCommitPeriod) {
+                if (!report.isConfirmed) {
+                    return (
+                        <button className="btn btn-primary" onClick={report.confirmReport}>
+                            Confirm Report
+                        </button>
+                    )
+                } else {
+                    return null;
+                }
+            } else {
+                return (
+                    <Link className="btn btn-primary" to="report" params={{marketId: market.id.toString(16)}}>
+                        View Details
+                    </Link>
+                );
+            }
+        }
+
+        return (
+            <Link className="btn btn-primary" to="market" params={{marketId: market.id.toString(16)}}>
+                Trade
+            </Link>
+        );
+    },
     render() {
         let market = this.props.market;
         let endDateLabel = (market.endDate != null && market.matured) ? 'Matured' : 'End Date';
         let endDateFormatted = market.endDate != null ? moment(market.endDate).format('MMM Do, YYYY') : '-';
+
+        var report = this.props.report;
+        let reportSection = this.getReportSection(report, market);
+        let holdingsSection = this.getHoldingsSection(this.props.numOpenOrders);
+
+        let rowAction = this.getRowAction(market, report);
 
         return (
             <div className="market-row">
@@ -46,33 +211,13 @@ let MarketRow = React.createClass({
                                 </tbody>
                             </table>
                         </div>
-                        <div className="table-container holdings">
-                            <table className="tabular tabular-condensed">
-                                <thead>
-                                    <tr>
-                                        <th colSpan="4">Your Trading [DUMMY]</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    <tr>
-                                        <td className="title">Positions</td><td className="value">2</td>
-                                        <td className="title">Trades</td><td className="value">8</td>
-                                    </tr>
-                                    <tr>
-                                        <td className="title">Open Orders</td><td className="value">{ this.props.numOpenOrders }</td>
-                                        <td className="title">Profit / Loss</td><td className="value"><span className={ Math.random() > 0.5 ? 'green' : 'red' }>+5.06%</span></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                        { holdingsSection }
+                        { reportSection }
                     </div>
                 </div>
 
                 <div className="buttons">
-                    <Link className="btn btn-primary" to="market" params={{marketId: market.id.toString(16)}}>
-                        Trade
-                    </Link>
+                    { rowAction }
                 </div>
             </div>
         );
