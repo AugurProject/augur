@@ -8,17 +8,15 @@ if (typeof localStorage === "undefined" || localStorage === null) {
     var LocalStorage = require("node-localstorage").LocalStorage;
     localStorage = new LocalStorage("./scratch");
 }
+var utils = require("../libs/utilities");
 var constants = require("../libs/constants");
-
-var bytesToHex = function (bytes) {
-  return '0x' + _.reduce(bytes, function (hexString, byte) {
-    return hexString + byte.toString(16);
-  }, '');
-};
 
 module.exports = {
   /**
-   * Saves the hash to local storage for later use
+   * Saves the report to local storage for later use.
+   * (localStorage is used so that the reports will be stored in the browser
+   * when the user returns during the second half of the reporting period
+   * to submit their plaintext reports.)
    */
   saveReport: function (userAccount, eventId, reportHash, reportedOutcome, isUnethical) {
     var key = constants.report.REPORTS_STORAGE + "-" + userAccount + "-" + eventId;
@@ -33,7 +31,7 @@ module.exports = {
    * Loads the report from local storage
    */
   loadReport: function (userAccount, eventId) {
-    console.log("loadReport: %o, %o", userAccount, eventId);
+    // console.log("loadReport: %o, %o", userAccount, eventId);
     var key = constants.report.REPORTS_STORAGE + "-" + userAccount + "-" + eventId;
     var value = localStorage.getItem(key);
     if (value !== null) {
@@ -55,125 +53,160 @@ module.exports = {
   loadEventsToReport: function () {
     var self = this;
     var augur = this.flux.augur;
-    var branch = this.flux.store('branch').getState().currentBranch;
+    var branch = this.flux.store("branch").getState().currentBranch;
 
     // Only load events if the vote period indicated by the chain is the
-    // previous period. (Otherwise, dispatch needs to be run, which will
-    // move the events from their old periods to the current period. Those
-    // events will get voted on in the next period.)
-    if (branch && branch.reportPeriod === branch.currentPeriod - 1) {
-      augur.getEvents(branch.id, branch.reportPeriod, function (eventIds) {
-        if (!eventIds || eventIds.error) {
-          return self.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {
-            eventsToReport: {}
-          });
-        }
-        eventIds = abi.bignum(eventIds);
-
-        // initialize all events
-        var eventsToReport = {};
-        _.each(eventIds, function (id) {
-          eventsToReport[id] = {id: id};
-        });
-        self.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {
-          eventsToReport: eventsToReport
-        });
-
-        _.each(eventIds, function (eventId) {
-          var eventToReport = {id: eventId};
-          augur.getDescription(eventId, function (description) {
-            if (description && !description.error) {
-              eventToReport['description'] = description;
-            }
-            augur.getEventInfo(eventId, function (eventInfo) {
-              if (eventInfo && !eventInfo.error) {
-                eventToReport['branchId'] = eventInfo[0];
-                eventToReport['expirationBlock'] = abi.bignum(eventInfo[1]);
-                eventToReport['outcome'] = abi.bignum(eventInfo[2]);
-                eventToReport['minValue'] = abi.bignum(eventInfo[3]);
-                eventToReport['maxValue'] = abi.bignum(eventInfo[4]);
-                eventToReport['numOutcomes'] = abi.bignum(eventInfo[5]);
-              }
-              self.dispatch(
-                constants.report.UPDATE_EVENT_TO_REPORT,
-                eventToReport
-              );
-            });
-          });
-        }, self);
+    // previous period. (Otherwise, incrementPeriod needs to be run.)
+    if (!branch || branch.reportPeriod >= branch.currentPeriod + 2) {
+      return this.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {
+        eventsToReport: {}
       });
-
-    } else {
-
+    } else if (branch.reportPeriod < branch.currentPeriod - 1 ) {
       this.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {
         eventsToReport: {}
       });
+      console.log("Incrementing period for branch", branch.id);
+      this.flux.augur.incrementPeriod(branch.id);
     }
+    augur.getEvents(branch.id, branch.reportPeriod, function (eventIds) {
+      if (!eventIds || eventIds.constructor !== Array || eventIds.error) {
+        return self.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {
+          eventsToReport: {}
+        });
+      }
+
+      // initialize all events
+      var eventsToReport = {};
+      _.each(eventIds, function (id) { eventsToReport[id] = {id: id}; });
+      self.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {
+        eventsToReport: eventsToReport
+      });
+
+      async.each(eventIds, function (eventId, nextEvent) {
+        augur.getEventInfo(eventId, function (eventInfo) {
+          if (!eventInfo) return nextEvent("couldn't get event info");
+          if (eventInfo.error) return nextEvent(eventInfo);
+          var eventToReport = {
+            id: eventId,
+            branchId: eventInfo[0],
+            expirationBlock: parseInt(eventInfo[1]),
+            outcome: eventInfo[2],
+            minValue: eventInfo[3],
+            maxValue: eventInfo[4],
+            numOutcomes: parseInt(eventInfo[5])
+          };
+          augur.getDescription(eventId, function (description) {
+            if (description && description.error) return nextEvent(description);
+            eventToReport.description = description;
+            augur.getMarkets(eventId, function (markets) {
+              if (!markets) return nextEvent("no markets found");
+              if (markets.error) return nextEvent(markets);
+              eventToReport.markets = markets;
+              self.dispatch(constants.report.UPDATE_EVENT_TO_REPORT, eventToReport);
+              nextEvent();
+            });
+          });
+        });
+      }, function (err) {
+        if (err) console.error("loadEventsToReport:", err);
+      });
+    });
   },
 
-  // why use localStorage instead of Flux?
+  loadPendingReports: function () {
+    var reportsString = localStorage.getItem(constants.report.REPORTS_STORAGE);
+    var pendingReports = reportsString ? JSON.parse(reportsString) : [];
+    this.dispatch(constants.report.LOAD_PENDING_REPORTS_SUCCESS, {pendingReports});
+  },
+
+  /**
+   * Store reports in localStorage.
+   * (localStorage is used so that the reports will be stored in the browser
+   * when the user returns during the second half of the reporting period
+   * to submit their plaintext reports.)
+   */
   storeReports: function (reports) {
-    // TODO: Encrypt the reports so malware can't access them and steal
-    // reputation.
     localStorage.setItem(constants.report.REPORTS_STORAGE, JSON.stringify(reports));
   },
 
   /**
-   * Broadcast the hash of the report and store the report and salt.
+   * Create, broadcast, and store the report hash.
+   * (Should be called during the first half of the reporting period.)
    */
-  hashReport: function (branchId, reportPeriod, decisions, cb) {
+  submitReportHash: function (branchId, eventId, reportPeriod, report, cb) {
     cb = cb || function (e, r) { console.log(e, r); };
-    var saltBytes = secureRandom(32);
-    var salt = bytesToHex(saltBytes);
-    var pendingReports = this.flux.store('report').getState().pendingReports;
+    var self = this;
+    var account = this.flux.store("config").getAccount();
+    var salt = utils.bytesToHex(secureRandom(32));
+    var pendingReports = this.flux.store("report").getState().pendingReports;
     pendingReports.push({
       branchId,
       reportPeriod,
-      decisions,
+      report,
       salt,
-      reported: false
+      submitHash: false,
+      submitReport: false
     });
     this.flux.actions.report.storeReports(pendingReports);
-
-    // Hash the report and submit it to the network.
-    var reportHash = this.flux.augur.hashReport(decisions, salt);
-    console.log("Submitting hash for period", reportPeriod);
-    console.log("Report hash:", reportHash);
-    this.flux.augur.submitReportHash({
-      branchId: branchId,
-      reportHash: reportHash,
-      reportPeriod: reportPeriod,
-      onSent: function (res) {
-        console.log("submitReportHash sent:", res);
-      },
-      onSuccess: function (res) {
-        // console.log("submitReportHash success:", res);
-        cb(null, res);
-      },
-      onFailed: cb
-    });
     this.dispatch(constants.report.UPDATE_PENDING_REPORTS, {pendingReports});
+    var reportHash = this.flux.augur.makeHash(salt, report, eventId, account);
+    var randomNumber = abi.hex(abi.bignum(this.flux.augur.from).plus(abi.bignum(eventId)));
+    this.flux.augur.rpc.sha3(randomNumber, function (diceroll) {
+      var threshold = self.flux.augur.calculateReportingThreshold(branchId, eventId, reportPeriod);
+      self.flux.augur.getEventIndex(reportPeriod, eventId, function (eventIndex) {
+        if (abi.bignum(diceroll).lt(abi.bignum(threshold))) {
+          self.flux.augur.submitReportHash({
+            branch: branchId,
+            reportHash: reportHash,
+            reportPeriod: reportPeriod,
+            eventID: eventId,
+            eventIndex: eventIndex,
+            onSent: function (res) {
+              console.log("submitReportHash sent:", res);
+            },
+            onSuccess: function (res) {
+              console.log("submitReportHash success:", res);
+              pendingReports[pendingReports.length - 1].submitHash = true;
+              self.dispatch(constants.report.UPDATE_PENDING_REPORTS, {pendingReports});
+              cb(null, res);
+            },
+            onFailed: function (err) {
+              console.error("submitReportHash:", err);
+              cb(err);
+            }
+          });
+        }
+      });
+    });
   },
 
   /**
-   * Submit the actual report data.
-   *
-   * @param report {Object} branchId, reportPeriod, decisions and salt.
+   * Broadcast the plaintext report to the network.
+   * (Should be called during the second half of the reporting period.)
    */
-  submitReport: function (report, cb) {
+  submitReport: function (branchId, eventId, reportPeriod, report, salt, ethics, cb) {
     cb = cb || function (e, r) { console.log(e, r); };
-    this.flux.augur.report({
-      branchId: report.branchId,
-      report: report.decisions,
-      reportPeriod: report.reportPeriod,
-      salt: report.salt,
-      onSent: function (res) {
-        // console.log("submitReport sent:", res);
-      },
-      onSuccess: function (res) {
-        cb(null, res);
-      },
-      onFailed: cb
+    this.flux.augur.getEventIndex(reportPeriod, eventId, function (eventIndex) {
+      this.flux.augur.submitReport({
+        branch: branchId,
+        reportPeriod: reportPeriod,
+        eventIndex: eventIndex,
+        salt: salt,
+        report: report,
+        eventID: eventId,
+        ethics: ethics,
+        onSent: function (res) {
+          console.log("submitReport sent:", res);
+        },
+        onSuccess: function (res) {
+          console.log("submitReport success:", res);
+          cb(null, res);
+        },
+        onFailed: function (err) {
+          console.error("submitReport:", err);
+          cb(err);
+        }
+      });
     });
   },
 
@@ -223,33 +256,6 @@ module.exports = {
       }
       cb(null, {sentReports, pendingReports: reports});
     });
-  },
-
-  loadPendingReports: function () {
-    var reportsString = localStorage.getItem(constants.report.REPORTS_STORAGE);
-    var pendingReports = reportsString ? JSON.parse(reportsString) : [];
-    this.dispatch(constants.report.LOAD_PENDING_REPORTS_SUCCESS, {pendingReports});
-  },
-
-  incrementPeriod: function () {
-
-  },
-
-  isReadyToReport: function () {
-    // is the "vote period" 1 period behind the current period?
-    // randomnumber = sha3(user address + event ID)
-    // check if randomnumber < calculateReportingThreshold(branchID, eventID, period)
-    // if so:
-    return true;
-    // if not:
-    this.flux.actions.report.incrementPeriod();
-  },
-
-  submitReportHash: function () {
-    // submit a HASH of the report and stores the report itself in localStorage
-  },
-
-  submitReport: function () {
-    // laod the report from localstorage and submitReport
   }
+
 };

@@ -18,6 +18,9 @@ module.exports = {
   getReportSummary: function (eventId) {
     return this.state.reportSummaries[eventId];
   },
+  getEventsToReport: function () {
+
+  },
   handleLoadEventsToReportSuccess: function (payload) {
     this.state.eventsToReport = payload.eventsToReport;
     this.emit(constants.CHANGE_EVENT);
@@ -31,7 +34,7 @@ module.exports = {
     this.emit(constants.CHANGE_EVENT);
   },
   handleLoadReportSuccess: function (payload) {
-    console.log("handleLoadReportSuccess %o", payload);
+    // console.log("handleLoadReportSuccess %o", payload);
     this.state.reportSummaries[payload.eventId] = {
       reportHash: payload.reportHash,
       reportedOutcome: payload.reportedOutcome,

@@ -1,6 +1,7 @@
 "use strict";
 
 var BigNumber = require("bignumber.js");
+var _ = require("lodash");
 var abi = require("augur-abi");
 var moment = require("moment");
 var constants = require("./constants");
@@ -56,6 +57,12 @@ module.exports = {
   isValidAccount: function (address) {
     address = address.replace(/^0x/, '');  // strip leading '0x' is it exists
     return address.match(/^[0-9a-fA-F]{40}$/) ? true : false;
+  },
+
+  bytesToHex: function (bytes) {
+    return "0x" + _.reduce(bytes, function (hexString, byte) {
+      return hexString + byte.toString(16);
+    }, "");
   },
 
   getOutcomeName: function (id, market) {

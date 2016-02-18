@@ -42,13 +42,13 @@ module.exports = {
     var currentPeriod = Math.floor(currentBlock / currentBranch.periodLength);
     var percentComplete = (currentBlock % currentBranch.periodLength) / currentBranch.periodLength * 100;
 
-    this.flux.augur.getVotePeriod(currentBranch.id, function (result) {
+    this.flux.augur.getReportPeriod(currentBranch.id, function (result) {
       if (!result || result.error) {
-        return console.error("augur.getVotePeriod error:", result);
+        return console.error("augur.getReportPeriod error:", result);
       }
       var reportPeriod = abi.number(result);
 
-      // if this is a new vote period, check quorum & submit reports
+      // if this is a new report period, check quorum & submit reports
       if (reportPeriod > currentBranch.reportPeriod) {
         self.flux.actions.report.loadEventsToReport();
         self.flux.actions.report.submitQualifiedReports(function (err, res) {

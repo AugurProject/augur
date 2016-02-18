@@ -1,26 +1,24 @@
-let React = require('react');
-
+let React = require("react");
 let Link = require("react-router/lib/components/Link");
-
 let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
 
 module.exports = React.createClass({
-    mixins: [FluxMixin, StoreWatchMixin('asset', 'branch', 'config', 'network', 'report')],
+    mixins: [FluxMixin, StoreWatchMixin("asset", "branch", "config", "network", "report")],
 
-    getStateFromFlux: function () {
-        var flux = this.getFlux();
+    getStateFromFlux() {
+        let flux = this.getFlux();
 
-        var state = {
-            account: flux.store('config').getAccount(),
-            asset: flux.store('asset').getState(),
-            blockNumber: flux.store('network').getState().blockNumber,
-            branchState: flux.store('branch').getState(),
-            events: flux.store('report').getState().eventsToReport
+        let state = {
+            account: flux.store("config").getAccount(),
+            asset: flux.store("asset").getState(),
+            blockNumber: flux.store("network").getState().blockNumber,
+            branchState: flux.store("branch").getState(),
+            events: flux.store("report").getState().eventsToReport
         };
 
         if (state.branchState.currentBranch) {
-            state.report = flux.store('report').getReport(
+            state.report = flux.store("report").getReport(
                 state.branchState.currentBranch.id,
                 state.branchState.currentBranch.reportPeriod
             );
