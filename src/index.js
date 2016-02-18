@@ -233,10 +233,10 @@ Augur.prototype.getNumBranches = function (callback) {
 Augur.prototype.getBranches = function (callback) {
     return this.fire(this.tx.getBranches, callback);
 };
-Augur.prototype.getMarkets = function (branch, callback) {
-    // branch: sha256 hash id
-    var tx = clone(this.tx.getMarketsInBranch);
-    tx.params = branch;
+Augur.prototype.getMarkets = function (eventID, callback) {
+    // eventID: sha256 hash id
+    var tx = clone(this.tx.getMarkets);
+    tx.params = eventID;
     return this.fire(tx, callback);
 };
 Augur.prototype.getMarketsInBranch = function (branch, callback) {
