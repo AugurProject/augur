@@ -257,6 +257,12 @@ Augur.prototype.getVotePeriod = function (branch, callback) {
     tx.params = branch;
     return this.fire(tx, callback);
 };
+Augur.prototype.getReportPeriod = function (branch, callback) {
+    // branch: sha256 hash id
+    var tx = clone(this.tx.getVotePeriod);
+    tx.params = branch;
+    return this.fire(tx, callback);
+};
 Augur.prototype.getNumMarketsBranch = function (branch, callback) {
     // branch: sha256
     var tx = clone(this.tx.getNumMarketsBranch);

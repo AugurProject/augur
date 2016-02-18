@@ -111,7 +111,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                                                 if (DEBUG) console.log("Market ID:", marketID);
 
                                                 // fast-forward to the period in which the new event expires
-                                                var period = parseInt(augur.getVotePeriod(newBranchID));
+                                                var period = parseInt(augur.getReportPeriod(newBranchID));
                                                 var currentPeriod = augur.getCurrentPeriod(newBranchID);
                                                 var blockNumber = augur.rpc.blockNumber();
                                                 var blocksToGo = periodLength - (blockNumber % periodLength);
@@ -160,7 +160,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
             this.timeout(augur.constants.TIMEOUT*100);
             var blockNumber = augur.rpc.blockNumber();
             if (DEBUG) console.log("Current block:", blockNumber + "\tResidual:", blockNumber % periodLength);
-            var startPeriod = parseInt(augur.getVotePeriod(newBranchID));
+            var startPeriod = parseInt(augur.getReportPeriod(newBranchID));
             if (DEBUG) console.log("Events in start period", startPeriod, augur.getEvents(newBranchID, startPeriod));
             var currentPeriod = augur.getCurrentPeriod(newBranchID);
             if (DEBUG) console.log("Current period:", currentPeriod);
@@ -170,7 +170,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 if (DEBUG) console.log("Difference", Number(currentPeriod) - startPeriod + ". Incrementing period...");
                 augur.incrementPeriod(newBranchID, utils.noop, function (res) {
                     assert.strictEqual(res.callReturn, "0x1");
-                    var period = parseInt(augur.getVotePeriod(newBranchID));
+                    var period = parseInt(augur.getReportPeriod(newBranchID));
                     if (DEBUG) console.log("Incremented reporting period to " + period + " (current period " + currentPeriod + ")");
                     currentPeriod = Math.floor(currentPeriod).toString();
                     if (DEBUG) console.log("Events in new period", period, augur.getEvents(newBranchID, period));
@@ -189,7 +189,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                         return augur.submitReportHash({
                             branch: newBranchID,
                             reportHash: reportHash,
-                            votePeriod: period,
+                            reportPeriod: period,
                             eventID: eventID,
                             eventIndex: eventIndex,
                             onSent: function (res) {
@@ -214,7 +214,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
             this.timeout(augur.constants.TIMEOUT*100);
 
             // fast-forward to the second half of the reporting period
-            var period = parseInt(augur.getVotePeriod(newBranchID));
+            var period = parseInt(augur.getReportPeriod(newBranchID));
             var blockNumber = augur.rpc.blockNumber();
             var blocksToGo = Math.ceil((periodLength / 2) - (blockNumber % (periodLength / 2)));
             if (DEBUG) {
@@ -223,11 +223,11 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 console.log("Fast forwarding", blocksToGo, "blocks...");
             }
             augur.rpc.fastforward(blocksToGo, function (endBlock) {
-                assert.strictEqual(parseInt(augur.getVotePeriod(newBranchID)), period);
+                assert.strictEqual(parseInt(augur.getReportPeriod(newBranchID)), period);
                 var eventIndex = augur.getEventIndex(period, eventID);
                 return augur.submitReport({
                     branch: newBranchID,
-                    votePeriod: period,
+                    reportPeriod: period,
                     eventIndex: eventIndex,
                     salt: salt,
                     report: report,
