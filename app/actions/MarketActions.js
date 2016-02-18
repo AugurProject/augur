@@ -236,9 +236,8 @@ module.exports = {
 
   loadMetadata: function (market) {
     var self = this;
-    console.log("loading:", market._id);
-    this.flux.augur.ramble.getMarketMetadata(market._id, null, function (err, metadata) {
-      console.info(market._id, "metadata loaded:", metadata);
+    this.flux.augur.ramble.getMarketMetadata(market._id, {sourceless: false}, function (err, metadata) {
+      console.info(market._id, "metadata loaded:", JSON.stringify(metadata, null, 2));
       if (!err && metadata) {
         self.dispatch(constants.market.LOAD_METADATA_SUCCESS, {metadata});
       }

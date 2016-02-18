@@ -201,11 +201,11 @@ let MarketRow = React.createClass({
         });
 
         // highlight Yes price
-        let price = parseFloat(outcomes[0].price);
+        let prices = [parseFloat(outcomes[0].price), parseFloat(outcomes[1].price)];
         tour.addStep("outcome-price", {
             title: "Market price",
-            text: "<p>The current price of " + outcomeNames[0] + " is " + price.toFixed(4) + ".</p>"+
-                "<p>People are betting that there is a " + (price * 100).toFixed(2) + "% chance that the answer to</p>"+
+            text: "<p>The current price of " + outcomeNames[0] + " is " + prices[0].toFixed(4) + ".</p>"+
+                "<p>People are betting that there is a " + (prices[0] * 100).toFixed(2) + "% chance that the answer to</p>"+
                 "<p><i>" + this.props.market.description + "</i></p>"+
                 "<p>will be " + outcomeNames[0] + ".</p>"+
                 "<p>If you think they're wrong, then place a bet!</p>"+
@@ -218,9 +218,9 @@ let MarketRow = React.createClass({
 
         tour.addStep("buy-shares", {
             title: "Do you agree with these probabilities?",
-            text: "<p>Do you think the chances of " + outcomeNames[0] + " are <i>higher</i> than " + (price * 100).toFixed(2) + "%?</p>"+
+            text: "<p>Do you think the chances of " + outcomeNames[0] + " are <i>higher</i> than " + (prices[0] * 100).toFixed(2) + "%?</p>"+
                 "<ul class='tour-outcome-list'><li>If so, <b>Buy</b> the " + outcomeNames[0] + " to trade on the " + outcomeNames[0] + " outcome.</li></ul>"+
-                "<p>Do you think the chances of " + outcomeNames[1] + " are <i>higher</i> than " + (price * 100).toFixed(2) + "%?</p>"+
+                "<p>Do you think the chances of " + outcomeNames[1] + " are <i>higher</i> than " + (prices[1] * 100).toFixed(2) + "%?</p>"+
                 "<ul class='tour-outcome-list'><li>If so, <b>Buy</b> the " + outcomeNames[1] + " to trade on the " + outcomeNames[1] + " outcome.</li></ul>"+
                 "<p>(You will need to sign in or run a local Ethereum node to place a bet!)</p>",
             buttons: [{
