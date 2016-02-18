@@ -15,7 +15,7 @@ module.exports = {
   getReport: function (branchId, reportPeriod) {
     return _.findWhere(this.getState().pendingReports, {branchId, reportPeriod});
   },
-  getReportSummary(eventId) {
+  getReportSummary: function (eventId) {
     return this.state.reportSummaries[eventId];
   },
   handleLoadEventsToReportSuccess: function (payload) {
@@ -30,7 +30,7 @@ module.exports = {
     this.state.eventsToReport[payload.id] = _.merge(this.state.eventsToReport[payload.id], payload);
     this.emit(constants.CHANGE_EVENT);
   },
-  handleLoadReportSuccess(payload) {
+  handleLoadReportSuccess: function (payload) {
     console.log("handleLoadReportSuccess %o", payload);
     this.state.reportSummaries[payload.eventId] = {
       reportHash: payload.reportHash,

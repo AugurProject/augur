@@ -147,6 +147,9 @@ var flux = {
         UPDATE_EVENT_TO_REPORT: function (payload) {
             flux.stores.report.handleUpdateEventToReport(payload);
         },
+        LOAD_REPORT_SUCCESS: function (payload) {
+            flux.stores.report.handleLoadReportSuccess(payload);
+        },
 
         // search
         KEYWORDS_UPDATED: function (payload) {

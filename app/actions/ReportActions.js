@@ -20,12 +20,10 @@ module.exports = {
   /**
    * Saves the hash to local storage for later use
    */
-  saveReport(userAccount, eventId, reportHash, reportedOutcome, isUnethical) {
-    let key = `${constants.report.REPORTS_STORAGE}-${userAccount}-${eventId}`;
-    let value = `${reportHash}|${reportedOutcome}|${isUnethical}`;
+  saveReport: function (userAccount, eventId, reportHash, reportedOutcome, isUnethical) {
+    var key = constants.report.REPORTS_STORAGE + "-" + userAccount + "-" + eventId;
+    var value = reportHash + "|" + reportedOutcome + "|" + isUnethical;
     localStorage.setItem(key, value);
-
-
     this.dispatch(constants.report.LOAD_REPORT_SUCCESS, {
       userAccount, eventId, reportHash, reportedOutcome, isUnethical
     });
@@ -34,14 +32,16 @@ module.exports = {
   /**
    * Loads the report from local storage
    */
-  loadReport(userAccount, eventId) {
+  loadReport: function (userAccount, eventId) {
     console.log("loadReport: %o, %o", userAccount, eventId);
-    let key = `${constants.report.REPORTS_STORAGE}-${userAccount}-${eventId}`;
-    let value = localStorage.getItem(key);
-    if (value != null) {
-      let [reportHash, reportedOutcome, isUnethical] = value.split("|");
+    var key = constants.report.REPORTS_STORAGE + "-" + userAccount + "-" + eventId;
+    var value = localStorage.getItem(key);
+    if (value !== null) {
+      var reportItem = value.split("|");
+      var reportHash = reportItem[0];
+      var reportedOutcome = reportItem[1];
+      var isUnethical = reportItem[2];
       isUnethical = isUnethical === "true";
-
       this.dispatch(constants.report.LOAD_REPORT_SUCCESS, {
         userAccount, eventId, reportHash, reportedOutcome, isUnethical
       });
@@ -50,7 +50,6 @@ module.exports = {
 
   /**
    * Load the events in the current branch that need reports.
-   *
    * TODO: Load events across all branches that need reports.
    */
   loadEventsToReport: function () {
@@ -73,13 +72,15 @@ module.exports = {
 
         // initialize all events
         var eventsToReport = {};
-        _.each(eventIds, function (id) { eventsToReport[id] = { id: id }; });
+        _.each(eventIds, function (id) {
+          eventsToReport[id] = {id: id};
+        });
         self.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {
           eventsToReport: eventsToReport
         });
 
         _.each(eventIds, function (eventId) {
-          var eventToReport = { id: eventId };
+          var eventToReport = {id: eventId};
           augur.getDescription(eventId, function (description) {
             if (description && !description.error) {
               eventToReport['description'] = description;
@@ -228,5 +229,27 @@ module.exports = {
     var reportsString = localStorage.getItem(constants.report.REPORTS_STORAGE);
     var pendingReports = reportsString ? JSON.parse(reportsString) : [];
     this.dispatch(constants.report.LOAD_PENDING_REPORTS_SUCCESS, {pendingReports});
+  },
+
+  incrementPeriod: function () {
+
+  },
+
+  isReadyToReport: function () {
+    // is the "vote period" 1 period behind the current period?
+    // randomnumber = sha3(user address + event ID)
+    // check if randomnumber < calculateReportingThreshold(branchID, eventID, period)
+    // if so:
+    return true;
+    // if not:
+    this.flux.actions.report.incrementPeriod();
+  },
+
+  submitReportHash: function () {
+    // submit a HASH of the report and stores the report itself in localStorage
+  },
+
+  submitReport: function () {
+    // laod the report from localstorage and submitReport
   }
 };
