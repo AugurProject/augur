@@ -39,7 +39,7 @@ module.exports = {
     var userAccount = this.flux.store("config").getAccount();
     var key = constants.report.REPORTS_STORAGE + "-" + userAccount + "-" + eventId;
     var value = localStorage.getItem(key);
-    if (value == null) {
+    if (value === null) {
       return {};
     }
     var reportParts = value.split("|");
