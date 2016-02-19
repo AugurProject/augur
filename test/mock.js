@@ -150,6 +150,9 @@ var flux = {
         LOAD_REPORT_SUCCESS: function (payload) {
             flux.stores.report.handleLoadReportSuccess(payload);
         },
+        READY: function (payload) {
+            flux.stores.report.handleReady(payload);
+        },
 
         // search
         KEYWORDS_UPDATED: function (payload) {

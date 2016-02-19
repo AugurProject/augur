@@ -5,6 +5,7 @@ var constants = require("../libs/constants");
 
 module.exports = {
   state: {
+    ready: [],
     reportSummaries: {},
     eventsToReport: {},
     pendingReports: []
@@ -17,9 +18,6 @@ module.exports = {
   },
   getReportSummary: function (eventId) {
     return this.state.reportSummaries[eventId];
-  },
-  getEventsToReport: function () {
-
   },
   handleLoadEventsToReportSuccess: function (payload) {
     this.state.eventsToReport = payload.eventsToReport;
@@ -40,6 +38,11 @@ module.exports = {
       reportedOutcome: payload.reportedOutcome,
       isUnethical: payload.isUnethical
     };
+    this.emit(constants.CHANGE_EVENT);
+  },
+  // payload: {branch}
+  handleReady: function (payload) {
+    this.state.ready = payload.branch;
     this.emit(constants.CHANGE_EVENT);
   }
 };

@@ -4,6 +4,7 @@
  */
 
 var test = require("tape");
+var keys = require("keythereum");
 var valid = require("validator");
 var abi = require("augur-abi");
 if (typeof localStorage === "undefined" || localStorage === null) {
@@ -13,17 +14,18 @@ if (typeof localStorage === "undefined" || localStorage === null) {
 var constants = require("../app/libs/constants");
 var flux = require("./mock");
 var reset = require("./reset");
+var tools = require("./tools");
 var marketInfo = require("./marketInfo");
+var keystore = require("./account");
 
-var DEBUG = false;
+var DEBUG = true;
+
 // var host = "http://127.0.0.1:8545";
 // flux.augur.rpc.setLocalNode(host);
 // flux.augur.connect(host);
 flux.augur.connect();
-flux.augur.connector.from = flux.augur.coinbase;
-flux.augur.sync(flux.augur.connector);
 var branch = flux.augur.branches.dev;
-var reportPeriod = flux.augur.getVotePeriod(branch);
+var reportPeriod = flux.augur.getReportPeriod(branch);
 var numEvents = flux.augur.getNumberEvents(branch, reportPeriod);
 var salt = "0xe8f36277bf8464cd778abf17421e5e49e64852cc353f398d3d6013802ac18e";
 
@@ -187,6 +189,25 @@ test("ReportActions.loadPendingReports", function (t) {
     flux.actions.report.loadPendingReports();
 });
 
+test("ReportActions.ready", function (t) {
+    flux = reset(flux);
+    var READY = flux.register.READY;
+    flux.register.READY = function (payload) {
+        t.equal(payload.constructor, Object, "payload is an object");
+        t.equal(payload.branch.constructor, String, "payload.branch is a string");
+        READY(payload);
+        t.pass("dispatch READY");
+        var storedReady = flux.store("report").getState().ready;
+        t.equal(storedReady.constructor, Array, "stores.report.state.ready is an array");
+        t.equal(storedReady.length, 1, "stores.report.state.ready.length == 1");
+        t.equal(storedReady[0], payload.branch, "storedReady[0] == payload.branch == " + payload.branch);
+        t.equal(flux.store("branch").getCurrentBranch().id, payload.branch, "stores.branch.state.currentBranch.id == payload.branch");
+        flux.register.READY = READY;
+        t.end();
+    };
+    tools.getReady(flux);
+});
+
 test("ReportActions.submitReportHash", function (t) {
     var UPDATE_PENDING_REPORTS = flux.register.UPDATE_PENDING_REPORTS;
     flux.register.UPDATE_PENDING_REPORTS = function (payload) {
@@ -198,6 +219,9 @@ test("ReportActions.submitReportHash", function (t) {
         flux.register.UPDATE_PENDING_REPORTS = UPDATE_PENDING_REPORTS;
         t.end();
     };
+    var branchID = flux.store("branch").getCurrentBranch().id;
+    var reportPeriod = flux.augur.getReportPeriod(branchID);
+    var reportedOutcome = "1";
     flux.actions.report.submitReportHash(branchID, reportPeriod, reportedOutcome);
 });
 

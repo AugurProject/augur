@@ -71,7 +71,8 @@ module.exports = function (flux) {
         flux.stores.report.state = {
             reportSummaries: {},
             eventsToReport: {},
-            pendingReports: []
+            pendingReports: [],
+            ready: []
         };
     }
     if (flux.stores.asset) {

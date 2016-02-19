@@ -46,6 +46,10 @@ module.exports = {
     }
   },
 
+  ready: function (branch) {
+    this.dispatch(constants.report.READY, {branch: branch});
+  },
+
   /**
    * Load the events in the current branch that need reports.
    * TODO: Load events across all branches that need reports.
@@ -181,37 +185,7 @@ module.exports = {
   },
 
   /**
-   * Broadcast the plaintext report to the network.
-   * (Should be called during the second half of the reporting period.)
-   */
-  submitReport: function (branchId, eventId, reportPeriod, report, salt, ethics, cb) {
-    cb = cb || function (e, r) { console.log(e, r); };
-    this.flux.augur.getEventIndex(reportPeriod, eventId, function (eventIndex) {
-      this.flux.augur.submitReport({
-        branch: branchId,
-        reportPeriod: reportPeriod,
-        eventIndex: eventIndex,
-        salt: salt,
-        report: report,
-        eventID: eventId,
-        ethics: ethics,
-        onSent: function (res) {
-          console.log("submitReport sent:", res);
-        },
-        onSuccess: function (res) {
-          console.log("submitReport success:", res);
-          cb(null, res);
-        },
-        onFailed: function (err) {
-          console.error("submitReport:", err);
-          cb(err);
-        }
-      });
-    });
-  },
-
-  /**
-   * Submit any reports that haven't been submitted and are in the last half of
+   * Submit any reports that haven't been submitted and are in the second half of
    * their reporting period.
    */
   submitQualifiedReports: function (cb) {
@@ -219,13 +193,12 @@ module.exports = {
     cb = cb || function (e, r) { console.log(e, r); };
     var currentBlock = this.flux.store('network').getState().blockNumber;
     var reports = this.flux.store('report').getState().pendingReports;
-    var unsentReports = _.filter(reports, function (r) { return !r.reported; });
+    var unsentReports = _.filter(reports, function (r) { return !r.submitReport; });
     var didSendReports = false;
     var sentReports = [];
     async.each(unsentReports, function (report, nextReport) {
       if (!report) return nextReport(new Error("no report found"));
-      if (!report.branchId || report.reportPeriod === null ||
-          report.reportPeriod === undefined) {
+      if (!report.branchId || report.reportPeriod === null || report.reportPeriod === undefined) {
         return nextReport(report);
       }
       self.flux.augur.getPeriodLength(report.branchId, function (periodLength) {
@@ -233,13 +206,28 @@ module.exports = {
         var reportingStartBlock = (report.reportPeriod + 1) * periodLength;
         var reportingCurrentBlock = currentBlock - reportingStartBlock;
         if (reportingCurrentBlock > (periodLength / 2)) {
-          console.debug("submitting report for period", report.reportPeriod);
-          self.flux.actions.report.submitReport(report, function (err, res) {
-            if (err) return nextReport(err);
-            report.reported = true;
-            didSendReports = true;
-            sentReports.push(report);
-            nextReport();
+          console.log("Submitting report for period", report.reportPeriod);
+          self.flux.augur.getEventIndex(reportPeriod, eventId, function (eventIndex) {
+            self.flux.augur.submitReport({
+              branch: branchId,
+              reportPeriod: reportPeriod,
+              eventIndex: eventIndex,
+              salt: salt,
+              report: report,
+              eventID: eventId,
+              ethics: ethics,
+              onSent: function (res) {
+                console.log("submitReport sent:", res);
+              },
+              onSuccess: function (res) {
+                console.log("submitReport success:", res);
+                didSendReports = true;
+                report.submitReport = true;
+                sentReports.push(report);
+                nextReport();
+              },
+              onFailed: nextReport
+            });
           });
         } else {
           nextReport();
