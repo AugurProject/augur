@@ -55,7 +55,9 @@ module.exports = {
     return this.state.orders;
   },
   getMetadata: function (marketId) {
-    return this.state.markets[marketId].metadata;
+    if (this.state.markets[marketId]) {
+      return this.state.markets[marketId].metadata;
+    }
   },
   handleMarketsLoading: function (payload) {
     if (payload.marketLoadingIds) this.state.marketLoadingIds = payload.marketLoadingIds;
