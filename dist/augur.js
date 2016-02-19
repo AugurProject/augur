@@ -66883,11 +66883,14 @@ Augur.prototype.sendReputation = function (branch, to, value, onSent, onSuccess,
 // transferShares.se
 
 // makeReports.se
-Augur.prototype.makeHash = function (salt, report, event, from) {
+Augur.prototype.makeHash = function (salt, report, event, from, isScalar) {
+    var fixedReport = (isScalar) ?
+        abi.hex(abi.fix(report).plus(new BigNumber(1))) :
+        abi.fix(report, "hex");
     return abi.hex(this.utils.sha256([
         from || this.from,
         abi.hex(salt),
-        abi.fix(report, "hex"),
+        fixedReport,
         event
     ]));
 };
