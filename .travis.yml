@@ -18,6 +18,7 @@ addons:
 
 before_script:
   - npm install
+  - npm install jshint
 
 script:
   - npm run lint
