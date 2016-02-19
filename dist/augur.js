@@ -67278,8 +67278,15 @@ Augur.prototype.checkPeriod = function (branch) {
     var periodsBehind = currentPeriod - period - 1;
     return periodsBehind;
 };
-Augur.prototype.getCurrentPeriod = function (branch) {
-    return parseInt(rpc.blockNumber()) / parseInt(this.getPeriodLength(branch));
+Augur.prototype.getCurrentPeriod = function (branch, callback) {
+    if (!callback) {
+        return rpc.blockNumber() / parseInt(this.getPeriodLength(branch));
+    }
+    this.getPeriodLength(branch, function (periodLength) {
+        rpc.blockNumber(function (blockNumber) {
+            callback(parseInt(blockNumber) / parseInt(periodLength));
+        });
+    });
 };
 Augur.prototype.getCurrentVotePeriod = function (branch, callback) {
     // branch: sha256
@@ -67984,12 +67991,10 @@ Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
     } else {
         priceMatched = currentPrice.gte(order.price);
     }
-    console.log("price matched:", priceMatched);
     if (priceMatched) {
         var trade;
         if (order.cap) {
             trade = this.orders.limit.fill(marketInfo, order);
-            console.log("trade:", trade);
         } else {
             trade = {order: order, amount: order.amount.toFixed(), filled: true};
         }
