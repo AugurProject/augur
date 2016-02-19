@@ -67023,7 +67023,6 @@ Augur.prototype.createEvent = function (branch, description, expDate, minValue, 
         maxValue,
         numOutcomes
     ];
-    console.log(tx)
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
