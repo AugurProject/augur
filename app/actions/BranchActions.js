@@ -57,50 +57,53 @@ module.exports = {
       }
 
       (function incrementPeriod() {
-        var isCurrent = reportPeriod < (currentPeriod - 1) ? false : true;
-        if (!isCurrent) {
-          var periodsBehind = currentPeriod - 1 - reportPeriod;
-          console.warn("branch", currentBranch.id, "behind", periodsBehind, "periods, incrementing period...");
-          self.flux.augur.incrementPeriod({
-            branchId: currentBranch.id,
-            onSent: function (result) {
-              console.log("incrementPeriod sent:", result);
-            },
-            onSuccess: function (result) {
-              self.flux.augur.getReportPeriod(currentBranch.id, function (reportPeriod) {
-                reportPeriod = parseInt(reportPeriod);
-                console.debug("incremented", currentBranch.id, "to period", reportPeriod);
-                isCurrent = reportPeriod < (currentPeriod - 1) ? false : true;
-                if (!isCurrent) return incrementPeriod();
-                console.debug("branch caught up!");
-                self.flux.augur.getCurrentPeriod(currentBranch.id, function (currentPeriod) {
-                  currentPeriod = Math.floor(currentPeriod);
-                  self.flux.augur.rpc.blockNumber(function (blockNumber) {
-                    var percentComplete = (blockNumber % currentBranch.periodLength) / currentBranch.periodLength * 100;
-                    var updatedBranch = _.merge(currentBranch, {
-                      currentPeriod: currentPeriod,
-                      reportPeriod: reportPeriod,
-                      isCurrent: isCurrent,
-                      percentComplete: percentComplete
+        self.flux.augur.getReportPeriod(currentBranch.id, function (reportPeriod) {
+          reportPeriod = parseInt(reportPeriod);
+          var isCurrent = reportPeriod < (currentPeriod - 1) ? false : true;
+          if (!isCurrent) {
+            var periodsBehind = currentPeriod - 1 - reportPeriod;
+            console.warn("branch", currentBranch.id, "behind", periodsBehind, "periods, incrementing period...");
+            self.flux.augur.incrementPeriod({
+              branchId: currentBranch.id,
+              onSent: function (result) {
+                console.log("incrementPeriod sent:", result);
+              },
+              onSuccess: function (result) {
+                self.flux.augur.getReportPeriod(currentBranch.id, function (reportPeriod) {
+                  reportPeriod = parseInt(reportPeriod);
+                  console.debug("incremented", currentBranch.id, "to period", reportPeriod);
+                  isCurrent = reportPeriod < (currentPeriod - 1) ? false : true;
+                  if (!isCurrent) return incrementPeriod();
+                  console.debug("branch caught up!");
+                  self.flux.augur.getCurrentPeriod(currentBranch.id, function (currentPeriod) {
+                    currentPeriod = Math.floor(currentPeriod);
+                    self.flux.augur.rpc.blockNumber(function (blockNumber) {
+                      var percentComplete = (blockNumber % currentBranch.periodLength) / currentBranch.periodLength * 100;
+                      var updatedBranch = _.merge(currentBranch, {
+                        currentPeriod: currentPeriod,
+                        reportPeriod: reportPeriod,
+                        isCurrent: isCurrent,
+                        percentComplete: percentComplete
+                      });
+                      self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, updatedBranch);
                     });
-                    self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, updatedBranch);
                   });
                 });
-              });
-            },
-            onFailed: function (err) {
-              console.log("incrementPeriod:", err);
-            }
-          });
-        } else {
-          var updatedBranch = _.merge(currentBranch, {
-            currentPeriod: currentPeriod,
-            reportPeriod: reportPeriod,
-            isCurrent: isCurrent,
-            percentComplete: percentComplete
-          });
-          self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, updatedBranch);
-        }
+              },
+              onFailed: function (err) {
+                console.log("incrementPeriod:", err);
+              }
+            });
+          } else {
+            var updatedBranch = _.merge(currentBranch, {
+              currentPeriod: currentPeriod,
+              reportPeriod: reportPeriod,
+              isCurrent: isCurrent,
+              percentComplete: percentComplete
+            });
+            self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, updatedBranch);
+          }
+        });
       })();
     });
   }
