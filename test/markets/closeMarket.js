@@ -67,7 +67,7 @@ before(function (done) {
                         if (DEBUG) console.log("Events in current period", currentPeriod, augur.getEvents(newBranchID, currentPeriod));
                         if (Number(currentPeriod) < startPeriod + 2 || Number(currentPeriod) >= startPeriod + 1) {
                             if (DEBUG) console.log("Difference", Number(currentPeriod) - startPeriod + ". Incrementing period...");
-                            augur.incrementPeriod(newBranchID, utils.noop, function (res) {
+                            augur.incrementPeriodAfterReporting(newBranchID, utils.noop, function (res) {
                                 assert.strictEqual(res.callReturn, "0x1");
                                 var period = parseInt(augur.getReportPeriod(newBranchID));
                                 if (DEBUG) console.log("Incremented reporting period to " + period + " (current period " + currentPeriod + ")");
@@ -283,7 +283,7 @@ describe("Close market", function () {
                 console.log("Current block:", blockNumber);
                 console.log("Incrementing period...");
             }
-            augur.incrementPeriod(newBranchID, utils.noop, function (res) {
+            augur.incrementPeriodAfterReporting(newBranchID, utils.noop, function (res) {
                 var period = parseInt(augur.getReportPeriod(newBranchID));
                 var currentPeriod = augur.getCurrentPeriod(newBranchID);
                 if (DEBUG) {

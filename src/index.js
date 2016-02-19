@@ -1444,8 +1444,8 @@ Augur.prototype.incrementPeriod = function (branchId, onSent, onSuccess, onFaile
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
 Augur.prototype.incrementPeriodAfterReporting = function (branch, onSent, onSuccess, onFailed) {
-    var tx = clone(this.tx.incrementPeriod);
-    var unpacked = this.utils.unpack(branchId, this.utils.labels(this.incrementPeriod), arguments);
+    var tx = clone(this.tx.incrementPeriodAfterReporting);
+    var unpacked = this.utils.unpack(branch, this.utils.labels(this.incrementPeriodAfterReporting), arguments);
     tx.params = unpacked.params;
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };

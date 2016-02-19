@@ -11,7 +11,7 @@ var madlibs = require("madlibs");
 var utils = require("../../src/utilities");
 var augur = utils.setup(require("../../src"), process.argv.slice(2));
 
-var DEBUG = false;
+var DEBUG = true;
 var branchID = augur.branches.dev;
 var accounts = utils.get_test_accounts(augur, augur.constants.MAX_TEST_ACCOUNTS);
 var suffix = Math.random().toString(36).substring(4);
@@ -174,7 +174,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
             if (DEBUG) console.log("Events in current period", currentPeriod, augur.getEvents(newBranchID, currentPeriod));
             if (Number(currentPeriod) < startPeriod + 2 || Number(currentPeriod) >= startPeriod + 1) {
                 if (DEBUG) console.log("Difference", Number(currentPeriod) - startPeriod + ". Incrementing period...");
-                augur.incrementPeriod(newBranchID, utils.noop, function (res) {
+                augur.incrementPeriodAfterReporting(newBranchID, utils.noop, function (res) {
                     assert.strictEqual(res.callReturn, "0x1");
                     var period = parseInt(augur.getReportPeriod(newBranchID));
                     if (DEBUG) console.log("Incremented reporting period to " + period + " (current period " + currentPeriod + ")");
