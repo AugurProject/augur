@@ -64879,8 +64879,6 @@ module.exports = function () {
  * Locally stored account info.
  */
 
-"use strict";
-
 var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 
 var clone = require("clone");
@@ -65019,8 +65017,6 @@ module.exports = {
 /**
  * Locally stored order book.
  */
-
-"use strict";
 
 var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 

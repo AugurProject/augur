@@ -9,7 +9,7 @@
     "debug": false,
     "devel": true,
     "es5": false,
-    "strict": true,
+    "strict": false,
     "boss": false,
     "laxbreak": false,
     "eqeqeq": false,

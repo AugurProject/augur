@@ -3,8 +3,6 @@
  * Locally stored order book.
  */
 
-"use strict";
-
 var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 
 var fzero = require("fzero");
