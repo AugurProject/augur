@@ -897,7 +897,7 @@ Augur.prototype.createBranch = function (description, periodLength, parent, trad
                 "0x2f0000000000000000",
                 periodLength,
                 parseInt(response.blockNumber),
-                parent,
+                abi.hex(parent),
                 parseInt(abi.fix(tradingFee, "hex")),
                 oracleOnly,
                 description
@@ -1093,6 +1093,7 @@ Augur.prototype.createEvent = function (branch, description, expDate, minValue, 
         maxValue,
         numOutcomes
     ];
+    console.log(tx)
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
