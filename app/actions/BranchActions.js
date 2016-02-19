@@ -63,8 +63,8 @@ module.exports = {
           if (!isCurrent) {
             var periodsBehind = currentPeriod - 1 - reportPeriod;
             console.warn("branch", currentBranch.id, "behind", periodsBehind, "periods, incrementing period...");
-            self.flux.augur.incrementPeriod({
-              branchId: currentBranch.id,
+            self.flux.augur.incrementPeriodAfterReporting({
+              branch: currentBranch.id,
               onSent: function (result) {
                 console.log("incrementPeriod sent:", result);
               },

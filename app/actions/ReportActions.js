@@ -73,8 +73,6 @@ module.exports = {
       this.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {
         eventsToReport: {}
       });
-      console.log("Incrementing period for branch", branch.id);
-      this.flux.augur.incrementPeriod(branch.id);
     }
     augur.getEvents(branch.id, branch.reportPeriod, function (eventIds) {
       if (!eventIds || eventIds.constructor !== Array || eventIds.error) {
