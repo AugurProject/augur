@@ -9,6 +9,13 @@ let Link = require("react-router/lib/components/Link");
 let OutcomeRow = require("./OutcomeRow");
 let utils = require("../../libs/utilities");
 
+let tour = new Shepherd.Tour({
+    defaults: {
+        classes: "shepherd-element shepherd-open shepherd-theme-arrows",
+        showCancelLink: true
+    }
+});
+
 let MarketRow = React.createClass({
 
     mixins: [FluxMixin, StoreWatchMixin("market")],
@@ -111,40 +118,30 @@ let MarketRow = React.createClass({
     componentDidMount() {
         var self = this;
 
-        if (!this.props.tour || localStorage.getItem("tour")) {
+        if (!this.props.tour || localStorage.getItem("tourMarketComplete") || localStorage.getItem("tourComplete")) {
             return;
         }
 
-        localStorage.setItem("tour", true);
+        localStorage.setItem("tourMarketComplete", true);
 
-        let outcomes = this.props.market.outcomes;
-        let numOutcomes = parseInt(this.props.market.numOutcomes);
-        let outcomeNames = new Array(numOutcomes);
-        let outcomeName;
-        for (var i = 0; i < numOutcomes; ++i) {
-            outcomeName = utils.getOutcomeName(outcomes[i].id, this.props.market);
-            outcomeNames[i] = outcomeName.outcome;
-        }
-        outcomes.reverse();
-        outcomeNames.reverse();
+        let outcomes = this.props.market.outcomes.slice().reverse();
+        let outcomeNames = utils.getOutcomeNames(this.props.market).slice().reverse();
 
-        let tour = new Shepherd.Tour({
-            defaults: {
-                classes: "shepherd-element shepherd-open shepherd-theme-arrows",
-                showCancelLink: true
-            }
+        Shepherd.once('cancel', () => {
+            console.log('**tourComplete');
+            localStorage.setItem("tourComplete", true);
         });
 
         // TODO add glowing border to current top market
         tour.addStep("markets-list", {
             title: "Welcome to Augur!",
-            text: "<p>On Augur, you can trade the probability of any real-world event happening.</p>"+
+            text: "<p>On Augur, you can trade the probability of any real-world event happening.<br /></p>"+
                 "<p>In this market, you are considering:<br /><br /><i>" + this.props.market.description + "</i></p>",
             attachTo: ".market-row .info .tour top",
             buttons: [{
-                text: "Exit Tour",
+                text: "Exit",
                 classes: "shepherd-button-secondary",
-                action: tour.back
+                action: tour.cancel
             }, {
                 text: "Next",
                 action: tour.next
@@ -153,11 +150,11 @@ let MarketRow = React.createClass({
 
         // TODO highlight outcome labels
         let outcomeList = "";
-        for (i = 0; i < numOutcomes; ++i) {
+        for (let i = 0; i < outcomeNames.length; ++i) {
             outcomeList += "<li>" + outcomeNames[i] + " has a probability of " + (parseFloat(outcomes[i].price) * 100).toFixed(2) + "%</li>";
         }
         tour.addStep("outcomes", {
-            text: "<p>This event has " + numOutcomes + " possible outcomes: " + outcomeNames.join(" or ") + "</p>" +
+            text: "<p>This event has " + outcomeNames.length + " possible outcomes: " + outcomeNames.join(" or ") + "</p>" +
                 "<p>According to the market:</p>"+
                 "<ul class='tour-outcome-list'>" + outcomeList + "</ul>",
             attachTo: ".outcomes right",
@@ -180,7 +177,7 @@ let MarketRow = React.createClass({
             buttons: [{
                 text: "Exit Tour",
                 classes: "shepherd-button-secondary",
-                action: tour.complete
+                action: tour.cancel
             }, {
                 text: "Back",
                 classes: "shepherd-button-secondary",
@@ -194,48 +191,21 @@ let MarketRow = React.createClass({
 
                 hide: function() {
                     let el = ReactDOM.findDOMNode(self.refs.tradeButton);
-                    el.className = el.className.replace(' btn-highlighted super-highlight', '');
+                    if (el) {
+                        el.className = el.className.replace(' btn-highlighted super-highlight', '');
+                    }
                 }
             },
             advanceOn: '.trade-button click'
         });
 
-        // highlight Yes price
-        let prices = [parseFloat(outcomes[0].price), parseFloat(outcomes[1].price)];
-        tour.addStep("outcome-price", {
-            title: "Market price",
-            text: "<p>The current price of " + outcomeNames[0] + " is " + prices[0].toFixed(4) + ".</p>"+
-                "<p>People are betting that there is a " + (prices[0] * 100).toFixed(2) + "% chance that the answer to</p>"+
-                "<p><i>" + this.props.market.description + "</i></p>"+
-                "<p>will be " + outcomeNames[0] + ".</p>"+
-                "<p>If you think they're wrong, then place a bet!</p>"+
-                "<p>If you're right, you'll make money, and this market's odds will be more accurate, too.</p>",
-            buttons: [{
-                text: "Next",
-                action: tour.next
-            }]
-        });
-
-        tour.addStep("buy-shares", {
-            title: "Do you agree with these probabilities?",
-            text: "<p>Do you think the chances of " + outcomeNames[0] + " are <i>higher</i> than " + (prices[0] * 100).toFixed(2) + "%?</p>"+
-                "<ul class='tour-outcome-list'><li>If so, <b>Buy</b> the " + outcomeNames[0] + " to trade on the " + outcomeNames[0] + " outcome.</li></ul>"+
-                "<p>Do you think the chances of " + outcomeNames[1] + " are <i>higher</i> than " + (prices[1] * 100).toFixed(2) + "%?</p>"+
-                "<ul class='tour-outcome-list'><li>If so, <b>Buy</b> the " + outcomeNames[1] + " to trade on the " + outcomeNames[1] + " outcome.</li></ul>"+
-                "<p>(You will need to sign in or run a local Ethereum node to place a bet!)</p>",
-            buttons: [{
-                text: "Back",
-                classes: "shepherd-button-secondary",
-                action: tour.back
-            }, {
-                text: "Done",
-                action: tour.next
-            }]
-        });
-
         setTimeout(() => tour.start(), 3000);
-    }
+    },
 
+    componentWillUnmount() {
+        tour.hide();
+        Shepherd.off();
+    }
 });
 
 module.exports = MarketRow;

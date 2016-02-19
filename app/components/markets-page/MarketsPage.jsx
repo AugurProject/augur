@@ -10,6 +10,7 @@ let Link = require("react-router/lib/components/Link");
 let Button = require("react-bootstrap/lib/Button");
 let constants = require("../../libs/constants");
 let MarketRow = require("./MarketRow");
+let utils = require("../../libs/utilities");
 
 let MarketsPage = React.createClass({
 
@@ -31,20 +32,13 @@ let MarketsPage = React.createClass({
         var currentBranch = flux.store("branch").getCurrentBranch();
         var account = flux.store("config").getAccount();
 
-        // pick a nice binary market for the new user tour...
-        for (var tourMarket in searchState.results) {
-            if (!searchState.results.hasOwnProperty(tourMarket)) continue;
-            if (!searchState.results[tourMarket].description.length) continue;
-            if (searchState.results[tourMarket].type === "binary") break;
-        }
-
         return {
             searchKeywords: searchState.keywords,
             markets: searchState.results,
             pendingMarkets: marketState.pendingMarkets,
             currentBranch: currentBranch,
             account: account,
-            tourMarket: abi.bignum(tourMarket)
+            tourMarketKey: abi.bignum(utils.getTourMarketKey(searchState.results))
         }
     },
 
@@ -117,17 +111,17 @@ let MarketsPage = React.createClass({
     render() {
         let flux = this.getFlux();
         let myOpenOrders = flux.augur.orders.get(flux.augur.from);
-        let tourMarket = this.state.tourMarket;
+        let tourMarketKey = this.state.tourMarketKey;
         let tourMarketId;
-        if (tourMarket) tourMarketId = this.state.markets[tourMarket]._id;
+        if (tourMarketKey) tourMarketId = this.state.markets[tourMarketKey]._id;
 
         let {markets, marketsCount, firstItemIndex, lastItemIndex} = this._getMarketsData();
 
         let tourMarketRow = <span />;
         if (tourMarketId) {
             tourMarketRow = <MarketRow
-                                key={tourMarket}
-                                market={this.state.markets[tourMarket]}
+                                key={tourMarketKey}
+                                market={this.state.markets[tourMarketKey]}
                                 tour={true}
                                 numOpenOrders={(myOpenOrders && tourMarketId && myOpenOrders[tourMarketId] && myOpenOrders[tourMarketId][1] && myOpenOrders[tourMarketId][1].length) || 0} />
         }
@@ -205,7 +199,7 @@ let MarketsPage = React.createClass({
                     <div className="col-xs-12">
                         {tourMarketRow}
                         {markets.map(market => {
-                            if (!tourMarket.eq(market.id)) {
+                            if (!tourMarketKey.eq(market.id)) {
                                 return (
                                     <MarketRow
                                         key={market.id}
