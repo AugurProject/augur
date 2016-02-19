@@ -358,7 +358,7 @@ module.exports = {
     });
   },
 
-  // @param {string} parent Hexadecimal string parent branch ID.
+  // @param {string|integer} parent Hexadecimal string parent branch ID.
   getReady: function (parent, periodLength, branchDescription, description, blocksUntilExpiration) {
     var self = this;
     var flux = this.flux;

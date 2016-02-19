@@ -206,6 +206,7 @@ test("ReportActions.getReady", function (t) {
         flux.register.READY = READY;
         t.end();
     };
+    flux.actions.branch.setCurrentBranch(flux.augur.branches.dev);
     flux.actions.report.getReady();
 });
 

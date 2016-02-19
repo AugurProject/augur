@@ -78,9 +78,7 @@ var ReportsPage = React.createClass({
                             // I'm not sure about the iteration
                             this.state.events.map(event => {
                                 let market = event.markets[0];
-                                if (market == null) {
-                                    return null;
-                                }
+                                if (!market) return null;
                                 return <MarketRow
                                     key={market.id}
                                     market={market}
@@ -99,8 +97,7 @@ var ReportsPage = React.createClass({
                                         commitPeriodEndMillis: 1000 + 1000,
                                         isConfirmed: false
                                         // values needed for expired period
-                                    }}
-                                    />;
+                                    }} />;
                             }, this)
                         }
                     </div>
