@@ -692,36 +692,6 @@ module.exports = function (network) {
             signature: "i",
             returns: "number"
         },
-        getStep: {
-            to: contracts.branches,
-            method: "getStep",
-            signature: "i",
-            returns: "number"
-        },
-        setStep: {
-            to: contracts.branches,
-            method: "setStep",
-            signature: "ii",
-            send: true
-        },
-        getSubstep: {
-            to: contracts.branches,
-            method: "getSubstep",
-            signature: "i",
-            returns: "number"
-        },
-        setSubstep: {
-            to: contracts.branches,
-            method: "setSubstep",
-            signature: "ii",
-            send: true
-        },
-        incrementSubstep: {
-            to: contracts.branches,
-            method: "incrementSubstep",
-            signature: "i",
-            send: true
-        },
         getNumMarketsBranch: {
             to: contracts.branches,
             method: "getNumMarketsBranch",
@@ -755,6 +725,16 @@ module.exports = function (network) {
             to: contracts.branches,
             method: "addMarket",
             signature: "ii",
+            returns: "number",
+            send: true
+        },
+
+        // consensus.se
+
+        incrementPeriodAfterReporting: {
+            to: contracts.consensus,
+            method: "incrementPeriodAfterReporting",
+            signature: "i",
             returns: "number",
             send: true
         },
@@ -67370,6 +67350,12 @@ Augur.prototype.getReporterPayouts = function (branch, reportPeriod, callback) {
     return this.fire(tx, callback);
 };
 Augur.prototype.incrementPeriod = function (branchId, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.incrementPeriod);
+    var unpacked = this.utils.unpack(branchId, this.utils.labels(this.incrementPeriod), arguments);
+    tx.params = unpacked.params;
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.incrementPeriodAfterReporting = function (branch, onSent, onSuccess, onFailed) {
     var tx = clone(this.tx.incrementPeriod);
     var unpacked = this.utils.unpack(branchId, this.utils.labels(this.incrementPeriod), arguments);
     tx.params = unpacked.params;

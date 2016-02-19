@@ -1443,6 +1443,12 @@ Augur.prototype.incrementPeriod = function (branchId, onSent, onSuccess, onFaile
     tx.params = unpacked.params;
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
+Augur.prototype.incrementPeriodAfterReporting = function (branch, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.incrementPeriod);
+    var unpacked = this.utils.unpack(branchId, this.utils.labels(this.incrementPeriod), arguments);
+    tx.params = unpacked.params;
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
 Augur.prototype.moveEventsToCurrentPeriod = function (branch, currentVotePeriod, currentPeriod, onSent, onSuccess, onFailed) {
     var tx = clone(this.tx.moveEventsToCurrentPeriod);
     tx.params = [branch, currentVotePeriod, currentPeriod];
