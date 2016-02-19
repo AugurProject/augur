@@ -362,7 +362,7 @@ module.exports = {
     var self = this;
     var flux = this.flux;
     var suffix = Math.random().toString(36).substring(4);
-    periodLength = periodLength || 75;
+    periodLength = periodLength || 100;
     branchDescription = branchDescription || suffix;
     blocksUntilExpiration = blocksUntilExpiration || 10;
     description = description || suffix;
@@ -420,7 +420,7 @@ module.exports = {
                           if (DEBUG) {
                             console.log("Difference", Number(currentPeriod) - startPeriod + ". Incrementing period...");
                           }
-                          flux.augur.incrementPeriod(branchID, flux.augur.utils.noop, function (res) {
+                          flux.augur.incrementPeriodAfterReporting(branchID, flux.augur.utils.noop, function (res) {
                             flux.actions.report.loadEventsToReport();
                             if (!DEBUG) return flux.actions.report.ready(branchID);
                             flux.augur.getReportPeriod(branchID, function (period) {
@@ -430,7 +430,7 @@ module.exports = {
                                 flux.augur.getEvents(branchID, period, function (events) {
                                   console.log("Incremented reporting period to " + period + " (current period " + currentPeriod + ")");
                                   console.log("Events in period", period, events);
-                                  console.log("Difference " + (Math.floor(currentPeriod) - period) + ": ready for report hash submission.");
+                                  console.log("Difference " + (currentPeriod - period) + ": ready for report hash submission.");
                                   flux.actions.report.ready(branchID);
                                 });
                               });
