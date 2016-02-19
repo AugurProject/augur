@@ -38,6 +38,23 @@ var ReportsPage = React.createClass({
     },
 
     render() {
+        let self = this;
+
+        let branchStore = this.getFlux().store('branch');
+        let isCommitPeriod = branchStore.isReportCommitPeriod(self.state.blockNumber);
+        let isRevealPeriod = !isCommitPeriod;
+
+        let events = _.filter(this.state.events, (event) => {
+            let query = this.props.query;
+            if (query.previous != null) {
+                return event.markets[0].matured;
+            } else if (query.committed != null) {
+                return isRevealPeriod;
+            } else {
+                return isCommitPeriod;
+            }
+        });
+
         return (
             <div>
                 <h1>
@@ -75,8 +92,7 @@ var ReportsPage = React.createClass({
                 <div className="row">
                     <div className="col-xs-12">
                         {
-                            // I'm not sure about the iteration
-                            this.state.events.map(event => {
+                            events.map(event => {
                                 let market = event.markets[0];
                                 if (!market) return null;
                                 return <MarketRow
@@ -84,16 +100,16 @@ var ReportsPage = React.createClass({
                                     market={market}
                                     report={{ // dummy data to present interface
                                         // general info about report
-                                        reportedOutcome: 1,
-                                        isUnethical: true,
+                                        reportedOutcome: event.report.reportedOutcome,
+                                        isUnethical: event.report.isUnethical,
 
                                         // values needed for filling period
-                                        isFillingPeriod: true,
+                                        isCommitPeriod,
                                         fillingPeriodEndMillis: 1000,
 
                                         // values needed for commit period
                                         confirmReport: this.confirmReport,
-                                        isCommitPeriod: false,
+                                        isRevealPeriod,
                                         commitPeriodEndMillis: 1000 + 1000,
                                         isConfirmed: false
                                         // values needed for expired period

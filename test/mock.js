@@ -147,8 +147,8 @@ var flux = {
         UPDATE_EVENT_TO_REPORT: function (payload) {
             flux.stores.report.handleUpdateEventToReport(payload);
         },
-        LOAD_REPORT_SUCCESS: function (payload) {
-            flux.stores.report.handleLoadReportSuccess(payload);
+        SAVE_REPORT_SUCCESS: function (payload) {
+            flux.stores.report.handleSaveReportSuccess(payload);
         },
         READY: function (payload) {
             flux.stores.report.handleReady(payload);

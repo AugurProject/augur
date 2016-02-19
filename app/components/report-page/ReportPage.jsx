@@ -20,55 +20,33 @@ var ReportPage = React.createClass({
       //this.getFlux().actions.report.loadReport(this.state.account, this.props.market.events[0].id);
     },
 
-    getInitialState() {
-        return {
-            isReportSummaryLoading: false,
-            reportedOutcome: null,
-            isUnethical: null
-        };
-    },
-
     getStateFromFlux() {
         var flux = this.getFlux();
+        let reportStore = flux.store('report');
 
-        let marketId = new BigNumber(this.props.params.marketId, 16);
-        let market = flux.store('market').getMarket(marketId);
+        let event = reportStore.getEvent(this.props.params.eventId);
+        let market, reportedOutcome, isUnethical;
+        if (event != null) {
+            market = flux.store('market').getMarket(new BigNumber(event.markets[0].id, 16));
+            reportedOutcome = event.report.reportedOutcome;
+            isUnethical = event.report.isUnethical;
+        }
         let account = flux.store('config').getAccount();
         let currentBranch = flux.store('branch').getCurrentBranch();
-        var state = {
+        let blockNumber = flux.store('network').getState().blockNumber;
+        let state = {
             account,
             market,
             currentBranch,
-            blockNumber: flux.store('network').getState().blockNumber
+            blockNumber: blockNumber,
+            reportedOutcome,
+            isUnethical
         };
 
-        let reportStore = flux.store('report');
         if (market != null) {
             if (currentBranch && market.tradingPeriod &&
                 currentBranch.currentPeriod >= market.tradingPeriod.toNumber()) {
                 market.matured = true;
-            }
-
-            let eventId = market.events[0].id; // not sure whether correct
-            let reportSummary = reportStore.getReportSummary(eventId);
-            if (reportSummary === undefined) {
-                // todo: when coming from reports page this.state is null, why?
-                if (!this.state.isReportSummaryLoading) {
-                    this.setState({
-                        isReportSummaryLoading: true
-                    });
-                    setTimeout(() => {
-                        // this is hack because I don't know when else to call it. see also componentDidMount()
-                        // without timeout:
-                        // Uncaught Error: Cannot dispatch an action ('LOAD_REPORT_SUCCESS') while another
-                        // action ('LOAD_MARKETS_SUCCESS') is being dispatched
-                        this.getFlux().actions.report.loadReport(account, eventId);
-                    }, 1);
-                }
-            } else {
-                state.reportedOutcome = reportSummary.reportedOutcome;
-                state.isUnethical = reportSummary.isUnethical;
-                state.reportHash = reportSummary.reportHash;
             }
         }
         if (state.currentBranch) {
@@ -96,7 +74,7 @@ var ReportPage = React.createClass({
 
         let augur = this.getFlux().augur;
 
-        let eventId = this.state.market.events[0].id;// is this right?
+        let eventId = this.props.params.eventId;
         let reportHash = augur.makeHash("salt", this.state.reportedOutcome, eventId);
 
         this.getFlux().actions.report.saveReport(
@@ -151,11 +129,10 @@ var ReportPage = React.createClass({
         }
 
         let blockNumber = this.state.blockNumber;
-        let periodLength = this.state.currentBranch.periodLength;
-        let isFillingPeriod = !market.matured && ((blockNumber % periodLength) < (periodLength / 2)),
-            isCommitPeriod = !market.matured && ((blockNumber % periodLength) >= (periodLength / 2));
+        let isReportCommitPeriod = this.getFlux().store('branch').isReportCommitPeriod(blockNumber),
+            isReportRevealPeriod = !isReportCommitPeriod;
 
-        if (isFillingPeriod) {
+        if (!market.matured && isReportCommitPeriod) {
             return (
                 <div>
                     <h1>
@@ -180,7 +157,7 @@ var ReportPage = React.createClass({
                         onHide={this.props.toggleReportSavedModal} />
                 </div>
             );
-        } else if (isCommitPeriod) {
+        } else if (!market.matured && isReportRevealPeriod) {
             if (this.state.reportedOutcome == null) {
                 // todo: what to do here?
                 return (
