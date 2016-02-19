@@ -362,7 +362,7 @@ module.exports = {
     var self = this;
     var flux = this.flux;
     var suffix = Math.random().toString(36).substring(4);
-    periodLength = periodLength || 50;
+    periodLength = periodLength || 100;
     branchDescription = branchDescription || suffix;
     blocksUntilExpiration = blocksUntilExpiration || 10;
     description = description || suffix;
@@ -416,8 +416,12 @@ module.exports = {
                       flux.augur.getCurrentPeriod(branchID, function (currentPeriod) {
                         currentPeriod = currentPeriod.toFixed(6);
                         if (DEBUG) {
-                          console.log("Events in start period", startPeriod, flux.augur.getEvents(branchID, startPeriod));
-                          console.log("Events in current period", currentPeriod, flux.augur.getEvents(branchID, currentPeriod));
+                          flux.augur.getEvents(branchID, startPeriod, function (events) {
+                            console.log("Events in start period", startPeriod, events);
+                            flux.augur.getEvents(branchID, currentPeriod, function (events) {
+                              console.log("Events in current period", currentPeriod, events);
+                            });
+                          });
                         }
                         if (Number(currentPeriod) < startPeriod + 2 || Number(currentPeriod) >= startPeriod + 1) {
                           if (DEBUG) {
@@ -425,12 +429,15 @@ module.exports = {
                           }
                           flux.augur.incrementPeriod(branchID, flux.augur.utils.noop, function (res) {
                             if (DEBUG) {
-                              var period = parseInt(flux.augur.getReportPeriod(branchID));
-                              var currentPeriod = flux.augur.getCurrentPeriod(branchID).toFixed(6);
-                              currentPeriod = Math.floor(currentPeriod).toString();
-                              console.log("Incremented reporting period to " + period + " (current period " + currentPeriod + ")");
-                              console.log("Events in new period", period, flux.augur.getEvents(branchID, period));
-                              console.log("Difference " + (Number(currentPeriod) - period) + ": ready for report hash submission.");
+                              flux.augur.getReportPeriod(branchID, function (period) {
+                                period = parseInt(period);
+                                flux.augur.getCurrentPeriod(branchID, function (currentPeriod) {
+                                  currentPeriod = currentPeriod.toFixed(6);
+                                  console.log("Incremented reporting period to " + period + " (current period " + currentPeriod + ")");
+                                  console.log("Events in period", period, flux.augur.getEvents(branchID, period));
+                                  console.log("Difference " + (Math.floor(currentPeriod) - period) + ": ready for report hash submission.");
+                                });
+                              });                              
                             }
                             flux.actions.report.loadEventsToReport();
                             flux.actions.report.ready(branchID);

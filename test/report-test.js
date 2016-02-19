@@ -212,6 +212,7 @@ test("ReportActions.getReady", function (t) {
 
 test("ReportActions.submitReportHash", function (t) {
     var UPDATE_PENDING_REPORTS = flux.register.UPDATE_PENDING_REPORTS;
+    var UPDATE_CURRENT_BRANCH_SUCCESS = flux.register.UPDATE_CURRENT_BRANCH_SUCCESS;
     flux.register.UPDATE_PENDING_REPORTS = function (payload) {
         if (DEBUG) console.log("UPDATE_PENDING_REPORTS:", payload);
         t.equal(payload.constructor, Object, "payload is an object");
@@ -221,18 +222,25 @@ test("ReportActions.submitReportHash", function (t) {
         flux.register.UPDATE_PENDING_REPORTS = UPDATE_PENDING_REPORTS;
         t.end();
     };
-    var branchID = flux.store("branch").getCurrentBranch().id;
-    console.log("branchID:", branchID);
-    var reportPeriod = flux.augur.getReportPeriod(branchID);
-    console.log("reportPeriod:", reportPeriod);
-    var reportedOutcome = "1";
-    var eventsToReport = flux.store("report").getState().eventsToReport;
-    console.log("eventsToReport:", eventsToReport);
-    for (var eventID in eventsToReport) {
-        if (!eventsToReport.hasOwnProperty(eventID)) continue;
-        console.log("Submit hash for event:", eventID);
-        flux.actions.report.submitReportHash(branchID, eventID, reportPeriod, reportedOutcome);
-    }
+    flux.register.UPDATE_CURRENT_BRANCH_SUCCESS = function (payload) {
+        var branchID = flux.store("branch").getCurrentBranch().id;
+        console.log("branchID:", branchID);
+        flux.actions.report.loadEventsToReport();
+        var reportPeriod = flux.augur.getReportPeriod(branchID);
+        console.log("reportPeriod:", reportPeriod);
+        var reportedOutcome = "1";
+        var eventsToReport = flux.store("report").getState().eventsToReport;
+        console.log("eventsToReport:", eventsToReport);
+        for (var eventID in eventsToReport) {
+            if (!eventsToReport.hasOwnProperty(eventID)) continue;
+            console.log("Submit hash for event:", eventID);
+            flux.actions.report.submitReportHash(branchID, eventID, reportPeriod, reportedOutcome);
+        }
+    };
+    flux.stores.network.state.blockNumber = flux.augur.rpc.blockNumber();
+    var branches = flux.augur.getBranches();
+    console.log("branches:", branches);
+    flux.actions.branch.setCurrentBranch(branches[branches.length - 1]);
 });
 
 test("ReportActions.submitQualifiedReports", function (t) {
