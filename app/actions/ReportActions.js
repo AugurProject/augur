@@ -6,7 +6,6 @@ var abi = require("augur-abi");
 var secureRandom = require("secure-random");
 var BigNumber = require("bignumber.js");
 var clone = require("clone");
-var madlibs = require("madlibs");
 if (typeof localStorage === "undefined" || localStorage === null) {
     var LocalStorage = require("node-localstorage").LocalStorage;
     localStorage = new LocalStorage("./scratch");
@@ -364,9 +363,9 @@ module.exports = {
     var flux = this.flux;
     var suffix = Math.random().toString(36).substring(4);
     periodLength = periodLength || 50;
-    branchDescription = branchDescription || madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
+    branchDescription = branchDescription || suffix;
     blocksUntilExpiration = blocksUntilExpiration || 10;
-    description = description || madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
+    description = description || suffix;
     parent = parent || flux.store("branch").getCurrentBranch().id;
     flux.actions.report.setupNewBranch(parent, branchDescription, periodLength, function (err, branchID) {
       if (err) return console.error("getReady.setupNewBranch:", err);
