@@ -23,7 +23,7 @@ let MarketRow = React.createClass({
         }
 
         let tableHeader, tableHeaderColSpan, content;
-        if (report.isFillingPeriod) {
+        if (report.isCommitPeriod) {
             tableHeaderColSpan = 2;
             let reportedOutcomeFmt;
 
@@ -47,7 +47,7 @@ let MarketRow = React.createClass({
                     </tr>
                 </tbody>
             );
-        } else if (report.isCommitPeriod) {
+        } else if (report.isRevealPeriod) {
             tableHeaderColSpan = 2;
             tableHeader = report.isConfirmed ? "Report confirmed" : "Please confirm report";
             content = (
@@ -136,13 +136,13 @@ let MarketRow = React.createClass({
      */
     getRowAction(market, report) {
         if (report != null) {
-            if (report.isFillingPeriod) {
+            if (report.isCommitPeriod) {
                 return (
-                    <Link className="btn btn-primary" to="report" params={{marketId: market.id.toString(16)}}>
+                    <Link className="btn btn-primary" to="report" params={{eventId: market.events[0].id.toString(16)}}>
                         Report
                     </Link>
                 );
-            } else if (report.isCommitPeriod) {
+            } else if (report.isRevealPeriod) {
                 if (!report.isConfirmed) {
                     return (
                         <button className="btn btn-primary" onClick={report.confirmReport}>
@@ -154,7 +154,7 @@ let MarketRow = React.createClass({
                 }
             } else {
                 return (
-                    <Link className="btn btn-primary" to="report" params={{marketId: market.id.toString(16)}}>
+                    <Link className="btn btn-primary" to="report" params={{eventId: market.events[0].id.toString(16)}}>
                         View Details
                     </Link>
                 );
@@ -172,10 +172,9 @@ let MarketRow = React.createClass({
         let endDateLabel = (market.endDate != null && market.matured) ? 'Matured' : 'End Date';
         let endDateFormatted = market.endDate != null ? moment(market.endDate).format('MMM Do, YYYY') : '-';
 
-        var report = this.props.report;
+        let report = this.props.report;
         let reportSection = this.getReportSection(report, market);
         let holdingsSection = this.getHoldingsSection(this.props.numOpenOrders);
-
         let rowAction = this.getRowAction(market, report);
 
         return (

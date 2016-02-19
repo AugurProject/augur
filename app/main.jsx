@@ -56,7 +56,7 @@ var routes = (
     <Route name="markets" path="/markets" handler={ MarketsPage } flux={ flux } title="Markets" />
     <Route name="market" path="/markets/:marketId" handler={ MarketPage } flux={ flux } />
     <Route name="reports" path="/reports" handler={ ReportsPage } flux={ flux } title="Reporting" />
-    <Route name="report" path="/reports/:marketId" handler={ ReportPage } flux={ flux } />
+    <Route name="report" path="/reports/:eventId" handler={ ReportPage } flux={ flux } />
     <Route name="portfolio" path="/portfolio" handler={Portfolio} flux={flux} title="Portfolio" />
   </Route>
 );

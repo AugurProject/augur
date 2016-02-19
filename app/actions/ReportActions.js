@@ -27,7 +27,7 @@ module.exports = {
     var key = constants.report.REPORTS_STORAGE + "-" + userAccount + "-" + eventId;
     var value = reportHash + "|" + reportedOutcome + "|" + isUnethical;
     localStorage.setItem(key, value);
-    this.dispatch(constants.report.LOAD_REPORT_SUCCESS, {
+    this.dispatch(constants.report.SAVE_REPORT_SUCCESS, {
       userAccount, eventId, reportHash, reportedOutcome, isUnethical
     });
   },
@@ -35,20 +35,19 @@ module.exports = {
   /**
    * Loads the report from local storage
    */
-  loadReport: function (userAccount, eventId) {
-    // console.log("loadReport: %o, %o", userAccount, eventId);
+  loadReportFromLs: function (eventId) {
+    var userAccount = this.flux.store("config").getAccount();
     var key = constants.report.REPORTS_STORAGE + "-" + userAccount + "-" + eventId;
     var value = localStorage.getItem(key);
-    if (value !== null) {
-      var reportItem = value.split("|");
-      var reportHash = reportItem[0];
-      var reportedOutcome = reportItem[1];
-      var isUnethical = reportItem[2];
-      isUnethical = isUnethical === "true";
-      this.dispatch(constants.report.LOAD_REPORT_SUCCESS, {
-        userAccount, eventId, reportHash, reportedOutcome, isUnethical
-      });
+    if (value == null) {
+      return {};
     }
+    var reportParts = value.split("|");
+    return {
+      reportHash: reportParts[0],
+      reportedOutcome: reportParts[1],
+      isUnethical: reportParts[2] === "true"
+    };
   },
 
   ready: function (branch) {
@@ -102,7 +101,8 @@ module.exports = {
             outcome: eventInfo[2],
             minValue: eventInfo[3],
             maxValue: eventInfo[4],
-            numOutcomes: parseInt(eventInfo[5])
+            numOutcomes: parseInt(eventInfo[5]),
+            report: self.loadReportFromLs(eventId)
           };
           augur.getDescription(eventId, function (description) {
             if (description && description.error) return nextEvent(description);

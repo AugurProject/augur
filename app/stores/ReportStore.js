@@ -16,8 +16,8 @@ module.exports = {
   getReport: function (branchId, reportPeriod) {
     return _.findWhere(this.getState().pendingReports, {branchId, reportPeriod});
   },
-  getReportSummary: function (eventId) {
-    return this.state.reportSummaries[eventId];
+  getEvent: function (eventId) {
+    return this.state.eventsToReport[eventId];
   },
   handleLoadEventsToReportSuccess: function (payload) {
     this.state.eventsToReport = payload.eventsToReport;
@@ -31,13 +31,14 @@ module.exports = {
     this.state.eventsToReport[payload.id] = _.merge(this.state.eventsToReport[payload.id], payload);
     this.emit(constants.CHANGE_EVENT);
   },
-  handleLoadReportSuccess: function (payload) {
-    // console.log("handleLoadReportSuccess %o", payload);
-    this.state.reportSummaries[payload.eventId] = {
+  handleSaveReportSuccess: function (payload) {
+    var event = this.state.eventsToReport[payload.id];
+    event.report = {
       reportHash: payload.reportHash,
       reportedOutcome: payload.reportedOutcome,
       isUnethical: payload.isUnethical
     };
+    this.state.eventsToReport[payload.id] = event;
     this.emit(constants.CHANGE_EVENT);
   },
   // payload: {branch}
