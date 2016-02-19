@@ -42,7 +42,7 @@ module.exports = {
   },
   // payload: {branch}
   handleReady: function (payload) {
-    this.state.ready = payload.branch;
+    this.state.ready.push(payload.branch);
     this.emit(constants.CHANGE_EVENT);
   }
 };

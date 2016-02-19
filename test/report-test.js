@@ -189,7 +189,7 @@ test("ReportActions.loadPendingReports", function (t) {
     flux.actions.report.loadPendingReports();
 });
 
-test("ReportActions.ready", function (t) {
+test("ReportActions.getReady", function (t) {
     flux = reset(flux);
     var READY = flux.register.READY;
     flux.register.READY = function (payload) {
@@ -197,6 +197,7 @@ test("ReportActions.ready", function (t) {
         t.equal(payload.branch.constructor, String, "payload.branch is a string");
         READY(payload);
         t.pass("dispatch READY");
+        console.log(flux.store("report").getState());
         var storedReady = flux.store("report").getState().ready;
         t.equal(storedReady.constructor, Array, "stores.report.state.ready is an array");
         t.equal(storedReady.length, 1, "stores.report.state.ready.length == 1");
@@ -205,7 +206,7 @@ test("ReportActions.ready", function (t) {
         flux.register.READY = READY;
         t.end();
     };
-    tools.getReady(flux);
+    flux.actions.report.getReady();
 });
 
 test("ReportActions.submitReportHash", function (t) {
@@ -220,13 +221,20 @@ test("ReportActions.submitReportHash", function (t) {
         t.end();
     };
     var branchID = flux.store("branch").getCurrentBranch().id;
+    console.log("branchID:", branchID);
     var reportPeriod = flux.augur.getReportPeriod(branchID);
+    console.log("reportPeriod:", reportPeriod);
     var reportedOutcome = "1";
-    flux.actions.report.submitReportHash(branchID, reportPeriod, reportedOutcome);
+    var eventsToReport = flux.store("report").getState().eventsToReport;
+    console.log("eventsToReport:", eventsToReport);
+    for (var eventID in eventsToReport) {
+        if (!eventsToReport.hasOwnProperty(eventID)) continue;
+        console.log("Submit hash for event:", eventID);
+        flux.actions.report.submitReportHash(branchID, eventID, reportPeriod, reportedOutcome);
+    }
 });
 
 test("ReportActions.submitQualifiedReports", function (t) {
-    flux = reset(flux);
     var checkbox = {loadPendingReportsSuccess: false, submitQualifiedReports: false};
     var LOAD_PENDING_REPORTS_SUCCESS = flux.register.LOAD_PENDING_REPORTS_SUCCESS;
     flux.register.LOAD_PENDING_REPORTS_SUCCESS = function (payload) {
