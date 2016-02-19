@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "secure": "node server.js -s",
-    "test": "./node_modules/tape/bin/tape ./test/*-test.js | ./node_modules/tap-spec/bin/cmd.js",
+    "test": "./node_modules/tape/bin/tape ./test/*.js | ./node_modules/tap-spec/bin/cmd.js",
     "lint": "jshint ./app/stores/*.js && jshint ./app/actions/*.js && jshint ./app/libs/blacklist.js && jshint ./app/libs/constants.js && jshint ./app/libs/utilities.js && jshint ./app/libs/identicon.js",
     "coverage": "istanbul cover ./node_modules/tape/bin/tape --report lcovonly -- ./test/*.js && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },

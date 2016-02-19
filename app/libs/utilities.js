@@ -93,11 +93,9 @@ module.exports = {
         console.warn("Choices not found for market", market._id, ".  Using outcome ID", id, "instead of outcome text.");
       }
       return {type: "categorical", outcome: id};
-      break;
     case "scalar":
       if (id === NO) return {type: "scalar", outcome: "⇩"};
       return {type: "scalar", outcome: "⇧"};
-      break;
     case "binary":
       if (id === NO) return {type: "binary", outcome: "No"};
       return {type: "binary", outcome: "Yes"};

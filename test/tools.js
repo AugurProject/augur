@@ -5,10 +5,10 @@ var utils = require("../app/libs/utilities");
 
 module.exports = {
 
-    parseMarketInfo: function (info, blockNumber) {
+    parseMarketInfo: function (info, blockNumber, account) {
         info.id = new BigNumber(info._id);
         info.endDate = utils.blockToDate(info.endDate, blockNumber);
-        info.creationBlock = utils.blockToDate(info.creationBlock, blockNumber)
+        info.creationBlock = utils.blockToDate(info.creationBlock, blockNumber);
         info.price = new BigNumber(info.price);
         info.tradingFee = new BigNumber(info.tradingFee);
         info.creationFee = new BigNumber(info.creationFee);

@@ -1,3 +1,5 @@
+/* global localStorage:true */
+
 "use strict";
 
 var _ = require("lodash");
@@ -209,16 +211,16 @@ module.exports = {
         var reportingStartBlock = (report.reportPeriod + 1) * periodLength;
         var reportingCurrentBlock = currentBlock - reportingStartBlock;
         if (reportingCurrentBlock > (periodLength / 2)) {
-          console.log("Submitting report for period", report.reportPeriod);
-          self.flux.augur.getEventIndex(reportPeriod, eventId, function (eventIndex) {
+          console.log("Submitting report:", report);
+          self.flux.augur.getEventIndex(report.reportPeriod, report.eventId, function (eventIndex) {
             self.flux.augur.submitReport({
-              branch: branchId,
-              reportPeriod: reportPeriod,
+              branch: report.branchId,
+              reportPeriod: report.reportPeriod,
               eventIndex: eventIndex,
-              salt: salt,
-              report: report,
-              eventID: eventId,
-              ethics: ethics,
+              salt: report.salt,
+              report: report.report,
+              eventID: report.eventId,
+              ethics: report.ethics,
               onSent: function (res) {
                 console.log("submitReport sent:", res);
               },
@@ -456,7 +458,7 @@ module.exports = {
           var blocksToGo = periodLength - (blockNumber % periodLength);
           if (DEBUG) {
               console.log("Current block:", blockNumber);
-              console.log("Next period starts at block", blockNumber + blocksToGo, "(" + blocksToGo + " to go)")
+              console.log("Next period starts at block", blockNumber + blocksToGo, "(" + blocksToGo + " to go)");
           }
           if (blocksToGo > blocksUntilExpiration) return createEvent(blockNumber);
           if (DEBUG) console.log("Waiting", blocksToGo, "blocks...");
