@@ -61,7 +61,7 @@ module.exports = {
   loadEventsToReport: function () {
     var self = this;
     var augur = this.flux.augur;
-    var branch = this.flux.store("branch").getState().currentBranch;
+    var branch = this.flux.store("branch").getCurrentBranch();
 
     // Only load events if the vote period indicated by the chain is the
     // previous period. (Otherwise, incrementPeriod needs to be run.)
