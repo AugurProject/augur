@@ -66302,71 +66302,71 @@ Augur.prototype.getEventIndex = function (period, eventID, callback) {
     tx.params = [period, eventID];
     return this.fire(tx, callback);
 };
-Augur.prototype.getEvents = function (branch, votePeriod, callback) {
+Augur.prototype.getEvents = function (branch, reportPeriod, callback) {
     // branch: sha256 hash id
-    // votePeriod: integer
+    // reportPeriod: integer
     var tx = clone(this.tx.getEvents);
-    tx.params = [branch, votePeriod];
+    tx.params = [branch, reportPeriod];
     return this.fire(tx, callback);
 };
-Augur.prototype.getNumberEvents = function (branch, votePeriod, callback) {
+Augur.prototype.getNumberEvents = function (branch, reportPeriod, callback) {
     // branch: sha256
-    // votePeriod: integer
+    // reportPeriod: integer
     var tx = clone(this.tx.getNumberEvents);
-    tx.params = [branch, votePeriod];
+    tx.params = [branch, reportPeriod];
     return this.fire(tx, callback);
 };
-Augur.prototype.getEvent = function (branch, votePeriod, eventIndex, callback) {
+Augur.prototype.getEvent = function (branch, reportPeriod, eventIndex, callback) {
     // branch: sha256
-    // votePeriod: integer
+    // reportPeriod: integer
     var tx = clone(this.tx.getEvent);
-    tx.params = [branch, votePeriod, eventIndex];
+    tx.params = [branch, reportPeriod, eventIndex];
     return this.fire(tx, callback);
 };
-Augur.prototype.getTotalRepReported = function (branch, votePeriod, callback) {
+Augur.prototype.getTotalRepReported = function (branch, reportPeriod, callback) {
     // branch: sha256
-    // votePeriod: integer
+    // reportPeriod: integer
     var tx = clone(this.tx.getTotalRepReported);
-    tx.params = [branch, votePeriod];
+    tx.params = [branch, reportPeriod];
     return this.fire(tx, callback);
 };
-Augur.prototype.getReporterBallot = function (branch, votePeriod, reporterID, callback) {
+Augur.prototype.getReporterBallot = function (branch, reportPeriod, reporterID, callback) {
     // branch: sha256
-    // votePeriod: integer
+    // reportPeriod: integer
     var tx = clone(this.tx.getReporterBallot);
-    tx.params = [branch, votePeriod, reporterID];
+    tx.params = [branch, reportPeriod, reporterID];
     if (!this.utils.is_function(callback)) {
         var reporterBallot = this.fire(tx);
         if (reporterBallot && reporterBallot.error) return reporterBallot;
-        return reporterBallot.slice(0, this.getNumberEvents(branch, votePeriod));
+        return reporterBallot.slice(0, this.getNumberEvents(branch, reportPeriod));
     }
     this.fire(tx, function (reporterBallot) {
         if (reporterBallot && reporterBallot.error) return callback(reporterBallot);
-        this.getNumberEvents(branch, votePeriod, function (numberEvents) {
+        this.getNumberEvents(branch, reportPeriod, function (numberEvents) {
             if (numberEvents && numberEvents.error) return callback(numberEvents);
             callback(reporterBallot.slice(0, numberEvents));
         });
     });
 };
-Augur.prototype.getReport = function (branch, votePeriod, reporter, reportNum, callback) {
+Augur.prototype.getReport = function (branch, reportPeriod, reporter, reportNum, callback) {
     // branch: sha256
-    // votePeriod: integer
+    // reportPeriod: integer
     var tx = clone(this.tx.getReport);
-    tx.params = [branch, votePeriod, reporter, reportNum];
+    tx.params = [branch, reportPeriod, reporter, reportNum];
     return this.fire(tx, callback);
 };
-Augur.prototype.getReportHash = function (branch, votePeriod, reporter, callback) {
+Augur.prototype.getReportHash = function (branch, reportPeriod, reporter, callback) {
     // branch: sha256
-    // votePeriod: integer
+    // reportPeriod: integer
     var tx = clone(this.tx.getReportHash);
-    tx.params = [branch, votePeriod, reporter];
+    tx.params = [branch, reportPeriod, reporter];
     return this.fire(tx, callback);
 };
-Augur.prototype.getTotalReputation = function (branch, votePeriod, callback) {
+Augur.prototype.getTotalReputation = function (branch, reportPeriod, callback) {
     // branch: sha256
-    // votePeriod: integer
+    // reportPeriod: integer
     var tx = clone(this.tx.getTotalReputation);
-    tx.params = [branch, votePeriod];
+    tx.params = [branch, reportPeriod];
     return this.fire(tx, callback);
 };
 
@@ -66894,27 +66894,30 @@ Augur.prototype.makeHash = function (salt, report, event, from, isScalar) {
         event
     ]));
 };
-Augur.prototype.makeHash_contract = function (salt, report, event, callback) {
+Augur.prototype.makeHash_contract = function (salt, report, event, isScalar, callback) {
     if (salt.constructor === Object && salt.salt) {
         report = salt.report;
         event = salt.event;
         if (salt.callback) callback = salt.callback;
         salt = salt.salt;
     }
+    var fixedReport = (isScalar) ?
+        abi.hex(abi.fix(report).plus(new BigNumber(1))) :
+        abi.fix(report, "hex");
     var tx = clone(this.tx.makeHash);
-    tx.params = [abi.hex(salt), abi.fix(report, "hex"), event];
+    tx.params = [abi.hex(salt), fixedReport, event];
     return this.fire(tx, callback);
 };
-Augur.prototype.calculateReportingThreshold = function (branch, eventID, votePeriod, callback) {
+Augur.prototype.calculateReportingThreshold = function (branch, eventID, reportPeriod, callback) {
     var tx = clone(this.tx.calculateReportingThreshold);
-    tx.params = [branch, eventID, votePeriod];
+    tx.params = [branch, eventID, reportPeriod];
     return this.fire(tx, callback);
 };
-Augur.prototype.submitReportHash = function (branch, reportHash, votePeriod, eventID, eventIndex, onSent, onSuccess, onFailed) {
+Augur.prototype.submitReportHash = function (branch, reportHash, reportPeriod, eventID, eventIndex, onSent, onSuccess, onFailed) {
     var self = this;
     if (branch.constructor === Object && branch.branch) {
         reportHash = branch.reportHash;
-        votePeriod = branch.votePeriod || branch.reportPeriod;
+        reportPeriod = branch.reportPeriod || branch.votePeriod;
         eventID = branch.eventID;
         eventIndex = branch.eventIndex;
         if (branch.onSent) onSent = branch.onSent;
@@ -66927,25 +66930,26 @@ Augur.prototype.submitReportHash = function (branch, reportHash, votePeriod, eve
     onFailed = onFailed || this.utils.pass;
     var tx = clone(this.tx.submitReportHash);
     if (eventIndex) {
-        tx.params = [branch, reportHash, votePeriod, eventID, eventIndex];
+        tx.params = [branch, reportHash, reportPeriod, eventID, eventIndex];
         return this.transact(tx, onSent, onSuccess, onFailed);
     }
-    this.getEventIndex(votePeriod, eventID, function (eventIndex) {
+    this.getEventIndex(reportPeriod, eventID, function (eventIndex) {
         if (!eventIndex) return onFailed("couldn't get event index for " + eventID);
         if (eventIndex.error) return onFailed(eventIndex);
-        tx.params = [branch, reportHash, votePeriod, eventID, eventIndex];
+        tx.params = [branch, reportHash, reportPeriod, eventID, eventIndex];
         self.transact(tx, onSent, onSuccess, onFailed);
     });
 };
-Augur.prototype.submitReport = function (branch, votePeriod, eventIndex, salt, report, eventID, ethics, onSent, onSuccess, onFailed) {
+Augur.prototype.submitReport = function (branch, reportPeriod, eventIndex, salt, report, eventID, ethics, isScalar, onSent, onSuccess, onFailed) {
     var self = this;
     if (branch.constructor === Object && branch.branch) {
-        votePeriod = branch.votePeriod || branch.reportPeriod;
+        reportPeriod = branch.reportPeriod || branch.votePeriod;
         eventIndex = branch.eventIndex;
         salt = branch.salt;
         report = branch.report;
         eventID = branch.eventID;
         ethics = branch.ethics;
+        isScalar = branch.isScalar;
         if (branch.onSent) onSent = branch.onSent;
         if (branch.onSuccess) onSuccess = branch.onSuccess;
         if (branch.onFailed) onFailed = branch.onFailed;
@@ -66954,42 +66958,45 @@ Augur.prototype.submitReport = function (branch, votePeriod, eventIndex, salt, r
     onSent = onSent || this.utils.pass;
     onSuccess = onSuccess || this.utils.pass;
     onFailed = onFailed || this.utils.pass;
+    var fixedReport = (isScalar) ?
+        abi.hex(abi.fix(report).plus(new BigNumber(1))) :
+        abi.fix(report, "hex");
     var tx = clone(this.tx.submitReport);
     if (eventIndex) {
         tx.params = [
             branch,
-            votePeriod,
+            reportPeriod,
             eventIndex,
             abi.hex(salt),
-            abi.fix(report, "hex"),
+            fixedReport,
             eventID,
             abi.fix(ethics, "hex")
         ];
         return this.transact(tx, onSent, onSuccess, onFailed);
     }
-    this.getEventIndex(votePeriod, eventID, function (eventIndex) {
+    this.getEventIndex(reportPeriod, eventID, function (eventIndex) {
         if (!eventIndex) return onFailed("couldn't get event index for " + eventID);
         if (eventIndex.error) return onFailed(eventIndex);
         tx.params = [
             branch,
-            votePeriod,
+            reportPeriod,
             eventIndex,
             abi.hex(salt),
-            abi.fix(report, "hex"),
+            fixedReport,
             eventID,
             abi.fix(ethics, "hex")
         ];
         self.transact(tx, onSent, onSuccess, onFailed);
     });
 };
-Augur.prototype.checkReportValidity = function (branch, report, votePeriod, callback) {
+Augur.prototype.checkReportValidity = function (branch, report, reportPeriod, callback) {
     var tx = clone(this.tx.checkReportValidity);
-    tx.params = [branch, abi.fix(report, "hex"), votePeriod];
+    tx.params = [branch, abi.fix(report, "hex"), reportPeriod];
     return this.fire(tx, callback);
 };
-Augur.prototype.slashRep = function (branch, votePeriod, salt, report, reporter, onSent, onSuccess, onFailed) {
+Augur.prototype.slashRep = function (branch, reportPeriod, salt, report, reporter, onSent, onSuccess, onFailed) {
     if (branch.constructor === Object && branch.branchId) {
-        votePeriod = branch.votePeriod || branch.reportPeriod;
+        reportPeriod = branch.reportPeriod || branch.votePeriod;
         salt = branch.salt;
         report = branch.report;
         reporter = branch.reporter;
@@ -66999,7 +67006,7 @@ Augur.prototype.slashRep = function (branch, votePeriod, salt, report, reporter,
         branch = branch.branchId;
     }
     var tx = clone(this.tx.slashRep);
-    tx.params = [branch, votePeriod, salt, abi.fix(report, "hex"), reporter];
+    tx.params = [branch, reportPeriod, salt, abi.fix(report, "hex"), reporter];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 

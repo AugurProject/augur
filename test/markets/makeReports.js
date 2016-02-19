@@ -24,8 +24,8 @@ var eventID, newBranchID, marketID;
 describe("makeReports.makeHash", function () {
     var test = function (t) {
         it("salt=" + t.salt + ", report=" + t.report + ", eventID=" + t.eventID, function () {
-            var localHash = augur.makeHash(t.salt, t.report, t.eventID);
-            var contractHash = augur.makeHash_contract(t.salt, t.report, t.eventID);
+            var localHash = augur.makeHash(t.salt, t.report, t.eventID, null, t.isScalar);
+            var contractHash = augur.makeHash_contract(t.salt, t.report, t.eventID, t.isScalar);
             assert.strictEqual(localHash, contractHash);
         });
     };
@@ -39,6 +39,12 @@ describe("makeReports.makeHash", function () {
             salt: abi.prefix_hex(utils.sha256(Math.random().toString())),
             report: Math.round(Math.random() * 50),
             eventID: abi.prefix_hex(utils.sha256(Math.random().toString()))
+        });
+        test({
+            salt: abi.prefix_hex(utils.sha256(Math.random().toString())),
+            report: Math.round(Math.random() * 50),
+            eventID: abi.prefix_hex(utils.sha256(Math.random().toString())),
+            isScalar: true
         });
     }
 });
@@ -180,9 +186,9 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                     var diceroll = augur.rpc.sha3(abi.hex(abi.bignum(augur.from).plus(abi.bignum(eventID))));
                     var threshold = augur.calculateReportingThreshold(newBranchID, eventID, period);
                     var blockNumber = augur.rpc.blockNumber();
-                    console.log("Residual:", blockNumber % periodLength);
+                    if (DEBUG) console.log("Residual:", blockNumber % periodLength);
                     var currentExpPeriod = blockNumber / periodLength;
-                    console.log("currentExpPeriod:", currentExpPeriod, currentExpPeriod >= (period+2), currentExpPeriod < (period+1));
+                    if (DEBUG) console.log("currentExpPeriod:", currentExpPeriod, currentExpPeriod >= (period+2), currentExpPeriod < (period+1));
                     assert.isTrue(currentExpPeriod >= period + 1);
                     assert.isBelow(currentExpPeriod, period + 2);
                     if (abi.bignum(diceroll).lt(abi.bignum(threshold))) {
