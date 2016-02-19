@@ -1,6 +1,9 @@
-/********************************
- * Locally stored account info. *
- ********************************/
+/* global localStorage:true */
+/**
+ * Locally stored account info.
+ */
+
+"use strict";
 
 var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 
@@ -101,7 +104,7 @@ module.exports = {
     },
 
     putPersistent: function (data) {
-        if (!data || !data.privateKey) return error.DB_WRITE_FAILED;
+        if (!data || !data.privateKey) return errors.DB_WRITE_FAILED;
         var persist = abi.copy(data);
         if (Buffer.isBuffer(data.privateKey)) {
             persist.privateKey = abi.hex(data.privateKey, true);

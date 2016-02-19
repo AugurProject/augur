@@ -64874,9 +64874,12 @@ module.exports = function () {
 }).call(this,require("buffer").Buffer)
 },{"../constants":331,"../utilities":334,"augur-abi":7,"augur-contracts":3,"bignumber.js":8,"buffer":256,"clone":268,"ethereumjs-tx":270,"keythereum":471,"node-uuid":325}],329:[function(require,module,exports){
 (function (process,Buffer){
-/********************************
- * Locally stored account info. *
- ********************************/
+/* global localStorage:true */
+/**
+ * Locally stored account info.
+ */
+
+"use strict";
 
 var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 
@@ -64977,7 +64980,7 @@ module.exports = {
     },
 
     putPersistent: function (data) {
-        if (!data || !data.privateKey) return error.DB_WRITE_FAILED;
+        if (!data || !data.privateKey) return errors.DB_WRITE_FAILED;
         var persist = abi.copy(data);
         if (Buffer.isBuffer(data.privateKey)) {
             persist.privateKey = abi.hex(data.privateKey, true);
@@ -65012,9 +65015,12 @@ module.exports = {
 }).call(this,require('_process'),require("buffer").Buffer)
 },{"../constants":331,"../utilities":334,"_process":223,"augur-abi":7,"augur-contracts":3,"buffer":256,"clone":268,"keythereum":471,"node-localstorage":324}],330:[function(require,module,exports){
 (function (process){
-/******************************
- * Locally stored order book. *
- ******************************/
+/* global localStorage:true */
+/**
+ * Locally stored order book.
+ */
+
+"use strict";
 
 var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 
