@@ -415,14 +415,6 @@ module.exports = {
                       startPeriod = parseInt(startPeriod);
                       flux.augur.getCurrentPeriod(branchID, function (currentPeriod) {
                         currentPeriod = currentPeriod.toFixed(6);
-                        if (DEBUG) {
-                          flux.augur.getEvents(branchID, startPeriod, function (events) {
-                            console.log("Events in start period", startPeriod, events);
-                            flux.augur.getEvents(branchID, currentPeriod, function (events) {
-                              console.log("Events in current period", currentPeriod, events);
-                            });
-                          });
-                        }
                         if (Number(currentPeriod) < startPeriod + 2 || Number(currentPeriod) >= startPeriod + 1) {
                           if (DEBUG) {
                             console.log("Difference", Number(currentPeriod) - startPeriod + ". Incrementing period...");
@@ -433,14 +425,19 @@ module.exports = {
                                 period = parseInt(period);
                                 flux.augur.getCurrentPeriod(branchID, function (currentPeriod) {
                                   currentPeriod = currentPeriod.toFixed(6);
-                                  console.log("Incremented reporting period to " + period + " (current period " + currentPeriod + ")");
-                                  console.log("Events in period", period, flux.augur.getEvents(branchID, period));
-                                  console.log("Difference " + (Math.floor(currentPeriod) - period) + ": ready for report hash submission.");
+                                  flux.augur.getEvents(branchID, period, function (events) {
+                                    console.log("Incremented reporting period to " + period + " (current period " + currentPeriod + ")");
+                                    console.log("Events in period", period, events);
+                                    console.log("Difference " + (Math.floor(currentPeriod) - period) + ": ready for report hash submission.");
+                                    flux.actions.report.loadEventsToReport();
+                                    flux.actions.report.ready(branchID);
+                                  });
                                 });
                               });                              
+                            } else {
+                              flux.actions.report.loadEventsToReport();
+                              flux.actions.report.ready(branchID);
                             }
-                            flux.actions.report.loadEventsToReport();
-                            flux.actions.report.ready(branchID);
                           }, function (err) {
                             console.error("getReady.incrementPeriod:", err);
                           });
