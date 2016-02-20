@@ -16,7 +16,7 @@ var utils = require("../libs/utilities");
 var constants = require("../libs/constants");
 var DEBUG = true;
 
-module.exports = {
+var ReportActions = {
   /**
    * Saves the report to local storage for later use.
    * (localStorage is used so that the reports will be stored in the browser
@@ -81,11 +81,11 @@ module.exports = {
 
       // initialize all events
       var eventsToReport = {};
-      // _.each(eventIds, function (id) { eventsToReport[id] = {id: id}; });
       async.each(eventIds, function (eventId, nextEvent) {
         augur.getEventInfo(eventId, function (eventInfo) {
           if (!eventInfo) return nextEvent("couldn't get event info");
           if (eventInfo.error) return nextEvent(eventInfo);
+          var storedReport = self.flux.actions.report.loadReportFromLs(eventId);
           eventsToReport[eventId] = {
             id: eventId,
             branchId: eventInfo[0],
@@ -94,9 +94,10 @@ module.exports = {
             minValue: eventInfo[3],
             maxValue: eventInfo[4],
             numOutcomes: parseInt(eventInfo[5]),
-            report: self.flux.actions.report.loadReportFromLs(eventId),
+            report: storedReport,
             markets: []
           };
+          console.log("report from localstorage:", storedReport);
           augur.getDescription(eventId, function (description) {
             if (description && description.error) return nextEvent(description);
             eventsToReport[eventId].description = description;
@@ -505,3 +506,5 @@ module.exports = {
   }
 
 };
+
+module.exports = ReportActions;

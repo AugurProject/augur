@@ -71,7 +71,8 @@ module.exports = {
     var account = self.flux.store('config').getAccount();
     var branchId = self.flux.store('branch').getCurrentBranch().id;
     var blackmarkets = blacklist.markets[this.flux.augur.network_id][branchId];
-    if (marketInfo && abi.bignum(marketInfo.branchId).eq(abi.bignum(branchId)) &&
+    if (marketInfo && marketInfo.branchId &&
+        abi.bignum(marketInfo.branchId).eq(abi.bignum(branchId)) &&
         !_.contains(blackmarkets, marketId.toString(16)) &&
         !marketInfo.invalid && marketInfo.price && marketInfo.description) {
       marketInfo.id = marketId;

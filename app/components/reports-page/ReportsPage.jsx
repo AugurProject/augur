@@ -15,22 +15,21 @@ let ReportsPage = React.createClass({
 
     getStateFromFlux() {
         let flux = this.getFlux();
-
+        let blockNumber = flux.store("network").getState().blockNumber;
         let state = {
             account: flux.store("config").getAccount(),
             asset: flux.store("asset").getState(),
-            blockNumber: flux.store("network").getState().blockNumber,
+            blockNumber: blockNumber,
             currentBranch: flux.store("branch").getCurrentBranch(),
-            events: flux.store("report").getState().eventsToReport
+            events: flux.store("report").getState().eventsToReport,
+            isCommitPeriod: flux.store("branch").isReportCommitPeriod(blockNumber)
         };
-
-        if (state.currentBranch) {
+        if (state.currentBranch && state.currentBranch.id) {
             state.report = flux.store("report").getReport(
                 state.currentBranch.id,
                 state.currentBranch.reportPeriod
             );
         }
-
         return state;
     },
 
@@ -41,26 +40,23 @@ let ReportsPage = React.createClass({
 
     render() {
         let self = this;
-
-        let branchStore = this.getFlux().store('branch');
-        let isCommitPeriod = branchStore.isReportCommitPeriod(self.state.blockNumber);
+        let blockNumber = this.state.blockNumber;
+        let isCommitPeriod = this.getFlux().store('branch').isReportCommitPeriod(blockNumber);
         let isRevealPeriod = !isCommitPeriod;
-
-        var event, market, report, marketRows = [];
+        let marketRows = [];
         if (this.state.currentBranch) {
             let periodLength = this.state.currentBranch.periodLength;
             let commitPeriodEndMillis = 0;
             if (isCommitPeriod) {
-                commitPeriodEndMillis = moment.duration(constants.SECONDS_PER_BLOCK * ((periodLength / 2) - (this.state.blockNumber % (periodLength / 2))), "seconds");
+                commitPeriodEndMillis = moment.duration(constants.SECONDS_PER_BLOCK * ((periodLength / 2) - (blockNumber % (periodLength / 2))), "seconds");
             }
-            let revealPeriodEndMillis = moment.duration(constants.SECONDS_PER_BLOCK * (periodLength - (this.state.blockNumber % periodLength)), "seconds");
-
-            for (var eventID in this.state.events) {
+            let revealPeriodEndMillis = moment.duration(constants.SECONDS_PER_BLOCK * (periodLength - (blockNumber % periodLength)), "seconds");
+            for (let eventID in this.state.events) {
                 if (!this.state.events.hasOwnProperty(eventID)) continue;
-                event = this.state.events[eventID];
-                market = event.markets[0];
+                let event = this.state.events[eventID];
+                let market = event.markets[0];
                 if (!market) continue;
-                report = {
+                let report = {
                     reportedOutcome: event.report.reportedOutcome,
                     isUnethical: event.report.isUnethical,
                     isCommitPeriod: isCommitPeriod,
@@ -89,31 +85,42 @@ let ReportsPage = React.createClass({
 
         return (
             <div>
-                <h1>
-                    Reporting
-                </h1>
-
+                <h1>Reporting</h1>
                 <div className="row submenu">
-                    <a className="collapsed" data-toggle="collapse" href="#collapseSubmenu"
+                    <a className="collapsed"
+                       data-toggle="collapse"
+                       href="#collapseSubmenu"
                        aria-expanded="false"
                        aria-controls="collapseSubmenu">
                         <h2>Navigation</h2>
                     </a>
-
-                    <div id="collapseSubmenu" className="col-xs-12 collapse" aria-expanded="false">
+                    <div id="collapseSubmenu"
+                         className="col-xs-12 collapse"
+                         aria-expanded="false">
                         <ul className="list-group" role="tablist" id="tabpanel">
-                            <li role="presentation" className={`list-group-item ${this.props.query.pending != null ? 'active' : ''}`}>
-                                <Link to='reports' query={{pending: true}} role="tab" activeClassName="">
+                            <li role="presentation"
+                                className={`list-group-item ${this.props.query.pending != null ? 'active' : ''}`}>
+                                <Link to="reports"
+                                    query={{pending: true}}
+                                    role="tab"
+                                    activeClassName="">
                                     Pending Reports
                                 </Link>
                             </li>
                             <li role="presentation" className={`list-group-item ${this.props.query.committed != null ? 'active' : ''}`}>
-                                <Link to="reports" query={{committed: true}} role="tab" activeClassName="">
+                                <Link to="reports"
+                                    query={{committed: true}}
+                                    role="tab"
+                                    activeClassName="">
                                     Pending Confirmations
                                 </Link>
                             </li>
-                            <li role="presentation" className={`list-group-item ${this.props.query.previous != null ? 'active' : ''}`}>
-                                <Link to="reports" query={{previous: true}} role="tab" activeClassName="">
+                            <li role="presentation"
+                                className={`list-group-item ${this.props.query.previous != null ? 'active' : ''}`}>
+                                <Link to="reports"
+                                    query={{previous: true}}
+                                    role="tab"
+                                    activeClassName="">
                                     Previous Reports
                                 </Link>
                             </li>

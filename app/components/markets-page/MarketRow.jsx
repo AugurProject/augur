@@ -101,7 +101,8 @@ let MarketRow = React.createClass({
     },
     getHoldingsSection(openOrdersCount) {
         if (openOrdersCount != null) {
-            return <div className="table-container holdings">
+            return <span />;
+            /*<div className="table-container holdings">
                 <table className="tabular tabular-condensed">
                     <thead>
                     <tr>
@@ -125,7 +126,7 @@ let MarketRow = React.createClass({
                     </tr>
                     </tbody>
                 </table>
-            </div>;
+            </div>*/
         } else {
             return null;
         }

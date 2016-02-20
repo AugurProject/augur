@@ -1,82 +1,66 @@
-let React = require('react');
-
+let React = require("react");
 let BigNumber = require("bignumber.js");
-let utilities = require("../../libs/utilities");
-
 let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
-
 let ReportFillForm = require("./ReportFillForm.jsx");
 let ReportConfirmForm = require("./ReportConfirmForm.jsx");
 let ReportSavedModal = require("./ReportSavedModal.jsx");
 let ReportDetails = require("./ReportDetails.jsx");
+let utilities = require("../../libs/utilities");
 
-var ReportPage = React.createClass({
-    mixins: [FluxMixin, StoreWatchMixin('branch', 'market', 'config', 'report')],
+let ReportPage = React.createClass({
+    mixins: [FluxMixin, StoreWatchMixin("branch", "market", "config", "report")],
 
-    componentDidMount() {
-      // usually this is recommended place where to perform initial calls, but I don't have account and market loaded
-      // at this time and I don't know how to achieve this
-      //this.getFlux().actions.report.loadReport(this.state.account, this.props.market.events[0].id);
+    getInitialState() {
+        return {reportError: null};
     },
 
     getStateFromFlux() {
-        var flux = this.getFlux();
-        let reportStore = flux.store('report');
-
-        let event = reportStore.getEvent(this.props.params.eventId);
-        let market, reportedOutcome, isUnethical;
-        if (event != null) {
-            market = flux.store('market').getMarket(new BigNumber(event.markets[0].id, 16));
-            reportedOutcome = event.report.reportedOutcome;
-            isUnethical = event.report.isUnethical;
+        let flux = this.getFlux();
+        let account = flux.store("config").getAccount();
+        let branch = flux.store("branch").getCurrentBranch();
+        let blockNumber = flux.store("network").getState().blockNumber;
+        let eventId;
+        if (this.props.params && this.props.params.eventId) {
+            eventId = this.props.params.eventId;
+        } else {
+            let pathname = window.location.pathname.split("/");
+            eventId = pathname[pathname.length - 1];
         }
-        let account = flux.store('config').getAccount();
-        let currentBranch = flux.store('branch').getCurrentBranch();
-        let blockNumber = flux.store('network').getState().blockNumber;
-        let state = {
-            account,
-            market,
-            currentBranch,
-            blockNumber: blockNumber,
-            reportedOutcome,
-            isUnethical
-        };
-
-        if (market != null) {
-            if (currentBranch && market.tradingPeriod &&
-                currentBranch.currentPeriod >= market.tradingPeriod.toNumber()) {
+        let event = flux.store("report").getEvent(eventId);
+        let market, reportedOutcome, isUnethical, report;
+        if (event && event.markets && event.markets.length) {
+            market = event.markets[0];
+            report = flux.store("report").getReport(branch.id, branch.reportPeriod);
+            console.log("report from flux:", report);
+            if (report && report.reportedOutcome !== null && report.reportedOutcome !== undefined) {
+                reportedOutcome = event.report.reportedOutcome;
+                isUnethical = event.report.isUnethical;
+            } else {
+                report = flux.actions.report.loadReportFromLs(eventId);
+                console.log("report from LS:", report);
+                reportedOutcome = report.reportedOutcome;
+                isUnethical = report.isUnethical;
+            }
+        }
+        if (market) {
+            if (branch && market.tradingPeriod &&
+                branch.currentPeriod >= market.tradingPeriod.toNumber()) {
                 market.matured = true;
             }
         }
-        if (state.currentBranch) {
-            state.report = reportStore.getReport(
-                state.currentBranch.id,
-                state.currentBranch.reportPeriod
-            );
-        }
-
-        return state;
+        return {event, account, market, branch, blockNumber, report, reportedOutcome, isUnethical};
     },
 
     onReportFormSubmit(event) {
         event.preventDefault();
-        if (this.state.reportedOutcome == null) {
-            this.setState({
-                reportError: "you must choose something"
-            });
-            return;
+        if (this.state.reportedOutcome === null) {
+            return this.setState({reportError: "you must choose something"});
         }
-
-        this.setState({
-            reportError: null
-        });
-
+        this.setState({reportError: null});
         let augur = this.getFlux().augur;
-
-        let eventId = this.props.params.eventId;
+        let eventId = this.state.event.id;
         let reportHash = augur.makeHash("salt", this.state.reportedOutcome, eventId);
-
         this.getFlux().actions.report.saveReport(
             this.state.account,
             eventId,
@@ -88,26 +72,21 @@ var ReportPage = React.createClass({
     },
     onConfirmFormSubmit(event) {
         event.preventDefault();
-
         let branchId, reportHash, reportPeriod, eventId, eventIndex;
-        branchId = this.state.currentBranch.id;
+        branchId = this.state.branch.id;
         reportHash = this.state.reportHash;
-        reportPeriod = this.state.currentBranch.reportPeriod;
+        reportPeriod = this.state.branch.reportPeriod;
         eventId = this.state.market.events[0].id;// is this right?
         eventIndex = this.getFlux().augur.getEventIndex(reportPeriod, eventId);
-
         this.getFlux().actions.report.submitReport(branchId, reportHash, reportPeriod, eventId, eventIndex);
     },
 
     onReportedOutcomeChanged(event) {
-        this.setState({
-            reportedOutcome: event.target.value
-        });
+        this.setState({reportedOutcome: event.target.value});
     },
+
     _onUnethicalChange(event) {
-        this.setState({
-            isUnethical: event.target.checked
-        });
+        this.setState({isUnethical: event.target.checked});
     },
 
     render() {
@@ -120,6 +99,7 @@ var ReportPage = React.createClass({
         }
 
         let market = this.state.market;
+        console.log("market:", market);
         if (market == null) {
             return (
                 <div>
