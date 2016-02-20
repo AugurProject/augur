@@ -162,7 +162,7 @@ var ReportPage = React.createClass({
                 // todo: what to do here?
                 return (
                     <div>
-                        You didn't report any outcome
+                        You did not report an outcome
                     </div>
                 );
             } else {
@@ -180,8 +180,7 @@ var ReportPage = React.createClass({
                             onConfirmFormSubmit={this.onConfirmFormSubmit}
                             market={market}
                             reportedOutcome={this.state.reportedOutcome}
-                            isUnethical={this.state.isUnethical}
-                            />
+                            isUnethical={this.state.isUnethical} />
                     </div>
                 );
             }
@@ -192,9 +191,7 @@ var ReportPage = React.createClass({
                             Reporting details
                         </h1>
 
-                        <ReportDetails
-                            market={market}
-                            />
+                        <ReportDetails market={market} />
                 </div>
             )
         }

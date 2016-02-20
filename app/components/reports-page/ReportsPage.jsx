@@ -2,14 +2,15 @@ let React = require("react");
 let Link = require("react-router/lib/components/Link");
 let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
-
 let BigNumber = require("bignumber.js");
 let _ = require("lodash");
-
+let moment = require("moment");
 let ReportConfirmedModal = require("./ReportConfirmedModal");
 let MarketRow = require("../markets-page/MarketRow");
+let utils = require("../../libs/utilities");
+let constants = require("../../libs/constants");
 
-var ReportsPage = React.createClass({
+let ReportsPage = React.createClass({
     mixins: [FluxMixin, StoreWatchMixin("asset", "branch", "config", "network", "report")],
 
     getStateFromFlux() {
@@ -19,19 +20,20 @@ var ReportsPage = React.createClass({
             account: flux.store("config").getAccount(),
             asset: flux.store("asset").getState(),
             blockNumber: flux.store("network").getState().blockNumber,
-            branchState: flux.store("branch").getState(),
+            currentBranch: flux.store("branch").getCurrentBranch(),
             events: flux.store("report").getState().eventsToReport
         };
 
-        if (state.branchState.currentBranch) {
+        if (state.currentBranch) {
             state.report = flux.store("report").getReport(
-                state.branchState.currentBranch.id,
-                state.branchState.currentBranch.reportPeriod
+                state.currentBranch.id,
+                state.currentBranch.reportPeriod
             );
         }
 
         return state;
     },
+
     confirmReport() {
         console.log("ReportsPage: todo: confirm the report");
         this.props.toggleConfirmReportModal();
@@ -44,16 +46,46 @@ var ReportsPage = React.createClass({
         let isCommitPeriod = branchStore.isReportCommitPeriod(self.state.blockNumber);
         let isRevealPeriod = !isCommitPeriod;
 
-        let events = _.filter(this.state.events, (event) => {
-            let query = this.props.query;
-            if (query.previous != null) {
-                return event.markets[0].matured;
-            } else if (query.committed != null) {
-                return isRevealPeriod;
-            } else {
-                return isCommitPeriod;
+        var event, market, report, marketRows = [];
+        if (this.state.currentBranch) {
+            let periodLength = this.state.currentBranch.periodLength;
+            let commitPeriodEndMillis = 0;
+            if (isCommitPeriod) {
+                commitPeriodEndMillis = moment.duration(constants.SECONDS_PER_BLOCK * ((periodLength / 2) - (this.state.blockNumber % (periodLength / 2))), "seconds");
             }
-        });
+            let revealPeriodEndMillis = moment.duration(constants.SECONDS_PER_BLOCK * (periodLength - (this.state.blockNumber % periodLength)), "seconds");
+
+            for (var eventID in this.state.events) {
+                if (!this.state.events.hasOwnProperty(eventID)) continue;
+                event = this.state.events[eventID];
+                market = event.markets[0];
+                if (!market) continue;
+                report = {
+                    reportedOutcome: event.report.reportedOutcome,
+                    isUnethical: event.report.isUnethical,
+                    isCommitPeriod: isCommitPeriod,
+                    isRevealPeriod: isRevealPeriod,
+                    confirmReport: this.confirmReport,
+                    isConfirmed: false,
+                    commitPeriodEndMillis: commitPeriodEndMillis,
+                    revealPeriodEndMillis: revealPeriodEndMillis
+                };
+                marketRows.push(
+                    <MarketRow key={market.id} market={market} report={report} />
+                );
+            }
+        }
+
+        // let events = _.filter(this.state.events, (event) => {
+        //     let query = this.props.query;
+        //     if (query.previous != null) {
+        //         return event.markets[0].matured;
+        //     } else if (query.committed != null) {
+        //         return isRevealPeriod;
+        //     } else {
+        //         return isCommitPeriod;
+        //     }
+        // });
 
         return (
             <div>
@@ -91,36 +123,12 @@ var ReportsPage = React.createClass({
 
                 <div className="row">
                     <div className="col-xs-12">
-                        {
-                            events.map(event => {
-                                let market = event.markets[0];
-                                if (!market) return null;
-                                return <MarketRow
-                                    key={market.id}
-                                    market={market}
-                                    report={{ // dummy data to present interface
-                                        // general info about report
-                                        reportedOutcome: event.report.reportedOutcome,
-                                        isUnethical: event.report.isUnethical,
-
-                                        // values needed for filling period
-                                        isCommitPeriod,
-                                        fillingPeriodEndMillis: 1000,
-
-                                        // values needed for commit period
-                                        confirmReport: this.confirmReport,
-                                        isRevealPeriod,
-                                        commitPeriodEndMillis: 1000 + 1000,
-                                        isConfirmed: false
-                                        // values needed for expired period
-                                    }} />;
-                            }, this)
-                        }
+                        {marketRows}
                     </div>
                 </div>
                 <ReportConfirmedModal
                     show={this.props.reportConfirmedModalOpen}
-                    onHide={this.props.toggleConfirmReportModal}/>
+                    onHide={this.props.toggleConfirmReportModal} />
             </div>
         )
     }

@@ -81,16 +81,12 @@ module.exports = {
 
       // initialize all events
       var eventsToReport = {};
-      _.each(eventIds, function (id) { eventsToReport[id] = {id: id}; });
-      self.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {
-        eventsToReport: eventsToReport
-      });
-
+      // _.each(eventIds, function (id) { eventsToReport[id] = {id: id}; });
       async.each(eventIds, function (eventId, nextEvent) {
         augur.getEventInfo(eventId, function (eventInfo) {
           if (!eventInfo) return nextEvent("couldn't get event info");
           if (eventInfo.error) return nextEvent(eventInfo);
-          var eventToReport = {
+          eventsToReport[eventId] = {
             id: eventId,
             branchId: eventInfo[0],
             expirationBlock: parseInt(eventInfo[1]),
@@ -98,22 +94,39 @@ module.exports = {
             minValue: eventInfo[3],
             maxValue: eventInfo[4],
             numOutcomes: parseInt(eventInfo[5]),
-            report: self.flux.actions.report.loadReportFromLs(eventId)
+            report: self.flux.actions.report.loadReportFromLs(eventId),
+            markets: []
           };
           augur.getDescription(eventId, function (description) {
             if (description && description.error) return nextEvent(description);
-            eventToReport.description = description;
+            eventsToReport[eventId].description = description;
             augur.getMarkets(eventId, function (markets) {
               if (!markets) return nextEvent("no markets found");
               if (markets.error) return nextEvent(markets);
-              eventToReport.markets = markets;
-              self.dispatch(constants.report.UPDATE_EVENT_TO_REPORT, eventToReport);
-              nextEvent();
+              async.each(markets, function (thisMarket, nextMarket) {
+                var market = self.flux.store("market").getMarket(abi.bignum(thisMarket));
+                if (market) {
+                  eventsToReport[eventId].markets.push(market);
+                  return nextMarket();
+                }
+                augur.getMarketInfo(thisMarket, function (marketInfo) {
+                  self.flux.actions.market.parseMarketInfo(marketInfo, function (info) {
+                    eventsToReport[eventId].markets.push(info);
+                    nextMarket();
+                  });
+                });
+              }, function (err) {
+                if (err) return nextEvent(err);
+                nextEvent();
+              });
             });
           });
         });
       }, function (err) {
         if (err) console.error("loadEventsToReport:", err);
+        self.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {
+          eventsToReport: eventsToReport
+        });
       });
     });
   },
@@ -250,6 +263,15 @@ module.exports = {
   /*********************************************************************
    * Methods to set up a new branch and prepare it for report testing. *
    *********************************************************************/
+
+  loadReadyBranch: function () {
+    var self = this;
+    this.flux.augur.getBranches(function (branches) {
+      if (branches && branches.constructor === Array && branches.length) {
+        self.flux.actions.branch.setCurrentBranch(branches[branches.length - 1]);
+      }
+    });
+  },
 
   tradeShares: function (branchID, eventID, marketID, cb) {
     var tradeParams = {
@@ -395,7 +417,6 @@ module.exports = {
                     }
                     if (DEBUG) {
                       console.log("Difference " + (currentPeriod - period) + ": ready for report hash submission.");
-                      console.log("Events to report:", self.flux.store("report").getState().eventsToReport);
                     }
                     self.flux.actions.branch.updateCurrentBranch();
                     self.flux.actions.report.ready(branchID);
@@ -406,8 +427,9 @@ module.exports = {
               console.error("getReady.incrementPeriod:", err);
             });
           } else {
-            console.log("Difference " + (currentPeriod - startPeriod) + ": ready for report hash submission.");
-            console.log("Events to report:", self.flux.store("report").getState().eventsToReport);
+            if (DEBUG) {
+              console.log("Difference " + (currentPeriod - startPeriod) + ": ready for report hash submission.");
+            }
             self.flux.actions.branch.updateCurrentBranch();
             self.flux.actions.report.ready(branchID);
           }
@@ -421,7 +443,7 @@ module.exports = {
     var self = this;
     var flux = this.flux;
     var suffix = Math.random().toString(36).substring(4);
-    periodLength = periodLength || 10;
+    periodLength = periodLength || 25;
     branchDescription = branchDescription || suffix;
     blocksUntilExpiration = blocksUntilExpiration || 5;
     description = description || suffix;

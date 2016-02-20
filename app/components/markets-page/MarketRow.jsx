@@ -43,7 +43,7 @@ let MarketRow = React.createClass({
                     </tr>
                     <tr>
                         <td>Reporting period closes</td>
-                        <td>{ moment(report.fillingPeriodEndMillis).to(moment()) }</td>
+                        <td>{ report.commitPeriodEndMillis.humanize(true) }</td>
                     </tr>
                 </tbody>
             );
@@ -58,7 +58,7 @@ let MarketRow = React.createClass({
                     </tr>
                     <tr>
                         <td>Confirmation period closes</td>
-                        <td>{ moment(report.commitPeriodEndMillis).to(moment()) }</td>
+                        <td>{ report.revealPeriodEndMillis.humanize(true) }</td>
                     </tr>
                 </tbody>
             );
