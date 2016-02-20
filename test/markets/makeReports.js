@@ -175,7 +175,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
             if (Number(currentPeriod) < startPeriod + 2 || Number(currentPeriod) >= startPeriod + 1) {
                 if (DEBUG) console.log("Difference", Number(currentPeriod) - startPeriod + ". Incrementing period...");
                 augur.incrementPeriodAfterReporting(newBranchID, utils.noop, function (res) {
-                    assert.strictEqual(res.callReturn, "0x1");
+                    assert.strictEqual(res.callReturn, "1");
                     var period = parseInt(augur.getReportPeriod(newBranchID));
                     if (DEBUG) console.log("Incremented reporting period to " + period + " (current period " + currentPeriod + ")");
                     currentPeriod = Math.floor(currentPeriod).toString();

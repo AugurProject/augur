@@ -719,7 +719,8 @@ module.exports = function (network) {
             to: contracts.branches,
             method: "incrementPeriod",
             signature: "i",
-            send: true
+            send: true,
+            returns: "number"
         },
         addMarket: {
             to: contracts.branches,
