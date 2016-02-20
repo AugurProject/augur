@@ -85,7 +85,6 @@ module.exports = {
             return console.log("contracts filter error:", filtrate);
           }
           console.log("[filter] contracts:", filtrate.address);
-          self.flux.actions.network.updateNetwork();
           self.flux.actions.asset.updateAssets();
           self.flux.actions.branch.updateCurrentBranch();
         }

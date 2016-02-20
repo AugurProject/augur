@@ -416,10 +416,10 @@ module.exports = {
                         }
                         startPeriod = parseInt(startPeriod);
                         flux.augur.getCurrentPeriod(branchID, function (currentPeriod) {
-                          currentPeriod = currentPeriod.toFixed(6);
-                          if (Number(currentPeriod) < startPeriod + 2 || Number(currentPeriod) >= startPeriod + 1) {
+                          currentPeriod = Math.floor(currentPeriod);
+                          if (currentPeriod < startPeriod + 2 || currentPeriod >= startPeriod + 1) {
                             if (DEBUG) {
-                              console.log("Difference", Number(currentPeriod) - startPeriod + ". Incrementing period...");
+                              console.log("Difference", currentPeriod - startPeriod + ". Incrementing period...");
                             }
                             flux.augur.incrementPeriodAfterReporting(branchID, flux.augur.utils.noop, function (res) {
                               flux.actions.report.loadEventsToReport();
@@ -427,13 +427,13 @@ module.exports = {
                               flux.augur.getReportPeriod(branchID, function (period) {
                                 period = parseInt(period);
                                 flux.augur.getCurrentPeriod(branchID, function (currentPeriod) {
-                                  currentPeriod = currentPeriod.toFixed(6);
+                                  currentPeriod = Math.floor(currentPeriod);
                                   flux.augur.getEvents(branchID, period, function (events) {
                                     console.log("Incremented reporting period to " + period + " (current period " + currentPeriod + ")");
                                     console.log("Events in period", period, events);
-                                    if (Number(currentPeriod) < startPeriod + 2 || Number(currentPeriod) >= startPeriod + 1) {
+                                    if (currentPeriod < startPeriod + 2 || currentPeriod >= startPeriod + 1) {
                                       if (DEBUG) {
-                                        console.log("Difference", Number(currentPeriod) - startPeriod + ". Incrementing period...");
+                                        console.log("Difference", currentPeriod - startPeriod + ". Incrementing period...");
                                       }
                                       return checkPeriod();
                                     }
