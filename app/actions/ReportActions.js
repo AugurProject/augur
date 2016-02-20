@@ -417,7 +417,7 @@ module.exports = {
                         startPeriod = parseInt(startPeriod);
                         flux.augur.getCurrentPeriod(branchID, function (currentPeriod) {
                           currentPeriod = Math.floor(currentPeriod);
-                          if (currentPeriod < startPeriod + 2 || currentPeriod >= startPeriod + 1) {
+                          if (currentPeriod > startPeriod + 1) {
                             if (DEBUG) {
                               console.log("Difference", currentPeriod - startPeriod + ". Incrementing period...");
                             }
@@ -431,9 +431,9 @@ module.exports = {
                                   flux.augur.getEvents(branchID, period, function (events) {
                                     console.log("Incremented reporting period to " + period + " (current period " + currentPeriod + ")");
                                     console.log("Events in period", period, events);
-                                    if (currentPeriod < startPeriod + 2 || currentPeriod >= startPeriod + 1) {
+                                    if (currentPeriod > period + 1) {
                                       if (DEBUG) {
-                                        console.log("Difference", currentPeriod - startPeriod + ". Incrementing period...");
+                                        console.log("Difference", currentPeriod - period + ". Incrementing period...");
                                       }
                                       return checkPeriod();
                                     }
