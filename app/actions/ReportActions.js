@@ -100,7 +100,7 @@ module.exports = {
             minValue: eventInfo[3],
             maxValue: eventInfo[4],
             numOutcomes: parseInt(eventInfo[5]),
-            report: self.loadReportFromLs(eventId)
+            report: self.flux.actions.report.loadReportFromLs(eventId)
           };
           augur.getDescription(eventId, function (description) {
             if (description && description.error) return nextEvent(description);
