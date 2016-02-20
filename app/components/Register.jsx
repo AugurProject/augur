@@ -232,7 +232,7 @@ let RegisterModal = React.createClass({
     if (this.state.handle === '') {
       this.setState({handleHelp: 'enter a valid handle'});
       return false;
-    } else if (this.state.password.length < 6) {
+    } else if (this.state.tab === 0 && this.state.password.length < 6) {
       this.setState({passwordHelp: 'must be at least 6 characters'});
       return false;
     } else if (this.state.password === '') {
