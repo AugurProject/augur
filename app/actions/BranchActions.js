@@ -86,6 +86,7 @@ module.exports = {
                         percentComplete: percentComplete
                       });
                       self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, updatedBranch);
+                      self.flux.actions.report.loadEventsToReport();
                     });
                   });
                 });
@@ -102,6 +103,7 @@ module.exports = {
               percentComplete: percentComplete
             });
             self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, updatedBranch);
+            self.flux.actions.report.loadEventsToReport();
           }
         });
       })();

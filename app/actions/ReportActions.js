@@ -64,15 +64,13 @@ module.exports = {
     var branch = this.flux.store("branch").getCurrentBranch();
 
     // Only load events if the vote period indicated by the chain is the
-    // previous period. (Otherwise, incrementPeriod needs to be run.)
-    if (!branch || branch.reportPeriod >= branch.currentPeriod + 2) {
-      return this.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {
-        eventsToReport: {}
-      });
-    } else if (branch.reportPeriod < branch.currentPeriod - 1 ) {
+    // previous period. (Otherwise, checkPeriod needs to be run.)
+    if (!branch || branch.currentPeriod >= branch.reportPeriod + 2 ||
+        branch.reportPeriod < branch.currentPeriod - 1) {
       this.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {
         eventsToReport: {}
       });
+      this.flux.actions.report.checkPeriod(branch.id, branch.periodLength);
     }
     augur.getEvents(branch.id, branch.reportPeriod, function (eventIds) {
       if (!eventIds || eventIds.constructor !== Array || eventIds.error) {
@@ -357,14 +355,75 @@ module.exports = {
     });
   },
 
+  checkPeriod: function (branchID, periodLength) {
+    var self = this;
+    this.flux.augur.rpc.blockNumber(function (blockNumber) {
+      if (!blockNumber || blockNumber.error) {
+        return console.error("getReady.blockNumber:", blockNumber);
+      }
+      blockNumber = parseInt(blockNumber);
+      if (DEBUG) {
+        console.log("Current block:", blockNumber);
+        console.log("Residual:", blockNumber % periodLength);
+      }
+      self.flux.actions.branch.setCurrentBranch(branchID);
+      self.flux.augur.getReportPeriod(branchID, function (startPeriod) {
+        if (startPeriod === null || startPeriod === undefined || startPeriod.error) {
+          return console.error("getReady.getReportPeriod:", startPeriod);
+        }
+        startPeriod = parseInt(startPeriod);
+        self.flux.augur.getCurrentPeriod(branchID, function (currentPeriod) {
+          currentPeriod = Math.floor(currentPeriod);
+          if (currentPeriod > startPeriod + 1) {
+            if (DEBUG) {
+              console.log("Difference", currentPeriod - startPeriod + ". Incrementing period...");
+            }
+            self.flux.augur.incrementPeriodAfterReporting(branchID, self.flux.augur.utils.noop, function (res) {
+              if (!DEBUG) return self.flux.actions.report.ready(branchID);
+              self.flux.augur.getReportPeriod(branchID, function (period) {
+                period = parseInt(period);
+                self.flux.augur.getCurrentPeriod(branchID, function (currentPeriod) {
+                  currentPeriod = Math.floor(currentPeriod);
+                  self.flux.augur.getEvents(branchID, period, function (events) {
+                    console.log("Incremented reporting period to " + period + " (current period " + currentPeriod + ")");
+                    console.log("Events in period", period, events);
+                    if (currentPeriod > period + 1) {
+                      if (DEBUG) {
+                        console.log("Difference", currentPeriod - period + ". Incrementing period...");
+                      }
+                      return self.flux.actions.report.checkPeriod(branchID, periodLength);
+                    }
+                    if (DEBUG) {
+                      console.log("Difference " + (currentPeriod - period) + ": ready for report hash submission.");
+                      console.log("Events to report:", self.flux.store("report").getState().eventsToReport);
+                    }
+                    self.flux.actions.branch.updateCurrentBranch();
+                    self.flux.actions.report.ready(branchID);
+                  });
+                });
+              });
+            }, function (err) {
+              console.error("getReady.incrementPeriod:", err);
+            });
+          } else {
+            console.log("Difference " + (currentPeriod - startPeriod) + ": ready for report hash submission.");
+            console.log("Events to report:", self.flux.store("report").getState().eventsToReport);
+            self.flux.actions.branch.updateCurrentBranch();
+            self.flux.actions.report.ready(branchID);
+          }
+        });
+      });
+    });
+  },
+
   // @param {string|integer} parent Hexadecimal string parent branch ID.
   getReady: function (parent, periodLength, branchDescription, description, blocksUntilExpiration) {
     var self = this;
     var flux = this.flux;
     var suffix = Math.random().toString(36).substring(4);
-    periodLength = periodLength || 50;
+    periodLength = periodLength || 10;
     branchDescription = branchDescription || suffix;
-    blocksUntilExpiration = blocksUntilExpiration || 10;
+    blocksUntilExpiration = blocksUntilExpiration || 5;
     description = description || suffix;
     parent = parent || flux.store("branch").getCurrentBranch().id;
     flux.actions.report.setupNewBranch(parent, branchDescription, periodLength, function (err, branchID) {
@@ -399,64 +458,7 @@ module.exports = {
                   if (!endBlock || endBlock.error) {
                     return console.error("getReady.fastforward:", endBlock);
                   }
-                  (function checkPeriod() {
-                    flux.augur.rpc.blockNumber(function (blockNumber) {
-                      if (!blockNumber || blockNumber.error) {
-                        return console.error("getReady.blockNumber:", blockNumber);
-                      }
-                      blockNumber = parseInt(blockNumber);
-                      if (DEBUG) {
-                        console.log("Current block:", blockNumber);
-                        console.log("Residual:", blockNumber % periodLength);
-                      }
-                      flux.actions.branch.setCurrentBranch(branchID);
-                      flux.augur.getReportPeriod(branchID, function (startPeriod) {
-                        if (startPeriod === null || startPeriod === undefined || startPeriod.error) {
-                          return console.error("getReady.getReportPeriod:", startPeriod);
-                        }
-                        startPeriod = parseInt(startPeriod);
-                        flux.augur.getCurrentPeriod(branchID, function (currentPeriod) {
-                          currentPeriod = Math.floor(currentPeriod);
-                          if (currentPeriod > startPeriod + 1) {
-                            if (DEBUG) {
-                              console.log("Difference", currentPeriod - startPeriod + ". Incrementing period...");
-                            }
-                            flux.augur.incrementPeriodAfterReporting(branchID, flux.augur.utils.noop, function (res) {
-                              flux.actions.report.loadEventsToReport();
-                              if (!DEBUG) return flux.actions.report.ready(branchID);
-                              flux.augur.getReportPeriod(branchID, function (period) {
-                                period = parseInt(period);
-                                flux.augur.getCurrentPeriod(branchID, function (currentPeriod) {
-                                  currentPeriod = Math.floor(currentPeriod);
-                                  flux.augur.getEvents(branchID, period, function (events) {
-                                    console.log("Incremented reporting period to " + period + " (current period " + currentPeriod + ")");
-                                    console.log("Events in period", period, events);
-                                    if (currentPeriod > period + 1) {
-                                      if (DEBUG) {
-                                        console.log("Difference", currentPeriod - period + ". Incrementing period...");
-                                      }
-                                      return checkPeriod();
-                                    }
-                                    if (DEBUG) {
-                                      console.log("Difference " + (currentPeriod - period) + ": ready for report hash submission.");
-                                      console.log("Events to report:", flux.store("report").getState().eventsToReport);
-                                    }
-                                    flux.actions.report.ready(branchID);
-                                  });
-                                });
-                              });
-                            }, function (err) {
-                              console.error("getReady.incrementPeriod:", err);
-                            });
-                          } else {
-                            console.log("Difference " + (currentPeriod - startPeriod) + ": ready for report hash submission.");
-                            console.log("Events to report:", flux.store("report").getState().eventsToReport);
-                            flux.actions.report.ready(branchID);
-                          }
-                        });
-                      });
-                    });
-                  })();
+                  flux.actions.report.checkPeriod(branchID, periodLength);
                 });
               });
             });
