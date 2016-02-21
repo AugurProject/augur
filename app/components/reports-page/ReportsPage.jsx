@@ -67,7 +67,7 @@ let ReportsPage = React.createClass({
                     revealPeriodEndMillis: revealPeriodEndMillis
                 };
                 marketRows.push(
-                    <MarketRow key={market.id} market={market} report={report} />
+                    <MarketRow key={event.id + "-" + market._id} market={market} report={report} />
                 );
             }
         }
@@ -140,4 +140,5 @@ let ReportsPage = React.createClass({
         )
     }
 });
+
 module.exports = ReportsPage;

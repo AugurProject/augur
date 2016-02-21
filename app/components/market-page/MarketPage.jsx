@@ -34,7 +34,8 @@ let MarketPage = React.createClass({
             image: "/images/augur_logo_bg.png",
             priceHistoryTimeout: null,
             orderBookTimeout: null,
-            addMarketModalOpen: false
+            addMarketModalOpen: false,
+            metadataTimeout: null
         };
     },
 
@@ -72,36 +73,6 @@ let MarketPage = React.createClass({
         };
     },
 
-    componentDidMount() {
-        this.checkOrderBook();
-        this.getPriceHistory();
-
-        this.stylesheetEl = document.createElement("link");
-        this.stylesheetEl.setAttribute("rel", "stylesheet");
-        this.stylesheetEl.setAttribute("type", "text/css");
-        this.stylesheetEl.setAttribute("href", "/css/market-detail.css");
-        document.getElementsByTagName("head")[0].appendChild(this.stylesheetEl);
-    },
-    componentWillUnmount() {
-        this.stylesheetEl.remove();
-
-        clearTimeout(this.state.priceHistoryTimeout);
-        clearTimeout(this.state.orderBookTimeout);
-    },
-
-    checkOrderBook() {
-        console.info("checking order book...");
-        let market = this.state.market;
-        if (this.state.orderBookTimeout) {
-            clearTimeout(this.state.orderBookTimeout);
-        }
-        if (market && market.constructor === Object && market._id &&
-            !market.orderBookChecked) {
-            return this.getFlux().actions.market.checkOrderBook(market);
-        }
-        this.setState({orderBookTimeout: setTimeout(this.checkOrderBook, 5000)});
-    },
-
     toggleCloseMarketModal(event) {
         this.setState({closeMarketModalOpen: !this.state.closeMarketModalOpen});
     },
@@ -128,6 +99,10 @@ let MarketPage = React.createClass({
                 </div>
             );
         }
+        let details = <span />;
+        if (market.metadata && market.metadata.details) {
+            details = market.metadata.details;
+        }
 
         return (
             <div className="marketPage">
@@ -135,6 +110,7 @@ let MarketPage = React.createClass({
                 {/*<img className="metadata-image" src={this.state.image} />*/}
                 <MarketInfo market={market}/>
                 {closeMarketButton}
+                {details}
 
                 <div role="tabpanel" style={{marginTop: '15px'}}>
                     <div className="row submenu">
@@ -306,26 +282,28 @@ let MarketPage = React.createClass({
 
         clearTimeout(this.state.priceHistoryTimeout);
         clearTimeout(this.state.orderBookTimeout);
+        clearTimeout(this.state.metadataTimeout);
 
         tour.hide();
-        Shepherd.off();
     },
 
     getMetadata() {
-        let self = this;
+        console.info("Loading metadata from IPFS...");
         let market = this.state.market;
         if (this.state.metadataTimeout) {
             clearTimeout(this.state.metadataTimeout);
         }
-        if (market && market.constructor === Object && market._id && !market.metadata) {
-            console.info("load metadata from IPFS...");
-            return this.getFlux().actions.market.loadMetadata(market);
+        if (market && market.constructor === Object && market._id) {
+            if (!market.metadata) {
+                return this.getFlux().actions.market.loadMetadata(market);
+            }
+        } else {
+            this.setState({metadataTimeout: setTimeout(this.getMetadata, 5000)});
         }
-        this.setState({metadataTimeout: setTimeout(this.getMetadata, 5000)});
     },
 
     checkOrderBook() {
-        console.info("checking order book...");
+        console.info("Checking order book...");
         let market = this.state.market;
         if (this.state.orderBookTimeout) {
             clearTimeout(this.state.orderBookTimeout);
@@ -338,13 +316,13 @@ let MarketPage = React.createClass({
     },
 
     getPriceHistory() {
+        console.info("Loading price history...");
         let market = this.state.market;
         if (this.state.priceHistoryTimeout) {
             clearTimeout(this.state.priceHistoryTimeout);
         }
         if (market && market.constructor === Object && market._id &&
             !market.priceHistory && !market.priceHistoryStatus) {
-            console.info("loading price history...");
             return this.getFlux().actions.market.loadPriceHistory(market);
         }
         this.setState({priceHistoryTimeout: setTimeout(this.getPriceHistory, 5000)});

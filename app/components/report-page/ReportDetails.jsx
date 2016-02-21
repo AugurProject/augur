@@ -24,7 +24,6 @@ let ReportDetails = React.createClass({
 
     render() {
         let market = this.props.market;
-        console.log("market:", market);
         let metadata = market.metadata || {};
         let links = [];
         if (metadata.links && metadata.links.constructor === Array) {

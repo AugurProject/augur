@@ -81,7 +81,10 @@ stores.search.initialize = function () {
     constants.market.LOAD_MARKETS_SUCCESS, this.handleMarketsUpdated,
     constants.market.UPDATE_MARKETS_SUCCESS, this.handleMarketsUpdated,
     constants.search.KEYWORDS_UPDATED, this.handleKeywordsUpdated,
-    constants.search.UPDATE_SORT_BY, this.handleUpdateSortBy
+    constants.search.UPDATE_SORT_BY, this.handleUpdateSortBy,
+    constants.market.PRICE_HISTORY_LOADING, this.handlePriceHistoryLoading,
+    constants.market.LOAD_PRICE_HISTORY_SUCCESS, this.handleLoadPriceHistorySuccess,
+    constants.market.LOAD_METADATA_SUCCESS, this.handleLoadMetadataSuccess
   );
 };
 

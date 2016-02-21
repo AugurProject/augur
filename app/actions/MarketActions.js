@@ -186,13 +186,14 @@ module.exports = {
         }, function (err) {
           if (err) return console.error("loadMarkets:", err);
 
-          // async.each(markets, function (thisMarket, nextMarket) {
-          //   console.log("load metadata for:", thisMarket._id);
-          //   self.flux.actions.market.loadMetadata(thisMarket);
-          //   nextMarket();
-          // }, function (err) {
-          //   if (err) console.error("metadata error:", err);
-          // });
+          async.each(markets, function (thisMarket, nextMarket) {
+            console.log("load metadata for:", thisMarket._id);
+            self.flux.actions.market.loadMetadata(thisMarket);
+            nextMarket();
+          }, function (err) {
+            if (err) console.error("metadata error:", err);
+            console.debug("all markets + metadata loaded in", ((new Date()).getTime() - start) / 1000, "seconds");
+          });
 
           // loading complete!
           console.debug("all markets loaded in", ((new Date()).getTime() - start) / 1000, "seconds");
@@ -238,8 +239,8 @@ module.exports = {
   loadMetadata: function (market) {
     var self = this;
     this.flux.augur.ramble.getMarketMetadata(market._id, {sourceless: false}, function (err, metadata) {
-      console.info(market._id, "metadata loaded:", JSON.stringify(metadata, null, 2));
       if (!err && metadata) {
+        console.info(market._id, "metadata loaded:", JSON.stringify(metadata, null, 2));
         self.dispatch(constants.market.LOAD_METADATA_SUCCESS, {metadata});
       }
     });

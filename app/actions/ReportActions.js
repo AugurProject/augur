@@ -112,8 +112,12 @@ var ReportActions = {
                 }
                 augur.getMarketInfo(thisMarket, function (marketInfo) {
                   self.flux.actions.market.parseMarketInfo(marketInfo, function (info) {
-                    eventsToReport[eventId].markets.push(info);
-                    nextMarket();
+                    augur.ramble.getMarketMetadata(thisMarket, {sourceless: false}, function (err, metadata) {
+                      if (err) console.error("getMetadata:", err);
+                      if (metadata) info.metadata = metadata;
+                      eventsToReport[eventId].markets.push(info);
+                      nextMarket();
+                    });
                   });
                 });
               }, function (err) {

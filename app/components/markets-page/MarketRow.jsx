@@ -1,7 +1,5 @@
 let React = require("react");
 let ReactDOM = require("react-dom");
-let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
-let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
 let _ = require("lodash");
 let utilities = require("../../libs/utilities");
 let moment = require("moment");
@@ -23,35 +21,6 @@ let tour = new Shepherd.Tour({
  * info about report, if you pass info about position (holdings) it displays info about position)
  */
 let MarketRow = React.createClass({
-
-    mixins: [FluxMixin, StoreWatchMixin("market")],
-
-    getInitialState() {
-        return {metadataTimer: null};
-    },
-
-    getStateFromFlux() {
-        return {};
-    },
-
-    componentDidMount() {
-        this.getMetadata();
-    },
-
-    getMetadata() {
-        let market = this.props.market;
-        if (this.state.metadataTimer) {
-            clearTimeout(this.state.metadataTimer);
-        }
-        if (market && market.constructor === Object && market._id) {
-            if (!market.metadata) {
-                console.info("Loading metadata from IPFS...");
-                return this.getFlux().actions.market.loadMetadata(market);
-            }
-        } else {
-            this.setState({metadataTimer: setTimeout(this.getMetadata, 5000)});
-        }
-    },
 
     /**
      * Based on info about report returns correct JSX
@@ -219,7 +188,11 @@ let MarketRow = React.createClass({
         if (market.metadata && market.metadata.tags && market.metadata.tags.length) {
             console.log("tags:", market.metadata.tags);
             for (var i = 0, n = market.metadata.tags.length; i < n; ++i) {
-                tags.push(<span className="tag">{market.metadata.tags[i]}</span>);
+                tags.push(
+                    <span key={market._id + "-tag-" + i} className="tag">
+                        {market.metadata.tags[i]}
+                    </span>
+                );
             }
         }
 
@@ -362,7 +335,6 @@ let MarketRow = React.createClass({
 
     componentWillUnmount() {
         tour.hide();
-        Shepherd.off();
     }
 });
 
