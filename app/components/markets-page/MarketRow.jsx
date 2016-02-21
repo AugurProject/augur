@@ -141,6 +141,44 @@ let MarketRow = React.createClass({
     /**
      *
      */
+    getClickableDescription(market, report) {
+        if (report != null) {
+            if (report.isCommitPeriod) {
+                return (
+                    <Link to="report" params={{eventId: market.events[0].id.toString(16)}}>
+                        {market.description}
+                    </Link>
+                );
+            } else if (report.isRevealPeriod) {
+                if (!report.isConfirmed) {
+                    return (
+                        <a href="#" onClick={report.confirmReport}>
+                            {market.description}
+                        </a>
+                    )
+                } else {
+                    return null;
+                }
+            } else {
+                return (
+                    <Link to="report" params={{eventId: market.events[0].id.toString(16)}}>
+                        {market.description}
+                    </Link>
+                );
+            }
+        }
+
+        return (
+            <Link to="market"
+                params={{marketId: market.id.toString(16)}}>
+                {market.description}
+            </Link>
+        );
+    },
+
+    /**
+     *
+     */
     getRowAction(market, report) {
         if (report != null) {
             if (report.isCommitPeriod) {
@@ -197,10 +235,13 @@ let MarketRow = React.createClass({
         let reportSection = this.getReportSection(report, market);
         let holdingsSection = this.getHoldingsSection(this.props.numOpenOrders);
         let rowAction = this.getRowAction(market, report);
+        let clickableDescription = this.getClickableDescription(market, report);
         return (
             <div className="market-row">
                 <div className="info">
-                    <h4 className={"description" + tourClass}>{market.description}</h4>
+                    <h4 className={"description" + tourClass}>
+                        {clickableDescription}
+                    </h4>
                     <div className="subtitle">
                         <span className="subtitle-label trading-fee-label">Trading Fee:</span>
                         <span className="subtitle-value trading-fee">{market.tradingFee ? +market.tradingFee.times(100).toFixed(2) + '%' : '-'}</span>
