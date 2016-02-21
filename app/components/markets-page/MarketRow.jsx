@@ -1,11 +1,9 @@
-let React = require('react');
-
+let React = require("react");
+let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let _ = require("lodash");
 let utilities = require("../../libs/utilities");
 let moment = require("moment");
-
 let Link = require("react-router/lib/components/Link");
-
 let OutcomeRow = require("./OutcomeRow");
 
 /**
@@ -14,13 +12,41 @@ let OutcomeRow = require("./OutcomeRow");
  * info about report, if you pass info about position (holdings) it displays info about position)
  */
 let MarketRow = React.createClass({
+
+    mixins: [FluxMixin],
+
+    getInitialState() {
+        return {metadataTimer: null};
+    },
+
+    getStateFromFlux() {
+        return {};
+    },
+
+    componentDidMount() {
+        this.getMetadata();
+    },
+
+    getMetadata() {
+        let market = this.props.market;
+        if (this.state.metadataTimer) {
+            clearTimeout(this.state.metadataTimer);
+        }
+        if (market && market.constructor === Object && market._id) {
+            if (!market.metadata) {
+                console.info("Loading metadata from IPFS...");
+                return this.getFlux().actions.market.loadMetadata(market);
+            }
+        } else {
+            this.setState({metadataTimer: setTimeout(this.getMetadata, 5000)});
+        }
+    },
+
     /**
      * Based on info about report returns correct JSX
      */
     getReportSection(report, market) {
-        if (report == null) {
-            return null;
-        }
+        if (report == null) return null;
 
         let tableHeader, tableHeaderColSpan, content;
         if (report.isCommitPeriod) {

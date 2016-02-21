@@ -22,7 +22,6 @@ let MarketPage = React.createClass({
 
     getInitialState() {
         return {
-            metadataTimeout: null,
             priceHistoryTimeout: null,
             orderBookTimeout: null,
             addMarketModalOpen: false
@@ -31,14 +30,12 @@ let MarketPage = React.createClass({
 
     getStateFromFlux() {
         let flux = this.getFlux();
-
         let marketId = new BigNumber(this.props.params.marketId, 16);
         let market = flux.store('market').getMarket(marketId);
         let currentBranch = flux.store('branch').getCurrentBranch();
         let account = flux.store('config').getAccount();
         let handle = flux.store('config').getHandle();
         let blockNumber = flux.store('network').getState().blockNumber;
-
         if (currentBranch && market && market.tradingPeriod &&
             currentBranch.currentPeriod >= market.tradingPeriod.toNumber()) {
             market.matured = true;
@@ -46,16 +43,10 @@ let MarketPage = React.createClass({
                 market.closable = true;
             }
         }
-
-        return {
-            market,
-            account,
-            handle,
-            blockNumber
-        };
+        return {market, account, handle, blockNumber};
     },
+
     componentDidMount() {
-        this.getMetadata();
         this.checkOrderBook();
         this.getPriceHistory();
 
@@ -72,19 +63,6 @@ let MarketPage = React.createClass({
         clearTimeout(this.state.orderBookTimeout);
     },
 
-    getMetadata() {
-        let market = this.state.market;
-        if (this.state.metadataTimeout) {
-            clearTimeout(this.state.metadataTimeout);
-        }
-        if (market && market.constructor === Object && market._id &&
-            !market.metadata) {
-            console.info("load metadata from IPFS...");
-            return this.getFlux().actions.market.loadMetadata(market);
-        }
-        this.setState({metadataTimeout: setTimeout(this.getMetadata, 5000)});
-    },
-
     checkOrderBook() {
         console.info("checking order book...");
         let market = this.state.market;
@@ -96,19 +74,6 @@ let MarketPage = React.createClass({
             return this.getFlux().actions.market.checkOrderBook(market);
         }
         this.setState({orderBookTimeout: setTimeout(this.checkOrderBook, 5000)});
-    },
-
-    getPriceHistory() {
-        let market = this.state.market;
-        if (this.state.priceHistoryTimeout) {
-            clearTimeout(this.state.priceHistoryTimeout);
-        }
-        if (market && market.constructor === Object && market._id &&
-            !market.priceHistory && !market.priceHistoryStatus) {
-            console.info("loading price history...");
-            return this.getFlux().actions.market.loadPriceHistory(market);
-        }
-        this.setState({priceHistoryTimeout: setTimeout(this.getPriceHistory, 5000)});
     },
 
     toggleCloseMarketModal(event) {

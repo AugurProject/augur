@@ -9,7 +9,7 @@ let ReportDetails = require("./ReportDetails.jsx");
 let utilities = require("../../libs/utilities");
 
 let ReportPage = React.createClass({
-    mixins: [FluxMixin, StoreWatchMixin("branch", "market", "config", "report")],
+    mixins: [FluxMixin, StoreWatchMixin("branch", "market", "config", "report", "network")],
 
     getInitialState() {
         return {reportError: null};
@@ -32,13 +32,11 @@ let ReportPage = React.createClass({
         if (event && event.markets && event.markets.length) {
             market = event.markets[0];
             report = flux.store("report").getReport(branch.id, branch.reportPeriod);
-            console.log("report from flux:", report);
             if (report && report.reportedOutcome !== null && report.reportedOutcome !== undefined) {
                 reportedOutcome = event.report.reportedOutcome;
                 isUnethical = event.report.isUnethical;
             } else {
                 report = flux.actions.report.loadReportFromLs(eventId);
-                console.log("report from LS:", report);
                 reportedOutcome = report.reportedOutcome;
                 isUnethical = report.isUnethical;
             }
@@ -91,45 +89,27 @@ let ReportPage = React.createClass({
 
     render() {
         if (this.state.account == null) {
-            return (
-                <div>
-                    Only for logged-in users
-                </div>
-            );
+            return <div>Only for logged-in users</div>;
         }
-
         let market = this.state.market;
-        console.log("market:", market);
         if (market == null) {
-            return (
-                <div>
-                    No report
-                </div>
-            );
+            return <div>No market found for this event</div>;
         }
-
         let blockNumber = this.state.blockNumber;
-        let isReportCommitPeriod = this.getFlux().store('branch').isReportCommitPeriod(blockNumber),
-            isReportRevealPeriod = !isReportCommitPeriod;
-
+        let isReportCommitPeriod = this.getFlux().store("branch").isReportCommitPeriod(blockNumber);
+        let isReportRevealPeriod = !isReportCommitPeriod;
         if (!market.matured && isReportCommitPeriod) {
             return (
                 <div>
-                    <h1>
-                        Reporting the outcome of a market
-                    </h1>
-
-                    <h2>
-                        Review the question and make your report
-                    </h2>
-
+                    <h1>Reporting the outcome of a market</h1>
+                    <h2>Review the question and make your report</h2>
                     <ReportFillForm onReportFormSubmit={this.onReportFormSubmit}
-                                onUnethicalChange={this._onUnethicalChange}
-                                onReportedOutcomeChanged={this.onReportedOutcomeChanged}
-                                reportedOutcome={this.state.reportedOutcome}
-                                isUnethical={this.state.isUnethical}
-                                reportError={this.state.reportError}
-                                market={market}/>
+                        onUnethicalChange={this._onUnethicalChange}
+                        onReportedOutcomeChanged={this.onReportedOutcomeChanged}
+                        reportedOutcome={this.state.reportedOutcome}
+                        isUnethical={this.state.isUnethical}
+                        reportError={this.state.reportError}
+                        market={market}/>
                     <ReportSavedModal
                         reportedOutcomeName={this.state.reportedOutcome != null ? utilities.getOutcomeName(this.state.reportedOutcome, market).outcome : "none"}
                         isUnethical={this.state.isUnethical}
@@ -141,21 +121,13 @@ let ReportPage = React.createClass({
             if (this.state.reportedOutcome == null) {
                 // todo: what to do here?
                 return (
-                    <div>
-                        You did not report an outcome
-                    </div>
+                    <div>You did not report an outcome</div>
                 );
             } else {
                 return (
                     <div>
-                        <h1>
-                            Reporting the outcome of a market
-                        </h1>
-
-                        <h2>
-                            Confirm your reported outcome
-                        </h2>
-
+                        <h1>Reporting the outcome of a market</h1>
+                        <h2>Confirm your reported outcome</h2>
                         <ReportConfirmForm
                             onConfirmFormSubmit={this.onConfirmFormSubmit}
                             market={market}
@@ -167,11 +139,8 @@ let ReportPage = React.createClass({
         } else {
             return (
                 <div>
-                        <h1>
-                            Reporting details
-                        </h1>
-
-                        <ReportDetails market={market} />
+                    <h1>Reporting details</h1>
+                    <ReportDetails market={market} />
                 </div>
             )
         }

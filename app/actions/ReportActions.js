@@ -309,7 +309,7 @@ var ReportActions = {
     this.flux.augur.trade(trade);
   },
 
-  // create an event on the new branch
+  // create an event and market on the new branch
   createEvent: function (branchID, expirationBlock, description, cb) {
     var self = this;
     if (DEBUG) console.log("Event expiration block:", expirationBlock);
@@ -334,7 +334,25 @@ var ReportActions = {
           tradingFee: "0.02",
           events: [eventID],
           forkSelection: 1,
-          onSent: self.flux.augur.utils.noop,
+          onSent: function (res) {
+            var metadata = {
+              marketId: res.callReturn,
+              details: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+              tags: ["latin", "lorem ipsum"],
+              source: "Reality Keys",
+              links: [
+                "http://www.lipsum.com/",
+                "https://github.com/traviskaufman/node-lipsum"
+              ]
+            };
+            self.flux.augur.ramble.addMetadata(metadata, function (sentResponse) {
+              if (DEBUG) console.log("addMetadata sent:", sentResponse);
+            }, function (successResponse) {
+              if (DEBUG) console.log("addMetadata success:", successResponse);
+            }, function (err) {
+              console.error("addMetadata:", err);
+            });
+          },
           onSuccess: function (res) {
             var marketID = res.callReturn;
             if (DEBUG) console.log("Market ID:", marketID);

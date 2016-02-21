@@ -100,8 +100,14 @@ module.exports = {
     }
   },
   handleLoadMetadataSuccess: function (payload) {
-    this.state.markets[abi.bignum(payload.metadata.marketId)].metadata = payload.metadata;
-    this.emit(constants.CHANGE_EVENT);
+    if (payload && payload.metadata && payload.metadata.marketId) {
+      var marketId = abi.bignum(payload.metadata.marketId);
+      var market = this.state.markets[marketId];
+      if (market) {
+        market.metadata = payload.metadata;
+        this.emit(constants.CHANGE_EVENT);
+      }
+    }
   },
   handlePriceHistoryLoading: function (payload) {
     this.state.markets[payload.marketId].priceHistoryStatus = "loading";
