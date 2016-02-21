@@ -220,6 +220,12 @@ let AddMarketModal = React.createClass({
     var pendingId = flux.actions.market.addPendingMarket(newMarketParams);
     var branchId = flux.store("branch").getCurrentBranch().id;
     var block = flux.store("network").getState().blockNumber;
+    var metadata = {
+      image: this.state.imageDataURL,
+      details: this.state.detailsText,
+      tags: this.state.tags,
+      links: this.state.resources
+    };
     flux.augur.createEvent({
       branchId: branchId,
       description: this.state.marketText,
@@ -262,10 +268,10 @@ let AddMarketModal = React.createClass({
             self.setState({progressModal: progressModal});
             flux.augur.ramble.addMetadata({
               marketId: r.callReturn,
-              image: self.state.imageDataURL,
-              details: self.state.detailsText,
-              tags: self.state.tags,
-              links: self.state.resources,
+              image: metadata.image,
+              details: metadata.details,
+              tags: metadata.tags,
+              links: metadata.links,
               source: source,
               broadcast: true
             }, function (res) {

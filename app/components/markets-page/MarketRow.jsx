@@ -183,10 +183,8 @@ let MarketRow = React.createClass({
         let tourClass = (this.props.tour) ? " tour" : "";
         let endDateLabel = (market.endDate != null && market.matured) ? "Matured" : "End Date";
         let endDateFormatted = market.endDate != null ? moment(market.endDate).format("MMM Do, YYYY") : "-";
-
-        var tags = [];
+        let tags = [];
         if (market.metadata && market.metadata.tags && market.metadata.tags.length) {
-            console.log("tags:", market.metadata.tags);
             for (var i = 0, n = market.metadata.tags.length; i < n; ++i) {
                 tags.push(
                     <span key={market._id + "-tag-" + i} className="tag">
@@ -195,12 +193,10 @@ let MarketRow = React.createClass({
                 );
             }
         }
-
         let report = this.props.report;
         let reportSection = this.getReportSection(report, market);
         let holdingsSection = this.getHoldingsSection(this.props.numOpenOrders);
         let rowAction = this.getRowAction(market, report);
-
         return (
             <div className="market-row">
                 <div className="info">

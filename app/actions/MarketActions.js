@@ -187,7 +187,6 @@ module.exports = {
           if (err) return console.error("loadMarkets:", err);
 
           async.each(markets, function (thisMarket, nextMarket) {
-            console.log("load metadata for:", thisMarket._id);
             self.flux.actions.market.loadMetadata(thisMarket);
             nextMarket();
           }, function (err) {
@@ -240,7 +239,7 @@ module.exports = {
     var self = this;
     this.flux.augur.ramble.getMarketMetadata(market._id, {sourceless: false}, function (err, metadata) {
       if (!err && metadata) {
-        console.info(market._id, "metadata loaded:", JSON.stringify(metadata, null, 2));
+        // console.info(market._id, "metadata loaded:", JSON.stringify(metadata, null, 2));
         self.dispatch(constants.market.LOAD_METADATA_SUCCESS, {metadata});
       }
     });

@@ -57,7 +57,6 @@ module.exports = {
   handleLoadMetadataSuccess: function (payload) {
     if (payload && payload.metadata && payload.metadata.marketId) {
       var marketId = abi.bignum(payload.metadata.marketId);
-      console.log("metadata for:", marketId, payload.metadata);
       if (this.state.markets[marketId]) {
         this.state.markets[marketId].metadata = payload.metadata;
       }
