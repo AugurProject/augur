@@ -149,7 +149,7 @@ module.exports = {
             callback: function (marketsInfo) {
               if (marketsInfo && !marketsInfo.error) {
                 var blackmarkets = blacklist.markets[augur.network_id][branchId];
-                async.eachSeries(marketsInfo, function (thisMarket, nextMarket) {
+                async.each(marketsInfo, function (thisMarket, nextMarket) {
                   if (creationBlock && creationBlock[thisMarket._id]) {
                     thisMarket.creationBlock = creationBlock[thisMarket._id];
                   }
@@ -185,6 +185,14 @@ module.exports = {
           });
         }, function (err) {
           if (err) return console.error("loadMarkets:", err);
+
+          // async.each(markets, function (thisMarket, nextMarket) {
+          //   console.log("load metadata for:", thisMarket._id);
+          //   self.flux.actions.market.loadMetadata(thisMarket);
+          //   nextMarket();
+          // }, function (err) {
+          //   if (err) console.error("metadata error:", err);
+          // });
 
           // loading complete!
           console.debug("all markets loaded in", ((new Date()).getTime() - start) / 1000, "seconds");
@@ -229,10 +237,11 @@ module.exports = {
 
   loadMetadata: function (market) {
     var self = this;
-    this.flux.augur.ramble.getMarketMetadata(market._id, null, function (err, metadata) {
-      if (err) return console.error("loadMetadata:", err);
-      console.log("metadata loaded:", metadata);
-      self.dispatch(constants.market.LOAD_METADATA_SUCCESS, {metadata});
+    this.flux.augur.ramble.getMarketMetadata(market._id, {sourceless: false}, function (err, metadata) {
+      console.info(market._id, "metadata loaded:", JSON.stringify(metadata, null, 2));
+      if (!err && metadata) {
+        self.dispatch(constants.market.LOAD_METADATA_SUCCESS, {metadata});
+      }
     });
   },
 

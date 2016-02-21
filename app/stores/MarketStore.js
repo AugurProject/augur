@@ -105,9 +105,9 @@ module.exports = {
       var market = this.state.markets[marketId];
       if (market) {
         market.metadata = payload.metadata;
-        this.emit(constants.CHANGE_EVENT);
       }
     }
+    this.emit(constants.CHANGE_EVENT);
   },
   handlePriceHistoryLoading: function (payload) {
     this.state.markets[payload.marketId].priceHistoryStatus = "loading";

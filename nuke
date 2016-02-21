@@ -5,6 +5,7 @@ set -e
 trap "exit" INT
 
 # nuke
+rm -Rf target
 rm -Rf node_modules
 
 # rebuild

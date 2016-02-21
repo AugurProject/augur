@@ -67,7 +67,8 @@
     "react-router": "^0.13.3",
     "react-tabs": "^0.5.1",
     "react-time-picker": "^1.1.0",
-    "secure-random": "^1.1.1"
+    "secure-random": "^1.1.1",
+    "tether-shepherd": "^1.7.0"
   },
   "peerDependencies": {},
   "devDependencies": {

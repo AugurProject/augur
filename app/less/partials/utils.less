@@ -133,3 +133,16 @@
     -ms-transition: all @time @type;
     transition: all @time @type;
 }
+
+.super-highlight {
+    animation-name: super-highlight-anim;
+    animation-duration: 0.5s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes super-highlight-anim {
+    0% { box-shadow: 0 0 0 2px #ffffaa; }
+    100% { box-shadow: 0 0 0px 8px #ffffaa; }
+}

@@ -772,6 +772,17 @@ a.market-pane:hover {
     border: 1px solid #ddd;
 }
 
+.metadata-image {
+    height: 75px;
+    border: 1px solid #ddd;
+    margin-bottom: 25px;
+    /*margin: 10px 5px 0 0;*/
+}
+
+.tour-outcome-list {
+    color: #54657e;
+}
+
 #market {
     padding-top: 11px;
 }

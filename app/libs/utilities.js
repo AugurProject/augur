@@ -53,10 +53,17 @@ module.exports = {
     return +percent + '%';
   },
 
-  // check if account address is correctly formatted
-  isValidAccount: function (address) {
-    address = address.replace(/^0x/, '');  // strip leading '0x' is it exists
-    return address.match(/^[0-9a-fA-F]{40}$/) ? true : false;
+  getPercentageFormatted: function (market, outcome) {
+    let price = outcome.price;
+    if (price == null) {
+      return "0 %";
+    }
+
+    if (market.type === "scalar") {
+      return +price.toFixed(2);
+    } else {
+      return +price.times(100).toFixed(1) + " %";
+    }
   },
 
   bytesToHex: function (bytes) {
@@ -104,5 +111,39 @@ module.exports = {
     default:
       console.error("unknown type:", market);
     }
+  },
+
+  getOutcomeNames: function (market) {
+    var numOutcomes = parseInt(market.numOutcomes, 10),
+        outcomes = market.outcomes,
+        outcomeNames = new Array(numOutcomes),
+        outcomeName,
+        i;
+
+    for (i = 0; i < numOutcomes; ++i) {
+        outcomeName = module.exports.getOutcomeName(outcomes[i].id, market);
+        outcomeNames[i] = outcomeName.outcome;
+    }
+
+    return outcomeNames;
+  },
+
+  getTourMarketKey: function(markets) {
+    for (var tourMarketKey in markets) {
+        if (!markets.hasOwnProperty(tourMarketKey)) continue;
+        if (!markets[tourMarketKey].description.length) continue;
+        if (markets[tourMarketKey].type === "binary" &&
+            markets[tourMarketKey]._id !== '0xd61ea5b5267761db397ad913ca7933c8727f840b0bbecab2dde169ab7ff3aaf' &&
+            markets[tourMarketKey]._id !== '-0x4a0aa5d564358bd70031540e0da0c17f2d670a0ad46b6993da68b3e8164ee3cd') {
+                break;
+            }
+    }
+    return tourMarketKey;
+  },
+
+  // check if account address is correctly formatted
+  isValidAccount: function (address) {
+    address = address.replace(/^0x/, '');  // strip leading '0x' is it exists
+    return address.match(/^[0-9a-fA-F]{40}$/) ? true : false;
   }
 };
