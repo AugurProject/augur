@@ -98,51 +98,58 @@ let ReportPage = React.createClass({
         let blockNumber = this.state.blockNumber;
         let isReportCommitPeriod = this.getFlux().store("branch").isReportCommitPeriod(blockNumber);
         let isReportRevealPeriod = !isReportCommitPeriod;
-        if (!market.matured && isReportCommitPeriod) {
-            return (
-                <div>
-                    <h1>Reporting the outcome of a market</h1>
-                    <h2>Review the question and make your report</h2>
-                    <ReportFillForm onReportFormSubmit={this.onReportFormSubmit}
-                        onUnethicalChange={this._onUnethicalChange}
-                        onReportedOutcomeChanged={this.onReportedOutcomeChanged}
-                        reportedOutcome={this.state.reportedOutcome}
-                        isUnethical={this.state.isUnethical}
-                        reportError={this.state.reportError}
-                        market={market}/>
-                    <ReportSavedModal
-                        reportedOutcomeName={this.state.reportedOutcome != null ? utilities.getOutcomeName(this.state.reportedOutcome, market).outcome : "none"}
-                        isUnethical={this.state.isUnethical}
-                        show={this.props.reportSavedModalOpen}
-                        onHide={this.props.toggleReportSavedModal} />
-                </div>
-            );
-        } else if (!market.matured && isReportRevealPeriod) {
-            if (this.state.reportedOutcome == null) {
-                // todo: what to do here?
-                return (
-                    <div>You did not report an outcome</div>
-                );
-            } else {
+        if (market.matured) {
+            if (isReportCommitPeriod) {
                 return (
                     <div>
                         <h1>Reporting the outcome of a market</h1>
-                        <h2>Confirm your reported outcome</h2>
-                        <ReportConfirmForm
-                            onConfirmFormSubmit={this.onConfirmFormSubmit}
-                            market={market}
+                        <h2>Review the question and make your report</h2>
+                        <ReportFillForm onReportFormSubmit={this.onReportFormSubmit}
+                            onUnethicalChange={this._onUnethicalChange}
+                            onReportedOutcomeChanged={this.onReportedOutcomeChanged}
                             reportedOutcome={this.state.reportedOutcome}
-                            isUnethical={this.state.isUnethical} />
+                            isUnethical={this.state.isUnethical}
+                            reportError={this.state.reportError}
+                            market={market} />
+                        <ReportDetails market={market} />
+                        <ReportSavedModal
+                            reportedOutcomeName={this.state.reportedOutcome != null ? utilities.getOutcomeName(this.state.reportedOutcome, market).outcome : "none"}
+                            isUnethical={this.state.isUnethical}
+                            show={this.props.reportSavedModalOpen}
+                            onHide={this.props.toggleReportSavedModal} />
                     </div>
                 );
+            } else if (isReportRevealPeriod) {
+                if (this.state.reportedOutcome == null) {
+                    return (
+                        <div>You did not report an outcome</div>
+                    );
+                } else {
+                    return (
+                        <div>
+                            <h1>Reporting the outcome of a market</h1>
+                            <h2>Confirm your reported outcome</h2>
+                            <ReportConfirmForm
+                                onConfirmFormSubmit={this.onConfirmFormSubmit}
+                                market={market}
+                                reportedOutcome={this.state.reportedOutcome}
+                                isUnethical={this.state.isUnethical} />
+                        </div>
+                    );
+                }
+            } else {
+                return (
+                    <div>
+                        <h1>Reporting details</h1>
+                        <ReportDetails market={market} />
+                    </div>
+                )
             }
         } else {
-            return (
-                <div>
-                    <h1>Reporting details</h1>
-                    <ReportDetails market={market} />
-                </div>
-            )
+            <div>
+                <h1>Event not ready for Reporting</h1>
+                <ReportDetails market={market} />
+            </div>
         }
     }
 });

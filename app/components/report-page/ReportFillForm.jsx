@@ -1,39 +1,36 @@
-let React = require('react');
-
+let React = require("react");
 let BigNumber = require("bignumber.js");
+let Input = require("react-bootstrap/lib/Input");
 let utilities = require("../../libs/utilities");
 let constants = require("../../libs/constants");
 let moment = require("moment");
 let classnames = require("classnames");
 
 var ReportFillForm = React.createClass({
+
     _getOutcomeOptions(outcomes, market) {
         let nameAttr = "reportedOutcome";
         let outcomeOptions = outcomes.map(outcome => {
             let outcomeName = utilities.getOutcomeName(outcome.id, market).outcome;
             return (
-                <div key={outcome.id}>
-                    <label>
-                        <input type="radio"
-                               name={nameAttr}
-                               value={outcome.id}
-                               checked={this.props.reportedOutcome == outcome.id}
-                               onChange={this.props.onReportedOutcomeChanged}/>
-                        { outcomeName }
-                    </label>
+                <div key={outcome.id} className="form-horizontal col-sm-12">
+                    <Input type="radio"
+                           name={nameAttr}
+                           value={outcome.id}
+                           checked={this.props.reportedOutcome == outcome.id}
+                           label={outcomeName}
+                           onChange={this.props.onReportedOutcomeChanged} />
                 </div>
             );
         });
         outcomeOptions.push(
-            <div key="indeterminate">
-                <label>
-                    <input type="radio"
-                           name={nameAttr}
-                           value={constants.INDETERMINATE_OUTCOME}
-                           checked={this.props.reportedOutcome == constants.INDETERMINATE_OUTCOME}
-                           onChange={this.props.onReportedOutcomeChanged} />
-                    Outcome is indeterminate
-                </label>
+            <div key="indeterminate" className="form-horizontal col-sm-12">
+                <Input type="radio"
+                       name={nameAttr}
+                       value={constants.INDETERMINATE_OUTCOME}
+                       checked={this.props.reportedOutcome == constants.INDETERMINATE_OUTCOME}
+                       label="Outcome is indeterminate"
+                       onChange={this.props.onReportedOutcomeChanged} />
             </div>
         );
         return outcomeOptions;
@@ -42,7 +39,6 @@ var ReportFillForm = React.createClass({
     render() {
         let market = this.props.market;
         let outcomeOptions = this._getOutcomeOptions(market.outcomes, market);
-
         return (
             <form onSubmit={this.props.onReportFormSubmit}>
                 <div className="form-group">
@@ -50,9 +46,8 @@ var ReportFillForm = React.createClass({
                         <div className="col-sm-3">
                             <label>Question</label>
                         </div>
-
                         <div className="col-sm-9">
-                            <div className="form-control-static">{ market.description }</div>
+                            <div className="form-control-static">{market.description}</div>
                         </div>
                     </div>
                 </div>
@@ -64,7 +59,7 @@ var ReportFillForm = React.createClass({
 
                         <div className="col-sm-9">
                             <span className="form-control-static">
-                                { market.endDate != null ? moment(market.endDate).format('MMM Do, YYYY') : '-' }
+                                {market.endDate != null ? moment(market.endDate).format("MMM Do, YYYY") : "-"}
                             </span>
                         </div>
                     </div>
@@ -76,9 +71,9 @@ var ReportFillForm = React.createClass({
                         </div>
 
                         <div className="col-sm-9">
-                            { outcomeOptions }
+                            {outcomeOptions}
                             <span className="help-block">
-                                { this.props.reportError }
+                                {this.props.reportError}
                             </span>
                         </div>
                     </div>
@@ -90,7 +85,6 @@ var ReportFillForm = React.createClass({
                                 Is this question unethical?
                             </label>
                         </div>
-
                         <div className="col-sm-9">
                             <label className="checkbox-inline">
                                 <input type="checkbox"
@@ -117,7 +111,7 @@ var ReportFillForm = React.createClass({
                     </div>
                 </div>
             </form>
-        )
+        );
     }
 });
 

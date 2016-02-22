@@ -99,7 +99,7 @@ let ReportDetails = React.createClass({
                         </div>
                     </div>
                 </div>
-                <div>
+                {/*<div>
                     <h2>Reporting details</h2>
                     <div className="form-group">
                         <div className="row">
@@ -161,8 +161,7 @@ let ReportDetails = React.createClass({
                             </div>
                         </div>
                     </div>
-
-                </div>
+                </div>*/}
             </div>
         );
     }
