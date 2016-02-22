@@ -27,7 +27,6 @@ GLOBAL.comments = augur.comments;
 augur.rpc.setLocalNode("http://127.0.0.1:8545");
 GLOBAL.b = augur.branches.dev;
 GLOBAL.ballot = [2, 1.5, 1.5, 1, 1.5, 1.5, 1];
-GLOBAL.log = console.log;
 
 longjohn.async_trace_limit = 25;
 longjohn.empty_frame = "";
@@ -44,16 +43,16 @@ GLOBAL.balances = (GLOBAL.balance = function (account, branch) {
         reputation: augur.getRepBalance(branch || augur.branches.dev, account),
         ether: abi.bignum(augur.rpc.balance(account)).dividedBy(constants.ETHER).toFixed()
     };
-    log(balances);
+    console.log(balances);
     return balances;
 })();
 
-log(chalk.cyan("Network"), chalk.green(augur.network_id));
+console.log(chalk.cyan("Network"), chalk.green(augur.network_id));
 
-log(chalk.cyan("Balances:"));
-log("Cash:       " + chalk.green(balances.cash));
-log("Reputation: " + chalk.green(balances.reputation));
-log("Ether:      " + chalk.green(balances.ether));
+console.log(chalk.cyan("Balances:"));
+console.log("Cash:       " + chalk.green(balances.cash));
+console.log("Reputation: " + chalk.green(balances.reputation));
+console.log("Ether:      " + chalk.green(balances.ether));
 
 var reportingInfo = (GLOBAL.reporting = function (branch) {
     var info = {
@@ -65,10 +64,10 @@ var reportingInfo = (GLOBAL.reporting = function (branch) {
     return info;
 })(b);
 
-log(chalk.cyan("Vote period"), chalk.green(reportingInfo.vote_period) + chalk.cyan(":"));
-log("Current period:     ", chalk.green(reportingInfo.current_period));
-log("Number of events:   ", chalk.green(reportingInfo.num_events));
-log("Number of reporters:", chalk.green(reportingInfo.num_reports));
+console.log(chalk.cyan("Vote period"), chalk.green(reportingInfo.vote_period) + chalk.cyan(":"));
+console.log("Current period:     ", chalk.green(reportingInfo.current_period));
+console.log("Number of events:   ", chalk.green(reportingInfo.num_events));
+console.log("Number of reporters:", chalk.green(reportingInfo.num_reports));
 
 GLOBAL.vote_period = reportingInfo.vote_period;
 GLOBAL.current_period = reportingInfo.current_period;

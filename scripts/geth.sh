@@ -21,6 +21,7 @@ optargs=""
 
 if [ "${network}" = "2" ]; then
     optargs="--testnet"
+    address="0x15f6400a88fb320822b689607d425272bea2175f"
 fi
 if [ "${network}" = "10101" ]; then
     # address="0x01114f4bda09ed6c6715cf0baf606b5bce1dc96a"
@@ -30,7 +31,7 @@ if [ "${network}" = "10101" ]; then
     optargs="--mine --minerthreads 1 --nodiscover"
     genesis="$HOME/src/augur.js/data/genesis-10101.json"
 else
-    optargs="--mine --minerthreads 1"
+    optargs="--mine --minerthreads 1 --verbosity 5"
     genesis="$HOME/src/augur.js/data/genesis-7.json"
     # vent: 70eb80f63946c2b3f65e68311b4419a80c78271c099a7d1f3d8df8cdd8e374934c795d8bc9f204dda21eb9a318d30197ba7593494eb27ceb52663c8339e9cb70
     # heavy: 9c3de1a912e7db6b46b10597cc0f1270e8b15d43c8f4ae003452c987133aea5845bf307fdfe1ec99a77af74027522e4a107196af1af51fab7840b1b708ca260e

@@ -1,5 +1,32 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 module.exports={
+    "2": {
+        "buyAndSellShares": "0xf5210713da9674da9f693713c00e79bcc3e79bc9",
+        "closeMarket": "0x0b4cd632d6816134738a0e5dff9739388185f281",
+        "closeMarketEight": "0x0aa0e4ae2919ed0e338ee61c793015d5366bb9c3",
+        "closeMarketFour": "0xff43d071e047ccfb4083dfa869e91aa9e43caac0",
+        "closeMarketOne": "0xf31dd48db77b291d03442cc6fe994d94df0ee3bd",
+        "closeMarketTwo": "0x4c0cd836927f0d9073a6b2ca8da86c80d33bc237",
+        "consensus": "0x588a6241592fb4097eeebccb2be5d922a7dd9acd",
+        "createBranch": "0x696a9fd06c41c64c5c3d5ac9441e671cc84e5ec8",
+        "createEvent": "0xb816283697f6a525b9cd499b2540ad9e0613b244",
+        "createMarket": "0x39dd6083c5bd3e004c0438efc5fc69c87ab04c37",
+        "eventResolution": "0xb46dbfa128ddc19ad188923cc564f7643667afd4",
+        "faucets": "0x9a065435e1ee34365fec4b71691230421cc3ea94",
+        "makeReports": "0xd81c5e42133d9901aa7493495dc297acc39b7c2d",
+        "orderBook": "0x7321ed33b9a7acf5794237e3c98892d3fc761dea",
+        "ramble": "0x132bf71d9aa4ef112a23106a28f7c32e0403717f",
+        "sendReputation": "0x1df4fc815ab7f970d8ae9079f684f3623407cc00",
+        "transferShares": "0x2ecdddf028c2186ba48a5623fba4d269d4c4c5be",
+        "branches": "0xb33543c4b11bb8a4f7a457855c786b9460693ea5",
+        "cash": "0xdb7bf3cd90cd2998edcf5ce534b98811d27c08b0",
+        "events": "0x7e4b372a66af47673b3a3fad65f12919ab91ca01",
+        "expiringEvents": "0xe7c0b33ce872bb8dfb1824b26e4ca0b641bfebec",
+        "fxpFunctions": "0x6a26ca406d6251de60f9ab4a41648e67ba94a05b",
+        "info": "0x175dd846b58dee3f63335b6e6462b0f40bfb1a7f",
+        "markets": "0x097f4d6e230f7afc561bad55cb91ed04c14a6aa6",
+        "reporting": "0x9cda2847e8b5a271601be07f4135b669953828d0"
+    },
     "7": {
         "buyAndSellShares": "0x271ee62a8577a97d648c4b4eb3a0e56306f711c1",
         "closeMarket": "0x7a2e05c795fbf585af34cebe760602b8425846dd",
