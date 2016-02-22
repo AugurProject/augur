@@ -238,6 +238,20 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
             var events = [[
                 "Will SpaceX successfully complete a manned flight to the International Space Station by the end of 2017?",
                 utils.date_to_block(augur, "1-1-2018")
+                // {
+                //     details: "NASA took a significant step Friday toward expanding research opportunities aboard the International Space Station with its first mission order from Hawthorne, California based-company SpaceX to launch astronauts from U.S. soil.\n\n"+
+                //         "This is the second in a series of four guaranteed orders NASA will make under the Commercial Crew Transportation Capability (CCtCap) contracts. The Boeing Company of Houston received its first crew mission order in May.\n\n"+
+                //         "\"It's really exciting to see SpaceX and Boeing with hardware in flow for their first crew rotation missions,\" said Kathy Lueders, manager of NASA's Commercial Crew Program. \"It is important to have at least two healthy and robust capabilities from U.S. companies to deliver crew and critical scientific experiments from American soil to the space station throughout its lifespan.\n\n\""+
+                //         "Determination of which company will fly its mission to the station first will be made at a later time. The contracts call for orders to take place prior to certification to support the lead time necessary for missions in late 2017, provided the contractors meet readiness conditions.\n\n"+
+                //         "Full story: http://www.nasa.gov/press-release/nasa-orders-spacex-crew-mission-to-international-space-station",
+                //     tags: ["space", "SpaceX", "astronaut"],
+                //     source: "NASA",
+                //     links: [
+                //         "http://www.spacex.com",
+                //         "http://www.nasa.gov/press-release/nasa-orders-spacex-crew-mission-to-international-space-station",
+                //         "http://www.popsci.com/first-crewed-private-spaceflights-may-not-fly-in-2017-according-to-safety-report"
+                //     ]
+                // }
             ], [
                 "Will the Larsen B ice shelf collapse by November 1, 2017?",
                 utils.date_to_block(augur, "11-2-2017")
@@ -256,6 +270,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 var description = element[0];
                 var expDate = (EXPIRING) ?
                     5*blockNumber + Math.round(Math.random() * 1000) : element[1];
+                var metadata = element[2];
                 var minValue = 1;
                 var maxValue = 2;
                 var numOutcomes = 2;
@@ -298,6 +313,9 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                             },
                             onSuccess: function (res) {
                                 var marketID = res.callReturn;
+                                console.log("metadata:", metadata);
+                                metadata.marketId = marketID;
+                                console.log("metadata:", metadata);
                                 var creator = augur.getCreator(marketID);
                                 if (creator !== augur.coinbase) {
                                     console.log("\n  createMarket.createMarket:", utils.pp(res));
@@ -324,7 +342,12 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                                         assert.strictEqual(info.events.length, 1);
                                         assert.strictEqual(info.events[0].type, "binary");
                                         assert.strictEqual(info.type, "binary");
-                                        next();
+                                        augur.ramble.addMetadata(metadata, function (sentResponse) {
+                                            console.log("addMetadata sent:", sentResponse);
+                                        }, function (successResponse) {
+                                            console.log("addMetadata success:", successResponse);
+                                            next();
+                                        }, next);
                                     });
                                 }); // markets.getMarketEvents
 

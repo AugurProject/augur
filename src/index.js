@@ -953,10 +953,17 @@ Augur.prototype.sendReputation = function (branch, to, value, onSent, onSuccess,
 // transferShares.se
 
 // makeReports.se
-Augur.prototype.makeHash = function (salt, report, event, from, isScalar) {
-    var fixedReport = (isScalar) ?
-        abi.hex(abi.fix(report).plus(new BigNumber(1))) :
-        abi.fix(report, "hex");
+Augur.prototype.makeHash = function (salt, report, event, from, indeterminate, isBinary) {
+    var fixedReport;
+    if (isBinary) {
+        fixedReport = abi.fix(report, "hex");
+    } else {
+        if (!indeterminate && abi.bignum(report).eq(new BigNumber("0.5"))) {
+            fixedReport = abi.hex(abi.fix(report).plus(new BigNumber(1)));
+        } else {
+            fixedReport = abi.fix(report, "hex");
+        }
+    }
     return abi.hex(this.utils.sha256([
         from || this.from,
         abi.hex(salt),
@@ -964,16 +971,23 @@ Augur.prototype.makeHash = function (salt, report, event, from, isScalar) {
         event
     ]));
 };
-Augur.prototype.makeHash_contract = function (salt, report, event, isScalar, callback) {
+Augur.prototype.makeHash_contract = function (salt, report, event, indeterminate, isBinary, callback) {
     if (salt.constructor === Object && salt.salt) {
         report = salt.report;
         event = salt.event;
         if (salt.callback) callback = salt.callback;
         salt = salt.salt;
     }
-    var fixedReport = (isScalar) ?
-        abi.hex(abi.fix(report).plus(new BigNumber(1))) :
-        abi.fix(report, "hex");
+    var fixedReport;
+    if (isBinary) {
+        fixedReport = abi.fix(report, "hex");
+    } else {
+        if (!indeterminate && abi.bignum(report).eq(new BigNumber("0.5"))) {
+            fixedReport = abi.hex(abi.fix(report).plus(new BigNumber(1)));
+        } else {
+            fixedReport = abi.fix(report, "hex");
+        }
+    }
     var tx = clone(this.tx.makeHash);
     tx.params = [abi.hex(salt), fixedReport, event];
     return this.fire(tx, callback);
@@ -1010,7 +1024,7 @@ Augur.prototype.submitReportHash = function (branch, reportHash, reportPeriod, e
         self.transact(tx, onSent, onSuccess, onFailed);
     });
 };
-Augur.prototype.submitReport = function (branch, reportPeriod, eventIndex, salt, report, eventID, ethics, isScalar, onSent, onSuccess, onFailed) {
+Augur.prototype.submitReport = function (branch, reportPeriod, eventIndex, salt, report, eventID, ethics, indeterminate, isBinary, onSent, onSuccess, onFailed) {
     var self = this;
     if (branch.constructor === Object && branch.branch) {
         reportPeriod = branch.reportPeriod || branch.votePeriod;
@@ -1019,7 +1033,8 @@ Augur.prototype.submitReport = function (branch, reportPeriod, eventIndex, salt,
         report = branch.report;
         eventID = branch.eventID;
         ethics = branch.ethics;
-        isScalar = branch.isScalar;
+        indeterminate = branch.indeterminate;
+        isBinary = branch.isBinary;
         if (branch.onSent) onSent = branch.onSent;
         if (branch.onSuccess) onSuccess = branch.onSuccess;
         if (branch.onFailed) onFailed = branch.onFailed;
@@ -1028,9 +1043,16 @@ Augur.prototype.submitReport = function (branch, reportPeriod, eventIndex, salt,
     onSent = onSent || this.utils.pass;
     onSuccess = onSuccess || this.utils.pass;
     onFailed = onFailed || this.utils.pass;
-    var fixedReport = (isScalar) ?
-        abi.hex(abi.fix(report).plus(new BigNumber(1))) :
-        abi.fix(report, "hex");
+    var fixedReport;
+    if (isBinary) {
+        fixedReport = abi.fix(report, "hex");
+    } else {
+        if (!indeterminate && abi.bignum(report).eq(new BigNumber("0.5"))) {
+            fixedReport = abi.hex(abi.fix(report).plus(new BigNumber(1)));
+        } else {
+            fixedReport = abi.fix(report, "hex");
+        }
+    }
     var tx = clone(this.tx.submitReport);
     if (eventIndex) {
         tx.params = [
