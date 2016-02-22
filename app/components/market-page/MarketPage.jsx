@@ -126,6 +126,7 @@ let MarketPage = React.createClass({
                                 <li role="presentation" className="list-group-item">
                                     <a role="tab" href="#statsTab" data-toggle="tab">Stats & Charts</a>
                                 </li>
+                                {/* TODO: implement
                                 <li role="presentation" className="list-group-item">
                                     <a role="tab" href="#rulesTab" data-toggle="tab">Rules</a>
                                 </li>
@@ -137,11 +138,12 @@ let MarketPage = React.createClass({
                                 <li role="presentation" className="list-group-item">
                                     <a role="tab" href="#userFrozenFundsTab" data-toggle="tab">
                                         Frozen Funds
-                                        {/*<span ng-show="app.balance.eventMargin != null">
+                                        <span ng-show="app.balance.eventMargin != null">
                                         (<span ng-bind="app.balance.eventMarginFormatted"></span>)
-                                    </span>*/}
+                                    </span>
                                     </a>
                                 </li>
+                                */}
                             </ul>
                         </div>
                     </div>
@@ -161,6 +163,7 @@ let MarketPage = React.createClass({
                                 blockNumber={this.state.blockNumber}
                                 />
                         </div>
+                        {/*
                         <div id="rulesTab" className="tab-pane" role="tabpanel">
                             <RulesTab/>
                         </div>
@@ -170,6 +173,7 @@ let MarketPage = React.createClass({
                         <div id="userFrozenFundsTab" className="tab-pane" role="tabpanel">
                             <UserFrozenFundsTab/>
                         </div>
+                        */}
                     </div>
                 </div>
 

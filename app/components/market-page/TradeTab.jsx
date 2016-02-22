@@ -12,13 +12,17 @@ let TradeTab = React.createClass({
             <div className="row collapsibleAccordion" role="tablist" aria-multiselectable="true">
                 <div className="col-sm-9">
                     <div className="row">
-                        <div className="col-sm-7 col-md-6">
+                        <div>
+                            {/* TODO: implement
                             <UserPosition market={this.props.market}/>
+                            */}
                             <UserOrders market={this.props.market}/>
                         </div>
+                    {/* TODO: implement
                         <div className="col-sm-5 col-md-6">
                             <OrderBook />
                         </div>
+                    */}
                     </div>
                 </div>
                 <div className="col-sm-3">
