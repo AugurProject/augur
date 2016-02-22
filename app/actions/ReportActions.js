@@ -178,14 +178,16 @@ var ReportActions = {
    */
   submitReportHash: function (branchId, eventId, reportPeriod, reportedOutcome, isUnethical, cb) {
     cb = cb || function (e, r) { console.log(e, r); };
+    console.log("this:", this);
+    console.log(branchId, eventId, reportPeriod, reportedOutcome, isUnethical);
     var self = this;
     this.flux.augur.getEventIndex(reportPeriod, eventId, function (eventIndex) {
       if (eventIndex === undefined || eventIndex === null || eventIndex.error) {
         return console.error("eventIndex:", eventIndex);
       }
-      var account = this.flux.store("config").getAccount();
+      var account = self.flux.store("config").getAccount();
       var salt = utils.bytesToHex(secureRandom(32));
-      var pendingReports = this.flux.store("report").getState().pendingReports;
+      var pendingReports = self.flux.store("report").getState().pendingReports;
       pendingReports.push({
         branchId,
         eventId,
@@ -206,11 +208,9 @@ var ReportActions = {
         reportPeriod: reportPeriod,
         eventID: eventId,
         eventIndex: eventIndex,
-        onSent: function (res) {
-          console.log("submitReportHash sent:", res);
-        },
+        onSent: self.flux.augur.utils.noop,
         onSuccess: function (res) {
-          console.log("submitReportHash success:", res);
+          console.log("report hash submitted:", res);
           pendingReports[pendingReports.length - 1].submitHash = true;
           self.dispatch(constants.report.UPDATE_PENDING_REPORTS, {pendingReports});
           cb(null, res);

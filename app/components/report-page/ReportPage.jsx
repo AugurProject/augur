@@ -51,12 +51,13 @@ let ReportPage = React.createClass({
     },
 
     onReportFormSubmit(event) {
+        let flux = this.getFlux();
         event.preventDefault();
         if (this.state.reportedOutcome === null) {
             return this.setState({reportError: "you must choose something"});
         }
         this.setState({reportError: null});
-        this.getFlux().actions.report.submitReportHash(
+        flux.actions.report.submitReportHash(
             this.state.branch.id,
             this.state.event.id,
             this.state.branch.reportPeriod,
