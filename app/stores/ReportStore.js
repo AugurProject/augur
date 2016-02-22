@@ -32,14 +32,14 @@ module.exports = {
     this.emit(constants.CHANGE_EVENT);
   },
   handleSaveReportSuccess: function (payload) {
-    var event = this.state.eventsToReport[payload.id];
-    event.report = {
-      reportHash: payload.reportHash,
-      reportedOutcome: payload.reportedOutcome,
-      isUnethical: payload.isUnethical
-    };
-    this.state.eventsToReport[payload.id] = event;
-    this.emit(constants.CHANGE_EVENT);
+    if (this.state.eventsToReport[payload.id]) {
+      this.state.eventsToReport[payload.id].report = {
+        reportHash: payload.reportHash,
+        reportedOutcome: payload.reportedOutcome,
+        isUnethical: payload.isUnethical
+      };
+      this.emit(constants.CHANGE_EVENT);
+    }
   },
   // payload: {branch}
   handleReady: function (payload) {

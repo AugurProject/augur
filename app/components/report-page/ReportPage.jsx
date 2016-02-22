@@ -56,25 +56,23 @@ let ReportPage = React.createClass({
             return this.setState({reportError: "you must choose something"});
         }
         this.setState({reportError: null});
-        let augur = this.getFlux().augur;
-        let eventId = this.state.event.id;
-        let reportHash = augur.makeHash("salt", this.state.reportedOutcome, eventId);
-        this.getFlux().actions.report.saveReport(
-            this.state.account,
-            eventId,
-            reportHash,
+        this.getFlux().actions.report.submitReportHash(
+            this.state.branch.id,
+            this.state.event.id,
+            this.state.branch.reportPeriod,
             this.state.reportedOutcome,
             this.state.isUnethical
         );
         this.props.toggleReportSavedModal();
     },
+
     onConfirmFormSubmit(event) {
         event.preventDefault();
         let branchId, reportHash, reportPeriod, eventId, eventIndex;
         branchId = this.state.branch.id;
         reportHash = this.state.reportHash;
         reportPeriod = this.state.branch.reportPeriod;
-        eventId = this.state.market.events[0].id;// is this right?
+        eventId = this.state.event.id;
         eventIndex = this.getFlux().augur.getEventIndex(reportPeriod, eventId);
         this.getFlux().actions.report.submitReport(branchId, reportHash, reportPeriod, eventId, eventIndex);
     },

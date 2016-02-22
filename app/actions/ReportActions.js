@@ -153,10 +153,30 @@ var ReportActions = {
   },
 
   /**
+   * Check if the current account is required to report on an event.
+   * @param {string} eventId Event ID to check.
+   * @param {function} cb Callback function.
+   * @return {bool} true if account is required to report, false otherwise.
+   */
+  isRequiredToReport: function (eventId, cb) {
+    var account = this.flux.store("config").getAccount();
+    var randomNumber = abi.hex(abi.bignum(account).plus(abi.bignum(eventId)));
+    this.flux.augur.rpc.sha3(randomNumber, function (diceroll) {
+      if (!diceroll) return cb(new Error("couldn't get sha3(account + eventID)"));
+      if (diceroll.error) return cb(diceroll);
+      self.flux.augur.calculateReportingThreshold(branchId, eventId, reportPeriod, function (threshold) {
+        if (!threshold) return cb(new Error("couldn't get reporting threshold for " + eventId));
+        if (threshold.error) return cb(threshold);
+        cb(null, abi.bignum(diceroll).lt(abi.bignum(threshold)));
+      });
+    });
+  },
+
+  /**
    * Create, broadcast, and store the report hash.
    * (Should be called during the first half of the reporting period.)
    */
-  submitReportHash: function (branchId, eventId, reportPeriod, report, cb) {
+  submitReportHash: function (branchId, eventId, reportPeriod, reportedOutcome, isUnethical, cb) {
     cb = cb || function (e, r) { console.log(e, r); };
     var self = this;
     var account = this.flux.store("config").getAccount();
@@ -172,33 +192,25 @@ var ReportActions = {
     });
     this.flux.actions.report.storeReports(pendingReports);
     this.dispatch(constants.report.UPDATE_PENDING_REPORTS, {pendingReports});
-    var reportHash = this.flux.augur.makeHash(salt, report, eventId, account);
-    var randomNumber = abi.hex(abi.bignum(this.flux.augur.from).plus(abi.bignum(eventId)));
-    this.flux.augur.rpc.sha3(randomNumber, function (diceroll) {
-      var threshold = self.flux.augur.calculateReportingThreshold(branchId, eventId, reportPeriod);
-      self.flux.augur.getEventIndex(reportPeriod, eventId, function (eventIndex) {
-        if (abi.bignum(diceroll).lt(abi.bignum(threshold))) {
-          self.flux.augur.submitReportHash({
-            branch: branchId,
-            reportHash: reportHash,
-            reportPeriod: reportPeriod,
-            eventID: eventId,
-            eventIndex: eventIndex,
-            onSent: function (res) {
-              console.log("submitReportHash sent:", res);
-            },
-            onSuccess: function (res) {
-              console.log("submitReportHash success:", res);
-              pendingReports[pendingReports.length - 1].submitHash = true;
-              self.dispatch(constants.report.UPDATE_PENDING_REPORTS, {pendingReports});
-              cb(null, res);
-            },
-            onFailed: function (err) {
-              console.error("submitReportHash:", err);
-              cb(err);
-            }
-          });
-        }
+    var reportHash = this.flux.augur.makeHash(salt, reportedOutcome, eventId, account);
+    this.flux.actions.report.saveReport(account, eventId, reportHash, reportedOutcome, isUnethical);
+    this.flux.augur.getEventIndex(reportPeriod, eventId, function (eventIndex) {
+      self.flux.augur.submitReportHash({
+        branch: branchId,
+        reportHash: reportHash,
+        reportPeriod: reportPeriod,
+        eventID: eventId,
+        eventIndex: eventIndex,
+        onSent: function (res) {
+          console.log("submitReportHash sent:", res);
+        },
+        onSuccess: function (res) {
+          console.log("submitReportHash success:", res);
+          pendingReports[pendingReports.length - 1].submitHash = true;
+          self.dispatch(constants.report.UPDATE_PENDING_REPORTS, {pendingReports});
+          cb(null, res);
+        },
+        onFailed: cb
       });
     });
   },
@@ -234,7 +246,7 @@ var ReportActions = {
               salt: report.salt,
               report: report.report,
               eventID: report.eventId,
-              ethics: report.ethics,
+              ethics: !report.isUnethical,
               onSent: function (res) {
                 console.log("submitReport sent:", res);
               },
