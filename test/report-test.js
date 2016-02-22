@@ -30,6 +30,7 @@ var branch = flux.augur.branches.dev;
 var reportPeriod = flux.augur.getReportPeriod(branch);
 var numEvents = flux.augur.getNumberEvents(branch, reportPeriod);
 var salt = "0xe8f36277bf8464cd778abf17421e5e49e64852cc353f398d3d6013802ac18e";
+var eventIndex = 0;
 
 var branchID = flux.augur.branches.dev;
 var userAccount = flux.augur.from;
@@ -88,9 +89,9 @@ test("ReportActions.saveReport", function (t) {
         checkReport(t, storedEventToReport.report, "stores.report.state.eventsToReport['" + eventID + "'].report");
 
         // verify report stored in localStorage
-        var key = constants.report.REPORTS_STORAGE + "-" + userAccount + "-" + eventID;
+        var key = constants.report.REPORTS_STORAGE + "-" + userAccount + "-" + eventToReport.branchId + "-" + eventID;
         var value = localStorage.getItem(key);
-        var expectedValue = reportHash + "|" + reportedOutcome + "|" + isUnethical;
+        var expectedValue = reportHash + "|" + reportedOutcome + "|" + eventIndex + "|" + isUnethical;
         t.equal(value, expectedValue, "localStorage.getItem(" + key + ") == " + expectedValue);
         flux.register.SAVE_REPORT_SUCCESS = SAVE_REPORT_SUCCESS;
         t.end();
@@ -98,7 +99,9 @@ test("ReportActions.saveReport", function (t) {
     flux.stores.config.state.currentAccount = userAccount;
     flux.stores.report.state.eventsToReport[eventID] = eventToReport;
     flux.actions.report.saveReport(
+        eventToReport.branchId,
         eventID,
+        eventIndex,
         reportHash,
         reportedOutcome,
         isUnethical
@@ -107,16 +110,16 @@ test("ReportActions.saveReport", function (t) {
 
 test("ReportActions.loadReportFromLs", function (t) {
     flux.stores.config.state.currentAccount = userAccount;
-    checkReport(t, flux.actions.report.loadReportFromLs(eventID));
+    checkReport(t, flux.actions.report.loadReportFromLs(eventToReport.branchId, eventID));
 
     // verify report stored in ReportStore
     var storedReport = flux.store("report").getEvent(eventID).report;
     checkReport(t, storedReport, "stores.report.state.eventsToReport['" + eventID + "'].report");
 
     // verify report stored in localStorage
-    var key = constants.report.REPORTS_STORAGE + "-" + userAccount + "-" + eventID;
+    var key = constants.report.REPORTS_STORAGE + "-" + userAccount + "-" + eventToReport.branchId + "-" + eventID;
     var value = localStorage.getItem(key);
-    var expectedValue = reportHash + "|" + reportedOutcome + "|" + isUnethical;
+    var expectedValue = reportHash + "|" + reportedOutcome + "|" + eventIndex + "|" + isUnethical;
     t.equal(value, expectedValue, "localStorage.getItem(" + key + ") == " + expectedValue);
     t.end();
 });
@@ -192,26 +195,53 @@ test("ReportActions.loadEventsToReport", function (t) {
     flux.actions.report.loadEventsToReport();
 });
 
-test("ReportActions.loadPendingReports", function (t) {
+test("ReportActions.storeReports", function (t) {
     flux = reset(flux);
-    var LOAD_PENDING_REPORTS_SUCCESS = flux.register.LOAD_PENDING_REPORTS_SUCCESS;
-    flux.register.LOAD_PENDING_REPORTS_SUCCESS = function (payload) {
-        if (DEBUG) console.log("LOAD_PENDING_REPORTS_SUCCESS:", payload);
-        t.equal(payload.constructor, Object, "payload is an object");
-        t.equal(payload.pendingReports.constructor, Array, "payload.pendingReports is an array");
-        LOAD_PENDING_REPORTS_SUCCESS(payload);
-        t.pass("dispatch LOAD_PENDING_REPORTS_SUCCESS");
-        flux.register.LOAD_PENDING_REPORTS_SUCCESS = LOAD_PENDING_REPORTS_SUCCESS;
-        t.end();
-    };
-    flux.stores.report.state.pendingReports = [{
+    var pendingReport = {
         branchId: branch,
+        eventId: eventID,
+        eventIndex: eventIndex,
         reportPeriod: reportPeriod,
         report: reportedOutcome,
         salt: salt,
         submitHash: false,
         submitReport: false
-    }];
+    };
+    flux.actions.report.storeReports([pendingReport]);
+    var storedReports = localStorage.getItem(constants.report.REPORTS_STORAGE);
+    t.equal(storedReports.constructor, String, "storedReports is a string");
+    t.equal(storedReports, JSON.stringify([pendingReport]), "storedReports == JSON.stringify([pendingReport])");
+    var parsedReports = JSON.parse(storedReports);
+    t.equal(parsedReports.constructor, Array, "storedReports parses into an array using JSON.parse");
+    t.equal(parsedReports.length, 1, "parsedReports.length == 1");
+    t.deepEqual(parsedReports[0], pendingReport, "parsedReports[0] == " + JSON.stringify(pendingReport));
+    t.end();
+});
+
+test("ReportActions.loadPendingReports", function (t) {
+    flux = reset(flux);
+    var pendingReport = {
+        branchId: branch,
+        eventId: eventID,
+        eventIndex: eventIndex,
+        reportPeriod: reportPeriod,
+        report: reportedOutcome,
+        salt: salt,
+        submitHash: false,
+        submitReport: false
+    };
+    var LOAD_PENDING_REPORTS_SUCCESS = flux.register.LOAD_PENDING_REPORTS_SUCCESS;
+    flux.register.LOAD_PENDING_REPORTS_SUCCESS = function (payload) {
+        if (DEBUG) console.log("LOAD_PENDING_REPORTS_SUCCESS:", payload);
+        t.equal(payload.constructor, Object, "payload is an object");
+        t.equal(payload.pendingReports.constructor, Array, "payload.pendingReports is an array");
+        t.deepEqual(payload.pendingReports[payload.pendingReports.length - 1], pendingReport, "payload.pendingReports[end] == " + JSON.stringify(pendingReport));
+        LOAD_PENDING_REPORTS_SUCCESS(payload);
+        t.pass("dispatch LOAD_PENDING_REPORTS_SUCCESS");
+        flux.register.LOAD_PENDING_REPORTS_SUCCESS = LOAD_PENDING_REPORTS_SUCCESS;
+        t.end();
+    };
+    flux.stores.report.state.pendingReports = [pendingReport];
     flux.actions.report.loadPendingReports();
 });
 

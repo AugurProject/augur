@@ -16,7 +16,7 @@ let ReportDetails = React.createClass({
         let report = flux.store("report").getReport(branch.id, branch.reportPeriod);
         console.log("loaded report from flux:", report);
         if (!report) {
-            report = flux.actions.report.loadReportFromLs(eventId);
+            report = flux.actions.report.loadReportFromLs(branch.id, eventId);
             console.log("loaded report from LS:", report);
         }
         return {branch, blockNumber, report};

@@ -48,12 +48,14 @@ module.exports = {
       }
       var reportPeriod = abi.number(result);
 
-      // if this is a new report period, check quorum & submit reports
+      self.flux.actions.report.submitQualifiedReports(function (err, res) {
+          if (err) console.error("ReportsPage.submitQualifiedReports:", err);
+          if (res) console.log("submitted reports:", res);
+      });
+
+      // if this is a new report period, load events to report
       if (reportPeriod > currentBranch.reportPeriod) {
         self.flux.actions.report.loadEventsToReport();
-        self.flux.actions.report.submitQualifiedReports(function (err, res) {
-          if (err) console.error("submitQualifiedReports:", err);
-        });
       }
 
       (function incrementPeriod() {

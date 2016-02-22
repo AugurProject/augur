@@ -41,7 +41,7 @@ let ReportSavedModal = React.createClass({
                     </div>
                 </div>
             </Modal>
-        )
+        );
     }
 });
 

@@ -34,20 +34,19 @@ let ReportsPage = React.createClass({
     },
 
     confirmReport() {
-        console.log("ReportsPage: todo: confirm the report");
         this.props.toggleConfirmReportModal();
     },
 
     render() {
         let self = this;
         let blockNumber = this.state.blockNumber;
-        let isCommitPeriod = this.getFlux().store('branch').isReportCommitPeriod(blockNumber);
+        let isCommitPeriod = this.state.isCommitPeriod;
         let isRevealPeriod = !isCommitPeriod;
         let marketRows = [];
         if (this.state.currentBranch) {
             let periodLength = this.state.currentBranch.periodLength;
             let commitPeriodEndMillis = 0;
-            if (isCommitPeriod) {
+            if (isCommitPeriod === true) {
                 commitPeriodEndMillis = moment.duration(constants.SECONDS_PER_BLOCK * ((periodLength / 2) - (blockNumber % (periodLength / 2))), "seconds");
             }
             let revealPeriodEndMillis = moment.duration(constants.SECONDS_PER_BLOCK * (periodLength - (blockNumber % periodLength)), "seconds");
@@ -71,18 +70,6 @@ let ReportsPage = React.createClass({
                 );
             }
         }
-
-        // let events = _.filter(this.state.events, (event) => {
-        //     let query = this.props.query;
-        //     if (query.previous != null) {
-        //         return event.markets[0].matured;
-        //     } else if (query.committed != null) {
-        //         return isRevealPeriod;
-        //     } else {
-        //         return isCommitPeriod;
-        //     }
-        // });
-
         return (
             <div>
                 <h1>Reporting</h1>
@@ -127,7 +114,6 @@ let ReportsPage = React.createClass({
                         </ul>
                     </div>
                 </div>
-
                 <div className="row">
                     <div className="col-xs-12">
                         {marketRows}

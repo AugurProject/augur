@@ -1,12 +1,10 @@
-let React = require('react');
-
+let React = require("react");
 let moment = require("moment");
 let utilities = require("../../libs/utilities");
 
 let ReportConfirmForm = React.createClass({
     render() {
         let market = this.props.market;
-
         return (
             <form onSubmit={this.props.onConfirmFormSubmit}>
                 <div className="form-group">
@@ -64,7 +62,7 @@ let ReportConfirmForm = React.createClass({
                     </div>
                 </div>
             </form>
-        )
+        );
     }
 });
 

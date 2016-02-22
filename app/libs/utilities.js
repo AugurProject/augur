@@ -55,10 +55,9 @@ module.exports = {
 
   getPercentageFormatted: function (market, outcome) {
     let price = outcome.price;
-    if (price == null) {
+    if (price === null || price === undefined) {
       return "0 %";
     }
-
     if (market.type === "scalar") {
       return +price.toFixed(2);
     } else {

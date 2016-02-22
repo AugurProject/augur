@@ -68,13 +68,16 @@ let ReportPage = React.createClass({
 
     onConfirmFormSubmit(event) {
         event.preventDefault();
+        let flux = this.getFlux();
         let branchId, reportHash, reportPeriod, eventId, eventIndex;
         branchId = this.state.branch.id;
         reportHash = this.state.reportHash;
         reportPeriod = this.state.branch.reportPeriod;
         eventId = this.state.event.id;
-        eventIndex = this.getFlux().augur.getEventIndex(reportPeriod, eventId);
-        this.getFlux().actions.report.submitReport(branchId, reportHash, reportPeriod, eventId, eventIndex);
+        eventIndex = flux.augur.getEventIndex(reportPeriod, eventId);
+        flux.actions.report.submitQualifiedReports(function (err, res) {
+            if (err) console.error("ReportsPage.submitQualifiedReports:", err);
+        });
     },
 
     onReportedOutcomeChanged(event) {
