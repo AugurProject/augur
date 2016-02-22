@@ -183,7 +183,7 @@ var ReportActions = {
     pendingReports.push({
       branchId,
       reportPeriod,
-      report,
+      reportedOutcome,
       salt,
       submitHash: false,
       submitReport: false
