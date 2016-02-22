@@ -144,9 +144,6 @@ var flux = {
         UPDATE_PENDING_REPORTS: function (payload) {
             flux.stores.report.handleLoadPendingReportsSuccess(payload);
         },
-        UPDATE_EVENT_TO_REPORT: function (payload) {
-            flux.stores.report.handleUpdateEventToReport(payload);
-        },
         SAVE_REPORT_SUCCESS: function (payload) {
             flux.stores.report.handleSaveReportSuccess(payload);
         },

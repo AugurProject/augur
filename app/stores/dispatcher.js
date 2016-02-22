@@ -72,7 +72,6 @@ stores.report.initialize = function () {
     constants.report.LOAD_PENDING_REPORTS_SUCCESS, this.handleLoadPendingReportsSuccess,
     constants.report.UPDATE_PENDING_REPORTS, this.handleLoadPendingReportsSuccess,
     constants.report.SAVE_REPORT_SUCCESS, this.handleSaveReportSuccess,
-    constants.report.UPDATE_EVENT_TO_REPORT, this.handleUpdateEventToReport,
     constants.report.READY, this.handleReady
   );
 };

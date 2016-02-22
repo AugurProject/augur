@@ -23,12 +23,13 @@ var ReportActions = {
    * when the user returns during the second half of the reporting period
    * to submit their plaintext reports.)
    */
-  saveReport: function (userAccount, eventId, reportHash, reportedOutcome, isUnethical) {
+  saveReport: function (eventId, reportHash, reportedOutcome, isUnethical) {
+    var userAccount = this.flux.store("config").getAccount();
     var key = constants.report.REPORTS_STORAGE + "-" + userAccount + "-" + eventId;
     var value = reportHash + "|" + reportedOutcome + "|" + isUnethical;
     localStorage.setItem(key, value);
     this.dispatch(constants.report.SAVE_REPORT_SUCCESS, {
-      userAccount, eventId, reportHash, reportedOutcome, isUnethical
+      eventId, reportHash, reportedOutcome, isUnethical
     });
   },
 
@@ -39,9 +40,7 @@ var ReportActions = {
     var userAccount = this.flux.store("config").getAccount();
     var key = constants.report.REPORTS_STORAGE + "-" + userAccount + "-" + eventId;
     var value = localStorage.getItem(key);
-    if (value === null) {
-      return {};
-    }
+    if (value === null) return {};
     var reportParts = value.split("|");
     return {
       reportHash: reportParts[0],
@@ -97,7 +96,6 @@ var ReportActions = {
             report: storedReport,
             markets: []
           };
-          console.log("report from localstorage:", storedReport);
           augur.getDescription(eventId, function (description) {
             if (description && description.error) return nextEvent(description);
             eventsToReport[eventId].description = description;
@@ -193,7 +191,7 @@ var ReportActions = {
     this.flux.actions.report.storeReports(pendingReports);
     this.dispatch(constants.report.UPDATE_PENDING_REPORTS, {pendingReports});
     var reportHash = this.flux.augur.makeHash(salt, reportedOutcome, eventId, account);
-    this.flux.actions.report.saveReport(account, eventId, reportHash, reportedOutcome, isUnethical);
+    this.flux.actions.report.saveReport(eventId, reportHash, reportedOutcome, isUnethical);
     this.flux.augur.getEventIndex(reportPeriod, eventId, function (eventIndex) {
       self.flux.augur.submitReportHash({
         branch: branchId,

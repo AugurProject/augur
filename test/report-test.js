@@ -17,13 +17,15 @@ var reset = require("./reset");
 var tools = require("./tools");
 var marketInfo = require("./marketInfo");
 var keystore = require("./account");
+var eventToReport = require("./eventToReport");
+var eventID = eventToReport.id;
 
 var DEBUG = true;
 
-// var host = "http://127.0.0.1:8545";
-// flux.augur.rpc.setLocalNode(host);
-// flux.augur.connect(host);
-flux.augur.connect();
+var host = "http://127.0.0.1:8545";
+flux.augur.rpc.setLocalNode(host);
+flux.augur.connect(host, process.env.GETH_IPC);
+// flux.augur.connect();
 var branch = flux.augur.branches.dev;
 var reportPeriod = flux.augur.getReportPeriod(branch);
 var numEvents = flux.augur.getNumberEvents(branch, reportPeriod);
@@ -31,10 +33,16 @@ var salt = "0xe8f36277bf8464cd778abf17421e5e49e64852cc353f398d3d6013802ac18e";
 
 var branchID = flux.augur.branches.dev;
 var userAccount = flux.augur.from;
-var eventID = marketInfo.events[0].id;
+// var eventID = marketInfo.events[0].id;
 var reportedOutcome = "1";
 var isUnethical = false;
 var reportHash = flux.augur.makeHash(salt, reportedOutcome, eventID);
+
+eventToReport.markets[0] = tools.parseMarketInfo(
+    eventToReport.markets[0],
+    flux.augur.rpc.blockNumber(),
+    {address: flux.augur.from}
+);
 
 function checkReport(t, report, label) {
     label = label || "payload";
@@ -45,13 +53,13 @@ function checkReport(t, report, label) {
     t.equal(report.isUnethical, isUnethical, label + ".isUnethical == " + isUnethical);
 }
 
-function checkEventToReport(t, eventToReport, label) {
+function checkEventToReport(t, eventToReport, branchID, label) {
     label = label || "payload";
     t.equal(eventToReport.constructor, Object, label + " is an object");
     t.equal(eventToReport.id.constructor, String, label + ".id is a string");
     t.equal(eventToReport.markets.constructor, Array, label + ".markets is an array");
     t.equal(eventToReport.id, eventID, label + ".id == " + eventID);
-    t.equal(eventToReport.markets[0], marketInfo._id, label + ".markets[0] == " + marketInfo._id);
+    t.equal(eventToReport.markets[0]._id, marketInfo._id, label + ".markets[0]._id == " + marketInfo._id);
     t.equal(eventToReport.branchId, branchID, label + ".branchId == " + branchID);
     t.equal(eventToReport.expirationBlock.constructor, Number, label + ".expirationBlock is a number");
     t.true(eventToReport.expirationBlock > 0, label + ".expirationBlock > 0");
@@ -66,30 +74,30 @@ function checkEventToReport(t, eventToReport, label) {
 
 test("ReportActions.saveReport", function (t) {
     flux = reset(flux);
-    var LOAD_REPORT_SUCCESS = flux.register.LOAD_REPORT_SUCCESS;
-    flux.register.LOAD_REPORT_SUCCESS = function (payload) {
+    var SAVE_REPORT_SUCCESS = flux.register.SAVE_REPORT_SUCCESS;
+    flux.register.SAVE_REPORT_SUCCESS = function (payload) {
         checkReport(t, payload);
-        t.equal(payload.userAccount.constructor, String, "payload.userAccount is a string");
-        t.equal(payload.userAccount, userAccount, "payload.userAccount == " + userAccount);
         t.equal(payload.eventId.constructor, String, "payload.eventId is a string");
         t.equal(payload.eventId, eventID, "payload.eventId == " + eventID);
-        LOAD_REPORT_SUCCESS(payload);
-        t.pass("dispatch LOAD_REPORT_SUCCESS");
+        SAVE_REPORT_SUCCESS(payload);
+        t.pass("dispatch SAVE_REPORT_SUCCESS");
 
         // verify report stored in ReportStore
-        var storedReport = flux.store("report").getReportSummary(eventID);
-        checkReport(t, storedReport, "stores.report.state.reportSummary['" + eventID + "']");
+        var storedEventToReport = flux.store("report").getEvent(eventID);
+        t.equal(storedEventToReport.constructor, Object, "stores.report.state.eventsToReport is an object");
+        checkReport(t, storedEventToReport.report, "stores.report.state.eventsToReport['" + eventID + "'].report");
 
         // verify report stored in localStorage
         var key = constants.report.REPORTS_STORAGE + "-" + userAccount + "-" + eventID;
         var value = localStorage.getItem(key);
         var expectedValue = reportHash + "|" + reportedOutcome + "|" + isUnethical;
         t.equal(value, expectedValue, "localStorage.getItem(" + key + ") == " + expectedValue);
-        flux.register.LOAD_REPORT_SUCCESS = LOAD_REPORT_SUCCESS;
+        flux.register.SAVE_REPORT_SUCCESS = SAVE_REPORT_SUCCESS;
         t.end();
     };
+    flux.stores.config.state.currentAccount = userAccount;
+    flux.stores.report.state.eventsToReport[eventID] = eventToReport;
     flux.actions.report.saveReport(
-        userAccount,
         eventID,
         reportHash,
         reportedOutcome,
@@ -97,66 +105,84 @@ test("ReportActions.saveReport", function (t) {
     );
 });
 
-test("ReportActions.loadReport", function (t) {
-    flux = reset(flux);
-    var LOAD_REPORT_SUCCESS = flux.register.LOAD_REPORT_SUCCESS;
-    flux.register.LOAD_REPORT_SUCCESS = function (payload) {
-        checkReport(t, payload);
-        t.equal(payload.userAccount.constructor, String, "payload.userAccount is a string");
-        t.equal(payload.userAccount, userAccount, "payload.userAccount == " + userAccount);
-        t.equal(payload.eventId.constructor, String, "payload.eventId is a string");
-        t.equal(payload.eventId, eventID, "payload.eventId == " + eventID);
-        LOAD_REPORT_SUCCESS(payload);
-        t.pass("dispatch LOAD_REPORT_SUCCESS");
+test("ReportActions.loadReportFromLs", function (t) {
+    flux.stores.config.state.currentAccount = userAccount;
+    checkReport(t, flux.actions.report.loadReportFromLs(eventID));
 
-        // verify report stored in ReportStore
-        var storedReport = flux.store("report").getReportSummary(eventID);
-        checkReport(t, storedReport, "stores.report.state.reportSummary['" + eventID + "']");
+    // verify report stored in ReportStore
+    var storedReport = flux.store("report").getEvent(eventID).report;
+    checkReport(t, storedReport, "stores.report.state.eventsToReport['" + eventID + "'].report");
 
-        // verify report stored in localStorage
-        var key = constants.report.REPORTS_STORAGE + "-" + userAccount + "-" + eventID;
-        var value = localStorage.getItem(key);
-        var expectedValue = reportHash + "|" + reportedOutcome + "|" + isUnethical;
-        t.equal(value, expectedValue, "localStorage.getItem(" + key + ") == " + expectedValue);
-        flux.register.LOAD_REPORT_SUCCESS = LOAD_REPORT_SUCCESS;
-        t.end();
-    };
-    flux.actions.report.loadReport(userAccount, eventID);
+    // verify report stored in localStorage
+    var key = constants.report.REPORTS_STORAGE + "-" + userAccount + "-" + eventID;
+    var value = localStorage.getItem(key);
+    var expectedValue = reportHash + "|" + reportedOutcome + "|" + isUnethical;
+    t.equal(value, expectedValue, "localStorage.getItem(" + key + ") == " + expectedValue);
+    t.end();
 });
 
 test("ReportActions.loadEventsToReport", function (t) {
     flux = reset(flux);
+    var branchID = "-0x3a4f66ed81a9925cfe016a0ade4844eb804d7814bda09b478fb8f701dba8c6a";
     var reportPeriod = abi.number(flux.augur.getReportPeriod(branchID));
     var periodLength = abi.number(flux.augur.getPeriodLength(branchID));
+    var getEventInfo = flux.augur.getEventInfo;
+    var getDescription = flux.augur.getDescription;
+    var getMarkets = flux.augur.getMarkets;
+    var getMarketInfo = flux.augur.getMarketInfo;
+    var getMarketMetadata = flux.augur.ramble.getMarketMetadata;
     var getEvents = flux.augur.getEvents;
     var LOAD_EVENTS_TO_REPORT_SUCCESS = flux.register.LOAD_EVENTS_TO_REPORT_SUCCESS;
-    var UPDATE_EVENT_TO_REPORT = flux.register.UPDATE_EVENT_TO_REPORT;
+    flux.augur.getEventInfo = function (eventID, callback) {
+        callback([
+            "-0x3a4f66ed81a9925cfe016a0ade4844eb804d7814bda09b478fb8f701dba8c6a",
+            "8436",
+            "0",
+            "1",
+            "2",
+            "2"
+        ]);
+    }
+    flux.augur.getDescription = function (ID, callback) {
+        callback("hy209qn1c92j4i");
+    };
+    flux.augur.getMarkets = function (eventID, callback) {
+        callback(["-0x1e1c5a167c922d09ba6f182416e177af6fe5464c04a9a098c22fd36f1f78a5b2"]);
+    };
+    flux.augur.getMarketInfo = function (marketID, callback) {
+        callback(marketInfo);
+    };
+    flux.augur.ramble.getMarketMetadata = function (marketID, options, callback) {
+        callback(null, eventToReport.markets[0].metadata);
+    };
     flux.augur.getEvents = function (branch, period, callback) {
         t.equal(branch, branchID, "branch == " + branchID);
         t.equal(period, reportPeriod, "reportPeriod == " + reportPeriod);
         callback([eventID]);
     };
     flux.register.LOAD_EVENTS_TO_REPORT_SUCCESS = function (payload) {
+        console.log(payload)
         t.equal(payload.constructor, Object, "payload is an object");
         t.equal(payload.eventsToReport.constructor, Object, "payload.eventsToReport is an object");
         t.equal(payload.eventsToReport[eventID].id, eventID, "payload[" + eventID + "].id == " + eventID);
+        checkEventToReport(t, payload.eventsToReport[eventID], branchID, "payload[" + eventID + "]");
         LOAD_EVENTS_TO_REPORT_SUCCESS(payload);
         t.pass("dispatch LOAD_EVENTS_TO_REPORT_SUCCESS");
         var eventsToReport = flux.store("report").getState().eventsToReport;
         t.equal(eventsToReport.constructor, Object, "stores.report.state.eventsToReport is an object");
         t.equal(eventsToReport[eventID].id, eventID, "stores.report.state.eventsToReport[" + eventID + "] == " + eventID);
-    };
-    flux.register.UPDATE_EVENT_TO_REPORT = function (payload) {
-        checkEventToReport(t, payload);
-        UPDATE_EVENT_TO_REPORT(payload);
-        t.pass("dispatch UPDATE_EVENT_TO_REPORT");
-        var eventsToReport = flux.store("report").getState().eventsToReport;
-        checkEventToReport(t, eventsToReport[eventID], "stores.report.state.eventsToReport[" + eventID + "]");
+        checkEventToReport(t, eventsToReport[eventID], branchID, "stores.report.state.eventsToReport[" + eventID + "]");
+        flux.augur.getEventInfo = getEventInfo;
+        flux.augur.getDescription = getDescription;
+        flux.augur.getMarkets = getMarkets;
+        flux.augur.getMarketInfo = getMarketInfo;
+        flux.augur.ramble.getMarketMetadata = getMarketMetadata;
         flux.augur.getEvents = getEvents;
         flux.register.LOAD_EVENTS_TO_REPORT_SUCCESS = LOAD_EVENTS_TO_REPORT_SUCCESS;
-        flux.register.UPDATE_EVENT_TO_REPORT = UPDATE_EVENT_TO_REPORT;
         t.end();
     };
+    flux.stores.config.state.currentAccount = userAccount;
+    flux.stores.report.state.eventsToReport[eventID] = eventToReport;
     flux.stores.branch.state.currentBranch = {
         id: branchID,
         reportPeriod: reportPeriod,
