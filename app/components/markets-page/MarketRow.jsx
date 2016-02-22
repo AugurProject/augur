@@ -262,7 +262,7 @@ let MarketRow = React.createClass({
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {market.outcomes.map((outcome) => {
+                                    {market.outcomes.sort((a,b) => b.price - a.price).map((outcome) => {
                                         return (
                                             <OutcomeRow
                                                 key={`${market._id}-${outcome.id}`}
@@ -294,11 +294,10 @@ let MarketRow = React.createClass({
 
         localStorage.setItem("tourMarketComplete", true);
 
-        let outcomes = this.props.market.outcomes.slice().reverse();
-        let outcomeNames = utils.getOutcomeNames(this.props.market).slice().reverse();
+        let outcomes = this.props.market.outcomes;
+        let outcomeNames = utils.getOutcomeNames(this.props.market);
 
         Shepherd.once('cancel', () => {
-            console.log('**tourComplete');
             localStorage.setItem("tourComplete", true);
         });
 
@@ -321,7 +320,7 @@ let MarketRow = React.createClass({
         // TODO highlight outcome labels
         let outcomeList = "";
         for (let i = 0; i < outcomeNames.length; ++i) {
-            outcomeList += "<li>" + outcomeNames[i] + " has a probability of " + (parseFloat(outcomes[i].price) * 100).toFixed(2) + "%</li>";
+            outcomeList += "<li>" + outcomeNames[i] + " has a probability of " + utils.getPercentageFormatted(this.props.market, outcomes[i]) + "</li>";
         }
         tour.addStep("outcomes", {
             text: "<p>This event has " + outcomeNames.length + " possible outcomes: " + outcomeNames.join(" or ") + "</p>" +

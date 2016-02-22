@@ -201,7 +201,8 @@ let MarketPage = React.createClass({
 
         let priceFormatted = this.state.market.price ? Math.abs(this.state.market.price).toFixed(3) : '-';
         let percentageFormatted = priceFormatted ? (priceFormatted * 100).toFixed(1) : '-';
-        let outcomeNames = utils.getOutcomeNames(this.state.market).slice().reverse();
+        let outcomes = this.state.market.outcomes;
+        let outcomeNames = utils.getOutcomeNames(this.state.market);
 
         Shepherd.once('cancel', () => {
             localStorage.setItem("tourComplete", true);
@@ -237,10 +238,10 @@ let MarketPage = React.createClass({
             }]
         });
 
-        tour.addStep("believe-yes", {
-            title: "Higher",
+        tour.addStep("believe-one", {
+            title: "Lower",
             text: "<p>If you think it should be higher, buy some shares in the " + outcomeNames[0].toUpperCase() + "</p>",
-            attachTo: ".outcome-2 .tradeAction-buy left",
+            attachTo: ".outcome-" + outcomes[0].id + " .tradeAction-buy left",
             buttons: [{
                 text: "Back",
                 classes: "shepherd-button-secondary",
@@ -251,10 +252,10 @@ let MarketPage = React.createClass({
             }]
         });
 
-        tour.addStep("believe-no", {
-            title: "Lower",
+        tour.addStep("believe-two", {
+            title: "Higher",
             text: "<p>If you think it should be lower, buy some shares in the " + outcomeNames[1].toUpperCase() + "</p>",
-            attachTo: ".outcome-1 .tradeAction-buy left",
+            attachTo: ".outcome-" + outcomes[1].id + "  .tradeAction-buy left",
             buttons: [{
                 text: "Back",
                 classes: "shepherd-button-secondary",
