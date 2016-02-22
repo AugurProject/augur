@@ -17,7 +17,7 @@ let ReportSavedModal = React.createClass({
             );
         }
         return (
-            <Modal show={this.props.show} onHide={this.props.onHide} bsSize='small'>
+            <Modal show={this.props.show} onHide={this.props.onHide} bsSize='large'>
                 <div className='modal-body clearfix'>
                     <h4>You have reported the outcome of this market!</h4>
                     <div className='row'>
