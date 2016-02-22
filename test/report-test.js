@@ -37,6 +37,7 @@ var userAccount = flux.augur.from;
 // var eventID = marketInfo.events[0].id;
 var reportedOutcome = "1";
 var isUnethical = false;
+var isIndeterminate = false;
 var reportHash = flux.augur.makeHash(salt, reportedOutcome, eventID);
 
 eventToReport.markets[0] = tools.parseMarketInfo(
@@ -104,7 +105,9 @@ test("ReportActions.saveReport", function (t) {
         eventIndex,
         reportHash,
         reportedOutcome,
+        salt,
         isUnethical,
+        isIndeterminate,
         false,
         false
     );
@@ -204,7 +207,9 @@ test("ReportActions.storeReports", function (t) {
         eventId: eventID,
         eventIndex: eventIndex,
         reportPeriod: reportPeriod,
-        report: reportedOutcome,
+        reportedOutcome: reportedOutcome,
+        isUnethical: isUnethical,
+        isIndeterminate: isIndeterminate,
         salt: salt,
         submitHash: false,
         submitReport: false
@@ -229,6 +234,8 @@ test("ReportActions.loadPendingReports", function (t) {
         reportPeriod: reportPeriod,
         report: reportedOutcome,
         salt: salt,
+        isUnethical: isUnethical,
+        isIndeterminate: isIndeterminate,
         submitHash: false,
         submitReport: false
     };
@@ -294,7 +301,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
             for (var eventID in eventsToReport) {
                 if (!eventsToReport.hasOwnProperty(eventID)) continue;
                 console.log("Submit hash for event:", eventID);
-                flux.actions.report.submitReportHash(branchID, eventID, reportPeriod, reportedOutcome);
+                flux.actions.report.submitReportHash(branchID, eventToReport, reportPeriod, reportedOutcome);
             }
         };
         flux.stores.network.state.blockNumber = flux.augur.rpc.blockNumber();

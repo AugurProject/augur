@@ -26,6 +26,7 @@ var ReportFillForm = React.createClass({
         outcomeOptions.push(
             <div key="indeterminate" className="form-horizontal col-sm-12">
                 <Input type="radio"
+                       id="indeterminate"
                        name={nameAttr}
                        value={constants.INDETERMINATE_OUTCOME}
                        checked={this.props.reportedOutcome == constants.INDETERMINATE_OUTCOME}

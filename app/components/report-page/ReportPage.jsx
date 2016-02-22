@@ -1,4 +1,5 @@
 let React = require("react");
+let abi = require("augur-abi");
 let BigNumber = require("bignumber.js");
 let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
@@ -7,6 +8,7 @@ let ReportConfirmForm = require("./ReportConfirmForm.jsx");
 let ReportSavedModal = require("./ReportSavedModal.jsx");
 let ReportDetails = require("./ReportDetails.jsx");
 let utilities = require("../../libs/utilities");
+let constants = require("../../libs/constants");
 
 let ReportPage = React.createClass({
     mixins: [FluxMixin, StoreWatchMixin("branch", "market", "config", "report", "network")],
@@ -28,17 +30,19 @@ let ReportPage = React.createClass({
             eventId = pathname[pathname.length - 1];
         }
         let event = flux.store("report").getEvent(eventId);
-        let market, reportedOutcome, isUnethical, report;
+        let market, reportedOutcome, isUnethical, report, isIndeterminate;
         if (event && event.markets && event.markets.length) {
             market = event.markets[0];
             report = flux.store("report").getReport(branch.id, branch.reportPeriod);
             if (report && report.reportedOutcome !== null && report.reportedOutcome !== undefined) {
                 reportedOutcome = event.report.reportedOutcome;
                 isUnethical = event.report.isUnethical;
+                isIndeterminate = event.report.isIndeterminate;
             } else {
                 report = flux.actions.report.loadReportFromLs(eventId);
                 reportedOutcome = report.reportedOutcome;
                 isUnethical = report.isUnethical;
+                isIndeterminate = report.isIndeterminate;
             }
         }
         if (market) {
@@ -47,7 +51,17 @@ let ReportPage = React.createClass({
                 market.matured = true;
             }
         }
-        return {event, account, market, branch, blockNumber, report, reportedOutcome, isUnethical};
+        return {
+            event,
+            account,
+            market,
+            branch,
+            blockNumber,
+            report,
+            reportedOutcome,
+            isUnethical,
+            isIndeterminate
+        };
     },
 
     onReportFormSubmit(event) {
@@ -59,10 +73,11 @@ let ReportPage = React.createClass({
         this.setState({reportError: null});
         flux.actions.report.submitReportHash(
             this.state.branch.id,
-            this.state.event.id,
+            this.state.event,
             this.state.branch.reportPeriod,
             this.state.reportedOutcome,
-            this.state.isUnethical
+            this.state.isUnethical,
+            this.state.isIndeterminate
         );
         this.props.toggleReportSavedModal();
     },
@@ -82,7 +97,14 @@ let ReportPage = React.createClass({
     },
 
     onReportedOutcomeChanged(event) {
-        this.setState({reportedOutcome: event.target.value});
+        let report = event.target.value;
+        if (report !== null && report !== undefined) {
+            if (abi.bignum(report).eq(new BigNumber(constants.INDETERMINATE_OUTCOME)) &&
+                event.target.id === "indeterminate") {
+                this.setState({isIndeterminate: true});
+            }
+            this.setState({reportedOutcome: report});
+        }
     },
 
     _onUnethicalChange(event) {

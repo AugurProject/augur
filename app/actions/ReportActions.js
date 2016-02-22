@@ -23,13 +23,21 @@ var ReportActions = {
    * when the user returns during the second half of the reporting period
    * to submit their plaintext reports.)
    */
-  saveReport: function (branchId, eventId, eventIndex, reportHash, reportedOutcome, isUnethical, submitHash, submitReport) {
+  saveReport: function (branchId, eventId, eventIndex, reportHash, reportedOutcome, salt, isUnethical, isIndeterminate, submitHash, submitReport) {
     var userAccount = this.flux.store("config").getAccount();
     var key = constants.report.REPORTS_STORAGE + "-" + userAccount + "-" + branchId + "-" + eventId;
-    var value = reportHash + "|" + reportedOutcome + "|" + eventIndex + "|" + isUnethical;
+    var value = reportHash + "|" + reportedOutcome + "|" + eventIndex + "|" + salt + "|" + isUnethical + "|" + isIndeterminate;
     localStorage.setItem(key, value);
     this.dispatch(constants.report.SAVE_REPORT_SUCCESS, {
-      branchId, eventId, reportHash, reportedOutcome, isUnethical, submitHash, submitReport
+      branchId,
+      eventId,
+      reportHash,
+      reportedOutcome,
+      salt,
+      isUnethical,
+      isIndeterminate,
+      submitHash,
+      submitReport
     });
   },
 
@@ -45,9 +53,12 @@ var ReportActions = {
     return {
       reportHash: reportParts[0],
       reportedOutcome: reportParts[1],
-      isUnethical: reportParts[2] === "true",
-      submitHash: reportParts[3] === "true",
-      submitReport: reportParts[4] === "true"
+      eventIndex: reportParts[2],
+      salt: reportParts[3],
+      isUnethical: reportParts[4] === "true",
+      isIndeterminate: reportParts[5] === "true",
+      submitHash: reportParts[6] === "true",
+      submitReport: reportParts[7] === "true"
     };
   },
 
@@ -111,6 +122,7 @@ var ReportActions = {
                   return nextMarket();
                 }
                 augur.getMarketInfo(thisMarket, function (marketInfo) {
+                  eventsToReport[eventId].type = marketInfo.type;
                   self.flux.actions.market.parseMarketInfo(marketInfo, function (info) {
                     augur.ramble.getMarketMetadata(thisMarket, {sourceless: false}, function (err, metadata) {
                       if (err) console.error("getMetadata:", err);
@@ -178,43 +190,84 @@ var ReportActions = {
    * Create, broadcast, and store the report hash.
    * (Should be called during the first half of the reporting period.)
    */
-  submitReportHash: function (branchId, eventId, reportPeriod, reportedOutcome, isUnethical, cb) {
+  submitReportHash: function (branchId, event, reportPeriod, reportedOutcome, isUnethical, isIndeterminate, cb) {
     cb = cb || function (e, r) { console.log(e, r); };
-    console.log(branchId, eventId, reportPeriod, reportedOutcome, isUnethical);
     var self = this;
-    this.flux.augur.getEventIndex(reportPeriod, eventId, function (eventIndex) {
+    reportedOutcome = abi.bignum(reportedOutcome);
+    var minValue = abi.bignum(event.minValue);
+    var maxValue = abi.bignum(event.maxValue);
+    this.flux.augur.getEventIndex(reportPeriod, event.id, function (eventIndex) {
       if (eventIndex === undefined || eventIndex === null || eventIndex.error) {
         return console.error("eventIndex:", eventIndex);
       }
+
+      // Re-scale scalar/categorical reports so they fall between 0 and 1
+      if (event.type === "scalar") {
+        reportedOutcome = reportedOutcome.minus(minValue).dividedBy(maxValue.minus(minValue)).toString();
+      } else if (event.type === "categorical") {
+        reportedOutcome = reportedOutcome.minus(abi.bignum(1)).dividedBy(abi.bignum(event.numOutcomes - 1)).toString();
+      }
+
       var account = self.flux.store("config").getAccount();
       var salt = utils.bytesToHex(secureRandom(32));
       var pendingReports = self.flux.store("report").getState().pendingReports;
       pendingReports.push({
         branchId,
-        eventId,
+        eventId: event.id,
         eventIndex,
         reportPeriod,
         reportedOutcome,
         salt,
+        isUnethical,
+        isIndeterminate,
         submitHash: false,
         submitReport: false
       });
       self.flux.actions.report.storeReports(pendingReports);
       self.dispatch(constants.report.UPDATE_PENDING_REPORTS, {pendingReports});
-      var reportHash = self.flux.augur.makeHash(salt, reportedOutcome, eventId, account);
-      self.flux.actions.report.saveReport(branchId, eventId, eventIndex, reportHash, reportedOutcome, isUnethical, false, false);
+      var reportHash = self.flux.augur.makeHash(
+        salt,
+        reportedOutcome,
+        event.id,
+        account,
+        isIndeterminate,
+        event.type === "binary"
+      );
+      self.flux.actions.report.saveReport(
+        branchId,
+        event.id,
+        eventIndex,
+        reportHash,
+        reportedOutcome,
+        salt,
+        isUnethical,
+        isIndeterminate,
+        false,
+        false
+      );
       self.flux.augur.submitReportHash({
         branch: branchId,
         reportHash: reportHash,
         reportPeriod: reportPeriod,
-        eventID: eventId,
+        eventID: event.id,
         eventIndex: eventIndex,
         onSent: function (res) {},
         onSuccess: function (res) {
           console.log("report hash submitted:", res);
           pendingReports[pendingReports.length - 1].submitHash = true;
           self.dispatch(constants.report.UPDATE_PENDING_REPORTS, {pendingReports});
-          self.flux.actions.report.saveReport(branchId, eventId, eventIndex, reportHash, reportedOutcome, isUnethical, true, false);
+          self.flux.actions.report.saveReport(
+            branchId,
+            event.id,
+            eventIndex,
+            reportHash,
+            reportedOutcome,
+            salt,
+            isUnethical,
+            isIndeterminate,
+            true,
+            false
+          );
           cb(null, res);
         },
         onFailed: cb
@@ -238,7 +291,6 @@ var ReportActions = {
     var sentReports = [];
     var currentBlock = this.flux.store("network").getState().blockNumber;
     async.each(unsentReports, function (report, nextReport) {
-      console.log("report:", report);
       if (!report) return nextReport(new Error("no report found"));
       if (!report.branchId || report.reportPeriod === null || report.reportPeriod === undefined) {
         return nextReport(report);
@@ -248,15 +300,6 @@ var ReportActions = {
         var reportingStartBlock = (report.reportPeriod + 1) * periodLength;
         var reportingCurrentBlock = currentBlock - reportingStartBlock;
         if (reportingCurrentBlock > (periodLength / 2)) {
-          console.log("submitting:", {
-            branch: report.branchId,
-            reportPeriod: report.reportPeriod,
-            eventIndex: report.eventIndex,
-            salt: report.salt,
-            report: report.reportedOutcome,
-            eventID: report.eventId,
-            ethics: Number(!report.isUnethical)
-          });
           self.flux.augur.submitReport({
             branch: report.branchId,
             reportPeriod: report.reportPeriod,
@@ -265,6 +308,7 @@ var ReportActions = {
             report: report.reportedOutcome,
             eventID: report.eventId,
             ethics: Number(!report.isUnethical),
+            indeterminate: report.isIndeterminate,
             onSent: function (res) {},
             onSuccess: function (res) {
               console.log("submitReport success:", res);
