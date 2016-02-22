@@ -18,7 +18,7 @@ var tools = require("./tools");
 
 var account = {address: flux.augur.rpc.coinbase()};
 var blockNumber = flux.augur.rpc.blockNumber();
-marketInfo = tools.parseMarketInfo(marketInfo);
+marketInfo = tools.parseMarketInfo(marketInfo, blockNumber, account);
 
 test("MarketActions.addComment", function (t) {
     var commentText = "augur's unit tests have something random to say: '" + Math.random().toString(36).substring(4) + "'";

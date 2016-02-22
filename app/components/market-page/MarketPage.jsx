@@ -32,17 +32,16 @@ let MarketPage = React.createClass({
     getInitialState() {
         return {
             image: "/images/augur_logo_bg.png",
-            metadataTimeout: null,
             priceHistoryTimeout: null,
             orderBookTimeout: null,
-            addMarketModalOpen: false
+            addMarketModalOpen: false,
+            metadataTimeout: null
         };
     },
 
     getStateFromFlux() {
         let self = this;
         let flux = this.getFlux();
-
         let marketId = new BigNumber(this.props.params.marketId, 16);
         let market = flux.store("market").getMarket(marketId);
         let currentBranch = flux.store("branch").getCurrentBranch();
@@ -50,7 +49,6 @@ let MarketPage = React.createClass({
         let handle = flux.store("config").getHandle();
         let blockNumber = flux.store("network").getState().blockNumber;
         var searchState = flux.store("search").getState();
-
         if (currentBranch && market && market.tradingPeriod &&
             currentBranch.currentPeriod >= market.tradingPeriod.toNumber()) {
             market.matured = true;
@@ -58,7 +56,6 @@ let MarketPage = React.createClass({
                 market.closable = true;
             }
         }
-
         if (market && market.metadata && market.metadata.image) {
             let blob = new Blob([market.metadata.image], {type: "image/png"});
             let reader = new FileReader();
@@ -67,7 +64,6 @@ let MarketPage = React.createClass({
             };
             reader.readAsDataURL(blob);
         }
-
         return {
             market,
             account,
@@ -75,6 +71,10 @@ let MarketPage = React.createClass({
             blockNumber,
             tourMarketKey: abi.bignum(utils.getTourMarketKey(searchState.results))
         };
+    },
+
+    toggleCloseMarketModal(event) {
+        this.setState({closeMarketModalOpen: !this.state.closeMarketModalOpen});
     },
 
     render() {
@@ -99,6 +99,10 @@ let MarketPage = React.createClass({
                 </div>
             );
         }
+        let details = <span />;
+        if (market.metadata && market.metadata.details) {
+            details = market.metadata.details;
+        }
 
         return (
             <div className="marketPage">
@@ -106,6 +110,7 @@ let MarketPage = React.createClass({
                 {/*<img className="metadata-image" src={this.state.image} />*/}
                 <MarketInfo market={market}/>
                 {closeMarketButton}
+                {details}
 
                 <div role="tabpanel" style={{marginTop: '15px'}}>
                     <div className="row submenu">
@@ -277,26 +282,28 @@ let MarketPage = React.createClass({
 
         clearTimeout(this.state.priceHistoryTimeout);
         clearTimeout(this.state.orderBookTimeout);
+        clearTimeout(this.state.metadataTimeout);
 
         tour.hide();
-        Shepherd.off();
     },
 
     getMetadata() {
-        let self = this;
+        console.info("Loading metadata from IPFS...");
         let market = this.state.market;
         if (this.state.metadataTimeout) {
             clearTimeout(this.state.metadataTimeout);
         }
-        if (market && market.constructor === Object && market._id && !market.metadata) {
-            console.info("load metadata from IPFS...");
-            return this.getFlux().actions.market.loadMetadata(market);
+        if (market && market.constructor === Object && market._id) {
+            if (!market.metadata) {
+                return this.getFlux().actions.market.loadMetadata(market);
+            }
+        } else {
+            this.setState({metadataTimeout: setTimeout(this.getMetadata, 5000)});
         }
-        this.setState({metadataTimeout: setTimeout(this.getMetadata, 5000)});
     },
 
     checkOrderBook() {
-        console.info("checking order book...");
+        console.info("Checking order book...");
         let market = this.state.market;
         if (this.state.orderBookTimeout) {
             clearTimeout(this.state.orderBookTimeout);
@@ -309,13 +316,13 @@ let MarketPage = React.createClass({
     },
 
     getPriceHistory() {
+        console.info("Loading price history...");
         let market = this.state.market;
         if (this.state.priceHistoryTimeout) {
             clearTimeout(this.state.priceHistoryTimeout);
         }
         if (market && market.constructor === Object && market._id &&
             !market.priceHistory && !market.priceHistoryStatus) {
-            console.info("loading price history...");
             return this.getFlux().actions.market.loadPriceHistory(market);
         }
         this.setState({priceHistoryTimeout: setTimeout(this.getPriceHistory, 5000)});

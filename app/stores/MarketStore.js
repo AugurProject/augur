@@ -55,7 +55,9 @@ module.exports = {
     return this.state.orders;
   },
   getMetadata: function (marketId) {
-    return this.state.markets[marketId].metadata;
+    if (this.state.markets[marketId]) {
+      return this.state.markets[marketId].metadata;
+    }
   },
   handleMarketsLoading: function (payload) {
     if (payload.marketLoadingIds) this.state.marketLoadingIds = payload.marketLoadingIds;
@@ -98,9 +100,11 @@ module.exports = {
     }
   },
   handleLoadMetadataSuccess: function (payload) {
-    var marketId = abi.bignum(payload.metadata.marketId);
-    if (this.state.markets[marketId]) {
-      this.state.markets[marketId].metadata = payload.metadata;
+    if (payload && payload.metadata && payload.metadata.marketId) {
+      var marketId = abi.bignum(payload.metadata.marketId);
+      if (this.state.markets[marketId]) {
+        this.state.markets[marketId].metadata = payload.metadata;
+      }
     }
     this.emit(constants.CHANGE_EVENT);
   },

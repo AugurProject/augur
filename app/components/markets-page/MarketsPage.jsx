@@ -39,7 +39,7 @@ let MarketsPage = React.createClass({
             currentBranch: currentBranch,
             account: account,
             tourMarketKey: abi.bignum(utils.getTourMarketKey(searchState.results))
-        }
+        };
     },
 
     handlePageChanged: function (data) {
@@ -118,7 +118,7 @@ let MarketsPage = React.createClass({
         let {markets, marketsCount, firstItemIndex, lastItemIndex} = this._getMarketsData();
 
         let tourMarketRow = <span />;
-        if (tourMarketId) {
+        if (tourMarketId && this.state.pageNum === 0) {
             tourMarketRow = <MarketRow
                                 key={tourMarketKey}
                                 market={this.state.markets[tourMarketKey]}
@@ -141,8 +141,7 @@ let MarketsPage = React.createClass({
                         clickCallback={ this.handlePageChanged }
                         containerClassName={ 'paginator' }
                         subContainerClassName={ 'pages' }
-                        activeClass={ 'active' }
-                        />
+                        activeClass={ 'active' } />
                 </div>
             </div>
         );

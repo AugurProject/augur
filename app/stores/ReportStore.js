@@ -5,6 +5,7 @@ var constants = require("../libs/constants");
 
 module.exports = {
   state: {
+    ready: [],
     eventsToReport: {},
     pendingReports: []
   },
@@ -14,6 +15,9 @@ module.exports = {
   getReport: function (branchId, reportPeriod) {
     return _.findWhere(this.getState().pendingReports, {branchId, reportPeriod});
   },
+  getEvent: function (eventId) {
+    return this.state.eventsToReport[eventId];
+  },
   handleLoadEventsToReportSuccess: function (payload) {
     this.state.eventsToReport = payload.eventsToReport;
     this.emit(constants.CHANGE_EVENT);
@@ -22,8 +26,19 @@ module.exports = {
     this.state.pendingReports = payload.pendingReports;
     this.emit(constants.CHANGE_EVENT);
   },
-  handleUpdateEventToReport: function (payload) {
-    this.state.eventsToReport[payload.id] = _.merge(this.state.eventsToReport[payload.id], payload);
+  handleSaveReportSuccess: function (payload) {
+    if (this.state.eventsToReport[payload.eventId]) {
+      this.state.eventsToReport[payload.eventId].report = {
+        reportHash: payload.reportHash,
+        reportedOutcome: payload.reportedOutcome,
+        isUnethical: payload.isUnethical
+      };
+      this.emit(constants.CHANGE_EVENT);
+    }
+  },
+  // payload: {branch}
+  handleReady: function (payload) {
+    this.state.ready.push(payload.branch);
     this.emit(constants.CHANGE_EVENT);
   }
 };

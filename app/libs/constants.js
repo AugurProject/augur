@@ -12,6 +12,7 @@ module.exports = {
   ONE_FXP: ONE_FXP,
   NO: ONE_FXP,
   YES: ONE_FXP.mul(2),
+  INDETERMINATE_OUTCOME: 0.5,
   SECONDS_PER_BLOCK: 12,
   MAX_BLOCKCHAIN_AGE: 300,  // in seconds
   MARKETS_PER_PAGE: 15,
@@ -71,9 +72,10 @@ module.exports = {
   }),
   report: keyMirror({
     REPORTS_STORAGE: null,
+    SAVE_REPORT_SUCCESS: null,
     LOAD_EVENTS_TO_REPORT_SUCCESS: null,
     LOAD_PENDING_REPORTS_SUCCESS: null,
     UPDATE_PENDING_REPORTS: null,
-    UPDATE_EVENT_TO_REPORT: null
+    READY: null
   })
 };

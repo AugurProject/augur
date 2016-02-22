@@ -1,6 +1,7 @@
 "use strict";
 
 var _ = require("lodash");
+var abi = require("augur-abi");
 var constants = require("../libs/constants");
 
 module.exports = {
@@ -52,5 +53,26 @@ module.exports = {
   sortMarkets: function () {
     this.state.results = _.sortBy(this.state.markets, this.state.sortBy);
     if (this.state.reverseSort) this.state.results.reverse();
+  },
+  handleLoadMetadataSuccess: function (payload) {
+    if (payload && payload.metadata && payload.metadata.marketId) {
+      var marketId = abi.bignum(payload.metadata.marketId);
+      if (this.state.markets[marketId]) {
+        this.state.markets[marketId].metadata = payload.metadata;
+      }
+    }
+    this.search();
+    this.emit(constants.CHANGE_EVENT);
+  },
+  handlePriceHistoryLoading: function (payload) {
+    this.state.markets[payload.marketId].priceHistoryStatus = "loading";
+    this.search();
+    this.emit(constants.CHANGE_EVENT);
+  },
+  handleLoadPriceHistorySuccess: function (payload) {
+    this.state.markets[payload.market.id].priceHistory = payload.priceHistory;
+    this.state.markets[payload.market.id].priceHistoryStatus = "complete";
+    this.search();
+    this.emit(constants.CHANGE_EVENT);
   }
 };

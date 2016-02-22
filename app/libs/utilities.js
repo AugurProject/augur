@@ -1,6 +1,7 @@
 "use strict";
 
 var BigNumber = require("bignumber.js");
+var _ = require("lodash");
 var abi = require("augur-abi");
 var moment = require("moment");
 var constants = require("./constants");
@@ -54,10 +55,9 @@ module.exports = {
 
   getPercentageFormatted: function (market, outcome) {
     let price = outcome.price;
-    if (price == null) {
+    if (price === null || price === undefined) {
       return "0 %";
     }
-
     if (market.type === "scalar") {
       return +price.toFixed(2);
     } else {
@@ -65,8 +65,22 @@ module.exports = {
     }
   },
 
+  bytesToHex: function (bytes) {
+    return "0x" + _.reduce(bytes, function (hexString, byte) {
+      return hexString + byte.toString(16);
+    }, "");
+  },
+
   getOutcomeName: function (id, market) {
-    switch (market.type) {
+    var marketType = market.type;
+    if (id == constants.INDETERMINATE_OUTCOME) {
+      return {
+        type: marketType,
+        outcome: "indeterminate"
+      };
+    }
+
+    switch (marketType) {
     case "categorical":
       if (market && market.description && market.description.indexOf("Choices:") > -1) {
         var desc = market.description.split("Choices:");
@@ -85,11 +99,9 @@ module.exports = {
         console.warn("Choices not found for market", market._id, ".  Using outcome ID", id, "instead of outcome text.");
       }
       return {type: "categorical", outcome: id};
-      break;
     case "scalar":
       if (id === NO) return {type: "scalar", outcome: "⇩"};
       return {type: "scalar", outcome: "⇧"};
-      break;
     case "binary":
       if (id === NO) return {type: "binary", outcome: "No"};
       return {type: "binary", outcome: "Yes"};

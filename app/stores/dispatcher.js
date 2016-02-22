@@ -71,7 +71,8 @@ stores.report.initialize = function () {
     constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, this.handleLoadEventsToReportSuccess,
     constants.report.LOAD_PENDING_REPORTS_SUCCESS, this.handleLoadPendingReportsSuccess,
     constants.report.UPDATE_PENDING_REPORTS, this.handleLoadPendingReportsSuccess,
-    constants.report.UPDATE_EVENT_TO_REPORT, this.handleUpdateEventToReport
+    constants.report.SAVE_REPORT_SUCCESS, this.handleSaveReportSuccess,
+    constants.report.READY, this.handleReady
   );
 };
 stores.search.initialize = function () {
@@ -79,7 +80,10 @@ stores.search.initialize = function () {
     constants.market.LOAD_MARKETS_SUCCESS, this.handleMarketsUpdated,
     constants.market.UPDATE_MARKETS_SUCCESS, this.handleMarketsUpdated,
     constants.search.KEYWORDS_UPDATED, this.handleKeywordsUpdated,
-    constants.search.UPDATE_SORT_BY, this.handleUpdateSortBy
+    constants.search.UPDATE_SORT_BY, this.handleUpdateSortBy,
+    constants.market.PRICE_HISTORY_LOADING, this.handlePriceHistoryLoading,
+    constants.market.LOAD_PRICE_HISTORY_SUCCESS, this.handleLoadPriceHistorySuccess,
+    constants.market.LOAD_METADATA_SUCCESS, this.handleLoadMetadataSuccess
   );
 };
 

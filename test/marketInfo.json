@@ -1,18 +1,18 @@
 {
-  "network": "7",
+  "network": "10101",
   "traderCount": 1,
   "alpha": "0.00790000000000000001",
   "traderIndex": 0,
   "numOutcomes": 2,
-  "tradingPeriod": 31749,
+  "tradingPeriod": 337,
   "tradingFee": "0.01999999999999999998",
-  "branchId": "0xf69b5",
+  "branchId": "-0x3a4f66ed81a9925cfe016a0ade4844eb804d7814bda09b478fb8f701dba8c6a",
   "numEvents": 1,
   "cumulativeScale": "1",
-  "creationFee": "52",
+  "creationFee": "100",
   "author": "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b",
   "type": "binary",
-  "endDate": 3174933,
+  "endDate": 8436,
   "participants": {
     "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b": 0
   },
@@ -26,29 +26,29 @@
     "0",
     "0"
   ],
-  "description": "Will Rand Paul win the 2016 U.S. Presidential Election?",
+  "description": "hy209qn1c92j4i",
   "outcomes": [
+    {
+      "shares": {
+        "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b": "0.10000000000000000002"
+      },
+      "id": 1,
+      "outstandingShares": "99.01669155142483078253",
+      "price": "0.52145923854039821776"
+    },
     {
       "shares": {
         "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b": "0"
       },
-      "id": 1,
-      "outstandingShares": "51.43667960674091200687",
-      "price": "0.2324286878432308967"
-    },
-    {
-      "shares": {
-        "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b": "1"
-      },
       "id": 2,
-      "outstandingShares": "52.43667960674091200687",
-      "price": "0.77607006870589234637"
+      "outstandingShares": "98.91669155142483078251",
+      "price": "0.48949416190372652125"
     }
   ],
   "events": [
     {
-      "id": "-0x796a6c94c7520108ff9fe8dbb8d6112844f64d03d2c39ffb74d41f3b1d1d5526",
-      "endDate": 3174933,
+      "id": "-0x73cfc61a1776425c3342b12943dcefa4a30d5f7a987202ec42877358706ea89f",
+      "endDate": 8436,
       "outcome": "0",
       "minValue": "1",
       "maxValue": "2",
@@ -56,6 +56,6 @@
       "type": "binary"
     }
   ],
-  "price": "0.77607006870589234637",
-  "_id": "-0x4a0aa5d564358bd70031540e0da0c17f2d670a0ad46b6993da68b3e8164ee3cd"
+  "price": "0.48949416190372652125",
+  "_id": "-0x1e1c5a167c922d09ba6f182416e177af6fe5464c04a9a098c22fd36f1f78a5b2"
 }

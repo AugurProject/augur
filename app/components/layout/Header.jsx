@@ -9,8 +9,7 @@ let SendEtherModal = SendModal.SendEtherModal;
 
 let Button = require('react-bootstrap/lib/Button');
 
-let Router = require("react-router");
-let Link = Router.Link;
+let Link = require("react-router/lib/components/Link");
 
 let utilities = require("../../libs/utilities");
 let BigNumber = require("bignumber.js");
@@ -85,7 +84,7 @@ let Header = React.createClass({
                         </Link>
                     </li>
                     <li>
-                        <Link to="ballots">
+                        <Link to="reports">
                             Reporting ({ this.props.ballotsCount })
                         </Link>
                     </li>
@@ -155,9 +154,7 @@ let Header = React.createClass({
                                 data-target="#navbar-main-collapse">
                             <strong>Menu</strong>
                         </a>
-                        <Link className="navbar-brand" to="markets">
-                            Augur
-                        </Link>
+                        <Link className="navbar-brand" to="markets"></Link>
                     </div>
 
                     <div className="collapse navbar-collapse" id="navbar-main-collapse">

@@ -70,7 +70,8 @@ module.exports = function (flux) {
     if (flux.stores.report) {
         flux.stores.report.state = {
             eventsToReport: {},
-            pendingReports: []
+            pendingReports: [],
+            ready: []
         };
     }
     if (flux.stores.asset) {

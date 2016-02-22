@@ -27,6 +27,15 @@ module.exports = {
   periodDuration: function () {
     return moment.duration(this.state.periodLength * constants.SECONDS_PER_BLOCK, "seconds");
   },
+  isReportCommitPeriod: function (blockNumber) {
+    if (this.state.currentBranch && this.state.currentBranch.periodLength) {
+      var periodLength = this.state.currentBranch.periodLength;
+      return ((blockNumber % periodLength) < (periodLength / 2));
+    }
+  },
+  isReportRevealPeriod: function (blockNumber) {
+    return !this.isReportCommitPeriod(blockNumber);
+  },
   getCurrentBranch: function () {
     if (this.state.currentBranch && this.state.currentBranch.id) {
       return this.state.currentBranch;

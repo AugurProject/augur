@@ -36,6 +36,8 @@ var AugurApp = React.createClass({
       repFaucetDisabled: false,
       sendCashModalOpen: false,
       sendRepModalOpen: false,
+      reportSavedModalOpen: false,
+      reportConfirmedModalOpen: false,
       status: 'stopped'
     };
   },
@@ -91,6 +93,12 @@ var AugurApp = React.createClass({
   toggleSendRepModal: function() {
      this.setState({sendRepModalOpen: !this.state.sendRepModalOpen});
   },
+  toggleReportSavedModal: function() {
+     this.setState({reportSavedModalOpen: !this.state.reportSavedModalOpen});
+  },
+  toggleConfirmReportModal: function() {
+     this.setState({reportConfirmedModalOpen: !this.state.reportConfirmedModalOpen});
+  },
 
   toggleSendEtherModal: function() {
     this.setState({sendEtherModalOpen: !this.state.sendEtherModalOpen});
@@ -128,6 +136,10 @@ var AugurApp = React.createClass({
               <div id="period"></div>
               <RouteHandler
                 toggleSignInModal={this.toggleSignInModal}
+                toggleReportSavedModal={this.toggleReportSavedModal} // report page
+                reportSavedModalOpen={this.state.reportSavedModalOpen} // report page
+                toggleConfirmReportModal={this.toggleConfirmReportModal} // report page
+                reportConfirmedModalOpen={this.state.reportConfirmedModalOpen} // report page
                 {...this.props}
                 branch={this.state.branch}
                 market={this.state.market} />

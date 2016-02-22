@@ -184,6 +184,12 @@ nav.header h1 > i {
     padding: 30px;
 }
 
+.navbar-brand {
+    background-image: url(/images/augur_logo_small_white.png);
+    background-repeat: no-repeat;
+    margin-top: 15px !important;
+    width: 35px;
+}
 .navbar-right {
     cursor: pointer;
 }
@@ -519,10 +525,6 @@ nav.header .register {
 }
 .account-info .send-button {
     width: 100%;
-}
-
-.subheading {
-    color: #ffffff;
 }
 
 #importAccountId {

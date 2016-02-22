@@ -144,8 +144,11 @@ var flux = {
         UPDATE_PENDING_REPORTS: function (payload) {
             flux.stores.report.handleLoadPendingReportsSuccess(payload);
         },
-        UPDATE_EVENT_TO_REPORT: function (payload) {
-            flux.stores.report.handleUpdateEventToReport(payload);
+        SAVE_REPORT_SUCCESS: function (payload) {
+            flux.stores.report.handleSaveReportSuccess(payload);
+        },
+        READY: function (payload) {
+            flux.stores.report.handleReady(payload);
         },
 
         // search
@@ -160,19 +163,21 @@ var flux = {
         return this.stores[store];
     }
 };
+var emitter = function (signal) {
+    if (DEBUG) console.log("emit: " + signal);
+};
+var dispatcher = function (label, payload) {
+    if (DEBUG) console.log("dispatch: " + label);
+    return flux.register[label](payload);
+};
 for (var s in flux.stores) {
     if (!flux.stores.hasOwnProperty(s)) continue;
-    flux.stores[s].emit = function (signal) {
-        if (DEBUG) console.log("[" + s + "] emit: " + signal);
-    };
+    flux.stores[s].emit = emitter;
 }
 for (var a in flux.actions) {
     if (!flux.actions.hasOwnProperty(a)) continue;
     flux.actions[a].flux = flux;
-    flux.actions[a].dispatch = function (label, payload) {
-        if (DEBUG) console.log("dispatch: " + label);
-        return flux.register[label](payload);
-    };
+    flux.actions[a].dispatch = dispatcher;
 }
 
 module.exports = flux;

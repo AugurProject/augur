@@ -1,0 +1,94 @@
+{
+  "id": "-0x73cfc61a1776425c3342b12943dcefa4a30d5f7a987202ec42877358706ea89f",
+  "branchId": "-0x3a4f66ed81a9925cfe016a0ade4844eb804d7814bda09b478fb8f701dba8c6a",
+  "expirationBlock": 8436,
+  "outcome": "0",
+  "minValue": "1",
+  "maxValue": "2",
+  "numOutcomes": 2,
+  "report": {},
+  "markets": [
+    {
+      "network": "10101",
+      "traderCount": "1",
+      "alpha": "0.00790000000000000001",
+      "traderIndex": 0,
+      "numOutcomes": 2,
+      "tradingPeriod": "337",
+      "tradingFee": "0.01999999999999999998",
+      "branchId": "-0x3a4f66ed81a9925cfe016a0ade4844eb804d7814bda09b478fb8f701dba8c6a",
+      "numEvents": 1,
+      "cumulativeScale": "1",
+      "creationFee": "100",
+      "author": "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b",
+      "type": "binary",
+      "endDate": "2016-02-22T00:58:51.547Z",
+      "participants": {
+        "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b": 0
+      },
+      "winningOutcomes": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "description": "hy209qn1c92j4i",
+      "outcomes": [
+        {
+          "shares": {
+            "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b": "0.10000000000000000002"
+          },
+          "id": 1,
+          "outstandingShares": "99.01669155142483078253",
+          "price": "0.52145923854039821776",
+          "sharesHeld": "0.10000000000000000002",
+          "pendingShares": "0"
+        },
+        {
+          "shares": {
+            "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b": "0"
+          },
+          "id": 2,
+          "outstandingShares": "98.91669155142483078251",
+          "price": "0.48949416190372652125",
+          "sharesHeld": "0",
+          "pendingShares": "0"
+        }
+      ],
+      "events": [
+        {
+          "id": "-0x73cfc61a1776425c3342b12943dcefa4a30d5f7a987202ec42877358706ea89f",
+          "endDate": "2016-02-22T00:58:51.547Z",
+          "outcome": "0",
+          "minValue": "1",
+          "maxValue": "2",
+          "numOutcomes": 2,
+          "type": "binary"
+        }
+      ],
+      "price": "0.48949416190372652125",
+      "_id": "-0x1e1c5a167c922d09ba6f182416e177af6fe5464c04a9a098c22fd36f1f78a5b2",
+      "endBlock": 8436,
+      "loaded": true,
+      "metadata": {
+        "marketId": "-0x1e1c5a167c922d09ba6f182416e177af6fe5464c04a9a098c22fd36f1f78a5b2",
+        "details": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        "tags": [
+          "latin",
+          "lorem ipsum"
+        ],
+        "source": "Reality Keys",
+        "links": [
+          "http://www.lipsum.com/",
+          "https://github.com/traviskaufman/node-lipsum"
+        ]
+      },
+      "matured": true
+    }
+  ],
+  "description": "hy209qn1c92j4i"
+}

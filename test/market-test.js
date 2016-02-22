@@ -33,7 +33,7 @@ for (var m in marketsInfo) {
     }
 }
 var rawInfo = clone(marketInfo);
-marketInfo = tools.parseMarketInfo(marketInfo);
+marketInfo = tools.parseMarketInfo(marketInfo, blockNumber, account);
 
 test("marketInfo", function (t) {
     var market = rawInfo._id;
