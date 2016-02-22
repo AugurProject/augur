@@ -61,7 +61,7 @@ let ReportsPage = React.createClass({
                     isCommitPeriod: isCommitPeriod,
                     isRevealPeriod: isRevealPeriod,
                     confirmReport: this.confirmReport,
-                    isConfirmed: false,
+                    isConfirmed: event.report.submitReport,
                     commitPeriodEndMillis: commitPeriodEndMillis,
                     revealPeriodEndMillis: revealPeriodEndMillis
                 };

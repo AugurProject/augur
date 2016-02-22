@@ -23,13 +23,13 @@ var ReportActions = {
    * when the user returns during the second half of the reporting period
    * to submit their plaintext reports.)
    */
-  saveReport: function (branchId, eventId, eventIndex, reportHash, reportedOutcome, isUnethical) {
+  saveReport: function (branchId, eventId, eventIndex, reportHash, reportedOutcome, isUnethical, submitHash, submitReport) {
     var userAccount = this.flux.store("config").getAccount();
     var key = constants.report.REPORTS_STORAGE + "-" + userAccount + "-" + branchId + "-" + eventId;
     var value = reportHash + "|" + reportedOutcome + "|" + eventIndex + "|" + isUnethical;
     localStorage.setItem(key, value);
     this.dispatch(constants.report.SAVE_REPORT_SUCCESS, {
-      branchId, eventId, reportHash, reportedOutcome, isUnethical
+      branchId, eventId, reportHash, reportedOutcome, isUnethical, submitHash, submitReport
     });
   },
 
@@ -45,7 +45,9 @@ var ReportActions = {
     return {
       reportHash: reportParts[0],
       reportedOutcome: reportParts[1],
-      isUnethical: reportParts[2] === "true"
+      isUnethical: reportParts[2] === "true",
+      submitHash: reportParts[3] === "true",
+      submitReport: reportParts[4] === "true"
     };
   },
 
@@ -178,7 +180,6 @@ var ReportActions = {
    */
   submitReportHash: function (branchId, eventId, reportPeriod, reportedOutcome, isUnethical, cb) {
     cb = cb || function (e, r) { console.log(e, r); };
-    console.log("this:", this);
     console.log(branchId, eventId, reportPeriod, reportedOutcome, isUnethical);
     var self = this;
     this.flux.augur.getEventIndex(reportPeriod, eventId, function (eventIndex) {
@@ -201,18 +202,19 @@ var ReportActions = {
       self.flux.actions.report.storeReports(pendingReports);
       self.dispatch(constants.report.UPDATE_PENDING_REPORTS, {pendingReports});
       var reportHash = self.flux.augur.makeHash(salt, reportedOutcome, eventId, account);
-      self.flux.actions.report.saveReport(branchId, eventId, eventIndex, reportHash, reportedOutcome, isUnethical);
+      self.flux.actions.report.saveReport(branchId, eventId, eventIndex, reportHash, reportedOutcome, isUnethical, false, false);
       self.flux.augur.submitReportHash({
         branch: branchId,
         reportHash: reportHash,
         reportPeriod: reportPeriod,
         eventID: eventId,
         eventIndex: eventIndex,
-        onSent: self.flux.augur.utils.noop,
+        onSent: function (res) {},
         onSuccess: function (res) {
           console.log("report hash submitted:", res);
           pendingReports[pendingReports.length - 1].submitHash = true;
           self.dispatch(constants.report.UPDATE_PENDING_REPORTS, {pendingReports});
+          self.flux.actions.report.saveReport(branchId, eventId, eventIndex, reportHash, reportedOutcome, isUnethical, true, false);
           cb(null, res);
         },
         onFailed: cb
@@ -230,15 +232,13 @@ var ReportActions = {
     this.flux.actions.report.loadPendingReports();
     var reports = this.flux.store("report").getState().pendingReports;
     if (!reports.length) return cb(null);
-    console.log("pending reports:", reports);
-    var unsentReports = _.filter(reports, function (r) {
-      return r.submitHash && !r.submitReport;
-    });
+    var unsentReports = _.filter(reports, function (r) { return !r.submitReport; });
     if (!unsentReports.length) return cb(null);
     var didSendReports = false;
     var sentReports = [];
     var currentBlock = this.flux.store("network").getState().blockNumber;
     async.each(unsentReports, function (report, nextReport) {
+      console.log("report:", report);
       if (!report) return nextReport(new Error("no report found"));
       if (!report.branchId || report.reportPeriod === null || report.reportPeriod === undefined) {
         return nextReport(report);
@@ -265,9 +265,7 @@ var ReportActions = {
             report: report.reportedOutcome,
             eventID: report.eventId,
             ethics: Number(!report.isUnethical),
-            onSent: function (res) {
-              console.log("submitReport sent:", res);
-            },
+            onSent: function (res) {},
             onSuccess: function (res) {
               console.log("submitReport success:", res);
               didSendReports = true;

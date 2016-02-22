@@ -28,7 +28,7 @@ let MarketRow = React.createClass({
     getReportSection(report, market) {
         if (report == null) return null;
 
-        let tableHeader, tableHeaderColSpan, content;
+        let tableHeader, tableHeaderColSpan, content, tableHeaderClass = "";
         if (report.isCommitPeriod) {
             tableHeaderColSpan = 2;
             let reportedOutcomeFmt;
@@ -37,6 +37,7 @@ let MarketRow = React.createClass({
                 tableHeader = "Please report outcome";
                 reportedOutcomeFmt = "-";
             } else {
+                tableHeaderClass = " holdings";
                 tableHeader = "Outcome reported";
                 reportedOutcomeFmt = `${utilities.getOutcomeName(report.reportedOutcome, market).outcome} ${report.isUnethical ? "/ Unethical" : ""}`;
             }
@@ -55,6 +56,7 @@ let MarketRow = React.createClass({
             );
         } else if (report.isRevealPeriod) {
             tableHeaderColSpan = 2;
+            console.log("report:", report);
             tableHeader = report.isConfirmed ? "Report confirmed" : "Please confirm report";
             content = (
                 <tbody>
@@ -90,7 +92,7 @@ let MarketRow = React.createClass({
         }
 
         return (
-            <div className="table-container">
+            <div className={"table-container" + tableHeaderClass}>
                 <table className="tabular tabular-condensed">
                     <thead>
                         <tr>

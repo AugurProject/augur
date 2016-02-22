@@ -104,7 +104,9 @@ test("ReportActions.saveReport", function (t) {
         eventIndex,
         reportHash,
         reportedOutcome,
-        isUnethical
+        isUnethical,
+        false,
+        false
     );
 });
 

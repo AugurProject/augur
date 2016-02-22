@@ -154,9 +154,7 @@ let Header = React.createClass({
                                 data-target="#navbar-main-collapse">
                             <strong>Menu</strong>
                         </a>
-                        <Link className="navbar-brand" to="markets">
-                            Augur
-                        </Link>
+                        <Link className="navbar-brand" to="markets"></Link>
                     </div>
 
                     <div className="collapse navbar-collapse" id="navbar-main-collapse">
