@@ -65229,7 +65229,7 @@ module.exports = {
     MAX_TEST_SAMPLES: 10,
 
     // free ether for new accounts on registration
-    FREEBIE: 1337,
+    FREEBIE: 100,
 
     // unit test timeout
     TIMEOUT: 600000,
@@ -121838,7 +121838,7 @@ arguments[4][327][0].apply(exports,arguments)
 },{"depd":506,"dup":327}],508:[function(require,module,exports){
 (function (process,global){
 /**
- * IPFS/Ethereum-powered decentralized comments.
+ * Ramble: IPFS/Ethereum adapter.
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -121979,7 +121979,19 @@ module.exports = {
                             });
                         });
                     } else {
-                        comment = JSON.parse(res.slice(res.indexOf("{"), res.lastIndexOf("}") + 1));
+                        try {
+                            comment = JSON.parse(res);
+                        } catch (exc) {
+                            console.error("[ramble] Comment parse error:", exc);
+                            try {
+                                console.log("comment:", res);
+                                comment = JSON.parse(res.slice(res.indexOf("{"), res.lastIndexOf("}") + 1));
+                            } catch (err) {
+                                console.error("[ramble] Comment parse/slice error:", err);
+                                console.log("comment:", res);
+                                return cb(err);
+                            }
+                        }
                         if (blockNumber === null || blockNumber === undefined) {
                             return cb(null, {
                                 ipfsHash: ipfsHash,
