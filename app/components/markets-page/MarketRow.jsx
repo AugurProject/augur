@@ -213,7 +213,7 @@ let MarketRow = React.createClass({
                 className="btn btn-primary trade-button"
                 to="market"
                 params={{marketId: market.id.toString(16)}} >
-                Trade
+                View Market
             </Link>
         );
     },
@@ -240,46 +240,45 @@ let MarketRow = React.createClass({
         let clickableDescription = this.getClickableDescription(market, report);
         return (
             <div className="market-row">
-                <div className="info">
-                    <h4 className={"description" + tourClass}>
+                <div className="title">
+                    <h4 className={`description ${tourClass}`}>
                         {clickableDescription}
                     </h4>
-                    <div className="subtitle">
-                        <span className="subtitle-label trading-fee-label">Trading Fee:</span>
-                        <span className="subtitle-value trading-fee">{market.tradingFee ? +market.tradingFee.times(100).toFixed(2) + '%' : '-'}</span>
-                        <span className="subtitle-label end-date-label">{endDateLabel}:</span>
-                        <span className="subtitle-value end-date">{endDateFormatted}</span>
-                    </div>
-                    <div className="tags">
-                        {tags}
-                    </div>
-                    <div className="details">
-                        <div className="table-container outcomes">
-                            <table className="tabular tabular-condensed">
-                                <thead>
-                                    <tr>
-                                        <th colSpan="3">Market Leaders</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {market.outcomes.sort((a,b) => b.price - a.price).map((outcome) => {
-                                        return (
-                                            <OutcomeRow
-                                                key={`${market._id}-${outcome.id}`}
-                                                outcome={outcome}
-                                                market={market}
-                                                contentType={this.props.contentType} />
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
-                        </div>
-                        { holdingsSection }
-                        { reportSection }
-                    </div>
-                </div>
-                <div className="buttons">
+
                     { rowAction }
+                </div>
+                <div className="subtitle">
+                    <span className="subtitle-label trading-fee-label">Trading Fee:</span>
+                    <span className="subtitle-value trading-fee">{market.tradingFee ? +market.tradingFee.times(100).toFixed(2) + '%' : '-'}</span>
+                    <span className="subtitle-label end-date-label">{endDateLabel}:</span>
+                    <span className="subtitle-value end-date">{endDateFormatted}</span>
+                </div>
+                <div className="tags">
+                    {tags}
+                </div>
+                <div className="details">
+                    <div className="table-container outcomes">
+                        <table className="tabular tabular-condensed">
+                            <thead>
+                                <tr>
+                                    <th colSpan="3">Market Leaders</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {market.outcomes.sort((a,b) => b.price - a.price).map((outcome) => {
+                                    return (
+                                        <OutcomeRow
+                                            key={`${market._id}-${outcome.id}`}
+                                            outcome={outcome}
+                                            market={market}
+                                            contentType={this.props.contentType} />
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+                    { holdingsSection }
+                    { reportSection }
                 </div>
             </div>
         );
