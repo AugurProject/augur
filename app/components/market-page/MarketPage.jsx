@@ -86,6 +86,17 @@ let MarketPage = React.createClass({
             );
         }
 
+        let tags = [];
+        if (market.metadata && market.metadata.tags && market.metadata.tags.length) {
+            for (var i = 0, n = market.metadata.tags.length; i < n; ++i) {
+                tags.push(
+                    <span key={market._id + "-tag-" + i} className="tag">
+                        {market.metadata.tags[i]}
+                    </span>
+                );
+            }
+        }
+
         let closeMarketButton = <span />;
         if (market.matured && market.closable && !market.closed) {
              closeMarketButton = (
@@ -101,13 +112,20 @@ let MarketPage = React.createClass({
         }
         let details = <span />;
         if (market.metadata && market.metadata.details) {
-            details = market.metadata.details;
+            details = (
+                <div className="row col-sm-12 metadata-details">
+                    {market.metadata.details};
+                </div>
+            );
         }
 
         return (
             <div className="marketPage">
                 <Breadcrumb market={market}/>
                 {/*<img className="metadata-image" src={this.state.image} />*/}
+                <div className="tags">
+                    {tags}
+                </div>
                 <MarketInfo market={market}/>
                 {closeMarketButton}
                 {details}

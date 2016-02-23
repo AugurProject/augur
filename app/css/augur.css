@@ -184,6 +184,21 @@ nav.header h1 > i {
     padding: 30px;
 }
 
+.metadata-details {
+    white-space: pre-wrap;
+}
+.marketPage .tags .tag {
+    margin-right: 0.6rem;
+    padding: 0.3rem;
+    border: solid 1px #d4dbe5;
+    border-radius: 3px;
+    font-size: 11px;
+    text-transform: uppercase;
+}
+.marketInfo {
+    margin-top: 25px;
+}
+
 .navbar-brand {
     background-image: url(/images/augur_logo_small_white.png);
     background-repeat: no-repeat;
