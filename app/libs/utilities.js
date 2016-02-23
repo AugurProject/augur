@@ -125,6 +125,18 @@ module.exports = {
 
     return outcomeNames;
   },
+  getMarketTypeName: function(market) {
+    switch (market.type) {
+      case "categorical":
+            return "Multiple-Choice Market";
+      case "scalar":
+            return "Numeric Market";
+      case "binary":
+            return "Yes/No Market";
+      default:
+            return "Unknown Market";
+    }
+  },
 
   getTourMarketKey: function(markets) {
     for (var tourMarketKey in markets) {
@@ -143,5 +155,8 @@ module.exports = {
   isValidAccount: function (address) {
     address = address.replace(/^0x/, '');  // strip leading '0x' is it exists
     return address.match(/^[0-9a-fA-F]{40}$/) ? true : false;
+  },
+  singularOrPlural(value, singular, plural) {
+    return Math.abs(value) === 1 ? singular : (plural || `${singular}s`);
   }
 };

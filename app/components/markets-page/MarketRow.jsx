@@ -6,7 +6,6 @@ let moment = require("moment");
 let Shepherd = require("tether-shepherd");
 let Link = require("react-router/lib/components/Link");
 let OutcomeRow = require("./OutcomeRow");
-let utils = require("../../libs/utilities");
 
 let tour = new Shepherd.Tour({
     defaults: {
@@ -247,11 +246,22 @@ let MarketRow = React.createClass({
 
                     { rowAction }
                 </div>
-                <div className="subtitle">
-                    <span className="subtitle-label trading-fee-label">Trading Fee:</span>
-                    <span className="subtitle-value trading-fee">{market.tradingFee ? market.tradingFee.times(100).toFixed(1) + '%' : '-'}</span>
-                    <span className="subtitle-label end-date-label">{endDateLabel}:</span>
-                    <span className="subtitle-value end-date">{endDateFormatted}</span>
+                <div className="subtitle clearfix">
+                    <div className="subtitle-group">
+                        <span className="subtitle-label trading-fee-label">Trading Fee:</span>
+                        <span className="subtitle-value trading-fee">{market.tradingFee ? market.tradingFee.times(100).toFixed(1) + '%' : '-'}</span>
+                    </div>
+                    <div className="subtitle-group">
+                        <span className="subtitle-label end-date-label">{endDateLabel}:</span>
+                        <span className="subtitle-value end-date">{endDateFormatted}</span>
+                    </div>
+                    <div className="subtitle-group">
+                        <span className="subtitle-label">
+                            {utilities.getMarketTypeName(market)}
+                            { " " }
+                            ({market.numOutcomes } {utilities.singularOrPlural(market.numOutcomes, "outcome")})
+                        </span>
+                    </div>
                 </div>
                 <div className="tags">
                     {tags}
@@ -294,7 +304,7 @@ let MarketRow = React.createClass({
         localStorage.setItem("tourMarketComplete", true);
 
         let outcomes = this.props.market.outcomes;
-        let outcomeNames = utils.getOutcomeNames(this.props.market);
+        let outcomeNames = utilities.getOutcomeNames(this.props.market);
 
         Shepherd.once('cancel', () => {
             localStorage.setItem("tourComplete", true);
@@ -319,7 +329,7 @@ let MarketRow = React.createClass({
         // TODO highlight outcome labels
         let outcomeList = "";
         for (let i = 0; i < outcomeNames.length; ++i) {
-            outcomeList += "<li>" + outcomeNames[i] + " has a probability of " + utils.getPercentageFormatted(this.props.market, outcomes[i]) + "</li>";
+            outcomeList += "<li>" + outcomeNames[i] + " has a probability of " + utilities.getPercentageFormatted(this.props.market, outcomes[i]) + "</li>";
         }
         tour.addStep("outcomes", {
             text: "<p>This event has " + outcomeNames.length + " possible outcomes: " + outcomeNames.join(" or ") + "</p>" +
