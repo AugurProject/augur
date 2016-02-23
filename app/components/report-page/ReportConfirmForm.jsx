@@ -24,7 +24,7 @@ let ReportConfirmForm = React.createClass({
                         </div>
                         <div className="col-sm-9">
                             <span className="form-control-static">
-                                { market.endDate != null ? moment(market.endDate).format('MMM Do, YYYY') : '-' }
+                                { market.endDate != null ? moment(market.endDate).format('MMM D, YYYY') : '-' }
                             </span>
                         </div>
                     </div>

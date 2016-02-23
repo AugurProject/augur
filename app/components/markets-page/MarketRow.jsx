@@ -222,7 +222,7 @@ let MarketRow = React.createClass({
         let market = this.props.market;
         let tourClass = (this.props.tour) ? " tour" : "";
         let endDateLabel = (market.endDate != null && market.matured) ? "Matured" : "End Date";
-        let endDateFormatted = market.endDate != null ? moment(market.endDate).format("MMM Do, YYYY") : "-";
+        let endDateFormatted = market.endDate != null ? moment(market.endDate).format("MMM D, YYYY") : "-";
         let tags = [];
         if (market.metadata && market.metadata.tags && market.metadata.tags.length) {
             for (var i = 0, n = market.metadata.tags.length; i < n; ++i) {
