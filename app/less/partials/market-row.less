@@ -1,11 +1,12 @@
 @import (reference) "../../../node_modules/bootstrap/less/variables";
 @import "./variables";
+@import "./labelValue";
 @import (reference) "../../../node_modules/flex.less/flex";
 
 @market-row-margin: 0.3rem;
 
 .market-row {
-     border-top: 1px solid @color-grey-light;
+     border-top: 1px solid @color-grey-lighter;
      padding: 15px 0;
 
      .title {
@@ -38,12 +39,6 @@
           .subtitle-group {
                float: left;
                margin-right: 25px;
-          }
-          .subtitle-label {
-               font-weight: 400;
-          }
-          .subtitle-value {
-               font-weight: 500;
           }
      }
 

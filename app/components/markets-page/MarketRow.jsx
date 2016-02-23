@@ -247,16 +247,16 @@ let MarketRow = React.createClass({
                     { rowAction }
                 </div>
                 <div className="subtitle clearfix">
-                    <div className="subtitle-group">
-                        <span className="subtitle-label trading-fee-label">Trading Fee:</span>
-                        <span className="subtitle-value trading-fee">{market.tradingFee ? market.tradingFee.times(100).toFixed(1) + '%' : '-'}</span>
+                    <div className="labelValue subtitle-group">
+                        <span className="labelValue-label trading-fee-label">Trading Fee:</span>
+                        <span className="labelValue-value trading-fee">{market.tradingFee ? market.tradingFee.times(100).toFixed(1) + '%' : '-'}</span>
                     </div>
-                    <div className="subtitle-group">
-                        <span className="subtitle-label end-date-label">{endDateLabel}:</span>
-                        <span className="subtitle-value end-date">{endDateFormatted}</span>
+                    <div className="labelValue subtitle-group">
+                        <span className="labelValue-label end-date-label">{endDateLabel}:</span>
+                        <span className="labelValue-value end-date">{endDateFormatted}</span>
                     </div>
-                    <div className="subtitle-group">
-                        <span className="subtitle-label">
+                    <div className="labelValue subtitle-group">
+                        <span className="labelValue-label">
                             {utilities.getMarketTypeName(market)}
                             { " " }
                             ({market.numOutcomes } {utilities.singularOrPlural(market.numOutcomes, "outcome")})

@@ -7,9 +7,10 @@ const NO = 1;
 const YES = 2;
 
 
-module.exports = React.createClass({
+var OutcomeRow = React.createClass({
+
     getInitialState() {
-        return { potentialProfit: null };
+        return {potentialProfit: null};
     },
 
     render() {
@@ -17,13 +18,15 @@ module.exports = React.createClass({
         let market = this.props.market;
 
         return (
-            <tr>
-                <td className="outcome-name">{ utilities.getOutcomeName(outcome.id, market).outcome }</td>
-                <td className="change-percent">{ utilities.getPercentageFormatted(market, outcome) }</td>
+            <tr className="labelValue">
+                <td className="labelValue-label outcome-name">{ utilities.getOutcomeName(outcome.id, market).outcome }</td>
+                <td className="labelValue-value change-percent">{ utilities.getPercentageFormatted(market, outcome) }</td>
                 {/* TODO: make this functional, the data for this is not easily available yet
-                <td className="change-direction"><i className={ Math.random() > 0.5 ? 'green fa fa-long-arrow-up' : 'red fa fa-long-arrow-down' } /></td>
-                */}
+                 <td className="change-direction"><i className={ Math.random() > 0.5 ? 'green fa fa-play fa-rotate-270' : 'red fa fa-play fa-rotate-90' } /></td>
+                 */}
             </tr>
         );
     }
 });
+
+module.exports = OutcomeRow;
