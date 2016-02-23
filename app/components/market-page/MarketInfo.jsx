@@ -19,6 +19,8 @@ let MarketInfo = React.createClass({
         let creationDateFormatted = market.creationDate ? moment(market.creationDate).format('MMM Do, YYYY') : '-';
         let endDateLabel = (market.endDate != null && market.matured) ? 'Matured:' : 'End date:';
         let endDateFormatted = market.endDate != null ? moment(market.endDate).format('MMM Do, YYYY') : '-';
+        let expirySource = "";
+        if (market.metadata) expirySource = market.metadata.source;
 
         return (
             <div className='row marketInfo'>
@@ -62,6 +64,10 @@ let MarketInfo = React.createClass({
                             <tr className="labelValue">
                                 <td className="labelValue-label">{ endDateLabel }</td>
                                 <td className="labelValue-value">{ endDateFormatted }</td>
+                            </tr>
+                            <tr className="labelValue">
+                                <td className="labelValue-label">Expiry source:</td>
+                                <td className="labelValue-value">{ expirySource }</td>
                             </tr>
                         </tbody>
                     </table>

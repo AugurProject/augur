@@ -6,6 +6,8 @@ let Fluxxor = require("fluxxor");
 let FluxMixin = Fluxxor.FluxMixin(React);
 let StoreWatchMixin = Fluxxor.StoreWatchMixin;
 let Button = require("react-bootstrap/lib/Button");
+let Collapse = require("react-bootstrap/lib/Collapse");
+let Glyphicon = require("react-bootstrap/lib/Glyphicon");
 
 let Breadcrumb = require("./Breadcrumb.jsx");
 let MarketInfo = require("./MarketInfo.jsx");
@@ -35,7 +37,8 @@ let MarketPage = React.createClass({
             priceHistoryTimeout: null,
             orderBookTimeout: null,
             addMarketModalOpen: false,
-            metadataTimeout: null
+            metadataTimeout: null,
+            showDetails: false
         };
     },
 
@@ -73,6 +76,10 @@ let MarketPage = React.createClass({
         };
     },
 
+    toggleDetails() {
+        this.setState({showDetails: !this.state.showDetails});
+    },
+
     toggleCloseMarketModal(event) {
         this.setState({closeMarketModalOpen: !this.state.closeMarketModalOpen});
     },
@@ -85,7 +92,6 @@ let MarketPage = React.createClass({
                 <div>No market info</div>
             );
         }
-
         let tags = [];
         if (market.metadata && market.metadata.tags && market.metadata.tags.length) {
             for (var i = 0, n = market.metadata.tags.length; i < n; ++i) {
@@ -96,7 +102,6 @@ let MarketPage = React.createClass({
                 );
             }
         }
-
         let closeMarketButton = <span />;
         if (market.matured && market.closable && !market.closed) {
              closeMarketButton = (
@@ -111,12 +116,23 @@ let MarketPage = React.createClass({
             );
         }
         let details = <span />;
-        if (market.metadata && market.metadata.details) {
+        let metadata = market.metadata || {};
+        if (metadata.details) {
             details = (
-                <div className="row col-sm-12 metadata-details">
-                    {market.metadata.details};
-                </div>
+                <p className="metadata-details">
+                    {metadata.details}
+                </p>
             );
+        }
+        let links = [];
+        if (metadata.links && metadata.links.constructor === Array) {
+            for (var i = 0, n = metadata.links.length; i < n; ++i) {
+                links.push(
+                    <li><a href={metadata.links[i]}>
+                        {metadata.links[i]}
+                    </a></li>
+                );
+            }
         }
 
         return (
@@ -126,9 +142,27 @@ let MarketPage = React.createClass({
                 <div className="tags">
                     {tags}
                 </div>
-                <MarketInfo market={market}/>
+                <MarketInfo market={market} />
+
                 {closeMarketButton}
-                {details}
+
+                <div onClick={this.toggleDetails} className="pointer">
+                    <Glyphicon
+                        glyph={this.state.showDetails ? "chevron-down" : "chevron-right"} />
+                    <b> Additional details</b>
+                </div>
+                <Collapse in={this.state.showDetails}>
+                    <div className="row col-sm-12 additional-details">
+                        <h4>Description</h4>
+                        <div className="row col-sm-12">
+                            {details}
+                        </div>
+                        <h4>Resources</h4>
+                        <div className="row col-sm-12">
+                            {links}
+                        </div>
+                    </div>
+                </Collapse>
 
                 <div role="tabpanel" style={{marginTop: '15px'}}>
                     <div className="row submenu">
@@ -172,14 +206,12 @@ let MarketPage = React.createClass({
                                 market={this.state.market}
                                 account={this.state.account}
                                 handle={this.state.handle}
-                                toggleSignInModal={this.props.toggleSignInModal}
-                                />
+                                toggleSignInModal={this.props.toggleSignInModal} />
                         </div>
                         <div id="statsTab" className="tab-pane" role="tabpanel">
                             <StatsTab
                                 market={this.state.market}
-                                blockNumber={this.state.blockNumber}
-                                />
+                                blockNumber={this.state.blockNumber} />
                         </div>
                         {/*
                         <div id="rulesTab" className="tab-pane" role="tabpanel">
