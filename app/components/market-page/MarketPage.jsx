@@ -33,7 +33,7 @@ let MarketPage = React.createClass({
 
     getInitialState() {
         return {
-            image: "/images/augur_logo_bg.png",
+            image: null,
             priceHistoryTimeout: null,
             orderBookTimeout: null,
             addMarketModalOpen: false,
@@ -60,6 +60,9 @@ let MarketPage = React.createClass({
             }
         }
         if (market && market.metadata && market.metadata.image) {
+            if (!Buffer.isBuffer(market.metadata.image)) {
+                market.metadata.image = new Buffer(market.metadata.image, "base64");
+            }
             let blob = new Blob([market.metadata.image], {type: "image/png"});
             let reader = new FileReader();
             reader.onload = function (e) {
@@ -134,11 +137,15 @@ let MarketPage = React.createClass({
                 );
             }
         }
+        let image = <span />;
+        if (metadata.image) {
+            image = <img className="metadata-image" src={this.state.image} />;
+        }
 
         return (
             <div className="marketPage">
                 <Breadcrumb market={market}/>
-                {/*<img className="metadata-image" src={this.state.image} />*/}
+                {image}
                 <div className="tags">
                     {tags}
                 </div>

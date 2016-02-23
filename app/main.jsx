@@ -40,7 +40,6 @@ var MarketsPage = require('./components/markets-page/MarketsPage.jsx');
 var MarketPage = require('./components/market-page/MarketPage.jsx');
 var ReportsPage = require('./components/reports-page/ReportsPage.jsx');
 var ReportPage = require('./components/report-page/ReportPage.jsx');
-//var Ballots = require("./components/Ballots");
 var Outcomes = require("./components/Outcomes");
 var Portfolio = require("./components/Portfolio");
 
