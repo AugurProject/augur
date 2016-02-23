@@ -79,11 +79,10 @@ module.exports = {
         outcome: "indeterminate"
       };
     }
-
     switch (marketType) {
     case "categorical":
-      if (market && market.description && market.description.indexOf("Choices:") > -1) {
-        var desc = market.description.split("Choices:");
+      if (market && market.longDescription && market.longDescription.indexOf("Choices:") > -1) {
+        var desc = market.longDescription.split("Choices:");
         var choices = desc[desc.length - 1].split(",");
         if (choices && choices.constructor === Array && choices.length > id - 1) {
             return {type: "categorical", outcome: choices[id - 1].trim()};

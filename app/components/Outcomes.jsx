@@ -191,9 +191,6 @@ var Overview = React.createClass({
             }
         });
     },
-    getDescription(market, outcome) {
-        return utilities.getOutcomeName(outcome.id, this.props.market);
-    },
     getPercentageFormatted(market, outcome) {
         let percentageFormatted;
         if (market.type === "scalar") {
@@ -218,7 +215,7 @@ var Overview = React.createClass({
             className += ' read-only';
         }
 
-        description = this.getDescription(market, outcome);
+        description = outcome.label;
         percentageFormatted = this.getPercentageFormatted(market, outcome);
 
         if (this.state.buyShares && !isReadOnly) {
@@ -301,7 +298,7 @@ var Overview = React.createClass({
         return (
             <div className={className}>
                 <h4>
-                    {description.outcome} ({percentageFormatted})
+                    {description} ({percentageFormatted})
                 </h4>
                 {buySellActions}
                 <ProgressModal

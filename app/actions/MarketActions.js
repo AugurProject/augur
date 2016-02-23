@@ -87,6 +87,10 @@ module.exports = {
       marketInfo.traderCount = abi.bignum(marketInfo.traderCount);
       marketInfo.alpha = abi.bignum(marketInfo.alpha);
       marketInfo.tradingPeriod = abi.bignum(marketInfo.tradingPeriod);
+      marketInfo.longDescription = marketInfo.description;
+      if (marketInfo.type === "categorical") {
+        marketInfo.description = marketInfo.description.slice(0, marketInfo.description.indexOf("Choices:"));
+      }
       if (marketInfo.participants[account]) {
         marketInfo.traderId = abi.bignum(marketInfo.participants[account]);
       }
@@ -107,6 +111,7 @@ module.exports = {
           }
           thisOutcome.pendingShares = abi.bignum(0);
           thisOutcome.price = abi.bignum(thisOutcome.price);
+          thisOutcome.label = utils.getOutcomeName(thisOutcome.id, marketInfo).outcome;
           nextOutcome();
         }, function (err) {
           if (err) console.error(err);
