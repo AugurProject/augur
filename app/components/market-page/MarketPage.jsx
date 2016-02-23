@@ -6,6 +6,8 @@ let Fluxxor = require("fluxxor");
 let FluxMixin = Fluxxor.FluxMixin(React);
 let StoreWatchMixin = Fluxxor.StoreWatchMixin;
 let Button = require("react-bootstrap/lib/Button");
+let Collapse = require("react-bootstrap/lib/Collapse");
+let Glyphicon = require("react-bootstrap/lib/Glyphicon");
 
 let Breadcrumb = require("./Breadcrumb.jsx");
 let MarketInfo = require("./MarketInfo.jsx");
@@ -31,11 +33,12 @@ let MarketPage = React.createClass({
 
     getInitialState() {
         return {
-            image: "/images/augur_logo_bg.png",
+            image: null,
             priceHistoryTimeout: null,
             orderBookTimeout: null,
             addMarketModalOpen: false,
-            metadataTimeout: null
+            metadataTimeout: null,
+            showDetails: false
         };
     },
 
@@ -57,6 +60,9 @@ let MarketPage = React.createClass({
             }
         }
         if (market && market.metadata && market.metadata.image) {
+            if (!Buffer.isBuffer(market.metadata.image)) {
+                market.metadata.image = new Buffer(market.metadata.image, "base64");
+            }
             let blob = new Blob([market.metadata.image], {type: "image/png"});
             let reader = new FileReader();
             reader.onload = function (e) {
@@ -73,6 +79,10 @@ let MarketPage = React.createClass({
         };
     },
 
+    toggleDetails() {
+        this.setState({showDetails: !this.state.showDetails});
+    },
+
     toggleCloseMarketModal(event) {
         this.setState({closeMarketModalOpen: !this.state.closeMarketModalOpen});
     },
@@ -85,7 +95,16 @@ let MarketPage = React.createClass({
                 <div>No market info</div>
             );
         }
-
+        let tags = [];
+        if (market.metadata && market.metadata.tags && market.metadata.tags.length) {
+            for (var i = 0, n = market.metadata.tags.length; i < n; ++i) {
+                tags.push(
+                    <span key={market._id + "-tag-" + i} className="tag">
+                        {market.metadata.tags[i]}
+                    </span>
+                );
+            }
+        }
         let closeMarketButton = <span />;
         if (market.matured && market.closable && !market.closed) {
              closeMarketButton = (
@@ -100,17 +119,57 @@ let MarketPage = React.createClass({
             );
         }
         let details = <span />;
-        if (market.metadata && market.metadata.details) {
-            details = market.metadata.details;
+        let metadata = market.metadata || {};
+        if (metadata.details) {
+            details = (
+                <p className="metadata-details">
+                    {metadata.details}
+                </p>
+            );
+        }
+        let links = [];
+        if (metadata.links && metadata.links.constructor === Array) {
+            for (var i = 0, n = metadata.links.length; i < n; ++i) {
+                links.push(
+                    <li><a href={metadata.links[i]}>
+                        {metadata.links[i]}
+                    </a></li>
+                );
+            }
+        }
+        let image = <span />;
+        if (metadata.image) {
+            image = <img className="metadata-image" src={this.state.image} />;
         }
 
         return (
             <div className="marketPage">
                 <Breadcrumb market={market}/>
-                {/*<img className="metadata-image" src={this.state.image} />*/}
-                <MarketInfo market={market}/>
+                {image}
+                <div className="tags">
+                    {tags}
+                </div>
+                <MarketInfo market={market} />
+
                 {closeMarketButton}
-                {details}
+
+                <div onClick={this.toggleDetails} className="pointer">
+                    <Glyphicon
+                        glyph={this.state.showDetails ? "chevron-down" : "chevron-right"} />
+                    <b> Additional details</b>
+                </div>
+                <Collapse in={this.state.showDetails}>
+                    <div className="row col-sm-12 additional-details">
+                        <h4>Description</h4>
+                        <div className="row col-sm-12">
+                            {details}
+                        </div>
+                        <h4>Resources</h4>
+                        <div className="row col-sm-12">
+                            {links}
+                        </div>
+                    </div>
+                </Collapse>
 
                 <div role="tabpanel" style={{marginTop: '15px'}}>
                     <div className="row submenu">
@@ -126,6 +185,7 @@ let MarketPage = React.createClass({
                                 <li role="presentation" className="list-group-item">
                                     <a role="tab" href="#statsTab" data-toggle="tab">Stats & Charts</a>
                                 </li>
+                                {/* TODO: implement
                                 <li role="presentation" className="list-group-item">
                                     <a role="tab" href="#rulesTab" data-toggle="tab">Rules</a>
                                 </li>
@@ -137,11 +197,12 @@ let MarketPage = React.createClass({
                                 <li role="presentation" className="list-group-item">
                                     <a role="tab" href="#userFrozenFundsTab" data-toggle="tab">
                                         Frozen Funds
-                                        {/*<span ng-show="app.balance.eventMargin != null">
+                                        <span ng-show="app.balance.eventMargin != null">
                                         (<span ng-bind="app.balance.eventMarginFormatted"></span>)
-                                    </span>*/}
+                                    </span>
                                     </a>
                                 </li>
+                                */}
                             </ul>
                         </div>
                     </div>
@@ -152,15 +213,14 @@ let MarketPage = React.createClass({
                                 market={this.state.market}
                                 account={this.state.account}
                                 handle={this.state.handle}
-                                toggleSignInModal={this.props.toggleSignInModal}
-                                />
+                                toggleSignInModal={this.props.toggleSignInModal} />
                         </div>
                         <div id="statsTab" className="tab-pane" role="tabpanel">
                             <StatsTab
                                 market={this.state.market}
-                                blockNumber={this.state.blockNumber}
-                                />
+                                blockNumber={this.state.blockNumber} />
                         </div>
+                        {/*
                         <div id="rulesTab" className="tab-pane" role="tabpanel">
                             <RulesTab/>
                         </div>
@@ -170,6 +230,7 @@ let MarketPage = React.createClass({
                         <div id="userFrozenFundsTab" className="tab-pane" role="tabpanel">
                             <UserFrozenFundsTab/>
                         </div>
+                        */}
                     </div>
                 </div>
 
@@ -201,7 +262,8 @@ let MarketPage = React.createClass({
 
         let priceFormatted = this.state.market.price ? Math.abs(this.state.market.price).toFixed(3) : '-';
         let percentageFormatted = priceFormatted ? (priceFormatted * 100).toFixed(1) : '-';
-        let outcomeNames = utils.getOutcomeNames(this.state.market).slice().reverse();
+        let outcomes = this.state.market.outcomes;
+        let outcomeNames = utils.getOutcomeNames(this.state.market);
 
         Shepherd.once('cancel', () => {
             localStorage.setItem("tourComplete", true);
@@ -237,10 +299,10 @@ let MarketPage = React.createClass({
             }]
         });
 
-        tour.addStep("believe-yes", {
-            title: "Higher",
+        tour.addStep("believe-one", {
+            title: "Lower",
             text: "<p>If you think it should be higher, buy some shares in the " + outcomeNames[0].toUpperCase() + "</p>",
-            attachTo: ".outcome-2 .tradeAction-buy left",
+            attachTo: ".outcome-" + outcomes[0].id + " .tradeAction-buy left",
             buttons: [{
                 text: "Back",
                 classes: "shepherd-button-secondary",
@@ -251,10 +313,10 @@ let MarketPage = React.createClass({
             }]
         });
 
-        tour.addStep("believe-no", {
-            title: "Lower",
+        tour.addStep("believe-two", {
+            title: "Higher",
             text: "<p>If you think it should be lower, buy some shares in the " + outcomeNames[1].toUpperCase() + "</p>",
-            attachTo: ".outcome-1 .tradeAction-buy left",
+            attachTo: ".outcome-" + outcomes[1].id + "  .tradeAction-buy left",
             buttons: [{
                 text: "Back",
                 classes: "shepherd-button-secondary",

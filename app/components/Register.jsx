@@ -92,14 +92,6 @@ let RegisterModal = React.createClass({
           flux.augur.filters.ignore(true, function (err) {
             if (err) return console.error(err);
             console.log("reset filters");
-            self.setState({
-              registerDetail: {
-                block: flux.augur.filters.block_filter.id,
-                contracts: flux.augur.filters.contracts_filter.id,
-                creation: flux.augur.filters.creation_filter.id,
-                price: flux.augur.filters.price_filter.id
-              }
-            });
             self.setState({registerStatus: self.state.registerStatus + "<br />Blockchain listeners reset."})
             flux.actions.config.initializeData();
             flux.actions.asset.updateAssets();

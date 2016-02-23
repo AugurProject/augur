@@ -20,7 +20,9 @@ module.exports = React.createClass({
             <tr>
                 <td className="outcome-name">{ utilities.getOutcomeName(outcome.id, market).outcome }</td>
                 <td className="change-percent">{ utilities.getPercentageFormatted(market, outcome) }</td>
+                {/* TODO: make this functional, the data for this is not easily available yet
                 <td className="change-direction"><i className={ Math.random() > 0.5 ? 'green fa fa-long-arrow-up' : 'red fa fa-long-arrow-down' } /></td>
+                */}
             </tr>
         );
     }
