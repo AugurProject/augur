@@ -1163,7 +1163,6 @@ a.market-pane:hover {
 
 .paginator {
     float: right;
-    font-family: 'Source Sans Pro', sans-serif;
     text-align: right;
     width: auto;
     list-style: none;
@@ -1207,10 +1206,6 @@ a.market-pane:hover {
     display: inline-block;
     padding: 0px 8px 1px 8px;
     border-radius: 3px;
-}
-.paginator > .pages > li:hover > a {
-    text-decoration: none;
-    background-color: #D7D3C2;
 }
 span.debug {
     font-size: 12px;
