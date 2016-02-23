@@ -1,4 +1,7 @@
-@import (reference) "../../../node_modules/bootstrap/less/bootstrap";
+@import (reference) "../../../node_modules/bootstrap/less/variables";
+@import (reference) "../../../node_modules/bootstrap/less/mixins/vendor-prefixes";
+@import (reference) "../../../node_modules/bootstrap/less/mixins/buttons";
+@import (reference) "../../../node_modules/bootstrap/less/mixins/alerts";
 @import (reference) "../../../node_modules/flex.less/flex";
 @import (reference) "variables";
 
@@ -26,11 +29,6 @@
 
 .td-shrink {
     width: 1%;
-}
-
-// table-condensed doesn't work because it's overridden by GSDK, so I just paste it here once again so it's later in code
-.table-condensed {
-    .table-condensed();
 }
 
 .pointer,

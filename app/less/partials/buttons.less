@@ -1,12 +1,17 @@
+@import (reference) "variables";
+
 .btn, .btn-primary {
     color: @color-slate;
     background: @color-grey-lighter;
     border: 1px solid @color-grey-light;
     border-radius: 3px;
+    padding-left: 18px;
+    padding-right: 18px;
 
     // turn off the smoothing for buttons, so they look same
     .font-render-auto();
-    font-size: @font-size-base;
+    font-size: @font-size-button;
+    line-height: 1.3384;
 
     &:hover, &:active, &:focus {
         color: white;
