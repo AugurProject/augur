@@ -13,7 +13,7 @@ let MarketInfo = React.createClass({
         }, 0);
         let outstandingSharesFormatted = outstandingShares != 0 ? +outstandingShares.toFixed(2) : '-';
 
-        let tradingFeeFormatted = market.tradingFee ? +market.tradingFee.times(100).toFixed(2)+'%' : '-';
+        let tradingFeeFormatted = market.tradingFee ? market.tradingFee.times(100).toFixed(1)+'%' : '-';
         let tradersCountFormatted = market.traderCount ? +market.traderCount.toNumber() : '-';
         let authorFormatted = market.author ? abi.format_address(abi.hex(market.author)) : '-';
         let creationDateFormatted = market.creationDate ? moment(market.creationDate).format('MMM D, YYYY') : '-';
