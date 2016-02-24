@@ -10,8 +10,9 @@ let Collapse = require("react-bootstrap/lib/Collapse");
 let Glyphicon = require("react-bootstrap/lib/Glyphicon");
 
 let Breadcrumb = require("./Breadcrumb.jsx");
+let OrderTicket = require('./order-ticket/OrderTicket.jsx');
+let UserOrders = require('./UserOrders.jsx');
 let MarketInfo = require("./MarketInfo.jsx");
-let TradeTab = require("./TradeTab.jsx");
 let StatsTab = require("./StatsTab");
 let RulesTab = require("./RulesTab");
 let UserTradesTab = require("./UserTradesTab");
@@ -149,6 +150,9 @@ let MarketPage = React.createClass({
                 <div className="tags">
                     {tags}
                 </div>
+                <OrderTicket market={this.state.market} account={this.state.account}/>
+                <UserOrders market={this.state.market}/>
+
                 <MarketInfo market={market} />
 
                 {closeMarketButton}
@@ -179,9 +183,6 @@ let MarketPage = React.createClass({
 
                         <div id="collapseSubmenu" className="col-xs-12 collapse" aria-expanded="false">
                             <ul className="list-group" role="tablist" id="tabpanel">
-                                <li role="presentation" className="list-group-item active">
-                                    <a role="tab" href="#tradeTab" data-toggle="tab">Trade</a>
-                                </li>
                                 <li role="presentation" className="list-group-item">
                                     <a role="tab" href="#statsTab" data-toggle="tab">Stats & Charts</a>
                                 </li>
@@ -208,13 +209,6 @@ let MarketPage = React.createClass({
                     </div>
 
                     <div className="tab-content">
-                        <div id="tradeTab" className="tab-pane active" role="tabpanel">
-                            <TradeTab
-                                market={this.state.market}
-                                account={this.state.account}
-                                handle={this.state.handle}
-                                toggleSignInModal={this.props.toggleSignInModal} />
-                        </div>
                         <div id="statsTab" className="tab-pane" role="tabpanel">
                             <StatsTab
                                 market={this.state.market}

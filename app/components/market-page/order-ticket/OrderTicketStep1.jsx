@@ -67,7 +67,7 @@ let OrderTicketStep1 = React.createClass({
         } else {
             outcomes = _.map(market.outcomes, function (outcome) {
                 return (
-                    <div className="" key={outcome.id}>
+                    <div className="outcome-container" key={outcome.id}>
                         <Outcomes.Overview
                             market={this.props.market}
                             outcome={_.clone(outcome)}
@@ -78,7 +78,7 @@ let OrderTicketStep1 = React.createClass({
         }
 
         return (
-            <div id="orderTicketCollapse" className="orderTicket-step collapse in collapsedOnMobile" style={style}>
+            <div className="orderTicket-step collapse in collapsedOnMobile order-ticket-display" style={style}>
                 { outcomes }
             </div>
 
