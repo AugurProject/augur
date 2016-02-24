@@ -668,11 +668,9 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                     .dividedBy(constants.ETHER);
                 augur.web.fund({address: recipient}, {
                     onRegistered: function (account) {
-                        console.log("onRegistered:", account);
                         assert.strictEqual(account.address, recipient);
                     },
                     onSendEther: function (account) {
-                        console.log("onSendEther:", account);
                         assert.strictEqual(account.address, recipient);
                         var final_balance = abi
                             .bignum(augur.rpc.balance(recipient))
@@ -680,14 +678,35 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                         var delta = final_balance.sub(initial_balance).toNumber();
                         assert.isAbove(Math.abs(delta), 4);
                     },
+                    onInitAccount: function (res) {
+                        console.log("init account:", res);
+                    },
+                    onReputationFaucet: function (res) {
+                        console.log("rep faucet:", res);
+                        assert.notProperty(res, "error");
+                        assert.strictEqual(res.callReturn, "1");
+                        augur.getRepBalance(augur.branches.dev, recipient, function (repBalance) {
+                            assert.notProperty(repBalance, "error");
+                            assert.strictEqual(abi.number(repBalance), 47);
+                        });
+                    },
+                    onSendCash: function (res) {
+                        console.log("send cash:", res);
+                        assert.notProperty(response, "error");
+                        assert.strictEqual(response.callReturn, "10000");
+                        augur.getCashBalance(recipient, function (cashBalance) {
+                            assert.notProperty(cashBalance, "error");
+                            assert.isAbove(abi.number(cashBalance), 9999);
+                        });
+                    },
                     onFunded: function (response) {
+                        console.log("funded:", res);
                         assert.notProperty(response, "error");
                         assert.strictEqual(response.callReturn, "1");
                         augur.getRepBalance(augur.branches.dev, recipient, function (repBalance) {
                             assert.notProperty(repBalance, "error");
                             assert.strictEqual(abi.number(repBalance), 47);
                             augur.getCashBalance(recipient, function (cashBalance) {
-                                console.log("cash balance:", recipient, cashBalance);
                                 assert.notProperty(cashBalance, "error");
                                 assert.isAbove(abi.number(cashBalance), 9999);
                                 augur.web.logout();

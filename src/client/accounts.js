@@ -29,10 +29,13 @@ module.exports = function () {
         account: {},
 
         // free (testnet) ether for new accounts on registration
-        fund: function (account, onRegistered, onSendEther, onFunded) {
+        fund: function (account, onRegistered, onSendEther, onInitAccount, onReputationFaucet, onSendCash, onFunded) {
             var self = this;
             if (onRegistered && onRegistered.constructor === Object) {
                 if (onRegistered.onSendEther) onSendEther = onRegistered.onSendEther;
+                if (onRegistered.onInitAccount) onInitAccount = onRegistered.onInitAccount;
+                if (onRegistered.onReputationFaucet) onReputationFaucet = onRegistered.onReputationFaucet;
+                if (onRegistered.onSendCash) onSendCash = onRegistered.onSendCash;
                 if (onRegistered.onFunded) onFunded = onRegistered.onFunded;
                 if (onRegistered.onRegistered) onRegistered = onRegistered.onRegistered;
             }
@@ -46,52 +49,48 @@ module.exports = function () {
                     value: constants.FREEBIE,
                     from: funder,
                     onSent: function (r) {
-                        console.log("sendEther sent:", r);
                         onRegistered(account);
                     },
                     onSuccess: function (r) {
-                        console.log("sendEther success:", r);
-                        var checkbox = {cash: null, reputation: null};
-                        var check = function (response) {
-                            console.log("check:", response, checkbox);
-                            if (checkbox.cash && checkbox.reputation) {
-                                onFunded(response);
+                        var gotCash, gotReputation;
+                        var check = function (gotCash, gotReputation) {
+                            if (gotCash && gotReputation) {
+                                onFunded(account);
                             }
                         };
                         onSendEther(account);
 
                         // free stuff, yay!
                         augur.sendCash({
-                            to: account.address,
+                            to: augur.tx.cash,
                             value: "0",
                             onSent: function (res) {
-                                console.log("sendCash sent:", res);
                                 augur.reputationFaucet({
                                     branch: augur.branches.dev,
-                                    onSent: function (res) {
-                                        console.log("[augur.js] reputationFaucet:", res.txHash);
-                                    },
+                                    onSent: function (res) {},
                                     onSuccess: function (res) {
-                                        checkbox.reputation = true;
-                                        check(res);
+                                        onReputationFaucet(res);
+                                        gotReputation = true;
+                                        check(gotCash, gotReputation);
                                     },
                                     onFailed: onFunded
                                 });
                             },
                             onSuccess: function (res) {
-                                console.log("sendCash success:", res);
-                                augur.cashFaucet({
-                                    // ID: account.address,
-                                    // amount: "10000",
-                                    onSent: function (res) {
-                                        console.log("[augur.js] cashFaucet:", res);
-                                    },
-                                    onSuccess: function (res) {
-                                        checkbox.cash = true;
-                                        check(res);
-                                    },
-                                    onFailed: onFunded
-                                });
+                                onInitAccount(res);
+                                augur.rpc.transact({
+                                    from: funder,
+                                    to: augur.contracts.cash,
+                                    method: "send",
+                                    signature: "ii",
+                                    send: true,
+                                    returns: "unfix",
+                                    params: [account.address, abi.fix("10000", "hex")]
+                                }, function (res) {}, function (res) {
+                                    onSendCash(res);
+                                    gotCash = true;
+                                    check(gotCash, gotReputation);
+                                }, onFunded);
                             },
                             onFailed: onFunded
                         });
@@ -102,7 +101,7 @@ module.exports = function () {
         },
 
         // options: {doNotFund, persist}
-        // cb: {onSent, onSendEther, onFunded}
+        // cb: {onRegistered, onSendEther, onInitAccount, onReputationFaucet, onSendCash, onFunded}
         register: function (handle, password, options, cb) {
             var i, self = this;
             if (!cb && options) {
@@ -119,6 +118,9 @@ module.exports = function () {
                     cb = {};
                     if (options.onRegistered) cb.onRegistered = options.onRegistered;
                     if (options.onSendEther) cb.onSendEther = options.onSendEther;
+                    if (options.onInitAccount) onInitAccount = options.onInitAccount;
+                    if (options.onReputationFaucet) onReputationFaucet = options.onReputationFaucet;
+                    if (options.onSendCash) onSendCash = options.onSendCash;
                     if (options.onFunded) cb.onFunded = options.onFunded;
                 }
             }
@@ -134,6 +136,9 @@ module.exports = function () {
             cb = cb || {};
             cb.onRegistered = cb.onRegistered || utils.pass;
             cb.onSendEther = cb.onSendEther || utils.pass;
+            cb.onInitAccount = cb.onInitAccount || utils.pass;
+            cb.onReputationFaucet = cb.onReputationFaucet || utils.pass;
+            cb.onSendCash = cb.onSendCash || utils.pass;
             cb.onFunded = cb.onFunded || utils.pass;
             options = options || {};
             if (!password || password.length < 6) return cb.onRegistered(errors.PASSWORD_TOO_SHORT);
