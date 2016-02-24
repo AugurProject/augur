@@ -1,13 +1,10 @@
 let React = require("react");
-let abi = require("augur-abi");
-let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
-let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
 let Button = require("react-bootstrap/lib/Button");
-let Input = require("react-bootstrap/lib/Input");
 let Modal = require("react-bootstrap/lib/Modal");
 let utilities = require("../libs/utilities");
 let Collapse = require("react-bootstrap/lib/Collapse");
 let Glyphicon = require("react-bootstrap/lib/Glyphicon");
+let ProgressBar = require("react-bootstrap/lib/ProgressBar");
 
 module.exports = React.createClass({
   getInitialState() {
@@ -32,7 +29,16 @@ module.exports = React.createClass({
     return (
       <Modal {...this.props} className="progress-modal">
         <div className="modal-header clearfix">
-          <h4>{this.props.header}</h4>
+          <h4>
+            {this.props.header}
+            <br />
+            <small className="progress-modal-subheading">
+              Do not leave this page until the green 'Close' button appears
+            </small>
+          </h4>
+          <ProgressBar
+            now={100 * (this.props.step / this.props.numSteps)}
+            className="loading-progress" />
         </div>
         <div className="modal-body clearfix">
           <div className="row">

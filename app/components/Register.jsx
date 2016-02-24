@@ -27,55 +27,64 @@ let RegisterModal = React.createClass({
       handleHelp: null,
       passwordHelp: null,
       verifyPasswordHelp: null,
-      progressModalOpen: false,
-      registerStatus: "",
-      registerHeader: "",
-      registerDetail: null,
-      registerComplete: null,
+      progressModal: {
+        open: false,
+        status: "",
+        header: "",
+        detail: null,
+        complete: null,
+        steps: 7,
+        step: 0
+      },
       tab: 0,
       keystore: null
     };
   },
 
   toggleProgressModal: function (event) {
-    this.setState({progressModalOpen: !this.state.progressModalOpen});
+    var progressModal = this.state.progressModal;
+    progressModal.open = !progressModal.open;
+    this.setState({progressModal: progressModal});
   },
+
+  updateProgressModal: utilities.updateProgressModal,
 
   onRegister: function (event) {
     if (this.isValid()) {
       let flux = this.getFlux();
       let self = this;
       this.props.onHide();
-      this.setState({
-        registerHeader: "Creating New Account",
-        registerStatus: "<b>Do not close this window or browse to another page until your account registration is complete!</b><br />Creating new account " + this.state.handle + "...",
-        registerDetail: {handle: this.state.handle, persist: this.state.persist}
+      this.updateProgressModal({
+        header: "Creating New Account",
+        status: "Creating new account <i>" + this.state.handle + "</i>...",
+        detail: {handle: this.state.handle, persist: this.state.persist}
       });
       this.toggleProgressModal();
+      let checkbox = {reputation: null, cash: null, funded: null};
       flux.augur.web.register(this.state.handle, this.state.password, {
         persist: this.state.persist
       }, {
         onRegistered: function (account) {
-          if (!account) return console.error("registration error");
-          if (account.error) {
-            console.error("registration error:", account);
-            self.setState({
-              registerDetail: {account},
-              registerComplete: true
+          if (!account || account.error) {
+            self.updateProgressModal({
+              detail: {account},
+              status: "Could not create new account.",
+              complete: true
             });
-            self.setState({registerStatus: self.state.registerStatus + "<br />Could not create new account."});
             flux.actions.config.updateAccount({
               currentAccount: null,
               privateKey: null,
               handle: null,
               keystore: null
             });
-            self.setState({handleHelp: account.message});
-            return;
+            return self.setState({handleHelp: account.message});
           }
-          console.log("account created:", account);
-          self.setState({registerDetail: {account}});
-          self.setState({registerStatus: self.state.registerStatus + "<br />Account created! Your new address is:<br /><i>" + account.address + "</i><br />Waiting for free Ether..."});
+          self.updateProgressModal([{
+              detail: {account},
+              status: "Account created! Your new address is:<br /><i>" + account.address + "</i>"
+            },
+            "Waiting for free Ether..."
+          ]);
           flux.actions.config.userRegistered();
           flux.actions.config.updateAccount({
             currentAccount: account.address,
@@ -86,24 +95,42 @@ let RegisterModal = React.createClass({
           flux.actions.asset.updateAssets();
         },
         onSendEther: function (account) {
-          console.log("Register.jsx: onSendEther %o", arguments);
-          self.setState({registerDetail: {account}});
-          self.setState({registerStatus: self.state.registerStatus + "<br />Received " + flux.augur.constants.FREEBIE + " Ether.<br />Resetting blockchain listeners...<br />Waiting for free CASH and Reputation..."});
+          self.updateProgressModal([
+            "Received " + flux.augur.constants.FREEBIE + " Ether.",
+            "Requesting free Reputation...",
+            "Initializing account on-contract..."
+          ]);
           flux.augur.filters.ignore(true, function (err) {
             if (err) return console.error(err);
-            console.log("reset filters");
-            self.setState({registerStatus: self.state.registerStatus + "<br />Blockchain listeners reset."})
+            self.updateProgressModal("Blockchain listeners reset.");
             flux.actions.config.initializeData();
             flux.actions.asset.updateAssets();
           });
         },
+        onInitAccount: function (res) {
+          self.updateProgressModal(["Account initialized.", "Requesting free Cash..."]);
+        },
+        onReputationFaucet: function (res) {
+          if (!checkbox.reputation) {
+            self.updateProgressModal("Received free Reputation.");
+          }
+          checkbox.reputation = true;
+        },
+        onSendCash: function (res) {
+          if (!checkbox.cash) {
+            self.updateProgressModal("Received free Cash.");
+          }
+          checkbox.cash = true;
+        },
         onFunded: function (response) {
-          console.log("register sequence complete %o", response);
-          self.setState({
-              registerDetail: {response},
-              registerComplete: true
+          if (!checkbox.funded) {
+            self.updateProgressModal({
+              detail: {response},
+              status: "Registration complete!",
+              complete: true
             });
-            self.setState({registerStatus: self.state.registerStatus + "<br />Received initial CASH and Reputation.<br />Registration complete! You can safely close this dialogue."})
+          }
+          checkbox.funded = true;
           flux.actions.asset.updateAssets();
         }
       });
@@ -120,45 +147,48 @@ let RegisterModal = React.createClass({
       var flux = this.getFlux();
       var self = this;
       this.props.onHide();
-      this.setState({
-        registerHeader: "Importing Account",
-        registerStatus: "<b>Do not close this window or browse to another page until your account registration is complete!</b><br />Decrypting private key for " + address + "...",
-        registerDetail: keystore
+      this.updateProgressModal({
+        header: "Importing Account",
+        status: "Decrypting private key for " + address + "...",
+        detail: keystore
       });
       this.toggleProgressModal();
       keys.recover(password, keystore, function (privateKey) {
         if (!privateKey || privateKey.error) {
-          self.setState({
-            registerStatus: self.state.registerStatus + "<br />Private key decryption failed. Please double-check that you entered the same password you used locally!",
-            registerDetail: privateKey,
-            registerComplete: true
+          self.updateProgressModal({
+            status: "Private key decryption failed. Please double-check that you entered the same password you used locally!",
+            detail: privateKey,
+            complete: true
           });
           return console.error("onImportAccount keys.recover:", privateKey);
         }
+        var keystoreCrypto = keystore.Crypto || keystore.crypto;
         var account = {
-            ciphertext: abi.prefix_hex(keystore.Crypto.ciphertext),
-            iv: abi.prefix_hex(keystore.Crypto.cipherparams.iv),
-            mac: abi.prefix_hex(keystore.Crypto.mac),
-            cipher: keystore.Crypto.cipher,
-            kdf: keystore.Crypto.kdf,
+            ciphertext: abi.prefix_hex(keystoreCrypto.ciphertext),
+            iv: abi.prefix_hex(keystoreCrypto.cipherparams.iv),
+            mac: abi.prefix_hex(keystoreCrypto.mac),
+            cipher: keystoreCrypto.cipher,
+            kdf: keystoreCrypto.kdf,
             kdfparams: {
-                c: keystore.Crypto.kdfparams.c,
-                dklen: keystore.Crypto.kdfparams.dklen,
-                prf: keystore.Crypto.kdfparams.prf,
-                salt: abi.prefix_hex(keystore.Crypto.kdfparams.salt)
+                c: keystoreCrypto.kdfparams.c,
+                dklen: keystoreCrypto.kdfparams.dklen,
+                prf: keystoreCrypto.kdfparams.prf,
+                salt: abi.prefix_hex(keystoreCrypto.kdfparams.salt)
             },
             id: abi.prefix_hex(new Buffer(uuid.parse(keystore.id)).toString("hex"))
         };
-        self.setState({
-          registerStatus: self.state.registerStatus + "<br />Private key decrypted!<br />Saving account to your browser (localStorage)...",
-          registerDetail: account
-        });
+        self.updateProgressModal([{
+            status: "Private key decrypted!",
+            detail: account
+          },
+          "Saving account to your browser (localStorage)..."
+        ]);
         flux.augur.db.put(handle, account, function (result) {
           if (!result || result.error) {
-            self.setState({
-              registerStatus: self.state.registerStatus + "<br />Could not save account.",
-              registerDetail: result,
-              registerComplete: true
+            self.updateProgressModal({
+              status: "Could not save account.",
+              detail: result,
+              complete: true
             });
             return console.error("onImportAccount augur.db.put:", result);
           }
@@ -177,11 +207,14 @@ let RegisterModal = React.createClass({
           if (options.persist) {
               flux.augur.db.putPersistent(flux.augur.web.account);
           }
-          self.setState({
-            registerStatus: self.state.registerStatus + "<br />Account saved.<br />Your account has been successfully imported. This dialogue can now be safely closed.",
-            registerDetail: account,
-            registerComplete: true
-          });
+          self.updateProgressModal([{
+              status: "Account saved.",
+              detail: account
+            }, {
+              status: "Your account has been successfully imported. This dialogue can now be safely closed.",
+              complete: true
+            }
+          ]);
           console.log("account import successful:", flux.augur.web.account);
           flux.actions.config.updateAccount({
             currentAccount: address,
@@ -389,11 +422,13 @@ let RegisterModal = React.createClass({
         </Modal>
         <ProgressModal
           backdrop="static"
-          show={this.state.progressModalOpen}
-          header={this.state.registerHeader}
-          status={this.state.registerStatus}
-          detail={JSON.stringify(this.state.registerDetail, null, 2)}
-          complete={this.state.registerComplete}
+          show={this.state.progressModal.open}
+          numSteps={this.state.progressModal.steps}
+          step={this.state.progressModal.step}
+          header={this.state.progressModal.header}
+          status={this.state.progressModal.status}
+          detail={JSON.stringify(this.state.progressModal.detail, null, 2)}
+          complete={this.state.progressModal.complete}
           onHide={this.toggleProgressModal} />
       </div>
     );

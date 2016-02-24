@@ -31,6 +31,10 @@ h1, h2, h3, h4, h5 {
     width: 100%;
 }
 
+.progress-modal .modal-header .loading-progress {
+    margin-bottom: 0 !important;
+}
+
 #loading .logo {
     position:absolute;
     left:50%;
@@ -792,6 +796,10 @@ a.market-pane:hover {
 .metadata-image {
     height: 100px;
     margin-bottom: 25px;
+}
+
+.progress-modal-subheading {
+    color: #337ab7;
 }
 
 .tour-outcome-list {

@@ -56,7 +56,9 @@ let AddMarketModal = React.createClass({
         status: "",
         header: "",
         detail: null,
-        complete: null
+        complete: null,
+        steps: 7,
+        step: 0
       }
     };
   },
@@ -69,6 +71,8 @@ let AddMarketModal = React.createClass({
       currentBranch: flux.store('branch').getCurrentBranch()
     }
   },
+
+  updateProgressModal: utilities.updateProgressModal,
 
   toggleProgressModal: function (event) {
     var progressModal = this.state.progressModal;
@@ -235,21 +239,22 @@ let AddMarketModal = React.createClass({
       numOutcomes: this.state.numOutcomes,
       onSent: function (res) {
         console.log("new event submitted:", res.txHash);
-        var progressModal = self.state.progressModal;
-        progressModal.header = "Creating Event";
-        progressModal.status = "New event submitted. Waiting for confirmation...<br />Event ID: <small>" + res.callReturn + "</small>";
-        progressModal.detail = res;
-        self.setState({progressModal: progressModal});
+        self.updateProgressModal({
+          header: "Creating Event",
+          status: "New event submitted. Waiting for confirmation...<br />Event ID: <small>" + res.callReturn + "</small>",
+          detail: res
+        });
         self.toggleProgressModal();
       },
       onSuccess: function (res) {
         console.log("new event ID:", res.callReturn);
         var events = res.callReturn;
         var progressModal = self.state.progressModal;
-        progressModal.header = "Creating Event";
-        progressModal.status += "<br />New event confirmed.";
-        progressModal.detail = res;
-        self.setState({progressModal: progressModal});
+        self.updateProgressModal({
+          header: "Creating Event",
+          status: "New event confirmed.",
+          detail: res
+        });
         if (events.constructor !== Array) events = [events];
         var checkbox = {createMarket: false, addMetadata: false};
         flux.augur.createMarket({
@@ -262,11 +267,11 @@ let AddMarketModal = React.createClass({
           onSent: function (r) {
             console.log("new market submitted:", r.txHash);
             var marketId = r.callReturn;
-            var progressModal = self.state.progressModal;
-            progressModal.header = "Creating Market";
-            progressModal.status += "<br />New market submitted.<br />Market ID: <small>" + r.callReturn + "</small><br />Waiting for confirmation...";
-            progressModal.detail = r;
-            self.setState({progressModal: progressModal});
+            self.updateProgressModal({
+              header: "Creating Market",
+              status: "New market submitted.<br />Market ID: <small>" + r.callReturn + "</small><br />Waiting for confirmation...",
+              detail: r
+            });
             flux.augur.ramble.addMetadata({
               marketId: marketId,
               image: metadata.image,
@@ -277,67 +282,72 @@ let AddMarketModal = React.createClass({
               broadcast: true
             }, function (res) {
               console.log("ramble.addMetadata sent:", res);
-              var progressModal = self.state.progressModal;
-              progressModal.header = "Creating Market";
-              progressModal.status += "<br />Uploading market metadata...";
-              progressModal.detail = r;
-              self.setState({progressModal: progressModal});
+              self.updateProgressModal({
+                header: "Creating Market",
+                status: "Uploading market metadata...",
+                detail: r
+              });
             }, function (res) {
               console.log("ramble.addMetadata success:", res);
-              var progressModal = self.state.progressModal;
-              progressModal.header = "Creating Market";
-              progressModal.status += "<br />Market metadata uploaded.";
-              progressModal.detail = r;
+              self.updateProgressModal({
+                header: "Creating Market",
+                status: "Market metadata uploaded.",
+                detail: r
+              });
               checkbox.addMetadata = true;
               if (checkbox.createMarket) {
-                progressModal.complete = true;
-                progressModal.status += "<br />Your market has been successfully created! This dialogue can now be safely closed.";
+                self.updateProgressModal({
+                  status: "Your market has been successfully created!",
+                  complete: true
+                });
               }
-              self.setState({progressModal: progressModal});
             }, function (err) {
               console.error("ramble.addMetadata:", err);
-              var progressModal = self.state.progressModal;
-              progressModal.header = "Creating Market";
-              progressModal.status += "<br />Market metadata upload failed.";
-              progressModal.detail = r;
+              self.updateProgressModal({
+                header: "Creating Market",
+                status: "Market metadata upload failed.",
+                detail: r
+              });
             });
           },
           onSuccess: function (r) {
             console.log("new market ID:", r.callReturn);
             var marketId = abi.bignum(r.callReturn);
-            var progressModal = self.state.progressModal;
-            progressModal.header = "Creating Market";
-            progressModal.status += "<br />New market confirmed.";
-            progressModal.detail = r;
+            self.updateProgressModal({
+              header: "Creating Market",
+              status: "New market confirmed.",
+              detail: r
+            });
             checkbox.createMarket = true;
             if (checkbox.addMetadata) {
-              progressModal.complete = true;
-              progressModal.status += "<br /><b>Your market has been successfully created!</b> This dialogue can now be safely closed.";
+              self.updateProgressModal({
+                complete: true,
+                status: "Your market has been successfully created!"
+              });
             }
-            self.setState({progressModal: progressModal});
             flux.actions.market.deleteMarket(pendingId);
             flux.actions.market.loadMarket(marketId);
           },
           onFailed: function (r) {
             console.error("market creation failed:", r);
-            var progressModal = self.state.progressModal;
-            progressModal.header = "Market Creation Failed";
-            progressModal.status = "Your market could not be created.";
-            progressModal.detail = r;
-            progressModal.complete = true;
-            self.setState({progressModal: progressModal});
+            self.updateProgressModal({
+              header: "Market Creation Failed",
+              status: "Your market could not be created.",
+              detail: r,
+              complete: true
+            });
             flux.actions.market.deleteMarket(pendingId);
           }
         });
       },
       onFailed: function (r) {
         console.error("event creation failed:", r);
-        var progressModal = self.state.progressModal;
-        progressModal.header = "Event Creation Failed";
-        progressModal.status = "Your event could not be created.";
-        progressModal.detail = r;
-        progressModal.complete = true;
-        self.setState({progressModal: progressModal});
+        self.updateProgressModal({
+          header: "Event Creation Failed",
+          status: "Your event could not be created.",
+          detail: r,
+          complete: true
+        });
         flux.actions.market.deleteMarket(pendingId);
       }
     });
@@ -714,6 +724,8 @@ let AddMarketModal = React.createClass({
         <ProgressModal
           backdrop="static"
           show={this.state.progressModal.open}
+          numSteps={this.state.progressModal.steps}
+          step={this.state.progressModal.step}
           header={this.state.progressModal.header}
           status={this.state.progressModal.status}
           detail={JSON.stringify(this.state.progressModal.detail, null, 2)}
