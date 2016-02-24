@@ -25,7 +25,7 @@ module.exports = {
     MAX_TEST_SAMPLES: 10,
 
     // free ether for new accounts on registration
-    FREEBIE: 100,
+    FREEBIE: 5,
 
     // unit test timeout
     TIMEOUT: 600000,

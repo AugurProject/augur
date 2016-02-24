@@ -12,7 +12,7 @@ var chalk = require("chalk");
 var utils = require("../../src/utilities");
 var augurpath = "../../src/index";
 var augur = require(augurpath);
-var DEBUG = false;
+var DEBUG = true;
 
 var marketInfo = {
     network: '10101',
@@ -383,7 +383,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
         test({numOutcomes: 4});
         test({numOutcomes: 9});
         test({scalar: true});
-        test({numOutcomes: 2, numEvents: 3});
+        // test({numOutcomes: 2, numEvents: 3});
     });
 
     describe("trade", function () {
@@ -546,6 +546,6 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
         test({numOutcomes: 4});
         test({numOutcomes: 9});
         test({scalar: true});
-        test({numOutcomes: 2, numEvents: 3});
+        // test({numOutcomes: 2, numEvents: 3});
     });
 }

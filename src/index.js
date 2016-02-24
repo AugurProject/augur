@@ -132,6 +132,9 @@ Augur.prototype.reputationFaucet = function (branch, onSent, onSuccess, onFailed
     tx.params = branch;
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
+Augur.prototype.cashFaucet = function (onSent, onSuccess, onFailed) {
+    return this.transact(clone(this.tx.cashFaucet), onSent, onSuccess, onFailed);
+};
 
 // cash.se
 Augur.prototype.initiateOwner = function (account, onSent, onSuccess, onFailed) {
