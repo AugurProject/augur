@@ -4,8 +4,8 @@
     th {
         padding: 0.5rem 1rem;
         vertical-align: middle;
-        color: @color-white;
-        background-color: @color-slate;
+        color: black;
+        background-color: @color-default-normal;
         font-size: @font-size-table-row;
         font-weight: @font-weight-normal;
     }
@@ -15,6 +15,54 @@
         vertical-align: middle;
         font-size: @font-size-table-row;
         font-weight: @font-weight-normal;
+    }
+
+    &.primary {
+        th {
+            color: @color-white;
+            background-color: @color-primary-normal;
+            border-color: @color-primary-normal;
+        }
+    }
+
+    &.primary {
+        th {
+            color: @color-white;
+            background-color: @color-primary-normal;
+            border-color: @color-primary-normal;
+        }
+    }
+
+    &.info {
+        th {
+            color: @color-white;
+            background-color: @color-info-normal;
+            border-color: @color-info-normal;
+        }
+    }
+
+    &.success {
+        th {
+            color: @color-white;
+            background-color: @color-success-normal;
+            border-color: @color-success-normal;
+        }
+    }
+
+    &.warning {
+        th {
+            color: @color-white;
+            background-color: @color-warning-normal;
+            border-color: @color-warning-normal;
+        }
+    }
+
+    &.danger {
+        th {
+            color: @color-white;
+            background-color: @color-danger-normal;
+            border-color: @color-danger-normal;
+        }
     }
 
     &.tabular-condensed {
@@ -70,7 +118,7 @@
 
         &:first-child {
             th {
-                border: 1px solid @color-slate;
+                border-width: 1px; border-style: solid;
                 &:first-child {
                     border-top-left-radius: 3px
                 }

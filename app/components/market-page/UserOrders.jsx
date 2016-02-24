@@ -73,7 +73,7 @@ let UserOrders = React.createClass({
                 </h4>
                 <div id="myOpenOrdersCollapse" className="collapse collapsedOnMobile">
                     <div className="table-responsive">
-                        <table className="table table-hover">
+                        <table className="tabular info user-order">
                             <thead>
                                 <tr>
                                     <th>Type</th>
@@ -81,7 +81,6 @@ let UserOrders = React.createClass({
                                     <th className="text-right">Qty.</th>
                                     <th className="text-right">Price</th>
                                     <th className="text-right">Cap</th>
-                                    <th className="text-right"></th>
                                 </tr>
                             </thead>
                             <tbody>

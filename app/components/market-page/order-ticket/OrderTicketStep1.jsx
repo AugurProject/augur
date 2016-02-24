@@ -67,12 +67,12 @@ let OrderTicketStep1 = React.createClass({
         } else {
             outcomes = _.map(market.outcomes, function (outcome) {
                 return (
-                    <div className="outcome-container" key={outcome.id}>
-                        <Outcomes.Overview
-                            market={this.props.market}
-                            outcome={_.clone(outcome)}
-                            account={this.props.account}/>
-                    </div>
+                    <Outcomes.Overview
+                        key={outcome.id}
+                        className="panelify primary"
+                        market={this.props.market}
+                        outcome={_.clone(outcome)}
+                        account={this.props.account}/>
                 );
             }, this);
         }

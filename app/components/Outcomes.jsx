@@ -279,7 +279,7 @@ var Overview = React.createClass({
             }
 
             buySellActions = (
-                <div className="summary">
+                <div>
                     <div className="">
                         <div className='tradeAction tradeAction-buy'>
                             { buyAction }
@@ -298,21 +298,23 @@ var Overview = React.createClass({
         }
 
         return (
-            <div className={className}>
-                <h4>
+            <div className={className + ' ' + this.props.className }>
+                <h4 className="title">
                     {description} ({percentageFormatted})
                 </h4>
-                {buySellActions}
-                <ProgressModal
-                    backdrop="static"
-                    show={this.state.progressModal.open}
-                    numSteps={this.state.progressModal.steps}
-                    step={this.state.progressModal.step}
-                    header={this.state.progressModal.header}
-                    status={this.state.progressModal.status}
-                    detail={JSON.stringify(this.state.progressModal.detail, null, 2)}
-                    complete={this.state.progressModal.complete}
-                    onHide={this.toggleProgressModal} />
+                <div className="content">
+                    {buySellActions}
+                    <ProgressModal
+                        backdrop="static"
+                        show={this.state.progressModal.open}
+                        numSteps={this.state.progressModal.steps}
+                        step={this.state.progressModal.step}
+                        header={this.state.progressModal.header}
+                        status={this.state.progressModal.status}
+                        detail={JSON.stringify(this.state.progressModal.detail, null, 2)}
+                        complete={this.state.progressModal.complete}
+                        onHide={this.toggleProgressModal} />
+                    </div>
             </div>
         );
     }
@@ -403,7 +405,7 @@ var TradeBase = {
         var inputStyle = this.state.inputError ? 'error' : null;
 
         return (
-            <div className="summary trade">
+            <div className="trade">
                 <div className='buy trade-button'>
                     <form onSubmit={this.onSubmit}>
                         <Input

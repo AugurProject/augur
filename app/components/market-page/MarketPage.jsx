@@ -183,7 +183,7 @@ let MarketPage = React.createClass({
 
                         <div id="collapseSubmenu" className="col-xs-12 collapse" aria-expanded="false">
                             <ul className="list-group" role="tablist" id="tabpanel">
-                                <li role="presentation" className="list-group-item">
+                                <li role="presentation" className="list-group-item active">
                                     <a role="tab" href="#statsTab" data-toggle="tab">Stats & Charts</a>
                                 </li>
                                 {/* TODO: implement
@@ -209,7 +209,7 @@ let MarketPage = React.createClass({
                     </div>
 
                     <div className="tab-content">
-                        <div id="statsTab" className="tab-pane" role="tabpanel">
+                        <div id="statsTab" className="tab-pane active" role="tabpanel">
                             <StatsTab
                                 market={this.state.market}
                                 blockNumber={this.state.blockNumber} />

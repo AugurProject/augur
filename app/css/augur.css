@@ -789,10 +789,6 @@ a.market-pane:hover {
     border-bottom-left-radius: 4px;
 }
 
-.highcharts-container {
-    border: 1px solid #ddd;
-}
-
 .metadata-image {
     height: 100px;
     margin-bottom: 25px;
