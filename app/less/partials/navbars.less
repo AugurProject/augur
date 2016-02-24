@@ -2,16 +2,24 @@
 .navbar {
     border-radius: 0;
     margin-bottom: 0;
-    background-color: #4a213f;
+    background-color: #3c4d58;
     color: @color-white;
     font-size: @font-size-base;
     .display(flex);
     .align-items(center);
+
     a {
         color: @color-white;
         font-size: @font-size-base;
     }
+
+    .container {
+        width: 100%;
+        padding: 0 1rem 0 4rem;
+    }
+
     .navbar-header {
+        margin-right: 2rem;
         .navbar-toggle {
             padding: 20px 15px;
             line-height: 30px;
@@ -64,7 +72,7 @@
                     &.active,
                     &:hover,
                     &:focus {
-                        background-color: @color-dark-bg-active;
+                        background-color: #324049;
                         color: @color-white;
                     }
                     &.btn {

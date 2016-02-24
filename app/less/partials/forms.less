@@ -5,7 +5,7 @@
     padding: 0.5rem 0.7rem;
     max-height: 12rem;
     font-weight: 500;
-    background: @color-grey-lighter;
+    background: @color-grey-lightest;
     border: 1px solid @color-grey-light;
     border-radius: 3px;
 
@@ -125,6 +125,11 @@ form {
 .form-control[readonly],
 fieldset[disabled] .form-control {
     color: @font-color-default
+}
+
+.form-control[disabled],
+.form-control[readonly] {
+    background: @color-grey-lighter;
 }
 
 label {

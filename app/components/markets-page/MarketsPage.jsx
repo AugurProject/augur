@@ -161,7 +161,7 @@ let MarketsPage = React.createClass({
         if (this.state.account) {
             submitMarketAction = (
                 <Button
-                  className="pull-right btn-primary"
+                  className="pull-right btn-primary btn-success"
                   onClick={this.toggleAddMarketModal}>
                   New Market
                 </Button>
