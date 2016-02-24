@@ -46,32 +46,29 @@ module.exports = function () {
                     value: constants.FREEBIE,
                     from: funder,
                     onSent: function (r) {
+                        console.log("sendEther sent:", r);
                         onRegistered(account);
                     },
                     onSuccess: function (r) {
+                        console.log("sendEther success:", r);
                         var count = 0;
                         var check = function (response) {
                             if (++count === 2) onFunded(response);
                         };
                         onSendEther(account);
 
-                        // exchange half of the free ether for cash
-                        augur.depositEther({
-                            value: constants.FREEBIE*0.5,
-                            onSent: function (res) {
-                                console.log("[augur.js] depositEther:", res.txHash);
-                                augur.reputationFaucet({
-                                    branch: augur.branches.dev,
-                                    onSent: function (res) {
-                                        console.log("[augur.js] reputationFaucet:", res.txHash);
-                                    },
-                                    onSuccess: check,
-                                    onFailed: onFunded
-                                });
-                            },
-                            onSuccess: check,
-                            onFailed: onFunded
-                        });
+                        // free stuff, yay!
+                        augur.cashFaucet(function (res) {
+                            console.log("[augur.js] cashFaucet:", res.txHash);
+                            augur.reputationFaucet({
+                                branch: augur.branches.dev,
+                                onSent: function (res) {
+                                    console.log("[augur.js] reputationFaucet:", res.txHash);
+                                },
+                                onSuccess: check,
+                                onFailed: onFunded
+                            });
+                        }, check, onFunded);
                     },
                     onFailed: onSendEther
                 });

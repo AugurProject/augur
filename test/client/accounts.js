@@ -662,21 +662,24 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
             var augur = utils.setup(require("../../src"), process.argv.slice(2));
             augur.web.login(handle, password, function (account) {
                 checkAccount(augur, account);
+                console.log("recipient:", account.address);
                 var recipient = account.address;
                 var initial_balance = abi
                     .bignum(augur.rpc.balance(recipient))
                     .dividedBy(constants.ETHER);
                 augur.web.fund({address: recipient}, {
                     onRegistered: function (account) {
+                        console.log("onRegistered:", account);
                         assert.strictEqual(account.address, recipient);
                     },
                     onSendEther: function (account) {
+                        console.log("onSendEther:", account);
                         assert.strictEqual(account.address, recipient);
                         var final_balance = abi
                             .bignum(augur.rpc.balance(recipient))
                             .dividedBy(constants.ETHER);
                         var delta = final_balance.sub(initial_balance).toNumber();
-                        assert.isAbove(Math.abs(delta), 49);
+                        assert.isAbove(Math.abs(delta), 4);
                     },
                     onFunded: function (response) {
                         assert.notProperty(response, "error");
@@ -686,7 +689,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                             assert.strictEqual(abi.number(repBalance), 47);
                             augur.getCashBalance(recipient, function (cashBalance) {
                                 assert.notProperty(cashBalance, "error");
-                                assert.strictEqual(abi.number(cashBalance), constants.FREEBIE*0.5);
+                                assert.strictEqual(abi.number(cashBalance), 10000);
                                 augur.web.logout();
                                 done();
                             });
