@@ -333,7 +333,7 @@ let RegisterModal = React.createClass({
         <Modal
           show={this.props.show}
           onHide={this.props.onHide}
-          className="send-modal"
+          className="send-modal register-modal"
           bsSize="large">
           <div className='modal-body clearfix'>
             <h4>Register</h4>
