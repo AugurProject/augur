@@ -88,7 +88,7 @@ let RegisterModal = React.createClass({
         onSendEther: function (account) {
           console.log("Register.jsx: onSendEther %o", arguments);
           self.setState({registerDetail: {account}});
-          self.setState({registerStatus: self.state.registerStatus + "<br />Received " + flux.augur.constants.FREEBIE + " Ether.<br />Resetting blockchain listeners...<br />Exchanging " + (flux.augur.constants.FREEBIE / 2) + " Ether for CASH..."});
+          self.setState({registerStatus: self.state.registerStatus + "<br />Received " + flux.augur.constants.FREEBIE + " Ether.<br />Resetting blockchain listeners...<br />Waiting for free CASH and Reputation..."});
           flux.augur.filters.ignore(true, function (err) {
             if (err) return console.error(err);
             console.log("reset filters");

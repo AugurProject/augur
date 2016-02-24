@@ -25,7 +25,6 @@ module.exports = {
         return this.flux.actions.config.connectHosted(connectHostedCb);
       }
       augur.rpc.setLocalNode(host);
-      console.log("local node:", host);
       augur.connect(host, process.env.GETH_IPC, function (connected) {
         if (connected) {
           console.log("connected to host:", augur.rpc.nodes.local || augur.rpc.nodes.hosted[0]);

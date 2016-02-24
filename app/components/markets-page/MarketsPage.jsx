@@ -9,8 +9,9 @@ let Navigation = require("react-router/lib/Navigation");
 let Link = require("react-router/lib/components/Link");
 let Button = require("react-bootstrap/lib/Button");
 let Select = require('react-select');
-let constants = require("../../libs/constants");
 let MarketRow = require("./MarketRow");
+let AddMarketModal = require("../AddMarketModal");
+let constants = require("../../libs/constants");
 let utils = require("../../libs/utilities");
 
 let MarketsPage = React.createClass({
@@ -23,7 +24,8 @@ let MarketsPage = React.createClass({
             marketsPerPage: constants.MARKETS_PER_PAGE,
             visiblePages: 3,
             pageNum: this.props.params.page ? this.props.params.page - 1 : 0,
-            sortValue: null
+            sortValue: null,
+            addMarketModalOpen: false
         };
     },
 
@@ -113,6 +115,10 @@ let MarketsPage = React.createClass({
         };
     },
 
+    toggleAddMarketModal: function (event) {
+        this.setState({addMarketModalOpen: !this.state.addMarketModalOpen});
+    },
+
     render() {
         let flux = this.getFlux();
         let myOpenOrders = flux.augur.orders.get(flux.augur.from);
@@ -151,9 +157,25 @@ let MarketsPage = React.createClass({
             </div>
         );
 
+        let submitMarketAction;
+        if (this.state.account) {
+            submitMarketAction = (
+                <Button
+                  className="pull-right btn-primary"
+                  onClick={this.toggleAddMarketModal}>
+                  New Market
+                </Button>
+            );
+        } else {
+            submitMarketAction = <span />;
+        }
+
         return (
             <div className="marketsPage">
-                <h1>Markets</h1>
+                <h1>
+                    Markets
+                    {submitMarketAction}
+                </h1>
 
                 <div className="row submenu">
                     <a className="collapsed" data-toggle="collapse" href="#collapseSubmenu"
@@ -221,7 +243,10 @@ let MarketsPage = React.createClass({
                         })}
                     </div>
                 </div>
-                 {pagination}
+                {pagination}
+                <AddMarketModal
+                    show={this.state.addMarketModalOpen}
+                    onHide={this.toggleAddMarketModal} />
             </div>
         );
     }

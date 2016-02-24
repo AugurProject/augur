@@ -248,11 +248,11 @@ let MarketRow = React.createClass({
                 </div>
                 <div className="subtitle clearfix">
                     <div className="labelValue subtitle-group">
-                        <span className="labelValue-label trading-fee-label">Trading Fee:</span>
+                        <span className="labelValue-label trading-fee-label">Trading Fee: </span>
                         <span className="labelValue-value trading-fee">{market.tradingFee ? market.tradingFee.times(100).toFixed(1) + '%' : '-'}</span>
                     </div>
                     <div className="labelValue subtitle-group">
-                        <span className="labelValue-label end-date-label">{endDateLabel}:</span>
+                        <span className="labelValue-label end-date-label">{endDateLabel}: </span>
                         <span className="labelValue-value end-date">{endDateFormatted}</span>
                     </div>
                     <div className="labelValue subtitle-group">
