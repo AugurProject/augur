@@ -64,7 +64,8 @@ module.exports = function (grunt) {
       build: {
         files: {
           'target/css/market-detail.css': 'app/less/public/market-detail.less',
-          'target/css/main.css': 'app/less/public/main.less'
+          'target/css/main.css': 'app/less/public/main.less',
+          'target/css/react-select.custom.css': 'app/less/public/react-select.custom.less'
         }
       }
     },
