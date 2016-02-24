@@ -315,7 +315,7 @@ let MarketRow = React.createClass({
             title: "Welcome to Augur!",
             text: "<p>On Augur, you can trade the probability of any real-world event happening.<br /></p>"+
                 "<p>In this market, you are considering:<br /><br /><i>" + this.props.market.description + "</i></p>",
-            attachTo: ".market-row .info .tour top",
+            attachTo: ".market-row .description top",
             buttons: [{
                 text: "Exit",
                 classes: "shepherd-button-secondary",
