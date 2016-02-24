@@ -1,9 +1,9 @@
 @import (reference) "variables";
 
 .btn, .btn-primary {
-    color: @color-slate;
-    background: @color-grey-lighter;
-    border: 1px solid @color-grey-light;
+    color: @color-white;
+    background: @color-info-normal;
+    border: 1px solid @color-info-normal;
     border-radius: 3px;
     padding-left: 18px;
     padding-right: 18px;
@@ -13,10 +13,16 @@
     font-size: @font-size-button;
     line-height: 1.3384;
 
-    &:hover, &:active, &:focus {
-        color: white;
-        background: @color-slate;
-        border: 1px solid @color-slate;
+    &:hover {
+        color: @color-white;
+        background: @color-info-hover;
+        border-color: @color-info-hover;
+    }
+
+    &:active, &:focus {
+        color: @color-white;
+        background: @color-info-active;
+        border-color: @color-info-active;
     }
 }
 

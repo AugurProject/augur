@@ -30,27 +30,26 @@
         }
 
         .list-group {
-            border-bottom: 1px solid #cad3df;
+            border-bottom: 1px solid @color-grey-light;
 
             .list-group-item {
                 margin-right: 4rem;
                 padding: 0;
                 text-align: center;
                 border: 0;
-                white-space: nowrap;
                 border-radius: 0;
+                white-space: nowrap;
 
                 a {
                     display: block;
                     padding: 10px 0;
-                    color: @color-bluegrey;
                 }
 
                 &.active,
                 &:focus {
                     z-index: 1;
                     background: 0;
-                    border-bottom: 3px solid @color-slate;
+                    border-bottom: 3px solid @color-base;
 
                     a {
                         color: @font-color-link;

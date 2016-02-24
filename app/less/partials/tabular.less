@@ -4,8 +4,9 @@
     th {
         padding: 0.5rem 1rem;
         vertical-align: middle;
-        color: black;
-        background-color: @color-default-normal;
+        color: @color-white;
+        background-color: @color-primary-normal;
+        border-color: @color-primary-normal;
         font-size: @font-size-table-row;
         font-weight: @font-weight-normal;
     }
@@ -17,11 +18,11 @@
         font-weight: @font-weight-normal;
     }
 
-    &.primary {
+    &.plain {
         th {
-            color: @color-white;
-            background-color: @color-primary-normal;
-            border-color: @color-primary-normal;
+            color: black;
+            background-color: @color-plain-normal;
+            border-color: @color-plain-normal;
         }
     }
 
