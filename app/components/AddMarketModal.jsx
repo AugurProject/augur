@@ -261,13 +261,14 @@ let AddMarketModal = React.createClass({
           events: events,
           onSent: function (r) {
             console.log("new market submitted:", r.txHash);
+            var marketId = r.callReturn;
             var progressModal = self.state.progressModal;
             progressModal.header = "Creating Market";
             progressModal.status += "<br />New market submitted.<br />Market ID: <small>" + r.callReturn + "</small><br />Waiting for confirmation...";
             progressModal.detail = r;
             self.setState({progressModal: progressModal});
             flux.augur.ramble.addMetadata({
-              marketId: r.callReturn,
+              marketId: marketId,
               image: metadata.image,
               details: metadata.details,
               tags: metadata.tags,
