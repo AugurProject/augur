@@ -8,6 +8,7 @@ let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
 let Navigation = require("react-router/lib/Navigation");
 let Link = require("react-router/lib/components/Link");
 let Button = require("react-bootstrap/lib/Button");
+let Select = require('react-select');
 let constants = require("../../libs/constants");
 let MarketRow = require("./MarketRow");
 let utils = require("../../libs/utilities");
@@ -21,7 +22,8 @@ let MarketsPage = React.createClass({
         return {
             marketsPerPage: constants.MARKETS_PER_PAGE,
             visiblePages: 3,
-            pageNum: this.props.params.page ? this.props.params.page - 1 : 0
+            pageNum: this.props.params.page ? this.props.params.page - 1 : 0,
+            sortValue: null
         };
     },
 
@@ -52,9 +54,12 @@ let MarketsPage = React.createClass({
         this.debounceSearchInput(event.target.value);
     },
 
-    onChangeSortBy: function (event) {
+    onChangeSortBy: function (newValue) {
+        this.setState({
+            sortValue: newValue
+        });
         this.handlePageChanged({selected: 0});
-        var sortInput = event.target.value.split('|');
+        var sortInput = newValue.value.split('|');
         this.getFlux().actions.search.sortMarkets(sortInput[0], parseInt(sortInput[1]));
     },
 
@@ -174,17 +179,24 @@ let MarketsPage = React.createClass({
                 </div>
 
                 <div className="row search-sort-row">
-                    <div className="col-sm-4 sort-container">
-                        <select className="sort-control" onChange={this.onChangeSortBy}>
-                            <option selected disabled>Sort markets</option>
-                            <option value="creationBlock|1">Creation date (newest first)</option>
-                            <option value="creationBlock|0">Creation date (oldest first)</option>
-                            <option value="endBlock|0">End date (soonest first)</option>
-                            <option value="endBlock|1">End date (farthest first)</option>
-                            <option value="description|0">Description</option>
-                        </select>
+                    <div className="col-sm-4 col-xs-6">
+                        <Select className="sort-control"
+                                value={this.state.sortValue}
+                                name="markets-sort"
+                                searchable={false}
+                                clearable={false}
+                                placeholder="Sort markets"
+                                onChange={this.onChangeSortBy}
+                                options={[
+                                    {value: "creationBlock|1", label: "Creation date (newest first)"},
+                                    {value: "creationBlock|0", label: "Creation date (oldest first)"},
+                                    {value: "endBlock|0", label: "End date (soonest first)"},
+                                    {value: "endBlock|1", label: "End date (farthest first)"},
+                                    {value: "description|0", label: "Description"}
+                                ]}>
+                        </Select>
                     </div>
-                    <div className="col-sm-4 search-container">
+                    <div className="col-sm-4 col-xs-6 col-sm-offset-4 search-container">
                         <input type="search"
                                className="form-control search-control"
                                value={this.state.searchKeywords}
