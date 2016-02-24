@@ -662,7 +662,6 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
             var augur = utils.setup(require("../../src"), process.argv.slice(2));
             augur.web.login(handle, password, function (account) {
                 checkAccount(augur, account);
-                console.log("recipient:", account.address);
                 var recipient = account.address;
                 var initial_balance = abi
                     .bignum(augur.rpc.balance(recipient))
@@ -688,8 +687,9 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                             assert.notProperty(repBalance, "error");
                             assert.strictEqual(abi.number(repBalance), 47);
                             augur.getCashBalance(recipient, function (cashBalance) {
+                                console.log("cash balance:", recipient, cashBalance);
                                 assert.notProperty(cashBalance, "error");
-                                assert.strictEqual(abi.number(cashBalance), 10000);
+                                assert.isAbove(abi.number(cashBalance), 9999);
                                 augur.web.logout();
                                 done();
                             });

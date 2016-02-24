@@ -133,10 +133,29 @@ Augur.prototype.reputationFaucet = function (branch, onSent, onSuccess, onFailed
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 Augur.prototype.cashFaucet = function (onSent, onSuccess, onFailed) {
+    if (onSent && onSent.constructor === Object && onSent.onSent) {
+        if (onSent.onSuccess) onSuccess = onSent.onSuccess;
+        if (onSent.onFailed) onFailed = onSent.onFailed;
+        if (onSent.onSent) onSent = onSent.onSent;
+    }
     return this.transact(clone(this.tx.cashFaucet), onSent, onSuccess, onFailed);
 };
 
 // cash.se
+Augur.prototype.setCash = function (address, balance, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.setCash);
+    var unpacked = this.utils.unpack(address, this.utils.labels(this.setCash), arguments);
+    tx.params = unpacked.params;
+    tx.params[1] = abi.fix(tx.params[1], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.addCash = function (ID, amount, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.addCash);
+    var unpacked = this.utils.unpack(ID, this.utils.labels(this.addCash), arguments);
+    tx.params = unpacked.params;
+    tx.params[1] = abi.fix(tx.params[1], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
 Augur.prototype.initiateOwner = function (account, onSent, onSuccess, onFailed) {
     // account: ethereum account
     if (account && account.account) {

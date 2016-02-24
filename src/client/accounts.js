@@ -51,24 +51,50 @@ module.exports = function () {
                     },
                     onSuccess: function (r) {
                         console.log("sendEther success:", r);
-                        var count = 0;
+                        var checkbox = {cash: null, reputation: null};
                         var check = function (response) {
-                            if (++count === 2) onFunded(response);
+                            console.log("check:", response, checkbox);
+                            if (checkbox.cash && checkbox.reputation) {
+                                onFunded(response);
+                            }
                         };
                         onSendEther(account);
 
                         // free stuff, yay!
-                        augur.cashFaucet(function (res) {
-                            console.log("[augur.js] cashFaucet:", res.txHash);
-                            augur.reputationFaucet({
-                                branch: augur.branches.dev,
-                                onSent: function (res) {
-                                    console.log("[augur.js] reputationFaucet:", res.txHash);
-                                },
-                                onSuccess: check,
-                                onFailed: onFunded
-                            });
-                        }, check, onFunded);
+                        augur.sendCash({
+                            to: account.address,
+                            value: "0",
+                            onSent: function (res) {
+                                console.log("sendCash sent:", res);
+                                augur.reputationFaucet({
+                                    branch: augur.branches.dev,
+                                    onSent: function (res) {
+                                        console.log("[augur.js] reputationFaucet:", res.txHash);
+                                    },
+                                    onSuccess: function (res) {
+                                        checkbox.reputation = true;
+                                        check(res);
+                                    },
+                                    onFailed: onFunded
+                                });
+                            },
+                            onSuccess: function (res) {
+                                console.log("sendCash success:", res);
+                                augur.cashFaucet({
+                                    // ID: account.address,
+                                    // amount: "10000",
+                                    onSent: function (res) {
+                                        console.log("[augur.js] cashFaucet:", res);
+                                    },
+                                    onSuccess: function (res) {
+                                        checkbox.cash = true;
+                                        check(res);
+                                    },
+                                    onFailed: onFunded
+                                });
+                            },
+                            onFailed: onFunded
+                        });
                     },
                     onFailed: onSendEther
                 });
@@ -102,8 +128,6 @@ module.exports = function () {
                 for (i = 0; i < Math.min(cb.length, 3); ++i) {
                     if (utils.is_function(cb[i])) temp[labels[i]] = cb[i];
                 }
-                console.log("cb:", cb);
-                console.log("temp:", temp);
                 cb = temp;
             }
             if (utils.is_function(cb)) cb = {onRegistered: cb};
