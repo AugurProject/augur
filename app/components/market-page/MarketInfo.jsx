@@ -52,7 +52,7 @@ let MarketInfo = React.createClass({
                             <tr className="labelValue">
                                 <td className="labelValue-label">Author:</td>
                                 <td className="labelValue-value">
-                                    <div className="marketInfo-author-value">
+                                    <div className="marketInfo-author-value" title={ authorFormatted }>
                                         { authorFormatted }
                                     </div>
                                 </td>

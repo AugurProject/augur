@@ -5,8 +5,7 @@
     background: @color-info-normal;
     border: 1px solid @color-info-normal;
     border-radius: 3px;
-    padding-left: 18px;
-    padding-right: 18px;
+    padding: 8px 18px;
 
     // turn off the smoothing for buttons, so they look same
     .font-render-auto();
@@ -40,6 +39,10 @@
 
 .btn-success {
     .button-variant(@color-white, @color-success-normal, @color-success-hover);
+}
+
+.btn-plain {
+    .button-variant(black, @color-plain-normal, @color-plain-hover);
 }
 
 // not sure why .btn-simple.btn-info does not work, so this is a hack to make it work

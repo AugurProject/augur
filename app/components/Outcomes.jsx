@@ -437,7 +437,7 @@ var TradeBase = {
                     </form>
                 </div>
                 <div className='cancel trade-button'>
-                    <Button bsStyle='default' onClick={this.props.handleCancel} bsSize='small'>CANCEL</Button>
+                    <Button bsStyle='plain' onClick={this.props.handleCancel} bsSize='small'>CANCEL</Button>
                 </div>
                 <p>{Math.abs(outcome.price).toFixed(4)} cash/share</p>
                 <p>
