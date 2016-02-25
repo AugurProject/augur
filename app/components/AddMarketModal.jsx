@@ -57,7 +57,7 @@ let AddMarketModal = React.createClass({
         header: "",
         detail: null,
         complete: null,
-        steps: 7,
+        steps: 5,
         step: 0
       }
     };
@@ -230,121 +230,88 @@ let AddMarketModal = React.createClass({
       tags: this.state.tags,
       links: this.state.resources
     };
-    flux.augur.createEvent({
+    var checkbox = {createMarket: false, addMetadata: false};
+    flux.augur.createSingleEventMarket({
       branchId: branchId,
-      description: this.state.marketText,
+      description: newMarketParams.description,
       expirationBlock: utilities.dateToBlock(moment(this.state.maturationDate), block),
       minValue: this.state.minValue,
       maxValue: this.state.maxValue,
       numOutcomes: this.state.numOutcomes,
-      onSent: function (res) {
-        console.log("new event submitted:", res.txHash);
+      alpha: "0.0079",
+      initialLiquidity: newMarketParams.initialLiquidity,
+      tradingFee: newMarketParams.tradingFee.toFixed(),
+      onSent: function (r) {
+        console.log("new market submitted:", r.txHash);
+        var marketId = r.callReturn;
         self.updateProgressModal({
-          header: "Creating Event",
-          status: "New event submitted. Waiting for confirmation...<br />Event ID: <small>" + res.callReturn + "</small>",
-          detail: res
+          header: "Creating Market",
+          status: "New market submitted.<br />Market ID: <small>" + r.callReturn + "</small><br />Waiting for confirmation...",
+          detail: r
         });
         self.toggleProgressModal();
-      },
-      onSuccess: function (res) {
-        console.log("new event ID:", res.callReturn);
-        var events = res.callReturn;
-        var progressModal = self.state.progressModal;
-        self.updateProgressModal({
-          header: "Creating Event",
-          status: "New event confirmed.",
-          detail: res
-        });
-        if (events.constructor !== Array) events = [events];
-        var checkbox = {createMarket: false, addMetadata: false};
-        flux.augur.createMarket({
-          branchId: branchId,
-          description: newMarketParams.description,
-          alpha: "0.0079",
-          initialLiquidity: newMarketParams.initialLiquidity,
-          tradingFee: newMarketParams.tradingFee.toFixed(),
-          events: events,
-          onSent: function (r) {
-            console.log("new market submitted:", r.txHash);
-            var marketId = r.callReturn;
+        flux.augur.ramble.addMetadata({
+          marketId: marketId,
+          image: metadata.image,
+          details: metadata.details,
+          tags: metadata.tags,
+          links: metadata.links,
+          source: source,
+          broadcast: true
+        }, function (res) {
+          console.log("ramble.addMetadata sent:", res);
+          self.updateProgressModal({
+            header: "Creating Market",
+            status: "Uploading market metadata...",
+            detail: r
+          });
+        }, function (res) {
+          console.log("ramble.addMetadata success:", res);
+          self.updateProgressModal({
+            header: "Creating Market",
+            status: "Market metadata uploaded.",
+            detail: r
+          });
+          checkbox.addMetadata = true;
+          if (checkbox.createMarket) {
             self.updateProgressModal({
-              header: "Creating Market",
-              status: "New market submitted.<br />Market ID: <small>" + r.callReturn + "</small><br />Waiting for confirmation...",
-              detail: r
-            });
-            flux.augur.ramble.addMetadata({
-              marketId: marketId,
-              image: metadata.image,
-              details: metadata.details,
-              tags: metadata.tags,
-              links: metadata.links,
-              source: source,
-              broadcast: true
-            }, function (res) {
-              console.log("ramble.addMetadata sent:", res);
-              self.updateProgressModal({
-                header: "Creating Market",
-                status: "Uploading market metadata...",
-                detail: r
-              });
-            }, function (res) {
-              console.log("ramble.addMetadata success:", res);
-              self.updateProgressModal({
-                header: "Creating Market",
-                status: "Market metadata uploaded.",
-                detail: r
-              });
-              checkbox.addMetadata = true;
-              if (checkbox.createMarket) {
-                self.updateProgressModal({
-                  status: "Your market has been successfully created!",
-                  complete: true
-                });
-              }
-            }, function (err) {
-              console.error("ramble.addMetadata:", err);
-              self.updateProgressModal({
-                header: "Creating Market",
-                status: "Market metadata upload failed.",
-                detail: r
-              });
-            });
-          },
-          onSuccess: function (r) {
-            console.log("new market ID:", r.callReturn);
-            var marketId = abi.bignum(r.callReturn);
-            self.updateProgressModal({
-              header: "Creating Market",
-              status: "New market confirmed.",
-              detail: r
-            });
-            checkbox.createMarket = true;
-            if (checkbox.addMetadata) {
-              self.updateProgressModal({
-                complete: true,
-                status: "Your market has been successfully created!"
-              });
-            }
-            flux.actions.market.deleteMarket(pendingId);
-            flux.actions.market.loadMarket(marketId);
-          },
-          onFailed: function (r) {
-            console.error("market creation failed:", r);
-            self.updateProgressModal({
-              header: "Market Creation Failed",
-              status: "Your market could not be created.",
-              detail: r,
+              status: "Your market has been successfully created!",
               complete: true
             });
-            flux.actions.market.deleteMarket(pendingId);
           }
+        }, function (err) {
+          console.error("ramble.addMetadata:", err);
+          self.updateProgressModal({
+            header: "Creating Market",
+            status: "Market metadata upload failed.",
+            detail: r,
+            complete: true
+          });
         });
       },
-      onFailed: function (r) {
-        console.error("event creation failed:", r);
+      onSuccess: function (r) {
+        console.log("new market ID:", r.callReturn);
+        var marketId = abi.bignum(r.callReturn);
         self.updateProgressModal({
-          header: "Event Creation Failed",
-          status: "Your event could not be created.",
+          header: "Creating Market",
+          status: "New market confirmed.",
+          detail: r
+        });
+        checkbox.createMarket = true;
+        if (checkbox.addMetadata) {
+          self.updateProgressModal({
+            complete: true,
+            status: "Your market has been successfully created!"
+          });
+        }
+        flux.actions.market.deleteMarket(pendingId);
+        flux.actions.market.loadMarket(marketId);
+      },
+      onFailed: function (r) {
+        console.error("market creation failed:", r);
+        self.updateProgressModal({
+          header: "Market Creation Failed",
+          status: "Your market could not be created.",
           detail: r,
           complete: true
         });

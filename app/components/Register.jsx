@@ -33,7 +33,7 @@ let RegisterModal = React.createClass({
         header: "",
         detail: null,
         complete: null,
-        steps: 7,
+        steps: 4,
         step: 0
       },
       tab: 0,
@@ -60,7 +60,6 @@ let RegisterModal = React.createClass({
         detail: {handle: this.state.handle, persist: this.state.persist}
       });
       this.toggleProgressModal();
-      let checkbox = {reputation: null, cash: null, funded: null};
       flux.augur.web.register(this.state.handle, this.state.password, {
         persist: this.state.persist
       }, {
@@ -95,43 +94,32 @@ let RegisterModal = React.createClass({
           flux.actions.asset.updateAssets();
         },
         onSendEther: function (account) {
-          self.updateProgressModal([
-            "Received " + flux.augur.constants.FREEBIE + " Ether.",
-            "Requesting free Reputation...",
-            "Initializing account on-contract..."
-          ]);
+          self.updateProgressModal("Received " + flux.augur.constants.FREEBIE + " Ether.");
           flux.augur.filters.ignore(true, function (err) {
             if (err) return console.error(err);
-            self.updateProgressModal("Blockchain listeners reset.");
+            console.debug("Blockchain listeners reset.");
             flux.actions.config.initializeData();
             flux.actions.asset.updateAssets();
           });
         },
-        onInitAccount: function (res) {
-          self.updateProgressModal(["Account initialized.", "Requesting free Cash..."]);
+        onSent: function (res) {
+          self.updateProgressModal("Requesting free Cash and Reputation...");
         },
-        onReputationFaucet: function (res) {
-          if (!checkbox.reputation) {
-            self.updateProgressModal("Received free Reputation.");
-          }
-          checkbox.reputation = true;
-        },
-        onSendCash: function (res) {
-          if (!checkbox.cash) {
-            self.updateProgressModal("Received free Cash.");
-          }
-          checkbox.cash = true;
-        },
-        onFunded: function (response) {
-          if (!checkbox.funded) {
-            self.updateProgressModal({
-              detail: {response},
-              status: "Registration complete!",
-              complete: true
-            });
-          }
-          checkbox.funded = true;
+        onSuccess: function (res) {
+          self.updateProgressModal({
+            detail: {res},
+            status: "Registration complete!",
+            complete: true
+          });
           flux.actions.asset.updateAssets();
+        },
+        onFailed: function (err) {
+          console.error(err);
+          self.updateProgressModal({
+            detail: {err},
+            status: "Registration failed.",
+            complete: true
+          });
         }
       });
     }
