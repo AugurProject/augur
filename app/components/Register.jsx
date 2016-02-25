@@ -33,7 +33,7 @@ let RegisterModal = React.createClass({
         header: "",
         detail: null,
         complete: null,
-        steps: 4,
+        steps: 5,
         step: 0
       },
       tab: 0,
