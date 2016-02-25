@@ -25,24 +25,16 @@
     }
 }
 
-.btn-highlighted {
-    color: white;
-    background: @faded-blue;
-    border: 1px solid @faded-blue;
-
-    &:hover, &:active, &:focus {
-        color: white;
-        background: @color-slate;
-        border: 1px solid @color-slate;
-    }
-}
-
 .btn-success {
     .button-variant(@color-white, @color-success-normal, @color-success-hover);
 }
 
 .btn-plain {
     .button-variant(black, @color-plain-normal, @color-plain-hover);
+}
+
+.btn-warning {
+    .button-variant(@color-white, @color-warning-normal, @color-warning-hover);
 }
 
 // not sure why .btn-simple.btn-info does not work, so this is a hack to make it work

@@ -168,16 +168,27 @@ module.exports = {
   },
 
   getTourMarketKey: function(markets) {
+    var finalTourMarketKey,
+        price;
+
     for (var tourMarketKey in markets) {
         if (!markets.hasOwnProperty(tourMarketKey)) continue;
         if (!markets[tourMarketKey].description.length) continue;
         if (markets[tourMarketKey].type === "binary" &&
             markets[tourMarketKey]._id !== '0xd61ea5b5267761db397ad913ca7933c8727f840b0bbecab2dde169ab7ff3aaf' &&
             markets[tourMarketKey]._id !== '-0x4a0aa5d564358bd70031540e0da0c17f2d670a0ad46b6993da68b3e8164ee3cd') {
-                break;
-            }
+
+          finalTourMarketKey = tourMarketKey;
+          price = markets[tourMarketKey].outcomes[0].price.times(100).toFixed(1);
+
+          if (price > 0 && price < 100) {
+            finalTourMarketKey = tourMarketKey;
+            break;
+          }
+        }
     }
-    return tourMarketKey;
+
+    return finalTourMarketKey;
   },
 
   // check if account address is correctly formatted

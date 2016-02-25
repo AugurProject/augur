@@ -115,6 +115,7 @@ module.exports = {
           nextOutcome();
         }, function (err) {
           if (err) console.error(err);
+          marketInfo.outcomes.sort((a,b) => b.price - a.price);
           marketInfo.loaded = true;
           callback(marketInfo);
         });
@@ -206,7 +207,7 @@ module.exports = {
     });
   },
 
-  loadMarket: function (marketId) {  
+  loadMarket: function (marketId) {
     var self = this;
     var augur = this.flux.augur;
     var branchId = this.flux.store('branch').getCurrentBranch().id;

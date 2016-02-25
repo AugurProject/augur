@@ -275,7 +275,7 @@ let MarketRow = React.createClass({
                                 </tr>
                             </thead>
                             <tbody>
-                                {market.outcomes.sort((a,b) => b.price - a.price).map((outcome) => {
+                                {market.outcomes.map((outcome) => {
                                     return (
                                         <OutcomeRow
                                             key={`${market._id}-${outcome.id}`}
@@ -314,7 +314,7 @@ let MarketRow = React.createClass({
         tour.addStep("markets-list", {
             title: "Welcome to Augur!",
             text: "<p>On Augur, you can trade the probability of any real-world event happening.<br /></p>"+
-                "<p>In this market, you are considering:<br /><br /><i>" + this.props.market.description + "</i></p>",
+                "<p>In this market, you are considering:<br /><br /><b><i>" + this.props.market.description + "</i></b></p>",
             attachTo: ".market-row .description top",
             buttons: [{
                 text: "Exit",
@@ -350,8 +350,8 @@ let MarketRow = React.createClass({
         tour.addStep("trade-button", {
             title: "What do you think?",
             text: "<p>" + this.props.market.description + " " + outcomeNames.join(" or ") + "?</p>"+
-                "<p>If you feel strongly enough, put your money where your mouth is and click the Trade button!</p>",
-            attachTo: ".buttons a left",
+                "<p>If you feel strongly enough, put your money where your mouth is and trade it!</p>",
+            attachTo: ".market-row .trade-button left",
             buttons: [{
                 text: "Exit Tour",
                 classes: "shepherd-button-secondary",
@@ -364,13 +364,13 @@ let MarketRow = React.createClass({
             when: {
                 show: function() {
                     let el = ReactDOM.findDOMNode(self.refs.tradeButton);
-                    el.className += ' btn-highlighted super-highlight';
+                    el.className += ' btn-warning super-highlight';
                 },
 
                 hide: function() {
                     let el = ReactDOM.findDOMNode(self.refs.tradeButton);
                     if (el) {
-                        el.className = el.className.replace(' btn-highlighted super-highlight', '');
+                        el.className = el.className.replace(' btn-warning super-highlight', '');
                     }
                 }
             },

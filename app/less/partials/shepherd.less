@@ -21,8 +21,8 @@
 }
 
 .shepherd-element.shepherd-theme-arrows {
-    max-width: 100%;
     max-height: 100%;
+    max-width: 35rem;
 }
 
 .shepherd-element.shepherd-theme-arrows .shepherd-content {
@@ -183,7 +183,7 @@
 }
 
 .shepherd-element.shepherd-theme-arrows.shepherd-has-title .shepherd-content header {
-    background: @color-slate;
+    background: @color-warning-normal;
     padding: 1em;
 
     h3, a {
@@ -290,22 +290,28 @@
     padding: .75em 2em;
 
     color: white;
-    background: @faded-blue;
-    border: 1px solid @faded-blue;
+    background: @color-warning-normal;
+    border: 1px solid @color-warning-normal;
     border-radius: 3px;
     text-decoration: none;
 
-    &:hover, &:active, &:focus {
+    &:hover {
         color: white;
-        background: @color-slate;
-        border: 1px solid @color-slate;
+        background: @color-warning-hover;
+        border: 1px solid @color-warning-hover;
+    }
+
+    &:active, &:focus {
+        color: white;
+        background: @color-warning-active;
+        border: 1px solid @color-warning-active;
     }
 }
 
 .shepherd-element.shepherd-theme-arrows .shepherd-content footer .shepherd-buttons li .shepherd-button.shepherd-button-secondary {
-    color: @color-slate;
-    background: @color-grey-lighter;
-    border: 1px solid @color-grey-light;
+    color: @color-grey-light;
+    background: @color-plain-normal;
+    border: 1px solid @color-plain-normal;
     opacity: 0.5;
 
     &:hover, &:active, &:focus {
