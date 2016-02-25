@@ -1,1 +1,0 @@
-geth --mine --minerthreads "1" --testnet --unlock 0x15f6400a88fb320822b689607d425272bea2175f --etherbase 0x15f6400a88fb320822b689607d425272bea2175f --rpc --rpccorsdomain "http://localhost:8080" --password $HOME/.ethereum/.password console

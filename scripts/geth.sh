@@ -20,18 +20,16 @@ genesis=""
 optargs=""
 
 if [ "${network}" = "2" ]; then
-    optargs="--testnet"
+    optargs="--testnet --mine --minerthreads 1"
     address="0x15f6400a88fb320822b689607d425272bea2175f"
-fi
-if [ "${network}" = "10101" ]; then
+elif [ "${network}" = "10101" ]; then
     # address="0x01114f4bda09ed6c6715cf0baf606b5bce1dc96a"
     # address="0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b"
     # address="0x0da70d5a92d6cfcd4c12e2a83950676fdf4c95f9"
     # address="0x2a7e417ff20606e384526ed42d306943caec2d24"
     optargs="--mine --minerthreads 1 --nodiscover"
     genesis="$HOME/src/augur.js/data/genesis-10101.json"
-fi
-if [ "${network}" = "7" ]; then
+elif [ "${network}" = "7" ]; then
     optargs="--mine --minerthreads 1"
     genesis="$HOME/src/augur.js/data/genesis-7.json"
     # vent: 70eb80f63946c2b3f65e68311b4419a80c78271c099a7d1f3d8df8cdd8e374934c795d8bc9f204dda21eb9a318d30197ba7593494eb27ceb52663c8339e9cb70
@@ -48,4 +46,5 @@ if [ -L $symlink ]; then
 fi
 ln -s "$HOME/.ethereum-${network}" $symlink
 
-geth $optargs --networkid $network --datadir $symlink --rpc --rpcapi "eth,net,web3" --ipcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" --rpccorsdomain "https://augur-dev.herokuapp.com http://augur-dev.herokuapp.com https://augur-exp.herokuapp.com http://augur-exp.herokuapp.com https://eth1.augur.net https://eth2.augur.net https://eth3.augur.net https://eth4.augur.net https://eth5.augur.net https://augur.divshot.io https://augur-stage.herokuapp.com https://client.augur.net http://localhost:8080 https://localhost:8080" --genesis "${genesis}" --maxpeers $maxpeers --etherbase $address --unlock $address --password $passfile console
+geth $optargs --networkid $network --datadir $symlink --rpc --rpcapi "eth,net,web3" --ipcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" --rpccorsdomain "https://augur-dev.herokuapp.com http://augur-dev.herokuapp.com https://augur-exp.herokuapp.com http://augur-exp.herokuapp.com https://eth1.augur.net https://eth2.augur.net https://eth3.augur.net https://eth4.augur.net https://eth5.augur.net https://augur.divshot.io https://augur-stage.herokuapp.com https://client.augur.net http://localhost:8080 https://localhost:8080" --maxpeers $maxpeers --etherbase $address --unlock $address --password $passfile console
+# geth $optargs --networkid $network --datadir $symlink --rpc --rpcapi "eth,net,web3" --ipcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" --rpccorsdomain "https://augur-dev.herokuapp.com http://augur-dev.herokuapp.com https://augur-exp.herokuapp.com http://augur-exp.herokuapp.com https://eth1.augur.net https://eth2.augur.net https://eth3.augur.net https://eth4.augur.net https://eth5.augur.net https://augur.divshot.io https://augur-stage.herokuapp.com https://client.augur.net http://localhost:8080 https://localhost:8080" --genesis "${genesis}" --maxpeers $maxpeers --etherbase $address --unlock $address --password $passfile console
