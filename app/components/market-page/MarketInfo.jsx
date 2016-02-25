@@ -29,12 +29,12 @@ let MarketInfo = React.createClass({
                     <table className="tabular tabular-light">
                         <tbody>
                             <tr className="labelValue">
-                                <td className="labelValue-label">Outstanding shares:</td>
-                                <td className="labelValue-value">{ outstandingSharesFormatted }</td>
-                            </tr>
-                            <tr className="labelValue">
                                 <td className="labelValue-label">Fee:</td>
                                 <td className="labelValue-value">{ tradingFeeFormatted }</td>
+                            </tr>
+                            <tr className="labelValue">
+                                <td className="labelValue-label">Outstanding shares:</td>
+                                <td className="labelValue-value">{ outstandingSharesFormatted }</td>
                             </tr>
                             <tr className="labelValue">
                                 <td className="labelValue-label">Traders:</td>
