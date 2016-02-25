@@ -9,7 +9,6 @@ let Button = require("react-bootstrap/lib/Button");
 let Collapse = require("react-bootstrap/lib/Collapse");
 let Glyphicon = require("react-bootstrap/lib/Glyphicon");
 
-let Breadcrumb = require("./Breadcrumb.jsx");
 let OrderTicket = require('./order-ticket/OrderTicket.jsx');
 let UserOrders = require('./UserOrders.jsx');
 let MarketInfo = require("./MarketInfo.jsx");
@@ -145,7 +144,7 @@ let MarketPage = React.createClass({
 
         return (
             <div className="marketPage">
-                <Breadcrumb market={market}/>
+                <h1>{ this.state.market.description }</h1>
                 {image}
                 <div className="tags">
                     {tags}
