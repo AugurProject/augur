@@ -42,8 +42,8 @@ module.exports = {
         {host: "ipfs5.augur.net", port: "443", protocol: "https"}
     ],
 
-    // Newton's method parameters
     TOLERANCE: new Decimal("0.00000001"),
     EPSILON: new Decimal("0.0000000000001"),
-    MAX_ITER: 250
+    MAX_ITER: 250,
+    MAX_SHARES_PER_TRADE: 1000
 };

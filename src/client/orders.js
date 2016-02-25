@@ -57,7 +57,7 @@ module.exports = {
             try {
                 var soln = fzero(function (n) {
                     return self.f(n, q, i, a, cap);
-                }, [1e-12, 1000], {verbose: false});
+                }, [1e-12, constants.MAX_SHARES_PER_TRADE], {verbose: false});
                 if (soln.code !== 1) console.warn("fzero:", soln);
                 return soln.solution;
             } catch (exc) {
@@ -65,12 +65,12 @@ module.exports = {
                 try {
                     var soln = fzero(function (n) {
                         return self.f(n, q, i, a, cap);
-                    }, 0.5, {verbose: true, maxiter: 50, randomized: true});
+                    }, 1, {verbose: true, maxiter: 1000, randomized: true});
                     if (soln.code !== 1) console.warn("fzero:", soln);
                     return soln.solution;
                 } catch (ex) {
                     console.error("limit.sharesToTrade (randomized):", ex);
-                    return null;
+                    return constants.MAX_SHARES_PER_TRADE;
                 }
             }
         },

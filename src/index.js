@@ -510,7 +510,10 @@ Augur.prototype.price = function (market, outcome, callback) {
             var info = JSON.parse(JSON.stringify(market));
             var epsilon = new Decimal("0.0000001");
             var a = new Decimal(self.lsLmsr(info));
-            info.outcomes[outcome-1].outstandingShares = new Decimal(info.outcomes[outcome-1].outstandingShares).plus(epsilon).toFixed();
+            for (var i = 0; i < info.numOutcomes; ++i) {
+                if (info.outcomes[i].id === Number(outcome)) break;
+            }
+            info.outcomes[i].outstandingShares = new Decimal(info.outcomes[i].outstandingShares).plus(epsilon).toFixed();
             var b = new Decimal(self.lsLmsr(info));
             return callback(b.minus(a).dividedBy(epsilon).toFixed());
         } else if (market._id) {
@@ -2152,6 +2155,8 @@ Augur.prototype.getAccountMeanTradePrices = function (account, cb) {
 Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
     var self = this;
     var currentPrice = new BigNumber(this.price(marketInfo, outcome));
+    // console.log(JSON.stringify(marketInfo, null, 2));
+    // console.log("current price:", currentPrice.toString());
     if (order.amount.constructor !== BigNumber) {
         order.amount = new BigNumber(order.amount);
     }
@@ -2161,14 +2166,16 @@ Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
     order.branch = marketInfo.branchId;
     order.market = marketInfo._id;
     order.outcome = outcome;
-
-    // buy orders
+    // console.log("order:", order);
     var priceMatched;
     if (order.amount.gt(new BigNumber(0))) {
         priceMatched = currentPrice.lte(order.price);
     } else {
         priceMatched = currentPrice.gte(order.price);
     }
+    // console.log("current price:", currentPrice.toString());
+    // console.log("order price:", order.price.toString());
+    // console.log("price matched:", priceMatched);
     if (priceMatched) {
         var trade;
         if (order.cap) {
@@ -2176,9 +2183,16 @@ Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
         } else {
             trade = {order: order, amount: order.amount.toFixed(), filled: true};
         }
+        console.log("trade:", trade);
 
         // execute order
         if (trade !== undefined) {
+            console.log("sending:", {
+                branch: order.branch,
+                market: order.market,
+                outcome: order.outcome,
+                amount: trade.amount
+            });
             this.trade({
                 branch: order.branch,
                 market: order.market,
