@@ -29,19 +29,20 @@ module.exports = function () {
         account: {},
 
         // free (testnet) ether for new accounts on registration
-        fund: function (account, onRegistered, onSendEther, onInitAccount, onReputationFaucet, onSendCash, onFunded) {
+        fund: function (account, branch, onRegistered, onSendEther, onSent, onSuccess, onFailed) {
             var self = this;
-            if (onRegistered && onRegistered.constructor === Object) {
+            if (onRegistered.constructor === Object && onRegistered.onRegistered) {
                 if (onRegistered.onSendEther) onSendEther = onRegistered.onSendEther;
-                if (onRegistered.onInitAccount) onInitAccount = onRegistered.onInitAccount;
-                if (onRegistered.onReputationFaucet) onReputationFaucet = onRegistered.onReputationFaucet;
-                if (onRegistered.onSendCash) onSendCash = onRegistered.onSendCash;
-                if (onRegistered.onFunded) onFunded = onRegistered.onFunded;
-                if (onRegistered.onRegistered) onRegistered = onRegistered.onRegistered;
+                if (onRegistered.onSent) onSent = onRegistered.onSent;
+                if (onRegistered.onSuccess) onSuccess = onRegistered.onSuccess;
+                if (onRegistered.onFailed) onFailed = onRegistered.onFailed;
+                onRegistered = onRegistered.onRegistered;
             }
             onRegistered = onRegistered || utils.noop;
             onSendEther = onSendEther || utils.noop;
-            onFunded = onFunded || utils.noop;
+            onSent = onSent || utils.noop;
+            onSuccess = onSuccess || utils.noop;
+            onFailed = onFailed || utils.noop;
             augur.rpc.coinbase(function (funder) {
                 if (!funder || funder.error) return onSendEther();
                 augur.rpc.sendEther({
@@ -52,47 +53,12 @@ module.exports = function () {
                         onRegistered(account);
                     },
                     onSuccess: function (r) {
-                        var gotCash, gotReputation;
-                        var check = function (gotCash, gotReputation) {
-                            if (gotCash && gotReputation) {
-                                onFunded(account);
-                            }
-                        };
                         onSendEther(account);
-
-                        // free stuff, yay!
-                        augur.sendCash({
-                            to: augur.tx.cash,
-                            value: "0",
-                            onSent: function (res) {
-                                augur.reputationFaucet({
-                                    branch: augur.branches.dev,
-                                    onSent: function (res) {},
-                                    onSuccess: function (res) {
-                                        onReputationFaucet(res);
-                                        gotReputation = true;
-                                        check(gotCash, gotReputation);
-                                    },
-                                    onFailed: onFunded
-                                });
-                            },
-                            onSuccess: function (res) {
-                                onInitAccount(res);
-                                augur.rpc.transact({
-                                    from: funder,
-                                    to: augur.contracts.cash,
-                                    method: "send",
-                                    signature: "ii",
-                                    send: true,
-                                    returns: "unfix",
-                                    params: [account.address, abi.fix("10000", "hex")]
-                                }, function (res) {}, function (res) {
-                                    onSendCash(res);
-                                    gotCash = true;
-                                    check(gotCash, gotReputation);
-                                }, onFunded);
-                            },
-                            onFailed: onFunded
+                        augur.fundNewAccount({
+                            branch: branch || augur.branches.dev,
+                            onSent: onSent,
+                            onSuccess: onSuccess,
+                            onFailed: onFailed
                         });
                     },
                     onFailed: onSendEther
@@ -101,57 +67,38 @@ module.exports = function () {
         },
 
         // options: {doNotFund, persist}
-        // cb: {onRegistered, onSendEther, onInitAccount, onReputationFaucet, onSendCash, onFunded}
-        register: function (handle, password, options, cb) {
+        register: function (handle, password, options, onRegistered, onSendEther, onSent, onSuccess, onFailed) {
             var i, self = this;
-            if (!cb && options) {
+            if (!onRegistered && options) {
                 if (utils.is_function(options)) {
-                    cb = options;
+                    onRegistered = options;
                     options = {};
-                } else if (options.constructor === Array && options.length &&
-                    utils.is_function(options[0])) {
-                    cb = new Array(options.length);
-                    for (i = 0; i < options.length; ++i) {
-                        cb[i] = options[i];
-                    }
-                } else if (options.constructor === Object) {
-                    cb = {};
-                    if (options.onRegistered) cb.onRegistered = options.onRegistered;
-                    if (options.onSendEther) cb.onSendEther = options.onSendEther;
-                    if (options.onInitAccount) onInitAccount = options.onInitAccount;
-                    if (options.onReputationFaucet) onReputationFaucet = options.onReputationFaucet;
-                    if (options.onSendCash) onSendCash = options.onSendCash;
-                    if (options.onFunded) cb.onFunded = options.onFunded;
                 }
             }
-            if (cb && cb.constructor === Array) {
-                var temp = {};
-                var labels = ["onRegistered", "onSendEther", "onFunded"];
-                for (i = 0; i < Math.min(cb.length, 3); ++i) {
-                    if (utils.is_function(cb[i])) temp[labels[i]] = cb[i];
-                }
-                cb = temp;
+            if (onRegistered && onRegistered.constructor === Object && onRegistered.onRegistered) {
+                if (onRegistered.onSendEther) onSendEther = onRegistered.onSendEther;
+                if (onRegistered.onSent) onSent = onRegistered.onSent;
+                if (onRegistered.onSuccess) onSuccess = onRegistered.onSuccess;
+                if (onRegistered.onFailed) onFailed = onRegistered.onFailed;
+                onRegistered = onRegistered.onRegistered;
             }
-            if (utils.is_function(cb)) cb = {onRegistered: cb};
-            cb = cb || {};
-            cb.onRegistered = cb.onRegistered || utils.pass;
-            cb.onSendEther = cb.onSendEther || utils.pass;
-            cb.onInitAccount = cb.onInitAccount || utils.pass;
-            cb.onReputationFaucet = cb.onReputationFaucet || utils.pass;
-            cb.onSendCash = cb.onSendCash || utils.pass;
-            cb.onFunded = cb.onFunded || utils.pass;
+            onRegistered = onRegistered || utils.noop;
+            onSendEther = onSendEther || utils.noop;
+            onSent = onSent || utils.noop;
+            onSuccess = onSuccess || utils.noop;
+            onFailed = onFailed || utils.noop;
             options = options || {};
-            if (!password || password.length < 6) return cb.onRegistered(errors.PASSWORD_TOO_SHORT);
+            if (!password || password.length < 6) return onRegistered(errors.PASSWORD_TOO_SHORT);
             augur.db.get(handle, function (record) {
-                if (!record || !record.error) return cb.onRegistered(errors.HANDLE_TAKEN);
+                if (!record || !record.error) return onRegistered(errors.HANDLE_TAKEN);
 
                 // generate ECDSA private key and initialization vector
                 keys.create(null, function (plain) {
-                    if (plain.error) return cb.onRegistered(plain);
+                    if (plain.error) return onRegistered(plain);
 
                     // derive secret key from password
                     keys.deriveKey(password, plain.salt, null, function (derivedKey) {
-                        if (derivedKey.error) return cb.onRegistered(derivedKey);
+                        if (derivedKey.error) return onRegistered(derivedKey);
 
                         var encryptedPrivateKey = new Buffer(keys.encrypt(
                             plain.privateKey,
@@ -185,8 +132,8 @@ module.exports = function () {
                             accountData.address = address;
                         }
                         augur.db.put(handle, accountData, function (result) {
-                            if (!result) return cb.onRegistered(errors.DB_WRITE_FAILED);
-                            if (result.error) return cb.onRegistered(result);
+                            if (!result) return onRegistered(errors.DB_WRITE_FAILED);
+                            if (result.error) return onRegistered(result);
 
                             // set web.account object
                             delete accountData.privateKey;
@@ -211,8 +158,8 @@ module.exports = function () {
                             augur.ramble.invoke = self.invoke;
                             augur.ramble.context = self;
                             augur.ramble.from = self.account.address;
-                            if (options.doNotFund) return cb.onRegistered(self.account);
-                            self.fund(self.account, cb);
+                            if (options.doNotFund) return onRegistered(self.account);
+                            self.fund(self.account, augur.branches.dev, onRegistered, onSendEther, onSent, onSuccess, onFailed);
 
                         }); // augur.db.put
                     }); // deriveKey

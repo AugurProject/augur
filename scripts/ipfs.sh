@@ -33,7 +33,7 @@ export PATH=$PATH:$HOME/go/bin:/usr/local/go/bin
 # cd startdir
 echo -e "Get ipfs-update: ${BLUE}github.com/ipfs/ipfs-update${NC}"
 go get -u github.com/ipfs/ipfs-update
-ipfs update --verbose fetch
+ipfs update fetch
 ipfs update install v0.4.0-dev
 echo -e "Installed:" $BLUE`which ipfs`$NC
 if [ -f "${IPFS_BIN}" ]; then
