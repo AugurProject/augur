@@ -138,9 +138,9 @@ let MarketPage = React.createClass({
             }
         }
         let image = <span />;
-        if (metadata.image) {
-            image = <img className="metadata-image" src={this.state.image} />;
-        }
+        // if (metadata.image) {
+        //     image = <img className="metadata-image" src={this.state.image} />;
+        // }
 
         return (
             <div className="marketPage">
