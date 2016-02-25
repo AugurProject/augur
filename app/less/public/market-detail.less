@@ -22,11 +22,19 @@
     padding-top: 15px;
 }
 
-.marketInfo .marketInfo-author-value {
-    max-width: 200px; // looks good on iP5 emulator
-    overflow: hidden;
-    text-overflow: ellipsis;
-    float: right; // so it's aligned to right
+.marketInfo {
+    margin-top: 25px;
+
+    .marketInfo-author-value {
+        max-width: 200px; // looks good on iP5 emulator
+        overflow: hidden;
+        text-overflow: ellipsis;
+        float: right; // so it's aligned to right
+    }
+
+    .tabular {
+        width: 100%;
+    }
 }
 
 @media (max-width: @screen-sm-min) {

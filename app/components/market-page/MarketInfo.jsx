@@ -23,14 +23,11 @@ let MarketInfo = React.createClass({
         if (market.metadata) expirySource = market.metadata.source;
 
         return (
-            <div className='row marketInfo'>
+            <div className='marketInfo'>
+                <h4>Details</h4>
                 <div className="col-sm-6">
-                    <table className="table table-condensed table--leftRightAlignment">
+                    <table className="tabular tabular-light">
                         <tbody>
-                            <tr className="labelValue">
-                                <td className="labelValue-label">Price:</td>
-                                <td className="labelValue-value">{ priceFormatted }</td>
-                            </tr>
                             <tr className="labelValue">
                                 <td className="labelValue-label">Outstanding shares:</td>
                                 <td className="labelValue-value">{ outstandingSharesFormatted }</td>
@@ -47,27 +44,27 @@ let MarketInfo = React.createClass({
                     </table>
                 </div>
                 <div className="col-sm-6">
-                    <table className="table table-condensed table--leftRightAlignment">
+                    <table className="tabular tabular-light">
                         <tbody>
+                            <tr className="labelValue">
+                                <td className="labelValue-label">{ endDateLabel }</td>
+                                <td className="labelValue-value">{ endDateFormatted }</td>
+                            </tr>
+                           <tr className="labelValue">
+                                <td className="labelValue-label">Expiry source:</td>
+                                <td className="labelValue-value">{ expirySource }</td>
+                            </tr>
                             <tr className="labelValue">
                                 <td className="labelValue-label">Author:</td>
                                 <td className="labelValue-value">
-                                    <div className="marketInfo-author-value" title={ authorFormatted }>
+                                    <span className="marketInfo-author-value" title={ authorFormatted }>
                                         { authorFormatted }
-                                    </div>
+                                    </span>
                                 </td>
                             </tr>
                             <tr className="labelValue">
                                 <td className="labelValue-label">Creation date:</td>
                                 <td className="labelValue-value">{ creationDateFormatted }</td>
-                            </tr>
-                            <tr className="labelValue">
-                                <td className="labelValue-label">{ endDateLabel }</td>
-                                <td className="labelValue-value">{ endDateFormatted }</td>
-                            </tr>
-                            <tr className="labelValue">
-                                <td className="labelValue-label">Expiry source:</td>
-                                <td className="labelValue-value">{ expirySource }</td>
                             </tr>
                         </tbody>
                     </table>

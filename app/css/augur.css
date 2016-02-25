@@ -199,9 +199,6 @@ nav.header h1 > i {
     font-size: 11px;
     text-transform: uppercase;
 }
-.marketInfo {
-    margin-top: 25px;
-}
 
 .navbar-brand {
     background-image: url(/images/augur_logo_small_white.png);
