@@ -102,10 +102,10 @@ module.exports = {
 
   getPercentageFormatted: function (market, outcome) {
     if (market.type === "scalar") {
-      return module.exports.priceToPercent(outcome.price.dividedBy(100));
+      return module.exports.priceToPercent(outcome.normalizedPrice.dividedBy(100));
     }
     else {
-      return module.exports.priceToPercent(outcome.price);
+      return module.exports.priceToPercent(outcome.normalizedPrice);
     }
   },
 
