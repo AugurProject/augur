@@ -106,9 +106,7 @@ let AddMarketModal = React.createClass({
       var imageFile = event.target.files[0];
       var reader = new FileReader();
       reader.onload = (function (f) {
-console.log('@@@');
         return function (e) {
-console.log('!!!', e);
           self.setState({imageDataURL: e.target.result});
         };
       })(imageFile);
