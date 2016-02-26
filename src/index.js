@@ -504,40 +504,24 @@ Augur.prototype.lsLmsr = function (market, callback) {
     return this.fire(tx, callback);
 };
 Augur.prototype.price = function (market, outcome, callback) {
-    var info, numOutcomes, a, q, exp_q, sum_q, sum_exp_q, sum_q_x_expq, j, b, tx;
     var self = this;
-    if (market && market.constructor === Object) {
+    if (market.constructor === Object) {
         if (market.network && market.events) {
             callback = callback || this.utils.pass;
-            outcome = parseInt(outcome);
-            info = JSON.parse(JSON.stringify(market));
-            numOutcomes = info.numOutcomes;
-            a = this.utils.toDecimal(info.alpha);        
-            q = new Array(numOutcomes);
-            exp_q = new Array(numOutcomes);
-            sum_q = new Decimal(0);
-            sum_exp_q = new Decimal(0);
-            sum_q_x_expq = new Decimal(0);
-            for (j = 0; j < numOutcomes; ++j) {
-                q[j] = this.utils.toDecimal(info.outcomes[j].outstandingShares);
-                sum_q = sum_q.plus(q[j]);
+            var info = JSON.parse(JSON.stringify(market));
+            var epsilon = new Decimal("0.0000001");
+            var a = new Decimal(self.lsLmsr(info));
+            for (var i = 0; i < info.numOutcomes; ++i) {
+                if (info.outcomes[i].id === Number(outcome)) break;
             }
-            b = a.times(sum_q);
-            for (j = 0; j < numOutcomes; ++j) {
-                exp_q[j] = q[j].dividedBy(b).exp();
-                sum_exp_q = sum_exp_q.plus(exp_q[j]);
-                sum_q_x_expq = sum_q_x_expq.plus(q[j].times(exp_q[j]));
-            }
-            return a.times(sum_exp_q.ln()).plus(
-                exp_q[outcome].times(sum_q).minus(sum_q_x_expq).dividedBy(
-                    sum_q.times(sum_exp_q)
-                )
-            ).toFixed();
+            info.outcomes[i].outstandingShares = new Decimal(info.outcomes[i].outstandingShares).plus(epsilon).toFixed();
+            var b = new Decimal(self.lsLmsr(info));
+            return callback(b.minus(a).dividedBy(epsilon).toFixed());
         } else if (market._id) {
             market = market._id;
         }
     }
-    tx = clone(this.tx.price);
+    var tx = clone(this.tx.price);
     tx.params = [market, outcome];
     return this.fire(tx, callback);
 };
