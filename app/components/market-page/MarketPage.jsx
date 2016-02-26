@@ -5,6 +5,7 @@ let abi = require("augur-abi");
 let Fluxxor = require("fluxxor");
 let FluxMixin = Fluxxor.FluxMixin(React);
 let StoreWatchMixin = Fluxxor.StoreWatchMixin;
+let utils = require("../../libs/utilities");
 let Button = require("react-bootstrap/lib/Button");
 let Collapse = require("react-bootstrap/lib/Collapse");
 let Glyphicon = require("react-bootstrap/lib/Glyphicon");
@@ -16,8 +17,8 @@ let StatsTab = require("./StatsTab");
 let RulesTab = require("./RulesTab");
 let UserTradesTab = require("./UserTradesTab");
 let UserFrozenFundsTab = require("./UserFrozenFundsTab");
+let Comments = require('./comments/Comments.jsx');
 let CloseMarketModal = require("../CloseMarket");
-let utils = require("../../libs/utilities");
 
 let Shepherd = require("tether-shepherd");
 
@@ -228,6 +229,13 @@ let MarketPage = React.createClass({
                     show={this.state.closeMarketModalOpen}
                     onHide={this.toggleCloseMarketModal} />
 
+                <Comments
+                    toggleSignInModal={this.state.toggleSignInModal}
+                    market={this.state.market}
+                    //comments={this.props.market.comments} // comments are already in market, should I pass them?
+                    account={this.state.account}
+                    handle={this.state.handle}
+                    />
             </div>
         );
     },
