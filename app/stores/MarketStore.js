@@ -13,6 +13,7 @@ module.exports = {
     marketLoadingIds: null,
     loadingPage: null,
     marketsPerPage: constants.MARKETS_PER_PAGE,
+    initialLoadComplete: false,
     orderBookChecked: null
   },
   getState: function () {
@@ -106,6 +107,10 @@ module.exports = {
         this.state.markets[marketId].metadata = payload.metadata;
       }
     }
+    this.emit(constants.CHANGE_EVENT);
+  },
+  handleInitialLoadComplete: function (payload) {
+    this.state.initialLoadComplete = true;
     this.emit(constants.CHANGE_EVENT);
   },
   handlePriceHistoryLoading: function (payload) {

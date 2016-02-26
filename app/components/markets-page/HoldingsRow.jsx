@@ -29,7 +29,7 @@ module.exports = React.createClass({
         if (market.type === "scalar") {
             return +price.toFixed(2);
         } else {
-            return +price.times(100).toFixed(1) + " %";
+            return +outcome.normalizedPrice.times(100).toFixed(1) + " %";
         }
     },
 

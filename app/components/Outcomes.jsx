@@ -509,9 +509,9 @@ var Sell = React.createClass(_.merge({
         }
         return (
             <span>
-        <i className='fa fa-chevron-down' style={{color: 'red'}}></i>
-        <span className='new-price'>{newPrice}</span>
-      </span>
+                <i className='fa fa-chevron-down' style={{color: 'red'}}></i>
+                <span className='new-price'>{newPrice}</span>
+            </span>
         );
     },
 
