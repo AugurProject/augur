@@ -10,6 +10,10 @@
      padding: 15px 0;
 
      .title {
+          .trade-button {
+               margin: 0 0 1rem 0;
+          }
+
           @media (min-width: @screen-sm-min) {
                & .btn {
                     margin-left: 4px;
@@ -21,12 +25,6 @@
 
                h4 {
                     .flex(1);
-               }
-          }
-
-          @media (max-width: @screen-xs-max) {
-               & .btn {
-                    margin-top: 8px;
                }
           }
      }
@@ -131,11 +129,6 @@
      .market-row {
           .info {
                width: auto;
-          }
-
-          .buttons {
-               width: auto;
-               text-align: left;
           }
      }
 }
