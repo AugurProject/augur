@@ -58,7 +58,7 @@ let MarketPage = React.createClass({
             if (!Buffer.isBuffer(market.metadata.image)) {
                 market.metadata.image = new Buffer(market.metadata.image, "base64");
             }
-            let blob = new Blob([market.metadata.image], {type: "image/png"});
+            let blob = new Blob([market.metadata.image]);
             let reader = new FileReader();
             reader.onload = function (e) {
                 self.setState({image: e.target.result});
@@ -133,9 +133,9 @@ let MarketPage = React.createClass({
             }
         }
         let image = <span />;
-        // if (metadata.image) {
-        //     image = <img className="metadata-image" src={this.state.image} />;
-        // }
+        if (metadata.image) {
+            image = <img className="metadata-image" src={this.state.image} />;
+        }
 
         return (
             <div className="marketPage">
