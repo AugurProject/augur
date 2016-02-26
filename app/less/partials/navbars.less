@@ -113,8 +113,10 @@
             }
 
             &.navbar-right {
-                display:block; position: relative;
-                margin: 0.85rem 0 0 0;
+                display: inline-block; position: relative;
+                float: none !important;
+                margin: 0;
+                vertical-align: middle;
                 text-align: right;
                 cursor: pointer;
 
@@ -149,20 +151,6 @@
                 background-color: transparent;
             }
         }
-    }
-}
-
-@media (min-width: 768px) {
-    // overwrite triangle params in dropdown menu
-    .navbar-nav.navbar-right > li > .dropdown-menu:after {
-        right: 18px;
-    }
-}
-
-@media (max-width: 767px) {
-    // overwrite nav menus which are displayed beneath each other now
-    body > .navbar-collapse ul.nav {
-        height: auto;
     }
 }
 
@@ -232,13 +220,28 @@ body > .navbar-collapse::after {
 }
 
 @media (min-width: @screen-sm-min) {
+    // overwrite triangle params in dropdown menu
+    .navbar-nav.navbar-right > li > .dropdown-menu:after {
+        right: 18px;
+    }
     .collapse.collapsedOnMobile {
         display: block;
         visibility: visible;
     }
+
+    .navbar-collapse.collapse {
+        height: 5rem !important;
+        line-height: 5rem;
+        text-align: right;
+    }
 }
 
 @media (max-width: @screen-sm-min) {
+
+    // overwrite nav menus which are displayed beneath each other now
+    body > .navbar-collapse ul.nav {
+        height: auto;
+    }
 
     // Main navigation bar
     .navbar {
@@ -302,6 +305,7 @@ body > .navbar-collapse::after {
                 }
 
                 &.navbar-right {
+                    display: block;
                     margin: 0 -15px;
                     text-align: left;
 
