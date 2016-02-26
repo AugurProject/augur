@@ -263,24 +263,24 @@ let MarketRow = React.createClass({
                 </div>
                 <div className="details">
                     <div className="table-container outcomes">
-                        <table className="tabular tabular-condensed">
-                            <thead>
-                                <tr>
-                                    <th colSpan="3">Market Leaders</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {market.outcomes.map((outcome) => {
-                                    return (
-                                        <OutcomeRow
-                                            key={`${market._id}-${outcome.id}`}
-                                            outcome={outcome}
-                                            market={market}
-                                            contentType={this.props.contentType} />
-                                    );
-                                })}
-                            </tbody>
-                        </table>
+                        <div className="panelify-sideways info">
+                            <div className="title">Top Predictions</div>
+                            <div className="content">
+                                <table className="outcomes-table">
+                                    <tbody>
+                                        {market.outcomes.map((outcome) => {
+                                            return (
+                                                <OutcomeRow
+                                                    key={`${market._id}-${outcome.id}`}
+                                                    outcome={outcome}
+                                                    market={market}
+                                                    contentType={this.props.contentType} />
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                     { holdingsSection }
                     { reportSection }

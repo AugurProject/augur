@@ -1,6 +1,6 @@
 @import (reference) "variables";
 
-.btn, .btn-primary {
+.btn {
     color: @color-white;
     background: @color-info-normal;
     border: 1px solid @color-info-normal;
@@ -23,6 +23,10 @@
         background: @color-info-active;
         border-color: @color-info-active;
     }
+}
+
+.btn-primary {
+    .button-variant(@color-white, @color-primary-normal, @color-primary-hover);
 }
 
 .btn-success {

@@ -12,10 +12,23 @@
     }
 
     td {
-        padding: 0.8rem 1rem;
+        padding: 0.4rem 1rem 0rem;
         vertical-align: middle;
         font-size: @font-size-table-row;
         font-weight: @font-weight-normal;
+    }
+
+    tr {
+        &:first-child {
+            td {
+                padding-top: 0.8rem;
+            }
+        }
+        &:last-child {
+            td {
+                padding-bottom: 0.8rem;
+            }
+        }
     }
 
     // the following creates a border around the table with rounder corners. we can't use a simple table border, because

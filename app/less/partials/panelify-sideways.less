@@ -1,0 +1,50 @@
+.panelify-sideways {
+    .title {
+        padding: 1rem 1rem 0 1rem;
+        vertical-align: middle;
+        color: black;
+        border: 1px solid @color-plain-normal; border-left: 7px solid @color-plain-normal; border-bottom: 0;
+        font-size: @font-size-table-row;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .content {
+        padding: 0.5rem 1rem 0.8rem 1rem;
+        vertical-align: middle;
+        color: @font-color-default;
+        border: 1px solid @color-grey-light2; border-left: 7px solid @color-plain-normal; border-top: 0;
+        font-size: @font-size-table-row;
+        font-weight: @font-weight-normal;
+    }
+
+    &.primary {
+        .title, .content {
+            border-left-color: @color-primary-normal;
+        }
+    }
+
+    &.info {
+        .title, .content {
+            border-left-color: @color-info-normal;
+        }
+    }
+
+    &.success {
+        .title, .content {
+            border-left-color: @color-success-normal;
+        }
+    }
+
+    &.warning {
+        .title, .content {
+            border-left-color: @color-warning-normal;
+        }
+    }
+
+    &.danger {
+        .title, .content {
+            border-left-color: @color-danger-normal;
+        }
+    }
+}
