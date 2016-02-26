@@ -198,7 +198,7 @@ var Overview = React.createClass({
         if (market.type === "scalar") {
             percentageFormatted = +outcome.price.toFixed(2);
         } else {
-            percentageFormatted = priceToPercentage(outcome.price) + "%";
+            percentageFormatted = priceToPercentage(outcome.normalizedPrice) + "%";
         }
         return percentageFormatted;
     },

@@ -54,7 +54,8 @@ module.exports = function (flux) {
             orders: {},
             marketLoadingIds: null,
             loadingPage: null,
-            marketsPerPage: 15
+            marketsPerPage: 15,
+            initialLoadComplete: false
         };
     }
     if (flux.stores.search) {

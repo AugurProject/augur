@@ -17,10 +17,10 @@ var constants = require("../app/libs/constants");
 var flux = require("./mock");
 var tools = require("./tools");
 
-// var host = "http://127.0.0.1:8545";
-// flux.augur.rpc.setLocalNode(host);
-// flux.augur.connect(host, process.env.GETH_IPC);
-flux.augur.connect();
+var host = "http://127.0.0.1:8545";
+flux.augur.rpc.setLocalNode(host);
+flux.augur.connect(host, process.env.GETH_IPC);
+// flux.augur.connect();
 var account = {address: flux.augur.from};
 var blockNumber = flux.augur.rpc.blockNumber();
 var marketsInfo = flux.augur.getMarketsInfo(flux.augur.branches.dev);
@@ -35,70 +35,69 @@ for (var m in marketsInfo) {
 var rawInfo = clone(marketInfo);
 marketInfo = tools.parseMarketInfo(marketInfo, blockNumber, account);
 
-test("marketInfo", function (t) {
-    var market = rawInfo._id;
-    t.false(rawInfo.id, "raw marketInfo's id field is unassigned");
-    t.true(validator.isHexadecimal(abi.unfork(rawInfo._id)), "unfork(_id) is valid hex");
-    t.true(validator.isNumeric(rawInfo.network), "network is numeric");
-    t.true(validator.isIn(rawInfo.network, ["7", "10101"]), "network is 7 or 10101");
-    t.true(validator.isInt(rawInfo.traderCount.toString()), "traderCount is an integer");
-    t.true(rawInfo.traderIndex > -1, "traderIndex > -1");
-    t.equal(rawInfo.alpha, "0.00790000000000000001", "alpha == 0.00790000000000000001");
-    t.true(validator.isInt(rawInfo.tradingPeriod.toString()), "tradingPeriod is an integer");
-    t.true(validator.isFloat(rawInfo.tradingFee), "tradingFee is a float");
-    t.true(rawInfo.tradingFee > 0, "tradingFee > 0");
-    t.true(rawInfo.tradingFee <= 1, "tradingFee <= 1");
-    t.true(validator.isHexadecimal(abi.unfork(rawInfo.branchId)), "unfork(branchId) is valid hex");
-    t.true(validator.isInt(rawInfo.numEvents.toString()), "numEvents is an integer");
-    t.true(rawInfo.numEvents >= 1, "numEvents >= 1");
-    t.true(validator.isInt(rawInfo.cumulativeScale), "cumulativeScale is a (string) integer");
-    t.true(validator.isInt(rawInfo.creationFee), "creationFee is a (string) integer");
-    t.true(Number(rawInfo.creationFee) > 0, "Number(creationFee) > 0");
-    t.true(validator.isHexadecimal(abi.unfork(rawInfo.author)), "unfork(author) is valid hex");
-    t.true(validator.isInt(rawInfo.endDate.toString()), "endDate is an integer");
-    t.equal(rawInfo.participants.constructor, Object, "participants is an object");
-    t.true(Object.keys(rawInfo.participants).length >= 0, "number of participants >= 0");
-    t.true(validator.isInt(rawInfo.numOutcomes.toString()), "numOutcomes is an integer");
-    t.true(rawInfo.numOutcomes > 1, "numOutcomes > 1");
-    t.equal(rawInfo.outcomes.constructor, Array, "outcomes is an array");
-    t.equal(rawInfo.numOutcomes, rawInfo.outcomes.length, "numOutcomes == outcomes.length");
-    var outcome;
-    for (var i = 0; i < rawInfo.numOutcomes; ++i) {
-        outcome = rawInfo.outcomes[i];
-        t.equal(outcome.constructor, Object, "outcome is an object");
-        t.true(validator.isInt(outcome.id.toString()), "outcome.id is an integer");
-        t.true(outcome.id > 0, "outcome.id > 0");
-        t.true(validator.isFloat(outcome.outstandingShares), "outcome.outstandingShares is a (string) float");
-        t.true(parseFloat(outcome.outstandingShares) > 0, "outcome.outstandingShares > 0");
-        t.true(validator.isFloat(outcome.price), "outcome.price is a (string) float");
-        t.equal(outcome.shares.constructor, Object, "outcome.shares is an object");
-        t.true(Object.keys(outcome.shares).length >= 0, "number of share holders >= 0");
-    }
-    t.equal(rawInfo.events.constructor, Array, "events is an array");
-    t.true(rawInfo.numEvents > 0, "numEvents > 0");
-    t.true(rawInfo.events.length > 0, "events.length > 0");
-    t.equal(rawInfo.numEvents, rawInfo.events.length, "numEvents == events.length");
-    var event;
-    for (i = 0; i < rawInfo.numEvents; ++i) {
-        event = rawInfo.events[i];
-        t.equal(event.constructor, Object, "event is an object");
-        t.true(validator.isHexadecimal(abi.unfork(event.id)), "unfork(event.id) is valid hex");
-        t.true(validator.isInt(event.endDate.toString()), "event.endDate is an integer");
-        t.true(event.endDate > 0, "event.endDate > 0");
-        t.true(validator.isInt(event.outcome), "event.outcome is a (string) integer");
-        t.true(parseInt(event.outcome) >= 0, "event.outcome >= 0");
-        t.true(validator.isInt(event.minValue), "event.minValue is a (string) integer");
-        t.true(validator.isInt(event.maxValue), "event.maxValue is a (string) integer");
-        t.true(parseInt(event.minValue) < parseInt(event.maxValue), "event.minValue < event.maxValue");
-        t.true(validator.isInt(event.numOutcomes.toString()), "event.numOutcomes is an integer");
-        t.true(event.numOutcomes > 1, "event.numOutcomes > 1");
-    }
-    if (!flux.augur.filters.price_filter.id) return t.end();
-    flux.augur.filters.ignore(true, t.end);
-});
+// test("marketInfo", function (t) {
+//     var market = rawInfo._id;
+//     t.false(rawInfo.id, "raw marketInfo's id field is unassigned");
+//     t.true(validator.isHexadecimal(abi.unfork(rawInfo._id)), "unfork(_id) is valid hex");
+//     t.true(validator.isNumeric(rawInfo.network), "network is numeric");
+//     t.true(validator.isIn(rawInfo.network, ["7", "10101"]), "network is 7 or 10101");
+//     t.true(validator.isInt(rawInfo.traderCount.toString()), "traderCount is an integer");
+//     t.true(rawInfo.traderIndex > -1, "traderIndex > -1");
+//     t.equal(rawInfo.alpha, "0.00790000000000000001", "alpha == 0.00790000000000000001");
+//     t.true(validator.isInt(rawInfo.tradingPeriod.toString()), "tradingPeriod is an integer");
+//     t.true(validator.isFloat(rawInfo.tradingFee), "tradingFee is a float");
+//     t.true(rawInfo.tradingFee > 0, "tradingFee > 0");
+//     t.true(rawInfo.tradingFee <= 1, "tradingFee <= 1");
+//     t.true(validator.isHexadecimal(abi.unfork(rawInfo.branchId)), "unfork(branchId) is valid hex");
+//     t.true(validator.isInt(rawInfo.numEvents.toString()), "numEvents is an integer");
+//     t.true(rawInfo.numEvents >= 1, "numEvents >= 1");
+//     t.true(validator.isInt(rawInfo.cumulativeScale), "cumulativeScale is a (string) integer");
+//     t.true(validator.isInt(rawInfo.creationFee), "creationFee is a (string) integer");
+//     t.true(Number(rawInfo.creationFee) > 0, "Number(creationFee) > 0");
+//     t.true(validator.isHexadecimal(abi.unfork(rawInfo.author)), "unfork(author) is valid hex");
+//     t.true(validator.isInt(rawInfo.endDate.toString()), "endDate is an integer");
+//     t.equal(rawInfo.participants.constructor, Object, "participants is an object");
+//     t.true(Object.keys(rawInfo.participants).length >= 0, "number of participants >= 0");
+//     t.true(validator.isInt(rawInfo.numOutcomes.toString()), "numOutcomes is an integer");
+//     t.true(rawInfo.numOutcomes > 1, "numOutcomes > 1");
+//     t.equal(rawInfo.outcomes.constructor, Array, "outcomes is an array");
+//     t.equal(rawInfo.numOutcomes, rawInfo.outcomes.length, "numOutcomes == outcomes.length");
+//     var outcome;
+//     for (var i = 0; i < rawInfo.numOutcomes; ++i) {
+//         outcome = rawInfo.outcomes[i];
+//         t.equal(outcome.constructor, Object, "outcome is an object");
+//         t.true(validator.isInt(outcome.id.toString()), "outcome.id is an integer");
+//         t.true(outcome.id > 0, "outcome.id > 0");
+//         t.true(validator.isFloat(outcome.outstandingShares), "outcome.outstandingShares is a (string) float");
+//         t.true(parseFloat(outcome.outstandingShares) > 0, "outcome.outstandingShares > 0");
+//         t.true(validator.isFloat(outcome.price), "outcome.price is a (string) float");
+//         t.equal(outcome.shares.constructor, Object, "outcome.shares is an object");
+//         t.true(Object.keys(outcome.shares).length >= 0, "number of share holders >= 0");
+//     }
+//     t.equal(rawInfo.events.constructor, Array, "events is an array");
+//     t.true(rawInfo.numEvents > 0, "numEvents > 0");
+//     t.true(rawInfo.events.length > 0, "events.length > 0");
+//     t.equal(rawInfo.numEvents, rawInfo.events.length, "numEvents == events.length");
+//     var event;
+//     for (i = 0; i < rawInfo.numEvents; ++i) {
+//         event = rawInfo.events[i];
+//         t.equal(event.constructor, Object, "event is an object");
+//         t.true(validator.isHexadecimal(abi.unfork(event.id)), "unfork(event.id) is valid hex");
+//         t.true(validator.isInt(event.endDate.toString()), "event.endDate is an integer");
+//         t.true(event.endDate > 0, "event.endDate > 0");
+//         t.true(validator.isInt(event.outcome), "event.outcome is a (string) integer");
+//         t.true(parseInt(event.outcome) >= 0, "event.outcome >= 0");
+//         t.true(validator.isInt(event.minValue), "event.minValue is a (string) integer");
+//         t.true(validator.isInt(event.maxValue), "event.maxValue is a (string) integer");
+//         t.true(parseInt(event.minValue) < parseInt(event.maxValue), "event.minValue < event.maxValue");
+//         t.true(validator.isInt(event.numOutcomes.toString()), "event.numOutcomes is an integer");
+//         t.true(event.numOutcomes > 1, "event.numOutcomes > 1");
+//     }
+//     t.end();
+// });
 
 test("MarketActions.parseMarketInfo", function (t) {
-    t.plan(18);
+    t.plan(17);
     var info = clone(rawInfo);
     flux.actions.market.parseMarketInfo(clone(info), function (parsedInfo) {
         t.false(rawInfo.id, "raw marketInfo's id field is unassigned after parseMarketInfo");
@@ -116,74 +115,15 @@ test("MarketActions.parseMarketInfo", function (t) {
         t.true(parsedInfo.alpha.eq(marketInfo.alpha), "check parsed marketInfo.alpha value");
         t.equal(parsedInfo.tradingPeriod.constructor, BigNumber, "parsed marketInfo.tradingPeriod is a BigNumber");
         t.true(parsedInfo.tradingPeriod.eq(marketInfo.tradingPeriod), "check parsed marketInfo.tradingPeriod value");
-        if (marketInfo.traderId) {
+        if (info.traderId) {
             t.equal(parsedInfo.traderId.constructor, BigNumber, "parsed marketInfo.traderId is a BigNumber");
             t.true(parsedInfo.traderId.eq(marketInfo.traderId), "check parsed marketInfo.traderId value");
         } else {
             t.false(parsedInfo.traderId, "parsed marketInfo.traderId is unassigned");
-            t.equal(parsedInfo.traderId, marketInfo.traderId, "check parsed marketInfo.traderId value");
         }
         t.true(moment.isMoment(parsedInfo.endDate), "parsed marketInfo.endDate is a Moment");
-        if (!flux.augur.filters.price_filter.id) return t.end();
-        flux.augur.filters.ignore(true, t.end);
+        t.end();
     });
-});
-
-test("MarketActions.loadMarkets", function (t) {
-    var dispatchCount = 0;
-    var LOAD_MARKETS_SUCCESS = flux.register.LOAD_MARKETS_SUCCESS;
-    var MARKETS_LOADING = flux.register.MARKETS_LOADING;
-    flux.register.LOAD_MARKETS_SUCCESS = function (payload) {
-        t.equal(payload.constructor, Object, "payload is an object");
-        t.equal(payload.markets.constructor, Object, "payload.markets is an object");
-        t.equal(payload.markets[marketInfo.id].constructor, Object, "payload.markets has marketInfo.id field");
-        t.true(Object.keys(payload.markets).length > 0, "payload.markets has at least 1 key");
-        if (++dispatchCount > 1) {
-            flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
-            flux.register.MARKETS_LOADING = MARKETS_LOADING;
-            if (!flux.augur.filters.price_filter.id) return t.end();
-            flux.augur.filters.ignore(true, t.end);
-        }
-    };
-    flux.register.MARKETS_LOADING = function (payload) {
-        t.equal(payload.constructor, Object, "payload is an object");
-        t.equal(payload.loadingPage, null, "payload.loadingPage is null");
-        if (++dispatchCount > 1) {
-            flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
-            flux.register.MARKETS_LOADING = MARKETS_LOADING;
-            if (!flux.augur.filters.price_filter.id) return t.end();
-            flux.augur.filters.ignore(true, t.end);
-        }
-    };
-    flux.actions.market.loadMarkets();
-});
-
-test("MarketActions.loadMarket", function (t) {
-    var dispatchCount = 0;
-    var LOAD_MARKETS_SUCCESS = flux.register.LOAD_MARKETS_SUCCESS;
-    var MARKETS_LOADING = flux.register.MARKETS_LOADING;
-    flux.register.LOAD_MARKETS_SUCCESS = function (payload) {
-        t.equal(payload.constructor, Object, "payload is an object");
-        t.equal(payload.markets.constructor, Object, "payload.markets is an object");
-        t.equal(payload.markets[marketInfo.id].constructor, Object, "payload.markets has marketInfo.id field");
-        if (++dispatchCount > 1) {
-            flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
-            flux.register.MARKETS_LOADING = MARKETS_LOADING;
-            if (!flux.augur.filters.price_filter.id) return t.end();
-            flux.augur.filters.ignore(true, t.end);
-        }
-    };
-    flux.register.MARKETS_LOADING = function (payload) {
-        t.equal(payload.constructor, Object, "payload is an object");
-        t.equal(payload.loadingPage, null, "payload.loadingPage is null");
-        if (++dispatchCount > 1) {
-            flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
-            flux.register.MARKETS_LOADING = MARKETS_LOADING;
-            if (!flux.augur.filters.price_filter.id) return t.end();
-            flux.augur.filters.ignore(true, t.end);
-        }
-    };
-    flux.actions.market.loadMarket(marketInfo.id);
 });
 
 test("MarketActions.initMarket", function (t) {
@@ -193,8 +133,7 @@ test("MarketActions.initMarket", function (t) {
     t.equal(skeleton.id.constructor, BigNumber, "skeleton market ID is a BigNumber");
     t.equal(abi.number(skeleton.branchId), abi.number(marketInfo.branchId), "number(skeleton.branchId) == number(marketInfo.branchId)");
     t.false(skeleton.loaded, "skeleton is not loaded");
-    if (!flux.augur.filters.price_filter.id) return t.end();
-    flux.augur.filters.ignore(true, t.end);
+    t.end();
 });
 
 test("MarketActions.addPendingMarket", function (t) {
@@ -221,8 +160,7 @@ test("MarketActions.addPendingMarket", function (t) {
         complete.dispatch = true;
         if (complete.dispatch && complete.returned) {
             flux.register.ADD_PENDING_MARKET_SUCCESS = ADD_PENDING_MARKET_SUCCESS;
-            if (!flux.augur.filters.price_filter.id) return t.end();
-            flux.augur.filters.ignore(true, t.end);
+            t.end();
         }
     };
     var marketId = flux.actions.market.addPendingMarket(clone(newMarket));
@@ -230,8 +168,7 @@ test("MarketActions.addPendingMarket", function (t) {
     complete.returned = true;
     if (complete.dispatch && complete.returned) {
         flux.register.ADD_PENDING_MARKET_SUCCESS = ADD_PENDING_MARKET_SUCCESS;
-        if (!flux.augur.filters.price_filter.id) return t.end();
-        flux.augur.filters.ignore(true, t.end);
+        t.end();
     }
 });
 
@@ -246,8 +183,7 @@ test("MarketActions.deleteMarket", function (t) {
     flux.register.DELETE_MARKET_SUCCESS = function (payload) {
         t.equal(payload.marketId.constructor, String, "payload.marketId is a string");
         t.equal(payload.marketId, marketId, "payload.marketId == input marketId");
-        if (!flux.augur.filters.price_filter.id) return t.end();
-        flux.augur.filters.ignore(true, t.end);
+        t.end();
     };
     flux.actions.market.deleteMarket(marketId);
 });
@@ -270,8 +206,7 @@ test("MarketActions.tradeSucceeded", function (t) {
         if (++dispatchCount > 1) {
             flux.register.MARKETS_LOADING = MARKETS_LOADING;
             flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
-            if (!flux.augur.filters.price_filter.id) return t.end();
-            flux.augur.filters.ignore(true, t.end);
+            t.end();
         }
     };
     flux.register.LOAD_MARKETS_SUCCESS = function (payload) {
@@ -279,8 +214,7 @@ test("MarketActions.tradeSucceeded", function (t) {
         if (++dispatchCount > 1) {
             flux.register.MARKETS_LOADING = MARKETS_LOADING;
             flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
-            if (!flux.augur.filters.price_filter.id) return t.end();
-            flux.augur.filters.ignore(true, t.end);
+            t.end();
         }
     };
     flux.actions.market.tradeSucceeded(trade, marketId);
@@ -298,8 +232,7 @@ test("MarketActions.updatePendingShares", function (t) {
         t.true(payload.market.id.eq(marketInfo.id), "payload.market.id == input id");
         t.true(marketInfo.outcomes[outcomeId - 1].pendingShares.plus(new BigNumber(relativeShares)).eq(payload.market.outcomes[outcomeId - 1].pendingShares), "after outcome pendingShares == before outcome pendingShares + signed trade");
         flux.register.UPDATE_MARKET_SUCCESS = UPDATE_MARKET_SUCCESS;
-        if (!flux.augur.filters.price_filter.id) return t.end();
-        flux.augur.filters.ignore(true, t.end);
+        t.end();
     };
     flux.actions.market.updatePendingShares(clone(marketInfo), outcomeId, relativeShares);
 });
@@ -335,8 +268,77 @@ test("MarketActions.updateOrders", function (t) {
         t.pass("dispatch UPDATE_ORDERS_SUCCESS");
         flux.register.UPDATE_ORDERS_SUCCESS = UPDATE_ORDERS_SUCCESS;
         t.deepEqual(flux.store("market").getOrders(), orders, "stores.market.orders == input orders");
-        if (!flux.augur.filters.price_filter.id) return t.end();
-        flux.augur.filters.ignore(true, t.end);
+        t.end();
     };
     flux.actions.market.updateOrders(orders);
+});
+
+test("MarketActions.loadMarket", function (t) {
+    var dispatchCount = 0;
+    var LOAD_MARKETS_SUCCESS = flux.register.LOAD_MARKETS_SUCCESS;
+    var MARKETS_LOADING = flux.register.MARKETS_LOADING;
+    flux.register.LOAD_MARKETS_SUCCESS = function (payload) {
+        t.equal(payload.constructor, Object, "payload is an object");
+        t.equal(payload.markets.constructor, Object, "payload.markets is an object");
+        t.equal(payload.markets[marketInfo.id].constructor, Object, "payload.markets has marketInfo.id field");
+        if (++dispatchCount > 1) {
+            flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
+            flux.register.MARKETS_LOADING = MARKETS_LOADING;
+            t.end();
+        }
+    };
+    flux.register.MARKETS_LOADING = function (payload) {
+        t.equal(payload.constructor, Object, "payload is an object");
+        t.equal(payload.loadingPage, null, "payload.loadingPage is null");
+        if (++dispatchCount > 1) {
+            flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
+            flux.register.MARKETS_LOADING = MARKETS_LOADING;
+            t.end();
+        }
+    };
+    flux.actions.market.loadMarket(marketInfo.id);
+});
+
+test("MarketActions.loadMarkets", function (t) {
+    var dispatchCount = 0;
+    var LOAD_MARKETS_SUCCESS = flux.register.LOAD_MARKETS_SUCCESS;
+    var MARKETS_LOADING = flux.register.MARKETS_LOADING;
+    var LOAD_METADATA = flux.register.LOAD_METADATA;
+    var INITIAL_LOAD_COMPLETE = flux.register.INITIAL_LOAD_COMPLETE;
+    flux.register.LOAD_MARKETS_SUCCESS = function (payload) {
+        t.equal(payload.constructor, Object, "payload is an object");
+        t.equal(payload.markets.constructor, Object, "payload.markets is an object");
+        t.equal(payload.markets[marketInfo.id].constructor, Object, "payload.markets has marketInfo.id field");
+        t.true(Object.keys(payload.markets).length > 0, "payload.markets has at least 1 key");
+        LOAD_MARKETS_SUCCESS(payload);
+        t.pass("dispatch LOAD_MARKETS_SUCCESS");
+    };
+    flux.register.MARKETS_LOADING = function (payload) {
+        t.equal(payload.constructor, Object, "payload is an object");
+        t.equal(payload.loadingPage, null, "payload.loadingPage is null");
+        MARKETS_LOADING(payload);
+        t.pass("dispatch MARKETS_LOADING");
+        if (++dispatchCount > 1) {
+            flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
+            flux.register.MARKETS_LOADING = MARKETS_LOADING;
+            t.end();
+        }
+    };
+    flux.register.LOAD_METADATA = function (payload) {
+        t.equal(payload.constructor, Object, "payload is an object");
+        t.equal(payload.metadata.constructor, Object, "payload.metadata is an object");
+        LOAD_METADATA(payload);
+        t.pass("dispatch LOAD_METADATA");
+        t.end();
+    };
+    flux.register.INITIAL_LOAD_COMPLETE = function (payload) {
+        t.false(payload, "payload is falsy");
+        INITIAL_LOAD_COMPLETE(payload);
+        t.pass("dispatch INITIAL_LOAD_COMPLETE");
+        flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
+        flux.register.MARKETS_LOADING = MARKETS_LOADING;
+        flux.register.LOAD_METADATA = LOAD_METADATA;
+        t.end();
+    };
+    flux.actions.market.loadMarkets();
 });

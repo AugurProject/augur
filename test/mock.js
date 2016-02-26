@@ -119,6 +119,9 @@ var flux = {
         LOAD_METADATA_SUCCESS: function (payload) {
             flux.stores.market.handleLoadMetadataSuccess(payload);
         },
+        INITIAL_LOAD_COMPLETE: function (payload) {
+            flux.stores.market.handleInitialLoadComplete(payload);
+        },
 
         // network
         UPDATE_NETWORK: function (payload) {

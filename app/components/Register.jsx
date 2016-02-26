@@ -95,12 +95,6 @@ let RegisterModal = React.createClass({
         },
         onSendEther: function (account) {
           self.updateProgressModal("Received " + flux.augur.constants.FREEBIE + " Ether.");
-          flux.augur.filters.ignore(true, function (err) {
-            if (err) return console.error(err);
-            console.debug("Blockchain listeners reset.");
-            flux.actions.config.initializeData();
-            flux.actions.asset.updateAssets();
-          });
         },
         onSent: function (res) {
           self.updateProgressModal("Requesting free Cash and Reputation...");
