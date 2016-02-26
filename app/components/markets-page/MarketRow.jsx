@@ -243,9 +243,12 @@ let MarketRow = React.createClass({
                 </div>
                 <div className="subtitle clearfix">
                     <div className="labelValue subtitle-group">
-                        <i className="fa fa-square-o" />
-                        <span className="labelValue-label trading-fee-label">Trading Fee: </span>
-                        <span className="labelValue-value trading-fee">{market.tradingFee ? market.tradingFee.times(100).toFixed(1) + '%' : '-'}</span>
+                        <i className="fa fa-bookmark-o" />
+                        <span className="labelValue-label">
+                            {utilities.getMarketTypeName(market)}
+                            { " " }
+                            ({market.numOutcomes } {utilities.singularOrPlural(market.numOutcomes, "outcome")})
+                        </span>
                     </div>
                     <div className="labelValue subtitle-group">
                         <i className="fa fa-clock-o" />
@@ -253,12 +256,9 @@ let MarketRow = React.createClass({
                         <span className="labelValue-value end-date">{endDateFormatted}</span>
                     </div>
                     <div className="labelValue subtitle-group">
-                        <i className="fa fa-bookmark-o" />
-                        <span className="labelValue-label">
-                            {utilities.getMarketTypeName(market)}
-                            { " " }
-                            ({market.numOutcomes } {utilities.singularOrPlural(market.numOutcomes, "outcome")})
-                        </span>
+                        <i className="fa fa-signal" style={{ transform: 'scaleX(-1)', fontSize: '0.8rem' }} />
+                        <span className="labelValue-label trading-fee-label">Trading Fee: </span>
+                        <span className="labelValue-value trading-fee">{market.tradingFee ? market.tradingFee.times(100).toFixed(1) + '%' : '-'}</span>
                     </div>
                 </div>
                 <div className="tags">
