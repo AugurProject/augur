@@ -141,18 +141,21 @@ let MarketsPage = React.createClass({
             <div className="row">
                 <div className="col-xs-12">
                     <span className='showing'>Showing { firstItemIndex + 1 } - { lastItemIndex } of { marketsCount }</span>
-                    <Paginate
-                        previousLabel={ <i className='fa fa-chevron-left'></i> }
-                        nextLabel={ <i className='fa fa-chevron-right'></i> }
-                        breakLabel={ <li className="break"><a href="">...</a></li> }
-                        pageNum={ marketsCount / this.state.marketsPerPage }
-                        marginPagesDisplayed={ 2 }
-                        pageRangeDisplayed={ 5 }
-                        forceSelected={ this.state.pageNum }
-                        clickCallback={ this.handlePageChanged }
-                        containerClassName={ 'paginator' }
-                        subContainerClassName={ 'pages' }
-                        activeClass={ 'active' } />
+
+                    { (marketsCount / this.state.marketsPerPage) >= 2 &&
+                        <Paginate
+                            previousLabel={ <i className='fa fa-chevron-left'></i> }
+                            nextLabel={ <i className='fa fa-chevron-right'></i> }
+                            breakLabel={ <li className="break"><a href="">...</a></li> }
+                            pageNum={ Math.floor(marketsCount / this.state.marketsPerPage) }
+                            marginPagesDisplayed={ 2 }
+                            pageRangeDisplayed={ 5 }
+                            forceSelected={ this.state.pageNum }
+                            clickCallback={ this.handlePageChanged }
+                            containerClassName={ 'paginator' }
+                            subContainerClassName={ 'pages' }
+                            activeClass={ 'active' } />
+                    }
                 </div>
             </div>
         );
