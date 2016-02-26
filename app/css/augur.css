@@ -191,6 +191,13 @@ nav.header h1 > i {
 .metadata-details {
     white-space: pre-wrap;
 }
+
+.marketPage h1 {
+    margin-bottom: 0;
+}
+.marketPage .tags {
+    margin-top: 0.5rem;
+}
 .marketPage .tags .tag {
     margin-right: 0.6rem;
     padding: 0.3rem;
