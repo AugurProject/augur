@@ -339,6 +339,10 @@ var TradeBase = {
         if (!numShares || numShares === '') {
             return this.setState({simulation: null});
         }
+        this.debounceChange(numShares);
+    },
+
+    debounceChange: _.debounce(function (numShares) {
         var sim = this.getSimulationFunction().call(this.getFlux().augur,
             this.props.market,
             this.props.outcome.id,
@@ -350,7 +354,7 @@ var TradeBase = {
                 newPrice: abi.bignum(sim[1])
             }
         });
-    },
+    }, 300),
 
     handleLimitChange: function () {
         var limit = this.refs.inputLimit.getValue();
