@@ -378,6 +378,13 @@ module.exports = function () {
 
                     // res is the txhash if nothing failed immediately
                     // (even if the tx is nulled, still index the hash)
+                    for (var rawTxHash in augur.rpc.rawTxs) {
+                        if (!augur.rpc.rawTxs.hasOwnProperty(rawTxHash)) continue;
+                        if (augur.rpc.rawTxs[rawTxHash].nonce === packaged.nonce) {
+                            ++packaged.nonce;
+                            break;
+                        }
+                    }
                     augur.rpc.rawTxs[res] = {tx: packaged};
 
                     // nonce ok, execute callback
