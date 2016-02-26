@@ -213,9 +213,6 @@ nav.header h1 > i {
     margin-top: 15px !important;
     width: 35px;
 }
-.navbar-right {
-    cursor: pointer;
-}
 nav.header .account {
     font-family: "Open Sans";
     font-size: 13px;
