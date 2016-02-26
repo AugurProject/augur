@@ -2,7 +2,7 @@
 .navbar {
     border-radius: 0;
     margin-bottom: 0;
-    background-color: @color-flat;
+    background-color: #3aa99e;
     color: @color-white;
     font-size: @font-size-base;
     .display(flex);
@@ -43,12 +43,8 @@
         }
     }
     .navbar-collapse {
-        &.collapsing {
-            background-color: @color-dark-bg;
-        }
         &.collapse {
             &.in {
-                background-color: @color-dark-bg;
                 .dropdown-menu > li > a {
                     color: @color-white;
                     &.active,
@@ -72,7 +68,7 @@
                     &.active,
                     &:hover,
                     &:focus {
-                        background-color: #324049;
+                        background-color: #269B8F;
                         color: @color-white;
                     }
                     &.btn {
@@ -235,6 +231,10 @@ body > .navbar-collapse::after {
 
     // Main navigation bar
     .navbar {
+        .navbar-brand {
+            margin-left: 25px;
+        }
+
         > .container {
             padding-right: 15px;
             padding-left: 15px;
