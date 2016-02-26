@@ -16,6 +16,8 @@ var errors = require("augur-contracts").errors;
 var constants = require("../constants");
 var utils = require("../utilities");
 
+Decimal.config({precision: 64});
+
 module.exports = {
 
     limit: {
@@ -27,7 +29,6 @@ module.exports = {
             var alpha = marketInfo.alpha.toFixed();
             for (var i = 0; i < marketInfo.numOutcomes; ++i) {
                 q[i] = utils.toDecimal(marketInfo.outcomes[i].outstandingShares);
-                console.log("q[" + i + "]:", q[i].toString());
             }
             order.outcome = parseInt(order.outcome);
             var n = this.sharesToTrade(q, order.outcome-1, alpha, order.cap.toString());

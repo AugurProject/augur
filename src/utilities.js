@@ -15,6 +15,7 @@ var chalk = require("chalk");
 var abi = require("augur-abi");
 var constants = require("./constants");
 
+Decimal.config({precision: 64});
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
 module.exports = {

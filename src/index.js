@@ -17,6 +17,7 @@ var contracts = require("augur-contracts");
 var connector = require("ethereumjs-connect");
 var ramble = require("ramble");
 
+Decimal.config({precision: 64});
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 var options = {debug: {broadcast: false, fallback: false}};
@@ -503,24 +504,40 @@ Augur.prototype.lsLmsr = function (market, callback) {
     return this.fire(tx, callback);
 };
 Augur.prototype.price = function (market, outcome, callback) {
+    var info, numOutcomes, a, q, exp_q, sum_q, sum_exp_q, sum_q_x_expq, j, b, tx;
     var self = this;
-    if (market.constructor === Object) {
+    if (market && market.constructor === Object) {
         if (market.network && market.events) {
             callback = callback || this.utils.pass;
-            var info = JSON.parse(JSON.stringify(market));
-            var epsilon = new Decimal("0.0000001");
-            var a = new Decimal(self.lsLmsr(info));
-            for (var i = 0; i < info.numOutcomes; ++i) {
-                if (info.outcomes[i].id === Number(outcome)) break;
+            outcome = parseInt(outcome);
+            info = JSON.parse(JSON.stringify(market));
+            numOutcomes = info.numOutcomes;
+            a = this.utils.toDecimal(info.alpha);        
+            q = new Array(numOutcomes);
+            exp_q = new Array(numOutcomes);
+            sum_q = new Decimal(0);
+            sum_exp_q = new Decimal(0);
+            sum_q_x_expq = new Decimal(0);
+            for (j = 0; j < numOutcomes; ++j) {
+                q[j] = this.utils.toDecimal(info.outcomes[j].outstandingShares);
+                sum_q = sum_q.plus(q[j]);
             }
-            info.outcomes[i].outstandingShares = new Decimal(info.outcomes[i].outstandingShares).plus(epsilon).toFixed();
-            var b = new Decimal(self.lsLmsr(info));
-            return callback(b.minus(a).dividedBy(epsilon).toFixed());
+            b = a.times(sum_q);
+            for (j = 0; j < numOutcomes; ++j) {
+                exp_q[j] = q[j].dividedBy(b).exp();
+                sum_exp_q = sum_exp_q.plus(exp_q[j]);
+                sum_q_x_expq = sum_q_x_expq.plus(q[j].times(exp_q[j]));
+            }
+            return a.times(sum_exp_q.ln()).plus(
+                exp_q[outcome].times(sum_q).minus(sum_q_x_expq).dividedBy(
+                    sum_q.times(sum_exp_q)
+                )
+            ).toFixed();
         } else if (market._id) {
             market = market._id;
         }
     }
-    var tx = clone(this.tx.price);
+    tx = clone(this.tx.price);
     tx.params = [market, outcome];
     return this.fire(tx, callback);
 };
@@ -549,7 +566,7 @@ Augur.prototype.getSimulatedBuy = function (market, outcome, amount, callback) {
             sumExp = sumExp.plus(new Decimal(info.outcomes[i].outstandingShares).dividedBy(bq).exp());
         }
         var newCost = bq.times(cumScale).times(sumExp.ln());
-        if (newCost.lte(oldCost)) return self.errors.getSimulatedBuy["-2"];
+        if (newCost.lt(oldCost)) return self.errors.getSimulatedBuy["-2"];
         return [newCost.minus(oldCost).toFixed(), self.price(info, outcome)];
     }
     if (market.constructor === Object) {
@@ -593,7 +610,7 @@ Augur.prototype.getSimulatedSell = function (market, outcome, amount, callback) 
             sumExp = sumExp.plus(new Decimal(info.outcomes[i].outstandingShares).dividedBy(bq).exp());
         }
         var newCost = bq.times(cumScale).times(sumExp.ln());
-        if (oldCost.lte(newCost)) return self.errors.getSimulatedSell["-2"];
+        if (oldCost.lt(newCost)) return self.errors.getSimulatedSell["-2"];
         return [oldCost.minus(newCost).toFixed(), self.price(info, outcome)];
     }
     if (market.constructor === Object) {
