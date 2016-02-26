@@ -54,6 +54,7 @@ let RegisterModal = React.createClass({
       let flux = this.getFlux();
       let self = this;
       this.props.onHide();
+      this.updateProgressModal();
       this.updateProgressModal({
         header: "Creating New Account",
         status: "Creating new account <i>" + this.state.handle + "</i>...",
