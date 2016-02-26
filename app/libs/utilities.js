@@ -15,29 +15,37 @@ module.exports = {
 
   updateProgressModal: function (update, noStep) {
     var self = this;
-    if (update.constructor === String) update = {status: update};
-    if (update.constructor === Array) {
-      return async.eachSeries(update, function (step, next) {
-        self.updateProgressModal(step, true);
-        next();
-      }, function () {
-        var state = self.state.progressModal;
-        state.step++;
-        self.setState({progressModal: state});
-      });
-    }
     var state = this.state.progressModal;
-    if (update.header) state.header = update.header;
-    if (update.detail) state.detail = update.detail;
-    if (update.status) {
-      update.status = (state.status === "") ?
-        update.status : "<br />" + update.status;
-      state.status += update.status;
+    if (update === null || update === undefined) {
+      state.status = "";
+      state.header = "";
+      state.detail = null;
+      state.complete = null;
+      state.step = 0;
+    } else {
+      if (update.constructor === String) update = {status: update};
+      if (update.constructor === Array) {
+        return async.eachSeries(update, function (step, next) {
+          self.updateProgressModal(step, true);
+          next();
+        }, function () {
+          var state = self.state.progressModal;
+          state.step++;
+          self.setState({progressModal: state});
+        });
+      }
+      if (update.header) state.header = update.header;
+      if (update.detail) state.detail = update.detail;
+      if (update.status) {
+        update.status = (state.status === "") ?
+          update.status : "<br />" + update.status;
+        state.status += update.status;
+      }
+      if (update.complete !== null && update.complete !== undefined) {
+        state.complete = update.complete;
+      }
+      if (!noStep) state.step++;
     }
-    if (update.complete !== null && update.complete !== undefined) {
-      state.complete = update.complete;
-    }
-    if (!noStep) state.step++;
     this.setState({progressModal: state});
   },
 

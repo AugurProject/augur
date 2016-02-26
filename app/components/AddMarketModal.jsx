@@ -244,6 +244,7 @@ let AddMarketModal = React.createClass({
       onSent: function (r) {
         console.log("new market submitted:", r.txHash);
         var marketId = r.callReturn;
+        self.updateProgressModal();
         self.updateProgressModal({
           header: "Creating Market",
           status: "New market submitted.<br />Market ID: <small>" + r.callReturn + "</small><br />Waiting for confirmation...",

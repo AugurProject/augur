@@ -81,6 +81,7 @@ var Overview = React.createClass({
             callbacks: {
                 onMarketHash: function (marketHash) {
                     console.debug("marketHash:", marketHash);
+                    self.updateProgressModal();
                     self.updateProgressModal({
                         header: "Committing to Trade",
                         status: "Trade commitment hash:<br /><small>" + marketHash + "</small>",
