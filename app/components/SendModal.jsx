@@ -106,7 +106,7 @@ let SendCashModal = React.createClass({
       <Button bsStyle='primary' onClick={ this.onSend }>Send</Button>
     );
     return (
-      <Modal {...this.props} className='send-modal' bsSize='small'>
+      <Modal {...this.props} className='send-modal' bsSize='large'>
         <div className='modal-body clearfix'>
           <h4>Send { this.assetType }</h4>
           <div className='row'>
@@ -241,7 +241,7 @@ let SendRepModal = React.createClass({
     );
 
     return (
-      <Modal {...this.props} className='send-modal' bsSize='small'>
+      <Modal {...this.props} className='send-modal' bsSize='large'>
         <div className='modal-body clearfix'>
           <h4>Send { this.assetType }</h4>
           <div className='row'>
@@ -436,7 +436,7 @@ let SendEtherModal = React.createClass({
       <Button bsStyle='primary' onClick={this.onSend}>Send</Button>
     );
     return (
-      <Modal {...this.props} className="send-modal" bsSize="small">
+      <Modal {...this.props} className="send-modal" bsSize="large">
         <div className="modal-body clearfix">
           <Tabs onSelect={this.handleSelect} selectedIndex={this.state.tab}>
             <TabList>
