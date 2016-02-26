@@ -242,15 +242,18 @@ let MarketRow = React.createClass({
                     { rowAction }
                 </div>
                 <div className="subtitle clearfix">
-                    <div className="fa fa-square-o labelValue subtitle-group">
+                    <div className="labelValue subtitle-group">
+                        <i className="fa fa-square-o" />
                         <span className="labelValue-label trading-fee-label">Trading Fee: </span>
                         <span className="labelValue-value trading-fee">{market.tradingFee ? market.tradingFee.times(100).toFixed(1) + '%' : '-'}</span>
                     </div>
-                    <div className="fa fa-clock-o labelValue subtitle-group">
+                    <div className="labelValue subtitle-group">
+                        <i className="fa fa-clock-o" />
                         <span className="labelValue-label end-date-label">{endDateLabel}: </span>
                         <span className="labelValue-value end-date">{endDateFormatted}</span>
                     </div>
-                    <div className="fa fa-bookmark-o labelValue subtitle-group">
+                    <div className="labelValue subtitle-group">
+                        <i className="fa fa-bookmark-o" />
                         <span className="labelValue-label">
                             {utilities.getMarketTypeName(market)}
                             { " " }
