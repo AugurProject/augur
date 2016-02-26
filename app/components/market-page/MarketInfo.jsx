@@ -15,7 +15,7 @@ let MarketInfo = React.createClass({
 
         let tradingFeeFormatted = market.tradingFee ? market.tradingFee.times(100).toFixed(1)+'%' : '-';
         let tradersCountFormatted = market.traderCount ? +market.traderCount.toNumber() : '-';
-        let authorFormatted = market.author ? abi.format_address(abi.hex(market.author)) : '-';
+        let authorFormatted = market.author ? abi.strip_0x(abi.format_address(abi.hex(market.author))) : '-';
         let creationDateFormatted = market.creationDate ? moment(market.creationDate).format('MMM D, YYYY') : '-';
         let endDateLabel = (market.endDate != null && market.matured) ? 'Matured:' : 'End date:';
         let endDateFormatted = market.endDate != null ? moment(market.endDate).format('MMM D, YYYY') : '-';
