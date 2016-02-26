@@ -1223,14 +1223,16 @@ span.debug {
 #doorbell-button {
     left: 5%;
     padding: 6px 15px;
-    opacity: 0.85;
+    background-color: #A3AFB7;
+    opacity: 0.9;
 }
 #doorbell-button:hover {
+    background-color: #E4EAEC;
     opacity: 1;
 }
 #doorbell form,
 #doorbell form.dark {
-    background-color: #f9f6ea;
+    background-color: white;
     -webkit-box-shadow: none;
     box-shadow: none;
 }
