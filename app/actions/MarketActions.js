@@ -121,7 +121,7 @@ module.exports = {
           marketInfo.outcomes[i].label = utils.getOutcomeName(marketInfo.outcomes[i].id, marketInfo).outcome;
         }
         marketInfo.outcomes.sort(function (a, b) {
-          b.price.minus(a.price);
+          return b.price.minus(a.price);
         });
         marketInfo.loaded = true;
         return callback(marketInfo);
