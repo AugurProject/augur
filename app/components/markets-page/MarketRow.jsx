@@ -242,7 +242,7 @@ let MarketRow = React.createClass({
                     { rowAction }
                 </div>
                 <div className="subtitle clearfix">
-                    <div className="fa fa-minus-square-o labelValue subtitle-group">
+                    <div className="fa fa-square-o labelValue subtitle-group">
                         <span className="labelValue-label trading-fee-label">Trading Fee: </span>
                         <span className="labelValue-value trading-fee">{market.tradingFee ? market.tradingFee.times(100).toFixed(1) + '%' : '-'}</span>
                     </div>
