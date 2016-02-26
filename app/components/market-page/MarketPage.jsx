@@ -55,6 +55,7 @@ let MarketPage = React.createClass({
             }
         }
         if (market && market.metadata && market.metadata.image) {
+console.log('$$$$$', market.metadata.image);
             if (!Buffer.isBuffer(market.metadata.image)) {
                 market.metadata.image = new Buffer(market.metadata.image, "base64");
             }
@@ -133,6 +134,7 @@ let MarketPage = React.createClass({
             }
         }
         let image = <span />;
+
         // if (metadata.image) {
         //     image = <img className="metadata-image" src={this.state.image} />;
         // }

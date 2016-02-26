@@ -106,7 +106,9 @@ let AddMarketModal = React.createClass({
       var imageFile = event.target.files[0];
       var reader = new FileReader();
       reader.onload = (function (f) {
+console.log('@@@');
         return function (e) {
+console.log('!!!', e);
           self.setState({imageDataURL: e.target.result});
         };
       })(imageFile);
@@ -183,7 +185,7 @@ let AddMarketModal = React.createClass({
         return false;
       } else if (!this.state.marketText.length) {
          this.setState({marketTextError: 'Please enter your question'});
-        return false;       
+        return false;
       }
     } else if (pageNumber === 2) {
       if (this.state.tradingFee === '') {
@@ -393,7 +395,7 @@ let AddMarketModal = React.createClass({
         <div className="fees">
 
           <div className="form-horizontal">
-            <Input 
+            <Input
               type='text'
               label='Trading fee'
               labelClassName='col-xs-3'
@@ -409,7 +411,7 @@ let AddMarketModal = React.createClass({
           <p className="desc">The trading fee is the percentage taken from each purchase or sale of an outcome.  These fees are split by you and all owners of winning outcomes</p>
 
           <div className="form-horizontal">
-            <Input 
+            <Input
               type="text"
               label="Initial liquidity"
               help={ marketInvestmentHelp }
