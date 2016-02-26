@@ -30,11 +30,20 @@
 }
 
 .btn-plain {
-    .button-variant(black, @color-plain-normal, @color-plain-hover);
+    .button-variant(@color-plain-active, @color-plain-normal, @color-plain-hover);
 }
 
 .btn-warning {
     .button-variant(@color-white, @color-warning-normal, @color-warning-hover);
+}
+
+.btn-danger {
+    .button-variant(@color-white, @color-danger-normal, @color-danger-hover);
+}
+
+.btn[disabled] {
+    .button-variant(@color-grey, @color-grey-lightest, @color-grey-lightest);
+    opacity: 1;
 }
 
 // not sure why .btn-simple.btn-info does not work, so this is a hack to make it work

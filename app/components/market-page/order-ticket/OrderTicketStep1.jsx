@@ -44,13 +44,6 @@ let OrderTicketStep1 = React.createClass({
                 console.error("unknown type:", market);
         }
     },
-    priceToPercentage(price) {
-        if (price) {
-            return +price.times(100).toFixed(1);
-        } else {
-            return 0;
-        }
-    },
 
     /**
      * Copied from Market#render

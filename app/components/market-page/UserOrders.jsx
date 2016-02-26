@@ -56,7 +56,7 @@ let UserOrders = React.createClass({
         if (!numOrders) {
             openOrders = (
                 <tr className="js-emptyRow">
-                    <td colSpan="5" className="text-center">
+                    <td colSpan="6" className="text-center">
                         You have no <span className="text-uppercase">open orders</span> right now
                     </td>
                 </tr>
@@ -81,6 +81,7 @@ let UserOrders = React.createClass({
                                     <th className="text-right">Qty.</th>
                                     <th className="text-right">Price</th>
                                     <th className="text-right">Cap</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>

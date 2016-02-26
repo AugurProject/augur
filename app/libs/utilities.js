@@ -69,35 +69,44 @@ module.exports = {
     };
   },
 
-  // assumes price is a BigNumber object
-  priceToPercent: function (price) {
-    var percent = price.times(100).toFixed(2);
-    if (price >= 0.999) {
-      percent = 100;
-    } else if (price <= 0.001) {
-      percent = 0;
-    } else if (price >= 0.1) {
-      percent = price.times(100).toFixed(1);
-    }
-    return +percent + '%';
-  },
-
-  getPercentageFormatted: function (market, outcome) {
-    let price = outcome.price;
-    if (price === null || price === undefined) {
-      return "0 %";
-    }
-    if (market.type === "scalar") {
-      return +price.toFixed(2);
-    } else {
-      return +price.times(100).toFixed(1) + " %";
-    }
-  },
-
   bytesToHex: function (bytes) {
     return "0x" + _.reduce(bytes, function (hexString, byte) {
       return hexString + byte.toString(16);
     }, "");
+  },
+
+  getOutcomePrice: function (outcome) {
+    if (!outcome.price && outcome.price !== 0) {
+      return '-';
+    }
+
+    return outcome.price.toFixed(3);
+  },
+
+  // assumes price is a BigNumber object
+  priceToPercent: function (price) {
+    var percent;
+
+    if (!price || price <= 0.001) {
+      percent = 0;
+    }
+    else if (price >= 0.999) {
+      percent = 100;
+    }
+    else {
+      percent = price.times(100).toFixed(0);
+    }
+
+    return percent + '%';
+  },
+
+  getPercentageFormatted: function (market, outcome) {
+    if (market.type === "scalar") {
+      return module.exports.priceToPercent(outcome.price.dividedBy(100));
+    }
+    else {
+      return module.exports.priceToPercent(outcome.price);
+    }
   },
 
   getOutcomeName: function (id, market) {

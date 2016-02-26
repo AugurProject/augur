@@ -1,6 +1,7 @@
 let _ = require("lodash");
 let abi = require("augur-abi");
 let React = require("react");
+let utils = require("../libs/utilities");
 let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
 let utilities = require("../libs/utilities");
@@ -11,14 +12,6 @@ let ProgressModal = require("./ProgressModal");
 
 let NO = 1;
 let YES = 2;
-
-var priceToPercentage = function (price) {
-    if (price) {
-        return +price.times(100).toFixed(1);
-    } else {
-        return 0;
-    }
-};
 
 var Overview = React.createClass({
 
@@ -193,51 +186,51 @@ var Overview = React.createClass({
             }
         });
     },
-    getPercentageFormatted(market, outcome) {
-        let percentageFormatted;
-        if (market.type === "scalar") {
-            percentageFormatted = +outcome.price.toFixed(2);
-        } else {
-            percentageFormatted = priceToPercentage(outcome.price) + "%";
-        }
-        return percentageFormatted;
-    },
 
     render: function () {
-        let description, percentageFormatted, costPerShareFormatted, sharesOutstandingFormatted;
+        let description, percentageFormatted;
 
+        let singInOrRegisterText = 'Sign in or register to ';
 
         var buySellActions;
         var outcome = this.props.outcome;
         var className = 'outcome outcome-' + outcome.id;
 
         var market = this.props.market;
-        let isReadOnly = market.matured || !this.props.account;
-        if (isReadOnly) {
+        if (market.matured) {
             className += ' read-only';
         }
 
         description = outcome.label;
-        percentageFormatted = this.getPercentageFormatted(market, outcome);
+        percentageFormatted = utils.getPercentageFormatted(market, outcome);
 
-        if (this.state.buyShares && !isReadOnly) {
+        if (this.state.buyShares && !market.matured) {
             className += ' buy';
             buySellActions = (
-                <Buy {...this.props} handleTrade={ this.handleTrade } handleCancel={ this.handleCancel }/>
+                <Buy {...this.props}
+                    handleTrade={ this.handleTrade }
+                    handleCancel={ this.handleCancel } />
             );
 
-        } else if (this.state.sellShares && !isReadOnly) {
+        } else if (this.state.sellShares && !market.matured) {
             className += ' sell';
             buySellActions = (
-                <Sell {...this.props} handleTrade={ this.handleTrade } handleCancel={ this.handleCancel }/>
+                <Sell {...this.props}
+                    handleTrade={ this.handleTrade }
+                    handleCancel={ this.handleCancel } />
             );
 
         } else {
             let buyAction, sellAction;
 
-            if (!isReadOnly) {
+            if (!market.matured) {
                 buyAction = (
-                    <Button bsStyle='success' onClick={ this.handleBuyClick }>Buy</Button>
+                    <Button
+                        className="buy-button"
+                        bsStyle='success'
+                        onClick={ this.handleBuyClick }
+                        disabled={ !this.props.account }
+                        data-tooltip={ !this.props.account ? singInOrRegisterText + 'buy' : null }>Buy</Button>
                 );
 
                 let pendingShares = this.props.outcome.pendingShares.toNumber();
@@ -245,7 +238,7 @@ var Overview = React.createClass({
                 if (pendingShares != 0) {
                     let sharesWithSignFormatted = pendingShares < 0 ? pendingShares.toString() : '+' + pendingShares;
                     pendingSharesNode = (
-                        <p>
+                        <p className="shares-pending">
                             { sharesWithSignFormatted } { pendingShares === 1 ? 'share ' : 'shares ' } pending
                         </p>
                     )
@@ -254,28 +247,21 @@ var Overview = React.createClass({
                 let sharesHeld = this.props.outcome.sharesHeld.toNumber();
                 let sharesHeldNode;
 
-                if (sharesHeld > 0) {
-                    sharesHeldNode = (
+                sellAction = (
+                    <div>
+                        <Button
+                            className="sell-button"
+                            bsStyle='danger'
+                            onClick={ this.handleSellClick }
+                            disabled={ !sharesHeld || !this.props.account}
+                            data-tooltip={ !this.props.account ? singInOrRegisterText + 'sell' : !sharesHeld ? 'You have no shares to sell' : null }>Sell</Button>
+
                         <p className="shares-held">
                             { sharesHeld } { sharesHeld === 1 ? 'share ' : 'shares ' } held
                         </p>
-                    );
-                    sellAction = (
-                        <div>
-                            <Button bsStyle='danger' onClick={ this.handleSellClick }>Sell</Button>
-                            { sharesHeldNode }
-                            { pendingSharesNode }
-                        </div>
-                    );
-
-                } else if (pendingShares != 0) {
-                    sellAction = pendingSharesNode;
-
-                } else {
-                    sellAction = (
-                        <span className="shares-held none">no shares held</span>
-                    );
-                }
+                        { pendingSharesNode }
+                    </div>
+                );
             }
 
             buySellActions = (
@@ -288,8 +274,8 @@ var Overview = React.createClass({
                             { sellAction }
                         </div>
                     </div>
-                    <p style={{clear: 'both'}}>
-                        { Math.abs(outcome.price).toFixed(4) } cash/share
+                    <p className="cash-per-share" style={{clear: 'both'}}>
+                        { utils.getOutcomePrice(outcome) } cash/share
                     </p>
 
                     <p>{ +outcome.outstandingShares.toFixed(2) } shares outstanding</p>
@@ -439,7 +425,7 @@ var TradeBase = {
                 <div className='cancel trade-button'>
                     <Button bsStyle='plain' onClick={this.props.handleCancel} bsSize='small'>CANCEL</Button>
                 </div>
-                <p>{Math.abs(outcome.price).toFixed(4)} cash/share</p>
+                <p>{ utils.getOutcomePrice(outcome) } cash/share</p>
                 <p>
                     {outcome.sharesHeld.toNumber()} {outcome.sharesHeld.toNumber() === 1 ? 'share ' : 'shares '} held
                 </p>
@@ -477,7 +463,7 @@ var Buy = React.createClass(_.merge({
         if (this.props.market.type === "scalar") {
             newPrice = +this.state.simulation.newPrice.toFixed(2);
         } else {
-            newPrice = priceToPercentage(this.state.simulation.newPrice) + "%";
+            newPrice = utils.priceToPercent(this.state.simulation.newPrice);
         }
         return (
             <span>
@@ -519,7 +505,7 @@ var Sell = React.createClass(_.merge({
         if (this.props.market.type === "scalar") {
             newPrice = +this.state.simulation.newPrice.toFixed(2);
         } else {
-            newPrice = priceToPercentage(this.state.simulation.newPrice) + "%";
+            newPrice = utils.priceToPercent(this.state.simulation.newPrice);
         }
         return (
             <span>

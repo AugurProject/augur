@@ -1,0 +1,24 @@
+*[data-tooltip] {
+    position: relative;
+    &:hover {
+        &:after{
+        	display: block; position: absolute; z-index: 98;
+        	left: 20%; bottom: 36px;
+        	max-width: 20rem;
+        	padding: 0.5rem 1rem;
+        	content: attr(data-tooltip);
+        	color: #fff;
+        	background: fade(@color-flat, 90%);
+        	border-radius: 3px;
+        }
+
+        &:before{
+        	position: absolute; z-index: 99;
+        	left: 50%; bottom: 30px;
+        	content: "";
+        	border: solid;
+        	border-color: @color-flat transparent;
+        	border-width: 6px 6px 0 6px;
+        }
+    }
+}

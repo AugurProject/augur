@@ -3,16 +3,11 @@ let ReactDOM = require("react-dom");
 let _ = require("lodash");
 let utilities = require("../../libs/utilities");
 let moment = require("moment");
-let Shepherd = require("tether-shepherd");
 let Link = require("react-router/lib/components/Link");
 let OutcomeRow = require("./OutcomeRow");
 
-let tour = new Shepherd.Tour({
-    defaults: {
-        classes: "shepherd-element shepherd-open shepherd-theme-arrows",
-        showCancelLink: true
-    }
-});
+let Shepherd = require("tether-shepherd");
+let tour;
 
 /**
  * Represents detail of market in market lists.
@@ -306,8 +301,13 @@ let MarketRow = React.createClass({
         let outcomes = this.props.market.outcomes;
         let outcomeNames = utilities.getOutcomeNames(this.props.market);
 
-        Shepherd.once('cancel', () => {
-            localStorage.setItem("tourComplete", true);
+        Shepherd.once('cancel', () => localStorage.setItem("tourComplete", true));
+
+        tour = new Shepherd.Tour({
+            defaults: {
+                classes: "shepherd-element shepherd-open shepherd-theme-arrows",
+                showCancelLink: true
+            }
         });
 
         // TODO add glowing border to current top market
@@ -381,7 +381,7 @@ let MarketRow = React.createClass({
     },
 
     componentWillUnmount() {
-        tour.hide();
+        tour && tour.hide();
     }
 });
 
