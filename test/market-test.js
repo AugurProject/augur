@@ -300,7 +300,6 @@ test("MarketActions.loadMarket", function (t) {
 });
 
 test("MarketActions.loadMarkets", function (t) {
-    var dispatchCount = 0;
     var LOAD_MARKETS_SUCCESS = flux.register.LOAD_MARKETS_SUCCESS;
     var MARKETS_LOADING = flux.register.MARKETS_LOADING;
     var LOAD_METADATA = flux.register.LOAD_METADATA;
@@ -318,18 +317,12 @@ test("MarketActions.loadMarkets", function (t) {
         t.equal(payload.loadingPage, null, "payload.loadingPage is null");
         MARKETS_LOADING(payload);
         t.pass("dispatch MARKETS_LOADING");
-        if (++dispatchCount > 1) {
-            flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
-            flux.register.MARKETS_LOADING = MARKETS_LOADING;
-            t.end();
-        }
     };
     flux.register.LOAD_METADATA = function (payload) {
         t.equal(payload.constructor, Object, "payload is an object");
         t.equal(payload.metadata.constructor, Object, "payload.metadata is an object");
         LOAD_METADATA(payload);
         t.pass("dispatch LOAD_METADATA");
-        t.end();
     };
     flux.register.INITIAL_LOAD_COMPLETE = function (payload) {
         t.false(payload, "payload is falsy");
