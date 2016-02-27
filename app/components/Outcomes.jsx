@@ -168,6 +168,7 @@ var Overview = React.createClass({
                         complete: true
                     });
                     flux.actions.market.tradeSucceeded(self.state.pending[res.txHash], marketId);
+                    flux.actions.market.loadMarket(marketId);
                 },
                 onTradeFailed: function (err) {
                     var pending = self.state.pending;
@@ -179,6 +180,7 @@ var Overview = React.createClass({
                         detail: err,
                         complete: true
                     });
+                    flux.actions.market.loadMarket(marketId);
                 },
                 onOrderCreated: function (orders) {
                     self.setState({buyShares: false, sellShares: false});
