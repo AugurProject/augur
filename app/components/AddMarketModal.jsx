@@ -42,9 +42,12 @@ let AddMarketModal = React.createClass({
       minDate: moment().format('YYYY-MM-DD'),
       numOutcomes: 2,
       tab: 0,
-      minValue: 1,
-      maxValue: 2,
+      minValue: null,
+      maxValue: null,
+      minValueError: null,
+      maxValueError: null,
       choices: ["", ""],
+      choiceTextError: [null, null],
       numResources: 0,
       resources: [],
       numTags: 0,
@@ -169,21 +172,33 @@ let AddMarketModal = React.createClass({
     this.setState({expirySourceURL: event.target.value});
   },
 
-  onNext: function(event) {
+  onNext: function (event) {
+    console.log("validated:", this.validatePage(this.state.pageNumber));
     if (this.validatePage(this.state.pageNumber)) {
       var newPageNumber = this.state.pageNumber + 1;
       this.setState({pageNumber: newPageNumber});
     }
   },
 
-  validatePage: function(pageNumber) {
+  validatePage: function (pageNumber) {
     if (pageNumber === 1) {
+      if (this.state.tab === 0) this.setState({minValue: 1, maxValue: 2});
       if (this.state.marketText.length > this.state.marketTextMaxLength) {
-        this.setState({marketTextError: 'Text exceeds the maximum length of ' + this.state.marketTextMaxLength});
+        this.setState({
+          marketTextError: 'Text exceeds the maximum length of ' + this.state.marketTextMaxLength
+        });
         return false;
       } else if (!this.state.marketText.length) {
-         this.setState({marketTextError: 'Please enter your question'});
+        this.setState({marketTextError: 'Please enter your question'});
         return false;
+      } else if (this.state.tab === 1) {
+        for (var i = 0, len = this.state.choices.length; i < len; ++i) {
+          if (!this.checkAnswerText(this.state.choices[i], i)) {
+            return false;
+          }
+        }
+      } else if (this.state.tab === 2) {
+        if (!this.checkMinimum() || !this.checkMaximum()) return false;
       }
     } else if (pageNumber === 2) {
       if (this.state.tradingFee === '') {
@@ -200,12 +215,12 @@ let AddMarketModal = React.createClass({
     return true;
   },
 
-  onHide: function() {
+  onHide: function () {
     this.setState(this.getInitialState());
     this.props.onHide();
   },
 
-  onBack: function(event) {
+  onBack: function (event) {
     var newPageNumber = this.state.pageNumber - 1;
     this.setState({pageNumber: newPageNumber});
   },
@@ -335,8 +350,10 @@ let AddMarketModal = React.createClass({
     if (numTags <= 3) {
       var tags = this.state.tags;
       tags.push('');
-      this.setState({numTags: numTags});
-      this.setState({tags: tags});
+      this.setState({
+        numTags: numTags,
+        tags: tags
+      });
     }
   },
 
@@ -344,22 +361,39 @@ let AddMarketModal = React.createClass({
     var numResources = this.state.numResources + 1;
     var resources = this.state.resources;
     resources.push('');
-    this.setState({numResources: numResources});
-    this.setState({resources: resources});
+    this.setState({
+      numResources: numResources,
+      resources: resources
+    });
   },
 
   onAddAnswer: function (event) {
     var numOutcomes = this.state.numOutcomes + 1;
     var choices = this.state.choices;
+    var choiceTextError = this.state.choiceTextError;
     choices.push('');
-    this.setState({numOutcomes: numOutcomes});
-    this.setState({choices: choices})
+    choiceTextError.push(null);
+    this.setState({
+      numOutcomes: numOutcomes,
+      choices: choices,
+      choiceTextError: choiceTextError
+    });
+  },
+
+  checkAnswerText: function (answerText, id) {
+    var isOk = !(/^\s*$/.test(answerText));
+    var choiceTextError = this.state.choiceTextError;
+    choiceTextError[id] = (isOk) ? null : "Answer cannot be blank";
+    this.setState({choiceTextError: choiceTextError})
+    return isOk;
   },
 
   onChangeAnswerText: function (event) {
     var choices = this.state.choices;
-    var id = event.target.id;
-    choices[id.split('-')[1]] = event.target.value;
+    var id = parseInt(event.target.id.split('-')[1]);
+    var answerText = event.target.value;
+    this.checkAnswerText(answerText, id);
+    choices[id] = answerText;
     this.setState({choices: choices});
     if (choices.length > 2) {
       var marketText = this.state.plainMarketText + " Choices: " + choices.join(", ") + ".";
@@ -367,14 +401,42 @@ let AddMarketModal = React.createClass({
     }
   },
 
+  checkMinimum: function () {
+    if (utilities.isNumeric(this.state.minValue)) {
+      this.setState({minValueError: null});
+      return true;
+    } else {
+      this.setState({minValueError: "You must enter a number"});
+      return false;
+    }
+  },
+
+  checkMaximum: function () {
+    if (utilities.isNumeric(this.state.maxValue)) {
+      this.setState({maxValueError: null});
+      return true;
+    } else {
+      this.setState({maxValueError: "You must enter a number"});
+      return false;
+    }
+  },
+
   onChangeMinimum: function (event) {
-    var minValue = abi.number(event.target.value);
+    var minValue = event.target.value;
+    if (utilities.isNumeric(minValue)) {
+      minValue = abi.number(minValue);
+    }
     this.setState({minValue: minValue});
+    this.checkMinimum();
   },
 
   onChangeMaximum: function (event) {
-    var maxValue = abi.number(event.target.value);
+    var maxValue = event.target.value;
+    if (utilities.isNumeric(maxValue)) {
+      maxValue = abi.number(maxValue);
+    }
     this.setState({maxValue: maxValue});
+    this.checkMaximum();
   },
 
   render: function () {
@@ -476,7 +538,7 @@ let AddMarketModal = React.createClass({
       var tags = new Array(numTags);
       var placeholderTag, tagId;
       for (var i = 0; i < numTags; ++i) {
-        placeholderTag = "Tag " + i;
+        placeholderTag = "Enter tag " + (i + 1);
         tagId = "tag-" + i
         tags[i] = <Input
             key={i}
@@ -491,7 +553,7 @@ let AddMarketModal = React.createClass({
       var resources = new Array(numResources);
       var placeholderText, resourceId;
       for (i = 0; i < numResources; ++i) {
-        placeholderText = "External resource " + i;
+        placeholderText = "Enter external resource " + (i + 1);
         resourceId = "resource-" + i
         resources[i] = <Input
             key={i}
@@ -584,15 +646,19 @@ let AddMarketModal = React.createClass({
       var choices = new Array(numOutcomes);
       var placeholderText, choiceId;
       for (var i = 0; i < numOutcomes; ++i) {
-        placeholderText = 'Enter answer ' + i;
+        placeholderText = 'Enter answer ' + (i + 1);
         choiceId = 'choice-' + i
         choices[i] = <Input
-            key={ i }
-            id={ choiceId }
-            type='text'
-            value={ this.state.choices[i] }
-            placeholder={ placeholderText }
-            onChange={ this.onChangeAnswerText } />;
+            key={i}
+            id={choiceId}
+            type="text"
+            // label={"Answer " + (i + 1)}
+            help={this.state.choiceTextError[i]}
+            bsStyle={this.state.choiceTextError[i] ? "error" : null}
+            value={this.state.choices[i]}
+            placeholder={placeholderText}
+            wrapperClassName="row clearfix col-lg-12"
+            onChange={this.onChangeAnswerText} />;
       }
       subheading = '';
       var inputStyle = this.state.marketTextError ? 'error' : null;
@@ -632,7 +698,7 @@ let AddMarketModal = React.createClass({
             <div className="col-sm-12">
               <p>Choices:</p>
               { choices }
-              <Button bsStyle='default' onClick={ this.onAddAnswer }>
+              <Button bsStyle="default" onClick={ this.onAddAnswer }>
                 Add another answer
               </Button>
             </div>
@@ -642,7 +708,7 @@ let AddMarketModal = React.createClass({
               <p>Enter a <b>numerical question</b> for the market to trade on.  This question should be easily verifiable and have an expiring date in the future.</p>
               <p>Answers to numerical questions can be anywhere within a range of numbers.  For example, "What will the high temperature be in San Francisco, California, on July 1, 2016?" is a numerical question.</p>
               <Input
-                type='textarea'
+                type="textarea"
                 help={ this.state.marketTextError }
                 bsStyle={ inputStyle }
                 value={ this.state.marketText }
@@ -652,23 +718,31 @@ let AddMarketModal = React.createClass({
             </div>
             <div className="col-sm-12">
               <p>What are the minimum and maximum allowed answers to your question?</p>
-              Minimum:
               <Input
-                type='text'
-                value={ this.state.minValue }
-                onChange={ this.onChangeMinimum } />
-              Maximum:
+                type="text"
+                // label="Minimum"
+                help={this.state.minValueError}
+                bsStyle={this.state.minValueError ? "error" : null}
+                value={this.state.minValue}
+                placeholder="Minimum answer"
+                wrapperClassName="row clearfix col-lg-12"
+                onChange={this.onChangeMinimum} />
               <Input
-                type='text'
-                value={ this.state.maxValue }
-                onChange={ this.onChangeMaximum } />
+                type="text"
+                // label="Maximum"
+                help={this.state.maxValueError}
+                bsStyle={this.state.maxValueError ? "error" : null}
+                value={this.state.maxValue}
+                placeholder="Maximum answer"
+                wrapperClassName="row clearfix col-lg-12"
+                onChange={this.onChangeMaximum} />
             </div>
           </TabPanel>
         </Tabs>
       );
       footer = (
-        <div className='pull-right'>
-          <Button bsStyle='primary' onClick={ this.onNext }>Next</Button>
+        <div className="pull-right">
+          <Button bsStyle="primary" onClick={ this.onNext }>Next</Button>
         </div>
       );
     };

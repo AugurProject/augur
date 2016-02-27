@@ -13,6 +13,10 @@ var warned = {};
 
 module.exports = {
 
+  isNumeric: function (n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+  },
+
   updateProgressModal: function (update, noStep) {
     var self = this;
     var state = this.state.progressModal;
