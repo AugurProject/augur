@@ -46,7 +46,7 @@ test("AssetActions.loadMeanTradePrices", function (t) {
         if (!flux.augur.filters.price_filter.id) return t.end();
         flux.augur.filters.ignore(true, t.end);
     };
-    flux.stores.config.state.currentAccount = "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b";
+    flux.stores.config.state.currentAccount = "0xaff9cb4dcb19d13b84761c040c91d21dc6c991ec";
     flux.actions.asset.loadMeanTradePrices();
 });
 

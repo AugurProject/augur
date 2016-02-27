@@ -373,13 +373,13 @@ let MarketPage = React.createClass({
     },
 
     getMetadata() {
-        console.info("Loading metadata from IPFS...");
         let market = this.state.market;
         if (this.state.metadataTimeout) {
             clearTimeout(this.state.metadataTimeout);
         }
         if (market && market.constructor === Object && market._id) {
             if (!market.metadata) {
+                console.info("Loading metadata from IPFS...");
                 return this.getFlux().actions.market.loadMetadata(market);
             }
         } else {
@@ -388,26 +388,26 @@ let MarketPage = React.createClass({
     },
 
     checkOrderBook() {
-        console.info("Checking order book...");
         let market = this.state.market;
         if (this.state.orderBookTimeout) {
             clearTimeout(this.state.orderBookTimeout);
         }
         if (market && market.constructor === Object && market._id &&
             !market.orderBookChecked) {
+            console.info("Checking order book...");
             return this.getFlux().actions.market.checkOrderBook(market);
         }
         this.setState({orderBookTimeout: setTimeout(this.checkOrderBook, 5000)});
     },
 
     getPriceHistory() {
-        console.info("Loading price history...");
         let market = this.state.market;
         if (this.state.priceHistoryTimeout) {
             clearTimeout(this.state.priceHistoryTimeout);
         }
         if (market && market.constructor === Object && market._id &&
             !market.priceHistory && !market.priceHistoryStatus) {
+            console.info("Loading price history...");
             return this.getFlux().actions.market.loadPriceHistory(market);
         }
         this.setState({priceHistoryTimeout: setTimeout(this.getPriceHistory, 5000)});

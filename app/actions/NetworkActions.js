@@ -32,7 +32,9 @@ module.exports = {
         self.dispatch(constants.network.UPDATE_ETHEREUM_STATUS, {
           ethereumStatus: constants.network.ETHEREUM_STATUS_FAILED
         });
-        setTimeout(self.flux.actions.network.checkNetwork, 5000);
+        setTimeout(function () {
+          self.flux.actions.network.checkNetwork();
+        }, 5000);
       } else if (wasDown && nowUp) {
         self.dispatch(constants.network.UPDATE_ETHEREUM_STATUS, {
           ethereumStatus: constants.network.ETHEREUM_STATUS_CONNECTED

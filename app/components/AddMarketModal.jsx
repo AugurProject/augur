@@ -246,13 +246,23 @@ let AddMarketModal = React.createClass({
       links: this.state.resources
     };
     var checkbox = {createMarket: false, addMetadata: false};
+    var minValue, maxValue, numOutcomes;
+    if (this.state.tab === 0) {
+      minValue = 1;
+      maxValue = 2;
+      numOutcomes = 2;
+    } else {
+      minValue = this.state.minValue;
+      maxValue = this.state.maxValue;
+      numOutcomes = this.state.numOutcomes;
+    }
     flux.augur.createSingleEventMarket({
       branchId: branchId,
       description: newMarketParams.description,
       expirationBlock: utilities.dateToBlock(moment(this.state.maturationDate), block),
-      minValue: this.state.minValue,
-      maxValue: this.state.maxValue,
-      numOutcomes: this.state.numOutcomes,
+      minValue: minValue,
+      maxValue: maxValue,
+      numOutcomes: numOutcomes,
       alpha: "0.0079",
       initialLiquidity: newMarketParams.initialLiquidity,
       tradingFee: newMarketParams.tradingFee.toFixed(),
@@ -395,10 +405,8 @@ let AddMarketModal = React.createClass({
     this.checkAnswerText(answerText, id);
     choices[id] = answerText;
     this.setState({choices: choices});
-    if (choices.length > 2) {
-      var marketText = this.state.plainMarketText + " Choices: " + choices.join(", ") + ".";
-      this.setState({marketText: marketText});
-    }
+    var marketText = this.state.plainMarketText + " Choices: " + choices.join(", ") + ".";
+    this.setState({marketText: marketText});
   },
 
   checkMinimum: function () {

@@ -72,6 +72,7 @@ module.exports = {
 
       // listen for new blocks
       block: function (blockHash) {
+        console.log("block filter:", blockHash);
         if (blockHash && self.flux.store('config').getAccount()) {
           self.flux.actions.asset.updateAssets();
         }
@@ -79,12 +80,15 @@ module.exports = {
 
       // listen for augur transactions
       contracts: function (filtrate) {
+        console.log("contracts filter:", filtrate);
         if (filtrate && filtrate.address) {
           if (filtrate.error) {
             return console.log("contracts filter error:", filtrate);
           }
           console.log("[filter] contracts:", filtrate.address);
+          console.log("updating assets...");
           self.flux.actions.asset.updateAssets();
+          console.log("updating current branch...");
           self.flux.actions.branch.updateCurrentBranch();
         }
       },
