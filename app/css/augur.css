@@ -913,6 +913,12 @@ a.market-pane:hover {
     display: none;
 }
 
+.stop-order-label {
+    font-size: 10pt;
+    font-weight: normal;
+    color: #76838f;
+}
+
 #overview .welcome.alert h3 {
     border: none;
 }

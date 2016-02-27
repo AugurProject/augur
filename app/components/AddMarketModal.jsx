@@ -406,7 +406,7 @@ let AddMarketModal = React.createClass({
       this.setState({minValueError: null});
       return true;
     } else {
-      this.setState({minValueError: "You must enter a number"});
+      this.setState({minValueError: "Minimum value must be a number"});
       return false;
     }
   },
@@ -416,7 +416,7 @@ let AddMarketModal = React.createClass({
       this.setState({maxValueError: null});
       return true;
     } else {
-      this.setState({maxValueError: "You must enter a number"});
+      this.setState({maxValueError: "Maximum value must be a number"});
       return false;
     }
   },

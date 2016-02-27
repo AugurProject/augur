@@ -6,8 +6,10 @@ let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
 let utilities = require("../libs/utilities");
 let constants = require("../libs/constants");
-let Input = require('react-bootstrap/lib/Input');
-let Button = require('react-bootstrap/lib/Button');
+let Input = require("react-bootstrap/lib/Input");
+let Button = require("react-bootstrap/lib/Button");
+let Collapse = require("react-bootstrap/lib/Collapse");
+let Glyphicon = require("react-bootstrap/lib/Glyphicon");
 let ProgressModal = require("./ProgressModal");
 
 let NO = 1;
@@ -327,6 +329,7 @@ var TradeBase = {
             inputError: null,
             limitInputError: null,
             capInputError: null,
+            showStopOrder: false,
             value: '',
             limit: '',
             cap: ''
@@ -360,14 +363,39 @@ var TradeBase = {
 
     handleLimitChange: function () {
         var limit = this.refs.inputLimit.getValue();
-        this.setState({limit: limit});
-        this.setState({limitInputError: null});
+        this.setState({
+            limit: limit,
+            limitInputError: null
+        });
+        this.checkCap(null, limit);
+    },
+
+    checkCap: function (cap, limit) {
+        var cap = cap || this.state.cap;
+        var limit = limit || this.state.limit;
+        var capInputError = this.state.capInputError;
+        if (this.actionLabel === "Sell") {
+            console.log("sell:", abi.number(limit), abi.number(cap));
+            if (abi.number(limit) <= abi.number(cap)) {
+                capInputError = "Minimum price must be lower than starting price";
+            } else {
+                capInputError = null;
+            }
+        } else {
+            console.log(abi.number(limit), abi.number(cap));
+            if (abi.number(limit) >= abi.number(cap)) {
+                capInputError = "Maximum price must be higher than starting price";
+            } else {
+                capInputError = null;
+            }
+        }
+        this.setState({capInputError: capInputError});
     },
 
     handleCapChange: function () {
         var cap = this.refs.inputCap.getValue();
         this.setState({cap: cap});
-        this.setState({capInputError: null});
+        this.checkCap(cap);
     },
 
     onSubmit: function (event) {
@@ -382,8 +410,16 @@ var TradeBase = {
         } else {
             limitPrice = (limitPrice === "") ? 0 : limitPrice;
             cap = (cap === "") ? 0 : cap;
+            if (cap) {
+                this.checkCap();
+                if (this.state.capInputError !== null) return;
+            }
             this.props.handleTrade(this.getRelativeShares(), limitPrice, cap);
         }
+    },
+
+    toggleStopOrder: function () {
+        this.setState({showStopOrder: !this.state.showStopOrder});
     },
 
     render: function () {
@@ -391,11 +427,24 @@ var TradeBase = {
         var outcomeCount = this.props.market.outcomes.length;
         var outcome = this.props.outcome;
 
-        var buttonStyle = this.actionLabel === 'Sell' ? 'danger' : 'success';
         var submit = (
             <Button bsStyle={buttonStyle} type="submit">{this.actionLabel}</Button>
         );
         var inputStyle = this.state.inputError ? 'error' : null;
+        var buttonStyle, pricePlaceholder, capPlaceholder, priceLabel, capLabel;
+        if (this.actionLabel === "Sell") {
+            buttonStyle = "danger";
+            pricePlaceholder = "Starting price";
+            capPlaceholder = "Min price";
+            priceLabel = "Sell shares automatically at this price:";
+            capLabel = "Lowest price you're willing to sell for (optional):";
+        } else {
+            buttonStyle = "success";
+            pricePlaceholder = "Starting price";
+            capPlaceholder = "Max price";
+            priceLabel = "Buy shares automatically at this price:";
+            capLabel = "Highest price you're willing to pay (optional):";
+        }
 
         return (
             <div className="trade">
@@ -410,27 +459,42 @@ var TradeBase = {
                             placeholder="Shares"
                             onChange={this.handleChange}
                             buttonAfter={submit} />
-                        <Input
-                            type="text"
-                            bsStyle={inputStyle}
-                            value={this.state.limit}
-                            // help="Specifying a price will create a Stop Order"
-                            ref="inputLimit"
-                            // use max price / min price instead?
-                            placeholder="Price (optional)"
-                            onChange={this.handleLimitChange} />
-                        <Input
-                            type="text"
-                            bsStyle={inputStyle}
-                            value={this.state.cap}
-                            // help="Specifying a cap will create a Limit Order"
-                            ref="inputCap"
-                            placeholder="Cap (optional)"
-                            onChange={this.handleCapChange} />
+                
+                        <div onClick={this.toggleStopOrder} className="pointer">
+                            <Glyphicon
+                                glyph={this.state.showStopOrder ? "chevron-down" : "chevron-right"} />
+                            <b> Create stop order</b>
+                        </div>
+                        <Collapse in={this.state.showStopOrder}>
+                            <div className="row col-sm-12">
+                                <Input
+                                    type="text"
+                                    label={priceLabel}
+                                    labelClassName="stop-order-label"
+                                    bsStyle={inputStyle}
+                                    value={this.state.limit}
+                                    ref="inputLimit"
+                                    placeholder={pricePlaceholder}
+                                    onChange={this.handleLimitChange} />
+                                <Input
+                                    type="text"
+                                    label={capLabel}
+                                    labelClassName="stop-order-label"
+                                    bsStyle={inputStyle}
+                                    value={this.state.cap}
+                                    help={this.state.capInputError}
+                                    bsStyle={this.state.capInputError ? "error" : null}
+                                    ref="inputCap"
+                                    placeholder={capPlaceholder}
+                                    onChange={this.handleCapChange} />
+                            </div>
+                        </Collapse>
                     </form>
                 </div>
                 <div className='cancel trade-button'>
-                    <Button bsStyle='plain' onClick={this.props.handleCancel} bsSize='small'>CANCEL</Button>
+                    <Button bsStyle='plain' onClick={this.props.handleCancel} bsSize='small'>
+                        CANCEL
+                    </Button>
                 </div>
                 <p>{ utils.getOutcomePrice(outcome) } cash/share</p>
                 <p>
