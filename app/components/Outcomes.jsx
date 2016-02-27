@@ -375,14 +375,12 @@ var TradeBase = {
         var limit = limit || this.state.limit;
         var capInputError = this.state.capInputError;
         if (this.actionLabel === "Sell") {
-            console.log("sell:", abi.number(limit), abi.number(cap));
             if (abi.number(limit) <= abi.number(cap)) {
                 capInputError = "Minimum price must be lower than starting price";
             } else {
                 capInputError = null;
             }
         } else {
-            console.log(abi.number(limit), abi.number(cap));
             if (abi.number(limit) >= abi.number(cap)) {
                 capInputError = "Maximum price must be higher than starting price";
             } else {
