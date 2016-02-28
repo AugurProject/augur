@@ -196,6 +196,8 @@ module.exports = {
 
     for (var tourMarketKey in markets) {
         if (!markets.hasOwnProperty(tourMarketKey)) continue;
+        if (!markets[tourMarketKey].description) continue;
+        if (!markets[tourMarketKey].type) continue;
         if (!markets[tourMarketKey].description.length) continue;
         if (markets[tourMarketKey].type === "binary" &&
             markets[tourMarketKey]._id !== '0xd61ea5b5267761db397ad913ca7933c8727f840b0bbecab2dde169ab7ff3aaf' &&

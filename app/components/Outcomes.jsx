@@ -30,7 +30,7 @@ var Overview = React.createClass({
                 header: "",
                 detail: null,
                 complete: null,
-                steps: 6,
+                steps: 5,
                 step: 0
             }
         };
@@ -106,14 +106,10 @@ var Overview = React.createClass({
                         buyShares: false,
                         sellShares: false
                     };
-                    var oldPrice = flux.store("market").getMarket(
-                        marketId
-                    ).outcomes[abi.number(outcomeId) - 1].price;
                     newState.pending[res.txHash] = {
                         branchId: branchId,
                         marketId: marketId,
-                        outcome: outcomeId,
-                        oldPrice: oldPrice
+                        outcome: outcomeId
                     };
                     self.setState(newState);
                     self.updateProgressModal({
@@ -126,8 +122,8 @@ var Overview = React.createClass({
                 onCommitTradeSuccess: function (res) {
                     console.info("trade committed:", res.txHash);
                     self.updateProgressModal({
-                        header: "Committing to Trade",
-                        status: "Trade commitment confirmed. Waiting for next block...",
+                        header: "Revealing Trade",
+                        status: "Trade commitment confirmed. Sending trade...",
                         detail: res,
                         complete: false
                     });
@@ -144,16 +140,8 @@ var Overview = React.createClass({
                         complete: true
                     });
                 },
-                onNextBlock: function (blockNumber) {
-                    console.debug("got next block:", blockNumber);
-                    self.updateProgressModal({
-                        header: "Committing to Trade",
-                        status: "Block " + blockNumber + " arrived.",
-                        detail: {blockNumber}
-                    });
-                },
                 onTradeSent: function (res) {
-                    console.debug("trade:", res);
+                    console.debug("trade sent:", res);
                     self.updateProgressModal({
                         header: "Revealing Trade",
                         status: "Trade sent. Waiting for confirmation...",
@@ -183,7 +171,6 @@ var Overview = React.createClass({
                         detail: err,
                         complete: true
                     });
-                    flux.actions.market.loadMarket(marketId);
                 },
                 onOrderCreated: function (orders) {
                     self.setState({buyShares: false, sellShares: false});
@@ -495,7 +482,7 @@ var TradeBase = {
                     </form>
                 </div>
                 <div className='cancel trade-button'>
-                    <Button bsStyle='plain' onClick={this.props.handleCancel} bsSize='small'>
+                    <Button className="btn-plain" onClick={this.props.handleCancel} bsSize='small'>
                         CANCEL
                     </Button>
                 </div>

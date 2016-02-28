@@ -127,9 +127,11 @@ let MarketPage = React.createClass({
         if (metadata.links && metadata.links.constructor === Array) {
             for (var i = 0, n = metadata.links.length; i < n; ++i) {
                 links.push(
-                    <li><a href={metadata.links[i]}>
-                        {metadata.links[i]}
-                    </a></li>
+                    <li key={market._id + "-link-" + i + "-" + metadata.links[i]}>
+                        <a href={metadata.links[i]}>
+                            {metadata.links[i]}
+                        </a>
+                    </li>
                 );
             }
         }

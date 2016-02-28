@@ -251,6 +251,58 @@ module.exports = {
     });
   },
 
+  updatePrice: function (marketId, callback) {
+    var self = this;
+    var account = this.flux.store("config").getAccount();
+    callback = callback || function () {};
+    console.log("marketId:", abi.hex(marketId));
+    this.flux.augur.getMarketInfo(abi.hex(marketId), function (marketInfo) {
+      if (!marketInfo || marketInfo.error || !marketInfo.network) {
+        return console.error("updatePrice:", marketInfo);
+      }
+      var markets = self.flux.store("market").getState().markets;
+      if (marketInfo.outcomes && marketInfo.outcomes.length) {
+        var totalPrice = new BigNumber(0);
+        var numOutcomes = marketInfo.numOutcomes;
+        for (var i = 0; i < numOutcomes; ++i) {
+          marketInfo.outcomes[i].price = abi.bignum(marketInfo.outcomes[i].price);
+          totalPrice = totalPrice.plus(marketInfo.outcomes[i].price);
+        }
+        for (i = 0; i < numOutcomes; ++i) {
+          if (marketInfo.outcomes[i].outstandingShares) {
+            marketInfo.outcomes[i].outstandingShares = abi.bignum(marketInfo.outcomes[i].outstandingShares);
+          } else {
+            marketInfo.outcomes[i].outstandingShares = new BigNumber(0);
+          }
+          if (marketInfo.outcomes[i].shares[account]) {
+            marketInfo.outcomes[i].sharesHeld = abi.bignum(marketInfo.outcomes[i].shares[account]);
+          } else {
+            marketInfo.outcomes[i].sharesHeld = new BigNumber(0);
+          }
+          marketInfo.outcomes[i].normalizedPrice = marketInfo.outcomes[i].price.dividedBy(totalPrice);
+          marketInfo.outcomes[i].pendingShares = new BigNumber(0);
+          marketInfo.outcomes[i].label = utils.getOutcomeName(marketInfo.outcomes[i].id, marketInfo).outcome;
+        }
+        marketInfo.outcomes.sort(function (a, b) {
+          return b.price.minus(a.price);
+        });
+        markets[marketId] = marketInfo.outcomes;
+
+        // save markets to MarketStore
+        self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {
+          markets: markets,
+          account: account
+        });
+
+        // loading complete!
+        self.dispatch(constants.market.MARKETS_LOADING, {loadingPage: null});
+        self.flux.actions.config.updatePercentLoaded(100);
+        self.flux.actions.market.loadMetadata(marketInfo);
+        callback(markets[marketId]);
+      }
+    });
+  },
+
   loadMetadata: function (market, callback) {
     var self = this;
     callback = callback || function () {};
@@ -282,9 +334,6 @@ module.exports = {
       },
       onCommitTradeFailed: function (err) {
         console.error("checkOrderBook.onCommitTradeFailed:", err);
-      },
-      onNextBlock: function (blockNumber) {
-        console.log("checkOrderBook.onNextBlock:", blockNumber);
       },
       onTradeSent: function (tradeSent) {
         console.log("checkOrderBook.onTradeSent:", tradeSent);
@@ -358,7 +407,10 @@ module.exports = {
   // relativeShares is a signed integer representing a trade (buy/sell)
   updatePendingShares: function (market, outcomeId, relativeShares) {
     if (market && outcomeId && relativeShares) {
-      market.outcomes[outcomeId-1].pendingShares = market.outcomes[outcomeId - 1].pendingShares.plus(abi.bignum(relativeShares));
+      for (var i = 0; i < market.numOutcomes; ++i) {
+          if (market.outcomes[i].id === Number(outcomeId)) break;
+      }
+      market.outcomes[i].pendingShares = market.outcomes[i].pendingShares.plus(abi.bignum(relativeShares));
       this.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
     }
   },

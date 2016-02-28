@@ -79,6 +79,7 @@ module.exports = {
 
       // listen for augur transactions
       contracts: function (filtrate) {
+        console.log("contracts filtrate:", filtrate);
         if (filtrate && filtrate.address) {
           if (filtrate.error) {
             return console.log("contracts filter error:", filtrate);
