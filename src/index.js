@@ -2154,10 +2154,23 @@ Augur.prototype.getAccountMeanTradePrices = function (account, cb) {
  **************/
 
 Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
+    var currentPrice, priceMatched, trade;
     var self = this;
-    var currentPrice = new BigNumber(this.price(marketInfo, outcome));
-    // console.log(JSON.stringify(marketInfo, null, 2));
-    // console.log("current price:", currentPrice.toString());
+    if (cb && this.utils.is_function(cb)) {
+        cb = {nextOrder: cb};
+    }
+    cb = cb || {};
+    cb.onPriceMatched = cb.onPriceMatched || this.utils.noop;
+    cb.onMarketHash = cb.onMarketHash || this.utils.noop;
+    cb.onCommitTradeSent = cb.onCommitTradeSent || this.utils.noop;
+    cb.onCommitTradeSuccess = cb.onCommitTradeSuccess || this.utils.noop;
+    cb.onCommitTradeFailed = cb.onCommitTradeFailed || this.utils.noop;
+    cb.onNextBlock = cb.onNextBlock || this.utils.noop;
+    cb.onTradeSent = cb.onTradeSent || this.utils.noop;
+    cb.onTradeSuccess = cb.onTradeSuccess || this.utils.noop;
+    cb.onTradeFailed = cb.onTradeFailed || this.utils.noop;
+    cb.nextOrder = cb.nextOrder || this.utils.noop;
+    currentPrice = new BigNumber(this.price(marketInfo, outcome));
     if (order.amount.constructor !== BigNumber) {
         order.amount = new BigNumber(order.amount);
     }
@@ -2167,119 +2180,131 @@ Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
     order.branch = marketInfo.branchId;
     order.market = marketInfo._id;
     order.outcome = outcome;
-    // console.log("order:", order);
-    var priceMatched;
     if (order.amount.gt(new BigNumber(0))) {
         priceMatched = currentPrice.lte(order.price);
     } else {
         priceMatched = currentPrice.gte(order.price);
     }
-    // console.log("current price:", currentPrice.toString());
-    // console.log("order price:", order.price.toString());
-    // console.log("price matched:", priceMatched);
-    if (priceMatched) {
-        var trade;
-        if (order.cap) {
-            trade = this.orders.limit.fill(marketInfo, order);
-        } else {
-            trade = {order: order, amount: order.amount.toFixed(), filled: true};
-        }
-        console.log("trade:", trade);
+    console.log("outcomes:", JSON.stringify(marketInfo.outcomes, null, 2));
+    console.log("order:", JSON.stringify(order, null, 2));
 
-        // execute order
-        if (trade !== undefined) {
-            console.log("sending:", {
-                branch: order.branch,
-                market: order.market,
-                outcome: order.outcome,
-                amount: trade.amount
-            });
-            this.trade({
-                branch: order.branch,
-                market: order.market,
-                outcome: order.outcome,
-                amount: trade.amount,
-                callbacks: {
-                    onMarketHash: function (marketHash) {
-                        console.log("checkOrder.marketHash:", marketHash);
-                    },
-                    onCommitTradeSent: function (res) {
-                        console.log("checkOrder.commitTradeSent:", res);
-                    },
-                    onCommitTradeSuccess: function (res) {
-                        console.log("checkOrder.commitTradeSuccess:", res);
-                    },
-                    onCommitTradeFailed: cb,
-                    onNextBlock: function (blockNumber) {
-                        console.log("checkOrder.blockNumber:", blockNumber);
-                    },
-                    onTradeSent: function (res) {
-                        console.log("checkOrder.trade sent:", res);
-                        var cancelled = self.orders.cancel(self.from, order.market, order.outcome, order.id);
-                        console.log("checkOrder.cancelled:", cancelled);
-                        if (!trade.filled) {
-                            var newOrder = JSON.parse(JSON.stringify(trade.order));
-                            newOrder.account = self.from;
-                            console.log("checkOrder.create order:", newOrder);
-                            var created = self.orders.create(newOrder);
-                            console.log("checkOrder.created:", created);
-                        }
-                    },
-                    onTradeSuccess: function (res) {
-                        cb(trade.order);
-                    },
-                    onTradeFailed: cb
-                }
-            });
-        }
+    // price not matched: do not fill order
+    if (!priceMatched) return cb.nextOrder(null);
+
+    // price matched: fill order
+    cb.onPriceMatched(order);
+    if (order.cap) {
+        trade = this.orders.limit.fill(marketInfo, order);
+    } else {
+        trade = {order: order, amount: order.amount.toFixed(), filled: true};
+    }
+    console.log("making trade:", trade);
+
+    // execute order
+    if (trade !== undefined) {
+        this.trade({
+            branch: order.branch,
+            market: order.market,
+            outcome: order.outcome,
+            amount: trade.amount,
+            callbacks: {
+                onMarketHash: cb.onMarketHash,
+                onCommitTradeSent: cb.onCommitTradeSent,
+                onCommitTradeSuccess: cb.onCommitTradeSuccess,
+                onCommitTradeFailed: cb.onCommitTradeFailed,
+                onNextBlock: cb.onNextBlock,
+                onTradeSent: function (response) {
+                    var tradeSent = {
+                        response: response,
+                        cancelled: self.orders.cancel(
+                            self.from,
+                            order.market,
+                            order.outcome,
+                            order.id
+                        ),
+                        newOrder: null,
+                        created: null
+                    };
+                    if (!trade.filled) {
+                        tradeSent.newOrder = JSON.parse(JSON.stringify(trade.order));
+                        tradeSent.newOrder.account = self.from;
+                        tradeSent.created = self.orders.create(tradeSent.newOrder);
+                    }
+                    cb.onTradeSent(tradeSent);
+                },
+                onTradeSuccess: function (response) {
+                    cb.onTradeSuccess({
+                        response: response,
+                        order: trade.order
+                    });
+                    cb.nextOrder(trade.order);
+                },
+                onTradeFailed: cb.onTradeFailed
+            }
+        });
     }
 };
 
 Augur.prototype.checkOutcomeOrderList = function (marketInfo, outcome, orderList, cb) {
     var self = this;
     var matchedOrders = [];
+    if (cb && this.utils.is_function(cb)) {
+        cb = {nextOutcome: cb};
+    }
+    cb = cb || {};
+    cb.nextOutcome = cb.nextOutcome || this.utils.noop;
     async.each(orderList, function (order, nextOrder) {
-        console.log("order:", order);
-        self.checkOrder(marketInfo, outcome, order, function (matched) {
-            console.log("matched:", matched);
+        cb.nextOrder = function (matched) {
             if (matched && !matched.error) {
                 matchedOrders.push(matched);
                 return nextOrder();
             }
-            nextOrder(matched || new Error("checkOutcomeOrderList error"));
-        });
+            nextOrder();
+        };
+        self.checkOrder(marketInfo, outcome, order, cb);
     }, function (err) {
-        if (err) return cb(err);
-        cb(matchedOrders);
+        if (err) return cb.onFailed(err);
+        cb.nextOutcome(matchedOrders);
     });
 };
 
 Augur.prototype.checkOrderBook = function (market, cb) {
     var self = this;
-    cb = cb || this.utils.pass;
+    if (cb && this.utils.is_function(cb)) {
+        cb = {onSuccess: cb};
+    }
+    cb = cb || {};
+    cb.onSuccess = cb.onSuccess || this.utils.noop;
+    cb.onFailed = cb.onFailed || this.utils.noop;
+    cb.onEmpty = cb.onEmpty || this.utils.noop;
     var orders = this.orders.get(this.from);
-    if (!market || !orders) return cb(false);
+    if (!market) return cb.onFailed(this.errors.CHECK_ORDER_BOOK_FAILED);
+    if (!orders) return cb.onEmpty();
     var matchedOrders = [];
     if (market.constructor === Object && market.network && market.events) {
-        if (!orders[market._id]) return cb(false);
+        if (!orders[market._id]) return cb.onEmpty();
         async.forEachOf(orders[market._id], function (orderList, outcome, nextOutcome) {
-            self.checkOutcomeOrderList(market, outcome, orderList, function (matched) {
+            cb.nextOutcome = function (matched) {
                 if (matched && matched.constructor === Array) {
                     matchedOrders = matchedOrders.concat(matched);
                     return nextOutcome();
                 }
-                nextOutcome(matched || new Error("checkOrderBook error"));
-            });
+                nextOutcome(matched);
+            };
+            self.checkOutcomeOrderList(market, outcome, orderList, cb);
         }, function (err) {
-            if (err) return cb(err);
-            cb(matchedOrders);
+            if (err) return cb.onFailed(err);
+            cb.onSuccess(matchedOrders);
+        });
+
+    // note: raw marketInfo is incompatible with processed client market!
+    } else {
+        if (!orders[market]) return cb.onFailed(this.errors.CHECK_ORDER_BOOK_FAILED);
+        this.getMarketInfo(market, function (info) {
+            if (!info || info.error) return cb.onFailed(info);
+            self.checkOrderBook(info, cb);
         });
     }
-    if (!orders[market]) return cb(false);
-    this.getMarketInfo(market, function (info) {
-        if (!info || info.error) return cb(info);
-        self.checkOrderBook(info, cb);
-    });
 };
 
 /**

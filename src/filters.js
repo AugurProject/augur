@@ -188,7 +188,6 @@ module.exports = function () {
         poll_price_listener: function (onMessage) {
             if (this.price_filter) {
                 this.eth_getFilterChanges(this.price_filter.id, function (filtrate) {
-                    // console.log("price filtrate:", filtrate);
                     var data_array, market, marketplus, outcome;
                     if (filtrate && filtrate.length) {
                         for (var i = 0, len = filtrate.length; i < len; ++i) {
@@ -213,7 +212,6 @@ module.exports = function () {
                                             cost: abi.unfix(data_array[1], "string"),
                                             blockNumber: abi.string(filtrate[i].blockNumber)
                                         });
-                                        augur.checkOrderBook.call(augur, market, augur.utils.pass);
                                     }
                                 } catch (exc) {
                                     console.error("updatePrice filter:", exc);

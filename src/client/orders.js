@@ -31,12 +31,13 @@ module.exports = {
                 q[i] = utils.toDecimal(marketInfo.outcomes[i].outstandingShares);
             }
             order.outcome = parseInt(order.outcome);
-            var n = this.sharesToTrade(q, order.outcome-1, alpha, order.cap.toString());
+            var isBuy = order.amount.gt(new Decimal(0));
+            var n = this.sharesToTrade(q, order.outcome-1, alpha, order.cap.toString(), isBuy);
             if (n !== undefined && n !== null) {
                 n = new Decimal(n);
 
-                // if n >= amount, this is a stop order
-                if (n.gte(order.amount)) {
+                // if |n| >= |amount|, this is a stop order
+                if (n.abs().gte(order.amount.abs())) {
                     amount = order.amount.toFixed();
                     filled = true;
 
@@ -50,15 +51,18 @@ module.exports = {
             }
         },
 
-        sharesToTrade: function (q, i, a, cap) {
+        sharesToTrade: function (q, i, a, cap, isBuy) {
             var self = this;
             q = utils.toDecimal(q);
             a = utils.toDecimal(a);
             cap = utils.toDecimal(cap);
+            var bounds = (isBuy) ?
+                [1e-12, constants.MAX_SHARES_PER_TRADE] :
+                [-constants.MAX_SHARES_PER_TRADE, -1e-12];
             try {
                 var soln = fzero(function (n) {
                     return self.f(n, q, i, a, cap);
-                }, [1e-12, constants.MAX_SHARES_PER_TRADE], {verbose: false});
+                }, bounds, {verbose: false});
                 if (soln.code !== 1) console.warn("fzero:", soln);
                 return soln.solution;
             } catch (exc) {

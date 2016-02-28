@@ -494,7 +494,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 numEvents: 3,
                 events: [{
                     type: "scalar",
-                    description: "How many new antibiotics will be approved by the FDA between today (December 26, 2015) and the end of 2020?",
+                    description: "How many new antibiotics will be approved by the FDA between March 1, 2016 and the end of 2020?",
                     expirationBlock: utils.date_to_block(augur, "1-1-2021"),
                     minValue: 0,
                     maxValue: 30,

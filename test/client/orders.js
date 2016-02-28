@@ -202,7 +202,7 @@ describe("orders.reset", function () {
 describe("orders.limit.sharesToTrade", function () {
     var test = function (t) {
         it(JSON.stringify(t), function () {
-            var shares = augur.orders.limit.sharesToTrade(t.q, t.outcome, t.alpha, t.cap);
+            var shares = augur.orders.limit.sharesToTrade(t.q, t.outcome, t.alpha, t.cap, t.isBuy);
             assert.notProperty(shares, "error");
             var zero = augur.orders.limit.f(shares, augur.utils.toDecimal(t.q), t.outcome, augur.utils.toDecimal(t.alpha), augur.utils.toDecimal(t.cap));
             assert.closeTo(zero.toNumber(), 0, 1e-12);
@@ -214,42 +214,56 @@ describe("orders.limit.sharesToTrade", function () {
         outcome: 1,
         alpha: "0.0079",
         cap: "0.3",
-        expected: "0.18974"
+        expected: "0.18974",
+        isBuy: true
     });
     test({
         q: [10, 10, 10, 10, 10],
         outcome: 1,
         alpha: "0.0079",
         cap: "0.6",
-        expected: "0.70132"
+        expected: "0.70132",
+        isBuy: true
     });
     test({
         q: [10, 10, 10, 10, 10],
         outcome: 1,
         alpha: "0.0079",
         cap: "0.9",
-        expected: "1.43950"
+        expected: "1.43950",
+        isBuy: true
     });
     test({
         q: [5, 6, 10, 13, 10, 2, 1, 12, 1],
         outcome: 1,
         alpha: "0.0079",
         cap: "0.3",
-        expected: "6.49217"
+        expected: "6.49217",
+        isBuy: true
     });
     test({
         q: [5, 6, 10, 13, 10, 2, 1, 12, 1],
         outcome: 1,
         alpha: "0.0079",
         cap: "0.6",
-        expected: "7.22194"
+        expected: "7.22194",
+        isBuy: true
     });
     test({
         q: [5, 6, 10, 13, 10, 2, 1, 12, 1],
         outcome: 1,
         alpha: "0.0079",
         cap: "0.9",
-        expected: "8.21047"
+        expected: "8.21047",
+        isBuy: true
+    });
+    test({
+        q: [5, 6, 10, 13, 10, 2, 1, 12, 1],
+        outcome: 1,
+        alpha: "0.0079",
+        cap: "0.1",
+        expected: "-28.33089",
+        isBuy: false
     });
 });
 
@@ -265,7 +279,7 @@ describe("checkOrder", function () {
                 assert.strictEqual(trade.market, t.order.market);
                 assert.strictEqual(trade.outcome, t.order.outcome);
                 assert.strictEqual(trade.amount, abi.string(t.order.amount));
-                trade.onSent();
+                trade.callbacks.onTradeSent();
                 var updated = augur.orders.cancel(
                     t.order.account,
                     t.order.market,
@@ -273,16 +287,21 @@ describe("checkOrder", function () {
                     orderId
                 );
                 assert.strictEqual(updated[t.order.market][t.order.outcome].length, numOrders-1);
-                trade.onSuccess();
+                trade.callbacks.onTradeSuccess();
             };
             var orders = augur.orders.create(t.order);
             var numOrders = orders[t.order.market][t.order.outcome].length;
             var orderId = orders[t.order.market][t.order.outcome][numOrders-1].id;
             augur.getMarketInfo(t.market, function (info) {
-                augur.checkOrder(info, t.outcome, t.order, function () {
-                    augur.price = Price;
-                    augur.trade = Trade;
-                    done();
+                augur.checkOrder(info, t.outcome, t.order, {
+                    onPriceMatched: function (order) {
+                        assert.strictEqual(JSON.stringify(order), JSON.stringify(t.order));
+                    },
+                    nextOrder: function () {
+                        augur.price = Price;
+                        augur.trade = Trade;
+                        done();
+                    }
                 });
             });
         });
@@ -334,7 +353,7 @@ describe("checkOutcomeOrderList", function () {
                 assert.property(order, "amount");
                 assert.property(order, "expiration");
                 assert.property(order, "cap");
-                cb(order);
+                cb.nextOrder(order);
             };
             var orders = augur.orders.create(t);
             var orderList = orders[t.market][t.outcome];
@@ -406,7 +425,7 @@ describe("checkOrderBook", function () {
                 assert.isObject(marketInfo);
                 assert.strictEqual(marketInfo._id, t.market);
                 assert.isArray(orderList);
-                cb(orderList);
+                cb.nextOutcome(orderList);
             };
             var orders = augur.orders.create(t);
             augur.checkOrderBook(t.market, function (matchedOrders) {
