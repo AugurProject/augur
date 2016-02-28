@@ -72,7 +72,7 @@ module.exports = {
 
       // listen for new blocks
       block: function (blockHash) {
-        console.log("block filter:", blockHash);
+        // console.log("block filter:", blockHash);
         if (blockHash && self.flux.store('config').getAccount()) {
           self.flux.actions.asset.updateAssets();
         }

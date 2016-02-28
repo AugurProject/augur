@@ -121,7 +121,7 @@ let MarketsPage = React.createClass({
 
     render() {
         let flux = this.getFlux();
-        let myOpenOrders = flux.augur.orders.get(flux.augur.from);
+        let myOpenOrders = flux.augur.orders.get(this.state.account);
         let tourMarketKey = this.state.tourMarketKey;
         let tourMarketId;
         if (tourMarketKey) tourMarketId = this.state.markets[tourMarketKey]._id;
@@ -136,18 +136,18 @@ let MarketsPage = React.createClass({
                                 tour={true}
                                 numOpenOrders={(myOpenOrders && tourMarketId && myOpenOrders[tourMarketId] && myOpenOrders[tourMarketId][1] && myOpenOrders[tourMarketId][1].length) || 0} />
         }
+        let numPages = Math.ceil(marketsCount / this.state.marketsPerPage);
 
         let pagination = (
             <div className="row">
                 <div className="col-xs-12">
                     <span className='showing'>Showing { firstItemIndex + 1 } - { lastItemIndex } of { marketsCount }</span>
-
-                    { (marketsCount / this.state.marketsPerPage) >= 2 &&
+                    { numPages >= 2 &&
                         <Paginate
                             previousLabel={ <i className='fa fa-chevron-left'></i> }
                             nextLabel={ <i className='fa fa-chevron-right'></i> }
                             breakLabel={ <li className="break"><a href="">...</a></li> }
-                            pageNum={ Math.floor(marketsCount / this.state.marketsPerPage) }
+                            pageNum={ numPages }
                             marginPagesDisplayed={ 2 }
                             pageRangeDisplayed={ 5 }
                             forceSelected={ this.state.pageNum }
@@ -235,7 +235,7 @@ let MarketsPage = React.createClass({
                     <div className="col-xs-12">
                         {tourMarketRow}
                         {markets.map(market => {
-                            if (!tourMarketKey.eq(market.id)) {
+                            if (tourMarketKey && !tourMarketKey.eq(market.id)) {
                                 return (
                                     <MarketRow
                                         key={market.id}
