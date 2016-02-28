@@ -72,7 +72,6 @@ module.exports = {
 
       // listen for new blocks
       block: function (blockHash) {
-        // console.log("block filter:", blockHash);
         if (blockHash && self.flux.store('config').getAccount()) {
           self.flux.actions.asset.updateAssets();
         }
@@ -80,15 +79,12 @@ module.exports = {
 
       // listen for augur transactions
       contracts: function (filtrate) {
-        console.log("contracts filter:", filtrate);
         if (filtrate && filtrate.address) {
           if (filtrate.error) {
             return console.log("contracts filter error:", filtrate);
           }
           console.log("[filter] contracts:", filtrate.address);
-          console.log("updating assets...");
           self.flux.actions.asset.updateAssets();
-          console.log("updating current branch...");
           self.flux.actions.branch.updateCurrentBranch();
         }
       },
@@ -100,11 +96,11 @@ module.exports = {
         if (result && result.marketId) {
           marketId = abi.bignum(result.marketId);
           market = self.flux.store("market").getMarket(marketId);
-          if (market && result.user &&
-              result.user !== self.flux.store("config").getAccount()) {
+          if (market) {
             self.flux.actions.asset.updateAssets();
-            console.log("updated price, reload market:", result.marketId);
-            self.flux.actions.market.loadMarket(marketId);
+            self.flux.actions.market.loadMarket(marketId, function (marketInfo) {
+              self.flux.actions.market.checkOrderBook(marketInfo);
+            });
           }
         }
       },

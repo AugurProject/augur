@@ -40,7 +40,7 @@ let AddMarketModal = React.createClass({
       tradingFeeError: null,
       valid: false,
       minDate: moment().format('YYYY-MM-DD'),
-      numOutcomes: 2,
+      numOutcomes: 3,
       tab: 0,
       minValue: null,
       maxValue: null,
@@ -247,15 +247,26 @@ let AddMarketModal = React.createClass({
     };
     var checkbox = {createMarket: false, addMetadata: false};
     var minValue, maxValue, numOutcomes;
+
+    // binary
     if (this.state.tab === 0) {
       minValue = 1;
       maxValue = 2;
       numOutcomes = 2;
-    } else {
+
+    // numerical
+    } else if (this.state.tab === 2) {
       minValue = this.state.minValue;
       maxValue = this.state.maxValue;
+      numOutcomes = 2;
+
+    // categorical
+    } else {
+      minValue = 1;
+      maxValue = 2;
       numOutcomes = this.state.numOutcomes;
     }
+
     flux.augur.createSingleEventMarket({
       branchId: branchId,
       description: newMarketParams.description,

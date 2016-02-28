@@ -214,11 +214,12 @@ module.exports = {
     });
   },
 
-  loadMarket: function (marketId) {
+  loadMarket: function (marketId, callback) {
     var self = this;
     var augur = this.flux.augur;
     var branchId = this.flux.store('branch').getCurrentBranch().id;
     var account = this.flux.store('config').getAccount();
+    callback = callback || function () {};
     marketId = abi.hex(marketId);
     augur.getMarketCreationBlock(marketId, function (creationBlock) {
       augur.getMarketPriceHistory(marketId, function (priceHistory) {
@@ -243,6 +244,7 @@ module.exports = {
             self.dispatch(constants.market.MARKETS_LOADING, {loadingPage: null});
             self.flux.actions.config.updatePercentLoaded(100);
             self.flux.actions.market.loadMetadata(marketInfo);
+            callback(parsedInfo);
           });
         });
       });
@@ -262,8 +264,44 @@ module.exports = {
 
   checkOrderBook: function (market) {
     var self = this;
-    this.flux.augur.checkOrderBook(market, function (matchedOrders) {
-      self.dispatch(constants.market.CHECK_ORDER_BOOK_SUCCESS, {matchedOrders});
+    this.flux.augur.checkOrderBook(market, {
+      onEmpty: function () {
+        console.log("checkOrderBook.onEmpty: no orders found");
+      },
+      onPriceMatched: function (order) {
+        console.log("checkOrderBook.onPriceMatched:", order);
+      },
+      onMarketHash: function (marketHash) {
+        console.log("checkOrderBook.onMarketHash:", marketHash);
+      },
+      onCommitTradeSent: function (res) {
+        console.log("checkOrderBook.onCommitTradeSent:", res);
+      },
+      onCommitTradeSuccess: function (res) {
+        console.log("checkOrderBook.onCommitTradeSuccess:", res);
+      },
+      onCommitTradeFailed: function (err) {
+        console.error("checkOrderBook.onCommitTradeFailed:", err);
+      },
+      onNextBlock: function (blockNumber) {
+        console.log("checkOrderBook.onNextBlock:", blockNumber);
+      },
+      onTradeSent: function (tradeSent) {
+        console.log("checkOrderBook.onTradeSent:", tradeSent);
+        self.dispatch(constants.market.UPDATE_ORDERS_SUCCESS, {
+          orders: tradeSent.cancelled
+        });
+      },
+      onTradeSuccess: function (res) {
+        console.log("checkOrderBook.onTradeSuccess:", res);
+      },
+      onSuccess: function (matchedOrders) {
+        console.log("checkOrderBook.onSuccess:", matchedOrders);
+        self.dispatch(constants.market.CHECK_ORDER_BOOK_SUCCESS, {matchedOrders});
+      },
+      onFailed: function (err) {
+        console.log("checkOrderBook.onFailed:", err);
+      }
     });
   },
 
@@ -333,10 +371,11 @@ module.exports = {
     }
   },
 
-  updateOrders: function (orders) {
+  updateOrders: function (market, orders) {
     if (orders) {
       this.dispatch(constants.market.UPDATE_ORDERS_SUCCESS, {orders});
     }
+    this.flux.actions.market.checkOrderBook(market);
   }
 
 };

@@ -66,6 +66,7 @@ var Overview = React.createClass({
         var self = this;
         var flux = this.getFlux();
         var txhash;
+        var market = this.props.market;
         var marketId = this.props.market.id;
         var branchId = this.props.market.branchId;
         var outcomeId = this.props.outcome.id;
@@ -94,6 +95,7 @@ var Overview = React.createClass({
                 },
                 onCommitTradeSent: function (res) {
                     console.debug("commit trade:", res);
+                    txhash = res.txHash;
                     flux.actions.market.updatePendingShares(
                         self.props.market,
                         self.props.outcome.id,
@@ -185,7 +187,7 @@ var Overview = React.createClass({
                 },
                 onOrderCreated: function (orders) {
                     self.setState({buyShares: false, sellShares: false});
-                    flux.actions.market.updateOrders(orders);
+                    flux.actions.market.updateOrders(market, orders);
                 }
             }
         });
