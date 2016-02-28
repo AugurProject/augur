@@ -367,7 +367,9 @@ var TradeBase = {
             limit: limit,
             limitInputError: null
         });
-        this.checkCap(null, limit);
+        if (this.state.cap !== '' && limit !== '') {
+            this.checkCap(null, limit);
+        }
     },
 
     checkCap: function (cap, limit) {
@@ -393,7 +395,9 @@ var TradeBase = {
     handleCapChange: function () {
         var cap = this.refs.inputCap.getValue();
         this.setState({cap: cap});
-        this.checkCap(cap);
+        if (cap !== '' && this.state.limit !== '') {
+            this.checkCap(cap);
+        }
     },
 
     onSubmit: function (event) {
