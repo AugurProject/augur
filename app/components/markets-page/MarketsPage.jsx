@@ -235,7 +235,7 @@ let MarketsPage = React.createClass({
                     <div className="col-xs-12">
                         {tourMarketRow}
                         {markets.map(market => {
-                            if (tourMarketKey && !tourMarketKey.eq(market.id)) {
+                            if (!tourMarketKey || (tourMarketKey && !tourMarketKey.eq(market.id))) {
                                 return (
                                     <MarketRow
                                         key={market.id}
