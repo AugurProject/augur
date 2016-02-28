@@ -95,16 +95,15 @@ module.exports = {
 
       // update market when a price change has been detected
       price: function (result) {
-        var checks, marketId, outcomeIdx, market, oldPrice;
+        var marketId, market;
+        console.log("[filter] updatePrice:", result);
         if (result && result.marketId) {
-          console.log("[filter] updatePrice:", result.marketId);
-          checks = 0;
           marketId = abi.bignum(result.marketId);
-          outcomeIdx = result.outcome - 1;
           market = self.flux.store("market").getMarket(marketId);
-          if (market) {
-            oldPrice = market.outcomes[outcomeIdx].price;
+          if (market && result.user &&
+              result.user !== self.flux.store("config").getAccount()) {
             self.flux.actions.asset.updateAssets();
+            console.log("updated price, reload market:", result.marketId);
             self.flux.actions.market.loadMarket(marketId);
           }
         }
@@ -112,8 +111,8 @@ module.exports = {
 
       // listen for new markets
       creation: function (result) {
+        console.log("[filter] creationBlock:", result);
         if (result && result.marketId) {
-          console.log("[filter] creationBlock:", result.blockNumber);
           var checks = 0;
           var marketId = abi.bignum(result.marketId);
           self.flux.actions.market.loadMarket(marketId);

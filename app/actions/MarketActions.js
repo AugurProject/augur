@@ -109,15 +109,15 @@ module.exports = {
           if (marketInfo.outcomes[i].outstandingShares) {
             marketInfo.outcomes[i].outstandingShares = abi.bignum(marketInfo.outcomes[i].outstandingShares);
           } else {
-            marketInfo.outcomes[i].outstandingShares = abi.bignum(0);
+            marketInfo.outcomes[i].outstandingShares = new BigNumber(0);
           }
           if (marketInfo.outcomes[i].shares[account]) {
             marketInfo.outcomes[i].sharesHeld = abi.bignum(marketInfo.outcomes[i].shares[account]);
           } else {
-            marketInfo.outcomes[i].sharesHeld = abi.bignum(0);
+            marketInfo.outcomes[i].sharesHeld = new BigNumber(0);
           }
           marketInfo.outcomes[i].normalizedPrice = marketInfo.outcomes[i].price.dividedBy(totalPrice);
-          marketInfo.outcomes[i].pendingShares = abi.bignum(0);
+          marketInfo.outcomes[i].pendingShares = new BigNumber(0);
           marketInfo.outcomes[i].label = utils.getOutcomeName(marketInfo.outcomes[i].id, marketInfo).outcome;
         }
         marketInfo.outcomes.sort(function (a, b) {
@@ -311,9 +311,8 @@ module.exports = {
     this.dispatch(constants.market.DELETE_MARKET_SUCCESS, {marketId: marketId});
   },
 
-  tradeSucceeded: function (tx, marketId) {
-    var self = this;
-    var outcomeIdx = abi.number(tx.outcome) - 1;
+  tradeSucceeded: function (marketId) {
+    console.log("Trade completed in market:", abi.hex(marketId));
     this.flux.actions.asset.updateAssets();
     this.flux.actions.market.loadMarket(marketId);
   },

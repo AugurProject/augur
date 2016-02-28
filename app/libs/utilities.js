@@ -88,18 +88,19 @@ module.exports = {
   },
 
   getOutcomePrice: function (outcome) {
-    if (!outcome.price && outcome.price !== 0) {
+    if (outcome.price === null || outcome.price === undefined) {
       return '-';
     }
-
-    return outcome.price.toFixed(3);
+    var price = outcome.price.toFixed(3);
+    if (price == "-0.000") price = "0.000";
+    return price;
   },
 
   // assumes price is a BigNumber object
   priceToPercent: function (price) {
     var percent;
 
-    if (!price || price <= 0.001) {
+    if (!price || price.abs() <= 0.001) {
       percent = 0;
     }
     else if (price >= 0.999) {
@@ -114,9 +115,10 @@ module.exports = {
 
   getPercentageFormatted: function (market, outcome) {
     if (market.type === "scalar") {
-      return outcome.price.toFixed(2);
-    }
-    else {
+      var price = outcome.price.toFixed(2);
+      if (price == "-0.00") price = "0.00";
+      return price;
+    } else {
       return module.exports.priceToPercent(outcome.normalizedPrice);
     }
   },
