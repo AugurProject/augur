@@ -465,10 +465,6 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                                     assert.strictEqual(res.callReturn, "1");
                                 },
                                 onCommitTradeFailed: done,
-                                onNextBlock: function (blockNumber) {
-                                    if (DEBUG) console.log("blockNumber:", blockNumber);
-                                    assert.isAbove(blockNumber, initialBlock);
-                                },
                                 onTradeSent: function (res) {
                                     if (DEBUG) console.log("tradeSent:", res);
                                     assert(res.txHash);

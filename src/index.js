@@ -531,17 +531,24 @@ Augur.prototype.getSimulatedBuy = function (market, outcome, amount, callback) {
     // amount: number
     var self = this;
     function getSimulatedBuy(marketInfo, outcome, amount) {
-        if (amount.constructor === BigNumber) amount = abi.string(amount);
-        if (amount.constructor !== Decimal) amount = new Decimal(amount);
+        try {
+            if (amount.constructor === BigNumber) amount = abi.string(amount);
+            if (amount.constructor !== Decimal) amount = new Decimal(amount);
+        } catch (exc) {
+            return exc;
+        }
         outcome = parseInt(outcome);
         var info = JSON.parse(JSON.stringify(marketInfo));
         var oldCost = new Decimal(self.lsLmsr(info));
         var cumScale = info.cumulativeScale;
         var alpha = new Decimal(info.alpha);
         var numOutcomes = info.numOutcomes;
-        info.outcomes[outcome-1].outstandingShares = new Decimal(info.outcomes[outcome-1].outstandingShares).plus(amount).toFixed();
-        var sumShares = new Decimal(0);
         for (var i = 0; i < numOutcomes; ++i) {
+            if (info.outcomes[i].id === Number(outcome)) break;
+        }
+        info.outcomes[i].outstandingShares = new Decimal(info.outcomes[i].outstandingShares).plus(amount).toFixed();
+        var sumShares = new Decimal(0);
+        for (i = 0; i < numOutcomes; ++i) {
             sumShares = sumShares.plus(new Decimal(info.outcomes[i].outstandingShares));
         }
         var bq = alpha.times(sumShares);
@@ -574,19 +581,25 @@ Augur.prototype.getSimulatedSell = function (market, outcome, amount, callback) 
     // amount: number
     var self = this;
     function getSimulatedSell(marketInfo, outcome, amount) {
-        if (amount.constructor === BigNumber) amount = abi.string(amount);
-        if (amount.constructor !== Decimal) amount = new Decimal(amount);
+        try {
+            if (amount.constructor === BigNumber) amount = abi.string(amount);
+            if (amount.constructor !== Decimal) amount = new Decimal(amount);
+        } catch (exc) {
+            return exc;
+        }
         outcome = parseInt(outcome);
         var info = JSON.parse(JSON.stringify(marketInfo));
         var oldCost = new Decimal(self.lsLmsr(info));
         var cumScale = info.cumulativeScale;
         var alpha = new Decimal(info.alpha);
         var numOutcomes = info.numOutcomes;
-        info.outcomes[outcome-1].outstandingShares = new Decimal(info.outcomes[outcome-1].outstandingShares).minus(amount).toFixed();
-        var sumShares = new Decimal(0);
         for (var i = 0; i < numOutcomes; ++i) {
+            if (info.outcomes[i].id === Number(outcome)) break;
+        }
+        info.outcomes[i].outstandingShares = new Decimal(info.outcomes[i].outstandingShares).minus(amount).toFixed();
+        var sumShares = new Decimal(0);
+        for (i = 0; i < numOutcomes; ++i) {
             sumShares = sumShares.plus(new Decimal(info.outcomes[i].outstandingShares));
-            if (i === outcome - 1) sumShares = sumShares.minus(amount);
         }
         var bq = alpha.times(sumShares);
         var sumExp = new Decimal(0);
@@ -2165,7 +2178,6 @@ Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
     cb.onCommitTradeSent = cb.onCommitTradeSent || this.utils.noop;
     cb.onCommitTradeSuccess = cb.onCommitTradeSuccess || this.utils.noop;
     cb.onCommitTradeFailed = cb.onCommitTradeFailed || this.utils.noop;
-    cb.onNextBlock = cb.onNextBlock || this.utils.noop;
     cb.onTradeSent = cb.onTradeSent || this.utils.noop;
     cb.onTradeSuccess = cb.onTradeSuccess || this.utils.noop;
     cb.onTradeFailed = cb.onTradeFailed || this.utils.noop;
@@ -2212,7 +2224,6 @@ Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
                 onCommitTradeSent: cb.onCommitTradeSent,
                 onCommitTradeSuccess: cb.onCommitTradeSuccess,
                 onCommitTradeFailed: cb.onCommitTradeFailed,
-                onNextBlock: cb.onNextBlock,
                 onTradeSent: function (response) {
                     var tradeSent = {
                         response: response,
