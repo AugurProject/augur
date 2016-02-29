@@ -220,11 +220,13 @@ let MarketRow = React.createClass({
         let tags = [];
         if (market.metadata && market.metadata.tags && market.metadata.tags.length) {
             for (var i = 0, n = market.metadata.tags.length; i < n; ++i) {
-                tags.push(
-                    <span key={market._id + "-tag-" + i} className="tag">
-                        {market.metadata.tags[i]}
-                    </span>
-                );
+                if (market.metadata.tags[i] !== "") {
+                    tags.push(
+                        <span key={market._id + "-tag-" + i} className="tag">
+                            {market.metadata.tags[i]}
+                        </span>
+                    );
+                }
             }
         }
         let report = this.props.report;

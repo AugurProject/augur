@@ -107,13 +107,13 @@ let AddMarketModal = React.createClass({
     var self = this;
     if (event.target && event.target.files && event.target.files.length) {
       var imageFile = event.target.files[0];
-      var reader = new FileReader();
-      reader.onload = (function (f) {
-        return function (e) {
-          self.setState({imageDataURL: e.target.result});
+      if (imageFile.type.match(/image.*/)) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          self.setState({imageDataURL: reader.result});
         };
-      })(imageFile);
-      reader.readAsDataURL(imageFile);
+        reader.readAsDataURL(imageFile); 
+      }
     }
   },
 
@@ -484,8 +484,7 @@ let AddMarketModal = React.createClass({
               wrapperClassName='col-xs-3'
               addonAfter='%'
               value={ this.state.tradingFee }
-              onChange={ this.onChangeTradingFee }
-            />
+              onChange={ this.onChangeTradingFee } />
           </div>
 
           <p className="desc">The trading fee is the percentage taken from each purchase or sale of an outcome.  These fees are split by you and all owners of winning outcomes</p>
@@ -499,8 +498,7 @@ let AddMarketModal = React.createClass({
               labelClassName='col-xs-3'
               wrapperClassName='col-xs-3'
               value={ this.state.marketInvestment }
-              onChange={ this.onChangeMarketInvestment }
-            />
+              onChange={ this.onChangeMarketInvestment } />
           </div>
 
           <p className="desc">The initial market liquidity is the amount of cash you wish to put in the market upfront.</p>
@@ -583,6 +581,11 @@ let AddMarketModal = React.createClass({
             onChange={this.onChangeResourceText} />;
       }
 
+      var image = <span />;
+      if (this.state.imageDataURL) {
+        image = <img className="metadata-image" src={this.state.imageDataURL} />;
+      }
+
       page = (
         <div>
           <h5>{subheading}</h5>
@@ -630,6 +633,7 @@ let AddMarketModal = React.createClass({
           <div className="form-group row">
             <div className="col-sm-12">
               <p>Upload an image to be displayed with your market.</p>
+              {image}
               <Input
                 type="file"
                 id="imageFile"

@@ -789,8 +789,11 @@ a.market-pane:hover {
 }
 
 .metadata-image {
-    height: 100px;
-    margin-bottom: 25px;
+    max-height: 200px;
+    max-width: 90%;
+    margin: 15px 0 10px 0;
+    /*border: 1px solid #E6E6E6;*/
+    padding: 10px;
 }
 
 .progress-modal-subheading {
