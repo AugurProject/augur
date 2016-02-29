@@ -106,18 +106,18 @@ let Header = React.createClass({
             let etherBalance = this.getEtherText();
             menuItemsOnRight = (
                 <ul className="nav navbar-nav navbar-right">
-                    <li>
-                        <a href="#" className="" onClick={this.handleSendCashClick}>
+                    <li onClick={this.handleSendCashClick}>
+                        <a href="#" className="">
                             cash {cashBalance}
                         </a>
                     </li>
-                    <li>
-                        <a href="#" className="" onClick={this.handleSendRepClick}>
+                    <li onClick={this.handleSendRepClick}>
+                        <a href="#" className="">
                             rep {repBalance}
                         </a>
                     </li>
-                    <li>
-                        <a href="#" className="" onClick={this.handleSendEtherClick}>
+                    <li onClick={this.handleSendEtherClick}>
+                        <a href="#" className="">
                             ether {etherBalance}
                         </a>
                     </li>
@@ -136,11 +136,11 @@ let Header = React.createClass({
 
             menuItemsOnRight = (
                 <ul className="nav navbar-nav navbar-right">
-                    <li>
-                        <a onClick={this.handleSignInClick}>Sign in</a>
+                    <li onClick={this.handleSignInClick}>
+                        <a href="#">Sign in</a>
                     </li>
-                    <li>
-                        <a onClick={this.handleRegisterClick}>Register</a>
+                    <li onClick={this.handleRegisterClick}>
+                        <a href="#">Register</a>
                     </li>
                 </ul>
             );

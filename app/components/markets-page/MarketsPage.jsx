@@ -35,14 +35,14 @@ let MarketsPage = React.createClass({
         var searchState = flux.store("search").getState();
         var currentBranch = flux.store("branch").getCurrentBranch();
         var account = flux.store("config").getAccount();
-
+        var tourMarketId = utils.getTourMarketKey(searchState.results, currentBranch);
         return {
             searchKeywords: searchState.keywords,
             markets: searchState.results,
             pendingMarkets: marketState.pendingMarkets,
             currentBranch: currentBranch,
             account: account,
-            tourMarketKey: abi.bignum(utils.getTourMarketKey(searchState.results))
+            tourMarketKey: abi.bignum(tourMarketId)
         };
     },
 
@@ -129,7 +129,7 @@ let MarketsPage = React.createClass({
         let {markets, marketsCount, firstItemIndex, lastItemIndex} = this._getMarketsData();
 
         let tourMarketRow = <span />;
-        if (tourMarketId && this.state.pageNum === 0) {
+        if (tourMarketId && this.state.pageNum === 0 && this.props.query.expired !== "true") {
             tourMarketRow = <MarketRow
                                 key={tourMarketKey}
                                 market={this.state.markets[tourMarketKey]}

@@ -177,43 +177,42 @@ module.exports = {
 
     return outcomeNames;
   },
-  getMarketTypeName: function(market) {
+
+  getMarketTypeName: function (market) {
     switch (market.type) {
       case "categorical":
-            return "Multiple-Choice Market";
+          return "Multiple-Choice Market";
       case "scalar":
-            return "Numeric Market";
+          return "Numeric Market";
       case "binary":
-            return "Yes/No Market";
+          return "Yes/No Market";
       default:
-            return "Unknown Market";
+          return "Unknown Market";
     }
   },
 
-  getTourMarketKey: function(markets) {
-    var finalTourMarketKey,
-        price;
-
-    for (var tourMarketKey in markets) {
-        if (!markets.hasOwnProperty(tourMarketKey)) continue;
-        if (!markets[tourMarketKey].description) continue;
-        if (!markets[tourMarketKey].type) continue;
-        if (!markets[tourMarketKey].description.length) continue;
-        if (markets[tourMarketKey].type === "binary" &&
-            markets[tourMarketKey]._id !== '0xd61ea5b5267761db397ad913ca7933c8727f840b0bbecab2dde169ab7ff3aaf' &&
-            markets[tourMarketKey]._id !== '-0x4a0aa5d564358bd70031540e0da0c17f2d670a0ad46b6993da68b3e8164ee3cd') {
-
-          finalTourMarketKey = tourMarketKey;
-          price = markets[tourMarketKey].outcomes[0].price.times(100).toFixed(1);
-
+  getTourMarketKey: function (markets, branch) {
+    var tourMarketId, price;
+    if (markets && branch && branch.currentPeriod) {
+      for (var marketId in markets) {
+        if (!markets.hasOwnProperty(marketId)) continue;
+        if (!markets[marketId].description) continue;
+        if (!markets[marketId].type) continue;
+        if (!markets[marketId].description.length) continue;
+        if (markets[marketId].tradingPeriod < branch.currentPeriod) continue;
+        if (markets[marketId].type === "binary" &&
+            markets[marketId]._id !== "0xd61ea5b5267761db397ad913ca7933c8727f840b0bbecab2dde169ab7ff3aaf" &&
+            markets[marketId]._id !== "-0x4a0aa5d564358bd70031540e0da0c17f2d670a0ad46b6993da68b3e8164ee3cd") {
+          tourMarketId = marketId;
+          price = markets[marketId].outcomes[0].price.times(100).toFixed(1);
           if (price > 0 && price < 100) {
-            finalTourMarketKey = tourMarketKey;
+            tourMarketId = marketId;
             break;
           }
         }
+      }
     }
-
-    return finalTourMarketKey;
+    return tourMarketId;
   },
 
   // check if account address is correctly formatted

@@ -113,25 +113,7 @@
             }
 
             &.navbar-right {
-                display: inline-block; position: relative;
-                float: none !important;
-                margin: 0;
-                vertical-align: middle;
-                text-align: right;
-                cursor: pointer;
-
-                li {
-                    display:block;
-
-                    a {
-                        padding: 0.0rem 0.8rem;
-                        line-height: 1.2rem;
-
-                        span:first-child {
-                            color: @color-grey-lighter;
-                        }
-                    }
-                }
+                float: right !important;
             }
         }
     }
@@ -304,13 +286,23 @@ body > .navbar-collapse::after {
                 }
 
                 &.navbar-right {
-                    display: block;
-                    margin: 0 -15px;
+                    display: inline-block; position: relative;
+                    float: none !important;
+                    margin: 0;
+                    vertical-align: middle;
                     text-align: left;
+                    cursor: pointer;
 
                     li {
+                        display:block;
+
                         a {
-                            line-height: 2.3rem;
+                            padding: 0.0rem 0.0rem;
+                            line-height: 1.2rem;
+
+                            span:first-child {
+                                color: @color-grey-lighter;
+                            }
                         }
                     }
                 }
