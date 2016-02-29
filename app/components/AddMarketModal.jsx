@@ -632,7 +632,7 @@ let AddMarketModal = React.createClass({
           </div>
           <div className="form-group row">
             <div className="col-sm-12">
-              <p>Upload an image to be displayed with your market.</p>
+              <p>Upload an image to be displayed with your market.  This uploader accepts most common image types (specifically, anything recognized as an image by the HTML5 File API).  A display of your image will be shown below this paragraph.  This is exactly the way the image will look on the market page.  Note: the maximum recommended height for images is 200px; images taller than this will be shrunken to a height of 200px.</p>
               {image}
               <Input
                 type="file"
