@@ -368,7 +368,7 @@ let AddMarketModal = React.createClass({
 
   onAddTag: function (event) {
     var numTags = this.state.numTags + 1;
-    if (numTags <= 3) {
+    if (numTags <= constants.MAX_ALLOWED_TAGS) {
       var tags = this.state.tags;
       tags.push('');
       this.setState({
@@ -556,6 +556,7 @@ let AddMarketModal = React.createClass({
       var numTags = this.state.numTags;
       var tags = new Array(numTags);
       var placeholderTag, tagId;
+
       for (var i = 0; i < numTags; ++i) {
         placeholderTag = "Enter tag " + (i + 1);
         tagId = "tag-" + i
@@ -636,9 +637,11 @@ let AddMarketModal = React.createClass({
                 onChange={this.onUploadImageFile} />
               <p>Enter up to three tags (categories) for your market.  Examples: politics, science, sports, weather, etc.</p>
               {tags}
-              <Button bsStyle="default" onClick={this.onAddTag}>
-                Add tag
-              </Button>
+              { this.state.numTags < constants.MAX_ALLOWED_TAGS &&
+                <Button bsStyle="default" onClick={this.onAddTag}>
+                  Add tag
+                </Button>
+              }
             </div>
           </div>
           <div className="form-group row">

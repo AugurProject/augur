@@ -16,6 +16,7 @@ module.exports = {
   SECONDS_PER_BLOCK: 12,
   MAX_BLOCKCHAIN_AGE: 300,  // in seconds
   MARKETS_PER_PAGE: 15,
+  MAX_ALLOWED_TAGS: 3,
   MIN_ETHER_WARNING: 50000000000000000000,
   CHANGE_EVENT: 'change',
   config: keyMirror({
