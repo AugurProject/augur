@@ -632,13 +632,13 @@ let AddMarketModal = React.createClass({
           </div>
           <div className="form-group row">
             <div className="col-sm-12">
-              <p>Upload an image to be displayed with your market.  This uploader accepts most common image types (specifically, anything recognized as an image by the HTML5 File API).  A display of your image will be shown below this paragraph.  This is exactly the way the image will look on the market page.  Note: the maximum recommended height for images is 200px; images taller than this will be shrunken to a height of 200px.</p>
+              <p>Upload an image to be displayed with your market. (optional) This uploader accepts most common image types (specifically, anything recognized as an image by the HTML5 File API).  A display of your image will be shown below this paragraph.  This is exactly the way the image will look on the market page.  Note: the maximum recommended height for images is 200px; images taller than this will be shrunken to a height of 200px.</p>
               {image}
               <Input
                 type="file"
                 id="imageFile"
                 onChange={this.onUploadImageFile} />
-              <p>Enter up to three tags (categories) for your market.  Examples: politics, science, sports, weather, etc.</p>
+              <p>Enter up to three tags (categories) for your market. (optional) Examples: politics, science, sports, weather, etc.</p>
               {tags}
               <Button bsStyle="default" onClick={this.onAddTag}>
                 Add tag
@@ -647,7 +647,7 @@ let AddMarketModal = React.createClass({
           </div>
           <div className="form-group row">
             <div className="col-sm-12">
-              <p>Are there any helpful links you want to add? (optional)  For example, if your question is about an election you could link to polling information or the webpages of candidates.</p>
+              <p>Are there any helpful links you want to add? (optional) For example, if your question is about an election you could link to polling information or the webpages of candidates.</p>
               {resources}
               <Button bsStyle="default" onClick={this.onAddResource}>
                 Add resource
