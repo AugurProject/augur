@@ -193,7 +193,7 @@ module.exports = {
 
   getTourMarketKey: function (markets, branch) {
     var tourMarketId, price;
-    if (constants.TOUR_MARKET_ID && markets[constants.TOUR_MARKET_ID]) {
+    if (constants.TOUR_MARKET_ID && markets[abi.bignum(constants.TOUR_MARKET_ID)]) {
       tourMarketId = constants.TOUR_MARKET_ID;
     } else {
       if (markets && branch && branch.currentPeriod) {
