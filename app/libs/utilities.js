@@ -193,21 +193,23 @@ module.exports = {
 
   getTourMarketKey: function (markets, branch) {
     var tourMarketId, price;
-    if (markets && branch && branch.currentPeriod) {
-      for (var marketId in markets) {
-        if (!markets.hasOwnProperty(marketId)) continue;
-        if (!markets[marketId].description) continue;
-        if (!markets[marketId].type) continue;
-        if (!markets[marketId].description.length) continue;
-        if (markets[marketId].tradingPeriod < branch.currentPeriod) continue;
-        if (markets[marketId].type === "binary" &&
-            markets[marketId]._id !== "0xd61ea5b5267761db397ad913ca7933c8727f840b0bbecab2dde169ab7ff3aaf" &&
-            markets[marketId]._id !== "-0x4a0aa5d564358bd70031540e0da0c17f2d670a0ad46b6993da68b3e8164ee3cd") {
-          tourMarketId = marketId;
-          price = markets[marketId].outcomes[0].price.times(100).toFixed(1);
-          if (price > 0 && price < 100) {
+    if (constants.TOUR_MARKET_ID && markets[abi.bignum(constants.TOUR_MARKET_ID)]) {
+      tourMarketId = constants.TOUR_MARKET_ID;
+    } else {
+      if (markets && branch && branch.currentPeriod) {
+        for (var marketId in markets) {
+          if (!markets.hasOwnProperty(marketId)) continue;
+          if (!markets[marketId].description) continue;
+          if (!markets[marketId].type) continue;
+          if (!markets[marketId].description.length) continue;
+          if (markets[marketId].tradingPeriod < branch.currentPeriod) continue;
+          if (markets[marketId].type === "binary") {
             tourMarketId = marketId;
-            break;
+            price = markets[marketId].outcomes[0].price.times(100).toFixed(1);
+            if (price > 0 && price < 100) {
+              tourMarketId = marketId;
+              break;
+            }
           }
         }
       }
