@@ -79,6 +79,7 @@ module.exports = {
 
       // listen for augur transactions
       contracts: function (filtrate) {
+        console.log("contracts filtrate:", filtrate);
         if (filtrate && filtrate.address) {
           if (filtrate.error) {
             return console.log("contracts filter error:", filtrate);
@@ -91,25 +92,24 @@ module.exports = {
 
       // update market when a price change has been detected
       price: function (result) {
-        var checks, marketId, outcomeIdx, market, oldPrice;
+        var marketId, market;
+        console.log("[filter] updatePrice:", result);
         if (result && result.marketId) {
-          console.log("[filter] updatePrice:", result.marketId);
-          checks = 0;
           marketId = abi.bignum(result.marketId);
-          outcomeIdx = result.outcome - 1;
           market = self.flux.store("market").getMarket(marketId);
           if (market) {
-            oldPrice = market.outcomes[outcomeIdx].price;
             self.flux.actions.asset.updateAssets();
-            self.flux.actions.market.loadMarket(marketId);
+            self.flux.actions.market.loadMarket(marketId, function (marketInfo) {
+              self.flux.actions.market.checkOrderBook(marketInfo);
+            });
           }
         }
       },
 
       // listen for new markets
       creation: function (result) {
+        console.log("[filter] creationBlock:", result);
         if (result && result.marketId) {
-          console.log("[filter] creationBlock:", result.blockNumber);
           var checks = 0;
           var marketId = abi.bignum(result.marketId);
           self.flux.actions.market.loadMarket(marketId);

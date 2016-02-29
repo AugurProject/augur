@@ -92,7 +92,7 @@ test("ReportActions.saveReport", function (t) {
         // verify report stored in localStorage
         var key = constants.report.REPORTS_STORAGE + "-" + userAccount + "-" + eventToReport.branchId + "-" + eventID;
         var value = localStorage.getItem(key);
-        var expectedValue = reportHash + "|" + reportedOutcome + "|" + eventIndex + "|" + isUnethical;
+        var expectedValue = reportHash + "|" + reportedOutcome + "|" + eventIndex + "|" + salt + "|" + isUnethical + "|" + isIndeterminate;
         t.equal(value, expectedValue, "localStorage.getItem(" + key + ") == " + expectedValue);
         flux.register.SAVE_REPORT_SUCCESS = SAVE_REPORT_SUCCESS;
         t.end();
@@ -124,7 +124,7 @@ test("ReportActions.loadReportFromLs", function (t) {
     // verify report stored in localStorage
     var key = constants.report.REPORTS_STORAGE + "-" + userAccount + "-" + eventToReport.branchId + "-" + eventID;
     var value = localStorage.getItem(key);
-    var expectedValue = reportHash + "|" + reportedOutcome + "|" + eventIndex + "|" + isUnethical;
+    var expectedValue = reportHash + "|" + reportedOutcome + "|" + eventIndex + "|"+ salt + "|" + isUnethical + "|" + isIndeterminate;
     t.equal(value, expectedValue, "localStorage.getItem(" + key + ") == " + expectedValue);
     t.end();
 });
@@ -232,7 +232,7 @@ test("ReportActions.loadPendingReports", function (t) {
         eventId: eventID,
         eventIndex: eventIndex,
         reportPeriod: reportPeriod,
-        report: reportedOutcome,
+        reportedOutcome: reportedOutcome,
         salt: salt,
         isUnethical: isUnethical,
         isIndeterminate: isIndeterminate,
@@ -244,6 +244,8 @@ test("ReportActions.loadPendingReports", function (t) {
         if (DEBUG) console.log("LOAD_PENDING_REPORTS_SUCCESS:", payload);
         t.equal(payload.constructor, Object, "payload is an object");
         t.equal(payload.pendingReports.constructor, Array, "payload.pendingReports is an array");
+        console.log("payload:", payload.pendingReports[payload.pendingReports.length - 1]);
+        console.log("pendingReport:",pendingReport);
         t.deepEqual(payload.pendingReports[payload.pendingReports.length - 1], pendingReport, "payload.pendingReports[end] == " + JSON.stringify(pendingReport));
         LOAD_PENDING_REPORTS_SUCCESS(payload);
         t.pass("dispatch LOAD_PENDING_REPORTS_SUCCESS");
@@ -323,7 +325,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
         flux.stores.report.state.pendingReports = [{
             branchId: branch,
             reportPeriod: reportPeriod,
-            report: reportedOutcome,
+            reportedOutcome: reportedOutcome,
             salt: salt,
             submitHash: false,
             submitReport: false

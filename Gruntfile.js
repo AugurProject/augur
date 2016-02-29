@@ -41,8 +41,12 @@ module.exports = function (grunt) {
     pkg: grunt.file.readJSON('package.json'),
     jshint: {
       files: [
-        'app/**/*.{js,jsx}',
-        '!app/libs/**/*.*'
+        'app/stores/*.js',
+        'app/actions/*.js',
+        'app/libs/constants.js',
+        'app/libs/utilities.js',
+        'app/libs/identicon.js',
+        'app/libs/blacklist.js'
       ],
       options: {
         force: true, // don't stop the build because JSHint doesn't know about JSX => ESLint

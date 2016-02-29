@@ -213,9 +213,6 @@ nav.header h1 > i {
     margin-top: 15px !important;
     width: 35px;
 }
-.navbar-right {
-    cursor: pointer;
-}
 nav.header .account {
     font-family: "Open Sans";
     font-size: 13px;
@@ -916,6 +913,12 @@ a.market-pane:hover {
     display: none;
 }
 
+.stop-order-label {
+    font-size: 10pt;
+    font-weight: normal;
+    color: #76838f;
+}
+
 #overview .welcome.alert h3 {
     border: none;
 }
@@ -954,7 +957,6 @@ a.market-pane:hover {
 }
 
 .holdings .description {
-    margin: 0px 75px 0px 40px;
     overflow: hidden;
     text-overflow: ellipsis;
     float: left;
@@ -1226,14 +1228,16 @@ span.debug {
 #doorbell-button {
     left: 5%;
     padding: 6px 15px;
-    opacity: 0.85;
+    background-color: #A3AFB7;
+    opacity: 0.9;
 }
 #doorbell-button:hover {
+    background-color: #E4EAEC;
     opacity: 1;
 }
 #doorbell form,
 #doorbell form.dark {
-    background-color: #f9f6ea;
+    background-color: white;
     -webkit-box-shadow: none;
     box-shadow: none;
 }

@@ -2,7 +2,7 @@
 .navbar {
     border-radius: 0;
     margin-bottom: 0;
-    background-color: #3aa99e;
+    background-color: @color-teal;
     color: @color-white;
     font-size: @font-size-base;
     .display(flex);
@@ -64,7 +64,7 @@
                     padding: 25px 15px;
                     line-height: 20px;
                     margin: 0;
-                    font-weight: @font-weight-bolder;
+                    font-weight: 400;
                     &.active,
                     &:hover,
                     &:focus {
@@ -113,13 +113,7 @@
             }
 
             &.navbar-right {
-                li {
-                    a {
-                        padding-left: 0.8rem; padding-right: 0.8rem;
-                        color: @color-grey-lightest;
-                        font-size: 0.8rem;
-                    }
-                }
+                float: right !important;
             }
         }
     }
@@ -138,20 +132,6 @@
                 background-color: transparent;
             }
         }
-    }
-}
-
-@media (min-width: 768px) {
-    // overwrite triangle params in dropdown menu
-    .navbar-nav.navbar-right > li > .dropdown-menu:after {
-        right: 18px;
-    }
-}
-
-@media (max-width: 767px) {
-    // overwrite nav menus which are displayed beneath each other now
-    body > .navbar-collapse ul.nav {
-        height: auto;
     }
 }
 
@@ -221,13 +201,28 @@ body > .navbar-collapse::after {
 }
 
 @media (min-width: @screen-sm-min) {
+    // overwrite triangle params in dropdown menu
+    .navbar-nav.navbar-right > li > .dropdown-menu:after {
+        right: 18px;
+    }
     .collapse.collapsedOnMobile {
         display: block;
         visibility: visible;
     }
+
+    .navbar-collapse.collapse {
+        height: 5rem !important;
+        line-height: 5rem;
+        text-align: right;
+    }
 }
 
 @media (max-width: @screen-sm-min) {
+
+    // overwrite nav menus which are displayed beneath each other now
+    body > .navbar-collapse ul.nav {
+        height: auto;
+    }
 
     // Main navigation bar
     .navbar {
@@ -246,7 +241,7 @@ body > .navbar-collapse::after {
                 .align-items(stretch);
                 .flex-direction(column);
                 > li {
-                    border-top: 1px solid @color-menu-border;
+                    border-top: 1px solid @color-teal-dark;
                     &.dropdown {
                         .dropdown-toggle {
                             .caret {
@@ -269,7 +264,7 @@ body > .navbar-collapse::after {
                             padding-top: 0;
                             padding-bottom: 0;
                             > li {
-                                border-top: 1px solid @color-menu-border;
+                                border-top: 1px solid @color-teal-dark;
                                 background-color: @color-dark-bg-active;
                                 > a {
                                     padding: 15px 15px 15px 30px;
@@ -285,6 +280,28 @@ body > .navbar-collapse::after {
                             &.btn {
                                 padding: 10px 12px;
                                 margin: 10px 20px;
+                            }
+                        }
+                    }
+                }
+
+                &.navbar-right {
+                    display: inline-block; position: relative;
+                    float: none !important;
+                    margin: 0;
+                    vertical-align: middle;
+                    text-align: left;
+                    cursor: pointer;
+
+                    li {
+                        display:block;
+
+                        a {
+                            padding: 0.0rem 0.0rem;
+                            line-height: 1.2rem;
+
+                            span:first-child {
+                                color: @color-grey-lighter;
                             }
                         }
                     }

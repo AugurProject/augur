@@ -107,6 +107,7 @@ let RegisterModal = React.createClass({
             complete: true
           });
           flux.actions.asset.updateAssets();
+          flux.actions.market.loadMarkets();
         },
         onFailed: function (err) {
           console.error(err);

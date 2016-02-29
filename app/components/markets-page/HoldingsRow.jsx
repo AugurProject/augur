@@ -20,18 +20,18 @@ module.exports = React.createClass({
             .bind(augur);
     },
 
-    getPercentageFormatted(market, outcome) {
-        let price = outcome.price;
-        if (price == null) {
-            return "0 %";
-        }
+    // getPercentageFormatted(market, outcome) {
+    //     let price = outcome.price;
+    //     if (price == null) {
+    //         return "0 %";
+    //     }
 
-        if (market.type === "scalar") {
-            return +price.toFixed(2);
-        } else {
-            return +outcome.normalizedPrice.times(100).toFixed(1) + " %";
-        }
-    },
+    //     if (market.type === "scalar") {
+    //         return +price.toFixed(2);
+    //     } else {
+    //         return +outcome.normalizedPrice.times(100).toFixed(1) + " %";
+    //     }
+    // },
 
     componentDidMount() {
         if (this.props.contentType === "holdings") {
@@ -54,7 +54,7 @@ module.exports = React.createClass({
             return (
                 <tr>
                     <td>{ utilities.getOutcomeName(outcome.id, market).outcome }</td>
-                    <td>{ this.getPercentageFormatted(market, outcome) }</td>
+                    <td>{ utilities.getPercentageFormatted(market, outcome) }</td>
                     <td>{ outcome.price != null ? outcome.price.toFixed(2) : "-" }</td>
                     <td>{ this.props.outcome.sharesHeld.toNumber() }</td>
                     <td>{ this.state.potentialProfit != null ? this.state.potentialProfit.toFixed(3) : "loading" }</td>
@@ -64,7 +64,7 @@ module.exports = React.createClass({
             return (
                 <tr>
                     <td>{ utilities.getOutcomeName(outcome.id, market).outcome }</td>
-                    <td>{ this.getPercentageFormatted(market, outcome) }</td>
+                    <td>{ utilities.getPercentageFormatted(market, outcome) }</td>
                     <td>{ outcome.price != null ? outcome.price.toFixed(2) : "-" }</td>
                 </tr>
             );

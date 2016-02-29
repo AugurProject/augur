@@ -1,6 +1,6 @@
 {
   "name": "augur-client",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Web client for Augur, a prediction markets platform",
   "main": "app/main.jsx",
   "scripts": {
@@ -37,7 +37,7 @@
     "async": "^1.4.2",
     "augur-abi": "^0.2.7",
     "augur-contracts": "AugurProject/augur-contracts",
-    "augur.js": "^0.15.11",
+    "augur.js": "^0.15.13",
     "bignumber.js": "^2.1.4",
     "bootstrap": "^3.3.4",
     "chalk": "^1.1.1",

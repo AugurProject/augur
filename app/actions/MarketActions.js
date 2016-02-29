@@ -109,15 +109,15 @@ module.exports = {
           if (marketInfo.outcomes[i].outstandingShares) {
             marketInfo.outcomes[i].outstandingShares = abi.bignum(marketInfo.outcomes[i].outstandingShares);
           } else {
-            marketInfo.outcomes[i].outstandingShares = abi.bignum(0);
+            marketInfo.outcomes[i].outstandingShares = new BigNumber(0);
           }
           if (marketInfo.outcomes[i].shares[account]) {
             marketInfo.outcomes[i].sharesHeld = abi.bignum(marketInfo.outcomes[i].shares[account]);
           } else {
-            marketInfo.outcomes[i].sharesHeld = abi.bignum(0);
+            marketInfo.outcomes[i].sharesHeld = new BigNumber(0);
           }
           marketInfo.outcomes[i].normalizedPrice = marketInfo.outcomes[i].price.dividedBy(totalPrice);
-          marketInfo.outcomes[i].pendingShares = abi.bignum(0);
+          marketInfo.outcomes[i].pendingShares = new BigNumber(0);
           marketInfo.outcomes[i].label = utils.getOutcomeName(marketInfo.outcomes[i].id, marketInfo).outcome;
         }
         marketInfo.outcomes.sort(function (a, b) {
@@ -214,11 +214,12 @@ module.exports = {
     });
   },
 
-  loadMarket: function (marketId) {
+  loadMarket: function (marketId, callback) {
     var self = this;
     var augur = this.flux.augur;
     var branchId = this.flux.store('branch').getCurrentBranch().id;
     var account = this.flux.store('config').getAccount();
+    callback = callback || function () {};
     marketId = abi.hex(marketId);
     augur.getMarketCreationBlock(marketId, function (creationBlock) {
       augur.getMarketPriceHistory(marketId, function (priceHistory) {
@@ -243,9 +244,62 @@ module.exports = {
             self.dispatch(constants.market.MARKETS_LOADING, {loadingPage: null});
             self.flux.actions.config.updatePercentLoaded(100);
             self.flux.actions.market.loadMetadata(marketInfo);
+            callback(parsedInfo);
           });
         });
       });
+    });
+  },
+
+  updatePrice: function (marketId, callback) {
+    var self = this;
+    var account = this.flux.store("config").getAccount();
+    callback = callback || function () {};
+    console.log("marketId:", abi.hex(marketId));
+    this.flux.augur.getMarketInfo(abi.hex(marketId), function (marketInfo) {
+      if (!marketInfo || marketInfo.error || !marketInfo.network) {
+        return console.error("updatePrice:", marketInfo);
+      }
+      var markets = self.flux.store("market").getState().markets;
+      if (marketInfo.outcomes && marketInfo.outcomes.length) {
+        var totalPrice = new BigNumber(0);
+        var numOutcomes = marketInfo.numOutcomes;
+        for (var i = 0; i < numOutcomes; ++i) {
+          marketInfo.outcomes[i].price = abi.bignum(marketInfo.outcomes[i].price);
+          totalPrice = totalPrice.plus(marketInfo.outcomes[i].price);
+        }
+        for (i = 0; i < numOutcomes; ++i) {
+          if (marketInfo.outcomes[i].outstandingShares) {
+            marketInfo.outcomes[i].outstandingShares = abi.bignum(marketInfo.outcomes[i].outstandingShares);
+          } else {
+            marketInfo.outcomes[i].outstandingShares = new BigNumber(0);
+          }
+          if (marketInfo.outcomes[i].shares[account]) {
+            marketInfo.outcomes[i].sharesHeld = abi.bignum(marketInfo.outcomes[i].shares[account]);
+          } else {
+            marketInfo.outcomes[i].sharesHeld = new BigNumber(0);
+          }
+          marketInfo.outcomes[i].normalizedPrice = marketInfo.outcomes[i].price.dividedBy(totalPrice);
+          marketInfo.outcomes[i].pendingShares = new BigNumber(0);
+          marketInfo.outcomes[i].label = utils.getOutcomeName(marketInfo.outcomes[i].id, marketInfo).outcome;
+        }
+        marketInfo.outcomes.sort(function (a, b) {
+          return b.price.minus(a.price);
+        });
+        markets[marketId] = marketInfo.outcomes;
+
+        // save markets to MarketStore
+        self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {
+          markets: markets,
+          account: account
+        });
+
+        // loading complete!
+        self.dispatch(constants.market.MARKETS_LOADING, {loadingPage: null});
+        self.flux.actions.config.updatePercentLoaded(100);
+        self.flux.actions.market.loadMetadata(marketInfo);
+        callback(markets[marketId]);
+      }
     });
   },
 
@@ -262,8 +316,41 @@ module.exports = {
 
   checkOrderBook: function (market) {
     var self = this;
-    this.flux.augur.checkOrderBook(market, function (matchedOrders) {
-      self.dispatch(constants.market.CHECK_ORDER_BOOK_SUCCESS, {matchedOrders});
+    this.flux.augur.checkOrderBook(market, {
+      onEmpty: function () {
+        console.log("checkOrderBook.onEmpty: no orders found");
+      },
+      onPriceMatched: function (order) {
+        console.log("checkOrderBook.onPriceMatched:", order);
+      },
+      onMarketHash: function (marketHash) {
+        console.log("checkOrderBook.onMarketHash:", marketHash);
+      },
+      onCommitTradeSent: function (res) {
+        console.log("checkOrderBook.onCommitTradeSent:", res);
+      },
+      onCommitTradeSuccess: function (res) {
+        console.log("checkOrderBook.onCommitTradeSuccess:", res);
+      },
+      onCommitTradeFailed: function (err) {
+        console.error("checkOrderBook.onCommitTradeFailed:", err);
+      },
+      onTradeSent: function (tradeSent) {
+        console.log("checkOrderBook.onTradeSent:", tradeSent);
+        self.dispatch(constants.market.UPDATE_ORDERS_SUCCESS, {
+          orders: tradeSent.cancelled
+        });
+      },
+      onTradeSuccess: function (res) {
+        console.log("checkOrderBook.onTradeSuccess:", res);
+      },
+      onSuccess: function (matchedOrders) {
+        console.log("checkOrderBook.onSuccess:", matchedOrders);
+        self.dispatch(constants.market.CHECK_ORDER_BOOK_SUCCESS, {matchedOrders});
+      },
+      onFailed: function (err) {
+        console.log("checkOrderBook.onFailed:", err);
+      }
     });
   },
 
@@ -311,9 +398,8 @@ module.exports = {
     this.dispatch(constants.market.DELETE_MARKET_SUCCESS, {marketId: marketId});
   },
 
-  tradeSucceeded: function (tx, marketId) {
-    var self = this;
-    var outcomeIdx = abi.number(tx.outcome) - 1;
+  tradeSucceeded: function (marketId) {
+    console.log("Trade completed in market:", abi.hex(marketId));
     this.flux.actions.asset.updateAssets();
     this.flux.actions.market.loadMarket(marketId);
   },
@@ -321,7 +407,10 @@ module.exports = {
   // relativeShares is a signed integer representing a trade (buy/sell)
   updatePendingShares: function (market, outcomeId, relativeShares) {
     if (market && outcomeId && relativeShares) {
-      market.outcomes[outcomeId-1].pendingShares = market.outcomes[outcomeId - 1].pendingShares.plus(abi.bignum(relativeShares));
+      for (var i = 0; i < market.numOutcomes; ++i) {
+          if (market.outcomes[i].id === Number(outcomeId)) break;
+      }
+      market.outcomes[i].pendingShares = market.outcomes[i].pendingShares.plus(abi.bignum(relativeShares));
       this.dispatch(constants.market.UPDATE_MARKET_SUCCESS, {market: market});
     }
   },
@@ -334,10 +423,11 @@ module.exports = {
     }
   },
 
-  updateOrders: function (orders) {
+  updateOrders: function (market, orders) {
     if (orders) {
       this.dispatch(constants.market.UPDATE_ORDERS_SUCCESS, {orders});
     }
+    this.flux.actions.market.checkOrderBook(market);
   }
 
 };

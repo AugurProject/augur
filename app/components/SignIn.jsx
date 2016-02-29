@@ -50,6 +50,7 @@ let SignInModal = React.createClass({
             keystore: account.keystore
           });
           flux.actions.asset.updateAssets();
+          flux.actions.market.loadMarkets();
           flux.actions.report.loadEventsToReport();
           flux.actions.report.loadPendingReports();
           flux.actions.asset.loadMeanTradePrices();
