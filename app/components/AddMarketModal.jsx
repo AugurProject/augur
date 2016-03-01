@@ -40,11 +40,14 @@ let AddMarketModal = React.createClass({
       tradingFeeError: null,
       valid: false,
       minDate: moment().format('YYYY-MM-DD'),
-      numOutcomes: 2,
+      numOutcomes: 3,
       tab: 0,
-      minValue: 1,
-      maxValue: 2,
+      minValue: null,
+      maxValue: null,
+      minValueError: null,
+      maxValueError: null,
       choices: ["", ""],
+      choiceTextError: [null, null],
       numResources: 0,
       resources: [],
       numTags: 0,
@@ -104,13 +107,13 @@ let AddMarketModal = React.createClass({
     var self = this;
     if (event.target && event.target.files && event.target.files.length) {
       var imageFile = event.target.files[0];
-      var reader = new FileReader();
-      reader.onload = (function (f) {
-        return function (e) {
-          self.setState({imageDataURL: e.target.result});
+      if (imageFile.type.match(/image.*/)) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          self.setState({imageDataURL: reader.result});
         };
-      })(imageFile);
-      reader.readAsDataURL(imageFile);
+        reader.readAsDataURL(imageFile); 
+      }
     }
   },
 
@@ -169,21 +172,33 @@ let AddMarketModal = React.createClass({
     this.setState({expirySourceURL: event.target.value});
   },
 
-  onNext: function(event) {
+  onNext: function (event) {
+    console.log("validated:", this.validatePage(this.state.pageNumber));
     if (this.validatePage(this.state.pageNumber)) {
       var newPageNumber = this.state.pageNumber + 1;
       this.setState({pageNumber: newPageNumber});
     }
   },
 
-  validatePage: function(pageNumber) {
+  validatePage: function (pageNumber) {
     if (pageNumber === 1) {
+      if (this.state.tab === 0) this.setState({minValue: 1, maxValue: 2});
       if (this.state.marketText.length > this.state.marketTextMaxLength) {
-        this.setState({marketTextError: 'Text exceeds the maximum length of ' + this.state.marketTextMaxLength});
+        this.setState({
+          marketTextError: 'Text exceeds the maximum length of ' + this.state.marketTextMaxLength
+        });
         return false;
       } else if (!this.state.marketText.length) {
-         this.setState({marketTextError: 'Please enter your question'});
+        this.setState({marketTextError: 'Please enter your question'});
         return false;
+      } else if (this.state.tab === 1) {
+        for (var i = 0, len = this.state.choices.length; i < len; ++i) {
+          if (!this.checkAnswerText(this.state.choices[i], i)) {
+            return false;
+          }
+        }
+      } else if (this.state.tab === 2) {
+        if (!this.checkMinimum() || !this.checkMaximum()) return false;
       }
     } else if (pageNumber === 2) {
       if (this.state.tradingFee === '') {
@@ -200,12 +215,12 @@ let AddMarketModal = React.createClass({
     return true;
   },
 
-  onHide: function() {
+  onHide: function () {
     this.setState(this.getInitialState());
     this.props.onHide();
   },
 
-  onBack: function(event) {
+  onBack: function (event) {
     var newPageNumber = this.state.pageNumber - 1;
     this.setState({pageNumber: newPageNumber});
   },
@@ -231,13 +246,34 @@ let AddMarketModal = React.createClass({
       links: this.state.resources
     };
     var checkbox = {createMarket: false, addMetadata: false};
+    var minValue, maxValue, numOutcomes;
+
+    // binary
+    if (this.state.tab === 0) {
+      minValue = 1;
+      maxValue = 2;
+      numOutcomes = 2;
+
+    // numerical
+    } else if (this.state.tab === 2) {
+      minValue = this.state.minValue;
+      maxValue = this.state.maxValue;
+      numOutcomes = 2;
+
+    // categorical
+    } else {
+      minValue = 1;
+      maxValue = 2;
+      numOutcomes = this.state.numOutcomes;
+    }
+
     flux.augur.createSingleEventMarket({
       branchId: branchId,
       description: newMarketParams.description,
       expirationBlock: utilities.dateToBlock(moment(this.state.maturationDate), block),
-      minValue: this.state.minValue,
-      maxValue: this.state.maxValue,
-      numOutcomes: this.state.numOutcomes,
+      minValue: minValue,
+      maxValue: maxValue,
+      numOutcomes: numOutcomes,
       alpha: "0.0079",
       initialLiquidity: newMarketParams.initialLiquidity,
       tradingFee: newMarketParams.tradingFee.toFixed(),
@@ -332,11 +368,13 @@ let AddMarketModal = React.createClass({
 
   onAddTag: function (event) {
     var numTags = this.state.numTags + 1;
-    if (numTags <= 3) {
+    if (numTags <= constants.MAX_ALLOWED_TAGS) {
       var tags = this.state.tags;
       tags.push('');
-      this.setState({numTags: numTags});
-      this.setState({tags: tags});
+      this.setState({
+        numTags: numTags,
+        tags: tags
+      });
     }
   },
 
@@ -344,37 +382,80 @@ let AddMarketModal = React.createClass({
     var numResources = this.state.numResources + 1;
     var resources = this.state.resources;
     resources.push('');
-    this.setState({numResources: numResources});
-    this.setState({resources: resources});
+    this.setState({
+      numResources: numResources,
+      resources: resources
+    });
   },
 
   onAddAnswer: function (event) {
     var numOutcomes = this.state.numOutcomes + 1;
     var choices = this.state.choices;
+    var choiceTextError = this.state.choiceTextError;
     choices.push('');
-    this.setState({numOutcomes: numOutcomes});
-    this.setState({choices: choices})
+    choiceTextError.push(null);
+    this.setState({
+      numOutcomes: numOutcomes,
+      choices: choices,
+      choiceTextError: choiceTextError
+    });
+  },
+
+  checkAnswerText: function (answerText, id) {
+    var isOk = !(/^\s*$/.test(answerText));
+    var choiceTextError = this.state.choiceTextError;
+    choiceTextError[id] = (isOk) ? null : "Answer cannot be blank";
+    this.setState({choiceTextError: choiceTextError})
+    return isOk;
   },
 
   onChangeAnswerText: function (event) {
     var choices = this.state.choices;
-    var id = event.target.id;
-    choices[id.split('-')[1]] = event.target.value;
+    var id = parseInt(event.target.id.split('-')[1]);
+    var answerText = event.target.value;
+    this.checkAnswerText(answerText, id);
+    choices[id] = answerText;
     this.setState({choices: choices});
-    if (choices.length > 2) {
-      var marketText = this.state.plainMarketText + " Choices: " + choices.join(", ") + ".";
-      this.setState({marketText: marketText});
+    var marketText = this.state.plainMarketText + " Choices: " + choices.join(", ") + ".";
+    this.setState({marketText: marketText});
+  },
+
+  checkMinimum: function () {
+    if (utilities.isNumeric(this.state.minValue)) {
+      this.setState({minValueError: null});
+      return true;
+    } else {
+      this.setState({minValueError: "Minimum value must be a number"});
+      return false;
+    }
+  },
+
+  checkMaximum: function () {
+    if (utilities.isNumeric(this.state.maxValue)) {
+      this.setState({maxValueError: null});
+      return true;
+    } else {
+      this.setState({maxValueError: "Maximum value must be a number"});
+      return false;
     }
   },
 
   onChangeMinimum: function (event) {
-    var minValue = abi.number(event.target.value);
+    var minValue = event.target.value;
+    if (utilities.isNumeric(minValue)) {
+      minValue = abi.number(minValue);
+    }
     this.setState({minValue: minValue});
+    this.checkMinimum();
   },
 
   onChangeMaximum: function (event) {
-    var maxValue = abi.number(event.target.value);
+    var maxValue = event.target.value;
+    if (utilities.isNumeric(maxValue)) {
+      maxValue = abi.number(maxValue);
+    }
     this.setState({maxValue: maxValue});
+    this.checkMaximum();
   },
 
   render: function () {
@@ -403,8 +484,7 @@ let AddMarketModal = React.createClass({
               wrapperClassName='col-xs-3'
               addonAfter='%'
               value={ this.state.tradingFee }
-              onChange={ this.onChangeTradingFee }
-            />
+              onChange={ this.onChangeTradingFee } />
           </div>
 
           <p className="desc">The trading fee is the percentage taken from each purchase or sale of an outcome.  These fees are split by you and all owners of winning outcomes</p>
@@ -418,8 +498,7 @@ let AddMarketModal = React.createClass({
               labelClassName='col-xs-3'
               wrapperClassName='col-xs-3'
               value={ this.state.marketInvestment }
-              onChange={ this.onChangeMarketInvestment }
-            />
+              onChange={ this.onChangeMarketInvestment } />
           </div>
 
           <p className="desc">The initial market liquidity is the amount of cash you wish to put in the market upfront.</p>
@@ -475,8 +554,9 @@ let AddMarketModal = React.createClass({
       var numTags = this.state.numTags;
       var tags = new Array(numTags);
       var placeholderTag, tagId;
+
       for (var i = 0; i < numTags; ++i) {
-        placeholderTag = "Tag " + i;
+        placeholderTag = "Enter tag " + (i + 1);
         tagId = "tag-" + i
         tags[i] = <Input
             key={i}
@@ -491,7 +571,7 @@ let AddMarketModal = React.createClass({
       var resources = new Array(numResources);
       var placeholderText, resourceId;
       for (i = 0; i < numResources; ++i) {
-        placeholderText = "External resource " + i;
+        placeholderText = "Enter external resource " + (i + 1);
         resourceId = "resource-" + i
         resources[i] = <Input
             key={i}
@@ -500,6 +580,11 @@ let AddMarketModal = React.createClass({
             value={this.state.resources[i]}
             placeholder={placeholderText}
             onChange={this.onChangeResourceText} />;
+      }
+
+      var image = <span />;
+      if (this.state.imageDataURL) {
+        image = <img className="metadata-image" src={this.state.imageDataURL} />;
       }
 
       page = (
@@ -548,21 +633,24 @@ let AddMarketModal = React.createClass({
           </div>
           <div className="form-group row">
             <div className="col-sm-12">
-              <p>Upload an image to be displayed with your market.</p>
+              <p>Upload an image to be displayed with your market. (optional) This uploader accepts most common image types (specifically, anything recognized as an image by the HTML5 File API).  A display of your image will be shown below this paragraph.  This is exactly the way the image will look on the market page.  Note: the maximum recommended height for images is 200px; images taller than this will be shrunken to a height of 200px.</p>
+              {image}
               <Input
                 type="file"
                 id="imageFile"
                 onChange={this.onUploadImageFile} />
-              <p>Enter up to three tags (categories) for your market.  Examples: politics, science, sports, weather, etc.</p>
+              <p>Enter up to three tags (categories) for your market. (optional) Examples: politics, science, sports, weather, etc.</p>
               {tags}
-              <Button bsStyle="default" onClick={this.onAddTag}>
-                Add tag
-              </Button>
+              { this.state.numTags < constants.MAX_ALLOWED_TAGS &&
+                <Button bsStyle="default" onClick={this.onAddTag}>
+                  Add tag
+                </Button>
+              }
             </div>
           </div>
           <div className="form-group row">
             <div className="col-sm-12">
-              <p>Are there any helpful links you want to add? (optional)  For example, if your question is about an election you could link to polling information or the webpages of candidates.</p>
+              <p>Are there any helpful links you want to add? (optional) For example, if your question is about an election you could link to polling information or the webpages of candidates.</p>
               {resources}
               <Button bsStyle="default" onClick={this.onAddResource}>
                 Add resource
@@ -584,15 +672,19 @@ let AddMarketModal = React.createClass({
       var choices = new Array(numOutcomes);
       var placeholderText, choiceId;
       for (var i = 0; i < numOutcomes; ++i) {
-        placeholderText = 'Enter answer ' + i;
+        placeholderText = 'Enter answer ' + (i + 1);
         choiceId = 'choice-' + i
         choices[i] = <Input
-            key={ i }
-            id={ choiceId }
-            type='text'
-            value={ this.state.choices[i] }
-            placeholder={ placeholderText }
-            onChange={ this.onChangeAnswerText } />;
+            key={i}
+            id={choiceId}
+            type="text"
+            // label={"Answer " + (i + 1)}
+            help={this.state.choiceTextError[i]}
+            bsStyle={this.state.choiceTextError[i] ? "error" : null}
+            value={this.state.choices[i]}
+            placeholder={placeholderText}
+            wrapperClassName="row clearfix col-lg-12"
+            onChange={this.onChangeAnswerText} />;
       }
       subheading = '';
       var inputStyle = this.state.marketTextError ? 'error' : null;
@@ -632,7 +724,7 @@ let AddMarketModal = React.createClass({
             <div className="col-sm-12">
               <p>Choices:</p>
               { choices }
-              <Button bsStyle='default' onClick={ this.onAddAnswer }>
+              <Button bsStyle="default" onClick={ this.onAddAnswer }>
                 Add another answer
               </Button>
             </div>
@@ -642,7 +734,7 @@ let AddMarketModal = React.createClass({
               <p>Enter a <b>numerical question</b> for the market to trade on.  This question should be easily verifiable and have an expiring date in the future.</p>
               <p>Answers to numerical questions can be anywhere within a range of numbers.  For example, "What will the high temperature be in San Francisco, California, on July 1, 2016?" is a numerical question.</p>
               <Input
-                type='textarea'
+                type="textarea"
                 help={ this.state.marketTextError }
                 bsStyle={ inputStyle }
                 value={ this.state.marketText }
@@ -652,23 +744,31 @@ let AddMarketModal = React.createClass({
             </div>
             <div className="col-sm-12">
               <p>What are the minimum and maximum allowed answers to your question?</p>
-              Minimum:
               <Input
-                type='text'
-                value={ this.state.minValue }
-                onChange={ this.onChangeMinimum } />
-              Maximum:
+                type="text"
+                // label="Minimum"
+                help={this.state.minValueError}
+                bsStyle={this.state.minValueError ? "error" : null}
+                value={this.state.minValue}
+                placeholder="Minimum answer"
+                wrapperClassName="row clearfix col-lg-12"
+                onChange={this.onChangeMinimum} />
               <Input
-                type='text'
-                value={ this.state.maxValue }
-                onChange={ this.onChangeMaximum } />
+                type="text"
+                // label="Maximum"
+                help={this.state.maxValueError}
+                bsStyle={this.state.maxValueError ? "error" : null}
+                value={this.state.maxValue}
+                placeholder="Maximum answer"
+                wrapperClassName="row clearfix col-lg-12"
+                onChange={this.onChangeMaximum} />
             </div>
           </TabPanel>
         </Tabs>
       );
       footer = (
-        <div className='pull-right'>
-          <Button bsStyle='primary' onClick={ this.onNext }>Next</Button>
+        <div className="pull-right">
+          <Button bsStyle="primary" onClick={ this.onNext }>Next</Button>
         </div>
       );
     };

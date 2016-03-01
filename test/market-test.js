@@ -192,12 +192,6 @@ test("MarketActions.deleteMarket", function (t) {
 test("MarketActions.tradeSucceeded", function (t) {
     t.plan(2);
     var marketId = marketInfo.id;
-    var trade = {
-        branchId: process.env.AUGUR_BRANCH_ID || "1010101",
-        marketId: marketId,
-        outcome: "1",
-        oldPrice: new BigNumber("0.5")
-    };
     var dispatchCount = 0;
     var MARKETS_LOADING = flux.register.MARKETS_LOADING;
     var LOAD_MARKETS_SUCCESS = flux.register.LOAD_MARKETS_SUCCESS;
@@ -217,7 +211,7 @@ test("MarketActions.tradeSucceeded", function (t) {
             t.end();
         }
     };
-    flux.actions.market.tradeSucceeded(trade, marketId);
+    flux.actions.market.tradeSucceeded(marketId);
 });
 
 test("MarketActions.updatePendingShares", function (t) {
@@ -238,7 +232,7 @@ test("MarketActions.updatePendingShares", function (t) {
 });
 
 test("MarketActions.updateOrders", function (t) {
-    t.plan(5);
+    t.plan(7);
     var orders = {
       "-0xe2ec88f924edae71b14c95d751538387e3c43e400bde53ad7aa686baa3985fca": {
         "1": [{
@@ -260,6 +254,7 @@ test("MarketActions.updateOrders", function (t) {
       }
     };
     var UPDATE_ORDERS_SUCCESS = flux.register.UPDATE_ORDERS_SUCCESS;
+    var CHECK_ORDER_BOOK_SUCCESS = flux.register.CHECK_ORDER_BOOK_SUCCESS;
     flux.register.UPDATE_ORDERS_SUCCESS = function (payload) {
         t.equal(payload.constructor, Object, "payload is an object");
         t.equal(payload.orders.constructor, Object, "payload.orders is an object");
@@ -268,9 +263,14 @@ test("MarketActions.updateOrders", function (t) {
         t.pass("dispatch UPDATE_ORDERS_SUCCESS");
         flux.register.UPDATE_ORDERS_SUCCESS = UPDATE_ORDERS_SUCCESS;
         t.deepEqual(flux.store("market").getOrders(), orders, "stores.market.orders == input orders");
+    };
+    flux.register.CHECK_ORDER_BOOK_SUCCESS = function (payload) {
+        t.equal(payload.constructor, Object, "payload is an object");
+        CHECK_ORDER_BOOK_SUCCESS(payload);
+        t.pass("dispatch CHECK_ORDER_BOOK_SUCCESS");
         t.end();
     };
-    flux.actions.market.updateOrders(orders);
+    flux.actions.market.updateOrders(marketInfo, orders);
 });
 
 test("MarketActions.loadMarket", function (t) {
@@ -300,7 +300,6 @@ test("MarketActions.loadMarket", function (t) {
 });
 
 test("MarketActions.loadMarkets", function (t) {
-    var dispatchCount = 0;
     var LOAD_MARKETS_SUCCESS = flux.register.LOAD_MARKETS_SUCCESS;
     var MARKETS_LOADING = flux.register.MARKETS_LOADING;
     var LOAD_METADATA = flux.register.LOAD_METADATA;
@@ -318,18 +317,12 @@ test("MarketActions.loadMarkets", function (t) {
         t.equal(payload.loadingPage, null, "payload.loadingPage is null");
         MARKETS_LOADING(payload);
         t.pass("dispatch MARKETS_LOADING");
-        if (++dispatchCount > 1) {
-            flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
-            flux.register.MARKETS_LOADING = MARKETS_LOADING;
-            t.end();
-        }
     };
     flux.register.LOAD_METADATA = function (payload) {
         t.equal(payload.constructor, Object, "payload is an object");
         t.equal(payload.metadata.constructor, Object, "payload.metadata is an object");
         LOAD_METADATA(payload);
         t.pass("dispatch LOAD_METADATA");
-        t.end();
     };
     flux.register.INITIAL_LOAD_COMPLETE = function (payload) {
         t.false(payload, "payload is falsy");

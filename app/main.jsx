@@ -31,6 +31,7 @@ var stores = {
   search: new dispatcher.search()
 };
 
+window.abi = require("augur-abi");
 window.flux = new Flux(stores, actions);
 flux.augur = require("augur.js");
 

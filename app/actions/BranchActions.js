@@ -50,7 +50,7 @@ module.exports = {
 
       self.flux.actions.report.submitQualifiedReports(function (err, res) {
           if (err) console.error("ReportsPage.submitQualifiedReports:", err);
-          if (res) console.log("submitted reports:", res);
+          // if (res) console.log("submitted reports:", res);
       });
 
       // if this is a new report period, load events to report
@@ -70,7 +70,7 @@ module.exports = {
               self.flux.augur.incrementPeriodAfterReporting({
                 branch: currentBranch.id,
                 onSent: function (result) {
-                  console.log("incrementPeriod sent:", result);
+                  // console.log("incrementPeriod sent:", result);
                 },
                 onSuccess: function (result) {
                   self.flux.augur.getReportPeriod(currentBranch.id, function (reportPeriod) {

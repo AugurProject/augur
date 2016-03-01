@@ -15,8 +15,8 @@ var utils = require("../app/libs/utilities");
 var flux = require("./mock");
 var tools = require("./tools");
 
-// market ID on network 7
-var marketId = abi.bignum("-0xe23ad526eb822279190558241a9ead324be156fa03c16ef21e17e0e9a44fcf72");
+// market ID on network 2
+var marketId = abi.bignum("-0x6248531e317da800bac91d186ca8ca64f0a57e7171128b8ce0799b5160dca1b");
 
 flux.augur.rpc.useHostedNode();
 flux.augur.connect();
@@ -27,13 +27,13 @@ var marketInfo = flux.augur.getMarketInfo(abi.hex(marketId));
 // from https://github.com/AugurProject/ramble tests
 var expected = {
     marketId: abi.hex(marketId),
-    image: fs.readFileSync(join(__dirname, "lena.png")),
-    details: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    tags: ["latin", "lorem ipsum"],
-    source: "Reality Keys",
+    image: fs.readFileSync(join(__dirname, "spacex.png")),
+    details: "SpaceX hit a big milestone on Friday with NASA confirming on Friday that the Elon Musk-led space cargo business will launch astronauts to the International Space Station by 2017.\n\nLast year, the space agency tentatively awarded a $2.6 billion contract to SpaceX to carry crew to space. NASA’s announcement on Friday formalizes the deal, which involves SpaceX loading its Crew Dragon spacecraft with astronauts and sending them beyond the stratosphere.",
+    tags: ["space", "Dragon", "ISS"],
+    source: "generic",
     links: [
-        "http://www.lipsum.com/",
-        "https://github.com/traviskaufman/node-lipsum"
+        "http://fortune.com/2015/11/20/spacex-astronauts-international-space-station/",
+        "http://www.spacex.com"
     ]
 };
 

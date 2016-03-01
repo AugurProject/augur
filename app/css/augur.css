@@ -789,8 +789,11 @@ a.market-pane:hover {
 }
 
 .metadata-image {
-    height: 100px;
-    margin-bottom: 25px;
+    max-height: 200px;
+    max-width: 90%;
+    margin: 15px 0 10px 0;
+    /*border: 1px solid #E6E6E6;*/
+    padding: 10px;
 }
 
 .progress-modal-subheading {
@@ -913,6 +916,12 @@ a.market-pane:hover {
     display: none;
 }
 
+.stop-order-label {
+    font-size: 10pt;
+    font-weight: normal;
+    color: #76838f;
+}
+
 #overview .welcome.alert h3 {
     border: none;
 }
@@ -951,7 +960,6 @@ a.market-pane:hover {
 }
 
 .holdings .description {
-    margin: 0px 75px 0px 40px;
     overflow: hidden;
     text-overflow: ellipsis;
     float: left;
@@ -1156,7 +1164,6 @@ a.market-pane:hover {
     margin: 0px 0px 0px 0px;
 }
 #add-market-modal .date input {
-  width: 130px;
   margin: 20px auto;
   display: block;
   text-align: center;

@@ -29,7 +29,6 @@ let MarketPage = React.createClass({
 
     getInitialState() {
         return {
-            image: null,
             priceHistoryTimeout: null,
             orderBookTimeout: null,
             addMarketModalOpen: false,
@@ -47,7 +46,7 @@ let MarketPage = React.createClass({
         let account = flux.store("config").getAccount();
         let handle = flux.store("config").getHandle();
         let blockNumber = flux.store("network").getState().blockNumber;
-        var searchState = flux.store("search").getState();
+        let searchState = flux.store("search").getState();
         if (currentBranch && market && market.tradingPeriod &&
             currentBranch.currentPeriod >= market.tradingPeriod.toNumber()) {
             market.matured = true;
@@ -55,23 +54,17 @@ let MarketPage = React.createClass({
                 market.closable = true;
             }
         }
+        let image = null;
         if (market && market.metadata && market.metadata.image) {
-            if (!Buffer.isBuffer(market.metadata.image)) {
-                market.metadata.image = new Buffer(market.metadata.image, "base64");
-            }
-            let blob = new Blob([market.metadata.image]);
-            let reader = new FileReader();
-            reader.onload = function (e) {
-                self.setState({image: e.target.result});
-            };
-            reader.readAsDataURL(blob);
+            image = market.metadata.image;
         }
         return {
             market,
             account,
             handle,
             blockNumber,
-            tourMarketKey: abi.bignum(utils.getTourMarketKey(searchState.results))
+            tourMarketKey: abi.bignum(utils.getTourMarketKey(searchState.results, currentBranch)),
+            image
         };
     },
 
@@ -94,11 +87,13 @@ let MarketPage = React.createClass({
         let tags = [];
         if (market.metadata && market.metadata.tags && market.metadata.tags.length) {
             for (var i = 0, n = market.metadata.tags.length; i < n; ++i) {
-                tags.push(
-                    <span key={market._id + "-tag-" + i} className="tag">
-                        {market.metadata.tags[i]}
-                    </span>
-                );
+                if (market.metadata.tags[i] !== "") {
+                    tags.push(
+                        <span key={market._id + "-tag-" + i} className="tag">
+                            {market.metadata.tags[i]}
+                        </span>
+                    );
+                }
             }
         }
         let closeMarketButton = <span />;
@@ -127,9 +122,11 @@ let MarketPage = React.createClass({
         if (metadata.links && metadata.links.constructor === Array) {
             for (var i = 0, n = metadata.links.length; i < n; ++i) {
                 links.push(
-                    <li><a href={metadata.links[i]}>
-                        {metadata.links[i]}
-                    </a></li>
+                    <li key={market._id + "-link-" + i + "-" + metadata.links[i]}>
+                        <a href={metadata.links[i]}>
+                            {metadata.links[i]}
+                        </a>
+                    </li>
                 );
             }
         }
@@ -373,13 +370,13 @@ let MarketPage = React.createClass({
     },
 
     getMetadata() {
-        console.info("Loading metadata from IPFS...");
         let market = this.state.market;
         if (this.state.metadataTimeout) {
             clearTimeout(this.state.metadataTimeout);
         }
         if (market && market.constructor === Object && market._id) {
             if (!market.metadata) {
+                console.info("Loading metadata from IPFS...");
                 return this.getFlux().actions.market.loadMetadata(market);
             }
         } else {
@@ -388,26 +385,26 @@ let MarketPage = React.createClass({
     },
 
     checkOrderBook() {
-        console.info("Checking order book...");
         let market = this.state.market;
         if (this.state.orderBookTimeout) {
             clearTimeout(this.state.orderBookTimeout);
         }
         if (market && market.constructor === Object && market._id &&
             !market.orderBookChecked) {
+            console.info("Checking order book...");
             return this.getFlux().actions.market.checkOrderBook(market);
         }
         this.setState({orderBookTimeout: setTimeout(this.checkOrderBook, 5000)});
     },
 
     getPriceHistory() {
-        console.info("Loading price history...");
         let market = this.state.market;
         if (this.state.priceHistoryTimeout) {
             clearTimeout(this.state.priceHistoryTimeout);
         }
         if (market && market.constructor === Object && market._id &&
             !market.priceHistory && !market.priceHistoryStatus) {
+            console.info("Loading price history...");
             return this.getFlux().actions.market.loadPriceHistory(market);
         }
         this.setState({priceHistoryTimeout: setTimeout(this.getPriceHistory, 5000)});
