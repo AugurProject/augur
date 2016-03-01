@@ -20,6 +20,8 @@ let SignInModal = React.createClass({
   },
 
   onSignIn: function (event) {
+    event.preventDefault();
+
     if (this.isValid()) {
       let flux = this.getFlux();
       let self = this;
@@ -96,43 +98,47 @@ let SignInModal = React.createClass({
     let passwordStyle = this.state.passwordHelp ? 'error' : null;
 
     let submit = (
-      <Button bsStyle='primary' onClick={ this.onSignIn }>Sign In</Button>
+      <Button bsStyle='primary' type="submit">Sign In</Button>
     );
 
     return (
       <Modal {...this.props} className='send-modal' bsSize='small'>
         <div className='modal-body clearfix'>
           <h4>Sign In </h4>
-          <div className='row'>
-            <div className="col-sm-12">
-              <Input
-                type='text'
-                name="handle"
-                bsStyle={ handleStyle }
-                help={ this.state.handleHelp }
-                placeholder='email address / username'
-                onChange={ this.handleChange } />
+          <form onSubmit={this.onSignIn}>
+            <div className='row'>
+              <div className="col-sm-12">
+                <Input
+                  type='text'
+                  name="handle"
+                  bsStyle={ handleStyle }
+                  help={ this.state.handleHelp }
+                  placeholder='email address / username'
+                  onChange={ this.handleChange } />
+              </div>
+
+              <div className="col-sm-12">
+                <Input
+                  type="password"
+                  name="password"
+                  ref="input"
+                  bsStyle={ passwordStyle }
+                  help={ this.state.passwordHelp }
+                  placeholder='password'
+                  onChange={this.handleChange}
+                  buttonAfter={ submit } />
+              </div>
+
+              <div className="col-sm-12">
+                <Input
+                  label="Remember Me"
+                  type="checkbox"
+                  name="persist"
+                  id="persist-checkbox"
+                  onChange={ this.handlePersistChange } />
+              </div>
             </div>
-            <div className="col-sm-12">
-              <Input
-                type="password"
-                name="password"
-                ref="input"
-                bsStyle={ passwordStyle }
-                help={ this.state.passwordHelp }
-                placeholder='password'
-                onChange={this.handleChange}
-                buttonAfter={ submit } />
-            </div>
-            <div className="col-sm-12">
-              <Input
-                label="Remember Me"
-                type="checkbox"
-                name="persist"
-                id="persist-checkbox"
-                onChange={ this.handlePersistChange } />
-            </div>
-          </div>
+          </form>
         </div>
       </Modal>
     );
