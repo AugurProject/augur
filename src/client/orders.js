@@ -67,16 +67,7 @@ module.exports = {
                 return soln.solution;
             } catch (exc) {
                 console.error("limit.sharesToTrade:", exc);
-                try {
-                    var soln = fzero(function (n) {
-                        return self.f(n, q, i, a, cap);
-                    }, 1, {verbose: true, maxiter: 1000, randomized: true});
-                    if (soln.code !== 1) console.warn("fzero:", soln);
-                    return soln.solution;
-                } catch (ex) {
-                    console.error("limit.sharesToTrade (randomized):", ex);
-                    return constants.MAX_SHARES_PER_TRADE;
-                }
+                return constants.MAX_SHARES_PER_TRADE;
             }
         },
 
