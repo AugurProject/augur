@@ -788,6 +788,35 @@ a.market-pane:hover {
     border-bottom-left-radius: 4px;
 }
 
+.close-market-explanation-box {
+    margin-bottom: 12px;
+}
+.close-market-explanation {
+    line-height: 1.45;
+}
+.close-market-id {
+    font-size: 10pt;
+    display: block;
+    text-align: center;
+    margin-top: 7px;
+    padding: 0;
+}
+.close-market-description {
+    font-size: 11pt;
+    line-height: 1.15;
+    margin-bottom: 4px;
+}
+.close-market-header {
+    border-bottom: 1px solid #E6E6E6;
+    font-size: 16pt;
+}
+.close-market-button {
+    margin-top: 19px;
+    margin-bottom: -18px;
+    text-transform: uppercase;
+    height: 40px;
+}
+
 .metadata-image {
     max-height: 200px;
     max-width: 90%;

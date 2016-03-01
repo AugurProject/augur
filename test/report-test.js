@@ -246,9 +246,11 @@ test("ReportActions.loadPendingReports", function (t) {
         t.equal(payload.pendingReports.constructor, Array, "payload.pendingReports is an array");
         console.log("payload:", payload.pendingReports[payload.pendingReports.length - 1]);
         console.log("pendingReport:",pendingReport);
-        t.deepEqual(payload.pendingReports[payload.pendingReports.length - 1], pendingReport, "payload.pendingReports[end] == " + JSON.stringify(pendingReport));
+        t.deepEqual(payload.pendingReports[0], pendingReport, "payload.pendingReports[0] == " + JSON.stringify(pendingReport));
         LOAD_PENDING_REPORTS_SUCCESS(payload);
         t.pass("dispatch LOAD_PENDING_REPORTS_SUCCESS");
+        var storedPendingReports = flux.store("report").getState().pendingReports;
+        t.deepEqual(storedPendingReports[0], pendingReport, "stores.report.state.pendingReports[0] == " + JSON.stringify(pendingReport));
         flux.register.LOAD_PENDING_REPORTS_SUCCESS = LOAD_PENDING_REPORTS_SUCCESS;
         t.end();
     };
@@ -256,89 +258,127 @@ test("ReportActions.loadPendingReports", function (t) {
     flux.actions.report.loadPendingReports();
 });
 
-if (!process.env.CONTINUOUS_INTEGRATION) {
+test("ReportActions.updatePendingReports", function (t) {
+    flux = reset(flux);
+    var pendingReport = {
+        branchId: branch,
+        eventId: eventID,
+        eventIndex: eventIndex,
+        reportPeriod: reportPeriod,
+        reportedOutcome: reportedOutcome,
+        salt: salt,
+        isUnethical: isUnethical,
+        isIndeterminate: isIndeterminate,
+        submitHash: false,
+        submitReport: false
+    };
+    var UPDATE_PENDING_REPORTS = flux.register.UPDATE_PENDING_REPORTS;
+    flux.register.UPDATE_PENDING_REPORTS = function (payload) {
+        if (DEBUG) console.log("UPDATE_PENDING_REPORTS:", payload);
+        t.equal(payload.constructor, Object, "payload is an object");
+        t.equal(payload.pendingReports.constructor, Array, "payload.pendingReports is an array");
+        t.equal(payload.pendingReports.length, 1, "payload.pendingReports.length == 1");
+        t.deepEqual(payload.pendingReports[0], pendingReport, "payload.pendingReports[0] == " + JSON.stringify(pendingReport));
+        var updatedStoredPendingReports = flux.store("report").getState().pendingReports;
+        UPDATE_PENDING_REPORTS(payload);
+        t.pass("dispatch UPDATE_PENDING_REPORTS");
+        var updatedStoredPendingReports = flux.store("report").getState().pendingReports;
+        t.deepEqual(updatedStoredPendingReports[0], pendingReport, "stores.report.state.pendingReports[0] == " + JSON.stringify(pendingReport));
+        flux.register.UPDATE_PENDING_REPORTS = UPDATE_PENDING_REPORTS;
+        t.end();
+    };
+    flux.stores.report.state.pendingReports = [pendingReport];
+    pendingReport.reportedOutcome = "2";
+    pendingReport.isUnethical = true;
+    flux.actions.report.updatePendingReports(
+        flux.store("report").getState().pendingReports,
+        pendingReport
+    );
+});
 
-    test("ReportActions.getReady", function (t) {
-        flux = reset(flux);
-        var READY = flux.register.READY;
-        flux.register.READY = function (payload) {
-            t.equal(payload.constructor, Object, "payload is an object");
-            t.equal(payload.branch.constructor, String, "payload.branch is a string");
-            READY(payload);
-            t.pass("dispatch READY");
-            console.log(flux.store("report").getState());
-            var storedReady = flux.store("report").getState().ready;
-            t.equal(storedReady.constructor, Array, "stores.report.state.ready is an array");
-            t.equal(storedReady.length, 1, "stores.report.state.ready.length == 1");
-            t.equal(storedReady[0], payload.branch, "storedReady[0] == payload.branch == " + payload.branch);
-            t.equal(flux.store("branch").getCurrentBranch().id, payload.branch, "stores.branch.state.currentBranch.id == payload.branch");
-            flux.register.READY = READY;
-            t.end();
-        };
-        flux.actions.branch.setCurrentBranch(flux.augur.branches.dev);
-        flux.actions.report.getReady();
-    });
+// if (!process.env.CONTINUOUS_INTEGRATION) {
 
-    test("ReportActions.submitReportHash", function (t) {
-        var UPDATE_PENDING_REPORTS = flux.register.UPDATE_PENDING_REPORTS;
-        var UPDATE_CURRENT_BRANCH_SUCCESS = flux.register.UPDATE_CURRENT_BRANCH_SUCCESS;
-        flux.register.UPDATE_PENDING_REPORTS = function (payload) {
-            if (DEBUG) console.log("UPDATE_PENDING_REPORTS:", payload);
-            t.equal(payload.constructor, Object, "payload is an object");
-            t.equal(payload.pendingReports.constructor, Array, "payload.pendingReports is an array");
-            UPDATE_PENDING_REPORTS(payload);
-            t.pass("dispatch UPDATE_PENDING_REPORTS");
-            flux.register.UPDATE_PENDING_REPORTS = UPDATE_PENDING_REPORTS;
-            t.end();
-        };
-        flux.register.UPDATE_CURRENT_BRANCH_SUCCESS = function (payload) {
-            var branchID = flux.store("branch").getCurrentBranch().id;
-            console.log("branchID:", branchID);
-            flux.actions.report.loadEventsToReport();
-            var reportPeriod = flux.augur.getReportPeriod(branchID);
-            console.log("reportPeriod:", reportPeriod);
-            var reportedOutcome = "1";
-            var eventsToReport = flux.store("report").getState().eventsToReport;
-            console.log("eventsToReport:", eventsToReport);
-            for (var eventID in eventsToReport) {
-                if (!eventsToReport.hasOwnProperty(eventID)) continue;
-                console.log("Submit hash for event:", eventID);
-                flux.actions.report.submitReportHash(branchID, eventToReport, reportPeriod, reportedOutcome);
-            }
-        };
-        flux.stores.network.state.blockNumber = flux.augur.rpc.blockNumber();
-        var branches = flux.augur.getBranches();
-        console.log("branches:", branches);
-        flux.actions.branch.setCurrentBranch(branches[branches.length - 1]);
-    });
+//     test("ReportActions.getReady", function (t) {
+//         flux = reset(flux);
+//         var READY = flux.register.READY;
+//         flux.register.READY = function (payload) {
+//             t.equal(payload.constructor, Object, "payload is an object");
+//             t.equal(payload.branch.constructor, String, "payload.branch is a string");
+//             READY(payload);
+//             t.pass("dispatch READY");
+//             console.log(flux.store("report").getState());
+//             var storedReady = flux.store("report").getState().ready;
+//             t.equal(storedReady.constructor, Array, "stores.report.state.ready is an array");
+//             t.equal(storedReady.length, 1, "stores.report.state.ready.length == 1");
+//             t.equal(storedReady[0], payload.branch, "storedReady[0] == payload.branch == " + payload.branch);
+//             t.equal(flux.store("branch").getCurrentBranch().id, payload.branch, "stores.branch.state.currentBranch.id == payload.branch");
+//             flux.register.READY = READY;
+//             t.end();
+//         };
+//         flux.actions.branch.setCurrentBranch(flux.augur.branches.dev);
+//         flux.actions.report.getReady();
+//     });
 
-    test("ReportActions.submitQualifiedReports", function (t) {
-        var checkbox = {loadPendingReportsSuccess: false, submitQualifiedReports: false};
-        var LOAD_PENDING_REPORTS_SUCCESS = flux.register.LOAD_PENDING_REPORTS_SUCCESS;
-        flux.register.LOAD_PENDING_REPORTS_SUCCESS = function (payload) {
-            if (DEBUG) console.log("LOAD_PENDING_REPORTS_SUCCESS:", JSON.stringify(payload, null, 2));
-            t.equal(payload.constructor, Object, "payload is an object");
-            t.equal(payload.pendingReports.constructor, Array, "payload.pendingReports is an array");
-            LOAD_PENDING_REPORTS_SUCCESS(payload);
-            t.pass("dispatch LOAD_PENDING_REPORTS_SUCCESS");
-        };
-        flux.stores.report.state.pendingReports = [{
-            branchId: branch,
-            reportPeriod: reportPeriod,
-            reportedOutcome: reportedOutcome,
-            salt: salt,
-            submitHash: false,
-            submitReport: false
-        }];
-        flux.actions.report.submitQualifiedReports(function (err, reports) {
-            t.equal(err, null, "err == null");
-            t.pass("submit qualified reports: " + JSON.stringify(reports));
-            t.equal(reports.constructor, Object, "reports is an object");
-            t.equal(reports.sentReports.constructor, Array, "reports.sentReports is an array");
-            t.equal(reports.pendingReports.constructor, Array, "reports.pendingReports is an array");
-            flux.register.LOAD_PENDING_REPORTS_SUCCESS = LOAD_PENDING_REPORTS_SUCCESS;
-            t.end();
-        });
-    });
+//     test("ReportActions.submitReportHash", function (t) {
+//         var UPDATE_PENDING_REPORTS = flux.register.UPDATE_PENDING_REPORTS;
+//         var UPDATE_CURRENT_BRANCH_SUCCESS = flux.register.UPDATE_CURRENT_BRANCH_SUCCESS;
+//         flux.register.UPDATE_PENDING_REPORTS = function (payload) {
+//             if (DEBUG) console.log("UPDATE_PENDING_REPORTS:", payload);
+//             t.equal(payload.constructor, Object, "payload is an object");
+//             t.equal(payload.pendingReports.constructor, Array, "payload.pendingReports is an array");
+//             UPDATE_PENDING_REPORTS(payload);
+//             t.pass("dispatch UPDATE_PENDING_REPORTS");
+//             flux.register.UPDATE_PENDING_REPORTS = UPDATE_PENDING_REPORTS;
+//             t.end();
+//         };
+//         flux.register.UPDATE_CURRENT_BRANCH_SUCCESS = function (payload) {
+//             var branchID = flux.store("branch").getCurrentBranch().id;
+//             console.log("branchID:", branchID);
+//             flux.actions.report.loadEventsToReport();
+//             var reportPeriod = flux.augur.getReportPeriod(branchID);
+//             console.log("reportPeriod:", reportPeriod);
+//             var reportedOutcome = "1";
+//             var eventsToReport = flux.store("report").getState().eventsToReport;
+//             console.log("eventsToReport:", eventsToReport);
+//             for (var eventID in eventsToReport) {
+//                 if (!eventsToReport.hasOwnProperty(eventID)) continue;
+//                 console.log("Submit hash for event:", eventID);
+//                 flux.actions.report.submitReportHash(branchID, eventToReport, reportPeriod, reportedOutcome);
+//             }
+//         };
+//         flux.stores.network.state.blockNumber = flux.augur.rpc.blockNumber();
+//         var branches = flux.augur.getBranches();
+//         console.log("branches:", branches);
+//         flux.actions.branch.setCurrentBranch(branches[branches.length - 1]);
+//     });
 
-}
+//     test("ReportActions.submitQualifiedReports", function (t) {
+//         var checkbox = {loadPendingReportsSuccess: false, submitQualifiedReports: false};
+//         var LOAD_PENDING_REPORTS_SUCCESS = flux.register.LOAD_PENDING_REPORTS_SUCCESS;
+//         flux.register.LOAD_PENDING_REPORTS_SUCCESS = function (payload) {
+//             if (DEBUG) console.log("LOAD_PENDING_REPORTS_SUCCESS:", JSON.stringify(payload, null, 2));
+//             t.equal(payload.constructor, Object, "payload is an object");
+//             t.equal(payload.pendingReports.constructor, Array, "payload.pendingReports is an array");
+//             LOAD_PENDING_REPORTS_SUCCESS(payload);
+//             t.pass("dispatch LOAD_PENDING_REPORTS_SUCCESS");
+//         };
+//         flux.stores.report.state.pendingReports = [{
+//             branchId: branch,
+//             reportPeriod: reportPeriod,
+//             reportedOutcome: reportedOutcome,
+//             salt: salt,
+//             submitHash: false,
+//             submitReport: false
+//         }];
+//         flux.actions.report.submitQualifiedReports(function (err, reports) {
+//             t.equal(err, null, "err == null");
+//             t.pass("submit qualified reports: " + JSON.stringify(reports));
+//             t.equal(reports.constructor, Object, "reports is an object");
+//             t.equal(reports.sentReports.constructor, Array, "reports.sentReports is an array");
+//             t.equal(reports.pendingReports.constructor, Array, "reports.pendingReports is an array");
+//             flux.register.LOAD_PENDING_REPORTS_SUCCESS = LOAD_PENDING_REPORTS_SUCCESS;
+//             t.end();
+//         });
+//     });
+
+// }

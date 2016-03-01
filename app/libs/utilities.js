@@ -151,10 +151,10 @@ module.exports = {
       }
       return {type: "categorical", outcome: id};
     case "scalar":
-      if (id === NO) return {type: "scalar", outcome: "⇩"};
+      if (parseInt(id) === NO) return {type: "scalar", outcome: "⇩"};
       return {type: "scalar", outcome: "⇧"};
     case "binary":
-      if (id === NO) return {type: "binary", outcome: "No"};
+      if (parseInt(id) === NO) return {type: "binary", outcome: "No"};
       return {type: "binary", outcome: "Yes"};
     case "combinatorial":
       return {type: "combinatorial"};

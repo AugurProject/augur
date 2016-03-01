@@ -112,29 +112,33 @@ var ReportActions = {
           augur.getDescription(eventId, function (description) {
             if (description && description.error) return nextEvent(description);
             eventsToReport[eventId].description = description;
-            augur.getMarkets(eventId, function (markets) {
-              if (!markets) return nextEvent("no markets found");
-              if (markets.error) return nextEvent(markets);
-              async.each(markets, function (thisMarket, nextMarket) {
-                var market = self.flux.store("market").getMarket(abi.bignum(thisMarket));
-                if (market) {
-                  eventsToReport[eventId].markets.push(market);
-                  return nextMarket();
-                }
-                augur.getMarketInfo(thisMarket, function (marketInfo) {
-                  eventsToReport[eventId].type = marketInfo.type;
-                  self.flux.actions.market.parseMarketInfo(marketInfo, function (info) {
-                    augur.ramble.getMarketMetadata(thisMarket, {sourceless: false}, function (err, metadata) {
-                      if (err) console.error("getMetadata:", err);
-                      if (metadata) info.metadata = metadata;
-                      eventsToReport[eventId].markets.push(info);
-                      nextMarket();
+            augur.getEventIndex(eventId, branch.reportPeriod, function (eventIndex) {
+              if (eventIndex && eventIndex.error) return nextEvent(eventIndex);
+              eventsToReport[eventId].index = eventIndex;
+              augur.getMarkets(eventId, function (markets) {
+                if (!markets) return nextEvent("no markets found");
+                if (markets.error) return nextEvent(markets);
+                async.each(markets, function (thisMarket, nextMarket) {
+                  var market = self.flux.store("market").getMarket(abi.bignum(thisMarket));
+                  if (market) {
+                    eventsToReport[eventId].markets.push(market);
+                    return nextMarket();
+                  }
+                  augur.getMarketInfo(thisMarket, function (marketInfo) {
+                    eventsToReport[eventId].type = marketInfo.type;
+                    self.flux.actions.market.parseMarketInfo(marketInfo, function (info) {
+                      augur.ramble.getMarketMetadata(thisMarket, {sourceless: false}, function (err, metadata) {
+                        if (err) console.error("getMetadata:", err);
+                        if (metadata) info.metadata = metadata;
+                        eventsToReport[eventId].markets.push(info);
+                        nextMarket();
+                      });
                     });
                   });
+                }, function (err) {
+                  if (err) return nextEvent(err);
+                  nextEvent();
                 });
-              }, function (err) {
-                if (err) return nextEvent(err);
-                nextEvent();
               });
             });
           });
@@ -186,92 +190,130 @@ var ReportActions = {
     });
   },
 
+  updatePendingReports: function (pendingReports, report) {
+    var isUpdate;
+    if (pendingReports && pendingReports.constructor === Array && pendingReports.length) {
+      for (var i = 0, n = pendingReports.length; i < n; ++i) {
+        if (pendingReports[i].branchId === report.branchId &&
+            pendingReports[i].eventId === report.eventId) {
+          for (var k in report) {
+            if (!report.hasOwnProperty(k)) continue;
+            pendingReports[i][k] = report[k];
+          }
+          isUpdate = true;
+          break;
+        }
+      }
+    }
+    if (!isUpdate) pendingReports.push(report);
+    this.flux.actions.report.storeReports(pendingReports);
+    this.dispatch(constants.report.UPDATE_PENDING_REPORTS, {pendingReports});
+  },
+
   /**
    * Create, broadcast, and store the report hash.
    * (Should be called during the first half of the reporting period.)
    */
   submitReportHash: function (branchId, event, reportPeriod, reportedOutcome, isUnethical, isIndeterminate, cb) {
-    cb = cb || function (e, r) { console.log(e, r); };
+    cb = cb || function () {};
     var self = this;
-    reportedOutcome = abi.bignum(reportedOutcome);
     var minValue = abi.bignum(event.minValue);
     var maxValue = abi.bignum(event.maxValue);
-    this.flux.augur.getEventIndex(reportPeriod, event.id, function (eventIndex) {
-      if (eventIndex === undefined || eventIndex === null || eventIndex.error) {
-        return console.error("eventIndex:", eventIndex);
-      }
+    var numOutcomes = abi.bignum(event.numOutcomes);
 
-      // Re-scale scalar/categorical reports so they fall between 0 and 1
-      if (event.type === "scalar") {
-        reportedOutcome = reportedOutcome.minus(minValue).dividedBy(maxValue.minus(minValue)).toString();
-      } else if (event.type === "categorical") {
-        reportedOutcome = reportedOutcome.minus(abi.bignum(1)).dividedBy(abi.bignum(event.numOutcomes - 1)).toString();
-      }
+    // Re-scale scalar/categorical reports so they fall between 0 and 1
+    if (event.type === "scalar") {
+      reportedOutcome = abi.bignum(reportedOutcome)
+                           .minus(minValue)
+                           .dividedBy(maxValue.minus(minValue)).toFixed();
+    } else if (event.type === "categorical") {
+      reportedOutcome = abi.bignum(reportedOutcome)
+                           .minus(abi.bignum(1))
+                           .dividedBy(numOutcomes.minus(abi.bignum(1))).toFixed();
+    }
 
-      var account = self.flux.store("config").getAccount();
-      var salt = utils.bytesToHex(secureRandom(32));
-      var pendingReports = self.flux.store("report").getState().pendingReports;
-      pendingReports.push({
-        branchId,
+    var account = this.flux.store("config").getAccount();
+    var salt = utils.bytesToHex(secureRandom(32));
+    this.flux.actions.report.updatePendingReports(
+      this.flux.store("report").getState().pendingReports, {
+        branchId: branchId,
         eventId: event.id,
-        eventIndex,
-        reportPeriod,
-        reportedOutcome,
-        salt,
-        isUnethical,
-        isIndeterminate,
+        eventIndex: event.index,
+        reportPeriod: reportPeriod,
+        reportedOutcome: reportedOutcome,
+        salt: salt,
+        isUnethical: isUnethical,
+        isIndeterminate: isIndeterminate,
         submitHash: false,
         submitReport: false
-      });
-      self.flux.actions.report.storeReports(pendingReports);
-      self.dispatch(constants.report.UPDATE_PENDING_REPORTS, {pendingReports});
-      var reportHash = self.flux.augur.makeHash(
-        salt,
-        reportedOutcome,
-        event.id,
-        account,
-        isIndeterminate,
-        event.type === "binary"
-      );
-      self.flux.actions.report.saveReport(
-        branchId,
-        event.id,
-        eventIndex,
-        reportHash,
-        reportedOutcome,
-        salt,
-        isUnethical,
-        isIndeterminate,
-        false,
-        false
-      );
-      self.flux.augur.submitReportHash({
-        branch: branchId,
-        reportHash: reportHash,
-        reportPeriod: reportPeriod,
-        eventID: event.id,
-        eventIndex: eventIndex,
-        onSent: function (res) {},
-        onSuccess: function (res) {
-          console.log("report hash submitted:", res);
-          pendingReports[pendingReports.length - 1].submitHash = true;
-          self.dispatch(constants.report.UPDATE_PENDING_REPORTS, {pendingReports});
-          self.flux.actions.report.saveReport(
-            branchId,
-            event.id,
-            eventIndex,
-            reportHash,
-            reportedOutcome,
-            salt,
-            isUnethical,
-            isIndeterminate,
-            true,
-            false
-          );
-          cb(null, res);
-        },
-        onFailed: cb
-      });
+      }
+    );
+    var reportHash = this.flux.augur.makeHash(
+      salt,
+      reportedOutcome,
+      event.id,
+      account,
+      isIndeterminate,
+      event.type === "binary"
+    );
+    this.flux.actions.report.saveReport(
+      branchId,
+      event.id,
+      event.index,
+      reportHash,
+      reportedOutcome,
+      salt,
+      isUnethical,
+      isIndeterminate,
+      false,
+      false
+    );
+    this.flux.augur.submitReportHash({
+      branch: branchId,
+      reportHash: reportHash,
+      reportPeriod: reportPeriod,
+      eventID: event.id,
+      eventIndex: event.index,
+      onSent: function (res) {
+        self.flux.actions.report.updatePendingReports(
+          self.flux.store("report").getState().pendingReports,
+          {branchId: branchId, eventId: event.id, submitHash: true}
+        );
+        self.flux.actions.report.saveReport(
+          branchId,
+          event.id,
+          event.index,
+          reportHash,
+          reportedOutcome,
+          salt,
+          isUnethical,
+          isIndeterminate,
+          true,
+          false
+        );
+      },
+      onSuccess: function (res) {
+        cb(null, res);
+      },
+      onFailed: function (err) {
+        self.flux.actions.report.updatePendingReports(
+          self.flux.store("report").getState().pendingReports,
+          {branchId: branchId, eventId: event.id, submitHash: false}
+        );
+        self.flux.actions.report.saveReport(
+          branchId,
+          event.id,
+          event.index,
+          reportHash,
+          reportedOutcome,
+          salt,
+          isUnethical,
+          isIndeterminate,
+          false,
+          false
+        );
+        cb(err);
+      }
     });
   },
 
@@ -537,7 +579,7 @@ var ReportActions = {
     var self = this;
     var flux = this.flux;
     var suffix = Math.random().toString(36).substring(4);
-    periodLength = periodLength || 25;
+    periodLength = periodLength || 30;
     branchDescription = branchDescription || suffix;
     blocksUntilExpiration = blocksUntilExpiration || 5;
     description = description || suffix;

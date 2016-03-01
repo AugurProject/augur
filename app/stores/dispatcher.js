@@ -56,7 +56,8 @@ stores.market.initialize = function () {
     constants.market.COMMENT_SAVED, this.handleCommentSaved,
     constants.market.CHECK_ORDER_BOOK_SUCCESS, this.handleCheckOrderBookSuccess,
     constants.market.LOAD_METADATA_SUCCESS, this.handleLoadMetadataSuccess,
-    constants.market.INITIAL_LOAD_COMPLETE, this.handleInitialLoadComplete
+    constants.market.INITIAL_LOAD_COMPLETE, this.handleInitialLoadComplete,
+    constants.market.CLOSED_MARKET, this.handleClosedMarket
   );
 };
 stores.network.initialize = function () {

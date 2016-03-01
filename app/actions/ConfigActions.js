@@ -10,6 +10,7 @@ module.exports = {
   connect: function (hosted) {
     var host, self = this;
     var augur = this.flux.augur;
+    augur.rpc.nodes.hosted = ["https://report.augur.net"];
     var connectHostedCb = function (host) {
       if (!host) {
         return console.error("Couldn't connect to hosted node:", host);
@@ -42,8 +43,15 @@ module.exports = {
     var self = this;
     var augur = this.flux.augur;
     augur.rpc.reset();
+    augur.rpc.nodes.hosted = ["https://report.augur.net"];
     augur.connect(null, null, function (connected) {
-      augur.rpc.excision = true;
+      if (augur.rpc.nodes.hosted.length > 1) {
+        augur.rpc.excision = true;
+        augur.rpc.balancer = true;
+      } else {
+        augur.rpc.excision = false;
+        augur.rpc.balancer = false;
+      }
       self.flux.actions.config.setIsHosted(connected);
       if (!connected) return cb(false);
       cb(augur.rpc.nodes.hosted[0]);
@@ -67,14 +75,14 @@ module.exports = {
   // set up filters: monitor the blockchain for changes
   setupFilters: function () {
     var self = this;
-    var augur = this.flux.augur;
-    augur.filters.listen({
+    this.flux.augur.filters.listen({
 
       // listen for new blocks
       block: function (blockHash) {
-        if (blockHash && self.flux.store('config').getAccount()) {
+        if (self.flux.store("config").getAccount()) {
           self.flux.actions.asset.updateAssets();
         }
+        self.flux.actions.branch.updateCurrentBranch();
       },
 
       // listen for augur transactions

@@ -148,5 +148,13 @@ module.exports = {
     } else {
       return false;
     }
+  },
+  handleClosedMarket: function (payload) {
+    var market = this.state.markets[payload.market.id];
+    if (market) {
+      market.closed = true;
+      this.state.markets[payload.market.id] = market;
+      this.emit(constants.CHANGE_EVENT);
+    }
   }
 };

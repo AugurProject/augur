@@ -428,6 +428,13 @@ module.exports = {
       this.dispatch(constants.market.UPDATE_ORDERS_SUCCESS, {orders});
     }
     this.flux.actions.market.checkOrderBook(market);
+  },
+
+  closedMarket: function (market) {
+    if (market && market.id) {
+      this.dispatch(constants.market.CLOSED_MARKET, {market});
+      this.flux.actions.market.loadMarket(market.id);
+    }
   }
 
 };

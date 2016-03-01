@@ -35,7 +35,6 @@ module.exports = {
     var account = this.flux.store('config').getAccount();
     if (account) {
       this.flux.augur.getAccountMeanTradePrices(account, function (meanTradePrices) {
-        console.log("meanTradePrices:", meanTradePrices);
         if (meanTradePrices && meanTradePrices.error) {
           return console.error("loadMeanTradePrices:", meanTradePrices);
         }
