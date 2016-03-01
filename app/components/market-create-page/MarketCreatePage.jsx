@@ -8,18 +8,13 @@ let DatePicker = require("react-date-picker");
 let TimePicker = require("react-time-picker");
 let moment = require("moment");
 let Button = require("react-bootstrap/lib/Button");
+let Link = require("react-router/lib/components/Link");
 let Input = require("react-bootstrap/lib/Input");
-let Modal = require("react-bootstrap/lib/Modal");
-let ReactTabs = require("react-tabs");
-let Tab = ReactTabs.Tab;
-let Tabs = ReactTabs.Tabs;
-let TabList = ReactTabs.TabList;
-let TabPanel = ReactTabs.TabPanel;
-let constants = require("../libs/constants");
-let utilities = require("../libs/utilities");
-let ProgressModal = require("./ProgressModal");
+let constants = require("../../libs/constants");
+let utilities = require("../../libs/utilities");
+let ProgressModal = require("../ProgressModal");
 
-let AddMarketModal = React.createClass({
+let MarketCreatePage = React.createClass({
 
   mixins: [FluxMixin, StoreWatchMixin("market", "network", "asset")],
 
@@ -180,6 +175,17 @@ let AddMarketModal = React.createClass({
     }
   },
 
+  onBack: function (event) {
+    var newPageNumber = this.state.pageNumber - 1;
+    this.setState({pageNumber: newPageNumber});
+  },
+
+  goToPage(newPageNumber) {
+    if (this.validatePage(this.state.pageNumber)) {
+      this.setState({pageNumber: newPageNumber});
+    }
+  },
+
   validatePage: function (pageNumber) {
     if (pageNumber === 1) {
       if (this.state.tab === 0) this.setState({minValue: 1, maxValue: 2});
@@ -220,13 +226,13 @@ let AddMarketModal = React.createClass({
     this.props.onHide();
   },
 
-  onBack: function (event) {
-    var newPageNumber = this.state.pageNumber - 1;
-    this.setState({pageNumber: newPageNumber});
-  },
-
   onSubmit: function(event) {
     if (!this.validatePage(this.state.pageNumber)) return;
+    let marketType;
+
+    if (this.props.query != null) {
+      marketType = this.props.query.type;
+    }
     var self = this;
     var flux = this.getFlux();
     var newMarketParams = {
@@ -248,14 +254,12 @@ let AddMarketModal = React.createClass({
     var checkbox = {createMarket: false, addMetadata: false};
     var minValue, maxValue, numOutcomes;
 
-    // binary
-    if (this.state.tab === 0) {
+    if (marketType === "binary") {
       minValue = 1;
       maxValue = 2;
       numOutcomes = 2;
 
-    // numerical
-    } else if (this.state.tab === 2) {
+    } else if (marketType === "scalar") {
       minValue = this.state.minValue;
       maxValue = this.state.maxValue;
       numOutcomes = 2;
@@ -459,8 +463,79 @@ let AddMarketModal = React.createClass({
   },
 
   render: function () {
+    let page, subheading, footer, marketType;
 
-    var page, subheading, footer;
+    if (this.props.query != null) {
+      marketType = this.props.query.type;
+    }
+
+    if (marketType == null) {
+      return (
+          <div>
+            <h1>
+              Select the type of market you want to create
+            </h1>
+
+            <div className="">
+              <Link to="market-create" query={{type: "binary"}}>
+                <h4>
+                  A market with a <span className="text-uppercase">yes</span> or
+                  <span className="text-uppercase">no</span> outcome
+                </h4>
+                            <span>
+                                Select
+                            </span>
+              </Link>
+
+              <p>
+                Ask a question that has a simple <span className="text-uppercase">yes</span> or
+                <span className="text-uppercase">no</span> answer
+              </p>
+            </div>
+            <div className="">
+              <Link to="market-create" query={{type: "categorical"}}>
+                <h4>
+                  A market with a <span className="text-uppercase">multiple choice</span> outcome
+                </h4>
+                <span>
+                    Select
+                </span>
+              </Link>
+
+              <p>
+                Ask a question and provide a series of multiple choice answers
+              </p>
+            </div>
+            <div className="">
+              <Link to="market-create" query={{type: "scalar"}}>
+                <h4>
+                  A market with a <span className="text-uppercase">numeric</span> outcome
+                </h4>
+                            <span>
+                                Select
+                            </span>
+              </Link>
+
+              <p>
+                Ask a question that has an answer somewhere within a range of numbers
+              </p>
+            </div>
+            <div>
+              <h4>
+                Important:
+              </h4>
+              <p>
+                There is a $30.00 bond charged to your account when you create a new market. If the
+                outcome
+                of your market cannot be determined (and the market cannot be expired as a result) or if
+                your market is ruled unethical, this bond will be forfeited. If your market is expired
+                the
+                bond will be returned to you in full.
+              </p>
+            </div>
+          </div>
+      );
+    }
 
     if (this.state.pageNumber === 2) {
 
@@ -688,107 +763,129 @@ let AddMarketModal = React.createClass({
       }
       subheading = '';
       var inputStyle = this.state.marketTextError ? 'error' : null;
-      page = (
-        <Tabs onSelect={ this.handleSelect } selectedIndex={ this.state.tab } >
-          <TabList>
-            <Tab>Yes or No</Tab>
-            <Tab>Multiple Choice</Tab>
-            <Tab>Numerical</Tab>
-          </TabList>
-          <TabPanel>
+      if (marketType === "binary") {
+        page = (
             <div>
               <p>Enter a <b>yes or no question</b> for the market to trade on.  This question should be easily verifiable and have an expiring date in the future.</p>
               <p>For example: "Will it rain in New York City on November 12, 2016?"</p>
               <Input
-                type="textarea"
-                help={this.state.marketTextError}
-                bsStyle={inputStyle}
-                value={this.state.marketText}
-                placeholder="Will it rain in New York City on November 12, 2016?"
-                onChange={this.onChangeMarketText} />
+                  type="textarea"
+                  help={this.state.marketTextError}
+                  bsStyle={inputStyle}
+                  value={this.state.marketText}
+                  placeholder="Will it rain in New York City on November 12, 2016?"
+                  onChange={this.onChangeMarketText} />
               <span className="text-count pull-right">{this.state.marketTextCount}</span>
             </div>
-          </TabPanel>
-          <TabPanel>
-            <div className="col-sm-12">
-              <p>Enter a <b>multiple choice question</b> for the market to trade on.  This question should be easily verifiable and have an expiring date in the future.</p>
-              <Input
-                type='textarea'
-                help={ this.state.marketTextError }
-                bsStyle={ inputStyle }
-                value={ this.state.marketText }
-                placeholder="Which political party's candidate will win the 2016 U.S. Presidential Election?  Choices: Democratic, Republican, Libertarian, other"
-                onChange={ this.onChangeMarketText } />
-              <span className="text-count pull-right">{ this.state.marketTextCount }</span>
+        );
+      } else if (marketType === "categorical") {
+        page = (
+            <div>
+        <div className="col-sm-12">
+          <p>Enter a <b>multiple choice question</b> for the market to trade on.  This question should be easily verifiable and have an expiring date in the future.</p>
+          <Input
+              type='textarea'
+              help={ this.state.marketTextError }
+              bsStyle={ inputStyle }
+              value={ this.state.marketText }
+              placeholder="Which political party's candidate will win the 2016 U.S. Presidential Election?  Choices: Democratic, Republican, Libertarian, other"
+              onChange={ this.onChangeMarketText } />
+          <span className="text-count pull-right">{ this.state.marketTextCount }</span>
+        </div>
+        <div className="col-sm-12">
+            <p>Choices:</p>
+        { choices }
+        <Button bsStyle="default" onClick={ this.onAddAnswer }>
+          Add another answer
+        </Button>
+        </div>
             </div>
-            <div className="col-sm-12">
-              <p>Choices:</p>
-              { choices }
-              <Button bsStyle="default" onClick={ this.onAddAnswer }>
-                Add another answer
-              </Button>
+        );
+      } else if (marketType === "scalar") {
+        page = (
+            <div>
+              <div className="col-sm-12">
+                <p>Enter a <b>numerical question</b> for the market to trade on.  This question should be easily verifiable and have an expiring date in the future.</p>
+                <p>Answers to numerical questions can be anywhere within a range of numbers.  For example, "What will the high temperature be in San Francisco, California, on July 1, 2016?" is a numerical question.</p>
+                <Input
+                    type="textarea"
+                    help={ this.state.marketTextError }
+                    bsStyle={ inputStyle }
+                    value={ this.state.marketText }
+                    placeholder="What will the high temperature (in degrees Fahrenheit) be in San Francisco, California, on July 1, 2016?"
+                    onChange={ this.onChangeMarketText } />
+                <span className="text-count pull-right">{ this.state.marketTextCount }</span>
+              </div>
+              <div className="col-sm-12">
+                <p>What are the minimum and maximum allowed answers to your question?</p>
+                <Input
+                    type="text"
+                    // label="Minimum"
+                    help={this.state.minValueError}
+                    bsStyle={this.state.minValueError ? "error" : null}
+                    value={this.state.minValue}
+                    placeholder="Minimum answer"
+                    wrapperClassName="row clearfix col-lg-12"
+                    onChange={this.onChangeMinimum} />
+                <Input
+                    type="text"
+                    // label="Maximum"
+                    help={this.state.maxValueError}
+                    bsStyle={this.state.maxValueError ? "error" : null}
+                    value={this.state.maxValue}
+                    placeholder="Maximum answer"
+                    wrapperClassName="row clearfix col-lg-12"
+                    onChange={this.onChangeMaximum} />
+              </div>
             </div>
-          </TabPanel>
-          <TabPanel>
-            <div className="col-sm-12">
-              <p>Enter a <b>numerical question</b> for the market to trade on.  This question should be easily verifiable and have an expiring date in the future.</p>
-              <p>Answers to numerical questions can be anywhere within a range of numbers.  For example, "What will the high temperature be in San Francisco, California, on July 1, 2016?" is a numerical question.</p>
-              <Input
-                type="textarea"
-                help={ this.state.marketTextError }
-                bsStyle={ inputStyle }
-                value={ this.state.marketText }
-                placeholder="What will the high temperature (in degrees Fahrenheit) be in San Francisco, California, on July 1, 2016?"
-                onChange={ this.onChangeMarketText } />
-              <span className="text-count pull-right">{ this.state.marketTextCount }</span>
+        );
+      } else {
+        return (
+            <div>
+              what
             </div>
-            <div className="col-sm-12">
-              <p>What are the minimum and maximum allowed answers to your question?</p>
-              <Input
-                type="text"
-                // label="Minimum"
-                help={this.state.minValueError}
-                bsStyle={this.state.minValueError ? "error" : null}
-                value={this.state.minValue}
-                placeholder="Minimum answer"
-                wrapperClassName="row clearfix col-lg-12"
-                onChange={this.onChangeMinimum} />
-              <Input
-                type="text"
-                // label="Maximum"
-                help={this.state.maxValueError}
-                bsStyle={this.state.maxValueError ? "error" : null}
-                value={this.state.maxValue}
-                placeholder="Maximum answer"
-                wrapperClassName="row clearfix col-lg-12"
-                onChange={this.onChangeMaximum} />
-            </div>
-          </TabPanel>
-        </Tabs>
-      );
+        );
+      }
       footer = (
         <div className="pull-right">
           <Button bsStyle="primary" onClick={ this.onNext }>Next</Button>
         </div>
       );
-    };
+    }
 
     return (
       <div>
-        <Modal {...this.props} bsSize="large" onHide={this.onHide} id='add-market-modal'>
-          <div className="modal-header clearfix">
-            <h4>
-              New Market Builder
-              <span className='subheading pull-right'>{subheading}</span>
-            </h4>
-          </div>
-          <div className="modal-body clearfix">
-            {page}
-          </div>
-          <div className="modal-footer clearfix">
-            {footer}
-          </div>
-        </Modal>
+        <h4>
+          New Market Builder
+          <span className='subheading pull-right'>{subheading}</span>
+        </h4>
+        <div className="">
+          <ol className="breadcrumb">
+            <li>
+              <Link to="market-create">
+                Type
+              </Link>
+            </li>
+            <li>
+              <span className={`${this.state.pageNumber > 0 ? 'active' : ''}`}>Question</span>
+            </li>
+            <li>
+              <span className={`${this.state.pageNumber > 1 ? 'active' : ''}`}>Extra info</span>
+            </li>
+            <li>
+              <span className={`${this.state.pageNumber > 2 ? 'active' : ''}`}>Fees & liquidity</span>
+            </li>
+            <li>
+              <span className={`${this.state.pageNumber > 3 ? 'active' : ''}`}>Review</span>
+            </li>
+          </ol>
+        </div>
+        <div className="clearfix">
+          {page}
+        </div>
+        <div className="clearfix">
+          {footer}
+        </div>
         <ProgressModal
           backdrop="static"
           show={this.state.progressModal.open}
@@ -804,4 +901,4 @@ let AddMarketModal = React.createClass({
   }
 });
 
-module.exports = AddMarketModal;
+module.exports = MarketCreatePage;

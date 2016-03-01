@@ -39,6 +39,7 @@ var AugurApp = require("./components/AugurApp");
 var Overview = require("./components/Overview");
 var MarketsPage = require('./components/markets-page/MarketsPage.jsx');
 var MarketPage = require('./components/market-page/MarketPage.jsx');
+var MarketCreatePage = require('./components/market-create-page/MarketCreatePage.jsx');
 var ReportsPage = require('./components/reports-page/ReportsPage.jsx');
 var ReportPage = require('./components/report-page/ReportPage.jsx');
 var Outcomes = require("./components/Outcomes");
@@ -54,6 +55,7 @@ var routes = (
     <DefaultRoute handler={ MarketsPage } flux={ flux } />
     <Route name="overview" path="/overview" handler={ Overview } flux={ flux } title="Overview" />
     <Route name="markets" path="/" handler={ MarketsPage } flux={ flux } title="Markets" />
+    <Route name="market-create" path="/markets/new" handler={ MarketCreatePage } flux={ flux } />
     <Route name="market" path="/markets/:marketId" handler={ MarketPage } flux={ flux } />
     <Route name="reports" path="/reports" handler={ ReportsPage } flux={ flux } title="Reporting" />
     <Route name="report" path="/reports/:eventId" handler={ ReportPage } flux={ flux } />

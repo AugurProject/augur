@@ -10,7 +10,6 @@ let Link = require("react-router/lib/components/Link");
 let Button = require("react-bootstrap/lib/Button");
 let Select = require('react-select');
 let MarketRow = require("./MarketRow");
-let AddMarketModal = require("../AddMarketModal");
 let constants = require("../../libs/constants");
 let utils = require("../../libs/utilities");
 
@@ -24,8 +23,7 @@ let MarketsPage = React.createClass({
             marketsPerPage: constants.MARKETS_PER_PAGE,
             visiblePages: 3,
             pageNum: this.props.params.page ? this.props.params.page - 1 : 0,
-            sortValue: null,
-            addMarketModalOpen: false
+            sortValue: null
         };
     },
 
@@ -115,10 +113,6 @@ let MarketsPage = React.createClass({
         };
     },
 
-    toggleAddMarketModal: function (event) {
-        this.setState({addMarketModalOpen: !this.state.addMarketModalOpen});
-    },
-
     render() {
         let flux = this.getFlux();
         let myOpenOrders = flux.augur.orders.get(this.state.account);
@@ -163,11 +157,12 @@ let MarketsPage = React.createClass({
         let submitMarketAction;
         if (this.state.account) {
             submitMarketAction = (
-                <Button
-                  className="pull-right btn-primary btn-success"
-                  onClick={this.toggleAddMarketModal}>
-                  New Market
-                </Button>
+                <div>
+                    <Link to="market-create"
+                          className="pull-right btn btn-primary btn-success">
+                        New Market
+                    </Link>
+                </div>
             );
         } else {
             submitMarketAction = <span />;
@@ -247,9 +242,6 @@ let MarketsPage = React.createClass({
                     </div>
                 </div>
                 {pagination}
-                <AddMarketModal
-                    show={this.state.addMarketModalOpen}
-                    onHide={this.toggleAddMarketModal} />
             </div>
         );
     }
