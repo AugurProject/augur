@@ -6,7 +6,6 @@ let BigNumber = require("bignumber.js");
 let _ = require("lodash");
 let clone = require("clone");
 let moment = require("moment");
-let ReportConfirmedModal = require("./ReportConfirmedModal");
 let MarketRow = require("../markets-page/MarketRow");
 let utils = require("../../libs/utilities");
 let constants = require("../../libs/constants");
@@ -33,10 +32,6 @@ let ReportsPage = React.createClass({
             );
         }
         return state;
-    },
-
-    confirmReport() {
-        this.props.toggleConfirmReportModal();
     },
 
     render() {
@@ -120,9 +115,6 @@ let ReportsPage = React.createClass({
                         {marketRows}
                     </div>
                 </div>
-                <ReportConfirmedModal
-                    show={this.props.reportConfirmedModalOpen}
-                    onHide={this.props.toggleConfirmReportModal} />
             </div>
         )
     }

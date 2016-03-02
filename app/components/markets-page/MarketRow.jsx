@@ -49,7 +49,7 @@ let MarketRow = React.createClass({
             );
         } else if (report.isRevealPeriod) {
             tableHeaderColSpan = 2;
-            tableHeader = report.isConfirmed ? "Report confirmed" : "Please confirm report";
+            tableHeader = report.isConfirmed ? "Report confirmed" : "Confirming report...";
             content = (
                 <tbody>
                     <tr>
@@ -184,8 +184,8 @@ let MarketRow = React.createClass({
             } else if (report.isRevealPeriod) {
                 if (!report.isConfirmed) {
                     return (
-                        <button className="btn btn-primary" onClick={report.confirmReport}>
-                            Confirm Report
+                        <button className="btn btn-disabled">
+                            Confirming Report...
                         </button>
                     )
                 } else {
