@@ -1,18 +1,25 @@
 let React = require("react");
-let BigNumber = require("bignumber.js");
-let abi = require("augur-abi");
 let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
 let ReactDOM = require("react-dom");
+
+let moment = require("moment");
+let BigNumber = require("bignumber.js");
+let abi = require("augur-abi");
+let constants = require("../../libs/constants");
+let utilities = require("../../libs/utilities");
+
 let DatePicker = require("react-date-picker");
 let TimePicker = require("react-time-picker");
-let moment = require("moment");
 let Button = require("react-bootstrap/lib/Button");
 let Link = require("react-router/lib/components/Link");
 let Input = require("react-bootstrap/lib/Input");
-let constants = require("../../libs/constants");
-let utilities = require("../../libs/utilities");
 let ProgressModal = require("../ProgressModal");
+
+let MarketCreateIndex = require("./MarketCreateIndex");
+let MarketCreateStep1 = require("./MarketCreateStep1");
+//let MarketCreateStep2 = require("./MarketCreateStep2");
+//let MarketCreateStep3 = require("./MarketCreateStep3");
 
 let MarketCreatePage = React.createClass({
 
@@ -24,8 +31,6 @@ let MarketCreatePage = React.createClass({
       marketText: '',
       detailsText: '',
       plainMarketText: '',
-      marketTextMaxLength: 256,
-      marketTextCount: '',
       marketTextError: null,
       marketInvestment: '501',
       marketInvestmentError: null,
@@ -84,11 +89,6 @@ let MarketCreatePage = React.createClass({
 
   onChangeMarketText: function (event) {
     var marketText = event.target.value;
-    if (marketText.length) {
-      this.state.marketTextCount = marketText.length.toString()+'/'+this.state.marketTextMaxLength.toString();
-    } else {
-      this.state.marketTextCount = '';
-    }
     this.setState({marketTextError: null});
     this.setState({marketText: marketText});
     this.setState({plainMarketText: marketText});
@@ -180,15 +180,39 @@ let MarketCreatePage = React.createClass({
     this.setState({pageNumber: newPageNumber});
   },
 
+  goToNextStep() {
+      var newPageNumber = this.state.pageNumber + 1;
+      this.setState({pageNumber: newPageNumber});
+  },
   goToPage(newPageNumber) {
     if (this.validatePage(this.state.pageNumber)) {
       this.setState({pageNumber: newPageNumber});
     }
   },
-
+  //componentWillReceiveProps(nextProps) {
+  //  let newMarketType = nextProps.query.type;
+  //  if (this.props.query.type != newMarketType) {
+  //    let state;
+  //    switch (marketType) {
+  //      case "binary":
+  //        state = { minValue: 1, maxValue: 2 };
+  //      case "categorical":
+  //        state = {};
+  //      case "scalar":
+  //        return "What will the price of oil be at the end of 2016?";
+  //      default:
+  //        console.warn("MarketCreateStep1[getPlaceholderText]: Unknown market type %o", marketType);
+  //        return "";
+  //    }
+  //    this.setState(state);
+  //  }
+  //},
   validatePage: function (pageNumber) {
     if (pageNumber === 1) {
-      if (this.state.tab === 0) this.setState({minValue: 1, maxValue: 2});
+      if (this.state.tab === 0) {
+        this.setState({minValue: 1, maxValue: 2});
+      }
+
       if (this.state.marketText.length > this.state.marketTextMaxLength) {
         this.setState({
           marketTextError: 'Text exceeds the maximum length of ' + this.state.marketTextMaxLength
@@ -394,7 +418,7 @@ let MarketCreatePage = React.createClass({
 
   onAddAnswer: function (event) {
     var numOutcomes = this.state.numOutcomes + 1;
-    var choices = this.state.choices;
+    var choices = this.state.choices.slice();
     var choiceTextError = this.state.choiceTextError;
     choices.push('');
     choiceTextError.push(null);
@@ -414,14 +438,14 @@ let MarketCreatePage = React.createClass({
   },
 
   onChangeAnswerText: function (event) {
-    var choices = this.state.choices;
-    var id = parseInt(event.target.id.split('-')[1]);
     var answerText = event.target.value;
-    this.checkAnswerText(answerText, id);
+    var id = parseInt(event.target.getAttribute("data-index"));
+    console.log("id: %o, text: %o", id, answerText);
+    var choices = this.state.choices.slice();
+    //this.checkAnswerText(answerText, id);
     choices[id] = answerText;
-    this.setState({choices: choices});
     var marketText = this.state.plainMarketText + " Choices: " + choices.join(", ") + ".";
-    this.setState({marketText: marketText});
+    this.setState({choices, marketText});
   },
 
   checkMinimum: function () {
@@ -463,135 +487,23 @@ let MarketCreatePage = React.createClass({
   },
 
   render: function () {
-    let page, subheading, footer, marketType;
+    let stepContent, subheading, footer, marketType;
 
     if (this.props.query != null) {
       marketType = this.props.query.type;
     }
 
     if (marketType == null) {
-      return (
-          <div>
-            <h1>
-              Select the type of market you want to create
-            </h1>
-
-            <div className="">
-              <Link to="market-create" query={{type: "binary"}}>
-                <h4>
-                  A market with a <span className="text-uppercase">yes</span> or
-                  <span className="text-uppercase">no</span> outcome
-                </h4>
-                            <span>
-                                Select
-                            </span>
-              </Link>
-
-              <p>
-                Ask a question that has a simple <span className="text-uppercase">yes</span> or
-                <span className="text-uppercase">no</span> answer
-              </p>
-            </div>
-            <div className="">
-              <Link to="market-create" query={{type: "categorical"}}>
-                <h4>
-                  A market with a <span className="text-uppercase">multiple choice</span> outcome
-                </h4>
-                <span>
-                    Select
-                </span>
-              </Link>
-
-              <p>
-                Ask a question and provide a series of multiple choice answers
-              </p>
-            </div>
-            <div className="">
-              <Link to="market-create" query={{type: "scalar"}}>
-                <h4>
-                  A market with a <span className="text-uppercase">numeric</span> outcome
-                </h4>
-                            <span>
-                                Select
-                            </span>
-              </Link>
-
-              <p>
-                Ask a question that has an answer somewhere within a range of numbers
-              </p>
-            </div>
-            <div>
-              <h4>
-                Important:
-              </h4>
-              <p>
-                There is a $30.00 bond charged to your account when you create a new market. If the
-                outcome
-                of your market cannot be determined (and the market cannot be expired as a result) or if
-                your market is ruled unethical, this bond will be forfeited. If your market is expired
-                the
-                bond will be returned to you in full.
-              </p>
-            </div>
-          </div>
-      );
+      return <MarketCreateIndex/>;
     }
 
     if (this.state.pageNumber === 2) {
-
-      var cashLeft = this.state.cash - this.state.marketInvestment;
-      var tradingFeeHelp = this.state.tradingFeeError ? this.state.tradingFeeError : null;
-      var tradingFeeHelpStyle = this.state.tradingFeeError ? 'error' : null;
-      var marketInvestmentHelp = this.state.marketInvestmentError ? this.state.marketInvestmentError : 'CASH: '+ cashLeft.toFixed(5);
-      var marketInvestmentHelpStyle = this.state.marketInvestmentError ? 'error' : null;
-
-      subheading = 'Fees';
-      page = (
-        <div className="fees">
-
-          <div className="form-horizontal">
-            <Input
-              type='text'
-              label='Trading fee'
-              labelClassName='col-xs-3'
-              help={ tradingFeeHelp }
-              bsStyle={ tradingFeeHelpStyle }
-              wrapperClassName='col-xs-3'
-              addonAfter='%'
-              value={ this.state.tradingFee }
-              onChange={ this.onChangeTradingFee } />
-          </div>
-
-          <p className="desc">The trading fee is the percentage taken from each purchase or sale of an outcome.  These fees are split by you and all owners of winning outcomes</p>
-
-          <div className="form-horizontal">
-            <Input
-              type="text"
-              label="Initial liquidity"
-              help={ marketInvestmentHelp }
-              bsStyle={ marketInvestmentHelpStyle }
-              labelClassName='col-xs-3'
-              wrapperClassName='col-xs-3'
-              value={ this.state.marketInvestment }
-              onChange={ this.onChangeMarketInvestment } />
-          </div>
-
-          <p className="desc">The initial market liquidity is the amount of cash you wish to put in the market upfront.</p>
-
-        </div>
-      );
-      footer = (
-        <div className="pull-right">
-          <Button bsStyle="default" onClick={this.onBack}>Back</Button>
-          <Button bsStyle="primary" onClick={this.onNext}>Next</Button>
-        </div>
-      );
-
+      stepContent = <MarketCreateStep2/>;
     } else if (this.state.pageNumber === 3) {
 
       subheading = "Maturation Date";
 
-      page = (
+      stepContent = (
         <div className="form-group date">
           <div className="col-sm-6">
             <p>Enter a date on or after which the outcome of this event will be known.</p>
@@ -662,7 +574,7 @@ let MarketCreatePage = React.createClass({
         image = <img className="metadata-image" src={this.state.imageDataURL} />;
       }
 
-      page = (
+      stepContent = (
         <div>
           <h5>{subheading}</h5>
           <div className="form-group row">
@@ -742,115 +654,23 @@ let MarketCreatePage = React.createClass({
       );
 
     } else {
-
-      var numOutcomes = this.state.numOutcomes;
-      var choices = new Array(numOutcomes);
-      var placeholderText, choiceId;
-      for (var i = 0; i < numOutcomes; ++i) {
-        placeholderText = 'Enter answer ' + (i + 1);
-        choiceId = 'choice-' + i
-        choices[i] = <Input
-            key={i}
-            id={choiceId}
-            type="text"
-            // label={"Answer " + (i + 1)}
-            help={this.state.choiceTextError[i]}
-            bsStyle={this.state.choiceTextError[i] ? "error" : null}
-            value={this.state.choices[i]}
-            placeholder={placeholderText}
-            wrapperClassName="row clearfix col-lg-12"
-            onChange={this.onChangeAnswerText} />;
-      }
-      subheading = '';
-      var inputStyle = this.state.marketTextError ? 'error' : null;
-      if (marketType === "binary") {
-        page = (
-            <div>
-              <p>Enter a <b>yes or no question</b> for the market to trade on.  This question should be easily verifiable and have an expiring date in the future.</p>
-              <p>For example: "Will it rain in New York City on November 12, 2016?"</p>
-              <Input
-                  type="textarea"
-                  help={this.state.marketTextError}
-                  bsStyle={inputStyle}
-                  value={this.state.marketText}
-                  placeholder="Will it rain in New York City on November 12, 2016?"
-                  onChange={this.onChangeMarketText} />
-              <span className="text-count pull-right">{this.state.marketTextCount}</span>
-            </div>
-        );
-      } else if (marketType === "categorical") {
-        page = (
-            <div>
-        <div className="col-sm-12">
-          <p>Enter a <b>multiple choice question</b> for the market to trade on.  This question should be easily verifiable and have an expiring date in the future.</p>
-          <Input
-              type='textarea'
-              help={ this.state.marketTextError }
-              bsStyle={ inputStyle }
-              value={ this.state.marketText }
-              placeholder="Which political party's candidate will win the 2016 U.S. Presidential Election?  Choices: Democratic, Republican, Libertarian, other"
-              onChange={ this.onChangeMarketText } />
-          <span className="text-count pull-right">{ this.state.marketTextCount }</span>
-        </div>
-        <div className="col-sm-12">
-            <p>Choices:</p>
-        { choices }
-        <Button bsStyle="default" onClick={ this.onAddAnswer }>
-          Add another answer
-        </Button>
-        </div>
-            </div>
-        );
-      } else if (marketType === "scalar") {
-        page = (
-            <div>
-              <div className="col-sm-12">
-                <p>Enter a <b>numerical question</b> for the market to trade on.  This question should be easily verifiable and have an expiring date in the future.</p>
-                <p>Answers to numerical questions can be anywhere within a range of numbers.  For example, "What will the high temperature be in San Francisco, California, on July 1, 2016?" is a numerical question.</p>
-                <Input
-                    type="textarea"
-                    help={ this.state.marketTextError }
-                    bsStyle={ inputStyle }
-                    value={ this.state.marketText }
-                    placeholder="What will the high temperature (in degrees Fahrenheit) be in San Francisco, California, on July 1, 2016?"
-                    onChange={ this.onChangeMarketText } />
-                <span className="text-count pull-right">{ this.state.marketTextCount }</span>
-              </div>
-              <div className="col-sm-12">
-                <p>What are the minimum and maximum allowed answers to your question?</p>
-                <Input
-                    type="text"
-                    // label="Minimum"
-                    help={this.state.minValueError}
-                    bsStyle={this.state.minValueError ? "error" : null}
-                    value={this.state.minValue}
-                    placeholder="Minimum answer"
-                    wrapperClassName="row clearfix col-lg-12"
-                    onChange={this.onChangeMinimum} />
-                <Input
-                    type="text"
-                    // label="Maximum"
-                    help={this.state.maxValueError}
-                    bsStyle={this.state.maxValueError ? "error" : null}
-                    value={this.state.maxValue}
-                    placeholder="Maximum answer"
-                    wrapperClassName="row clearfix col-lg-12"
-                    onChange={this.onChangeMaximum} />
-              </div>
-            </div>
-        );
-      } else {
-        return (
-            <div>
-              what
-            </div>
-        );
-      }
-      footer = (
-        <div className="pull-right">
-          <Button bsStyle="primary" onClick={ this.onNext }>Next</Button>
-        </div>
-      );
+      stepContent = <MarketCreateStep1
+          marketType={marketType}
+          marketText={this.state.marketText}
+          marketTextError={this.state.marketTextError}
+          onChangeMarketText={this.onChangeMarketText}
+          categoricalChoices={this.state.choices}
+          categoricalChoiceErrors={this.state.choiceTextError}
+          onChangeCategoricalChoices={this.onChangeAnswerText}
+          onAddCategoricalOutcome={this.onAddAnswer}
+          minValue={this.state.minValue}
+          minValueError={this.state.minValueError}
+          maxValue={this.state.maxValue}
+          maxValueError={this.state.maxValueError}
+          onChangeMinimum={this.onChangeMinimum}
+          onChangeMaximum={this.onChangeMaximum}
+          onEndDatePicked={this.handleDatePicked}
+          />;
     }
 
     return (
@@ -880,12 +700,9 @@ let MarketCreatePage = React.createClass({
             </li>
           </ol>
         </div>
-        <div className="clearfix">
-          {page}
-        </div>
-        <div className="clearfix">
-          {footer}
-        </div>
+
+        {stepContent}
+
         <ProgressModal
           backdrop="static"
           show={this.state.progressModal.open}
