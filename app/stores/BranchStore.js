@@ -49,14 +49,11 @@ module.exports = {
     this.emit(constants.CHANGE_EVENT);
   },
   handleUpdateCurrentBranchSuccess: function (payload) {
-    console.log("payload:", payload);
     payload.currentPeriod = payload.currentPeriod || 0;
     payload.reportPeriod = payload.reportPeriod || 0;
     payload.isCurrent = payload.isCurrent || false;
     payload.percentComplete = payload.percentComplete || 0;
     this.state.currentBranch = _.merge(this.state.currentBranch, payload);
-    // this.state.currentBranch = payload;
-    console.log("branch:", this.state.currentBranch);
     this.emit(constants.CHANGE_EVENT);
   },
   handleCheckQuorumSent: function (payload) {

@@ -250,7 +250,7 @@ let MarketRow = React.createClass({
                 }
             }
             for (var j = 0; j < market.numOutcomes; ++j) {
-                if (market.outcomes[j].shares[this.props.account]) {
+                if (abi.number(market.outcomes[j].shares[this.props.account])) {
                     ++numPositions;
                 }
             }

@@ -43,7 +43,6 @@ module.exports = {
         blockNumber: currentBlock
       });
       var currentBranch = self.flux.store("branch").getCurrentBranch();
-      console.log("Updating branch:", currentBranch);
       var currentPeriod = Math.floor(currentBlock / currentBranch.periodLength);
       var percentComplete;
       if (currentBranch.periodLength) {

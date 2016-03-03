@@ -204,7 +204,7 @@ module.exports = {
               var totalIn = new BigNumber(0);
               var totalOut = new BigNumber(0);
               var totalUnsold = new BigNumber(0);
-              var cost, unsoldShares, unsoldValue;
+              var cost, shares, unsoldShares, unsoldValue;
               for (var outcome in thisMarket.trades) {
                 if (!thisMarket.trades.hasOwnProperty(outcome)) continue;
                 unsoldShares = null;
@@ -216,14 +216,15 @@ module.exports = {
                 }
                 for (var i = 0; i < thisMarket.trades[outcome].length; ++i) {
                   cost = abi.bignum(thisMarket.trades[outcome][i].cost);
+                  shares = abi.bignum(thisMarket.trades[outcome][i].shares);
                   if (cost.lt(new BigNumber(0))) {
-                    totalIn = totalIn.plus(cost.abs());
+                    totalIn = totalIn.plus(cost.abs().times(shares));
                   } else {
-                    totalOut = totalOut.plus(cost);
+                    totalOut = totalOut.plus(cost.times(shares));
                   }
                 }
                 if (unsoldShares) {
-                  unsoldValue = abi.bignum(augur.getSimulatedSell(thisMarket, outcome, unsoldShares)[0]).dividedBy(100);
+                  unsoldValue = abi.bignum(augur.getSimulatedSell(thisMarket, outcome, unsoldShares)[0]);
                   totalUnsold = totalUnsold.plus(unsoldValue);
                 }
               }
