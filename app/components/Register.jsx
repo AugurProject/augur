@@ -366,6 +366,9 @@ let RegisterModal = React.createClass({
                       label="Remember Me"
                       onChange={this.handlePersistChange} />
                   </div>
+                  <div className="col-sm-12">
+                    <span className="red">Store your password in a safe place!</span>  Your password cannot be recovered.  If you forget it, you will lose all assets in your account.
+                  </div>
                 </div>
               </TabPanel>
               <TabPanel>

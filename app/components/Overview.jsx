@@ -42,6 +42,8 @@ let Overview = React.createClass({
 
   render: function () {
 
+    var self = this;
+    var account = this.state.account || null;
     var exportAccountButton = (
       <div className="col-sm-3">
         <Button
@@ -72,13 +74,13 @@ let Overview = React.createClass({
     }
 
     var accountSection = <span />
-    if (this.state.account) {
+    if (account) {
       accountSection = (
         <div className="account-info">
           <h3>Account</h3>
           <div className="row">
             <div className="col-sm-9">
-              <span className="account">{this.state.account}</span>
+              <span className="account">{account}</span>
             </div>
             {exportAccountButton}
           </div>
@@ -87,7 +89,7 @@ let Overview = React.createClass({
     }
 
     var submitMarketAction;
-    if (this.state.account) {
+    if (account) {
         submitMarketAction = (
             <Button
               className="pull-right btn-primary btn-success"
@@ -110,7 +112,12 @@ let Overview = React.createClass({
           <div className='row'>
             <div className="col-xs-12">
                 {_.map(this.state.authoredMarkets, market => {
-                  return <MarketRow key={market.id} market={market} />;
+                  return (
+                    <MarketRow
+                      key={market.id}
+                      market={market}
+                      account={self.state.account} />
+                  );
                 })}
             </div>
           </div>

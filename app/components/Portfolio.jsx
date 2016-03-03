@@ -28,17 +28,24 @@ let Overview = React.createClass({
       config: flux.store('config').getState(),
       currentBranch: currentBranch,
       holdings: flux.store('market').getMarketsHeld()
-    }
+    };
   },
 
   render: function () {
 
+    var account = this.state.account;
     var holdings = _
       .filter(this.state.holdings, market => {
         return market.outcomes.some((outcome) => outcome.sharesHeld && outcome.sharesHeld.toNumber() > 0);
       })
       .map(function (market) {
-        return <MarketRow key={market.id} market={market} contentType="holdings" />;
+        return (
+          <MarketRow
+            key={market.id}
+            market={market}
+            contentType="holdings"
+            account={account} />
+        );
       });
 
     var holdingsSection = <span />

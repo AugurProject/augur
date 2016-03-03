@@ -1,5 +1,6 @@
 "use strict";
 
+var _ = require("lodash");
 var moment = require("moment");
 var constants = require("../libs/constants");
 
@@ -47,12 +48,15 @@ module.exports = {
     this.state.branches = payload.branches;
     this.emit(constants.CHANGE_EVENT);
   },
-  handleUpdateCurrentBranchSuccess: function (branch) {
-    branch.currentPeriod = branch.currentPeriod || 0;
-    branch.reportPeriod = branch.reportPeriod || 0;
-    branch.isCurrent = branch.isCurrent || false;
-    branch.percentComplete = branch.percentComplete || 0;
-    this.state.currentBranch = branch;
+  handleUpdateCurrentBranchSuccess: function (payload) {
+    console.log("payload:", payload);
+    payload.currentPeriod = payload.currentPeriod || 0;
+    payload.reportPeriod = payload.reportPeriod || 0;
+    payload.isCurrent = payload.isCurrent || false;
+    payload.percentComplete = payload.percentComplete || 0;
+    this.state.currentBranch = _.merge(this.state.currentBranch, payload);
+    // this.state.currentBranch = payload;
+    console.log("branch:", this.state.currentBranch);
     this.emit(constants.CHANGE_EVENT);
   },
   handleCheckQuorumSent: function (payload) {

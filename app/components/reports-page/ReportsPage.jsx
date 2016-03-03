@@ -36,6 +36,7 @@ let ReportsPage = React.createClass({
 
     render() {
         let self = this;
+        let account = this.state.account;
         let blockNumber = this.state.blockNumber;
         let isCommitPeriod = this.state.isCommitPeriod;
         let isRevealPeriod = !isCommitPeriod;
@@ -62,7 +63,11 @@ let ReportsPage = React.createClass({
                 console.log("commit period:", commitPeriodEndMillis);
                 console.log("reveal period:", revealPeriodEndMillis);
                 marketRows.push(
-                    <MarketRow key={event.id + "-" + market._id} market={market} report={report} />
+                    <MarketRow
+                        key={event.id + "-" + market._id}
+                        market={market}
+                        report={report}
+                        account={account} />
                 );
             }
         }

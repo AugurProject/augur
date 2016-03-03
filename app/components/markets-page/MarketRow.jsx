@@ -1,5 +1,8 @@
 let React = require("react");
 let ReactDOM = require("react-dom");
+let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
+let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
+let abi = require("augur-abi");
 let _ = require("lodash");
 let utilities = require("../../libs/utilities");
 let moment = require("moment");
@@ -22,7 +25,6 @@ let MarketRow = React.createClass({
     getReportSection(report, market) {
         if (report == null) return null;
 
-        console.log("report:", report);
         let tableHeader, tableHeaderColSpan, content, tableHeaderClass = "";
         if (report.isCommitPeriod) {
             tableHeaderColSpan = 2;
@@ -99,34 +101,42 @@ let MarketRow = React.createClass({
         );
     },
 
-    getHoldingsSection(openOrdersCount) {
-        if (openOrdersCount != null) {
-            return <span />;
-            /*<div className="table-container holdings">
-                <table className="tabular tabular-condensed">
-                    <thead>
-                    <tr>
-                        <th colSpan="4">Your Trading [DUMMY]</th>
-                    </tr>
-                    </thead>
-
-                    <tbody>
-                    <tr>
-                        <td className="title">Positions</td>
-                        <td className="value">2</td>
-                        <td className="title">Trades</td>
-                        <td className="value">8</td>
-                    </tr>
-                    <tr>
-                        <td className="title">Open Orders</td>
-                        <td className="value">{ openOrdersCount }</td>
-                        <td className="title">Profit / Loss</td>
-                        <td className="value"><span className={ Math.random() > 0.5 ? 'green' : 'red' }>+5.06%</span>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>*/
+    getHoldingsSection(numOpenOrders, numPositions, numTrades, profitAndLoss, unrealizedProfitAndLoss) {
+        if (numOpenOrders || numPositions || numTrades) {
+            let pnl = {color: "green", text: profitAndLoss + "%"};
+            let unrealizedPnl = {color: "green", text: unrealizedProfitAndLoss + "%"};
+            if (abi.bignum(profitAndLoss).lt(abi.bignum(0))) pnl.color = "red";
+            if (abi.bignum(unrealizedProfitAndLoss).lt(abi.bignum(0))) unrealizedPnl.color = "red";
+            if (!numOpenOrders) numOpenOrders = 0;
+            return (
+                <div className="table-container holdings">
+                    <div className="panelify-sideways success">
+                        <div className="title">Your Trading</div>
+                        <div className="content">
+                            <table className="holdings-table">
+                                <tbody>
+                                    <tr className="labelValue">
+                                        <td className="labelValue-label outcome-name">Positions</td>
+                                        <td className="labelValue-value change-percent">{numPositions}</td>
+                                        <td className="labelValue-label outcome-name">Trades</td>
+                                        <td className="labelValue-value change-percent">{numTrades}</td>
+                                    </tr>
+                                    <tr className="labelValue">
+                                        <td className="labelValue-label outcome-name">Profit / Loss</td>
+                                        <td className="labelValue-value change-percent">
+                                            <span className={pnl.color}>{pnl.text}</span>
+                                        </td>
+                                        <td className="labelValue-label outcome-name">Unrealized P/L</td>
+                                        <td className="labelValue-value change-percent">
+                                            <span className={unrealizedPnl.color}>{unrealizedPnl.text}</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            );
         } else {
             return null;
         }
@@ -229,7 +239,30 @@ let MarketRow = React.createClass({
         }
         let report = this.props.report;
         let reportSection = this.getReportSection(report, market);
-        let holdingsSection = this.getHoldingsSection(this.props.numOpenOrders);
+
+        let numPositions = 0;
+        let numTrades = 0;
+        if (this.props.account) {
+            if (market.trades) {
+                for (var outcome in market.trades) {
+                    if (!market.trades.hasOwnProperty(outcome)) continue;
+                    numTrades += market.trades[outcome].length;
+                }
+            }
+            for (var j = 0; j < market.numOutcomes; ++j) {
+                if (market.outcomes[j].shares[this.props.account]) {
+                    ++numPositions;
+                }
+            }
+        }
+        let pnl = "0.00";
+        let unrealizedPnl = "0.00";
+        if (market) {
+            if (market.pnl) pnl = market.pnl;
+            if (market.unrealizedPnl) unrealizedPnl = market.unrealizedPnl;
+        }
+
+        let holdingsSection = this.getHoldingsSection(this.props.numOpenOrders, numPositions, numTrades, pnl, unrealizedPnl);
         let rowAction = this.getRowAction(market, report);
         let clickableDescription = this.getClickableDescription(market, report);
         return (
@@ -238,15 +271,14 @@ let MarketRow = React.createClass({
                     <h4 className={`description ${tourClass}`}>
                         {clickableDescription}
                     </h4>
-
-                    { rowAction }
+                    {rowAction}
                 </div>
                 <div className="subtitle clearfix">
                     <div className="labelValue subtitle-group">
                         <i className="fa fa-bookmark-o" />
                         <span className="labelValue-label">
                             {utilities.getMarketTypeName(market)}
-                            { " " }
+                            {" "}
                             ({market.numOutcomes } {utilities.singularOrPlural(market.numOutcomes, "outcome")})
                         </span>
                     </div>
@@ -285,8 +317,8 @@ let MarketRow = React.createClass({
                             </div>
                         </div>
                     </div>
-                    { holdingsSection }
-                    { reportSection }
+                    {holdingsSection}
+                    {reportSection}
                 </div>
             </div>
         );
@@ -315,8 +347,8 @@ let MarketRow = React.createClass({
 
         // TODO add glowing border to current top market
         tour.addStep("markets-list", {
-            title: "Welcome to Augur!",
-            text: "<p>On Augur, you can trade the probability of any real-world event happening.<br /></p>"+
+            title: "Welcome to the Augur beta test!",
+            text: "<p>On Augur, you can trade the probability of any real-world event happening. (Note: from now until the end of the beta test, everything on Augur is just play money!  Please do <b>not</b> send real Ether to your Augur beta account.)<br /></p>"+
                 "<p>In this market, you are considering:<br /><br /><b><i>" + this.props.market.description + "</i></b></p>",
             attachTo: ".market-row .description top",
             buttons: [{

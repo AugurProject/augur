@@ -72,6 +72,7 @@ module.exports = {
 
   formatEther: function (wei) {
     if (!wei) return { value: '', unit: 'ether', withUnit: '-' };
+    if (wei instanceof Error) throw wei;
     var value = abi.bignum(wei).dividedBy(constants.ETHER);
     var unit = 'ether';
     return {
