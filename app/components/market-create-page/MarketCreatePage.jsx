@@ -19,7 +19,7 @@ let ProgressModal = require("../ProgressModal");
 let MarketCreateIndex = require("./MarketCreateIndex");
 let MarketCreateStep1 = require("./MarketCreateStep1");
 let MarketCreateStep2 = require("./MarketCreateStep2");
-//let MarketCreateStep3 = require("./MarketCreateStep3");
+let MarketCreateStep3 = require("./MarketCreateStep3");
 
 let MarketCreatePage = React.createClass({
 
@@ -40,22 +40,19 @@ let MarketCreatePage = React.createClass({
       timePicked: "12:00:00",
       tradingFee: '2',
       tradingFeeError: null,
-      valid: false,
       minDate: moment().format('YYYY-MM-DD'),
       numOutcomes: 3,
-      tab: 0,
       minValue: null,
       maxValue: null,
       minValueError: null,
       maxValueError: null,
       choices: ["", ""],
-      choiceTextError: [null, null],
-      numResources: 0,
-      resources: [],
-      numTags: 0,
-      tags: [],
+      choiceErrors: [null, null],
+      resources: ["", ""],
+      tags: ["", ""],
+      tagErrors: [null, null],
       expirySource: "generic",
-      expirySourceURL: "",
+      expirySourceUrl: "",
       progressModal: {
         open: false,
         status: "",
@@ -111,16 +108,23 @@ let MarketCreatePage = React.createClass({
   },
 
   onChangeTagText: function (event) {
-    var tags = this.state.tags;
-    var id = event.target.id;
-    tags[id.split('-')[1]] = event.target.value;
-    this.setState({tags: tags});
+    let tags = this.state.tags.slice();
+    let id = parseInt(event.target.getAttribute("data-index"));
+    tags[id] = event.target.value;
+    this.setState({tags: tags}, () => {
+      this.validateStep2(`tags:${id}`);
+    });
+  },
+  validateTag(tag) {
+    let isValid = !(/^\s*$/.test(tag));
+    let errorMessage = isValid ? null : "Tag cannot be blank";
+    return {errorMessage};
   },
 
   onChangeResourceText: function (event) {
-    var resources = this.state.resources;
-    var id = event.target.id;
-    resources[id.split('-')[1]] = event.target.value;
+    let resources = this.state.resources.slice();
+    let id = parseInt(event.target.getAttribute("data-index"));
+    resources[id] = event.target.value;
     this.setState({resources: resources});
   },
 
@@ -153,26 +157,23 @@ let MarketCreatePage = React.createClass({
     });
   },
 
-  onChangeMaturationDate: function (event) {
-    this.setState({maturationDate: event.target.value}, () => {
-      this.validateStep1("maturationDate");
+  onChangeExpirySource: function (event) {
+    this.setState({expirySource: event.target.value}, () => {
+      this.validateStep2("expirySource");
     });
   },
 
-  onChangeExpirySource: function (event) {
-    this.setState({expirySource: event.target.value});
-  },
-
-  onChangeExpirySourceURL: function (event) {
-    this.setState({expirySourceURL: event.target.value});
+  onChangeExpirySourceUrl: function (event) {
+    this.setState({expirySourceUrl: event.target.value}, () => {
+      this.validateStep2("expirySource");
+    });
   },
 
   goToNextStep: function () {
     let isPageValid = this.validatePage(this.state.pageNumber);
     console.log("validated:", isPageValid);
     if (isPageValid) {
-      var newPageNumber = this.state.pageNumber + 1;
-      this.setState({pageNumber: newPageNumber});
+      this.setState({pageNumber: this.state.pageNumber + 1});
     }
   },
 
@@ -181,13 +182,8 @@ let MarketCreatePage = React.createClass({
     this.setState({pageNumber: newPageNumber});
   },
 
-  goToPage(newPageNumber) {
-    if (this.validatePage(this.state.pageNumber)) {
-      this.setState({pageNumber: newPageNumber});
-    }
-  },
   /**
-   * Need to update min and max values
+   * Need to reset some values when transitioning from one type to another
    */
   componentWillReceiveProps(nextProps) {
     let newMarketType = nextProps.query.type;
@@ -225,8 +221,8 @@ let MarketCreatePage = React.createClass({
    * @param {String=} fieldToValidate
    * @return boolean
    */
-      validateStep1(fieldToValidate) {
-    let isValid = true;
+  validateStep1(fieldToValidate) {
+    let isStepValid = true;
 
     if (fieldToValidate == null || fieldToValidate == "marketText") {
       let isMarketTextLongEnough = this.state.marketText.length <= this.state.marketTextMaxLength;
@@ -234,13 +230,13 @@ let MarketCreatePage = React.createClass({
         marketTextError: isMarketTextLongEnough ? null : `Text exceeds the maximum length of ${this.state.marketTextMaxLength}`
       });
       if (!isMarketTextLongEnough) {
-        isValid = false;
+        isStepValid = false;
       }
 
       let isMarketTextSet = this.state.marketText.length > 0;
       this.setState({marketTextError: isMarketTextSet ? null : 'Please enter your question'});
       if (!isMarketTextSet) {
-        isValid = false;
+        isStepValid = false;
       }
     }
 
@@ -248,17 +244,24 @@ let MarketCreatePage = React.createClass({
       let isMaturationSet = this.state.maturationDate !== '';
       this.setState({maturationDateError: isMaturationSet ? null : 'Please enter maturation date'});
       if (!isMaturationSet) {
-        isValid = false;
+        isStepValid = false;
       }
     }
 
-    if (fieldToValidate == null || fieldToValidate == "choices") {
+    if (fieldToValidate == null || fieldToValidate.indexOf("choices") > -1) {
       if (this.props.query.type === "categorical") {
-        for (var i = 0, len = this.state.choices.length; i < len; ++i) {
-          if (!this.checkAnswerText(this.state.choices[i], i)) {
-            isValid = false;
-          }
-        }
+        let choiceIndex = fieldToValidate == null ? null : fieldToValidate.split(":")[1];
+        let choiceErrors = this.state.choiceErrors.slice();
+        let choices = choiceIndex != null ? [this.state.choices[choiceIndex]] : this.state.choices.slice();
+
+        // iterates all choices, validating each
+        isStepValid = choices.reduce((isStepValid, choice, index) => {
+          let validationResult = this.validateChoice(choice);
+          choiceErrors[choiceIndex || index] = validationResult.errorMessage;
+          return validationResult.errorMessage == null ? isStepValid : false;
+        }, isStepValid);
+
+        this.setState({choiceErrors});
       }
     }
 
@@ -267,15 +270,43 @@ let MarketCreatePage = React.createClass({
         let isMinValid = this.checkMinimum();
         let isMaxValid = this.checkMaximum();
         if (!isMinValid || !isMaxValid) {
-          isValid = false;
+          isStepValid = false;
         }
       }
     }
 
-    return isValid;
+    return isStepValid;
   },
-  validateStep2() {
-    return true;
+  validateStep2(fieldToValidate) {
+    let isStepValid = true;
+
+    if (fieldToValidate == null || fieldToValidate == "expirySource") {
+      let isExpirySourceValid = true;
+      if (this.state.expirySource === "specific") {
+        isExpirySourceValid = this.state.expirySourceUrl !== "";
+      }
+      // no need to display custom error message, UI always contains info
+      if (!isExpirySourceValid) {
+        isStepValid = false;
+      }
+    }
+
+    if (fieldToValidate == null || fieldToValidate.indexOf("tags") > -1) {
+      let tagIndex = fieldToValidate == null ? null : fieldToValidate.split(":")[1];
+      let tagErrors = this.state.tagErrors.slice();
+      let tags = tagIndex != null ? [this.state.tags[tagIndex]] : this.state.tags.slice();
+
+      // iterates all tags, validating each
+      isStepValid = tags.reduce((isStepValid, tag, index) => {
+        let validationResult = this.validateTag(tag);
+        tagErrors[tagIndex || index] = validationResult.errorMessage;
+        return validationResult.errorMessage == null ? isStepValid : false;
+      }, isStepValid);
+
+      this.setState({tagErrors});
+    }
+    
+    return isStepValid;
   },
   validateStep3() {
     return true;
@@ -301,7 +332,7 @@ let MarketCreatePage = React.createClass({
       tradingFee: new BigNumber(this.state.tradingFee / 100)
     };
     var source = (this.state.expirySource === "specific") ?
-      this.state.expirySourceURL : this.state.expirySource;
+      this.state.expirySourceUrl : this.state.expirySource;
     var pendingId = flux.actions.market.addPendingMarket(newMarketParams);
     var branchId = flux.store("branch").getCurrentBranch().id;
     var block = flux.store("network").getState().blockNumber;
@@ -324,11 +355,11 @@ let MarketCreatePage = React.createClass({
       maxValue = this.state.maxValue;
       numOutcomes = 2;
 
-    // categorical
     } else {
+      // categorical
       minValue = 1;
       maxValue = 2;
-      numOutcomes = this.state.numOutcomes;
+      numOutcomes = this.state.choices.length;
     }
 
     flux.augur.createSingleEventMarket({
@@ -433,58 +464,44 @@ let MarketCreatePage = React.createClass({
   },
 
   onAddTag: function (event) {
-    var numTags = this.state.numTags + 1;
-    if (numTags <= constants.MAX_ALLOWED_TAGS) {
-      var tags = this.state.tags;
+    let tagErrors = this.state.tagErrors.slice();
+    let tags = this.state.tags.slice();
+
+    if (tags.length + 1 <= constants.MAX_ALLOWED_TAGS) {
       tags.push('');
-      this.setState({
-        numTags: numTags,
-        tags: tags
-      });
+      tagErrors.push(null);
+      this.setState({ tags, tagErrors });
     }
   },
 
   onAddResource: function (event) {
-    var numResources = this.state.numResources + 1;
-    var resources = this.state.resources;
+    let resources = this.state.resources.slice();
     resources.push('');
-    this.setState({
-      numResources: numResources,
-      resources: resources
-    });
+    this.setState({ resources });
   },
 
   onAddAnswer: function (event) {
-    var numOutcomes = this.state.numOutcomes + 1;
     var choices = this.state.choices.slice();
-    var choiceTextError = this.state.choiceTextError;
+    var choiceErrors = this.state.choiceErrors.slice();
     choices.push('');
-    choiceTextError.push(null);
-    this.setState({
-      numOutcomes: numOutcomes,
-      choices: choices,
-      choiceTextError: choiceTextError
-    });
+    choiceErrors.push(null);
+    this.setState({ choices, choiceErrors });
   },
 
-  checkAnswerText: function (answerText, id) {
-    var isOk = !(/^\s*$/.test(answerText));
-    var choiceTextError = this.state.choiceTextError;
-    choiceTextError[id] = (isOk) ? null : "Answer cannot be blank";
-    this.setState({choiceTextError: choiceTextError});
-    return isOk;
+  validateChoice: function (choice) {
+    let isValid = !(/^\s*$/.test(choice));
+    let errorMessage = isValid ? null : "Answer cannot be blank";
+    return {errorMessage};
   },
 
   onChangeAnswerText: function (event) {
-    var answerText = event.target.value;
-    var id = parseInt(event.target.getAttribute("data-index"));
-    console.log("id: %o, text: %o", id, answerText);
-    var choices = this.state.choices.slice();
-    //this.checkAnswerText(answerText, id);
+    let answerText = event.target.value;
+    let id = parseInt(event.target.getAttribute("data-index"));
+    let choices = this.state.choices.slice();
     choices[id] = answerText;
-    var marketText = this.state.plainMarketText + " Choices: " + choices.join(", ") + ".";
+    let marketText = this.state.plainMarketText + " Choices: " + choices.join(", ") + ".";
     this.setState({choices, marketText}, () => {
-      this.validateStep1("choices");
+      this.validateStep1(`choices:${id}`);
     });
   },
 
@@ -547,163 +564,35 @@ let MarketCreatePage = React.createClass({
     }
 
     if (this.state.pageNumber === 2) {
-      stepContent = <MarketCreateStep2
+      stepContent = (
+        <MarketCreateStep2
+          expirySource={this.state.expirySource}
+          expirySourceUrl={this.state.expirySourceUrl}
+          onChangeExpirySource={this.onChangeExpirySource}
+          onChangeExpirySourceUrl={this.onChangeExpirySourceUrl}
+          tags={this.state.tags}
+          tagErrors={this.state.tagErrors}
+          onAddTag={this.onAddTag}
+          onChangeTagText={this.onChangeTagText}
+          detailsText={this.state.detailsText}
+          onChangeDetailsText={this.onChangeDetailsText}
+          resources={this.state.resources}
+          onChangeResourceText={this.onChangeResourceText}
+          onAddResource={this.onAddResource}
+          imageDataURL={this.state.imageDataURL}
+          onUploadImageFile={this.onUploadImageFile}
           goToNextStep={this.goToNextStep}
           goToPreviousStep={this.goToPreviousStep}
-          />;
+        />
+      );
     } else if (this.state.pageNumber === 3) {
-
-      subheading = "Maturation Date";
-
       stepContent = (
-        <div className="form-group date">
-          <div className="col-sm-6">
-            <p>Enter a date on or after which the outcome of this event will be known.</p>
-            <Input
-              className="form-control"
-              bsSize="large"
-              type="text"
-              placeholder="YYYY-MM-DD"
-              value={this.state.maturationDate}
-              onChange={this.onChangeMaturationDate} />
-          </div>
-          <div className="col-sm-6">
-            <DatePicker
-              minDate={this.state.minDate}
-              hideFooter={true}
-              onChange={this.handleDatePicked} />
-            {/*<TimePicker
-              style={{width: "100%", padding: 5, height: 50}}
-              value={this.state.timePicked}
-              onChange={this.handleTimePicked} />*/}
-          </div>
-        </div>
-      );
-      footer = (
-        <div className="pull-right">
-          <Button bsStyle="default" onClick={this.onBack}>Back</Button>
-          <Button bsStyle="primary" onClick={this.onNext}>Next</Button>
-        </div>
-      );
-
+        <MarketCreateStep3
+          goToNextStep={this.goToNextStep}
+          goToPreviousStep={this.goToPreviousStep}
+        />
+      )
     } else if (this.state.pageNumber === 4) {
-
-      subheading = "Additional market information";
-
-      var numTags = this.state.numTags;
-      var tags = new Array(numTags);
-      var placeholderTag, tagId;
-
-      for (var i = 0; i < numTags; ++i) {
-        placeholderTag = "Enter tag " + (i + 1);
-        tagId = "tag-" + i
-        tags[i] = <Input
-            key={i}
-            id={tagId}
-            type="text"
-            value={this.state.tags[i]}
-            placeholder={placeholderTag}
-            onChange={this.onChangeTagText} />;
-      }
-
-      var numResources = this.state.numResources;
-      var resources = new Array(numResources);
-      var placeholderText, resourceId;
-      for (i = 0; i < numResources; ++i) {
-        placeholderText = "Enter external resource " + (i + 1);
-        resourceId = "resource-" + i
-        resources[i] = <Input
-            key={i}
-            id={resourceId}
-            type="text"
-            value={this.state.resources[i]}
-            placeholder={placeholderText}
-            onChange={this.onChangeResourceText} />;
-      }
-
-      var image = <span />;
-      if (this.state.imageDataURL) {
-        image = <img className="metadata-image" src={this.state.imageDataURL} />;
-      }
-
-      stepContent = (
-        <div>
-          <h5>{subheading}</h5>
-          <div className="form-group row">
-            <div className="col-sm-12">
-              <p>What information source will be used to determine the outcome of this event? (required)</p>
-            </div>
-            <Input
-              value="generic"
-              type="radio"
-              checked={this.state.expirySource === "generic"}
-              label="Outcome will be covered by local, national or international news media."
-              labelClassName="col-sm-10"
-              wrapperClassName="col-sm-12"
-              onChange={this.onChangeExpirySource} />
-            <Input
-              value="specific"
-              type="radio"
-              checked={this.state.expirySource === "specific"}
-              label="Outcome will be detailed on a specific website."
-              labelClassName="col-sm-10"
-              wrapperClassName="col-sm-12"
-              onChange={this.onChangeExpirySource} />
-            <div className="col-sm-12 indent">
-              <p>Please enter the full URL of the website - which must be publicly available:</p>
-              <Input
-                disabled={this.state.expirySource === "generic"}
-                type="text"
-                value={this.state.expirySourceURL}
-                placeholder="http://www.boxofficemojo.com"
-                onChange={this.onChangeExpirySourceURL} />
-            </div>
-          </div>
-          <div className="form-group row">
-            <div className="col-sm-12">
-              <p>Does your question need further explanation? (optional)</p>
-              <Input
-                type="textarea"
-                bsStyle={inputStyle}
-                value={this.state.detailsText}
-                placeholder="Optional: enter a more detailed description of your market."
-                onChange={this.onChangeDetailsText} />
-            </div>
-          </div>
-          <div className="form-group row">
-            <div className="col-sm-12">
-              <p>Upload an image to be displayed with your market. (optional) This uploader accepts most common image types (specifically, anything recognized as an image by the HTML5 File API).  A display of your image will be shown below this paragraph.  This is exactly the way the image will look on the market page.  Note: the maximum recommended height for images is 200px; images taller than this will be shrunken to a height of 200px.</p>
-              {image}
-              <Input
-                type="file"
-                id="imageFile"
-                onChange={this.onUploadImageFile} />
-              <p>Enter up to three tags (categories) for your market. (optional) Examples: politics, science, sports, weather, etc.</p>
-              {tags}
-              { this.state.numTags < constants.MAX_ALLOWED_TAGS &&
-                <Button bsStyle="default" onClick={this.onAddTag}>
-                  Add tag
-                </Button>
-              }
-            </div>
-          </div>
-          <div className="form-group row">
-            <div className="col-sm-12">
-              <p>Are there any helpful links you want to add? (optional) For example, if your question is about an election you could link to polling information or the webpages of candidates.</p>
-              {resources}
-              <Button bsStyle="default" onClick={this.onAddResource}>
-                Add resource
-              </Button>
-            </div>
-          </div>
-        </div>
-      );
-      footer = (
-        <div className='pull-right'>
-          <Button bsStyle='default' onClick={ this.onBack }>Back</Button>
-          <Button bsStyle='primary' onClick={ this.onSubmit }>Submit Market</Button>
-        </div>
-      );
 
     } else {
       stepContent = <MarketCreateStep1
@@ -712,7 +601,7 @@ let MarketCreatePage = React.createClass({
           marketTextError={this.state.marketTextError}
           onChangeMarketText={this.onChangeMarketText}
           categoricalChoices={this.state.choices}
-          categoricalChoiceErrors={this.state.choiceTextError}
+          categoricalChoiceErrors={this.state.choiceErrors}
           onChangeCategoricalChoices={this.onChangeAnswerText}
           onAddCategoricalOutcome={this.onAddAnswer}
           maturationDate={this.state.maturationDate}
