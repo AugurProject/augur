@@ -97,10 +97,10 @@ let RegisterModal = React.createClass({
           flux.actions.asset.updateAssets();
         },
         onSendEther: function (account) {
-          self.updateProgressModal("Received " + flux.augur.constants.FREEBIE + " Ether.");
+          self.updateProgressModal("Received " + flux.augur.constants.FREEBIE + " test Ether.");
         },
         onSent: function (res) {
-          self.updateProgressModal("Requesting free Cash and Reputation...");
+          self.updateProgressModal("Requesting free play Cash and Reputation...");
         },
         onSuccess: function (res) {
           self.updateProgressModal({
