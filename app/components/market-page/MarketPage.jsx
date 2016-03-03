@@ -168,37 +168,31 @@ let MarketPage = React.createClass({
                 </Collapse>
 
                 <div role="tabpanel" style={{marginTop: '15px'}}>
-                    <div className="row submenu">
-                        <a className="collapsed" data-toggle="collapse" href="#collapseSubmenu" aria-expanded="false" aria-controls="collapseSubmenu">
-                            <h2>Navigation</h2>
-                        </a>
-
-                        <div id="collapseSubmenu" className="col-xs-12 collapse" aria-expanded="false">
-                            <ul className="list-group" role="tablist" id="tabpanel">
-                                <li role="presentation" className="list-group-item active">
-                                    <a role="tab" href="#statsTab" data-toggle="tab">Stats & Charts</a>
-                                </li>
-                                {/* TODO: implement
-                                <li role="presentation" className="list-group-item">
-                                    <a role="tab" href="#rulesTab" data-toggle="tab">Rules</a>
-                                </li>
-                                <li role="presentation" className="list-group-item">
-                                    <a role="tab" href="#userTradesTab" data-toggle="tab">
-                                        My Trades
-                                    </a>
-                                </li>
-                                <li role="presentation" className="list-group-item">
-                                    <a role="tab" href="#userFrozenFundsTab" data-toggle="tab">
-                                        Frozen Funds
-                                        <span ng-show="app.balance.eventMargin != null">
-                                        (<span ng-bind="app.balance.eventMarginFormatted"></span>)
-                                    </span>
-                                    </a>
-                                </li>
-                                */}
-                            </ul>
-                        </div>
-                    </div>
+                    <nav className="submenu">
+                        <ul className="list-group">
+                            <li role="presentation" className="list-group-item active">
+                                <a role="tab" href="#statsTab" data-toggle="tab">Stats & Charts</a>
+                            </li>
+                            {/* TODO: implement
+                            <li role="presentation" className="list-group-item">
+                                <a role="tab" href="#rulesTab" data-toggle="tab">Rules</a>
+                            </li>
+                            <li role="presentation" className="list-group-item">
+                                <a role="tab" href="#userTradesTab" data-toggle="tab">
+                                    My Trades
+                                </a>
+                            </li>
+                            <li role="presentation" className="list-group-item">
+                                <a role="tab" href="#userFrozenFundsTab" data-toggle="tab">
+                                    Frozen Funds
+                                    <span ng-show="app.balance.eventMargin != null">
+                                    (<span ng-bind="app.balance.eventMarginFormatted"></span>)
+                                </span>
+                                </a>
+                            </li>
+                            */}
+                        </ul>
+                    </nav>
 
                     <div className="tab-content">
                         <div id="statsTab" className="tab-pane active" role="tabpanel">

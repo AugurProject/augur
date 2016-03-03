@@ -71,50 +71,42 @@ let ReportsPage = React.createClass({
                 );
             }
         }
+
         return (
             <div>
                 <h1>Reporting</h1>
-                {/*<div className="row submenu">
-                    <a className="collapsed"
-                       data-toggle="collapse"
-                       href="#collapseSubmenu"
-                       aria-expanded="false"
-                       aria-controls="collapseSubmenu">
-                        <h2>Navigation</h2>
-                    </a>
-                    <div id="collapseSubmenu"
-                         className="col-xs-12 collapse"
-                         aria-expanded="false">
-                        <ul className="list-group" role="tablist" id="tabpanel">
-                            <li role="presentation"
-                                className={`list-group-item ${this.props.query.pending != null ? 'active' : ''}`}>
-                                <Link to="reports"
-                                    query={{pending: true}}
-                                    role="tab"
-                                    activeClassName="">
-                                    Pending Reports
-                                </Link>
-                            </li>
-                            <li role="presentation" className={`list-group-item ${this.props.query.committed != null ? 'active' : ''}`}>
-                                <Link to="reports"
-                                    query={{committed: true}}
-                                    role="tab"
-                                    activeClassName="">
-                                    Pending Confirmations
-                                </Link>
-                            </li>
-                            <li role="presentation"
-                                className={`list-group-item ${this.props.query.previous != null ? 'active' : ''}`}>
-                                <Link to="reports"
-                                    query={{previous: true}}
-                                    role="tab"
-                                    activeClassName="">
-                                    Previous Reports
-                                </Link>
-                            </li>
-                        </ul>
-                    </div>
-                </div>*/}
+                {/*
+                <nav className="row submenu">
+                    <ul className="list-group" role="tablist" id="tabpanel">
+                        <li role="presentation"
+                            className={`list-group-item ${this.props.query.pending != null ? 'active' : ''}`}>
+                            <Link to="reports"
+                                query={{pending: true}}
+                                role="tab"
+                                activeClassName="">
+                                Pending Reports
+                            </Link>
+                        </li>
+                        <li role="presentation" className={`list-group-item ${this.props.query.committed != null ? 'active' : ''}`}>
+                            <Link to="reports"
+                                query={{committed: true}}
+                                role="tab"
+                                activeClassName="">
+                                Pending Confirmations
+                            </Link>
+                        </li>
+                        <li role="presentation"
+                            className={`list-group-item ${this.props.query.previous != null ? 'active' : ''}`}>
+                            <Link to="reports"
+                                query={{previous: true}}
+                                role="tab"
+                                activeClassName="">
+                                Previous Reports
+                            </Link>
+                        </li>
+                    </ul>
+                </nav>
+                */}
                 <div className="row">
                     <div className="col-xs-12">
                         {marketRows}

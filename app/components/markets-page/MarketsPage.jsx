@@ -1,4 +1,5 @@
 let React = require("react");
+let classnames = require("classnames");
 let abi = require("augur-abi");
 let _ = require("lodash");
 let moment = require("moment");
@@ -13,6 +14,9 @@ let MarketRow = require("./MarketRow");
 let AddMarketModal = require("../AddMarketModal");
 let constants = require("../../libs/constants");
 let utils = require("../../libs/utilities");
+
+
+MarketRow
 
 let MarketsPage = React.createClass({
 
@@ -182,28 +186,20 @@ let MarketsPage = React.createClass({
                     {submitMarketAction}
                 </h1>
 
-                <div className="row submenu">
-                    <a className="collapsed" data-toggle="collapse" href="#collapseSubmenu"
-                       aria-expanded="false"
-                       aria-controls="collapseSubmenu">
-                        <h2>Navigation</h2>
-                    </a>
-
-                    <div id="collapseSubmenu" className="col-xs-12 collapse" aria-expanded="false">
-                        <ul className="list-group" role="tablist" id="tabpanel">
-                            <li role="presentation" className={`list-group-item ${this.props.query.expired !== 'true' ? 'active' : ''}`}>
-                                <Link to='markets' role="tab" activeClassName="">
-                                    Open Markets
-                                </Link>
-                            </li>
-                            <li role="presentation" className={`list-group-item ${this.props.query.expired === 'true' ? 'active' : ''}`}>
-                                <Link to="markets" activeClassName="" query={{expired: true}} role="tab">
-                                    Expired Markets
-                                </Link>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+                <nav className="submenu">
+                    <ul className="list-group">
+                        <li className={ classnames('list-group-item', { 'active': this.props.query.expired !== 'true' }) } role="presentation">
+                            <Link to="markets" activeClassName="" role="tab">
+                                Open Markets
+                            </Link>
+                        </li>
+                        <li className={ classnames('list-group-item', { 'active': this.props.query.expired === 'true' }) } role="presentation">
+                            <Link to="markets" activeClassName="" query={{expired: true}} role="tab">
+                                Expired Markets
+                            </Link>
+                        </li>
+                    </ul>
+                </nav>
 
                 <div className="row search-sort-row">
                     <div className="col-sm-4 col-xs-6">
