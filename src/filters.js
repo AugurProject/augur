@@ -210,6 +210,7 @@ module.exports = function () {
                                             outcome: outcome,
                                             price: abi.unfix(data_array[0], "string"),
                                             cost: abi.unfix(data_array[1], "string"),
+                                            shares: abi.unfix(data_array[2], "string"),
                                             blockNumber: abi.string(filtrate[i].blockNumber)
                                         });
                                     }

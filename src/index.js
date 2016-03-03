@@ -2148,7 +2148,7 @@ Augur.prototype.getAccountTrades = function (account, cb) {
             return cb(null);
         }
         if (logs.error) return cb(logs);
-        var market, outcome, parsed, price, cost, trades = {};
+        var market, outcome, parsed, price, cost, shares, trades = {};
         for (var i = 0, n = logs.length; i < n; ++i) {
             if (logs[i] && logs[i].data !== undefined &&
                 logs[i].data !== null && logs[i].data !== "0x") {
@@ -2159,13 +2159,13 @@ Augur.prototype.getAccountTrades = function (account, cb) {
                 parsed = rpc.unmarshal(logs[i].data);
                 price = abi.unfix(parsed[0]);
                 cost = abi.unfix(parsed[1]);
-                if (price && cost) {
+                shares = abi.unfix(parsed[2]);
+                if (price && cost && shares) {
                     trades[market][outcome].push({
                         market: abi.hex(market), // re-fork
                         price: price.toFixed(),
                         cost: cost.toFixed(),
-                        // number of shares = -price / cost
-                        shares: price.dividedBy(cost).mul(new BigNumber(-1)).toFixed(),
+                        shares: shares.toFixed(),
                         blockNumber: parseInt(logs[i].blockNumber)
                     });
                 }
