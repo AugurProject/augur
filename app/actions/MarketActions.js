@@ -131,6 +131,45 @@ module.exports = {
     return callback();
   },
 
+  calculatePnl: function (market) {
+    var account = this.flux.store("config").getAccount();
+    var totalIn = new BigNumber(0);
+    var totalOut = new BigNumber(0);
+    var totalUnsold = new BigNumber(0);
+    var cost, shares, unsoldShares, unsoldValue;
+    for (var outcome in market.trades) {
+      if (!market.trades.hasOwnProperty(outcome)) continue;
+      unsoldShares = null;
+      for (var j = 0; j < market.outcomes.length; ++j) {
+        if (market.outcomes[j].id.toString() === outcome) {
+          unsoldShares = market.outcomes[j].shares[account];
+          break;
+        }
+      }
+      for (var i = 0; i < market.trades[outcome].length; ++i) {
+        cost = abi.bignum(market.trades[outcome][i].cost);
+        shares = abi.bignum(market.trades[outcome][i].shares);
+        if (cost.lt(new BigNumber(0))) {
+          totalIn = totalIn.plus(cost.times(shares).abs());
+        } else {
+          totalOut = totalOut.plus(cost.times(shares).abs());
+        }
+      }
+      if (unsoldShares) {
+        unsoldValue = abi.bignum(this.flux.augur.getSimulatedSell(market, outcome, unsoldShares)[0]);
+        totalUnsold = totalUnsold.plus(unsoldValue);
+      }
+    }
+    if (!totalIn.eq(new BigNumber(0))) {
+      market.pnl = totalOut.minus(totalIn).dividedBy(totalIn).times(new BigNumber(100)).toFixed(2);
+      market.unrealizedPnl = totalOut.plus(totalUnsold).minus(totalIn).dividedBy(totalIn).times(new BigNumber(100)).toFixed(2);
+    } else {
+      market.pnl = "0.00";
+      market.unrealizedPnl = "0.00";
+    }
+    return market;
+  },
+
   loadMarkets: function () {
     var self = this;
     var augur = this.flux.augur;
@@ -201,41 +240,9 @@ module.exports = {
             var unforkedMarketId = abi.unfork(thisMarket._id, true);
             if (trades && trades[unforkedMarketId]) {
               thisMarket.trades = trades[unforkedMarketId];
-              var totalIn = new BigNumber(0);
-              var totalOut = new BigNumber(0);
-              var totalUnsold = new BigNumber(0);
-              var cost, shares, unsoldShares, unsoldValue;
-              for (var outcome in thisMarket.trades) {
-                if (!thisMarket.trades.hasOwnProperty(outcome)) continue;
-                unsoldShares = null;
-                for (var j = 0; j < thisMarket.outcomes.length; ++j) {
-                  if (thisMarket.outcomes[j].id.toString() === outcome) {
-                    unsoldShares = thisMarket.outcomes[j].shares[account];
-                    break;
-                  }
-                }
-                for (var i = 0; i < thisMarket.trades[outcome].length; ++i) {
-                  cost = abi.bignum(thisMarket.trades[outcome][i].cost);
-                  shares = abi.bignum(thisMarket.trades[outcome][i].shares);
-                  if (cost.lt(new BigNumber(0))) {
-                    totalIn = totalIn.plus(cost.abs().times(shares));
-                  } else {
-                    totalOut = totalOut.plus(cost.times(shares));
-                  }
-                }
-                if (unsoldShares) {
-                  unsoldValue = abi.bignum(augur.getSimulatedSell(thisMarket, outcome, unsoldShares)[0]);
-                  totalUnsold = totalUnsold.plus(unsoldValue);
-                }
-              }
-              if (!totalIn.eq(new BigNumber(0))) {
-                thisMarket.pnl = totalOut.minus(totalIn).dividedBy(totalIn).times(new BigNumber(100)).toFixed(2);
-                thisMarket.unrealizedPnl = totalOut.plus(totalUnsold).minus(totalIn).dividedBy(totalIn).times(new BigNumber(100)).toFixed(2);
-              }
+              thisMarket = self.flux.actions.market.calculatePnl(thisMarket);
             } else {
               thisMarket.trades = null;
-              thisMarket.pnl = "0.00";
-              thisMarket.unrealizedPnl = "0.00";
             }
           }
           console.debug(
@@ -300,6 +307,7 @@ module.exports = {
           if (priceHistory) marketInfo.priceHistory = priceHistory;
           marketInfo.branchId = branchId;
           self.flux.actions.market.parseMarketInfo(marketInfo, function (parsedInfo) {
+            parsedInfo = self.flux.actions.market.calculatePnl(parsedInfo);
             markets[parsedInfo.id] = parsedInfo;
 
             // save markets to MarketStore

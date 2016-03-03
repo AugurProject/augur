@@ -99,13 +99,25 @@ module.exports = {
 
       // update market when a price change has been detected
       price: function (result) {
-        var marketId, market;
+        var marketId, market, markets;
         console.log("[filter] updatePrice:", result);
         if (result && result.marketId) {
           marketId = abi.bignum(result.marketId);
           market = self.flux.store("market").getMarket(marketId);
           if (market) {
             self.flux.actions.asset.updateAssets();
+            if (market.trades[result.outcome]) {
+              market.trades[result.outcome].push(result);
+            } else {
+              market.trades[result.outcome] = [result];
+            }
+            market = self.flux.actions.market.calculatePnl(market);
+            markets = self.flux.store("market").getState().markets;
+            markets[marketId] = market;
+            self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {
+              markets: markets,
+              account: self.flux.store("config").getAccount()
+            });
             self.flux.actions.market.loadMarket(marketId, function (marketInfo) {
               self.flux.actions.market.checkOrderBook(marketInfo);
             });
