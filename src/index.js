@@ -1137,21 +1137,6 @@ Augur.prototype.checkReportValidity = function (branch, report, reportPeriod, ca
     tx.params = [branch, abi.fix(report, "hex"), reportPeriod];
     return this.fire(tx, callback);
 };
-Augur.prototype.slashRep = function (branch, reportPeriod, salt, report, reporter, onSent, onSuccess, onFailed) {
-    if (branch.constructor === Object && branch.branchId) {
-        reportPeriod = branch.reportPeriod || branch.votePeriod;
-        salt = branch.salt;
-        report = branch.report;
-        reporter = branch.reporter;
-        if (branch.onSent) onSent = branch.onSent;
-        if (branch.onSuccess) onSuccess = branch.onSuccess;
-        if (branch.onFailed) onFailed = branch.onFailed;
-        branch = branch.branchId;
-    }
-    var tx = clone(this.tx.slashRep);
-    tx.params = [branch, reportPeriod, salt, abi.fix(report, "hex"), reporter];
-    return this.transact(tx, onSent, onSuccess, onFailed);
-};
 
 // createSingleEventMarket.se
 Augur.prototype.createSingleEventMarket = function (branch, description, expirationBlock, minValue, maxValue, numOutcomes, alpha, liquidity, tradingFee, events, forkSelection, onSent, onSuccess, onFailed) {
@@ -1552,15 +1537,59 @@ Augur.prototype.incrementPeriod = function (branchId, onSent, onSuccess, onFaile
     tx.params = unpacked.params;
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
+Augur.prototype.moveEventsToCurrentPeriod = function (branch, currentVotePeriod, currentPeriod, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.moveEventsToCurrentPeriod);
+    tx.params = [branch, currentVotePeriod, currentPeriod];
+    return this.transact(tx, onSent, onSuccess, onFailed);
+};
 Augur.prototype.incrementPeriodAfterReporting = function (branch, onSent, onSuccess, onFailed) {
     var tx = clone(this.tx.incrementPeriodAfterReporting);
     var unpacked = this.utils.unpack(branch, this.utils.labels(this.incrementPeriodAfterReporting), arguments);
     tx.params = unpacked.params;
+    console.log("increment:", tx);
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
-Augur.prototype.moveEventsToCurrentPeriod = function (branch, currentVotePeriod, currentPeriod, onSent, onSuccess, onFailed) {
-    var tx = clone(this.tx.moveEventsToCurrentPeriod);
-    tx.params = [branch, currentVotePeriod, currentPeriod];
+Augur.prototype.penalizeNotEnoughReports = function (branch, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.penalizeNotEnoughReports);
+    var unpacked = this.utils.unpack(branch, this.utils.labels(this.penalizeNotEnoughReports), arguments);
+    tx.params = unpacked.params;
+    console.log("penalizeNotEnoughReports tx:", tx);
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.penalizeWrong = function (branch, event, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.penalizeWrong);
+    var unpacked = this.utils.unpack(branch, this.utils.labels(this.penalizeWrong), arguments);
+    tx.params = unpacked.params;
+    console.log("penalizeWrong tx:", tx);
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.collectFees = function (branch, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.collectFees);
+    var unpacked = this.utils.unpack(branch, this.utils.labels(this.collectFees), arguments);
+    tx.params = unpacked.params;
+    console.log("collectFees tx:", tx);
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.penalizationCatchup = function (branch, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.penalizationCatchup);
+    var unpacked = this.utils.unpack(branch, this.utils.labels(this.penalizationCatchup), arguments);
+    tx.params = unpacked.params;
+    console.log("penalizationCatchup tx:", tx);
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.slashRep = function (branch, salt, report, reporter, eventID, onSent, onSuccess, onFailed) {
+    if (branch.constructor === Object && branch.branchId) {
+        eventID = branch.eventID;
+        salt = branch.salt;
+        report = branch.report;
+        reporter = branch.reporter;
+        if (branch.onSent) onSent = branch.onSent;
+        if (branch.onSuccess) onSuccess = branch.onSuccess;
+        if (branch.onFailed) onFailed = branch.onFailed;
+        branch = branch.branchId;
+    }
+    var tx = clone(this.tx.slashRep);
+    tx.params = [branch, salt, abi.fix(report, "hex"), reporter, eventID];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
