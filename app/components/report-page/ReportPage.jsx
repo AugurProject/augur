@@ -77,7 +77,11 @@ let ReportPage = React.createClass({
             this.state.branch.reportPeriod,
             this.state.reportedOutcome,
             this.state.isUnethical,
-            this.state.isIndeterminate
+            this.state.isIndeterminate,
+            function (err, res) {
+                if (err) return console.error("submitReportHash failed:", err);
+                console.log("submitReportHash complete:", res);
+            }
         );
         this.props.toggleReportSavedModal();
     },
@@ -85,19 +89,21 @@ let ReportPage = React.createClass({
     onConfirmFormSubmit(event) {
         event.preventDefault();
         let flux = this.getFlux();
-        let branchId, reportHash, reportPeriod, eventId, eventIndex;
+        let branchId, reportHash, reportPeriod, eventIndex;
         branchId = this.state.branch.id;
         reportHash = this.state.reportHash;
         reportPeriod = this.state.branch.reportPeriod;
-        eventId = this.state.event.id;
-        eventIndex = flux.augur.getEventIndex(reportPeriod, eventId);
-        flux.actions.report.submitQualifiedReports(function (err, res) {
-            if (err) console.error("ReportsPage.submitQualifiedReports:", err);
+        eventIndex = flux.augur.getEventIndex(reportPeriod, this.state.event.id, function (eventIndex) {
+            flux.actions.report.submitQualifiedReports(function (err, res) {
+                if (err) console.error("ReportsPage.submitQualifiedReports:", err);
+            });
         });
     },
 
     onReportedOutcomeChanged(event) {
+        let flux = this.getFlux();
         let report = event.target.value;
+        console.log("reported outcome changed:", report);
         if (report !== null && report !== undefined) {
             if (abi.bignum(report).eq(new BigNumber(constants.INDETERMINATE_OUTCOME)) &&
                 event.target.id === "indeterminate") {

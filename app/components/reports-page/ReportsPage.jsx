@@ -4,8 +4,8 @@ let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
 let BigNumber = require("bignumber.js");
 let _ = require("lodash");
+let clone = require("clone");
 let moment = require("moment");
-let ReportConfirmedModal = require("./ReportConfirmedModal");
 let MarketRow = require("../markets-page/MarketRow");
 let utils = require("../../libs/utilities");
 let constants = require("../../libs/constants");
@@ -16,6 +16,7 @@ let ReportsPage = React.createClass({
     getStateFromFlux() {
         let flux = this.getFlux();
         let blockNumber = flux.store("network").getState().blockNumber;
+        console.log("blockNumber:", blockNumber);
         let state = {
             account: flux.store("config").getAccount(),
             asset: flux.store("asset").getState(),
@@ -33,19 +34,16 @@ let ReportsPage = React.createClass({
         return state;
     },
 
-    confirmReport() {
-        this.props.toggleConfirmReportModal();
-    },
-
     render() {
         let self = this;
+        let account = this.state.account;
         let blockNumber = this.state.blockNumber;
         let isCommitPeriod = this.state.isCommitPeriod;
         let isRevealPeriod = !isCommitPeriod;
         let marketRows = [];
         if (this.state.currentBranch) {
             let periodLength = this.state.currentBranch.periodLength;
-            let commitPeriodEndMillis = 0;
+            let commitPeriodEndMillis = moment.duration(0);
             if (isCommitPeriod === true) {
                 commitPeriodEndMillis = moment.duration(constants.SECONDS_PER_BLOCK * ((periodLength / 2) - (blockNumber % (periodLength / 2))), "seconds");
             }
@@ -55,25 +53,28 @@ let ReportsPage = React.createClass({
                 let event = this.state.events[eventID];
                 let market = event.markets[0];
                 if (!market) continue;
-                let report = {
-                    reportedOutcome: event.report.reportedOutcome,
-                    isUnethical: event.report.isUnethical,
-                    isCommitPeriod: isCommitPeriod,
-                    isRevealPeriod: isRevealPeriod,
-                    confirmReport: this.confirmReport,
-                    isConfirmed: event.report.submitReport,
-                    commitPeriodEndMillis: commitPeriodEndMillis,
-                    revealPeriodEndMillis: revealPeriodEndMillis
-                };
+                let report = clone(event.report);
+                report.isCommitPeriod = isCommitPeriod;
+                report.isRevealPeriod = isRevealPeriod;
+                report.confirmReport = this.confirmReport;
+                report.isConfirmed = report.submitReport;
+                report.commitPeriodEndMillis = commitPeriodEndMillis;
+                report.revealPeriodEndMillis = revealPeriodEndMillis;
+                console.log("commit period:", commitPeriodEndMillis);
+                console.log("reveal period:", revealPeriodEndMillis);
                 marketRows.push(
-                    <MarketRow key={event.id + "-" + market._id} market={market} report={report} />
+                    <MarketRow
+                        key={event.id + "-" + market._id}
+                        market={market}
+                        report={report}
+                        account={account} />
                 );
             }
         }
         return (
             <div>
                 <h1>Reporting</h1>
-                <div className="row submenu">
+                {/*<div className="row submenu">
                     <a className="collapsed"
                        data-toggle="collapse"
                        href="#collapseSubmenu"
@@ -113,15 +114,12 @@ let ReportsPage = React.createClass({
                             </li>
                         </ul>
                     </div>
-                </div>
+                </div>*/}
                 <div className="row">
                     <div className="col-xs-12">
                         {marketRows}
                     </div>
                 </div>
-                <ReportConfirmedModal
-                    show={this.props.reportConfirmedModalOpen}
-                    onHide={this.props.toggleConfirmReportModal} />
             </div>
         )
     }

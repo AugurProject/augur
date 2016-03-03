@@ -112,29 +112,33 @@ var ReportActions = {
           augur.getDescription(eventId, function (description) {
             if (description && description.error) return nextEvent(description);
             eventsToReport[eventId].description = description;
-            augur.getMarkets(eventId, function (markets) {
-              if (!markets) return nextEvent("no markets found");
-              if (markets.error) return nextEvent(markets);
-              async.each(markets, function (thisMarket, nextMarket) {
-                var market = self.flux.store("market").getMarket(abi.bignum(thisMarket));
-                if (market) {
-                  eventsToReport[eventId].markets.push(market);
-                  return nextMarket();
-                }
-                augur.getMarketInfo(thisMarket, function (marketInfo) {
-                  eventsToReport[eventId].type = marketInfo.type;
-                  self.flux.actions.market.parseMarketInfo(marketInfo, function (info) {
-                    augur.ramble.getMarketMetadata(thisMarket, {sourceless: false}, function (err, metadata) {
-                      if (err) console.error("getMetadata:", err);
-                      if (metadata) info.metadata = metadata;
-                      eventsToReport[eventId].markets.push(info);
-                      nextMarket();
+            augur.getEventIndex(eventId, branch.reportPeriod, function (eventIndex) {
+              if (eventIndex && eventIndex.error) return nextEvent(eventIndex);
+              eventsToReport[eventId].index = eventIndex;
+              augur.getMarkets(eventId, function (markets) {
+                if (!markets) return nextEvent("no markets found");
+                if (markets.error) return nextEvent(markets);
+                async.each(markets, function (thisMarket, nextMarket) {
+                  var market = self.flux.store("market").getMarket(abi.bignum(thisMarket));
+                  if (market) {
+                    eventsToReport[eventId].markets.push(market);
+                    return nextMarket();
+                  }
+                  augur.getMarketInfo(thisMarket, function (marketInfo) {
+                    eventsToReport[eventId].type = marketInfo.type;
+                    self.flux.actions.market.parseMarketInfo(marketInfo, function (info) {
+                      augur.ramble.getMarketMetadata(thisMarket, {sourceless: false}, function (err, metadata) {
+                        if (err) console.error("getMetadata:", err);
+                        if (metadata) info.metadata = metadata;
+                        eventsToReport[eventId].markets.push(info);
+                        nextMarket();
+                      });
                     });
                   });
+                }, function (err) {
+                  if (err) return nextEvent(err);
+                  nextEvent();
                 });
-              }, function (err) {
-                if (err) return nextEvent(err);
-                nextEvent();
               });
             });
           });
@@ -186,92 +190,130 @@ var ReportActions = {
     });
   },
 
+  updatePendingReports: function (pendingReports, report) {
+    var isUpdate;
+    if (pendingReports && pendingReports.constructor === Array && pendingReports.length) {
+      for (var i = 0, n = pendingReports.length; i < n; ++i) {
+        if (pendingReports[i].branchId === report.branchId &&
+            pendingReports[i].eventId === report.eventId) {
+          for (var k in report) {
+            if (!report.hasOwnProperty(k)) continue;
+            pendingReports[i][k] = report[k];
+          }
+          isUpdate = true;
+          break;
+        }
+      }
+    }
+    if (!isUpdate) pendingReports.push(report);
+    this.flux.actions.report.storeReports(pendingReports);
+    this.dispatch(constants.report.UPDATE_PENDING_REPORTS, {pendingReports});
+  },
+
   /**
    * Create, broadcast, and store the report hash.
    * (Should be called during the first half of the reporting period.)
    */
   submitReportHash: function (branchId, event, reportPeriod, reportedOutcome, isUnethical, isIndeterminate, cb) {
-    cb = cb || function (e, r) { console.log(e, r); };
+    cb = cb || function () {};
     var self = this;
-    reportedOutcome = abi.bignum(reportedOutcome);
     var minValue = abi.bignum(event.minValue);
     var maxValue = abi.bignum(event.maxValue);
-    this.flux.augur.getEventIndex(reportPeriod, event.id, function (eventIndex) {
-      if (eventIndex === undefined || eventIndex === null || eventIndex.error) {
-        return console.error("eventIndex:", eventIndex);
-      }
+    var numOutcomes = abi.bignum(event.numOutcomes);
 
-      // Re-scale scalar/categorical reports so they fall between 0 and 1
-      if (event.type === "scalar") {
-        reportedOutcome = reportedOutcome.minus(minValue).dividedBy(maxValue.minus(minValue)).toString();
-      } else if (event.type === "categorical") {
-        reportedOutcome = reportedOutcome.minus(abi.bignum(1)).dividedBy(abi.bignum(event.numOutcomes - 1)).toString();
-      }
+    // Re-scale scalar/categorical reports so they fall between 0 and 1
+    if (event.type === "scalar") {
+      reportedOutcome = abi.bignum(reportedOutcome)
+                           .minus(minValue)
+                           .dividedBy(maxValue.minus(minValue)).toFixed();
+    } else if (event.type === "categorical") {
+      reportedOutcome = abi.bignum(reportedOutcome)
+                           .minus(abi.bignum(1))
+                           .dividedBy(numOutcomes.minus(abi.bignum(1))).toFixed();
+    }
 
-      var account = self.flux.store("config").getAccount();
-      var salt = utils.bytesToHex(secureRandom(32));
-      var pendingReports = self.flux.store("report").getState().pendingReports;
-      pendingReports.push({
-        branchId,
+    var account = this.flux.store("config").getAccount();
+    var salt = utils.bytesToHex(secureRandom(32));
+    this.flux.actions.report.updatePendingReports(
+      this.flux.store("report").getState().pendingReports, {
+        branchId: branchId,
         eventId: event.id,
-        eventIndex,
-        reportPeriod,
-        reportedOutcome,
-        salt,
-        isUnethical,
-        isIndeterminate,
+        eventIndex: event.index,
+        reportPeriod: reportPeriod,
+        reportedOutcome: reportedOutcome,
+        salt: salt,
+        isUnethical: isUnethical,
+        isIndeterminate: isIndeterminate,
         submitHash: false,
         submitReport: false
-      });
-      self.flux.actions.report.storeReports(pendingReports);
-      self.dispatch(constants.report.UPDATE_PENDING_REPORTS, {pendingReports});
-      var reportHash = self.flux.augur.makeHash(
-        salt,
-        reportedOutcome,
-        event.id,
-        account,
-        isIndeterminate,
-        event.type === "binary"
-      );
-      self.flux.actions.report.saveReport(
-        branchId,
-        event.id,
-        eventIndex,
-        reportHash,
-        reportedOutcome,
-        salt,
-        isUnethical,
-        isIndeterminate,
-        false,
-        false
-      );
-      self.flux.augur.submitReportHash({
-        branch: branchId,
-        reportHash: reportHash,
-        reportPeriod: reportPeriod,
-        eventID: event.id,
-        eventIndex: eventIndex,
-        onSent: function (res) {},
-        onSuccess: function (res) {
-          console.log("report hash submitted:", res);
-          pendingReports[pendingReports.length - 1].submitHash = true;
-          self.dispatch(constants.report.UPDATE_PENDING_REPORTS, {pendingReports});
-          self.flux.actions.report.saveReport(
-            branchId,
-            event.id,
-            eventIndex,
-            reportHash,
-            reportedOutcome,
-            salt,
-            isUnethical,
-            isIndeterminate,
-            true,
-            false
-          );
-          cb(null, res);
-        },
-        onFailed: cb
-      });
+      }
+    );
+    var reportHash = this.flux.augur.makeHash(
+      salt,
+      reportedOutcome,
+      event.id,
+      account,
+      isIndeterminate,
+      event.type === "binary"
+    );
+    this.flux.actions.report.saveReport(
+      branchId,
+      event.id,
+      event.index,
+      reportHash,
+      reportedOutcome,
+      salt,
+      isUnethical,
+      isIndeterminate,
+      false,
+      false
+    );
+    this.flux.augur.submitReportHash({
+      branch: branchId,
+      reportHash: reportHash,
+      reportPeriod: reportPeriod,
+      eventID: event.id,
+      eventIndex: event.index,
+      onSent: function (res) {
+        self.flux.actions.report.updatePendingReports(
+          self.flux.store("report").getState().pendingReports,
+          {branchId: branchId, eventId: event.id, submitHash: true}
+        );
+        self.flux.actions.report.saveReport(
+          branchId,
+          event.id,
+          event.index,
+          reportHash,
+          reportedOutcome,
+          salt,
+          isUnethical,
+          isIndeterminate,
+          true,
+          false
+        );
+      },
+      onSuccess: function (res) {
+        cb(null, res);
+      },
+      onFailed: function (err) {
+        self.flux.actions.report.updatePendingReports(
+          self.flux.store("report").getState().pendingReports,
+          {branchId: branchId, eventId: event.id, submitHash: false}
+        );
+        self.flux.actions.report.saveReport(
+          branchId,
+          event.id,
+          event.index,
+          reportHash,
+          reportedOutcome,
+          salt,
+          isUnethical,
+          isIndeterminate,
+          false,
+          false
+        );
+        cb(err);
+      }
     });
   },
 
@@ -511,6 +553,8 @@ var ReportActions = {
                     }
                     if (DEBUG) {
                       console.log("Difference " + (currentPeriod - period) + ": ready for report hash submission.");
+                      var snd = new Audio("data:audio/wav;base64,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qJrx4KOQjahZxWbcZgztj2c49nKmkId44S71j0c8eV9yDK6uPRzx5X18eDvjvQ6yKo9ZSS6l//8elePK/Lf//IInrOF/FvDoADYAGBMGb7FtErm5MXMlmPAJQVgWta7Zx2go+8xJ0UiCb8LHHdftWyLJE0QIAIsI+UbXu67dZMjmgDGCGl1H+vpF4NSDckSIkk7Vd+sxEhBQMRU8j/12UIRhzSaUdQ+rQU5kGeFxm+hb1oh6pWWmv3uvmReDl0UnvtapVaIzo1jZbf/pD6ElLqSX+rUmOQNpJFa/r+sa4e/pBlAABoAAAAA3CUgShLdGIxsY7AUABPRrgCABdDuQ5GC7DqPQCgbbJUAoRSUj+NIEig0YfyWUho1VBBBA//uQZB4ABZx5zfMakeAAAAmwAAAAF5F3P0w9GtAAACfAAAAAwLhMDmAYWMgVEG1U0FIGCBgXBXAtfMH10000EEEEEECUBYln03TTTdNBDZopopYvrTTdNa325mImNg3TTPV9q3pmY0xoO6bv3r00y+IDGid/9aaaZTGMuj9mpu9Mpio1dXrr5HERTZSmqU36A3CumzN/9Robv/Xx4v9ijkSRSNLQhAWumap82WRSBUqXStV/YcS+XVLnSS+WLDroqArFkMEsAS+eWmrUzrO0oEmE40RlMZ5+ODIkAyKAGUwZ3mVKmcamcJnMW26MRPgUw6j+LkhyHGVGYjSUUKNpuJUQoOIAyDvEyG8S5yfK6dhZc0Tx1KI/gviKL6qvvFs1+bWtaz58uUNnryq6kt5RzOCkPWlVqVX2a/EEBUdU1KrXLf40GoiiFXK///qpoiDXrOgqDR38JB0bw7SoL+ZB9o1RCkQjQ2CBYZKd/+VJxZRRZlqSkKiws0WFxUyCwsKiMy7hUVFhIaCrNQsKkTIsLivwKKigsj8XYlwt/WKi2N4d//uQRCSAAjURNIHpMZBGYiaQPSYyAAABLAAAAAAAACWAAAAApUF/Mg+0aohSIRobBAsMlO//Kk4soosy1JSFRYWaLC4qZBYWFRGZdwqKiwkNBVmoWFSJkWFxX4FFRQWR+LsS4W/rFRb/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////VEFHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU291bmRib3kuZGUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMjAwNGh0dHA6Ly93d3cuc291bmRib3kuZGUAAAAAAAAAACU=");  
+                      snd.play();
                     }
                     self.flux.actions.branch.updateCurrentBranch();
                     self.flux.actions.report.ready(branchID);
@@ -537,7 +581,7 @@ var ReportActions = {
     var self = this;
     var flux = this.flux;
     var suffix = Math.random().toString(36).substring(4);
-    periodLength = periodLength || 25;
+    periodLength = periodLength || 30;
     branchDescription = branchDescription || suffix;
     blocksUntilExpiration = blocksUntilExpiration || 5;
     description = description || suffix;
@@ -591,9 +635,15 @@ var ReportActions = {
               console.log("Current block:", blockNumber);
               console.log("Next period starts at block", blockNumber + blocksToGo, "(" + blocksToGo + " to go)");
           }
-          if (blocksToGo > blocksUntilExpiration) return createEvent(blockNumber);
+          if (blocksToGo > blocksUntilExpiration) {
+            return createEvent(blockNumber + blocksUntilExpiration);
+          }
           if (DEBUG) console.log("Waiting", blocksToGo, "blocks...");
-          flux.augur.rpc.fastforward(blocksToGo, createEvent);
+          flux.augur.rpc.fastforward(blocksToGo, function (lastBlock) {
+            console.log("Last block:", lastBlock);
+            console.log("event expires at:" + (lastBlock + blocksUntilExpiration));
+            createEvent(lastBlock + blocksUntilExpiration);
+          });
       });
     });
   }

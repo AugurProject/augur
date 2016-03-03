@@ -13,11 +13,20 @@ var valid = require("validator");
 var utils = require("../app/libs/utilities");
 var flux = require("./mock");
 var keystore = require("./account");
-var marketInfo = require("./marketInfo");
 var tools = require("./tools");
+var marketInfo = require("./marketInfo");
 
 var account = {address: flux.augur.rpc.coinbase()};
 var blockNumber = flux.augur.rpc.blockNumber();
+flux.augur.connect(null, null, function (c) {
+    flux.augur.getMarketsInBranch(flux.augur.branches.dev, function (markets) {
+        flux.augur.rpc.version(function (version) {
+            console.log("version:", version);
+        });
+        console.log("sync version:", flux.augur.rpc.version());
+    });
+});
+
 marketInfo = tools.parseMarketInfo(marketInfo, blockNumber, account);
 
 test("MarketActions.addComment", function (t) {

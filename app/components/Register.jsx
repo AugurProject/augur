@@ -50,6 +50,8 @@ let RegisterModal = React.createClass({
   updateProgressModal: utilities.updateProgressModal,
 
   onRegister: function (event) {
+    event.preventDefault();
+
     if (this.isValid()) {
       let flux = this.getFlux();
       let self = this;
@@ -95,10 +97,10 @@ let RegisterModal = React.createClass({
           flux.actions.asset.updateAssets();
         },
         onSendEther: function (account) {
-          self.updateProgressModal("Received " + flux.augur.constants.FREEBIE + " Ether.");
+          self.updateProgressModal("Received " + flux.augur.constants.FREEBIE + " test Ether.");
         },
         onSent: function (res) {
-          self.updateProgressModal("Requesting free Cash and Reputation...");
+          self.updateProgressModal("Requesting free play Cash and Reputation...");
         },
         onSuccess: function (res) {
           self.updateProgressModal({
@@ -122,6 +124,8 @@ let RegisterModal = React.createClass({
   },
 
   onImportAccount: function (event) {
+    event.preventDefault();
+
     if (this.isValid()) {
       var handle = this.state.handle;
       var password = this.state.password;
@@ -234,7 +238,13 @@ let RegisterModal = React.createClass({
   },
 
   handleSelect: function (index, last) {
-    this.setState({tab: index});
+    this.setState({
+      handle: '',
+      password: '',
+      handleHelp: null,
+      passwordHelp: null,
+      tab: index
+    });
   },
 
   isValid: function () {
@@ -276,10 +286,10 @@ let RegisterModal = React.createClass({
     let passwordStyle = this.state.passwordHelp ? 'error' : null;
     let verifyPasswordStyle = this.state.verifyPasswordHelp ? 'error' : null;
     let submit = (
-      <Button bsStyle='primary' onClick={this.onRegister}>Register</Button>
+      <Button bsStyle='primary' type="submit">Register</Button>
     );
     let importSubmit = (
-      <Button bsStyle='primary' onClick={this.onImportAccount}>Import</Button>
+      <Button bsStyle='primary' type="submit">Import</Button>
     );
     let loadAccountFile;
     if (this.state.keystore === null) {
@@ -327,79 +337,86 @@ let RegisterModal = React.createClass({
                 <Tab>Import Account</Tab>
               </TabList>
               <TabPanel>
-                <div className='row'>
-                  <div className="col-sm-12">
-                    <Input
-                      type='text'
-                      name='handle'
-                      bsStyle={handleStyle}
-                      help={this.state.handleHelp}
-                      placeholder='email address / username'
-                      onChange={this.handleChange} />
+                <form onSubmit={this.onRegister}>
+                  <div className='row'>
+                    <div className="col-sm-12">
+                      <Input
+                        type='text'
+                        name='handle'
+                        bsStyle={handleStyle}
+                        help={this.state.handleHelp}
+                        placeholder='email address / username'
+                        onChange={this.handleChange} />
+                    </div>
+                    <div className="col-sm-12">
+                      <Input
+                        type="password"
+                        name="password"
+                        ref="input"
+                        bsStyle={passwordStyle}
+                        help={this.state.passwordHelp}
+                        placeholder='password'
+                        onChange={this.handleChange} />
+                    </div>
+                    <div className="col-sm-12">
+                      <Input
+                        type="password"
+                        name="verifyPassword"
+                        bsStyle={verifyPasswordStyle}
+                        help={this.state.verifyPasswordHelp}
+                        ref="input"
+                        placeholder='verify password'
+                        onChange={this.handleChange}
+                        buttonAfter={submit} />
+                    </div>
+                    <div className="col-sm-12">
+                      <Input
+                        type="checkbox"
+                        name="persist"
+                        id="persist-checkbox"
+                        label="Remember Me"
+                        onChange={this.handlePersistChange} />
+                    </div>
                   </div>
                   <div className="col-sm-12">
-                    <Input
-                      type="password"
-                      name="password"
-                      ref="input"
-                      bsStyle={passwordStyle}
-                      help={this.state.passwordHelp}
-                      placeholder='password'
-                      onChange={this.handleChange} />
+                    <span className="red">Store your password in a safe place!</span>  Your password cannot be recovered.  If you forget it, you will lose all assets in your account.
                   </div>
-                  <div className="col-sm-12">
-                    <Input
-                      type="password"
-                      name="verifyPassword"
-                      bsStyle={verifyPasswordStyle}
-                      help={this.state.verifyPasswordHelp}
-                      ref="input"
-                      placeholder='verify password'
-                      onChange={this.handleChange}
-                      buttonAfter={submit} />
-                  </div>
-                  <div className="col-sm-12">
-                    <Input
-                      type="checkbox"
-                      name="persist"
-                      id="persist-checkbox"
-                      label="Remember Me"
-                      onChange={this.handlePersistChange} />
-                  </div>
-                </div>
+                </form>
               </TabPanel>
               <TabPanel>
-                <div className='row'>
-                  {loadAccountFile}
-                  <div className="col-sm-12">
-                    <Input
-                      type='text'
-                      name="handle"
-                      bsStyle={handleStyle}
-                      help={this.state.handleHelp}
-                      placeholder='email address / username'
-                      onChange={this.handleChange} />
+                <form onSubmit={this.onImportAccount}>
+                  <div className='row'>
+                    {loadAccountFile}
+                    <div className="col-sm-12">
+                      <Input
+                        type='text'
+                        name="handle"
+                        bsStyle={handleStyle}
+                        help={this.state.handleHelp}
+                        placeholder='email address / username'
+                        onChange={this.handleChange} />
+                    </div>
+                    <div className="col-sm-12">
+                      <Input
+                        type="password"
+                        name="password"
+                        ref="input"
+                        bsStyle={passwordStyle}
+                        help="The password used for this account on your local Ethereum node"
+                        placeholder='password'
+                        onChange={this.handleChange}
+                        buttonAfter={importSubmit} />
+                    </div>
+                    <div className="col-sm-12">
+                      <Input
+                        type="checkbox"
+                        name="persist"
+                        id="persist-checkbox"
+                        label="Remember Me"
+                        onChange={this.handlePersistChange} />
+                    </div>
                   </div>
-                  <div className="col-sm-12">
-                    <Input
-                      type="password"
-                      name="password"
-                      ref="input"
-                      bsStyle={passwordStyle}
-                      help="The password used for this account on your local Ethereum node"
-                      placeholder='password'
-                      onChange={this.handleChange}
-                      buttonAfter={importSubmit} />
-                  </div>
-                  <div className="col-sm-12">
-                    <Input
-                      type="checkbox"
-                      name="persist"
-                      id="persist-checkbox"
-                      label="Remember Me"
-                      onChange={this.handlePersistChange} />
-                  </div>
-                </div>
+                </form>
               </TabPanel>
             </Tabs>
           </div>

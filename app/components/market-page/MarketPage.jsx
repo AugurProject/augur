@@ -101,8 +101,8 @@ let MarketPage = React.createClass({
              closeMarketButton = (
                 <div className="close-market">
                     <Button
-                        bsSize="small"
-                        bsStyle="info"
+                        className="btn-block active close-market-button"
+                        bsStyle="warning"
                         onClick={this.toggleCloseMarketModal}>
                         Close Market
                     </Button>
@@ -137,17 +137,17 @@ let MarketPage = React.createClass({
 
         return (
             <div className="marketPage">
+                {closeMarketButton}
                 <h1>{ this.state.market.description }</h1>
                 {image}
                 <div className="tags">
                     {tags}
                 </div>
+
                 <OrderTicket market={this.state.market} account={this.state.account}/>
                 <UserOrders market={this.state.market}/>
 
                 <MarketInfo market={market} />
-
-                {closeMarketButton}
 
                 <div onClick={this.toggleDetails} className="pointer">
                     <Glyphicon

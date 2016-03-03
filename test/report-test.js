@@ -246,14 +246,54 @@ test("ReportActions.loadPendingReports", function (t) {
         t.equal(payload.pendingReports.constructor, Array, "payload.pendingReports is an array");
         console.log("payload:", payload.pendingReports[payload.pendingReports.length - 1]);
         console.log("pendingReport:",pendingReport);
-        t.deepEqual(payload.pendingReports[payload.pendingReports.length - 1], pendingReport, "payload.pendingReports[end] == " + JSON.stringify(pendingReport));
+        t.deepEqual(payload.pendingReports[0], pendingReport, "payload.pendingReports[0] == " + JSON.stringify(pendingReport));
         LOAD_PENDING_REPORTS_SUCCESS(payload);
         t.pass("dispatch LOAD_PENDING_REPORTS_SUCCESS");
+        var storedPendingReports = flux.store("report").getState().pendingReports;
+        t.deepEqual(storedPendingReports[0], pendingReport, "stores.report.state.pendingReports[0] == " + JSON.stringify(pendingReport));
         flux.register.LOAD_PENDING_REPORTS_SUCCESS = LOAD_PENDING_REPORTS_SUCCESS;
         t.end();
     };
     flux.stores.report.state.pendingReports = [pendingReport];
     flux.actions.report.loadPendingReports();
+});
+
+test("ReportActions.updatePendingReports", function (t) {
+    flux = reset(flux);
+    var pendingReport = {
+        branchId: branch,
+        eventId: eventID,
+        eventIndex: eventIndex,
+        reportPeriod: reportPeriod,
+        reportedOutcome: reportedOutcome,
+        salt: salt,
+        isUnethical: isUnethical,
+        isIndeterminate: isIndeterminate,
+        submitHash: false,
+        submitReport: false
+    };
+    var UPDATE_PENDING_REPORTS = flux.register.UPDATE_PENDING_REPORTS;
+    flux.register.UPDATE_PENDING_REPORTS = function (payload) {
+        if (DEBUG) console.log("UPDATE_PENDING_REPORTS:", payload);
+        t.equal(payload.constructor, Object, "payload is an object");
+        t.equal(payload.pendingReports.constructor, Array, "payload.pendingReports is an array");
+        t.equal(payload.pendingReports.length, 1, "payload.pendingReports.length == 1");
+        t.deepEqual(payload.pendingReports[0], pendingReport, "payload.pendingReports[0] == " + JSON.stringify(pendingReport));
+        var updatedStoredPendingReports = flux.store("report").getState().pendingReports;
+        UPDATE_PENDING_REPORTS(payload);
+        t.pass("dispatch UPDATE_PENDING_REPORTS");
+        var updatedStoredPendingReports = flux.store("report").getState().pendingReports;
+        t.deepEqual(updatedStoredPendingReports[0], pendingReport, "stores.report.state.pendingReports[0] == " + JSON.stringify(pendingReport));
+        flux.register.UPDATE_PENDING_REPORTS = UPDATE_PENDING_REPORTS;
+        t.end();
+    };
+    flux.stores.report.state.pendingReports = [pendingReport];
+    pendingReport.reportedOutcome = "2";
+    pendingReport.isUnethical = true;
+    flux.actions.report.updatePendingReports(
+        flux.store("report").getState().pendingReports,
+        pendingReport
+    );
 });
 
 if (!process.env.CONTINUOUS_INTEGRATION) {

@@ -18,15 +18,22 @@ module.exports = React.createClass({
   },
 
   onConfirm: function (event) {
-    var marketId = abi.hex(this.props.params.market.id);
-    var branchId = this.props.params.market.branchId;
-    console.log("Closing market", marketId, "on branch", branchId);
-    this.getFlux().augur.closeMarket({
+    var flux = this.getFlux();
+    var market = this.props.params.market;
+    var marketId = abi.hex(market.id);
+    var branchId = market.branchId;
+    console.info("Closing market", marketId, "on branch", branchId);
+    flux.augur.closeMarket({
       branch: branchId,
       market: marketId,
-      onSent: function (res) { console.log("Close market sent:", res); },
-      onSuccess: function (res) { console.log("Close market succeeded:", res); },
-      onFailed: function (err) { console.error("Close market failed:", err); }
+      onSent: function () {},
+      onSuccess: function (res) {
+        console.log("Close market succeeded:", res);
+        flux.actions.market.closedMarket(market);
+      },
+      onFailed: function (err) {
+        console.error("Close market failed:", err);
+      }
     });
     this.props.onHide();
   },
@@ -40,15 +47,37 @@ module.exports = React.createClass({
     return (
       <Modal {...this.props} id="close-market-modal">
         <div className="modal-header clearfix">
-          <h4>Close Market</h4>
+          <h4>
+            <div className="close-market-header">Close Market</div>
+          </h4>
+          <div className="close-market-description">{market.description}</div>
+          <code className="close-market-id">{market._id}</code>
         </div>
         <div className="modal-body clearfix">
-          <p>Closing {market.type} market: {market._id}</p>
-          <div className="col-sm-12">
-            <p><i>{market.description}</i></p>
+          <div className="row clearfix">
+            <div className="col-sm-12 close-market-explanation-box">
+              <p className="close-market-explanation">
+                After this market is closed, the market creator and Reporters will receive their fees, and all outstanding trades will be settled.  Shares of this market's outcomes will automatically be converted to Cash at the outcome's closing price.
+              </p>
+            </div>
           </div>
-          <Button bsStyle="default" onClick={this.onCancel}>Cancel</Button>
-          <Button bsStyle="danger" onClick={this.onConfirm}>Close Market</Button>
+          <div className="row clearfix">
+            <div className="col-sm-6">
+              <Button
+                className="btn-plain btn-block"
+                onClick={this.onCancel}>
+                Cancel
+              </Button>
+            </div>
+            <div className="col-sm-6">
+              <Button
+                bsStyle="warning"
+                className="active btn-block"
+                onClick={this.onConfirm}>
+                Close Market
+              </Button>
+            </div>
+          </div>
         </div>
       </Modal>
     );

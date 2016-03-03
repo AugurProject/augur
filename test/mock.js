@@ -122,6 +122,9 @@ var flux = {
         INITIAL_LOAD_COMPLETE: function (payload) {
             flux.stores.market.handleInitialLoadComplete(payload);
         },
+        CLOSED_MARKET: function (payload) {
+            flux.stores.market.handleClosedMarket(payload);
+        },
 
         // network
         UPDATE_NETWORK: function (payload) {

@@ -10,6 +10,7 @@ module.exports = {
   connect: function (hosted) {
     var host, self = this;
     var augur = this.flux.augur;
+    // augur.rpc.nodes.hosted = ["https://report.augur.net"];
     var connectHostedCb = function (host) {
       if (!host) {
         return console.error("Couldn't connect to hosted node:", host);
@@ -42,8 +43,15 @@ module.exports = {
     var self = this;
     var augur = this.flux.augur;
     augur.rpc.reset();
+    // augur.rpc.nodes.hosted = ["https://report.augur.net"];
     augur.connect(null, null, function (connected) {
-      augur.rpc.excision = true;
+      if (augur.rpc.nodes.hosted.length > 1) {
+        augur.rpc.excision = true;
+        augur.rpc.balancer = true;
+      } else {
+        augur.rpc.excision = false;
+        augur.rpc.balancer = false;
+      }
       self.flux.actions.config.setIsHosted(connected);
       if (!connected) return cb(false);
       cb(augur.rpc.nodes.hosted[0]);
@@ -67,14 +75,14 @@ module.exports = {
   // set up filters: monitor the blockchain for changes
   setupFilters: function () {
     var self = this;
-    var augur = this.flux.augur;
-    augur.filters.listen({
+    this.flux.augur.filters.listen({
 
       // listen for new blocks
       block: function (blockHash) {
-        if (blockHash && self.flux.store('config').getAccount()) {
+        if (self.flux.store("config").getAccount()) {
           self.flux.actions.asset.updateAssets();
         }
+        self.flux.actions.branch.updateCurrentBranch();
       },
 
       // listen for augur transactions
@@ -91,13 +99,26 @@ module.exports = {
 
       // update market when a price change has been detected
       price: function (result) {
-        var marketId, market;
+        var marketId, market, markets;
         console.log("[filter] updatePrice:", result);
         if (result && result.marketId) {
           marketId = abi.bignum(result.marketId);
           market = self.flux.store("market").getMarket(marketId);
           if (market) {
             self.flux.actions.asset.updateAssets();
+            if (!market.trades) market.trades = {};
+            if (market.trades[result.outcome]) {
+              market.trades[result.outcome].push(result);
+            } else {
+              market.trades[result.outcome] = [result];
+            }
+            market = self.flux.actions.market.calculatePnl(market);
+            markets = self.flux.store("market").getState().markets;
+            markets[marketId] = market;
+            self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {
+              markets: markets,
+              account: self.flux.store("config").getAccount()
+            });
             self.flux.actions.market.loadMarket(marketId, function (marketInfo) {
               self.flux.actions.market.checkOrderBook(marketInfo);
             });

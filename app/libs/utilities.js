@@ -72,6 +72,7 @@ module.exports = {
 
   formatEther: function (wei) {
     if (!wei) return { value: '', unit: 'ether', withUnit: '-' };
+    if (wei instanceof Error) throw wei;
     var value = abi.bignum(wei).dividedBy(constants.ETHER);
     var unit = 'ether';
     return {
@@ -151,10 +152,10 @@ module.exports = {
       }
       return {type: "categorical", outcome: id};
     case "scalar":
-      if (id === NO) return {type: "scalar", outcome: "⇩"};
+      if (parseInt(id) === NO) return {type: "scalar", outcome: "⇩"};
       return {type: "scalar", outcome: "⇧"};
     case "binary":
-      if (id === NO) return {type: "binary", outcome: "No"};
+      if (parseInt(id) === NO) return {type: "binary", outcome: "No"};
       return {type: "binary", outcome: "Yes"};
     case "combinatorial":
       return {type: "combinatorial"};

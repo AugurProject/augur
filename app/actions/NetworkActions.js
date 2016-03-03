@@ -125,12 +125,8 @@ module.exports = {
     // get block age and peer count until we're current
     augur.rpc.blockNumber(function (blockNumber) {
       if (blockNumber && !blockNumber.error) {
-        blockNumber = abi.number(blockNumber);
-        var blockMoment = utilities.blockToDate(blockNumber, blockNumber);
-        self.dispatch(constants.network.UPDATE_NETWORK, {
-          blockNumber: blockNumber,
-          blocktime: blockMoment
-        });
+        blockNumber = parseInt(blockNumber);
+        self.dispatch(constants.network.UPDATE_NETWORK, {blockNumber});
         augur.rpc.getBlock(blockNumber, true, function (block) {
           if (block && block.constructor === Object && !block.error) {
             var blockTimestamp = block.timestamp;

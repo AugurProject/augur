@@ -121,7 +121,8 @@ let MarketsPage = React.createClass({
 
     render() {
         let flux = this.getFlux();
-        let myOpenOrders = flux.augur.orders.get(this.state.account);
+        let account = this.state.account;
+        let myOpenOrders = flux.augur.orders.get(account);
         let tourMarketKey = this.state.tourMarketKey;
         let tourMarketId;
         if (tourMarketKey) tourMarketId = this.state.markets[tourMarketKey]._id;
@@ -132,6 +133,7 @@ let MarketsPage = React.createClass({
         if (tourMarketId && this.state.pageNum === 0 && this.props.query.expired !== "true") {
             tourMarketRow = <MarketRow
                                 key={tourMarketKey}
+                                account={account}
                                 market={this.state.markets[tourMarketKey]}
                                 tour={true}
                                 numOpenOrders={(myOpenOrders && tourMarketId && myOpenOrders[tourMarketId] && myOpenOrders[tourMarketId][1] && myOpenOrders[tourMarketId][1].length) || 0} />
@@ -239,6 +241,7 @@ let MarketsPage = React.createClass({
                                 return (
                                     <MarketRow
                                         key={market.id}
+                                        account={account}
                                         market={market}
                                         numOpenOrders={(myOpenOrders && myOpenOrders[market._id] && myOpenOrders[market._id][1] && myOpenOrders[market._id][1].length) || 0} />
                                 );
