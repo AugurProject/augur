@@ -12,14 +12,10 @@ let MarketCreateStep1 = React.createClass({
         }
     },
 
-    validate() {
-
-    },
-
     onSubmit(event) {
         event.preventDefault();
 
-
+        this.props.goToNextStep();
     },
 
     getPlaceholderText(marketType) {
@@ -85,22 +81,19 @@ let MarketCreateStep1 = React.createClass({
                         <label for="">Minimum</label>
                         <Input
                             type="number"
-                            // label="Minimum"
                             help={this.props.minValueError}
                             bsStyle={this.props.minValueError ? "error" : null}
                             value={this.props.minValue}
                             placeholder="Minimum answer"
-                            wrapperClassName="row clearfix col-lg-12"
                             onChange={this.props.onChangeMinimum} />
+
                         <label for="">Maximum</label>
                         <Input
                             type="number"
-                            // label="Maximum"
                             help={this.props.maxValueError}
                             bsStyle={this.props.maxValueError ? "error" : null}
                             value={this.props.maxValue}
                             placeholder="Maximum answer"
-                            wrapperClassName="row clearfix col-lg-12"
                             onChange={this.props.onChangeMaximum} />
                     </div>
                 );
@@ -122,9 +115,10 @@ let MarketCreateStep1 = React.createClass({
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group">
                         <label for="marketText">
-                            What do you want to ask?/
+                            What do you want to ask?
                         </label>
                         <Input
+                            style={{width: "100%"}}
                             standalone={true}
                             id="marketText"
                             type="text"
@@ -139,8 +133,11 @@ let MarketCreateStep1 = React.createClass({
                         <label for="">What's the end date for your question?</label>
                         <DatePicker
                             minDate={this.state.minDate}
+                            date={this.props.maturationDate}
                             hideFooter={true}
                             onChange={this.props.onEndDatePicked} />
+
+                        { this.props.maturationDateError }
                     </div>
                     <div className="form-group">
                         <label for="">Question checklist</label>

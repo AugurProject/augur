@@ -18,7 +18,7 @@ let ProgressModal = require("../ProgressModal");
 
 let MarketCreateIndex = require("./MarketCreateIndex");
 let MarketCreateStep1 = require("./MarketCreateStep1");
-//let MarketCreateStep2 = require("./MarketCreateStep2");
+let MarketCreateStep2 = require("./MarketCreateStep2");
 //let MarketCreateStep3 = require("./MarketCreateStep3");
 
 let MarketCreatePage = React.createClass({
@@ -31,10 +31,12 @@ let MarketCreatePage = React.createClass({
       marketText: '',
       detailsText: '',
       plainMarketText: '',
+      marketTextMaxLength: 256,
       marketTextError: null,
       marketInvestment: '501',
       marketInvestmentError: null,
       maturationDate: '',
+      maturationDateError: null,
       timePicked: "12:00:00",
       tradingFee: '2',
       tradingFeeError: null,
@@ -83,15 +85,11 @@ let MarketCreatePage = React.createClass({
     this.setState({progressModal: progressModal});
   },
 
-  handleSelect: function (index, last) {
-    this.setState({tab: index});
-  },
-
   onChangeMarketText: function (event) {
     var marketText = event.target.value;
-    this.setState({marketTextError: null});
-    this.setState({marketText: marketText});
-    this.setState({plainMarketText: marketText});
+    this.setState({marketText, plainMarketText: marketText}, () => {
+      this.validateStep1("marketText");
+    });
   },
 
   onChangeDetailsText: function (event) {
@@ -156,7 +154,9 @@ let MarketCreatePage = React.createClass({
   },
 
   onChangeMaturationDate: function (event) {
-    this.setState({maturationDate: event.target.value});
+    this.setState({maturationDate: event.target.value}, () => {
+      this.validateStep1("maturationDate");
+    });
   },
 
   onChangeExpirySource: function (event) {
@@ -167,81 +167,117 @@ let MarketCreatePage = React.createClass({
     this.setState({expirySourceURL: event.target.value});
   },
 
-  onNext: function (event) {
-    console.log("validated:", this.validatePage(this.state.pageNumber));
-    if (this.validatePage(this.state.pageNumber)) {
+  goToNextStep: function () {
+    let isPageValid = this.validatePage(this.state.pageNumber);
+    console.log("validated:", isPageValid);
+    if (isPageValid) {
       var newPageNumber = this.state.pageNumber + 1;
       this.setState({pageNumber: newPageNumber});
     }
   },
 
-  onBack: function (event) {
+  goToPreviousStep: function () {
     var newPageNumber = this.state.pageNumber - 1;
     this.setState({pageNumber: newPageNumber});
   },
 
-  goToNextStep() {
-      var newPageNumber = this.state.pageNumber + 1;
-      this.setState({pageNumber: newPageNumber});
-  },
   goToPage(newPageNumber) {
     if (this.validatePage(this.state.pageNumber)) {
       this.setState({pageNumber: newPageNumber});
     }
   },
-  //componentWillReceiveProps(nextProps) {
-  //  let newMarketType = nextProps.query.type;
-  //  if (this.props.query.type != newMarketType) {
-  //    let state;
-  //    switch (marketType) {
-  //      case "binary":
-  //        state = { minValue: 1, maxValue: 2 };
-  //      case "categorical":
-  //        state = {};
-  //      case "scalar":
-  //        return "What will the price of oil be at the end of 2016?";
-  //      default:
-  //        console.warn("MarketCreateStep1[getPlaceholderText]: Unknown market type %o", marketType);
-  //        return "";
-  //    }
-  //    this.setState(state);
-  //  }
-  //},
+  /**
+   * Need to update min and max values
+   */
+  componentWillReceiveProps(nextProps) {
+    let newMarketType = nextProps.query.type;
+    if (this.props.query.type != newMarketType) {
+      let newState = {
+        pageNumber: 1
+      };
+      switch (newMarketType) {
+        case "binary": // fallthrough
+        case "categorical":
+          newState.minValue = 1;
+          newState.maxValue = 2;
+          break;
+        case "scalar":
+          newState.minValue = null;
+          newState.maxValue = null;
+          break;
+      }
+      this.setState(newState);
+    }
+  },
   validatePage: function (pageNumber) {
     if (pageNumber === 1) {
-      if (this.state.tab === 0) {
-        this.setState({minValue: 1, maxValue: 2});
+      return this.validateStep1();
+    } else if (pageNumber === 2) {
+      return this.validateStep2();
+    } else if (pageNumber === 3) {
+      return this.validateStep3();
+    }
+    return true;
+  },
+  /**
+   * Validates all fields at once to give immediate feedback to user
+   *
+   * @param {String=} fieldToValidate
+   * @return boolean
+   */
+      validateStep1(fieldToValidate) {
+    let isValid = true;
+
+    if (fieldToValidate == null || fieldToValidate == "marketText") {
+      let isMarketTextLongEnough = this.state.marketText.length <= this.state.marketTextMaxLength;
+      this.setState({
+        marketTextError: isMarketTextLongEnough ? null : `Text exceeds the maximum length of ${this.state.marketTextMaxLength}`
+      });
+      if (!isMarketTextLongEnough) {
+        isValid = false;
       }
 
-      if (this.state.marketText.length > this.state.marketTextMaxLength) {
-        this.setState({
-          marketTextError: 'Text exceeds the maximum length of ' + this.state.marketTextMaxLength
-        });
-        return false;
-      } else if (!this.state.marketText.length) {
-        this.setState({marketTextError: 'Please enter your question'});
-        return false;
-      } else if (this.state.tab === 1) {
+      let isMarketTextSet = this.state.marketText.length > 0;
+      this.setState({marketTextError: isMarketTextSet ? null : 'Please enter your question'});
+      if (!isMarketTextSet) {
+        isValid = false;
+      }
+    }
+
+    if (fieldToValidate == null || fieldToValidate == "maturationDate") {
+      let isMaturationSet = this.state.maturationDate !== '';
+      this.setState({maturationDateError: isMaturationSet ? null : 'Please enter maturation date'});
+      if (!isMaturationSet) {
+        isValid = false;
+      }
+    }
+
+    if (fieldToValidate == null || fieldToValidate == "choices") {
+      if (this.props.query.type === "categorical") {
         for (var i = 0, len = this.state.choices.length; i < len; ++i) {
           if (!this.checkAnswerText(this.state.choices[i], i)) {
-            return false;
+            isValid = false;
           }
         }
-      } else if (this.state.tab === 2) {
-        if (!this.checkMinimum() || !this.checkMaximum()) return false;
       }
-    } else if (pageNumber === 2) {
-      if (this.state.tradingFee === '') {
-        this.setState({ tradingFeeError: 'invalid fee' });
-        return false;
-      } else if (this.state.marketInvestment === '') {
-        this.setState({ marketInvestmentError: 'invalid amount' });
-        return false;
-      }
-      if (this.state.marketInvestmentError || this.state.tradingFeeError) return false;
-    } else if (pageNumber === 3) {
-      if (this.state.maturationDate === '') return false;
     }
+
+    if (fieldToValidate == null || fieldToValidate == "minMax") {
+      if (this.props.query.type === "scalar") {
+        let isMinValid = this.checkMinimum();
+        let isMaxValid = this.checkMaximum();
+        if (!isMinValid || !isMaxValid) {
+          isValid = false;
+        }
+      }
+    }
+
+    return isValid;
+  },
+  validateStep2() {
+    return true;
+  },
+  validateStep3() {
     return true;
   },
 
@@ -387,7 +423,9 @@ let MarketCreatePage = React.createClass({
   },
 
   handleDatePicked: function (dateText, moment, event) {
-    this.setState({maturationDate: dateText});
+    this.setState({maturationDate: dateText}, () => {
+      this.validateStep1("maturationDate");
+    });
   },
 
   handleTimePicked: function (picked) {
@@ -433,7 +471,7 @@ let MarketCreatePage = React.createClass({
     var isOk = !(/^\s*$/.test(answerText));
     var choiceTextError = this.state.choiceTextError;
     choiceTextError[id] = (isOk) ? null : "Answer cannot be blank";
-    this.setState({choiceTextError: choiceTextError})
+    this.setState({choiceTextError: choiceTextError});
     return isOk;
   },
 
@@ -445,27 +483,36 @@ let MarketCreatePage = React.createClass({
     //this.checkAnswerText(answerText, id);
     choices[id] = answerText;
     var marketText = this.state.plainMarketText + " Choices: " + choices.join(", ") + ".";
-    this.setState({choices, marketText});
+    this.setState({choices, marketText}, () => {
+      this.validateStep1("choices");
+    });
   },
 
   checkMinimum: function () {
-    if (utilities.isNumeric(this.state.minValue)) {
-      this.setState({minValueError: null});
-      return true;
-    } else {
-      this.setState({minValueError: "Minimum value must be a number"});
-      return false;
-    }
+    let isMinNumeric = utilities.isNumeric(this.state.minValue);
+    this.setState({minValueError: isMinNumeric ? null : "Minimum value must be a number"});
+    return isMinNumeric;
   },
 
   checkMaximum: function () {
-    if (utilities.isNumeric(this.state.maxValue)) {
-      this.setState({maxValueError: null});
-      return true;
-    } else {
-      this.setState({maxValueError: "Maximum value must be a number"});
-      return false;
+    let isMaxNumeric = utilities.isNumeric(this.state.maxValue),
+        isValid = true,
+        errorMessage;
+
+    if (!isMaxNumeric) {
+      errorMessage = "Maximum value must be a number";
+      isValid = false;
     }
+
+    let isMinNumeric = utilities.isNumeric(this.state.minValue);
+    if (isMinNumeric && isMaxNumeric) {
+      if (this.state.maxValue <= this.state.minValue) {
+        errorMessage = "Maximum must be greater than minimum";
+        isValid = false;
+      }
+    }
+    this.setState({maxValueError: isValid ? null : errorMessage});
+    return isValid;
   },
 
   onChangeMinimum: function (event) {
@@ -473,8 +520,9 @@ let MarketCreatePage = React.createClass({
     if (utilities.isNumeric(minValue)) {
       minValue = abi.number(minValue);
     }
-    this.setState({minValue: minValue});
-    this.checkMinimum();
+    this.setState({minValue: minValue}, () => {
+      this.validateStep1("minMax");
+    });
   },
 
   onChangeMaximum: function (event) {
@@ -482,8 +530,9 @@ let MarketCreatePage = React.createClass({
     if (utilities.isNumeric(maxValue)) {
       maxValue = abi.number(maxValue);
     }
-    this.setState({maxValue: maxValue});
-    this.checkMaximum();
+    this.setState({maxValue: maxValue}, () => {
+      this.validateStep1("minMax");
+    });
   },
 
   render: function () {
@@ -498,7 +547,10 @@ let MarketCreatePage = React.createClass({
     }
 
     if (this.state.pageNumber === 2) {
-      stepContent = <MarketCreateStep2/>;
+      stepContent = <MarketCreateStep2
+          goToNextStep={this.goToNextStep}
+          goToPreviousStep={this.goToPreviousStep}
+          />;
     } else if (this.state.pageNumber === 3) {
 
       subheading = "Maturation Date";
@@ -663,6 +715,8 @@ let MarketCreatePage = React.createClass({
           categoricalChoiceErrors={this.state.choiceTextError}
           onChangeCategoricalChoices={this.onChangeAnswerText}
           onAddCategoricalOutcome={this.onAddAnswer}
+          maturationDate={this.state.maturationDate}
+          maturationDateError={this.state.maturationDateError}
           minValue={this.state.minValue}
           minValueError={this.state.minValueError}
           maxValue={this.state.maxValue}
@@ -670,6 +724,8 @@ let MarketCreatePage = React.createClass({
           onChangeMinimum={this.onChangeMinimum}
           onChangeMaximum={this.onChangeMaximum}
           onEndDatePicked={this.handleDatePicked}
+          goToNextStep={this.goToNextStep}
+          marketTextMaxLength={this.state.marketTextMaxLength}
           />;
     }
 
