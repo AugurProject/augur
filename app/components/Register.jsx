@@ -55,7 +55,7 @@ let RegisterModal = React.createClass({
     if (this.isValid()) {
       let flux = this.getFlux();
       let self = this;
-      this.props.onHide();
+      setTimeout(() => self.props.onHide(), 0);
       this.updateProgressModal();
       this.updateProgressModal({
         header: "Creating New Account",
@@ -79,7 +79,17 @@ let RegisterModal = React.createClass({
               handle: null,
               keystore: null
             });
-            return self.setState({handleHelp: account.message});
+
+            self.setState({
+              handleHelp: account.message,
+              progressModal: {
+                ...self.getInitialState().progressModal
+              }
+            });
+
+            setTimeout(() => self.props.onHide(), 1);
+
+            return;
           }
           self.updateProgressModal([{
               detail: {account},
