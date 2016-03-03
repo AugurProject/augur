@@ -19,7 +19,7 @@
     }
 
     .navbar-header {
-        margin-right: 2rem;
+        margin-right: 1rem;
         .navbar-toggle {
             padding: 20px 15px;
             line-height: 30px;
@@ -113,7 +113,16 @@
             }
 
             &.navbar-right {
-                float: right !important;
+                text-align: right;
+                cursor: pointer;
+
+                li {
+                    display:block; float: none;
+
+                    a {
+                        font-size: 0.8rem;
+                    }
+                }
             }
         }
     }
@@ -286,25 +295,9 @@ body > .navbar-collapse::after {
                 }
 
                 &.navbar-right {
-                    display: inline-block; position: relative;
-                    float: none !important;
-                    margin: 0;
-                    vertical-align: middle;
+                    display: block;
+                    margin: 0 -15px;
                     text-align: left;
-                    cursor: pointer;
-
-                    li {
-                        display:block;
-
-                        a {
-                            padding: 0.0rem 0.0rem;
-                            line-height: 1.2rem;
-
-                            span:first-child {
-                                color: @color-grey-lighter;
-                            }
-                        }
-                    }
                 }
             }
         }
