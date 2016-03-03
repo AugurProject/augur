@@ -307,7 +307,6 @@ module.exports = {
           if (priceHistory) marketInfo.priceHistory = priceHistory;
           marketInfo.branchId = branchId;
           self.flux.actions.market.parseMarketInfo(marketInfo, function (parsedInfo) {
-            parsedInfo = self.flux.actions.market.calculatePnl(parsedInfo);
             markets[parsedInfo.id] = parsedInfo;
 
             // save markets to MarketStore

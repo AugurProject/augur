@@ -106,6 +106,7 @@ module.exports = {
           market = self.flux.store("market").getMarket(marketId);
           if (market) {
             self.flux.actions.asset.updateAssets();
+            if (!market.trades) market.trades = {};
             if (market.trades[result.outcome]) {
               market.trades[result.outcome].push(result);
             } else {
