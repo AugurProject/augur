@@ -1,6 +1,7 @@
 "use strict";
 
 var _ = require("lodash");
+var async = require("async");
 var abi = require("augur-abi");
 var constants = require("../libs/constants");
 var utilities = require("../libs/utilities");
@@ -139,7 +140,7 @@ module.exports = {
                     nextEvent(err);
                   }
                 });
-              })
+              });
             }, function (err) {
               if (err) console.error("each event error:", err);
             });
