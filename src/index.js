@@ -1553,28 +1553,24 @@ Augur.prototype.penalizeNotEnoughReports = function (branch, onSent, onSuccess, 
     var tx = clone(this.tx.penalizeNotEnoughReports);
     var unpacked = this.utils.unpack(branch, this.utils.labels(this.penalizeNotEnoughReports), arguments);
     tx.params = unpacked.params;
-    console.log("penalizeNotEnoughReports tx:", tx);
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
 Augur.prototype.penalizeWrong = function (branch, event, onSent, onSuccess, onFailed) {
     var tx = clone(this.tx.penalizeWrong);
     var unpacked = this.utils.unpack(branch, this.utils.labels(this.penalizeWrong), arguments);
     tx.params = unpacked.params;
-    console.log("penalizeWrong tx:", tx);
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
 Augur.prototype.collectFees = function (branch, onSent, onSuccess, onFailed) {
     var tx = clone(this.tx.collectFees);
     var unpacked = this.utils.unpack(branch, this.utils.labels(this.collectFees), arguments);
     tx.params = unpacked.params;
-    console.log("collectFees tx:", tx);
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
 Augur.prototype.penalizationCatchup = function (branch, onSent, onSuccess, onFailed) {
     var tx = clone(this.tx.penalizationCatchup);
     var unpacked = this.utils.unpack(branch, this.utils.labels(this.penalizationCatchup), arguments);
     tx.params = unpacked.params;
-    console.log("penalizationCatchup tx:", tx);
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
 Augur.prototype.slashRep = function (branch, salt, report, reporter, eventID, onSent, onSuccess, onFailed) {
