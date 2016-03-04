@@ -93,11 +93,6 @@ let Header = React.createClass({
                             My Markets
                         </Link>
                     </li>
-                    <li>
-                        <a href="#" onClick={this.handleSignOutClick}>
-                            Sign out
-                        </a>
-                    </li>
                 </ul>
             );
 
@@ -119,6 +114,11 @@ let Header = React.createClass({
                     <li onClick={this.handleSendEtherClick}>
                         <a href="#" className="">
                             ether {etherBalance}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onClick={this.handleSignOutClick}>
+                            Sign out
                         </a>
                     </li>
                 </ul>
