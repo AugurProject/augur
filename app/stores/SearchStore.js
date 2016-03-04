@@ -26,7 +26,7 @@ module.exports = {
     if (payload.keywords) {
       cleanKeywords = payload.keywords.replace(/\s+/g, ' ');
       cleanKeywords = cleanKeywords.trim().toLocaleLowerCase();
-      cleanKeywords = cleanKeywords.split(' ');    
+      cleanKeywords = cleanKeywords.split(' ');
     }
     this.state.keywords = payload.keywords;
     this.state.cleanKeywords = cleanKeywords;
@@ -34,14 +34,18 @@ module.exports = {
     this.emit(constants.CHANGE_EVENT);
   },
   search: function () {
-    var self = this;
-    var results = {};
+    var self = this,
+        results = {},
+        isMarketMatch = (market, keyword) => market.description.toLowerCase().indexOf(keyword) >= 0,
+        isTagsMatch = (market, keyword) => (market.metadata && market.metadata.tags && market.metadata.tags.length && market.metadata.tags.some(tag => tag.toLowerCase().indexOf(keyword) >= 0));
+
     _.each(this.state.markets, function (market, key) {
       var isMarketMatched = !self.state.cleanKeywords.length || self.state.cleanKeywords.every(function (keyword) {
-        return market.description.toLowerCase().indexOf(keyword) >= 0;
+        return isMarketMatch(market, keyword) || isTagsMatch(market, keyword);
       });
       if (isMarketMatched) results[key] = market;
     });
+
     this.state.results = results;
   },
   handleUpdateSortBy: function (payload) {

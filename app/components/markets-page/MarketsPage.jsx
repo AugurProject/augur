@@ -213,7 +213,7 @@ let MarketsPage = React.createClass({
                         </Select>
                     </div>
                     <div className="col-sm-4 col-xs-6 col-sm-offset-4 search-container">
-                        <InputClear 
+                        <InputClear
                                value={this.state.searchKeywords}
                                onChange={this.onChangeSearchInput}/>
                     </div>
