@@ -623,6 +623,7 @@ let AddMarketModal = React.createClass({
           <div className="form-group row">
             <div className="col-sm-12">
               <p>Does your question need further explanation? (optional)</p>
+              <p>Your question: {this.state.marketText}</p>
               <Input
                 type="textarea"
                 bsStyle={inputStyle}
