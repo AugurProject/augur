@@ -3,6 +3,7 @@
 var _ = require("lodash");
 var async = require("async");
 var clone = require("clone");
+var randomColor = require("randomcolor");
 var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
 var constants = require("../libs/constants");
@@ -442,7 +443,37 @@ module.exports = {
           if (priceHistory.error) {
             return console.error("loadPriceHistory:", priceHistory);
           }
-          self.dispatch(constants.market.LOAD_PRICE_HISTORY_SUCCESS, {market, priceHistory});
+          var priceTimeSeries = [];
+          var numPoints = {};
+          var data = {};
+          var colors = randomColor({count: market.numOutcomes, seed: 10101});
+          var block = self.flux.store("network").getState().blockNumber;
+          for (var i = 0; i < market.numOutcomes; ++i) {
+            var outcomeId = market.outcomes[i].id;
+            if (priceHistory[outcomeId] && priceHistory[outcomeId].length) {
+              numPoints[outcomeId] = priceHistory[outcomeId].length;
+            } else {
+              numPoints[outcomeId] = 0;
+            }
+            var numPts = numPoints[outcomeId];
+            data[outcomeId] = new Array(numPts);
+            for (var j = 0; j < numPts; ++j) {
+              data[outcomeId][j] = [
+                utils.blockToDate(priceHistory[outcomeId][j].blockNumber, block).unix() * 1000,
+                Number(priceHistory[outcomeId][j].price)
+              ];
+            }
+            priceTimeSeries.push({
+              name: market.outcomes[i].label,
+              data: data[outcomeId],
+              color: colors[i]
+            });
+          }
+          self.dispatch(constants.market.LOAD_PRICE_HISTORY_SUCCESS, {
+            market,
+            priceHistory,
+            priceTimeSeries
+          });
         }
       });
     }
