@@ -50,8 +50,10 @@ let AddMarketModal = React.createClass({
       choiceTextError: [null, null],
       numResources: 0,
       resources: [],
+      resourceTextError: [],
       numTags: 0,
       tags: [],
+      tagTextError: [],
       expirySource: "generic",
       expirySourceURL: "",
       progressModal: {
@@ -117,20 +119,6 @@ let AddMarketModal = React.createClass({
     }
   },
 
-  onChangeTagText: function (event) {
-    var tags = this.state.tags;
-    var id = event.target.id;
-    tags[id.split('-')[1]] = event.target.value;
-    this.setState({tags: tags});
-  },
-
-  onChangeResourceText: function (event) {
-    var resources = this.state.resources;
-    var id = event.target.id;
-    resources[id.split('-')[1]] = event.target.value;
-    this.setState({resources: resources});
-  },
-
   onChangeTradingFee: function (event) {
     var amount = event.target.value;
     if (!amount.match(/^[0-9]*\.?[0-9]*$/) ) {
@@ -181,18 +169,19 @@ let AddMarketModal = React.createClass({
   },
 
   validatePage: function (pageNumber) {
+    var i;
     if (pageNumber === 1) {
       if (this.state.tab === 0) this.setState({minValue: 1, maxValue: 2});
       if (this.state.marketText.length > this.state.marketTextMaxLength) {
         this.setState({
-          marketTextError: 'Text exceeds the maximum length of ' + this.state.marketTextMaxLength
+          marketTextError: "Text exceeds the maximum length of " + this.state.marketTextMaxLength
         });
         return false;
       } else if (!this.state.marketText.length) {
-        this.setState({marketTextError: 'Please enter your question'});
+        this.setState({marketTextError: "Please enter your question"});
         return false;
       } else if (this.state.tab === 1) {
-        for (var i = 0, len = this.state.choices.length; i < len; ++i) {
+        for (i = 0; i < this.state.numOutcomes; ++i) {
           if (!this.checkAnswerText(this.state.choices[i], i)) {
             return false;
           }
@@ -202,15 +191,26 @@ let AddMarketModal = React.createClass({
       }
     } else if (pageNumber === 2) {
       if (this.state.tradingFee === '') {
-        this.setState({ tradingFeeError: 'invalid fee' });
+        this.setState({ tradingFeeError: "invalid fee" });
         return false;
       } else if (this.state.marketInvestment === '') {
-        this.setState({ marketInvestmentError: 'invalid amount' });
+        this.setState({ marketInvestmentError: "invalid amount" });
         return false;
       }
       if (this.state.marketInvestmentError || this.state.tradingFeeError) return false;
     } else if (pageNumber === 3) {
       if (this.state.maturationDate === '') return false;
+    } else if (pageNumber === 4) {
+      for (i = 0; i < this.state.numTags; ++i) {
+        if (!this.checkTagText(this.state.tags[i], i)) {
+          return false;
+        }
+      }
+      for (i = 0; i < this.state.numResources; ++i) {
+        if (!this.checkResourceText(this.state.resources[i], i)) {
+          return false;
+        }
+      }
     }
     return true;
   },
@@ -370,10 +370,13 @@ let AddMarketModal = React.createClass({
     var numTags = this.state.numTags + 1;
     if (numTags <= constants.MAX_ALLOWED_TAGS) {
       var tags = this.state.tags;
+      var tagTextError = this.state.tagTextError;
       tags.push('');
+      tagTextError.push(null);
       this.setState({
         numTags: numTags,
-        tags: tags
+        tags: tags,
+        tagTextError: tagTextError
       });
     }
   },
@@ -381,10 +384,13 @@ let AddMarketModal = React.createClass({
   onAddResource: function (event) {
     var numResources = this.state.numResources + 1;
     var resources = this.state.resources;
+    var resourceTextError = this.state.resourceTextError;
     resources.push('');
+    resourceTextError.push(null);
     this.setState({
       numResources: numResources,
-      resources: resources
+      resources: resources,
+      resourceTextError: resourceTextError
     });
   },
 
@@ -409,6 +415,22 @@ let AddMarketModal = React.createClass({
     return isOk;
   },
 
+  checkTagText: function (tagText, id) {
+    var isOk = !(/^\s*$/.test(tagText));
+    var tagTextError = this.state.tagTextError;
+    tagTextError[id] = (isOk) ? null : "Tag cannot be blank";
+    this.setState({tagTextError: tagTextError})
+    return isOk;
+  },
+
+  checkResourceText: function (resourceText, id) {
+    var isOk = !(/^\s*$/.test(resourceText));
+    var resourceTextError = this.state.resourceTextError;
+    resourceTextError[id] = (isOk) ? null : "Resource cannot be blank";
+    this.setState({resourceTextError: resourceTextError})
+    return isOk;
+  },
+
   onChangeAnswerText: function (event) {
     var choices = this.state.choices;
     var id = parseInt(event.target.id.split('-')[1]);
@@ -418,6 +440,24 @@ let AddMarketModal = React.createClass({
     this.setState({choices: choices});
     var marketText = this.state.plainMarketText + " Choices: " + choices.join(", ") + ".";
     this.setState({marketText: marketText});
+  },
+
+  onChangeTagText: function (event) {
+    var tags = this.state.tags;
+    var id = parseInt(event.target.id.split('-')[1]);
+    var tagText = event.target.value;
+    this.checkTagText(tagText, id);
+    tags[id] = tagText;
+    this.setState({tags: tags});
+  },
+
+  onChangeResourceText: function (event) {
+    var resources = this.state.resources;
+    var id = parseInt(event.target.id.split('-')[1]);
+    var resourceText = event.target.value;
+    this.checkResourceText(resourceText, id);
+    resources[id] = resourceText;
+    this.setState({resources: resources});
   },
 
   checkMinimum: function () {
@@ -562,8 +602,11 @@ let AddMarketModal = React.createClass({
             key={i}
             id={tagId}
             type="text"
+            help={this.state.tagTextError[i]}
+            bsStyle={this.state.tagTextError[i] ? "error" : null}
             value={this.state.tags[i]}
             placeholder={placeholderTag}
+            wrapperClassName="row clearfix col-lg-12"
             onChange={this.onChangeTagText} />;
       }
 
@@ -577,8 +620,11 @@ let AddMarketModal = React.createClass({
             key={i}
             id={resourceId}
             type="text"
+            help={this.state.resourceTextError[i]}
+            bsStyle={this.state.resourceTextError[i] ? "error" : null}
             value={this.state.resources[i]}
             placeholder={placeholderText}
+            wrapperClassName="row clearfix col-lg-12"
             onChange={this.onChangeResourceText} />;
       }
 
@@ -679,7 +725,6 @@ let AddMarketModal = React.createClass({
             key={i}
             id={choiceId}
             type="text"
-            // label={"Answer " + (i + 1)}
             help={this.state.choiceTextError[i]}
             bsStyle={this.state.choiceTextError[i] ? "error" : null}
             value={this.state.choices[i]}
