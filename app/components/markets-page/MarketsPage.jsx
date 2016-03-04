@@ -14,9 +14,7 @@ let MarketRow = require("./MarketRow");
 let AddMarketModal = require("../AddMarketModal");
 let constants = require("../../libs/constants");
 let utils = require("../../libs/utilities");
-
-
-MarketRow
+let InputClear = require('../layout/InputClear');
 
 let MarketsPage = React.createClass({
 
@@ -55,9 +53,9 @@ let MarketsPage = React.createClass({
         this.setState({pageNum: data.selected});
     },
 
-    onChangeSearchInput: function (event) {
-        this.setState({searchKeywords: event.target.value});
-        this.debounceSearchInput(event.target.value);
+    onChangeSearchInput: function (searchKeywords) {
+        this.handlePageChanged({selected: 0});
+        this.getFlux().actions.search.updateKeywords(searchKeywords);
     },
 
     onChangeSortBy: function (newValue) {
@@ -68,11 +66,6 @@ let MarketsPage = React.createClass({
         var sortInput = newValue.value.split('|');
         this.getFlux().actions.search.sortMarkets(sortInput[0], parseInt(sortInput[1]));
     },
-
-    debounceSearchInput: _.debounce(function (val) {
-        this.handlePageChanged({selected: 0});
-        this.getFlux().actions.search.updateKeywords(val);
-    }, 500),
 
     componentWillReceiveProps(nextProps) {
         if (this.props.query.expired !== nextProps.query.expired) {
@@ -220,11 +213,8 @@ let MarketsPage = React.createClass({
                         </Select>
                     </div>
                     <div className="col-sm-4 col-xs-6 col-sm-offset-4 search-container">
-                        <input type="search"
-                               className="form-control search-control"
+                        <InputClear 
                                value={this.state.searchKeywords}
-                               placeholder="Search"
-                               tabIndex="0"
                                onChange={this.onChangeSearchInput}/>
                     </div>
                 </div>
