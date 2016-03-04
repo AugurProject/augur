@@ -65,9 +65,9 @@ describe("branches.se", function () {
             batch.execute();
         });
     });
-    describe("getPeriodLength(" + branch_id + ") == '100'", function () {
+    describe("getPeriodLength(" + branch_id + ") == '40000'", function () {
         var test = function (r) {
-            assert.strictEqual(r, "100");
+            assert.strictEqual(r, "40000");
         };
         it("sync", function () {
             test(augur.getPeriodLength(branch_id));

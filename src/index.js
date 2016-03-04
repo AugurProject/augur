@@ -460,11 +460,11 @@ Augur.prototype.getReport = function (branch, reportPeriod, reporter, reportNum,
     tx.params = [branch, reportPeriod, reporter, reportNum];
     return this.fire(tx, callback);
 };
-Augur.prototype.getReportHash = function (branch, reportPeriod, reporter, callback) {
+Augur.prototype.getReportHash = function (branch, reportPeriod, reporter, event, callback) {
     // branch: sha256
     // reportPeriod: integer
     var tx = clone(this.tx.getReportHash);
-    tx.params = [branch, reportPeriod, reporter];
+    tx.params = [branch, reportPeriod, reporter, event];
     return this.fire(tx, callback);
 };
 Augur.prototype.getTotalReputation = function (branch, reportPeriod, callback) {

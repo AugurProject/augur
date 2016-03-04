@@ -105,7 +105,7 @@ var testMarketInfo = function (info) {
     assert.isObject(r);
     assert.property(r, "_id");
     assert.property(r, "network");
-    assert(r.network === "7" || r.network === "10101");
+    assert(r.network === "7" || r.network === "10101" || r.network === "2");
     assert.property(r, "traderCount");
     assert.isAbove(r.traderIndex, -1);
     assert.strictEqual(parseInt(augur.getCurrentParticipantNumber(market)), r.traderCount);

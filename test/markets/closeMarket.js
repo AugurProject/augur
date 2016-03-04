@@ -308,31 +308,42 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                             augur.penalizeNotEnoughReports({
                                 branch: newBranchID,
                                 onSent: function (res) {
-                                    console.log("penalizeNotEnoughReports sent:", res);
+                                    if (DEBUG) console.log("penalizeNotEnoughReports sent:", res);
+                                    assert(res.txHash);
+                                    assert.strictEqual(res.callReturn, "1");
                                 },
                                 onSuccess: function (res) {
-                                    console.log("penalizeNotEnoughReports success:", res);
+                                    if (DEBUG) console.log("penalizeNotEnoughReports success:", res);
                                     augur.getWinningOutcomes(marketID, function (winningOutcomes) {
-                                        console.log("winningOutcomes:", winningOutcomes);
+                                        if (DEBUG) console.log("winningOutcomes:", winningOutcomes);
                                         assert.strictEqual(winningOutcomes[report-1], "1");
                                         augur.penalizeWrong({
                                             branch: newBranchID,
                                             event: eventID,
                                             onSent: function (res) {
-                                                console.log("penalizeWrong sent:", res);
+                                                if (DEBUG) console.log("penalizeWrong sent:", res);
+                                                assert(res.txHash);
+                                                assert.strictEqual(res.callReturn, "1");
                                             },
                                             onSuccess: function (res) {
-                                                console.log("penalizeWrong success:", res);
-                                                console.log("fastforwarding", periodLength/2+1, "blocks...");
+                                                assert(res.txHash);
+                                                assert.strictEqual(res.callReturn, "1");
+                                                if (DEBUG) console.log("penalizeWrong success:", res);
+                                                if (DEBUG) console.log("fastforwarding", periodLength/2+1, "blocks...");
                                                 augur.rpc.fastforward(periodLength / 2 + 1, function (endBlock) {
-                                                    console.log("fastforward complete at:", endBlock);
+                                                    if (DEBUG) console.log("fastforward complete at:", endBlock);
                                                     augur.collectFees({
                                                         branch: newBranchID,
                                                         onSent: function (res) {
-                                                            console.log("collectFees sent:", res);
+                                                            if (DEBUG) console.log("collectFees sent:", res);
+                                                            assert(res.txHash);
+                                                            assert.strictEqual(res.callReturn, "1");
                                                         },
                                                         onSuccess: function (res) {
-                                                            console.log("collectFees success:", res);
+                                                            if (DEBUG) console.log("collectFees success:", res);
+                                                            assert(res.txHash);
+                                                            assert.strictEqual(res.callReturn, "1");
+                                                            done();
                                                         },
                                                         onFailed: done
                                                     });
