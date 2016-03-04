@@ -100,29 +100,29 @@ module.exports = {
       // update market when a price change has been detected
       price: function (result) {
         var marketId, market, markets;
+        var account = self.flux.store("config").getAccount();
         console.log("[filter] updatePrice:", result);
         if (result && result.marketId) {
           marketId = abi.bignum(result.marketId);
-          market = self.flux.store("market").getMarket(marketId);
-          if (market) {
-            self.flux.actions.asset.updateAssets();
-            if (!market.trades) market.trades = {};
-            if (market.trades[result.outcome]) {
-              market.trades[result.outcome].push(result);
-            } else {
-              market.trades[result.outcome] = [result];
+          self.flux.actions.asset.updateAssets();
+          self.flux.actions.market.updatePrice(marketId, function (market) {
+            if (result.user === account) {
+              if (!market.trades) market.trades = {};
+              if (market.trades[result.outcome]) {
+                market.trades[result.outcome].push(result);
+              } else {
+                market.trades[result.outcome] = [result];
+              }
             }
             market = self.flux.actions.market.calculatePnl(market);
             markets = self.flux.store("market").getState().markets;
             markets[marketId] = market;
             self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {
               markets: markets,
-              account: self.flux.store("config").getAccount()
+              account: account
             });
-            self.flux.actions.market.loadMarket(marketId, function (marketInfo) {
-              self.flux.actions.market.checkOrderBook(marketInfo);
-            });
-          }
+            self.flux.actions.market.checkOrderBook(market);
+          });
         }
       },
 

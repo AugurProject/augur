@@ -273,7 +273,7 @@ module.exports = {
             async.eachSeries(markets, function (thisMarket, nextMarket) {
               self.flux.actions.market.loadMetadata(thisMarket, nextMarket);
             }, function (err) {
-              if (err) console.error("metadata error:", err);
+              if (err) console.warn("metadata:", err);
               console.debug(
                 "all markets + metadata + logs loaded in",
                 ((new Date()).getTime() - start) / 1000, "seconds"
@@ -318,7 +318,7 @@ module.exports = {
             // loading complete!
             self.dispatch(constants.market.MARKETS_LOADING, {loadingPage: null});
             self.flux.actions.config.updatePercentLoaded(100);
-            self.flux.actions.market.loadMetadata(marketInfo);
+            self.flux.actions.market.loadMetadata(parsedInfo);
             callback(parsedInfo);
           });
         });
@@ -330,8 +330,8 @@ module.exports = {
     var self = this;
     var account = this.flux.store("config").getAccount();
     callback = callback || function () {};
-    console.log("marketId:", abi.hex(marketId));
-    this.flux.augur.getMarketInfo(abi.hex(marketId), function (marketInfo) {
+    var hexMarketId = abi.hex(marketId);
+    this.flux.augur.getMarketInfo(hexMarketId, function (marketInfo) {
       if (!marketInfo || marketInfo.error || !marketInfo.network) {
         return console.error("updatePrice:", marketInfo);
       }
@@ -361,7 +361,11 @@ module.exports = {
         marketInfo.outcomes.sort(function (a, b) {
           return b.price.minus(a.price);
         });
-        markets[marketId] = marketInfo.outcomes;
+        if (markets[marketId] && markets[marketId].outcomes) {
+          markets[marketId].outcomes = marketInfo.outcomes;
+        } else {
+          markets[marketId] = self.flux.actions.parseMarketInfo(marketInfo);
+        }
 
         // save markets to MarketStore
         self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {
