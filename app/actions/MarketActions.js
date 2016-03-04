@@ -446,7 +446,12 @@ module.exports = {
           var priceTimeSeries = [];
           var numPoints = {};
           var data = {};
-          var colors = randomColor({count: market.numOutcomes, seed: 10101});
+          var colors = randomColor({
+            count: market.numOutcomes,
+            luminosity: "bright",
+            seed: 123457,
+            hue: "random"
+          });
           var block = self.flux.store("network").getState().blockNumber;
           for (var i = 0; i < market.numOutcomes; ++i) {
             var outcomeId = market.outcomes[i].id;
