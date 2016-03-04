@@ -53,7 +53,11 @@ module.exports = {
     payload.reportPeriod = payload.reportPeriod || 0;
     payload.isCurrent = payload.isCurrent || false;
     payload.percentComplete = payload.percentComplete || 0;
-    this.state.currentBranch = _.merge(this.state.currentBranch, payload);
+    if (this.state.currentBranch && this.state.currentBranch.id === payload.id) {
+      this.state.currentBranch = _.merge(this.state.currentBranch, payload);
+    } else {
+      this.state.currentBranch = payload;
+    }
     this.emit(constants.CHANGE_EVENT);
   },
   handleCheckQuorumSent: function (payload) {
