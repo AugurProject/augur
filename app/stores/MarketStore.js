@@ -119,6 +119,7 @@ module.exports = {
   },
   handleLoadPriceHistorySuccess: function (payload) {
     this.state.markets[payload.market.id].priceHistory = payload.priceHistory;
+    this.state.markets[payload.market.id].priceTimeSeries = payload.priceTimeSeries;
     this.state.markets[payload.market.id].priceHistoryStatus = "complete";
     this.emit(constants.CHANGE_EVENT);
   },

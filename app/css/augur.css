@@ -818,8 +818,8 @@ a.market-pane:hover {
 }
 
 .metadata-image {
-    max-height: 200px;
-    max-width: 90%;
+    max-height: 300px;
+    max-width: 100%;
     margin: 15px 0 10px 0;
     /*border: 1px solid #E6E6E6;*/
     padding: 10px;

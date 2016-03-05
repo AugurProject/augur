@@ -197,7 +197,7 @@ let MarketPage = React.createClass({
                     <div className="tab-content">
                         <div id="statsTab" className="tab-pane active" role="tabpanel">
                             <StatsTab
-                                market={this.state.market}
+                                priceTimeSeries={this.state.market.priceTimeSeries}
                                 blockNumber={this.state.blockNumber} />
                         </div>
                         {/*
