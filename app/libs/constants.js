@@ -77,8 +77,8 @@ module.exports = {
   report: keyMirror({
     REPORTS_STORAGE: null,
     SAVE_REPORT_SUCCESS: null,
+    LOAD_EVENTS_TO_REPORT: null,
     LOAD_EVENTS_TO_REPORT_SUCCESS: null,
-    LOAD_PENDING_REPORTS_SUCCESS: null,
     UPDATE_PENDING_REPORTS: null,
     READY: null
   })

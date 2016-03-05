@@ -71,9 +71,7 @@ stores.network.initialize = function () {
 stores.report.initialize = function () {
   this.bindActions(
     constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, this.handleLoadEventsToReportSuccess,
-    constants.report.LOAD_PENDING_REPORTS_SUCCESS, this.handleLoadPendingReportsSuccess,
-    constants.report.UPDATE_PENDING_REPORTS, this.handleLoadPendingReportsSuccess,
-    constants.report.SAVE_REPORT_SUCCESS, this.handleSaveReportSuccess,
+    constants.report.UPDATE_PENDING_REPORTS, this.handleUpdatePendingReports,
     constants.report.READY, this.handleReady
   );
 };

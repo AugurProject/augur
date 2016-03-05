@@ -103,8 +103,8 @@ let MarketRow = React.createClass({
 
     getHoldingsSection(numOpenOrders, numPositions, numTrades, profitAndLoss, unrealizedProfitAndLoss) {
         if (numOpenOrders || numPositions || numTrades) {
-            let pnl = {color: "green", text: profitAndLoss + "%"};
-            let unrealizedPnl = {color: "green", text: unrealizedProfitAndLoss + "%"};
+            let pnl = {color: "green", text: profitAndLoss};
+            let unrealizedPnl = {color: "green", text: unrealizedProfitAndLoss};
             if (abi.bignum(profitAndLoss).lt(abi.bignum(0))) pnl.color = "red";
             if (abi.bignum(unrealizedProfitAndLoss).lt(abi.bignum(0))) unrealizedPnl.color = "red";
             if (!numOpenOrders) numOpenOrders = 0;
@@ -187,7 +187,10 @@ let MarketRow = React.createClass({
         if (report != null) {
             if (report.isCommitPeriod) {
                 return (
-                    <Link className="btn btn-primary" to="report" params={{eventId: market.events[0].id.toString(16)}}>
+                    <Link
+                        className="btn btn-primary"
+                        to="report"
+                        params={{eventId: market.events[0].id.toString(16)}}>
                         Report
                     </Link>
                 );
@@ -199,11 +202,18 @@ let MarketRow = React.createClass({
                         </button>
                     )
                 } else {
-                    return null;
+                    return (
+                        <button className="btn btn-disabled">
+                            Report Complete
+                        </button>
+                    )
                 }
             } else {
                 return (
-                    <Link className="btn btn-primary" to="report" params={{eventId: market.events[0].id.toString(16)}}>
+                    <Link
+                        className="btn btn-primary"
+                        to="report"
+                        params={{eventId: market.events[0].id.toString(16)}}>
                         View Details
                     </Link>
                 );

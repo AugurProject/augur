@@ -16,7 +16,6 @@ let ReportsPage = React.createClass({
     getStateFromFlux() {
         let flux = this.getFlux();
         let blockNumber = flux.store("network").getState().blockNumber;
-        console.log("blockNumber:", blockNumber);
         let state = {
             account: flux.store("config").getAccount(),
             asset: flux.store("asset").getState(),
@@ -25,6 +24,7 @@ let ReportsPage = React.createClass({
             events: flux.store("report").getState().eventsToReport,
             isCommitPeriod: flux.store("branch").isReportCommitPeriod(blockNumber)
         };
+        console.log("blockNumber:", blockNumber, "(" + state.currentBranch.percentComplete + "%)");
         if (state.currentBranch && state.currentBranch.id) {
             state.report = flux.store("report").getReport(
                 state.currentBranch.id,
@@ -54,14 +54,15 @@ let ReportsPage = React.createClass({
                 let market = event.markets[0];
                 if (!market) continue;
                 let report = clone(event.report);
+                if (!report) report = {};
                 report.isCommitPeriod = isCommitPeriod;
                 report.isRevealPeriod = isRevealPeriod;
                 report.confirmReport = this.confirmReport;
                 report.isConfirmed = report.submitReport;
                 report.commitPeriodEndMillis = commitPeriodEndMillis;
                 report.revealPeriodEndMillis = revealPeriodEndMillis;
-                console.log("commit period:", commitPeriodEndMillis);
-                console.log("reveal period:", revealPeriodEndMillis);
+                // console.log("commit period:", commitPeriodEndMillis);
+                // console.log("reveal period:", revealPeriodEndMillis);
                 marketRows.push(
                     <MarketRow
                         key={event.id + "-" + market._id}

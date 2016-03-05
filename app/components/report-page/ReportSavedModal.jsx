@@ -16,6 +16,14 @@ let ReportSavedModal = React.createClass({
                 </p>
             );
         }
+        let timeInfo = <span />;
+        if (this.props.report && this.props.report.commitPeriodEndMillis) {
+            timeInfo = (
+                <span>
+                    This begins in {this.props.report.commitPeriodEndMillis.humanize(true)} and ends in {this.props.report.revealPeriodEndMillis.humanize(true)}.
+                </span>
+            );
+        }
         return (
             <Modal show={this.props.show} onHide={this.props.onHide} bsSize='large'>
                 <div className='modal-body clearfix'>
@@ -23,20 +31,23 @@ let ReportSavedModal = React.createClass({
                     <div className='row'>
                         <div className="col-sm-12">
                             <p>
-                                The outcome you have reported is: <em>{ this.props.reportedOutcomeName }</em>
+                                The outcome you have reported is: <em>{this.props.reportedOutcomeName}</em>
                             </p>
-                            { markedAsUnethicalText }
+                            {markedAsUnethicalText}
                             <p>
-                                You can change this report anytime before end of the reporting period by submitting a
-                                new report with a different outcome.
+                                You can change this report anytime before end of the reporting period by submitting a new report with a different outcome.
                             </p>
                             <p>
-                                You will need to confirm your report during the confirmation period. You can do this on
-                                the Pending Confirmations tab of the Reporting page.
+                                To confirm your report, you will need to log in sometime during the second half of the reporting period.  {timeInfo}  Your report has not been officially submitted until you do this!
                             </p>
                         </div>
                         <div className="col-sm-12">
-                            <Button className="pull-right" bsStyle="primary" onClick={this.onCloseClick}>OK</Button>
+                            <Button
+                                className="pull-right"
+                                bsStyle="primary"
+                                onClick={this.onCloseClick}>
+                                OK
+                            </Button>
                         </div>
                     </div>
                 </div>

@@ -14,11 +14,8 @@ let ReportDetails = React.createClass({
         let pathname = window.location.pathname.split("/");
         let eventId = pathname[pathname.length - 1];
         let report = flux.store("report").getReport(branch.id, branch.reportPeriod);
+        if (!report) report = {};
         console.log("loaded report from flux:", report);
-        if (!report) {
-            report = flux.actions.report.loadReportFromLs(branch.id, eventId);
-            console.log("loaded report from LS:", report);
-        }
         return {branch, blockNumber, report};
     },
 

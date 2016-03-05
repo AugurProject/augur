@@ -222,7 +222,6 @@ let RegisterModal = React.createClass({
           });
           flux.actions.asset.updateAssets();
           flux.actions.report.loadEventsToReport();
-          flux.actions.report.loadPendingReports();
         });
       });
     }

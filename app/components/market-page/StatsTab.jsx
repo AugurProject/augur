@@ -8,6 +8,7 @@ let StatsTab = React.createClass({
         var nextSeries = nextProps.priceTimeSeries;
         if (thisSeries && nextSeries) {
             if (nextSeries.length !== thisSeries.length) return true;
+            var thisLength, nextLength;
             for (var i = 0, len = thisSeries.length; i < len; ++i) {
                 thisLength = thisSeries[i].data.length;
                 nextLength = nextSeries[i].data.length;

@@ -38,11 +38,6 @@ let ReportPage = React.createClass({
                 reportedOutcome = event.report.reportedOutcome;
                 isUnethical = event.report.isUnethical;
                 isIndeterminate = event.report.isIndeterminate;
-            } else {
-                report = flux.actions.report.loadReportFromLs(eventId);
-                reportedOutcome = report.reportedOutcome;
-                isUnethical = report.isUnethical;
-                isIndeterminate = report.isIndeterminate;
             }
         }
         if (market) {
@@ -140,10 +135,12 @@ let ReportPage = React.createClass({
                             reportedOutcome={this.state.reportedOutcome}
                             isUnethical={this.state.isUnethical}
                             reportError={this.state.reportError}
+                            report={this.state.report}
                             market={market} />
                         <ReportDetails market={market} />
                         <ReportSavedModal
                             reportedOutcomeName={this.state.reportedOutcome != null ? utilities.getOutcomeName(this.state.reportedOutcome, market).outcome : "none"}
+                            report={this.state.report}
                             isUnethical={this.state.isUnethical}
                             show={this.props.reportSavedModalOpen}
                             onHide={this.props.toggleReportSavedModal} />

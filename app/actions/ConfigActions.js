@@ -10,7 +10,7 @@ module.exports = {
   connect: function (hosted) {
     var host, self = this;
     var augur = this.flux.augur;
-    // augur.rpc.nodes.hosted = ["https://report.augur.net"];
+    augur.rpc.nodes.hosted = ["https://report.augur.net"];
     var connectHostedCb = function (host) {
       if (!host) {
         return console.error("Couldn't connect to hosted node:", host);
@@ -43,7 +43,7 @@ module.exports = {
     var self = this;
     var augur = this.flux.augur;
     augur.rpc.reset();
-    // augur.rpc.nodes.hosted = ["https://report.augur.net"];
+    augur.rpc.nodes.hosted = ["https://report.augur.net"];
     augur.connect(null, null, function (connected) {
       if (augur.rpc.nodes.hosted.length > 1) {
         augur.rpc.excision = true;
@@ -92,7 +92,9 @@ module.exports = {
             return console.log("contracts filter error:", filtrate);
           }
           console.log("[filter] contracts:", filtrate.address);
-          self.flux.actions.asset.updateAssets();
+          if (self.flux.store("config").getAccount()) {
+            self.flux.actions.asset.updateAssets();
+          }
           self.flux.actions.branch.updateCurrentBranch();
         }
       },
@@ -164,7 +166,6 @@ module.exports = {
     this.flux.actions.market.loadMarkets();
     this.flux.actions.market.loadOrders();
     this.flux.actions.report.loadEventsToReport();
-    this.flux.actions.report.loadPendingReports();
     this.flux.actions.config.setupFilters();
     this.dispatch(constants.config.LOAD_APPLICATION_DATA_SUCCESS);
   },

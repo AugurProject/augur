@@ -15,9 +15,6 @@ let AddMarketModal = require("../AddMarketModal");
 let constants = require("../../libs/constants");
 let utils = require("../../libs/utilities");
 
-
-MarketRow
-
 let MarketsPage = React.createClass({
 
     // assuming only one branch and all markets in store are of that branch

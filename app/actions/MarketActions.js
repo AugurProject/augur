@@ -162,8 +162,12 @@ module.exports = {
       }
     }
     if (!totalIn.eq(new BigNumber(0))) {
-      market.pnl = totalOut.minus(totalIn).dividedBy(totalIn).times(new BigNumber(100)).toFixed(2);
-      market.unrealizedPnl = totalOut.plus(totalUnsold).minus(totalIn).dividedBy(totalIn).times(new BigNumber(100)).toFixed(2);
+      // market.pnl = totalOut.minus(totalIn).dividedBy(totalIn).times(new BigNumber(100)).toFixed(2);
+      // market.unrealizedPnl = totalOut.plus(totalUnsold).minus(totalIn).dividedBy(totalIn).times(new BigNumber(100)).toFixed(2);
+      market.pnl = totalOut.minus(totalIn).toFixed(2);
+      market.unrealizedPnl = totalOut.plus(totalUnsold).minus(totalIn).toFixed(2);
+      if (market.pnl === "-0.00") market.pnl = "0.00";
+      if (market.unrealizedPnl === "-0.00") market.unrealizedPnl = "0.00";
     } else {
       market.pnl = "0.00";
       market.unrealizedPnl = "0.00";
@@ -179,6 +183,7 @@ module.exports = {
     var account = this.flux.store('config').getAccount();
 
     // request data from geth via JSON RPC
+    // TODO: get "closed" status here and in loadMarket
     var start = (new Date()).getTime();
     var prevTime = start;
     augur.getNumMarketsBranch(branchId, function (numMarkets) {
@@ -200,9 +205,7 @@ module.exports = {
               var blackmarkets = blacklist.markets[augur.network_id][branchId];
               async.each(marketsInfo, function (thisMarket, nextMarket) {
                 self.flux.actions.market.parseMarketInfo(thisMarket, function (marketInfo) {
-                  if (marketInfo && marketInfo.id) {
-                    markets[marketInfo.id] = marketInfo;
-                  }
+                  if (marketInfo && marketInfo.id) markets[marketInfo.id] = marketInfo;
                   nextMarket();
                 });
               }, function (err) {

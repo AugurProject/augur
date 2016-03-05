@@ -1,5 +1,3 @@
-/* global localStorage:true */
-
 "use strict";
 
 var _ = require("lodash");
@@ -8,59 +6,11 @@ var abi = require("augur-abi");
 var secureRandom = require("secure-random");
 var BigNumber = require("bignumber.js");
 var clone = require("clone");
-if (typeof localStorage === "undefined" || localStorage === null) {
-    var LocalStorage = require("node-localstorage").LocalStorage;
-    localStorage = new LocalStorage("./scratch");
-}
 var utils = require("../libs/utilities");
 var constants = require("../libs/constants");
 var DEBUG = true;
 
 var ReportActions = {
-  /**
-   * Saves the report to local storage for later use.
-   * (localStorage is used so that the reports will be stored in the browser
-   * when the user returns during the second half of the reporting period
-   * to submit their plaintext reports.)
-   */
-  saveReport: function (branchId, eventId, eventIndex, reportHash, reportedOutcome, salt, isUnethical, isIndeterminate, submitHash, submitReport) {
-    var userAccount = this.flux.store("config").getAccount();
-    var key = constants.report.REPORTS_STORAGE + "-" + userAccount + "-" + branchId + "-" + eventId;
-    var value = reportHash + "|" + reportedOutcome + "|" + eventIndex + "|" + salt + "|" + isUnethical + "|" + isIndeterminate;
-    localStorage.setItem(key, value);
-    this.dispatch(constants.report.SAVE_REPORT_SUCCESS, {
-      branchId,
-      eventId,
-      reportHash,
-      reportedOutcome,
-      salt,
-      isUnethical,
-      isIndeterminate,
-      submitHash,
-      submitReport
-    });
-  },
-
-  /**
-   * Loads the report from local storage
-   */
-  loadReportFromLs: function (branchId, eventId) {
-    var userAccount = this.flux.store("config").getAccount();
-    var key = constants.report.REPORTS_STORAGE + "-" + userAccount + "-" + branchId + "-" + eventId;
-    var value = localStorage.getItem(key);
-    if (value === null) return {};
-    var reportParts = value.split("|");
-    return {
-      reportHash: reportParts[0],
-      reportedOutcome: reportParts[1],
-      eventIndex: reportParts[2],
-      salt: reportParts[3],
-      isUnethical: reportParts[4] === "true",
-      isIndeterminate: reportParts[5] === "true",
-      submitHash: reportParts[6] === "true",
-      submitReport: reportParts[7] === "true"
-    };
-  },
 
   ready: function (branch) {
     this.dispatch(constants.report.READY, {branch: branch});
@@ -76,13 +26,12 @@ var ReportActions = {
     var branch = this.flux.store("branch").getCurrentBranch();
 
     // Only load events if the vote period indicated by the chain is the
-    // previous period. (Otherwise, checkPeriod needs to be run.)
+    // previous period.
     if (!branch || branch.currentPeriod >= branch.reportPeriod + 2 ||
         branch.reportPeriod < branch.currentPeriod - 1) {
       this.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {
         eventsToReport: {}
       });
-      this.flux.actions.report.checkPeriod(branch.id, branch.periodLength);
     }
     augur.getEvents(branch.id, branch.reportPeriod, function (eventIds) {
       if (!eventIds || eventIds.constructor !== Array || eventIds.error) {
@@ -93,11 +42,11 @@ var ReportActions = {
 
       // initialize all events
       var eventsToReport = {};
+      var pendingReports = self.flux.store("report").getPendingReports();
       async.each(eventIds, function (eventId, nextEvent) {
         augur.getEventInfo(eventId, function (eventInfo) {
           if (!eventInfo) return nextEvent("couldn't get event info");
           if (eventInfo.error) return nextEvent(eventInfo);
-          var storedReport = self.flux.actions.report.loadReportFromLs(branch.id, eventId);
           eventsToReport[eventId] = {
             id: eventId,
             branchId: eventInfo[0],
@@ -106,7 +55,10 @@ var ReportActions = {
             minValue: eventInfo[3],
             maxValue: eventInfo[4],
             numOutcomes: parseInt(eventInfo[5]),
-            report: storedReport,
+            report: _.findWhere(pendingReports, {
+              branchId: branch.id,
+              reportPeriod: branch.reportPeriod
+            }),
             markets: []
           };
           augur.getDescription(eventId, function (description) {
@@ -145,27 +97,9 @@ var ReportActions = {
         });
       }, function (err) {
         if (err) console.error("loadEventsToReport:", err);
-        self.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {
-          eventsToReport: eventsToReport
-        });
+        self.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {eventsToReport});
       });
     });
-  },
-
-  loadPendingReports: function () {
-    var reportsString = localStorage.getItem(constants.report.REPORTS_STORAGE);
-    var pendingReports = reportsString ? JSON.parse(reportsString) : [];
-    this.dispatch(constants.report.LOAD_PENDING_REPORTS_SUCCESS, {pendingReports});
-  },
-
-  /**
-   * Store reports in localStorage.
-   * (localStorage is used so that the reports will be stored in the browser
-   * when the user returns during the second half of the reporting period
-   * to submit their plaintext reports.)
-   */
-  storeReports: function (reports) {
-    localStorage.setItem(constants.report.REPORTS_STORAGE, JSON.stringify(reports));
   },
 
   /**
@@ -206,7 +140,6 @@ var ReportActions = {
       }
     }
     if (!isUpdate) pendingReports.push(report);
-    this.flux.actions.report.storeReports(pendingReports);
     this.dispatch(constants.report.UPDATE_PENDING_REPORTS, {pendingReports});
   },
 
@@ -234,11 +167,13 @@ var ReportActions = {
 
     var account = this.flux.store("config").getAccount();
     var salt = utils.bytesToHex(secureRandom(32));
+    var reportHash = this.flux.augur.makeHash(salt, reportedOutcome, event.id, account, isIndeterminate, event.type === "binary");
     this.flux.actions.report.updatePendingReports(
-      this.flux.store("report").getState().pendingReports, {
+      this.flux.store("report").getPendingReports(), {
         branchId: branchId,
         eventId: event.id,
         eventIndex: event.index,
+        reportHash: reportHash,
         reportPeriod: reportPeriod,
         reportedOutcome: reportedOutcome,
         salt: salt,
@@ -248,26 +183,6 @@ var ReportActions = {
         submitReport: false
       }
     );
-    var reportHash = this.flux.augur.makeHash(
-      salt,
-      reportedOutcome,
-      event.id,
-      account,
-      isIndeterminate,
-      event.type === "binary"
-    );
-    this.flux.actions.report.saveReport(
-      branchId,
-      event.id,
-      event.index,
-      reportHash,
-      reportedOutcome,
-      salt,
-      isUnethical,
-      isIndeterminate,
-      false,
-      false
-    );
     this.flux.augur.submitReportHash({
       branch: branchId,
       reportHash: reportHash,
@@ -276,20 +191,8 @@ var ReportActions = {
       eventIndex: event.index,
       onSent: function (res) {
         self.flux.actions.report.updatePendingReports(
-          self.flux.store("report").getState().pendingReports,
+          self.flux.store("report").getPendingReports(),
           {branchId: branchId, eventId: event.id, submitHash: true}
-        );
-        self.flux.actions.report.saveReport(
-          branchId,
-          event.id,
-          event.index,
-          reportHash,
-          reportedOutcome,
-          salt,
-          isUnethical,
-          isIndeterminate,
-          true,
-          false
         );
       },
       onSuccess: function (res) {
@@ -297,20 +200,8 @@ var ReportActions = {
       },
       onFailed: function (err) {
         self.flux.actions.report.updatePendingReports(
-          self.flux.store("report").getState().pendingReports,
+          self.flux.store("report").getPendingReports(),
           {branchId: branchId, eventId: event.id, submitHash: false}
-        );
-        self.flux.actions.report.saveReport(
-          branchId,
-          event.id,
-          event.index,
-          reportHash,
-          reportedOutcome,
-          salt,
-          isUnethical,
-          isIndeterminate,
-          false,
-          false
         );
         cb(err);
       }
@@ -324,19 +215,18 @@ var ReportActions = {
   submitQualifiedReports: function (cb) {
     var self = this;
     cb = cb || function (e, r) { console.log(e, r); };
-    this.flux.actions.report.loadPendingReports();
-    var reports = this.flux.store("report").getState().pendingReports;
-    if (!reports.length) return cb(null);
-    var unsentReports = _.filter(reports, function (r) { return !r.submitReport; });
-    if (!unsentReports.length) return cb(null);
-    var didSendReports = false;
+    var pendingReports = this.flux.store("report").getPendingReports();
+    if (!pendingReports.length) return cb(null);
     var sentReports = [];
     var currentBlock = this.flux.store("network").getState().blockNumber;
-    async.each(unsentReports, function (report, nextReport) {
+    async.forEachOf(pendingReports, function (report, index, nextReport) {
+      console.log("checking report:", index, report);
+      if (report.submitReport) return nextReport();
       if (!report) return nextReport(new Error("no report found"));
       if (!report.branchId || report.reportPeriod === null || report.reportPeriod === undefined) {
         return nextReport(report);
       }
+      console.log("submitting report:", index, report);
       self.flux.augur.getPeriodLength(report.branchId, function (periodLength) {
         periodLength = abi.number(periodLength);
         var reportingStartBlock = (report.reportPeriod + 1) * periodLength;
@@ -351,11 +241,26 @@ var ReportActions = {
             eventID: report.eventId,
             ethics: Number(!report.isUnethical),
             indeterminate: report.isIndeterminate,
-            onSent: function (res) {},
+            onSent: function (res) {
+              report.submitReport = true;
+              pendingReports[index] = report;
+              self.flux.actions.report.updatePendingReports(
+                self.flux.store("report").getPendingReports(), {
+                  branchId: report.branchId,
+                  eventId: report.eventId,
+                  eventIndex: report.eventIndex,
+                  reportPeriod: report.reportPeriod,
+                  reportedOutcome: report.reportedOutcome,
+                  salt: report.salt,
+                  isUnethical: report.isUnethical,
+                  isIndeterminate: report.isIndeterminate,
+                  submitHash: true,
+                  submitReport: true
+                }
+              );
+            },
             onSuccess: function (res) {
               console.log("submitReport success:", res);
-              didSendReports = true;
-              report.submitReport = true;
               sentReports.push(report);
               nextReport();
             },
@@ -367,14 +272,7 @@ var ReportActions = {
       });
     }, function (err) {
       if (err) return cb(err);
-      if (didSendReports) {
-        // Update localStorage and the stores with the mutated reports array.
-        self.flux.actions.report.storeReports(reports);
-        self.dispatch(constants.report.LOAD_PENDING_REPORTS_SUCCESS, {
-          pendingReports: reports
-        });
-      }
-      cb(null, {sentReports, pendingReports: reports});
+      cb(null, {sentReports, pendingReports});
     });
   },
 
