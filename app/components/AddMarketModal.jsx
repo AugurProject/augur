@@ -48,12 +48,14 @@ let AddMarketModal = React.createClass({
       maxValueError: null,
       choices: ["", ""],
       choiceTextError: [null, null],
+      addAnswerDisabled: false,
       numResources: 0,
       resources: [],
       resourceTextError: [],
       numTags: 0,
       tags: [],
       tagTextError: [],
+      addTagDisabled: false,
       expirySource: "generic",
       expirySourceURL: "",
       progressModal: {
@@ -376,7 +378,8 @@ let AddMarketModal = React.createClass({
       this.setState({
         numTags: numTags,
         tags: tags,
-        tagTextError: tagTextError
+        tagTextError: tagTextError,
+        addTagDisabled: numTags === constants.MAX_ALLOWED_TAGS
       });
     }
   },
@@ -396,15 +399,18 @@ let AddMarketModal = React.createClass({
 
   onAddAnswer: function (event) {
     var numOutcomes = this.state.numOutcomes + 1;
-    var choices = this.state.choices;
-    var choiceTextError = this.state.choiceTextError;
-    choices.push('');
-    choiceTextError.push(null);
-    this.setState({
-      numOutcomes: numOutcomes,
-      choices: choices,
-      choiceTextError: choiceTextError
-    });
+    if (numOutcomes <= constants.MAX_ALLOWED_OUTCOMES) {
+      var choices = this.state.choices;
+      var choiceTextError = this.state.choiceTextError;
+      choices.push('');
+      choiceTextError.push(null);
+      this.setState({
+        numOutcomes: numOutcomes,
+        choices: choices,
+        choiceTextError: choiceTextError,
+        addAnswerDisabled: numOutcomes === constants.MAX_ALLOWED_OUTCOMES
+      });
+    }
   },
 
   checkAnswerText: function (answerText, id) {
@@ -688,11 +694,13 @@ let AddMarketModal = React.createClass({
                 onChange={this.onUploadImageFile} />
               <p>Enter up to three tags (categories) for your market. (optional) Examples: politics, science, sports, weather, etc.</p>
               {tags}
-              { this.state.numTags < constants.MAX_ALLOWED_TAGS &&
-                <Button bsStyle="default" onClick={this.onAddTag}>
+              {this.state.numTags < constants.MAX_ALLOWED_TAGS &&
+                <Button
+                  bsStyle="default"
+                  disabled={this.state.addTagDisabled}
+                  onClick={this.onAddTag}>
                   Add tag
-                </Button>
-              }
+                </Button>}
             </div>
           </div>
           <div className="form-group row">
@@ -734,6 +742,8 @@ let AddMarketModal = React.createClass({
       }
       subheading = '';
       var inputStyle = this.state.marketTextError ? 'error' : null;
+      // var addAnswerButtonDisabled = "";
+      // if (this.state.addAnswerDisabled) addAnswerButtonDisabled = "btn-disabled";
       page = (
         <Tabs onSelect={ this.handleSelect } selectedIndex={ this.state.tab } >
           <TabList>
@@ -760,17 +770,20 @@ let AddMarketModal = React.createClass({
               <p>Enter a <b>multiple choice question</b> for the market to trade on.  This question should be easily verifiable and have an expiring date in the future.</p>
               <Input
                 type='textarea'
-                help={ this.state.marketTextError }
-                bsStyle={ inputStyle }
-                value={ this.state.marketText }
+                help={this.state.marketTextError}
+                bsStyle={inputStyle}
+                value={this.state.marketText}
                 placeholder="Which political party's candidate will win the 2016 U.S. Presidential Election?  Choices: Democratic, Republican, Libertarian, other"
-                onChange={ this.onChangeMarketText } />
-              <span className="text-count pull-right">{ this.state.marketTextCount }</span>
+                onChange={this.onChangeMarketText} />
+              <span className="text-count pull-right">{this.state.marketTextCount}</span>
             </div>
             <div className="col-sm-12">
               <p>Choices:</p>
-              { choices }
-              <Button bsStyle="default" onClick={ this.onAddAnswer }>
+              {choices}
+              <Button
+                bsStyle="default"
+                disabled={this.state.addAnswerDisabled}
+                onClick={this.onAddAnswer}>
                 Add another answer
               </Button>
             </div>
@@ -781,18 +794,18 @@ let AddMarketModal = React.createClass({
               <p>Answers to numerical questions can be anywhere within a range of numbers.  For example, "What will the high temperature be in San Francisco, California, on July 1, 2016?" is a numerical question.</p>
               <Input
                 type="textarea"
-                help={ this.state.marketTextError }
-                bsStyle={ inputStyle }
-                value={ this.state.marketText }
+                help={this.state.marketTextError}
+                bsStyle={inputStyle}
+                value={this.state.marketText}
                 placeholder="What will the high temperature (in degrees Fahrenheit) be in San Francisco, California, on July 1, 2016?"
-                onChange={ this.onChangeMarketText } />
-              <span className="text-count pull-right">{ this.state.marketTextCount }</span>
+                onChange={this.onChangeMarketText} />
+              <span className="text-count pull-right">{this.state.marketTextCount}</span>
             </div>
             <div className="col-sm-12">
               <p>What are the minimum and maximum allowed answers to your question?</p>
+              // TODO fix does not recognize 0
               <Input
                 type="text"
-                // label="Minimum"
                 help={this.state.minValueError}
                 bsStyle={this.state.minValueError ? "error" : null}
                 value={this.state.minValue}
@@ -801,7 +814,6 @@ let AddMarketModal = React.createClass({
                 onChange={this.onChangeMinimum} />
               <Input
                 type="text"
-                // label="Maximum"
                 help={this.state.maxValueError}
                 bsStyle={this.state.maxValueError ? "error" : null}
                 value={this.state.maxValue}
@@ -814,7 +826,7 @@ let AddMarketModal = React.createClass({
       );
       footer = (
         <div className="pull-right">
-          <Button bsStyle="primary" onClick={ this.onNext }>Next</Button>
+          <Button bsStyle="primary" onClick={this.onNext}>Next</Button>
         </div>
       );
     };
