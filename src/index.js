@@ -1004,6 +1004,54 @@ Augur.prototype.sendReputation = function (branch, to, value, onSent, onSuccess,
 // transferShares.se
 
 // makeReports.se
+Augur.prototype.getReportedPeriod = function (branch, period, reporter, callback) {
+    var tx = clone(this.tx.getReportedPeriod);
+    tx.params = [branch, period, reporter];
+    return this.fire(tx, callback);
+};
+Augur.prototype.getReportable = function (reportPeriod, eventID, callback) {
+    var tx = clone(this.tx.getReportable);
+    tx.params = [reportPeriod, eventID];
+    return this.fire(tx, callback);
+};
+Augur.prototype.getNumReportsActual = function (branch, reportPeriod, callback) {
+    var tx = clone(this.tx.getNumReportsActual);
+    tx.params = [branch, reportPeriod];
+    return this.fire(tx, callback);
+};
+Augur.prototype.getSubmittedHash = function (branch, period, reporter, callback) {
+    var tx = clone(this.tx.getSubmittedHash);
+    tx.params = [branch, period, reporter];
+    return this.fire(tx, callback);
+};
+Augur.prototype.getBeforeRep = function (branch, period, callback) {
+    var tx = clone(this.tx.getBeforeRep);
+    tx.params = [branch, period];
+    return this.fire(tx, callback);
+};
+Augur.prototype.getAfterRep = function (branch, period, callback) {
+    var tx = clone(this.tx.getAfterRep);
+    tx.params = [branch, period];
+    return this.fire(tx, callback);
+};
+Augur.prototype.getReport = function (branch, period, event, callback) {
+    var tx = clone(this.tx.getReport);
+    tx.params = [branch, period, event];
+    return this.fire(tx, callback);
+};
+Augur.prototype.getRRUpToDate = function (callback) {
+    return this.fire(clone(this.tx.getRRUpToDate), callback);
+};
+Augur.prototype.getNumReportsExpectedEvent = function (branch, reportPeriod, eventID, callback) {
+    var tx = clone(this.tx.getNumReportsExpectedEvent);
+    tx.params = [branch, reportPeriod, eventID];
+    return this.fire(tx, callback);
+};
+Augur.prototype.getNumReportsEvent = function (branch, reportPeriod, eventID, callback) {
+    var tx = clone(this.tx.getNumReportsEvent);
+    tx.params = [branch, reportPeriod, eventID];
+    return this.fire(tx, callback);
+};
 Augur.prototype.makeHash = function (salt, report, event, from, indeterminate, isBinary) {
     var fixedReport;
     if (isBinary) {
@@ -1462,28 +1510,6 @@ Augur.prototype.getCurrentPeriod = function (branch, callback) {
         });
     });
 };
-Augur.prototype.getCurrentVotePeriod = function (branch, callback) {
-    // branch: sha256
-    var periodLength, blockNum;
-    this.tx.getPeriodLength.params = branch;
-    if (callback) {
-        this.fire(this.tx.getPeriodLength, function (periodLength) {
-            if (periodLength) {
-                periodLength = abi.bignum(periodLength);
-                rpc.blockNumber(function (blockNum) {
-                    blockNum = abi.bignum(blockNum);
-                    callback(blockNum.dividedBy(periodLength).floor().minus(1).toFixed());
-                });
-            }
-        });
-    } else {
-        periodLength = this.fire(this.tx.getPeriodLength);
-        if (periodLength) {
-            blockNum = abi.bignum(rpc.blockNumber());
-            return blockNum.dividedBy(abi.bignum(periodLength)).floor().minus(1).toFixed();
-        }
-    }
-};
 Augur.prototype.getEventsRange = function (branch, vpStart, vpEnd, callback) {
     // branch: sha256, vpStart: integer, vpEnd: integer
     var vp_range, txlist;
@@ -1546,7 +1572,6 @@ Augur.prototype.incrementPeriodAfterReporting = function (branch, onSent, onSucc
     var tx = clone(this.tx.incrementPeriodAfterReporting);
     var unpacked = this.utils.unpack(branch, this.utils.labels(this.incrementPeriodAfterReporting), arguments);
     tx.params = unpacked.params;
-    console.log("increment:", tx);
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
 Augur.prototype.penalizeNotEnoughReports = function (branch, onSent, onSuccess, onFailed) {
