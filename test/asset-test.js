@@ -8,16 +8,9 @@
 var test = require("tape");
 var abi = require("augur-abi");
 var BigNumber = require("bignumber.js");
-var keys = require("keythereum");
-var constants = require("../app/libs/constants");
 var flux = require("./mock");
-var keystore = require("./account");
 
 var DEBUG = false;
-var sink = "0x639b41c4d3d399894f2a57894278e1653e7cd24c";
-var amount = "1";
-var handle = "tinybike";
-var password = "tinypassword";
 
 // var host = "http://127.0.0.1:8545";
 // flux.augur.rpc.setLocalNode(host);
@@ -66,8 +59,7 @@ test("AssetActions.updateAssets", function (t) {
         flux.augur.connect();
         t.equal(flux.augur.coinbase, flux.augur.connector.from, "augur.coinbase == augur.connector.from");
         t.equal(flux.augur.coinbase, flux.augur.from, "augur.coinbase == augur.from");
-        if (!flux.augur.filters.price_filter.id) return t.end();
-        flux.augur.filters.ignore(true, t.end);
+        t.end();
     }
     var UPDATE_ASSETS = flux.register.UPDATE_ASSETS;
     flux.register.UPDATE_ASSETS = function (payload) {
@@ -88,12 +80,7 @@ test("AssetActions.updateAssets", function (t) {
             if (assets.cash && assets.reputation) done();
         }
     }
-
-    // manual keythereum "login"
-    var privateKey = keys.recover(password, keystore);
-    var address = keys.privateKeyToAddress(privateKey);
-    flux.augur.web.account = {handle: handle, privateKey: privateKey, address: address};
-    flux.augur.connector.from = address;
+    flux.stores.config.state.currentAccount = "0xaff9cb4dcb19d13b84761c040c91d21dc6c991ec";
     flux.stores.asset.state.cash = null;
     flux.stores.asset.state.reputation = null;
     flux.stores.asset.state.ether = null;
