@@ -9,7 +9,10 @@ let StatsTab = React.createClass({
         if (thisSeries && nextSeries) {
             if (nextSeries.length !== thisSeries.length) return true;
             for (var i = 0, len = thisSeries.length; i < len; ++i) {
-                if (nextSeries[i].data.length !== thisSeries[i].data.length) {
+                thisLength = thisSeries[i].data.length;
+                nextLength = nextSeries[i].data.length;
+                if (thisLength !== nextLength) return true;
+                if (thisSeries[i].data[thisLength-1] !== nextSeries[i].data[nextLength-1]) {
                     return true;
                 }
             }

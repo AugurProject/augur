@@ -232,29 +232,12 @@ module.exports = {
       }, function (err) {
         if (err) return console.error("loadMarkets:", err);
 
+        // loading complete!
+        console.debug("all markets loaded in", ((new Date()).getTime() - start) / 1000, "seconds");
+
         // load delicious extras
-        augur.getAccountTrades(account, function (trades) {
-          var thisMarket;
-          for (var id in markets) {
-            if (!markets.hasOwnProperty(id)) continue;
-            thisMarket = markets[id];
-            var unforkedMarketId = abi.unfork(thisMarket._id, true);
-            if (trades && trades[unforkedMarketId]) {
-              thisMarket.trades = trades[unforkedMarketId];
-              thisMarket = self.flux.actions.market.calculatePnl(thisMarket);
-            } else {
-              thisMarket.trades = null;
-            }
-          }
-          console.debug(
-            "all markets + trades loaded in",
-            ((new Date()).getTime() - start) / 1000, "seconds"
-          );
-          self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {
-            markets: markets,
-            percentLoaded: 100,
-            account: account
-          });
+
+        function getCreationBlocks(markets) {
           augur.getCreationBlocks(branchId, function (creationBlock) {
             for (var id in markets) {
               if (!markets.hasOwnProperty(id)) continue;
@@ -282,10 +265,34 @@ module.exports = {
               self.dispatch(constants.market.INITIAL_LOAD_COMPLETE);
             });
           });
-        });
+        }
 
-        // loading complete!
-        console.debug("all markets loaded in", ((new Date()).getTime() - start) / 1000, "seconds");
+        if (!account) return getCreationBlocks(markets);
+
+        augur.getAccountTrades(account, function (trades) {
+          var thisMarket;
+          for (var id in markets) {
+            if (!markets.hasOwnProperty(id)) continue;
+            thisMarket = markets[id];
+            var unforkedMarketId = abi.unfork(thisMarket._id, true);
+            if (trades && trades[unforkedMarketId]) {
+              thisMarket.trades = trades[unforkedMarketId];
+              thisMarket = self.flux.actions.market.calculatePnl(thisMarket);
+            } else {
+              thisMarket.trades = null;
+            }
+          }
+          console.debug(
+            "all markets + trades loaded in",
+            ((new Date()).getTime() - start) / 1000, "seconds"
+          );
+          self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {
+            markets: markets,
+            percentLoaded: 100,
+            account: account
+          });
+          getCreationBlocks(markets);
+        });
       });
     });
   },
@@ -398,7 +405,7 @@ module.exports = {
     var self = this;
     this.flux.augur.checkOrderBook(market, {
       onEmpty: function () {
-        console.log("checkOrderBook.onEmpty: no orders found");
+        // console.log("checkOrderBook.onEmpty: no orders found");
       },
       onPriceMatched: function (order) {
         console.log("checkOrderBook.onPriceMatched:", order);

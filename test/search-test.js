@@ -41,8 +41,7 @@ test("SearchActions.updateKeywords", function (t) {
         t.true(Object.keys(state.results).length, "search.state.results is not empty");
         flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
         flux.register.KEYWORDS_UPDATED = KEYWORDS_UPDATED;
-        if (!flux.augur.filters.price_filter.id) return t.end();
-        flux.augur.filters.ignore(true, t.end);
+        t.end();
     };
     var initialState = flux.store("search").getState();
     t.equal(initialState.keywords, "", "initial search.state.keywords == ''");
@@ -56,11 +55,10 @@ test("SearchActions.updateKeywords", function (t) {
 test("SearchActions.sortMarkets", function (t) {
     flux = reset(flux);
     var sortBy = "creationBlock";
-    var LOAD_MARKETS_SUCCESS = flux.register.LOAD_MARKETS_SUCCESS;
-    flux.register.LOAD_MARKETS_SUCCESS = function (payload) {
-        LOAD_MARKETS_SUCCESS(payload);
-        t.pass("dispatch LOAD_MARKETS_SUCCESS");
-        flux.register.LOAD_MARKETS_SUCCESS = LOAD_MARKETS_SUCCESS;
+    var INITIAL_LOAD_COMPLETE = flux.register.INITIAL_LOAD_COMPLETE;
+    flux.register.INITIAL_LOAD_COMPLETE = function () {
+        INITIAL_LOAD_COMPLETE();
+        t.pass("dispatch INITIAL_LOAD_COMPLETE");
         flux.actions.search.sortMarkets(sortBy, 0);
     };
     var UPDATE_SORT_BY = flux.register.UPDATE_SORT_BY;
@@ -96,9 +94,9 @@ test("SearchActions.sortMarkets", function (t) {
                 }
                 prevMarket = clone(markets[m]);
             }
+            flux.register.INITIAL_LOAD_COMPLETE = INITIAL_LOAD_COMPLETE;
             flux.register.UPDATE_SORT_BY = UPDATE_SORT_BY;
-            if (!flux.augur.filters.price_filter.id) return t.end();
-            flux.augur.filters.ignore(true, t.end);
+            t.end();
         };
         flux.actions.search.sortMarkets(sortBy, 1);
     };
