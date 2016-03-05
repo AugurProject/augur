@@ -145,31 +145,6 @@ test("ReportActions.loadEventsToReport", function (t) {
     flux.actions.report.loadEventsToReport();
 });
 
-test("ReportActions.storeReports", function (t) {
-    flux = reset(flux);
-    var pendingReport = {
-        branchId: branch,
-        eventId: eventID,
-        eventIndex: eventIndex,
-        reportPeriod: reportPeriod,
-        reportedOutcome: reportedOutcome,
-        isUnethical: isUnethical,
-        isIndeterminate: isIndeterminate,
-        salt: salt,
-        submitHash: false,
-        submitReport: false
-    };
-    flux.actions.report.storeReports([pendingReport]);
-    var storedReports = localStorage.getItem(constants.report.REPORTS_STORAGE);
-    t.equal(storedReports.constructor, String, "storedReports is a string");
-    t.equal(storedReports, JSON.stringify([pendingReport]), "storedReports == JSON.stringify([pendingReport])");
-    var parsedReports = JSON.parse(storedReports);
-    t.equal(parsedReports.constructor, Array, "storedReports parses into an array using JSON.parse");
-    t.equal(parsedReports.length, 1, "parsedReports.length == 1");
-    t.deepEqual(parsedReports[0], pendingReport, "parsedReports[0] == " + JSON.stringify(pendingReport));
-    t.end();
-});
-
 test("ReportActions.updatePendingReports", function (t) {
     flux = reset(flux);
     var pendingReport = {

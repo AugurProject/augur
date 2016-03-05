@@ -60,7 +60,7 @@ module.exports = {
         // if this is a new report period, load events to report
         if (reportPeriod > branch.reportPeriod) {
           console.log("New report period! Clearing pending reports...");
-          self.dispatch(constants.report.UPDATE_PENDING_REPORTS, {});
+          self.dispatch(constants.report.UPDATE_PENDING_REPORTS, {pendingReports: []});
           console.log("Getting new events to report...");
           self.flux.actions.report.loadEventsToReport();
         }
@@ -150,18 +150,29 @@ module.exports = {
           self.flux.actions.report.submitQualifiedReports(function (err, res) {
             if (err) console.error("ReportsPage.submitQualifiedReports:", err);
           });
-          self.flux.augur.collectFees({
-            branch: branch.id,
-            onSent: function (res) {
-              console.log("collectFees sent:", res);
-            },
-            onSuccess: function (res) {
-              console.log("collectFees success:", res);
-            },
-            onFailed: function (err) {
-              console.error("collectFees error:", err);
-            }
-          });
+          if (!branch.calledCollectFees) {
+            self.flux.augur.collectFees({
+              branch: branch.id,
+              onSent: function (res) {
+                console.log("collectFees sent:", res);
+                var branch = self.flux.store("branch").getCurrentBranch();
+                branch.calledCollectFees = true;
+                self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, branch);
+              },
+              onSuccess: function (res) {
+                console.log("collectFees success:", res);
+                self.flux.actions.asset.updateAssets();
+              },
+              onFailed: function (err) {
+                console.error("collectFees error:", err);
+                var branch = self.flux.store("branch").getCurrentBranch();
+                branch.calledCollectFees = true;
+                self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, branch);
+              }
+            });
+            branch.calledCollectFees = true;
+            self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, branch);
+          }
         }
 
         // increment period if needed

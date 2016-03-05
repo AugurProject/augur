@@ -46,10 +46,12 @@ module.exports = {
   handleUpdatePendingReports: function (payload) {
     console.log("updating pendingReports:", payload.pendingReports);
     var report;
-    for (var i = 0, len = payload.pendingReports.length; i < len; ++i) {
-      report = payload.pendingReports[i];
-      if (this.state.eventsToReport[report.eventId]) {
-        this.state.eventsToReport[report.eventId].report = report;
+    if (payload.pendingReports && payload.pendingReports.length) {
+      for (var i = 0, len = payload.pendingReports.length; i < len; ++i) {
+        report = payload.pendingReports[i];
+        if (this.state.eventsToReport[report.eventId]) {
+          this.state.eventsToReport[report.eventId].report = report;
+        }
       }
     }
     this.state.pendingReports = payload.pendingReports;
