@@ -25,7 +25,6 @@ let ReportsPage = React.createClass({
             events: flux.store("report").getState().eventsToReport,
             isCommitPeriod: flux.store("branch").isReportCommitPeriod(blockNumber)
         };
-        // console.log("blockNumber:", blockNumber, "(" + state.currentBranch.percentComplete + "%)");
         if (state.currentBranch && state.currentBranch.id) {
             state.report = flux.store("report").getReport(
                 state.currentBranch.id,
@@ -62,8 +61,6 @@ let ReportsPage = React.createClass({
                 report.isConfirmed = report.submitReport;
                 report.commitPeriodEndMillis = commitPeriodEndMillis;
                 report.revealPeriodEndMillis = revealPeriodEndMillis;
-                // console.log("commit period:", commitPeriodEndMillis);
-                // console.log("reveal period:", revealPeriodEndMillis);
                 marketRows.push(
                     <MarketRow
                         key={event.id + "-" + market._id}
@@ -116,19 +113,19 @@ let ReportsPage = React.createClass({
                             </small>
                         </h4>
                     </div>
-                </div>
-                <div className="col-sm-12">
-                    <ProgressBar
-                        now={percentComplete}
-                        bsStyle={progressBarStyle}
-                        // label={percentComplete.toFixed(2) + "%"}
-                        // active={true}
-                        className="loading-progress" />
-                </div>
-                <div className="col-sm-12">
-                    <h4>
-                        <span className="green">{phase}</span> phase of period <span className="blue">{reportPeriod}</span>
-                    </h4>
+                    <div className="col-sm-12">
+                        <ProgressBar
+                            now={percentComplete}
+                            bsStyle={progressBarStyle}
+                            // label={percentComplete.toFixed(2) + "%"}
+                            // active={true}
+                            className="loading-progress" />
+                    </div>
+                    <div className="col-sm-12">
+                        <h4>
+                            <span className="green">{phase}</span> phase of period <span className="blue">{reportPeriod}</span>
+                        </h4>
+                    </div>
                 </div>
                 {/*
                 <nav className="row submenu">

@@ -84,7 +84,7 @@ let MarketRow = React.createClass({
 
         return (
             <div className="table-container holdings">
-                <div className="panelify-sideways success">
+                <div className="panelify-sideways warning">
                     <div className="title">{tableHeader}</div>
                     <div className="content">
                         <table className="holdings-table">
@@ -259,7 +259,16 @@ let MarketRow = React.createClass({
             if (market.unrealizedPnl) unrealizedPnl = market.unrealizedPnl;
         }
 
-        let holdingsSection = this.getHoldingsSection(this.props.numOpenOrders, numPositions, numTrades, pnl, unrealizedPnl);
+        let holdingsSection = <span />;
+        if (!report) {
+            holdingsSection = this.getHoldingsSection(
+                this.props.numOpenOrders,
+                numPositions,
+                numTrades,
+                pnl,
+                unrealizedPnl
+            );
+        }
         let rowAction = this.getRowAction(market, report);
         let clickableDescription = this.getClickableDescription(market, report);
         return (
