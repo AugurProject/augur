@@ -6,6 +6,7 @@ let BigNumber = require("bignumber.js");
 let _ = require("lodash");
 let clone = require("clone");
 let moment = require("moment");
+let ProgressBar = require("react-bootstrap/lib/ProgressBar");
 let MarketRow = require("../markets-page/MarketRow");
 let utils = require("../../libs/utilities");
 let constants = require("../../libs/constants");
@@ -24,7 +25,7 @@ let ReportsPage = React.createClass({
             events: flux.store("report").getState().eventsToReport,
             isCommitPeriod: flux.store("branch").isReportCommitPeriod(blockNumber)
         };
-        console.log("blockNumber:", blockNumber, "(" + state.currentBranch.percentComplete + "%)");
+        // console.log("blockNumber:", blockNumber, "(" + state.currentBranch.percentComplete + "%)");
         if (state.currentBranch && state.currentBranch.id) {
             state.report = flux.store("report").getReport(
                 state.currentBranch.id,
@@ -73,9 +74,60 @@ let ReportsPage = React.createClass({
             }
         }
 
+        let percentComplete = 0;
+        let phase = "Submission";
+        let progressBarStyle = "info";
+        if (this.state.currentBranch && this.state.currentBranch.percentComplete) {
+            percentComplete = this.state.currentBranch.percentComplete;
+            if (percentComplete > 50) {
+                progressBarStyle = "warning";
+                phase = "Confirmation";
+            }
+        }
+        let periodLength = "";
+        if (this.state.currentBranch && this.state.currentBranch.periodLength) {
+            periodLength = this.state.currentBranch.periodLength.toFixed();
+        }
+        let reportPeriod = "";
+        if (this.state.currentBranch && this.state.currentBranch.reportPeriod) {
+            reportPeriod = this.state.currentBranch.reportPeriod.toFixed();
+        }
+        let branchId = "";
+        if (this.state.currentBranch && this.state.currentBranch.id) {
+            branchId = abi.hex(this.state.currentBranch.id);
+        }
+        let branchDescription = "";
+        if (this.state.currentBranch && this.state.currentBranch.description) {
+            branchDescription = this.state.currentBranch.description;
+        }
+
         return (
             <div>
                 <h1>Reporting</h1>
+                <div className="col-sm-12">
+                    <h4>
+                        <span className="branch-description">
+                            {branchDescription}
+                        </span>
+                        <br />
+                        <small>
+                            {branchId} &middot; {periodLength} blocks/period
+                        </small>
+                    </h4>
+                </div>
+                <div className="col-sm-12">
+                    <ProgressBar
+                        now={percentComplete}
+                        bsStyle={progressBarStyle}
+                        // label={percentComplete.toFixed(2) + "%"}
+                        // active={true}
+                        className="loading-progress" />
+                </div>
+                <div className="col-sm-12">
+                    <h4>
+                        <span className="green">{phase}</span> phase of period <span className="blue">{reportPeriod}</span>
+                    </h4>
+                </div>
                 {/*
                 <nav className="row submenu">
                     <ul className="list-group" role="tablist" id="tabpanel">

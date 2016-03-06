@@ -24,6 +24,10 @@ h1, h2, h3, h4, h5 {
     display: none;
 }
 
+.branch-description {
+    font-size: 15pt;
+}
+
 #loading {
     background-color: #34495e;
     position: absolute;
@@ -31,7 +35,7 @@ h1, h2, h3, h4, h5 {
     width: 100%;
 }
 
-.progress-modal .modal-header .loading-progress {
+.loading-progress {
     margin-bottom: 0 !important;
 }
 

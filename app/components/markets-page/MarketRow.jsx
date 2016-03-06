@@ -154,15 +154,7 @@ let MarketRow = React.createClass({
                     </Link>
                 );
             } else if (report.isRevealPeriod) {
-                if (!report.isConfirmed) {
-                    return (
-                        <a href="#" onClick={report.confirmReport}>
-                            {market.description}
-                        </a>
-                    )
-                } else {
-                    return null;
-                }
+                return <a href="#">{market.description}</a>;
             } else {
                 return (
                     <Link to="report" params={{eventId: market.events[0].id.toString(16)}}>
