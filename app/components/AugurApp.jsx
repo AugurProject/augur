@@ -26,7 +26,7 @@ var AugurApp = React.createClass({
 
   mixins: [
     FluxMixin,
-    StoreWatchMixin('branch', 'asset', 'network', 'config', 'report', 'market', 'search')
+    StoreWatchMixin("branch", "asset", "network", "config", "report", "market", "search")
   ],
 
   getInitialState: function () {
@@ -38,28 +38,28 @@ var AugurApp = React.createClass({
       sendRepModalOpen: false,
       reportSavedModalOpen: false,
       reportConfirmedModalOpen: false,
-      status: 'stopped'
+      status: "stopped"
     };
   },
 
   getStateFromFlux: function () {
     var flux = this.getFlux();
-    var percentLoaded = flux.store('config').getState().percentLoaded;
+    var percentLoaded = flux.store("config").getState().percentLoaded;
 
     // set app status (stopped, loading, running) from network & config state
-    if (parseInt(percentLoaded) > 0) {
-      this.setState({ status: 'running' });
+    if (Number(percentLoaded) > 0) {
+      this.setState({status: "running"});
     }
 
     return {
-      network: flux.store('network').getState(),
-      branch: flux.store('branch').getState(),
-      asset: flux.store('asset').getState(),
-      market: flux.store('market').getState(),
-      search: flux.store('search').getState(),
-      config: flux.store('config').getState(),
-      report: flux.store('report').getState()
-    }
+      network: flux.store("network").getState(),
+      branch: flux.store("branch").getState(),
+      asset: flux.store("asset").getState(),
+      market: flux.store("market").getState(),
+      search: flux.store("search").getState(),
+      config: flux.store("config").getState(),
+      report: flux.store("report").getState()
+    };
   },
 
   componentDidMount: function () {
@@ -67,10 +67,10 @@ var AugurApp = React.createClass({
   },
 
   getLoadingProgress: function () {
-    var loadingProgress = <span/>;
+    var loadingProgress = <span />;
     if (this.state.config.percentLoaded) {
       loadingProgress = (
-        <ProgressBar now={ parseFloat(this.state.config.percentLoaded) } className='loading-progress' />
+        <ProgressBar now={Number(this.state.config.percentLoaded)} className="loading-progress" />
       );
     } else if (this.state.network.blockchainAge && this.state.network.blockchainAge < constants.MAX_BLOCKCHAIN_AGE) {
       loadingProgress = (<span className="loading-text">loading...</span>);
@@ -113,7 +113,6 @@ var AugurApp = React.createClass({
         <SendCashModal
             show={this.state.sendCashModalOpen}
             onHide={this.toggleSendCashModal} />
-
         <Header
             userAccount={this.state.config.currentAccount}
             isNewRegistration={this.state.config.isNewRegistration}
@@ -124,9 +123,7 @@ var AugurApp = React.createClass({
             toggleSendCashModal={this.toggleSendCashModal}
             toggleSendRepModal={this.toggleSendRepModal}
             toggleSendEtherModal={this.toggleSendEtherModal}
-            asset={this.state.asset}
-            />
-
+            asset={this.state.asset} />
         <section id="main" className="container">
           <div className="dash page row">
             <div className="col-sm-12">
@@ -142,16 +139,16 @@ var AugurApp = React.createClass({
             </div>
           </div>
         </section>
-        
+
         <RegisterModal
           show={this.state.registerModalOpen}
           onHide={this.toggleRegisterModal} />
         <SignInModal
           show={this.state.signInModalOpen}
           onHide={this.toggleSignInModal} />
-        
+
         <footer><div className="row container clearfix"></div></footer>
-        
+
         <section id="loading" className="container">
           <div className="logo">
             {this.getLoadingProgress()}

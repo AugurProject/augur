@@ -38,6 +38,26 @@ h1, h2, h3, h4, h5 {
 .loading-progress {
     margin-bottom: 0 !important;
 }
+.loading-progress-modal {
+    margin-bottom: 10px !important;
+}
+.loading-progress-modal-minimized {
+    margin-bottom: 2px !important;
+}
+.loading-progress-modal-row {
+    margin-right: -3px !important;
+    margin-left: -3px !important;
+    margin-top: 3px !important;
+}
+.minimize-icon {
+    cursor: pointer;
+}
+.loading-progress-modal-wrapper {
+    width: 97%;
+}
+.clickable {
+    cursor: pointer;
+}
 
 #loading .logo {
     position:absolute;
@@ -261,15 +281,52 @@ nav.header .register {
     box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.4);
     -webkit-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.4);
     -moz-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.4);
-    /*height: 25px;*/
 }
 
-.progress-modal .modal-body pre {
+.hidden {
+    display: none;
+}
+.full-height {
+    height: 250px;
+    overflow-y: auto;
+}
+.minimized {
+    max-height: 100px;
+    overflow: hidden;
+}
+.min-button {
+    /*height: 25px;*/
+    cursor: pointer;
+}
+.progress-modal {
+    position: fixed;
+    z-index: 999;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border-top: 1px solid #C4C4C4;
+    padding: 10px 20px;
+    background: rgb(255, 255, 255);
+    background: rgba(255, 255, 255, 0.95);
+}
+.progress-modal .progress-modal-bar {
+    margin-bottom: 10px !important;
+}
+.progress-modal-header h4 {
+    color: #76838f !important;
+    background: rgb(255, 255, 255) !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    font-size: 18px !important;
+    padding: 0 !important;
+}
+.progress-modal-subheading {
+    color: #337ab7;
+}
+.progress-modal pre {
     font-size: 10pt;
 }
 .progress-status {
     font-size: 12pt;
-    /*font-style: italic;*/
 }
 .progress-status-box {
     padding-bottom: 10px;
@@ -825,12 +882,7 @@ a.market-pane:hover {
     max-height: 300px;
     max-width: 100%;
     margin: 15px 0 10px 0;
-    /*border: 1px solid #E6E6E6;*/
     padding: 10px;
-}
-
-.progress-modal-subheading {
-    color: #337ab7;
 }
 
 .tour-outcome-list {

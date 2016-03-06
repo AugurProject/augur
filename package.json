@@ -48,7 +48,7 @@
     "formsy-react": "0.17.0",
     "immutable": "^3.7.6",
     "jquery": "^2.1.4",
-    "keythereum": "^0.2.3",
+    "keythereum": "^0.2.5",
     "lodash": "^3.10.1",
     "moment": "^2.11.0",
     "node-localstorage": "^1.1.2",
