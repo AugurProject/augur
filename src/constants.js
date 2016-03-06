@@ -32,7 +32,7 @@ module.exports = {
 
     KDF: "pbkdf2",
     SCRYPT: 'scrypt',
-    ROUNDS: 65536,
+    ROUNDS: 262144,
     KEYSIZE: 32,
     IVSIZE: 16,
     IPFS_LOCAL: {host: "localhost", port: "5001", protocol: "http"},
