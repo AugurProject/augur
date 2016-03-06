@@ -268,12 +268,6 @@ Augur.prototype.getNumBranches = function (callback) {
 Augur.prototype.getBranches = function (callback) {
     return this.fire(this.tx.getBranches, callback);
 };
-Augur.prototype.getMarkets = function (eventID, callback) {
-    // eventID: sha256 hash id
-    var tx = clone(this.tx.getMarkets);
-    tx.params = eventID;
-    return this.fire(tx, callback);
-};
 Augur.prototype.getMarketsInBranch = function (branch, callback) {
     // branch: sha256 hash id
     var tx = clone(this.tx.getMarketsInBranch);
@@ -324,6 +318,12 @@ Augur.prototype.getBranch = function (branchNumber, callback) {
 };
 
 // events.se
+Augur.prototype.getMarkets = function (eventID, callback) {
+    // eventID: sha256 hash id
+    var tx = clone(this.tx.getMarkets);
+    tx.params = eventID;
+    return this.fire(tx, callback);
+};
 Augur.prototype.getReportingThreshold = function (event, callback) {
     var tx = clone(this.tx.getReportingThreshold);
     tx.params = event;
@@ -1004,6 +1004,11 @@ Augur.prototype.sendReputation = function (branch, to, value, onSent, onSuccess,
 // transferShares.se
 
 // makeReports.se
+Augur.prototype.getNumEventsToReport = function (branch, period, callback) {
+    var tx = clone(this.tx.getNumEventsToReport);
+    tx.params = [branch, period];
+    return this.fire(tx, callback);
+};
 Augur.prototype.getReportedPeriod = function (branch, period, reporter, callback) {
     var tx = clone(this.tx.getReportedPeriod);
     tx.params = [branch, period, reporter];

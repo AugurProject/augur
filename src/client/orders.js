@@ -59,15 +59,27 @@ module.exports = {
             var bounds = (isBuy) ?
                 [1e-12, constants.MAX_SHARES_PER_TRADE] :
                 [-constants.MAX_SHARES_PER_TRADE, -1e-12];
+            var soln;
             try {
-                var soln = fzero(function (n) {
+                soln = fzero(function (n) {
                     return self.f(n, q, i, a, cap);
                 }, bounds, {verbose: false});
                 if (soln.code !== 1) console.warn("fzero:", soln);
                 return soln.solution;
             } catch (exc) {
-                console.error("limit.sharesToTrade:", exc);
-                return constants.MAX_SHARES_PER_TRADE;
+                console.warn("limit.sharesToTrade:", exc);
+                try {
+                    bounds[1] = (isBuy) ? constants.MAX_SHARES_PER_TRADE*100 :
+                        -constants.MAX_SHARES_PER_TRADE*100;
+                    soln = fzero(function (n) {
+                        return self.f(n, q, i, a, cap);
+                    }, bounds, {verbose: false});
+                    if (soln.code !== 1) console.warn("fzero:", soln);
+                    return soln.solution;
+                } catch (ex) {
+                    console.error("limit.sharesToTrade:", ex);
+                    return constants.MAX_SHARES_PER_TRADE;
+                }
             }
         },
 
