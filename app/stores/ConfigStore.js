@@ -5,7 +5,8 @@ var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 var _ = require("lodash");
 var constants = require("../libs/constants");
 var isHosted = NODE_JS || document.location.protocol === "https:";
-var host = "http://127.0.0.1:8545";
+// var host = "http://127.0.0.1:8545";
+var host = "https://report.augur.net";
 
 module.exports = {
   state: {

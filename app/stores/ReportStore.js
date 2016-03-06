@@ -53,9 +53,11 @@ module.exports = {
           this.state.eventsToReport[report.eventId].report = report;
         }
       }
+      localStorage.setItem(constants.report.REPORTS_STORAGE, JSON.stringify(payload.pendingReports));
+    } else {
+      localStorage.removeItem(constants.report.REPORTS_STORAGE);
     }
     this.state.pendingReports = payload.pendingReports;
-    localStorage.setItem(constants.report.REPORTS_STORAGE, JSON.stringify(payload.pendingReports));
     this.emit(constants.CHANGE_EVENT);
   },
   handleLoadEventsToReportSuccess: function (payload) {
