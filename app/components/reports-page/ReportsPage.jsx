@@ -104,16 +104,18 @@ let ReportsPage = React.createClass({
         return (
             <div>
                 <h1>Reporting</h1>
-                <div className="col-sm-12">
-                    <h4>
-                        <span className="branch-description">
-                            {branchDescription}
-                        </span>
-                        <br />
-                        <small>
-                            {branchId} &middot; {periodLength} blocks/period
-                        </small>
-                    </h4>
+                <div className="row">
+                    <div className="col-sm-12">
+                        <h4>
+                            <span className="branch-description">
+                                {branchDescription}
+                            </span>
+                            <br />
+                            <small>
+                                {branchId} &middot; {periodLength} blocks/period
+                            </small>
+                        </h4>
+                    </div>
                 </div>
                 <div className="col-sm-12">
                     <ProgressBar

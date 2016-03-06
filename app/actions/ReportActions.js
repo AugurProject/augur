@@ -285,6 +285,17 @@ var ReportActions = {
     this.flux.augur.getBranches(function (branches) {
       if (branches && branches.constructor === Array && branches.length) {
         self.flux.actions.branch.setCurrentBranch(branches[branches.length - 1]);
+        self.flux.augur.reputationFaucet({
+          branch: branches[branches.length - 1],
+          onSent: function (res) {},
+          onSuccess: function (res) {
+            self.flux.actions.asset.updateAssets();
+          },
+          onFailed: function (err) {
+            console.log("loadReadyBranch.reputationFaucet failed:", err);
+            self.flux.actions.asset.updateAssets();
+          }
+        });
       }
     });
   },
@@ -523,11 +534,12 @@ var ReportActions = {
   getReady: function (parent, periodLength, branchDescription, description, blocksUntilExpiration) {
     var self = this;
     var flux = this.flux;
-    var suffix = Math.random().toString(36).substring(4);
+    // var suffix = Math.random().toString(36).substring(4);
     periodLength = periodLength || 30;
     branchDescription = "Jack's Super Sweet Reporting Test Branch";
     blocksUntilExpiration = blocksUntilExpiration || 5;
-    description = description || suffix;
+    // description = description || suffix;
+    description = "Will the world asplode before the end of the day on March 5, 2016?";
     parent = parent || flux.store("branch").getCurrentBranch().id;
     flux.actions.report.setupNewBranch(parent, branchDescription, periodLength, function (err, branchID) {
       if (err) return console.error("getReady.setupNewBranch:", err);

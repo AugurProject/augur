@@ -25,9 +25,8 @@ let MarketRow = React.createClass({
     getReportSection(report, market) {
         if (report == null) return null;
 
-        let tableHeader, tableHeaderColSpan, content, tableHeaderClass = "";
+        let tableHeader, content, tableHeaderClass = "";
         if (report.isCommitPeriod) {
-            tableHeaderColSpan = 2;
             let reportedOutcomeFmt;
             if (report.reportedOutcome == null) {
                 tableHeader = "Please report outcome";
@@ -39,64 +38,60 @@ let MarketRow = React.createClass({
             }
             content = (
                 <tbody>
-                    <tr>
-                        <td>Reported outcome</td>
-                        <td>{ reportedOutcomeFmt }</td>
+                    <tr className="labelValue">
+                        <td className="labelValue-label outcome-name">Reported outcome</td>
+                        <td className="labelValue-value change-percent">{ reportedOutcomeFmt }</td>
                     </tr>
-                    <tr>
-                        <td>Reporting period closes</td>
-                        <td>{ report.commitPeriodEndMillis.humanize(true) }</td>
+                    <tr className="labelValue">
+                        <td className="labelValue-label outcome-name">Submission phase ends</td>
+                        <td className="labelValue-value change-percent">{report.commitPeriodEndMillis.humanize(true)}</td>
                     </tr>
                 </tbody>
             );
         } else if (report.isRevealPeriod) {
-            tableHeaderColSpan = 2;
             tableHeader = report.isConfirmed ? "Report confirmed" : "Confirming report...";
             content = (
                 <tbody>
-                    <tr>
-                        <td>Reported outcome</td>
-                        <td>{utilities.getOutcomeName(report.reportedOutcome, market).outcome} { report.isUnethical ? "/ Unethical" : "" }</td>
+                    <tr className="labelValue">
+                        <td className="labelValue-label outcome-name">Reported outcome</td>
+                        <td className="labelValue-value change-percent">{utilities.getOutcomeName(report.reportedOutcome, market).outcome} { report.isUnethical ? "/ Unethical" : "" }</td>
                     </tr>
-                    <tr>
-                        <td>Confirmation period closes</td>
-                        <td>{ report.revealPeriodEndMillis.humanize(true) }</td>
+                    <tr className="labelValue">
+                        <td className="labelValue-label outcome-name">Confirmation period closes</td>
+                        <td className="labelValue-value change-percent">{report.revealPeriodEndMillis.humanize(true)}</td>
                     </tr>
                 </tbody>
             );
         } else {
-            tableHeaderColSpan = 4;
             tableHeader = "Report summary";
             content = (
                 <tbody>
-                    <tr>
-                        <td>Reported outcome</td>
-                        <td>{utilities.getOutcomeName(report.reportedOutcome, market).outcome} { report.isUnethical ? "/ Unethical" : "" }</td>
-                        <td>Fees</td>
-                        <td>fees</td>
+                    <tr className="labelValue">
+                        <td className="labelValue-label outcome-name">Reported outcome</td>
+                        <td className="labelValue-value change-percent">{utilities.getOutcomeName(report.reportedOutcome, market).outcome} {report.isUnethical ? "/ Unethical" : ""}</td>
+                        <td className="labelValue-label outcome-name">Fees</td>
+                        <td className="labelValue-value change-percent">fees</td>
                     </tr>
-                    <tr>
-                        <td>Consensus</td>
-                        <td>consensus</td>
-                        <td>Reputation</td>
-                        <td>reputation</td>
+                    <tr className="labelValue">
+                        <td className="labelValue-label outcome-name">Consensus</td>
+                        <td className="labelValue-value change-percent">consensus</td>
+                        <td className="labelValue-label outcome-name">Reputation</td>
+                        <td className="labelValue-value change-percent">reputation</td>
                     </tr>
                 </tbody>
             );
         }
 
         return (
-            <div className={"table-container" + tableHeaderClass}>
-                <table className="tabular tabular-condensed">
-                    <thead>
-                        <tr>
-                            <th colSpan={tableHeaderColSpan}>
-                                { tableHeader }
-                            </th>
-                        </tr>
-                    </thead>
-                    { content }
-                </table>
+            <div className="table-container holdings">
+                <div className="panelify-sideways success">
+                    <div className="title">{tableHeader}</div>
+                    <div className="content">
+                        <table className="holdings-table">
+                            {content}
+                        </table>
+                    </div>
+                </div>
             </div>
         );
     },

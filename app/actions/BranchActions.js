@@ -151,6 +151,8 @@ module.exports = {
                   self.flux.augur.getMarkets(event, function (markets) {
                     if (!markets || markets.error) return console.error("getMarkets:", markets);
                     async.each(markets, function (market, nextMarket) {
+                      // TODO check if market is closed!
+                      // if closed:
                       self.flux.augur.getReportHash(branch.id, prevPeriod, account, event, function (reportHash) {
                         if (reportHash && reportHash.error) return nextEvent(reportHash);
                         if (!reportHash || reportHash === "0x0") return nextEvent();
