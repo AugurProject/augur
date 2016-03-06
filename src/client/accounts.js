@@ -20,7 +20,7 @@ BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 keys.constants.pbkdf2.c = constants.ROUNDS;
 keys.constants.scrypt.n = constants.ROUNDS;
 
-const deriveKeyOptions = {
+var deriveKeyOptions = {
     kdf: constants.SCRYPT,
     kdfparams: {
         n: constants.ROUNDS,
