@@ -31,6 +31,7 @@ module.exports = {
     TIMEOUT: 600000,
 
     KDF: "pbkdf2",
+    SCRYPT: 'scrypt',
     ROUNDS: 65536,
     KEYSIZE: 32,
     IVSIZE: 16,

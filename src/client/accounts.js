@@ -20,6 +20,16 @@ BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 keys.constants.pbkdf2.c = constants.ROUNDS;
 keys.constants.scrypt.n = constants.ROUNDS;
 
+const deriveKeyOptions = {
+    kdf: constants.SCRYPT,
+    kdfparams: {
+        n: constants.ROUNDS,
+        r: 8,
+        p: 1, // to trigger the chunked scrypt implementation in keythereum, p has to be 1 (significantly improves performance in browsers)
+        dklen: constants.KEYSIZE
+    }
+};
+
 module.exports = function () {
 
     var augur = this;
@@ -98,8 +108,11 @@ module.exports = function () {
                     if (plain.error) return onRegistered(plain);
 
                     // derive secret key from password
-                    keys.deriveKey(password, plain.salt, null, function (derivedKey) {
+                    keys.deriveKey(password, plain.salt, deriveKeyOptions, function (derivedKey) {
                         if (derivedKey.error) return onRegistered(derivedKey);
+
+                        if (!Buffer.isBuffer(derivedKey))
+                            derivedKey = new Buffer(derivedKey, "hex");
 
                         var encryptedPrivateKey = new Buffer(keys.encrypt(
                             plain.privateKey,
@@ -184,7 +197,7 @@ module.exports = function () {
                 if (!stored || stored.error) return cb(errors.BAD_CREDENTIALS);
 
                 // derive secret key from password
-                keys.deriveKey(password, stored.kdfparams.salt, null, function (derived) {
+                keys.deriveKey(password, stored.kdfparams.salt, deriveKeyOptions, function (derived) {
                     if (!derived || derived.error) return cb(errors.BAD_CREDENTIALS);
 
                     // verify that message authentication codes match
@@ -192,6 +205,9 @@ module.exports = function () {
                     if (keys.getMAC(derived, storedKey) !== stored.mac.toString("hex")) {
                         return cb(errors.BAD_CREDENTIALS);
                     }
+
+                    if (!Buffer.isBuffer(derived))
+                        derived = new Buffer(derived, "hex");
 
                     // decrypt stored private key using secret key
                     try {
@@ -390,7 +406,7 @@ module.exports = function () {
                         // res is the txhash if nothing failed immediately
                         // (even if the tx is nulled, still index the hash)
                         augur.rpc.rawTxs[res] = {tx: packaged};
-                        
+
                         // nonce ok, execute callback
                         return cb(res);
                     }
