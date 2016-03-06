@@ -85,7 +85,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
         var simulatedSell = augur.getSimulatedSell(marketInfo, outcome, amount);
         assert.isArray(simulatedSell);
         assert.strictEqual(simulatedSell.length, 2);
-        assert.strictEqual(parseFloat(simulatedSell[0]).toFixed(8), "0.35812488");
+        assert.strictEqual(parseFloat(simulatedSell[0]).toFixed(8), "0.35402040");
         assert.strictEqual(parseFloat(simulatedSell[1]).toFixed(8), "0.21950285");
     });
 
