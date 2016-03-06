@@ -10,6 +10,7 @@ module.exports = {
   connect: function (hosted) {
     var host, self = this;
     var augur = this.flux.augur;
+    augur.rpc.nodes.hosted = ["https://report.augur.net"];
     var connectHostedCb = function (host) {
       if (!host) {
         return console.error("Couldn't connect to hosted node:", host);
@@ -42,6 +43,7 @@ module.exports = {
     var self = this;
     var augur = this.flux.augur;
     augur.rpc.reset();
+    augur.rpc.nodes.hosted = ["https://report.augur.net"];
     augur.connect(null, null, function (connected) {
       if (augur.rpc.nodes.hosted.length > 1) {
         augur.rpc.excision = true;
