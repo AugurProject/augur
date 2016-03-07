@@ -40,7 +40,7 @@ let MarketRow = React.createClass({
                 <tbody>
                     <tr className="labelValue">
                         <td className="labelValue-label outcome-name">Reported outcome</td>
-                        <td className="labelValue-value change-percent">{ reportedOutcomeFmt }</td>
+                        <td className="labelValue-value change-percent">{reportedOutcomeFmt}</td>
                     </tr>
                     <tr className="labelValue">
                         <td className="labelValue-label outcome-name">Submission phase ends</td>
@@ -50,11 +50,18 @@ let MarketRow = React.createClass({
             );
         } else if (report.isRevealPeriod) {
             tableHeader = report.isConfirmed ? "Report confirmed" : "Confirming report...";
+            let reportedOutcomeFmt;
+            if (report.reportedOutcome == null) {
+                reportedOutcomeFmt = "-";
+                tableHeader = "Report not submitted"
+            } else {
+                reportedOutcomeFmt = `${utilities.getOutcomeName(report.reportedOutcome, market).outcome} ${report.isUnethical ? "/ Unethical" : ""}`;
+            }
             content = (
                 <tbody>
                     <tr className="labelValue">
                         <td className="labelValue-label outcome-name">Reported outcome</td>
-                        <td className="labelValue-value change-percent">{utilities.getOutcomeName(report.reportedOutcome, market).outcome} { report.isUnethical ? "/ Unethical" : "" }</td>
+                        <td className="labelValue-value change-percent">{reportedOutcomeFmt}</td>
                     </tr>
                     <tr className="labelValue">
                         <td className="labelValue-label outcome-name">Confirmation period closes</td>
@@ -189,11 +196,7 @@ let MarketRow = React.createClass({
                         </button>
                     )
                 } else {
-                    return (
-                        <button className="btn btn-disabled">
-                            Report Complete
-                        </button>
-                    )
+                    return null;
                 }
             } else {
                 return (

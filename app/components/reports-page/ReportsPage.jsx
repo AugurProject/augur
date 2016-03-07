@@ -43,11 +43,11 @@ let ReportsPage = React.createClass({
         let marketRows = [];
         if (this.state.currentBranch) {
             let periodLength = this.state.currentBranch.periodLength;
-            let commitPeriodEndMillis = moment.duration(0);
+            var commitPeriodEndMillis = moment.duration(0);
             if (isCommitPeriod === true) {
                 commitPeriodEndMillis = moment.duration(constants.SECONDS_PER_BLOCK * ((periodLength / 2) - (blockNumber % (periodLength / 2))), "seconds");
             }
-            let revealPeriodEndMillis = moment.duration(constants.SECONDS_PER_BLOCK * (periodLength - (blockNumber % periodLength)), "seconds");
+            var revealPeriodEndMillis = moment.duration(constants.SECONDS_PER_BLOCK * (periodLength - (blockNumber % periodLength)), "seconds");
             for (let eventID in this.state.events) {
                 if (!this.state.events.hasOwnProperty(eventID)) continue;
                 let event = this.state.events[eventID];
@@ -117,13 +117,12 @@ let ReportsPage = React.createClass({
                         <ProgressBar
                             now={percentComplete}
                             bsStyle={progressBarStyle}
-                            // label={percentComplete.toFixed(2) + "%"}
-                            // active={true}
+                            label={percentComplete.toFixed(2) + "%"}
                             className="loading-progress" />
                     </div>
                     <div className="col-sm-12">
                         <h4>
-                            <span className="green">{phase}</span> phase of period <span className="blue">{reportPeriod}</span>
+                            <span className="green">{phase}</span> phase of period <span className="blue">{reportPeriod}</span> (ends {commitPeriodEndMillis.humanize(true)})
                         </h4>
                     </div>
                 </div>
