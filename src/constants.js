@@ -7,7 +7,7 @@
 var Decimal = require("decimal.js");
 var BigNumber = require("bignumber.js");
 
-BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
+BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 module.exports = {
 
@@ -31,8 +31,8 @@ module.exports = {
     TIMEOUT: 600000,
 
     KDF: "pbkdf2",
-    SCRYPT: 'scrypt',
-    ROUNDS: 262144,
+    SCRYPT: "scrypt",
+    ROUNDS: 65536,
     KEYSIZE: 32,
     IVSIZE: 16,
     IPFS_LOCAL: {host: "localhost", port: "5001", protocol: "http"},

@@ -20,16 +20,6 @@ BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 keys.constants.pbkdf2.c = constants.ROUNDS;
 keys.constants.scrypt.n = constants.ROUNDS;
 
-var deriveKeyOptions = {
-    kdf: constants.SCRYPT,
-    kdfparams: {
-        n: constants.ROUNDS,
-        r: 8,
-        p: 1, // to trigger the chunked scrypt implementation in keythereum, p has to be 1 (significantly improves performance in browsers)
-        dklen: constants.KEYSIZE
-    }
-};
-
 module.exports = function () {
 
     var augur = this;
@@ -108,7 +98,7 @@ module.exports = function () {
                     if (plain.error) return onRegistered(plain);
 
                     // derive secret key from password
-                    keys.deriveKey(password, plain.salt, deriveKeyOptions, function (derivedKey) {
+                    keys.deriveKey(password, plain.salt, null, function (derivedKey) {
                         if (derivedKey.error) return onRegistered(derivedKey);
 
                         if (!Buffer.isBuffer(derivedKey))
@@ -197,7 +187,7 @@ module.exports = function () {
                 if (!stored || stored.error) return cb(errors.BAD_CREDENTIALS);
 
                 // derive secret key from password
-                keys.deriveKey(password, stored.kdfparams.salt, deriveKeyOptions, function (derived) {
+                keys.deriveKey(password, stored.kdfparams.salt, null, function (derived) {
                     if (!derived || derived.error) return cb(errors.BAD_CREDENTIALS);
 
                     // verify that message authentication codes match
