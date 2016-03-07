@@ -98,7 +98,7 @@ Augur.prototype.connect = function (rpcinfo, ipcpath, cb) {
  *********************************/
 
 Augur.prototype.fire = function (tx, callback) {
-    if (tx.send && this.web && this.web.account && this.web.account.address) {
+    if (this.web && this.web.account && this.web.account.address) {
         tx.from = this.web.account.address;
     } else {
         tx.from = tx.from || this.coinbase;
@@ -107,9 +107,9 @@ Augur.prototype.fire = function (tx, callback) {
 };
 
 Augur.prototype.transact = function (tx, onSent, onSuccess, onFailed) {
-    if (tx.send && this.web && this.web.account && this.web.account.address) {
+    if (this.web && this.web.account && this.web.account.address) {
         tx.from = this.web.account.address;
-        tx.invocation = { invoke: this.web.invoke, context: this.web };
+        tx.invocation = {invoke: this.web.invoke, context: this.web};
     } else {
         tx.from = tx.from || this.coinbase;
     }
