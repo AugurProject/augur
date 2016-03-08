@@ -353,56 +353,130 @@ var ReportActions = {
   // create an event and market on the new branch
   createEvent: function (branchID, expirationBlock, description, cb) {
     var self = this;
-    if (DEBUG) console.log("Event expiration block:", expirationBlock);
-    this.flux.augur.createEvent({
+    if (DEBUG) {
+      console.log("Event expiration block:", expirationBlock);
+      console.log("Creating binary event:", description);
+    }
+    var multipleChoiceDescription = "What day will we launch the beta test?";
+    var scalarDescription = "How many users will the beta have during its first 24 hours?";
+    var newMarkets = {binary: null, multipleChoice: null, scalar: null};
+    this.flux.augur.createSingleEventMarket({
       branchId: branchID,
       description: description,
       expirationBlock: expirationBlock,
       minValue: 1,
       maxValue: 2,
       numOutcomes: 2,
-      onSent: self.flux.augur.utils.noop,
+      alpha: "0.0079",
+      initialLiquidity: 100,
+      tradingFee: "0.02",
+      onSent: function (res) {
+        
+      },
       onSuccess: function (res) {
-        var eventID = res.callReturn;
-        if (DEBUG) console.log("Event ID:", eventID);
+        var marketID = res.callReturn;
+        if (DEBUG) console.log("Binary market ID:", marketID);
+        self.flux.augur.ramble.addMetadata({
+          marketId: marketID,
+          details: "It's game over, man.  Game over!",
+          tags: ["asplosions", "world", "game over"],
+          source: "Reality Keys",
+          links: [
+            "http://www.lipsum.com/",
+            "https://github.com/traviskaufman/node-lipsum"
+          ]
+        }, function (sentResponse) {
+          if (DEBUG) console.log("binary addMetadata sent:", sentResponse);
+        }, function (successResponse) {
+          if (DEBUG) console.log("binary addMetadata success:", successResponse);
+        }, function (err) {
+          console.error("binary addMetadata:", err);
+        });
+        self.flux.augur.getMarketEvents(marketID, function (events) {
+          newMarkets.binary = {eventID: events[0], marketID: marketID};
+          if (DEBUG) console.log("Creating multiple-choice market...");
+          self.flux.augur.createSingleEventMarket({
+            branchId: branchID,
+            description: multipleChoiceDescription,
+            expirationBlock: expirationBlock,
+            minValue: 1,
+            maxValue: 2,
+            numOutcomes: 4,
+            alpha: "0.0079",
+            initialLiquidity: 100,
+            tradingFee: "0.02",
+            onSent: function (res) {
+              
+            },
+            onSuccess: function (res) {
+              var marketID = res.callReturn;
+              if (DEBUG) console.log("Multiple-choice market ID:", marketID);
+              self.flux.augur.ramble.addMetadata({
+                marketId: marketID,
+                details: "Multiple-choice market test",
+                tags: ["testing", "multiple-choice", "categorical"],
+                source: "generic"
+              }, function (sentResponse) {
+                if (DEBUG) console.log("multiple-choice addMetadata sent:", sentResponse);
+              }, function (successResponse) {
+                if (DEBUG) console.log("multiple-choice addMetadata success:", successResponse);
+              }, function (err) {
+                console.error("multiple-choice addMetadata:", err);
+              });
+              self.flux.augur.getMarketEvents(marketID, function (events) {
+                newMarkets.multipleChoice = {eventID: events[0], marketID: marketID};
+                if (DEBUG) console.log("Creating scalar market...");
+                self.flux.augur.createSingleEventMarket({
+                  branchId: branchID,
+                  description: multipleChoiceDescription,
+                  expirationBlock: expirationBlock,
+                  minValue: 0,
+                  maxValue: 1000000,
+                  numOutcomes: 2,
+                  alpha: "0.0079",
+                  initialLiquidity: 100,
+                  tradingFee: "0.02",
+                  onSent: function (res) {
 
-        // incorporate the event into a market on the new branch
-        self.flux.augur.createMarket({
-          branchId: branchID,
-          description: description,
-          alpha: "0.0079",
-          initialLiquidity: 100,
-          tradingFee: "0.02",
-          events: [eventID],
-          forkSelection: 1,
-          onSent: function (res) {
-            var metadata = {
-              marketId: res.callReturn,
-              details: "It's game over, man.  Game over!",
-              tags: ["asplosions", "world", "game over"],
-              source: "Reality Keys",
-              links: [
-                "http://www.lipsum.com/",
-                "https://github.com/traviskaufman/node-lipsum"
-              ]
-            };
-            self.flux.augur.ramble.addMetadata(metadata, function (sentResponse) {
-              if (DEBUG) console.log("addMetadata sent:", sentResponse);
-            }, function (successResponse) {
-              if (DEBUG) console.log("addMetadata success:", successResponse);
-            }, function (err) {
-              console.error("addMetadata:", err);
-            });
-          },
-          onSuccess: function (res) {
-            var marketID = res.callReturn;
-            if (DEBUG) console.log("Market ID:", marketID);
-            cb(null, {eventID: eventID, marketID: marketID});
-          },
-          onFailed: cb
+                  },
+                  onSuccess: function (res) {
+                    var marketID = res.callReturn;
+                    if (DEBUG) console.log("Scalar market ID:", marketID);
+                    self.flux.augur.ramble.addMetadata({
+                      marketId: marketID,
+                      details: "Scalar market test",
+                      tags: ["testing", "scalar", "numerical"],
+                      source: "generic"
+                    }, function (sentResponse) {
+                      if (DEBUG) console.log("scalar addMetadata sent:", sentResponse);
+                    }, function (successResponse) {
+                      if (DEBUG) console.log("scalar addMetadata success:", successResponse);
+                    }, function (err) {
+                      console.error("scalar addMetadata:", err);
+                    });
+                    self.flux.augur.getMarketEvents(marketID, function (events) {
+                      newMarkets.scalar = {eventID: events[0], marketID: marketID};
+                      cb(null, newMarkets);
+                    });
+                  },
+                  onFailed: function (err) {
+                    console.error("getReady.createEvent (scalar):", err);
+                    cb(err);
+                  }
+                });
+              });
+            },
+            onFailed: function (err) {
+              console.error("getReady.createEvent (multiple-choice):", err);
+              cb(err);
+            }
+          });
         });
       },
-      onFailed: cb
+      onFailed: function (err) {
+        console.error("getReady.createEvent (binary):", err);
+        cb(err);
+      }
     });
   },
 
@@ -510,26 +584,12 @@ var ReportActions = {
                       }
                       return self.flux.actions.report.checkPeriod(branchID, periodLength);
                     }
-                    if (DEBUG) console.log("Hitting Reputation faucet...");
-                    self.flux.augur.reputationFaucet({
-                      branch: branchID,
-                      onSent: function (res) {
-                        if (DEBUG) console.log("reputationFaucet sent:", res);
-                      },
-                      onSuccess: function (res) {
-                        if (DEBUG) console.log("reputationFaucet success:", res);
-                        self.flux.actions.asset.updateAssets();
-                      },
-                      onFailed: function (err) {
-                        if (DEBUG) console.error("reputationFaucet failed:", res);
-                        self.flux.actions.asset.updateAssets();
-                      }
-                    });
                     if (DEBUG) {
                       console.log("Difference " + (currentPeriod - period) + ": ready for report hash submission.");
                     }
                     var snd = new Audio("data:audio/wav;base64,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qJrx4KOQjahZxWbcZgztj2c49nKmkId44S71j0c8eV9yDK6uPRzx5X18eDvjvQ6yKo9ZSS6l//8elePK/Lf//IInrOF/FvDoADYAGBMGb7FtErm5MXMlmPAJQVgWta7Zx2go+8xJ0UiCb8LHHdftWyLJE0QIAIsI+UbXu67dZMjmgDGCGl1H+vpF4NSDckSIkk7Vd+sxEhBQMRU8j/12UIRhzSaUdQ+rQU5kGeFxm+hb1oh6pWWmv3uvmReDl0UnvtapVaIzo1jZbf/pD6ElLqSX+rUmOQNpJFa/r+sa4e/pBlAABoAAAAA3CUgShLdGIxsY7AUABPRrgCABdDuQ5GC7DqPQCgbbJUAoRSUj+NIEig0YfyWUho1VBBBA//uQZB4ABZx5zfMakeAAAAmwAAAAF5F3P0w9GtAAACfAAAAAwLhMDmAYWMgVEG1U0FIGCBgXBXAtfMH10000EEEEEECUBYln03TTTdNBDZopopYvrTTdNa325mImNg3TTPV9q3pmY0xoO6bv3r00y+IDGid/9aaaZTGMuj9mpu9Mpio1dXrr5HERTZSmqU36A3CumzN/9Robv/Xx4v9ijkSRSNLQhAWumap82WRSBUqXStV/YcS+XVLnSS+WLDroqArFkMEsAS+eWmrUzrO0oEmE40RlMZ5+ODIkAyKAGUwZ3mVKmcamcJnMW26MRPgUw6j+LkhyHGVGYjSUUKNpuJUQoOIAyDvEyG8S5yfK6dhZc0Tx1KI/gviKL6qvvFs1+bWtaz58uUNnryq6kt5RzOCkPWlVqVX2a/EEBUdU1KrXLf40GoiiFXK///qpoiDXrOgqDR38JB0bw7SoL+ZB9o1RCkQjQ2CBYZKd/+VJxZRRZlqSkKiws0WFxUyCwsKiMy7hUVFhIaCrNQsKkTIsLivwKKigsj8XYlwt/WKi2N4d//uQRCSAAjURNIHpMZBGYiaQPSYyAAABLAAAAAAAACWAAAAApUF/Mg+0aohSIRobBAsMlO//Kk4soosy1JSFRYWaLC4qZBYWFRGZdwqKiwkNBVmoWFSJkWFxX4FFRQWR+LsS4W/rFRb/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////VEFHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU291bmRib3kuZGUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMjAwNGh0dHA6Ly93d3cuc291bmRib3kuZGUAAAAAAAAAACU=");  
                     snd.play();
+                    self.flux.actions.asset.updateAssets();
                     self.flux.actions.branch.updateCurrentBranch();
                     self.flux.actions.report.ready(branchID);
                   });
@@ -565,11 +625,14 @@ var ReportActions = {
         var expirationBlock = blockNumber + blocksUntilExpiration;
         flux.actions.report.createEvent(branchID, expirationBlock, binaryEventDescription, function (err, ids) {
           if (err) return console.error("getReady.createEvent:", err);
-          if (!branchID || !ids || !ids.eventID || !ids.marketID) {
-            return console.error("getReady.createEvent:", ids);
-          }
-          flux.actions.report.tradeShares(branchID, ids.eventID, ids.marketID, function (err, trade) {
-            if (err) return console.error("getReady.tradeShares:", err);
+          async.forEachOf(ids, function (thisMarket, index, nextMarket) {
+            console.log("forEachOf:", thisMarket);
+            flux.actions.report.tradeShares(branchID, thisMarket.eventID, thisMarket.marketID, function (err, trade) {
+              if (err) return nextMarket(err);
+              nextMarket();
+            });
+          }, function (err) {
+            if (err) console.error("getReady.forEachOf:", err);
 
             // fast-forward to the period in which the new event expires
             flux.augur.getReportPeriod(branchID, function (period) {
