@@ -2,7 +2,7 @@
 .navbar {
     border-radius: 0;
     margin-bottom: 0;
-    background-color: @color-purple;
+    background-color: @color-purple-dark;
     color: @color-white;
     font-size: @font-size-base;
     .display(flex);
@@ -68,7 +68,7 @@
                     &.active,
                     &:hover,
                     &:focus {
-                        background-color: @color-purple-dark;
+                        background-color: @color-purple;
                         color: @color-white;
                     }
                     &.btn {
@@ -250,7 +250,7 @@ body > .navbar-collapse::after {
                 .align-items(stretch);
                 .flex-direction(column);
                 > li {
-                    border-top: 1px solid @color-purple-dark;
+                    border-top: 1px solid @color-purple;
                     &.dropdown {
                         .dropdown-toggle {
                             .caret {
@@ -273,7 +273,7 @@ body > .navbar-collapse::after {
                             padding-top: 0;
                             padding-bottom: 0;
                             > li {
-                                border-top: 1px solid @color-purple-dark;
+                                border-top: 1px solid @color-purple;
                                 background-color: @color-dark-bg-active;
                                 > a {
                                     padding: 15px 15px 15px 30px;
