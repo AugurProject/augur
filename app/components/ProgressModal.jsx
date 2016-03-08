@@ -56,10 +56,23 @@ module.exports = React.createClass({
       label = this.props.header.toUpperCase();
       if (this.props.complete) label += " - COMPLETE"
     }
-    var progressBarStyle = "default";
     var closeButton = <span />;
+    var progressBar = (
+      <ProgressBar
+        now={100 * (this.props.step / this.props.numSteps)}
+        className={loadingProgressModal}
+        active={active}
+        label={label} />
+    );
     if (this.props.complete) {
-      progressBarStyle = "success";
+      progressBar = (
+        <ProgressBar
+          bsStyle="success"
+          now={100 * (this.props.step / this.props.numSteps)}
+          className={loadingProgressModal}
+          active={active}
+          label={label} />
+      );
       closeButton = (
         <Button
           bsStyle="success"
@@ -109,12 +122,7 @@ module.exports = React.createClass({
               <div
                 className={loadingProgressModalWrapper}
                 onClick={this.closeIfComplete}>
-                <ProgressBar
-                  bsStyle={progressBarStyle}
-                  now={100 * (this.props.step / this.props.numSteps)}
-                  className={loadingProgressModal}
-                  active={active}
-                  label={label} />
+                {progressBar}
               </div>
               {expandIcon}
             </div>
