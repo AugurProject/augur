@@ -5,6 +5,12 @@ let utilities = require("../../libs/utilities");
 let ReportConfirmForm = React.createClass({
     render() {
         let market = this.props.market;
+        let reportedOutcomeName = "";
+        if (market.type === "scalar") {
+            reportedOutcomeName = this.props.reportedOutcome;
+        } else {
+            reportedOutcomeName = utilities.getOutcomeName(this.props.reportedOutcome, market).outcome;
+        }
         return (
             <form onSubmit={this.props.onConfirmFormSubmit}>
                 <div className="form-group">
@@ -13,7 +19,7 @@ let ReportConfirmForm = React.createClass({
                             <label>Question</label>
                         </div>
                         <div className="col-sm-9">
-                            <div className="form-control-static">{ market.description }</div>
+                            <div className="form-control-static">{market.description}</div>
                         </div>
                     </div>
                 </div>
@@ -24,7 +30,7 @@ let ReportConfirmForm = React.createClass({
                         </div>
                         <div className="col-sm-9">
                             <span className="form-control-static">
-                                { market.endDate != null ? moment(market.endDate).format('MMM D, YYYY') : '-' }
+                                {market.endDate != null ? moment(market.endDate).format('MMM D, YYYY') : '-'}
                             </span>
                         </div>
                     </div>
@@ -35,8 +41,7 @@ let ReportConfirmForm = React.createClass({
                             <label>Reported outcome</label>
                         </div>
                         <div className="col-sm-9">
-
-                            { utilities.getOutcomeName(this.props.reportedOutcome, market).outcome }
+                            {reportedOutcomeName}
                         </div>
                     </div>
                 </div>
@@ -48,7 +53,7 @@ let ReportConfirmForm = React.createClass({
                             </label>
                         </div>
                         <div className="col-sm-9">
-                            { this.props.isUnethical ? "Yes" : "No" }
+                            {this.props.isUnethical ? "Yes" : "No"}
                         </div>
                     </div>
                 </div>

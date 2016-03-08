@@ -135,10 +135,11 @@ module.exports = {
     switch (marketType) {
     case "categorical":
       if (market && market.longDescription && market.longDescription.indexOf("Choices:") > -1) {
+        id = Number(id);
         var desc = market.longDescription.split("Choices:");
         var choices = desc[desc.length - 1].split(",");
-        if (choices && choices.constructor === Array && choices.length > id - 1) {
-            return {type: "categorical", outcome: choices[id - 1].trim()};
+        if (id && choices && choices.constructor === Array && choices.length > id - 1) {
+          return {type: "categorical", outcome: choices[id - 1].trim()};
         }
         if (!warned[market._id]) {
           warned[market._id] = true;

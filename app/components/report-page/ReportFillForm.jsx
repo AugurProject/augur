@@ -8,21 +8,41 @@ let classnames = require("classnames");
 
 var ReportFillForm = React.createClass({
 
+    getInitialState() {
+        return {scalarValue: ""};
+    },
+
+    onScalarValueChanged(event) {
+        this.setState({scalarValue: event.target.value});
+        this.props.onReportedOutcomeChanged(event);
+    },
+
     _getOutcomeOptions(outcomes, market) {
         let nameAttr = "reportedOutcome";
-        let outcomeOptions = outcomes.map(outcome => {
-            let outcomeName = utilities.getOutcomeName(outcome.id, market).outcome;
-            return (
-                <div key={outcome.id} className="form-horizontal col-sm-12">
-                    <Input type="radio"
-                           name={nameAttr}
-                           value={outcome.id}
-                           checked={this.props.reportedOutcome == outcome.id}
-                           label={outcomeName}
-                           onChange={this.props.onReportedOutcomeChanged} />
-                </div>
+        let outcomeOptions;
+        if (market.type === "scalar") {
+            outcomeOptions = [];
+            outcomeOptions.push(
+                <Input type="text"
+                       name={nameAttr}
+                       placeholder="Event outcome"
+                       value={this.state.scalarValue}
+                       onChange={this.onScalarValueChanged} />
             );
-        });
+        } else {
+            outcomeOptions = outcomes.map(outcome => {
+                return (
+                    <div key={outcome.id} className="form-horizontal col-sm-12">
+                        <Input type="radio"
+                               name={nameAttr}
+                               value={outcome.id}
+                               checked={this.props.reportedOutcome == outcome.id}
+                               label={outcome.label}
+                               onChange={this.props.onReportedOutcomeChanged} />
+                    </div>
+                );
+            });
+        }
         outcomeOptions.push(
             <div key="indeterminate" className="form-horizontal col-sm-12">
                 <Input type="radio"

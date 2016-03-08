@@ -19,8 +19,8 @@ module.exports = {
   getState: function () {
     return this.state;
   },
-  getReport: function (branchId, reportPeriod) {
-    return _.findWhere(this.state.pendingReports, {branchId, reportPeriod});
+  getReport: function (branchId, reportPeriod, eventId) {
+    return _.findWhere(this.state.pendingReports, {branchId, reportPeriod, eventId});
   },
   getEvent: function (eventId) {
     return this.state.eventsToReport[eventId];
@@ -28,7 +28,6 @@ module.exports = {
   getPendingReports: function () {
     if (!this.state.loadedReports &&
         (!this.state.pendingReports || !this.state.pendingReports.length)) {
-      console.log("loading reports from localStorage...");
       var reportsString = localStorage.getItem(constants.report.REPORTS_STORAGE);
       var pendingReports = reportsString ? JSON.parse(reportsString) : [];
       var report;
@@ -44,7 +43,6 @@ module.exports = {
     return this.state.pendingReports;
   },
   handleUpdatePendingReports: function (payload) {
-    console.log("updating pendingReports:", payload.pendingReports);
     var report;
     if (payload.pendingReports && payload.pendingReports.length) {
       for (var i = 0, len = payload.pendingReports.length; i < len; ++i) {

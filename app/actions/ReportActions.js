@@ -24,12 +24,13 @@ var ReportActions = {
     var self = this;
     var augur = this.flux.augur;
     var branch = this.flux.store("branch").getCurrentBranch();
+    var account = this.flux.store("config").getAccount();
 
     // Only load events if the vote period indicated by the chain is the
     // previous period.
     if (!branch || branch.currentPeriod >= branch.reportPeriod + 2 ||
         branch.reportPeriod < branch.currentPeriod - 1) {
-      this.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {
+      return this.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {
         eventsToReport: {}
       });
     }
@@ -43,10 +44,13 @@ var ReportActions = {
       // initialize all events
       var eventsToReport = {};
       var pendingReports = self.flux.store("report").getPendingReports();
-      async.each(eventIds, function (eventId, nextEvent) {
+      async.eachSeries(eventIds, function (eventId, nextEvent) {
         augur.getEventInfo(eventId, function (eventInfo) {
           if (!eventInfo) return nextEvent("couldn't get event info");
           if (eventInfo.error) return nextEvent(eventInfo);
+          var minValue = abi.bignum(eventInfo[3]);
+          var maxValue = abi.bignum(eventInfo[4]);
+          var numOutcomes = abi.bignum(eventInfo[5]);
           eventsToReport[eventId] = {
             id: eventId,
             branchId: eventInfo[0],
@@ -56,40 +60,65 @@ var ReportActions = {
             maxValue: eventInfo[4],
             numOutcomes: parseInt(eventInfo[5]),
             report: _.findWhere(pendingReports, {
+              eventId: eventId,
               branchId: branch.id,
               reportPeriod: branch.reportPeriod
-            }),
+            }) || {},
             markets: []
           };
           augur.getDescription(eventId, function (description) {
             if (description && description.error) return nextEvent(description);
             eventsToReport[eventId].description = description;
-            augur.getEventIndex(eventId, branch.reportPeriod, function (eventIndex) {
+            augur.getEventIndex(branch.reportPeriod, eventId, function (eventIndex) {
               if (eventIndex && eventIndex.error) return nextEvent(eventIndex);
               eventsToReport[eventId].index = eventIndex;
-              augur.getMarkets(eventId, function (markets) {
-                if (!markets) return nextEvent("no markets found");
-                if (markets.error) return nextEvent(markets);
-                async.each(markets, function (thisMarket, nextMarket) {
-                  var market = self.flux.store("market").getMarket(abi.bignum(thisMarket));
-                  if (market) {
-                    eventsToReport[eventId].markets.push(market);
-                    return nextMarket();
+              eventsToReport[eventId].report.eventIndex = eventIndex;
+              augur.getReportHash(branch.id, branch.reportPeriod, account, eventId, function (reportHash) {
+                if (reportHash && !reportHash.error && reportHash !== "0x0") {
+                  eventsToReport[eventId].report.branchId = branch.id;
+                  eventsToReport[eventId].report.eventId = eventId;
+                  eventsToReport[eventId].report.reportHash = reportHash;
+                }
+                augur.getReport(branch.id, branch.reportPeriod, eventId, function (report) {
+                  if (report && report !== "0") {
+                    eventsToReport[eventId].report.rescaledReportedOutcome = report;
                   }
-                  augur.getMarketInfo(thisMarket, function (marketInfo) {
-                    eventsToReport[eventId].type = marketInfo.type;
-                    self.flux.actions.market.parseMarketInfo(marketInfo, function (info) {
-                      augur.ramble.getMarketMetadata(thisMarket, {sourceless: false}, function (err, metadata) {
-                        if (err) console.error("getMetadata:", err);
-                        if (metadata) info.metadata = metadata;
-                        eventsToReport[eventId].markets.push(info);
-                        nextMarket();
+                  augur.getMarkets(eventId, function (markets) {
+                    if (!markets) return nextEvent("no markets found");
+                    if (markets.error) return nextEvent(markets);
+                    async.each(markets, function (thisMarket, nextMarket) {
+                      var market = self.flux.store("market").getMarket(abi.bignum(thisMarket));
+                      if (market) {
+                        eventsToReport[eventId].markets.push(market);
+                        return nextMarket();
+                      }
+                      augur.getMarketInfo(thisMarket, function (marketInfo) {
+                        eventsToReport[eventId].type = marketInfo.type;
+                        if (report && report !== "0") {
+                          if (marketInfo.type === "scalar") {
+                            eventsToReport[eventId].report.reportedOutcome = abi.bignum(report).times(maxValue.minus(minValue)).plus(minValue).toFixed();
+                          } else if (marketInfo.type === "categorical") {
+                            eventsToReport[eventId].report.reportedOutcome = abi.bignum(report).times(numOutcomes.minus(abi.bignum(1))).plus(abi.bignum(1)).toFixed();
+                          } else {
+                            eventsToReport[eventId].report.reportedOutcome = report;
+                          }
+                        }
+                        self.flux.actions.market.parseMarketInfo(marketInfo, function (info) {
+                          augur.ramble.getMarketMetadata(thisMarket, {sourceless: false}, function (err, metadata) {
+                            if (err) console.error("getMetadata:", err);
+                            if (info) {
+                              if (metadata) info.metadata = metadata;
+                              eventsToReport[eventId].markets.push(info);
+                            }
+                            nextMarket();
+                          });
+                        });
                       });
+                    }, function (err) {
+                      if (err) return nextEvent(err);
+                      nextEvent();
                     });
                   });
-                }, function (err) {
-                  if (err) return nextEvent(err);
-                  nextEvent();
                 });
               });
             });
@@ -138,8 +167,10 @@ var ReportActions = {
           break;
         }
       }
+      if (!isUpdate) pendingReports.push(report);
+    } else {
+      pendingReports = [report];
     }
-    if (!isUpdate) pendingReports.push(report);
     this.dispatch(constants.report.UPDATE_PENDING_REPORTS, {pendingReports});
   },
 
@@ -155,19 +186,22 @@ var ReportActions = {
     var numOutcomes = abi.bignum(event.numOutcomes);
 
     // Re-scale scalar/categorical reports so they fall between 0 and 1
+    var rescaledReportedOutcome;
     if (event.type === "scalar") {
-      reportedOutcome = abi.bignum(reportedOutcome)
-                           .minus(minValue)
-                           .dividedBy(maxValue.minus(minValue)).toFixed();
+      rescaledReportedOutcome = abi.bignum(reportedOutcome)
+                                   .minus(minValue)
+                                   .dividedBy(maxValue.minus(minValue)).toFixed();
     } else if (event.type === "categorical") {
-      reportedOutcome = abi.bignum(reportedOutcome)
-                           .minus(abi.bignum(1))
-                           .dividedBy(numOutcomes.minus(abi.bignum(1))).toFixed();
+      rescaledReportedOutcome = abi.bignum(reportedOutcome)
+                                   .minus(abi.bignum(1))
+                                   .dividedBy(numOutcomes.minus(abi.bignum(1))).toFixed();
+    } else {
+      rescaledReportedOutcome = reportedOutcome;
     }
 
     var account = this.flux.store("config").getAccount();
     var salt = utils.bytesToHex(secureRandom(32));
-    var reportHash = this.flux.augur.makeHash(salt, reportedOutcome, event.id, account, isIndeterminate, event.type === "binary");
+    var reportHash = this.flux.augur.makeHash(salt, rescaledReportedOutcome, event.id, account, isIndeterminate, event.type === "binary");
     this.flux.actions.report.updatePendingReports(
       this.flux.store("report").getPendingReports(), {
         branchId: branchId,
@@ -176,6 +210,7 @@ var ReportActions = {
         reportHash: reportHash,
         reportPeriod: reportPeriod,
         reportedOutcome: reportedOutcome,
+        rescaledReportedOutcome: rescaledReportedOutcome,
         salt: salt,
         isUnethical: isUnethical,
         isIndeterminate: isIndeterminate,
@@ -242,7 +277,7 @@ var ReportActions = {
             reportPeriod: report.reportPeriod,
             eventIndex: report.eventIndex,
             salt: report.salt,
-            report: report.reportedOutcome,
+            report: report.rescaledReportedOutcome,
             eventID: report.eventId,
             ethics: Number(!report.isUnethical),
             indeterminate: report.isIndeterminate
@@ -252,13 +287,11 @@ var ReportActions = {
             reportPeriod: report.reportPeriod,
             eventIndex: report.eventIndex,
             salt: report.salt,
-            report: report.reportedOutcome,
+            report: report.rescaledReportedOutcome,
             eventID: report.eventId,
             ethics: Number(!report.isUnethical),
             indeterminate: report.isIndeterminate,
             onSent: function (res) {
-              report.submitReport = true;
-              pendingReports[index] = report;
               self.flux.actions.report.updatePendingReports(
                 self.flux.store("report").getPendingReports(), {
                   branchId: report.branchId,
@@ -320,7 +353,7 @@ var ReportActions = {
       branch: branchID,
       market: marketID,
       outcome: 1,
-      amount: "0.1",
+      amount: "1",
       limit: 0
     };
     var trade = clone(tradeParams);
@@ -353,13 +386,11 @@ var ReportActions = {
   // create an event and market on the new branch
   createEvent: function (branchID, expirationBlock, description, cb) {
     var self = this;
-    if (DEBUG) {
-      console.log("Event expiration block:", expirationBlock);
-      console.log("Creating binary event:", description);
-    }
+    if (DEBUG) console.log("Event expiration block:", expirationBlock);
     var multipleChoiceDescription = "What day will we launch the beta test? Choices: Yesterday, Today, Tomorrow, In Two Weeks (TM)";
     var scalarDescription = "How many users will the beta have during its first 24 hours?";
     var newMarkets = {binary: null, multipleChoice: null, scalar: null};
+    if (DEBUG) console.log("Creating binary market...");
     this.flux.augur.createSingleEventMarket({
       branchId: branchID,
       description: description,
@@ -386,11 +417,11 @@ var ReportActions = {
             "https://github.com/traviskaufman/node-lipsum"
           ]
         }, function (sentResponse) {
-          if (DEBUG) console.log("binary addMetadata sent:", sentResponse);
+          // if (DEBUG) console.log("binary addMetadata sent:", sentResponse);
         }, function (successResponse) {
-          if (DEBUG) console.log("binary addMetadata success:", successResponse);
+          // if (DEBUG) console.log("binary addMetadata success:", successResponse);
         }, function (err) {
-          console.error("binary addMetadata:", err);
+          // console.error("binary addMetadata:", err);
         });
         self.flux.augur.getMarketEvents(marketID, function (events) {
           newMarkets.binary = {eventID: events[0], marketID: marketID};
@@ -417,18 +448,18 @@ var ReportActions = {
                 tags: ["testing", "multiple-choice", "categorical"],
                 source: "generic"
               }, function (sentResponse) {
-                if (DEBUG) console.log("multiple-choice addMetadata sent:", sentResponse);
+                // if (DEBUG) console.log("multiple-choice addMetadata sent:", sentResponse);
               }, function (successResponse) {
-                if (DEBUG) console.log("multiple-choice addMetadata success:", successResponse);
+                // if (DEBUG) console.log("multiple-choice addMetadata success:", successResponse);
               }, function (err) {
-                console.error("multiple-choice addMetadata:", err);
+                // console.error("multiple-choice addMetadata:", err);
               });
               self.flux.augur.getMarketEvents(marketID, function (events) {
                 newMarkets.multipleChoice = {eventID: events[0], marketID: marketID};
                 if (DEBUG) console.log("Creating scalar market...");
                 self.flux.augur.createSingleEventMarket({
                   branchId: branchID,
-                  description: multipleChoiceDescription,
+                  description: scalarDescription,
                   expirationBlock: expirationBlock,
                   minValue: 0,
                   maxValue: 1000000,
@@ -448,11 +479,11 @@ var ReportActions = {
                       tags: ["testing", "scalar", "numerical"],
                       source: "generic"
                     }, function (sentResponse) {
-                      if (DEBUG) console.log("scalar addMetadata sent:", sentResponse);
+                      // if (DEBUG) console.log("scalar addMetadata sent:", sentResponse);
                     }, function (successResponse) {
-                      if (DEBUG) console.log("scalar addMetadata success:", successResponse);
+                      // if (DEBUG) console.log("scalar addMetadata success:", successResponse);
                     }, function (err) {
-                      console.error("scalar addMetadata:", err);
+                      // console.error("scalar addMetadata:", err);
                     });
                     self.flux.augur.getMarketEvents(marketID, function (events) {
                       newMarkets.scalar = {eventID: events[0], marketID: marketID};
@@ -616,7 +647,7 @@ var ReportActions = {
     var flux = this.flux;
     periodLength = periodLength || 100;
     branchDescription = "Jack's Super Sweet Reporting Test Branch";
-    blocksUntilExpiration = blocksUntilExpiration || 5;
+    blocksUntilExpiration = blocksUntilExpiration || 15;
     var binaryEventDescription = eventDescription || "Will the world asplode before the end of the day on March 6, 2016?";
     parent = parent || flux.store("branch").getCurrentBranch().id;
     flux.actions.report.setupNewBranch(parent, branchDescription, periodLength, function (err, branchID) {
@@ -626,7 +657,7 @@ var ReportActions = {
         flux.actions.report.createEvent(branchID, expirationBlock, binaryEventDescription, function (err, ids) {
           if (err) return console.error("getReady.createEvent:", err);
           async.forEachOf(ids, function (thisMarket, index, nextMarket) {
-            console.log("forEachOf:", thisMarket);
+            console.log("trading in:", thisMarket.marketID);
             flux.actions.report.tradeShares(branchID, thisMarket.eventID, thisMarket.marketID, function (err, trade) {
               if (err) return nextMarket(err);
               nextMarket();

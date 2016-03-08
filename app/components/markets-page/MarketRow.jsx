@@ -34,7 +34,11 @@ let MarketRow = React.createClass({
             } else {
                 tableHeaderClass = " holdings";
                 tableHeader = "Outcome reported";
-                reportedOutcomeFmt = `${utilities.getOutcomeName(report.reportedOutcome, market).outcome} ${report.isUnethical ? "/ Unethical" : ""}`;
+                if (market.type === "scalar") {
+                    reportedOutcomeFmt = report.reportedOutcome;
+                } else {
+                    reportedOutcomeFmt = `${utilities.getOutcomeName(report.reportedOutcome, market).outcome} ${report.isUnethical ? "/ Unethical" : ""}`;
+                }
             }
             content = (
                 <tbody>
@@ -55,7 +59,11 @@ let MarketRow = React.createClass({
                 reportedOutcomeFmt = "-";
                 tableHeader = "Report not submitted"
             } else {
-                reportedOutcomeFmt = `${utilities.getOutcomeName(report.reportedOutcome, market).outcome} ${report.isUnethical ? "/ Unethical" : ""}`;
+                if (market.type === "scalar") {
+                    reportedOutcomeFmt = report.reportedOutcome;
+                } else {
+                    reportedOutcomeFmt = `${utilities.getOutcomeName(report.reportedOutcome, market).outcome} ${report.isUnethical ? "/ Unethical" : ""}`;
+                }
             }
             content = (
                 <tbody>
@@ -149,14 +157,12 @@ let MarketRow = React.createClass({
      */
     getClickableDescription(market, report) {
         if (report != null) {
-            if (report.isCommitPeriod) {
+            if (report.isCommitPeriod || report.isRevealPeriod) {
                 return (
                     <Link to="report" params={{eventId: market.events[0].id.toString(16)}}>
                         {market.description}
                     </Link>
                 );
-            } else if (report.isRevealPeriod) {
-                return <a href="#">{market.description}</a>;
             } else {
                 return (
                     <Link to="report" params={{eventId: market.events[0].id.toString(16)}}>
@@ -165,7 +171,6 @@ let MarketRow = React.createClass({
                 );
             }
         }
-
         return (
             <Link to="market"
                 params={{marketId: market.id.toString(16)}}>
