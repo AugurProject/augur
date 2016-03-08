@@ -9,11 +9,21 @@ let classnames = require("classnames");
 var ReportFillForm = React.createClass({
 
     getInitialState() {
-        return {reportedOutcome: this.props.reportedOutcome || ""};
+        return {
+            reportedOutcome: this.props.reportedOutcome || "",
+            isUnethical: this.props.isUnethical || null,
+            isIndeterminate: this.props.isIndeterminate || null
+        };
     },
 
     onReportedOutcomeChanged(event) {
-        this.setState({reportedOutcome: event.target.value});
+        let report = event.target.value;
+        if (report !== null && report !== undefined) {
+            if (report === constants.INDETERMINATE_OUTCOME && event.target.id === "indeterminate") {
+                this.setState({isIndeterminate: true});
+            }
+            this.setState({reportedOutcome: report});
+        }
         this.props.onReportedOutcomeChanged(event);
     },
 
@@ -57,11 +67,25 @@ var ReportFillForm = React.createClass({
         return outcomeOptions;
     },
 
+    onUnethicalChange(event) {
+        this.setState({isUnethical: event.target.checked});
+        this.props.onUnethicalChange(event);
+    },
+
+    onReportFormSubmit(event) {
+        event.preventDefault();
+        this.props.onReportFormSubmit(
+            this.state.reportedOutcome,
+            this.state.isUnethical,
+            this.state.isIndeterminate
+        );
+    },
+
     render() {
         let market = this.props.market;
         let outcomeOptions = this._getOutcomeOptions(market.outcomes, market);
         return (
-            <form onSubmit={this.props.onReportFormSubmit}>
+            <form onSubmit={this.onReportFormSubmit}>
                 <div className="form-group">
                     <div className="row">
                         <div className="col-sm-3">
@@ -111,8 +135,8 @@ var ReportFillForm = React.createClass({
                                 <input type="checkbox"
                                        id="isUnethical-input"
                                        name="isUnethical"
-                                       checked={this.props.isUnethical}
-                                       onChange={this.props.onUnethicalChange}/>
+                                       checked={this.state.isUnethical}
+                                       onChange={this.onUnethicalChange}/>
                                 Yes, this question is unethical
                             </label>
                             <span className="help-block">

@@ -46,7 +46,7 @@ var ReportActions = {
       var pendingReports = self.flux.store("report").getPendingReports();
       async.eachSeries(eventIds, function (eventId, nextEvent) {
         augur.getReportable(branch.reportPeriod, eventId, function (reportable) {
-          console.log(eventId, "reportable:", reportable);
+          // console.log(eventId, "reportable:", reportable);
           if (!reportable || reportable === "-1") return nextEvent();
           if (reportable.error) return nextEvent(reportable);
           augur.getEventInfo(eventId, function (eventInfo) {

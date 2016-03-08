@@ -4,7 +4,6 @@ let BigNumber = require("bignumber.js");
 let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
 let ReportFillForm = require("./ReportFillForm.jsx");
-let ReportConfirmForm = require("./ReportConfirmForm.jsx");
 let ReportSavedModal = require("./ReportSavedModal.jsx");
 let ReportDetails = require("./ReportDetails.jsx");
 let utilities = require("../../libs/utilities");
@@ -59,24 +58,33 @@ let ReportPage = React.createClass({
         };
     },
 
-    onReportFormSubmit(event) {
+    onReportFormSubmit(reportedOutcome, isUnethical, isIndeterminate) {
         let self = this;
         let flux = this.getFlux();
-        event.preventDefault();
-        if (this.state.reportedOutcome === null) {
+        if (reportedOutcome === null) {
             return this.setState({reportError: "you must choose something"});
         }
-        this.setState({reportError: null});
+        this.setState({
+            reportError: null,
+            reportedOutcome: reportedOutcome,
+            isUnethical: isUnethical,
+            isIndeterminate: isIndeterminate
+        });
         flux.actions.report.submitReportHash(
             this.state.branch.id,
             this.state.event,
             this.state.branch.reportPeriod,
-            this.state.reportedOutcome,
-            this.state.isUnethical,
-            this.state.isIndeterminate,
+            reportedOutcome,
+            isUnethical,
+            isIndeterminate,
             function (err, res) {
                 if (err) {
-                    console.error("submitReportHash failed:", err);
+                    if (err.error === "-5") {
+                        console.log(err);
+                        flux.actions.report.loadEventsToReport();
+                    } else {
+                        console.error("submitReportHash failed:", err);
+                    }
                     return self.setState({reportedOutcome: null});
                 }
                 console.log("submitReportHash complete:", res);
@@ -85,22 +93,7 @@ let ReportPage = React.createClass({
         this.props.toggleReportSavedModal();
     },
 
-    onConfirmFormSubmit(event) {
-        event.preventDefault();
-        let flux = this.getFlux();
-        let branchId, reportHash, reportPeriod, eventIndex;
-        branchId = this.state.branch.id;
-        reportHash = this.state.reportHash;
-        reportPeriod = this.state.branch.reportPeriod;
-        eventIndex = flux.augur.getEventIndex(reportPeriod, this.state.event.id, function (eventIndex) {
-            flux.actions.report.submitQualifiedReports(function (err, res) {
-                if (err) console.error("ReportsPage.submitQualifiedReports:", err);
-            });
-        });
-    },
-
     onReportedOutcomeChanged(event) {
-        let flux = this.getFlux();
         let report = event.target.value;
         if (report !== null && report !== undefined) {
             if (report === constants.INDETERMINATE_OUTCOME && event.target.id === "indeterminate") {
@@ -154,37 +147,21 @@ let ReportPage = React.createClass({
                             onHide={this.props.toggleReportSavedModal} />
                     </div>
                 );
-            } else if (isReportRevealPeriod) {
-                if (this.state.reportedOutcome == null) {
-                    return (
-                        <div>You did not report an outcome</div>
-                    );
-                } else {
-                    return (
-                        <div>
-                            <h1>Reporting the outcome of a market</h1>
-                            <h2>Confirm your reported outcome</h2>
-                            <ReportConfirmForm
-                                onConfirmFormSubmit={this.onConfirmFormSubmit}
-                                market={market}
-                                reportedOutcome={this.state.reportedOutcome}
-                                isUnethical={this.state.isUnethical} />
-                        </div>
-                    );
-                }
             } else {
                 return (
                     <div>
                         <h1>Reporting details</h1>
                         <ReportDetails market={market} />
                     </div>
-                )
+                );
             }
         } else {
-            <div>
-                <h1>Event not ready for Reporting</h1>
-                <ReportDetails market={market} />
-            </div>
+            return (
+                <div>
+                    <h1>Event not ready for Reporting</h1>
+                    <ReportDetails market={market} />
+                </div>
+            );
         }
     }
 });
