@@ -9,11 +9,11 @@ let classnames = require("classnames");
 var ReportFillForm = React.createClass({
 
     getInitialState() {
-        return {scalarValue: this.props.reportedOutcome || ""};
+        return {reportedOutcome: this.props.reportedOutcome || ""};
     },
 
-    onScalarValueChanged(event) {
-        this.setState({scalarValue: event.target.value});
+    onReportedOutcomeChanged(event) {
+        this.setState({reportedOutcome: event.target.value});
         this.props.onReportedOutcomeChanged(event);
     },
 
@@ -26,8 +26,8 @@ var ReportFillForm = React.createClass({
                 <Input type="text"
                        name={nameAttr}
                        placeholder="Event outcome"
-                       value={this.state.scalarValue}
-                       onChange={this.onScalarValueChanged} />
+                       value={this.state.reportedOutcome}
+                       onChange={this.onReportedOutcomeChanged} />
             );
         } else {
             outcomeOptions = outcomes.map(outcome => {
@@ -36,9 +36,9 @@ var ReportFillForm = React.createClass({
                         <Input type="radio"
                                name={nameAttr}
                                value={outcome.id}
-                               checked={this.props.reportedOutcome == outcome.id}
+                               checked={this.state.reportedOutcome == outcome.id}
                                label={outcome.label}
-                               onChange={this.props.onReportedOutcomeChanged} />
+                               onChange={this.onReportedOutcomeChanged} />
                     </div>
                 );
             });
@@ -49,9 +49,9 @@ var ReportFillForm = React.createClass({
                        id="indeterminate"
                        name={nameAttr}
                        value={constants.INDETERMINATE_OUTCOME}
-                       checked={this.props.reportedOutcome == constants.INDETERMINATE_OUTCOME}
+                       checked={this.state.reportedOutcome == constants.INDETERMINATE_OUTCOME}
                        label="Outcome is indeterminate"
-                       onChange={this.props.onReportedOutcomeChanged} />
+                       onChange={this.onReportedOutcomeChanged} />
             </div>
         );
         return outcomeOptions;

@@ -60,6 +60,7 @@ let ReportPage = React.createClass({
     },
 
     onReportFormSubmit(event) {
+        let self = this;
         let flux = this.getFlux();
         event.preventDefault();
         if (this.state.reportedOutcome === null) {
@@ -74,7 +75,10 @@ let ReportPage = React.createClass({
             this.state.isUnethical,
             this.state.isIndeterminate,
             function (err, res) {
-                if (err) return console.error("submitReportHash failed:", err);
+                if (err) {
+                    console.error("submitReportHash failed:", err);
+                    return self.setState({reportedOutcome: null});
+                }
                 console.log("submitReportHash complete:", res);
             }
         );
@@ -98,13 +102,10 @@ let ReportPage = React.createClass({
     onReportedOutcomeChanged(event) {
         let flux = this.getFlux();
         let report = event.target.value;
-        console.log("reported outcome changed:", report);
         if (report !== null && report !== undefined) {
-            if (abi.bignum(report).eq(new BigNumber(constants.INDETERMINATE_OUTCOME)) &&
-                event.target.id === "indeterminate") {
+            if (report === constants.INDETERMINATE_OUTCOME && event.target.id === "indeterminate") {
                 this.setState({isIndeterminate: true});
             }
-            console.log("set report to:", report);
             this.setState({reportedOutcome: report});
         }
     },
