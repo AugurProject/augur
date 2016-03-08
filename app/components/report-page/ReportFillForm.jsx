@@ -9,7 +9,7 @@ let classnames = require("classnames");
 var ReportFillForm = React.createClass({
 
     getInitialState() {
-        return {scalarValue: ""};
+        return {scalarValue: this.props.reportedOutcome || ""};
     },
 
     onScalarValueChanged(event) {

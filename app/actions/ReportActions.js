@@ -198,6 +198,7 @@ var ReportActions = {
     } else {
       rescaledReportedOutcome = reportedOutcome;
     }
+    console.log("rescaled outcome:", rescaledReportedOutcome);
 
     var account = this.flux.store("config").getAccount();
     var salt = utils.bytesToHex(secureRandom(32));
